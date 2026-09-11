@@ -21,7 +21,7 @@ class Projects::BlobController < Projects::ApplicationController
 
   around_action :allow_gitaly_ref_name_caching, only: [:show]
 
-  before_action :require_non_empty_project, except: [:new, :create]
+  before_action :require_non_empty_project, except: [:new, :create, :preview]
   before_action :authorize_download_code!, except: [:show]
   before_action :authorize_read_code!, only: [:show]
 
@@ -33,8 +33,9 @@ class Projects::BlobController < Projects::ApplicationController
 
   before_action :authorize_edit_tree!, only: [:new, :create, :update, :destroy]
 
-  before_action :require_commit, except: [:new, :create]
-  before_action :require_blob, except: [:new, :create]
+  before_action :require_commit, except: [:new, :create, :preview]
+  before_action :require_commit_or_empty_repository, only: [:preview]
+  before_action :require_blob, except: [:new, :create, :preview]
   before_action :require_branch_head, only: [:edit, :update]
   before_action :editor_variables, except: [:show, :preview, :diff]
   before_action :validate_diff_params, only: :diff
@@ -120,8 +121,8 @@ class Projects::BlobController < Projects::ApplicationController
 
     @preview_file_name = preview_file_name
 
-    blob.load_all_data!
-    diffy = Diffy::Diff.new(blob.data, @content, diff: '-U 3', include_diff_info: true)
+    blob&.load_all_data!
+    diffy = Diffy::Diff.new(blob&.data || '', @content, diff: '-U 3', include_diff_info: true)
     diff_lines = diffy.diff.scan(/.*\n/)[2..]
     diff_lines = Gitlab::Diff::Parser.new.parse(diff_lines).to_a
     @diff_lines = Gitlab::Diff::Highlight.new(diff_lines, repository: @repository).highlight
@@ -210,7 +211,7 @@ class Projects::BlobController < Projects::ApplicationController
   def preview_file_name
     file_path = params.permit(:file_path)[:file_path]
 
-    file_path.present? ? File.basename(file_path.to_s) : blob.name
+    file_path.present? ? File.basename(file_path.to_s) : blob&.name || ''
   end
 
   def redirect_to_project_tree_path
@@ -232,6 +233,12 @@ class Projects::BlobController < Projects::ApplicationController
 
   def require_commit
     render_404 unless commit
+  end
+
+  def require_commit_or_empty_repository
+    return if @repository.empty?
+
+    require_commit
   end
 
   def redirect_renamed_default_branch?

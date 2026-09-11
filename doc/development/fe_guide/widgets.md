@@ -72,7 +72,7 @@ export const assigneesQueries = {
 };
 ```
 
-To handle the same logic for query updates, we **alias** query fields. For example:
+To handle the same logic for query updates, we alias query fields. For example:
 
 - `group` or `project` become `namespace`
 - `issue`, `epic`, or `mergeRequest` become `issuable`

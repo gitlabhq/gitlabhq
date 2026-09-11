@@ -150,12 +150,12 @@ RSpec.shared_examples 'attach child work item endpoint' do
     expect(json_response['error']).to eq('child_id is invalid')
   end
 
-  it 'returns forbidden when the feature flag is disabled' do
+  it 'returns not_found when the feature flag is disabled' do
     stub_feature_flags(work_item_rest_api: false)
 
     post api(api_request_path, user)
 
-    expect(response).to have_gitlab_http_status(:forbidden)
+    expect(response).to have_gitlab_http_status(:not_found)
   end
 end
 
@@ -279,12 +279,12 @@ RSpec.shared_examples 'detach child work item endpoint' do
     expect(json_response['error']).to eq('child_id is invalid')
   end
 
-  it 'returns forbidden when the feature flag is disabled' do
+  it 'returns not_found when the feature flag is disabled' do
     stub_feature_flags(work_item_rest_api: false)
 
     delete api(api_request_path, user)
 
-    expect(response).to have_gitlab_http_status(:forbidden)
+    expect(response).to have_gitlab_http_status(:not_found)
   end
 end
 
@@ -468,11 +468,11 @@ RSpec.shared_examples 'reorder child work item endpoint' do
     expect(response).to have_gitlab_http_status(:bad_request)
   end
 
-  it 'returns forbidden when the feature flag is disabled' do
+  it 'returns not_found when the feature flag is disabled' do
     stub_feature_flags(work_item_rest_api: false)
 
     put api(api_request_path, user), params: { move_before_id: first_child.id }
 
-    expect(response).to have_gitlab_http_status(:forbidden)
+    expect(response).to have_gitlab_http_status(:not_found)
   end
 end

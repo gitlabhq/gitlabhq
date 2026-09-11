@@ -19,7 +19,7 @@ minimal effort of the engineer who created a data type.
 
 ## Geo is a requirement in the definition of done
 
-Geo is the GitLab solution for [disaster recovery](https://about.gitlab.com/direction/geo/disaster_recovery/). A robust disaster recovery solution must replicate **all GitLab data** such that all GitLab services can be successfully restored in their entirety with minimal data loss in the event of a disaster.
+Geo is the GitLab solution for [disaster recovery](https://about.gitlab.com/direction/geo/disaster_recovery/). A robust disaster recovery solution must replicate all GitLab data such that all GitLab services can be successfully restored in their entirety with minimal data loss in the event of a disaster.
 
 For this reason, Geo replication and verification support for GitLab generated data is part of the [definition of done](../contributing/merge_request_workflow.md#definition-of-done). This ensures that new features ship with Geo support and our customers are not exposed to data loss.
 

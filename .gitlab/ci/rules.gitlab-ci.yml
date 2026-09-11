@@ -149,6 +149,9 @@
 .if-merge-request-labels-skip-check-ci-partition-pruning: &if-merge-request-labels-skip-check-ci-partition-pruning
   if: '($CI_PIPELINE_SOURCE == "merge_request_event" && $CI_MERGE_REQUEST_EVENT_TYPE != "merge_train") && $CI_MERGE_REQUEST_LABELS =~ /pipeline:skip-check-ci-partition-pruning/'
 
+.if-merge-request-labels-skip-router-sync: &if-merge-request-labels-skip-router-sync
+  if: '($CI_PIPELINE_SOURCE == "merge_request_event" && $CI_MERGE_REQUEST_EVENT_TYPE != "merge_train") && $CI_MERGE_REQUEST_LABELS =~ /pipeline:skip-router-sync/'
+
 .if-merge-request-labels-jh-contribution: &if-merge-request-labels-jh-contribution
   if: '($CI_PIPELINE_SOURCE == "merge_request_event" && $CI_MERGE_REQUEST_EVENT_TYPE != "merge_train") && $CI_MERGE_REQUEST_LABELS =~ /JiHu contribution/'
 
@@ -1737,6 +1740,22 @@
       when: never
     - <<: *if-default-refs
       changes: *code-backstage-qa-patterns
+
+# Deliberately narrower than routes-up-to-date. The paired HTTP Router merge request merges
+# first, so the router is ahead of master until the GitLab side lands. Outside that scope the
+# job would fail on merge requests that never touched a route.
+.cells:rules:routes-router-in-sync:
+  rules:
+    - <<: *if-not-ee
+      when: never
+    - <<: *if-jh
+      when: never
+    - <<: *if-merge-request-targeting-stable-branch
+      when: never
+    - <<: *if-merge-request-labels-skip-router-sync
+      when: never
+    - <<: *if-merge-request
+      changes: ["config/routing/gitlab_routes.json"]
 
 #########################
 # DAST Variables rules  #

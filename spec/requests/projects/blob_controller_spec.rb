@@ -217,10 +217,10 @@ RSpec.describe 'Projects blob controller', feature_category: :code_review_workfl
   describe 'POST preview', :aggregate_failures do
     let(:content) { 'Some content' }
 
-    def do_post(content, id: 'master/CHANGELOG', **extra_params)
+    def do_post(content, id: 'master/CHANGELOG', target_project: project, **extra_params)
       post namespace_project_preview_blob_path(
-        namespace_id: project.namespace,
-        project_id: project,
+        namespace_id: target_project.namespace,
+        project_id: target_project,
         id: id
       ), params: { content: content }.merge(extra_params)
     end
@@ -234,12 +234,14 @@ RSpec.describe 'Projects blob controller', feature_category: :code_review_workfl
       expect(doc.css('.file-content.md h1').map { |heading| heading.text.strip }).to include('Title')
     end
 
-    def expect_diff_preview
+    def expect_diff_preview(all_lines_added: false)
       expect(response).to have_gitlab_http_status(:ok)
       expect(response.headers['Content-Type']).to include('text/html')
 
       doc = Nokogiri::HTML(response.body)
       expect(doc.css('.diff-file')).to be_present
+      expect(doc.css('.line_holder.new')).to be_present
+      expect(doc.css('.line_holder.old')).to be_empty if all_lines_added
       expect(doc.css('.file-content.md')).to be_empty
     end
 
@@ -253,6 +255,32 @@ RSpec.describe 'Projects blob controller', feature_category: :code_review_workfl
 
         expect(response).to have_gitlab_http_status(:payload_too_large)
         expect(json_response['errors']).to include('Preview content too large')
+      end
+    end
+
+    context 'when the user cannot download code from a private project' do
+      let_it_be(:private_project) { create(:project, :private, :repository) }
+
+      it 'redirects an anonymous user to sign in' do
+        sign_out(user)
+
+        do_post(content, target_project: private_project)
+
+        expect(response).to redirect_to(new_user_session_path)
+      end
+
+      it 'does not disclose the project to a non-member' do
+        do_post(content, target_project: private_project)
+
+        expect(response).to have_gitlab_http_status(:not_found)
+      end
+
+      it 'denies a guest member' do
+        private_project.add_guest(user)
+
+        do_post(content, target_project: private_project)
+
+        expect(response).to have_gitlab_http_status(:not_found)
       end
     end
 
@@ -305,6 +333,82 @@ RSpec.describe 'Projects blob controller', feature_category: :code_review_workfl
             expect_diff_preview
           end
         end
+      end
+    end
+
+    context 'when the file is new' do
+      def do_post_new_file(content, **extra_params)
+        do_post(content, id: 'master', **extra_params)
+      end
+
+      context 'when file_path is a markup file' do
+        it 'renders the content with the markup renderer' do
+          do_post_new_file("* Title\n", file_path: 'docs/doc.org')
+
+          expect_markup_preview
+        end
+      end
+
+      context 'when file_path is not a markup file' do
+        it 'renders a diff with all lines added' do
+          do_post_new_file(content, file_path: 'scripts/script.py')
+
+          expect_diff_preview(all_lines_added: true)
+        end
+      end
+
+      context 'without a file_path param' do
+        it 'renders a diff with all lines added' do
+          do_post_new_file(content)
+
+          expect_diff_preview(all_lines_added: true)
+        end
+      end
+    end
+
+    context 'when the repository is empty' do
+      let_it_be(:empty_project) { create(:project, :empty_repo, maintainers: user) }
+
+      def do_post_empty_repo(content, **extra_params)
+        do_post(content, id: 'master', target_project: empty_project, **extra_params)
+      end
+
+      it 'renders a markup file_path with the markup renderer' do
+        do_post_empty_repo("* Title\n", file_path: 'docs/doc.org')
+
+        expect_markup_preview
+      end
+
+      it 'renders a diff with all lines added' do
+        do_post_empty_repo(content, file_path: 'scripts/script.py')
+
+        expect_diff_preview(all_lines_added: true)
+      end
+    end
+
+    context 'when the ref does not exist' do
+      it 'returns not found' do
+        do_post(content, id: 'nonexistent-branch', file_path: 'docs/doc.org')
+
+        expect(response).to have_gitlab_http_status(:not_found)
+      end
+    end
+
+    context 'when the id contains a path that does not exist' do
+      it 'renders a diff with all lines added' do
+        do_post(content, id: 'master/does/not/exist.py')
+
+        expect_diff_preview(all_lines_added: true)
+      end
+    end
+
+    context 'when creating a new file inside a directory' do
+      # The New file button carries the current directory into the URL,
+      # so the preview id can point at a tree, not a blob.
+      it 'renders a diff with all lines added' do
+        do_post(content, id: 'master/files')
+
+        expect_diff_preview(all_lines_added: true)
       end
     end
   end

@@ -5,7 +5,7 @@ info: Any user with at least the Maintainer role can merge updates to this conte
 title: Backwards compatibility across updates
 ---
 
-GitLab deployments can be broken down into many components. Updating GitLab is not atomic. Therefore, **many components must be backwards-compatible**.
+GitLab deployments can be broken down into many components. Updating GitLab is not atomic. Therefore, many components must be backwards-compatible.
 
 ## Common gotchas
 
@@ -156,8 +156,8 @@ where the code was merged, then customers performing [zero-downtime updates](../
 will end up running the new frontend code against the previous release's API.
 
 If you're not sure whether it's safe to enable all the changes at once, then one
-option is to enable the API in the **current** release and enable the frontend
-change in the **next** release. This is an example of the [Expand and contract pattern](#expand-and-contract-pattern).
+option is to enable the API in the current release and enable the frontend
+change in the next release. This is an example of the [Expand and contract pattern](#expand-and-contract-pattern).
 
 Or you may be able to avoid delaying by a release by modifying the frontend to
 [degrade gracefully](#graceful-degradation) against the previous release's API.
@@ -177,7 +177,7 @@ This means that every breaking change is broken down in three phases: expand, mi
 1. **migrate**: all consumers are updated to make use of the new implementation.
 1. **contract**: backward compatibility is removed.
 
-Those three phases **must be part of different milestones**, to allow zero-downtime updates.
+Those three phases must be part of different milestones, to allow zero-downtime updates.
 
 Depending on the support level for the feature, the contract phase could be delayed until the next major release.
 

@@ -38,7 +38,6 @@ export function initProjectPermissionsSettings() {
       confirmDangerMessage,
       confirmButtonText,
       htmlConfirmationMessage: parseBoolean(htmlConfirmationMessage),
-      groupPathRegex: new RegExp(`^(${componentProps.groupPathRegex})$`),
     },
     component: settingsPanel,
     props: {

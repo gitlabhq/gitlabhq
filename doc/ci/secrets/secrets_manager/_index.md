@@ -245,8 +245,8 @@ To update the secrets permissions for a project:
 1. In the left sidebar, select **Settings** > **General**.
 1. Expand **Visibility, project features, permissions**.
 1. Under **GitLab Secrets Manager**, in the **User permissions** section:
-   - Select **Add** to add permissions rules for specific users, groups, or roles.
-   - You can set permission scopes to read, write (create & update), and delete secrets.
+   - Select **Add** to add permissions rules for specific users or roles.
+   - You can set permission scopes to read metadata, read value, write (create & update), and delete secrets.
 
 For secrets managers enabled in GitLab 19.4 and later, users with the Maintainer role for the project have the
 read and write (create & update) permissions by default. Users with the Owner role can remove or change these default permissions.
@@ -272,8 +272,8 @@ To update the secrets permissions for a group:
    - In a top-level group, select **Settings** > **Secure**.
    - In a subgroup, select **Settings** > **General** and expand **Permissions and group features**.
 1. Under **GitLab Secrets Manager**, in the **User permissions** section:
-   - Select **Add** to add permissions rules for specific users, groups, or roles.
-   - You can set permission scopes to read, write (create & update), and delete secrets.
+   - Select **Add** to add permissions rules for specific users or roles.
+   - You can set permission scopes to read metadata, read value, write (create & update), and delete secrets.
 
 Users with the Owner role for the group always have permissions to perform all operations in the Secrets Manager.
 

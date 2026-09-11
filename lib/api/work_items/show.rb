@@ -9,6 +9,7 @@ module API
       allow_ai_workflows_access
 
       before { authenticate! }
+      before { check_work_item_rest_api_feature_flag! }
 
       feature_category :portfolio_management
       urgency :low
@@ -41,9 +42,7 @@ module API
             boundaries: [{ boundary_type: :group }, { boundary_type: :project }],
             job_token_policies: :read_work_items
           get ':work_item_iid' do
-            namespace = find_namespace_by_path!(params[:id].to_s, allow_project_namespaces: true)
-            not_found!('Namespace') if namespace.is_a?(::Namespaces::UserNamespace)
-            resource_parent = namespace.is_a?(::Namespaces::ProjectNamespace) ? namespace.project : namespace
+            resource_parent = resolve_namespace_resource_parent!(params[:id])
 
             render_work_item_for(resource_parent, params[:work_item_iid])
           end

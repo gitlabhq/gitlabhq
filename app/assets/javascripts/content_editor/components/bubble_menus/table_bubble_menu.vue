@@ -2,6 +2,7 @@
 import { GlDisclosureDropdown, GlTooltipDirective as GlTooltip } from '@gitlab/ui';
 import { selectedRect as getSelectedRect, selectionCell, cellNear } from '@tiptap/pm/tables';
 import { __, n__, s__ } from '~/locale';
+import { getModifierKey } from '~/constants';
 import EditorStateObserver from '../editor_state_observer.vue';
 import Table from '../../extensions/table';
 import TableHeader from '../../extensions/table_header';
@@ -9,6 +10,40 @@ import TableCell from '../../extensions/table_cell';
 import { canReadClipboard } from '../../extensions/copy_paste';
 import { rectUnion } from '../../services/utils';
 import BubbleMenu from './bubble_menu.vue';
+
+/* eslint-disable @gitlab/require-i18n-strings -- key names are not translatable */
+function pasteShortcuts() {
+  const isMac = window.gl?.client?.isMac;
+  return {
+    intoCell: {
+      kbd: isMac ? `${getModifierKey(true)}⌥V` : `${getModifierKey()}Alt+V`,
+      ariaKeyshortcuts: isMac ? 'Meta+Alt+V' : 'Control+Alt+V',
+    },
+    intoTable: {
+      kbd: isMac ? `${getModifierKey(true)}V` : `${getModifierKey()}V`,
+      ariaKeyshortcuts: isMac ? 'Meta+V' : 'Control+V',
+    },
+  };
+}
+/* eslint-enable @gitlab/require-i18n-strings */
+
+function pasteItems() {
+  const { intoCell, intoTable } = pasteShortcuts();
+  return [
+    {
+      text: s__('ContentEditor|Paste into cell'),
+      value: 'pasteFromClipboardIntoCell',
+      kbd: intoCell.kbd,
+      extraAttrs: { 'aria-keyshortcuts': intoCell.ariaKeyshortcuts },
+    },
+    {
+      text: s__('ContentEditor|Paste and merge into table'),
+      value: 'pasteFromClipboardIntoTable',
+      kbd: intoTable.kbd,
+      extraAttrs: { 'aria-keyshortcuts': intoTable.ariaKeyshortcuts },
+    },
+  ];
+}
 
 function getDropdownItems({ selectedRect, cellType, rowspan = 1, colspan = 1, align = 'left' }) {
   const totalRows = selectedRect?.map.height;
@@ -45,15 +80,7 @@ function getDropdownItems({ selectedRect, cellType, rowspan = 1, colspan = 1, al
       ].filter(Boolean),
     },
     {
-      items: canReadClipboard()
-        ? [
-            { text: s__('ContentEditor|Paste into cell'), value: 'pasteFromClipboardIntoCell' },
-            {
-              text: s__('ContentEditor|Paste and merge into table'),
-              value: 'pasteFromClipboardIntoTable',
-            },
-          ]
-        : [],
+      items: canReadClipboard() ? pasteItems() : [],
     },
     {
       items: [
@@ -165,6 +192,13 @@ export default {
       text-sr-only
       :items="dropdownItems"
       @action="runCommand"
-    />
+    >
+      <template #list-item="{ item }">
+        <span class="gl-flex gl-items-center gl-justify-between gl-gap-3">
+          <span>{{ item.text }}</span>
+          <kbd v-if="item.kbd" class="flat" aria-hidden="true">{{ item.kbd }}</kbd>
+        </span>
+      </template>
+    </gl-disclosure-dropdown>
   </bubble-menu>
 </template>

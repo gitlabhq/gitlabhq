@@ -47,10 +47,10 @@ Use this guide when:
 | `component_name`        | string, null  | Name of the individual component within the flow (maximum length: 64 characters). | The agent component's name. |
 | `agent_name`            | string, null  | Which agent within the flow is executing. | `"duo_chat"`, `"code_agent"`, `"planning_agent"` |
 | `custom_item_id`        | integer, null | Custom item ID (only populated for custom items) | `123` |
-| `flow_registry_version` | string, null  | Flow Registry framework version used to build the flow (maximum length: 64 characters). **Deprecated in favor of `item_schema_version`**. | `"experimental"`, `"v1"` |
-| `flow_type`             | string, null  | Type of DAP flow (more custom flows to be included in the future). **Deprecated in favor of `flow_name`**.| `"chat"`, `"software_development"`, `"convert_to_gitlab_ci"` |
-| `flow_version`          | string, null  | Version of the AI feature implementation for the flow (maximum length: 64 characters). **Deprecated in favor of `item_version`**. | `"2.1.0"`, `"3.0.1"` |
-| `agent_type`            | string, null  | Which agent type within the flow is executing. **Deprecated in favor of `item_type`**. | `"foundational"`, `"custom"` |
+| `flow_registry_version` | string, null  | Flow Registry framework version used to build the flow (maximum length: 64 characters). Deprecated in favor of `item_schema_version`. | `"experimental"`, `"v1"` |
+| `flow_type`             | string, null  | Type of DAP flow (more custom flows to be included in the future). Deprecated in favor of `flow_name`.| `"chat"`, `"software_development"`, `"convert_to_gitlab_ci"` |
+| `flow_version`          | string, null  | Version of the AI feature implementation for the flow (maximum length: 64 characters). Deprecated in favor of `item_version`. | `"2.1.0"`, `"3.0.1"` |
+| `agent_type`            | string, null  | Which agent type within the flow is executing. Deprecated in favor of `item_type`. | `"foundational"`, `"custom"` |
 
 ### Model Information
 
@@ -155,18 +155,18 @@ The following events illustrate the lifecycle of a DAP session and should be tra
 
 When tracking token usage in AI Context:
 
-1. **Always include `total_tokens`** when tracking AI model interactions
-1. **Track both input and output tokens** separately for accurate billing
-1. **Record cache usage** (`cache_read`, `ephemeral_5m_input_tokens`, `ephemeral_1h_input_tokens`) to monitor cache effectiveness
-1. **Include model information** (`model_provider`, `model_engine`, `model_name`) in AI Context to enable model-specific analysis
+- Always include `total_tokens` when tracking AI model interactions
+- Track both input and output tokens separately for accurate billing
+- Record cache usage (`cache_read`, `ephemeral_5m_input_tokens`, `ephemeral_1h_input_tokens`) to monitor cache effectiveness
+- Include model information (`model_provider`, `model_engine`, `model_name`) in AI Context to enable model-specific analysis
 
 ### Billing and Attribution
 
 For proper billing and customer attribution:
 
-1. **Include `correlation_id`** (Standard Context) - Critical for joining DAP events to billable events
-1. **Include `ultimate_parent_namespace_id`** (Standard Context) - Ensures customer attribution aligns with usage billing
-1. **Include `feature_enabled_by_namespace_ids`** (Standard Context) - Current method for customer attribution in AI data models
+- Include `correlation_id` (Standard Context) - Critical for joining DAP events to billable events
+- Include `ultimate_parent_namespace_id` (Standard Context) - Ensures customer attribution aligns with usage billing
+- Include `feature_enabled_by_namespace_ids` (Standard Context) - Current method for customer attribution in AI data models
 
 ## Adding a Field to AI Context
 

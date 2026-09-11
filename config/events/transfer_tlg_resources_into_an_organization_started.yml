@@ -1,0 +1,22 @@
+---
+description: Fires when the background job begins transferring the subgroups, projects,
+  and members of an organization's top-level groups into a newly confirmed organization
+internal_events: true
+status: active
+action: transfer_tlg_resources_into_an_organization_started
+identifiers:
+- user
+additional_properties:
+  target_organization_id:
+    description: ID of the organization the resources are being transferred into.
+      Differs from the standard context `organization_id`, which holds the
+      organization the request originated from
+product_group: organizations
+product_categories:
+- organization
+milestone: '19.4'
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/254597
+tiers:
+- free
+- premium
+- ultimate

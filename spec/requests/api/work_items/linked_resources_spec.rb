@@ -41,12 +41,12 @@ RSpec.describe API::WorkItems::LinkedResources, feature_category: :portfolio_man
       expect(response).to have_gitlab_http_status(:not_found)
     end
 
-    it 'returns forbidden when the feature flag is disabled' do
+    it 'returns not_found when the feature flag is disabled' do
       stub_feature_flags(work_item_rest_api: false)
 
       get api(api_request_path, user)
 
-      expect(response).to have_gitlab_http_status(:forbidden)
+      expect(response).to have_gitlab_http_status(:not_found)
     end
 
     it 'paginates the response', :aggregate_failures do

@@ -60,7 +60,7 @@ For the naming conventions, see [Naming Permissions](../conventions.md#naming-pe
 
 #### Determining the Permission Name for Types and Mutations
 
-When implementing granular PAT authorization, name permissions based on what the type **represents** or what the mutation **does**, not the GraphQL schema structure.
+When implementing granular PAT authorization, name permissions based on what the type represents or what the mutation does, not the GraphQL schema structure.
 
 **Examples:**
 

@@ -224,6 +224,8 @@ The HTTP Router downloads `config/routing/gitlab_routes.json` from GitLab. When 
 request changes routes, update the HTTP Router snapshot in a paired merge request that downloads
 the file from that GitLab branch. For details, see the
 [HTTP Router development documentation](https://gitlab.com/gitlab-org/cells/http-router/-/blob/main/docs/development.md).
+A separate CI job checks that this download stays current. For details, see
+[Check the HTTP Router is in sync](#check-the-http-router-is-in-sync).
 
 The HTTP Router derives its reserved-word route guards, in `src/generated_route_guards.ts`, from
 this snapshot file. Because the snapshot is generated with `RAILS_ENV=test`, development-only
@@ -234,3 +236,31 @@ router. GDK behavior is unchanged either way. With the guard, `/rails/*` goes st
 JSON rule engine; without it, the request falls through the top-level `/:ROUTE/*` classify rule,
 fails to classify `rails` as a namespace route, and the handler catches that failure and falls
 back to the same JSON rule engine, at the cost of one extra Topology Service call in development.
+
+### Check the HTTP Router is in sync
+
+The `cells-routes:router-in-sync` CI job downloads `test/routes/gitlab_routes.json` from the
+`main` branch of the HTTP Router repository and compares it byte-for-byte with
+`config/routing/gitlab_routes.json` on your branch. Where `cells-routes:up-to-date` checks the
+file in GitLab against the Rails route table, `cells-routes:router-in-sync` checks the copy in the
+HTTP Router against the file in GitLab.
+
+The job runs only on merge request pipelines, and only when the merge request changes
+`config/routing/gitlab_routes.json`. It reports a download failure separately from route drift,
+so a network problem while fetching the file from the HTTP Router is not mistaken for a route
+change. The job sets `allow_failure: true`, so it does not block the merge request today. Making
+the job blocking is proposed in
+[work item 723](https://gitlab.com/gitlab-com/gl-infra/tenant-scale/cells-infrastructure/team/-/work_items/723).
+
+When the job fails because of route drift, open a paired merge request in the HTTP Router that
+downloads the routes from your GitLab branch:
+
+```shell
+npm run download-gitlab-routes -- <your-gitlab-branch-name>
+```
+
+Update the vitest snapshot, and the routing rules if a new route does not match correctly, then
+merge that merge request and re-run the GitLab pipeline.
+
+If you must merge before the paired merge request is ready, apply the `pipeline:skip-router-sync`
+label to skip the job, and explain why in the merge request description.

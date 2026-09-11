@@ -24,12 +24,12 @@ RSpec.shared_examples 'a work item development feature endpoint' do
     expect(response).to have_gitlab_http_status(:not_found)
   end
 
-  it 'returns forbidden when the work_item_rest_api feature flag is disabled' do
+  it 'returns not_found when the work_item_rest_api feature flag is disabled' do
     stub_feature_flags(work_item_rest_api: false)
 
     get api(api_request_path, user)
 
-    expect(response).to have_gitlab_http_status(:forbidden)
+    expect(response).to have_gitlab_http_status(:not_found)
   end
 
   it 'paginates the response' do

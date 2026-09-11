@@ -18,3 +18,16 @@ cells-routes:up-to-date:
     paths:
       - config/routing/gitlab_routes.json
     when: on_failure
+
+cells-routes:router-in-sync:
+  # No bundle: gitlab-cells-http_router has no runtime dependencies, so the script
+  # loads it from gems/ with plain Ruby and the job needs nothing installed.
+  extends:
+    - .default-retry
+    - .with-alpine-ruby-image
+    - .cells:rules:routes-router-in-sync
+  stage: lint
+  needs: []
+  allow_failure: true
+  script:
+    - scripts/cells/check_router_routes_sync.rb

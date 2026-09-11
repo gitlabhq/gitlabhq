@@ -45,7 +45,7 @@ reliably decide if an object is no longer needed.
 
 ### Git alternates in GitLab: pool repositories
 
-GitLab organizes this object borrowing by [creating special **pool repositories**](../administration/repository_storage_paths.md)
+GitLab organizes this object borrowing by [creating special pool repositories](../administration/repository_storage_paths.md)
 which are hidden from the user. We then use Git
 alternates to let a collection of project repositories borrow from a
 single pool repository. We call such a collection of project

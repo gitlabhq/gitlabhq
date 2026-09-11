@@ -40,8 +40,12 @@ entire instance. If you do not select a specific model, all GitLab Duo features
 use the default GitLab model.
 
 > [!note]
-> For GitLab Self-Managed instances with an offline license, to change the model for features in the GitLab Duo Agent Platform,
-> you must have the [GitLab Duo Agent Platform Self-Hosted](../../subscriptions/subscription-add-ons.md) add-on.
+> For GitLab Self-Managed instances with an offline license, GitLab-managed models are not available.
+> An offline license has no connection to the GitLab.com AI Gateway that serves them, so the
+> model selection list does not include GitLab-managed models and no error is displayed.
+> To change the model for features in the GitLab Duo Agent Platform, you must have the
+> [GitLab Duo Agent Platform Self-Hosted](../../subscriptions/subscription-add-ons.md) add-on
+> and [configure self-hosted models](../gitlab_duo_self_hosted/configure_duo_features.md).
 
 Prerequisites:
 

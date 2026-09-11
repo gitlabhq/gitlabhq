@@ -1621,6 +1621,9 @@ production: &base
   # on a given port instead of serving directly from /assets/webpack. This is only indended for use
   # in development.
   webpack:
+    # Which bundler compiled the assets: 'webpack' (default) or 'rspack'.
+    # Rspack writes its manifest under a different filename.
+    # bundler: rspack
     # dev_server:
     #   enabled: true
     #   host: localhost

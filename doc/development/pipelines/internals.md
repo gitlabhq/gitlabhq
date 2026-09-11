@@ -313,8 +313,8 @@ This list can be expanded as new failure patterns emerge. To avoid conflicts, pl
 
 #### Key takeaways
 
-- If you need to **extend a hash**, you should use `extends`
-- If you need to **extend an array**, you'll need to use `!reference`, or `YAML anchors` as last resort
+- If you need to extend a hash, you should use `extends`
+- If you need to extend an array, you'll need to use `!reference`, or `YAML anchors` as last resort
 - For more complex cases (for example, extend hash inside array, extend array inside hash, ...), you'll have to use `!reference` or `YAML anchors`
 
 #### What can `extends` and `YAML anchors` do?

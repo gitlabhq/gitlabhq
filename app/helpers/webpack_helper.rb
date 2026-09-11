@@ -110,7 +110,7 @@ module WebpackHelper
   end
 
   def rspack_enabled?
-    Gitlab::Utils.to_boolean(ENV['ENABLE_RSPACK'], default: false)
+    Gitlab::Utils.to_boolean(ENV['ENABLE_RSPACK'], default: Gitlab.config.webpack.bundler == 'rspack')
   end
 
   def bundler_manifest_filename

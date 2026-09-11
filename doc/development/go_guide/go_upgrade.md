@@ -217,7 +217,7 @@ projects with:
   operational issues. Isolated component testing reduces mean time to
   feedback on updates and decreases resource burn across the organization.
 - Components should have end-to-end test coverage in the GitLab Performance Test tool.
-- Integration validation through installation of fresh packages **_and_** upgrade from previous versions for:
+- Integration validation through installation of fresh packages and upgrade from previous versions for:
   - Single GitLab Node
   - Reference Architecture Deployment
   - Geo Deployment

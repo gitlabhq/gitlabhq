@@ -118,7 +118,7 @@ export class ContentEditor {
     }
   }
 
-  async setSerializedContent(serializedContent) {
+  async setSerializedContent(serializedContent, { addToHistory = false } = {}) {
     const { _tiptapEditor: editor } = this;
 
     if (this._collaborationProvider) {
@@ -131,7 +131,11 @@ export class ContentEditor {
         const { document } = await this.deserialize(serializedContent);
 
         if (document) {
-          editor.commands.setContent(document.toJSON(), false);
+          editor
+            .chain()
+            .setMeta('addToHistory', addToHistory)
+            .setContent(document.toJSON(), false)
+            .run();
         }
       });
 
@@ -146,7 +150,7 @@ export class ContentEditor {
       for (const [key, value] of Object.entries(document.attrs)) {
         tr = tr.step(new DocAttrStep(key, value));
       }
-      editor.view.dispatch(tr.setMeta('preventUpdate', true));
+      editor.view.dispatch(tr.setMeta('preventUpdate', true).setMeta('addToHistory', addToHistory));
     }
   }
 

@@ -4,6 +4,7 @@ module API
   module WorkItems
     class Create < ::API::Base
       before { authenticate! }
+      before { check_work_item_rest_api_feature_flag! }
 
       feature_category :portfolio_management
       urgency :low
@@ -12,6 +13,7 @@ module API
       helpers ::API::Helpers::WorkItems::ShowParams
       helpers ::API::Helpers::WorkItems::Authorization
       helpers ::API::Helpers::WorkItems::Creation
+      helpers ::API::Helpers::WorkItems::Preloads
       helpers ::API::Helpers::WorkItems::Rendering
       helpers ::API::Helpers::WorkItems::WidgetValidation
 
@@ -37,9 +39,7 @@ module API
             permissions: :create_work_item,
             boundaries: [{ boundary_type: :group }, { boundary_type: :project }]
           post do
-            namespace = find_namespace_by_path!(params[:id].to_s, allow_project_namespaces: true)
-            not_found!('Namespace') if namespace.is_a?(::Namespaces::UserNamespace)
-            resource_parent = namespace.is_a?(::Namespaces::ProjectNamespace) ? namespace.project : namespace
+            resource_parent = resolve_namespace_resource_parent!(params[:id])
 
             result = execute_work_item_creation(resource_parent)
             render_work_item_creation(result)

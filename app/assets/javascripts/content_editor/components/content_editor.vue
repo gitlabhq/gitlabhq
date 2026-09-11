@@ -194,8 +194,9 @@ export default {
       // The markdown prop lags the CRDT document, so it is not reliable.
       if (this.collaborationProvider) return;
 
+      // A replacement while editing (a template, a saved reply) stays undoable; the load does not.
       if (markdown !== this.latestMarkdown) {
-        this.setSerializedContent(markdown);
+        this.setSerializedContent(markdown, { addToHistory: true });
       }
     },
     editable(value) {
@@ -324,11 +325,11 @@ export default {
     pasteContent(content) {
       this.contentEditor.tiptapEditor.chain().focus().pasteContent(content).run();
     },
-    async setSerializedContent(markdown) {
+    async setSerializedContent(markdown, options) {
       this.notifyLoading();
 
       try {
-        await this.contentEditor.setSerializedContent(markdown);
+        await this.contentEditor.setSerializedContent(markdown, options);
         this.notifyLoadingSuccess();
         this.latestMarkdown = markdown;
       } catch {
@@ -341,7 +342,7 @@ export default {
           actionLabel: __('Retry'),
           action: () => {
             this.contentEditor.setEditable(true);
-            this.setSerializedContent(markdown);
+            this.setSerializedContent(markdown, options);
           },
         });
         this.notifyLoadingError();

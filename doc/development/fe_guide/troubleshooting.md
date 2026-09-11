@@ -37,7 +37,7 @@ See [this video](https://www.youtube.com/watch?v=-BkEhghP-kM) for an in-depth ov
 + expect(wrapper.findComponent(ChildComponent).props()).toMatchObject(...);
 ```
 
-`toMatchObject` actually changes the nature of the assertion and won't fail if some items are **missing** from the expectation.
+`toMatchObject` actually changes the nature of the assertion and won't fail if some items are missing from the expectation.
 
 ### Script issues
 

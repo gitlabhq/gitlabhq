@@ -569,6 +569,35 @@ describe('content_editor/extensions/copy_paste', () => {
             });
           });
         });
+
+        describe('shortcut: Mod-Alt-v', () => {
+          beforeEach(() => {
+            window.isSecureContext = true;
+            mockClipboardRead({
+              html: '<table><tr><td>X</td><td>Y</td></tr></table>',
+              text: 'X\tY',
+            });
+          });
+
+          it('pastes the clipboard table as a nested table inside the cell', async () => {
+            tiptapEditor.commands.keyboardShortcut('Mod-Alt-v');
+            await waitForPromises();
+
+            const docJSON = JSON.stringify(tiptapEditor.state.doc.toJSON());
+            expect(docJSON.match(/"type":"table"/g)).toHaveLength(2);
+          });
+
+          it('does nothing when the Clipboard API is unavailable', async () => {
+            window.isSecureContext = false;
+            const docBefore = tiptapEditor.state.doc.toJSON();
+
+            tiptapEditor.commands.keyboardShortcut('Mod-Alt-v');
+            await waitForPromises();
+
+            expect(tiptapEditor.state.doc.toJSON()).toEqual(docBefore);
+            expect(navigator.clipboard.read).not.toHaveBeenCalled();
+          });
+        });
       });
 
       it('uses the markdown-based paste path when pasting a single cell', async () => {
@@ -655,6 +684,22 @@ describe('content_editor/extensions/copy_paste', () => {
         }),
       ),
     ).toBe(false);
+  });
+
+  describe('shortcut: Mod-Alt-v outside a table', () => {
+    it('does nothing and lets the event fall through', async () => {
+      window.isSecureContext = true;
+      jest.spyOn(navigator.clipboard, 'read');
+
+      tiptapEditor.commands.insertContent('<p>Some text</p>');
+      const docBefore = tiptapEditor.state.doc.toJSON();
+
+      tiptapEditor.commands.keyboardShortcut('Mod-Alt-v');
+      await waitForPromises();
+
+      expect(tiptapEditor.state.doc.toJSON()).toEqual(docBefore);
+      expect(navigator.clipboard.read).not.toHaveBeenCalled();
+    });
   });
 
   describe('when pasting raw markdown source', () => {

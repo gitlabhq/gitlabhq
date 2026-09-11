@@ -630,12 +630,12 @@ recommended to observe objects with their own stateful behavior.
 
 Based on the Vue guidance:
 
-- **Do not** use or create a JavaScript class in your [data function](https://v2.vuejs.org/v2/api/#data).
-- **Do not** add new JavaScript class implementations.
-- **Do** encapsulate complex state management with cohesive decoupled components or [a state manager](state_management.md).
-- **Do** maintain existing implementations using such approaches.
-- **Do** migrate components to a pure object model when there are substantial changes to it.
-- **Do** move business logic to separate files, so you can test them separately from your component.
+- Do not use or create a JavaScript class in your [data function](https://v2.vuejs.org/v2/api/#data).
+- Do not add new JavaScript class implementations.
+- Do encapsulate complex state management with cohesive decoupled components or [a state manager](state_management.md).
+- Do maintain existing implementations using such approaches.
+- Do migrate components to a pure object model when there are substantial changes to it.
+- Do move business logic to separate files, so you can test them separately from your component.
 
 #### Why
 
@@ -911,7 +911,7 @@ describe('~/todos/app.vue', () => {
    expect(checkbox.attributes('disabled')).toBeDefined();
    ```
 
-1. **Do not** test the internal implementation of the child components:
+1. Do not test the internal implementation of the child components:
 
    ```javascript
    // bad

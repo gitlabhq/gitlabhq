@@ -225,8 +225,8 @@ a sharding key to an existing table.
 
 When you add a new table or modify an existing table to be sharded by `organization_id`, you must:
 
-1. **Add transfer service support**: Update records' `organization_id` when a group or users transfer to a new organization.
-1. **Use common organization in factories**: Ensure RSpec factories automatically associate with the common organization. See the after build block in the Namespaces factory.
+1. Add transfer service support. Update records' `organization_id` when a group or users transfer to a new organization.
+1. Use common organization in factories. Ensure RSpec factories automatically associate with the common organization. See the after build block in the Namespaces factory.
 
 ## Cross-schema references
 
@@ -237,8 +237,8 @@ Cross schema references are not allowed, in general.
 
 When an organization moves to a different cell, all its data stored in organization-level tables must be transferred. This means:
 
-1. **Organization data cannot depend on cell-local data** unless that dependency is consistent or self-healing.
-1. **Cell-local data can reference organization data** because organization data is stable and moves with the organization.
+- Organization data cannot depend on cell-local data unless that dependency is consistent or self-healing.
+- Cell-local data can reference organization data because organization data is stable and moves with the organization.
 
 ### Acceptable patterns
 

@@ -241,6 +241,76 @@ RSpec.describe SemgrepResultProcessor, feature_category: :tooling do
     end
   end
 
+  describe '#triage_action_for' do
+    before do
+      stub_env('SAST_TRIAGE_ENABLED', '1')
+      stub_env('SAST_TRIAGE_COMMENT_ENABLED', '1')
+      stub_env('SAST_TRIAGE_ACTIONS_ENABLED', '1')
+      processor.instance_variable_set(:@triage_verdicts,
+        { 'fp1' => { verdict: 'fp', confidence: 0.95, rationale: 'x', error: nil } })
+    end
+
+    context 'when SAST_TRIAGE_ACTIONS_ENABLED is not set' do
+      it 'returns :none even for a high-confidence verdict' do
+        stub_env('SAST_TRIAGE_ACTIONS_ENABLED', nil)
+
+        expect(processor.send(:triage_action_for, 'fp1')).to eq(:none)
+      end
+    end
+
+    context 'when SAST_TRIAGE_ENABLED is not set' do
+      it 'returns :none even with the actions flag on' do
+        stub_env('SAST_TRIAGE_ENABLED', nil)
+
+        expect(processor.send(:triage_action_for, 'fp1')).to eq(:none)
+      end
+    end
+
+    context 'when SAST_TRIAGE_COMMENT_ENABLED is not set' do
+      it 'returns :none even with the actions flag on' do
+        stub_env('SAST_TRIAGE_COMMENT_ENABLED', nil)
+
+        expect(processor.send(:triage_action_for, 'fp1')).to eq(:none)
+      end
+    end
+
+    context 'when all three flags are on' do
+      def action_for(verdict_hash)
+        processor.instance_variable_set(:@triage_verdicts, { 'f' => verdict_hash })
+        processor.send(:triage_action_for, 'f')
+      end
+
+      it 'dismisses a false positive at the threshold' do
+        expect(action_for(verdict: 'fp', confidence: 0.80, rationale: 'x', error: nil)).to eq(:dismiss)
+      end
+
+      it 'escalates a true positive at the threshold' do
+        expect(action_for(verdict: 'tp', confidence: 0.80, rationale: 'x', error: nil)).to eq(:escalate)
+      end
+
+      it 'returns :none for either verdict just below the threshold', :aggregate_failures do
+        expect(action_for(verdict: 'fp', confidence: 0.79, rationale: 'x', error: nil)).to eq(:none)
+        expect(action_for(verdict: 'tp', confidence: 0.79, rationale: 'x', error: nil)).to eq(:none)
+      end
+
+      it 'acts on a confidence that rounds up to the threshold, matching the displayed percent' do
+        expect(action_for(verdict: 'fp', confidence: 0.799, rationale: 'x', error: nil)).to eq(:dismiss)
+      end
+
+      it 'returns :none for an uncertain verdict regardless of confidence' do
+        expect(action_for(verdict: 'uncertain', confidence: 0.95, rationale: 'x', error: nil)).to eq(:none)
+      end
+
+      it 'returns :none for an errored verdict' do
+        expect(action_for(verdict: 'fp', confidence: 0.95, rationale: nil, error: 'rate_limited')).to eq(:none)
+      end
+
+      it 'returns :none when no verdict exists for the fingerprint' do
+        expect(processor.send(:triage_action_for, 'missing')).to eq(:none)
+      end
+    end
+  end
+
   describe '#sast_stop_label_present?' do
     context 'when CI_MERGE_REQUEST_LABELS includes appsec-sast::stop' do
       it 'returns true' do
@@ -324,6 +394,106 @@ RSpec.describe SemgrepResultProcessor, feature_category: :tooling do
         processor.send(:apply_label)
       end.to output(%r{Failed to apply labels with status code 400: Bad Request})
                .to_stdout
+    end
+
+    it 'sends the labels it was given' do
+      successful_response = instance_double(Net::HTTPOK)
+      allow(successful_response).to receive(:instance_of?).with(Net::HTTPOK).and_return(true)
+      http = instance_double(Net::HTTP)
+      form_data_captured = nil
+      request_double = instance_double(Net::HTTP::Put)
+      allow(request_double).to receive(:[]=)
+      allow(request_double).to receive(:set_form_data) { |data| form_data_captured = data }
+      allow(Net::HTTP::Put).to receive(:new).and_return(request_double)
+      allow(Net::HTTP).to receive(:start).and_yield(http)
+      allow(http).to receive(:request).and_return(successful_response)
+
+      processor.send(:apply_label, described_class::ESCALATION_LABELS)
+
+      expect(form_data_captured).to eq('add_labels' => described_class::ESCALATION_LABELS)
+    end
+
+    it 'refuses a label set outside the allowlist without calling the API', :aggregate_failures do
+      expect(Net::HTTP).not_to receive(:start)
+
+      expect { processor.send(:apply_label, 'attacker-chosen::label') }
+        .to output(/Refusing to apply non-allowlisted label set/).to_stdout
+    end
+  end
+
+  describe '#discussion_id_from' do
+    it 'extracts the discussion id from the response body' do
+      response = instance_double(Net::HTTPCreated, body: '{"id":"ab12cd34"}')
+
+      expect(processor.send(:discussion_id_from, response)).to eq('ab12cd34')
+    end
+
+    it 'returns nil for an unparseable body' do
+      response = instance_double(Net::HTTPCreated, body: 'not json')
+
+      expect(processor.send(:discussion_id_from, response)).to be_nil
+    end
+
+    it 'returns nil when the id is not a hex sha, so it cannot alter the URL path', :aggregate_failures do
+      traversal = instance_double(Net::HTTPCreated, body: '{"id":"../../other_endpoint"}')
+      query = instance_double(Net::HTTPCreated, body: '{"id":"abc123?resolved=false"}')
+      numeric = instance_double(Net::HTTPCreated, body: '{"id":42}')
+
+      expect(processor.send(:discussion_id_from, traversal)).to be_nil
+      expect(processor.send(:discussion_id_from, query)).to be_nil
+      expect(processor.send(:discussion_id_from, numeric)).to be_nil
+    end
+
+    it 'returns nil for a nil response' do
+      expect(processor.send(:discussion_id_from, nil)).to be_nil
+    end
+  end
+
+  describe '#resolve_discussion' do
+    let(:http) { instance_double(Net::HTTP) }
+    let(:request_double) { instance_double(Net::HTTP::Put) }
+    let(:captured) { {} }
+
+    before do
+      allow(request_double).to receive(:[]=)
+      allow(request_double).to receive(:set_form_data) { |data| captured[:form_data] = data }
+      allow(Net::HTTP::Put).to receive(:new) { |uri| captured[:uri] = uri.to_s }.and_return(request_double)
+      allow(Net::HTTP).to receive(:start).and_yield(http)
+    end
+
+    it 'PUTs resolved=true to the discussion endpoint', :aggregate_failures do
+      successful_response = instance_double(Net::HTTPOK)
+      allow(successful_response).to receive(:instance_of?).with(Net::HTTPOK).and_return(true)
+      allow(http).to receive(:request).and_return(successful_response)
+
+      processor.send(:resolve_discussion, 'ab12cd34')
+
+      expect(captured[:uri]).to end_with('/merge_requests/1234/discussions/ab12cd34')
+      expect(captured[:form_data]).to eq('resolved' => 'true')
+    end
+
+    it 'fails open on a non-success response without raising' do
+      failed_response = instance_double(Net::HTTPBadRequest)
+      allow(failed_response).to receive(:instance_of?).with(Net::HTTPOK).and_return(false)
+      allow(failed_response).to receive_messages(code: '400', body: 'Bad Request')
+      allow(http).to receive(:request).and_return(failed_response)
+
+      expect { processor.send(:resolve_discussion, 'ab12cd34') }
+        .to output(/Leaving thread unresolved for human review/).to_stdout
+    end
+
+    it 'fails open when the request raises' do
+      allow(http).to receive(:request).and_raise(StandardError, 'boom')
+
+      expect { processor.send(:resolve_discussion, 'ab12cd34') }
+        .to output(/Leaving thread unresolved for human review/).to_stdout
+    end
+
+    it 'skips the request entirely when the discussion id is nil', :aggregate_failures do
+      expect(Net::HTTP).not_to receive(:start)
+
+      expect { processor.send(:resolve_discussion, nil) }
+        .to output(/Could not extract discussion id/).to_stdout
     end
   end
 
@@ -776,8 +946,9 @@ RSpec.describe SemgrepResultProcessor, feature_category: :tooling do
         allow(http_double).to receive(:request).and_return(failed_response)
         allow(Net::HTTP).to receive(:start).and_yield(http_double)
 
-        # Expect post_comment to be called
+        # Expect post_comment to be called, and labels applied to the fallback comment
         expect(processor).to receive(:post_comment).once
+        expect(processor).to receive(:apply_label).with(described_class::PING_LABELS).once
 
         # Output should include error message
         expect do
@@ -829,8 +1000,8 @@ RSpec.describe SemgrepResultProcessor, feature_category: :tooling do
         end
         allow(Net::HTTP).to receive(:start).and_yield(http_double)
 
-        # Apply label should be called once
-        expect(processor).to receive(:apply_label).once
+        # Apply label runs for the successful inline post and again for the fallback comment
+        expect(processor).to receive(:apply_label).twice
 
         # Post_comment should be called once
         expect(processor).to receive(:post_comment).once
@@ -839,6 +1010,240 @@ RSpec.describe SemgrepResultProcessor, feature_category: :tooling do
         expect do
           processor.create_inline_comments(mixed_findings)
         end.to output(/Failed to post inline comment with status code 400/).to_stdout
+      end
+    end
+
+    context 'with active-mode triage actions enabled' do
+      let(:finding) do
+        {
+          'f1' => {
+            path: 'file.rb',
+            line: 5,
+            message: 'Error message',
+            check_id: 'builds.sast-custom-rules.other'
+          }
+        }
+      end
+
+      let(:captured_bodies) { [] }
+      let(:successful_response) do
+        instance_double(Net::HTTPCreated).tap do |response|
+          allow(response).to receive(:instance_of?).with(Net::HTTPCreated).and_return(true)
+          allow(response).to receive_messages(code: '201', body: '{"id":"ab12cd34"}')
+        end
+      end
+
+      let(:request_double) do
+        instance_double(Net::HTTP::Post).tap do |request|
+          allow(request).to receive(:[]=)
+          allow(request).to receive(:set_form_data) { |data| captured_bodies << data['body'] }
+        end
+      end
+
+      before do
+        stub_env('SAST_TRIAGE_ENABLED', '1')
+        stub_env('SAST_TRIAGE_COMMENT_ENABLED', '1')
+        stub_env('SAST_TRIAGE_ACTIONS_ENABLED', '1')
+        allow(Net::HTTP::Post).to receive(:new).and_return(request_double)
+        http_double = instance_double(Net::HTTP)
+        allow(http_double).to receive(:request).and_return(successful_response)
+        allow(Net::HTTP).to receive(:start).and_yield(http_double)
+      end
+
+      context 'with a high-confidence false-positive verdict' do
+        before do
+          processor.instance_variable_set(:@triage_verdicts,
+            { 'f1' => { verdict: 'fp', confidence: 0.92, rationale: 'Test-only path.', error: nil } })
+        end
+
+        it 'posts a no-ping dismissal comment and resolves the thread instead of labeling', :aggregate_failures do
+          expect(processor).to receive(:resolve_discussion).with('ab12cd34')
+          expect(processor).not_to receive(:apply_label)
+
+          processor.create_inline_comments(finding)
+
+          body = captured_bodies.first
+          expect(body).to include(described_class::MESSAGE_AUTO_DISMISSED)
+          expect(body).to include(described_class::TRIAGE_RECOMMENDATION_HEADING)
+          expect(body).to include(described_class::MESSAGE_FOOTER)
+          expect(body).not_to include(described_class::APPSEC_HANDLE)
+        end
+
+        it 'keeps the fingerprint header so re-runs still dedupe the finding' do
+          allow(processor).to receive(:resolve_discussion)
+
+          processor.create_inline_comments(finding)
+
+          expect(captured_bodies.first).to include('<!-- {"fingerprint":"f1"')
+        end
+
+        it 'leaves the thread unresolved when resolution fails, without aborting', :aggregate_failures do
+          failed_put = instance_double(Net::HTTPBadRequest)
+          allow(failed_put).to receive(:instance_of?).with(Net::HTTPOK).and_return(false)
+          allow(failed_put).to receive_messages(code: '400', body: 'Bad Request')
+          put_double = instance_double(Net::HTTP::Put)
+          allow(put_double).to receive(:[]=)
+          allow(put_double).to receive(:set_form_data)
+          allow(Net::HTTP::Put).to receive(:new).and_return(put_double)
+          http_double = instance_double(Net::HTTP)
+          call_count = 0
+          allow(http_double).to receive(:request) do
+            call_count += 1
+            call_count == 1 ? successful_response : failed_put
+          end
+          allow(Net::HTTP).to receive(:start).and_yield(http_double)
+          expect(processor).not_to receive(:apply_label)
+
+          expect { processor.create_inline_comments(finding) }
+            .to output(/Leaving thread unresolved for human review/).to_stdout
+        end
+
+        it 'still resolves the thread when the inline post falls back to a normal comment', :aggregate_failures do
+          failed_response = instance_double(Net::HTTPBadRequest)
+          allow(failed_response).to receive(:instance_of?).with(Net::HTTPCreated).and_return(false)
+          allow(failed_response).to receive_messages(code: '400', body: 'Bad Request')
+          http_double = instance_double(Net::HTTP)
+          allow(http_double).to receive(:request).and_return(failed_response)
+          allow(Net::HTTP).to receive(:start).and_yield(http_double)
+          allow(processor).to receive(:post_comment).and_return(successful_response)
+          expect(processor).to receive(:resolve_discussion).with('ab12cd34')
+          expect(processor).not_to receive(:apply_label)
+
+          expect { processor.create_inline_comments(finding) }
+            .to output(/Failed to post inline comment/).to_stdout
+        end
+      end
+
+      context 'with a high-confidence true-positive verdict' do
+        before do
+          processor.instance_variable_set(:@triage_verdicts,
+            { 'f1' => { verdict: 'tp', confidence: 0.9, rationale: 'Reachable sink.', error: nil } })
+        end
+
+        it 'still applies the escalation labels when the inline post falls back to a normal comment' do
+          failed_response = instance_double(Net::HTTPBadRequest)
+          allow(failed_response).to receive(:instance_of?).with(Net::HTTPCreated).and_return(false)
+          allow(failed_response).to receive_messages(code: '400', body: 'Bad Request')
+          http_double = instance_double(Net::HTTP)
+          allow(http_double).to receive(:request).and_return(failed_response)
+          allow(Net::HTTP).to receive(:start).and_yield(http_double)
+          allow(processor).to receive(:post_comment).and_return(successful_response)
+          expect(processor).to receive(:apply_label).with(described_class::ESCALATION_LABELS)
+
+          expect { processor.create_inline_comments(finding) }
+            .to output(/Failed to post inline comment/).to_stdout
+        end
+
+        it 'keeps the AppSec ping, adds the escalation note and label', :aggregate_failures do
+          expect(processor).to receive(:apply_label)
+            .with(described_class::ESCALATION_LABELS)
+          expect(processor).not_to receive(:resolve_discussion)
+
+          processor.create_inline_comments(finding)
+
+          body = captured_bodies.first
+          expect(body).to include(described_class::MESSAGE_PING_APPSEC)
+          expect(body).to include(described_class::MESSAGE_ESCALATION_NOTE)
+        end
+      end
+
+      context 'with a verdict below the action threshold' do
+        before do
+          processor.instance_variable_set(:@triage_verdicts,
+            { 'f1' => { verdict: 'fp', confidence: 0.79, rationale: 'x', error: nil } })
+        end
+
+        it 'behaves as advisory only', :aggregate_failures do
+          expect(processor).to receive(:apply_label).with(described_class::PING_LABELS)
+          expect(processor).not_to receive(:resolve_discussion)
+
+          processor.create_inline_comments(finding)
+
+          body = captured_bodies.first
+          expect(body).to include(described_class::MESSAGE_PING_APPSEC)
+          expect(body).not_to include(described_class::MESSAGE_AUTO_DISMISSED)
+        end
+
+        it 'still applies the standard labels when the inline post falls back to a normal comment' do
+          failed_response = instance_double(Net::HTTPBadRequest)
+          allow(failed_response).to receive(:instance_of?).with(Net::HTTPCreated).and_return(false)
+          allow(failed_response).to receive_messages(code: '400', body: 'Bad Request')
+          http_double = instance_double(Net::HTTP)
+          allow(http_double).to receive(:request).and_return(failed_response)
+          allow(Net::HTTP).to receive(:start).and_yield(http_double)
+          allow(processor).to receive(:post_comment).and_return(successful_response)
+          expect(processor).to receive(:apply_label).with(described_class::PING_LABELS)
+
+          expect { processor.create_inline_comments(finding) }
+            .to output(/Failed to post inline comment/).to_stdout
+        end
+      end
+
+      context 'when every finding on the MR is auto-dismissed' do
+        let(:finding) do
+          {
+            'f1' => { path: 'a.rb', line: 1, message: 'm1', check_id: 'builds.sast-custom-rules.other' },
+            'f2' => { path: 'b.rb', line: 2, message: 'm2', check_id: 'builds.sast-custom-rules.other' }
+          }
+        end
+
+        before do
+          processor.instance_variable_set(:@triage_verdicts,
+            {
+              'f1' => { verdict: 'fp', confidence: 0.9, rationale: 'x', error: nil },
+              'f2' => { verdict: 'fp', confidence: 0.85, rationale: 'y', error: nil }
+            })
+        end
+
+        it 'applies no labels and resolves both threads' do
+          expect(processor).not_to receive(:apply_label)
+          expect(processor).to receive(:resolve_discussion).with('ab12cd34').twice
+
+          processor.create_inline_comments(finding)
+        end
+      end
+
+      context 'with a mix of dismissed and undecided findings' do
+        let(:finding) do
+          {
+            'f1' => { path: 'a.rb', line: 1, message: 'm1', check_id: 'builds.sast-custom-rules.other' },
+            'f2' => { path: 'b.rb', line: 2, message: 'm2', check_id: 'builds.sast-custom-rules.other' }
+          }
+        end
+
+        before do
+          processor.instance_variable_set(:@triage_verdicts,
+            {
+              'f1' => { verdict: 'fp', confidence: 0.9, rationale: 'x', error: nil },
+              'f2' => { verdict: 'tp', confidence: 0.5, rationale: 'y', error: nil }
+            })
+        end
+
+        it 'pings and labels only for the undecided finding' do
+          expect(processor).to receive(:apply_label).with(described_class::PING_LABELS).once
+          expect(processor).to receive(:resolve_discussion).with('ab12cd34').once
+
+          processor.create_inline_comments(finding)
+        end
+      end
+
+      context 'when SAST_TRIAGE_ACTIONS_ENABLED is not set' do
+        before do
+          stub_env('SAST_TRIAGE_ACTIONS_ENABLED', nil)
+          processor.instance_variable_set(:@triage_verdicts,
+            { 'f1' => { verdict: 'fp', confidence: 0.95, rationale: 'x', error: nil } })
+        end
+
+        it 'keeps today\'s advisory behavior even for a high-confidence verdict', :aggregate_failures do
+          expect(processor).to receive(:apply_label).with(described_class::PING_LABELS)
+          expect(processor).not_to receive(:resolve_discussion)
+
+          processor.create_inline_comments(finding)
+
+          body = captured_bodies.first
+          expect(body).to include(described_class::MESSAGE_PING_APPSEC)
+          expect(body).not_to include(described_class::MESSAGE_AUTO_DISMISSED)
+        end
       end
     end
   end

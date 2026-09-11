@@ -891,6 +891,7 @@ Settings.webpack['config_file'] ||= 'config/webpack.config.js'
 Settings.webpack['output_dir']  ||= 'public/assets/webpack'
 Settings.webpack['public_path'] ||= 'assets/webpack'
 Settings.webpack['manifest_filename'] ||= 'manifest.json'
+Settings.webpack['bundler'] ||= 'webpack'
 Settings.webpack['dev_server'] ||= {}
 Settings.webpack.dev_server['enabled'] ||= false
 Settings.webpack.dev_server['host']    ||= 'localhost'

@@ -113,6 +113,56 @@ docker run -e AIGW_GITLAB_URL=<your_gitlab_instance> \
 The value must be greater than `0`.
 If a model has its own timeout in `MODEL_SPECIFICATIONS`, that value takes precedence over this default.
 
+### Configure user ID header for your model endpoint
+
+{{< history >}}
+
+- [Introduced](https://gitlab.com/gitlab-org/modelops/applied-ml/code-suggestions/ai-assist/-/merge_requests/6787) in GitLab 19.4.
+
+{{< /history >}}
+
+By default, every request the AI Gateway sends to your self-hosted model
+looks like it comes from a single service account.
+If your model-serving platform attributes or meters usage per caller, you can configure
+the AI Gateway to add a header with the ID of the GitLab user who triggered the request.
+
+To configure this header, set the `AIGW_CUSTOM_MODELS__USER_ID_HEADER` environment variable
+in the AI Gateway container to the header name your model endpoint expects:
+
+```shell
+docker run -e AIGW_GITLAB_URL=<your_gitlab_instance> \
+  -e AIGW_CUSTOM_MODELS__USER_ID_HEADER=x-gitlab-user-id \
+  <ai_gateway_image>
+```
+
+The AI Gateway adds the header to every request it sends to a model endpoint,
+including OpenAI-compatible endpoints, Amazon Bedrock, and Google Vertex AI.
+The header value is the numeric ID of the user on your GitLab instance.
+For example, in this configuration, a request triggered by a user
+with the ID `42` arrives at your model endpoint with this header:
+
+```plaintext
+x-gitlab-user-id: 42
+```
+
+GitLab-managed models are not affected because those requests do not go through your AI Gateway.
+
+The header name must meet the following criteria:
+
+- A valid HTTP header name
+- Not a transport or authentication header,
+  such as `Authorization`, `Host`, or `Content-Type`
+- Not a header the AI Gateway already sets,
+  such as `anthropic-version`
+
+Requests that are not made on behalf of a user,
+such as health checks, never include the header.
+Use the header only to attribute or meter usage,
+not to make authorization decisions on your model endpoint.
+
+To verify the configuration, trigger a GitLab Duo feature that uses a self-hosted model
+and check the request headers in the access logs of your model-serving platform.
+
 ## Configure access to the GitLab Duo Agent Platform
 
 {{< history >}}
@@ -272,6 +322,11 @@ To select a self-hosted model:
 {{< /history >}}
 
 You can select a GitLab-managed model for a feature, even if you use a self-hosted AI Gateway and self-hosted models.
+
+With an offline license, GitLab-managed models are not available.
+For more information, see [model selection](../gitlab_duo/model_selection.md).
+
+To select a GitLab-managed model for a feature:
 
 1. In the upper-right corner, select **Admin**.
 1. In the left sidebar, select **GitLab Duo**.

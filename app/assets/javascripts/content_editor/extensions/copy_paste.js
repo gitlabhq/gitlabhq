@@ -256,6 +256,16 @@ export default Extension.create({
         },
     };
   },
+  addKeyboardShortcuts() {
+    return {
+      // No native paste event fires for a custom shortcut, so this relies on
+      // the async Clipboard API path used by the table bubble menu actions.
+      'Mod-Alt-v': () => {
+        if (!isInTable(this.editor.state) || !canReadClipboard()) return false;
+        return this.editor.commands.pasteFromClipboardIntoCell();
+      },
+    };
+  },
   addProseMirrorPlugins() {
     let pasteRaw = false;
 

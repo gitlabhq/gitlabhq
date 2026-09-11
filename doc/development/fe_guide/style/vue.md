@@ -151,7 +151,7 @@ Instead of using a `<style>` tag you should use [Tailwind CSS utility classes](s
 
 Over time, a number of programming patterns and style preferences have emerged in our efforts to
 effectively test Vue components. The following guide describes some of these.
-**These are not strict guidelines**, but rather a collection of suggestions and good practices that
+These are not strict guidelines, but rather a collection of suggestions and good practices that
 aim to provide insight into how we write Vue tests at GitLab.
 
 ### Mounting a component

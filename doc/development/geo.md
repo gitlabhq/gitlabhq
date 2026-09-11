@@ -449,7 +449,7 @@ graph TB
 
 #### Not-replicated data
 
-This example diagram illustrates GitLab data that is **not replicated**. GitLab environments have many possible configurations. This diagram is not intended to be fully comprehensive.
+This example diagram illustrates GitLab data that is not replicated. GitLab environments have many possible configurations. This diagram is not intended to be fully comprehensive.
 
 ```mermaid
 graph TB

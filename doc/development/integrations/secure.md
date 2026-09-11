@@ -513,7 +513,7 @@ The `details` field is an object that supports many different content elements t
 The `location` indicates where the vulnerability has been detected.
 The format of the location depends on the type of scanning.
 
-Internally GitLab extracts some attributes of the `location` to generate the **location fingerprint**,
+Internally GitLab extracts some attributes of the `location` to generate the location fingerprint,
 which is used to track vulnerabilities
 as new commits are pushed to the repository.
 The attributes used to generate the location fingerprint also depend on the type of scanning.

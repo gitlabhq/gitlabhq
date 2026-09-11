@@ -82,6 +82,18 @@ RSpec.describe Gitlab::Access, feature_category: :permissions do
     end
   end
 
+  describe '.values_with_minimal_access' do
+    it 'includes all standard access level values' do
+      expect(described_class.values_with_minimal_access).to include(*described_class.all_values)
+    end
+
+    unless Gitlab.ee?
+      it 'does not include MINIMAL_ACCESS in CE' do
+        expect(described_class.values_with_minimal_access).not_to include(described_class::MINIMAL_ACCESS)
+      end
+    end
+  end
+
   describe '.sym_options' do
     it 'returns roles in correct order' do
       expect(described_class.sym_options.keys).to eq(

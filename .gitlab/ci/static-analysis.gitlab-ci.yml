@@ -159,6 +159,7 @@ update-static-analysis-cache:
     - .caching:rules:rubocop-cache-update
   stage: prepare
   needs:
+    - !reference [.lint-base, needs]
     - job: cache:ruby-gems
       optional: true
   script:
@@ -433,6 +434,9 @@ ping-appsec-for-sast-findings:
     # Requires SAST_TRIAGE_ENABLED=1 (verdicts only exist once shadow-mode triage has run).
     # See: scripts/semgrep_result_processor.rb and work item gitlab-com/gl-security/product-security/appsec/appsec-team#1647
     SAST_TRIAGE_COMMENT_ENABLED: "0"
+    # Set SAST_TRIAGE_ACTIONS_ENABLED=1 to let high-confidence Duo verdicts act on findings:
+    # Requires SAST_TRIAGE_ENABLED=1 and SAST_TRIAGE_COMMENT_ENABLED=1
+    SAST_TRIAGE_ACTIONS_ENABLED: "0"
   needs:
     - !reference [.lint-base, needs]
     - semgrep-appsec-custom-rules

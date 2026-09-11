@@ -1,0 +1,21 @@
+---
+key_path: settings.database.autovacuum_disabled
+description: Whether autovacuum is disabled, preventing automatic reclamation of dead tuples.
+product_group: database_health
+product_categories:
+- database
+value_type: boolean
+status: active
+milestone: "19.4"
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/254376
+time_frame: none
+data_source: system
+data_category: optional
+instrumentation_class: DatabaseAutovacuumFindingMetric
+options:
+  finding_code: autovacuum_disabled
+performance_indicator_type: []
+tiers:
+- free
+- premium
+- ultimate

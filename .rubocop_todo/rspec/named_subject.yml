@@ -440,7 +440,6 @@ RSpec/NamedSubject:
     - 'ee/spec/requests/api/internal/app_sec/dast/site_validations_spec.rb'
     - 'ee/spec/requests/api/internal/base_spec.rb'
     - 'ee/spec/requests/api/internal/kubernetes_spec.rb'
-    - 'ee/spec/requests/api/issues_spec.rb'
     - 'ee/spec/requests/api/members_spec.rb'
     - 'ee/spec/requests/api/merge_trains_spec.rb'
     - 'ee/spec/requests/api/namespaces_spec.rb'

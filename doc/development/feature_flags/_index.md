@@ -41,17 +41,17 @@ have been updated yet, which can range from a minor UI issue to a customer-impac
 
 Follow this guidance when working with feature flags in external API consumers:
 
-1. **Prefer API fields or Application Settings.** Where possible, avoid querying a feature flag
-   from an external API consumer. Instead, introduce a dedicated API field or
-   [Application Setting](../application_settings.md) that the consumer can query. These values
-   persist after the flag is removed.
-1. **Implement fail-open behavior.** If a feature flag must be used in an external API consumer,
-   implement a "fail-open" mechanism: after the rollout milestone is finalized, the consumer should
-   default to treating the flag as enabled. Update the consumer as soon as the rollout milestone is
-   confirmed. See [an example in the GitLab Language Server](https://gitlab.com/gitlab-org/editor-extensions/gitlab-lsp/-/merge_requests/2558/diffs).
-1. **Consider user upgrade patterns before removal.** Before removing a flag that is used by an
-   external API consumer, assess how quickly users update their clients and determine the safest
-   timing for removal.
+- Prefer API fields or Application Settings. Where possible, avoid querying a feature flag
+  from an external API consumer. Instead, introduce a dedicated API field or
+  [Application Setting](../application_settings.md) that the consumer can query. These values
+  persist after the flag is removed.
+- Implement fail-open behavior. If a feature flag must be used in an external API consumer,
+  implement a "fail-open" mechanism: after the rollout milestone is finalized, the consumer should
+  default to treating the flag as enabled. Update the consumer as soon as the rollout milestone is
+  confirmed. See [an example in the GitLab Language Server](https://gitlab.com/gitlab-org/editor-extensions/gitlab-lsp/-/merge_requests/2558/diffs).
+- Consider user upgrade patterns before removal. Before removing a flag that is used by an
+  external API consumer, assess how quickly users update their clients and determine the safest
+  timing for removal.
 
 ### Do not use feature flags for long lived settings
 
@@ -73,7 +73,7 @@ which is another reason you should not use them as a replacement for settings.
 The following highlights should be considered when deciding if feature flags
 should be leveraged:
 
-- The feature flag must be **disabled by default**.
+- The feature flag must be disabled by default.
 - Feature flags should remain in the codebase for as short a period as possible
   to reduce the need for feature flag accounting.
 - The person operating the feature flag is responsible for clearly communicating
@@ -87,10 +87,10 @@ should be leveraged:
 When the feature implementation is delivered over multiple merge requests:
 
 1. [Create a new feature flag](#create-a-new-feature-flag)
-   which is **disabled** by default, in the first merge request which uses the flag.
+   which is disabled by default, in the first merge request which uses the flag.
    Flags [should not be added separately](#risk-of-a-broken-default-branch).
 1. Submit incremental changes via one or more merge requests, ensuring that any
-   new code added can only be reached if the feature flag is **enabled**.
+   new code added can only be reached if the feature flag is enabled.
    You can keep the feature flag enabled on your local GDK during development.
 1. When the feature is ready to be tested by other team members, [create the initial documentation](../documentation/feature_flags.md#when-to-document-features-behind-a-feature-flag).
    Include details about the status of the [feature flag](../documentation/feature_flags.md#how-to-add-feature-flag-documentation).
@@ -101,7 +101,7 @@ When the feature implementation is delivered over multiple merge requests:
 1. When the feature is ready for production use, including GitLab Self-Managed instances, open one merge request to:
    - Update the documentation to describe the latest flag status.
    - Add a [changelog entry](#changelog).
-   - Remove the feature flag to enable the new behavior, or flip the feature flag to be **enabled by default** (only for `ops` and `beta` feature flags).
+   - Remove the feature flag to enable the new behavior, or flip the feature flag to be enabled by default (only for `ops` and `beta` feature flags).
 
 When the feature flag removal is delivered over multiple merge requests:
 
@@ -112,8 +112,8 @@ One might be tempted to think that feature flags will delay the release of a
 feature by at least one month (= one release). This is not the case. A feature
 flag does not have to stick around for a specific amount of time
 (for example, at least one release). Instead, it should stick around until the feature
-is deemed stable. **Stable means it works on GitLab.com without causing any
-problems, such as outages.**
+is deemed stable. Stable means it works on GitLab.com without causing any
+problems, such as outages.
 
 ## Risk of a broken default branch
 
@@ -394,7 +394,7 @@ type: beta
 default_enabled: false
 ```
 
-All newly-introduced feature flags must be [**disabled by default**](https://handbook.gitlab.com/handbook/product-development-flow/feature-flag-lifecycle/).
+All newly-introduced feature flags must be [disabled by default](https://handbook.gitlab.com/handbook/product-development-flow/feature-flag-lifecycle/).
 
 Features that are developed and merged behind a feature flag
 should not include a changelog entry. The entry should be added either in the merge
@@ -410,7 +410,7 @@ the feature flag is set to enabled. If the feature contains any database migrati
 When choosing a name for a new feature flag, consider the following guidelines:
 
 - Describe the feature the feature flag is holding
-  - A long, **descriptive** name is better than a short but confusing one.
+  - A long, descriptive name is better than a short but confusing one.
 - Avoid names that indicate state/phase of the feature like `_mvc`, `_alpha`, `_beta`, etc
 - Write the name in snake case (`my_cool_feature_flag`).
 - Avoid using `disable` in the name to avoid having to think (or [document](../documentation/feature_flags.md))
@@ -648,7 +648,7 @@ end
 
 ### Feature actors
 
-**It is strongly advised to use actors with feature flags.** Actors provide a simple
+It is strongly advised to use actors with feature flags. Actors provide a simple
 way to enable a feature flag only for a given project, group, or user. This makes debugging
 easier, as you can filter logs and errors for example, based on actors. This also makes it possible
 to enable the feature on the `gitlab-org` or `gitlab-com` groups first, while the rest of
@@ -949,7 +949,7 @@ We want to avoid introducing a changelog when features are not accessible by an 
 ## Feature flags in tests
 
 Introducing a feature flag into the codebase creates an additional code path that should be tested.
-Include automated tests for all code affected by a feature flag, both when **enabled** and **disabled**, but because flags are enabled by default in tests, the enabled state is the default scenario and needs no stub and no dedicated context.
+Include automated tests for all code affected by a feature flag, both when enabled and disabled, but because flags are enabled by default in tests, the enabled state is the default scenario and needs no stub and no dedicated context.
 Cover the disabled state in a separate, self-contained context that stubs the flag to `false`, so that removing the flag later is a single deletion (see the pattern below).
 If automated tests are not included for both states, the functionality associated with the untested code path should be manually tested before deployment to production.
 
@@ -1156,7 +1156,7 @@ The implementation can be found at [SkipJobs Sidekiq server middleware](https://
 > feature flag after the worker is deemed safe to continue processing.
 
 When set to false, 100% of the jobs are deferred. When you want processing to resume, you can
-use a **percentage of time** rollout. For example:
+use a percentage of time rollout. For example:
 
 ```shell
 # not running any jobs, deferring all 100% of the jobs

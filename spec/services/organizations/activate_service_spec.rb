@@ -53,6 +53,58 @@ RSpec.describe Organizations::ActivateService, feature_category: :organization d
         response
       end
 
+      it 'triggers the transfer started event', :clean_gitlab_redis_shared_state do
+        expect { response }.to trigger_internal_events(
+          'transfer_tlg_resources_into_an_organization_started'
+        ).with(
+          user: current_user,
+          additional_properties: { target_organization_id: organization.id }
+        ).and increment_usage_metrics(
+          usage_metrics_for('transfer_tlg_resources_into_an_organization_started')
+        )
+      end
+
+      it 'triggers the transfer succeeded event', :clean_gitlab_redis_shared_state do
+        expect { response }.to trigger_internal_events(
+          'transfer_tlg_resources_into_an_organization_succeeded'
+        ).with(
+          user: current_user,
+          additional_properties: {
+            target_organization_id: organization.id,
+            value: 2,
+            projects_count: 0,
+            users_count: 1
+          }
+        ).and increment_usage_metrics(
+          usage_metrics_for('transfer_tlg_resources_into_an_organization_succeeded')
+        )
+      end
+
+      it 'does not trigger the transfer failed event' do
+        expect { response }.to not_trigger_internal_events(
+          'transfer_tlg_resources_into_an_organization_failed'
+        )
+      end
+
+      context 'when the organization has projects and a subgroup' do
+        let_it_be(:subgroup) { create(:group, parent: top_level_group, organization: organization) }
+        let_it_be(:project) { create(:project, group: subgroup, organization: organization) }
+
+        it 'reports the group, project, and user counts on the succeeded event' do
+          expect { response }.to trigger_internal_events(
+            'transfer_tlg_resources_into_an_organization_succeeded'
+          ).with(
+            user: current_user,
+            additional_properties: {
+              target_organization_id: organization.id,
+              value: 3,
+              projects_count: 1,
+              users_count: 1
+            }
+          )
+        end
+      end
+
       it 'copies users to the organization via Organizations::Transfer::OrganizationUsersService' do
         expect_next_instance_of(
           Organizations::Transfer::OrganizationUsersService, organization: organization
@@ -148,6 +200,23 @@ RSpec.describe Organizations::ActivateService, feature_category: :organization d
       it 'does not publish an Organizations::ActivatedEvent' do
         expect { response }.to not_publish_event(Organizations::ActivatedEvent)
       end
+
+      it 'triggers the transfer failed event with the group_transfer reason', :clean_gitlab_redis_shared_state do
+        expect { response }.to trigger_internal_events(
+          'transfer_tlg_resources_into_an_organization_failed'
+        ).with(
+          user: current_user,
+          additional_properties: { target_organization_id: organization.id, label: 'group_transfer' }
+        ).and increment_usage_metrics(
+          usage_metrics_for('transfer_tlg_resources_into_an_organization_failed')
+        )
+      end
+
+      it 'does not trigger the transfer succeeded event' do
+        expect { response }.to not_trigger_internal_events(
+          'transfer_tlg_resources_into_an_organization_succeeded'
+        )
+      end
     end
 
     context 'when the state transition to active fails' do
@@ -172,6 +241,17 @@ RSpec.describe Organizations::ActivateService, feature_category: :organization d
 
       it 'does not publish an Organizations::ActivatedEvent' do
         expect { response }.to not_publish_event(Organizations::ActivatedEvent)
+      end
+
+      it 'triggers the transfer failed event with the activation reason', :clean_gitlab_redis_shared_state do
+        expect { response }.to trigger_internal_events(
+          'transfer_tlg_resources_into_an_organization_failed'
+        ).with(
+          user: current_user,
+          additional_properties: { target_organization_id: organization.id, label: 'activation' }
+        ).and increment_usage_metrics(
+          usage_metrics_for('transfer_tlg_resources_into_an_organization_failed')
+        )
       end
     end
 
@@ -208,7 +288,29 @@ RSpec.describe Organizations::ActivateService, feature_category: :organization d
         it 'does not publish an Organizations::ActivatedEvent' do
           expect { response }.to not_publish_event(Organizations::ActivatedEvent)
         end
+
+        it 'does not trigger any transfer events', :clean_gitlab_redis_shared_state do
+          expect { response }.to not_trigger_internal_events(
+            'transfer_tlg_resources_into_an_organization_started',
+            'transfer_tlg_resources_into_an_organization_succeeded',
+            'transfer_tlg_resources_into_an_organization_failed'
+          ).and not_increment_usage_metrics(
+            usage_metrics_for('transfer_tlg_resources_into_an_organization_started'),
+            usage_metrics_for('transfer_tlg_resources_into_an_organization_succeeded'),
+            usage_metrics_for('transfer_tlg_resources_into_an_organization_failed')
+          )
+        end
       end
     end
+  end
+
+  def usage_metrics_for(event)
+    [
+      "counts.count_total_#{event}",
+      "counts.count_total_#{event}_monthly",
+      "counts.count_total_#{event}_weekly",
+      "redis_hll_counters.count_distinct_target_organization_id_from_#{event}_monthly",
+      "redis_hll_counters.count_distinct_target_organization_id_from_#{event}_weekly"
+    ]
   end
 end

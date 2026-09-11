@@ -44,7 +44,7 @@ Check out [the docs](https://ruby-doc.org/stdlib-2.7.0/libdoc/irb/rdoc/Binding.h
 
 ## `pry`
 
-There are **a lot** of features present in `pry`, too much to cover in
+There are a lot of features present in `pry`, too much to cover in
 this document, so for the full documentation head over to the [Pry wiki](https://github.com/pry/pry/wiki).
 
 Below are a few features definitely worth checking out, also run

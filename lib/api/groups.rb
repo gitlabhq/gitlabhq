@@ -756,7 +756,7 @@ module API
       end
       params do
         requires :group_id, type: Integer, desc: 'The ID of the group to share'
-        requires :group_access, type: Integer, values: Gitlab::Access.all_values, desc: 'The group access level'
+        requires :group_access, type: Integer, values: Gitlab::Access.values_with_minimal_access, desc: 'The group access level'
         optional :expires_at, type: Date, desc: 'Share expiration date'
         optional :member_role_id, type: Integer, desc: 'The ID of the Member Role to be assigned to the group'
       end

@@ -39,12 +39,12 @@ RSpec.describe API::WorkItems::EmailParticipants, feature_category: :service_des
       expect(response).to have_gitlab_http_status(:not_found)
     end
 
-    it 'returns forbidden when the feature flag is disabled' do
+    it 'returns not_found when the feature flag is disabled' do
       stub_feature_flags(work_item_rest_api: false)
 
       get api(api_request_path, user)
 
-      expect(response).to have_gitlab_http_status(:forbidden)
+      expect(response).to have_gitlab_http_status(:not_found)
     end
 
     context 'with optional fields requested' do

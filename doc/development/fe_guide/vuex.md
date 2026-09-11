@@ -7,7 +7,7 @@ title: Vuex
 
 ## DEPRECATED
 
-**[Vuex](https://vuex.vuejs.org) is deprecated at GitLab** and no new Vuex stores should be created.
+[Vuex](https://vuex.vuejs.org) is deprecated at GitLab and no new Vuex stores should be created.
 You can still maintain existing Vuex stores but we strongly recommend [migrating away from Vuex entirely](migrating_from_vuex.md).
 
 The rest of the information included on this page is explained in more detail in the

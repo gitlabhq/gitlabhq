@@ -1,10 +1,13 @@
 import { nextTick } from 'vue';
 import GroupSettingsCreateOrganization from '~/groups/settings/create_organization/components/app.vue';
 import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
+import { useMockInternalEventsTracking } from 'helpers/tracking_internal_events_helper';
 import { convertToGraphQLId } from '~/graphql_shared/utils';
 import { TYPENAME_GROUP } from '~/graphql_shared/constants';
 import ReconciliationModal from '~/groups/settings/create_organization/components/modal.vue';
 import { mockDefaultGroupOrganization } from './mock_data';
+
+const { bindInternalEventDocument } = useMockInternalEventsTracking();
 
 describe('GroupSettingsCreateOrganization', () => {
   let wrapper;
@@ -37,6 +40,20 @@ describe('GroupSettingsCreateOrganization', () => {
     await nextTick();
 
     expect(findReconciliationModal().props('visible')).toBe(true);
+  });
+
+  describe('when create organization button is clicked', () => {
+    it('tracks the click', () => {
+      const { trackEventSpy } = bindInternalEventDocument(wrapper.element);
+
+      findStartCreatingOrganizationButton().vm.$emit('click');
+
+      expect(trackEventSpy).toHaveBeenCalledWith(
+        'click_create_organization_from_group_settings',
+        {},
+        undefined,
+      );
+    });
   });
 
   it('closes modal when change event is emitted with false', async () => {

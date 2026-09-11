@@ -12,7 +12,7 @@ discussed, promoted, and rejected for years at GitLab. The general
 conclusion is that we are unable to integrate TypeScript into the main
 project because the costs outweigh the benefits.
 
-- The main project has **a lot** of pre-existing code that is not strongly typed.
+- The main project has a lot of pre-existing code that is not strongly typed.
 - The main contributors to the main project are not all familiar with TypeScript.
 
 Apart from the main project, TypeScript has been profitably employed in

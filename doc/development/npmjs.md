@@ -14,7 +14,7 @@ fostering trust and consistency in the GitLab ecosystem.
 ## Setting up an npm account
 
 1. Use your GitLab corporate email ID when creating an account on [npmjs.com](https://www.npmjs.com/).
-1. Enable **Two-Factor Authentication (2FA)** for enhanced security.
+1. Enable Two-Factor Authentication (2FA) for enhanced security.
 1. Communicate any account changes (for example, email updates, ownership transfers) to the directly responsible teams via issues.
 
 ## Guidelines for publishing packages
@@ -25,8 +25,8 @@ fostering trust and consistency in the GitLab ecosystem.
    You can do this by running `npm info <yourpackage> alias` to verify what a given alias points to.
    Ensure that you're confident that all aliases point to legitimate packages that you trust.
 1. Avoid publishing secrets to npm registries (for example, npmjs.com, [GitLab npm registry](../user/packages/npm_registry/_index.md), etc) by enabling in the GitLab project:
-   - **[Secret push protection](../user/application_security/secret_detection/secret_push_protection/_index.md)**
-   - **[Secret detection](../user/application_security/secret_detection/pipeline/_index.md)**
+   - [Secret push protection](../user/application_security/secret_detection/secret_push_protection/_index.md)
+   - [Secret detection](../user/application_security/secret_detection/pipeline/_index.md)
 1. Secure NPM tokens used for registry interactions:
    - Strongly consider using an external secret store like OpenBao or Vault
    - At a minimum, store tokens [securely](../ci/pipeline_security/_index.md#cicd-variables) in environment variables
@@ -37,7 +37,7 @@ fostering trust and consistency in the GitLab ecosystem.
 
 ### Dependency Integrity
 
-1. Use **lock files** (`package-lock.json` or `yarn.lock`) to ensure consistency in dependencies across environments.
+1. Use lock files (`package-lock.json` or `yarn.lock`) to ensure consistency in dependencies across environments.
 1. Consider performing [dependency pinning/specification](https://docs.npmjs.com/specifying-dependencies-and-devdependencies-in-a-package-json-file)
    to lock specific versions and prevent unintended upgrades to malicious or vulnerable versions.
    This may make upgrading dependencies more involved.
@@ -62,9 +62,9 @@ To set up publishing through GitLab CI/CD:
 
 ### Secure registry access
 
-1. Use **scoped packages** (`@organization-name/package-name`) to prevent namespace pollution or name-squatting by other users.
+1. Use scoped packages (`@organization-name/package-name`) to prevent namespace pollution or name-squatting by other users.
 1. Restrict registry permissions:
-   - Use **organization-specific NPM scopes** and enforce permissions for accessing or publishing packages.
+   - Use organization-specific NPM scopes and enforce permissions for accessing or publishing packages.
 
 ### Securing package metadata
 
@@ -110,7 +110,7 @@ publish:
 
 ## Best Practices for Package Security
 
-1. Enable npm **2FA for package publishing** to prevent unauthorized publishing.
+1. Enable npm 2FA for package publishing to prevent unauthorized publishing.
 1. Enable [dependency scanning](../user/application_security/dependency_scanning/_index.md)
    on the project and regularly review the vulnerability report.
 1. Monitor published packages for unusual activity or unauthorized updates.

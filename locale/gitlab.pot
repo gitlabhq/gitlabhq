@@ -5579,9 +5579,6 @@ msgstr ""
 msgid "Add files"
 msgstr ""
 
-msgid "Add group"
-msgstr ""
-
 msgid "Add header and footer to emails. Please note that color settings will only be applied within the application interface"
 msgstr ""
 
@@ -12217,6 +12214,9 @@ msgstr ""
 msgid "ArtifactRegistry|Add the dependency to your %{codeStart}build.gradle.kts%{codeEnd} file:"
 msgstr ""
 
+msgid "ArtifactRegistry|Add the dependency to your %{codeStart}build.sbt%{codeEnd} file:"
+msgstr ""
+
 msgid "ArtifactRegistry|Add the repository to your %{codeStart}build.gradle%{codeEnd} file:"
 msgstr ""
 
@@ -12229,7 +12229,13 @@ msgstr ""
 msgid "ArtifactRegistry|Add this to your %{codeStart}.yarnrc.yml%{codeEnd} file:"
 msgstr ""
 
+msgid "ArtifactRegistry|Add this to your %{codeStart}build.sbt%{codeEnd} file:"
+msgstr ""
+
 msgid "ArtifactRegistry|Add this to your %{codeStart}pom.xml%{codeEnd} file:"
+msgstr ""
+
+msgid "ArtifactRegistry|Add this to your %{codeStart}~/.sbt/1.0/credentials.sbt%{codeEnd} file:"
 msgstr ""
 
 msgid "ArtifactRegistry|All formats"
@@ -13119,6 +13125,9 @@ msgid "ArtifactRegistry|npm (.npmrc):"
 msgstr ""
 
 msgid "ArtifactRegistry|pnpm"
+msgstr ""
+
+msgid "ArtifactRegistry|sbt"
 msgstr ""
 
 msgid "ArtifactRegistry|yarn"
@@ -40368,9 +40377,6 @@ msgstr ""
 msgid "Group overview content"
 msgstr ""
 
-msgid "Group path"
-msgstr ""
-
 msgid "Group requires separate account"
 msgstr ""
 
@@ -51009,6 +51015,9 @@ msgid "Min Value"
 msgstr ""
 
 msgid "Minimal Access"
+msgstr ""
+
+msgid "Minimal Access is not supported by license or is not available for subgroups"
 msgstr ""
 
 msgid "MinimalAccessProvisioning|%{minimal_access_link_start}Users with the Minimal Access role%{minimal_access_link_end} can only view limited group information without access to projects."
@@ -71310,9 +71319,6 @@ msgstr ""
 msgid "SecretsManagerPermissions|GitLab Secrets Manager is enabled for this namespace."
 msgstr ""
 
-msgid "SecretsManagerPermissions|Group names must start and end with letters or numbers, and can only contain letters, numbers, periods, hyphens and underscores. Separate subgroups with slashes."
-msgstr ""
-
 msgid "SecretsManagerPermissions|Permissions for secrets manager removed."
 msgstr ""
 
@@ -71335,9 +71341,6 @@ msgid "SecretsManagerPermissions|Store secrets in the secrets manager, which can
 msgstr ""
 
 msgid "SecretsManagerPermissions|Store secrets in the secrets manager, which can then be fetched by this project."
-msgstr ""
-
-msgid "SecretsManagerPermissions|The full path to the group to add. For example, %{example}."
 msgstr ""
 
 msgid "SecretsManagerPermissions|There was a problem disabling GitLab Secrets Manager. Please try again."

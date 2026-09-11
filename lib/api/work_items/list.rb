@@ -36,9 +36,7 @@ module API
             boundaries: [{ boundary_type: :group }, { boundary_type: :project }],
             job_token_policies: :read_work_items
           get do
-            namespace = find_namespace_by_path!(params[:id].to_s, allow_project_namespaces: true)
-            not_found!('Namespace') if namespace.is_a?(::Namespaces::UserNamespace)
-            resource_parent = namespace.is_a?(::Namespaces::ProjectNamespace) ? namespace.project : namespace
+            resource_parent = resolve_namespace_resource_parent!(params[:id])
 
             render_work_items_collection_for(resource_parent)
           end

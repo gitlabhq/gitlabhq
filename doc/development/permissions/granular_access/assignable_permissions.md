@@ -53,7 +53,7 @@ The directory structure uses three levels: `<category>/<resource>/<action>.yml`
 
 **Category Level:** The `<category>` subfolder represents the name of the category displayed in the UI where assignable permissions are grouped. The folder name is titleized when displayed (e.g., `project_management` becomes "Project Management"). This category name is displayed in permission selection UIs, helping users organize and find permissions by functional area.
 
-Create a `.metadata.yml` file in the category folder **only if** titleization produces an incorrect display name. For example, acronyms or abbreviations that don't titleize well:
+Create a `.metadata.yml` file in the category folder only if titleization produces an incorrect display name. For example, acronyms or abbreviations that don't titleize well:
 
 ```yaml
 ---
@@ -201,7 +201,7 @@ validation unchanged.
 
 ### Important Constraints
 
-- Each raw permission included in the assignable permission **must already exist** (created as a [raw permission definition file](permission_definitions.md#permission-definition-file))
+- Each raw permission included in the assignable permission must already exist (created as a [raw permission definition file](permission_definitions.md#permission-definition-file))
 - Only raw permissions assigned to assignable permissions can be used for token authorization
 - Use consistent naming across related assignable permissions
 
@@ -228,7 +228,7 @@ Assignable permissions might need changes over time. This section covers common 
 
 Understanding how tokens store and resolve permissions is essential before making changes.
 
-Tokens store **assignable permission names** (not raw permissions) in the database. At request time, the system dynamically resolves these names to raw permissions using the current YAML definitions. This means changes to YAML files take effect immediately for all existing tokens without requiring a migration.
+Tokens store assignable permission names (not raw permissions) in the database. At request time, the system dynamically resolves these names to raw permissions using the current YAML definitions. This means changes to YAML files take effect immediately for all existing tokens without requiring a migration.
 
 This is implemented in `app/models/authz/granular_scope.rb`:
 
@@ -250,13 +250,13 @@ Adding a new assignable permission is safe. New YAML files are automatically dis
 
 #### Removing assignable permissions
 
-Removing an assignable permission is a **breaking change**. Tokens created with that assignable permission lose all API access the included raw permissions granted, because `Assignable.get(p)` returns `nil` for the removed name.
+Removing an assignable permission is a breaking change. Tokens created with that assignable permission lose all API access the included raw permissions granted, because `Assignable.get(p)` returns `nil` for the removed name.
 
 Only remove assignable permissions when the underlying API functionality is also being removed.
 
 #### Renaming assignable permissions
 
-Renaming an assignable permission is a **breaking change**. Tokens created with the old name lose access because the stored name no longer matches any YAML definition.
+Renaming an assignable permission is a breaking change. Tokens created with the old name lose access because the stored name no longer matches any YAML definition.
 
 This requires a three-step process:
 
@@ -349,7 +349,7 @@ Only add raw permissions when adding support for new API endpoints. Add the raw 
 
 #### Removing raw permissions from an assignable permission
 
-Removing raw permissions from an assignable permission is a **breaking change**. Tokens with that assignable permission immediately lose access that the removed raw permissions granted.
+Removing raw permissions from an assignable permission is a breaking change. Tokens with that assignable permission immediately lose access that the removed raw permissions granted.
 
 This can be mitigated by using the `rename_granular_scope_permission` migration to replace the old assignable permission with a combination of the old permission (minus the removed raw permissions) and a new assignable permission that includes the moved raw permissions.
 
@@ -358,7 +358,7 @@ This can be mitigated by using the `rename_granular_scope_permission` migration 
 
 #### Changing the boundary type of an endpoint or directive
 
-Changing the `boundary_type` of a REST API `route_setting` or GraphQL `authorize_granular_token` directive can be a **breaking change** for existing tokens.
+Changing the `boundary_type` of a REST API `route_setting` or GraphQL `authorize_granular_token` directive can be a breaking change for existing tokens.
 
 The `boundaries` field on an assignable permission must cover the union of all `boundary_type` values declared by its raw permissions' endpoints and directives. You don't change assignable permission boundaries directly - they change as a consequence of endpoints adding or changing their `boundary_type`, or raw permissions being added to or removed from the assignable permission. The Lefthook pre-push validation catches any mismatches.
 
@@ -366,7 +366,7 @@ Tokens store granular scopes as a combination of a boundary (namespace) and assi
 
 **Changing between `project` and `group`** is safe. Because projects belong to groups, a token with a group-bound granular scope also covers projects within that group, and a project-bound scope is unaffected by group endpoints.
 
-**Changing to or from `user` or `instance`** (e.g., from `project` to `instance`) is a **breaking change**. Tokens created with a project-bound granular scope for that permission no longer have access. The token holder would need to create a new scope at the new boundary.
+**Changing to or from `user` or `instance`** (e.g., from `project` to `instance`) is a breaking change. Tokens created with a project-bound granular scope for that permission no longer have access. The token holder would need to create a new scope at the new boundary.
 
 #### Renaming raw permissions used in API authorization
 

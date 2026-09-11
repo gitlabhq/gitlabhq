@@ -879,10 +879,6 @@ RSpec.describe ProjectsHelper, feature_category: :source_code_management do
       expect(subject).to include(membersPagePath: project_project_members_path(project))
     end
 
-    it 'includes groupPathRegex' do
-      expect(subject).to include(groupPathRegex: JsRegex.new(Gitlab::PathRegex::FULL_NAMESPACE_FORMAT_REGEX).source)
-    end
-
     it 'includes canAddCatalogResource' do
       allow(helper).to receive(:can?) { false }
 

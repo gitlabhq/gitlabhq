@@ -77110,7 +77110,7 @@ paths:
         content:
           application/json:
             schema:
-              "$ref": "#/components/schemas/RequestBody_a5c8ad7d0148"
+              "$ref": "#/components/schemas/RequestBody_89001ae93e52"
   "/api/v4/groups/{id}/share/{group_id}":
     delete:
       operationId: deleteApiV4GroupsIdShareGroupId
@@ -124203,7 +124203,7 @@ components:
           nullable: true
       required:
       - organization_id
-    RequestBody_a5c8ad7d0148:
+    RequestBody_89001ae93e52:
       type: object
       properties:
         group_id:
@@ -124213,6 +124213,7 @@ components:
         group_access:
           type: integer
           enum:
+          - 5
           - 10
           - 15
           - 20

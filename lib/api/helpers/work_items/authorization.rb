@@ -13,7 +13,9 @@ module API
         def check_work_item_rest_api_feature_flag!
           return if Feature.enabled?(:work_item_rest_api, current_user)
 
-          forbidden!('work_item_rest_api feature flag is disabled for this user')
+          # Experiment-stage endpoints must 404 (not 403) while the flag is off, so the response does
+          # not disclose that the endpoint exists. See doc/development/api_styleguide.md.
+          not_found!
         end
 
         # Invariant prologue for every work-item-scoped read path, so the feature flag gate and the

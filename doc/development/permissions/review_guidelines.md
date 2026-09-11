@@ -92,8 +92,8 @@ broadly and causes bugs where one user's result leaks into another context.
 
 The rules are:
 
-- Use `scope: :user` only if the condition reads **user data only** - no subject data.
-- Use `scope: :subject` only if the condition reads **subject data only** - no user data.
+- Use `scope: :user` only if the condition reads user data only - no subject data.
+- Use `scope: :subject` only if the condition reads subject data only - no user data.
 - Use `scope: :global` only if the condition doesn't need either user or subject data.
 - Omit `:scope` (the default) if the condition reads both user and subject data.
 
@@ -162,8 +162,8 @@ role YAML definition and then combined with a subject-level condition in the
 policy to enable the broader public permission. This pattern is intentional
 because:
 
-- The private permission makes the role's conditional capability **explicit
-  and machine-readable**, which is required for privilege escalation checks
+- The private permission makes the role's conditional capability explicit
+  and machine-readable, which is required for privilege escalation checks
   and custom role composition.
 - The cascade is always exactly one level deep: private permission + condition
   enables public permission. Deeper chains are still not allowed.

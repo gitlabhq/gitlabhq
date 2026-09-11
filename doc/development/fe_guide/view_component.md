@@ -245,7 +245,7 @@ The `Pajamas::ToggleComponent` follows the [Pajamas Toggle](https://design.gitla
 ```
 
 > [!note]
-> **The toggle ViewComponent is special as it depends on the Vue.js component.**
+> The toggle ViewComponent is special as it depends on the Vue.js component.
 > To actually initialize this component, make sure to call the `initToggle` helper from `~/toggles`.
 
 For the full list of options, see its

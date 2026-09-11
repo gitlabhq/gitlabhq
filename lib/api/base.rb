@@ -18,6 +18,10 @@ module API
       end
 
       def endpoint_id_for_route(route)
+        # Grape's generated OPTIONS and 405 handlers carry no request method, which would
+        # interpolate to " /api/:version/users". Return nil instead
+        return if route.is_a?(Grape::Router::GreedyRoute)
+
         "#{route.request_method} #{route.origin}"
       end
 

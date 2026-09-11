@@ -511,7 +511,7 @@ retained.
   have minimal impact on memory, but substantial impact on performance. The more objects you
   allocate, the more work is being done and the slower the application is.
 
-As a general rule, **retained** is always smaller than or equal to **allocated**.
+As a general rule, retained is always smaller than or equal to allocated.
 
 The actual RSS cost is always slightly higher as MRI heaps are not squashed to size and memory fragments.
 

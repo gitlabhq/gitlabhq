@@ -26,7 +26,7 @@ Permissions are referenced by [role definition YAML files](role_definitions.md) 
 
 ## Naming Permissions
 
-Our goal is for all permissions to follow a consistent pattern: **`action_resource(_subresource)`**. These guidelines apply to both Assignable Permissions and Raw Permissions, but must be most strictly followed with Assignable Permissions as they are public facing.
+Our goal is for all permissions to follow a consistent pattern: `action_resource(_subresource)`. These guidelines apply to both Assignable Permissions and Raw Permissions, but must be most strictly followed with Assignable Permissions as they are public facing.
 
 ### Preferred Actions
 
@@ -81,12 +81,12 @@ The resource (and optional subresource) in a permission name should always:
 
 ### Avoiding Resource Boundaries in Permission Names
 
-Permissions **should NOT encode the resource boundary** (such as `project`, `group`, or `user`) directly into the permission name.
+Permissions should not encode the resource boundary (such as `project`, `group`, or `user`) directly into the permission name.
 
 For example, avoid introducing separate permissions like `read_project_insights_dashboard` and `read_group_insights_dashboard`.
 Instead, define a single semantic permission that describes the capability itself, such as `read_insights_dashboard`.
 
-Including boundaries like `project` or `group` in the permission name is redundant because passing the **subject** in the `can?` check already determines the scope. For example:
+Including boundaries like `project` or `group` in the permission name is redundant because passing the subject in the `can?` check already determines the scope. For example:
 
 ```ruby
 can?(:read_insights_dashboard, project)
@@ -101,7 +101,7 @@ If you believe a new permission is needed that does not follow these conventions
 
 Private permissions are narrowly-scoped permissions that represent conditional
 or nuanced capabilities. They are prefixed with an underscore (`_`) to signal
-that they are **private to policy logic only** and must not be checked directly
+that they are private to policy logic only and must not be checked directly
 at enforcement points (controllers, services, finders, GraphQL).
 
 ### Why private permissions exist
@@ -128,7 +128,7 @@ machine-readable.
 
 ### Naming convention
 
-Private permissions follow the pattern **`_<action>_<qualifier>_<resource>`**,
+Private permissions follow the pattern `_<action>_<qualifier>_<resource>`,
 where the qualifier describes the condition under which the permission applies:
 
 | Permission | Description | Typical roles |
@@ -207,12 +207,12 @@ authorize :_read_authored_issue
 
 Use a private permission when:
 
-1. A role can perform an action **only when a subject-level condition is met**
+1. A role can perform an action only when a subject-level condition is met
    (authored by the user, assigned to the user, created by the user).
 1. Different roles have different levels of access to the same action (some
    unconditional, some conditional).
-1. The distinction matters for **privilege escalation checks** or
-   **custom role composition**.
+1. The distinction matters for privilege escalation checks or
+   custom role composition.
 
 Do not use private permissions for:
 

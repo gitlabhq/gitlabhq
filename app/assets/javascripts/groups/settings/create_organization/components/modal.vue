@@ -10,6 +10,7 @@ import { rootPath } from '~/lib/utils/path_helpers/routes';
 import { visitUrlWithAlerts } from '~/lib/utils/url_utility';
 import { convertToGraphQLId } from '~/graphql_shared/utils';
 import { TYPE_ORGANIZATION } from '~/graphql_shared/constants';
+import { InternalEvents } from '~/tracking';
 import groupsQuery from '../graphql/queries/groups.query.graphql';
 import transferGroupsAndConfirmOrganizationMutation from '../graphql/mutations/transfer_groups_and_confirm_organization.mutation.graphql';
 import { NEW_ORGANIZATION_GID } from '../constants';
@@ -17,6 +18,8 @@ import SkeletonLoader from './skeleton_loader.vue';
 import Step1 from './steps/step_1.vue';
 import Step2 from './steps/step_2.vue';
 import Step3 from './steps/step_3.vue';
+
+const trackingMixin = InternalEvents.mixin();
 
 export default {
   name: 'OrganizationReconciliationModal',
@@ -31,6 +34,7 @@ export default {
     GlSprintf,
     SkeletonLoader,
   },
+  mixins: [trackingMixin],
   model: {
     prop: 'visible',
     event: 'change',
@@ -238,6 +242,8 @@ export default {
 
         return;
       }
+
+      this.trackEvent('click_confirm_organization_from_group_settings');
 
       this.nextButtonLoading = true;
       const organizationId = await this.createNewOrganizationIfNeeded();

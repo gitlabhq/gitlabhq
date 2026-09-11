@@ -84,7 +84,7 @@ For the naming conventions, see [Naming Permissions](../conventions.md#naming-pe
 
 #### Determining the Resource Name for Endpoints
 
-When implementing granular PAT authorization, name permissions based on what the endpoint **modifies or returns**, not the route structure.
+When implementing granular PAT authorization, name permissions based on what the endpoint modifies or returns, not the route structure.
 
 **Examples:**
 
@@ -336,8 +336,8 @@ The bypass is gated to `:project` and `:group` boundaries. `:user` and `:instanc
 
 **Important Notes:**
 
-- Add the decorator to **every endpoint** individually, even if multiple endpoints use the same permission
-- The decorator goes **immediately before** the HTTP method definition (`get`, `post`, `put`, `delete`)
+- Add the decorator to every endpoint individually, even if multiple endpoints use the same permission
+- The decorator goes immediately before the HTTP method definition (`get`, `post`, `put`, `delete`)
 - Use the exact permission name (symbol) defined in your YAML files
 - Use `boundary_type` or `boundary` for single-boundary endpoints. Use the `boundaries` array for multi-boundary endpoints
 - `boundaries` entries are alternatives, where any one satisfies the requirement, while `additional_scopes` entries are all required, in addition to the primary boundary

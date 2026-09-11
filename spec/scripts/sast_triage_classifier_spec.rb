@@ -7,9 +7,11 @@ require_relative '../support/silence_stdout'
 
 RSpec.describe SastTriageClassifier, :silence_stdout, feature_category: :tooling do
   let(:project_dir) { Dir.mktmpdir }
+  # The api_url allowlist only accepts the production URL, so stubs use the
+  # real host instead of the usual gitlab.example.com convention.
   let(:classifier) do
     described_class.new(
-      api_url: 'https://gitlab.example.com/api/v4',
+      api_url: 'https://gitlab.com/api/v4',
       token: 'fake-token',
       bot_user_id: '26792702',
       project_dir: project_dir
@@ -29,6 +31,41 @@ RSpec.describe SastTriageClassifier, :silence_stdout, feature_category: :tooling
 
   after do
     FileUtils.remove_entry(project_dir) if File.directory?(project_dir)
+  end
+
+  describe 'api_url allowlist' do
+    def build_classifier(api_url)
+      described_class.new(
+        api_url: api_url,
+        token: 'fake-token',
+        bot_user_id: '26792702',
+        project_dir: project_dir
+      )
+    end
+
+    it 'accepts the production API URL, with or without a trailing slash', :aggregate_failures do
+      expect { build_classifier('https://gitlab.com/api/v4') }.not_to raise_error
+      expect { build_classifier('https://gitlab.com/api/v4/') }.not_to raise_error
+    end
+
+    it 'rejects a non-allowlisted host' do
+      expect { build_classifier('https://evil.example.com/api/v4') }.to raise_error(ArgumentError, /not allowlisted/)
+    end
+
+    it 'rejects a lookalike host that only starts with gitlab.com' do
+      expect do
+        build_classifier('https://gitlab.com.evil.example/api/v4')
+      end.to raise_error(ArgumentError, /not allowlisted/)
+    end
+
+    it 'rejects the instance root without the API path' do
+      expect { build_classifier('https://gitlab.com') }.to raise_error(ArgumentError, /not allowlisted/)
+    end
+
+    it 'never sends the token anywhere when construction is rejected', :aggregate_failures do
+      expect { build_classifier('https://evil.example.com/api/v4') }.to raise_error(ArgumentError)
+      expect(WebMock).not_to have_requested(:post, %r{evil\.example\.com})
+    end
   end
 
   describe '#classify' do
@@ -61,7 +98,7 @@ RSpec.describe SastTriageClassifier, :silence_stdout, feature_category: :tooling
         # First finding's mutation succeeds; the second fails at the mutation.
         # WebMock returns these responses in order, so they map to fp1 then fp2,
         # exercising the per-finding isolation in #classify.
-        stub_request(:post, 'https://gitlab.example.com/api/graphql')
+        stub_request(:post, 'https://gitlab.com/api/graphql')
           .with(body: hash_including(query: /aiAction/))
           .to_return(
             { status: 200, body: { data: { aiAction: { requestId: 'req-1', errors: [] } } }.to_json },
@@ -120,7 +157,7 @@ RSpec.describe SastTriageClassifier, :silence_stdout, feature_category: :tooling
 
     context 'when the mutation call fails with a non-success HTTP status' do
       before do
-        stub_request(:post, 'https://gitlab.example.com/api/graphql').to_return(status: 500, body: '')
+        stub_request(:post, 'https://gitlab.com/api/graphql').to_return(status: 500, body: '')
       end
 
       it 'returns an uncertain verdict' do
@@ -130,7 +167,7 @@ RSpec.describe SastTriageClassifier, :silence_stdout, feature_category: :tooling
 
     context 'when the mutation returns field-level errors' do
       before do
-        stub_request(:post, 'https://gitlab.example.com/api/graphql')
+        stub_request(:post, 'https://gitlab.com/api/graphql')
           .to_return(status: 200, body: { data: { aiAction: { requestId: nil, errors: ['Duo not enabled'] } } }.to_json)
       end
 
@@ -141,7 +178,7 @@ RSpec.describe SastTriageClassifier, :silence_stdout, feature_category: :tooling
 
     context 'when the mutation returns a top-level rate-limit error' do
       before do
-        stub_request(:post, 'https://gitlab.example.com/api/graphql').to_return(
+        stub_request(:post, 'https://gitlab.com/api/graphql').to_return(
           status: 200,
           body: {
             errors: [{ message: 'This endpoint has been requested too many times. Try again later.' }],
@@ -157,7 +194,7 @@ RSpec.describe SastTriageClassifier, :silence_stdout, feature_category: :tooling
 
     context 'when the mutation returns an uncategorized top-level error' do
       before do
-        stub_request(:post, 'https://gitlab.example.com/api/graphql').to_return(
+        stub_request(:post, 'https://gitlab.com/api/graphql').to_return(
           status: 200,
           body: {
             errors: [{ message: 'Field "thingThatIsntReal" not found.' }],
@@ -174,7 +211,7 @@ RSpec.describe SastTriageClassifier, :silence_stdout, feature_category: :tooling
     context 'when polling does not yield a response in time' do
       before do
         stub_chat_mutation('req-123')
-        stub_request(:post, 'https://gitlab.example.com/api/graphql')
+        stub_request(:post, 'https://gitlab.com/api/graphql')
           .with(body: hash_including(query: /aiMessages/))
           .to_return(status: 200, body: { data: { aiMessages: { nodes: [] } } }.to_json)
         stub_const("#{described_class}::POLL_TIMEOUT_SECONDS", 0)
@@ -210,7 +247,7 @@ RSpec.describe SastTriageClassifier, :silence_stdout, feature_category: :tooling
 
       it 'includes the code excerpt in the prompt sent to chat' do
         captured_content = nil
-        stub_request(:post, 'https://gitlab.example.com/api/graphql')
+        stub_request(:post, 'https://gitlab.com/api/graphql')
           .with(body: hash_including(query: /aiAction/)).to_return do |request|
           body = Gitlab::Json.safe_parse(request.body)
           captured_content ||= body.dig('variables', 'content')
@@ -246,7 +283,7 @@ RSpec.describe SastTriageClassifier, :silence_stdout, feature_category: :tooling
 
       it 'does not read the symlink target and sends the placeholder excerpt instead', :aggregate_failures do
         captured_content = nil
-        stub_request(:post, 'https://gitlab.example.com/api/graphql').to_return do |request|
+        stub_request(:post, 'https://gitlab.com/api/graphql').to_return do |request|
           body = Gitlab::Json.safe_parse(request.body)
           captured_content ||= body.dig('variables', 'content')
           { status: 200, body: { data: { aiAction: { requestId: 'req-123', errors: [] } } }.to_json }
@@ -282,7 +319,7 @@ RSpec.describe SastTriageClassifier, :silence_stdout, feature_category: :tooling
 
       it 'still sends a normally-structured prompt with the injection text quoted as data' do
         captured_content = nil
-        stub_request(:post, 'https://gitlab.example.com/api/graphql').to_return do |request|
+        stub_request(:post, 'https://gitlab.com/api/graphql').to_return do |request|
           body = Gitlab::Json.safe_parse(request.body)
           captured_content ||= body.dig('variables', 'content')
           { status: 200, body: { data: { aiAction: { requestId: 'req-123', errors: [] } } }.to_json }
@@ -422,7 +459,7 @@ RSpec.describe SastTriageClassifier, :silence_stdout, feature_category: :tooling
   # GraphQL request, so a stubbed request body can be asserted after classify.
   def capture_prompt_content
     captured = nil
-    stub_request(:post, 'https://gitlab.example.com/api/graphql')
+    stub_request(:post, 'https://gitlab.com/api/graphql')
       .with(body: hash_including(query: /aiAction/)).to_return do |request|
       body = Gitlab::Json.safe_parse(request.body)
       captured ||= body.dig('variables', 'content')
@@ -451,13 +488,13 @@ RSpec.describe SastTriageClassifier, :silence_stdout, feature_category: :tooling
   end
 
   def stub_chat_mutation(request_id)
-    stub_request(:post, 'https://gitlab.example.com/api/graphql')
+    stub_request(:post, 'https://gitlab.com/api/graphql')
       .with(body: hash_including(query: /aiAction/))
       .to_return(status: 200, body: { data: { aiAction: { requestId: request_id, errors: [] } } }.to_json)
   end
 
   def stub_ai_messages(_request_id, assistant_content:)
-    stub_request(:post, 'https://gitlab.example.com/api/graphql')
+    stub_request(:post, 'https://gitlab.com/api/graphql')
       .with(body: hash_including(query: /aiMessages/))
       .to_return(
         status: 200,

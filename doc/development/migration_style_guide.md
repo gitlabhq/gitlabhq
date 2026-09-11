@@ -242,7 +242,7 @@ and explains how to perform them without requiring downtime.
 
 ## Reversibility
 
-Your migration **must be** reversible. This is very important, as it should
+Your migration must be reversible. This is very important, as it should
 be possible to downgrade in case of a vulnerability or bugs.
 
 > [!note]
@@ -309,8 +309,8 @@ If your single-transaction migration takes long to finish, you have several opti
 In all cases, remember to select the appropriate migration type
 depending on [how long a migration takes](#how-long-a-migration-should-take)
 
-- Split the migration into **multiple single-transaction migrations**.
-- Use **multiple transactions** by [using `disable_ddl_transaction!`](#disable-transaction-wrapped-migration).
+- Split the migration into multiple single-transaction migrations.
+- Use multiple transactions by [using `disable_ddl_transaction!`](#disable-transaction-wrapped-migration).
 - Keep using a single-transaction migration after adjusting statement and lock timeout settings.
   If your heavy workload must use the guarantees of a transaction,
   you should check your migration can execute without hitting the timeout limits.
@@ -998,7 +998,7 @@ provided by Rails is generally considered safe. Before dropping the table,
 consider the following:
 
 If your table has foreign keys on a [high-traffic table](#high-traffic-tables) (like `projects`), then
-the `DROP TABLE` statement is likely to stall concurrent traffic until it fails with **statement timeout** error.
+the `DROP TABLE` statement is likely to stall concurrent traffic until it fails with `statement timeout` error.
 
 Table **has no records** (feature was never in use) and **no foreign
 keys**:
@@ -1115,7 +1115,7 @@ end
 
 > [!note]
 > `add_sequence` should be avoided for columns with foreign keys.
-> Adding sequence to these columns is **only allowed** in the down method (restore previous schema state).
+> Adding sequence to these columns is only allowed in the down method (restore previous schema state).
 
 ## Truncate a table
 
@@ -1247,7 +1247,7 @@ class BuildMetadata
 end
 ```
 
-When using a `JSONB` column, use the [JsonSchemaValidator](https://gitlab.com/gitlab-org/gitlab/-/blob/master/app/validators/json_schema_validator.rb) to keep control of the data being inserted over time. You must also specify a `size_limit` to prevent performance issues from large JSONB data, with **64 KB** as the recommended maximum.
+When using a `JSONB` column, use the [JsonSchemaValidator](https://gitlab.com/gitlab-org/gitlab/-/blob/master/app/validators/json_schema_validator.rb) to keep control of the data being inserted over time. You must also specify a `size_limit` to prevent performance issues from large JSONB data, with 64 KB as the recommended maximum.
 
 If your JSON schema uses `additionalProperties: false`, see
 [Changing JSON/JSONB columns with schema validation](database/avoiding_downtime_in_migrations.md#changing-jsonjsonb-columns-with-schema-validation)
@@ -1412,7 +1412,7 @@ Be aware of the limitations [when using models in migrations](#using-application
 
 ### Modifying existing data
 
-In most circumstances, prefer migrating data in **batches** when modifying data in the database.
+In most circumstances, prefer migrating data in batches when modifying data in the database.
 
 Use the helper [`each_batch_range`](https://gitlab.com/gitlab-org/gitlab/blob/d430ac7e5b994a4328d648302f85e8d47ed41e11/lib/gitlab/database/migration_helpers.rb#L52-52) which facilitates the process of iterating over a collection in a performant way. The default size of the batch is defined in the `BATCH_SIZE` constant.
 

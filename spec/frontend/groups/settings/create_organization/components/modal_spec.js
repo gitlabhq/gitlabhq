@@ -6,6 +6,7 @@ import { GlButton, GlSprintf, GlModal } from '@gitlab/ui';
 import createMockApollo from 'helpers/mock_apollo_helper';
 import waitForPromises from 'helpers/wait_for_promises';
 import { stubComponent, RENDER_ALL_SLOTS_TEMPLATE } from 'helpers/stub_component';
+import { useMockInternalEventsTracking } from 'helpers/tracking_internal_events_helper';
 import { createAlert } from '~/alert';
 import axios from '~/lib/utils/axios_utils';
 import { HTTP_STATUS_CREATED, HTTP_STATUS_INTERNAL_SERVER_ERROR } from '~/lib/utils/http_status';
@@ -40,6 +41,8 @@ jest.mock('~/lib/utils/url_utility', () => ({
 }));
 
 Vue.use(VueApollo);
+
+const { bindInternalEventDocument } = useMockInternalEventsTracking();
 
 describe('OrganizationReconciliationModal', () => {
   let wrapper;
@@ -342,6 +345,17 @@ describe('OrganizationReconciliationModal', () => {
 
         expect(wrapper.emitted('change')).toEqual([[false]]);
       });
+
+      describe('when next button advances to a step that is not the last', () => {
+        it('does not track the confirm event', async () => {
+          const { trackEventSpy } = bindInternalEventDocument(wrapper.element);
+
+          findNextButton().vm.$emit('click');
+          await nextTick();
+
+          expect(trackEventSpy).not.toHaveBeenCalled();
+        });
+      });
     });
 
     describe('step 2', () => {
@@ -467,6 +481,18 @@ describe('OrganizationReconciliationModal', () => {
           findNextButton().vm.$emit('click');
           await waitForPromises();
         };
+
+        it('tracks the confirm click', async () => {
+          const { trackEventSpy } = bindInternalEventDocument(wrapper.element);
+
+          await goToStep3AndConfirm();
+
+          expect(trackEventSpy).toHaveBeenCalledWith(
+            'click_confirm_organization_from_group_settings',
+            {},
+            undefined,
+          );
+        });
 
         describe('when the group is still in the default organization', () => {
           beforeEach(async () => {

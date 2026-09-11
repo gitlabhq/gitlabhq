@@ -140,7 +140,7 @@ GitLab does not capture which model or model provider the customer uses.
 After you choose a product option, configure how your AI Gateway connects to LLMs:
 
 - **Self-hosted AI Gateway and LLMs**: Use your own AI Gateway and models for full control over your AI infrastructure.
-- **Hybrid AI Gateway and model configuration**: For each feature, use either your self-hosted AI Gateway with self-hosted models, or the GitLab.com AI Gateway with GitLab-managed models.
+- **Hybrid AI Gateway and model configuration**: For each feature, use either your self-hosted AI Gateway with self-hosted models, or the GitLab.com AI Gateway with GitLab-managed models. GitLab-managed models are not available with an offline license.
 - **GitLab.com AI Gateway with default GitLab external vendor LLMs**: Use GitLab managed AI infrastructure.
 
 | Configuration               | Self-hosted AI Gateway                                                                    | Hybrid AI Gateway and model configuration                                                                                                        | GitLab.com AI Gateway                    |

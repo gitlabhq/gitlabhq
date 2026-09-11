@@ -2,6 +2,8 @@
 
 module Organizations
   class ActivateService
+    include Gitlab::InternalEventsTracking
+
     attr_reader :current_user, :params, :organization
 
     def initialize(current_user, params = {})
@@ -14,6 +16,8 @@ module Organizations
       return error(_('Organization not found')) unless organization
       return error(_('Insufficient permissions')) unless allowed?
       return error(_('Organization must be confirmed')) unless organization.state == 'confirmed'
+
+      track_transfer_started
 
       response = nil
 
@@ -33,7 +37,8 @@ module Organizations
           response = ServiceResponse.success(payload: { organization: organization })
         else
           response = error(
-            organization.errors.full_messages.to_sentence.presence || _('Organization could not be activated')
+            organization.errors.full_messages.to_sentence.presence || _('Organization could not be activated'),
+            reason: :activation
           )
           raise ActiveRecord::Rollback
         end
@@ -41,10 +46,50 @@ module Organizations
 
       publish_activated_event if response&.success?
 
+      track_transfer_finished(response)
+
       response
     end
 
     private
+
+    # Tracked inline rather than through Gitlab::InternalEvents::ServiceTracking
+    # because that concern only fires after `execute` returns, which cannot
+    # express a start event or skip the early-return guards above.
+    def track_transfer_started
+      track_transfer_event('transfer_tlg_resources_into_an_organization_started')
+    end
+
+    def track_transfer_finished(response)
+      if response&.success?
+        track_transfer_event('transfer_tlg_resources_into_an_organization_succeeded', **transferred_counts)
+      else
+        track_transfer_event('transfer_tlg_resources_into_an_organization_failed', label: failure_reason(response))
+      end
+    end
+
+    # Counted after the transfer, not on the start event: ConfirmService moves only
+    # the top-level groups, so descendants and projects still carry the old
+    # organization_id until `transfer_top_level_groups` runs.
+    def transferred_counts
+      {
+        value: Group.in_organization(organization).count,
+        projects_count: Project.in_organization(organization).count,
+        users_count: organization.organization_users.count
+      }
+    end
+
+    def track_transfer_event(event_name, **additional_properties)
+      track_internal_event(
+        event_name,
+        user: current_user,
+        additional_properties: { target_organization_id: organization.id, **additional_properties }
+      )
+    end
+
+    def failure_reason(response)
+      response&.reason&.to_s
+    end
 
     def publish_activated_event
       Gitlab::EventStore.publish(
@@ -74,6 +119,7 @@ module Organizations
 
       ServiceResponse.error(
         message: aggregated_errors.map(&:message).join('; '),
+        reason: :group_transfer,
         payload: { organization: organization, failed_transfers: aggregated_errors }
       )
     end
@@ -90,8 +136,8 @@ module Organizations
       current_user&.can?(:update_organization, organization)
     end
 
-    def error(message)
-      ServiceResponse.error(message: message, payload: { organization: organization })
+    def error(message, reason: nil)
+      ServiceResponse.error(message: message, reason: reason, payload: { organization: organization })
     end
   end
 end

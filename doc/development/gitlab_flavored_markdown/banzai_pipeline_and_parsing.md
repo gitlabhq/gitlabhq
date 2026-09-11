@@ -164,7 +164,7 @@ Two MRs and feature flag adjustments are required for the rollout. The example b
    /chatops gitlab run feature set markdown_cache_stochastic_rollout_34 1 --random
    ```
 
-   You **must use the `--random` option** for this flag. Using `--actors` with it is a no-op. This flag is explicitly designed to be used with the `--random` option.
+   You must use the `--random` option for this flag. Using `--actors` with it is a no-op. This flag is explicitly designed to be used with the `--random` option.
 
 1. **Ramp.** Watch `gitlab_markdown_cache_version_upgrades_total` and database write rate. Increase the percentage gradually (for example, `5`, `25`, `50`, `100`) as headroom allows.
 

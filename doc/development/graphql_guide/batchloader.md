@@ -11,7 +11,7 @@ It is the properties of the GraphQL query tree that create opportunities for bat
 
 ## When should you use it?
 
-We should try to batch DB requests as much as possible during GraphQL **query** execution. There is no need to batch loading during **mutations** because they are executed serially. If you need to make a database query, and it is possible to combine two similar (but not necessarily identical) queries, then consider using the batch-loader.
+We should try to batch DB requests as much as possible during GraphQL query execution. There is no need to batch loading during mutations because they are executed serially. If you need to make a database query, and it is possible to combine two similar (but not necessarily identical) queries, then consider using the batch-loader.
 
 When implementing a new endpoint we should aim to minimize the number of SQL queries. For stability and scalability we must also ensure that our queries do not suffer from N+1 performance issues.
 
@@ -181,7 +181,7 @@ def resolve(args = {}, context = { current_user: current_user })
 end
 ```
 
-We can also use [QueryRecorder](../database/query_recorder.md) to make sure we are performing only **one SQL query** per call.
+We can also use [QueryRecorder](../database/query_recorder.md) to make sure we are performing only one SQL query per call.
 
 ```ruby
 it 'executes only 1 SQL query' do

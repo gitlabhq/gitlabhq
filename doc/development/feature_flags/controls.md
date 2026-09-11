@@ -319,13 +319,13 @@ You can mix project paths and numeric project IDs:
 ```
 
 Lastly, to verify that the feature is deemed stable in as many cases as possible,
-you should fully roll out the feature by enabling the flag **globally** by running:
+you should fully roll out the feature by enabling the flag globally by running:
 
 ```shell
 /chatops gitlab run feature set some_feature true
 ```
 
-This changes the feature flag state to be **enabled** always, which overrides the
+This changes the feature flag state to be enabled always, which overrides the
 existing gates (for example, `--group=gitlab-org`) in the above processes.
 
 Note, that if an actor based feature gate is present, switching the
@@ -525,7 +525,7 @@ For flags that do not gate data writes, cache keys, or state transitions (for ex
 pure UI or behavior toggles), this multi-milestone pattern is not required, but still recommended
 as good practice.
 
-To remove a feature flag, open **one merge request** to make the changes. In the MR:
+To remove a feature flag, open one merge request to make the changes. In the MR:
 
 1. Add the ~"feature flag" label so release managers are aware of the removal.
 1. If the merge request has to be backported into the current version, follow the

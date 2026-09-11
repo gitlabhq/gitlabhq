@@ -4,6 +4,7 @@ module API
   module WorkItems
     class Update < ::API::Base
       before { authenticate! }
+      before { check_work_item_rest_api_feature_flag! }
 
       feature_category :portfolio_management
       urgency :low
@@ -39,12 +40,7 @@ module API
             permissions: :update_work_item,
             boundaries: [{ boundary_type: :group }, { boundary_type: :project }]
           patch ':work_item_iid' do
-            namespace = find_namespace_by_path!(params[:id].to_s, allow_project_namespaces: true)
-            not_found!('Namespace') if namespace.is_a?(::Namespaces::UserNamespace)
-            resource_parent = namespace.is_a?(::Namespaces::ProjectNamespace) ? namespace.project : namespace
-
-            work_item = find_work_item_by_iid(resource_parent, params[:work_item_iid])
-            not_found!('Work Item') unless work_item
+            work_item = work_item_for_namespace!(params[:id], params[:work_item_iid])
 
             result = execute_work_item_update(work_item)
             render_work_item_update(result)
@@ -75,10 +71,7 @@ module API
             permissions: :update_work_item,
             boundary_type: :project
           patch ':work_item_iid' do
-            project = find_project!(params[:id])
-
-            work_item = find_work_item_by_iid(project, params[:work_item_iid])
-            not_found!('Work Item') unless work_item
+            work_item = work_item_for!(find_project!(params[:id]), params[:work_item_iid])
 
             result = execute_work_item_update(work_item)
             render_work_item_update(result)
@@ -109,10 +102,7 @@ module API
             permissions: :update_work_item,
             boundary_type: :group
           patch ':work_item_iid' do
-            group = find_group!(params[:id])
-
-            work_item = find_work_item_by_iid(group, params[:work_item_iid])
-            not_found!('Work Item') unless work_item
+            work_item = work_item_for!(find_group!(params[:id]), params[:work_item_iid])
 
             result = execute_work_item_update(work_item)
             render_work_item_update(result)

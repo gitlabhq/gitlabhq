@@ -6,6 +6,7 @@ module API
       include PaginationParams
 
       before { authenticate! }
+      before { check_work_item_rest_api_feature_flag! }
 
       feature_category :portfolio_management
       urgency :low

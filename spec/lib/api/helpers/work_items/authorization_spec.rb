@@ -21,7 +21,7 @@ RSpec.describe API::Helpers::WorkItems::Authorization, feature_category: :portfo
 
     context 'when the feature flag is enabled for the user' do
       it 'permits the request' do
-        expect(helper).not_to receive(:forbidden!)
+        expect(helper).not_to receive(:not_found!)
 
         check
       end
@@ -32,9 +32,8 @@ RSpec.describe API::Helpers::WorkItems::Authorization, feature_category: :portfo
         stub_feature_flags(work_item_rest_api: false)
       end
 
-      it 'forbids the request' do
-        expect(helper).to receive(:forbidden!)
-          .with('work_item_rest_api feature flag is disabled for this user')
+      it 'returns not found' do
+        expect(helper).to receive(:not_found!)
 
         check
       end
@@ -56,9 +55,8 @@ RSpec.describe API::Helpers::WorkItems::Authorization, feature_category: :portfo
         stub_feature_flags(work_item_rest_api: false)
       end
 
-      it 'forbids the request' do
-        expect(helper).to receive(:forbidden!)
-          .with('work_item_rest_api feature flag is disabled for this user')
+      it 'returns not found' do
+        expect(helper).to receive(:not_found!)
         allow(helper).to receive(:authorize!)
 
         authorize

@@ -32,12 +32,12 @@ RSpec.describe API::WorkItems::Notes, feature_category: :portfolio_management do
       expect(response).to have_gitlab_http_status(:not_found)
     end
 
-    it 'returns forbidden when the feature flag is disabled' do
+    it 'returns not_found when the feature flag is disabled' do
       stub_feature_flags(work_item_rest_api: false)
 
       get api(api_request_path, user)
 
-      expect(response).to have_gitlab_http_status(:forbidden)
+      expect(response).to have_gitlab_http_status(:not_found)
     end
 
     it 'returns unauthorized when no token is provided' do
@@ -197,12 +197,12 @@ RSpec.describe API::WorkItems::Notes, feature_category: :portfolio_management do
       expect(response).to have_gitlab_http_status(:not_found)
     end
 
-    it 'returns forbidden when the feature flag is disabled' do
+    it 'returns not_found when the feature flag is disabled' do
       stub_feature_flags(work_item_rest_api: false)
 
       get api(api_request_path, user)
 
-      expect(response).to have_gitlab_http_status(:forbidden)
+      expect(response).to have_gitlab_http_status(:not_found)
     end
 
     it 'returns unauthorized when no token is provided' do

@@ -17,5 +17,10 @@
           = _('Commit changes')
 
   .file-editor
+    = gl_tabs_nav({ class: 'js-edit-mode nav-links gl-border-0'}) do
+      = gl_tab_link_to _('Write'), '#editor', { tab_class: 'active' }
+
+      = gl_tab_link_to _('Preview'), '#preview', { data: { 'preview-url': project_preview_blob_path(@project, @id) } }
+
     = form_tag(project_create_blob_path(@project, @id), method: :post, class: 'js-edit-blob-form js-new-blob-form js-quick-submit', data: blob_editor_paths(@project, 'post')) do
       = render 'projects/blob/editor', ref: @ref, path: @path

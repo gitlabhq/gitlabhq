@@ -2,6 +2,7 @@
 
 require_relative "http_router/version"
 require_relative "http_router/routes_snapshot"
+require_relative "http_router/snapshot_comparison"
 
 module Gitlab
   module Cells

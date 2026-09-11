@@ -4,6 +4,7 @@ module API
   module WorkItems
     class Delete < ::API::Base
       before { authenticate! }
+      before { check_work_item_rest_api_feature_flag! }
 
       feature_category :portfolio_management
       urgency :low
@@ -13,8 +14,6 @@ module API
 
       helpers do
         def delete_work_item(resource_parent)
-          check_work_item_rest_api_feature_flag!
-
           work_item = build_work_items_relation(resource_parent).without_order.find_by_iid(params[:work_item_iid])
           not_found!('Work Item') unless work_item
 
@@ -54,9 +53,7 @@ module API
             permissions: :delete_work_item,
             boundaries: [{ boundary_type: :group }, { boundary_type: :project }]
           delete ':work_item_iid' do
-            namespace = find_namespace_by_path!(params[:id].to_s, allow_project_namespaces: true)
-            not_found!('Namespace') if namespace.is_a?(::Namespaces::UserNamespace)
-            resource_parent = namespace.is_a?(::Namespaces::ProjectNamespace) ? namespace.project : namespace
+            resource_parent = resolve_namespace_resource_parent!(params[:id])
 
             delete_work_item(resource_parent)
           end

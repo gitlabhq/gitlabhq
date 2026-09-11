@@ -85,7 +85,7 @@ RSpec.describe API::WorkItems::Delete, feature_category: :portfolio_management d
       it 'returns 403' do
         delete api(api_request_path, owner)
 
-        expect(response).to have_gitlab_http_status(:forbidden)
+        expect(response).to have_gitlab_http_status(:not_found)
       end
     end
   end

@@ -1,0 +1,28 @@
+---
+description: Fires when the background job that transfers top-level group resources
+  into an organization fails and the organization is not activated
+internal_events: true
+status: active
+action: transfer_tlg_resources_into_an_organization_failed
+identifiers:
+  - user
+additional_properties:
+  target_organization_id:
+    description: ID of the organization the resources were being transferred into.
+      Differs from the standard context `organization_id`, which holds the
+      organization the request originated from
+  label:
+    description: The failure reason. Either `group_transfer` (a group's transfer into
+      the organization returned an error), `already_transferred`
+      (The group and all of its descendants are already in the target organization),
+      or `activation` (transfers succeeded but the
+      organization could not be activated).
+product_group: organizations
+product_categories:
+  - organization
+milestone: '19.4'
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/254597
+tiers:
+  - free
+  - premium
+  - ultimate

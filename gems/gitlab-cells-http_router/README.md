@@ -48,6 +48,31 @@ Gitlab::Cells::HttpRouter::RoutesSnapshot.example_for('/api/:version/groups/:id/
 # => "/api/v4/groups/foo/access_requests"
 ```
 
+## SnapshotComparison
+
+Compares the snapshot committed in GitLab with the copy the HTTP Router mirrors. The verdict is
+byte equality, because the router parses the file and a serialization change matters as much as a
+missing route. The template sets are compared separately, only to explain a byte difference in
+terms a route author can act on.
+
+```ruby
+comparison = Gitlab::Cells::HttpRouter::SnapshotComparison.new(
+  gitlab_payload: File.read('config/routing/gitlab_routes.json'),
+  router_payload: downloaded_body
+)
+
+comparison.identical?       # => false
+comparison.formatting_only? # => false when a template moved
+comparison.router_only      # => templates GitLab no longer has
+comparison.gitlab_only      # => templates the router has not seen
+```
+
+A payload that is not a routing snapshot, such as a 404 error page, raises
+`SnapshotComparison::InvalidSnapshotError` rather than reporting every route as drifted. The error
+carries a `source` reader, `:gitlab` or `:router`, so the caller can report a bad local file
+separately from a bad download. See `scripts/cells/check_router_routes_sync.rb` in the GitLab
+monorepo for the CI caller.
+
 ## Development
 
 Follow the GitLab [gems development guidelines](../../doc/development/gems.md).

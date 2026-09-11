@@ -75,24 +75,44 @@ To deploy the Agent Platform in an offline environment, complete the following s
 
 All artifacts except LLM model weights are OCI container images.
 
+The container images your GitLab instance itself runs are a separate transfer.
+For more information, see [offline GitLab](../../topics/offline/_index.md).
+
 ### Container images
 
-| Artifact | Source registry | Tag format | Approximate size |
+| Artifact | Source registry | Tag format | Approximate compressed size |
 |----------|----------------|------------|-----------------|
-| AI Gateway | `registry.gitlab.com/gitlab-org/modelops/applied-ml/code-suggestions/ai-assist/model-gateway` | `self-hosted-vX.Y.Z-ee` | 340 MB |
-| Agent Platform Flows executor | `registry.gitlab.com/gitlab-org/duo-workflow/default-docker-image/workflow-generic-image` | `vX.Y.Z` | 2-3 GB |
-| vLLM inference server | `docker.io/vllm/vllm-openai` | `vX.Y.Z` (v0.18.1 or later) | 2-4 GB |
+| AI Gateway | `registry.gitlab.com/gitlab-org/modelops/applied-ml/code-suggestions/ai-assist/model-gateway` | `self-hosted-vX.Y.Z-ee` | 0.6 GiB |
+| Agent Platform Flows executor | `registry.gitlab.com/gitlab-org/duo-workflow/default-docker-image/workflow-generic-image` | `vX.Y.Z` | 0.5 GiB |
+| vLLM inference server | `docker.io/vllm/vllm-openai` | `vX.Y.Z` (v0.18.1 or later) | 9 GiB |
+
+Sizes are the compressed sizes you transfer.
+Each image is larger after it is loaded into a registry or pulled to a host.
+To check a size before you transfer, run
+`skopeo inspect --raw docker://<image>:<tag>` and add up the `config` and
+`layers` sizes it reports.
 
 The AI Gateway tag uses your GitLab version number:
 `self-hosted-v<your-gitlab-version>-ee`.
 
-To check the current executor image version, run the following command:
+The executor tag must match the tag your GitLab version requests when it
+starts a flow.
+That tag is pinned per release. To find the tag,
+in `ee/app/services/ai/duo_workflows/start_workflow_service.rb`,
+check the `IMAGE_PATH` constant for your version.
+The tag also appears as the image on the CI/CD job that a flow creates.
+The newest tag in the registry is often ahead of the tag your version
+requests, so do not select the tag by listing the registry.
 
-```shell
-skopeo list-tags \
-  docker://registry.gitlab.com/gitlab-org/duo-workflow/default-docker-image/workflow-generic-image \
-  | jq --raw-output '.Tags[]' | grep --extended-regexp '^v[0-9]' | sort --version-sort | tail --lines=1
-```
+In an offline environment, pin the instance to the image you transferred
+instead of tracking the version default.
+Use either of the following:
+
+- The `image` key in a project's `.gitlab/duo/agent-config.yml` file, which
+  applies to flows in that project.
+- The `duo_workflows_default_image_registry` application setting, which
+  accepts a full image reference, including a tag, and applies to every
+  project.
 
 ClickHouse is not required for GitLab Duo Agentic Chat, Code
 Suggestions, GitLab Duo Code Review, and Agent Platform flows.
@@ -367,17 +387,19 @@ For offline flow execution, use a custom executor image with
 1. Build the custom image with the binary included:
 
    ```dockerfile
-   FROM registry.gitlab.com/gitlab-org/duo-workflow/default-docker-image/workflow-generic-image:v0.0.6
+   FROM registry.gitlab.com/gitlab-org/duo-workflow/default-docker-image/workflow-generic-image:v0.0.14
    COPY duo-linux-x64 /usr/bin/duo
    RUN chmod +x /usr/bin/duo
    ```
+
+   Replace `v0.0.14` with the tag your GitLab version requests.
 
 1. Transfer the image to your internal registry using the same
    `skopeo copy` procedure described above, then reference it
    in your project's `agent-config.yml`:
 
    ```yaml
-   image: registry.internal.example.com/duo/duo-executor:v0.0.6
+   image: registry.internal.example.com/duo/duo-executor:v0.0.14
    ```
 
 ## Verify the deployment
@@ -418,6 +440,10 @@ For common issues, see
 When you upgrade your GitLab instance, transfer updated container
 images using the same procedure.
 Use the AI Gateway image tag that matches the new GitLab version.
+
+An upgrade can also change the executor tag the new version requests.
+Check that tag before you upgrade, and transfer the matching executor image
+with the AI Gateway image.
 
 Model weights do not need to be updated when you upgrade GitLab.
 Updates are only required when you change to a different model.

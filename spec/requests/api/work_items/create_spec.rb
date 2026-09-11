@@ -185,7 +185,7 @@ RSpec.describe API::WorkItems::Create, feature_category: :portfolio_management d
       it 'returns 403' do
         post api(api_request_path, user), params: { title: 'New task', work_item_type_name: 'task' }
 
-        expect(response).to have_gitlab_http_status(:forbidden)
+        expect(response).to have_gitlab_http_status(:not_found)
       end
     end
 

@@ -6,6 +6,7 @@ module API
       include PaginationParams
 
       before { authenticate! }
+      before { check_work_item_rest_api_feature_flag! }
 
       feature_category :portfolio_management
       urgency :low
@@ -16,8 +17,7 @@ module API
 
       helpers do
         def render_current_user_todos_for(parent_work_item)
-          check_work_item_rest_api_feature_flag!
-          authorize! :read_work_item, parent_work_item
+          authorize_work_item_feature!(parent_work_item)
 
           # TodosFinder treats a nil state as `pending`, so default to both states to mirror the GraphQL widget.
           state = params[:state] || %w[done pending]
@@ -62,12 +62,7 @@ module API
             boundaries: [{ boundary_type: :group }, { boundary_type: :project }],
             job_token_policies: :read_work_items
           get ':work_item_iid/current_user_todos' do
-            namespace = find_namespace_by_path!(params[:id].to_s, allow_project_namespaces: true)
-            not_found!('Namespace') if namespace.is_a?(::Namespaces::UserNamespace)
-            resource_parent = namespace.is_a?(::Namespaces::ProjectNamespace) ? namespace.project : namespace
-
-            parent_work_item = find_work_item_by_iid(resource_parent, params[:work_item_iid])
-            not_found!('Work Item') unless parent_work_item
+            parent_work_item = work_item_for_namespace!(params[:id], params[:work_item_iid])
 
             render_current_user_todos_for(parent_work_item)
           end
@@ -100,10 +95,7 @@ module API
             boundary_type: :project,
             job_token_policies: :read_work_items
           get ':work_item_iid/current_user_todos' do
-            project = find_project!(params[:id])
-
-            parent_work_item = find_work_item_by_iid(project, params[:work_item_iid])
-            not_found!('Work Item') unless parent_work_item
+            parent_work_item = work_item_for!(find_project!(params[:id]), params[:work_item_iid])
 
             render_current_user_todos_for(parent_work_item)
           end
@@ -135,10 +127,7 @@ module API
             permissions: :read_work_item,
             boundary_type: :group
           get ':work_item_iid/current_user_todos' do
-            group = find_group!(params[:id])
-
-            parent_work_item = find_work_item_by_iid(group, params[:work_item_iid])
-            not_found!('Work Item') unless parent_work_item
+            parent_work_item = work_item_for!(find_group!(params[:id]), params[:work_item_iid])
 
             render_current_user_todos_for(parent_work_item)
           end

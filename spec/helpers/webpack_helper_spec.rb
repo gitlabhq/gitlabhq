@@ -40,6 +40,10 @@ RSpec.describe WebpackHelper, feature_category: :tooling do
   end
 
   describe '#bundler_manifest_filename' do
+    before do
+      allow(Gitlab.config.webpack).to receive(:bundler).and_return('webpack')
+    end
+
     it 'uses the Webpack manifest by default' do
       expect(helper.bundler_manifest_filename).to eq(Gitlab.config.webpack.manifest_filename)
     end
@@ -51,6 +55,22 @@ RSpec.describe WebpackHelper, feature_category: :tooling do
 
       it 'uses the Rspack manifest' do
         expect(helper.bundler_manifest_filename).to eq('manifest.rspack.json')
+      end
+    end
+
+    context 'when the configured bundler is Rspack' do
+      before do
+        allow(Gitlab.config.webpack).to receive(:bundler).and_return('rspack')
+      end
+
+      it 'uses the Rspack manifest' do
+        expect(helper.bundler_manifest_filename).to eq('manifest.rspack.json')
+      end
+
+      it 'lets ENABLE_RSPACK override the configuration' do
+        stub_env('ENABLE_RSPACK', 'false')
+
+        expect(helper.bundler_manifest_filename).to eq(Gitlab.config.webpack.manifest_filename)
       end
     end
   end

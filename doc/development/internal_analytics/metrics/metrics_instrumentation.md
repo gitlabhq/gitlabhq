@@ -175,7 +175,7 @@ Errors return a value of `-1`.
 > [!warning]
 > This functionality estimates a distinct count of a specific ActiveRecord_Relation in a given column,
 > which uses the [HyperLogLog](https://static.googleusercontent.com/media/research.google.com/en//pubs/archive/40671.pdf) algorithm.
-> As the HyperLogLog algorithm is probabilistic, the **results always include error**.
+> As the HyperLogLog algorithm is probabilistic, the results always include error.
 > The highest encountered error rate is 4.9%.
 
 When correctly used, the `estimate_batch_distinct_count` method enables efficient counting over

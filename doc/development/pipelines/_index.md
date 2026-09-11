@@ -21,7 +21,7 @@ on the `dev.gitlab.com` mirror if they do not exist on that instance.
 
 ## Pipeline tiers
 
-A merge request will typically run several CI/CD pipelines. Depending on where the merge request is at in the approval process, we will trigger different kinds of pipelines. We call those kinds of pipelines **pipeline tiers**.
+A merge request will typically run several CI/CD pipelines. Depending on where the merge request is at in the approval process, we will trigger different kinds of pipelines. We call those kinds of pipelines pipeline tiers.
 
 We currently have three tiers:
 
@@ -266,7 +266,7 @@ graph LR
 
 [We started using merge trains in June 2024](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/154540).
 
-At the moment, **Merge train pipelines don't run any tests**: they only enforce the
+At the moment, merge train pipelines don't run any tests: they only enforce the
 ["Merging a merge request" guidelines](../code_review.md#merging-a-merge-request)
 that already existed before the enablement of merge trains, but that we couldn't easily enforce.
 
@@ -288,7 +288,7 @@ to actually start running tests in merge train pipelines.
 
 #### Why do we need to have a "stable" default branch?
 
-If the default branch is unstable (for example, the CI/CD pipelines for the default branch are failing frequently), all of the merge requests pipelines that were added AFTER a faulty merge request pipeline would have to be **canceled** and **added back to the train**, which would create a lot of delays if the merge train is long.
+If the default branch is unstable (for example, the CI/CD pipelines for the default branch are failing frequently), all of the merge requests pipelines that were added AFTER a faulty merge request pipeline would have to be canceled and added back to the train, which would create a lot of delays if the merge train is long.
 
 #### How stable does the default branch have to be?
 

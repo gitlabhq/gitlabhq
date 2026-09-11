@@ -79,7 +79,11 @@ module Gitlab
       group_group_links = GroupGroupLink.arel_table
       namespaces = Namespace.arel_table
 
+      # Exclude minimal-access group shares (access_level 5) to mirror the
+      # member-side filter in join_members_on_namespaces / join_members_on_group_group_links,
+      # preventing LEAST(member_access, 5) = 5 rows from leaking into project_authorizations.
       cond = group_group_links[:shared_group_id].eq(namespaces[:id])
+               .and(group_group_links[:group_access].gt(Gitlab::Access::MINIMAL_ACCESS))
       Arel::Nodes::InnerJoin.new(group_group_links, Arel::Nodes::On.new(cond))
     end
 

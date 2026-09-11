@@ -6,6 +6,7 @@ module API
       include PaginationParams
 
       before { authenticate! }
+      before { check_work_item_rest_api_feature_flag! }
 
       feature_category :service_desk
       urgency :low
@@ -27,12 +28,8 @@ module API
 
       helpers do
         def render_email_participants_for(resource_parent, work_item_iid)
-          check_work_item_rest_api_feature_flag!
-
-          work_item = find_work_item_by_iid(resource_parent, work_item_iid)
-          not_found!('Work Item') unless work_item
-
-          authorize! :read_work_item, work_item
+          work_item = work_item_for!(resource_parent, work_item_iid)
+          authorize_work_item_feature!(work_item)
 
           widget = work_item.get_widget(:email_participants)
           not_found!('Email participants are not available for this work item type') unless widget
@@ -81,9 +78,7 @@ module API
             boundaries: [{ boundary_type: :group }, { boundary_type: :project }],
             job_token_policies: :read_work_items
           get ':work_item_iid/email_participants' do
-            namespace = find_namespace_by_path!(params[:id].to_s, allow_project_namespaces: true)
-            not_found!('Namespace') if namespace.is_a?(::Namespaces::UserNamespace)
-            resource_parent = namespace.is_a?(::Namespaces::ProjectNamespace) ? namespace.project : namespace
+            resource_parent = resolve_namespace_resource_parent!(params[:id])
 
             render_email_participants_for(resource_parent, params[:work_item_iid])
           end

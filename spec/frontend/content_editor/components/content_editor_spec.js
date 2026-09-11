@@ -7,6 +7,7 @@ import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
 import { CONTENT_EDITOR_PASTE } from '~/vue_shared/constants';
 import markdownEditorEventHub from '~/vue_shared/components/markdown/eventhub';
 import ContentEditor from '~/content_editor/components/content_editor.vue';
+import { ContentEditor as ContentEditorService } from '~/content_editor/services/content_editor';
 import ContentEditorAlert from '~/content_editor/components/content_editor_alert.vue';
 import ContentEditorProvider from '~/content_editor/components/content_editor_provider.vue';
 import EditorStateObserver from '~/content_editor/components/editor_state_observer.vue';
@@ -208,6 +209,62 @@ describe('ContentEditor', () => {
 
           expect(findEditorContent().props().editor.isEditable).toBe(true);
         });
+      });
+    });
+  });
+
+  describe('when loading markdown', () => {
+    let setSerializedContent;
+
+    const findTiptapEditor = () => findEditorContent().props('editor');
+
+    beforeEach(async () => {
+      renderMarkdown.mockResolvedValue({ body: '<p>hello</p>' });
+      setSerializedContent = jest.spyOn(ContentEditorService.prototype, 'setSerializedContent');
+
+      createWrapper({ markdown: 'hello' });
+      await waitForPromises();
+    });
+
+    it('loads the initial markdown outside the undo history', () => {
+      expect(setSerializedContent).toHaveBeenCalledTimes(1);
+      expect(setSerializedContent.mock.calls[0]).toEqual(['hello', undefined]);
+    });
+
+    it('loads a changed markdown prop as an undoable replacement', async () => {
+      await wrapper.setProps({ markdown: 'replaced' });
+
+      expect(setSerializedContent).toHaveBeenCalledWith('replaced', { addToHistory: true });
+    });
+
+    describe('when a changed markdown prop fails to load and Retry succeeds', () => {
+      beforeEach(async () => {
+        renderMarkdown.mockRejectedValueOnce(new Error());
+        await wrapper.setProps({ markdown: 'replaced' });
+        await waitForPromises();
+
+        renderMarkdown.mockResolvedValueOnce({ body: '<p>replaced</p>' });
+        await wrapper.findComponent(GlAlert).vm.$emit('primary-action');
+        await waitForPromises();
+      });
+
+      it('loads the replacement as undoable on both attempts', () => {
+        expect(setSerializedContent.mock.calls).toEqual([
+          ['hello', undefined],
+          ['replaced', { addToHistory: true }],
+          ['replaced', { addToHistory: true }],
+        ]);
+      });
+
+      it('restores the previous content when undo is pressed', () => {
+        const tiptapEditor = findTiptapEditor();
+
+        expect(tiptapEditor.state.doc.textContent).toBe('replaced');
+
+        expect(tiptapEditor.commands.undo()).toBe(true);
+        expect(tiptapEditor.state.doc.textContent).toBe('hello');
+
+        expect(tiptapEditor.commands.undo()).toBe(false);
       });
     });
   });

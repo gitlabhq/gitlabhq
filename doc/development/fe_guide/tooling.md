@@ -37,7 +37,7 @@ To check a specific file in the repository with ESLINT, run the following script
 yarn run lint:eslint $PATH_TO_FILE
 ```
 
-To check **all** files in the repository with ESLint, run the following script:
+To check all files in the repository with ESLint, run the following script:
 
 ```shell
 yarn run lint:eslint:all
@@ -45,7 +45,7 @@ yarn run lint:eslint:all
 
 A list of problems found are logged to the console.
 
-To apply automatic ESLint fixes to **all** files in the repository, run the following script:
+To apply automatic ESLint fixes to all files in the repository, run the following script:
 
 ```shell
 yarn run lint:eslint:all:fix
@@ -171,8 +171,8 @@ export function queryToObject(query, options = {}) {
 
 It is strongly encouraged that you:
 
-- Put in an **alternative path for developers** looking to use this function.
-- **Provide a link to the issue** that tracks the migration process.
+- Put in an alternative path for developers looking to use this function.
+- Provide a link to the issue that tracks the migration process.
 
 > [!note]
 > Uses are detected if you import the deprecated function into another file. They are not detected when the function is used in the same file.

@@ -6,6 +6,7 @@ module API
       include PaginationParams
 
       before { authenticate! }
+      before { check_work_item_rest_api_feature_flag! }
 
       feature_category :portfolio_management
       urgency :low
@@ -88,15 +89,11 @@ module API
         end
 
         def render_notes_endpoint_for(resource_parent)
-          parent_work_item = find_work_item_by_iid(resource_parent, params[:work_item_iid])
-          not_found!('Work Item') unless parent_work_item
-
-          render_notes_for(parent_work_item)
+          render_notes_for(work_item_for!(resource_parent, params[:work_item_iid]))
         end
 
         def render_notes_for(parent_work_item)
-          check_work_item_rest_api_feature_flag!
-          authorize! :read_work_item, parent_work_item
+          authorize_work_item_feature!(parent_work_item)
           authorize! :read_note, parent_work_item
 
           notes_filter = UserPreference::NOTES_FILTERS[params[:activity_filter].to_sym]
@@ -138,9 +135,7 @@ module API
             job_token_policies: :read_work_items
 
           get ':work_item_iid/notes' do
-            namespace = find_namespace_by_path!(params[:id].to_s, allow_project_namespaces: true)
-            not_found!('Namespace') if namespace.is_a?(::Namespaces::UserNamespace)
-            resource_parent = namespace.is_a?(::Namespaces::ProjectNamespace) ? namespace.project : namespace
+            resource_parent = resolve_namespace_resource_parent!(params[:id])
 
             render_notes_endpoint_for(resource_parent)
           end

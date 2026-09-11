@@ -382,7 +382,7 @@ Some libraries rely on Vue.js 2 internals. They might not work with `@vue/compat
 
 **Goals**
 
-- We should add as few changes as possible to existing code to support new libraries. Instead, we should **add** new code, which acts as **a facade**, making the new version compatible with the old one
+- We should add as few changes as possible to existing code to support new libraries. Instead, we should add new code, which acts as a facade, making the new version compatible with the old one
 - Switching between new and old versions should be hidden inside tooling (webpack / jest) and should not be exposed to the code
 - All facades specific to migration should live in the same directory to simplify future migration steps
 
@@ -466,7 +466,7 @@ appears.
 1. Verify that the console shows
    `[gitlab] [V] Using Vue.js 3 (with @vue/compat) for <your app name>`.
 1. Verify that `document.querySelectorAll('[data-gitlab-vue3-app]')` returns your app.
-1. **Verify the app works correctly locally**. To turn that check into evidence a reviewer can
+1. Verify the app works correctly locally. To turn that check into evidence a reviewer can
    watch, see [Record the verification as a video](#record-the-verification-as-a-video).
 1. Open an MR with your changes and get them merged!
 1. Proceed with the feature flag rollout with the `user` actor.
@@ -538,7 +538,7 @@ page entrypoint.
 1. Verify that the console shows
    `[gitlab] [V] Using Vue.js 3 (with @vue/compat) for <your app name>`.
 1. Verify that `document.querySelectorAll('[data-gitlab-vue3-app]')` returns your app.
-1. **Verify the app works correctly locally**, and record the walkthrough as evidence for the
+1. Verify the app works correctly locally, and record the walkthrough as evidence for the
    reviewer.
 1. Open an MR with your changes and get them merged.
 1. Proceed with the feature flag rollout with the `user` actor.
