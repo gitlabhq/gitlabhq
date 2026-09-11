@@ -20,10 +20,7 @@ module Search
       if ::Gitlab::ApplicationRateLimiter.throttled_request?(
         context[:request], current_user, key, scope: scope, users_allowlist: users_allowlist
       )
-        error_msg = <<~ERR.squish
-              _('This endpoint has been requested too many times. Try again later.')
-        ERR
-        raise_resource_not_available_error!(error_msg)
+        raise_resource_not_available_error!(::Gitlab::ApplicationRateLimiter.throttled_error_message)
       end
     end
 

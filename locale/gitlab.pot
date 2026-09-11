@@ -10555,9 +10555,6 @@ msgstr ""
 msgid "An error occurred when trying to display this embedded view:"
 msgstr ""
 
-msgid "An error occurred while adding approvers"
-msgstr ""
-
 msgid "An error occurred while adding formatted title for epic"
 msgstr ""
 
@@ -10841,9 +10838,6 @@ msgid "An error occurred while trying to update the registry: '%{error_message}'
 msgstr ""
 
 msgid "An error occurred while unsubscribing from this page. Please try again later."
-msgstr ""
-
-msgid "An error occurred while updating approvers"
 msgstr ""
 
 msgid "An error occurred while updating assignees."
@@ -35414,6 +35408,9 @@ msgstr ""
 msgid "Explore / AI Catalog (Flows)"
 msgstr ""
 
+msgid "Explore GitLab security and compliance capabilities"
+msgstr ""
+
 msgid "Explore groups"
 msgstr ""
 
@@ -55355,9 +55352,6 @@ msgstr ""
 msgid "Observability|Set up observability"
 msgstr ""
 
-msgid "Observability|Setup"
-msgstr ""
-
 msgid "Observability|Setup guide"
 msgstr ""
 
@@ -68069,6 +68063,9 @@ msgstr ""
 msgid "RiskClassification|Authorization, access control, or tenant isolation"
 msgstr ""
 
+msgid "RiskClassification|Based on a partial picture: %{missing} could not be measured."
+msgstr ""
+
 msgid "RiskClassification|Change shape"
 msgstr ""
 
@@ -68087,6 +68084,9 @@ msgstr ""
 msgid "RiskClassification|Concentration of the change across files"
 msgstr ""
 
+msgid "RiskClassification|Critical risk"
+msgstr ""
+
 msgid "RiskClassification|Cryptography, key management, or credential handling"
 msgstr ""
 
@@ -68102,13 +68102,43 @@ msgstr ""
 msgid "RiskClassification|Destructive database migration"
 msgstr ""
 
+msgid "RiskClassification|Failed to load the risk assessment"
+msgstr ""
+
 msgid "RiskClassification|Feature flag rollout"
+msgstr ""
+
+msgid "RiskClassification|High confidence"
+msgstr ""
+
+msgid "RiskClassification|High risk"
 msgstr ""
 
 msgid "RiskClassification|How new the author is to this project"
 msgstr ""
 
+msgid "RiskClassification|Loading the risk assessment"
+msgstr ""
+
+msgid "RiskClassification|Low confidence"
+msgstr ""
+
+msgid "RiskClassification|Low risk"
+msgstr ""
+
 msgid "RiskClassification|Manifest file changed directly"
+msgstr ""
+
+msgid "RiskClassification|Medium confidence"
+msgstr ""
+
+msgid "RiskClassification|Medium risk"
+msgstr ""
+
+msgid "RiskClassification|New commits were pushed after this assessment. It reflects an earlier version of the changes."
+msgstr ""
+
+msgid "RiskClassification|New risk assessment queued"
 msgstr ""
 
 msgid "RiskClassification|Number of dependency ecosystems touched"
@@ -68126,6 +68156,9 @@ msgstr ""
 msgid "RiskClassification|Public API contract, REST or GraphQL"
 msgstr ""
 
+msgid "RiskClassification|Rationale"
+msgstr ""
+
 msgid "RiskClassification|Reversibility"
 msgstr ""
 
@@ -68135,7 +68168,19 @@ msgstr ""
 msgid "RiskClassification|Reverts a previously merged change"
 msgstr ""
 
+msgid "RiskClassification|Risk assessment"
+msgstr ""
+
 msgid "RiskClassification|Risk assessment cannot be refreshed while %{status}."
+msgstr ""
+
+msgid "RiskClassification|Risk assessment failed"
+msgstr ""
+
+msgid "RiskClassification|Risk assessment pending"
+msgstr ""
+
+msgid "RiskClassification|Risk assessment updating"
 msgstr ""
 
 msgid "RiskClassification|Size of change"
@@ -68154,6 +68199,12 @@ msgid "RiskClassification|Test evidence"
 msgstr ""
 
 msgid "RiskClassification|Uncovered changed lines"
+msgstr ""
+
+msgid "RiskClassification|Very high confidence"
+msgstr ""
+
+msgid "RiskClassification|What contributed to this score"
 msgstr ""
 
 msgid "RiskClassification|diff_sha %{diff_sha} does not match any known revision of this merge request."
@@ -73750,6 +73801,9 @@ msgstr ""
 msgid "SecurityOrchestration|Enter up to %{maxBranches} branch names, separated by commas."
 msgstr ""
 
+msgid "SecurityOrchestration|Enter vulnerability IDs (e.g. CVEs) or package URLs (PURLs) to exempt, separated by commas"
+msgstr ""
+
 msgid "SecurityOrchestration|Enter vulnerability IDs (e.g. CVEs) to exempt, separated by commas"
 msgstr ""
 
@@ -74318,6 +74372,9 @@ msgid "SecurityOrchestration|Results of most recent test"
 msgstr ""
 
 msgid "SecurityOrchestration|Risk severity"
+msgstr ""
+
+msgid "SecurityOrchestration|Risk severity rule"
 msgstr ""
 
 msgid "SecurityOrchestration|Roles"
@@ -86767,6 +86824,9 @@ msgstr ""
 msgid "UsageBilling|Per-user cap overrides"
 msgstr ""
 
+msgid "UsageBilling|Per-user cap overrides require flat cap value"
+msgstr ""
+
 msgid "UsageBilling|Product"
 msgstr ""
 
@@ -86822,6 +86882,9 @@ msgid "UsageBilling|This dashboard may not display all GitLab Credits usage data
 msgstr ""
 
 msgid "UsageBilling|This dashboard may not display all current subscription data. For complete visibility, please upgrade to the latest version of GitLab or visit the %{linkStart}Customer Portal%{linkEnd}."
+msgstr ""
+
+msgid "UsageBilling|To add per-user overrides you need to save Flat cap value first. You can leave Enforce cap turned off until you're ready."
 msgstr ""
 
 msgid "UsageBilling|Total credit consumption"
@@ -88905,6 +88968,9 @@ msgid "View issue"
 msgstr ""
 
 msgid "View issues"
+msgstr ""
+
+msgid "View issues in your external issue tracker"
 msgstr ""
 
 msgid "View it on GitLab"

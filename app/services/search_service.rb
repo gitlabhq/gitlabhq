@@ -7,6 +7,12 @@ class SearchService
   DEFAULT_PER_PAGE = Gitlab::SearchResults::DEFAULT_PER_PAGE
   MAX_PER_PAGE = 200
 
+  # Elasticsearch answers `from + size > index.max_result_window` with an HTTP
+  # 400, and GitLab overrides that setting nowhere, so the ES default applies.
+  # Not read back from the cluster, so raising it there has no effect here.
+  # The user-facing limit is documented in doc/api/search.md.
+  MAX_RESULT_WINDOW = 10_000
+
   def self.supported_search_types
     %w[basic]
   end
@@ -63,6 +69,8 @@ class SearchService
   strong_memoize_attr :search_results
 
   def search_objects(preload_method = nil)
+    return @search_objects ||= results_beyond_result_window if page_beyond_result_window?
+
     @search_objects ||= redact_unauthorized_results(
       search_results.objects(scope, page: page, per_page: per_page, preload_method: preload_method)
     )
@@ -127,8 +135,29 @@ class SearchService
     Search::PipeAbuseDetector.new(search_type, params)
   end
 
+  # Advanced search cannot reach past MAX_RESULT_WINDOW. Serving an empty page at
+  # the requested offset, rather than clamping `page`, is what keeps `X-Page` and
+  # `rel="next"` honest for a client walking pages. Basic search (SQL OFFSET) and
+  # Zoekt have no result window, so both keep serving deep pages.
+  def page_beyond_result_window?
+    search_type == 'advanced' && page > max_page
+  end
+
+  # total_count sits at Kaminari's MAX_COUNT_LIMIT so that OffsetPagination omits
+  # X-Total instead of publishing a fabricated one; a smaller value is published.
+  def results_beyond_result_window
+    Kaminari.paginate_array([], total_count: MAX_RESULT_WINDOW, limit: per_page, offset: per_page * (page - 1))
+  end
+
   def page
     [1, params[:page].to_i].max
+  end
+
+  # The deepest page that keeps `from + per_page <= MAX_RESULT_WINDOW`, given
+  # that `from == per_page * (page - 1)`. The lower guard is defensive: per_page
+  # is in [1, 200] today, so max_page >= 50.
+  def max_page
+    [MAX_RESULT_WINDOW / per_page, 1].max
   end
 
   def per_page

@@ -40,7 +40,7 @@ module Mutations
             :import_source_user_notification, scope: [import_source_user]
           )
 
-          raise_resource_not_available_error! _('This endpoint has been requested too many times. Try again later.')
+          raise_resource_not_available_error! Gitlab::ApplicationRateLimiter.throttled_error_message
         end
       end
     end

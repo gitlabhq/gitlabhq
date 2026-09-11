@@ -26,6 +26,12 @@ If you want to use basic search instead, see
 
 The search API supports [offset-based pagination](rest/_index.md#offset-based-pagination).
 
+With advanced search, you can retrieve up to 10,000 results (`page` multiplied by `per_page`).
+Requests past that limit return an empty page with no `next` link, so a client that
+pages until it gets an empty response stops at the limit. Basic search and exact code
+search are not affected. Raising `index.max_result_window` on your Elasticsearch cluster
+does not increase the limit because GitLab does not read that setting.
+
 ## Search an instance
 
 Search for a [term](../user/search/advanced_search.md#syntax) across the entire GitLab instance.

@@ -282,7 +282,10 @@ export default {
   watch: {
     workItems: {
       handler(value) {
-        if (!this.shouldLoad) {
+        // `isInitialLoadComplete` is set by whichever list query returns first, but the detail
+        // panel needs `iid`, `webPath` and `workItemType`, which only the slim query selects.
+        // Wait for it, otherwise a full-query-first response opens the panel on a bare item.
+        if (!this.shouldLoad && !this.isLoading) {
           this.checkDetailPanelParams();
         }
         this.$emit('work-items-changed', {

@@ -66,7 +66,7 @@ if [[ $OSTYPE == 'darwin'* ]]; then
   fi
 fi
 
-kubectl wait --for=condition=Ready pod \
+caproni kubectl wait --for=condition=Ready pod \
   -l app=toolbox \
   --namespace "$NAMESPACE" \
   --timeout=120s

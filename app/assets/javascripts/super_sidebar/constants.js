@@ -16,11 +16,6 @@ export const DEFAULT_PIN_CONTEXT = {
 export const JS_TOGGLE_COLLAPSE_CLASS = 'js-super-sidebar-toggle-collapse';
 export const JS_TOGGLE_EXPAND_CLASS = 'js-super-sidebar-toggle-expand';
 
-export const CHAT_MODES = {
-  CLASSIC: 'classic',
-  AGENTIC: 'agentic',
-};
-
 export const TRACKING_UNKNOWN_ID = 'item_without_id';
 export const TRACKING_UNKNOWN_PANEL = 'nav_panel_unknown';
 export const CLICK_MENU_ITEM_ACTION = 'click_menu_item';

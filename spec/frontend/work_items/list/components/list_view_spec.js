@@ -18,9 +18,11 @@ import getWorkItemsRestQuery from 'ee_else_ce/work_items/list/graphql/get_work_i
 import workItemsReorderMutation from '~/work_items/graphql/work_items_reorder.mutation.graphql';
 import { scrollUp } from '~/lib/utils/scroll_utils';
 import { getParameterByName } from '~/lib/utils/url_utility';
+import { getIdFromGraphQLId } from '~/graphql_shared/utils';
 import IssuableBulkEditSidebar from '~/vue_shared/issuable/list/components/issuable_bulk_edit_sidebar.vue';
 import PageSizeSelector from '~/vue_shared/components/page_size_selector.vue';
 import IssuableItem from '~/vue_shared/issuable/list/components/issuable_item.vue';
+import ResourceListsLoadingStateList from '~/vue_shared/components/resource_lists/loading_state_list.vue';
 import CreateWorkItemModal from '~/work_items/components/create_work_item_modal.vue';
 import ListView from '~/work_items/list/list_view.vue';
 import { WORK_ITEM_TYPE_NAME_TICKET } from '~/work_items/constants';
@@ -107,6 +109,7 @@ const findChildItem1 = () => findIssuableItems().at(0);
 const findChildItem2 = () => findIssuableItems().at(1);
 const findSubChildIndicator = (item) => item.find('[data-testid="sub-child-work-item-indicator"]');
 const findGlAlert = () => wrapper.findComponent(GlAlert);
+const findLoadingStateList = () => wrapper.findComponent(ResourceListsLoadingStateList);
 
 const defaultQueryVariables = {
   fullPath: 'full/path',
@@ -615,5 +618,71 @@ describe('REST API specific behavior', () => {
         expect.objectContaining({ sort: UPDATED_DESC }),
       );
     });
+  });
+});
+
+// The full list query only selects the fields the slim query does not, so its nodes carry no
+// `title`, `iid`, `webPath` or `workItemType`. Nothing may render off the full query alone.
+describe('when the full query resolves before the slim query', () => {
+  const slimOnlyFields = [
+    'iid',
+    'author',
+    'closedAt',
+    'createdAt',
+    'namespace',
+    'reference',
+    'state',
+    'title',
+    'titleHtml',
+    'updatedAt',
+    'webUrl',
+    'webPath',
+    'workItemType',
+  ];
+
+  const fullOnlyResponse = () => {
+    const { namespace } = workItemsQueryResponseCombined.data;
+    return {
+      data: {
+        namespace: {
+          ...namespace,
+          workItems: {
+            ...namespace.workItems,
+            nodes: namespace.workItems.nodes.map((node) =>
+              Object.fromEntries(
+                Object.entries(node).filter(([key]) => !slimOnlyFields.includes(key)),
+              ),
+            ),
+          },
+        },
+      },
+    };
+  };
+
+  const mountWithPendingSlimQuery = async () => {
+    workItemsFullQueryHandler.mockResolvedValue(fullOnlyResponse());
+    workItemsSlimQueryHandler.mockReturnValue(new Promise(() => {}));
+    mountComponent({ workItemFeaturesField: true });
+    await waitForPromises();
+  };
+
+  it('keeps the loading skeleton visible and renders no work items', async () => {
+    await mountWithPendingSlimQuery();
+
+    expect(findLoadingStateList().exists()).toBe(true);
+    expect(findIssuableItems()).toHaveLength(0);
+  });
+
+  it('does not open the detail panel for a deep-linked work item', async () => {
+    const workItemId = getIdFromGraphQLId(
+      workItemsQueryResponseCombined.data.namespace.workItems.nodes[0].id,
+    );
+    getParameterByName.mockImplementation((name) =>
+      name === 'show' ? btoa(JSON.stringify({ id: workItemId, full_path: 'full/path' })) : null,
+    );
+
+    await mountWithPendingSlimQuery();
+
+    expect(wrapper.emitted('set-active-item')).toBeUndefined();
   });
 });

@@ -49,7 +49,7 @@ module Mutations
         def verify_rate_limit!
           return unless Gitlab::ApplicationRateLimiter.throttled?(:organization_user_create, scope: [current_user])
 
-          raise_resource_not_available_error! _('This endpoint has been requested too many times. Try again later.')
+          raise_resource_not_available_error! Gitlab::ApplicationRateLimiter.throttled_error_message
         end
 
         def find_organization(organization_id)

@@ -1,0 +1,8 @@
+---
+migration_job_name: UpdateLegacyStepUrlsToWelcomePath
+description: Update onboarding step_url from legacy company or groups/new paths (prefix match) to welcome path
+feature_category: onboarding
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/253722
+milestone: '19.4'
+queued_migration_version: 20260904143618
+gitlab_schema: gitlab_main_user

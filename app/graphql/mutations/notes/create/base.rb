@@ -62,7 +62,7 @@ module Mutations
         def verify_rate_limit!(current_user)
           return unless rate_limit_throttled?
 
-          raise_resource_not_available_error! 'This endpoint has been requested too many times. Try again later.'
+          raise_resource_not_available_error! Gitlab::ApplicationRateLimiter.throttled_error_message
         end
 
         def rate_limit_throttled?

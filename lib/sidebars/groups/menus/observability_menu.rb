@@ -277,7 +277,7 @@ module Sidebars
         def setup_menu_item
           link = group_observability_setup_path(context.group)
           ::Sidebars::MenuItem.new(
-            title: s_('Observability|Setup'),
+            title: s_('Observability|Observability configuration'),
             link: link,
             super_sidebar_parent: ::Sidebars::Groups::SuperSidebarMenus::ObservabilityMenu,
             item_id: :setup,

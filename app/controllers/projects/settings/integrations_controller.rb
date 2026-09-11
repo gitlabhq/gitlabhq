@@ -163,7 +163,7 @@ module Projects
         check_rate_limit!(:project_testing_integration, scope: [@project, current_user]) do
           render json: {
             error: true,
-            message: _('This endpoint has been requested too many times. Try again later.')
+            message: Gitlab::ApplicationRateLimiter.throttled_error_message
           }, status: :ok
         end
       end

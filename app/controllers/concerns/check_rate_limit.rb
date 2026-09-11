@@ -12,7 +12,7 @@ module CheckRateLimit
 
     return yield if block_given?
 
-    message = _('This endpoint has been requested too many times. Try again later.')
+    message = Gitlab::ApplicationRateLimiter.throttled_error_message
 
     if redirect_back
       redirect_back_or_default(options: { alert: message })

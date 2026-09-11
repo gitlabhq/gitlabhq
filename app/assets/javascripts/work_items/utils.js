@@ -716,7 +716,10 @@ export function combineWorkItemLists(slimList, fullList, workItemFeaturesField =
     const slimVersion = slimList.find((item) => item.id === fullItem.id);
     const combineFeatureFn = workItemFeaturesField ? combineFeatures : combineWidgets;
 
+    // The full query only selects the fields the slim query does not, to keep it under the
+    // anonymous GraphQL complexity cap, so the shared scalars come from the slim item.
     return {
+      ...slimVersion,
       ...fullItem,
       ...combineFeatureFn(fullItem, slimVersion),
     };

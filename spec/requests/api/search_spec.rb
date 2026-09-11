@@ -224,6 +224,63 @@ RSpec.describe API::Search, :clean_gitlab_redis_rate_limiting, feature_category:
       end
     end
 
+    context 'when the requested page is past the advanced search result window' do
+      before do
+        allow_next_instance_of(SearchService) do |service|
+          allow(service).to receive(:search_type).and_return('advanced')
+        end
+
+        get api(endpoint, user), params: { scope: 'projects', search: 'awesome', page: 1000, per_page: 20 }
+      end
+
+      it 'serves an empty page at the requested offset with no next link' do
+        expect(response).to have_gitlab_http_status(:ok)
+        expect(json_response).to eq([])
+        expect(response.headers['X-Page']).to eq('1000')
+        expect(response.headers['X-Next-Page']).to eq('')
+        expect(response.headers['Link']).not_to include('rel="next"')
+        # Kaminari reports neither neighbour for an out-of-range page, so there is
+        # no `prev` link either; `rel="first"` is how a client gets back.
+        expect(response.headers['X-Prev-Page']).to eq('')
+        expect(response.headers['Link']).not_to include('rel="prev"')
+        expect(response.headers['Link']).to include('rel="first"')
+        # The fabricated total is at MAX_COUNT_LIMIT, so no total is published.
+        expect(response.headers['X-Total']).to be_nil
+        expect(response.headers['Link']).not_to include('rel="last"')
+      end
+    end
+
+    context 'when the requested page is past a lowered advanced search result window' do
+      let_it_be(:deep_page_project_a) { create(:project, :public, name: 'deeppage alpha', group: group) }
+      let_it_be(:deep_page_project_b) { create(:project, :public, name: 'deeppage beta', group: group) }
+
+      let(:deep_page_params) { { scope: 'projects', search: 'deeppage', page: 2, per_page: 1 } }
+
+      before do
+        stub_const('SearchService::MAX_RESULT_WINDOW', 1)
+      end
+
+      # Control: the requested offset genuinely holds a row, so the empty page
+      # below is caused by the guard and not by an exhausted result set.
+      it 'serves the row at that offset when the search is basic' do
+        get api(endpoint, user), params: deep_page_params
+
+        expect(json_response.size).to eq(1)
+      end
+
+      it 'serves an empty page when the search is advanced' do
+        allow_next_instance_of(SearchService) do |service|
+          allow(service).to receive(:search_type).and_return('advanced')
+        end
+
+        get api(endpoint, user), params: deep_page_params
+
+        expect(response).to have_gitlab_http_status(:ok)
+        expect(json_response).to eq([])
+        expect(response.headers['X-Page']).to eq('2')
+      end
+    end
+
     context 'when there is a search error' do
       let(:results) { instance_double(Gitlab::SearchResults, failed?: true, error: 'failed to parse query') }
 

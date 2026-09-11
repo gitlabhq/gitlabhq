@@ -67,14 +67,14 @@ module Onboarding
 
     def check_feature_library_search_rate_limit!
       check_rate_limit!(:feature_library_search, scope: current_user) do
-        render json: { error: _('This endpoint has been requested too many times. Try again later.') },
+        render json: { error: Gitlab::ApplicationRateLimiter.throttled_error_message },
           status: :too_many_requests
       end
     end
 
     def check_feature_library_ai_search_rate_limit!
       check_rate_limit!(:feature_library_ai_search, scope: current_user) do
-        render json: { error: _('This endpoint has been requested too many times. Try again later.') },
+        render json: { error: Gitlab::ApplicationRateLimiter.throttled_error_message },
           status: :too_many_requests
       end
     end

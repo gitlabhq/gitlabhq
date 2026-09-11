@@ -118,6 +118,17 @@ Object.assign(alias, {
     ROOT_PATH,
     'node_modules/@json-render/core/dist/store-utils.mjs',
   ),
+  // vscode-languageserver-* ship UMD + ESM builds. Webpack 4 falls back to the
+  // UMD "main" field and emits a critical-dependency warning for the dynamic
+  // require() inside it. Point webpack directly at the clean ESM build.
+  'vscode-languageserver-types': path.join(
+    ROOT_PATH,
+    'node_modules/vscode-languageserver-types/lib/esm/main.js',
+  ),
+  'vscode-languageserver-textdocument': path.join(
+    ROOT_PATH,
+    'node_modules/vscode-languageserver-textdocument/lib/esm/main.js',
+  ),
 });
 
 let dll;

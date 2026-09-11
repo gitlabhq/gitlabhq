@@ -105,7 +105,7 @@ RSpec.describe Gitlab::GithubImport::AttachmentsDownloader, feature_category: :i
 
         expect { downloader.perform }.to raise_exception(
           Gitlab::GithubImport::AttachmentsDownloader::DownloadError,
-          "Error downloading file from #{file_url}. Error code: #{chunk_double.code}"
+          "Error downloading attachment. Error code: #{chunk_double.code}"
         )
       end
     end
@@ -123,7 +123,7 @@ RSpec.describe Gitlab::GithubImport::AttachmentsDownloader, feature_category: :i
 
         expect { downloader.perform }.to raise_exception(
           Gitlab::GithubImport::AttachmentsDownloader::NotRetriableError,
-          "Error downloading file from #{file_url}. Error code: #{chunk_double.code}"
+          "Error downloading attachment. Error code: #{chunk_double.code}"
         )
       end
     end
@@ -147,6 +147,16 @@ RSpec.describe Gitlab::GithubImport::AttachmentsDownloader, feature_category: :i
         end
       end
 
+      context 'when retry-after header exceeds RATE_LIMIT_MAX_RESET_IN' do
+        let(:http_response) { instance_double(Net::HTTPTooManyRequests, :[] => 2.hours.to_i.to_s) }
+
+        it 'caps reset_in at RATE_LIMIT_MAX_RESET_IN' do
+          expect { downloader.perform }.to raise_error(Gitlab::GithubImport::RateLimitError) do |error|
+            expect(error.reset_in).to eq(1.hour.to_i)
+          end
+        end
+      end
+
       context 'when retry-after header is missing for 429 response' do
         let(:http_response) { instance_double(Net::HTTPTooManyRequests, :[] => nil) }
 
@@ -164,7 +174,7 @@ RSpec.describe Gitlab::GithubImport::AttachmentsDownloader, feature_category: :i
         it 'raises NotRetirableError error' do
           expect { downloader.perform }.to raise_exception(
             Gitlab::GithubImport::AttachmentsDownloader::NotRetriableError,
-            "Error downloading file from #{file_url}. Error code: #{chunk_double.code}"
+            "Error downloading attachment. Error code: #{chunk_double.code}"
           )
         end
       end

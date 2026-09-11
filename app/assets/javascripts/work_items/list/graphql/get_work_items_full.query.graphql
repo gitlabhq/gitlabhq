@@ -93,32 +93,10 @@ query getWorkItemsFull(
       }
       nodes {
         id
-        iid
-        author {
-          id
-          avatarUrl
-          name
-          username
-          webUrl
-          webPath
-        }
-        closedAt
         confidential
-        createdAt
         externalAuthor
         hidden
-        namespace {
-          id
-          fullPath
-        }
-        reference(full: true)
-        state
-        title
-        titleHtml
-        updatedAt
         userDiscussionsCount
-        webUrl
-        webPath
         widgets(
           onlyTypes: [
             ASSIGNEES
@@ -136,11 +114,6 @@ query getWorkItemsFull(
         }
         features @include(if: $useWorkItemFeatures) {
           ...WorkItemsListFeatures
-        }
-        workItemType {
-          id
-          name
-          iconName
         }
       }
     }

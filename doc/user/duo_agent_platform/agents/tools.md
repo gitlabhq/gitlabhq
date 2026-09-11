@@ -45,11 +45,11 @@ The following tools are available to custom agents.
 | Get Pipeline Errors | `get_pipeline_errors` | Get the logs for failed jobs from the latest pipeline of a merge request. |
 | Get Pipeline Failing Jobs | `get_pipeline_failing_jobs` | Get the IDs for failed jobs in a pipeline. |
 | Get Plan | `get_plan` | Get a list of tasks. |
-| Get Previous Session Context | `get_previous_session_context` | Get context from a previous session. |
 | Get Project | `get_project` | Get details about a project. |
 | Get Repository File | `get_repository_file` | Get the contents of a file from a remote repository. |
 | Get Repository Files | `get_repository_files` | Get the contents of multiple files from a repository in a single call. |
 | Get Security Finding Details | `get_security_finding_details` | Get the details of a potential vulnerability by its ID and the ID of the pipeline scan that identified it. |
+| Get Session Context | `get_session_context` | Get context from a running or finished session. |
 | Get Vulnerability Details | `get_vulnerability_details` | Get the following information about a vulnerability specified by ID: basic vulnerability information, location details, CVE enrichment data, detection pipeline information, and detailed vulnerability report data. |
 | Get Wiki Page | `get_wiki_page` | Get a wiki page from a project or group, including all its comments. |
 | Get Work Item | `get_work_item` | Get a work item from a group or project. |

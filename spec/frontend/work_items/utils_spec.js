@@ -945,6 +945,17 @@ describe('combineWorkItemLists', () => {
         });
       });
     });
+
+    describe('when the full list omits scalars the slim list provides', () => {
+      it('keeps the slim list scalars on the merged item', () => {
+        const slimList = [{ id: 1, title: 'Slim title', webUrl: '/slim', features: {} }];
+        const fullList = [{ id: 1, userDiscussionsCount: 3, features: {} }];
+
+        expect(combineWorkItemLists(slimList, fullList, true)).toEqual([
+          { id: 1, title: 'Slim title', webUrl: '/slim', userDiscussionsCount: 3, features: {} },
+        ]);
+      });
+    });
   });
 
   describe('with the widget data', () => {

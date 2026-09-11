@@ -3,6 +3,7 @@
 module Gitlab
   class Highlight
     include Gitlab::Loggable
+    include Gitlab::Utils::StrongMemoize
 
     def self.highlight(
       blob_name, blob_content, language: nil, plain: false, context: {}, used_on: :blob,
@@ -114,7 +115,14 @@ module Gitlab
     end
 
     def link_dependencies(text, highlighted_text, used_on: :blob)
-      Gitlab::DependencyLinker.link(blob_name, text, highlighted_text, used_on: used_on)
+      return highlighted_text unless dependency_linker
+
+      Gitlab::DependencyLinker.link(blob_name, text, highlighted_text, used_on: used_on, linker: dependency_linker)
     end
+
+    def dependency_linker
+      Gitlab::DependencyLinker.linker(blob_name)
+    end
+    strong_memoize_attr :dependency_linker
   end
 end

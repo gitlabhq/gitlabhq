@@ -368,6 +368,144 @@ RSpec.describe SearchService, :with_current_organization, feature_category: :glo
           search_service.search_objects
         end
       end
+
+      describe 'result window boundary' do
+        using RSpec::Parameterized::TableSyntax
+
+        let(:page) { requested_page }
+
+        def objects_passed_to_search_results
+          passed = nil
+
+          expect_next_instance_of(Gitlab::SearchResults) do |search_results|
+            expect(search_results).to receive(:objects) do |_scope, **kwargs|
+              passed = kwargs
+              Kaminari.paginate_array([]).page(kwargs[:page]).per(kwargs[:per_page])
+            end
+          end
+
+          search_service.search_objects
+
+          passed
+        end
+
+        # Elasticsearch answers `from + size > index.max_result_window` with an
+        # HTTP 400, and advanced search derives `from` as `per_page * (page - 1)`
+        # (ee/lib/search/elastic/formats.rb). So the deepest page advanced search
+        # can reach is `MAX_RESULT_WINDOW / per_page`.
+        context 'with advanced search' do
+          before do
+            allow(search_service).to receive(:search_type).and_return('advanced')
+          end
+
+          context 'when the requested page fits in the result window' do
+            where(:per_page, :requested_page) do
+              [
+                [SearchService::DEFAULT_PER_PAGE, 1],
+                [SearchService::DEFAULT_PER_PAGE, 500],
+                [SearchService::MAX_PER_PAGE, 50],
+                [3, 3333],
+                [199, 50],
+                [1, SearchService::MAX_RESULT_WINDOW]
+              ]
+            end
+
+            with_them do
+              it 'queries the requested page' do
+                passed = objects_passed_to_search_results
+
+                expect(passed[:page]).to eq(requested_page)
+                expect(passed[:per_page]).to eq(per_page)
+
+                from = passed[:per_page] * (passed[:page] - 1)
+                expect(from + passed[:per_page]).to be <= described_class::MAX_RESULT_WINDOW
+              end
+            end
+          end
+
+          context 'when the requested page is past the result window' do
+            where(:per_page, :requested_page) do
+              [
+                [SearchService::DEFAULT_PER_PAGE, 501],
+                [SearchService::DEFAULT_PER_PAGE, 1000],
+                [SearchService::MAX_PER_PAGE, 51],
+                [3, 3334],
+                [199, 51],
+                [1, SearchService::MAX_RESULT_WINDOW + 1]
+              ]
+            end
+
+            with_them do
+              it 'returns an empty page at the requested offset without querying Elasticsearch' do
+                expect(Gitlab::SearchResults).not_to receive(:new)
+
+                objects = search_service.search_objects
+
+                expect(objects.to_a).to be_empty
+                # The headers describe what was served: the requested page, and no next page,
+                # so a client walking `rel="next"` terminates here.
+                expect(objects.current_page).to eq(requested_page)
+                expect(objects.limit_value).to eq(per_page)
+                expect(objects.offset_value).to eq(per_page * (requested_page - 1))
+                expect(objects.next_page).to be_nil
+                # Kaminari reports no neighbours at all for a page past the
+                # fabricated total, so there is no `prev` link either and a client
+                # pages back via `rel="first"`. The one exception is a per_page
+                # that does not divide MAX_RESULT_WINDOW, where the first
+                # unreachable page *is* the fabricated last page and `prev`
+                # points at the deepest page that can still be served.
+                last_fabricated_page = (described_class::MAX_RESULT_WINDOW.to_f / per_page).ceil
+                expected_prev = requested_page > last_fabricated_page ? nil : requested_page - 1
+                expect(objects.prev_page).to eq(expected_prev)
+                # The fabricated total sits at MAX_COUNT_LIMIT so OffsetPagination
+                # omits X-Total rather than publishing it. See
+                # SearchService#results_beyond_result_window.
+                expect(objects.total_count).to eq(described_class::MAX_RESULT_WINDOW)
+                expect(objects.total_pages).to eq((described_class::MAX_RESULT_WINDOW.to_f / per_page).ceil)
+              end
+            end
+          end
+        end
+
+        # Basic search pages with a SQL OFFSET and Zoekt with its own pagination:
+        # neither has a result window, so neither is capped.
+        context 'with a search type that has no result window' do
+          where(:search_type, :per_page, :requested_page) do
+            [
+              ['basic', SearchService::DEFAULT_PER_PAGE, 501],
+              ['basic', SearchService::DEFAULT_PER_PAGE, 1000],
+              ['basic', SearchService::MAX_PER_PAGE, 51],
+              ['zoekt', SearchService::DEFAULT_PER_PAGE, 1000]
+            ]
+          end
+
+          with_them do
+            before do
+              allow(search_service).to receive(:search_type).and_return(search_type)
+            end
+
+            it 'queries the requested page' do
+              passed = objects_passed_to_search_results
+
+              expect(passed[:page]).to eq(requested_page)
+              expect(passed[:per_page]).to eq(per_page)
+            end
+          end
+        end
+
+        context 'when the search type is not stubbed' do
+          let(:per_page) { described_class::DEFAULT_PER_PAGE }
+          let(:requested_page) { 1000 }
+
+          it 'resolves to basic search and queries the requested page' do
+            expect(search_service.search_type).to eq('basic')
+
+            passed = objects_passed_to_search_results
+
+            expect(passed[:page]).to eq(1000)
+          end
+        end
+      end
     end
 
     context 'with accessible project_id' do

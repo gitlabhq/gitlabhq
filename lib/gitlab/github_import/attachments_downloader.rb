@@ -21,6 +21,7 @@ module Gitlab
       SUCCESS_STATUS_CODE = 200
       RATE_LIMIT_STATUS_CODES = [403, 429].freeze # GitHub sometimes returns rate limit responses as 403s
       RATE_LIMIT_DEFAULT_RESET_IN = 120
+      RATE_LIMIT_MAX_RESET_IN = 1.hour.to_i
 
       attr_reader :file_url, :filename, :file_size_limit, :options, :web_endpoint
 
@@ -104,11 +105,11 @@ module Gitlab
           raise_rate_limit_error(chunk) if rate_limited?(chunk)
 
           if NON_RETRIABLE_ERROR_CODES.include?(chunk.code)
-            raise NotRetriableError, "Error downloading file from #{url}. Error code: #{chunk.code}"
+            raise NotRetriableError, "Error downloading attachment. Error code: #{chunk.code}"
           end
 
           if chunk.code != SUCCESS_STATUS_CODE
-            raise DownloadError, "Error downloading file from #{url}. Error code: #{chunk.code}"
+            raise DownloadError, "Error downloading attachment. Error code: #{chunk.code}"
           end
 
           file.write(chunk)
@@ -139,6 +140,8 @@ module Gitlab
 
         reset_in = retry_after.to_i
         reset_in = RATE_LIMIT_DEFAULT_RESET_IN if reset_in == 0
+        # An oversized or malformed Retry-After must not stall the import indefinitely.
+        reset_in = [reset_in, RATE_LIMIT_MAX_RESET_IN].min
 
         raise RateLimitError.new("Rate limit exceeded. Response code: #{response.code}", reset_in)
       end

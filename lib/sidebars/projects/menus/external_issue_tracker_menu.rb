@@ -39,7 +39,9 @@ module Sidebars
         def serialize_as_menu_item_args
           super.merge({
             item_id: :external_issue_tracker,
-            super_sidebar_parent: ::Sidebars::Projects::SuperSidebarMenus::PlanMenu
+            super_sidebar_parent: ::Sidebars::Projects::SuperSidebarMenus::PlanMenu,
+            description: _('View issues in your external issue tracker'),
+            library_icon: 'external-link'
           })
         end
 
