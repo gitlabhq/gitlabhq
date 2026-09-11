@@ -11,6 +11,10 @@ RSpec.describe 'Merge request > User sees discussions navigation', :js, feature_
     sign_in(user)
   end
 
+  def discussion_content_selector(discussion)
+    "[data-testid='discussion-content'][data-discussion-id='#{discussion.id}']"
+  end
+
   describe 'Code discussions' do
     let!(:position) do
       build(
@@ -48,8 +52,8 @@ RSpec.describe 'Merge request > User sees discussions navigation', :js, feature_
       ).to_discussion
     end
 
-    let(:first_discussion_selector) { ".discussion[data-discussion-id='#{first_discussion.id}']" }
-    let(:second_discussion_selector) { ".discussion[data-discussion-id='#{second_discussion.id}']" }
+    let(:first_discussion_selector) { discussion_content_selector(first_discussion) }
+    let(:second_discussion_selector) { discussion_content_selector(second_discussion) }
 
     shared_examples 'a page with a thread navigation' do
       context 'with active threads' do
@@ -119,8 +123,8 @@ RSpec.describe 'Merge request > User sees discussions navigation', :js, feature_
       create(:discussion_note_on_merge_request, noteable: merge_request, project: project).to_discussion
     end
 
-    let(:first_discussion_selector) { ".discussion[data-discussion-id='#{first_discussion.id}']" }
-    let(:second_discussion_selector) { ".discussion[data-discussion-id='#{second_discussion.id}']" }
+    let(:first_discussion_selector) { discussion_content_selector(first_discussion) }
+    let(:second_discussion_selector) { discussion_content_selector(second_discussion) }
 
     shared_examples 'a page with no code discussions' do
       describe "Changes page discussions navigation" do
@@ -170,9 +174,27 @@ RSpec.describe 'Merge request > User sees discussions navigation', :js, feature_
 
   def goto_next_thread
     click_button 'Next open thread', obscured: false
+    wait_for_thread_scroll
   end
 
   def goto_previous_thread
     click_button 'Previous open thread', obscured: false
+    wait_for_thread_scroll
+  end
+
+  # Thread navigation scrolls the page asynchronously, so `obscured?` can sample a
+  # position the page is still moving away from. The merge request page scrolls
+  # inside the panel, not the window.
+  def wait_for_thread_scroll
+    previous = nil
+
+    wait_for('thread navigation scroll to settle') do
+      current = page.evaluate_script(
+        "document.querySelector('.js-static-panel-inner')?.scrollTop ?? window.scrollY"
+      )
+      settled = !previous.nil? && current == previous
+      previous = current
+      settled
+    end
   end
 end

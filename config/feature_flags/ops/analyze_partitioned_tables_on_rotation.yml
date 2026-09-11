@@ -1,0 +1,10 @@
+---
+name: analyze_partitioned_tables_on_rotation
+description: Ops kill-switch for the ANALYZE that the partition manager runs on newly created partitions. Enabled by default; disable to immediately stop this ANALYZE if it causes unexpected database load.
+feature_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/627248
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/253608
+rollout_issue_url:
+milestone: '19.4'
+group: group::database frameworks
+type: ops
+default_enabled: true

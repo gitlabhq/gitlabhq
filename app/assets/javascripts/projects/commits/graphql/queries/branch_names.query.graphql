@@ -1,0 +1,9 @@
+# @feature_category: source_code_management
+query getCommitListBranchNames($projectPath: ID!, $ref: String!) {
+  project(fullPath: $projectPath) {
+    id
+    repository {
+      branchNames(searchPattern: $ref, offset: 0, limit: 1)
+    }
+  }
+}

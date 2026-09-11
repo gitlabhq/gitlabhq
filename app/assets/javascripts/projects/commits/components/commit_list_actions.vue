@@ -26,10 +26,15 @@ export default {
       required: false,
       default: '',
     },
+    mergeRequestAction: {
+      type: Object,
+      required: false,
+      default: null,
+    },
   },
   computed: {
     dropdownItems() {
-      return [
+      const items = [
         {
           text: __('Browse files'),
           icon: 'folder-open',
@@ -38,15 +43,30 @@ export default {
             'data-testid': 'browse-files-link',
           },
         },
-        {
-          text: __('Commits feed'),
-          icon: 'rss',
-          href: this.commitsFeedPath,
-          extraAttrs: {
-            'data-testid': 'commits-feed-link',
-          },
-        },
       ];
+
+      if (this.mergeRequestAction) {
+        items.push({
+          text: this.mergeRequestAction.text,
+          icon: 'merge-request',
+          href: this.mergeRequestAction.href,
+          wrapperClass: '@md/panel:gl-hidden',
+          extraAttrs: {
+            'data-testid': this.mergeRequestAction.testid,
+          },
+        });
+      }
+
+      items.push({
+        text: __('Commits feed'),
+        icon: 'rss',
+        href: this.commitsFeedPath,
+        extraAttrs: {
+          'data-testid': 'commits-feed-link',
+        },
+      });
+
+      return items;
     },
   },
 };
@@ -73,6 +93,7 @@ export default {
         v-for="item in dropdownItems"
         :key="item.text"
         :item="item"
+        :class="item.wrapperClass"
         v-bind="item.extraAttrs"
       >
         <template #list-item>

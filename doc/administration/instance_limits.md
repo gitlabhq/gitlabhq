@@ -1032,6 +1032,29 @@ The Commits and Files APIs enforce maximum size and rate limits on the following
 
 The maximum request size is configurable on GitLab Self-Managed by setting the `GITLAB_COMMITS_MAX_REQUEST_SIZE_BYTES` environment variable. This variable sets the maximum request size in bytes. Instructions on how to set an environment variable can be found in [HTTP Request Limits](#http-request-limits).
 
+## Secrets Manager limits
+
+{{< history >}}
+
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/219436) in GitLab 18.9.
+
+{{< /history >}}
+
+[GitLab Secrets Manager](../ci/secrets/secrets_manager/_index.md) enforces these limits:
+
+| Limit               | Default              | Configurable |
+|:--------------------|:---------------------|:-------------|
+| Secrets per project | 100                  | {{< yes >}}  |
+| Secrets per group   | 500                  | {{< yes >}}  |
+| Secret value size   | 10 KB (10,000 bytes) | {{< no >}}   |
+
+To change the secret count limits, use the `project_secrets_limit` and `group_secrets_limit`
+settings in the [application settings API](../api/settings.md). These settings apply to every
+project and group on the instance.
+
+> [!warning]
+> Setting `project_secrets_limit` or `group_secrets_limit` to `0` removes the limit entirely. Without a limit, users can create an unlimited number of secrets, which can exhaust instance resources.
+
 ## List all instance limits
 
 To list all instance limit values, run the following from the [GitLab Rails console](operations/rails_console.md#starting-a-rails-console-session):

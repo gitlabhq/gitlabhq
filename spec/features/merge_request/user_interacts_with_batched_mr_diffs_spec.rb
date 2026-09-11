@@ -3,11 +3,18 @@
 require 'spec_helper'
 
 RSpec.describe 'Batch diffs', :js, feature_category: :code_review_workflow do
-  include MergeRequestDiffHelpers
   include RepoHelpers
+  include RapidDiffsDiscussionHelpers
 
   let_it_be(:project) { create(:project, :repository) }
   let(:merge_request) { create(:merge_request, source_project: project, source_branch: 'master', target_branch: 'empty-branch') }
+
+  # Streaming keeps appending files, so the last one has to be resolved once and
+  # then looked up by path: re-running the scroll can land on a different file.
+  let(:second_diff_path) do
+    stream_all_diffs
+    all('diff-file header h2').last.text
+  end
 
   before do
     sign_in(project.first_owner)
@@ -15,23 +22,17 @@ RSpec.describe 'Batch diffs', :js, feature_category: :code_review_workflow do
     visit diffs_project_merge_request_path(merge_request.project, merge_request)
     wait_for_requests
 
-    within(get_first_diff) do
-      click_diff_line(find_by_testid('left-side', match: :first))
-    end
+    line_holder = first_commentable_line(get_first_diff)
+    click_diff_line(line_holder)
 
-    page.within get_first_diff.find('.js-discussion-note-form') do
-      fill_in('note_note', with: 'First Line Comment')
-      click_button('Add comment now')
-    end
+    next_discussion_row(line_holder).fill_in('note[note]', with: 'First Line Comment')
+    click_button('Add comment now')
 
-    within(get_second_diff) do
-      click_diff_line(find_by_testid('left-side', match: :first))
-    end
+    line_holder = first_commentable_line(get_second_diff)
+    click_diff_line(line_holder)
 
-    page.within get_second_diff.find('.js-discussion-note-form') do
-      fill_in('note_note', with: 'Last Line Comment')
-      click_button('Add comment now')
-    end
+    next_discussion_row(line_holder).fill_in('note[note]', with: 'Last Line Comment')
+    click_button('Add comment now')
 
     wait_for_requests
   end
@@ -43,20 +44,16 @@ RSpec.describe 'Batch diffs', :js, feature_category: :code_review_workflow do
     wait_for_requests
 
     # Confirm discussions are applied to appropriate files (should be contained in multiple diff pages)
-    page.within get_first_diff.find('.notes .timeline-entry .note .note-text') do
-      expect(page).to have_content('First Line Comment')
-    end
+    expect(get_first_diff).to have_content('First Line Comment')
 
-    page.within get_second_diff.find('.notes .timeline-entry .note .note-text') do
-      expect(page).to have_content('Last Line Comment')
-    end
+    expect(get_second_diff).to have_content('Last Line Comment')
   end
 
   context 'when user visits a URL with a link directly to to a discussion' do
     context 'which is in the first batched page of diffs' do
-      it 'scrolls to the correct discussion',
-        quarantine: { issue: 'https://gitlab.com/gitlab-org/gitlab/-/issues/410029' } do
-        page.within get_first_diff do
+      it 'scrolls to the correct discussion', skip: 'Rapid Diffs: #note_ discussion deep-link not handled by fragment loader (index.js populateLegacyFileFragment); ' \
+                                                'https://gitlab.com/gitlab-org/gitlab/-/issues/628498' do
+        within(get_first_diff) do
           click_link('just now')
         end
 
@@ -65,14 +62,14 @@ RSpec.describe 'Batch diffs', :js, feature_category: :code_review_workflow do
         wait_for_requests
 
         # Confirm scrolled to correct UI element
-        expect(get_first_diff.find('.discussion-notes .timeline-entry li.note[id]').obscured?).to be_falsey
+        expect(find_by_testid('noteable-note-container', context: get_first_diff).obscured?).to be_falsey
       end
     end
 
     context 'which is in at least page 2 of the batched pages of diffs' do
-      it 'scrolls to the correct discussion',
-        quarantine: { issue: 'https://gitlab.com/gitlab-org/quality/test-failure-issues/-/issues/16778' } do
-        page.within get_first_diff do
+      it 'scrolls to the correct discussion', skip: 'Rapid Diffs: #note_ discussion deep-link not handled by fragment loader (index.js populateLegacyFileFragment); ' \
+                                                'https://gitlab.com/gitlab-org/gitlab/-/issues/628498' do
+        within(get_second_diff) do
           click_link('just now')
         end
 
@@ -80,37 +77,46 @@ RSpec.describe 'Batch diffs', :js, feature_category: :code_review_workflow do
 
         wait_for_requests
 
-        # Confirm scrolled to correct UI element
-        expect(get_first_diff.find('.discussion-notes .timeline-entry li.note[id]').obscured?).to be_truthy
-        expect(get_second_diff.find('.discussion-notes .timeline-entry li.note[id]').obscured?).to be_falsey
+        stream_all_diffs
+
+        expect(page).to have_selector('[data-testid="noteable-note-container"]', text: 'Last Line Comment', obscured: false)
+        expect(page).to have_selector('[data-testid="noteable-note-container"]', text: 'First Line Comment', obscured: true)
       end
     end
   end
 
   context 'when user switches view styles' do
     before do
-      find('.js-show-diff-settings').click
-      find_by_testid('listbox-item-parallel').click
+      select_parallel_view
 
       wait_for_requests
     end
 
     it 'has the correct discussions applied to files across batched pages' do
-      page.within get_first_diff.find('.notes .timeline-entry .note .note-text') do
-        expect(page).to have_content('First Line Comment')
-      end
+      expect(get_first_diff).to have_content('First Line Comment')
 
-      page.within get_second_diff.find('.notes .timeline-entry .note .note-text') do
-        expect(page).to have_content('Last Line Comment')
-      end
+      expect(get_second_diff).to have_content('Last Line Comment')
     end
   end
 
   def get_first_diff
-    find('#a9b6f940524f646951cc28d954aa41f814f95d4f')
+    all('diff-file').first
   end
 
   def get_second_diff
-    find('#b285a86891571c7fdbf1f82e840816079de1cc8b')
+    diff_file(second_diff_path)
+  end
+
+  def stream_all_diffs
+    previous = -1
+    while (current = all('diff-file').size) != previous
+      previous = current
+      page.execute_script('window.scrollTo(0, document.body.scrollHeight)')
+      wait_for_requests
+    end
+  end
+
+  def first_commentable_line(diff_file)
+    diff_file.first('[data-hunk-lines] [data-line-number]', match: :first).find(:xpath, './ancestor::tr[1]')
   end
 end

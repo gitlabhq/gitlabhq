@@ -19824,7 +19824,7 @@ paths:
         content:
           application/json:
             schema:
-              "$ref": "#/components/schemas/RequestBody_b33eea6589ea"
+              "$ref": "#/components/schemas/RequestBody_8a91eaf1b58c"
   "/api/v4/service_accounts":
     post:
       operationId: postApiV4ServiceAccounts
@@ -91763,6 +91763,8 @@ components:
           type: string
         zoekt_max_restarts_15m:
           type: string
+        orbit_auto_index_root_namespace:
+          type: string
         duo_workflow_oauth_application_id:
           type: string
         scan_execution_policies_action_limit:
@@ -106522,7 +106524,7 @@ components:
           description: Scopes available to the application. Separate multiple scopes
             with a space.
           nullable: true
-    RequestBody_b33eea6589ea:
+    RequestBody_8a91eaf1b58c:
       type: object
       properties:
         admin_mode:
@@ -109461,6 +109463,9 @@ components:
           type: string
           nullable: true
         zoekt_max_restarts_15m:
+          type: string
+          nullable: true
+        orbit_auto_index_root_namespace:
           type: string
           nullable: true
         duo_workflow_oauth_application_id:

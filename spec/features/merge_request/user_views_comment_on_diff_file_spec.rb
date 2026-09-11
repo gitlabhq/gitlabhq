@@ -3,7 +3,6 @@
 require 'spec_helper'
 
 RSpec.describe 'User views comment on a diff file', :js, feature_category: :code_review_workflow do
-  include MergeRequestDiffHelpers
   include RepoHelpers
 
   let_it_be(:project) { create(:project, :repository) }
@@ -31,7 +30,7 @@ RSpec.describe 'User views comment on a diff file', :js, feature_category: :code
     it 'renders diffs' do
       visit diffs_project_merge_request_path(project, merge_request)
 
-      expect(page).to have_selector('.diff-file')
+      expect(page).to have_selector('diff-file')
     end
 
     it 'renders discussion on overview tab' do

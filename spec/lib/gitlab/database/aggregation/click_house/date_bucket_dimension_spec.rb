@@ -10,13 +10,7 @@ RSpec.describe Gitlab::Database::Aggregation::ClickHouse::DateBucketDimension, :
       self.table_name = 'agent_platform_sessions'
 
       dimensions do
-        date_bucket :started_event_at, :date, -> { sql('anyIfMerge(started_event_at)') }, parameters: {
-          granularity: {
-            type: :string,
-            in: ['weekly', 'monthly', /\A([1-9]\d?|[12]\d{2}|3[0-5]\d|36[0-6])d\z/]
-          },
-          origin: { type: :datetime }
-        }
+        date_bucket :started_event_at, :date, -> { sql('anyIfMerge(started_event_at)') }
       end
 
       metrics do
@@ -60,66 +54,31 @@ RSpec.describe Gitlab::Database::Aggregation::ClickHouse::DateBucketDimension, :
     [session1, session2, session3]
   end
 
+  def request_for(parameters)
+    Gitlab::Database::Aggregation::Request.new(
+      dimensions: [{ identifier: :started_event_at, parameters: parameters }],
+      metrics: [{ identifier: :total_count }]
+    )
+  end
+
   describe 'default parameters' do
-    let(:engine_definition) do
-      Gitlab::Database::Aggregation::ClickHouse::Engine.build do
-        self.table_name = 'agent_platform_sessions'
-
-        dimensions do
-          date_bucket :started_event_at, :date, -> { sql('anyIfMerge(started_event_at)') }
-        end
-
-        metrics do
-          count
-        end
-      end
+    it 'declares granularity and origin without an engine-level declaration' do
+      expect(engine_definition.dimensions.first.parameters).to eq(described_class::DEFAULT_PARAMETERS)
     end
 
-    def request_for(parameters)
-      Gitlab::Database::Aggregation::Request.new(
-        dimensions: [{ identifier: :started_event_at, parameters: parameters }],
-        metrics: [{ identifier: :total_count }]
-      )
-    end
-
-    it 'declares the calendar granularity parameter without an engine-level declaration' do
-      expect(engine_definition.dimensions.first.parameters)
-        .to eq(described_class::DEFAULT_PARAMETERS)
-    end
-
-    it 'accepts every calendar granularity' do
+    it 'accepts daily buckets' do
       expect(engine).to execute_aggregation(request_for(granularity: 'daily')).and_return(match_array([
-        { started_event_at_daily: Date.parse('2025-03-01'), total_count: 1 },
-        { started_event_at_daily: Date.parse('2025-03-12'), total_count: 1 },
-        { started_event_at_daily: Date.parse('2025-04-04'), total_count: 1 }
+        { started_event_at_granularity_daily: Date.parse('2025-03-01'), total_count: 1 },
+        { started_event_at_granularity_daily: Date.parse('2025-03-12'), total_count: 1 },
+        { started_event_at_granularity_daily: Date.parse('2025-04-04'), total_count: 1 }
       ]))
-
-      expect(engine).to execute_aggregation(request_for(granularity: 'weekly')).and_return(match_array([
-        { started_event_at_weekly: Date.parse('2025-03-01').beginning_of_week, total_count: 1 },
-        { started_event_at_weekly: Date.parse('2025-03-12').beginning_of_week, total_count: 1 },
-        { started_event_at_weekly: Date.parse('2025-04-01').beginning_of_week, total_count: 1 }
-      ]))
-
-      expect(engine).to execute_aggregation(request_for(granularity: 'monthly')).and_return([
-        { started_event_at_monthly: Date.parse('2025-03-01'), total_count: 2 },
-        { started_event_at_monthly: Date.parse('2025-04-01'), total_count: 1 }
-      ])
     end
 
-    it 'rejects granularities outside the calendar default' do
-      %w[yearly 30d].each do |granularity|
-        expect(engine).to execute_aggregation(request_for(granularity: granularity)).with_errors(array_including(
-          a_string_matching(%r{Invalid value\(s\) for parameter `granularity`: #{granularity}})
-        ))
-      end
-    end
+    it 'lets an explicit declaration override a default parameter' do
+      granularity = { type: :string, in: %w[monthly] }
+      definition = described_class.new(:created_at, :date, parameters: { granularity: granularity })
 
-    it 'lets an explicit declaration replace the default' do
-      definition = described_class.new(:created_at, :date, parameters: {
-        granularity: { type: :string, in: %w[monthly] }
-      })
-
-      expect(definition.parameters).to eq(granularity: { type: :string, in: %w[monthly] })
+      expect(definition.parameters).to eq(described_class::DEFAULT_PARAMETERS.merge(granularity: granularity))
     end
   end
 
@@ -150,23 +109,16 @@ RSpec.describe Gitlab::Database::Aggregation::ClickHouse::DateBucketDimension, :
 
   it 'returns errors if granularity is not allowed' do
     request = Gitlab::Database::Aggregation::Request.new(
-      dimensions: [{ identifier: :started_event_at, parameters: { granularity: 'daily' } }],
+      dimensions: [{ identifier: :started_event_at, parameters: { granularity: 'yearly' } }],
       metrics: [{ identifier: :total_count }]
     )
 
     expect(engine).to execute_aggregation(request).with_errors(array_including(
-      a_string_matching(%r{Invalid value\(s\) for parameter `granularity`: daily})
+      a_string_matching(%r{Invalid value\(s\) for parameter `granularity`: yearly})
     ))
   end
 
   context 'with a dynamic day granularity' do
-    def request_for(parameters)
-      Gitlab::Database::Aggregation::Request.new(
-        dimensions: [{ identifier: :started_event_at, parameters: parameters }],
-        metrics: [{ identifier: :total_count }]
-      )
-    end
-
     it 'returns fixed-length day buckets aligned to the unix epoch' do
       # 30-day grid aligned to the unix epoch: sessions 1 and 2 fall into the
       # bucket starting 2025-02-11, session 3 into the one starting 2025-03-13.
@@ -255,17 +207,17 @@ RSpec.describe Gitlab::Database::Aggregation::ClickHouse::DateBucketDimension, :
       ]))
     end
 
-    it 'accepts the upper boundary day count of 366d' do
-      # All three sessions fall into the epoch-aligned 366-day bucket
-      # starting 2025-02-11.
-      expect(engine).to execute_aggregation(request_for(granularity: '366d')).and_return([
-        { started_event_at_granularity_366d: Date.parse('2025-02-11'), total_count: 3 }
+    it 'accepts the upper boundary day count of 399d' do
+      # All three sessions fall into the epoch-aligned 399-day bucket
+      # starting 2024-08-15.
+      expect(engine).to execute_aggregation(request_for(granularity: '399d')).and_return([
+        { started_event_at_granularity_399d: Date.parse('2024-08-15'), total_count: 3 }
       ])
     end
 
-    it 'returns errors if the day count exceeds 366' do
-      expect(engine).to execute_aggregation(request_for(granularity: '367d')).with_errors(array_including(
-        a_string_matching(%r{Invalid value\(s\) for parameter `granularity`: 367d})
+    it 'returns errors if the day count exceeds 399' do
+      expect(engine).to execute_aggregation(request_for(granularity: '400d')).with_errors(array_including(
+        a_string_matching(%r{Invalid value\(s\) for parameter `granularity`: 400d})
       ))
     end
 
@@ -294,7 +246,7 @@ RSpec.describe Gitlab::Database::Aggregation::ClickHouse::DateBucketDimension, :
         .with_errors(array_including(a_string_matching(%r{Invalid value\(s\) for parameter `granularity`})))
     end
 
-    context 'when the engine allowlist permits day counts beyond 366' do
+    context 'when the engine allowlist permits day counts beyond 399' do
       let(:engine_definition) do
         Gitlab::Database::Aggregation::ClickHouse::Engine.build do
           self.table_name = 'agent_platform_sessions'
@@ -313,7 +265,7 @@ RSpec.describe Gitlab::Database::Aggregation::ClickHouse::DateBucketDimension, :
 
       it 'buckets by the engine-allowed day count' do
         expect(engine).to execute_aggregation(request_for(granularity: '400d')).and_return([
-          { started_event_at_400d: Date.parse('2024-10-04'), total_count: 3 }
+          { started_event_at_granularity_400d: Date.parse('2024-10-04'), total_count: 3 }
         ])
       end
     end

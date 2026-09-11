@@ -12,12 +12,11 @@ RSpec.describe 'User views diff by commit', :js, feature_category: :code_review_
 
   before do
     visit(diffs_project_merge_request_path(project, merge_request, commit_id: commit_id))
+    wait_for_requests # rubocop:disable RSpec/AvoidWaitForRequests -- Rapid Diffs streams diffs asynchronously
   end
 
   it 'shows full commit description by default' do
-    within_testid('commit-content') do
-      expect(page).to have_content("Add submodule from gitlab.com")
-    end
+    expect(page).to have_content("Add submodule from gitlab.com")
   end
 
   it 'shows correct commit metadata' do
@@ -25,10 +24,8 @@ RSpec.describe 'User views diff by commit', :js, feature_category: :code_review_
     within_testid('diffs-tab') do
       expect(page).to have_content('Changes 2')
     end
-    page.within('#diffs') do
-      expect(page).to have_content('2 files')
-    end
-    within_testid('file-tree-container') do
+    expect(page).to have_css('diff-file', count: 2)
+    within_testid('file-browser-tree') do
       expect(page).to have_content('Files 2')
     end
   end

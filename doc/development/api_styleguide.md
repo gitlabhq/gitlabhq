@@ -96,11 +96,51 @@ triggers an offense.
   and embedding (`expose :author, using: UserBasic`). A single field added to
   `UserBasic` cascades to `User`, `UserPublic`, and every entity that embeds it.
 
-#### Recommended pattern
+#### Recommended solutions
 
-Instead of adding fields to a high-impact entity, create a
-**feature-bounded entity**: a new, purpose-built entity class that
-is used only by the endpoints that need the new field.
+Try these solutions, in order:
+
+1. Consider moving the new field to a new endpoint, with a new entity,
+   rather than appending to an existing one.
+1. Make the field opt-in: serialize it only when explicitly requested, for
+   example through a query parameter, so most consumers pay no cost.
+1. If neither solution fits, create a **feature-bounded entity**: a new,
+   purpose-built entity class that is used only by the endpoints that need
+   the new field.
+
+##### Opt-in field example
+
+Guard the `expose` call with an `if:` option, and only enable it when the
+caller asks for the field through a query parameter:
+
+```ruby
+module API
+  module Entities
+    class UserBasic < UserSafe
+      expose :state
+      expose :avatar_url
+      expose :web_url
+      expose :notification_email, if: ->(_, options) { options[:with_emails] }
+    end
+  end
+end
+```
+
+```ruby
+# In your API endpoint file
+params do
+  optional :with_emails, type: Boolean, default: false,
+    desc: 'Include email-related fields in the response'
+end
+get ':id/users' do
+  present users, with: Entities::UserBasic, with_emails: params[:with_emails]
+end
+```
+
+Callers that do not pass `with_emails=true` get the same payload as before,
+so the field costs nothing for the majority of consumers.
+
+##### Feature-bounded entity example
 
 The simplest approach is to create a new entity that inherits from the
 foundational one and adds the fields you need:

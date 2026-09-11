@@ -35,6 +35,7 @@ description: Automatically open merge requests to fix vulnerable dependencies.
   [removed](https://gitlab.com/gitlab-org/gitlab/-/work_items/595588) in GitLab 19.3.
 - NuGet (.NET) support [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/604603)
   in GitLab 19.4.
+- Support in the triage and remediation profile [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/253780) in GitLab 19.4 [with a feature flag](../../../administration/feature_flags/_index.md) named `triage_and_remediation_profile`. Enabled by default.
 
 {{< /history >}}
 
@@ -51,6 +52,10 @@ In beta, dependency scanning auto-remediation supports two independently configu
   [enable agentic breaking-change resolution](#enable-agentic-breaking-change-resolution).
 
 For the generally available roadmap, see [epic 19244](https://gitlab.com/groups/gitlab-org/-/work_items/19244).
+
+Security configuration profiles also support this flow. To turn on and configure the flow
+across multiple projects and groups at once, use the
+[automated triage and remediation profile](../configuration/security_configuration_profiles.md#automated-triage-and-remediation-profile).
 
 ## Turn on dependency scanning auto-remediation
 

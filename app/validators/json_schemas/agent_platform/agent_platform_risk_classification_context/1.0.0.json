@@ -1,0 +1,33 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "description": "The risk domains the risk_classification flow answers a claim about. Sent as a flow input rather than fixed in the flow config, so a domain added to the catalog reaches the agent with no change on the flow side.",
+  "type": "object",
+  "properties": {
+    "domains": {
+      "type": "array",
+      "description": "Every risk domain in the catalog. The agent answers exactly one true/false claim per entry, keyed by name, and GitLab weights each answer by that domain's severity.",
+      "items": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string",
+            "description": "Key the agent answers its claim under"
+          },
+          "description": {
+            "type": "string",
+            "description": "What the domain covers, in the reviewer's language"
+          }
+        },
+        "required": [
+          "name",
+          "description"
+        ],
+        "additionalProperties": false
+      }
+    }
+  },
+  "required": [
+    "domains"
+  ],
+  "additionalProperties": false
+}

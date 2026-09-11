@@ -1,5 +1,5 @@
 import { resetHTMLFixture, setHTMLFixture } from 'helpers/fixtures';
-import { getPanelElement, getScrollingElement } from '~/lib/utils/panels';
+import { getPanelElement, getScrollingElement, getDefaultScrollingPanel } from '~/lib/utils/panels';
 
 describe('Panels utils', () => {
   const findElem = () => document.querySelector('#element');
@@ -93,6 +93,20 @@ describe('Panels utils', () => {
 
         expect(getScrollingElement(element)).toBe(document.scrollingElement);
       });
+    });
+  });
+
+  describe('getDefaultScrollingPanel', () => {
+    it('returns the dynamic panel when one is present', () => {
+      setupEnvironment();
+
+      expect(getDefaultScrollingPanel()).toBe(findDynamicPanelInner());
+    });
+
+    it('falls back to the static panel when no dynamic panel is present', () => {
+      setHTMLFixture('<div class="js-static-panel-inner"></div>');
+
+      expect(getDefaultScrollingPanel()).toBe(findStaticPanelInner());
     });
   });
 });

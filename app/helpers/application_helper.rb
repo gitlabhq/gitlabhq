@@ -442,8 +442,12 @@ module ApplicationHelper
   end
 
   def add_work_items_stylesheet
-    add_page_specific_style('page_bundles/work_items')
+    add_page_specific_style('page_bundles/design_management')
+    add_page_specific_style('page_bundles/issuable_list')
+    add_page_specific_style('page_bundles/issues_list')
+    add_page_specific_style('page_bundles/issues_show')
     add_page_specific_style('page_bundles/notes_shared')
+    add_page_specific_style('page_bundles/work_items')
   end
 
   def add_issuable_stylesheet

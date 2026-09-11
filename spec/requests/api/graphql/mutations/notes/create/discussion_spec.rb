@@ -33,7 +33,7 @@ RSpec.describe 'Adding an DiscussionNote', feature_category: :code_review_workfl
 
   it_behaves_like 'authorizing granular token permissions for GraphQL', :create_note do
     let_it_be(:group) { create(:group) }
-    let_it_be(:project) { create(:project, :repository, group: group) }
+    let_it_be(:project) { create(:project, group: group) }
     let(:user) { create(:user, developer_of: group) }
     let(:boundary_object) { group }
     let(:error_boundary_object) { project }

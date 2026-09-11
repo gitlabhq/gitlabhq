@@ -169,6 +169,12 @@
   @apply gl-overflow-y-auto;
   scrollbar-gutter: stable;
   container-type: scroll-state;
+
+  // The panel is focused programmatically to redirect keyboard scrolling to it,
+  // so it should not render a focus ring.
+  &:focus {
+    @apply gl-outline-none;
+  }
 }
 
 // Top shadow on scroll

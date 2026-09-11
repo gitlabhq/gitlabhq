@@ -6,7 +6,7 @@ RSpec.describe Mutations::Metrics::Dashboard::Annotations::Delete, feature_categ
   include GraphqlHelpers
 
   let_it_be(:current_user) { create(:user) }
-  let_it_be(:project) { create(:project, :private, :repository) }
+  let_it_be(:project) { create(:project, :private) }
 
   let(:variables) { { id: 'ids-dont-matter' } }
   let(:mutation)  { graphql_mutation(:delete_annotation, variables) }

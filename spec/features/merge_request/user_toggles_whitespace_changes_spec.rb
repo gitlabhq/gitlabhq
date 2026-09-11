@@ -3,6 +3,8 @@
 require 'spec_helper'
 
 RSpec.describe 'Merge request > User toggles whitespace changes', :js, feature_category: :code_review_workflow do
+  include RapidDiffsHelpers
+
   let(:merge_request) { create(:merge_request) }
   let(:project) { merge_request.project }
   let(:user) { project.creator }
@@ -11,8 +13,9 @@ RSpec.describe 'Merge request > User toggles whitespace changes', :js, feature_c
     project.add_maintainer(user)
     sign_in(user)
     visit diffs_project_merge_request_path(project, merge_request)
+    wait_for_requests
 
-    find('.js-show-diff-settings').click
+    open_diff_view_preferences
   end
 
   it 'has a button to toggle whitespace changes' do
@@ -25,8 +28,9 @@ RSpec.describe 'Merge request > User toggles whitespace changes', :js, feature_c
       wait_for_requests
 
       visit diffs_project_merge_request_path(project, merge_request)
+      wait_for_requests
 
-      find('.js-show-diff-settings').click
+      open_diff_view_preferences
 
       expect(find_by_testid('show-whitespace')).not_to be_checked
     end

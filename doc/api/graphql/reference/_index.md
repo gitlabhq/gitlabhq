@@ -34413,7 +34413,8 @@ Arguments:
 
 | Name | Type | Description |
 | ---- | ---- | ----------- |
-| <a id="agentplatformsessionsaggregationresponsedimensions-createdeventat-granularity"></a>`granularity` | [`String`](#string) | Date granularity: daily, weekly, or monthly. |
+| <a id="agentplatformsessionsaggregationresponsedimensions-createdeventat-granularity"></a>`granularity` | [`String`](#string) | Date granularity: daily, weekly, monthly, or a fixed number of days between 1d and 399d (for example 30d). |
+| <a id="agentplatformsessionsaggregationresponsedimensions-createdeventat-origin"></a>`origin` | [`Time`](#time) | Anchor for fixed-day granularities: buckets start at this timestamp and repeat every N days. Only valid with a fixed-day granularity. |
 
 ### `AgentPlatformSessionsAggregationResponseDurationMetrics`
 
@@ -40869,7 +40870,8 @@ Arguments:
 
 | Name | Type | Description |
 | ---- | ---- | ----------- |
-| <a id="contributionsaggregationresponsedimensions-createdat-granularity"></a>`granularity` | [`String`](#string) | Date granularity: daily, weekly, or monthly. |
+| <a id="contributionsaggregationresponsedimensions-createdat-granularity"></a>`granularity` | [`String`](#string) | Date granularity: daily, weekly, monthly, or a fixed number of days between 1d and 399d (for example 30d). |
+| <a id="contributionsaggregationresponsedimensions-createdat-origin"></a>`origin` | [`Time`](#time) | Anchor for fixed-day granularities: buckets start at this timestamp and repeat every N days. Only valid with a fixed-day granularity. |
 
 ### `ContributionsAggregationScope`
 
@@ -42763,7 +42765,8 @@ Arguments:
 
 | Name | Type | Description |
 | ---- | ---- | ----------- |
-| <a id="deploymentsaggregationresponsedimensions-createdat-granularity"></a>`granularity` | [`String`](#string) | Date granularity: daily, weekly, or monthly. |
+| <a id="deploymentsaggregationresponsedimensions-createdat-granularity"></a>`granularity` | [`String`](#string) | Date granularity: daily, weekly, monthly, or a fixed number of days between 1d and 399d (for example 30d). |
+| <a id="deploymentsaggregationresponsedimensions-createdat-origin"></a>`origin` | [`Time`](#time) | Anchor for fixed-day granularities: buckets start at this timestamp and repeat every N days. Only valid with a fixed-day granularity. |
 
 ##### `DeploymentsAggregationResponseDimensions.finishedAt`
 
@@ -42775,7 +42778,8 @@ Arguments:
 
 | Name | Type | Description |
 | ---- | ---- | ----------- |
-| <a id="deploymentsaggregationresponsedimensions-finishedat-granularity"></a>`granularity` | [`String`](#string) | Date granularity: daily, weekly, or monthly. |
+| <a id="deploymentsaggregationresponsedimensions-finishedat-granularity"></a>`granularity` | [`String`](#string) | Date granularity: daily, weekly, monthly, or a fixed number of days between 1d and 399d (for example 30d). |
+| <a id="deploymentsaggregationresponsedimensions-finishedat-origin"></a>`origin` | [`Time`](#time) | Anchor for fixed-day granularities: buckets start at this timestamp and repeat every N days. Only valid with a fixed-day granularity. |
 
 ### `DeploymentsAggregationResponseDurationMetrics`
 
@@ -43466,7 +43470,8 @@ Arguments:
 
 | Name | Type | Description |
 | ---- | ---- | ----------- |
-| <a id="duocodesuggestionsaggregationresponsedimensions-timestamp-granularity"></a>`granularity` | [`String`](#string) | Date granularity: daily, weekly, or monthly. |
+| <a id="duocodesuggestionsaggregationresponsedimensions-timestamp-granularity"></a>`granularity` | [`String`](#string) | Date granularity: daily, weekly, monthly, or a fixed number of days between 1d and 399d (for example 30d). |
+| <a id="duocodesuggestionsaggregationresponsedimensions-timestamp-origin"></a>`origin` | [`Time`](#time) | Anchor for fixed-day granularities: buckets start at this timestamp and repeat every N days. Only valid with a fixed-day granularity. |
 
 ### `DuoCodeSuggestionsAggregationScope`
 
@@ -43587,7 +43592,8 @@ Arguments:
 
 | Name | Type | Description |
 | ---- | ---- | ----------- |
-| <a id="duousageeventsaggregationresponsedimensions-timestamp-granularity"></a>`granularity` | [`String`](#string) | Date granularity: daily, weekly, or monthly. |
+| <a id="duousageeventsaggregationresponsedimensions-timestamp-granularity"></a>`granularity` | [`String`](#string) | Date granularity: daily, weekly, monthly, or a fixed number of days between 1d and 399d (for example 30d). |
+| <a id="duousageeventsaggregationresponsedimensions-timestamp-origin"></a>`origin` | [`Time`](#time) | Anchor for fixed-day granularities: buckets start at this timestamp and repeat every N days. Only valid with a fixed-day granularity. |
 
 ### `DuoUsageEventsAggregationScope`
 
@@ -44048,7 +44054,8 @@ Arguments:
 
 | Name | Type | Description |
 | ---- | ---- | ----------- |
-| <a id="duoworkflowsaggregationresponsedimensions-createdat-granularity"></a>`granularity` | [`String`](#string) | Date granularity: daily, weekly, or monthly. |
+| <a id="duoworkflowsaggregationresponsedimensions-createdat-granularity"></a>`granularity` | [`String`](#string) | Date granularity: daily, weekly, monthly, or a fixed number of days between 1d and 399d (for example 30d). |
+| <a id="duoworkflowsaggregationresponsedimensions-createdat-origin"></a>`origin` | [`Time`](#time) | Anchor for fixed-day granularities: buckets start at this timestamp and repeat every N days. Only valid with a fixed-day granularity. |
 
 ##### `DuoWorkflowsAggregationResponseDimensions.userTier`
 
@@ -53388,7 +53395,8 @@ Arguments:
 
 | Name | Type | Description |
 | ---- | ---- | ----------- |
-| <a id="mergerequestsaggregationresponsedimensions-createdat-granularity"></a>`granularity` | [`String`](#string) | Date granularity: daily, weekly, or monthly. |
+| <a id="mergerequestsaggregationresponsedimensions-createdat-granularity"></a>`granularity` | [`String`](#string) | Date granularity: daily, weekly, monthly, or a fixed number of days between 1d and 399d (for example 30d). |
+| <a id="mergerequestsaggregationresponsedimensions-createdat-origin"></a>`origin` | [`Time`](#time) | Anchor for fixed-day granularities: buckets start at this timestamp and repeat every N days. Only valid with a fixed-day granularity. |
 
 ##### `MergeRequestsAggregationResponseDimensions.metricMergedAt`
 
@@ -53400,7 +53408,8 @@ Arguments:
 
 | Name | Type | Description |
 | ---- | ---- | ----------- |
-| <a id="mergerequestsaggregationresponsedimensions-metricmergedat-granularity"></a>`granularity` | [`String`](#string) | Date granularity: daily, weekly, or monthly. |
+| <a id="mergerequestsaggregationresponsedimensions-metricmergedat-granularity"></a>`granularity` | [`String`](#string) | Date granularity: daily, weekly, monthly, or a fixed number of days between 1d and 399d (for example 30d). |
+| <a id="mergerequestsaggregationresponsedimensions-metricmergedat-origin"></a>`origin` | [`Time`](#time) | Anchor for fixed-day granularities: buckets start at this timestamp and repeat every N days. Only valid with a fixed-day granularity. |
 
 ### `MergeRequestsAggregationResponseTimeToMergeMetrics`
 
@@ -56588,7 +56597,8 @@ Arguments:
 
 | Name | Type | Description |
 | ---- | ---- | ----------- |
-| <a id="pipelinesaggregationresponsedimensions-finishedat-granularity"></a>`granularity` | [`String`](#string) | Date granularity: daily, weekly, or monthly. |
+| <a id="pipelinesaggregationresponsedimensions-finishedat-granularity"></a>`granularity` | [`String`](#string) | Date granularity: daily, weekly, monthly, or a fixed number of days between 1d and 399d (for example 30d). |
+| <a id="pipelinesaggregationresponsedimensions-finishedat-origin"></a>`origin` | [`Time`](#time) | Anchor for fixed-day granularities: buckets start at this timestamp and repeat every N days. Only valid with a fixed-day granularity. |
 
 ##### `PipelinesAggregationResponseDimensions.startedAt`
 
@@ -56600,7 +56610,8 @@ Arguments:
 
 | Name | Type | Description |
 | ---- | ---- | ----------- |
-| <a id="pipelinesaggregationresponsedimensions-startedat-granularity"></a>`granularity` | [`String`](#string) | Date granularity: daily, weekly, or monthly. |
+| <a id="pipelinesaggregationresponsedimensions-startedat-granularity"></a>`granularity` | [`String`](#string) | Date granularity: daily, weekly, monthly, or a fixed number of days between 1d and 399d (for example 30d). |
+| <a id="pipelinesaggregationresponsedimensions-startedat-origin"></a>`origin` | [`Time`](#time) | Anchor for fixed-day granularities: buckets start at this timestamp and repeat every N days. Only valid with a fixed-day granularity. |
 
 ### `PipelinesAggregationResponseDurationMetrics`
 

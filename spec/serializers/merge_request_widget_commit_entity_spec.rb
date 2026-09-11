@@ -3,7 +3,7 @@
 require 'spec_helper'
 
 RSpec.describe MergeRequestWidgetCommitEntity do
-  let(:project) { create(:project, :repository) }
+  let_it_be(:project) { create(:project, :small_repo) }
   let(:commit) { project.commit }
   let(:request) { double('request') }
 

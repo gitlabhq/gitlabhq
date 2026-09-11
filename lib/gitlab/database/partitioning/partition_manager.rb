@@ -45,7 +45,7 @@ module Gitlab
             create(partitions_to_create) unless partitions_to_create.empty?
             detach(partitions_to_detach) unless partitions_to_detach.empty?
 
-            run_analyze_on_partitioned_table if analyze
+            run_analyze(partitions_to_create) if analyze
 
             raise_unable_to_detach_partition if @detach_error_messages.any?
           end
@@ -252,13 +252,73 @@ module Gitlab
           Gitlab::AppLogger.warn(log_payload(message: 'Skipping syncing partitions'))
         end
 
+        # Rescued separately so an ANALYZE failure is not logged as a partition
+        # create/detach failure: by this point those already committed.
+        def run_analyze(created_partitions)
+          analyzed = with_analyze_error_handling('Failed to run ANALYZE on partitioned table') do
+            run_analyze_on_partitioned_table
+          end
+
+          # The whole-table ANALYZE recurses into every leaf, so the per-partition
+          # pass is only needed when the interval throttle skipped it.
+          return if analyzed
+
+          with_analyze_error_handling('Failed to run ANALYZE on created partitions') do
+            run_analyze_on_created_partitions(created_partitions)
+          end
+        end
+
+        def with_analyze_error_handling(message)
+          yield
+        rescue StandardError => e
+          Gitlab::AppLogger.error(
+            log_payload(
+              message: message,
+              exception_class: e.class,
+              exception_message: e.message
+            )
+          )
+
+          false
+        end
+
         def run_analyze_on_partitioned_table
-          return if ineligible_for_analyzing?
+          return false if ineligible_for_analyzing?
 
           primary_transaction(statement_timeout: STATEMENT_TIMEOUT) do
             # Running ANALYZE on partitioned table will go through itself and its partitions
             connection.execute("ANALYZE (SKIP_LOCKED) #{model.quoted_table_name}")
           end
+
+          true
+        end
+
+        # A just-created partition has no planner statistics, which can produce
+        # pathological plans (INC-13566), so analyze it despite the interval throttle.
+        def run_analyze_on_created_partitions(partitions)
+          return if partitions.empty? || analyze_interval.blank?
+          # Ops kill-switch so post-rotation ANALYZE can be stopped without a deploy
+          return unless Feature.enabled?(:analyze_partitioned_tables_on_rotation, type: :ops)
+
+          primary_transaction(statement_timeout: STATEMENT_TIMEOUT) do
+            partitions.each do |partition|
+              connection.execute("ANALYZE (SKIP_LOCKED) #{connection.quote_table_name(identifier(partition))}")
+
+              next unless analyze_skipped?(partition)
+
+              # SKIP_LOCKED no-ops on lock conflict, leaving the statless state this guards against
+              Gitlab::AppLogger.warn(
+                log_payload(message: 'ANALYZE skipped on created partition', partition_name: partition.partition_name)
+              )
+            end
+          end
+        end
+
+        # ANALYZE always sets reltuples >= 0; -1 means the table was never analyzed
+        def analyze_skipped?(partition)
+          connection.select_value(
+            "SELECT reltuples FROM pg_class WHERE oid = '#{identifier(partition)}'::regclass"
+          ).to_f < 0
         end
 
         def ineligible_for_analyzing?

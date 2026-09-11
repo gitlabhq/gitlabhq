@@ -7,6 +7,7 @@ import BrandLogo from 'jh_else_ce/super_sidebar/components/brand_logo.vue';
 import { parseBoolean } from '~/lib/utils/common_utils';
 import { EVENT_OPEN_GLOBAL_SEARCH } from '~/vue_shared/global_search/constants';
 import { staticBreadcrumbs } from '~/lib/utils/breadcrumbs_state';
+import { RedirectScrollKeysToPanelDirective } from '~/vue_shared/directives/redirect_scroll_keys_to_panel';
 import { adminRootPath } from '~/lib/utils/path_helpers/instance_admin';
 import { newUserRegistrationPath, newUserSessionPath } from '~/lib/utils/path_helpers/routes';
 import SuperSidebarToggle from './super_sidebar_toggle.vue';
@@ -43,6 +44,7 @@ export default {
   directives: {
     GlModal: GlModalDirective,
     GlTooltip: GlTooltipDirective,
+    RedirectScrollKeysToPanel: RedirectScrollKeysToPanelDirective,
   },
   mixins: [glFeatureFlagsMixin()],
   i18n: {
@@ -119,6 +121,7 @@ export default {
 
 <template>
   <header
+    v-redirect-scroll-keys-to-panel
     class="super-topbar js-super-topbar gl-grid gl-grid-cols-[1fr_1fr] gl-items-center gl-gap-x-5 gl-outline-none sm:gl-grid-cols-[1fr_auto_1fr] forced-colors:gl-outline-0"
     tabindex="0"
     autofocus

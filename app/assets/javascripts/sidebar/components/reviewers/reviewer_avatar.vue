@@ -24,7 +24,7 @@ export default {
       return this.user.avatarUrl || this.user.avatar_url || gon.default_avatar_url;
     },
     hasMergeIcon() {
-      return !this.user.mergeRequestInteraction?.canMerge;
+      return this.user.mergeRequestInteraction && !this.user.mergeRequestInteraction.canMerge;
     },
   },
 };

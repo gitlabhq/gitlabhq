@@ -363,10 +363,18 @@ shows information about the issue to close on merge:
 
 ![This merge request closes issue #2754.](img/closing_pattern_v17_4.png)
 
-When you merge a merge request, GitLab checks that you have permission to close the targeted issues.
+When you merge a merge request, GitLab checks that you have permission to close the issues targeted by a
+closing pattern.
 In public repositories, this check is important, because external users can create both merge requests
 and commits that contain closing patterns. When you are the user who merges, it's important
 that you are aware of the effects the merge has on both the code and issues in your project.
+
+You can also link an issue to a merge request without a closing pattern.
+Use the GraphQL API, or the merge request's **Work items** widget.
+For links created either way, GitLab checks your permissions when you create the link, not when the
+merge request merges.
+The link persists, so the issue still closes on merge, even if you lose access to the issue's project.
+For more information, see [link work items manually](../../work_items/_index.md#link-work-items-manually).
 
 When [auto-merge](../merge_requests/auto_merge.md) is turned on for a merge request, no further changes can be made to
 the list of issues that are automatically closed.

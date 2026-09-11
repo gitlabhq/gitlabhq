@@ -6,11 +6,13 @@ include Spec::Support::Helpers::ModalHelpers # rubocop:disable  Style/MixinUsage
 RSpec.describe 'Merge request > User sees avatars on diff notes', :js, feature_category: :code_review_workflow do
   include NoteInteractionHelpers
   include Spec::Support::Helpers::ModalHelpers
-  include MergeRequestDiffHelpers
+  include RapidDiffsHelpers
 
   let_it_be(:project) { create(:project, :public, :repository) }
   let_it_be(:user)    { project.creator }
-  let_it_be(:merge_request) { create(:merge_request_with_diffs, source_project: project, author: user, title: 'Bug NS-04') }
+  let_it_be(:merge_request, freeze: false) do
+    create(:merge_request_with_diffs, source_project: project, author: user, title: 'Bug NS-04')
+  end
 
   let(:path) { 'files/ruby/popen.rb' }
   let(:position) do
@@ -96,103 +98,62 @@ RSpec.describe 'Merge request > User sees avatars on diff notes', :js, feature_c
         visit diffs_project_merge_request_path(project, merge_request, view: view)
 
         wait_for_requests
-
-        find_by_testid('file-tree-button').click
       end
 
-      it 'shows note avatar', quarantine: 'https://gitlab.com/gitlab-org/quality/test-failure-issues/-/issues/5873' do
-        page.within find_line(position.line_code(project.repository)) do
-          find('.diff-notes-collapse').send_keys(:return)
+      it 'shows note avatar' do
+        collapse_thread
 
-          expect(page).to have_selector('.js-diff-comment-avatar [data-testid="user-avatar-image"]', count: 1)
-        end
+        expect(commented_file).to have_selector('[data-testid="gutter-avatar"]', count: 1)
       end
 
-      it 'shows comment on note avatar',
-        quarantine: 'https://gitlab.com/gitlab-org/quality/test-failure-issues/-/issues/5932' do
-        page.within find_line(position.line_code(project.repository)) do
-          find('.diff-notes-collapse').send_keys(:return)
-          first('.js-diff-comment-avatar [data-testid="user-avatar-image"]').hover
-        end
+      it 'shows comment on note avatar' do
+        collapse_thread
+        find_by_testid('gutter-avatar', context: commented_file, match: :first).hover
 
         expect(page).to have_content "#{note.author.name}: #{note.note.truncate(17)}"
       end
 
       it 'toggles comments when clicking avatar' do
-        page.within find_line(position.line_code(project.repository)) do
-          find('.diff-notes-collapse').send_keys(:return)
-        end
+        collapse_thread
 
-        # Confirm the collapsed state has settled (the comment avatar is shown
-        # in place of the expanded notes) before asserting the notes are hidden.
-        expect(page).to have_selector('.js-diff-comment-avatar [data-testid="user-avatar-image"]')
-        expect(page).not_to have_selector('.notes_holder')
+        expect(commented_file).to have_selector('[data-testid="gutter-avatar"]')
+        expect(commented_file).to have_no_selector('[data-testid="noteable-note-container"]')
 
-        page.within find_line(position.line_code(project.repository)) do
-          first('.js-diff-comment-avatar [data-testid="user-avatar-image"]').click
-        end
+        find_by_testid('gutter-avatar', context: commented_file, match: :first).click
 
-        expect(page).to have_selector('.notes_holder')
+        expect(commented_file).to have_selector('[data-testid="noteable-note-container"]')
       end
 
-      it 'removes avatar when note is deleted',
-        quarantine: 'https://gitlab.com/gitlab-org/quality/test-failure-issues/-/issues/4253' do
-        open_more_actions_dropdown_in_panel(note)
+      it 'removes avatar when note is deleted' do
+        note = find_by_testid('noteable-note-container', context: commented_file, match: :first)
+        note.hover
+        find_by_testid('ellipsis_v-icon', context: note, match: :first).ancestor('button').click
 
         accept_gl_confirm(button_text: 'Delete comment') do
-          find(".note-row-#{note.id} .js-note-delete").click
+          click_button 'Delete comment'
         end
 
         wait_for_requests
 
-        page.within find_line(position.line_code(project.repository)) do
-          expect(page).not_to have_selector('.js-diff-comment-avatar [data-testid="user-avatar-image"]')
-        end
+        expect(commented_file).to have_no_selector('[data-gutter-toggle]')
       end
 
-      it 'adds avatar when commenting', quarantine: 'https://gitlab.com/gitlab-org/quality/test-failure-issues/-/issues/5899' do
-        find_in_panel_by_scrolling('[data-discussion-id]', match: :first)
-        find_field('Reply…', match: :first).click
+      it 'adds avatar when commenting' do
+        reply_to_thread('Test')
+        collapse_thread
 
-        page.within '.js-discussion-note-form' do
-          find('.js-note-text').native.send_keys('Test')
-
-          click_button 'Add comment now'
-
-          wait_for_requests
-        end
-
-        page.within find_line(position.line_code(project.repository)) do
-          find('.diff-notes-collapse').send_keys(:return)
-
-          expect(page).to have_selector('.js-diff-comment-avatar [data-testid="user-avatar-image"]', count: 2)
-        end
+        expect(commented_file).to have_selector('[data-testid="gutter-avatar"]', count: 2)
       end
 
-      it 'adds multiple comments',
-        quarantine: 'https://gitlab.com/gitlab-org/quality/test-failure-issues/-/issues/5874' do
-        3.times do
-          find_in_panel_by_scrolling('[data-discussion-id]', match: :first)
-          find_field('Reply…', match: :first).click
+      it 'adds multiple comments' do
+        3.times { reply_to_thread('Test') }
+        collapse_thread
 
-          page.within '.js-discussion-note-form' do
-            find('.js-note-text').native.send_keys('Test')
-            click_button 'Add comment now'
-
-            wait_for_requests
-          end
-        end
-
-        page.within find_line(position.line_code(project.repository)) do
-          find('.diff-notes-collapse').send_keys(:return)
-
-          expect(page).to have_selector('.js-diff-comment-avatar [data-testid="user-avatar-image"]', count: 3)
-          expect(find('.diff-comments-more-count')).to have_content '+1'
-        end
+        expect(commented_file).to have_selector('[data-testid="gutter-avatar"]', count: 3)
+        expect(commented_file).to have_selector('[data-testid="more-count"]', text: '+1')
       end
 
-      context 'multiple comments',
-        quarantine: 'https://gitlab.com/gitlab-org/quality/test-failure-issues/-/issues/4262' do
+      context 'multiple comments' do
         before do
           create_list(:diff_note_on_merge_request, 3, project: project, noteable: merge_request, in_reply_to: note)
           visit diffs_project_merge_request_path(project, merge_request, view: view)
@@ -201,19 +162,28 @@ RSpec.describe 'Merge request > User sees avatars on diff notes', :js, feature_c
         end
 
         it 'shows extra comment count' do
-          page.within find_line(position.line_code(project.repository)) do
-            find('.diff-notes-collapse').send_keys(:return)
+          collapse_thread
 
-            expect(find('.diff-comments-more-count')).to have_content '+1'
-          end
+          expect(commented_file).to have_selector('[data-testid="more-count"]', text: '+1')
         end
       end
     end
   end
 
-  def find_line(line_code)
-    line = find_in_panel_by_scrolling("[id='#{line_code}']")
-    line = line.find(:xpath, 'preceding-sibling::*[1][self::td]/preceding-sibling::*[1][self::td]') if line.tag_name == 'td'
-    line
+  def commented_file
+    diff_file(path)
+  end
+
+  def collapse_thread
+    within(commented_file) { find_by_testid('collapse-toggle', match: :first).click }
+  end
+
+  def reply_to_thread(body)
+    within(commented_file) do
+      find_by_testid('discussion-reply-tab').click
+      find_by_testid('reply-field').set(body)
+      find_by_testid('reply-comment-button').click
+    end
+    wait_for_requests
   end
 end

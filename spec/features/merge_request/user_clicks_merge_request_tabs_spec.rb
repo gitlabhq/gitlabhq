@@ -16,6 +16,7 @@ RSpec.describe 'User clicks on merge request tabs', :js, feature_category: :code
     click_link('Changes')
 
     expect(current_url).to match(/diffs$/)
+    expect(page).to have_selector('[data-rapid-diffs]')
 
     page.driver.go_back
 

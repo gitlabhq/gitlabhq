@@ -1,11 +1,15 @@
 <script>
 import { glSlotsMixin } from '~/lib/utils/vue3compat/gl_slots_mixin';
+import { RedirectScrollKeysToPanelDirective } from '~/vue_shared/directives/redirect_scroll_keys_to_panel';
 import PanelActions from './panel_actions.vue';
 
 export default {
   name: 'DynamicPanel',
   components: {
     PanelActions,
+  },
+  directives: {
+    RedirectScrollKeysToPanel: RedirectScrollKeysToPanelDirective,
   },
   mixins: [glSlotsMixin],
   provide() {
@@ -76,7 +80,7 @@ export default {
 
 <template>
   <div class="paneled-view js-paneled-view contextual-panel !gl-h-full !gl-w-full">
-    <div class="panel-header">
+    <div v-redirect-scroll-keys-to-panel class="panel-header">
       <div class="panel-header-inner">
         <slot name="header">
           <span class="panel-header-inner-text">{{ header }}</span>

@@ -1,4 +1,4 @@
-import Vue from 'vue';
+import Vue, { nextTick } from 'vue';
 import VueApollo from 'vue-apollo';
 import VueRouter from 'vue-router';
 import { GlKeysetPagination, GlLoadingIcon } from '@gitlab/ui';
@@ -11,6 +11,7 @@ import { groupCommitsByDay } from '~/projects/commits/utils/commit_grouping';
 import CommitListApp from '~/projects/commits/components/commit_list_app.vue';
 import CommitListRefSelector from '~/projects/commits/components/commit_list_ref_selector.vue';
 import CommitListActions from '~/projects/commits/components/commit_list_actions.vue';
+import CommitsMergeRequestButton from '~/projects/commits/components/commits_merge_request_button.vue';
 import CommitListItem from '~/projects/commits/components/commit_list_item.vue';
 import CommitFilteredSearch from '~/projects/commits/components/commit_filtered_search.vue';
 import PageSizeSelector from '~/vue_shared/components/page_size_selector.vue';
@@ -101,6 +102,7 @@ describe('CommitListApp', () => {
   const findLoadingIcon = () => wrapper.findComponent(GlLoadingIcon);
   const findCommitRefSelector = () => wrapper.findComponent(CommitListRefSelector);
   const findCommitActions = () => wrapper.findComponent(CommitListActions);
+  const findCommitsMergeRequestButton = () => wrapper.findComponent(CommitsMergeRequestButton);
   const findCommitFilteredSearch = () => wrapper.findComponent(CommitFilteredSearch);
   const findDailyCommits = () => wrapper.findAllByTestId('daily-commits');
   const findTimeElements = () => wrapper.findAll('time');
@@ -189,6 +191,28 @@ describe('CommitListApp', () => {
 
     it('renders the commit actions component', () => {
       expect(findCommitActions().exists()).toBe(true);
+    });
+
+    it('renders the create merge request button with the current ref', () => {
+      expect(findCommitsMergeRequestButton().props()).toMatchObject({
+        currentRef: 'main',
+        refType: '',
+      });
+    });
+
+    it('forwards the emitted merge request action to the commit list actions', async () => {
+      const mergeRequestAction = {
+        text: 'Create merge request',
+        href: '/merge_requests/new',
+        testid: 'create-merge-request-link',
+      };
+
+      expect(findCommitActions().props('mergeRequestAction')).toBe(null);
+
+      findCommitsMergeRequestButton().vm.$emit('merge-request-action', mergeRequestAction);
+      await nextTick();
+
+      expect(findCommitActions().props('mergeRequestAction')).toEqual(mergeRequestAction);
     });
 
     it('renders the filtered search component', () => {
@@ -471,7 +495,7 @@ describe('CommitListApp', () => {
 
       expect(handler).toHaveBeenCalledWith(
         expect.objectContaining({
-          ref: 'develop',
+          ref: 'refs/heads/develop',
           pipelineRef: 'develop',
         }),
       );
@@ -492,7 +516,7 @@ describe('CommitListApp', () => {
 
       expect(handler).toHaveBeenCalledWith(
         expect.objectContaining({
-          ref: 'develop',
+          ref: 'refs/heads/develop',
           pipelineRef: 'develop',
         }),
       );
@@ -522,6 +546,27 @@ describe('CommitListApp', () => {
         }),
       );
     });
+  });
+
+  describe('ref disambiguation', () => {
+    it.each`
+      refType      | escapedRef         | ref
+      ${'heads'}   | ${'main'}          | ${'refs/heads/main'}
+      ${'tags'}    | ${'main'}          | ${'refs/tags/main'}
+      ${'heads'}   | ${'feature%2Fdev'} | ${'refs/heads/feature/dev'}
+      ${'HEADS'}   | ${'main'}          | ${'refs/heads/main'}
+      ${'garbage'} | ${'main'}          | ${'main'}
+      ${''}        | ${'main'}          | ${'main'}
+    `(
+      'sends ref "$ref" for escapedRef "$escapedRef" and ref_type "$refType"',
+      async ({ refType, escapedRef, ref }) => {
+        const handler = jest.fn().mockResolvedValue(mockCommitsQueryResponse);
+        createComponent(handler, refType ? { ref_type: refType } : {}, { provide: { escapedRef } });
+        await waitForPromises();
+
+        expect(handler).toHaveBeenLastCalledWith(expect.objectContaining({ ref }));
+      },
+    );
   });
 
   describe('filtering', () => {

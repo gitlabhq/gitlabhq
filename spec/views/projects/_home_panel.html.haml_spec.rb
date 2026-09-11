@@ -20,7 +20,7 @@ RSpec.describe 'projects/_home_panel' do
   end
 
   describe 'forks' do
-    let(:source_project) { create(:project, :repository) }
+    let(:source_project) { create(:project) }
     let(:project) { fork_project(source_project) }
     let(:user) { create(:user) }
 

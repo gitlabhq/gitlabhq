@@ -604,6 +604,37 @@ RSpec.describe API::Issues, :aggregate_failures, feature_category: :team_plannin
         expect(json_response['project_id']).to eq(target_project.id)
       end
 
+      context 'when the author explicitly unsubscribed from the issue' do
+        before do
+          issue.unsubscribe(user, project)
+        end
+
+        it 'returns the destination issue subscription state' do
+          expect(issue.participant?(user)).to be(true)
+          expect(issue.subscribed?(user, project)).to be(false)
+
+          post api(path, user), params: { to_project_id: target_project.id }
+
+          expect(response).to have_gitlab_http_status(:created)
+          move_response = json_response.deep_dup
+          moved_issue = issue.reload.moved_to
+          moved_subscription = moved_issue.subscriptions.find_by!(user: user)
+
+          expect(move_response).to include(
+            'id' => moved_issue.id,
+            'project_id' => target_project.id,
+            'subscribed' => false
+          )
+          expect(moved_issue.participant?(user)).to be(true)
+          expect(moved_subscription).to have_attributes(project_id: target_project.id, subscribed: false)
+
+          get api("/projects/#{target_project.id}/issues/#{moved_issue.iid}", user)
+
+          expect(response).to have_gitlab_http_status(:ok)
+          expect(json_response).to include('project_id' => target_project.id, 'subscribed' => false)
+        end
+      end
+
       context 'when source and target projects are the same' do
         it 'returns 400 when trying to move an issue' do
           post api(path, user), params: { to_project_id: project.id }

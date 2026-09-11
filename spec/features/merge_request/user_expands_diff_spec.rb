@@ -7,7 +7,7 @@ RSpec.describe 'User expands diff', :js, feature_category: :code_review_workflow
   let(:merge_request) { create(:merge_request, source_branch: 'expand-collapse-files', source_project: project, target_project: project) }
 
   before do
-    allow(Gitlab::CurrentSettings).to receive(:diff_max_patch_bytes).and_return(100.bytes)
+    allow(Gitlab::Git::Diff).to receive(:patch_safe_limit_bytes).and_return(100.bytes)
 
     visit(diffs_project_merge_request_path(project, merge_request))
 
@@ -15,13 +15,18 @@ RSpec.describe 'User expands diff', :js, feature_category: :code_review_workflow
   end
 
   it 'allows user to expand diff' do
-    page.within find("[id='4c76a1271e41072d7da9fe40bf0f79f7384d472a']") do
-      find_by_testid('expand-button').click
+    file = find('diff-file button', text: 'Show changes', match: :first).ancestor('diff-file')
+    file_name = file.find('header h2').text
 
-      wait_for_requests
-
-      expect(page).not_to have_content('Expand file')
-      expect(page).to have_selector('.code')
+    within(file) do
+      click_button 'Show changes'
     end
+
+    wait_for_requests
+
+    expanded = find('diff-file header', text: file_name, match: :first).ancestor('diff-file')
+
+    expect(expanded).to have_no_button('Show changes')
+    expect(expanded).to have_selector('[data-hunk-lines]')
   end
 end

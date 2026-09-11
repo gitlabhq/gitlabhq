@@ -59,7 +59,9 @@ RSpec.describe Projects::MergeRequestsController, feature_category: :source_code
         'Overview' => -> { project_merge_request_path(project, merge_request) },
         'Commits' => -> { commits_project_merge_request_path(project, merge_request) },
         'Pipelines' => -> { pipelines_project_merge_request_path(project, merge_request) },
-        'legacy Changes' => -> { diffs_project_merge_request_path(project, merge_request) },
+        'legacy Changes' => -> {
+          diffs_project_merge_request_path(project, merge_request, rapid_diffs_disabled: 'true')
+        },
         'Rapid Diffs Changes' => -> { diffs_project_merge_request_path(project, merge_request, rapid_diffs: 'true') }
       }.each do |tab, path|
         it "asks password managers to ignore the #{tab} tab" do
@@ -306,6 +308,8 @@ RSpec.describe Projects::MergeRequestsController, feature_category: :source_code
       end
 
       it 'renders legacy diffs when rapid_diffs query parameter doesnt exist' do
+        stub_feature_flags(rapid_diffs_default_on_mr_show: false)
+
         get diffs_project_merge_request_path(project, merge_request)
 
         expect(response).to have_gitlab_http_status(:ok)
@@ -353,7 +357,7 @@ RSpec.describe Projects::MergeRequestsController, feature_category: :source_code
         end
 
         it 'includes new_blob_path for legacy diffs' do
-          get diffs_project_merge_request_path(project, merge_request)
+          get diffs_project_merge_request_path(project, merge_request, rapid_diffs_disabled: 'true')
 
           expect(noteable_data).to have_key('new_blob_path')
         end
@@ -1071,7 +1075,7 @@ RSpec.describe Projects::MergeRequestsController, feature_category: :source_code
   end
 
   describe 'GET #diffs' do
-    subject(:action) { get diffs_project_merge_request_path(project, merge_request) }
+    subject(:action) { get diffs_project_merge_request_path(project, merge_request, rapid_diffs_disabled: 'true') }
 
     before do
       sign_in(user)

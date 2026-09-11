@@ -16,18 +16,25 @@ module Gitlab
 
           DEFAULT_GRANULARITY = :monthly
 
+          # Shape of a dynamic day granularity (`30d`). Parsing is deliberately
+          # lenient: the allowed day range is enforced by the `in:` allowlist.
+          DYNAMIC_GRANULARITY_PATTERN = /\A(?<days>\d+)d\z/
+          # 1..399 days; bounds the bucket count by construction.
+          DEFAULT_DYNAMIC_GRANULARITY_FORMAT = /\A([1-9]\d?|[1-3]\d{2})d\z/
+
           DEFAULT_PARAMETERS = {
             granularity: {
               type: :string,
-              in: %w[daily weekly monthly],
-              description: 'Date granularity: daily, weekly, or monthly'
+              in: ['daily', 'weekly', 'monthly', DEFAULT_DYNAMIC_GRANULARITY_FORMAT],
+              description: 'Date granularity: daily, weekly, monthly, or a fixed number of days ' \
+                'between 1d and 399d (for example 30d)'
+            },
+            origin: {
+              type: :datetime,
+              description: 'Anchor for fixed-day granularities: buckets start at this timestamp ' \
+                'and repeat every N days. Only valid with a fixed-day granularity'
             }
           }.freeze
-
-          # Shape of a dynamic day granularity (`30d`). Parsing is deliberately
-          # lenient: the allowed day range is enforced by each engine's `in:`
-          # allowlist.
-          DYNAMIC_GRANULARITY_PATTERN = /\A(?<days>\d+)d\z/
 
           def initialize(*args, parameters: {}, **kwargs)
             super(*args, parameters: DEFAULT_PARAMETERS.merge(parameters || {}), **kwargs)

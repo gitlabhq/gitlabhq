@@ -4,7 +4,7 @@ require 'spec_helper'
 
 RSpec.describe 'Merge request > Draft note diff context on the Overview tab', :js,
   feature_category: :code_review_workflow do
-  include RapidDiffsHelpers
+  include RapidDiffsDiscussionHelpers
 
   let_it_be(:commented_line) { 'SOURCE CHANGE (comment on this line)' }
   let_it_be(:merge_head_line) { 91 }
@@ -46,8 +46,8 @@ RSpec.describe 'Merge request > Draft note diff context on the Overview tab', :j
 
     materialize_merge_ref(merge_request)
 
-    select_parallel_view
-    select_inline_view
+    visit diffs_project_merge_request_path(project, merge_request, view: 'inline')
+    wait_for_requests # rubocop:disable RSpec/AvoidWaitForRequests -- Rapid Diffs streams diffs asynchronously
     expect(page).to have_css("[data-line-number='#{merge_head_line}']")
 
     line_holder = find_commented_line
@@ -76,19 +76,5 @@ RSpec.describe 'Merge request > Draft note diff context on the Overview tab', :j
 
   def find_commented_line
     find('[data-hunk-lines]', text: commented_line, match: :first)
-  end
-
-  def next_discussion_row(line_holder)
-    line_holder.find(:xpath, './following-sibling::*[@data-discussion-row][1]')
-  end
-
-  def click_diff_line(line_holder)
-    page.execute_script("arguments[0].scrollIntoView({ block: 'center' })", line_holder.native)
-    link = line_holder.find('[data-line-number]', match: :first)
-    wait_for('new-discussion toggle to appear on the row') do
-      link.hover
-      has_testid?('new_discussion_toggle', context: line_holder, wait: 0.2)
-    end
-    find_by_testid('new_discussion_toggle', context: line_holder).click
   end
 end

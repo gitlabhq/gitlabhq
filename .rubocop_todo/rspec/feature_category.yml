@@ -435,7 +435,6 @@ RSpec/FeatureCategory:
     - 'ee/spec/services/analytics/devops_adoption/enabled_namespaces/bulk_find_or_create_service_spec.rb'
     - 'ee/spec/services/analytics/devops_adoption/enabled_namespaces/create_service_spec.rb'
     - 'ee/spec/services/analytics/devops_adoption/enabled_namespaces/delete_service_spec.rb'
-    - 'ee/spec/services/analytics/devops_adoption/enabled_namespaces/find_or_create_service_spec.rb'
     - 'ee/spec/services/analytics/devops_adoption/snapshots/create_service_spec.rb'
     - 'ee/spec/services/analytics/devops_adoption/snapshots/update_service_spec.rb'
     - 'ee/spec/services/app_sec/dast/builds/associate_service_spec.rb'

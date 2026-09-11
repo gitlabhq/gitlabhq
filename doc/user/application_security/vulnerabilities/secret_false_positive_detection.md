@@ -18,6 +18,7 @@ description: Automatic detection and filtering of false positives in secret dete
 
 - Introduced in [epic 17885](https://gitlab.com/groups/gitlab-org/-/work_items/20152) in GitLab 18.10 as a [beta](../../../policy/development_stages_support.md#beta) feature with a [feature flag](../../../administration/feature_flags/_index.md) named `duo_secret_detection_false_positive`. [Enabled on GitLab.com, GitLab Self-Managed, and GitLab Dedicated](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/227074).
 - [Generally available](https://gitlab.com/groups/gitlab-org/-/work_items/21233) in GitLab 19.1.
+- Support in the triage and remediation profile [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/254011) in GitLab 19.4 [with a feature flag](../../../administration/feature_flags/_index.md) named `triage_and_remediation_profile`. Enabled by default.
 
 {{< /history >}}
 
@@ -38,6 +39,10 @@ The GitLab Duo assessment includes information about each false positive finding
 Once enabled, false positive detection runs automatically after each security scan without manual intervention.
 
 Results are based on AI analysis and should be reviewed by security professionals. The feature requires GitLab Duo with an active subscription.
+
+Security configuration profiles also support this flow. To turn on and configure the flow
+across multiple projects and groups at once, use the
+[automated triage and remediation profile](../configuration/security_configuration_profiles.md#automated-triage-and-remediation-profile).
 
 ## Automatic detection
 

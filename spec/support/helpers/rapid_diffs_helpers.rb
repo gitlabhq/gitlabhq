@@ -1,6 +1,23 @@
 # frozen_string_literal: true
 
 module RapidDiffsHelpers
+  def diff_file(path)
+    find('diff-file header h2', text: path, exact_text: true, match: :first).ancestor('diff-file')
+  end
+
+  def within_diff_file(path, &block)
+    within(diff_file(path), &block)
+  end
+
+  def diff_line(text, within: nil)
+    scope = within ? diff_file(within) : page
+    scope.find('[data-hunk-lines]', text: text, match: :first)
+  end
+
+  def scroll_to_center(element)
+    page.execute_script("arguments[0].scrollIntoView({ block: 'center' })", element.native)
+  end
+
   def select_inline_view
     open_diff_view_preferences
     inline_view_option.click
@@ -22,6 +39,13 @@ module RapidDiffsHelpers
   def open_diff_view_preferences
     button = find("button:has(svg[data-testid='preferences-icon'])")
     return if button['aria-expanded'] == 'true'
+
+    button.click
+  end
+
+  def close_diff_view_preferences
+    button = find("button:has(svg[data-testid='preferences-icon'])")
+    return unless button['aria-expanded'] == 'true'
 
     button.click
   end

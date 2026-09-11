@@ -1262,6 +1262,9 @@ export const saveSavedView = async ({
     filters: updatedSavedViewFilters,
     displaySettings,
     sort,
+    updatedAt: '',
+    author: {},
+    lastUpdatedBy: {},
     __typename: 'WorkItemSavedViewType',
   };
 
@@ -1275,9 +1278,6 @@ export const saveSavedView = async ({
             ...commonSavedViewResponse,
             userPermissions,
             subscribed,
-            updatedAt: '',
-            author: {},
-            lastUpdatedBy: {},
           }
         : {
             id: NEW_SAVED_VIEWS_GID,

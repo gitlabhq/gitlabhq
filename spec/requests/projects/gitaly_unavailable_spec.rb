@@ -521,7 +521,11 @@ RSpec.describe 'Gitaly unavailable graceful degradation', feature_category: :sou
     end
 
     describe '#show' do
-      let(:make_request) { get diffs_project_merge_request_path(project, merge_request, format: :json) }
+      # Rapid Diffs handles its own render errors by redirecting to the legacy page, so this
+      # controller's Gitaly error handling is only observable on the legacy diffs page.
+      let(:make_request) do
+        get diffs_project_merge_request_path(project, merge_request, format: :json, rapid_diffs_disabled: 'true')
+      end
 
       it_behaves_like 'handles Gitaly errors for json format'
     end

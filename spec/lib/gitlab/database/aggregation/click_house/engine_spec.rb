@@ -767,13 +767,13 @@ RSpec.describe Gitlab::Database::Aggregation::ClickHouse::Engine, :click_house, 
         # Window is PARTITION BY flow_type ORDER BY event_date ASC.
         # user 1 reappears on 2025-04-04 after 2025-03-04, so retained count = 1 on that date.
         expect(engine).to execute_aggregation(request).and_return([
-          { flow_type: 'chat', event_date_daily: Date.parse('2025-03-01'), returning_users_count: 0,
+          { flow_type: 'chat', event_date_granularity_daily: Date.parse('2025-03-01'), returning_users_count: 0,
             previous_users_count: 0 },
-          { flow_type: 'chat', event_date_daily: Date.parse('2025-03-02'), returning_users_count: 0,
+          { flow_type: 'chat', event_date_granularity_daily: Date.parse('2025-03-02'), returning_users_count: 0,
             previous_users_count: 1 },
-          { flow_type: 'chat', event_date_daily: Date.parse('2025-03-04'), returning_users_count: 0,
+          { flow_type: 'chat', event_date_granularity_daily: Date.parse('2025-03-04'), returning_users_count: 0,
             previous_users_count: 1 },
-          { flow_type: 'chat', event_date_daily: Date.parse('2025-04-04'), returning_users_count: 1,
+          { flow_type: 'chat', event_date_granularity_daily: Date.parse('2025-04-04'), returning_users_count: 1,
             previous_users_count: 1 }
         ])
       end
@@ -941,10 +941,10 @@ RSpec.describe Gitlab::Database::Aggregation::ClickHouse::Engine, :click_house, 
         # All 5 sessions are flow_type=chat; 4 distinct event dates ordered DESC.
         # user 1 reappears on 2025-04-04 after 2025-03-04, so retained = 1 on that date.
         expect(engine).to execute_aggregation(request).and_return([
-          { event_date_daily: Date.parse('2025-04-04'), returning_users_count: 1 },
-          { event_date_daily: Date.parse('2025-03-04'), returning_users_count: 0 },
-          { event_date_daily: Date.parse('2025-03-02'), returning_users_count: 0 },
-          { event_date_daily: Date.parse('2025-03-01'), returning_users_count: 0 }
+          { event_date_granularity_daily: Date.parse('2025-04-04'), returning_users_count: 1 },
+          { event_date_granularity_daily: Date.parse('2025-03-04'), returning_users_count: 0 },
+          { event_date_granularity_daily: Date.parse('2025-03-02'), returning_users_count: 0 },
+          { event_date_granularity_daily: Date.parse('2025-03-01'), returning_users_count: 0 }
         ])
 
         paginated = engine.execute(request).payload[:data].limit(2).offset(0).to_a

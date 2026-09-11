@@ -22,13 +22,14 @@ RSpec.describe 'User views diffs file-by-file', :js, feature_category: :code_rev
 
   it 'shows diffs file-by-file' do
     page.within('#diffs') do
-      expect(page).to have_selector('.file-holder', count: 1)
-      expect(page).to have_selector('.diff-file .file-title', text: 'files/ruby/popen.rb')
+      expect(page).to have_selector('diff-file', count: 1)
+      expect(page).to have_selector('diff-file header h2', text: 'files/ruby/popen.rb')
 
-      find_by_testid('nextButton').click
+      within_testid('file-by-file-navigation') { click_button('Next') }
+      wait_for_requests
 
-      expect(page).to have_selector('.file-holder', count: 1)
-      expect(page).to have_selector('.diff-file .file-title', text: 'files/ruby/regex.rb')
+      expect(page).to have_selector('diff-file', count: 1)
+      expect(page).to have_selector('diff-file header h2', text: 'files/ruby/regex.rb')
     end
   end
 end

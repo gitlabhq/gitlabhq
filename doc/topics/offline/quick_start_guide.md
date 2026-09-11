@@ -715,6 +715,317 @@ Reuse the same output directory on every run: `rsync --delete` removes any regis
 
 When the snapshot on the service matches the one already in the output directory, the script skips the download for that registry.
 
+### Download v3 license data
+
+{{< details >}}
+
+- Tier: Ultimate
+
+{{< /details >}}
+
+{{< history >}}
+
+- [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/22880) in GitLab 19.4 with a flag named `sync_v3_license_expressions`. Enabled by default.
+
+{{< /history >}}
+
+> [!flag]
+> The availability of this feature is controlled by a feature flag.
+> For more information, see the history.
+>
+> If you turn the flag off, the instance falls back to the v2 layout and drops its v3 checkpoints.
+> If you turn the flag back on, the instance re-imports v3 data from the beginning instead of resuming from the last synchronized snapshot.
+
+The v3 license data layout carries Software Package Data Exchange (SPDX) license expressions instead of single license identifiers. For example, `MIT OR Apache-2.0`.
+
+Use the following procedure to download the v3 license data.
+The script asks the Package Metadata Database distribution service (PDS) which archives make up the current snapshot,
+and writes each registry's checkpoint only after it downloads every archive.
+It downloads only the current snapshot for the registries you have enabled, rather than every format and delta that the license bucket holds.
+It does not require `gsutil`.
+
+When a `v3` directory exists under `vendor/package_metadata/licenses`, the instance synchronizes licenses from it
+instead of the `v2` directory. Complete the copy step below before the sync job runs.
+
+This procedure has the same prerequisites and caveats as the [malware advisory procedure](#download-gitlab-malware-advisories).
+The script exchanges your license key for a token that is valid for three days.
+
+The following is an example of how the license data can be downloaded using cURL and jq.
+
+```shell
+#!/bin/bash
+
+set -euo pipefail
+
+CDOT_URL="${CDOT_URL:-https://customers.gitlab.com}"
+PDS_URL="${PDS_URL:-https://pmdb-dist-svc.runway.gitlab.net}"
+
+if [ $# -lt 4 ]; then
+  echo "Usage: download_licenses.sh <license_file> <gitlab_version> <output_dir> <registry>..."
+  echo "Pass the package registries to download, or 'all' for every supported registry."
+  exit 1
+fi
+
+LICENSE_FILE=$1
+GITLAB_VERSION=$2
+OUTPUT_DIR=$3
+shift 3
+REQUESTED_REGISTRIES="$*"
+
+if [ -z "$OUTPUT_DIR" ]; then
+  echo "output_dir must not be empty"
+  exit 1
+fi
+
+if [ ! -r "$LICENSE_FILE" ]; then
+  echo "Cannot read $LICENSE_FILE"
+  exit 1
+fi
+
+REQUEST_FILE="$(mktemp)"
+RESPONSE_FILE="$(mktemp)"
+SHARDS_FILE="$(mktemp)"
+HEADER_FILE="$(mktemp)"
+trap 'rm -f "$REQUEST_FILE" "$RESPONSE_FILE" "$SHARDS_FILE" "$HEADER_FILE"' EXIT
+chmod 600 "$HEADER_FILE"
+
+# Exchange the license key for a Cloud Connector token.
+GRAPHQL_QUERY='query($licenseKey: String!, $gitlabVersion: String!) {
+  cloudConnectorAccess(licenseKey: $licenseKey, gitlabVersion: $gitlabVersion) {
+    serviceToken { token }
+  }
+}'
+
+jq --null-input --arg query "$GRAPHQL_QUERY" --rawfile licenseKey "$LICENSE_FILE" \
+  --arg gitlabVersion "$GITLAB_VERSION" \
+  '{query: $query, variables: {licenseKey: $licenseKey, gitlabVersion: $gitlabVersion}}' >"$REQUEST_FILE"
+
+HTTP_STATUS="$(curl --silent --show-error --request POST "$CDOT_URL/graphql" \
+  --header 'Content-Type: application/json' --data @"$REQUEST_FILE" \
+  --output "$RESPONSE_FILE" --write-out '%{http_code}')"
+
+if [ "$HTTP_STATUS" != "200" ]; then
+  echo "Token request to $CDOT_URL failed with HTTP $HTTP_STATUS"
+  head -c 500 "$RESPONSE_FILE"
+  exit 1
+fi
+
+TOKEN="$(jq --raw-output '.data.cloudConnectorAccess.serviceToken.token // empty' "$RESPONSE_FILE")"
+
+if [ -z "$TOKEN" ]; then
+  echo "No token in the response from $CDOT_URL"
+  jq --raw-output '.errors[]?.message // empty' "$RESPONSE_FILE"
+  exit 1
+fi
+
+# The distribution service requires X-Gitlab-Instance-Id to equal the token's
+# subject claim and X-Gitlab-Realm to equal its realm claim. Both are in the
+# payload, which is the second dot-separated segment of the token.
+CLAIMS="$(printf '%s' "$TOKEN" |
+  jq --raw-input 'split(".")[1] | gsub("-"; "+") | gsub("_"; "/") | @base64d | fromjson')"
+
+INSTANCE_ID="$(jq --raw-output '.sub // empty' <<<"$CLAIMS")"
+REALM="$(jq --raw-output '.gitlab_realm // empty' <<<"$CLAIMS")"
+
+if [ -z "$INSTANCE_ID" ] || [ -z "$REALM" ]; then
+  echo "The token is missing its subject or realm claim"
+  exit 1
+fi
+
+# Pass the headers through a file so the token never appears in a process
+# list. It is readable there by any local user for the download's duration.
+{
+  printf 'header = "Authorization: Bearer %s"\n' "$TOKEN"
+  printf 'header = "X-Gitlab-Instance-Id: %s"\n' "$INSTANCE_ID"
+  printf 'header = "X-Gitlab-Realm: %s"\n' "$REALM"
+} >"$HEADER_FILE"
+
+# Writes the response body to $2 and returns the HTTP status.
+licenses_request() {
+  curl --silent --show-error --config "$HEADER_FILE" \
+    --output "$2" --write-out '%{http_code}' "$1"
+}
+
+HTTP_STATUS="$(licenses_request "$PDS_URL/v1/licenses/supported" "$RESPONSE_FILE")"
+
+if [ "$HTTP_STATUS" != "200" ]; then
+  echo "Request for the supported package registries failed with HTTP $HTTP_STATUS"
+  head -c 500 "$RESPONSE_FILE"
+  exit 1
+fi
+
+SUPPORTED="$(jq --raw-output '.registries[]' "$RESPONSE_FILE")"
+SKIPPED=""
+
+if [ -z "$SUPPORTED" ]; then
+  echo "No package registries are available"
+  exit 1
+fi
+
+echo "Available package registries: $(echo "$SUPPORTED" | tr '\n' ' ')"
+
+# Disable filename expansion so a registry name is never treated as a glob.
+set -f
+
+if [ "$REQUESTED_REGISTRIES" = "all" ]; then
+  REGISTRIES="$SUPPORTED"
+else
+  REGISTRIES="$REQUESTED_REGISTRIES"
+
+  for REGISTRY in $REGISTRIES; do
+    if ! grep --quiet --fixed-strings --line-regexp "$REGISTRY" <<<"$SUPPORTED"; then
+      echo "$REGISTRY is not a supported package registry"
+      exit 1
+    fi
+  done
+fi
+
+for REGISTRY in $REGISTRIES; do
+  HTTP_STATUS="$(licenses_request "$PDS_URL/v1/licenses/all?purl_type=$REGISTRY" "$RESPONSE_FILE")"
+
+  # A pending snapshot is the only skippable outcome. Every other 503 is
+  # transient, and treating it as "no data" would delete a registry that the
+  # instance already has.
+  if [ "$HTTP_STATUS" = "503" ]; then
+    # A 503 from in front of the service has no JSON body, so keep the reason
+    # empty rather than letting jq abort the script.
+    REASON="$(jq --raw-output '.reason // empty' "$RESPONSE_FILE" 2>/dev/null || true)"
+
+    if [ "$REASON" = "snapshot_not_yet_published" ]; then
+      echo "Skipping $REGISTRY, no snapshot is published yet"
+      SKIPPED="$SKIPPED $REGISTRY"
+      continue
+    fi
+
+    echo "Request for $REGISTRY failed with HTTP 503, try again later ($REASON)"
+    exit 1
+  fi
+
+  if [ "$HTTP_STATUS" != "200" ]; then
+    echo "Request for $REGISTRY failed with HTTP $HTTP_STATUS"
+    head -c 500 "$RESPONSE_FILE"
+    exit 1
+  fi
+
+  UNTIL="$(jq --raw-output '.until // empty' "$RESPONSE_FILE")"
+
+  if [ -z "$UNTIL" ]; then
+    echo "The response for $REGISTRY has no snapshot timestamp"
+    exit 1
+  fi
+  DATASET_DIR="$OUTPUT_DIR/v3/$REGISTRY/full_dataset"
+
+  # Skip the download when this snapshot is already on disk. Every archive in a
+  # snapshot shares one `until`, so an unchanged value means no archive changed.
+  if [ -r "$DATASET_DIR/checkpoint.json" ] &&
+    [ "$(jq --raw-output '.until // empty' "$DATASET_DIR/checkpoint.json" 2>/dev/null)" = "$UNTIL" ]; then
+    echo "Skipping $REGISTRY, snapshot $UNTIL is already downloaded"
+    continue
+  fi
+
+  # Remove any previous snapshot. GitLab reads every archive in this directory,
+  # so archives left over from an earlier snapshot would be imported alongside
+  # the new ones, restoring licenses that changed since.
+  rm -rf "$DATASET_DIR"
+  mkdir -p "$DATASET_DIR"
+
+  jq --raw-output '.shards[] | [.shard, (.signed_url // .url)] | @tsv' "$RESPONSE_FILE" >"$SHARDS_FILE"
+
+  while IFS=$'\t' read -r SHARD URL; do
+    echo "Downloading $REGISTRY archive $SHARD"
+    curl --fail --silent --show-error --location --output "$DATASET_DIR/$SHARD.tar.zst.part" "$URL"
+    mv "$DATASET_DIR/$SHARD.tar.zst.part" "$DATASET_DIR/$SHARD.tar.zst"
+  done <"$SHARDS_FILE"
+
+  # Write the checkpoint last. GitLab ignores a directory that has no
+  # checkpoint, so an interrupted download is never imported as a snapshot.
+  jq --null-input --argjson until "$UNTIL" '{until: $until}' >"$DATASET_DIR/checkpoint.json"
+done
+
+set +f
+
+if [ -n "$SKIPPED" ]; then
+  echo "Warning: no snapshot is published yet for:$SKIPPED"
+  echo "The downloaded registries are complete and safe to copy. Run the script again later to pick up the rest."
+fi
+
+echo "License data saved to $OUTPUT_DIR"
+```
+
+To download the license data:
+
+1. On the offline instance, find the GitLab version.
+
+   ```shell
+   sudo gitlab-rails runner 'puts Gitlab::VERSION'
+   ```
+
+1. On the machine with internet access, save the preceding script as `download_licenses.sh` and make it executable.
+
+   ```shell
+   chmod +x download_licenses.sh
+   ```
+
+1. Run the script with your license file, the GitLab version from the first step, a directory to write to, and the package registries to download.
+   Pass the registries whose types are enabled in the **Admin** area, or `all` for every supported registry.
+
+   ```shell
+   ./download_licenses.sh ./Gitlab.gitlab-license 19.4.0-ee ./licenses npm pypi
+   ```
+
+   The script creates one directory per package registry, named for the registry identifier rather than the package type.
+
+   ```plaintext
+   licenses/
+   └── v3/
+       └── npm/
+           └── full_dataset/
+               ├── 00.tar.zst
+               ├── 01.tar.zst
+               ├── ...
+               ├── 7f.tar.zst
+               └── checkpoint.json
+   ```
+
+   Each archive is named for its hexadecimal shard identifier.
+
+1. Transfer the output directory to the offline instance.
+
+1. On the offline instance, find the root of the GitLab Rails directory, then copy the license data into place and update the permissions.
+
+   ```shell
+   export GITLAB_RAILS_ROOT_DIR="$(sudo gitlab-rails runner 'puts Rails.root.to_s')"
+   echo $GITLAB_RAILS_ROOT_DIR
+   export LICENSES_DIR="$GITLAB_RAILS_ROOT_DIR/vendor/package_metadata/licenses"
+   sudo rm -rf "$LICENSES_DIR/v3.old" "$LICENSES_DIR/v3.incoming"
+   sudo mkdir -p "$LICENSES_DIR/v3" "$LICENSES_DIR/v3.incoming"
+   sudo rsync --recursive ./licenses/v3/ "$LICENSES_DIR/v3.incoming/"
+   sudo mv "$LICENSES_DIR/v3" "$LICENSES_DIR/v3.old" && \
+     sudo mv "$LICENSES_DIR/v3.incoming" "$LICENSES_DIR/v3" && \
+     sudo rm -rf "$LICENSES_DIR/v3.old"
+   sudo chmod -R 755 "$GITLAB_RAILS_ROOT_DIR/vendor/package_metadata/"
+   ```
+
+   The commands write only to the `v3` directory, so an existing `v2` directory stays on disk, unused.
+
+   The instance reads licenses from the `v3` directory as soon as that directory exists.
+   The sync job runs every five minutes, so if you copy directly into `v3`, the sync job may read
+   a directory that is still being written and `v3` may end up missing or half-written.
+   Copy into `v3.incoming` and publish with renames instead.
+
+The `PackageMetadata::LicensesSyncWorker` cron job runs every five minutes and imports the license data on its next run.
+As with the advisories, the job imports only the package registry types enabled in the **Admin** area, so the instance
+can hold data for registries it never imports.
+
+To update the license data, repeat this procedure.
+Each run downloads a complete snapshot rather than a set of changes.
+Publishing replaces the whole `v3` directory, so a registry left out of a later run stops receiving updates.
+The license data already imported for that registry stays in the database, and updates resume the next time you
+include it in a run.
+
+When the snapshot on the service matches the one already in the output directory, the script skips the download
+for that registry, so it is safe to run on a schedule.
+
 ### Automatic synchronization
 
 Your GitLab instance is synchronized [regularly](https://gitlab.com/gitlab-org/gitlab/-/blob/63a187d47f6da353ba4514650bbbbeb99c356325/config/initializers/1_settings.rb#L840-842) with the contents of the `package_metadata` directory.
@@ -769,11 +1080,7 @@ re-downloads the whole export whether or not `-d` is present.
 
 {{< /history >}}
 
-Read this section to check that the license files on your instance are in the folder structure GitLab expects, and
-to recognize the `v3/` directories that appear after a sync.
-
-`v2` and `v3` are format versions of the license export.
-Each one is published in its own folder of the license bucket, and each holds a different kind of license data:
+`v2` and `v3` are format versions of the license export, each published in its own folder and holding a different kind of license data:
 
 | Format version | Folder                                 | License data                                      | Read by |
 |----------------|----------------------------------------|---------------------------------------------------|---------|
@@ -781,13 +1088,12 @@ Each one is published in its own folder of the license bucket, and each holds a 
 | v3             | `licenses/v3/<registry>/full_dataset/` | SPDX license expressions, in compressed archives. | GitLab 19.4 and later |
 
 You do not choose the format version, GitLab does.
-An instance can hold both folders, and only one of them is read.
+An instance can hold both folders, but GitLab reads only one.
 
-GitLab 19.4 selects v3, since `sync_v3_license_expressions` feature flag is enabled by default, and a `v3/` folder exists
-under `vendor/package_metadata/licenses`.
-v3 takes precedence, so an instance that holds both folders reads v3 and ignores `v2/`.
-Turn the flag off to read v2 even when a `v3/` folder is present.
-Earlier versions have no v3 read path and always read v2.
+In GitLab 19.4 and later, GitLab reads v3 when the `sync_v3_license_expressions` flag is enabled and a `v3/` folder
+exists under `vendor/package_metadata/licenses`. When both folders are present, v3 takes precedence and `v2/` is ignored.
+Turn the flag off to read v2 instead.
+Earlier versions always read v2.
 
 About the v3 folder structure:
 
@@ -947,6 +1253,29 @@ The [`sidekiq`](../../administration/logs/_index.md#sidekiq-logs) logs will show
 
 - For licenses: `PackageMetadata::LicensesSyncWorker`
 - For advisories: `PackageMetadata::AdvisoriesSyncWorker`
+
+#### Missing v3 license data
+
+If license data is missing after you copy it to the instance, the sync job either did not find the directory or found nothing new to import.
+Both outcomes are silent, so work through the following checks instead of looking for an error.
+
+Before you begin:
+
+- Follow the troubleshooting guidance for [missing database data](#missing-database-data), specifically check the enabled package registry types and the file structure for the licenses.
+- Confirm the v3 license file structure. It should match the [malware advisory file structure](#confirm-the-malware-advisory-file-structure).
+
+##### Verify v3 license data
+
+Expressions are stored on the license records. To verify your synchronized v3 snapshot, look for at least one license with an expression.
+You can confirm in the Rails console:
+
+- `sudo gitlab-rails runner "puts \"#{PackageMetadata::License.where.not(spdx_expression: nil).count} licenses have an expression\""`
+
+If packages and checkpoints exist but there isn't a license with an expression, the instance synchronized the v2 layout instead of v3.
+Check that the data on disk is under `v3/`.
+
+A snapshot is imported only if it is newer than the recorded checkpoint, so copying the same snapshot a second time has no effect.
+To get newer license data, run the download script again to fetch the current snapshot.
 
 #### Missing malware advisory data
 

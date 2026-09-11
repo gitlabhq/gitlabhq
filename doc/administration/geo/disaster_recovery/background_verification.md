@@ -70,18 +70,16 @@ in sync.
 Due to bugs or transient infrastructure failures, it is possible for Git
 repositories to change unexpectedly without being marked for verification.
 Geo constantly reverifies the repositories to ensure the integrity of the
-data. The default and recommended re-verification interval is 7 days, though
-an interval as short as 1 day can be set. Shorter intervals reduce risk but
-increase load and vice versa.
+data. The default re-verification interval is 90 days, though an interval as
+short as 1 day can be set. Shorter intervals reduce risk but increase load
+and vice versa.
 
 On the primary site:
 
 1. In the upper-right corner, select **Admin**.
 1. In the left sidebar, select **Geo** > **Sites**.
 1. Select **Edit** for the primary site to customize the minimum
-   re-verification interval:
-
-   ![Window with configuration attributes of a Geo node.](img/reverification-interval_v11_6.png)
+   re-verification interval.
 
 ## Reset verification for projects where verification has failed
 

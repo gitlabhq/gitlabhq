@@ -154,7 +154,7 @@ RSpec.describe RuboCop::Cop::API::EntityExposureGrowth, feature_category: :api d
     it 'falls back to the base message without an endpoint count' do
       expect_offense(<<~RUBY)
         expose :new_field, documentation: { type: 'String' }
-        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ Do not add `expose` calls to high-impact entities. Create a new, feature-bounded entity instead. [...]
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ Do not add `expose` calls to high-impact entities. Rearchitect to avoid needing the field, make the field opt-in, or create a new, feature-bounded entity instead. [...]
       RUBY
     end
   end
@@ -170,7 +170,7 @@ RSpec.describe RuboCop::Cop::API::EntityExposureGrowth, feature_category: :api d
     it 'falls back to the base message without an endpoint count' do
       expect_offense(<<~RUBY)
         expose :new_field, documentation: { type: 'String' }
-        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ Do not add `expose` calls to high-impact entities. Create a new, feature-bounded entity instead. [...]
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ Do not add `expose` calls to high-impact entities. Rearchitect to avoid needing the field, make the field opt-in, or create a new, feature-bounded entity instead. [...]
       RUBY
     end
   end

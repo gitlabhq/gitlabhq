@@ -17,12 +17,13 @@ RSpec.describe 'User creates discussion on diff file', :js, feature_category: :c
   end
 
   it 'creates discussion on diff file' do
-    first('.diff-file [data-testid="comment-files-button"]').click
+    within(first('diff-file')) do
+      find('[data-testid="comment-files-button"]:not([disabled])').click
 
-    send_keys "Test comment"
+      find_by_testid('reply-field').set('Test comment')
+      click_button 'Add comment now'
 
-    click_button "Add comment now"
-
-    expect(first('.diff-file')).to have_selector('.note-text', text: 'Test comment')
+      expect(page).to have_selector('[data-testid="noteable-note-container"]', text: 'Test comment')
+    end
   end
 end

@@ -35,8 +35,14 @@ export default {
     ApprovalSummary: defineAsyncComponent(
       () => import('ee_component/merge_requests/components/reviewers/approval_summary.vue'),
     ),
+    SuggestedReviewers: defineAsyncComponent(
+      () => import('ee_component/merge_requests/components/reviewers/suggested_reviewers.vue'),
+    ),
   },
   mixins: [InternalEvents.mixin()],
+  inject: {
+    aiSuggestedReviewersAvailable: { default: false },
+  },
   props: {
     mediator: {
       type: Object,
@@ -264,6 +270,7 @@ export default {
       @assign-self="reviewBySelf"
       @remove-reviewer="removeReviewerById"
     />
+    <suggested-reviewers v-if="aiSuggestedReviewersAvailable" :can-update="canUpdate" />
     <mounting-portal mount-to="#js-reviewer-drawer-portal">
       <reviewer-drawer
         :open="drawerOpen"

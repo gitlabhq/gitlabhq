@@ -3,7 +3,7 @@
 require 'spec_helper'
 
 RSpec.describe 'projects/settings/ci_cd/_autodevops_form' do
-  let(:project) { create(:project, :repository) }
+  let(:project) { create(:project) }
 
   before do
     assign :project, project

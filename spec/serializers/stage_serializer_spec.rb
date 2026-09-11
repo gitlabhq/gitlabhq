@@ -2,9 +2,9 @@
 
 require 'spec_helper'
 
-RSpec.describe StageSerializer do
-  let(:project) { create(:project, :repository) }
-  let(:user) { create(:user) }
+RSpec.describe StageSerializer, factory_default: :keep do
+  let_it_be(:project) { create_default(:project) }
+  let_it_be(:user) { create(:user) }
   let(:resource) { create(:ci_stage) }
 
   let(:serializer) do

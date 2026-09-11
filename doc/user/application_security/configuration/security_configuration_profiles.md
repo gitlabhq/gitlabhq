@@ -23,6 +23,7 @@ title: Managing security configuration profiles
 - Feature flag `security_scan_profiles_feature` removed in GitLab 19.4.
 - Feature flag `security_remediation_profiles` removed in GitLab 19.4.
 - SAST scan profile configuration [introduced](https://gitlab.com/gitlab-org/gitlab/-/work_items/617070) in GitLab 19.4 as an [experiment](../../../policy/development_stages_support.md), available through the GraphQL API only.
+- Triage and remediation profile [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/622469) in GitLab 19.4 [with a feature flag](../../../administration/feature_flags/_index.md) named `triage_and_remediation_profile`. Enabled by default.
 
 {{< /history >}}
 
@@ -121,6 +122,52 @@ glab security config enable dependency_scanning_post_processing -R my-group/my-p
 > [!note]
 > A project can have both profiles attached at the same time. In that situation, GitLab only uses the profile that
 > was applied first. The configuration for the other profile is ignored.
+
+### Automated triage and remediation profile
+
+> [!flag]
+> The availability of this feature is controlled by a feature flag. For more information, see the
+> history.
+
+Use the triage and remediation profile to turn on GitLab Duo triage flows and dependency scanning
+auto-remediation across projects and groups. The GitLab Duo flows use AI to assess and resolve
+findings. A profile can enable a flow on its own, or replace the equivalent per-project setting
+where one exists.
+
+GitLab provides three presets: Conservative, Standard, and Proactive. Each one applies a
+different configuration to every flow, so you can choose how broadly and how often the flows trigger
+and run. You can also create a profile and configure it yourself.
+
+Prerequisites:
+
+- Meet the [prerequisites for the GitLab Duo Agent Platform](../../duo_agent_platform/_index.md#prerequisites).
+- Turn on **Allow foundational flows** and each flow you want to use
+  [for the top-level group](../../duo_agent_platform/flows/foundational_flows/_index.md#turn-foundational-flows-on-or-off).
+  You turn flows on once for the top-level group, not for each project.
+
+> [!note]
+> Most of these flows are AI-powered and consume [GitLab Credits](../../../subscriptions/gitlab_credits.md).
+> Consumption scales with the number of findings.
+
+#### Presets
+
+| Flow | Conservative | Standard | Proactive |
+| ---- | ------------ | -------- | --------- |
+| SAST false positive detection | `high` and above, on demand | `medium` and above, automatic | `info` and above, automatic |
+| SAST vulnerability resolution | `high` and above, on demand, up to five open merge requests | `medium` and above, automatic, up to 15 open merge requests | `info` and above, automatic, no merge request limit |
+| Secret detection false positive detection | `high` and above, on demand | `medium` and above, automatic | `info` and above, automatic |
+| Dependency scanning auto-remediation | `high` and above, minor version upgrades, up to five open merge requests, skips fix versions from the last seven days | `high` and above, minor version upgrades, up to 10 open merge requests, skips fix versions from the last seven days | `info` and above, major version upgrades, up to 10 open merge requests, skips fix versions from the last seven days |
+
+To apply a preset, use the [GraphQL API](#apply-a-profile-with-the-graphql-api). The presets
+are named `Triage and Remediation (Conservative)`, `Triage and Remediation (Standard)`, and
+`Triage and Remediation (Proactive)`.
+
+#### Related topics
+
+- [Detect false positives automatically](../vulnerabilities/false_positive_detection.md)
+- [Agentic SAST Vulnerability Resolution](../vulnerabilities/agentic_vulnerability_resolution.md)
+- [Secret false positive detection](../vulnerabilities/secret_false_positive_detection.md)
+- [Dependency scanning auto-remediation](../remediate/dependency_scanning_auto_remediation.md)
 
 ### View details about a profile
 

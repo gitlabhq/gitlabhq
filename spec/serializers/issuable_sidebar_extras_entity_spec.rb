@@ -4,7 +4,7 @@ require 'spec_helper'
 
 RSpec.describe IssuableSidebarExtrasEntity do
   let(:user) { create(:user) }
-  let(:project) { create(:project, :repository) }
+  let_it_be(:project) { create(:project) }
   let(:resource) { create(:issue, project: project) }
   let(:request) { double('request', current_user: user) }
 

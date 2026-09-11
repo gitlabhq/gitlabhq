@@ -18,6 +18,7 @@ description: Automatic detection and filtering of false positives in SAST findin
 - [Introduced](https://gitlab.com/groups/gitlab-org/-/work_items/18977) in GitLab 18.7 as a [beta](../../../policy/development_stages_support.md#beta) [with feature flags](../../../administration/feature_flags/_index.md) named `enable_vulnerability_fp_detection` and `ai_experiment_sast_fp_detection`. Enabled by default.
 - [Generally available](https://gitlab.com/groups/gitlab-org/-/work_items/19789) in GitLab 18.10.
 - Feature flags [`ai_experiment_sast_fp_detection`](https://gitlab.com/gitlab-org/gitlab/-/work_items/584344) and [`enable_vulnerability_fp_detection`](https://gitlab.com/gitlab-org/gitlab/-/work_items/584343) removed in GitLab 19.1.
+- Support in the triage and remediation profile [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/254011) in GitLab 19.4 [with a feature flag](../../../administration/feature_flags/_index.md) named `triage_and_remediation_profile`. Enabled by default.
 
 {{< /history >}}
 
@@ -39,6 +40,10 @@ For an overview, see [GitLab AI-Powered SAST False Positive Detection and Remedi
 
 For a click-through demo, see [SAST False Positive Detection Flow](https://gitlab.navattic.com/sast-fp-detection-flow).
 <!-- Demo published on 2026-02-17 -->
+
+Security configuration profiles also support this flow. To turn on and configure the flow
+across multiple projects and groups at once, use the
+[automated triage and remediation profile](../configuration/security_configuration_profiles.md#automated-triage-and-remediation-profile).
 
 ## Prerequisites
 

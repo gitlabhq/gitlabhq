@@ -3,7 +3,7 @@
 require 'spec_helper'
 
 RSpec.describe Import::HasImportSource, feature_category: :importers do
-  let_it_be(:snippet_not_imported) { create(:project_snippet, :repository) }
+  let_it_be(:snippet_not_imported) { create(:project_snippet) }
   let_it_be(:snippet_imported) { create(:project_snippet, imported_from: :bitbucket) }
   let_it_be(:merge_request_imported) { create(:project_snippet, imported_from: :fogbugz) }
   let_it_be(:merge_request_imported_bb_cloud) { create(:project_snippet, imported_from: :bitbucket) }

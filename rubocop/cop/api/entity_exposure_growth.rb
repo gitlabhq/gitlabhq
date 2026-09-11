@@ -6,7 +6,8 @@ module RuboCop
   module Cop
     module API
       # Prevents adding `expose` calls to high-impact REST API entities that
-      # affect many endpoints. Create a new, feature-bounded entity instead.
+      # affect many endpoints. Rearchitect to avoid needing the field, make the field
+      # opt-in, or create a new, feature-bounded entity instead.
       #
       # The cop loads an allowlist YAML file that maps each protected entity file
       # to its `usage_radius` (the number of endpoints the entity is exposed on)
@@ -40,12 +41,14 @@ module RuboCop
         include CodeReuseHelpers
 
         MSG = 'Do not add `expose` calls to high-impact entities. ' \
-          'Create a new, feature-bounded entity instead. ' \
+          'Rearchitect to avoid needing the field, make the field opt-in, ' \
+          'or create a new, feature-bounded entity instead. ' \
           'See https://docs.gitlab.com/development/api_styleguide/#high-impact-entities-and-feature-bounded-entities'
 
         IMPACT_MSG = 'Do not add `expose` calls to high-impact entities. ' \
           'This field would be exposed on ~%{usage_radius} API endpoints. ' \
-          'Create a new, feature-bounded entity instead. ' \
+          'Rearchitect to avoid needing the field, make the field opt-in, ' \
+          'or create a new, feature-bounded entity instead. ' \
           'See https://docs.gitlab.com/development/api_styleguide/#high-impact-entities-and-feature-bounded-entities'
 
         RESTRICT_ON_SEND = %i[expose].freeze

@@ -17,6 +17,7 @@ description: Find where symbols are defined and called, using the knowledge grap
 {{< history >}}
 
 - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/234404) as a [beta](../../policy/development_stages_support.md#beta) in GitLab 19.0 [with a feature flag](../../administration/feature_flags/_index.md) named `orbit_code_intelligence`. Disabled by default.
+- [Enabled on GitLab.com](https://gitlab.com/gitlab-org/gitlab/-/work_items/599054) in GitLab 19.4.
 
 {{< /history >}}
 

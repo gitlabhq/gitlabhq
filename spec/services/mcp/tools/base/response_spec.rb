@@ -166,6 +166,11 @@ RSpec.describe Mcp::Tools::Base::Response, feature_category: :mcp_server do
       expect(described_class.error?(nil)).to be false
       expect(described_class.error?('string')).to be false
     end
+
+    it 'returns false when isError is missing or nil' do
+      expect(described_class.error?({ content: [] })).to be false
+      expect(described_class.error?({ content: [], isError: nil })).to be false
+    end
   end
 
   describe '.error_message' do

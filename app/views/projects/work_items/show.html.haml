@@ -1,13 +1,13 @@
 - if @work_item.present?
   = render 'shared/work_item_metadata', work_item: @work_item
-- add_page_specific_style 'page_bundles/issuable_list'
-- add_page_specific_style 'page_bundles/issues_list'
-- add_page_specific_style 'page_bundles/issues_show'
+- else
+  - page_title s_('WorkItem|Work items')
+
 - add_work_items_stylesheet
-- add_page_specific_style 'page_bundles/design_management'
+- @force_show_panel_header = true
 - @gfm_form = true
 - @noteable_type = 'WorkItem'
-- @force_show_panel_header = true
 
 = ai_context_block(@project)
+
 #js-work-items{ data: work_item_views_only_data(@project) }

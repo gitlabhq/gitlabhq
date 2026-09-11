@@ -483,7 +483,7 @@ module API
 
           issue = response.payload[:work_item]
 
-          present issue, with: Entities::Issue, current_user: current_user, project: user_project
+          present issue, with: Entities::Issue, current_user: current_user, project: new_project
         end
       end
       # rubocop: enable CodeReuse/ActiveRecord

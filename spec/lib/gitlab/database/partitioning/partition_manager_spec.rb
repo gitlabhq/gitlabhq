@@ -984,6 +984,201 @@ RSpec.describe Gitlab::Database::Partitioning::PartitionManager, feature_categor
 
       it_behaves_like 'run only once analyze within interval'
     end
+
+    context 'when a partition is created within the analyze interval' do
+      let(:created_partition_identifier) { "gitlab_partitions_dynamic.#{analyze_table}_2" }
+      let(:created_partition_analyze_regex) do
+        /ANALYZE \(SKIP_LOCKED\) "gitlab_partitions_dynamic"\."#{analyze_table}_2"/
+      end
+
+      let(:my_model) do
+        interval = analyze_interval
+        Class.new(ApplicationRecord) do
+          include PartitionedTable
+
+          partitioned_by :partition_id,
+            strategy: :ci_sliding_list,
+            next_partition_if: proc { |partition| partition.values.max < 2 },
+            detach_partition_if: proc { false },
+            analyze_interval: interval
+        end
+      end
+
+      before do
+        allow_next_instance_of(described_class) do |instance|
+          allow(instance).to receive(:parent_table_has_loose_foreign_key?).and_return(false)
+        end
+
+        # Last analyze is recent, so the interval throttle skips the whole-table ANALYZE
+        allow(connection).to receive(:select_value).and_call_original
+        allow(connection).to receive(:select_value)
+          .with(/pg_stat_get_last_analyze_time/)
+          .and_return(Time.current)
+      end
+
+      it 'analyzes the created partition directly, bypassing the interval throttle' do
+        control = ActiveRecord::QueryRecorder.new do
+          described_class.new(my_model, connection: connection).sync_partitions(analyze: analyze)
+        end
+
+        expect(control.occurrences).to include(created_partition_analyze_regex)
+        expect(control.occurrences).not_to include(analyze_regex)
+
+        reltuples = connection.execute(
+          "SELECT reltuples FROM pg_class WHERE oid = '#{created_partition_identifier}'::regclass"
+        ).first['reltuples']
+        expect(reltuples).to be >= 0 # -1 means never analyzed
+      end
+
+      context 'when the model does not set analyze_interval' do
+        let(:my_model) do
+          Class.new(ApplicationRecord) do
+            include PartitionedTable
+
+            partitioned_by :partition_id,
+              strategy: :ci_sliding_list,
+              next_partition_if: proc { |partition| partition.values.max < 2 },
+              detach_partition_if: proc { false }
+          end
+        end
+
+        it 'does not analyze the created partition' do
+          control = ActiveRecord::QueryRecorder.new do
+            described_class.new(my_model, connection: connection).sync_partitions(analyze: analyze)
+          end
+
+          expect(control.occurrences).not_to include(created_partition_analyze_regex)
+          expect(control.occurrences).not_to include(analyze_regex)
+        end
+      end
+
+      context 'when analyze is false' do
+        let(:analyze) { false }
+
+        it 'does not analyze the created partition' do
+          control = ActiveRecord::QueryRecorder.new do
+            described_class.new(my_model, connection: connection).sync_partitions(analyze: analyze)
+          end
+
+          expect(control.occurrences).not_to include(created_partition_analyze_regex)
+          expect(control.occurrences).not_to include(analyze_regex)
+        end
+      end
+
+      context 'when the analyze_partitioned_tables_on_rotation flag is disabled' do
+        before do
+          stub_feature_flags(analyze_partitioned_tables_on_rotation: false)
+        end
+
+        it 'does not analyze the created partition' do
+          control = ActiveRecord::QueryRecorder.new do
+            described_class.new(my_model, connection: connection).sync_partitions(analyze: analyze)
+          end
+
+          expect(control.occurrences).not_to include(created_partition_analyze_regex)
+        end
+      end
+
+      context 'when the ANALYZE on the created partition fails' do
+        before do
+          allow(connection).to receive(:execute).and_call_original
+          allow(connection).to receive(:execute)
+            .with(/\AANALYZE \(SKIP_LOCKED\) "gitlab_partitions_dynamic"/)
+            .and_raise(ActiveRecord::StatementInvalid, 'analyze failed')
+        end
+
+        it 'logs an analyze failure and keeps the created partition' do
+          expect(Gitlab::AppLogger).to receive(:error).with(
+            hash_including('message' => 'Failed to run ANALYZE on created partitions')
+          )
+          expect(Gitlab::AppLogger).not_to receive(:error).with(
+            hash_including('message' => 'Failed to create / detach partition(s)')
+          )
+
+          described_class.new(my_model, connection: connection).sync_partitions(analyze: analyze)
+
+          created = connection.execute(
+            "SELECT to_regclass('#{created_partition_identifier}') IS NOT NULL AS present"
+          ).first['present']
+          expect(created).to be(true)
+        end
+
+        context 'when the whole-table ANALYZE is due' do
+          before do
+            allow(connection).to receive(:select_value)
+              .with(/pg_stat_get_last_analyze_time/)
+              .and_return(nil)
+          end
+
+          it 'still analyzes the partitioned table' do
+            expect(connection).to receive(:execute).with(analyze_regex).and_call_original
+
+            described_class.new(my_model, connection: connection).sync_partitions(analyze: analyze)
+          end
+        end
+      end
+
+      context 'when the whole-table ANALYZE is due but fails' do
+        before do
+          allow(connection).to receive(:select_value)
+            .with(/pg_stat_get_last_analyze_time/)
+            .and_return(nil)
+          allow(connection).to receive(:execute).and_call_original
+          allow(connection).to receive(:execute)
+            .with(/\AANALYZE \(SKIP_LOCKED\) "#{analyze_table}"/)
+            .and_raise(ActiveRecord::StatementInvalid, 'analyze failed')
+        end
+
+        it 'still analyzes the created partition' do
+          expect(Gitlab::AppLogger).to receive(:error).with(
+            hash_including('message' => 'Failed to run ANALYZE on partitioned table')
+          )
+
+          control = ActiveRecord::QueryRecorder.new do
+            described_class.new(my_model, connection: connection).sync_partitions(analyze: analyze)
+          end
+
+          expect(control.occurrences).to include(created_partition_analyze_regex)
+        end
+      end
+
+      context 'when the whole-table ANALYZE is due in the same run' do
+        before do
+          allow(connection).to receive(:select_value)
+            .with(/pg_stat_get_last_analyze_time/)
+            .and_return(nil)
+        end
+
+        it 'relies on the whole-table ANALYZE instead of analyzing the partition twice' do
+          control = ActiveRecord::QueryRecorder.new do
+            described_class.new(my_model, connection: connection).sync_partitions(analyze: analyze)
+          end
+
+          expect(control.occurrences).to include(analyze_regex)
+          expect(control.occurrences).not_to include(created_partition_analyze_regex)
+        end
+      end
+
+      context 'when SKIP_LOCKED makes the ANALYZE a no-op' do
+        before do
+          allow(connection).to receive(:execute).and_call_original
+          allow(connection).to receive(:execute)
+            .with(/\AANALYZE \(SKIP_LOCKED\) "gitlab_partitions_dynamic"/)
+            .and_return(nil)
+        end
+
+        it 'logs a warning for the statless partition' do
+          expect(Gitlab::AppLogger).to receive(:warn).with(
+            hash_including(
+              'message' => 'ANALYZE skipped on created partition',
+              'partition_name' => "#{analyze_table}_2"
+            )
+          )
+
+          described_class.new(my_model, connection: connection).sync_partitions(analyze: analyze)
+        end
+      end
+    end
   end
 
   describe 'strategies that support analyze_interval' do

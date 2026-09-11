@@ -5,7 +5,7 @@ require 'spec_helper'
 RSpec.describe 'Query.project.pipeline.stages.groups', feature_category: :continuous_integration do
   include GraphqlHelpers
 
-  let_it_be(:project) { create(:project, :repository, :public) }
+  let_it_be(:project) { create(:project, :public) }
   let_it_be(:user) { create(:user) }
   let_it_be(:pipeline) { create(:ci_pipeline, project: project, user: user) }
   let(:group_graphql_data) { graphql_data_at(:project, :pipeline, :stages, :nodes, 0, :groups, :nodes) }

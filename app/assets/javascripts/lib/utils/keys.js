@@ -9,3 +9,5 @@ export const ARROW_RIGHT_KEY = 'ArrowRight';
 export const END_KEY = 'End';
 export const HOME_KEY = 'Home';
 export const TAB_KEY = 'Tab';
+export const PAGE_DOWN_KEY = 'PageDown';
+export const PAGE_UP_KEY = 'PageUp';

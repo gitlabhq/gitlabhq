@@ -5,7 +5,7 @@ require 'spec_helper'
 RSpec.describe BlobViewer::Readme do
   include FakeBlobHelpers
 
-  let(:project) { create(:project, :repository, :wiki_repo) }
+  let(:project) { create(:project, :wiki_repo) }
   let(:blob) { fake_blob(path: 'README.md') }
 
   subject { described_class.new(blob) }

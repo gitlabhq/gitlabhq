@@ -1,0 +1,8 @@
+---
+name: autovacuum_indicator_uses_context_connection
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/254976
+rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/work_items/628693
+milestone: '19.4'
+type: ops
+group: group::security foundations
+default_enabled: false

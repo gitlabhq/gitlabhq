@@ -24,7 +24,7 @@ module Mcp
         end
 
         def self.error?(result)
-          result.is_a?(Hash) && result[:isError]
+          result.is_a?(Hash) && !!result[:isError]
         end
 
         def self.error_message(result)

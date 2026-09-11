@@ -9697,10 +9697,22 @@
               "args": [
                 {
                   "name": "granularity",
-                  "description": "Date granularity: daily, weekly, or monthly",
+                  "description": "Date granularity: daily, weekly, monthly, or a fixed number of days between 1d and 399d (for example 30d)",
                   "type": {
                     "kind": "SCALAR",
                     "name": "String",
+                    "ofType": null
+                  },
+                  "defaultValue": null,
+                  "isDeprecated": false,
+                  "deprecationReason": null
+                },
+                {
+                  "name": "origin",
+                  "description": "Anchor for fixed-day granularities: buckets start at this timestamp and repeat every N days. Only valid with a fixed-day granularity",
+                  "type": {
+                    "kind": "SCALAR",
+                    "name": "Time",
                     "ofType": null
                   },
                   "defaultValue": null,
@@ -106487,10 +106499,22 @@
               "args": [
                 {
                   "name": "granularity",
-                  "description": "Date granularity: daily, weekly, or monthly",
+                  "description": "Date granularity: daily, weekly, monthly, or a fixed number of days between 1d and 399d (for example 30d)",
                   "type": {
                     "kind": "SCALAR",
                     "name": "String",
+                    "ofType": null
+                  },
+                  "defaultValue": null,
+                  "isDeprecated": false,
+                  "deprecationReason": null
+                },
+                {
+                  "name": "origin",
+                  "description": "Anchor for fixed-day granularities: buckets start at this timestamp and repeat every N days. Only valid with a fixed-day granularity",
+                  "type": {
+                    "kind": "SCALAR",
+                    "name": "Time",
                     "ofType": null
                   },
                   "defaultValue": null,
@@ -136308,10 +136332,22 @@
               "args": [
                 {
                   "name": "granularity",
-                  "description": "Date granularity: daily, weekly, or monthly",
+                  "description": "Date granularity: daily, weekly, monthly, or a fixed number of days between 1d and 399d (for example 30d)",
                   "type": {
                     "kind": "SCALAR",
                     "name": "String",
+                    "ofType": null
+                  },
+                  "defaultValue": null,
+                  "isDeprecated": false,
+                  "deprecationReason": null
+                },
+                {
+                  "name": "origin",
+                  "description": "Anchor for fixed-day granularities: buckets start at this timestamp and repeat every N days. Only valid with a fixed-day granularity",
+                  "type": {
+                    "kind": "SCALAR",
+                    "name": "Time",
                     "ofType": null
                   },
                   "defaultValue": null,
@@ -136345,10 +136381,22 @@
               "args": [
                 {
                   "name": "granularity",
-                  "description": "Date granularity: daily, weekly, or monthly",
+                  "description": "Date granularity: daily, weekly, monthly, or a fixed number of days between 1d and 399d (for example 30d)",
                   "type": {
                     "kind": "SCALAR",
                     "name": "String",
+                    "ofType": null
+                  },
+                  "defaultValue": null,
+                  "isDeprecated": false,
+                  "deprecationReason": null
+                },
+                {
+                  "name": "origin",
+                  "description": "Anchor for fixed-day granularities: buckets start at this timestamp and repeat every N days. Only valid with a fixed-day granularity",
+                  "type": {
+                    "kind": "SCALAR",
+                    "name": "Time",
                     "ofType": null
                   },
                   "defaultValue": null,
@@ -145315,10 +145363,22 @@
               "args": [
                 {
                   "name": "granularity",
-                  "description": "Date granularity: daily, weekly, or monthly",
+                  "description": "Date granularity: daily, weekly, monthly, or a fixed number of days between 1d and 399d (for example 30d)",
                   "type": {
                     "kind": "SCALAR",
                     "name": "String",
+                    "ofType": null
+                  },
+                  "defaultValue": null,
+                  "isDeprecated": false,
+                  "deprecationReason": null
+                },
+                {
+                  "name": "origin",
+                  "description": "Anchor for fixed-day granularities: buckets start at this timestamp and repeat every N days. Only valid with a fixed-day granularity",
+                  "type": {
+                    "kind": "SCALAR",
+                    "name": "Time",
                     "ofType": null
                   },
                   "defaultValue": null,
@@ -146415,10 +146475,22 @@
               "args": [
                 {
                   "name": "granularity",
-                  "description": "Date granularity: daily, weekly, or monthly",
+                  "description": "Date granularity: daily, weekly, monthly, or a fixed number of days between 1d and 399d (for example 30d)",
                   "type": {
                     "kind": "SCALAR",
                     "name": "String",
+                    "ofType": null
+                  },
+                  "defaultValue": null,
+                  "isDeprecated": false,
+                  "deprecationReason": null
+                },
+                {
+                  "name": "origin",
+                  "description": "Anchor for fixed-day granularities: buckets start at this timestamp and repeat every N days. Only valid with a fixed-day granularity",
+                  "type": {
+                    "kind": "SCALAR",
+                    "name": "Time",
                     "ofType": null
                   },
                   "defaultValue": null,
@@ -150287,10 +150359,22 @@
               "args": [
                 {
                   "name": "granularity",
-                  "description": "Date granularity: daily, weekly, or monthly",
+                  "description": "Date granularity: daily, weekly, monthly, or a fixed number of days between 1d and 399d (for example 30d)",
                   "type": {
                     "kind": "SCALAR",
                     "name": "String",
+                    "ofType": null
+                  },
+                  "defaultValue": null,
+                  "isDeprecated": false,
+                  "deprecationReason": null
+                },
+                {
+                  "name": "origin",
+                  "description": "Anchor for fixed-day granularities: buckets start at this timestamp and repeat every N days. Only valid with a fixed-day granularity",
+                  "type": {
+                    "kind": "SCALAR",
+                    "name": "Time",
                     "ofType": null
                   },
                   "defaultValue": null,
@@ -256283,10 +256367,22 @@
               "args": [
                 {
                   "name": "granularity",
-                  "description": "Date granularity: daily, weekly, or monthly",
+                  "description": "Date granularity: daily, weekly, monthly, or a fixed number of days between 1d and 399d (for example 30d)",
                   "type": {
                     "kind": "SCALAR",
                     "name": "String",
+                    "ofType": null
+                  },
+                  "defaultValue": null,
+                  "isDeprecated": false,
+                  "deprecationReason": null
+                },
+                {
+                  "name": "origin",
+                  "description": "Anchor for fixed-day granularities: buckets start at this timestamp and repeat every N days. Only valid with a fixed-day granularity",
+                  "type": {
+                    "kind": "SCALAR",
+                    "name": "Time",
                     "ofType": null
                   },
                   "defaultValue": null,
@@ -256320,10 +256416,22 @@
               "args": [
                 {
                   "name": "granularity",
-                  "description": "Date granularity: daily, weekly, or monthly",
+                  "description": "Date granularity: daily, weekly, monthly, or a fixed number of days between 1d and 399d (for example 30d)",
                   "type": {
                     "kind": "SCALAR",
                     "name": "String",
+                    "ofType": null
+                  },
+                  "defaultValue": null,
+                  "isDeprecated": false,
+                  "deprecationReason": null
+                },
+                {
+                  "name": "origin",
+                  "description": "Anchor for fixed-day granularities: buckets start at this timestamp and repeat every N days. Only valid with a fixed-day granularity",
+                  "type": {
+                    "kind": "SCALAR",
+                    "name": "Time",
                     "ofType": null
                   },
                   "defaultValue": null,
@@ -316735,10 +316843,22 @@
               "args": [
                 {
                   "name": "granularity",
-                  "description": "Date granularity: daily, weekly, or monthly",
+                  "description": "Date granularity: daily, weekly, monthly, or a fixed number of days between 1d and 399d (for example 30d)",
                   "type": {
                     "kind": "SCALAR",
                     "name": "String",
+                    "ofType": null
+                  },
+                  "defaultValue": null,
+                  "isDeprecated": false,
+                  "deprecationReason": null
+                },
+                {
+                  "name": "origin",
+                  "description": "Anchor for fixed-day granularities: buckets start at this timestamp and repeat every N days. Only valid with a fixed-day granularity",
+                  "type": {
+                    "kind": "SCALAR",
+                    "name": "Time",
                     "ofType": null
                   },
                   "defaultValue": null,
@@ -316796,10 +316916,22 @@
               "args": [
                 {
                   "name": "granularity",
-                  "description": "Date granularity: daily, weekly, or monthly",
+                  "description": "Date granularity: daily, weekly, monthly, or a fixed number of days between 1d and 399d (for example 30d)",
                   "type": {
                     "kind": "SCALAR",
                     "name": "String",
+                    "ofType": null
+                  },
+                  "defaultValue": null,
+                  "isDeprecated": false,
+                  "deprecationReason": null
+                },
+                {
+                  "name": "origin",
+                  "description": "Anchor for fixed-day granularities: buckets start at this timestamp and repeat every N days. Only valid with a fixed-day granularity",
+                  "type": {
+                    "kind": "SCALAR",
+                    "name": "Time",
                     "ofType": null
                   },
                   "defaultValue": null,

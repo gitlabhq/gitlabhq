@@ -5367,6 +5367,9 @@ msgstr ""
 msgid "Add %{linkStart}assets%{linkEnd} to your Release. GitLab automatically includes read-only assets, like source code and release evidence."
 msgstr ""
 
+msgid "Add %{name} as a reviewer"
+msgstr ""
+
 msgid "Add %{name} to favorites"
 msgstr ""
 
@@ -5656,6 +5659,9 @@ msgid "Add reaction to @%{username}"
 msgstr ""
 
 msgid "Add request manually"
+msgstr ""
+
+msgid "Add reviewer"
 msgstr ""
 
 msgid "Add role"
@@ -25121,6 +25127,9 @@ msgstr ""
 msgid "Cost factor for forks of projects"
 msgstr ""
 
+msgid "Could not add %{name} as a reviewer. Try again later."
+msgstr ""
+
 msgid "Could not apply %{name} command."
 msgstr ""
 
@@ -30992,6 +31001,9 @@ msgid "DuoAgenticChat|Choose a group to use Agentic Chat"
 msgstr ""
 
 msgid "DuoAgenticChat|Collaborate with AI agents to accomplish tasks and answer questions, or use a multi-agent flow to solve a complex problem."
+msgstr ""
+
+msgid "DuoAgenticChat|Compacting…"
 msgstr ""
 
 msgid "DuoAgenticChat|Connection lost"
@@ -53145,6 +53157,9 @@ msgstr ""
 msgid "No agents available to create workspaces. Please consult %{linkStart}Workspaces documentation%{linkEnd} for troubleshooting."
 msgstr ""
 
+msgid "No approval rule"
+msgstr ""
+
 msgid "No approvers"
 msgstr ""
 
@@ -56829,6 +56844,9 @@ msgstr ""
 msgid "Orbit|Configure Orbit for a group"
 msgstr ""
 
+msgid "Orbit|Configure instance-level settings for Orbit indexing."
+msgstr ""
+
 msgid "Orbit|Connect"
 msgstr ""
 
@@ -57000,6 +57018,9 @@ msgstr ""
 msgid "Orbit|Index"
 msgstr ""
 
+msgid "Orbit|Index root namespaces automatically"
+msgstr ""
+
 msgid "Orbit|Indexed content"
 msgstr ""
 
@@ -57139,6 +57160,9 @@ msgid "Orbit|Orbit is unavailable."
 msgstr ""
 
 msgid "Orbit|Orbit not enabled"
+msgstr ""
+
+msgid "Orbit|Orbit settings"
 msgstr ""
 
 msgid "Orbit|Owner instructions"
@@ -66184,6 +66208,9 @@ msgstr ""
 msgid "Ready to merge!"
 msgstr ""
 
+msgid "Reason for recommended reviewer"
+msgstr ""
+
 msgid "Reason:"
 msgstr ""
 
@@ -66239,6 +66266,9 @@ msgid "Recently used"
 msgstr ""
 
 msgid "Recently viewed"
+msgstr ""
+
+msgid "Recommended"
 msgstr ""
 
 msgid "Recommended. Permanently delete an item:"
@@ -71588,6 +71618,9 @@ msgstr ""
 msgid "SecretsManager|GitLab Secrets Manager is free during open beta, but will consume %{linkStart}GitLab Credits%{linkEnd} when it becomes generally available. Credits will be consumed only if you opt in. You will receive advance notice before general availability."
 msgstr ""
 
+msgid "SecretsManager|GitLab Secrets Manager will no longer be billed when disabled."
+msgstr ""
+
 msgid "SecretsManager|GitLab Secrets Manager will not use GitLab Credits when disabled."
 msgstr ""
 
@@ -71688,6 +71721,9 @@ msgid "SecretsManager|Stored secrets"
 msgstr ""
 
 msgid "SecretsManager|Storing secrets and reading them consumes GitLab Credits."
+msgstr ""
+
+msgid "SecretsManager|The GitLab Secrets Manager add-on could not be enabled. Please try again."
 msgstr ""
 
 msgid "SecretsManager|The GitLab Secrets Manager has been enabled for all groups and projects in this instance. Visit any group or project to create secrets."

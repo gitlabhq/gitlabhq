@@ -4,8 +4,8 @@ require 'spec_helper'
 
 RSpec.describe 'Merge request > User sees diff', :js, feature_category: :code_review_workflow do
   include ProjectForksHelper
+  include RapidDiffsHelpers
   include RepoHelpers
-  include MergeRequestDiffHelpers
 
   let(:project) { create(:project, :public, :repository) }
   let(:merge_request) { create(:merge_request, source_project: project) }
@@ -32,7 +32,7 @@ RSpec.describe 'Merge request > User sees diff', :js, feature_category: :code_re
         visit "#{diffs_project_merge_request_path(project, merge_request)}#{fragment}"
       end
 
-      it 'shows expanded note', quarantine: 'https://gitlab.com/gitlab-org/quality/test-failure-issues/-/issues/9350' do
+      it 'shows expanded note' do
         expect(page).to have_selector(fragment, visible: :visible)
       end
     end
@@ -42,25 +42,48 @@ RSpec.describe 'Merge request > User sees diff', :js, feature_category: :code_re
     let(:note) { create :diff_note_on_merge_request, project: project, noteable: merge_request }
     let(:line) { note.diff_file.highlighted_diff_lines.last }
     let(:line_code) { line.line_code }
+    let(:line_text) { Nokogiri::HTML(line.text_content).text.strip }
 
     before do
       visit "#{diffs_project_merge_request_path(project, merge_request)}##{line_code}"
     end
 
-    it 'shows the linked line', quarantine: 'https://gitlab.com/gitlab-org/gitlab/-/issues/496702' do
-      expect(page).to have_selector("[id='#{line_code}']", visible: :visible, obscured: false)
+    it 'shows the linked line' do
+      _file_hash, old_line, new_line = line_code.split('_')
+
+      expect(diff_file(note.diff_file.file_path)).to have_selector(
+        "[data-position='new'] [data-line-number='#{new_line}'], " \
+          "[data-position='old'] [data-line-number='#{old_line}']",
+        obscured: false, wait: 20
+      )
     end
   end
 
   context 'when merge request has overflow' do
-    it 'displays warning' do
+    it 'displays warning',
+      skip: 'Rapid Diffs has no overflow warning; ' \
+        'https://gitlab.com/gitlab-org/gitlab/-/issues/628508' do
       allow(Commit).to receive(:max_diff_options).and_return(max_files: 3)
-      allow_any_instance_of(DiffHelper).to receive(:render_overflow_warning?).and_return(true)
 
       visit diffs_project_merge_request_path(project, merge_request)
 
       page.within('.gl-alert') do
-        expect(page).to have_text("Only the first 3 files are listed on this page To view all changes, download the diff. Plain diff Patches")
+        expect(page).to have_text("Only the first 3 files are listed on this page")
+        expect(page).to have_link("Plain diff", href: merge_request_path(merge_request, format: :diff))
+        expect(page).to have_link("Patches", href: merge_request_path(merge_request, format: :patch))
+      end
+    end
+  end
+
+  context 'when merge request has collapsed files' do
+    it 'displays warning' do
+      allow(Commit).to receive(:diff_safe_max_files).and_return(3)
+
+      visit diffs_project_merge_request_path(project, merge_request)
+
+      page.within('.gl-alert') do
+        expect(page).to have_text(/\d+ files are collapsed/)
+        expect(page).to have_text("To view all changes, download the diff.")
         expect(page).to have_link("Plain diff", href: merge_request_path(merge_request, format: :diff))
         expect(page).to have_link("Patches", href: merge_request_path(merge_request, format: :patch))
       end
@@ -72,29 +95,30 @@ RSpec.describe 'Merge request > User sees diff', :js, feature_category: :code_re
     let(:user) { create(:user) }
     let(:forked_project) { fork_project(project, author_user, repository: true) }
     let(:merge_request) { create(:merge_request_with_diffs, source_project: forked_project, target_project: project, author: author_user) }
-    let(:changelog_id) { Digest::SHA1.hexdigest("CHANGELOG") }
 
     context 'as author' do
       it 'contains direct edit link', :sidekiq_might_not_need_inline do
         sign_in(author_user)
         visit diffs_project_merge_request_path(project, merge_request)
+        wait_for_requests # rubocop:disable RSpec/AvoidWaitForRequests -- Rapid Diffs streams diffs asynchronously
 
-        find_by_testid('options-dropdown-button', match: :first).click
+        find('diff-file', match: :first).find('button[aria-label="Show options"]').click
 
-        expect(page).to have_selector(".js-edit-blob")
+        expect(page).to have_link('Edit single file')
       end
     end
 
     context 'as user who needs to fork' do
-      it 'shows fork/cancel confirmation', :sidekiq_might_not_need_inline, quarantine: 'https://gitlab.com/gitlab-org/quality/test-failure-issues/-/issues/9320' do
+      it 'shows fork/cancel confirmation', :sidekiq_might_not_need_inline,
+        skip: 'Rapid Diffs: no inline fork suggestion yet (diff_file_component TODO); ' \
+          'https://gitlab.com/gitlab-org/gitlab/-/issues/628501' do
         sign_in(user)
         visit diffs_project_merge_request_path(project, merge_request)
 
-        find_in_panel_by_scrolling("[id=\"#{changelog_id}\"]")
-
-        # Throws `Capybara::Poltergeist::InvalidSelector` if we try to use `#hash` syntax
-        find("[id=\"#{changelog_id}\"] .js-diff-more-actions").click
-        find("[id=\"#{changelog_id}\"] .js-edit-blob").click
+        changelog_file = page.find('diff-file header h2', text: 'CHANGELOG', exact_text: true)
+                              .find(:xpath, './ancestor::diff-file[1]')
+        changelog_file.find('button[aria-label="Show options"]').click
+        changelog_file.click_link('Edit single file')
 
         expect(page).to have_selector('.js-fork-suggestion-button', count: 1)
         expect(page).to have_selector('.js-cancel-fork-suggestion-button', count: 1)
@@ -127,7 +151,6 @@ RSpec.describe 'Merge request > User sees diff', :js, feature_category: :code_re
           CONTENT
 
         file_name = 'xss_file.rs'
-        file_hash = Digest::SHA1.hexdigest(file_name)
 
         create_file('master', file_name, file_content)
         merge_request = create(:merge_request, source_project: project)
@@ -137,8 +160,7 @@ RSpec.describe 'Merge request > User sees diff', :js, feature_category: :code_re
 
         visit diffs_project_merge_request_path(project, merge_request)
 
-        find_in_panel_by_scrolling("[id='#{file_hash}']")
-
+        expect(page).to have_selector('diff-file header h2', text: file_name, exact_text: true)
         expect(page).to have_text("function foo<input> {")
         expect(page).to have_css(".line[data-lang=\"rust\"] .k")
       end
@@ -170,7 +192,7 @@ RSpec.describe 'Merge request > User sees diff', :js, feature_category: :code_re
           let(:file_name) { 'a/ruby.rb' }
 
           it 'shows an error message' do
-            expect(page).to have_content('source diff could not be displayed: it is stored in LFS')
+            expect(page).to have_content('File stored in LFS.')
           end
         end
       end

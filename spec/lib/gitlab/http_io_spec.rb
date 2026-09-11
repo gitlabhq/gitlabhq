@@ -70,6 +70,9 @@ RSpec.describe Gitlab::HttpIO, feature_category: :job_artifacts do
 
     context 'when the connection fails mid-read' do
       before do
+        # This example asserts single-attempt behavior. Flags default to enabled in specs, so
+        # disable this one here; the retry path is covered under 'retrying transient failures'.
+        stub_feature_flags(http_io_retry_transient_errors: false)
         stub_request(:get, url).to_raise(Errno::ECONNRESET)
       end
 
@@ -110,6 +113,12 @@ RSpec.describe Gitlab::HttpIO, feature_category: :job_artifacts do
     end
 
     context 'when the server fails persistently and then recovers' do
+      before do
+        # Asserts on Net::HTTP's own single retry, which HttpIO retries would
+        # otherwise absorb.
+        stub_feature_flags(http_io_retry_transient_errors: false)
+      end
+
       it 'surfaces the error, then a retried read on the same object succeeds', :aggregate_failures do
         server.fail_next_requests(2)
 
@@ -135,6 +144,10 @@ RSpec.describe Gitlab::HttpIO, feature_category: :job_artifacts do
       end
 
       context 'when the truncation persists' do
+        before do
+          stub_feature_flags(http_io_retry_transient_errors: false)
+        end
+
         it 'surfaces the error, then a retried read on the same object succeeds', :aggregate_failures do
           server.truncate_next_responses(2)
 
@@ -147,6 +160,161 @@ RSpec.describe Gitlab::HttpIO, feature_category: :job_artifacts do
           # for the successful read
           expect(server.accepts).to eq(3)
         end
+      end
+    end
+  end
+
+  describe 'retrying transient failures', :prometheus do
+    before do
+      set_smaller_buffer_size_than(size)
+      # Stub sleep to avoid real backoff delays. allow_next_instance_of rather
+      # than allow(http_io), which would instantiate http_io before inner
+      # contexts stub the feature flag that initialize reads.
+      allow_next_instance_of(described_class) do |instance|
+        allow(instance).to receive(:sleep)
+      end
+    end
+
+    context 'with a transient response code' do
+      it 'retries and returns the body' do
+        stub_request(:get, url)
+          .to_return(status: 503).then
+          .to_return { |request| remote_url_response(file_path, request, 206) }
+
+        expect(http_io.read).to eq(file_body)
+      end
+
+      it 'gives up once the budget is spent' do
+        stub_remote_url_500(url)
+
+        expect { http_io.read }.to raise_error(described_class::FailedToGetChunkError, 'Unexpected response code: 500')
+        expect(a_request(:get, url)).to have_been_made.times(described_class::RETRY_BUDGET + 1)
+      end
+
+      it 'counts the retry against its reason' do
+        counter = instance_double(Prometheus::Client::Counter, increment: nil)
+        allow(Gitlab::Metrics).to receive(:counter)
+          .with(:gitlab_http_io_chunk_retries_total, anything).and_return(counter)
+        stub_request(:get, url)
+          .to_return(status: 503).then
+          .to_return { |request| remote_url_response(file_path, request, 206) }
+
+        http_io.read
+
+        expect(counter).to have_received(:increment).with(reason: 'http_503').once
+      end
+    end
+
+    context 'with the backoff delay' do
+      let(:base) { described_class::RETRY_BASE_DELAY }
+
+      it 'doubles per retry' do
+        stub_remote_url_500(url)
+        delays = []
+        allow(http_io).to receive(:sleep) { |seconds| delays << seconds }
+        # Pin the jitter factor to 1, so the delays are exactly the intended
+        # multiples of the base.
+        allow(http_io).to receive(:rand).and_return(0.5)
+
+        expect { http_io.read }.to raise_error(described_class::FailedToGetChunkError)
+        expect(delays).to eq([base, base * 2, base * 4])
+      end
+    end
+
+    context 'when the connection keeps dying mid-body' do
+      it 'preserves the original EOFError as the cause of the raised error' do
+        stub_request(:get, url).to_raise(EOFError)
+
+        expect { http_io.read }.to raise_error(described_class::FailedToGetChunkError) do |error|
+          expect(error.cause).to be_a(EOFError)
+        end
+      end
+    end
+
+    context 'with a transport error that persists past the budget' do
+      it 'surfaces the original error after the final attempt', :aggregate_failures do
+        stub_request(:get, url).to_raise(Errno::ECONNRESET)
+
+        expect { http_io.read }.to raise_error(Errno::ECONNRESET)
+        expect(a_request(:get, url)).to have_been_made.times(described_class::RETRY_BUDGET + 1)
+      end
+    end
+
+    context 'with a response code that will not change on a retry' do
+      it 'fails on the first attempt' do
+        stub_request(:get, url).to_return(status: 404)
+
+        expect { http_io.read }.to raise_error(described_class::FailedToGetChunkError, 'Unexpected response code: 404')
+        expect(a_request(:get, url)).to have_been_made.once
+      end
+    end
+
+    context 'when the handshake fails while opening the session' do
+      # Net::HTTP.start connects outside #transport_request, so its own retry
+      # never covers this - the failure reported in the originating incident.
+      it 'retries on a fresh session' do
+        stub_remote_url_206(url, file_path)
+        starts = 0
+        allow(Net::HTTP).to receive(:start).and_wrap_original do |original, *args, **kwargs|
+          starts += 1
+          if starts == 1
+            raise OpenSSL::SSL::SSLError, 'SSL_connect returned=6 errno=107 state=SSLv3/TLS write client hello'
+          end
+
+          original.call(*args, **kwargs)
+        end
+
+        expect(http_io.read).to eq(file_body)
+        expect(starts).to eq(2)
+      end
+    end
+
+    context 'when failures are spread across chunks' do
+      let(:buffer_size) { 32.kilobytes }
+
+      before do
+        stub_const("Gitlab::HttpIO::BUFFER_SIZE", buffer_size)
+      end
+
+      it 'shares one budget across the whole read rather than allowing one per chunk' do
+        requests = 0
+        stub_request(:get, url).to_return do |request|
+          requests += 1
+          requests.even? ? { status: 503 } : remote_url_response(file_path, request, 206)
+        end
+
+        # Every other request fails, so no single chunk exhausts the budget on
+        # its own; the read fails on the failure after the budget is spent.
+        expect { http_io.read }.to raise_error(described_class::FailedToGetChunkError)
+        expect(requests).to eq((2 * described_class::RETRY_BUDGET) + 2)
+      end
+    end
+
+    context 'when the flag is disabled' do
+      before do
+        stub_feature_flags(http_io_retry_transient_errors: false)
+      end
+
+      it 'fails on the first attempt' do
+        stub_remote_url_500(url)
+
+        expect { http_io.read }.to raise_error(described_class::FailedToGetChunkError)
+        expect(a_request(:get, url)).to have_been_made.once
+      end
+    end
+
+    context 'with a real keep-alive server' do
+      let(:server) { HttpIOHelpers::RangeRequestServer.new(file_body) }
+      let(:url) { "http://127.0.0.1:#{server.port}/trace" }
+
+      after do
+        server.stop
+      end
+
+      it 'absorbs a truncation that outlasts Net::HTTP\'s own retry' do
+        server.truncate_next_responses(2)
+
+        expect(http_io.read).to eq(file_body)
       end
     end
   end
@@ -383,6 +551,9 @@ RSpec.describe Gitlab::HttpIO, feature_category: :job_artifacts do
       let(:length) { nil }
 
       before do
+        # This example asserts single-attempt behavior. Flags default to enabled in specs, so
+        # disable this one here; the retry path is covered under 'retrying transient failures'.
+        stub_feature_flags(http_io_retry_transient_errors: false)
         stub_remote_url_500(url)
       end
 
@@ -459,6 +630,9 @@ RSpec.describe Gitlab::HttpIO, feature_category: :job_artifacts do
       let(:length) { nil }
 
       before do
+        # This example asserts single-attempt behavior. Flags default to enabled in specs, so
+        # disable this one here; the retry path is covered under 'retrying transient failures'.
+        stub_feature_flags(http_io_retry_transient_errors: false)
         stub_remote_url_500(url)
       end
 

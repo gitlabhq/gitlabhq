@@ -20,8 +20,38 @@ module Gitlab
     # read timeout to the worst case for a single chunk.
     MAX_RETRIES = 1
 
+    # Shared by every chunk an instance fetches, rather than allowed per chunk:
+    # a read walks the object BUFFER_SIZE bytes at a time, so a per-chunk
+    # allowance would let one unhealthy endpoint stretch a large read by the
+    # retry cost multiplied by the chunk count.
+    RETRY_BUDGET = 3
+
+    # Doubled per retry and jittered, so concurrent readers of the same
+    # unhealthy endpoint do not retry in lockstep. Deliberately short: retries
+    # happen inside a user-facing request.
+    RETRY_BASE_DELAY = 0.1
+
+    RETRIABLE_RESPONSE_CODES = %w[429 500 502 503 504].freeze
+
     InvalidURLError = Class.new(StandardError)
     FailedToGetChunkError = Class.new(StandardError)
+
+    # Every error here fails within milliseconds, so a 100ms backoff is worth
+    # paying. Timeouts are deliberately excluded: retrying one repeats the full
+    # open/read/write wait (10-30s), and no backoff helps an endpoint that
+    # already took that long to answer.
+    RETRIABLE_ERRORS = [
+      EOFError,
+      Errno::ECONNABORTED,
+      Errno::ECONNREFUSED,
+      Errno::ECONNRESET,
+      Errno::EHOSTUNREACH,
+      Errno::ENETUNREACH,
+      Errno::EPIPE,
+      Net::HTTPBadResponse,
+      OpenSSL::SSL::SSLError,
+      SocketError
+    ].freeze
 
     attr_reader :uri, :size
     attr_reader :tell
@@ -35,6 +65,8 @@ module Gitlab
       @uri = URI(url)
       @size = size
       @tell = 0
+      @retries_used = 0
+      @retry_transient_errors = Feature.enabled?(:http_io_retry_transient_errors, Feature.current_request)
     end
 
     def close
@@ -197,19 +229,90 @@ module Gitlab
       @chunk[chunk_offset..BUFFER_SIZE]
     end
 
+    def fetch_chunk_response
+      return fetch_chunk_response_with_retries if @retry_transient_errors
+
+      fetch_chunk_response_once
+    end
+
     # Net::HTTP transparently reconnects and retries the (idempotent) GET once
     # if the server dropped the keep-alive connection between chunks. It also
     # closes the socket before re-raising a transport error, and reconnects on
     # finding a closed socket, so the memoized session self-heals rather than
     # staying wedged after a failed read.
-    def fetch_chunk_response
+    def fetch_chunk_response_once
       http_session.request(request)
     rescue EOFError => e
-      # ignore_eof: false (see #http_session) turns a connection that dies
-      # mid-body into an error rather than a silently truncated chunk. Surface
-      # it as the same class as any other failed chunk fetch; the original
-      # EOFError remains available as the exception's cause.
-      raise FailedToGetChunkError, "Connection closed before the chunk was fully received: #{e.message}"
+      raise_chunk_error(e)
+    end
+
+    # Net::HTTP's own retry happens inside #transport_request, after the TLS
+    # handshake in Net::HTTP.start, and never treats a response status as an
+    # error - this loop covers both gaps. Repeating a range request is safe:
+    # it asks for the same bytes, and no chunk state is assigned until the
+    # caller checks the status.
+    #
+    # Returns the first response not worth another attempt, including a
+    # failure response once the retry budget is spent (the caller decides what
+    # an unusable response means). Errors are raised from the loop itself.
+    def fetch_chunk_response_with_retries
+      loop do
+        outcome = chunk_attempt
+        reason = retry_reason(outcome)
+
+        return outcome if reason.nil?
+
+        if @retries_used >= RETRY_BUDGET
+          raise_chunk_error(outcome) if outcome.is_a?(StandardError)
+
+          return outcome
+        end
+
+        @retries_used += 1
+        retry_counter.increment(reason: reason)
+        sleep(retry_delay)
+      end
+    end
+
+    # Returns the response, or the error the request failed with when that
+    # error is worth another attempt. Carrying the failure as a value lets
+    # response codes and transport errors reach the same decision.
+    def chunk_attempt
+      http_session.request(request)
+    rescue *RETRIABLE_ERRORS => error
+      error
+    end
+
+    # nil when the outcome is not worth another attempt.
+    def retry_reason(outcome)
+      return outcome.class.name if outcome.is_a?(StandardError)
+
+      "http_#{outcome.code}" if RETRIABLE_RESPONSE_CODES.include?(outcome.code)
+    end
+
+    # @retries_used spans every chunk this instance fetches (see RETRY_BUDGET),
+    # so backoff keeps escalating across chunks instead of restarting per chunk.
+    def retry_delay
+      RETRY_BASE_DELAY * (2**(@retries_used - 1)) * (0.5 + rand)
+    end
+
+    def retry_counter
+      Gitlab::Metrics.counter(
+        :gitlab_http_io_chunk_retries_total,
+        'Chunk requests retried by Gitlab::HttpIO, by failure reason'
+      )
+    end
+
+    def raise_chunk_error(error)
+      raise error unless error.is_a?(EOFError)
+
+      # EOFError means the connection died mid-body (see #http_session's
+      # ignore_eof comment). Wrap it so callers get a FailedToGetChunkError;
+      # cause: is explicit because the retry loop raises here after the rescue
+      # that caught the error has already exited.
+      raise FailedToGetChunkError,
+        "Connection closed before the chunk was fully received: #{error.message}",
+        cause: error
     end
 
     def http_session

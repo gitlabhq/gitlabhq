@@ -122,7 +122,7 @@ Secrets defined for a group can only be accessed by pipelines in a project direc
 You can add secrets to the secrets manager so that it can be used for secure CI/CD pipelines
 and workflows.
 
-1. In the top bar, select **Search or go to** and find your project.
+1. In the top bar, select **Search or go to** and find your project or group.
 1. Select **Secure** > **Secrets manager**.
 1. Select **Add secret** and fill in the details:
    - **Name**: Must be unique in the project.
@@ -138,6 +138,10 @@ and workflows.
    - **Protected**: Option only exists in group settings. Optional. Export secrets to pipelines running on protected branches only.
    - **Rotation reminder**: Optional. Send an email reminder to rotate the secret after the set number of days.
      Minimum 7 days.
+
+[By default](../../../administration/instance_limits.md#secrets-manager-limits),
+you can store a maximum of 100 secrets per project, and 500 per group. Secrets in a subgroup or
+in a member project do not count toward the limit of a parent group.
 
 After you create a secret:
 
