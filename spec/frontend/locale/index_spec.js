@@ -49,6 +49,15 @@ describe('locale', () => {
 
       expect(getPreferredLocales()).toEqual(['es-ES', 'es', 'en']);
     });
+
+    it('strips HTTP quality values (e.g. "en;q=0.9") from navigator.languages entries', () => {
+      jest
+        .spyOn(window.navigator, 'languages', 'get')
+        .mockReset()
+        .mockReturnValue(['en-US;q=1.0', 'en;q=0.9']);
+
+      expect(getPreferredLocales()).toEqual(['en-US', 'en']);
+    });
   });
 
   describe('createDateTimeFormat', () => {

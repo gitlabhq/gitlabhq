@@ -1,6 +1,7 @@
 # frozen_string_literal: true
 
 require 'fast_spec_helper'
+require 'rspec-parameterized'
 
 RSpec.describe Gitlab::Ci::EnvironmentMatcher, feature_category: :continuous_integration do
   describe '#match?' do
@@ -17,16 +18,35 @@ RSpec.describe Gitlab::Ci::EnvironmentMatcher, feature_category: :continuous_int
     end
 
     context 'when given pattern has a wildcard' do
-      it 'returns true on wildcard matches', :aggregate_failures do
-        expect(described_class.new('review/*').match?('review/123')).to be true
-        expect(described_class.new('review/*/*').match?('review/123/456')).to be true
-        expect(described_class.new('*-this-is-a-pattern-*').match?('abc123-this-is-a-pattern-abc123')).to be true
+      using RSpec::Parameterized::TableSyntax
+
+      where(:pattern, :environment, :matches) do
+        [
+          ['review/*', 'review/123', true],
+          ['review/*', 'review/feature-branch', true],
+          ['review/*/*', 'review/123/456', true],
+          ['*-this-is-a-pattern-*', 'abc123-this-is-a-pattern-abc123', true],
+          ['prod*', 'production', true],
+          ['*', 'anything-goes', true],
+          ['*', '', true],
+          ['review/*/*', 'review/123', false],
+          ['*-this-is-a-pattern-*', 'abc123-this-is-a-pattern', false],
+          ['review/*', 'review123', false],
+          ['review/*', 'not-review/app1', false],
+          ['review/*', 'staging-review/test', false],
+          ['prod*', 'not-prod-thing', false],
+          ['prod.internal*', 'prodXinternal-app', false],
+          # environment_scope values aren't schema-validated, so patterns can
+          # contain unescaped regex metacharacters like `[`.
+          ['prod[*', 'prod[abc', true],
+          ['prod*', "production\nmalicious", false]
+        ]
       end
 
-      it 'returns false when not a wildcard match', :aggregate_failures do
-        expect(described_class.new('review/*').match?('review123')).to be false
-        expect(described_class.new('review/*/*').match?('review/123')).to be false
-        expect(described_class.new('*-this-is-a-pattern-*').match?('abc123-this-is-a-pattern')).to be false
+      with_them do
+        it 'matches as expected' do
+          expect(described_class.new(pattern).match?(environment)).to eq matches
+        end
       end
     end
 

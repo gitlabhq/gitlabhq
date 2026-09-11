@@ -250,10 +250,38 @@ describe('content_editor/components/bubble_menus/media_bubble_menu', () => {
   });
 
   describe('iframe', () => {
+    const editEmbedUrl = async (url) => {
+      buildWrapper();
+      await showMenu();
+
+      await wrapper.findComponentByTestId('edit-media').vm.$emit('click');
+
+      wrapper.findByTestId('media-src').setValue(url);
+
+      await wrapper.findComponent(GlForm).vm.$emit('submit', createFakeEvent());
+      await waitForPromises();
+    };
+
     beforeEach(() => {
+      window.gon = {
+        iframe_rendering_enabled: true,
+        iframe_rendering_allowlist: ['www.youtube.com'],
+        features: { allowIframesInMarkdown: true },
+      };
+
       buildEditor();
 
       tiptapEditor.chain().insertContent(TIPTAP_IFRAME_HTML).setNodeSelection(1).run();
+    });
+
+    it('does not show the embed URL', async () => {
+      contentEditor.resolveUrl.mockResolvedValue('https://www.youtube.com/watch?v=abc');
+
+      buildWrapper();
+      await showMenu();
+
+      expect(wrapper.findComponent(GlLink).exists()).toBe(false);
+      expect(wrapper.findByTestId('edit-media').exists()).toBe(true);
     });
 
     it('calls resolveIframeSrc when saving an iframe edit, not resolveUrl', async () => {
@@ -276,10 +304,38 @@ describe('content_editor/components/bubble_menus/media_bubble_menu', () => {
       expect(contentEditor.resolveIframeSrc).toHaveBeenCalledWith(
         'https://www.youtube.com/watch?v=xyz',
       );
+      expect(contentEditor.resolveUrl).not.toHaveBeenCalled();
 
       const { src, canonicalSrc } = tiptapEditor.getAttributes('iframe');
       expect(src).toBe('https://www.youtube.com/embed/xyz');
       expect(canonicalSrc).toBe('https://www.youtube.com/watch?v=xyz');
+    });
+
+    describe('#security: when the edited URL does not resolve to an allowlisted src', () => {
+      // eslint-disable-next-line no-script-url
+      it.each(['javascript:alert(document.domain)', 'https://evil.example.com/embed/abc'])(
+        'leaves the node untouched for %s',
+        async (url) => {
+          contentEditor.resolveUrl.mockResolvedValue(url);
+          contentEditor.resolveIframeSrc.mockResolvedValue(url);
+
+          await editEmbedUrl(url);
+
+          const { src, canonicalSrc } = tiptapEditor.getAttributes('iframe');
+          expect(src).toBe('https://www.youtube.com/embed/abc');
+          expect(canonicalSrc).toBe('https://www.youtube.com/watch?v=abc');
+        },
+      );
+
+      it('leaves the node untouched when an allowlisted URL resolves to a disallowed src', async () => {
+        contentEditor.resolveIframeSrc.mockResolvedValue('https://evil.example.com/embed/xyz');
+
+        await editEmbedUrl('https://www.youtube.com/watch?v=xyz');
+
+        const { src, canonicalSrc } = tiptapEditor.getAttributes('iframe');
+        expect(src).toBe('https://www.youtube.com/embed/abc');
+        expect(canonicalSrc).toBe('https://www.youtube.com/watch?v=abc');
+      });
     });
   });
 });

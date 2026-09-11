@@ -293,6 +293,33 @@ RSpec.describe Groups::DestroyService, feature_category: :groups_and_projects do
     end
   end
 
+  context 'when a before_destroy callback aborts the destroy' do
+    before do
+      allow(group).to receive(:destroy) do
+        group.errors.add(:base, 'cannot be deleted right now')
+        false
+      end
+    end
+
+    it 'raises DestroyError instead of reporting success', :aggregate_failures do
+      expect { destroy_group(group, user, false) }
+        .to raise_error(described_class::DestroyError, 'cannot be deleted right now')
+
+      expect(Group.exists?(group.id)).to be(true)
+    end
+  end
+
+  context 'when a before_destroy callback aborts the destroy without adding an error' do
+    before do
+      allow(group).to receive(:destroy).and_return(false)
+    end
+
+    it 'falls back to a message naming the group instead of raising with a blank message' do
+      expect { destroy_group(group, user, false) }
+        .to raise_error(described_class::DestroyError, "Group #{group.id} can't be deleted")
+    end
+  end
+
   context 'when group owner is blocked' do
     before do
       user.block!

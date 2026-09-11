@@ -746,6 +746,46 @@ RSpec.describe API::GenericPackages, feature_category: :package_registry do
             expect(response).to have_gitlab_http_status(:created)
           end
         end
+
+        context 'when changing the status of the existing package' do
+          let(:params) { super().merge(status: 'hidden') }
+
+          shared_examples 'rejecting the status change' do
+            it 'returns forbidden and leaves the package untouched' do
+              expect { upload_api_call }
+                .to not_change { existing_package.reload.status }
+                .and not_change { Packages::PackageFile.count }
+
+              aggregate_failures do
+                expect(response).to have_gitlab_http_status(:forbidden)
+                expect(json_response['message'])
+                  .to eq('403 Forbidden - Insufficient permissions to change the package status')
+              end
+            end
+          end
+
+          context 'when the user can update packages' do
+            before do
+              project.add_maintainer(user)
+            end
+
+            it 'hides the package' do
+              expect { upload_api_call }.to change { existing_package.reload.status }.to('hidden')
+
+              expect(response).to have_gitlab_http_status(:created)
+            end
+          end
+
+          context 'when the user cannot update packages' do
+            it_behaves_like 'rejecting the status change'
+          end
+
+          context 'when a deploy token is used' do
+            let(:headers) { workhorse_headers.merge(deploy_token_header(deploy_token_wo.token)) }
+
+            it_behaves_like 'rejecting the status change'
+          end
+        end
       end
 
       shared_examples 'handling a race condition' do

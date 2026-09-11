@@ -194,6 +194,17 @@ detect-tests:
       - ${GLCI_PREDICTIVE_RSPEC_MATCHING_TESTS_EE_PATH}
       - ${GLCI_PREDICTIVE_RSPEC_MATCHING_TESTS_FOSS_PATH}
 
+# Reads the Duo CLI constants of the start workflow service so CI jobs install and verify
+# the exact binary the flow executor downloads. Reuse with `!reference [.duo-cli-constants, script]`.
+.duo-cli-constants:
+  script:
+    - |
+      SERVICE_FILE="ee/app/services/ai/duo_workflows/start_workflow_service.rb"
+      DUO_CLI_VERSION=$(grep -oP 'DUO_CLI_VERSION\s*=\s*"\K[^"]+' "${SERVICE_FILE}")
+      DUO_CLI_PROJECT_ID=$(grep -oP 'DUO_CLI_PROJECT_ID\s*=\s*"\K[^"]+' "${SERVICE_FILE}")
+      DUO_CLI_REGISTRY_BASE_URL=$(grep -oP 'DUO_CLI_REGISTRY_BASE_URL\s*=\s*"\K[^"]+' "${SERVICE_FILE}")
+      DUO_CLI_PACKAGE_URL="${DUO_CLI_REGISTRY_BASE_URL}/${DUO_CLI_PROJECT_ID}/packages/generic/duo-cli/${DUO_CLI_VERSION}"
+
 detect-system-tests-duo:
   extends:
     - .with-ci-node-image
@@ -211,7 +222,13 @@ detect-system-tests-duo:
     - !reference [".prevent-spec-only", rules]  # spec files already directly identified by detect-tests; Duo adds nothing
     - !reference [.rails:rules:detect-tests, rules]
   before_script:
-    - npm install -g @gitlab/duo-cli
+    # Install the binary and version the flow executor uses; verify-start-workflow-service-assets checks it exists.
+    - !reference [.duo-cli-constants, script]
+    - |
+      mkdir -p "${HOME}/.local/bin"
+      curl --fail --silent --show-error --location "${DUO_CLI_PACKAGE_URL}/duo-linux-x64" --output "${HOME}/.local/bin/duo"
+      chmod +x "${HOME}/.local/bin/duo"
+      export PATH="${HOME}/.local/bin:${PATH}"
   script:
     - |
       if [ -n "$CI_MERGE_REQUEST_IID" ] || [ -n "$FIND_CHANGES_MERGE_REQUEST_IID" ]; then
@@ -248,15 +265,16 @@ verify-start-workflow-service-assets:
   variables:
     GIT_STRATEGY: fetch
   script:
+    - !reference [.duo-cli-constants, script]
     - |
-      SERVICE_FILE="ee/app/services/ai/duo_workflows/start_workflow_service.rb"
+      # The executor runs on Linux and picks the binary by architecture; check every binary it can select.
+      for BINARY in duo-linux-x64 duo-linux-arm64; do
+        echo "Checking availability of ${DUO_CLI_PACKAGE_URL}/${BINARY}..."
+        curl --fail -sfIL -o /dev/null "${DUO_CLI_PACKAGE_URL}/${BINARY}" || \
+          { echo "ERROR: ${DUO_CLI_PACKAGE_URL}/${BINARY} not found in the package registry. Update DUO_CLI_VERSION or publish the binary."; exit 1; }
+      done
+
       REGISTRY="registry.gitlab.com"
-
-      DUO_CLI_VERSION=$(grep -oP 'DUO_CLI_VERSION\s*=\s*"\K[^"]+' "${SERVICE_FILE}")
-      echo "Checking npm availability of @gitlab/duo-cli@${DUO_CLI_VERSION}..."
-      npm view "@gitlab/duo-cli@${DUO_CLI_VERSION}" version || \
-        { echo "ERROR: @gitlab/duo-cli@${DUO_CLI_VERSION} is not available on the npm registry. Update DUO_CLI_VERSION or publish the package." && exit 1; }
-
       IMAGE_PATH=$(grep -oP 'IMAGE_PATH\s*=\s*"\K[^"]+' "${SERVICE_FILE}")
       IMAGE_REPO="${IMAGE_PATH%:*}"
       IMAGE_TAG="${IMAGE_PATH##*:}"

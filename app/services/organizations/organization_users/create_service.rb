@@ -30,7 +30,7 @@ module Organizations
       attr_reader :organization, :current_user, :params
 
       def user_to_add
-        user_by_username || user_by_email
+        user_by_username
       end
       strong_memoize_attr :user_to_add
 
@@ -47,13 +47,6 @@ module Organizations
         return if username.blank?
 
         ::User.by_username(username).first
-      end
-
-      def user_by_email
-        email = params[:email]
-        return if email.blank?
-
-        ::User.by_any_email(email, confirmed: true).first
       end
 
       def create_organization_user!(user)

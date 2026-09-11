@@ -176,6 +176,20 @@ RSpec.describe Projects::AutocompleteSourcesController do
         expect(response).to have_gitlab_http_status(:ok)
       end
 
+      context 'when usernames are passed in the mentioned param' do
+        let_it_be(:mentioned_user) { create(:user, username: 'zzz_mentioned', guest_of: public_project) }
+
+        it 'includes a mentioned member that does not match the search', :aggregate_failures do
+          get :members, format: :json, params: {
+            namespace_id: group.path, project_id: public_project.path,
+            type: issue.class.name, type_id: issue.iid, search: user.username, mentioned: [mentioned_user.username]
+          }
+
+          expect(response).to have_gitlab_http_status(:ok)
+          expect(json_response.pluck('username')).to include(mentioned_user.username)
+        end
+      end
+
       shared_examples 'all members are returned' do
         it 'does not return the all mention user' do
           get :members, format: :json, params: { namespace_id: group.path, project_id: public_project.path, type: issuable_type, type_id: issuable_iid }

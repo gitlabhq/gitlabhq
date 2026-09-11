@@ -691,6 +691,40 @@ RSpec.describe VerifiesWithEmail, :clean_gitlab_redis_sessions, :clean_gitlab_re
             it_behaves_like 'sends verification instructions for email OTP'
             it_behaves_like 'prompt for email verification'
           end
+
+          # See https://gitlab.com/gitlab-org/gitlab/-/work_items/603742
+          context 'when password authentication is disabled for users with an SSO identity' do
+            before do
+              stub_application_setting(disable_password_authentication_for_users_with_sso_identities: true)
+            end
+
+            context 'when user without an SSO identity' do
+              before do
+                perform_enqueued_jobs { sign_in }
+              end
+
+              let(:log_reason) { 'email_otp' }
+
+              it_behaves_like 'sends verification instructions for email OTP'
+              it_behaves_like 'prompt for email verification'
+            end
+
+            context 'when user with an SSO identity' do
+              let!(:sso_identity) { create(:identity, provider: 'saml', user: user) }
+
+              it 'does not send verification instructions or prompt for email verification', :aggregate_failures do
+                perform_enqueued_jobs { sign_in }
+
+                expect(user.reload.email_otp).to be_nil
+
+                expect(request.session[:verifies_with_email_user_id]).to be_nil
+                expect(response).to have_gitlab_http_status(:ok)
+                expect(response).not_to render_template('devise/sessions/email_verification')
+
+                expect(flash[:alert]).to include('Invalid login or password.')
+              end
+            end
+          end
         end
       end
     end
@@ -1301,6 +1335,63 @@ RSpec.describe VerifiesWithEmail, :clean_gitlab_redis_sessions, :clean_gitlab_re
                 user.email_otp_last_sent_at + VerifiesWithEmailHelper::RESEND_COOLDOWN_PERIOD
               ).to_i * 1000
             })
+          end
+        end
+
+        # See https://gitlab.com/gitlab-org/gitlab/-/work_items/603742
+        context 'when password authentication is disabled for web' do
+          before do
+            stub_application_setting(password_authentication_enabled_for_web: false)
+          end
+
+          it 'is not permitted and does not start email verification' do
+            post(users_fallback_to_email_otp_path(user: { login: user.username }))
+
+            expect(response).to have_gitlab_http_status(:bad_request)
+            expect(json_response).to match({
+              'success' => false,
+              'message' => s_('IdentityVerification|Email verification is no longer available for this ' \
+                              'sign-in attempt. Log in again.')
+            })
+            expect(session[:verifies_with_email_user_id]).to be_nil
+          end
+        end
+
+        # See https://gitlab.com/gitlab-org/gitlab/-/work_items/603742
+        context 'when password authentication is disabled for users with an SSO identity' do
+          before do
+            stub_application_setting(disable_password_authentication_for_users_with_sso_identities: true)
+          end
+
+          it 'is permitted to fallback to email otp', :freeze_time do
+            post(users_fallback_to_email_otp_path(user: { login: user.username }))
+            user.reload
+
+            expect(session[:verifies_with_email_user_id]).to eq(user.id)
+            expect(response).to have_gitlab_http_status(:ok)
+
+            expect(json_response).to match({
+              "status" => "success",
+              "show_resend_after" => (
+                user.email_otp_last_sent_at + VerifiesWithEmailHelper::RESEND_COOLDOWN_PERIOD
+              ).to_i * 1000
+            })
+          end
+
+          context 'when user with an SSO identity' do
+            let!(:sso_identity) { create(:identity, provider: 'saml', user: user) }
+
+            it 'is not permitted and does not start email verification' do
+              post(users_fallback_to_email_otp_path(user: { login: user.username }))
+
+              expect(response).to have_gitlab_http_status(:bad_request)
+              expect(json_response).to match({
+                'success' => false,
+                'message' => s_('IdentityVerification|Email verification is no longer available for this ' \
+                                'sign-in attempt. Log in again.')
+              })
+              expect(session[:verifies_with_email_user_id]).to be_nil
+            end
           end
         end
       end

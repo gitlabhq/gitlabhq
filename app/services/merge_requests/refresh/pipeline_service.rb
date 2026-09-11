@@ -15,7 +15,7 @@ module MergeRequests
 
       def refresh_pipelines
         merge_requests_for_source_branch.each do |mr|
-          refresh_pipelines_on_merge_requests(mr)
+          refresh_pipelines_on_merge_requests(mr, checkout_sha: @push.newrev)
         end
       end
     end

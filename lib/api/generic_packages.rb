@@ -113,6 +113,8 @@ module API
                 bad_request!('Duplicate package is not allowed')
               elsif response.cause.package_protected?
                 forbidden!('Package protected.')
+              elsif response.cause.package_status_change_not_allowed?
+                forbidden!(response.message)
               elsif response.cause.package_already_exists?
                 bad_request!('Package already exists')
               else

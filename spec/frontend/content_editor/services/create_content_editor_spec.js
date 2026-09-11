@@ -136,4 +136,61 @@ describe('content_editor/services/create_content_editor', () => {
       });
     });
   });
+
+  describe('#security: iframe extension', () => {
+    const hasIframeExtension = () =>
+      createContentEditor({
+        renderMarkdown,
+        uploadsPath,
+      }).tiptapEditor.extensionManager.extensions.some((extension) => extension.name === 'iframe');
+
+    describe('when iframe rendering is enabled and the feature flag is on', () => {
+      beforeEach(() => {
+        window.gon = {
+          iframe_rendering_enabled: true,
+          features: { allowIframesInMarkdown: true },
+        };
+      });
+
+      it('is loaded', () => {
+        expect(hasIframeExtension()).toBe(true);
+      });
+    });
+
+    describe('when iframe rendering is disabled', () => {
+      beforeEach(() => {
+        window.gon = {
+          iframe_rendering_enabled: false,
+          features: { allowIframesInMarkdown: true },
+        };
+      });
+
+      it('is not loaded', () => {
+        expect(hasIframeExtension()).toBe(false);
+      });
+    });
+
+    describe('when the feature flag is off', () => {
+      beforeEach(() => {
+        window.gon = {
+          iframe_rendering_enabled: true,
+          features: { allowIframesInMarkdown: false },
+        };
+      });
+
+      it('is not loaded', () => {
+        expect(hasIframeExtension()).toBe(false);
+      });
+    });
+
+    describe('when the page pushes no feature flags', () => {
+      beforeEach(() => {
+        window.gon = { iframe_rendering_enabled: true };
+      });
+
+      it('is not loaded', () => {
+        expect(hasIframeExtension()).toBe(false);
+      });
+    });
+  });
 });

@@ -23,6 +23,7 @@ module MergeRequests
         pipeline_creation_request: pipeline_creation_request,
         defer_request_completion: true
       )
+      worker_params[:checkout_sha] ||= merge_request.diff_head_sha
 
       ::MergeRequests::CreatePipelineWorker.perform_async(
         project.id, current_user.id, merge_request.id,
@@ -38,6 +39,7 @@ module MergeRequests
       Ci::CreatePipelineService.new(project,
         current_user,
         ref: ref,
+        checkout_sha: params[:checkout_sha],
         push_options: params[:push_options],
         pipeline_creation_request: params[:pipeline_creation_request],
         gitaly_context: params[:gitaly_context],

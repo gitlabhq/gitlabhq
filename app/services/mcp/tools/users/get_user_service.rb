@@ -4,6 +4,9 @@ module Mcp
   module Tools
     module Users
       class GetUserService < Base::GraphqlService
+        # Looks up a user, not a project or group, so no argument names a container to govern by.
+        ungovernable!
+
         register_version '0.1.0', {
           description: 'Get a single GitLab user. Use me: true to look up the authenticated user, for example ' \
             'to find your own user id before setting assignee_ids or reviewer_ids. Provide exactly one of ' \

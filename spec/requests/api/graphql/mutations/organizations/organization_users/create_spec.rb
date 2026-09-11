@@ -67,23 +67,6 @@ RSpec.describe Mutations::Organizations::OrganizationUsers::Create, feature_cate
         .to eq('OWNER')
     end
 
-    context 'when adding by email' do
-      let(:params) do
-        {
-          organization_id: organization.to_global_id.to_s,
-          email: user.email,
-          user_type: user_type
-        }
-      end
-
-      it 'adds the user' do
-        create_organization_user
-
-        expect(mutation_response['errors']).to be_empty
-        expect(added_username).to eq(user.username)
-      end
-    end
-
     context 'when the identifier does not match a user' do
       let(:params) do
         {
@@ -112,7 +95,7 @@ RSpec.describe Mutations::Organizations::OrganizationUsers::Create, feature_cate
       end
     end
 
-    context 'when neither username nor email is given' do
+    context 'when username is not given' do
       let(:params) do
         {
           organization_id: organization.to_global_id.to_s,
@@ -124,7 +107,7 @@ RSpec.describe Mutations::Organizations::OrganizationUsers::Create, feature_cate
         create_organization_user
 
         expect(graphql_errors)
-          .to include(a_hash_including('message' => a_string_including('One and only one of [username, email]')))
+          .to include(a_hash_including('message' => a_string_including('username')))
       end
     end
 

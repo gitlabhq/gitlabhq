@@ -14877,10 +14877,9 @@ Arguments:
 | Name | Type | Description |
 | ---- | ---- | ----------- |
 | <a id="mutation-organizationusercreate-clientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
-| <a id="mutation-organizationusercreate-email"></a>`email` | [`String`](#string) | Email of the user to add to the organization. |
 | <a id="mutation-organizationusercreate-organizationid"></a>`organizationId` | [`OrganizationsOrganizationID!`](#organizationsorganizationid) | ID of the organization to add the user to. |
 | <a id="mutation-organizationusercreate-usertype"></a>`userType` | [`OrganizationUserType!`](#organizationusertype) | Type to add the organization user with. |
-| <a id="mutation-organizationusercreate-username"></a>`username` | [`String`](#string) | Username of the user to add to the organization. |
+| <a id="mutation-organizationusercreate-username"></a>`username` | [`String!`](#string) | Username of the user to add to the organization. |
 
 Fields:
 

@@ -16,13 +16,8 @@ module Mutations
 
         argument :username,
           GraphQL::Types::String,
-          required: false,
+          required: true,
           description: 'Username of the user to add to the organization.'
-
-        argument :email,
-          GraphQL::Types::String,
-          required: false,
-          description: 'Email of the user to add to the organization.'
 
         argument :user_type,
           ::Types::Organizations::OrganizationUserTypeEnum,
@@ -34,8 +29,6 @@ module Mutations
           null: true,
           description: 'Organization user added by the mutation.',
           experiment: { milestone: '19.3' }
-
-        validates exactly_one_of: [:username, :email]
 
         def resolve(organization_id:, **args)
           organization = find_organization(organization_id)

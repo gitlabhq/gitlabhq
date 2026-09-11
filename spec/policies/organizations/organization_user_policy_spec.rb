@@ -9,12 +9,24 @@ RSpec.describe Organizations::OrganizationUserPolicy, feature_category: :organiz
   subject(:policy) { described_class.new(current_user, organization_user) }
 
   shared_examples 'organization owner policy' do
-    context 'when the current user is not an owner' do
+    context 'when the current user is not a member of the organization' do
       let_it_be_with_refind(:organization_user) do
         create(:organization_user, organization: organization, user: create(:user))
       end
 
-      it { is_expected.to be_disallowed(user_policy) }
+      it { expect_disallowed(permission) }
+    end
+
+    context 'when the current user is a member but not an owner' do
+      let_it_be_with_refind(:organization_user) do
+        create(:organization_user, organization: organization, user: create(:user))
+      end
+
+      before_all do
+        create(:organization_user, organization: organization, user: current_user)
+      end
+
+      it { expect_disallowed(permission) }
     end
 
     context 'when the current user is an owner' do
@@ -23,7 +35,7 @@ RSpec.describe Organizations::OrganizationUserPolicy, feature_category: :organiz
       end
 
       context 'when the current user is the last owner' do
-        it { is_expected.to be_disallowed(user_policy) }
+        it { expect_disallowed(permission) }
       end
 
       context 'when the current user is not the last owner' do
@@ -31,7 +43,7 @@ RSpec.describe Organizations::OrganizationUserPolicy, feature_category: :organiz
           create(:organization_user, :owner, organization: organization)
         end
 
-        it { is_expected.to be_allowed(user_policy) }
+        it { expect_allowed(permission) }
       end
     end
 
@@ -42,7 +54,7 @@ RSpec.describe Organizations::OrganizationUserPolicy, feature_category: :organiz
         context 'when the user is not an owner' do
           let_it_be_with_refind(:organization_user) { create(:organization_user, organization: organization) }
 
-          it { is_expected.to be_allowed(user_policy) }
+          it { expect_allowed(permission) }
         end
 
         context 'when the user is an owner' do
@@ -51,7 +63,7 @@ RSpec.describe Organizations::OrganizationUserPolicy, feature_category: :organiz
           end
 
           context 'when the user is the last owner' do
-            it { is_expected.to be_disallowed(user_policy) }
+            it { expect_disallowed(permission) }
           end
 
           context 'when the user is not the last owner' do
@@ -59,7 +71,7 @@ RSpec.describe Organizations::OrganizationUserPolicy, feature_category: :organiz
               create(:organization_user, :owner, organization: organization)
             end
 
-            it { is_expected.to be_allowed(user_policy) }
+            it { expect_allowed(permission) }
           end
         end
       end
@@ -68,7 +80,7 @@ RSpec.describe Organizations::OrganizationUserPolicy, feature_category: :organiz
         context 'when the user is not an owner' do
           let_it_be_with_refind(:organization_user) { create(:organization_user, organization: organization) }
 
-          it { is_expected.to be_disallowed(user_policy) }
+          it { expect_disallowed(permission) }
         end
 
         context 'when the user is an owner' do
@@ -77,7 +89,7 @@ RSpec.describe Organizations::OrganizationUserPolicy, feature_category: :organiz
           end
 
           context 'when the user is the last owner' do
-            it { is_expected.to be_disallowed(user_policy) }
+            it { expect_disallowed(permission) }
           end
 
           context 'when the user is not the last owner' do
@@ -85,14 +97,14 @@ RSpec.describe Organizations::OrganizationUserPolicy, feature_category: :organiz
               create(:organization_user, :owner, organization: organization)
             end
 
-            it { is_expected.to be_disallowed(user_policy) }
+            it { expect_disallowed(permission) }
           end
         end
       end
     end
   end
 
-  context 'for create_organization_user policy' do
+  context 'for the create_organization_user permission' do
     # Refind so the memoized `owner_user_ids` used by the policy is not shared between examples.
     let_it_be_with_refind(:organization) { create(:organization) }
 
@@ -131,8 +143,8 @@ RSpec.describe Organizations::OrganizationUserPolicy, feature_category: :organiz
     end
   end
 
-  context 'for update_organization_user policy' do
-    let_it_be(:user_policy) { :update_organization_user }
+  context 'for the update_organization_user permission' do
+    let(:permission) { :update_organization_user }
 
     it_behaves_like 'organization owner policy'
 
@@ -145,8 +157,8 @@ RSpec.describe Organizations::OrganizationUserPolicy, feature_category: :organiz
     end
   end
 
-  context 'for delete_organization_user policy' do
-    let_it_be(:user_policy) { :delete_organization_user }
+  context 'for the delete_organization_user permission' do
+    let(:permission) { :delete_organization_user }
 
     it_behaves_like 'organization owner policy'
 

@@ -7,8 +7,11 @@ organization:
   permissions: []
   raw_permissions:
   - access_organization_admin_area
+  - create_organization_user
   - delete_organization
+  - delete_organization_user
   - read_admin_users
   - read_organization_user
   - transfer_group
   - update_organization
+  - update_organization_user

@@ -106,9 +106,12 @@ To create push rules for the instance:
 1. Follow the previous steps to allow **Commit author's email** and **Branch name**.
 1. Select **Save push rules**.
 
-## Job for a flow does not start or is stuck at `Starting job`
+## A flow's job or session fails to start
 
-If a job for a flow never starts, or the job is stuck at `Starting job`, no runner is available to pick up the job.
+If a job for a flow never starts, or the job is stuck at `Starting job`, no runner is available to
+pick up the job. On the session page (**AI** > **Sessions**), the `Session failed to start` alert
+appears.
+
 Flows run on runners that meet the following requirements:
 
 - The runner has the `gitlab--duo` tag.
@@ -127,6 +130,15 @@ To resolve this issue:
    1. In the left sidebar, select **Build** > **Runners**.
    1. Confirm that a runner with the `gitlab--duo` tag is online.
 1. If no runner meets the requirements, [configure a runner to execute flows](flows/execution/_index.md#configure-runners-to-execute-flows).
+
+If a runner meets all of the requirements but jobs still do not start, check the following:
+
+- The namespace has used all of its [compute minutes](../../ci/pipelines/instance_runner_compute_minutes.md#enforcement),
+  which also removes access to hosted runners. A used-up quota can therefore look like a runner
+  availability problem.
+- The top-level group [restricts access by IP address](../group/access_and_permissions.md#restrict-group-access-by-ip-address).
+  Hosted runners use dynamic IP addresses that cannot be added to an allowlist, so they cannot run
+  flows for that group. Instead, configure your own runner at the top-level group.
 
 ## Error: `Something went wrong while requesting a review from GitLab Duo`
 

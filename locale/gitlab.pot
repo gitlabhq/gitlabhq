@@ -31361,6 +31361,9 @@ msgstr ""
 msgid "DuoAgentsPlatform|Analyze pipeline failures and get fix suggestions"
 msgstr ""
 
+msgid "DuoAgentsPlatform|Approval gate"
+msgstr ""
+
 msgid "DuoAgentsPlatform|Are you sure you want to cancel this session? This action cannot be undone."
 msgstr ""
 
@@ -31373,13 +31376,13 @@ msgstr ""
 msgid "DuoAgentsPlatform|Before you can use GitLab Duo Agent Platform, we need to verify your account."
 msgstr ""
 
-msgid "DuoAgentsPlatform|CI jobs"
-msgstr ""
-
 msgid "DuoAgentsPlatform|Cancel session"
 msgstr ""
 
 msgid "DuoAgentsPlatform|Cancel session?"
+msgstr ""
+
+msgid "DuoAgentsPlatform|Canceled"
 msgstr ""
 
 msgid "DuoAgentsPlatform|Change the target or events for this trigger."
@@ -31419,6 +31422,9 @@ msgid "DuoAgentsPlatform|Configuration source"
 msgstr ""
 
 msgid "DuoAgentsPlatform|Configure the schedule."
+msgstr ""
+
+msgid "DuoAgentsPlatform|Confirm action"
 msgstr ""
 
 msgid "DuoAgentsPlatform|Contact a project Maintainer or group Owner"
@@ -31899,6 +31905,9 @@ msgid "DuoAgentsPlatform|View session"
 msgstr ""
 
 msgid "DuoAgentsPlatform|View session #%{sessionId}"
+msgstr ""
+
+msgid "DuoAgentsPlatform|Waiting for input"
 msgstr ""
 
 msgid "DuoAgentsPlatform|We need to verify your account"

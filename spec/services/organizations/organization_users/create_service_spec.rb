@@ -47,39 +47,6 @@ RSpec.describe Organizations::OrganizationUsers::CreateService, feature_category
         end
       end
 
-      context 'when adding by email' do
-        let(:params) { { email: user.email, user_type: user_type } }
-
-        it 'adds the user with the requested access level' do
-          expect(response).to be_success
-          expect(organization_user.user).to eq(user)
-          expect(organization_user.access_level).to eq(user_type.to_s)
-        end
-
-        context 'when the email belongs to a confirmed secondary email' do
-          let_it_be(:other_user) { create(:user) }
-          let_it_be(:secondary_email) { create(:email, :confirmed, user: other_user) }
-
-          let(:params) { { email: secondary_email.email, user_type: user_type } }
-
-          it 'adds the owning user' do
-            expect(response).to be_success
-            expect(organization_user.user).to eq(other_user)
-          end
-        end
-
-        context 'when the email is unconfirmed' do
-          let_it_be(:unconfirmed_user) { create(:user, :unconfirmed) }
-
-          let(:params) { { email: unconfirmed_user.email, user_type: user_type } }
-
-          it 'returns a user not found error' do
-            expect(response).to be_error
-            expect(response.message).to match_array([_('The user could not be found')])
-          end
-        end
-      end
-
       context 'when the identifier does not match a user' do
         let(:params) { { username: 'nonexistent-username', user_type: user_type } }
 

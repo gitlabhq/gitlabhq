@@ -53,8 +53,10 @@ class Projects::AutocompleteSourcesController < Projects::ApplicationController
 
   private
 
+  # ParticipantsService#mentioned_users reads :mentioned to keep already-@-mentioned
+  # users in the payload, so it must be permitted alongside :search.
   def participants_params
-    params.permit(:search)
+    params.permit(:search, mentioned: [])
   end
 
   def work_item_type_params

@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Packages::Nuget::DependencyLinkMetadatum, type: :model do
+RSpec.describe Packages::Nuget::DependencyLinkMetadatum, type: :model, feature_category: :package_registry do
   describe 'relationships' do
     it { is_expected.to belong_to(:dependency_link) }
   end

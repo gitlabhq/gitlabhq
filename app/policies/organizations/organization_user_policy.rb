@@ -8,14 +8,9 @@ module Organizations
     condition(:last_owner) { @subject.last_owner? }
     condition(:home_organization_membership) { @subject.organization_id == @subject.user&.organization_id }
 
-    rule { can?(:update_organization) }.enable :create_organization_user
+    rule { ~record_belongs_to_self }.prevent :_delete_own_organization_user
 
-    rule { can?(:update_organization) }.policy do
-      enable :update_organization_user
-      enable :delete_organization_user
-    end
-
-    rule { record_belongs_to_self }.enable :delete_organization_user
+    rule { can?(:_delete_own_organization_user) }.enable :delete_organization_user
 
     rule { home_organization_membership }.prevent :delete_organization_user
 

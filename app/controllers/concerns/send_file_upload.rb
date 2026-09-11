@@ -29,13 +29,13 @@ module SendFileUpload
       location = file_upload.file_storage? ? file_upload.path : file_upload.url
       content_type ||= content_type_for(attachment, sanitize: sanitize_content_type)
 
-      headers.store(*Gitlab::Workhorse.send_scaled_image(location, safe_width, content_type))
+      store_workhorse_send_data! { Gitlab::Workhorse.send_scaled_image(location, safe_width, content_type) }
 
       head :ok
     elsif file_upload.file_storage?
       send_file file_upload.path, send_params
     elsif file_upload.proxy_download_enabled? || proxy
-      headers.store(*Gitlab::Workhorse.send_url(file_upload.url(**redirect_params), **ssrf_params))
+      store_workhorse_send_data! { Gitlab::Workhorse.send_url(file_upload.url(**redirect_params), **ssrf_params) }
       head :ok
     else
       file_url = ObjectStorage::CDN::FileUrl.new(
@@ -47,6 +47,19 @@ module SendFileUpload
   end
 
   private
+
+  # Emits a Gitlab-Workhorse-Send-Data header only after asserting that the
+  # request transited Workhorse. This is the controller-side analog of the Grape
+  # `send_workhorse_headers!` helper. The `[header, value]` pair is built inside
+  # the block, so the senddata payload -- which may carry Gitaly credentials,
+  # pre-signed URLs, or upstream registry credentials -- is only constructed once
+  # the JWT is verified; a request that did not transit Workhorse never builds it,
+  # let alone emits it. The local `send_file` and object-storage redirect branches
+  # emit no senddata, so (like `present_carrierwave_file!`) they are not routed here.
+  def store_workhorse_send_data!
+    verify_workhorse_api!
+    headers.store(*yield)
+  end
 
   def content_type_for(attachment, sanitize:)
     return '' unless attachment

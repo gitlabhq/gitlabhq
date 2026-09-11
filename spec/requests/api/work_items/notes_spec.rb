@@ -309,4 +309,46 @@ RSpec.describe API::WorkItems::Notes, feature_category: :portfolio_management do
       end
     end
   end
+
+  shared_context 'for creating a note' do
+    let_it_be(:owner) { project.first_owner }
+    let_it_be(:public_project) { create(:project, :public) }
+    let_it_be(:locked_work_item) { create(:work_item, :issue, project: public_project, discussion_locked: true) }
+    let_it_be(:quick_action_label) { create(:label, project: project, title: 'bug') }
+  end
+
+  describe 'POST /projects/:id/-/work_items/:work_item_iid/notes' do
+    include_context 'for creating a note'
+
+    let(:path_for) { ->(item) { "/projects/#{item.project.id}/-/work_items/#{item.iid}/notes" } }
+    let(:api_request_path) { path_for.call(work_item) }
+
+    it_behaves_like 'a work item endpoint creating a note'
+
+    it_behaves_like 'authorizing granular token permissions', :create_note, expected_success_status: :created do
+      let(:boundary_object) { project }
+      let(:request) do
+        post api(api_request_path, personal_access_token: pat), params: { body: 'hi!' }
+      end
+    end
+  end
+
+  describe 'POST /namespaces/:id/-/work_items/:work_item_iid/notes' do
+    include_context 'for creating a note'
+
+    let(:path_for) do
+      ->(item) { "/namespaces/#{CGI.escape(item.namespace.full_path)}/-/work_items/#{item.iid}/notes" }
+    end
+
+    let(:api_request_path) { path_for.call(work_item) }
+
+    it_behaves_like 'a work item endpoint creating a note'
+
+    it_behaves_like 'authorizing granular token permissions', :create_note, expected_success_status: :created do
+      let(:boundary_object) { project }
+      let(:request) do
+        post api(api_request_path, personal_access_token: pat), params: { body: 'hi!' }
+      end
+    end
+  end
 end

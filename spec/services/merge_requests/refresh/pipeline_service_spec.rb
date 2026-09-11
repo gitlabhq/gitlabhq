@@ -31,7 +31,7 @@ RSpec.describe MergeRequests::Refresh::PipelineService, :sidekiq_inline, feature
 
   let(:service) { described_class.new(project: project, current_user: user) }
   let(:oldrev) { 'old_sha' }
-  let(:newrev) { 'new_sha' }
+  let(:newrev) { merge_request.diff_head_sha }
   let(:ref) { 'refs/heads/master' }
 
   before_all do
@@ -77,6 +77,15 @@ RSpec.describe MergeRequests::Refresh::PipelineService, :sidekiq_inline, feature
 
           expect(merge_request.has_commits?).to be_truthy
           expect(another_merge_request.has_commits?).to be_falsy
+        end
+
+        it 'pins checkout_sha to newrev when creating the pipeline' do
+          allow(service).to receive(:refresh_pipelines_on_merge_requests).and_call_original
+
+          execute
+
+          expect(service).to have_received(:refresh_pipelines_on_merge_requests)
+            .with(merge_request, checkout_sha: newrev)
         end
 
         context 'when "push_options: nil" is passed' do

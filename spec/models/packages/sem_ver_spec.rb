@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Packages::SemVer, type: :model do
+RSpec.describe Packages::SemVer, type: :model, feature_category: :package_registry do
   shared_examples '#parse with a valid semver' do |str, major, minor, patch, prerelease, build|
     context "with #{str}" do
       it "returns #{described_class.new(major, minor, patch, prerelease, build, prefixed: true)} with prefix" do

@@ -2218,7 +2218,9 @@ Grants the ability to create, delete, read, and update work items such as epics 
 | Action | Access | Method | Path |
 | ------ | ------ | ------ | ---- |
 | Create | Project | `POST` | `/namespaces/:id/-/work_items` |
+| Create | Project | `POST` | `/namespaces/:id/-/work_items/:work_item_iid/notes` |
 | Create | Project | `POST` | `/projects/:id/-/work_items` |
+| Create | Project | `POST` | `/projects/:id/-/work_items/:work_item_iid/notes` |
 | Create | Project | `POST` | `/projects/:id/boards` |
 | Create | Project | `POST` | `/projects/:id/boards/:board_id/lists` |
 | Create | Project | `POST` | `/projects/:id/issues` |
@@ -2244,6 +2246,7 @@ Grants the ability to create, delete, read, and update work items such as epics 
 | Create | Group | `POST` | `/groups/:id/(-/)epics/:epic_iid/epics/:child_epic_id` |
 | Create | Group | `POST` | `/groups/:id/(-/)epics/:epic_iid/issues/:issue_id` |
 | Create | Group | `POST` | `/groups/:id/-/work_items` |
+| Create | Group | `POST` | `/groups/:id/-/work_items/:work_item_iid/notes` |
 | Create | Group | `POST` | `/groups/:id/boards` |
 | Create | Group | `POST` | `/groups/:id/boards/:board_id/lists` |
 | Create | Group | `POST` | `/groups/:id/epics/:epic_iid/award_emoji` |
@@ -2255,6 +2258,7 @@ Grants the ability to create, delete, read, and update work items such as epics 
 | Create | Group | `POST` | `/groups/:id/milestones` |
 | Create | Group | `POST` | `/groups/:id/wiki_pages/:noteable_id/notes` |
 | Create | Group | `POST` | `/namespaces/:id/-/work_items` |
+| Create | Group | `POST` | `/namespaces/:id/-/work_items/:work_item_iid/notes` |
 | Delete | Project | `DELETE` | `/namespaces/:id/-/work_items/:work_item_iid` |
 | Delete | Project | `DELETE` | `/projects/:id/-/work_items/:work_item_iid` |
 | Delete | Project | `DELETE` | `/projects/:id/boards/:board_id` |

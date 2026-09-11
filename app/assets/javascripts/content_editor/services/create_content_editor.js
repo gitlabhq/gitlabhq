@@ -1,6 +1,7 @@
 import { Editor } from '@tiptap/vue-2';
 import { isFunction, flatMap } from 'lodash-es';
 import eventHubFactory from '~/helpers/event_hub_factory';
+import { iframeRenderingEnabled } from '~/behaviors/markdown/render_iframe';
 import { PROVIDE_SERIALIZER_OR_RENDERER_ERROR } from '../constants';
 import * as builtInExtensions from '../extensions';
 import createCollaborationExtensions from './create_collaboration_extensions';
@@ -47,7 +48,7 @@ export const createContentEditor = ({
     render: renderMarkdown,
   });
 
-  const { Suggestions, DrawioDiagram, TableOfContents, History, ...otherExtensions } =
+  const { Suggestions, DrawioDiagram, TableOfContents, History, Iframe, ...otherExtensions } =
     builtInExtensions;
 
   // Yjs tracks history per client, so it ships its own undo manager.
@@ -74,6 +75,7 @@ export const createContentEditor = ({
   if (supportsTableOfContents) allExtensions.push(TableOfContents);
   if (collaborationProvider)
     allExtensions.push(...createCollaborationExtensions({ provider: collaborationProvider }));
+  if (iframeRenderingEnabled()) allExtensions.push(Iframe);
 
   const trackedExtensions = allExtensions.map(trackInputRulesAndShortcuts);
   const tiptapEditor = createTiptapEditor({ extensions: trackedExtensions, ...tiptapOptions });

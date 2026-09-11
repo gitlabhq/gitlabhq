@@ -5,6 +5,7 @@ inherits_from: []
 organization:
   permissions: []
   raw_permissions:
+  - _delete_own_organization_user
   - create_group
   - read_artifact_registry
   - read_organization
