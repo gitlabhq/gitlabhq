@@ -12531,7 +12531,7 @@ msgstr ""
 msgid "ArtifactRegistry|File"
 msgstr ""
 
-msgid "ArtifactRegistry|Filter repositories"
+msgid "ArtifactRegistry|Filter repositories by type"
 msgstr ""
 
 msgid "ArtifactRegistry|For more information on the Maven registry, %{linkStart}see the documentation%{linkEnd}."
@@ -13035,7 +13035,7 @@ msgstr ""
 msgid "ArtifactRegistry|This action permanently deletes signature %{name} and any tags pointing to it. The image it signs will then verify as unsigned. This action cannot be undone."
 msgstr ""
 
-msgid "ArtifactRegistry|This action permanently deletes the repository and all of its artifacts. If this repository is connected to a virtual repository, the virtual repository loses access to this repository and its artifacts."
+msgid "ArtifactRegistry|This action permanently deletes the repository and all of its artifacts."
 msgstr ""
 
 msgid "ArtifactRegistry|This action permanently deletes version %{name} and all of its files. This action cannot be undone."

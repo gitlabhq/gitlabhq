@@ -57,6 +57,10 @@ describe('WorkItemDisplaySettingsGroupBy', () => {
   const findLoadingIcon = () => wrapper.findComponent(GlLoadingIcon);
   const findHideAll = () => wrapper.findByTestId('hide-all');
   const findToggles = () => wrapper.findAllComponents(GlToggle);
+  const findShownSection = () => wrapper.findByTestId('shown-groups');
+  const findHiddenSection = () => wrapper.findByTestId('hidden-groups');
+  const findShownToggles = () => findShownSection().findAllComponents(GlToggle);
+  const findHiddenToggles = () => findHiddenSection().findAllComponents(GlToggle);
   const findNoGroupsFound = () => wrapper.findByTestId('no-groups-found');
   const findGroupLimitHint = () => wrapper.findByTestId('group-limit-hint');
 
@@ -134,11 +138,8 @@ describe('WorkItemDisplaySettingsGroupBy', () => {
       expect(findLoadingIcon().exists()).toBe(false);
     });
 
-    it('renders an enabled toggle for each status, shown by default', () => {
-      const toggles = findToggles();
-      expect(toggles).toHaveLength(2);
-      expect(toggles.at(0).props()).toMatchObject({ value: true, label: 'Triage' });
-      expect(toggles.at(1).props()).toMatchObject({ value: true, label: 'To do' });
+    it('renders a toggle for each status', () => {
+      expect(findToggles()).toHaveLength(2);
     });
   });
 
@@ -162,27 +163,51 @@ describe('WorkItemDisplaySettingsGroupBy', () => {
     });
   });
 
-  describe('when only some groups are visible', () => {
-    beforeEach(async () => {
-      createComponent({ visibleGroups: [groupId(statuses[0])] });
+  describe('shown and hidden sections', () => {
+    it('lists every group under Shown when they are all visible', async () => {
+      createComponent();
       await waitForPromises();
+
+      expect(findShownToggles().wrappers.map((toggle) => toggle.props('label'))).toEqual([
+        'Triage',
+        'To do',
+      ]);
+      expect(findHiddenSection().exists()).toBe(false);
     });
 
-    it('only turns on the toggles for the visible groups', () => {
-      expect(findToggles().at(0).props('value')).toBe(true);
-      expect(findToggles().at(1).props('value')).toBe(false);
+    it('splits the groups across both sections when only some are visible', async () => {
+      createComponent({ visibleGroups: [groupId(statuses[0])] });
+      await waitForPromises();
+
+      expect(findShownToggles().wrappers.map((toggle) => toggle.props('label'))).toEqual([
+        'Triage',
+      ]);
+      expect(findHiddenToggles().wrappers.map((toggle) => toggle.props('label'))).toEqual([
+        'To do',
+      ]);
+    });
+
+    it('lists every group under Hidden when none are visible', async () => {
+      createComponent({ visibleGroups: [] });
+      await waitForPromises();
+
+      expect(findShownSection().exists()).toBe(false);
+      expect(findHiddenToggles().wrappers.map((toggle) => toggle.props('label'))).toEqual([
+        'Triage',
+        'To do',
+      ]);
     });
   });
 
   describe('when the persisted selection changes', () => {
-    it('follows it', async () => {
+    it('moves the newly hidden group into the Hidden section', async () => {
       createComponent();
       await waitForPromises();
 
       await wrapper.setProps({ namespacePreferences: { visibleGroups: [groupId(statuses[0])] } });
 
-      expect(findToggles().at(0).props('value')).toBe(true);
-      expect(findToggles().at(1).props('value')).toBe(false);
+      expect(findShownToggles().at(0).props('label')).toBe('Triage');
+      expect(findHiddenToggles().at(0).props('label')).toBe('To do');
     });
   });
 
@@ -192,7 +217,7 @@ describe('WorkItemDisplaySettingsGroupBy', () => {
         createComponent();
         await waitForPromises();
 
-        findToggles().at(1).vm.$emit('change');
+        findShownToggles().at(1).vm.$emit('change');
         await waitForPromises();
       });
 
@@ -215,7 +240,7 @@ describe('WorkItemDisplaySettingsGroupBy', () => {
         createComponent();
         await waitForPromises();
 
-        findToggles().at(0).vm.$emit('change');
+        findShownToggles().at(0).vm.$emit('change');
         await waitForPromises();
       });
 
@@ -231,7 +256,7 @@ describe('WorkItemDisplaySettingsGroupBy', () => {
         });
         await waitForPromises();
 
-        findToggles().at(1).vm.$emit('change');
+        findHiddenToggles().at(0).vm.$emit('change');
         await waitForPromises();
       });
 
@@ -247,7 +272,7 @@ describe('WorkItemDisplaySettingsGroupBy', () => {
         createComponent({ props: { isSavedView: true } });
         await waitForPromises();
 
-        findToggles().at(1).vm.$emit('change');
+        findShownToggles().at(1).vm.$emit('change');
         await waitForPromises();
       });
 
@@ -268,7 +293,7 @@ describe('WorkItemDisplaySettingsGroupBy', () => {
           });
           await waitForPromises();
 
-          findToggles().at(0).vm.$emit('change');
+          findShownToggles().at(0).vm.$emit('change');
           await waitForPromises();
         });
 
@@ -310,7 +335,7 @@ describe('WorkItemDisplaySettingsGroupBy', () => {
 
       describe('when the matching group is toggled off', () => {
         beforeEach(async () => {
-          findToggles().at(0).vm.$emit('change');
+          findShownToggles().at(0).vm.$emit('change');
           await waitForPromises();
         });
 
@@ -371,20 +396,6 @@ describe('WorkItemDisplaySettingsGroupBy', () => {
         }),
       );
     });
-
-    describe('when every group is already hidden', () => {
-      beforeEach(async () => {
-        createComponent({ visibleGroups: [] });
-        await waitForPromises();
-
-        findHideAll().trigger('click');
-        await waitForPromises();
-      });
-
-      it('does not persist again', () => {
-        expect(persistMetadataPreference).not.toHaveBeenCalled();
-      });
-    });
   });
 
   describe('group limit', () => {
@@ -402,10 +413,9 @@ describe('WorkItemDisplaySettingsGroupBy', () => {
         await waitForPromises();
       });
 
-      it('turns every toggle off, so the user has to choose', () => {
-        expect(findToggles().wrappers.every((toggle) => toggle.props('value') === false)).toBe(
-          true,
-        );
+      it('hides every group, so the user has to choose', () => {
+        expect(findShownSection().exists()).toBe(false);
+        expect(findHiddenToggles()).toHaveLength(manyValues.length);
       });
 
       it('says how many groups can be selected', () => {
@@ -413,7 +423,7 @@ describe('WorkItemDisplaySettingsGroupBy', () => {
       });
 
       it('persists only the group toggled on', async () => {
-        findToggles().at(3).vm.$emit('change');
+        findHiddenToggles().at(3).vm.$emit('change');
         await waitForPromises();
 
         expect(persistMetadataPreference).toHaveBeenCalledWith(
@@ -422,13 +432,6 @@ describe('WorkItemDisplaySettingsGroupBy', () => {
             displaySettings: { visibleGroups: [groupId(manyValues[3])] },
           }),
         );
-      });
-
-      it('does not persist anything when Hide all is clicked, since it is already effectively empty', async () => {
-        findHideAll().trigger('click');
-        await waitForPromises();
-
-        expect(persistMetadataPreference).not.toHaveBeenCalled();
       });
     });
 
@@ -443,11 +446,11 @@ describe('WorkItemDisplaySettingsGroupBy', () => {
       });
 
       it('disables the toggles for the hidden groups', () => {
-        expect(findToggles().at(25).props('disabled')).toBe(true);
+        expect(findHiddenToggles().at(0).props('disabled')).toBe(true);
       });
 
       it('leaves the shown groups toggleable, so the user can swap one out', () => {
-        expect(findToggles().at(0).props('disabled')).toBe(false);
+        expect(findShownToggles().at(0).props('disabled')).toBe(false);
       });
     });
 
@@ -477,7 +480,7 @@ describe('WorkItemDisplaySettingsGroupBy', () => {
       await waitForPromises();
       const { trackEventSpy } = bindInternalEventDocument(wrapper.element);
 
-      findToggles().at(1).vm.$emit('change');
+      findShownToggles().at(1).vm.$emit('change');
       await waitForPromises();
 
       expect(trackEventSpy).toHaveBeenCalledWith(
@@ -492,7 +495,7 @@ describe('WorkItemDisplaySettingsGroupBy', () => {
       await waitForPromises();
       const { trackEventSpy } = bindInternalEventDocument(wrapper.element);
 
-      findToggles().at(1).vm.$emit('change');
+      findHiddenToggles().at(0).vm.$emit('change');
       await waitForPromises();
 
       expect(trackEventSpy).toHaveBeenCalledWith(
@@ -513,21 +516,6 @@ describe('WorkItemDisplaySettingsGroupBy', () => {
       expect(trackEventSpy).toHaveBeenCalledWith(
         'configure_columns_on_work_item_board',
         { label: 'hide_all_groups' },
-        undefined,
-      );
-    });
-
-    it('tracks nothing when Hide all is used and every group is already hidden', async () => {
-      createComponent({ visibleGroups: [] });
-      await waitForPromises();
-      const { trackEventSpy } = bindInternalEventDocument(wrapper.element);
-
-      findHideAll().trigger('click');
-      await waitForPromises();
-
-      expect(trackEventSpy).not.toHaveBeenCalledWith(
-        'configure_columns_on_work_item_board',
-        expect.anything(),
         undefined,
       );
     });

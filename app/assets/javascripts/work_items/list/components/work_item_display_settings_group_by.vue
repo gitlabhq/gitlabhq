@@ -42,6 +42,7 @@ export default {
     groups: s__('WorkItems|Groups'),
     searchPlaceholder: s__('WorkItems|Search groups'),
     shown: s__('WorkItems|Shown'),
+    hidden: s__('WorkItems|Hidden'),
     hideAll: s__('WorkItems|Hide all'),
     noGroupsFound: s__('WorkItems|No groups match your search.'),
   },
@@ -136,6 +137,12 @@ export default {
         };
       });
     },
+    shownGroups() {
+      return this.decoratedGroupByValues.filter((row) => this.isGroupVisible(row.value));
+    },
+    hiddenGroups() {
+      return this.decoratedGroupByValues.filter((row) => !this.isGroupVisible(row.value));
+    },
     noGroupsAvailable() {
       return this.isSearching && this.filteredGroupByValues.length === 0;
     },
@@ -179,8 +186,6 @@ export default {
       this.persist(next);
     },
     hideAll() {
-      // Everything is already hidden, so skip the redundant preference write.
-      if (this.visibleGroups?.length === 0) return;
       this.trackEvent('configure_columns_on_work_item_board', { label: 'hide_all_groups' });
       this.persist([]);
     },
@@ -256,41 +261,62 @@ export default {
         {{ $options.i18n.noGroupsFound }}
       </p>
       <template v-else>
-        <div class="gl-mt-4 gl-flex gl-items-center gl-justify-between">
-          <span class="gl-text-sm gl-font-bold">{{ $options.i18n.shown }}</span>
-          <button
-            type="button"
-            class="gl-border-none gl-bg-transparent gl-p-0 gl-text-sm gl-text-subtle"
-            data-testid="hide-all"
-            @click="hideAll"
-          >
-            {{ $options.i18n.hideAll }}
-          </button>
-        </div>
         <p
           v-if="showGroupLimitHint"
-          class="gl-mb-0 gl-mt-2 gl-text-sm gl-text-subtle"
+          class="gl-mb-0 gl-mt-4 gl-text-sm gl-text-subtle"
           data-testid="group-limit-hint"
         >
           {{ groupLimitHint }}
         </p>
-        <ul class="gl-m-0 gl-mt-2 gl-list-none gl-p-0" data-testid="group-by-values">
-          <li
-            v-for="row in decoratedGroupByValues"
-            :key="row.value.id"
-            class="gl-flex gl-items-center gl-gap-3 gl-py-2"
-          >
-            <gl-icon v-if="row.showIcon" :name="row.iconName" :style="row.iconStyle" />
-            <gl-toggle
-              :value="isGroupVisible(row.value)"
-              :disabled="isAtGroupLimit && !isGroupVisible(row.value)"
-              :label="row.value.name"
-              class="gl-w-full gl-justify-between"
-              label-position="left"
-              @change="toggleGroupVisibility(row.value)"
-            />
-          </li>
-        </ul>
+        <div v-if="shownGroups.length" class="gl-mt-4" data-testid="shown-groups">
+          <div class="gl-flex gl-items-center gl-justify-between">
+            <span class="gl-text-sm gl-font-bold">{{ $options.i18n.shown }}</span>
+            <button
+              type="button"
+              class="gl-border-none gl-bg-transparent gl-p-0 gl-text-sm gl-text-subtle"
+              data-testid="hide-all"
+              @click="hideAll"
+            >
+              {{ $options.i18n.hideAll }}
+            </button>
+          </div>
+          <ul class="gl-m-0 gl-mt-2 gl-list-none gl-p-0">
+            <li
+              v-for="row in shownGroups"
+              :key="row.value.id"
+              class="gl-flex gl-items-center gl-gap-3 gl-py-2"
+            >
+              <gl-icon v-if="row.showIcon" :name="row.iconName" :style="row.iconStyle" />
+              <gl-toggle
+                :value="true"
+                :label="row.value.name"
+                class="gl-w-full gl-justify-between"
+                label-position="left"
+                @change="toggleGroupVisibility(row.value)"
+              />
+            </li>
+          </ul>
+        </div>
+        <div v-if="hiddenGroups.length" class="gl-mt-4" data-testid="hidden-groups">
+          <span class="gl-text-sm gl-font-bold">{{ $options.i18n.hidden }}</span>
+          <ul class="gl-m-0 gl-mt-2 gl-list-none gl-p-0">
+            <li
+              v-for="row in hiddenGroups"
+              :key="row.value.id"
+              class="gl-flex gl-items-center gl-gap-3 gl-py-2"
+            >
+              <gl-icon v-if="row.showIcon" :name="row.iconName" :style="row.iconStyle" />
+              <gl-toggle
+                :value="false"
+                :disabled="isAtGroupLimit"
+                :label="row.value.name"
+                class="gl-w-full gl-justify-between"
+                label-position="left"
+                @change="toggleGroupVisibility(row.value)"
+              />
+            </li>
+          </ul>
+        </div>
       </template>
     </div>
   </div>
