@@ -59,7 +59,6 @@ RSpec.describe API::Mcp, 'List tools request', feature_category: :mcp_server do
       expected_annotations = {
         # write, non-destructive
         'add_branch' => { 'readOnlyHint' => false, 'destructiveHint' => false },
-        'create_issue' => { 'readOnlyHint' => false, 'destructiveHint' => false },
         'save_merge_request' => { 'readOnlyHint' => false, 'destructiveHint' => false },
         'fork_repository' => { 'readOnlyHint' => false, 'destructiveHint' => false },
         'link_work_items' => { 'readOnlyHint' => false, 'destructiveHint' => false },
@@ -118,7 +117,7 @@ RSpec.describe API::Mcp, 'List tools request', feature_category: :mcp_server do
 
       api_tool_names = ::API::API.routes.filter_map do |route|
         settings = route.app.route_setting(:mcp)
-        next if settings.blank? || settings[:aggregators].present?
+        next if settings.blank? || settings[:aggregators].present? || settings[:unlisted].present?
 
         settings[:tool_name].to_s
       end.uniq
@@ -287,6 +286,16 @@ RSpec.describe API::Mcp, 'List tools request', feature_category: :mcp_server do
       end
     end
 
+    context 'with tools retired from the catalog' do
+      it 'does not advertise create_issue but keeps it callable' do
+        post_list_tools
+
+        tool_names = json_response['result']['tools'].pluck('name')
+        expect(tool_names).not_to include('create_issue')
+        expect(::Mcp::Tools::Manager.new.get_tool(name: 'create_issue')).to be_present
+      end
+    end
+
     context 'when a tool is unlisted' do
       let(:manager) do
         ::Mcp::Tools::Manager.new.tap do |m|
@@ -315,17 +324,17 @@ RSpec.describe API::Mcp, 'List tools request', feature_category: :mcp_server do
       end
 
       it 'returns only the tools listed in the header' do
-        post_list_tools_with_allowed('get_issue,create_issue')
+        post_list_tools_with_allowed('get_issue,get_pipeline')
 
         tool_names = json_response['result']['tools'].pluck('name')
-        expect(tool_names).to contain_exactly('get_issue', 'create_issue')
+        expect(tool_names).to contain_exactly('get_issue', 'get_pipeline')
       end
 
       it 'excludes tools not in the allowed list' do
         post_list_tools_with_allowed('get_issue')
 
         tool_names = json_response['result']['tools'].pluck('name')
-        expect(tool_names).not_to include('create_issue', 'search', 'get_merge_request')
+        expect(tool_names).not_to include('get_pipeline', 'search', 'get_merge_request')
       end
 
       it 'handles a single tool correctly' do
@@ -347,7 +356,7 @@ RSpec.describe API::Mcp, 'List tools request', feature_category: :mcp_server do
           post_list_tools_with_allowed('')
 
           tool_names = json_response['result']['tools'].pluck('name')
-          expect(tool_names).to include('get_issue', 'create_issue', 'search', 'get_merge_request')
+          expect(tool_names).to include('get_issue', 'get_pipeline', 'search', 'get_merge_request')
         end
       end
     end
@@ -357,7 +366,7 @@ RSpec.describe API::Mcp, 'List tools request', feature_category: :mcp_server do
         post_list_tools
 
         tool_names = json_response['result']['tools'].pluck('name')
-        expect(tool_names).to include('get_issue', 'create_issue', 'search', 'get_merge_request')
+        expect(tool_names).to include('get_issue', 'get_pipeline', 'search', 'get_merge_request')
       end
     end
 

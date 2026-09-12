@@ -114,8 +114,16 @@ with the content "# New title" and commit message "Add README"
 {{< history >}}
 
 - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/203055) in GitLab 18.4.
+- [Unlisted](https://gitlab.com/gitlab-org/gitlab/-/work_items/625129) in GitLab 19.4. Superseded by [`save_work_item`](#save_work_item).
 
 {{< /history >}}
+
+Superseded by [`save_work_item`](#save_work_item), which resolves milestone titles and
+label names in the same places (the project and its ancestor groups) but is stricter
+about names it cannot find: `create_issue` creates label names that don't exist yet and
+silently drops an unknown milestone title, while `save_work_item` returns an error naming
+anything it cannot find. This tool no longer appears in `tools/list` but remains callable
+while callers migrate.
 
 Creates a new issue in a GitLab project.
 
