@@ -44,9 +44,9 @@ RSpec.describe Gitlab::Database::Aggregation::ClickHouse::AcquiredCount, :click_
       # Day 2: (1,3) minus (1,2) -> 1 (user 3)
       # Day 3: (2)   minus (1,3) -> 1 (user 2)
       expect(engine).to execute_aggregation(request).and_return([
-        { event_date_daily: Date.parse('2025-03-01'), new_users_count: 2 },
-        { event_date_daily: Date.parse('2025-03-02'), new_users_count: 1 },
-        { event_date_daily: Date.parse('2025-03-03'), new_users_count: 1 }
+        { event_date_granularity_daily: Date.parse('2025-03-01'), new_users_count: 2 },
+        { event_date_granularity_daily: Date.parse('2025-03-02'), new_users_count: 1 },
+        { event_date_granularity_daily: Date.parse('2025-03-03'), new_users_count: 1 }
       ])
     end
   end
@@ -63,9 +63,9 @@ RSpec.describe Gitlab::Database::Aggregation::ClickHouse::AcquiredCount, :click_
       # Days 1 and 2 have no bucket two positions back, so every user counts as acquired.
       # Day 3: (2) minus Day 1 (1,2) -> 0
       expect(engine).to execute_aggregation(request).and_return([
-        { event_date_daily: Date.parse('2025-03-01'), two_periods_new_count: 2 },
-        { event_date_daily: Date.parse('2025-03-02'), two_periods_new_count: 2 },
-        { event_date_daily: Date.parse('2025-03-03'), two_periods_new_count: 0 }
+        { event_date_granularity_daily: Date.parse('2025-03-01'), two_periods_new_count: 2 },
+        { event_date_granularity_daily: Date.parse('2025-03-02'), two_periods_new_count: 2 },
+        { event_date_granularity_daily: Date.parse('2025-03-03'), two_periods_new_count: 0 }
       ])
     end
   end
@@ -80,9 +80,9 @@ RSpec.describe Gitlab::Database::Aggregation::ClickHouse::AcquiredCount, :click_
 
     it 'returns both the acquired user count and total session count per day' do
       expect(engine).to execute_aggregation(request).and_return([
-        { event_date_daily: Date.parse('2025-03-01'), total_count: 2, new_users_count: 2 },
-        { event_date_daily: Date.parse('2025-03-02'), total_count: 2, new_users_count: 1 },
-        { event_date_daily: Date.parse('2025-03-03'), total_count: 1, new_users_count: 1 }
+        { event_date_granularity_daily: Date.parse('2025-03-01'), total_count: 2, new_users_count: 2 },
+        { event_date_granularity_daily: Date.parse('2025-03-02'), total_count: 2, new_users_count: 1 },
+        { event_date_granularity_daily: Date.parse('2025-03-03'), total_count: 1, new_users_count: 1 }
       ])
     end
   end
@@ -100,9 +100,9 @@ RSpec.describe Gitlab::Database::Aggregation::ClickHouse::AcquiredCount, :click_
       # chat-only: Day 1 (1,2); Day 2 (1); Day 3 (2).
       # Acquired vs prev: 2; (1) minus (1,2) = 0; (2) minus (1) = 1.
       expect(engine).to execute_aggregation(request).and_return([
-        { event_date_daily: Date.parse('2025-03-01'), new_users_count: 2 },
-        { event_date_daily: Date.parse('2025-03-02'), new_users_count: 0 },
-        { event_date_daily: Date.parse('2025-03-03'), new_users_count: 1 }
+        { event_date_granularity_daily: Date.parse('2025-03-01'), new_users_count: 2 },
+        { event_date_granularity_daily: Date.parse('2025-03-02'), new_users_count: 0 },
+        { event_date_granularity_daily: Date.parse('2025-03-03'), new_users_count: 1 }
       ])
     end
   end
@@ -118,9 +118,9 @@ RSpec.describe Gitlab::Database::Aggregation::ClickHouse::AcquiredCount, :click_
 
     it 'returns results ordered by the specified dimension' do
       expect(engine).to execute_aggregation(request).and_return([
-        { event_date_daily: Date.parse('2025-03-03'), new_users_count: 1 },
-        { event_date_daily: Date.parse('2025-03-02'), new_users_count: 1 },
-        { event_date_daily: Date.parse('2025-03-01'), new_users_count: 2 }
+        { event_date_granularity_daily: Date.parse('2025-03-03'), new_users_count: 1 },
+        { event_date_granularity_daily: Date.parse('2025-03-02'), new_users_count: 1 },
+        { event_date_granularity_daily: Date.parse('2025-03-01'), new_users_count: 2 }
       ])
     end
   end
@@ -135,9 +135,9 @@ RSpec.describe Gitlab::Database::Aggregation::ClickHouse::AcquiredCount, :click_
 
     it 'returns both lag_offset=1 and lag_offset=2 results together' do
       expect(engine).to execute_aggregation(request).and_return([
-        { event_date_daily: Date.parse('2025-03-01'), new_users_count: 2, two_periods_new_count: 2 },
-        { event_date_daily: Date.parse('2025-03-02'), new_users_count: 1, two_periods_new_count: 2 },
-        { event_date_daily: Date.parse('2025-03-03'), new_users_count: 1, two_periods_new_count: 0 }
+        { event_date_granularity_daily: Date.parse('2025-03-01'), new_users_count: 2, two_periods_new_count: 2 },
+        { event_date_granularity_daily: Date.parse('2025-03-02'), new_users_count: 1, two_periods_new_count: 2 },
+        { event_date_granularity_daily: Date.parse('2025-03-03'), new_users_count: 1, two_periods_new_count: 0 }
       ])
     end
   end
@@ -169,9 +169,9 @@ RSpec.describe Gitlab::Database::Aggregation::ClickHouse::AcquiredCount, :click_
     # passthrough. Every row is 'prod', so only the first day acquires it.
     it 'projects the expression column explicitly' do
       expect(engine).to execute_aggregation(request).and_return([
-        { event_date_daily: Date.parse('2025-03-01'), new_environments_count: 1 },
-        { event_date_daily: Date.parse('2025-03-02'), new_environments_count: 0 },
-        { event_date_daily: Date.parse('2025-03-03'), new_environments_count: 0 }
+        { event_date_granularity_daily: Date.parse('2025-03-01'), new_environments_count: 1 },
+        { event_date_granularity_daily: Date.parse('2025-03-02'), new_environments_count: 0 },
+        { event_date_granularity_daily: Date.parse('2025-03-03'), new_environments_count: 0 }
       ])
     end
   end

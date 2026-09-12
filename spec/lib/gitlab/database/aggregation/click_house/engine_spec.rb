@@ -822,13 +822,13 @@ RSpec.describe Gitlab::Database::Aggregation::ClickHouse::Engine, :click_house, 
       # there. Without arrayDistinct, new_users_count on that date would be 2 instead of 1.
       it 'computes acquired and churned counts alongside the existing bitmap metrics' do
         expect(engine).to execute_aggregation(request).and_return([
-          { flow_type: 'chat', event_date_daily: Date.parse('2025-03-01'), distinct_users_count: 1,
+          { flow_type: 'chat', event_date_granularity_daily: Date.parse('2025-03-01'), distinct_users_count: 1,
             returning_users_count: 0, previous_users_count: 0, new_users_count: 1, churned_users_count: 0 },
-          { flow_type: 'chat', event_date_daily: Date.parse('2025-03-02'), distinct_users_count: 1,
+          { flow_type: 'chat', event_date_granularity_daily: Date.parse('2025-03-02'), distinct_users_count: 1,
             returning_users_count: 0, previous_users_count: 1, new_users_count: 1, churned_users_count: 1 },
-          { flow_type: 'chat', event_date_daily: Date.parse('2025-03-04'), distinct_users_count: 1,
+          { flow_type: 'chat', event_date_granularity_daily: Date.parse('2025-03-04'), distinct_users_count: 1,
             returning_users_count: 0, previous_users_count: 1, new_users_count: 1, churned_users_count: 1 },
-          { flow_type: 'chat', event_date_daily: Date.parse('2025-04-04'), distinct_users_count: 1,
+          { flow_type: 'chat', event_date_granularity_daily: Date.parse('2025-04-04'), distinct_users_count: 1,
             returning_users_count: 1, previous_users_count: 1, new_users_count: 0, churned_users_count: 0 }
         ])
       end
