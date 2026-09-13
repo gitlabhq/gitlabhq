@@ -2,6 +2,7 @@
 
 class BackfillPipelinesIdRangeOnCiPartitions < Gitlab::Database::Migration[2.3]
   restrict_gitlab_migration gitlab_schema: :gitlab_ci
+  disable_ddl_transaction!
 
   milestone '19.0'
 
@@ -24,7 +25,21 @@ class BackfillPipelinesIdRangeOnCiPartitions < Gitlab::Database::Migration[2.3]
 
       upper = Build.where(partition_id: next_partition.id).minimum(:commit_id)
 
-      partition.update!(pipelines_id_range: min...upper)
+      # An empty next partition leaves a NULL upper bound, making this non-current
+      # partition unbounded and overlapping the current one. Skip it; a partition
+      # with no range just falls back to a full scan at lookup time.
+      next if upper.nil? && !partition.current?
+
+      begin
+        partition.update!(pipelines_id_range: min...upper)
+      rescue ActiveRecord::StatementInvalid => e
+        # Tolerate only a range overlap, the failure this backfill exists to avoid;
+        # let timeouts, deadlocks, and the like abort so they are not masked.
+        raise unless e.cause.is_a?(PG::ExclusionViolation)
+
+        say "Skipping partition #{partition.id}: #{e.message}"
+      end
+
       break if partition.current?
     end
   end
