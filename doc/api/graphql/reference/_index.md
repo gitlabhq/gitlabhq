@@ -20666,6 +20666,71 @@ Fields:
 | <a id="mutation-workitemcreatefromtask-newworkitem"></a>`newWorkItem` | [`WorkItem`](#workitem) | New work item created from task. |
 | <a id="mutation-workitemcreatefromtask-workitem"></a>`workItem` | [`WorkItem`](#workitem) | Updated work item. |
 
+### `Mutation.workItemDecisionCreate`
+
+{{< details >}}
+
+- Introduced in GitLab 19.4.
+- Status: Experiment.
+
+{{< /details >}}
+
+Records a decision in the decision log of a work item.
+
+Input type: `WorkItemDecisionCreateInput`
+
+Arguments:
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="mutation-workitemdecisioncreate-clientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
+| <a id="mutation-workitemdecisioncreate-description"></a>`description` | [`String`](#string) | Context of the decision. |
+| <a id="mutation-workitemdecisioncreate-discussionid"></a>`discussionId` | [`DiscussionID`](#discussionid) | Global ID of the originating discussion thread. |
+| <a id="mutation-workitemdecisioncreate-options"></a>`options` | [`[WorkItemDecisionOptionInput!]`](#workitemdecisionoptioninput) | Candidate options of the decision. Maximum of 5 options. Incompatible with resolution. |
+| <a id="mutation-workitemdecisioncreate-resolution"></a>`resolution` | [`WorkItemDecisionResolutionInput`](#workitemdecisionresolutioninput) | When present, records the decision as resolved at creation. Incompatible with options. |
+| <a id="mutation-workitemdecisioncreate-sourcelink"></a>`sourceLink` | [`String`](#string) | URL of the comment, discussion, or external resource that prompted the decision. |
+| <a id="mutation-workitemdecisioncreate-title"></a>`title` | [`String`](#string) | Question being decided. Required unless resolution is provided. |
+| <a id="mutation-workitemdecisioncreate-workitemid"></a>`workItemId` | [`WorkItemID!`](#workitemid) | Global ID of the work item. |
+
+Fields:
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="mutation-workitemdecisioncreate-clientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
+| <a id="mutation-workitemdecisioncreate-decision"></a>`decision` | [`WorkItemDecision`](#workitemdecision) | Decision after mutation. |
+| <a id="mutation-workitemdecisioncreate-errors"></a>`errors` | [`[String!]!`](#string) | Errors encountered during the mutation. |
+
+### `Mutation.workItemDecisionResolve`
+
+{{< details >}}
+
+- Introduced in GitLab 19.4.
+- Status: Experiment.
+
+{{< /details >}}
+
+Resolves a decision in the decision log of a work item.
+
+Input type: `WorkItemDecisionResolveInput`
+
+Arguments:
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="mutation-workitemdecisionresolve-clientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
+| <a id="mutation-workitemdecisionresolve-id"></a>`id` | [`WorkItemsDecisionID!`](#workitemsdecisionid) | Global ID of the decision. |
+| <a id="mutation-workitemdecisionresolve-resolutionrationale"></a>`resolutionRationale` | [`String`](#string) | Reasoning for the resolution. |
+| <a id="mutation-workitemdecisionresolve-resolvingnoteid"></a>`resolvingNoteId` | [`NoteID`](#noteid) | Global ID of the comment that resolved the decision. |
+| <a id="mutation-workitemdecisionresolve-selectedoptionids"></a>`selectedOptionIds` | [`[WorkItemsDecisionOptionID!]`](#workitemsdecisionoptionid) | Global IDs of the selected options. Maximum of 5 options. |
+
+Fields:
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="mutation-workitemdecisionresolve-clientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
+| <a id="mutation-workitemdecisionresolve-decision"></a>`decision` | [`WorkItemDecision`](#workitemdecision) | Decision after mutation. |
+| <a id="mutation-workitemdecisionresolve-errors"></a>`errors` | [`[String!]!`](#string) | Errors encountered during the mutation. |
+
 ### `Mutation.workItemDelete`
 
 {{< details >}}
@@ -65948,7 +66013,7 @@ Fields:
 | <a id="workitemdecision-resolvedby"></a>`resolvedBy` {{< icon name="warning-solid" >}} | [`UserCore`](#usercore) | Introduced in GitLab 19.4. Status: Experiment. User who resolved the decision. |
 | <a id="workitemdecision-resolvingnoteid"></a>`resolvingNoteId` {{< icon name="warning-solid" >}} | [`NoteID`](#noteid) | Introduced in GitLab 19.4. Status: Experiment. Global ID of the comment that resolved the decision. |
 | <a id="workitemdecision-sourcelink"></a>`sourceLink` {{< icon name="warning-solid" >}} | [`String`](#string) | Introduced in GitLab 19.4. Status: Experiment. URL of the comment, discussion, or external resource that prompted the decision. Present only on manually created decisions. |
-| <a id="workitemdecision-title"></a>`title` {{< icon name="warning-solid" >}} | [`String!`](#string) | Introduced in GitLab 19.4. Status: Experiment. Question being decided. |
+| <a id="workitemdecision-title"></a>`title` {{< icon name="warning-solid" >}} | [`String`](#string) | Introduced in GitLab 19.4. Status: Experiment. Question being decided. May be absent for decisions recorded as already resolved at creation. |
 
 ### `WorkItemDecisionOption`
 
@@ -79293,6 +79358,30 @@ Arguments:
 | <a id="workitemconverttaskinput-lockversion"></a>`lockVersion` | [`Int!`](#int) | Current lock version of the work item containing the task in the description. |
 | <a id="workitemconverttaskinput-title"></a>`title` | [`String!`](#string) | Full string of the task to be replaced. New title for the created work item. |
 | <a id="workitemconverttaskinput-workitemtypeid"></a>`workItemTypeId` | [`WorkItemsTypeID!`](#workitemstypeid) | Global ID of the work item type used to create the new work item. |
+
+### `WorkItemDecisionOptionInput`
+
+Attributes for a candidate option of a work item decision.
+
+Arguments:
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="workitemdecisionoptioninput-content"></a>`content` | [`String!`](#string) | Content of the decision option. |
+| <a id="workitemdecisionoptioninput-description"></a>`description` | [`String`](#string) | Reasoning behind the decision option. |
+| <a id="workitemdecisionoptioninput-recommended"></a>`recommended` | [`Boolean`](#boolean) | Indicates the option is recommended by GitLab Duo. |
+
+### `WorkItemDecisionResolutionInput`
+
+Attributes for recording a work item decision as resolved at creation.
+
+Arguments:
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="workitemdecisionresolutioninput-decision"></a>`decision` | [`String!`](#string) | Decision that was made, recorded as the selected option of the work item decision. |
+| <a id="workitemdecisionresolutioninput-rationale"></a>`rationale` | [`String`](#string) | Reasoning behind the decision. |
+| <a id="workitemdecisionresolutioninput-resolvedbyid"></a>`resolvedById` | [`UserID`](#userid) | Global ID of the user who resolved the decision. Defaults to the current user. |
 
 ### `WorkItemDescriptionTemplateContentInput`
 

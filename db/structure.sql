@@ -35369,7 +35369,7 @@ CREATE TABLE work_item_decisions (
     created_at timestamp with time zone NOT NULL,
     updated_at timestamp with time zone NOT NULL,
     resolved_at timestamp with time zone,
-    title text NOT NULL,
+    title text,
     description text,
     resolution_rationale text,
     discussion_id text,

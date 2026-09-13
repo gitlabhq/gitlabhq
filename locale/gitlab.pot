@@ -27943,6 +27943,12 @@ msgstr ""
 msgid "December"
 msgstr ""
 
+msgid "Decision cannot have more than %{max} options"
+msgstr ""
+
+msgid "Decision is already resolved"
+msgstr ""
+
 msgid "Decline"
 msgstr ""
 
@@ -53622,6 +53628,9 @@ msgstr ""
 msgid "Note"
 msgstr ""
 
+msgid "Note cannot resolve this decision"
+msgstr ""
+
 msgid "Note creation requests"
 msgstr ""
 
@@ -56635,6 +56644,9 @@ msgid "Optionally, you can %{link_to_customize} how FogBugz email addresses and 
 msgstr ""
 
 msgid "Options"
+msgstr ""
+
+msgid "Options are not supported when creating a resolved decision"
 msgstr ""
 
 msgid "Orbit"
@@ -67722,6 +67734,9 @@ msgstr ""
 msgid "Resize static panel"
 msgstr ""
 
+msgid "Resolution rationale is required when rejecting all options"
+msgstr ""
+
 msgid "Resolve"
 msgstr ""
 
@@ -67771,6 +67786,9 @@ msgid "Resolved by "
 msgstr ""
 
 msgid "Resolved by %{name}"
+msgstr ""
+
+msgid "Resolver must have access to the work item"
 msgstr ""
 
 msgid "Resource link added"
@@ -76828,6 +76846,9 @@ msgid "Selected for all items."
 msgstr ""
 
 msgid "Selected for some items."
+msgstr ""
+
+msgid "Selected options must belong to the decision"
 msgstr ""
 
 msgid "Selected tag is already in use. Choose another option."
