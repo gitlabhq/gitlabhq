@@ -118,18 +118,21 @@ func runInjectTests(t *testing.T, injector senddata.Injecter, tests []injectTest
 	}
 }
 
-// mockDiffServiceServer is a combined mock for both RawDiff and RawPatch RPCs
-// on the Gitaly DiffService.
 type mockDiffServiceServer struct {
 	gitalypb.UnimplementedDiffServiceServer
-	rawDiffFunc  func(*gitalypb.RawDiffRequest, gitalypb.DiffService_RawDiffServer) error
-	rawPatchFunc func(*gitalypb.RawPatchRequest, gitalypb.DiffService_RawPatchServer) error
+	rawDiffFunc          func(*gitalypb.RawDiffRequest, gitalypb.DiffService_RawDiffServer) error
+	rawPatchFunc         func(*gitalypb.RawPatchRequest, gitalypb.DiffService_RawPatchServer) error
+	findChangedPathsFunc func(*gitalypb.FindChangedPathsRequest, gitalypb.DiffService_FindChangedPathsServer) error
 }
 
-func (s *mockDiffServiceServer) RawDiff(req *gitalypb.RawDiffRequest, stream gitalypb.DiffService_RawDiffServer) error {
-	return s.rawDiffFunc(req, stream)
+func (server *mockDiffServiceServer) RawDiff(request *gitalypb.RawDiffRequest, stream gitalypb.DiffService_RawDiffServer) error {
+	return server.rawDiffFunc(request, stream)
 }
 
-func (s *mockDiffServiceServer) RawPatch(req *gitalypb.RawPatchRequest, stream gitalypb.DiffService_RawPatchServer) error {
-	return s.rawPatchFunc(req, stream)
+func (server *mockDiffServiceServer) RawPatch(request *gitalypb.RawPatchRequest, stream gitalypb.DiffService_RawPatchServer) error {
+	return server.rawPatchFunc(request, stream)
+}
+
+func (server *mockDiffServiceServer) FindChangedPaths(request *gitalypb.FindChangedPathsRequest, stream gitalypb.DiffService_FindChangedPathsServer) error {
+	return server.findChangedPathsFunc(request, stream)
 }

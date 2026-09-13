@@ -176,6 +176,35 @@ RSpec.describe Admin::UserActionsHelper, feature_category: :user_management do
           allow(helper).to receive(:options).and_return(authorization_context: organization)
         end
 
+        context 'for the edit action' do
+          before do
+            allow(current_user).to receive(:can?).and_call_original
+            allow(current_user).to receive(:can?)
+              .with(:delete_organization_user, an_instance_of(Organizations::OrganizationUser))
+              .and_return(false)
+          end
+
+          context 'when the current user can update the organization user' do
+            before do
+              allow(current_user).to receive(:can?)
+                .with(:update_organization_user, an_instance_of(Organizations::OrganizationUser))
+                .and_return(true)
+            end
+
+            it { is_expected.to include('edit') }
+          end
+
+          context 'when the current user cannot update the organization user' do
+            before do
+              allow(current_user).to receive(:can?)
+                .with(:update_organization_user, an_instance_of(Organizations::OrganizationUser))
+                .and_return(false)
+            end
+
+            it { is_expected.not_to include('edit') }
+          end
+        end
+
         context 'when the current user can remove the organization user' do
           before do
             allow(current_user).to receive(:can?).and_call_original

@@ -1,5 +1,9 @@
 import { SOLO_OWNED_ORGANIZATIONS_EMPTY } from '~/admin/users/constants';
-import { initializeValuesFromQuery, getSoloOwnedOrganizations } from '~/admin/users/utils';
+import {
+  initializeValuesFromQuery,
+  getSoloOwnedOrganizations,
+  generateUserPaths,
+} from '~/admin/users/utils';
 import { OPERATOR_IS } from '~/vue_shared/components/filtered_search_bar/constants';
 import {
   oneSoloOwnedOrganization,
@@ -64,6 +68,42 @@ describe('initializeValuesFromQuery', () => {
     expect(initializeValuesFromQuery(FILTER_TOKEN_CONFIGS, STANDARD_TOKEN_CONFIGS)).toMatchObject({
       tokenValues: [],
       sort: undefined,
+    });
+  });
+});
+
+describe('generateUserPaths', () => {
+  it('replaces the `id` path segment with the given id', () => {
+    const paths = {
+      edit: '/admin/users/id/edit',
+      delete: '/admin/users/id',
+      deleteWithContributions: '/admin/users/id?hard_delete=true',
+    };
+
+    expect(generateUserPaths(paths, 'root')).toEqual({
+      edit: '/admin/users/root/edit',
+      delete: '/admin/users/root',
+      deleteWithContributions: '/admin/users/root?hard_delete=true',
+    });
+  });
+
+  it('does not replace `id` inside an organization slug', () => {
+    const paths = {
+      edit: '/o/rapid-corp/admin/users/id/edit',
+    };
+
+    expect(generateUserPaths(paths, 'root')).toEqual({
+      edit: '/o/rapid-corp/admin/users/root/edit',
+    });
+  });
+
+  it('replaces only the `/users/id` placeholder when a path segment is literally `id`', () => {
+    const paths = {
+      edit: '/o/id/admin/users/id/edit',
+    };
+
+    expect(generateUserPaths(paths, 'root')).toEqual({
+      edit: '/o/id/admin/users/root/edit',
     });
   });
 });

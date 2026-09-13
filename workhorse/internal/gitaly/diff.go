@@ -43,11 +43,12 @@ func (client *DiffClient) SendRawDiff(ctx context.Context, w http.ResponseWriter
 	})
 }
 
-// changedPathEntry represents a single changed path as NDJSON.
 type changedPathEntry struct {
+	CommitID  string `json:"commit_id,omitempty"`
 	Path      string `json:"path"`
 	Status    string `json:"status"`
 	OldPath   string `json:"old_path"`
+	OldMode   int32  `json:"old_mode"`
 	NewMode   int32  `json:"new_mode"`
 	OldBlobID string `json:"old_blob_id"`
 	NewBlobID string `json:"new_blob_id"`
@@ -57,7 +58,7 @@ type changedPathEntry struct {
 func (client *DiffClient) SendFindChangedPaths(ctx context.Context, w http.ResponseWriter, request *gitalypb.FindChangedPathsRequest) error {
 	stream, err := client.FindChangedPaths(ctx, request)
 	if err != nil {
-		return fmt.Errorf("rpc failed: %v", err)
+		return fmt.Errorf("rpc failed: %w", err)
 	}
 
 	w.Header().Set("Content-Type", "application/x-ndjson")
@@ -71,25 +72,29 @@ func (client *DiffClient) SendFindChangedPaths(ctx context.Context, w http.Respo
 			break
 		}
 		if err != nil {
-			return fmt.Errorf("receive changed paths: %v", err)
+			return fmt.Errorf("receive changed paths: %w", err)
 		}
 
 		for _, path := range resp.GetPaths() {
 			entry := changedPathEntry{
+				CommitID:  path.GetCommitId(),
 				Path:      string(path.GetPath()),
 				Status:    path.GetStatus().String(),
 				OldPath:   string(path.GetOldPath()),
+				OldMode:   path.GetOldMode(),
 				NewMode:   path.GetNewMode(),
 				OldBlobID: path.GetOldBlobId(),
 				NewBlobID: path.GetNewBlobId(),
 			}
 			if err := encoder.Encode(entry); err != nil {
-				return fmt.Errorf("encode changed path: %v", err)
+				return fmt.Errorf("encode changed path: %w", err)
 			}
 		}
 
-		if flusher, ok := w.(http.Flusher); ok {
-			flusher.Flush()
+		if len(resp.GetPaths()) > 0 {
+			if err := http.NewResponseController(w).Flush(); err != nil {
+				return fmt.Errorf("flush changed paths: %w", err)
+			}
 		}
 	}
 

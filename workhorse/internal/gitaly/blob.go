@@ -50,7 +50,7 @@ func (client *BlobClient) SendBlob(ctx context.Context, w http.ResponseWriter, r
 func (client *BlobClient) SendListBlobs(ctx context.Context, w http.ResponseWriter, request *gitalypb.ListBlobsRequest) error {
 	stream, err := client.ListBlobs(ctx, request)
 	if err != nil {
-		return fmt.Errorf("rpc failed: %v", err)
+		return fmt.Errorf("rpc failed: %w", err)
 	}
 
 	w.Header().Set("Content-Type", "application/octet-stream")
@@ -62,12 +62,12 @@ func (client *BlobClient) SendListBlobs(ctx context.Context, w http.ResponseWrit
 			break
 		}
 		if err != nil {
-			return fmt.Errorf("receive list blobs: %v", err)
+			return fmt.Errorf("receive list blobs: %w", err)
 		}
 
 		frame, err := proto.Marshal(resp)
 		if err != nil {
-			return fmt.Errorf("marshal list blobs response: %v", err)
+			return fmt.Errorf("marshal list blobs response: %w", err)
 		}
 
 		if len(frame) > math.MaxUint32 {
@@ -77,14 +77,14 @@ func (client *BlobClient) SendListBlobs(ctx context.Context, w http.ResponseWrit
 		var lengthPrefix [4]byte
 		binary.BigEndian.PutUint32(lengthPrefix[:], uint32(len(frame))) // #nosec G115 -- overflow guarded above
 		if _, err := w.Write(lengthPrefix[:]); err != nil {
-			return fmt.Errorf("write frame length: %v", err)
+			return fmt.Errorf("write frame length: %w", err)
 		}
 		if _, err := w.Write(frame); err != nil {
-			return fmt.Errorf("write frame data: %v", err)
+			return fmt.Errorf("write frame data: %w", err)
 		}
 
-		if flusher, ok := w.(http.Flusher); ok {
-			flusher.Flush()
+		if err := http.NewResponseController(w).Flush(); err != nil {
+			return fmt.Errorf("flush list blobs: %w", err)
 		}
 	}
 

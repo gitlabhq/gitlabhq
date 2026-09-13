@@ -11,7 +11,8 @@ import { OPERATOR_IS } from '~/vue_shared/components/filtered_search_bar/constan
 export const generateUserPaths = (paths, id) => {
   return Object.fromEntries(
     Object.entries(paths).map(([action, genericPath]) => {
-      return [action, genericPath.replace('id', id)];
+      // eslint-disable-next-line @gitlab/no-hardcoded-urls -- Relative path segment, not a URL
+      return [action, genericPath.replace(/\/users\/id(\/|\?|$)/, `/users/${id}$1`)];
     }),
   );
 };

@@ -421,16 +421,6 @@
     "dottedExample": "/john.doe/bar/john.doe/-/automate/mcp-servers"
   },
   {
-    "template": "/*namespace_id/:project_id/-/automate/onboarding",
-    "example": "/foo/bar/foo/-/automate/onboarding",
-    "dottedExample": "/john.doe/bar/john.doe/-/automate/onboarding"
-  },
-  {
-    "template": "/*namespace_id/:project_id/-/automate/onboarding/setup",
-    "example": "/foo/bar/foo/-/automate/onboarding/setup",
-    "dottedExample": "/john.doe/bar/john.doe/-/automate/onboarding/setup"
-  },
-  {
     "template": "/*namespace_id/:project_id/-/automate/triggers",
     "example": "/foo/bar/foo/-/automate/triggers",
     "dottedExample": "/john.doe/bar/john.doe/-/automate/triggers"
@@ -9975,6 +9965,12 @@
     "dottedExample": "/api/v4/internal/orbit/project/john.doe/repository/archive"
   },
   {
+    "template": "/api/:version/internal/orbit/project/:project_id/repository/branches",
+    "example": "/api/v4/internal/orbit/project/foo/repository/branches",
+    "acceptsFormat": true,
+    "dottedExample": "/api/v4/internal/orbit/project/john.doe/repository/branches"
+  },
+  {
     "template": "/api/:version/internal/orbit/project/:project_id/repository/changed_paths",
     "example": "/api/v4/internal/orbit/project/foo/repository/changed_paths",
     "acceptsFormat": true,
@@ -9991,6 +9987,12 @@
     "example": "/api/v4/internal/orbit/project/foo/repository/list_blobs",
     "acceptsFormat": true,
     "dottedExample": "/api/v4/internal/orbit/project/john.doe/repository/list_blobs"
+  },
+  {
+    "template": "/api/:version/internal/orbit/project/:project_id/repository/tree",
+    "example": "/api/v4/internal/orbit/project/foo/repository/tree",
+    "acceptsFormat": true,
+    "dottedExample": "/api/v4/internal/orbit/project/john.doe/repository/tree"
   },
   {
     "template": "/api/:version/internal/orbit/redaction",
@@ -19298,16 +19300,6 @@
     "template": "/o/:organization_path/*namespace_id/:project_id/-/automate/mcp-servers",
     "example": "/o/foo/foo/bar/foo/-/automate/mcp-servers",
     "dottedExample": "/o/john.doe/john.doe/bar/john.doe/-/automate/mcp-servers"
-  },
-  {
-    "template": "/o/:organization_path/*namespace_id/:project_id/-/automate/onboarding",
-    "example": "/o/foo/foo/bar/foo/-/automate/onboarding",
-    "dottedExample": "/o/john.doe/john.doe/bar/john.doe/-/automate/onboarding"
-  },
-  {
-    "template": "/o/:organization_path/*namespace_id/:project_id/-/automate/onboarding/setup",
-    "example": "/o/foo/foo/bar/foo/-/automate/onboarding/setup",
-    "dottedExample": "/o/john.doe/john.doe/bar/john.doe/-/automate/onboarding/setup"
   },
   {
     "template": "/o/:organization_path/*namespace_id/:project_id/-/automate/triggers",

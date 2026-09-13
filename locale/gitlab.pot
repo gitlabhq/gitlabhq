@@ -30575,6 +30575,9 @@ msgstr ""
 msgid "DuoAgentPlatform|Agent required human input"
 msgstr ""
 
+msgid "DuoAgentPlatform|Agent setup progress: %{done} of %{total} steps complete"
+msgstr ""
+
 msgid "DuoAgentPlatform|Agent todos"
 msgstr ""
 
@@ -31395,16 +31398,10 @@ msgstr ""
 msgid "DuoAgentsPlatform|Add schedule"
 msgstr ""
 
-msgid "DuoAgentsPlatform|Agent Platform health checks pass and runners are available to this project."
-msgstr ""
-
 msgid "DuoAgentsPlatform|Agent session"
 msgstr ""
 
 msgid "DuoAgentsPlatform|All"
-msgstr ""
-
-msgid "DuoAgentsPlatform|Already set up"
 msgstr ""
 
 msgid "DuoAgentsPlatform|An error occurred while fetching flows configured for this project."
@@ -31506,9 +31503,6 @@ msgstr ""
 msgid "DuoAgentsPlatform|Create trigger"
 msgstr ""
 
-msgid "DuoAgentsPlatform|Customize agents for this project"
-msgstr ""
-
 msgid "DuoAgentsPlatform|Data Analyst"
 msgstr ""
 
@@ -31584,9 +31578,6 @@ msgstr ""
 msgid "DuoAgentsPlatform|Failed to update trigger."
 msgstr ""
 
-msgid "DuoAgentsPlatform|Files that tune how agents read and act on this codebase"
-msgstr ""
-
 msgid "DuoAgentsPlatform|Find files"
 msgstr ""
 
@@ -31602,13 +31593,7 @@ msgstr ""
 msgid "DuoAgentsPlatform|Flow or external agent"
 msgstr ""
 
-msgid "DuoAgentsPlatform|Flows can't run yet"
-msgstr ""
-
 msgid "DuoAgentsPlatform|Frequency"
-msgstr ""
-
-msgid "DuoAgentsPlatform|Generate"
 msgstr ""
 
 msgid "DuoAgentsPlatform|Get access to GitLab Duo"
@@ -31621,12 +31606,6 @@ msgid "DuoAgentsPlatform|Get issue"
 msgstr ""
 
 msgid "DuoAgentsPlatform|Get merge request"
-msgstr ""
-
-msgid "DuoAgentsPlatform|Get this project ready for GitLab Duo Agent Platform"
-msgstr ""
-
-msgid "DuoAgentsPlatform|GitLab Duo Agent Platform"
 msgstr ""
 
 msgid "DuoAgentsPlatform|GitLab Duo can autonomously change code. Responses and changes can be inaccurate. Review carefully."
@@ -31686,9 +31665,6 @@ msgstr ""
 msgid "DuoAgentsPlatform|No conditions yet. Add a schedule or an event."
 msgstr ""
 
-msgid "DuoAgentsPlatform|No runner is available to this project. You can still prepare the repository below while this is fixed."
-msgstr ""
-
 msgid "DuoAgentsPlatform|No triggers yet"
 msgstr ""
 
@@ -31704,18 +31680,6 @@ msgstr ""
 msgid "DuoAgentsPlatform|On an event"
 msgstr ""
 
-msgid "DuoAgentsPlatform|Onboarding"
-msgstr ""
-
-msgid "DuoAgentsPlatform|Onboarding setup path not configured."
-msgstr ""
-
-msgid "DuoAgentsPlatform|Open group settings"
-msgstr ""
-
-msgid "DuoAgentsPlatform|Open setup guide"
-msgstr ""
-
 msgid "DuoAgentsPlatform|Owner"
 msgstr ""
 
@@ -31726,9 +31690,6 @@ msgid "DuoAgentsPlatform|Plan updated"
 msgstr ""
 
 msgid "DuoAgentsPlatform|Planning Agent"
-msgstr ""
-
-msgid "DuoAgentsPlatform|Prerequisite missing"
 msgstr ""
 
 msgid "DuoAgentsPlatform|Raw runner output"
@@ -31851,16 +31812,7 @@ msgstr ""
 msgid "DuoAgentsPlatform|Sessions"
 msgstr ""
 
-msgid "DuoAgentsPlatform|Set up what your project needs to work well with the Agent Platform. Start with the highest-impact step; the rest are recommendations you can take as they fit."
-msgstr ""
-
-msgid "DuoAgentsPlatform|Skipped"
-msgstr ""
-
 msgid "DuoAgentsPlatform|Something went wrong while fetching Agent Flows"
-msgstr ""
-
-msgid "DuoAgentsPlatform|Something went wrong while running the initializer."
 msgstr ""
 
 msgid "DuoAgentsPlatform|Specify the path to a YAML file that contains a flow definition."
@@ -31888,12 +31840,6 @@ msgid "DuoAgentsPlatform|Target is required."
 msgstr ""
 
 msgid "DuoAgentsPlatform|Tell the agent what to change and it will generate an updated plan for your review."
-msgstr ""
-
-msgid "DuoAgentsPlatform|The Agent Platform isn't enabled for this project yet"
-msgstr ""
-
-msgid "DuoAgentsPlatform|The Agent Platform isn't enabled for this project yet. Here's what your group needs to do, and what you can already start on."
 msgstr ""
 
 msgid "DuoAgentsPlatform|The service account has the %{linkStart}%{role} role%{linkEnd} on this project."
@@ -31947,9 +31893,6 @@ msgstr ""
 msgid "DuoAgentsPlatform|Unknown event"
 msgstr ""
 
-msgid "DuoAgentsPlatform|Until your group enables it, agents and flows can't run on this project. You can still install local tools below, and review what setup is required."
-msgstr ""
-
 msgid "DuoAgentsPlatform|Update merge request"
 msgstr ""
 
@@ -31996,9 +31939,6 @@ msgid "DuoAgentsPlatform|You don't have permission to use GitLab Duo Agent Platf
 msgstr ""
 
 msgid "DuoAgentsPlatform|Your agents are grinding away. The moment one of them wants a decision, it lands here."
-msgstr ""
-
-msgid "DuoAgentsPlatform|Your project environment is healthy"
 msgstr ""
 
 msgid "DuoAgentsPlatform|minutes past the hour"

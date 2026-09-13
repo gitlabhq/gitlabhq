@@ -9,8 +9,8 @@ import (
 
 	"gitlab.com/gitlab-org/gitlab/workhorse/internal/api"
 	"gitlab.com/gitlab-org/gitlab/workhorse/internal/gitaly"
+	"gitlab.com/gitlab-org/gitlab/workhorse/internal/helper"
 	"gitlab.com/gitlab-org/gitlab/workhorse/internal/helper/fail"
-	"gitlab.com/gitlab-org/gitlab/workhorse/internal/log"
 	"gitlab.com/gitlab-org/gitlab/workhorse/internal/senddata"
 )
 
@@ -42,8 +42,8 @@ func (cp *changedPaths) Inject(w http.ResponseWriter, r *http.Request, sendData 
 		return
 	}
 
-	if err := diffClient.SendFindChangedPaths(ctx, w, request); err != nil {
-		log.WithRequest(r).WithError(&copyError{fmt.Errorf("SendChangedPaths: %v", err)}).Error()
-		return
+	response := helper.NewCountingResponseWriter(w)
+	if err := diffClient.SendFindChangedPaths(ctx, response, request); err != nil {
+		failRepositoryStream(response, r, fmt.Errorf("SendChangedPaths: %w", err))
 	}
 }

@@ -43,7 +43,7 @@ All endpoints require the `knowledge_graph_infra` feature flag to be enabled.
 
 #### Fetch project info
 
-Use a GET command to get the default branch for a project.
+Use a GET command to get the default branch and its current commit SHA for a project.
 
 ```plaintext
 GET /internal/orbit/project/:project_id/info
@@ -60,11 +60,98 @@ Example response:
 ```json
 {
   "project_id": 1,
-  "default_branch": "main"
+  "default_branch": "main",
+  "default_branch_head_sha": "abc123def456"
 }
 ```
 
 ### Repository
+
+#### List repository branches
+
+Use a GET command to list repository branches and their commits.
+
+```plaintext
+GET /internal/orbit/project/:project_id/repository/branches
+```
+
+| Attribute    | Type    | Required | Description |
+|:-------------|:--------|:---------|:------------|
+| `project_id` | integer | yes      | ID of the project. |
+| `page_token` | string  | no       | Opaque cursor from the `Link` header of the previous response. Invalid cursors return `400`. |
+| `pagination` | string  | no       | Pagination method. Only `keyset` is supported and is the default. |
+| `per_page`   | integer | no       | Number of branches per page. Defaults to `20` when omitted or `null`. Values above `100` are capped at `100`. Values below `1` return `400`. |
+| `sort`       | string  | no       | Sort branches by `name_asc`, `updated_asc`, or `updated_desc`. Defaults to `name_asc`. |
+
+Example request:
+
+```shell
+curl --request GET \
+  --header "Gitlab-Orbit-Api-Request: <json-web-token>" \
+  --url "https://gitlab.example.com/api/v4/internal/orbit/project/1/repository/branches?pagination=keyset&per_page=20"
+```
+
+Example response:
+
+```json
+[
+  {
+    "name": "main",
+    "commit": {
+      "id": "abc123def456",
+      "title": "Update README"
+    }
+  }
+]
+```
+
+When another keyset page is available, the response includes a `Link` header with the
+`page_token` for the next request.
+
+#### List repository tree entries
+
+Use a GET command to list repository files and directories for a ref and path.
+
+```plaintext
+GET /internal/orbit/project/:project_id/repository/tree
+```
+
+| Attribute          | Type    | Required | Description |
+|:-------------------|:--------|:---------|:------------|
+| `project_id`       | integer | yes      | ID of the project. |
+| `page`             | integer | no       | Page number. Defaults to `1`. Used with `legacy` pagination. |
+| `page_token`       | string  | no       | Opaque cursor from the `Link` header of the previous response. Used with `keyset` pagination. Invalid cursors return `400`. |
+| `pagination`       | string  | no       | Pagination method: `legacy`, `keyset`, or `none`. Defaults to `keyset`. `none` requires `recursive=true`. |
+| `path`             | string  | no       | Path within the repository tree. |
+| `per_page`         | integer | no       | Number of entries per page. Defaults to `20` when omitted or `null`. Values above `100` are capped at `100`. Values below `1` return `400`. Validated but not used with `pagination=none`. |
+| `recursive`        | boolean | no       | Return entries recursively. Defaults to `false`. |
+| `ref`              | string  | no       | Branch, tag, or SHA. Defaults to the default branch. |
+| `with_last_commit` | boolean | no       | Include the last commit for each entry. Cannot be combined with `recursive=true`. |
+
+Example request:
+
+```shell
+curl --request GET \
+  --header "Gitlab-Orbit-Api-Request: <json-web-token>" \
+  --url "https://gitlab.example.com/api/v4/internal/orbit/project/1/repository/tree?ref=main&recursive=true&pagination=none"
+```
+
+Example response:
+
+```json
+[
+  {
+    "id": "a1e8f8d745cc87e3a9248358d9352bb7f9a0aeba",
+    "name": "README.md",
+    "type": "blob",
+    "path": "README.md",
+    "mode": "100644"
+  }
+]
+```
+
+When another keyset page is available, the response includes a `Link` header with the
+`page_token` for the next request.
 
 #### Download repository archive
 
@@ -105,7 +192,8 @@ The response body is a binary tar.gz archive streamed via Workhorse.
 
 Use a GET command to stream changed file paths between two tree revisions as newline-delimited JSON via Workhorse.
 Proxies to the Gitaly `FindChangedPaths` RPC.
-Returns 400 if `left_tree_revision` is not an ancestor of `right_tree_revision` (force push detected).
+This route remains fast-forward only.
+It returns `400` if `left_tree_revision` is not an ancestor of `right_tree_revision`.
 
 ```plaintext
 GET /internal/orbit/project/:project_id/repository/changed_paths
@@ -120,21 +208,77 @@ GET /internal/orbit/project/:project_id/repository/changed_paths
 Example request:
 
 ```shell
-curl --header "Gitlab-Orbit-Api-Request: <json-web-token>" "https://gitlab.example.com/api/v4/internal/orbit/project/1/repository/changed_paths?left_tree_revision=abc123&right_tree_revision=def456"
+curl --header "Gitlab-Orbit-Api-Request: <json-web-token>" "https://gitlab.example.com/api/v4/internal/orbit/project/1/repository/changed_paths?left_tree_revision=0123456789abcdef0123456789abcdef01234567&right_tree_revision=89abcdef0123456789abcdef0123456789abcdef"
 ```
 
 Example response (newline-delimited JSON streamed via Workhorse):
 
 ```json
-{"path":"app/models/user.rb","status":"MODIFIED","old_path":"","new_mode":33188,"old_blob_id":"aaa111","new_blob_id":"bbb222"}
-{"path":"README.md","status":"ADDED","old_path":"","new_mode":33188,"old_blob_id":"","new_blob_id":"ccc333"}
-{"path":"old_file.rb","status":"DELETED","old_path":"","new_mode":0,"old_blob_id":"ddd444","new_blob_id":""}
+{"path":"app/models/user.rb","status":"MODIFIED","old_path":"","old_mode":33188,"new_mode":33188,"old_blob_id":"aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa","new_blob_id":"bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb"}
+{"path":"README.md","status":"ADDED","old_path":"","old_mode":0,"new_mode":33188,"old_blob_id":"","new_blob_id":"cccccccccccccccccccccccccccccccccccccccc"}
+{"path":"old_file.rb","status":"DELETED","old_path":"","old_mode":33188,"new_mode":0,"old_blob_id":"dddddddddddddddddddddddddddddddddddddddd","new_blob_id":""}
+{"path":"vendor/lib","status":"DELETED","old_path":"","old_mode":57344,"new_mode":0,"old_blob_id":"eeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee","new_blob_id":""}
 ```
+
+`old_mode` and `new_mode` are Git tree entry modes in decimal.
+A mode of `57344` (`0160000`) is a submodule and `16384` (`040000`) is a directory, so their blob IDs are not blobs and must not be fetched.
+
+Use a POST command to stream changed file paths for one or more commit comparisons as newline-delimited JSON through Workhorse.
+Proxies to one Gitaly `FindChangedPaths` RPC with repeated `CommitRequest` entries.
+Each comparison uses `base_revision` as the explicit parent and `target_revision` as the commit to inspect.
+The route accepts divergent histories and does not require ancestry.
+
+```plaintext
+POST /internal/orbit/project/:project_id/repository/changed_paths
+```
+
+| Attribute     | Type   | Required | Description |
+|:--------------|:-------|:---------|:------------|
+| `project_id`  | integer | yes     | ID of the project |
+| `comparisons` | array  | yes      | 1 to 1,000 comparison objects |
+
+Each comparison object requires `base_revision` and `target_revision`.
+Both fields must be full 40- or 64-character commit SHAs and cannot be blank.
+The API converts them to lowercase before sending them to Gitaly.
+`target_revision` must be unique in the request, even when the letter case differs.
+
+Example request:
+
+```shell
+curl --request POST \
+  --header "Content-Type: application/json" \
+  --header "Gitlab-Orbit-Api-Request: <json-web-token>" \
+  --url "https://gitlab.example.com/api/v4/internal/orbit/project/1/repository/changed_paths" \
+  --data '{"comparisons":[{"base_revision":"0123456789abcdef0123456789abcdef01234567","target_revision":"89abcdef0123456789abcdef0123456789abcdef"}]}'
+```
+
+Example response (newline-delimited JSON streamed through Workhorse):
+
+```json
+{"commit_id":"89abcdef0123456789abcdef0123456789abcdef","path":"app/models/user.rb","status":"MODIFIED","old_path":"","old_mode":33188,"new_mode":33188,"old_blob_id":"aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa","new_blob_id":"bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb"}
+{"commit_id":"89abcdef0123456789abcdef0123456789abcdef","path":"README.md","status":"ADDED","old_path":"","old_mode":0,"new_mode":33188,"old_blob_id":"","new_blob_id":"cccccccccccccccccccccccccccccccccccccccc"}
+```
+
+The GET response does not include `commit_id`.
+POST rows include `commit_id`, which is the target revision.
+When a target revision has no changed paths, the stream emits no rows for that comparison.
+Initialize an empty bucket for each `target_revision`, and accept the bucket only after the stream finishes successfully.
+
+#### Stream failures
+
+Both the changed-paths and list-blobs streams end with `EOF` when Workhorse finishes successfully.
+If Gitaly rejects a revision as an unknown object before Workhorse writes any response bytes, Workhorse returns `404` with the Gitaly error message as a plain-text body.
+Git rejects the whole request when any single revision is unknown, so clients that want the other blobs must retry without the unknown revision.
+If the backend fails for any other reason before Workhorse writes any response bytes, Workhorse returns `500`.
+If the backend fails after the body starts, Workhorse aborts the HTTP response rather than completing it.
+Clients must discard any partial data.
 
 #### List blobs
 
-Use a POST command to stream blob contents for given revisions as length-prefixed protobuf frames via Workhorse.
-Proxies to the Gitaly `ListBlobs` RPC. Blobs larger than `bytes_limit` are truncated.
+Use a POST command to stream blob contents for given revisions as length-prefixed protobuf frames through Workhorse.
+Proxies to the Gitaly `ListBlobs` RPC.
+The response body stays a binary stream of `ListBlobsResponse` protobuf frames.
+Each frame is preceded by a 4-byte big-endian length prefix that gives the size of the following protobuf message.
 
 ```plaintext
 POST /internal/orbit/project/:project_id/repository/list_blobs
@@ -143,20 +287,23 @@ POST /internal/orbit/project/:project_id/repository/list_blobs
 | Attribute     | Type     | Required | Description                                                                          |
 |:--------------|:---------|:---------|:-------------------------------------------------------------------------------------|
 | `project_id`  | integer  | yes      | ID of the project                                                                    |
-| `revisions`   | string[] | yes      | Git revisions to list blobs for (e.g., a SHA, `--not`, a range exclusion). Must not be empty. |
-| `bytes_limit` | integer  | no       | Maximum blob size in bytes (1 to 1,048,576). Defaults to 1 MB.                       |
+| `revisions`   | string[] | yes      | Git revisions to list blobs for, for example a SHA, `--not`, or a range exclusion. Must not be empty. |
+| `bytes_limit` | integer  | no       | Request limit in bytes. Valid values are `1` to `1,048,576`. Defaults to `1,048,576` bytes (`1 MiB`). Requests outside that range return `400`. |
 
 Example request:
 
 ```shell
-curl --request POST --header "Gitlab-Orbit-Api-Request: <json-web-token>" \
+curl --request POST \
+  --header "Gitlab-Orbit-Api-Request: <json-web-token>" \
   --header "Content-Type: application/json" \
-  --data '{"revisions": ["def456", "--not", "abc123"]}' \
+  --data '{"revisions":["0123456789abcdef0123456789abcdef01234567","--not","89abcdef0123456789abcdef0123456789abcdef"],"bytes_limit":1048576}' \
   "https://gitlab.example.com/api/v4/internal/orbit/project/1/repository/list_blobs"
 ```
 
-The response body is a binary stream of `ListBlobsResponse` protobuf frames. Each frame is preceded
-by a 4-byte big-endian length prefix indicating the size of the following protobuf message.
+The `size` field reports the original blob size.
+The server forwards `bytes_limit` to Gitaly, which truncates blobs above the limit instead of rejecting them.
+Client code must exclude blobs whose original size exceeds the selected limit, and it must not use the truncated payload length.
+At the default limit, a blob of `1,048,576` bytes is accepted and a blob of `1,048,577` bytes is excluded by client code.
 
 #### List repository commits
 
@@ -166,20 +313,27 @@ Use a GET command to get a paginated list of commits for a given ref.
 GET /internal/orbit/project/:project_id/repository/commits
 ```
 
-| Attribute    | Type     | Required | Description                                            |
-|:-------------|:---------|:---------|:-------------------------------------------------------|
-| `project_id` | integer  | yes      | ID of the project                                      |
-| `ref`        | string   | no       | Branch, tag, or SHA. Defaults to the default branch.   |
-| `since`      | datetime | no       | Only commits after or on this date (ISO 8601)          |
-| `until`      | datetime | no       | Only commits before or on this date (ISO 8601)         |
-| `order`      | string   | no       | Sort order: `default` or `topo`. Defaults to `default` |
-| `page`       | integer  | no       | Page number (defaults to 1)                            |
-| `per_page`   | integer  | no       | Number of items per page (defaults to 20)              |
+| Attribute     | Type     | Required | Description |
+|:--------------|:---------|:---------|:------------|
+| `project_id`  | integer  | yes      | ID of the project. |
+| `all`         | boolean  | no       | Return commits from all refs instead of a single ref. |
+| `author`      | string   | no       | Search commits by commit author. |
+| `first_parent` | boolean  | no       | Follow only the first parent of merge commits. |
+| `order`       | string   | no       | Commit traversal order: `default` or `topo`. Defaults to `default`. |
+| `page_token`  | string   | no       | Opaque cursor from the `X-Next-Page-Token` header of the previous response. |
+| `path`        | string   | no       | File path used to filter commits. |
+| `per_page`    | integer  | no       | Number of commits per page. Defaults to `20` when omitted or `null`. Values above `100` are capped at `100`. Values below `1` return `400`. |
+| `ref`         | string   | no       | Alias for `ref_name`. Cannot be used with `ref_name`. |
+| `ref_name`    | string   | no       | Branch, tag, or SHA. Defaults to the default branch. |
+| `since`       | datetime | no       | Return only commits after or on this date in ISO 8601 format. |
+| `until`       | datetime | no       | Return only commits before or on this date in ISO 8601 format. |
 
 Example request:
 
 ```shell
-curl --header "Gitlab-Orbit-Api-Request: <json-web-token>" "https://gitlab.example.com/api/v4/internal/orbit/project/1/repository/commits?ref=main&per_page=2"
+curl --request GET \
+  --header "Gitlab-Orbit-Api-Request: <json-web-token>" \
+  --url "https://gitlab.example.com/api/v4/internal/orbit/project/1/repository/commits?ref_name=main&per_page=2"
 ```
 
 Example response:
@@ -198,6 +352,9 @@ Example response:
   }
 ]
 ```
+
+When another page is available, the response includes an `X-Next-Page-Token` header.
+Pass its value as `page_token` in the next request.
 
 ### Merge requests
 

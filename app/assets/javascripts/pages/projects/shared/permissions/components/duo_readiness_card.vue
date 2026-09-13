@@ -6,7 +6,7 @@ import DuoReadinessRunnerRow from 'ee_component/pages/projects/shared/permission
 import DuoOrbitRow from 'ee_component/pages/projects/shared/permissions/components/duo_orbit_row.vue';
 import DuoMcpRow from 'ee_component/pages/projects/shared/permissions/components/duo_mcp_row.vue';
 import CascadingLockIcon from '~/namespaces/cascading_settings/components/cascading_lock_icon.vue';
-import { n__, s__ } from '~/locale';
+import { n__, s__, sprintf } from '~/locale';
 import {
   duoFlowHelpPath,
   STATUS_DONE,
@@ -174,6 +174,12 @@ export default {
 
       return n__('DuoAgentPlatform|%d step left', 'DuoAgentPlatform|%d steps left', this.stepsLeft);
     },
+    progressBarLabel() {
+      return sprintf(this.$options.i18n.progressBarLabel, {
+        done: this.doneCount,
+        total: REQUIRED_STEP_COUNT,
+      });
+    },
     stateLine() {
       if (!this.platformEnabled) return this.$options.i18n.stateBlocked;
       if (this.allStepsComplete) return this.$options.i18n.stateReady;
@@ -204,6 +210,9 @@ export default {
       'DuoAgentPlatform|Features that give your agent more context to work with.',
     ),
     allStepsComplete: s__('DuoAgentPlatform|All steps complete'),
+    progressBarLabel: s__(
+      'DuoAgentPlatform|Agent setup progress: %{done} of %{total} steps complete',
+    ),
     duoRowDescription: s__('DuoAgentPlatform|Turn on AI-native features for this project.'),
     flowExecutionTitle: s__('DuoAgentPlatform|Flow execution'),
     flowExecutionDescription: s__(
@@ -234,6 +243,7 @@ export default {
         <gl-progress-bar
           :value="doneCount"
           :max="$options.REQUIRED_STEP_COUNT"
+          :aria-label="progressBarLabel"
           :variant="allStepsComplete ? 'success' : 'primary'"
           class="gl-mt-2"
           data-testid="readiness-progress-bar"

@@ -22,9 +22,14 @@ module Admin
     def organization_admin_actions
       return if @user == current_user
 
+      organization_edit_actions
       remove_from_organization_actions
 
       @actions
+    end
+
+    def organization_edit_actions
+      @actions << 'edit' if current_user.can?(:update_organization_user, organization_user(@user))
     end
 
     def instance_admin_actions

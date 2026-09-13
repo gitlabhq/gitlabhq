@@ -130,7 +130,6 @@ KNOWN_STABLE_CE_IDS = %i[
 ].freeze
 
 KNOWN_STABLE_EE_IDS = %i[
-  agents_onboarding
   agents_runs
   ai_agents
   ai_catalog_agents
