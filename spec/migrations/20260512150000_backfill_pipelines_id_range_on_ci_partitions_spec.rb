@@ -52,6 +52,42 @@ RSpec.describe BackfillPipelinesIdRangeOnCiPartitions, migration: :gitlab_ci, fe
 
       expect(partition_100.reload.pipelines_id_range).to be_nil
     end
+
+    it 'skips the range that would overlap when an intermediate partition is empty' do
+      # 100 populated (active), 101 empty (active), 102 current + populated.
+      builds_table.where(partition_id: 101).delete_all
+      partition_101.update!(status: 3)
+      partition_102.update!(status: 2)
+
+      Ci::ApplicationRecord.connection.execute(<<~SQL)
+        CREATE TABLE IF NOT EXISTS "gitlab_partitions_dynamic"."ci_builds_102"
+          PARTITION OF "p_ci_builds" FOR VALUES IN (102);
+      SQL
+
+      pipeline_102 = pipelines_table.create!(partition_id: 102, project_id: 1)
+      builds_table.create!(partition_id: 102, project_id: 1, commit_id: pipeline_102.id)
+
+      expect { migrate! }.not_to raise_error
+
+      # 100 has builds but its next partition is empty, so it is left without a range
+      # rather than written as an unbounded range that overlaps the current partition.
+      expect(partition_100.reload.pipelines_id_range).to be_nil
+      expect(partition_101.reload.pipelines_id_range).to be_nil
+      expect(partition_102.reload.pipelines_id_range).to eq(pipeline_102.id...Float::INFINITY)
+    end
+
+    it 'skips a partition whose range overlaps instead of aborting the migration' do
+      # Force an overlap the guard cannot prevent: 100 already holds an unbounded
+      # range (and has no builds, so the migration leaves it untouched), while the
+      # current partition 101 would write a second unbounded range that collides.
+      builds_table.where(partition_id: 100).delete_all
+      partition_100.update!(pipelines_id_range: Range.new(1, nil, true))
+
+      expect { migrate! }.not_to raise_error
+
+      expect(partition_100.reload.pipelines_id_range).to eq(1...Float::INFINITY)
+      expect(partition_101.reload.pipelines_id_range).to be_nil
+    end
   end
 
   describe '#down' do
