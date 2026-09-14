@@ -51,6 +51,7 @@
   @apply gl-border-solid;
   @apply gl-border-transparent;
   @apply dark:gl-border-subtle;
+  @apply gl-shadow-sm;
 }
 
 // stylelint-disable-next-line gitlab/no-has -- targeting directly the AI panel
@@ -65,6 +66,7 @@
 
 .ai-panel {
   @apply gl-rounded-xl;
+  @apply gl-shadow-sm;
   @apply gl-border-1;
   @apply gl-border-solid;
   @apply gl-border-transparent;

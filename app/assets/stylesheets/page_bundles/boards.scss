@@ -236,7 +236,7 @@ $focus-mode-z-index: 9000;
 }
 
 .content-panels.is-focused {
-  background: var(--body-background-color);
+  @apply gl-bg-application-chrome;
 
   .panel-content .panel-content-inner {
     @apply gl-mx-0;

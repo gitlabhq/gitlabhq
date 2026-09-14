@@ -522,7 +522,6 @@ RSpec/NamedSubject:
     - 'ee/spec/services/app_sec/dast/scans/run_service_spec.rb'
     - 'ee/spec/services/app_sec/dast/site_profile_secret_variables/create_or_update_service_spec.rb'
     - 'ee/spec/services/app_sec/dast/site_profile_secret_variables/destroy_service_spec.rb'
-    - 'ee/spec/services/app_sec/dast/site_profiles/create_service_spec.rb'
     - 'ee/spec/services/app_sec/dast/site_profiles/destroy_service_spec.rb'
     - 'ee/spec/services/app_sec/dast/site_profiles/update_service_spec.rb'
     - 'ee/spec/services/app_sec/dast/site_tokens/find_or_create_service_spec.rb'

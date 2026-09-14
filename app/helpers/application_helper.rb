@@ -312,12 +312,10 @@ module ApplicationHelper
     class_names << 'epic-boards-page gl-overflow-auto' if current_controller?(:epic_boards)
     class_names << 'with-performance-bar' if performance_bar_enabled?
     class_names << 'with-header'
-    class_names << 'page-theme-background'
     class_names << 'page-with-panels'
     class_names << 'with-gl-container-queries'
     class_names << system_message_class
     class_names << (current_user ? 'user-logged-in' : 'user-logged-out')
-    class_names << 'aura-tinted-themes' if Feature.enabled?(:aura_tinted_themes, current_user)
 
     class_names
   end

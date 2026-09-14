@@ -36,6 +36,7 @@ module CheckRouterRoutesSync
   LOCAL_SNAPSHOT = "config/routing/gitlab_routes.json"
   ROUTER_SNAPSHOT = "test/routes/gitlab_routes.json"
   DOCS_URL = "https://docs.gitlab.com/development/cells/http_router/#check-the-http-router-is-in-sync"
+  ROUTER_DOCS_URL = "https://gitlab.com/gitlab-org/cells/http-router/-/blob/main/docs/adding-gitlab-routes.md"
   SKIP_LABEL = "pipeline:skip-router-sync"
 
   MAX_LISTED_TEMPLATES = 20
@@ -234,6 +235,11 @@ module CheckRouterRoutesSync
         Open a paired merge request in gitlab-org/cells/http-router that runs:
           npm run download-gitlab-routes -- <this-branch-name>
         Update the vitest snapshot, merge that request, then re-run this pipeline.
+
+        Most new routes match an existing router rule and need only the refreshed
+        snapshot. The step-by-step procedure, including how to tell that case apart
+        from one that needs a routing change, is here:
+          #{ROUTER_DOCS_URL}
 
         This check does not block merging yet. To merge anyway, apply the
         #{SKIP_LABEL} label and say why in the merge request description.

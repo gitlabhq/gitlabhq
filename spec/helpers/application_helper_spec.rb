@@ -800,10 +800,6 @@ RSpec.describe ApplicationHelper, feature_category: :shared do
       it { is_expected.to include('page-with-panels') }
     end
 
-    describe 'page-theme-background' do
-      it { is_expected.to include('page-theme-background') }
-    end
-
     describe 'user-logged-in and user-logged-out' do
       context 'when current_user is present' do
         before do
@@ -821,20 +817,6 @@ RSpec.describe ApplicationHelper, feature_category: :shared do
 
         it { is_expected.to include('user-logged-out') }
         it { is_expected.not_to include('user-logged-in') }
-      end
-    end
-
-    describe 'aura-tinted-themes' do
-      context 'when the aura_tinted_themes feature flag is enabled' do
-        it { is_expected.to include('aura-tinted-themes') }
-      end
-
-      context 'when the aura_tinted_themes feature flag is disabled' do
-        before do
-          stub_feature_flags(aura_tinted_themes: false)
-        end
-
-        it { is_expected.not_to include('aura-tinted-themes') }
       end
     end
   end

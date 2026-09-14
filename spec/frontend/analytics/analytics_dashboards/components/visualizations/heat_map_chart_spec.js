@@ -1,3 +1,15 @@
+import {
+  GL_COLOR_DATA_BLUE_50,
+  GL_COLOR_DATA_BLUE_100,
+  GL_COLOR_DATA_BLUE_200,
+  GL_COLOR_DATA_BLUE_400,
+  GL_COLOR_DATA_BLUE_600,
+  GL_COLOR_DATA_BLUE_800,
+  GL_COLOR_NEUTRAL_0,
+  GL_COLOR_NEUTRAL_50,
+  GL_COLOR_NEUTRAL_800,
+  GL_COLOR_NEUTRAL_950,
+} from '@gitlab/ui/src/tokens/build/js/tokens';
 import { GlChart } from '@gitlab/ui/src/charts';
 import { nextTick } from 'vue';
 import { mountExtended, shallowMountExtended } from 'helpers/vue_test_utils_helper';
@@ -141,13 +153,13 @@ describe('HeatMapChart', () => {
       // CELLS holds four distinct values, so four bands are used, spread
       // across the ramp rather than taken from one end of it.
       expect(pieces).toHaveLength(5);
-      expect(pieces[0]).toEqual({ value: 0, color: '#ececef' });
-      expect(pieces[1]).toMatchObject({ gt: 0, color: '#e9ebff' });
+      expect(pieces[0]).toEqual({ value: 0, color: GL_COLOR_NEUTRAL_50 });
+      expect(pieces[1]).toMatchObject({ gt: 0, color: GL_COLOR_DATA_BLUE_50 });
       expect(pieces.slice(1).map(({ color }) => color)).toEqual([
-        '#e9ebff',
-        '#b7c6ff',
-        '#7992f5',
-        '#374291',
+        GL_COLOR_DATA_BLUE_50,
+        GL_COLOR_DATA_BLUE_200,
+        GL_COLOR_DATA_BLUE_400,
+        GL_COLOR_DATA_BLUE_800,
       ]);
     });
 
@@ -165,19 +177,19 @@ describe('HeatMapChart', () => {
         const { pieces } = chartOptions().visualMap;
 
         expect(pieces.slice(1).map(({ color }) => color)).toEqual([
-          '#374291',
-          '#7992f5',
-          '#b7c6ff',
-          '#e9ebff',
+          GL_COLOR_DATA_BLUE_800,
+          GL_COLOR_DATA_BLUE_400,
+          GL_COLOR_DATA_BLUE_200,
+          GL_COLOR_DATA_BLUE_50,
         ]);
       });
 
       it('darkens the zero cell', () => {
-        expect(chartOptions().visualMap.pieces[0].color).toBe('#3a383f');
+        expect(chartOptions().visualMap.pieces[0].color).toBe(GL_COLOR_NEUTRAL_800);
       });
 
       it('darkens the cell gaps too, so they read as background', () => {
-        expect(chartOptions().xAxis.splitLine.lineStyle.color).toBe('#18171d');
+        expect(chartOptions().xAxis.splitLine.lineStyle.color).toBe(GL_COLOR_NEUTRAL_950);
       });
 
       it('still contrasts each label against its own band', () => {
@@ -188,8 +200,8 @@ describe('HeatMapChart', () => {
           ],
         });
 
-        expect(cellWithValue(17024).label.color).toBe('#18171d');
-        expect(cellWithValue(1).label.color).toBe('#fff');
+        expect(cellWithValue(17024).label.color).toBe(GL_COLOR_NEUTRAL_950);
+        expect(cellWithValue(1).label.color).toBe(GL_COLOR_NEUTRAL_0);
       });
     });
 
@@ -203,8 +215,14 @@ describe('HeatMapChart', () => {
     });
 
     it('draws the cell gaps in the colour behind the grid', () => {
-      expect(chartOptions().xAxis.splitLine.lineStyle).toEqual({ color: '#fff', width: 2 });
-      expect(chartOptions().yAxis.splitLine.lineStyle).toEqual({ color: '#fff', width: 2 });
+      expect(chartOptions().xAxis.splitLine.lineStyle).toEqual({
+        color: GL_COLOR_NEUTRAL_0,
+        width: 2,
+      });
+      expect(chartOptions().yAxis.splitLine.lineStyle).toEqual({
+        color: GL_COLOR_NEUTRAL_0,
+        width: 2,
+      });
     });
 
     it('marks the zero cell out by desaturating it, not by lightening it', () => {
@@ -240,7 +258,7 @@ describe('HeatMapChart', () => {
         ],
       });
 
-      expect(cellWithValue(1).label.color).toBe('#18171d');
+      expect(cellWithValue(1).label.color).toBe(GL_COLOR_NEUTRAL_950);
       expect(chartOptions().visualMap.pieces[1]).toMatchObject({ gt: 0 });
     });
 
@@ -311,7 +329,7 @@ describe('HeatMapChart', () => {
       const { pieces } = chartOptions().visualMap;
 
       expect(pieces).toHaveLength(2);
-      expect(pieces[0]).toEqual({ value: 0, color: '#ececef' });
+      expect(pieces[0]).toEqual({ value: 0, color: GL_COLOR_NEUTRAL_50 });
     });
 
     it('does not leak bands into the ECharts option', () => {
@@ -349,13 +367,13 @@ describe('HeatMapChart', () => {
   describe('cell contrast', () => {
     // Every stop, so no cell can end up with unreadable text.
     it.each([
-      ['#ececef', '#18171d'],
-      ['#e9ebff', '#18171d'],
-      ['#d2dcff', '#18171d'],
-      ['#b7c6ff', '#18171d'],
-      ['#7992f5', '#18171d'],
-      ['#4e65cd', '#fff'],
-      ['#374291', '#fff'],
+      [GL_COLOR_NEUTRAL_50, GL_COLOR_NEUTRAL_950],
+      [GL_COLOR_DATA_BLUE_50, GL_COLOR_NEUTRAL_950],
+      [GL_COLOR_DATA_BLUE_100, GL_COLOR_NEUTRAL_950],
+      [GL_COLOR_DATA_BLUE_200, GL_COLOR_NEUTRAL_950],
+      [GL_COLOR_DATA_BLUE_400, GL_COLOR_NEUTRAL_950],
+      [GL_COLOR_DATA_BLUE_600, GL_COLOR_NEUTRAL_0],
+      [GL_COLOR_DATA_BLUE_800, GL_COLOR_NEUTRAL_0],
     ])('picks the higher-contrast label color on %s', (background, expected) => {
       expect(labelColorOn(background)).toBe(expected);
     });
@@ -386,8 +404,8 @@ describe('HeatMapChart', () => {
         ],
       });
 
-      expect(cellWithValue(17024).label.color).toBe('#fff');
-      expect(cellWithValue(1).label.color).toBe('#18171d');
+      expect(cellWithValue(17024).label.color).toBe(GL_COLOR_NEUTRAL_0);
+      expect(cellWithValue(1).label.color).toBe(GL_COLOR_NEUTRAL_950);
     });
   });
 

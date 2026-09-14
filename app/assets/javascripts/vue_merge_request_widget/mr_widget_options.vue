@@ -549,11 +549,9 @@ export default {
 </script>
 <template>
   <div v-if="!loading" id="widget-state" class="mr-state-widget gl-mt-5">
-    <header v-if="shouldRenderCollaborationStatus" class="mr-section-container gl-overflow-hidden">
-      <mr-widget-alert-message type="info">
-        {{ s__('mrWidget|Members who can merge are allowed to add commits.') }}
-      </mr-widget-alert-message>
-    </header>
+    <mr-widget-alert-message v-if="shouldRenderCollaborationStatus" type="info">
+      {{ s__('mrWidget|Members who can merge are allowed to add commits.') }}
+    </mr-widget-alert-message>
     <mr-widget-pipeline-container
       v-if="shouldRenderPipelines"
       :mr="mr"
@@ -568,7 +566,7 @@ export default {
           type="danger"
           dismissible
           data-testid="merge-error"
-          class="mr-widget-section gl-rounded-b-none gl-border-b-section"
+          class="mr-widget-section gl-rounded-b-none"
         >
           <span>{{ mergeError }}</span>
         </mr-widget-alert-message>
@@ -576,7 +574,7 @@ export default {
           v-if="showMergePipelineForkWarning"
           type="warning"
           :help-path="mr.mergeRequestPipelinesHelpPath"
-          class="mr-widget-section gl-rounded-b-none gl-border-b-section"
+          class="mr-widget-section gl-rounded-b-none"
           data-testid="merge-pipeline-fork-warning"
         >
           {{

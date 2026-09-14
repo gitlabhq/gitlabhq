@@ -165,7 +165,7 @@ describe('SectionedPercentageBar', () => {
         PERCENTAGE_BAR_SECTION_TESTID_PREFIX + SECTION_1,
       );
       expect(section1PercentageBar.attributes('style')).toContain(
-        'background-color: rgb(220, 220, 222);',
+        'background-color: rgb(220, 219, 217);',
       );
     });
 
@@ -176,7 +176,7 @@ describe('SectionedPercentageBar', () => {
 
       expect(
         section1Legend.find(`[data-testid="${LEGEND_SECTION_COLOR_TESTID}"]`).attributes('style'),
-      ).toBe('background-color: rgb(220, 220, 222);');
+      ).toBe('background-color: rgb(220, 219, 217);');
     });
 
     it('falls back to the palette color when not specified', () => {

@@ -163,15 +163,15 @@ RSpec.describe PreferencesHelper, feature_category: :settings do
   describe '#user_application_theme' do
     context 'with a user' do
       it "returns user's theme's css_class" do
-        stub_user(theme_id: 3)
+        stub_user(theme_id: 4)
 
-        expect(helper.user_application_theme).to eq 'ui-neutral'
+        expect(helper.user_application_theme).to eq 'ui-blue'
       end
 
-      it 'returns the default when id is invalid', quarantine: 'https://gitlab.com/gitlab-org/gitlab/-/issues/444873' do
+      it 'returns the default when id is invalid' do
         stub_user(theme_id: Gitlab::Themes.count + 5)
 
-        allow(Gitlab.config.gitlab).to receive(:default_theme).and_return(1)
+        allow(Gitlab.config.gitlab).to receive(:default_theme).and_return(3)
 
         expect(helper.user_application_theme).to eq 'ui-neutral'
       end

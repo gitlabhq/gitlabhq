@@ -45,6 +45,7 @@ Before upgrading to GitLab 19.4, review the following:
 
 - [19.4.0] - [Geo SSH proxying enabled by default](#geo-ssh-proxying-enabled-by-default)
 - [19.4.0] - [Restores that use `SKIP_REPOSITORIES_PATHS` keep existing repositories](#restores-that-use-skip_repositories_paths-keep-existing-repositories)
+- [19.4.0] - [Untrusted group SAML identities are restored to trusted](#untrusted-group-saml-identities-are-restored-to-trusted)
 
 ### Upgrade to 19.3
 
@@ -131,6 +132,22 @@ instead, or remove those repositories before the restore.
 For more information, see
 [restore specific repositories](../../administration/backup_restore/restore_gitlab.md#restore-specific-repositories)
 and [issue 610910](https://gitlab.com/gitlab-org/gitlab/-/issues/610910).
+
+### Untrusted group SAML identities are restored to trusted
+
+- Affects: All installation methods
+- Affected versions: 19.4.0
+
+In GitLab 18.10, 18.11, 19.0, 19.1, 19.2, and 19.3, updating the `extern_uid` of a group SAML identity with the
+[SAML identities API](../../api/saml.md) marked that identity as untrusted, and the affected user
+could not sign in with SAML single sign-on until they linked their identity again.
+
+GitLab 19.4 reverts this behavior. A group Owner controls the group identity provider, so a group
+Owner can already assert any `NameID` through the identity provider. A post-deployment migration
+sets `trusted_extern_uid` back to `true` for every group SAML identity, so affected users can sign
+in with SAML single sign-on again.
+
+For more information, see [issue 608236](https://gitlab.com/gitlab-org/gitlab/-/issues/608236).
 
 ### GitLab Duo Self-Hosted AI Gateway URLs cleared after upgrade
 

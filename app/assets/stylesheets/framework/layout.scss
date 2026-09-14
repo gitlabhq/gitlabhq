@@ -25,8 +25,7 @@ html {
   body {
     @apply gl-flex;
     @apply gl-flex-col;
-    // Application chrome background
-    background-color: var(--body-background-color);
+    @apply gl-bg-application-chrome;
   }
 }
 

@@ -222,8 +222,9 @@ excluded explicitly by the generator, in
 
 The HTTP Router downloads `config/routing/gitlab_routes.json` from GitLab. When a GitLab merge
 request changes routes, update the HTTP Router snapshot in a paired merge request that downloads
-the file from that GitLab branch. For details, see the
-[HTTP Router development documentation](https://gitlab.com/gitlab-org/cells/http-router/-/blob/main/docs/development.md).
+the file from that GitLab branch. For the commands, the decision on whether the new routes need
+a routing change, and two worked examples, see
+[Adding GitLab routes to the HTTP Router](https://gitlab.com/gitlab-org/cells/http-router/-/blob/main/docs/adding-gitlab-routes.md).
 A separate CI job checks that this download stays current. For details, see
 [Check the HTTP Router is in sync](#check-the-http-router-is-in-sync).
 
@@ -260,7 +261,9 @@ npm run download-gitlab-routes -- <your-gitlab-branch-name>
 ```
 
 Update the vitest snapshot, and the routing rules if a new route does not match correctly, then
-merge that merge request and re-run the GitLab pipeline.
+merge that merge request and re-run the GitLab pipeline. Most new routes match an existing rule
+and need only a refreshed snapshot. To tell the two apart, and for the full procedure, see
+[Adding GitLab routes to the HTTP Router](https://gitlab.com/gitlab-org/cells/http-router/-/blob/main/docs/adding-gitlab-routes.md).
 
 If you must merge before the paired merge request is ready, apply the `pipeline:skip-router-sync`
 label to skip the job, and explain why in the merge request description.

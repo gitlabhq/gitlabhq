@@ -48897,6 +48897,8 @@ CREATE INDEX index_iam_outbox_l2_undelivered_lookup ON iam_outbox USING btree (e
 
 CREATE INDEX index_iam_outbox_on_organization_id ON iam_outbox USING btree (organization_id);
 
+CREATE INDEX index_identities_on_provider_and_id ON identities USING btree (provider, id);
+
 CREATE INDEX index_identities_on_saml_provider_id ON identities USING btree (saml_provider_id) WHERE (saml_provider_id IS NOT NULL);
 
 CREATE INDEX index_identities_on_user_id ON identities USING btree (user_id);

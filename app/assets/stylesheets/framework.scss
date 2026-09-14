@@ -7,7 +7,7 @@
 
 @import 'bootstrap_migration';
 @import 'framework/layout';
-@import 'framework/page_theme_background';
+@import 'framework/bloom';
 
 @import 'framework/animations';
 @import 'framework/vue_transitions';
@@ -61,7 +61,5 @@
 @import 'framework/duo_chat';
 @import 'framework/crud';
 @import 'framework/severity';
-
-@import 'framework/aura_tinted_themes';
 
 @include make-container-grid-columns;
