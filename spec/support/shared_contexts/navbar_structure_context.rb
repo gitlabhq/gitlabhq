@@ -237,6 +237,10 @@ RSpec.shared_context 'dashboard navbar structure' do
   let(:structure) do
     [
       {
+        nav_item: _("Home"),
+        nav_sub_items: []
+      },
+      {
         nav_item: _("Projects"),
         nav_sub_items: []
       },

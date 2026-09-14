@@ -64,8 +64,8 @@ instead of `n__()`, which means the noun always appears in singular form:
 s__('TrialWidget|%{daysLeft} days left in trial')
 
 // Correct: Noun pluralizes with the count
-n__('TrialWidget|%{daysLeft} day left in trial',
-    'TrialWidget|%{daysLeft} days left in trial', daysLeft)
+sprintf(n__('TrialWidget|%{daysLeft} day left in trial',
+            'TrialWidget|%{daysLeft} days left in trial', daysLeft), { daysLeft })
 ```
 
 For strings that are structurally different, use `if`/`else` with separate strings:
@@ -107,7 +107,9 @@ For the zero state, use a separate string. For counted forms, use `n__()`:
 if (count === 0) {
   s__('MlModelRegistry|No other versions')
 } else {
-  n__('MlModelRegistry|%{count} version', 'MlModelRegistry|%{count} versions', count)
+  sprintf(n__('MlModelRegistry|%{count} version', 'MlModelRegistry|%{count} versions', count), {
+    count,
+  })
 }
 ```
 
@@ -153,29 +155,40 @@ use `__()`, not `n__()`.
 
 ## Interpolation in plural strings
 
-Use named `%{count}` interpolation rather than the positional `%d` placeholder.
-Named placeholders give translators a readable variable name and are consistent
-with the GitLab convention for all other interpolated strings.
+The plural functions select a form. They do not substitute named placeholders.
 
-For single-count strings, `%d` is acceptable, but `%{count}` is preferred:
+In JavaScript, `n__()` substitutes `%d` with the count and leaves `%{count}`
+and `%s` in the output. To use a named placeholder, pass the result of `n__()`
+to [`sprintf()`](externalization.md#interpolation), or to `GlSprintf` in a Vue
+template:
 
 ```javascript
-// Preferred
-n__('%{count} issue', '%{count} issues', count)
-
-// Acceptable
+// n__() substitutes %d
 n__('%d issue', '%d issues', count)
+// => '3 issues'
+
+// n__() leaves %{count} in the output
+n__('%{count} issue', '%{count} issues', count)
+// => '%{count} issues'
+
+// sprintf() substitutes %{count}
+sprintf(n__('%{count} issue', '%{count} issues', count), { count })
+// => '3 issues'
 ```
 
-For strings with multiple variables, always use named `%{placeholder}` syntax.
+In a Vue template, `GlSprintf` fills the named placeholder from a slot:
 
-In Ruby and HAML, apply `%` after the `n_()` call to substitute the value:
-
-```ruby
-n_("There is a mouse.", "There are %d mice.", size) % size
-# => When size == 1: 'There is a mouse.'
-# => When size == 2: 'There are 2 mice.'
+```html
+<gl-sprintf :message="n__('%{count} issue', '%{count} issues', issuesCount)">
+  <template #count>{{ numberToMetricPrefix(issuesCount) }}</template>
+</gl-sprintf>
 ```
+
+Named placeholders are preferred. They give translators a readable variable
+name and are consistent with the GitLab convention for all other interpolated
+strings. For a single count and no other variable in the string, `%d` is
+acceptable. For strings with more than one variable, always use named
+`%{placeholder}` syntax.
 
 ### In Vue
 
@@ -184,12 +197,16 @@ Instead, define them as functions that accept a `count` argument:
 
 ```javascript
 // .../feature/constants.js
-import { n__ } from '~/locale';
+import { __, n__, sprintf } from '~/locale';
 
 export const I18N = {
   // Static strings that are always singular do not need a function
   someDaysRemain: __('Some days remain'),
   daysRemaining(count) { return n__('%d day remaining', '%d days remaining', count); },
+  // A named placeholder needs sprintf(), because n__() substitutes only %d
+  itemsSelected(count) {
+    return sprintf(n__('%{count} item selected', '%{count} items selected', count), { count });
+  },
 };
 ```
 
@@ -214,6 +231,21 @@ export default {
     <span>{{ $options.i18n.daysRemaining(days) }}</span>
   </div>
 </template>
+```
+
+### In Ruby and HAML
+
+`n_()` does not substitute any values. Apply the format after the `n_()` call. Use `format()` for
+named placeholders, `safe_format()` where the result renders as HTML, and `%`
+for `%d`:
+
+```ruby
+format(n_('There is a mouse.', 'There are %{count} mice.', size), count: size)
+# => When size == 1: 'There is a mouse.'
+# => When size == 2: 'There are 2 mice.'
+
+n_('There is a mouse.', 'There are %d mice.', size) % size
+# => When size == 2: 'There are 2 mice.'
 ```
 
 ### `%d` in singular form anti-pattern
@@ -272,20 +304,25 @@ Crowdin and other translation checkers cannot catch this error because
 there is no placeholder to verify. The string passes all checks and the
 defect ships silently.
 
-The positional `%s` placeholder is also an improvement over a hardcoded number,
-but the named `%{count}` placeholder is preferred. It provides translators
-with a readable variable name and is consistent with the GitLab convention:
+A placeholder in both forms is an improvement over a hardcoded number. The
+named `%{count}` placeholder is preferred. It provides translators with a
+readable variable name and is consistent with the GitLab convention:
 
 ```javascript
 // Avoid: Hardcoded number in singular form
 n__('Timeago|1 second ago', 'Timeago|%s seconds ago', n)
 
-// Acceptable: Positional placeholder in both forms
-n__('Timeago|%s second ago', 'Timeago|%s seconds ago', n)
+// Preferred: Named placeholder, substituted by sprintf()
+sprintf(n__('Timeago|%{count} second ago', 'Timeago|%{count} seconds ago', n), { count: n })
 
-// Preferred: Named placeholder
-n__('Timeago|%{count} second ago', 'Timeago|%{count} seconds ago', n)
+// Acceptable: %d, substituted by n__() itself
+n__('Timeago|%d second ago', 'Timeago|%d seconds ago', n)
 ```
+
+The `Timeago|` strings in the codebase use `%s`, which `n__()` leaves in place.
+The `timeago.js` library substitutes `%s` after `n__()` returns, in
+[`timeago_utility.js`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/app/assets/javascripts/lib/utils/datetime/timeago_utility.js).
+Use `%{count}` or `%d` everywhere else.
 
 When you want a natural singular form without a number, handle it as a
 separate string outside the plural call, not inside the `one` slot.
@@ -297,8 +334,8 @@ In Ruby/HAML:
 if count == 1
   s_('SecurityProfiles|Last scan successful')
 else
-  n_('SecurityProfiles|Last %{count} scan successful',
-     'SecurityProfiles|Last %{count} scans successful', count)
+  format(n_('SecurityProfiles|Last %{count} scan successful',
+            'SecurityProfiles|Last %{count} scans successful', count), count: count)
 end
 ```
 
@@ -309,8 +346,8 @@ In JavaScript:
 if (count === 1) {
   s__('SecurityProfiles|Last scan successful')
 } else {
-  n__('SecurityProfiles|Last %{count} scan successful',
-      'SecurityProfiles|Last %{count} scans successful', count)
+  sprintf(n__('SecurityProfiles|Last %{count} scan successful',
+              'SecurityProfiles|Last %{count} scans successful', count), { count })
 }
 ```
 
@@ -339,14 +376,20 @@ Split the string into separate pluralized parts and combine them
 with a non-pluralized connector:
 
 ```javascript
-const hoursText = n__('%{count} hour', '%{count} hours', hours);
-const minutesText = n__('%{count} minute', '%{count} minutes', minutes);
+const hoursText = sprintf(n__('%{count} hour', '%{count} hours', hours), { count: hours });
+const minutesText = sprintf(n__('%{count} minute', '%{count} minutes', minutes), {
+  count: minutes,
+});
 
 sprintf(s__('IncidentManagement|%{hours}, %{minutes} remaining'), {
   hours: hoursText,
   minutes: minutesText
 });
 ```
+
+Substitute the count in each part before you combine them. `sprintf()` does not
+scan the values it substitutes, so a `%{count}` left inside `hoursText` appears
+in the output.
 
 Each `n__()` call handles one plural independently.
 The connector string is a standard translatable string that gives translators
@@ -380,9 +423,9 @@ apply:
 
 ```ruby
 # Preferred: whole-sentence n_ with a named %{count} placeholder
-n_('Your group %{group_name} will be removed in %{count} day.',
-   'Your group %{group_name} will be removed in %{count} days.',
-   count) % { group_name: name, count: count }
+format(n_('Your group %{group_name} will be removed in %{count} day.',
+          'Your group %{group_name} will be removed in %{count} days.',
+          count), group_name: name, count: count)
 ```
 
 The `n_()` approach also avoids a separate counted phrase inserted through

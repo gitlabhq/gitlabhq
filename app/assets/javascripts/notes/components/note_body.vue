@@ -22,8 +22,8 @@ export default {
     NoteAttachment,
     NoteForm,
     Suggestions,
-    DuoCodeReviewFeedback: defineAsyncComponent(
-      () => import('ee_component/notes/components/duo_code_review_feedback.vue'),
+    UserFeedback: defineAsyncComponent(
+      () => import('ee_component/ai/components/user_feedback.vue'),
     ),
   },
   directives: {
@@ -232,10 +232,11 @@ export default {
       @remove-from-batch="removeSuggestionFromBatch"
     />
     <div v-else v-safe-html:[$options.safeHtmlConfig]="note.note_html" class="note-text md"></div>
-    <duo-code-review-feedback
+    <user-feedback
       v-if="isDuoFirstReviewComment && !isDiffNote"
-      :duo-session-url="note.duo_session_url"
-      class="gl-mt-3"
+      event-name="duo_code_review"
+      :feedback-link-text="__('Rate the review')"
+      class="gl-mt-3 gl-inline-block !gl-pt-0"
       data-testid="code-review-feedback"
     />
     <note-form

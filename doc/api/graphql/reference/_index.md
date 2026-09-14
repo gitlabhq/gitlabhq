@@ -20731,6 +20731,39 @@ Fields:
 | <a id="mutation-workitemdecisionresolve-decision"></a>`decision` | [`WorkItemDecision`](#workitemdecision) | Decision after mutation. |
 | <a id="mutation-workitemdecisionresolve-errors"></a>`errors` | [`[String!]!`](#string) | Errors encountered during the mutation. |
 
+### `Mutation.workItemDecisionUpdate`
+
+{{< details >}}
+
+- Introduced in GitLab 19.5.
+- Status: Experiment.
+
+{{< /details >}}
+
+Updates a decision in the decision log of a work item.
+
+Input type: `WorkItemDecisionUpdateInput`
+
+Arguments:
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="mutation-workitemdecisionupdate-clientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
+| <a id="mutation-workitemdecisionupdate-description"></a>`description` | [`String`](#string) | Context of the decision. |
+| <a id="mutation-workitemdecisionupdate-discussionid"></a>`discussionId` | [`DiscussionID`](#discussionid) | Global ID of the originating discussion thread. |
+| <a id="mutation-workitemdecisionupdate-id"></a>`id` | [`WorkItemsDecisionID!`](#workitemsdecisionid) | Global ID of the decision. |
+| <a id="mutation-workitemdecisionupdate-resolutionrationale"></a>`resolutionRationale` | [`String`](#string) | Reasoning for the resolution. |
+| <a id="mutation-workitemdecisionupdate-sourcelink"></a>`sourceLink` | [`String`](#string) | URL of the comment, discussion, or external resource that prompted the decision. |
+| <a id="mutation-workitemdecisionupdate-title"></a>`title` | [`String`](#string) | Question being decided. |
+
+Fields:
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="mutation-workitemdecisionupdate-clientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
+| <a id="mutation-workitemdecisionupdate-decision"></a>`decision` | [`WorkItemDecision`](#workitemdecision) | Decision after mutation. |
+| <a id="mutation-workitemdecisionupdate-errors"></a>`errors` | [`[String!]!`](#string) | Errors encountered during the mutation. |
+
 ### `Mutation.workItemDelete`
 
 {{< details >}}
@@ -57020,7 +57053,7 @@ Fields:
 
 {{< /details >}}
 
-Policies stored in the policy store for the organization. Returns `null` for groups and when the current user cannot read the policies of the organization.
+Policies stored in the policy store for the organization or group. Returns `null` when the current user cannot read the policies of the container.
 
 Returns [`[GovernPolicy!]`](#governpolicy).
 

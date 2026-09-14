@@ -615,6 +615,9 @@ msgstr ""
 msgid "%{argument_name} must start with a number."
 msgstr ""
 
+msgid "%{attributes} can't be blank"
+msgstr ""
+
 msgid "%{attribute} already taken."
 msgstr ""
 
@@ -32598,9 +32601,6 @@ msgstr ""
 msgid "DuoChat|👋 I am GitLab Duo Chat, your personal AI-powered assistant. How can I help you today?"
 msgstr ""
 
-msgid "DuoCodeReviewFeedback|View agent session"
-msgstr ""
-
 msgid "DuoCodeReview|:warning: %{user_reference}, you don't have permission to create a pipeline for Code Review Flow in this project. Contact your administrator to update your permissions."
 msgstr ""
 
@@ -36283,6 +36283,9 @@ msgid "Favicon will be removed. Are you sure?"
 msgstr ""
 
 msgid "Feature Flags"
+msgstr ""
+
+msgid "Feature catalog"
 msgstr ""
 
 msgid "Feature disabled"
@@ -52238,9 +52241,6 @@ msgstr ""
 msgid "More details"
 msgstr ""
 
-msgid "More features"
-msgstr ""
-
 msgid "More info"
 msgstr ""
 
@@ -53319,6 +53319,9 @@ msgid "No artifacts found"
 msgstr ""
 
 msgid "No assignee"
+msgstr ""
+
+msgid "No attributes to update"
 msgstr ""
 
 msgid "No authentication methods configured."

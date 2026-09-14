@@ -13,6 +13,8 @@ RSpec.describe 'Active user sessions', :clean_gitlab_redis_sessions, feature_cat
 
       sessions = ActiveSession.list(user)
       expect(sessions.count).to eq 1
+      # A homepage request that lands after the sign-out re-registers the session.
+      wait_for_requests # rubocop:disable RSpec/AvoidWaitForRequests -- widgets load on visibility, so no single UI marker means "settled"
       gitlab_sign_out
     end
 
@@ -65,6 +67,8 @@ RSpec.describe 'Active user sessions', :clean_gitlab_redis_sessions, feature_cat
 
     expect(ActiveSession.list(user).count).to eq 1
 
+    # A homepage request that lands after the sign-out re-registers the session.
+    wait_for_requests # rubocop:disable RSpec/AvoidWaitForRequests -- widgets load on visibility, so no single UI marker means "settled"
     gitlab_sign_out
     expect(page).to have_current_path new_user_session_path, ignore_query: true
 

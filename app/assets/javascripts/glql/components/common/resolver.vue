@@ -41,20 +41,14 @@ export default {
       default: null,
     },
     /**
-     * A second query run alongside `glqlQuery`, with its result exposed as `comparisonData`.
+     * Comparison settings: `query` is a second query run alongside `glqlQuery`, with its
+     * result exposed as `comparisonData`, and `metric` names the metric used for comparison.
+     * Only dashboard panels set this.
      */
-    comparisonQuery: {
+    comparison: {
       required: false,
-      type: String,
-      default: '',
-    },
-    /**
-     * Key of the metric a table's trend column compares against `comparisonData`.
-     */
-    trendMetric: {
-      required: false,
-      type: String,
-      default: '',
+      type: Object,
+      default: null,
     },
   },
   emits: ['change'],
@@ -192,16 +186,17 @@ export default {
     // sets paged in step drift apart as soon as one page fails. A comparison that fails to
     // compile or run is dropped and reported, so the main result still renders without it.
     async fetchComparison() {
-      if (!this.comparisonQuery) return undefined;
+      if (!this.comparison?.query) return undefined;
 
       try {
         const { query, variables, fields, mode, source } = await parse(
-          this.comparisonQuery,
+          this.comparison.query,
           this.scope,
         );
         const executionResult = await execute(query, variables);
+        const result = await transform(executionResult, { fields, mode, source });
 
-        return await transform(executionResult, { fields, mode, source });
+        return { ...result, metric: this.comparison.metric };
       } catch (error) {
         Sentry.captureException(error);
         return undefined;
@@ -261,7 +256,6 @@ export default {
       :fields="fields"
       :display-type="config.display"
       :display-config="config.displayConfig"
-      :trend-metric="trendMetric"
       :source="source"
       :loading="loading"
       @error="handlePresenterError"

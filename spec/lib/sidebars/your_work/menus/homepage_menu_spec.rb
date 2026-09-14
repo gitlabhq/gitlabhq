@@ -11,17 +11,12 @@ RSpec.describe Sidebars::YourWork::Menus::HomepageMenu, feature_category: :navig
 
     subject { described_class.new(context).render? }
 
-    where(:current_user, :feature_flag_enabled, :result) do
-      nil  | true  | false
-      user | false | false
-      user | true  | true
+    where(:current_user, :result) do
+      nil  | false
+      user | true
     end
 
     with_them do
-      before do
-        stub_feature_flags(personal_homepage: feature_flag_enabled)
-      end
-
       it { is_expected.to eq(result) }
     end
   end

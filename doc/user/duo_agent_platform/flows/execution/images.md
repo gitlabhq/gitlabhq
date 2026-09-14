@@ -222,7 +222,7 @@ The following table lists the current pinned versions:
 | `git-lfs`                             | UBI 9 stock                                              |
 | Node.js                               | 20 (UBI 9 module stream `nodejs:20`)                     |
 | `npm`                                 | Bundled with Node.js 20                                  |
-| `@gitlab/duo-cli`                     | 8.109.0                                                  |
+| `@gitlab/duo-cli`                     | 9.21.0                                                   |
 | `glab` (GitLab CLI)                   | 1.107.0                                                  |
 | `@anthropic-ai/sandbox-runtime` (SRT) | 0.0.63 (via npm)                                         |
 | `bwrap` (bubblewrap)                  | AlmaLinux 9 EPEL (plain binary, userns-based sandboxing) |

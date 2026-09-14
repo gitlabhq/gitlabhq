@@ -125,6 +125,7 @@ RSpec.describe 'new tables missing sharding_key', feature_category: :organizatio
       # deleted but before the snippet LFK cleanup runs. Cleanup happens via snippet_id -> snippets CASCADE.
       # https://gitlab.com/gitlab-org/gitlab/-/work_items/613747
       'snippet_repositories.snippet_organization_id',
+      'snippet_repository_states.snippet_organization_id',
       'snippet_statistics.snippet_organization_id',
       'snippet_user_mentions.snippet_organization_id',
       'snippet_repository_storage_moves.snippet_organization_id',

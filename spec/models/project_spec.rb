@@ -9032,18 +9032,49 @@ RSpec.describe Project, factory_default: :keep, feature_category: :groups_and_pr
     subject { project.leave_pool_repository }
 
     it 'removes the membership and disconnects alternates' do
-      expect(pool).to receive(:unlink_repository).with(project.repository, disconnect: true).and_call_original
+      expect(project.repository).to receive(:disconnect_alternates).and_call_original
 
       subject
 
       expect(pool.member_projects.reload).not_to include(project)
     end
 
+    it 'does not mark the pool obsolete when other members remain' do
+      subject
+
+      expect(pool.reload).not_to be_obsolete
+    end
+
+    context 'when the project is the last member' do
+      before do
+        pool.source_project.update_column(:pool_repository_id, nil)
+      end
+
+      it 'marks the pool obsolete and schedules its destruction' do
+        expect(ObjectPool::DestroyWorker).to receive(:perform_async).with(pool.id)
+
+        subject
+
+        expect(pool.reload).to be_obsolete
+      end
+    end
+
+    context 'when disconnecting alternates fails' do
+      it 'does not remove the membership' do
+        expect(project.repository).to receive(:disconnect_alternates).and_raise(GRPC::Internal)
+
+        expect { subject }.to raise_error(GRPC::Internal)
+
+        expect(pool.member_projects.reload).to include(project)
+        expect(pool.reload).not_to be_obsolete
+      end
+    end
+
     context 'when the project is pending delete' do
       it 'removes the membership and does not disconnect alternates' do
         project.pending_delete = true
 
-        expect(pool).to receive(:unlink_repository).with(project.repository, disconnect: false).and_call_original
+        expect(project.repository).not_to receive(:disconnect_alternates)
 
         subject
 

@@ -264,44 +264,13 @@ describe('dimensionLabelFormatter', () => {
       value,
     );
 
-  it.each`
-    granularity  | value           | expected
-    ${'daily'}   | ${'2026-06-01'} | ${'Jun 1'}
-    ${'weekly'}  | ${'2026-01-12'} | ${'Jan 12 – 18'}
-    ${'weekly'}  | ${'2026-06-29'} | ${'Jun 29 – Jul 5'}
-    ${'monthly'} | ${'2026-06-01'} | ${'Jun 2026'}
-    ${'yearly'}  | ${'2026-01-01'} | ${'2026'}
-  `('formats a $granularity bucket start as $expected', ({ granularity, value, expected }) => {
-    expect(format(granularity, value)).toBe(expected);
+  // Formatting itself is covered in utils/date_bucket_spec.js; this checks the delegation.
+  it('formats bucket values through formatBucketDate', () => {
+    expect(format('monthly', '2026-06-01')).toBe('Jun 2026');
   });
 
-  // Daily bucket starts arrive as ISO datetimes (ClickHouse's
-  // toStartOfInterval returns DateTime for day intervals) while weekly and
-  // monthly arrive date-only, so ISO datetime bucket values format too.
-  it.each`
-    granularity  | value                         | expected
-    ${'daily'}   | ${'2026-08-03T00:00:00Z'}     | ${'Aug 3'}
-    ${'daily'}   | ${'2026-08-03T00:00:00.000Z'} | ${'Aug 3'}
-    ${'monthly'} | ${'2026-06-01T00:00:00Z'}     | ${'Jun 2026'}
-  `('formats the ISO datetime bucket $value as $expected', ({ granularity, value, expected }) => {
-    expect(format(granularity, value)).toBe(expected);
-  });
-
-  it.each([
-    '2026-01-01 00:00:00',
-    '2026-01-01Tjunk',
-    '2026-02-30T00:00:00Z',
-    '2026-01-01T00:00:00+junk',
-    '2026-01',
-    '2026-01-01-hotfix',
-    'v2026-01-01',
-    '20260101',
-    '2026-02-30',
-    '2027-02-29',
-    '0099-01-01',
-    '2026-01-01 release notes',
-  ])('passes the non-bucket string %s through unchanged', (value) => {
-    expect(format('daily', value)).toBe(value);
+  it('passes non-bucket values through unchanged', () => {
+    expect(format('daily', '2026-02-30')).toBe('2026-02-30');
   });
 
   it('is plain stringification for non-time dimensions', () => {

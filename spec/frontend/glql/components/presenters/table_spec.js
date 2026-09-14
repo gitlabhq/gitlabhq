@@ -105,6 +105,27 @@ describe('TablePresenter', () => {
     expect(fieldPresenter.props('presenterKey')).toBe('durationQuantile');
   });
 
+  it('renders date bucket dimensions as date-only labels, not relative time', async () => {
+    const monthlyDimension = {
+      key: 'created',
+      label: 'Created',
+      name: 'created',
+      type: 'dimension',
+      parameters: { granularity: 'monthly' },
+    };
+
+    await createWrapper(
+      {
+        data: { nodes: [{ created: '2026-06-01' }, { created: '2026-07-01' }] },
+        fields: [monthlyDimension],
+      },
+      mountExtended,
+    );
+
+    expect(getCells(wrapper.findByTestId('table-row-0'))).toEqual(['Jun 2026']);
+    expect(getCells(wrapper.findByTestId('table-row-1'))).toEqual(['Jul 2026']);
+  });
+
   it('renders formatted values, not "None", for aliased parameterised fields', async () => {
     const fields = [
       {
@@ -132,7 +153,7 @@ describe('TablePresenter', () => {
 
     const cells = getCells(wrapper.findByTestId('table-row-0'));
 
-    expect(cells).toEqual(['Jun 1, 2026', '1h 1m 1s']);
+    expect(cells).toEqual(['Jun 2026', '1h 1m 1s']);
   });
 
   it('renders skeleton loader if loading is true', () => {
@@ -323,6 +344,12 @@ describe('TablePresenter', () => {
       source: 'CodeSuggestions',
     };
 
+    // The resolver attaches the metric to the comparison result, so the table reads it there.
+    const withTrendMetric = (props, metric) => ({
+      ...props,
+      comparisonData: { ...props.comparisonData, metric },
+    });
+
     const headerLabels = () =>
       wrapper.findAllComponents(ThResizable).wrappers.map((th) => th.text());
     const badges = () => wrapper.findAllByTestId('trend-badge');
@@ -457,13 +484,13 @@ describe('TablePresenter', () => {
       });
 
       it('compares the named metric', async () => {
-        await createWrapper({ ...twoMetricProps, trendMetric: 'acceptanceRate' }, mountExtended);
+        await createWrapper(withTrendMetric(twoMetricProps, 'acceptanceRate'), mountExtended);
 
         expect(badges().wrappers.map((badge) => badge.text())).toEqual(['25%', '16.8%']);
       });
 
       it('reports an error when the named metric is not selected', async () => {
-        await createWrapper({ ...twoMetricProps, trendMetric: 'usersCount' }, mountExtended);
+        await createWrapper(withTrendMetric(twoMetricProps, 'usersCount'), mountExtended);
 
         expect(wrapper.emitted('error')[0][0].message).toBe(
           'Unknown metric for `trendMetric`: `usersCount`.',
@@ -484,15 +511,17 @@ describe('TablePresenter', () => {
         nodes: [{ language: 'ruby', Suggestions: 20, acceptanceRate: 0.4 }],
       };
 
-      it.each(['Suggestions', 'totalCount'])('resolves `%s` to the metric', async (trendMetric) => {
+      it.each(['Suggestions', 'totalCount'])('resolves `%s` to the metric', async (metric) => {
         await createWrapper(
-          {
-            ...trendProps,
-            data: mockAliasedData,
-            comparisonData: mockAliasedComparisonData,
-            fields: mockAliasedFields,
-            trendMetric,
-          },
+          withTrendMetric(
+            {
+              ...trendProps,
+              data: mockAliasedData,
+              comparisonData: mockAliasedComparisonData,
+              fields: mockAliasedFields,
+            },
+            metric,
+          ),
           mountExtended,
         );
 

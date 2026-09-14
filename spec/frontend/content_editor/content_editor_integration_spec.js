@@ -1,11 +1,12 @@
 import { GlLoadingIcon } from '@gitlab/ui';
 import Vue, { nextTick } from 'vue';
 import VueApollo from 'vue-apollo';
-import { mountExtended } from 'helpers/vue_test_utils_helper';
+import { initEmojiMock, clearEmojiMock } from 'helpers/emoji';
 import createMockApollo from 'helpers/mock_apollo_helper';
+import { mountExtended } from 'helpers/vue_test_utils_helper';
+import waitForPromises from 'helpers/wait_for_promises';
 import savedRepliesQuery from 'ee_else_ce/vue_shared/components/markdown/saved_replies.query.graphql';
 import { ContentEditor } from '~/content_editor';
-import waitForPromises from 'helpers/wait_for_promises';
 
 Vue.use(VueApollo);
 
@@ -47,8 +48,16 @@ describe('content_editor', () => {
     renderMarkdown.mockImplementation((markdown) => ({ body: markdown ? response : null }));
   };
 
-  beforeEach(() => {
+  beforeEach(async () => {
+    // The emoji extension loads the emoji map on mount. Priming the cache keeps
+    // this spec free of network requests; no assertion here depends on emoji.
+    await initEmojiMock();
+
     renderMarkdown = jest.fn();
+  });
+
+  afterEach(() => {
+    clearEmojiMock();
   });
 
   describe('when loading initial content', () => {

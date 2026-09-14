@@ -64,15 +64,6 @@ export default {
       type: [Boolean, Number],
       default: false,
     },
-    /**
-     * Key of the metric the trend column compares, matched against a field's alias or its
-     * base key. Optional when the table selects a single metric.
-     */
-    trendMetric: {
-      required: false,
-      type: String,
-      default: '',
-    },
     source: {
       required: false,
       type: String,
@@ -95,6 +86,11 @@ export default {
     },
     metrics() {
       return metricsOf(this.fields);
+    },
+    // Set by the resolver on the comparison result. Matched against a field's alias or its
+    // base key, and optional when the table selects a single metric.
+    trendMetric() {
+      return this.comparisonData?.metric ?? '';
     },
     trendField() {
       if (!this.trendMetric) return this.metrics.length === 1 ? this.metrics[0] : null;
@@ -251,6 +247,7 @@ export default {
               :item="item"
               :field-key="field.key"
               :presenter-key="baseFieldKeyOf(field)"
+              :parameters="field.parameters"
             />
           </td>
         </tr>

@@ -105,6 +105,16 @@ class PoolRepository < ApplicationRecord
     member_projects.id_not_in(repository.project.id).exists? || mark_obsolete
   end
 
+  # Clear membership before checking for remaining members, under a pool
+  # row lock, so concurrent leavers cannot both observe each other and
+  # skip mark_obsolete (https://gitlab.com/gitlab-org/gitlab/-/work_items/628444).
+  def remove_member(project)
+    with_lock do
+      project.update_column(:pool_repository_id, nil)
+      mark_obsolete unless member_projects.exists?
+    end
+  end
+
   def object_pool
     @object_pool ||= Gitlab::Git::ObjectPool.new(
       shard.name,

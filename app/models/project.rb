@@ -3358,12 +3358,14 @@ class Project < ApplicationRecord
   end
 
   def leave_pool_repository
-    return if pool_repository.blank?
+    pool = pool_repository
+    return if pool.blank?
 
     # Disconnecting the repository can be expensive, so let's skip it if
     # this repository is being deleted anyway.
-    pool_repository.unlink_repository(repository, disconnect: !pending_delete?)
-    update_column(:pool_repository_id, nil)
+    repository.disconnect_alternates unless pending_delete?
+
+    pool.remove_member(self)
   end
 
   # After repository is moved from shard to shard, disconnect it from the previous object pool and connect to the new pool

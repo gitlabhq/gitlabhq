@@ -19,7 +19,6 @@ module Gitlab
 
       attr_reader :octokit
 
-      SEARCH_MAX_REQUESTS_PER_MINUTE = 30
       DEFAULT_PER_PAGE = 100
       CLIENT_CONNECTION_ERROR = ::Faraday::ConnectionFailed # used/set in sawyer agent which octokit uses
 
@@ -28,12 +27,11 @@ module Gitlab
 
       # The minimum number of requests we want to keep available.
       #
-      # We don't use a value of 0 as multiple threads may be using the same
+      # We avoid using a value of 0 as multiple threads may be using the same
       # token in parallel. This could result in all of them hitting the GitHub
       # rate limit at once. The threshold is put in place to not hit the limit
-      # in most cases.
-      RATE_LIMIT_THRESHOLD = 50
-      SEARCH_RATE_LIMIT_THRESHOLD = 3
+      # in most cases. The threshold is reduced for very low limits for efficiency.
+      RATE_LIMIT_THRESHOLD_MAX = 50
 
       # token - The GitHub API token to use.
       #
@@ -201,14 +199,17 @@ module Gitlab
         end
       end
 
-      # Returns `true` if we're still allowed to perform API calls.
-      # Search API has rate limit of 30, use lowered threshold when search is used.
       def requests_remaining?
-        if requests_limit == SEARCH_MAX_REQUESTS_PER_MINUTE
-          return remaining_requests > SEARCH_RATE_LIMIT_THRESHOLD
-        end
+        # Set the threshold to a small percentage of the limit plus a constant so that the
+        # threshold is never too low when limit is low, and threshold is closer to the percent
+        # as the limit increases, capped to RATE_LIMIT_THRESHOLD_MAX to avoid inefficiencies at high limits.
+        rate_limit_threshold = if requests_limit > 1
+                                 [((0.05 * requests_limit) + 1).round, RATE_LIMIT_THRESHOLD_MAX].min
+                               else
+                                 0 # Allow limit of 1 to still process
+                               end
 
-        remaining_requests > RATE_LIMIT_THRESHOLD
+        remaining_requests > rate_limit_threshold
       end
 
       def remaining_requests
@@ -238,7 +239,13 @@ module Gitlab
 
       def rate_limiting_enabled?
         strong_memoize(:rate_limiting_enabled) do
-          api_endpoint.include?('.github.com')
+          next true if api_endpoint.include?('.github.com')
+
+          with_retry { octokit.rate_limit }
+
+          true
+        rescue ::Octokit::NotFound
+          false
         end
       end
 

@@ -633,7 +633,7 @@ describe('Sidebar Menu', () => {
     });
   });
 
-  describe('Feature Library modal', () => {
+  describe('Feature catalog modal', () => {
     const findFeatureLibraryModal = () => wrapper.findComponent({ name: 'FeatureLibraryModal' });
     const findTrigger = () => wrapper.findComponentByTestId('feature-library-trigger');
 
@@ -646,7 +646,7 @@ describe('Sidebar Menu', () => {
 
       it('renders the trigger button with the expected label', () => {
         expect(findTrigger().exists()).toBe(true);
-        expect(findTrigger().text()).toBe('More features');
+        expect(findTrigger().text()).toBe('Feature catalog');
       });
 
       it('renders the feature-addition icon on the trigger', () => {
@@ -884,7 +884,7 @@ describe('Sidebar Menu', () => {
           createFocusWrapper();
         });
 
-        it('moves focus to the "More features" button', async () => {
+        it('moves focus to the "Feature catalog" button', async () => {
           unpin({ fromPinnedSection: true });
           await nextTick();
 
@@ -956,7 +956,7 @@ describe('Sidebar Menu', () => {
           });
         });
 
-        it('moves focus to its current-page item, not "More features"', async () => {
+        it('moves focus to its current-page item, not "Feature catalog"', async () => {
           unpin({ fromPinnedSection: true }, 'active_page', 'Active subitem');
           await nextTick();
 
@@ -965,7 +965,7 @@ describe('Sidebar Menu', () => {
           );
         });
 
-        it('moves focus to "More features" when unpinning a non-active page', async () => {
+        it('moves focus to "Feature catalog" when unpinning a non-active page', async () => {
           unpin({ fromPinnedSection: true }, 'some_item', 'Some Item');
           await nextTick();
 
@@ -996,7 +996,7 @@ describe('Sidebar Menu', () => {
           });
         });
 
-        it('moves focus to "More features" when unpinning a different page', async () => {
+        it('moves focus to "Feature catalog" when unpinning a different page', async () => {
           expect(wrapper.findByTestId('current-page-section').exists()).toBe(true);
 
           unpin({ fromPinnedSection: true }, 'some_item', 'Some Item');

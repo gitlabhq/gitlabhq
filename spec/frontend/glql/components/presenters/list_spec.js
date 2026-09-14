@@ -8,6 +8,7 @@ import StatePresenter from '~/glql/components/presenters/state.vue';
 import HtmlPresenter from '~/glql/components/presenters/html.vue';
 import UserPresenter from '~/glql/components/presenters/user.vue';
 import { useMockLocationHelper } from 'helpers/mock_window_location_helper';
+import DateBucketPresenter from '~/glql/components/presenters/date_bucket.vue';
 import { MOCK_FIELDS, MOCK_ISSUES, MOCK_PROJECT } from '../../mock_data';
 
 describe('ListPresenter', () => {
@@ -86,6 +87,22 @@ describe('ListPresenter', () => {
     expect(wrapper.find('h3').exists()).toBe(false);
   });
 
+  it('renders date bucket dimensions as date-only labels, not relative time', () => {
+    const weeklyDimension = {
+      key: 'created',
+      label: 'Created',
+      name: 'created',
+      type: 'dimension',
+      parameters: { granularity: 'weekly' },
+    };
+    createWrapper(
+      { data: { nodes: [{ created: '2026-01-12' }] }, fields: [weeklyDimension] },
+      mountExtended,
+    );
+
+    expect(wrapper.findByTestId('list-item-0').text()).toBe('Jan 12 – 18, 2026');
+  });
+
   it('renders all fields when there is no title field', () => {
     const fieldsWithoutTitle = MOCK_FIELDS.filter((f) => f.key !== 'title');
     createWrapper({ data: MOCK_ISSUES, fields: fieldsWithoutTitle }, mountExtended);
@@ -128,6 +145,44 @@ describe('ListPresenter', () => {
 
       expect(inlineKeys).not.toContain('name');
       expect(inlineKeys).toContain('updatedAt');
+    });
+  });
+
+  describe('aliases and the title heading', () => {
+    it('promotes the title field to the heading under an alias', () => {
+      const fields = [
+        { key: 'Name', field: 'title', label: 'Name', name: 'title' },
+        { key: 'state', label: 'State', name: 'state' },
+      ];
+      createWrapper({ data: MOCK_ISSUES, fields }, mountExtended);
+
+      const heading = wrapper.findByTestId('list-item-0').find('h3');
+      expect(heading.findComponent(IssuablePresenter).exists()).toBe(true);
+      expect(heading.findComponent(FieldPresenter).props('fieldKey')).toBe('Name');
+      expect(heading.findComponent(FieldPresenter).props('presenterKey')).toBe('title');
+    });
+
+    it('keeps a bucket dimension aliased as "title" inline as a date bucket', () => {
+      const fields = [
+        {
+          key: 'title',
+          field: 'created',
+          label: 'title',
+          name: 'created',
+          type: 'dimension',
+          parameters: { granularity: 'monthly' },
+        },
+        { key: 'totalCount', label: 'Total count', name: 'totalCount', type: 'metric' },
+      ];
+      createWrapper(
+        { data: { nodes: [{ __typename: 'Issue', title: '2026-06-01', totalCount: 3 }] }, fields },
+        mountExtended,
+      );
+
+      const item = wrapper.findByTestId('list-item-0');
+      expect(item.find('h3').exists()).toBe(false);
+      expect(item.findComponent(DateBucketPresenter).exists()).toBe(true);
+      expect(item.text()).toBe('Jun 2026 · 3');
     });
   });
 
@@ -183,7 +238,7 @@ describe('ListPresenter', () => {
       mountExtended,
     );
 
-    expect(wrapper.findByTestId('list-item-0').text()).toBe('Jun 1, 2026 · 1h 1m 1s');
+    expect(wrapper.findByTestId('list-item-0').text()).toBe('Jun 2026 · 1h 1m 1s');
   });
 
   it('passes compact variant to field presenters', () => {

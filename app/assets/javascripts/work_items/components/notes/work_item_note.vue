@@ -1,4 +1,5 @@
 <script>
+import { defineAsyncComponent } from 'vue';
 import { isEmpty } from 'lodash-es';
 import { GlAlert, GlAvatarLink, GlAvatar } from '@gitlab/ui';
 import DuoQuestionNote from 'ee_else_ce/work_items/components/notes/duo_question_note.vue';
@@ -35,6 +36,9 @@ export default {
     NoteHeader,
     NoteActions,
     GlAlert,
+    NoteSessionBar: defineAsyncComponent(
+      () => import('ee_component/ai/shared/widgets/note_session_bar.vue'),
+    ),
     GlAvatar,
     GlAvatarLink,
     WorkItemCommentForm,
@@ -258,6 +262,10 @@ export default {
     },
     duoCreatedSessionId() {
       return getIdFromGraphQLId(this.note.duoCreatedSession?.id);
+    },
+    hasSession() {
+      const session = this.note.duoTriggeredSession;
+      return this.glFeatures.noteAgentSessionBar && Boolean(session?.id && session?.agentName);
     },
   },
   mounted() {
@@ -577,6 +585,13 @@ export default {
             />
           </div>
         </div>
+        <note-session-bar
+          v-if="hasSession"
+          :agent-name="note.duoTriggeredSession.agentName"
+          :session-id="note.duoTriggeredSession.id"
+          :status="note.duoTriggeredSession.statusName"
+          :is-reply="!isFirstNote"
+        />
       </div>
     </div>
   </timeline-entry-item>

@@ -1412,7 +1412,7 @@ Lint/RedundantSafeNavigation:
 
 Lint/UnusedBlockArgument:
   Exclude:
-    - ee/app/models/ai/catalog/foundational_flow/definitions/*.rb
+    - ee/app/models/ai/catalog/foundational_flow/*/definition.rb
 
 Style/ClassEqualityComparison:
   Enabled: true

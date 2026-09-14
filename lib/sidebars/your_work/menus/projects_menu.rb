@@ -26,11 +26,7 @@ module Sidebars
 
         override :active_routes
         def active_routes
-          if Feature.enabled?(:personal_homepage, context.current_user)
-            { controller: ['projects', 'dashboard/projects'] }
-          else
-            { controller: ['root', 'projects', 'dashboard/projects'] }
-          end
+          { controller: ['projects', 'dashboard/projects'] }
         end
       end
     end

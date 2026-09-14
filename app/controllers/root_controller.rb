@@ -2,12 +2,10 @@
 
 # RootController
 #
-# This controller exists solely to handle requests to `root_url`. When a user is
-# logged in and has customized their `dashboard` setting, they will be
-# redirected to their preferred location.
-#
-# For users who haven't customized the setting, we simply delegate to
-# `DashboardController#show`, which is the default.
+# This controller exists solely to handle requests to `root_url`. Signed-out
+# users are redirected to the sign-in page or the instance's custom home page.
+# Signed-in users are redirected to their preferred `dashboard` location if
+# they have one set; otherwise, we render the personal homepage.
 class RootController < Dashboard::ProjectsController
   include HomepageData
   include ::Gitlab::InternalEventsTracking
@@ -18,16 +16,13 @@ class RootController < Dashboard::ProjectsController
   before_action :redirect_logged_user, if: -> { current_user.present? }
 
   before_action only: [:index] do
-    push_frontend_feature_flag(:personal_homepage, current_user)
     push_frontend_feature_flag(:homepage_pipelines_widget, current_user)
   end
 
   CACHE_CONTROL_HEADER = 'no-store'
 
   DASHBOARD_PATHS = {
-    'projects' => ->(context) {
-      context.dashboard_projects_path if Feature.enabled?(:personal_homepage, context.current_user)
-    },
+    'projects' => ->(context) { context.dashboard_projects_path },
     'stars' => ->(context) { context.starred_dashboard_projects_path },
     'member_projects' => ->(context) { context.member_dashboard_projects_path },
     'your_activity' => ->(context) { context.activity_dashboard_path },
@@ -48,12 +43,9 @@ class RootController < Dashboard::ProjectsController
 
   def index
     @homepage_app_data = homepage_app_data(current_user)
-    if Feature.enabled?(:personal_homepage, current_user)
-      track_internal_event('user_views_homepage', user: current_user)
-      render('root/index') && return
-    end
+    track_internal_event('user_views_homepage', user: current_user)
 
-    super
+    render('root/index')
   end
 
   private

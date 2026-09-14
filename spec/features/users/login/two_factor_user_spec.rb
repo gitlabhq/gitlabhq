@@ -66,7 +66,7 @@ RSpec.describe 'Login', :with_current_organization, :clean_gitlab_redis_sessions
 
             enter_code(codes.sample, only_two_factor_webauthn_enabled: only_two_factor_webauthn_enabled)
 
-            expect(page).to have_content('Welcome to GitLab')
+            expect(page).to have_testid('homepage-greeting-header')
             expect(page).to have_current_path root_path, ignore_query: true
           end
 
@@ -77,7 +77,7 @@ RSpec.describe 'Login', :with_current_organization, :clean_gitlab_redis_sessions
 
             size_before = user.reload.otp_backup_codes.size
             enter_code(codes.sample, only_two_factor_webauthn_enabled: only_two_factor_webauthn_enabled)
-            expect(page).to have_content('Welcome to GitLab')
+            expect(page).to have_testid('homepage-greeting-header')
             expect(user.reload.otp_backup_codes.size).to eq(size_before - 1)
           end
 
@@ -90,14 +90,14 @@ RSpec.describe 'Login', :with_current_organization, :clean_gitlab_redis_sessions
             random_code = codes.delete(codes.sample)
             size_before = user.reload.otp_backup_codes.size
             enter_code(random_code, only_two_factor_webauthn_enabled: only_two_factor_webauthn_enabled)
-            expect(page).to have_content('Welcome to GitLab')
+            expect(page).to have_testid('homepage-greeting-header')
             expect(user.reload.otp_backup_codes.size).to eq(size_before - 1)
 
             gitlab_sign_out(user)
             submit_sign_in_form_for(user)
 
             enter_code(codes.sample, only_two_factor_webauthn_enabled: only_two_factor_webauthn_enabled)
-            expect(page).to have_content('Welcome to GitLab')
+            expect(page).to have_testid('homepage-greeting-header')
             expect(user.reload.otp_backup_codes.size).to eq(size_before - 2)
           end
 
@@ -108,7 +108,7 @@ RSpec.describe 'Login', :with_current_organization, :clean_gitlab_redis_sessions
             expect(ActiveSession).to receive(:cleanup).with(user).once.and_call_original
 
             enter_code(codes.sample, only_two_factor_webauthn_enabled: only_two_factor_webauthn_enabled)
-            expect(page).to have_content('Welcome to GitLab')
+            expect(page).to have_testid('homepage-greeting-header')
           end
         end
 
@@ -149,7 +149,7 @@ RSpec.describe 'Login', :with_current_organization, :clean_gitlab_redis_sessions
             .and increment(:user_two_factor_authenticated_counter)
 
           enter_code(user.current_otp)
-          expect(page).to have_content('Welcome to GitLab')
+          expect(page).to have_testid('homepage-greeting-header')
           expect(page).not_to have_content(I18n.t('devise.failure.already_authenticated'))
           expect_single_session_with_authenticated_ttl
         end
@@ -170,7 +170,7 @@ RSpec.describe 'Login', :with_current_organization, :clean_gitlab_redis_sessions
               .and increment(:user_two_factor_authenticated_counter)
 
             enter_code(user.current_otp)
-            expect(page).to have_content('Welcome to GitLab')
+            expect(page).to have_testid('homepage-greeting-header')
             expect_single_session_with_authenticated_ttl
             expect(page).to have_current_path root_path, ignore_query: true
           end
@@ -197,7 +197,7 @@ RSpec.describe 'Login', :with_current_organization, :clean_gitlab_redis_sessions
             expect(page).to have_content('Invalid two-factor code')
 
             enter_code(user.current_otp)
-            expect(page).to have_content('Welcome to GitLab')
+            expect(page).to have_testid('homepage-greeting-header')
             expect_single_session_with_authenticated_ttl
             expect(page).to have_current_path root_path, ignore_query: true
           end
@@ -209,7 +209,7 @@ RSpec.describe 'Login', :with_current_organization, :clean_gitlab_redis_sessions
             expect(ActiveSession).to receive(:cleanup).with(user).once.and_call_original
 
             enter_code(user.current_otp)
-            expect(page).to have_content('Welcome to GitLab')
+            expect(page).to have_testid('homepage-greeting-header')
           end
         end
 
@@ -262,7 +262,7 @@ RSpec.describe 'Login', :with_current_organization, :clean_gitlab_redis_sessions
 
           webauthn_device.respond_to_webauthn_authentication
 
-          expect(page).to have_content('Welcome to GitLab')
+          expect(page).to have_testid('homepage-greeting-header')
           expect(page).to have_current_path(root_path, ignore_query: true)
         end
       end
@@ -391,7 +391,7 @@ RSpec.describe 'Login', :with_current_organization, :clean_gitlab_redis_sessions
           expect(ActiveSession).to receive(:cleanup).with(user).once.and_call_original
 
           sign_in_using_saml!
-          expect(page).to have_content('Welcome to GitLab')
+          expect(page).to have_testid('homepage-greeting-header')
           expect_single_session_with_authenticated_ttl
           expect(page).not_to have_button(_('Verify code'))
           expect(page).to have_current_path root_path, ignore_query: true
@@ -412,7 +412,7 @@ RSpec.describe 'Login', :with_current_organization, :clean_gitlab_redis_sessions
           expect(page).to have_button(_('Verify code'))
 
           enter_code(user.current_otp)
-          expect(page).to have_content('Welcome to GitLab')
+          expect(page).to have_testid('homepage-greeting-header')
           expect_single_session_with_authenticated_ttl
           expect(page).to have_current_path root_path, ignore_query: true
         end

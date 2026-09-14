@@ -6,7 +6,6 @@ RSpec.describe 'Home - Todos', :js, feature_category: :notifications do
   let_it_be(:user) { create(:user, :with_namespace) }
 
   before do
-    stub_feature_flags(personal_homepage: true)
     sign_in user
   end
 

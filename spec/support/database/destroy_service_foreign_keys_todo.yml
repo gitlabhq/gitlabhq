@@ -812,7 +812,6 @@ organizations:
 - slack_api_scopes.organization_id
 - slack_integrations.organization_id
 - slack_integrations_scopes.organization_id
-- snippet_repository_states.snippet_organization_id
 - spam_logs.organization_id
 - subscription_add_on_purchases.organization_id
 - subscription_seat_assignments.organization_id

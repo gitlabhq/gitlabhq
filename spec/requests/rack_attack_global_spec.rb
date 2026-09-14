@@ -492,9 +492,9 @@ RSpec.describe 'Rack Attack global throttles', :use_clean_rails_memory_store_cac
 
         context 'when unauthenticated web throttle is enabled' do
           before do
-            settings_to_set[:throttle_unauthenticated_web_requests_per_period] = requests_per_period
-            settings_to_set[:throttle_unauthenticated_web_period_in_seconds] = period_in_seconds
-            settings_to_set[:throttle_unauthenticated_web_enabled] = true
+            settings_to_set[:throttle_unauthenticated_requests_per_period] = requests_per_period
+            settings_to_set[:throttle_unauthenticated_period_in_seconds] = period_in_seconds
+            settings_to_set[:throttle_unauthenticated_enabled] = true
             stub_application_setting(settings_to_set)
           end
 
@@ -1054,9 +1054,9 @@ RSpec.describe 'Rack Attack global throttles', :use_clean_rails_memory_store_cac
 
         context 'when unauthenticated web throttle is enabled' do
           before do
-            settings_to_set[:throttle_unauthenticated_web_requests_per_period] = requests_per_period
-            settings_to_set[:throttle_unauthenticated_web_period_in_seconds] = period_in_seconds
-            settings_to_set[:throttle_unauthenticated_web_enabled] = true
+            settings_to_set[:throttle_unauthenticated_requests_per_period] = requests_per_period
+            settings_to_set[:throttle_unauthenticated_period_in_seconds] = period_in_seconds
+            settings_to_set[:throttle_unauthenticated_enabled] = true
             stub_application_setting(settings_to_set)
           end
 
@@ -1251,9 +1251,9 @@ RSpec.describe 'Rack Attack global throttles', :use_clean_rails_memory_store_cac
 
         context 'when unauthenticated web throttle is enabled' do
           before do
-            settings_to_set[:throttle_unauthenticated_web_requests_per_period] = requests_per_period
-            settings_to_set[:throttle_unauthenticated_web_period_in_seconds] = period_in_seconds
-            settings_to_set[:throttle_unauthenticated_web_enabled] = true
+            settings_to_set[:throttle_unauthenticated_requests_per_period] = requests_per_period
+            settings_to_set[:throttle_unauthenticated_period_in_seconds] = period_in_seconds
+            settings_to_set[:throttle_unauthenticated_enabled] = true
             stub_application_setting(settings_to_set)
           end
 

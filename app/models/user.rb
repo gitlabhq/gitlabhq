@@ -474,7 +474,9 @@ class User < ApplicationRecord
   # Override enum setter for `dashboard` to support flipped mapping for rollout
   def dashboard=(value)
     if should_use_flipped_dashboard_mapping_for_rollout?
-      numeric_value = dashboard_enum_mapping[value.to_s]
+      # Pass unmapped values through so the enum still rejects them, rather than
+      # silently persisting the `nil` a missing mapping key would return.
+      numeric_value = dashboard_enum_mapping.fetch(value.to_s, value)
       super(numeric_value)
     else
       super(value)
@@ -507,8 +509,6 @@ class User < ApplicationRecord
 
   # Determines if this user should use flipped dashboard enum mapping
   def should_use_flipped_dashboard_mapping_for_rollout?
-    return false unless Feature.enabled?(:personal_homepage, self)
-
     # Don't flip for SM admins who have no authorized projects as they go through different onboarding flow.
     return false if self_managed_admin? && !authorized_projects.exists?
 

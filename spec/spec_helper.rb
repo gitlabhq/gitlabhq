@@ -303,9 +303,6 @@ RSpec.configure do |config|
       # Default false while we make them compatible
       stub_feature_flags(v2_approval_rules: false)
 
-      # New personal homepage is still a WIP and not functional.
-      stub_feature_flags(personal_homepage: false)
-
       # Hiding unpinned sidebar items is WIP; disable globally to avoid
       # breaking feature specs that interact with sidebar sections.
       stub_feature_flags(hide_unpinned_sidebar_items: false)

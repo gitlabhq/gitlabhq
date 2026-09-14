@@ -5,8 +5,6 @@ import pipelineHeaderRunningNoPermissions from 'test_fixtures/graphql/pipelines/
 import pipelineHeaderRunningWithDuration from 'test_fixtures/graphql/pipelines/pipeline_header_running_with_duration.json';
 import pipelineHeaderFailed from 'test_fixtures/graphql/pipelines/pipeline_header_failed.json';
 
-const PIPELINE_RUNNING = 'RUNNING';
-
 const threeWeeksAgo = new Date();
 threeWeeksAgo.setDate(threeWeeksAgo.getDate() - 21);
 
@@ -68,46 +66,6 @@ export const mockPipelineHeader = {
     username: 'foobar',
     email: 'foo@bar.com',
     avatarUrl: 'link',
-  },
-};
-
-const mockRunningPipelineHeader = {
-  ...mockPipelineHeader,
-  status: PIPELINE_RUNNING,
-  retryable: false,
-  cancelable: true,
-  detailedStatus: {
-    id: 'status-1',
-    group: 'running',
-    icon: 'status_running',
-    label: 'running',
-    text: 'running',
-    detailsPath: 'path',
-  },
-};
-
-export const mockRunningPipelineHeaderData = {
-  data: {
-    project: {
-      id: '1',
-      pipeline: {
-        ...mockRunningPipelineHeader,
-        iid: '28',
-        user: {
-          id: 'user-1',
-          name: 'Foo',
-          username: 'foobar',
-          webPath: '/foo',
-          webUrl: '/foo',
-          email: 'foo@bar.com',
-          avatarUrl: 'link',
-          status: null,
-          __typename: 'UserCore',
-        },
-        __typename: 'Pipeline',
-      },
-      __typename: 'Project',
-    },
   },
 };
 

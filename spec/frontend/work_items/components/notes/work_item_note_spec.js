@@ -101,6 +101,7 @@ describe('Work Item Note', () => {
   const findCommentForm = () => wrapper.findComponent(WorkItemCommentForm);
   const findEditedAt = () => wrapper.findComponent(EditedAt);
   const findUpdateError = () => wrapper.find('[data-testid="update-error"]');
+  const findSessionBar = () => wrapper.findComponent({ name: 'NoteSessionBar' });
 
   const createComponent = ({
     note = mockWorkItemCommentNote,
@@ -130,6 +131,11 @@ describe('Work Item Note', () => {
       provide: provideData,
       stubs: {
         TimelineEntryItem,
+        NoteSessionBar: {
+          name: 'NoteSessionBar',
+          props: ['agentName', 'sessionId', 'status', 'isReply'],
+          template: '<div></div>',
+        },
       },
       mocks: {
         $route: {},
@@ -708,6 +714,104 @@ end`;
 
       expect(wrapper.emitted('start-editing')).toBeUndefined();
       expect(findCommentForm().exists()).toBe(false);
+    });
+  });
+
+  describe('NoteSessionBar', () => {
+    const SESSION_ID = 1;
+    const AGENT_NAME = 'Duo Developer';
+
+    const sessionNote = {
+      ...mockWorkItemCommentNote,
+      duoTriggeredSession: {
+        id: SESSION_ID,
+        agentName: AGENT_NAME,
+        statusName: 'running',
+      },
+    };
+
+    describe('when the noteAgentSessionBar feature flag is disabled and the note has a session', () => {
+      beforeEach(() => {
+        createComponent({
+          note: sessionNote,
+          provideData: { glFeatures: { noteAgentSessionBar: false } },
+        });
+      });
+
+      it('does not render', () => {
+        expect(findSessionBar().exists()).toBe(false);
+      });
+    });
+
+    describe('when the noteAgentSessionBar feature flag is enabled', () => {
+      const createWithFlag = (options = {}) =>
+        createComponent({
+          ...options,
+          provideData: { glFeatures: { noteAgentSessionBar: true } },
+        });
+
+      describe.each`
+        description                              | note
+        ${'has no session'}                      | ${mockWorkItemCommentNote}
+        ${'has a null session'}                  | ${{ ...mockWorkItemCommentNote, duoTriggeredSession: null }}
+        ${'has a session without an id'}         | ${{ ...mockWorkItemCommentNote, duoTriggeredSession: { id: null, agentName: AGENT_NAME, statusName: 'running' } }}
+        ${'has a session without an agent name'} | ${{ ...mockWorkItemCommentNote, duoTriggeredSession: { id: SESSION_ID, agentName: null, statusName: 'running' } }}
+      `('when the note $description', ({ note }) => {
+        beforeEach(() => {
+          createWithFlag({ note });
+        });
+
+        it('does not render', () => {
+          expect(findSessionBar().exists()).toBe(false);
+        });
+      });
+
+      describe('when the note has a session', () => {
+        beforeEach(() => {
+          createWithFlag({ note: sessionNote });
+        });
+
+        it('renders the session bar', () => {
+          expect(findSessionBar().exists()).toBe(true);
+        });
+
+        it('passes the session props', () => {
+          expect(findSessionBar().props()).toMatchObject({
+            agentName: AGENT_NAME,
+            sessionId: SESSION_ID,
+            status: 'running',
+          });
+        });
+      });
+
+      describe.each`
+        isFirstNote | expectedIsReply
+        ${true}     | ${false}
+        ${false}    | ${true}
+      `('when isFirstNote is $isFirstNote', ({ isFirstNote, expectedIsReply }) => {
+        beforeEach(() => {
+          createWithFlag({ note: sessionNote, isFirstNote });
+        });
+
+        it('passes the matching isReply prop', () => {
+          expect(findSessionBar().props('isReply')).toBe(expectedIsReply);
+        });
+      });
+
+      describe('when the session status is finished', () => {
+        beforeEach(() => {
+          createWithFlag({
+            note: {
+              ...sessionNote,
+              duoTriggeredSession: { ...sessionNote.duoTriggeredSession, statusName: 'finished' },
+            },
+          });
+        });
+
+        it('still renders the session bar', () => {
+          expect(findSessionBar().exists()).toBe(true);
+        });
+      });
     });
   });
 });

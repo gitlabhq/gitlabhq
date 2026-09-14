@@ -14,9 +14,9 @@ GitLab Duo est conçu pour fournir des informations contextuellement pertinentes
 
 {{< details >}}
 
-- Édition : GitLab Premium, GitLab Ultimate
-- Module complémentaire : GitLab Duo Enterprise
-- Offre : GitLab.com, GitLab Self-Managed
+- Édition : GitLab Premium, GitLab Ultimate
+- Module d'extension : GitLab Duo Enterprise
+- Offre : GitLab.com, GitLab Self-Managed
 - Statut : version bêta
 
 {{< /details >}}
@@ -30,17 +30,17 @@ GitLab Duo est conçu pour fournir des informations contextuellement pertinentes
 
 {{< history >}}
 
-- [Introduction](https://gitlab.com/groups/gitlab-org/-/epics/10401) dans GitLab 16.2 en tant que [version expérimentale](../../../policy/development_stages_support.md#experiment).
-- [Modifié](https://gitlab.com/gitlab-org/gitlab/-/issues/429882) en version bêta dans GitLab 16.10.
-- À partir de GitLab 17.6, le module d'extension GitLab Duo est devenu obligatoire.
-- LLM [mis à jour](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/186862) vers Claude 3.7 Sonnet dans GitLab 17.10
-- Le feature flag `add_ai_summary_for_new_mr` [activé par défaut](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/186108) dans GitLab 17.11.
-- Modifié pour inclure GitLab Premium dans GitLab 18.0.
-- LLM [mis à jour](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/193208) vers Claude 4.0 Sonnet dans GitLab 18.1.
+- [Introduction](https://gitlab.com/groups/gitlab-org/-/epics/10401) dans GitLab 16.2 en [version expérimentale](../../../policy/development_stages_support.md#experiment).
+- [Modification](https://gitlab.com/gitlab-org/gitlab/-/issues/429882) en version bêta dans GitLab 16.10.
+- À partir de GitLab 17.6 et versions ultérieures, le module d'extension GitLab Duo est devenu obligatoire.
+- [Mise à jour](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/186862) du grand modèle de langage (LLM) vers Claude 3.7 Sonnet dans GitLab 17.10
+- [Activation par défaut](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/186108) du feature flag `add_ai_summary_for_new_mr` dans GitLab 17.11.
+- Modification pour inclure GitLab Premium dans GitLab 18.0.
+- [Mise à jour](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/193208) du grand modèle de langage (LLM) vers Claude 4.0 Sonnet dans GitLab 18.1
 
 {{< /history >}}
 
-Lorsque vous créez ou modifiez une merge request, utilisez GitLab Duo Merge Request Summary pour créer une description de merge request.
+Lorsque vous créez ou modifiez une merge request, utilisez GitLab Duo Merge Request Summary pour créer une description de la merge request.
 
 1. [Créez une nouvelle merge request](creating_merge_requests.md).
 1. Dans le champ **Description**, placez votre curseur à l'endroit où vous souhaitez insérer la description.
@@ -56,17 +56,17 @@ Donnez votre avis sur cette fonctionnalité dans le [ticket 443236](https://gitl
 
 Utilisation des données : le diff des modifications entre la tête de la branche source et la branche cible est envoyé au grand modèle de langage.
 
-## Utiliser GitLab Duo pour réviser votre code {#use-gitlab-duo-to-review-your-code}
+## Utiliser GitLab Duo pour examiner votre code {#use-gitlab-duo-to-review-your-code}
 
 GitLab Duo peut examiner votre merge request pour détecter des erreurs potentielles et fournir des commentaires sur la conformité aux standards.
 
-Lorsque vous demandez une revue à GitLab Duo, il exécute automatiquement l'une des deux fonctionnalités de revue de code en fonction de votre add-on. Les utilisateurs disposant du rôle Owner pour le groupe peuvent configurer la fonctionnalité qui s'exécute pour tous les utilisateurs.
+Lorsque vous demandez une revue à GitLab Duo, il exécute automatiquement l'une des deux fonctionnalités de revue de code en fonction de votre module d'extension. Les utilisateurs disposant du rôle Propriétaire pour le groupe peuvent configurer la fonctionnalité qui s'exécute pour tous les utilisateurs.
 
-| Détail              | [Flow Code Review](../../duo_agent_platform/flows/foundational_flows/code_review.md) | [GitLab Duo Code Review](../../gitlab_duo/code_review.md) |
+| Détail              | [Flow Code Review](../../duo_agent_platform/flows/foundational_flows/code_review/_index.md) | [GitLab Duo Code Review](../../gitlab_duo/code_review.md) |
 |---------------------|--------------------------------------------------------------------------------------|-----------------------------------------------------------|
 | Relecteur            | `@GitLabDuo`                                                                         | `@GitLabDuo`                                              |
 | Type                | Agentique                                                                              | Non agentique                                               |
-| Add-on requis     | Aucun. Utilise des GitLab Credits.                                                           | GitLab Duo Enterprise                                     |
+| Module d'extension requis     | Aucun. Utilise des GitLab Credits.                                                           | GitLab Duo Enterprise                                     |
 | Sensibilité au contexte   | Compréhension approfondie de la structure du dépôt et des dépendances entre fichiers           | Centré sur la merge request et les diffs de fichiers qu'elle contient |
 | Analyse            | Raisonnement agentique multi-étapes                                                         | Passage unique                                               |
 | Création de session    | {{< yes >}}                                                                          | {{< no >}}                                                |
@@ -86,7 +86,7 @@ Par défaut, la fonctionnalité de revue de code que GitLab exécute dépend de 
 
 Si l'utilisateur initiant la revue dispose d'un siège GitLab Duo Enterprise, GitLab Duo Code Review s'exécute. Sinon, le flow Code Review s'exécute. Les deux fonctionnalités peuvent s'exécuter dans le même projet.
 
-Les utilisateurs disposant du rôle Owner pour le groupe peuvent [configurer toutes les revues pour utiliser le flow Code Review](#turn-on-code-review-flow-for-gitlab-duo-enterprise-seats), quel que soit le type de siège. Lorsque le flow Code Review s'exécute, l'utilisation des crédits est attribuée à l'utilisateur initiant la revue.
+Les utilisateurs disposant du rôle Propriétaire pour le groupe peuvent [configurer toutes les revues pour utiliser le flow Code Review](#turn-on-code-review-flow-for-gitlab-duo-enterprise-seats), quel que soit le type de siège. Lorsque le flow Code Review s'exécute, l'utilisation des crédits est attribuée à l'utilisateur initiant la revue.
 
 Pour déterminer quelle fonctionnalité exécute une revue, vérifiez le fil d'activité de la merge request. Le flow Code Review démarre une session de revue lors de son exécution. Si aucune session de revue n'apparaît, GitLab Duo Code Review exécute la revue.
 
@@ -98,12 +98,12 @@ Une fois la revue terminée, vous pouvez également rechercher une session de fl
 
 {{< history >}}
 
-- [Introduction](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/240432) dans GitLab 19.2 [avec un feature flag](../../../administration/feature_flags/_index.md) nommé `duo_code_review_dap_routing_consent_enabled`. Activé par défaut.
-- [Généralement disponible](https://gitlab.com/gitlab-org/gitlab/-/issues/602689) dans GitLab 19.3. Le feature flag `duo_code_review_dap_routing_consent_enabled` a été supprimé.
+- [Introduction](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/240432) dans GitLab 19.2 [avec le feature flag](../../../administration/feature_flags/_index.md) `duo_code_review_dap_routing_consent_enabled`. Activé par défaut.
+- [Passage en disponibilité générale](https://gitlab.com/gitlab-org/gitlab/-/issues/602689) dans GitLab 19.3. Suppression du feature flag `duo_code_review_dap_routing_consent_enabled`.
 
 {{< /history >}}
 
-Pour éviter que les titulaires de siège GitLab Duo Enterprise n'utilisent une fonctionnalité qui consomme des GitLab Credits, toutes les revues de code qu'ils initient utilisent GitLab Duo Code Review par défaut. Ce comportement se produit même si un utilisateur disposant du rôle Owner active le flow Code Review pour le groupe.
+Pour éviter que les titulaires de siège GitLab Duo Enterprise n'utilisent une fonctionnalité qui consomme des GitLab Credits, toutes les revues de code qu'ils initient utilisent GitLab Duo Code Review par défaut. Ce comportement se produit même si un utilisateur disposant du rôle Propriétaire active le flow Code Review pour le groupe.
 
 Vous pouvez modifier ce paramètre par défaut et configurer toutes les revues de code pour utiliser le flow Code Review à la place, quel que soit le siège de l'utilisateur.
 
@@ -115,14 +115,14 @@ Pour remplacer la fonctionnalité de revue de code par défaut pour les sièges 
 
 Prérequis :
 
-- Le rôle Propriétaire pour le groupe principal.
-- [Flow Code Review](../../duo_agent_platform/flows/foundational_flows/code_review.md#prerequisites) activé et configuré correctement pour votre groupe principal.
+- Disposer du rôle Propriétaire pour le groupe principal.
+- [Flow Code Review](../../duo_agent_platform/flows/foundational_flows/code_review/_index.md#prerequisites) activé et configuré correctement pour votre groupe principal.
 
-1. Dans la barre supérieure, sélectionnez **Rechercher ou accéder à** et trouvez votre groupe principal.
+1. Dans la barre supérieure, sélectionnez **Rechercher ou accéder à** et repérez votre groupe principal.
 1. Sélectionnez **Paramètres** > **GitLab Duo**.
 1. Sélectionnez **Modifier la configuration**.
 1. Sous **Exécution des flux** > **Autoriser les flows par défaut**, décochez la case **Flux de revue de code**, puis cochez-la à nouveau.
-1. Dans la boîte de dialogue de confirmation, sélectionnez **Enable Code Review Flow**.
+1. Dans la boîte de dialogue de confirmation, sélectionnez **Activer le flux de revue de code**.
 
 {{< /tab >}}
 
@@ -130,15 +130,15 @@ Prérequis :
 
 Prérequis :
 
-- Le rôle Maintainer ou Owner pour le groupe.
-- [Flow Code Review](../../duo_agent_platform/flows/foundational_flows/code_review.md#prerequisites) activé et configuré correctement pour l'instance.
+- Le rôle Chargé de maintenance ou Propriétaire pour le groupe.
+- [Flow Code Review](../../duo_agent_platform/flows/foundational_flows/code_review/_index.md#prerequisites) activé et configuré correctement pour l'instance.
 
 1. Dans la barre supérieure, sélectionnez **Rechercher ou accéder à** et repérez votre groupe ou votre sous-groupe.
 1. Sélectionnez **Paramètres** > **Généralités**.
 1. Développez **Fonctionnalités de GitLab Duo**.
-1. Sous **Exécution des flux**, décochez la case **Flux de revue de code**, puis sélectionnez **Sauvegarder les modifications**.
+1. Sous **Exécution des flux**, décochez la case **Flux de revue de code**, puis sélectionnez **Enregistrer les modifications**.
 1. Développez à nouveau **Fonctionnalités de GitLab Duo** et, sous **Exécution des flux**, cochez la case **Flux de revue de code**.
-1. Dans la boîte de dialogue de confirmation, sélectionnez **Enable Code Review Flow**.
+1. Dans la boîte de dialogue de confirmation, sélectionnez **Activer le flux de revue de code**.
 1. Sélectionnez **Enregistrer les modifications**.
 
 {{< /tab >}}
@@ -151,31 +151,34 @@ Le flow Code Review s'exécute désormais pour toutes les revues de code dans le
 
 {{< details >}}
 
-- Édition : GitLab Premium, GitLab Ultimate
-- Offre : GitLab.com, GitLab Self-Managed, GitLab Dedicated
-- Statut : version bêta
+- Édition : GitLab Premium, GitLab Ultimate
+- Offre : GitLab.com, GitLab Self-Managed, GitLab Dedicated
 
 {{< /details >}}
 
 {{< history >}}
 
-- [Introduction](https://gitlab.com/gitlab-org/gitlab/-/work_items/600990) en [version bêta](../../../policy/development_stages_support.md) dans GitLab 19.2 [avec un feature flag](../../../administration/feature_flags/_index.md) nommé `resolve_discussion_with_duo`. Activé par défaut.
+- [Introduction](https://gitlab.com/gitlab-org/gitlab/-/work_items/600990) en [version bêta](../../../policy/development_stages_support.md) dans GitLab 19.2 [avec le feature flag](../../../administration/feature_flags/_index.md) `resolve_discussion_with_duo`. Activé par défaut.
+- [Passage en disponibilité générale](https://gitlab.com/gitlab-org/gitlab/-/work_items/603482) dans GitLab 19.3.
 
 {{< /history >}}
+
+> [!flag]
+> Un feature flag contrôle la disponibilité de cette fonctionnalité. Pour plus d'informations, consultez l'historique.
 
 Utilisez GitLab Duo pour résoudre les discussions de revue sur les merge requests.
 
 Lorsque vous demandez à GitLab Duo de résoudre une discussion, il lit le commentaire de revue et le code environnant, apporte la modification demandée sur la branche source, puis effectue un commit et pousse la modification. GitLab Duo répond ensuite à la discussion avec un résumé de la modification et résout le fil de discussion.
 
-Cette fonctionnalité utilise le flow Developer sur la [plateforme GitLab Duo Agent](../../duo_agent_platform/_index.md).
+Cette fonctionnalité utilise le flow Developer sur [GitLab Duo Agent Platform](../../duo_agent_platform/_index.md).
 
 Prérequis :
 
 - Le rôle Développeur, Chargé de maintenance ou Propriétaire pour le projet.
-- Les [prérequis pour la plateforme GitLab Duo Agent](../../duo_agent_platform/_index.md#prerequisites).
+- Les [prérequis pour GitLab Duo Agent Platform](../../duo_agent_platform/_index.md#prerequisites).
 - **Autoriser les flows par défaut** et **Développeur** activés [pour le groupe principal](../../duo_agent_platform/flows/foundational_flows/_index.md#turn-foundational-flows-on-or-off).
 - [Règles push configurées pour autoriser un compte de service](../../duo_agent_platform/troubleshooting.md#configure-push-rules-to-allow-a-service-account).
-- [Vos propres runners configurés](../../duo_agent_platform/flows/execution.md#configure-runners-to-execute-flows) ou [runners hébergés par GitLab](../../../ci/runners/hosted_runners/_index.md) activés pour votre projet.
+- [Vos propres runners configurés](../../duo_agent_platform/flows/execution/_index.md#configure-runners-to-execute-flows) ou [runners hébergés par GitLab](../../../ci/runners/hosted_runners/_index.md) activés pour votre projet.
 
 Pour résoudre une discussion avec GitLab Duo :
 
@@ -189,9 +192,9 @@ GitLab Duo démarre une session que vous pouvez suivre dans les [sessions de vot
 
 {{< details >}}
 
-- Édition : GitLab Premium, GitLab Ultimate
-- Module complémentaire : GitLab Duo Enterprise
-- Offre : GitLab.com, GitLab Self-Managed, GitLab Dedicated
+- Édition : GitLab Premium, GitLab Ultimate
+- Module d'extension : GitLab Duo Enterprise
+- Offre : GitLab.com, GitLab Self-Managed, GitLab Dedicated
 - Statut : version expérimentale
 
 {{< /details >}}
@@ -205,20 +208,20 @@ GitLab Duo démarre une session que vous pouvez suivre dans les [sessions de vot
 
 {{< history >}}
 
-- [Introduction](https://gitlab.com/groups/gitlab-org/-/epics/10466) dans GitLab 16.0 en tant que [version expérimentale](../../../policy/development_stages_support.md#experiment).
-- Le feature flag `summarize_my_code_review` [activé par défaut](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/182448) dans GitLab 17.10.
-- LLM [mis à jour](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/183873) vers Claude 3.7 Sonnet dans GitLab 17.11.
-- Modifié pour inclure GitLab Premium dans GitLab 18.0.
-- LLM [mis à jour](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/193685) vers Claude 4.0 Sonnet dans GitLab 18.1.
+- [Introduction](https://gitlab.com/groups/gitlab-org/-/epics/10466) dans GitLab 16.0 en [version expérimentale](../../../policy/development_stages_support.md#experiment).
+- [Activation par défaut](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/182448) du feature flag `summarize_my_code_review` dans GitLab 17.10.
+- [Mise à jour](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/183873) du grand modèle de langage (LLM) vers Claude 3.7 Sonnet dans GitLab 17.11
+- Modification pour inclure GitLab Premium dans GitLab 18.0.
+- [Mise à jour](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/193685) du grand modèle de langage (LLM) vers Claude 4.0 Sonnet dans GitLab 18.1
 
 {{< /history >}}
 
 Lorsque vous avez terminé votre revue d'une merge request et que vous êtes prêt à [soumettre votre revue](reviews/_index.md#submit-a-review), utilisez GitLab Duo Code Review Summary pour générer un résumé de vos commentaires.
 
-1. Dans la barre supérieure, sélectionnez **Rechercher ou accédez à** et repérez votre projet.
-1. Dans la barre latérale gauche, sélectionnez **Code** > **Requêtes de fusion** et trouvez la merge request que vous souhaitez réviser.
-1. Lorsque vous êtes prêt à soumettre votre revue, sélectionnez **Finish review**.
-1. Sélectionnez **Add Summary**.
+1. Dans la barre supérieure, sélectionnez **Rechercher ou accéder à** et repérez votre projet.
+1. Dans la barre latérale gauche, sélectionnez **Code** > **Requêtes de fusion** et repérez la merge request que vous souhaitez réviser.
+1. Lorsque vous êtes prêt à soumettre votre revue, sélectionnez **Terminer la revue**.
+1. Sélectionnez **Ajouter un résumé**.
 
 Le résumé s'affiche dans la zone de commentaire. Vous pouvez modifier et affiner le résumé avant de soumettre votre revue.
 
@@ -234,9 +237,9 @@ Utilisation des données : lorsque vous utilisez cette fonctionnalité, les donn
 
 {{< details >}}
 
-- Édition : GitLab Premium, GitLab Ultimate
-- Module complémentaire : GitLab Duo Enterprise, GitLab Duo with Amazon Q
-- Offre : GitLab.com, GitLab Self-Managed, GitLab Dedicated
+- Édition : GitLab Premium, GitLab Ultimate
+- Module d'extension : GitLab Duo Enterprise, GitLab Duo with Amazon Q
+- Offre : GitLab.com, GitLab Self-Managed, GitLab Dedicated
 
 {{< /details >}}
 
@@ -250,19 +253,19 @@ Utilisation des données : lorsque vous utilisez cette fonctionnalité, les donn
 
 {{< history >}}
 
-- [Introduction](https://gitlab.com/groups/gitlab-org/-/epics/10453) dans GitLab 16.2 en tant que [version expérimentale](../../../policy/development_stages_support.md#experiment) [avec un feature flag](../../../administration/feature_flags/_index.md) nommé `generate_commit_message_flag`. Désactivés par défaut.
-- Le feature flag `generate_commit_message_flag` [activé par défaut](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/158339) dans GitLab 17.2.
-- Le feature flag `generate_commit_message_flag` [supprimé](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/173262) dans GitLab 17.7.
-- Modifié pour inclure GitLab Premium dans GitLab 18.0.
-- LLM [mis à jour](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/193793) vers Claude 4.0 Sonnet dans GitLab 18.1.
+- [Introduction](https://gitlab.com/groups/gitlab-org/-/epics/10453) dans GitLab 16.2 en [version expérimentale](../../../policy/development_stages_support.md#experiment) [avec le feature flag](../../../administration/feature_flags/_index.md) `generate_commit_message_flag`. Désactivés par défaut.
+- [Activation par défaut](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/158339) du feature flag `generate_commit_message_flag` dans GitLab 17.2.
+- [Suppression](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/173262) du feature flag `generate_commit_message_flag` dans GitLab 17.7.
+- Modification pour inclure GitLab Premium dans GitLab 18.0.
+- [Mise à jour](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/193793) du grand modèle de langage (LLM) vers Claude 4.0 Sonnet dans GitLab 18.1
 - Prise en charge d'Amazon Q ajoutée dans GitLab 18.3.
 
 {{< /history >}}
 
 Lors de la préparation de la fusion de votre merge request, modifiez le message de commit de fusion proposé à l'aide de GitLab Duo Merge Commit Message Generation.
 
-1. Dans la barre supérieure, sélectionnez **Rechercher ou accédez à** et repérez votre projet.
-1. Dans la barre latérale gauche, sélectionnez **Code** > **Requêtes de fusion** et repérez votre merge request.
+1. Dans la barre supérieure, sélectionnez **Rechercher ou accéder à** et repérez votre projet.
+1. Dans la barre latérale gauche, sélectionnez **Code** > **Requêtes de fusion** et repérez votre merge request.
 1. Cochez la case **Modifier le message de validation** dans le widget de fusion.
 1. Sélectionnez **Générer un message de validation**.
 1. Vérifiez le message de commit fourni et choisissez **Insérer** pour l'ajouter au commit.
@@ -278,7 +281,7 @@ Utilisation des données : lorsque vous utilisez cette fonctionnalité, les donn
 
 - [Contrôler la disponibilité de GitLab Duo](../../gitlab_duo/turn_on_off.md)
 - [Toutes les fonctionnalités de GitLab Duo](../../gitlab_duo/_index.md)
-- [Résoudre les conflits de merge avec GitLab Duo](../../project/merge_requests/conflicts.md#resolve-conflicts-with-gitlab-duo)
+- [Résoudre les conflits de merge avec GitLab Duo](conflicts.md#resolve-conflicts-with-gitlab-duo)
 
 ## Dépannage {#troubleshooting}
 
@@ -286,21 +289,21 @@ Lorsque vous travaillez avec GitLab Duo dans les merge requests, vous pouvez ren
 
 ### Réponse non reçue {#response-not-received}
 
-Si vous demandez une revue à GitLab Duo en mentionnant ou en répondant à `@GitLabDuo`, et que vous ne recevez pas de réponse, cela peut être dû au fait que vous ne disposez pas de l'add-on GitLab Duo approprié.
+Si vous demandez une revue à GitLab Duo en mentionnant ou en répondant à `@GitLabDuo`, et que vous ne recevez pas de réponse, cela peut être dû au fait que vous ne disposez pas du module d'extension GitLab Duo approprié.
 
-Pour vérifier votre add-on GitLab Duo, demandez au Owner de votre groupe de vérifier les [attributions de sièges GitLab Duo](../../../subscriptions/subscription-add-ons.md#view-assigned-gitlab-duo-users) du groupe.
+Pour vérifier votre module d'extension GitLab Duo, demandez au Propriétaire de votre groupe de vérifier les [attributions de sièges GitLab Duo](../../../subscriptions/subscription-add-ons.md#view-assigned-gitlab-duo-users) du groupe.
 
-Pour modifier votre add-on GitLab Duo, contactez votre administrateur.
+Pour modifier votre module d'extension GitLab Duo, contactez votre administrateur.
 
 ### Impossible d'assigner GitLab Duo comme relecteur {#unable-to-assign-gitlab-duo-to-review}
 
-Si vous ne pouvez pas assigner GitLab Duo comme relecteur, cela peut être dû au fait que vous ne disposez pas de l'add-on GitLab Duo approprié.
+Si vous ne pouvez pas assigner GitLab Duo comme relecteur, cela peut être dû au fait que vous ne disposez pas du module d'extension GitLab Duo approprié.
 
-Pour vérifier votre add-on GitLab Duo, demandez au Owner de votre groupe de vérifier les [attributions de sièges GitLab Duo](../../../subscriptions/subscription-add-ons.md#view-assigned-gitlab-duo-users) du groupe.
+Pour vérifier votre module d'extension GitLab Duo, demandez au Propriétaire de votre groupe de vérifier les [attributions de sièges GitLab Duo](../../../subscriptions/subscription-add-ons.md#view-assigned-gitlab-duo-users) du groupe.
 
-Pour modifier votre add-on GitLab Duo, contactez votre administrateur.
+Pour modifier votre module d'extension GitLab Duo, contactez votre administrateur.
 
-### Erreur :`GitLab Duo Code Review was not automatically added...` {#error-gitlab-duo-code-review-was-not-automatically-added}
+### Erreur : `GitLab Duo Code Review was not automatically added...` {#error-gitlab-duo-code-review-was-not-automatically-added}
 
 Si vous essayez de créer une merge request avec les revues automatiques de GitLab Duo activées, vous pouvez obtenir le message d'erreur suivant :
 

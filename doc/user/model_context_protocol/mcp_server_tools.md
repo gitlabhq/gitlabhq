@@ -150,8 +150,12 @@ Create a new issue titled "Fix login bug" in project 123 with description
 {{< history >}}
 
 - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/201838) in GitLab 18.4.
+- [Unlisted](https://gitlab.com/gitlab-org/gitlab/-/work_items/628333) in GitLab 19.4. Superseded by [`get_work_item`](#get_work_item).
 
 {{< /history >}}
+
+Superseded by [`get_work_item`](#get_work_item), which covers issues and other work item
+types. This tool no longer appears in `tools/list` but remains callable while callers migrate.
 
 Retrieves detailed information about a specific GitLab issue.
 

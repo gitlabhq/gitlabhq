@@ -286,7 +286,7 @@ module Features
         expect do
           click_button s_('IdentityVerification|Verify code')
 
-          expect(page).to have_content('Welcome to GitLab')
+          expect(page).to have_testid('homepage-greeting-header')
         end.to change { user.reload.sign_in_count }
       end
     end

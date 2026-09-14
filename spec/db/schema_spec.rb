@@ -215,6 +215,7 @@ RSpec.describe 'Database schema',
       # Cleanup happens via the hard snippet_id -> snippets ON DELETE CASCADE FK.
       # https://gitlab.com/gitlab-org/gitlab/-/work_items/613747
       snippet_repositories: %w[snippet_organization_id],
+      snippet_repository_states: %w[snippet_organization_id],
       snippet_repository_storage_moves: %w[snippet_organization_id],
       snippet_statistics: %w[snippet_organization_id],
       snippet_user_mentions: %w[snippet_organization_id],

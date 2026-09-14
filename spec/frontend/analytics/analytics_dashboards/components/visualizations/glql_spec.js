@@ -34,31 +34,49 @@ describe('GlqlVisualization', () => {
     expect(findResolver().exists()).toBe(true);
     expect(findResolver().props()).toEqual({
       glqlQuery,
-      comparisonQuery: '',
-      trendMetric: '',
+      comparison: null,
       trackingEventName: 'render_analytics_dashboard_glql_panel',
       scope: null,
     });
   });
 
-  it('passes the comparison query the data source derived on to the resolver', () => {
+  describe('comparison', () => {
     const comparisonQuery = 'type = Issue AND created >= "2026-01-01"';
 
-    createWrapper({
-      data: 'type = Issue AND created >= "2026-02-01"',
-      options: { comparisonQuery },
+    it("bundles the derived query and the panel's metric for the resolver", () => {
+      createWrapper({
+        data: 'type = Issue AND created >= "2026-02-01"',
+        options: { comparisonQuery, trendMetric: 'totalCount' },
+      });
+
+      expect(findResolver().props('comparison')).toEqual({
+        query: comparisonQuery,
+        metric: 'totalCount',
+      });
     });
 
-    expect(findResolver().props('comparisonQuery')).toBe(comparisonQuery);
-  });
+    it('leaves the metric out when the panel selects a single metric', () => {
+      createWrapper({
+        data: 'type = Issue AND created >= "2026-02-01"',
+        options: { comparisonQuery },
+      });
 
-  it('passes the trend metric on to the resolver', () => {
-    createWrapper({
-      data: 'type = Issue AND created >= "2026-02-01"',
-      options: { trendMetric: 'totalCount' },
+      expect(findResolver().props('comparison')).toEqual({
+        query: comparisonQuery,
+        metric: undefined,
+      });
     });
 
-    expect(findResolver().props('trendMetric')).toBe('totalCount');
+    // The data source only derives a query for a panel that asked for trends, so a metric
+    // on its own is not a comparison.
+    it('is null without a derived query', () => {
+      createWrapper({
+        data: 'type = Issue AND created >= "2026-02-01"',
+        options: { trendMetric: 'totalCount' },
+      });
+
+      expect(findResolver().props('comparison')).toBe(null);
+    });
   });
 
   describe('scope', () => {

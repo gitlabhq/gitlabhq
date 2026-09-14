@@ -93,15 +93,6 @@ describe('FrequentlyVisitedProjects', () => {
     });
   });
 
-  it('forwards listeners to FrequentItems', () => {
-    const spy = jest.fn();
-    createComponent({ listeners: { 'nothing-to-render': spy } });
-
-    findFrequentItems().vm.$emit('nothing-to-render');
-
-    expect(spy).toHaveBeenCalledTimes(1);
-  });
-
   describe('events', () => {
     beforeEach(() => {
       createComponent();

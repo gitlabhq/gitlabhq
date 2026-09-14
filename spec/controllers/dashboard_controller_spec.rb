@@ -3,10 +3,6 @@
 require 'spec_helper'
 
 RSpec.describe DashboardController, feature_category: :code_review_workflow do
-  before do
-    stub_feature_flags(personal_homepage: true)
-  end
-
   context 'when user is nil' do
     before do
       allow(controller).to receive(:authenticate_user!)

@@ -49,6 +49,13 @@ export default {
     showActions() {
       return this.options.showActions ?? true;
     },
+    // Bundled here rather than passed down as separate options: the resolver is shared with
+    // GLQL blocks in comments and descriptions, which have no dashboard to configure a trend.
+    comparison() {
+      if (!this.options.comparisonQuery) return null;
+
+      return { query: this.options.comparisonQuery, metric: this.options.trendMetric };
+    },
     // Null, not an empty object, so the resolver falls back to deriving the namespace from the URL.
     scope() {
       if (!this.namespace) return null;
@@ -117,8 +124,7 @@ export default {
       v-else
       ref="resolver"
       :glql-query="data"
-      :comparison-query="options.comparisonQuery"
-      :trend-metric="options.trendMetric"
+      :comparison="comparison"
       :scope="scope"
       tracking-event-name="render_analytics_dashboard_glql_panel"
       @change="handleResolverChange"

@@ -71,7 +71,7 @@ end
 def mark_foundational_flow_flags_as_used(edition)
   return unless GitlabEdition.public_send(:"#{edition}?") # rubocop:disable GitlabSecurity/PublicSend
 
-  Dir.glob("#{edition}/app/models/ai/catalog/foundational_flow/definitions/**/*.rb").each do |path|
+  Dir.glob("#{edition}/app/models/ai/catalog/foundational_flow/*/definition.rb").each do |path|
     sexp = FoundationalFlowFeatureFlags.parse(File.read(path))
     unless sexp
       warn "Could not parse #{path}, skipping."

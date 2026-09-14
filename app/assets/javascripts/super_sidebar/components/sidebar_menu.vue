@@ -47,7 +47,7 @@ export default {
   mixins: [glFeatureFlagsMixin(), GlToastMixin],
   modalId: MODAL_ID,
   i18n: {
-    browseMoreFeatures: __('More features'),
+    browseMoreFeatures: __('Feature catalog'),
     pinAdded: s__('Navigation|%{title} added to pinned items'),
     pinRemoved: s__('Navigation|%{title} removed from pinned items'),
     emptyPinsHint: s__('Navigation|Pin frequently used features for quick access.'),

@@ -7,7 +7,6 @@ RSpec.describe PreferencesHelper, feature_category: :settings do
 
   before do
     allow(helper).to receive(:current_user).and_return(user)
-    stub_feature_flags(personal_homepage: true)
   end
 
   describe '#dashboard_value' do

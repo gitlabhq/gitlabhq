@@ -302,7 +302,7 @@ RSpec.describe 'Login', :with_current_organization, :clean_gitlab_redis_sessions
             fill_in 'user_otp_attempt', with: user.current_otp
             click_button s_('TwoFactorAuth|Verify code')
 
-            expect(page).to have_content('Welcome to GitLab')
+            expect(page).to have_testid('homepage-greeting-header')
             expect(page).to have_current_path root_path, ignore_query: true
           end
         end

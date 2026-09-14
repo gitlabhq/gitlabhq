@@ -344,7 +344,11 @@ describe('Resolver', () => {
       );
       transform.mockImplementation(identity);
 
-      createWrapper({ glqlQuery: GLQL_QUERY, comparisonQuery: COMPARISON_QUERY, scope: SCOPE });
+      createWrapper({
+        glqlQuery: GLQL_QUERY,
+        comparison: { query: COMPARISON_QUERY },
+        scope: SCOPE,
+      });
       await waitForPromises();
     };
 
@@ -369,7 +373,7 @@ describe('Resolver', () => {
       );
       transform.mockImplementation(identity);
 
-      createWrapper({ glqlQuery: GLQL_QUERY, comparisonQuery: COMPARISON_QUERY });
+      createWrapper({ glqlQuery: GLQL_QUERY, comparison: { query: COMPARISON_QUERY } });
       await waitForPromises();
 
       expect(execute.mock.calls.map(([query]) => query)).toEqual(['query {}']);
@@ -396,7 +400,7 @@ describe('Resolver', () => {
       });
     });
 
-    it('hands the trend metric down to the presenter', async () => {
+    it('attaches the trend metric to the comparison result', async () => {
       mockParse();
       execute.mockImplementation((query) =>
         Promise.resolve(isComparison(query) ? PREVIOUS : CURRENT),
@@ -405,12 +409,14 @@ describe('Resolver', () => {
 
       createWrapper({
         glqlQuery: GLQL_QUERY,
-        comparisonQuery: COMPARISON_QUERY,
-        trendMetric: 'totalCount',
+        comparison: { query: COMPARISON_QUERY, metric: 'totalCount' },
       });
       await waitForPromises();
 
-      expect(findPresenter().props('trendMetric')).toBe('totalCount');
+      expect(findPresenter().props('comparisonData')).toEqual({
+        ...PREVIOUS,
+        metric: 'totalCount',
+      });
     });
 
     it('emits the change event with the main result as the data', async () => {
@@ -430,7 +436,10 @@ describe('Resolver', () => {
       await setup();
       parse.mockClear();
 
-      await wrapper.setProps({ glqlQuery: nextQuery, comparisonQuery: nextComparisonQuery });
+      await wrapper.setProps({
+        glqlQuery: nextQuery,
+        comparison: { query: nextComparisonQuery },
+      });
       await waitForPromises();
 
       expect(parse.mock.calls).toEqual([
@@ -469,7 +478,7 @@ describe('Resolver', () => {
         mockFailure(error);
         transform.mockImplementation(identity);
 
-        createWrapper({ glqlQuery: GLQL_QUERY, comparisonQuery: COMPARISON_QUERY });
+        createWrapper({ glqlQuery: GLQL_QUERY, comparison: { query: COMPARISON_QUERY } });
         await waitForPromises();
       });
 
@@ -531,7 +540,7 @@ describe('Resolver', () => {
         });
         transform.mockImplementation(identity);
 
-        createWrapper({ glqlQuery: GLQL_QUERY, comparisonQuery: COMPARISON_QUERY });
+        createWrapper({ glqlQuery: GLQL_QUERY, comparison: { query: COMPARISON_QUERY } });
         await waitForPromises();
         execute.mockClear();
 

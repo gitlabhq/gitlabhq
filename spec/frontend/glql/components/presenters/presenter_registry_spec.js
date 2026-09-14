@@ -6,6 +6,7 @@ import CiItemPresenter from '~/glql/components/presenters/ci_item.vue';
 import CiStatusPresenter from '~/glql/components/presenters/ci_status.vue';
 import CodePresenter from '~/glql/components/presenters/code.vue';
 import CollectionPresenter from '~/glql/components/presenters/collection.vue';
+import DateBucketPresenter from '~/glql/components/presenters/date_bucket.vue';
 import DurationPresenter from '~/glql/components/presenters/duration.vue';
 import DurationMsPresenter from '~/glql/components/presenters/duration_ms.vue';
 import HtmlPresenter from '~/glql/components/presenters/html.vue';
@@ -247,6 +248,51 @@ describe('presenter_registry', () => {
       });
     });
 
+    describe('date bucket dispatch', () => {
+      const monthly = { parameters: { granularity: 'monthly' } };
+
+      it('routes a bucket-shaped value on a field with a granularity to DateBucketPresenter', () => {
+        expect(presenterFor({ created: '2026-06-01' }, 'created', monthly)).toBe(
+          DateBucketPresenter,
+        );
+      });
+
+      it('routes an aliased bucket dimension to DateBucketPresenter', () => {
+        expect(
+          presenterFor({ Monthly: '2026-06-01' }, 'Monthly', {
+            presenterKey: 'created',
+            ...monthly,
+          }),
+        ).toBe(DateBucketPresenter);
+      });
+
+      it('keeps relative time for date strings without a granularity', () => {
+        expect(presenterFor({ created: '2026-06-01' }, 'created')).toBe(TimePresenter);
+      });
+
+      it('routes any string on a field with a granularity to DateBucketPresenter', () => {
+        expect(presenterFor({ size: 'large' }, 'size', monthly)).toBe(DateBucketPresenter);
+      });
+
+      it('falls through to regular dispatch for non-string values', () => {
+        expect(presenterFor({ size: 42 }, 'size', monthly)).toBe(TextPresenter);
+        expect(presenterFor({ user: MOCK_USER }, 'user', monthly)).toBe(UserPresenter);
+      });
+
+      it('routes a bucket dimension aliased as the title field by its own value', () => {
+        expect(
+          presenterFor({ __typename: 'Issue', title: '2026-06-01' }, 'title', {
+            presenterKey: 'created',
+            ...monthly,
+          }),
+        ).toBe(DateBucketPresenter);
+      });
+
+      it('returns NullPresenter when the bucket value is null', () => {
+        expect(presenterFor({ created: null }, 'created', monthly)).toBe(NullPresenter);
+      });
+    });
+
     describe('title-aliased field keys', () => {
       it('routes a Project item by its `name` field through ProjectPresenter', () => {
         expect(presenterFor(MOCK_PROJECT, 'name')).toBe(ProjectPresenter);
@@ -270,6 +316,17 @@ describe('presenter_registry', () => {
 
     it('returns the field value for non-title field keys', () => {
       expect(dataForField({ key: 'value' }, 'key')).toBe('value');
+    });
+
+    it('returns the field value when only the alias matches the title field', () => {
+      expect(dataForField({ ...MOCK_ISSUE, title: '2026-06-01' }, 'title', 'created')).toBe(
+        '2026-06-01',
+      );
+    });
+
+    it('returns the item when the base field is the title field under an alias', () => {
+      const item = { ...MOCK_ISSUE, Name: 'x' };
+      expect(dataForField(item, 'Name', 'title')).toBe(item);
     });
   });
 

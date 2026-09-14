@@ -10,15 +10,7 @@ const agentToken = {
   name: 'cluster-agent',
 };
 
-export const defaultActivityEvent = {
-  kind: 'unknown_agent',
-  level: 'info',
-  recordedAt: '2021-11-22T19:26:56Z',
-  agentToken,
-  user,
-};
-
-export const mockAgentActivityEvents = [
+const mockAgentActivityEvents = [
   {
     kind: 'token_created',
     level: 'info',

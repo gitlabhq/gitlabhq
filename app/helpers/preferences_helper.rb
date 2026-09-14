@@ -26,8 +26,6 @@ module PreferencesHelper
     validate_dashboard_choices!(dashboards)
     dashboards -= excluded_dashboard_choices
 
-    dashboards -= ['homepage'] unless Feature.enabled?(:personal_homepage, current_user)
-
     # Move homepage to first position if it's available
     # For homepage rollout with flipped mapping, homepage becomes their default (value 0)
     dashboards.unshift('homepage') if dashboards.delete('homepage')

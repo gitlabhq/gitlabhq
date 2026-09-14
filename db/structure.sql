@@ -58605,9 +58605,6 @@ ALTER TABLE ONLY saml_group_links
 ALTER TABLE ONLY duo_workflows_workflow_merge_requests
     ADD CONSTRAINT fk_6338e34638 FOREIGN KEY (workflow_id) REFERENCES duo_workflows_workflows(id) ON DELETE CASCADE;
 
-ALTER TABLE ONLY snippet_repository_states
-    ADD CONSTRAINT fk_634bc9f2e3 FOREIGN KEY (snippet_organization_id) REFERENCES organizations(id) ON DELETE CASCADE;
-
 ALTER TABLE ONLY deployment_approvals
     ADD CONSTRAINT fk_63920ba071 FOREIGN KEY (project_id) REFERENCES projects(id) ON DELETE CASCADE;
 

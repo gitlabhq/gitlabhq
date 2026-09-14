@@ -184,12 +184,6 @@ describe('DataPresenter', () => {
       expect(wrapper.findComponent(TablePresenter).props('comparisonData')).toBe(comparisonData);
     });
 
-    it('forwards the trend metric to the table presenter', () => {
-      const wrapper = createTableWrapper({ trendMetric: 'totalCount' });
-
-      expect(wrapper.findComponent(TablePresenter).props('trendMetric')).toBe('totalCount');
-    });
-
     it('forwards the query data source to the table presenter', () => {
       const wrapper = createTableWrapper({ source: 'CodeSuggestions' });
 

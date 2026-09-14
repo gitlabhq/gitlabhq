@@ -29,30 +29,42 @@ RSpec.describe 'Merge Requests > Filters generic behavior', :js, feature_categor
     describe 'state tabs' do
       it 'does not change when state tabs are clicked' do
         expect(page).to have_issuable_counts(open: 1, merged: 1, closed: 1, all: 3)
-        expect(page).to have_content 'Bugfix1'
-        expect(page).not_to have_content 'Bugfix2'
-        expect(page).not_to have_content 'Feature'
+
+        within_issuable_list do
+          expect(page).to have_content 'Bugfix1'
+          expect(page).not_to have_content 'Bugfix2'
+          expect(page).not_to have_content 'Feature'
+        end
 
         click_link 'Merged'
 
         expect(page).to have_issuable_counts(open: 1, merged: 1, closed: 1, all: 3)
-        expect(page).not_to have_content 'Bugfix1'
-        expect(page).to have_content 'Bugfix2'
-        expect(page).not_to have_content 'Feature'
+
+        within_issuable_list do
+          expect(page).not_to have_content 'Bugfix1'
+          expect(page).to have_content 'Bugfix2'
+          expect(page).not_to have_content 'Feature'
+        end
 
         click_link 'Closed'
 
         expect(page).to have_issuable_counts(open: 1, merged: 1, closed: 1, all: 3)
-        expect(page).not_to have_content 'Bugfix1'
-        expect(page).not_to have_content 'Bugfix2'
-        expect(page).to have_content 'Feature'
+
+        within_issuable_list do
+          expect(page).not_to have_content 'Bugfix1'
+          expect(page).not_to have_content 'Bugfix2'
+          expect(page).to have_content 'Feature'
+        end
 
         click_link 'All'
 
         expect(page).to have_issuable_counts(open: 1, merged: 1, closed: 1, all: 3)
-        expect(page).to have_content 'Bugfix1'
-        expect(page).to have_content 'Bugfix2'
-        expect(page).to have_content 'Feature'
+
+        within_issuable_list do
+          expect(page).to have_content 'Bugfix1'
+          expect(page).to have_content 'Bugfix2'
+          expect(page).to have_content 'Feature'
+        end
       end
     end
 
@@ -61,10 +73,21 @@ RSpec.describe 'Merge Requests > Filters generic behavior', :js, feature_categor
         find_by_testid('filtered-search-clear-button').click
 
         expect(page).to have_issuable_counts(open: 1, merged: 1, closed: 1, all: 3)
-        expect(page).to have_content 'Bugfix1'
-        expect(page).not_to have_content 'Bugfix2'
-        expect(page).not_to have_content 'Feature'
+
+        within_issuable_list do
+          expect(page).to have_content 'Bugfix1'
+          expect(page).not_to have_content 'Bugfix2'
+          expect(page).not_to have_content 'Feature'
+        end
       end
+    end
+  end
+
+  private
+
+  def within_issuable_list
+    within('ul.issuable-list') do
+      yield
     end
   end
 end

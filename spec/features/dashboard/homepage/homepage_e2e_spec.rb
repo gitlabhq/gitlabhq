@@ -13,7 +13,6 @@ RSpec.describe 'Dashboard - Homepage E2E', :js, feature_category: :notifications
   end
 
   before do
-    stub_feature_flags(personal_homepage: true)
     sign_in user
   end
 

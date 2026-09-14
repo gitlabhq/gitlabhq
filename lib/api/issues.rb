@@ -308,7 +308,9 @@ module API
       params do
         requires :issue_iid, type: Integer, desc: 'The internal ID of a project issue'
       end
-      route_setting :mcp, tool_name: :get_issue, toolset: :work_items, params: [:id, :issue_iid], resource_name: "issue"
+      # Unlisted pending removal: superseded by get_work_item (https://gitlab.com/gitlab-org/gitlab/-/work_items/628333).
+      route_setting :mcp, tool_name: :get_issue, toolset: :work_items, params: [:id, :issue_iid],
+        resource_name: "issue", unlisted: true
       route_setting :authentication, job_token_allowed: true
       route_setting :authorization, permissions: :read_issue, boundary_type: :project, job_token_policies: :read_work_items, allow_public_access_for_enabled_project_features: :issues
       get ":id/issues/:issue_iid", as: :api_v4_project_issue do

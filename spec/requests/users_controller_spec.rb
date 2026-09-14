@@ -315,7 +315,6 @@ RSpec.describe UsersController, feature_category: :user_management do
         let(:project) { create(:project) }
 
         before do
-          stub_feature_flags(personal_homepage: true)
           sign_in(user)
         end
 

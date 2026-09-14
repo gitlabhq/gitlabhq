@@ -61,14 +61,6 @@ export default {
       type: Object,
       default: () => ({}),
     },
-    /**
-     * Key of the metric the table's trend column compares.
-     */
-    trendMetric: {
-      required: false,
-      type: String,
-      default: '',
-    },
     source: {
       required: false,
       type: String,
@@ -117,7 +109,6 @@ export default {
     :comparison-data="comparisonData"
     :fields="fields"
     :loading="loading"
-    :trend-metric="trendMetric"
     :source="source"
     @error="$emit('error', $event)"
   />

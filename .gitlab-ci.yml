@@ -40,7 +40,7 @@ default:
     # NOTE: job-level `hooks` replaces this wholesale rather than merging with
     # it, so a job that defines its own `hooks` also needs this line.
     pre_get_sources_script:
-      - if [ "$ENABLE_PACKFILE_URI_CI" = "true" ]; then git config --global fetch.uriProtocols https; fi
+      - if [ "$ENABLE_PACKFILE_URI_CI" = "true" ]; then git config --global fetch.uriProtocols https; else echo "Packfile URI disabled"; fi
 
 .default-ruby-variables: &default-ruby-variables
   RUBY_VERSION: "${RUBY_VERSION_DEFAULT}"
@@ -288,6 +288,8 @@ variables:
   GIT_STRATEGY: "clone"
   GIT_SUBMODULE_STRATEGY: "none"
   GET_SOURCES_ATTEMPTS: "3"
+  # See the `pre_get_sources_script` hook in `default:` above.
+  ENABLE_PACKFILE_URI_CI: "true"
   # CI_FETCH_REPO_GIT_STRATEGY: "none" is from artifacts. "clone" is from cloning
   CI_FETCH_REPO_GIT_STRATEGY: "none"
   FORCE_COLOR: 1

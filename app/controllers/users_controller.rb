@@ -75,8 +75,7 @@ class UsersController < ApplicationController
       format.json do
         load_events
 
-        @is_personal_homepage = permitted_params[:is_personal_homepage].present? &&
-          Feature.enabled?(:personal_homepage, current_user)
+        @is_personal_homepage = permitted_params[:is_personal_homepage].present?
 
         if permitted_params[:type] == 'raw'
           @events = if user.include_private_contributions?

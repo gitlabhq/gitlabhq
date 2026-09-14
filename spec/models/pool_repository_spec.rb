@@ -196,6 +196,44 @@ RSpec.describe PoolRepository, feature_category: :source_code_management do
     end
   end
 
+  describe '#remove_member' do
+    let(:pool) { create(:pool_repository) }
+    let(:member) { create(:project, pool_repository: pool) }
+
+    it 'clears the project membership' do
+      expect { pool.remove_member(member) }
+        .to change { member.reload.pool_repository }.from(pool).to(nil)
+    end
+
+    it 'does not disconnect alternates' do
+      expect(member.repository).not_to receive(:disconnect_alternates)
+
+      pool.remove_member(member)
+    end
+
+    context 'when other members remain' do
+      it 'does not mark the pool obsolete' do
+        pool.remove_member(member)
+
+        expect(pool.reload).not_to be_obsolete
+      end
+    end
+
+    context 'when the last member leaves' do
+      before do
+        pool.source_project.update_column(:pool_repository_id, nil)
+      end
+
+      it 'marks the pool obsolete and schedules its destruction' do
+        expect(ObjectPool::DestroyWorker).to receive(:perform_async).with(pool.id)
+
+        pool.remove_member(member)
+
+        expect(pool.reload).to be_obsolete
+      end
+    end
+  end
+
   describe '#object_pool' do
     subject { pool.object_pool }
 
