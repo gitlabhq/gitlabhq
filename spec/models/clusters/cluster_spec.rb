@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Clusters::Cluster, :use_clean_rails_memory_store_caching,
+RSpec.describe Clusters::Cluster, :use_clean_rails_memory_store_caching, :with_current_organization,
   feature_category: :deployment_management do
   include ReactiveCachingHelpers
   include KubernetesHelpers
@@ -241,7 +241,7 @@ RSpec.describe Clusters::Cluster, :use_clean_rails_memory_store_caching,
 
     context 'when validates unique_environment_scope' do
       context 'for a project cluster' do
-        let_it_be(:project) { create(:project) }
+        let_it_be(:project) { create(:project, organization: current_organization) }
 
         before_all do
           create(:cluster, projects: [project], environment_scope: 'product/*')
@@ -260,7 +260,7 @@ RSpec.describe Clusters::Cluster, :use_clean_rails_memory_store_caching,
         end
 
         context 'when identical environment scope exists in different project' do
-          let(:project2) { create(:project) }
+          let(:project2) { create(:project, organization: current_organization) }
           let(:cluster) { build(:cluster, projects: [project2], environment_scope: 'product/*') }
 
           it { is_expected.to be_truthy }
@@ -477,7 +477,7 @@ RSpec.describe Clusters::Cluster, :use_clean_rails_memory_store_caching,
     end
 
     describe 'unique scope for management_project' do
-      let(:project) { create(:project) }
+      let(:project) { create(:project, organization: current_organization) }
       let!(:cluster_with_management_project) { create(:cluster, management_project: project) }
 
       context 'duplicate scopes for the same management project' do
@@ -523,7 +523,7 @@ RSpec.describe Clusters::Cluster, :use_clean_rails_memory_store_caching,
     end
 
     context 'when project does not belong to this group' do
-      let(:project) { create(:project, group: create(:group)) }
+      let(:project) { create(:project, group: create(:group), organization: current_organization) }
 
       it 'returns nothing' do
         is_expected.to be_empty
@@ -531,7 +531,7 @@ RSpec.describe Clusters::Cluster, :use_clean_rails_memory_store_caching,
     end
 
     context 'when group has a configured kubernetes cluster' do
-      let(:project) { create(:project, group: group) }
+      let(:project) { create(:project, group: group, organization: current_organization) }
 
       it 'returns the group cluster' do
         is_expected.to eq([group_cluster])
@@ -539,7 +539,7 @@ RSpec.describe Clusters::Cluster, :use_clean_rails_memory_store_caching,
     end
 
     context 'when group and instance have configured kubernetes clusters' do
-      let(:project) { create(:project, group: group) }
+      let(:project) { create(:project, group: group, organization: current_organization) }
       let_it_be(:instance_cluster) { create(:cluster, :instance) }
 
       it 'returns clusters in order, descending the hierachy' do
@@ -550,7 +550,7 @@ RSpec.describe Clusters::Cluster, :use_clean_rails_memory_store_caching,
     context 'when sub-group has configured kubernetes cluster' do
       let(:sub_group_cluster) { create(:cluster, :group) }
       let(:sub_group) { sub_group_cluster.group }
-      let(:project) { create(:project, group: sub_group) }
+      let(:project) { create(:project, group: sub_group, organization: current_organization) }
 
       before do
         sub_group.update!(parent: group)
@@ -561,7 +561,7 @@ RSpec.describe Clusters::Cluster, :use_clean_rails_memory_store_caching,
       end
 
       it 'avoids N+1 queries' do
-        another_project = create(:project)
+        another_project = create(:project, organization: current_organization)
         control = ActiveRecord::QueryRecorder.new do
           described_class.ancestor_clusters_for_clusterable(another_project, hierarchy_order: hierarchy_order)
         end
@@ -569,7 +569,7 @@ RSpec.describe Clusters::Cluster, :use_clean_rails_memory_store_caching,
         cluster2 = create(:cluster, :group)
         child2 = cluster2.group
         child2.update!(parent: sub_group)
-        project = create(:project, group: child2)
+        project = create(:project, group: child2, organization: current_organization)
 
         expect do
           described_class.ancestor_clusters_for_clusterable(project, hierarchy_order: hierarchy_order)
@@ -586,7 +586,7 @@ RSpec.describe Clusters::Cluster, :use_clean_rails_memory_store_caching,
     end
 
     context 'scope chaining' do
-      let(:project) { create(:project, group: group) }
+      let(:project) { create(:project, group: group, organization: current_organization) }
 
       subject { described_class.none.ancestor_clusters_for_clusterable(project) }
 
@@ -717,7 +717,7 @@ RSpec.describe Clusters::Cluster, :use_clean_rails_memory_store_caching,
 
   describe '#all_projects' do
     context 'cluster_type is project_type' do
-      let(:project) { create(:project) }
+      let(:project) { create(:project, organization: current_organization) }
       let(:cluster) { create(:cluster, projects: [project]) }
 
       it 'returns projects' do
@@ -727,7 +727,7 @@ RSpec.describe Clusters::Cluster, :use_clean_rails_memory_store_caching,
 
     context 'cluster_type is group_type' do
       let(:group) { create(:group) }
-      let!(:project) { create(:project, group: group) }
+      let!(:project) { create(:project, group: group, organization: current_organization) }
       let(:cluster) { create(:cluster_for_group, groups: [group]) }
 
       it 'returns group projects' do
@@ -736,7 +736,7 @@ RSpec.describe Clusters::Cluster, :use_clean_rails_memory_store_caching,
     end
 
     context 'cluster_type is instance_type' do
-      let!(:project) { create(:project) }
+      let!(:project) { create(:project, organization: current_organization) }
       let(:cluster) { create(:cluster, :instance) }
 
       it "returns all instance's projects" do

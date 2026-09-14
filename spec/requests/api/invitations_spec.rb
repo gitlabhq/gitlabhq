@@ -13,17 +13,14 @@ RSpec.describe API::Invitations, feature_category: :user_profile do
   let(:email2) { 'email2@example.com' }
 
   let_it_be_with_reload(:project) do
-    create(:project, :public, creator_id: maintainer.id, namespace: maintainer.namespace) do |project|
-      project.add_developer(developer)
-      project.add_maintainer(maintainer)
+    create(:project, :public, creator_id: maintainer.id, namespace: maintainer.namespace,
+      developers: developer, maintainers: maintainer) do |project|
       project.request_access(access_requester)
     end
   end
 
   let_it_be_with_reload(:group) do
-    create(:group, :public) do |group|
-      group.add_developer(developer)
-      group.add_owner(maintainer)
+    create(:group, :public, developers: developer, owners: maintainer) do |group|
       group.request_access(access_requester)
     end
   end
@@ -215,11 +212,10 @@ RSpec.describe API::Invitations, feature_category: :user_profile do
 
       context 'access levels' do
         it 'does not create the member if group level is higher' do
-          parent = create(:group)
+          parent = create(:group, developers: stranger)
 
           group.update!(parent: parent)
           project.update!(group: group)
-          parent.add_developer(stranger)
 
           post invitations_url(source, maintainer),
             params: { email: stranger.email, access_level: Member::REPORTER }
@@ -230,11 +226,10 @@ RSpec.describe API::Invitations, feature_category: :user_profile do
         end
 
         it 'creates the member if group level is lower' do
-          parent = create(:group)
+          parent = create(:group, developers: stranger)
 
           group.update!(parent: parent)
           project.update!(group: group)
-          parent.add_developer(stranger)
 
           post invitations_url(source, maintainer),
             params: { email: stranger.email, access_level: Member::MAINTAINER }
@@ -307,8 +302,7 @@ RSpec.describe API::Invitations, feature_category: :user_profile do
         let_it_be(:project_bot) { create(:user, :project_bot) }
 
         before do
-          unrelated_project = create(:project)
-          unrelated_project.add_maintainer(project_bot)
+          create(:project, maintainers: project_bot)
         end
 
         it 'returns error' do

@@ -27,6 +27,34 @@ func transform(t *testing.T, input string) (string, error) {
 	return out.String(), err
 }
 
+// Without a ceiling the decoder grows to fit the largest single token, so a
+// pathological upstream could buffer its whole response inside Workhorse.
+func TestTransformBoundsTokenBuffer(t *testing.T) {
+	huge := `{"` + targetKey + `":"` + npmPrefix + strings.Repeat("x", maxTokenBytes+1) + `"}`
+
+	err := Transform(strings.NewReader(huge), io.Discard, targetKey, []string{npmPrefix}, gitlabPrefix)
+
+	require.ErrorIs(t, err, ErrTokenTooLarge)
+}
+
+// The bound is per token, not per document: a document far larger than
+// maxTokenBytes made of small tokens must still stream through.
+func TestTransformStreamsDocumentsLargerThanTokenBound(t *testing.T) {
+	var doc strings.Builder
+	doc.WriteString(`[`)
+	for i := 0; doc.Len() < 2*maxTokenBytes; i++ {
+		if i > 0 {
+			doc.WriteString(`,`)
+		}
+		fmt.Fprintf(&doc, `{"%s":"%sfile-%d.tgz"}`, targetKey, npmPrefix, i)
+	}
+	doc.WriteString(`]`)
+
+	err := Transform(strings.NewReader(doc.String()), io.Discard, targetKey, []string{npmPrefix}, gitlabPrefix)
+
+	require.NoError(t, err)
+}
+
 // requireJSONEqual compares two JSON documents by structure, so whitespace
 // differences from the encoder don't matter.
 func requireJSONEqual(t *testing.T, want, got string) {

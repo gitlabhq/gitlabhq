@@ -4,7 +4,7 @@ require 'spec_helper'
 
 RSpec.describe Projects::DeploymentsController, feature_category: :deployment_management do
   let(:user) { create(:user) }
-  let(:project) { create(:project, :repository, maintainers: user) }
+  let(:project) { create(:project, :small_repo, maintainers: user) }
   let(:environment) { create(:environment, name: 'production', project: project) }
 
   before do

@@ -11,7 +11,7 @@ FactoryBot.define do
       # We need a persisted project so we can create commits and tags
       # in `commit` otherwise linting this factory with `build` strategy
       # will fail.
-      project { create(:project, :repository) }
+      project { create(:project, :small_repo) }
       # rubocop: enable RSpec/FactoryBot/InlineAssociation
 
       service do

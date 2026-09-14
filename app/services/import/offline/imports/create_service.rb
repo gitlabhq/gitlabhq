@@ -5,6 +5,11 @@ module Import
     module Imports
       class CreateService
         include Gitlab::Utils::StrongMemoize
+        include ::Gitlab::InternalEvents::ServiceTracking
+
+        track_internal_event 'start_offline_transfer_import',
+          on: :success,
+          additional_properties: ->(result) { { label: result.payload.offline_configuration.provider.to_s } }
 
         # @param storage_configuration [Hash]
         #   {

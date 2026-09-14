@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Clusters::Agents::Authorizations::CiAccess::RefreshService, feature_category: :deployment_management do
+RSpec.describe Clusters::Agents::Authorizations::CiAccess::RefreshService, :with_current_organization, feature_category: :deployment_management do
   describe '#execute' do
     let_it_be(:root_ancestor) { create(:group) }
 
@@ -10,14 +10,17 @@ RSpec.describe Clusters::Agents::Authorizations::CiAccess::RefreshService, featu
     let_it_be(:modified_group) { create(:group, parent: root_ancestor) }
     let_it_be(:added_group) { create(:group, path: 'group-path-with-UPPERCASE', parent: root_ancestor) }
 
-    let_it_be(:removed_project) { create(:project, namespace: root_ancestor) }
-    let_it_be(:modified_project) { create(:project, namespace: root_ancestor) }
-    let_it_be(:added_project) { create(:project, path: 'project-path-with-UPPERCASE', namespace: root_ancestor) }
+    let_it_be(:removed_project) { create(:project, namespace: root_ancestor, organization: current_organization) }
+    let_it_be(:modified_project) { create(:project, namespace: root_ancestor, organization: current_organization) }
+    let_it_be(:added_project) do
+      create(:project, path: 'project-path-with-UPPERCASE', namespace: root_ancestor,
+        organization: current_organization)
+    end
 
-    let_it_be(:user_project_outside_of_hierarchy) { create(:project) }
-    let_it_be(:group_project_outside_of_hierarchy) { create(:project, :in_group) }
+    let_it_be(:user_project_outside_of_hierarchy) { create(:project, organization: current_organization) }
+    let_it_be(:group_project_outside_of_hierarchy) { create(:project, :in_group, organization: current_organization) }
 
-    let(:project) { create(:project, namespace: root_ancestor) }
+    let(:project) { create(:project, namespace: root_ancestor, organization: current_organization) }
     let(:agent) { create(:cluster_agent, project: project) }
 
     let(:config) do
@@ -138,8 +141,8 @@ RSpec.describe Clusters::Agents::Authorizations::CiAccess::RefreshService, featu
       end
 
       context 'project does not belong to a group, and is in the same namespace as the agent' do
-        let(:root_ancestor) { create(:namespace) }
-        let(:added_project) { create(:project, namespace: root_ancestor) }
+        let(:root_ancestor) { create(:namespace, organization: current_organization) }
+        let(:added_project) { create(:project, namespace: root_ancestor, organization: current_organization) }
 
         it 'creates an authorization record for the project' do
           expect(subject).to be_truthy
@@ -161,7 +164,7 @@ RSpec.describe Clusters::Agents::Authorizations::CiAccess::RefreshService, featu
       end
 
       context 'project does not belong to a group, and is authorizing itself' do
-        let(:root_ancestor) { create(:namespace) }
+        let(:root_ancestor) { create(:namespace, organization: current_organization) }
         let(:added_project) { project }
 
         it 'creates an authorization record for the project' do
@@ -224,6 +227,25 @@ RSpec.describe Clusters::Agents::Authorizations::CiAccess::RefreshService, featu
           expect(authorization.organization).to eq(project.organization)
           expect(authorization.config).to eq({ 'default_namespace' => 'default' })
         end
+      end
+    end
+
+    context 'when projects belong to different organizations' do
+      let_it_be(:other_organization) { create(:organization) }
+      let_it_be(:other_org_project) { create(:project, organization: other_organization) }
+      let_it_be(:other_org_agent) { create(:cluster_agent, project: other_org_project) }
+
+      let(:minimal_config) { { ci_access: { instance: { default_namespace: 'default' } } }.deep_stringify_keys }
+
+      before do
+        stub_application_setting(organization_cluster_agent_authorization_enabled: true)
+      end
+
+      it 'scopes the organization authorization to the agent project organization' do
+        described_class.new(other_org_agent, config: minimal_config).execute
+
+        expect(other_org_agent.ci_access_organization_authorizations.map(&:organization))
+          .to contain_exactly(other_organization)
       end
     end
   end

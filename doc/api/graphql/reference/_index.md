@@ -36651,6 +36651,7 @@ Fields:
 | <a id="artifactregistryrepository-settings"></a>`settings` {{< icon name="warning-solid" >}} | [`ArtifactRegistryRemoteSettings`](#artifactregistryremotesettings) | Introduced in GitLab 19.3. Status: Experiment. Upstream configuration Artifact Registry returned for the repository. Null when it returned none, so null on a hosted or virtual repository. |
 | <a id="artifactregistryrepository-sizebytes"></a>`sizeBytes` {{< icon name="warning-solid" >}} | [`BigInt!`](#bigint) | Introduced in GitLab 19.3. Status: Experiment. Storage the repository occupies, in bytes. Buffered, so it can lag. |
 | <a id="artifactregistryrepository-updatedby"></a>`updatedBy` {{< icon name="warning-solid" >}} | [`UserCore`](#usercore) | Introduced in GitLab 19.4. Status: Experiment. User who last changed the repository. Null when the editor is unknown or no longer exists. |
+| <a id="artifactregistryrepository-userpermissions"></a>`userPermissions` {{< icon name="warning-solid" >}} | [`ArtifactRegistryRepositoryPermissions!`](#artifactregistryrepositorypermissions) | Introduced in GitLab 19.5. Status: Experiment. Permissions Artifact Registry grants the current user on the repository. Advisory, because Artifact Registry authorizes every request on its own. Every permission is `false` when Artifact Registry returned no verdicts. The parent field returns `null` when the `artifact_registry_ui` feature flag is disabled, so this block is not reached. |
 | <a id="artifactregistryrepository-visibility"></a>`visibility` {{< icon name="warning-solid" >}} | [`ArtifactRegistryRepositoryVisibility!`](#artifactregistryrepositoryvisibility) | Introduced in GitLab 19.3. Status: Experiment. Who can read the repository. |
 
 ### `ArtifactRegistryRepositoryDetails`
@@ -36675,6 +36676,7 @@ Fields:
 | <a id="artifactregistryrepositorydetails-settings"></a>`settings` {{< icon name="warning-solid" >}} | [`ArtifactRegistryRemoteSettings`](#artifactregistryremotesettings) | Introduced in GitLab 19.3. Status: Experiment. Upstream configuration Artifact Registry returned for the repository. Null when it returned none, so null on a hosted or virtual repository. |
 | <a id="artifactregistryrepositorydetails-sizebytes"></a>`sizeBytes` {{< icon name="warning-solid" >}} | [`BigInt!`](#bigint) | Introduced in GitLab 19.3. Status: Experiment. Storage the repository occupies, in bytes. Buffered, so it can lag. |
 | <a id="artifactregistryrepositorydetails-updatedby"></a>`updatedBy` {{< icon name="warning-solid" >}} | [`UserCore`](#usercore) | Introduced in GitLab 19.4. Status: Experiment. User who last changed the repository. Null when the editor is unknown or no longer exists. |
+| <a id="artifactregistryrepositorydetails-userpermissions"></a>`userPermissions` {{< icon name="warning-solid" >}} | [`ArtifactRegistryRepositoryPermissions!`](#artifactregistryrepositorypermissions) | Introduced in GitLab 19.5. Status: Experiment. Permissions Artifact Registry grants the current user on the repository. Advisory, because Artifact Registry authorizes every request on its own. Every permission is `false` when Artifact Registry returned no verdicts. The parent field returns `null` when the `artifact_registry_ui` feature flag is disabled, so this block is not reached. |
 | <a id="artifactregistryrepositorydetails-visibility"></a>`visibility` {{< icon name="warning-solid" >}} | [`ArtifactRegistryRepositoryVisibility!`](#artifactregistryrepositoryvisibility) | Introduced in GitLab 19.3. Status: Experiment. Who can read the repository. |
 
 #### Fields with arguments
@@ -36736,6 +36738,24 @@ Arguments:
 | ---- | ---- | ----------- |
 | <a id="artifactregistryrepositorydetails-version-artifactid"></a>`artifactId` | [`ID!`](#id) | ID of the package the version is displayed under, in Artifact Registry. The version resolves `null` when it belongs to a different package. |
 | <a id="artifactregistryrepositorydetails-version-id"></a>`id` | [`ID!`](#id) | ID of the version in Artifact Registry. |
+
+### `ArtifactRegistryRepositoryPermissions`
+
+Per-action permissions Artifact Registry reports for the current user on a repository.
+
+Fields:
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="artifactregistryrepositorypermissions-createartifact"></a>`createArtifact` {{< icon name="warning-solid" >}} | [`Boolean!`](#boolean) | Introduced in GitLab 19.5. Status: Experiment. Indicates the user can publish artifacts to the repository. |
+| <a id="artifactregistryrepositorypermissions-createrepositoryupstream"></a>`createRepositoryUpstream` {{< icon name="warning-solid" >}} | [`Boolean!`](#boolean) | Introduced in GitLab 19.5. Status: Experiment. Indicates the user can add an upstream to the repository. |
+| <a id="artifactregistryrepositorypermissions-deleteartifact"></a>`deleteArtifact` {{< icon name="warning-solid" >}} | [`Boolean!`](#boolean) | Introduced in GitLab 19.5. Status: Experiment. Indicates the user can delete artifacts from the repository. |
+| <a id="artifactregistryrepositorypermissions-deleterepository"></a>`deleteRepository` {{< icon name="warning-solid" >}} | [`Boolean!`](#boolean) | Introduced in GitLab 19.5. Status: Experiment. Indicates the user can delete the repository. |
+| <a id="artifactregistryrepositorypermissions-deleterepositoryupstream"></a>`deleteRepositoryUpstream` {{< icon name="warning-solid" >}} | [`Boolean!`](#boolean) | Introduced in GitLab 19.5. Status: Experiment. Indicates the user can remove an upstream from the repository. |
+| <a id="artifactregistryrepositorypermissions-readartifact"></a>`readArtifact` {{< icon name="warning-solid" >}} | [`Boolean!`](#boolean) | Introduced in GitLab 19.5. Status: Experiment. Indicates the user can read artifacts held by the repository. |
+| <a id="artifactregistryrepositorypermissions-readrepository"></a>`readRepository` {{< icon name="warning-solid" >}} | [`Boolean!`](#boolean) | Introduced in GitLab 19.5. Status: Experiment. Indicates the user can read the repository and its metadata. |
+| <a id="artifactregistryrepositorypermissions-updaterepository"></a>`updateRepository` {{< icon name="warning-solid" >}} | [`Boolean!`](#boolean) | Introduced in GitLab 19.5. Status: Experiment. Indicates the user can change the repository's settings. |
+| <a id="artifactregistryrepositorypermissions-updaterepositoryupstream"></a>`updateRepositoryUpstream` {{< icon name="warning-solid" >}} | [`Boolean!`](#boolean) | Introduced in GitLab 19.5. Status: Experiment. Indicates the user can change an upstream of the repository. |
 
 ### `ArtifactRegistryRoleAssignment`
 

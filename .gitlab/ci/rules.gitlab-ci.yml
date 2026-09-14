@@ -1196,7 +1196,9 @@
   - "tooling/authz/permissions/docs/templates/*"
 
 .ci-job-token-policies-patterns: &ci-job-token-policies-patterns
-  - "{,ee/}lib/api/*.rb"
+  # ci:job_tokens:check_policies walks the whole API tree, so this has to match
+  # nested files too, the way .permissions-patterns above already does.
+  - "{,ee/}lib/{,**/}api/{,**/}*.rb"
   - "app/validators/json_schemas/ci_job_token_policies.json"
   - "doc/ci/jobs/fine_grained_permissions.md"
   - "tooling/ci/job_tokens/docs/templates/fine_grained_permissions.md.erb"

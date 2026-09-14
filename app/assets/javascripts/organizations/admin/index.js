@@ -13,8 +13,9 @@ export const initAdminAddOrganizationUsers = () => {
     defaultClient: createDefaultClient(),
   });
 
-  const { organizationGid, organizationName, searchUrl, buttonVariant } =
-    convertObjectPropsToCamelCase(JSON.parse(el.dataset.appData));
+  const { organizationGid, organizationName, searchUrl } = convertObjectPropsToCamelCase(
+    JSON.parse(el.dataset.appData),
+  );
 
   return initVueApp({
     el,
@@ -26,8 +27,5 @@ export const initAdminAddOrganizationUsers = () => {
       searchUrl,
     },
     component: AddOrganizationUsersTrigger,
-    props: {
-      buttonVariant,
-    },
   });
 };

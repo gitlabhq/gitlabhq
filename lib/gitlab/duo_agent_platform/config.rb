@@ -153,6 +153,10 @@ module Gitlab
       end
 
       def file_content
+        # Gitaly rejects a blank revision with GRPC::InvalidArgument rather than
+        # reporting no blob, and an empty repository has no resolvable revision.
+        return if project.empty_repo?
+
         @file_content ||= candidate_file_content || project.repository.blob_data_at(
           project.default_branch,
           CONFIG_FILE_NAME

@@ -16,10 +16,19 @@ module WebpackHelper
   end
 
   def webpack_bundle_tag(bundle, **options)
+    # `current_user` raises outside a Warden request, and helper and fixture specs
+    # render bundle tags without one. Only a rollout entry needs the actor.
+    entrypoint = if ::Gitlab::Vue3Migration.rollout?(bundle)
+                   ::Gitlab::Vue3Migration.entrypoint_for(bundle, current_user: current_user)
+                 else
+                   bundle
+                 end
+
     if vite_enabled?
-      vite_javascript_tag bundle, **options
+      # ViteRuby appends `.js` only to a name with no extension, and `.vue3` reads as one.
+      vite_javascript_tag(entrypoint == bundle ? bundle : "#{entrypoint}.js", **options)
     else
-      javascript_include_tag(*webpack_entrypoint_paths(bundle), **options)
+      javascript_include_tag(*webpack_entrypoint_paths(entrypoint), **options)
     end
   end
 

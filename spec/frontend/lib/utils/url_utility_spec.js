@@ -609,7 +609,7 @@ describe('URL utility', () => {
 
       urlUtils.visitUrl(mockUrl, true);
 
-      expect(window.open).toHaveBeenCalledWith(mockUrl);
+      expect(window.open).toHaveBeenCalledWith(mockUrl, '_blank', 'noopener');
     });
 
     describe('when the URL is external', () => {

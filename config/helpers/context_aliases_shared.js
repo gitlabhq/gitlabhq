@@ -38,6 +38,10 @@ const INFECTION_BLOCKLIST = [
   // `gfm_auto_complete` in `main.js` reads its store, so the two lanes must share
   // it. Keeps `services/sidebar_service.js` and its Apollo client single too.
   'app/assets/javascripts/sidebar/sidebar_mediator.js',
+  // Each configures one shared registry that throws on a second call in
+  // development. Global bundles import `~/commons`, so a Vue 3 lane would run them again.
+  'app/assets/javascripts/commons/duo_ui.js',
+  'app/assets/javascripts/commons/gitlab_ui.js',
 ];
 
 module.exports = {

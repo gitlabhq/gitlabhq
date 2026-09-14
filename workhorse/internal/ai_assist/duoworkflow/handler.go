@@ -81,7 +81,7 @@ const (
 )
 
 // Stages at which a connection can fail with errorTypeOther. Logged so the
-// otherwise opaque "other" bucket can be traced back to a specific stage.
+// otherwise opaque "other" error type can be traced back to a specific stage.
 const (
 	errorStageUpgrade        = "websocket_upgrade"
 	errorStageRequestBody    = "request_body"
@@ -89,10 +89,9 @@ const (
 	errorStageExecution      = "runner_execution"
 )
 
-// countOtherConnectionError increments connectionErrorsTotal{error_type=other}
-// and logs the stage and underlying error, which the metric label alone loses.
-func countOtherConnectionError(r *http.Request, transport string, stage string, err error) {
-	connectionErrorsTotal.WithLabelValues(transport, errorTypeOther).Inc()
+// logConnectionError logs a connection failure that has no more specific error
+// type than "other", along with the stage it failed at.
+func logConnectionError(r *http.Request, transport string, stage string, err error) {
 	log.WithRequest(r).WithError(err).WithFields(log.Fields{
 		"transport":   transport,
 		"error_stage": stage,
@@ -105,8 +104,6 @@ func countOtherConnectionError(r *http.Request, transport string, stage string, 
 // and manages the lifecycle of the workflow runner including registration and cleanup.
 func (h *Handler) Build() http.Handler {
 	return h.rails.PreAuthorizeHandler(func(w http.ResponseWriter, r *http.Request, a *api.Response) {
-		connectionsTotal.WithLabelValues(transportWebSocket).Inc()
-
 		upgrader := h.upgrader
 		if len(h.trustedForwardedHosts) > 0 {
 			upgrader.CheckOrigin = origincheck.ByForwardedHost(h.trustedForwardedHosts)
@@ -114,7 +111,7 @@ func (h *Handler) Build() http.Handler {
 
 		conn, err := upgrader.Upgrade(w, r, nil)
 		if err != nil {
-			countOtherConnectionError(r, transportWebSocket, errorStageUpgrade, err)
+			logConnectionError(r, transportWebSocket, errorStageUpgrade, err)
 			fail.Request(w, r, fmt.Errorf("failed to upgrade: %v", err))
 			return
 		}
@@ -126,7 +123,7 @@ func (h *Handler) Build() http.Handler {
 func (h *Handler) handleWebSocketConnection(w http.ResponseWriter, r *http.Request, conn *websocket.Conn, duoWorkflowConfig *api.DuoWorkflow) {
 	runner, err := h.createRunner(newWsManager(conn), duoWorkflowConfig, r)
 	if err != nil {
-		countOtherConnectionError(r, transportWebSocket, errorStageInitialization, err)
+		logConnectionError(r, transportWebSocket, errorStageInitialization, err)
 		h.handleInitializationError(w, r, conn, err)
 		return
 	}
@@ -185,16 +182,14 @@ func (h *Handler) handleWebSocketExecutionError(r *http.Request, conn *websocket
 		// We provide the client with specific error details
 		// for this case so it can tell the user about the
 		// conflicting flow
-		connectionErrorsTotal.WithLabelValues(transportWebSocket, errorTypeLocked).Inc()
 		h.sendCloseMessage(r, conn, websocket.CloseTryAgainLater, "Failed to acquire lock on workflow")
 	case errors.Is(err, errUsageQuotaExceededError):
 		// We close the connection with the specific error
 		// so client can process and inform user about the lack
 		// of credits
-		connectionErrorsTotal.WithLabelValues(transportWebSocket, errorTypeQuotaExceeded).Inc()
 		h.sendCloseMessage(r, conn, websocket.ClosePolicyViolation, "Insufficient credits: quota exceeded")
 	default:
-		countOtherConnectionError(r, transportWebSocket, errorStageExecution, err)
+		logConnectionError(r, transportWebSocket, errorStageExecution, err)
 	}
 }
 

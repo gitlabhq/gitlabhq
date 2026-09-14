@@ -4,8 +4,8 @@ require 'spec_helper'
 
 RSpec.describe API::GroupPackages, feature_category: :package_registry do
   let_it_be(:group) { create(:group, :public) }
-  let_it_be(:project) { create(:project, :public, namespace: group, name: 'project A', path: 'project-a') }
   let_it_be(:user) { create(:user) }
+  let_it_be(:project) { create(:project, :public, namespace: group, name: 'project A', path: 'project-a', creator: user) }
 
   let(:params) { {} }
 
@@ -61,7 +61,7 @@ RSpec.describe API::GroupPackages, feature_category: :package_registry do
       end
 
       it_behaves_like 'package sorting', 'project_path' do
-        let_it_be(:another_project) { create(:project, :public, namespace: group, name: 'project B', path: 'project-b') }
+        let_it_be(:another_project) { create(:project, :public, namespace: group, name: 'project B', path: 'project-b', creator: user) }
         let_it_be(:package4) { create(:npm_package, project: another_project, version: '3.1.0', name: "@#{project.root_namespace.path}/bar") }
 
         let(:packages) { [package3, package2, package1, package4] }
@@ -70,12 +70,12 @@ RSpec.describe API::GroupPackages, feature_category: :package_registry do
     end
 
     context 'with private group' do
-      let!(:package1) { create(:generic_package, project: project) }
-      let!(:package2) { create(:generic_package, project: project) }
+      let_it_be(:group) { create(:group, :private) }
+      let_it_be(:project) { create(:project, :private, namespace: group, creator: user) }
+      let_it_be(:package1) { create(:generic_package, project: project) }
+      let_it_be(:package2) { create(:generic_package, project: project) }
 
-      let(:group) { create(:group, :private) }
       let(:subgroup) { create(:group, :private, parent: group) }
-      let(:project) { create(:project, :private, namespace: group) }
       let(:subproject) { create(:project, :private, namespace: subgroup) }
 
       context 'with unauthenticated user' do
@@ -92,9 +92,9 @@ RSpec.describe API::GroupPackages, feature_category: :package_registry do
         it_behaves_like 'returns packages', :group, :guest
 
         context 'with subgroup' do
-          let(:subgroup) { create(:group, :private, parent: group) }
-          let(:subproject) { create(:project, :private, namespace: subgroup) }
-          let!(:package3) { create(:npm_package, project: subproject) }
+          let_it_be(:subgroup) { create(:group, :private, parent: group) }
+          let_it_be(:subproject) { create(:project, :private, namespace: subgroup, creator: user) }
+          let_it_be(:package3) { create(:npm_package, project: subproject) }
 
           it_behaves_like 'returns packages with subgroups', :group, :owner
           it_behaves_like 'returns packages with subgroups', :group, :maintainer
@@ -123,7 +123,7 @@ RSpec.describe API::GroupPackages, feature_category: :package_registry do
         it_behaves_like 'returns packages', :group, :no_type
 
         context 'with a private project alongside the public project' do
-          let_it_be(:private_project) { create(:project, :private, namespace: group) }
+          let_it_be(:private_project) { create(:project, :private, namespace: group, creator: user) }
           let_it_be(:private_package) { create(:generic_package, project: private_project) }
 
           it 'returns only packages from public projects' do
@@ -160,8 +160,8 @@ RSpec.describe API::GroupPackages, feature_category: :package_registry do
     context 'filtering on package_version' do
       include_context 'package filter context'
 
-      let!(:package1) { create(:nuget_package, project: project, version: '2.0.4') }
-      let!(:package2) { create(:nuget_package, project: project) }
+      let_it_be(:package1) { create(:nuget_package, project: project, version: '2.0.4') }
+      let_it_be(:package2) { create(:nuget_package, project: project) }
 
       it 'returns the versioned package' do
         url = group_filter_url(:version, '2.0.4')
@@ -212,15 +212,15 @@ RSpec.describe API::GroupPackages, feature_category: :package_registry do
 
     context 'when a project has the package registry disabled', :aggregate_failures do
       let_it_be(:group) { create(:group, :private) }
-      let_it_be(:enabled_project) { create(:project, :private, group: group) }
+      let_it_be(:user) { create(:user) }
+      let_it_be(:enabled_project) { create(:project, :private, group: group, creator: user) }
       let_it_be(:disabled_project) do
-        create(:project, :private, group: group,
+        create(:project, :private, group: group, creator: user,
           package_registry_access_level: ProjectFeature::DISABLED, packages_enabled: false)
       end
 
       let_it_be(:visible_package) { create(:generic_package, project: enabled_project) }
       let_it_be(:hidden_package) { create(:generic_package, project: disabled_project) }
-      let_it_be(:user) { create(:user) }
 
       before_all do
         group.add_reporter(user)
@@ -238,7 +238,7 @@ RSpec.describe API::GroupPackages, feature_category: :package_registry do
 
     context 'when group permission gates listing of descendant project packages' do
       let_it_be(:group) { create(:group, :private) }
-      let_it_be(:subproject) { create(:project, :private, group: group) }
+      let_it_be(:subproject) { create(:project, :private, group: group, creator: user) }
       let_it_be(:package) { create(:generic_package, project: subproject) }
 
       let_it_be(:granular_assignable_permission_name) do
@@ -288,7 +288,7 @@ RSpec.describe API::GroupPackages, feature_category: :package_registry do
 
       context 'with a subgroup' do
         let_it_be(:subgroup) { create(:group, :private, parent: group) }
-        let_it_be(:subproject) { create(:project, :private, group: subgroup) }
+        let_it_be(:subproject) { create(:project, :private, group: subgroup, creator: user) }
         let_it_be(:package) { create(:generic_package, project: subproject) }
 
         context 'when caller is Guest on group + Reporter on the subgroup project' do
@@ -460,7 +460,7 @@ RSpec.describe API::GroupPackages, feature_category: :package_registry do
         observed_delta = 5
 
         def create_subproject_with_package(group, user)
-          subproject = create(:project, :private, group: group)
+          subproject = create(:project, :private, group: group, creator: user)
           subproject.add_reporter(user)
           create(:generic_package, project: subproject)
         end
@@ -484,11 +484,12 @@ RSpec.describe API::GroupPackages, feature_category: :package_registry do
 
       context 'with unrelated groups present' do
         let_it_be(:unrelated_group) { create(:group, :private) }
-        let_it_be(:unrelated_project) { create(:project, :private, group: unrelated_group) }
-        let_it_be(:unrelated_package) { create(:generic_package, project: unrelated_project) }
         let_it_be(:user) do
           create(:user).tap { |u| group.add_guest(u) }
         end
+
+        let_it_be(:unrelated_project) { create(:project, :private, group: unrelated_group, creator: user) }
+        let_it_be(:unrelated_package) { create(:generic_package, project: unrelated_project) }
 
         it 'does not include packages from unrelated groups' do
           list_request

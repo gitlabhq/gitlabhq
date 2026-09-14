@@ -8,13 +8,6 @@ export default {
     GlButton,
     AddOrganizationUsersModal,
   },
-  props: {
-    buttonVariant: {
-      type: String,
-      required: false,
-      default: 'default',
-    },
-  },
   data() {
     return {
       modalVisible: false,
@@ -30,11 +23,7 @@ export default {
 
 <template>
   <div>
-    <gl-button
-      :variant="buttonVariant"
-      data-testid="add-organization-users-button"
-      @click="openModal"
-    >
+    <gl-button variant="confirm" @click="openModal">
       {{ s__('Organization|Invite organization user') }}
     </gl-button>
     <add-organization-users-modal v-model="modalVisible" />

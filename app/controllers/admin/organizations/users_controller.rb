@@ -12,7 +12,7 @@ module Admin
 
         @organization = ::Current.organization
 
-        render 'admin/users/index' unless performed?
+        render 'admin/organizations/users/index' unless performed?
       end
 
       def edit

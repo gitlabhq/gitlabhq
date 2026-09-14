@@ -73,6 +73,16 @@ RSpec.describe Import::Offline::Imports::CreateService, :aggregate_failures, fea
       )
     end
 
+    it 'tracks the start offline transfer import event', :clean_gitlab_redis_shared_state do
+      expect { service.execute }
+        .to trigger_internal_events('start_offline_transfer_import')
+        .with(user: user, additional_properties: { label: 'aws' })
+        .and increment_usage_metrics(
+          'counts.count_total_start_offline_transfer_import',
+          'counts.count_total_start_offline_transfer_import_monthly'
+        )
+    end
+
     it 'creates the offline transfer configuration' do
       expect { service.execute }
         .to change { Import::Offline::Configuration.count }.by(1)

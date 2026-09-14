@@ -138,8 +138,16 @@ module WorkItems
 
       # Labels - custom handling due to unique and different OR key
       def validate_labels
+        # validate_static_filters already wrote the wildcard here; hold it so label_ids can't clobber it
+        wildcard = sanitized_filters.delete(:label_name)
+
         validate_id_to_attribute(id_key: :label_ids, model: Label, attribute: :title, output_key: :label_name,
           warning_label: 'label(s)', unique: true)
+
+        return if wildcard.nil?
+
+        resolved = sanitized_filters[:label_name]
+        sanitized_filters[:label_name] = resolved ? Array.wrap(wildcard) + Array.wrap(resolved) : wildcard
       end
 
       def validate_not_labels

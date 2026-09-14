@@ -30,14 +30,14 @@ RSpec.describe CommitPolicy do
     end
 
     context 'when project is public' do
-      let_it_be(:project) { create(:project, :public, :repository, group: group) }
+      let_it_be(:project) { create(:project, :public, :small_repo, group: group) }
 
       context 'when the user is not a project member' do
         it_behaves_like 'can read commit and create a note'
       end
 
       context 'when repository access level is private' do
-        let_it_be(:project) { create(:project, :public, :repository, :repository_private, group: group) }
+        let_it_be(:project) { create(:project, :public, :small_repo, :repository_private, group: group) }
 
         context 'when the user is not a project member' do
           it_behaves_like 'cannot read commit nor create a note'
@@ -82,7 +82,7 @@ RSpec.describe CommitPolicy do
     end
 
     context 'when project is private' do
-      let_it_be(:project) { create(:project, :private, :repository, group: group) }
+      let_it_be(:project) { create(:project, :private, :small_repo, group: group) }
 
       context 'when the user is not a project member' do
         it_behaves_like 'cannot read commit nor create a note'

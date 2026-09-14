@@ -20093,6 +20093,75 @@ msgstr ""
 msgid "Code snippet copied. Insert it in the correct location in the YAML file."
 msgstr ""
 
+msgid "CodeDropdownClients|Add client"
+msgstr ""
+
+msgid "CodeDropdownClients|Add custom \"Open with\" entries to the project Code dropdown for all users on this instance. GitLab can't verify these applications, so add only clients you trust."
+msgstr ""
+
+msgid "CodeDropdownClients|An unknown error occurred. Please try again."
+msgstr ""
+
+msgid "CodeDropdownClients|Another client already uses this URL template."
+msgstr ""
+
+msgid "CodeDropdownClients|Another client already uses this display name."
+msgstr ""
+
+msgid "CodeDropdownClients|Client name"
+msgstr ""
+
+msgid "CodeDropdownClients|Code dropdown clients"
+msgstr ""
+
+msgid "CodeDropdownClients|Code dropdown clients updated."
+msgstr ""
+
+msgid "CodeDropdownClients|Define the name of the client shown to users in the Code dropdown."
+msgstr ""
+
+msgid "CodeDropdownClients|Delete client"
+msgstr ""
+
+msgid "CodeDropdownClients|Delete code dropdown client?"
+msgstr ""
+
+msgid "CodeDropdownClients|Display name"
+msgstr ""
+
+msgid "CodeDropdownClients|Display name must be %{max} characters or less."
+msgstr ""
+
+msgid "CodeDropdownClients|Edit client"
+msgstr ""
+
+msgid "CodeDropdownClients|Enter a display name."
+msgstr ""
+
+msgid "CodeDropdownClients|Enter at least one URL template."
+msgstr ""
+
+msgid "CodeDropdownClients|No clients have been added."
+msgstr ""
+
+msgid "CodeDropdownClients|The %{scheme} scheme is not allowed."
+msgstr ""
+
+msgid "CodeDropdownClients|URL template must be %{max} characters or less."
+msgstr ""
+
+msgid "CodeDropdownClients|URL template must be a valid URL with a scheme, for example vscode://."
+msgstr ""
+
+msgid "CodeDropdownClients|URL template must contain {url} exactly once."
+msgstr ""
+
+msgid "CodeDropdownClients|Use {url} as the placeholder for the clone URL."
+msgstr ""
+
+msgid "CodeDropdownClients|You are about to delete the %{name} client."
+msgstr ""
+
 msgid "CodeGenerationVolumeTrendsChart|Lines of code accepted"
 msgstr ""
 
@@ -23034,6 +23103,9 @@ msgid "Configure custom rules for Jira issue key matching"
 msgstr ""
 
 msgid "Configure feature \"%{name}\""
+msgstr ""
+
+msgid "Configure general repository settings."
 msgstr ""
 
 msgid "Configure import sources and settings related to import and export features."
@@ -95027,6 +95099,9 @@ msgid "You do not have permission to access dora metrics."
 msgstr ""
 
 msgid "You do not have permission to approve a member"
+msgstr ""
+
+msgid "You do not have permission to create or import a repository."
 msgstr ""
 
 msgid "You do not have permission to create saved views in this namespace."

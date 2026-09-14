@@ -443,6 +443,42 @@ Use the [`beta`](../feature_flags/_index.md#beta-type) feature flag type, since 
 type that lets you both enable the migration by default and still turn it off if a regression
 appears.
 
+#### Global bundles
+
+Page entries are not the only entrypoints. The bundles that load alongside a page, such as
+`super_sidebar`, `performance_bar`, `tracker`, `sentry`, `redirect_listbox`, `jira_connect_app`,
+`graphql_explorer`, and the sandboxed viewers, are declared by hand in
+`config/helpers/entry_points.js` and rendered with `webpack_bundle_tag`.
+
+These bundles use the same mechanism and the same YAML document as page entries. The file sits
+beside the entry module it describes, and its name says which module that is: a bare
+`vue3_migration.yml` describes the `index.js` beside it, and `<name>.vue3_migration.yml` describes
+the `<name>.js` beside it. A page entry is always `index.js`, so it uses the bare name. A bundle
+declared in `config/helpers/entry_points.js` uses whichever shape matches its entry module:
+
+```plaintext
+└── entrypoints/
+    ├── performance_bar.js                      # Entrypoint
+    └── performance_bar.vue3_migration.yml      # Declares the bundle's migration status
+└── sentry/
+    ├── index.js                                # Entrypoint of the `sentry` bundle
+    └── vue3_migration.yml                      # Declares the bundle's migration status
+```
+
+The document is identical to a page's: the same `status` values, the same `feature_flag` rule, and
+the same optional fields. The described module must be a bundler entry. The loader resolves the
+entry name from `config/helpers/entry_points.js` or from the page's path, and raises an error for
+any other module.
+
+You cannot migrate `main` this way. `config/helpers/entry_points.js` declares it as
+`default: ['./main']`, and `config/webpack.helpers.js` prepends it to every page entry instead of
+emitting it as a bundle of its own, so there is no asset for Rails to swap. The loader raises an
+error if it finds a `main.vue3_migration.yml`. For code reached from `main.js`, use
+[Option 2](#option-2-migrate-your-page-partially-using-vue3) instead.
+
+The migration steps below apply unchanged, except that step 1 points at the bundle's entry module
+in `config/helpers/entry_points.js` instead of a page under `pages/`.
+
 #### Migration steps
 
 1. Identify your page's entrypoint under `app/assets/javascripts/pages` (or `ee/...`).
@@ -545,6 +581,17 @@ page entrypoint.
 1. Proceed with the feature flag rollout with the `user` actor.
 1. Upon removing the feature flag, import `~/my_app?vue3` directly and delete both the conditional
    and the Vue 2 import.
+
+Option 2 is also the only route for code reached from `main.js`, including `main_ee.js` and
+`main_jh.js`. These files run on every page and are compiled into every page entry, so they have
+no bundle name a `vue3_migration.yml` could target.
+
+One caution applies. A module shared between an infected subtree and the rest of the app is built
+twice, once per runtime. This is fine for stateless code, but a module-level singleton, such as an
+event hub, a cache, or a mutable flag, becomes two singletons, and the two halves stop seeing each
+other. If the code you are migrating shares state across that boundary, route it through
+[`~/lib/utils/observable`](#vueobservable), which mirrors writes across both runtimes.
+`config/helpers/context_aliases_shared.js` lists the modules that must stay shared.
 
 ### Record the verification as a video
 

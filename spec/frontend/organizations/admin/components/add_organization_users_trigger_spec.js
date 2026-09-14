@@ -6,9 +6,8 @@ import AddOrganizationUsersModal from '~/organizations/admin/components/add_orga
 describe('AddOrganizationUsersTrigger', () => {
   let wrapper;
 
-  const createComponent = (props = {}) => {
+  const createComponent = () => {
     wrapper = shallowMountExtended(AddOrganizationUsersTrigger, {
-      propsData: props,
       stubs: { AddOrganizationUsersModal: true },
     });
   };
@@ -24,18 +23,8 @@ describe('AddOrganizationUsersTrigger', () => {
     expect(findButton().exists()).toBe(true);
   });
 
-  describe('button variant', () => {
-    it('uses the default variant by default', () => {
-      createComponent();
-
-      expect(findButton().props('variant')).toBe('default');
-    });
-
-    it('uses the variant passed via buttonVariant prop', () => {
-      createComponent({ buttonVariant: 'confirm' });
-
-      expect(findButton().props('variant')).toBe('confirm');
-    });
+  it('uses the confirm variant', () => {
+    expect(findButton().props('variant')).toBe('confirm');
   });
 
   it('modal is hidden by default', () => {

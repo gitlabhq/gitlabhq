@@ -279,6 +279,11 @@ module API
       optional :ai_action_api_rate_limit, type: Integer, desc: 'Maximum requests a user can make per 8 hours to aiAction endpoint'
       optional :code_suggestions_api_rate_limit, type: Integer, desc: 'Maximum requests a user can make per minute to code suggestions endpoint'
       optional :resource_usage_limits, type: JSON, desc: 'Definition for resource usage limits enforced in Sidekiq workers'
+      optional :code_dropdown_custom_clients, type: Array, desc: 'Custom "Open with" clients shown in the project Code dropdown list' do
+        requires :name, type: String, desc: 'Name shown to users in the Code dropdown list'
+        optional :ssh_url_template, type: String, desc: 'URL template opened for the SSH clone URL. Must contain {url} exactly once'
+        optional :http_url_template, type: String, desc: 'URL template opened for the HTTPS clone URL. Must contain {url} exactly once'
+      end
       optional :vscode_extension_marketplace, type: Hash, desc: 'Settings for VS Code Extension Marketplace' do
         optional :enabled, type: Boolean, desc: 'Enables VS Code Extension Marketplace for Web IDE and Workspaces'
         optional :preset, type: String, desc: "The preset configuration of URL's for the VS Code Extension Marketplace"
@@ -754,6 +759,8 @@ module API
         attrs.delete(:logging_field_schema_version)
         attrs.delete(:logging_field_dual_emit_target)
       end
+
+      attrs.delete(:code_dropdown_custom_clients) unless Feature.enabled?(:custom_code_dropdown_clients, current_user)
 
       if ApplicationSettings::UpdateService.new(current_settings, current_user, attrs).execute
         present current_settings, with: Entities::ApplicationSetting

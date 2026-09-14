@@ -837,7 +837,7 @@ export function visitUrl(destination, openWindow = false) {
     window.open(url, target, 'noreferrer');
   } else if (openWindow) {
     // eslint-disable-next-line no-restricted-properties
-    window.open(url);
+    window.open(url, '_blank', 'noopener');
   } else {
     window.location.assign(url);
   }

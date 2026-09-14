@@ -353,7 +353,7 @@ class ApplicationSettingsAnalysis
     'bytea' => API_TYPE_STRING_OR_ARRAY_OF_STRING,
     'integer[]' => API_TYPE_ARRAY_OF_INTEGER,
     'smallint[]' => API_TYPE_ARRAY_OF_INTEGER,
-    'jsonb' => ['hash', 'hash of strings to integers', 'object'],
+    'jsonb' => ['hash', 'hash of strings to integers', 'object', 'array of hashes'],
     'smallint' => API_TYPE_INTEGER,
     'bigint' => API_TYPE_INTEGER,
     'double' => API_TYPE_FLOAT,

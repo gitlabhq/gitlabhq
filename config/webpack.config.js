@@ -46,7 +46,8 @@ const {
   DEV_SERVER_LIVERELOAD,
 } = require('./webpack.constants');
 const { PDF_JS_WORKER_PUBLIC_PATH, PDF_JS_CMAPS_PUBLIC_PATH } = require('./pdfjs.constants');
-const { generateEntries } = require('./webpack.helpers');
+const { generateEntries, applyVue3Migrations } = require('./webpack.helpers');
+const { loadVue3Migrations } = require('./helpers/vue3_migration_loader');
 
 const createIncrementalWebpackCompiler = require('./helpers/incremental_webpack_compiler');
 const vendorDllHash = require('./helpers/vendor_dll_hash');
@@ -255,10 +256,11 @@ module.exports = {
     Note 2: If you are using web-workers, you might need to reset the public path, see:
     https://gitlab.com/gitlab-org/gitlab/-/issues/321656
      */
-    const generated = generateEntries(baseEntryPoints.default);
+    const migrations = loadVue3Migrations();
+    const generated = generateEntries(baseEntryPoints.default, { migrations });
     entriesState = generated.entriesState;
     return {
-      ...baseEntryPoints,
+      ...applyVue3Migrations(baseEntryPoints, { migrations }),
       ...incrementalCompiler.filterEntryPoints(generated.entries),
     };
   },

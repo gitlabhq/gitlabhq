@@ -30,22 +30,20 @@ const startRequestBodyLimit = MaxMessageSize
 // ndjsonTransport.
 func (h *Handler) BuildHTTP() http.Handler {
 	return h.rails.PreAuthorizeHandler(func(w http.ResponseWriter, r *http.Request, a *api.Response) {
-		connectionsTotal.WithLabelValues(transportHTTP).Inc()
-
 		h.handleHTTPConnection(w, r, a.DuoWorkflow)
 	}, "")
 }
 
 func (h *Handler) handleHTTPConnection(w http.ResponseWriter, r *http.Request, duoWorkflowConfig *api.DuoWorkflow) {
 	if err := validateHTTPConfig(duoWorkflowConfig); err != nil {
-		countOtherConnectionError(r, transportHTTP, errorStageInitialization, err)
+		logConnectionError(r, transportHTTP, errorStageInitialization, err)
 		fail.Request(w, r, err)
 		return
 	}
 
 	startEvent, err := decodeStartEvent(r, duoWorkflowConfig.WorkflowID)
 	if err != nil {
-		countOtherConnectionError(r, transportHTTP, errorStageRequestBody, err)
+		logConnectionError(r, transportHTTP, errorStageRequestBody, err)
 		fail.Request(w, r, err, fail.WithStatus(http.StatusBadRequest))
 		return
 	}
@@ -54,7 +52,7 @@ func (h *Handler) handleHTTPConnection(w http.ResponseWriter, r *http.Request, d
 
 	runner, err := h.createRunner(transport, duoWorkflowConfig, r)
 	if err != nil {
-		countOtherConnectionError(r, transportHTTP, errorStageInitialization, err)
+		logConnectionError(r, transportHTTP, errorStageInitialization, err)
 		fail.Request(w, r, fmt.Errorf("failed to initialize agent platform client: %v", err), fail.WithStatus(http.StatusBadGateway))
 		return
 	}
@@ -87,9 +85,7 @@ func (h *Handler) reportHTTPOutcome(w http.ResponseWriter, r *http.Request, tran
 	}
 
 	if errorType == errorTypeOther {
-		countOtherConnectionError(r, transportHTTP, errorStageExecution, execErr)
-	} else {
-		connectionErrorsTotal.WithLabelValues(transportHTTP, errorType).Inc()
+		logConnectionError(r, transportHTTP, errorStageExecution, execErr)
 	}
 
 	if transport.HeaderWritten() {

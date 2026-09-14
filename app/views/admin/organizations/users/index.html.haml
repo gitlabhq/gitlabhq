@@ -1,0 +1,12 @@
+- page_title _("Users")
+
+= render ::Layouts::PageHeadingComponent.new(_('Users')) do |c|
+  - c.with_actions do
+    - if show_invite_organization_user_button?
+      #js-admin-add-organization-users{ data: { app_data: invite_organization_user_app_data(@organization) } }
+
+= render 'admin/users/tabs'
+
+.tab-content.gl-border-t
+  .tab-pane.active
+    = render 'admin/users/users'

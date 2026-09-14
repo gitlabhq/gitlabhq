@@ -336,44 +336,19 @@ Client receives action response
 
 ## Metrics
 
-The package exposes six Prometheus counters, one gauge and one histogram.
-
-### `gitlab_workhorse_duo_workflow_connections_total`
-
-Incremented for every inbound request that passes pre-authorization, labeled by `transport`, which is `websocket` for the WebSocket endpoint and `http` for server-side execution. On the WebSocket transport the counter is incremented before the upgrade is attempted, so it includes requests that subsequently fail to upgrade.
+The package exposes four Prometheus counters, one gauge and one histogram.
 
 ### `gitlab_workhorse_duo_workflow_connections_open`
 
 The number of runners currently executing, labeled by `transport`, incremented when a runner is registered and decremented when it is torn down.
 
-Connections stay open for hours, so concurrency cannot be derived from `connections_total` alone. `gitlab_workhorse_http_in_flight_requests` is not a substitute: it is unlabelled, so it cannot be narrowed to this route, and it also counts the HTTP actions that re-enter the upstream router while the connection is still open.
+This gauge is the only way to see concurrency. `gitlab_workhorse_http_in_flight_requests` is not a substitute: it is unlabelled, so it cannot be narrowed to this route, and it also counts the HTTP actions that re-enter the upstream router while the connection is still open.
 
 Use it to normalise process memory per connection. Sum over `transport` first, because a WebSocket connection and a server-side run cost different amounts and mixing them makes the ratio meaningless on its own:
 
 ```promql
 go_memstats_heap_inuse_bytes{job=~"gitlab-workhorse.*"}
   / on(instance) sum without(transport) (gitlab_workhorse_duo_workflow_connections_open)
-```
-
-### `gitlab_workhorse_duo_workflow_connection_errors_total`
-
-Incremented whenever a connection fails at any stage, labeled by `transport` (`websocket`, `http`) and `error_type`:
-
-| Stage                 | Trigger                                                              | `error_type`     |
-| --------------------- | -------------------------------------------------------------------- | ---------------- |
-| WebSocket upgrade     | `websocket.Upgrader.Upgrade` returns an error                        | `other`          |
-| Request body          | Start request body cannot be read or decoded (`http` transport only) | `other`          |
-| Runner initialisation | `newRunner` / `newStreamManager` returns an error                    | `other`          |
-| Runner execution      | Usage quota exceeded                                                 | `quota_exceeded` |
-| Runner execution      | Workflow lock cannot be acquired                                     | `locked`         |
-| Runner execution      | Any other `runner.Execute` error                                     | `other`          |
-
-The ratio `connection_errors_total / connections_total` gives the connection error rate.
-
-Example query to break down errors by transport and type:
-
-```promql
-sum(rate(gitlab_workhorse_duo_workflow_connection_errors_total[5m])) by (transport, error_type)
 ```
 
 ### `gitlab_workhorse_duo_workflow_sessions_total`

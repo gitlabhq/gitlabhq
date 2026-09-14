@@ -22,6 +22,24 @@ RSpec.describe Gitlab::DuoAgentPlatform::Config, feature_category: :duo_agent_pl
                                    .and_return(nil)
   end
 
+  context 'when the repository is empty' do
+    let_it_be(:project) { create(:project, :empty_repo) }
+
+    before do
+      # Let default_branch fall through to the group or instance preference, as it
+      # does in production, so the guard is exercised rather than asserted. The
+      # commit lookup for cache_key then really resolves to nothing.
+      allow(project).to receive(:default_branch).and_call_original
+      allow(project.repository).to receive(:commit).and_call_original
+    end
+
+    it 'does not ask Gitaly for either config file' do
+      expect(project.repository).not_to receive(:blob_data_at)
+
+      expect(config.config_present?).to be(false)
+    end
+  end
+
   describe 'candidate config file' do
     before do
       allow(project.repository).to receive(:blob_data_at)

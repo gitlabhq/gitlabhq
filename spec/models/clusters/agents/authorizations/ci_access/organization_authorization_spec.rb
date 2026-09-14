@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Clusters::Agents::Authorizations::CiAccess::OrganizationAuthorization, feature_category: :deployment_management do
+RSpec.describe Clusters::Agents::Authorizations::CiAccess::OrganizationAuthorization, :with_current_organization, feature_category: :deployment_management do
   it { is_expected.to belong_to(:agent).class_name('Clusters::Agent').required }
   it { is_expected.to belong_to(:organization).class_name('Organizations::Organization').required }
 

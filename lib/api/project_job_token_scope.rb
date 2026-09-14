@@ -92,7 +92,7 @@ module API
           { code: 403, message: 'Forbidden' },
           { code: 404, message: 'Not found' }
         ]
-        success status: 200, model: Entities::BasicProjectDetails
+        success status: 200, model: Entities::BasicGroupDetails
         tags %w[projects_job_token_scope]
       end
       params do
@@ -117,7 +117,7 @@ module API
           { code: 404, message: 'Not found' },
           { code: 422, message: 'Unprocessable entity' }
         ]
-        success status: 201, model: Entities::BasicProjectDetails
+        success status: 201, model: Entities::ProjectScopeLink
         tags %w[projects_job_token_scope]
       end
       params do
@@ -159,7 +159,7 @@ module API
           { code: 404, message: 'Not found' },
           { code: 422, message: 'Unprocessable entity' }
         ]
-        success status: 201, model: Entities::BasicGroupDetails
+        success status: 201, model: Entities::GroupScopeLink
         tags %w[projects_job_token_scope]
       end
       params do

@@ -5,7 +5,7 @@ require 'spec_helper'
 RSpec.describe ClusterablePresenter, feature_category: :deployment_management do
   include Gitlab::Routing.url_helpers
 
-  let_it_be(:project) { create(:project, :repository) }
+  let_it_be(:project) { create(:project) }
 
   describe '.fabricate' do
     subject { described_class.fabricate(project) }

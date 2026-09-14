@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe DeploymentsFinder, feature_category: :deployment_management, factory_default: :keep do
+RSpec.describe DeploymentsFinder, :with_current_organization, feature_category: :deployment_management, factory_default: :keep do
   subject { described_class.new(params).execute }
 
   describe "validation" do
@@ -77,7 +77,7 @@ RSpec.describe DeploymentsFinder, feature_category: :deployment_management, fact
     end
 
     context 'at project scope' do
-      let_it_be(:project) { create_default(:project, :public, :test_repo) }
+      let_it_be(:project) { create_default(:project, :public, :test_repo, organization: current_organization) }
       let_it_be(:environment) { create_default(:environment, project: project) }
 
       let(:base_params) { { project: project } }
@@ -303,9 +303,9 @@ RSpec.describe DeploymentsFinder, feature_category: :deployment_management, fact
       let_it_be(:group) { create(:group) }
       let_it_be(:subgroup) { create(:group, parent: group) }
 
-      let_it_be(:group_project_1) { create(:project, :public, :test_repo, group: group) }
-      let_it_be(:group_project_2) { create(:project, :public, :test_repo, group: group) }
-      let_it_be(:subgroup_project_1) { create(:project, :public, :test_repo, group: subgroup) }
+      let_it_be(:group_project_1) { create(:project, :public, :test_repo, group: group, organization: current_organization) }
+      let_it_be(:group_project_2) { create(:project, :public, :test_repo, group: group, organization: current_organization) }
+      let_it_be(:subgroup_project_1) { create(:project, :public, :test_repo, group: subgroup, organization: current_organization) }
 
       let_it_be(:group_project_1_environment) { create(:environment, project: group_project_1) }
       let_it_be(:group_project_2_environment) { create(:environment, project: group_project_2) }
@@ -350,7 +350,7 @@ RSpec.describe DeploymentsFinder, feature_category: :deployment_management, fact
         execute_queries = -> { described_class.new({ group: group }).execute.first }
         control = ActiveRecord::QueryRecorder.new { execute_queries }
 
-        new_project = create(:project, :repository, group: group)
+        new_project = create(:project, :repository, group: group, organization: current_organization)
         new_env = create(:environment, project: new_project, name: "production")
         create_list(:deployment, 2, status: :success, project: new_project, environment: new_env)
         group.reload

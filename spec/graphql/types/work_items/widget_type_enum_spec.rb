@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe GitlabSchema.types['WorkItemWidgetType'] do
+RSpec.describe GitlabSchema.types['WorkItemWidgetType'], feature_category: :team_planning do
   specify { expect(described_class.graphql_name).to eq('WorkItemWidgetType') }
 
   it 'exposes all the existing widget type values' do

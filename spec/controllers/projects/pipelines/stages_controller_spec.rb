@@ -4,18 +4,18 @@ require 'spec_helper'
 
 RSpec.describe Projects::Pipelines::StagesController, feature_category: :continuous_integration do
   let_it_be(:user) { create(:user) }
-  let_it_be(:project) { create(:project, :repository) }
-  let(:downstream_project) { create(:project, :repository) }
+  let_it_be(:project) { create(:project, :small_repo) }
+  let_it_be(:downstream_project) { create(:project, :small_repo, maintainers: user) }
 
   before do
     sign_in(user)
   end
 
   describe 'POST #play_manual.json' do
-    let(:pipeline) { create(:ci_pipeline, project: project) }
+    let_it_be_with_reload(:pipeline) { create(:ci_pipeline, project: project) }
     let(:stage_name) { 'test' }
 
-    before do
+    before_all do
       create_manual_build(pipeline, 'test', 'rspec 1/2')
       create_manual_build(pipeline, 'test', 'rspec 2/2')
       create_manual_bridge(pipeline, 'test', 'trigger')
@@ -34,10 +34,6 @@ RSpec.describe Projects::Pipelines::StagesController, feature_category: :continu
     context 'when user has access' do
       before_all do
         project.add_maintainer(user)
-      end
-
-      before do
-        downstream_project.add_maintainer(user)
       end
 
       context 'when the stage does not exists' do

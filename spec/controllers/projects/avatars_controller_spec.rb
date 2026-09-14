@@ -60,7 +60,7 @@ RSpec.describe Projects::AvatarsController do
   end
 
   describe 'DELETE #destroy' do
-    let(:project) { create(:project, :repository, avatar: fixture_file_upload("spec/fixtures/dk.png", "image/png")) }
+    let(:project) { create(:project, avatar: fixture_file_upload("spec/fixtures/dk.png", "image/png")) }
 
     before do
       sign_in(project.first_owner)

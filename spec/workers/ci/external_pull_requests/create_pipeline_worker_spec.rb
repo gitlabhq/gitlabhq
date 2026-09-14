@@ -3,7 +3,7 @@
 require 'spec_helper'
 
 RSpec.describe Ci::ExternalPullRequests::CreatePipelineWorker, feature_category: :pipeline_composition do
-  let_it_be(:project) { create(:project, :auto_devops, :repository) }
+  let_it_be(:project) { create(:project, :auto_devops, :small_repo) }
   let_it_be(:user) { project.first_owner }
   let_it_be(:external_pull_request) do
     branch = project.repository.branches.last

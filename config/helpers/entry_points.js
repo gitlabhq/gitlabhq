@@ -22,4 +22,10 @@ if (IS_EE) {
   ALWAYS_LOADED_ENTRY_POINTS.push('duo_panel');
 }
 
-module.exports = { baseEntryPoints, ALWAYS_LOADED_ENTRY_POINTS };
+/**
+ * Entry name of a page entry, from its `index.js` path relative to a JS root:
+ * `pages/projects/jobs/show/index.js` -> `pages.projects.jobs.show`.
+ */
+const pageEntryName = (indexPath) => indexPath.replace(/\/index\.js$/, '').replace(/\//g, '.');
+
+module.exports = { baseEntryPoints, ALWAYS_LOADED_ENTRY_POINTS, pageEntryName };

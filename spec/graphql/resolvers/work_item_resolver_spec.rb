@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Resolvers::WorkItemResolver do
+RSpec.describe Resolvers::WorkItemResolver, feature_category: :team_planning do
   include GraphqlHelpers
 
   describe '#resolve' do

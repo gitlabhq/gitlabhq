@@ -1,9 +1,13 @@
 /**
  * File-format validation for `vue3_migration.yml` files.
  *
- * A page entry under `app/assets/javascripts/pages/**` (and the EE / JH
- * equivalents) opts into the Vue 3 migration system by adding a sibling
- * `vue3_migration.yml` file. Pages without such a file build only a
+ * An entry opts into the Vue 3 migration system with a metadata file beside
+ * its entry file. The file name says which entry file it describes:
+ * `vue3_migration.yml` describes the `index.js` beside it (page entries under
+ * `app/assets/javascripts/pages/**`), and `<name>.vue3_migration.yml`
+ * describes the `<name>.js` beside it (global bundles under
+ * `app/assets/javascripts/entrypoints/`). EE and JH roots work the same way.
+ * Entries without such a file build only a
  * Vue 2 chunk and are served by Rails as Vue 2. The bundler reads these
  * files to decide whether to emit an additional `?vue3`-infected entry
  * sibling, and Rails reads them to decide which entrypoint to render.

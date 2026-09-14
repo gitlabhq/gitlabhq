@@ -63,33 +63,6 @@ func testDuoWorkflowConfig(server *testServer) *api.DuoWorkflow {
 	}
 }
 
-// newServerSideConn opens a loopback WebSocket pair and returns the server-side
-// *websocket.Conn. It is useful when a test needs a real conn to pass into
-// handler methods that call WriteMessage, without standing up a full handler.
-func newServerSideConn(t *testing.T) *websocket.Conn {
-	t.Helper()
-	connCh := make(chan *websocket.Conn, 1)
-	upgrader := websocket.Upgrader{}
-	srv := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-		c, err := upgrader.Upgrade(w, r, nil)
-		assert.NoError(t, err)
-		connCh <- c
-	}))
-	t.Cleanup(srv.Close)
-
-	wsURL := "ws" + strings.TrimPrefix(srv.URL, "http") + "/"
-	clientConn, resp, err := websocket.DefaultDialer.Dial(wsURL, nil)
-	if resp != nil {
-		_ = resp.Body.Close()
-	}
-	require.NoError(t, err)
-	t.Cleanup(func() { _ = clientConn.Close() })
-
-	serverConn := <-connCh
-	t.Cleanup(func() { _ = serverConn.Close() })
-	return serverConn
-}
-
 // dialTestHandler starts a full HTTP/WebSocket server backed by the given handler
 // and returns an open WebSocket connection to it.
 func dialTestHandler(t *testing.T, h http.Handler) *websocket.Conn {
@@ -135,24 +108,6 @@ func setupHandlerWithGRPC(t *testing.T, grpcServer *testServer) http.Handler {
 	return NewHandler(apiClient, initRdb(t), http.HandlerFunc(func(_ http.ResponseWriter, _ *http.Request) {}), "").Build()
 }
 
-// TestConnectionsTotal verifies that connectionsTotal increments once per
-// inbound request, before the WebSocket upgrade is attempted.
-func TestConnectionsTotal(t *testing.T) {
-	testhelper.ConfigureSecret()
-
-	grpcServer := setupTestServer(t)
-	handler := setupHandlerWithGRPC(t, grpcServer)
-
-	before := counterVecValue(t, connectionsTotal, transportWebSocket)
-
-	// The counter is incremented before Upgrade, so it is already bumped by the
-	// time the WebSocket dial returns.
-	_ = dialTestHandler(t, handler)
-
-	require.InDelta(t, before+1, counterVecValue(t, connectionsTotal, transportWebSocket), 0,
-		"connectionsTotal should increment by 1 per connection attempt")
-}
-
 func TestConnectionsOpen(t *testing.T) {
 	testhelper.ConfigureSecret()
 
@@ -184,69 +139,6 @@ func TestConnectionsOpen(t *testing.T) {
 		return openWebSocketConns() == before
 	}, 15*time.Second, time.Millisecond,
 		"connectionsOpen should return to its previous value once the connection closes")
-}
-
-// TestConnectionErrorsTotal verifies that connectionErrorsTotal increments with
-// the correct error_type label in handleExecutionError, and does not increment
-// on a clean EOF.
-func TestConnectionErrorsTotal(t *testing.T) {
-	t.Run("increments with 'other' label on generic runner execution error", func(t *testing.T) {
-		t.Skip("Pending fix: https://gitlab.com/gitlab-org/gitlab/-/work_items/595283")
-		before := counterVecValue(t, connectionErrorsTotal, transportWebSocket, errorTypeOther)
-
-		h := &Handler{}
-		r := httptest.NewRequest(http.MethodGet, "/", nil)
-		grpcErr := status.Error(codes.Internal, "boom")
-		sm := newTestStreamManager(t, &mockWorkflowStream{recvError: grpcErr})
-		runner := &runner{streamManager: sm, client: newWsManager(&mockWebSocketConn{}), mcpManager: &mockMcpManager{}}
-
-		h.registerAndExecuteRunner(r, transportWebSocket, runner, func(error) {})
-
-		require.InDelta(t, before+1, counterVecValue(t, connectionErrorsTotal, transportWebSocket, errorTypeOther), 0,
-			"connectionErrorsTotal{error_type=other} should increment on generic runner execution error")
-	})
-
-	t.Run("increments with 'quota_exceeded' label on usage quota exceeded error", func(t *testing.T) {
-		before := counterVecValue(t, connectionErrorsTotal, transportWebSocket, errorTypeQuotaExceeded)
-
-		h := &Handler{}
-		r := httptest.NewRequest(http.MethodGet, "/", nil)
-		h.handleWebSocketExecutionError(r, newServerSideConn(t), errUsageQuotaExceededError)
-
-		require.InDelta(t, before+1, counterVecValue(t, connectionErrorsTotal, transportWebSocket, errorTypeQuotaExceeded), 0,
-			"connectionErrorsTotal{error_type=quota_exceeded} should increment on quota exceeded error")
-	})
-
-	t.Run("increments with 'locked' label on failed to acquire lock error", func(t *testing.T) {
-		before := counterVecValue(t, connectionErrorsTotal, transportWebSocket, errorTypeLocked)
-
-		h := &Handler{}
-		r := httptest.NewRequest(http.MethodGet, "/", nil)
-		h.handleWebSocketExecutionError(r, newServerSideConn(t), errFailedToAcquireLockError)
-
-		require.InDelta(t, before+1, counterVecValue(t, connectionErrorsTotal, transportWebSocket, errorTypeLocked), 0,
-			"connectionErrorsTotal{error_type=locked} should increment on lock acquisition failure")
-	})
-
-	t.Run("does not increment on clean EOF", func(t *testing.T) {
-		seriesBefore := testutil.CollectAndCount(connectionErrorsTotal)
-
-		h := &Handler{}
-		r := httptest.NewRequest(http.MethodGet, "/", nil)
-		// Block the WebSocket reader so the gRPC EOF side wins the race and
-		// Execute returns nil — matching how the existing runner tests handle this.
-		sm := newTestStreamManager(t, &mockWorkflowStream{recvError: io.EOF})
-		runner := &runner{
-			streamManager: sm,
-			client:        newWsManager(&mockWebSocketConn{blockCh: make(chan bool)}),
-			mcpManager:    &mockMcpManager{},
-		}
-
-		h.registerAndExecuteRunner(r, transportWebSocket, runner, func(error) {})
-
-		require.Equal(t, seriesBefore, testutil.CollectAndCount(connectionErrorsTotal),
-			"connectionErrorsTotal must not create new series for a clean EOF")
-	})
 }
 
 // TestSessionsTotal verifies that sessionsTotal increments exactly once for each

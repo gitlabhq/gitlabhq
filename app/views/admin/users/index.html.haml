@@ -7,11 +7,11 @@
     - if can_admin_all_resources
       = render_if_exists 'admin/users/admin_email_users'
       = render_if_exists 'admin/users/admin_export_user_permissions'
-    - if show_invite_organization_user_button?
-      #js-admin-add-organization-users{ data: { app_data: invite_organization_user_app_data(@organization, has_new_user_button: can_admin_all_resources) } }
-    - if can_admin_all_resources
       = render Pajamas::ButtonComponent.new(variant: :confirm, href: new_admin_user_path) do
         = s_('AdminUsers|New user')
+
+.gl-grid.gl-gap-5.gl-mt-4.grid-flow-col.auto-cols-max{ class: "@lg/panel:gl-grid-cols-3 @md/panel:gl-grid-cols-3" }
+  = render 'admin/users/stats_cards'
 
 = render 'admin/users/tabs'
 

@@ -219,6 +219,71 @@ RSpec.describe BulkImport, feature_category: :importers do
     end
   end
 
+  describe 'internal events tracking', :clean_gitlab_redis_shared_state do
+    context 'when the import is an offline transfer' do
+      let_it_be_with_reload(:import) { create(:bulk_import, :started, :with_offline_configuration) }
+
+      context 'when transitioning to finished' do
+        context 'without failures' do
+          it 'tracks a complete event with the without_failures label' do
+            expect { import.finish! }
+              .to trigger_internal_events('complete_offline_transfer_import')
+              .with(user: import.user, additional_properties: { label: 'without_failures' })
+              .and increment_usage_metrics(
+                'counts.count_total_complete_offline_transfer_import',
+                'counts.count_total_complete_offline_transfer_import_monthly'
+              ).and not_increment_usage_metrics(
+                'counts.count_total_complete_offline_transfer_import_with_failures',
+                'counts.count_total_complete_offline_transfer_import_with_failures_monthly'
+              )
+          end
+        end
+
+        context 'with failures' do
+          before do
+            import.update!(has_failures: true)
+          end
+
+          it 'tracks a complete event with the with_failures label' do
+            expect { import.finish! }
+              .to trigger_internal_events('complete_offline_transfer_import')
+              .with(user: import.user, additional_properties: { label: 'with_failures' })
+              .and increment_usage_metrics(
+                'counts.count_total_complete_offline_transfer_import',
+                'counts.count_total_complete_offline_transfer_import_monthly',
+                'counts.count_total_complete_offline_transfer_import_with_failures',
+                'counts.count_total_complete_offline_transfer_import_with_failures_monthly'
+              )
+          end
+        end
+      end
+
+      context 'when transitioning to failed' do
+        it 'tracks a fail event' do
+          expect { import.fail_op! }
+            .to trigger_internal_events('fail_offline_transfer_import')
+            .with(user: import.user)
+            .and increment_usage_metrics(
+              'counts.count_total_fail_offline_transfer_import',
+              'counts.count_total_fail_offline_transfer_import_monthly'
+            )
+        end
+      end
+    end
+
+    context 'when the import is a direct transfer' do
+      let_it_be_with_reload(:import) { create(:bulk_import, :started) }
+
+      it 'does not track a complete event' do
+        expect { import.finish! }.not_to trigger_internal_events('complete_offline_transfer_import')
+      end
+
+      it 'does not track a fail event' do
+        expect { import.fail_op! }.not_to trigger_internal_events('fail_offline_transfer_import')
+      end
+    end
+  end
+
   describe '#destination_group_roots' do
     let_it_be(:import, freeze: false) { create(:bulk_import, :started) }
 

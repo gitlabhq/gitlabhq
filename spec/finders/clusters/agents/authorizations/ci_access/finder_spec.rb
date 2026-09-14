@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Clusters::Agents::Authorizations::CiAccess::Finder, feature_category: :deployment_management do
+RSpec.describe Clusters::Agents::Authorizations::CiAccess::Finder, :with_current_organization, feature_category: :deployment_management do
   describe '#execute' do
     let_it_be(:top_level_group) { create(:group) }
     let_it_be(:subgroup1) { create(:group, parent: top_level_group) }
@@ -10,11 +10,11 @@ RSpec.describe Clusters::Agents::Authorizations::CiAccess::Finder, feature_categ
     let_it_be(:bottom_level_group) { create(:group, parent: subgroup2) }
 
     let_it_be(:non_ancestor_group) { create(:group, parent: top_level_group) }
-    let_it_be(:non_ancestor_project) { create(:project, namespace: non_ancestor_group) }
+    let_it_be(:non_ancestor_project) { create(:project, namespace: non_ancestor_group, organization: current_organization) }
     let_it_be(:non_ancestor_agent) { create(:cluster_agent, project: non_ancestor_project) }
 
-    let_it_be(:agent_configuration_project) { create(:project, namespace: subgroup1) }
-    let_it_be_with_reload(:requesting_project) { create(:project, namespace: bottom_level_group) }
+    let_it_be(:agent_configuration_project) { create(:project, namespace: subgroup1, organization: current_organization) }
+    let_it_be_with_reload(:requesting_project) { create(:project, namespace: bottom_level_group, organization: current_organization) }
 
     let_it_be(:staging_agent) { create(:cluster_agent, project: agent_configuration_project) }
     let_it_be(:production_agent) { create(:cluster_agent, project: agent_configuration_project) }

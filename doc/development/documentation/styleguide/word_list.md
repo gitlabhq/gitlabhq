@@ -1444,7 +1444,31 @@ use **GitLab Operator (Kubernetes)**.
 
 ## GitLab Orbit
 
-Do not use **Orbit** by itself. Always use **GitLab Orbit**.
+Use **GitLab Orbit**.
+
+After first use in a section, you can use **Orbit**.
+
+## GitLab Orbit Remote
+
+Use **GitLab Orbit Remote**.
+
+After the first use in a section, you can use **Orbit Remote**.
+
+## GitLab Orbit Local
+
+Use **GitLab Orbit Local**.
+
+After the first use in a section, you can use **Orbit Local**.
+
+## GitLab Orbit CLI
+
+Use **GitLab Orbit CLI**.
+
+After first use in a section, you can use **Orbit CLI**.
+
+When referring to commands, include both `orbit` and `glab orbit cli` versions to cover both
+installation and command execution options. In the GitLab CLI docs,
+document just the `glab orbit cli` version of the command.
 
 ## GitLab Pages
 

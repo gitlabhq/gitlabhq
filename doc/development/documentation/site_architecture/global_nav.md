@@ -72,6 +72,10 @@ With these groups in mind, the following are general rules for where new items s
   - Accessing the rails console or running Rake tasks.
   - Doing things in the **Admin** area.
   - Tasks that can only be done by an instance administrator.
+- Subscription and billing documentation belongs under **Subscribe**.
+  This includes pages about plans and tiers, managing subscriptions, seats and billing accounts,
+  and general GitLab Credits concepts. Add pages about how a specific feature consumes GitLab
+  Credits under that feature’s section.
 - Other documentation belongs at the top-level, but care must be taken to not create an enormously
   long top-level navigation, which defeats the purpose of it.
 

@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Clusters::Agent, feature_category: :deployment_management do
+RSpec.describe Clusters::Agent, :with_current_organization, feature_category: :deployment_management do
   subject { create(:cluster_agent) }
 
   it { is_expected.to belong_to(:created_by_user).class_name('User').optional }
@@ -118,7 +118,7 @@ RSpec.describe Clusters::Agent, feature_category: :deployment_management do
     end
 
     it 'does not have access to other projects' do
-      expect(agent.has_access_to?(create(:project))).to be_falsey
+      expect(agent.has_access_to?(create(:project, organization: current_organization))).to be_falsey
     end
   end
 
@@ -182,9 +182,9 @@ RSpec.describe Clusters::Agent, feature_category: :deployment_management do
     using RSpec::Parameterized::TableSyntax
 
     let_it_be(:organization) { create(:group) }
-    let_it_be(:agent_management_project) { create(:project, group: organization) }
+    let_it_be(:agent_management_project) { create(:project, group: organization, organization: current_organization) }
     let_it_be(:agent) { create(:cluster_agent, project: agent_management_project) }
-    let_it_be(:deployment_project) { create(:project, group: organization) }
+    let_it_be(:deployment_project) { create(:project, group: organization, organization: current_organization) }
 
     let_it_be(:user) { create(:user) }
 
@@ -237,9 +237,9 @@ RSpec.describe Clusters::Agent, feature_category: :deployment_management do
     using RSpec::Parameterized::TableSyntax
 
     let_it_be(:organization) { create(:group) }
-    let_it_be(:agent_management_project) { create(:project, group: organization) }
+    let_it_be(:agent_management_project) { create(:project, group: organization, organization: current_organization) }
     let_it_be(:agent) { create(:cluster_agent, project: agent_management_project) }
-    let_it_be(:deployment_project) { create(:project, group: organization) }
+    let_it_be(:deployment_project) { create(:project, group: organization, organization: current_organization) }
 
     let_it_be(:user) { create(:user) }
 
@@ -290,7 +290,7 @@ RSpec.describe Clusters::Agent, feature_category: :deployment_management do
 
   describe '#user_access_config' do
     let_it_be(:group) { create(:group) }
-    let_it_be(:project) { create(:project) }
+    let_it_be(:project) { create(:project, organization: current_organization) }
     let_it_be_with_refind(:agent) { create(:cluster_agent, project: project) }
 
     subject { agent.user_access_config }

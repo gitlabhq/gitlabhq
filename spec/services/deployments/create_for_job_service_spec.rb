@@ -2,8 +2,8 @@
 
 require 'spec_helper'
 
-RSpec.describe Deployments::CreateForJobService, feature_category: :continuous_delivery do
-  let_it_be(:project) { create(:project, :repository) }
+RSpec.describe Deployments::CreateForJobService, :with_current_organization, feature_category: :continuous_delivery do
+  let_it_be(:project) { create(:project, :repository, organization: current_organization) }
   let_it_be(:user) { create(:user) }
 
   let(:service) { described_class.new }

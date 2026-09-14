@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Types::WorkItems::Widgets::AssigneesType do
+RSpec.describe Types::WorkItems::Widgets::AssigneesType, feature_category: :team_planning do
   it 'exposes the expected fields' do
     expected_fields = %i[assignees allows_multiple_assignees can_invite_members type]
 

@@ -7,7 +7,7 @@ RSpec.describe 'gitlab:praefect:replicas', :silence_stdout do
     Rake.application.rake_require 'tasks/gitlab/praefect'
   end
 
-  let(:project) { create(:project, :repository) }
+  let(:project) { create(:project, :small_repo) }
   let(:repository) { project.repository }
 
   describe 'replicas', :praefect do

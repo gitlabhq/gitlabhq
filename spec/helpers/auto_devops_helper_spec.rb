@@ -92,7 +92,7 @@ RSpec.describe AutoDevopsHelper do
         end
 
         context 'with groups' do
-          let(:receiver) { create(:project, :repository, namespace: group) }
+          let(:receiver) { create(:project, namespace: group) }
 
           before do
             stub_application_setting(auto_devops_enabled: false)
@@ -125,7 +125,7 @@ RSpec.describe AutoDevopsHelper do
         end
 
         context 'with groups' do
-          let(:receiver) { create(:project, :repository, namespace: group) }
+          let(:receiver) { create(:project, namespace: group) }
 
           context 'when auto devops is disabled on group level' do
             let(:group) { create(:group, :auto_devops_disabled) }

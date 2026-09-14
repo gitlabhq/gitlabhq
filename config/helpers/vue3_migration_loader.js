@@ -8,28 +8,93 @@ const {
   VUE3_MIGRATION_STATUS_MIGRATED,
   validateVue3MigrationFile,
 } = require('./vue3_migration_file_validation');
+const { baseEntryPoints, pageEntryName } = require('./entry_points');
 
 const ROOT_PATH = path.resolve(__dirname, '..', '..');
-const VUE3_MIGRATION_GLOB = `{,ee/,jh/}app/assets/javascripts/pages/**/${VUE3_MIGRATION_FILENAME}`;
+const JS_ROOTS = [
+  'app/assets/javascripts',
+  'ee/app/assets/javascripts',
+  'jh/app/assets/javascripts',
+];
+
+// A migration file sits beside the entry module it describes, wherever that is.
+const VUE3_MIGRATION_GLOB = `{,ee/,jh/}app/assets/javascripts/**/*${VUE3_MIGRATION_FILENAME}`;
+
+// `vue3_migration.yml` describes `index.js`, `<name>.vue3_migration.yml` describes `<name>.js`.
+const MIGRATION_FILE_RE = new RegExp(
+  `^(?:(.+)\\.)?${VUE3_MIGRATION_FILENAME.replace(/\./g, '\\.')}$`,
+);
+
+// `default` (`./main`) is prepended to every page entry rather than emitted as a
+// bundle of its own, so there is no asset for Rails to swap.
+const MAIN_MODULE = path.posix.join(JS_ROOTS[0], `${baseEntryPoints.default[0]}.js`);
+
+// Repo-relative entry module path -> bundler entry name, for every entry the bundler knows.
+function entryModules() {
+  const index = {};
+
+  for (const [name, spec] of Object.entries(baseEntryPoints)) {
+    if (typeof spec !== 'string') continue;
+    index[path.posix.join(JS_ROOTS[0], spec)] = name;
+  }
+
+  for (const root of JS_ROOTS) {
+    for (const rel of glob.sync('pages/**/index.js', { cwd: path.join(ROOT_PATH, root) })) {
+      index[path.posix.join(root, rel)] = pageEntryName(rel);
+    }
+  }
+
+  return index;
+}
 
 /**
- * Extract the bundler entry name from a `vue3_migration.yml` path
- * relative to the repository root. The path is expected to contain
- * `app/assets/javascripts/pages/<entry-path>/vue3_migration.yml`.
+ * The entry module a migration file describes, relative to the repository root.
  *
- * For example:
  *   `app/assets/javascripts/pages/projects/jobs/show/vue3_migration.yml`
- *   -> `pages.projects.jobs.show`
+ *   -> `app/assets/javascripts/pages/projects/jobs/show/index.js`
+ *
+ *   `app/assets/javascripts/entrypoints/super_sidebar.vue3_migration.yml`
+ *   -> `app/assets/javascripts/entrypoints/super_sidebar.js`
  *
  * @param {string} relFile - Path relative to ROOT_PATH.
  * @returns {string}
  */
-function entryNameFromFile(relFile) {
-  const match = relFile.match(/app\/assets\/javascripts\/pages\/(.+)\/[^/]+$/);
+function entryModuleFor(relFile) {
+  const match = path.posix.basename(relFile).match(MIGRATION_FILE_RE);
   if (!match) {
-    throw new Error(`[vue3-migration] Unexpected file path: ${relFile}`);
+    throw new Error(`[vue3-migration] Unexpected file name: ${relFile}`);
   }
-  return `pages.${match[1].split('/').join('.')}`;
+
+  return path.posix.join(path.posix.dirname(relFile), `${match[1] ?? 'index'}.js`);
+}
+
+/**
+ * The bundler entry name a migration file describes, looked up in `entryModules`.
+ *
+ * @param {string} relFile - Path relative to ROOT_PATH.
+ * @param {Record<string, string>} index - From `entryModules()`.
+ * @returns {string}
+ */
+function entryNameFromFile(relFile, index) {
+  const moduleFile = entryModuleFor(relFile);
+
+  if (moduleFile === MAIN_MODULE) {
+    throw new Error(
+      `[vue3-migration] ${relFile} cannot be migrated this way. \`main\` is prepended to every ` +
+        `page entry instead of being emitted as its own bundle, so there is no asset to swap. ` +
+        `Use the \`?vue3\` import documented as Option 2 in doc/development/fe_guide/vue3_migration.md.`,
+    );
+  }
+
+  const entryName = index[moduleFile];
+  if (!entryName) {
+    throw new Error(
+      `[vue3-migration] ${relFile} describes ${moduleFile}, which is not a bundler entry. ` +
+        `Entries are the values of config/helpers/entry_points.js and every pages/**/index.js.`,
+    );
+  }
+
+  return entryName;
 }
 
 /**
@@ -65,10 +130,11 @@ function loadVue3Migrations() {
   const collected = {};
 
   const files = glob.sync(VUE3_MIGRATION_GLOB, { cwd: ROOT_PATH });
+  const index = entryModules();
 
   for (const relFile of files) {
     const absFile = path.join(ROOT_PATH, relFile);
-    const entryName = entryNameFromFile(relFile);
+    const entryName = entryNameFromFile(relFile, index);
 
     let doc;
     try {

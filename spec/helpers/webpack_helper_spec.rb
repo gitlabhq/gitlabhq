@@ -216,4 +216,74 @@ RSpec.describe WebpackHelper, feature_category: :tooling do
       end
     end
   end
+
+  describe '#webpack_bundle_tag with vue3 migration' do
+    subject(:output) { helper.webpack_bundle_tag(bundle) }
+
+    let(:user) { build_stubbed(:user) }
+
+    before do
+      allow(helper).to receive(:current_user).and_return(user)
+      allow(Gitlab::Webpack::Manifest).to receive(:entrypoint_paths) do |entry|
+        ["/assets/webpack/#{entry}.js"]
+      end
+    end
+
+    context 'when the bundle is rolling out Vue 3' do
+      let(:bundle) { 'performance_bar' }
+
+      before do
+        allow(Gitlab::Vue3Migration).to receive(:rollout?).with(bundle).and_return(true)
+        allow(Gitlab::Vue3Migration).to receive(:entrypoint_for)
+          .with(bundle, current_user: user).and_return(resolved_entry)
+      end
+
+      context 'and the feature flag is off' do
+        let(:resolved_entry) { bundle }
+
+        it 'renders the Vue 2 bundle', :aggregate_failures do
+          expect(output).to include('performance_bar.js')
+          expect(output).not_to include('.vue3.js')
+        end
+      end
+
+      context 'and the feature flag is on' do
+        let(:resolved_entry) { "#{bundle}.vue3" }
+
+        it 'renders the Vue 3 bundle' do
+          expect(output).to include('performance_bar.vue3.js')
+        end
+
+        context 'with Vite enabled' do
+          before do
+            allow(helper).to receive(:vite_enabled?).and_return(true)
+          end
+
+          # ViteRuby appends `.js` only to a name without an extension, and
+          # `.vue3` reads as one, so the bare name 404s on the dev server.
+          it 'requests the Vue 3 bundle with its extension' do
+            expect(helper).to receive(:vite_javascript_tag).with('performance_bar.vue3.js')
+
+            output
+          end
+        end
+      end
+    end
+
+    context 'when the bundle has no rollout declaration' do
+      let(:bundle) { 'redirect_listbox' }
+
+      before do
+        allow(Gitlab::Vue3Migration).to receive(:rollout?).with(bundle).and_return(false)
+      end
+
+      # Helper and fixture specs render this tag without a Warden request, where
+      # `current_user` raises `Devise::MissingWarden`.
+      it 'renders the bundle without consulting the current user', :aggregate_failures do
+        expect(helper).not_to receive(:current_user)
+
+        expect(output).to include('redirect_listbox.js')
+      end
+    end
+  end
 end

@@ -1,13 +1,16 @@
 # frozen_string_literal: true
 
 module Gitlab
-  # Resolves which page entrypoint (Vue 2 or Vue 3) to serve for pages
-  # that are rolling out Vue 3 behind a feature flag. Used by
-  # `WebpackHelper` and `ViteHelper` at request time.
+  # Resolves which entrypoint (Vue 2 or Vue 3) to serve for entries that
+  # are rolling out Vue 3 behind a feature flag. Used by `WebpackHelper`
+  # and `ViteHelper` at request time.
   #
-  # The source of truth is the `vue3_migration.yml` files co-located with
-  # each page entry under `app/assets/javascripts/pages/**` (and EE / JH
-  # equivalents). Only entries with `status: rollout` need runtime
+  # The source of truth is the metadata beside each entry file. The file
+  # name says which entry file it describes: `vue3_migration.yml` is the
+  # `index.js` of a page under `app/assets/javascripts/pages/**`, and
+  # `<name>.vue3_migration.yml` is the `<name>.js` global bundle under
+  # `app/assets/javascripts/entrypoints/` (and EE / JH equivalents).
+  # Only entries with `status: rollout` need runtime
   # metadata (the feature flag switches between the `<entry>` and
   # `<entry>.vue3` bundles); `migrated` pages build Vue 3 under the
   # original entry name and resolve with no lookup, and pages without a
@@ -44,12 +47,23 @@ module Gitlab
 
     VUE3_MIGRATION_ALLOWED_KEYS = %w[status feature_flag group migration_issue].freeze
 
-    # Brace-expansion globs that walk CE, EE, and JH page roots in one pass.
-    # The leading brace expands to each edition's prefix; missing editions
-    # simply return no matches.
-    VUE3_MIGRATION_PAGES_GLOB = '{,ee/,jh/}app/assets/javascripts/pages'
-    VUE3_MIGRATION_GLOB =
-      "#{VUE3_MIGRATION_PAGES_GLOB}/**/#{VUE3_MIGRATION_FILENAME}".freeze
+    ROOT_PATH = File.expand_path('../..', __dir__)
+    JS_ROOTS = %w[app/assets/javascripts ee/app/assets/javascripts jh/app/assets/javascripts].freeze
+
+    # A migration file sits beside the entry module it describes, wherever that
+    # is. The leading brace expands to each edition; missing editions match nothing.
+    VUE3_MIGRATION_GLOB = "{,ee/,jh/}app/assets/javascripts/**/*#{VUE3_MIGRATION_FILENAME}".freeze
+
+    # `vue3_migration.yml` describes `index.js`, `<name>.vue3_migration.yml` describes `<name>.js`.
+    VUE3_MIGRATION_FILE_RE = /\A(?:(?<entry>.+)\.)?#{Regexp.escape(VUE3_MIGRATION_FILENAME)}\z/
+
+    # Hand-declared bundles. Read as text in development and test; production
+    # never derives entry names, it reads the compiled manifest.
+    ENTRY_POINTS_FILE = 'config/helpers/entry_points.js'
+    # Matches both `name: './x.js',` and the conditional `baseEntryPoints.name = './x.js';`.
+    ENTRY_POINT_LINE_RE = %r{^\s*(?:baseEntryPoints\.)?(?<name>\w+)\s*[:=]\s*'\./(?<module>[^']+)'}
+    # `default: ['./main']`: prepended to every page entry, never a bundle of its own.
+    DEFAULT_ENTRY_LINE_RE = %r{^\s*default:\s*\['\./(?<module>[^']+)'\]}
 
     # Raised in production when the compiled manifest cannot be read.
     class ManifestLoadError < StandardError
@@ -82,6 +96,74 @@ module Gitlab
         # rubocop:enable Gitlab/FeatureFlagKeyDynamic
       end
 
+      # Whether `name` is switched by a feature flag, so `entrypoint_for`
+      # needs an actor for it.
+      def rollout?(name)
+        definitions.key?(name)
+      end
+
+      # The entry module a migration file describes: `index.js` for a bare
+      # `vue3_migration.yml`, `<name>.js` for `<name>.vue3_migration.yml`.
+      def entry_file_for(file)
+        match = File.basename(file.to_s).match(VUE3_MIGRATION_FILE_RE)
+        raise "Unexpected #{VUE3_MIGRATION_FILENAME} name: #{file}" unless match
+
+        File.join(File.dirname(file.to_s), "#{match[:entry] || 'index'}.js")
+      end
+
+      # The bundler entry name a migration file describes, looked up in
+      # `entry_modules`. Mirrors `entryNameFromFile` in
+      # `config/helpers/vue3_migration_loader.js`.
+      def entry_name_for(file)
+        module_file = relative_to_root(entry_file_for(file))
+
+        if module_file == main_module
+          raise "#{file} cannot be migrated this way: `main` has no bundle of its own. " \
+            "Use the `?vue3` import documented as Option 2 in doc/development/fe_guide/vue3_migration.md."
+        end
+
+        entry_modules.fetch(module_file) do
+          raise "#{file} describes #{module_file}, which is not a bundler entry. " \
+            "Entries are the values of #{ENTRY_POINTS_FILE} and every pages/**/index.js."
+        end
+      end
+
+      # Repo-relative entry module path -> bundler entry name, for every entry
+      # the bundler knows. Mirrors `entryModules` in the JS loader.
+      def entry_modules
+        @entry_modules ||= begin
+          index = {}
+
+          entry_points_lines.each do |line|
+            match = line.match(ENTRY_POINT_LINE_RE)
+            index[File.join(JS_ROOTS.first, match[:module])] = match[:name] if match
+          end
+
+          JS_ROOTS.each do |root|
+            Dir.glob(File.join(ROOT_PATH, root, 'pages/**/index.js')).each do |file|
+              rel = relative_to_root(file).delete_prefix("#{root}/")
+              index[File.join(root, rel)] = rel.delete_suffix('/index.js').tr('/', '.')
+            end
+          end
+
+          index
+        end
+      end
+
+      # Module path of the `default` entry, read from `entry_points.js` like the index.
+      def main_module
+        @main_module ||= begin
+          match = entry_points_lines.filter_map { |line| line.match(DEFAULT_ENTRY_LINE_RE) }.first
+          raise "No `default` entry found in #{ENTRY_POINTS_FILE}" unless match
+
+          File.join(JS_ROOTS.first, "#{match[:module]}.js")
+        end
+      end
+
+      def entry_points_lines
+        File.readlines(File.join(ROOT_PATH, ENTRY_POINTS_FILE))
+      end
+
       # Hash of entry name (e.g. `pages.projects.jobs.show`) to feature
       # flag name, for entries with `status: rollout`.
       def definitions
@@ -89,11 +171,14 @@ module Gitlab
       end
 
       def reload!
-        @definitions = load_all!
+        clear_memoization!
+        definitions
       end
 
       def clear_memoization!
         @definitions = nil
+        @entry_modules = nil
+        @main_module = nil
       end
 
       private
@@ -112,7 +197,7 @@ module Gitlab
       def load_from_source_files
         result = {}
 
-        Dir.glob(Rails.root.join(VUE3_MIGRATION_GLOB)).each do |file|
+        Dir.glob(File.join(ROOT_PATH, VUE3_MIGRATION_GLOB)).each do |file|
           doc = YAML.safe_load_file(file)
 
           # The schema is enforced by the validator spec; here we only
@@ -122,7 +207,7 @@ module Gitlab
           # Shadowed CE/EE/JH files are enforced identical by
           # `spec/lib/gitlab/vue3_migration_files_spec.rb`, so later
           # edition matches overriding earlier ones is inconsequential.
-          result[entry_name_from_file(file)] = doc['feature_flag']
+          result[entry_name_for(file)] = doc['feature_flag']
         end
 
         result
@@ -145,11 +230,8 @@ module Gitlab
         )
       end
 
-      def entry_name_from_file(file)
-        match = file.to_s.match(%r{app/assets/javascripts/pages/(.+)/[^/]+\z})
-        raise "Unexpected vue3_migration.yml path: #{file}" unless match
-
-        "pages.#{match[1].tr('/', '.')}"
+      def relative_to_root(file)
+        file.to_s.delete_prefix("#{ROOT_PATH}/")
       end
     end
   end

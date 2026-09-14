@@ -1,0 +1,126 @@
+---
+stage: Agent Foundations
+group: Agent Developer
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see <https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments>
+title: Convert to GitLab CI/CD Flow
+---
+
+{{< details >}}
+
+- Tier: [Free](../../subscriptions/gitlab_credits.md#for-the-free-tier), Premium, Ultimate
+- Offering: GitLab.com, GitLab Self-Managed, GitLab Dedicated
+
+{{< /details >}}
+
+{{< history >}}
+
+- Introduced as [a beta](../../policy/development_stages_support.md) in GitLab 18.3 [with a feature flag](../../administration/feature_flags/_index.md) named `duo_workflow_in_ci`. Disabled by default, but can be enabled for the instance or a user.
+- Feature flag `duo_workflow_in_ci` enabled by default in GitLab 18.4. Feature flag `duo_workflow` must also be enabled, but it is enabled by default.
+- [Generally available](https://gitlab.com/gitlab-org/gitlab/-/work_items/585273) in GitLab 18.8.
+- Feature flags `duo_workflow_in_ci` and `duo_workflow` removed in GitLab 18.9.
+- Available on the Free tier on GitLab.com with GitLab Credits in GitLab 18.10.
+
+{{< /history >}}
+
+The Convert to GitLab CI/CD Flow helps you migrate your Jenkins pipelines to GitLab CI/CD. This flow:
+
+- Analyzes your existing Jenkins pipeline configuration.
+- Converts Jenkins pipeline syntax to GitLab CI/CD YAML.
+- Suggests best practices for GitLab CI/CD implementation.
+- Creates a merge request with the converted pipeline configuration.
+- Provides guidance on migrating Jenkins plugins to GitLab features.
+
+This flow is available in the GitLab UI only.
+
+## Prerequisites
+
+- Meet the [prerequisites for the GitLab Duo Agent Platform](../../user/duo_agent_platform/_index.md#prerequisites).
+- Turn on **Allow foundational flows** and **Convert to GitLab CI/CD** [for the top-level group](../../user/duo_agent_platform/flows/foundational_flows/_index.md#turn-foundational-flows-on-or-off).
+- Have the Developer, Maintainer, or Owner role for the target GitLab project.
+- Have access to your Jenkins pipeline configuration.
+- [Configure push rules to allow a service account](../../user/duo_agent_platform/troubleshooting.md#configure-push-rules-to-allow-a-service-account).
+- [Configure your own runners](../../user/duo_agent_platform/flows/execution/_index.md#configure-runners-to-execute-flows) or turn on [GitLab hosted runners](../../ci/runners/hosted_runners/_index.md) for your project.
+
+## Use the flow
+
+To convert your Jenkinsfile to GitLab CI/CD:
+
+1. In the top bar, select **Search or go to** and find your project.
+1. Open your Jenkinsfile.
+1. Above the file, select **Convert to GitLab CI/CD**.
+1. Monitor progress by selecting **AI** > **Sessions**.
+1. When the pipeline has successfully executed, in the left sidebar, select **Code** > **Merge requests**.
+   A merge request with the title `Duo Workflow: Convert to GitLab CI` is displayed.
+1. Review the merge request and make changes as needed.
+
+### Conversion process
+
+The process converts:
+
+- Pipeline stages and steps.
+- Environment variables.
+- Build triggers and parameters.
+- Artifacts and dependencies.
+- Parallel execution.
+- Conditional logic.
+- Post-build actions.
+
+## Example
+
+Jenkinsfile input:
+
+```groovy
+pipeline {
+    agent any
+    stages {
+        stage('Build') {
+            steps {
+                sh 'npm install'
+                sh 'npm build'
+            }
+        }
+        stage('Test') {
+            steps {
+                sh 'npm test'
+            }
+        }
+        stage('Deploy') {
+            when { branch 'main' }
+            steps {
+                sh './deploy.sh'
+            }
+        }
+    }
+}
+```
+
+GitLab output:
+
+```yaml
+stages:
+  - build
+  - test
+  - deploy
+
+build:
+  stage: build
+  script:
+    - npm install
+    - npm build
+  artifacts:
+    paths:
+      - node_modules/
+      - dist/
+
+test:
+  stage: test
+  script:
+    - npm test
+
+deploy:
+  stage: deploy
+  script:
+    - ./deploy.sh
+  only:
+    - main
+```

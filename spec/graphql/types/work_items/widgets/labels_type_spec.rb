@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Types::WorkItems::Widgets::LabelsType do
+RSpec.describe Types::WorkItems::Widgets::LabelsType, feature_category: :team_planning do
   it 'exposes the expected fields' do
     expected_fields = %i[labels allowsScopedLabels type]
 
