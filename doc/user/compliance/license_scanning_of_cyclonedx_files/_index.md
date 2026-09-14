@@ -43,7 +43,7 @@ To enable License scanning of CycloneDX files:
 - Using the dependency scanning template
   - Turn on [dependency scanning](../../application_security/dependency_scanning/dependency_scanning_sbom/_index.md#turn-on-dependency-scanning)
     and ensure that its prerequisites are met.
-  - On GitLab Self-Managed, you can [choose package registry metadata to synchronize](../../../administration/settings/security_and_compliance.md#choose-package-registry-metadata-to-sync) in the **Admin** area for the GitLab instance. For this data synchronization to work, you must allow outbound network traffic from your GitLab instance to the domain `storage.googleapis.com`. If you have limited or no network connectivity then refer to the documentation section [running in an offline environment](#running-in-an-offline-environment) for further guidance.
+  - On GitLab Self-Managed, you can [choose package registry metadata to synchronize](../../../administration/settings/security_and_compliance.md#choose-package-registry-metadata-to-sync) in the **Admin** area for the GitLab instance. For this data synchronization to work, you must allow outbound network traffic from your GitLab instance to the domains `storage.googleapis.com` and `pmdb-dist-svc.runway.gitlab.net`. If you have limited or no network connectivity then refer to the documentation section [running in an offline environment](#running-in-an-offline-environment) for further guidance.
 - Or use the [CI/CD component](../../../ci/components/_index.md) for applicable package registries.
 
 ## Supported languages and package managers
@@ -218,13 +218,14 @@ license names.
 {{< history >}}
 
 - Support for SPDX license expressions in CycloneDX SBOMs [introduced](https://gitlab.com/gitlab-org/gitlab/-/work_items/606225) in GitLab 19.3.
+- Support for SPDX license expressions in PMDB [introduced](https://gitlab.com/groups/gitlab-org/-/work_items/22880) in GitLab 19.4.
 
 {{< /history >}}
 
 GitLab reads SPDX [license expressions](https://spdx.github.io/spdx-spec/v2-draft/SPDX-license-expressions/)
 from the `expression` field in CycloneDX SBOMs, including `LicenseRef-[NAME]` syntax for custom non-SPDX licenses.
 When a component's SBOM entry includes an `expression`, GitLab stores and evaluates the full expression.
-Previously, components with license expressions appeared with an `unknown` license.
+When a CycloneDX SBOM doesn't contain license information, GitLab matches components against PMDB license data, which supports license expressions.
 
 License expressions are supported in [license approval policies](../license_approval_policies.md).
 When a policy targets a license that appears as a term in a component's expression, the policy evaluates correctly against the full expression.

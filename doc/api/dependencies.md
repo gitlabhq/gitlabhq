@@ -76,6 +76,18 @@ Example response:
         "url": "https://opensource.org/licenses/MIT"
       }
     ]
-  }
+  },
+  {
+    "name": "pako",
+    "version": "2.2.0",
+    "package_manager": "yarn",
+    "dependency_file_path": "yarn.lock",
+    "vulnerabilities": [],
+    "licenses": [
+      {
+        "name": "MIT AND Zlib",
+      }
+    ]
+  },
 ]
 ```

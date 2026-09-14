@@ -315,7 +315,7 @@ config/bounded_contexts.yml @fabiopitino @grzesiek @stanhu @tkuah
 /spec/lib/gitlab/sql/
 /spec/tasks/gitlab/db_rake_spec.rb
 
-^[Database] @gitlab-org/maintainers/database
+^[Database optional] @gitlab-org/maintainers/database
 /spec/lib/gitlab/background_migration/
 /ee/spec/lib/ee/gitlab/background_migration/
 /spec/migrations/
@@ -2103,7 +2103,7 @@ ee/lib/gitlab/llm/embeddings/
 /ee/elastic/migrate/
 /ee/elastic/docs/
 
-^[Advanced Search Migration] @gitlab-org/search-team/maintainers/advanced-migrations
+^[Advanced Search Migration optional] @gitlab-org/search-team/maintainers/advanced-migrations
 /ee/spec/elastic/migrate/
 /ee/spec/lib/search/elastic
 

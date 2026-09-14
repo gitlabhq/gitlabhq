@@ -124,6 +124,8 @@ curl --request GET \
 
 The response is `404 Not Found` if the dependency list export is not finished yet or was not found.
 
+In CycloneDX exports, a component with an SPDX license expression (for example `MIT AND Zlib`) has the full expression in `licenses[].license.name`, and that entry has no `id` field.
+
 Example response:
 
 ```json

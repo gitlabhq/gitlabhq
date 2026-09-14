@@ -12651,6 +12651,12 @@ msgstr ""
 msgid "ArtifactRegistry|Lowercase letters, numbers, hyphens (-), and underscores (_) only. The repository name cannot be changed after creation."
 msgstr ""
 
+msgid "ArtifactRegistry|Manifest %{digest}"
+msgstr ""
+
+msgid "ArtifactRegistry|Manifest %{digest} for %{platform}"
+msgstr ""
+
 msgid "ArtifactRegistry|Manifest %{digest} of %{name}."
 msgstr ""
 
@@ -12780,6 +12786,12 @@ msgstr[1] ""
 msgid "ArtifactRegistry|Package successfully scheduled for deletion."
 msgstr ""
 
+msgid "ArtifactRegistry|Platform"
+msgstr ""
+
+msgid "ArtifactRegistry|Platforms"
+msgstr ""
+
 msgid "ArtifactRegistry|Podman"
 msgstr ""
 
@@ -12832,6 +12844,9 @@ msgid "ArtifactRegistry|Push an image:"
 msgstr ""
 
 msgid "ArtifactRegistry|Push your first manifest to get started."
+msgstr ""
+
+msgid "ArtifactRegistry|Referenced by"
 msgstr ""
 
 msgid "ArtifactRegistry|Referrer"

@@ -260,7 +260,7 @@ If the license appears as `unknown` upstream, it is expected that GitLab will sh
 
 #### License includes SPDX license expression
 
-[SPDX license expressions](https://spdx.github.io/spdx-spec/v2.3/SPDX-license-expressions/) are not supported. Dependencies with SPDX license expressions appear with a **License** that is `unknown`. An example of an SPDX license expression is `(MIT OR CC0-1.0)`. Read more in [issue 336878](https://gitlab.com/gitlab-org/gitlab/-/issues/336878).
+[SPDX license expressions](https://spdx.github.io/spdx-spec/v2.3/SPDX-license-expressions/) are supported in GitLab 19.4 and later. An example of an SPDX license expression is `(MIT OR CC0-1.0)`.
 
 #### Package version not in Package Metadata DB
 

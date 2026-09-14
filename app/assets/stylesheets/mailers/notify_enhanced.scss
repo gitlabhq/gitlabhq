@@ -52,6 +52,22 @@ gl-emoji img {
   margin-top: $gl-spacing-scale-5;
 }
 
+// stylelint-disable-next-line gitlab/no-gl-class
+.gl-label-scoped {
+  border-width: $gl-spacing-scale-1;
+  border-style: solid;
+
+  // stylelint-disable-next-line gitlab/no-gl-class
+  .gl-label-text {
+    padding: 0 $label-padding-horizontal 0 ($label-padding-horizontal - $gl-spacing-scale-1);
+  }
+
+  // stylelint-disable-next-line gitlab/no-gl-class
+  .gl-label-text-scoped {
+    padding: 0 ($gl-spacing-scale-3 - $gl-spacing-scale-1) 0 $gl-spacing-scale-2;
+  }
+}
+
 .content {
   hr {
     border: 1px solid $gl-border-color-default;

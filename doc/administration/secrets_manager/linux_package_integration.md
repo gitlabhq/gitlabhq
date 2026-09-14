@@ -16,7 +16,6 @@ title: Install OpenBao for a Linux package deployment of GitLab
 {{< history >}}
 
 - [Introduced](https://gitlab.com/gitlab-org/omnibus-gitlab/-/work_items/9669) as a beta feature in GitLab 19.0.
-- Automatic database and role creation [added](https://gitlab.com/gitlab-org/omnibus-gitlab/-/merge_requests/9440) in GitLab 19.2.
 - Helm values generation [added](https://gitlab.com/gitlab-org/omnibus-gitlab/-/merge_requests/9290) in GitLab 19.2.
 
 {{< /history >}}
@@ -42,9 +41,9 @@ Run OpenBao in one of two ways:
   to use a managed Kubernetes service from your cloud provider.
 
 > [!note]
-> The Linux package-managed [PostgreSQL cluster](../postgresql/replication_and_failover.md) is not supported as the OpenBao database backend.
-> If you use such cluster for GitLab, provision a separate PostgreSQL instance for OpenBao,
-> either self-managed or as a managed cloud database service.
+> For this installation procedure, provision a dedicated PostgreSQL instance for OpenBao.
+> Use a self-managed or managed PostgreSQL service that is separate from the PostgreSQL
+> instance used by GitLab.
 > For more information, see [issue 7292](https://gitlab.com/gitlab-org/omnibus-gitlab/-/work_items/7292).
 
 ## Prerequisites
@@ -101,9 +100,8 @@ Before you install OpenBao, verify your setup meets these requirements:
   instance nodes. How you establish this connectivity depends on your infrastructure. For example,
   you might use VPC peering, shared VPC, or firewall rules. GitLab Rails and Sidekiq must be able
   to reach the OpenBao URL you expose from the cluster.
-- If you use Linux package-managed PostgreSQL as the OpenBao database, the PostgreSQL node must accept
-  TCP connections from the cluster pod CIDR. Configure firewall or security group rules to allow
-  this traffic on the database port.
+- Your PostgreSQL instance must accept TCP connections from the cluster pod
+  CIDR. Configure firewall or security group rules to allow this traffic on the database port.
 
 {{< /tab >}}
 
@@ -135,9 +133,8 @@ Before you begin:
 
 1. Collect the CIDR of your Kubernetes pod network. You need it later to configure PostgreSQL
    authentication.
-1. Collect the address of the PostgreSQL instance that OpenBao uses (`<POSTGRES_ADDRESS>`).
-   This is either the IP address of your Linux package PostgreSQL node, or the endpoint of your
-   external or managed PostgreSQL instance.
+1. Collect the address of the PostgreSQL instance that OpenBao uses
+   (`<POSTGRES_ADDRESS>`).
 1. Confirm that your Kubernetes cluster is fully running before you attempt to install OpenBao.
 1. Confirm that your `kubectl` context is set to this cluster (`KUBECONFIG` is configured correctly).
 
@@ -147,19 +144,27 @@ Before you begin:
 
 ## Provision the OpenBao PostgreSQL database
 
-OpenBao stores its data in a PostgreSQL database. How you provision it depends on your PostgreSQL setup:
+OpenBao requires its own PostgreSQL database. Provision this database on your external or managed PostgreSQL
+instance before you configure GitLab.
 
-- Linux package-managed PostgreSQL: the Linux package creates the database and role automatically
-  during `gitlab-ctl reconfigure`, based on the `postgresql['component_databases']` setting you
-  declare when you configure GitLab by using the instructions below.
-- External or managed PostgreSQL: you create the database and role manually, because
-  `component_databases` supports only Linux package-managed PostgreSQL.
-
-To prepare the database:
+To provision the OpenBao PostgreSQL database:
 
 1. Choose a strong password for the OpenBao database user.
-   You use this same password in the Kubernetes secret, and either in the
-   `postgresql['component_databases']` configuration or when you create the database user manually.
+   You use this same password in the Kubernetes secret in the last step of this section.
+
+1. Create the OpenBao database user:
+
+   ```shell
+   psql -h <POSTGRES_ADDRESS> -U <admin_user> \
+     -c "CREATE USER openbao WITH PASSWORD '<strong-password>';"
+   ```
+
+1. Create the OpenBao database:
+
+   ```shell
+   psql -h <POSTGRES_ADDRESS> -U <admin_user> \
+     -c "CREATE DATABASE openbao OWNER openbao;"
+   ```
 
 1. Create the Kubernetes namespace and the secret that passes the database password to the Helm
    chart. The secret name and key must match the generated Helm values file:
@@ -170,16 +175,6 @@ To prepare the database:
    kubectl create secret generic openbao-db-password \
      --namespace openbao \
      --from-literal=password='<strong-password>'
-   ```
-
-1. If you use an external or managed PostgreSQL instance, create the database and role manually:
-
-   ```shell
-   psql -h <POSTGRES_ADDRESS> -U <admin_user> \
-     -c "CREATE USER openbao WITH PASSWORD '<strong-password>';"
-
-   psql -h <POSTGRES_ADDRESS> -U <admin_user> \
-     -c "CREATE DATABASE openbao OWNER openbao;"
    ```
 
 ## Configure GitLab
@@ -205,18 +200,6 @@ postgresql['trust_auth_cidr_addresses'] = %w[127.0.0.1/32 ::1/128 <SHARED_NETWOR
 # Kubernetes pods authenticate with a password.
 # Replace 10.42.0.0/16 with the CIDR of your Kubernetes CNI (pod network).
 postgresql['md5_auth_cidr_addresses'] = %w[10.42.0.0/16]
-
-# Create the OpenBao database and role automatically.
-# Only for Linux package-managed PostgreSQL, omit for external DB
-# Use the same password as the openbao-db-password Kubernetes secret.
-postgresql['component_databases'] = {
-  'openbao' => {
-    'enable'   => true,
-    'database' => 'openbao',
-    'user'     => 'openbao',
-    'password' => '<strong-password>'
-  }
-}
 
 # Without this setting, NGINX routes all traffic on the shared IP to the
 # OpenBao virtual host. Both virtual hosts must listen on the same addresses
@@ -254,8 +237,6 @@ In this configuration:
   the Unix socket.
 - `postgresql['md5_auth_cidr_addresses']` is a list of CIDR blocks from the pod CIDR. Connections
   from these blocks require a password. These addresses are used by OpenBao pods.
-- `postgresql['component_databases']` declares the OpenBao database and role. The Linux package
-  creates them during `gitlab-ctl reconfigure`. If you use an external or managed instance, omit this setting.
 - `nginx['listen_addresses']` specifies the addresses that the GitLab and OpenBao NGINX virtual
   hosts listen on. Both virtual hosts must listen on the same addresses so NGINX can route
   requests by server name instead of preferring the most specific listen address.
@@ -305,40 +286,11 @@ If you have separate Sidekiq nodes, add the same `gitlab_rails['openbao']` setti
 `/etc/gitlab/gitlab.rb` on each Sidekiq node. Sidekiq workers that provision secrets also
 require access to OpenBao.
 
-If you use the Linux package-managed PostgreSQL as the OpenBao database, also add the following to
-`/etc/gitlab/gitlab.rb` on the PostgreSQL node:
-
-```ruby
-# PostgreSQL: accept TCP connections from Kubernetes pods.
-postgresql['listen_address'] = '<POSTGRES_ADDRESS>'
-
-# Local connections (GitLab Rails and other services) continue without a password.
-postgresql['trust_auth_cidr_addresses'] = %w[127.0.0.1/32 ::1/128]
-
-# Kubernetes pods authenticate with a password.
-# Replace 10.0.0.0/14 with the CIDR of your Kubernetes pod network.
-postgresql['md5_auth_cidr_addresses'] = %w[10.0.0.0/14]
-
-# Create the OpenBao database and role automatically.
-# Use the same password as the openbao-db-password Kubernetes secret.
-# Only for Linux package-managed PostgreSQL, omit for external DB
-postgresql['component_databases'] = {
-  'openbao' => {
-    'enable'   => true,
-    'database' => 'openbao',
-    'user'     => 'openbao',
-    'password' => '<strong-password>'
-  }
-}
-```
-
-Add these CIDR entries to your existing `trust_auth_cidr_addresses` and
-`md5_auth_cidr_addresses` values instead of replacing them. Keep your existing entries for
-other GitLab nodes, such as Rails and Sidekiq nodes.
-
-For an external or managed PostgreSQL instance, omit the `component_databases` block and create the
-database and role manually, as described in
+You already created the OpenBao database and role on your external or managed PostgreSQL
+instance, as described in
 [Provision the OpenBao PostgreSQL database](#provision-the-openbao-postgresql-database).
+Configure that instance to accept TCP connections from the cluster pod CIDR, as described in
+[Requirements](#requirements).
 
 {{< /tab >}}
 
@@ -358,7 +310,6 @@ sudo gitlab-ctl reconfigure
 
 This command applies all configuration in a single pass:
 
-- The OpenBao database and role are created.
 - PostgreSQL starts accepting TCP connections from Kubernetes pods.
 - NGINX is configured with the OpenBao virtual host, including TLS termination
   and HTTP to HTTPS redirect.
@@ -371,15 +322,13 @@ Reconfigure fails if `oak['components']['openbao']['external_url']` or `oak['com
 
 {{< tab title="External cluster" >}}
 
-Apply configuration changes on each node where you updated `gitlab.rb`:
+Apply configuration changes on each Rails and Sidekiq node where you updated `gitlab.rb`:
 
 ```shell
 sudo gitlab-ctl reconfigure
 ```
 
-On the PostgreSQL node, this creates the OpenBao database and role, and makes PostgreSQL accept TCP
-connections from the cluster pod network. On Rails and Sidekiq nodes, this applies the OpenBao URL
-configuration.
+This applies the OpenBao URL configuration.
 
 {{< /tab >}}
 
