@@ -22,7 +22,7 @@ module RuboCop
       #   end
       #
       class NoFindInWorkers < RuboCop::Cop::Base
-        DOC_LINK = 'https://docs.gitlab.com/ee/development/sidekiq/#retries'
+        DOC_LINK = 'https://docs.gitlab.com/development/sidekiq/#retries'
 
         RESTRICT_ON_SEND = [:find].freeze
 

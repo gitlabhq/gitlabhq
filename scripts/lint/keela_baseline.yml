@@ -17,8 +17,6 @@ attributes:
   ee/app/services/epics/transfer_service.rb:
   - epic_created_events
 constants:
-  app/controllers/admin/application_settings_controller.rb:
-  - PARAM_JOB_ID_MAX_SIZE
   app/controllers/admin/jobs_controller.rb:
   - BUILDS_PER_PAGE
   app/controllers/graphql_controller.rb:

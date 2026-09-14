@@ -88,6 +88,11 @@ export default {
         variables: { fullPath: this.fullPath, searchTerm: '' },
       });
 
+      // Nothing cached to amend while the labels query is still in flight.
+      if (!sourceData) {
+        return;
+      }
+
       const collator = new Intl.Collator('en');
       const data = produce(sourceData, (draftData) => {
         const { nodes } = get(draftData, dataPath);

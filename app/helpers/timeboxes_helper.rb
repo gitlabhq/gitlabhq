@@ -261,8 +261,9 @@ module TimeboxesHelper
   end
 
   def milestone_issues_count_message(milestone)
-    total_count = milestone_visible_issues_count(milestone)
     limit = Milestone::DISPLAY_ISSUES_LIMIT
+    count = milestone_visible_issues_count(milestone)
+    total_count = count > limit ? "#{limit}+" : count.to_s
     link_options = { milestone_title: @milestone.title }
 
     message = _('Showing %{limit} of %{total_count} items. ') % { limit: limit, total_count: total_count }
@@ -271,10 +272,22 @@ module TimeboxesHelper
     message.html_safe
   end
 
+  def milestone_merge_requests_count_for_display(milestone)
+    count = milestone_visible_merge_requests_count(milestone)
+    limit = Milestone::DISPLAY_MERGE_REQUESTS_LIMIT
+
+    count > limit ? "#{limit}+" : count.to_s
+  end
+
   private
 
   def milestone_visible_issues_count(milestone)
-    @milestone_visible_issues_count ||= milestone.issues_visible_to_user(current_user).size
+    @milestone_visible_issues_count ||=
+      milestone.issues_visible_to_user(current_user).limit(Milestone::DISPLAY_ISSUES_LIMIT + 1).count
+  end
+
+  def milestone_visible_merge_requests_count(milestone)
+    @milestone_visible_merge_requests_count ||= milestone.merge_requests_count_for_display(current_user)
   end
 
   def milestones_path_for_type(type, opts)

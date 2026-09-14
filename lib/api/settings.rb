@@ -596,6 +596,14 @@ module API
       optional :throttle_authenticated_git_http_requests_per_period,
         desc: 'Maximum requests per period per user. `throttle_authenticated_git_http_enabled` must be `true`. ' \
           'Default value: `3600`.'
+      optional :throttle_authenticated_dependency_proxy_enabled,
+        desc: 'If `true`, enforces the authenticated dependency proxy request rate limit. Default value: `false`.'
+      optional :throttle_authenticated_dependency_proxy_period_in_seconds,
+        desc: 'Rate limit period in seconds. `throttle_authenticated_dependency_proxy_enabled` must be `true`. ' \
+          'Default value: `15`.'
+      optional :throttle_authenticated_dependency_proxy_requests_per_period,
+        desc: 'Maximum requests per period per user. `throttle_authenticated_dependency_proxy_enabled` must be ' \
+          '`true`. Default value: `1000`.'
       optional :throttle_authenticated_packages_api_enabled,
         desc: '(**If enabled, requires**: `throttle_authenticated_packages_api_period_in_seconds` and ' \
           '`throttle_authenticated_packages_api_requests_per_period`) Enable authenticated API request rate limit. ' \

@@ -162,10 +162,10 @@ To create a milestone:
 
 ### Milestone title rules
 
-To avoid confusion within group hierarchies, duplicate milestone titles are not permitted.
+To avoid confusion in group hierarchies, duplicate milestone titles are not permitted.
 
 - For **project milestones**, titles must be unique in the project's ancestor hierarchy for both project and milestone titles.
-- For **group milestones**, titles must be unique within the group's hierarchy, for both ancestors and children, including group and project milestones.
+- For **group milestones**, titles must be unique in the group's hierarchy, for both ancestors and children, including group and project milestones.
 
 ## Edit a milestone
 
@@ -272,7 +272,7 @@ To promote a project milestone:
 
 {{< history >}}
 
-- Ability to assign milestones to epics [introduced](https://gitlab.com/groups/gitlab-org/-/work_items/329) in GitLab 18.2.
+- Assigning milestones to epics [introduced](https://gitlab.com/groups/gitlab-org/-/work_items/329) in GitLab 18.2.
 
 {{< /history >}}
 

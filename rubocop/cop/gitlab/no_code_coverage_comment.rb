@@ -23,7 +23,7 @@ module RuboCop
       class NoCodeCoverageComment < RuboCop::Cop::Base
         include RangeHelp
 
-        MSG = 'The use of %<nocov_comment>s is discouraged. All code must have tests. See https://docs.gitlab.com/ee/development/contributing/merge_request_workflow.html#testing'
+        MSG = 'The use of %<nocov_comment>s is discouraged. All code must have tests. See https://docs.gitlab.com/development/contributing/merge_request_workflow/#testing'
 
         DEFAULT_COMMENT_TOKEN = 'nocov'
 

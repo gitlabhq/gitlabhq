@@ -53,7 +53,7 @@ module RuboCop
           include RuboCop::FactoryBot::Language
 
           MSG = 'Prefer inline `association` over `%{type}`. ' \
-            'See https://docs.gitlab.com/ee/development/testing_guide/best_practices.html#factories'
+            'See https://docs.gitlab.com/development/testing_guide/best_practices/#factories'
 
           FORBIDDEN_METHODS = %i[build build_list build_stubbed build_stubbed_list create create_list].freeze
 

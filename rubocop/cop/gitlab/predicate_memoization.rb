@@ -7,7 +7,7 @@ module RuboCop
         MSG = <<~TEXT
           Avoid using `@value ||= query` inside predicate methods in order to
           properly memoize `false` or `nil` values.
-          https://docs.gitlab.com/ee/development/utilities.html#strongmemoize
+          https://docs.gitlab.com/development/utilities/#strongmemoize
         TEXT
 
         def on_def(node)

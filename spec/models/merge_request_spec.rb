@@ -1537,53 +1537,65 @@ RSpec.describe MergeRequest, factory_default: :keep, feature_category: :code_rev
 
     let!(:merge_request) { create(:merge_request) }
 
-    context 'with sha contained in latest merge request diff' do
-      let(:commit) { merge_request.merge_request_diff.merge_request_diff_commits.last }
-      let(:sha) { commit.sha }
+    shared_examples 'by_commit_sha scope behavior' do
+      context 'with sha contained in latest merge request diff' do
+        let(:commit) { merge_request.merge_request_diff.merge_request_diff_commits.last }
+        let(:sha) { commit.sha }
 
-      context 'when sha is only present in diff commit metadata' do
-        before do
-          commit.update!(sha: nil)
+        context 'when sha is only present in diff commit metadata' do
+          before do
+            commit.update!(sha: nil)
+          end
+
+          it 'returns merge requests' do
+            expect(by_commit_sha).to eq([merge_request])
+          end
         end
 
-        it 'returns merge requests' do
-          expect(by_commit_sha).to eq([merge_request])
+        context 'when sha is only present in diff commit' do
+          before do
+            # Pre-backfill scenario: SHA lives only on `merge_request_diff_commits.sha`,
+            # not in `merge_request_commits_metadata`. The metadata-only read path
+            # (`mr_diff_commits_read_new_table`) is only enabled post-backfill, so
+            # stub it off to exercise the legacy union fallback.
+            stub_read_new_commits_table(false)
+
+            commit.update!(sha: sha)
+            commit.merge_request_commits_metadata.destroy!
+          end
+
+          it 'returns merge requests' do
+            expect(by_commit_sha).to eq([merge_request])
+          end
         end
       end
 
-      context 'when sha is only present in diff commit' do
-        before do
-          # Pre-backfill scenario: SHA lives only on `merge_request_diff_commits.sha`,
-          # not in `merge_request_commits_metadata`. The metadata-only read path
-          # (`mr_diff_commits_read_new_table`) is only enabled post-backfill, so
-          # stub it off to exercise the legacy union fallback.
-          stub_read_new_commits_table(false)
+      context 'with sha contained not in latest merge request diff' do
+        let(:sha) { 'b83d6e391c22777fca1ed3012fce84f633d7fed0' }
 
-          commit.update!(sha: sha)
-          commit.merge_request_commits_metadata.destroy!
+        before do
+          latest_merge_request_diff = merge_request.merge_request_diffs.create!
+          commits_metadata = MergeRequest::CommitsMetadata.where(sha: sha)
+          MergeRequestDiffCommit.where(
+            merge_request_diff_id: latest_merge_request_diff,
+            merge_request_commits_metadata: commits_metadata
+          ).delete_all
         end
 
-        it 'returns merge requests' do
-          expect(by_commit_sha).to eq([merge_request])
+        it 'returns empty requests' do
+          expect(by_commit_sha).to be_empty
         end
       end
     end
 
-    context 'with sha contained not in latest merge request diff' do
-      let(:sha) { 'b83d6e391c22777fca1ed3012fce84f633d7fed0' }
+    it_behaves_like 'by_commit_sha scope behavior'
 
-      before do
-        latest_merge_request_diff = merge_request.merge_request_diffs.create!
-        commits_metadata = MergeRequest::CommitsMetadata.where(sha: 'b83d6e391c22777fca1ed3012fce84f633d7fed0')
-        MergeRequestDiffCommit.where(
-          merge_request_diff_id: latest_merge_request_diff,
-          merge_request_commits_metadata: commits_metadata
-        ).delete_all
-      end
+    it 'generates ANY(ARRAY(...)) over diff IDs rather than EXISTS' do
+      sha = 'b83d6e391c22777fca1ed3012fce84f633d7fed0'
+      sql = described_class.by_commit_sha([merge_request.project.id], sha).to_sql
 
-      it 'returns empty requests' do
-        expect(by_commit_sha).to be_empty
-      end
+      expect(sql).to include('latest_merge_request_diff_id = ANY(ARRAY(')
+      expect(sql).not_to include('EXISTS')
     end
 
     context 'when commit_sha_scope_logger is disabled' do
@@ -1597,6 +1609,22 @@ RSpec.describe MergeRequest, factory_default: :keep, feature_category: :code_rev
         expect(Gitlab::AppLogger).not_to receive(:info)
 
         by_commit_sha
+      end
+    end
+
+    context 'when mr_by_commit_sha_use_array_subquery is disabled' do
+      before do
+        stub_feature_flags(mr_by_commit_sha_use_array_subquery: false)
+      end
+
+      it_behaves_like 'by_commit_sha scope behavior'
+
+      it 'generates an EXISTS correlated subquery' do
+        sha = 'b83d6e391c22777fca1ed3012fce84f633d7fed0'
+        sql = described_class.by_commit_sha([merge_request.project.id], sha).to_sql
+
+        expect(sql).to include('EXISTS (')
+        expect(sql).not_to include('ANY(ARRAY(')
       end
     end
   end

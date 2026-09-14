@@ -51,12 +51,12 @@ These charts help teams:
 
 - Visualize progress in real time throughout a milestone period.
 - Identify potential delays early by comparing actual progress to ideal progress.
-- Communicate status to stakeholders with easy-to-understand visual data.
+- Communicate status to stakeholders with clear visual data.
 - Make data-driven decisions about resource allocation and prioritization.
 
 Use burndown charts to focus on remaining work.
 Use burnup charts to track both completed work and scope changes over time.
-Burnup charts are particularly useful for monitoring scope creep (uncontrolled additions to a
+Burnup charts help you monitor scope creep (uncontrolled additions to a
 project's scope) by showing spikes in the chart's total issues.
 
 ## Burndown charts
@@ -91,7 +91,7 @@ To view a group's burndown chart:
 A burndown chart is available for every project or group milestone that has been attributed a **start date** and a **due date**.
 
 > [!note]
-> You're able to [promote project milestones](_index.md#promote-a-project-milestone-to-a-group-milestone) to group milestones and still see the **burndown chart** for them, respecting license limitations.
+> You can [promote project milestones](_index.md#promote-a-project-milestone-to-a-group-milestone) to group milestones and still see the **burndown chart** for them, respecting license limitations.
 
 The chart indicates the project's progress throughout that milestone (for issues assigned to it).
 
@@ -173,7 +173,7 @@ When an issue is closed, the **Total** line remains the same and the **Completed
 > This feature is available for testing, but not ready for production use.
 
 With [tasks](../../tasks.md), a more granular planning is possible.
-If this feature is enabled, the weight of issues that have tasks is derived from the tasks in the
+If this feature is turned on, the weight of issues that have tasks is derived from the tasks in the
 same milestone.
 Issues with tasks are not counted separately in burndown or burnup charts.
 

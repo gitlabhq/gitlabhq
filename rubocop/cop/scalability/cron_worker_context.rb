@@ -38,7 +38,7 @@ module RuboCop
           If there is no relevant metadata, please disable the cop with a comment
           explaining this.
 
-          Read more about it https://docs.gitlab.com/ee/development/sidekiq/logging.html#worker-context
+          Read more about it https://docs.gitlab.com/development/sidekiq/logging/#worker-context
         MSG
 
         # @!method includes_cronjob_queue?(node)

@@ -3,9 +3,9 @@
 module RuboCop
   module Cop
     module Database
-      # Checks for `self.inheritance_column` usage, which is discouraged https://docs.gitlab.com/ee/development/database/single_table_inheritance.html
+      # Checks for `self.inheritance_column` usage, which is discouraged https://docs.gitlab.com/development/database/single_table_inheritance/
       class AvoidInheritanceColumn < RuboCop::Cop::Base
-        MSG = "Do not use Single Table Inheritance https://docs.gitlab.com/ee/development/database/single_table_inheritance.html"
+        MSG = "Do not use Single Table Inheritance https://docs.gitlab.com/development/database/single_table_inheritance/"
 
         # @!method inheritance_column_used?(node)
         def_node_search :inheritance_column_used?, <<~PATTERN

@@ -15,15 +15,21 @@
 #   1  the two snapshots differ
 #   2  the router's snapshot could not be downloaded, or was not a snapshot
 #
+# The snapshot is read through the Repository Files API rather than /-/raw,
+# whose unauthenticated rate limit is low enough to fail the job under load.
+# In CI the request carries CI_JOB_TOKEN so it counts as authenticated.
+#
 # Overridable for local runs and fork branches:
 #
 #   CELLS_ROUTER_PROJECT       default gitlab-org/cells/http-router
 #   CELLS_ROUTER_REF           default main
 #   CELLS_ROUTER_SNAPSHOT_URL  bypasses both of the above
+#   CI_API_V4_URL              default https://gitlab.com/api/v4
 #
 # Runs on plain Ruby with no bundle: the gem it loads has no runtime
 # dependencies, so the CI job needs no gems and can run with `needs: []`.
 
+require "cgi"
 require "net/http"
 require "openssl"
 require "uri"
@@ -102,10 +108,13 @@ module CheckRouterRoutesSync
 
     def snapshot_url
       @snapshot_url ||= ENV["CELLS_ROUTER_SNAPSHOT_URL"] || begin
+        api_url = ENV["CI_API_V4_URL"] || "https://gitlab.com/api/v4"
         project = ENV["CELLS_ROUTER_PROJECT"] || "gitlab-org/cells/http-router"
         ref = ENV["CELLS_ROUTER_REF"] || "main"
 
-        "https://gitlab.com/#{project}/-/raw/#{ref}/#{ROUTER_SNAPSHOT}"
+        file = CGI.escape(ROUTER_SNAPSHOT)
+
+        "#{api_url}/projects/#{CGI.escape(project)}/repository/files/#{file}/raw?ref=#{CGI.escape(ref)}"
       end
     end
 
@@ -129,7 +138,7 @@ module CheckRouterRoutesSync
         use_ssl: uri.scheme == "https",
         open_timeout: OPEN_TIMEOUT,
         read_timeout: READ_TIMEOUT
-      ) { |http| http.request(Net::HTTP::Get.new(uri)) }
+      ) { |http| http.request(build_request(uri)) }
 
       case response
       when Net::HTTPSuccess
@@ -139,6 +148,12 @@ module CheckRouterRoutesSync
       else
         raise DownloadError, "#{snapshot_url} returned HTTP #{response.code} #{response.message}"
       end
+    end
+
+    def build_request(uri)
+      request = Net::HTTP::Get.new(uri)
+      request["JOB-TOKEN"] = ENV["CI_JOB_TOKEN"] if ENV["CI_JOB_TOKEN"].to_s != ""
+      request
     end
 
     def report_in_sync

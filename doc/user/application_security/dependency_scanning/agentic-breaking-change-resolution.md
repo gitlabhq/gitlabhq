@@ -17,6 +17,7 @@ description: AI-native resolution of problems with merge requests that bump depe
 {{< history >}}
 
 - [Introduced](https://gitlab.com/groups/gitlab-org/-/work_items/17884) in GitLab 19.2 as a [beta](../../../policy/development_stages_support.md#beta) feature with [feature flags](../../../administration/feature_flags/_index.md) named `enable_dependency_bump_breaking_changes` and `dependency_bump_web_search`.
+- Feature flag `enable_dependency_bump_breaking_changes` [removed](https://gitlab.com/gitlab-org/gitlab/-/work_items/604558) in GitLab 19.4.
 
 {{< /history >}}
 

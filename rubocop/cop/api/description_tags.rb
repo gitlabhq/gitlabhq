@@ -37,7 +37,7 @@ module RuboCop
         include CodeReuseHelpers
         extend AutoCorrector
 
-        MSG = 'API desc blocks must define tags. See https://docs.gitlab.com/development/api_styleguide#choosing-a-tag.'
+        MSG = 'API desc blocks must define tags. See https://docs.gitlab.com/development/api_styleguide/#choosing-a-tag.'
 
         # @!method desc_block(node)
         def_node_matcher :desc_block, <<~PATTERN

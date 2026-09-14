@@ -238,6 +238,7 @@ To find subscribers, search the subscription files under
 | `Search::Zoekt::RepoToIndexEvent` | `global_search` | EE | Published when Zoekt repositories pending indexing are detected, so the subscribed worker can enqueue indexing tasks for them. |
 | `Search::Zoekt::RepoToReindexEvent` | `global_search` | EE | Published when Zoekt repositories require reindexing, so the subscribed worker can enqueue reindex tasks (one event per node for parallel processing). |
 | `Search::Zoekt::SaasRolloutEvent` | `global_search` | EE | Published periodically on GitLab.com to drive the SaaS rollout of Zoekt exact code search to enabled namespaces. |
+| `Search::Zoekt::TaskClaimExpiredEvent` | `global_search` | EE | Published when Zoekt indexing tasks are found holding an expired claim, so a worker can release them back to pending or fail them once retries are spent. |
 | `Search::Zoekt::TaskFailedEvent` | `global_search` | EE | Published when a Zoekt indexing task exhausts its retries and is moved to the failed state, so subscribers can react to the failure. |
 | `Search::Zoekt::TooManyReplicasEvent` | `global_search` | EE | Published when more Zoekt replicas exist for a namespace than the configured replica count, so the subscribed worker can prune the excess replicas. |
 | `Search::Zoekt::UpdateIndexUsedStorageBytesEvent` | `global_search` | EE | Published when Zoekt indices with stale used-storage statistics are detected, so the subscribed worker can refresh their `used_storage_bytes` from the underlying repositories. |

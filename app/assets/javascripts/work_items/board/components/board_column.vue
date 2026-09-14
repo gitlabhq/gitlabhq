@@ -373,7 +373,11 @@ export default {
         @start="onDragStart"
         @end="onDragEnd"
       >
-        <work-item-card-skeleton v-if="insertingCard" key="inserting-card" />
+        <!-- Only the cards belong in the default slot: vuedraggable draws one node per
+        item from it, and takes everything else through header and footer. -->
+        <template #header>
+          <work-item-card-skeleton v-if="insertingCard" />
+        </template>
         <work-item-card
           v-for="workItem in workItems"
           :key="workItem.id"
@@ -384,31 +388,33 @@ export default {
           :detail-panel-enabled="detailPanelEnabled"
           @set-active-item="$emit('set-active-item', $event)"
         />
-        <work-item-card-skeleton
-          v-for="n in isLoading || fetchNextPageInProgress ? $options.skeletonCount : 0"
-          :key="`skeleton-${n}`"
-        />
-        <li
-          v-if="showEmptyState"
-          data-testid="empty-state"
-          class="gl-list-none gl-py-3 gl-text-center gl-text-sm gl-text-subtle"
-        >
-          {{ $options.i18n.emptyText }}
-        </li>
-        <li v-if="hasNextPage && !fetchNextPageInProgress" class="gl-list-none">
-          <work-item-children-load-more
-            class="gl-justify-center"
-            :fetch-next-page-in-progress="fetchNextPageInProgress"
-            @fetch-next-page="fetchNextPage"
+        <template #footer>
+          <work-item-card-skeleton
+            v-for="n in isLoading || fetchNextPageInProgress ? $options.skeletonCount : 0"
+            :key="`skeleton-${n}`"
           />
-        </li>
-        <li
-          v-if="loadMoreError"
-          data-testid="load-more-error"
-          class="gl-list-none gl-py-2 gl-text-center gl-text-sm gl-text-subtle"
-        >
-          {{ $options.i18n.loadMoreError }}
-        </li>
+          <li
+            v-if="showEmptyState"
+            data-testid="empty-state"
+            class="gl-list-none gl-py-3 gl-text-center gl-text-sm gl-text-subtle"
+          >
+            {{ $options.i18n.emptyText }}
+          </li>
+          <li v-if="hasNextPage && !fetchNextPageInProgress" class="gl-list-none">
+            <work-item-children-load-more
+              class="gl-justify-center"
+              :fetch-next-page-in-progress="fetchNextPageInProgress"
+              @fetch-next-page="fetchNextPage"
+            />
+          </li>
+          <li
+            v-if="loadMoreError"
+            data-testid="load-more-error"
+            class="gl-list-none gl-py-2 gl-text-center gl-text-sm gl-text-subtle"
+          >
+            {{ $options.i18n.loadMoreError }}
+          </li>
+        </template>
       </draggable-compat>
     </div>
   </div>

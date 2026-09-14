@@ -12,7 +12,7 @@
     - if milestone.merge_requests_enabled?
       = gl_tab_link_to '#tab-merge-requests', data: { endpoint: milestone_tab_path(milestone, 'merge_requests', show_project_name: show_project_name) } do
         = _('Merge requests')
-        = gl_tab_counter_badge milestone.merge_requests_visible_to_user(current_user).size
+        = gl_tab_counter_badge milestone_merge_requests_count_for_display(milestone)
     = gl_tab_link_to '#tab-participants', data: { endpoint: milestone_tab_path(milestone, 'participants') } do
       = _('Participants')
       = gl_tab_counter_badge milestone.issue_participants_visible_by_user(current_user).count

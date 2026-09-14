@@ -41173,7 +41173,7 @@
             },
             {
               "name": "images",
-              "description": "Images the repository holds. Can be selected once per operation, so one operation reads images for one repository. Returns `null` for a repository holding packages and for a repository that is gone. Also `null` when Artifact Registry rejects the read: silently for a 401, 403, or 404, and alongside a top-level error for a 429, a 5xx, or any other 4xx. Introduced in GitLab 19.4: Status: Experiment.",
+              "description": "Images the repository holds. Can be selected once per operation, so one operation reads images for one repository. Returns `null` for a virtual repository, for a repository holding packages, and for a repository that is gone. Also `null` when Artifact Registry rejects the read: silently for a 401, 403, or 404, and alongside a top-level error for a 429, a 5xx, or any other 4xx. Introduced in GitLab 19.4: Status: Experiment.",
               "args": [
                 {
                   "name": "after",
@@ -41307,7 +41307,7 @@
             },
             {
               "name": "packages",
-              "description": "Packages the repository holds, ordered by name. Can be selected once per operation, so one operation reads packages for one repository. Returns `null` for a repository holding images, for a repository that is gone, and when Artifact Registry rejects the read. Introduced in GitLab 19.3: Status: Experiment.",
+              "description": "Packages the repository holds, ordered by name. Can be selected once per operation, so one operation reads packages for one repository. Returns `null` for a virtual repository, for a repository holding images, for a repository that is gone, and when Artifact Registry rejects the read. Introduced in GitLab 19.3: Status: Experiment.",
               "args": [
                 {
                   "name": "after",

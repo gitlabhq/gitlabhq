@@ -6,7 +6,7 @@ module RuboCop
       class EeOnlyClass < RuboCop::Cop::Base
         # Cop that checks for incorrect placement of classes in the ee/**/ee subdirectories.
         #
-        # see https://docs.gitlab.com/ee/development/ee_features.html#extend-ce-features-with-ee-backend-code
+        # see https://docs.gitlab.com/development/ee_features/#extend-ce-features-with-ee-backend-code
         #
         #  # bad
         #  # filename: ee/app/services/ee/null_notification_service.rb
@@ -25,7 +25,7 @@ module RuboCop
           It is likely this file should be removed from the sub ee directory it is currently in. Please read this
           for the rationale behind it:
 
-          https://docs.gitlab.com/ee/development/ee_features.html#extend-ce-features-with-ee-backend-code
+          https://docs.gitlab.com/development/ee_features/#extend-ce-features-with-ee-backend-code
         TEXT
 
         def on_class(node)

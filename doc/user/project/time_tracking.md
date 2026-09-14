@@ -16,7 +16,7 @@ description: Estimates, time spent, and reporting.
 {{< history >}}
 
 - Time tracking for tasks [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/438577) in GitLab 17.0.
-- Time tracking for epics [introduced](https://gitlab.com/groups/gitlab-org/-/epics/12396) in GitLab 17.5. [The new look for epics](../group/epics/_index.md#epics-as-work-items) must be enabled.
+- Time tracking for epics [introduced](https://gitlab.com/groups/gitlab-org/-/epics/12396) in GitLab 17.5. [The new look for epics](../group/epics/_index.md#epics-as-work-items) must be turned on.
 - Minimum role to add, edit, and remove estimate [changed](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/169256) from Reporter to Planner in GitLab 17.7.
 - Time tracking for epics [generally available](https://gitlab.com/gitlab-org/gitlab/-/issues/468310) in GitLab 18.1.
 - The supported total amount of time spent was raised from 1 year to 4 years in GitLab 18.10.
@@ -153,7 +153,7 @@ If you type a future date, no time is logged.
 
 {{< /history >}}
 
-You can record time spent on issues directly in commit messages. This approach is useful when you want to track time as you work, without updating the issue separately.
+You can record time spent on issues directly in commit messages. Use this approach to track time as you work, without updating the issue separately.
 
 To add time spent in a commit message, include an issue reference and a time tracking marker in the format `@<time>` with no spaces between time units.
 
@@ -283,7 +283,7 @@ The breakdown of spent time displayed is limited to a maximum of 100 entries.
 View a report of time spent in issues, tasks, and merge requests across all of GitLab.
 
 This feature is an [experiment](../../policy/development_stages_support.md).
-If you find a bug, let us know in the [feedback issue](https://gitlab.com/gitlab-org/gitlab/-/issues/435222).
+If you find a bug, add it to the [feedback issue](https://gitlab.com/gitlab-org/gitlab/-/issues/435222).
 
 To view the global time tracking report:
 
@@ -326,7 +326,7 @@ To do so:
 1. Under **Time tracking**, select the **Limit display of time tracking units to hours** checkbox.
 1. Select **Save changes**.
 
-With this option enabled, `75h` is displayed instead of `1w 4d 3h`.
+With this option turned on, `75h` is displayed instead of `1w 4d 3h`.
 
 ## Related topics
 

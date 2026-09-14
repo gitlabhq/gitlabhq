@@ -3,6 +3,7 @@ stage: Plan
 group: Work Items
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see <https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments>
 title: Notification emails
+description: Configure global, group, and project notification levels to control which issue, merge request, epic, and design events send you email.
 ---
 
 {{< details >}}
@@ -14,9 +15,6 @@ title: Notification emails
 
 {{< history >}}
 
-- Enhanced email styling [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/78604) in GitLab 14.9 [with a feature flag](../../administration/feature_flags/_index.md) named `enhanced_notify_css`. Disabled by default.
-- Enhanced email styling [enabled on GitLab.com](https://gitlab.com/gitlab-org/gitlab/-/issues/355907) in GitLab 14.9.
-- Enhanced email styling [enabled on GitLab Self-Managed](https://gitlab.com/gitlab-org/gitlab/-/issues/355907) in GitLab 15.0.
 - Enhanced email styling [generally available](https://gitlab.com/gitlab-org/gitlab/-/issues/355907) in GitLab 18.3. Feature flag `enhanced_notify_css` removed.
 
 {{< /history >}}
@@ -32,14 +30,14 @@ per 24 hours per project or group per user.
 
 ## Who receives notifications
 
-When notifications are enabled for an issue, merge request, or epic, GitLab notifies you of actions
+When notifications are turned on for an issue, merge request, or epic, GitLab notifies you of actions
 that happen there.
 
 You might receive notifications for one of the following reasons:
 
 - You participate in an issue, merge request, epic, or design. You become a participant when you comment
   or edit, or someone mentions your username.
-- You've [enabled notifications in an issue, merge request, or epic](#issue-merge-request-and-epic-events).
+- You've [turned on notifications in an issue, merge request, or epic](#issue-merge-request-and-epic-events).
 - You've configured notifications for the [project](#change-level-of-project-notifications) or [group](#group-notifications).
 - You're subscribed to group or project pipeline notifications through the pipeline emails [integration](../project/integrations/_index.md).
 
@@ -210,7 +208,7 @@ User notification events:
 | Personal access tokens have been created | User    | Security email, always sent. |
 | Personal access tokens have expired      | User    | Security email, always sent. |
 | SSH key has expired                      | User    | Security email, always sent. |
-| Two-factor authentication disabled       | User    | Security email, always sent. |
+| Two-factor authentication turned off     | User    | Security email, always sent. |
 
 ### Project events
 
@@ -230,7 +228,7 @@ Project notification events:
 | Project access level changed        | Project members                       | Sent when a user's project access level is changed. |
 | Project access tokens expiring soon | Direct project Owners and Maintainers | Security email, always sent. |
 | Project deploy tokens expiring soon | Project Owners and Maintainers        | Security email, always sent. |
-| Project moved                       | Project members                       | Sent for all notification levels except disabled, or when the  **Project is moved** custom notification level is selected. |
+| Project moved                       | Project members                       | Sent for all notification levels except **Disabled**, or when the  **Project is moved** custom notification level is selected. |
 | Project scheduled for deletion      | Project Owners                        | Sent when project is scheduled for deletion. |
 | User added to project               | User                                  | Sent when user is added to project. |
 
@@ -262,7 +260,7 @@ Group notification events:
 {{< /history >}}
 
 Events generate notifications based on the [notification level](#notification-levels) selected.
-Some notifications can be optionally enabled by selecting the **Custom** notification level, and selecting the desired events. You can also manually [subscribe to notifications](#subscribe-to-notifications-for-a-specific-issue-merge-request-or-epic)
+Some notifications can be optionally turned on by selecting the **Custom** notification level, and selecting the desired events. You can also manually [subscribe to notifications](#subscribe-to-notifications-for-a-specific-issue-merge-request-or-epic)
 for an epic, issue, or merge request.
 
 By default, you don't receive notifications for issues, merge requests, or epics you create.
@@ -318,8 +316,8 @@ Merge request notifications are sent for the following notification levels:
 To toggle notifications on a specific issue, merge request, or epic:
 
 1. At the top of the right sidebar, select:
-   - **Notifications on** ({{< icon name="notifications" >}}) to enable notifications.
-   - **Notifications off** ({{< icon name="notifications-off" >}}) to disable notifications.
+   - **Notifications on** ({{< icon name="notifications" >}}) to turn on notifications.
+   - **Notifications off** ({{< icon name="notifications-off" >}}) to turn off notifications.
 
 #### Moved notifications
 
@@ -331,7 +329,6 @@ To toggle notifications on a specific issue, merge request, or epic:
 
 {{< history >}}
 
-- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/132678) in GitLab 16.5 [with a feature flag](../../administration/feature_flags/_index.md) named `notifications_todos_buttons`. Disabled by default.
 - [Generally available](https://gitlab.com/gitlab-org/gitlab/-/issues/426305) in GitLab 19.3. Feature flag `notifications_todos_buttons` removed.
 
 {{< /history >}}
@@ -368,8 +365,8 @@ to the **Watch** level.
 
 ### Disable specific events
 
-To disable `always sent` security emails on GitLab Self-Managed and GitLab Dedicated,
-an instance administrator can disable individual [background jobs](../../administration/maintenance_mode/_index.md#background-jobs).
+To turn off `always sent` security emails on GitLab Self-Managed and GitLab Dedicated,
+an instance administrator can turn off individual [background jobs](../../administration/maintenance_mode/_index.md#background-jobs).
 
 For example:
 
@@ -389,9 +386,9 @@ For example:
 {{< /history >}}
 
 > [!note]
-> This feature is enabled by default for GitLab Self-Managed instances. Administrators may disable this feature
+> This feature is turned on by default for GitLab Self-Managed instances. Administrators can turn off this feature
 > through the [Sign-in restrictions](../../administration/settings/sign_in_restrictions.md#email-notification-for-unknown-sign-ins) section of the UI.
-> The feature is always enabled on GitLab.com.
+> The feature is always turned on for GitLab.com.
 
 When a user successfully signs in from a previously unknown IP address or device,
 GitLab notifies the user by email. In this way, GitLab proactively alerts users of potentially
@@ -466,7 +463,7 @@ To unsubscribe:
 
 ### Using an email client or other software
 
-Your email client might show an **Unsubscribe** button when you view an email from GitLab.
+Your email client might show **Unsubscribe** when you view an email from GitLab.
 To unsubscribe, select this button.
 
 Notification emails from GitLab contain special headers.
@@ -597,7 +594,7 @@ message.
 
 ### Email notifications are enabled, but not received
 
-If you've enabled email notifications in GitLab, but users aren't receiving notifications as expected, ensure the affected users' emails are verified in GitLab and that your email provider isn't blocking emails from your GitLab instance. Many email providers (like Outlook) block emails
+If you've turned on email notifications in GitLab, but users aren't receiving notifications as expected, ensure the affected users' emails are verified in GitLab and that your email provider isn't blocking emails from your GitLab instance. Many email providers (like Outlook) block emails
 coming from lesser-known self-managed mail server IP addresses. To verify, attempt to send an email
 directly from the SMTP server for your instance. For example, a test email from Sendmail might look something like:
 

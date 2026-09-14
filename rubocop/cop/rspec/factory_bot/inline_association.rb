@@ -49,7 +49,7 @@ module RuboCop
           extend RuboCop::Cop::AutoCorrector
 
           MSG = 'Prefer inline `association` over `%{type}`. ' \
-            'See https://docs.gitlab.com/ee/development/testing_guide/best_practices.html#factories'
+            'See https://docs.gitlab.com/development/testing_guide/best_practices/#factories'
 
           REPLACEMENT = 'association'
 

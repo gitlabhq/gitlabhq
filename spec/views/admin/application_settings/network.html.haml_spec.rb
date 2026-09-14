@@ -29,6 +29,16 @@ RSpec.describe 'admin/application_settings/network.html.haml', feature_category:
     end
   end
 
+  context 'for Dependency Proxy rate limits' do
+    it 'renders the `dependency_proxy_rate_limit_authenticated` field' do
+      render
+
+      expect(rendered).to have_field('application_setting_throttle_authenticated_dependency_proxy_enabled')
+      expect(rendered).to have_field('application_setting_throttle_authenticated_dependency_proxy_requests_per_period')
+      expect(rendered).to have_field('application_setting_throttle_authenticated_dependency_proxy_period_in_seconds')
+    end
+  end
+
   context 'for Users API rate limits' do
     it 'renders the reset disclaimer' do
       render

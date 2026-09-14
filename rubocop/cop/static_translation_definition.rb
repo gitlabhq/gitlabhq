@@ -5,7 +5,7 @@ module RuboCop
     # This cop flags translation definitions in static scopes because changing
     # locales has no effect and won't translate this text again.
     #
-    # See https://docs.gitlab.com/ee/development/i18n/externalization.html#keep-translations-dynamic
+    # See https://docs.gitlab.com/development/i18n/externalization/#keep-translations-dynamic
     #
     # @example
     #
@@ -54,7 +54,7 @@ module RuboCop
     class StaticTranslationDefinition < RuboCop::Cop::Base
       MSG = <<~TEXT.tr("\n", ' ')
         Translation is defined in static scope.
-        Keep translations dynamic. See https://docs.gitlab.com/ee/development/i18n/externalization.html#keep-translations-dynamic
+        Keep translations dynamic. See https://docs.gitlab.com/development/i18n/externalization/#keep-translations-dynamic
       TEXT
 
       RESTRICT_ON_SEND = %i[_ s_ n_].freeze

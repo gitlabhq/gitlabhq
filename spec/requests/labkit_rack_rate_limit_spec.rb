@@ -468,6 +468,89 @@ RSpec.describe 'Labkit::RateLimit rack middleware', :clean_gitlab_redis_rate_lim
     end
   end
 
+  # The dependency proxy throttle (cohort 1) sits ahead of the cohort 2 web rule so
+  # a disabled setting falls through to being counted by web instead of escaping
+  # both (see lib/gitlab/rack_attack/labkit_rate_limit/throttle_registry.rb).
+  describe 'the dependency proxy throttle' do
+    include DependencyProxyHelpers
+
+    let_it_be(:group) { create(:group) }
+    let_it_be(:manifest) { create(:dependency_proxy_manifest) }
+
+    let(:jwt_token) { build_jwt(user) }
+    let(:headers) { jwt_token_authorization_headers(jwt_token) }
+    let(:path) { "/v2/#{group.path}/dependency_proxy/containers/alpine/manifests/latest" }
+
+    before_all do
+      group.add_owner(user)
+    end
+
+    before do
+      allow(Gitlab.config.dependency_proxy).to receive(:enabled).and_return(true)
+      allow_next_instance_of(DependencyProxy::RequestTokenService) do |instance|
+        allow(instance).to receive(:execute).and_return({ status: :success, token: 'abcd1234' })
+      end
+      allow_next_instance_of(DependencyProxy::FindCachedManifestService) do |instance|
+        allow(instance).to receive(:execute).and_return({ status: :success, manifest: manifest, from_cache: false })
+      end
+      allow_next_instance_of(DependencyProxy::HeadManifestService) do |instance|
+        allow(instance).to receive(:execute).and_return({ status: :success })
+      end
+    end
+
+    context 'when enabled' do
+      before do
+        stub_application_setting(
+          throttle_authenticated_dependency_proxy_enabled: true,
+          throttle_authenticated_dependency_proxy_requests_per_period: 1,
+          throttle_authenticated_dependency_proxy_period_in_seconds: 60
+        )
+        enable_cohort!(1)
+      end
+
+      it 'rejects requests over the rate limit', :aggregate_failures do
+        get path, headers: headers
+        expect(response).not_to have_gitlab_http_status(:too_many_requests)
+
+        expect_rejection('throttle_authenticated_dependency_proxy') { get path, headers: headers }
+      end
+    end
+
+    context 'when claimed ahead of the web rule' do
+      before do
+        stub_application_setting(
+          throttle_authenticated_dependency_proxy_enabled: true,
+          throttle_authenticated_web_enabled: true
+        )
+        stub_feature_flags(rate_limiter_use_labkit_rack_cohort_1: true, rate_limiter_use_labkit_rack_cohort_2: true)
+      end
+
+      it 'counts under the dependency proxy rule, not authenticated_web', :aggregate_failures do
+        get path, headers: headers
+
+        expect(labkit_count_for('authenticated_dependency_proxy')).to eq(1)
+        expect(labkit_count_for('authenticated_web')).to eq(0)
+      end
+    end
+
+    context 'when disabled while the web throttle is enabled' do
+      before do
+        stub_application_setting(
+          throttle_authenticated_dependency_proxy_enabled: false,
+          throttle_authenticated_web_enabled: true
+        )
+        stub_feature_flags(rate_limiter_use_labkit_rack_cohort_1: true, rate_limiter_use_labkit_rack_cohort_2: true)
+      end
+
+      it 'falls through to the authenticated_web rule', :aggregate_failures do
+        get path, headers: headers
+
+        expect(labkit_count_for('authenticated_dependency_proxy')).to eq(0)
+        expect(labkit_count_for('authenticated_web')).to eq(1)
+      end
+    end
+  end
+
   # Rack::Attack counts a collector request under both the collector and web
   # throttles (a collector path is also a web path); the collector rule claims it
   # here. Pins the known, accepted divergence rather than hiding it.

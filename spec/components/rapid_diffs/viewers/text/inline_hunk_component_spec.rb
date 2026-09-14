@@ -29,6 +29,13 @@ RSpec.describe RapidDiffs::Viewers::Text::InlineHunkComponent, feature_category:
     end
   end
 
+  it "labels line links with the bare line number" do
+    added_line = Gitlab::Diff::Line.new("added", 'new', 1, nil, 5)
+    diff_hunk = Gitlab::Diff::ViewerHunk.new(lines: [added_line])
+    render_component(diff_hunk)
+    expect(page).to have_selector("a[aria-label='5']")
+  end
+
   it "renders expand up with tooltip" do
     match_line = Gitlab::Diff::Line.new("", 'match', 100, 0, 0)
     diff_hunk = Gitlab::Diff::ViewerHunk.new(

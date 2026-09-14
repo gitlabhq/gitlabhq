@@ -4,7 +4,7 @@ module RuboCop
   module Cop
     module Gitlab
       class BoundedContexts < RuboCop::Cop::Base
-        DOC_LINK = "https://docs.gitlab.com/ee/development/software_design#bounded-contexts"
+        DOC_LINK = "https://docs.gitlab.com/development/software_design/#bounded-contexts"
         MODULE_MSG = "Module `%{identifier}` is not a valid bounded context. See #{DOC_LINK}.".freeze
         CLASS_MSG = "Class `%{identifier}` is not within a valid bounded context module. See #{DOC_LINK}.".freeze
 

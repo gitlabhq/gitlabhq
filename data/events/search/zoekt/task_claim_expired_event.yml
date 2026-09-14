@@ -1,0 +1,6 @@
+---
+event: Search::Zoekt::TaskClaimExpiredEvent
+description: Published when Zoekt indexing tasks are found holding an expired claim,
+  so a worker can release them back to pending or fail them once retries are spent.
+feature_category: global_search
+ee_only: true

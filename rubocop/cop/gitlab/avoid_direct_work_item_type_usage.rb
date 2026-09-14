@@ -24,7 +24,7 @@ module RuboCop
       class AvoidDirectWorkItemTypeUsage < RuboCop::Cop::Base
         MSG = 'Avoid using `WorkItems::Type` or `WorkItems::TypesFramework::SystemDefined::Type` directly. ' \
           'Use `WorkItems::TypesFramework::Provider` instead. ' \
-          'See https://docs.gitlab.com/development/work_items.md'
+          'See https://docs.gitlab.com/development/work_items/'
 
         # @!method work_item_type_call?(node)
         def_node_matcher :work_item_type_call?, <<~PATTERN

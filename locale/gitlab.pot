@@ -8225,6 +8225,9 @@ msgstr ""
 msgid "AgentPlan|Are you sure you want to delete this workplan? This action cannot be undone."
 msgstr ""
 
+msgid "AgentPlan|Awaiting input"
+msgstr ""
+
 msgid "AgentPlan|Confidence"
 msgstr ""
 
@@ -8244,6 +8247,12 @@ msgid "AgentPlan|Edit"
 msgstr ""
 
 msgid "AgentPlan|Generate"
+msgstr ""
+
+msgid "AgentPlan|Generating workplan..."
+msgstr ""
+
+msgid "AgentPlan|Generation failed"
 msgstr ""
 
 msgid "AgentPlan|High"
@@ -8273,10 +8282,19 @@ msgstr ""
 msgid "AgentPlan|Regenerate workplan"
 msgstr ""
 
+msgid "AgentPlan|Reviewing work item..."
+msgstr ""
+
 msgid "AgentPlan|Score: %{score} / 100"
 msgstr ""
 
 msgid "AgentPlan|Shows how ready this work item is for an agent to run. To raise the score, add more detail to the work item description and to the workplan steps. %{linkStart}Learn more%{linkEnd}."
+msgstr ""
+
+msgid "AgentPlan|Something went wrong while starting workplan generation."
+msgstr ""
+
+msgid "AgentPlan|Try again"
 msgstr ""
 
 msgid "AgentPlan|What is a workplan?"
@@ -12551,6 +12569,9 @@ msgstr ""
 msgid "ArtifactRegistry|For more information on the npm registry, %{linkStart}see the documentation%{linkEnd}."
 msgstr ""
 
+msgid "ArtifactRegistry|For more information, %{linkStart}see the documentation%{linkEnd}."
+msgstr ""
+
 msgid "ArtifactRegistry|Format"
 msgstr ""
 
@@ -12609,6 +12630,9 @@ msgstr[0] ""
 msgstr[1] ""
 
 msgid "ArtifactRegistry|Install"
+msgstr ""
+
+msgid "ArtifactRegistry|Install by tag"
 msgstr ""
 
 msgid "ArtifactRegistry|Install by version"
@@ -12836,10 +12860,19 @@ msgstr ""
 msgid "ArtifactRegistry|Pull an image:"
 msgstr ""
 
+msgid "ArtifactRegistry|Pull by digest"
+msgstr ""
+
 msgid "ArtifactRegistry|Pull by digest:"
 msgstr ""
 
 msgid "ArtifactRegistry|Pull by tag:"
+msgstr ""
+
+msgid "ArtifactRegistry|Pull command"
+msgstr ""
+
+msgid "ArtifactRegistry|Pull command for %{digest}"
 msgstr ""
 
 msgid "ArtifactRegistry|Pull command for %{version}"
@@ -12975,6 +13008,9 @@ msgid "ArtifactRegistry|Store and manage packages and container images by creati
 msgstr ""
 
 msgid "ArtifactRegistry|Subject digest: %{digest}"
+msgstr ""
+
+msgid "ArtifactRegistry|Tag"
 msgstr ""
 
 msgid "ArtifactRegistry|Tags"
@@ -13558,6 +13594,9 @@ msgstr ""
 msgid "AuditLogs|Action"
 msgstr ""
 
+msgid "AuditLogs|Audit event details"
+msgstr ""
+
 msgid "AuditLogs|Author"
 msgstr ""
 
@@ -13582,6 +13621,12 @@ msgstr ""
 msgid "AuditLogs|Member Events"
 msgstr ""
 
+msgid "AuditLogs|No"
+msgstr ""
+
+msgid "AuditLogs|No additional details available for this event."
+msgstr ""
+
 msgid "AuditLogs|No matching %{type} found."
 msgstr ""
 
@@ -13595,6 +13640,9 @@ msgid "AuditLogs|Target"
 msgstr ""
 
 msgid "AuditLogs|User Events"
+msgstr ""
+
+msgid "AuditLogs|Yes"
 msgstr ""
 
 msgid "AuditStreams|%d destination"
@@ -13831,6 +13879,12 @@ msgid "Authenticated Git LFS request rate limit"
 msgstr ""
 
 msgid "Authenticated Git LFS requests"
+msgstr ""
+
+msgid "Authenticated dependency proxy rate limit period in seconds"
+msgstr ""
+
+msgid "Authenticated dependency proxy request rate limit"
 msgstr ""
 
 msgid "Authenticated web rate limit period in seconds"
@@ -23165,6 +23219,9 @@ msgstr ""
 msgid "Configure specific limits for Git LFS requests that supersede the general user and IP rate limits."
 msgstr ""
 
+msgid "Configure specific limits for authenticated dependency proxy requests."
+msgstr ""
+
 msgid "Configure specific limits for deprecated API requests that supersede the general user and IP rate limits."
 msgstr ""
 
@@ -28681,6 +28738,9 @@ msgstr ""
 msgid "Dependency list"
 msgstr ""
 
+msgid "Dependency proxy rate limits"
+msgstr ""
+
 msgid "Dependency scanning"
 msgstr ""
 
@@ -30999,9 +31059,6 @@ msgid "DuoAgentPlatform|Session failed"
 msgstr ""
 
 msgid "DuoAgentPlatform|Session failed to start"
-msgstr ""
-
-msgid "DuoAgentPlatform|Session information"
 msgstr ""
 
 msgid "DuoAgentPlatform|Sessions"
@@ -33831,6 +33888,9 @@ msgid "Enable authenticated Git HTTP request rate limit"
 msgstr ""
 
 msgid "Enable authenticated Git LFS request rate limit"
+msgstr ""
+
+msgid "Enable authenticated dependency proxy request rate limit"
 msgstr ""
 
 msgid "Enable authenticated web request rate limit"
@@ -49172,6 +49232,9 @@ msgid "Max Value"
 msgstr ""
 
 msgid "Max authenticated Git LFS requests per period per user"
+msgstr ""
+
+msgid "Max authenticated dependency proxy requests per period per user"
 msgstr ""
 
 msgid "Max role"
@@ -66060,6 +66123,16 @@ msgstr ""
 msgid "Rapid Diffs encountered an error and has been temporarily disabled. The page has loaded using the standard diff view. %{feedback_link}"
 msgstr ""
 
+msgid "RapidDiffs|%{count} added line"
+msgid_plural "RapidDiffs|%{count} added lines"
+msgstr[0] ""
+msgstr[1] ""
+
+msgid "RapidDiffs|%{count} removed line"
+msgid_plural "RapidDiffs|%{count} removed lines"
+msgstr[0] ""
+msgstr[1] ""
+
 msgid "RapidDiffs|%{count} thread hidden."
 msgid_plural "RapidDiffs|%{count} threads hidden."
 msgstr[0] ""
@@ -66076,10 +66149,10 @@ msgid_plural "RapidDiffs|Added %d lines."
 msgstr[0] ""
 msgstr[1] ""
 
-msgid "RapidDiffs|Added line %d"
+msgid "RapidDiffs|Beta"
 msgstr ""
 
-msgid "RapidDiffs|Beta"
+msgid "RapidDiffs|Changes for %{path}: %{added}, %{removed}."
 msgstr ""
 
 msgid "RapidDiffs|Changes view"
@@ -66121,9 +66194,6 @@ msgstr ""
 msgid "RapidDiffs|Leave feedback"
 msgstr ""
 
-msgid "RapidDiffs|Line %d"
-msgstr ""
-
 msgid "RapidDiffs|Loading image diff..."
 msgstr ""
 
@@ -66143,9 +66213,6 @@ msgid "RapidDiffs|Removed %d line."
 msgid_plural "RapidDiffs|Removed %d lines."
 msgstr[0] ""
 msgstr[1] ""
-
-msgid "RapidDiffs|Removed line %d"
-msgstr ""
 
 msgid "RapidDiffs|Show hidden lines"
 msgstr ""

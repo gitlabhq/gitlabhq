@@ -20,7 +20,7 @@ module RuboCop
         #   let(:users) { build_stubbed_list(:user, 2) }
         #   let(:users) { build_list(:user, 2) }
         class AvoidCreate < RuboCop::Cop::Base
-          MESSAGE = "Prefer using `build_stubbed` or similar over `%{method_name}`. See https://docs.gitlab.com/ee/development/testing_guide/best_practices.html#optimize-factory-usage"
+          MESSAGE = "Prefer using `build_stubbed` or similar over `%{method_name}`. See https://docs.gitlab.com/development/testing_guide/best_practices/#optimize-factory-usage"
           FORBIDDEN_METHODS = %i[create create_list].freeze
           RESTRICT_ON_SEND = FORBIDDEN_METHODS
 

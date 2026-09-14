@@ -9,7 +9,7 @@ RSpec.describe RuboCop::Cop::Graphql::ForbiddenLoadsArgument, feature_category: 
     "Do not use `loads:` in GraphQL arguments. " \
       "It leaks information about resource existence. " \
       "Instead, accept the ID and load/authorize the object manually in the resolver. " \
-      "See https://docs.gitlab.com/ee/development/graphql_guide/authorization.html"
+      "See https://docs.gitlab.com/development/graphql_guide/authorization/"
   end
 
   it "adds an offense when using loads: in an argument" do

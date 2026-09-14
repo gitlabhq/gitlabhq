@@ -36,6 +36,8 @@ description: Automatically open merge requests to fix vulnerable dependencies.
 - NuGet (.NET) support [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/604603)
   in GitLab 19.4.
 - Support in the triage and remediation profile [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/253780) in GitLab 19.4 [with a feature flag](../../../administration/feature_flags/_index.md) named `triage_and_remediation_profile`. Enabled by default.
+- Feature flag `enable_dependency_bump_breaking_changes`
+  [removed](https://gitlab.com/gitlab-org/gitlab/-/work_items/604558) in GitLab 19.4.
 
 {{< /history >}}
 
@@ -115,9 +117,6 @@ version bump capability and has its own toggle.
 Prerequisites:
 
 - You must have [GitLab Duo](../../gitlab_duo/_index.md) available for the project.
-- The `enable_dependency_bump_breaking_changes`
-  [feature flag](../../../administration/feature_flags/_index.md) must be enabled for the
-  project's root namespace.
 
 To enable agentic breaking-change resolution, use the
 [Projects API](../../../api/projects.md#update-a-project) to set

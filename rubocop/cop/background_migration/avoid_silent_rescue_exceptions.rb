@@ -40,7 +40,7 @@ module RuboCop
       #   end
       class AvoidSilentRescueExceptions < RuboCop::Cop::Base
         MSG = 'Avoid rescuing exceptions inside job classes. See ' \
-              'https://docs.gitlab.com/ee/development/database/batched_background_migrations.html#best-practices'
+              'https://docs.gitlab.com/development/database/batched_background_migrations/#best-practices'
 
         # @!method batched_migration_job_class?(node)
         def_node_matcher :batched_migration_job_class?, <<~PATTERN

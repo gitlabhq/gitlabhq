@@ -4,7 +4,7 @@ module RuboCop
   module Cop
     module Gitlab
       # Prefer using `.strong_memoize_attr()` over `#strong_memoize()`. See
-      # https://docs.gitlab.com/ee/development/utilities.html/#strongmemoize.
+      # https://docs.gitlab.com/development/utilities/#strongmemoize.
       #
       # Good:
       #

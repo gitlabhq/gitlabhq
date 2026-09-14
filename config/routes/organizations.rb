@@ -28,10 +28,6 @@ unless @organization_scoped_routes
         get :groups_and_projects
         get :users
 
-        resource :settings, only: [], as: :settings_organization do
-          get :general
-        end
-
         resource :groups, only: [:new, :create], as: :groups_organization
 
         scope(

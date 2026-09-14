@@ -12,7 +12,7 @@ RSpec.describe RuboCop::Cop::Gitlab::NoFindInWorkers, feature_category: :shared 
 
           def perform
             namespace = Namespace.find(namespace_id)
-                        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^ Refrain from using `find`, use `find_by` instead. See https://docs.gitlab.com/ee/development/sidekiq/#retries.[...]
+                        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^ Refrain from using `find`, use `find_by` instead. See https://docs.gitlab.com/development/sidekiq/#retries.[...]
           end
         end
       RUBY

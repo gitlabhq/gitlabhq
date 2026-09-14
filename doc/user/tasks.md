@@ -63,7 +63,7 @@ To create a task:
 
 1. In the top bar, select **Search or go to** and find your project.
 1. In the left sidebar, select **Plan** > **Work items**.
-1. In the top-right corner, select **New item**.
+1. In the upper-right corner, select **New item**.
 1. From the **Type** dropdown list, select **Task** if it is not already selected.
 1. Complete the following:
    - Enter the task title.
@@ -736,8 +736,6 @@ If a task is closed with a locked discussion, then you cannot reopen it until th
 
 {{< history >}}
 
-- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/416558) in GitLab 16.5 [with a feature flag](../administration/feature_flags/_index.md) named `linked_work_items`. Disabled by default.
-- [Enabled on GitLab.com and GitLab Self-Managed](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/139394) in GitLab 16.7.
 - [Generally available](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/150148) in GitLab 17.0. Feature flag `linked_work_items` removed.
 - [Changed](https://gitlab.com/groups/gitlab-org/-/work_items/10267) minimum required role from Reporter (if true) to Guest in GitLab 17.0.
 
@@ -800,7 +798,7 @@ Prerequisites:
 - You must have the Reporter, Developer, Maintainer, or Owner role for the project containing the task.
 
 1. Edit your merge request.
-1. In the **Description** box, find and add the task.
+1. In the **Description** text box, find and add the task.
    - Use the [closing pattern](project/issues/managing_issues.md#closing-issues-automatically) that you would for adding a merge request to an issue.
    - If your task is in the same project as your merge request, you can search for your task by typing <kbd>#</kbd> followed by the task's ID or title.
    - If your task is in a different project, with a task open, copy the URL from the browser or
@@ -811,7 +809,7 @@ The merge requests are now visible in the main body, in the **Development** sect
 Use the exact closing pattern to add the merge request to the task.
 
 If [automatic issue closing](project/issues/managing_issues.md#disable-automatic-issue-closing)
-is enabled in your project settings, the task is automatically closed when either:
+is turned on in your project settings, the task is automatically closed when either:
 
 - The added merge request is merged.
 - A commit referencing a task with the closing pattern is committed to your project's default branch.

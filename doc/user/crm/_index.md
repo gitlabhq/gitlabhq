@@ -44,15 +44,15 @@ For more information about what is planned for the future, see [issue 2256](http
 
 ## Enable customer relations management (CRM)
 
-Customer relations management features are enabled at the group level. If your
-group also contains subgroups, and you want to use CRM features in the subgroup,
-CRM features must also be enabled for the subgroup.
+Customer relations management features are turned on for a group.
+To use CRM features in a subgroup, you must also turn them on for
+the subgroup.
 
-To enable customer relations management in a group or subgroup:
+To turn on customer relations management in a group or subgroup:
 
 1. In the top bar, select **Search or go to** and find your group or subgroup.
 1. Select **Settings** > **General**.
-1. Expand the **Permissions and group features** section.
+1. Expand **Permissions and group features**.
 1. Select **Customer relations is enabled**.
 1. Select **Save changes**.
 
@@ -66,14 +66,14 @@ To enable customer relations management in a group or subgroup:
 
 By default, contacts are sourced from a work item's top-level group.
 
-The contact source for a group will apply to all subgroups,
+The contact source for a group applies to all subgroups,
 unless they have a contact source configured.
 
 To configure the contact source for a group or subgroup:
 
 1. In the top bar, select **Search or go to** and find your group or subgroup.
 1. Select **Settings** > **General**.
-1. Expand the **Permissions and group features** section.
+1. Expand **Permissions and group features**.
 1. Select **Contact source** > **Search for a group**.
 1. Select the group from which you wish to source contacts.
 1. Select **Save changes**.

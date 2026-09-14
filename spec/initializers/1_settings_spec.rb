@@ -497,6 +497,7 @@ RSpec.describe '1_settings', feature_category: :settings do
         background_operation_environments_auto_delete
         background_operation_merge_requests_clear_old_merged_cached_html
         background_operation_merge_requests_clear_stale_cached_html
+        background_operation_notes_clear_stale_cached_html
         bbo_users_delete_unconfirmed_secondary
         bulk_imports_stale_import_worker
         cells_schedule_claims_verification_worker

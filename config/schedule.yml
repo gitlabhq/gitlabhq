@@ -66,6 +66,19 @@ background_operation_merge_requests_clear_stale_cached_html:
     table_name: "merge_requests"
     column_name: "id"
 
+background_operation_notes_clear_stale_cached_html:
+  class: Database::BackgroundOperation::CronEnqueueWorker
+  cron: "30 5 1,15 * *"
+  args:
+    job_class_name: "NotesClearStaleCachedHtml"
+    table_name: "notes"
+    column_name: "id"
+    options:
+      # `notes` is ~3.16B rows, so a pass at the default sub-batch size is estimated in
+      # months. `pause_ms` is a fixed cost per sub-batch and `batch_size` self-tunes, so
+      # the sub-batch size is the only lever on how much of the table a pass covers.
+      sub_batch_size: 500
+
 background_operations_worker_cell_local_ci_database:
   class: Database::BackgroundOperation::CiSchedulerCellLocalWorker
   cron: "* * * * *"

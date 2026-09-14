@@ -154,6 +154,12 @@ RSpec.describe Gitlab::RackAttack::LabkitRateLimit::ThrottleRegistry, feature_ca
       expect(positions['throttle_authenticated_git_lfs']).to be < positions['throttle_authenticated_web']
       expect(positions['throttle_unauthenticated_web']).to be < positions['throttle_unauthenticated_api']
       expect(positions['throttle_authenticated_web']).to be < positions['throttle_authenticated_api']
+
+      # throttle_authenticated_dependency_proxy (cohort 1) must claim ahead of both
+      # web rules, so a disabled setting falls through to the web throttle instead
+      # of escaping it.
+      expect(positions['throttle_authenticated_dependency_proxy']).to be < positions['throttle_unauthenticated_web']
+      expect(positions['throttle_authenticated_dependency_proxy']).to be < positions['throttle_authenticated_web']
     end
   end
 

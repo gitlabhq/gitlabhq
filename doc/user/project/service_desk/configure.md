@@ -3,6 +3,7 @@ stage: Plan
 group: Work Items
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see <https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments>
 title: Configure Service Desk
+description: Turn on Service Desk for a project, and configure ticket visibility, email templates, custom email addresses, and multi-node email ingestion.
 ---
 
 {{< details >}}
@@ -25,10 +26,10 @@ Prerequisites:
   To do this, you must have administrator access.
   Without incoming email that supports email sub-addressing or a catch-all mailbox,
   the **Service Desk** section is not displayed in the project settings.
-- You must have enabled [issue](../settings/_index.md#configure-project-features-and-permissions)
+- You must have turned on the [issue](../settings/_index.md#configure-project-features-and-permissions)
   tracker for the project.
 
-To enable Service Desk in your project:
+To turn on Service Desk in your project:
 
 1. In the top bar, select **Search or go to** and find your project.
 1. In the left sidebar, select **Settings** > **General**.
@@ -40,7 +41,7 @@ To enable Service Desk in your project:
      [description template](../description_templates.md) in your repository.
 1. Select **Save changes**.
 
-Service Desk is now enabled for this project.
+Service Desk is now turned on for this project.
 If anyone sends an email to the address available below **Email address to use for Service Desk**,
 GitLab creates a confidential ticket with the email's content.
 
@@ -58,7 +59,7 @@ This glossary provides definitions for terms related to Service Desk.
 To improve your Service Desk project's security, you should:
 
 - Put the Service Desk email address behind an alias on your email system so you can change it later.
-- [Enable Akismet](../../../integration/akismet.md) on your GitLab instance to add spam checking to this service.
+- [Turn on Akismet](../../../integration/akismet.md) on your GitLab instance to add spam checking to this service.
   Unblocked email spam can result in many spam issues being created.
 
 ## Customize emails sent to external participants
@@ -229,7 +230,7 @@ Prerequisites:
 
 - You must have the Maintainer or Owner role for the project.
 
-To disable this setting:
+To turn off this setting:
 
 1. In the top bar, select **Search or go to** and find your project.
 1. In the left sidebar, select **Settings** > **General**.
@@ -251,7 +252,7 @@ Prerequisites:
 
 - You must have the Maintainer or Owner role for the project.
 
-To enable this setting:
+To turn on this setting:
 
 1. In the top bar, select **Search or go to** and find your project.
 1. In the left sidebar, select **Settings** > **General**.
@@ -276,7 +277,7 @@ For an overview, see [a short showcase video](https://youtu.be/_moD5U3xcQs).
 
 This feature is in [beta](../../../policy/development_stages_support.md#beta).
 A beta feature is not production-ready, but is unlikely to change drastically
-before it's released. We encourage users to try beta features and provide feedback
+before it's released. Try beta features and provide feedback
 in the [feedback issue](https://gitlab.com/gitlab-org/gitlab/-/issues/416637).
 
 ### Prerequisites
@@ -307,7 +308,7 @@ Configure and verify a custom email address when you want to send Service Desk e
 
 > [!warning]
 > When you set up email forwarding, use the address in the
-> **Service Desk email address to forward emails to** field in the custom email form
+> **Service Desk email address to forward emails to** in the custom email form
 > (the `incoming+...` address). Do not forward to the alias address (`contact-project+...`)
 > at the top of the Service Desk settings page. Forwarding to the alias
 > address causes `Incorrect forwarding target` verification failures.
@@ -315,7 +316,7 @@ Configure and verify a custom email address when you want to send Service Desk e
 1. In the top bar, select **Search or go to** and find your project.
 1. In the left sidebar, select **Settings** > **General**.
 1. Expand **Service Desk** and find the **Configure a custom email address** section.
-1. Copy the email address from the **Service Desk email address to forward emails to** field.
+1. Copy the email address from **Service Desk email address to forward emails to**.
    This is the `incoming+...` address that you must use as the forwarding target.
 1. In your email provider (for example, Gmail or Microsoft 365), set up email forwarding
    from your custom email address to the address you copied in the previous step.
@@ -347,7 +348,7 @@ notification email with the verification result.
 If the verification failed, the email also contains details of the reason.
 
 If the verification was successful, the custom email address is ready to be used.
-You can now enable sending Service Desk emails with the custom email address.
+You can now turn on sending Service Desk emails with the custom email address.
 
 #### Troubleshooting your configuration
 
@@ -383,7 +384,7 @@ To resolve this issue:
      In the output, find the line that starts with `250-AUTH`,
      then select one of the supported authentication methods in the custom email setup form.
 
-1. If you're using Microsoft 365 and the error persists, disable conditional access and repeat the previous steps.
+1. If you're using Microsoft 365 and the error persists, turn off conditional access and repeat the previous steps.
 
 ##### Incorrect forwarding target
 
@@ -407,22 +408,22 @@ To troubleshoot this:
 
 ### Enable or disable the custom email address
 
-After the custom email address has been verified, administrators can enable or disable sending Service Desk emails with the custom email address.
+After the custom email address has been verified, administrators can turn on or turn off sending Service Desk emails with the custom email address.
 
-To **enable** the custom email address:
+To **turn on** the custom email address:
 
 1. In the top bar, select **Search or go to** and find your project.
 1. In the left sidebar, select **Settings** > **General**.
 1. Expand **Service Desk**.
-1. Turn on the **Enable custom email** toggle.
+1. Turn on the **Enable custom email address** toggle.
    Service Desk emails to external participants are sent using the SMTP credentials.
 
-To **disable** the custom email address:
+To **turn off** the custom email address:
 
 1. In the top bar, select **Search or go to** and find your project.
 1. In the left sidebar, select **Settings** > **General**.
 1. Expand **Service Desk**.
-1. Turn off the **Enable custom email** toggle.
+1. Turn off the **Enable custom email address** toggle.
    Because you set up email forwarding, emails to your custom email address continue to be processed and
    appear as Service Desk tickets in your project.
 
@@ -523,8 +524,8 @@ In GitLab:
    - **SMTP password**: The app password you previously created for the custom email account.
    - **SMTP authentication method**: Let GitLab select a server-supported method (recommended).
 1. Select **Save and test connection**.
-1. After the [verification process](#verification) you should be able to
-   [enable the custom email address](#enable-or-disable-the-custom-email-address).
+1. After the [verification process](#verification) you can
+   [turn on the custom email address](#enable-or-disable-the-custom-email-address).
 
 ### Use Microsoft 365 (Exchange online) with your own domain
 
@@ -556,11 +557,11 @@ You can also experiment with other configuration options.
 In [Microsoft 365 admin center](https://admin.microsoft.com/Adminportal/Home#/homepage):
 
 1. Create a new account for the custom email address you'd like to use (for example, `support@example.com`).
-   1. Expand the **Users** section and select **Active users** from the menu.
+   1. Expand **Users** and select **Active users** from the menu.
    1. Select **Add a user** and follow the instructions on the screen.
-1. In Microsoft Entra (previously named Active Directory), enable two-factor authentication for the account.
+1. In Microsoft Entra (previously named Active Directory), turn on two-factor authentication for the account.
 1. [Allow users to create app passwords](https://learn.microsoft.com/en-us/entra/identity/authentication/howto-mfa-app-passwords).
-1. Enable **Authenticated SMTP** for the account.
+1. Turn on **Authenticated SMTP** for the account.
    1. Select the account from the list.
    1. In the drawer select **Mail**.
    1. Below **Email apps** select **Manage email apps**.
@@ -579,7 +580,7 @@ In [Microsoft 365 admin center](https://admin.microsoft.com/Adminportal/Home#/ho
       Set-TransportConfig -AllowLegacyTLSClients $true
       ```
 
-   1. If you want to forward to an external recipient, see this guide on how to enable
+   1. If you want to forward to an external recipient, see this guide on how to turn on
       [external email forwarding](https://learn.microsoft.com/en-gb/defender-office-365/outbound-spam-policies-external-email-forwarding).
       You might also want to [create an outbound anti-spam policy](https://security.microsoft.com/antispam)
       to allow forwarding to external recipients only for users who need it.
@@ -634,7 +635,7 @@ In GitLab:
 In [Microsoft 365 admin center](https://admin.microsoft.com/Adminportal/Home#/homepage):
 
 <!-- vale gitlab_base.SubstitutionWarning = NO -->
-1. Expand the **Users** section and select **Active users** from the menu.
+1. Expand **Users** and select **Active users** from the menu.
 <!-- vale gitlab_base.SubstitutionWarning = YES -->
 1. Select the account you'd like to use for the custom email from the list.
 1. In the drawer select **Mail**.
@@ -661,13 +662,13 @@ In GitLab:
    - **SMTP password**: The app password you previously created for the custom email account.
    - **SMTP authentication method**: Login.
 1. Select **Save and test connection**.
-1. After the [verification process](#verification) you should be able to
-   [enable the custom email address](#enable-or-disable-the-custom-email-address).
+1. After the [verification process](#verification) you can
+   [turn on the custom email address](#enable-or-disable-the-custom-email-address).
 
 ### Known issues
 
 - Some service providers don't allow SMTP connections anymore.
-  Often you can enable them on a per-user basis and create an app password.
+  Often you can turn them on for each user and create an app password.
 
 ## Use an additional Service Desk alias email
 
@@ -758,7 +759,7 @@ use an encrypted file for the incoming email credentials.
 
 Prerequisites:
 
-- To use encrypted credentials, you must first enable the
+- To use encrypted credentials, you must first turn on the
   [encrypted configuration](../../../administration/encrypted_configuration.md).
 
 The supported configuration items for the encrypted file are:
@@ -1255,7 +1256,7 @@ or completely separately.
 
       {{< /tabs >}}
 
-1. Disable `mail_room` on all nodes that should not run email ingestion. For example, in `/etc/gitlab/gitlab.rb`:
+1. Turn off `mail_room` on all nodes that should not run email ingestion. For example, in `/etc/gitlab/gitlab.rb`:
 
    ```ruby
    mailroom['enable'] = false
@@ -1265,14 +1266,14 @@ or completely separately.
 
 #### Set up a single email ingestion node
 
-After setting up all nodes and disabling the `mail_room` process, enable `mail_room` on a single node.
+After setting up all nodes and turning off the `mail_room` process, turn on `mail_room` on a single node.
 This node polls the mailboxes for `incoming_email` and `service_desk_email` on a regular basis and
 move new unread emails to GitLab.
 
 1. Choose an existing node that additionally handles email ingestion.
 1. Add [full configuration and credentials](../../../administration/incoming_email.md#configuration-examples)
    for `incoming_email` and `service_desk_email`.
-1. Enable `mail_room` on this node. For example, in `/etc/gitlab/gitlab.rb`:
+1. Turn on `mail_room` on this node. For example, in `/etc/gitlab/gitlab.rb`:
 
    ```ruby
    mailroom['enable'] = true

@@ -11,7 +11,7 @@ module RuboCop
         MSG = <<~MSG
           Don't use or inherit from ActiveRecord::Base.
           Use ApplicationRecord classes to ensure the correct database is used.
-          See https://docs.gitlab.com/ee/development/database/batched_background_migrations.html#accessing-data-for-multiple-databases.
+          See https://docs.gitlab.com/development/database/batched_background_migrations/#accessing-data-for-multiple-databases.
         MSG
 
         # @!method inherits_from_active_record_base?(node)

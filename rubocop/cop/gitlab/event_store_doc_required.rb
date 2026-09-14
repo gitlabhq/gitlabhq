@@ -27,7 +27,7 @@ module RuboCop
 
           Option 1 — Auto-generate (requires glab with Duo CLI):
             scripts/generate_event_doc %<source_path>s
-            (Setup: https://docs.gitlab.com/ee/user/gitlab_duo_cli/)
+            (Setup: https://docs.gitlab.com/user/gitlab_duo_cli/)
 
           Option 2 — Manually:
             cp data/events/templates/example.yml %<doc_path>s

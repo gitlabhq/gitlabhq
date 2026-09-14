@@ -1,0 +1,10 @@
+---
+name: mr_by_commit_sha_use_array_subquery
+description: Use ARRAY(subquery) instead of EXISTS to avoid planner mis-estimation in MergeRequest.by_commit_sha
+feature_issue_url: https://gitlab.com/gitlab-org/gitlab/-/work_items/627135
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/254592
+rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/work_items/628680
+milestone: '19.5'
+group: group::code review
+type: gitlab_com_derisk
+default_enabled: false

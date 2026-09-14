@@ -1155,7 +1155,6 @@ Style/InlineDisableAnnotation:
     - 'ee/app/services/package_metadata/advisory_data_object.rb'
     - 'ee/app/services/protected_environments/base_service.rb'
     - 'ee/app/services/protected_environments/search_service.rb'
-    - 'ee/app/services/security/ingestion/schedule_mark_dropped_as_resolved_service.rb'
     - 'ee/app/services/security/ingestion/tasks/ingest_vulnerability_flags.rb'
     - 'ee/app/services/security/merge_request_security_report_generation_service.rb'
     - 'ee/app/services/security/security_orchestration_policies/fetch_policy_approvers_service.rb'

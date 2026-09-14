@@ -24,7 +24,6 @@ const defaultProps = {
   initialDuoFoundationalFlowsAvailability: false,
   initialDuoSastFalsePositiveDetectionEnabled: false,
   initialDuoSecretDetectionFpEnabled: false,
-  duoDependencyBumpBreakingChangesAvailable: true,
   initialDuoDependencyBumpBreakingChangesEnabled: false,
   initialDuoSastVrWorkflowEnabled: false,
 };

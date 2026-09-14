@@ -480,8 +480,19 @@ class MergeRequest < ApplicationRecord
       )
     end
 
-    where('EXISTS (?)', MergeRequestDiff.select(1).where('merge_requests.latest_merge_request_diff_id = merge_request_diffs.id').by_commit_sha(target_project_id, sha)).reorder(nil)
+    project_ids_list = Array.wrap(target_project_id)
+
+    # Avoids planner mis-estimation by collecting diff IDs first
+    # via ARRAY(subquery), then matching with = ANY(...)
+
+    if project_ids_list.all? { |id| Feature.enabled?(:mr_by_commit_sha_use_array_subquery, Project.actor_from_id(id)) }
+      diff_ids_query = MergeRequestDiff.by_commit_sha(target_project_id, sha).select(:id)
+      where(Arel.sql("latest_merge_request_diff_id = ANY(ARRAY(#{diff_ids_query.to_sql}))")).reorder(nil)
+    else
+      where('EXISTS (?)', MergeRequestDiff.select(1).where('merge_requests.latest_merge_request_diff_id = merge_request_diffs.id').by_commit_sha(target_project_id, sha)).reorder(nil)
+    end
   end
+
   scope :by_merge_commit_sha, ->(sha) do
     where(merge_commit_sha: sha)
   end

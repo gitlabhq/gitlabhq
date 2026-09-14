@@ -235,6 +235,33 @@ RSpec.describe Gitlab::RateLimit::RequestClassification, feature_category: :rate
     end
   end
 
+  describe '#dependency_proxy_path?' do
+    subject { request.send(:dependency_proxy_path?) }
+
+    where(:path, :expected) do
+      '/v2/mygroup/dependency_proxy/containers/alpine/manifests/latest'                       | true
+      '/v2/mygroup/dependency_proxy/containers/alpine/blobs/sha256:cafebabe'                  | true
+
+      '/v2'                                                                                   | false
+      '/v2/mygroup/dependency_proxy/containers/alpine/referrers/latest'                       | false
+      '/v2/mygroup/dependency_proxy/containers/alpine/blobs/sha256:cafebabe/upload'           | false
+      '/v2/mygroup/dependency_proxy/containers/alpine/blobs/sha256:cafebabe/upload/authorize' | false
+      '/jwt/auth'                                                                             | false
+    end
+
+    with_them do
+      it { is_expected.to eq(expected) }
+
+      context 'when the application is mounted at a relative URL' do
+        before do
+          stub_config_setting(relative_url_root: '/gitlab/root')
+        end
+
+        it { is_expected.to eq(expected) }
+      end
+    end
+  end
+
   describe '#deprecated_api_request?' do
     subject { request.send(:deprecated_api_request?) }
 

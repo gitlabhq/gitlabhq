@@ -319,6 +319,8 @@ export default {
       this.showLabelForm = false;
       this.createdLabelId = label.id;
       this.selectedLabelsIds.push(label.id);
+      // The cache patch is skipped on a cold cache, so refetch to be sure the label is listed.
+      this.$apollo.queries.searchLabels.refetch();
     },
   },
 };

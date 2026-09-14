@@ -136,11 +136,6 @@ export default {
       required: false,
       default: false,
     },
-    duoDependencyBumpBreakingChangesAvailable: {
-      type: Boolean,
-      required: false,
-      default: false,
-    },
     initialDuoDependencyBumpBreakingChangesEnabled: {
       type: Boolean,
       required: false,
@@ -720,9 +715,7 @@ export default {
         />
       </project-setting-row>
       <project-setting-row
-        v-if="
-          duoDependencyBumpBreakingChangesAvailable && ultimateFeaturesAvailable && showAllSettings
-        "
+        v-if="ultimateFeaturesAvailable && showAllSettings"
         :label="s__('DuoDependencyBump|Turn on Agentic Breaking Change Resolution')"
         class="gl-mt-5"
         :help-text="

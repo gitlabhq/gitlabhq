@@ -33,6 +33,6 @@
       reopen_url: can_admin ? update_milestone_path(milestone, { state_event: :activate }) : '',
       promote_url: can_promote ? promote_project_milestone_path(milestone.project, milestone) : '',
       group_name: can_promote && milestone.project_milestone? && milestone.project.group ? milestone.project.group.name : '',
-      issue_count: milestone.issues.count,
-      merge_request_count: milestone.merge_requests.count
+      issue_count: milestone.total_issues_count,
+      merge_request_count: milestone.total_merge_requests_count
     } }

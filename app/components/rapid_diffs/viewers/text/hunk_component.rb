@@ -31,14 +31,6 @@ module RapidDiffs
           'removed' if line.removed?
         end
 
-        def line_number_label(line, position)
-          number = line_number(line, position)
-          return s_('RapidDiffs|Removed line %d') % number if line.removed?
-          return s_('RapidDiffs|Added line %d') % number if line.added?
-
-          s_('RapidDiffs|Line %d') % number
-        end
-
         def line_number_visible?(line, position)
           return false unless line && !line.meta?
 
@@ -84,7 +76,7 @@ module RapidDiffs
               if number > 0
                 link_to('', "##{line_id}", class: 'rd-line-link',
                   data: { line_number: number },
-                  aria: { label: line_number_label(line, position) })
+                  aria: { label: number })
               else
                 tag.span
               end

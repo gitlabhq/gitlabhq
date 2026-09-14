@@ -10,12 +10,18 @@ RSpec.describe RapidDiffs::Viewers::Text::InlineViewComponent, type: :component,
     expect(page).to have_selector('table tbody')
   end
 
-  it "renders headings" do
+  it "renders headings with a column scope" do
     render_component
-    page_text = page.native.inner_html
     ['Original line number', 'Diff line number', 'Diff line'].each do |heading|
-      expect(page_text).to include(heading)
+      expect(page).to have_selector("th[scope='col']", text: heading)
     end
+  end
+
+  it "renders a screen-reader-only caption summarizing the changes", :aggregate_failures do
+    render_component
+    expect(page).to have_selector('caption', text: diff_file.file_path)
+    expect(page).to have_selector('caption', text: "#{diff_file.added_lines} added line")
+    expect(page).to have_selector('caption', text: "#{diff_file.removed_lines} removed line")
   end
 
   it "returns virtual row count" do

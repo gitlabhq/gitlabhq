@@ -63,7 +63,7 @@ RSpec.describe RuboCop::CheckGracefulTask, feature_category: :tooling do
           let(:user_name) { 'GitLab Bot' }
           let(:job_name) { 'some job name' }
           let(:job_url) { 'some job url' }
-          let(:docs_link) { 'https://docs.gitlab.com/ee/development/rubocop_development_guide.html#silenced-offenses' }
+          let(:docs_link) { 'https://docs.gitlab.com/development/rubocop_development_guide/#silenced-offenses' }
 
           before do
             env = {

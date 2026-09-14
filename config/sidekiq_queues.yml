@@ -101,6 +101,8 @@
   - 1
 - - ai_repository_xray_scan_dependencies
   - 1
+- - ai_run_flow_schedule
+  - 1
 - - analytics_ai_usage_events_backfill
   - 1
 - - analytics_code_review_metrics
@@ -1116,6 +1118,8 @@
 - - search_zoekt_repo_to_reindex_event
   - 1
 - - search_zoekt_saas_rollout_event
+  - 1
+- - search_zoekt_task_claim_expired_event
   - 1
 - - search_zoekt_task_failed_event
   - 1

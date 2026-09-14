@@ -1,0 +1,10 @@
+---
+name: vue3_migrate_feature_flags
+description: Enables Vue 3 in compatibility mode for the feature flags pages.
+feature_issue_url: https://gitlab.com/gitlab-org/gitlab/-/work_items/628866
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/255241
+rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/work_items/628866
+milestone: '19.5'
+group: group::environments
+type: beta
+default_enabled: false

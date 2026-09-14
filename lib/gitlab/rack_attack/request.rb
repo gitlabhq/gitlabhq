@@ -83,6 +83,7 @@ module Gitlab
       def throttle_authenticated_web?
         (web_request? || frontend_request?) &&
           !throttle_authenticated_git_lfs? &&
+          !throttle_authenticated_dependency_proxy? &&
           !(git_path? && !git_lfs_path?) &&
           Gitlab::Throttle.settings.throttle_authenticated_web_enabled
       end
@@ -156,6 +157,13 @@ module Gitlab
       def throttle_authenticated_git_lfs?
         git_lfs_path? &&
           Gitlab::Throttle.settings.throttle_authenticated_git_lfs_enabled
+      end
+
+      # False while the setting is off, so the web throttle's exclusion of this
+      # predicate is a no-op and the request falls back to being counted there
+      # instead of escaping both throttles.
+      def throttle_authenticated_dependency_proxy?
+        dependency_proxy_path? && Gitlab::Throttle.settings.throttle_authenticated_dependency_proxy_enabled
       end
 
       def throttle_unauthenticated_files_api?

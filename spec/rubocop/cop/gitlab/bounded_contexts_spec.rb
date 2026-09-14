@@ -7,7 +7,7 @@ RSpec.describe RuboCop::Cop::Gitlab::BoundedContexts, feature_category: :tooling
   it 'flags an offense for an empty non bounded context module' do
     expect_offense(<<~RUBY)
       module NotABoundedContext
-             ^^^^^^^^^^^^^^^^^^ Module `NotABoundedContext` is not a valid bounded context. See https://docs.gitlab.com/ee/development/software_design#bounded-contexts.
+             ^^^^^^^^^^^^^^^^^^ Module `NotABoundedContext` is not a valid bounded context. See https://docs.gitlab.com/development/software_design/#bounded-contexts.
       end
     RUBY
   end
@@ -15,7 +15,7 @@ RSpec.describe RuboCop::Cop::Gitlab::BoundedContexts, feature_category: :tooling
   it 'flags an offense for a non bounded context module which contains a class' do
     expect_offense(<<~RUBY)
       module NotABoundedContext
-             ^^^^^^^^^^^^^^^^^^ Module `NotABoundedContext` is not a valid bounded context. See https://docs.gitlab.com/ee/development/software_design#bounded-contexts.
+             ^^^^^^^^^^^^^^^^^^ Module `NotABoundedContext` is not a valid bounded context. See https://docs.gitlab.com/development/software_design/#bounded-contexts.
         class NotABoundedContextClass
         end
       end
@@ -25,7 +25,7 @@ RSpec.describe RuboCop::Cop::Gitlab::BoundedContexts, feature_category: :tooling
   it 'flags an offense for a non bounded context module which contains a class (compact version)' do
     expect_offense(<<~RUBY)
       class NotABoundedContext::SomeClass
-            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ Class `NotABoundedContext::SomeClass` is not within a valid bounded context module. See https://docs.gitlab.com/ee/development/software_design#bounded-contexts.
+            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ Class `NotABoundedContext::SomeClass` is not within a valid bounded context module. See https://docs.gitlab.com/development/software_design/#bounded-contexts.
       end
     RUBY
   end
@@ -33,7 +33,7 @@ RSpec.describe RuboCop::Cop::Gitlab::BoundedContexts, feature_category: :tooling
   it 'flags an offense for a non bounded context module which contains a module' do
     expect_offense(<<~RUBY)
       module NotABoundedContext
-             ^^^^^^^^^^^^^^^^^^ Module `NotABoundedContext` is not a valid bounded context. See https://docs.gitlab.com/ee/development/software_design#bounded-contexts.
+             ^^^^^^^^^^^^^^^^^^ Module `NotABoundedContext` is not a valid bounded context. See https://docs.gitlab.com/development/software_design/#bounded-contexts.
         module NotABoundedContextEither
         end
       end
@@ -43,7 +43,7 @@ RSpec.describe RuboCop::Cop::Gitlab::BoundedContexts, feature_category: :tooling
   it 'flags an offense for a class which is not within a module' do
     expect_offense(<<~RUBY)
       class AClassNotInAModule
-            ^^^^^^^^^^^^^^^^^^ Class `AClassNotInAModule` is not within a valid bounded context module. See https://docs.gitlab.com/ee/development/software_design#bounded-contexts.
+            ^^^^^^^^^^^^^^^^^^ Class `AClassNotInAModule` is not within a valid bounded context module. See https://docs.gitlab.com/development/software_design/#bounded-contexts.
       end
     RUBY
   end
@@ -136,7 +136,7 @@ RSpec.describe RuboCop::Cop::Gitlab::BoundedContexts, feature_category: :tooling
       expect_offense(<<~RUBY)
         module EE
           module NotABoundedContext
-                 ^^^^^^^^^^^^^^^^^^ Module `NotABoundedContext` is not a valid bounded context. See https://docs.gitlab.com/ee/development/software_design#bounded-contexts.
+                 ^^^^^^^^^^^^^^^^^^ Module `NotABoundedContext` is not a valid bounded context. See https://docs.gitlab.com/development/software_design/#bounded-contexts.
             class SomeClass
             end
           end
@@ -147,7 +147,7 @@ RSpec.describe RuboCop::Cop::Gitlab::BoundedContexts, feature_category: :tooling
     it 'flags an offense inside an EE module (compact version)' do
       expect_offense(<<~RUBY)
         module EE::NotABoundedContext
-               ^^^^^^^^^^^^^^^^^^^^^^ Module `NotABoundedContext` is not a valid bounded context. See https://docs.gitlab.com/ee/development/software_design#bounded-contexts.
+               ^^^^^^^^^^^^^^^^^^^^^^ Module `NotABoundedContext` is not a valid bounded context. See https://docs.gitlab.com/development/software_design/#bounded-contexts.
           class SomeClass
           end
         end
@@ -166,7 +166,7 @@ RSpec.describe RuboCop::Cop::Gitlab::BoundedContexts, feature_category: :tooling
         expect_offense(<<~RUBY)
         module #{clazz}
           module NotABoundedContext
-                 ^^^^^^^^^^^^^^^^^^ Module `NotABoundedContext` is not a valid bounded context. See https://docs.gitlab.com/ee/development/software_design#bounded-contexts.
+                 ^^^^^^^^^^^^^^^^^^ Module `NotABoundedContext` is not a valid bounded context. See https://docs.gitlab.com/development/software_design/#bounded-contexts.
           end
         end
         RUBY
@@ -197,7 +197,7 @@ RSpec.describe RuboCop::Cop::Gitlab::BoundedContexts, feature_category: :tooling
           module EE
             module #{clazz}
               module NotABoundedContext
-                     ^^^^^^^^^^^^^^^^^^ Module `NotABoundedContext` is not a valid bounded context. See https://docs.gitlab.com/ee/development/software_design#bounded-contexts.
+                     ^^^^^^^^^^^^^^^^^^ Module `NotABoundedContext` is not a valid bounded context. See https://docs.gitlab.com/development/software_design/#bounded-contexts.
               end
             end
           end
@@ -210,7 +210,7 @@ RSpec.describe RuboCop::Cop::Gitlab::BoundedContexts, feature_category: :tooling
         module Types
           module PermissionTypes
             module NotABoundedContext
-                   ^^^^^^^^^^^^^^^^^^ Module `NotABoundedContext` is not a valid bounded context. See https://docs.gitlab.com/ee/development/software_design#bounded-contexts.
+                   ^^^^^^^^^^^^^^^^^^ Module `NotABoundedContext` is not a valid bounded context. See https://docs.gitlab.com/development/software_design/#bounded-contexts.
             end
           end
         end
@@ -220,7 +220,7 @@ RSpec.describe RuboCop::Cop::Gitlab::BoundedContexts, feature_category: :tooling
     it 'flags an offense for a permission type not in a bounded context (compact)' do
       expect_offense(<<~RUBY)
         module Types::PermissionTypes::NotABoundedContext
-               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ Module `NotABoundedContext` is not a valid bounded context. See https://docs.gitlab.com/ee/development/software_design#bounded-contexts.
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ Module `NotABoundedContext` is not a valid bounded context. See https://docs.gitlab.com/development/software_design/#bounded-contexts.
         end
       RUBY
     end
@@ -255,7 +255,7 @@ RSpec.describe RuboCop::Cop::Gitlab::BoundedContexts, feature_category: :tooling
         module Types
           module PermissionTypes
             module NotABoundedContext
-                   ^^^^^^^^^^^^^^^^^^ Module `NotABoundedContext` is not a valid bounded context. See https://docs.gitlab.com/ee/development/software_design#bounded-contexts.
+                   ^^^^^^^^^^^^^^^^^^ Module `NotABoundedContext` is not a valid bounded context. See https://docs.gitlab.com/development/software_design/#bounded-contexts.
             end
           end
         end

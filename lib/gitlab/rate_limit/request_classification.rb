@@ -108,6 +108,10 @@ module Gitlab
         matches?(::Gitlab::PathRegex.repository_git_lfs_route_regex)
       end
 
+      def dependency_proxy_path?
+        matches?(::Gitlab::PathRegex.dependency_proxy_route_regex)
+      end
+
       def files_api_path?
         matches?(FILES_PATH_REGEX)
       end

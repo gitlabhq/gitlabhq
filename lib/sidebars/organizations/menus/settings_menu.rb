@@ -18,24 +18,6 @@ module Sidebars
         def pick_into_super_sidebar?
           true
         end
-
-        override :render?
-        def render?
-          can?(context.current_user, :update_organization, context.container)
-        end
-
-        override :configure_menu_items
-        def configure_menu_items
-          add_item(
-            ::Sidebars::MenuItem.new(
-              title: _('General'),
-              link: general_settings_organization_path(context.container),
-              super_sidebar_parent: ::Sidebars::Organizations::Menus::SettingsMenu,
-              active_routes: { path: 'organizations/settings#general' },
-              item_id: :organization_settings_general
-            )
-          )
-        end
       end
     end
   end

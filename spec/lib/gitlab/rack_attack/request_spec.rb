@@ -730,6 +730,74 @@ RSpec.describe Gitlab::RackAttack::Request, feature_category: :rate_limiting do
     end
   end
 
+  describe '#throttle_authenticated_dependency_proxy?' do
+    let_it_be(:group) { create(:group) }
+
+    let(:dependency_proxy_manifest_path) { "/v2/#{group.path}/dependency_proxy/containers/alpine/manifests/latest" }
+    let(:dependency_proxy_blob_path) { "/v2/#{group.path}/dependency_proxy/containers/alpine/blobs/sha256:cafebabe" }
+    let(:api_path) { '/api/v4/projects' }
+    let(:web_path) { '/users/sign_in' }
+
+    subject { request.throttle_authenticated_dependency_proxy? }
+
+    where(:path, :throttle_authenticated_dependency_proxy_enabled, :expected) do
+      # Dependency proxy paths are throttled when enabled
+      ref(:dependency_proxy_manifest_path) | true  | true
+      ref(:dependency_proxy_manifest_path) | false | false
+
+      ref(:dependency_proxy_blob_path) | true  | true
+      ref(:dependency_proxy_blob_path) | false | false
+
+      # Regular API paths are NOT throttled by the dependency proxy throttle
+      ref(:api_path) | true  | false
+      ref(:api_path) | false | false
+
+      # Web paths are NOT throttled by the dependency proxy throttle
+      ref(:web_path) | true  | false
+      ref(:web_path) | false | false
+    end
+
+    with_them do
+      before do
+        stub_application_setting(
+          throttle_authenticated_dependency_proxy_enabled: throttle_authenticated_dependency_proxy_enabled
+        )
+      end
+
+      it { is_expected.to eq expected }
+    end
+
+    # REGRESSION: the throttle_authenticated_dependency_proxy definition (see
+    # lib/gitlab/rack_attack.rb) resolves its discriminator with [:api, :rss, :ics],
+    # not [:api], because a manifest tag can end in .atom (the route's *tag glob is
+    # unconstrained). With the narrower list this request would resolve no
+    # identifier at all, escaping every throttle instead of being counted here.
+    context 'when the manifest tag ends in .atom and the request carries a feed_token' do
+      # tap(&:feed_token) so ensure_feed_token! runs at creation; a factory user
+      # has no persisted feed token otherwise.
+      let_it_be(:user) { create(:user).tap(&:feed_token) }
+
+      let(:path) { "/v2/#{group.path}/dependency_proxy/containers/alpine/manifests/latest.atom" }
+      let(:env) { { 'QUERY_STRING' => "feed_token=#{user.feed_token}" } }
+
+      before do
+        stub_application_setting(throttle_authenticated_dependency_proxy_enabled: true)
+      end
+
+      # Resolved through the registered definition rather than by calling
+      # throttled_identifer directly, so narrowing the definition's format list
+      # fails this example instead of leaving it passing against the wide one.
+      it 'is counted by the throttle rather than escaping it', :aggregate_failures do
+        is_expected.to be(true)
+
+        definition = Gitlab::RackAttack.all_throttle_definitions
+                                       .fetch('throttle_authenticated_dependency_proxy')
+
+        expect(definition.request_identifier.call(request)).to eq("user:#{user.id}")
+      end
+    end
+  end
+
   describe '#throttle_authenticated_git_http?' do
     let_it_be(:project) { create(:project) }
 

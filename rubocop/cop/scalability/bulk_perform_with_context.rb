@@ -34,7 +34,7 @@ module RuboCop
           being scheduled, please disable this cop with a comment explaing which
           context will be applied.
 
-          Read more about it https://docs.gitlab.com/ee/development/sidekiq/logging.html#worker-context
+          Read more about it https://docs.gitlab.com/development/sidekiq/logging/#worker-context
         MSG
 
         # @!method schedules_in_batch_without_context?(node)

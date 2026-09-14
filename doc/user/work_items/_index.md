@@ -19,7 +19,7 @@ while maintaining a connection to the bigger picture.
 Work items are designed around this fundamental need, providing a unified way to represent units of
 work at any level, from strategic initiatives to individual tasks.
 
-The hierarchical nature of work items enables clear relationships between different levels of work,
+The hierarchical nature of work items creates clear relationships between different levels of work,
 helping teams understand how daily tasks contribute to larger goals and how strategic objectives break
 down into actionable components.
 

@@ -43,7 +43,7 @@ module RuboCop
       class FeatureCategory < RuboCop::Cop::RSpec::Base
         include RuboCop::Cop::RSpec::TopLevelGroup
 
-        DOCUMENT_LINK = 'https://docs.gitlab.com/ee/development/feature_categorization/#rspec-examples'
+        DOCUMENT_LINK = 'https://docs.gitlab.com/development/feature_categorization/#rspec-examples'
 
         PRODUCT_GROUP_MSG = 'Use only `feature_category` instead of `product_group`. ' \
           'See %{document_link}'

@@ -23,7 +23,7 @@ module RuboCop
       class AvoidUnpartitionedCiRelations < RuboCop::Cop::Base
         MSG = 'Avoid calling `%{relation}` on a Project without scoping to a partition. ' \
           'Use `.in_partition(<partition_id>)` to prevent full cross-partition scans on CI tables. ' \
-          'See: https://docs.gitlab.com/ee/development/cicd/cicd_tables.html'
+          'See: https://docs.gitlab.com/development/cicd/cicd_tables/'
 
         PARTITIONED_CI_RELATIONS = %i[
           all_pipelines

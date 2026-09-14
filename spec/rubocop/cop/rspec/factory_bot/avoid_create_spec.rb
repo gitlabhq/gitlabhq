@@ -13,7 +13,7 @@ RSpec.describe RuboCop::Cop::RSpec::FactoryBot::AvoidCreate, feature_category: :
         expect_offense(<<-RUBY)
         describe 'foo' do
           let(:user) { #{namespaced_forbidden_method} }
-                       #{'^' * namespaced_forbidden_method.size} Prefer using `build_stubbed` or similar over `#{forbidden_method}`. See https://docs.gitlab.com/ee/development/testing_guide/best_practices.html#optimize-factory-usage
+                       #{'^' * namespaced_forbidden_method.size} Prefer using `build_stubbed` or similar over `#{forbidden_method}`. See https://docs.gitlab.com/development/testing_guide/best_practices/#optimize-factory-usage
         end
         RUBY
       end

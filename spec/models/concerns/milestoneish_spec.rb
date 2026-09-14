@@ -210,6 +210,30 @@ RSpec.describe Milestone, 'Milestoneish', factory_default: :keep do
     end
   end
 
+  describe '#merge_requests_count_for_display' do
+    it 'returns the count of merge requests visible to the user' do
+      expect(milestone.merge_requests_count_for_display(member)).to eq(1)
+    end
+
+    it 'returns 0 when no merge requests are visible' do
+      project.update!(visibility_level: Gitlab::VisibilityLevel::PRIVATE)
+
+      expect(milestone.merge_requests_count_for_display(non_member)).to eq(0)
+    end
+
+    it 'caps the count at DISPLAY_MERGE_REQUESTS_LIMIT + 1' do
+      stub_const('Milestoneish::DISPLAY_MERGE_REQUESTS_LIMIT', 1)
+
+      create(:merge_request, source_project: project, target_project: project,
+        source_branch: 'fix-1', milestone: milestone)
+      create(:merge_request, source_project: project, target_project: project,
+        source_branch: 'fix-2', milestone: milestone)
+
+      expect(milestone.merge_requests_visible_to_user(member).count).to eq(3)
+      expect(milestone.merge_requests_count_for_display(member)).to eq(2)
+    end
+  end
+
   describe '#complete?', :use_clean_rails_memory_store_caching do
     it 'returns false when has items opened' do
       expect(milestone.complete?).to be false
@@ -241,6 +265,12 @@ RSpec.describe Milestone, 'Milestoneish', factory_default: :keep do
   describe '#total_issues_count' do
     it 'counts all issues including confidential' do
       expect(milestone.total_issues_count).to eq 8
+    end
+  end
+
+  describe '#total_merge_requests_count' do
+    it 'counts merge requests' do
+      expect(milestone.total_merge_requests_count).to eq 1
     end
   end
 

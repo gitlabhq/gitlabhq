@@ -9,7 +9,7 @@ RSpec.describe RuboCop::Cop::Graphql::GraphqlNamePosition, feature_category: :ap
     expect_offense(<<~RUBY)
       module Types
         class AType < BaseObject
-        ^^^^^^^^^^^^^^^^^^^^^^^^ `graphql_name` should be the first line of the class: https://docs.gitlab.com/ee/development/api_graphql_styleguide.html#naming-conventions
+        ^^^^^^^^^^^^^^^^^^^^^^^^ `graphql_name` should be the first line of the class: https://docs.gitlab.com/development/api_graphql_styleguide/#naming-conventions
           field :a_thing
           field :another_thing
           graphql_name 'ATypeName'

@@ -78,6 +78,7 @@ mutation {
 - [Generally available](https://gitlab.com/gitlab-org/gitlab/-/work_items/567736) in GitLab 18.8. 
 - [Expanded](https://gitlab.com/gitlab-org/gitlab/-/work_items/612115) validity checks for external service tokens in GitLab 19.3.
 - Feature flag `secret_detection_partner_token_verification` [removed](https://gitlab.com/gitlab-org/gitlab/-/work_items/619506) in GitLab 19.4.
+- [Expanded](https://gitlab.com/gitlab-org/gitlab/-/work_items/624216) validity checks to more GitHub token types in GitLab 19.4.
 
 {{< /history >}}
 
@@ -102,6 +103,9 @@ Validity checks support the following secret types:
 - Anthropic API keys
 - AWS IAM long-term access key IDs (beginning with `AKIA`)
 - Datadog API keys
+- GitHub App installation tokens
+- GitHub fine-grained personal access tokens
+- GitHub OAuth access tokens
 - GitHub personal access tokens (classic)
 - Google Cloud API keys
 - Heroku API keys
@@ -129,6 +133,7 @@ The supported URLs are:
 - `https://api.anthropic.com/v1/models`
 - `https://api.datadoghq.com/api/v1/validate`
 - `https://api.getpostman.com/me`
+- `https://api.github.com/installation/repositories`
 - `https://api.github.com/user`
 - `https://api.heroku.com/account`
 - `https://api.openai.com/v1/models`

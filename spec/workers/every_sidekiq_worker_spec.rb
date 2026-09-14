@@ -468,6 +468,7 @@ RSpec.describe 'Every Sidekiq worker', feature_category: :sidekiq do
         'Search::Zoekt::RepoToIndexEventWorker' => 1,
         'Search::Zoekt::RepoToReindexEventWorker' => 1,
         'Search::Zoekt::SaasRolloutEventWorker' => 1,
+        'Search::Zoekt::TaskClaimExpiredEventWorker' => 1,
         'Search::Zoekt::TaskFailedEventWorker' => 1,
         'Search::Zoekt::UpdateIndexUsedStorageBytesEventWorker' => 1,
         'Security::ProcessScanEventsWorker' => 3,

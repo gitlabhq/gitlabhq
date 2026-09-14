@@ -40,7 +40,7 @@ RSpec.describe RuboCop::Cop::API::DescriptionDetail, :config, feature_category: 
     it 'registers an offense' do
       expect_offense(<<~RUBY)
         desc 'Get a list of things' do
-        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ API desc blocks must define a valid detail string. https://docs.gitlab.com/development/api_styleguide#defining-endpoint-details.
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ API desc blocks must define a valid detail string. https://docs.gitlab.com/development/api_styleguide/#defining-endpoint-details.
           tags %w[things]
         end
       RUBY
@@ -51,7 +51,7 @@ RSpec.describe RuboCop::Cop::API::DescriptionDetail, :config, feature_category: 
     it 'registers an offense' do
       expect_offense(<<~RUBY)
         desc 'Get a list of things' do
-        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ API desc blocks must define a valid detail string. https://docs.gitlab.com/development/api_styleguide#defining-endpoint-details.
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ API desc blocks must define a valid detail string. https://docs.gitlab.com/development/api_styleguide/#defining-endpoint-details.
           detail ['Get', 2, 'list of things']
           tags %w[things]
         end

@@ -24179,12 +24179,6 @@
     "dottedExample": "/o/john.doe/-/settings/artifact_registry"
   },
   {
-    "template": "/o/:organization_path/-/settings/general",
-    "example": "/o/foo/-/settings/general",
-    "acceptsFormat": true,
-    "dottedExample": "/o/john.doe/-/settings/general"
-  },
-  {
     "template": "/o/:organization_path/-/smartcard/auth",
     "example": "/o/foo/-/smartcard/auth",
     "acceptsFormat": true,
@@ -24728,6 +24722,12 @@
     "example": "/o/foo/admin/cohorts",
     "acceptsFormat": true,
     "dottedExample": "/o/john.doe/admin/cohorts"
+  },
+  {
+    "template": "/o/:organization_path/admin/settings/general",
+    "example": "/o/foo/admin/settings/general",
+    "acceptsFormat": true,
+    "dottedExample": "/o/john.doe/admin/settings/general"
   },
   {
     "template": "/o/:organization_path/admin/sidekiq",

@@ -8,6 +8,7 @@ module Sidebars
         def configure_menus
           super
           add_menu(Sidebars::Admin::Organizations::Menus::OverviewMenu.new(context))
+          add_menu(Sidebars::Admin::Organizations::Menus::SettingsMenu.new(context))
         end
 
         override :aria_label

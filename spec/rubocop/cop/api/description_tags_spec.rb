@@ -55,7 +55,7 @@ RSpec.describe RuboCop::Cop::API::DescriptionTags, :config, feature_category: :a
       it 'registers an offense' do
         expect_offense(<<~RUBY)
           desc 'Get a specific environment' do
-          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ API desc blocks must define tags. See https://docs.gitlab.com/development/api_styleguide#choosing-a-tag.
+          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ API desc blocks must define tags. See https://docs.gitlab.com/development/api_styleguide/#choosing-a-tag.
             success Entities::Environment
             failure [
               { code: 401, message: 'Unauthorized' },
@@ -79,7 +79,7 @@ RSpec.describe RuboCop::Cop::API::DescriptionTags, :config, feature_category: :a
       it 'registers an offense for desc block with only success in subfolder' do
         expect_offense(<<~RUBY, 'ee/lib/ee/environments.rb')
           desc 'Simple endpoint' do
-          ^^^^^^^^^^^^^^^^^^^^^^ API desc blocks must define tags. See https://docs.gitlab.com/development/api_styleguide#choosing-a-tag.
+          ^^^^^^^^^^^^^^^^^^^^^^ API desc blocks must define tags. See https://docs.gitlab.com/development/api_styleguide/#choosing-a-tag.
             success Entities::Simple
           end
         RUBY
@@ -95,7 +95,7 @@ RSpec.describe RuboCop::Cop::API::DescriptionTags, :config, feature_category: :a
       it 'registers an offense for desc block with only success' do
         expect_offense(<<~RUBY)
           desc 'Simple endpoint' do
-          ^^^^^^^^^^^^^^^^^^^^^^ API desc blocks must define tags. See https://docs.gitlab.com/development/api_styleguide#choosing-a-tag.
+          ^^^^^^^^^^^^^^^^^^^^^^ API desc blocks must define tags. See https://docs.gitlab.com/development/api_styleguide/#choosing-a-tag.
             success Entities::Simple
           end
         RUBY
@@ -111,7 +111,7 @@ RSpec.describe RuboCop::Cop::API::DescriptionTags, :config, feature_category: :a
       it 'registers an offense for desc block with detail but no tags' do
         expect_offense(<<~RUBY)
           desc 'Complex endpoint' do
-          ^^^^^^^^^^^^^^^^^^^^^^^ API desc blocks must define tags. See https://docs.gitlab.com/development/api_styleguide#choosing-a-tag.
+          ^^^^^^^^^^^^^^^^^^^^^^^ API desc blocks must define tags. See https://docs.gitlab.com/development/api_styleguide/#choosing-a-tag.
             detail 'This is a complex endpoint'
             success Entities::Complex
             failure [{ code: 500, message: 'Server Error' }]
@@ -131,7 +131,7 @@ RSpec.describe RuboCop::Cop::API::DescriptionTags, :config, feature_category: :a
       it 'registers an offence for detail block using heredoc' do
         expect_offense(<<~RUBY)
           desc 'Complex endpoint' do
-          ^^^^^^^^^^^^^^^^^^^^^^^ API desc blocks must define tags. See https://docs.gitlab.com/development/api_styleguide#choosing-a-tag.
+          ^^^^^^^^^^^^^^^^^^^^^^^ API desc blocks must define tags. See https://docs.gitlab.com/development/api_styleguide/#choosing-a-tag.
             detail <<~END
               This feature was introduced in GitLab 12.7.
 
@@ -221,7 +221,7 @@ RSpec.describe RuboCop::Cop::API::DescriptionTags, :config, feature_category: :a
     it 'registers offenses for blocks without tags and ignores blocks with tags' do
       expect_offense(<<~RUBY)
         desc 'First endpoint' do
-        ^^^^^^^^^^^^^^^^^^^^^ API desc blocks must define tags. See https://docs.gitlab.com/development/api_styleguide#choosing-a-tag.
+        ^^^^^^^^^^^^^^^^^^^^^ API desc blocks must define tags. See https://docs.gitlab.com/development/api_styleguide/#choosing-a-tag.
           success Entities::First
         end
 
@@ -231,7 +231,7 @@ RSpec.describe RuboCop::Cop::API::DescriptionTags, :config, feature_category: :a
         end
 
         desc 'Third endpoint' do
-        ^^^^^^^^^^^^^^^^^^^^^ API desc blocks must define tags. See https://docs.gitlab.com/development/api_styleguide#choosing-a-tag.
+        ^^^^^^^^^^^^^^^^^^^^^ API desc blocks must define tags. See https://docs.gitlab.com/development/api_styleguide/#choosing-a-tag.
           success Entities::Third
           failure [{ code: 404, message: 'Not found' }]
         end

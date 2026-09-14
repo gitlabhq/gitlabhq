@@ -44,13 +44,6 @@ module Admin
       ci_cd reporting metrics_and_profiling
       network preferences].freeze
 
-    # The current size of a sidekiq job's jid is 24 characters. The size of the
-    # jid is an internal detail of Sidekiq, and they do not guarantee that it'll
-    # stay the same. We chose 50 to give us room in case the size of the jid
-    # increases. The jid is alphanumeric, so 50 is very generous. There is a spec
-    # that ensures that the constant value is more than the size of an actual jid.
-    PARAM_JOB_ID_MAX_SIZE = 50
-
     VALID_SETTING_PANELS.each do |action|
       define_method(action) { perform_update if submitted? }
     end

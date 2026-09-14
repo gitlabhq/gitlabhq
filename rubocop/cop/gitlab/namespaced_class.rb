@@ -36,7 +36,7 @@ module RuboCop
       #   end
       class NamespacedClass < RuboCop::Cop::Base
         MSG = 'Classes must be declared inside a module indicating a product domain namespace. ' \
-          'For more info: https://docs.gitlab.com/ee/development/software_design.html#bounded-contexts'
+          'For more info: https://docs.gitlab.com/development/software_design/#bounded-contexts'
 
         # These namespaces are considered top-level semantically.
         # Note: Nested namespace like Foo::Bar are also supported.

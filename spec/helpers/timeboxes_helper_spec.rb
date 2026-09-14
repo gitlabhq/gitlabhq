@@ -186,15 +186,18 @@ RSpec.describe TimeboxesHelper, feature_category: :team_planning do
     end
 
     describe '#milestone_issues_count_message' do
+      let(:issues_relation) { instance_double(ActiveRecord::Relation, limit: limited_relation) }
+      let(:limited_relation) { instance_double(ActiveRecord::Relation, count: 501) }
+
       before do
         assign(:milestone, milestone)
-        allow(milestone).to receive(:issues_visible_to_user).with(user).and_return(instance_double(ActiveRecord::Relation, size: 600))
+        allow(milestone).to receive(:issues_visible_to_user).with(user).and_return(issues_relation)
       end
 
       context 'with project' do
         it 'includes link to work items path' do
           message = helper.milestone_issues_count_message(milestone)
-          expect(message).to include('Showing 500 of 600 items.')
+          expect(message).to include('Showing 500 of 500+ items.')
           expect(message).to include('View all')
           expect(message).to include(project_work_items_path(project, milestone_title: milestone.title))
         end
@@ -208,12 +211,12 @@ RSpec.describe TimeboxesHelper, feature_category: :team_planning do
           assign(:project, nil)
           assign(:group, group)
           assign(:milestone, group_milestone)
-          allow(group_milestone).to receive(:issues_visible_to_user).with(user).and_return(instance_double(ActiveRecord::Relation, size: 600))
+          allow(group_milestone).to receive(:issues_visible_to_user).with(user).and_return(issues_relation)
         end
 
         it 'includes link to group work items path' do
           message = helper.milestone_issues_count_message(group_milestone)
-          expect(message).to include('Showing 500 of 600 items.')
+          expect(message).to include('Showing 500 of 500+ items.')
           expect(message).to include('View all')
           expect(message).to include(group_work_items_path(group, milestone_title: group_milestone.title))
         end
@@ -226,9 +229,36 @@ RSpec.describe TimeboxesHelper, feature_category: :team_planning do
 
         it 'includes link to dashboard issues path' do
           message = helper.milestone_issues_count_message(milestone)
-          expect(message).to include('Showing 500 of 600 items.')
+          expect(message).to include('Showing 500 of 500+ items.')
           expect(message).to include('View all')
           expect(message).to include(issues_dashboard_path(milestone_title: milestone.title))
+        end
+      end
+    end
+
+    describe '#milestone_merge_requests_count_for_display' do
+      before do
+        allow(helper).to receive(:current_user).and_return(user)
+      end
+
+      context 'when count is within the limit' do
+        before do
+          allow(milestone).to receive(:merge_requests_count_for_display).with(user).and_return(5)
+        end
+
+        it 'returns the count as a string' do
+          expect(helper.milestone_merge_requests_count_for_display(milestone)).to eq('5')
+        end
+      end
+
+      context 'when count exceeds the limit' do
+        before do
+          stub_const('Milestone::DISPLAY_MERGE_REQUESTS_LIMIT', 10)
+          allow(milestone).to receive(:merge_requests_count_for_display).with(user).and_return(11)
+        end
+
+        it 'returns the limit with a + suffix' do
+          expect(helper.milestone_merge_requests_count_for_display(milestone)).to eq('10+')
         end
       end
     end

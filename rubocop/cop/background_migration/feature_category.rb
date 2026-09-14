@@ -19,7 +19,7 @@ module RuboCop
 
         MSG = "'feature_category' should be defined to better assign the ownership for batched migration jobs. " \
               "For more details refer: " \
-              "https://docs.gitlab.com/ee/development/feature_categorization/#batched-background-migrations"
+              "https://docs.gitlab.com/development/feature_categorization/#batched-background-migrations"
 
         INVALID_FEATURE_CATEGORY_MSG =
           "'feature_category' is invalid. " \

@@ -42,7 +42,7 @@ module RuboCop
         MSG_UNKNOWN_STATUS = 'HTTP status `%{code}` is unknown. ' \
                              'Please provide a valid one or disable this cop.'
 
-        MSG_DOCS_LINK = 'https://docs.gitlab.com/ee/development/testing_guide/best_practices.html#have_gitlab_http_status'
+        MSG_DOCS_LINK = 'https://docs.gitlab.com/development/testing_guide/best_practices/#have_gitlab_http_status'
 
         REPLACEMENT = 'have_gitlab_http_status(%{arg})'
 

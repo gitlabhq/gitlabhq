@@ -3,6 +3,16 @@ import Draggable from 'vuedraggable';
 import { glSlotsMixin } from '~/lib/utils/vue3compat/gl_slots_mixin';
 import { glListenersMixin } from '~/lib/utils/vue3compat/gl_listeners_mixin';
 
+// A `v-for` in the slot compiles to one fragment vnode holding everything it produced,
+// so swap each fragment for its children to get the flat list the consumer wrote. Only
+// fragments have a symbol type and array children; text and comment vnodes hold a string.
+const flattenSlotNodes = (nodes) =>
+  nodes.flatMap((node) =>
+    typeof node?.type === 'symbol' && Array.isArray(node.children)
+      ? flattenSlotNodes(node.children)
+      : [node],
+  );
+
 export default {
   name: 'DraggableCompat',
   components: { Draggable },
@@ -48,21 +58,12 @@ export default {
     itemSlot(element) {
       if (!this.isVue3) return null;
 
-      const slotContent = this.glSlots().default?.();
-      if (!slotContent?.length) return null;
-
-      const firstNode = slotContent[0];
-      const firstNodeChildren = Array.isArray(firstNode?.children)
-        ? firstNode.children
-        : [firstNode?.children].filter(Boolean);
-
-      const children = [...firstNodeChildren, ...slotContent];
-      if (!children.length) return null;
-
       const targetKey =
         typeof this.itemKey === 'function' ? this.itemKey(element) : element[this.itemKey];
 
-      return children.find((child) => child?.key === targetKey);
+      return flattenSlotNodes(this.glSlots().default?.() ?? []).find(
+        (node) => node?.key === targetKey,
+      );
     },
     emitInputEvents(event) {
       this.$emit('update:modelValue', event);
@@ -75,6 +76,9 @@ export default {
 <template>
   <!-- Vue 2 mode: render default slot (user v-for) -->
   <draggable v-if="!isVue3" v-bind="props" v-on="glListeners()">
+    <template v-if="glSlots().header" #header>
+      <slot name="header"></slot>
+    </template>
     <template v-if="glSlots().default" #default>
       <slot></slot>
     </template>
@@ -95,6 +99,9 @@ export default {
     @update="$emit('update', $event)"
     @update:model-value="emitInputEvents"
   >
+    <template v-if="glSlots().header" #header>
+      <slot name="header"></slot>
+    </template>
     <template #item="slotProps">
       <component :is="itemSlot(slotProps.element)" v-bind="slotProps" />
     </template>

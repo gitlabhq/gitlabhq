@@ -1,6 +1,7 @@
 import Vue from 'vue';
 import VueApollo from 'vue-apollo';
 import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
+import { stubComponent } from 'helpers/stub_component';
 import createMockApollo from 'helpers/mock_apollo_helper';
 import waitForPromises from 'helpers/wait_for_promises';
 import * as Sentry from '~/sentry/sentry_browser_wrapper';
@@ -84,6 +85,18 @@ describe.each([
       apolloProvider,
       provide: {
         glFeatures,
+      },
+      stubs: {
+        // Stubs render only the default slot, so the skeletons, empty state and
+        // load-more button the column puts in header and footer would vanish. Their
+        // order matters too: a test below relies on header rendering above the cards.
+        DraggableCompat: stubComponent(DraggableCompat, {
+          template: `<ul>
+            <slot name="header"></slot>
+            <slot></slot>
+            <slot name="footer"></slot>
+          </ul>`,
+        }),
       },
       propsData: {
         value: mockStatus,

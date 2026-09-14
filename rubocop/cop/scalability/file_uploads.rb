@@ -28,7 +28,7 @@ module RuboCop
       #   end
       class FileUploads < RuboCop::Cop::Base
         MSG = 'Do not upload files without workhorse acceleration. ' \
-              'Please refer to https://docs.gitlab.com/ee/development/uploads/'
+              'Please refer to https://docs.gitlab.com/development/uploads/'
 
         # @!method file_in_type(node)
         def_node_matcher :file_in_type, <<~PATTERN

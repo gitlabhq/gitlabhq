@@ -7273,6 +7273,7 @@ CREATE TABLE zoekt_tasks (
     state smallint DEFAULT 0 NOT NULL,
     task_type smallint NOT NULL,
     retries_left smallint DEFAULT 5 NOT NULL,
+    claimed_until timestamp with time zone,
     CONSTRAINT c_zoekt_tasks_on_retries_left CHECK (((retries_left > 0) OR ((retries_left = 0) AND (state = 255))))
 )
 PARTITION BY LIST (partition_id);
@@ -52411,6 +52412,8 @@ CREATE INDEX index_zoekt_repositories_on_schema_version ON zoekt_repositories US
 
 CREATE INDEX index_zoekt_repositories_on_state ON zoekt_repositories USING btree (state);
 
+CREATE INDEX index_zoekt_tasks_on_claimed_until_for_processing ON ONLY zoekt_tasks USING btree (claimed_until) WHERE (state = 1);
+
 CREATE INDEX index_zoekt_tasks_on_state ON ONLY zoekt_tasks USING btree (state);
 
 CREATE INDEX index_zoekt_tasks_on_zoekt_node_id_and_state_and_perform_at ON ONLY zoekt_tasks USING btree (zoekt_node_id, state, perform_at);
@@ -52742,6 +52745,8 @@ CREATE UNIQUE INDEX snippet_user_mentions_on_snippet_id_index ON snippet_user_me
 CREATE INDEX temp_index_on_users_where_dark_theme ON users USING btree (id) WHERE (theme_id = 11);
 
 CREATE UNIQUE INDEX term_agreements_unique_index ON term_agreements USING btree (user_id, term_id);
+
+CREATE INDEX tmp_idx_award_emoji_on_id_where_awardable_type_issue ON award_emoji USING btree (id) WHERE ((awardable_type)::text = 'Issue'::text);
 
 CREATE INDEX tmp_idx_members_on_access_level_source_type_requested_at_id ON members USING btree (id) WHERE ((access_level = 5) AND ((source_type)::text = 'Namespace'::text) AND (requested_at IS NULL));
 

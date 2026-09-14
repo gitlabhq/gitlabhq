@@ -610,6 +610,20 @@ describe('WorkItemLabels component', () => {
           expect(findDisclosureDropdown().exists()).toBe(false);
           expect(findDropdownContentsCreateView().exists()).toBe(false);
         });
+
+        it('refetches the labels so the new label is listed', async () => {
+          showDropdown();
+          await waitForPromises();
+          const callsBefore = projectLabelsQueryHandler.mock.calls.length;
+
+          findDropdownContentsCreateView().vm.$emit('label-created', {
+            id: 'gid://gitlab/Label/55',
+            name: 'New label',
+          });
+          await waitForPromises();
+
+          expect(projectLabelsQueryHandler.mock.calls).toHaveLength(callsBefore + 1);
+        });
       });
     });
   });

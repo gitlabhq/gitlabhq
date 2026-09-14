@@ -1,8 +1,9 @@
 %table.rd-text-view-root.code-syntax-highlight-theme
+  %caption.gl-sr-only= table_caption
   %thead.gl-sr-only
     %tr
       - column_titles.each do |title|
-        %th= title
+        %th{ scope: 'col' }= title
   - hunks_with_row_counts.each do |hunk, row_count|
     %tbody.rd-text-view-content{ style: "--virtual-total-rows: #{row_count}" }
       = render RapidDiffs::Viewers::Text::InlineHunkComponent.new(diff_hunk: hunk, file_hash: @diff_file.short_file_hash)

@@ -19,7 +19,7 @@ module RuboCop
       #   end
       class JSONType < RuboCop::Cop::Base
         MSG = 'Avoid using GraphQL::Types::JSON. See: ' \
-              'https://docs.gitlab.com/ee/development/api_graphql_styleguide.html#json'
+              'https://docs.gitlab.com/development/api_graphql_styleguide/#json'
 
         # @!method has_json_type?(node)
         def_node_matcher :has_json_type?, <<~PATTERN
