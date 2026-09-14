@@ -17704,7 +17704,8 @@ ALTER SEQUENCE ci_minutes_additional_packs_id_seq OWNED BY ci_minutes_additional
 CREATE TABLE ci_namespace_mirrors (
     id bigint NOT NULL,
     namespace_id bigint NOT NULL,
-    traversal_ids bigint[] DEFAULT '{}'::bigint[] NOT NULL
+    traversal_ids bigint[] DEFAULT '{}'::bigint[] NOT NULL,
+    organization_id bigint
 );
 
 CREATE SEQUENCE ci_namespace_mirrors_id_seq
@@ -17967,7 +17968,8 @@ ALTER SEQUENCE ci_project_metrics_id_seq OWNED BY ci_project_metrics.id;
 CREATE TABLE ci_project_mirrors (
     id bigint NOT NULL,
     project_id bigint NOT NULL,
-    namespace_id bigint NOT NULL
+    namespace_id bigint NOT NULL,
+    organization_id bigint
 );
 
 CREATE SEQUENCE ci_project_mirrors_id_seq
@@ -47709,6 +47711,8 @@ CREATE INDEX index_ci_minutes_additional_packs_on_namespace_id_purchase_xid ON c
 
 CREATE UNIQUE INDEX index_ci_namespace_mirrors_on_namespace_id ON ci_namespace_mirrors USING btree (namespace_id);
 
+CREATE INDEX index_ci_namespace_mirrors_on_organization_id_and_namespace_id ON ci_namespace_mirrors USING btree (organization_id, namespace_id);
+
 CREATE INDEX index_ci_namespace_mirrors_on_traversal_ids_unnest ON ci_namespace_mirrors USING btree ((traversal_ids[1]), (traversal_ids[2]), (traversal_ids[3]), (traversal_ids[4])) INCLUDE (traversal_ids, namespace_id);
 
 CREATE UNIQUE INDEX index_ci_partitions_on_current_status ON ci_partitions USING btree (status) WHERE (status = 2);
@@ -47790,6 +47794,8 @@ CREATE INDEX index_ci_pipeline_schedules_on_project_id ON ci_pipeline_schedules 
 CREATE UNIQUE INDEX index_ci_project_metrics_on_project_id ON ci_project_metrics USING btree (project_id);
 
 CREATE INDEX index_ci_project_mirrors_on_namespace_id ON ci_project_mirrors USING btree (namespace_id);
+
+CREATE INDEX index_ci_project_mirrors_on_organization_id_and_project_id ON ci_project_mirrors USING btree (organization_id, project_id);
 
 CREATE UNIQUE INDEX index_ci_project_mirrors_on_project_id ON ci_project_mirrors USING btree (project_id);
 

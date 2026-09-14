@@ -205,6 +205,11 @@ export const autovacuumConfig = {
   },
   findings: [
     {
+      severity: 'error',
+      code: 'tables_autovacuum_disabled',
+      message: 'Autovacuum is disabled for 1 table.',
+    },
+    {
       severity: 'warning',
       code: 'autovacuum_cost_limit_low',
       setting_name: 'autovacuum_vacuum_cost_limit',
@@ -216,9 +221,48 @@ export const autovacuumConfig = {
       setting_name: 'autovacuum_work_mem',
       message: 'The autovacuum_work_mem setting is unset and inherits maintenance_work_mem.',
     },
+    {
+      severity: 'warning',
+      code: 'scale_factor_risk',
+      message: 'The global vacuum scale factor is high for 1 large table.',
+    },
   ],
-  severity: 'warning',
-  counts: { warning: 2 },
+  severity: 'error',
+  counts: { error: 1, warning: 3 },
+  table_overrides: [
+    {
+      schema_name: 'public',
+      table_name: 'ci_builds',
+      total_bytes: 5368709120,
+      estimated_rows: 1000000,
+      overrides: { autovacuum_vacuum_scale_factor: '0.01' },
+      autovacuum_disabled: false,
+    },
+    {
+      schema_name: 'public',
+      table_name: 'audit_events',
+      total_bytes: 1073741824,
+      estimated_rows: 500000,
+      overrides: { autovacuum_enabled: 'false' },
+      autovacuum_disabled: true,
+    },
+    {
+      schema_name: 'public',
+      table_name: 'ci_job_artifacts',
+      total_bytes: 2199023255552,
+      estimated_rows: 50000000,
+      overrides: { autovacuum_vacuum_scale_factor: '0.001' },
+      autovacuum_disabled: false,
+    },
+  ],
+  scale_factor_risks: [
+    {
+      schema_name: 'public',
+      table_name: 'merge_request_diffs',
+      total_bytes: 21474836480,
+      estimated_rows: 9000000,
+    },
+  ],
 };
 
 export const databaseInformationResults = {

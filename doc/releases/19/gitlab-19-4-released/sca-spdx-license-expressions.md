@@ -20,4 +20,5 @@ single-license dependencies.
 
 Expressions declared in a CycloneDX SBOM have been supported since GitLab 19.3.
 This release adds them to the license data GitLab synchronizes.
-Offline instances receive expressions only after mirroring the v3 license dataset.
+Offline instances receive expressions only after
+[downloading the v3 license data](../../../topics/offline/quick_start_guide.md#download-v3-license-data).

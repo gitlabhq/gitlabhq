@@ -52,7 +52,6 @@ RSpec.describe 'ai_usage_events downstream containment', :click_house, feature_c
       ai_usage_events_daily
       ai_code_suggestions
       code_suggestion_events_daily
-      duo_chat_events_daily
       agent_platform_sessions
     ]
   end

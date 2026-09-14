@@ -35,6 +35,10 @@
     "ArtifactRegistryMavenPackageDetails",
     "ArtifactRegistryNpmPackageDetails"
   ],
+  "ArtifactRegistryVersionFile": [
+    "ArtifactRegistryMavenVersionFile",
+    "ArtifactRegistryNpmVersionFile"
+  ],
   "AuditEventStreamingDestinationInterface": [
     "GroupAuditEventStreamingDestination",
     "InstanceAuditEventStreamingDestination"

@@ -87,6 +87,53 @@ RSpec.describe Gitlab::Database::Diagnostics::Console::Views::AutovacuumSettings
       end
     end
 
+    context 'with per-table overrides and scale factor risks' do
+      let(:payload) do
+        {
+          autovacuum_config: {
+            settings: settings,
+            findings: findings,
+            severity: severity,
+            counts: counts,
+            table_overrides: [
+              {
+                schema_name: 'public',
+                table_name: 'audit_events',
+                total_bytes: 1073741824,
+                estimated_rows: 500000,
+                overrides: { 'autovacuum_enabled' => 'false' },
+                autovacuum_disabled: true
+              }
+            ],
+            scale_factor_risks: [
+              {
+                schema_name: 'public',
+                table_name: 'merge_request_diffs',
+                total_bytes: 21474836480,
+                estimated_rows: 9000000
+              }
+            ]
+          }
+        }
+      end
+
+      it 'renders both tables with humanised sizes and row counts', :aggregate_failures do
+        view.run
+
+        expect(rendered).to include('   Per-table overrides')
+        expect(buffer.string).to include('public.audit_events (autovacuum disabled)')
+        # GitLab's locale renders binary units (GiB); the gem default renders GB.
+        expect(buffer.string).to match(/1 Gi?B/)
+        expect(buffer.string).to include('~500,000')
+        expect(buffer.string).to include('autovacuum_enabled=false')
+
+        expect(rendered).to include('   Scale factor risk: large tables with a high scale factor in effect')
+        expect(buffer.string).to include('public.merge_request_diffs')
+        expect(buffer.string).to match(/20 Gi?B/)
+        expect(buffer.string).to include('~9,000,000')
+      end
+    end
+
     context 'when no settings could be read' do
       let(:settings) { {} }
 

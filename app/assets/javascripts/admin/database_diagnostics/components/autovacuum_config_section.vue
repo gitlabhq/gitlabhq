@@ -1,5 +1,6 @@
 <script>
 import {
+  GlAlert,
   GlBadge,
   GlButton,
   GlCollapse,
@@ -9,7 +10,8 @@ import {
   GlTooltipDirective,
 } from '@gitlab/ui';
 import { uniqueId } from 'lodash-es';
-import { s__, sprintf } from '~/locale';
+import { s__, n__, sprintf, formatNumber } from '~/locale';
+import { bytes } from '~/lib/utils/unit_format';
 import { helpPagePath } from '~/helpers/help_page_helper';
 
 const SEVERITY_VARIANTS = {
@@ -23,7 +25,7 @@ const WRAPAROUND_DOCS_URL = helpPagePath('administration/troubleshooting/postgre
 
 export default {
   name: 'AutovacuumConfigSection',
-  components: { GlBadge, GlButton, GlCollapse, GlIcon, GlLink, GlTableLite },
+  components: { GlAlert, GlBadge, GlButton, GlCollapse, GlIcon, GlLink, GlTableLite },
   directives: { GlTooltip: GlTooltipDirective },
   props: {
     config: {
@@ -34,7 +36,9 @@ export default {
   data() {
     return {
       settingsExpanded: false,
+      overridesExpanded: false,
       settingsDetailsId: uniqueId('autovacuum-settings-details-'),
+      overridesDetailsId: uniqueId('autovacuum-overrides-details-'),
     };
   },
   computed: {
@@ -44,8 +48,21 @@ export default {
     findings() {
       return this.config.findings || [];
     },
+    // Findings without a setting_name are table-level; the settings header
+    // only summarises the per-setting ones.
+    settingsFindings() {
+      return this.findings.filter((finding) => finding.setting_name);
+    },
+    tableFindings() {
+      return this.findings.filter((finding) => !finding.setting_name);
+    },
     findingsBySetting() {
-      return Object.fromEntries(this.findings.map((finding) => [finding.setting_name, finding]));
+      return Object.fromEntries(
+        this.settingsFindings.map((finding) => [finding.setting_name, finding]),
+      );
+    },
+    tableOverrides() {
+      return this.config.table_overrides || [];
     },
     hasSettings() {
       return Object.keys(this.settings).length > 0;
@@ -59,13 +76,34 @@ export default {
         finding: this.findingsBySetting[name],
       }));
     },
+    settingsSeverity() {
+      if (this.settingsFindings.some((finding) => finding.severity === 'error')) return 'error';
+      if (this.settingsFindings.length) return 'warning';
+      return null;
+    },
     statusIcon() {
-      if (this.config.severity === 'error') return { name: 'error', variant: 'danger' };
-      if (this.config.severity === 'warning') return { name: 'warning', variant: 'warning' };
+      if (this.settingsSeverity === 'error') return { name: 'error', variant: 'danger' };
+      if (this.settingsSeverity === 'warning') return { name: 'warning', variant: 'warning' };
       return { name: 'check-circle-filled', variant: 'success' };
     },
     badgeVariant() {
-      return this.config.severity === 'error' ? 'danger' : 'warning';
+      return this.settingsSeverity === 'error' ? 'danger' : 'warning';
+    },
+    // The only adverse signal among overrides is a table with autovacuum
+    // disabled; everything else is informational tuning.
+    disabledOverrides() {
+      return this.tableOverrides.filter((table) => table.autovacuum_disabled);
+    },
+    overridesStatusIcon() {
+      return this.disabledOverrides.length
+        ? { name: 'error', variant: 'danger' }
+        : { name: 'check-circle-filled', variant: 'success' };
+    },
+    overridesBadgeVariant() {
+      return this.disabledOverrides.length ? 'danger' : 'neutral';
+    },
+    scaleFactorRisks() {
+      return this.config.scale_factor_risks || [];
     },
   },
   methods: {
@@ -90,14 +128,38 @@ export default {
     findingVariant(finding) {
       return SEVERITY_VARIANTS[finding.severity] || 'warning';
     },
+    overrideEntries(table) {
+      return Object.entries(table.overrides || {}).map(([key, value]) => `${key}=${value}`);
+    },
+    formatBytes(value) {
+      return bytes(value, 2, { unitSeparator: ' ' });
+    },
+    rowCount(count) {
+      return sprintf(
+        n__('DatabaseDiagnostics|~%{count} row', 'DatabaseDiagnostics|~%{count} rows', count),
+        { count: formatNumber(count) },
+      );
+    },
     toggleSettings() {
       this.settingsExpanded = !this.settingsExpanded;
+    },
+    toggleOverrides() {
+      this.overridesExpanded = !this.overridesExpanded;
     },
   },
   settingFields: [
     { key: 'setting', label: s__('DatabaseDiagnostics|Setting') },
     { key: 'value', label: s__('DatabaseDiagnostics|Value') },
     { key: 'status', label: s__('DatabaseDiagnostics|Status') },
+  ],
+  overrideFields: [
+    { key: 'table', label: s__('DatabaseDiagnostics|Table') },
+    { key: 'size', label: s__('DatabaseDiagnostics|Size') },
+    { key: 'overrides', label: s__('DatabaseDiagnostics|Overrides') },
+  ],
+  riskFields: [
+    { key: 'table', label: s__('DatabaseDiagnostics|Table') },
+    { key: 'size', label: s__('DatabaseDiagnostics|Size') },
   ],
   wraparoundDocsUrl: WRAPAROUND_DOCS_URL,
   // Short badge labels per backend finding code; the finding message itself is
@@ -118,10 +180,16 @@ export default {
     effectiveValue: s__('DatabaseDiagnostics|%{value} (effective: %{effective})'),
     details: s__('DatabaseDiagnostics|Details'),
     settingsEmpty: s__('DatabaseDiagnostics|No autovacuum settings could be read.'),
+    overridesTitle: s__('DatabaseDiagnostics|Per-table overrides'),
+    scaleFactorTitle: s__('DatabaseDiagnostics|Scale factor risk'),
     learnMore: s__(
       'DatabaseDiagnostics|Learn more about PostgreSQL autovacuum and transaction ID wraparound.',
     ),
     ok: s__('DatabaseDiagnostics|OK'),
+    tableDisabled: s__('DatabaseDiagnostics|Autovacuum disabled'),
+    tableDisabledHint: s__(
+      'DatabaseDiagnostics|Autovacuum is disabled for this table, so its dead tuples are never reclaimed automatically.',
+    ),
   },
 };
 </script>
@@ -134,11 +202,11 @@ export default {
         <gl-icon v-if="hasSettings" v-bind="statusIcon" data-testid="settings-status-icon" />
         <h4 class="gl-heading-5 !gl-mb-0">{{ $options.i18n.settingsTitle }}</h4>
         <gl-badge
-          v-if="findings.length"
+          v-if="settingsFindings.length"
           :variant="badgeVariant"
           data-testid="settings-flagged-count"
         >
-          {{ findings.length }}
+          {{ settingsFindings.length }}
         </gl-badge>
       </div>
 
@@ -197,5 +265,104 @@ export default {
         }}</gl-link>
       </p>
     </gl-collapse>
+
+    <gl-alert
+      v-for="finding in tableFindings"
+      :key="finding.code"
+      :variant="findingVariant(finding)"
+      :dismissible="false"
+      class="gl-mt-5"
+      :data-testid="`table-finding-${finding.code}`"
+    >
+      {{ finding.message }}
+    </gl-alert>
+
+    <!-- Foldable "Per-table overrides" block: omitted entirely when there are none. -->
+    <template v-if="tableOverrides.length">
+      <div
+        class="gl-mt-5 gl-flex gl-items-center gl-justify-between gl-rounded-base gl-bg-subtle gl-p-3"
+      >
+        <div class="gl-flex gl-items-center gl-gap-2">
+          <gl-icon v-bind="overridesStatusIcon" data-testid="overrides-status-icon" />
+          <h4 class="gl-heading-5 !gl-mb-0">{{ $options.i18n.overridesTitle }}</h4>
+          <gl-badge :variant="overridesBadgeVariant" data-testid="overrides-count">
+            {{ tableOverrides.length }}
+          </gl-badge>
+        </div>
+
+        <gl-button
+          category="tertiary"
+          size="small"
+          data-testid="overrides-toggle"
+          :icon="overridesExpanded ? 'chevron-up' : 'chevron-down'"
+          :aria-expanded="overridesExpanded.toString()"
+          :aria-controls="overridesDetailsId"
+          @click="toggleOverrides"
+        >
+          {{ $options.i18n.details }}
+        </gl-button>
+      </div>
+
+      <gl-collapse
+        :id="overridesDetailsId"
+        :visible="overridesExpanded"
+        class="gl-mt-3"
+        data-testid="overrides-details"
+      >
+        <gl-table-lite
+          :items="tableOverrides"
+          :fields="$options.overrideFields"
+          stacked="md"
+          data-testid="overrides-table"
+        >
+          <template #cell(table)="{ item }">
+            <div class="gl-flex gl-flex-wrap gl-items-center gl-gap-2">
+              <code>{{ item.schema_name }}.{{ item.table_name }}</code>
+              <gl-badge
+                v-if="item.autovacuum_disabled"
+                v-gl-tooltip
+                variant="danger"
+                icon="warning"
+                :title="$options.i18n.tableDisabledHint"
+                data-testid="table-disabled-badge"
+              >
+                {{ $options.i18n.tableDisabled }}
+              </gl-badge>
+            </div>
+          </template>
+
+          <template #cell(size)="{ item }">
+            {{ formatBytes(item.total_bytes) }}
+            <span class="gl-text-subtle">({{ rowCount(item.estimated_rows) }})</span>
+          </template>
+
+          <template #cell(overrides)="{ item }">
+            <code v-for="entry in overrideEntries(item)" :key="entry" class="gl-mr-2">{{
+              entry
+            }}</code>
+          </template>
+        </gl-table-lite>
+      </gl-collapse>
+    </template>
+
+    <template v-if="scaleFactorRisks.length">
+      <h4 class="gl-heading-5 gl-mt-5">{{ $options.i18n.scaleFactorTitle }}</h4>
+
+      <gl-table-lite
+        :items="scaleFactorRisks"
+        :fields="$options.riskFields"
+        stacked="md"
+        data-testid="scale-factor-risks"
+      >
+        <template #cell(table)="{ item }">
+          <code>{{ item.schema_name }}.{{ item.table_name }}</code>
+        </template>
+
+        <template #cell(size)="{ item }">
+          {{ formatBytes(item.total_bytes) }}
+          <span class="gl-text-subtle">({{ rowCount(item.estimated_rows) }})</span>
+        </template>
+      </gl-table-lite>
+    </template>
   </section>
 </template>

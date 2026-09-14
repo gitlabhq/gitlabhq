@@ -22957,6 +22957,29 @@ Fields:
 | <a id="artifactregistryversionedge-cursor"></a>`cursor` | [`String!`](#string) | A cursor for use in pagination. |
 | <a id="artifactregistryversionedge-node"></a>`node` | [`ArtifactRegistryVersion`](#artifactregistryversion) | The item at the end of the edge. |
 
+#### `ArtifactRegistryVersionFileConnection`
+
+The connection type for [`ArtifactRegistryVersionFile`](#artifactregistryversionfile).
+
+Fields:
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="artifactregistryversionfileconnection-edges"></a>`edges` | [`[ArtifactRegistryVersionFileEdge]`](#artifactregistryversionfileedge) | A list of edges. |
+| <a id="artifactregistryversionfileconnection-nodes"></a>`nodes` | [`[ArtifactRegistryVersionFile]`](#artifactregistryversionfile) | A list of nodes. |
+| <a id="artifactregistryversionfileconnection-pageinfo"></a>`pageInfo` | [`PageInfo!`](#pageinfo) | Information to aid in pagination. |
+
+#### `ArtifactRegistryVersionFileEdge`
+
+The edge type for [`ArtifactRegistryVersionFile`](#artifactregistryversionfile).
+
+Fields:
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="artifactregistryversionfileedge-cursor"></a>`cursor` | [`String!`](#string) | A cursor for use in pagination. |
+| <a id="artifactregistryversionfileedge-node"></a>`node` | [`ArtifactRegistryVersionFile`](#artifactregistryversionfile) | The item at the end of the edge. |
+
 #### `AscpComponentConnection`
 
 The connection type for [`AscpComponent`](#ascpcomponent).
@@ -35690,18 +35713,22 @@ Fields:
 | <a id="aiusermetrics-duochatinteractionscount"></a>`duoChatInteractionsCount` {{< icon name="warning-solid" >}} | [`Int`](#int) | Deprecated in GitLab 18.7. Use `chat.requestDuoChatResponseEventCount` instead. |
 | <a id="aiusermetrics-duomessaging"></a>`duoMessaging` | [`duoMessagingUserMetrics`](#duomessagingusermetrics) | Duo Messaging metrics for the user. |
 | <a id="aiusermetrics-duoworkflow"></a>`duoWorkflow` | [`duoWorkflowUserMetrics`](#duoworkflowusermetrics) | Duo Workflow metrics for the user. |
+| <a id="aiusermetrics-explaincode"></a>`explainCode` | [`explainCodeUserMetrics`](#explaincodeusermetrics) | Explain Code metrics for the user. |
 | <a id="aiusermetrics-explainvulnerability"></a>`explainVulnerability` | [`explainVulnerabilityUserMetrics`](#explainvulnerabilityusermetrics) | Explain Vulnerability metrics for the user. |
 | <a id="aiusermetrics-featurediscovery"></a>`featureDiscovery` | [`featureDiscoveryUserMetrics`](#featurediscoveryusermetrics) | Feature Discovery metrics for the user. |
+| <a id="aiusermetrics-fixcode"></a>`fixCode` | [`fixCodeUserMetrics`](#fixcodeusermetrics) | Fix Code metrics for the user. |
 | <a id="aiusermetrics-fixpipeline"></a>`fixPipeline` | [`fixPipelineUserMetrics`](#fixpipelineusermetrics) | Fix Pipeline metrics for the user. |
 | <a id="aiusermetrics-generatemergecommitmessage"></a>`generateMergeCommitMessage` | [`generateMergeCommitMessageUserMetrics`](#generatemergecommitmessageusermetrics) | Generate Merge Commit Message metrics for the user. |
 | <a id="aiusermetrics-lastduoactivityon"></a>`lastDuoActivityOn` | [`Date`](#date) | Date of the last Duo activity across all features for the user. |
 | <a id="aiusermetrics-mcp"></a>`mcp` | [`mcpUserMetrics`](#mcpusermetrics) | Mcp metrics for the user. |
+| <a id="aiusermetrics-refactorcode"></a>`refactorCode` | [`refactorCodeUserMetrics`](#refactorcodeusermetrics) | Refactor Code metrics for the user. |
 | <a id="aiusermetrics-requestduovulnerabilityresolution"></a>`requestDuoVulnerabilityResolution` | [`requestDuoVulnerabilityResolutionUserMetrics`](#requestduovulnerabilityresolutionusermetrics) | Request Duo Vulnerability Resolution metrics for the user. |
 | <a id="aiusermetrics-summarizenewmergerequest"></a>`summarizeNewMergeRequest` | [`summarizeNewMergeRequestUserMetrics`](#summarizenewmergerequestusermetrics) | Summarize New Merge Request metrics for the user. |
 | <a id="aiusermetrics-summarizereview"></a>`summarizeReview` | [`summarizeReviewUserMetrics`](#summarizereviewusermetrics) | Summarize Review metrics for the user. |
 | <a id="aiusermetrics-totaleventcount"></a>`totalEventCount` | [`Int`](#int) | Total count of all tracked events for the user. |
 | <a id="aiusermetrics-troubleshootjob"></a>`troubleshootJob` {{< icon name="warning-solid" >}} | [`troubleshootJobUserMetrics`](#troubleshootjobusermetrics) | Deprecated in GitLab 19.1. Legacy troubleshoot job metrics for the user (event ID 7 only). For current GitLab Duo Agent Platform-based troubleshoot jobs, use `agentPlatformSessions` with `flow_type = 'fix_pipeline/v1'`. |
 | <a id="aiusermetrics-user"></a>`user` | [`AddOnUser`](#addonuser) | User associated with metrics. |
+| <a id="aiusermetrics-writetests"></a>`writeTests` | [`writeTestsUserMetrics`](#writetestsusermetrics) | Write Tests metrics for the user. |
 
 ### `AiVectorizableFileUploadRegistry`
 
@@ -36464,6 +36491,23 @@ Arguments:
 | ---- | ---- | ----------- |
 | <a id="artifactregistrymavenpackagedetails-versions-sort"></a>`sort` {{< icon name="warning-solid" >}} | [`ArtifactRegistryVersionSort`](#artifactregistryversionsort) | Introduced in GitLab 19.4. Status: Experiment. Sort versions by the criteria. Defaults to publication date descending. |
 
+### `ArtifactRegistryMavenVersionFile`
+
+File of a Maven version in an Artifact Registry repository.
+
+Fields:
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="artifactregistrymavenversionfile-createdat"></a>`createdAt` {{< icon name="warning-solid" >}} | [`Time`](#time) | Introduced in GitLab 19.4. Status: Experiment. Timestamp the file was stored. Null until Artifact Registry serializes the Maven file timestamp. |
+| <a id="artifactregistrymavenversionfile-filename"></a>`fileName` {{< icon name="warning-solid" >}} | [`String!`](#string) | Introduced in GitLab 19.4. Status: Experiment. Name of the file. |
+| <a id="artifactregistrymavenversionfile-id"></a>`id` {{< icon name="warning-solid" >}} | [`ID!`](#id) | Introduced in GitLab 19.4. Status: Experiment. ID of the file in Artifact Registry. |
+| <a id="artifactregistrymavenversionfile-md5"></a>`md5` {{< icon name="warning-solid" >}} | [`String`](#string) | Introduced in GitLab 19.4. Status: Experiment. MD5 checksum of the file. Null when the deploy stored none. |
+| <a id="artifactregistrymavenversionfile-sha1"></a>`sha1` {{< icon name="warning-solid" >}} | [`String!`](#string) | Introduced in GitLab 19.4. Status: Experiment. SHA-1 checksum of the file. |
+| <a id="artifactregistrymavenversionfile-sha256"></a>`sha256` {{< icon name="warning-solid" >}} | [`String!`](#string) | Introduced in GitLab 19.4. Status: Experiment. SHA-256 checksum of the file. |
+| <a id="artifactregistrymavenversionfile-sha512"></a>`sha512` {{< icon name="warning-solid" >}} | [`String!`](#string) | Introduced in GitLab 19.4. Status: Experiment. SHA-512 checksum of the file. |
+| <a id="artifactregistrymavenversionfile-sizebytes"></a>`sizeBytes` {{< icon name="warning-solid" >}} | [`BigInt!`](#bigint) | Introduced in GitLab 19.4. Status: Experiment. Stored size of the file in bytes. |
+
 ### `ArtifactRegistryNpmDistTag`
 
 npm dist-tag of a package in an Artifact Registry repository.
@@ -36555,6 +36599,20 @@ Arguments:
 | Name | Type | Description |
 | ---- | ---- | ----------- |
 | <a id="artifactregistrynpmpackagedetails-versions-sort"></a>`sort` {{< icon name="warning-solid" >}} | [`ArtifactRegistryVersionSort`](#artifactregistryversionsort) | Introduced in GitLab 19.4. Status: Experiment. Sort versions by the criteria. Defaults to publication date descending. |
+
+### `ArtifactRegistryNpmVersionFile`
+
+File of an npm version in an Artifact Registry repository.
+
+Fields:
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="artifactregistrynpmversionfile-createdat"></a>`createdAt` {{< icon name="warning-solid" >}} | [`Time`](#time) | Introduced in GitLab 19.4. Status: Experiment. Timestamp the file was stored. Null on a remote repository, whose cached row carries none. |
+| <a id="artifactregistrynpmversionfile-filename"></a>`fileName` {{< icon name="warning-solid" >}} | [`String!`](#string) | Introduced in GitLab 19.4. Status: Experiment. Name of the file. |
+| <a id="artifactregistrynpmversionfile-id"></a>`id` {{< icon name="warning-solid" >}} | [`ID!`](#id) | Introduced in GitLab 19.4. Status: Experiment. ID of the file in Artifact Registry. |
+| <a id="artifactregistrynpmversionfile-sha256"></a>`sha256` {{< icon name="warning-solid" >}} | [`String!`](#string) | Introduced in GitLab 19.4. Status: Experiment. SHA-256 checksum of the file. |
+| <a id="artifactregistrynpmversionfile-sizebytes"></a>`sizeBytes` {{< icon name="warning-solid" >}} | [`BigInt!`](#bigint) | Introduced in GitLab 19.4. Status: Experiment. Stored size of the file in bytes. |
 
 ### `ArtifactRegistryRemoteSettings`
 
@@ -36723,6 +36781,7 @@ Fields:
 | <a id="artifactregistryversiondetails-createdat"></a>`createdAt` {{< icon name="warning-solid" >}} | [`Time`](#time) | Introduced in GitLab 19.4. Status: Experiment. Timestamp the version was published. Null when Artifact Registry stored none. |
 | <a id="artifactregistryversiondetails-createdby"></a>`createdBy` {{< icon name="warning-solid" >}} | [`UserCore`](#usercore) | Introduced in GitLab 19.4. Status: Experiment. User who published the version, resolved from the reference Artifact Registry stores. Null when it stored none or the user no longer exists. |
 | <a id="artifactregistryversiondetails-disttags"></a>`distTags` {{< icon name="warning-solid" >}} | [`[String!]!`](#string) | Introduced in GitLab 19.4. Status: Experiment. Names of the npm dist-tags bound to the version, in ascending name order. Empty for Maven versions. |
+| <a id="artifactregistryversiondetails-files"></a>`files` {{< icon name="warning-solid" >}} | [`ArtifactRegistryVersionFileConnection`](#artifactregistryversionfileconnection) | Introduced in GitLab 19.4. Status: Experiment. Files the version holds, ordered by file name. Reads at most 20 rows per page and can be selected once per operation. Returns `null` for a version that is gone, and when Artifact Registry rejects the read: silently for a 401, 403, or 404, and alongside a top-level error for a 429, a 5xx, or any other 4xx. |
 | <a id="artifactregistryversiondetails-id"></a>`id` {{< icon name="warning-solid" >}} | [`ID!`](#id) | Introduced in GitLab 19.4. Status: Experiment. ID of the version in Artifact Registry. |
 | <a id="artifactregistryversiondetails-project"></a>`project` {{< icon name="warning-solid" >}} | [`Project`](#project) | Introduced in GitLab 19.4. Status: Experiment. Project the version was published from, resolved from the reference Artifact Registry stores. Null when it stored none, the project no longer exists, or the viewer cannot see the project. |
 | <a id="artifactregistryversiondetails-sizebytes"></a>`sizeBytes` {{< icon name="warning-solid" >}} | [`BigInt`](#bigint) | Introduced in GitLab 19.4. Status: Experiment. Stored size of the version in bytes. Null for a Maven version until Artifact Registry serializes the column, and on a remote repository. |
@@ -67359,6 +67418,18 @@ Fields:
 | <a id="duoworkflowusermetrics-lastduoactivityon"></a>`lastDuoActivityOn` | [`Date`](#date) | Date of the last Duo Workflow activity for the user. |
 | <a id="duoworkflowusermetrics-totaleventcount"></a>`totalEventCount` | [`Int`](#int) | Total count of all Duo Workflow events for the user. |
 
+### `explainCodeUserMetrics`
+
+Explain Code user metrics for a user. Requires ClickHouse. Premium and Ultimate with GitLab Duo Enterprise only.
+
+Fields:
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="explaincodeusermetrics-explaincodeeventcount"></a>`explainCodeEventCount` | [`Int`](#int) | Total count of `explain_code` event. |
+| <a id="explaincodeusermetrics-lastduoactivityon"></a>`lastDuoActivityOn` | [`Date`](#date) | Date of the last Explain Code activity for the user. |
+| <a id="explaincodeusermetrics-totaleventcount"></a>`totalEventCount` | [`Int`](#int) | Total count of all Explain Code events for the user. |
+
 ### `explainVulnerabilityUserMetrics`
 
 Explain Vulnerability user metrics for a user. Requires ClickHouse. Premium and Ultimate with GitLab Duo Enterprise only.
@@ -67382,6 +67453,18 @@ Fields:
 | <a id="featurediscoveryusermetrics-lastduoactivityon"></a>`lastDuoActivityOn` | [`Date`](#date) | Date of the last Feature Discovery activity for the user. |
 | <a id="featurediscoveryusermetrics-resolvefeaturediscoverysearcheventcount"></a>`resolveFeatureDiscoverySearchEventCount` | [`Int`](#int) | Total count of `resolve_feature_discovery_search` event. |
 | <a id="featurediscoveryusermetrics-totaleventcount"></a>`totalEventCount` | [`Int`](#int) | Total count of all Feature Discovery events for the user. |
+
+### `fixCodeUserMetrics`
+
+Fix Code user metrics for a user. Requires ClickHouse. Premium and Ultimate with GitLab Duo Enterprise only.
+
+Fields:
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="fixcodeusermetrics-fixcodeeventcount"></a>`fixCodeEventCount` | [`Int`](#int) | Total count of `fix_code` event. |
+| <a id="fixcodeusermetrics-lastduoactivityon"></a>`lastDuoActivityOn` | [`Date`](#date) | Date of the last Fix Code activity for the user. |
+| <a id="fixcodeusermetrics-totaleventcount"></a>`totalEventCount` | [`Int`](#int) | Total count of all Fix Code events for the user. |
 
 ### `fixPipelineUserMetrics`
 
@@ -67431,6 +67514,18 @@ Fields:
 | <a id="mcpusermetrics-lastduoactivityon"></a>`lastDuoActivityOn` | [`Date`](#date) | Date of the last MCP activity for the user. |
 | <a id="mcpusermetrics-startmcptoolcalleventcount"></a>`startMcpToolCallEventCount` | [`Int`](#int) | Total count of `start_mcp_tool_call` event. |
 | <a id="mcpusermetrics-totaleventcount"></a>`totalEventCount` | [`Int`](#int) | Total count of all MCP events for the user. |
+
+### `refactorCodeUserMetrics`
+
+Refactor Code user metrics for a user. Requires ClickHouse. Premium and Ultimate with GitLab Duo Enterprise only.
+
+Fields:
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="refactorcodeusermetrics-lastduoactivityon"></a>`lastDuoActivityOn` | [`Date`](#date) | Date of the last Refactor Code activity for the user. |
+| <a id="refactorcodeusermetrics-refactorcodeeventcount"></a>`refactorCodeEventCount` | [`Int`](#int) | Total count of `refactor_code` event. |
+| <a id="refactorcodeusermetrics-totaleventcount"></a>`totalEventCount` | [`Int`](#int) | Total count of all Refactor Code events for the user. |
 
 ### `requestDuoVulnerabilityResolutionUserMetrics`
 
@@ -67489,6 +67584,18 @@ Fields:
 | <a id="troubleshootjobusermetrics-lastduoactivityon"></a>`lastDuoActivityOn` | [`Date`](#date) | Date of the last Troubleshoot Job activity for the user. |
 | <a id="troubleshootjobusermetrics-totaleventcount"></a>`totalEventCount` | [`Int`](#int) | Total count of all Troubleshoot Job events for the user. |
 | <a id="troubleshootjobusermetrics-troubleshootjobeventcount"></a>`troubleshootJobEventCount` | [`Int`](#int) | Total count of `troubleshoot_job` event. |
+
+### `writeTestsUserMetrics`
+
+Write Tests user metrics for a user. Requires ClickHouse. Premium and Ultimate with GitLab Duo Enterprise only.
+
+Fields:
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="writetestsusermetrics-lastduoactivityon"></a>`lastDuoActivityOn` | [`Date`](#date) | Date of the last Write Tests activity for the user. |
+| <a id="writetestsusermetrics-totaleventcount"></a>`totalEventCount` | [`Int`](#int) | Total count of all Write Tests events for the user. |
+| <a id="writetestsusermetrics-writetestseventcount"></a>`writeTestsEventCount` | [`Int`](#int) | Total count of `write_tests` event. |
 
 ## Enumeration types
 
@@ -67993,10 +68100,12 @@ Type of AI usage event.
 | <a id="aiusageeventtype-duo_workflow_workload_completed"></a>`DUO_WORKFLOW_WORKLOAD_COMPLETED` | Duo Workflow workload was completed. |
 | <a id="aiusageeventtype-encounter_duo_code_review_error_during_review"></a>`ENCOUNTER_DUO_CODE_REVIEW_ERROR_DURING_REVIEW` | Duo Code Review encountered an error. |
 | <a id="aiusageeventtype-excluded_files_from_duo_code_review"></a>`EXCLUDED_FILES_FROM_DUO_CODE_REVIEW` | Files were excluded from Duo Code Review. |
+| <a id="aiusageeventtype-explain_code"></a>`EXPLAIN_CODE` | Code explanation was requested with the GitLab Duo Chat /explain command. |
 | <a id="aiusageeventtype-explain_vulnerability"></a>`EXPLAIN_VULNERABILITY` | An AI explanation of a vulnerability was requested with GitLab Duo. |
 | <a id="aiusageeventtype-find_nothing_to_review_duo_code_review_on_mr"></a>`FIND_NOTHING_TO_REVIEW_DUO_CODE_REVIEW_ON_MR` | Duo Code Review found nothing to review on MR. |
 | <a id="aiusageeventtype-find_no_issues_duo_code_review_after_review"></a>`FIND_NO_ISSUES_DUO_CODE_REVIEW_AFTER_REVIEW` | Duo Code Review found no issues after review. |
 | <a id="aiusageeventtype-finish_mcp_tool_call"></a>`FINISH_MCP_TOOL_CALL` | MCP tool call was finished. |
+| <a id="aiusageeventtype-fix_code"></a>`FIX_CODE` | Code fix was requested with the GitLab Duo Chat /fix command. |
 | <a id="aiusageeventtype-fix_pipeline_suggestion_applied"></a>`FIX_PIPELINE_SUGGESTION_APPLIED` | Fix pipeline suggestion was applied. |
 | <a id="aiusageeventtype-fix_pipeline_suggestion_posted"></a>`FIX_PIPELINE_SUGGESTION_POSTED` | Fix pipeline suggestion was posted. |
 | <a id="aiusageeventtype-generate_merge_commit_message"></a>`GENERATE_MERGE_COMMIT_MESSAGE` | Merge commit message was generated for a merge request. |
@@ -68004,6 +68113,7 @@ Type of AI usage event.
 | <a id="aiusageeventtype-publish_duo_code_review_comments"></a>`PUBLISH_DUO_CODE_REVIEW_COMMENTS` | Duo Code Review comments were published. |
 | <a id="aiusageeventtype-react_thumbs_down_on_duo_code_review_comment"></a>`REACT_THUMBS_DOWN_ON_DUO_CODE_REVIEW_COMMENT` | User gave thumbs-down reaction to Duo Code Review comment. |
 | <a id="aiusageeventtype-react_thumbs_up_on_duo_code_review_comment"></a>`REACT_THUMBS_UP_ON_DUO_CODE_REVIEW_COMMENT` | User gave thumbs-up reaction to Duo Code Review comment. |
+| <a id="aiusageeventtype-refactor_code"></a>`REFACTOR_CODE` | Code refactor was requested with the GitLab Duo Chat /refactor command. |
 | <a id="aiusageeventtype-request_duo_chat_response"></a>`REQUEST_DUO_CHAT_RESPONSE` | Duo Chat response was requested. |
 | <a id="aiusageeventtype-request_duo_vulnerability_resolution"></a>`REQUEST_DUO_VULNERABILITY_RESOLUTION` | An AI vulnerability resolution was requested with GitLab Duo. |
 | <a id="aiusageeventtype-request_review_duo_code_review_on_mr_by_author"></a>`REQUEST_REVIEW_DUO_CODE_REVIEW_ON_MR_BY_AUTHOR` | MR author requested Duo Code Review. |
@@ -68016,6 +68126,7 @@ Type of AI usage event.
 | <a id="aiusageeventtype-trigger_slack_duo"></a>`TRIGGER_SLACK_DUO` | Duo agent was triggered from a Slack mention. |
 | <a id="aiusageeventtype-troubleshoot_job"></a>`TROUBLESHOOT_JOB` | Troubleshoot job feature was used. |
 | <a id="aiusageeventtype-view_duo_agentic_subscription_expired_empty_state"></a>`VIEW_DUO_AGENTIC_SUBSCRIPTION_EXPIRED_EMPTY_STATE` | Duo Agent Platform subscription expired empty state was viewed. |
+| <a id="aiusageeventtype-write_tests"></a>`WRITE_TESTS` | Test generation was requested with the GitLab Duo Chat /tests command. |
 
 ### `AiUserMetricsSort`
 
@@ -68071,6 +68182,10 @@ Values for sorting AI user metrics.
 | <a id="aiusermetricssort-encounter_duo_code_review_error_during_review_desc"></a>`ENCOUNTER_DUO_CODE_REVIEW_ERROR_DURING_REVIEW_DESC` | Encounter Duo Code Review Error During Review event count in descending order. |
 | <a id="aiusermetricssort-excluded_files_from_duo_code_review_asc"></a>`EXCLUDED_FILES_FROM_DUO_CODE_REVIEW_ASC` | Excluded Files From Duo Code Review event count in ascending order. |
 | <a id="aiusermetricssort-excluded_files_from_duo_code_review_desc"></a>`EXCLUDED_FILES_FROM_DUO_CODE_REVIEW_DESC` | Excluded Files From Duo Code Review event count in descending order. |
+| <a id="aiusermetricssort-explain_code_asc"></a>`EXPLAIN_CODE_ASC` | Explain Code event count in ascending order. |
+| <a id="aiusermetricssort-explain_code_desc"></a>`EXPLAIN_CODE_DESC` | Explain Code event count in descending order. |
+| <a id="aiusermetricssort-explain_code_total_count_asc"></a>`EXPLAIN_CODE_TOTAL_COUNT_ASC` | Explain Code total event count in ascending order. |
+| <a id="aiusermetricssort-explain_code_total_count_desc"></a>`EXPLAIN_CODE_TOTAL_COUNT_DESC` | Explain Code total event count in descending order. |
 | <a id="aiusermetricssort-explain_vulnerability_asc"></a>`EXPLAIN_VULNERABILITY_ASC` | Explain Vulnerability event count in ascending order. |
 | <a id="aiusermetricssort-explain_vulnerability_desc"></a>`EXPLAIN_VULNERABILITY_DESC` | Explain Vulnerability event count in descending order. |
 | <a id="aiusermetricssort-explain_vulnerability_total_count_asc"></a>`EXPLAIN_VULNERABILITY_TOTAL_COUNT_ASC` | Explain Vulnerability total event count in ascending order. |
@@ -68083,6 +68198,10 @@ Values for sorting AI user metrics.
 | <a id="aiusermetricssort-find_no_issues_duo_code_review_after_review_desc"></a>`FIND_NO_ISSUES_DUO_CODE_REVIEW_AFTER_REVIEW_DESC` | Find No Issues Duo Code Review After Review event count in descending order. |
 | <a id="aiusermetricssort-finish_mcp_tool_call_asc"></a>`FINISH_MCP_TOOL_CALL_ASC` | Finish Mcp Tool Call event count in ascending order. |
 | <a id="aiusermetricssort-finish_mcp_tool_call_desc"></a>`FINISH_MCP_TOOL_CALL_DESC` | Finish Mcp Tool Call event count in descending order. |
+| <a id="aiusermetricssort-fix_code_asc"></a>`FIX_CODE_ASC` | Fix Code event count in ascending order. |
+| <a id="aiusermetricssort-fix_code_desc"></a>`FIX_CODE_DESC` | Fix Code event count in descending order. |
+| <a id="aiusermetricssort-fix_code_total_count_asc"></a>`FIX_CODE_TOTAL_COUNT_ASC` | Fix Code total event count in ascending order. |
+| <a id="aiusermetricssort-fix_code_total_count_desc"></a>`FIX_CODE_TOTAL_COUNT_DESC` | Fix Code total event count in descending order. |
 | <a id="aiusermetricssort-fix_pipeline_suggestion_applied_asc"></a>`FIX_PIPELINE_SUGGESTION_APPLIED_ASC` | Fix Pipeline Suggestion Applied event count in ascending order. |
 | <a id="aiusermetricssort-fix_pipeline_suggestion_applied_desc"></a>`FIX_PIPELINE_SUGGESTION_APPLIED_DESC` | Fix Pipeline Suggestion Applied event count in descending order. |
 | <a id="aiusermetricssort-fix_pipeline_suggestion_posted_asc"></a>`FIX_PIPELINE_SUGGESTION_POSTED_ASC` | Fix Pipeline Suggestion Posted event count in ascending order. |
@@ -68103,6 +68222,10 @@ Values for sorting AI user metrics.
 | <a id="aiusermetricssort-react_thumbs_down_on_duo_code_review_comment_desc"></a>`REACT_THUMBS_DOWN_ON_DUO_CODE_REVIEW_COMMENT_DESC` | React Thumbs Down On Duo Code Review Comment event count in descending order. |
 | <a id="aiusermetricssort-react_thumbs_up_on_duo_code_review_comment_asc"></a>`REACT_THUMBS_UP_ON_DUO_CODE_REVIEW_COMMENT_ASC` | React Thumbs Up On Duo Code Review Comment event count in ascending order. |
 | <a id="aiusermetricssort-react_thumbs_up_on_duo_code_review_comment_desc"></a>`REACT_THUMBS_UP_ON_DUO_CODE_REVIEW_COMMENT_DESC` | React Thumbs Up On Duo Code Review Comment event count in descending order. |
+| <a id="aiusermetricssort-refactor_code_asc"></a>`REFACTOR_CODE_ASC` | Refactor Code event count in ascending order. |
+| <a id="aiusermetricssort-refactor_code_desc"></a>`REFACTOR_CODE_DESC` | Refactor Code event count in descending order. |
+| <a id="aiusermetricssort-refactor_code_total_count_asc"></a>`REFACTOR_CODE_TOTAL_COUNT_ASC` | Refactor Code total event count in ascending order. |
+| <a id="aiusermetricssort-refactor_code_total_count_desc"></a>`REFACTOR_CODE_TOTAL_COUNT_DESC` | Refactor Code total event count in descending order. |
 | <a id="aiusermetricssort-request_duo_chat_response_asc"></a>`REQUEST_DUO_CHAT_RESPONSE_ASC` | Request Duo Chat Response event count in ascending order. |
 | <a id="aiusermetricssort-request_duo_chat_response_desc"></a>`REQUEST_DUO_CHAT_RESPONSE_DESC` | Request Duo Chat Response event count in descending order. |
 | <a id="aiusermetricssort-request_duo_vulnerability_resolution_asc"></a>`REQUEST_DUO_VULNERABILITY_RESOLUTION_ASC` | Request Duo Vulnerability Resolution event count in ascending order. |
@@ -68137,6 +68260,10 @@ Values for sorting AI user metrics.
 | <a id="aiusermetricssort-troubleshoot_job_total_count_desc"></a>`TROUBLESHOOT_JOB_TOTAL_COUNT_DESC` | Troubleshoot Job total event count in descending order. |
 | <a id="aiusermetricssort-view_duo_agentic_subscription_expired_empty_state_asc"></a>`VIEW_DUO_AGENTIC_SUBSCRIPTION_EXPIRED_EMPTY_STATE_ASC` | View Duo Agentic Subscription Expired Empty State event count in ascending order. |
 | <a id="aiusermetricssort-view_duo_agentic_subscription_expired_empty_state_desc"></a>`VIEW_DUO_AGENTIC_SUBSCRIPTION_EXPIRED_EMPTY_STATE_DESC` | View Duo Agentic Subscription Expired Empty State event count in descending order. |
+| <a id="aiusermetricssort-write_tests_asc"></a>`WRITE_TESTS_ASC` | Write Tests event count in ascending order. |
+| <a id="aiusermetricssort-write_tests_desc"></a>`WRITE_TESTS_DESC` | Write Tests event count in descending order. |
+| <a id="aiusermetricssort-write_tests_total_count_asc"></a>`WRITE_TESTS_TOTAL_COUNT_ASC` | Write Tests total event count in ascending order. |
+| <a id="aiusermetricssort-write_tests_total_count_desc"></a>`WRITE_TESTS_TOTAL_COUNT_DESC` | Write Tests total event count in descending order. |
 
 ### `AlertManagementAlertSort`
 
@@ -75649,6 +75776,15 @@ One of:
 
 - [`ArtifactRegistryMavenPackageDetails`](#artifactregistrymavenpackagedetails)
 - [`ArtifactRegistryNpmPackageDetails`](#artifactregistrynpmpackagedetails)
+
+#### `ArtifactRegistryVersionFile`
+
+File of a version in an Artifact Registry repository, by package format.
+
+One of:
+
+- [`ArtifactRegistryMavenVersionFile`](#artifactregistrymavenversionfile)
+- [`ArtifactRegistryNpmVersionFile`](#artifactregistrynpmversionfile)
 
 #### `CiJobTokenScopeTarget`
 

@@ -166,6 +166,11 @@ function createApolloClient(resolvers = {}, config = {}) {
     fetchCredentials = 'same-origin',
     // eslint-disable-next-line @gitlab/no-hardcoded-urls -- default GraphQL API path template, not a navigational URL
     path = '/api/graphql',
+    // Extra ApolloLinks prepended to the link chain (outermost position).
+    // Errors propagate outward from the terminating link, so the built-in
+    // suppress-during-navigation link swallows navigation-abort errors before
+    // these links (e.g. error reporting) can observe them.
+    links = [],
   } = config;
 
   let ac = null;
@@ -282,6 +287,7 @@ function createApolloClient(resolvers = {}, config = {}) {
     new ActionCableLink(),
     ApolloLink.from(
       [
+        ...links,
         getSuppressNetworkErrorsDuringNavigationLink(),
         getInstrumentationLink(),
         sentryBreadcrumbLink,

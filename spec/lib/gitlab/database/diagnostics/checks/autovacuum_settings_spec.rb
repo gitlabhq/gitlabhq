@@ -4,6 +4,8 @@ require 'spec_helper'
 
 RSpec.describe Gitlab::Database::Diagnostics::Checks::AutovacuumSettings, feature_category: :database do
   describe '#execute' do
+    using RSpec::Parameterized::TableSyntax
+
     let(:connection) { instance_double(ActiveRecord::ConnectionAdapters::PostgreSQLAdapter) }
 
     # Healthy values; contexts below override individual settings.
@@ -29,12 +31,19 @@ RSpec.describe Gitlab::Database::Diagnostics::Checks::AutovacuumSettings, featur
       end.reverse
     end
 
+    let(:override_rows) { [] }
+    let(:largest_table_rows) { [] }
+
     subject(:result) { described_class.new(connection).execute }
 
     before do
       allow(connection).to receive(:quote) { |value| "'#{value}'" }
       allow(connection).to receive(:select_all)
         .with(a_string_matching(/FROM pg_settings/)).and_return(settings_rows)
+      allow(connection).to receive(:select_all)
+        .with(a_string_matching(/reloptions IS NOT NULL/)).and_return(override_rows)
+      allow(connection).to receive(:select_all)
+        .with(a_string_matching(/pg_catalog/)).and_return(largest_table_rows)
     end
 
     it 'maps effective settings into a name-keyed hash with value and unit' do
@@ -159,6 +168,177 @@ RSpec.describe Gitlab::Database::Diagnostics::Checks::AutovacuumSettings, featur
       it 'skips their checks instead of misfiring', :aggregate_failures do
         expect(result[:settings].keys).to eq(%w[maintenance_work_mem])
         expect(result[:findings]).to be_empty
+      end
+    end
+
+    context 'with per-table overrides' do
+      let(:override_rows) do
+        [
+          {
+            'schema_name' => 'public',
+            'table_name' => 'ci_builds',
+            'total_bytes' => '5368709120',
+            'estimated_rows' => '1000000',
+            'overrides' => '{"autovacuum_vacuum_scale_factor": "0.01"}'
+          },
+          {
+            'schema_name' => 'public',
+            'table_name' => 'audit_events',
+            'total_bytes' => '1073741824',
+            'estimated_rows' => '500000',
+            'overrides' => '{"autovacuum_enabled": "false"}'
+          }
+        ]
+      end
+
+      it 'maps the rows, parsing the JSON overrides and casting numeric columns' do
+        expect(result[:table_overrides].first).to eq(
+          schema_name: 'public',
+          table_name: 'ci_builds',
+          total_bytes: 5368709120,
+          estimated_rows: 1000000,
+          overrides: { 'autovacuum_vacuum_scale_factor' => '0.01' },
+          autovacuum_disabled: false
+        )
+      end
+
+      it 'reports an error finding for the table disabling autovacuum', :aggregate_failures do
+        expect(result[:table_overrides].last).to include(autovacuum_disabled: true)
+        expect(result[:findings].first).to include(severity: 'error', code: 'tables_autovacuum_disabled')
+        expect(result[:findings].first[:message]).to include('1 table')
+        expect(result[:severity]).to eq('error')
+      end
+
+      it 'defaults overrides to an empty hash when none are returned' do
+        override_rows.first['overrides'] = nil
+
+        expect(result[:table_overrides].first[:overrides]).to eq({})
+      end
+
+      # reloptions keep the boolean as the user typed it; PostgreSQL accepts
+      # all of these spellings.
+      context 'when autovacuum_enabled is spelled in different ways' do
+        where(:value, :disabled) do
+          'false' | true
+          'off'   | true
+          'OFF'   | true
+          '0'     | true
+          'no'    | true
+          'f'     | true
+          'n'     | true
+          'on'    | false
+          'true'  | false
+          'maybe' | false
+        end
+
+        with_them do
+          let(:override_rows) do
+            [{
+              'schema_name' => 'public', 'table_name' => 't',
+              'total_bytes' => '1', 'estimated_rows' => '1',
+              'overrides' => %({"autovacuum_enabled": "#{value}"})
+            }]
+          end
+
+          it 'recognises the spelling' do
+            expect(result[:table_overrides].first).to include(autovacuum_disabled: disabled)
+          end
+        end
+      end
+    end
+
+    context 'with a flagged setting and a table disabling autovacuum' do
+      let(:overrides) { { 'autovacuum_max_workers' => ['1', nil] } }
+
+      let(:override_rows) do
+        [{
+          'schema_name' => 'public', 'table_name' => 't',
+          'total_bytes' => '1', 'estimated_rows' => '1',
+          'overrides' => '{"autovacuum_enabled": "off"}'
+        }]
+      end
+
+      it 'merges both groups into one sorted list with shared counts', :aggregate_failures do
+        expect(result[:findings].pluck(:code)).to eq(%w[tables_autovacuum_disabled autovacuum_max_workers_low])
+        expect(result[:severity]).to eq('error')
+        expect(result[:counts]).to eq('error' => 1, 'warning' => 1)
+      end
+    end
+
+    context 'with a high global scale factor' do
+      let(:overrides) { { 'autovacuum_vacuum_scale_factor' => ['0.2', nil] } }
+
+      let(:largest_table_rows) do
+        [
+          large_table('merge_request_diffs', nil),
+          large_table('ci_builds', '{"autovacuum_vacuum_scale_factor": "0.01"}'),
+          large_table('namespaces', '{"autovacuum_vacuum_scale_factor": "0.5"}'),
+          large_table('users', '{"autovacuum_vacuum_threshold": "1000"}'),
+          large_table('audit_events', '{"autovacuum_enabled": "false"}'),
+          large_table('small_table', nil).merge('total_bytes' => '1048576')
+        ]
+      end
+
+      def large_table(name, overrides)
+        {
+          'schema_name' => 'public', 'table_name' => name,
+          'total_bytes' => '21474836480', 'estimated_rows' => '9000000',
+          'overrides' => overrides
+        }
+      end
+
+      it 'reports large tables whose scale factor in effect is still high', :aggregate_failures do
+        expect(result[:scale_factor_risks].pluck(:table_name)).to eq(%w[merge_request_diffs namespaces users])
+        expect(result[:scale_factor_risks].first).to eq(
+          schema_name: 'public',
+          table_name: 'merge_request_diffs',
+          total_bytes: 21474836480,
+          estimated_rows: 9000000
+        )
+        expect(result[:findings].first).to include(severity: 'warning', code: 'scale_factor_risk')
+        expect(result[:findings].first[:message]).to include('3 large tables')
+      end
+    end
+
+    context 'with a low global scale factor' do
+      let(:overrides) { { 'autovacuum_vacuum_scale_factor' => ['0.05', nil] } }
+
+      let(:largest_table_rows) do
+        [{
+          'schema_name' => 'public', 'table_name' => 'merge_request_diffs',
+          'total_bytes' => '21474836480', 'estimated_rows' => '9000000',
+          'overrides' => nil
+        }]
+      end
+
+      it 'reports no risks without querying the largest tables', :aggregate_failures do
+        expect(connection).not_to receive(:select_all).with(a_string_matching(/pg_catalog/))
+
+        expect(result[:scale_factor_risks]).to be_empty
+        expect(result[:findings]).to be_empty
+      end
+    end
+
+    context 'with a table at the large-table size threshold' do
+      let(:overrides) { { 'autovacuum_vacuum_scale_factor' => ['0.2', nil] } }
+
+      where(:total_bytes, :risk_count) do
+        10737418240 | 1
+        10737418239 | 0
+      end
+
+      with_them do
+        let(:largest_table_rows) do
+          [{
+            'schema_name' => 'public', 'table_name' => 't',
+            'total_bytes' => total_bytes.to_s, 'estimated_rows' => '1',
+            'overrides' => nil
+          }]
+        end
+
+        it 'treats 10 GiB as the first size at risk' do
+          expect(result[:scale_factor_risks].size).to eq(risk_count)
+        end
       end
     end
   end

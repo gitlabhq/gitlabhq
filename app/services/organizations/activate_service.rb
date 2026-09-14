@@ -62,10 +62,28 @@ module Organizations
 
     def track_transfer_finished(response)
       if response&.success?
-        track_transfer_event('transfer_tlg_resources_into_an_organization_succeeded', **transferred_counts)
+        track_transfer_event(
+          'transfer_tlg_resources_into_an_organization_succeeded',
+          **transferred_counts,
+          **user_perceived_duration
+        )
       else
-        track_transfer_event('transfer_tlg_resources_into_an_organization_failed', label: failure_reason(response))
+        track_transfer_event(
+          'transfer_tlg_resources_into_an_organization_failed',
+          label: failure_reason(response),
+          **user_perceived_duration
+        )
       end
+    end
+
+    # Measured from confirmation rather than from the start of this service so that
+    # Sidekiq queue time and database health deferrals count towards the duration
+    # the user actually waited.
+    def user_perceived_duration
+      confirmed_at = organization.state_metadata['confirmed_at']
+      return {} unless confirmed_at
+
+      { value: (Time.current - Time.zone.parse(confirmed_at)).round }
     end
 
     # Counted after the transfer, not on the start event: ConfirmService moves only
@@ -73,7 +91,7 @@ module Organizations
     # organization_id until `transfer_top_level_groups` runs.
     def transferred_counts
       {
-        value: Group.in_organization(organization).count,
+        groups_count: Group.in_organization(organization).count,
         projects_count: Project.in_organization(organization).count,
         users_count: organization.organization_users.count
       }

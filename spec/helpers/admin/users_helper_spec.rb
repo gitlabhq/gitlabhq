@@ -27,32 +27,6 @@ RSpec.describe Admin::UsersHelper, feature_category: :user_management do
     end
   end
 
-  describe 'show_admin_edit_user_organization_field?' do
-    let_it_be(:organization) { create(:organization) } # rubocop:disable RSpec/FactoryBot/AvoidCreate -- spec needs organization persisted to database
-
-    before do
-      allow(helper).to receive(:current_user).and_return(current_user)
-    end
-
-    subject { helper.show_admin_edit_user_organization_field?(user) }
-
-    context 'when user has organizations' do
-      let_it_be(:user) { create(:user, organizations: [organization]) } # rubocop:disable RSpec/FactoryBot/AvoidCreate -- spec needs organization persisted to database
-
-      it { is_expected.to be(true) }
-
-      context 'when ui_for_organizations_enabled? is false', :ui_for_organizations_disabled do
-        it { is_expected.to be(false) }
-      end
-    end
-
-    context 'when user does not have organizations' do
-      let_it_be(:user) { create(:user, organizations: []) } # rubocop:disable RSpec/FactoryBot/AvoidCreate -- spec needs organization persisted to database
-
-      it { is_expected.to be(false) }
-    end
-  end
-
   describe 'admin_new_user_organization_field_app_data' do
     subject { Gitlab::Json.parse(helper.admin_new_user_organization_field_app_data) }
 
@@ -84,28 +58,6 @@ RSpec.describe Admin::UsersHelper, feature_category: :user_management do
           }
         })
       end
-    end
-  end
-
-  describe 'admin_edit_user_organization_field_app_data' do
-    let_it_be(:organization) { create(:organization) } # rubocop:disable RSpec/FactoryBot/AvoidCreate -- spec needs organization persisted to database
-    let_it_be(:user) { create(:user, organizations: [organization]) } # rubocop:disable RSpec/FactoryBot/AvoidCreate -- spec needs organization persisted to database
-    let_it_be(:organization_user) { user.organization_users.first }
-
-    subject { Gitlab::Json.parse(helper.admin_edit_user_organization_field_app_data(user)) }
-
-    it do
-      is_expected.to eq({
-        'organization_user' => {
-          'access_level' => organization_user.access_level,
-          'id' => organization_user.id
-        },
-        'initial_organization' => {
-          'id' => organization.id,
-          'name' => organization.name,
-          'avatar_url' => organization.avatar_url(size: 96)
-        }
-      })
     end
   end
 

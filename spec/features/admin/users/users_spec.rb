@@ -452,7 +452,7 @@ RSpec.describe 'Admin::Users', feature_category: :user_management do
 
     it 'assigns correct organization access level', :js do
       within_testid 'organization-section' do
-        select_from_listbox 'Owner', from: 'User'
+        choose 'Organization administrator'
       end
 
       click_create_user!
@@ -677,25 +677,6 @@ RSpec.describe 'Admin::Users', feature_category: :user_management do
         expect(user.admin?).to be_truthy
         expect(user.password_expires_at).to be <= Time.zone.now
         expect(user.private_profile).to be(true)
-      end
-
-      context 'when updating the organization access level' do
-        it 'updates the user organization access level' do
-          organization_user = Organizations::OrganizationUser
-            .find_by(user_id: user.id, organization_id: common_organization.id)
-
-          expect do
-            within_testid 'organization-section' do
-              select_from_listbox 'Owner', from: 'User'
-            end
-
-            click_button 'Save changes'
-
-            # Wait for UI element and wait for requests otherwise test will proceed immediately to assertion
-            expect(page).to have_content 'successfully updated'
-            wait_for_requests
-          end.to change { organization_user.reload.access_level }.from('default').to('owner')
-        end
       end
     end
 

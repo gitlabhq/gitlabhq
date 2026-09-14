@@ -55,7 +55,7 @@ experience (rather than the single file editor or the Web IDE). It includes:
 
 - Code completion suggestions that ensure you are only using accepted keywords.
 - Automatic syntax highlighting and validation.
-- The [CI/CD configuration visualization](pipeline_editor/_index.md#visualize-ci-configuration),
+- The [CI/CD configuration visualization](pipeline_editor/_index.md#visualize-cicd-configuration),
   a graphical representation of your `.gitlab-ci.yml` file.
 
 #### Edit `.gitlab-ci.yml` locally

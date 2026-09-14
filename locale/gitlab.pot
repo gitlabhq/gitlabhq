@@ -13543,6 +13543,9 @@ msgstr ""
 msgid "Attributes you create will appear here."
 msgstr ""
 
+msgid "Audit event streaming"
+msgstr ""
+
 msgid "Audit events"
 msgstr ""
 
@@ -21851,6 +21854,9 @@ msgstr ""
 msgid "ComplianceStandardsAdherence|Add adequate administrators"
 msgstr ""
 
+msgid "ComplianceStandardsAdherence|Add an active streaming destination to the group. Do not exclude the group with a namespace filter, and either leave the event type filter empty or include the Duo Agent Platform event types."
+msgstr ""
+
 msgid "ComplianceStandardsAdherence|Add multiple administrators"
 msgstr ""
 
@@ -21921,6 +21927,9 @@ msgid "ComplianceStandardsAdherence|Configure access restrictions"
 msgstr ""
 
 msgid "ComplianceStandardsAdherence|Configure approval requirements"
+msgstr ""
+
+msgid "ComplianceStandardsAdherence|Configure audit event streaming"
 msgstr ""
 
 msgid "ComplianceStandardsAdherence|Configure branch protection to prevent accidental or unauthorized branch deletion."
@@ -22056,6 +22065,9 @@ msgid "ComplianceStandardsAdherence|Disable branch deletion"
 msgstr ""
 
 msgid "ComplianceStandardsAdherence|Disable force pushing"
+msgstr ""
+
+msgid "ComplianceStandardsAdherence|Duo Agentic Flow audit events streaming"
 msgstr ""
 
 msgid "ComplianceStandardsAdherence|Enable DAST scanner"
@@ -22239,6 +22251,9 @@ msgid "ComplianceStandardsAdherence|Ensures strict permissions are set for repos
 msgstr ""
 
 msgid "ComplianceStandardsAdherence|Ensures that a Git repository exists for the project."
+msgstr ""
+
+msgid "ComplianceStandardsAdherence|Ensures that an active audit event streaming destination at the group level captures GitLab Duo Agent Platform events."
 msgstr ""
 
 msgid "ComplianceStandardsAdherence|Ensures that code owners file is configured."
@@ -27546,6 +27561,17 @@ msgstr ""
 msgid "DatabaseDiagnostics|Autovacuum configuration"
 msgstr ""
 
+msgid "DatabaseDiagnostics|Autovacuum disabled"
+msgstr ""
+
+msgid "DatabaseDiagnostics|Autovacuum is disabled for %{count} table, so its dead tuples are never reclaimed automatically."
+msgid_plural "DatabaseDiagnostics|Autovacuum is disabled for %{count} tables, so their dead tuples are never reclaimed automatically."
+msgstr[0] ""
+msgstr[1] ""
+
+msgid "DatabaseDiagnostics|Autovacuum is disabled for this table, so its dead tuples are never reclaimed automatically."
+msgstr ""
+
 msgid "DatabaseDiagnostics|Autovacuum is disabled. Dead tuples will not be reclaimed automatically, risking bloat and eventually transaction ID wraparound."
 msgstr ""
 
@@ -27699,6 +27725,9 @@ msgstr ""
 msgid "DatabaseDiagnostics|Only a few autovacuum workers are configured, which may be too few for a large or decomposed database fleet."
 msgstr ""
 
+msgid "DatabaseDiagnostics|Overrides"
+msgstr ""
+
 msgid "DatabaseDiagnostics|Owner"
 msgstr ""
 
@@ -27709,6 +27738,9 @@ msgid "DatabaseDiagnostics|Parent table"
 msgstr ""
 
 msgid "DatabaseDiagnostics|Pending records"
+msgstr ""
+
+msgid "DatabaseDiagnostics|Per-table overrides"
 msgstr ""
 
 msgid "DatabaseDiagnostics|Phase"
@@ -27727,6 +27759,9 @@ msgid "DatabaseDiagnostics|Run schema check"
 msgstr ""
 
 msgid "DatabaseDiagnostics|Running for"
+msgstr ""
+
+msgid "DatabaseDiagnostics|Scale factor risk"
 msgstr ""
 
 msgid "DatabaseDiagnostics|Schema"
@@ -27756,6 +27791,9 @@ msgstr ""
 msgid "DatabaseDiagnostics|Setting"
 msgstr ""
 
+msgid "DatabaseDiagnostics|Size"
+msgstr ""
+
 msgid "DatabaseDiagnostics|Status"
 msgstr ""
 
@@ -27779,6 +27817,11 @@ msgstr ""
 
 msgid "DatabaseDiagnostics|The search path contains a GitLab partition schema. Partition schemas are expected to be referenced fully qualified, not via the search path."
 msgstr ""
+
+msgid "DatabaseDiagnostics|The vacuum scale factor in effect is high for %{count} large table, which delays autovacuum until a large amount of dead tuples has accumulated."
+msgid_plural "DatabaseDiagnostics|The vacuum scale factor in effect is high for %{count} large tables, which delays autovacuum until a large amount of dead tuples has accumulated."
+msgstr[0] ""
+msgstr[1] ""
 
 msgid "DatabaseDiagnostics|These issues require manual remediation."
 msgstr ""
@@ -27806,6 +27849,11 @@ msgstr ""
 
 msgid "DatabaseDiagnostics|Warning"
 msgstr ""
+
+msgid "DatabaseDiagnostics|~%{count} row"
+msgid_plural "DatabaseDiagnostics|~%{count} rows"
+msgstr[0] ""
+msgstr[1] ""
 
 msgid "DatadogIntegration|%{link_start}API key%{link_end} used for authentication with Datadog."
 msgstr ""
@@ -57518,6 +57566,9 @@ msgstr ""
 msgid "Organization|A group is a collection of several projects. If you organize your projects under a group, it works like a folder."
 msgstr ""
 
+msgid "Organization|Access to their groups and projects."
+msgstr ""
+
 msgid "Organization|Accessible by any signed in user except external users."
 msgstr ""
 
@@ -57629,10 +57680,16 @@ msgstr ""
 msgid "Organization|Current organization"
 msgstr ""
 
+msgid "Organization|Define user access to groups, projects, users, and features in this Organization."
+msgstr ""
+
 msgid "Organization|Delete the organization"
 msgstr ""
 
 msgid "Organization|Drop groups here"
+msgstr ""
+
+msgid "Organization|Full access to all groups, projects, users, features, and the Organization admin area."
 msgstr ""
 
 msgid "Organization|Get started with organizations"
@@ -57710,6 +57767,9 @@ msgstr ""
 msgid "Organization|Organization administration"
 msgstr ""
 
+msgid "Organization|Organization administrator"
+msgstr ""
+
 msgid "Organization|Organization administrators"
 msgstr ""
 
@@ -57734,6 +57794,9 @@ msgstr ""
 msgid "Organization|Organization overview"
 msgstr ""
 
+msgid "Organization|Organization regular user"
+msgstr ""
+
 msgid "Organization|Organization role"
 msgstr ""
 
@@ -57747,6 +57810,9 @@ msgid "Organization|Organization successfully created."
 msgstr ""
 
 msgid "Organization|Organization user details"
+msgstr ""
+
+msgid "Organization|Organization user type"
 msgstr ""
 
 msgid "Organization|Organization visibility level"
@@ -75959,6 +76025,9 @@ msgstr ""
 msgid "SecurityReports|Low risk"
 msgstr ""
 
+msgid "SecurityReports|MTTR"
+msgstr ""
+
 msgid "SecurityReports|MTTR over time"
 msgstr ""
 
@@ -76109,6 +76178,9 @@ msgid "SecurityReports|Reachable:"
 msgstr ""
 
 msgid "SecurityReports|Reduce time and effort with proposed fixes from AI-created MRs."
+msgstr ""
+
+msgid "SecurityReports|Remediations"
 msgstr ""
 
 msgid "SecurityReports|Remove project from dashboard"
@@ -76928,10 +77000,13 @@ msgstr ""
 msgid "SemanticSearch|Batch size updated."
 msgstr ""
 
+msgid "SemanticSearch|Change embedding model"
+msgstr ""
+
 msgid "SemanticSearch|Change model"
 msgstr ""
 
-msgid "SemanticSearch|Changing the embeddings model or dimensions results in a backfill"
+msgid "SemanticSearch|Changing the embedding model or dimensions results in a backfill"
 msgstr ""
 
 msgid "SemanticSearch|Chunk size"
@@ -76983,6 +77058,12 @@ msgid "SemanticSearch|Disabled"
 msgstr ""
 
 msgid "SemanticSearch|Elasticsearch"
+msgstr ""
+
+msgid "SemanticSearch|Embedding dimensions"
+msgstr ""
+
+msgid "SemanticSearch|Embedding model"
 msgstr ""
 
 msgid "SemanticSearch|Embedding model configuration is not available. Ensure %{coll_name} collection exists."
@@ -77096,12 +77177,6 @@ msgstr ""
 msgid "SemanticSearch|Search settings"
 msgstr ""
 
-msgid "SemanticSearch|Select embedding dimensions"
-msgstr ""
-
-msgid "SemanticSearch|Select embedding model"
-msgstr ""
-
 msgid "SemanticSearch|Select the search adapter to use for vector storage."
 msgstr ""
 
@@ -77171,7 +77246,7 @@ msgstr ""
 msgid "SemanticSearch|This cannot be changed when there is already a current model."
 msgstr ""
 
-msgid "SemanticSearch|This process can take several hours depending on your codebase size. Semantic search will remain available during the backfill."
+msgid "SemanticSearch|This process can take several hours depending on your codebase size. Semantic search remains available during the backfill."
 msgstr ""
 
 msgid "SemanticSearch|Unexpected server response. Please refresh the page and try again."
@@ -77187,9 +77262,6 @@ msgid "SemanticSearch|Update batch size for embedding requests"
 msgstr ""
 
 msgid "SemanticSearch|Update batch size for next model"
-msgstr ""
-
-msgid "SemanticSearch|Update embedding model"
 msgstr ""
 
 msgid "SemanticSearch|Update embeddings and start backfill process"

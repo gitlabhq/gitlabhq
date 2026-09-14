@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Organizations::ActivateService, feature_category: :organization do
+RSpec.describe Organizations::ActivateService, :freeze_time, feature_category: :organization do
   let_it_be(:user) { create(:user) }
   let_it_be_with_reload(:organization) { create(:organization, :confirmed, owners: user) }
   let_it_be(:top_level_group) { create(:group, organization: organization, owners: user) }
@@ -11,8 +11,14 @@ RSpec.describe Organizations::ActivateService, feature_category: :organization d
   let(:current_user) { user }
   let(:organization_id) { organization.id }
   let(:params) { { organization_id: organization_id } }
+  let(:seconds_since_confirmation) { 90 }
 
   subject(:response) { described_class.new(current_user, params).execute }
+
+  before do
+    organization.state_metadata['confirmed_at'] = seconds_since_confirmation.seconds.ago.as_json
+    organization.organization_detail.save!
+  end
 
   describe '#execute' do
     context 'when all validations pass' do
@@ -71,7 +77,8 @@ RSpec.describe Organizations::ActivateService, feature_category: :organization d
           user: current_user,
           additional_properties: {
             target_organization_id: organization.id,
-            value: 2,
+            value: seconds_since_confirmation,
+            groups_count: 2,
             projects_count: 0,
             users_count: 1
           }
@@ -86,6 +93,27 @@ RSpec.describe Organizations::ActivateService, feature_category: :organization d
         )
       end
 
+      context 'when the organization has no confirmation timestamp' do
+        before do
+          organization.state_metadata.delete('confirmed_at')
+          organization.organization_detail.save!
+        end
+
+        it 'omits the duration from the succeeded event' do
+          expect { response }.to trigger_internal_events(
+            'transfer_tlg_resources_into_an_organization_succeeded'
+          ).with(
+            user: current_user,
+            additional_properties: {
+              target_organization_id: organization.id,
+              groups_count: 2,
+              projects_count: 0,
+              users_count: 1
+            }
+          )
+        end
+      end
+
       context 'when the organization has projects and a subgroup' do
         let_it_be(:subgroup) { create(:group, parent: top_level_group, organization: organization) }
         let_it_be(:project) { create(:project, group: subgroup, organization: organization) }
@@ -97,7 +125,8 @@ RSpec.describe Organizations::ActivateService, feature_category: :organization d
             user: current_user,
             additional_properties: {
               target_organization_id: organization.id,
-              value: 3,
+              value: seconds_since_confirmation,
+              groups_count: 3,
               projects_count: 1,
               users_count: 1
             }
@@ -206,7 +235,11 @@ RSpec.describe Organizations::ActivateService, feature_category: :organization d
           'transfer_tlg_resources_into_an_organization_failed'
         ).with(
           user: current_user,
-          additional_properties: { target_organization_id: organization.id, label: 'group_transfer' }
+          additional_properties: {
+            target_organization_id: organization.id,
+            label: 'group_transfer',
+            value: seconds_since_confirmation
+          }
         ).and increment_usage_metrics(
           usage_metrics_for('transfer_tlg_resources_into_an_organization_failed')
         )
@@ -248,7 +281,11 @@ RSpec.describe Organizations::ActivateService, feature_category: :organization d
           'transfer_tlg_resources_into_an_organization_failed'
         ).with(
           user: current_user,
-          additional_properties: { target_organization_id: organization.id, label: 'activation' }
+          additional_properties: {
+            target_organization_id: organization.id,
+            label: 'activation',
+            value: seconds_since_confirmation
+          }
         ).and increment_usage_metrics(
           usage_metrics_for('transfer_tlg_resources_into_an_organization_failed')
         )

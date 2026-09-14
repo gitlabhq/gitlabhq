@@ -1,10 +1,12 @@
-import { HttpLink } from '@apollo/client/core';
+import { ApolloLink, HttpLink } from '@apollo/client/core';
 import getPipelineDetails from 'shared_queries/pipelines/get_pipeline_details.query.graphql';
 import createDefaultClient, { stripWhitespaceFromQuery, typePolicies } from '~/lib/graphql';
+import { getSuppressNetworkErrorsDuringNavigationLink } from '~/lib/apollo/suppress_network_errors_during_navigation_link';
 import { queryToObject } from '~/lib/utils/url_utility';
 import { defaultOrganization as currentOrganization } from 'jest/organizations/mock_data';
 
 jest.mock('@apollo/client/core');
+jest.mock('~/lib/apollo/suppress_network_errors_during_navigation_link');
 
 describe('stripWhitespaceFromQuery', () => {
   const operationName = 'getPipelineDetails';
@@ -129,6 +131,23 @@ describe('createDefaultClient', () => {
           }),
         }),
       );
+    });
+  });
+
+  describe('config.links', () => {
+    // The position is behaviour: errors propagate outward from the terminating
+    // link, so the suppress-during-navigation link must sit inside custom links
+    // to swallow navigation-abort errors before custom links can observe them.
+    it('places custom links at the head of the chain, ahead of the suppress link', () => {
+      const customLink = { custom: true };
+      const suppressLink = { suppress: true };
+      getSuppressNetworkErrorsDuringNavigationLink.mockReturnValue(suppressLink);
+
+      createDefaultClient({}, { links: [customLink] });
+
+      const chain = ApolloLink.from.mock.calls.at(-1)[0];
+      expect(chain.indexOf(customLink)).toBe(0);
+      expect(chain.indexOf(customLink)).toBeLessThan(chain.indexOf(suppressLink));
     });
   });
 });

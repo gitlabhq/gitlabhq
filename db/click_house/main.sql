@@ -3723,23 +3723,6 @@ SELECT
     base._siphon_deleted AS deleted
 FROM base;
 
-CREATE MATERIALIZED VIEW duo_chat_events_daily_mv TO duo_chat_events_daily
-(
-    `namespace_path` String,
-    `user_id` UInt64,
-    `date` Date,
-    `event` UInt16,
-    `occurrences` UInt8
-)
-AS SELECT
-    namespace_path,
-    user_id,
-    toDate(timestamp) AS date,
-    event,
-    1 AS occurrences
-FROM ai_usage_events
-WHERE event = 6;
-
 CREATE MATERIALIZED VIEW duo_workflows_workflows_enriched_delta_mv
 REFRESH EVERY 15 MINUTE APPEND TO duo_workflows_workflows_enriched
 (

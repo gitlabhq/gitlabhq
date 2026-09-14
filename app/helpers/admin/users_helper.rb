@@ -6,20 +6,12 @@ module Admin
       ui_for_organizations_enabled? && ::Organizations::Organization.exists?
     end
 
-    def show_admin_edit_user_organization_field?(user)
-      ui_for_organizations_enabled? && user.organizations.exists?
-    end
-
     def admin_new_user_organization_field_app_data
       initial_organization = ::Organizations::Organization.first
 
       {
         has_multiple_organizations: ::Organizations::Organization.limit(2).count > 1
       }.merge(admin_user_organization_field_shared(initial_organization)).to_json
-    end
-
-    def admin_edit_user_organization_field_app_data(user)
-      organization_field_app_data(user, user.organization)
     end
 
     def organization_admin_edit_user_organization_field_app_data(user)
