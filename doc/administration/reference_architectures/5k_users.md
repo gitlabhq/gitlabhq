@@ -47,17 +47,17 @@ For a full list of reference architectures, see
 
 <!-- Disable ordered list rule <https://github.com/DavidAnson/markdownlint/blob/main/doc/Rules.md#md029---ordered-list-item-prefix> -->
 <!-- markdownlint-disable MD029 -->
-1. Machine type examples are given for illustration purposes. These types are used in [validation and testing](_index.md#validation-and-test-results) but are not intended as prescriptive defaults. Switching to other machine types that meet the requirements as listed is supported, including ARM variants if available. See [Supported machine types](_index.md#supported-machine-types) for more information.
+1. Machine type examples are given for illustration purposes. These types are used in [validation and testing](_index.md#how-specifications-are-derived) but are not intended as prescriptive defaults. Switching to other machine types that meet the requirements as listed is supported, including ARM variants if available. See [Supported machine types](_index.md#how-specifications-are-derived) for more information.
 2. Can be optionally run on reputable third-party external PaaS PostgreSQL solutions. See [Provide your own PostgreSQL instance](#provide-your-own-postgresql-instance) for more information.
 3. Can be optionally run on reputable third-party external PaaS Redis solutions. See [Provide your own Redis instance](#provide-your-own-redis-instance) for more information.
 4. Recommended to be run with a reputable third-party load balancer or service (LB PaaS) which can provide HA capabilities.
-   Also, the sizing depends on selected Load Balancer and additional factors such as Network Bandwidth. Refer to [Load Balancers](_index.md#load-balancers) for more information.
+   Also, the sizing depends on selected Load Balancer and additional factors such as Network Bandwidth.
 5. Should be run on reputable Cloud Provider or Self Managed solutions. See [Configure the object storage](#configure-the-object-storage) for more information.
 6. Gitaly Cluster (Praefect) provides the benefits of fault tolerance, but comes with additional complexity of setup and management.
    Review the existing [technical limitations and considerations before deploying Gitaly Cluster (Praefect)](../gitaly/praefect/_index.md#before-deploying-gitaly-cluster-praefect). If you want sharded Gitaly, use the same specs listed in the previous table for `Gitaly`.
 7. Gitaly specifications are based on high percentiles of both usage patterns and repository sizes in good health.
-   However, if you have [large monorepos](_index.md#large-monorepos) (larger than several gigabytes) or [additional workloads](_index.md#additional-workloads) these can significantly impact Git and Gitaly performance and further adjustments will likely be required.
-8. Can be placed in Auto Scaling Groups (ASGs) as the component doesn't store any [stateful data](_index.md#autoscaling-of-stateful-nodes).
+   However, if you have [large monorepos](../../install/sizing.md#large-monorepos) (larger than several gigabytes) or [additional workloads](_index.md#additional-workloads) these can significantly impact Git and Gitaly performance and further adjustments will likely be required.
+8. Can be placed in Auto Scaling Groups (ASGs) as the component doesn't store any [stateful data](../../install/sizing.md#autoscaling).
    However, [Cloud Native Hybrid setups](#cloud-native-hybrid-reference-architecture-with-helm-charts-alternative) are generally preferred as certain components
    such as [migrations](#gitlab-rails-post-configuration) and [Mailroom](../incoming_email.md) can only be run on one node, which is handled better in Kubernetes.
 <!-- markdownlint-enable MD029 -->
@@ -165,14 +165,14 @@ The 100 RPS / 5k user reference architecture is designed to accommodate most com
 
 These targets are based on actual customer data reflecting total environmental loads for the specified user count, including CI pipelines and other workloads. This represents a typical workload composition. For guidance on atypical workload patterns, see [Understanding RPS composition](../../install/sizing.md#understanding-rps-composition-and-workload-patterns).
 
-For more information about our testing methodology, see the [validation and test results](_index.md#validation-and-test-results) section.
+For more information about our testing methodology, see the [validation and test results](_index.md#how-specifications-are-derived) section.
 
 ### Performance considerations
 
 You may need additional adjustments if your environment has:
 
 - Consistently higher throughput than the listed targets
-- [Large monorepos](_index.md#large-monorepos)
+- [Large monorepos](../../install/sizing.md#large-monorepos)
 - Significant [additional workloads](_index.md#additional-workloads)
 
 In these cases, refer to [scaling an environment](_index.md#scaling-an-environment) for more information. If you believe these considerations may apply to you, contact us for additional guidance as required.
@@ -529,7 +529,7 @@ Use a reputable provider that runs a [supported PostgreSQL version](../../instal
 For more information, including guidance on high availability and database load balancing, see:
 
 - [Infrastructure and services](_index.md#infrastructure-and-services).
-- [Best practices for the database services](_index.md#best-practices-for-the-database-services).
+- [Best practices for the database services](../../install/cloud-services.md#use-managed-cloud-postgresql).
 
 If you use a third party external service:
 
@@ -1027,7 +1027,7 @@ designated the primary, and failover occurs automatically if the primary node go
 
 > [!warning]
 > Gitaly specifications are based on high percentiles of both usage patterns and repository sizes in good health.
-> However, if you have [large monorepos](_index.md#large-monorepos) (larger than several gigabytes) or [additional workloads](_index.md#additional-workloads) these can significantly impact the performance of the environment and further adjustments may be required.
+> However, if you have [large monorepos](../../install/sizing.md#large-monorepos) (larger than several gigabytes) or [additional workloads](_index.md#additional-workloads) these can significantly impact the performance of the environment and further adjustments may be required.
 > If you believe this applies to you, contact us for additional guidance as required.
 
 Gitaly Cluster (Praefect) provides the benefits of fault tolerance, but comes with additional complexity of setup and management.
@@ -1393,7 +1393,7 @@ requirements that are dependent on data and load.
 
 > [!warning]
 > Gitaly specifications are based on high percentiles of both usage patterns and repository sizes in good health.
-> However, if you have [large monorepos](_index.md#large-monorepos) (larger than several gigabytes) or [additional workloads](_index.md#additional-workloads) these can significantly impact the performance of the environment and further adjustments may be required.
+> However, if you have [large monorepos](../../install/sizing.md#large-monorepos) (larger than several gigabytes) or [additional workloads](_index.md#additional-workloads) these can significantly impact the performance of the environment and further adjustments may be required.
 > If you believe this applies to you, contact us for additional guidance as required.
 
 Gitaly has certain [disk requirements](../gitaly/_index.md#disk-requirements) for Gitaly storages.
@@ -2190,8 +2190,8 @@ the overall makeup as desired as long as the minimum CPU and Memory requirements
 | Sidekiq              | 7.2 vCPU<br/>16 GB memory (request)<br/>32 GB memory (limit) | 3 x `n1-standard-4` | 3 x `m5.xlarge`  |
 | Supporting services  | 4 vCPU<br/>15 GB memory | 2 x `n1-standard-2` | 2 x `m5.large`   |
 
-- For this setup, we regularly [test](_index.md#validation-and-test-results) and recommended [Google Kubernetes Engine (GKE)](https://cloud.google.com/kubernetes-engine) and [Amazon Elastic Kubernetes Service (EKS)](https://aws.amazon.com/eks/). Other Kubernetes services may also work, but your mileage may vary.
-- Machine type examples are given for illustration purposes. These types are used in [validation and testing](_index.md#validation-and-test-results) but are not intended as prescriptive defaults. Switching to other machine types that meet the requirements as listed is supported. See [Supported Machine Types](_index.md#supported-machine-types) for more information.
+- For this setup, we regularly [test](_index.md#how-specifications-are-derived) and recommended [Google Kubernetes Engine (GKE)](https://cloud.google.com/kubernetes-engine) and [Amazon Elastic Kubernetes Service (EKS)](https://aws.amazon.com/eks/). Other Kubernetes services may also work, but your mileage may vary.
+- Machine type examples are given for illustration purposes. These types are used in [validation and testing](_index.md#how-specifications-are-derived) but are not intended as prescriptive defaults. Switching to other machine types that meet the requirements as listed is supported. See [Supported Machine Types](_index.md#how-specifications-are-derived) for more information.
 - The [Webservice](#webservice) and [Sidekiq](#sidekiq) target node pool totals are given for GitLab components only. Additional resources are required for the chosen Kubernetes provider's system processes. The given examples take this into account.
 - The [Supporting](#supporting) target node pool total is given generally to accommodate several resources for supporting the GitLab deployment as well as any additional deployments you may wish to make depending on your requirements. Similar to the other node pools, the chosen Kubernetes provider's system processes also require resources. The given examples take this into account.
 - In production deployments, it's not required to assign pods to specific nodes. However, it is recommended to have several nodes in each pool spread across different availability zones to align with resilient cloud architecture practices.
@@ -2216,16 +2216,16 @@ services where applicable):
 
 <!-- Disable ordered list rule <https://github.com/DavidAnson/markdownlint/blob/main/doc/Rules.md#md029---ordered-list-item-prefix> -->
 <!-- markdownlint-disable MD029 -->
-1. Machine type examples are given for illustration purposes. These types are used in [validation and testing](_index.md#validation-and-test-results) but are not intended as prescriptive defaults. Switching to other machine types that meet the requirements as listed is supported, including ARM variants if available. See [Supported Machine Types](_index.md#supported-machine-types) for more information.
+1. Machine type examples are given for illustration purposes. These types are used in [validation and testing](_index.md#how-specifications-are-derived) but are not intended as prescriptive defaults. Switching to other machine types that meet the requirements as listed is supported, including ARM variants if available. See [Supported Machine Types](_index.md#how-specifications-are-derived) for more information.
 2. Can be optionally run on reputable third-party external PaaS PostgreSQL solutions. See [Provide your own PostgreSQL instance](#provide-your-own-postgresql-instance) for more information.
 3. Can be optionally run on reputable third-party external PaaS Redis solutions. See [Provide your own Redis instance](#provide-your-own-redis-instance) for more information.
 4. Recommended to be run with a reputable third-party load balancer or service (LB PaaS).
-   Also, the sizing depends on selected Load Balancer and additional factors such as Network Bandwidth. Refer to [Load Balancers](_index.md#load-balancers) for more information.
+   Also, the sizing depends on selected Load Balancer and additional factors such as Network Bandwidth.
 5. Should be run on reputable Cloud Provider or Self Managed solutions. See [Configure the object storage](#configure-the-object-storage) for more information.
 6. Gitaly Cluster (Praefect) provides the benefits of fault tolerance, but comes with additional complexity of setup and management.
    Review the existing [technical limitations and considerations before deploying Gitaly Cluster (Praefect)](../gitaly/praefect/_index.md#before-deploying-gitaly-cluster-praefect). If you want sharded Gitaly, use the same specs listed in the previous table for `Gitaly`.
 7. Gitaly specifications are based on high percentiles of both usage patterns and repository sizes in good health.
-   However, if you have [large monorepos](_index.md#large-monorepos) (larger than several gigabytes) or [additional workloads](_index.md#additional-workloads) these can significantly impact Git and Gitaly performance and further adjustments will likely be required.
+   However, if you have [large monorepos](../../install/sizing.md#large-monorepos) (larger than several gigabytes) or [additional workloads](_index.md#additional-workloads) these can significantly impact Git and Gitaly performance and further adjustments will likely be required.
 <!-- markdownlint-enable MD029 -->
 
 > [!note]

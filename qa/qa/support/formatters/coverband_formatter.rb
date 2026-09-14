@@ -113,11 +113,11 @@ module QA
             false
           end
 
-          example_path = example_notification.example.metadata[:location]
+          spec_file = root_spec_file(example_notification.example)
           full_coverage_data = JSON.parse(response.body)
 
           # Store full coverage data for both test selection and LCOV conversion
-          full_coverage_by_example[example_path] = full_coverage_data
+          merge_coverage(spec_file, full_coverage_data)
 
           logger.info("Fetched coverage data")
         rescue StandardError
@@ -164,6 +164,33 @@ module QA
         # This normalizes to: app/models/user.rb
         def normalize_coverage_paths(coverage_data)
           coverage_data.transform_keys { |path| PathNormalizer.normalize(path) }
+        end
+
+        # Shared examples report the shared file, not the spec rspec runs
+        #
+        # @param [RSpec::Core::Example] example
+        # @return [String]
+        def root_spec_file(example)
+          group = example.metadata[:example_group]
+          group = group[:parent_example_group] while group[:parent_example_group]
+          group[:file_path]
+        end
+
+        # Add an example's coverage to what the spec file already collected
+        #
+        # @param [String] spec_file
+        # @param [Hash] coverage_data
+        # @return [void]
+        def merge_coverage(spec_file, coverage_data)
+          collected = full_coverage_by_example[spec_file]
+          return full_coverage_by_example[spec_file] = coverage_data unless collected
+
+          coverage_data.each do |path, lines|
+            collected_lines = collected[path]
+            next collected[path] = lines unless collected_lines
+
+            lines.each { |line, hits| collected_lines[line] = collected_lines[line].to_i + hits.to_i }
+          end
         end
       end
     end

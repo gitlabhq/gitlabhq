@@ -100,6 +100,7 @@ module Banzai
         uri = Addressable::URI.parse(html_attr.value)
 
         if uri.relative? && uri.path.present?
+          preserve_original_link(html_attr, html_attr.parent)
           html_attr.value = rebuild_relative_uri(uri).to_s
           html_attr.parent.add_class('gfm')
         end

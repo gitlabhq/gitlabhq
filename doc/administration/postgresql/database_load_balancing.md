@@ -27,7 +27,7 @@ For external database services, only the `db_load_balancing` configuration is ne
 pooling can help manage connection counts at scale, but the right approach depends on your provider
 and is outside the scope of this guide.
 For connection management guidance, see
-[connection management](../reference_architectures/_index.md#connection-management).
+[connection pooling](../../install/cloud-services.md#connection-pooling).
 
 > [!note]
 > [AWS RDS Proxy](https://aws.amazon.com/rds/proxy/) is not validated for use with GitLab.

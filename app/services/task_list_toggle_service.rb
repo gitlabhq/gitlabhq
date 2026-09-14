@@ -43,7 +43,7 @@ class TaskListToggleService
     line  = lines[sourcepos[:start][:line]]
 
     # The source in the DB could be using either \n or \r\n line endings
-    return unless line.chomp == line_source
+    return unless line && line.chomp == line_source
 
     # Attempt precise sourcepos replacement, falling back to imprecise on failure
     # (replace first task item-looking thing on the line).

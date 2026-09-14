@@ -61,7 +61,7 @@ module Banzai
 
       def preserve_original_link(html_attr, node)
         return if html_attr.blank?
-        return if node.value?('data-canonical-src')
+        return if node.key?('data-canonical-src')
 
         node.set_attribute('data-canonical-src', html_attr.value)
       end

@@ -91,6 +91,12 @@ RSpec.describe Banzai::Filter::RepositoryLinkFilter, feature_category: :markdown
 
       expect(doc.at_css('audio')['src']).to eq 'files/audio/sample.wav'
     end
+
+    it 'does not add data-canonical-src' do
+      doc = filter(link('README.md'))
+
+      expect(doc.at_css('a')['data-canonical-src']).to be_nil
+    end
   end
 
   context 'with a wiki' do
@@ -267,6 +273,36 @@ RSpec.describe Banzai::Filter::RepositoryLinkFilter, feature_category: :markdown
 
       expect(doc.at_css('a')['href'])
         .to eq "/#{project_path}/-/raw/#{ref}/files/images/logo-black.png"
+    end
+
+    it 'keeps the path as written in data-canonical-src' do
+      doc = filter(link('doc/api/README.md'))
+
+      expect(doc.at_css('a')['data-canonical-src']).to eq 'doc/api/README.md'
+    end
+
+    it 'keeps the path of an image as written in data-canonical-src' do
+      doc = filter(image('files/images/logo-black.png'))
+
+      expect(doc.at_css('img')['data-canonical-src']).to eq 'files/images/logo-black.png'
+    end
+
+    it 'keeps a path with ../ components as written in data-canonical-src' do
+      doc = filter(link('../api/README.md'), requested_path: 'doc/update/7.14-to-8.0.md')
+
+      expect(doc.at_css('a')['data-canonical-src']).to eq '../api/README.md'
+    end
+
+    it 'does not overwrite an existing data-canonical-src' do
+      doc = filter(%(<a href="doc/api/README.md" data-canonical-src="original">text</a>))
+
+      expect(doc.at_css('a')['data-canonical-src']).to eq 'original'
+    end
+
+    it 'does not add data-canonical-src to an absolute URL' do
+      doc = filter(link('http://example.com'))
+
+      expect(doc.at_css('a')['data-canonical-src']).to be_nil
     end
 
     it 'rebuilds relative URL for a video in the repo' do

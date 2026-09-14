@@ -300,7 +300,7 @@ The machine types shown are examples used in validation and testing. You can use
 
 Do not use burstable instance types due to inconsistent performance.
 
-For more information, see [supported machine types](_index.md#supported-machine-types).
+For more information, see [supported machine types](_index.md#how-specifications-are-derived).
 
 ### Gitaly considerations
 

@@ -5803,6 +5803,24 @@
     "acceptsFormat": true
   },
   {
+    "template": "/admin/application_settings/search/semantic_search_embeddings/:id",
+    "example": "/admin/application_settings/search/semantic_search_embeddings/foo",
+    "acceptsFormat": true,
+    "dottedExample": "/admin/application_settings/search/semantic_search_embeddings/john.doe"
+  },
+  {
+    "template": "/admin/application_settings/search/semantic_search_embeddings/:id/test_model_configuration",
+    "example": "/admin/application_settings/search/semantic_search_embeddings/foo/test_model_configuration",
+    "acceptsFormat": true,
+    "dottedExample": "/admin/application_settings/search/semantic_search_embeddings/john.doe/test_model_configuration"
+  },
+  {
+    "template": "/admin/application_settings/search/semantic_search_embeddings/:id/update_embeddings_request_batch_size",
+    "example": "/admin/application_settings/search/semantic_search_embeddings/foo/update_embeddings_request_batch_size",
+    "acceptsFormat": true,
+    "dottedExample": "/admin/application_settings/search/semantic_search_embeddings/john.doe/update_embeddings_request_batch_size"
+  },
+  {
     "template": "/admin/application_settings/search/vector_storage",
     "example": "/admin/application_settings/search/vector_storage",
     "acceptsFormat": true
@@ -5816,24 +5834,6 @@
     "template": "/admin/application_settings/security_and_compliance",
     "example": "/admin/application_settings/security_and_compliance",
     "acceptsFormat": true
-  },
-  {
-    "template": "/admin/application_settings/semantic_search_embeddings/:id",
-    "example": "/admin/application_settings/semantic_search_embeddings/foo",
-    "acceptsFormat": true,
-    "dottedExample": "/admin/application_settings/semantic_search_embeddings/john.doe"
-  },
-  {
-    "template": "/admin/application_settings/semantic_search_embeddings/:id/test_model_configuration",
-    "example": "/admin/application_settings/semantic_search_embeddings/foo/test_model_configuration",
-    "acceptsFormat": true,
-    "dottedExample": "/admin/application_settings/semantic_search_embeddings/john.doe/test_model_configuration"
-  },
-  {
-    "template": "/admin/application_settings/semantic_search_embeddings/:id/update_embeddings_request_batch_size",
-    "example": "/admin/application_settings/semantic_search_embeddings/foo/update_embeddings_request_batch_size",
-    "acceptsFormat": true,
-    "dottedExample": "/admin/application_settings/semantic_search_embeddings/john.doe/update_embeddings_request_batch_size"
   },
   {
     "template": "/admin/application_settings/service_accounts(/*vueroute)",

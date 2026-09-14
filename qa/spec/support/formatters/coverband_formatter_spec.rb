@@ -16,10 +16,14 @@ describe QA::Support::Formatters::CoverbandFormatter do
       execution_result: instance_double(RSpec::Core::Example::ExecutionResult, status: status),
       metadata: {
         full_description: "Plan",
-        location: "./qa/specs/features/browser_ui/2_plan/issue/create_issue_spec.rb:5"
+        location: "#{spec_file}:5",
+        example_group: { file_path: spec_file }
       }
     )
   end
+
+  let(:spec_file) { "./qa/specs/features/browser_ui/2_plan/issue/create_issue_spec.rb" }
+  let(:shared_example_file) { "./qa/specs/features/shared_examples/audit_event_streaming_shared_examples.rb" }
 
   let(:gitlab_address) { 'http://gitlab.test.com' }
   let(:api_path) { "#{gitlab_address}/api/v4/internal/coverage" }
@@ -32,6 +36,27 @@ describe QA::Support::Formatters::CoverbandFormatter do
 
   let(:mapping) do
     { "./qa/specs/features/browser_ui/2_plan/issue/create_issue_spec.rb:5": { "test mapping": 1 } }
+  end
+
+  # Examples defined in a shared file still belong to the spec file that includes them
+  let(:shared_rspec_example) do
+    instance_double(
+      RSpec::Core::Example,
+      file_path: shared_example_file,
+      execution_result: instance_double(RSpec::Core::Example::ExecutionResult, status: status),
+      metadata: {
+        full_description: "Plan",
+        location: "#{shared_example_file}:5",
+        example_group: {
+          file_path: shared_example_file,
+          parent_example_group: { file_path: spec_file }
+        }
+      }
+    )
+  end
+
+  let(:shared_rspec_example_notification) do
+    instance_double(RSpec::Core::Notifications::ExampleNotification, example: shared_rspec_example)
   end
 
   before do
@@ -115,13 +140,41 @@ describe QA::Support::Formatters::CoverbandFormatter do
   context 'when example finished' do
     context 'with success response and non empty coverage' do
       let(:status) { :passed }
-      let(:body) { '{"app/models/user.rb":{"1":"5","2":"10"},"app/controllers/application_controller.rb":{"1":"3"}}' }
+      let(:body) { '{"app/models/user.rb":{"1":5,"2":10},"app/controllers/application_controller.rb":{"1":3}}' }
 
       it 'logs success message and does not log any errors' do
         formatter.example_finished(rspec_example_notification)
 
         expect(logger).not_to have_received(:error)
         expect(logger).to have_received(:info).with("Fetched coverage data").once
+      end
+
+      it 'stores coverage under the spec file rather than the example location' do
+        formatter.example_finished(rspec_example_notification)
+
+        expect(formatter.send(:full_coverage_by_example).keys).to eq([spec_file])
+      end
+
+      context 'when the example comes from a shared example file' do
+        it 'stores coverage under the spec file that includes it' do
+          formatter.example_finished(shared_rspec_example_notification)
+
+          expect(formatter.send(:full_coverage_by_example).keys).to eq([spec_file])
+        end
+      end
+
+      context 'when several examples run from the same spec file' do
+        it 'sums their line hits instead of keeping only the last one' do
+          formatter.example_finished(rspec_example_notification)
+          formatter.example_finished(shared_rspec_example_notification)
+
+          expect(formatter.send(:full_coverage_by_example)).to eq({
+            spec_file => {
+              "app/models/user.rb" => { "1" => 10, "2" => 20 },
+              "app/controllers/application_controller.rb" => { "1" => 6 }
+            }
+          })
+        end
       end
     end
 

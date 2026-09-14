@@ -12,8 +12,36 @@ import {
   RESOLVED_USER_HTML,
   RESOLVED_VULNERABILITY_HTML,
   RESOLVED_USER_WITH_DOTS_HTML,
+  REPOSITORY_RELATIVE_LINK_HTML,
+  REPOSITORY_RELATIVE_IMAGE_HTML,
+  UPLOAD_IMAGE_HTML,
+  LINK_REFERENCE_HTML,
 } from '../test_constants';
 import { createTestEditor, triggerNodeInputRule, waitUntilTransaction } from '../test_utils';
+
+// Every reference filter in lib/banzai/filter/references (CE and EE) plus the reference
+// type of the personal snippet filter; each emits `class="gfm gfm-<type>"` together with
+// `data-reference-type="<type>"`.
+const BACKEND_REFERENCE_TYPES = [
+  'alert',
+  'commit',
+  'commit_range',
+  'design',
+  'epic',
+  'external_issue',
+  'feature_flag',
+  'issue',
+  'iteration',
+  'iterations_cadence',
+  'merge_request',
+  'milestone',
+  'project',
+  'snippet',
+  'user',
+  'vulnerability',
+  'wiki_page',
+  'work_item',
+];
 
 describe('content_editor/extensions/reference', () => {
   let tiptapEditor;
@@ -265,6 +293,52 @@ describe('content_editor/extensions/reference', () => {
           ),
         ),
       );
+    });
+  });
+
+  describe('parseHTML', () => {
+    it.each(BACKEND_REFERENCE_TYPES)(
+      'parses an anchor with data-reference-type="%s" as a reference node',
+      (referenceType) => {
+        tiptapEditor.commands.setContent(
+          `<p><a href="/path" class="gfm gfm-${referenceType}" data-reference-type="${referenceType}" data-original="ref">ref text</a></p>`,
+        );
+
+        expect(tiptapEditor.getJSON()).toEqual(
+          doc(
+            p(
+              reference({
+                className: `gfm gfm-${referenceType}`,
+                referenceType,
+                originalText: 'ref',
+                href: '/path',
+                text: 'ref text',
+              }),
+            ),
+          ).toJSON(),
+        );
+      },
+    );
+
+    it('parses a label as a label reference node', () => {
+      tiptapEditor.commands.setContent(RESOLVED_LABEL_HTML);
+
+      expect(tiptapEditor.getJSON().content[0].content[0]).toMatchObject({
+        type: 'referenceLabel',
+        attrs: { referenceType: 'label', originalText: '~Aquanix', text: 'Aquanix' },
+      });
+    });
+
+    it.each`
+      description                                    | html                              | expectedDoc
+      ${'a link to a file in the repository'}        | ${REPOSITORY_RELATIVE_LINK_HTML}  | ${() => doc(p('readme'))}
+      ${'an image from the repository'}              | ${REPOSITORY_RELATIVE_IMAGE_HTML} | ${() => doc(p())}
+      ${'an uploaded image'}                         | ${UPLOAD_IMAGE_HTML}              | ${() => doc(p())}
+      ${'a link whose text differs from its target'} | ${LINK_REFERENCE_HTML}            | ${() => doc(p('the issue'))}
+    `('does not parse $description as a reference', ({ html, expectedDoc }) => {
+      tiptapEditor.commands.setContent(html);
+
+      expect(tiptapEditor.getJSON()).toEqual(expectedDoc().toJSON());
     });
   });
 });

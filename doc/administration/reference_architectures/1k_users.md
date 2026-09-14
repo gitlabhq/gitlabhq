@@ -33,7 +33,7 @@ For a full list of reference architectures, see
 
 <!-- Disable ordered list rule <https://github.com/DavidAnson/markdownlint/blob/main/doc/Rules.md#md029---ordered-list-item-prefix> -->
 <!-- markdownlint-disable MD029 -->
-1. Machine type examples are given for illustration purposes. These types are used in [validation and testing](_index.md#validation-and-test-results) but are not intended as prescriptive defaults. Switching to other machine types that meet the requirements as listed is supported, including ARM variants if available. See [Supported machine types](_index.md#supported-machine-types) for more information.
+1. Machine type examples are given for illustration purposes. These types are used in [validation and testing](_index.md#how-specifications-are-derived) but are not intended as prescriptive defaults. Switching to other machine types that meet the requirements as listed is supported, including ARM variants if available. See [Supported machine types](_index.md#how-specifications-are-derived) for more information.
 2. For GCP, the closest and equivalent standard machine type has been selected that matches the recommended requirement of 8 vCPU and 16 GB of RAM. A [custom machine type](https://docs.cloud.google.com/compute/docs/instances/creating-instance-with-custom-machine-type) can also be used if desired.
 <!-- markdownlint-enable MD029 -->
 
@@ -81,7 +81,7 @@ Before proceeding, review the [requirements](_index.md#requirements) for the ref
 
 > [!warning]
 > The node's specifications are based on high percentiles of both usage patterns and repository sizes in good health.
-> However, if you have [large monorepos](_index.md#large-monorepos) (larger than several gigabytes) or [additional workloads](_index.md#additional-workloads), they might significantly impact the performance of the environment.
+> However, if you have [large monorepos](../../install/sizing.md#large-monorepos) (larger than several gigabytes) or [additional workloads](_index.md#additional-workloads), they might significantly impact the performance of the environment.
 > If this applies to you, [further adjustments might be required](_index.md#scaling-an-environment). See the linked documentation and contact us if required for further guidance.
 
 ## Testing methodology
@@ -97,14 +97,14 @@ The 20 RPS / 1k user reference architecture is designed to accommodate most comm
 
 These targets are based on actual customer data reflecting total environmental loads for the specified user count, including CI pipelines and other workloads. This represents a typical workload composition. For guidance on atypical workload patterns, see [Understanding RPS composition](../../install/sizing.md#understanding-rps-composition-and-workload-patterns).
 
-For more information about our testing methodology, see the [validation and test results](_index.md#validation-and-test-results) section.
+For more information about our testing methodology, see the [validation and test results](_index.md#how-specifications-are-derived) section.
 
 ### Performance considerations
 
 You may need additional adjustments if your environment has:
 
 - Consistently higher throughput than the listed targets
-- [Large monorepos](_index.md#large-monorepos)
+- [Large monorepos](../../install/sizing.md#large-monorepos)
 - Significant [additional workloads](_index.md#additional-workloads)
 
 In these cases, refer to [scaling an environment](_index.md#scaling-an-environment) for more information. If you believe these considerations may apply to you, contact us for additional guidance as required.

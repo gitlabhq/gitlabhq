@@ -61,8 +61,13 @@ export default Link.extend({
       },
       title: {
         title: null,
+        // A reference renders its own text, so its title is not the author's and is
+        // dropped. `gfm` alone does not mean reference: RepositoryLinkFilter adds the
+        // class to plain links into the repository, whose title the author did type.
         parseHTML: (element) =>
-          element.classList.contains('gfm') ? null : element.getAttribute('title'),
+          element.classList.contains('gfm') && element.dataset.referenceType
+            ? null
+            : element.getAttribute('title'),
       },
       // only for gollum links (wikis)
       isGollumLink: {

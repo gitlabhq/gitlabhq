@@ -36,7 +36,19 @@ RSpec.describe Banzai::Filter::WikiLinkFilter, feature_category: :wiki do
     it "does not store original url in the data-canonical-src attribute" do
       filtered_link = filter("<a href='/uploads/a.test'>Link</a>", wiki: wiki).children[0]
 
-      expect(filtered_link.value?('data-canonical-src')).to be(false)
+      expect(filtered_link.key?('data-canonical-src')).to be(false)
+    end
+  end
+
+  describe 'when a node already carries a canonical src' do
+    it 'keeps the value an earlier filter recorded' do
+      original_path = "#{repository_upload_folder}/a.jpg"
+      filtered_link = filter(
+        "<a href='#{original_path}' data-canonical-src='typed/by/the/author.jpg'>Link</a>",
+        wiki: wiki
+      ).children[0]
+
+      expect(filtered_link.attribute('data-canonical-src').value).to eq('typed/by/the/author.jpg')
     end
   end
 

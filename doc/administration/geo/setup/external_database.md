@@ -14,7 +14,7 @@ title: Geo with external PostgreSQL instances
 
 This document is relevant if you are using a PostgreSQL instance that is not
 managed by the Linux package. This includes
-[cloud-managed instances](../../reference_architectures/_index.md#best-practices-for-the-database-services),
+[cloud-managed instances](../../../install/cloud-services.md#use-managed-cloud-postgresql),
 or manually installed and configured PostgreSQL instances.
 
 Ensure that you are using one of the PostgreSQL versions that

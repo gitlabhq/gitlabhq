@@ -12176,10 +12176,21 @@ msgstr ""
 msgid "Artifact was successfully deleted."
 msgstr ""
 
+msgid "ArtifactRegistry|%d referrer"
+msgid_plural "ArtifactRegistry|%d referrers"
+msgstr[0] ""
+msgstr[1] ""
+
 msgid "ArtifactRegistry|%{artifactType} for %{digest}"
 msgstr ""
 
 msgid "ArtifactRegistry|%{date} by %{user}"
+msgstr ""
+
+msgid "ArtifactRegistry|%{tab} tab for manifest %{digest} of %{name}."
+msgstr ""
+
+msgid "ArtifactRegistry|%{tab} tab for manifest %{digest}."
 msgstr ""
 
 msgid "ArtifactRegistry|%{tab} tab for version %{version} of %{name}."
@@ -12657,16 +12668,10 @@ msgstr ""
 msgid "ArtifactRegistry|Manifest %{digest} for %{platform}"
 msgstr ""
 
-msgid "ArtifactRegistry|Manifest %{digest} of %{name}."
-msgstr ""
-
 msgid "ArtifactRegistry|Manifest %{digest} was not deleted because it is indexed by %{total} other manifests, including: %{parents}."
 msgstr ""
 
 msgid "ArtifactRegistry|Manifest %{digest} was not deleted because it is indexed by other manifests: %{parents}."
-msgstr ""
-
-msgid "ArtifactRegistry|Manifest %{digest}."
 msgstr ""
 
 msgid "ArtifactRegistry|Manifest digest: %{digest}"
@@ -12856,6 +12861,9 @@ msgid "ArtifactRegistry|Referrer for %{digest}"
 msgstr ""
 
 msgid "ArtifactRegistry|Referrer manifests"
+msgstr ""
+
+msgid "ArtifactRegistry|Referrers"
 msgstr ""
 
 msgid "ArtifactRegistry|Registry URL"

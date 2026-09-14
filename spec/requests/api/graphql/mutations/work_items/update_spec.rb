@@ -304,6 +304,22 @@ RSpec.describe 'Update a work item', feature_category: :team_planning do
         end
       end
 
+      context 'when a concurrent edit removed the targeted line' do
+        before do
+          mutation_work_item.update!(description: 'Intro')
+        end
+
+        it 'returns a conflict error along with the current work item state' do
+          expect do
+            post_graphql_mutation(mutation, current_user: current_user)
+            mutation_work_item.reload
+          end.not_to change { mutation_work_item.description }
+
+          expect(mutation_response['errors'].first).to include('Someone edited this')
+          expect(mutation_response['workItem']['description']).to eq('Intro')
+        end
+      end
+
       context 'when combined with a description' do
         let(:input) do
           {
