@@ -51060,6 +51060,7 @@ Fields:
 | <a id="mergerequest-commitswithoutmergecommits"></a>`commitsWithoutMergeCommits` | [`CommitConnection`](#commitconnection) | Merge request commits excluding merge commits. (see [Connections](#connections)) |
 | <a id="mergerequest-committers"></a>`committers` | [`UserCoreConnection`](#usercoreconnection) | Users who have added commits to the merge request. (see [Connections](#connections)) |
 | <a id="mergerequest-conflictfiles"></a>`conflictFiles` {{< icon name="warning-solid" >}} | [`[MergeRequestConflict!]`](#mergerequestconflict) | Introduced in GitLab 19.4. Status: Experiment. Files with conflicts that prevent the merge request from being merged, including raw Git conflict markers. Null unless the merge request cannot be merged and the current user can push to the source branch. This field can only be resolved once per request. |
+| <a id="mergerequest-conflictstatus"></a>`conflictStatus` {{< icon name="warning-solid" >}} | [`MergeRequestConflictStatus`](#mergerequestconflictstatus) | Introduced in GitLab 19.4. Status: Experiment. Why conflict files are or are not available. Use alongside conflictFiles to distinguish permission errors, unchecked mergeability, and missing branches. |
 | <a id="mergerequest-conflicts"></a>`conflicts` | [`Boolean!`](#boolean) | Indicates if the merge request has conflicts. |
 | <a id="mergerequest-createdat"></a>`createdAt` | [`Time!`](#time) | Timestamp of when the merge request was created. |
 | <a id="mergerequest-defaultmergecommitmessage"></a>`defaultMergeCommitMessage` | [`String`](#string) | Default merge commit message of the merge request. |
@@ -71390,6 +71391,18 @@ Values for sorting members.
 | <a id="membersort-created_desc"></a>`created_desc` {{< icon name="warning-solid" >}} | Deprecated in GitLab 13.5. Renamed. Use `CREATED_DESC` instead. |
 | <a id="membersort-updated_asc"></a>`updated_asc` {{< icon name="warning-solid" >}} | Deprecated in GitLab 13.5. Renamed. Use `UPDATED_ASC` instead. |
 | <a id="membersort-updated_desc"></a>`updated_desc` {{< icon name="warning-solid" >}} | Deprecated in GitLab 13.5. Renamed. Use `UPDATED_DESC` instead. |
+
+### `MergeRequestConflictStatus`
+
+Status of conflict file availability for a merge request.
+
+| Value | Description |
+| ----- | ----------- |
+| <a id="mergerequestconflictstatus-branch_missing"></a>`BRANCH_MISSING` | Source or target branch is missing, or diff refs are incomplete. |
+| <a id="mergerequestconflictstatus-has_conflicts"></a>`HAS_CONFLICTS` | Merge request has conflicts. conflictFiles may still be null if files cannot be fetched (for example, binary files). |
+| <a id="mergerequestconflictstatus-no_conflicts"></a>`NO_CONFLICTS` | Merge request can be merged; no conflicts exist. |
+| <a id="mergerequestconflictstatus-no_push_access"></a>`NO_PUSH_ACCESS` | Current user cannot push to the source branch. |
+| <a id="mergerequestconflictstatus-unchecked"></a>`UNCHECKED` | Mergeability has not been checked yet; conflicts cannot be determined. |
 
 ### `MergeRequestNewState`
 

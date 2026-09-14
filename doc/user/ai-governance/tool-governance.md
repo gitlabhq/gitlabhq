@@ -103,8 +103,8 @@ server exposes.
 
 Many capabilities exist as a GitLab Duo Agent Platform tool and an MCP server
 tool. One mode governs both, even when the two tools have different names. For
-example, setting a mode for `get_work_item_notes` also applies to the MCP
-server tool `get_workitem_notes`. Set the mode on the GitLab Duo Agent Platform
+example, setting a mode for `create_merge_request` also applies to the MCP
+server tool `save_merge_request`. Set the mode on the GitLab Duo Agent Platform
 tool. You don't need to find and set the MCP server tool separately.
 
 If you don't set a mode, behavior is unchanged. Read-only MCP tools remain

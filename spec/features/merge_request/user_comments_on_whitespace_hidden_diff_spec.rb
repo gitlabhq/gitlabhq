@@ -30,7 +30,7 @@ RSpec.describe 'User comments on a diff with whitespace changes', :js, feature_c
       end
 
       context 'when commenting on line combinations that are not present in the real diff' do
-        let(:line_holder) { line_by_number('files/ruby/popen.rb', 'old', 19) }
+        let(:line_holder) { line_by_numbers('files/ruby/popen.rb', old: 19, new: 20) }
 
         before do
           # Comment on line combination old: 19, new 20

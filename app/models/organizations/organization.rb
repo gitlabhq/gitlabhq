@@ -19,9 +19,6 @@ module Organizations
     DEFAULT_ORGANIZATION_ID = 1
 
     scope :without_default, -> { id_not_in(DEFAULT_ORGANIZATION_ID) }
-    scope :with_namespace_path, ->(path) {
-      joins(namespaces: :route).where(route: { path: path.to_s })
-    }
     scope :with_user, ->(user) {
       joins(:organization_users).merge(Organizations::OrganizationUser.by_user(user))
                                 .order(:id)
@@ -107,9 +104,25 @@ module Organizations
       with_isolation_record.where("LOWER(path) = ?", path.downcase).first
     end
 
+    # The Organization owning the namespace with the given full path. Matches
+    # Routable#find_by_full_path semantics (case-insensitive, and following
+    # redirect routes of renamed namespaces) in one query per route source.
     def self.find_by_namespace_path_with_isolation_record(path)
-      with_isolation_record.where(id: with_namespace_path(path).select(:id)).first
+      organization_via_namespace_route(Route, path) || organization_via_namespace_route(RedirectRoute, path)
     end
+
+    def self.find_by_personal_snippet_id_with_isolation_record(snippet_id)
+      organization_ids = PersonalSnippet.where(id: snippet_id).select(:organization_id)
+
+      with_isolation_record.where(id: organization_ids).first
+    end
+
+    def self.organization_via_namespace_route(route_model, path)
+      namespace_ids = route_model.where(source_type: Namespace.name).iwhere(path: path.to_s).select(:source_id)
+
+      with_isolation_record.where(id: Namespace.where(id: namespace_ids).select(:organization_id)).first
+    end
+    private_class_method :organization_via_namespace_route
 
     def self.default?(id)
       id == DEFAULT_ORGANIZATION_ID

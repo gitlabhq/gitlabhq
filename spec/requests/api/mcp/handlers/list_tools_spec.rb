@@ -89,7 +89,6 @@ RSpec.describe API::Mcp, 'List tools request', feature_category: :mcp_server do
         'get_user' => { 'readOnlyHint' => true },
         'get_work_item' => { 'readOnlyHint' => true },
         'get_work_item_types' => { 'readOnlyHint' => true },
-        'get_workitem_notes' => { 'readOnlyHint' => true },
         'list_commits' => { 'readOnlyHint' => true },
         'list_branches' => { 'readOnlyHint' => true },
         'list_groups' => { 'readOnlyHint' => true },
@@ -287,12 +286,14 @@ RSpec.describe API::Mcp, 'List tools request', feature_category: :mcp_server do
     end
 
     context 'with tools retired from the catalog' do
-      it 'does not advertise create_issue but keeps it callable' do
+      it 'does not advertise retired tools but keeps them callable' do
         post_list_tools
 
         tool_names = json_response['result']['tools'].pluck('name')
-        expect(tool_names).not_to include('create_issue')
-        expect(::Mcp::Tools::Manager.new.get_tool(name: 'create_issue')).to be_present
+        expect(tool_names).not_to include('create_issue', 'get_workitem_notes')
+        manager = ::Mcp::Tools::Manager.new
+        expect(manager.get_tool(name: 'create_issue')).to be_present
+        expect(manager.get_tool(name: 'get_workitem_notes')).to be_present
       end
     end
 

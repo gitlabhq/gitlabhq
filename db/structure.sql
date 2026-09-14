@@ -45890,6 +45890,8 @@ CREATE UNIQUE INDEX idx_dm_remediations_on_project_purl_package_path_and_version
 
 CREATE UNIQUE INDEX idx_duo_wf_checkpoint_blobs_dedup ON ONLY p_duo_workflows_checkpoint_blobs USING btree (project_id, workflow_id, thread_ts, channel, version, step_action, workflow_created_at) NULLS NOT DISTINCT;
 
+CREATE INDEX idx_duo_wf_checkpoint_blobs_on_workflow_channel_id ON ONLY p_duo_workflows_checkpoint_blobs USING btree (workflow_id, channel, id);
+
 CREATE INDEX idx_elastic_reindexing_slices_on_elastic_reindexing_subtask_id ON elastic_reindexing_slices USING btree (elastic_reindexing_subtask_id);
 
 CREATE UNIQUE INDEX idx_enabled_flows_on_namespace_catalog_item ON enabled_foundational_flows USING btree (namespace_id, catalog_item_id) WHERE (namespace_id IS NOT NULL);
@@ -48367,8 +48369,6 @@ CREATE INDEX index_dts_on_expiring_at_sixty_days_notification_sent_at ON deploy_
 CREATE INDEX index_dts_on_expiring_at_thirty_days_notification_sent_at ON deploy_tokens USING btree (expires_at, id) WHERE ((revoked = false) AND (thirty_days_notification_sent_at IS NULL));
 
 CREATE INDEX index_duo_wf_checkpoint_blobs_on_namespace_id ON ONLY p_duo_workflows_checkpoint_blobs USING btree (namespace_id);
-
-CREATE INDEX index_duo_wf_checkpoint_blobs_on_workflow_id ON ONLY p_duo_workflows_checkpoint_blobs USING btree (workflow_id);
 
 CREATE INDEX index_duo_wf_checkpoint_headers_on_namespace_id ON ONLY p_duo_workflows_checkpoint_headers USING btree (namespace_id);
 

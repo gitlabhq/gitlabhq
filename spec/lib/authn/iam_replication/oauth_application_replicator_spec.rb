@@ -31,7 +31,8 @@ RSpec.describe Authn::IamReplication::OauthApplicationReplicator, feature_catego
           grant_types: %w[authorization_code refresh_token client_credentials],
           response_types: %w[code],
           created_at: Google::Protobuf::Timestamp.new(seconds: application.created_at.to_i),
-          updated_at: Google::Protobuf::Timestamp.new(seconds: application.updated_at.to_i)
+          updated_at: Google::Protobuf::Timestamp.new(seconds: application.updated_at.to_i),
+          organization_id: application.organization.uuid
         )
       end
 
@@ -43,6 +44,16 @@ RSpec.describe Authn::IamReplication::OauthApplicationReplicator, feature_catego
 
         expect(client).to have_received(:upsert_oauth_application)
           .with(hash_including(hashed_client_secret: match(/\A[0-9a-f]{128}\z/)))
+      end
+
+      it 'sends an organization_id in the UUIDv7 format IAM validates' do
+        replicator.deliver(row)
+
+        expect(client).to have_received(:upsert_oauth_application).with(
+          hash_including(
+            organization_id: match(/\A[0-9a-f]{8}-[0-9a-f]{4}-7[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}\z/)
+          )
+        )
       end
 
       it 'delivers with a single upsert call' do

@@ -1,6 +1,6 @@
 ---
-source_checksum: 850b047440757755
-distilled_at_sha: 2437a5545d9f350b76b314e8cf58cde7e0d785ac
+source_checksum: a1c66a83bfd388a8
+distilled_at_sha: 1952db3e816e6562c3e8f7246a7bbb1b53041ba2
 ---
 <!-- Auto-generated from docs.gitlab.com by gitlab-ai-principles-distiller — do not edit manually -->
 
@@ -28,6 +28,10 @@ distilled_at_sha: 2437a5545d9f350b76b314e8cf58cde7e0d785ac
 - DO NOT override `has_many through:` or `has_one through:` associations; overriding changes `destroy()` behavior and can cause data loss.
 - DO NOT open database connections or issue queries from Rails initializers or routes (see Rails Initializers).
 
+### Utilities
+
+- Use `Gitlab::Utils::Executable` (via `include Gitlab::Utils::Executable`) in service classes when the caller does not need the service instance after the call, instead of manually writing a `self.execute` delegator that restates the argument list.
+
 ### JSON
 
 - Use `Gitlab::Json` in place of all calls to the default `JSON` class, `.to_json`, and similar methods.
@@ -54,26 +58,6 @@ distilled_at_sha: 2437a5545d9f350b76b314e8cf58cde7e0d785ac
 - Common logging fields imported from `labkit-ruby` `lib/labkit/fields.rb`.
 - New fields added to log messages must not be dynamically generated.
 - Follow Field Standardisation Guidelines for observability.
-
-### Internationalization (i18n)
-
-- Wrap all user-visible strings in Ruby/HAML with `_()`, `s_()`, or `n_()` helpers; use `__()`, `s__()`, `n__()` in JavaScript/Vue.
-- DO NOT translate strings at class or module load time (e.g., in constants or memoized class methods); keep translations dynamic by calling helpers inside instance/class methods.
-- DO NOT split sentences across multiple translation calls; externalize the full sentence with interpolation placeholders.
-- DO NOT include HTML directly in translation strings; use `safe_format` with `tag_pair` in Ruby/HAML or `GlSprintf` in Vue.
-- DO NOT call `downcase` or `toLocaleLowerCase()` on translatable strings; let translators control casing.
-- Add a namespace (PascalCase, followed by `|`) to all UI strings to provide translator context; prefer granular subcategories over broad ones.
-- Pass only string literals to translation helpers; DO NOT pass variables, function calls, or interpolated strings.
-- Use `%{named}` placeholders rather than positional `%d` in strings where the number adds no value to the singular form; use `n_`/`n__` with `%{count}` named placeholders for counted strings.
-- Use `n_`/`n__` only to select between plural forms of the same string, not to switch between entirely different strings.
-- DO NOT place a zero-state phrase in the `one` slot of a plural string; handle the zero state as a separate string outside the plural call.
-- Pluralize whole sentences rather than extracting single words to give translators full context.
-- DO NOT define pluralized strings that depend on runtime counts as static constants in Vue; define them as functions that accept a `count` argument.
-- Split strings with multiple independent plurals into separate `n__()` calls and combine with a non-pluralized connector string.
-- Add errors to `:base` with a complete sentence rather than to a specific attribute when the message is a full sentence, to avoid Rails prepending the humanized attribute name.
-- Update `locale/gitlab.pot` by running `tooling/bin/gettext_extractor locale/gitlab.pot` before pushing changes to translated strings.
-- In RSpec, use the same externalizing helper in expectations (e.g., `have_content(_('...'))`); DO NOT hard-code translated strings.
-- In Jest, DO NOT wrap expected strings in `__()` — externalization is mocked and expectations should use plain string literals.
 
 ### Redis
 
@@ -117,7 +101,7 @@ distilled_at_sha: 2437a5545d9f350b76b314e8cf58cde7e0d785ac
 
 - Focus comments on the "why" (rationale, constraints, edge cases), not the "what" or "how".
 - Add a link to a tracking issue in any comment describing a follow-up action or technical debt.
-- Use YARD syntax (`@param`, `@return`) when documenting method arguments or return values.
+- Document every new or updated method with a short description of what it does; use YARD syntax (`@param` for each argument, `@return` for methods with an explicit return value), separate the description from YARD tags with a blank line, and use linkable references (e.g., `{Order#order_ids_by_email}`) when referring to other methods or classes.
 - Annotate methods whose return value should not be used with `@return [void]` and explicitly `return nil` at the end.
 
 ### Gotchas
@@ -151,10 +135,8 @@ For the full picture, see:
 - doc/development/ruby3_gotchas.md
 - doc/development/utilities.md
 - doc/development/changelog.md
-- doc/development/i18n/pluralization.md
 - doc/development/logging.md
 - doc/development/json.md
-- doc/development/i18n/externalization.md
 - doc/development/redis.md
 - doc/development/polling.md
 - doc/development/routing.md

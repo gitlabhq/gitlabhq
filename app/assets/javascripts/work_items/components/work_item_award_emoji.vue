@@ -203,6 +203,11 @@ export default {
 
       const sourceData = cache.readQuery(query);
 
+      // The query is not cached until the list has loaded; the refetch covers that case.
+      if (!sourceData) {
+        return;
+      }
+
       const newData = produce(sourceData, (draftState) => {
         const widgetAwardEmoji = findAwardEmojiWidget(draftState.namespace?.workItem);
         if (widgetAwardEmoji && widgetAwardEmoji.awardEmoji) {

@@ -3,13 +3,12 @@
 module Tasks
   module Gitlab
     module Siphon
-      # Checks that the Siphon logical replication slots have a producer attached, still reserve
-      # their WAL, and are advancing. Read only.
+      # Checks that the Siphon logical replication slots have a producer attached, still hold the
+      # WAL they need, and are advancing. Read only.
       class CheckReplicationSlotsTask
         POLL_INTERVAL_SECONDS = 5
         POLL_ATTEMPTS = 5
         DISCOVERY_PATTERN = '%siphon%'
-        EXPECTED_WAL_STATUS = 'reserved'
         LOST_WAL_STATUS = 'lost'
 
         def initialize(slot_names: nil, database: nil)
@@ -84,11 +83,6 @@ module Tasks
         def verdict(before, slot)
           return [:failed, "wal_status is #{LOST_WAL_STATUS}, the slot has to be recreated"] if lost?(slot)
           return [:failed, "still inactive after #{timeout_seconds}s, no producer connected"] unless slot['active']
-
-          unless slot['wal_status'] == EXPECTED_WAL_STATUS
-            return [:failed, "wal_status is #{slot['wal_status']}, expected #{EXPECTED_WAL_STATUS}"]
-          end
-
           return [:ok, nil] if advanced?(before, slot)
 
           [:warned, "confirmed_flush_lsn did not advance in #{timeout_seconds}s, " \

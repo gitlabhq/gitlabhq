@@ -244,6 +244,23 @@ describe('WorkItemAwardEmoji component', () => {
     },
   );
 
+  describe('when the award emoji query has not been cached yet', () => {
+    beforeEach(async () => {
+      createComponent({
+        awardEmojiQueryHandler: jest.fn().mockReturnValue(new Promise(() => {})),
+      });
+      await waitForPromises();
+    });
+
+    it('runs the mutation without throwing while updating the cache', async () => {
+      findAwardsList().vm.$emit('award', EMOJI_THUMBS_UP);
+      await waitForPromises();
+
+      expect(awardEmojiAddSuccessHandler).toHaveBeenCalled();
+      expect(wrapper.emitted('error')).toBeUndefined();
+    });
+  });
+
   it('emits error when the update mutation fails', async () => {
     createComponent({
       awardEmojiMutationHandler: awardEmojiUpdateFailureHandler,

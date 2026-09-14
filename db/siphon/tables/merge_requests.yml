@@ -7,6 +7,8 @@ ignored_columns:
 replication_targets:
   - name: clickhouse_main
     target: siphon_merge_requests
+    downstream_materialized_views:
+      - merge_requests_base
     dedup_by_table: merge_requests
     dedup_by:
       - id

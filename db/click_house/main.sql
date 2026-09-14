@@ -708,6 +708,7 @@ CREATE TABLE merge_requests
         created_at DateTime64(6, 'UTC'))),
     `_siphon_watermark` DateTime64(6, 'UTC') DEFAULT now64(6, 'UTC') CODEC(ZSTD(1)),
     `created_by_duo` Bool DEFAULT false CODEC(ZSTD(1)),
+    `_siphon_enriched` Bool DEFAULT false CODEC(ZSTD(1)),
     INDEX idx_siphon_watermark_minmax _siphon_watermark TYPE minmax GRANULARITY 1,
     PROJECTION pg_pkey_ordered
     (
@@ -719,6 +720,63 @@ ENGINE = ReplacingMergeTree(_siphon_replicated_at, _siphon_deleted)
 PRIMARY KEY (traversal_path, id)
 ORDER BY (traversal_path, id)
 SETTINGS index_granularity = 2048, deduplicate_merge_projection_mode = 'rebuild';
+
+CREATE TABLE merge_requests_base
+(
+    `id` Int64 CODEC(DoubleDelta, ZSTD(1)),
+    `target_branch` String,
+    `source_branch` String,
+    `source_project_id` Nullable(Int64),
+    `author_id` Nullable(Int64),
+    `assignee_id` Nullable(Int64),
+    `title` String CODEC(ZSTD(1)),
+    `created_at` DateTime64(6, 'UTC') CODEC(Delta(8), ZSTD(1)),
+    `updated_at` DateTime64(6, 'UTC') CODEC(Delta(8), ZSTD(1)),
+    `milestone_id` Nullable(Int64),
+    `merge_status` LowCardinality(String) DEFAULT 'unchecked',
+    `target_project_id` Int64,
+    `iid` Int64,
+    `description` String CODEC(ZSTD(3)),
+    `updated_by_id` Nullable(Int64),
+    `merge_error` Nullable(String),
+    `merge_params` Nullable(String),
+    `merge_when_pipeline_succeeds` Bool DEFAULT false CODEC(ZSTD(1)),
+    `merge_user_id` Nullable(Int64),
+    `merge_commit_sha` Nullable(String),
+    `approvals_before_merge` Nullable(Int64),
+    `rebase_commit_sha` Nullable(String),
+    `in_progress_merge_commit_sha` Nullable(String),
+    `time_estimate` Nullable(Int64) DEFAULT 0,
+    `squash` Bool DEFAULT false CODEC(ZSTD(1)),
+    `cached_markdown_version` Nullable(Int64),
+    `last_edited_at` Nullable(DateTime64(6, 'UTC')),
+    `last_edited_by_id` Nullable(Int64),
+    `merge_jid` String,
+    `discussion_locked` Nullable(Bool) CODEC(ZSTD(1)),
+    `latest_merge_request_diff_id` Nullable(Int64),
+    `allow_maintainer_to_push` Nullable(Bool) DEFAULT true CODEC(ZSTD(1)),
+    `state_id` Int16 DEFAULT 1,
+    `rebase_jid` Nullable(String),
+    `squash_commit_sha` Nullable(String),
+    `merge_ref_sha` Nullable(String),
+    `draft` Bool DEFAULT false CODEC(ZSTD(1)),
+    `prepared_at` Nullable(DateTime64(6, 'UTC')),
+    `merged_commit_sha` Nullable(String),
+    `override_requested_changes` Bool DEFAULT false CODEC(ZSTD(1)),
+    `head_pipeline_id` Nullable(Int64),
+    `imported_from` Int16 DEFAULT 0,
+    `retargeted` Bool DEFAULT false CODEC(ZSTD(1)),
+    `traversal_path` String CODEC(ZSTD(3)),
+    `_siphon_replicated_at` DateTime64(6, 'UTC') DEFAULT now64(6, 'UTC') CODEC(ZSTD(1)),
+    `_siphon_deleted` Bool DEFAULT false CODEC(ZSTD(1)),
+    `seen` DateTime64(6, 'UTC') DEFAULT now64(6, 'UTC') CODEC(ZSTD(1)),
+    INDEX idx_merge_requests_base_seen_minmax seen TYPE minmax GRANULARITY 1
+)
+ENGINE = ReplacingMergeTree(_siphon_replicated_at, _siphon_deleted)
+PRIMARY KEY (traversal_path, id)
+ORDER BY (traversal_path, id)
+TTL seen + toIntervalHour(1)
+SETTINGS index_granularity = 8192;
 
 CREATE TABLE namespace_traversal_paths
 (
@@ -4229,7 +4287,106 @@ SELECT
 FROM cte
 LEFT JOIN namespace_paths ON namespace_paths.id = cte.group_id;
 
-CREATE MATERIALIZED VIEW merge_requests_mv TO merge_requests
+CREATE MATERIALIZED VIEW merge_requests_base_mv TO merge_requests_base
+(
+    `id` Int64,
+    `target_branch` String,
+    `source_branch` String,
+    `source_project_id` Nullable(Int64),
+    `author_id` Nullable(Int64),
+    `assignee_id` Nullable(Int64),
+    `title` String,
+    `created_at` DateTime64(6, 'UTC'),
+    `updated_at` DateTime64(6, 'UTC'),
+    `milestone_id` Nullable(Int64),
+    `merge_status` LowCardinality(String),
+    `target_project_id` Int64,
+    `iid` Int64,
+    `description` String,
+    `updated_by_id` Nullable(Int64),
+    `merge_error` Nullable(String),
+    `merge_params` Nullable(String),
+    `merge_when_pipeline_succeeds` Bool,
+    `merge_user_id` Nullable(Int64),
+    `merge_commit_sha` Nullable(String),
+    `approvals_before_merge` Nullable(Int64),
+    `rebase_commit_sha` Nullable(String),
+    `in_progress_merge_commit_sha` Nullable(String),
+    `time_estimate` Nullable(Int64),
+    `squash` Bool,
+    `cached_markdown_version` Nullable(Int64),
+    `last_edited_at` Nullable(DateTime64(6, 'UTC')),
+    `last_edited_by_id` Nullable(Int64),
+    `merge_jid` String,
+    `discussion_locked` Nullable(Bool),
+    `latest_merge_request_diff_id` Nullable(Int64),
+    `allow_maintainer_to_push` Nullable(Bool),
+    `state_id` Int16,
+    `rebase_jid` Nullable(String),
+    `squash_commit_sha` Nullable(String),
+    `merge_ref_sha` Nullable(String),
+    `draft` Bool,
+    `prepared_at` Nullable(DateTime64(6, 'UTC')),
+    `merged_commit_sha` Nullable(String),
+    `override_requested_changes` Bool,
+    `head_pipeline_id` Nullable(Int64),
+    `imported_from` Int16,
+    `retargeted` Bool,
+    `traversal_path` String,
+    `_siphon_replicated_at` DateTime64(6, 'UTC'),
+    `_siphon_deleted` Bool
+)
+AS SELECT
+    id,
+    target_branch,
+    source_branch,
+    source_project_id,
+    author_id,
+    assignee_id,
+    title,
+    created_at,
+    updated_at,
+    milestone_id,
+    merge_status,
+    target_project_id,
+    iid,
+    description,
+    updated_by_id,
+    merge_error,
+    merge_params,
+    merge_when_pipeline_succeeds,
+    merge_user_id,
+    merge_commit_sha,
+    approvals_before_merge,
+    rebase_commit_sha,
+    in_progress_merge_commit_sha,
+    time_estimate,
+    squash,
+    cached_markdown_version,
+    last_edited_at,
+    last_edited_by_id,
+    merge_jid,
+    discussion_locked,
+    latest_merge_request_diff_id,
+    allow_maintainer_to_push,
+    state_id,
+    rebase_jid,
+    squash_commit_sha,
+    merge_ref_sha,
+    draft,
+    prepared_at,
+    merged_commit_sha,
+    override_requested_changes,
+    head_pipeline_id,
+    imported_from,
+    retargeted,
+    traversal_path,
+    _siphon_replicated_at,
+    _siphon_deleted
+FROM siphon_merge_requests;
+
+CREATE MATERIALIZED VIEW merge_requests_enriched_mv
+REFRESH EVERY 1 MINUTE APPEND TO merge_requests
 (
     `id` Int64,
     `target_branch` String,
@@ -4314,13 +4471,22 @@ CREATE MATERIALIZED VIEW merge_requests_mv TO merge_requests
         String,
         Int64,
         DateTime64(6, 'UTC'))),
-    `created_by_duo` Bool
+    `created_by_duo` Bool,
+    `_siphon_enriched` Bool,
+    `_siphon_watermark` DateTime64(6, 'UTC')
 )
+DEFINER = default SQL SECURITY DEFINER
 AS WITH
     base AS
     (
         SELECT *
-        FROM siphon_merge_requests
+        FROM
+        (
+            SELECT *
+            FROM merge_requests_base
+            FINAL
+            WHERE seen > (now64(6, 'UTC') - toIntervalMinute(5))
+        )
     ),
     siphon_merge_request_metrics_cte AS
     (
@@ -4599,7 +4765,7 @@ SELECT
     base.imported_from AS imported_from,
     base.retargeted AS retargeted,
     base.traversal_path AS traversal_path,
-    base._siphon_replicated_at AS _siphon_replicated_at,
+    addMicroseconds(base._siphon_replicated_at, 1) AS _siphon_replicated_at,
     base._siphon_deleted AS _siphon_deleted,
     siphon_merge_request_metrics_cte.latest_build_started_at AS metric_latest_build_started_at,
     siphon_merge_request_metrics_cte.latest_build_finished_at AS metric_latest_build_finished_at,
@@ -4626,7 +4792,9 @@ SELECT
     siphon_approvals_cte.approvals AS approvals,
     siphon_label_links_cte.label_ids AS label_ids,
     siphon_award_emoji_cte.award_emojis AS award_emojis,
-    siphon_duo_workflows_workflow_merge_requests_cte.created_by_duo AS created_by_duo
+    siphon_duo_workflows_workflow_merge_requests_cte.created_by_duo AS created_by_duo,
+    CAST(1, 'Bool') AS _siphon_enriched,
+    base.seen AS _siphon_watermark
 FROM base
 LEFT JOIN siphon_merge_request_metrics_cte ON (base.traversal_path = siphon_merge_request_metrics_cte.traversal_path) AND (base.id = siphon_merge_request_metrics_cte.merge_request_id)
 LEFT JOIN siphon_merge_request_reviewers_cte ON (base.traversal_path = siphon_merge_request_reviewers_cte.traversal_path) AND (base.id = siphon_merge_request_reviewers_cte.merge_request_id)
@@ -4634,7 +4802,106 @@ LEFT JOIN siphon_merge_request_assignees_cte ON (base.traversal_path = siphon_me
 LEFT JOIN siphon_approvals_cte ON (base.traversal_path = siphon_approvals_cte.traversal_path) AND (base.id = siphon_approvals_cte.merge_request_id)
 LEFT JOIN siphon_label_links_cte ON (base.traversal_path = siphon_label_links_cte.traversal_path) AND (base.id = siphon_label_links_cte.merge_request_id)
 LEFT JOIN siphon_award_emoji_cte ON (base.traversal_path = siphon_award_emoji_cte.traversal_path) AND (base.id = siphon_award_emoji_cte.merge_request_id)
-LEFT JOIN siphon_duo_workflows_workflow_merge_requests_cte ON base.id = siphon_duo_workflows_workflow_merge_requests_cte.merge_request_id;
+LEFT JOIN siphon_duo_workflows_workflow_merge_requests_cte ON base.id = siphon_duo_workflows_workflow_merge_requests_cte.merge_request_id
+SETTINGS log_comment = '{"application":"clickhouse","feature_category":"database","note":"merge_requests_enrichment"}';
+
+CREATE MATERIALIZED VIEW merge_requests_mv TO merge_requests
+(
+    `id` Int64,
+    `target_branch` String,
+    `source_branch` String,
+    `source_project_id` Nullable(Int64),
+    `author_id` Nullable(Int64),
+    `assignee_id` Nullable(Int64),
+    `title` String,
+    `created_at` DateTime64(6, 'UTC'),
+    `updated_at` DateTime64(6, 'UTC'),
+    `milestone_id` Nullable(Int64),
+    `merge_status` LowCardinality(String),
+    `target_project_id` Int64,
+    `iid` Int64,
+    `description` String,
+    `updated_by_id` Nullable(Int64),
+    `merge_error` Nullable(String),
+    `merge_params` Nullable(String),
+    `merge_when_pipeline_succeeds` Bool,
+    `merge_user_id` Nullable(Int64),
+    `merge_commit_sha` Nullable(String),
+    `approvals_before_merge` Nullable(Int64),
+    `rebase_commit_sha` Nullable(String),
+    `in_progress_merge_commit_sha` Nullable(String),
+    `time_estimate` Nullable(Int64),
+    `squash` Bool,
+    `cached_markdown_version` Nullable(Int64),
+    `last_edited_at` Nullable(DateTime64(6, 'UTC')),
+    `last_edited_by_id` Nullable(Int64),
+    `merge_jid` String,
+    `discussion_locked` Nullable(Bool),
+    `latest_merge_request_diff_id` Nullable(Int64),
+    `allow_maintainer_to_push` Nullable(Bool),
+    `state_id` Int16,
+    `rebase_jid` Nullable(String),
+    `squash_commit_sha` Nullable(String),
+    `merge_ref_sha` Nullable(String),
+    `draft` Bool,
+    `prepared_at` Nullable(DateTime64(6, 'UTC')),
+    `merged_commit_sha` Nullable(String),
+    `override_requested_changes` Bool,
+    `head_pipeline_id` Nullable(Int64),
+    `imported_from` Int16,
+    `retargeted` Bool,
+    `traversal_path` String,
+    `_siphon_replicated_at` DateTime64(6, 'UTC'),
+    `_siphon_deleted` Bool
+)
+AS SELECT
+    id,
+    target_branch,
+    source_branch,
+    source_project_id,
+    author_id,
+    assignee_id,
+    title,
+    created_at,
+    updated_at,
+    milestone_id,
+    merge_status,
+    target_project_id,
+    iid,
+    description,
+    updated_by_id,
+    merge_error,
+    merge_params,
+    merge_when_pipeline_succeeds,
+    merge_user_id,
+    merge_commit_sha,
+    approvals_before_merge,
+    rebase_commit_sha,
+    in_progress_merge_commit_sha,
+    time_estimate,
+    squash,
+    cached_markdown_version,
+    last_edited_at,
+    last_edited_by_id,
+    merge_jid,
+    discussion_locked,
+    latest_merge_request_diff_id,
+    allow_maintainer_to_push,
+    state_id,
+    rebase_jid,
+    squash_commit_sha,
+    merge_ref_sha,
+    draft,
+    prepared_at,
+    merged_commit_sha,
+    override_requested_changes,
+    head_pipeline_id,
+    imported_from,
+    retargeted,
+    traversal_path,
+    _siphon_replicated_at,
+    _siphon_deleted
+FROM siphon_merge_requests;
 
 CREATE MATERIALIZED VIEW namespace_traversal_path_refresh_to_projects_mv TO siphon_projects
 (

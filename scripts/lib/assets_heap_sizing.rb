@@ -6,6 +6,10 @@ module AssetsHeapSizing
   # Heap to keep when memory can't be detected, matching the historical CI default.
   DEFAULT_HEAP_MB = 8192
 
+  # Terser forks one worker per CPU and each runs outside this heap, so the main
+  # process must leave the rest of the machine to them. 16 GB fits a 32 GB runner.
+  MAX_HEAP_MB = 16_384
+
   # cgroup v1 reports a value near Int64::MAX to mean "unlimited". Treat anything
   # this large as no limit rather than a real byte count; no container is this big.
   CGROUP_UNLIMITED_MIN_BYTES = 1 << 62
@@ -17,7 +21,7 @@ module AssetsHeapSizing
 
     # Leave headroom for Node's off-heap allocations and the buildx image build
     # that shares the job, and never drop below the historical default.
-    [(available * 0.75).to_i, DEFAULT_HEAP_MB].max
+    (available * 0.75).to_i.clamp(DEFAULT_HEAP_MB, MAX_HEAP_MB)
   end
 
   def container_memory_limit_mb

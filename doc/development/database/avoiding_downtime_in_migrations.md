@@ -541,6 +541,31 @@ Do not guard the assignment with `||=`.
 On a process with a stale schema cache, the attribute already holds the cached default, so `||=` skips the assignment and the concern writes the stale value instead of the computed one.
 The `came_from_user?` check is true only when the value was set explicitly, regardless of the schema cache.
 
+**Nullable column where `NULL` is unsafe: use an unconditional `before_create` callback.**
+
+A Rails `attribute` default does not override an explicit `nil`.
+If a caller runs `Model.new(col: nil).save!`, the column is written as `NULL` even when an attribute default is declared.
+When the column is nullable and `NULL` is unsafe (for example, a `NULL` row escapes a partial unique index), use an unconditional `before_create` callback instead:
+
+```ruby
+class ProjectAuthorization < ApplicationRecord
+  include SafelyChangeColumnDefault
+
+  columns_changing_default :is_unique
+
+  before_create :assign_is_unique
+
+  private
+
+  def assign_is_unique
+    self.is_unique = true
+  end
+end
+```
+
+Unlike an `attribute` default, the callback runs unconditionally at save time and overrides any in-memory `nil`.
+The column is never written as `NULL` through the model.
+
 Then create a **post-deployment migration** to change the default:
 
 ```shell

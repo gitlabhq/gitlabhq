@@ -1681,4 +1681,50 @@ RSpec.describe 'Git LFS API and storage', feature_category: :source_code_managem
       end
     end
   end
+
+  describe 'Current.organization resolution' do
+    let_it_be(:organization) { create(:organization) }
+    let_it_be(:group) { create(:group, :public, organization: organization) }
+    let_it_be(:public_project) { create(:project, :public, :empty_repo, group: group, organization: organization) }
+
+    before do
+      stub_lfs_setting(enabled: true)
+
+      # Keep the application context readable after the request finishes
+      allow(Labkit::Context).to receive(:pop)
+    end
+
+    it 'resolves the organization owning the repository from the URL path' do
+      body = { 'operation' => 'download', 'objects' => [{ 'oid' => 'a' * 64, 'size' => 1 }] }
+      post_lfs_json(batch_url(public_project), body)
+
+      expect(Gitlab::ApplicationContext.current).to include('meta.organization_id' => organization.id)
+    end
+
+    context 'when downloading from storage' do
+      let_it_be(:lfs_object) { create(:lfs_object, :with_file) }
+      let_it_be(:lfs_objects_project) do
+        create(:lfs_objects_project, project: public_project, lfs_object: lfs_object)
+      end
+
+      it 'resolves the organization owning the repository from the URL path', :aggregate_failures do
+        get objects_url(public_project, lfs_object.oid)
+
+        expect(response).to have_gitlab_http_status(:ok)
+        expect(Gitlab::ApplicationContext.current).to include('meta.organization_id' => organization.id)
+      end
+    end
+
+    context 'when requesting an LFS object of a personal snippet' do
+      let_it_be(:snippet_organization) { create(:organization) }
+      let_it_be(:snippet) { create(:personal_snippet, :public, :empty_repo, organization: snippet_organization) }
+
+      it 'resolves the organization owning the snippet, also for the rejected request', :aggregate_failures do
+        get objects_url(snippet, 'a' * 64)
+
+        expect(response).to have_gitlab_http_status(:not_found)
+        expect(Gitlab::ApplicationContext.current).to include('meta.organization_id' => snippet_organization.id)
+      end
+    end
+  end
 end

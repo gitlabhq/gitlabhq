@@ -32,6 +32,7 @@ query getMergeRequest(
       updatedAt
       mergedAt
       conflicts
+      conflictStatus @include(if: $includeConflicts)
       conflictFiles @include(if: $includeConflicts) {
         ourPath
         theirPath

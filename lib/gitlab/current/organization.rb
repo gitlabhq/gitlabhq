@@ -26,7 +26,7 @@ module Gitlab
       strong_memoize_attr :from_request
 
       def from_params
-        from_group_params || from_organization_params
+        from_group_params || from_organization_params || from_repository_params
       end
 
       # True when the URL names an Organization (/o/:organization_path) other than
@@ -51,6 +51,25 @@ module Gitlab
 
         ::Organizations::Organization.find_by_id_with_isolation_record(header_organization_id)
       end
+
+      # The Organization owning the repository named by the URL on git-over-HTTP
+      # routes (/group/sub/project.git/...): resolved via the top-level namespace
+      # in the path, or via the snippet record for personal snippet repositories,
+      # whose paths carry no namespace.
+      def from_repository_params
+        path = params[:repository_path]
+        return if path.blank?
+
+        snippet_id = Gitlab::RepoPath.personal_snippet_id(path)
+
+        return ::Organizations::Organization.find_by_personal_snippet_id_with_isolation_record(snippet_id) if snippet_id
+
+        namespace_path = Gitlab::RepoPath.top_level_namespace_path(path)
+        return unless namespace_path
+
+        ::Organizations::Organization.find_by_namespace_path_with_isolation_record(namespace_path)
+      end
+      strong_memoize_attr :from_repository_params
 
       # The Organization named by the URL's /o/:organization_path segment, if any.
       def from_organization_params

@@ -221,6 +221,7 @@ yarn.lock @gitlab-org/maintainers/frontend
 /.ai/principles/distilled/workers.md @gitlab-org/maintainers/rails-backend
 /.ai/principles/distilled/cicd-internals.md @gitlab-org/maintainers/cicd-verify
 /.ai/principles/distilled/frontend-vue.md @gitlab-org/maintainers/frontend
+/.ai/principles/distilled/internationalization.md @gitlab-com/localization/maintainers/i18n
 /.ai/principles/distilled/frontend-style.md @gitlab-org/maintainers/frontend
 /.ai/principles/distilled/frontend-haml.md @gitlab-org/maintainers/frontend
 /.ai/principles/distilled/frontend-a11y.md @gitlab-org/maintainers/frontend

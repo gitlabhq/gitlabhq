@@ -403,14 +403,10 @@ principles:
         url: https://docs.gitlab.com/development/utilities/
       - path: doc/development/changelog.md
         url: https://docs.gitlab.com/development/changelog/
-      - path: doc/development/i18n/pluralization.md
-        url: https://docs.gitlab.com/development/i18n/pluralization/
       - path: doc/development/logging.md
         url: https://docs.gitlab.com/development/logging/
       - path: doc/development/json.md
         url: https://docs.gitlab.com/development/json/
-      - path: doc/development/i18n/externalization.md
-        url: https://docs.gitlab.com/development/i18n/externalization/
       - path: doc/development/redis.md
         url: https://docs.gitlab.com/development/redis/
       - path: doc/development/polling.md
@@ -587,12 +583,26 @@ principles:
         url: https://docs.gitlab.com/development/fe_guide/pinia/
       - path: doc/development/fe_guide/axios.md
         url: https://docs.gitlab.com/development/fe_guide/axios/
+      - path: doc/development/code_comments.md
+        url: https://docs.gitlab.com/development/code_comments/
+
+  internationalization:
+    description: Internationalization across Ruby, Haml, ERB, Vue, JavaScript, TypeScript, and locale/gitlab.pot (externalization, interpolation, sentence boundaries, and pluralization)
+    group: Internationalization
+    owner_team: '@gitlab-com/localization/maintainers/i18n'
+    file_filters:
+      - '**/*.rb'
+      - '**/*.haml'
+      - '**/*.erb'
+      - '**/*.vue'
+      - '**/*.js'
+      - '**/*.ts'
+      - 'locale/gitlab.pot'
+    sources:
       - path: doc/development/i18n/externalization.md
         url: https://docs.gitlab.com/development/i18n/externalization/
       - path: doc/development/i18n/pluralization.md
         url: https://docs.gitlab.com/development/i18n/pluralization/
-      - path: doc/development/code_comments.md
-        url: https://docs.gitlab.com/development/code_comments/
 
   frontend-style:
     description: CSS/SCSS, Tailwind, dark mode

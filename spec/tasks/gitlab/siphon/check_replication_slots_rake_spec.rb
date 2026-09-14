@@ -112,12 +112,11 @@ RSpec.describe 'gitlab:siphon:check_replication_slots', :silence_stdout, feature
   end
 
   context 'when wal_status is extended' do
-    let(:readings) { [[slot_row(wal_status: 'extended')]] }
+    let(:readings) { [[slot_row(wal_status: 'extended')], [slot_row(wal_status: 'extended', bytes: 2000)]] }
 
-    it 'aborts' do
+    it 'passes, since holding more than max_wal_size is normal while snapshotting or under load' do
       expect { run_rake_task(task_name) }
-        .to raise_error(SystemExit)
-        .and output(/wal_status is extended, expected reserved/).to_stderr
+        .to output(a_string_including('All 1 slots are active and advancing')).to_stdout
     end
   end
 

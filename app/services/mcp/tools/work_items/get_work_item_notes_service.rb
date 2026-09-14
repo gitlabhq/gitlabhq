@@ -9,6 +9,13 @@ module Mcp
           ['get_work_item_notes']
         end
 
+        # Unlisted pending removal: superseded by the get_work_item notes facet
+        # (https://gitlab.com/gitlab-org/gitlab/-/work_items/625128).
+        override :unlisted?
+        def unlisted?
+          true
+        end
+
         register_version '0.1.0', {
           toolset: :work_items,
           description: 'Get all comments (notes) for a specific work item',

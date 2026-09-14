@@ -1574,6 +1574,10 @@ instructions:
     instructions: |
       1. Write all review comments in English, even when the files under review are in another language.
       2. Flag sentences in the target language that are grammatically incomplete or missing an expected word. A dangling particle or a missing noun usually means a word or phrase was dropped during translation. Check this against the translated file alone; the English source is not required. Point out that a word or phrase is missing; do not guess the specific missing word, since the source is not consulted here.
+      3. Repetition is out of scope. Do not flag a repeated word, or a list of near-synonyms, as evidence of machine-translation debris. The English source often contains a synonym list, and several English synonyms can map to one word in the target language, so the repetition can be faithful to the source.
+      4. Do not propose deleting, restructuring, or rewording content. Report what you observe and leave the decision to the assignee.
+      5. Do not judge terminology. Whether a term is the right one for this product is decided by human linguistic review, which has the glossary and the source.
+      6. The merge request description includes a `Source: <sha>` line giving the English commit the translation was made from. If you make any claim about the English source, cite that SHA and the file path you read. If you did not read the English source, say so, and do not assert what it contains.
 
   - name: Experiments
     fileFilters:

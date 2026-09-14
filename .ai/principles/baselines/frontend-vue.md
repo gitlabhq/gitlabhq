@@ -14,7 +14,3 @@
 - Frontend or feature tests exist to prevent premature code removal
 - Tests cover experiment variants and tracking behavior
 - Temporary assets (icons/illustrations) are in `/ee/app/assets/images` or `/app/assets/images`, not Pajamas library
-
-### Internationalization (i18n)
-
-- DO NOT split a translatable sentence across multiple `GlSprintf` instances; keep the full sentence (e.g., `"Created %{date} by %{author}"`) in a single `GlSprintf :message` so translators can reorder words across languages

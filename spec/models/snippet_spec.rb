@@ -56,7 +56,7 @@ RSpec.describe Snippet, feature_category: :source_code_management do
     describe '.with_repository_storage_moves' do
       subject { described_class.with_repository_storage_moves }
 
-      let_it_be_with_reload(:snippet) { create(:project_snippet) }
+      let_it_be(:snippet) { create(:project_snippet) }
 
       it { is_expected.to be_empty }
 
@@ -70,7 +70,7 @@ RSpec.describe Snippet, feature_category: :source_code_management do
     describe '.in_organization' do
       let_it_be(:organization) { create(:organization) }
       let_it_be(:other_organization) { create(:organization) }
-      let_it_be_with_reload(:project) { create(:project, organization: organization) }
+      let_it_be(:project) { create(:project, organization: organization) }
       let_it_be(:other_project) { create(:project, organization: other_organization) }
 
       # Personal snippets
@@ -126,7 +126,7 @@ RSpec.describe Snippet, feature_category: :source_code_management do
 
     context 'content validations' do
       context 'with existing snippets' do
-        let(:snippet) { create(:personal_snippet, content: 'This is a valid content at the time of creation') }
+        let_it_be_with_reload(:snippet) { create(:personal_snippet, content: 'This is a valid content at the time of creation') }
 
         before do
           expect(snippet).to be_valid
@@ -175,7 +175,7 @@ RSpec.describe Snippet, feature_category: :source_code_management do
       let_it_be(:invalid_description) { 'a' * (described_class::DESCRIPTION_LENGTH_MAX * 2) }
 
       context 'with existing snippets' do
-        let(:snippet) { create(:personal_snippet, description: 'This is a valid content at the time of creation') }
+        let_it_be_with_reload(:snippet) { create(:personal_snippet, description: 'This is a valid content at the time of creation') }
 
         it 'does not raise a validation error if the description is not changed' do
           snippet.title = 'new title'
@@ -213,7 +213,7 @@ RSpec.describe Snippet, feature_category: :source_code_management do
     describe 'project or organization validation' do
       # Test using both subclasses to ensure the parent validation works
 
-      let_it_be_with_reload(:project) { create(:project) }
+      let_it_be(:project) { create(:project) }
       let_it_be(:organization) { create(:organization) }
 
       context 'with ProjectSnippet' do
@@ -351,7 +351,7 @@ RSpec.describe Snippet, feature_category: :source_code_management do
   end
 
   describe '.search' do
-    let_it_be_with_reload(:snippet) { create(:project_snippet, title: 'test snippet', description: 'description') }
+    let_it_be(:snippet) { create(:project_snippet, title: 'test snippet', description: 'description') }
 
     it 'returns snippets with a matching title' do
       expect(described_class.search(snippet.title)).to eq([snippet])
@@ -593,7 +593,7 @@ RSpec.describe Snippet, feature_category: :source_code_management do
   end
 
   describe '.find_by_project_title_trunc_created_at' do
-    let_it_be_with_reload(:snippet) { create(:project_snippet) }
+    let_it_be(:snippet) { create(:project_snippet) }
     let_it_be(:created_at_without_ms) { snippet.created_at.change(usec: 0) }
 
     it 'returns a record if arguments match' do
@@ -641,7 +641,7 @@ RSpec.describe Snippet, feature_category: :source_code_management do
     let_it_be(:user) { create(:user) }
     let_it_be(:banned_user) { create(:user, :banned) }
 
-    let_it_be_with_reload(:snippet) { create(:project_snippet, author: user) }
+    let_it_be(:snippet) { create(:project_snippet, author: user) }
     let_it_be(:snippet_by_banned_user) { create(:project_snippet, author: banned_user) }
 
     subject(:without_created_by_banned_user) { described_class.without_created_by_banned_user }
@@ -659,10 +659,10 @@ RSpec.describe Snippet, feature_category: :source_code_management do
   end
 
   describe '#participants' do
-    let_it_be_with_reload(:project) { create(:project, :public) }
+    let_it_be(:project) { create(:project, :public) }
     let_it_be_with_reload(:snippet) { create(:project_snippet, content: 'foo', project: project) }
 
-    let_it_be_with_reload(:note1) do
+    let_it_be(:note1) do
       create(
         :note_on_project_snippet,
         noteable: snippet,
@@ -703,7 +703,8 @@ RSpec.describe Snippet, feature_category: :source_code_management do
     end
 
     context 'when private' do
-      let(:visibility_level) { Snippet::PRIVATE }
+      let_it_be(:visibility_level) { Snippet::PRIVATE }
+      let_it_be_with_reload(:snippet) { create(:project_snippet, visibility_level: visibility_level) }
       let(:title) { snippet.title }
 
       it 'returns false' do
@@ -765,7 +766,7 @@ RSpec.describe Snippet, feature_category: :source_code_management do
     end
 
     context 'when repository exists' do
-      let(:snippet) { create(:project_snippet, :repository) }
+      let_it_be_with_reload(:snippet) { create(:project_snippet, :repository) }
 
       it 'returns array of blobs' do
         expect(snippet.blobs).to all(be_a(Blob))
@@ -825,7 +826,7 @@ RSpec.describe Snippet, feature_category: :source_code_management do
   end
 
   describe '#track_snippet_repository' do
-    let(:snippet) { create(:project_snippet) }
+    let_it_be_with_reload(:snippet) { create(:project_snippet) }
     let(:shard_name) { 'foo' }
 
     subject { snippet.track_snippet_repository(shard_name) }
@@ -846,7 +847,7 @@ RSpec.describe Snippet, feature_category: :source_code_management do
     end
 
     context 'when a tracking entry exists' do
-      let!(:snippet) { create(:project_snippet, :repository) }
+      let_it_be_with_reload(:snippet) { create(:project_snippet, :repository) }
       let(:snippet_repository) { snippet.snippet_repository }
       let(:shard_name) { 'bar' }
 
@@ -977,7 +978,7 @@ RSpec.describe Snippet, feature_category: :source_code_management do
   end
 
   describe '#hook_attrs' do
-    let_it_be_with_reload(:snippet) { create(:personal_snippet) }
+    let_it_be(:snippet) { create(:personal_snippet) }
 
     subject(:attrs) { snippet.hook_attrs }
 
@@ -999,7 +1000,7 @@ RSpec.describe Snippet, feature_category: :source_code_management do
     end
 
     context 'when snippet is for a project' do
-      let_it_be_with_reload(:snippet) { create(:project_snippet) }
+      let_it_be(:snippet) { create(:project_snippet) }
 
       it { is_expected.to include(project_id: snippet.project.id) }
     end
@@ -1052,7 +1053,7 @@ RSpec.describe Snippet, feature_category: :source_code_management do
   end
 
   describe '#list_files' do
-    let_it_be_with_reload(:snippet) { create(:project_snippet, :repository) }
+    let_it_be(:snippet) { create(:project_snippet, :repository) }
 
     let(:ref) { 'test-ref' }
 

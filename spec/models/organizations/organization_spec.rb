@@ -369,23 +369,64 @@ RSpec.describe Organizations::Organization, type: :model, feature_category: :org
       end
     end
 
-    describe '.with_namespace_path' do
+    describe '.find_by_namespace_path_with_isolation_record' do
       let_it_be(:group) { create(:group, organization: organization) }
-      let(:path) { group.path }
 
-      subject(:match) { described_class.with_namespace_path(path) }
+      subject(:match) { described_class.find_by_namespace_path_with_isolation_record(path) }
 
-      context 'when namespace path belongs to an organiation' do
-        it 'returns associated organization' do
-          expect(match).to contain_exactly(group.organization)
+      context 'when namespace path belongs to an organization' do
+        let(:path) { group.path }
+
+        it 'returns the associated organization' do
+          expect(match).to eq(organization)
         end
       end
 
-      context 'when namespace path does not have an organiation' do
-        let(:path) { non_existing_record_id }
+      context 'when namespace path differs in case' do
+        let(:path) { group.path.upcase }
+
+        it 'returns the associated organization' do
+          expect(match).to eq(organization)
+        end
+      end
+
+      context 'when the path is a redirect route of a renamed namespace' do
+        let_it_be(:redirect_route) { create(:redirect_route, source: group, path: 'former-namespace-path') }
+
+        let(:path) { 'former-namespace-path' }
+
+        it 'returns the associated organization' do
+          expect(match).to eq(organization)
+        end
+      end
+
+      context 'when no namespace matches the path' do
+        let(:path) { 'not-a-namespace' }
 
         it 'returns nil' do
-          expect(match).to be_empty
+          expect(match).to be_nil
+        end
+      end
+    end
+
+    describe '.find_by_personal_snippet_id_with_isolation_record' do
+      let_it_be(:snippet) { create(:personal_snippet, organization: organization) }
+
+      subject(:match) { described_class.find_by_personal_snippet_id_with_isolation_record(snippet_id) }
+
+      context 'when the snippet exists' do
+        let(:snippet_id) { snippet.id }
+
+        it 'returns the organization owning the snippet' do
+          expect(match).to eq(organization)
+        end
+      end
+
+      context 'when the snippet does not exist' do
+        let(:snippet_id) { non_existing_record_id }
+
+        it 'returns nil' do
+          expect(match).to be_nil
         end
       end
     end

@@ -12,7 +12,11 @@ RSpec.describe AssetsHeapSizing, feature_category: :tooling do
     end
 
     it 'returns 75% of the detected memory' do
-      expect(described_class.node_heap_size_mb(32_000)).to eq(24_000)
+      expect(described_class.node_heap_size_mb(16_000)).to eq(12_000)
+    end
+
+    it 'never exceeds the maximum' do
+      expect(described_class.node_heap_size_mb(32_000)).to eq(described_class::MAX_HEAP_MB)
     end
 
     it 'never drops below the default' do

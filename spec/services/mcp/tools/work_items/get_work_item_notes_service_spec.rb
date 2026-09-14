@@ -31,6 +31,10 @@ RSpec.describe Mcp::Tools::WorkItems::GetWorkItemNotesService, feature_category:
     it 'has correct description' do
       expect(service.description).to eq('Get all comments (notes) for a specific work item')
     end
+
+    it 'is unlisted while it awaits removal' do
+      expect(service.unlisted?).to be(true)
+    end
   end
 
   describe 'input schema' do

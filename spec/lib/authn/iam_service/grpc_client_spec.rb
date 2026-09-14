@@ -61,6 +61,7 @@ RSpec.describe Authn::IamService::GrpcClient, feature_category: :system_access d
   describe '#create_oauth_application' do
     let(:created_at) { Google::Protobuf::Timestamp.new(seconds: 1.day.ago.to_i) }
     let(:updated_at) { Google::Protobuf::Timestamp.new(seconds: Time.current.to_i) }
+    let(:organization_id) { Gitlab::Utils.uuid_v7 }
 
     it 'forwards every client field on the request', :aggregate_failures do
       expect(oauth_clients_stub).to receive(:create_client) do |request, **|
@@ -76,6 +77,7 @@ RSpec.describe Authn::IamService::GrpcClient, feature_category: :system_access d
         expect(request.owner).to eq('owner-id')
         expect(request.created_at).to eq(created_at)
         expect(request.updated_at).to eq(updated_at)
+        expect(request.organization_id).to eq(organization_id)
 
         ::Gitlab::Iam::Auth::V1::InternalOAuthClientsServiceCreateClientResponse.new
       end
@@ -92,7 +94,8 @@ RSpec.describe Authn::IamService::GrpcClient, feature_category: :system_access d
         trusted: true,
         owner: 'owner-id',
         created_at: created_at,
-        updated_at: updated_at
+        updated_at: updated_at,
+        organization_id: organization_id
       )
     end
   end
@@ -100,6 +103,7 @@ RSpec.describe Authn::IamService::GrpcClient, feature_category: :system_access d
   describe '#upsert_oauth_application' do
     let(:created_at) { Google::Protobuf::Timestamp.new(seconds: 1.day.ago.to_i) }
     let(:updated_at) { Google::Protobuf::Timestamp.new(seconds: Time.current.to_i) }
+    let(:organization_id) { Gitlab::Utils.uuid_v7 }
 
     it 'forwards every client field on the request', :aggregate_failures do
       expect(oauth_clients_stub).to receive(:upsert_client) do |request, **|
@@ -115,6 +119,7 @@ RSpec.describe Authn::IamService::GrpcClient, feature_category: :system_access d
         expect(request.owner).to eq('owner-id')
         expect(request.created_at).to eq(created_at)
         expect(request.updated_at).to eq(updated_at)
+        expect(request.organization_id).to eq(organization_id)
 
         ::Gitlab::Iam::Auth::V1::InternalOAuthClientsServiceUpsertClientResponse.new
       end
@@ -131,7 +136,8 @@ RSpec.describe Authn::IamService::GrpcClient, feature_category: :system_access d
         trusted: true,
         owner: 'owner-id',
         created_at: created_at,
-        updated_at: updated_at
+        updated_at: updated_at,
+        organization_id: organization_id
       )
     end
   end

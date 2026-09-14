@@ -16,7 +16,11 @@ module Repositories
     skip_around_action :set_session_storage
     skip_before_action :verify_authenticity_token
 
-    prepend_before_action :authenticate_user, :parse_repo_path
+    # Listed in reverse execution order: set_current_organization runs first
+    # (it only needs the repository_path param), so the repository lookup and
+    # authentication both run in the context of the request's organization.
+    skip_before_action :set_current_organization
+    prepend_before_action :authenticate_user, :parse_repo_path, :set_current_organization
 
     # Make sure IP address is set before #authenticate_user evaluates policies
     # (evaluated policies are cached, and IP enforcement in EE would never be
@@ -112,6 +116,12 @@ module Repositories
       parse_repo_path unless defined?(@project)
 
       @project
+    end
+
+    # Git HTTP routes have no namespace_id param; the organization is resolved
+    # from the *repository_path glob instead (Gitlab::Current::Organization).
+    def organization_params
+      super.merge(repository_path: repository_path)
     end
 
     def repository_path

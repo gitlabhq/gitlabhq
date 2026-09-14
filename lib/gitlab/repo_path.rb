@@ -11,8 +11,12 @@ module Gitlab
     # - The original container path (if redirected)
     #
     # @returns [HasRepository, Project, String, String]
+    # Anchored variant of Gitlab::PathRegex.personal_snippet_repository_path_regex
+    # (private there), with a capture for the snippet id.
+    PERSONAL_SNIPPET_REPOSITORY_PATH_REGEX = %r{\Asnippets/(?<id>\d+)\z}
+
     def self.parse(path)
-      repo_path = path.delete_prefix('/').delete_suffix('.git')
+      repo_path = normalize(path)
 
       # Detect the repo type based on the path, the first one tried is the project
       # type, which does not have a suffix.
@@ -37,6 +41,33 @@ module Gitlab
       # could create the project if the user pushing is allowed to do so.
       [nil, nil, Gitlab::GlRepository.default_type, nil]
     end
+
+    # Personal snippet id from a repository path like `snippets/42.git`, or nil.
+    def self.personal_snippet_id(path)
+      normalize(path)[PERSONAL_SNIPPET_REPOSITORY_PATH_REGEX, 'id']
+    end
+
+    # Top-level namespace path of a repository path (`group/sub/project.git`
+    # -> `group`, `group.wiki.git` -> `group`), or nil. A namespace hierarchy
+    # belongs to a single organization, so this is enough to resolve it before
+    # the container is looked up. A bare single segment (`project.git`) is
+    # skipped: it can only be an EE project alias, which may match an unrelated
+    # top-level namespace.
+    def self.top_level_namespace_path(path)
+      repo_path = normalize(path)
+      return if repo_path.blank?
+
+      namespace_path, separator = repo_path.partition('/')
+      return namespace_path if separator.present?
+
+      type = Gitlab::GlRepository.types.values.find { |t| t.suffix && repo_path.end_with?(t.path_suffix) }
+      repo_path.delete_suffix(type.path_suffix) if type
+    end
+
+    def self.normalize(path)
+      path.to_s.delete_prefix('/').delete_suffix('.git')
+    end
+    private_class_method :normalize
 
     # Returns an array containing:
     # - The repository container

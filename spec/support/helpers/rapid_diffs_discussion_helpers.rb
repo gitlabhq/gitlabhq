@@ -34,6 +34,13 @@ module RapidDiffsDiscussionHelpers
     diff_file(file_path).find(selector, match: :first).find(:xpath, './ancestor::tr[1]')
   end
 
+  def line_by_numbers(file_path, old:, new:)
+    diff_file(file_path).find(
+      "tr:has([data-position='old'] [data-line-number='#{old}'])" \
+        ":has([data-position='new'] [data-line-number='#{new}'])"
+    )
+  end
+
   def next_discussion_row(line_holder)
     line_holder.find(:xpath, './following-sibling::*[@data-discussion-row][1]')
   end

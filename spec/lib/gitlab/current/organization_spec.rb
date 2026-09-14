@@ -40,6 +40,25 @@ RSpec.describe Gitlab::Current::Organization, feature_category: :organization do
     { namespace_id: 'not_found', organization_path: other_organization.path }
   end
 
+  let_it_be(:snippet_organization) { create(:organization) }
+  let_it_be(:personal_snippet) { create(:personal_snippet, organization: snippet_organization) }
+  let_it_be(:group_redirect_route) { create(:redirect_route, source: group, path: 'previous-group-path') }
+
+  let_it_be(:params_with_repository_path) { { repository_path: "#{group.full_path}/sub/project.git" } }
+  let_it_be(:params_with_upcased_repository_path) { { repository_path: "#{group.full_path.upcase}/sub/project.git" } }
+  let_it_be(:params_with_redirected_repository_path) { { repository_path: 'previous-group-path/sub/project.git' } }
+  let_it_be(:params_with_wiki_repository_path) { { repository_path: "#{group.full_path}.wiki.git" } }
+  let_it_be(:params_with_invalid_repository_path) { { repository_path: 'not_found/project.git' } }
+  let_it_be(:params_with_single_segment_repository_path) { { repository_path: 'project.git' } }
+  let_it_be(:params_with_snippet_repository_path) { { repository_path: "snippets/#{personal_snippet.id}.git" } }
+  let_it_be(:params_with_missing_snippet_repository_path) do
+    { repository_path: "snippets/#{non_existing_record_id}.git" }
+  end
+
+  let_it_be(:params_with_org_path_and_repository_path) do
+    { organization_path: other_organization.path, repository_path: "#{group.full_path}/sub/project.git" }
+  end
+
   let_it_be(:empty_params) { {} }
   let_it_be(:rack_env_with_valid_org) { { 'HTTP_X_GITLAB_ORGANIZATION_ID' => header_organization.id.to_s } }
   let_it_be(:rack_env_with_invalid_org) { { 'HTTP_X_GITLAB_ORGANIZATION_ID' => non_existing_record_id.to_s } }
@@ -82,6 +101,18 @@ RSpec.describe Gitlab::Current::Organization, feature_category: :organization do
       ref(:empty_params)                  | ref(:rack_env_with_non_numeric) | ref(:user) | ref(:user_organization)    | false
       ref(:empty_params)                  | ref(:rack_env_with_zero)        | nil        | ref(:default_organization) | true
 
+      # Git-over-HTTP repository_path resolves via its top-level namespace; /o/:organization_path wins over it
+      ref(:params_with_repository_path)                 | ref(:rack_env_with_valid_org)   | ref(:user) | ref(:organization)         | false
+      ref(:params_with_org_path_and_repository_path)    | ref(:empty_rack_env)            | nil        | ref(:other_organization)   | false
+      ref(:params_with_upcased_repository_path)         | ref(:empty_rack_env)            | nil        | ref(:organization)         | false
+      ref(:params_with_redirected_repository_path)      | ref(:empty_rack_env)            | nil        | ref(:organization)         | false
+      ref(:params_with_wiki_repository_path)            | ref(:empty_rack_env)            | nil        | ref(:organization)         | false
+      ref(:params_with_invalid_repository_path)         | ref(:empty_rack_env)            | ref(:user) | ref(:user_organization)    | false
+      ref(:params_with_invalid_repository_path)         | ref(:empty_rack_env)            | nil        | ref(:default_organization) | true
+      ref(:params_with_single_segment_repository_path)  | ref(:empty_rack_env)            | nil        | ref(:default_organization) | true
+      ref(:params_with_snippet_repository_path)         | ref(:empty_rack_env)            | nil        | ref(:snippet_organization) | false
+      ref(:params_with_missing_snippet_repository_path) | ref(:empty_rack_env)            | nil        | ref(:default_organization) | true
+
       # Test other invalid parameter types to ensure consistent fallback behavior
       ref(:params_with_empty_namespace)   | ref(:empty_rack_env)            | nil        | ref(:default_organization) | true
       ref(:params_with_invalid_groups_id) | ref(:rack_env_with_valid_org)   | ref(:user) | ref(:header_organization)  | false
@@ -115,6 +146,16 @@ RSpec.describe Gitlab::Current::Organization, feature_category: :organization do
 
       context 'when resolving from organization params' do
         let(:params) { params_with_org_path }
+        let(:rack_env) { nil }
+        let(:user_param) { nil }
+
+        it 'uses only 1 query' do
+          expect { current_organization.organization }.to match_query_count(1)
+        end
+      end
+
+      context 'when resolving from repository params' do
+        let(:params) { params_with_repository_path }
         let(:rack_env) { nil }
         let(:user_param) { nil }
 
@@ -233,6 +274,7 @@ RSpec.describe Gitlab::Current::Organization, feature_category: :organization do
       ref(:params_with_namespace_id)      | ref(:rack_env_with_valid_org) | ref(:organization)
       ref(:params_with_org_path)          | ref(:rack_env_with_valid_org) | ref(:other_organization)
       ref(:params_with_invalid_namespace) | ref(:rack_env_with_valid_org) | ref(:header_organization)
+      ref(:params_with_repository_path)   | ref(:empty_rack_env)          | ref(:organization)
       ref(:empty_params)                  | ref(:rack_env_with_valid_org) | ref(:header_organization)
       ref(:empty_params)                  | ref(:empty_rack_env)          | nil
       ref(:empty_params)                  | ref(:nil_rack_env)            | nil

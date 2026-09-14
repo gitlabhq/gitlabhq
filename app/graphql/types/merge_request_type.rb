@@ -251,6 +251,14 @@ module Types
         'once per request.' do
       extension ::Gitlab::Graphql::Limit::FieldCallCount, limit: 1
     end
+    field :conflict_status,
+      Types::MergeRequests::ConflictStatusEnum,
+      null: true,
+      calls_gitaly: true,
+      resolver: Resolvers::MergeRequests::ConflictStatusResolver,
+      experiment: { milestone: '19.4' },
+      description: 'Why conflict files are or are not available. Use alongside conflictFiles ' \
+        'to distinguish permission errors, unchecked mergeability, and missing branches.'
     field :conflicts, GraphQL::Types::Boolean, null: false, method: :cannot_be_merged?,
       description: 'Indicates if the merge request has conflicts.'
     field :milestone, Types::MilestoneType, null: true,

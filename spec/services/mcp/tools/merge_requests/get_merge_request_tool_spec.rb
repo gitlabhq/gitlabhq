@@ -201,6 +201,7 @@ RSpec.describe Mcp::Tools::MergeRequests::GetMergeRequestTool, :request_store, f
       expect(result[:structuredContent]).not_to have_key('diffStatsSummary')
       expect(result[:structuredContent]).not_to have_key('approved')
       expect(result[:structuredContent]).not_to have_key('approvedBy')
+      expect(result[:structuredContent]).not_to have_key('conflictStatus')
     end
 
     context 'when approvals are requested' do
@@ -276,6 +277,18 @@ RSpec.describe Mcp::Tools::MergeRequests::GetMergeRequestTool, :request_store, f
         expect(nodes.first).to have_key('diff')
         expect(nodes.map { |node| node['diff'] }.join).to include('@@')
         expect(result[:structuredContent].dig('diffs', 'pageInfo')).to have_key('hasNextPage')
+      end
+    end
+
+    context 'when conflicts are requested' do
+      let(:params) { super().merge(include: ['conflicts']) }
+
+      it 'includes conflictStatus in the response', :aggregate_failures do
+        result = tool.execute
+
+        expect(result[:isError]).to be(false)
+        expect(result[:structuredContent]).to have_key('conflictStatus')
+        expect(result[:structuredContent]['conflictStatus']).to eq('NO_CONFLICTS')
       end
     end
 

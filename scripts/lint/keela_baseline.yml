@@ -450,7 +450,6 @@ methods:
   - self.ids_for_plan_name_uids
   app/models/postgresql/replication_slot.rb:
   - self.unused_slots_count
-  - self.slots_retained_bytes
   app/models/project.rb:
   - import_scheduled?
   - updating_remote_mirror?

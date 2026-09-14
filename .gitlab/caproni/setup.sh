@@ -247,6 +247,7 @@ CONFIG_FILES=(
   "config/resque.yml"
   "config/session_store.yml"
   "config/secrets.yml"
+  "config/click_house.yml"
   "config/initializers/smtp_settings.rb"
   "config/puma.rb"
   "config/puma_ipv6.rb"
@@ -372,6 +373,7 @@ ENV_REWRITE_FILES=(
   "config/resque.yml"
   "config/session_store.yml"
   "config/secrets.yml"
+  "config/click_house.yml"
 )
 
 MODIFIED_FILES=()
@@ -543,6 +545,7 @@ TEST_SECTION_FILES=(
   "config/resque.yml"
   "config/session_store.yml"
   "config/secrets.yml"
+  "config/click_house.yml"
 )
 
 for file in "${TEST_SECTION_FILES[@]}"; do
@@ -574,6 +577,26 @@ for file in "${TEST_SECTION_FILES[@]}"; do
           gsub(/gitaly_address: tcp:\/\/[^ ]+/, "gitaly_address: unix:" repo "/tmp/tests/gitaly/praefect.socket")
           gsub(/_development/, "_test")
           print
+        }
+      ' "$file_path"
+    } >> "$file_path"
+  elif [[ "$file" == "config/click_house.yml" ]]; then
+    # click_house.yml: the cluster database is gitlab_main (no *_development
+    # suffix), so point test: at gitlab_clickhouse_test, which the RSpec
+    # hooks drop and recreate, and run mutations synchronously as in
+    # config/click_house.yml.example.
+    {
+      echo ""
+      awk '
+        /^development:/{found=1; print "test:"; next}
+        found && /^[^ ]/{exit}
+        found{
+          sub(/database: .*/, "database: \"gitlab_clickhouse_test\"")
+          print
+          if ($0 ~ /^ *variables:/) {
+            match($0, /^ */)
+            print substr($0, 1, RLENGTH) "  mutations_sync: 1"
+          }
         }
       ' "$file_path"
     } >> "$file_path"

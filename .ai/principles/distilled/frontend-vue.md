@@ -1,6 +1,6 @@
 ---
-source_checksum: 6c13487585a5b5f2
-distilled_at_sha: da75f7373628b035becb13fb3f0d21b4b3d3690f
+source_checksum: baa82c4535c918a9
+distilled_at_sha: 873967e8a5ba03138e43cbf9c5ad0b760df1d53b
 ---
 <!-- Auto-generated from docs.gitlab.com by gitlab-ai-principles-distiller — do not edit manually -->
 
@@ -95,25 +95,7 @@ distilled_at_sha: da75f7373628b035becb13fb3f0d21b4b3d3690f
 
 ### Internationalization (i18n)
 
-- Use `__()`, `s__()`, `n__()` from `~/locale` for JavaScript/Vue translations
-- DO NOT include HTML directly in translation strings; use placeholder pairs (e.g., `%{linkStart}/%{linkEnd}`) instead
-- DO NOT split a sentence across multiple translation calls; keep full sentences together so word order can be reordered by translators
-- DO NOT split a translatable sentence across multiple `GlSprintf` instances; keep the full sentence (e.g., `"Created %{date} by %{author}"`) in a single `GlSprintf :message` so translators can reorder words across languages
-- Use `GlSprintf` when including child components or HTML in translation strings
-- Use `sprintf` for simple variable interpolation in computed properties
-- Use namespaces (PascalCase, pipe-separated) for all UI strings; prefer granular subcategories (e.g., `WorkItemsStatusConfigure|Add to`) over broad ones (e.g., `WorkItems|Add to`)
-- DO NOT use `downcase` or `toLocaleLowerCase()` on translatable strings; let translators control casing
-- Always pass string literals to translation helpers; DO NOT pass variables, function calls, or template literals
-- In Jest tests, DO NOT wrap expected strings in `__()` or `s__()`; use plain string literals (i18n is mocked in the test environment)
-- Run `tooling/bin/gettext_extractor locale/gitlab.pot` after adding new translatable strings
-- Keep translations dynamic (in methods, not class-level constants or memoized class methods)
-- DO NOT use variables as arguments to translation helpers when the string can be made unique per case; create separate strings instead
-- DO NOT add errors to specific model attributes when the error message is a complete sentence; add to `:base` instead so Rails does not prepend the humanized attribute name
-- Place translations close to where they are used
-- Prefer `__()` / `s__()` calls over module-level constants (e.g., `const MY_STRING = __('...')`)
-- DO NOT import translation constants into specs
 - Put translation calls directly in the `<template>`; move a string to `$options.i18n` only for a specific reason (e.g., the same string is reused in both the template and a method, needs processing like `sanitize()`, is a value in a runtime-keyed lookup map, or is shared across several components in the same module)
-- For translations used more than once in a Vue SFC, define them in the component's `$options.i18n` object rather than as a module-level constant
 
 ### Vue Testing
 
@@ -157,5 +139,5 @@ For the full picture, see:
 - doc/development/fe_guide/state_management.md
 - doc/development/fe_guide/pinia.md
 - doc/development/fe_guide/axios.md
-- doc/development/i18n/externalization.md
+- doc/development/code_comments.md
 

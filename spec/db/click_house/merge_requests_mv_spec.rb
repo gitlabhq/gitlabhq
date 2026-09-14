@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe 'merge_requests_mv created_by_duo enrichment', :click_house, feature_category: :value_stream_management do
+RSpec.describe 'merge_requests created_by_duo enrichment', :click_house, feature_category: :value_stream_management do
   let(:conn) { ClickHouse::Connection.new(:main) }
 
   before do
@@ -35,22 +35,44 @@ RSpec.describe 'merge_requests_mv created_by_duo enrichment', :click_house, feat
         (104, 4, 2, 'main', 'feature', 'MR', '', '', now64(6), now64(6), '1/1/2/'),
         (105, 5, 2, 'main', 'feature', 'MR', '', '', now64(6), now64(6), '1/1/2/')
     SQL
+
+    # created_by_duo is a joined column, so the insert path leaves it false and the
+    # enrichment pass fills it in. Nothing here is time-dependent, so one pass is enough.
+    conn.execute('SYSTEM REFRESH VIEW merge_requests_enriched_mv')
+    conn.execute('SYSTEM WAIT VIEW merge_requests_enriched_mv')
   end
 
-  it 'marks only merge requests with a live created link, once per merge request' do
+  it 'marks only merge requests with a live created link', :aggregate_failures do
     rows = conn.select(<<~SQL)
-      SELECT id, created_by_duo, count() AS versions
-      FROM merge_requests
-      GROUP BY id, created_by_duo
+      SELECT id, created_by_duo
+      FROM merge_requests FINAL
       ORDER BY id
     SQL
 
-    expect(rows.map { |row| row.values_at('id', 'created_by_duo', 'versions') }).to eq([
-      [101, true, 1],
-      [102, false, 1],
-      [103, true, 1],
-      [104, false, 1],
-      [105, false, 1]
+    expect(rows.map { |row| row.values_at('id', 'created_by_duo') }).to eq([
+      [101, true],
+      [102, false],
+      [103, true],
+      [104, false],
+      [105, false]
+    ])
+
+    # MR 103 has two created links, so a missing GROUP BY in the CTE would fan the
+    # enriched row out into one row per link.
+    enriched = conn.select(<<~SQL)
+      SELECT id, count() AS versions
+      FROM merge_requests
+      WHERE _siphon_enriched
+      GROUP BY id
+      ORDER BY id
+    SQL
+
+    expect(enriched.map { |row| row.values_at('id', 'versions') }).to eq([
+      [101, 1],
+      [102, 1],
+      [103, 1],
+      [104, 1],
+      [105, 1]
     ])
   end
 end

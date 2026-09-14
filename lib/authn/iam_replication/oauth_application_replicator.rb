@@ -58,7 +58,8 @@ module Authn
           grant_types: grant_types(application),
           response_types: %w[code],
           created_at: timestamp(application.created_at),
-          updated_at: timestamp(application.updated_at)
+          updated_at: timestamp(application.updated_at),
+          organization_id: application.organization.uuid
         }
       end
 

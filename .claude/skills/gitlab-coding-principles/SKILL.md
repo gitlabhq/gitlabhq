@@ -60,6 +60,9 @@ ALWAYS load Database principles regardless of which files you are editing.
 - **HAML templates, ViewComponents, Pajamas**: Read .ai/principles/distilled/frontend-haml.md *(also load: .ai/principles/distilled/frontend-vue.md)*
 - **Frontend accessibility patterns and requirements**: Read .ai/principles/distilled/frontend-a11y.md *(also load: .ai/principles/distilled/frontend-vue.md)*
 
+**Internationalization:**
+- **Internationalization across Ruby, Haml, ERB, Vue, JavaScript, TypeScript, and locale/gitlab.pot (externalization, interpolation, sentence boundaries, and pluralization)**: Read .ai/principles/distilled/internationalization.md
+
 **Testing:**
 - **RSpec patterns, factories, shared examples**: Read .ai/principles/distilled/testing-rspec.md
 - **Test quality for authentication and authorization specs — positive and negative path coverage, token edge cases (expired, revoked, wrong-scope), the authorization actor matrix (authorized, unauthorized, anonymous, admin), auth-stubbing red flags, rate-limit specs, and narrow token scopes in specs**: Read .ai/principles/distilled/authentication-testing.md

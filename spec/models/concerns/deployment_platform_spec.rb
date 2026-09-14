@@ -3,14 +3,14 @@
 require 'spec_helper'
 
 RSpec.describe DeploymentPlatform do
-  let(:project) { create(:project) }
+  let_it_be_with_refind(:project) { create(:project) }
 
   describe '#deployment_platform' do
     subject { project.deployment_platform }
 
     context 'multiple clusters' do
-      let(:group) { create(:group) }
-      let(:project) { create(:project, group: group) }
+      let_it_be(:group) { create(:group) }
+      let_it_be_with_refind(:project) { create(:project, group: group) }
 
       shared_examples 'certificate_based_clusters is disabled' do
         before do
@@ -37,13 +37,13 @@ RSpec.describe DeploymentPlatform do
       end
 
       context 'multiple clusters use the same management project' do
-        let(:management_project) { create(:project, group: group) }
+        let_it_be_with_refind(:management_project) { create(:project, group: group) }
 
-        let!(:default_cluster) do
+        let_it_be(:default_cluster) do
           create(:cluster_for_group, groups: [group], environment_scope: '*', management_project: management_project)
         end
 
-        let!(:cluster) do
+        let_it_be(:cluster) do
           create(:cluster_for_group, groups: [group], environment_scope: 'review/*', management_project: management_project)
         end
 
@@ -55,7 +55,7 @@ RSpec.describe DeploymentPlatform do
       end
 
       context 'when project does not have a cluster but has group clusters' do
-        let!(:default_cluster) do
+        let_it_be(:default_cluster) do
           create(
             :cluster,
             :provided_by_user,
@@ -65,7 +65,7 @@ RSpec.describe DeploymentPlatform do
           )
         end
 
-        let!(:cluster) do
+        let_it_be_with_reload(:cluster) do
           create(
             :cluster,
             :provided_by_user,
@@ -104,11 +104,31 @@ RSpec.describe DeploymentPlatform do
         end
 
         context 'when group belongs to a parent group' do
-          let(:parent_group) { create(:group) }
-          let(:group) { create(:group, parent: parent_group) }
+          let_it_be(:parent_group) { create(:group) }
+          let_it_be(:group) { create(:group, parent: parent_group) }
+          let_it_be_with_refind(:project) { create(:project, group: group) }
+          let_it_be(:default_cluster) do
+            create(
+              :cluster,
+              :provided_by_user,
+              :group,
+              groups: [group],
+              environment_scope: '*'
+            )
+          end
+
+          let_it_be(:cluster) do
+            create(
+              :cluster,
+              :provided_by_user,
+              :group,
+              environment_scope: 'review/*',
+              groups: [group]
+            )
+          end
 
           context 'when parent_group has a cluster with default scope' do
-            let!(:parent_group_cluster) do
+            let_it_be(:parent_group_cluster) do
               create(
                 :cluster,
                 :provided_by_user,
@@ -122,7 +142,7 @@ RSpec.describe DeploymentPlatform do
           end
 
           context 'when parent_group has a cluster that is an exact match' do
-            let!(:parent_group_cluster) do
+            let_it_be(:parent_group_cluster) do
               create(
                 :cluster,
                 :provided_by_user,
@@ -138,11 +158,11 @@ RSpec.describe DeploymentPlatform do
       end
 
       context 'with instance clusters' do
-        let!(:default_cluster) do
+        let_it_be(:default_cluster) do
           create(:cluster, :provided_by_user, :instance, environment_scope: '*')
         end
 
-        let!(:cluster) do
+        let_it_be_with_reload(:cluster) do
           create(:cluster, :provided_by_user, :instance, environment_scope: 'review/*')
         end
 
@@ -176,10 +196,13 @@ RSpec.describe DeploymentPlatform do
       end
 
       context 'when environment is specified' do
-        let!(:default_cluster) { create(:cluster, :provided_by_user, projects: [project], environment_scope: '*') }
-        let!(:cluster) { create(:cluster, :provided_by_user, environment_scope: 'review/*', projects: [project]) }
+        let_it_be(:default_cluster) { create(:cluster, :provided_by_user, projects: [project], environment_scope: '*') }
 
-        let!(:group_default_cluster) do
+        let_it_be_with_reload(:cluster) do
+          create(:cluster, :provided_by_user, environment_scope: 'review/*', projects: [project])
+        end
+
+        let_it_be(:group_default_cluster) do
           create(
             :cluster,
             :provided_by_user,
@@ -297,7 +320,7 @@ RSpec.describe DeploymentPlatform do
     end
 
     context 'when project has configured kubernetes from CI/CD > Clusters' do
-      let!(:cluster) { create(:cluster, :provided_by_gcp, projects: [project]) }
+      let_it_be(:cluster) { create(:cluster, :provided_by_gcp, projects: [project]) }
       let(:platform_kubernetes) { cluster.platform_kubernetes }
 
       it 'returns the Kubernetes platform' do
@@ -318,8 +341,8 @@ RSpec.describe DeploymentPlatform do
     end
 
     context 'when group has configured kubernetes cluster' do
-      let!(:group_cluster) { create(:cluster, :provided_by_gcp, :group) }
-      let(:group) { group_cluster.group }
+      let_it_be(:group_cluster) { create(:cluster, :provided_by_gcp, :group) }
+      let_it_be(:group) { group_cluster.group }
 
       before do
         project.update!(group: group)
@@ -343,7 +366,7 @@ RSpec.describe DeploymentPlatform do
 
       context 'when project is not the cluster\'s management project' do
         let(:another_project) { create(:project, group: group) }
-        let!(:cluster_with_management_project) { create(:cluster, :provided_by_user, management_project: another_project) }
+        let!(:cluster_with_management_project) { create(:cluster, :provided_by_user, projects: [another_project], management_project: another_project) }
 
         it 'returns the group cluster' do
           is_expected.to eq(group_cluster.platform_kubernetes)
@@ -351,8 +374,8 @@ RSpec.describe DeploymentPlatform do
       end
 
       context 'when child group has configured kubernetes cluster' do
-        let(:child_group1) { create(:group, parent: group) }
-        let!(:child_group1_cluster) { create(:cluster_for_group, groups: [child_group1]) }
+        let_it_be(:child_group1) { create(:group, parent: group) }
+        let_it_be(:child_group1_cluster) { create(:cluster_for_group, groups: [child_group1]) }
 
         before do
           project.update!(group: child_group1)
@@ -363,8 +386,8 @@ RSpec.describe DeploymentPlatform do
         end
 
         context 'deeply nested group' do
-          let(:child_group2) { create(:group, parent: child_group1) }
-          let!(:child_group2_cluster) { create(:cluster_for_group, groups: [child_group2]) }
+          let_it_be(:child_group2) { create(:group, parent: child_group1) }
+          let_it_be_with_reload(:child_group2_cluster) { create(:cluster_for_group, groups: [child_group2]) }
 
           before do
             project.update!(group: child_group2)

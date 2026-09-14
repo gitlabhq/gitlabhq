@@ -12,6 +12,8 @@ RSpec.describe 'foreign keys to tables with destroy services', feature_category:
       to_table = foreign_key.referenced_table_name
       entry = todo_entry_for(foreign_key)
       services = tables_to_services[to_table]
+      next unless services_loadable?(services)
+
       handled = handled_by_all_services?(services, foreign_key.constrained_table_name)
 
       if todo_list[to_table]&.include?(entry)
@@ -74,6 +76,12 @@ RSpec.describe 'foreign keys to tables with destroy services', feature_category:
 
   def todo_entry_for(foreign_key)
     "#{foreign_key.constrained_table_name}.#{Array(foreign_key.constrained_columns).join(',')}"
+  end
+
+  # FOSS pipelines remove `ee/`, so EE-only destroy services cannot be
+  # constantized there. Their foreign keys are verified on EE pipelines.
+  def services_loadable?(services)
+    Gitlab.ee? || services.all?(&:safe_constantize)
   end
 
   # Every owning service can delete rows of the referenced table

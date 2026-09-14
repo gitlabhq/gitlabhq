@@ -534,7 +534,8 @@ module.exports = {
   },
 
   optimization: {
-    // Terser spawns one worker per host CPU, outside the node heap limit
+    // Terser forks (CPU count - 1) workers that run outside the main Node heap,
+    // so scripts/lib/assets_heap_sizing.rb must leave memory for them.
     minimize: IS_PRODUCTION && !NO_MINIFY,
     // Replace 'hashed' with 'deterministic' in webpack 5
     moduleIds: 'hashed',

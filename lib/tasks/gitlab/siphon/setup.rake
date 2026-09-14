@@ -30,14 +30,16 @@ namespace :gitlab do
     end
 
     # Checks that the Siphon logical replication slots are healthy on every configured database.
-    # Per slot it verifies that a producer is connected (`active`), that PostgreSQL still retains
-    # the WAL the slot needs (`wal_status` is `reserved`), and that `confirmed_flush_lsn` moves
-    # forward. Read only.
+    # Per slot it verifies that a producer is connected (`active`), that the WAL the slot needs is
+    # still there (`wal_status` is not `lost`), and that `confirmed_flush_lsn` moves forward.
+    # Read only.
     #
     # All three are re-read up to 5 times, 5 seconds apart, so a producer that reconnects part way
     # through still passes and the worst case is 25 seconds per database. Exits non-zero when a
-    # slot is missing, still inactive at the end, or has lost its WAL reservation. A slot that
-    # simply did not move is a warning, not a failure: an idle database produces no WAL.
+    # slot is missing, still inactive at the end, or has lost its WAL. A slot that simply did not
+    # move is a warning, not a failure: an idle database produces no WAL. `wal_status` of
+    # `extended` is not a failure either: a slot holding more than `max_wal_size` is expected
+    # while the initial snapshot runs and under write-heavy load.
     #
     # Only slots bound to the database being checked are considered, so one living on a replica
     # will not be found.

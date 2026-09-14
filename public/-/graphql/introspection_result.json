@@ -230590,6 +230590,18 @@
               "deprecationReason": "Status: Experiment. Introduced in GitLab 19.4."
             },
             {
+              "name": "conflictStatus",
+              "description": "Why conflict files are or are not available. Use alongside conflictFiles to distinguish permission errors, unchecked mergeability, and missing branches. Introduced in GitLab 19.4: Status: Experiment.",
+              "args": [],
+              "type": {
+                "kind": "ENUM",
+                "name": "MergeRequestConflictStatus",
+                "ofType": null
+              },
+              "isDeprecated": true,
+              "deprecationReason": "Status: Experiment. Introduced in GitLab 19.4."
+            },
+            {
               "name": "conflicts",
               "description": "Indicates if the merge request has conflicts.",
               "args": [],
@@ -242565,6 +242577,47 @@
           "inputFields": null,
           "interfaces": [],
           "enumValues": null,
+          "possibleTypes": null
+        },
+        {
+          "kind": "ENUM",
+          "name": "MergeRequestConflictStatus",
+          "description": "Status of conflict file availability for a merge request.",
+          "fields": null,
+          "inputFields": null,
+          "interfaces": null,
+          "enumValues": [
+            {
+              "name": "HAS_CONFLICTS",
+              "description": "Merge request has conflicts. conflictFiles may still be null if files cannot be fetched (for example, binary files).",
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "NO_CONFLICTS",
+              "description": "Merge request can be merged; no conflicts exist.",
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "UNCHECKED",
+              "description": "Mergeability has not been checked yet; conflicts cannot be determined.",
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "BRANCH_MISSING",
+              "description": "Source or target branch is missing, or diff refs are incomplete.",
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "NO_PUSH_ACCESS",
+              "description": "Current user cannot push to the source branch.",
+              "isDeprecated": false,
+              "deprecationReason": null
+            }
+          ],
           "possibleTypes": null
         },
         {

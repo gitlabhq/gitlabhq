@@ -5,7 +5,7 @@ require 'spec_helper'
 RSpec.describe API::Branches, feature_category: :source_code_management do
   let_it_be(:user) { create(:user) }
 
-  let(:project) { create(:project, :in_group, :repository, creator: user, path: 'my.project', create_branch: 'ends-with.txt') }
+  let(:project) { create(:project, :in_group, :repository, creator: user, path: 'my.project', create_branch: 'ends-with.txt', maintainers: user) }
   let(:guest) { create(:user, guest_of: project) }
   let(:branch_name) { 'feature' }
   let(:branch_sha) { '0b4bc9a49b562e85de7cc9e834518ea6828729b9' }
@@ -16,7 +16,6 @@ RSpec.describe API::Branches, feature_category: :source_code_management do
   let(:current_user) { nil }
 
   before do
-    project.add_maintainer(user)
     stub_feature_flags(branch_list_keyset_pagination: false)
   end
 
@@ -261,6 +260,8 @@ RSpec.describe API::Branches, feature_category: :source_code_management do
       it_behaves_like 'repository branches'
 
       describe 'caching' do
+        let_it_be_with_reload(:project) { create(:project, :in_group, :repository, creator: user, path: 'my.project', create_branch: 'ends-with.txt', maintainers: user) }
+
         it 'caches the query' do
           get api(route), params: { per_page: 1 }
 
@@ -292,6 +293,8 @@ RSpec.describe API::Branches, feature_category: :source_code_management do
         end
 
         context 'when the default_branch changes' do
+          let(:project) { create(:project, :in_group, :repository, creator: user, path: 'my.project', create_branch: 'ends-with.txt', maintainers: user) }
+
           it 'requests for new value after 30 seconds' do
             get api(route), params: { per_page: 1 }
 
@@ -783,12 +786,8 @@ RSpec.describe API::Branches, feature_category: :source_code_management do
     end
 
     context 'when authenticated', 'as a developer and branch is protected' do
-      let(:current_user) { create(:user) }
+      let(:current_user) { create(:user, developer_of: project) }
       let!(:protected_branch) { create(:protected_branch, project: project, name: branch_name) }
-
-      before do
-        project.add_developer(current_user)
-      end
 
       it_behaves_like 'repository branch'
 
@@ -903,6 +902,8 @@ RSpec.describe API::Branches, feature_category: :source_code_management do
       let(:current_user) { user }
 
       context "when a protected branch doesn't already exist" do
+        let_it_be_with_reload(:project) { create(:project, :in_group, :repository, creator: user, path: 'my.project', create_branch: 'ends-with.txt', maintainers: user) }
+
         it_behaves_like 'repository new protected branch'
 
         context 'when branch contains a dot' do
@@ -981,6 +982,9 @@ RSpec.describe API::Branches, feature_category: :source_code_management do
   end
 
   describe 'PUT /projects/:id/repository/branches/:branch/unprotect' do
+    let_it_be_with_reload(:project) { create(:project, :in_group, :repository, creator: user, path: 'my.project', create_branch: 'ends-with.txt', maintainers: user) }
+    let_it_be(:guest) { create(:user, guest_of: project) }
+
     let(:route) { "/projects/#{project_id}/repository/branches/#{branch_name}/unprotect" }
 
     it_behaves_like 'authorizing granular token permissions', :delete_protected_branch do
@@ -1201,6 +1205,8 @@ RSpec.describe API::Branches, feature_category: :source_code_management do
   end
 
   describe 'DELETE /projects/:id/repository/branches/:branch' do
+    let_it_be(:project) { create(:project, :in_group, :repository, creator: user, path: 'my.project', create_branch: 'ends-with.txt', maintainers: user) }
+
     before do
       allow_next_instance_of(Repository) do |instance|
         allow(instance).to receive(:rm_branch).and_return(true)
@@ -1247,6 +1253,9 @@ RSpec.describe API::Branches, feature_category: :source_code_management do
   end
 
   describe 'DELETE /projects/:id/repository/merged_branches' do
+    let_it_be_with_reload(:project) { create(:project, :in_group, :repository, creator: user, path: 'my.project', create_branch: 'ends-with.txt', maintainers: user) }
+    let_it_be(:guest) { create(:user, guest_of: project) }
+
     before do
       allow_next_instance_of(Repository) do |instance|
         allow(instance).to receive(:rm_branch).and_return(true)

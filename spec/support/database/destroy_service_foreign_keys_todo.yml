@@ -1459,8 +1459,6 @@ users:
 - work_item_decisions.resolved_by_id
 - work_item_type_user_preferences.user_id
 - workspaces.user_id
-vulnerability_exports:
-- vulnerability_export_parts.vulnerability_export_id
 work_item_custom_lifecycles:
 - work_item_custom_lifecycle_statuses.lifecycle_id
 - work_item_type_custom_lifecycles.lifecycle_id

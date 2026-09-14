@@ -774,6 +774,10 @@ Should be externalized as follows:
 {{ sprintf(s__("mrWidget|Set by %{author} to be merged automatically when the pipeline succeeds"), { author: author.name }) }}
 ```
 
+Do not split a translatable sentence across multiple `GlSprintf` instances.
+Keep the full sentence, such as `Created %{date} by %{author}`, in one `GlSprintf` `:message`
+with placeholders so translators can reorder words to match the grammar of their language.
+
 #### Avoid splitting sentences when adding links
 
 This also applies when using links in between translated sentences. Otherwise, these texts are not

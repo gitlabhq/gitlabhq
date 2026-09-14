@@ -769,6 +769,44 @@ Each replicated table has a configuration file in
 To replicate a table and design its ClickHouse schema, see
 [ClickHouse table design with Siphon](clickhouse_table_design_with_siphon.md).
 
+### Check whether Siphon replication is available
+
+`Gitlab::ClickHouse.enabled_for_analytics?` tells you whether ClickHouse is configured and turned
+on for analytics. It does not tell you whether the Siphon-replicated data your feature reads is
+actually present. ClickHouse can be reachable while Siphon is misconfigured or paused for a
+given table.
+
+Use `Gitlab::ClickHouse.siphon_enabled?` to answer that second question. It checks Siphon's own
+replication metadata table, `siphon_internal_events`, instead of inspecting the replicated
+`siphon_*` tables directly:
+
+- `Gitlab::ClickHouse.siphon_enabled?` checks whether Siphon has replicated anything at all.
+- `Gitlab::ClickHouse.siphon_enabled?('duo_workflows_workflows')` checks whether Siphon has
+  replicated that specific PostgreSQL table. The argument is the PostgreSQL table name, the same
+  name used in `db/siphon/tables/<table>.yml`, not the `siphon_`-prefixed ClickHouse table name.
+
+The method returns `false` when ClickHouse is not configured, and `false` when the ClickHouse
+query fails. A failed query is written to the exception log.
+
+A `true` result is cached for the lifetime of the Ruby process. A `false` result is not cached,
+so a table that starts replicating later is picked up on the next call. A `true` result for any
+single table also satisfies the no-argument global check, without issuing another query.
+
+The check has three limitations:
+
+- It does not detect replication lag. A `true` result means Siphon has replicated the table at
+  some point, not that the data is fresh.
+- It does not detect that replication stopped. Once a table has replicated, the check keeps
+  returning `true`.
+- It does not handle partitioned tables. Siphon tracks each partition separately, so passing a
+  routing table name like `p_ci_builds` never matches.
+
+Use it as a guard at the start of a feature that reads a Siphon-replicated table:
+
+```ruby
+return unless Gitlab::ClickHouse.siphon_enabled?('duo_workflows_workflows')
+```
+
 ### Database migrations
 
 Keep the PostgreSQL and the ClickHouse schemas in sync.

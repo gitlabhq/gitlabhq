@@ -106,9 +106,9 @@ RSpec.describe MergeRequestDiff, feature_category: :code_review_workflow do
     end
 
     context 'when diff_type is merge_head' do
-      let(:merge_request) { create(:merge_request) }
+      let_it_be_with_reload(:merge_request) { create(:merge_request) }
 
-      let!(:merge_head) do
+      let_it_be_with_reload(:merge_head) do
         MergeRequests::MergeToRefService
           .new(project: merge_request.project, current_user: merge_request.author)
           .execute(merge_request)
@@ -137,7 +137,7 @@ RSpec.describe MergeRequestDiff, feature_category: :code_review_workflow do
     end
 
     context 'when the gitaly data is preloaded' do
-      let(:merge_request) { create(:merge_request) }
+      let_it_be_with_reload(:merge_request) { create(:merge_request) }
 
       subject(:diff) do
         mr_diff = merge_request.merge_request_diffs.build
@@ -782,16 +782,16 @@ RSpec.describe MergeRequestDiff, feature_category: :code_review_workflow do
   end
 
   describe '#latest?' do
-    let!(:mr) { create(:merge_request) }
-    let!(:first_diff) { mr.merge_request_diff }
-    let!(:last_diff) { mr.create_merge_request_diff }
+    let_it_be_with_reload(:mr) { create(:merge_request) }
+    let_it_be_with_reload(:first_diff) { mr.merge_request_diff }
+    let_it_be_with_reload(:last_diff) { mr.create_merge_request_diff }
 
     it { expect(last_diff.reload).to be_latest }
     it { expect(first_diff.reload).not_to be_latest }
   end
 
   shared_examples_for 'merge request diffs' do |reuse_diff_fixture = false|
-    let(:merge_request) { create(:merge_request) }
+    let_it_be_with_reload(:merge_request) { create(:merge_request) }
 
     context 'when it was not cleaned by the system' do
       let!(:diff) { merge_request.merge_request_diff.reload }
@@ -1252,8 +1252,8 @@ RSpec.describe MergeRequestDiff, feature_category: :code_review_workflow do
     end
 
     describe '#enqueue_keep_around_commits' do
-      let(:merge_request) { create(:merge_request) }
-      let(:merge_request_diff) { merge_request.merge_request_diff }
+      let_it_be_with_reload(:merge_request) { create(:merge_request) }
+      let_it_be_with_reload(:merge_request_diff) { merge_request.merge_request_diff }
 
       it 'enqueues KeepAroundRefsWorker with project IDs, SHAs, and source' do
         project_ids = [merge_request_diff.project.id, merge_request.source_project_id].compact.uniq
@@ -1278,7 +1278,7 @@ RSpec.describe MergeRequestDiff, feature_category: :code_review_workflow do
     end
 
     describe "#set_patch_id_sha" do
-      let(:mr_diff) { create(:merge_request).merge_request_diff }
+      let_it_be_with_reload(:mr_diff) { create(:merge_request).merge_request_diff }
 
       it "sets the patch_id_sha attribute" do
         expect(mr_diff.set_patch_id_sha).not_to be_nil
@@ -1311,11 +1311,7 @@ RSpec.describe MergeRequestDiff, feature_category: :code_review_workflow do
     end
 
     describe '#get_patch_id_sha' do
-      let(:mr_diff) { create(:merge_request).merge_request_diff }
-
-      before do
-        mr_diff.reload
-      end
+      let_it_be_with_reload(:mr_diff) { create(:merge_request).merge_request_diff }
 
       context 'when the patch_id exists on the model' do
         it 'returns the patch_id' do
@@ -2576,7 +2572,7 @@ RSpec.describe MergeRequestDiff, feature_category: :code_review_workflow do
   end
 
   describe '#ensure_commit_shas' do
-    let(:merge_request) { create(:merge_request) }
+    let_it_be_with_reload(:merge_request) { create(:merge_request) }
 
     subject { merge_request.merge_request_diffs.build }
 
@@ -2622,7 +2618,7 @@ RSpec.describe MergeRequestDiff, feature_category: :code_review_workflow do
   end
 
   it_behaves_like 'object storable' do
-    let(:locally_stored) do
+    let_it_be(:locally_stored) do
       merge_request_diff = create(:merge_request_diff)
 
       if merge_request_diff.external_diff_store == ObjectStorage::Store::REMOTE
@@ -2632,7 +2628,7 @@ RSpec.describe MergeRequestDiff, feature_category: :code_review_workflow do
       merge_request_diff
     end
 
-    let(:remotely_stored) do
+    let_it_be(:remotely_stored) do
       merge_request_diff = create(:merge_request_diff)
 
       if merge_request_diff.external_diff_store == ObjectStorage::Store::LOCAL
@@ -2644,10 +2640,10 @@ RSpec.describe MergeRequestDiff, feature_category: :code_review_workflow do
   end
 
   describe 'bytea SHA sync triggers' do
-    let(:hex_base)  { 'ae73cb07c9eeaf35924a10f713b364d32b2dd34f' }
-    let(:hex_start) { '0b4bc9a49b562e85de7cc9e834518ea6828729b9' }
-    let(:hex_head)  { 'b83d6e391c22777fca1ed3012fce84f633d7fed0' }
-    let(:other_hex) { 'f14ae956369247901117b8b7d237c9dc605898c5' }
+    let_it_be(:hex_base)  { 'ae73cb07c9eeaf35924a10f713b364d32b2dd34f' }
+    let_it_be(:hex_start) { '0b4bc9a49b562e85de7cc9e834518ea6828729b9' }
+    let_it_be(:hex_head)  { 'b83d6e391c22777fca1ed3012fce84f633d7fed0' }
+    let_it_be(:other_hex) { 'f14ae956369247901117b8b7d237c9dc605898c5' }
 
     def bin(hex)
       [hex].pack('H*')
@@ -2695,7 +2691,7 @@ RSpec.describe MergeRequestDiff, feature_category: :code_review_workflow do
     end
 
     context 'on UPDATE' do
-      let(:diff) do
+      let_it_be_with_reload(:diff) do
         create(:merge_request_diff,
           base_commit_sha: hex_base,
           start_commit_sha: hex_start,
@@ -2731,9 +2727,9 @@ RSpec.describe MergeRequestDiff, feature_category: :code_review_workflow do
     end
 
     context 'with invalid values' do
-      it 'rejects a non-hex varchar SHA and leaves both columns unchanged' do
-        diff = create(:merge_request_diff, head_commit_sha: hex_head)
+      let_it_be_with_reload(:diff) { create(:merge_request_diff, head_commit_sha: hex_head) }
 
+      it 'rejects a non-hex varchar SHA and leaves both columns unchanged' do
         expect(diff.update(head_commit_sha: 'z' * 40)).to be(false)
         expect(diff.errors[:head_commit_sha]).to include('is not a valid SHA')
 
@@ -2744,8 +2740,6 @@ RSpec.describe MergeRequestDiff, feature_category: :code_review_workflow do
       end
 
       it 'rejects a too-short varchar SHA and leaves both columns unchanged' do
-        diff = create(:merge_request_diff, head_commit_sha: hex_head)
-
         expect(diff.update(head_commit_sha: 'abc')).to be(false)
         expect(diff.errors[:head_commit_sha]).to include('is not a valid SHA')
 
@@ -2756,8 +2750,6 @@ RSpec.describe MergeRequestDiff, feature_category: :code_review_workflow do
       end
 
       it 'lets varchar win when both columns are changed in the same UPDATE' do
-        diff = create(:merge_request_diff, head_commit_sha: hex_head)
-
         diff.update_columns(head_commit_sha: other_hex, head_commit_sha_bytea: bin(hex_base))
 
         expect(diff.reload).to have_attributes(
