@@ -92,10 +92,20 @@ RSpec.describe Import::Offline::Imports::ScheduleImportWorker, feature_category:
 
       it 'calls ScheduleImportService with the bulk_import and entities' do
         expect(Import::Offline::Imports::ScheduleImportService).to receive(:new)
-          .with(bulk_import, entities).and_return(service)
+          .with(bulk_import, entities, nil).and_return(service)
         expect(service).to receive(:execute)
 
         described_class.new.perform(bulk_import.id, entities)
+      end
+
+      it 'passes import_all through to ScheduleImportService' do
+        import_all = { 'destination_namespace' => 'dest-group' }
+
+        expect(Import::Offline::Imports::ScheduleImportService).to receive(:new)
+          .with(bulk_import, entities, import_all).and_return(service)
+        expect(service).to receive(:execute)
+
+        described_class.new.perform(bulk_import.id, entities, import_all)
       end
     end
   end

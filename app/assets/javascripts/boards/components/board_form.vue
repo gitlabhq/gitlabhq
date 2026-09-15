@@ -211,6 +211,13 @@ export default {
       return this.$options.i18n.lastBoardDefaultMessage;
     },
   },
+  watch: {
+    currentBoard(board) {
+      if (!this.isNewForm && !this.board.id && Object.keys(board).length) {
+        this.resetFormState();
+      }
+    },
+  },
   mounted() {
     this.resetFormState();
     if (this.$refs.name) {

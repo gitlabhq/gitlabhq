@@ -232,7 +232,6 @@ export const mockBranchPipeline = {
   source: 'web',
   latest: true,
   yamlErrors: false,
-  yamlErrorMessages: null,
   failureReason: null,
   configSource: 'REPOSITORY_SOURCE',
   stuck: false,

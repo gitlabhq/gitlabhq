@@ -5,12 +5,12 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 title: Vulnerability risk assessment data
 ---
 
-Use vulnerability risk data to help assess the potential impact to your environment.
+Use vulnerability risk data to help assess the potential impact on your environment.
 
 - Severity: Each vulnerability is assigned a standardized GitLab severity value.
 - For vulnerabilities in the [Common Vulnerabilities and Exposures (CVE)](https://www.cve.org/) catalog,
   the following data can be retrieved through the [vulnerability details](_index.md) page or by using a GraphQL query:
-  - Likelihood of exploitation: [Exploit Prediction Scoring System (EPSS)](https://www.first.org/epss) score.
+  - Likelihood of exploitation: [Exploit Prediction Scoring System (EPSS)](https://www.first.org/epss/) score.
   - Existence of known exploits: [Known Exploited Vulnerabilities (KEV)](https://www.cisa.gov/known-exploited-vulnerabilities-catalog) status.
 
 Use this data to help prioritize remediation and mitigation actions. For example, a vulnerability
@@ -28,7 +28,7 @@ high severity and a low EPSS score.
 {{< /history >}}
 
 The EPSS score provides an estimate of the likelihood a vulnerability in the CVE catalog will be
-exploited in the next 30 days. EPSS assigns each CVE a score between 0 to 1 (equivalent to 0% to
+exploited in the next 30 days. EPSS assigns each CVE a score between 0 and 1 (equivalent to 0% to
 100%).
 
 ## KEV
@@ -41,7 +41,7 @@ exploited in the next 30 days. EPSS assigns each CVE a score between 0 to 1 (equ
 
 The KEV catalog lists vulnerabilities that are known to have been exploited. You should prioritize
 the remediation of vulnerabilities in the KEV catalog above other vulnerabilities. Attacks using
-these vulnerabilities have occurred and the exploitation method is likely known to attackers.
+these vulnerabilities have occurred, and the exploitation method is likely known to attackers.
 
 ## Reachability
 

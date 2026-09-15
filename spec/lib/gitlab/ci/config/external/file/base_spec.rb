@@ -3,6 +3,12 @@
 require 'spec_helper'
 
 RSpec.describe Gitlab::Ci::Config::External::File::Base, feature_category: :pipeline_composition do
+  around do |example|
+    Gitlab::Ci::Config::FeatureFlags.with_actor(nil) do
+      example.run
+    end
+  end
+
   let_it_be(:project) { create(:project) }
   let(:variables) { nil }
   let(:context_params) { { sha: 'HEAD', variables: variables, project: project } }
@@ -111,6 +117,17 @@ RSpec.describe Gitlab::Ci::Config::External::File::Base, feature_category: :pipe
         expect(valid?).to be_falsy
         expect(file.error_message)
           .to eq('`some/file/[MASKED]xxxxxxxx.yml`: Invalid configuration format')
+      end
+    end
+
+    context 'when the file contains only comments' do
+      let(:location) { 'some/file/config.yml' }
+      let(:content) { "# only a comment\n" }
+
+      it 'is not a valid file' do
+        expect(valid?).to be_falsy
+        expect(file.errors)
+          .to include('Included file `some/file/config.yml` contains no configuration!')
       end
     end
 
@@ -256,13 +273,13 @@ RSpec.describe Gitlab::Ci::Config::External::File::Base, feature_category: :pipe
     context 'when the other file has the same params' do
       let(:other_file) { test_class.new({ location: location, content: content }, ctx) }
 
-      it { is_expected.to eq(true) }
+      it { is_expected.to be(true) }
     end
 
     context 'when the other file has not the same params' do
       let(:other_file) { test_class.new({ location: 'some/other/file', content: content }, ctx) }
 
-      it { is_expected.to eq(false) }
+      it { is_expected.to be(false) }
     end
   end
 
@@ -349,6 +366,19 @@ RSpec.describe Gitlab::Ci::Config::External::File::Base, feature_category: :pipe
     it 'returns true after calling inputs_only!' do
       file.inputs_only!
       expect(file.inputs_only?).to be_truthy
+    end
+  end
+
+  describe '#expand_context_attrs' do
+    let(:location) { 'some/file/config.yml' }
+
+    subject { file.send(:expand_context_attrs) }
+
+    it 'includes parent_file and pipeline_policy_context' do
+      is_expected.to include(
+        parent_file: file,
+        pipeline_policy_context: nil
+      )
     end
   end
 

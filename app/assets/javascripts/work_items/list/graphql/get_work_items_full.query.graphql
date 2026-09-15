@@ -27,7 +27,6 @@ query getWorkItemsFull(
   $milestoneWildcardId: MilestoneWildcardId
   $myReactionEmoji: String
   $subscribed: SubscriptionStatus
-  $types: [IssueType!]
   $updatedAfter: Time
   $updatedBefore: Time
   $workItemTypeIds: [WorkItemsTypeID!]
@@ -39,6 +38,7 @@ query getWorkItemsFull(
   $in: [IssuableSearchableField!]
   $not: NegatedWorkItemFilterInput
   $or: UnionedWorkItemFilterInput
+  $ids: [WorkItemID!]
   $afterCursor: String
   $beforeCursor: String
   $firstPageSize: Int
@@ -49,6 +49,7 @@ query getWorkItemsFull(
     id
     name
     workItems(
+      ids: $ids
       iid: $iid
       excludeProjects: $excludeProjects
       excludeGroupWorkItems: $excludeGroupWorkItems
@@ -71,7 +72,6 @@ query getWorkItemsFull(
       milestoneWildcardId: $milestoneWildcardId
       myReactionEmoji: $myReactionEmoji
       subscribed: $subscribed
-      types: $types
       updatedAfter: $updatedAfter
       updatedBefore: $updatedBefore
       workItemTypeIds: $workItemTypeIds
@@ -93,32 +93,10 @@ query getWorkItemsFull(
       }
       nodes {
         id
-        iid
-        author {
-          id
-          avatarUrl
-          name
-          username
-          webUrl
-          webPath
-        }
-        closedAt
         confidential
-        createdAt
         externalAuthor
         hidden
-        namespace {
-          id
-          fullPath
-        }
-        reference(full: true)
-        state
-        title
-        titleHtml
-        updatedAt
         userDiscussionsCount
-        webUrl
-        webPath
         widgets(
           onlyTypes: [
             ASSIGNEES
@@ -136,11 +114,6 @@ query getWorkItemsFull(
         }
         features @include(if: $useWorkItemFeatures) {
           ...WorkItemsListFeatures
-        }
-        workItemType {
-          id
-          name
-          iconName
         }
       }
     }

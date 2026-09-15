@@ -15,7 +15,7 @@ description: Security attributes allows security teams to apply custom metadata 
 
 {{< history >}}
 
-- [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/18010) in GitLab 18.5 with flags named `security_context_labels` and `security_categories_and_attributes`. Disabled by default. This feature was introduced in [beta](../../../policy/development_stages_support.md)
+- [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/18010) in GitLab 18.5 with flags named `security_context_labels` and `security_categories_and_attributes`. Disabled by default. This feature was introduced in [beta](../../../policy/development_stages_support.md).
 - [Enabled on GitLab.com, GitLab Self-Managed, and GitLab Dedicated](https://gitlab.com/gitlab-org/gitlab/-/issues/551226) in GitLab 18.6.
 - [Generally available](https://gitlab.com/gitlab-org/gitlab/-/work_items/588619) in GitLab 18.9. Feature flag `security_inventory_dashboard` removed.
 
@@ -31,7 +31,7 @@ Security attributes are organized by categories based on:
 - Internet exposure
 - Location
 
-By applying these attributes across your projects, you can much more quickly identify which projects require action based on your own organizations risk posture and business needs. With security attributes, you can:
+By applying these attributes across your projects, you can much more quickly identify which projects require action based on your own organization's risk posture and business needs. With security attributes, you can:
 
 - Identify projects that are mission critical and require stronger scan coverage.
 - Review scan coverage for each application or business unit.

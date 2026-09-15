@@ -35,7 +35,6 @@
     "container_registry",
     "context_systems",
     "contributor_success",
-    "custom_models",
     "dap_events",
     "dap_repository_flows",
     "database_architecture",
@@ -51,7 +50,6 @@
     "developer_clients",
     "development_analytics",
     "development_tooling",
-    "distribution_build",
     "duo_chat",
     "duo_client_sdk",
     "dynamic_analysis",
@@ -75,7 +73,6 @@
     "hosted_runners",
     "import",
     "infrastructure",
-    "knowledge_graph",
     "localization",
     "mlops",
     "mobile_devops",
@@ -88,7 +85,6 @@
     "performance_enablement",
     "pipeline_authoring",
     "pipeline_execution",
-    "pipeline_security",
     "planner_intelligence",
     "planning_views",
     "platform_insights",
@@ -111,12 +107,8 @@
     "secrets_manager_openbao",
     "security_controls",
     "security_foundations",
-    "security_infrastructure",
-    "security_platform_management",
-    "self_managed",
     "source_code",
     "spec_driven_development",
-    "static_analysis",
     "subscription_management",
     "switchboard",
     "technical_writing",
@@ -128,7 +120,6 @@
     "ux_paper_cuts",
     "vulnerability_management",
     "vulnerability_research",
-    "work_items",
-    "workflow_catalog"
+    "work_items"
   ]
 }

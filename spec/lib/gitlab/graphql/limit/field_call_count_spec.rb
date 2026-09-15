@@ -5,7 +5,6 @@ require 'spec_helper'
 RSpec.describe Gitlab::Graphql::Limit::FieldCallCount do
   include GraphqlHelpers
 
-  let(:field_args) { {} }
   let(:owner) { fresh_object_type }
   let(:field) do
     ::Types::BaseField.new(name: 'value', type: GraphQL::Types::String, null: true, owner: owner) do

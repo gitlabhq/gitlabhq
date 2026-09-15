@@ -12,11 +12,19 @@ class SemgrepResultProcessor
   include Gitlab::Utils::StrongMemoize
 
   ALLOWED_PROJECT_DIRS = %w[/builds/gitlab-org/gitlab].freeze
-  ALLOWED_API_URLS = %w[https://gitlab.com/api/v4].freeze
+  ALLOWED_API_URLS = SastTriageClassifier::ALLOWED_API_URLS
   UNIQUE_COMMENT_RULES_IDS = %w[builds.sast-custom-rules.appsec-pings.glappsec_ci-job-token builds.sast-custom-rules.secure-coding-guidelines.ruby.glappsec_insecure-regex].freeze
   APPSEC_HANDLE = "@gitlab-com/gl-security/appsec"
   TRIAGE_VERDICTS_ARTIFACT = 'gl-sast-triage-verdicts.json'
   VERDICT_RECOMMENDATION_THRESHOLD = 60
+  VERDICT_ACTION_THRESHOLD = 80
+
+  PING_LABELS = 'appsec-sast-ping::unresolved,AppSecWorkType::TriageRotation,Application Security Team'
+  ESCALATION_LABEL = 'appsec-sast::escalated'
+  ESCALATION_LABELS = "#{PING_LABELS},#{ESCALATION_LABEL}".freeze
+  # apply_label only accepts these fixed sets so no caller can ever feed
+  # model-derived or finding-derived text into the add_labels API field.
+  ALLOWED_LABEL_SETS = [PING_LABELS, ESCALATION_LABELS].freeze
 
   # Only definitive verdicts are surfaced to the engineer; 'uncertain' and errored
   # verdicts fall back to the standard comment.
@@ -41,6 +49,17 @@ class SemgrepResultProcessor
   MESSAGE_PING_APPSEC =
     "#{APPSEC_HANDLE} please review this finding. " \
       "#{LABEL_INSTRUCTION}".freeze
+
+  MESSAGE_AUTO_DISMISSED =
+    'Duo triage assessed this finding as a likely false positive with high confidence, ' \
+      'so this thread was resolved automatically and AppSec was not pinged — see the ' \
+      'Duo triage recommendation below for the rationale. AppSec still makes the final ' \
+      'determination: if you believe this finding is a real issue, unresolve this thread ' \
+      'and apply the ~"appsec-sast-ping::unresolved" label to request an AppSec review.'
+
+  MESSAGE_ESCALATION_NOTE =
+    'Duo triage assessed this finding as a likely true positive with high confidence, ' \
+      "so it has been escalated for priority review with the ~\"#{ESCALATION_LABEL}\" label.".freeze
 
   MESSAGE_FOOTER = <<~FOOTER
 
@@ -204,12 +223,14 @@ class SemgrepResultProcessor
       message = sanitize_rationale(finding[:message])
       check_id = finding[:check_id]
       uri = URI.parse("#{ENV['CI_API_V4_URL']}/projects/#{ENV['CI_MERGE_REQUEST_PROJECT_ID']}/merge_requests/#{ENV['CI_MERGE_REQUEST_IID']}/discussions")
-      suffix = if check_id&.start_with?("builds.sast-custom-rules.secure-coding-guidelines")
-                 "\n#{MESSAGE_SCG_PING_APPSEC}"
-               elsif check_id&.start_with?("builds.sast-custom-rules.s1")
-                 "\n#{MESSAGE_S1_PING_APPSEC}"
+      action = triage_action_for(fingerprint)
+      suffix = case action
+               when :dismiss
+                 "\n#{MESSAGE_AUTO_DISMISSED}"
+               when :escalate
+                 "#{ping_suffix_for(check_id)}\n\n#{MESSAGE_ESCALATION_NOTE}"
                else
-                 "\n#{MESSAGE_PING_APPSEC}"
+                 ping_suffix_for(check_id)
                end
 
       message_from_bot = "#{message_header}\n#{message}#{suffix}#{triage_recommendation_for(fingerprint)}\n#{MESSAGE_FOOTER}"
@@ -232,16 +253,90 @@ class SemgrepResultProcessor
       end
 
       if response.instance_of?(Net::HTTPCreated)
-        apply_label
+        if action == :dismiss
+          resolve_discussion(discussion_id_from(response))
+        else
+          apply_label(action == :escalate ? ESCALATION_LABELS : PING_LABELS)
+        end
+
         next
       end
 
       puts "Failed to post inline comment with status code #{response.code}: #{response.body}. Posting normal comment instead."
-      post_comment message_from_bot
+      fallback_response = post_comment message_from_bot
+      if action == :dismiss
+        resolve_discussion(discussion_id_from(fallback_response))
+      else
+        apply_label(action == :escalate ? ESCALATION_LABELS : PING_LABELS)
+      end
     end
   end
 
   private
+
+  def ping_suffix_for(check_id)
+    if check_id&.start_with?("builds.sast-custom-rules.secure-coding-guidelines")
+      "\n#{MESSAGE_SCG_PING_APPSEC}"
+    elsif check_id&.start_with?("builds.sast-custom-rules.s1")
+      "\n#{MESSAGE_S1_PING_APPSEC}"
+    else
+      "\n#{MESSAGE_PING_APPSEC}"
+    end
+  end
+
+  # SAST_TRIAGE_COMMENT_ENABLED is required: the audit trail only renders when the comment flag is on.
+  def triage_actions_enabled?
+    ENV['SAST_TRIAGE_ACTIONS_ENABLED'] == '1' &&
+      ENV['SAST_TRIAGE_ENABLED'] == '1' &&
+      ENV['SAST_TRIAGE_COMMENT_ENABLED'] == '1'
+  end
+
+  def triage_action_for(fingerprint)
+    return :none unless triage_actions_enabled?
+
+    verdict = (@triage_verdicts || {})[fingerprint]
+    return :none unless verdict && verdict[:error].nil?
+    return :none unless (verdict[:confidence].to_f * 100).round >= VERDICT_ACTION_THRESHOLD
+
+    case verdict[:verdict]
+    when 'fp' then :dismiss
+    when 'tp' then :escalate
+    else :none
+    end
+  end
+
+  # GitLab discussion ids are hex shas; anything else is an unexpected response
+  # body that must not be interpolated into the resolve URL path.
+  def discussion_id_from(response)
+    id = JSON.parse(response.body)['id']
+    id if id.is_a?(String) && id.match?(/\A[a-f0-9]+\z/)
+  rescue StandardError
+    nil
+  end
+
+  # Fails open: any failure to resolve leaves the thread unresolved for human
+  # review and never aborts the loop, so remaining findings still get comments.
+  def resolve_discussion(discussion_id)
+    unless discussion_id
+      puts 'Could not extract discussion id; leaving thread unresolved for human review.'
+      return
+    end
+
+    uri = URI.parse("#{ENV['CI_API_V4_URL']}/projects/#{ENV['CI_MERGE_REQUEST_PROJECT_ID']}/merge_requests/#{ENV['CI_MERGE_REQUEST_IID']}/discussions/#{discussion_id}")
+    request = Net::HTTP::Put.new(uri)
+    request['PRIVATE-TOKEN'] = ENV['CUSTOM_SAST_RULES_BOT_PAT']
+    request.set_form_data('resolved' => 'true')
+
+    response = Net::HTTP.start(uri.hostname, uri.port, use_ssl: uri.scheme == 'https') do |http|
+      http.request(request)
+    end
+
+    return if response.instance_of?(Net::HTTPOK)
+
+    puts "Failed to resolve discussion #{discussion_id} with status code #{response.code}: #{response.body}. Leaving thread unresolved for human review."
+  rescue StandardError => e
+    puts "Failed to resolve discussion #{discussion_id}: #{e.class}: #{e.message}. Leaving thread unresolved for human review."
+  end
 
   # Renders the shadow-mode Duo verdict for a finding as an advisory block appended
   # to the inline comment, so the engineer sees the true/false-positive recommendation
@@ -293,12 +388,17 @@ class SemgrepResultProcessor
   end
   strong_memoize_attr :stripped_labels
 
-  def apply_label
+  def apply_label(labels = PING_LABELS)
+    unless ALLOWED_LABEL_SETS.include?(labels)
+      puts "Refusing to apply non-allowlisted label set '#{labels}'."
+      return
+    end
+
     uri = URI.parse("#{ENV['CI_API_V4_URL']}/projects/#{ENV['CI_MERGE_REQUEST_PROJECT_ID']}/merge_requests/#{ENV['CI_MERGE_REQUEST_IID']}")
     request = Net::HTTP::Put.new(uri)
     request["PRIVATE-TOKEN"] = ENV['CUSTOM_SAST_RULES_BOT_PAT']
     request.set_form_data(
-      "add_labels" => "appsec-sast-ping::unresolved,AppSecWorkType::TriageRotation,Application Security Team"
+      "add_labels" => labels
     )
 
     response = Net::HTTP.start(uri.hostname, uri.port, use_ssl: uri.scheme == 'https') do |http|
@@ -372,7 +472,7 @@ class SemgrepResultProcessor
       http.request(request)
     end
 
-    return if response.instance_of?(Net::HTTPCreated)
+    return response if response.instance_of?(Net::HTTPCreated)
 
     puts "Failed to post comment #{response.code}: #{response.body}"
     # if we cannot even post a comment, fail the pipeline

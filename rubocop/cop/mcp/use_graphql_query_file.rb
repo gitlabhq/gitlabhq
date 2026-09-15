@@ -27,7 +27,7 @@ module RuboCop
       #   # good
       #   register_version VERSIONS[:v0_1_0], {
       #     operation_name: 'createNote',
-      #     graphql_operation: load_graphql('work_items/create_note.mutation.graphql')
+      #     graphql_operation: load_graphql('notes/create_note.mutation.graphql')
       #   }
       class UseGraphqlQueryFile < RuboCop::Cop::Base
         MSG = 'Load MCP tool GraphQL operations from a .graphql file under ' \

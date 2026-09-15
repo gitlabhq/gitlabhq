@@ -81,7 +81,7 @@ export default {
       required: true,
     },
   },
-  emits: ['close-dropdown', 'set-labels'],
+  emits: ['set-labels'],
   data() {
     return {
       showDropdownContentsCreateView: false,
@@ -166,7 +166,6 @@ export default {
       this.$emit('set-labels', this.localSelectedLabels);
     },
     handleDropdownHide() {
-      this.$emit('close-dropdown');
       if (!this.isSidebar) {
         this.setLabels();
       }
@@ -238,8 +237,8 @@ export default {
         :workspace-type="workspaceType"
         :attr-workspace-path="attrWorkspacePath"
         :label-create-type="labelCreateType"
-        @hideCreateView="toggleDropdownContent"
-        @labelCreated="handleNewLabel"
+        @hide-create-view="toggleDropdownContent"
+        @label-created="handleNewLabel"
         @input="clearSearch"
       />
     </template>

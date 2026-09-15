@@ -1,0 +1,11 @@
+---
+name: use_labkit_git_basic_auth_ban
+description: Routes the git and container registry authentication IP ban through Labkit::RateLimit
+  instead of Rack::Attack::Allow2Ban.
+feature_issue_url: https://gitlab.com/gitlab-com/gl-infra/production-engineering/-/issues/29557
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/252213
+rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/624121
+milestone: '19.4'
+group: group::networking and incident management
+type: gitlab_com_derisk
+default_enabled: false

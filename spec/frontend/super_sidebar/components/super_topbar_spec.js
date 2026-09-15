@@ -504,16 +504,14 @@ describe('SuperTopbar', () => {
     });
 
     describe('Analytics dashboards button', () => {
-      describe('when exploreAnalyticsDashboards feature is enabled', () => {
+      describe('when sidebar data supplies the path', () => {
         it('renders with correct href', () => {
-          createComponent(
-            {
-              sidebarData: {
-                ...mockSidebarData,
-              },
+          createComponent({
+            sidebarData: {
+              ...mockSidebarData,
+              analytics_dashboards_path: '/explore/analytics_dashboards',
             },
-            { glFeatures: { exploreAnalyticsDashboards: true } },
-          );
+          });
 
           expect(findAnalyticsDashboardsButton().exists()).toBe(true);
           expect(findAnalyticsDashboardsButton().attributes('href')).toBe(
@@ -527,16 +525,13 @@ describe('SuperTopbar', () => {
         });
       });
 
-      describe('when exploreAnalyticsDashboards feature is disabled', () => {
+      describe('when sidebar data omits the path', () => {
         it('does not render', () => {
-          createComponent(
-            {
-              sidebarData: {
-                ...mockSidebarData,
-              },
+          createComponent({
+            sidebarData: {
+              ...mockSidebarData,
             },
-            { glFeatures: { exploreAnalyticsDashboards: false } },
-          );
+          });
 
           expect(findAnalyticsDashboardsButton().exists()).toBe(false);
         });
@@ -544,15 +539,13 @@ describe('SuperTopbar', () => {
 
       describe('when user is not logged in', () => {
         it('does not render', () => {
-          createComponent(
-            {
-              sidebarData: {
-                ...mockSidebarData,
-                is_logged_in: false,
-              },
+          createComponent({
+            sidebarData: {
+              ...mockSidebarData,
+              is_logged_in: false,
+              analytics_dashboards_path: '/explore/analytics_dashboards',
             },
-            { glFeatures: { exploreAnalyticsDashboards: true } },
-          );
+          });
 
           expect(findAnalyticsDashboardsButton().exists()).toBe(false);
         });

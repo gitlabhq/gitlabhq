@@ -5,8 +5,11 @@ module Mcp
     class GetServerVersionService < Base::CustomService
       extend ::Gitlab::Utils::Override
 
+      ungovernable!
+
       # Register version 0.1.0
       register_version '0.1.0', {
+        toolset: :meta,
         description: 'Get the current version of MCP server.',
         input_schema: {
           type: 'object',

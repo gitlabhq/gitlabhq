@@ -3,23 +3,27 @@ import { GlFormTextarea, GlSprintf } from '@gitlab/ui';
 import VueApollo from 'vue-apollo';
 import produce from 'immer';
 import { createMockSubscription as createMockApolloSubscription } from 'mock-apollo-client';
+import MockAdapter from 'axios-mock-adapter';
 import readyToMergeResponse from 'test_fixtures/graphql/merge_requests/states/ready_to_merge.query.graphql.json';
 import axios from '~/lib/utils/axios_utils';
+import { HTTP_STATUS_FORBIDDEN } from '~/lib/utils/http_status';
+import { createAlert } from '~/alert';
 import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
 import waitForPromises from 'helpers/wait_for_promises';
 import createMockApollo from 'helpers/mock_apollo_helper';
 import readyToMergeQuery from '~/vue_merge_request_widget/queries/states/ready_to_merge.query.graphql';
-import simplePoll from '~/lib/utils/simple_poll';
 import CommitEdit from '~/vue_merge_request_widget/components/states/commit_edit.vue';
 import CommitMessageDropdown from '~/vue_merge_request_widget/components/states/commit_message_dropdown.vue';
 import ReadyToMerge from '~/vue_merge_request_widget/components/states/ready_to_merge.vue';
 import SquashBeforeMerge from '~/vue_merge_request_widget/components/states/squash_before_merge.vue';
 import MergeFailedPipelineConfirmationDialog from '~/vue_merge_request_widget/components/states/merge_failed_pipeline_confirmation_dialog.vue';
+import RebaseConfirmationDialog from '~/vue_merge_request_widget/components/states/rebase_confirmation_dialog.vue';
 import { MWCP_MERGE_STRATEGY } from '~/vue_merge_request_widget/constants';
 import eventHub from '~/vue_merge_request_widget/event_hub';
 import readyToMergeSubscription from '~/vue_merge_request_widget/queries/states/ready_to_merge.subscription.graphql';
 import { joinPaths } from '~/lib/utils/url_utility';
 
+jest.mock('~/alert');
 jest.mock('~/lib/utils/simple_poll', () =>
   jest.fn().mockImplementation(jest.requireActual('~/lib/utils/simple_poll').default),
 );
@@ -226,7 +230,7 @@ describe('ReadyToMerge', () => {
       createComponent({
         mr: {
           pipeline: { status: 'FAILED' },
-          availableAutoMergeStrategies: MWCP_MERGE_STRATEGY,
+          availableAutoMergeStrategies: [MWCP_MERGE_STRATEGY],
           hasCI: true,
         },
       });
@@ -304,6 +308,43 @@ describe('ReadyToMerge', () => {
       await nextTick();
 
       expect(findMergeButton().props('disabled')).toBe(true);
+    });
+
+    it('stays enabled when auto-merge is genuinely unavailable (loaded empty [])', () => {
+      // [] means "loaded, no auto-merge strategy" — an immediate Merge is the
+      // correct action, so the button must NOT be disabled. Only `undefined`
+      // (not-yet-loaded) disables it. Guards against a no-auto-merge regression.
+      createComponent({ mr: { availableAutoMergeStrategies: [] } });
+
+      expect(findMergeButton().props('disabled')).toBe(false);
+      expect(findMergeButton().text()).toBe('Merge');
+    });
+
+    it('shows a spinner instead of a clickable button while strategies are still loading', () => {
+      // Regression for #593704: strategies load from a separate poll, so a
+      // clickable "Merge" button here would let a user immediately merge and
+      // bypass a merge train before auto-merge availability is known. Show a
+      // loading spinner (and keep it non-interactive) until the poll resolves.
+      createComponent({ mr: { availableAutoMergeStrategies: undefined } });
+
+      expect(findMergeButton().props('loading')).toBe(true);
+      expect(findMergeButton().props('disabled')).toBe(true);
+      expect(findMergeButton().text()).toBe('Checking if auto-merge is available…');
+    });
+
+    it('enables the auto-merge action once strategies arrive from the poll', async () => {
+      // Simulates the real lifecycle: initial data has no strategies
+      // (undefined) until the widget poll populates them as an array.
+      createComponent({ mr: { availableAutoMergeStrategies: undefined } });
+      expect(findMergeButton().props('loading')).toBe(true);
+
+      await wrapper.setProps({
+        mr: createTestMr({ mr: { availableAutoMergeStrategies: [MWCP_MERGE_STRATEGY] } }),
+      });
+
+      expect(findMergeButton().props('loading')).toBe(false);
+      expect(findMergeButton().props('disabled')).toBe(false);
+      expect(findMergeButton().text()).toBe('Set to auto-merge');
     });
   });
 
@@ -410,7 +451,7 @@ describe('ReadyToMerge', () => {
 
       await waitForPromises();
 
-      expect(eventHub.$emit).toHaveBeenCalledWith('MRWidgetUpdateRequested');
+      expect(eventHub.$emit).toHaveBeenCalledWith('mr-widget-update-requested');
       expect(eventHub.$emit).toHaveBeenCalledWith('StateMachineValueChanged', {
         transition: 'start-auto-merge',
       });
@@ -508,7 +549,7 @@ describe('ReadyToMerge', () => {
 
       await waitForPromises();
 
-      expect(eventHub.$emit).toHaveBeenCalledWith('FailedToMerge', undefined);
+      expect(eventHub.$emit).toHaveBeenCalledWith('failed-to-merge', undefined);
 
       const params = service.merge.mock.calls[0][0];
 
@@ -556,84 +597,6 @@ describe('ReadyToMerge', () => {
       await waitForPromises();
 
       expect(wrapper.findByTestId('edit_commit_message').exists()).toBe(false);
-    });
-  });
-
-  describe('initiateRemoveSourceBranchPolling', () => {
-    it('should emit event and call simplePoll', () => {
-      createComponent();
-
-      jest.spyOn(eventHub, '$emit').mockImplementation(() => {});
-
-      wrapper.vm.initiateRemoveSourceBranchPolling();
-
-      expect(eventHub.$emit).toHaveBeenCalledWith('SetBranchRemoveFlag', [true]);
-      expect(simplePoll).toHaveBeenCalled();
-    });
-  });
-
-  describe('handleRemoveBranchPolling', () => {
-    const response = (state) => ({
-      data: {
-        source_branch_exists: state,
-      },
-    });
-
-    it('should call start and stop polling when MR merged', async () => {
-      createComponent();
-
-      jest.spyOn(eventHub, '$emit').mockImplementation(() => {});
-      jest.spyOn(service, 'poll').mockResolvedValue(response(false));
-
-      let cpc = false; // continuePollingCalled
-      let spc = false; // stopPollingCalled
-
-      wrapper.vm.handleRemoveBranchPolling(
-        () => {
-          cpc = true;
-        },
-        () => {
-          spc = true;
-        },
-      );
-
-      await waitForPromises();
-
-      expect(service.poll).toHaveBeenCalled();
-
-      const args = eventHub.$emit.mock.calls[0];
-
-      expect(args[0]).toEqual('MRWidgetUpdateRequested');
-      expect(args[1]).toBeDefined();
-      args[1]();
-
-      expect(eventHub.$emit).toHaveBeenCalledWith('SetBranchRemoveFlag', [false]);
-
-      expect(cpc).toBe(false);
-      expect(spc).toBe(true);
-    });
-
-    it('should continue polling until MR is merged', async () => {
-      createComponent();
-
-      jest.spyOn(service, 'poll').mockResolvedValue(response(true));
-
-      let cpc = false; // continuePollingCalled
-      let spc = false; // stopPollingCalled
-
-      wrapper.vm.handleRemoveBranchPolling(
-        () => {
-          cpc = true;
-        },
-        () => {
-          spc = true;
-        },
-      );
-
-      await waitForPromises();
-
-      expect(cpc).toBe(true);
-      expect(spc).toBe(false);
     });
   });
 
@@ -1064,6 +1027,72 @@ describe('ReadyToMerge', () => {
         expect(wrapper.vm.sourceHasDivergedFromTarget).toBe(true);
         expect(wrapper.vm.mr.canPushToSourceBranch).toBe(true);
         expect(wrapper.vm.canRebase).toBe(true);
+      });
+    });
+
+    describe('when the rebase request is rejected', () => {
+      let axiosMock;
+
+      const findRebaseButton = () => wrapper.findComponent('[data-testid="rebase-button"]');
+
+      const rebaseWithResponse = async (body) => {
+        axiosMock
+          .onPost('/namespace/project/-/merge_requests/123/rebase')
+          .reply(HTTP_STATUS_FORBIDDEN, body);
+
+        createComponent(
+          {
+            mr: {
+              divergedCommitsCount: 2,
+              targetProjectFullPath: 'namespace/project',
+              iid: 123,
+              sourceBranch: 'feature-branch',
+              state: 'readyToMerge',
+              userPermissions: { canMerge: true },
+              availableAutoMergeStrategies: [],
+              canPushToSourceBranch: true,
+            },
+          },
+          true,
+        );
+
+        findRebaseButton().vm.$emit('click');
+        await nextTick();
+
+        wrapper.findComponent(RebaseConfirmationDialog).vm.$emit('rebase-confirmed');
+        await waitForPromises();
+      };
+
+      beforeEach(() => {
+        axiosMock = new MockAdapter(axios);
+      });
+
+      afterEach(() => {
+        axiosMock.restore();
+      });
+
+      it('alerts the reason the backend sent', async () => {
+        await rebaseWithResponse({ merge_error: 'Source branch is protected from force push' });
+
+        expect(createAlert).toHaveBeenCalledWith({
+          message: 'Failed to rebase: Source branch is protected from force push.',
+          variant: 'danger',
+        });
+      });
+
+      it('alerts a generic message when the backend sent no reason', async () => {
+        await rebaseWithResponse({});
+
+        expect(createAlert).toHaveBeenCalledWith({
+          message: 'Failed to rebase. Please try again.',
+          variant: 'danger',
+        });
+      });
+
+      it('stops the rebase button from loading', async () => {
+        await rebaseWithResponse({ merge_error: 'Cannot push to source branch' });
+
+        expect(findRebaseButton().props('loading')).toBe(false);
       });
     });
 

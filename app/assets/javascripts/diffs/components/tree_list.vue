@@ -75,7 +75,13 @@ export default {
     };
   },
   computed: {
-    ...mapState(useFileBrowser, ['renderTreeList', 'tree', 'allBlobs', 'flatBlobsList']),
+    ...mapState(useFileBrowser, [
+      'renderTreeList',
+      'tree',
+      'allBlobs',
+      'flatBlobsList',
+      'focusSearchRequest',
+    ]),
     ...mapState(useCodeReview, ['reviewedIds']),
     flatUngroupedList() {
       return this.flatBlobsList.reduce((acc, blob, index) => {
@@ -193,6 +199,9 @@ export default {
     },
   },
   watch: {
+    focusSearchRequest() {
+      this.$refs.search.focusInput();
+    },
     currentDiffFileId: {
       async handler(hash) {
         if (!hash) return;
@@ -289,6 +298,7 @@ export default {
     </div>
     <gl-search-box-by-type
       id="diff-tree-search"
+      ref="search"
       v-model="search"
       :placeholder="$options.searchPlaceholder"
       name="diff-tree-search"

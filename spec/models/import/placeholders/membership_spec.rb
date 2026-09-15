@@ -84,6 +84,38 @@ RSpec.describe Import::Placeholders::Membership, feature_category: :importers do
     end
   end
 
+  describe '#retention_expires_at' do
+    it 'defaults to one year from now for a new record' do
+      freeze_time do
+        membership = build(:import_placeholder_membership, retention_expires_at: nil)
+        membership.valid?
+
+        expect(membership.retention_expires_at).to be_within(1.second).of(1.year.from_now)
+      end
+    end
+
+    it 'defaults to one year from now, not one year from created_at, for a pre-existing record with no value set' do
+      created_at = 3.years.ago
+      membership = travel_to(created_at) { create(:import_placeholder_membership) }
+      membership.update_column(:retention_expires_at, nil)
+
+      freeze_time do
+        membership.valid?
+
+        expect(membership.retention_expires_at).to be_within(1.second).of(1.year.from_now)
+      end
+    end
+
+    it 'does not override an explicitly set value' do
+      expires_at = 5.days.from_now
+      membership = build(:import_placeholder_membership, retention_expires_at: expires_at)
+
+      membership.valid?
+
+      expect(membership.retention_expires_at).to be_within(1.second).of(expires_at)
+    end
+  end
+
   describe 'Scopes' do
     describe '.by_source_user' do
       it 'returns records by source user' do

@@ -177,7 +177,7 @@ RSpec.describe Projects::UpdateRepositoryStorageService, feature_category: :sour
         end
       end
 
-      context 'with repository pool' do
+      context 'with repository pool', :skip_gitaly_mvcc do
         let(:object_pool_double_source) { double(:object_pool, repository: object_pool_repository_double_source) }
         let(:object_pool_repository_double_source) { double(:repository) }
 

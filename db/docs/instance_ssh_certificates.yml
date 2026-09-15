@@ -1,0 +1,12 @@
+---
+table_name: instance_ssh_certificates
+classes:
+- InstanceSshCertificate
+feature_categories:
+- source_code_management
+description: Stores instance-level CA public keys used to verify which SSH certificates
+  are authorized to access the instance
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/251165
+milestone: '19.4'
+gitlab_schema: gitlab_main_cell_setting
+table_size: small

@@ -1,10 +1,7 @@
-import { GlToast } from '@gitlab/ui';
 import Vue from 'vue';
 import { parseBoolean } from '~/lib/utils/common_utils';
 import NotificationsDropdown from './components/notifications_dropdown.vue';
 import NotificationEmailListboxInput from './components/notification_email_listbox_input.vue';
-
-Vue.use(GlToast);
 
 const initNotificationEmailListboxInputs = () => {
   const CLASS_NAME = 'js-notification-email-listbox-input';

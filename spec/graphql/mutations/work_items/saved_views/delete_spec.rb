@@ -34,6 +34,22 @@ RSpec.describe Mutations::WorkItems::SavedViews::Delete, feature_category: :plan
         expect(result[:errors]).to be_empty
       end
 
+      it 'tracks the saved_view_delete internal event', :clean_gitlab_redis_shared_state do
+        expect { mutation.resolve(id: saved_view_gid) }
+          .to trigger_internal_events('saved_view_delete')
+          .with(
+            category: 'Gitlab::WorkItems::Instrumentation::TrackingService',
+            user: current_user,
+            namespace: saved_view.namespace,
+            project: project,
+            additional_properties: { property: 'Developer' }
+          )
+          .and increment_usage_metrics(
+            'redis_hll_counters.count_distinct_user_id_from_saved_view_delete_weekly',
+            'redis_hll_counters.count_distinct_user_id_from_saved_view_delete_monthly'
+          )
+      end
+
       it 'cascades delete to user_saved_views' do
         expect { mutation.resolve(id: saved_view_gid) }.to change { WorkItems::SavedViews::UserSavedView.count }.by(-1)
       end

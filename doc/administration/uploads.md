@@ -16,7 +16,7 @@ description: Administer uploads storage.
 Uploads represent all user data that may be sent to GitLab as a single file. For example, avatars and note attachments are uploads. Uploads are integral to GitLab functionality and therefore cannot be disabled.
 
 > [!note]
-> Attachments added to comments or descriptions are deleted **only** when the parent project or group
+> Attachments added to comments or descriptions are deleted only when the parent project or group
 > is deleted. Attachments remain in file storage even when the comment or resource (like issue, merge
 > request, epic) where they were uploaded is deleted.
 
@@ -89,7 +89,7 @@ package installations, they are prefixed by `uploads_object_store_`.
 |---------|-------------|---------|
 | `enabled` | Enable/disable object storage | `false` |
 | `remote_directory` | The bucket name where Uploads are stored| |
-| `proxy_download` | Set to `true` to enable proxying all files served. Option allows to reduce egress traffic as this allows clients to download directly from remote storage instead of proxying all data | `false` |
+| `proxy_download` | Set to `true` to enable proxying all files served. When set to `false`, clients download directly from remote storage, reducing egress traffic on the GitLab server | `false` |
 | `connection` | Various connection options described below | |
 
 #### Connection settings

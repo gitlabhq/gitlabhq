@@ -43,7 +43,7 @@
     "confirmed_by_user_id": {
       "type": "number"
     },
-    "read_only_reason": {
+    "maintenance_reason": {
       "type": "string",
       "enum": [
         "migration",

@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Analytics::CycleAnalytics::ValueStream, type: :model, feature_category: :value_stream_management do
+RSpec.describe Analytics::CycleAnalytics::ValueStream, feature_category: :value_stream_management do
   describe 'associations' do
     it { is_expected.to belong_to(:namespace).required }
     it { is_expected.to have_many(:stages) }

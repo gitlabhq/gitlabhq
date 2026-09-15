@@ -114,7 +114,7 @@ Example of a problematic pipeline flow with the **Prevent outdated deployment jo
 1. Pipeline-A is created on the default branch.
 1. Later, Pipeline-B is created on the default branch (with a newer commit SHA).
 1. The `deploy` job in Pipeline-B finishes first, and deploys the newer code.
-1. The `deploy` job in Pipeline-A finished later, and deploys the older code, **overwriting** the newer (latest) deployment.
+1. The `deploy` job in Pipeline-A finished later, and deploys the older code, overwriting the newer (latest) deployment.
 
 The improved pipeline flow with the setting enabled:
 

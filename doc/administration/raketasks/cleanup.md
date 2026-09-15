@@ -241,6 +241,59 @@ level with `NICENESS`. Below are the valid levels, but consult
 - `2` or `Best-effort` (default)
 - `3` or `Idle`
 
+## Remove orphaned pool repository records for removed storages
+
+{{< history >}}
+
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/work_items/616939) in GitLab 19.4.
+
+{{< /history >}}
+
+If you permanently remove a Gitaly storage from your configuration, database
+records for object deduplication pools on that storage can be left behind.
+These records cannot be cleaned up by regular housekeeping because the
+storage they reference no longer exists.
+
+This Rake task deletes `pool_repositories` database records that:
+
+- Are on one of the storages you specify.
+- Have no source project.
+- Are not referenced by any project.
+
+Records still referenced by a project are never deleted, and are reported in
+the task output instead.
+
+> [!warning]
+> Only pass storages that have been permanently removed and whose data is
+> gone. The task refuses to run if any given storage is present in your
+> current Gitaly configuration. Deleted records can only be restored from the
+> generated CSV file.
+> Run this task on a node that has your complete Gitaly storage
+> configuration, such as a Rails node. On a node with only partial
+> configuration, the safety check cannot detect that a storage is still
+> in use.
+
+By default, the task runs in dry-run mode: it writes the records it would
+delete to the CSV file given in `OUTPUT_FILE` without deleting anything.
+Review that file first:
+
+```shell
+sudo gitlab-rake gitlab:pool_repositories:cleanup_orphaned_on_missing_shards \
+  SHARD_NAMES=old-storage-1,old-storage-2 OUTPUT_FILE=/tmp/orphaned_pools.csv
+```
+
+To delete the records, run the command again with `DRY_RUN=false`:
+
+```shell
+sudo gitlab-rake gitlab:pool_repositories:cleanup_orphaned_on_missing_shards \
+  SHARD_NAMES=old-storage-1,old-storage-2 OUTPUT_FILE=/tmp/deleted_pools.csv DRY_RUN=false
+```
+
+The CSV file contains all columns of the deleted records. Keep it in a safe
+place: it is the only way to restore the records if you delete something by
+mistake. To protect previous audit files, the task refuses to run if the
+`OUTPUT_FILE` path already exists. Pass a new file path for each run.
+
 ## Remove expired ActiveSession lookup keys
 
 To remove expired ActiveSession lookup keys:

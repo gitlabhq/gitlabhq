@@ -70,7 +70,7 @@ to existing merge requests:
 - If approval rule overrides are not allowed, all changes to default rules
   are applied to existing merge requests. Any approval rules that were previously
   manually [overridden](#edit-or-override-merge-request-approval-rules) during the
-  period when approval rule overrides where allowed, are not modified.
+  period when approval rule overrides were allowed, are not modified.
 
 ## Edit an approval rule
 
@@ -236,7 +236,7 @@ To enable approval permissions for these users without granting them push access
 {{< /details >}}
 
 You can use [merge request approval policies](../../../application_security/policies/merge_request_approval_policies.md#merge-request-approval-policy-editor) to define security approvals based on the status of vulnerabilities in the merge request and the default branch.
-Details for each security policy is shown in the Security Approvals section of your Merge Request configuration.
+Details for each security policy are shown in the Security Approvals section of your Merge Request configuration.
 
 The security approval rules are applied to all merge requests until the pipeline is complete. The application of the
 security approval rules prevents users from merging in code before the security scans run. After the pipeline is
@@ -339,7 +339,7 @@ like `@group-name`, only direct members of eligible groups can provide approvals
 You can add a group of users as approvers. All direct members of this group
 can approve the rule. Inherited members cannot approve the rule.
 
-Typically the group is a subgroup in your top-level namespace, unless you are
+Typically, the group is a subgroup in your top-level namespace, unless you are
 collaborating with an external group. If you are collaborating with another group
 and want to use members of that group as approvers, you can either:
 
@@ -376,9 +376,9 @@ For more information about this validation error, read
 
 ### Groups need explicit or inherited Developer role on a project
 
-A group created to handle approvals may be created in a different area of the
+A group created to handle approvals might be created in a different area of the
 project hierarchy than the project requiring review. If this happens, members of the
-group may not have permission to approve the merge request as they do not have access to it.
+group might not have permission to approve the merge request as they do not have access to it.
 
 For example:
 

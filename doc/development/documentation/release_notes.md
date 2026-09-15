@@ -261,10 +261,12 @@ maps to one of the following sections:
 | Agentic Core                | `ai_platform`, `ai_coding`, `agent_foundations`, `ai_clients`, `modelops` |
 | Unified DevOps and Security | `analytics`, `application_security_testing`, `create`, `deploy`, `knowledge_graph`, `package`, `plan`, `security_risk_management`, `software_supply_chain_security`, `verify` |
 | Scale and Deployments       | `data_access`, `database_excellence`, `developer_experience`, `foundations`, `fulfillment`, `gitlab_dedicated`, `gitlab_delivery`, `growth`, `production_engineering`, `tenant_scale`, `unlisted/unknown` |
+| Co-created contributions    | -      |
 
 Sections appear in the order listed in the table, with `Primary features` first. Any stage that
 isn't mapped appears in the `Scale and Deployments` section. To add features to the `Primary features` section,
-use the [`level`](#feature-release-note-metadata) metadata.
+use the [`level`](#feature-release-note-metadata) metadata. To add features to the
+`Co-created contributions` section, use the [`co_create`](#feature-release-note-metadata) metadata.
 
 In each section, feature release notes are listed alphabetically by title. To override this order, define a value
 for the `weight` metadata, where lower numbers go first.
@@ -295,6 +297,7 @@ values unless a note must absolutely appear first.
 | `categories`         | array                                                                                                  | An array with the `Name` value of one or more [categories](https://gitlab.com/gitlab-com/www-gitlab-com/-/blob/master/data/categories.yml). Values are case-sensitive, separate multiple values with commas. If a related category doesn't exist, make another merge request to add it. |
 | `stage`              | string                                                                                                 | Name of the stage that created the feature. Used to [organize](#organization) the section the release note appears in. |
 | `level`              | One of: `primary` or `secondary`                                                                       | Optional. Controls placement in the `Primary features` section. If undefined, defaults to `secondary`. |
+| `co_create`          | boolean                                                                                                | Optional. When `true`, the release note appears in the `Co-created contributions` section instead of a stage section, and `level` is ignored. Use for community contributions and features delivered through the [Co-Create program](https://about.gitlab.com/community/co-create/). |
 | `weight`             | number                                                                                                 | Optional. Controls ordering in each [section](#organization). Lower numbers go first. To force a feature release note first in a section, use a lower number such as 10. To avoid sorting issues with other feature release notes, avoid using single-digit numbers unless the note must absolutely appear first. |
 
 ## Templates

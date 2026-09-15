@@ -5,11 +5,13 @@ require 'spec_helper'
 RSpec.describe 'devise/registrations/_signup_box_form', feature_category: :system_access do
   before do
     stub_devise
-    allow(view).to receive(:arkose_labs_enabled?).and_return(false)
-    allow(view).to receive(:url).and_return('_url_')
-    allow(view).to receive(:button_text).and_return('')
-    allow(view).to receive(:preregistration_tracking_label).and_return('')
-    allow(view).to receive(:signup_submit_button_data).and_return({})
+    allow(view).to receive_messages(
+      arkose_labs_enabled?: false,
+      url: '_url_',
+      button_text: '',
+      preregistration_tracking_label: '',
+      signup_submit_button_data: {}
+    )
     stub_template 'devise/shared/_error_messages.html.haml' => ''
   end
 
@@ -26,8 +28,6 @@ RSpec.describe 'devise/registrations/_signup_box_form', feature_category: :syste
   end
 
   def stub_devise
-    allow(view).to receive(:devise_mapping).and_return(Devise.mappings[:user])
-    allow(view).to receive(:resource).and_return(spy)
-    allow(view).to receive(:resource_name).and_return(:user)
+    allow(view).to receive_messages(devise_mapping: Devise.mappings[:user], resource: spy, resource_name: :user)
   end
 end

@@ -12,7 +12,7 @@ RSpec.describe SystemCheck::App::TableTruncateCheck, feature_category: :cell do
     describe '#skip?' do
       subject { described_class.new.skip? }
 
-      it { is_expected.to eq(true) }
+      it { is_expected.to be(true) }
     end
   end
 
@@ -37,7 +37,7 @@ RSpec.describe SystemCheck::App::TableTruncateCheck, feature_category: :cell do
     describe '#skip?' do
       subject { described_class.new.skip? }
 
-      it { is_expected.to eq(false) }
+      it { is_expected.to be(false) }
     end
 
     describe '#check?' do
@@ -46,13 +46,13 @@ RSpec.describe SystemCheck::App::TableTruncateCheck, feature_category: :cell do
       context 'when TableTruncate returns false' do
         let(:needs_truncation) { false }
 
-        it { is_expected.to eq(true) }
+        it { is_expected.to be(true) }
       end
 
       context 'when TableTruncate returns true' do
         let(:needs_truncation) { true }
 
-        it { is_expected.to eq(false) }
+        it { is_expected.to be(false) }
       end
     end
 

@@ -16,7 +16,7 @@ RSpec.describe 'clearing redis cache', :clean_gitlab_redis_repository_cache, :cl
 
   describe 'clearing pipeline status cache' do
     let(:pipeline_status) do
-      project = create(:project, :repository)
+      project = create(:project, :small_repo)
       create(:ci_pipeline, project: project).project.pipeline_status
     end
 

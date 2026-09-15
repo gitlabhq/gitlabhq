@@ -13,7 +13,7 @@ module Authn
     scope :latest_per_application, -> do
       select('DISTINCT ON (client_id) oauth_consents.*').order(:client_id, created_at: :desc)
     end
-    scope :preload_application, -> { preload(:application) }
+    scope :preload_application, -> { preload(application: :owner) }
     scope :with_application, -> { joins(:application) }
 
     validates :client_id, presence: true

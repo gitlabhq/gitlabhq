@@ -253,7 +253,7 @@ RSpec.describe Gitlab::SidekiqMiddleware::SizeLimiter::Validator, :aggregate_fai
             validate.call(TestSizeLimiterWorker, job)
           end.to raise_error(Gitlab::SidekiqMiddleware::SizeLimiter::ExceedLimitError)
 
-          expect(job['size_limiter']).to eq(nil)
+          expect(job['size_limiter']).to be_nil
         end
 
         it 'does not raise an exception when the worker allows big payloads' do
@@ -310,11 +310,11 @@ RSpec.describe Gitlab::SidekiqMiddleware::SizeLimiter::Validator, :aggregate_fai
     it 'returns true when the job is already validated' do
       described_class.validate!(TestSizeLimiterWorker, job)
 
-      expect(described_class.validated?(job)).to eq(true)
+      expect(described_class.validated?(job)).to be(true)
     end
 
     it 'returns false when job is not yet validated' do
-      expect(described_class.validated?(job)).to eq(false)
+      expect(described_class.validated?(job)).to be(false)
     end
   end
 

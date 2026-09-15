@@ -189,7 +189,7 @@ export default {
     }
   },
 
-  beforeUnmount() {
+  beforeDestroy() {
     this.pollingCancelled = true;
     clearTimeout(this.iframeReadyTimeout);
     clearTimeout(this.authTimeout);

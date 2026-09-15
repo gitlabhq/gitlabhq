@@ -1,5 +1,5 @@
 ---
-stage: Tenant Scale
+stage: GitLab Dedicated
 group: Geo
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see <https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments>
 title: Set up Geo for two single-node sites (with external PostgreSQL services)
@@ -99,7 +99,7 @@ has three main functions:
 
 To configure the connection to the external read-replica database:
 
-1. SSH into each **Rails, Sidekiq, and Geo Log Cursor** node on your secondary site and login as root:
+1. SSH into each Rails, Sidekiq, and Geo Log Cursor node on your secondary site and login as root:
 
    ```shell
    sudo -i
@@ -329,7 +329,7 @@ Fast lookup is [required for Geo](../../operations/fast_ssh_key_lookup.md#fast-l
    1. In **Name**, enter the value for `gitlab_rails['geo_node_name']` in
       `/etc/gitlab/gitlab.rb`. The values must match exactly.
    1. In **External URL**, enter the value for `external_url` in `/etc/gitlab/gitlab.rb`.
-      It's okay if one values ends in `/` and the other doesn't. Otherwise, the values must
+      It's okay if one value ends in `/` and the other doesn't. Otherwise, the values must
       match exactly.
    1. Optional. In **Internal URL (optional)**, enter an internal URL for the primary site.
    1. Optional. Select which groups or storage shards should be replicated by the

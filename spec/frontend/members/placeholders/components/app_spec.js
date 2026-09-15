@@ -125,7 +125,7 @@ describe('PlaceholdersTabApp', () => {
       });
 
       it('updates URL on filter by status', async () => {
-        findFilteredSearchBar().vm.$emit('onFilter', [filterByFailedStatusToken]);
+        findFilteredSearchBar().vm.$emit('on-filter', [filterByFailedStatusToken]);
         await nextTick();
 
         expect(findUnassignedTable().props('queryStatuses')).toEqual([PLACEHOLDER_STATUS_FAILED]);
@@ -133,7 +133,7 @@ describe('PlaceholdersTabApp', () => {
       });
 
       it('updates URL on search', async () => {
-        findFilteredSearchBar().vm.$emit('onFilter', searchTokens);
+        findFilteredSearchBar().vm.$emit('on-filter', searchTokens);
         await nextTick();
 
         expect(findUnassignedTable().props('querySearch')).toBe(searchTerm);
@@ -177,7 +177,7 @@ describe('PlaceholdersTabApp', () => {
       });
 
       it('updates URL on new filter and search', async () => {
-        findFilteredSearchBar().vm.$emit('onFilter', [
+        findFilteredSearchBar().vm.$emit('on-filter', [
           filterByReassigningStatusToken,
           ...searchTokens,
         ]);
@@ -193,7 +193,7 @@ describe('PlaceholdersTabApp', () => {
       });
 
       it('updates URL when a new sort is passed', async () => {
-        findFilteredSearchBar().vm.$emit('onSort', 'CREATED_AT_DESC');
+        findFilteredSearchBar().vm.$emit('on-sort', 'CREATED_AT_DESC');
         await nextTick();
 
         expect(findUnassignedTable().props('querySort')).toBe(PLACEHOLDER_SORT_ID_DESC);

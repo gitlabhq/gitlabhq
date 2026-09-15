@@ -16,6 +16,10 @@ module Gitlab
             rescue ActiveRecord::RecordNotFound
               raise Sidekiq::JobRetry::Skip
             end
+
+            if Feature.enabled?(:track_organization_fallback, Feature.current_request)
+              Gitlab::ApplicationContext.push(organization_source: 'context')
+            end
           end
 
           yield

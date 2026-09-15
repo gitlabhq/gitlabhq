@@ -184,7 +184,7 @@ overrides the environment variable.
 
 #### Switch accounts
 
-The extension uses one account for each [VS Code workspace](https://code.visualstudio.com/docs/editor/workspaces)
+The extension uses one account for each [VS Code workspace](https://code.visualstudio.com/docs/editing/workspaces/workspaces)
 (window). It automatically selects the account when:
 
 - You authenticate with only one GitLab account in the extension.

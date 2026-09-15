@@ -29,7 +29,8 @@
     "resource_deploy_token_events",
     "branch_filter_strategy",
     "token_present",
-    "signing_token_present"
+    "signing_token_present",
+    "duo_flow_callback_enabled"
   ],
   "optional": [
     "url_variables",
@@ -133,6 +134,9 @@
       "type": "boolean"
     },
     "vulnerability_events": {
+      "type": "boolean"
+    },
+    "duo_flow_callback_enabled": {
       "type": "boolean"
     },
     "alert_status": {

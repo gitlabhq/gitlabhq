@@ -4,8 +4,6 @@ require 'rubocop_spec_helper'
 require_relative '../../../../rubocop/cop/rspec/expect_gitlab_tracking'
 
 RSpec.describe RuboCop::Cop::RSpec::ExpectGitlabTracking, feature_category: :shared do
-  let(:source_file) { 'spec/foo_spec.rb' }
-
   good_samples = [
     'expect_snowplow_event(category: nil, action: nil)',
     'expect_snowplow_event(category: "EventCategory", action: "event_action")',

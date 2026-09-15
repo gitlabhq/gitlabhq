@@ -17,7 +17,7 @@ RSpec.describe Gitlab::Ci::Config::Entry::PullPolicy, feature_category: :continu
     context 'when retry value is an empty array' do
       let(:config) { [] }
 
-      it { is_expected.to eq(nil) }
+      it { is_expected.to be_nil }
     end
 
     context 'when retry value is string' do
@@ -39,48 +39,48 @@ RSpec.describe Gitlab::Ci::Config::Entry::PullPolicy, feature_category: :continu
     context 'when retry value is nil' do
       let(:config) { nil }
 
-      it { is_expected.to eq(false) }
+      it { is_expected.to be(false) }
     end
 
     context 'when retry value is an empty array' do
       let(:config) { [] }
 
-      it { is_expected.to eq(false) }
+      it { is_expected.to be(false) }
     end
 
     context 'when retry value is a hash' do
       let(:config) { {} }
 
-      it { is_expected.to eq(false) }
+      it { is_expected.to be(false) }
     end
 
     context 'when retry value is string' do
       let(:config) { "always" }
 
-      it { is_expected.to eq(true) }
+      it { is_expected.to be(true) }
 
       context 'when it is an invalid policy' do
         let(:config) { "invalid" }
 
-        it { is_expected.to eq(false) }
+        it { is_expected.to be(false) }
       end
 
       context 'when it is an empty string' do
         let(:config) { "" }
 
-        it { is_expected.to eq(false) }
+        it { is_expected.to be(false) }
       end
     end
 
     context 'when retry value is array' do
       let(:config) { %w[always if-not-present] }
 
-      it { is_expected.to eq(true) }
+      it { is_expected.to be(true) }
 
       context 'when config contains an invalid policy' do
         let(:config) { %w[always invalid] }
 
-        it { is_expected.to eq(false) }
+        it { is_expected.to be(false) }
       end
     end
   end

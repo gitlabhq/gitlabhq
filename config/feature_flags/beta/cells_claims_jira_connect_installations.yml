@@ -1,0 +1,11 @@
+---
+name: cells_claims_jira_connect_installations
+description: Gates cells claims and the claims verification worker for the JiraConnectInstallation model
+  (forge_installation_xid and client_key)
+feature_issue_url: https://gitlab.com/gitlab-com/gl-infra/tenant-scale/cells-infrastructure/team/-/work_items/602
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/248948
+rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/624924
+milestone: '19.4'
+group: group::import
+type: beta
+default_enabled: false

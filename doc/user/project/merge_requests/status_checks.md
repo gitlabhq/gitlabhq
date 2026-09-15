@@ -52,7 +52,7 @@ By default, merge requests in projects can be merged even if external status che
 
 ## Lifecycle
 
-External status checks have an **asynchronous** workflow. Merge requests emit a merge request webhook payload to an external service whenever:
+External status checks have an asynchronous workflow. Merge requests emit a merge request webhook payload to an external service whenever:
 
 - A merge request is updated, closed, reopened, approved, unapproved, or merged.
 - Code is pushed to the source branch of the merge request.
@@ -128,15 +128,14 @@ For common form errors see the [troubleshooting](#troubleshooting) section below
 
 #### Service name
 
-This name can be any alphanumerical value and **must** be set. The name **must** be unique for
+This name can be any alphanumerical value and must be set. The name must be unique for
 the project.
-The name **has** to be unique for the project.
 
 #### API to check
 
-This field requires a URL and **must** use either the HTTP or HTTPS protocols.
-We **recommend** using HTTPS to protect your merge request data in transit.
-The URL **must** be set and **must** be unique for the project.
+This field requires a URL and must use either the HTTP or HTTPS protocols.
+We recommend using HTTPS to protect your merge request data in transit.
+The URL must be set and must be unique for the project.
 
 #### Target branch
 
@@ -145,14 +144,14 @@ you can use this field to set this limit.
 
 ![Status checks branch selector](img/status_checks_branches_selector_v14_0.png)
 
-The branches list is populated from the projects [protected branches](../repository/branches/protected.md).
+The branches list is populated from the project's [protected branches](../repository/branches/protected.md).
 
 You can scroll through the list of branches or use the search box
 when there are a lot of branches and the branch you are looking
 for doesn't appear immediately. The search box requires
-**three** alphanumeric characters to be entered for the search to begin.
+three alphanumeric characters to be entered for the search to begin.
 
-If you want the status check to be applied to **all** merge requests,
+If you want the status check to be applied to all merge requests,
 you can select the **All branches** option.
 
 #### HMAC shared secret
@@ -169,8 +168,8 @@ The **Remove status check?** dialog is then shown.
 ![Status checks delete modal](img/status_checks_delete_modal_v14_0.png)
 
 To complete the deletion of the status check you must select the
-**Remove status check** button. This **permanently** deletes
-the status check and it **is not** recoverable.
+**Remove status check** button. This permanently deletes
+the status check and it is not recoverable.
 
 ## Status checks widget
 
@@ -207,8 +206,8 @@ External API is already in use by another status check
 ```
 
 On a per project basis, status checks can only use a name or API URL once.
-These errors mean that either the status checks name or API URL have already
-been used in this projects status checks.
+These errors mean that either the status check's name or API URL has already
+been used in this project's status checks.
 
 You must either choose a different
 value on the current status check or update the value on the existing status check.
@@ -219,7 +218,7 @@ value on the current status check or update the value on the existing status che
 Please provide a valid URL
 ```
 
-The API to check field requires the URL provided to use either the HTTP or HTTPs protocols.
+The API to check field requires the URL provided to use either the HTTP or HTTPS protocols.
 You must update the value of the field to meet this requirement.
 
 ### Branch list error during retrieval or search
@@ -229,7 +228,7 @@ Unable to fetch branches list, please close the form and try again
 ```
 
 An unexpected response was received from the branches retrieval API.
-As suggested, you should close the form and reopen again or refresh the page. This error should be temporary, although
+As suggested, you should close the form and reopen it, or refresh the page. This error should be temporary, although
 if it persists, check the [GitLab status page](https://status.gitlab.com/) to see if there is a wider outage.
 
 ### Failed to load status checks

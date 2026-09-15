@@ -307,6 +307,18 @@ Instead of:
 This phrasing is more active and is from the user perspective, rather than the person who implemented the feature.
 For more information, see the [Microsoft Style Guide](https://learn.microsoft.com/en-us/style-guide/a-z-word-list-term-collections/a/allow-allows).
 
+## allowlist
+
+Do not use as a verb. Use only as a noun. 
+
+Use:
+
+- Add variables to an allowlist.
+
+Instead of:
+
+- Allowlist variables.
+
 ## analytics
 
 Use lowercase for **analytics** and its variations, like **contribution analytics** and **issue analytics**.
@@ -482,7 +494,7 @@ Use two Ls for the noun **cancellation**.
 
 ## cannot, can not
 
-Use **cannot** instead of **can not**.
+Use "cannot" instead of "can not".
 
 See also [contractions](_index.md#contractions).
 
@@ -1432,7 +1444,31 @@ use **GitLab Operator (Kubernetes)**.
 
 ## GitLab Orbit
 
-Do not use **Orbit** by itself. Always use **GitLab Orbit**.
+Use **GitLab Orbit**.
+
+After first use in a section, you can use **Orbit**.
+
+## GitLab Orbit Remote
+
+Use **GitLab Orbit Remote**.
+
+After the first use in a section, you can use **Orbit Remote**.
+
+## GitLab Orbit Local
+
+Use **GitLab Orbit Local**.
+
+After the first use in a section, you can use **Orbit Local**.
+
+## GitLab Orbit CLI
+
+Use **GitLab Orbit CLI**.
+
+After first use in a section, you can use **Orbit CLI**.
+
+When referring to commands, include both `orbit` and `glab orbit cli` versions to cover both
+installation and command execution options. In the GitLab CLI docs,
+document just the `glab orbit cli` version of the command.
 
 ## GitLab Pages
 
@@ -1979,17 +2015,17 @@ Do not use **navigate**. Use **go** instead. For example:
 
 Try to avoid **need to**, because it's wordy.
 
-For example, when a variable is **required**,
+For example, when a variable is required,
 instead of **You need to set the variable**, use:
 
 - Set the variable.
 - You must set the variable.
 
-When the variable is **recommended**:
+When the variable is recommended:
 
 - You should set the variable.
 
-When the variable is **optional**:
+When the variable is optional:
 
 - You can set the variable.
 
@@ -2105,14 +2141,14 @@ Instead of:
 
 ## only
 
-Put the word **only** next to the word it modifies.
+Put the word "only" next to the word it modifies.
 
-In the following example, **only** modifies the noun **projects**.
+In the following example, "only" modifies the noun **projects**.
 The meaning is that you can create one type of project--a private project.
 
 - You can create only private projects.
 
-In the following example, **only** modifies the verb **create**.
+In the following example, "only" modifies the verb **create**.
 The meaning is that you can't perform other actions,
 like deleting private projects, or adding users to them.
 
@@ -2661,6 +2697,27 @@ Do not confuse **set up** with [**configure**](#configure).
 1. Set up your installation.
 1. Configure your installation.
 
+## ship
+
+Do not use **ship** because it is ambiguous. Sometimes it
+means to release a feature or to include a component.
+Use:
+
+- When a feature or version is released:
+  - **release**
+  - **available in**
+  - Example: This feature is available in 19.2.
+- When a product includes a component by default:
+  - **include**
+  - **come with**
+  - **provide**
+  - Example: Siphon does not include its own table list.
+
+Do not use:
+
+- Siphon does not ship its own table list.
+- This feature ships in 17.4.
+
 ## sidebar, top bar
 
 Use **sidebar** to refer to the fixed areas on the left and right of the GitLab UI.
@@ -3008,7 +3065,7 @@ Pay attention to spacing by the letter **v**. In semantic versioning, no space e
 
 ## via
 
-Do not use Latin abbreviations. Use **with**, **through**, or **by using** instead. ([Vale](../testing/vale.md) rule: [`LatinTerms.yml`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/doc/.vale/gitlab_base/LatinTerms.yml))
+Do not use Latin abbreviations. Use "with", "through", or "by using" instead. ([Vale](../testing/vale.md) rule: [`LatinTerms.yml`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/doc/.vale/gitlab_base/LatinTerms.yml))
 
 ## virtual registry
 

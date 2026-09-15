@@ -42,12 +42,11 @@ module CreatesCommit
         format.json { render json: { message: _("success"), filePath: success_path } }
       end
     else
-      flash[:alert] = flash_message(result, @project, @branch_name, @commit_params)
-
       failure_path = failure_path.call if failure_path.respond_to?(:call)
 
       respond_to do |format|
         format.html do
+          flash[:alert] = flash_message(result, @project, @branch_name, @commit_params)
           if failure_view
             render failure_view
           else
@@ -142,10 +141,17 @@ module CreatesCommit
         target_project_id: @project_to_commit_into.default_merge_request_target.id,
         source_branch: @branch_name,
         target_branch: @start_branch
-      }
+      },
+      **new_merge_request_extra_params
     )
   end
   # rubocop:enable Gitlab/ModuleWithInstanceVariables
+
+  # Override to add context about the commit that seeded the branch. Kept out of
+  # the `merge_request` hash because these are not merge request attributes.
+  def new_merge_request_extra_params
+    {}
+  end
 
   def existing_merge_request_path
     project_merge_request_path(@project, @merge_request) # rubocop:disable Gitlab/ModuleWithInstanceVariables
@@ -171,8 +177,12 @@ module CreatesCommit
     # as the target branch in the same project,
     # we don't want to create a merge request.
     # FIXME: We should use either 1 or true, not both.
-    ActiveModel::Type::Boolean.new.cast(params[:create_merge_request]) &&
+    ActiveModel::Type::Boolean.new.cast(create_merge_request_param) &&
       (@different_project || @start_branch != @branch_name) # rubocop:disable Gitlab/ModuleWithInstanceVariables
+  end
+
+  def create_merge_request_param
+    params.permit(:create_merge_request)[:create_merge_request]
   end
 
   def branch_name_or_ref

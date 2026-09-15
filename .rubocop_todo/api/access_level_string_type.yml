@@ -1,6 +1,5 @@
 ---
 API/AccessLevelStringType:
-  Details: grace period
   Exclude:
     - 'ee/lib/api/entities/member_role.rb'
     - 'ee/lib/api/entities/protected_environments/approval_rule.rb'

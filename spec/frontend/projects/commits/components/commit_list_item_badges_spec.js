@@ -99,7 +99,7 @@ describe('CommitListItemBadges', () => {
       expect(ciIcons).toHaveLength(2);
 
       ciIcons.wrappers.forEach((icon) => {
-        expect(icon.props('status')).toBe(mockCommit.pipelines.edges[0].node.detailedStatus);
+        expect(icon.props('status')).toBe(mockCommit.latestPipeline.detailedStatus);
       });
     });
   });

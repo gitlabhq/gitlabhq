@@ -1,5 +1,0 @@
-fragment CodeSuggestionsUsersCountMetricItem on AiMetrics {
-  codeSuggestions {
-    contributorsCount
-  }
-}

@@ -29,16 +29,21 @@ RSpec.describe ActiveContext::BulkProcessor do
   end
 
   describe '#initialize' do
-    it 'initializes with empty failures and the correct adapter' do
-      processor = described_class.new
+    it 'initializes with empty failures, the correct adapter, and the queue name' do
+      processor = described_class.new(queue_name: 'retry_queue')
 
       expect(processor.failures).to be_empty
       expect(processor.adapter).to be_a(ActiveContext::Databases::Elasticsearch::Adapter)
+      expect(processor.queue_name).to eq('retry_queue')
+    end
+
+    it 'requires the queue name' do
+      expect { described_class.new }.to raise_error(ArgumentError, /missing keyword: :?queue_name/)
     end
   end
 
   describe '#process' do
-    let(:processor) { described_class.new }
+    let(:processor) { described_class.new(queue_name: 'code') }
 
     it 'adds ref to adapter and calls send_bulk if it returns true' do
       allow(adapter).to receive(:add_ref).and_return(true)
@@ -56,7 +61,7 @@ RSpec.describe ActiveContext::BulkProcessor do
   end
 
   describe '#flush' do
-    let(:processor) { described_class.new }
+    let(:processor) { described_class.new(queue_name: 'code') }
 
     it 'calls send_bulk and returns failures' do
       allow(processor).to receive(:send_bulk).and_return(processor)
@@ -65,7 +70,7 @@ RSpec.describe ActiveContext::BulkProcessor do
   end
 
   describe '#send_bulk' do
-    let(:processor) { described_class.new }
+    let(:processor) { described_class.new(queue_name: 'code') }
 
     before do
       processor.process(ref)
@@ -92,7 +97,7 @@ RSpec.describe ActiveContext::BulkProcessor do
   end
 
   describe '#try_send_bulk' do
-    let(:processor) { described_class.new }
+    let(:processor) { described_class.new(queue_name: 'retry_queue') }
 
     before do
       processor.process(ref)
@@ -112,7 +117,9 @@ RSpec.describe ActiveContext::BulkProcessor do
         expect(logger).to receive(:error).with(
           message: 'bulk_exception',
           error_class: 'StandardError',
-          error_message: 'Bulk processing failed'
+          error_message: 'Bulk processing failed',
+          queue_name: 'retry_queue',
+          refs_count: 1
         )
 
         expect(processor.send(:try_send_bulk)).to eq([ref])

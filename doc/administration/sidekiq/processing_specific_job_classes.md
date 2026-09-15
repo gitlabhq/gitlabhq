@@ -10,7 +10,7 @@ title: Processing specific job classes
 > instances should only add more processes that listen to all queues. This is the
 > same approach described in the [Reference Architectures](../reference_architectures/_index.md).
 
-Most GitLab instances should have [all processes to listen to all queues](extra_sidekiq_processes.md#start-multiple-processes).
+Most GitLab instances should have [all processes listen to all queues](extra_sidekiq_processes.md#start-multiple-processes).
 
 Another alternative is to use [routing rules](#routing-rules) which direct specific
 job classes inside the application to queue names that you configure. Then, the Sidekiq
@@ -102,15 +102,15 @@ These are not recommendations.
 
 ## Worker matching query
 
-GitLab provides a query syntax to match a worker based on its attributes
-employed by routing rules. A query includes two components:
+GitLab provides a query syntax, employed by routing rules, to match a worker based on its attributes.
+A query includes two components:
 
 - Attributes that can be selected.
 - Operators used to construct a query.
 
 ### Available attributes
 
-Queue matching query works upon the worker attributes, described in
+The queue matching query works upon the worker attributes, described in
 the Sidekiq style guide in the GitLab development documentation. We support querying
 based on a subset of worker attributes:
 

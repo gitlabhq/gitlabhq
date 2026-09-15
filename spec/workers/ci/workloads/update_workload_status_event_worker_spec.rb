@@ -8,7 +8,7 @@ RSpec.describe Ci::Workloads::UpdateWorkloadStatusEventWorker, feature_category:
   let_it_be_with_reload(:workload) { create(:ci_workload, project: project, pipeline: pipeline) }
   let(:status) { 'success' }
   let(:data) do
-    { pipeline_id: pipeline.id, status: status }
+    { pipeline_id: pipeline.id, status: status, source: 'push', partition_id: pipeline.partition_id }
   end
 
   let(:event) { Ci::PipelineFinishedEvent.new(data: data) }
@@ -20,7 +20,7 @@ RSpec.describe Ci::Workloads::UpdateWorkloadStatusEventWorker, feature_category:
 
     context 'when pipeline cannot be found' do
       let(:data) do
-        { pipeline_id: non_existing_record_id, status: status }
+        { pipeline_id: non_existing_record_id, status: status, source: 'push', partition_id: pipeline.partition_id }
       end
 
       it 'does not change workload state' do
@@ -30,7 +30,7 @@ RSpec.describe Ci::Workloads::UpdateWorkloadStatusEventWorker, feature_category:
 
     context 'when the event carries a partition_id that does not match the pipeline' do
       let(:data) do
-        { pipeline_id: pipeline.id, status: status, partition_id: pipeline.partition_id + 1 }
+        { pipeline_id: pipeline.id, status: status, source: 'push', partition_id: pipeline.partition_id + 1 }
       end
 
       it 'does not change workload state' do
@@ -42,7 +42,12 @@ RSpec.describe Ci::Workloads::UpdateWorkloadStatusEventWorker, feature_category:
       context 'when workload cannot be found' do
         let_it_be(:pipeline_without_workload) { create(:ci_pipeline, project: project) }
         let(:data) do
-          { pipeline_id: pipeline_without_workload.id, status: status }
+          {
+            pipeline_id: pipeline_without_workload.id,
+            status: status,
+            source: 'push',
+            partition_id: pipeline_without_workload.partition_id
+          }
         end
 
         it 'does not change workload state' do

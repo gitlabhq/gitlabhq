@@ -31,8 +31,26 @@ module API
         hook_scope.find(params.delete(:hook_id))
       end
 
+      # Overridden by the project and group hook APIs. System hooks have no container.
+      def hook_container
+        nil
+      end
+
+      # Rejected rather than dropped, so a caller is never told it enabled callbacks that
+      # are unavailable. Only false -> true is rejected: re-asserting a stored true grants
+      # nothing, since the flow side still refuses to attach the hook.
+      def validate_duo_flow_callback_param!(hook_params, current_value: false)
+        return unless hook_params[:duo_flow_callback_enabled]
+        return if current_value
+        return if ::Gitlab::WebHooks::DuoFlowCallback.available?(hook_container)
+
+        bad_request!('duo_flow_callback_enabled is not available for this namespace')
+      end
+
       def create_hook_params
         hook_params = declared_params(include_missing: false)
+        validate_duo_flow_callback_param!(hook_params)
+
         url_variables = hook_params.delete(:url_variables)
 
         if url_variables.present?
@@ -59,6 +77,8 @@ module API
 
       def update_hook_params(hook)
         update_params = declared_params(include_missing: false)
+        validate_duo_flow_callback_param!(update_params, current_value: hook.duo_flow_callback_enabled)
+
         url_variables = update_params.delete(:url_variables) || []
         url_variables = url_variables.to_h { [_1[:key], _1[:value]] }
         update_params[:url_variables] = hook.url_variables.merge(url_variables) if url_variables.present?

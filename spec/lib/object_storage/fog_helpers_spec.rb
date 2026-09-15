@@ -27,7 +27,7 @@ RSpec.describe ObjectStorage::FogHelpers, feature_category: :shared do
 
   describe '#available?' do
     context 'when object storage is enabled' do
-      it { is_expected.to eq(true) }
+      it { is_expected.to be(true) }
     end
 
     context 'when object storage is disabled' do
@@ -35,7 +35,7 @@ RSpec.describe ObjectStorage::FogHelpers, feature_category: :shared do
         stub_artifacts_object_storage(enabled: false)
       end
 
-      it { is_expected.to eq(false) }
+      it { is_expected.to be(false) }
     end
 
     context 'when implementing class did not define storage_location_identifier' do

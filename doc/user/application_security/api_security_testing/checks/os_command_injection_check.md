@@ -14,7 +14,7 @@ This check modifies parameters in the request (path, query string, headers, JSON
 
 ## Remediation
 
-It is possible to execute arbitrary OS commands on the target application server. OS Command Injection is a critical vulnerability that can lead to a full system compromise. User input should never be used in constructing commands or command arguments to functions which execute OS commands. This includes filenames supplied by user uploads or downloads.
+It is possible to execute arbitrary OS commands on the target application server. OS command injection is a critical vulnerability that can lead to a full system compromise. User input should never be used in constructing commands or command arguments to functions which execute OS commands. This includes filenames supplied by user uploads or downloads.
 
 Ensure your application does not:
 

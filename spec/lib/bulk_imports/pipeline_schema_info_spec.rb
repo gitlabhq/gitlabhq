@@ -21,7 +21,7 @@ RSpec.describe BulkImports::PipelineSchemaInfo, feature_category: :importers do
       let(:pipeline_name) { BulkImports::Common::Pipelines::EntityFinisher.to_s }
 
       it 'returns nil' do
-        expect(subject.db_schema).to eq(nil)
+        expect(subject.db_schema).to be_nil
       end
     end
 
@@ -29,7 +29,7 @@ RSpec.describe BulkImports::PipelineSchemaInfo, feature_category: :importers do
       let(:pipeline_name) { BulkImports::Projects::Pipelines::CommitNotesPipeline.to_s }
 
       it 'returns nil' do
-        expect(subject.db_schema).to eq(nil)
+        expect(subject.db_schema).to be_nil
       end
     end
   end

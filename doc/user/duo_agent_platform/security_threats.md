@@ -78,7 +78,7 @@ The following table describes the security controls and how they apply to each m
 | Tool restrictions | In each flow definition | In each flow definition | In each flow definition |
 | File access restrictions | Sandbox paths, project denylists, and Git-tracked files | Project denylists and Git-tracked files | Project denylists |
 | Tool response sanitization | Executed on the server | Executed on the server | Executed on the server |
-| Prompt injection detection | Executed on the server through HiddenLayer | Executed on the server HiddenLayer | Executed on the server HiddenLayer |
+| Prompt injection detection | Executed on the server through HiddenLayer | Executed on the server through HiddenLayer | Executed on the server through HiddenLayer |
 | Secret scanning | Client-side Gitleaks redaction | Client-side Gitleaks redaction | Not applied |
 
 ### Example attack sequences
@@ -225,7 +225,7 @@ This creates a review opportunity: users can examine the agent's output before i
 Allow an agent to write to many resources, but restrict read access to a controlled environment.
 For example, limit the agent to read only from a local file system subtree opened in an IDE.
 This prevents the agent from accessing public repositories where attackers could inject malicious prompts.
-Because the agent only reads from trusted, private sources, attackers cannot inject instructions through public merge requests, or public issues.
+Because the agent only reads from trusted, private sources, attackers cannot inject instructions through public merge requests or public issues.
 This breaks the "exposure to untrusted content" condition of the lethal trifecta.
 
 #### Use VS Code Dev Containers when running GitLab Duo in the IDE

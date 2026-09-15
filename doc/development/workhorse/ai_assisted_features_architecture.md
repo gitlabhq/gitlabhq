@@ -10,7 +10,7 @@ AI-assisted features in GitLab are powered by the GitLab Duo Workflow Service, a
 ## Key components
 
 - **GitLab Rails**: The main GitLab application that handles authentication, authorization, and API requests.
-- **Workhorse**: A smart reverse proxy that manages WebSocket connections and proxies requests between clients and the GitLab Duo Workflow Service.
+- **Workhorse**: A smart reverse proxy that manages WebSocket connections and proxies requests between clients and the GitLab Duo Workflow Service. Workhorse also runs a flow itself for callers that cannot execute actions, such as an integration handler in a background job.
 - **GitLab Duo Workflow Service**: An external service that performs requests to LLMs and orchestrates AI workflows.
 - **MCP Servers**: Model Context Protocol servers that provide tools and information to the AI agent (for example, the GitLab MCP server and external MCP servers).
 
@@ -72,6 +72,42 @@ sequenceDiagram
     WH->>User: 16. Forward response via WebSocket
 ```
 
+### Server-side execution
+
+Some callers need a flow run for them and cannot execute actions at all. A chat turn that arrives from a Slack integration and is handled in a background job has no filesystem, no shell, and no way to answer an `Action`. For these callers, Workhorse starts the flow itself and streams the checkpoints of the flow back over a single HTTP response as newline-delimited JSON.
+
+```mermaid
+sequenceDiagram
+    accTitle: Server-side flow execution
+    accDescr: Workhorse starts a flow for a server-side caller, streams checkpoints back as newline-delimited JSON, and answers on the caller's behalf the actions the caller cannot execute.
+    participant Caller as Server-side caller<br/>(Integration handler)
+    participant WH as Workhorse
+    participant Rails as GitLab Rails
+    participant DWS as Duo Workflow<br/>Service
+
+    Caller->>WH: 1. POST StartWorkflowRequest
+    WH->>Rails: 2. Pre-authorize request (/execute endpoint)
+    Rails->>WH: 3. Return workflow ID, DWS config & MCP servers
+    WH->>DWS: 4. Establish gRPC stream (ExecuteWorkflow)
+    WH->>DWS: 5. Send StartWorkflowRequest
+
+    DWS->>WH: 6. Send Action (NewCheckpoint)
+    WH->>Caller: 7. Stream checkpoint as ndjson line
+
+    DWS->>WH: 8. Send Action (RunCommand)
+    WH->>DWS: 9. Send ActionResponse carrying an error
+
+    DWS->>WH: 10. Send Action (NewCheckpoint)
+    WH->>Caller: 11. Stream checkpoint as ndjson line
+
+    DWS->>WH: 12. Close gRPC stream
+    WH->>Caller: 13. End response
+```
+
+The caller never answers an action. The GitLab Duo Workflow Service waits for a response to every action it emits, and an unanswered action stalls the flow until the service times out, so Workhorse answers on the caller's behalf. Actions the caller cannot execute receive an `ActionResponse` that carries an error. Actions Workhorse handles for every transport, such as `RunHTTPRequest` and MCP tool calls, are executed as usual. Only `NewCheckpoint` actions reach the caller, which is enough to follow the progress of the flow.
+
+The response header is committed with the first line written, so failures raised before the first action are reported as HTTP status codes: `409` when the workflow is already running elsewhere, `403` when the usage quota is exhausted, `400` for an invalid start request, and `502` when the gRPC stream cannot be opened. After the first line, a failure only ends the response, and the caller checks the workflow status to tell a completed run from an interrupted one.
+
 ### Restricted network environments
 
 In environments with IP restrictions or closed networks, Workhorse acts as a proxy for all external requests:
@@ -110,3 +146,5 @@ During server shutdown, Workhorse:
 - [MR !196891: Handle runHttpRequest action from GitLab Duo Workflow](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/196891)
 - [MR !206445: Implement MCP client that uses GitLab MCP server](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/206445)
 - [MR !212684: Workhorse shutdown DWS conns during blackout](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/212684)
+- [MR !254410: Introduce clientTransport interface in duoworkflow runner](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/254410)
+- [MR !254443: Add Duo Workflow server-side execution auth endpoint](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/254443)

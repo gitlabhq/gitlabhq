@@ -51,7 +51,7 @@ describe('ProjectSelector component', () => {
   });
 
   it(`triggers a "bottom-reached" event when user has scrolled to the bottom of the list`, () => {
-    wrapper.findComponent(GlInfiniteScroll).vm.$emit('bottomReached');
+    wrapper.findComponent(GlInfiniteScroll).vm.$emit('bottom-reached');
     expect(wrapper.emitted('bottom-reached')).toHaveLength(1);
   });
 

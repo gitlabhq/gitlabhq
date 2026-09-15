@@ -128,16 +128,6 @@ module IssuesHelper
     }
   end
 
-  def has_issue_date_filter_feature?(namespace, current_user)
-    enabled_for_user = Feature.enabled?(:issue_date_filter, current_user)
-    return true if enabled_for_user
-
-    enabled_for_group = Feature.enabled?(:issue_date_filter, namespace.group) if namespace.respond_to?(:group)
-    return true if enabled_for_group
-
-    Feature.enabled?(:issue_date_filter, namespace)
-  end
-
   def dashboard_issues_list_data(current_user)
     {
       autocomplete_award_emojis_path: autocomplete_award_emojis_path,
@@ -147,7 +137,6 @@ module IssuesHelper
       dashboard_milestones_path: dashboard_milestones_path(format: :json),
       empty_state_with_filter_svg_path: image_path('illustrations/empty-state/empty-issues-md.svg'),
       empty_state_without_filter_svg_path: image_path('illustrations/empty-state/empty-search-md.svg'),
-      has_issue_date_filter_feature: Feature.enabled?(:issue_date_filter, current_user).to_s,
       initial_sort: current_user&.user_preference&.issues_sort,
       is_public_visibility_restricted:
         Gitlab::CurrentSettings.restricted_visibility_levels&.include?(Gitlab::VisibilityLevel::PUBLIC).to_s,

@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Analytics::CycleAnalytics::Aggregation, type: :model, feature_category: :value_stream_management do
+RSpec.describe Analytics::CycleAnalytics::Aggregation, feature_category: :value_stream_management do
   describe 'associations' do
     it { is_expected.to belong_to(:namespace).required }
   end
@@ -227,7 +227,7 @@ RSpec.describe Analytics::CycleAnalytics::Aggregation, type: :model, feature_cat
     context 'when aggregation was not yet executed for the given group' do
       let(:aggregation) { create(:cycle_analytics_aggregation, last_incremental_run_at: nil) }
 
-      it { expect(aggregation.estimated_next_run_at).to eq(nil) }
+      it { expect(aggregation.estimated_next_run_at).to be_nil }
     end
 
     context 'when aggregation was already run' do
@@ -252,7 +252,7 @@ RSpec.describe Analytics::CycleAnalytics::Aggregation, type: :model, feature_cat
 
     context 'when no records are present in the DB' do
       it 'returns nil' do
-        expect(described_class.new.estimated_next_run_at).to eq(nil)
+        expect(described_class.new.estimated_next_run_at).to be_nil
       end
     end
 

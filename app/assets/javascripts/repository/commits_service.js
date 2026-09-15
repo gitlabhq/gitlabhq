@@ -40,6 +40,23 @@ const fetchData = (projectPath, path, ref, offset, refType) => {
     .catch(() => createAlert({ message: I18N_COMMIT_DATA_FETCH_ERROR }));
 };
 
+// Refetches every batch that was already loaded, e.g. after a path lock
+// changes, so that server-provided fields like `lockLabel` stay accurate.
+// eslint-disable-next-line max-params
+export const reloadCommits = async (projectPath, path, ref, refType) => {
+  const offsets = [...fetchedBatches];
+  resetRequestedCommits();
+
+  const commits = await Promise.all(
+    offsets.map((offset) => {
+      Array.from(Array(COMMIT_BATCH_SIZE)).forEach((_, i) => addRequestedOffset(offset + i));
+      return fetchData(projectPath, path, ref, offset, refType);
+    }),
+  );
+
+  return commits.flat();
+};
+
 // eslint-disable-next-line max-params
 export const loadCommits = async (projectPath, path, ref, offset, refType) => {
   if (isRequested(offset)) {

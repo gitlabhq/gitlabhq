@@ -32,7 +32,7 @@ module Types
           end
 
           def inputs
-            object.spec.fetch('inputs', {}).map do |key, value|
+            object.ordered_inputs.map do |key, value|
               input_hash(key, value)
             end
           end

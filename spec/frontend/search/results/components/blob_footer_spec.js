@@ -44,7 +44,7 @@ describe('BlobFooter', () => {
     it(`renders default open state`, async () => {
       findGlButton().vm.$emit('click');
       await nextTick();
-      expect(spy).toHaveBeenCalledWith('showMore', {
+      expect(spy).toHaveBeenCalledWith('show-more', {
         id: 'Testjs/Test:file/test.js',
         state: true,
       });

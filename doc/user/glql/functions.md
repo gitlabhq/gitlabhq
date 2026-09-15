@@ -100,7 +100,7 @@ functions in the `fields` parameter.
 
 **Description**:
 
-The `labels` function takes one or more label name string values as parameter,
+The `labels` function takes one or more label name string values as parameters,
 and creates a filtered column with only those labels on issues.
 The function also works as an extractor, so if a label has been extracted, it no longer shows up
 in the regular `labels` column, if you choose to display that column as well.
@@ -108,7 +108,7 @@ in the regular `labels` column, if you choose to display that column as well.
 **Additional details**:
 
 - By default, this function looks for an exact match to the label name.
-  A wildcard character (`*`) in the string to match any character.
+  Use a wildcard character (`*`) in the string to match any character.
 - A minimum of 1 and maximum of 100 label names can be passed to the `labels` function.
 - Label names passed to this function are case-insensitive. For example, `Deliverable` and `deliverable` are equivalent.
 

@@ -69,7 +69,7 @@ module Ci
     scope :with_interruptible_true, -> do
       where_exists(
         Ci::JobDefinitionInstance
-          .joins(:job_definition)
+          .joins_job_definition_scoped_by_job_partition
           .scoped_job
           .merge(Ci::JobDefinition.with_interruptible_true)
       )
@@ -78,7 +78,7 @@ module Ci
     scope :with_interruptible_false, -> do
       where_not_exists(
         Ci::JobDefinitionInstance
-           .joins(:job_definition)
+           .joins_job_definition_scoped_by_job_partition
            .scoped_job
            .merge(Ci::JobDefinition.with_interruptible_true)
       )

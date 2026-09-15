@@ -39,7 +39,7 @@ For example, the `X-Requested-With` header can't be used for preflight requests.
 
 GitLab supports the following authorization flows:
 
-- **Authorization code with [Proof Key for Code Exchange (PKCE)](https://www.rfc-editor.org/rfc/rfc7636)**:
+- **Authorization code with [Proof Key for Code Exchange (PKCE)](https://www.rfc-editor.org/rfc/rfc7636/)**:
   Most secure. Without PKCE, you'd have to include client secrets on mobile clients.
   This flow is recommended for both client and server apps.
 - **Authorization code**: Secure and common flow. Recommended option for secure
@@ -49,16 +49,21 @@ GitLab supports the following authorization flows:
 The draft specification for [OAuth 2.1](https://oauth.net/2.1/) specifically omits both the
 Implicit grant and Resource Owner Password Credentials flows.
 
-Refer to the [OAuth RFC](https://www.rfc-editor.org/rfc/rfc6749) to find out
+Refer to the [OAuth RFC](https://www.rfc-editor.org/info/rfc6749/) to find out
 how all those flows work and pick the right one for your use case.
 
 Authorization code (with or without PKCE) flow requires `application` to be
 registered first via the `/user_settings/applications` page in your user's account.
 During registration, by enabling proper scopes, you can limit the range of
 resources which the `application` can access. Upon creation, you obtain the
-`application` credentials: _Application ID_ and _Client Secret_. The _Client Secret_
-**must be kept secure**. It is also advantageous to keep the _Application ID_
-secret when your application architecture allows.
+`application` credentials:
+
+- Application ID
+- Client Secret
+
+> [!warning]
+> The Client Secret must be kept secure. You should also keep Application ID
+> secret when your application architecture allows.
 
 For a list of scopes in GitLab, see [the provider documentation](../integration/oauth_provider.md#view-all-authorized-applications).
 
@@ -76,7 +81,7 @@ For production, use HTTPS for your `redirect_uri`.
 For development, GitLab allows insecure HTTP redirect URIs.
 
 As OAuth 2.0 bases its security entirely on the transport layer, you should not use unprotected
-URIs. For more information, see the [OAuth 2.0 RFC](https://www.rfc-editor.org/rfc/rfc6749#section-3.1.2.1)
+URIs. For more information, see the [OAuth 2.0 RFC](https://www.rfc-editor.org/info/rfc6749/#section-3.1.2.1)
 and the [OAuth 2.0 Threat Model RFC](https://www.rfc-editor.org/rfc/rfc6819#section-4.4.2.1).
 
 In the following sections you can find detailed instructions on how to obtain
@@ -84,7 +89,7 @@ authorization with each flow.
 
 ### Authorization code with Proof Key for Code Exchange (PKCE)
 
-The [PKCE RFC](https://www.rfc-editor.org/rfc/rfc7636#section-1.1) includes a
+The [PKCE RFC](https://www.rfc-editor.org/info/rfc7636/#section-1.1) includes a
 detailed flow description, from authorization request through access token.
 The following steps describe our implementation of the flow.
 
@@ -180,7 +185,7 @@ You can now make requests to the API with the access token.
 ### Authorization code flow
 
 > [!note]
-> Check the [RFC spec](https://www.rfc-editor.org/rfc/rfc6749#section-4.1) for a
+> Check the [RFC spec](https://www.rfc-editor.org/info/rfc6749/#section-4.1) for a
 > detailed flow description.
 
 The authorization code flow is essentially the same as

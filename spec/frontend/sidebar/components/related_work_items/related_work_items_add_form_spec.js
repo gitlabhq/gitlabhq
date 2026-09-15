@@ -1,19 +1,25 @@
-import Vue from 'vue';
+import Vue, { nextTick } from 'vue';
 import VueApollo from 'vue-apollo';
-import { GlIcon, GlCollapsibleListbox, GlModal } from '@gitlab/ui';
+import { GlAlert, GlIcon, GlCollapsibleListbox, GlModal } from '@gitlab/ui';
 import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
 import createMockApollo from 'helpers/mock_apollo_helper';
 import waitForPromises from 'helpers/wait_for_promises';
 import { createAlert } from '~/alert';
+import * as Sentry from '~/sentry/sentry_browser_wrapper';
 import RelatedWorkItemsAddForm from '~/sidebar/components/related_work_items/related_work_items_add_form.vue';
 import CreateWorkItemModal from '~/work_items/components/create_work_item_modal.vue';
 import WorkItemTokenInput from '~/work_items/components/shared/work_item_token_input.vue';
 import recentlyViewedWorkItemsQuery from '~/sidebar/queries/recently_viewed_work_items.query.graphql';
+import mergeRequestRelatedWorkItemsQuery from '~/sidebar/queries/merge_request_related_work_items.query.graphql';
+import createMergeRequestWorkItemRelationMutation from '~/sidebar/queries/create_merge_request_work_item_relation.mutation.graphql';
 import { MR_WORK_ITEM_RELATIONSHIP_OPTIONS } from '~/sidebar/constants';
 
 jest.mock('~/alert');
 
 Vue.use(VueApollo);
+
+const MOCK_MERGE_REQUEST_ID = 'gid://gitlab/MergeRequest/1';
+const MOCK_MERGE_REQUEST_IID = '1';
 
 const recentlyViewedResponse = (items) => ({
   data: {
@@ -53,27 +59,87 @@ const issueItemWithoutIcon = {
   __typename: 'Issue',
 };
 
+const workItemToLink = {
+  id: 'gid://gitlab/WorkItem/101',
+  iid: '11',
+  title: 'New related item',
+  webPath: '/group/project/-/work_items/11',
+  webUrl: '/group/project/-/work_items/11',
+  namespace: {
+    id: 'gid://gitlab/Project/7',
+    fullPath: 'group/project',
+    __typename: 'Namespace',
+  },
+  __typename: 'WorkItem',
+};
+
+const createdRelation = {
+  id: 'gid://gitlab/MergeRequestsClosingIssues/1',
+  linkType: 'CLOSES',
+  fromMrDescription: false,
+  workItem: workItemToLink,
+  __typename: 'MergeRequestWorkItemRelation',
+};
+
+const createMutationResponse = (workItemRelations = [createdRelation], errors = []) => ({
+  data: {
+    mergeRequestCreateWorkItemRelations: {
+      errors,
+      workItemRelations,
+      __typename: 'MergeRequestCreateWorkItemRelationsPayload',
+    },
+  },
+});
+
 describe('RelatedWorkItemsAddForm', () => {
   let wrapper;
+  let mockApollo;
 
   const findRecentItems = () => wrapper.findAllByTestId('recently-viewed-item');
   const findRelationshipListbox = () => wrapper.findComponent(GlCollapsibleListbox);
   const findTokenInput = () => wrapper.findComponent(WorkItemTokenInput);
   const findCreateModal = () => wrapper.findComponent(CreateWorkItemModal);
   const findCreateButton = () => wrapper.findComponentByTestId('add-work-item-create');
+  const findConfirmButton = () => wrapper.findComponentByTestId('add-work-item-confirm');
   const findModal = () => wrapper.findComponent(GlModal);
+  const findError = () => wrapper.findComponent(GlAlert);
+
+  const selectAndAdd = async (workItems = [workItemToLink]) => {
+    findTokenInput().vm.$emit('input', workItems);
+    await nextTick();
+    findConfirmButton().vm.$emit('click');
+    await waitForPromises();
+  };
+
+  const readRelationsFromCache = (explicitMrWorkItemRelations = true) =>
+    mockApollo.clients.defaultClient.cache.readQuery({
+      query: mergeRequestRelatedWorkItemsQuery,
+      variables: { id: MOCK_MERGE_REQUEST_ID, explicitMrWorkItemRelations },
+    })?.mergeRequest;
 
   const createComponent = ({
     queryHandler = jest
       .fn()
       .mockResolvedValue(recentlyViewedResponse([issueItem, issueItemWithoutIcon])),
+    mutationHandler = jest.fn().mockResolvedValue(createMutationResponse()),
     propsData = {},
+    provide = {},
   } = {}) => {
+    mockApollo = createMockApollo([
+      [recentlyViewedWorkItemsQuery, queryHandler],
+      [createMergeRequestWorkItemRelationMutation, mutationHandler],
+    ]);
+
     wrapper = shallowMountExtended(RelatedWorkItemsAddForm, {
-      apolloProvider: createMockApollo([[recentlyViewedWorkItemsQuery, queryHandler]]),
+      apolloProvider: mockApollo,
+      provide: {
+        glFeatures: { explicitMrWorkItemRelations: true },
+        ...provide,
+      },
       propsData: {
         fullPath: 'group/project',
-        mergeRequestId: 'gid://gitlab/MergeRequest/1',
+        mergeRequestId: MOCK_MERGE_REQUEST_ID,
+        mergeRequestIid: MOCK_MERGE_REQUEST_IID,
         visible: true,
         ...propsData,
       },
@@ -220,7 +286,8 @@ describe('RelatedWorkItemsAddForm', () => {
         title: 'Brand new item',
         __typename: 'WorkItem',
       };
-      createComponent();
+      const mutationHandler = jest.fn().mockResolvedValue(createMutationResponse());
+      createComponent({ mutationHandler });
       await findRelationshipListbox().vm.$emit('select', 'RELATED');
 
       findCreateModal().vm.$emit('work-item-created', createdWorkItem);
@@ -228,7 +295,7 @@ describe('RelatedWorkItemsAddForm', () => {
       expect(wrapper.emitted('created')).toEqual([
         [{ workItem: createdWorkItem, linkType: 'RELATED' }],
       ]);
-      expect(wrapper.emitted('link')).toBeUndefined();
+      expect(mutationHandler).not.toHaveBeenCalled();
     });
 
     it('hides the create modal after a work item is created', async () => {
@@ -258,6 +325,223 @@ describe('RelatedWorkItemsAddForm', () => {
 
       await findCreateButton().vm.$emit('click');
       expect(findCreateModal().props('visible')).toBe(true);
+    });
+  });
+
+  describe('linking work items', () => {
+    const seedCache = ({ explicitMrWorkItemRelations = true } = {}) => {
+      mockApollo.clients.defaultClient.cache.writeQuery({
+        query: mergeRequestRelatedWorkItemsQuery,
+        variables: { id: MOCK_MERGE_REQUEST_ID, explicitMrWorkItemRelations },
+        data: {
+          mergeRequest: {
+            id: MOCK_MERGE_REQUEST_ID,
+            iid: MOCK_MERGE_REQUEST_IID,
+            title: 'Fix the bug',
+            reference: 'group/project!1',
+            ...(explicitMrWorkItemRelations
+              ? {
+                  userPermissions: {
+                    adminMergeRequest: true,
+                    __typename: 'MergeRequestPermissions',
+                  },
+                  workItemRelations: {
+                    nodes: [],
+                    __typename: 'MergeRequestWorkItemRelationConnection',
+                  },
+                }
+              : {}),
+            linkedWorkItems: [],
+            __typename: 'MergeRequest',
+          },
+        },
+      });
+    };
+
+    it('calls the create mutation with the selected items and relationship type', async () => {
+      const mutationHandler = jest.fn().mockResolvedValue(createMutationResponse());
+      createComponent({ mutationHandler });
+
+      await findRelationshipListbox().vm.$emit('select', 'RELATED');
+      await selectAndAdd();
+
+      expect(mutationHandler).toHaveBeenCalledWith({
+        projectPath: 'group/project',
+        iid: MOCK_MERGE_REQUEST_IID,
+        workItemIds: [workItemToLink.id],
+        linkType: 'RELATED',
+      });
+    });
+
+    it('links a recently viewed item when its row is clicked', async () => {
+      const mutationHandler = jest.fn().mockResolvedValue(createMutationResponse());
+      createComponent({ mutationHandler });
+      await waitForPromises();
+
+      findRecentItems().at(0).trigger('click');
+      await waitForPromises();
+
+      expect(mutationHandler).toHaveBeenCalledWith({
+        projectPath: 'group/project',
+        iid: MOCK_MERGE_REQUEST_IID,
+        workItemIds: [issueItem.id],
+        linkType: 'CLOSES',
+      });
+    });
+
+    it('shows the loading state on the add button while the mutation is in flight', async () => {
+      createComponent();
+
+      findTokenInput().vm.$emit('input', [workItemToLink]);
+      await nextTick();
+      findConfirmButton().vm.$emit('click');
+      await nextTick();
+
+      expect(findConfirmButton().props('loading')).toBe(true);
+
+      await waitForPromises();
+
+      expect(findConfirmButton().props('loading')).toBe(false);
+    });
+
+    it('does not start a second mutation while one is in flight', async () => {
+      const mutationHandler = jest.fn().mockResolvedValue(createMutationResponse());
+      createComponent({ mutationHandler });
+      await waitForPromises();
+
+      findRecentItems().at(0).trigger('click');
+      findRecentItems().at(1).trigger('click');
+      await waitForPromises();
+
+      expect(mutationHandler).toHaveBeenCalledTimes(1);
+    });
+
+    describe('when the mutation succeeds', () => {
+      it('emits "linked" with the number of linked items', async () => {
+        createComponent();
+
+        await selectAndAdd([
+          workItemToLink,
+          { ...workItemToLink, id: 'gid://gitlab/WorkItem/102' },
+        ]);
+
+        expect(wrapper.emitted('linked')).toEqual([[{ count: 2 }]]);
+      });
+
+      it('does not show an error', async () => {
+        createComponent();
+
+        await selectAndAdd();
+
+        expect(findError().exists()).toBe(false);
+      });
+
+      it('adds the new relation to the merge request relations in the cache', async () => {
+        createComponent();
+        seedCache();
+
+        await selectAndAdd();
+
+        expect(readRelationsFromCache().workItemRelations.nodes).toEqual([createdRelation]);
+      });
+
+      it('adds the new relation to the linked work items when the feature flag is disabled', async () => {
+        createComponent({ provide: { glFeatures: { explicitMrWorkItemRelations: false } } });
+        seedCache({ explicitMrWorkItemRelations: false });
+
+        await selectAndAdd();
+
+        expect(readRelationsFromCache(false).linkedWorkItems).toEqual([
+          {
+            linkType: createdRelation.linkType,
+            workItem: workItemToLink,
+            __typename: 'LinkedWorkItem',
+          },
+        ]);
+      });
+    });
+
+    describe('when the mutation returns errors', () => {
+      const mutationHandler = () =>
+        jest.fn().mockResolvedValue(createMutationResponse([], ['Work item could not be linked.']));
+
+      it('shows the returned error in the modal', async () => {
+        createComponent({ mutationHandler: mutationHandler() });
+
+        await selectAndAdd();
+
+        expect(findError().text()).toBe('Work item could not be linked.');
+        expect(findError().props('variant')).toBe('danger');
+        expect(createAlert).not.toHaveBeenCalled();
+      });
+
+      it('does not emit "linked"', async () => {
+        createComponent({ mutationHandler: mutationHandler() });
+
+        await selectAndAdd();
+
+        expect(wrapper.emitted('linked')).toBeUndefined();
+      });
+
+      it('hides the error when the user dismisses it', async () => {
+        createComponent({ mutationHandler: mutationHandler() });
+        await selectAndAdd();
+
+        findError().vm.$emit('dismiss');
+        await nextTick();
+
+        expect(findError().exists()).toBe(false);
+      });
+
+      it('does not show the error again when the modal is reopened', async () => {
+        let rejectMutation;
+        createComponent({
+          mutationHandler: jest.fn().mockImplementation(
+            () =>
+              new Promise((resolve, reject) => {
+                rejectMutation = reject;
+              }),
+          ),
+        });
+
+        findTokenInput().vm.$emit('input', [workItemToLink]);
+        await nextTick();
+        findConfirmButton().vm.$emit('click');
+        await nextTick();
+
+        // The user gives up and closes the modal while the request is in flight.
+        await wrapper.setProps({ visible: false });
+        rejectMutation(new Error('Network error'));
+        await waitForPromises();
+
+        await wrapper.setProps({ visible: true });
+
+        expect(findError().exists()).toBe(false);
+      });
+
+      it('hides the error when the modal is closed', async () => {
+        createComponent({ mutationHandler: mutationHandler() });
+        await selectAndAdd();
+
+        await wrapper.setProps({ visible: false });
+
+        expect(findError().exists()).toBe(false);
+      });
+    });
+
+    describe('when the mutation request fails', () => {
+      const error = new Error('Network error');
+
+      it('shows a generic error in the modal and reports it', async () => {
+        jest.spyOn(Sentry, 'captureException');
+        createComponent({ mutationHandler: jest.fn().mockRejectedValue(error) });
+
+        await selectAndAdd();
+
+        expect(findError().text()).toBe('Something went wrong while linking the work item.');
+        expect(wrapper.emitted('linked')).toBeUndefined();
+        expect(Sentry.captureException).toHaveBeenCalledWith(error);
+      });
     });
   });
 });

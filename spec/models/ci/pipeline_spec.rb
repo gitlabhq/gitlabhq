@@ -719,10 +719,10 @@ RSpec.describe Ci::Pipeline, :mailer, factory_default: :keep, feature_category: 
 
         if (from_status != to_status || success_to_success?) && transitionable?(from_status, to_status)
           expect(pipeline.set_status(to_status.to_s))
-            .to eq(true)
+            .to be(true)
         else
           expect(pipeline.set_status(to_status.to_s))
-            .to eq(false), 'loopback transitions are not allowed'
+            .to be(false), 'loopback transitions are not allowed'
         end
       end
 
@@ -1021,28 +1021,6 @@ RSpec.describe Ci::Pipeline, :mailer, factory_default: :keep, feature_category: 
 
       it 'does not return anything' do
         is_expected.to be_empty
-      end
-    end
-  end
-
-  describe '.where_not_sha' do
-    let_it_be(:pipeline) { create(:ci_pipeline, sha: 'abcx') }
-    let_it_be(:pipeline_2) { create(:ci_pipeline, sha: 'abc') }
-
-    let(:sha) { 'abc' }
-
-    subject { described_class.where_not_sha(sha) }
-
-    it 'returns the pipeline without the specified sha' do
-      is_expected.to contain_exactly(pipeline)
-    end
-
-    context 'when argument is array' do
-      let(:sha) { %w[abc abcx] }
-
-      it 'returns the pipelines without the specified shas' do
-        pipeline_3 = create(:ci_pipeline, sha: 'abcy')
-        is_expected.to contain_exactly(pipeline_3)
       end
     end
   end
@@ -2349,7 +2327,7 @@ RSpec.describe Ci::Pipeline, :mailer, factory_default: :keep, feature_category: 
       it 'does not update the coverage value of each build from the trace' do
         pipeline.update_builds_coverage
 
-        expect(build.reload.coverage).to eq(nil)
+        expect(build.reload.coverage).to be_nil
       end
     end
 
@@ -3632,7 +3610,7 @@ RSpec.describe Ci::Pipeline, :mailer, factory_default: :keep, feature_category: 
       let(:pipeline) { build(:ci_empty_pipeline, ref: 'master', project: build(:project)) }
 
       it 'always returns false' do
-        expect(pipeline.ref_exists?).to eq false
+        expect(pipeline.ref_exists?).to be false
       end
     end
   end
@@ -3783,23 +3761,23 @@ RSpec.describe Ci::Pipeline, :mailer, factory_default: :keep, feature_category: 
 
     subject { pipeline.has_exposed_artifacts? }
 
-    it { is_expected.to eq(false) }
+    it { is_expected.to be(false) }
 
     context 'with unexposed artifacts' do
       let(:options) { { artifacts: { paths: ['test'] } } }
 
-      it { is_expected.to eq(false) }
+      it { is_expected.to be(false) }
     end
 
     context 'with exposed artifacts' do
       let(:options) { { artifacts: { expose_as: 'test', paths: ['test'] } } }
 
-      it { is_expected.to eq(true) }
+      it { is_expected.to be(true) }
 
       context 'when the pipeline is not complete' do
         let(:pipeline) { create(:ci_pipeline, :running) }
 
-        it { is_expected.to eq(false) }
+        it { is_expected.to be(false) }
       end
 
       context 'when job_artifacts_metadata.exposed_as is not populated' do
@@ -3808,7 +3786,7 @@ RSpec.describe Ci::Pipeline, :mailer, factory_default: :keep, feature_category: 
         end
 
         it 'reads from job options' do
-          is_expected.to eq(true)
+          is_expected.to be(true)
         end
       end
 
@@ -3819,7 +3797,7 @@ RSpec.describe Ci::Pipeline, :mailer, factory_default: :keep, feature_category: 
         end
 
         it 'reads from job_artifacts_metadata' do
-          is_expected.to eq(true)
+          is_expected.to be(true)
         end
       end
     end
@@ -5163,6 +5141,10 @@ RSpec.describe Ci::Pipeline, :mailer, factory_default: :keep, feature_category: 
     let_it_be_with_reload(:project) { create(:project) }
     let_it_be(:pipeline) { create(:ci_empty_pipeline, :created, project: project) }
 
+    let(:fork) { fork_project(project) }
+    let(:branch_pipeline) { create(:ci_empty_pipeline, status: 'created', project: project, ref: 'master') }
+    let(:fork_pipeline) { create(:ci_empty_pipeline, status: 'created', project: fork, ref: 'master') }
+
     shared_examples 'a method that returns all merge requests for a given pipeline' do
       let(:pipeline) { create(:ci_empty_pipeline, status: 'created', project: pipeline_project, ref: 'master') }
       let(:merge_request) do
@@ -5267,84 +5249,49 @@ RSpec.describe Ci::Pipeline, :mailer, factory_default: :keep, feature_category: 
       end
     end
 
-    context 'when ci_skip_fork_mr_lookup_for_non_forks is disabled' do
-      before do
-        stub_feature_flags(ci_skip_fork_mr_lookup_for_non_forks: false)
-      end
+    it_behaves_like 'a method that returns all merge requests for a given pipeline' do
+      let(:pipeline_project) { project }
+    end
 
+    context 'for a fork' do
       it_behaves_like 'a method that returns all merge requests for a given pipeline' do
-        let(:pipeline_project) { project }
-      end
-
-      context 'for a fork' do
-        let(:fork) { fork_project(project) }
-
-        it_behaves_like 'a method that returns all merge requests for a given pipeline' do
-          let(:pipeline_project) { fork }
-        end
+        let(:pipeline_project) { fork }
       end
     end
 
-    context 'when ci_skip_fork_mr_lookup_for_non_forks is enabled' do
-      # The flag is enabled by default in the test environment.
-      let(:fork) { fork_project(project) }
-      let(:branch_pipeline) { create(:ci_empty_pipeline, status: 'created', project: project, ref: 'master') }
-      let(:fork_pipeline) { create(:ci_empty_pipeline, status: 'created', project: fork, ref: 'master') }
+    it 'does not issue a from_fork pluck query for a non-fork project' do
+      expect do
+        branch_pipeline.all_merge_requests.to_a
+      end.not_to make_queries_matching(/source_project_id <> target_project_id/)
+    end
 
-      it_behaves_like 'a method that returns all merge requests for a given pipeline' do
-        let(:pipeline_project) { project }
+    it 'still issues the fork target lookup for a fork project' do
+      expect do
+        fork_pipeline.all_merge_requests.to_a
+      end.to make_queries_matching(/SELECT DISTINCT "merge_requests"\."target_project_id"/)
+    end
+
+    context 'for a project unlinked from its fork network' do
+      let(:unlinked_fork) { fork_project(project) }
+      let(:pipeline) { create(:ci_empty_pipeline, status: 'created', project: unlinked_fork, ref: 'master') }
+
+      let(:historical_merge_request) do
+        create(:merge_request, source_project: unlinked_fork, target_project: project, source_branch: 'master')
       end
 
-      context 'for a fork' do
-        it_behaves_like 'a method that returns all merge requests for a given pipeline' do
-          let(:pipeline_project) { fork }
-        end
+      before do
+        create(
+          :merge_request_diff_commit,
+          merge_request_diff: historical_merge_request.merge_request_diff,
+          sha: pipeline.sha
+        )
+
+        Projects::UnlinkForkService.new(unlinked_fork, project.first_owner).execute
+        unlinked_fork.reload
       end
 
-      it 'does not issue a from_fork pluck query for a non-fork project' do
-        expect do
-          branch_pipeline.all_merge_requests.to_a
-        end.not_to make_queries_matching(/source_project_id <> target_project_id/)
-      end
-
-      it 'still issues the fork target lookup for a fork project' do
-        expect do
-          fork_pipeline.all_merge_requests.to_a
-        end.to make_queries_matching(/SELECT DISTINCT "merge_requests"\."target_project_id"/)
-      end
-
-      context 'for a project unlinked from its fork network' do
-        let(:unlinked_fork) { fork_project(project) }
-        let(:pipeline) { create(:ci_empty_pipeline, status: 'created', project: unlinked_fork, ref: 'master') }
-
-        let(:historical_merge_request) do
-          create(:merge_request, source_project: unlinked_fork, target_project: project, source_branch: 'master')
-        end
-
-        before do
-          create(
-            :merge_request_diff_commit,
-            merge_request_diff: historical_merge_request.merge_request_diff,
-            sha: pipeline.sha
-          )
-
-          Projects::UnlinkForkService.new(unlinked_fork, project.first_owner).execute
-          unlinked_fork.reload
-        end
-
-        it 'no longer returns the historical cross-project merge request' do
-          expect(pipeline.all_merge_requests).to be_empty
-        end
-
-        context 'when the flag is disabled' do
-          before do
-            stub_feature_flags(ci_skip_fork_mr_lookup_for_non_forks: false)
-          end
-
-          it 'returns the historical cross-project merge request' do
-            expect(pipeline.all_merge_requests).to eq([historical_merge_request])
-          end
-        end
+      it 'does not return the historical cross-project merge request' do
+        expect(pipeline.all_merge_requests).to be_empty
       end
     end
   end
@@ -5735,7 +5682,7 @@ RSpec.describe Ci::Pipeline, :mailer, factory_default: :keep, feature_category: 
 
     subject { pipeline.filtered_as_empty? }
 
-    it { is_expected.to eq false }
+    it { is_expected.to be false }
 
     context 'when the pipeline is failed' do
       using RSpec::Parameterized::TableSyntax
@@ -7003,7 +6950,7 @@ RSpec.describe Ci::Pipeline, :mailer, factory_default: :keep, feature_category: 
         it 'returns true' do
           create(:ci_bridge, pipeline: pipeline, scheduling_type: :dag)
 
-          expect(pipeline.uses_needs?).to eq(true)
+          expect(pipeline.uses_needs?).to be(true)
         end
       end
 
@@ -7011,7 +6958,7 @@ RSpec.describe Ci::Pipeline, :mailer, factory_default: :keep, feature_category: 
         it 'returns true' do
           create(:ci_build, pipeline: pipeline, scheduling_type: :dag)
 
-          expect(pipeline.uses_needs?).to eq(true)
+          expect(pipeline.uses_needs?).to be(true)
         end
       end
     end
@@ -7020,7 +6967,7 @@ RSpec.describe Ci::Pipeline, :mailer, factory_default: :keep, feature_category: 
       it 'returns false' do
         create(:ci_build, pipeline: pipeline, scheduling_type: :stage)
 
-        expect(pipeline.uses_needs?).to eq(false)
+        expect(pipeline.uses_needs?).to be(false)
       end
     end
   end
@@ -8813,11 +8760,31 @@ RSpec.describe Ci::Pipeline, :mailer, factory_default: :keep, feature_category: 
             'pipeline_id' => pipeline.id,
             'status' => pipeline.status,
             'source' => pipeline.source,
-            'partition_id' => pipeline.partition_id
+            'partition_id' => pipeline.partition_id,
+            'source_ref' => pipeline.ref
           })
         end
 
         pipeline.public_send(transition)
+      end
+    end
+
+    context 'with a merge request pipeline' do
+      let_it_be(:merge_request) do
+        create(:merge_request, source_project: project, target_project: project, source_branch: 'feature-branch')
+      end
+
+      let_it_be_with_reload(:pipeline) do
+        create(:ci_pipeline, project: project, merge_request: merge_request,
+          source: :merge_request_event, ref: merge_request.ref_path)
+      end
+
+      it 'publishes the merge request source branch as source_ref' do
+        expect(::Gitlab::EventStore).to receive(:publish) do |event|
+          expect(event.data).to include('source_ref' => 'feature-branch')
+        end
+
+        pipeline.succeed!
       end
     end
   end

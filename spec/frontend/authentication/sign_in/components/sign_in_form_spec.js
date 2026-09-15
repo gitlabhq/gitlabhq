@@ -146,6 +146,12 @@ describe('SignInForm', () => {
     it('add fragment to form action', () => {
       expect(findSignInForm().attributes('action')).toBe(`${defaultPropsData.signInPath}#foo`);
     });
+
+    it('adds fragment to passkeys form action', () => {
+      expect(findPasskeysForm().attributes('action')).toBe(
+        `${defaultPropsData.passkeysSignInPath}#foo`,
+      );
+    });
   });
 
   it('renders authenticity_token hidden input', () => {

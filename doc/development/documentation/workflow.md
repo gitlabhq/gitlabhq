@@ -28,7 +28,7 @@ for a milestone when:
 - A process, workflow, or previously documented feature is changed.
 - A feature is deprecated or removed.
 
-Documentation is not typically required when a **backend feature** is added or changed.
+Documentation is not typically required when a backend feature is added or changed.
 
 ### Developer responsibilities
 
@@ -118,7 +118,7 @@ ensure quality. Documentation forms part of the GitLab [definition of done](../c
 
 Documentation is sometimes merged with a feature without a technical writer review.
 If not assigned for a technical writer review prior to merging, the developer or maintainer must schedule a review immediately after the merge. For this,
-create an issue with the [Doc Review description template](https://gitlab.com/gitlab-org/gitlab/-/issues/new?description_template=Doc%20Review)
+create an issue with the [Doc Review description template](https://gitlab.com/gitlab-org/gitlab/-/work_items/new?description_template=Doc%20Review)
 and add a link to the merged merge request that introduced the documentation change.
 
 Circumstances where a post-merge technical writer review might occur are:
@@ -243,11 +243,11 @@ documentation in the same merge request as the code that it relates to, but
 this isn't strictly mandatory. It's still common for documentation to be added
 in an MR separate from the feature MR.
 
-Engineering teams may elect to adopt a workflow where it is **mandatory** that
+Engineering teams may elect to adopt a workflow where it is mandatory that
 documentation is included in the code MR, as part of their
 [definition of done](../contributing/merge_request_workflow.md#definition-of-done).
 When a team adopts this workflow, that team's engineers must include their
-documentation in the **same** MR as their feature code, at all times.
+documentation in the same MR as their feature code, at all times.
 
 ### Downsides of separate documentation MRs
 
@@ -342,7 +342,7 @@ changes might need to happen to a team's current workflow:
   must be reassigned the MR to verify the update.
 - Maintainers are allowed to merge features with the documentation *as-is*,
   even if the technical writer hasn't given final approval yet. The
-  **documentation reviews must not be blockers**. Therefore, it's important to
+  documentation reviews must not be blockers. Therefore, it's important to
   get the documentation included and assigned to the technical writers early.
   If the feature is merged before final documentation approval, the maintainer
   must create a [post-merge follow-up issue](#post-merge-reviews),
@@ -367,7 +367,7 @@ For complex features split over multiple merge requests:
   included.
 - If a merge request will expose a feature to users in any way, such as an
   enabled user interface element, an API endpoint, or anything similar, then
-  that MR **must** have documentation. This might mean multiple
+  that MR must have documentation. This might mean multiple
   documentation additions could happen in the buildup to the implementation of
   a single large feature, for example API documentation and feature usage
   documentation.
@@ -413,7 +413,7 @@ This will help manage the volume of notifications per review round.
 
 ### MR Reviews
 
-After the merge request is created, all changes and additions to text in the UI **must** be reviewed by
+After the merge request is created, all changes and additions to text in the UI must be reviewed by
 the technical writer.
 These might include labels (buttons, menus, column headers, and UI sections) or any phrases that would be
 displayed in the UI, such as microcopy or error messages.
@@ -586,7 +586,7 @@ When a new GitLab version is released, the Technical Writing team releases
 
 To make a documentation change that is not associated with a specific code change, the Technical Writing team encourages contributors to create an MR.
 
-If you start with an issue rather than an MR, use the [documentation template](https://gitlab.com/gitlab-org/gitlab/-/issues/new?description_template=Documentation).
+If you start with an issue rather than an MR, use the [documentation template](https://gitlab.com/gitlab-org/gitlab/-/work_items/new?description_template=Documentation).
 For the labels you should apply, see [labels](#labels).
 
 Also include:

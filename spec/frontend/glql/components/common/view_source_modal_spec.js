@@ -1,5 +1,6 @@
 import { GlModal } from '@gitlab/ui';
 import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
+import waitForPromises from 'helpers/wait_for_promises';
 import GlqlViewSourceModal from '~/glql/components/common/view_source_modal.vue';
 import { copyToClipboard } from '~/lib/utils/copy_to_clipboard';
 
@@ -7,6 +8,7 @@ jest.mock('~/lib/utils/copy_to_clipboard');
 
 describe('GlqlViewSourceModal', () => {
   let wrapper;
+  let toastShow;
 
   const query = 'type = Issue AND state = opened';
   const wrappedQuery = `\`\`\`glql\n${query}\n\`\`\``;
@@ -17,12 +19,21 @@ describe('GlqlViewSourceModal', () => {
         query,
         ...props,
       },
+      mocks: {
+        $toast: { show: toastShow },
+      },
     });
   };
 
   const findModal = () => wrapper.findComponent(GlModal);
+  const triggerPrimaryAction = async () => {
+    findModal().vm.$emit('primary');
+    await waitForPromises();
+  };
 
   beforeEach(() => {
+    toastShow = jest.fn();
+    copyToClipboard.mockResolvedValue();
     createComponent();
   });
 
@@ -69,8 +80,8 @@ describe('GlqlViewSourceModal', () => {
   });
 
   describe('when the primary action is triggered', () => {
-    beforeEach(() => {
-      findModal().vm.$emit('primary');
+    beforeEach(async () => {
+      await triggerPrimaryAction();
     });
 
     it('copies the wrapped query to the clipboard', () => {
@@ -81,6 +92,24 @@ describe('GlqlViewSourceModal', () => {
       const [, container] = copyToClipboard.mock.calls[0];
 
       expect(container.textContent).toEqual(wrappedQuery);
+    });
+
+    it('shows a success toast', () => {
+      expect(toastShow).toHaveBeenCalledTimes(1);
+      expect(toastShow).toHaveBeenCalledWith('Source copied to clipboard');
+    });
+  });
+
+  describe('when copying fails', () => {
+    beforeEach(async () => {
+      copyToClipboard.mockRejectedValue(new Error('Clipboard permission denied'));
+
+      await triggerPrimaryAction();
+    });
+
+    it('shows an error toast', () => {
+      expect(toastShow).toHaveBeenCalledTimes(1);
+      expect(toastShow).toHaveBeenCalledWith('Failed to copy source to clipboard');
     });
   });
 });

@@ -164,7 +164,7 @@ module Mutations
         toggle = widget_params[:description_widget]&.delete(:task_list_toggle)
         return unless toggle
 
-        if Feature.disabled?(:work_items_task_list_toggle, work_item.resource_parent)
+        if Feature.disabled?(:work_items_task_list_toggle, work_item.root_ancestor)
           raise Gitlab::Graphql::Errors::ArgumentError,
             '`taskListToggle` is not available. The `work_items_task_list_toggle` feature flag is disabled.'
         end

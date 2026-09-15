@@ -81,6 +81,12 @@ RSpec.describe 'Bulk update work items', feature_category: :team_planning do
       )
     end
 
+    it_behaves_like 'authorizing granular token permissions for GraphQL', :update_work_item do
+      let(:user) { current_user }
+      let(:boundary_object) { project }
+      let(:request) { post_graphql_mutation(mutation, token: { personal_access_token: pat }) }
+    end
+
     context 'when current user cannot read the specified project' do
       let(:parent) { private_project }
 

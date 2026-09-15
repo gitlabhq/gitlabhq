@@ -47,7 +47,7 @@ settings manually.
 
 ### EKS clusters
 
-To add an existing **EKS** cluster, you need:
+To add an existing EKS cluster, you need:
 
 - An Amazon EKS cluster with worker nodes properly configured.
 - `kubectl` [installed and configured](https://docs.aws.amazon.com/eks/latest/userguide/getting-started.html#get-started-kubectl)
@@ -56,7 +56,7 @@ To add an existing **EKS** cluster, you need:
 
 ### GKE clusters
 
-To add an existing **GKE** cluster, you need:
+To add an existing GKE cluster, you need:
 
 - The `container.clusterRoleBindings.create` permission to create a cluster
   role binding. You can follow the [Google Cloud documentation](https://cloud.google.com/iam/docs/granting-changing-revoking-access)
@@ -99,7 +99,7 @@ To add a Kubernetes cluster to your project, group, or instance:
 
          If the command returns the entire certificate chain, you must copy the Root CA
          certificate and any intermediate certificates at the bottom of the chain.
-         A chain file has following structure:
+         A chain file has the following structure:
 
          ```plaintext
             -----BEGIN MY CERTIFICATE-----
@@ -115,9 +115,9 @@ To add a Kubernetes cluster to your project, group, or instance:
    1. **Token** -
       GitLab authenticates against Kubernetes using service tokens, which are
       scoped to a particular `namespace`.
-      **The token used should belong to a service account with
+      The token used should belong to a service account with
       [`cluster-admin`](https://kubernetes.io/docs/reference/access-authn-authz/rbac/#user-facing-roles)
-      privileges**. To create this service account:
+      privileges. To create this service account:
       1. Create a file called `gitlab-admin-service-account.yaml` with contents:
 
          ```yaml
@@ -200,7 +200,7 @@ To add a Kubernetes cluster to your project, group, or instance:
         you're using a secret with broader permissions, like the secret from `default`.
       - You should not use `default` as the project namespace.
       - If you or someone created a secret specifically for the project, usually
-        with limited permissions, the secret's namespace and project namespace may
+        with limited permissions, the secret's namespace and project namespace might
         be the same.
 
 1. Select the **Add Kubernetes cluster** button.
@@ -222,7 +222,7 @@ integration to work properly.
 > Disabling RBAC means that any application running in the cluster,
 > or user who can authenticate to the cluster, has full API access. This is a
 > [security concern](../../infrastructure/clusters/connect/_index.md#security-implications-for-clusters-connected-with-certificates),
-> and may not be desirable.
+> and might not be desirable.
 
 To effectively disable RBAC, global permissions can be applied granting full access:
 
@@ -249,7 +249,7 @@ Ensure you're properly pasting the service token. Some shells may add a line bre
 service token, making it invalid. Ensure that there are no line breaks by
 pasting your token into an editor and removing any additional spaces.
 
-You may also experience this error if your certificate is not valid. To check that your certificate's
+You might also experience this error if your certificate is not valid. To check that your certificate's
 subject alternative names contain the correct domain for your cluster's API, run this command:
 
 ```shell

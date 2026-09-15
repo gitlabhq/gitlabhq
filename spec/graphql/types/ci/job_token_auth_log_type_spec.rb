@@ -21,14 +21,6 @@ RSpec.describe GitlabSchema.types['CiJobTokenAuthLog'], feature_category: :conti
     let(:returned_origin_project_avatar_urls) { authorizations_field.pluck('originProject').pluck('avatarUrl') }
     let_it_be(:current_project) { create(:project) }
 
-    let(:authorizations_log) do
-      create(
-        :ci_job_token_authorization,
-        origin_project: origin_project,
-        access_project: current_project
-      )
-    end
-
     let_it_be(:current_user) { create(:user) }
     let_it_be(:avatar_file) { fixture_file_upload('spec/fixtures/banana_sample.gif', 'image/gif') }
 

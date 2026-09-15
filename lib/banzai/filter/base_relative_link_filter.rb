@@ -26,6 +26,13 @@ module Banzai
         Gitlab.config.gitlab.relative_url_root.presence || '/'
       end
 
+      def preserve_original_link(html_attr, node)
+        return if html_attr.blank?
+        return if node.key?('data-canonical-src')
+
+        node.set_attribute('data-canonical-src', html_attr.value)
+      end
+
       private
 
       def unescape_and_scrub_uri(uri)

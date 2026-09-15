@@ -1,0 +1,23 @@
+---
+description: A standalone permalink to lines of a repository file was rendered as an inline code snippet in Markdown content.
+internal_events: true
+status: active
+action: render_blob_embed_in_markdown
+identifiers:
+  - project
+  - namespace
+  - user
+additional_properties:
+  label:
+    description: SHA256 of the embedded permalink's target project ID, commit SHA, file path and line range
+  property:
+    description: Where the document was rendered, either web or email
+product_group: planner_intelligence
+product_categories:
+  - markdown
+milestone: "19.4"
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/253363
+tiers:
+  - free
+  - premium
+  - ultimate

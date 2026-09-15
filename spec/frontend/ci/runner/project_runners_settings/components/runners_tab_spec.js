@@ -1,4 +1,5 @@
 import Vue from 'vue';
+import { cloneDeep } from 'lodash-es';
 import VueApollo from 'vue-apollo';
 import { GlAlert, GlTab, GlBadge, GlLoadingIcon } from '@gitlab/ui';
 import { shallowMountExtended, mountExtended } from 'helpers/vue_test_utils_helper';
@@ -284,6 +285,44 @@ describe('RunnersTab', () => {
       wrapper.vm.refresh();
 
       expect(projectRunnersHandler).toHaveBeenCalledTimes(2);
+    });
+
+    describe('when refreshed twice while the first refresh is in flight', () => {
+      const projectRunnersDataWithEdges = (edges) => {
+        const data = cloneDeep(projectRunnersData);
+        data.data.project.runners.edges = edges;
+        return data;
+      };
+
+      beforeEach(async () => {
+        await createComponent();
+      });
+
+      it('keeps the latest refresh response', async () => {
+        const pendingQueries = [];
+        projectRunnersHandler.mockImplementation(
+          () =>
+            new Promise((resolve) => {
+              pendingQueries.push(resolve);
+            }),
+        );
+
+        wrapper.vm.refresh();
+        wrapper.vm.refresh();
+        await waitForPromises();
+
+        // Each refresh is a real request, even while another refresh is in flight
+        expect(pendingQueries).toHaveLength(2);
+
+        // The fresh response (1 runner) overtakes the stale one (2 runners)
+        const [resolveStaleQuery, resolveFreshQuery] = pendingQueries;
+        resolveFreshQuery(projectRunnersDataWithEdges([mockRunners[0]]));
+        await waitForPromises();
+        resolveStaleQuery(projectRunnersDataWithEdges(mockRunners));
+        await waitForPromises();
+
+        expect(findRunnerList().props('runners')).toHaveLength(1);
+      });
     });
   });
 });

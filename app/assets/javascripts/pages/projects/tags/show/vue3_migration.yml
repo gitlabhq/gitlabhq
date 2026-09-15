@@ -1,0 +1,4 @@
+status: rollout
+feature_flag: vue3_migrate_refs_management
+group: group::source code
+migration_issue: https://gitlab.com/gitlab-org/gitlab/-/work_items/613674

@@ -8,6 +8,7 @@ module Organizations
 
       TransferError = Class.new(StandardError)
       BATCH_SIZE = 50
+      SLACK_SCOPE_BATCH_LIMIT = 1_000
 
       def initialize(group:, new_organization:, current_user:)
         @group = group
@@ -33,6 +34,11 @@ module Organizations
 
       def execute
         return ServiceResponse.error(message: transfer_error, reason: transfer_error_reason) unless can_transfer?
+
+        # Capture log fields before the transaction. If the transfer fails, the
+        # transaction is aborted and any DB read (e.g. group.full_path) would raise
+        # PG::InFailedSqlTransaction during error logging.
+        capture_log_context
 
         Group.transaction do
           perform_transfer
@@ -76,7 +82,10 @@ module Organizations
       def perform_transfer
         transfer_namespaces_and_projects
         transfer_topics
+        transfer_slack_api_scopes
+        transfer_infrastructure
         schedule_ci_runners_transfer
+        schedule_user_agent_details_transfer
         publish_event
       end
 
@@ -102,6 +111,7 @@ module Organizations
           )
 
           transfer_oauth_applications(batch_ids)
+          transfer_stage_event_hashes(batch_ids)
         end
       end
 
@@ -110,14 +120,6 @@ module Organizations
         update_organization_id_for(Authn::OauthApplication) do |relation|
           relation.where(owner_type: 'Namespace', owner_id: namespace_ids)
         end
-
-        # update_all above bypasses callbacks, so capture the moved records explicitly.
-        # TODO: evaluate moving this into OrganizationUpdater#update_organization_id_for.
-        Authn::OauthApplication.record_iam_outbox_upserts(
-          Authn::OauthApplication.where(
-            owner_type: 'Namespace', owner_id: namespace_ids, organization_id: new_organization.id
-          )
-        )
       end
       # rubocop:enable CodeReuse/ActiveRecord
 
@@ -135,19 +137,191 @@ module Organizations
         ).execute
       end
 
+      # rubocop:disable CodeReuse/ActiveRecord -- scoped queries for duplication transfer
+      def transfer_slack_api_scopes
+        namespace_ids = group.self_and_descendant_ids(skope: Namespace)
+
+        group_scope_ids = Integrations::SlackWorkspace::IntegrationApiScope
+          .where(group_id: namespace_ids)
+          .distinct
+          .limit(SLACK_SCOPE_BATCH_LIMIT)
+          .pluck(:slack_api_scope_id)
+
+        project_scope_ids = Integrations::SlackWorkspace::IntegrationApiScope
+          .where(project_id: group.all_projects)
+          .distinct
+          .limit(SLACK_SCOPE_BATCH_LIMIT)
+          .pluck(:slack_api_scope_id)
+
+        all_scope_ids = group_scope_ids | project_scope_ids
+
+        old_scopes = Integrations::SlackWorkspace::ApiScope
+          .where(id: all_scope_ids, organization_id: old_organization.id)
+
+        old_scope_names = old_scopes.map(&:name)
+        new_scopes = Integrations::SlackWorkspace::ApiScope
+          .find_or_initialize_by_names(old_scope_names, organization_id: new_organization.id)
+
+        name_to_new_id = new_scopes.index_by(&:name).transform_values(&:id)
+
+        old_scopes.each do |old_scope|
+          new_id = name_to_new_id[old_scope.name]
+
+          Integrations::SlackWorkspace::IntegrationApiScope
+            .where(group_id: namespace_ids, slack_api_scope_id: old_scope.id)
+            .update_all(slack_api_scope_id: new_id)
+
+          Integrations::SlackWorkspace::IntegrationApiScope
+            .where(project_id: group.all_projects, slack_api_scope_id: old_scope.id)
+            .update_all(slack_api_scope_id: new_id)
+        end
+      end
+      # rubocop:enable CodeReuse/ActiveRecord
+
+      def transfer_infrastructure
+        transfer_burned_project_routes
+        transfer_agent_organization_authorizations
+      end
+
+      # rubocop:disable CodeReuse/ActiveRecord -- used only in this service
+      def transfer_stage_event_hashes(namespace_ids)
+        stages = stages_with_event_hashes(namespace_ids)
+        group_ids = namespace_ids
+
+        Analytics::CycleAnalytics::StageEventHash
+          .where(organization_id: old_organization.id)
+          .each_batch(of: BATCH_SIZE) do |hash_batch|
+            source_hashes = hash_batch.where_exists(matching_stages_scope(stages)).to_a
+            next if source_hashes.empty?
+
+            target_ids_by_sha256 = ensure_target_stage_event_hashes(source_hashes)
+
+            source_hashes.each do |source_hash|
+              target_hash_id = target_ids_by_sha256.fetch(source_hash.hash_sha256)
+
+              repoint_stages(stages, source_hash.id, target_hash_id)
+              repoint_stage_events(source_hash.id, target_hash_id, group_ids)
+            end
+          end
+      end
+
+      def stages_with_event_hashes(namespace_ids)
+        Analytics::CycleAnalytics::Stage
+          .where(group_id: namespace_ids)
+          .where.not(stage_event_hash_id: nil)
+      end
+
+      def matching_stages_scope(stages)
+        stages.where(
+          Analytics::CycleAnalytics::Stage.arel_table[:stage_event_hash_id]
+            .eq(Analytics::CycleAnalytics::StageEventHash.arel_table[:id])
+        )
+      end
+
+      def ensure_target_stage_event_hashes(source_hashes)
+        hash_sha256_values = source_hashes.map(&:hash_sha256)
+        attributes = hash_sha256_values.map do |hash_sha256|
+          { organization_id: new_organization.id, hash_sha256: hash_sha256 }
+        end
+
+        Analytics::CycleAnalytics::StageEventHash.insert_all(
+          attributes,
+          unique_by: 'index_cycle_analytics_stage_event_hashes_on_org_id_sha_256',
+          returning: false
+        )
+
+        Analytics::CycleAnalytics::StageEventHash
+          .where(organization_id: new_organization.id, hash_sha256: hash_sha256_values)
+          .index_by(&:hash_sha256)
+          .transform_values(&:id)
+      end
+
+      def repoint_stages(stages, source_hash_id, target_hash_id)
+        stages.where(stage_event_hash_id: source_hash_id).each_batch(of: BATCH_SIZE) do |stage_batch|
+          stage_batch.update_all(stage_event_hash_id: target_hash_id)
+        end
+      end
+
+      def repoint_stage_events(source_hash_id, target_hash_id, group_ids)
+        return if source_hash_id == target_hash_id
+
+        stage_event_models.each do |model|
+          model
+            .where(stage_event_hash_id: source_hash_id, group_id: group_ids)
+            .each_batch(column: model.issuable_id_column, of: BATCH_SIZE) do |batch|
+              batch.update_all(stage_event_hash_id: target_hash_id)
+            end
+        end
+      end
+
+      def stage_event_models
+        [
+          Analytics::CycleAnalytics::IssueStageEvent,
+          Analytics::CycleAnalytics::MergeRequestStageEvent
+        ]
+      end
+      # rubocop:enable CodeReuse/ActiveRecord
+
+      # rubocop:disable CodeReuse/ActiveRecord -- used only in this service
+      def transfer_burned_project_routes
+        path_prefix = "#{group.full_path.downcase}/"
+        like_pattern = "#{Authn::BurnedProjectRoute.sanitize_sql_like(path_prefix)}%"
+        path_scope = ->(relation) { relation.where("LOWER(path) LIKE ?", like_pattern) }
+
+        conflicting_paths = path_scope.call(
+          Authn::BurnedProjectRoute.where(organization_id: new_organization.id)
+        ).select("LOWER(path)")
+
+        # Delete source-org burns that conflict with the target org - the target-org
+        # row already protects the path. The surviving row's project_id may differ;
+        # see https://gitlab.com/gitlab-org/gitlab/-/work_items/616401
+        path_scope.call(
+          Authn::BurnedProjectRoute.where(organization_id: old_organization.id)
+        ).where("LOWER(path) IN (?)", conflicting_paths)
+          .each_batch(of: ORGANIZATION_ID_UPDATE_BATCH_SIZE) { |batch| batch.delete_all }
+
+        update_organization_id_for(Authn::BurnedProjectRoute, &path_scope)
+      end
+      # rubocop:enable CodeReuse/ActiveRecord
+
+      # rubocop:disable CodeReuse/ActiveRecord -- used only in this service
+      def transfer_agent_organization_authorizations
+        descendant_agents = Clusters::Agent
+          .joins(project: :namespace)
+          .where("namespaces.traversal_ids @> '{?}'", group.id)
+          .where("cluster_agents.id = agent_organization_authorizations.agent_id")
+
+        update_organization_id_for(
+          Clusters::Agents::Authorizations::CiAccess::OrganizationAuthorization
+        ) do |relation|
+          relation.where_exists(descendant_agents)
+        end
+      end
+      # rubocop:enable CodeReuse/ActiveRecord
+
+      def projects
+        Project.in_namespace(group.self_and_descendant_ids(skope: Namespace))
+      end
+      strong_memoize_attr :projects
+
       # rubocop:disable CodeReuse/ActiveRecord -- used only in this service
       def schedule_pool_repository_disconnections(batch)
-        group.run_after_commit_or_now do
-          batch.where.not(pool_repository_id: nil).select(:id).each do |project|
-            Repositories::LeavePoolRepositoryWorker.perform_async(project.id)
-          end
+        # rubocop:disable Database/AvoidUsingPluckWithoutLimit -- bounded by each_batch
+        project_ids = batch.where.not(pool_repository_id: nil).pluck(:id)
+        # rubocop:enable Database/AvoidUsingPluckWithoutLimit
+
+        return if project_ids.empty?
+
+        # `group` never joins the transaction (all writes are `update_all`), so it cannot
+        # carry an after-commit callback. Leaving a pool disconnects alternates in Gitaly
+        # and nils pool_repository_id on the worker's connection; a rollback undoes neither.
+        ActiveRecord.after_all_transactions_commit do
+          project_ids.each { |project_id| Repositories::LeavePoolRepositoryWorker.perform_async(project_id) }
         end
       end
       # rubocop:enable CodeReuse/ActiveRecord
 
       def publish_event
-        # Capture IDs before the block: instance_eval in run_after_commit_or_now
-        # changes self to the group object, so attr_reader methods would not resolve.
         group_id = group.id
         old_org_id = old_organization.id
         new_org_id = new_organization.id
@@ -155,7 +329,11 @@ module Organizations
         # Publish once for the root group only. Descendants implicitly move with it.
         # Subscribers that need to act on descendant projects must traverse them
         # independently (e.g. via NamespaceEachBatch).
-        group.run_after_commit_or_now do
+        #
+        # `group` never joins the transaction (all writes are `update_all`), so it cannot
+        # carry an after-commit callback. Subscribers read the transferred rows, so
+        # publishing before commit makes them act on the old organization.
+        ActiveRecord.after_all_transactions_commit do
           Gitlab::EventStore.publish(
             Organizations::GroupTransferredEvent.new(data: {
               group_id: group_id,
@@ -171,8 +349,23 @@ module Organizations
         old_org_id = old_organization.id
         new_org_id = new_organization.id
 
-        group.run_after_commit_or_now do
+        # `group` never joins the transaction (all writes are `update_all`), so it cannot
+        # carry an after-commit callback. Defer so a rollback enqueues nothing.
+        ActiveRecord.after_all_transactions_commit do
           ::Ci::Runners::TransferOrganizationWorker.perform_async(group_id, old_org_id, new_org_id)
+        end
+      end
+
+      def schedule_user_agent_details_transfer
+        group_id = group.id
+        old_org_id = old_organization.id
+        new_org_id = new_organization.id
+
+        # `group` is never saved here - every write is `update_all` - so it cannot carry
+        # an after-commit callback, and a caller may have wrapped us in its own
+        # transaction. Defer to the outermost commit so a rollback enqueues nothing.
+        ActiveRecord.after_all_transactions_commit do
+          ::Organizations::TransferUserAgentDetailsWorker.perform_async(group_id, old_org_id, new_org_id)
         end
       end
 
@@ -184,17 +377,22 @@ module Organizations
         log_transfer(error_message)
       end
 
+      def capture_log_context
+        @log_context = {
+          group_path: group.full_path,
+          group_id: group.id,
+          new_organization_path: new_organization&.full_path,
+          new_organization_id: new_organization&.id
+        }
+      end
+
       def log_transfer(error_message = nil)
         action = error_message.nil? ? "was" : "was not"
 
-        log_payload = {
+        log_payload = (@log_context || {}).merge(
           message: "Group #{action} transferred to a new organization",
-          group_path: @group.full_path,
-          group_id: @group.id,
-          new_organization_path: new_organization&.full_path,
-          new_organization_id: new_organization&.id,
           error_message: error_message
-        }
+        )
 
         if error_message.nil?
           ::Gitlab::AppLogger.info(log_payload)

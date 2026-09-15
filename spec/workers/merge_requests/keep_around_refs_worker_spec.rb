@@ -131,26 +131,6 @@ RSpec.describe MergeRequests::KeepAroundRefsWorker, feature_category: :code_revi
       end
     end
 
-    # With the flag off for every project in the job the service keeps its old
-    # return value, which is not a `ServiceResponse` and must not be treated as one.
-    context 'when the service returns no ServiceResponse' do
-      [nil, [], %w[repository]].each do |value|
-        context "when it returns #{value.inspect}" do
-          before do
-            allow_next_instance_of(MergeRequests::KeepAroundRefsService) do |service|
-              allow(service).to receive(:execute).and_return(value)
-            end
-          end
-
-          it 'does not raise or log' do
-            expect(worker.logger).not_to receive(:warn)
-
-            expect { worker.perform(project_ids, shas, source) }.not_to raise_error
-          end
-        end
-      end
-    end
-
     it_behaves_like 'an idempotent worker' do
       let(:job_args) { [project_ids, shas, source] }
     end

@@ -544,14 +544,12 @@ RSpec.describe 'Project issue boards', :js, feature_category: :planning_views do
     end
   end
 
-  def drag(selector: '.board-list', list_from_index: 0, from_index: 0, to_index: 0, list_to_index: 0)
+  def drag(list_from_index: 0, from_index: 0, to_index: 0, list_to_index: 0)
     # ensure there is enough horizontal space for four lists
     resize_window(2000, 800)
 
-    lists = all(selector)
-    from_list = lists.at(list_from_index)
-    from_item = from_list.all('.board-card').at(from_index)
-    to_list = lists.at(list_to_index)
+    from_item = board_card(list_from_index, from_index)
+    to_list = board_list(list_to_index)
 
     to_item = to_list.all('.board-card').at(to_index).presence || to_list
 

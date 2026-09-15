@@ -56,7 +56,7 @@ module Gitlab
         end
 
         def parse_response_body(body)
-          Gitlab::Json.parse(body)
+          Gitlab::Json::SafeParser.parse(body)
         rescue StandardError
           raise Consul::Internal::UnexpectedResponseError
         end

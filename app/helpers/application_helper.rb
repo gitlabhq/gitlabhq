@@ -127,17 +127,21 @@ module ApplicationHelper
     Digest::SHA1.hexdigest string
   end
 
-  def simple_sanitize(str)
-    sanitize(str, tags: %w[a span])
-  end
-
   def body_data
     {
       page: body_data_page,
       page_type_id: controller.params[:id],
       group: @group&.path,
       group_full_path: @group&.full_path
-    }.merge(project_data)
+    }.merge(project_data).merge(password_manager_data)
+  end
+
+  def password_manager_data
+    return {} unless @ignore_password_managers
+
+    # 1Password only honours data-1p-ignore on <body> (or per field); without it, its DOM observers
+    # re-walk every node Rapid Diffs streams in and can freeze the page for seconds.
+    { '1p_ignore': '' }
   end
 
   def project_data
@@ -308,12 +312,10 @@ module ApplicationHelper
     class_names << 'epic-boards-page gl-overflow-auto' if current_controller?(:epic_boards)
     class_names << 'with-performance-bar' if performance_bar_enabled?
     class_names << 'with-header'
-    class_names << 'page-theme-background'
     class_names << 'page-with-panels'
     class_names << 'with-gl-container-queries'
     class_names << system_message_class
     class_names << (current_user ? 'user-logged-in' : 'user-logged-out')
-    class_names << 'aura-tinted-themes' if Feature.enabled?(:aura_tinted_themes, current_user)
 
     class_names
   end
@@ -438,8 +440,12 @@ module ApplicationHelper
   end
 
   def add_work_items_stylesheet
-    add_page_specific_style('page_bundles/work_items')
+    add_page_specific_style('page_bundles/design_management')
+    add_page_specific_style('page_bundles/issuable_list')
+    add_page_specific_style('page_bundles/issues_list')
+    add_page_specific_style('page_bundles/issues_show')
     add_page_specific_style('page_bundles/notes_shared')
+    add_page_specific_style('page_bundles/work_items')
   end
 
   def add_issuable_stylesheet
@@ -517,10 +523,6 @@ module ApplicationHelper
     content_tag(:span, class: 'has-tooltip', title: title) do
       sprite_icon('spam', css_class: ['gl-align-text-bottom', css_class].compact_blank.join(' '), variant: variant)
     end
-  end
-
-  def ai_panel_expanded?
-    cookies[:ai_panel_active_tab].present?
   end
 
   private

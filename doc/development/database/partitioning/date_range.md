@@ -99,7 +99,7 @@ substantial. Partitioning should only be leveraged if the access patterns
 of the data support the partitioning strategy, otherwise performance
 suffers.
 
-## Time-range Partitioning Strategies
+## Time-range partitioning strategies
 
 GitLab supports three strategies for time-range partitioning:
 
@@ -107,7 +107,7 @@ GitLab supports three strategies for time-range partitioning:
 - Weekly partitioning
 - Monthly partitioning
 
-### Using Time-range Partitioning
+### Using time-range partitioning
 
 To use time-range partitioning in your model, include the `PartitionedTable` module and configure the partition settings:
 
@@ -119,9 +119,9 @@ class WebHookLog < ApplicationRecord
 end
 ```
 
-### Available Strategies
+### Available strategies
 
-#### Daily Strategy (`:daily`)
+#### Daily strategy (`:daily`)
 
 The daily strategy creates one partition per day:
 
@@ -129,7 +129,7 @@ The daily strategy creates one partition per day:
 partitioned_by :created_at, strategy: :daily, retain_for: 7.days
 ```
 
-#### Weekly Strategy (`:weekly`)
+#### Weekly strategy (`:weekly`)
 
 The weekly strategy creates one partition per week. Weeks start on Monday:
 
@@ -137,7 +137,7 @@ The weekly strategy creates one partition per week. Weeks start on Monday:
 partitioned_by :created_at, strategy: :weekly, retain_for: 4.weeks
 ```
 
-#### Monthly Strategy (`:monthly`)
+#### Monthly strategy (`:monthly`)
 
 The monthly strategy creates one partition per month:
 
@@ -306,7 +306,7 @@ This step [queues a batched background migration](../batched_background_migratio
 In this step,
 add another post-deployment migration that cleans up after the
 background migration. This includes forcing any remaining jobs to
-execute, and copying data that may have been missed, due to dropped or
+execute, and copying data that might have been missed, due to dropped or
 failed jobs.
 
 Once again, continuing the example, this migration would look like:
@@ -335,7 +335,7 @@ original table guarantees that the data remains in sync going forward.
 
 ### Step 4: Swap the partitioned and non-partitioned tables (Release N+1)
 
-This step replaces the non-partitioned table with its partitioned copy, this should be used only after all other migration steps have completed successfully.
+This step replaces the non-partitioned table with its partitioned copy. Use this step only after all other migration steps have completed successfully.
 
 Some limitations to this method MUST be handled before, or during, the swap migration:
 

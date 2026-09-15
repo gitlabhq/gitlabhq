@@ -3,7 +3,12 @@
 module API
   module Internal
     class Shellhorse < ::API::Base
+      # gitlab-shell and workhorse authenticate via a shared secret, so the
+      # global organization hook has no user; derive from gl_repository instead.
+      skip_global_organization_setup!
+
       before { authenticate_by_gitlab_shell_or_workhorse_token! }
+      before { set_current_organization_from_repository }
 
       helpers ::API::Helpers::InternalHelpers
 
@@ -53,6 +58,9 @@ module API
               desc: 'Number of bytes received (from client) during the git operation.'
             optional :key_id, type: Integer,
               desc: 'ID of the SSH key used for authentication. Present when a deploy key authenticates via SSH.'
+            optional :identifier, type: String,
+              desc: 'GL_ID of the actor performing the git operation, such as `user-1` or `deploy-token-1`.
+              Sent by Workhorse for HTTP operations and takes precedence over `username` when resolving the actor.'
             optional :username, type: String,
               desc: 'Username of the user performing the git operation.'
             optional :namespace_path, type: String,
@@ -67,14 +75,6 @@ module API
 
             unless need_git_audit_event?
               break response_with_status(code: 200, success: false, message: "No git audit event needed")
-            end
-
-            check_result = access_check_result
-            break check_result if unsuccessful_response?(check_result)
-
-            unless check_result.is_a?(::Gitlab::GitAccessResult::Success)
-              break response_with_status(code: 500, success: false,
-                message: ::API::Helpers::InternalHelpers::UNKNOWN_CHECK_RESULT_ERROR)
             end
 
             audit_message = {

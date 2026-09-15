@@ -110,7 +110,7 @@ describe('SortDropdown', () => {
         jest.spyOn(urlUtilities, 'visitUrl').mockImplementation();
         createComponent();
 
-        findSortingComponent().vm.$emit('sortByChange', FIELD_KEY_MAX_ROLE);
+        findSortingComponent().vm.$emit('sort-by-change', FIELD_KEY_MAX_ROLE);
         await nextTick();
       });
 

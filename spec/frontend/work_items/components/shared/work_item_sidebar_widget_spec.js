@@ -104,10 +104,10 @@ describe('WorkItemSidebarWidget component', () => {
         expect(wrapper.text()).toContain('Editing');
       });
 
-      it('emits "stopEditing" event when apply button is clicked', () => {
+      it('emits "stop-editing" event when apply button is clicked', () => {
         findApplyButton().vm.$emit('click');
 
-        expect(wrapper.emitted('stopEditing')).toEqual([[]]);
+        expect(wrapper.emitted('stop-editing')).toEqual([[]]);
       });
 
       it('stops editing when the Esc key is pressed', async () => {
@@ -118,7 +118,7 @@ describe('WorkItemSidebarWidget component', () => {
         expect(findEditButton().exists()).toBe(true);
         expect(wrapper.text()).not.toContain('Editing');
         expect(findApplyButton().exists()).toBe(false);
-        expect(wrapper.emitted('stopEditing')).toEqual([[]]);
+        expect(wrapper.emitted('stop-editing')).toEqual([[]]);
       });
     });
 

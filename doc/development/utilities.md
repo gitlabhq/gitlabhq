@@ -7,6 +7,39 @@ title: GitLab utilities
 
 We have developed a number of utilities to help ease development:
 
+## `Executable`
+
+Refer to [`executable.rb`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/gems/gitlab-utils/lib/gitlab/utils/executable.rb):
+
+- Adds a class-level `execute` method to a service class. The method builds a new instance
+  with the given arguments and calls `execute` on it:
+
+  ```ruby
+  # Before
+  class MyService
+    def self.execute(project, user)
+      new(project, user).execute
+    end
+  end
+
+  # After
+  class MyService
+    include Gitlab::Utils::Executable
+  end
+  ```
+
+  Both versions support `MyService.execute(project, user)` as a shortcut for
+  `MyService.new(project, user).execute`.
+
+- Use the mixin when the caller does not need the service instance after the call. `new`
+  stays available for callers that need the instance.
+
+- The method forwards arguments with `...`, so it cannot fall out of sync with `initialize`.
+  A delegator that restates the argument list falls out of sync when `initialize` changes.
+
+- `include` places the module ahead of the superclass in the singleton ancestor chain. So the
+  mixin overrides a class-level `execute` inherited from a parent class.
+
 ## `MergeHash`
 
 Refer to [`merge_hash.rb`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/lib/gitlab/utils/merge_hash.rb):

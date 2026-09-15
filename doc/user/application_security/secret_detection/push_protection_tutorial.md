@@ -6,7 +6,7 @@ title: 'Tutorial: Protect your project with secret push protection'
 ---
 
 If your application uses external resources, you usually need to authenticate your
-application with a **secret**, like a token or key. If a secret is pushed to a
+application with a secret, like a token or key. If a secret is pushed to a
 remote repository, anyone with access to the repository can impersonate you or your
 application.
 
@@ -30,7 +30,7 @@ This tutorial is adapted from the following GitLab Unfiltered videos:
 
 ## Before you begin
 
-Before you begin this tutorial make sure you have the following:
+Before you begin this tutorial, make sure you have the following:
 
 - A GitLab Ultimate subscription.
 - A test project. You can use any project you like, but consider creating a test project specifically for this tutorial.

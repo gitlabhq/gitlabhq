@@ -1,12 +1,13 @@
 <script>
-import { GlDropdownItem } from '@gitlab/ui';
+import { GlDropdownItem, GlLoadingIcon } from '@gitlab/ui';
 import { createAlert } from '~/alert';
 import { TYPE_ALERT, TYPE_ISSUE, TYPE_MERGE_REQUEST } from '~/issues/constants';
 import { __, n__ } from '~/locale';
 import UserSelect from '~/vue_shared/components/user_select/user_select.vue';
+import AssigneeDropdown from '~/merge_requests/components/assignees/assignee_dropdown.vue';
 import glFeatureFlagsMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
 import { keysFor, ISSUE_MR_CHANGE_ASSIGNEE } from '~/behaviors/shortcuts/keybindings';
-import { shouldDisableShortcuts } from '~/behaviors/shortcuts/shortcuts_toggle';
+import { keyboardShortcutsDisabled } from '~/behaviors/shortcuts/shortcuts_disabled';
 import { sanitize } from '~/lib/dompurify';
 import { observable } from '~/lib/utils/observable';
 import { assigneesQueries } from '../../queries/constants';
@@ -36,9 +37,11 @@ export default {
     SidebarEditableItem,
     IssuableAssignees,
     GlDropdownItem,
+    GlLoadingIcon,
     SidebarInviteMembers,
     SidebarAssigneesRealtime,
     UserSelect,
+    AssigneeDropdown,
   },
   mixins: [glFeatureFlagsMixin()],
   inject: {
@@ -127,6 +130,9 @@ export default {
     },
   },
   computed: {
+    isMergeRequest() {
+      return this.issuableType === TYPE_MERGE_REQUEST;
+    },
     shouldEnableRealtime() {
       // Note: Realtime is only available on issues right now, future support for MR wil be built later.
       return this.issuableType === TYPE_ISSUE;
@@ -173,15 +179,15 @@ export default {
       return this.currentUser.username !== undefined;
     },
     assigneeShortcutDescription() {
-      return shouldDisableShortcuts() ? null : ISSUE_MR_CHANGE_ASSIGNEE.description;
+      return keyboardShortcutsDisabled() ? null : ISSUE_MR_CHANGE_ASSIGNEE.description;
     },
     assigneeShortcutKey() {
-      return shouldDisableShortcuts() ? null : keysFor(ISSUE_MR_CHANGE_ASSIGNEE)[0];
+      return keyboardShortcutsDisabled() ? null : keysFor(ISSUE_MR_CHANGE_ASSIGNEE)[0];
     },
     assigneeTooltip() {
       const description = this.assigneeShortcutDescription;
       const key = this.assigneeShortcutKey;
-      return shouldDisableShortcuts()
+      return keyboardShortcutsDisabled()
         ? null
         : sanitize(`${description} <kbd class="flat gl-ml-1" aria-hidden=true>${key}</kbd>`);
     },
@@ -283,9 +289,44 @@ export default {
       :issuable-type="issuableType"
       :issuable-id="issuableId"
       :query-variables="queryVariables"
-      @assigneesUpdated="$emit('assignees-updated', $event)"
+      @assignees-updated="$emit('assignees-updated', $event)"
     />
+    <template v-if="isMergeRequest">
+      <div
+        class="hide-collapsed gl-flex gl-items-center gl-gap-2 gl-font-bold gl-leading-20 gl-text-default"
+      >
+        {{ assigneeText }}
+        <gl-loading-icon
+          v-if="issuableIsLoading || isSettingAssignees"
+          size="sm"
+          inline
+          class="!gl-align-bottom"
+          data-testid="loading-icon"
+        />
+        <assignee-dropdown
+          v-if="editable && !isAssigneesLoading"
+          :full-path="fullPath"
+          :iid="iid"
+          :issuable-id="issuableId"
+          :selected-assignees="assignees"
+          :author="nonPlaceholderIssuableAuthor"
+          :multiple-selection-enabled="allowMultipleAssignees"
+          :current-user-can-merge="currentUser.canMerge"
+        />
+      </div>
+      <template v-if="!isAssigneesLoading">
+        <slot name="collapsed" :users="assignees"></slot>
+        <issuable-assignees
+          :users="assignees"
+          :issuable-type="issuableType"
+          :signed-in="signedIn"
+          :editable="editable"
+          @assign-self="assignSelf"
+        />
+      </template>
+    </template>
     <sidebar-editable-item
+      v-else
       ref="toggle"
       :loading="isSettingAssignees"
       :initial-loading="isAssigneesLoading"

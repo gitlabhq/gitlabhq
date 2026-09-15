@@ -86,8 +86,9 @@ class Projects::MergeRequests::CreationsController < Projects::MergeRequests::Ap
     # This is always source
     @source_project = @merge_request.nil? ? @project : @merge_request.source_project
 
-    if params[:ref].present?
-      @ref = params[:ref]
+    ref = permitted_params[:ref]
+    if ref.present?
+      @ref = ref
       @commit = @repository.commit(Gitlab::Git::BRANCH_REF_PREFIX + @ref)
     end
 
@@ -97,11 +98,12 @@ class Projects::MergeRequests::CreationsController < Projects::MergeRequests::Ap
   def branch_to
     @target_project = selected_target_project
 
+    ref = permitted_params[:ref]
     if @target_project &&
-        params[:ref].present? &&
+        ref.present? &&
         Ability.allowed?(current_user, :create_merge_request_in, @target_project)
 
-      @ref = params[:ref]
+      @ref = ref
       @commit = @target_project.commit(Gitlab::Git::BRANCH_REF_PREFIX + @ref)
     end
 
@@ -109,6 +111,10 @@ class Projects::MergeRequests::CreationsController < Projects::MergeRequests::Ap
   end
 
   private
+
+  def permitted_params
+    params.permit(:ref, :target_project_id, :nav_source)
+  end
 
   def rapid_diffs_presenter
     return unless @merge_request.can_be_created
@@ -121,11 +127,15 @@ class Projects::MergeRequests::CreationsController < Projects::MergeRequests::Ap
       current_user: current_user,
       request_params: {
         merge_request: merge_request_params,
-        file_path: params[:file_path],
-        old_path: params[:old_path],
-        new_path: params[:new_path]
+        file_path: diff_path_params[:file_path],
+        old_path: diff_path_params[:old_path],
+        new_path: diff_path_params[:new_path]
       }
     )
+  end
+
+  def diff_path_params
+    params.permit(:file_path, :old_path, :new_path)
   end
 
   def define_new_vars
@@ -165,11 +175,11 @@ class Projects::MergeRequests::CreationsController < Projects::MergeRequests::Ap
   def selected_target_project
     return @project unless @project.forked?
 
-    if params[:target_project_id].present?
-      return @project if @project.id.to_s == params[:target_project_id]
+    if permitted_params[:target_project_id].present?
+      return @project if @project.id.to_s == permitted_params[:target_project_id]
 
       MergeRequestTargetProjectFinder.new(current_user: current_user, source_project: @project)
-        .find_by(id: params[:target_project_id])
+        .find_by(id: permitted_params[:target_project_id])
     else
       @project.default_merge_request_target
     end
@@ -177,7 +187,7 @@ class Projects::MergeRequests::CreationsController < Projects::MergeRequests::Ap
   # rubocop: enable CodeReuse/ActiveRecord
 
   def webide_source?
-    params[:nav_source] == 'webide'
+    permitted_params[:nav_source] == 'webide'
   end
 
   def after_push_link?

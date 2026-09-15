@@ -404,7 +404,7 @@ For more information about disaster recovery, including recovery objectives, see
 How you migrate to GitLab Dedicated depends on your source system.
 
 To migrate a complete GitLab Self-Managed instance, use
-[Geo](../../administration/dedicated/geo_migration.md).
+[Geo](../../administration/dedicated/migrate_with_geo/_index.md).
 Consider Geo first, because it replicates your entire instance and migrates the most complete set of data.
 
 To migrate specific groups and projects from GitLab Self-Managed or GitLab.com, use one of

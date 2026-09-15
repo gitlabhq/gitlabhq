@@ -3,7 +3,7 @@
 require 'spec_helper'
 require_migration!
 
-RSpec.describe BackfillItemConsumerPinnedVersionPrefix, feature_category: :workflow_catalog do
+RSpec.describe BackfillItemConsumerPinnedVersionPrefix, feature_category: :ai_catalog_curation do
   let(:ai_catalog_items) { table(:ai_catalog_items) }
   let(:ai_catalog_item_versions) { table(:ai_catalog_item_versions) }
   let(:ai_catalog_item_consumers) { table(:ai_catalog_item_consumers) }

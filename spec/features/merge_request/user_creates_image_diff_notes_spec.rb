@@ -138,7 +138,8 @@ RSpec.describe 'Merge request > User creates image diff notes', :js, feature_cat
         .from(a_string_matching('left: 1px'))
     end
 
-    it 'shows both images at the same position' do
+    it 'shows both images at the same position', skip: 'Rapid Diffs: image overlay alignment / onion-skin drag in .rd-image-with-discussions; ' \
+                                                   'https://gitlab.com/gitlab-org/gitlab/-/merge_requests/248300' do
       drag_and_drop_by(find('.swipe-bar'), 40, 0)
 
       expect(left_position('.frame.added img'))
@@ -147,7 +148,8 @@ RSpec.describe 'Merge request > User creates image diff notes', :js, feature_cat
   end
 
   shared_examples 'onion skin' do
-    it 'resets opacity when toggling between view modes', quarantine: 'https://gitlab.com/gitlab-org/quality/test-failure-issues/-/issues/9342' do
+    it 'resets opacity when toggling between view modes', skip: 'Rapid Diffs: image overlay alignment / onion-skin drag in .rd-image-with-discussions; ' \
+                                                            'https://gitlab.com/gitlab-org/gitlab/-/merge_requests/248300' do
       # Simulate dragging onion-skin slider
       drag_and_drop_by(find('.dragger'), -30, 0)
 
@@ -165,7 +167,7 @@ RSpec.describe 'Merge request > User creates image diff notes', :js, feature_cat
 
     before do
       visit diffs_project_merge_request_path(project, merge_request)
-      click_link "Changes"
+      wait_for_requests
     end
 
     def set_image_diff_sources
@@ -177,6 +179,13 @@ RSpec.describe 'Merge request > User creates image diff notes', :js, feature_cat
 
       expect(find('.frame.added img', visible: false)['src']).to match('/apple-touch-icon.png')
       expect(find('.frame.deleted img', visible: false)['src']).to match('/favicon.png')
+
+      wait_for('image diff sources to decode') do
+        page.evaluate_script(<<~JS)
+          Array.from(document.querySelectorAll('.frame.added img, .frame.deleted img'))
+            .every((img) => img.complete && img.naturalWidth > 0)
+        JS
+      end
     end
 
     def switch_to_swipe_view
@@ -203,7 +212,7 @@ RSpec.describe 'Merge request > User creates image diff notes', :js, feature_cat
       it_behaves_like 'onion skin'
     end
 
-    describe 'swipe view', quarantine: 'https://gitlab.com/gitlab-org/quality/test-failure-issues/-/issues/9345' do
+    describe 'swipe view' do
       before do
         switch_to_swipe_view
       end
@@ -213,6 +222,7 @@ RSpec.describe 'Merge request > User creates image diff notes', :js, feature_cat
   end
 
   def drag_and_drop_by(element, right_by, down_by)
+    page.execute_script("arguments[0].scrollIntoView({ block: 'center' })", element.native)
     page.driver.browser.action.drag_and_drop_by(element.native, right_by, down_by).perform
   end
 

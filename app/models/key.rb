@@ -10,8 +10,7 @@ class Key < ApplicationRecord
   include CreatedAtFilterable
   include Cells::Claimable
 
-  cells_claims_attribute :fingerprint_sha256, type: CLAIMS_CLAIM_TYPE::CLAIM_TYPE_SSH_KEY_FINGERPRINT,
-    feature_flag: :cells_claims_keys
+  cells_claims_attribute :fingerprint_sha256, type: CLAIMS_CLAIM_TYPE::CLAIM_TYPE_SSH_KEY_FINGERPRINT
 
   cells_claims_metadata subject_type: CLAIMS_SUBJECT_TYPE::ORGANIZATION, subject_key: :organization_id
 

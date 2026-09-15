@@ -1,0 +1,10 @@
+---
+name: duo_panel_session_inbox
+description: "Tabbed session inbox in the Duo side panel (Needs a decision / All)"
+feature_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/616493
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/250917
+rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/616496
+milestone: '19.4'
+group: group::agent execution
+type: wip
+default_enabled: false

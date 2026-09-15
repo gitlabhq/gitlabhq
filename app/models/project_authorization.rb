@@ -11,6 +11,9 @@ class ProjectAuthorization < ApplicationRecord
   validates :access_level, inclusion: { in: Gitlab::Access.all_values }, presence: true
   validates :user, uniqueness: { scope: :project }, presence: true
 
+  # Column shape required by .access_levels_by_project
+  EXPECTED_PAIR_COLUMNS = %w[project_id access_level].freeze
+
   scope :for_project, ->(projects) { where(project: projects) }
   scope :for_user, ->(user_ids) { where(user_id: user_ids) }
   scope :non_guests, -> { where('access_level > ?', ::Gitlab::Access::GUEST) }
@@ -24,6 +27,43 @@ class ProjectAuthorization < ApplicationRecord
 
   # TODO: To be removed after https://gitlab.com/gitlab-org/gitlab/-/issues/418205
   before_create :assign_is_unique
+
+  # Reads authorizations as raw [project_id, access_level] pairs. A single user
+  # can be authorized on tens of thousands of projects, and instantiating one
+  # record per row dominates the cost of an authorization refresh - most of
+  # which find nothing to change.
+  #
+  # The result is deliberately unbounded. It is diffed in memory against the
+  # freshly calculated set and never fed into an IN clause, and a limit here
+  # would be unsafe: rows past the cut-off would never be compared, so
+  # revocations for them would be silently skipped. At the largest sizes seen in
+  # production - roughly 47k projects for one user - these pairs occupy about
+  # 2 MB, against about 18 MB for the ActiveRecord objects they replace.
+  def self.project_ids_and_access_levels_for(user_id)
+    for_user(user_id).pluck(:project_id, :access_level) # rubocop: disable Database/AvoidUsingPluckWithoutLimit -- see above
+  end
+
+  # As above, for an already-built relation such as a freshly calculated set.
+  #
+  # `pluck` is not an option here, unlike in the method above. The relation this
+  # receives aggregates, as
+  # `SELECT project_id, MAX(access_level) AS access_level ... GROUP BY project_id`,
+  # and `pluck` replaces the select list, which would leave `access_level`
+  # outside an aggregate for Postgres to reject.
+  #
+  # The relation must select exactly project_id then access_level: the result is
+  # mapped to a Hash by column position, so a different shape would silently
+  # produce wrong access levels rather than fail. Checked once per call.
+  def self.access_levels_by_project(relation)
+    result = connection.select_all(relation.to_sql)
+
+    unless result.columns == EXPECTED_PAIR_COLUMNS
+      raise ArgumentError,
+        "expected #{EXPECTED_PAIR_COLUMNS.join(', ')}; got #{result.columns.join(', ')}"
+    end
+
+    result.cast_values.to_h
+  end
 
   def self.select_from_union(relations)
     from_union(relations)

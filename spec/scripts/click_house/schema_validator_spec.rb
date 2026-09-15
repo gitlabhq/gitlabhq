@@ -258,8 +258,6 @@ RSpec.describe ClickHouse::SchemaValidator, feature_category: :database do
         end
 
         context 'when migration checksum files are missing' do
-          let(:missing_version) { '20240101120000' }
-
           before do
             allow(described_class).to receive_messages(execute_git_diff: '', validate_migration_checksums: false)
           end

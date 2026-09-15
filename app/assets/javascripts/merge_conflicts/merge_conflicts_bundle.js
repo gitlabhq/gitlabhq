@@ -6,6 +6,7 @@ import { useMergeConflicts } from './store';
 
 export default function initMergeConflicts() {
   const conflictsEl = document.querySelector('#conflicts');
+  if (!conflictsEl) return null;
 
   const { sourceBranchPath, mergeRequestPath, conflictsPath, resolveConflictsPath } =
     conflictsEl.dataset;

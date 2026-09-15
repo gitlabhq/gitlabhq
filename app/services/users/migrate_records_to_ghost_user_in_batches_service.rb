@@ -32,38 +32,34 @@ module Users
     attr_reader :execution_tracker
 
     def ghost_user_migrations
-      if Feature.enabled?(:split_ghost_user_migration_queue_into_human_and_non_human, :instance)
-        # rubocop:disable CodeReuse/ActiveRecord -- https://docs.gitlab.com/development/database/efficient_in_operator_queries/
-        scope = Users::GhostUserMigration.consume_order
+      # rubocop:disable CodeReuse/ActiveRecord -- https://docs.gitlab.com/development/database/efficient_in_operator_queries/
+      scope = Users::GhostUserMigration.consume_order
 
-        array_scope = Users::GhostUserMigration.unscoped
-          .select(:user_type)
-          .from(
-            Arel::Nodes::Grouping.new(
-              Arel::Nodes::ValuesList.new(
-                Users::GhostUserMigration.user_types.fetch_values(*@user_types).map { |v| [v] }
-              )
-            ).as('tbl (user_type)').to_sql
-          )
+      array_scope = Users::GhostUserMigration.unscoped
+        .select(:user_type)
+        .from(
+          Arel::Nodes::Grouping.new(
+            Arel::Nodes::ValuesList.new(
+              Users::GhostUserMigration.user_types.fetch_values(*@user_types).map { |v| [v] }
+            )
+          ).as('tbl (user_type)').to_sql
+        )
 
-        array_mapping_scope = ->(user_type_expression) do
-          Users::GhostUserMigration.where(Users::GhostUserMigration.arel_table[:user_type].eq(user_type_expression))
-        end
-
-        finder_query = ->(_consume_after_expression, id_expression) do
-          Users::GhostUserMigration.where(Users::GhostUserMigration.arel_table[:id].eq(id_expression))
-        end
-        # rubocop:enable CodeReuse/ActiveRecord
-
-        Gitlab::Pagination::Keyset::InOperatorOptimization::QueryBuilder.new(
-          scope: scope,
-          array_scope: array_scope,
-          array_mapping_scope: array_mapping_scope,
-          finder_query: finder_query
-        ).execute.limit(LIMIT_SIZE)
-      else
-        Users::GhostUserMigration.consume_order.limit(LIMIT_SIZE)
+      array_mapping_scope = ->(user_type_expression) do
+        Users::GhostUserMigration.where(Users::GhostUserMigration.arel_table[:user_type].eq(user_type_expression))
       end
+
+      finder_query = ->(_consume_after_expression, id_expression) do
+        Users::GhostUserMigration.where(Users::GhostUserMigration.arel_table[:id].eq(id_expression))
+      end
+      # rubocop:enable CodeReuse/ActiveRecord
+
+      Gitlab::Pagination::Keyset::InOperatorOptimization::QueryBuilder.new(
+        scope: scope,
+        array_scope: array_scope,
+        array_mapping_scope: array_mapping_scope,
+        finder_query: finder_query
+      ).execute.limit(LIMIT_SIZE)
     end
 
     def reschedule(job)

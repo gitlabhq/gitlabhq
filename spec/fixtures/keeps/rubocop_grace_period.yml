@@ -1,0 +1,7 @@
+---
+# Cop supports --autocorrect.
+RuboCop/FakeGracePeriodRule:
+  Details: grace period
+  Exclude:
+    - 'app/models/fake1.rb'
+    - 'app/models/fake2.rb'

@@ -570,7 +570,7 @@ You don’t have to take action to receive this update unless you’ve [pinned S
 
 We’ve integrated Secret Detection with Postman to better protect customers who use Postman in their GitLab projects.
 
-Secret Detection searches for [Postman API keys](https://learning.postman.com/docs/developer/postman-api/authentication/).
+Secret Detection searches for [Postman API keys](https://learning.postman.com/docs/reference/postman-api/authentication).
 If a key is exposed in a public project on GitLab.com, GitLab sends the leaked key to Postman.
 Postman verifies the key, then [notifies the owner of the Postman API key](https://learning.postman.com/docs/administration/token-scanner/#protecting-postman-api-keys-in-gitlab).
 

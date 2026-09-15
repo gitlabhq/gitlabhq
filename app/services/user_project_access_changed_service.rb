@@ -26,20 +26,7 @@ class UserProjectAccessChangedService
       when MEDIUM_PRIORITY
         AuthorizedProjectUpdate::UserRefreshWithLowUrgencyWorker.bulk_perform_in(MEDIUM_DELAY, bulk_args, batch_size: 100, batch_delay: 30.seconds) # rubocop:disable Scalability/BulkPerformWithContext
       when LOW_PRIORITY
-        if Feature.disabled?(:do_not_run_safety_net_auth_refresh_jobs)
-          Gitlab::ApplicationContext.with_raw_context(
-            authorized_projects_refresh_purpose: SAFETY_NET_REFRESH_PURPOSE
-          ) do
-            # We wrap the execution in `with_related_class_context`so as
-            # to obtain the location of the original caller in jobs
-            # enqueued from within
-            # `AuthorizedProjectUpdate::UserRefreshFromReplicaWorker`
-            with_related_class_context do
-              AuthorizedProjectUpdate::UserRefreshFromReplicaWorker.bulk_perform_in( # rubocop:disable Scalability/BulkPerformWithContext
-                DELAY, bulk_args, batch_size: 100, batch_delay: 30.seconds)
-            end
-          end
-        end
+        execute_low_priority_refresh(bulk_args)
       end
 
     ::User.sticking.bulk_stick(:user, @user_ids)
@@ -48,6 +35,25 @@ class UserProjectAccessChangedService
   end
 
   private
+
+  def execute_low_priority_refresh(bulk_args)
+    return if Feature.enabled?(:do_not_run_safety_net_auth_refresh_jobs)
+
+    if Feature.enabled?(:use_db_to_queue_safety_net_auth_refresh, :instance)
+      Authz::ProjectAuthorizationReverification.queue_users(@user_ids)
+    else
+      Gitlab::ApplicationContext.with_raw_context(
+        authorized_projects_refresh_purpose: SAFETY_NET_REFRESH_PURPOSE
+      ) do
+        # rubocop:disable Scalability/BulkPerformWithContext -- related_class context is set by the wrapping block
+        with_related_class_context do
+          AuthorizedProjectUpdate::UserRefreshFromReplicaWorker.bulk_perform_in(
+            DELAY, bulk_args, batch_size: 100, batch_delay: 30.seconds)
+        end
+        # rubocop:enable Scalability/BulkPerformWithContext
+      end
+    end
+  end
 
   def with_related_class_context(&block)
     current_caller_id = Gitlab::ApplicationContext.current_context_attribute('meta.caller_id').presence

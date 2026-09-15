@@ -1,16 +1,20 @@
 = render_if_exists 'admin/users/minimal_access_provisioning_alert'
 - page_title _("Users")
+- can_admin_all_resources = can?(current_user, :admin_all_resources)
 
 = render ::Layouts::PageHeadingComponent.new(_('Users'), options: { data: { event_tracking_load: 'true', event_tracking: 'view_admin_users_pageload' } }) do |c|
   - c.with_actions do
-    - if can?(current_user, :admin_all_resources)
+    - if can_admin_all_resources
       = render_if_exists 'admin/users/admin_email_users'
       = render_if_exists 'admin/users/admin_export_user_permissions'
       = render Pajamas::ButtonComponent.new(variant: :confirm, href: new_admin_user_path) do
         = s_('AdminUsers|New user')
 
-= render 'tabs'
+.gl-grid.gl-gap-5.gl-mt-4.grid-flow-col.auto-cols-max{ class: "@lg/panel:gl-grid-cols-3 @md/panel:gl-grid-cols-3" }
+  = render 'admin/users/stats_cards'
+
+= render 'admin/users/tabs'
 
 .tab-content.gl-border-t
   .tab-pane.active
-    = render 'users'
+    = render 'admin/users/users'

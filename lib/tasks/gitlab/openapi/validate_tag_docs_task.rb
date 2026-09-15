@@ -39,6 +39,9 @@ module Tasks
         def api_classes
           excluded = ::Gitlab::GrapeOpenapi.configuration.excluded_api_classes
 
+          # Rails 8 draws routes lazily, so we need to reference the root API first so that it mounts and
+          # registers every API class in API::Base.descendants.
+          ::API::API # rubocop:disable Lint/Void -- Referenced for its load side effect
           ::API::Base.descendants.reject { |api_class| excluded.include?(api_class.name) }
         end
 

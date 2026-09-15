@@ -72,7 +72,7 @@ export default {
       default: () => [],
     },
   },
-  emits: ['assigneesUpdated', 'error', 'update-widget-draft'],
+  emits: ['assignees-updated', 'error', 'update-widget-draft'],
   data() {
     return {
       localAssigneeIds: [],
@@ -320,7 +320,7 @@ export default {
           return;
         }
         this.track('updated_assignees');
-        this.$emit('assigneesUpdated', localAssigneeIds);
+        this.$emit('assignees-updated', localAssigneeIds);
       } catch {
         this.throwUpdateError();
       } finally {
@@ -380,7 +380,7 @@ export default {
     @dropdown-shown="onDropdownShown"
     @search-started="setSearchKey"
     @update-value="handleAssigneesInput"
-    @updateSelected="handleAssigneeClick"
+    @update-selected="handleAssigneeClick"
     @dropdown-hidden="onDropdownHide"
   >
     <template #list-item="{ item }">

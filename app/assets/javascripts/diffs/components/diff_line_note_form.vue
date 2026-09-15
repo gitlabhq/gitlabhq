@@ -265,9 +265,9 @@ export default {
       :autosave-key="autosaveKey"
       :autofocus="false"
       class="diff-comment-form gl-mt-3"
-      @handleFormUpdateAddToReview="addToReview"
+      @handle-form-update-add-to-review="addToReview"
       @cancel-form="handleCancelCommentForm"
-      @handleFormUpdate="handleSaveNote"
+      @handle-form-update="handleSaveNote"
       @handle-suggest-dismissed="setSuggestPopoverDismissed"
     />
   </div>

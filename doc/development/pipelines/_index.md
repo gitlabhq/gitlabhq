@@ -21,7 +21,7 @@ on the `dev.gitlab.com` mirror if they do not exist on that instance.
 
 ## Pipeline tiers
 
-A merge request will typically run several CI/CD pipelines. Depending on where the merge request is at in the approval process, we will trigger different kinds of pipelines. We call those kinds of pipelines **pipeline tiers**.
+A merge request will typically run several CI/CD pipelines. Depending on where the merge request is at in the approval process, we will trigger different kinds of pipelines. We call those kinds of pipelines pipeline tiers.
 
 We currently have three tiers:
 
@@ -36,7 +36,7 @@ See the [Introduce "tiers" in MR pipelines](https://gitlab.com/groups/gitlab-org
 
 ## Predictive test jobs before a merge request is approved
 
-**To reduce the pipeline cost and shorten the job duration, before a merge request is approved, the pipeline will run a predictive set of RSpec & Jest tests that are likely to fail for the merge request changes.**
+To reduce the pipeline cost and shorten the job duration, before a merge request is approved, the pipeline will run a predictive set of RSpec & Jest tests that are likely to fail for the merge request changes.
 
 After a merge request has been approved, the pipeline would contain the full RSpec & Jest tests. This will ensure that all tests
 have been run before a merge request is merged.
@@ -266,7 +266,7 @@ graph LR
 
 [We started using merge trains in June 2024](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/154540).
 
-At the moment, **Merge train pipelines don't run any tests**: they only enforce the
+At the moment, merge train pipelines don't run any tests: they only enforce the
 ["Merging a merge request" guidelines](../code_review.md#merging-a-merge-request)
 that already existed before the enablement of merge trains, but that we couldn't easily enforce.
 
@@ -288,7 +288,7 @@ to actually start running tests in merge train pipelines.
 
 #### Why do we need to have a "stable" default branch?
 
-If the default branch is unstable (for example, the CI/CD pipelines for the default branch are failing frequently), all of the merge requests pipelines that were added AFTER a faulty merge request pipeline would have to be **canceled** and **added back to the train**, which would create a lot of delays if the merge train is long.
+If the default branch is unstable (for example, the CI/CD pipelines for the default branch are failing frequently), all of the merge requests pipelines that were added AFTER a faulty merge request pipeline would have to be canceled and added back to the train, which would create a lot of delays if the merge train is long.
 
 #### How stable does the default branch have to be?
 
@@ -327,43 +327,11 @@ If you want to force all the RSpec jobs to run regardless of your changes, you c
 The `gitaly-mvcc` RSpec jobs run the suite against a Gitaly server that uses the MVCC storage backend.
 They do not run automatically.
 To run them all, add the `pipeline:run-gitaly-mvcc` label to the merge request and start a new pipeline.
+In cross-project triggered pipelines (such as the `rails-specs` trigger from `gitlab-org/gitaly`), set `ENABLE_RSPEC_GITALY_MVCC=true` instead.
 
 ### End-to-end jobs
 
 For more information, see [End-to-end test pipelines](../testing_guide/end_to_end/test_pipelines.md).
-
-### Observability end-to-end jobs
-
-The [GitLab Observability Backend](https://gitlab.com/gitlab-org/opstrace/opstrace) has dedicated [end-to-end tests](https://gitlab.com/gitlab-org/opstrace/opstrace/-/tree/main/test/e2e/frontend) that run against a GitLab instance. These tests are designed to ensure the integration between GitLab and the Observability Backend is functioning correctly.
-
-The GitLab pipeline has dedicated jobs (see [`observability-backend.gitlab-ci.yml`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/.gitlab/ci/observability-backend.gitlab-ci.yml)) that can be executed from GitLab MRs. These jobs will trigger the E2E tests on the GitLab Observability Backend pipeline against a GitLab instance built from the GitLab MR branch. These jobs are useful to make sure that the GitLab changes under review will not break E2E tests on the GitLab Observability Backend pipeline.
-
-There are two Observability end-to-end jobs:
-
-- `e2e:observability-backend-main-branch`: executes the tests against the main branch of the GitLab Observability Backend.
-- `e2e:observability-backend`: executes the tests against a branch of the GitLab Observability Backend with the same name as the MR branch.
-
-The Observability E2E jobs are triggered automatically **only** for merge requests that touch relevant files, such as those in the `lib/gitlab/observability/` directory or specific configuration files related to observability features.
-
-To run these jobs manually, you can add the `pipeline:run-observability-e2e-tests-main-branch` or `pipeline:run-observability-e2e-tests-current-branch` label to your merge request.
-
-In the following example workflow, a developer creates an MR that touches Observability code and uses Observability end-to-end jobs:
-
-1. A developer creates a GitLab MR that touches observability code. The MR automatically executes the `e2e:observability-backend-main-branch` job.
-1. If `e2e:observability-backend-main-branch` fails, it means that either the MR broke something (and needs fixing), or the MR made changes that requires the e2e tests to be updated.
-1. To update the e2e tests, the developer should:
-   1. Create a branch in the GitLab Observability Backend [repository](https://gitlab.com/gitlab-org/opstrace/opstrace), with the same name as the GitLab branch containing the breaking changes.
-   1. Fix the [e2e tests](https://gitlab.com/gitlab-org/opstrace/opstrace/-/tree/main/test/e2e/frontend).
-   1. Create a merge request with the changes.
-1. The developer should add the `pipeline:run-observability-e2e-tests-current-branch` label on the GitLab MR and wait for the `e2e:observability-backend` job to succeed.
-1. If `e2e:observability-backend` succeeds, the developer can merge both MRs.
-
-In addition, the developer can manually add `pipeline:run-observability-e2e-tests-main-branch` to force the MR to run the `e2e:observability-backend-main-branch` job. This could be useful in case of changes to files that are not being tracked as related to observability.
-
-There might be situations where the developer would need to skip those tests. To skip tests:
-
-- For an MR, apply the label `pipeline:skip-observability-e2e-tests label`.
-- For a whole project, set the CI variable `SKIP_GITLAB_OBSERVABILITY_BACKEND_TRIGGER`.
 
 ### As-if-FOSS jobs and cross project downstream pipeline
 
@@ -746,7 +714,7 @@ Coverage data flows through several CI jobs:
 1. **Collection**: Tests run with coverage instrumentation
    - `rspec` jobs collect backend coverage via SimpleCov
    - `jest` jobs collect frontend coverage via Istanbul
-   - `e2e:test-on-gdk` collects E2E coverage via Coverband (backend) and Istanbul (frontend)
+   - `e2e:test-on-cng` collects E2E coverage via Coverband (backend) and Istanbul (frontend)
    - `workhorse` jobs collect Go coverage
 
 1. **Merging**: Coverage from parallel jobs and E2E is merged
@@ -788,18 +756,35 @@ Exceptions to this general guideline should be motivated and documented.
 ### Ruby versions testing
 
 We're running Ruby 3.3 on GitLab.com, as well as for the default branch.
-To prepare for the next Ruby version, we run merge requests in Ruby 3.4.
-See the roadmap at
+Merge request pipelines run the default version too, unless you add a
+label to opt into another version.
+
+To prepare for the next Ruby version, we run 2-hourly scheduled pipelines
+(every odd-numbered hour) on the `ruby-next` branch. See the roadmap at the
 [Ruby 3.4 epic](https://gitlab.com/groups/gitlab-org/-/work_items/16601)
 for more details.
 
-To make sure all supported Ruby versions are working, we also run our test
-suite on dedicated 2-hourly scheduled pipelines for each supported version.
+For merge requests, you can add one of the following labels to change
+which Ruby version the pipeline runs:
 
-For merge requests, you can add the following labels to run the respective
-Ruby version only:
-
-- `pipeline:run-in-ruby3_3`
+- `pipeline:run-in-ruby3_3`: keeps the merge request pipeline on the
+  default Ruby version. If the default Ruby version changes later, this
+  label follows the new default. It takes precedence over
+  `pipeline:run-with-ruby-next` when both labels are present.
+- `pipeline:run-with-ruby-next`: runs the merge request pipeline with the
+  next Ruby version, from the `RUBY_VERSION_NEXT` CI variable. It works the
+  same way `pipeline:run-with-rails-next` does for Rails. Add it to any
+  merge request that bumps `RUBY_VERSION_NEXT`, so the new version gets
+  validated before it merges. Merge train pipelines always run the default
+  Ruby version regardless of this label. The label also has no effect on
+  merge requests matched by an earlier-evaluated workflow rule, such as
+  community contributions, bot-authored merge requests, and merge
+  requests targeting stable branches. The rule for
+  `pipeline:run-with-rails-next` is also evaluated first, so a merge
+  request carrying both labels gets the default Ruby version. The
+  `database` label rule, on the other hand, is evaluated after this one,
+  so a merge request with both labels runs on the next Ruby version and
+  does not get `QUERY_LOG_LINE`.
 
 ### PostgreSQL versions testing
 
@@ -819,7 +804,7 @@ We run our test suite against PostgreSQL 16, 17, and 18 on nightly scheduled pip
 | Merge requests                                                                                  | 17 (default version)            | 3.3 (default version) |
 | `master` branch commits                                                                         | 17 (default version)            | 3.3 (default version) |
 | `maintenance` scheduled pipelines for the `master` branch (every even-numbered hour at XX:05)   | 17 (default version)            | 3.3 (default version) |
-| `maintenance` scheduled pipelines for the `ruby-next` branch (every odd-numbered hour at XX:10) | 17 (default version)            | 3.3                   |
+| `maintenance` scheduled pipelines for the `ruby-next` branch (every odd-numbered hour at XX:10) | 17 (default version)            | 3.4                   |
 | `nightly` scheduled pipelines for the `master` branch                                           | 17 (default version), 16, and 18 | 3.3 (default version) |
 | `weekly` scheduled pipelines for the `master` branch                                            | 17 (default version)            | 3.3 (default version) |
 

@@ -3,13 +3,13 @@
 require 'spec_helper'
 
 RSpec.describe API::Issues, feature_category: :team_planning do
-  let_it_be(:user2, freeze: false)               { create(:user) }
-  let_it_be(:admin, freeze: false)               { create(:user, :admin) }
-  let_it_be(:non_member, freeze: false)          { create(:user) }
-  let_it_be(:user, freeze: false)                { create(:user) }
-  let_it_be(:guest, freeze: false)               { create(:user) }
-  let_it_be(:author, freeze: false)              { create(:author) }
-  let_it_be(:assignee, freeze: false)            { create(:assignee) }
+  let_it_be_with_reload(:user2)               { create(:user) }
+  let_it_be_with_reload(:admin)               { create(:user, :admin) }
+  let_it_be_with_reload(:non_member)          { create(:user) }
+  let_it_be_with_reload(:user)                { create(:user) }
+  let_it_be_with_reload(:guest)               { create(:user) }
+  let_it_be_with_reload(:author)              { create(:author) }
+  let_it_be_with_reload(:assignee)            { create(:assignee) }
   let_it_be(:issue_title, freeze: false)         { 'foo' }
   let_it_be(:issue_description, freeze: false)   { 'closed' }
   let_it_be(:no_milestone_title, freeze: false)  { 'None' }
@@ -20,13 +20,15 @@ RSpec.describe API::Issues, feature_category: :team_planning do
   end
 
   describe 'GET /groups/:id/issues' do
-    let_it_be(:group, freeze: false) { create(:group) }
-    let_it_be(:group_project, freeze: false) { create(:project, :public, :repository, creator_id: user.id, namespace: group) }
+    let_it_be_with_reload(:group) { create(:group) }
+    let_it_be_with_reload(:group_project) { create(:project, :public, :repository, creator_id: user.id, namespace: group) }
     let_it_be(:private_mrs_project, freeze: false) do
       create(:project, :public, :repository, creator_id: user.id, namespace: group, merge_requests_access_level: ProjectFeature::PRIVATE)
     end
 
-    let!(:group_closed_issue) do
+    let_it_be(:group_milestone) { create(:milestone, title: '3.0.0', project: group_project) }
+    let_it_be(:group_empty_milestone) { create(:milestone, title: '4.0.0', project: group_project) }
+    let_it_be_with_reload(:group_closed_issue) do
       create :closed_issue,
         author: user,
         assignees: [user],
@@ -37,7 +39,7 @@ RSpec.describe API::Issues, feature_category: :team_planning do
         created_at: 1.day.ago
     end
 
-    let!(:group_confidential_issue) do
+    let_it_be(:group_confidential_issue) do
       create :issue,
         :confidential,
         project: group_project,
@@ -47,7 +49,7 @@ RSpec.describe API::Issues, feature_category: :team_planning do
         created_at: 2.days.ago
     end
 
-    let!(:group_issue) do
+    let_it_be_with_reload(:group_issue) do
       create :issue,
         author: user,
         assignees: [user],
@@ -59,17 +61,13 @@ RSpec.describe API::Issues, feature_category: :team_planning do
         created_at: 5.days.ago
     end
 
-    let!(:group_label) do
+    let_it_be(:group_label) do
       create(:label, title: 'group_lbl', color: '#FFAABB', project: group_project)
     end
 
-    let!(:group_label_link) { create(:label_link, label: group_label, target: group_issue) }
-    let!(:group_milestone) { create(:milestone, title: '3.0.0', project: group_project) }
-    let!(:group_empty_milestone) do
-      create(:milestone, title: '4.0.0', project: group_project)
-    end
+    let_it_be(:group_label_link) { create(:label_link, label: group_label, target: group_issue) }
 
-    let!(:group_note) { create(:note_on_issue, author: user, project: group_project, noteable: group_issue) }
+    let_it_be(:group_note) { create(:note_on_issue, author: user, project: group_project, noteable: group_issue) }
 
     let(:base_url) { "/groups/#{group.id}/issues" }
 
@@ -86,14 +84,14 @@ RSpec.describe API::Issues, feature_category: :team_planning do
     end
 
     context 'when group has subgroups' do
-      let(:subgroup_1) { create(:group, parent: group) }
-      let(:subgroup_2) { create(:group, parent: subgroup_1) }
+      let_it_be(:subgroup_1) { create(:group, parent: group) }
+      let_it_be(:subgroup_2) { create(:group, parent: subgroup_1) }
 
-      let(:subgroup_1_project) { create(:project, :public, namespace: subgroup_1) }
-      let(:subgroup_2_project) { create(:project, namespace: subgroup_2) }
+      let_it_be(:subgroup_1_project) { create(:project, :public, namespace: subgroup_1) }
+      let_it_be(:subgroup_2_project) { create(:project, namespace: subgroup_2) }
 
-      let!(:issue_1) { create(:issue, project: subgroup_1_project) }
-      let!(:issue_2) { create(:issue, project: subgroup_2_project) }
+      let_it_be(:issue_1) { create(:issue, project: subgroup_1_project) }
+      let_it_be(:issue_2) { create(:issue, project: subgroup_2_project) }
 
       context 'when user is unauthenticated' do
         it 'also returns subgroups public projects issues' do
@@ -168,9 +166,7 @@ RSpec.describe API::Issues, feature_category: :team_planning do
       end
 
       context 'when user is a group member' do
-        before do
-          group.add_developer(user)
-        end
+        before_all { group.add_developer(user) }
 
         it 'also returns subgroups projects issues' do
           get api(base_url, user)
@@ -248,7 +244,7 @@ RSpec.describe API::Issues, feature_category: :team_planning do
         end
 
         context "when returns issue merge_requests_count for different access levels" do
-          let!(:merge_request1) do
+          let_it_be(:merge_request1) do
             create(
               :merge_request,
               :simple,
@@ -259,7 +255,7 @@ RSpec.describe API::Issues, feature_category: :team_planning do
             )
           end
 
-          let!(:merge_request2) do
+          let_it_be(:merge_request2) do
             create(
               :merge_request,
               :simple,
@@ -351,9 +347,7 @@ RSpec.describe API::Issues, feature_category: :team_planning do
     end
 
     context 'when user is a group member' do
-      before do
-        group.add_reporter(user)
-      end
+      before_all { group.add_reporter(user) }
 
       it_behaves_like 'authorizing granular token permissions', :read_issue do
         let(:boundary_object) { group }
@@ -444,19 +438,21 @@ RSpec.describe API::Issues, feature_category: :team_planning do
         end
 
         context 'with labeled issues' do
-          let(:group_issue2) { create :issue, project: group_project }
-          let(:label_b) { create(:label, title: 'foo', project: group_project) }
-          let(:label_c) { create(:label, title: 'bar', project: group_project) }
+          let_it_be(:group_issue2) { create :issue, project: group_project }
+          let_it_be(:label_b) { create(:label, title: 'foo', project: group_project) }
+          let_it_be(:label_c) { create(:label, title: 'bar', project: group_project) }
           let(:issue) { group_issue }
           let(:issue2) { group_issue2 }
           let(:label) { group_label }
 
-          before do
+          before_all do
             create(:label_link, label: group_label, target: group_issue2)
             create(:label_link, label: label_b, target: group_issue)
             create(:label_link, label: label_b, target: group_issue2)
             create(:label_link, label: label_c, target: group_issue)
+          end
 
+          before do
             get api(base_url, user), params: params
           end
 
@@ -584,7 +580,7 @@ RSpec.describe API::Issues, feature_category: :team_planning do
         end
 
         context 'with 2 issues with same created_at' do
-          let!(:group_issue2) do
+          let_it_be(:group_issue2) do
             create :issue,
               author: user,
               assignees: [user],
@@ -696,10 +692,10 @@ RSpec.describe API::Issues, feature_category: :team_planning do
       end
 
       context 'filtering by assignee_username' do
-        let(:another_assignee) { create(:assignee) }
-        let!(:issue1) { create(:issue, author: user2, project: group_project, created_at: 3.days.ago) }
-        let!(:issue2) { create(:issue, author: user2, project: group_project, created_at: 2.days.ago) }
-        let!(:issue3) { create(:issue, author: user2, assignees: [assignee, another_assignee], project: group_project, created_at: 1.day.ago) }
+        let_it_be_with_reload(:another_assignee) { create(:assignee) }
+        let_it_be(:issue1) { create(:issue, author: user2, project: group_project, created_at: 3.days.ago) }
+        let_it_be(:issue2) { create(:issue, author: user2, project: group_project, created_at: 2.days.ago) }
+        let_it_be_with_reload(:issue3) { create(:issue, author: user2, assignees: [assignee, another_assignee], project: group_project, created_at: 1.day.ago) }
 
         it 'returns issues with by assignee_username', :aggregate_failures do
           get api(base_url, user), params: { assignee_username: [assignee.username], scope: 'all' }

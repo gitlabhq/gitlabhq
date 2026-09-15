@@ -197,7 +197,7 @@ module Gitlab
             end
 
             variables.append(key: 'CI_NODE_INDEX', value: job.options[:instance].to_s) if job.options&.include?(:instance)
-            variables.append(key: 'CI_NODE_TOTAL', value: ci_node_total_value(job.options).to_s)
+            variables.append(key: 'CI_NODE_TOTAL', value: Gitlab::Utils::Job.node_total(job.options).to_s)
 
             if environment.present?
               variables.append(key: 'CI_ENVIRONMENT_NAME', value: environment)
@@ -218,7 +218,7 @@ module Gitlab
             variables.append(key: 'CI_PIPELINE_TRIGGERED', value: 'true') if trigger
             variables.append(key: 'CI_TRIGGER_SHORT_TOKEN', value: trigger.trigger_short_token) if trigger
             variables.append(key: 'CI_NODE_INDEX', value: job_attr[:options][:instance].to_s) if job_attr[:options]&.include?(:instance)
-            variables.append(key: 'CI_NODE_TOTAL', value: ci_node_total_value(job_attr[:options]).to_s)
+            variables.append(key: 'CI_NODE_TOTAL', value: Gitlab::Utils::Job.node_total(job_attr[:options]).to_s)
 
             if environment.present?
               variables.append(key: 'CI_ENVIRONMENT_NAME', value: environment)
@@ -293,12 +293,6 @@ module Gitlab
 
         def job_name_slug(job_name)
           job_name && Gitlab::Utils.slugify(job_name)
-        end
-
-        def ci_node_total_value(job_options)
-          parallel = job_options&.dig(:parallel)
-          parallel = parallel[:total] if parallel.is_a?(Hash)
-          parallel || 1
         end
 
         def protected_ref?

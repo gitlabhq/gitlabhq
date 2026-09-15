@@ -21,7 +21,9 @@ RSpec.describe 'Merge request > User sees MR with deleted source branch',
     expect(page).to have_content('The source branch this-branch-does-not-exist does not exist.')
   end
 
-  it 'still contains Discussion, Commits and Changes tabs' do
+  it 'still contains Discussion, Commits and Changes tabs',
+    skip: 'Rapid Diffs: no diffs rendered for a deleted source branch; ' \
+      'https://gitlab.com/gitlab-org/gitlab/-/issues/628502' do
     within '.merge-request-details' do
       expect(page).to have_content('Overview')
       expect(page).to have_content('Commits')
@@ -33,6 +35,6 @@ RSpec.describe 'Merge request > User sees MR with deleted source branch',
     click_on 'Changes'
     wait_for_requests
 
-    expect(page).to have_selector('.diffs.tab-pane .file-holder')
+    expect(page).to have_selector('diff-file')
   end
 end

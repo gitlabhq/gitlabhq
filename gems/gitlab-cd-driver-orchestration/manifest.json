@@ -1,6 +1,6 @@
 {
   "id": "com.gitlab.cd.orchestration",
-  "version": "0.6.0",
+  "version": "0.7.0",
   "configuration": {
     "flow_definition": "schemas/flow_definition.json"
   },

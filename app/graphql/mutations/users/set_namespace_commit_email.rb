@@ -22,6 +22,10 @@ module Mutations
 
       authorize :read_namespace
 
+      authorize_granular_token permissions: :update_commit_email,
+        boundary: :user,
+        boundary_type: :user
+
       def resolve(args)
         namespace = authorized_find!(args[:namespace_id])
         args[:email_id] = args[:email_id].model_id

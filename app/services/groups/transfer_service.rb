@@ -427,6 +427,7 @@ module Groups
         namespace_with_same_path: s_('TransferGroup|The parent group already has a subgroup or a project with the same path.'),
         group_is_already_root: s_('TransferGroup|Group is already a root group.'),
         same_parent_as_current: s_('TransferGroup|Group is already associated to the parent group.'),
+        has_subscription: s_('TransferGroup|This group is linked to a subscription'),
         invalid_policies: s_("TransferGroup|You don't have enough permissions."),
         group_contains_images: s_('TransferGroup|Cannot update the path because there are projects under this group that contain Docker images in their container registry. Please remove the images from your projects first and try again.'),
         cannot_transfer_to_subgroup: s_('TransferGroup|Cannot transfer group to one of its subgroup.'),

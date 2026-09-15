@@ -180,7 +180,7 @@ RSpec.describe PackagesHelper, feature_category: :package_registry do
         container_repository.update!(project_id: project.id)
       end
 
-      it { is_expected.to eq(false) }
+      it { is_expected.to be(false) }
     end
 
     context 'when container expiration policy is disabled' do
@@ -194,7 +194,7 @@ RSpec.describe PackagesHelper, feature_category: :package_registry do
         project.container_expiration_policy.update!(enabled: false)
       end
 
-      it { is_expected.to eq(true) }
+      it { is_expected.to be(true) }
     end
   end
 

@@ -45,13 +45,13 @@ When using SBOM-based dependency scanning on GitLab Self-Managed instances, ther
 - GitLab.com: The "Dependency scanning running" compliance control works correctly with SBOM-based dependency scanning.
 - GitLab Self-Managed from 18.4: The "Dependency scanning running" compliance control may fail when using SBOM-based dependency scanning (`DS_ENFORCE_NEW_ANALYZER: 'true'`) because the traditional `gl-dependency-scanning-report.json` artifact is not generated.
 
-Workaround for Self-Managed instances: If you need to pass compliance framework checks that require the "Dependency scanning running" control, you can use the `v2` template (`Jobs/Dependency-Scanning.v2.gitlab-ci.yml`) which generates both SBOM and dependency scanning reports
+Workaround for Self-Managed instances: If you need to pass compliance framework checks that require the "Dependency scanning running" control, you can use the `v2` template (`Jobs/Dependency-Scanning.v2.gitlab-ci.yml`), which generates both SBOM and dependency scanning reports.
 
 For more information about compliance controls, see [GitLab compliance controls](../../../compliance/compliance_frameworks/_index.md#gitlab-compliance-controls).
 
 ## Resolution job fails but dependency scanning still runs
 
-Because resolution jobs run automatically they set `allow_failure: true`. If a resolution job fails, the
+Because resolution jobs run automatically, they set `allow_failure: true`. If a resolution job fails, the
 `dependency-scanning` job still runs. Depending on whether a lockfile is committed to the
 repository, the scan either uses the committed file or falls back to
 [manifest fallback](_index.md#manifest-fallback) if enabled.
@@ -133,3 +133,12 @@ merge request pipelines. If your project does not use merge request pipelines fo
 causes only the dependency scanning job to appear in the merge request pipeline, while all other
 jobs run in a separate branch pipeline. To disable this behavior, see
 [Disable MR pipelines for dependency scanning](_index.md#disable-merge-request-pipelines-for-dependency-scanning).
+
+If the template is injected by a pipeline execution policy, this issue occurs even when a project
+or group variable sets `AST_ENABLE_MR_PIPELINES: "false"`. Pipeline execution policies run in
+isolation by default, so the policy job doesn't receive that value. An unset variable defaults to
+`"true"`, and the job runs in merge request pipelines regardless of the project or group setting.
+
+The workaround is to set `AST_ENABLE_MR_PIPELINES: "false"` directly in the policy CI/CD
+configuration. For more information, including how to use the project or group value instead, see
+[CI/CD variables](../../policies/pipeline_execution_policies.md#cicd-variables).

@@ -134,7 +134,7 @@ Official documentation suggests using `setActivePinia(createPinia())` to test th
 Our recommendation is to leverage `createTestingPinia` with unstubbed actions.
 It acts the same as `setActivePinia(createPinia())` but also allows us to spy on any action by default.
 
-**Always** use `createTestingPinia` with `stubActions: false` when unit testing the store.
+Always use `createTestingPinia` with `stubActions: false` when unit testing the store.
 
 A basic test could look like this:
 
@@ -213,7 +213,7 @@ Instead, the store itself should be properly tested and the component tests shou
 
 #### Setting up initial state
 
-Pinia doesn't allow to unstub actions once they've been stubbed.
+Pinia doesn't allow unstubbing actions once they've been stubbed.
 That means you can not use them to set the initial state if you didn't set `stubActions: false`.
 
 In that case it is allowed to set the state directly:
@@ -288,7 +288,7 @@ Follow these steps to iterate over the migration process and split the work onto
 1. Identify the store you are going to migrate.
    Start with the file that defines your store via `new Vuex.Store()` and go from there.
    Include all the modules that are used inside this store.
-1. Create a migration issue, assign a migration DRI(s) and list all the store modules you're going to migrate.
+1. Create a migration issue, assign migration DRI(s) and list all the store modules you're going to migrate.
    Track your migration progress in that issue. If necessary, split the migration into multiple issues.
 1. Create a new CODEOWNERS (`.gitlab/CODEOWNERS`) rule for the store files you're migrating, include all the Vuex module dependencies and store specs.
 
@@ -385,14 +385,14 @@ In such cases prefer migrating nested modules first:
 1. Create a Pinia store counterpart of the nested Vuex store module.
 1. Create a placeholder Pinia 'root' store for root module dependencies if applicable.
 1. Copy and adapt existing tests for the migrated module.
-1. **Do not use migrated modules yet.**
+1. Do not use migrated modules yet.
 1. Once all the nested modules are migrated you can migrate the root module and replace the placeholder store with the real one.
 1. Replace Vuex store with Pinia stores in components.
 
 ### Avoiding circular dependencies
 
 It is imperative that you don't create circular dependencies in your Pinia stores.
-Unfortunately Vuex design allows to create interdependent modules that we have to refactor later.
+Unfortunately, the Vuex design allows creating interdependent modules that we have to refactor later.
 
 An example circular dependency in store design:
 
@@ -445,7 +445,7 @@ function callOtherStore() {
 This will look up the store by its name using Pinia instance and prevent the circular dependency issue.
 Store name is defined when calling `defineStore('storeName', ...)`.
 
-You **must** initialize both stores prior to component mounting when using `tryStore`:
+You must initialize both stores prior to component mounting when using `tryStore`:
 
 ```javascript
 // stores are created in advance
@@ -588,7 +588,7 @@ Always prefer testing each action call explicitly.
 
 #### Custom getters
 
-Pinia allows to define custom getters in Vue 3. Since we're using Vue 2 this is not possible.
+Pinia allows defining custom getters in Vue 3. Since we're using Vue 2 this is not possible.
 To work around this you can use `createCustomGetters` helper from `helpers/pinia_helpers`.
 
 ##### Before

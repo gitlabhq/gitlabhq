@@ -386,6 +386,12 @@ Example response:
 
 ## List all references a commit is pushed to
 
+{{< history >}}
+
+- [CI/CD job token](../ci/jobs/ci_job_token.md) authentication [introduced](https://gitlab.com/gitlab-org/gitlab/-/work_items/606881) in GitLab 19.4.
+
+{{< /history >}}
+
 Lists all references (from branches or tags) a commit is pushed to.
 The pagination parameters `page` and `per_page` can be used to restrict the list of references.
 

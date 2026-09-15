@@ -43,23 +43,20 @@ module IssuableCollections
 
   # rubocop:disable Gitlab/ModuleWithInstanceVariables
   def finder_options
-    params[:state] = default_state if params[:state].blank?
+    normalize_filter_params!
+
+    filter_params = issuable_filter_params
 
     options = {
-      scope: params[:scope],
-      state: params[:state],
-      confidential: Gitlab::Utils.to_boolean(params[:confidential]),
+      scope: filter_params[:scope],
+      state: filter_params[:state],
+      confidential: Gitlab::Utils.to_boolean(filter_params[:confidential]),
       sort: set_sort_order
     }
+    options[:iids] = search_iid if search_iid
 
     # Used by view to highlight active option
     @sort = options[:sort]
-
-    # When a user looks for an exact iid, we do not filter by search but only by iid
-    if params[:search] =~ /^#(?<iid>\d+)\z/
-      options[:iids] = Regexp.last_match[:iid]
-      params[:search] = nil
-    end
 
     if @project
       options[:project_id] = @project.id
@@ -70,10 +67,38 @@ module IssuableCollections
       options[:attempt_group_search_optimizations] = true
     end
 
-    params.permit(finder_type.valid_params).merge(options)
+    filter_params.merge(options)
   end
   strong_memoize_attr :finder_options
   # rubocop:enable Gitlab/ModuleWithInstanceVariables
+
+  # Writes land on `params` itself rather than a permitted copy, because shared/issuable/_nav
+  # reads params[:state] for the active tab and the search box re-reads params[:search].
+  # Must run before issuable_filter_params so the permit captures the normalized values.
+  def normalize_filter_params!
+    # rubocop:disable Rails/StrongParams -- deliberate in-place normalization, see above
+    params[:state] = default_state if state_param.blank?
+    params[:search] = nil if search_iid
+    # rubocop:enable Rails/StrongParams
+  end
+
+  # An exact iid search filters by iid instead of search. Memoized because
+  # normalize_filter_params! clears params[:search] once it has matched.
+  def search_iid
+    match = params.permit(:search)[:search]&.match(/^#(?<iid>\d+)\z/)
+    match && match[:iid]
+  end
+  strong_memoize_attr :search_iid
+
+  # :scope, :state and :confidential are consumed by finder_options but are not part
+  # of finder_type.valid_params, so they must be permitted explicitly.
+  def issuable_filter_params
+    params.permit(:scope, :state, :confidential, *finder_type.valid_params)
+  end
+
+  def state_param
+    params.permit(:state)[:state]
+  end
 
   def default_state
     'opened'
@@ -84,7 +109,7 @@ module IssuableCollections
   end
 
   def default_sort_order
-    if %w[merged closed].include?(params[:state])
+    if %w[merged closed].include?(state_param)
       sort_value_recently_updated
     else
       sort_value_created_date

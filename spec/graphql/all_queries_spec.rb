@@ -70,13 +70,12 @@ RSpec.describe 'graphql queries', feature_category: :api do
     app/assets/javascripts/analytics/dashboards/graphql/dora_metrics_by_project.query.graphql
     app/assets/javascripts/analytics/dashboards/graphql/vulnerabilities.query.graphql
     app/assets/javascripts/analytics/dashboards/graphql/contributor_count.query.graphql
+    app/assets/javascripts/analytics/dashboards/graphql/merge_requests_throughput_clickhouse.query.graphql
     app/assets/javascripts/analytics/dashboards/ai_impact/graphql/ai_agent_platform_flow_metrics.query.graphql
     app/assets/javascripts/analytics/dashboards/ai_impact/graphql/ai_agent_platform_flows_usage_by_user.query.graphql
     app/assets/javascripts/analytics/dashboards/ai_impact/graphql/ai_metrics.query.graphql
     app/assets/javascripts/analytics/dashboards/ai_impact/graphql/code_suggestions_acceptance_by_ide.query.graphql
     app/assets/javascripts/analytics/dashboards/ai_impact/graphql/code_suggestions_acceptance_by_language.query.graphql
-    app/assets/javascripts/analytics/dashboards/ai_impact/graphql/code_suggestions_acceptance_rate.query.graphql
-    app/assets/javascripts/analytics/dashboards/ai_impact/graphql/code_suggestions_users_count.query.graphql
     app/assets/javascripts/analytics/dashboards/ai_impact/graphql/duo_agent_platform_agent_flows_users_count.query.graphql
     app/assets/javascripts/analytics/dashboards/ai_impact/graphql/duo_agent_platform_chats.query.graphql
     app/assets/javascripts/analytics/dashboards/ai_impact/graphql/duo_feature_usage.query.graphql
@@ -207,6 +206,27 @@ RSpec.describe 'graphql queries', feature_category: :api do
           complexity = query_complexity_with_typename(definition.text, { "useWorkItemFeatures" => true })
 
           expect(complexity).to be <= GitlabSchema::ADMIN_MAX_COMPLEXITY
+        end
+      end
+    end
+  end
+
+  # Anonymous visitors load the work item detail queries, so those are bound by the
+  # unauthenticated limit too, not just the authenticated one asserted above. Mutations and
+  # subscriptions need a session, so they are deliberately not listed here.
+  # See https://gitlab.com/gitlab-org/gitlab/-/issues/587972
+  describe 'work item detail query complexity for unauthenticated users', unless: Gitlab.ee? do
+    %w[
+      app/assets/javascripts/work_items/graphql/work_item_by_iid.query.graphql
+      app/assets/javascripts/work_items/graphql/work_item_by_id.query.graphql
+    ].each do |query_path|
+      describe query_path do
+        let(:definition) { Gitlab::Graphql::Queries.find(Rails.root.join(query_path)).first }
+
+        it 'does not exceed unauthenticated max complexity with features enabled' do
+          complexity = query_complexity_with_typename(definition.text, { "useWorkItemFeatures" => true })
+
+          expect(complexity).to be <= GitlabSchema::DEFAULT_MAX_COMPLEXITY
         end
       end
     end

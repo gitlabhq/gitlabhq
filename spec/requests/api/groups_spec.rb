@@ -38,9 +38,9 @@ RSpec.describe API::Groups, :with_current_organization, feature_category: :group
         make_upload_request
 
         group_id = json_response['id']
-        expect(json_response['avatar_url']).to eq('http://localhost/uploads/' \
-                                                  '-/system/group/avatar/' \
-                                                  "#{group_id}/banana_sample.gif")
+        expect(json_response['avatar_url']).to start_with('http://localhost/uploads/' \
+                                                   '-/system/group/avatar/' \
+                                                   "#{group_id}/banana_sample.gif")
       end
     end
 
@@ -87,7 +87,7 @@ RSpec.describe API::Groups, :with_current_organization, feature_category: :group
   shared_examples 'includes statistics when all_available is false' do
     let(:params) { { all_available: false, statistics: true } }
 
-    before do
+    before_all do
       group1.add_developer(admin)
       create(:group, parent: group1)
     end
@@ -239,20 +239,12 @@ RSpec.describe API::Groups, :with_current_organization, feature_category: :group
     end
 
     context 'when using the visibility filter' do
-      let_it_be(:group_1) { create(:group, :private) }
-      let_it_be(:group_2) { create(:group, :internal) }
-      let_it_be(:group_3) { create(:group, :public) }
-      let_it_be(:group_4) { create(:group, :private) }
-      let_it_be(:group_5) { create(:group, :public) }
+      let_it_be(:group_1) { create(:group, :private, owners: user1) }
+      let_it_be(:group_2) { create(:group, :internal, owners: user1) }
+      let_it_be(:group_3) { create(:group, :public, owners: user1) }
+      let_it_be(:group_4) { create(:group, :private, owners: user1) }
+      let_it_be(:group_5) { create(:group, :public, owners: user1) }
       let(:response_groups) { json_response.map { |group| group['id'] } }
-
-      before_all do
-        group_1.add_owner(user1)
-        group_2.add_owner(user1)
-        group_3.add_owner(user1)
-        group_4.add_owner(user1)
-        group_5.add_owner(user1)
-      end
 
       it 'filters based on private visibility param' do
         get api("/groups", user1), params: { visibility: 'private' }
@@ -429,14 +421,9 @@ RSpec.describe API::Groups, :with_current_organization, feature_category: :group
     end
 
     context "when using top_level_only" do
-      let(:top_level_group) { create(:group, name: 'top-level-group') }
-      let(:subgroup) { create(:group, :nested, name: 'subgroup') }
+      let_it_be(:top_level_group) { create(:group, name: 'top-level-group', owners: user1) }
+      let_it_be(:subgroup) { create(:group, :nested, name: 'subgroup', owners: user1) }
       let(:response_groups) { json_response.map { |group| group['name'] } }
-
-      before do
-        top_level_group.add_owner(user1)
-        subgroup.add_owner(user1)
-      end
 
       it "doesn't return subgroups", :aggregate_failures do
         get api("/groups", user1), params: { top_level_only: true }
@@ -450,18 +437,12 @@ RSpec.describe API::Groups, :with_current_organization, feature_category: :group
     end
 
     context "when using sorting" do
-      let_it_be(:group3) { create(:group, name: "a#{group1.name}", path: "z#{group1.path}") }
-      let_it_be(:group4) { create(:group, name: "same-name", path: "y#{group1.path}") }
-      let_it_be(:group5) { create(:group, name: "same-name") }
+      let_it_be(:group3) { create(:group, name: "a#{group1.name}", path: "z#{group1.path}", owners: user1) }
+      let_it_be(:group4) { create(:group, name: "same-name", path: "y#{group1.path}", owners: user1) }
+      let_it_be(:group5) { create(:group, name: "same-name", owners: user1) }
 
       let(:response_groups) { json_response.map { |group| group['name'] } }
       let(:response_groups_ids) { json_response.map { |group| group['id'] } }
-
-      before_all do
-        group3.add_owner(user1)
-        group4.add_owner(user1)
-        group5.add_owner(user1)
-      end
 
       it "sorts by name ascending by default", :aggregate_failures do
         get api("/groups", user1)
@@ -527,15 +508,10 @@ RSpec.describe API::Groups, :with_current_organization, feature_category: :group
       end
 
       context 'when searching with similarity ordering', :aggregate_failures do
-        let_it_be(:group6) { create(:group, name: 'same-name subgroup', parent: group4) }
-        let_it_be(:group7) { create(:group, name: 'same-name parent') }
+        let_it_be(:group6) { create(:group, name: 'same-name subgroup', parent: group4, owners: user1) }
+        let_it_be(:group7) { create(:group, name: 'same-name parent', owners: user1) }
 
         let(:params) { { order_by: 'similarity', search: 'same-name' } }
-
-        before_all do
-          group6.add_owner(user1)
-          group7.add_owner(user1)
-        end
 
         subject { get api('/groups', user1), params: params }
 
@@ -584,12 +560,11 @@ RSpec.describe API::Groups, :with_current_organization, feature_category: :group
     end
 
     context 'when using min_access_level in the request' do
-      let!(:group3) { create(:group, :private) }
+      let_it_be(:group3) { create(:group, :private, maintainers: user2) }
       let(:response_groups) { json_response.map { |group| group['id'] } }
 
-      before do
+      before_all do
         group1.add_developer(user2)
-        group3.add_maintainer(user2)
       end
 
       context 'with min_access_level parameter' do
@@ -1021,11 +996,7 @@ RSpec.describe API::Groups, :with_current_organization, feature_category: :group
       end
 
       context "expose shared_runners_setting attribute" do
-        let(:group) { create(:group, shared_runners_enabled: true) }
-
-        before do
-          group.add_owner(user1)
-        end
+        let_it_be_with_reload(:group) { create(:group, shared_runners_enabled: true, owners: user1) }
 
         it "returns the group with shared_runners_setting as 'enabled'", :aggregate_failures do
           get api("/groups/#{group.id}", user1)
@@ -1281,7 +1252,7 @@ RSpec.describe API::Groups, :with_current_organization, feature_category: :group
         expect(json_response['shared_projects'].length).to eq(0)
         expect(json_response['default_branch_protection']).to eq(::Gitlab::Access::MAINTAINER_PROJECT_ACCESS)
         expect(json_response['default_branch_protection_defaults']).to eq(::Gitlab::Access::BranchProtection.protected_after_initial_push.stringify_keys)
-        expect(json_response['avatar_url']).to end_with('dk.png')
+        expect(json_response['avatar_url']).to start_with("http://localhost/uploads/-/system/group/avatar/#{group1.id}/dk.png")
         expect(json_response['math_rendering_limits_enabled']).to be(false)
         expect(json_response['lock_math_rendering_limits_enabled']).to be(true)
         expect(json_response['step_up_auth_required_oauth_provider']).to be_nil
@@ -1504,10 +1475,6 @@ RSpec.describe API::Groups, :with_current_organization, feature_category: :group
         context 'when user lacks admin_group permission' do
           let(:developer) { create(:user, developer_of: group1) }
 
-          before do
-            group1.add_developer(developer)
-          end
-
           it 'returns forbidden' do
             put api("/groups/#{group1.id}", developer), params: {
               step_up_auth_required_oauth_provider: 'openid_connect'
@@ -1556,11 +1523,9 @@ RSpec.describe API::Groups, :with_current_organization, feature_category: :group
       end
 
       context 'within a subgroup' do
-        let(:group3) { create(:group, visibility_level: Gitlab::VisibilityLevel::PUBLIC) }
-        let!(:subgroup) { create(:group, parent: group3, visibility_level: Gitlab::VisibilityLevel::PUBLIC) }
-
-        before do
-          group3.add_owner(user3)
+        let_it_be(:group3) { create(:group, visibility_level: Gitlab::VisibilityLevel::PUBLIC, owners: user3) }
+        let_it_be_with_reload(:subgroup) do
+          create(:group, parent: group3, visibility_level: Gitlab::VisibilityLevel::PUBLIC)
         end
 
         it 'does not change visibility when not requested', :aggregate_failures do
@@ -1686,21 +1651,16 @@ RSpec.describe API::Groups, :with_current_organization, feature_category: :group
       context 'with owned' do
         let_it_be(:group) { create(:group) }
 
-        let_it_be(:project1) { create(:project, group: group) }
         let_it_be(:project1_guest) { create(:user) }
         let_it_be(:project1_owner) { create(:user) }
         let_it_be(:project1_maintainer) { create(:user) }
 
-        let_it_be(:project2) { create(:project, group: group) }
-
-        before do
-          project1.add_guest(project1_guest)
-          project1.add_owner(project1_owner)
-          project1.add_maintainer(project1_maintainer)
-
-          project2_owner = project1_owner
-          project2.add_owner(project2_owner)
+        let_it_be(:project1) do
+          create(:project, group: group, guests: project1_guest, owners: project1_owner,
+            maintainers: project1_maintainer)
         end
+
+        let_it_be(:project2) { create(:project, group: group, owners: project1_owner) }
 
         context "as a guest" do
           it 'returns no projects' do
@@ -1811,7 +1771,7 @@ RSpec.describe API::Groups, :with_current_organization, feature_category: :group
       end
 
       context 'with similarity ordering' do
-        let_it_be(:group_with_projects) { create(:group) }
+        let_it_be(:group_with_projects) { create(:group, owners: user1) }
         let_it_be(:project_1) { create(:project, name: 'Project', path: 'project', group: group_with_projects) }
         let_it_be(:project_2) { create(:project, name: 'Test Project', path: 'test-project', group: group_with_projects) }
         let_it_be(:project_3) { create(:project, name: 'Test', path: 'test', group: group_with_projects) }
@@ -1819,10 +1779,6 @@ RSpec.describe API::Groups, :with_current_organization, feature_category: :group
         let(:params) { { order_by: 'similarity', search: 'test' } }
 
         subject { get api("/groups/#{group_with_projects.id}/projects", user1), params: params }
-
-        before do
-          group_with_projects.add_owner(user1)
-        end
 
         it 'returns items based ordered by similarity', :aggregate_failures do
           subject
@@ -1854,7 +1810,7 @@ RSpec.describe API::Groups, :with_current_organization, feature_category: :group
       end
 
       context 'with star_count ordering' do
-        let_it_be(:group_with_projects) { create(:group) }
+        let_it_be(:group_with_projects) { create(:group, owners: user1) }
         let_it_be(:project_1) { create(:project, name: 'Project Test', path: 'project-test', group: group_with_projects) }
         let_it_be(:project_2) { create(:project, name: 'Test Project', path: 'test-project', group: group_with_projects, star_count: 10) }
         let_it_be(:project_3) { create(:project, name: 'Test', path: 'test', group: group_with_projects, star_count: 5) }
@@ -1862,10 +1818,6 @@ RSpec.describe API::Groups, :with_current_organization, feature_category: :group
         let(:params) { { order_by: 'star_count', search: 'test' } }
 
         subject { get api("/groups/#{group_with_projects.id}/projects", user1), params: params }
-
-        before do
-          group_with_projects.add_owner(user1)
-        end
 
         it 'returns items based ordered by star_count', :aggregate_failures do
           subject
@@ -1931,7 +1883,7 @@ RSpec.describe API::Groups, :with_current_organization, feature_category: :group
       end
 
       context 'when include_subgroups is true' do
-        before do
+        before_all do
           subgroup = create(:group, parent: group1)
           subgroup2 = create(:group, parent: subgroup)
 
@@ -1940,7 +1892,9 @@ RSpec.describe API::Groups, :with_current_organization, feature_category: :group
           create(:project, group: subgroup2)
 
           group1.reload
+        end
 
+        before do
           # Stub to prevent cascading settings queries from auto_duo_code_review_settings_available?
           # These queries are unrelated to what this N+1 spec is testing.
           # Added in https://gitlab.com/gitlab-org/gitlab/-/merge_requests/216006
@@ -2106,13 +2060,13 @@ RSpec.describe API::Groups, :with_current_organization, feature_category: :group
   end
 
   describe "GET /groups/:id/projects/shared" do
-    let!(:project4) do
+    let_it_be(:project4) do
       create(:project, namespace: group2, name: 'test project', path: 'test_project', visibility_level: Gitlab::VisibilityLevel::PRIVATE, star_count: 5)
     end
 
     let(:path) { "/groups/#{group1.id}/projects/shared" }
 
-    before do
+    before_all do
       create(:project_group_link, project: project2, group: group1)
       create(:project_group_link, project: project4, group: group1)
     end
@@ -2332,7 +2286,7 @@ RSpec.describe API::Groups, :with_current_organization, feature_category: :group
 
     let(:path) { "/groups/#{main_group.id}/groups/shared" }
 
-    before do
+    before_all do
       create(:group_group_link, shared_group: shared_group1, shared_with_group: main_group)
       create(:group_group_link, shared_group: shared_group2, shared_with_group: main_group)
       create(:group_group_link, shared_group: other_group, shared_with_group: main_group)
@@ -2439,16 +2393,14 @@ RSpec.describe API::Groups, :with_current_organization, feature_category: :group
       end
 
       let_it_be(:shared_group1) do
-        create(:group, :private)
+        create(:group, :private, developers: user1)
       end
 
       let_it_be(:shared_group2) do
-        create(:group, :private)
+        create(:group, :private, reporters: user1)
       end
 
-      before do
-        shared_group1.add_developer(user1)
-        shared_group2.add_reporter(user1)
+      before_all do
         create(:group_group_link, shared_group: shared_group1, shared_with_group: new_main_group)
         create(:group_group_link, shared_group: shared_group2, shared_with_group: new_main_group)
       end
@@ -2523,7 +2475,7 @@ RSpec.describe API::Groups, :with_current_organization, feature_category: :group
       let(:shared_group_names) { [shared_group1.name, shared_group2.name, shared_group3.name] }
       let(:params) { { order_by: 'similarity', search: 'same-name' } }
 
-      before do
+      before_all do
         create(:group_group_link, shared_group: shared_group1, shared_with_group: main_group_2)
         create(:group_group_link, shared_group: shared_group2, shared_with_group: main_group_2)
         create(:group_group_link, shared_group: shared_group3, shared_with_group: main_group_2)
@@ -2563,7 +2515,7 @@ RSpec.describe API::Groups, :with_current_organization, feature_category: :group
 
       let(:response_groups) { json_response.map { |group| group['id'] } }
 
-      before do
+      before_all do
         create(:group_group_link, shared_group: shared_group1, shared_with_group: main_group_3)
         create(:group_group_link, shared_group: shared_group2, shared_with_group: main_group_3)
         create(:group_group_link, shared_group: shared_group3, shared_with_group: main_group_3)
@@ -2631,7 +2583,7 @@ RSpec.describe API::Groups, :with_current_organization, feature_category: :group
 
     let(:path) { "/groups/#{main_group.id}/invited_groups" }
 
-    before do
+    before_all do
       create(:group_group_link, shared_group: main_group, shared_with_group: shared_group1)
       create(:group_group_link, shared_group: main_group, shared_with_group: shared_group2)
       create(:group_group_link, shared_group: main_group, shared_with_group: other_group)
@@ -2726,16 +2678,14 @@ RSpec.describe API::Groups, :with_current_organization, feature_category: :group
       end
 
       let_it_be(:shared_group1) do
-        create(:group, :private)
+        create(:group, :private, developers: user1)
       end
 
       let_it_be(:shared_group2) do
-        create(:group, :private)
+        create(:group, :private, reporters: user1)
       end
 
-      before do
-        shared_group1.add_developer(user1)
-        shared_group2.add_reporter(user1)
+      before_all do
         create(:group_group_link, shared_group: new_main_group, shared_with_group: shared_group1)
         create(:group_group_link, shared_group: new_main_group, shared_with_group: shared_group2)
       end
@@ -2760,7 +2710,7 @@ RSpec.describe API::Groups, :with_current_organization, feature_category: :group
       let_it_be(:new_shared_group) { create(:group, :public, name: "new search group", owners: user1) }
       let_it_be(:other_shared_group) { create(:group, :private, name: "other group", owners: user1) }
 
-      before do
+      before_all do
         create(:group_group_link, shared_group: relation_main_group, shared_with_group: new_shared_group)
         create(:group_group_link, shared_group: relation_main_group, shared_with_group: other_shared_group)
       end
@@ -2904,9 +2854,9 @@ RSpec.describe API::Groups, :with_current_organization, feature_category: :group
   end
 
   describe 'GET /groups/:id/subgroups' do
-    let!(:subgroup1) { create(:group, parent: group1) }
-    let!(:subgroup2) { create(:group, :private, parent: group1) }
-    let!(:subgroup3) { create(:group, :private, parent: group2) }
+    let_it_be(:subgroup1) { create(:group, parent: group1) }
+    let_it_be(:subgroup2) { create(:group, :private, parent: group1) }
+    let_it_be(:subgroup3) { create(:group, :private, parent: group2) }
 
     context 'when unauthenticated' do
       it 'returns only public subgroups', :aggregate_failures do
@@ -2982,7 +2932,7 @@ RSpec.describe API::Groups, :with_current_organization, feature_category: :group
       end
 
       context 'when user is member of public group' do
-        before do
+        before_all do
           group1.add_guest(user2)
         end
 
@@ -3011,7 +2961,7 @@ RSpec.describe API::Groups, :with_current_organization, feature_category: :group
       end
 
       context 'when user is member of private group' do
-        before do
+        before_all do
           group2.add_guest(user1)
         end
 
@@ -3131,7 +3081,7 @@ RSpec.describe API::Groups, :with_current_organization, feature_category: :group
       end
 
       context 'when user is member of public group' do
-        before do
+        before_all do
           group1.add_guest(user2)
         end
 
@@ -3165,7 +3115,7 @@ RSpec.describe API::Groups, :with_current_organization, feature_category: :group
       end
 
       context 'when user is member of private group' do
-        before do
+        before_all do
           group2.add_guest(user1)
         end
 
@@ -3288,7 +3238,7 @@ RSpec.describe API::Groups, :with_current_organization, feature_category: :group
       end
 
       context 'as owner' do
-        before do
+        before_all do
           group2.add_owner(user1)
         end
 
@@ -3313,7 +3263,7 @@ RSpec.describe API::Groups, :with_current_organization, feature_category: :group
       end
 
       context 'as maintainer' do
-        before do
+        before_all do
           group2.add_maintainer(user1)
         end
 
@@ -3345,7 +3295,7 @@ RSpec.describe API::Groups, :with_current_organization, feature_category: :group
         end
 
         context 'and organization_id is passed' do
-          let!(:organization_owner) { create(:organization_owner, user: admin, organization: organization) }
+          let_it_be(:organization_owner) { create(:organization_owner, user: admin, organization: organization) }
 
           it 'creates group within organization' do
             post api('/groups', admin), params: attributes_for_group_api(organization_id: organization.id)
@@ -3521,7 +3471,7 @@ RSpec.describe API::Groups, :with_current_organization, feature_category: :group
       end
 
       context 'when creating a nested group with `default_branch_protection_defaults` attribute' do
-        let_it_be(:parent) { create(:group, organization: current_organization) }
+        let_it_be(:parent) { create(:group, organization: current_organization, owners: user3) }
         let_it_be(:params) do
           attributes_for_group_api(
             default_branch_protection_defaults: {
@@ -3532,10 +3482,6 @@ RSpec.describe API::Groups, :with_current_organization, feature_category: :group
         end
 
         subject { post api("/groups", user3), params: params }
-
-        before do
-          parent.add_owner(user3)
-        end
 
         it 'creates group with the specified default_branch_protection_defaults' do
           subject
@@ -3697,7 +3643,7 @@ RSpec.describe API::Groups, :with_current_organization, feature_category: :group
       let(:params) { { permanently_remove: true } }
 
       context 'if group is a subgroup' do
-        let(:parent_group) { create(:group) }
+        let_it_be(:parent_group) { create(:group) }
 
         before do
           group.update!(parent: parent_group)
@@ -3813,7 +3759,7 @@ RSpec.describe API::Groups, :with_current_organization, feature_category: :group
   end
 
   describe "POST /groups/:id/projects/:project_id" do
-    let(:project) { create(:project) }
+    let_it_be(:project) { create(:project) }
     let(:project_path) { CGI.escape(project.full_path) }
 
     before do
@@ -3894,18 +3840,17 @@ RSpec.describe API::Groups, :with_current_organization, feature_category: :group
     end
 
     context 'when the user has rights to transfer the group' do
-      let_it_be(:guest_group) { create(:group) }
-      let_it_be(:maintainer_group) { create(:group, name: 'maintainer group', path: 'maintainer-group') }
-      let_it_be(:owner_group_1) { create(:group, name: 'owner group', path: 'owner-group') }
-      let_it_be(:owner_group_2) { create(:group, name: 'gitlab group', path: 'gitlab-group') }
+      let_it_be(:guest_group) { create(:group, guests: user) }
+      let_it_be(:maintainer_group) do
+        create(:group, name: 'maintainer group', path: 'maintainer-group', maintainers: user)
+      end
+
+      let_it_be(:owner_group_1) { create(:group, name: 'owner group', path: 'owner-group', owners: user) }
+      let_it_be(:owner_group_2) { create(:group, name: 'gitlab group', path: 'gitlab-group', owners: user) }
       let_it_be(:shared_with_group_where_direct_owner_as_owner) { create(:group) }
 
-      before do
+      before_all do
         source_group.add_owner(user)
-        guest_group.add_guest(user)
-        maintainer_group.add_maintainer(user)
-        owner_group_1.add_owner(user)
-        owner_group_2.add_owner(user)
         create(
           :group_group_link,
           :owner,
@@ -3958,7 +3903,7 @@ RSpec.describe API::Groups, :with_current_organization, feature_category: :group
     end
 
     context 'when the user does not have permissions to transfer the group' do
-      before do
+      before_all do
         source_group.add_developer(user)
       end
 
@@ -3982,13 +3927,8 @@ RSpec.describe API::Groups, :with_current_organization, feature_category: :group
 
   describe 'POST /groups/:id/transfer' do
     let_it_be(:user) { create(:user) }
-    let_it_be_with_reload(:new_parent_group) { create(:group, :private) }
-    let_it_be_with_reload(:group, freeze: false) { create(:group, :nested, :private) }
-
-    before do
-      new_parent_group.add_owner(user)
-      group.add_owner(user)
-    end
+    let_it_be_with_reload(:new_parent_group) { create(:group, :private, owners: user) }
+    let_it_be_with_reload(:group, freeze: false) { create(:group, :nested, :private, owners: user) }
 
     def make_request(user)
       post api("/groups/#{group.id}/transfer", user), params: params
@@ -4096,100 +4036,12 @@ RSpec.describe API::Groups, :with_current_organization, feature_category: :group
         end
       end
     end
-
-    context 'when groups_and_projects_async_transfer is disabled' do
-      before do
-        stub_feature_flags(groups_and_projects_async_transfer: false)
-      end
-
-      context 'when promoting a subgroup to a root group' do
-        shared_examples_for 'promotes the subgroup to a root group' do
-          it 'returns success', :aggregate_failures do
-            expect_log_keys(caller_id: "POST /api/:version/groups/:id/transfer",
-              route: "/api/:version/groups/:id/transfer",
-              root_namespace: group.path)
-
-            make_request(user)
-
-            expect(response).to have_gitlab_http_status(:created)
-            expect(json_response['parent_id']).to be_nil
-            expect(group.reload.state).to eq('ancestor_inherited')
-          end
-        end
-
-        context 'when no group_id is specified' do
-          let(:params) {}
-
-          it_behaves_like 'promotes the subgroup to a root group'
-        end
-
-        context 'when group_id is specified as blank' do
-          let(:params) { { group_id: '' } }
-
-          it_behaves_like 'promotes the subgroup to a root group'
-        end
-
-        context 'when the group is already a root group' do
-          let(:group) { create(:group) }
-          let(:params) { { group_id: '' } }
-
-          it 'returns error', :aggregate_failures do
-            make_request(user)
-
-            expect(response).to have_gitlab_http_status(:bad_request)
-            expect(json_response['message']).to eq('Transfer failed: Group is already a root group.')
-          end
-        end
-      end
-
-      context 'when transferring a subgroup to a different group' do
-        let(:params) { { group_id: new_parent_group.id } }
-
-        context 'when the transfer fails due to an error' do
-          before do
-            expect_next_instance_of(::Groups::TransferService) do |service|
-              expect(service).to receive(:proceed_to_transfer).and_raise(Gitlab::UpdatePathError, 'namespace directory cannot be moved')
-            end
-          end
-
-          it 'returns error', :aggregate_failures do
-            make_request(user)
-
-            expect(response).to have_gitlab_http_status(:bad_request)
-            expect(json_response['message']).to eq('Transfer failed: namespace directory cannot be moved')
-          end
-        end
-
-        context 'when the transfer succeeds' do
-          before do
-            # Added this to https://gitlab.com/gitlab-org/gitlab/-/work_items/595305
-            # Bumped by ~6 to accommodate the secrets manager deprovision walk
-            # added in MR !236024 (snapshot capture of self_and_descendants +
-            # all_projects for the SM deprovision hook). Performance work is
-            # tracked in gitlab-org/gitlab#600129.
-            allow(Gitlab::QueryLimiting::Transaction).to receive(:threshold).and_return(112)
-          end
-
-          it 'returns success', :aggregate_failures do
-            make_request(user)
-
-            expect(response).to have_gitlab_http_status(:created)
-            expect(json_response['parent_id']).to eq(new_parent_group.id)
-            expect(group.reload.state).to eq('ancestor_inherited')
-          end
-        end
-      end
-    end
   end
 
   describe 'POST /groups/:id/transfer_to_organization' do
     let_it_be(:organization) { create(:organization) }
-    let_it_be(:group_to_transfer) { create(:group, :private) }
+    let_it_be(:group_to_transfer) { create(:group, :private, owners: user1) }
     let_it_be(:subgroup) { create(:group, :private, parent: group_to_transfer) }
-
-    before do
-      group_to_transfer.add_owner(user1)
-    end
 
     context 'when authenticated as group owner' do
       it 'initiates the transfer' do
@@ -4247,7 +4099,7 @@ RSpec.describe API::Groups, :with_current_organization, feature_category: :group
     end
 
     context 'when user is not group owner' do
-      before do
+      before_all do
         group_to_transfer.add_developer(user2) # Add this line
       end
 
@@ -4275,7 +4127,7 @@ RSpec.describe API::Groups, :with_current_organization, feature_category: :group
     let(:user) { user1 }
     let(:boundary_type) { group1 }
 
-    before do
+    before_all do
       group2.add_owner(user1)
     end
   end
@@ -4335,39 +4187,31 @@ RSpec.describe API::Groups, :with_current_organization, feature_category: :group
     end
 
     context 'when authenticated as owner' do
-      let(:owner_group) { create(:group) }
-      let(:owner_user) { create(:user) }
-
-      before do
-        owner_group.add_owner(owner_user)
-      end
+      let_it_be(:owner_user) { create(:user) }
+      let_it_be(:owner_group) { create(:group, owners: owner_user) }
 
       it_behaves_like 'shares group with group' do
         let(:user) { owner_user }
         let(:group) { owner_group }
-        let(:shared_with_group) { create(:group) }
+        let_it_be(:shared_with_group) { create(:group) }
       end
 
       it_behaves_like 'authorizing granular token permissions', :share_group do
         let(:expires_at) { 10.days.from_now.to_date }
-        let(:boundary_object) { create(:group) }
+        let_it_be(:boundary_object) { create(:group, owners: owner_user) }
         let(:user) { owner_user }
         let(:request) do
           post api("/groups/#{owner_group.id}/share", personal_access_token: pat), params: { group_id: boundary_object.id, group_access: Gitlab::Access::DEVELOPER, expires_at: expires_at }
-        end
-
-        before do
-          boundary_object.add_owner(owner_user)
         end
       end
     end
 
     context 'when the user is not the owner of the group' do
       let(:group) { create(:group) }
-      let(:user4) { create(:user) }
+      let_it_be(:user4) { create(:user) }
       let(:expires_at) { 10.days.from_now.to_date }
 
-      before do
+      before_all do
         group1.add_maintainer(user4)
       end
 
@@ -4381,8 +4225,8 @@ RSpec.describe API::Groups, :with_current_organization, feature_category: :group
     context 'when authenticated as admin' do
       it_behaves_like 'shares group with group' do
         let(:user) { admin }
-        let(:group) { create(:group) }
-        let(:shared_with_group) { create(:group) }
+        let_it_be(:group) { create(:group) }
+        let_it_be(:shared_with_group) { create(:group) }
         let(:admin_mode) { true }
       end
     end
@@ -4421,9 +4265,9 @@ RSpec.describe API::Groups, :with_current_organization, feature_category: :group
     end
 
     context 'when authenticated as owner' do
-      let(:group_a) { create(:group) }
+      let_it_be(:group_a) { create(:group) }
 
-      before do
+      before_all do
         create(:group_group_link, shared_group: group1, shared_with_group: group_a)
       end
 
@@ -4440,17 +4284,17 @@ RSpec.describe API::Groups, :with_current_organization, feature_category: :group
           delete api("/groups/#{group1.id}/share/#{group_a.id}", personal_access_token: pat)
         end
 
-        before do
+        before_all do
           group_a.add_owner(user1)
         end
       end
     end
 
     context 'when the user is not the owner of the group' do
-      let(:group_a) { create(:group) }
-      let(:user4) { create(:user) }
+      let_it_be(:group_a) { create(:group) }
+      let_it_be(:user4) { create(:user) }
 
-      before do
+      before_all do
         group1.add_maintainer(user4)
         create(:group_group_link, shared_group: group1, shared_with_group: group_a)
       end
@@ -4459,15 +4303,35 @@ RSpec.describe API::Groups, :with_current_organization, feature_category: :group
         expect do
           delete api("/groups/#{group1.id}/share/#{group_a.id}", user4)
 
-          expect(response).to have_gitlab_http_status(:no_content)
+          expect(response).to have_gitlab_http_status(:not_found)
         end.not_to change { group1.shared_with_group_links }
       end
     end
 
-    context 'when authenticated as admin' do
-      let(:group_b) { create(:group) }
+    context 'when the group has LDAP sync enabled' do
+      let_it_be(:group_a) { create(:group) }
+
+      before_all do
+        create(:group_group_link, shared_group: group1, shared_with_group: group_a)
+      end
 
       before do
+        allow_next_found_instance_of(Group) do |found_group|
+          allow(found_group).to receive(:ldap_synced?).and_return(true)
+        end
+      end
+
+      it_behaves_like 'deletes group share' do
+        let(:user) { user1 }
+        let(:shared_group) { group1 }
+        let(:shared_with_group) { group_a }
+      end
+    end
+
+    context 'when authenticated as admin' do
+      let_it_be(:group_b) { create(:group) }
+
+      before_all do
         create(:group_group_link, shared_group: group2, shared_with_group: group_b)
       end
 

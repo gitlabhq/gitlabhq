@@ -1693,6 +1693,26 @@ RSpec.describe Issue, feature_category: :team_planning do
       let(:default_params) { { project: project } }
     end
 
+    describe 'sibling-shift query with the read flag on' do
+      it 'filters the range on work_item_positions.relative_position, not issues' do
+        left = create(:issue, project: project, relative_position: 99)
+        right = create(:issue, project: project, relative_position: 100)
+        create(:issue, project: project, relative_position: 100)
+        middle = create(:issue, project: project, relative_position: nil)
+
+        recorder = ActiveRecord::QueryRecorder.new do
+          middle.move_between(left, right)
+          middle.save!
+        end
+
+        shift = recorder.log.find { |q| q.match?(/UPDATE "issues".*IN \(SELECT.*work_item_positions/m) }
+
+        expect(shift).to be_present
+        expect(shift).to match(/"work_item_positions"\."relative_position" (=|BETWEEN)/)
+        expect(shift).not_to match(/AND "issues"\."relative_position" (=|BETWEEN)/)
+      end
+    end
+
     it 'is not blocked for repositioning by default' do
       expect(issue1.blocked_for_repositioning?).to be(false)
     end
@@ -1736,11 +1756,12 @@ RSpec.describe Issue, feature_category: :team_planning do
       end
 
       context 'when read_relative_positions_from_work_item_positions is enabled' do
-        it 'joins work_item_positions while keeping the namespace scope' do
+        it 'joins work_item_positions and scopes by the positioning root column' do
           sql = described_class.relative_positioning_query_base(project_issue).to_sql
 
           expect(sql).to include('INNER JOIN "work_item_positions"')
-          expect(sql).to include('"issues"."namespace_id" IN')
+          expect(sql).to include('"work_item_positions"."relative_positioning_namespace_id" =')
+          expect(sql).not_to include('"issues"."namespace_id" IN')
         end
       end
 

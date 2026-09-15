@@ -131,7 +131,7 @@ Adaptive concurrency limiting specific metrics:
 
 - `gitaly_concurrency_limiting_current_limit` - A gauge showing the current limit value of an adaptive concurrency limit for each RPC type. Only adaptive limits are included in this metric.
 - `gitaly_concurrency_limiting_backoff_events_total` - Counter indicating the total number of backoff events, representing when and why limits are reduced due to resource pressure.
-- `gitaly_concurrency_limiting_watcher_errors_total` - Counter tracking errors that occur when Gitaly fails to retrieve resource data, which may impact the ability for
+- `gitaly_concurrency_limiting_watcher_errors_total` - Counter tracking errors that occur when Gitaly fails to retrieve resource data, which may impact the ability of
   Gitaly to evaluate the current resource situation.
 
 When investigating issues with adaptive limiting, correlate these metrics with the general concurrency limiting metrics and logs to get a complete picture of system behavior.
@@ -146,7 +146,7 @@ You can observe the status of [control groups (cgroups)](configure_gitaly.md#con
 - `gitaly_cgroups_cpu_usage`, a gauge that measures CPU usage per cgroup.
 - `gitaly_cgroup_procs_total`, a gauge that measures the total number of
   processes Gitaly has spawned under the control of cgroups.
-- `gitaly_cgroup_cpu_cfs_periods_total`, a counter that for the value of [`nr_periods`](https://docs.kernel.org/scheduler/sched-bwc.html#statistics).
+- `gitaly_cgroup_cpu_cfs_periods_total`, a counter for the value of [`nr_periods`](https://docs.kernel.org/scheduler/sched-bwc.html#statistics).
 - `gitaly_cgroup_cpu_cfs_throttled_periods_total`, a counter for the value of [`nr_throttled`](https://docs.kernel.org/scheduler/sched-bwc.html#statistics).
 - `gitaly_cgroup_cpu_cfs_throttled_seconds_total`, a counter for the value of [`throttled_time`](https://docs.kernel.org/scheduler/sched-bwc.html#statistics) in seconds.
 

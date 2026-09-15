@@ -48,7 +48,7 @@ class JwtController < ApplicationController
   # ee/lib/ee/gitlab/middleware/read_only/controller.rb
   # If the action here changes to allow POST requests then a check for maintenance mode should be added
   def auth
-    service = SERVICES[params[:service]]
+    service = SERVICES[service_params[:service]]
 
     unless service
       return render_error(
@@ -101,7 +101,7 @@ class JwtController < ApplicationController
       message: 'JWT authentication failed',
       http_user: login,
       remote_ip: request.ip,
-      auth_service: params[:service],
+      auth_service: service_params[:service],
       'auth_result.type': result.type,
       'auth_result.actor_type': result.actor&.class
     }.merge(::Gitlab::ApplicationContext.current)
@@ -136,6 +136,10 @@ class JwtController < ApplicationController
     )
   end
 
+  def service_params
+    params.permit(:service)
+  end
+
   def auth_params
     params.permit(:service, :account, :client_id)
           .merge(additional_params)
@@ -160,7 +164,7 @@ class JwtController < ApplicationController
   #
   # This method makes to always return an array of scopes
   def scopes_param
-    return unless params[:scope].present?
+    return unless params.permit(:scope)[:scope].present?
 
     scopes = Array(Rack::Utils.parse_query(request.query_string)['scope'])
     scopes.flat_map(&:split)

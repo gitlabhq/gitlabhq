@@ -3,7 +3,6 @@
 require 'spec_helper'
 
 RSpec.describe Gitlab::Kubernetes::ConfigMap do
-  let(:kubeclient) { double('kubernetes client') }
   let(:name) { 'my-name' }
   let(:files) { [] }
   let(:config_map) { described_class.new(name, files) }

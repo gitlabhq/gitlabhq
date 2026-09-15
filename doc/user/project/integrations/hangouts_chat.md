@@ -1,6 +1,6 @@
 ---
 stage: Plan
-group: Project Management
+group: Work Items
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see <https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments>
 title: Google Chat
 description: "Configure the Google Chat integration to receive notifications from GitLab in a Google Chat space."
@@ -16,7 +16,7 @@ description: "Configure the Google Chat integration to receive notifications fro
 You can configure your project in GitLab to send notifications to a
 space of your choice in [Google Chat](https://chat.google.com/).
 
-Threaded notifications are enabled by default
+Threaded notifications are turned on by default
 in Google Chat for the same GitLab object (for example, an issue or merge request).
 For more information, see [issue 438452](https://gitlab.com/gitlab-org/gitlab/-/issues/438452).
 

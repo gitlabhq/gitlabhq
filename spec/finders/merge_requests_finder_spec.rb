@@ -346,184 +346,6 @@ RSpec.describe MergeRequestsFinder, feature_category: :code_review_workflow do
         end
 
         it_behaves_like 'filtering by group'
-
-        context 'with group_mr_in_operator_optimization feature flag' do
-          # Minimal params that satisfy idx_mrs_on_target_id_and_created_at_and_state_id:
-          #   group + subgroups, created_at sort, single state, no extra filters.
-          let(:optimizable_params) do
-            { group_id: group.id, include_subgroups: true, sort: 'created_at_desc', state: 'opened', non_archived: true, with_labels_details: true }
-          end
-
-          before do
-            stub_feature_flags(group_mr_in_operator_optimization: true)
-          end
-
-          context 'before execute is called' do
-            it 'returns nil (falsy)' do
-              finder = described_class.new(user, optimizable_params)
-
-              expect(finder.group_mr_in_optimization_applied?).to be_nil
-            end
-          end
-
-          context 'when all conditions are met' do
-            it 'applies the optimization' do
-              finder = described_class.new(user, optimizable_params)
-              finder.execute
-
-              expect(finder.group_mr_in_optimization_applied?).to be(true)
-            end
-
-            it 'logs the optimization being applied' do
-              expect(Gitlab::AppLogger).to receive(:info).with(
-                hash_including(
-                  message: 'MergeRequestsFinder: in-operator optimization applied',
-                  group_id: group.id,
-                  sort: optimizable_params[:sort],
-                  state: optimizable_params[:state]
-                )
-              )
-
-              described_class.new(user, optimizable_params).execute
-            end
-
-            it 'uses the recursive keyset CTE in the generated SQL' do
-              expect(described_class.new(user, optimizable_params).execute.to_sql)
-                .to include('recursive_keyset_cte')
-            end
-
-            it 'returns results in descending order for created_at_desc' do
-              expect(described_class.new(user, optimizable_params).execute)
-                .to eq([merge_request1, merge_request5])
-            end
-
-            it 'returns results in ascending order for created_at_asc' do
-              current_time = Time.current
-              merge_request1.update_column(:created_at, current_time - 1.second)
-              merge_request5.update_column(:created_at, current_time - 2.seconds)
-              expect(described_class.new(user, optimizable_params.merge(sort: 'created_at_asc')).execute)
-                .to eq([merge_request5, merge_request1])
-            end
-          end
-
-          context 'when the feature flag is disabled' do
-            before do
-              stub_feature_flags(group_mr_in_operator_optimization: false)
-            end
-
-            it 'does not apply the optimization' do
-              finder = described_class.new(user, optimizable_params)
-              finder.execute
-
-              expect(finder.group_mr_in_optimization_applied?).to be(false)
-            end
-          end
-
-          context 'when the sort is not created_at' do
-            it 'does not apply the optimization' do
-              finder = described_class.new(user, optimizable_params.merge(sort: 'updated_at_desc'))
-              expect(Gitlab::AppLogger).to receive(:info).with(
-                hash_including(
-                  message: 'MergeRequestsFinder: in-operator optimization skipped')
-              )
-              finder.execute
-
-              expect(finder.group_mr_in_optimization_applied?).to be(false)
-            end
-          end
-
-          context 'when state is all' do
-            it 'does not apply the optimization' do
-              finder = described_class.new(user, optimizable_params.merge(state: 'all'))
-              expect(Gitlab::AppLogger).to receive(:info).with(
-                hash_including(
-                  message: 'MergeRequestsFinder: in-operator optimization skipped')
-              )
-              finder.execute
-
-              expect(finder.group_mr_in_optimization_applied?).to be(false)
-            end
-          end
-
-          context 'when state is absent' do
-            it 'does not apply the optimization' do
-              finder = described_class.new(user, optimizable_params.except(:state))
-              expect(Gitlab::AppLogger).to receive(:info).with(
-                hash_including(
-                  message: 'MergeRequestsFinder: in-operator optimization skipped')
-              )
-              finder.execute
-
-              expect(finder.group_mr_in_optimization_applied?).to be(false)
-            end
-          end
-
-          context 'when include_subgroups is false' do
-            it 'does not apply the optimization' do
-              finder = described_class.new(user, optimizable_params.merge(include_subgroups: false))
-              expect(Gitlab::AppLogger).to receive(:info).with(
-                hash_including(
-                  message: 'MergeRequestsFinder: in-operator optimization skipped')
-              )
-              finder.execute
-
-              expect(finder.group_mr_in_optimization_applied?).to be(false)
-            end
-          end
-
-          context 'when the query is not scoped to a group' do
-            it 'does not apply the optimization' do
-              finder = described_class.new(user, { project_id: project1.id, sort: 'created_at_desc', state: 'opened' })
-              expect(Gitlab::AppLogger).to receive(:info).with(
-                hash_including(
-                  message: 'MergeRequestsFinder: in-operator optimization skipped')
-              )
-              finder.execute
-
-              expect(finder.group_mr_in_optimization_applied?).to be(false)
-            end
-          end
-
-          context 'when an UNOPTIMIZABLE_FILTER_PARAMS is present' do
-            it 'does not apply the optimization' do
-              finder = described_class.new(user, optimizable_params.merge(author_id: 1))
-              expect(Gitlab::AppLogger).to receive(:info).with(
-                hash_including(
-                  message: 'MergeRequestsFinder: in-operator optimization skipped')
-              )
-              finder.execute
-              expect(finder.group_mr_in_optimization_applied?).to be(false)
-            end
-          end
-
-          context 'when UnsupportedScopeOrder is raised during optimization' do
-            before do
-              allow_next_instance_of(described_class) do |instance|
-                allow(instance).to receive(:execute_with_in_operator_optimization)
-                              .and_raise(Gitlab::Pagination::Keyset::UnsupportedScopeOrder)
-              end
-            end
-
-            it 'logs the fallback with the error message' do
-              expect(Gitlab::AppLogger).to receive(:info).with(
-                hash_including(
-                  message: 'MergeRequestsFinder: in-operator optimization fell back due to UnsupportedScopeOrder',
-                  group_id: group.id,
-                  Labkit::Fields::ERROR_MESSAGE => a_kind_of(String)
-                )
-              )
-
-              described_class.new(user, optimizable_params).execute
-            end
-
-            it 'falls back to the standard execution' do
-              finder = described_class.new(user, optimizable_params)
-              finder.execute
-
-              expect(finder.group_mr_in_optimization_applied?).to be(false)
-            end
-          end
-        end
       end
 
       it 'filters by non_archived' do
@@ -545,7 +367,7 @@ RSpec.describe MergeRequestsFinder, feature_category: :code_review_workflow do
 
       [:source_branch, :target_branch].each do |param|
         describe "#{param} parameter" do
-          let(:merge_requests) { create_list(:merge_request, 2, :unique_branches, source_project: project4, target_project: project4, author: user) }
+          let_it_be(:merge_requests) { create_list(:merge_request, 2, :unique_branches, source_project: project4, target_project: project4, author: user) }
           let(:attribute) { param }
 
           it_behaves_like 'scalar or array parameter'
@@ -583,6 +405,53 @@ RSpec.describe MergeRequestsFinder, feature_category: :code_review_workflow do
 
           expect(all_distinct).to be_empty
           expect(all_common).to match_array(merge_requests)
+        end
+      end
+
+      describe 'label filtering without a project or group scope' do
+        let_it_be(:label, freeze: false) { create(:label, project: project1) }
+
+        let!(:label_link) { create(:label_link, label: label, target: merge_request2) }
+        let!(:same_label_different_reviewer) { create(:label_link, label: label, target: merge_request3) }
+
+        let(:params) { { reviewer_id: user2.id, label_name: label.title } }
+
+        it 'returns the same merge requests with and without the CTE fence', :aggregate_failures do
+          expect(described_class.new(user, params).execute).to contain_exactly(merge_request2)
+
+          stub_feature_flags(use_cte_for_label_filter: false)
+
+          expect(described_class.new(user, params).execute).to contain_exactly(merge_request2)
+        end
+
+        it 'fences only a query bounded by a specific reviewer', :aggregate_failures do
+          fenced = ->(extra) do
+            described_class
+              .new(user, { label_name: label.title }.merge(extra))
+              .execute.to_sql.include?('filtered_issuables')
+          end
+
+          expect(fenced.call(reviewer_id: user2.id)).to be(true)
+          expect(fenced.call(reviewer_username: user2.username)).to be(true)
+
+          expect(fenced.call(reviewer_id: 'None')).to be(false)
+          expect(fenced.call(reviewer_id: 'Any')).to be(false)
+
+          expect(
+            fenced.call(reviewer_id: user2.id, sort: 'created_desc', approved_by_usernames: [user.username])
+          ).to be(false)
+        end
+
+        it 'executes when approvals force a GROUP BY' do
+          approvals_params = params.merge(sort: 'created_desc', approved_by_usernames: [user.username])
+
+          expect { described_class.new(user, approvals_params).execute.to_a }.not_to raise_error
+        end
+
+        it 'executes when a vote sort forces a GROUP BY', :aggregate_failures do
+          %w[popularity upvotes_desc downvotes_desc].each do |sort|
+            expect { described_class.new(user, params.merge(sort: sort)).execute.to_a }.not_to raise_error
+          end
         end
       end
 
@@ -668,11 +537,13 @@ RSpec.describe MergeRequestsFinder, feature_category: :code_review_workflow do
         it 'returns the relevant merge requests' do
           deployment1 = create(
             :deployment,
+            deployable: nil,
             project: project_with_repo,
             sha: project_with_repo.commit.id
           )
           deployment2 = create(
             :deployment,
+            deployable: nil,
             project: project_with_repo,
             sha: project_with_repo.commit.id
           )
@@ -687,7 +558,7 @@ RSpec.describe MergeRequestsFinder, feature_category: :code_review_workflow do
 
         context 'when a deployment does not contain any merge requests' do
           it 'returns an empty result' do
-            params = { deployment_id: create(:deployment, project: project_with_repo, sha: project_with_repo.commit.sha).id }
+            params = { deployment_id: create(:deployment, deployable: nil, project: project_with_repo, sha: project_with_repo.commit.sha).id }
             merge_requests = described_class.new(user, params).execute
 
             expect(merge_requests).to be_empty
@@ -1072,7 +943,7 @@ RSpec.describe MergeRequestsFinder, feature_category: :code_review_workflow do
       end
 
       context 'filtering by group milestone' do
-        let(:group_milestone) { create(:milestone, group: group) }
+        let_it_be(:group_milestone) { create(:milestone, group: group) }
 
         before do
           merge_request1.update!(milestone: group_milestone)
@@ -1204,7 +1075,7 @@ RSpec.describe MergeRequestsFinder, feature_category: :code_review_workflow do
       context 'filtering by created_at/updated_at' do
         let_it_be(:new_project) { create(:project, forked_from_project: project1) }
 
-        let!(:new_merge_request) do
+        let_it_be(:new_merge_request) do
           create(
             :merge_request,
             :simple,
@@ -1216,7 +1087,7 @@ RSpec.describe MergeRequestsFinder, feature_category: :code_review_workflow do
           )
         end
 
-        let!(:old_merge_request) do
+        let_it_be(:old_merge_request) do
           create(
             :merge_request,
             :simple,
@@ -1471,11 +1342,11 @@ RSpec.describe MergeRequestsFinder, feature_category: :code_review_workflow do
 
     let(:merge_requests) { described_class.new(user, {}).execute }
 
-    let!(:mr_public) { create(:merge_request, source_project: public_project) }
-    let!(:mr_private) { create(:merge_request, source_project: private_project) }
-    let!(:mr_internal) { create(:merge_request, source_project: internal) }
-    let!(:mr_private_repo_access) { create(:merge_request, source_project: public_with_private_repo) }
-    let!(:mr_internal_private_repo_access) { create(:merge_request, source_project: internal_with_private_repo) }
+    let_it_be(:mr_public) { create(:merge_request, source_project: public_project) }
+    let_it_be(:mr_private) { create(:merge_request, source_project: private_project) }
+    let_it_be(:mr_internal) { create(:merge_request, source_project: internal) }
+    let_it_be(:mr_private_repo_access) { create(:merge_request, source_project: public_with_private_repo) }
+    let_it_be(:mr_internal_private_repo_access) { create(:merge_request, source_project: internal_with_private_repo) }
 
     context 'with admin user' do
       let_it_be_with_reload(:user) { create(:user, :admin) }

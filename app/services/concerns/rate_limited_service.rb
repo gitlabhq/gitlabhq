@@ -38,7 +38,7 @@ module RateLimitedService
       evaluated_scope = evaluated_scope_for(service)
 
       if rate_limiter.throttled?(key, **opts.merge(scope: evaluated_scope.values, users_allowlist: users_allowlist))
-        raise RateLimitedError.new(key: key, rate_limiter: rate_limiter), _('This endpoint has been requested too many times. Try again later.')
+        raise RateLimitedError.new(key: key, rate_limiter: rate_limiter), Gitlab::ApplicationRateLimiter.throttled_error_message
       end
     end
 

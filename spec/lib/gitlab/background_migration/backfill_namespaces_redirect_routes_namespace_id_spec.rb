@@ -4,7 +4,6 @@ require 'spec_helper'
 
 RSpec.describe Gitlab::BackgroundMigration::BackfillNamespacesRedirectRoutesNamespaceId,
   feature_category: :groups_and_projects do
-  let(:organizations_table) { table(:organizations) }
   let(:namespaces_table) { table(:namespaces) }
   let(:projects_table) { table(:projects) }
   let(:redirect_routes_table) { table(:redirect_routes) }

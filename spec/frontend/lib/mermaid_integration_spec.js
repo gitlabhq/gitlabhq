@@ -90,5 +90,63 @@ jest.mock('~/lib/utils/webpack');
 
       expect(mermaid.registerLayoutLoaders).toHaveBeenCalledWith(elkLayouts);
     });
+
+    describe('link click delegation', () => {
+      let postMessageSpy;
+
+      beforeEach(() => {
+        postMessageSpy = jest.spyOn(window.parent, 'postMessage').mockImplementation(() => {});
+      });
+
+      const clickInApp = (html, { type = 'click', button = 0 } = {}) => {
+        require(`~/lib/${entrypoint}`);
+
+        const appDiv = document.getElementById('app');
+        appDiv.innerHTML = html;
+
+        const target = appDiv.querySelector('[data-testid="click-target"]') || appDiv;
+        const event = new MouseEvent(type, { bubbles: true, cancelable: true, button });
+        target.dispatchEvent(event);
+
+        return event;
+      };
+
+      const href = 'https://docs.gitlab.com/user/markdown/';
+      const anchorHtml = (attribute = 'href') =>
+        `<svg><a ${attribute}="${href}"><text data-testid="click-target">link</text></a></svg>`;
+
+      it.each`
+        description                          | attribute       | options
+        ${'a click on an href anchor'}       | ${'href'}       | ${{}}
+        ${'a click on an xlink:href anchor'} | ${'xlink:href'} | ${{}}
+        ${'a middle click on an anchor'}     | ${'href'}       | ${{ type: 'auxclick', button: 1 }}
+      `(
+        'delegates $description to the parent and prevents default navigation',
+        ({ attribute, options }) => {
+          const event = clickInApp(anchorHtml(attribute), options);
+
+          expect(event.defaultPrevented).toBe(true);
+          expect(postMessageSpy).toHaveBeenCalledWith({ href }, window.location.origin);
+        },
+      );
+
+      it('does not delegate a right click on an anchor', () => {
+        const event = clickInApp(anchorHtml(), { type: 'auxclick', button: 2 });
+
+        expect(event.defaultPrevented).toBe(false);
+        expect(postMessageSpy).not.toHaveBeenCalled();
+      });
+
+      it.each`
+        description                    | html                                                                | defaultPrevented
+        ${'a click outside an anchor'} | ${'<svg><text data-testid="click-target">no link</text></svg>'}     | ${false}
+        ${'an anchor without an href'} | ${'<svg><a><text data-testid="click-target">link</text></a></svg>'} | ${true}
+      `('does not post a message for $description', ({ html, defaultPrevented }) => {
+        const event = clickInApp(html);
+
+        expect(event.defaultPrevented).toBe(defaultPrevented);
+        expect(postMessageSpy).not.toHaveBeenCalled();
+      });
+    });
   });
 });

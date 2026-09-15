@@ -63,7 +63,7 @@ RSpec.describe 'Namespace Pages Deployments query', feature_category: :pages do
       'pathPrefix' => deployment.path_prefix,
       'project' => project.nil? ? instance_of(Hash) : hash_including({ 'name' => project.name }),
       'rootDirectory' => deployment.root_directory,
-      'size' => deployment.size,
+      'size' => deployment.size.to_s,
       'updatedAt' => deployment.updated_at.iso8601,
       'expiresAt' => deployment.expires_at&.iso8601,
       'url' => deployment.url

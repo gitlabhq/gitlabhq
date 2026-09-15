@@ -1,5 +1,5 @@
 %li.js-label-list-item{ id: dom_id(label) }
-  .label-content
+  .label-content.gl-flex.gl-justify-between
     = render "shared/label_row", label: label.present(issuable_subject: nil)
     .label-actions-list.gl-inline-block
       .js-vue-label-actions{ data: { label_id: label.id, label_name: label.name, edit_path: edit_admin_label_path(label), destroy_path: admin_label_path(label) } }

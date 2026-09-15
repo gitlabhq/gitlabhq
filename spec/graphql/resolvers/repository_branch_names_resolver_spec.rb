@@ -12,7 +12,7 @@ RSpec.describe Resolvers::RepositoryBranchNamesResolver do
       let(:pattern) { '' }
 
       it 'returns nil' do
-        expect(resolve_branch_names(pattern, 0, 100)).to eq(nil)
+        expect(resolve_branch_names(pattern, 0, 100)).to be_nil
       end
     end
 

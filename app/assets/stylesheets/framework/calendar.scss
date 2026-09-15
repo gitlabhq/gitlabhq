@@ -22,8 +22,50 @@
   min-height: 15px;
 }
 
+.contrib-calendar .user-contribution-graph-cell {
+  cursor: pointer;
+  // Fade contribution colors in once the data has been fetched. The delay is
+  // staggered per column (via --contrib-fade-delay) for a more natural reveal.
+  transition:
+    background-color 0.5s ease var(--contrib-fade-delay, 0ms),
+    border-color 0.1s ease;
+
+  &:disabled {
+    cursor: default;
+    opacity: 0;
+  }
+
+  &:not(:disabled):hover,
+  &:not(:disabled):focus {
+    z-index: 1;
+    border: 2px solid var(--gl-background-color-default);
+    outline: 2px solid var(--gl-action-selected-border-color-default) !important;
+    outline-offset: 0;
+  }
+}
+
+.contrib-legend-cell {
+  cursor: help;
+}
+
 .user-contribution-graph-cell-0 {
   background-color: var(--user-contribution-graph-cell-level-0);
+}
+
+.user-contribution-graph-cell-1 {
+  background-color: var(--user-contribution-graph-cell-level-1);
+}
+
+.user-contribution-graph-cell-2 {
+  background-color: var(--user-contribution-graph-cell-level-2);
+}
+
+.user-contribution-graph-cell-3 {
+  background-color: var(--user-contribution-graph-cell-level-3);
+}
+
+.user-contribution-graph-cell-4 {
+  background-color: var(--user-contribution-graph-cell-level-4);
 }
 
 .user-contrib-cell {

@@ -10,7 +10,12 @@ RSpec.describe Authn::IamReplication::Outboxable, feature_category: :system_acce
       expect { model_class.iam_replicable(entity_type: '') }.to raise_error(ArgumentError)
     end
 
-    it 'sets the entity type when given a non-empty string' do
+    it 'rejects an entity_type outside the allowlist' do
+      expect { model_class.iam_replicable(entity_type: 'group_member') }
+        .to raise_error(ArgumentError, /unknown entity_type/)
+    end
+
+    it 'sets the entity type when given an allowed value' do
       model_class.iam_replicable(entity_type: 'oauth_application')
 
       expect(model_class.iam_outbox_entity_type).to eq('oauth_application')

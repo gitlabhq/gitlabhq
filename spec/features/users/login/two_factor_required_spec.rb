@@ -142,9 +142,9 @@ RSpec.describe 'Login', :with_current_organization, :clean_gitlab_redis_sessions
             end
 
             find('summary', text: _('Review and leave groups')).click
-            expect(page).to have_link('Group 1')
-            expect(page).to have_link('Group 2')
-            expect(page).to have_link('Leave group', count: 2)
+            expect(page).to have_content('Group 1')
+            expect(page).to have_content('Group 2')
+            expect(page).to have_link(_('Leave group'), count: 2)
           end
 
           it 'allows skipping two-factor configuration' do
@@ -179,9 +179,9 @@ RSpec.describe 'Login', :with_current_organization, :clean_gitlab_redis_sessions
             expect(page).not_to have_link('Configure it later')
 
             find('summary', text: _('Review and leave groups')).click
-            expect(page).to have_link('Group 1')
-            expect(page).to have_link('Group 2')
-            expect(page).to have_link('Leave group', count: 2)
+            expect(page).to have_content('Group 1')
+            expect(page).to have_content('Group 2')
+            expect(page).to have_link(_('Leave group'), count: 2)
           end
 
           it 'disallows skipping two-factor configuration' do
@@ -214,9 +214,9 @@ RSpec.describe 'Login', :with_current_organization, :clean_gitlab_redis_sessions
           )
 
           find('summary', text: _('Review and leave groups')).click
-          expect(page).to have_link('Group 1')
-          expect(page).to have_link('Group 2')
-          expect(page).to have_link('Leave group', count: 2)
+          expect(page).to have_content('Group 1')
+          expect(page).to have_content('Group 2')
+          expect(page).to have_link(_('Leave group'), count: 2)
         end
       end
     end

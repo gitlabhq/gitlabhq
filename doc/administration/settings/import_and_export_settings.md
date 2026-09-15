@@ -1,5 +1,5 @@
 ---
-stage: Create
+stage: GitLab Dedicated
 group: Import
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see <https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments>
 gitlab_dedicated: yes
@@ -77,6 +77,73 @@ To enable migration of groups and projects by direct transfer:
 The same setting
 [is available](../../api/settings.md#available-settings) in the API as the
 `bulk_import_enabled` attribute.
+
+## Enable export of groups and projects for offline transfer
+
+{{< history >}}
+
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/work_items/588971) in GitLab 19.3
+  [with a feature flag](../../administration/feature_flags/_index.md) named `offline_transfer_exports`. Disabled by default.
+
+{{< /history >}}
+
+> [!flag]
+> The availability of this feature is controlled by a feature flag.
+> For more information, see the history.
+
+Prerequisites:
+
+- You must be an administrator.
+
+Turn on this setting to allow users to create
+[offline transfer](../../user/import/gitlab_instances/offline-transfer-migrations.md) exports of
+groups and projects.
+
+To enable export of groups and projects for offline transfer:
+
+1. In the upper-right corner, select **Admin**.
+1. In the left sidebar, select **Settings** > **General**.
+1. Expand the **Import and export settings** section.
+1. Scroll to **Allow exporting GitLab groups and projects by offline transfer**.
+1. Select the **Enabled** checkbox.
+1. Select **Save changes**.
+
+The same setting
+[is available](../../api/settings.md#available-settings) in the API as the
+`offline_transfer_exports_enabled` attribute.
+
+## Enable import of groups and projects by offline transfer
+
+{{< history >}}
+
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/work_items/588971) in GitLab 19.3
+  [with a feature flag](../../administration/feature_flags/_index.md) named `offline_transfer_imports`. Disabled by default.
+
+{{< /history >}}
+
+> [!flag]
+> The availability of this feature is controlled by a feature flag.
+> For more information, see the history.
+
+Prerequisites:
+
+- You must be an administrator.
+
+Turn on this setting to allow users to import groups and projects from an
+[offline transfer](../../user/import/gitlab_instances/offline-transfer-migrations.md) export.
+
+To enable import of groups and projects by offline transfer:
+
+1. In the upper-right corner, select **Admin**.
+1. In the left sidebar, select **Settings** > **General**.
+1. Expand the **Import and export settings** section.
+1. Scroll to **Allow importing GitLab groups and projects by offline transfer**.
+1. Select the **Enabled** checkbox.
+1. Select **Save changes**.
+
+The same setting
+[is available](../../api/settings.md#available-settings) in the API as the
+`offline_transfer_imports_enabled` attribute.
 
 ## Allow S3-compatible object storage for offline transfer
 
@@ -262,9 +329,26 @@ To modify the maximum file size for imports in GitLab:
 This setting applies only to repositories
 [imported from a GitLab export file](../../user/project/settings/import_export.md#import-a-project-and-its-data).
 
-If you choose a size larger than the configured value for the web server,
-you may receive errors. See the [troubleshooting section](account_and_limit_settings.md#troubleshooting) for more
-details.
+This setting only controls the limit enforced by GitLab itself.
+Any HTTP proxy or load balancer in front of GitLab enforces its own,
+independent request size limit, which you must configure separately.
+
+{{< tabs >}}
+
+{{< tab title="Linux package (Omnibus)" >}}
+
+Adjust the bundled NGINX `client_max_body_size` setting.
+
+{{< /tab >}}
+
+{{< tab title="Helm chart (Kubernetes)" >}}
+
+Adjust the Ingress controller or Gateway API configuration,
+depending on which one your deployment uses.
+
+{{< /tab >}}
+
+{{< /tabs >}}
 
 For GitLab.com repository size limits, read [accounts and limit settings](../../user/gitlab_com/_index.md#account-and-limit-settings).
 
@@ -312,7 +396,7 @@ To modify this setting:
 
 ## Timeout for decompressing archived files
 
-When you [import a project](../../user/project/settings/import_export.md), you can specify the maximum time out for decompressing imported archives. The default value is 210 seconds.
+When you [import a project](../../user/project/settings/import_export.md), you can specify the maximum timeout for decompressing imported archives. The default value is 210 seconds.
 
 To modify the maximum decompressed file size for imports in GitLab:
 
@@ -395,6 +479,26 @@ If you have enough resources, you can increase this number to process more concu
 
 To modify this setting, send an API request to `/api/v4/application/settings`
 with `concurrent_relation_batch_export_limit`.
+For more information, see [application settings API](../../api/settings.md).
+
+### Concurrent project file exports
+
+{{< history >}}
+
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/work_items/599092) in GitLab 19.4.
+
+{{< /history >}}
+
+Project file exports run on Sidekiq nodes with limited memory and disk space, so too many
+concurrent exports can saturate those nodes and delay every export on the instance.
+To limit how many project file exports run at the same time, administrators can configure the
+`concurrent_relation_export_limit` setting.
+
+The default value is `25` exports. Exports requested while the limit is reached stay queued and
+start in the order they were requested, as running exports finish.
+
+To modify this setting, send an API request to `/api/v4/application/settings`
+with `concurrent_relation_export_limit`.
 For more information, see [application settings API](../../api/settings.md).
 
 ### Export batch size

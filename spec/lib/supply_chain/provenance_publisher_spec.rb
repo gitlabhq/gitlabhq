@@ -5,7 +5,6 @@ require 'digest'
 
 RSpec.describe SupplyChain::ProvenancePublisher, feature_category: :artifact_security do
   let(:publisher) { described_class.new(build) }
-  let(:success_message) { "Attestations persisted" }
 
   include_context 'with mocked cosign execution'
 

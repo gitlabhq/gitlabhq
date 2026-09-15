@@ -3,7 +3,7 @@
 require 'spec_helper'
 
 RSpec.describe Gitlab::GitAccessProject do
-  let_it_be(:user) { create(:user) }
+  let_it_be_with_reload(:user) { create(:user) }
   let_it_be(:project) { create(:project, :repository) }
 
   let(:container) { project }
@@ -102,6 +102,25 @@ RSpec.describe Gitlab::GitAccessProject do
                 expect { push_access_check }
                   .to change { Project.count }.by(1)
                   .and change { Project.where(namespace: user.namespace, name: project_path).count }.by(1)
+              end
+
+              context 'when the namespace organization is in maintenance' do
+                let_it_be_with_reload(:maintenance_org) { create(:organization, owners: user) }
+
+                before do
+                  user.namespace.update!(organization: maintenance_org)
+                  maintenance_org.start_maintenance(maintenance_reason: 'migration')
+                  maintenance_org.confirm_maintenance
+                end
+
+                it_behaves_like 'no project is created' do
+                  let(:raise_specific_error) do
+                    raise_error(
+                      Gitlab::GitAccess::ForbiddenError,
+                      'This organization is temporarily unavailable due to maintenance.'
+                    )
+                  end
+                end
               end
             end
 

@@ -76,7 +76,7 @@ First we'll need to create an HTTP endpoint that can be triggered to create/reso
 
 ### Jira Incident Creation Workflow
 
-To automatically trigger the GitLab alert endpoint when a Jira incident is created, we'll use [Jira automation](https://community.atlassian.com/t5/Jira-articles/Automation-for-Jira-Send-web-request-using-Jira-REST-API/ba-p/1443828).
+To automatically trigger the GitLab alert endpoint when a Jira incident is created, we'll use [Jira automation](https://community.atlassian.com/forums/Jira-articles/Automation-for-Jira-Send-web-request-using-Jira-REST-API/ba-p/1443828).
 
 1. Navigate to your Jira project where your incidents are managed. From the sidebar, head to **Project settings** > **Automation** (you may have to scroll down a bit to find it).
 1. From here we can manage our Jira automation workflows. In the upper right, click **Create rule**.
@@ -143,4 +143,4 @@ At this point, incidents you resolve in Jira will also be resolved in GitLab. Th
   - [GitLab HTTP endpoint authorization](../../operations/incident_management/integrations.md#authorization)
   - [GitLab alert parameters](../../operations/incident_management/integrations.md#customize-the-alert-payload-outside-of-gitlab)
   - [GitLab recovery alerts](../../operations/incident_management/integrations.md#recovery-alerts)
-- [Jira automation with web requests](https://community.atlassian.com/t5/Jira-articles/Automation-for-Jira-Send-web-request-using-Jira-REST-API/ba-p/1443828)
+- [Jira automation with web requests](https://community.atlassian.com/forums/Jira-articles/Automation-for-Jira-Send-web-request-using-Jira-REST-API/ba-p/1443828)

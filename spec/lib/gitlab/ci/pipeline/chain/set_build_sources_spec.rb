@@ -10,9 +10,6 @@ RSpec.describe Gitlab::Ci::Pipeline::Chain::SetBuildSources, feature_category: :
   let_it_be_with_reload(:compliance_project) { create(:project, :empty_repo, group: group) }
   let_it_be(:user) { create(:user, developer_of: [project, compliance_project]) }
 
-  let(:ref_name) { 'refs/heads/master' }
-  let(:opts) { {} }
-
   let(:command) do
     Gitlab::Ci::Pipeline::Chain::Command.new(
       project: project,

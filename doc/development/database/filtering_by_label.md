@@ -1,6 +1,6 @@
 ---
 stage: Plan
-group: Project Management
+group: Work Items
 info: Any user with at least the Maintainer role can merge updates to this content. For details, see <https://docs.gitlab.com/development/development_processes/#development-guidelines-review>.
 title: Filtering by label
 ---
@@ -121,7 +121,7 @@ This has some strong advantages over titles:
 Unfortunately, our application design makes this hard. If we were able to query
 just by label ID easily, we wouldn't need the `INNER JOIN labels` in the initial
 query at the start of this document. GitLab allows users to filter by label
-title across projects and even across groups, so a filter by the label ~Plan may
+title across projects and even across groups, so a filter by the label ~Plan might
 include labels with multiple distinct IDs.
 
 We do not want users to have to know about the different IDs, which means that

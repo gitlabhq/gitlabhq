@@ -7,6 +7,7 @@ import createMockApollo from 'helpers/mock_apollo_helper';
 import { useMockInternalEventsTracking } from 'helpers/tracking_internal_events_helper';
 import HomepageApp from '~/homepage/components/homepage_app.vue';
 import PickUpWidget from '~/homepage/components/pick_up_widget.vue';
+import PipelinesWidget from '~/homepage/components/pipelines_widget.vue';
 import BaseWidget from '~/homepage/components/base_widget.vue';
 import * as Sentry from '~/sentry/sentry_browser_wrapper';
 import mergeRequestsWidgetMetadataQuery from '~/homepage/graphql/queries/merge_requests_widget_metadata.query.graphql';
@@ -61,11 +62,13 @@ describe('HomepageApp', () => {
     wrapper.findComponentByTestId('authored-work-items-widget');
   const findBaseWidget = () => wrapper.findComponent(BaseWidget);
   const findPickUpWidget = () => wrapper.findComponent(PickUpWidget);
+  const findPipelinesWidget = () => wrapper.findComponent(PipelinesWidget);
 
-  function createWrapper(props = {}) {
+  function createWrapper(props = {}, { glFeatures = { homepagePipelinesWidget: true } } = {}) {
     wrapper = shallowMountExtended(HomepageApp, {
       provide: {
         duoCodeReviewBotUsername: MOCK_DUO_CODE_REVIEW_BOT_USERNAME,
+        glFeatures,
       },
       propsData: {
         reviewRequestedPath: MOCK_MERGE_REQUESTS_REVIEW_REQUESTED_PATH,
@@ -103,6 +106,7 @@ describe('HomepageApp', () => {
       apolloProvider: mockApollo,
       provide: {
         duoCodeReviewBotUsername: MOCK_DUO_CODE_REVIEW_BOT_USERNAME,
+        glFeatures: { homepagePipelinesWidget: true },
       },
       propsData: {
         reviewRequestedPath: MOCK_MERGE_REQUESTS_REVIEW_REQUESTED_PATH,
@@ -380,6 +384,18 @@ describe('HomepageApp', () => {
 
   it('renders the PickUpWidget component', () => {
     expect(findPickUpWidget().exists()).toBe(true);
+  });
+
+  it('renders the PipelinesWidget component when the homepage_pipelines_widget flag is enabled', () => {
+    expect(findPipelinesWidget().exists()).toBe(true);
+  });
+
+  describe('when the homepage_pipelines_widget flag is disabled', () => {
+    it('does not render the PipelinesWidget component', () => {
+      createWrapper({}, { glFeatures: { homepagePipelinesWidget: false } });
+
+      expect(findPipelinesWidget().exists()).toBe(false);
+    });
   });
 
   describe('when there is no lastPushEvent', () => {

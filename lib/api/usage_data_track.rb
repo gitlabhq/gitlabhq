@@ -6,7 +6,7 @@ module API
 
     allow_access_with_scope :ai_workflows
 
-    helpers UsageData.helpers
+    helpers ::API::Helpers::UsageDataHelpers
 
     namespace 'usage_data' do
       resource :track_event do

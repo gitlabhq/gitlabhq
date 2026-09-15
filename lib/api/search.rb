@@ -12,6 +12,7 @@ module API
       issues: Entities::IssueBasic,
       work_items: Entities::WorkItem,
       projects: Entities::BasicProjectDetails,
+      groups: Entities::BasicGroupDetails,
       milestones: Entities::Milestone,
       notes: Entities::Note,
       commits: Entities::CommitDetail,
@@ -23,7 +24,6 @@ module API
 
     before do
       authenticate!
-      set_current_organization
 
       check_rate_limit!(
         :search_rate_limit,

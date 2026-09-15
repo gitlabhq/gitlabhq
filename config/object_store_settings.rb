@@ -3,8 +3,9 @@
 # Set default values for object_store settings
 class ObjectStoreSettings
   SUPPORTED_TYPES = %w[artifacts external_diffs lfs uploads packages dependency_proxy terraform_state pages
-    ci_secure_files agent_plan_content].freeze
-  ALLOWED_OBJECT_STORE_OVERRIDES = %w[bucket enabled proxy_download cdn].freeze
+    ci_secure_files agent_plan_content ci_catalog_bundles].freeze
+  ALLOWED_OBJECT_STORE_OVERRIDES = %w[bucket enabled proxy_download allowed_download_modes cdn].freeze
+  VALID_DOWNLOAD_MODES = %w[proxy direct].freeze
 
   # To ensure the one Workhorse credential matches the Rails config, we
   # enforce consolidated settings on those accelerated
@@ -17,13 +18,18 @@ class ObjectStoreSettings
   # introduced first as a storage-specific setting. To avoid breaking
   # consolidated settings for other object types, exclude it here.
   #
-  # agent_plan_content is written server-side via CarrierWave only
-  # (never browser-uploaded), so it does not need Workhorse acceleration.
-  WORKHORSE_ACCELERATED_TYPES = SUPPORTED_TYPES - %w[pages ci_secure_files agent_plan_content]
+  # agent_plan_content and ci_catalog_bundles are written server-side via
+  # CarrierWave only (never browser-uploaded), so they do not need Workhorse
+  # acceleration.
+  WORKHORSE_ACCELERATED_TYPES = SUPPORTED_TYPES - %w[pages ci_secure_files agent_plan_content ci_catalog_bundles]
 
   # pages and ci_secure_files may be enabled but use legacy disk storage
   # we don't need to raise an error in that case
-  ALLOWED_INCOMPLETE_TYPES = %w[pages ci_secure_files].freeze
+  #
+  # ci_catalog_bundles defaults to enabled, so an install already using
+  # consolidated settings would fail to boot before an administrator has had a
+  # chance to provision a bucket for it. Warn instead.
+  ALLOWED_INCOMPLETE_TYPES = %w[pages ci_secure_files ci_catalog_bundles].freeze
 
   attr_accessor :settings
 
@@ -40,7 +46,31 @@ class ObjectStoreSettings
     object_store['proxy_download'] = false if object_store['proxy_download'].nil?
     object_store['storage_options'] ||= {}
 
+    validate_allowed_download_modes!(
+      object_store['allowed_download_modes'], proxy_download: object_store['proxy_download'], context: object_store_type
+    )
+
     object_store
+  end
+
+  # Ensures allowed_download_modes is either unset or an array of valid modes,
+  # raising a clear config error instead of silently misbehaving at request time.
+  def self.validate_allowed_download_modes!(modes, proxy_download:, context:)
+    return if modes.nil?
+
+    raise "#{context}: `allowed_download_modes` must be an array, got #{modes.class}" unless modes.is_a?(Array)
+
+    invalid = modes - VALID_DOWNLOAD_MODES
+    unless invalid.empty?
+      raise "#{context}: `allowed_download_modes` contains invalid values: #{invalid.inspect}. " \
+        "Allowed values are: #{VALID_DOWNLOAD_MODES.inspect}"
+    end
+
+    default_download_mode = proxy_download ? 'proxy' : 'direct'
+    return if modes.include?(default_download_mode)
+
+    raise "#{context}: `allowed_download_modes` must include #{default_download_mode.inspect} " \
+      "because `proxy_download` is #{proxy_download.inspect}"
   end
 
   def self.split_bucket_prefix(bucket)
@@ -155,7 +185,13 @@ class ObjectStoreSettings
     return unless use_consolidated_settings?
 
     main_config = settings['object_store']
-    common_config = main_config.slice('enabled', 'connection', 'proxy_download', 'storage_options')
+    common_config = main_config.slice(
+      'enabled', 'connection', 'proxy_download', 'allowed_download_modes', 'storage_options'
+    )
+
+    self.class.validate_allowed_download_modes!(
+      common_config['allowed_download_modes'], proxy_download: common_config['proxy_download'], context: 'object_store'
+    )
 
     # These are no longer configurable if common config is used
     common_config['direct_upload'] = true
@@ -163,7 +199,15 @@ class ObjectStoreSettings
 
     SUPPORTED_TYPES.each do |store_type|
       overrides = main_config.dig('objects', store_type) || {}
+
       target_config = common_config.merge(overrides.slice(*ALLOWED_OBJECT_STORE_OVERRIDES))
+
+      self.class.validate_allowed_download_modes!(
+        target_config['allowed_download_modes'],
+        proxy_download: target_config['proxy_download'],
+        context: "object_store.objects.#{store_type}"
+      )
+
       section = settings.try(store_type)
 
       # Admins can selectively disable object storage for a specific

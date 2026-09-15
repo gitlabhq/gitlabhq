@@ -48,7 +48,7 @@ RSpec.describe Gitlab::GitalyClient, feature_category: :gitaly do
         allow(instance).to receive(:info).and_return(response)
       end
 
-      expect(described_class.filesystem_id('default')).to eq(nil)
+      expect(described_class.filesystem_id('default')).to be_nil
     end
   end
 
@@ -64,13 +64,13 @@ RSpec.describe Gitlab::GitalyClient, feature_category: :gitaly do
 
     describe '.filesystem_disk_available' do
       it 'returns nil when the relevant storage status is not found in the response' do
-        expect(described_class.filesystem_disk_available('default')).to eq(nil)
+        expect(described_class.filesystem_disk_available('default')).to be_nil
       end
     end
 
     describe '.filesystem_disk_used' do
       it 'returns nil when the relevant storage status is not found in the response' do
-        expect(described_class.filesystem_disk_used('default')).to eq(nil)
+        expect(described_class.filesystem_disk_used('default')).to be_nil
       end
     end
   end

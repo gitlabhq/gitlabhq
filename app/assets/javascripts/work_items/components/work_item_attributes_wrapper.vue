@@ -233,7 +233,7 @@ export default {
       :work-item-type="workItemType"
       :full-path="fullPath"
       @error="$emit('error', $event)"
-      @statusUpdated="
+      @status-updated="
         $emit('attributes-updated', { type: $options.ListType.status, ids: [$event] })
       "
     />
@@ -250,7 +250,7 @@ export default {
       :work-item-type="workItemType"
       :can-invite-members="workItemAssignees.canInviteMembers"
       @error="$emit('error', $event)"
-      @assigneesUpdated="
+      @assignees-updated="
         $emit('attributes-updated', { type: $options.ListType.assignee, ids: $event })
       "
     />
@@ -264,7 +264,7 @@ export default {
       :work-item-iid="workItem.iid"
       :work-item-type="workItemType"
       @error="$emit('error', $event)"
-      @labelsUpdated="$emit('attributes-updated', { type: $options.ListType.label, ids: $event })"
+      @labels-updated="$emit('attributes-updated', { type: $options.ListType.label, ids: $event })"
     />
     <work-item-parent
       v-if="showParent"
@@ -298,7 +298,7 @@ export default {
       :work-item-type="workItemType"
       :can-update="canUpdateMetadata"
       @error="$emit('error', $event)"
-      @milestoneUpdated="
+      @milestone-updated="
         $emit('attributes-updated', { type: $options.ListType.milestone, ids: [$event] })
       "
     />
@@ -313,7 +313,7 @@ export default {
       :work-item-iid="workItem.iid"
       :work-item-type="workItemType"
       @error="$emit('error', $event)"
-      @iterationUpdated="
+      @iteration-updated="
         $emit('attributes-updated', { type: $options.ListType.iteration, ids: [$event] })
       "
     />
@@ -379,6 +379,7 @@ export default {
       :work-item-id="workItem.id"
       :work-item-iid="workItem.iid"
       :work-item-type="workItemType"
+      @error="$emit('error', $event)"
     />
     <participants
       v-if="workItemParticipantNodes.length"

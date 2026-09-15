@@ -383,8 +383,8 @@ export default {
       class="row-content-block gl-top-2 gl-z-3 gl-grow gl-border-t-0 @sm/panel:gl-flex @md/panel:gl-sticky"
       data-testid="issuable-search-container"
       @checked-input="handleAllIssuablesCheckedInput"
-      @onFilter="$emit('filter', $event)"
-      @onSort="$emit('sort', $event)"
+      @on-filter="$emit('filter', $event)"
+      @on-sort="$emit('sort', $event)"
     >
       <template v-if="glSlots()['user-preference']" #user-preference>
         <slot name="user-preference"></slot>

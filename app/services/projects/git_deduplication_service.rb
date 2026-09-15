@@ -35,8 +35,11 @@ module Projects
     end
 
     def pool_can_fetch_from_source?
+      source_project = pool_repository.source_project
+      return false unless source_project
+
       project.git_objects_poolable? &&
-        same_storage_as_pool?(pool_repository.source_project.repository)
+        same_storage_as_pool?(source_project.repository)
     end
 
     def same_storage_as_pool?(repository)

@@ -56,7 +56,7 @@ graph TD
 
 ## Adding a New Navigation Item
 
-The GitLab Duo Agent Platform uses a router-driven navigation system where the Vue Router configuration directly drives the breadcrumb navigation. The key insight is that **the router structure in `ee/app/assets/javascripts/ai/duo_agents_platform/router/index.js` determines both the URL structure and the breadcrumb hierarchy**.
+The GitLab Duo Agent Platform uses a router-driven navigation system where the Vue Router configuration directly drives the breadcrumb navigation. The key insight is that the router structure in `ee/app/assets/javascripts/ai/duo_agents_platform/router/index.js` determines both the URL structure and the breadcrumb hierarchy.
 
 ### How Router-Driven Navigation Works
 

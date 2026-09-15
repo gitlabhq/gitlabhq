@@ -74,7 +74,7 @@ database with GitLab:
 - At least one of the `subjectAltName` (SAN) extensions
   must define the user identity (`email`) within the GitLab instance (`URI`).
 - The `URI` must match `Gitlab.config.host.gitlab`.
-- If your certificate contains only **one** SAN email entry, you don't need to
+- If your certificate contains only one SAN email entry, you don't need to
   add or modify it to match the `email` with the `URI`.
 
 For example:
@@ -108,7 +108,7 @@ Certificate:
 {{< /details >}}
 
 GitLab implements a standard way of certificate matching following
-[RFC4523](https://www.rfc-editor.org/rfc/rfc4523). It uses the
+[RFC4523](https://www.rfc-editor.org/info/rfc4523/). It uses the
 `certificateExactMatch` certificate matching rule against the `userCertificate`
 attribute. As a prerequisite, you must use an LDAP server that:
 
@@ -200,7 +200,7 @@ For self-compiled installations:
 
 1. Configure NGINX to request a client side certificate
 
-   In NGINX configuration, an **additional** server context must be defined with
+   In NGINX configuration, an additional server context must be defined with
    the same configuration except:
 
    - The additional NGINX server context must be configured to run on a different

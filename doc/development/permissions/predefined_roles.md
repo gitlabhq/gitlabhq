@@ -12,7 +12,7 @@ title: Predefined system of user roles
 Each user can be one of the following types:
 
 - Regular.
-- External - access to groups and projects only if direct member.
+- External - access to groups and projects only if a direct member.
 - [Internal users](../../administration/internal_users.md) - system created.
 - [Auditor](https://gitlab.com/gitlab-org/gitlab/-/blob/master/ee/app/policies/ee/base_policy.rb#L9):
   - No access to projects or groups settings menu.
@@ -90,7 +90,7 @@ module):
 - Maintainer (`40`)
 - Owner (`50`)
 
-If a user is a member of both a project and the project parent groups, the
+If a user is a member of both a project and the project's parent groups, the
 highest permission is the applied access level for the project.
 
 If a user is a member of a project, but not the parent groups, they

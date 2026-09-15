@@ -10,7 +10,7 @@ RSpec.describe Gitlab::Redis::Sessions, feature_category: :redis do
 
     # Check that Gitlab::Redis::Sessions is configured as RedisStore or ClusterStore
     it 'instantiates an instance of Redis::Store' do
-      expect([::Redis::Store, ::Gitlab::Redis::ClusterStore].include?(store.class)).to eq(true)
+      expect([::Redis::Store, ::Gitlab::Redis::ClusterStore].include?(store.class)).to be(true)
     end
   end
 end

@@ -60,4 +60,27 @@ RSpec.describe Search::ProjectSettings, feature_category: :global_search do
       )
     end
   end
+
+  describe '#ci_cd_settings' do
+    subject(:feature_flags_setting) do
+      project_settings.ci_cd_settings.find { |s| s[:text] == _("Feature flags") }
+    end
+
+    it 'includes Feature flags when the feature flag is enabled' do
+      expect(feature_flags_setting).to be_present
+      expect(feature_flags_setting[:href]).to eq(
+        "/#{project.full_path}/-/settings/ci_cd#js-feature-flags-settings"
+      )
+    end
+
+    context 'when the feature flag is disabled' do
+      before do
+        stub_feature_flags(feature_flag_management_permissions: false)
+      end
+
+      it 'excludes Feature flags' do
+        expect(feature_flags_setting).to be_nil
+      end
+    end
+  end
 end

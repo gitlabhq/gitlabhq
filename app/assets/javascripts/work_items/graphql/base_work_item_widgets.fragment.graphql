@@ -16,29 +16,6 @@ fragment BaseWorkItemWidgets on WorkItemWidget {
   }
   ... on WorkItemWidgetCrmContacts @skip(if: $useWorkItemFeatures) {
     contactsAvailable
-    contacts {
-      nodes {
-        id
-        email
-        firstName
-        lastName
-        phone
-        description
-        organization {
-          id
-          name
-          description
-          defaultRate
-        }
-      }
-    }
-  }
-  ... on WorkItemWidgetCurrentUserTodos @skip(if: $useWorkItemFeatures) {
-    currentUserTodos(state: pending) {
-      nodes {
-        id
-      }
-    }
   }
   ... on WorkItemWidgetDescription @skip(if: $useWorkItemFeatures) {
     description
@@ -83,13 +60,6 @@ fragment BaseWorkItemWidgets on WorkItemWidget {
     labels {
       nodes {
         ...Label
-      }
-    }
-  }
-  ... on WorkItemWidgetLinkedResources @skip(if: $useWorkItemFeatures) {
-    linkedResources {
-      nodes {
-        url
       }
     }
   }

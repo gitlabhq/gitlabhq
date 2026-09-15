@@ -82,7 +82,7 @@ RSpec.describe Gitlab::Graphql::Authz::AuthorizeGranularToken, feature_category:
           { boundary: :project },
           { boundary_argument: :project_path },
           { boundaries: [{ boundary_type: :project }] },
-          { traversal: true }
+          { assignable_when: [:admin] }
         ]
 
         other_args.each do |other_arg|
@@ -93,19 +93,54 @@ RSpec.describe Gitlab::Graphql::Authz::AuthorizeGranularToken, feature_category:
       end
     end
 
-    context 'when neither permissions nor a skip reason is given' do
-      it 'raises ArgumentError' do
-        expect { test_type.authorize_granular_token }.to raise_error(ArgumentError, /permissions/)
+    context 'when assignable_when is passed' do
+      it 'applies the conditions to the directive' do
+        test_type.authorize_granular_token(
+          permissions: :read_audit_event, boundary: :instance, boundary_type: :instance, assignable_when: [:admin]
+        )
+
+        directive = test_type.directives.first
+        expect(directive.arguments[:assignable_when]).to eq(['admin'])
+      end
+
+      it 'applies the conditions to every boundary and additional scope' do
+        test_mutation.authorize_granular_token(
+          permissions: :update_runner,
+          boundaries: [
+            { boundary_argument: :id, boundary_type: :project },
+            { boundary_argument: :id, boundary_type: :group }
+          ],
+          additional_scopes: [
+            { permissions: :read_project, boundary_argument: :project_path, boundary_type: :project }
+          ],
+          assignable_when: [:admin, :self_managed]
+        )
+
+        directives = test_mutation.directives.select { |d| d.is_a?(Directives::Authz::GranularScope) }
+        expect(directives.size).to eq(3)
+        expect(directives).to all(satisfy { |d| d.arguments[:assignable_when] == %w[admin self_managed] })
+      end
+
+      it 'adds boundary-specific conditions to the shared ones' do
+        test_mutation.authorize_granular_token(
+          permissions: :update_member_role,
+          boundaries: [
+            { boundary_argument: :id, boundary_type: :group, assignable_when: [:saas] },
+            { boundary: :instance, boundary_type: :instance, assignable_when: [:admin] }
+          ],
+          assignable_when: [:self_managed]
+        )
+
+        directives = test_mutation.directives.select { |d| d.is_a?(Directives::Authz::GranularScope) }
+        expect(directives.map { |d| d.arguments[:assignable_when] }).to eq(
+          [%w[self_managed saas], %w[self_managed admin]]
+        )
       end
     end
 
-    context 'when traversal: true is passed' do
-      it 'raises ArgumentError to prevent misuse on type-level directives' do
-        expect do
-          test_type.authorize_granular_token(
-            permissions: :read_group, boundary: :itself, boundary_type: :group, traversal: true
-          )
-        end.to raise_error(ArgumentError, /not valid on a type-level/)
+    context 'when neither permissions nor a skip reason is given' do
+      it 'raises ArgumentError' do
+        expect { test_type.authorize_granular_token }.to raise_error(ArgumentError, /permissions/)
       end
     end
 
@@ -179,6 +214,21 @@ RSpec.describe Gitlab::Graphql::Authz::AuthorizeGranularToken, feature_category:
       }])
     end
 
+    it 'includes assignable_when conditions' do
+      result = test_type.granular_scope_directive(
+        permissions: :read_audit_event, boundary: :instance, boundary_type: :instance, assignable_when: [:admin]
+      )
+
+      expect(result).to eq([{
+        Directives::Authz::GranularScope => {
+          permissions: ['read_audit_event'],
+          boundary: 'instance',
+          boundary_type: 'INSTANCE',
+          assignable_when: ['admin']
+        }
+      }])
+    end
+
     it 'returns an array with a single directive hash without boundary_type when boundary_type is nil' do
       result = test_type.granular_scope_directive(
         permissions: :read_project, boundary: :project, boundary_type: nil
@@ -190,29 +240,6 @@ RSpec.describe Gitlab::Graphql::Authz::AuthorizeGranularToken, feature_category:
           boundary: 'project'
         }
       }])
-    end
-
-    it 'forwards traversal: true into the directive arguments hash' do
-      result = test_type.granular_scope_directive(
-        permissions: :read_group, boundary_argument: :full_path, boundary_type: :group, traversal: true
-      )
-
-      expect(result).to eq([{
-        Directives::Authz::GranularScope => {
-          permissions: ['read_group'],
-          boundary_argument: 'full_path',
-          boundary_type: 'GROUP',
-          traversal: true
-        }
-      }])
-    end
-
-    it 'omits traversal from the arguments when not supplied' do
-      result = test_type.granular_scope_directive(
-        permissions: :read_group, boundary_argument: :full_path, boundary_type: :group
-      )
-
-      expect(result.first[Directives::Authz::GranularScope]).not_to have_key(:traversal)
     end
   end
 

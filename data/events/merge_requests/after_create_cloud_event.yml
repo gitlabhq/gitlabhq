@@ -1,0 +1,7 @@
+---
+event: MergeRequests::AfterCreateCloudEvent
+description: Published when a newly created merge request is ready for automation,
+  with its diff built and its code-owner approval rules synced against it. Backs the
+  **created** action for the `merge_request` trigger on the GitLab Duo Agent Platform.
+  Uses the CloudEvents v1.0 envelope, and fires for draft merge requests too.
+feature_category: code_suggestions

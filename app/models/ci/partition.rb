@@ -77,6 +77,20 @@ module Ci
           .order(id: :asc)
           .first
       end
+
+      def all_archived?(ids)
+        return false if ids.blank?
+
+        id_in(ids).with_status(:archived).count == ids.uniq.size
+      end
+
+      # `archived` is terminal and only the archive event reaches it, so a row's `updated_at` is
+      # when that partition was archived. The last of them is when the set became archived.
+      def archived_since(ids)
+        return unless all_archived?(ids)
+
+        id_in(ids).with_status(:archived).maximum(:updated_at)
+      end
     end
 
     def all_partitions_exist?

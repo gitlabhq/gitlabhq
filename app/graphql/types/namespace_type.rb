@@ -62,6 +62,7 @@ module Types
     field :projects, Types::ProjectType.connection_type, null: false,
       description: 'Projects within this namespace. ' \
         'Returns projects from the parent group if namespace is project.',
+      scopes: [:api, :read_api, :ai_workflows],
       resolver: ::Resolvers::NamespaceProjectsResolver
 
     field :package_settings,
@@ -223,6 +224,12 @@ module Types
         'of new projects in the namespace.',
       experiment: { milestone: '18.11' }
 
+    field :web_path,
+      GraphQL::Types::String,
+      null: true,
+      scopes: [:api, :read_api, :ai_workflows],
+      description: 'Path of the namespace relative to the instance root.'
+
     field :web_url,
       GraphQL::Types::String,
       null: true,
@@ -251,6 +258,10 @@ module Types
       description: 'Top-level namespace of the namespace.'
 
     markdown_field :description_html, null: true, &:namespace_details
+
+    def web_path
+      Gitlab::UrlBuilder.build(object, only_path: true)
+    end
 
     def achievements_path
       ::Gitlab::Routing.url_helpers.group_achievements_path(object) if object.is_a?(Group)

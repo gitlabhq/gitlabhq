@@ -14,7 +14,7 @@ module Projects
       urgency :low
 
       def create
-        result = webhook_processor.execute(params[:token])
+        result = webhook_processor.execute(params.permit(:token)[:token])
 
         head result.http_status
       end
@@ -23,7 +23,11 @@ module Projects
 
       def project_without_auth
         @project ||= Project
-          .find_by_full_path("#{params[:namespace_id]}/#{params[:project_id]}")
+          .find_by_full_path("#{project_path_params[:namespace_id]}/#{project_path_params[:project_id]}")
+      end
+
+      def project_path_params
+        params.permit(:namespace_id, :project_id)
       end
 
       def webhook_processor
@@ -31,7 +35,7 @@ module Projects
       end
 
       def payload
-        @payload ||= params.permit![:pager_duty_incident].to_h
+        @payload ||= safe_params[:pager_duty_incident].to_h
       end
     end
   end

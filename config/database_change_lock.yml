@@ -85,3 +85,9 @@ locks:
     change_request_issue_url: "https://gitlab.com/gitlab-com/gl-infra/production/-/work_items/22444"
     warning_days: 5
     merge_buffer: 2
+  - start_date: "2026-08-20T11:00:00Z"
+    end_date: "2026-08-23T01:00:00Z"
+    details: "Mock-up performance test for Patroni CI clusters from PostgreSQL 17 to PostgreSQL 18 (CI only). This lock is in lieu of a Hard PCL."
+    change_request_issue_url: "https://gitlab.com/gitlab-com/gl-infra/production/-/work_items/22720"
+    warning_days: 5
+    merge_buffer: 0

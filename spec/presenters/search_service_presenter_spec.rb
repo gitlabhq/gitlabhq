@@ -34,10 +34,12 @@ RSpec.describe SearchServicePresenter, feature_category: :global_search do
     let(:scope) { nil }
 
     before do
-      allow(presenter).to receive(:search_objects).and_return([])
-      allow(presenter).to receive(:without_count?).and_return(!with_count)
-      allow(presenter).to receive(:show_snippets?).and_return(show_snippets)
-      allow(presenter).to receive(:show_sort_dropdown?).and_return(show_sort_dropdown)
+      allow(presenter).to receive_messages(
+        search_objects: [],
+        without_count?: !with_count,
+        show_snippets?: show_snippets,
+        show_sort_dropdown?: show_sort_dropdown
+      )
     end
 
     where(:with_count, :show_snippets, :show_sort_dropdown, :result) do

@@ -42,6 +42,26 @@ RSpec.describe Mcp::Tools::Base::BaseService, feature_category: :mcp_server do
 
   let(:test_service) { test_service_class.new(name: service_name) }
 
+  describe '#unlisted?' do
+    it 'returns false by default' do
+      expect(service.unlisted?).to be(false)
+    end
+
+    context 'when a subclass marks itself unlisted' do
+      let(:unlisted_service_class) do
+        Class.new(described_class) do
+          def unlisted?
+            true
+          end
+        end
+      end
+
+      it 'returns true' do
+        expect(unlisted_service_class.new(name: service_name).unlisted?).to be(true)
+      end
+    end
+  end
+
   describe '#description' do
     it 'raises NoMethodError' do
       expect { service.description }.to raise_error(NoMethodError)

@@ -20,16 +20,16 @@ RSpec.describe Mcp::Tools::Concerns::ResourceFinder, feature_category: :mcp_serv
         @current_user = user
       end
 
-      def test_find_project(project_id)
-        find_project!(project_id)
+      def test_find_project(project_id, ability: :read_project)
+        find_project!(project_id, ability: ability)
       end
 
       def test_find_project_without_bang(project_id)
         find_project(project_id)
       end
 
-      def test_find_group(group_id)
-        find_group!(group_id)
+      def test_find_group(group_id, ability: :read_group)
+        find_group!(group_id, ability: ability)
       end
 
       def test_find_parent_by_id_or_path(parent_type, identifier)
@@ -43,69 +43,55 @@ RSpec.describe Mcp::Tools::Concerns::ResourceFinder, feature_category: :mcp_serv
       def test_build_work_item_finder_params(parent)
         build_work_item_finder_params(parent)
       end
-
-      def test_authorize_parent_access!(parent, parent_type, identifier)
-        authorize_parent_access!(parent, parent_type, identifier)
-      end
-
-      def test_can_read_parent?(parent, parent_type)
-        can_read_parent?(parent, parent_type)
-      end
     end
   end
 
-  let(:service) { test_class.new }
-
-  shared_examples 'parent access control' do |parent_type, public_resource, private_resource, error_prefix|
-    let(:accessible_resource) { public_send(public_resource) }
-    let(:inaccessible_resource) { public_send(private_resource) }
-    let(:service) { test_class.new(user) }
-
-    it 'allows access when user has permission' do
-      accessible_resource.add_developer(user)
-      expect { service.test_find_parent_by_id_or_path(parent_type, accessible_resource.full_path) }
-        .not_to raise_error
-    end
-
-    it 'denies access when user lacks permission' do
-      identifier = inaccessible_resource.full_path
-      expect { service.test_find_parent_by_id_or_path(parent_type, identifier) }
-        .to raise_error(ArgumentError, "#{error_prefix}: '#{identifier}'")
-    end
-  end
-
-  shared_examples 'resource finder' do |finder_method, resource_ref|
-    let(:resource) { public_send(resource_ref) }
-
-    it 'finds resource by ID' do
-      result = service.public_send(finder_method, resource.id.to_s)
-      expect(result).to eq(resource)
-    end
-
-    it 'finds resource by full path' do
-      result = service.public_send(finder_method, resource.full_path)
-      expect(result).to eq(resource)
-    end
-
-    it 'raises error for non-existent ID' do
-      expect { service.public_send(finder_method, non_existing_record_id.to_s) }
-        .to raise_error(StandardError, /not found or inaccessible/)
-    end
-
-    it 'raises error for non-existent path' do
-      expect { service.public_send(finder_method, 'invalid/path') }
-        .to raise_error(StandardError, /not found or inaccessible/)
-    end
-  end
+  let(:service) { test_class.new(user) }
 
   describe '#find_project!' do
     subject(:find_project) { service.test_find_project(project_id_or_path) }
 
-    let_it_be_with_refind(:project) { create(:project) }
+    let_it_be_with_refind(:project) { create(:project, :public) }
 
     let(:project_id_or_path) { project.id.to_s }
 
-    it_behaves_like 'resource finder', :test_find_project, :public_project
+    context 'when user can access the project' do
+      it 'finds by numeric ID' do
+        expect(service.test_find_project(public_project.id.to_s)).to eq(public_project)
+      end
+
+      it 'finds by full path' do
+        expect(service.test_find_project(public_project.full_path)).to eq(public_project)
+      end
+    end
+
+    context 'when project does not exist' do
+      it 'raises StandardError for non-existent ID' do
+        expect { service.test_find_project(non_existing_record_id.to_s) }
+          .to raise_error(StandardError, /not found or inaccessible/)
+      end
+
+      it 'raises StandardError for non-existent path' do
+        expect { service.test_find_project('invalid/path') }
+          .to raise_error(StandardError, /not found or inaccessible/)
+      end
+    end
+
+    context 'when user cannot access the project' do
+      let(:service) { test_class.new(user) }
+
+      it 'raises the same error as for a missing project, preventing enumeration' do
+        identifier = private_project.full_path
+        expect { service.test_find_project(identifier) }
+          .to raise_error(StandardError, "Project '#{identifier}' not found or inaccessible")
+      end
+
+      it 'raises the same error when looking up by ID' do
+        identifier = private_project.id.to_s
+        expect { service.test_find_project(identifier) }
+          .to raise_error(StandardError, "Project '#{identifier}' not found or inaccessible")
+      end
+    end
 
     context 'when validating input type' do
       context 'with integer input' do
@@ -148,6 +134,16 @@ RSpec.describe Mcp::Tools::Concerns::ResourceFinder, feature_category: :mcp_serv
         is_expected.to eq(project)
       end
     end
+
+    context 'with a custom ability' do
+      it 'raises when the user lacks the specified ability' do
+        allow(Ability).to receive(:allowed?).and_call_original
+        allow(Ability).to receive(:allowed?).with(user, :read_merge_request, public_project).and_return(false)
+
+        expect { service.test_find_project(public_project.id.to_s, ability: :read_merge_request) }
+          .to raise_error(StandardError, /not found or inaccessible/)
+      end
+    end
   end
 
   describe '#find_project' do
@@ -169,7 +165,43 @@ RSpec.describe Mcp::Tools::Concerns::ResourceFinder, feature_category: :mcp_serv
   describe '#find_group!' do
     subject(:find_group) { service.test_find_group(group_full_path) }
 
-    it_behaves_like 'resource finder', :test_find_group, :private_group
+    context 'when user can access the group' do
+      let(:group_full_path) { public_group.full_path }
+
+      it 'finds by full path' do
+        is_expected.to eq(public_group)
+      end
+
+      it 'finds by numeric ID' do
+        expect(service.test_find_group(public_group.id.to_s)).to eq(public_group)
+      end
+    end
+
+    context 'when group does not exist' do
+      it 'raises StandardError for non-existent ID' do
+        expect { service.test_find_group(non_existing_record_id.to_s) }
+          .to raise_error(StandardError, /not found or inaccessible/)
+      end
+
+      it 'raises StandardError for non-existent path' do
+        expect { service.test_find_group('invalid/path') }
+          .to raise_error(StandardError, /not found or inaccessible/)
+      end
+    end
+
+    context 'when user cannot access the group' do
+      it 'raises the same error as for a missing group, preventing enumeration' do
+        identifier = private_group.full_path
+        expect { service.test_find_group(identifier) }
+          .to raise_error(StandardError, "Group '#{identifier}' not found or inaccessible")
+      end
+
+      it 'raises the same error when looking up by ID' do
+        identifier = private_group.id.to_s
+        expect { service.test_find_group(identifier) }
+          .to raise_error(StandardError, "Group '#{identifier}' not found or inaccessible")
+      end
+    end
 
     context 'with nested groups' do
       let(:nested_group) { create(:group, parent: group) }
@@ -187,7 +219,25 @@ RSpec.describe Mcp::Tools::Concerns::ResourceFinder, feature_category: :mcp_serv
     end
 
     context 'with project parent type' do
-      it_behaves_like 'parent access control', :project, :public_project, :private_project, 'Access denied to project'
+      context 'when user has access' do
+        let(:user) { create(:user, developer_of: public_project) }
+        let(:parent_type) { :project }
+        let(:identifier) { public_project.full_path }
+
+        it 'finds and returns the project' do
+          is_expected.to eq(public_project)
+        end
+      end
+
+      context 'when user lacks access' do
+        let(:parent_type) { :project }
+        let(:identifier) { private_project.full_path }
+
+        it 'raises a uniform not-found error indistinguishable from a missing project' do
+          expect { find_parent_by_id_or_path }
+            .to raise_error(StandardError, "Project '#{identifier}' not found or inaccessible")
+        end
+      end
 
       context 'when finding by ID' do
         let(:user) { create(:user, developer_of: public_project) }
@@ -201,7 +251,25 @@ RSpec.describe Mcp::Tools::Concerns::ResourceFinder, feature_category: :mcp_serv
     end
 
     context 'with group parent type' do
-      it_behaves_like 'parent access control', :group, :public_group, :private_group, 'Access denied to group'
+      context 'when user has access' do
+        let(:user) { create(:user, developer_of: public_group) }
+        let(:parent_type) { :group }
+        let(:identifier) { public_group.full_path }
+
+        it 'finds and returns the group' do
+          is_expected.to eq(public_group)
+        end
+      end
+
+      context 'when user lacks access' do
+        let(:parent_type) { :group }
+        let(:identifier) { private_group.full_path }
+
+        it 'raises a uniform not-found error indistinguishable from a missing group' do
+          expect { find_parent_by_id_or_path }
+            .to raise_error(StandardError, "Group '#{identifier}' not found or inaccessible")
+        end
+      end
 
       context 'when finding by ID' do
         let(:user) { create(:user, developer_of: group) }
@@ -234,7 +302,7 @@ RSpec.describe Mcp::Tools::Concerns::ResourceFinder, feature_category: :mcp_serv
 
         it 'raises error when work item not found' do
           expect { find_work_item_in_parent }
-            .to raise_error(ArgumentError, "Work item ##{work_item_iid} not found")
+            .to raise_error(ArgumentError, "Work item ##{work_item_iid} not found or inaccessible")
         end
       end
 
@@ -246,7 +314,7 @@ RSpec.describe Mcp::Tools::Concerns::ResourceFinder, feature_category: :mcp_serv
 
         it 'restricts access' do
           expect { find_work_item_in_parent }
-            .to raise_error(ArgumentError, "Work item ##{work_item_iid} not found")
+            .to raise_error(ArgumentError, "Work item ##{work_item_iid} not found or inaccessible")
         end
       end
     end
@@ -277,60 +345,6 @@ RSpec.describe Mcp::Tools::Concerns::ResourceFinder, feature_category: :mcp_serv
       it 'returns empty hash' do
         is_expected.to eq({})
       end
-    end
-  end
-
-  describe '#authorize_parent_access!' do
-    let(:service) { test_class.new(user) }
-
-    shared_examples 'authorization check' do |parent_type, public_resource, private_resource|
-      let(:accessible) { public_send(public_resource) }
-      let(:inaccessible) { public_send(private_resource) }
-
-      it 'passes when user has access' do
-        accessible.add_developer(user)
-        expect { service.test_authorize_parent_access!(accessible, parent_type, accessible.full_path) }
-          .not_to raise_error
-      end
-
-      it 'raises error when user lacks access' do
-        expect { service.test_authorize_parent_access!(inaccessible, parent_type, inaccessible.full_path) }
-          .to raise_error(ArgumentError, "Access denied to #{parent_type}: '#{inaccessible.full_path}'")
-      end
-    end
-
-    context 'with project parent' do
-      it_behaves_like 'authorization check', :project, :public_project, :private_project
-    end
-
-    context 'with group parent' do
-      it_behaves_like 'authorization check', :group, :public_group, :private_group
-    end
-  end
-
-  describe '#can_read_parent?' do
-    let(:service) { test_class.new(user) }
-
-    shared_examples 'permission check' do |parent_type, public_resource, private_resource|
-      let(:accessible) { public_send(public_resource) }
-      let(:inaccessible) { public_send(private_resource) }
-
-      it 'returns true when user has permission' do
-        accessible.add_developer(user)
-        expect(service.test_can_read_parent?(accessible, parent_type)).to be true
-      end
-
-      it 'returns false when user lacks permission' do
-        expect(service.test_can_read_parent?(inaccessible, parent_type)).to be false
-      end
-    end
-
-    context 'with project parent' do
-      it_behaves_like 'permission check', :project, :public_project, :private_project
-    end
-
-    context 'with group parent' do
-      it_behaves_like 'permission check', :group, :public_group, :private_group
     end
   end
 end

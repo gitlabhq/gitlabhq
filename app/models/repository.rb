@@ -164,8 +164,7 @@ class Repository
       first_parent: !!opts[:first_parent],
       order: opts[:order],
       literal_pathspec: opts.fetch(:literal_pathspec, true),
-      trailers: opts[:trailers],
-      include_referenced_by: opts[:include_referenced_by]
+      trailers: opts[:trailers]
     }
 
     commits = Gitlab::Git::Commit.where(options)
@@ -394,11 +393,14 @@ class Repository
     raw_repository.languages(root_ref)
   end
 
-  def keep_around(*shas, source:, retry_failed_writes: nil)
-    Gitlab::Git::KeepAround.execute(self, shas, source: source, retry_failed_writes: retry_failed_writes)
+  def keep_around(*shas, source:)
+    Gitlab::Git::KeepAround.execute(self, shas, source: source)
   end
 
-  def archive_metadata(ref, storage_path, format = "tar.gz", append_sha:, path: nil, ref_type: nil)
+  def archive_metadata(
+    ref, storage_path, format = "tar.gz",
+    append_sha:, path: nil, ref_type: nil, include_lfs_blobs: true, exclude_paths: []
+  )
     raw_repository.archive_metadata(
       ref,
       storage_path,
@@ -406,7 +408,9 @@ class Repository
       format,
       append_sha: append_sha,
       path: path,
-      ref_type: ref_type
+      ref_type: ref_type,
+      include_lfs_blobs: include_lfs_blobs,
+      exclude_paths: exclude_paths
     )
   end
 
@@ -1303,14 +1307,15 @@ class Repository
     @submodule_links ||= ::Gitlab::SubmoduleLinks.new(self)
   end
 
-  def update_submodule(user, submodule, commit_sha, message:, branch:)
+  def update_submodule(user, submodule, commit_sha, message:, branch:, expected_old_oid: '')
     with_cache_hooks do
       raw.update_submodule(
         user: user,
         submodule: submodule,
         commit_sha: commit_sha,
         branch: branch,
-        message: message
+        message: message,
+        expected_old_oid: expected_old_oid
       )
     end
   end
@@ -1463,7 +1468,11 @@ class Repository
   def ignore_revs_file_blob
     return unless project&.default_branch
 
-    blob_at(project.default_branch, Gitlab::Blame::IGNORE_REVS_FILE_NAME, limit: 0)
+    # Qualify the ref so that branch names Gitaly's revision validation would
+    # reject (for example, names starting with a dash) resolve cleanly instead
+    # of raising. This matches the blame call sites which already use the
+    # fully qualified form for this file.
+    blob_at("refs/heads/#{project.default_branch}", Gitlab::Blame::IGNORE_REVS_FILE_NAME, limit: 0)
   end
 
   def diffs_by_changed_paths(diff_refs, offset = 0, batch_size = 30)

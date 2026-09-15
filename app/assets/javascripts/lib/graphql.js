@@ -10,6 +10,11 @@ import { StartupJSLink } from '~/lib/utils/apollo_startup_js_link';
 import csrf from '~/lib/utils/csrf';
 import { objectToQuery, queryToObject } from '~/lib/utils/url_utility';
 import PerformanceBarService from '~/performance_bar/services/performance_bar_service';
+import {
+  registerApolloClient,
+  startNonDedupedOperation,
+  finishNonDedupedOperation,
+} from './graphql_pending_requests';
 import { getInstrumentationLink } from './apollo/instrumentation_link';
 import { getSuppressNetworkErrorsDuringNavigationLink } from './apollo/suppress_network_errors_during_navigation_link';
 import { getPersistLink } from './apollo/persist_link';
@@ -151,30 +156,6 @@ export const stripWhitespaceFromQuery = (url, path) => {
   return `${path}?${reassembled}`;
 };
 
-const acs = [];
-
-let pendingApolloMutations = 0;
-
-// ### Why track pendingApolloMutations, but calculate pendingApolloRequests?
-//
-// In Apollo 2, we had a single link for counting operations.
-//
-// With Apollo 3, the `forward().map(...)` of deduped queries is never called.
-// So, we resorted to calculating the sum of `inFlightLinkObservables?.size`.
-// However! Mutations don't use `inFLightLinkObservables`, but since they are likely
-// not deduped we can count them...
-//
-// https://gitlab.com/gitlab-org/gitlab/-/merge_requests/55062#note_838943715
-// https://www.apollographql.com/docs/react/v2/networking/network-layer/#query-deduplication
-Object.defineProperty(window, 'pendingApolloRequests', {
-  get() {
-    return acs.reduce(
-      (sum, ac) => sum + (ac?.queryManager?.inFlightLinkObservables?.size || 0),
-      pendingApolloMutations,
-    );
-  },
-});
-
 function createApolloClient(resolvers = {}, config = {}) {
   const {
     baseUrl,
@@ -185,6 +166,11 @@ function createApolloClient(resolvers = {}, config = {}) {
     fetchCredentials = 'same-origin',
     // eslint-disable-next-line @gitlab/no-hardcoded-urls -- default GraphQL API path template, not a navigational URL
     path = '/api/graphql',
+    // Extra ApolloLinks prepended to the link chain (outermost position).
+    // Errors propagate outward from the terminating link, so the built-in
+    // suppress-during-navigation link swallows navigation-abort errors before
+    // these links (e.g. error reporting) can observe them.
+    links = [],
   } = config;
 
   let ac = null;
@@ -278,15 +264,18 @@ function createApolloClient(resolvers = {}, config = {}) {
   const hasMutation = (operation) =>
     (operation?.query?.definitions || []).some((x) => x.operation === 'mutation');
 
-  const mutationCounterLink = getOperationFinishedLink({
+  const isNonDedupedOperation = (operation) =>
+    hasMutation(operation) || Boolean(operation.getContext().forceFetch);
+
+  const operationCounterLink = getOperationFinishedLink({
     started: (operation) => {
-      if (hasMutation(operation)) {
-        pendingApolloMutations += 1;
+      if (isNonDedupedOperation(operation)) {
+        startNonDedupedOperation();
       }
     },
     finished: (operation) => {
-      if (hasMutation(operation)) {
-        pendingApolloMutations -= 1;
+      if (isNonDedupedOperation(operation)) {
+        finishNonDedupedOperation();
       }
     },
   });
@@ -298,11 +287,12 @@ function createApolloClient(resolvers = {}, config = {}) {
     new ActionCableLink(),
     ApolloLink.from(
       [
+        ...links,
         getSuppressNetworkErrorsDuringNavigationLink(),
         getInstrumentationLink(),
         sentryBreadcrumbLink,
         correlationIdLink,
-        mutationCounterLink,
+        operationCounterLink,
         performanceBarLink,
         new StartupJSLink(),
         apolloCaptchaLink,
@@ -338,7 +328,7 @@ function createApolloClient(resolvers = {}, config = {}) {
     },
   });
 
-  acs.push(ac);
+  registerApolloClient(ac);
 
   return { client: ac, cache: newCache };
 }

@@ -133,7 +133,8 @@ namespace :gitlab do
         puts "File #{path_to_sql} is not writeable, skipping writing #{database}.sql"
       end
 
-      ClickHouse::SchemaCache.dump(connection, database)
+      # Schema cache is a committed development artifact, never regenerate it on real instances
+      ClickHouse::SchemaCache.dump(connection, database) if Rails.env.development? || Rails.env.test?
     end
   end
 end

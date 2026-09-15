@@ -1,0 +1,15 @@
+# @feature_category: mcp_server
+mutation mcpAcceptMergeRequest($input: MergeRequestAcceptInput!) {
+  mergeRequestAccept(input: $input) {
+    mergeRequest {
+      id
+      iid
+      webUrl
+      state
+      targetBranch
+      autoMergeEnabled
+      autoMergeStrategy
+    }
+    errors
+  }
+}

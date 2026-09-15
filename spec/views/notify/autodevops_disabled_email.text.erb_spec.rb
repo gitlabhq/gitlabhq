@@ -6,7 +6,7 @@ RSpec.describe 'notify/autodevops_disabled_email.text.erb' do
   include Devise::Test::ControllerHelpers
 
   let(:user) { create(:user, developer_of: project) }
-  let(:project) { create(:project, :repository) }
+  let(:project) { create(:project, :small_repo) }
 
   let(:pipeline) do
     create(

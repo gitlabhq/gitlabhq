@@ -1,5 +1,5 @@
 ---
-stage: Create
+stage: GitLab Dedicated
 group: Import
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see <https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments>
 title: Migrate from Bitbucket Server
@@ -46,7 +46,15 @@ Footnotes:
 1. GitLab doesn't allow comments on arbitrary lines of code. Any out-of-bounds Bitbucket comments are inserted as
    comments in the merge request.
 1. Multiple threading levels are collapsed into one thread and quotes are added as part of the original comment.
-1. Project filtering doesn't support fuzzy search. Only **starts with** or **full match** strings are supported.
+1. Project filtering doesn't support fuzzy search. Only starts with or full match strings are supported.
+
+## Known issues
+
+- Images and file attachments embedded in pull request descriptions and comments are not copied to GitLab.
+  They remain as external links pointing to the original Bitbucket-hosted URLs.
+  If the source Bitbucket Server instance is decommissioned or the repository is deleted, all embedded images and attachment links break permanently.
+  Before decommissioning the source Bitbucket Server instance, verify that all embedded images and attachments are accessible or preserve them separately.
+  Support for importing images and attachments is proposed in [work item 623235](https://gitlab.com/gitlab-org/gitlab/-/work_items/623235).
 
 ## Importer workflow
 
@@ -81,7 +89,7 @@ However, to help estimate the duration of your import, a project comprised of th
   publicly resolvable or accessible on the network where GitLab is running.
 - You must enable the [Bitbucket Server import source](../../administration/settings/import_and_export_settings.md#configure-allowed-import-sources)
   or ask your GitLab administrator to enable it. Enabled by default on GitLab.com.
-- the Maintainer or Owner role on the destination group to import to.
+- The Maintainer or Owner role on the destination group to import to.
 - Bitbucket Server authentication token with administrator access. Without administrator access, some data is
   [not imported](https://gitlab.com/gitlab-org/gitlab/-/issues/446218).
 

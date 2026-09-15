@@ -9,8 +9,8 @@ module RuboCop
         #
         # @example
         #   # bad
-        #   'See [the docs](https://docs.gitlab.com/ee/user/permissions#roles).'
-        #   _('See [the docs](https://docs.gitlab.com/ee/user/permissions#roles).')
+        #   'See [the docs](https://docs.gitlab.com/user/permissions/#roles).'
+        #   _('See [the docs](https://docs.gitlab.com/user/permissions/#roles).')
         #
         #   # good
         #   docs_link = link_to _('the docs'), help_page_url('user/permissions.md', anchor: 'roles')
@@ -20,9 +20,11 @@ module RuboCop
           include RangeHelp
 
           MSG = 'Use `#help_page_url` instead of directly including link. ' \
-            'See https://docs.gitlab.com/ee/development/documentation/help#linking-to-help.'
+            'See https://docs.gitlab.com/development/documentation/help/#linking-to-help.'
 
-          DOCS_URL_REGEXP = %r{https://docs.gitlab.com/ee/[\w#%./-]+}
+          # Excludes docs.gitlab.com/{runner,omnibus,charts}/... because those docs live in
+          # separate repositories and can never be linked via `#help_page_url`.
+          DOCS_URL_REGEXP = %r{https://docs.gitlab.com/(?:ee/)?(?!runner/|omnibus/|charts/)[\w#%./-]+}
 
           def on_str(node)
             match = DOCS_URL_REGEXP.match(node.source)

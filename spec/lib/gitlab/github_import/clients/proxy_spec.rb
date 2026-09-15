@@ -42,6 +42,48 @@ RSpec.describe Gitlab::GithubImport::Clients::Proxy, :manage, feature_category: 
         }
       )
     end
+
+    context 'when the GraphQL search response contains a nil node' do
+      # GithubImport::Client's GraphQL API responses are Sawyer::Resource objects, not plain hashes.
+      # A nil mixed into `nodes` breaks Sawyer's own `Resource#to_h`, which only
+      # deep-converts an array if every element is a Sawyer::Resource, so `nodes`
+      # is left holding raw Sawyer::Resource objects (plus the nil) instead of hashes.
+      let(:sawyer_agent) { Sawyer::Agent.new('') }
+      let(:client_response) do
+        Sawyer::Resource.new(
+          sawyer_agent,
+          data: {
+            search: {
+              nodes: [
+                { id: 1, name: 'foo', full_name: 'foo/foo' },
+                nil,
+                { id: 2, name: 'bar', full_name: 'bar/bar' }
+              ],
+              pageInfo: { startCursor: 'foo', endCursor: 'bar' },
+              repositoryCount: 2
+            }
+          }
+        ).to_h
+      end
+
+      it 'filters out the nil node and converts the remaining nodes to plain hashes' do
+        expect(Gitlab::GithubImport::Client)
+          .to receive(:new).with(access_token).and_return(client_stub)
+        expect(client_stub)
+          .to receive(:search_repos_by_name_graphql)
+          .with(search_text, pagination_options).and_return(client_response)
+
+        repos = client.repos(search_text, pagination_options)[:repos]
+
+        expect(repos).to eq(
+          [
+            { id: 1, name: 'foo', full_name: 'foo/foo' },
+            { id: 2, name: 'bar', full_name: 'bar/bar' }
+          ]
+        )
+        expect(repos).to all(be_a(Hash))
+      end
+    end
   end
 
   describe '#count_repos_by', :clean_gitlab_redis_shared_state do

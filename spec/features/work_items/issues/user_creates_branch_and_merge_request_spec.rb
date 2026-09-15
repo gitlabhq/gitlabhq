@@ -31,7 +31,11 @@ RSpec.describe 'User creates branch and merge request on issue page', :js, featu
       before do
         visit project_issue_path(project, issue)
 
-        find('button:not([aria-disabled="true"])', text: 'Create merge request')
+        create_mr_button = find('button:not([aria-disabled="true"])', text: 'Create merge request')
+
+        # The issue description's sticky markdown toolbar can overlap the split button and
+        # intercept clicks. Center the button in the viewport so it is clear of the toolbar.
+        scroll_to(create_mr_button, align: :center)
       end
 
       it 'shows elements' do
@@ -73,7 +77,8 @@ RSpec.describe 'User creates branch and merge request on issue page', :js, featu
           expect(page).to have_text("From #{branch_name} into #{project.default_branch}")
           expect(page).to have_field("Title", with: "Draft: Resolve \"Cherry-Coloured Funk\"")
           expect(page).to have_field("Description", with: "Closes ##{issue.iid}")
-          expect(page).to have_current_path(project_new_merge_request_path(project, merge_request: { source_branch: branch_name, target_branch: project.default_branch, issue_iid: issue.iid }))
+          expect(page).to have_current_path(project_new_merge_request_path(project,
+            merge_request: { source_branch: branch_name, target_branch: project.default_branch, issue_iid: issue.iid }))
         end
 
         it 'creates a branch' do
@@ -103,7 +108,8 @@ RSpec.describe 'User creates branch and merge request on issue page', :js, featu
           expect(page).to have_text("From #{branch_name} into #{project.default_branch}")
           expect(page).to have_field("Title", with: "Draft: Resolve \"Cherry-Coloured Funk\"")
           expect(page).to have_field("Description", with: "Closes ##{issue.iid}")
-          expect(page).to have_current_path(project_new_merge_request_path(project, merge_request: { source_branch: branch_name, target_branch: project.default_branch, issue_iid: issue.iid }))
+          expect(page).to have_current_path(project_new_merge_request_path(project,
+            merge_request: { source_branch: branch_name, target_branch: project.default_branch, issue_iid: issue.iid }))
         end
 
         it 'creates a branch' do

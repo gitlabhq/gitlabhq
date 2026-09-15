@@ -9,7 +9,7 @@ When a security incident occurs, you should primarily follow the processes defin
 
 - For administrators and maintainers of GitLab Self-Managed instances and groups on GitLab.com.
 - To provide additional information and best practices on how to respond to various security incidents related to GitLab services.
-- As a supplement to the processes defined by your organization to handle security incidents. It is **not a replacement**.
+- As a supplement to the processes defined by your organization to handle security incidents. It is not a replacement.
 
 Using this guide, you should feel confident in handling security incidents related to GitLab. Where necessary, the guide links to other parts of GitLab documentation.
 

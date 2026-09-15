@@ -6,14 +6,14 @@ RSpec.describe Gitlab::Timeless, feature_category: :shared do
   let(:model) { build(:user) }
 
   it 'disables record_timestamps temporarily' do
-    expect(model.record_timestamps).to eq(true)
+    expect(model.record_timestamps).to be(true)
 
     Gitlab::Timeless.timeless(model) do |m|
-      expect(m.record_timestamps).to eq(false)
-      expect(model.record_timestamps).to eq(false)
+      expect(m.record_timestamps).to be(false)
+      expect(model.record_timestamps).to be(false)
     end
 
-    expect(model.record_timestamps).to eq(true)
+    expect(model.record_timestamps).to be(true)
   end
 
   it 'does not record created_at' do

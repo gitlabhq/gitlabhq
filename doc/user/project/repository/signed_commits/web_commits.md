@@ -127,7 +127,7 @@ GitLab UI. For signed commits that arrive as a regular Git push, for example fro
 
 ## Commits created using REST API
 
-[Commits created using the REST API](../../../../api/commits.md#create-a-commit).
+[Commits created using the REST API](../../../../api/commits.md#create-a-commit)
 are also considered as web-based commits.
 Using the REST API endpoint, you can set `author_name` and `author_email` fields of the commit,
 which makes it possible to create commits on behalf of other users.

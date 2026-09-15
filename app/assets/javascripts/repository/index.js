@@ -30,6 +30,8 @@ Vue.use(PerformancePlugin, {
 
 export default function setupVueRepositoryList() {
   const el = document.getElementById('js-tree-list');
+  if (!el) return null;
+
   const { dataset } = el;
   const {
     projectPath,

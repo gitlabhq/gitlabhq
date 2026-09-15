@@ -26,9 +26,9 @@ namespace :gitlab do
 
         hash[feature_category] ||= []
         hash[feature_category] << {
-          klass: klass.to_s,
+          klass: klass.name,
           action: path,
-          source_location: src_location(klass)
+          source_location: src_location(klass.name)
         }
       end
 

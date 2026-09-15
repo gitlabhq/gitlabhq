@@ -62,9 +62,13 @@ module Backup
       attr_reader :strategy, :storages, :paths, :skip_paths, :logger
 
       def remove_all_repositories
-        return if paths.present?
+        return if partial_restore?
 
         storages.presence || Gitlab.config.repositories.storages.keys
+      end
+
+      def partial_restore?
+        paths.present? || skip_paths.present?
       end
 
       def enqueue_consecutive

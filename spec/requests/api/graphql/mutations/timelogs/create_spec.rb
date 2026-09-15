@@ -37,4 +37,24 @@ RSpec.describe 'Create a timelog', feature_category: :team_planning do
 
     it_behaves_like 'issuable supports timelog creation mutation'
   end
+
+  it_behaves_like 'authorizing granular token permissions for GraphQL', :create_timelog do
+    let_it_be(:issuable) { create(:issue, project: project) }
+
+    before_all do
+      project.add_reporter(author)
+    end
+
+    let(:mutation) do
+      graphql_mutation(:timelog_create, {
+        time_spent: time_spent,
+        summary: 'Test summary',
+        issuable_id: issuable.to_global_id.to_s
+      })
+    end
+
+    let(:user) { author }
+    let(:boundary_object) { project }
+    let(:request) { post_graphql_mutation(mutation, token: { personal_access_token: pat }) }
+  end
 end

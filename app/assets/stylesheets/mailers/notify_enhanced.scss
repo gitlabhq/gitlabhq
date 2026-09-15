@@ -36,6 +36,12 @@ pre {
   font-size: 14px;
 }
 
+gl-emoji img {
+  width: 1.2em;
+  height: 1.2em;
+  object-fit: scale-down;
+}
+
 // stylelint-disable-next-line gitlab/no-gl-class
 .gl-mb-5 {
   margin-bottom: $gl-spacing-scale-5;
@@ -44,6 +50,22 @@ pre {
 // stylelint-disable-next-line gitlab/no-gl-class
 .gl-mt-5 {
   margin-top: $gl-spacing-scale-5;
+}
+
+// stylelint-disable-next-line gitlab/no-gl-class
+.gl-label-scoped {
+  border-width: $gl-spacing-scale-1;
+  border-style: solid;
+
+  // stylelint-disable-next-line gitlab/no-gl-class
+  .gl-label-text {
+    padding: 0 $label-padding-horizontal 0 ($label-padding-horizontal - $gl-spacing-scale-1);
+  }
+
+  // stylelint-disable-next-line gitlab/no-gl-class
+  .gl-label-text-scoped {
+    padding: 0 ($gl-spacing-scale-3 - $gl-spacing-scale-1) 0 $gl-spacing-scale-2;
+  }
 }
 
 .content {
@@ -67,7 +89,7 @@ pre {
   }
 
   .diff-table.code,
-  table.code {
+  table.code:not(.blob-embed) {
     width: auto;
 
     td {

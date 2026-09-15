@@ -3,6 +3,10 @@
 module ActiveContext
   module Concerns
     module Preprocessor
+      # A batch can hold 1,000 refs. A log line with the full list can exceed
+      # log pipeline limits and get dropped. Log a sample instead.
+      LOGGED_REFS_SAMPLE_SIZE = 10
+
       def preprocessors
         @preprocessors ||= []
       end
@@ -16,13 +20,13 @@ module ActiveContext
       end
 
       def preprocess(refs, **options)
-        result = { successful: [], failed: [], retryable: [] }
+        result = { successful: [], failed: [], infinite_retry: [] }
 
         refs_by_class = refs.group_by(&:class)
 
         refs_by_class.each do |klass, class_refs|
           all_failed_refs = []
-          all_retryable_refs = []
+          all_infinite_retry_refs = []
           current_successful_refs = class_refs
 
           klass.eligible_preprocessors.each do |preprocessor|
@@ -31,13 +35,13 @@ module ActiveContext
             processed = preprocessor[:block].call(current_successful_refs, **options)
 
             all_failed_refs.concat(processed[:failed])
-            all_retryable_refs.concat(processed[:retryable]) if processed.key?(:retryable)
+            all_infinite_retry_refs.concat(processed[:infinite_retry] || [])
             current_successful_refs = processed[:successful]
           end
 
           result[:successful].concat(current_successful_refs)
           result[:failed].concat(all_failed_refs)
-          result[:retryable].concat(all_retryable_refs)
+          result[:infinite_retry].concat(all_infinite_retry_refs)
         end
 
         result
@@ -58,21 +62,22 @@ module ActiveContext
           yield(ref)
           successful_refs << ref
         rescue *skip_error_types => e
-          ::ActiveContext::Logger.skippable_exception(
+          ::ActiveContext::Logger.exception(
             e,
-            class_name: self.class.name,
+            handling: :skipped,
+            class_name: name,
             queue_name: queue_name,
             preprocessor: preprocessor,
             reference: ref.serialize,
             reference_id: ref.identifier
           )
         rescue *retry_error_types => e
-          ::ActiveContext::Logger.retryable_exception(
+          ::ActiveContext::Logger.exception(
             e,
-            class_name: self.class.name,
+            handling: :retryable,
+            class_name: name,
             queue_name: queue_name,
             preprocessor: preprocessor,
-            infinite_retry: false,
             reference: ref.serialize,
             reference_id: ref.identifier
           )
@@ -89,47 +94,51 @@ module ActiveContext
         infinite_retry_error_types: [],
         queue_name: nil,
         preprocessor: nil)
-        return { successful: [], failed: [], retryable: [] } unless refs.any?
+        return { successful: [], failed: [], infinite_retry: [] } unless refs.any?
 
         begin
           yield(refs)
 
-          { successful: refs, failed: [], retryable: [] }
+          { successful: refs, failed: [], infinite_retry: [] }
         rescue *infinite_retry_error_types => e
-          ::ActiveContext::Logger.retryable_exception(
-            e,
-            class_name: self.class.name,
-            queue_name: queue_name,
-            preprocessor: preprocessor,
-            infinite_retry: true,
-            refs: refs.map(&:serialize)
-          )
+          log_batch_failure(e, refs, handling: :infinite_retry, queue_name: queue_name, preprocessor: preprocessor)
 
-          { successful: [], failed: [], retryable: refs }
+          { successful: [], failed: [], infinite_retry: refs }
         rescue *error_types => e
-          ::ActiveContext::Logger.retryable_exception(
-            e,
-            class_name: self.class.name,
-            queue_name: queue_name,
-            preprocessor: preprocessor,
-            infinite_retry: false,
-            refs: refs.map(&:serialize)
-          )
+          log_batch_failure(e, refs, handling: :retryable, queue_name: queue_name, preprocessor: preprocessor)
 
-          { successful: [], failed: refs, retryable: [] }
+          { successful: [], failed: refs, infinite_retry: [] }
+        rescue StandardError => e
+          # This error is not in the caller's `error_types` list.
+          # Log it as an error, not a warning, so it does not hide with expected failures.
+          log_batch_failure(e, refs, handling: :unexpected, queue_name: queue_name, preprocessor: preprocessor)
+
+          { successful: [], failed: refs, infinite_retry: [] }
         end
       end
 
       private
 
+      def log_batch_failure(exception, refs, handling:, queue_name:, preprocessor:)
+        ::ActiveContext::Logger.exception(
+          exception,
+          handling: handling,
+          class_name: name,
+          queue_name: queue_name,
+          preprocessor: preprocessor,
+          refs_count: refs.count,
+          refs_sample: refs.first(LOGGED_REFS_SAMPLE_SIZE).map(&:serialize)
+        )
+      end
+
       def grouped_processing_result(grouped_refs)
-        initial_result = { successful: [], failed: [], retryable: [] }
+        initial_result = { successful: [], failed: [], infinite_retry: [] }
         grouped_refs.each_with_object(initial_result) do |(group_key, refs_in_group), result|
           group_result = yield(group_key, refs_in_group)
 
           result[:successful] += group_result[:successful]
           result[:failed] += group_result[:failed]
-          result[:retryable] += group_result[:retryable]
+          result[:infinite_retry] += group_result[:infinite_retry].to_a
         end
       end
     end

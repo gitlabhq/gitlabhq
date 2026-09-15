@@ -96,3 +96,25 @@ WithTitleIcon.args = {
   ...Default.args,
   titleIcon: 'users',
 };
+
+// Its own template because the shared one does not fill the `#footer` slot. The tall body
+// shows the footer staying put while the body scrolls.
+const FooterTemplate = (args, { argTypes }) => ({
+  components: { ExtendedDashboardPanel },
+  props: Object.keys(argTypes),
+  template: `
+    <extended-dashboard-panel v-bind="$props" style="height: 12rem;">
+      <template #body>
+        <p v-for="line in 12" :key="line"><code>#body</code> slot content</p>
+      </template>
+      <template #footer>
+        <a href="#"><code>#footer</code> slot content</a>
+      </template>
+    </extended-dashboard-panel>
+  `,
+});
+
+export const WithFooter = FooterTemplate.bind({});
+WithFooter.args = {
+  ...Default.args,
+};

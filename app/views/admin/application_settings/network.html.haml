@@ -28,9 +28,19 @@
   expanded: expanded_by_default?) do |c|
   - c.with_description do
     = _('Set rate limits for package registry API requests that supersede the general user and IP rate limits.')
-    = link_to _('Learn more.'), help_page_path('administration/settings/package_registry_rate_limits.md'), target: '_blank', rel: 'noopener noreferrer'
+    = link_to _('Learn more.'), help_page_path('rate_limits/api/package-registry.md'), target: '_blank', rel: 'noopener noreferrer'
   - c.with_body do
     = render partial: 'network_rate_limits', locals: { anchor: 'js-packages-limits-settings', setting_fragment: 'packages_api' }
+
+= render ::Layouts::SettingsBlockComponent.new(_('Dependency proxy rate limits'),
+  id: 'js-dependency-proxy-limits-settings',
+  testid: 'dependency-proxy-limits-settings',
+  expanded: expanded_by_default?) do |c|
+  - c.with_description do
+    = _('Configure specific limits for authenticated dependency proxy requests.')
+    = link_to _('Learn more.'), help_page_path('administration/settings/user_and_ip_rate_limits.md', anchor: 'enable-authenticated-dependency-proxy-request-rate-limit'), target: '_blank', rel: 'noopener noreferrer'
+  - c.with_body do
+    = render 'dependency_proxy_limits'
 
 = render ::Layouts::SettingsBlockComponent.new(_('Files API rate limits'),
   id: 'js-files-limits-settings',
@@ -56,7 +66,7 @@
   expanded: expanded_by_default?) do |c|
   - c.with_description do
     = _('Configure specific limits for deprecated API requests that supersede the general user and IP rate limits.')
-    = link_to _('Which API requests are affected?'), help_page_path('administration/settings/deprecated_api_rate_limits.md'), target: '_blank', rel: 'noopener noreferrer'
+    = link_to _('Which API requests are affected?'), help_page_path('rate_limits/api/deprecated.md'), target: '_blank', rel: 'noopener noreferrer'
   - c.with_body do
     = render partial: 'network_rate_limits', locals: { anchor: 'js-deprecated-limits-settings', setting_fragment: 'deprecated_api' }
 
@@ -66,7 +76,7 @@
   expanded: expanded_by_default?) do |c|
   - c.with_description do
     = _('Configure specific limits for Git HTTP requests.')
-    = link_to _('Learn more.'), help_page_path('administration/settings/git_http_rate_limits.md'), target: '_blank', rel: 'noopener noreferrer'
+    = link_to _('Learn more.'), help_page_path('rate_limits/git.md', anchor: 'git-http'), target: '_blank', rel: 'noopener noreferrer'
   - c.with_body do
     = render 'git_http_limits'
 
@@ -75,7 +85,7 @@
   expanded: expanded_by_default?) do |c|
   - c.with_description do
     = _('Configure specific limits for Git LFS requests that supersede the general user and IP rate limits.')
-    = link_to _('Learn more.'), help_page_path('administration/settings/git_lfs_rate_limits.md'), target: '_blank', rel: 'noopener noreferrer'
+    = link_to _('Learn more.'), help_page_path('rate_limits/git.md', anchor: 'git-lfs'), target: '_blank', rel: 'noopener noreferrer'
   - c.with_body do
     = render 'git_lfs_limits'
 
@@ -106,7 +116,7 @@
   expanded: expanded_by_default?) do |c|
   - c.with_description do
     = _('Limit the number of issues and epics per minute a user can create through web and API requests.')
-    = link_to _('Learn more.'), help_page_path('administration/settings/rate_limit_on_issues_creation.md'), target: '_blank', rel: 'noopener noreferrer'
+    = link_to _('Learn more.'), help_page_path('rate_limits/content_creation.md', anchor: 'issue-and-epic-creation'), target: '_blank', rel: 'noopener noreferrer'
   - c.with_body do
     = render 'issue_limits'
 
@@ -115,7 +125,7 @@
   expanded: expanded_by_default?) do |c|
   - c.with_description do
     = _('Set the per-user rate limit for notes created by web or API requests.')
-    = link_to _('Learn more.'), help_page_path('administration/settings/rate_limit_on_notes_creation.md'), target: '_blank', rel: 'noopener noreferrer'
+    = link_to _('Learn more.'), help_page_path('rate_limits/content_creation.md', anchor: 'note-creation'), target: '_blank', rel: 'noopener noreferrer'
   - c.with_body do
     = render 'note_limits'
 
@@ -146,7 +156,7 @@
   expanded: expanded_by_default?) do |c|
   - c.with_description do
     = _('Limit the number of pipeline creation requests per minute. This limit includes pipelines created through the UI, the API, and by background processing.')
-    = link_to _('Learn more.'), help_page_path('administration/settings/rate_limit_on_pipelines_creation.md'), target: '_blank', rel: 'noopener noreferrer'
+    = link_to _('Learn more.'), help_page_path('administration/cicd/limits.md', anchor: 'pipeline-creation-rate-limits'), target: '_blank', rel: 'noopener noreferrer'
   - c.with_body do
     = render 'pipeline_limits'
 

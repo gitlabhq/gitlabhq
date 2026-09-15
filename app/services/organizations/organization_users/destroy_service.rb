@@ -12,7 +12,7 @@ module Organizations
 
       def execute
         return denied_response unless allowed?
-        return error_home_organization if home_organization?
+        return error_has_memberships if memberships_in_organization?
 
         organization_user.destroy
 
@@ -41,9 +41,18 @@ module Organizations
         organization_user.organization_id == organization_user.user.organization_id
       end
 
+      def memberships_in_organization?
+        Member
+          .with_user(organization_user.user)
+          .non_request
+          .in_organization(organization_user.organization_id)
+          .exists?
+      end
+
       # The delete_organization_user ability covers both authorization and the last owner rule, so we only
       # report the latter to users who are otherwise allowed to administer the organization.
       def denied_response
+        return error_home_organization if home_organization?
         return error_last_owner if can_update_organization? && organization_user.last_owner?
 
         error_no_permission
@@ -63,6 +72,14 @@ module Organizations
         )
       end
 
+      def error_has_memberships
+        ServiceResponse.error(
+          message: [_('You cannot remove a user from an organization while they are a member of groups ' \
+            'or projects in the organization')],
+          reason: :has_memberships
+        )
+      end
+
       def error_home_organization
         ServiceResponse.error(
           message: [_('You cannot delete a user from their home organization')],
@@ -79,3 +96,5 @@ module Organizations
     end
   end
 end
+
+Organizations::OrganizationUsers::DestroyService.prepend_mod

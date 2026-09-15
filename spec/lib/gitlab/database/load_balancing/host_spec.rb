@@ -274,7 +274,7 @@ RSpec.describe Gitlab::Database::LoadBalancing::Host, feature_category: :databas
         .to receive(:last_checked_at)
         .and_return(1.year.ago)
 
-      expect(host.check_replica_status?).to eq(true)
+      expect(host.check_replica_status?).to be(true)
     end
 
     it 'returns false when we do not need to check the replica status' do
@@ -283,7 +283,7 @@ RSpec.describe Gitlab::Database::LoadBalancing::Host, feature_category: :databas
           .to receive(:last_checked_at)
           .and_return(Time.zone.now)
 
-        expect(host.check_replica_status?).to eq(false)
+        expect(host.check_replica_status?).to be(false)
       end
     end
   end
@@ -295,7 +295,7 @@ RSpec.describe Gitlab::Database::LoadBalancing::Host, feature_category: :databas
           .to receive(:replication_lag_below_threshold?)
           .and_return(true)
 
-        expect(host.replica_is_up_to_date?).to eq(true)
+        expect(host.replica_is_up_to_date?).to be(true)
       end
     end
 
@@ -311,7 +311,7 @@ RSpec.describe Gitlab::Database::LoadBalancing::Host, feature_category: :databas
           .to receive(:data_is_recent_enough?)
           .and_return(true)
 
-        expect(host.replica_is_up_to_date?).to eq(true)
+        expect(host.replica_is_up_to_date?).to be(true)
       end
 
       it 'returns false when the data is not recent enough' do
@@ -319,7 +319,7 @@ RSpec.describe Gitlab::Database::LoadBalancing::Host, feature_category: :databas
           .to receive(:data_is_recent_enough?)
           .and_return(false)
 
-        expect(host.replica_is_up_to_date?).to eq(false)
+        expect(host.replica_is_up_to_date?).to be(false)
       end
     end
   end
@@ -338,7 +338,7 @@ RSpec.describe Gitlab::Database::LoadBalancing::Host, feature_category: :databas
         .to receive(:replication_lag_time)
         .and_return(1)
 
-      expect(host.replication_lag_below_threshold?).to eq(true)
+      expect(host.replication_lag_below_threshold?).to be(true)
     end
 
     it 'returns false when the lag time exceeds the threshold' do
@@ -346,7 +346,7 @@ RSpec.describe Gitlab::Database::LoadBalancing::Host, feature_category: :databas
         .to receive(:replication_lag_time)
         .and_return(9000)
 
-      expect(host.replication_lag_below_threshold?).to eq(false)
+      expect(host.replication_lag_below_threshold?).to be(false)
     end
 
     it 'returns false when no lag time could be calculated' do
@@ -354,7 +354,7 @@ RSpec.describe Gitlab::Database::LoadBalancing::Host, feature_category: :databas
         .to receive(:replication_lag_time)
         .and_return(nil)
 
-      expect(host.replication_lag_below_threshold?).to eq(false)
+      expect(host.replication_lag_below_threshold?).to be(false)
     end
 
     context 'with the load_balancer_double_replication_lag_time feature flag enabled' do
@@ -365,7 +365,7 @@ RSpec.describe Gitlab::Database::LoadBalancing::Host, feature_category: :databas
           .to receive(:replication_lag_time)
           .and_return(121)
 
-        expect(host.replication_lag_below_threshold?).to eq(false)
+        expect(host.replication_lag_below_threshold?).to be(false)
       end
 
       it 'returns true when lag time is below the higher threshold' do
@@ -373,7 +373,7 @@ RSpec.describe Gitlab::Database::LoadBalancing::Host, feature_category: :databas
           .to receive(:replication_lag_time)
           .and_return(119)
 
-        expect(host.replication_lag_below_threshold?).to eq(true)
+        expect(host.replication_lag_below_threshold?).to be(true)
       end
     end
 
@@ -385,14 +385,14 @@ RSpec.describe Gitlab::Database::LoadBalancing::Host, feature_category: :databas
          .to receive(:replication_lag_time)
          .and_return(3600)
 
-        expect(host.replication_lag_below_threshold?).to eq(true)
+        expect(host.replication_lag_below_threshold?).to be(true)
       end
     end
   end
 
   describe '#data_is_recent_enough?' do
     it 'returns true when the data is recent enough' do
-      expect(host.data_is_recent_enough?).to eq(true)
+      expect(host.data_is_recent_enough?).to be(true)
     end
 
     it 'returns false when the data is not recent enough' do
@@ -407,7 +407,7 @@ RSpec.describe Gitlab::Database::LoadBalancing::Host, feature_category: :databas
         .to receive(:query_and_release)
         .and_return({ 'diff' => diff })
 
-      expect(host.data_is_recent_enough?).to eq(false)
+      expect(host.data_is_recent_enough?).to be(false)
     end
 
     it 'returns false when no lag size could be calculated' do
@@ -415,7 +415,7 @@ RSpec.describe Gitlab::Database::LoadBalancing::Host, feature_category: :databas
         .to receive(:replication_lag_size)
         .and_return(nil)
 
-      expect(host.data_is_recent_enough?).to eq(false)
+      expect(host.data_is_recent_enough?).to be(false)
     end
   end
 
@@ -627,7 +627,7 @@ RSpec.describe Gitlab::Database::LoadBalancing::Host, feature_category: :databas
         let(:diff_result) { [{ "diff" => 123 }] }
 
         it 'returns false' do
-          expect(host.caught_up?('foo')).to eq(false)
+          expect(host.caught_up?('foo')).to be(false)
         end
       end
     end
@@ -639,7 +639,7 @@ RSpec.describe Gitlab::Database::LoadBalancing::Host, feature_category: :databas
           .to receive(:connection)
                 .and_raise(wrapped_error)
 
-        expect(host.caught_up?('foo')).to eq(false)
+        expect(host.caught_up?('foo')).to be(false)
       end
     end
   end

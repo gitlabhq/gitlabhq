@@ -192,17 +192,6 @@ module SystemNotes
 
       create_note(NoteSummary.new(noteable, project, author, body, action: 'reviewed'))
     end
-
-    private
-
-    def format_reason(reason)
-      return if reason.blank?
-
-      formatted_reason = +reason
-      formatted_reason[0] = formatted_reason[0].downcase
-
-      formatted_reason
-    end
   end
 end
 

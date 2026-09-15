@@ -315,6 +315,7 @@ RSpec.describe SearchController, feature_category: :global_search do
             :global_search_work_items_enabled     | 'work_items'
             :global_search_merge_requests_enabled | 'merge_requests'
             :global_search_users_enabled          | 'users'
+            :global_search_groups_enabled         | 'groups'
           end
 
           with_them do

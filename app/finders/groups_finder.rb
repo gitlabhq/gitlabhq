@@ -210,6 +210,19 @@ class GroupsFinder < UnionFinder
     params.fetch(:all_available, true)
   end
 
+  def can_sort_by_similarity?
+    super && membership_bounded_scope?
+  end
+
+  # Mirrors the branch order in `all_groups`. `SIMILARITY()` cannot be
+  # index-assisted, so scoring an unbounded scope would touch every namespace.
+  def membership_bounded_scope?
+    return true if params[:owned] || min_access_level?
+    return false if public_or_internal_only?
+
+    !all_available?
+  end
+
   def public_or_internal_only?
     return false unless visibility_levels.present?
 

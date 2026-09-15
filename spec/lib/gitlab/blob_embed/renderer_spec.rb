@@ -10,6 +10,7 @@ RSpec.describe Gitlab::BlobEmbed::Renderer, feature_category: :markdown do
   let(:from) { 3 }
   let(:to) { 6 }
   let(:cross_project) { false }
+  let(:for_email) { false }
   let(:line_count) { project.repository.blob_at(sha, path).data.each_line.count }
 
   subject(:renderer) { fresh_renderer }
@@ -18,7 +19,8 @@ RSpec.describe Gitlab::BlobEmbed::Renderer, feature_category: :markdown do
   # separate instances.
   def fresh_renderer
     described_class.new(
-      project: project, sha: sha, path: path, from: from, to: to, cross_project: cross_project
+      project: project, sha: sha, path: path, from: from, to: to, cross_project: cross_project,
+      for_email: for_email
     )
   end
 
@@ -167,6 +169,44 @@ RSpec.describe Gitlab::BlobEmbed::Renderer, feature_category: :markdown do
       expect(project.repository).to receive(:blob_at).once.and_call_original
 
       2.times { fresh_renderer.render }
+    end
+
+    context 'when viewers have different locales' do
+      before do
+        allow(Rails).to receive(:cache).and_return(ActiveSupport::Cache::MemoryStore.new)
+      end
+
+      def range_text
+        Nokogiri::HTML5.fragment(fresh_renderer.render).at_css('.blob-embed-range').text
+      end
+
+      it 'does not serve one locale\'s render to another' do
+        translated = Gitlab::I18n.with_locale('fr') { range_text }
+
+        expect(range_text).to eq('Lines 3 to 6')
+        expect(translated).not_to eq('Lines 3 to 6')
+      end
+
+      it 'builds the embed once per locale' do
+        expect(project.repository).to receive(:blob_at).twice.and_call_original
+
+        fresh_renderer.render
+        Gitlab::I18n.with_locale('fr') { fresh_renderer.render }
+      end
+    end
+
+    context 'when rendering for email' do
+      let(:for_email) { true }
+
+      def fragment
+        Nokogiri::HTML5.fragment(fresh_renderer.render)
+      end
+
+      it 'renders the table variant rather than the blob viewer markup', :aggregate_failures do
+        expect(fragment.at_css('table.blob-embed')).to be_present
+        expect(fragment.at_css('.line-numbers')).to be_nil
+        expect(fragment.css('td.blob-embed-line').size).to eq(4)
+      end
     end
 
     context 'when the blob cannot be embedded' do

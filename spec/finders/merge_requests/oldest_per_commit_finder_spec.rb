@@ -3,6 +3,10 @@
 require 'spec_helper'
 
 RSpec.describe MergeRequests::OldestPerCommitFinder, feature_category: :code_review_workflow do
+  before do
+    stub_read_new_commits_table
+  end
+
   let_it_be(:project) { create(:project) }
 
   describe '#execute' do
@@ -178,9 +182,27 @@ RSpec.describe MergeRequests::OldestPerCommitFinder, feature_category: :code_rev
       )
     end
 
+    it 'prefers the merge request that generated the commit over a newer one that carries it' do
+      sha = Digest::SHA1.hexdigest('foo')
+
+      introducing_mr = create(:merge_request, :merged, target_project: project)
+      create(:merge_request_generated_ref_commit,
+        project: project, merge_request: introducing_mr, commit_sha: sha)
+
+      # A later merge request promotes the same commit onto another branch, so
+      # its diff carries the SHA too. The changelog must still credit the
+      # merge request that introduced it.
+      promoting_mr = create(:merge_request, :merged, target_project: project)
+      create_commit(promoting_mr.merge_request_diff, sha, create_metadata: true)
+
+      commits = [instance_double(Commit, id: sha)]
+
+      expect(described_class.new(project).execute(commits)).to eq(sha => introducing_mr)
+    end
+
     context 'when SHAs are only present in `merge_request_diff_commits` table' do
       before do
-        stub_feature_flags(mr_diff_commits_read_new_table: false)
+        stub_read_new_commits_table(false)
       end
 
       it_behaves_like 'finder for oldest MR per commit'
@@ -192,7 +214,7 @@ RSpec.describe MergeRequests::OldestPerCommitFinder, feature_category: :code_rev
 
     context 'when SHAs are present in both tables' do
       before do
-        stub_feature_flags(mr_diff_commits_read_new_table: false)
+        stub_read_new_commits_table(false)
       end
 
       it 'returns a Hash mapping commit SHAs to their oldest merge requests' do

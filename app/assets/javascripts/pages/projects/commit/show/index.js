@@ -11,8 +11,12 @@ import { initDiffStatsDropdown } from '~/init_diff_stats_dropdown';
 import axios from '~/lib/utils/axios_utils';
 import { handleLocationHash } from '~/lib/utils/common_utils';
 import { __ } from '~/locale';
-import initCommitActions from '~/projects/commit';
-import { initCommitBoxInfo } from '~/projects/commit_box/info';
+import { fetchCommitMergeRequests } from '~/commit_merge_requests';
+import initCherryPickCommitModal from '~/projects/commit/init_cherry_pick_commit_modal';
+import initCommitOptionsDropdown from '~/projects/commit/init_commit_options_dropdown';
+import initRevertCommitModal from '~/projects/commit/init_revert_commit_modal';
+import initCommitPipelineSummary from '~/projects/commit_box/info/init_commit_pipeline_summary';
+import initCommitReferences from '~/projects/commit_box/info/init_commit_references';
 import syntaxHighlight from '~/syntax_highlight';
 import ZenMode from '~/zen_mode';
 import '~/sourcegraph/load';
@@ -31,7 +35,9 @@ initDiffStatsDropdown();
 new ZenMode();
 addShortcutsExtension(ShortcutsNavigation);
 
-initCommitBoxInfo();
+fetchCommitMergeRequests();
+initCommitPipelineSummary();
+initCommitReferences();
 
 initDeprecatedNotes();
 initReportAbuse();
@@ -99,6 +105,9 @@ if (filesContainer.length) {
 }
 
 loadAwardsHandler();
-initCommitActions();
+
+initRevertCommitModal();
+initCherryPickCommitModal();
+initCommitOptionsDropdown();
 
 syntaxHighlight([document.querySelector('.files')]);

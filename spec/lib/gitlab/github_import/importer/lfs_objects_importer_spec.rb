@@ -6,7 +6,6 @@ RSpec.describe Gitlab::GithubImport::Importer::LfsObjectsImporter, feature_categ
   let_it_be(:project) { create(:project, :import_started) }
 
   let(:client) { double(:client) }
-  let(:download_link) { "http://www.gitlab.com/lfs_objects/oid" }
 
   let(:lfs_attributes) do
     {

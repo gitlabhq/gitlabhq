@@ -114,12 +114,12 @@ RSpec.describe Keeps::Helpers::Milestones, feature_category: :tooling do
 
     subject(:before_cuttoff) { described_class.new.before_cuttoff?(milestone: milestone, milestones_ago: 12) }
 
-    it { is_expected.to eq(false) }
+    it { is_expected.to be(false) }
 
     context 'when milestone is before cuttoff' do
       let(:milestone) { '15.8' }
 
-      it { is_expected.to eq(true) }
+      it { is_expected.to be(true) }
     end
 
     context 'when milestone is more than 2 major versions before cuttoff' do
@@ -127,7 +127,7 @@ RSpec.describe Keeps::Helpers::Milestones, feature_category: :tooling do
 
       subject(:before_cuttoff) { described_class.new.before_cuttoff?(milestone: milestone, milestones_ago: 21) }
 
-      it { is_expected.to eq(true) }
+      it { is_expected.to be(true) }
     end
   end
 

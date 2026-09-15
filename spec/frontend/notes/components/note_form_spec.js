@@ -17,7 +17,7 @@ import { useLegacyDiffs } from '~/diffs/stores/legacy_diffs';
 import { useNotes } from '~/notes/store/legacy_notes';
 import { useBatchComments } from '~/batch_comments/store';
 import currentUserQuery from '~/graphql_shared/queries/current_user.query.graphql';
-import { noteableDataMock, notesDataMock, discussionMock } from '../mock_data';
+import { noteableDataMock, notesDataMock, discussionMock, userDataMock } from '../mock_data';
 
 jest.mock('~/lib/utils/autosave');
 
@@ -164,12 +164,26 @@ describe('issue_note_form component', () => {
       });
 
       describe('up', () => {
-        it('should ender edit mode', () => {
+        it('does not emit `enter-edit-mode` while the form still has content', () => {
           const eventHubSpy = jest.spyOn(notesEventHub, '$emit');
 
           textarea.trigger('keydown.up');
 
           expect(eventHubSpy).not.toHaveBeenCalled();
+        });
+
+        it('emits `enter-edit-mode` with your last note when the form is empty', () => {
+          const noteId = 42;
+          useNotes().userData = userDataMock;
+          createComponentWrapper({
+            noteBody: '',
+            discussion: { ...discussionMock, notes: [{ id: noteId, author: userDataMock }] },
+          });
+          const eventHubSpy = jest.spyOn(notesEventHub, '$emit');
+
+          textarea.trigger('keydown.up');
+
+          expect(eventHubSpy).toHaveBeenCalledWith('enter-edit-mode', { noteId });
         });
       });
 
@@ -177,13 +191,13 @@ describe('issue_note_form component', () => {
         it('should save note when cmd+enter is pressed', () => {
           textarea.trigger('keydown.enter', { metaKey: true });
 
-          expect(wrapper.emitted('handleFormUpdate')).toHaveLength(1);
+          expect(wrapper.emitted('handle-form-update')).toHaveLength(1);
         });
 
         it('should save note when ctrl+enter is pressed', () => {
           textarea.trigger('keydown.enter', { ctrlKey: true });
 
-          expect(wrapper.emitted('handleFormUpdate')).toHaveLength(1);
+          expect(wrapper.emitted('handle-form-update')).toHaveLength(1);
         });
 
         it('should disable textarea when ctrl+enter is pressed', async () => {
@@ -226,7 +240,7 @@ describe('issue_note_form component', () => {
         const saveButton = wrapper.findComponent('.js-vue-issue-save');
         saveButton.vm.$emit('click');
 
-        expect(wrapper.emitted('handleFormUpdate')).toHaveLength(1);
+        expect(wrapper.emitted('handle-form-update')).toHaveLength(1);
       });
 
       it('tracks event when save button is clicked', () => {
@@ -318,7 +332,7 @@ describe('issue_note_form component', () => {
 
         await nextTick();
 
-        expect(wrapper.emitted('handleFormUpdateAddToReview')).toStrictEqual([
+        expect(wrapper.emitted('handle-form-update-add-to-review')).toStrictEqual([
           ['Foo', false, wrapper.vm.$refs.editNoteForm, expect.any(Function)],
         ]);
       });
@@ -331,7 +345,7 @@ describe('issue_note_form component', () => {
 
         await nextTick();
 
-        expect(wrapper.emitted('handleFormUpdate')).toHaveLength(1);
+        expect(wrapper.emitted('handle-form-update')).toHaveLength(1);
       });
     });
 
@@ -350,8 +364,8 @@ describe('issue_note_form component', () => {
 
         findAddToStartReviewButton().trigger('click');
 
-        expect(notesEventHub.$emit).toHaveBeenCalledWith('noteFormAddToReview', {
-          name: 'noteFormAddToReview',
+        expect(notesEventHub.$emit).toHaveBeenCalledWith('note-form-add-to-review', {
+          name: 'note-form-add-to-review',
         });
       });
 
@@ -364,8 +378,8 @@ describe('issue_note_form component', () => {
 
         findAddToStartReviewButton().trigger('click');
 
-        expect(notesEventHub.$emit).toHaveBeenCalledWith('noteFormStartReview', {
-          name: 'noteFormStartReview',
+        expect(notesEventHub.$emit).toHaveBeenCalledWith('note-form-start-review', {
+          name: 'note-form-start-review',
         });
       });
     });

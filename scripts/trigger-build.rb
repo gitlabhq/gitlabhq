@@ -206,8 +206,6 @@ module Trigger
   class CNG < Base
     TriggerRefBranchCreationFailed = Class.new(StandardError)
 
-    DEFAULT_DEBIAN_IMAGE = "debian:bookworm-slim"
-    DEFAULT_ALPINE_IMAGE = "alpine:3.20"
     DEFAULT_SKIPPED_JOBS = %w[final-images-listing].freeze
     DEFAULT_SKIPPED_JOB_REGEX = "/^(#{DEFAULT_SKIPPED_JOBS.join('|')})$/".freeze
     STABLE_BASE_JOBS = %w[alpine-stable debian-stable].freeze
@@ -259,7 +257,7 @@ module Trigger
 
     def assets_tag_variable
       tag = ENV['GLCI_ASSETS_IMAGE_TAG']
-      return { 'GITLAB_ASSETS_TAG' => tag } unless tag.nil? || tag.empty?
+      return { 'GITLAB_ASSETS_TAG' => tag } unless tag.nil? || tag.empty? || tag.start_with?('$')
 
       logger.warn("No image tag found in GLCI_ASSETS_IMAGE_TAG environment variable, enabling asset compilation in CNG pipeline")
       { 'COMPILE_ASSETS' => 'true' }
@@ -329,8 +327,12 @@ module Trigger
         "EE_PIPELINE" => Trigger.ee? ? "true" : nil, # Always set a value, even an empty string, so that the downstream pipeline can correctly check it.
         "FULL_RUBY_VERSION" => RUBY_VERSION,
         "SKIP_JOB_REGEX" => DEFAULT_SKIPPED_JOB_REGEX,
-        "DEBIAN_IMAGE" => DEFAULT_DEBIAN_IMAGE, # Make sure default values are always set to not end up as empty string
-        "ALPINE_IMAGE" => DEFAULT_ALPINE_IMAGE, # Make sure default values are always set to not end up as empty string
+        # DEBIAN_IMAGE and ALPINE_IMAGE are intentionally not set here. When the
+        # redundant-job check runs, #variables sets them (pinned to a digest) from
+        # CNG's ci_files/variables.yml. Otherwise they must be left unset so the
+        # downstream CNG pipeline uses its own variables.yml as the source of truth.
+        # Sending a stale hardcoded default here would override CNG and build the
+        # wrong base image (e.g. bookworm after CNG moved to trixie).
         **default_build_vars,
         **assets_tag_variable
       }
@@ -371,10 +373,21 @@ module Trigger
     # @return [Hash]
     def default_build_vars
       @default_build_vars ||= {
-        "CONTAINER_VERSION_SUFFIX" => ENV.fetch("CI_PROJECT_PATH_SLUG", "upstream-trigger"),
+        "CONTAINER_VERSION_SUFFIX" => container_version_suffix,
         "CACHE_BUSTER" => "false",
         "ARCH_LIST" => ENV.fetch("ARCH_LIST", "amd64")
       }
+    end
+
+    # Suffix added to every container version this script works out
+    #
+    # The tag ignores which assets were baked into the image, so two builds of the same commit
+    # would otherwise share one image. A build that needs its own images sets this to stay apart.
+    #
+    # @return [String]
+    def container_version_suffix
+      Trigger.non_empty_variable_value("CONTAINER_VERSION_SUFFIX") ||
+        ENV.fetch("CI_PROJECT_PATH_SLUG", "upstream-trigger")
     end
 
     # Skip redundant build jobs by calculating if container images are already present in the registry

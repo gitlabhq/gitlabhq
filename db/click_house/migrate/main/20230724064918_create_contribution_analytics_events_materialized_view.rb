@@ -24,7 +24,7 @@ class CreateContributionAnalyticsEventsMaterializedView < ClickHouse::Migration
 
   def down
     execute <<~SQL
-      DROP VIEW contribution_analytics_events_mv
+      DROP VIEW IF EXISTS contribution_analytics_events_mv
     SQL
   end
 end

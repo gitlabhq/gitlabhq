@@ -7,7 +7,7 @@ title: SQL views
 
 ## Overview
 
-At GitLab, we use SQL views as an abstraction layer over PostgreSQL's system catalogs (`pg_*` tables). This makes it easier to query the system catalogs from Rails.
+At GitLab, we use SQL views as an abstraction layer over PostgreSQL system catalogs (`pg_*` tables). This makes it easier to query the system catalogs from Rails.
 
 ## Example
 
@@ -27,7 +27,7 @@ module Gitlab
 end
 ```
 
-This allows us to manage database maintenance tasks through Ruby code:
+This means we can manage database maintenance tasks through Ruby code:
 
 ```ruby
 Gitlab::Database::PostgresSequence.by_table_name('web_hook_logs')
@@ -44,10 +44,10 @@ Gitlab::Database::PostgresSequence.by_table_name('web_hook_logs')
 
 Using these views provides several advantages:
 
-1. **ActiveRecord Integration**: Complex PostgreSQL metadata queries are wrapped in familiar ActiveRecord models
-1. **Maintenance Automation**: Enables automated database maintenance tasks through Ruby code
-1. **Monitoring**: Simplifies database health monitoring and metrics collection
-1. **Consistency**: Provides a standardized interface for database operations
+1. **ActiveRecord integration**: Complex PostgreSQL metadata queries are wrapped in familiar ActiveRecord models.
+1. **Maintenance automation**: Enables automated database maintenance tasks through Ruby code.
+1. **Monitoring**: Simplifies database health monitoring and metrics collection.
+1. **Consistency**: Provides a standardized interface for database operations.
 
 ## Drawbacks
 
@@ -76,7 +76,7 @@ RSpec.describe Gitlab::Database::PostgresSequence do
 end
 ```
 
-## Further Reading
+## Further reading
 
 - [PostgreSQL System Catalogs](https://www.postgresql.org/docs/16/catalogs.html)
 - [PostgreSQL Views](https://www.postgresql.org/docs/16/sql-createview.html)

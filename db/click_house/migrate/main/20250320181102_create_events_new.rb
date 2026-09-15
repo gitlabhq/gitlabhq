@@ -3,7 +3,7 @@
 class CreateEventsNew < ClickHouse::Migration
   def up
     execute <<-SQL
-      CREATE TABLE events_new (
+      CREATE TABLE IF NOT EXISTS events_new (
         id Int64 DEFAULT 0,
         path String DEFAULT '0/',
         author_id UInt64 DEFAULT 0,

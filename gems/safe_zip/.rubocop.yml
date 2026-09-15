@@ -1,6 +1,5 @@
 inherit_from:
   - ../config/rubocop.yml
-  - .rubocop_todo.yml
 
 # Configuration parameters: AllowSubject.
 RSpec/MultipleMemoizedHelpers:

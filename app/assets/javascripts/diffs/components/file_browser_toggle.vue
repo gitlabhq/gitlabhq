@@ -1,7 +1,7 @@
 <script>
 import { GlAnimatedSidebarIcon, GlButton, GlTooltip } from '@gitlab/ui';
 import { mapActions, mapState } from 'pinia';
-import { shouldDisableShortcuts } from '~/behaviors/shortcuts/shortcuts_toggle';
+import { keyboardShortcutsDisabled } from '~/behaviors/shortcuts/shortcuts_disabled';
 import { __ } from '~/locale';
 import {
   keysFor,
@@ -21,13 +21,20 @@ export default {
     GlTooltip,
     Shortcut,
   },
+  props: {
+    bindFocusShortcut: {
+      type: Boolean,
+      required: false,
+      default: true,
+    },
+  },
   computed: {
     ...mapState(useFileBrowser, ['fileBrowserVisible']),
     toggleFileBrowserShortcutKey() {
       return this.shortcutsEnabled ? keysFor(MR_TOGGLE_FILE_BROWSER)[0] : null;
     },
     shortcutsEnabled() {
-      return !shouldDisableShortcuts();
+      return !keyboardShortcutsDisabled();
     },
     toggleFileBrowserTitle() {
       return this.fileBrowserVisible ? __('Hide file browser') : __('Show file browser');
@@ -38,13 +45,17 @@ export default {
   },
   mounted() {
     if (this.shortcutsEnabled) {
-      Mousetrap.bind(keysFor(MR_FOCUS_FILE_BROWSER), this.focusFileBrowser);
+      if (this.bindFocusShortcut) {
+        Mousetrap.bind(keysFor(MR_FOCUS_FILE_BROWSER), this.focusFileBrowser);
+      }
       Mousetrap.bind(keysFor(MR_TOGGLE_FILE_BROWSER), this.toggleFileBrowserVisibility);
     }
   },
   beforeDestroy() {
     if (this.shortcutsEnabled) {
-      Mousetrap.unbind(keysFor(MR_FOCUS_FILE_BROWSER));
+      if (this.bindFocusShortcut) {
+        Mousetrap.unbind(keysFor(MR_FOCUS_FILE_BROWSER));
+      }
       Mousetrap.unbind(keysFor(MR_TOGGLE_FILE_BROWSER));
     }
   },
@@ -53,13 +64,13 @@ export default {
       'toggleFileBrowserVisibility',
       'setFileBrowserVisibility',
       'initFileBrowserVisibility',
+      'requestSearchFocus',
     ]),
-    async focusFileBrowser(event) {
+    focusFileBrowser(event) {
       // event is empty when testing using Mousetrap.trigger
       event?.preventDefault?.();
       this.setFileBrowserVisibility(true);
-      await this.$nextTick();
-      document.querySelector('#diff-tree-search').focus();
+      this.requestSearchFocus();
     },
   },
 };

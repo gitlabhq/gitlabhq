@@ -50,7 +50,7 @@ RSpec.describe "Pages with Let's Encrypt", :https_pages_enabled, feature_categor
       expect(page).to have_selector '[data-testid="crud-title"]', text: 'Certificate'
       expect(page).to have_text domain.subject
 
-      find('.js-auto-ssl-toggle-container .js-project-feature-toggle button').click
+      within('.js-auto-ssl-toggle-container .js-project-feature-toggle') { click_button }
 
       expect(find("#pages_domain_auto_ssl_enabled", visible: false).value).to eq 'true'
       expect(page).not_to have_selector '[data-testid="crud-title"]', text: 'Certificate'
@@ -78,7 +78,7 @@ RSpec.describe "Pages with Let's Encrypt", :https_pages_enabled, feature_categor
       expect(page).not_to have_field 'Certificate (PEM)', type: 'textarea'
       expect(page).not_to have_field 'Key (PEM)', type: 'textarea'
 
-      find('.js-auto-ssl-toggle-container .js-project-feature-toggle button').click
+      within('.js-auto-ssl-toggle-container .js-project-feature-toggle') { click_button }
 
       expect(find("#pages_domain_auto_ssl_enabled", visible: false).value).to eq 'false'
       expect(page).to have_field 'Certificate (PEM)', type: 'textarea'
@@ -135,21 +135,21 @@ RSpec.describe "Pages with Let's Encrypt", :https_pages_enabled, feature_categor
     context 'when certificate is provided by user' do
       let(:domain) { create(:pages_domain, project: project, auto_ssl_enabled: false) }
 
-      it 'user sees certificate subject',
-        quarantine: 'https://gitlab.com/gitlab-org/quality/test-failure-issues/-/work_items/43890' do
+      it 'shows the certificate subject for a user-provided certificate' do
         visit project_pages_domain_path(project, domain)
 
         expect(page).to have_selector '[data-testid="crud-title"]', text: 'Certificate'
         expect(page).to have_text domain.subject
       end
 
-      it 'user can delete the certificate', :js,
-        quarantine: 'https://gitlab.com/gitlab-org/quality/test-failure-issues/-/work_items/43890' do
+      it 'clears the PEM fields after the certificate is removed', :js do
         visit project_pages_domain_path(project, domain)
 
         expect(page).to have_selector '[data-testid="crud-title"]', text: 'Certificate'
         expect(page).to have_text domain.subject
-        within_testid('crud-body') { find_by_testid('remove-certificate').click }
+
+        within_testid('crud-body') { click_link 'Remove certificate' }
+
         accept_gl_confirm(button_text: 'Remove certificate')
         expect(page).to have_field 'Certificate (PEM)', with: ''
         expect(page).to have_field 'Key (PEM)', with: ''

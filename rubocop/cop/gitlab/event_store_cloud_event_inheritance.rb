@@ -36,7 +36,7 @@ module RuboCop
         MSG = 'Inherit from `Gitlab::EventStore::CloudEvent` (or a descendant) instead of ' \
           '`Gitlab::EventStore::Event`. ' \
           'All events must comply with the CloudEvents spec. ' \
-          'See https://docs.gitlab.com/ee/development/eventstore/'
+          'See https://docs.gitlab.com/development/eventstore/'
 
         # @!method inherits_from_event_store_event?(node)
         def_node_matcher :inherits_from_event_store_event?, <<~PATTERN

@@ -9,9 +9,9 @@ RSpec.describe Sidebars::YourWork::Menus::OrganizationsMenu, feature_category: :
   subject(:menu) { described_class.new(context) }
 
   describe '#render?' do
-    context 'when `ui_for_organizations` feature flag is disabled' do
+    context 'when `your_work_sidebar_org_menu_item` organization flag is disabled' do
       before do
-        stub_feature_flags(ui_for_organizations: false)
+        stub_organization_release(your_work_sidebar_org_menu_item: false)
       end
 
       it 'returns false' do
@@ -19,7 +19,7 @@ RSpec.describe Sidebars::YourWork::Menus::OrganizationsMenu, feature_category: :
       end
     end
 
-    context 'when `ui_for_organizations` feature flag is enabled' do
+    context 'when `your_work_sidebar_org_menu_item` organization flag is enabled' do
       context 'when `current_user` is not available' do
         let(:user) { nil }
 

@@ -196,6 +196,41 @@ RSpec.describe Gitlab::Auth::Identity, :request_store, feature_category: :system
         expect(found_primary_user).to eq(primary_user)
       end
     end
+
+    context 'when several primary users are linked to the same scoped user' do
+      let(:authenticated_primary_user) { create(:user, :service_account, composite_identity_enforced: true) }
+
+      before do
+        primary_user.update!(composite_identity_enforced: true)
+        described_class.new(primary_user).link!(scoped_user, context: :permission_check)
+        described_class.new(authenticated_primary_user).link!(scoped_user, context: :authentication)
+      end
+
+      it 'returns the authenticated primary user rather than an incidentally linked one' do
+        expect(found_primary_user).to eq(authenticated_primary_user)
+      end
+    end
+  end
+
+  describe '.currently_linked' do
+    context 'when the store holds a linked user but no last-linked pointer' do
+      before do
+        primary_user.update!(composite_identity_enforced: true)
+        store_key = format(described_class::COMPOSITE_IDENTITY_KEY_FORMAT, primary_user.id)
+        Gitlab::SafeRequestStore.store[described_class::COMPOSITE_IDENTITY_USERS_KEY] = Set.new([primary_user])
+        Gitlab::SafeRequestStore.store[store_key] = scoped_user
+      end
+
+      it 'falls back to the only linked user' do
+        expect(described_class.currently_linked.primary_user).to eq(primary_user)
+      end
+    end
+
+    context 'when nothing is linked' do
+      it 'returns nil' do
+        expect(described_class.currently_linked).to be_nil
+      end
+    end
   end
 
   describe '.fabricate' do
@@ -447,13 +482,34 @@ RSpec.describe Gitlab::Auth::Identity, :request_store, feature_category: :system
       end
     end
 
-    context 'when a primary user is found but currently_linked returns nil' do
+    context 'when another service account is authenticated for a different scoped user' do
+      let(:permission_check_primary_user) { create(:user, :service_account, composite_identity_enforced: true) }
+      let(:authenticated_primary_user) { create(:user, :service_account, composite_identity_enforced: true) }
+      let(:other_scoped_user) { create(:user) }
+
+      before do
+        described_class.new(permission_check_primary_user).link!(scoped_user, context: :permission_check)
+        described_class.new(authenticated_primary_user).link!(other_scoped_user, context: :authentication)
+      end
+
+      it 'attributes the incidentally linked scoped user to themselves' do
+        expect(described_class.resolve_composite_identity_actor(scoped_user)).to eq(scoped_user)
+      end
+
+      it 'attributes the authenticated scoped user to the service account' do
+        expect(described_class.resolve_composite_identity_actor(other_scoped_user))
+          .to eq(authenticated_primary_user)
+      end
+    end
+
+    context 'when the primary user has no link data' do
       let(:current_user) { scoped_user }
 
       before do
         primary_user.update!(composite_identity_enforced: true)
-        described_class.link_from_scoped_user_id(primary_user, scoped_user.id, context: :authentication)
-        allow(described_class).to receive(:currently_linked).and_return(nil)
+        allow(described_class).to receive(:find_primary_user_by_scoped_user_id)
+                                   .with(current_user.id)
+                                   .and_return(primary_user)
       end
 
       it 'returns the current user' do
@@ -535,16 +591,105 @@ RSpec.describe Gitlab::Auth::Identity, :request_store, feature_category: :system
     end
 
     context 'when a second service account is linked with permission_check context' do
-      let(:another_primary_user) { create(:user, :service_account) }
+      let(:another_primary_user) { create(:user, :service_account, composite_identity_enforced: true) }
       let(:another_scoped_user) { create(:user) }
 
       before do
         identity.link!(scoped_user, context: :permission_check)
       end
 
-      it 'raises TooManyIdentitiesLinkedError' do
+      it 'does not raise, and the authenticated identity is the one that acts' do
         expect { described_class.new(another_primary_user).link!(another_scoped_user, context: :authentication) }
+          .not_to raise_error
+
+        expect(described_class.currently_linked.primary_user).to eq(another_primary_user)
+      end
+
+      it 'allows further permission_check links for other service accounts' do
+        third_primary_user = create(:user, :service_account, composite_identity_enforced: true)
+
+        expect { described_class.new(third_primary_user).link!(scoped_user, context: :permission_check) }
+          .not_to raise_error
+
+        expect(described_class.new(primary_user)).to be_linked
+        expect(described_class.new(third_primary_user)).to be_linked
+      end
+    end
+
+    context 'when an authenticated identity is linked before another service account' do
+      let(:another_primary_user) { create(:user, :service_account, composite_identity_enforced: true) }
+
+      before do
+        primary_user.update!(composite_identity_enforced: true)
+        identity.link!(scoped_user, context: :authentication)
+      end
+
+      it 'keeps the authenticated identity as the one that acts' do
+        described_class.new(another_primary_user).link!(scoped_user, context: :permission_check)
+
+        expect(described_class.currently_linked.primary_user).to eq(primary_user)
+        expect(described_class.resolve_composite_identity_actor(scoped_user)).to eq(primary_user)
+      end
+
+      it 'does not let a rejected authentication link escalate an existing permission_check link' do
+        described_class.new(another_primary_user).link!(scoped_user, context: :permission_check)
+
+        expect { described_class.new(another_primary_user).link!(scoped_user, context: :authentication) }
           .to raise_error(described_class::TooManyIdentitiesLinkedError)
+
+        expect(described_class.new(another_primary_user).link_context).to eq(:permission_check)
+      end
+    end
+
+    context 'when a service account upgrades a permission_check link by authenticating' do
+      before do
+        primary_user.update!(composite_identity_enforced: true)
+        identity.link!(scoped_user, context: :permission_check)
+      end
+
+      it 'records the authentication context' do
+        identity.link!(scoped_user, context: :authentication)
+
+        expect(identity.link_context).to eq(:authentication)
+        expect(described_class.currently_linked.primary_user).to eq(primary_user)
+      end
+    end
+
+    context 'when the same service account re-links with authentication context' do
+      before do
+        primary_user.update!(composite_identity_enforced: true)
+        identity.link!(scoped_user, context: :authentication)
+      end
+
+      it 'is idempotent' do
+        expect { described_class.new(primary_user).link!(scoped_user, context: :authentication) }
+          .not_to raise_error
+      end
+    end
+
+    context 'when a raised TooManyIdentitiesLinkedError has already been rescued' do
+      let(:another_primary_user) { create(:user, :service_account, composite_identity_enforced: true) }
+      let(:third_primary_user) { create(:user, :service_account, composite_identity_enforced: true) }
+
+      before do
+        primary_user.update!(composite_identity_enforced: true)
+        identity.link!(scoped_user, context: :authentication)
+
+        begin
+          described_class.new(another_primary_user).link!(scoped_user, context: :authentication)
+        rescue described_class::TooManyIdentitiesLinkedError
+          nil
+        end
+      end
+
+      it 'does not leave the rejected identity linked' do
+        expect(described_class.new(another_primary_user)).not_to be_linked
+        expect(described_class.currently_linked.primary_user).to eq(primary_user)
+      end
+
+      it 'does not poison later permission_check links' do
+        expect { described_class.new(third_primary_user).link!(scoped_user, context: :permission_check) }
+          .not_to raise_error
       end
     end
 

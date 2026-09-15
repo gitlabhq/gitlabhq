@@ -72,7 +72,7 @@ categories and scope by those values, but you cannot scope by custom categories.
 | `match_mode` | `string` | `all`, `any` | [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/569793) in GitLab 18.10. Determines how the policy handles multiple scope conditions. Use `all` (default) to require that all conditions match, or `any` to require that at least one condition matches. |
 | `compliance_frameworks` | `array`  | Not applicable           | List of IDs of the compliance frameworks in scope for enforcement, in an array of objects with key `id`. |
 | `projects`              | `object` | `including`, `excluding` | Use `excluding:` or `including:` then list the IDs of the projects you wish to include or exclude, in an array of objects with key `id`. You can also exclude projects by type using `type: personal` for personal projects or `type: archived` for archived projects. |
-| `groups`                | `object` | `including`              | Use `including:` then list the IDs of the groups you wish to include, in an array of objects with key `id`. Only groups linked to the same security policy project can be listed in the policy. |
+| `groups`                | `object` | `including`, `excluding` | Use `excluding:` or `including:` then list the IDs of the groups you wish to include or exclude, in an array of objects with key `id`. Only groups linked to the same security policy project can be listed in the policy. |
 | `business_impact` | `object` | `including`, `excluding` | [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/227155) in GitLab 18.11 with a flag named `security_attributes_policy_scope` flag. Enabled by default. List the IDs of the Business Impact [security attribute](../attributes/_index.md) values to include or exclude, in an array of objects with key `id`. |
 | `application` | `object` | `including`, `excluding` | [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/227155) in GitLab 18.11 with a flag named `security_attributes_policy_scope` flag. Enabled by default. List the IDs of the Application [security attribute](../attributes/_index.md) values to include or exclude, in an array of objects with key `id`. |
 | `business_unit` | `object` | `including`, `excluding` | [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/227155) in GitLab 18.11 with a flag named `security_attributes_policy_scope` flag. Enabled by default. List the IDs of the Business Unit [security attribute](../attributes/_index.md) values to include or exclude, in an array of objects with key `id`. |
@@ -307,7 +307,7 @@ When specifying branch names in a policy, use a generic category of protected br
 **default branch** or **all protected branches**, not individual branch names.
 
 A policy is enforced on a project only if the specified branch exists in that project. For example,
-if your policy enforces rules on branch `main` but some projects in scope are using `production` as
+if your policy enforces rules on branch `main`, but some projects in scope are using `production` as
 their default branch, the policy is not applied for the latter.
 
 ### Push rules
@@ -389,6 +389,15 @@ Use the policy editor to create, edit, and delete policies:
 
    If you are a project owner and a security policy project is not associated with this project,
    a security policy project is created and linked to this project when the merge request is created.
+
+> [!warning]
+> GitLab synchronizes policy changes only when you merge a merge request into the security policy
+> project.
+> If you edit the `policy.yml` file directly, for example with a Git commit, the Commits API, or
+> an automated script, and push the change to the default branch without a merge request, GitLab
+> does not synchronize the policy.
+> To ensure your changes take effect, use the policy editor, or open and merge a merge request for
+> any direct edits to `policy.yml`.
 
 ### Standard and advanced editor layouts
 
@@ -538,7 +547,7 @@ If the scheduled pipelines are not running as configured:
 
 #### Policy jobs failing
 
-If the policy job are failing:
+If the policy jobs are failing:
 
 - Verify the bot has access to required CI/CD variables.
 - Check that referenced CI/CD configuration files exist and are accessible.

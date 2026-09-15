@@ -1,0 +1,9 @@
+---
+migration_job_name: CleanupWebHookLogsDailyShardingKeyOrphans
+description: Deletes web_hook_logs_daily rows violating check_19dc80d658 whose parent web_hook was deleted, so the constraint can be validated
+feature_category: webhooks
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/247913
+milestone: '19.3'
+queued_migration_version: 20260804151018
+finalized_by: # version of the migration that finalized this BBM
+gitlab_schema: gitlab_main_org

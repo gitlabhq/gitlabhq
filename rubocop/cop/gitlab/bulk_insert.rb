@@ -6,7 +6,7 @@ module RuboCop
       # Cop that disallows the use of `legacy_bulk_insert`, in favour of using
       # the `BulkInsertSafe` module.
       class BulkInsert < RuboCop::Cop::Base
-        MSG = 'Use the `BulkInsertSafe` concern, instead of using `LegacyBulkInsert.bulk_insert`. See https://docs.gitlab.com/ee/development/database/insert_into_tables_in_batches.html'
+        MSG = 'Use the `BulkInsertSafe` concern, instead of using `LegacyBulkInsert.bulk_insert`. See https://docs.gitlab.com/development/database/insert_into_tables_in_batches/'
 
         # @!method raw_union?(node)
         def_node_matcher :raw_union?, <<~PATTERN

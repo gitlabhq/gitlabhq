@@ -2,10 +2,10 @@
 
 require 'spec_helper'
 
-RSpec.describe Deployment, feature_category: :continuous_delivery do
+RSpec.describe Deployment, :with_current_organization, feature_category: :continuous_delivery do
   subject { build(:deployment) }
 
-  let_it_be(:project) { create(:project, :repository) }
+  let_it_be(:project) { create(:project, :repository, organization: current_organization) }
   let_it_be_with_reload(:environment) { create(:environment, project: project) }
   let_it_be(:pipeline) { create(:ci_pipeline, project: project) }
   let_it_be(:pipeline_b) { create(:ci_pipeline, project: project) }
@@ -67,7 +67,7 @@ RSpec.describe Deployment, feature_category: :continuous_delivery do
   describe 'modules' do
     it_behaves_like 'AtomicInternalId' do
       # Use a fresh project specifically for these IID tests
-      let_it_be(:iid_test_project) { create(:project, :repository) }
+      let_it_be(:iid_test_project) { create(:project, :repository, organization: current_organization) }
       let_it_be(:iid_test_environment) { create(:environment, project: iid_test_project) }
       let_it_be(:iid_test_deployable) { create(:ci_build, project: iid_test_project) }
 
@@ -562,7 +562,7 @@ RSpec.describe Deployment, feature_category: :continuous_delivery do
     describe '.for_environment_name' do
       subject { described_class.for_environment_name(project, environment_name) }
 
-      let_it_be(:other_project) { create(:project, :repository) }
+      let_it_be(:other_project) { create(:project, :repository, organization: current_organization) }
       let_it_be(:other_production) { create(:environment, :production, project: other_project) }
 
       let(:environment_name) { production.name }

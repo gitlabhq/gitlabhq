@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Gitlab::Diff::Suggestion do
+RSpec.describe Gitlab::Diff::Suggestion, feature_category: :code_review_workflow do
   shared_examples 'correct suggestion raw content' do
     it 'returns correct raw data' do
       expect(suggestion.to_hash).to include(

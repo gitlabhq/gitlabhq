@@ -163,5 +163,138 @@ RSpec.describe Admin::UserActionsHelper, feature_category: :user_management do
 
       it { is_expected.to match_array([]) }
     end
+
+    context 'for the remove_from_organization action' do
+      let_it_be(:organization) { create(:organization) }
+
+      let_it_be(:user, freeze: false) do
+        create(:user, organization: create(:organization), organizations: [organization])
+      end
+
+      context 'when on the organization admin page' do
+        before do
+          allow(helper).to receive(:options).and_return(authorization_context: organization)
+        end
+
+        context 'for the edit action' do
+          before do
+            allow(current_user).to receive(:can?).and_call_original
+            allow(current_user).to receive(:can?)
+              .with(:delete_organization_user, an_instance_of(Organizations::OrganizationUser))
+              .and_return(false)
+          end
+
+          context 'when the current user can update the organization user' do
+            before do
+              allow(current_user).to receive(:can?)
+                .with(:update_organization_user, an_instance_of(Organizations::OrganizationUser))
+                .and_return(true)
+            end
+
+            it { is_expected.to include('edit') }
+          end
+
+          context 'when the current user cannot update the organization user' do
+            before do
+              allow(current_user).to receive(:can?)
+                .with(:update_organization_user, an_instance_of(Organizations::OrganizationUser))
+                .and_return(false)
+            end
+
+            it { is_expected.not_to include('edit') }
+          end
+        end
+
+        context 'when the current user can remove the organization user' do
+          before do
+            allow(current_user).to receive(:can?).and_call_original
+            allow(current_user).to receive(:can?)
+              .with(:delete_organization_user, an_instance_of(Organizations::OrganizationUser))
+              .and_return(true)
+          end
+
+          it { is_expected.to include('remove_from_organization') }
+        end
+
+        context 'when the current user cannot remove the organization user' do
+          before do
+            allow(current_user).to receive(:can?).and_call_original
+            allow(current_user).to receive(:can?)
+              .with(:delete_organization_user, an_instance_of(Organizations::OrganizationUser))
+              .and_return(false)
+          end
+
+          it { is_expected.not_to include('remove_from_organization') }
+        end
+
+        context 'when the user does not belong to the organization' do
+          let_it_be(:user, freeze: false) { create(:user) }
+
+          it { is_expected.not_to include('remove_from_organization') }
+        end
+
+        context 'when driven by the real :delete_organization_user ability' do
+          before do
+            allow(helper).to receive(:can?).and_call_original
+            allow(helper).to receive(:can?).with(current_user, :admin_all_resources).and_return(true)
+          end
+
+          context 'when the current user is an organization owner' do
+            let_it_be(:current_user) do
+              create(:organization_owner, organization: organization).user
+            end
+
+            it { is_expected.to include('remove_from_organization') }
+          end
+
+          context 'when the current user is not an organization owner' do
+            let_it_be(:current_user) { create(:user) }
+
+            it { is_expected.not_to include('remove_from_organization') }
+          end
+        end
+      end
+
+      context 'when not on the organization admin page' do
+        before do
+          allow(helper).to receive(:options).and_return(authorization_context: nil)
+        end
+
+        it { is_expected.not_to include('remove_from_organization') }
+      end
+    end
+  end
+
+  describe '#organization_user_gid', :enable_admin_mode do
+    let_it_be(:organization) { create(:organization) }
+    let_it_be(:user) { create(:user, organizations: [organization]) }
+
+    subject(:gid) { helper.organization_user_gid(user) }
+
+    context 'when on the organization admin page' do
+      before do
+        allow(helper).to receive(:options).and_return(authorization_context: organization)
+      end
+
+      it 'returns the organization user global ID' do
+        organization_user = organization.organization_users.by_user(user).first
+
+        expect(gid).to eq(organization_user.to_global_id.to_s)
+      end
+
+      context 'when the user does not belong to the organization' do
+        let_it_be(:user) { create(:user) }
+
+        it { is_expected.to be_nil }
+      end
+    end
+
+    context 'when not on the organization admin page' do
+      before do
+        allow(helper).to receive(:options).and_return(authorization_context: nil)
+      end
+
+      it { is_expected.to be_nil }
+    end
   end
 end

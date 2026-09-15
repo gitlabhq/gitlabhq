@@ -21,7 +21,7 @@ that are decoupled from the business logic of GitLab and can be developed separa
 The best place in a Rails codebase with opportunities to extract new gems
 is the [lib/](https://gitlab.com/gitlab-org/gitlab/-/tree/master/lib/) folder.
 
-Our **lib/** folder is a mix of code that is generic/universal, GitLab-specific, and tightly integrated with the rest of the codebase.
+Our `lib/` folder is a mix of code that is generic/universal, GitLab-specific, and tightly integrated with the rest of the codebase.
 
 In order to decide whether to extract part of the codebase as a Gem, ask yourself the following questions:
 
@@ -29,7 +29,7 @@ In order to decide whether to extract part of the codebase as a Gem, ask yoursel
 1. Do I expect it to be used internally outside of the Monolith?
 1. Is this useful for the wider community that we should consider releasing as a separate component?
 
-If the answer is **Yes** for any of the questions above, you should strongly consider creating a new Gem.
+If the answer is yes for any of the questions above, you should strongly consider creating a new Gem.
 
 You can always start by creating a new Gem [in the same repository](#in-the-same-repo) and later evaluate whether to migrate it to a separate repository, when it is intended
 to be used by a wider community.
@@ -69,7 +69,7 @@ Examples of existing gems:
 
 ## In the same repo
 
-**When extracting Gems from existing codebase, put them in `gems/` of the GitLab monorepo**
+When extracting Gems from existing codebase, put them in `gems/` of the GitLab monorepo.
 
 That gives us the advantages of gems (modular code, quicker to run tests in development).
 and prevents complexity (coordinating changes across repositories, new permissions, multiple projects, etc.).
@@ -319,7 +319,7 @@ to store them in monorepo:
 - The `vendor/gems/` MUST NOT be used for storing in-house gems.
 - The `vendor/gems/` MAY accept fixes to make them buildable with GitLab monorepo
 - The `gems/` MUST be used for storing all in-house gems that are part of GitLab monorepo.
-- The **RubyGems** MUST be used for all externally stored dependencies that are not in `gems/` in GitLab monorepo.
+- The RubyGems MUST be used for all externally stored dependencies that are not in `gems/` in GitLab monorepo.
 
 ### Handling of an existing gems in `vendor/gems`
 
@@ -349,7 +349,7 @@ to store them in monorepo:
 
 ### Reserve a gem name
 
-We may reserve gem names as a precaution **before publishing any public code that contains a new gem**, to avoid name-squatters taking over the name in RubyGems.
+We may reserve gem names as a precaution before publishing any public code that contains a new gem, to avoid name-squatters taking over the name in RubyGems.
 
 To reserve a gem name, follow the steps to [Create and publish a Ruby gem](#create-and-publish-a-ruby-gem), with the following changes:
 

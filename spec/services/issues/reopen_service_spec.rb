@@ -80,6 +80,8 @@ RSpec.describe Issues::ReopenService, feature_category: :team_planning do
 
       it 'broadcasts namespaceWorkItemChanges for the state change' do
         allow(GitlabSchema.subscriptions).to receive(:trigger)
+        allow(Gitlab::ApplicationRateLimiter).to receive(:peek)
+          .with(:namespace_work_item_changes_broadcast, scope: anything).and_return(false)
         allow(Gitlab::ApplicationRateLimiter).to receive(:throttled?)
           .with(:namespace_work_item_changes_broadcast, scope: anything).and_return(false)
 

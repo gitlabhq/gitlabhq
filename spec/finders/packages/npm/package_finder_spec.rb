@@ -6,7 +6,6 @@ RSpec.describe ::Packages::Npm::PackageFinder, feature_category: :package_regist
   let_it_be_with_reload(:project) { create(:project) }
   let_it_be_with_refind(:package) { create(:npm_package, project: project) }
 
-  let(:project) { package.project }
   let(:package_name) { package.name }
   let(:package_version) { package.version }
   let(:params) { { package_name: package_name, package_version: package_version }.compact }

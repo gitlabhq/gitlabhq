@@ -7,6 +7,8 @@ identifiers:
 additional_properties:
   label:
     description: The type by which the todo list is filtered
+  property:
+    description: The reason by which the todo list is filtered
 product_group: engagement
 product_categories:
 - notifications

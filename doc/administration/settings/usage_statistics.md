@@ -379,7 +379,7 @@ To upload the payload manually:
 1. Select **Upload**.
 
 The uploaded file is encrypted and sent using secure HTTPS protocol. HTTPS creates a secure
-communication channel between web browser and the server, and protects transmitted data against man-in-the-middle attacks.
+communication channel between the web browser and the server, and protects transmitted data against man-in-the-middle attacks.
 
 If there are problems with the manual upload:
 

@@ -5,7 +5,6 @@ pre-merge-checks:
   variables:
     # We use > instead of | because we want the files to be space-separated.
     FILES_TO_DOWNLOAD: >
-      scripts/utils.sh
       scripts/pipeline/pre_merge_checks.rb
   image: ${GITLAB_DEPENDENCY_PROXY_ADDRESS}ruby:${RUBY_VERSION}-alpine3.23
   stage: pre-merge

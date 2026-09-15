@@ -15,13 +15,13 @@ RSpec.describe Sidebars::Projects::Menus::CiCdMenu, feature_category: :navigatio
       let(:user) { nil }
 
       it 'returns false' do
-        expect(subject.render?).to eq false
+        expect(subject.render?).to be false
       end
     end
 
     context 'when user can read builds' do
       it 'returns true' do
-        expect(subject.render?).to eq true
+        expect(subject.render?).to be true
       end
     end
   end

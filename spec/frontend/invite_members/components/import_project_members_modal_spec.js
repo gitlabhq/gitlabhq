@@ -107,9 +107,9 @@ describe('ImportProjectMembersModal', () => {
   const findErrorsIcon = () => wrapper.findComponent(GlIcon);
   const findSeatOveragesAlert = () =>
     wrapper.findByTestId('import-project-members-seat-overages-alert');
-  const findMemberErrorMessage = (element) =>
-    `@${Object.keys(importProjectMembersApiResponse.EXPANDED_IMPORT_ERRORS.message)[element]}: ${
-      Object.values(importProjectMembersApiResponse.EXPANDED_IMPORT_ERRORS.message)[element]
+  const findDistinctErrorMessage = (element) =>
+    `@${Object.keys(importProjectMembersApiResponse.DISTINCT_IMPORT_ERRORS.message)[element]}: ${
+      Object.values(importProjectMembersApiResponse.DISTINCT_IMPORT_ERRORS.message)[element]
     }`;
 
   describe('rendering the modal', () => {
@@ -326,7 +326,7 @@ describe('ImportProjectMembersModal', () => {
         findProjectSelect().vm.$emit('input', projectToBeImported);
       });
 
-      it('displays the error alert', async () => {
+      it('displays the error alert with members grouped by shared message', async () => {
         mockInvitationsApi(
           HTTP_STATUS_CREATED,
           importProjectMembersApiResponse.NO_COLLAPSE_IMPORT_ERRORS,
@@ -338,11 +338,13 @@ describe('ImportProjectMembersModal', () => {
         expect(findMemberErrorAlert().props('title')).toContain(
           'The following 2 out of 2 members could not be added',
         );
-        expect(findMemberErrorAlert().text()).toContain(findMemberErrorMessage(0));
-        expect(findMemberErrorAlert().text()).toContain(findMemberErrorMessage(1));
+        expect(findMemberErrorAlert().text()).toContain(
+          '@bob_smith and @john_smith: Something is wrong for this member.',
+        );
+        expect(wrapper.findAllByTestId('errors-limited-item')).toHaveLength(1);
       });
 
-      it('displays collapse when there are more than 2 errors', async () => {
+      it('groups all members into one entry when they share the same message', async () => {
         mockInvitationsApi(
           HTTP_STATUS_CREATED,
           importProjectMembersApiResponse.EXPANDED_IMPORT_ERRORS,
@@ -351,6 +353,28 @@ describe('ImportProjectMembersModal', () => {
         clickImportButton();
         await waitForPromises();
 
+        expect(findMemberErrorAlert().props('title')).toContain(
+          'The following 4 out of 4 members could not be added',
+        );
+        expect(findMemberErrorAlert().text()).toContain(
+          '@bob_smith, @john_smith, @doug_logan, and @root: Something is wrong for this member.',
+        );
+        expect(wrapper.findAllByTestId('errors-limited-item')).toHaveLength(1);
+        expect(findAccordion().exists()).toBe(false);
+        expect(findMoreInviteErrorsButton().exists()).toBe(false);
+      });
+
+      it('displays collapse when there are more than 2 distinct errors', async () => {
+        mockInvitationsApi(
+          HTTP_STATUS_CREATED,
+          importProjectMembersApiResponse.DISTINCT_IMPORT_ERRORS,
+        );
+
+        clickImportButton();
+        await waitForPromises();
+
+        expect(findMemberErrorAlert().text()).toContain(findDistinctErrorMessage(0));
+        expect(findMemberErrorAlert().text()).toContain(findDistinctErrorMessage(1));
         expect(findAccordion().exists()).toBe(true);
         expect(findMoreInviteErrorsButton().text()).toContain('Show more (2)');
       });
@@ -358,7 +382,7 @@ describe('ImportProjectMembersModal', () => {
       it('toggles the collapse on click', async () => {
         mockInvitationsApi(
           HTTP_STATUS_CREATED,
-          importProjectMembersApiResponse.EXPANDED_IMPORT_ERRORS,
+          importProjectMembersApiResponse.DISTINCT_IMPORT_ERRORS,
         );
 
         clickImportButton();
@@ -373,6 +397,8 @@ describe('ImportProjectMembersModal', () => {
         expect(findMoreInviteErrorsButton().text()).toContain(EXPANDED_ERRORS);
         expect(findErrorsIcon().attributes('class')).toContain('gl-rotate-180');
         expect(findAccordion().attributes('visible')).toBeDefined();
+        expect(findMemberErrorAlert().text()).toContain(findDistinctErrorMessage(2));
+        expect(findMemberErrorAlert().text()).toContain(findDistinctErrorMessage(3));
 
         await findMoreInviteErrorsButton().vm.$emit('click');
 

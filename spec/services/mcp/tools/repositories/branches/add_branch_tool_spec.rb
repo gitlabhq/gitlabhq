@@ -142,7 +142,7 @@ RSpec.describe Mcp::Tools::Repositories::Branches::AddBranchTool, feature_catego
     end
 
     context 'when the user cannot push code' do
-      let_it_be(:outsider) { create(:user) }
+      let_it_be(:outsider) { create(:user, reporter_of: project) }
       let(:tool) { described_class.new(current_user: outsider, params: params) }
 
       it 'returns an error' do

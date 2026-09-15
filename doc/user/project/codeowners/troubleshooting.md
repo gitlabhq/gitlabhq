@@ -46,7 +46,7 @@ How this works:
    merge requests in the project. If the user does not have that permission, show an error.
 1. For each valid group reference, check that the maximum role value is Developer or higher.
    For each group reference that has a value lower than Developer, show an error.
-1. For each valid group reference, check that they group contains at least one user with
+1. For each valid group reference, check that the group contains at least one user with
    permission to approve merge requests. For any group reference containing zero users with
    permission to approve merge requests, show an error.
 
@@ -98,7 +98,7 @@ The workaround is to check that the group or user has been invited to the projec
 
 ## `CODEOWNERS` not updated when user or group names change
 
-When a user or group change their names, the `CODEOWNERS` isn't automatically updated with the new names.
+When a user or group changes their names, the `CODEOWNERS` isn't automatically updated with the new names.
 To enter the new names, you must edit the file.
 
 Organizations using SAML SSO can [set usernames](../../../integration/saml.md#set-a-username) to

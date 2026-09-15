@@ -1,19 +1,6 @@
 import { ACTIVE_CONNECTION_TIME } from '~/clusters_list/constants';
 import { agent, tokens, connections } from '../mocks/apollo';
 
-export const agentConfigurationsResponse = {
-  data: {
-    project: {
-      agentConfigurations: {
-        nodes: [{ agentName: 'installed-agent' }, { agentName: 'configured-agent' }],
-      },
-      clusterAgents: {
-        nodes: [{ name: 'installed-agent' }],
-      },
-    },
-  },
-};
-
 export const connectedTimeNow = new Date();
 export const connectedTimeInactive = new Date(connectedTimeNow.getTime() - ACTIVE_CONNECTION_TIME);
 

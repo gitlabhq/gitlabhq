@@ -1,4 +1,3 @@
-import { GlToast } from '@gitlab/ui';
 import Vue from 'vue';
 // eslint-disable-next-line no-restricted-imports
 import Vuex from 'vuex';
@@ -24,7 +23,6 @@ export const initMembersApp = (el, context, options) => {
 
   Vue.use(Vuex);
   Vue.use(VueApollo);
-  Vue.use(GlToast);
 
   const {
     sourceId,

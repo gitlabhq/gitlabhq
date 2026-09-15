@@ -33,6 +33,16 @@ RSpec.shared_context 'project navbar structure' do
         ]
       },
 
+      if Gitlab.ee?
+        {
+          nav_item: s_('DuoAgentsPlatform|AI'),
+          nav_sub_items: [
+            s_('AICatalog|Agents'),
+            s_('DuoAgentsPlatform|Sessions')
+          ]
+        }
+      end,
+
       {
         nav_item: _('Code'),
         nav_sub_items: [
@@ -90,7 +100,7 @@ RSpec.shared_context 'project navbar structure' do
       {
         nav_item: _('Observe'),
         nav_sub_items: [
-          s_('Observability|Setup')
+          s_('Observability|Observability configuration')
         ]
       },
       {
@@ -182,7 +192,14 @@ RSpec.shared_context 'group navbar structure' do
   let(:observability_nav_item) do
     {
       nav_item: _("Observe"),
-      nav_sub_items: [s_("Observability|O11y service settings"), s_('Observability|Setup')]
+      nav_sub_items: [s_("Observability|O11y service settings"), s_('Observability|Observability configuration')]
+    }
+  end
+
+  let(:duo_agents_nav_item) do
+    {
+      nav_item: s_('DuoAgentsPlatform|AI'),
+      nav_sub_items: [s_('AICatalog|Agents')]
     }
   end
 
@@ -196,6 +213,8 @@ RSpec.shared_context 'group navbar structure' do
         nav_item: _("Plan"),
         nav_sub_items: plan_nav_items
       },
+      # The Duo Agents menu renders only for root groups
+      (duo_agents_nav_item if Gitlab.ee? && group.parent.nil?),
       {
         nav_item: _("Code"),
         nav_sub_items: [_("Merge requests")]
@@ -284,10 +303,13 @@ RSpec.shared_context '"Explore" navbar structure' do
         }
       end,
 
-      {
-        nav_item: _("Analytics dashboards"),
-        nav_sub_items: []
-      },
+      if Gitlab.ee?
+        {
+          nav_item: _("Analytics dashboards"),
+          nav_sub_items: []
+        }
+      end,
+
       {
         nav_item: _("Topics"),
         nav_sub_items: []

@@ -1,5 +1,6 @@
 <script>
 import { GlFormCheckbox, GlTooltipDirective } from '@gitlab/ui';
+import { s__, sprintf } from '~/locale';
 import { I18N_BULK_DELETE_MAX_SELECTED } from '~/ci/artifacts/constants';
 
 export default {
@@ -13,6 +14,10 @@ export default {
   props: {
     hasArtifacts: {
       type: Boolean,
+      required: true,
+    },
+    jobName: {
+      type: String,
       required: true,
     },
     selectedArtifacts: {
@@ -47,6 +52,13 @@ export default {
         ? I18N_BULK_DELETE_MAX_SELECTED
         : '';
     },
+    ariaLabel() {
+      return sprintf(
+        s__('Artifacts|Select artifacts for %{jobName}'),
+        { jobName: this.jobName },
+        false,
+      );
+    },
   },
   methods: {
     handleChange(checked) {
@@ -63,6 +75,7 @@ export default {
   <gl-form-checkbox
     v-gl-tooltip.right
     :title="tooltipText"
+    :aria-label="ariaLabel"
     :disabled="disabled"
     :checked="checked"
     :indeterminate="indeterminate"

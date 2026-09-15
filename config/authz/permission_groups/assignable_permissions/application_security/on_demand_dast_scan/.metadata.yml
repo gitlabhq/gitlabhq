@@ -1,0 +1,4 @@
+---
+name: On-Demand DAST Scan
+description: Grants the ability to <actions> on-demand DAST scans, including their
+  site profiles, scanner profiles, site tokens, and site validations.

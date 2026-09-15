@@ -22,13 +22,19 @@ require 'securerandom'
 
 module Support
   class PerTestCoverageFormatter < RSpec::Core::Formatters::BaseFormatter
-    RSpec::Core::Formatters.register self, :example_finished, :stop
+    RSpec::Core::Formatters.register self, :example_started, :example_finished, :stop
 
     PROJECT_DIR_PREFIX_RE = %r{\A#{Regexp.escape(ENV.fetch('CI_PROJECT_DIR', '/builds/gitlab-org/gitlab'))}/}
 
     def initialize(output)
       super
       @file = nil
+    end
+
+    # Discard coverage accumulated before the example starts (e.g. spec files loaded
+    # between examples when test balancing is enabled) so it is not attributedto this example.
+    def example_started(_notification)
+      Coverage.result(stop: false, clear: true)
     end
 
     def example_finished(notification)

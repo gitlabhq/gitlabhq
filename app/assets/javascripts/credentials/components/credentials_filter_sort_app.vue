@@ -87,8 +87,8 @@ export default {
       :is-ascending="sorting.isAsc"
       :sort-by="sorting.value"
       :sort-options="$options.SORT_OPTIONS"
-      @sortByChange="handleSortChange"
-      @sortDirectionChange="handleSortDirectionChange"
+      @sort-by-change="handleSortChange"
+      @sort-direction-change="handleSortDirectionChange"
     />
   </div>
 </template>

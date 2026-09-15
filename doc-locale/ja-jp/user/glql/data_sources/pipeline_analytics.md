@@ -14,20 +14,22 @@ title: パイプラインアナリティクス
 
 {{< history >}}
 
-- GitLab 19.1で[導入](https://gitlab.com/groups/gitlab-org/-/epics/21212)されました。
+- GitLab 19.1で[導入](https://gitlab.com/groups/gitlab-org/-/work_items/21212)されました。
+- [変更](https://gitlab.com/gitlab-org/glql/-/merge_requests/416)され、GitLab 19.2で進行中のパイプラインを含むすべての状態のパイプラインをカバーするようになりました。
+- GitLab 19.3で設定可能な`granularity`および`quantile`パラメータが[導入](https://gitlab.com/gitlab-org/glql/-/issues/130)されました。
 
 {{< /history >}}
 
-アナリティクスモードは、完了したパイプラインの集計メトリクスを返します。データは通常10分以内に利用可能です。
+アナリティクスモードは、進行中のパイプラインを含むすべての状態のパイプラインに対して集約されたメトリクスを返し、データは通常10分以内に利用可能です。
 
 個々のパイプラインレコードをクエリするには、[パイプライン](pipelines.md)を使用します。
 
 ## 許可されたスコープ {#allowed-scopes}
 
-| スコープ     | 説明                                                                   |
-| --------- | ----------------------------------------------------------------------------- |
-| `project` | 特定のプロジェクトで完了したパイプラインをクエリする。                               |
-| `group`   | グループ内のすべてのプロジェクト（サブグループを含む）で完了したパイプラインをクエリする。 |
+| スコープ     | 説明                                                          |
+| --------- | -------------------------------------------------------------------- |
+| `project` | 特定のプロジェクトのパイプラインをクエリします。                               |
+| `group`   | サブグループを含むグループ内のすべてのプロジェクトのパイプラインをクエリします。 |
 
 ## クエリフィールド {#query-fields}
 
@@ -51,7 +53,6 @@ title: パイプラインアナリティクス
 **ノート**:
 
 - `=`演算子の場合、時間範囲はユーザーのタイムゾーンで00:00から23:59までと見なされます。
-- `>=`および`<=`演算子は、クエリ対象の日付を含みますが、`>`および`<`は含みません。
 
 ### Ref {#ref}
 
@@ -83,7 +84,6 @@ title: パイプラインアナリティクス
 **ノート**:
 
 - `=`演算子の場合、時間範囲はユーザーのタイムゾーンで00:00から23:59までと見なされます。
-- `>=`および`<=`演算子は、クエリ対象の日付を含みますが、`>`および`<`は含みません。
 
 ### ステータス {#status}
 
@@ -91,33 +91,32 @@ title: パイプラインアナリティクス
 
 **指定可能な値の型**:
 
-- `Enum`。次のいずれか: `canceled`、`failed`、`skipped`、または`success`
+- `Enum`（`canceled`、`canceling`、`created`、`failed`、`manual`、`pending`、`preparing`、`running`、`scheduled`、`skipped`、`success`、`waiting_for_callback`、または`waiting_for_resource`）のいずれか。
 - `List`（複数の値には`in`演算子を使用）
 
 ## ディメンション {#dimensions}
 
 | ディメンション   | 名前       | 説明                              |
 | ----------- | ---------- | ---------------------------------------- |
-| 完了日時 | `finished` | 完了日でグループ化します（週単位）。 |
+| 完了日時 | `finished` | 終了日でグループ化します。`daily`、`weekly`、または`monthly`（デフォルト: `weekly`）の[`granularity`パラメータ](../_index.md#field-parameters)を受け入れます。例: `finished(daily)`。 |
 | プロジェクト     | `project`  | プロジェクトでグループ化します。                        |
 | Ref         | `ref`      | Gitブランチまたはタグでグループ化します。        |
 | ソース      | `source`   | パイプラインをトリガーしたものでグループ化します。    |
-| 開始日時  | `started`  | 開始日でグループ化します（週単位）。  |
+| 開始日時  | `started`  | 開始日でグループ化します。`daily`、`weekly`、または`monthly`（デフォルト: `weekly`）の[`granularity`パラメータ](../_index.md#field-parameters)を受け入れます。例: `started(daily)`。 |
 | ステータス      | `status`   | パイプラインのステータスでグループ化します。                |
 
 ## メトリクス {#metrics}
 
-| メトリック            | 名前               | 説明                                       |
-| ----------------- | ------------------ | ------------------------------------------------- |
-| キャンセル率     | `canceledRate`     | キャンセルされたパイプラインの、全パイプラインに対する比率。   |
-| 期間クォンタイル | `durationQuantile` | パイプライン期間の95パーセンタイル値（秒単位）。 |
-| 失敗率      | `failureRate`      | 失敗したパイプラインの、全パイプラインに対する比率。     |
-| スキップ率      | `skippedRate`      | スキップされたパイプラインの、全パイプラインに対する比率。    |
-| 成功率      | `successRate`      | 成功したパイプラインの、全パイプラインに対する比率。 |
-| 合計数       | `totalCount`       | 完了したパイプラインの総数。               |
+パイプラインは、処理を完了し、成功、失敗した、キャンセル済み、またはスキップ済みの最終状態に達したときに完了と見なされます。
 
-> [!note]
-> 日付ディメンションは固定の`weekly`粒度を使用し、`durationQuantile`は固定の0.95クォンタイルを使用します。設定可能な粒度とクォンタイルに関するサポートは、[GLQLイシュー130](https://gitlab.com/gitlab-org/glql/-/work_items/130)で提案されています。
+| メトリック            | 名前               | 説明                                            |
+| ----------------- | ------------------ | ------------------------------------------------------ |
+| キャンセル率     | `canceledRate`     | キャンセルされたパイプラインの、完了したパイプラインに対する比率。    |
+| 期間クォンタイル | `durationQuantile` | パイプラインの継続時間のクォンタイル（秒単位）。`0.01`と`0.99`の間の[`quantile`パラメータ](../_index.md#field-parameters)を受け入れます（デフォルト: `0.95`）。例: `durationQuantile(0.5)`。 |
+| 失敗率      | `failureRate`      | 失敗したパイプラインの、完了したパイプラインに対する比率。      |
+| スキップ率      | `skippedRate`      | スキップされたパイプラインの、完了したパイプラインに対する比率。     |
+| 成功率      | `successRate`      | 成功したパイプラインの、完了したパイプラインに対する比率。  |
+| 合計数       | `totalCount`       | 進行中のものを含む、パイプラインの合計数。 |
 
 ## ソートフィールド {#sort-fields}
 
@@ -150,6 +149,20 @@ title: パイプラインアナリティクス
   dimensions: finished as "Week"
   metrics: totalCount as "Total", durationQuantile as "p95 duration (s)"
   sort: finished desc
+  ```
+  ````
+
+- 週ごとのメディアンおよびp95パイプライン継続時間:
+
+  ````yaml
+  ```glql
+  title: "Median and p95 pipeline duration by week"
+  display: table
+  mode: analytics
+  query: type = Pipeline and project = "gitlab-org/gitlab" and finished >= -90d
+  dimensions: finished(weekly) as "Week", status as "Status"
+  metrics: durationQuantile(0.5) as "Median", durationQuantile(0.95) as "p95", totalCount as "Total"
+  sort: Median desc
   ```
   ````
 

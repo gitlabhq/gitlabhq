@@ -6,6 +6,10 @@ module Resolvers
 
     authorize :read_label
 
+    def self.authorization_scopes
+      super + [:ai_workflows]
+    end
+
     type Types::LabelType.connection_type, null: true
 
     argument :title, GraphQL::Types::String,
@@ -16,6 +20,13 @@ module Resolvers
     argument :search_term, GraphQL::Types::String,
       required: false,
       description: 'Search term to find labels with.'
+
+    argument :fuzzy_search, GraphQL::Types::Boolean,
+      required: false,
+      default_value: false,
+      description: 'Match `searchTerm` fuzzily: labels match when they contain the searched ' \
+        'characters in order, but not necessarily contiguously ' \
+        '(for example, `bugu` matches `bug::ux`). Ignored if using `title`.'
 
     argument :search_in, [Types::Issuables::Labels::SearchFieldListEnum],
       default_value: [:title, :description],

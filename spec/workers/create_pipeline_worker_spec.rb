@@ -128,45 +128,27 @@ RSpec.describe CreatePipelineWorker, feature_category: :pipeline_composition do
         allow(create_pipeline_service).to receive(:execute).and_return(service_response)
       end
 
-      context 'when ci_create_pipeline_worker_retry_on_reference_not_found feature flag is enabled' do
-        before do
-          stub_feature_flags(ci_create_pipeline_worker_retry_on_reference_not_found: project)
+      it 'raises TransientGitalyReadError without logging' do
+        expect(Sidekiq.logger).not_to receive(:warn)
+
+        expect { worker.perform(*push_args) }
+          .to raise_error(described_class::TransientGitalyReadError)
+      end
+
+      context 'when before SHA is not blank' do
+        let(:push_args) do
+          [project.id, user.id, project.default_branch, :push, {}, { 'before' => 'abc123def456abc123def456abc123def456abc1' }]
         end
 
-        it 'raises TransientGitalyReadError without logging' do
-          expect(Sidekiq.logger).not_to receive(:warn)
+        it 'does not raise and logs the error instead' do
+          expect(Sidekiq.logger).to receive(:warn)
 
-          expect { worker.perform(*push_args) }
-            .to raise_error(described_class::TransientGitalyReadError)
-        end
-
-        context 'when before SHA is not blank' do
-          let(:push_args) do
-            [project.id, user.id, project.default_branch, :push, {}, { 'before' => 'abc123def456abc123def456abc123def456abc1' }]
-          end
-
-          it 'does not raise and logs the error instead' do
-            expect(Sidekiq.logger).to receive(:warn)
-
-            expect { worker.perform(*push_args) }.not_to raise_error
-          end
-        end
-
-        context 'when error message is not "Reference not found"' do
-          let(:service_response) { instance_double(ServiceResponse, error?: true, message: 'some other error', payload: pipeline) }
-
-          it 'does not raise and logs the error instead' do
-            expect(Sidekiq.logger).to receive(:warn)
-
-            expect { worker.perform(*push_args) }.not_to raise_error
-          end
+          expect { worker.perform(*push_args) }.not_to raise_error
         end
       end
 
-      context 'when ci_create_pipeline_worker_retry_on_reference_not_found feature flag is disabled' do
-        before do
-          stub_feature_flags(ci_create_pipeline_worker_retry_on_reference_not_found: false)
-        end
+      context 'when error message is not "Reference not found"' do
+        let(:service_response) { instance_double(ServiceResponse, error?: true, message: 'some other error', payload: pipeline) }
 
         it 'does not raise and logs the error instead' do
           expect(Sidekiq.logger).to receive(:warn)

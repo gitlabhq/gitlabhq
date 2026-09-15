@@ -51,6 +51,14 @@ mapping:
   - source: '.gitlab/ci/(?<rest>.+)\.gitlab-ci\.yml'
     test: 'spec/dot_gitlab_ci/rules_spec.rb'
 
+  # The jest per-test-coverage generator mirrors the shard count of
+  # rspec-all frontend_fixture; run its spec when either side changes
+  - source:
+      - '.gitlab/ci/frontend\.gitlab-ci\.yml'
+      - '.gitlab/ci/per_test_coverage/jest_child_pipeline_template\.erb'
+      - 'scripts/generate_jest_pipeline\.rb'
+    test: 'spec/scripts/generate_jest_pipeline_spec.rb'
+
   # Map config to respective specs
   - source: 'config/(?<rest>.+)\..*'
     test: 'spec/config/%{rest}_spec.rb'
@@ -99,6 +107,15 @@ mapping:
     test:
       - 'spec/graphql/all_queries_spec.rb'
       - 'ee/spec/graphql/all_queries_spec.rb'
+
+  # vue3_migration.yml files and their sibling page index.js entrypoints are
+  # validated together (orphan and schema checks). A vue3_migration.yml is only
+  # valid next to an index.js, so a change to either can break the spec.
+  # See https://gitlab.com/gitlab-org/gitlab/-/merge_requests/253552
+  - source:
+      - '(ee/|jh/)?app/assets/javascripts/pages/.+/vue3_migration\.yml'
+      - '(ee/|jh/)?app/assets/javascripts/pages/.+/index\.js'
+    test: 'spec/lib/gitlab/vue3_migration_files_spec.rb'
 
   # EE/FOSS spec code should map to itself
   - source: '(?<rest>.+_spec\.rb)'

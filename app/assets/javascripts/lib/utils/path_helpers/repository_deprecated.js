@@ -3,7 +3,7 @@
 // To regenerate, run: bin/rake gitlab:js:routes
 
 import { __jsr } from '~/lib/utils/path_helpers/core';
-import { hasOrganizationScopedPaths, splitProjectFullPath } from '~/lib/utils/path_helpers/utils';
+import { resolveOrganizationScope, splitProjectFullPath } from '~/lib/utils/path_helpers/utils';
 
 
 /**
@@ -16,6 +16,7 @@ import { hasOrganizationScopedPaths, splitProjectFullPath } from '~/lib/utils/pa
  *
  * @param {string} projectFullPath
  * @param {object | undefined} options
+ * @param {string | null | undefined} options.organizationPath Path of organization to nest under. Pass `null` to remove path from URL params when outside of an organization data context.
  * @returns {string} route path
  */
 export const projectDeprecatedRepositoryPath = /*#__PURE__*/ (projectFullPath, ...args) => {
@@ -23,12 +24,13 @@ export const projectDeprecatedRepositoryPath = /*#__PURE__*/ (projectFullPath, .
   const _namespaceProjectDeprecatedRepositoryPath = /*#__PURE__*/ __jsr.r({"namespace_id":{"r":true},"project_id":{"r":true},"format":{}}, [2,[7,"/"],[2,[5,[3,"namespace_id"]],[2,[7,"/"],[2,[3,"project_id"],[2,[7,"/"],[2,[6,"repository"],[1,[2,[8,"."],[3,"format"]]]]]]]]]);
 
   const { namespacePath, projectPath } = splitProjectFullPath(projectFullPath);
+  const { organizationPath, routeArgs } = resolveOrganizationScope(args);
 
-  if (hasOrganizationScopedPaths()) {
-    return _organizationNamespaceProjectDeprecatedRepositoryPath(gon.current_organization.path, namespacePath, projectPath, ...args);
+  if (organizationPath) {
+    return _organizationNamespaceProjectDeprecatedRepositoryPath(organizationPath, namespacePath, projectPath, ...routeArgs);
   }
 
-  return _namespaceProjectDeprecatedRepositoryPath(namespacePath, projectPath, ...args);
+  return _namespaceProjectDeprecatedRepositoryPath(namespacePath, projectPath, ...routeArgs);
 };
 
 /**
@@ -40,6 +42,7 @@ export const projectDeprecatedRepositoryPath = /*#__PURE__*/ (projectFullPath, .
  *
  * @param {string} projectFullPath
  * @param {object | undefined} options
+ * @param {string | null | undefined} options.organizationPath Path of organization to nest under. Pass `null` to remove path from URL params when outside of an organization data context.
  * @returns {string} route path
  */
 export const projectDeprecatedRefsSwitchPath = /*#__PURE__*/ (projectFullPath, ...args) => {
@@ -47,12 +50,13 @@ export const projectDeprecatedRefsSwitchPath = /*#__PURE__*/ (projectFullPath, .
   const _namespaceProjectDeprecatedRefsSwitchPath = /*#__PURE__*/ __jsr.r({"namespace_id":{"r":true},"project_id":{"r":true}}, [2,[7,"/"],[2,[5,[3,"namespace_id"]],[2,[7,"/"],[2,[3,"project_id"],[2,[7,"/"],[2,[6,"refs"],[2,[7,"/"],[6,"switch"]]]]]]]]);
 
   const { namespacePath, projectPath } = splitProjectFullPath(projectFullPath);
+  const { organizationPath, routeArgs } = resolveOrganizationScope(args);
 
-  if (hasOrganizationScopedPaths()) {
-    return _organizationNamespaceProjectDeprecatedRefsSwitchPath(gon.current_organization.path, namespacePath, projectPath, ...args);
+  if (organizationPath) {
+    return _organizationNamespaceProjectDeprecatedRefsSwitchPath(organizationPath, namespacePath, projectPath, ...routeArgs);
   }
 
-  return _namespaceProjectDeprecatedRefsSwitchPath(namespacePath, projectPath, ...args);
+  return _namespaceProjectDeprecatedRefsSwitchPath(namespacePath, projectPath, ...routeArgs);
 };
 
 /**
@@ -65,6 +69,7 @@ export const projectDeprecatedRefsSwitchPath = /*#__PURE__*/ (projectFullPath, .
  * @param {string} projectFullPath
  * @param {any} id
  * @param {object | undefined} options
+ * @param {string | null | undefined} options.organizationPath Path of organization to nest under. Pass `null` to remove path from URL params when outside of an organization data context.
  * @returns {string} route path
  */
 export const projectDeprecatedPath = /*#__PURE__*/ (projectFullPath, ...args) => {
@@ -72,12 +77,13 @@ export const projectDeprecatedPath = /*#__PURE__*/ (projectFullPath, ...args) =>
   const _namespaceProjectDeprecatedPath = /*#__PURE__*/ __jsr.r({"namespace_id":{"r":true},"project_id":{"r":true},"id":{"r":true}}, [2,[7,"/"],[2,[5,[3,"namespace_id"]],[2,[7,"/"],[2,[3,"project_id"],[2,[7,"/"],[2,[6,"refs"],[2,[7,"/"],[2,[3,"id"],[2,[7,"/"],[6,"logs_tree"]]]]]]]]]]);
 
   const { namespacePath, projectPath } = splitProjectFullPath(projectFullPath);
+  const { organizationPath, routeArgs } = resolveOrganizationScope(args);
 
-  if (hasOrganizationScopedPaths()) {
-    return _organizationNamespaceProjectDeprecatedPath(gon.current_organization.path, namespacePath, projectPath, ...args);
+  if (organizationPath) {
+    return _organizationNamespaceProjectDeprecatedPath(organizationPath, namespacePath, projectPath, ...routeArgs);
   }
 
-  return _namespaceProjectDeprecatedPath(namespacePath, projectPath, ...args);
+  return _namespaceProjectDeprecatedPath(namespacePath, projectPath, ...routeArgs);
 };
 
 /**
@@ -91,6 +97,7 @@ export const projectDeprecatedPath = /*#__PURE__*/ (projectFullPath, ...args) =>
  * @param {string} projectFullPath
  * @param {any} id
  * @param {object | undefined} options
+ * @param {string | null | undefined} options.organizationPath Path of organization to nest under. Pass `null` to remove path from URL params when outside of an organization data context.
  * @returns {string} route path
  */
 export const projectDeprecatedDeprecatedTreePath = /*#__PURE__*/ (projectFullPath, ...args) => {
@@ -98,12 +105,13 @@ export const projectDeprecatedDeprecatedTreePath = /*#__PURE__*/ (projectFullPat
   const _namespaceProjectDeprecatedDeprecatedTreePath = /*#__PURE__*/ __jsr.r({"namespace_id":{"r":true},"project_id":{"r":true},"id":{"r":true}}, [2,[7,"/"],[2,[5,[3,"namespace_id"]],[2,[7,"/"],[2,[3,"project_id"],[2,[7,"/"],[2,[6,"tree"],[2,[7,"/"],[5,[3,"id"]]]]]]]]]);
 
   const { namespacePath, projectPath } = splitProjectFullPath(projectFullPath);
+  const { organizationPath, routeArgs } = resolveOrganizationScope(args);
 
-  if (hasOrganizationScopedPaths()) {
-    return _organizationNamespaceProjectDeprecatedDeprecatedTreePath(gon.current_organization.path, namespacePath, projectPath, ...args);
+  if (organizationPath) {
+    return _organizationNamespaceProjectDeprecatedDeprecatedTreePath(organizationPath, namespacePath, projectPath, ...routeArgs);
   }
 
-  return _namespaceProjectDeprecatedDeprecatedTreePath(namespacePath, projectPath, ...args);
+  return _namespaceProjectDeprecatedDeprecatedTreePath(namespacePath, projectPath, ...routeArgs);
 };
 
 /**
@@ -117,6 +125,7 @@ export const projectDeprecatedDeprecatedTreePath = /*#__PURE__*/ (projectFullPat
  * @param {string} projectFullPath
  * @param {any} id
  * @param {object | undefined} options
+ * @param {string | null | undefined} options.organizationPath Path of organization to nest under. Pass `null` to remove path from URL params when outside of an organization data context.
  * @returns {string} route path
  */
 export const projectDeprecatedDeprecatedBlobPath = /*#__PURE__*/ (projectFullPath, ...args) => {
@@ -124,12 +133,13 @@ export const projectDeprecatedDeprecatedBlobPath = /*#__PURE__*/ (projectFullPat
   const _namespaceProjectDeprecatedDeprecatedBlobPath = /*#__PURE__*/ __jsr.r({"namespace_id":{"r":true},"project_id":{"r":true},"id":{"r":true}}, [2,[7,"/"],[2,[5,[3,"namespace_id"]],[2,[7,"/"],[2,[3,"project_id"],[2,[7,"/"],[2,[6,"blob"],[2,[7,"/"],[5,[3,"id"]]]]]]]]]);
 
   const { namespacePath, projectPath } = splitProjectFullPath(projectFullPath);
+  const { organizationPath, routeArgs } = resolveOrganizationScope(args);
 
-  if (hasOrganizationScopedPaths()) {
-    return _organizationNamespaceProjectDeprecatedDeprecatedBlobPath(gon.current_organization.path, namespacePath, projectPath, ...args);
+  if (organizationPath) {
+    return _organizationNamespaceProjectDeprecatedDeprecatedBlobPath(organizationPath, namespacePath, projectPath, ...routeArgs);
   }
 
-  return _namespaceProjectDeprecatedDeprecatedBlobPath(namespacePath, projectPath, ...args);
+  return _namespaceProjectDeprecatedDeprecatedBlobPath(namespacePath, projectPath, ...routeArgs);
 };
 
 /**
@@ -143,6 +153,7 @@ export const projectDeprecatedDeprecatedBlobPath = /*#__PURE__*/ (projectFullPat
  * @param {string} projectFullPath
  * @param {any} id
  * @param {object | undefined} options
+ * @param {string | null | undefined} options.organizationPath Path of organization to nest under. Pass `null` to remove path from URL params when outside of an organization data context.
  * @returns {string} route path
  */
 export const projectDeprecatedDeprecatedRawPath = /*#__PURE__*/ (projectFullPath, ...args) => {
@@ -150,12 +161,13 @@ export const projectDeprecatedDeprecatedRawPath = /*#__PURE__*/ (projectFullPath
   const _namespaceProjectDeprecatedDeprecatedRawPath = /*#__PURE__*/ __jsr.r({"namespace_id":{"r":true},"project_id":{"r":true},"id":{"r":true}}, [2,[7,"/"],[2,[5,[3,"namespace_id"]],[2,[7,"/"],[2,[3,"project_id"],[2,[7,"/"],[2,[6,"raw"],[2,[7,"/"],[5,[3,"id"]]]]]]]]]);
 
   const { namespacePath, projectPath } = splitProjectFullPath(projectFullPath);
+  const { organizationPath, routeArgs } = resolveOrganizationScope(args);
 
-  if (hasOrganizationScopedPaths()) {
-    return _organizationNamespaceProjectDeprecatedDeprecatedRawPath(gon.current_organization.path, namespacePath, projectPath, ...args);
+  if (organizationPath) {
+    return _organizationNamespaceProjectDeprecatedDeprecatedRawPath(organizationPath, namespacePath, projectPath, ...routeArgs);
   }
 
-  return _namespaceProjectDeprecatedDeprecatedRawPath(namespacePath, projectPath, ...args);
+  return _namespaceProjectDeprecatedDeprecatedRawPath(namespacePath, projectPath, ...routeArgs);
 };
 
 /**
@@ -169,6 +181,7 @@ export const projectDeprecatedDeprecatedRawPath = /*#__PURE__*/ (projectFullPath
  * @param {string} projectFullPath
  * @param {any} id
  * @param {object | undefined} options
+ * @param {string | null | undefined} options.organizationPath Path of organization to nest under. Pass `null` to remove path from URL params when outside of an organization data context.
  * @returns {string} route path
  */
 export const projectDeprecatedDeprecatedBlamePath = /*#__PURE__*/ (projectFullPath, ...args) => {
@@ -176,11 +189,12 @@ export const projectDeprecatedDeprecatedBlamePath = /*#__PURE__*/ (projectFullPa
   const _namespaceProjectDeprecatedDeprecatedBlamePath = /*#__PURE__*/ __jsr.r({"namespace_id":{"r":true},"project_id":{"r":true},"id":{"r":true}}, [2,[7,"/"],[2,[5,[3,"namespace_id"]],[2,[7,"/"],[2,[3,"project_id"],[2,[7,"/"],[2,[6,"blame"],[2,[7,"/"],[5,[3,"id"]]]]]]]]]);
 
   const { namespacePath, projectPath } = splitProjectFullPath(projectFullPath);
+  const { organizationPath, routeArgs } = resolveOrganizationScope(args);
 
-  if (hasOrganizationScopedPaths()) {
-    return _organizationNamespaceProjectDeprecatedDeprecatedBlamePath(gon.current_organization.path, namespacePath, projectPath, ...args);
+  if (organizationPath) {
+    return _organizationNamespaceProjectDeprecatedDeprecatedBlamePath(organizationPath, namespacePath, projectPath, ...routeArgs);
   }
 
-  return _namespaceProjectDeprecatedDeprecatedBlamePath(namespacePath, projectPath, ...args);
+  return _namespaceProjectDeprecatedDeprecatedBlamePath(namespacePath, projectPath, ...routeArgs);
 };
 

@@ -324,7 +324,7 @@ For example, if the GitLab Pages daemon runs on the `10.0.0.0/24` range, globall
 GitLab Pages can still fetch artifacts from pipelines, even if IP address restrictions for the group don't
 include the `10.0.0.0/24` range.
 
-To add a IP address range to the allowlist for a group:
+To add an IP address range to the allowlist for a group:
 
 Prerequisites:
 
@@ -387,7 +387,7 @@ Prerequisites:
 
 - You must be an administrator.
 
-To turn on the display of user data on the [GitLab Credits dashboard](../../subscriptions/gitlab_credits.md#gitlab-credits-dashboard):
+To turn on the display of user data on the [GitLab Credits dashboard](../../subscriptions/gitlab_credits_dashboard.md):
 
 1. In the upper-right corner, select **Admin**.
 1. In the left sidebar, select **Settings** > **General**.

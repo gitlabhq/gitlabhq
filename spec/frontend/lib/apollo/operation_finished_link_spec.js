@@ -139,5 +139,36 @@ describe('getOperationFinishedLink', () => {
 
       expect(unsubscribeSpy).toHaveBeenCalled();
     });
+
+    it('calls finished exactly once when unsubscribed before the operation completes', () => {
+      const pendingLink = new ApolloLink(() => new Observable(() => {}));
+
+      const link = getOperationFinishedLink({ started: startedSpy, finished: finishedSpy }).concat(
+        pendingLink,
+      );
+
+      subscription = execute(link, { operationName: 'test' }).subscribe({});
+
+      expect(calls).toEqual(['started']);
+
+      subscription.unsubscribe();
+
+      expect(calls).toEqual(['started', 'finished']);
+      expect(finishedSpy).toHaveBeenCalledTimes(1);
+    });
+
+    it('does not call finished again when unsubscribed after the operation completes', async () => {
+      const link = getOperationFinishedLink({ started: startedSpy, finished: finishedSpy }).concat(
+        new ApolloLink(() => Observable.of({})),
+      );
+
+      await new Promise((resolve) => {
+        createSubscription(link, { complete: resolve });
+      });
+      subscription.unsubscribe();
+
+      expect(calls).toEqual(['started', 'finished']);
+      expect(finishedSpy).toHaveBeenCalledTimes(1);
+    });
   });
 });

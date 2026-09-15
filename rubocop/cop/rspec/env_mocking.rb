@@ -6,7 +6,7 @@ module RuboCop
   module Cop
     module RSpec
       # Check for ENV mocking in specs.
-      # See https://docs.gitlab.com/ee/development/testing_guide/best_practices.html#persistent-in-memory-application-state
+      # See https://docs.gitlab.com/development/testing_guide/best_practices/#persistent-in-memory-application-state
       #
       # @example
       #

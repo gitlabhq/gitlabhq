@@ -54,8 +54,10 @@ class Projects::BranchesController < Projects::ApplicationController
   def diverging_commit_counts
     respond_to do |format|
       format.json do
+        next render json: {} unless repository.head_commit
+
         service = ::Branches::DivergingCommitCountsService.new(repository)
-        ref_names = params.permit(names: [])[:names].presence
+        ref_names = permitted_params[:names].presence
 
         branches = Gitlab::Git::Finders::RefsFinder.new(
           repository,
@@ -64,7 +66,7 @@ class Projects::BranchesController < Projects::ApplicationController
         ).execute
 
         Gitlab::GitalyClient.allow_n_plus_1_calls do
-          render json: branches.to_h { |branch| [branch.name, service.call(branch)] }
+          render json: branches.to_h { |branch| [branch.name, service.call(branch)] }.compact
         end
       end
     end
@@ -72,7 +74,7 @@ class Projects::BranchesController < Projects::ApplicationController
 
   # rubocop: disable CodeReuse/ActiveRecord
   def create
-    branch_name = strip_tags(sanitize(params[:branch_name]))
+    branch_name = strip_tags(sanitize(permitted_params[:branch_name]))
     branch_name = safe_unescape(branch_name)
 
     redirect_to_autodeploy = project.empty_repo? && project.deployment_platform.present?
@@ -82,9 +84,10 @@ class Projects::BranchesController < Projects::ApplicationController
 
     success = (result[:status] == :success)
 
-    if params[:issue_iid] && success
+    if permitted_params[:issue_iid] && success
       target_project = confidential_issue_project || @project
-      issue = IssuesFinder.new(current_user, project_id: target_project.id).find_by(iid: params[:issue_iid])
+      issue = IssuesFinder.new(current_user, project_id: target_project.id)
+                .find_by(iid: permitted_params[:issue_iid])
 
       if issue
         SystemNoteService.new_issue_branch(issue, target_project, current_user, branch_name, branch_project: @project)
@@ -118,7 +121,7 @@ class Projects::BranchesController < Projects::ApplicationController
   # rubocop: enable CodeReuse/ActiveRecord
 
   def destroy
-    result = ::Branches::DeleteService.new(project, current_user).execute(params[:id])
+    result = ::Branches::DeleteService.new(project, current_user).execute(permitted_params[:id])
 
     respond_to do |format|
       format.html do
@@ -142,6 +145,10 @@ class Projects::BranchesController < Projects::ApplicationController
   end
 
   private
+
+  def permitted_params
+    params.permit(:branch_name, :confidential_issue_project_id, :id, :issue_iid, :ref, names: [])
+  end
 
   def sort_param
     sort = branches_params[:sort].presence
@@ -173,14 +180,14 @@ class Projects::BranchesController < Projects::ApplicationController
 
     # If we don't have many branches in the repository, then go ahead.
     return if project.repository.branch_count <= limit
-    return if params[:names].present? && Array(params[:names]).length <= limit
+    return if permitted_params[:names].present? && Array(permitted_params[:names]).length <= limit
 
     render json: { error: "Specify at least one and at most #{limit} branch names" }, status: :unprocessable_entity
   end
 
   def ref
-    if params[:ref]
-      ref_escaped = strip_tags(sanitize(params[:ref]))
+    if permitted_params[:ref]
+      ref_escaped = strip_tags(sanitize(permitted_params[:ref]))
       safe_unescape(ref_escaped)
     else
       @project.default_branch_or_main
@@ -257,9 +264,9 @@ class Projects::BranchesController < Projects::ApplicationController
   end
 
   def confidential_issue_project
-    return if params[:confidential_issue_project_id].blank?
+    return if permitted_params[:confidential_issue_project_id].blank?
 
-    confidential_issue_project = Project.find(params[:confidential_issue_project_id])
+    confidential_issue_project = Project.find(permitted_params[:confidential_issue_project_id])
 
     return unless can?(current_user, :update_issue, confidential_issue_project)
 

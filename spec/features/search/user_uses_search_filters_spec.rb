@@ -84,8 +84,6 @@ RSpec.describe 'User uses search filters', :js, feature_category: :global_search
         visit search_path(search: "test", project_id: project.id)
       end
 
-      let(:query) { { project_id: project.id } }
-
       describe 'clear filter button' do
         it 'removes Project filters' do
           within_testid 'project-filter' do

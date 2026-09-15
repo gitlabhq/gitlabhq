@@ -2,15 +2,18 @@
 
 RSpec.describe Gitlab::PolicyStore do
   let(:repository) { instance_double(Gitlab::PolicyStore::Ports::PolicyRepository) }
+  let(:evaluation_recorder) { instance_double(Gitlab::PolicyStore::Ports::EvaluationRecorder) }
 
   after do
     described_class.reset_configuration!
   end
 
   describe 'default configuration' do
-    it 'uses the in-memory adapter' do
+    it 'uses the in-memory adapters' do
       expect(described_class.configuration.repository)
         .to be_a(Gitlab::PolicyStore::Adapters::InMemoryPolicyRepository)
+      expect(described_class.configuration.evaluation_recorder)
+        .to be_a(Gitlab::PolicyStore::Adapters::InMemoryEvaluationRecorder)
     end
   end
 
@@ -41,7 +44,7 @@ RSpec.describe Gitlab::PolicyStore do
   context 'with an injected repository' do
     before do
       allow(described_class).to receive(:configuration)
-        .and_return(Gitlab::PolicyStore::Configuration.new(repository))
+        .and_return(Gitlab::PolicyStore::Configuration.new(repository, evaluation_recorder))
     end
 
     describe '#create' do
@@ -81,16 +84,44 @@ RSpec.describe Gitlab::PolicyStore do
       end
     end
 
+    describe '#record_evaluation' do
+      it 'delegates to the configured evaluation recorder' do
+        attributes = { policy_id: 1, verdict: 'deny' }
+        evaluation = instance_double(Gitlab::PolicyStore::Evaluation)
+        allow(evaluation_recorder).to receive(:record).with(attributes).and_return(evaluation)
+
+        expect(described_class.record_evaluation(attributes)).to eq(evaluation)
+      end
+    end
+
     describe '#list' do
-      it 'delegates to the configured repository, defaulting trigger_type to nil' do
-        unfiltered = [instance_double(Gitlab::PolicyStore::Policy)]
-        filtered = [instance_double(Gitlab::PolicyStore::Policy)]
-        allow(repository).to receive(:list).with(organization_id: 5, trigger_type: nil).and_return(unfiltered)
+      it 'delegates to the configured repository, defaulting the filters' do
+        unfiltered = instance_double(Gitlab::PolicyStore::Page)
+        filtered = instance_double(Gitlab::PolicyStore::Page)
+        namespaced = instance_double(Gitlab::PolicyStore::Page)
+        allow(repository).to receive(:list).with(
+          organization_id: 5, trigger_type: nil, namespace_id: nil, lifecycle_state: nil, ids: nil, offset: 0,
+          per_page: Gitlab::PolicyStore::Ports::PolicyRepository::DEFAULT_PER_PAGE
+        ).and_return(unfiltered)
         allow(repository).to receive(:list)
-          .with(organization_id: 5, trigger_type: 'deployment_requested').and_return(filtered)
+          .with(
+            organization_id: 5, trigger_type: 'deployment_requested', namespace_id: nil, lifecycle_state: 'active',
+            ids: [1, 2], offset: 20, per_page: 10
+          )
+          .and_return(filtered)
+        allow(repository).to receive(:list)
+          .with(organization_id: 5, trigger_type: nil, namespace_id: 7, lifecycle_state: nil, ids: nil, offset: 0,
+            per_page: Gitlab::PolicyStore::Ports::PolicyRepository::DEFAULT_PER_PAGE)
+          .and_return(namespaced)
 
         expect(described_class.list(organization_id: 5)).to eq(unfiltered)
-        expect(described_class.list(organization_id: 5, trigger_type: 'deployment_requested')).to eq(filtered)
+        expect(
+          described_class.list(
+            organization_id: 5, trigger_type: 'deployment_requested', lifecycle_state: 'active', ids: [1, 2],
+            offset: 20, per_page: 10
+          )
+        ).to eq(filtered)
+        expect(described_class.list(organization_id: 5, namespace_id: 7)).to eq(namespaced)
       end
     end
   end

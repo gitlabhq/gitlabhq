@@ -6,12 +6,45 @@
 package jsonstream
 
 import (
+	"errors"
 	"io"
 
 	"github.com/go-json-experiment/json/jsontext"
 
 	"gitlab.com/gitlab-org/gitlab/workhorse/internal/prefixrewrite"
 )
+
+// maxTokenBytes bounds how much of a single token the decoder may buffer. A
+// real document is millions of small tokens, but the decoder grows its buffer
+// to fit the largest single one, so without a ceiling an upstream response that
+// is one enormous string value would buffer in full inside Workhorse. This is
+// the same limit htmlstream applies, so the two paths fail the same way.
+const maxTokenBytes = 1 << 20 // 1 MiB
+
+// ErrTokenTooLarge is returned when a single JSON token exceeds maxTokenBytes.
+var ErrTokenTooLarge = errors.New("jsonstream: token exceeds maximum size")
+
+// tokenBoundReader never lets the bytes handed to the decoder but not yet
+// consumed as a token exceed maxTokenBytes. Each read is clipped to what is
+// left of that allowance, so a token that outgrows it has to ask for more and
+// is refused. Refusing on a later read is what makes this work: the decoder
+// drops any error returned alongside bytes it did receive.
+type tokenBoundReader struct {
+	r   io.Reader
+	dec *jsontext.Decoder
+}
+
+func (b *tokenBoundReader) Read(p []byte) (int, error) {
+	remaining := maxTokenBytes - len(b.dec.UnreadBuffer())
+	if remaining <= 0 {
+		return 0, ErrTokenTooLarge
+	}
+	if len(p) > remaining {
+		p = p[:remaining]
+	}
+
+	return b.r.Read(p)
+}
 
 // Transform streams JSON from r to w, replacing the first matching prefix in
 // froms with the to prefix, in every string value whose enclosing object key
@@ -34,7 +67,9 @@ func Transform(r io.Reader, w io.Writer, key string, froms []string, to string) 
 		jsontext.AllowDuplicateNames(true),
 		jsontext.AllowInvalidUTF8(true),
 	}
-	dec := jsontext.NewDecoder(r, opts...)
+	bounded := &tokenBoundReader{r: r}
+	dec := jsontext.NewDecoder(bounded, opts...)
+	bounded.dec = dec
 	enc := jsontext.NewEncoder(w, opts...)
 
 	// Tracks whether the next token is the value of a matching key.

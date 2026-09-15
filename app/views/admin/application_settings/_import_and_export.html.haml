@@ -66,7 +66,8 @@
     .form-group
       = f.label :max_import_size, _('Maximum import size (MiB)'), class: 'label-light'
       = f.number_field :max_import_size, class: 'form-control gl-form-input', title: _('Maximum size of import files.'), data: { toggle: 'tooltip', container: 'body' }
-      %span.form-text.gl-text-subtle= _('Only effective when remote storage is enabled. Set to 0 for no size limit.')
+      - tag_pair_max_import_size_docs = tag_pair(link_to('', help_page_path('administration/settings/import_and_export_settings.md', anchor: 'max-import-size'), target: '_blank', rel: 'noopener noreferrer'), :link_start, :link_end)
+      %span.form-text.gl-text-subtle= safe_format(s_('AdminSettings|Only effective when remote storage is enabled. Set to 0 for no size limit. Your HTTP proxy or load balancer may enforce a separate limit. %{link_start}Learn more%{link_end}.'), tag_pair_max_import_size_docs)
     .form-group
       = f.label :max_import_remote_file_size, s_('Import|Maximum import remote file size (MiB)'), class: 'label-light'
       = f.number_field :max_import_remote_file_size, class: 'form-control gl-form-input', title: s_('Import|Maximum remote file size for imports from external object storages. For example, AWS S3.'), data: { toggle: 'tooltip', container: 'body' }

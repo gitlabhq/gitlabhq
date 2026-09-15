@@ -64,7 +64,6 @@ Standard context, also referred to as [Cloud context](https://gitlab.com/gitlab-
 | `google_analytics_id` | string, null  | Google Analytics ID from the marketing site.            | `"UA-XXXXXXXX-X"`           |
 | `context_generated_at` | string, null | Timestamp indicating when the context was generated.    | `"2023-12-20T10:00:00Z"`    |
 | `correlation_id`      | string, null  | Unique request ID for each request.                     | `uuid`                      |
-| `billing_event_id`    | string, null  | Unique identifier for each billing event (RFC9562 UUID). Used for linking to billable usage events. Multiple billing event IDs can exist per `correlation_id`. | `uuid`                      |
 | `extra`               | object, null  | Additional data associated with the event, in key-value pair format. | `{"key": "value"}`          |
 
 ### Adding a New Field to the Standard Context

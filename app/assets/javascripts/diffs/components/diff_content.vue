@@ -132,7 +132,7 @@ export default {
   },
   updated() {
     this.$nextTick(() => {
-      eventHub.$emit('showBlobInteractionZones', this.diffFile.new_path);
+      eventHub.$emit('show-blob-interaction-zones', this.diffFile.new_path);
     });
   },
   methods: {
@@ -250,8 +250,8 @@ export default {
             ref="noteForm"
             :save-button-title="__('Comment')"
             class="diff-comment-form new-note discussion-form discussion-form-container"
-            @handleFormUpdateAddToReview="addToReview"
-            @handleFormUpdate="handleSaveNote"
+            @handle-form-update-add-to-review="addToReview"
+            @handle-form-update="handleSaveNote"
             @cancel-form="closeDiffFileCommentForm(diffFileHash)"
           />
         </div>

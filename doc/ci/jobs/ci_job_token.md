@@ -38,6 +38,7 @@ This access can also [be restricted](#limit-job-token-scope-for-public-or-intern
 
 - Permission to get a single tag [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/216463) in GitLab 18.8.
 - Permission to access the Badges API [introduced](https://gitlab.com/gitlab-org/gitlab/-/work_items/326910) in GitLab 19.1.
+- Permission to list all references a commit is pushed to [introduced](https://gitlab.com/gitlab-org/gitlab/-/work_items/606881) in GitLab 19.4.
 
 {{< /history >}}
 
@@ -47,7 +48,7 @@ CI/CD job tokens can access the following resources:
 | ----------------------------------------------------------------------------------------------------- | ----- |
 | [Badges API](../../api/project_badges.md)                                                             | Can access all endpoints in this API. |
 | [Branches API](../../api/branches.md)                                                                 | Can access the `GET /projects/:id/repository/branches` endpoint. |
-| [Commits API](../../api/commits.md)                                                                   | Can access the `GET /projects/:id/repository/commits/:sha` and `GET /projects/:id/repository/commits/:sha/merge_requests` endpoints. |
+| [Commits API](../../api/commits.md)                                                                   | Can access the `GET /projects/:id/repository/commits/:sha`, `GET /projects/:id/repository/commits/:sha/merge_requests`, and `GET /projects/:id/repository/commits/:sha/refs` endpoints. |
 | [Container registry](../../user/packages/container_registry/build_and_push_images.md#use-gitlab-cicd) | Used as the `$CI_REGISTRY_PASSWORD` [predefined variable](../variables/predefined_variables.md) to authenticate with the container registry associated with the job's project. |
 | [Package registry](../../user/packages/package_registry/_index.md#to-build-packages)                  | Used to authenticate with the registry. |
 | [Terraform module registry](../../user/packages/terraform_module_registry/_index.md)                  | Used to authenticate with the registry. |
@@ -130,11 +131,20 @@ For example, project A can add project B to project A's allowlist. CI/CD jobs
 in project B (the "allowed project") can now use CI/CD job tokens to
 authenticate API calls to access project A.
 
+When you add a group to the allowlist, the entry gives access to every project in that group,
+and its subgroups at any depth. GitLab evaluates the match each time a job uses the token,
+so projects added to a group later are included without changing the allowlist.
+
+For example, project A adds the group `example-group` to its allowlist. Jobs in
+`example-group/team-b/project-c` can then use a job token to access project A, as can jobs
+in any project created under `example-group` afterwards.
+
 Prerequisites:
 
 - You must have the Maintainer or Owner role for the current project. If the allowed project
   is internal or private, you must have the Guest, Planner, Reporter, Developer, Maintainer, or Owner role in that project.
-- You must not have more than 200 groups and projects added to the allowlist.
+- You must not have more than 200 groups on the allowlist, and not more than 200 projects.
+  The two limits are counted separately.
 
 To add a group or project to the allowlist:
 

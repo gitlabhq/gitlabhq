@@ -28,7 +28,7 @@ describe('ProjectsFilter', () => {
     avatarUrl: 'avatarUrl',
   };
 
-  const createComponent = async (props = {}) => {
+  const createComponent = async (props = {}, provide = {}) => {
     mockHandler = jest.fn().mockResolvedValue({
       data: {
         projects: {
@@ -47,12 +47,21 @@ describe('ProjectsFilter', () => {
         groupNamespace: 'group/subgroup',
         ...props,
       },
+      provide: {
+        defaultProjectFullPath: null,
+        ...provide,
+      },
     });
 
     await waitForPromises();
   };
 
   const findProjectsDropdownFilter = () => wrapper.findComponent(ProjectsDropdownFilter);
+
+  // The location persists between tests, so start each one from a clean URL.
+  beforeEach(() => {
+    setWindowLocation('/');
+  });
 
   describe('default', () => {
     beforeEach(() => {
@@ -83,6 +92,10 @@ describe('ProjectsFilter', () => {
     it('does not load the defaultProjects', () => {
       expect(findProjectsDropdownFilter().props('loadingDefaultProjects')).toBe(false);
       expect(mockHandler).not.toHaveBeenCalled();
+    });
+
+    it('does not emit project-selected', () => {
+      expect(wrapper.emitted('project-selected')).toBeUndefined();
     });
   });
 
@@ -159,6 +172,55 @@ describe('ProjectsFilter', () => {
 
     it('loads the default project', () => {
       expect(mockHandler).toHaveBeenCalledWith({ fullPaths: [mockDefaultProjectA.id] });
+    });
+  });
+
+  describe('when the page provides a project', () => {
+    const defaultProject = { defaultProjectFullPath: mockDefaultProjectA.fullPath };
+
+    describe('without a projects query param', () => {
+      beforeEach(() => {
+        return createComponent({}, defaultProject);
+      });
+
+      it('loads the project from the page', () => {
+        expect(mockHandler).toHaveBeenCalledWith({ fullPaths: [mockDefaultProjectA.fullPath] });
+      });
+
+      it('sets the defaultProjects', () => {
+        expect(findProjectsDropdownFilter().props('defaultProjects')).toEqual([
+          mockDefaultProjectA,
+        ]);
+      });
+
+      it('emits project-selected so the dashboard picks up the seeded namespace', () => {
+        expect(wrapper.emitted('project-selected')).toEqual([[[mockDefaultProjectA]]]);
+      });
+    });
+
+    describe('when no group is selected yet', () => {
+      beforeEach(() => {
+        return createComponent({ groupNamespace: '' }, defaultProject);
+      });
+
+      // Selecting a group clears the project it scopes, so the project only seeds
+      // itself once a group is set, keeping the two seeded selections from racing.
+      it('waits for a group before seeding the project', () => {
+        expect(mockHandler).not.toHaveBeenCalled();
+        expect(wrapper.emitted('project-selected')).toBeUndefined();
+      });
+    });
+
+    describe('with a projects query param', () => {
+      beforeEach(() => {
+        setWindowLocation(`?projects[]=${mockDefaultProjectB.fullPath}`);
+
+        return createComponent({}, defaultProject);
+      });
+
+      it('prefers the query param over the page project', () => {
+        expect(mockHandler).toHaveBeenCalledWith({ fullPaths: [mockDefaultProjectB.fullPath] });
+      });
     });
   });
 

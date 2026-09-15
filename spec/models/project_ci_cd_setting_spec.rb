@@ -248,6 +248,20 @@ RSpec.describe ProjectCiCdSetting, feature_category: :continuous_integration do
     end
   end
 
+  describe '#push_pipelines_for_job_token_allowed' do
+    let_it_be(:project, freeze: false) { create(:project) }
+
+    it 'defaults to false' do
+      expect(project.ci_cd_settings.push_pipelines_for_job_token_allowed).to be(false)
+    end
+
+    it 'returns the value' do
+      project.ci_cd_settings.update!(push_pipelines_for_job_token_allowed: true)
+
+      expect(project.ci_cd_settings.push_pipelines_for_job_token_allowed).to be(true)
+    end
+  end
+
   describe '#pipeline_override_role_privileged?' do
     let(:project) { build(:project) }
     let(:setting) { project.ci_cd_settings }

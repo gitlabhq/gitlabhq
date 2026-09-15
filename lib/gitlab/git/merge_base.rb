@@ -17,7 +17,7 @@ module Gitlab
         end
 
         strong_memoize(:sha) do
-          @repository.merge_base(*commits_for_refs)
+          @repository.merge_base(*commits_for_refs.map(&:id))
         end
       end
 
@@ -31,14 +31,17 @@ module Gitlab
       # Returns the refs passed on initialization that aren't found in
       # the repository, and thus cannot be used to find a merge base.
       def unknown_refs
-        @unknown_refs ||= Hash[@refs.zip(commits_for_refs)]
-                            .select { |ref, commit| commit.nil? }.keys
+        @unknown_refs ||= @refs.reject { |ref| commits_by_ref.key?(ref) }
       end
 
       private
 
       def commits_for_refs
-        @commits_for_refs ||= @repository.commits_by(oids: @refs)
+        @commits_for_refs ||= @refs.map { |ref| commits_by_ref.fetch(ref) }
+      end
+
+      def commits_by_ref
+        @commits_by_ref ||= @repository.list_commits_by_ref_name(@refs)
       end
     end
   end

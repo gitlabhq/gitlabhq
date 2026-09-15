@@ -39,7 +39,7 @@ export default {
     exploreItem() {
       return {
         text: __('Explore'),
-        href: exploreRootPath(),
+        href: exploreRootPath({ organizationPath: null }),
       };
     },
     items() {
@@ -72,9 +72,11 @@ export default {
     },
   },
   methods: {
-    newUserRegistrationPath,
+    newUserRegistrationPath() {
+      return newUserRegistrationPath({ organizationPath: null });
+    },
     signInPath() {
-      return newUserSessionPath({ redirect_to_referer: 'yes' });
+      return newUserSessionPath({ redirect_to_referer: 'yes', organizationPath: null });
     },
     promoUrl(url) {
       return `${PROMO_URL}${url}`;

@@ -73,4 +73,22 @@ RSpec.describe Gitlab::Utils::Job, feature_category: :continuous_integration do
       end
     end
   end
+
+  describe '#node_total' do
+    using RSpec::Parameterized::TableSyntax
+    where(:job_options, :node_total) do
+      { parallel: { total: 5 } }               | 5
+      { parallel: 3 }                          | 3
+      { parallel: { matrix: [{}], total: 2 } } | 2
+      { parallel: nil }                        | 1
+      {}                                       | 1
+      nil                                      | 1
+    end
+
+    with_them do
+      it "returns #{params[:node_total]} for #{params[:job_options].inspect}" do
+        expect(described_class.node_total(job_options)).to eq(node_total)
+      end
+    end
+  end
 end

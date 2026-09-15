@@ -19,7 +19,7 @@ module Events
     def render_options(atom_request)
       return {} unless atom_request
 
-      { only_path: false, xhtml: true }
+      Banzai::ATOM_CONTEXT
     end
   end
 end

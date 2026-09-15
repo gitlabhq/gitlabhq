@@ -1,0 +1,7 @@
+%li
+  = render Pajamas::AvatarComponent.new(@user, size: 64, class: 'gl-mr-3')
+%li
+  %span.gl-text-subtle= _('Profile page:')
+  %strong
+    = link_to user_path(@user) do
+      = @user.username

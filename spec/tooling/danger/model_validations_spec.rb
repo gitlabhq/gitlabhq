@@ -111,8 +111,7 @@ RSpec.describe Tooling::Danger::ModelValidations, feature_category: :tooling do
         app/assets/index.js
       ]
 
-      allow(model_validations.helper).to receive(:added_files).and_return(added_files)
-      allow(model_validations.helper).to receive(:modified_files).and_return(modified_files)
+      allow(model_validations.helper).to receive_messages(added_files: added_files, modified_files: modified_files)
     end
 
     it 'returns added and modified files' do

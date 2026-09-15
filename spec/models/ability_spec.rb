@@ -374,6 +374,30 @@ RSpec.describe Ability, feature_category: :system_access do
     end
   end
 
+  describe '.pipelines_readable_by_user' do
+    let_it_be(:user) { create(:user) }
+    let_it_be(:member_project) { create(:project, :private, reporters: user) }
+    let_it_be(:non_member_project) { create(:project, :private) }
+    let_it_be(:readable_pipeline) { create(:ci_empty_pipeline, project: member_project, user: user) }
+    let_it_be(:unreadable_pipeline) { create(:ci_empty_pipeline, project: non_member_project, user: user) }
+
+    subject(:readable_pipelines) do
+      described_class.pipelines_readable_by_user([readable_pipeline, unreadable_pipeline], user)
+    end
+
+    it 'returns pipelines the user can read' do
+      expect(readable_pipelines).to contain_exactly(readable_pipeline)
+    end
+
+    context 'without a user' do
+      let(:user) { nil }
+
+      it 'returns no pipelines from private projects' do
+        expect(readable_pipelines).to be_empty
+      end
+    end
+  end
+
   describe '.feature_flags_readable_by_user' do
     context 'without a user' do
       it 'returns no feature flags' do

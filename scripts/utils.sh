@@ -114,7 +114,12 @@ function bundle_install_script() {
 function yarn_install_script() {
   section_start "yarn-install" "Installing Yarn packages"
 
-  retry yarn install --frozen-lockfile
+  # babel-plugin-istanbul is a devDependency, and production installs skip it
+  if [[ "$BABEL_ENV" == "istanbul" ]]; then
+    retry yarn install --frozen-lockfile --production=false
+  else
+    retry yarn install --frozen-lockfile
+  fi
 
   section_end "yarn-install"
 }
@@ -367,6 +372,11 @@ function assets_image_tag() {
   if [[ "$VUE_VERSION" = "3" ]]; then
     echo -n '-vue3'
   fi
+
+  # Instrumented assets must never be reused by pipelines expecting plain ones
+  if [[ "$BABEL_ENV" = "istanbul" ]]; then
+    echo -n '-istanbul'
+  fi
 }
 
 function setup_gcloud() {
@@ -390,7 +400,7 @@ function download_files() {
   echo "List of files to download:"
   cat urls_outputs.txt
 
-  curl -f --header "Private-Token: ${PROJECT_TOKEN_FOR_CI_SCRIPTS_API_USAGE}" --create-dirs --parallel --config urls_outputs.txt
+  curl -f --retry 2 --header "Private-Token: ${PROJECT_TOKEN_FOR_CI_SCRIPTS_API_USAGE}" --create-dirs --parallel --config urls_outputs.txt
 }
 
 # Taken from https://gist.github.com/jaytaylor/5a90c49e0976aadfe0726a847ce58736

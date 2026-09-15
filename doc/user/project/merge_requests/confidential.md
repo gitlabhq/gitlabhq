@@ -23,7 +23,7 @@ same namespace (same group or subgroup) as the original (public) repository,
 developers receive the same permissions in your fork. This inheritance ensures:
 
 - Developer users have the needed permissions to view confidential issues and resolve them.
-- You do not need grant individual users access to your fork.
+- You do not need to grant individual users access to your fork.
 
 For more information, see the [patch release runbook for GitLab engineers](https://gitlab.com/gitlab-org/release/docs/blob/master/general/security/engineer.md).
 
@@ -55,8 +55,8 @@ To create a confidential merge request:
 1. Scroll below the issue description, and select **Create confidential merge request**.
 1. Select the item that meets your needs:
    - To create both a branch and a merge request, select
-     **Create confidential merge request and branch**. Your merge request will
-     target the default branch of your fork, not the default branch of the
+     **Create confidential merge request and branch**. Your merge request
+     targets the default branch of your fork, not the default branch of the
      public upstream project.
    - To create only a branch, select **Create branch**.
 1. Select a **Project** to use. These projects have merge requests enabled, and

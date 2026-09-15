@@ -29,21 +29,12 @@ module QA
         group.find_member(owner.username).present?
       end
 
-      # SM availability now requires (FF AND enrollment). Enroll the instance
-      # so the SM section renders in group settings.
+      # SM availability requires instance enrollment on self-managed.
       enroll_instance_in_secrets_manager
 
-      Flow::Login.while_signed_in(as: owner) do
-        group.visit!
-
-        Page::Group::Menu.perform(&:go_to_general_settings)
-        Page::Group::Settings::General.perform do |settings|
-          settings.enable_secrets_manager
-          Support::Waiter.wait_until(max_duration: 60, sleep_interval: 2) do
-            settings.has_secrets_manager_enabled?
-          end
-        end
-      end
+      # Provisioning happens from the Secrets page or the API, so provision
+      # through GraphQL instead of driving the UI.
+      provision_secrets_manager(group, token: owner.create_personal_access_token!.token)
     end
   end
 end

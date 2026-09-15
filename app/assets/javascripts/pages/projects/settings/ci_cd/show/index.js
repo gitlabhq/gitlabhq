@@ -4,6 +4,7 @@ import initSettingsPipelinesTriggers from '~/ci_settings_pipeline_triggers';
 import initVariableList from '~/ci/ci_variable_list';
 import initInheritedGroupCiVariables from '~/ci/inherited_ci_variables';
 import initDeployFreeze from '~/deploy_freeze';
+import initFeatureFlagsMinimumRole from '~/feature_flags/minimum_role';
 import initRefSwitcherBadges from '~/projects/settings/mount_ref_switcher_badges';
 import initSettingsPanels from '~/settings_panels';
 import { initJobTokenAccess } from '~/ci/job_token_access';
@@ -34,6 +35,7 @@ initDeployTokens();
 initDeployFreeze();
 initSettingsPipelinesTriggers();
 initArtifactsSettings();
+initFeatureFlagsMinimumRole();
 
 if (gon.features?.vue3MigratePipelines) {
   (async () => {

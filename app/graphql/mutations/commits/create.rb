@@ -25,6 +25,15 @@ module Mutations
         required: false,
         description: 'If on a new branch, name of the original branch.'
 
+      argument :start_sha, GraphQL::Types::String,
+        required: false,
+        description: 'SHA of the commit to start the new branch from. Mutually exclusive with startBranch.'
+
+      argument :start_project_path, GraphQL::Types::ID,
+        required: false,
+        description: 'Full path of the project to start the commit from. ' \
+          'Must be the project itself or a project it was forked from.'
+
       argument :message,
         GraphQL::Types::String,
         required: true,
@@ -59,6 +68,8 @@ module Mutations
         null: true,
         description: 'Contents of the commit.'
 
+      validates mutually_exclusive: [:start_branch, :start_sha]
+
       authorize :push_code
       authorize_granular_token permissions: :push_code, boundary_argument: :project_path,
         boundary_type: :project
@@ -77,9 +88,11 @@ module Mutations
         attributes = {
           commit_message: message,
           branch_name: branch,
-          start_branch: args[:start_branch] || branch,
+          start_branch: args[:start_sha] ? nil : (args[:start_branch] || branch),
+          start_sha: args[:start_sha],
+          start_project: fetch_start_project(project, args[:start_project_path]),
           actions: actions.map(&:to_h)
-        }
+        }.compact
 
         result = ::Files::MultiService.new(project, current_user, attributes).execute
 
@@ -94,6 +107,24 @@ module Mutations
       end
 
       private
+
+      # Mirrors the REST commits endpoint contract, with one uniform error so
+      # an unreadable start project is indistinguishable from a missing one.
+      def fetch_start_project(project, full_path)
+        return unless full_path
+
+        start_project = find_object(full_path)
+
+        allowed = start_project && Ability.allowed?(current_user, :read_code, start_project) &&
+          (start_project == project || project.forked_from?(start_project))
+
+        unless allowed
+          raise_resource_not_available_error!(
+            'startProjectPath is not the project or a member of its fork network, or you cannot read its code.')
+        end
+
+        start_project
+      end
 
       def track_ci_config_creation(project, actions)
         creates_ci_config = actions.any? do |action|

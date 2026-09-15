@@ -59,6 +59,8 @@ class Release < ApplicationRecord
   scope :recent, -> { sorted.limit(MAX_NUMBER_TO_DISPLAY) }
   scope :without_evidence, -> { left_joins(:evidences).where(::Releases::Evidence.arel_table[:id].eq(nil)) }
   scope :released_within_2hrs, -> { where(released_at: Time.zone.now - 1.hour..Time.zone.now + 1.hour) }
+  scope :upcoming, -> { where(arel_table[:released_at].gt(Time.zone.now)) }
+  scope :released, -> { where(released_at: ..Time.zone.now) }
   scope :unpublished, -> { where(release_published_at: nil) }
   scope :for_projects, ->(projects) { where(project_id: projects) }
   scope :by_tag, ->(tag) { where(tag: tag) }

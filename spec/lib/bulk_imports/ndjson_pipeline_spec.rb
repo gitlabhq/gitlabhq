@@ -78,7 +78,7 @@ RSpec.describe BulkImports::NdjsonPipeline, feature_category: :importers do
   subject { NdjsonPipelineClass.new(group, user, context) }
 
   it 'marks pipeline as ndjson' do
-    expect(NdjsonPipelineClass.file_extraction_pipeline?).to eq(true)
+    expect(NdjsonPipelineClass.file_extraction_pipeline?).to be(true)
   end
 
   describe 'caching' do

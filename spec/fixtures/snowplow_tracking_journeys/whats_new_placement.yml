@@ -1,0 +1,42 @@
+---
+experiment: whats_new_placement
+description: |
+  Events emitted when a user reaches What's new from a navigation menu.
+
+  The experiment decides which menu holds the entry point, so each arm declares its own
+  events. Every event must also carry the experiment context for the arm under test; that
+  is asserted from the `experiment` key above and does not need repeating below.
+
+  When the experiment is cleaned up, move the winning arm's events to a top-level `events:`
+  key and delete `experiment:` and `variants:`.
+
+variants:
+  candidate:
+    events:
+      - category: whats_new_placement
+        action: assignment
+
+      - action: render_whats_new_for_you_menu_item
+        property: profile_menu
+
+      - action: click_whats_new_for_you_menu_item
+        property: profile_menu
+
+      - action: view_whats_new_drawer
+        property: profile_menu
+        label: namespace_id
+
+  control:
+    events:
+      - category: whats_new_placement
+        action: assignment
+
+      - action: render_whats_new_for_you_menu_item
+        property: help_menu
+
+      - action: click_whats_new_for_you_menu_item
+        property: help_menu
+
+      - action: view_whats_new_drawer
+        property: help_menu
+        label: namespace_id

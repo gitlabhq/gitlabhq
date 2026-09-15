@@ -1,3 +1,5 @@
+#import "./work_item_current_user_todos.fragment.graphql"
+
 # @feature_category: team_planning
 mutation workItemUpdateCurrentUserTodos(
   $input: WorkItemUpdateInput!
@@ -6,25 +8,12 @@ mutation workItemUpdateCurrentUserTodos(
   workItemUpdate(input: $input) {
     workItem {
       id
-      widgets @skip(if: $useWorkItemFeatures) {
-        ... on WorkItemWidgetCurrentUserTodos {
-          type
-          currentUserTodos {
-            nodes {
-              id
-              state
-            }
-          }
-        }
+      widgets(onlyTypes: [CURRENT_USER_TODOS]) @skip(if: $useWorkItemFeatures) {
+        ...WorkItemCurrentUserTodos
       }
       features @include(if: $useWorkItemFeatures) {
         currentUserTodos {
-          currentUserTodos(state: pending) {
-            nodes {
-              id
-              state
-            }
-          }
+          ...WorkItemCurrentUserTodos
         }
       }
     }

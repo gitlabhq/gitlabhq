@@ -110,7 +110,7 @@ RSpec.describe Gitlab::UntrustedRegexp, feature_category: :shared do
       let(:text) { 'foo' }
 
       it 'returns an array of matches' do
-        is_expected.to eq(true)
+        is_expected.to be(true)
       end
     end
 
@@ -119,7 +119,7 @@ RSpec.describe Gitlab::UntrustedRegexp, feature_category: :shared do
       let(:text) { 'foo' }
 
       it 'returns an array of nil matches' do
-        is_expected.to eq(false)
+        is_expected.to be(false)
       end
     end
 
@@ -127,35 +127,35 @@ RSpec.describe Gitlab::UntrustedRegexp, feature_category: :shared do
       let(:regexp) { '\w{0,2}' }
       let(:text) { nil }
 
-      it { is_expected.to eq(false) }
+      it { is_expected.to be(false) }
     end
 
     context 'when a matching empty string is passed' do
       let(:regexp) { '\w{0,2}' }
       let(:text) { '' }
 
-      it { is_expected.to eq(true) }
+      it { is_expected.to be(true) }
     end
 
     context 'when a matching string only containing spaces is passed' do
       let(:regexp) { '^\s{0,2}$' }
       let(:text) { ' ' }
 
-      it { is_expected.to eq(true) }
+      it { is_expected.to be(true) }
     end
 
     context 'when a non-matching empty string is passed' do
       let(:regexp) { '\w{1,2}' }
       let(:text) { '' }
 
-      it { is_expected.to eq(false) }
+      it { is_expected.to be(false) }
     end
 
     context 'when a non-matching string only containing spaces is passed' do
       let(:regexp) { '^\s{2,4}$' }
       let(:text) { ' ' }
 
-      it { is_expected.to eq(false) }
+      it { is_expected.to be(false) }
     end
   end
 

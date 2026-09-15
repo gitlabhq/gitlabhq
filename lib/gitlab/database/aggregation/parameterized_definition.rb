@@ -63,13 +63,27 @@ module Gitlab
             val = instance_parameter(param_key, part.configuration)
             next unless val
 
-            invalid = Array.wrap(val).reject { |v| v.in?(allowed) }
+            invalid = Array.wrap(val).reject { |v| allowed_value?(v, allowed) }
             next if invalid.empty?
 
             part.errors.add(param_key,
               format(s_("AggregationEngine|Invalid value(s) for parameter `%{param}`: %{values}"),
                 param: param_key,
                 values: invalid.join(', ')))
+          end
+        end
+
+        # `in:` accepts an Array mixing String, Regexp, and Gitlab::UntrustedRegexp
+        # entries, or any other container responding to `include?` (for example a
+        # Range). Patterns are developer-defined; anchor them with `\A`/`\z`.
+        def allowed_value?(value, allowed)
+          return value.in?(allowed) unless allowed.is_a?(Array)
+
+          allowed.any? do |entry|
+            case entry
+            when Regexp, ::Gitlab::UntrustedRegexp then entry.match?(value.to_s)
+            else entry == value
+            end
           end
         end
       end

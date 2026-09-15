@@ -13,7 +13,7 @@ module RuboCop
           `%s` is over the limit authorized, adding more should be avoided unless absolutely necessary.
           Consider storing the column in a different table or creating a new one.
           The list of large tables is defined in rubocop/rubocop-migrations.yml.
-          See https://docs.gitlab.com/ee/development/database/large_tables_limitations.html
+          See https://docs.gitlab.com/development/database/large_tables_limitations/
         MSG
 
         DENYLISTED_METHODS = %i[

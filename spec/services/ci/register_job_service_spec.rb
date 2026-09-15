@@ -34,9 +34,21 @@ module Ci
         end
 
         it 'does not schedule an organization isolation status check' do
-          stub_feature_flags(isolation_status_check: true)
-
           expect(::Organizations::CheckOrganizationIsolationStatusWorker).not_to receive(:perform_async)
+
+          expect(execute.build).to eq(pending_job)
+        end
+      end
+
+      context 'when ci_suspendable_environment_runner_routing is disabled for the project' do
+        let_it_be(:runner) { create(:ci_runner, :project, projects: [project]) }
+
+        before do
+          stub_feature_flags(ci_suspendable_environment_runner_routing: false)
+        end
+
+        it 'still picks the build without eager loading job_runtime_environment' do
+          expect(Ci::Build).not_to receive(:preload)
 
           expect(execute.build).to eq(pending_job)
         end
@@ -409,8 +421,14 @@ module Ci
             let!(:build1_project3) { create(:ci_build, :pending, :queued, pipeline: pipeline3) }
 
             it 'picks builds one-by-one' do
-              expect(Ci::Build).to receive(:find_by!).with(partition_id: pending_job.partition_id, id: pending_job.id)
-                .and_call_original
+              allow(Ci::Build).to receive(:preload).with(job_runtime_environment: :runtime_environment).and_wrap_original do |method, *args|
+                relation = method.call(*args)
+
+                expect(relation).to receive(:find_by!)
+                  .with(partition_id: pending_job.partition_id, id: pending_job.id).and_call_original
+
+                relation
+              end
 
               expect(build_on(shared_runner)).to eq(build1_project1)
             end
@@ -817,6 +835,23 @@ module Ci
                 'meta.artifacts_dependencies_count' => 2
               })
             end
+
+            context 'when the recorded artifact size does not match the stored file' do
+              before do
+                [pre_stage_job, pre_stage_job_second].each do |job|
+                  job.job_artifacts_archive.update!(size: 1)
+                end
+              end
+
+              it 'logs the size recorded on the artifact' do
+                build_on(project_runner)
+
+                expect(Gitlab::ApplicationContext.current).to include({
+                  'meta.artifacts_dependencies_size' => 2,
+                  'meta.artifacts_dependencies_count' => 2
+                })
+              end
+            end
           end
 
           shared_examples 'when not picking build' do
@@ -874,7 +909,11 @@ module Ci
               before do
                 pipeline.unlocked!
                 allow(pending_job).to receive(:drop!).and_raise(ActiveRecord::StaleObjectError.new(pending_job, :drop!))
-                allow(Ci::Build).to receive(:find_by!).and_return(pending_job)
+                allow(Ci::Build).to receive(:preload).with(job_runtime_environment: :runtime_environment).and_wrap_original do |method, *args|
+                  relation = method.call(*args)
+                  allow(relation).to receive(:find_by!).and_return(pending_job)
+                  relation
+                end
               end
 
               it 'does not drop nor pick' do
@@ -966,7 +1005,11 @@ module Ci
 
           it 'drops the build and logs the failure' do
             allow(pending_job).to receive(:run!).and_raise(RuntimeError, 'scheduler error')
-            allow(Ci::Build).to receive(:find_by!).and_return(pending_job)
+            allow(Ci::Build).to receive(:preload).with(job_runtime_environment: :runtime_environment).and_wrap_original do |method, *args|
+              relation = method.call(*args)
+              allow(relation).to receive(:find_by!).and_return(pending_job)
+              relation
+            end
 
             expect(Gitlab::ErrorTracking).to receive(:track_and_raise_for_dev_exception)
               .with(anything, a_hash_including(build_id: pending_job.id))
@@ -981,7 +1024,11 @@ module Ci
 
           context 'when the build transitions to running and fails on post-commit' do
             it 'transitions to scheduler_failure status and clears runtime_metadata' do
-              allow(Ci::Build).to receive(:find_by!).and_return(pending_job)
+              allow(Ci::Build).to receive(:preload).with(job_runtime_environment: :runtime_environment).and_wrap_original do |method, *args|
+                relation = method.call(*args)
+                allow(relation).to receive(:find_by!).and_return(pending_job)
+                relation
+              end
               allow(pending_job).to receive(:execute_hooks).and_raise(RuntimeError, 'scheduler error')
               expect(Gitlab::ErrorTracking).to receive(:track_and_raise_for_dev_exception)
                                                  .with(anything, a_hash_including(build_id: pending_job.id))
@@ -993,6 +1040,175 @@ module Ci
               expect(pending_job).to be_failed
               expect(pending_job).to be_scheduler_failure
               expect(pending_job.runtime_metadata).to be_nil
+            end
+          end
+        end
+
+        context 'with a request timeout for job assignment phases' do
+          let!(:pending_job) do
+            create(:ci_build, :pending, :queued, pipeline: pipeline)
+          end
+
+          let(:request_time_left) { 60.seconds }
+          let(:request_timeout_at) { ::Gitlab::Metrics::System.monotonic_time + request_time_left }
+
+          subject(:result) do
+            described_class.new(project_runner, nil, request_timeout_at: request_timeout_at).execute.build
+          end
+
+          it 'gives each phase what remains of the timeout, less the unwind reserve' do
+            phase_budgets = []
+            allow(Timeout).to receive(:timeout).and_wrap_original do |original, period, *args, &blk|
+              error_class = args.first
+              phase_budgets << period if error_class.is_a?(Class) && error_class <= described_class::PhaseTimeoutError
+
+              original.call(period, *args, &blk)
+            end
+
+            expect(result).to eq(pending_job)
+
+            expect(phase_budgets.size).to eq(2)
+            expect(phase_budgets).to all(be > 0)
+            expect(phase_budgets).to all(be <= request_time_left - described_class::UNWIND_RESERVE)
+            expect(phase_budgets.last).to be < phase_budgets.first
+          end
+
+          context 'when a phase times out' do
+            let(:error_class) { described_class::PHASE_TIMEOUT_ERRORS.fetch(phase) }
+
+            before do
+              allow(Timeout).to receive(:timeout).and_call_original
+              allow(Timeout).to receive(:timeout)
+                .with(anything, error_class, a_string_including(phase.to_s))
+                .and_raise(error_class, "#{phase} timed out")
+            end
+
+            context 'in the pre-assign runner checks' do
+              let(:phase) { :pre_assign_runner_checks }
+
+              it 'drops the build with scheduler_failure without running it' do
+                expect(Gitlab::ErrorTracking).to receive(:track_and_raise_for_dev_exception)
+                  .with(an_instance_of(described_class::PreAssignRunnerChecksTimeoutError),
+                    a_hash_including(build_id: pending_job.id))
+                  .once
+
+                expect(result).to be_nil
+
+                pending_job.reload
+                expect(pending_job).to be_failed
+                expect(pending_job).to be_scheduler_failure
+                expect(pending_job.runner).to be_nil
+              end
+
+              it 'counts the timeout against the phase' do
+                allow(Gitlab::ErrorTracking).to receive(:track_and_raise_for_dev_exception)
+
+                counter = Gitlab::Ci::Queue::Metrics.queue_operations_total
+                allow(counter).to receive(:increment)
+
+                expect(counter).to receive(:increment)
+                  .with(operation: :queue_phase_timeout_pre_assign_runner_checks).once
+
+                result
+              end
+            end
+
+            context 'in the response rendering' do
+              let(:phase) { :present_build }
+
+              it 'drops the build with scheduler_failure and tracks the error' do
+                expect(Gitlab::ErrorTracking).to receive(:track_and_raise_for_dev_exception)
+                  .with(an_instance_of(described_class::PresentBuildTimeoutError),
+                    a_hash_including(build_id: pending_job.id))
+                  .once
+
+                expect(result).to be_nil
+
+                pending_job.reload
+                expect(pending_job).to be_failed
+                expect(pending_job).to be_scheduler_failure
+              end
+
+              it 'counts the timeout against the phase' do
+                allow(Gitlab::ErrorTracking).to receive(:track_and_raise_for_dev_exception)
+
+                counter = Gitlab::Ci::Queue::Metrics.queue_operations_total
+                allow(counter).to receive(:increment)
+
+                expect(counter).to receive(:increment)
+                  .with(operation: :queue_phase_timeout_present_build).once
+
+                result
+              end
+            end
+          end
+
+          context 'when the timeout leaves no room before any build is processed' do
+            let(:request_time_left) { described_class::UNWIND_RESERVE }
+
+            before do
+              allow(Timeout).to receive(:timeout).and_call_original
+            end
+
+            it 'stops the queue scan without dropping builds' do
+              expect(Gitlab::ErrorTracking).not_to receive(:track_and_raise_for_dev_exception)
+
+              expect(result).to be_nil
+
+              expect(pending_job.reload).to be_pending
+
+              expect(Timeout).not_to have_received(:timeout)
+                .with(anything, a_kind_of(Class), anything)
+            end
+          end
+
+          context 'when a build consumes the entire timeout' do
+            let!(:second_pending_job) do
+              create(:ci_build, :pending, :queued, pipeline: pipeline)
+            end
+
+            before do
+              # Shift the monotonic clock past the timeout while the first
+              # build's pre-assign checks run, as if a check stalled.
+              time_offset = 0
+              allow(::Gitlab::Metrics::System).to receive(:monotonic_time).and_wrap_original do |original|
+                original.call + time_offset
+              end
+
+              allow_next_instance_of(described_class) do |service|
+                allow(service).to receive(:pre_assign_runner_checks).and_wrap_original do |original|
+                  time_offset = request_time_left.to_f
+                  original.call
+                end
+              end
+            end
+
+            it 'drops only that build and leaves later candidates in the queue' do
+              expect(Gitlab::ErrorTracking).to receive(:track_and_raise_for_dev_exception)
+                .with(an_instance_of(described_class::PresentBuildTimeoutError),
+                  a_hash_including(build_id: pending_job.id))
+                .once
+
+              expect(result).to be_nil
+
+              expect(pending_job.reload).to be_failed
+              expect(pending_job.reload).to be_scheduler_failure
+              expect(second_pending_job.reload).to be_pending
+            end
+          end
+
+          context 'without a request timeout' do
+            let(:request_timeout_at) { nil }
+
+            before do
+              allow(Timeout).to receive(:timeout).and_call_original
+            end
+
+            it 'does not apply timeouts and picks the build' do
+              expect(result).to eq(pending_job)
+
+              expect(Timeout).not_to have_received(:timeout)
+                .with(anything, a_kind_of(Class), anything)
             end
           end
         end
@@ -1177,6 +1393,18 @@ module Ci
             expect(pending_job.reload).to be_failed
             expect(pending_job.failure_reason).to eq('id_token_burned_project_path')
             expect(pending_job).to be_id_token_burned_project_path
+          end
+
+          context 'when block_jwt_for_reclaimed_paths is false' do
+            before do
+              stub_env('IN_MEMORY_APPLICATION_SETTINGS', 'false')
+              create(:application_setting, block_jwt_for_reclaimed_paths: false)
+            end
+
+            it 'picks the build' do
+              expect(build_on(runner)).not_to be_nil
+              expect(pending_job.reload).to be_running
+            end
           end
         end
 
@@ -1544,70 +1772,47 @@ module Ci
       end
     end
 
-    describe 'routing via environment_key' do
+    describe 'routing via ci_pending_builds.runner_machine_id' do
       # Use a dedicated project/pipeline so the outer pending_build (different project) does not
       # compete with our pending_job for the same project_runner.
       let_it_be(:resume_project) { create(:project, shared_runners_enabled: false) }
       let_it_be(:resume_pipeline) { create(:ci_empty_pipeline, project: resume_project) }
       let_it_be(:project_runner) { create(:ci_runner, :project, projects: [resume_project]) }
-      let_it_be(:runner_manager) { create(:ci_runner_machine, runner: project_runner, system_xid: 's_testmachine') }
+      let_it_be(:runner_manager) { create(:ci_runner_machine, runner: project_runner) }
+      let_it_be(:other_runner_manager) { create(:ci_runner_machine, runner: project_runner) }
 
-      let(:env_key) { nil }
-      let!(:pending_job) do
-        options = { script: ['echo hi'] }
-        options[:suspend_options] = { environment_key: env_key } unless env_key.nil?
-        create(:ci_build, :pending, :queued, pipeline: resume_pipeline, options: options)
+      let(:routed_machine_id) { nil }
+      let(:pending_job) do
+        create(:ci_build, :pending, pipeline: resume_pipeline)
       end
 
-      def build_on(runner)
-        described_class.new(runner, runner_manager).execute.build
+      let!(:pending_build) do
+        create(:ci_pending_build, build: pending_job, project: resume_project, runner_machine_id: routed_machine_id)
       end
 
-      before do
-        stub_feature_flags(ci_resume_environment_runner_routing: true)
+      def build_on(runner, manager)
+        described_class.new(runner, manager).execute.build
       end
 
-      context 'when build has no environment_key in options' do
-        it 'proceeds with normal matching and picks the build' do
-          expect(build_on(project_runner)).to eq(pending_job)
+      context 'when the build is not routed to any machine' do
+        it 'is picked up regardless of which runner_manager polls' do
+          expect(build_on(project_runner, runner_manager)).to eq(pending_job)
         end
       end
 
-      context 'when build has a blank environment_key' do
-        let(:env_key) { '' }
+      context 'when the build is routed to this runner_manager' do
+        let(:routed_machine_id) { runner_manager.id }
 
-        it 'treats blank key as absent and picks the build' do
-          expect(build_on(project_runner)).to eq(pending_job)
-        end
-      end
-
-      context 'when build has environment_key matching this runner' do
-        let(:env_key) { "#{project_runner.id}/s_testmachine/executor-specific-data" }
-
-        it 'picks the build because the key matches this runner' do
-          expect(build_on(project_runner)).to eq(pending_job)
-        end
-      end
-
-      context 'when build has environment_key for a different runner' do
-        let_it_be(:other_runner) { create(:ci_runner, :project, projects: [resume_project]) }
-        let(:env_key) { "#{other_runner.id}/s_testmachine/executor-specific-data" }
-
-        it 'does not pick the build because the key belongs to a different runner' do
-          expect(build_on(project_runner)).to be_nil
-        end
-      end
-
-      context 'when feature flag is disabled' do
-        let_it_be(:other_runner) { create(:ci_runner, :project, projects: [resume_project]) }
-        let(:env_key) { "#{other_runner.id}/s_testmachine/executor-specific-data" }
-
-        before do
-          stub_feature_flags(ci_resume_environment_runner_routing: false)
+        it 'is picked up by the matching runner_manager' do
+          expect(build_on(project_runner, runner_manager)).to eq(pending_job)
         end
 
-        it 'skips routing check and allows any runner to pick the build' do
-          expect(build_on(project_runner)).to eq(pending_job)
+        it 'is not picked up by a different runner_manager' do
+          expect(build_on(project_runner, other_runner_manager)).to be_nil
+        end
+
+        it 'is not picked up when polling without a runner_manager' do
+          expect(build_on(project_runner, nil)).to be_nil
         end
       end
     end

@@ -18,7 +18,7 @@ GitLabの以下の機能は非推奨となっており、使用は推奨され�
 
 [REST APIの非推奨化](../api/rest/deprecations.md)については、別途ドキュメントに記載されています。
 
-{{< icon name="rss" >}}**今後の破壊的な変更の通知を受け取るには**、このURL（`https://about.gitlab.com/breaking-changes.xml`）をRSSフィードリーダーに追加してください。
+{{< icon name="rss" >}}**今後の破壊的変更の通知を受け取るには**、このURL（`https://docs.gitlab.com/releases/breaking-changes.xml`）をRSSフィードリーダーに追加してください。
 
 <!-- vale off -->
 <!--
@@ -32,7 +32,7 @@ located at `lib/tasks/gitlab/docs/compile_deprecations.rake`,
 For deprecation authors (usually Product Managers and Engineering Managers):
 
 - To add a deprecation, use the example.yml file in `/data/deprecations/templates` as a template.
-- For more information about authoring deprecations, check the the deprecation item guidance:
+- For more information about authoring deprecations, check the deprecation item guidance:
   <https://handbook.gitlab.com/handbook/marketing/blog/release-posts/#update-the-deprecations-doc>
 
 For deprecation reviewers (Technical Writers only):
@@ -65,6 +65,24 @@ For deprecation reviewers (Technical Writers only):
 - [移行ガイド](https://docs.gitlab.com/user/compliance/compliance_pipelines/#pipeline-execution-policies-migration)。
 - [ブログ記事](https://about.gitlab.com/blog/why-gitlab-is-deprecating-compliance-pipelines-in-favor-of-security-policies/)。
 
+### パッケージの依存プロキシは非推奨です {#dependency-proxy-for-packages-is-deprecated}
+
+- GitLab 19.1で発表されました
+- GitLab 20.0で削除
+- この変更について議論したり、詳細を確認したりするには、[非推奨に関するイシュー](https://gitlab.com/gitlab-org/gitlab/-/issues/601255)を参照してください。
+
+パッケージの依存プロキシは非推奨であり、今後のリリースで削除されます。この機能は、パフォーマンスの向上、より優れたアップストリームプロキシとキャッシュ機能、およびGitLabのパッケージ管理ワークフローとのより深いインテグレーションを提供する**Maven virtual registry**に置き換えられました。
+
+**必要なアクション:** お使いのパッケージマネージャーの設定を、パッケージの依存プロキシのエンドポイントからMaven仮想レジストリに移行する必要があります。セットアップ手順については、[Maven仮想レジストリドキュメント](https://docs.gitlab.com/user/packages/virtual_registry/maven/)を参照してください。
+
+### `previousStageJobs`をGraphQLから非推奨にする {#deprecate-previousstagejobs-from-graphql}
+
+- GitLab 19.2で発表されました
+- GitLab 20.0で削除（[破壊的変更](https://docs.gitlab.com/update/terminology/#breaking-change)）
+- この変更について議論したり、詳細を確認したりするには、[非推奨に関するイシュー](https://gitlab.com/gitlab-org/gitlab/-/issues/603950)を参照してください。
+
+GraphQL `CiJob`タイプ内の`previousStageJobs`フィールドは非推奨であり、GitLab 20.0で削除されます。GitLab UIが依存関係を計算するために`previousStageJobs`を必要としなくなったため、サーバー側の代替は不要です。
+
 ### 設計管理が非推奨になりました {#design-management-deprecated}
 
 - GitLab 18.6で発表
@@ -80,6 +98,35 @@ GitLab 20.0で、GitLabは設計管理の非推奨化を開始します。設計
 - この変更について議論したり、詳細を確認したりするには、[非推奨に関するイシュー](https://gitlab.com/gitlab-org/gitlab/-/issues/382338)を参照してください。
 
 インスタンス、グループ、プロジェクトの監査イベントAPIは現在、オプションのキーセットページネーションをサポートしています。GitLab 20.0では、これらのAPIにキーセットページネーションを適用します。
+
+### Goモジュールプロキシ（実験的）は非推奨です {#go-module-proxy-experimental-is-deprecated}
+
+- GitLab 19.1で発表されました
+- GitLab 20.0で削除
+- この変更について議論したり、詳細を確認したりするには、[非推奨に関するイシュー](https://gitlab.com/gitlab-org/gitlab/-/issues/592132)を参照してください。
+
+GitLabパッケージレジストリ内の実験的なGoモジュールプロキシは非推奨であり、GitLab 20.0で削除されます。この機能は実験的なステータスを超えて進展しませんでした。
+
+これは、GitLabを介してGoモジュールを解決するための、より完全で信頼性の高いエクスペリエンスを提供する**Go virtual registry**に置き換えられます。
+
+**必要なアクション:** GitLabをGoモジュールプロキシとして使用している場合は、Go仮想レジストリが利用可能になったらそちらに移行する計画を立ててください。それまでの間、`proxy.golang.org`やセルフホスト型ソリューションなどの代替プロキシを、`GOPROXY`環境変数を更新することで設定できます。
+
+### 従来の`retry:when`の失敗理由`stuck_or_timeout_failure`と`job_execution_timeout`は非推奨になりました {#legacy-retrywhen-failure-reasons-stuck_or_timeout_failure-and-job_execution_timeout-are-deprecated}
+
+- GitLab 19.1で発表されました
+- GitLab 20.0で削除（[破壊的変更](https://docs.gitlab.com/update/terminology/#breaking-change)）
+- この変更について議論したり、詳細を確認したりするには、[非推奨に関するイシュー](https://gitlab.com/gitlab-org/gitlab/-/issues/602133)を参照してください。
+
+GitLab 19.0では、汎用的な`stuck_or_timeout_failure`および`job_execution_timeout`ジョブの失敗理由は、より具体的な理由のセット（たとえば、`stuck_pending_no_matching_runners`、`no_updates_running`、および`server_timeout_running`）に分割されました。新しいビルドは古い理由では記録されなくなりました。
+
+これらの古い理由は、`.gitlab-ci.yml`内の[`retry:when`](https://docs.gitlab.com/ci/yaml/#retrywhen)に対して有効な値のままです。既存の設定がサイレントに壊れるのを防ぐため、`retry:when`の下に`stuck_or_timeout_failure`または`job_execution_timeout`をリストすると、GitLabはこれらをそれらを置き換えた具体的な理由の完全なセットに一致するエイリアスとして扱います。GitLabは、これらの値が使用されている場合、CI Lint出力とパイプラインエディタでノンブロッキング警告も表示します。
+
+両方の値は非推奨であり、GitLab 20.0での削除が予定されています。
+
+**必要なアクション:** `retry:when`を更新して、代わりに具体的な失敗理由を使用してください:
+
+- `stuck_or_timeout_failure`を`stuck_pending_with_matching_runners`、`stuck_pending_no_matching_runners`、`no_updates_running`、および`no_updates_canceling`の関連するサブセットに置き換えます。
+- `job_execution_timeout`を`server_timeout_running`および/または`server_timeout_canceling`に置き換えます。
 
 ### レガシーグループレベル監査イベントストリーミング先GraphQLAPI {#legacy-group-level-audit-event-streaming-destination-graphql-apis}
 
@@ -161,6 +208,48 @@ GitLab Helmチャートは、Kubernetes Gateway APIを使用するデフォル�
 
 バンドルされているEnvoy GatewayとGateway APIへの移行することをお勧めします。または、[外部のIngressコントローラーとクラス](https://docs.gitlab.com/charts/charts/globals/#configure-ingress-settings)をデプロイし、設定することができます。
 
+## GitLab 19.5 {#gitlab-195}
+
+### Bitbucket CloudイシューとWikiのインポート {#bitbucket-cloud-issue-and-wiki-import}
+
+- GitLab 19.1で発表されました
+- GitLab 19.5での削除（[破壊的変更](https://docs.gitlab.com/update/terminology/#breaking-change)）
+- この変更について議論したり、詳細を確認したりするには、[非推奨に関するイシュー](https://gitlab.com/gitlab-org/gitlab/-/work_items/601061)を参照してください。
+
+Atlassianは2026年8月20日に[Bitbucket Cloud Issues and Wikis](https://community.atlassian.com/forums/Bitbucket-articles/Announcing-sunset-of-Bitbucket-Issues-and-Wikis/ba-p/3193882)を廃止します。その日付以降、基盤となるAPIエンドポイントが削除され、GitLabはBitbucket CloudからイシューやWikiをインポートできなくなります。
+
+GitLab 19.3では、Bitbucket CloudインポーターがAPIの削除を適切に処理し、イシューとWikiをスキップする予定です。GitLab 19.5では、イシューとWikiのインポートコードが削除される予定です。
+
+Bitbucketのイシューデータが必要なユーザーは、2026年8月20日の期日までにインポートを完了するか、Bitbucketからエクスポートする後に[CSV import](https://docs.gitlab.com/user/project/issues/csv_import/)を使用する必要があります。Wikiの場合は、期日前にBitbucket Wikiリポジトリをローカルにクローンしてください。
+
+## GitLab 19.3 {#gitlab-193}
+
+### REST APIは、整数パスパラメータの非数値IDに対して400を返します {#rest-api-returns-400-for-non-numeric-ids-on-integer-path-parameters}
+
+- GitLab 19.3で発表されました
+- GitLab 19.3での削除（[破壊的変更](https://docs.gitlab.com/update/terminology/#breaking-change)）
+- この変更について議論したり、詳細を確認したりするには、[非推奨に関するイシュー](https://gitlab.com/gitlab-org/gitlab/-/issues/605824)を参照してください。
+
+いくつかのREST APIエンドポイントは、以前は整数型のパスパラメータに対して、事前の検証なしに非数値または複数値の入力を受け入れていました。明確なエラーの代わりに、これらのリクエストは一貫性のないレスポンス（`401 Unauthorized`、`404 Not Found`、またはまれな潜在的バグケースでは`200 OK`）を返していました。これらは現在パラメータタイプを検証し、`400 Bad Request`を返します。
+
+移行するには、各リクエストに単一の数値IDを送信してください。正当なクライアントはすでにこれを行っているため、適切に形成されたリクエストにはアクションは必要ありません。
+
+## GitLab 19.2 {#gitlab-192}
+
+### 自己管理型Ultimateプランには高度な検索が必要です {#advanced-search-is-required-for-self-managed-ultimate-tier}
+
+- GitLab 18.11で発表されました
+- GitLab 19.2で削除
+- この変更について議論したり、詳細を確認したりするには、[非推奨に関するイシュー](https://gitlab.com/gitlab-org/gitlab/-/work_items/582417)を参照してください。
+
+自己管理型Ultimateプランの顧客が、Ultimateプランの機能一式に完全にアクセスするために[Advanced Search](https://docs.gitlab.com/integration/advanced_search/elasticsearch/)を使用することを**_require_**するようになりました。Advanced SearchがなくてもGitLabが動作しなくなるわけではありませんが、有効になっていない限り、すべてのUltimateプラン機能が利用できるわけではありません。
+
+以前は、特定の機能のクエリパフォーマンスを向上させる方法として、Advanced Searchを有効にすることを**_recommended_**していました。Advanced Searchを必要とする完全な機能を構築することが、私たちが要求する提供のペースと品質を満たすために不可欠であると、私たちは現在確立しています。
+
+Advanced Searchを使用しないことで、既存の機能が壊れたり、性能が低下したりすることはありません。これは将来を見据えた変更のみです。新しい機能はAdvanced Searchなしではサポートされない可能性があります。UltimateプランGA機能は、完全または部分的な機能のためにAdvanced Searchに対する厳格な要件を持つ場合があります。
+
+Advanced Searchを有効にするためのガイダンスは、[私たちのドキュメントで見つけることができます](https://docs.gitlab.com/user/search/advanced_search/)。
+
 ## GitLab 19.1 {#gitlab-191}
 
 ### Elasticsearch 7.xはアドバンストサーチでサポートされなくなりました {#elasticsearch-7x-no-longer-supported-for-advanced-search}
@@ -169,7 +258,7 @@ GitLab Helmチャートは、Kubernetes Gateway APIを使用するデフォル�
 - GitLab 19.1で削除（[破壊的変更](https://docs.gitlab.com/update/terminology/#breaking-change)）
 - この変更について議論したり、詳細を確認したりするには、[非推奨に関するイシュー](https://gitlab.com/gitlab-org/gitlab/-/issues/583544)を参照してください。
 
-The [メンテナンス期間for Elasticsearch 7.x](https://www.elastic.co/support/eol)は2026-01-15に終了しました。GitLab Self-Managedインスタンスの場合、管理者はElasticsearchインスタンスをアップグレードしてアドバンストサーチを使用する必要があります。
+[Elasticsearch 7.xのメンテナンス期間](https://www.elastic.co/support/eol)は、2026年1月15日に終了しました。GitLab Self-Managedインスタンスの場合、管理者はElasticsearchインスタンスをアップグレードしてアドバンストサーチを使用する必要があります。
 
 ### Amazon Linux 2のLinuxパッケージサポート {#linux-package-support-for-amazon-linux-2}
 
@@ -177,11 +266,11 @@ The [メンテナンス期間for Elasticsearch 7.x](https://www.elastic.co/suppo
 - GitLab 19.1で削除（[破壊的変更](https://docs.gitlab.com/update/terminology/#breaking-change)）
 - この変更について議論したり、詳細を確認したりするには、[非推奨に関するイシュー](https://gitlab.com/gitlab-org/gitlab/-/work_items/590802)を参照してください。
 
-GitLab 19.1では、LinuxパッケージのAmazon Linux 2 (AL2) パッケージビルドを削除します。
+GitLab 19.1では、LinuxパッケージのAmazon Linux 2（AL2）パッケージビルドを削除します。
 
 Amazon Linux 2は2026年6月にエンドオブライフを迎え、それ以降はセキュリティアップデートを受け取れなくなります。[当社のLinuxパッケージサポート対象プラットフォームポリシー](https://docs.gitlab.com/install/package/#supported-platforms)に従い、ベンダーがオペレーティングシステムのサポートを停止した場合、少なくとも6ヶ月の告知期間を設けてパッケージビルドの提供を終了します。
 
-現在、Amazon Linux 2でGitLabを実行している場合は、GitLab 19.1にアップグレードする前にAmazon Linux 2023 (AL2023) または別の[サポート対象オペレーティングシステム](https://docs.gitlab.com/install/package/#supported-platforms)に移行する必要があります。Amazonは、AL2からAL2023への移行に役立つ[移行ドキュメント](https://docs.aws.amazon.com/elasticbeanstalk/latest/dg/using-features.migration-al.generic.from-al2.html)を提供しています。
+現在、Amazon Linux 2でGitLabを実行している場合は、GitLab 19.1にアップグレードする前にAmazon Linux 2023（AL2023）または別の[サポート対象オペレーティングシステム](https://docs.gitlab.com/install/package/#supported-platforms)に移行する必要があります。Amazonは、AL2からAL2023への移行に役立つ[移行ドキュメント](https://docs.aws.amazon.com/elasticbeanstalk/latest/dg/using-features.migration-al.generic.from-al2.html)を提供しています。
 
 ## GitLab 19.0 {#gitlab-190}
 
@@ -259,6 +348,8 @@ Linuxパッケージを使用するSUSEディストリビューションのお�
 
 これらのディストリビューションをご利用のお客様は、既存のディストリビューション上でGitLabの[Dockerデプロイ](https://docs.gitlab.com/install/docker/installation/)に移行することをお勧めします。これにより、GitLabのアップグレードを継続するために別のLinuxディストリビューションに移行する必要がなくなります。
 
+**更新**: [SLES 12.5でのRPMパッケージサイズ制限](https://gitlab.com/gitlab-org/omnibus-gitlab/-/work_items/9716)により、[Mattermost](https://docs.gitlab.com/update/deprecations/#mattermost-bundled-with-linux-package)と[Spamcheck](https://docs.gitlab.com/update/deprecations/#spamcheck-support-in-the-linux-package-and-gitlab-helm-chart)は、GitLab 19.0での全ディストリビューションからの計画的な削除に先立ち、GitLab 18.11でSLES 12.5パッケージから削除されました。
+
 ### Ubuntu 20.04のLinuxパッケージサポート {#linux-package-support-for-ubuntu-2004}
 
 - GitLab 17.9で発表
@@ -281,7 +372,7 @@ GitLab 19.0以降、Linuxパッケージインストール用のUbuntu 20.04デ�
 
 GitLab 19.0では、バンドルされているMattermostをLinuxパッケージから削除する予定です。
 
-Mattermostは2015年に、オープンソースのチームメッセージングソリューションとしてGitLabに初めてバンドルされ、インテグレーションをサポートするためにGitLabSSOが含まれていました。それ以降、Mattermostは独自のパッケージングおよびデプロイオプションを大幅に成熟させ、GitLabのお客様の間でのバンドルされたMattermostの採用は比較的に低いままです。
+Mattermostは2015年に、オープンソースのチームメッセージングソリューションとしてGitLabに初めてバンドルされ、インテグレーションをサポートするためにGitLabSSOが含まれていました。それ以降、Mattermost独自のパッケージ化およびデプロイの選択肢は大幅に成熟しましたが、GitLabのお客様によるバンドルされたMattermostの採用率は比較的低いままです。
 
 Mattermost v11では、[Mattermostは無料提供からGitLabSSOを非推奨にしました](https://forum.mattermost.com/t/mattermost-v11-changes-in-free-offerings/25126)。この変更、Mattermostのスタンドアロンデプロイオプションの成熟度、および顧客ベースでの採用率の低さを考慮し、LinuxパッケージからMattermostを削除します。
 
@@ -321,7 +412,7 @@ AWS SDK v1を使用するコンテナレジストリのS3ストレージドラ�
 - GitLab 19.0で削除（[破壊的変更](https://docs.gitlab.com/update/terminology/#breaking-change)）
 - この変更について議論したり、詳細を確認したりするには、[非推奨に関するイシュー](https://gitlab.com/gitlab-org/gitlab/-/work_items/569345)を参照してください。
 
-[Slackスラッシュコマンドインテグレーション](https://docs.gitlab.com/user/project/integrations/slack_slash_commands/)は、同じ機能でよりセキュアなインテグレーションメソッドを提供する[GitLab for Slackアプリ](https://docs.gitlab.com/user/project/integrations/gitlab_slack_application/)を優先して非推奨になりました。
+Slackスラッシュコマンドインテグレーションは、より安全なインテグレーション方法で同じ機能を提供する[GitLab for Slack app](https://docs.gitlab.com/user/project/integrations/gitlab_slack_application/)に有利な形で非推奨になりました。
 
 GitLab 19.0以降、ユーザーはSlackスラッシュコマンドインテグレーションを設定または使用できなくなります。このインテグレーションは、GitLab Self-ManagedインスタンスおよびGitLab Dedicatedインスタンスでのみ利用可能です。GitLab.comをご利用の場合は、何もする必要はありません。
 
@@ -355,7 +446,7 @@ GitLab 19.0以降、Gateway APIとバンドルされたEnvoy Gatewayがデフォ
 
 この変更は、Linuxパッケージ内のNGINX、または外部管理されたIngressまたはGateway APIコントローラーを使用するGitLab HelmチャートおよびGitLab Operatorインスタンスには影響しません。
 
-フォークしたNGINX Ingressチャートとビルドについては、完全な削除まで最大限の努力でセキュリティプロジェクトのメンテナンスを提供します。スムーズな移行を確実にするために、提供されているGateway APIソリューションまたは外部管理されたIngressコントローラーへの移行を計画することをお勧めします。
+フォークしたNGINX Ingressチャートとビルドについては、完全な削除まで最大限の努力でセキュリティプロジェクトのメンテナンスを提供します。スムーズな移行を確実にするために、提供されているGateway APIソリューションまたは外部管理されたIngressコントローラーへの移行を計画することをお勧めします。ステップバイステップの手順については、[Envoy Gateway移行ガイド](https://docs.gitlab.com/charts/installation/migration/envoy_gateway_migration/)を参照してください。
 
 ### PostgreSQL 16のサポート {#support-for-postgresql-16}
 
@@ -363,7 +454,7 @@ GitLab 19.0以降、Gateway APIとバンドルされたEnvoy Gatewayがデフォ
 - GitLab 19.0で削除（[破壊的変更](https://docs.gitlab.com/update/terminology/#breaking-change)）
 - この変更について議論したり、詳細を確認したりするには、[非推奨に関するイシュー](https://gitlab.com/gitlab-org/gitlab/-/issues/589774)を参照してください。
 
-GitLabは、[PostgreSQLの年間アップグレードケイデンス](https://handbook.gitlab.com/handbook/engineering/infrastructure-platforms/data-access/database-framework/postgresql-upgrade-cadence/)に従います。
+GitLabは、[PostgreSQLの年間アップグレードケイデンス](https://handbook.gitlab.com/handbook/engineering/data-engineering/database-excellence/database-frameworks/postgresql-upgrade-cadence/)に従います。
 
 PostgreSQL 16のサポートはGitLab 19.0で削除される予定です。GitLab 19.0では、PostgreSQL 17が最小要件のPostgreSQLバージョンになります。
 
@@ -381,18 +472,15 @@ Linuxパッケージを使用してインストールした単一のPostgreSQL�
 
 GitLab 19.0では、安全でサポート可能なインフラストラクチャスタックを維持するというコミットメントの一環として、Redis 6のサポートを削除する予定です。
 
-GitLab 19.0にアップグレードする前に、以下のいずれかを実行している必要があります:
-
-- Redis 7.2。
-- Valkey 7.2（GitLab 18.9からベータ版で利用可能で、GitLab 19.0での一般公開が計画されています）。
+GitLab 19.0にアップグレードする前に、Redis 7.0以降、またはValkey 7.2に移行してください。Redis 7.2またはValkey 7.2が推奨されます。Redis 7.0はアップストリームでEOL（End-of-Life）に達しましたが、Amazon ElastiCache for Redis 7.1（Redis 7.0上に構築されています）のように、ベンダーによって積極的にメンテナンスされているケースもあります。
 
 Linuxパッケージに含まれるバンドルされたRedisは、GitLab 16.2以降Redis 7を使用しており、影響を受けません。外部のRedis 6デプロイを使用しているGitLab Self-Managedインスタンスのみが移行する必要があります。
 
 外部のRedis 6デプロイを移行するための以下のリソースを参照してください:
 
-- **AWS ElastiCache**: Redis 6インスタンスをRedis 7.2またはValkey 7.2にアップグレードしてください。利用可能なアップグレードパスについては、[AWS ElastiCacheドキュメント](https://docs.aws.amazon.com/AmazonElastiCache/latest/dg/supported-engine-versions.html)を参照してください。
-- **GCP Memorystore**: Redis 6インスタンスをRedis 7.2またはValkey 7.2にアップグレードしてください。利用可能なアップグレードパスについては、[GCP Memorystoreドキュメント](https://cloud.google.com/memorystore/docs/redis/supported-versions)を参照してください。
-- **Azure Cache for Redis**: 現在、AzureではマネージドRedis 7.2またはValkey 7.2オプションは利用できません。Azure VMまたはAKS上でRedis 7.2またはValkey 7.2をセルフホストできます。また、GitLab Linuxパッケージのインストール方法を使用することもできます。これは、GitLab 19.0での一般公開が計画されているValkey 7.2をサポートします。
+- **AWS ElastiCache**: ElastiCache for Redis 7.2はAWSでは利用できません。推奨される[Amazon ElastiCache for Valkey 7.2](https://aws.amazon.com/elasticache/what-is-valkey/)に移行してください。ElastiCache for Redis 7.1はRedis 7.0上に構築されており、動作することが知られています。利用可能なアップグレードパスについては、[AWS ElastiCacheドキュメント](https://docs.aws.amazon.com/AmazonElastiCache/latest/dg/engine-versions.html)を参照してください。
+- **GCP Memorystore**: Redis 6インスタンスをRedis 7.2またはValkey 7.2にアップグレードしてください。利用可能なアップグレードパスについては、[GCP Memorystoreドキュメント](https://docs.cloud.google.com/memorystore/docs/redis/supported-versions)を参照してください。
+- **Azure Cache for Redis**: 現在、AzureではマネージドRedis 7.2またはValkey 7.2オプションは利用できません。Azure VMまたはAKS上でRedis 7.2またはValkey 7.2をセルフホストできます。Valkey 7.2をサポートするGitLab Linuxパッケージのインストール方法も使用できます。
 - **Self-hosted**: Redis 6インスタンスをRedis 7.2またはValkey 7.2にアップグレードしてください。
 
 詳細については、[要件ドキュメント](https://docs.gitlab.com/install/requirements/)を参照してください。
@@ -441,7 +529,7 @@ GitLab 19.0以降も`heroku/builder:22`を引き続き使用するには、`AUTO
 - GitLab 19.0で削除（[破壊的変更](https://docs.gitlab.com/update/terminology/#breaking-change)）
 - この変更について議論したり、詳細を確認したりするには、[非推奨に関するイシュー](https://gitlab.com/groups/gitlab-org/-/work_items/18493)を参照してください。
 
-**トレンド**タブ（**検索** > **プロジェクト**）とそれに関連するGraphQL引数は、GitLab 18.8で非推奨となり、GitLab 19.0で削除されます。GitLab 19.0のリリース前の月に、***トレンド**タブはGitLab.comで星の数が多い順にソートされた**アクティブ**タブにリダイレクトされます。
+**トレンド**タブ（**検索** > **プロジェクト**）とそれに関連するGraphQL引数は、GitLab 18.8で非推奨となり、GitLab 19.0で削除されます。GitLab 19.0のリリース前の月に、\***トレンド**タブはGitLab.comで星の数が多い順にソートされた**アクティブ**タブにリダイレクトされます。
 
 **What's being removed**
 
@@ -517,7 +605,7 @@ GitLab 18.6では、GitLab Duo Self-Hostedで使用されるMistral 7B-it、Mixt
 
 LinuxパッケージにバンドルされているPrometheus 2.xは非推奨となり、GitLab 18.6で最新のPrometheus 3.xリリースにアップグレードされます。
 
-Prometheus 3には、新しいログ形式やより厳格なヘッダー検証など、潜在的に破壊的な変更が含まれています。詳細については、[Prometheus移行ガイド](https://prometheus.io/docs/prometheus/3.0/migration)を参照してください。
+Prometheus 3には、新しいログ形式やより厳格なヘッダー検証など、潜在的に破壊的な変更が含まれています。詳細については、[Prometheus移行ガイド](https://prometheus.io/docs/prometheus/latest/migration/)を参照してください。
 
 この変更は、GitLab Helmチャートのインストールには影響しません。
 
@@ -566,9 +654,9 @@ GitLab 18.6では、要件とコントロールに関するより正確なレポ
 
 GitLab Helmチャートのデフォルト設定は、PostgreSQLおよびRedis用のBitnamiチャートとコンテナイメージに依存しています。Bitnamiは、2025年9月29日にこれらのイメージを無料カタログから削除します。イメージの一時的な停止であるブラウンアウトは、2025年8月28日に開始されました。
 
-GitLabチャートは、デモおよびテスト目的でのみBitnamiのPostgreSQLとRedisをバンドルしています。これらは、サポートされているGitLab[リファレンスアーキテクチャ](https://docs.gitlab.com/administration/reference_architectures/)の一部ではありません。リファレンスアーキテクチャを使用している場合、または別のベンダーのパッケージやイメージを使用して外部のPostgreSQLとRedisをデプロイしている場合、この変更の影響は**not impacted**。
+GitLabチャートは、デモおよびテスト目的でのみBitnamiのPostgreSQLとRedisをバンドルしています。これらは、サポートされているGitLab[リファレンスアーキテクチャ](https://docs.gitlab.com/administration/reference_architectures/)の一部ではありません。リファレンスアーキテクチャを使用している場合、または別のベンダーのパッケージやイメージを使用して外部のPostgreSQLおよびRedisをデプロイしている場合、この変更による**影響はありません**。
 
-一時的な解決策として、GitLabはチャート設定をBitnamiレガシーリポジトリに移行するしました。しかし、パッチが適用されていないGitLabチャート環境（GitLab 17.11、GitLab 18.0.5。GitLab 18.1.4およびGitLab 18.2.1以前）は、非推奨のBitnamiリポジトリからイメージをプルし続けるため、9月29日以降にデプロイの失敗を引き起こし、ブラウンアウトフェーズ中にデプロイの失敗を引き起こす可能性があります。
+一時的な解決策として、GitLabはチャート設定をBitnamiレガシーリポジトリに移行しました。しかし、パッチが適用されていないGitLabチャート環境（GitLab 17.11、GitLab 18.0.5。GitLab 18.1.4およびGitLab 18.2.1以前）は、非推奨のBitnamiリポジトリからイメージをプルし続けるため、9月29日以降にデプロイの失敗を引き起こし、ブラウンアウトフェーズ中にデプロイの失敗を引き起こす可能性があります。
 
 影響を受けるGitLabチャート設定を実行している場合は、以下のいずれかを実行する必要があります:
 
@@ -649,7 +737,7 @@ GitLab 17.0からGitLab 17.11のユーザーは、GitLab 18.0のリリースま�
 - ファズAPI: バージョン4
 - IaCスキャン: バージョン5
 - パイプラインシークレット検出: バージョン6
-- 静的アプリケーションセキュリティテスト (SAST): [すべてのアナライザー](https://docs.gitlab.com/user/application_security/sast/analyzers/)のバージョン5
+- 静的アプリケーションセキュリティテスト（SAST）: [すべてのアナライザー](https://docs.gitlab.com/user/application_security/sast/analyzers/)のバージョン5
   - `kics`
   - `kubesec`
   - `pmd-apex`
@@ -701,7 +789,7 @@ GitLab 15.9では、[**認証されたグループとプロジェクト**](https
 
 **このプロジェクト_からの_アクセスを制限**設定は、すべての新しいプロジェクトでデフォルトで無効になっています。GitLab 16.0以降では、この設定をプロジェクトで無効にした後、再度有効にすることはできません。代わりに、**認証されたグループとプロジェクト**設定を使用して、プロジェクトへのジョブトークンアクセスを制御します。
 
-### DASTの`dast_crawl_extract_element_timeout`および`dast_crawl_search_element_timeout`変数は非推奨 {#dast-dast_crawl_extract_element_timeout-and-dast_crawl_search_element_timeout-variables-are-deprecated}
+### DAST `dast_crawl_extract_element_timeout`および`dast_crawl_search_element_timeout`変数 {#dast-dast_crawl_extract_element_timeout-and-dast_crawl_search_element_timeout-variables}
 
 - GitLab 17.9で発表
 - GitLab 18.0で削除
@@ -812,7 +900,7 @@ GitLab 17.6（Helmチャート8.6）では、GitLabチャートでデフォル�
 - GitLab 17.3.6（Helmチャート8.3.6）
 
 > [!note]
-> Helmチャート8.3から8.7の最新パッチバージョンには、NGINXコントローラーバージョン1.11.2が含まれています。それ以降のチャートバージョンには、さまざまなセキュリティ修正が含まれているバージョン1.11.5が含まれています。GitLab 18.0は、デフォルトでコントローラーバージョン1.11.5になります。
+> Helmチャート8.3から8.7の最新のパッチバージョンには、NGINXコントローラーバージョン1.11.2が含まれています。それ以降のチャートバージョンには、さまざまなセキュリティ修正が含まれているバージョン1.11.5が含まれています。GitLab 18.0は、デフォルトでコントローラーバージョン1.11.5になります。
 
 独自のNGINX RBACルールを管理している場合は、`nginx-ingress.rbac.create`を`false`に設定していることになります。その場合、GitLab 17.3（Helmチャート8.3）からGitLab 17.11（Helmチャート8.11）までは、その変更を検出し、古いコントローラーイメージを使用するフォールバックメカニズムがあるため、RBACルールを変更する必要はありません。
 
@@ -905,7 +993,7 @@ GitLab 18.0では、システムパフォーマンスと信頼性を向上させ
 - GitLab 18.0で削除（[破壊的変更](https://docs.gitlab.com/update/terminology/#breaking-change)）
 - この変更について議論したり、詳細を確認したりするには、[非推奨に関するイシュー](https://gitlab.com/gitlab-org/gitlab/-/issues/521663)を参照してください。
 
-GitLabは、[PostgreSQLの年間アップグレードケイデンス](https://handbook.gitlab.com/handbook/engineering/infrastructure-platforms/data-access/database-framework/postgresql-upgrade-cadence/)に従います。
+GitLabは、[PostgreSQLの年間アップグレードケイデンス](https://handbook.gitlab.com/handbook/engineering/data-engineering/database-excellence/database-frameworks/postgresql-upgrade-cadence/)に従います。
 
 PostgreSQL 14および15のサポートは、GitLab 18.0で削除される予定です。GitLab 18.0では、PostgreSQL 16が最小要件のPostgreSQLバージョンになります。
 
@@ -1043,10 +1131,10 @@ RESTおよびGraphQL APIを使用したノートの機密性の切替は非推�
 ### クライアント認証情報のないOAuth ROPC付与は非推奨 {#oauth-ropc-grant-without-client-credentials-is-deprecated}
 
 - GitLab 17.11で発表
-- GitLab 17.11での削除（[breaking change](https://docs.gitlab.com/update/terminology/#breaking-change)）
+- GitLab 17.11での削除（[破壊的変更](https://docs.gitlab.com/update/terminology/#breaking-change)）
 - この変更について議論したり、詳細を確認したりするには、[非推奨に関するイシュー](https://gitlab.com/gitlab-org/gitlab/-/issues/535298)を参照してください。
 
-GitLab.comでは、2025年4月8日の時点で、OAuthリソースオーナーパスワード認証情報（ROPC）OAuth付与にクライアント認証が必要です。ROPCは、OAuthワーキンググループによってRFCバージョン2.1で省略されました。クライアント認証情報のない既存のROPCインテグレーションは、この日以降、サービスが中断されます。中断が発生した場合は、期限までにクライアント認証情報を含めるようにインテグレーションを更新してください。詳細については、[ブログ](https://about.gitlab.com/blog/2025/04/01/improving-oauth-ropc-security-on-gitlab-com/)をご覧ください。
+GitLab.comでは、2025年4月8日の時点で、OAuthリソースオーナーパスワード認証情報（ROPC）OAuth付与にクライアント認証が必要です。ROPCは、OAuthワーキンググループによってRFCバージョン2.1で省略されました。クライアント認証情報のない既存のROPCインテグレーションは、この日以降、サービスが中断されます。中断が発生した場合は、期限までにクライアント認証情報を含めるようにインテグレーションを更新してください。詳細については、[ブログ](https://about.gitlab.com/blog/improving-oauth-ropc-security-on-gitlab-com/)をご覧ください。
 
 ## GitLab 17.9 {#gitlab-179}
 
@@ -1117,7 +1205,7 @@ Red Hat Enterprise Linux（RHEL）7は、[2024年6月にメンテナンスサポ
 ### `/repository/tree` REST APIエンドポイントのエラー処理が`404`を返す {#error-handling-for-repositorytree-rest-api-endpoint-returns-404}
 
 - GitLab 16.5で発表
-- GitLab 17.7での削除（[breaking change](https://docs.gitlab.com/update/terminology/#breaking-change)）
+- GitLab 17.7での削除（[破壊的変更](https://docs.gitlab.com/update/terminology/#breaking-change)）
 - この変更について議論したり、詳細を確認したりするには、[非推奨に関するイシュー](https://gitlab.com/gitlab-org/gitlab/-/issues/420865)を参照してください。
 
 GitLab 17.7では、リストリポジトリツリーAPIエンドポイント`/projects/:id/repository/tree`のエラー処理動作は、要求されたパスが見つからない場合に更新されます。エンドポイントは、ステータスコード`404 Not Found`を返すようになりました。以前は、ステータスコードは`200 OK`でした。
@@ -1182,7 +1270,7 @@ GitLabサポートチームの[サポートステートメント](https://about.
 ### Kubernetesのエージェントのオプション`ca-cert-file`の名前変更 {#agent-for-kubernetes-option-ca-cert-file-renamed}
 
 - GitLab 16.9で発表
-- GitLab 17.0での削除（[breaking change](https://docs.gitlab.com/update/terminology/#breaking-change)）
+- GitLab 17.0での削除（[破壊的変更](https://docs.gitlab.com/update/terminology/#breaking-change)）
 - この変更について議論したり、詳細を確認したりするには、[非推奨に関するイシュー](https://gitlab.com/gitlab-org/gitlab/-/issues/437728)を参照してください。
 
 Kubernetes向けGitLabエージェント（agentk）では、`--ca-cert-file`コマンドラインオプションとそれに対応する`config.caCert` Helmチャートの値の名前がそれぞれ`--kas-ca-cert-file`と`config.kasCaCert`に変更されました。
@@ -1192,7 +1280,7 @@ Kubernetes向けGitLabエージェント（agentk）では、`--ca-cert-file`コ
 ### HerokuishのAuto DevOpsサポートは非推奨 {#auto-devops-support-for-herokuish-is-deprecated}
 
 - GitLab 15.8で発表
-- GitLab 17.0での削除（[breaking change](https://docs.gitlab.com/update/terminology/#breaking-change)）
+- GitLab 17.0での削除（[破壊的変更](https://docs.gitlab.com/update/terminology/#breaking-change)）
 - この変更について議論したり、詳細を確認したりするには、[非推奨に関するイシュー](https://gitlab.com/gitlab-org/gitlab/-/issues/211643)を参照してください。
 
 [Cloud Native Buildpacks](https://docs.gitlab.com/topics/autodevops/stages/#auto-build-using-cloud-native-buildpacks)を優先して、HerokuishのAuto DevOpsサポートは非推奨になります。[HerokuishからCloud Native Buildpacksにビルドを移行する](https://docs.gitlab.com/topics/autodevops/stages/#moving-from-herokuish-to-cloud-native-buildpacks)必要があります。GitLab 14.0からは、Auto BuildはデフォルトでCloud Native Buildpacksを使用します。
@@ -1202,7 +1290,7 @@ Cloud Native Buildpacksは自動テストをサポートしていないため、
 ### ダッシュ（`-`）文字を含む自動生成されたMarkdownアンカーリンク {#autogenerated-markdown-anchor-links-with-dash---characters}
 
 - GitLab 16.9で発表
-- GitLab 17.0での削除（[breaking change](https://docs.gitlab.com/update/terminology/#breaking-change)）
+- GitLab 17.0での削除（[破壊的変更](https://docs.gitlab.com/update/terminology/#breaking-change)）
 - この変更について議論したり、詳細を確認したりするには、[非推奨に関するイシュー](https://gitlab.com/gitlab-org/gitlab/-/issues/440733)を参照してください。
 
 GitLabでは、すべての見出しに対して自動的にアンカーリンクが作成されるため、ユーザーは、MarkdownドキュメントまたはWikiページの特定の位置にリンクできます。ただし、一部のエッジケースでは、自動生成されたアンカーは、多くのユーザーが予想するよりも少ないダッシュ（`-`）文字で作成されます。たとえば、`## Step - 1`の見出しでは、他のほとんどのMarkdownツールとLinterは`#step---1`を予期します。しかし、GitLabは`#step-1`のアンカーを生成し、連続するダッシュは1つに圧縮されます。
@@ -1212,7 +1300,7 @@ GitLab 17.0では、連続するダッシュを削除しないようにするこ
 ### CiRunner.projectsのデフォルトの並べ替えを`id_desc`に変更 {#cirunnerprojects-default-sort-is-changing-to-id_desc}
 
 - GitLab 16.0で発表
-- GitLab 17.0での削除（[breaking change](https://docs.gitlab.com/update/terminology/#breaking-change)）
+- GitLab 17.0での削除（[破壊的変更](https://docs.gitlab.com/update/terminology/#breaking-change)）
 - この変更について議論したり、詳細を確認したりするには、[非推奨に関するイシュー](https://gitlab.com/gitlab-org/gitlab/-/issues/372117)を参照してください。
 
 `CiRunner.projects`のフィールドのデフォルトの並べ替え順の値が、`id_asc`から`id_desc`に変更されます。返されるプロジェクトの順序を`id_asc`にする必要がある場合は、その選択を明示的にするためにスクリプトを変更してください。
@@ -1220,7 +1308,7 @@ GitLab 17.0では、連続するダッシュを削除しないようにするこ
 ### 一般設定でのコンプライアンスフレームワーク {#compliance-framework-in-general-settings}
 
 - GitLab 16.9で発表
-- GitLab 17.0での削除（[breaking change](https://docs.gitlab.com/update/terminology/#breaking-change)）
+- GitLab 17.0での削除（[破壊的変更](https://docs.gitlab.com/update/terminology/#breaking-change)）
 - この変更について議論したり、詳細を確認したりするには、[非推奨に関するイシュー](https://gitlab.com/gitlab-org/gitlab/-/issues/422783)を参照してください。
 
 コンプライアンスフレームワークの管理を、[コンプライアンスセンター](https://docs.gitlab.com/user/compliance/compliance_center/)のフレームワークおよびプロジェクトレポートに移動しました。
@@ -1230,7 +1318,7 @@ GitLab 17.0では、連続するダッシュを削除しないようにするこ
 ### SwiftおよびOSSストレージドライバーのコンテナレジストリのサポート {#container-registry-support-for-the-swift-and-oss-storage-drivers}
 
 - GitLab 16.6で発表
-- GitLab 17.0での削除（[breaking change](https://docs.gitlab.com/update/terminology/#breaking-change)）
+- GitLab 17.0での削除（[破壊的変更](https://docs.gitlab.com/update/terminology/#breaking-change)）
 - この変更について議論したり、詳細を確認したりするには、[非推奨に関するイシュー](https://gitlab.com/gitlab-org/container-registry/-/issues/1141)を参照してください。
 
 コンテナレジストリは、ストレージドライバーを使用して、さまざまなオブジェクトストレージプラットフォームと連携します。各ドライバーのコードは比較的自己完結型ですが、これらのドライバーのメンテナンス負荷は高くなっています。各ドライバーの実装は一意であり、ドライバーを変更するには、その特定のドライバーに関する高度なドメイン専門知識が必要です。
@@ -1242,7 +1330,7 @@ OSSには[S3互換モード](https://www.alibabacloud.com/help/en/oss/developer-
 ### DAST ZAPの高度な設定変数は非推奨 {#dast-zap-advanced-configuration-variables-deprecation}
 
 - GitLab 15.7で発表
-- GitLab 17.0での削除（[breaking change](https://docs.gitlab.com/update/terminology/#breaking-change)）
+- GitLab 17.0での削除（[破壊的変更](https://docs.gitlab.com/update/terminology/#breaking-change)）
 - この変更について議論したり、詳細を確認したりするには、[非推奨に関するイシュー](https://gitlab.com/gitlab-org/gitlab/-/issues/383467)を参照してください。
 
 GitLab 15.7で新しいブラウザベースのDASTアナライザーが一般公開になったため、将来的には、このアナライザーをデフォルトのDASTアナライザーにすることを目指しています。この準備として、従来のDAST変数`DAST_ZAP_CLI_OPTIONS`および`DAST_ZAP_LOG_CONFIGURATION`は非推奨となり、GitLab 17.0で削除される予定です。これらの変数により、OWASP ZAPに基づいた従来のDASTアナライザーで高度な設定が利用可能になっていましたこれらの機能はZAPの動作に固有のものであるため、新しいブラウザベースのアナライザーには含まれません。
@@ -1252,7 +1340,7 @@ GitLab 15.7で新しいブラウザベースのDASTアナライザーが一般�
 ### 依存関係スキャンにおける誤ったSBOMメタデータプロパティ {#dependency-scanning-incorrect-sbom-metadata-properties}
 
 - GitLab 16.9で発表
-- GitLab 17.0での削除（[breaking change](https://docs.gitlab.com/update/terminology/#breaking-change)）
+- GitLab 17.0での削除（[破壊的変更](https://docs.gitlab.com/update/terminology/#breaking-change)）
 - この変更について議論したり、詳細を確認したりするには、[非推奨に関するイシュー](https://gitlab.com/gitlab-org/gitlab/-/issues/438779)を参照してください。
 
 GitLab 17.0では、CycloneDX SBOMレポートの次のメタデータプロパティのサポートが削除されます。
@@ -1270,7 +1358,7 @@ GitLab 17.0では、CycloneDX SBOMレポートの次のメタデータプロパ�
 ### sbt 1.0.Xの依存関係スキャンサポート {#dependency-scanning-support-for-sbt-10x}
 
 - GitLab 16.8で発表
-- GitLab 17.0での削除（[breaking change](https://docs.gitlab.com/update/terminology/#breaking-change)）
+- GitLab 17.0での削除（[破壊的変更](https://docs.gitlab.com/update/terminology/#breaking-change)）
 - この変更について議論したり、詳細を確認したりするには、[非推奨に関するイシュー](https://gitlab.com/gitlab-org/gitlab/-/issues/415835)を参照してください。
 
 sbtの非常に古いバージョンをサポートすると、メンテナンスコストを増やすことなく、このパッケージマネージャーで追加ユースケースのサポートを改善できなくなります。
@@ -1288,7 +1376,7 @@ GraphQLフィールドの`isTemporaryStorageIncreaseEnabled`と`temporaryStorage
 ### コンテナスキャンにおけるGrypeスキャナーの非推奨化 {#deprecate-grype-scanner-for-container-scanning}
 
 - GitLab 16.9で発表
-- GitLab 17.0での削除（[breaking change](https://docs.gitlab.com/update/terminology/#breaking-change)）
+- GitLab 17.0での削除（[破壊的変更](https://docs.gitlab.com/update/terminology/#breaking-change)）
 - この変更について議論したり、詳細を確認したりするには、[非推奨に関するイシュー](https://gitlab.com/gitlab-org/gitlab/-/issues/439164)を参照してください。
 
 GitLab 16.9で、GitLabコンテナスキャンアナライザーにおけるGrypeスキャナーのサポートは非推奨になりました。
@@ -1304,7 +1392,7 @@ Grypeアナライザーイメージの現行メジャーバージョンは、Git
 ### ライセンススキャンCIテンプレートを非推奨化 {#deprecate-license-scanning-ci-templates}
 
 - GitLab 16.9で発表
-- GitLab 17.0での削除（[breaking change](https://docs.gitlab.com/update/terminology/#breaking-change)）
+- GitLab 17.0での削除（[破壊的変更](https://docs.gitlab.com/update/terminology/#breaking-change)）
 - この変更について議論したり、詳細を確認したりするには、[非推奨に関するイシュー](https://gitlab.com/gitlab-org/gitlab/-/issues/439157)を参照してください。
 
 GitLab 17.0で、ライセンススキャンCIテンプレートが削除されます。
@@ -1320,7 +1408,7 @@ GitLab 17.0で、ライセンススキャンCIテンプレートが削除され�
 ### 依存関係スキャンおよびライセンススキャンにおけるPython 3.9の非推奨化 {#deprecate-python-39-in-dependency-scanning-and-license-scanning}
 
 - GitLab 16.9で発表
-- GitLab 17.0での削除（[breaking change](https://docs.gitlab.com/update/terminology/#breaking-change)）
+- GitLab 17.0での削除（[破壊的変更](https://docs.gitlab.com/update/terminology/#breaking-change)）
 - この変更について議論したり、詳細を確認したりするには、[非推奨に関するイシュー](https://gitlab.com/gitlab-org/gitlab/-/issues/441201)を参照してください。
 
 GitLab 16.9以降、Python 3.9に対する依存関係スキャンおよびライセンススキャンのサポートは非推奨です。GitLab 17.0では、Python 3.10が依存関係スキャンCI/CDジョブのデフォルトバージョンです。
@@ -1330,7 +1418,7 @@ GitLab 17.0以降、依存関係スキャンおよびライセンススキャン
 ### GitLab RunnerでWindows CMDを非推奨化 {#deprecate-windows-cmd-in-gitlab-runner}
 
 - GitLab 16.1で発表
-- GitLab 17.0での削除（[breaking change](https://docs.gitlab.com/update/terminology/#breaking-change)）
+- GitLab 17.0での削除（[破壊的変更](https://docs.gitlab.com/update/terminology/#breaking-change)）
 - この変更について議論したり、詳細を確認したりするには、[非推奨に関するイシュー](https://gitlab.com/gitlab-org/gitlab/-/issues/414864)を参照してください。
 
 GitLab 11.11では、PowerShellを優先して、WindowsバッチexecutorであるCMD ShellがGitLab Runnerで非推奨になりました。それ以降も、CMD ShellはGitLab Runnerで引き続きサポートされています。ただし、これにより、エンジニアリングチームと、WindowsでRunnerを使用しているお客様の両方にとって、複雑さが増しています。17.0で、GitLab RunnerからのWindows CMDのサポートを完全に削除する予定です。お客様は、Shell executorでWindows上のRunnerを使用する場合は、PowerShellを使用するように計画する必要があります。お客様は、削除イシューの[イシュー29479](https://gitlab.com/gitlab-org/gitlab-runner/-/issues/29479)でフィードバックを提供したり、質問したりできます。
@@ -1338,7 +1426,7 @@ GitLab 11.11では、PowerShellを優先して、Windowsバッチexecutorであ�
 ### `CiRunnerManager`で複製された`CiRunner` GraphQLフィールドを非推奨化 {#deprecate-cirunner-graphql-fields-duplicated-in-cirunnermanager}
 
 - GitLab 16.2で発表
-- GitLab 17.0での削除（[breaking change](https://docs.gitlab.com/update/terminology/#breaking-change)）
+- GitLab 17.0での削除（[破壊的変更](https://docs.gitlab.com/update/terminology/#breaking-change)）
 - この変更について議論したり、詳細を確認したりするには、[非推奨に関するイシュー](https://gitlab.com/gitlab-org/gitlab/-/issues/415185)を参照してください。
 
 これらのフィールド（`architectureName`、`ipAddress`、`platformName`、`revision`、`version`）は、Runner設定内でグループ化されたRunnerマネージャーの導入により重複しているため、[GraphQL `CiRunner`](https://docs.gitlab.com/api/graphql/reference/#cirunner)タイプで非推奨になりました。
@@ -1346,7 +1434,7 @@ GitLab 11.11では、PowerShellを優先して、Windowsバッチexecutorであ�
 ### TerraformモジュールCI/CDテンプレートで`fmt`ジョブを非推奨化 {#deprecate-fmt-job-in-terraform-module-cicd-template}
 
 - GitLab 16.9で発表
-- GitLab 17.0での削除（[breaking change](https://docs.gitlab.com/update/terminology/#breaking-change)）
+- GitLab 17.0での削除（[破壊的変更](https://docs.gitlab.com/update/terminology/#breaking-change)）
 - この変更について議論したり、詳細を確認したりするには、[非推奨に関するイシュー](https://gitlab.com/gitlab-org/gitlab/-/issues/440249)を参照してください。
 
 TerraformモジュールCI/CDテンプレートの`fmt`ジョブは非推奨となり、GitLab 17.0で削除されます。これは、次のテンプレートに影響します。
@@ -1367,7 +1455,7 @@ fmt:
 ### 脆弱性管理機能において`message`フィールドを非推奨化 {#deprecate-message-field-from-vulnerability-management-features}
 
 - GitLab 16.1で発表
-- GitLab 17.0での削除（[breaking change](https://docs.gitlab.com/update/terminology/#breaking-change)）
+- GitLab 17.0での削除（[破壊的変更](https://docs.gitlab.com/update/terminology/#breaking-change)）
 - この変更について議論したり、詳細を確認したりするには、[非推奨に関するイシュー](https://gitlab.com/gitlab-org/gitlab/-/issues/411573)を参照してください。
 
 このMRは、`VulnerabilityCreate` GraphQLミューテーションの`message`フィールド、および脆弱性エクスポートの`AdditionalInfo`列を非推奨にします。メッセージフィールドは、GitLab 16.0でセキュリティレポートスキーマから削除され、他の場所では使用されなくなっています。
@@ -1384,7 +1472,7 @@ GitLab Runner Kubernetes executor設定である`terminationGracePeriodSeconds`�
 ### 機能フラグAPIで`version`フィールドを非推奨化 {#deprecate-version-field-in-feature-flag-api}
 
 - GitLab 16.9で発表
-- GitLab 17.0での削除（[breaking change](https://docs.gitlab.com/update/terminology/#breaking-change)）
+- GitLab 17.0での削除（[破壊的変更](https://docs.gitlab.com/update/terminology/#breaking-change)）
 - この変更について議論したり、詳細を確認したりするには、[非推奨に関するイシュー](https://gitlab.com/gitlab-org/gitlab/-/issues/437986)を参照してください。
 
 [機能フラグREST API](https://docs.gitlab.com/api/feature_flags/)の`version`フィールドは非推奨となり、GitLab 17.0で削除されます。
@@ -1394,7 +1482,7 @@ GitLab Runner Kubernetes executor設定である`terminationGracePeriodSeconds`�
 ### デベロッパーロールからの脆弱性ステータスの変更を非推奨化 {#deprecate-change-vulnerability-status-from-the-developer-role}
 
 - GitLab 16.4で発表
-- GitLab 17.0での削除（[breaking change](https://docs.gitlab.com/update/terminology/#breaking-change)）
+- GitLab 17.0での削除（[破壊的変更](https://docs.gitlab.com/update/terminology/#breaking-change)）
 - この変更について議論したり、詳細を確認したりするには、[非推奨に関するイシュー](https://gitlab.com/gitlab-org/gitlab/-/issues/424133)を参照してください。
 
 デベロッパーが脆弱性ステータスを変更する機能は、現在非推奨となっています。今後のGitLab 17.0リリースで破壊的な変更を加え、この機能をデベロッパーロールから削除する予定です。デベロッパーにこの権限を引き続き付与したいユーザーは、デベロッパー用の[カスタムロールを作成](https://docs.gitlab.com/user/permissions/#custom-roles)して、`admin_vulnerability`権限を追加すると、このアクセス権を付与できます。
@@ -1402,7 +1490,7 @@ GitLab Runner Kubernetes executor設定である`terminationGracePeriodSeconds`�
 ### GitLab Self-Managedでグループオーナーのカスタムロール作成を非推奨化 {#deprecate-custom-role-creation-for-group-owners-on-gitlab-self-managed}
 
 - GitLab 16.9で発表
-- GitLab 17.0での削除（[breaking change](https://docs.gitlab.com/update/terminology/#breaking-change)）
+- GitLab 17.0での削除（[破壊的変更](https://docs.gitlab.com/update/terminology/#breaking-change)）
 - この変更について議論したり、詳細を確認したりするには、[非推奨に関するイシュー](https://gitlab.com/gitlab-org/gitlab/-/issues/439284)を参照してください。
 
 GitLab Self-Managed 17.0では、グループオーナーに対して、カスタムロールの作成が削除されます。この機能は、管理者専用のインスタンスレベルに移動します。グループオーナーは、グループレベルでカスタムロールを割り当てることができます。
@@ -1418,7 +1506,7 @@ APIを使用してGitLab Self-Managedでカスタムロールを管理する場�
 ### GraphQL VulnerabilityTypeのフィールド`hasSolutions`を非推奨化 {#deprecate-field-hassolutions-from-graphql-vulnerabilitytype}
 
 - GitLab 16.3で発表
-- GitLab 17.0での削除（[breaking change](https://docs.gitlab.com/update/terminology/#breaking-change)）
+- GitLab 17.0での削除（[破壊的変更](https://docs.gitlab.com/update/terminology/#breaking-change)）
 - この変更について議論したり、詳細を確認したりするには、[非推奨に関するイシュー](https://gitlab.com/gitlab-org/gitlab/-/issues/414895)を参照してください。
 
 GraphQLフィールド`Vulnerability.hasSolutions`は非推奨となり、GitLab 17.0で削除されます。代わりに、`Vulnerability.hasRemediations`を使用してください。
@@ -1434,7 +1522,7 @@ GraphQLフィールド`Vulnerability.hasSolutions`は非推奨となり、GitLab
 ### サインインページのカスタムテキストに関連する非推奨のパラメータ {#deprecated-parameters-related-to-custom-text-in-the-sign-in-page}
 
 - GitLab 16.2で発表
-- GitLab 17.0での削除（[breaking change](https://docs.gitlab.com/update/terminology/#breaking-change)）
+- GitLab 17.0での削除（[破壊的変更](https://docs.gitlab.com/update/terminology/#breaking-change)）
 - この変更について議論したり、詳細を確認したりするには、[非推奨に関するイシュー](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/124461)を参照してください。
 
 パラメータの`sign_in_text`と`help_text`は、[設定API](https://docs.gitlab.com/api/settings/)では非推奨です。サインインページおよび新規ユーザーアカウントページにカスタムテキストを追加するには、[Appearance API](https://docs.gitlab.com/api/appearance/)の`description`フィールドを使用します。
@@ -1442,7 +1530,7 @@ GraphQLフィールド`Vulnerability.hasSolutions`は非推奨となり、GitLab
 ### Windows Server 2022を優先してWindows Server 2019を非推奨化 {#deprecating-windows-server-2019-in-favor-of-2022}
 
 - GitLab 16.9で発表
-- GitLab 17.0での削除（[breaking change](https://docs.gitlab.com/update/terminology/#breaking-change)）
+- GitLab 17.0での削除（[破壊的変更](https://docs.gitlab.com/update/terminology/#breaking-change)）
 - この変更について議論したり、詳細を確認したりするには、[非推奨に関するイシュー](https://gitlab.com/gitlab-org/gitlab/-/issues/438554)を参照してください。
 
 Windows上のGitLab.com Runner用のWindows Server 2022（ベータ版）のリリースを最近発表しました。これに伴い、GitLab 17.0でWindows 2019を非推奨にします。
@@ -1452,7 +1540,7 @@ Windows 2022の使用に移行する方法の詳細については、[GitLab.com
 ### DingTalk OmniAuthプロバイダー {#dingtalk-omniauth-provider}
 
 - GitLab 15.10で発表
-- GitLab 17.0での削除（[breaking change](https://docs.gitlab.com/update/terminology/#breaking-change)）
+- GitLab 17.0での削除（[破壊的変更](https://docs.gitlab.com/update/terminology/#breaking-change)）
 - この変更について議論したり、詳細を確認したりするには、[非推奨に関するイシュー](https://gitlab.com/gitlab-org/gitlab/-/issues/390855)を参照してください。
 
 GitLabにDingTalk OmniAuthプロバイダーを提供する`omniauth-dingtalk` gemは、次のメジャーリリースであるGitLab 17.0で削除されます。このgemはほとんど使用されていませんが、JiHuエディションに適しています。
@@ -1460,7 +1548,7 @@ GitLabにDingTalk OmniAuthプロバイダーを提供する`omniauth-dingtalk` g
 ### Gitaly設定内のストレージの重複 {#duplicate-storages-in-gitaly-configuration}
 
 - GitLab 16.10で発表
-- GitLab 17.0での削除（[breaking change](https://docs.gitlab.com/update/terminology/#breaking-change)）
+- GitLab 17.0での削除（[破壊的変更](https://docs.gitlab.com/update/terminology/#breaking-change)）
 - この変更について議論したり、詳細を確認したりするには、[非推奨に関するイシュー](https://gitlab.com/gitlab-org/gitaly/-/issues/5598)を参照してください。
 
 同じストレージパスを指す複数のGitalyストレージの設定のサポートは非推奨であり、GitLab 17.0で削除されます。GitLab 17.0以降では、このタイプの設定でエラーが発生します。
@@ -1472,7 +1560,7 @@ GitLabにDingTalk OmniAuthプロバイダーを提供する`omniauth-dingtalk` g
 ### ダウンストリームパイプラインで修正されたファイルタイプ変数の展開 {#file-type-variable-expansion-fixed-in-downstream-pipelines}
 
 - GitLab 16.6で発表
-- GitLab 17.0での削除（[breaking change](https://docs.gitlab.com/update/terminology/#breaking-change)）
+- GitLab 17.0での削除（[破壊的変更](https://docs.gitlab.com/update/terminology/#breaking-change)）
 - この変更について議論したり、詳細を確認したりするには、[非推奨に関するイシュー](https://gitlab.com/gitlab-org/gitlab/-/issues/419445)を参照してください。
 
 以前は、別のCI/CD変数で[ファイルタイプCI/CD変数](https://docs.gitlab.com/ci/variables/#use-file-type-cicd-variables)を参照しようとすると、CI/CD変数はファイルの内容を含むように展開されていました。この動作は、一般的なシェル変数展開ルールに準拠していないため、正しくありませんでした。CI/CD変数の参照は、ファイルの内容ではなく、ファイルへのパスのみを含むように展開する必要があります。これは、[GitLab 15.7のほとんどのユースケースで修正されました](https://gitlab.com/gitlab-org/gitlab/-/issues/29407)。残念ながら、CI/CD変数をダウンストリームパイプラインに渡すことは、まだ修正されていないエッジケースですが、GitLab 17.0で修正される予定です。
@@ -1484,7 +1572,7 @@ GitLabにDingTalk OmniAuthプロバイダーを提供する`omniauth-dingtalk` g
 ### Geo: デザインとプロジェクトの従来のレプリケーション詳細ルートは非推奨 {#geo-legacy-replication-details-routes-for-designs-and-projects-deprecated}
 
 - GitLab 16.4で発表
-- GitLab 17.0での削除（[breaking change](https://docs.gitlab.com/update/terminology/#breaking-change)）
+- GitLab 17.0での削除（[破壊的変更](https://docs.gitlab.com/update/terminology/#breaking-change)）
 - この変更について議論したり、詳細を確認したりするには、[非推奨に関するイシュー](https://gitlab.com/gitlab-org/gitlab/-/issues/424002)を参照してください。
 
 従来のデータ型から[Geoセルフサービスフレームワーク](https://docs.gitlab.com/development/geo/framework/)への移行の一環として、次のレプリケーション詳細ルートは非推奨になります。
@@ -1497,7 +1585,7 @@ GitLab 16.4から17.0までは、従来のルートのルックアップは自�
 ### GitLab Helmチャートの値`gitlab.kas.privateApi.tls.*`は非推奨 {#gitlab-helm-chart-values-gitlabkasprivateapitls-are-deprecated}
 
 - GitLab 15.8で発表
-- GitLab 17.0での削除（[breaking change](https://docs.gitlab.com/update/terminology/#breaking-change)）
+- GitLab 17.0での削除（[破壊的変更](https://docs.gitlab.com/update/terminology/#breaking-change)）
 - この変更について議論したり、詳細を確認したりするには、[非推奨に関するイシュー](https://gitlab.com/gitlab-org/charts/gitlab/-/issues/4097)を参照してください。
 
 KASとHelmチャートコンポーネント間のTLS通信を容易にするために、`global.kas.tls.*` Helm値を導入しました。古い値`gitlab.kas.privateApi.tls.enabled`および`gitlab.kas.privateApi.tls.secretName`は非推奨となり、GitLab 17.0で削除される予定です。
@@ -1511,7 +1599,7 @@ KASとHelmチャートコンポーネント間のTLS通信を容易にするた�
 ### GitLab Runnerの来歴メタデータSLSA v0.2ステートメント {#gitlab-runner-provenance-metadata-slsa-v02-statement}
 
 - GitLab 16.8で発表
-- GitLab 17.0での削除（[breaking change](https://docs.gitlab.com/update/terminology/#breaking-change)）
+- GitLab 17.0での削除（[破壊的変更](https://docs.gitlab.com/update/terminology/#breaking-change)）
 - この変更について議論したり、詳細を確認したりするには、[非推奨に関するイシュー](https://gitlab.com/gitlab-org/gitlab-runner/-/issues/36869)を参照してください。
 
 現在、Runnerは来歴メタデータを生成して、SLSA v0.2に準拠するステートメントを生成するようにデフォルト設定されています。SLSA v1.0がリリースされ、GitLabでサポートされるようになったため、v0.2ステートメントは非推奨となり、GitLab 17.0での削除が計画されています。SLSA v1.0ステートメントは、GitLab 17.0で新しいデフォルトのステートメント形式になる予定です。
@@ -1519,7 +1607,7 @@ KASとHelmチャートコンポーネント間のTLS通信を容易にするた�
 ### サポートされていないメソッドによるGraphQL APIアクセス {#graphql-api-access-through-unsupported-methods}
 
 - GitLab 17.0で発表
-- GitLab 17.0での削除（[breaking change](https://docs.gitlab.com/update/terminology/#breaking-change)）
+- GitLab 17.0での削除（[破壊的変更](https://docs.gitlab.com/update/terminology/#breaking-change)）
 - この変更について議論したり、詳細を確認したりするには、[非推奨に関するイシュー](https://gitlab.com/gitlab-org/gitlab/-/issues/442520)を参照してください。
 
 GitLab 17.0以降、GraphQLへのアクセスを、[すでにドキュメント化されているサポート対象のトークンタイプ](https://docs.gitlab.com/api/graphql/#token-authentication)を介してのみ行うように制限します。
@@ -1529,7 +1617,7 @@ GitLab 17.0以降、GraphQLへのアクセスを、[すでにドキュメント�
 ### GraphQL `networkPolicies`リソースは非推奨 {#graphql-networkpolicies-resource-deprecated}
 
 - GitLab 14.8で発表
-- GitLab 17.0での削除（[breaking change](https://docs.gitlab.com/update/terminology/#breaking-change)）
+- GitLab 17.0での削除（[破壊的変更](https://docs.gitlab.com/update/terminology/#breaking-change)）
 - この変更について議論したり、詳細を確認したりするには、[非推奨に関するイシュー](https://gitlab.com/gitlab-org/gitlab/-/issues/421440)を参照してください。
 
 `networkPolicies`[GraphQLリソース](https://docs.gitlab.com/api/graphql/reference/#projectnetworkpolicies)は非推奨となっていて、GitLab 17.0で削除されます。GitLab 15.0以降、このフィールドはデータを返していません。
@@ -1537,7 +1625,7 @@ GitLab 17.0以降、GraphQLへのアクセスを、[すでにドキュメント�
 ### GraphQLフィールド`confidential`をノート上で`internal`に変更 {#graphql-field-confidential-changed-to-internal-on-notes}
 
 - GitLab 15.5で発表
-- GitLab 17.0での削除（[breaking change](https://docs.gitlab.com/update/terminology/#breaking-change)）
+- GitLab 17.0での削除（[破壊的変更](https://docs.gitlab.com/update/terminology/#breaking-change)）
 - この変更について議論したり、詳細を確認したりするには、[非推奨に関するイシュー](https://gitlab.com/gitlab-org/gitlab/-/issues/371485)を参照してください。
 
 `Note`の`confidential`フィールドは非推奨となり、`internal`に名前が変更されます。
@@ -1545,7 +1633,7 @@ GitLab 17.0以降、GraphQLへのアクセスを、[すでにドキュメント�
 ### GraphQLフィールド`registrySizeEstimated`は非推奨 {#graphql-field-registrysizeestimated-has-been-deprecated}
 
 - GitLab 16.2で発表
-- GitLab 17.0での削除（[breaking change](https://docs.gitlab.com/update/terminology/#breaking-change)）
+- GitLab 17.0での削除（[破壊的変更](https://docs.gitlab.com/update/terminology/#breaking-change)）
 - この変更について議論したり、詳細を確認したりするには、[非推奨に関するイシュー](https://gitlab.com/gitlab-org/gitlab/-/issues/416509)を参照してください。
 
 明確にするため、GraphQLフィールド`registrySizeEstimated`の名前を、対応するものと一致するように`containerRegistrySizeIsEstimated`に変更しました。`registrySizeEstimated`はGitLab 16.2で非推奨となっていて、GitLab 17.0で削除されます。代わりにGitLab 16.2で導入された`containerRegistrySizeIsEstimated`を使用してください。
@@ -1553,7 +1641,7 @@ GitLab 17.0以降、GraphQLへのアクセスを、[すでにドキュメント�
 ### GraphQLフィールド`totalWeight`は非推奨 {#graphql-field-totalweight-is-deprecated}
 
 - GitLab 16.3で発表
-- GitLab 17.0での削除（[breaking change](https://docs.gitlab.com/update/terminology/#breaking-change)）
+- GitLab 17.0での削除（[破壊的変更](https://docs.gitlab.com/update/terminology/#breaking-change)）
 - この変更について議論したり、詳細を確認したりするには、[非推奨に関するイシュー](https://gitlab.com/gitlab-org/gitlab/-/issues/416219)を参照してください。
 
 GraphQLを使用して、イシューボードのイシューの合計ウェイトをクエリできます。ただし、`totalWeight`フィールドは最大サイズ2147483647に制限されています。その結果、`totalWeight`は非推奨となり、GitLab 17.0で削除されます。
@@ -1563,7 +1651,7 @@ GraphQLを使用して、イシューボードのイシューの合計ウェイ�
 ### GraphQLのタイプ`RunnerMembershipFilter`の名前を`CiRunnerMembershipFilter`に変更 {#graphql-type-runnermembershipfilter-renamed-to-cirunnermembershipfilter}
 
 - GitLab 16.0で発表
-- GitLab 17.0での削除（[breaking change](https://docs.gitlab.com/update/terminology/#breaking-change)）
+- GitLab 17.0での削除（[破壊的変更](https://docs.gitlab.com/update/terminology/#breaking-change)）
 - この変更について議論したり、詳細を確認したりするには、[非推奨に関するイシュー](https://gitlab.com/gitlab-org/gitlab/-/issues/409333)を参照してください。
 
 GraphQLのタイプ`RunnerMembershipFilter`の名前が`CiRunnerMembershipFilter`に変更されました。GitLab 17.0では、`RunnerMembershipFilter`タイプのエイリアスが削除されます。
@@ -1571,7 +1659,7 @@ GraphQLのタイプ`RunnerMembershipFilter`の名前が`CiRunnerMembershipFilter
 ### GraphQL: `SharedRunnersSetting` enumの`DISABLED_WITH_OVERRIDE`値は非推奨 {#graphql-the-disabled_with_override-value-for-the-sharedrunnerssetting-enum-is-deprecated}
 
 - GitLab 15.8で発表
-- GitLab 17.0での削除（[breaking change](https://docs.gitlab.com/update/terminology/#breaking-change)）
+- GitLab 17.0での削除（[破壊的変更](https://docs.gitlab.com/update/terminology/#breaking-change)）
 - この変更について議論したり、詳細を確認したりするには、[非推奨に関するイシュー](https://gitlab.com/gitlab-org/gitlab/-/issues/385636)を参照してください。
 
 GitLab 17.0では、`SharedRunnersSetting` GraphQL enumタイプの`DISABLED_WITH_OVERRIDE`値が削除されます。代わりに、`DISABLED_AND_OVERRIDABLE`を使用してください。
@@ -1579,7 +1667,7 @@ GitLab 17.0では、`SharedRunnersSetting` GraphQL enumタイプの`DISABLED_WIT
 ### GraphQL: `canDestroy`と`canDelete`のサポートを非推奨化 {#graphql-deprecate-support-for-candestroy-and-candelete}
 
 - GitLab 16.6で発表
-- GitLab 17.0での削除（[breaking change](https://docs.gitlab.com/update/terminology/#breaking-change)）
+- GitLab 17.0での削除（[破壊的変更](https://docs.gitlab.com/update/terminology/#breaking-change)）
 - この変更について議論したり、詳細を確認したりするには、[非推奨に関するイシュー](https://gitlab.com/gitlab-org/gitlab/-/issues/390754)を参照してください。
 
 パッケージレジストリのユーザーインターフェースは、GitLab GraphQL APIに依存しています。誰もが簡単にコントリビュートできるように、すべてのGitLab製品領域でフロントエンドが一貫してコーディングされていることが重要です。ただし、GitLab 16.6より前は、パッケージレジストリUIの権限処理が製品の他の領域とは異なっていました。
@@ -1591,7 +1679,7 @@ GitLab 17.0では、`SharedRunnersSetting` GraphQL enumタイプの`DISABLED_WIT
 ### HashiCorp Vaultインテグレーションはデフォルトで`CI_JOB_JWT` CI/CDジョブトークンの使用を停止 {#hashicorp-vault-integration-will-no-longer-use-the-ci_job_jwt-cicd-job-token-by-default}
 
 - GitLab 15.9で発表
-- GitLab 17.0での削除（[breaking change](https://docs.gitlab.com/update/terminology/#breaking-change)）
+- GitLab 17.0での削除（[破壊的変更](https://docs.gitlab.com/update/terminology/#breaking-change)）
 - この変更について議論したり、詳細を確認したりするには、[非推奨に関するイシュー](https://gitlab.com/gitlab-org/gitlab/-/issues/366798)を参照してください。
 
 JWTとOIDCを使用してCIワークフローのセキュリティを向上させる取り組みの一環として、ネイティブHashiCorpインテグレーションもGitLab 16.0で更新されています。Vaultからシークレットを取得するために[`secrets:vault`](https://docs.gitlab.com/ci/yaml/#secretsvault)キーワードを使用するすべてのプロジェクトは、[IDトークンを使用するように設定](https://docs.gitlab.com/ci/secrets/id_token_authentication/#configure-automatic-id-token-authentication)する必要があります。IDトークンは15.7で導入されました。
@@ -1609,7 +1697,7 @@ GitLab 16.0以降では、次のようになります。
 ### Auto DevOpsビルドのHerokuイメージのアップグレード {#heroku-image-upgrade-in-auto-devops-build}
 
 - GitLab 16.9で発表
-- GitLab 17.0での削除（[breaking change](https://docs.gitlab.com/update/terminology/#breaking-change)）
+- GitLab 17.0での削除（[破壊的変更](https://docs.gitlab.com/update/terminology/#breaking-change)）
 - この変更について議論したり、詳細を確認したりするには、[非推奨に関するイシュー](https://gitlab.com/gitlab-org/gitlab/-/issues/437937)を参照してください。
 
 GitLab 17.0では、`auto-build-image`プロジェクトは`heroku/builder:20`イメージから`heroku/builder:22`にアップグレードされます。
@@ -1621,7 +1709,7 @@ GitLab 17.0以降も`heroku/builder:20`を引き続き使用するには、`AUTO
 ### 内部コンテナレジストリAPIタグの削除エンドポイント {#internal-container-registry-api-tag-deletion-endpoint}
 
 - GitLab 16.4で発表
-- GitLab 17.0での削除（[breaking change](https://docs.gitlab.com/update/terminology/#breaking-change)）
+- GitLab 17.0での削除（[破壊的変更](https://docs.gitlab.com/update/terminology/#breaking-change)）
 - この変更について議論したり、詳細を確認したりするには、[非推奨に関するイシュー](https://gitlab.com/gitlab-org/container-registry/-/issues/1094)を参照してください。
 
 DockerレジストリHTTP API V2仕様（後に[OCIディストリビューション仕様](https://github.com/opencontainers/distribution-spec/blob/main/spec.md)に置き換えられました）には、タグの削除操作が含まれていませんでした。また、（タグではなくマニフェストの削除を含む）時間がかかる安全ではない回避策を使用して、同じ目的を達成する必要がありました。
@@ -1641,7 +1729,7 @@ DockerレジストリHTTP API V2仕様（後に[OCIディストリビューシ�
 ### JWT `/-/jwks`インスタンスエンドポイントは非推奨 {#jwt--jwks-instance-endpoint-is-deprecated}
 
 - GitLab 16.7で発表
-- GitLab 17.0での削除（[breaking change](https://docs.gitlab.com/update/terminology/#breaking-change)）
+- GitLab 17.0での削除（[破壊的変更](https://docs.gitlab.com/update/terminology/#breaking-change)）
 - この変更について議論したり、詳細を確認したりするには、[非推奨に関するイシュー](https://gitlab.com/gitlab-org/gitlab/-/issues/221031)を参照してください。
 
 GitLab 17.0で[古いJSON Webトークンバージョンが非推奨](https://docs.gitlab.com/update/deprecations/?removal_milestone=17.0#old-versions-of-json-web-tokens-are-deprecated)になることで、`/oauth/discovery/keys`のエイリアスである関連する`/-/jwks`エンドポイントは不要になり、削除されます。認証設定で`jwks_url`を指定している場合は、代わりに設定を`oauth/discovery/keys`に更新し、エンドポイントでの`/-/jwks`の使用箇所をすべて削除します。認証設定で`oauth_discovery_keys`をすでに使用し、エンドポイントで`/-/jwks`エイリアスをすでに使用している場合は、エンドポイントから`/-/jwks`を削除します。たとえば、`https://gitlab.example.com/-/jwks`を`https://gitlab.example.com`に変更します。
@@ -1649,7 +1737,7 @@ GitLab 17.0で[古いJSON Webトークンバージョンが非推奨](https://do
 ### 従来のGeo Prometheusメトリクス {#legacy-geo-prometheus-metrics}
 
 - GitLab 16.6で発表
-- GitLab 17.0での削除（[breaking change](https://docs.gitlab.com/update/terminology/#breaking-change)）
+- GitLab 17.0での削除（[破壊的変更](https://docs.gitlab.com/update/terminology/#breaking-change)）
 - この変更について議論したり、詳細を確認したりするには、[非推奨に関するイシュー](https://gitlab.com/gitlab-org/gitlab/-/issues/430192)を参照してください。
 
 [Geoセルフサービスフレームワーク](https://docs.gitlab.com/development/geo/framework/)へのプロジェクトの移行後、多くの[Prometheus](https://docs.gitlab.com/administration/monitoring/prometheus/)メトリクスを非推奨にしました。次のGeo関連のPrometheusメトリクスは非推奨となり、17.0で削除されます。以下の表に、非推奨のメトリクスとそれぞれの代替メトリクスを示します。代替メトリクスは、GitLab 16.3.0以降で使用できます。
@@ -1668,7 +1756,7 @@ GitLab 17.0で[古いJSON Webトークンバージョンが非推奨](https://do
 ### ライセンスリストは非推奨 {#license-list-is-deprecated}
 
 - GitLab 16.8で発表
-- GitLab 17.0での削除（[breaking change](https://docs.gitlab.com/update/terminology/#breaking-change)）
+- GitLab 17.0での削除（[破壊的変更](https://docs.gitlab.com/update/terminology/#breaking-change)）
 - この変更について議論したり、詳細を確認したりするには、[非推奨に関するイシュー](https://gitlab.com/gitlab-org/gitlab/-/issues/436100)を参照してください。
 
 GitLabでは現在、プロジェクトのすべてのライセンスとそのライセンスを使用するすべてのコンポーネントのリストを、ライセンスリストで確認できます。16.8の時点で、ライセンスリストは非推奨であり、破壊的な変更として17.0で削除される予定です。プロジェクトまたはグループが使用しているすべてのライセンスに、依存関係リストでアクセスできるようになり、ライセンスによるフィルタリングも可能です。
@@ -1676,7 +1764,7 @@ GitLabでは現在、プロジェクトのすべてのライセンスとその�
 ### sbt 1.0.Xのライセンススキャンのサポート {#license-scanning-support-for-sbt-10x}
 
 - GitLab 16.8で発表
-- GitLab 17.0での削除（[breaking change](https://docs.gitlab.com/update/terminology/#breaking-change)）
+- GitLab 17.0での削除（[破壊的変更](https://docs.gitlab.com/update/terminology/#breaking-change)）
 - この変更について議論したり、詳細を確認したりするには、[非推奨に関するイシュー](https://gitlab.com/gitlab-org/gitlab/-/issues/437591)を参照してください。
 
 GitLab 17.0では、sbt 1.0.xのライセンススキャンのサポートが削除されます。
@@ -1701,7 +1789,7 @@ GitLab 17.0以降に備えるには:
 ### リポジトリディレクトリの一覧表示Rakeタスク {#list-repository-directories-rake-task}
 
 - GitLab 16.7で発表
-- GitLab 17.0での削除（[breaking change](https://docs.gitlab.com/update/terminology/#breaking-change)）
+- GitLab 17.0での削除（[破壊的変更](https://docs.gitlab.com/update/terminology/#breaking-change)）
 - この変更について議論したり、詳細を確認したりするには、[非推奨に関するイシュー](https://gitlab.com/gitlab-org/gitlab/-/issues/384361)を参照してください。
 
 `gitlab-rake gitlab:list_repos` Rakeタスクは機能せず、GitLab 17.0で削除されます。GitLabを移行する場合は、代わりに[バックアップと復元](https://docs.gitlab.com/administration/operations/moving_repositories/#recommended-approach-in-all-cases)を使用してください。
@@ -1709,7 +1797,7 @@ GitLab 17.0以降に備えるには:
 ### GraphQL APIを使用してパッケージ設定を変更する機能を提供するメンテナーロール {#maintainer-role-providing-the-ability-to-change-package-settings-using-graphql-api}
 
 - GitLab 15.8で発表
-- GitLab 17.0での削除（[breaking change](https://docs.gitlab.com/update/terminology/#breaking-change)）
+- GitLab 17.0での削除（[破壊的変更](https://docs.gitlab.com/update/terminology/#breaking-change)）
 - この変更について議論したり、詳細を確認したりするには、[非推奨に関するイシュー](https://gitlab.com/gitlab-org/gitlab/-/issues/370471)を参照してください。
 
 メンテナーロールを持つユーザーがGraphQL APIを使用してグループの**パッケージとレジストリ**の設定を変更する機能はGitLab 15.8で非推奨となり、GitLab 17.0で削除される予定です。これらの設定には以下が含まれます。
@@ -1723,7 +1811,7 @@ GitLab 17.0以降では、GitLab UIまたはGraphQL APIを使用して、グル�
 ### Maven 3.8.8未満のバージョンの依存関係スキャンとライセンススキャンサポート {#maven-versions-below-388-support-in-dependency-scanning-and-license-scanning}
 
 - GitLab 16.9で発表
-- GitLab 17.0での削除（[breaking change](https://docs.gitlab.com/update/terminology/#breaking-change)）
+- GitLab 17.0での削除（[破壊的変更](https://docs.gitlab.com/update/terminology/#breaking-change)）
 - この変更について議論したり、詳細を確認したりするには、[非推奨に関するイシュー](https://gitlab.com/gitlab-org/gitlab/-/issues/438772)を参照してください。
 
 GitLab 17.0では、Maven 3.8.8未満のバージョンに対する依存関係スキャンおよびライセンススキャンのサポートが終了します。
@@ -1733,7 +1821,7 @@ GitLab 17.0では、Maven 3.8.8未満のバージョンに対する依存関係�
 ### Sidekiqオプションの最小並行処理と最大並行処理 {#min-concurrency-and-max-concurrency-in-sidekiq-options}
 
 - GitLab 16.9で発表
-- GitLab 17.0での削除（[breaking change](https://docs.gitlab.com/update/terminology/#breaking-change)）
+- GitLab 17.0での削除（[破壊的変更](https://docs.gitlab.com/update/terminology/#breaking-change)）
 - この変更について議論したり、詳細を確認したりするには、[非推奨に関するイシュー](https://gitlab.com/gitlab-org/gitlab/-/issues/439687)を参照してください。
 
 Linuxパッケージ（Omnibus）インストールの場合、[`sidekiq['min_concurrency']`および`sidekiq['max_concurrency']`](https://docs.gitlab.com/administration/sidekiq/extra_sidekiq_processes/#manage-thread-counts-explicitly)の設定はGitLab 16.9で非推奨となり、GitLab 17.0で削除されます。
@@ -1749,7 +1837,7 @@ GitLab Helmチャートインストールの場合、`SIDEKIQ_CONCURRENCY_MIN`�
 ### `/users` REST APIエンドポイントのオフセットページネーションは非推奨 {#offset-pagination-for-users-rest-api-endpoint-is-deprecated}
 
 - GitLab 16.5で発表
-- GitLab 17.0での削除（[breaking change](https://docs.gitlab.com/update/terminology/#breaking-change)）
+- GitLab 17.0での削除（[破壊的変更](https://docs.gitlab.com/update/terminology/#breaking-change)）
 - この変更について議論したり、詳細を確認したりするには、[非推奨に関するイシュー](https://gitlab.com/gitlab-org/gitlab/-/issues/426547)を参照してください。
 
 `/users` REST APIのオフセットページネーションはGitLab 16.5で非推奨となり、GitLab 17.0で削除される予定です。代わりに[キーセットページネーション](https://docs.gitlab.com/api/rest/#keyset-based-pagination)を使用してください。
@@ -1757,7 +1845,7 @@ GitLab Helmチャートインストールの場合、`SIDEKIQ_CONCURRENCY_MIN`�
 ### 古いバージョンのJSON Webトークンは非推奨 {#old-versions-of-json-web-tokens-are-deprecated}
 
 - GitLab 15.9で発表
-- GitLab 17.0での削除（[breaking change](https://docs.gitlab.com/update/terminology/#breaking-change)）
+- GitLab 17.0での削除（[破壊的変更](https://docs.gitlab.com/update/terminology/#breaking-change)）
 - この変更について議論したり、詳細を確認したりするには、[非推奨に関するイシュー](https://gitlab.com/gitlab-org/gitlab/-/issues/366798)を参照してください。
 
 OIDCをサポートする[IDトークン](https://docs.gitlab.com/ci/secrets/id_token_authentication/)は、GitLab 15.7で導入されました。これらのトークンは、古いJSON Webトークン（JWT）よりも設定しやすく、OIDCに準拠しており、IDトークンが明示的に設定されているCI/CDジョブでのみ使用できます。IDトークンは、すべてのジョブで公開されている古い`CI_JOB_JWT*` JSON Webトークンよりも安全であるため、次の古いJSON Webトークンは非推奨になります。
@@ -1781,7 +1869,7 @@ GitLab 17.0では、非推奨のトークンは完全に削除され、CI/CDジ�
 ### OmniAuth Facebookは非推奨 {#omniauth-facebook-is-deprecated}
 
 - GitLab 16.2で発表
-- GitLab 17.0での削除（[breaking change](https://docs.gitlab.com/update/terminology/#breaking-change)）
+- GitLab 17.0での削除（[破壊的変更](https://docs.gitlab.com/update/terminology/#breaking-change)）
 - この変更について議論したり、詳細を確認したりするには、[非推奨に関するイシュー](https://gitlab.com/gitlab-org/gitlab/-/issues/416000)を参照してください。
 
 OmniAuth FacebookのサポートはGitLab 17.0で削除されます。最後のgemリリースは2021年に行われ、現在はメンテナンスされていません。現在の使用率は0.1%未満です。OmniAuth Facebookを使用している場合は、サポートが削除される前に、[サポートされているプロバイダー](https://docs.gitlab.com/integration/omniauth/#supported-providers)に切り替えてください。
@@ -1789,7 +1877,7 @@ OmniAuth FacebookのサポートはGitLab 17.0で削除されます。最後のg
 ### APIペイロードのパッケージパイプラインのページネーション {#package-pipelines-in-api-payload-is-paginated}
 
 - GitLab 14.5で発表
-- GitLab 17.0での削除（[breaking change](https://docs.gitlab.com/update/terminology/#breaking-change)）
+- GitLab 17.0での削除（[破壊的変更](https://docs.gitlab.com/update/terminology/#breaking-change)）
 - この変更について議論したり、詳細を確認したりするには、[非推奨に関するイシュー](https://gitlab.com/gitlab-org/gitlab/-/issues/289956)を参照してください。
 
 `/api/v4/projects/:id/packages`へのAPIリクエストは、パッケージのページネーションされた結果を返します。各パッケージは、この応答ですべてのパイプラインを一覧表示します。パッケージが数百または数千の関連するパイプラインを持つ可能性があるため、これはパフォーマンス上の懸念事項です。
@@ -1799,10 +1887,10 @@ OmniAuth FacebookのサポートはGitLab 17.0で削除されます。最後のg
 ### PostgreSQL 13はサポート終了 {#postgresql-13-no-longer-supported}
 
 - GitLab 16.0で発表
-- GitLab 17.0での削除（[breaking change](https://docs.gitlab.com/update/terminology/#breaking-change)）
+- GitLab 17.0での削除（[破壊的変更](https://docs.gitlab.com/update/terminology/#breaking-change)）
 - この変更について議論したり、詳細を確認したりするには、[非推奨に関するイシュー](https://gitlab.com/groups/gitlab-org/-/epics/9065)を参照してください。
 
-GitLabは、[PostgreSQLの年間アップグレードケイデンス](https://handbook.gitlab.com/handbook/engineering/infrastructure-platforms/data-access/database-framework/postgresql-upgrade-cadence/)に従います。
+GitLabは、[PostgreSQLの年間アップグレードケイデンス](https://handbook.gitlab.com/handbook/engineering/data-engineering/database-excellence/database-frameworks/postgresql-upgrade-cadence/)に従います。
 
 PostgreSQL 13のサポートは、GitLab 17.0で削除される予定です。GitLab 17.0では、PostgreSQL 14が最低限必要なPostgreSQLのバージョンとなります。
 
@@ -1811,7 +1899,7 @@ PostgreSQL 13は、GitLab 16リリースサイクル全体でサポートされ�
 ### プロキシベースのDASTは非推奨 {#proxy-based-dast-deprecated}
 
 - GitLab 16.6で発表
-- GitLab 17.0での削除（[breaking change](https://docs.gitlab.com/update/terminology/#breaking-change)）
+- GitLab 17.0での削除（[破壊的変更](https://docs.gitlab.com/update/terminology/#breaking-change)）
 - この変更について議論したり、詳細を確認したりするには、[非推奨に関するイシュー](https://gitlab.com/gitlab-org/gitlab/-/issues/430966)を参照してください。
 
 GitLab 17.0以降、プロキシベースのDASTはサポートされません。動的な解析を介したセキュリティ検出結果のためにプロジェクトの分析を継続するには、ブラウザベースのDASTに移行してください。プロキシベースのDASTの上に構築されたインキュベーション機能である**Breach and Attack Simulation**も、この非推奨化の対象に含まれており、17.0以降はサポートされません。
@@ -1820,7 +1908,7 @@ GitLab 17.0以降、プロキシベースのDASTはサポートされません�
 
 - GitLab 15.9で発表
 - GitLab 16.0でサポート終了
-- GitLab 17.0での削除（[breaking change](https://docs.gitlab.com/update/terminology/#breaking-change)）
+- GitLab 17.0での削除（[破壊的変更](https://docs.gitlab.com/update/terminology/#breaking-change)）
 - この変更について議論したり、詳細を確認したりするには、[非推奨に関するイシュー](https://gitlab.com/gitlab-org/gitlab/-/issues/390787)を参照してください。
 
 [キューセレクター](https://docs.gitlab.com/administration/sidekiq/processing_specific_job_classes/#queue-selectors)（一連のキューをリッスンする複数のプロセスを持つ）と[ネゲート設定](https://docs.gitlab.com/administration/sidekiq/processing_specific_job_classes/#negate-settings)を使用してSidekiqを実行することは非推奨であり、17.0で完全に削除されます。
@@ -1832,7 +1920,7 @@ GitLab 17.0以降、プロキシベースのDASTはサポートされません�
 ### Linux上の小さなGitLab.com Runnerからのタグの削除 {#removal-of-tags-from-small-gitlabcom-runners-on-linux}
 
 - GitLab 16.9で発表
-- GitLab 17.0での削除（[breaking change](https://docs.gitlab.com/update/terminology/#breaking-change)）
+- GitLab 17.0での削除（[破壊的変更](https://docs.gitlab.com/update/terminology/#breaking-change)）
 - この変更について議論したり、詳細を確認したりするには、[非推奨に関するイシュー](https://gitlab.com/gitlab-org/gitlab-runner/-/issues/30829)を参照してください。
 
 ラベルとして使用されていたという歴史的な理由から、小規模なLinux GitLab.com Runnerには多くのタグが付与されていました。`saas-linux-small-amd64`だけを使用するようにタグを効率化し、すべてのGitLab.com Runnerで一貫性を持たせたいと考えています。
@@ -1844,7 +1932,7 @@ GitLab 17.0以降、プロキシベースのDASTはサポートされません�
 ### 必須のパイプライン設定は非推奨 {#required-pipeline-configuration-is-deprecated}
 
 - GitLab 15.9で発表
-- GitLab 17.0での削除（[breaking change](https://docs.gitlab.com/update/terminology/#breaking-change)）
+- GitLab 17.0での削除（[破壊的変更](https://docs.gitlab.com/update/terminology/#breaking-change)）
 - この変更について議論したり、詳細を確認したりするには、[非推奨に関するイシュー](https://gitlab.com/gitlab-org/gitlab/-/issues/389467)を参照してください。
 
 必須のパイプライン設定はGitLab 17.0で削除されます。これは、UltimateプランのGitLab Self-Managedのユーザーに影響します。
@@ -1861,7 +1949,7 @@ GitLab 17.0以降、プロキシベースのDASTはサポートされません�
 ### GitLab 17.0でのSASTアナライザーのカバレッジの変更 {#sast-analyzer-coverage-changing-in-gitlab-170}
 
 - GitLab 16.9で発表
-- GitLab 17.0での削除（[breaking change](https://docs.gitlab.com/update/terminology/#breaking-change)）
+- GitLab 17.0での削除（[破壊的変更](https://docs.gitlab.com/update/terminology/#breaking-change)）
 - この変更について議論したり、詳細を確認したりするには、[非推奨に関するイシュー](https://gitlab.com/gitlab-org/gitlab/-/issues/412060)を参照してください。
 
 GitLab SASTでデフォルトで使用されるサポート対象の[アナライザー](https://docs.gitlab.com/user/application_security/sast/analyzers/)の数を削減しています。これは、さまざまなプログラミング言語で、より高速で一貫性のあるユーザーエクスペリエンスを実現するための長期的な戦略の一環です。
@@ -1885,7 +1973,7 @@ GitLab 17.0では、次のようになります。
 ### `_EXCLUDED_ANALYZERS`変数を使用したスキャン実行ポリシーによるプロジェクト変数のオーバーライド {#scan-execution-policies-using-_excluded_analyzers-variable-override-project-variables}
 
 - GitLab 16.9で発表
-- GitLab 17.0での削除（[breaking change](https://docs.gitlab.com/update/terminology/#breaking-change)）
+- GitLab 17.0での削除（[破壊的変更](https://docs.gitlab.com/update/terminology/#breaking-change)）
 - この変更について議論したり、詳細を確認したりするには、[非推奨に関するイシュー](https://gitlab.com/gitlab-org/gitlab/-/issues/424513)を参照してください。
 
 [SEP変数を最高の優先度で適用する](https://gitlab.com/gitlab-org/gitlab/-/issues/424028)ことを配信および検証した後、意図しない動作が発見されました。これにより、ユーザーはパイプライン設定で`_EXCLUDED_PATHS`を設定できるようになりましたが、ポリシーとパイプライン設定の両方で`_EXCLUDED_ANALYZERS`を設定することはできなくなりました。
@@ -1897,7 +1985,7 @@ GitLab 17.0では、次のようになります。
 ### Secureアナライザーのメジャーバージョン更新 {#secure-analyzers-major-version-update}
 
 - GitLab 16.9で発表
-- GitLab 17.0での削除（[breaking change](https://docs.gitlab.com/update/terminology/#breaking-change)）
+- GitLab 17.0での削除（[破壊的変更](https://docs.gitlab.com/update/terminology/#breaking-change)）
 - この変更について議論したり、詳細を確認したりするには、[非推奨に関するイシュー](https://gitlab.com/gitlab-org/gitlab/-/issues/438123)を参照してください。
 
 Secureステージでは、GitLab 17.0のリリースと連携して、アナライザーのメジャーバージョンが引き上げられます。
@@ -1932,7 +2020,7 @@ GitLab 16.0 - 16.11のユーザーは、GitLab 17.0のリリースまでは通�
 ### セキュリティポリシーフィールド`match_on_inclusion`は非推奨 {#security-policy-field-match_on_inclusion-is-deprecated}
 
 - GitLab 16.9で発表
-- GitLab 17.0での削除（[breaking change](https://docs.gitlab.com/update/terminology/#breaking-change)）
+- GitLab 17.0での削除（[破壊的変更](https://docs.gitlab.com/update/terminology/#breaking-change)）
 - この変更について議論したり、詳細を確認したりするには、[非推奨に関するイシュー](https://gitlab.com/gitlab-org/gitlab/-/issues/424513)を参照してください。
 
 [スキャン結果ポリシーの追加フィルターのサポート](https://gitlab.com/groups/gitlab-org/-/epics/6826#note_1341377224)では、`newly_detected`フィールドを`new_needs_triage`および`new_dismissed`の2つのオプションに分割しました。セキュリティポリシーYAMLに両方のオプションを含めることで、元の`newly_detected`フィールドと同じ結果が得られます。ただし、`new_needs_triage`のみを使用することで、フィルターを絞り込んで、無視された検出結果を無視できるようになりました。[エピック10203](https://gitlab.com/groups/gitlab-org/-/epics/10203#note_1545826313)でのディスカッションに基づいて、YAML定義の明確化のために、`match_on_inclusion`フィールドの名前を`match_on_inclusion_license`に変更しました。
@@ -1940,7 +2028,7 @@ GitLab 16.0 - 16.11のユーザーは、GitLab 17.0のリリースまでは通�
 ### セキュリティポリシーフィールド`newly_detected`は非推奨 {#security-policy-field-newly_detected-is-deprecated}
 
 - GitLab 16.5で発表
-- GitLab 17.0での削除（[breaking change](https://docs.gitlab.com/update/terminology/#breaking-change)）
+- GitLab 17.0での削除（[破壊的変更](https://docs.gitlab.com/update/terminology/#breaking-change)）
 - この変更について議論したり、詳細を確認したりするには、[非推奨に関するイシュー](https://gitlab.com/gitlab-org/gitlab/-/issues/422414)を参照してください。
 
 [スキャン結果ポリシーの追加フィルターのサポート](https://gitlab.com/groups/gitlab-org/-/epics/6826#note_1341377224)では、`newly_detected`フィールドを`new_needs_triage`および`new_dismissed`の2つのオプションに分割しました。セキュリティポリシーYAMLに両方のオプションを含めることで、元の`newly_detected`フィールドと同じ結果が得られます。ただし、`new_needs_triage`のみを使用することで、フィルターを絞り込んで、無視された検出結果を無視できるようになりました。
@@ -1948,7 +2036,7 @@ GitLab 16.0 - 16.11のユーザーは、GitLab 17.0のリリースまでは通�
 ### 自己ホスト型Sentryバージョン21.4.1以前のサポート {#support-for-self-hosted-sentry-versions-2141-and-earlier}
 
 - GitLab 16.9で発表
-- GitLab 17.0での削除（[breaking change](https://docs.gitlab.com/update/terminology/#breaking-change)）
+- GitLab 17.0での削除（[破壊的変更](https://docs.gitlab.com/update/terminology/#breaking-change)）
 - この変更について議論したり、詳細を確認したりするには、[非推奨に関するイシュー](https://gitlab.com/gitlab-org/gitlab/-/issues/435791)を参照してください。
 
 自己ホスト型Sentryバージョン21.4.1以前のサポートは非推奨となり、GitLab 17.0で削除されます。
@@ -1956,12 +2044,12 @@ GitLab 16.0 - 16.11のユーザーは、GitLab 17.0のリリースまでは通�
 自己ホスト型Sentryのバージョンが21.4.1以前の場合、GitLab 17.0以降にアップグレードすると、GitLabインスタンスからエラーを収集できなくなる可能性があります。GitLabインスタンスからSentryインスタンスへのエラー送信を継続するには、Sentryをバージョン21.5.0以降にアップグレードします。詳細については、[Sentryドキュメント](https://develop.sentry.dev/self-hosted/releases/)を参照してください。
 
 > [!note]
-> [GitLabインスタンスのエラー追跡機能](https://docs.gitlab.com/omnibus/settings/configuration/#error-reporting-and-logging-with-sentry)に対する非推奨のサポートは、管理者向けです。非推奨のサポートは、デベロッパー自身のデプロイ済みアプリケーション用の[GitLabエラー追跡](https://docs.gitlab.com/operations/error_tracking/#sentry-error-tracking)には関連していません。
+> この非推奨のサポートは、管理者向けの[GitLabインスタンスエラー追跡機能](https://docs.gitlab.com/omnibus/settings/configuration/#error-reporting-and-logging-with-sentry)に関するものです。非推奨のサポートは、デベロッパー自身のデプロイ済みアプリケーション用の[GitLabエラー追跡](https://docs.gitlab.com/operations/error_tracking/#sentry-error-tracking)には関連していません。
 
 ### バックアップ用のカスタムスキーマの設定のサポートは非推奨 {#support-for-setting-custom-schema-for-backup-is-deprecated}
 
 - GitLab 16.8で発表
-- GitLab 17.0での削除（[breaking change](https://docs.gitlab.com/update/terminology/#breaking-change)）
+- GitLab 17.0での削除（[破壊的変更](https://docs.gitlab.com/update/terminology/#breaking-change)）
 - この変更について議論したり、詳細を確認したりするには、[非推奨に関するイシュー](https://gitlab.com/gitlab-org/gitlab/-/issues/435210)を参照してください。
 
 Linuxパッケージインストールの場合は、`/etc/gitlab/gitlab.rb`の`gitlab_rails['backup_pg_schema'] = '<schema_name>'`を設定し、自己コンパイルインストールの場合は、`config/gitlab.yml`を編集することにより、バックアップ用のカスタムスキーマを使用するようにGitLabを設定することが可能でした。
@@ -1971,7 +2059,7 @@ Linuxパッケージインストールの場合は、`/etc/gitlab/gitlab.rb`の`
 ### GitHubインポーターRakeタスク {#the-github-importer-rake-task}
 
 - GitLab 16.6で発表
-- GitLab 17.0での削除（[breaking change](https://docs.gitlab.com/update/terminology/#breaking-change)）
+- GitLab 17.0での削除（[破壊的変更](https://docs.gitlab.com/update/terminology/#breaking-change)）
 - この変更について議論したり、詳細を確認したりするには、[非推奨に関するイシュー](https://gitlab.com/gitlab-org/gitlab/-/issues/428225)を参照してください。
 
 GitHubインポーターRakeタスクは、GitLab 16.6で非推奨となりました。Rakeタスクは、APIでサポートされているいくつかの機能が欠落していて、積極的にメンテナンスされていません。
@@ -1983,7 +2071,7 @@ GitHubインポーターRakeタスクは、GitLab 16.6で非推奨となりま�
 ### Visual Reviewsツールは非推奨 {#the-visual-reviews-tool-is-deprecated}
 
 - GitLab 15.8で発表
-- GitLab 17.0での削除（[breaking change](https://docs.gitlab.com/update/terminology/#breaking-change)）
+- GitLab 17.0での削除（[破壊的変更](https://docs.gitlab.com/update/terminology/#breaking-change)）
 - この変更について議論したり、詳細を確認したりするには、[非推奨に関するイシュー](https://gitlab.com/gitlab-org/gitlab/-/issues/387751)を参照してください。
 
 お客様の利用状況と機能が限られているため、レビューアプリのVisual Reviews機能は非推奨となり、削除されます。代替手段は計画されておらず、ユーザーはGitLab 17.0の前にVisual Reviewsの使用を停止する必要があります。
@@ -1991,7 +2079,7 @@ GitHubインポーターRakeタスクは、GitLab 16.6で非推奨となりま�
 ### `gitlab-runner exec`コマンドは非推奨 {#the-gitlab-runner-exec-command-is-deprecated}
 
 - GitLab 15.7で発表
-- GitLab 17.0での削除（[breaking change](https://docs.gitlab.com/update/terminology/#breaking-change)）
+- GitLab 17.0での削除（[破壊的変更](https://docs.gitlab.com/update/terminology/#breaking-change)）
 - この変更について議論したり、詳細を確認したりするには、[非推奨に関するイシュー](https://gitlab.com/gitlab-org/gitlab/-/issues/385235)を参照してください。
 
 `gitlab-runner exec`コマンドは非推奨となり、16.0でGitLab Runnerから完全に削除されます。`gitlab-runner exec`機能は当初、GitLabインスタンスへの更新をコミットしなくても、ローカルシステムでGitLab CIパイプラインを検証できるようにするために開発されました。ただし、GitLab CIの継続的な進化に伴い、すべてのGitLab CI機能を`gitlab-runner exec`に複製することはもはや実現可能ではありませんでした。パイプライン構文と検証の[シミュレーション](https://docs.gitlab.com/ci/pipeline_editor/#simulate-a-cicd-pipeline)がGitLabパイプラインエディタで利用できます。
@@ -1999,19 +2087,19 @@ GitHubインポーターRakeタスクは、GitLab 16.6で非推奨となりま�
 ### Kubernetes向けGitLabエージェントのプルベースのデプロイ機能は非推奨 {#the-pull-based-deployment-features-of-the-gitlab-agent-for-kubernetes-is-deprecated}
 
 - GitLab 16.2で発表
-- GitLab 17.0での削除（[breaking change](https://docs.gitlab.com/update/terminology/#breaking-change)）
+- GitLab 17.0での削除（[破壊的変更](https://docs.gitlab.com/update/terminology/#breaking-change)）
 - この変更について議論したり、詳細を確認したりするには、[非推奨に関するイシュー](https://gitlab.com/gitlab-org/gitlab/-/issues/406545)を参照してください。
 
 Fluxおよび関連するインテグレーションを優先して、Kubernetes向けGitLabエージェントに組み込まれているプルベースのデプロイ機能は非推奨になります。
 
 Kubernetes向けGitLabエージェントは**非推奨ではありません**。この変更は、エージェントのプルベースの機能のみに影響します。他のすべての機能はそのまま残り、GitLabは引き続きKubernetes向けエージェントをサポートします。
 
-エージェントをプルベースのデプロイに使用する場合は、[Fluxに移行する](https://docs.gitlab.com/user/clusters/agent/gitops/agent/#migrate-to-flux)必要があります。FluxはGitOps向けの成熟したCNCFプロジェクトであるため、[2023年2月にFluxをGitLabと統合](https://about.gitlab.com/blog/2023/02/08/why-did-we-choose-to-integrate-fluxcd-with-gitlab/)することを決定しました。
+エージェントをプルベースのデプロイに使用する場合は、[Fluxに移行する](https://docs.gitlab.com/user/clusters/agent/gitops/agent/#migrate-to-flux)必要があります。FluxはGitOps向けの成熟したCNCFプロジェクトであるため、[2023年2月にFluxをGitLabと統合](https://about.gitlab.com/blog/why-did-we-choose-to-integrate-fluxcd-with-gitlab/)することを決定しました。
 
 ### Twitter OmniAuthログインオプションはGitLab Self-Managedで非推奨 {#twitter-omniauth-login-option-is-deprecated-from-gitlab-self-managed}
 
 - GitLab 16.3で発表
-- GitLab 17.0での削除（[breaking change](https://docs.gitlab.com/update/terminology/#breaking-change)）
+- GitLab 17.0での削除（[破壊的変更](https://docs.gitlab.com/update/terminology/#breaking-change)）
 - この変更について議論したり、詳細を確認したりするには、[非推奨に関するイシュー](https://gitlab.com/gitlab-com/Product/-/issues/11417)を参照してください。
 
 Twitter OAuth 1.0a OmniAuthは非推奨となり、使用率が低く、gemのサポートがないため、GitLab 17.0のGitLab Self-Managedでは削除される予定です。代わりに、[サポートされている別のOmniAuthプロバイダー](https://docs.gitlab.com/integration/omniauth/#supported-providers)を使用してください。
@@ -2019,7 +2107,7 @@ Twitter OAuth 1.0a OmniAuthは非推奨となり、使用率が低く、gemの�
 ### 統合承認ルールは非推奨 {#unified-approval-rules-are-deprecated}
 
 - GitLab 16.1で発表
-- GitLab 17.0での削除（[breaking change](https://docs.gitlab.com/update/terminology/#breaking-change)）
+- GitLab 17.0での削除（[破壊的変更](https://docs.gitlab.com/update/terminology/#breaking-change)）
 - この変更について議論したり、詳細を確認したりするには、[非推奨に関するイシュー](https://gitlab.com/groups/gitlab-org/-/epics/9662)を参照してください。
 
 より柔軟性の高い複数の承認ルールを優先して、統合承認ルールは非推奨となります。破壊的な変更を行わないと、統合承認ルールを複数の承認ルールに移行できない場合があります。手動での移行を支援するため、移行ドキュメントを提供しました。
@@ -2031,7 +2119,7 @@ GitLab 15.11では、統合承認ルールのUIサポートが削除されまし
 ### Linux上のGitLab.com Runnerのオペレーティングシステムバージョンのアップグレード {#upgrading-the-operating-system-version-of-gitlabcom-runners-on-linux}
 
 - GitLab 16.9で発表
-- GitLab 17.0での削除（[breaking change](https://docs.gitlab.com/update/terminology/#breaking-change)）
+- GitLab 17.0での削除（[破壊的変更](https://docs.gitlab.com/update/terminology/#breaking-change)）
 - この変更について議論したり、詳細を確認したりするには、[非推奨に関するイシュー](https://gitlab.com/gitlab-org/ci-cd/shared-runners/infrastructure/-/issues/60)を参照してください。
 
 GitLabは、Linux上のGitLab.com Runnerのジョブ実行に使用される一時的なVMのコンテナ最適化オペレーティングシステム（COS）をアップグレードしています。COSのこのアップグレードには、Docker Engineのバージョン19.03.15からバージョン23.0.5へのアップグレードが含まれており、これにより既知の互換性の問題が発生します。
@@ -2043,7 +2131,7 @@ GitLabは、Linux上のGitLab.com Runnerのジョブ実行に使用される一�
 ### 脆弱性の信頼度フィールド {#vulnerability-confidence-field}
 
 - GitLab 15.4で発表
-- GitLab 17.0での削除（[breaking change](https://docs.gitlab.com/update/terminology/#breaking-change)）
+- GitLab 17.0での削除（[破壊的変更](https://docs.gitlab.com/update/terminology/#breaking-change)）
 - この変更について議論したり、詳細を確認したりするには、[非推奨に関するイシュー](https://gitlab.com/gitlab-org/gitlab/-/issues/372332)を参照してください。
 
 GitLab 15.3では、[バージョン15より前のセキュリティレポートスキーマは非推奨](https://docs.gitlab.com/update/deprecations/#security-report-schemas-version-14xx)になりました。脆弱性の検出結果の`confidence`属性は、`15-0-0`より前のスキーマバージョンにのみ存在し、GitLab 15.4がスキーマバージョン`15-0-0`をサポートしているため、事実上非推奨となっています。レポートとパブリックAPIの一貫性を維持するため、GraphQL APIの脆弱性関連コンポーネントの`confidence`属性は非推奨となり、17.0で削除されます。
@@ -2051,7 +2139,7 @@ GitLab 15.3では、[バージョン15より前のセキュリティレポート
 ### `after_script`キーワードはキャンセルされたジョブでも実行 {#after_script-keyword-will-run-for-canceled-jobs}
 
 - GitLab 16.8で発表
-- GitLab 17.0での削除（[breaking change](https://docs.gitlab.com/update/terminology/#breaking-change)）
+- GitLab 17.0での削除（[破壊的変更](https://docs.gitlab.com/update/terminology/#breaking-change)）
 - この変更について議論したり、詳細を確認したりするには、[非推奨に関するイシュー](https://gitlab.com/gitlab-org/gitlab/-/issues/437789)を参照してください。
 
 [`after_script`](https://docs.gitlab.com/ci/yaml/#after_script) CI/CDキーワードは、ジョブのメイン`script`セクションに続いて追加コマンドを実行するために使用されます。これは多くの場合、ジョブで使用された環境またはその他のリソースをクリーンアップするために使用されます。多くのユーザーにとって、ジョブがキャンセルされた場合に`after_script`コマンドが実行されないという事実は、予想外であり、望ましくありませんでした。17.0では、キーワードが更新され、ジョブのキャンセル後にもコマンドが実行されるようになります。`after_script`キーワードを使用するCI/CD設定が、キャンセルされたジョブに対しても実行を処理できることを確認してください。
@@ -2059,7 +2147,7 @@ GitLab 15.3では、[バージョン15より前のセキュリティレポート
 ### `dependency_files`は非推奨 {#dependency_files-is-deprecated}
 
 - GitLab 16.9で発表
-- GitLab 17.0での削除（[breaking change](https://docs.gitlab.com/update/terminology/#breaking-change)）
+- GitLab 17.0での削除（[破壊的変更](https://docs.gitlab.com/update/terminology/#breaking-change)）
 - この変更について議論したり、詳細を確認したりするには、[非推奨に関するイシュー](https://gitlab.com/gitlab-org/gitlab/-/issues/396376)を参照してください。
 
 今日のGitLabでは、プロジェクトの依存関係リストは、`dependency_files`のコンテンツを依存関係スキャンレポートで使用して生成されます。ただし、グループ依存関係リストとの一貫性を維持するために、GitLab 17.0以降では、プロジェクトの依存関係リストは、PostgreSQLデータベースに保存されているCycloneDX SBOMレポートアーティファクトを使用します。そのため、依存関係スキャンレポートスキーマの`dependency_files`プロパティは非推奨となり、17.0で削除されます。
@@ -2071,7 +2159,7 @@ GitLab 15.3では、[バージョン15より前のセキュリティレポート
 ### DORA APIの`metric`フィルターと`value`フィールド {#metric-filter-and-value-field-for-dora-api}
 
 - GitLab 16.8で発表
-- GitLab 17.0での削除（[breaking change](https://docs.gitlab.com/update/terminology/#breaking-change)）
+- GitLab 17.0での削除（[破壊的変更](https://docs.gitlab.com/update/terminology/#breaking-change)）
 - この変更について議論したり、詳細を確認したりするには、[非推奨に関するイシュー](https://gitlab.com/gitlab-org/gitlab/-/issues/393172)を参照してください。
 
 複数のDORAメトリクスを、新しいメトリクスフィールドを使用して同時にクエリできるようになりました。GraphQL DORA APIの`metric`フィルターと`value`フィールドは、GitLab 17.0で削除されます。
@@ -2079,7 +2167,7 @@ GitLab 15.3では、[バージョン15より前のセキュリティレポート
 ### `omniauth-azure-oauth2` gemは非推奨 {#omniauth-azure-oauth2-gem-is-deprecated}
 
 - GitLab 16.9で発表
-- GitLab 17.0での削除（[breaking change](https://docs.gitlab.com/update/terminology/#breaking-change)）
+- GitLab 17.0での削除（[破壊的変更](https://docs.gitlab.com/update/terminology/#breaking-change)）
 - この変更について議論したり、詳細を確認したりするには、[非推奨に関するイシュー](https://gitlab.com/gitlab-org/gitlab/-/issues/408989)を参照してください。
 
 GitLabユーザーは、`omniauth-azure-oauth2` gemを使用してGitLabで認証できます。17.0では、このgemは`omniauth_openid_connect` gemに置き換えられます。新しいgemには、古いgemと同じ機能がすべて含まれていますが、アップストリームのメンテナンスもあり、セキュリティと集中メンテナンスに適しています。
@@ -2089,7 +2177,7 @@ GitLabユーザーは、`omniauth-azure-oauth2` gemを使用してGitLabで認�
 ### `omnibus_gitconfig`設定項目は非推奨 {#omnibus_gitconfig-configuration-item-is-deprecated}
 
 - GitLab 16.10で発表
-- GitLab 17.0での削除（[breaking change](https://docs.gitlab.com/update/terminology/#breaking-change)）
+- GitLab 17.0での削除（[破壊的変更](https://docs.gitlab.com/update/terminology/#breaking-change)）
 - この変更について議論したり、詳細を確認したりするには、[非推奨に関するイシュー](https://gitlab.com/gitlab-org/gitaly/-/issues/5132)を参照してください。
 
 `omnibus_gitconfig['system']`設定項目は非推奨となりました。`omnibus_gitconfig['system']`を使用してGitalyのカスタムGit設定を行う場合は、GitLab 17.0にアップグレードする前に、`gitaly[:configuration][:git][:config]`の下のGitaly設定を直接使用してGitを設定する必要があります。
@@ -2126,7 +2214,7 @@ Gitalyによって管理されている次の設定オプションを削除す�
 ### `postgres_exporter['per_table_stats']`設定項目 {#postgres_exporterper_table_stats-configuration-setting}
 
 - GitLab 16.4で発表
-- GitLab 17.0での削除（[breaking change](https://docs.gitlab.com/update/terminology/#breaking-change)）
+- GitLab 17.0での削除（[破壊的変更](https://docs.gitlab.com/update/terminology/#breaking-change)）
 - この変更について議論したり、詳細を確認したりするには、[非推奨に関するイシュー](https://gitlab.com/gitlab-org/omnibus-gitlab/-/issues/8164)を参照してください。
 
 Linuxパッケージは、バンドルされているPostgreSQL Exporter用のカスタムクエリを提供します。これには、`postgres_exporter['per_table_stats']`設定項目によって制御される`per_table_stats`クエリが含まれていました。
@@ -2136,7 +2224,7 @@ PostgreSQL Exporterは、同じメトリクスを提供する`stat_user_tables`�
 ### `projectFingerprint` GraphQLフィールド {#projectfingerprint-graphql-field}
 
 - GitLab 15.1で発表
-- GitLab 17.0での削除（[breaking change](https://docs.gitlab.com/update/terminology/#breaking-change)）
+- GitLab 17.0での削除（[破壊的変更](https://docs.gitlab.com/update/terminology/#breaking-change)）
 - この変更について議論したり、詳細を確認したりするには、[非推奨に関するイシュー](https://gitlab.com/gitlab-org/gitlab/-/issues/343475)を参照してください。
 
 `uuid`属性を優先して、脆弱性検出の[`project_fingerprint`](https://gitlab.com/groups/gitlab-org/-/epics/2791)属性は非推奨になります。UUIDv5値を使用して検出結果を識別することにより、関連するエンティティを検出結果に簡単に関連付けることができます。`project_fingerprint`属性は検出の追跡に使用されなくなり、GitLab 17.0で削除されます。16.1以降、`project_fingerprint`の出力は`uuid`フィールドと同じ値を返します。
@@ -2144,7 +2232,7 @@ PostgreSQL Exporterは、同じメトリクスを提供する`stat_user_tables`�
 ### 公開プロジェクトの`repository_download_operation`監査イベントタイプ {#repository_download_operation-audit-event-type-for-public-projects}
 
 - GitLab 16.9で発表
-- GitLab 17.0での削除（[breaking change](https://docs.gitlab.com/update/terminology/#breaking-change)）
+- GitLab 17.0での削除（[破壊的変更](https://docs.gitlab.com/update/terminology/#breaking-change)）
 - この変更について議論したり、詳細を確認したりするには、[非推奨に関するイシュー](https://gitlab.com/gitlab-org/gitlab/-/issues/383218)を参照してください。
 
 監査イベントタイプ`repository_download_operation`は現在、すべてのプロジェクトのダウンロード（公開プロジェクトと非公開プロジェクトの両方）でデータベースに保存されます。公開プロジェクトの場合、この監査イベントは認証されていないユーザーによってトリガーされる可能性があるため、監査目的ではあまり有用ではありません。
@@ -2154,7 +2242,7 @@ GitLab 17.0以降、`repository_download_operation`監査イベントタイプ�
 ### npmパッケージのアップロードが非同期で行われる {#npm-package-uploads-now-occur-asynchronously}
 
 - GitLab 16.9で発表
-- GitLab 17.0での削除（[breaking change](https://docs.gitlab.com/update/terminology/#breaking-change)）
+- GitLab 17.0での削除（[破壊的変更](https://docs.gitlab.com/update/terminology/#breaking-change)）
 - この変更について議論したり、詳細を確認したりするには、[非推奨に関するイシュー](https://gitlab.com/gitlab-org/gitlab/-/issues/433009)を参照してください。
 
 GitLabパッケージレジストリは、npmとYarnをサポートしています。npmまたはYarnパッケージをアップロードする場合、アップロードは同期的に処理されます。ただし、同期アップロードには既知の問題があります。たとえば、GitLabは[オーバーライド](https://gitlab.com/gitlab-org/gitlab/-/issues/432876)などの機能をサポートしていません。
@@ -2199,7 +2287,7 @@ GitLab 15.8以降に備えるには、次の手順を実行する必要があり
 ### Shimoのインテグレーション {#shimo-integration}
 
 - GitLab 15.7で発表
-- GitLab 16.7で削除 ([breaking change](https://docs.gitlab.com/update/terminology/#breaking-change))
+- GitLab 16.7で削除（[破壊的変更](https://docs.gitlab.com/update/terminology/#breaking-change)）
 - この変更について議論したり、詳細を確認したりするには、[非推奨に関するイシュー](https://gitlab.com/gitlab-org/gitlab/-/issues/377824)を参照してください。
 
 **Shimoワークスペースのインテグレーション**は非推奨となっていて、JiHu GitLabのコードベースに移行します。
@@ -2207,7 +2295,7 @@ GitLab 15.8以降に備えるには、次の手順を実行する必要があり
 ### `user_email_lookup_limit` APIフィールド {#user_email_lookup_limit-api-field}
 
 - GitLab 14.9で発表
-- GitLab 16.7で削除 ([breaking change](https://docs.gitlab.com/update/terminology/#breaking-change))
+- GitLab 16.7で削除（[破壊的変更](https://docs.gitlab.com/update/terminology/#breaking-change)）
 
 `user_email_lookup_limit` [APIフィールド](https://docs.gitlab.com/api/settings/)はGitLab 14.9で非推奨となり、GitLab 16.7で削除されました。機能が削除されるまで、`user_email_lookup_limit`は`search_rate_limit`にエイリアスされ、既存のワークフローは引き続き機能します。
 
@@ -2218,10 +2306,10 @@ GitLab 15.8以降に備えるには、次の手順を実行する必要があり
 ### ジョブトークン許可リストは公開プロジェクトと内部プロジェクトを対象とする {#job-token-allowlist-covers-public-and-internal-projects}
 
 - GitLab 16.3で発表
-- GitLab 16.6で削除 ([breaking change](https://docs.gitlab.com/update/terminology/#breaking-change))
+- GitLab 16.6で削除（[破壊的変更](https://docs.gitlab.com/update/terminology/#breaking-change)）
 - この変更について議論したり、詳細を確認したりするには、[非推奨に関するイシュー](https://gitlab.com/gitlab-org/gitlab/-/issues/420678)を参照してください。
 
-16.6以降、**公開**または**内部**のプロジェクトは、[**このプロジェクトへのアクセスを制限する**](https://docs.gitlab.com/ci/jobs/ci_job_token/#add-a-group-or-project-to-the-job-token-allowlist)が有効になっている場合、プロジェクトの許可リストに**ない**プロジェクトからのジョブトークンリクエストを承認しなくなります。
+16.6以降、[**このプロジェクトへのアクセスを制限する**](https://docs.gitlab.com/ci/jobs/ci_job_token/#add-a-group-or-project-to-the-job-token-allowlist)が有効な場合、**公開**プロジェクトまたは**内部**プロジェクトでは、プロジェクトの許可リストに含まれていないプロジェクトからのジョブトークンリクエストは認可されなくなります。
 
 **このプロジェクトへのアクセスを制限する**設定が有効になっている[公開または内部](https://docs.gitlab.com/user/public_access/#change-project-visibility)プロジェクトがある場合は、承認を継続するために、ジョブトークンリクエストを行うプロジェクトをプロジェクトの許可リストに追加する必要があります。
 
@@ -2238,7 +2326,7 @@ GitLab 15.8以降に備えるには、次の手順を実行する必要があり
 ### Geo: ハウスキーピングRakeタスク {#geo-housekeeping-rake-tasks}
 
 - GitLab 16.3で発表
-- GitLab 16.5で削除 ([breaking change](https://docs.gitlab.com/update/terminology/#breaking-change))
+- GitLab 16.5で削除（[破壊的変更](https://docs.gitlab.com/update/terminology/#breaking-change)）
 - この変更について議論したり、詳細を確認したりするには、[非推奨に関するイシュー](https://gitlab.com/gitlab-org/gitlab/-/issues/416384)を参照してください。
 
 [Geoセルフサービスフレームワーク（SSF）](https://docs.gitlab.com/development/geo/framework/)へのレプリケーションと検証の移行の一環として、プロジェクトリポジトリの従来のレプリケーションは[削除](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/130565)されました。その結果、レガシーコードに依存していた以下のRakeタスクも削除されました。これらのRakeタスクによって実行される作業は、定期的に、またはトリガーイベントに基づいて自動的にトリガーされるようになりました。
@@ -2257,7 +2345,7 @@ GitLab 15.8以降に備えるには、次の手順を実行する必要があり
 ### バンドルされたGrafanaは非推奨および無効 {#bundled-grafana-deprecated-and-disabled}
 
 - GitLab 16.0で発表
-- GitLab 16.3で削除 ([breaking change](https://docs.gitlab.com/update/terminology/#breaking-change))
+- GitLab 16.3で削除（[破壊的変更](https://docs.gitlab.com/update/terminology/#breaking-change)）
 - この変更について議論したり、詳細を確認したりするには、[非推奨に関するイシュー](https://gitlab.com/gitlab-org/omnibus-gitlab/-/issues/7772)を参照してください。
 
 Omnibus GitLabにバンドルされているGrafanaのバージョンは、16.0で[非推奨および無効になり](https://docs.gitlab.com/administration/monitoring/performance/grafana_configuration/#deprecation-of-bundled-grafana)、16.3で削除されます。バンドルされたGrafanaを使用している場合は、次のいずれかに移行する必要があります。
@@ -2272,7 +2360,7 @@ GitLabバージョン16.0～16.2では、[バンドルされたGrafanaを再度�
 ### RSAキーサイズの制限 {#rsa-key-size-limits}
 
 - GitLab 16.3で発表
-- GitLab 16.3で削除 ([breaking change](https://docs.gitlab.com/update/terminology/#breaking-change))
+- GitLab 16.3で削除（[破壊的変更](https://docs.gitlab.com/update/terminology/#breaking-change)）
 - この変更について議論したり、詳細を確認したりするには、[非推奨に関するイシュー](https://gitlab.com/groups/gitlab-org/-/epics/11186)を参照してください。
 
 Goバージョン1.20.7以降では、RSAキーを最大8192ビットに制限する`maxRSAKeySize`定数が追加されています。その結果、8192ビットを超えるRSAキーはGitLabでは機能しなくなります。8192ビットを超えるRSAキーは、これより小さいサイズで再生成する必要があります。
@@ -2282,7 +2370,7 @@ Goバージョン1.20.7以降では、RSAキーを最大8192ビットに制限�
 ### Twitter OmniAuthログインオプションはGitLab.comから削除 {#twitter-omniauth-login-option-is-removed-from-gitlabcom}
 
 - GitLab 16.3で発表
-- GitLab 16.3で削除 ([breaking change](https://docs.gitlab.com/update/terminology/#breaking-change))
+- GitLab 16.3で削除（[破壊的変更](https://docs.gitlab.com/update/terminology/#breaking-change)）
 - この変更について議論したり、詳細を確認したりするには、[非推奨に関するイシュー](https://gitlab.com/gitlab-com/Product/-/issues/11417)を参照してください。
 
 Twitter OAuth 1.0a OmniAuthは、使用率が低く、gemのサポートがないことに加えて、この機能の機能的なサインインオプションがないため、GitLab 16.3のGitLab.comで非推奨となり、削除されます。TwitterでGitLab.comにサインインする場合は、パスワードで、または別の[サポートされているOmniAuthプロバイダー](https://gitlab.com/users/sign_in)でサインインできます。
@@ -2290,7 +2378,7 @@ Twitter OAuth 1.0a OmniAuthは、使用率が低く、gemのサポートがな�
 ### ライセンスコンプライアンスCIテンプレート {#license-compliance-ci-template}
 
 - GitLab 15.9で発表
-- GitLab 16.3で削除 ([breaking change](https://docs.gitlab.com/update/terminology/#breaking-change))
+- GitLab 16.3で削除（[破壊的変更](https://docs.gitlab.com/update/terminology/#breaking-change)）
 - この変更について議論したり、詳細を確認したりするには、[非推奨に関するイシュー](https://gitlab.com/gitlab-org/gitlab/-/issues/387561)を参照してください。
 
 **更新**: 以前、GitLab 16.0で既存のライセンスコンプライアンスCI/CDテンプレートを削除すると発表しました。[CycloneDXファイルのライセンススキャン](https://docs.gitlab.com/user/compliance/license_scanning_of_cyclonedx_files/)に関するパフォーマンスの問題のため、代わりに16.3で削除します。
@@ -2333,7 +2421,7 @@ GitLabの[ライセンスコンプライアンス](https://docs.gitlab.com/user/
 ### Auto DevOpsはデフォルトでのPostgreSQLデータベースのプロビジョニングを終了 {#auto-devops-no-longer-provisions-a-postgresql-database-by-default}
 
 - GitLab 15.8で発表
-- GitLab 16.0で削除 ([breaking change](https://docs.gitlab.com/update/terminology/#breaking-change))
+- GitLab 16.0で削除（[破壊的変更](https://docs.gitlab.com/update/terminology/#breaking-change)）
 - この変更について議論したり、詳細を確認したりするには、[非推奨に関するイシュー](https://gitlab.com/gitlab-org/gitlab/-/issues/343988)を参照してください。
 
 現在、Auto DevOpsは、デフォルトでクラスター内PostgreSQLデータベースをプロビジョニングしています。GitLab 16.0では、データベースはオプトインしたユーザーに対してのみプロビジョニングされます。この変更は、より堅牢なデータベース管理を必要とする本番環境のデプロイをサポートします。
@@ -2343,7 +2431,7 @@ Auto DevOpsでクラスター内データベースをプロビジョニングす
 ### Azure Storageドライバーの正しいルートプレフィックスがデフォルト設定に {#azure-storage-driver-defaults-to-the-correct-root-prefix}
 
 - GitLab 15.8で発表
-- GitLab 16.0で削除 ([breaking change](https://docs.gitlab.com/update/terminology/#breaking-change))
+- GitLab 16.0で削除（[破壊的変更](https://docs.gitlab.com/update/terminology/#breaking-change)）
 - この変更について議論したり、詳細を確認したりするには、[非推奨に関するイシュー](https://gitlab.com/gitlab-org/container-registry/-/issues/854)を参照してください。
 
 コンテナレジストリのAzure Storageドライバーは、デフォルトのルートディレクトリとして`//`に書き込みます。このデフォルトのルートディレクトリは、Azure UI内の一部の場所では`/<no-name>/`として表示されます。このストレージドライバーを使用する以前のデプロイをサポートするために、この従来の動作を維持してきました。ただし、別のストレージドライバーからAzureに移行する場合、この動作は、`trimlegacyrootprefix: true`を設定して、余分な先頭のスラッシュなしでストレージドライバーがルートパスを構築するように設定するまで、すべてのデータを非表示にします。
@@ -2355,7 +2443,7 @@ Auto DevOpsでクラスター内データベースをプロビジョニングす
 ### バンドルされたGrafana Helmチャートは非推奨 {#bundled-grafana-helm-chart-is-deprecated}
 
 - GitLab 15.10で発表
-- GitLab 16.0で削除 ([breaking change](https://docs.gitlab.com/update/terminology/#breaking-change))
+- GitLab 16.0で削除（[破壊的変更](https://docs.gitlab.com/update/terminology/#breaking-change)）
 - この変更について議論したり、詳細を確認したりするには、[非推奨に関するイシュー](https://gitlab.com/gitlab-org/charts/gitlab/-/issues/4353)を参照してください。
 
 GitLab HelmチャートにバンドルされているGrafana Helmチャートは非推奨であり、GitLab Helmチャート7.0リリース（GitLab 16.0とともにリリース）で削除されます。
@@ -2369,7 +2457,7 @@ GitLab Helmチャートが現在提供しているGrafanaのバージョンは�
 ### CAS OmniAuthプロバイダー {#cas-omniauth-provider}
 
 - GitLab 15.3で発表
-- GitLab 16.0で削除 ([breaking change](https://docs.gitlab.com/update/terminology/#breaking-change))
+- GitLab 16.0で削除（[破壊的変更](https://docs.gitlab.com/update/terminology/#breaking-change)）
 - この変更について議論したり、詳細を確認したりするには、[非推奨に関するイシュー](https://gitlab.com/gitlab-org/gitlab/-/issues/369127)を参照してください。
 
 GitLabにCAS OmniAuthプロバイダーを提供する`omniauth-cas3` gemは、次回のメジャーリリースであるGitLab 16.0で削除されます。このgemの使用頻度は非常に低く、アップストリームのメンテナンスが不足しているため、GitLabを[OmniAuth 2.0にアップグレード](https://gitlab.com/gitlab-org/gitlab/-/issues/30073)することはできません。
@@ -2377,7 +2465,7 @@ GitLabにCAS OmniAuthプロバイダーを提供する`omniauth-cas3` gemは、�
 ### HashiCorp Vaultからシークレットが返されない場合、CI/CDジョブは失敗する {#cicd-jobs-will-fail-when-no-secret-is-returned-from-hashicorp-vault}
 
 - GitLab 15.9で発表
-- GitLab 16.0で削除 ([breaking change](https://docs.gitlab.com/update/terminology/#breaking-change))
+- GitLab 16.0で削除（[破壊的変更](https://docs.gitlab.com/update/terminology/#breaking-change)）
 - この変更について議論したり、詳細を確認したりするには、[非推奨に関するイシュー](https://gitlab.com/gitlab-org/gitlab/-/issues/353080)を参照してください。
 
 ネイティブのHashiCorp Vaultインテグレーションを使用すると、Vaultからシークレットが返されない場合、CI/CDジョブは失敗します。GitLab 16.0より前に、設定が常にシークレットを返すようにするか、この変更を処理するようにパイプラインを更新してください。
@@ -2385,7 +2473,7 @@ GitLabにCAS OmniAuthプロバイダーを提供する`omniauth-cas3` gemは、�
 ### マルチモジュールAndroidプロジェクトでMobSFベースのSASTアナライザーの動作を変更 {#changing-mobsf-based-sast-analyzer-behavior-in-multi-module-android-projects}
 
 - GitLab 16.0で発表
-- GitLab 16.0で削除 ([breaking change](https://docs.gitlab.com/update/terminology/#breaking-change))
+- GitLab 16.0で削除（[破壊的変更](https://docs.gitlab.com/update/terminology/#breaking-change)）
 - この変更について議論したり、詳細を確認したりするには、[非推奨に関するイシュー](https://gitlab.com/gitlab-org/gitlab/-/issues/408396)を参照してください。
 
 **更新**: 以前に、MobSFベースのGitLab SASTアナライザーがマルチモジュールAndroidプロジェクトをスキャンする方法の変更を発表しました。その変更はキャンセルされており、対応は必要ありません。
@@ -2395,7 +2483,7 @@ GitLabにCAS OmniAuthプロバイダーを提供する`omniauth-cas3` gemは、�
 ### `/approvals` APIエンドポイントを使用したマージリクエストの承認を変更 {#changing-merge-request-approvals-with-the-approvals-api-endpoint}
 
 - GitLab 14.0で発表
-- GitLab 16.0で削除 ([breaking change](https://docs.gitlab.com/update/terminology/#breaking-change))
+- GitLab 16.0で削除（[破壊的変更](https://docs.gitlab.com/update/terminology/#breaking-change)）
 - この変更について議論したり、詳細を確認したりするには、[非推奨に関するイシュー](https://gitlab.com/gitlab-org/gitlab/-/issues/353097)を参照してください。
 
 マージリクエストに必要な承認を変更するために、GitLab 14.0で非推奨になった`/approvals` APIエンドポイントを使用しないでください。
@@ -2405,7 +2493,7 @@ GitLabにCAS OmniAuthプロバイダーを提供する`omniauth-cas3` gemは、�
 ### Conanプロジェクトレベルの検索エンドポイントはプロジェクト固有の結果を返す {#conan-project-level-search-endpoint-returns-project-specific-results}
 
 - GitLab 15.8で発表
-- GitLab 16.0で削除 ([breaking change](https://docs.gitlab.com/update/terminology/#breaking-change))
+- GitLab 16.0で削除（[破壊的変更](https://docs.gitlab.com/update/terminology/#breaking-change)）
 - この変更について議論したり、詳細を確認したりするには、[非推奨に関するイシュー](https://gitlab.com/gitlab-org/gitlab/-/issues/384455)を参照してください。
 
 [プロジェクトレベル](https://docs.gitlab.com/user/packages/conan_repository/#add-a-remote-for-your-project)または[インスタンスレベル](https://docs.gitlab.com/user/packages/conan_repository/#add-a-remote-for-your-instance)のエンドポイントでGitLab Conanリポジトリを使用できます。各レベルがConan検索コマンドをサポートしています。ただし、プロジェクトレベルの検索エンドポイントは、ターゲットプロジェクトの外部からもパッケージを返します。
@@ -2415,7 +2503,7 @@ GitLabにCAS OmniAuthプロバイダーを提供する`omniauth-cas3` gemは、�
 ### GitLab Runner Helmチャートの設定フィールド {#configuration-fields-in-gitlab-runner-helm-chart}
 
 - GitLab 15.6で発表
-- GitLab 16.0で削除 ([breaking change](https://docs.gitlab.com/update/terminology/#breaking-change))
+- GitLab 16.0で削除（[破壊的変更](https://docs.gitlab.com/update/terminology/#breaking-change)）
 - この変更について議論したり、詳細を確認したりするには、[非推奨に関するイシュー](https://gitlab.com/gitlab-org/gitlab/-/issues/379064)を参照してください。
 
 GitLab 13.6以降、ユーザーは[GitLab Runner Helmチャートで任意のRunner設定を指定](https://docs.gitlab.com/runner/install/kubernetes/)できます。この機能を実装したときに、GitLab Helmチャート設定のGitLab Runner固有の値を非推奨にしました。非推奨の値はGitLab 16.0で削除されます。
@@ -2423,7 +2511,7 @@ GitLab 13.6以降、ユーザーは[GitLab Runner Helmチャートで任意のRu
 ### 環境変数を使用したRedis設定ファイルのパスの設定は非推奨 {#configuring-redis-config-file-paths-using-environment-variables-is-deprecated}
 
 - GitLab 15.8で発表
-- GitLab 16.0で削除 ([breaking change](https://docs.gitlab.com/update/terminology/#breaking-change))
+- GitLab 16.0で削除（[破壊的変更](https://docs.gitlab.com/update/terminology/#breaking-change)）
 - この変更について議論したり、詳細を確認したりするには、[非推奨に関するイシュー](https://gitlab.com/gitlab-org/gitlab/-/issues/388255)を参照してください。
 
 `GITLAB_REDIS_CACHE_CONFIG_FILE`や`GITLAB_REDIS_QUEUES_CONFIG_FILE`のような環境変数を使用してRedis設定ファイルの場所を指定することはできなくなりました。代わりに、`config/redis.cache.yml`や`config/redis.queues.yml`などのデフォルトの設定ファイルの場所を使用してください。
@@ -2431,15 +2519,15 @@ GitLab 13.6以降、ユーザーは[GitLab Runner Helmチャートで任意のRu
 ### コンテナレジストリのプルスルーキャッシュ {#container-registry-pull-through-cache}
 
 - GitLab 15.8で発表
-- GitLab 16.0で削除 ([breaking change](https://docs.gitlab.com/update/terminology/#breaking-change))
+- GitLab 16.0で削除（[破壊的変更](https://docs.gitlab.com/update/terminology/#breaking-change)）
 - この変更について議論したり、詳細を確認したりするには、[非推奨に関するイシュー](https://gitlab.com/gitlab-org/container-registry/-/issues/842)を参照してください。
 
-コンテナレジストリの[プルスルーキャッシュ](https://docs.docker.com/docker-hub/mirror/)はGitLab 15.8で非推奨となり、GitLab 16.0で削除されます。プルスルーキャッシュは、アップストリームの[Docker Distributionプロジェクト](https://github.com/distribution/distribution)の一部です。ただし、Docker HubからコンテナイメージをプロキシおよびキャッシュできるGitLab依存プロキシを優先して、プルスルーキャッシュを削除します。プルスルーキャッシュを削除すると、機能を犠牲にすることなく、アップストリームクライアントコードも削除できます。
+コンテナレジストリの[プルスルーキャッシュ](https://docs.docker.com/docker-hub/image-library/mirror/)はGitLab 15.8で非推奨となり、GitLab 16.0で削除されます。プルスルーキャッシュは、アップストリームの[Docker Distributionプロジェクト](https://github.com/distribution/distribution)の一部です。ただし、Docker HubからコンテナイメージをプロキシおよびキャッシュできるGitLab依存プロキシを優先して、プルスルーキャッシュを削除します。プルスルーキャッシュを削除すると、機能を犠牲にすることなく、アップストリームクライアントコードも削除できます。
 
 ### Dockerを参照するコンテナスキャン変数 {#container-scanning-variables-that-reference-docker}
 
 - GitLab 15.4で発表
-- GitLab 16.0で削除 ([breaking change](https://docs.gitlab.com/update/terminology/#breaking-change))
+- GitLab 16.0で削除（[破壊的変更](https://docs.gitlab.com/update/terminology/#breaking-change)）
 - この変更について議論したり、詳細を確認したりするには、[非推奨に関するイシュー](https://gitlab.com/gitlab-org/gitlab/-/issues/371840)を参照してください。
 
 変数名が`DOCKER_`で始まるすべてのコンテナスキャン変数は非推奨です。これには、`DOCKER_IMAGE`、`DOCKER_PASSWORD`、`DOCKER_USER`、および`DOCKERFILE_PATH`変数が含まれます。これらの変数のサポートは、GitLab 16.0リリースで削除されます。非推奨になった変数の名前の代わりに、[新しい変数名](https://docs.gitlab.com/user/application_security/container_scanning/#available-cicd-variables)である`CS_IMAGE`、`CS_REGISTRY_PASSWORD`、`CS_REGISTRY_USER`、`CS_DOCKERFILE_PATH`を使用します。
@@ -2447,7 +2535,7 @@ GitLab 13.6以降、ユーザーは[GitLab Runner Helmチャートで任意のRu
 ### GitLab for Jira CloudアプリのCookie認証 {#cookie-authorization-in-the-gitlab-for-jira-cloud-app}
 
 - GitLab 15.8で発表
-- GitLab 16.0で削除 ([breaking change](https://docs.gitlab.com/update/terminology/#breaking-change))
+- GitLab 16.0で削除（[破壊的変更](https://docs.gitlab.com/update/terminology/#breaking-change)）
 - この変更について議論したり、詳細を確認したりするには、[非推奨に関するイシュー](https://gitlab.com/gitlab-org/gitlab/-/issues/387299)を参照してください。
 
 OAuth認証を優先して、GitLab for Jira CloudアプリのCookie認証は非推奨になりました。GitLab Self-Managedで、GitLab for Jira Cloudアプリを引き続き使用するには、[OAuth認証を設定](https://docs.gitlab.com/integration/jira/connect-app/#set-up-oauth-authentication-for-self-managed-instances)する必要があります。OAuthがないと、リンクされたネームスペースを管理できません。
@@ -2455,7 +2543,7 @@ OAuth認証を優先して、GitLab for Jira CloudアプリのCookie認証は非
 ### DASTテンプレートを使用したDAST APIスキャンは非推奨 {#dast-api-scans-using-dast-template-is-deprecated}
 
 - GitLab 15.7で発表
-- GitLab 16.0で削除 ([breaking change](https://docs.gitlab.com/update/terminology/#breaking-change))
+- GitLab 16.0で削除（[破壊的変更](https://docs.gitlab.com/update/terminology/#breaking-change)）
 - この変更について議論したり、詳細を確認したりするには、[非推奨に関するイシュー](https://gitlab.com/gitlab-org/gitlab/-/issues/384198)を参照してください。
 
 新しいDAST APIアナライザーと、DAST APIスキャン用の`DAST-API.gitlab-ci.yml`テンプレートへの移行に伴い、DASTアナライザーでAPIをスキャンする機能は削除されます。APIスキャンでの`DAST.gitlab-ci.yml`または`DAST-latest.gitlab-ci.yml`テンプレートの使用は、GitLab 15.7の時点で非推奨となり、GitLab 16.0では機能しなくなります。`DAST-API.gitlab-ci.yml`テンプレートを使用し、[DAST APIアナライザー](https://docs.gitlab.com/user/application_security/dast_api/#configure-dast-api-with-an-openapi-specification)のドキュメントで設定の詳細を確認してください。
@@ -2463,7 +2551,7 @@ OAuth認証を優先して、GitLab for Jira CloudアプリのCookie認証は非
 ### DAST API変数 {#dast-api-variables}
 
 - GitLab 15.7で発表
-- GitLab 16.0で削除 ([breaking change](https://docs.gitlab.com/update/terminology/#breaking-change))
+- GitLab 16.0で削除（[破壊的変更](https://docs.gitlab.com/update/terminology/#breaking-change)）
 - この変更について議論したり、詳細を確認したりするには、[非推奨に関するイシュー](https://gitlab.com/gitlab-org/gitlab/-/issues/383467)を参照してください。
 
 GitLab 15.6で新しいDAST APIアナライザーに切り替えたことにより、2つの従来のDAST API変数が非推奨になります。変数`DAST_API_HOST_OVERRIDE`および`DAST_API_SPECIFICATION`は、DAST APIスキャンには使用されなくなります。
@@ -2477,7 +2565,7 @@ OpenAPI仕様のホストを自動的にオーバーライドする`DAST_API_TAR
 ### DASTレポート変数の非推奨化 {#dast-report-variables-deprecation}
 
 - GitLab 15.7で発表
-- GitLab 16.0で削除 ([breaking change](https://docs.gitlab.com/update/terminology/#breaking-change))
+- GitLab 16.0で削除（[破壊的変更](https://docs.gitlab.com/update/terminology/#breaking-change)）
 - この変更について議論したり、詳細を確認したりするには、[非推奨に関するイシュー](https://gitlab.com/gitlab-org/gitlab/-/issues/384340)を参照してください。
 
 GitLab 15.7で新しいブラウザベースのDASTアナライザーが一般公開になったため、将来的には、このアナライザーをデフォルトのDASTアナライザーにすることを目指しています。この準備として、従来のDAST変数`DAST_HTML_REPORT`、`DAST_XML_REPORT`、および`DAST_MARKDOWN_REPORT`が非推奨になり、GitLab 16.0で削除される予定です。これらのレポートは従来のDASTアナライザーに依存しており、新しいブラウザベースのアナライザーに実装する予定はありません。GitLab 16.0の時点で、これらのレポートアーティファクトは生成されなくなります。
@@ -2487,15 +2575,15 @@ GitLab 15.7で新しいブラウザベースのDASTアナライザーが一般�
 ### Java 13、14、15、16の依存関係スキャンサポート {#dependency-scanning-support-for-java-13-14-15-and-16}
 
 - GitLab 15.8で発表
-- GitLab 16.0で削除 ([breaking change](https://docs.gitlab.com/update/terminology/#breaking-change))
+- GitLab 16.0で削除（[破壊的変更](https://docs.gitlab.com/update/terminology/#breaking-change)）
 - この変更について議論したり、詳細を確認したりするには、[非推奨に関するイシュー](https://gitlab.com/gitlab-org/gitlab/-/issues/387560)を参照してください。
 
 GitLabはJavaバージョン13、14、15、16の依存関係スキャンサポートを非推奨とし、次のGitLab 16.0リリースでこのサポートを削除する予定です。これらのバージョンのOracle PremierおよびExtended Supportが終了したため、これは[Oracleサポートポリシー](https://www.oracle.com/java/technologies/java-se-support-roadmap.html)と一致しています。これにより、GitLabは、今後依存関係スキャンのJavaサポートをLTSバージョンに集中させることができます。
 
-### `updated_at`と`updated_at`を一緒に使用しない場合、デプロイAPIはをエラーを返す {#deployment-api-returns-error-when-updated_at-and-updated_at-are-not-used-together}
+### `updated_at`と`updated_at`を一緒に使用しない場合、デプロイAPIはエラーを返す {#deployment-api-returns-error-when-updated_at-and-updated_at-are-not-used-together}
 
 - GitLab 15.8で発表
-- GitLab 16.0で削除 ([breaking change](https://docs.gitlab.com/update/terminology/#breaking-change))
+- GitLab 16.0で削除（[破壊的変更](https://docs.gitlab.com/update/terminology/#breaking-change)）
 - この変更について議論したり、詳細を確認したりするには、[非推奨に関するイシュー](https://gitlab.com/gitlab-org/gitlab/-/issues/328500)を参照してください。
 
 `updated_at`フィルタリングと`updated_at`ソートを一緒に使用しない場合、デプロイAPIはエラーを返すようになります。一部のユーザーは、`updated_at`ソートを使用せずに、`updated_at`でフィルタリングして「最新」のデプロイを取得していましたが、これは誤った結果をもたらす可能性があります。代わりに、それらを一緒に使用するか、`finished_at`でフィルタリングし、`finished_at`でソートするように移行する必要があります。これにより、「最新のデプロイ」が一貫して得られます。
@@ -2503,17 +2591,17 @@ GitLabはJavaバージョン13、14、15、16の依存関係スキャンサポ�
 ### 従来のGitaly設定方法を非推奨化 {#deprecate-legacy-gitaly-configuration-methods}
 
 - GitLab 14.8で発表
-- GitLab 16.0で削除 ([breaking change](https://docs.gitlab.com/update/terminology/#breaking-change))
+- GitLab 16.0で削除（[破壊的変更](https://docs.gitlab.com/update/terminology/#breaking-change)）
 - この変更について議論したり、詳細を確認したりするには、[非推奨に関するイシュー](https://gitlab.com/gitlab-org/gitlab/-/issues/352609)を参照してください。
 
-環境変数`GIT_CONFIG_SYSTEM`と`GIT_CONFIG_GLOBAL`を使用して、Gitalyを設定することは[非推奨](https://gitlab.com/gitlab-org/gitlab/-/issues/352609)になりました。これらの変数は、標準の[`config.toml` Gitaly設定](https://docs.gitlab.com/administration/gitaly/reference/)に置き換えられています。
+環境変数`GIT_CONFIG_SYSTEM`と`GIT_CONFIG_GLOBAL`を使用して、Gitalyを設定することは[非推奨](https://gitlab.com/gitlab-org/gitlab/-/issues/352609)になりました。これらの変数は、標準の[`config.toml` Gitaly設定](https://docs.gitlab.com/administration/gitaly/)に置き換えられています。
 
 `GIT_CONFIG_SYSTEM`と`GIT_CONFIG_GLOBAL`を使用してGitalyを設定するGitLabインスタンスは、`config.toml`を使用して設定するように切り替える必要があります。
 
 ### 非推奨のConsul httpメトリクス {#deprecated-consul-http-metrics}
 
 - GitLab 15.10で発表
-- GitLab 16.0で削除 ([breaking change](https://docs.gitlab.com/update/terminology/#breaking-change))
+- GitLab 16.0で削除（[破壊的変更](https://docs.gitlab.com/update/terminology/#breaking-change)）
 - この変更について議論したり、詳細を確認したりするには、[非推奨に関するイシュー](https://gitlab.com/gitlab-org/omnibus-gitlab/-/issues/7278)を参照してください。
 
 Linuxパッケージで提供されるConsulは、GitLab 16.0以降、以前の非推奨のConsulメトリクスを提供しなくなります。
@@ -2525,7 +2613,7 @@ Consulメトリクスを使用するモニタリングがある場合は、`cons
 ### GitLab.comでの`CI_PRE_CLONE_SCRIPT`変数の非推奨化と計画された削除 {#deprecation-and-planned-removal-for-ci_pre_clone_script-variable-on-gitlabcom}
 
 - GitLab 15.9で発表
-- GitLab 16.0で削除 ([breaking change](https://docs.gitlab.com/update/terminology/#breaking-change))
+- GitLab 16.0で削除（[破壊的変更](https://docs.gitlab.com/update/terminology/#breaking-change)）
 - この変更について議論したり、詳細を確認したりするには、[非推奨に関するイシュー](https://gitlab.com/gitlab-org/gitlab/-/issues/391896)を参照してください。
 
 GitLab.com Runnerでサポートされている[`CI_PRE_CLONE_SCRIPT`変数](https://docs.gitlab.com/ci/runners/saas/linux_saas_runner/#pre-clone-script)は、GitLab 15.9の時点で非推奨となり、16.0で削除されます。`CI_PRE_CLONE_SCRIPT`変数を使用すると、RunnerがGit initとget fetchを実行する前に、CI/CDジョブでコマンドを実行できます。この機能の仕組みについて詳しくは、[Pre-clone script](https://docs.gitlab.com/ci/runners/saas/linux_saas_runner/#pre-clone-script)を参照してください。別の方法として、[`pre_get_sources_script`](https://docs.gitlab.com/ci/yaml/#hookspre_get_sources_script)を使用できます。
@@ -2533,7 +2621,7 @@ GitLab.com Runnerでサポートされている[`CI_PRE_CLONE_SCRIPT`変数](htt
 ### グループにプロジェクトをインポートする機能を提供するデベロッパーロール {#developer-role-providing-the-ability-to-import-projects-to-a-group}
 
 - GitLab 15.8で発表
-- GitLab 16.0で削除 ([breaking change](https://docs.gitlab.com/update/terminology/#breaking-change))
+- GitLab 16.0で削除（[破壊的変更](https://docs.gitlab.com/update/terminology/#breaking-change)）
 - この変更について議論したり、詳細を確認したりするには、[非推奨に関するイシュー](https://gitlab.com/gitlab-org/gitlab/-/issues/387891)を参照してください。
 
 グループのデベロッパーロールを持つユーザーがそのグループにプロジェクトをインポートする機能はGitLab 15.8で非推奨となり、GitLab 16.0で削除されます。GitLab 16.0以降、グループのメンテナーまたはオーナーロールを持つユーザーのみが、そのグループにプロジェクトをインポートできるようになります。
@@ -2541,7 +2629,7 @@ GitLab.com Runnerでサポートされている[`CI_PRE_CLONE_SCRIPT`変数](htt
 ### PHPおよびPython用の開発依存関係の報告 {#development-dependencies-reported-for-php-and-python}
 
 - GitLab 15.9で発表
-- GitLab 16.0で削除 ([breaking change](https://docs.gitlab.com/update/terminology/#breaking-change))
+- GitLab 16.0で削除（[破壊的変更](https://docs.gitlab.com/update/terminology/#breaking-change)）
 - この変更について議論したり、詳細を確認したりするには、[非推奨に関するイシュー](https://gitlab.com/gitlab-org/gitlab/-/issues/375505)を参照してください。
 
 GitLab 16.0では、GitLabの依存関係スキャンアナライザーがPython/pipenvおよびPHP/composerプロジェクトの両方で開発依存関係のレポートを開始します。これらの開発依存関係の報告を希望しないユーザーは、CI/CDファイルで`DS_INCLUDE_DEV_DEPENDENCIES: false`を設定する必要があります。
@@ -2549,7 +2637,7 @@ GitLab 16.0では、GitLabの依存関係スキャンアナライザーがPython
 ### MarkdownでのGrafanaパネルの埋め込みは非推奨 {#embedding-grafana-panels-in-markdown-is-deprecated}
 
 - GitLab 15.9で発表
-- GitLab 16.0で削除 ([breaking change](https://docs.gitlab.com/update/terminology/#breaking-change))
+- GitLab 16.0で削除（[破壊的変更](https://docs.gitlab.com/update/terminology/#breaking-change)）
 - この変更について議論したり、詳細を確認したりするには、[非推奨に関するイシュー](https://gitlab.com/gitlab-org/gitlab/-/issues/389477)を参照してください。
 
 GitLab Flavored MarkdownでのGrafanaパネルの追加機能は15.9で非推奨となり、16.0で削除されます。この機能を、[GitLab可観測性UI](https://gitlab.com/gitlab-org/opstrace/opstrace-ui)で[チャートを埋め込む](https://gitlab.com/groups/gitlab-org/opstrace/-/epics/33)機能に置き換える予定です。
@@ -2557,7 +2645,7 @@ GitLab Flavored MarkdownでのGrafanaパネルの追加機能は15.9で非推奨
 ### CI/CDパラメータの文字長の強制検証 {#enforced-validation-of-cicd-parameter-character-lengths}
 
 - GitLab 15.9で発表
-- GitLab 16.0で削除 ([breaking change](https://docs.gitlab.com/update/terminology/#breaking-change))
+- GitLab 16.0で削除（[破壊的変更](https://docs.gitlab.com/update/terminology/#breaking-change)）
 - この変更について議論したり、詳細を確認したりするには、[非推奨に関するイシュー](https://gitlab.com/gitlab-org/gitlab/-/issues/372770)を参照してください。
 
 CI/CDの[ジョブ名](https://docs.gitlab.com/ci/jobs/#job-name)には255文字の厳密な制限がありますが、他のCI/CDパラメータには、制限を超えないことを保証する検証がまだありません。
@@ -2573,7 +2661,7 @@ GitLab Self-Managedのユーザーは、255文字を超えるパラメータを�
 ### 環境検索クエリには3文字以上が必要 {#environment-search-query-requires-at-least-three-characters}
 
 - GitLab 15.10で発表
-- GitLab 16.0で削除 ([breaking change](https://docs.gitlab.com/update/terminology/#breaking-change))
+- GitLab 16.0で削除（[破壊的変更](https://docs.gitlab.com/update/terminology/#breaking-change)）
 - この変更について議論したり、詳細を確認したりするには、[非推奨に関するイシュー](https://gitlab.com/gitlab-org/gitlab/-/issues/382532)を参照してください。
 
 GitLab 16.0以降、APIで環境を検索する場合、3文字以上を使用する必要があります。この変更は、検索操作のスケーラビリティを確保するのに役立ちます。
@@ -2581,14 +2669,14 @@ GitLab 16.0以降、APIで環境を検索する場合、3文字以上を使用�
 ### GraphQL ReleaseAssetLinkタイプの外部フィールド {#external-field-in-graphql-releaseassetlink-type}
 
 - GitLab 15.9で発表
-- GitLab 16.0で削除 ([breaking change](https://docs.gitlab.com/update/terminology/#breaking-change))
+- GitLab 16.0で削除（[破壊的変更](https://docs.gitlab.com/update/terminology/#breaking-change)）
 
 [GraphQL API](https://docs.gitlab.com/api/graphql/)では、[`ReleaseAssetLink`タイプ](https://docs.gitlab.com/api/graphql/reference/#releaseassetlink)の`external`フィールドを使用して、[リリースリンク](https://docs.gitlab.com/user/project/releases/release_fields/#links)がGitLabインスタンスの内部であるか外部であるかを示していました。GitLab 15.9の時点で、すべてのリリースリンクを外部として扱っているので、このフィールドはGitLab 15.9で非推奨となり、GitLab 16.0で削除されます。`external`フィールドは削除され、代替されないため、ワークフローの混乱を避けるために、このフィールドの使用を中止してください。
 
 ### リリースおよびリリースリンクAPIの外部フィールド {#external-field-in-releases-and-release-links-apis}
 
 - GitLab 15.9で発表
-- GitLab 16.0で削除 ([breaking change](https://docs.gitlab.com/update/terminology/#breaking-change))
+- GitLab 16.0で削除（[破壊的変更](https://docs.gitlab.com/update/terminology/#breaking-change)）
 
 [リリースAPI](https://docs.gitlab.com/api/releases/)と[リリースリンクAPI](https://docs.gitlab.com/api/releases/links/)では、`external`フィールドを使用して、[リリースリンク](https://docs.gitlab.com/user/project/releases/release_fields/#links)がGitLabインスタンスの内部であるか外部であるかを示していました。GitLab 15.9の時点で、すべてのリリースリンクを外部として扱っているので、このフィールドはGitLab 15.9で非推奨となり、GitLab 16.0で削除されます。`external`フィールドは削除され、代替されないため、ワークフローの混乱を避けるために、このフィールドの使用を中止してください。
 
@@ -2603,7 +2691,7 @@ GitLab 16.0以降、APIで環境を検索する場合、3文字以上を使用�
 ### GitLab管理者には保護ブランチまたはタグを変更する権限が必要 {#gitlab-administrators-must-have-permission-to-modify-protected-branches-or-tags}
 
 - GitLab 16.0で発表
-- GitLab 16.0で削除 ([breaking change](https://docs.gitlab.com/update/terminology/#breaking-change))
+- GitLab 16.0で削除（[破壊的変更](https://docs.gitlab.com/update/terminology/#breaking-change)）
 - この変更について議論したり、詳細を確認したりするには、[非推奨に関するイシュー](https://gitlab.com/gitlab-org/gitlab/-/issues/12776)を参照してください。
 
 GitLab管理者は、保護されたブランチまたはタグに対してアクションを実行する権限が明示的に付与されていない限り、そのアクションを実行できなくなりました。これらのアクションには、[保護されたブランチ](https://docs.gitlab.com/user/project/repository/branches/protected/)へのプッシュとマージ、ブランチの保護解除、[保護されたタグ](https://docs.gitlab.com/user/project/protected_tags/)の作成が含まれます。
@@ -2611,7 +2699,7 @@ GitLab管理者は、保護されたブランチまたはタグに対してア�
 ### GitLab自己モニタリングプロジェクト {#gitlab-self-monitoring-project}
 
 - GitLab 14.9で発表
-- GitLab 16.0で削除 ([breaking change](https://docs.gitlab.com/update/terminology/#breaking-change))
+- GitLab 16.0で削除（[破壊的変更](https://docs.gitlab.com/update/terminology/#breaking-change)）
 - この変更について議論したり、詳細を確認したりするには、[非推奨に関するイシュー](https://gitlab.com/gitlab-org/gitlab/-/issues/348909)を参照してください。
 
 GitLab自己モニタリングは、インスタンス管理者がインスタンスのヘルスを監視するためのツールを提供します。この機能はGitLab 14.9で非推奨となり、16.0で削除される予定です。
@@ -2620,7 +2708,6 @@ GitLab自己モニタリングは、インスタンス管理者がインスタ�
 
 - GitLab 15.8で発表
 - GitLab 16.0で削除
-- この変更について議論したり、詳細を確認したりするには、[非推奨に関するイシュー](https://gitlab.com/gitlab-com/Product/-/issues/4895)を参照してください。
 
 GitLab.comインポーターはGitLab 15.8で非推奨となり、GitLab 16.0で削除されます。
 
@@ -2631,7 +2718,7 @@ GitLab.comインポーターは、UIを介してGitLab.comからGitLab Self-Mana
 ### GraphQL API Runnerのステータスで`paused`を返さなくなる {#graphql-api-runner-status-will-not-return-paused}
 
 - GitLab 14.5で発表
-- GitLab 16.0で削除 ([breaking change](https://docs.gitlab.com/update/terminology/#breaking-change))
+- GitLab 16.0で削除（[破壊的変更](https://docs.gitlab.com/update/terminology/#breaking-change)）
 - この変更について議論したり、詳細を確認したりするには、[非推奨に関するイシュー](https://gitlab.com/gitlab-org/gitlab/-/issues/344648)を参照してください。
 
 GitLab 16.0では、GraphQL API Runnerのエンドポイントは、ステータスとして`paused`または`active`を返しません。今後のREST API v5では、GitLab Runnerのエンドポイントも`paused`または`active`を返しません。
@@ -2643,7 +2730,7 @@ Runnerが`paused`かどうかを確認する場合、APIユーザーは、代わ
 ### Jira Cloud用のJira DVCSコネクタ {#jira-dvcs-connector-for-jira-cloud}
 
 - GitLab 15.1で発表
-- GitLab 16.0で削除 ([breaking change](https://docs.gitlab.com/update/terminology/#breaking-change))
+- GitLab 16.0で削除（[破壊的変更](https://docs.gitlab.com/update/terminology/#breaking-change)）
 - この変更について議論したり、詳細を確認したりするには、[非推奨に関するイシュー](https://gitlab.com/groups/gitlab-org/-/epics/7508)を参照してください。
 
 Jira Cloud用の[Jira DVCSコネクタ](https://docs.gitlab.com/integration/jira/dvcs/)は非推奨となり、GitLab 16.0で削除されます。Jira CloudでJira DVCSコネクタを使用している場合は、[GitLab for Jira Cloudアプリ](https://docs.gitlab.com/integration/jira/connect-app/)に移行してください。
@@ -2653,7 +2740,7 @@ Jira DVCSコネクタはJira 8.13以前でも非推奨です。Jira DVCSコネ�
 ### GitLab HelmチャートのKASメトリクスポート {#kas-metrics-port-in-gitlab-helm-chart}
 
 - GitLab 15.7で発表
-- GitLab 16.0で削除 ([breaking change](https://docs.gitlab.com/update/terminology/#breaking-change))
+- GitLab 16.0で削除（[破壊的変更](https://docs.gitlab.com/update/terminology/#breaking-change)）
 - この変更について議論したり、詳細を確認したりするには、[非推奨に関するイシュー](https://gitlab.com/gitlab-org/gitlab/-/issues/383039)を参照してください。
 
 [GitLab Helmチャート](https://gitlab.com/gitlab-org/charts/gitlab/-/merge_requests/2839)の新しい`gitlab.kas.observability.port`設定フィールドを優先して、`gitlab.kas.metrics.port`は非推奨になりました。このポートは、メトリクスだけでなく、多くの目的に使用されるため、設定の混乱を避けるためにこの変更が必要になりました。
@@ -2661,7 +2748,7 @@ Jira DVCSコネクタはJira 8.13以前でも非推奨です。Jira DVCSコネ�
 ### 従来のGitaly設定方法 {#legacy-gitaly-configuration-method}
 
 - GitLab 15.10で発表
-- GitLab 16.0で削除 ([breaking change](https://docs.gitlab.com/update/terminology/#breaking-change))
+- GitLab 16.0で削除（[破壊的変更](https://docs.gitlab.com/update/terminology/#breaking-change)）
 - この変更について議論したり、詳細を確認したりするには、[非推奨に関するイシュー](https://gitlab.com/gitlab-org/gitlab/-/issues/393574)を参照してください。
 
 Omnibus GitLab内のGitaly設定は、すGitaly関連のべての設定キーが、標準のGitaly設定に一致する単一の設定構造になるように更新されました。そのため、以前の設定構造は非推奨になります。
@@ -2675,7 +2762,7 @@ Omnibus GitLab内のGitaly設定は、すGitaly関連のべての設定キーが
 ### 従来のPraefect設定方法 {#legacy-praefect-configuration-method}
 
 - GitLab 15.9で発表
-- GitLab 16.0で削除 ([breaking change](https://docs.gitlab.com/update/terminology/#breaking-change))
+- GitLab 16.0で削除（[破壊的変更](https://docs.gitlab.com/update/terminology/#breaking-change)）
 - この変更について議論したり、詳細を確認したりするには、[非推奨に関するイシュー](https://gitlab.com/gitlab-org/gitlab/-/issues/390291)を参照してください。
 
 以前は、Praefect設定キーは設定ファイル全体に散在していました。現在、これらはPraefect設定に一致する単一の設定構造になっているため、以前の設定方法は非推奨になります。
@@ -2687,7 +2774,7 @@ Omnibus GitLab内のGitaly設定は、すGitaly関連のべての設定キーが
 ### 従来のURLの置き換えまたは削除 {#legacy-urls-replaced-or-removed}
 
 - GitLab 15.9で発表
-- GitLab 16.0で削除 ([breaking change](https://docs.gitlab.com/update/terminology/#breaking-change))
+- GitLab 16.0で削除（[破壊的変更](https://docs.gitlab.com/update/terminology/#breaking-change)）
 - この変更について議論したり、詳細を確認したりするには、[非推奨に関するイシュー](https://gitlab.com/gitlab-org/gitlab/-/issues/214217)を参照してください。
 
 GitLab 16.0では、GitLabアプリケーションから従来のURLが削除されます。
@@ -2701,7 +2788,7 @@ GitLab 9.0でサブグループが導入されたとき、グループパスの�
 ### License-Checkとライセンスコンプライアンスページのポリシータブ {#license-check-and-the-policies-tab-on-the-license-compliance-page}
 
 - GitLab 15.9で発表
-- GitLab 16.0で削除 ([breaking change](https://docs.gitlab.com/update/terminology/#breaking-change))
+- GitLab 16.0で削除（[破壊的変更](https://docs.gitlab.com/update/terminology/#breaking-change)）
 - この変更について議論したり、詳細を確認したりするには、[非推奨に関するイシュー](https://gitlab.com/gitlab-org/gitlab/-/issues/390417)を参照してください。
 
 **ライセンスチェック機能**は非推奨となり、GitLab 16.0で削除される予定です。さらに、ライセンスコンプライアンスページのポリシータブとLicense-Check機能に関連するすべてのAPIは非推奨となり、GitLab 16.0で削除される予定です。検出されたライセンスに基づいて承認を強制し続けたいユーザーは、代わりに新しい[ライセンス承認ポリシー](https://docs.gitlab.com/user/compliance/license_approval_policies/)を作成することをお勧めします。
@@ -2709,7 +2796,7 @@ GitLab 9.0でサブグループが導入されたとき、グループパスの�
 ### 外部認証を使用したパーソナルアクセストークンとデプロイトークンのアクセスの制限 {#limit-personal-access-token-and-deploy-tokens-access-with-external-authorization}
 
 - GitLab 15.8で発表
-- GitLab 16.0で削除 ([breaking change](https://docs.gitlab.com/update/terminology/#breaking-change))
+- GitLab 16.0で削除（[破壊的変更](https://docs.gitlab.com/update/terminology/#breaking-change)）
 - この変更について議論したり、詳細を確認したりするには、[非推奨に関するイシュー](https://gitlab.com/gitlab-org/gitlab/-/issues/387721)を参照してください。
 
 外部認証を有効にすると、パーソナルアクセストークン（PAT）とデプロイトークンは、コンテナまたはパッケージレジストリにアクセスできなくなります。この多層防御のセキュリティ対策は、16.0でデプロイされます。PATとデプロイトークンを使用してこれらのレジストリにアクセスするユーザーの場合、この対策によりこれらのトークンの使用が中断されます。コンテナまたはパッケージレジストリでトークンを使用するには、外部認証を無効にします。
@@ -2717,7 +2804,7 @@ GitLab 9.0でサブグループが導入されたとき、グループパスの�
 ### GitLab Helmチャート用の主要なバンドルHelmチャートの更新 {#major-bundled-helm-chart-updates-for-the-gitlab-helm-chart}
 
 - GitLab 15.10で発表
-- GitLab 16.0で削除 ([breaking change](https://docs.gitlab.com/update/terminology/#breaking-change))
+- GitLab 16.0で削除（[破壊的変更](https://docs.gitlab.com/update/terminology/#breaking-change)）
 - この変更について議論したり、詳細を確認したりするには、[非推奨に関するイシュー](https://gitlab.com/gitlab-org/charts/gitlab/-/issues/3442)を参照してください。
 
 GitLab 16.0と同時に、GitLab Helmチャートは7.0のメジャーバージョンをリリースします。次の主要なバンドルチャートの更新が含まれます。
@@ -2733,7 +2820,7 @@ GitLab Helmチャート7.0の完全なアップグレード手順は、[アッ�
 ### 管理ライセンスAPI {#managed-licenses-api}
 
 - GitLab 15.9で発表
-- GitLab 16.0で削除 ([breaking change](https://docs.gitlab.com/update/terminology/#breaking-change))
+- GitLab 16.0で削除（[破壊的変更](https://docs.gitlab.com/update/terminology/#breaking-change)）
 - この変更について議論したり、詳細を確認したりするには、[非推奨に関するイシュー](https://gitlab.com/gitlab-org/gitlab/-/issues/390417)を参照してください。
 
 管理ライセンスAPIは現在非推奨となっており、GitLab 16.0で削除される予定です。
@@ -2752,7 +2839,7 @@ GitLab Helmチャート7.0の完全なアップグレード手順は、[アッ�
 ### Prometheusを介したパフォーマンスメトリクスのモニタリング {#monitor-performance-metrics-through-prometheus}
 
 - GitLab 14.7で発表
-- GitLab 16.0で削除 ([breaking change](https://docs.gitlab.com/update/terminology/#breaking-change))
+- GitLab 16.0で削除（[破壊的変更](https://docs.gitlab.com/update/terminology/#breaking-change)）
 - この変更について議論したり、詳細を確認したりするには、[非推奨に関するイシュー](https://gitlab.com/gitlab-org/gitlab/-/issues/346541)を参照してください。
 
 GitLabは、Prometheusインスタンスに格納されているデータを表示することにより、ユーザーがパフォーマンスメトリクスを閲覧できるようにします。GitLabは、ダッシュボードにもこれらのメトリクスの可視化を表示します。ユーザーは、以前に設定した外部Prometheusインスタンスに接続するか、PrometheusをGitLab Managed Appとして設定できます。ただし、GitLabではKubernetesクラスターとの証明書ベースのインテグレーションは非推奨であるため、Prometheusに依存するGitLabのメトリクス機能も非推奨となっています。これには、ダッシュボードでのメトリクスの表示も含まれます。GitLabは、[Opstrace](https://about.gitlab.com/press/releases/2021-12-14-gitlab-acquires-opstrace-to-expand-its-devops-platform-with-open-source-observability-solution/)に基づいて単一のユーザーエクスペリエンスを開発することに取り組んでいます。Opstraceインテグレーションの作業をフォローするための[イシューが存在](https://gitlab.com/groups/gitlab-org/-/epics/6976)します。
@@ -2760,7 +2847,7 @@ GitLabは、Prometheusインスタンスに格納されているデータを表�
 ### 有効期限のないアクセストークン {#non-expiring-access-tokens}
 
 - GitLab 15.4で発表
-- GitLab 16.0で削除 ([breaking change](https://docs.gitlab.com/update/terminology/#breaking-change))
+- GitLab 16.0で削除（[破壊的変更](https://docs.gitlab.com/update/terminology/#breaking-change)）
 - この変更について議論したり、詳細を確認したりするには、[非推奨に関するイシュー](https://gitlab.com/gitlab-org/gitlab/-/issues/369122)を参照してください。
 
 既存のプロジェクトアクセストークンに有効期限が自動的に適用されるかどうかは、お使いのGitLabの提供形態と、GitLab 16.0以降にアップグレードした時期によって異なります。
@@ -2800,7 +2887,7 @@ GitLab 16.0では、有効期限のない[パーソナルアクセストーク�
 ### 非標準のデフォルトRedisポートは非推奨 {#non-standard-default-redis-ports-are-deprecated}
 
 - GitLab 15.8で発表
-- GitLab 16.0で削除 ([breaking change](https://docs.gitlab.com/update/terminology/#breaking-change))
+- GitLab 16.0で削除（[破壊的変更](https://docs.gitlab.com/update/terminology/#breaking-change)）
 - この変更について議論したり、詳細を確認したりするには、[非推奨に関するイシュー](https://gitlab.com/gitlab-org/gitlab/-/issues/388269)を参照してください。
 
 GitLabがRedis設定ファイルなしで起動した場合、GitLabは、`localhost:6380`、`localhost:6381`、`localhost:6382`の3つのRedisサーバーに接続できると想定します。この動作を変更して、GitLabが`localhost:6379`に1つのRedisサーバーがあると想定するようにします。
@@ -2810,7 +2897,7 @@ GitLabがRedis設定ファイルなしで起動した場合、GitLabは、`local
 ### 削除保護設定でプロジェクトをすぐに削除するオプションは非推奨 {#option-to-delete-projects-immediately-is-deprecated-from-deletion-protection-settings}
 
 - GitLab 15.9で発表
-- GitLab 16.0で削除 ([breaking change](https://docs.gitlab.com/update/terminology/#breaking-change))
+- GitLab 16.0で削除（[破壊的変更](https://docs.gitlab.com/update/terminology/#breaking-change)）
 - この変更について議論したり、詳細を確認したりするには、[非推奨に関するイシュー](https://gitlab.com/gitlab-org/gitlab/-/issues/389557)を参照してください。
 
 **管理者**エリアのグループおよびプロジェクト削除保護設定には、グループおよびプロジェクトをすぐに削除するオプションがありました。16.0以降、このオプションは利用できなくなり、グループとプロジェクトの遅延削除がデフォルトの動作になります。
@@ -2822,7 +2909,7 @@ GitLabがRedis設定ファイルなしで起動した場合、GitLabは、`local
 ### PostgreSQL 12は非推奨 {#postgresql-12-deprecated}
 
 - GitLab 15.0で発表
-- GitLab 16.0で削除 ([breaking change](https://docs.gitlab.com/update/terminology/#breaking-change))
+- GitLab 16.0で削除（[破壊的変更](https://docs.gitlab.com/update/terminology/#breaking-change)）
 - この変更について議論したり、詳細を確認したりするには、[非推奨に関するイシュー](https://gitlab.com/gitlab-org/gitlab/-/issues/349185)を参照してください。
 
 PostgreSQL 12のサポートは、GitLab 16.0で削除される予定です。GitLab 16.0では、PostgreSQL 13が、必要なPostgreSQLの最小バージョンになります。
@@ -2834,7 +2921,7 @@ PostgreSQL 13のサポートは、GitLab 15.2でGeoに追加されました。
 ### プロジェクトAPIフィールド`operations_access_level`は非推奨 {#projects-api-field-operations_access_level-is-deprecated}
 
 - GitLab 15.8で発表
-- GitLab 16.0で削除 ([breaking change](https://docs.gitlab.com/update/terminology/#breaking-change))
+- GitLab 16.0で削除（[破壊的変更](https://docs.gitlab.com/update/terminology/#breaking-change)）
 - この変更について議論したり、詳細を確認したりするには、[非推奨に関するイシュー](https://gitlab.com/gitlab-org/gitlab/-/issues/385798)を参照してください。
 
 プロジェクトAPIの`operations_access_level`フィールドは非推奨になります。このフィールドは、特定の機能を制御するフィールド（`releases_access_level`、`environments_access_level`、`feature_flags_access_level`、`infrastructure_access_level`、`monitor_access_level`）に置き換えられました。
@@ -2843,7 +2930,6 @@ PostgreSQL 13のサポートは、GitLab 15.2でGeoに追加されました。
 
 - GitLab 15.8で発表
 - GitLab 16.0で削除
-- この変更について議論したり、詳細を確認したりするには、[非推奨に関するイシュー](https://gitlab.com/gitlab-com/Product/-/issues/5255)を参照してください。
 
 ベアリポジトリをインポートするためのRakeタスク（`gitlab:import:repos`）は、GitLab 15.8で非推奨となり、GitLab 16.0で削除されます。
 
@@ -2859,13 +2945,13 @@ PostgreSQL 13のサポートは、GitLab 15.2でGeoに追加されました。
 
 - [エクスポートファイル](https://docs.gitlab.com/user/project/settings/import_export/)または[直接転送](https://docs.gitlab.com/user/group/import/#migrate-groups-by-direct-transfer-recommended)を使用してプロジェクトを移行し、リポジトリも移行する。
 - [URLでポジトリ](https://docs.gitlab.com/user/project/import/repo_by_url/)をインポートする。
-- [GitLab以外のソースからリポジトリ](https://docs.gitlab.com/user/project/import/)をインポートする。
+- [GitLab以外のソースからリポジトリ](https://docs.gitlab.com/user/import/)をインポートする。
 
 ### Redis 5は非推奨 {#redis-5-deprecated}
 
 - GitLab 15.3で発表
 - GitLab 15.6でサポート終了
-- GitLab 16.0で削除 ([breaking change](https://docs.gitlab.com/update/terminology/#breaking-change))
+- GitLab 16.0で削除（[破壊的変更](https://docs.gitlab.com/update/terminology/#breaking-change)）
 - この変更について議論したり、詳細を確認したりするには、[非推奨に関するイシュー](https://gitlab.com/gitlab-org/gitlab/-/issues/331468)を参照してください。
 
 GitLab 13.9のOmnibus GitLabパッケージおよびGitLab Helmチャート4.9では、Redisバージョンが[Redis 6に更新](https://about.gitlab.com/releases/2021/02/22/gitlab-13-9-released/#omnibus-improvements)されました。Redis 5は2022年4月にサポートが終了し、GitLab 15.6の時点でサポートされなくなります。独自のRedis 5.0インスタンスを使用している場合は、GitLab 16.0以降にアップグレードする前に、Redis 6.0以降にアップグレードする必要があります。
@@ -2873,7 +2959,7 @@ GitLab 13.9のOmnibus GitLabパッケージおよびGitLab Helmチャート4.9�
 ### `POST /jobs/request` Runnerエンドポイントから`job_age`パラメータを削除 {#remove-job_age-parameter-from-post-jobsrequest-runner-endpoint}
 
 - GitLab 15.2で発表
-- GitLab 16.0で削除 ([breaking change](https://docs.gitlab.com/update/terminology/#breaking-change))
+- GitLab 16.0で削除（[破壊的変更](https://docs.gitlab.com/update/terminology/#breaking-change)）
 - この変更について議論したり、詳細を確認したりするには、[非推奨に関するイシュー](https://gitlab.com/gitlab-org/gitlab/-/issues/334253)を参照してください。
 
 GitLab Runnerとの通信で使用される、`POST /jobs/request` APIエンドポイントから返される`job_age`パラメータは、GitLabとRunnerのどの機能でも使用されたことがありません。このパラメータはGitLab 16.0で削除されます。
@@ -2883,7 +2969,7 @@ GitLab Runnerとの通信で使用される、`POST /jobs/request` APIエンド�
 ### GitLab 16.0でSASTアナライザーのカバレッジを変更 {#sast-analyzer-coverage-changing-in-gitlab-160}
 
 - GitLab 15.9で発表
-- GitLab 16.0で削除 ([breaking change](https://docs.gitlab.com/update/terminology/#breaking-change))
+- GitLab 16.0で削除（[破壊的変更](https://docs.gitlab.com/update/terminology/#breaking-change)）
 - この変更について議論したり、詳細を確認したりするには、[非推奨に関するイシュー](https://gitlab.com/gitlab-org/gitlab/-/issues/390416)を参照してください。
 
 GitLab SASTは、さまざまな[アナライザー](https://docs.gitlab.com/user/application_security/sast/analyzers/)を使用してコードをスキャンし、脆弱性を確認します。
@@ -2913,7 +2999,7 @@ PHPCS Security Auditベースのアナライザーを置き換える作業は、
 ### Secureアナライザーのメジャーバージョン更新 {#secure-analyzers-major-version-update-1}
 
 - GitLab 15.9で発表
-- GitLab 16.0で削除 ([breaking change](https://docs.gitlab.com/update/terminology/#breaking-change))
+- GitLab 16.0で削除（[破壊的変更](https://docs.gitlab.com/update/terminology/#breaking-change)）
 - この変更について議論したり、詳細を確認したりするには、[非推奨に関するイシュー](https://gitlab.com/gitlab-org/gitlab/-/issues/390912)を参照してください。
 
 Secureステージでは、GitLab 16.0のリリースと連携して、アナライザーのメジャーバージョンが引き上げられます。この引き上げにより、以下のアナライザーの明確な区別が可能になります。
@@ -2948,7 +3034,7 @@ Secureステージでは、GitLab 16.0のリリースと連携して、アナラ
 ### セキュアスキャンのCI/CDテンプレートは新しいジョブ`rules`を使用 {#secure-scanning-cicd-templates-will-use-new-job-rules}
 
 - GitLab 15.9で発表
-- GitLab 16.0で削除 ([breaking change](https://docs.gitlab.com/update/terminology/#breaking-change))
+- GitLab 16.0で削除（[破壊的変更](https://docs.gitlab.com/update/terminology/#breaking-change)）
 - この変更について議論したり、詳細を確認したりするには、[非推奨に関するイシュー](https://gitlab.com/gitlab-org/gitlab/-/issues/391822)を参照してください。
 
 セキュリティスキャン用のGitLab管理CI/CDテンプレートは、GitLab 16.0リリースで更新されます。この更新には、CI/CDテンプレートの最新バージョンですでにリリースされている改善が含まれます。カスタマイズされたCI/CDパイプライン設定に混乱を招く可能性があるため、これらの変更は、最新のテンプレートバージョンでリリースしました。
@@ -2974,7 +3060,7 @@ Secureステージでは、GitLab 16.0のリリースと連携して、アナラ
 ### セキュリティレポートスキーマバージョン14.x.x {#security-report-schemas-version-14xx}
 
 - GitLab 15.3で発表
-- GitLab 16.0で削除 ([breaking change](https://docs.gitlab.com/update/terminology/#breaking-change))
+- GitLab 16.0で削除（[破壊的変更](https://docs.gitlab.com/update/terminology/#breaking-change)）
 - この変更について議論したり、詳細を確認したりするには、[非推奨に関するイシュー](https://gitlab.com/gitlab-org/gitlab/-/issues/366477)を参照してください。
 
 バージョン14.x.xの[セキュリティレポートスキーマ](https://gitlab.com/gitlab-org/security-products/security-report-schemas)は非推奨となります。
@@ -2988,7 +3074,7 @@ GitLab 16.0以降、この機能は削除されます。スキーマバージョ
 ### Kubernetes向けGitLabエージェントの設定におけるStarboardディレクティブ {#starboard-directive-in-the-configuration-of-the-gitlab-agent-for-kubernetes}
 
 - GitLab 15.4で発表
-- GitLab 16.0で削除 ([breaking change](https://docs.gitlab.com/update/terminology/#breaking-change))
+- GitLab 16.0で削除（[破壊的変更](https://docs.gitlab.com/update/terminology/#breaking-change)）
 - この変更について議論したり、詳細を確認したりするには、[非推奨に関するイシュー](https://gitlab.com/gitlab-org/gitlab/-/issues/368828)を参照してください。
 
 GitLabコンテナスキャン機能は、Starboardのインストールを必要としなくなります。その結果、Kubernetes向けGitLabエージェントの設定ファイルで`starboard:`ディレクティブを使用することは非推奨となり、GitLab 16.0で削除される予定です。`container_scanning:`ディレクティブを使用するように設定ファイルを更新します。
@@ -3004,7 +3090,7 @@ Windows Server 2004および20H2のサポートが終了するため、GitLab 16
 ### Praefectカスタムメトリクスのエンドポイント設定のサポート {#support-for-praefect-custom-metrics-endpoint-configuration}
 
 - GitLab 15.9で発表
-- GitLab 16.0で削除 ([breaking change](https://docs.gitlab.com/update/terminology/#breaking-change))
+- GitLab 16.0で削除（[破壊的変更](https://docs.gitlab.com/update/terminology/#breaking-change)）
 - この変更について議論したり、詳細を確認したりするには、[非推奨に関するイシュー](https://gitlab.com/gitlab-org/gitlab/-/issues/390266)を参照してください。
 
 `prometheus_exclude_database_from_default_metrics`設定値の使用のサポートはGitLab 15.9で非推奨となり、GitLab 16.0で削除されます。この設定値を使用するとパフォーマンスが低下するため、削除します。この変更は、次のメトリクスが`/metrics`で使用できなくなることを意味します。
@@ -3018,7 +3104,7 @@ Windows Server 2004および20H2のサポートが終了するため、GitLab 16
 ### Terraformステート名でのピリオド（`.`）のサポートによる、既存のステートが破損する可能性 {#support-for-periods--in-terraform-state-names-might-break-existing-states}
 
 - GitLab 15.7で発表
-- GitLab 16.0で削除 ([breaking change](https://docs.gitlab.com/update/terminology/#breaking-change))
+- GitLab 16.0で削除（[破壊的変更](https://docs.gitlab.com/update/terminology/#breaking-change)）
 - この変更について議論したり、詳細を確認したりするには、[非推奨に関するイシュー](https://gitlab.com/gitlab-org/gitlab/-/issues/385564)を参照してください。
 
 以前は、ピリオドを含むTerraformステート名はサポートされていませんでした。ただし、回避策を使用して、ピリオドを含むステート名を使用することもできました。
@@ -3036,7 +3122,7 @@ GitLab 15.7では、ピリオドを含むステート名の[完全なサポー�
 ### APIはKubernetes向けエージェントの失効したトークンを返さなくなる {#the-api-no-longer-returns-revoked-tokens-for-the-agent-for-kubernetes}
 
 - GitLab 15.8で発表
-- GitLab 16.0で削除 ([breaking change](https://docs.gitlab.com/update/terminology/#breaking-change))
+- GitLab 16.0で削除（[破壊的変更](https://docs.gitlab.com/update/terminology/#breaking-change)）
 - この変更について議論したり、詳細を確認したりするには、[非推奨に関するイシュー](https://gitlab.com/gitlab-org/gitlab/-/issues/382129)を参照してください。
 
 現在、[クラスターエージェントAPI](https://docs.gitlab.com/api/cluster_agents/#list-tokens-for-an-agent)エンドポイントへのGETリクエストは、失効したトークンを返すことができます。GitLab 16.0では、GETリクエストは失効したトークンを返しません。
@@ -3045,7 +3131,7 @@ GitLab 15.7では、ピリオドを含むステート名の[完全なサポー�
 
 この変更は、次のRESTおよびGraphQL APIエンドポイントに影響します。
 
-- REST API:
+- REST API: 
   - [トークンのリストを取得する](https://docs.gitlab.com/api/cluster_agents/#list-tokens-for-an-agent)
   - [1つのトークンを取得する](https://docs.gitlab.com/api/cluster_agents/#get-a-single-agent-token)
 - GraphQL: 
@@ -3054,18 +3140,17 @@ GitLab 15.7では、ピリオドを含むステート名の[完全なサポー�
 ### Phabricatorタスクインポーターは非推奨 {#the-phabricator-task-importer-is-deprecated}
 
 - GitLab 15.7で発表
-- GitLab 16.0で削除 ([breaking change](https://docs.gitlab.com/update/terminology/#breaking-change))
-- この変更について議論したり、詳細を確認したりするには、[非推奨に関するイシュー](https://gitlab.com/gitlab-com/Product/-/issues/4894)を参照してください。
+- GitLab 16.0で削除（[破壊的変更](https://docs.gitlab.com/update/terminology/#breaking-change)）
 
 Phabricatorタスクインポーターは非推奨になります。プロジェクトとしてのPhabricator自体は、2021年6月1日以降、積極的にメンテナンスされなくなります。このツールを使用したインポートは確認されていません。GitLabで公開されている関連イシューでのアクティビティはありません。
 
 ### 最新のTerraformテンプレートは現在の安定版テンプレートを上書き {#the-latest-terraform-templates-will-overwrite-current-stable-templates}
 
 - GitLab 15.8で発表
-- GitLab 16.0で削除 ([breaking change](https://docs.gitlab.com/update/terminology/#breaking-change))
+- GitLab 16.0で削除（[破壊的変更](https://docs.gitlab.com/update/terminology/#breaking-change)）
 - この変更について議論したり、詳細を確認したりするには、[非推奨に関するイシュー](https://gitlab.com/gitlab-org/gitlab/-/issues/386001)を参照してください。
 
-GitLabのメジャーバージョンがリリースされるたびに、安定版のTerraformテンプレートを現在の最新テンプレートで更新します。この変更は、[クイックスタート](https://gitlab.com/gitlab-org/gitlab/-/blob/master/lib/gitlab/ci/templates/Terraform.gitlab-ci.yml)テンプレートと[ベース](https://gitlab.com/gitlab-org/gitlab/-/blob/master/lib/gitlab/ci/templates/Terraform/Base.gitlab-ci.yml)テンプレートに影響します。
+GitLabのメジャーバージョンがリリースされるたびに、安定版のTerraformテンプレートを現在の最新テンプレートで更新します。この変更は、[quickstart](https://gitlab.com/gitlab-org/gitlab/-/blob/master/lib/gitlab/ci/templates/Terraform.gitlab-ci.yml)と[base templates](https://docs.gitlab.com/update/deprecations/#deprecate-terraform-cicd-templates)に影響します。
 
 新しいテンプレートにはデフォルトのルールが付属しているため、更新するとTerraformパイプラインが壊れる可能性があります。たとえば、Terraformジョブがダウンストリームパイプラインとしてトリガーされる場合、GitLab 16.0ではルールがジョブをトリガーしません。
 
@@ -3074,7 +3159,7 @@ GitLabのメジャーバージョンがリリースされるたびに、安定�
 ### マージリクエストでの`/draft`クイックアクションの動作の切替 {#toggle-behavior-of-draft-quick-action-in-merge-requests}
 
 - GitLab 15.4で発表
-- GitLab 16.0で削除 ([breaking change](https://docs.gitlab.com/update/terminology/#breaking-change))
+- GitLab 16.0で削除（[破壊的変更](https://docs.gitlab.com/update/terminology/#breaking-change)）
 - この変更について議論したり、詳細を確認したりするには、[非推奨に関するイシュー](https://gitlab.com/gitlab-org/gitlab/-/issues/365365)を参照してください。
 
 クイックアクションを介してマージリクエストのドラフトステータスを切り替える動作をより明確にするために、`/draft`クイックアクションの切替動作を非推奨にして削除します。GitLab 16.0のリリース以降、`/draft`はマージリクエストをドラフトに設定するだけとなり、新しい`/ready`クイックアクションを使用してドラフトステータスを削除します。
@@ -3082,7 +3167,7 @@ GitLabのメジャーバージョンがリリースされるたびに、安定�
 ### `vulnerabilityFindingDismiss`ミューテーションでの`id`フィールドの使用 {#use-of-id-field-in-vulnerabilityfindingdismiss-mutation}
 
 - GitLab 15.3で発表
-- GitLab 16.0で削除 ([breaking change](https://docs.gitlab.com/update/terminology/#breaking-change))
+- GitLab 16.0で削除（[破壊的変更](https://docs.gitlab.com/update/terminology/#breaking-change)）
 - この変更について議論したり、詳細を確認したりするには、[非推奨に関するイシュー](https://gitlab.com/gitlab-org/gitlab/-/issues/367166)を参照してください。
 
 `vulnerabilityFindingDismiss` GraphQLミューテーションを使用して、脆弱性検出のステータスを`Dismissed`に設定できます。以前は、このミューテーションは`id`フィールドを使用して検出を一意に識別していました。ただし、この方法では、パイプラインセキュリティタブからの検出を無視できませんでした。したがって、識別子として`id`フィールドを使用することは中止され、`uuid`フィールドが優先されることになりました。識別子として「uuid」フィールドを使用すると、パイプラインセキュリティタブから検出を無視できます。
@@ -3090,7 +3175,7 @@ GitLabのメジャーバージョンがリリースされるたびに、安定�
 ### サードパーティ製コンテナレジストリの使用は非推奨 {#use-of-third-party-container-registries-is-deprecated}
 
 - GitLab 15.8で発表
-- GitLab 16.0で削除 ([breaking change](https://docs.gitlab.com/update/terminology/#breaking-change))
+- GitLab 16.0で削除（[破壊的変更](https://docs.gitlab.com/update/terminology/#breaking-change)）
 - この変更について議論したり、詳細を確認したりするには、[非推奨に関するイシュー](https://gitlab.com/gitlab-org/gitlab/-/issues/376216)を参照してください。
 
 GitLabを認証エンドポイントとして使用するサードパーティのコンテナレジストリの使用はGitLab 15.8で非推奨となり、[サポートの終了](https://docs.gitlab.com/development/deprecation_guidelines/#terminology)はGitLab 16.0で予定されています。これは、コンテナイメージを検索、表示、削除するために、外部レジストリをGitLabユーザーインターフェースに接続しているGitLab Self-Managedのユーザーに影響します。
@@ -3106,7 +3191,7 @@ GitLab.com用の新しい[GitLabコンテナレジストリ](https://gitlab.com/
 ### パスの最後にグローバルIDがある作業アイテムのパスは非推奨 {#work-items-path-with-global-id-at-the-end-of-the-path-is-deprecated}
 
 - GitLab 15.10で発表
-- GitLab 16.0で削除 ([breaking change](https://docs.gitlab.com/update/terminology/#breaking-change))
+- GitLab 16.0で削除（[破壊的変更](https://docs.gitlab.com/update/terminology/#breaking-change)）
 - この変更について議論したり、詳細を確認したりするには、[非推奨に関するイシュー](https://gitlab.com/gitlab-org/gitlab/-/issues/393836)を参照してください。
 
 作業アイテムのURLでグローバルIDを使用することは非推奨です。将来的には、内部ID（IID）のみがサポートされます。
@@ -3120,7 +3205,7 @@ GitLab 16.0では、作業アイテムのパスでグローバルIDを使用す�
 ### `CI_BUILD_*`定義済み変数 {#ci_build_-predefined-variables}
 
 - GitLab 14.8で発表
-- GitLab 16.0で削除 ([breaking change](https://docs.gitlab.com/update/terminology/#breaking-change))
+- GitLab 16.0で削除（[破壊的変更](https://docs.gitlab.com/update/terminology/#breaking-change)）
 - この変更について議論したり、詳細を確認したりするには、[非推奨に関するイシュー](https://gitlab.com/gitlab-org/gitlab/-/issues/352957)を参照してください。
 
 `CI_BUILD_*`で始まる定義済みのCI/CD変数はGitLab 9.0で非推奨となっていて、GitLab 16.0で削除されます。これらの変数をまだ使用している場合は、機能的に同一である代替[定義済み変数](https://docs.gitlab.com/ci/variables/predefined_variables/)に必ず変更してください。
@@ -3143,7 +3228,7 @@ GitLab 16.0では、作業アイテムのパスでグローバルIDを使用す�
 ### `POST ci/lint` APIエンドポイントは非推奨 {#post-cilint-api-endpoint-deprecated}
 
 - GitLab 15.7で発表
-- GitLab 16.0で削除 ([breaking change](https://docs.gitlab.com/update/terminology/#breaking-change))
+- GitLab 16.0で削除（[破壊的変更](https://docs.gitlab.com/update/terminology/#breaking-change)）
 - この変更について議論したり、詳細を確認したりするには、[非推奨に関するイシュー](https://gitlab.com/gitlab-org/gitlab/-/issues/381669)を参照してください。
 
 `POST ci/lint` APIエンドポイントは15.7で非推奨となり、16.0で削除されます。このエンドポイントは、CI/CD設定オプションのすべての範囲を検証しません。代わりに、CI/CD設定を適切に検証する[`POST /projects/:id/ci/lint`](https://docs.gitlab.com/api/lint/#validate-a-ci-yaml-configuration-with-a-namespace)を使用してください。
@@ -3151,7 +3236,7 @@ GitLab 16.0では、作業アイテムのパスでグローバルIDを使用す�
 ### DORA API用の`environment_tier`パラメータ {#environment_tier-parameter-for-dora-api}
 
 - GitLab 15.8で発表
-- GitLab 16.0で削除 ([breaking change](https://docs.gitlab.com/update/terminology/#breaking-change))
+- GitLab 16.0で削除（[破壊的変更](https://docs.gitlab.com/update/terminology/#breaking-change)）
 - この変更について議論したり、詳細を確認したりするには、[非推奨に関するイシュー](https://gitlab.com/gitlab-org/gitlab/-/issues/365939)を参照してください。
 
 混乱と重複を避けるため、`environment_tiers`パラメータを優先して、`environment_tier`パラメータは非推奨になります。新しい`environment_tiers`パラメータを使用すると、DORA APIは複数のプランの集約データを同時に返すことができます。`environment_tier`パラメータはGitLab 16.0で削除されます。
@@ -3159,7 +3244,7 @@ GitLab 16.0では、作業アイテムのパスでグローバルIDを使用す�
 ### `PipelineSecurityReportFinding` GraphQLタイプ用の`name`フィールド {#name-field-for-pipelinesecurityreportfinding-graphql-type}
 
 - GitLab 15.1で発表
-- GitLab 16.0で削除 ([breaking change](https://docs.gitlab.com/update/terminology/#breaking-change))
+- GitLab 16.0で削除（[破壊的変更](https://docs.gitlab.com/update/terminology/#breaking-change)）
 - この変更について議論したり、詳細を確認したりするには、[非推奨に関するイシュー](https://gitlab.com/gitlab-org/gitlab/-/issues/346335)を参照してください。
 
 以前、[`PipelineSecurityReportFinding` GraphQLタイプが更新](https://gitlab.com/gitlab-org/gitlab/-/issues/335372)され、新しい`title`フィールドが含まれるようになりました。このフィールドは現在の`name`フィールドのエイリアスであり、特定性の低い`name`フィールドは冗長になっています。`name`フィールドは、GitLab 16.0で`PipelineSecurityReportFinding`タイプから削除されます。
@@ -3167,7 +3252,7 @@ GitLab 16.0では、作業アイテムのパスでグローバルIDを使用す�
 ### `started`イテレーションステート {#started-iteration-state}
 
 - GitLab 14.8で発表
-- GitLab 16.0で削除 ([breaking change](https://docs.gitlab.com/update/terminology/#breaking-change))
+- GitLab 16.0で削除（[破壊的変更](https://docs.gitlab.com/update/terminology/#breaking-change)）
 - この変更について議論したり、詳細を確認したりするには、[非推奨に関するイシュー](https://gitlab.com/gitlab-org/gitlab/-/issues/334018)を参照してください。
 
 [イテレーションGraphQL API](https://docs.gitlab.com/api/graphql/reference/#iterationstate)および[イテレーションREST API](https://docs.gitlab.com/api/iterations/#list-project-iterations)の`started`イテレーションステートは非推奨となります。
@@ -3179,7 +3264,7 @@ GitLab 16.0でGraphQL APIバージョンは削除されます。このステー�
 ### `vulnerabilityFindingDismiss` GraphQLミューテーション {#vulnerabilityfindingdismiss-graphql-mutation}
 
 - GitLab 15.5で発表
-- GitLab 16.0で削除 ([breaking change](https://docs.gitlab.com/update/terminology/#breaking-change))
+- GitLab 16.0で削除（[破壊的変更](https://docs.gitlab.com/update/terminology/#breaking-change)）
 - この変更について議論したり、詳細を確認したりするには、[非推奨に関するイシュー](https://gitlab.com/gitlab-org/gitlab/-/issues/375645)を参照してください。
 
 `VulnerabilityFindingDismiss` GraphQLミューテーションは非推奨となり、GitLab 16.0で削除されます。このミューテーションは、ユーザーが脆弱性検出IDを利用できなかったため（このフィールドは[15.3で非推奨](https://docs.gitlab.com/update/deprecations/#use-of-id-field-in-vulnerabilityfindingdismiss-mutation)になりました）、あまり使用されていませんでした。代わりに、ユーザーは脆弱性レポートの脆弱性を無視するには`VulnerabilityDismiss`を、CIパイプラインセキュリティタブのセキュリティ検出結果を無視するには`SecurityFindingDismiss`を使用する必要があります。
@@ -3203,7 +3288,7 @@ GitLab 15.7以降、openSUSE Leap 15.4のパッケージの提供を開始して
 ### OpenStack SwiftおよびRackspace APIを使用した自動バックアップのアップロード {#automatic-backup-upload-using-openstack-swift-and-rackspace-apis}
 
 - GitLab 15.8で発表
-- GitLab 15.10で削除 ([breaking change](https://docs.gitlab.com/update/terminology/#breaking-change))
+- GitLab 15.10で削除（[破壊的変更](https://docs.gitlab.com/update/terminology/#breaking-change)）
 - この変更について議論したり、詳細を確認したりするには、[非推奨に関するイシュー](https://gitlab.com/gitlab-org/gitlab/-/issues/387976)を参照してください。
 
 OpenStack SwiftおよびRackspace APIを使用した**リモートストレージへのバックアップのアップロード**のサポートを非推奨にします。これらのAPIのサポートは、積極的にメンテナンスされなくなり、Ruby 3用に更新されていないサードパーティライブラリに依存しています。GitLabは、セキュリティパッチを最新に保つため、Ruby 2のEOLより前にRuby 3に移行しています。
@@ -3216,7 +3301,7 @@ OpenStack SwiftおよびRackspace APIを使用した**リモートストレー�
 ### Web IDEでのライブプレビューの利用停止 {#live-preview-no-longer-available-in-the-web-ide}
 
 - GitLab 15.8で発表
-- GitLab 15.9で削除 ([breaking change](https://docs.gitlab.com/update/terminology/#breaking-change))
+- GitLab 15.9で削除（[破壊的変更](https://docs.gitlab.com/update/terminology/#breaking-change)）
 - この変更について議論したり、詳細を確認したりするには、[非推奨に関するイシュー](https://gitlab.com/gitlab-org/gitlab/-/issues/383889)を参照してください。
 
 Web IDEのライブプレビュー機能は、静的なWebアプリケーションのクライアント側のプレビューを提供するように設計されていました。ただし、設定手順が複雑で、サポートされているプロジェクトタイプの範囲が狭いため、その有用性は限られています。GitLab 15.7でWeb IDEベータ版が導入されたことで、フルサーバー側のランタイム環境に接続できるようになりました。Web IDEで拡張機能をインストールすることを今後サポートするともに、ライブプレビューで利用できるワークフローよりも高度なワークフローのサポートも提供します。GitLab 15.9以降、Web IDEでライブプレビューは利用できなくなります。
@@ -3224,7 +3309,7 @@ Web IDEのライブプレビュー機能は、静的なWebアプリケーショ�
 ### `omniauth-authentiq` gemの利用停止 {#omniauth-authentiq-gem-no-longer-available}
 
 - GitLab 15.9で発表
-- GitLab 15.9で削除 ([breaking change](https://docs.gitlab.com/update/terminology/#breaking-change))
+- GitLab 15.9で削除（[破壊的変更](https://docs.gitlab.com/update/terminology/#breaking-change)）
 - この変更について議論したり、詳細を確認したりするには、[非推奨に関するイシュー](https://gitlab.com/gitlab-org/gitlab/-/issues/389452)を参照してください。
 
 `omniauth-authentiq`は、GitLabの一部であったOmniAuth戦略gemです。認証サービスを提供する会社であるAuthentiqが閉鎖されました。そのため、gemは削除されます。
@@ -3234,7 +3319,7 @@ Web IDEのライブプレビュー機能は、静的なWebアプリケーショ�
 ### `.gitlab-ci.yml`でのファイルタイプ変数の展開 {#file-type-variable-expansion-in-gitlab-ciyml}
 
 - GitLab 15.5で発表
-- GitLab 15.7で削除 ([breaking change](https://docs.gitlab.com/update/terminology/#breaking-change))
+- GitLab 15.7で削除（[破壊的変更](https://docs.gitlab.com/update/terminology/#breaking-change)）
 - この変更について議論したり、詳細を確認したりするには、[非推奨に関するイシュー](https://gitlab.com/gitlab-org/gitlab/-/issues/29407)を参照してください。
 
 以前は、エイリアスファイル変数を参照または適用していた変数では、`File`型変数の値を展開していました。たとえば、ファイルの内容です。この動作は、一般的なシェル変数展開ルールに準拠していないため、正しくありませんでした。`File`型変数に保存されているシークレットまたは機密情報を漏洩させるために、ユーザーが、変数を入力パラメータとして指定して$echoコマンドを実行する可能性がありました。
@@ -3283,7 +3368,7 @@ GitLab 15.4では、バンドルされたGrafanaを、GitLabがメンテナン�
 ### SASTアナライザーの統合とCI/CDテンプレートの変更 {#sast-analyzer-consolidation-and-cicd-template-changes}
 
 - GitLab 14.8で発表
-- GitLab 15.4で削除 ([breaking change](https://docs.gitlab.com/update/terminology/#breaking-change))
+- GitLab 15.4で削除（[破壊的変更](https://docs.gitlab.com/update/terminology/#breaking-change)）
 - この変更について議論したり、詳細を確認したりするには、[非推奨に関するイシュー](https://gitlab.com/gitlab-org/gitlab/-/issues/352554)を参照してください。
 
 GitLab SASTは、さまざまな[アナライザー](https://docs.gitlab.com/user/application_security/sast/analyzers/)を使用してコードをスキャンし、脆弱性を確認します。
@@ -3297,7 +3382,7 @@ GitLab 15.4では、GitLab SASTは次のアナライザーを使用しなくな�
 - [Bandit](https://gitlab.com/gitlab-org/security-products/analyzers/bandit)（Python）
 
 > [!note]
-> この変更は当初GitLab 15.0で計画されていましたが、GitLab 15.4に延期されました。
+> この変更は元々GitLab 15.0で計画されていましたが、GitLab 15.4に延期されました。
 
 これらのアナライザーは[GitLab管理のSAST CI/CDテンプレート](https://gitlab.com/gitlab-org/gitlab/-/blob/master/lib/gitlab/ci/templates/Security/SAST.gitlab-ci.yml)から削除され、[Semgrepベースのアナライザー](https://gitlab.com/gitlab-org/security-products/analyzers/semgrep)に置き換えられます。これらのアナライザーはただちに、セキュリティアップデートのみを受信するようになります。その他の定期的な改善や更新は保証されません。これらのアナライザーがサポート終了になると、それ以上の更新は提供されません。これらのアナライザー用に以前に公開したコンテナイメージは削除しません。そのような変更は、非推奨化、削除、または破壊的な変更の発表として発表します。
 
@@ -3344,7 +3429,7 @@ GitLab 15.4では、GitLab SASTは次のアナライザーを使用しなくな�
 ### リポジトリプッシュイベントの監査イベント {#audit-events-for-repository-push-events}
 
 - GitLab 14.3で発表
-- GitLab 15.0で削除 ([breaking change](https://docs.gitlab.com/update/terminology/#breaking-change))
+- GitLab 15.0で削除（[破壊的変更](https://docs.gitlab.com/update/terminology/#breaking-change)）
 - この変更について議論したり、詳細を確認したりするには、[非推奨に関するイシュー](https://gitlab.com/gitlab-org/gitlab/-/issues/337993)を参照してください。
 
 **リポジトリイベント**の監査イベントは非推奨となり、GitLab 15.0で削除されます。
@@ -3354,7 +3439,7 @@ GitLab 15.4では、GitLab SASTは次のアナライザーを使用しなくな�
 ### オブジェクトストレージのバックグラウンドアップロード {#background-upload-for-object-storage}
 
 - GitLab 14.9で発表
-- GitLab 15.0で削除 ([breaking change](https://docs.gitlab.com/update/terminology/#breaking-change))
+- GitLab 15.0で削除（[破壊的変更](https://docs.gitlab.com/update/terminology/#breaking-change)）
 - この変更について議論したり、詳細を確認したりするには、[非推奨に関するイシュー](https://gitlab.com/gitlab-org/gitlab/-/issues/26600)を参照してください。
 
 [オブジェクトストレージ機能](https://docs.gitlab.com/administration/object_storage/)の全体的な複雑さとメンテナンスの負担を軽減するために、`background_upload`を使用してファイルをアップロードするサポートは非推奨となり、GitLab 15.0で完全に削除されます。[オブジェクトストレージ用の削除されたバックグラウンドアップロード設定](https://docs.gitlab.com/omnibus/update/gitlab_15_changes/#removed-background-uploads-settings-for-object-storage)の[15.0固有の変更点](https://docs.gitlab.com/omnibus/update/gitlab_15_changes/)を確認してください。
@@ -3369,7 +3454,7 @@ GitLabは、影響を受けるお客様の移行を支援するために、追�
 ### CI/CDジョブ名の長さ制限 {#cicd-job-name-length-limit}
 
 - GitLab 14.6で発表
-- GitLab 15.0で削除 ([breaking change](https://docs.gitlab.com/update/terminology/#breaking-change))
+- GitLab 15.0で削除（[破壊的変更](https://docs.gitlab.com/update/terminology/#breaking-change)）
 - この変更について議論したり、詳細を確認したりするには、[非推奨に関するイシュー](https://gitlab.com/gitlab-org/gitlab/-/issues/342800)を参照してください。
 
 GitLab 15.0では、CI/CDジョブ名の文字数を255文字に制限します。ジョブ名が255文字の制限を超えるパイプラインは、15.0のリリース後に動作しなくなります。
@@ -3377,7 +3462,7 @@ GitLab 15.0では、CI/CDジョブ名の文字数を255文字に制限します�
 ### インスタンス（共有）Runnerをプロジェクト（特定）Runnerに変更 {#changing-an-instance-shared-runner-to-a-project-specific-runner}
 
 - GitLab 14.5で発表
-- GitLab 15.0で削除 ([breaking change](https://docs.gitlab.com/update/terminology/#breaking-change))
+- GitLab 15.0で削除（[破壊的変更](https://docs.gitlab.com/update/terminology/#breaking-change)）
 - この変更について議論したり、詳細を確認したりするには、[非推奨に関するイシュー](https://gitlab.com/gitlab-org/gitlab/-/issues/345347)を参照してください。
 
 GitLab 15.0では、インスタンス（共有）Runnerをプロジェクト（特定）Runnerに変更できなくなります。
@@ -3389,7 +3474,7 @@ GitLab 15.0では、インスタンス（共有）Runnerをプロジェクト（
 ### コンテナネットワークとホストのセキュリティ {#container-network-and-host-security}
 
 - GitLab 14.8で発表
-- GitLab 15.0で削除 ([breaking change](https://docs.gitlab.com/update/terminology/#breaking-change))
+- GitLab 15.0で削除（[破壊的変更](https://docs.gitlab.com/update/terminology/#breaking-change)）
 
 GitLabコンテナネットワークセキュリティおよびコンテナホストセキュリティのカテゴリに関連するすべての機能は、GitLab 14.8で非推奨となり、GitLab 15.0で削除される予定です。この機能の代替が必要なユーザーは、GitLabの外部でインストールして管理できる潜在的なソリューションとして、オープンソースプロジェクトの[AppArmor](https://gitlab.com/apparmor/apparmor)、[Cilium](https://github.com/cilium/cilium)、[Falco](https://github.com/falcosecurity/falco)、[FluentD](https://github.com/fluent/fluentd)、[Podセキュリティアドミッション](https://kubernetes.io/docs/concepts/security/pod-security-admission/)を評価することをおすすめします。
 
@@ -3440,7 +3525,7 @@ GitLabコンテナネットワークセキュリティおよびコンテナホ�
 ### Python 3.9および3.6イメージの依存関係スキャン非推奨 {#dependency-scanning-python-39-and-36-image-deprecation}
 
 - GitLab 14.8で発表
-- GitLab 15.0で削除 ([breaking change](https://docs.gitlab.com/update/terminology/#breaking-change))
+- GitLab 15.0で削除（[破壊的変更](https://docs.gitlab.com/update/terminology/#breaking-change)）
 - この変更について議論したり、詳細を確認したりするには、[非推奨に関するイシュー](https://gitlab.com/gitlab-org/gitlab/-/issues/334060)を参照してください。
 
 Pythonプロジェクトの依存関係スキャンを使用している場合、Python 3.6を使用するデフォルトの`gemnasium-python:2`イメージと、Python 3.9を使用するカスタム`gemnasium-python:2-python-3.9`イメージを非推奨とします。GitLab 15.0以降の新しいデフォルトイメージは、Python 3.9用になります。Python 3.9が[サポートされているバージョン](https://endoflife.date/python)であり、3.6は[サポートされなくなる](https://endoflife.date/python)ためです。
@@ -3466,7 +3551,7 @@ gemnasium-python-dependency_scanning:
 ### 依存関係スキャンのデフォルトJavaバージョンが17に変更されました {#dependency-scanning-default-java-version-changed-to-17}
 
 - GitLab 14.10で発表
-- GitLab 15.0で削除 ([breaking change](https://docs.gitlab.com/update/terminology/#breaking-change))
+- GitLab 15.0で削除（[破壊的変更](https://docs.gitlab.com/update/terminology/#breaking-change)）
 
 GitLab 15.0では、依存関係スキャンのために、スキャナーが期待するJavaのデフォルトバージョンが11から17に更新されます。Java 17は[最新の長期サポート（LTS）バージョン](https://en.wikipedia.org/wiki/Java_version_history)です。依存関係スキャンは、同じ[バージョン範囲（8、11、13、14、15、16、17）](https://docs.gitlab.com/user/application_security/dependency_scanning/#supported-languages-and-package-managers)を引き続きサポートしており、デフォルトバージョンのみが変更されます。プロジェクトが以前のJava 11のデフォルトを使用している場合は、一致するように[`DS_Java_Version`変数を設定](https://docs.gitlab.com/user/application_security/dependency_scanning/#configuring-specific-analyzers-used-by-dependency-scanning)してください。
 
@@ -3489,7 +3574,7 @@ GitLab 15.0では、依存関係スキャンのために、スキャナーが期
 
 GitLab 13.0では、Geo管理者UIに新しいプロジェクトとデザインのレプリケーションの詳細ルートを導入しました。これらのルートは、`/admin/geo/replication/projects`と`/admin/geo/replication/designs`です。従来のルートを保持し、それらを新しいルートにリダイレクトしました。GitLab 15.0では、従来のルート`/admin/geo/projects`および`/admin/geo/designs`のサポートを削除します。従来のルートを使用する可能性のあるブックマークまたはスクリプトを更新してください。
 
-### カスタムGeo:db:* Rakeタスクを非推奨化 {#deprecate-custom-geodb-rake-tasks}
+### カスタムGeo:db:\* Rakeタスクを非推奨化 {#deprecate-custom-geodb-rake-tasks}
 
 - GitLab 14.8で発表
 - GitLab 15.0で削除
@@ -3518,7 +3603,7 @@ GitLab 14.8では、[`geo:db:*`のRakeタスクを組み込みタスクに置き
 ### 機能フラグPUSH_RULES_SUPERSEDE_CODE_OWNERSを非推奨化 {#deprecate-feature-flag-push_rules_supersede_code_owners}
 
 - GitLab 14.8で発表
-- GitLab 15.0で削除 ([breaking change](https://docs.gitlab.com/update/terminology/#breaking-change))
+- GitLab 15.0で削除（[破壊的変更](https://docs.gitlab.com/update/terminology/#breaking-change)）
 - この変更について議論したり、詳細を確認したりするには、[非推奨に関するイシュー](https://gitlab.com/gitlab-org/gitlab/-/issues/262019)を参照してください。
 
 機能フラグ`PUSH_RULES_SUPERSEDE_CODE_OWNERS`は、GitLab 15.0で削除されます。削除すると、プッシュルールはコードオーナーよりも優先されます。コードオーナーの承認が必要な場合でも、特定のユーザーがコードをプッシュすることを明示的に許可するプッシュルールは、コードオーナー設定よりも優先されます。
@@ -3526,7 +3611,7 @@ GitLab 14.8では、[`geo:db:*`のRakeタスクを組み込みタスクに置き
 ### Elasticsearch 6.8 {#elasticsearch-68}
 
 - GitLab 14.8で発表
-- GitLab 15.0で削除 ([breaking change](https://docs.gitlab.com/update/terminology/#breaking-change))
+- GitLab 15.0で削除（[破壊的変更](https://docs.gitlab.com/update/terminology/#breaking-change)）
 - この変更について議論したり、詳細を確認したりするには、[非推奨に関するイシュー](https://gitlab.com/gitlab-org/gitlab/-/issues/350275)を参照してください。
 
 Elasticsearch 6.8はGitLab 14.8で非推奨となり、GitLab 15.0で削除される予定です。Elasticsearch 6.8を使用しているお客様は、GitLab 15.0にアップグレードする前に、Elasticsearchのバージョンを7.xにアップグレードする必要があります。Elasticsearchのすべての改善機能を活用するには、最新バージョンのElasticsearch 7を使用することをおすすめします。
@@ -3548,7 +3633,7 @@ Elasticsearch 6.8は、[GitLab 15.0でサポートする予定](https://gitlab.c
 ### 外部ステータスチェックAPIの破壊的な変更 {#external-status-check-api-breaking-changes}
 
 - GitLab 14.8で発表
-- GitLab 15.0で削除 ([breaking change](https://docs.gitlab.com/update/terminology/#breaking-change))
+- GitLab 15.0で削除（[破壊的変更](https://docs.gitlab.com/update/terminology/#breaking-change)）
 
 [外部ステータスチェックAPI](https://docs.gitlab.com/api/status_checks/)は当初、ステータスチェックに合格としてマークされる、デフォルトで合格するリクエストをサポートするために実装されました。デフォルトで合格するリクエストは現在非推奨です。具体的には、次のリクエストが非推奨です。
 
@@ -3572,7 +3657,7 @@ GitLab 15.0以降、ステータスチェックは、`status`フィールドが�
 ### GitLab Serverless {#gitlab-serverless}
 
 - GitLab 14.3で発表
-- GitLab 15.0で削除 ([breaking change](https://docs.gitlab.com/update/terminology/#breaking-change))
+- GitLab 15.0で削除（[破壊的変更](https://docs.gitlab.com/update/terminology/#breaking-change)）
 - この変更について議論したり、詳細を確認したりするには、[非推奨に関するイシュー](https://gitlab.com/groups/gitlab-org/configure/-/epics/6)を参照してください。
 
 GitLab Serverlessは、自動デプロイとモニタリングによるKnativeベースのサーバーレス開発をサポートするための機能セットです。
@@ -3590,7 +3675,7 @@ Go用のGodep依存関係マネージャーは、2020年にGoによって非推�
 ### GraphQL IDとGlobalIDの互換性 {#graphql-id-and-globalid-compatibility}
 
 - GitLab 14.8で発表
-- GitLab 15.0で削除 ([breaking change](https://docs.gitlab.com/update/terminology/#breaking-change))
+- GitLab 15.0で削除（[破壊的変更](https://docs.gitlab.com/update/terminology/#breaking-change)）
 - この変更について議論したり、詳細を確認したりするには、[非推奨に関するイシュー](https://gitlab.com/gitlab-org/gitlab/-/issues/257883)を参照してください。
 
 下位互換性のために追加した、GraphQLプロセッサへの非標準の拡張機能を削除します。この拡張機能はGraphQLクエリの検証を変更し、通常は拒否される引数に`ID`タイプを使用できるようにします。一部の引数は元々`ID`タイプでした。これらは、特定の種類の`ID`に変更されました。この変更は、次の場合に破壊的な変更になる可能性があります。
@@ -3637,7 +3722,7 @@ query($id: IssueID!) {
 ### パッケージ設定でのGraphQL権限の変更 {#graphql-permissions-change-for-package-settings}
 
 - GitLab 14.9で発表
-- GitLab 15.0で削除 ([breaking change](https://docs.gitlab.com/update/terminology/#breaking-change))
+- GitLab 15.0で削除（[破壊的変更](https://docs.gitlab.com/update/terminology/#breaking-change)）
 
 GitLab Packageステージはパッケージレジストリ、コンテナレジストリ、依存プロキシを提供することで、GitLabを使用してすべての依存関係を管理できるようにします。これらの各製品カテゴリには、APIを使用して調整できるさまざまな設定があります。
 
@@ -3651,7 +3736,7 @@ GraphQLの権限モデルが更新されます。15.0以降、ゲスト、レポ
 ### GitLab Runner SSH executorに必要な既知のホスト {#known-host-required-for-gitlab-runner-ssh-executor}
 
 - GitLab 14.5で発表
-- GitLab 15.0で削除 ([breaking change](https://docs.gitlab.com/update/terminology/#breaking-change))
+- GitLab 15.0で削除（[破壊的変更](https://docs.gitlab.com/update/terminology/#breaking-change)）
 - この変更について議論したり、詳細を確認したりするには、[非推奨に関するイシュー](https://gitlab.com/gitlab-org/gitlab-runner/-/issues/28192)を参照してください。
 
 [GitLab 14.3](https://gitlab.com/gitlab-org/gitlab-runner/-/merge_requests/3074)で、GitLab Runner `config.toml`ファイルに設定項目を追加しました。この設定である[`[runners.ssh.disable_strict_host_key_checking]`](https://docs.gitlab.com/runner/executors/ssh/#security)は、SSH executorで厳密なホストキーチェックを使用するかどうかを制御します。
@@ -3661,7 +3746,7 @@ GitLab 15.0以降、この設定オプションのデフォルト値は、`true`
 ### レガシーな承認ステータス名（ライセンスコンプライアンスAPIより） {#legacy-approval-status-names-from-license-compliance-api}
 
 - GitLab 14.6で発表
-- GitLab 15.0で削除 ([breaking change](https://docs.gitlab.com/update/terminology/#breaking-change))
+- GitLab 15.0で削除（[破壊的変更](https://docs.gitlab.com/update/terminology/#breaking-change)）
 - この変更について議論したり、詳細を確認したりするには、[非推奨に関するイシュー](https://gitlab.com/gitlab-org/gitlab/-/issues/335707)を参照してください。
 
 `managed_licenses` APIでライセンスポリシーの承認ステータスの従来の名前（`blacklisted`、`approved`）を非推奨にしましたが、APIクエリと応答では引き続き使用されています。これらの名前は15.0で削除されます。
@@ -3671,7 +3756,7 @@ GitLab 15.0以降、この設定オプションのデフォルト値は、`true`
 ### 従来のデータベース設定 {#legacy-database-configuration}
 
 - GitLab 14.3で発表
-- GitLab 15.0で削除 ([breaking change](https://docs.gitlab.com/update/terminology/#breaking-change))
+- GitLab 15.0で削除（[破壊的変更](https://docs.gitlab.com/update/terminology/#breaking-change)）
 - この変更について議論したり、詳細を確認したりするには、[非推奨に関するイシュー](https://gitlab.com/gitlab-org/gitlab/-/issues/338182)を参照してください。
 
 `database.yml`にある[GitLabデータベース](https://docs.gitlab.com/omnibus/settings/database/)設定の構文が変更され、従来の形式は非推奨になります。従来の形式は単一のPostgreSQLアダプターの使用をサポートしていましたが、新しい形式は複数のデータベースをサポートするように変更されています。`main:`データベースは、最初の設定アイテムとして定義する必要があります。
@@ -3681,7 +3766,7 @@ GitLab 15.0以降、この設定オプションのデフォルト値は、`true`
 ### GitLabでのログ機能 {#logging-in-gitlab}
 
 - GitLab 14.7で発表
-- GitLab 15.0で削除 ([breaking change](https://docs.gitlab.com/update/terminology/#breaking-change))
+- GitLab 15.0で削除（[破壊的変更](https://docs.gitlab.com/update/terminology/#breaking-change)）
 - この変更について議論したり、詳細を確認したりするには、[非推奨に関するイシュー](https://gitlab.com/gitlab-org/gitlab/-/issues/346485)を参照してください。
 
 GitLabのログ生成機能を使用すると、ユーザーはELK（Elasticsearch、Logstash、Kibana）をインストールして、アプリケーションログを集約および管理できます。ユーザーはGitLabで関連するログを検索できます。ただし、KubernetesクラスターとGitLab Managed Appsとの証明書ベースのインテグレーションを非推奨にして以来、GitLab内でのログ生成に推奨されるソリューションはありません。詳細については、[OpstraceとGitLabのインテグレーション](https://gitlab.com/groups/gitlab-org/-/epics/6976)に関するイシューを参照してください。
@@ -3696,14 +3781,14 @@ GitLabのログ生成機能を使用すると、ユーザーはELK（Elasticsear
 ### OAuthの暗黙的付与 {#oauth-implicit-grant}
 
 - GitLab 14.0で発表
-- GitLab 15.0で削除 ([breaking change](https://docs.gitlab.com/update/terminology/#breaking-change))
+- GitLab 15.0で削除（[破壊的変更](https://docs.gitlab.com/update/terminology/#breaking-change)）
 
 OAuthの暗黙的付与認証フローは、次期メジャーリリースであるGitLab 15.0で削除されます。OAuthの暗黙的付与を使用するすべてのアプリケーションは、代替の[サポートされているOAuthフロー](https://docs.gitlab.com/api/oauth2/)に切り替える必要があります。
 
 ### 有効期限のないOAuthトークン {#oauth-tokens-without-expiration}
 
 - GitLab 14.8で発表
-- GitLab 15.0で削除 ([breaking change](https://docs.gitlab.com/update/terminology/#breaking-change))
+- GitLab 15.0で削除（[破壊的変更](https://docs.gitlab.com/update/terminology/#breaking-change)）
 
 すべての新しいアプリケーションでは、デフォルトでアクセストークンの有効期限が2時間後に切れます。GitLab 14.2以前は、OAuthアクセストークンに有効期限はありませんでした。GitLab 15.0では、有効期限がまだない既存のトークンに対して有効期限が自動的に生成されます。
 
@@ -3715,7 +3800,7 @@ GitLab 15.0のリリース前に、トークンを有効期限切れにするよ
 ### OmniAuth Kerberos gem {#omniauth-kerberos-gem}
 
 - GitLab 14.3で発表
-- GitLab 15.0で削除 ([breaking change](https://docs.gitlab.com/update/terminology/#breaking-change))
+- GitLab 15.0で削除（[破壊的変更](https://docs.gitlab.com/update/terminology/#breaking-change)）
 - この変更について議論したり、詳細を確認したりするには、[非推奨に関するイシュー](https://gitlab.com/gitlab-org/gitlab/-/issues/337384)を参照してください。
 
 次のメジャーリリースであるGitLab 15.0で、`omniauth-kerberos` gemが削除されます。
@@ -3727,7 +3812,7 @@ Kerberos SPNEGOインテグレーションは非推奨にしていません。�
 ### PAT有効期限をオプションで適用 {#optional-enforcement-of-pat-expiration}
 
 - GitLab 14.8で発表
-- GitLab 15.0で削除 ([breaking change](https://docs.gitlab.com/update/terminology/#breaking-change))
+- GitLab 15.0で削除（[破壊的変更](https://docs.gitlab.com/update/terminology/#breaking-change)）
 - この変更について議論したり、詳細を確認したりするには、[非推奨に関するイシュー](https://gitlab.com/gitlab-org/gitlab/-/issues/351962)を参照してください。
 
 セキュリティの観点からは、PAT有効期限の適用を無効にする機能は一般的ではありません。この一般的でない機能により、ユーザーにとって予期しない動作が引き起こされる可能性があることが懸念されます。セキュリティ機能での予期しない動作は本質的に危険であるため、この機能を削除することにしました。
@@ -3735,7 +3820,7 @@ Kerberos SPNEGOインテグレーションは非推奨にしていません。�
 ### SSH有効期限をオプションで適用 {#optional-enforcement-of-ssh-expiration}
 
 - GitLab 14.8で発表
-- GitLab 15.0で削除 ([breaking change](https://docs.gitlab.com/update/terminology/#breaking-change))
+- GitLab 15.0で削除（[破壊的変更](https://docs.gitlab.com/update/terminology/#breaking-change)）
 - この変更について議論したり、詳細を確認したりするには、[非推奨に関するイシュー](https://gitlab.com/gitlab-org/gitlab/-/issues/351963)を参照してください。
 
 セキュリティの観点からは、SSH有効期限の適用を無効にする機能は一般的ではありません。この一般的でない機能により、ユーザーにとって予期しない動作が引き起こされる可能性があることが懸念されます。セキュリティ機能での予期しない動作は本質的に危険であるため、この機能を削除することにしました。
@@ -3743,7 +3828,7 @@ Kerberos SPNEGOインテグレーションは非推奨にしていません。�
 ### Java 8の標準サポート（SAST） {#out-of-the-box-sast-support-for-java-8}
 
 - GitLab 14.8で発表
-- GitLab 15.0で削除 ([breaking change](https://docs.gitlab.com/update/terminology/#breaking-change))
+- GitLab 15.0で削除（[破壊的変更](https://docs.gitlab.com/update/terminology/#breaking-change)）
 - この変更について議論したり、詳細を確認したりするには、[非推奨に関するイシュー](https://gitlab.com/gitlab-org/gitlab/-/issues/352549)を参照してください。
 
 [GitLab SAST SpotBugsアナライザー](https://gitlab.com/gitlab-org/security-products/analyzers/spotbugs)は、[Java、Scala、Groovy、Kotlinコード](https://docs.gitlab.com/user/application_security/sast/#supported-languages-and-frameworks)をスキャンし、セキュリティの脆弱性を確認します。技術的な理由により、アナライザーは最初にコードをコンパイルしてからスキャンする必要があります。[プリコンパイル戦略](https://docs.gitlab.com/user/application_security/sast/#pre-compilation)を使用しない限り、アナライザーはプロジェクトのコードを自動的にコンパイルしようとします。
@@ -3760,7 +3845,7 @@ GitLab 15.0では、次のようになります。
 ### 高度な検索移行の古いインデックス {#outdated-indices-of-advanced-search-migrations}
 
 - GitLab 14.10で発表
-- GitLab 15.0で削除 ([breaking change](https://docs.gitlab.com/update/terminology/#breaking-change))
+- GitLab 15.0で削除（[破壊的変更](https://docs.gitlab.com/update/terminology/#breaking-change)）
 - この変更について議論したり、詳細を確認したりするには、[非推奨に関するイシュー](https://gitlab.com/gitlab-org/gitlab/-/issues/359133)を参照してください。
 
 高度な検索移行は通常、複数のコードパスを長期間サポートする必要があるため、安全なときにそれらをクリーンアップすることが重要です。GitLabのメジャーバージョンアップグレードは、完全に移行されていないインデックスの下位互換性を削除する安全な期間として利用されます。詳細については、[アップグレードドキュメント](https://docs.gitlab.com/update/#upgrading-to-a-new-major-version)を参照してください。
@@ -3776,7 +3861,7 @@ GitLab 15.0では、次のようになります。
 ### `instanceStatisticsMeasurements` GraphQLノードを介した使用状況トレンドのクエリ {#querying-usage-trends-via-the-instancestatisticsmeasurements-graphql-node}
 
 - GitLab 14.8で発表
-- GitLab 15.0で削除 ([breaking change](https://docs.gitlab.com/update/terminology/#breaking-change))
+- GitLab 15.0で削除（[破壊的変更](https://docs.gitlab.com/update/terminology/#breaking-change)）
 - この変更について議論したり、詳細を確認したりするには、[非推奨に関するイシュー](https://gitlab.com/gitlab-org/gitlab/-/issues/332323)を参照してください。
 
 13.10で`instanceStatisticsMeasurements` GraphQLノードの名前は`usageTrendsMeasurements`に変更され、古いフィールド名は非推奨としてマークされています。既存のGraphQLクエリを修正するには、`instanceStatisticsMeasurements`を`usageTrendsMeasurements`に置き換えます。
@@ -3784,7 +3869,7 @@ GitLab 15.0では、次のようになります。
 ### リクエストプロファイリング {#request-profiling}
 
 - GitLab 14.8で発表
-- GitLab 15.0で削除 ([breaking change](https://docs.gitlab.com/update/terminology/#breaking-change))
+- GitLab 15.0で削除（[破壊的変更](https://docs.gitlab.com/update/terminology/#breaking-change)）
 - この変更について議論したり、詳細を確認したりするには、[非推奨に関するイシュー](https://gitlab.com/gitlab-org/gitlab/-/issues/352488)を参照してください。
 
 [リクエストプロファイリング](https://docs.gitlab.com/administration/monitoring/performance/)は、GitLab 14.8で非推奨となり、GitLab 15.0で削除される予定です。
@@ -3796,7 +3881,7 @@ GitLab 15.0では、次のようになります。
 ### Premiumプランで必須のパイプライン設定 {#required-pipeline-configurations-in-premium-tier}
 
 - GitLab 14.8で発表
-- GitLab 15.0で削除 ([breaking change](https://docs.gitlab.com/update/terminology/#breaking-change))
+- GitLab 15.0で削除（[破壊的変更](https://docs.gitlab.com/update/terminology/#breaking-change)）
 
 [必須のパイプライン設定](https://docs.gitlab.com/administration/settings/continuous_integration/#required-pipeline-configuration-deprecated)機能は、Premiumのお客様にはGitLab 14.8で非推奨となり、GitLab 15.0で削除される予定です。この機能は、GitLab Ultimateのお客様には非推奨ではありません。
 
@@ -3807,7 +3892,7 @@ GitLab 15.0では、次のようになります。
 ### Retire-JS依存関係スキャンツール {#retire-js-dependency-scanning-tool}
 
 - GitLab 14.8で発表
-- GitLab 15.0で削除 ([breaking change](https://docs.gitlab.com/update/terminology/#breaking-change))
+- GitLab 15.0で削除（[破壊的変更](https://docs.gitlab.com/update/terminology/#breaking-change)）
 - この変更について議論したり、詳細を確認したりするには、[非推奨に関するイシュー](https://gitlab.com/gitlab-org/gitlab/-/issues/350510)を参照してください。
 
 14.8より、retire.jsジョブは依存関係スキャンから非推奨とされています。非推奨になっている間は、引き続きCI/CDテンプレートに含まれます。2022年5月22日、15.0でretire.jsを依存関係スキャンから削除します。JavaScriptスキャン機能は、Gemnasiumによって引き続きカバーされているため、影響を受けません。
@@ -3828,7 +3913,7 @@ DS_EXCLUDED_ANALYZERSを使用してretire.jsを明示的に除外した場合�
 ### .NET 2.1用のSASTサポート {#sast-support-for-net-21}
 
 - GitLab 14.8で発表
-- GitLab 15.0で削除 ([breaking change](https://docs.gitlab.com/update/terminology/#breaking-change))
+- GitLab 15.0で削除（[破壊的変更](https://docs.gitlab.com/update/terminology/#breaking-change)）
 - この変更について議論したり、詳細を確認したりするには、[非推奨に関するイシュー](https://gitlab.com/gitlab-org/gitlab/-/issues/352553)を参照してください。
 
 GitLab SASTセキュリティコードスキャンアナライザーは、.NETコードをスキャンして、セキュリティの脆弱性を確認します。技術的な理由により、アナライザーは最初にコードをビルドしてスキャンする必要があります。
@@ -3885,7 +3970,7 @@ GitLab 15.0では、シークレット検出[アナライザー](https://docs.gi
 ### 新しい場所で公開されたSecureおよびProtectアナライザーのイメージ {#secure-and-protect-analyzer-images-published-in-new-location}
 
 - GitLab 14.8で発表
-- GitLab 15.0で削除 ([breaking change](https://docs.gitlab.com/update/terminology/#breaking-change))
+- GitLab 15.0で削除（[破壊的変更](https://docs.gitlab.com/update/terminology/#breaking-change)）
 - この変更について議論したり、詳細を確認したりするには、[非推奨に関するイシュー](https://gitlab.com/gitlab-org/gitlab/-/issues/352564)を参照してください。
 
 GitLabは、さまざまな[アナライザー](https://docs.gitlab.com/user/application_security/terminology/#analyzer)を使用して[セキュリティの脆弱性をスキャン](https://docs.gitlab.com/user/application_security/)します。各アナライザーはコンテナイメージとして配布されます。
@@ -3904,7 +3989,7 @@ GitLab 14.8以降、GitLab SecureおよびProtectアナライザーの新しい�
 ### SecureおよびProtectアナライザーのメジャーバージョン更新 {#secure-and-protect-analyzer-major-version-update}
 
 - GitLab 14.8で発表
-- GitLab 15.0で削除 ([breaking change](https://docs.gitlab.com/update/terminology/#breaking-change))
+- GitLab 15.0で削除（[破壊的変更](https://docs.gitlab.com/update/terminology/#breaking-change)）
 - この変更について議論したり、詳細を確認したりするには、[非推奨に関するイシュー](https://gitlab.com/gitlab-org/gitlab/-/issues/350936)を参照してください。
 
 SecureおよびProtectのステージでは、GitLab 15.0リリースと連携して、アナライザーのメジャーバージョンが引き上げられます。このメジャーバージョンの引き上げにより、以下のアナライザーの明確な区別が可能になります。
@@ -3941,7 +4026,7 @@ SecureおよびProtectのステージでは、GitLab 15.0リリースと連携�
 ### Sidekiqメトリクスとヘルスチェックの設定 {#sidekiq-metrics-and-health-checks-configuration}
 
 - GitLab 14.7で発表
-- GitLab 15.0で削除 ([breaking change](https://docs.gitlab.com/update/terminology/#breaking-change))
+- GitLab 15.0で削除（[破壊的変更](https://docs.gitlab.com/update/terminology/#breaking-change)）
 - この変更について議論したり、詳細を確認したりするには、[非推奨に関するイシュー](https://gitlab.com/gitlab-org/gitlab/-/issues/347509)を参照してください。
 
 単一のプロセスとポートを使用してSidekiqメトリクスとヘルスチェックをエクスポートすることは非推奨になります。15.0でサポートが削除されます。
@@ -3965,14 +4050,14 @@ SecureおよびProtectのステージでは、GitLab 15.0リリースと連携�
 ### SLES 12 SP2のサポート {#support-for-sles-12-sp2}
 
 - GitLab 14.5で発表
-- GitLab 15.0で削除 ([breaking change](https://docs.gitlab.com/update/terminology/#breaking-change))
+- GitLab 15.0で削除（[破壊的変更](https://docs.gitlab.com/update/terminology/#breaking-change)）
 
 SUSE Linux Enterprise Server（SLES）12 SP2の長期サービスとサポート（LTSS）は、[2021年3月31日に終了しました](https://www.suse.com/lifecycle/)。SP2のCA証明書には、期限切れのDSTルート証明書が含まれており、新しいCA証明書パッケージの更新は取得されていません。いくつかの[回避策](https://gitlab.com/gitlab-org/gitlab-omnibus-builder/-/merge_requests/191)を実装しましたが、ビルドを正常に実行し続けることはできません。
 
 ### Gitalyと他のGitLabの間にデプロイされたgRPC対応プロキシのサポート {#support-for-grpc-aware-proxy-deployed-between-gitaly-and-rest-of-gitlab}
 
 - GitLab 14.8で発表
-- GitLab 15.0で削除 ([breaking change](https://docs.gitlab.com/update/terminology/#breaking-change))
+- GitLab 15.0で削除（[破壊的変更](https://docs.gitlab.com/update/terminology/#breaking-change)）
 
 推奨もドキュメント化もされていませんが、Gitalyと他のGitLabの間にgRPC対応プロキシをデプロイすることができました。たとえば、NGINXやEnvoyなどです。gRPC対応プロキシをデプロイする機能は[非推奨](https://gitlab.com/gitlab-org/gitlab/-/issues/352517)になりました。現在、Gitaly接続にgRPC対応プロキシを使用している場合は、TCPまたはTLSプロキシ（OSIレイヤー4）を使用するようにプロキシ設定を変更する必要があります。
 
@@ -3983,7 +4068,7 @@ Gitaly Clusterは、GitLab 13.12でgRPC対応プロキシとの互換性がな�
 ### テストカバレッジプロジェクトのCI/CD設定 {#test-coverage-project-cicd-setting}
 
 - GitLab 14.8で発表
-- GitLab 15.0で削除 ([breaking change](https://docs.gitlab.com/update/terminology/#breaking-change))
+- GitLab 15.0で削除（[破壊的変更](https://docs.gitlab.com/update/terminology/#breaking-change)）
 
 テストカバレッジパターンの設定を簡単にするために、GitLab 15.0では、[テストカバレッジ解析用のプロジェクト設定](https://docs.gitlab.com/ci/pipelines/settings/#add-test-coverage-results-using-project-settings-removed)が削除されます。
 
@@ -3992,7 +4077,7 @@ Gitaly Clusterは、GitLab 13.12でgRPC対応プロキシとの互換性がな�
 ### GitLabのトレーシング {#tracing-in-gitlab}
 
 - GitLab 14.7で発表
-- GitLab 15.0で削除 ([breaking change](https://docs.gitlab.com/update/terminology/#breaking-change))
+- GitLab 15.0で削除（[破壊的変更](https://docs.gitlab.com/update/terminology/#breaking-change)）
 - この変更について議論したり、詳細を確認したりするには、[非推奨に関するイシュー](https://gitlab.com/gitlab-org/gitlab/-/issues/346540)を参照してください。
 
 GitLabのトレーシングは、オープンソースのエンドツーエンド分散トレーシングシステムであるJaegerとのインテグレーションです。GitLabユーザーはJaegerインスタンスにアクセスして、デプロイされたアプリケーションのパフォーマンスに関するインサイトを得ることで、特定のリクエストを処理する各関数またはマイクロサービスを追跡できます。GitLabのトレーシングはGitLab 14.7で非推奨となり、15.0で削除される予定です。可能な代替手段に関する作業を追跡するには、[OpstraceとGitLabのインテグレーション](https://gitlab.com/groups/gitlab-org/-/epics/6976)に関するイシューを参照してください。
@@ -4000,7 +4085,7 @@ GitLabのトレーシングは、オープンソースのエンドツーエン�
 ### コンテナレジストリグループレベルAPIの更新 {#update-to-the-container-registry-group-level-api}
 
 - GitLab 14.5で発表
-- GitLab 15.0で削除 ([breaking change](https://docs.gitlab.com/update/terminology/#breaking-change))
+- GitLab 15.0で削除（[破壊的変更](https://docs.gitlab.com/update/terminology/#breaking-change)）
 - この変更について議論したり、詳細を確認したりするには、[非推奨に関するイシュー](https://gitlab.com/gitlab-org/gitlab/-/issues/336912)を参照してください。
 
 マイルストーン15.0では、`tags`および`tags_count`パラメータのサポートが、[グループからレジストリリポジトリを取得](https://docs.gitlab.com/api/container_registry/#within-a-group)するコンテナレジストリAPIから削除されます。
@@ -4010,7 +4095,7 @@ GitLabのトレーシングは、オープンソースのエンドツーエン�
 ### バリューストリーム分析のフィルタリング計算の変更 {#value-stream-analytics-filtering-calculation-change}
 
 - GitLab 14.5で発表
-- GitLab 15.0で削除 ([breaking change](https://docs.gitlab.com/update/terminology/#breaking-change))
+- GitLab 15.0で削除（[破壊的変更](https://docs.gitlab.com/update/terminology/#breaking-change)）
 - この変更について議論したり、詳細を確認したりするには、[非推奨に関するイシュー](https://gitlab.com/gitlab-org/gitlab/-/issues/343210)を参照してください。
 
 バリューストリーム分析の日付フィルターの動作方法を変更します。日付フィルターは、イシューまたはマージリクエストが作成された時刻でフィルタリングする代わりに、指定されたステージの終了イベント時刻でフィルタリングします。これにより、この変更がロールアウトされた後では、数値が完全に異なるものになります。
@@ -4020,7 +4105,7 @@ GitLabのトレーシングは、オープンソースのエンドツーエン�
 ### 脆弱性チェック {#vulnerability-check}
 
 - GitLab 14.8で発表
-- GitLab 15.0で削除 ([breaking change](https://docs.gitlab.com/update/terminology/#breaking-change))
+- GitLab 15.0で削除（[破壊的変更](https://docs.gitlab.com/update/terminology/#breaking-change)）
 
 脆弱性チェック機能はGitLab 14.8で非推奨となり、GitLab 15.0で削除される予定です。代わりに、新しいセキュリティ承認機能に移行することをおすすめします。移行するには、**セキュリティとコンプライアンス** > **ポリシー**に移動して、新しいスキャン結果ポリシーを作成します。
 
@@ -4034,7 +4119,7 @@ GitLabのトレーシングは、オープンソースのエンドツーエン�
 ### 基本の`PackageType`の`Versions` {#versions-on-base-packagetype}
 
 - GitLab 14.5で発表
-- GitLab 15.0で削除 ([breaking change](https://docs.gitlab.com/update/terminology/#breaking-change))
+- GitLab 15.0で削除（[破壊的変更](https://docs.gitlab.com/update/terminology/#breaking-change)）
 - この変更について議論したり、詳細を確認したりするには、[非推奨に関するイシュー](https://gitlab.com/gitlab-org/gitlab/-/issues/327453)を参照してください。
 
 [パッケージレジストリGraphQL API](https://gitlab.com/groups/gitlab-org/-/epics/6318)を作成する作業の一環として、パッケージグループは、基本の`PackageType`型の`Version`型を非推奨にし、[`PackageDetailsType`](https://docs.gitlab.com/api/graphql/reference/#packagedetailstype)に移行しました。
@@ -4044,7 +4129,7 @@ GitLabのトレーシングは、オープンソースのエンドツーエン�
 ### `apiFuzzingCiConfigurationCreate` GraphQLミューテーション {#apifuzzingciconfigurationcreate-graphql-mutation}
 
 - GitLab 14.6で発表
-- GitLab 15.0で削除 ([breaking change](https://docs.gitlab.com/update/terminology/#breaking-change))
+- GitLab 15.0で削除（[破壊的変更](https://docs.gitlab.com/update/terminology/#breaking-change)）
 - この変更について議論したり、詳細を確認したりするには、[非推奨に関するイシュー](https://gitlab.com/gitlab-org/gitlab/-/issues/333233)を参照してください。
 
 APIファジング設定スニペットは、クライアント側で生成されるようになり、APIリクエストは不要になりました。したがって、GitLabで使用されなくなる`apiFuzzingCiConfigurationCreate`ミューテーションは非推奨になります。
@@ -4052,7 +4137,7 @@ APIファジング設定スニペットは、クライアント側で生成さ�
 ### `artifacts:reports:cobertura`キーワード {#artifactsreportscobertura-keyword}
 
 - GitLab 14.7で発表
-- GitLab 15.0で削除 ([breaking change](https://docs.gitlab.com/update/terminology/#breaking-change))
+- GitLab 15.0で削除（[破壊的変更](https://docs.gitlab.com/update/terminology/#breaking-change)）
 - この変更について議論したり、詳細を確認したりするには、[非推奨に関するイシュー](https://gitlab.com/gitlab-org/gitlab/-/issues/348980)を参照してください。
 
 現在、GitLabのテストカバレッジの可視化では、Coberturaレポートのみがサポートされています。15.0以降、`artifacts:reports:cobertura`キーワードは[`artifacts:reports:coverage_report`](https://gitlab.com/gitlab-org/gitlab/-/issues/344533)に置き換えられます。Coberturaは15.0でサポートされる唯一のレポートファイルになりますが、これはGitLabが他のレポートタイプをサポートするための最初のステップです。
@@ -4060,7 +4145,7 @@ APIファジング設定スニペットは、クライアント側で生成さ�
 ### `defaultMergeCommitMessageWithDescription` GraphQL APIフィールド {#defaultmergecommitmessagewithdescription-graphql-api-field}
 
 - GitLab 14.5で発表
-- GitLab 15.0で削除 ([breaking change](https://docs.gitlab.com/update/terminology/#breaking-change))
+- GitLab 15.0で削除（[破壊的変更](https://docs.gitlab.com/update/terminology/#breaking-change)）
 - この変更について議論したり、詳細を確認したりするには、[非推奨に関するイシュー](https://gitlab.com/gitlab-org/gitlab/-/issues/345451)を参照してください。
 
 GraphQL APIフィールド`defaultMergeCommitMessageWithDescription`は非推奨となっていて、GitLab 15.0で削除されます。コミットメッセージテンプレートが設定されたプロジェクトの場合、テンプレートは無視されます。
@@ -4068,7 +4153,7 @@ GraphQL APIフィールド`defaultMergeCommitMessageWithDescription`は非推奨
 ### `dependency_proxy_for_private_groups`機能フラグ {#dependency_proxy_for_private_groups-feature-flag}
 
 - GitLab 14.5で発表
-- GitLab 15.0で削除 ([breaking change](https://docs.gitlab.com/update/terminology/#breaking-change))
+- GitLab 15.0で削除（[破壊的変更](https://docs.gitlab.com/update/terminology/#breaking-change)）
 - この変更について議論したり、詳細を確認したりするには、[非推奨に関するイシュー](https://gitlab.com/gitlab-org/gitlab/-/issues/276777)を参照してください。
 
 [GitLab-#11582](https://gitlab.com/gitlab-org/gitlab/-/issues/11582)によって公開グループが依存プロキシを使用する方法が変更されたため、機能フラグを追加しました。この変更前は、認証なしで依存プロキシを使用できました。この変更により、依存プロキシを使用するには認証が必要になります。
@@ -4078,7 +4163,7 @@ GraphQL APIフィールド`defaultMergeCommitMessageWithDescription`は非推奨
 ### `htpasswd`コンテナレジストリの認証 {#htpasswd-authentication-for-the-container-registry}
 
 - GitLab 14.9で発表
-- GitLab 15.0で削除 ([breaking change](https://docs.gitlab.com/update/terminology/#breaking-change))
+- GitLab 15.0で削除（[破壊的変更](https://docs.gitlab.com/update/terminology/#breaking-change)）
 
 コンテナレジストリは、`htpasswd`での[認証](https://gitlab.com/gitlab-org/container-registry/-/blob/master/docs/configuration.md#auth)をサポートしています。これは、`bcrypt`を使用してハッシュされたパスワードを含む、[Apache `htpasswd`ファイル](https://httpd.apache.org/docs/2.4/programs/htpasswd.html)に依存しています。
 
@@ -4087,7 +4172,7 @@ GitLab（製品）のコンテキストで使用されないため、`htpasswd`�
 ### `version`フィールドの`pipelines`フィールド {#pipelines-field-from-the-version-field}
 
 - GitLab 14.5で発表
-- GitLab 15.0で削除 ([breaking change](https://docs.gitlab.com/update/terminology/#breaking-change))
+- GitLab 15.0で削除（[破壊的変更](https://docs.gitlab.com/update/terminology/#breaking-change)）
 - この変更について議論したり、詳細を確認したりするには、[非推奨に関するイシュー](https://gitlab.com/gitlab-org/gitlab/-/issues/342882)を参照してください。
 
 GraphQLには、パッケージバージョンのパイプラインを取得するために[`PackageDetailsType`](https://docs.gitlab.com/api/graphql/reference/#packagedetailstype)で使用できる2つの`pipelines`フィールドがあります。
@@ -4100,14 +4185,14 @@ GraphQLには、パッケージバージョンのパイプラインを取得す�
 ### `PipelineSecurityReportFinding` GraphQLの`projectFingerprint` {#projectfingerprint-in-pipelinesecurityreportfinding-graphql}
 
 - GitLab 14.8で発表
-- GitLab 15.0で削除 ([breaking change](https://docs.gitlab.com/update/terminology/#breaking-change))
+- GitLab 15.0で削除（[破壊的変更](https://docs.gitlab.com/update/terminology/#breaking-change)）
 
 [`PipelineSecurityReportFinding`](https://docs.gitlab.com/api/graphql/reference/#pipelinesecurityreportfinding) GraphQLオブジェクトの`projectFingerprint`フィールドは非推奨になります。このフィールドには、一意性を判断するために使用されるセキュリティ検出結果の「フィンガープリント」が含まれています。フィンガープリントを計算する方法が変更され、異なる値が生成されています。今後は、新しい値がUUIDフィールドに公開されます。`projectFingerprint`フィールドで以前に利用可能だったデータは、最終的に完全に削除されます。
 
 ### `gitlab-ctl`からの`promote-db`コマンド {#promote-db-command-from-gitlab-ctl}
 
 - GitLab 14.5で発表
-- GitLab 15.0で削除 ([breaking change](https://docs.gitlab.com/update/terminology/#breaking-change))
+- GitLab 15.0で削除（[破壊的変更](https://docs.gitlab.com/update/terminology/#breaking-change)）
 - この変更について議論したり、詳細を確認したりするには、[非推奨に関するイシュー](https://gitlab.com/gitlab-org/gitlab/-/issues/345207)を参照してください。
 
 GitLab 14.5で、フェイルオーバー時にGeoセカンダリノードをプライマリにプロモートするコマンド`gitlab-ctl promote`を導入しました。このコマンドは、マルチノードGeoセカンダリサイトでデータベースノードをプロモートするために使用される`gitlab-ctl promote-db`を置き換えます。`gitlab-ctl promote-db`は引き続きそのまま機能し、GitLab 15.0まで使用できます。Geoをご利用のお客様は、ステージング環境で新しい`gitlab-ctl promote`コマンドのテストを開始し、フェイルオーバー手順に新しいコマンドを組み込むことをおすすめします。
@@ -4115,7 +4200,7 @@ GitLab 14.5で、フェイルオーバー時にGeoセカンダリノードをプ
 ### `gitlab-ctl`からの`promote-to-primary-node`コマンド {#promote-to-primary-node-command-from-gitlab-ctl}
 
 - GitLab 14.5で発表
-- GitLab 15.0で削除 ([breaking change](https://docs.gitlab.com/update/terminology/#breaking-change))
+- GitLab 15.0で削除（[破壊的変更](https://docs.gitlab.com/update/terminology/#breaking-change)）
 - この変更について議論したり、詳細を確認したりするには、[非推奨に関するイシュー](https://gitlab.com/gitlab-org/gitlab/-/issues/345207)を参照してください。
 
 GitLab 14.5で、フェイルオーバー時にGeoセカンダリノードをプライマリにプロモートするコマンド`gitlab-ctl promote`を導入しました。このコマンドは、シングルノードGeoサイトでのみ使用可能だった`gitlab-ctl promote-to-primary-node`を置き換えます。`gitlab-ctl promote-to-primary-node`は引き続きそのまま機能し、GitLab 15.0まで使用できます。Geoをご利用のお客様は、ステージング環境で新しい`gitlab-ctl promote`コマンドのテストを開始し、フェイルオーバー手順に新しいコマンドを組み込むことをおすすめします。
@@ -4123,14 +4208,14 @@ GitLab 14.5で、フェイルオーバー時にGeoセカンダリノードをプ
 ### CI/CD設定の`type`および`types`キーワード {#type-and-types-keyword-in-cicd-configuration}
 
 - GitLab 14.6で発表
-- GitLab 15.0で削除 ([breaking change](https://docs.gitlab.com/update/terminology/#breaking-change))
+- GitLab 15.0で削除（[破壊的変更](https://docs.gitlab.com/update/terminology/#breaking-change)）
 
 GitLab 15.0では、`type`および`types` CI/CDキーワードが削除されます。これらのキーワードを使用するパイプラインは動作を停止するため、同じ動作をする`stage`および`stages`に切り替える必要があります。
 
 ### bundler-audit依存関係スキャンツール {#bundler-audit-dependency-scanning-tool}
 
 - GitLab 14.6で発表
-- GitLab 15.0で削除 ([breaking change](https://docs.gitlab.com/update/terminology/#breaking-change))
+- GitLab 15.0で削除（[破壊的変更](https://docs.gitlab.com/update/terminology/#breaking-change)）
 - この変更について議論したり、詳細を確認したりするには、[非推奨に関するイシュー](https://gitlab.com/gitlab-org/gitlab/-/issues/289832)を参照してください。
 
 14.6より、bundler-auditは依存関係スキャンから非推奨とされています。非推奨になっている間は、引き続きCI/CDテンプレートに存在します。2022年5月22日、15.0でbundler-auditを依存関係スキャンから削除します。この削除後も、Rubyスキャン機能はGemnasiumによって引き続きカバーされているため、影響を受けません。
@@ -4142,7 +4227,7 @@ DS_EXCLUDED_ANALYZERSを使用してbundler-auditを明示的に除外した場�
 ### Composer依存関係をダウンロードするための権限の変更 {#permissions-change-for-downloading-composer-dependencies}
 
 - GitLab 14.9で発表
-- GitLab 14.10で削除 ([breaking change](https://docs.gitlab.com/update/terminology/#breaking-change))
+- GitLab 14.10で削除（[破壊的変更](https://docs.gitlab.com/update/terminology/#breaking-change)）
 
 GitLab Composerリポジトリを使用して、PHP依存関係のプッシュ、検索、そのメタデータの取得、ダウンロードを行うことができます。これらのすべてのアクションには認証が必要ですが、依存関係のダウンロードは例外です。
 
@@ -4163,7 +4248,7 @@ GitLab Composerリポジトリを使用して、PHP依存関係のプッシュ�
 ### 統合されたエラー追跡はデフォルトで無効 {#integrated-error-tracking-disabled-by-default}
 
 - GitLab 14.9で発表
-- GitLab 14.9で削除 ([breaking change](https://docs.gitlab.com/update/terminology/#breaking-change))
+- GitLab 14.9で削除（[破壊的変更](https://docs.gitlab.com/update/terminology/#breaking-change)）
 - この変更について議論したり、詳細を確認したりするには、[非推奨に関するイシュー](https://gitlab.com/gitlab-org/gitlab/-/issues/353639)を参照してください。
 
 GitLab 14.4で、GitLabはSentryの代替となる統合されたエラー追跡バックエンドをリリースしました。この機能により、データベースのパフォーマンスの問題が発生しました。GitLab 14.9で、統合されたエラー追跡はGitLab.comから削除され、GitLab Self-Managedでデフォルトでオフになりました。GitLabがこの機能の今後の開発について探索している間は、[プロジェクト設定でエラー追跡をSentryに変更](https://docs.gitlab.com/operations/error_tracking/#sentry-error-tracking)して、Sentryバックエンドに切り替えることを検討してください。
@@ -4212,7 +4297,7 @@ Task Runnerポッドは、GitLabアプリケーション内で定期的なハウ
 - この変更について議論したり、詳細を確認したりするには、[非推奨に関するイシュー](https://gitlab.com/gitlab-org/gitlab/-/issues/471677)を参照してください。
 
 > [!note]
-> この変更は元のマイルストーンから削除され、再評価中です。
+> この変更は元のマイルストーンから削除され、再評価されています。
 
 GitLab 19.0では、CodeClimateベースのCode Qualityスキャンを削除します。この変更は以前、GitLab 18.0で予定されていましたが、延期されました。
 
@@ -4233,7 +4318,7 @@ CodeClimateベースのスキャンは、ただちに[限定的な更新](https:
 - この変更について議論したり、詳細を確認したりするには、[非推奨に関するイシュー](https://gitlab.com/gitlab-org/gitlab/-/issues/571531)を参照してください。
 
 > [!note]
-> この変更は元のマイルストーンから削除され、再評価中です。
+> この変更は元のマイルストーンから削除され、再評価されています。
 
 GitLabコンテナレジストリのレガシーメタデータストレージアプローチは、コンテナレジストリメタデータデータベースを優先して非推奨になりました。
 
@@ -4253,7 +4338,7 @@ GitLab.comはすでにメタデータデータベースを使用しています�
 - この変更について議論したり、詳細を確認したりするには、[非推奨に関するイシュー](https://gitlab.com/gitlab-org/gitlab/-/issues/517841)を参照してください。
 
 > [!note]
-> この変更は元のマイルストーンから削除され、再評価中です。
+> この変更は元のマイルストーンから削除され、再評価されています。
 
 カバレッジガイドファズテストは非推奨となり、GitLab 18.0以降ではサポートされません。この機能は、GitLab 19.0で完全に削除されます。
 
@@ -4265,7 +4350,7 @@ GitLab.comはすでにメタデータデータベースを使用しています�
 - この変更について議論したり、詳細を確認したりするには、[非推奨に関するイシュー](https://gitlab.com/gitlab-org/gitlab/-/issues/501308)を参照してください。
 
 > [!note]
-> この変更は元のマイルストーンから削除され、再評価中です。
+> この変更は元のマイルストーンから削除され、再評価されています。
 
 依存関係スキャン用のGemnasiumアナライザーによって提供される[JavaScriptベンダーライブラリの依存関係スキャン](https://docs.gitlab.com/user/application_security/dependency_scanning/#javascript)機能は、GitLab 17.9で非推奨になりました。
 
@@ -4279,7 +4364,7 @@ GitLab.comはすでにメタデータデータベースを使用しています�
 - この変更について議論したり、詳細を確認したりするには、[非推奨に関するイシュー](https://gitlab.com/gitlab-org/gitlab/-/issues/501308)を参照してください。
 
 > [!note]
-> この変更は元のマイルストーンから削除され、再評価中です。
+> この変更は元のマイルストーンから削除され、再評価されています。
 
 依存関係スキャン機能がGitLab SBOM脆弱性スキャナーにアップグレードされます。この変更の一環として、Gemnasiumアナライザー（以前はCI/CDパイプラインで使用）はGitLab 17.9で非推奨になります。
 
@@ -4306,13 +4391,13 @@ GitLab 18.5現在、この新機能はLimited Availabilityです。大多数の�
 - この変更について議論したり、詳細を確認したりするには、[非推奨に関するイシュー](https://gitlab.com/gitlab-org/gitlab/-/issues/513685)を参照してください。
 
 > [!note]
-> この変更は元のマイルストーンから削除され、再評価中です。
+> この変更は元のマイルストーンから削除され、再評価されています。
 
-GitLab 19.0では、[SAST CI/CDテンプレート](https://docs.gitlab.com/user/application_security/sast#stable-vs-latest-sast-templates)を更新して、GitLab Ultimateを使用しているプロジェクトでデフォルトで[GitLabの高度なSAST](https://docs.gitlab.com/user/application_security/sast/gitlab_advanced_sast)を有効にするようにします。この変更前は、CI/CD変数`GITLAB_ADVANCED_SAST_ENABLED`を`true`に設定した場合にのみ、GitLabの高度なSASTアナライザーが有効になります。この変更は以前、GitLab 18.0で予定されていましたが、延期されました。
+GitLab 19.0では、[SAST CI/CDテンプレート](https://docs.gitlab.com/user/application_security/sast#stable-vs-latest-sast-templates)を更新して、GitLab Ultimateを使用しているプロジェクトでデフォルトで[GitLabの高度なSAST](https://docs.gitlab.com/user/application_security/sast/gitlab_advanced_sast/)を有効にするようにします。この変更前は、CI/CD変数`GITLAB_ADVANCED_SAST_ENABLED`を`true`に設定した場合にのみ、GitLabの高度なSASTアナライザーが有効になります。この変更は以前、GitLab 18.0で予定されていましたが、延期されました。
 
-高度なSASTは、クロスファイル、クロスファンクションスキャン、新しいルールセットを使用して、より正確な結果を提供します。高度なSASTは[サポートされる言語](https://docs.gitlab.com/user/application_security/sast/gitlab_advanced_sast#supported-languages)のカバレッジを引き継ぎ、以前のスキャナーでのそれらの言語のスキャンを無効にします。自動化されたプロセスでは、各プロジェクトのデフォルトブランチでの最初のスキャン後に、以前のスキャナーからの結果が引き続き検出される場合、その結果を移行します。
+高度なSASTは、クロスファイル、クロスファンクションスキャン、新しいルールセットを使用して、より正確な結果を提供します。高度なSASTは[サポートされる言語](https://docs.gitlab.com/user/application_security/sast/gitlab_advanced_sast/#supported-languages)のカバレッジを引き継ぎ、以前のスキャナーでのそれらの言語のスキャンを無効にします。自動化されたプロセスでは、各プロジェクトのデフォルトブランチでの最初のスキャン後に、以前のスキャナーからの結果が引き続き検出される場合、その結果を移行します。
 
-高度なSASTでは、プロジェクトのスキャンが詳細に行われるため、プロジェクトのスキャンに時間がかかる場合があります。必要に応じて、CI/CD変数`GITLAB_ADVANCED_SAST_ENABLED`を`false`に設定して、[GitLabの高度なSASTを無効](https://docs.gitlab.com/user/application_security/sast/gitlab_advanced_sast#disable-gitlab-advanced-sast-scanning)にできます。この変数をプロジェクト、グループ、またはポリシーで今すぐ設定すると、GitLab 19.0でデフォルトで高度なSASTが有効になるのを防ぐことができます。
+高度なSASTでは、プロジェクトのスキャンが詳細に行われるため、プロジェクトのスキャンに時間がかかる場合があります。必要に応じて、CI/CD変数`GITLAB_ADVANCED_SAST_ENABLED`を`false`に設定して、[GitLabの高度なSASTを無効](https://docs.gitlab.com/user/application_security/sast/gitlab_advanced_sast/#disable-gitlab-advanced-sast-scanning)にできます。この変数をプロジェクト、グループ、またはポリシーで今すぐ設定すると、GitLab 19.0でデフォルトで高度なSASTが有効になるのを防ぐことができます。
 
 ### GitLab Runner Docker Machine Executorは非推奨 {#gitlab-runner-docker-machine-executor-is-deprecated}
 
@@ -4320,7 +4405,7 @@ GitLab 19.0では、[SAST CI/CDテンプレート](https://docs.gitlab.com/user/
 - この変更について議論したり、詳細を確認したりするには、[非推奨に関するイシュー](https://gitlab.com/gitlab-org/gitlab/-/issues/498268)を参照してください。
 
 > [!note]
-> この変更は元のマイルストーンから削除され、再評価中です。
+> この変更は元のマイルストーンから削除され、再評価されています。
 
 [GitLab Runner Docker Machine Executor](https://docs.gitlab.com/runner/executors/docker_machine/)は非推奨となり、GitLab 20.0（2027年5月）でサポート対象機能として製品から完全に削除されます。Docker Machineの代替となる、Amazon Web Services（AWS）EC2、Google Compute Engine（GCE）、Microsoft Azure仮想マシン（VM）用のGitLab開発プラグインを備えた[GitLab Runner Autoscaler](https://docs.gitlab.com/runner/runner_autoscale/)が一般提供されています。この発表に伴い、GitLab Runnerチームは、GitLabが管理するDocker Machineフォークに対するコミュニティからのコントリビュートを受け付けなくなり、新たに特定されたバグを解決することもなくなります。
 
@@ -4330,7 +4415,7 @@ GitLab 19.0では、[SAST CI/CDテンプレート](https://docs.gitlab.com/user/
 - この変更について議論したり、詳細を確認したりするには、[非推奨に関するイシュー](https://gitlab.com/gitlab-org/gitlab/-/issues/387937)を参照してください。
 
 > [!note]
-> この変更は元のマイルストーンから削除され、再評価中です。
+> この変更は元のマイルストーンから削除され、再評価されています。
 
 GitLab Runnerプラットフォームとインストール手順を取得するための`runnerPlatforms`および`runnerSetup`クエリは非推奨となり、GraphQL APIから削除されます。インストール手順については、これらのAPIクエリを使用する代わりに、[GitLab Runnerドキュメント](https://docs.gitlab.com/runner/)を参照してください。
 
@@ -4340,7 +4425,7 @@ GitLab Runnerプラットフォームとインストール手順を取得する�
 - この変更について議論したり、詳細を確認したりするには、[非推奨に関するイシュー](https://gitlab.com/groups/gitlab-org/configure/-/epics/8)を参照してください。
 
 > [!note]
-> この変更は元のマイルストーンから削除され、再評価中です。
+> この変更は元のマイルストーンから削除され、再評価されています。
 
 Kubernetesとの証明書ベースのインテグレーションは[非推奨となり、削除されます](https://about.gitlab.com/blog/deprecating-the-cert-based-kubernetes-integration/)。
 
@@ -4358,7 +4443,7 @@ GitLabは、新しいソリューションに機能の同等性が備わるま�
 - この変更について議論したり、詳細を確認したりするには、[非推奨に関するイシュー](https://gitlab.com/groups/gitlab-org/configure/-/epics/8)を参照してください。
 
 > [!note]
-> この変更は元のマイルストーンから削除され、再評価中です。
+> この変更は元のマイルストーンから削除され、再評価されています。
 
 Kubernetesとの証明書ベースのインテグレーションは[非推奨となり、削除されます](https://about.gitlab.com/blog/deprecating-the-cert-based-kubernetes-integration/)。GitLab 15.0以降、GitLab.comユーザーとして、新しいネームスペースで証明書ベースのアプローチを使用して、GitLabとクラスターを統合できなくなります。現在のユーザーのインテグレーションは、ネームスペースごとに有効になります。
 
@@ -4374,7 +4459,7 @@ GitLab Self-Managedのお客様は、[機能フラグを使用して](https://do
 - この変更について議論したり、詳細を確認したりするには、[非推奨に関するイシュー](https://gitlab.com/gitlab-org/gitlab/-/issues/414236)を参照してください。
 
 > [!note]
-> この変更は元のマイルストーンから削除され、再評価中です。
+> この変更は元のマイルストーンから削除され、再評価されています。
 
 GraphQLを使用して、GitLab依存プロキシで使用されるストレージの量をクエリできます。ただし、`dependencyProxyTotalSizeInBytes`フィールドは約2ギガバイトに制限されており、依存プロキシにとっては必ずしも十分な大きさではありません。結果として、`dependencyProxyTotalSizeInBytes`は非推奨になりました。
 
@@ -4386,7 +4471,7 @@ GraphQLを使用して、GitLab依存プロキシで使用されるストレー�
 - この変更について議論したり、詳細を確認したりするには、[非推奨に関するイシュー](https://gitlab.com/gitlab-org/gitlab/-/issues/458835)を参照してください。
 
 > [!note]
-> この変更は元のマイルストーンから削除され、再評価中です。
+> この変更は元のマイルストーンから削除され、再評価されています。
 
 OWASP Top 10 2017で脆弱性レポートをグループ化することは非推奨であり、OWASP Top 10 2021でグループ化することに置き換えられました。将来的には、脆弱性レポートのグループ化のためにOWASP Top 10の最新バージョンをサポートする予定です。この変更に伴い、この機能が使用する2017 GraphQL API enumも非推奨にして削除します。詳細については、[このイシュー](https://gitlab.com/gitlab-org/gitlab/-/issues/488433)を参照してください。
 
@@ -4396,7 +4481,7 @@ OWASP Top 10 2017で脆弱性レポートをグループ化することは非推
 - この変更について議論したり、詳細を確認したりするには、[非推奨に関するイシュー](https://gitlab.com/gitlab-org/gitlab/-/issues/502382)を参照してください。
 
 > [!note]
-> この変更は元のマイルストーンから削除され、再評価中です。
+> この変更は元のマイルストーンから削除され、再評価されています。
 
 GitLabは、セキュアバイデフォルトの実践を重視しています。これを尊重するために、いくつかの変更を行って、CI/CD変数の使用に関する最小権限の原則がサポートされるようにしています。現在、デベロッパーロール以上のユーザーは、検証やオプトインなしで、デフォルトで[パイプライン変数](https://docs.gitlab.com/ci/variables/#use-pipeline-variables)を使用できます。
 
@@ -4408,7 +4493,7 @@ GitLabは、セキュアバイデフォルトの実践を重視しています�
 - この変更について議論したり、詳細を確認したりするには、[非推奨に関するイシュー](https://gitlab.com/components/opentofu/-/issues/43#note_1913822299)を参照してください。
 
 > [!note]
-> この変更は元のマイルストーンから削除され、再評価中です。
+> この変更は元のマイルストーンから削除され、再評価されています。
 
 16.8でOpenTofu CI/CDテンプレートを導入したのは、CI/CDコンポーネントがGitLab Self-Managedでまだ利用できなかったためです。[GitLab Self-ManagedのGitLab CI/CDコンポーネント](https://docs.gitlab.com/ci/components/#use-a-gitlabcom-component-in-a-self-managed-instance)の導入に伴い、CI/CDコンポーネントを優先して、冗長なOpenTofu CI/CDテンプレートを削除します。
 
@@ -4420,7 +4505,7 @@ CI/CDテンプレートからコンポーネントへの移行については、
 - この変更について議論したり、詳細を確認したりするには、[非推奨に関するイシュー](https://gitlab.com/gitlab-org/gitlab/-/issues/573447)を参照してください。
 
 > [!note]
-> この変更は元のマイルストーンから削除され、再評価中です。
+> この変更は元のマイルストーンから削除され、再評価されています。
 
 パイプライン実行ポリシーの[カスタムステージ](https://gitlab.com/gitlab-org/gitlab/-/issues/475152)の導入に伴い（GitLab 17.9で利用可能）、非推奨の`inject_ci`の代わりとなる設定オプション`inject_policy`が導入されました。
 
@@ -4434,9 +4519,9 @@ CI/CDテンプレートからコンポーネントへの移行については、
 - この変更について議論したり、詳細を確認したりするには、[非推奨に関するイシュー](https://gitlab.com/gitlab-org/gitlab/-/issues/480914)を参照してください。
 
 > [!note]
-> この変更は元のマイルストーンから削除され、再評価中です。
+> この変更は元のマイルストーンから削除され、再評価されています。
 
-[ユーザー](https://docs.gitlab.com/administration/settings/user_and_ip_rate_limits/)、[プロジェクト](https://docs.gitlab.com/administration/settings/rate_limit_on_projects_api/)、[グループ](https://docs.gitlab.com/administration/settings/rate_limit_on_groups_api/)の一般的に使用されるエンドポイントに対して、デフォルトでレート制限が有効になります。これらのレート制限をデフォルトで有効にして、APIの大量使用が広範なユーザーエクスペリエンスに悪影響を与える可能性を減らすことにより、システム全体の安定性を向上させることができます。レート制限を超えてリクエストを行った場合、[HTTP 429](https://developer.mozilla.org/en-US/docs/Web/HTTP/Status/429)エラーコードと[追加のレート制限ヘッダー](https://docs.gitlab.com/administration/settings/user_and_ip_rate_limits/#response-headers)が返されます。
+[ユーザー](https://docs.gitlab.com/administration/settings/user_and_ip_rate_limits/)、[プロジェクト](https://docs.gitlab.com/administration/settings/rate_limit_on_projects_api/)、[グループ](https://docs.gitlab.com/administration/settings/rate_limit_on_groups_api/)の一般的に使用されるエンドポイントに対して、デフォルトでレート制限が有効になります。これらのレート制限をデフォルトで有効にして、APIの大量使用が広範なユーザーエクスペリエンスに悪影響を与える可能性を減らすことにより、システム全体の安定性を向上させることができます。レート制限を超えてリクエストを行った場合、[HTTP 429](https://developer.mozilla.org/en-US/docs/Web/HTTP/Reference/Status/429)エラーコードと[追加のレート制限ヘッダー](https://docs.gitlab.com/administration/settings/user_and_ip_rate_limits/#response-headers)が返されます。
 
 デフォルトのレート制限は、GitLab.comで確認できるリクエストレートに基づいて、意図的にかなり高く設定して、ほとんどの使用状況で混乱を引き起こさないようにしています。インスタンス管理者は、すでに設定されている他のレート制限と同様に、管理者エリアで必要に応じてより高い制限またはより低い制限を設定できます。
 
@@ -4446,7 +4531,7 @@ CI/CDテンプレートからコンポーネントへの移行については、
 - この変更について議論したり、詳細を確認したりするには、[非推奨に関するイシュー](https://gitlab.com/gitlab-org/gitlab/-/issues/459869)を参照してください。
 
 > [!note]
-> この変更は元のマイルストーンから削除され、再評価中です。
+> この変更は元のマイルストーンから削除され、再評価されています。
 
 GitLab GraphQL APIの`ContainerRepositoryType`にある`migrationState`フィールドは非推奨になりました。この非推奨化は、APIを効率化し、改善するための取り組みの一環です。
 
@@ -4458,7 +4543,7 @@ GitLab GraphQL APIの`ContainerRepositoryType`にある`migrationState`フィー
 - この変更について議論したり、詳細を確認したりするには、[非推奨に関するイシュー](https://gitlab.com/gitlab-org/gitlab/-/issues/424417)を参照してください。
 
 > [!note]
-> この変更は元のマイルストーンから削除され、再評価中です。
+> この変更は元のマイルストーンから削除され、再評価されています。
 
 `previousStageJobsOrNeeds`フィールドは、`previousStageJobs`フィールドと`needs`フィールドに置き換えられたため、GraphQLから削除されます。
 
@@ -4468,7 +4553,7 @@ GitLab GraphQL APIの`ContainerRepositoryType`にある`migrationState`フィー
 - この変更について議論したり、詳細を確認したりするには、[非推奨に関するイシュー](https://gitlab.com/gitlab-org/gitlab/-/issues/391941)を参照してください。
 
 > [!note]
-> この変更は元のマイルストーンから削除され、再評価中です。
+> この変更は元のマイルストーンから削除され、再評価されています。
 
 GraphQLフィールド`take_ownership_pipeline_schedule`は非推奨になります。ユーザーがパイプラインスケジュールの所有権を取得できるかどうかを判断するには、代わりに`admin_pipeline_schedule`フィールドを使用します。
 
@@ -4478,7 +4563,7 @@ GraphQLフィールド`take_ownership_pipeline_schedule`は非推奨になりま
 - この変更について議論したり、詳細を確認したりするには、[非推奨に関するイシュー](https://gitlab.com/gitlab-org/gitlab/-/issues/501308)を参照してください。
 
 > [!note]
-> この変更は元のマイルストーンから削除され、再評価中です。
+> この変更は元のマイルストーンから削除され、再評価されています。
 
 依存関係スキャン用のGemnasiumアナライザーによって提供されるYarnプロジェクト向けの[脆弱性を解決する](https://docs.gitlab.com/user/application_security/vulnerabilities/#resolve-a-vulnerability)機能は、GitLab 17.9で非推奨になりました。
 
@@ -4492,7 +4577,7 @@ GraphQLフィールド`take_ownership_pipeline_schedule`は非推奨になりま
 - この変更について議論したり、詳細を確認したりするには、[非推奨に関するイシュー](https://gitlab.com/gitlab-org/gitlab/-/issues/515371#note_2319368251)を参照してください。
 
 > [!note]
-> この変更は元のマイルストーンから削除され、再評価中です。
+> この変更は元のマイルストーンから削除され、再評価されています。
 
 パブリックREST APIの次のエンドポイントが削除されます。
 
@@ -4516,7 +4601,7 @@ GraphQLフィールド`take_ownership_pipeline_schedule`は非推奨になりま
 - この変更について議論したり、詳細を確認したりするには、[非推奨に関するイシュー](https://gitlab.com/gitlab-org/cluster-integration/gitlab-agent/-/issues/630)を参照してください。
 
 > [!note]
-> この変更は元のマイルストーンから削除され、再評価中です。
+> この変更は元のマイルストーンから削除され、再評価されています。
 
 `agentk`コンテナレジストリを[プロジェクト固有のレジストリ](https://gitlab.com/gitlab-org/cluster-integration/gitlab-agent/container_registry/1223205)から[クラウドネイティブGitLab（CNG）レジストリ](https://gitlab.com/gitlab-org/build/CNG/container_registry/8241772)に移動します。GitLab 18.0以降、CNGで構築された`agentk`イメージは、プロジェクト固有のレジストリにミラーリングされます。新しいイメージは古いイメージと同等ですが、新しいイメージは`amd64`および`arm64`アーキテクチャのみをサポートします。32ビットの`arm`アーキテクチャはサポートされていません。GitLab 19.0以降、プロジェクト固有のレジストリは`agentk`の更新を受信しません。`agentk`コンテナをローカルレジストリにミラーリングする場合は、ミラーのソースを[CNGレジストリ](https://gitlab.com/gitlab-org/build/CNG/container_registry/8241772)に変更する必要があります。
 
@@ -4528,7 +4613,7 @@ GraphQLフィールド`take_ownership_pipeline_schedule`は非推奨になりま
 - この変更について議論したり、詳細を確認したりするには、[非推奨に関するイシュー](https://gitlab.com/gitlab-org/gitlab/-/issues/509578)を参照してください。
 
 > [!note]
-> この変更は元のマイルストーンから削除され、再評価中です。
+> この変更は元のマイルストーンから削除され、再評価されています。
 
 GitLab 19.0では、CI/CDジョブトークンが文字列トークン形式からJWTトークン形式に切り替わります。この変更は、すべてのプロジェクトの新規および既存のCI/CDジョブトークンに影響を及ぼします。問題が発生した場合は、GitLab 20.0がリリースされるまで、[CI/CDトークンにレガシー形式を使用](https://docs.gitlab.com/ci/jobs/ci_job_token#use-legacy-format-for-cicd-tokens)できます。
 
@@ -4543,7 +4628,7 @@ GitLab 19.0では、CI/CDジョブトークンが文字列トークン形式か�
 - この変更について議論したり、詳細を確認したりするには、[非推奨に関するイシュー](https://gitlab.com/gitlab-org/omnibus-gitlab/-/issues/9181)を参照してください。
 
 > [!note]
-> この変更は元のマイルストーンから削除され、再評価中です。
+> この変更は元のマイルストーンから削除され、再評価されています。
 
 Gitalyで`bin_path`および`use_bundled_binaries`設定オプションを使用するためのサポートは非推奨となり、GitLab 19.0で削除されます。
 
@@ -4555,7 +4640,7 @@ Gitalyが提供するGitバイナリが、Gitを実行する際にサポート�
 - この変更について議論したり、詳細を確認したりするには、[非推奨に関するイシュー](https://gitlab.com/gitlab-org/cluster-integration/gitlab-agent/-/issues/656)を参照してください。
 
 > [!note]
-> この変更は元のマイルストーンから削除され、再評価中です。
+> この変更は元のマイルストーンから削除され、再評価されています。
 
 Kubernetesエージェントの`kpt`ベースのインストールに対するサポートを削除します。代わりに、サポートされているいずれかのインストール方法でエージェントをインストールする必要があります。
 
@@ -4571,7 +4656,7 @@ Kubernetesエージェントの`kpt`ベースのインストールに対する�
 - この変更について議論したり、詳細を確認したりするには、[非推奨に関するイシュー](https://gitlab.com/gitlab-org/gitlab/-/issues/473759)を参照してください。
 
 > [!note]
-> この変更は元のマイルストーンから削除され、再評価中です。
+> この変更は元のマイルストーンから削除され、再評価されています。
 
 `MergeRequest`のGraphQLフィールド`mergeTrainIndex`と`mergeTrainsCount`は非推奨です。マージトレインでのマージリクエストの位置を判断するには、代わりに`MergeTrainCar`の`index`フィールドを使用します。マージトレイン内のMRの数を取得するには、代わりに`MergeTrains::TrainType`の`cars`から`count`を使用します。
 
@@ -4581,7 +4666,7 @@ Kubernetesエージェントの`kpt`ベースのインストールに対する�
 - この変更について議論したり、詳細を確認したりするには、[非推奨に関するイシュー](https://gitlab.com/gitlab-org/gitlab/-/issues/439199)を参照してください。
 
 > [!note]
-> この変更は元のマイルストーンから削除され、再評価中です。
+> この変更は元のマイルストーンから削除され、再評価されています。
 
 16.10では、スキャン結果ポリシーの名前がマージリクエスト承認ポリシーに変更され、ポリシータイプに対するスコープと機能の変更がより正確に反映されるようになりました。
 

@@ -37,7 +37,7 @@ For example, consider two pipelines with these scan results:
 
 The security scan report shows the following results:
 
-- `V1` exists on both branches so is not shown in the report.
+- `V1` exists on both branches, so it is not shown in the report.
 - `V2` appears in the report as **fixed**.
 - `V3` appears in the report as **added**.
 

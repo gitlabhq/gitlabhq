@@ -7,7 +7,7 @@ class RecreateCiFinishedPipelinesTable < ClickHouse::Migration
     SQL
 
     execute <<~SQL
-      CREATE TABLE ci_finished_pipelines
+      CREATE TABLE IF NOT EXISTS ci_finished_pipelines
       (
         `id` UInt64 DEFAULT 0,
         `path` String DEFAULT '0/',
@@ -33,7 +33,7 @@ class RecreateCiFinishedPipelinesTable < ClickHouse::Migration
     SQL
 
     execute <<~SQL
-      CREATE TABLE ci_finished_pipelines
+      CREATE TABLE IF NOT EXISTS ci_finished_pipelines
       (
         `id` UInt64 DEFAULT 0,
         `project_id` UInt64 DEFAULT 0,

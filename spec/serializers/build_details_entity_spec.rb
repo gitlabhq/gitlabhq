@@ -120,7 +120,7 @@ RSpec.describe BuildDetailsEntity, feature_category: :continuous_integration do
       end
 
       it { is_expected.to include(failure_reason: 'unmet_prerequisites') }
-      it { is_expected.to include(callout_message: CommitStatusPresenter.callout_failure_messages[:unmet_prerequisites]) }
+      it { is_expected.to include(callout_message: s_(CommitStatusPresenter.callout_failure_messages[:unmet_prerequisites])) }
     end
 
     context 'when the build has failed due to a missing dependency' do

@@ -310,7 +310,7 @@ If you plan to install a package from a project or group,
 then you do not have to adhere to the naming convention.
 
 If you plan to install a package from an instance, then you must name your package
-with a scope. Scoped packages begin with a `@` have the format of
+with a scope. Scoped packages begin with a `@` and have the format of
 `@owner/package-name`. You can set up the scope for your package in the `.npmrc` file and by using the `publishConfig`
 option in the `package.json`.
 
@@ -318,7 +318,7 @@ option in the `package.json`.
   of the project with the source code of the package itself. The scope should be lowercase.
 - The package name can be anything you want.
 
-For more information, see [Scoped packages](https://docs.npmjs.com/cli/v11/using-npm/scope).
+For more information, see [Scoped packages](https://docs.npmjs.com/cli/v11/using-npm/scope/).
 
 | Project URL                                             | Package registry in | Scope     | Full package name      |
 | ------------------------------------------------------- | ------------------- | --------- | ---------------------- |

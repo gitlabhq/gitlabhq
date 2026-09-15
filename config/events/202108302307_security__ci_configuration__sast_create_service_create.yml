@@ -3,7 +3,7 @@ category: Security::CiConfiguration::SastCreateService
 action: create
 extra_properties:
 identifiers:
-product_group: static_analysis
+product_group: code_scanning
 product_categories:
 - static_application_security_testing
 milestone: "13.12"

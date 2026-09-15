@@ -63,8 +63,9 @@ For more information, see [Bitmask Searches in LDAP](https://ctovswild.com/2009/
 
 The process also updates the following user information:
 
-- Name. Because of a [sync issue](https://gitlab.com/gitlab-org/gitlab/-/issues/342598), `name` is not synchronized if
-  [**Prevent users from changing their profile name**](../../settings/account_and_limit_settings.md#disable-user-profile-name-changes) is enabled or `sync_name` is set to `false`.
+- Name, if `sync_name` is set to `true`.
+  This synchronization takes place even if
+  [**Prevent users from changing their profile name**](../../settings/account_and_limit_settings.md#disable-user-profile-name-changes) is enabled.
 - Email address.
 - SSH public keys if `sync_ssh_keys` is set.
 - Kerberos identity if Kerberos is enabled.
@@ -192,7 +193,7 @@ A blocked user is unblocked when they sign in with LDAP if all of the following 
 - All the access check conditions are true.
 - The LDAP server is available when the user signs in.
 
-**All users** are blocked if the LDAP server is unavailable when an LDAP user synchronization is run.
+All users are blocked if the LDAP server is unavailable when an LDAP user synchronization is run.
 
 > [!note]
 > If all users are blocked due to the LDAP server not being available when an LDAP user synchronization is run,

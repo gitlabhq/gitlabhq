@@ -65,6 +65,7 @@ FactoryBot.define do
     transient do
       boundary { nil }
       permissions { nil }
+      additional_scopes { [] }
       granular_scope do
         next unless permissions.present?
 
@@ -80,14 +81,18 @@ FactoryBot.define do
     granular { true }
 
     personal_access_token_granular_scopes do
-      next [] unless granular_scope.present?
+      extra = additional_scopes.map do |scope|
+        association(:granular_scope,
+          boundary: scope[:boundary], permissions: Array(scope[:permissions]), organization: organization
+        )
+      end
 
-      [
+      [granular_scope, *extra].compact.map do |scope|
         association(:personal_access_token_granular_scope,
-          granular_scope: granular_scope,
+          granular_scope: scope,
           organization: organization
         )
-      ]
+      end
     end
   end
 

@@ -16,15 +16,13 @@ export default {
 </script>
 
 <template>
-  <!-- eslint-disable vue/v-on-event-hyphenation -->
   <gl-alert
     data-testid="diagram-performance-warning"
     :primary-button-text="$options.i18n.buttonText"
     variant="warning"
     @dismiss="$emit('close-alert')"
-    @primaryAction="$emit('show-image')"
+    @primary-action="$emit('show-image')"
   >
     {{ $options.i18n.bodyText }}
   </gl-alert>
-  <!-- eslint-enable vue/v-on-event-hyphenation -->
 </template>

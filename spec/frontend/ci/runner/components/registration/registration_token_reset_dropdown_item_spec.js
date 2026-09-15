@@ -1,4 +1,4 @@
-import { GlDisclosureDropdownItem, GlLoadingIcon, GlToast, GlModal } from '@gitlab/ui';
+import { GlDisclosureDropdownItem, GlLoadingIcon, GlModal } from '@gitlab/ui';
 import { shallowMount } from '@vue/test-utils';
 import Vue, { nextTick } from 'vue';
 
@@ -16,7 +16,6 @@ jest.mock('~/alert');
 jest.mock('~/sentry/sentry_browser_wrapper');
 
 Vue.use(VueApollo);
-Vue.use(GlToast);
 
 const mockNewRegistrationToken = 'MOCK_NEW_REGISTRATION_TOKEN';
 const modalID = 'token-reset-modal';

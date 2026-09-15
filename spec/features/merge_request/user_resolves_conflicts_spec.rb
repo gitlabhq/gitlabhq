@@ -38,18 +38,18 @@ RSpec.describe 'Merge request > User resolves conflicts', :js, feature_category:
 
       find_by_testid('file-tree-button').click
 
-      within find('.diff-file', text: 'files/ruby/popen.rb') do
-        expect(page).to have_selector('.line_content.new', text: "vars = { 'PWD' => path }")
-        expect(page).to have_selector('.line_content.new', text: "options = { chdir: path }")
+      within find('diff-file', text: 'files/ruby/popen.rb') do
+        expect(page).to have_selector('[data-change="added"]', text: "vars = { 'PWD' => path }")
+        expect(page).to have_selector('[data-change="added"]', text: "options = { chdir: path }")
       end
 
-      within find('.diff-file', text: 'files/ruby/regex.rb') do
-        expect(page).to have_selector('.line_content.new', text: "def username_regexp")
-        expect(page).to have_selector('.line_content.new', text: "def project_name_regexp")
-        expect(page).to have_selector('.line_content.new', text: "def path_regexp")
-        expect(page).to have_selector('.line_content.new', text: "def archive_formats_regexp")
-        expect(page).to have_selector('.line_content.new', text: "def git_reference_regexp")
-        expect(page).to have_selector('.line_content.new', text: "def default_regexp")
+      within find('diff-file', text: 'files/ruby/regex.rb') do
+        expect(page).to have_selector('[data-change="added"]', text: "def username_regexp")
+        expect(page).to have_selector('[data-change="added"]', text: "def project_name_regexp")
+        expect(page).to have_selector('[data-change="added"]', text: "def path_regexp")
+        expect(page).to have_selector('[data-change="added"]', text: "def archive_formats_regexp")
+        expect(page).to have_selector('[data-change="added"]', text: "def git_reference_regexp")
+        expect(page).to have_selector('[data-change="added"]', text: "def default_regexp")
       end
     end
   end
@@ -77,7 +77,9 @@ RSpec.describe 'Merge request > User resolves conflicts', :js, feature_category:
 
       wait_for_requests
 
-      click_on 'Changes'
+      # Rapid Diffs pins the diff version it streams at page load, so the new version
+      # created by resolving the conflicts is only picked up on a fresh page load.
+      visit diffs_project_merge_request_path(project, merge_request)
       wait_for_requests
 
       expect(page).to have_content('One morning')
@@ -96,6 +98,8 @@ RSpec.describe 'Merge request > User resolves conflicts', :js, feature_category:
 
       before do
         visit project_merge_request_path(project, merge_request)
+
+        wait_for_requests
 
         click_button 'Expand merge checks'
       end
@@ -129,6 +133,8 @@ RSpec.describe 'Merge request > User resolves conflicts', :js, feature_category:
 
       before do
         visit project_merge_request_path(project, merge_request)
+
+        wait_for_requests
 
         click_button 'Expand merge checks'
 
@@ -175,6 +181,8 @@ RSpec.describe 'Merge request > User resolves conflicts', :js, feature_category:
       before do
         visit project_merge_request_path(project, merge_request)
 
+        wait_for_requests
+
         click_button 'Expand merge checks'
 
         click_link('conflicts', href: %r{/conflicts\Z})
@@ -201,6 +209,8 @@ RSpec.describe 'Merge request > User resolves conflicts', :js, feature_category:
         project.add_developer(user)
         sign_in(user)
         visit project_merge_request_path(project, merge_request)
+
+        wait_for_requests
 
         click_button 'Expand merge checks'
       end

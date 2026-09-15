@@ -9,7 +9,6 @@ RSpec.describe Atlassian::Forge::JwksClient, :use_clean_rails_redis_caching, fea
   let(:kid) { 'forge-test-key-id' }
   let(:jwk) { JWT::JWK.new(private_key, { use: 'sig', kid: kid }) }
   let(:jwks_response) { { 'keys' => [jwk.export] } }
-  let(:cache_key) { "atlassian:forge:jwks:#{described_class::JWKS_URL}" }
   let(:headers) { { 'cache-control' => 'max-age=3600' } }
 
   let(:successful_response) do

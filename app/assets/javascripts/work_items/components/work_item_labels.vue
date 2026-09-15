@@ -67,7 +67,7 @@ export default {
       default: false,
     },
   },
-  emits: ['error', 'labelsUpdated', 'update-widget-draft'],
+  emits: ['error', 'labels-updated', 'update-widget-draft'],
   data() {
     return {
       searchLabels: [],
@@ -301,7 +301,7 @@ export default {
 
           this.track('updated_labels');
         }
-        this.$emit('labelsUpdated', [...addLabelIds, ...removeLabelIds]);
+        this.$emit('labels-updated', [...addLabelIds, ...removeLabelIds]);
       } catch {
         this.$emit('error', i18n.updateError);
       } finally {
@@ -319,6 +319,8 @@ export default {
       this.showLabelForm = false;
       this.createdLabelId = label.id;
       this.selectedLabelsIds.push(label.id);
+      // The cache patch is skipped on a cold cache, so refetch to be sure the label is listed.
+      this.$apollo.queries.searchLabels.refetch();
     },
   },
 };
@@ -345,7 +347,7 @@ export default {
     @dropdown-shown="onDropdownShown"
     @search-started="search"
     @update-value="submitLabels"
-    @updateSelected="setLabels"
+    @update-selected="setLabels"
   >
     <template #list-item="{ item }">
       <div class="gl-flex gl-items-center gl-gap-3 gl-break-anywhere">
@@ -412,8 +414,8 @@ export default {
           :label-create-type="workspaceType"
           :search-key="searchTerm"
           :workspace-type="workspaceType"
-          @hideCreateView="showLabelForm = false"
-          @labelCreated="handleLabelCreated"
+          @hide-create-view="showLabelForm = false"
+          @label-created="handleLabelCreated"
         />
       </gl-disclosure-dropdown>
     </template>

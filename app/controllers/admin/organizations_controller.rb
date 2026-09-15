@@ -7,9 +7,6 @@ module Admin
     feature_category :organization
 
     before_action :check_feature_flag!
-    before_action only: [:index] do
-      push_frontend_feature_flag(:organization_switching, current_user)
-    end
 
     def index; end
 

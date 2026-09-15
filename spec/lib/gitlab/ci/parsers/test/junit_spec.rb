@@ -702,6 +702,27 @@ RSpec.describe Gitlab::Ci::Parsers::Test::Junit, feature_category: :code_testing
       end
     end
 
+    context 'when nested <testsuite> elements have no `time` attribute' do
+      let(:junit) do
+        <<~XML
+          <testsuites>
+            <testsuite name="Outer">
+              <testsuite name="Inner">
+                <testcase name="test1" time="1.02"/>
+                <testcase name="test2" time="2.08"/>
+              </testsuite>
+            </testsuite>
+          </testsuites>
+        XML
+      end
+
+      it 'keeps the `total_time` calculated from the nested test cases' do
+        expect { subject }.not_to raise_error
+
+        expect(test_suite.total_time).to eq(3.1)
+      end
+    end
+
     context 'when <testsuites> have multiple <testsuite>s' do
       let(:junit) do
         <<~XML
@@ -720,6 +741,171 @@ RSpec.describe Gitlab::Ci::Parsers::Test::Junit, feature_category: :code_testing
         expect { subject }.not_to raise_error
 
         expect(test_suite.total_time).to eq(13.68)
+      end
+    end
+
+    context 'when a job has multiple JUnit report files' do
+      def parse(xml_data)
+        expect { described_class.new.parse!(xml_data, test_report, job: job) }.not_to raise_error
+      end
+
+      context 'when the files have no `time` attributes' do
+        let(:junit_first) do
+          <<~XML
+            <testsuite name='Math'>
+              <testcase classname='Calculator' name='sumTest1' time='0.01'></testcase>
+            </testsuite>
+          XML
+        end
+
+        let(:junit_second) do
+          <<~XML
+            <testsuite name='Stats'>
+              <testcase classname='Analyzer' name='meanTest1' time='0.02'></testcase>
+            </testsuite>
+          XML
+        end
+
+        it 'aggregates test cases and `total_time` across multiple parses' do
+          parse(junit_first)
+          parse(junit_second)
+
+          expect(test_cases).to contain_exactly(
+            have_attributes(
+              suite_name: 'Math',
+              classname: 'Calculator',
+              name: 'sumTest1',
+              execution_time: 0.01
+            ),
+            have_attributes(
+              suite_name: 'Stats',
+              classname: 'Analyzer',
+              name: 'meanTest1',
+              execution_time: 0.02
+            )
+          )
+
+          expect(test_suite.total_time).to eq(0.03)
+        end
+      end
+
+      context 'when the files have <testsuite> `time` attributes' do
+        let(:junit_first) do
+          <<~XML
+            <testsuite name='Math' time='0.02'>
+              <testcase classname='Calculator' name='sumTest1' time='0.01'></testcase>
+            </testsuite>
+          XML
+        end
+
+        let(:junit_second) do
+          <<~XML
+            <testsuite name='Stats' time='0.03'>
+              <testcase classname='Analyzer' name='meanTest1' time='0.02'></testcase>
+            </testsuite>
+          XML
+        end
+
+        it 'sums `total_time` across multiple parses' do
+          parse(junit_first)
+          parse(junit_second)
+
+          expect(test_suite.total_time).to eq(0.05)
+        end
+
+        it 'sums `total_time` regardless of parse order' do
+          parse(junit_second)
+          parse(junit_first)
+
+          expect(test_suite.total_time).to eq(0.05)
+        end
+      end
+
+      context 'when the files have <testsuites> `time` attributes' do
+        let(:junit_first) do
+          <<~XML
+            <testsuites time='10.0'>
+              <testsuite name='Math' time='9.0'>
+                <testcase classname='Calculator' name='sumTest1' time='8.0'></testcase>
+              </testsuite>
+            </testsuites>
+          XML
+        end
+
+        let(:junit_second) do
+          <<~XML
+            <testsuites time='5.0'>
+              <testsuite name='Stats' time='4.0'>
+                <testcase classname='Analyzer' name='meanTest1' time='3.0'></testcase>
+              </testsuite>
+            </testsuites>
+          XML
+        end
+
+        it 'sums `total_time` across multiple parses' do
+          parse(junit_first)
+          parse(junit_second)
+
+          expect(test_suite.total_time).to eq(15.0)
+        end
+      end
+
+      context 'when the files use nested <testsuite> elements with no `time` attributes' do
+        let(:junit_first) do
+          <<~XML
+            <testsuites>
+              <testsuite name='Math'>
+                <testsuite name='Math.Calculator'>
+                  <testcase classname='Calculator' name='sumTest1' time='1.5'></testcase>
+                </testsuite>
+              </testsuite>
+            </testsuites>
+          XML
+        end
+
+        let(:junit_second) do
+          <<~XML
+            <testsuites>
+              <testsuite name='Stats'>
+                <testsuite name='Stats.Analyzer'>
+                  <testcase classname='Analyzer' name='meanTest1' time='2.5'></testcase>
+                </testsuite>
+              </testsuite>
+            </testsuites>
+          XML
+        end
+
+        it 'aggregates the nested test case times across multiple parses' do
+          parse(junit_first)
+          parse(junit_second)
+
+          expect(test_suite.total_time).to eq(4.0)
+        end
+      end
+
+      context 'when a later file declares no time at all' do
+        let(:junit_first) do
+          <<~XML
+            <testsuite name='Math' time='10.0'>
+              <testcase classname='Calculator' name='sumTest1' time='8.0'></testcase>
+            </testsuite>
+          XML
+        end
+
+        let(:junit_second) do
+          <<~XML
+            <testsuite name='Stats'>
+              <testcase classname='Analyzer' name='meanTest1'></testcase>
+            </testsuite>
+          XML
+        end
+
+        it 'keeps the `total_time` accumulated so far' do
+          parse(junit_first)
+          parse(junit_second)
+
+          expect(test_suite.total_time).to eq(10.0)
+        end
       end
     end
 

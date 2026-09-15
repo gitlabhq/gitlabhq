@@ -166,6 +166,25 @@ RSpec.describe MarkupHelper, feature_category: :markdown do
     end
   end
 
+  describe '#markdown_with_result' do
+    it 'returns the rendered HTML alongside what the post-process filters reported',
+      :aggregate_failures do
+      html, result = helper.markdown_with_result('[README](README.md)', requested_path: '')
+
+      expect(html).to include("/#{project.full_path}/-/blob/master/README.md")
+      expect(result[:linkable_attributes]).to be_present
+    end
+
+    context 'when the text is blank' do
+      it 'has nothing to report', :aggregate_failures do
+        html, result = helper.markdown_with_result('')
+
+        expect(html).to eq('')
+        expect(result).to eq({})
+      end
+    end
+  end
+
   describe '#markdown_field' do
     let(:attribute) { :title }
 
@@ -195,6 +214,22 @@ RSpec.describe MarkupHelper, feature_category: :markdown do
 
         helper.markdown_field(commit, attribute, post_process: false)
       end
+    end
+  end
+
+  describe '#atom_markdown_field' do
+    let(:issuable) { create(:issue, project: project, description: "See #{merge_request.to_reference}") }
+
+    it 'resolves references to absolute URLs' do
+      expect(gfm_link_href(helper.atom_markdown_field(issuable, :description)))
+        .to eq(urls.project_merge_request_url(project, merge_request))
+    end
+  end
+
+  describe '#atom_markdown' do
+    it 'resolves references to absolute URLs' do
+      expect(gfm_link_href(helper.atom_markdown(merge_request.to_reference)))
+        .to eq(urls.project_merge_request_url(project, merge_request))
     end
   end
 
@@ -681,5 +716,9 @@ RSpec.describe MarkupHelper, feature_category: :markdown do
 
   def urls
     Gitlab::Routing.url_helpers
+  end
+
+  def gfm_link_href(html)
+    Nokogiri::HTML5.fragment(html).at_css('a.gfm')[:href]
   end
 end

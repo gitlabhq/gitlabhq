@@ -25,6 +25,7 @@ module API
           tools = tools_hash.filter_map do |name, tool|
             next nil if allowed_tools.present? && allowed_tools.exclude?(name)
             next nil unless tool_available?(tool, current_user)
+            next nil if tool.unlisted?
 
             tool_data = {
               name: "#{tool_name_prefix}#{name}",

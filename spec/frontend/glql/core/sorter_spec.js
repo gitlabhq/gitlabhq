@@ -85,19 +85,76 @@ describe('sorterFor', () => {
 
   it('sorts status by category', () => {
     const items = [
-      { status: { category: 'triage' } },
-      { status: { category: 'done' } },
-      { status: { category: 'to_do' } },
-      { status: { category: 'triage' } },
-      { status: { category: 'in_progress' } },
+      { status: { category: 'triage', name: 'Triage' } },
+      { status: { category: 'done', name: 'Done' } },
+      { status: { category: 'to_do', name: 'To do' } },
+      { status: { category: 'triage', name: 'Triage' } },
+      { status: { category: 'in_progress', name: 'In progress' } },
     ];
 
     expect(items.sort(sorterFor('status'))).toEqual([
-      { status: { category: 'triage' } },
-      { status: { category: 'triage' } },
-      { status: { category: 'to_do' } },
-      { status: { category: 'in_progress' } },
-      { status: { category: 'done' } },
+      { status: { category: 'triage', name: 'Triage' } },
+      { status: { category: 'triage', name: 'Triage' } },
+      { status: { category: 'to_do', name: 'To do' } },
+      { status: { category: 'in_progress', name: 'In progress' } },
+      { status: { category: 'done', name: 'Done' } },
+    ]);
+  });
+
+  it('sorts statuses with the same category alphabetically by name', () => {
+    const items = [
+      { status: { category: 'in_progress', name: 'In review' } },
+      { status: { category: 'in_progress', name: 'In dev' } },
+    ];
+
+    expect(items.sort(sorterFor('status'))).toEqual([
+      { status: { category: 'in_progress', name: 'In dev' } },
+      { status: { category: 'in_progress', name: 'In review' } },
+    ]);
+
+    expect(items.sort(sorterFor('status', false))).toEqual([
+      { status: { category: 'in_progress', name: 'In review' } },
+      { status: { category: 'in_progress', name: 'In dev' } },
+    ]);
+  });
+
+  it('sorts statuses with the same category case-insensitively by name', () => {
+    const items = [
+      { status: { category: 'in_progress', name: 'In review' } },
+      { status: { category: 'in_progress', name: 'in dev' } },
+    ];
+
+    expect(items.sort(sorterFor('status'))).toEqual([
+      { status: { category: 'in_progress', name: 'in dev' } },
+      { status: { category: 'in_progress', name: 'In review' } },
+    ]);
+
+    expect(items.sort(sorterFor('status', false))).toEqual([
+      { status: { category: 'in_progress', name: 'In review' } },
+      { status: { category: 'in_progress', name: 'in dev' } },
+    ]);
+  });
+
+  it('sorts scalar string statuses alphabetically', () => {
+    const items = [
+      { status: 'SUCCESS' },
+      { status: 'FAILED' },
+      { status: 'running' },
+      { status: 'CANCELED' },
+    ];
+
+    expect(items.sort(sorterFor('status'))).toEqual([
+      { status: 'CANCELED' },
+      { status: 'FAILED' },
+      { status: 'running' },
+      { status: 'SUCCESS' },
+    ]);
+
+    expect(items.sort(sorterFor('status', false))).toEqual([
+      { status: 'SUCCESS' },
+      { status: 'running' },
+      { status: 'FAILED' },
+      { status: 'CANCELED' },
     ]);
   });
 
@@ -212,6 +269,41 @@ describe('sorterFor', () => {
       { labels: { nodes: [{ title: 'A' }, { title: 'B' }] } },
       { labels: { nodes: [] } },
     ]);
+  });
+
+  it('sorts strings in locale order, regardless of accents and case', () => {
+    const items = [
+      { title: 'Zebra' },
+      { title: 'Évaluation' },
+      { title: 'apple' },
+      { title: 'Ñoño' },
+      { title: 'über' },
+      { title: 'Mango' },
+    ];
+
+    expect(items.sort(sorterFor('title'))).toEqual([
+      { title: 'apple' },
+      { title: 'Évaluation' },
+      { title: 'Mango' },
+      { title: 'Ñoño' },
+      { title: 'über' },
+      { title: 'Zebra' },
+    ]);
+
+    expect(items.sort(sorterFor('title', false))).toEqual([
+      { title: 'Zebra' },
+      { title: 'über' },
+      { title: 'Ñoño' },
+      { title: 'Mango' },
+      { title: 'Évaluation' },
+      { title: 'apple' },
+    ]);
+  });
+
+  it('treats accented and base letters as equal, preserving input order', () => {
+    const items = [{ title: 'résumé' }, { title: 'resume' }];
+
+    expect(items.sort(sorterFor('title'))).toEqual([{ title: 'résumé' }, { title: 'resume' }]);
   });
 });
 

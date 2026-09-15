@@ -68,6 +68,42 @@ describe('LineHighlighter', () => {
       }
     });
 
+    it('adds top/bottom border classes only to the range boundaries', () => {
+      new LineHighlighter({ hash: '#L5-25' });
+
+      expect(document.querySelector('#LC5').classList).toContain('highlight-top');
+      expect(document.querySelector('#LC5').classList).not.toContain('highlight-bottom');
+      expect(document.querySelector('#LC25').classList).toContain('highlight-bottom');
+      expect(document.querySelector('#LC25').classList).not.toContain('highlight-top');
+
+      // Middle lines get neither border
+      expect(document.querySelector('#LC15').classList).not.toContain('highlight-top');
+      expect(document.querySelector('#LC15').classList).not.toContain('highlight-bottom');
+    });
+
+    it('adds both border classes to a single highlighted line', () => {
+      new LineHighlighter({ hash: '#L13' });
+
+      expect(document.querySelector('#LC13').classList).toContain('highlight-top');
+      expect(document.querySelector('#LC13').classList).toContain('highlight-bottom');
+    });
+
+    it('extends the highlight into the line-number gutter', () => {
+      new LineHighlighter({ hash: '#L5-25' });
+
+      const firstGutter = document.querySelector('#L5').closest('.diff-line-num');
+      const lastGutter = document.querySelector('#L25').closest('.diff-line-num');
+      const middleGutter = document.querySelector('#L15').closest('.diff-line-num');
+
+      expect(firstGutter.classList).toContain(testContext.css);
+      expect(firstGutter.classList).toContain('highlight-top');
+      expect(lastGutter.classList).toContain(testContext.css);
+      expect(lastGutter.classList).toContain('highlight-bottom');
+      expect(middleGutter.classList).toContain(testContext.css);
+      expect(middleGutter.classList).not.toContain('highlight-top');
+      expect(middleGutter.classList).not.toContain('highlight-bottom');
+    });
+
     it('scrolls to the first highlighted line on initial load', () => {
       jest.spyOn(utils, 'scrollToElement');
       new LineHighlighter({ hash: '#L5-25' });
@@ -160,7 +196,7 @@ describe('LineHighlighter', () => {
           });
 
           expect(document.querySelector('#LC13').classList).toContain(testContext.css);
-          expect(document.querySelectorAll(`.${testContext.css}`)).toHaveLength(1);
+          expect(document.querySelectorAll(`pre .${testContext.css}`)).toHaveLength(1);
         });
 
         it('sets the hash', () => {
@@ -180,7 +216,7 @@ describe('LineHighlighter', () => {
             shiftKey: true,
           });
 
-          expect(document.querySelectorAll(`.${testContext.css}`)).toHaveLength(6);
+          expect(document.querySelectorAll(`pre .${testContext.css}`)).toHaveLength(6);
           for (let line = 15; line <= 20; line += 1) {
             expect(document.querySelector(`#LC${line}`).classList).toContain(testContext.css);
           }
@@ -192,7 +228,7 @@ describe('LineHighlighter', () => {
             shiftKey: true,
           });
 
-          expect(document.querySelectorAll(`.${testContext.css}`)).toHaveLength(6);
+          expect(document.querySelectorAll(`pre .${testContext.css}`)).toHaveLength(6);
           for (let line = 5; line <= 10; line += 1) {
             expect(document.querySelector(`#LC${line}`).classList).toContain(testContext.css);
           }
@@ -214,7 +250,7 @@ describe('LineHighlighter', () => {
             shiftKey: true,
           });
 
-          expect(document.querySelectorAll(`.${testContext.css}`)).toHaveLength(6);
+          expect(document.querySelectorAll(`pre .${testContext.css}`)).toHaveLength(6);
           for (let line = 5; line <= 10; line += 1) {
             expect(document.querySelector(`#LC${line}`).classList).toContain(testContext.css);
           }
@@ -225,7 +261,7 @@ describe('LineHighlighter', () => {
             shiftKey: true,
           });
 
-          expect(document.querySelectorAll(`.${testContext.css}`)).toHaveLength(6);
+          expect(document.querySelectorAll(`pre .${testContext.css}`)).toHaveLength(6);
           for (let line = 10; line <= 15; line += 1) {
             expect(document.querySelector(`#LC${line}`).classList).toContain(testContext.css);
           }
@@ -267,6 +303,17 @@ describe('LineHighlighter', () => {
       testContext.subject('13');
 
       expect(document.querySelector('#LC13').classList).toContain(testContext.css);
+    });
+  });
+
+  describe('clearHighlight', () => {
+    it('removes the highlight and border classes from all lines', () => {
+      testContext.class.highlightRange([5, 10]);
+      testContext.class.clearHighlight();
+
+      expect(document.querySelectorAll(`.${testContext.css}`)).toHaveLength(0);
+      expect(document.querySelectorAll('.highlight-top')).toHaveLength(0);
+      expect(document.querySelectorAll('.highlight-bottom')).toHaveLength(0);
     });
   });
 

@@ -1,5 +1,5 @@
 import Vue from 'vue';
-import { GlAlert, GlLoadingIcon, GlSprintf, GlToast } from '@gitlab/ui';
+import { GlAlert, GlLoadingIcon, GlSprintf } from '@gitlab/ui';
 import { shallowMount } from '@vue/test-utils';
 import VueApollo from 'vue-apollo';
 
@@ -69,7 +69,6 @@ const defaultProvide = {
   newPipelinePath: '',
 };
 
-Vue.use(GlToast);
 Vue.use(VueApollo);
 
 describe('Pipeline editor app component', () => {

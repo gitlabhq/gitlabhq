@@ -1,6 +1,6 @@
 ---
 stage: Plan
-group: Knowledge
+group: Planner Intelligence
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see <https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments>
 title: GitLab Pages DNS records
 ---
@@ -38,10 +38,10 @@ For the most popular hosting services, see the following instructions:
 - [123-reg](https://www.123-reg.co.uk/support/domains/domain-name-server-dns-management-guide/)
 - [Amazon](https://docs.aws.amazon.com/AmazonS3/latest/userguide/website-hosting-custom-domain-walkthrough.html)
 - [Bluehost](https://www.bluehost.com/help/article/dns-management-add-edit-or-delete-dns-entries)
-- [Cloudflare](https://developers.cloudflare.com/fundamentals/setup/)
+- [Cloudflare](https://developers.cloudflare.com/fundamentals/account/)
 - [cPanel](https://docs.cpanel.net/cpanel/domains/zone-editor/)
 - [DigitalOcean](https://docs.digitalocean.com/products/networking/dns/how-to/manage-records/)
-- [DreamHost](https://help.dreamhost.com/hc/en-us/articles/360035516812)
+- [DreamHost](https://help.dreamhost.com/hc/en-us/articles/360035516812-Adding-custom-DNS-records)
 - [Gandi](https://docs.gandi.net/en/domain_names/faq/dns_records.html)
 - [Go Daddy](https://www.godaddy.com/help/add-an-a-record-19238)
 - [Hostgator](https://www.hostgator.com/help/article/changing-dns-records)
@@ -76,7 +76,7 @@ Example:
 
 ## `CNAME` record
 
-`CNAME` records define an alias for canonical name for your server (one defined
+`CNAME` records define an alias for the canonical name for your server (one defined
 by an `A` record). It points a subdomain to another domain.
 
 Example:
@@ -104,7 +104,7 @@ use is for site verification.
 
 Example:
 
-- `example.com`=> `TXT` => `"google-site-verification=6P08Ow5E-8Q0m6vQ7FMAqAYIDprkVV8fUf_7hZ4Qvc8"`
+- `example.com` => `TXT` => `"google-site-verification=6P08Ow5E-8Q0m6vQ7FMAqAYIDprkVV8fUf_7hZ4Qvc8"`
 
 This way, you can verify the ownership for that domain name.
 
@@ -116,4 +116,4 @@ You can have one DNS record or more than one combined:
 - `example.com` => `AAAA` => `2001:db8::1`
 - `www` => `CNAME` => `example.com`
 - `MX` => `mail.example.com`
-- `example.com`=> `TXT` => `"google-site-verification=6P08Ow5E-8Q0m6vQ7FMAqAYIDprkVV8fUf_7hZ4Qvc8"`
+- `example.com` => `TXT` => `"google-site-verification=6P08Ow5E-8Q0m6vQ7FMAqAYIDprkVV8fUf_7hZ4Qvc8"`

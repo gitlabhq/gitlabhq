@@ -7,6 +7,23 @@ module AuditEvents
     # Handle missing attributes
     MissingAttributeError = Class.new(StandardError)
 
+    # Audit events live in one table per scope. Keys are scope class names, which
+    # are also the values the scoped models report as `entity_type`.
+    ENTITY_TYPE_TO_MODEL = {
+      'Project' => ::AuditEvents::ProjectAuditEvent,
+      'Group' => ::AuditEvents::GroupAuditEvent,
+      'User' => ::AuditEvents::UserAuditEvent,
+      # Gitlab::Audit::InstanceScope is EE-only, so the name is hardcoded here.
+      'Gitlab::Audit::InstanceScope' => ::AuditEvents::InstanceAuditEvent
+    }.freeze
+
+    # instance_audit_events has no scope column, hence no InstanceScope entry.
+    ENTITY_TYPE_TO_SCOPE_COLUMN = {
+      'Project' => :project_id,
+      'Group' => :group_id,
+      'User' => :user_id
+    }.freeze
+
     # @raise [MissingAttributeError] when required attributes are blank
     #
     # @return [BuildService]
@@ -29,27 +46,40 @@ module AuditEvents
       @target_details = target_details
     end
 
-    # Create an instance of AuditEvent
+    # Create an unsaved audit event for the table backing the scope
     #
-    # @return [AuditEvent]
+    # @return [AuditEvents::ProjectAuditEvent, AuditEvents::GroupAuditEvent,
+    #   AuditEvents::UserAuditEvent, AuditEvents::InstanceAuditEvent]
     def execute
-      AuditEvent.new(payload)
+      ENTITY_TYPE_TO_MODEL.fetch(entity_type).new(payload)
     end
 
     private
+
+    def entity_type
+      @scope.class.name
+    end
 
     def payload
       base_payload.merge(details: base_details_payload)
     end
 
+    # target_*, entity_path and author_name columns are filled in from `details`
+    # by AuditEvents::CommonModel#parallel_persist when the event is validated.
     def base_payload
       {
         author_id: @author.id,
         author_name: @author.name,
-        entity_id: @scope.id,
-        entity_type: @scope.class.name,
+        event_name: @additional_details[:event_name],
         created_at: @created_at
-      }
+      }.merge(scope_payload)
+    end
+
+    def scope_payload
+      column = ENTITY_TYPE_TO_SCOPE_COLUMN[entity_type]
+      return {} unless column
+
+      { column => @scope.id }
     end
 
     def base_details_payload

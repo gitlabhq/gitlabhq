@@ -18,7 +18,7 @@ RSpec.describe Gitlab::Pages, feature_category: :pages do
       encoded_token = JWT.encode(payload, 'wrongsecret', 'HS256')
       headers = { described_class::INTERNAL_API_REQUEST_HEADER => encoded_token }
 
-      expect(described_class.verify_api_request(headers)).to eq(false)
+      expect(described_class.verify_api_request(headers)).to be(false)
     end
 
     it 'returns the decoded JWT' do
@@ -54,7 +54,7 @@ RSpec.describe Gitlab::Pages, feature_category: :pages do
   describe '.multiple_versions_enabled_for?' do
     context 'when project is nil' do
       it 'returns false' do
-        expect(described_class.multiple_versions_enabled_for?(nil)).to eq(false)
+        expect(described_class.multiple_versions_enabled_for?(nil)).to be(false)
       end
     end
 
@@ -94,8 +94,8 @@ RSpec.describe Gitlab::Pages, feature_category: :pages do
 
         described_class.add_unique_domain_to(project)
 
-        expect(project.project_setting.pages_unique_domain_enabled).to eq(false)
-        expect(project.project_setting.pages_unique_domain).to eq(nil)
+        expect(project.project_setting.pages_unique_domain_enabled).to be(false)
+        expect(project.project_setting.pages_unique_domain).to be_nil
       end
     end
 
@@ -111,7 +111,7 @@ RSpec.describe Gitlab::Pages, feature_category: :pages do
 
         described_class.add_unique_domain_to(project)
 
-        expect(project.project_setting.pages_unique_domain_enabled).to eq(true)
+        expect(project.project_setting.pages_unique_domain_enabled).to be(true)
         expect(project.project_setting.pages_unique_domain).to eq('unique-domain')
       end
 
@@ -135,7 +135,7 @@ RSpec.describe Gitlab::Pages, feature_category: :pages do
 
           described_class.add_unique_domain_to(project)
 
-          expect(project.project_setting.pages_unique_domain_enabled).to eq(true)
+          expect(project.project_setting.pages_unique_domain_enabled).to be(true)
           expect(project.project_setting.pages_unique_domain).to eq('new-unique-domain')
         end
       end
@@ -149,7 +149,7 @@ RSpec.describe Gitlab::Pages, feature_category: :pages do
 
             described_class.add_unique_domain_to(project)
 
-            expect(project.project_setting.pages_unique_domain_enabled).to eq(true)
+            expect(project.project_setting.pages_unique_domain_enabled).to be(true)
             expect(project.project_setting.pages_unique_domain).to eq('new-unique-domain')
           end
         end

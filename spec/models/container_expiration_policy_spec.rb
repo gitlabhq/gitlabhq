@@ -149,12 +149,6 @@ RSpec.describe ContainerExpirationPolicy, type: :model do
     let_it_be(:container_repository2) { create(:container_repository, project: policy2.project) }
     let_it_be(:policy3) { create(:container_expiration_policy) }
 
-    describe '.with_container_repositories' do
-      subject { described_class.with_container_repositories }
-
-      it { is_expected.to contain_exactly(policy1, policy2) }
-    end
-
     describe '.without_container_repositories' do
       subject { described_class.without_container_repositories }
 

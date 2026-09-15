@@ -575,6 +575,62 @@ RSpec.describe Gitlab::Email::Handler::ServiceDeskHandler, feature_category: :se
               expect(WorkItem.last.project).to eq(project_with_same_key)
             end
           end
+
+          context 'when multiple projects collide on the same address slug' do
+            # full_path_slug is lossy: "email/ab-c" and "email/ab/c" both
+            # slugify to "email-ab-c", so two different routes share one service
+            # desk address. This can happen from legacy data or an ancestor
+            # group rename on a self-managed instance without a Topology Service
+            # claim.
+            let_it_be(:colliding_group) { create(:group, :private, parent: group, path: 'ab') }
+            let_it_be(:project_one) do
+              create(:project, group: group, path: 'ab-c', service_desk_enabled: true)
+            end
+
+            let_it_be(:project_two) do
+              create(:project, group: colliding_group, path: 'c', service_desk_enabled: true)
+            end
+
+            let(:colliding_slug) { project_one.full_path_slug.to_s }
+
+            let(:email_raw) do
+              service_desk_fixture('emails/service_desk_custom_address.eml', slug: colliding_slug)
+            end
+
+            before do
+              # The uniqueness validation blocks creating a colliding key
+              # through normal writes, so seed the collision the way it reaches
+              # production: pre-existing/backfilled data that skipped validation.
+              [project_one, project_two].each do |project|
+                setting = build(:service_desk_setting, project: project, project_key: service_desk_key)
+                setting.save!(validate: false)
+              end
+            end
+
+            it 'refuses to route and bounces the email' do
+              expect(project_one.full_path_slug).to eq(project_two.full_path_slug)
+              expect { receiver.execute }
+                .to raise_error(Gitlab::Email::ProjectNotFound)
+                .and not_change { WorkItem.count }
+            end
+
+            it 'logs the collision with the colliding project ids' do
+              colliding_ids = [project_one.id, project_two.id].sort.join(', ')
+
+              expect_next_instance_of(Gitlab::Email::Handler::ServiceDeskHandler) do |handler|
+                expect(handler.send(:logger)).to receive(:warn).with(
+                  hash_including(
+                    Labkit::Fields::LOG_MESSAGE => 'Service desk email address slug collision, refusing to route',
+                    Labkit::Fields::ADDITIONAL_DETAILS =>
+                      "slug: '#{colliding_slug}', key: '#{service_desk_key}', " \
+                      "colliding_project_ids: #{colliding_ids}"
+                  )
+                )
+              end
+
+              expect { receiver.execute }.to raise_error(Gitlab::Email::ProjectNotFound)
+            end
+          end
         end
 
         context 'when project key is not set' do
@@ -750,6 +806,43 @@ RSpec.describe Gitlab::Email::Handler::ServiceDeskHandler, feature_category: :se
       end
     end
 
+    context 'when the namespace is over the Service Desk email rate limit' do
+      before do
+        allow_next_instance_of(::ServiceDesk::EmailRateLimiter) do |limiter|
+          allow(limiter).to receive(:rate_limit_batch!).and_return(true)
+          allow(limiter).to receive(:post_suppression_notice)
+        end
+      end
+
+      it 'still creates the ticket' do
+        expect { receiver.execute }.to change { WorkItem.count }.by(1)
+      end
+
+      it 'does not send the thank you email' do
+        expect(Notify).not_to receive(:service_desk_thank_you_email)
+
+        receiver.execute
+      end
+
+      it 'posts a suppression notice on the ticket' do
+        expect_next_instance_of(::ServiceDesk::EmailRateLimiter) do |limiter|
+          allow(limiter).to receive(:rate_limit_batch!).and_return(true)
+          expect(limiter).to receive(:post_suppression_notice).with(instance_of(WorkItem))
+        end
+
+        receiver.execute
+      end
+    end
+
+    context 'when the namespace is not over the Service Desk email rate limit' do
+      it 'sends the thank you email as before' do
+        expect(Notify).to receive(:service_desk_thank_you_email).once
+          .and_return(instance_double(ActionMailer::MessageDelivery, deliver_later: true))
+
+        receiver.execute
+      end
+    end
+
     context 'when rate limiting is in effect', :freeze_time, :clean_gitlab_redis_rate_limiting do
       let(:receiver) { Gitlab::Email::Receiver.new(email_raw) }
 
@@ -907,6 +1000,24 @@ RSpec.describe Gitlab::Email::Handler::ServiceDeskHandler, feature_category: :se
       end
 
       it_behaves_like 'a new ticket request'
+    end
+
+    context 'when the email has no subject' do
+      let(:email_raw) do
+        <<~EMAIL
+          From: user@example.org
+          To: #{::ServiceDesk::Emails.new(project).incoming_address}
+          Message-ID: <no-subject-test@example.com>
+          Subject:
+
+          This email is to test empty subject.
+        EMAIL
+      end
+
+      it 'creates a ticket with "(no subject)" as the title' do
+        expect { receiver.execute }.to change { WorkItem.count }.by(1)
+        expect(WorkItem.last.title).to eq(_("(no subject)"))
+      end
     end
   end
 

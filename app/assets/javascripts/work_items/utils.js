@@ -10,6 +10,7 @@ import Tracking from '~/tracking';
 
 import {
   DEFAULT_PAGE_SIZE_CHILD_ITEMS,
+  DETAIL_VIEW_QUERY_PARAM_NAME,
   NAME_TO_ENUM_MAP,
   NEW_WORK_ITEM_GID,
   STATE_CLOSED,
@@ -228,6 +229,10 @@ export const formatUserForListbox = (user) => ({
 export const convertTypeEnumToName = (workItemTypeEnum) =>
   Object.keys(NAME_TO_ENUM_MAP).find((name) => NAME_TO_ENUM_MAP[name] === workItemTypeEnum);
 
+// Type names are stored in title case, so mid-sentence interpolation needs sentence case.
+// https://design.gitlab.com/content/ui-text#capitalization
+export const lowercaseWorkItemType = (workItemType) => workItemType?.toLowerCase() ?? '';
+
 /**
  * TODO: Remove this method with https://gitlab.com/gitlab-org/gitlab/-/issues/479637
  * We're currently setting children count per page based on `DEFAULT_PAGE_SIZE_CHILD_ITEMS`
@@ -239,6 +244,13 @@ export const getDefaultHierarchyChildrenCount = () => {
   const { children_count } = queryToObject(window.location.search);
   return Number(children_count) || DEFAULT_PAGE_SIZE_CHILD_ITEMS;
 };
+
+/**
+ * Returns the panel the current URL asks for, or `undefined` when it asks for none.
+ * A panel key doubles as its `?show=` value, so callers compare the result to their own key.
+ */
+export const getRequestedPanel = () =>
+  queryToObject(window.location.search)?.[DETAIL_VIEW_QUERY_PARAM_NAME];
 
 export const formatAncestors = (workItem) =>
   findHierarchyWidgetAncestors(workItem).map((ancestor) => ({
@@ -404,7 +416,15 @@ export const makeDetailPanelUrlParam = (activeItem, fullPath, issuableType = TYP
  * @returns {{item: Object|null, notFound: boolean}}
  */
 export const findDetailPanelWorkItem = (queryParam, items, activeItem) => {
-  const { id, full_path: fullPath } = JSON.parse(atob(queryParam));
+  let parsed;
+  try {
+    parsed = JSON.parse(atob(queryParam));
+  } catch {
+    // The `show` param is shared with non-work-item panels (e.g. the workplan
+    // sentinel), whose values aren't base64-encoded work items. Ignore those.
+    return { item: null, notFound: false };
+  }
+  const { id, full_path: fullPath } = parsed;
 
   if (!id || getIdFromGraphQLId(activeItem?.id) === id) {
     return { item: null, notFound: false };
@@ -413,6 +433,9 @@ export const findDetailPanelWorkItem = (queryParam, items, activeItem) => {
   const item = items.find((i) => getIdFromGraphQLId(i.id) === id);
   return item ? { item: { ...item, fullPath }, notFound: false } : { item: null, notFound: true };
 };
+
+export const getWorkItemsConnection = (data, useRestApi) =>
+  useRestApi ? data?.restWorkItems : data?.namespace?.workItems;
 
 export const getAutosaveKeyQueryParamString = () => {
   const allowedKeysInQueryParamString = [
@@ -693,7 +716,10 @@ export function combineWorkItemLists(slimList, fullList, workItemFeaturesField =
     const slimVersion = slimList.find((item) => item.id === fullItem.id);
     const combineFeatureFn = workItemFeaturesField ? combineFeatures : combineWidgets;
 
+    // The full query only selects the fields the slim query does not, to keep it under the
+    // anonymous GraphQL complexity cap, so the shared scalars come from the slim item.
     return {
+      ...slimVersion,
       ...fullItem,
       ...combineFeatureFn(fullItem, slimVersion),
     };

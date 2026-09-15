@@ -1,0 +1,9 @@
+---
+name: update_crm_contact
+description: Grants the ability to update customer relations contacts
+boundaries:
+  - group
+available_for:
+  - granular_access_token
+permissions:
+  - update_crm_contact

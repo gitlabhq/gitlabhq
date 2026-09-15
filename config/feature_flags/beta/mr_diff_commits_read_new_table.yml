@@ -1,9 +1,9 @@
 ---
 name: mr_diff_commits_read_new_table
 description: |
-  Shapes merge request diff commit queries to support only the new table structure, dropping support for the
-  legacy structure. Correctness depends on the BackfillMergeRequestDiffCommitsToPartitioned background
-  migration having finished.
+  The commit query shape follows whether `merge_request_diff_commits` is partitioned, so this flag only
+  gates whether that check runs. Enable it fully before the table swap, and never disable it afterwards:
+  with the swap done and the flag off, queries reference columns the partitioned table does not have.
 feature_issue_url: https://gitlab.com/gitlab-org/gitlab/-/work_items/600540
 introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/237028
 rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/work_items/600673

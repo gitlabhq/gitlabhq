@@ -1304,6 +1304,7 @@ RSpec.shared_examples 'workhorse authorization' do
         expect(response).to have_gitlab_http_status(:ok)
         expect(response.media_type).to eq(Gitlab::Workhorse::INTERNAL_API_CONTENT_TYPE)
         expect(json_response).not_to have_key('TempPath')
+        expect(json_response['LocalTempPath']).to eq(Dir.tmpdir)
         expect(json_response['RemoteObject']).to have_key('ID')
         expect(json_response['RemoteObject']).to have_key('GetURL')
         expect(json_response['RemoteObject']).to have_key('StoreURL')

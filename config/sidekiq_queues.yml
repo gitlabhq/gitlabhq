@@ -57,6 +57,8 @@
   - 1
 - - ai_catalog_flows_execute_merge_request_approved_workflow_triggers
   - 1
+- - ai_catalog_flows_execute_merge_request_created_workflow_triggers
+  - 1
 - - ai_catalog_flows_execute_merge_request_merged_workflow_triggers
   - 1
 - - ai_catalog_flows_execute_merge_request_ready_workflow_triggers
@@ -75,7 +77,11 @@
   - 1
 - - ai_duo_workflows_code_review_publish_comments
   - 1
+- - ai_duo_workflows_code_review_start_review
+  - 1
 - - ai_duo_workflows_code_review_timeout
+  - 1
+- - ai_duo_workflows_fetch_namespace_session_credits
   - 1
 - - ai_duo_workflows_generate_workflow_summary
   - 1
@@ -91,7 +97,11 @@
   - 1
 - - ai_messaging_progress_delivery
   - 1
+- - ai_messaging_webhook_delivery
+  - 1
 - - ai_repository_xray_scan_dependencies
+  - 1
+- - ai_run_flow_schedule
   - 1
 - - analytics_ai_usage_events_backfill
   - 1
@@ -131,11 +141,15 @@
   - 1
 - - audit_events_audit_event_streaming
   - 1
+- - audit_events_streaming_nats_partition_consumer
+  - 1
 - - audit_events_user_impersonation_event_create
   - 1
 - - auth_saml_group_sync
   - 1
 - - authn_cleanup_scim_group_memberships
+  - 1
+- - authn_iam_replication_drain
   - 1
 - - authn_oauth_applications_cleanup_dynamic_applications
   - 1
@@ -153,8 +167,6 @@
   - 2
 - - authorized_project_update:authorized_project_update_enqueue_group_members_refresh_authorized_projects
   - 1
-- - authorized_project_update:authorized_project_update_enqueue_users_refresh_authorized_projects
-  - 1
 - - authorized_project_update:authorized_project_update_project_recalculate
   - 1
 - - authorized_project_update:authorized_project_update_project_recalculate_per_user
@@ -167,6 +179,10 @@
   - 2
 - - authorized_projects
   - 2
+- - authz_organizations_grant_owner_role
+  - 1
+- - authz_organizations_revoke_owner_role
+  - 1
 - - authz_user_group_member_roles_destroy_for_group
   - 1
 - - authz_user_group_member_roles_destroy_for_shared_group
@@ -261,9 +277,13 @@
   - 1
 - - bulk_imports_user_contributions_export
   - 1
-- - cd_artifact_sources_publish_from_registry
+- - cd_rollouts_process_workflow_event
+  - 1
+- - cd_rollouts_push_gate_decision
   - 1
 - - cd_rollouts_start
+  - 1
+- - cd_versions_backfill_from_artifact_source
   - 1
 - - cd_versions_create_from_artifact
   - 1
@@ -727,6 +747,8 @@
   - 1
 - - merge_requests_auto_assign_reviewers
   - 1
+- - merge_requests_cleanup_ai_suggested_reviewers
+  - 1
 - - merge_requests_cleanup_ref
   - 1
 - - merge_requests_close_issue
@@ -843,6 +865,8 @@
   - 1
 - - organizations_activate
   - 1
+- - organizations_activation_email
+  - 1
 - - organizations_check_organization_isolation_status
   - 1
 - - organizations_confirm
@@ -853,11 +877,17 @@
   - 1
 - - organizations_root_group_organization_backfill
   - 1
+- - organizations_transfer_security_exports
+  - 1
 - - organizations_transfer_topic_avatar
+  - 1
+- - organizations_transfer_user_agent_details
   - 1
 - - package_cleanup
   - 1
 - - package_metadata_global_advisory_scan
+  - 1
+- - package_metadata_global_malware_advisory_scan
   - 1
 - - package_repositories
   - 1
@@ -1089,6 +1119,8 @@
   - 1
 - - search_zoekt_saas_rollout_event
   - 1
+- - search_zoekt_task_claim_expired_event
+  - 1
 - - search_zoekt_task_failed_event
   - 1
 - - search_zoekt_too_many_replicas_event
@@ -1140,8 +1172,6 @@
 - - security_analyzers_status_update_archived_analyzer_status
   - 1
 - - security_attributes_background_operation_bulk_update
-  - 1
-- - security_attributes_bulk_update
   - 1
 - - security_attributes_bulk_update_scheduler
   - 1
@@ -1257,6 +1287,8 @@
   - 1
 - - security_scan_result_policies_process_pipeline_completion
   - 1
+- - security_scan_result_policies_resync_merge_request_rules
+  - 1
 - - security_scan_result_policies_sync_any_merge_request_approval_rules
   - 1
 - - security_scan_result_policies_sync_merge_request_approvals
@@ -1288,6 +1320,8 @@
 - - security_sync_pipeline_execution_policy_metadata
   - 1
 - - security_sync_policy
+  - 1
+- - security_sync_policy_configuration
   - 1
 - - security_sync_policy_event
   - 1
@@ -1407,7 +1441,11 @@
   - 1
 - - vulnerabilities_process_group_archived_events
   - 1
+- - vulnerabilities_process_organization_transfer_event
+  - 1
 - - vulnerabilities_process_transfer_events
+  - 1
+- - vulnerabilities_reindex_project_vulnerabilities
   - 1
 - - vulnerabilities_remove_all_vulnerabilities
   - 1

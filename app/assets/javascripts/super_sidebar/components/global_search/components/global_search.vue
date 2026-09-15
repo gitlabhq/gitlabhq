@@ -371,7 +371,7 @@ export default {
       visitUrl(injectRegexSearch(this.searchQuery));
     },
     runFirstCommand() {
-      this.getFocusableOptions()[0]?.firstChild?.click();
+      this.getFocusableOptions()[0]?.firstElementChild?.click();
     },
     onSearchModalShown() {
       this.$emit('shown');
@@ -403,7 +403,7 @@ export default {
     },
     highlightFirstCommand() {
       if (this.isCommandMode) {
-        const activeCommand = this.getFocusableOptions()[0]?.firstChild;
+        const activeCommand = this.getFocusableOptions()[0]?.firstElementChild;
         activeCommand?.classList.toggle(
           this.commandHighlightClass,
           Boolean(!this.nextFocusedItemIndex),

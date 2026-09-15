@@ -67,7 +67,9 @@ export default {
       return Math.max(this.minSize, Math.min(this.maxSize, raw));
     },
     resolvedCustomClass() {
-      return ['gl-z-1', 'focus-visible:gl-focus', this.customClass].filter(Boolean).join(' ');
+      return ['gl-z-1', 'hover:!gl-bg-neutral-300', 'focus-visible:gl-focus', this.customClass]
+        .filter(Boolean)
+        .join(' ');
     },
   },
   mounted() {

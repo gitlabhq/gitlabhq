@@ -1,6 +1,6 @@
 ---
 stage: Plan
-group: Product Planning
+group: Portfolio Planning
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see <https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments>
 title: Epics
 description: Roadmaps, hierarchies, planning, and issue progress.
@@ -45,7 +45,7 @@ The possible relationships between epics and other items are:
 
 - An epic is the parent of one or more issues.
 - An epic is the parent of one or more [child epics](../../work_items/child_items.md#work-with-multi-level-hierarchies). Ultimate only.
-- An epic is [linked](linked_epics.md) to one or more task, objective, or key result.
+- An epic is [linked](linked_epics.md) to one or more tasks, objectives, or key results.
 
 Example set of relationships:
 

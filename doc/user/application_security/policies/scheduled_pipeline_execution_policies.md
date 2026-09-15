@@ -290,7 +290,7 @@ When you configure the `branches` property in your schedule:
 ```yaml
 pipeline_execution_schedule_policy:
 - name: Scan Multiple Branches
-  description: 'Run security scans on main, staging and develop branches'
+  description: 'Run security scans on main, staging, and develop branches'
   enabled: true
   content:
     include:

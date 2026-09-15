@@ -1,8 +1,9 @@
 ---
 stage: Plan
-group: Project Management
+group: Work Items
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see <https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments>
 title: Confidential issues
+description: Turn on confidentiality for an issue to limit visibility to project members with at least the Planner role.
 ---
 
 {{< details >}}
@@ -40,7 +41,7 @@ When you create a new issue, a checkbox right below the text area is available
 to mark the issue as confidential. Check that box and select **Create issue**
 to create the issue.
 
-When you create a confidential issue in a project, the project becomes listed in the **Contributed projects** section in your [profile](../../profile/_index.md). **Contributed projects** does not show information about the confidential issue; it only shows the project name.
+When you create a confidential issue in a project, the project becomes listed in the **Contributed projects** section in your [profile](../../profile/_index.md). **Contributed projects** does not show information about the confidential issue. It only shows the project name.
 
 To create a confidential issue:
 
@@ -97,7 +98,7 @@ issue you are commenting on is confidential.
 
 There is also an indicator in the sidebar denoting confidentiality.
 
-Every change from regular to confidential and vice versa, is indicated by a
+Every change from regular to confidential and vice versa is indicated by a
 system note in the issue's comments, for example:
 
 - {{< icon name="eye-slash" >}} Jo Garcia made the issue confidential 5 minutes ago

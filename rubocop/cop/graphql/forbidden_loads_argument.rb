@@ -22,7 +22,7 @@ module RuboCop
         MSG = "Do not use `loads:` in GraphQL arguments. " \
           "It leaks information about resource existence. " \
           "Instead, accept the ID and load/authorize the object manually in the resolver. " \
-          "See https://docs.gitlab.com/ee/development/graphql_guide/authorization.html"
+          "See https://docs.gitlab.com/development/graphql_guide/authorization/"
 
         RESTRICT_ON_SEND = [:argument].freeze
 

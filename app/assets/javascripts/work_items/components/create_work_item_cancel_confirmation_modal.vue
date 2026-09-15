@@ -1,6 +1,7 @@
 <script>
 import { GlButton, GlModal } from '@gitlab/ui';
 import { s__, sprintf } from '~/locale';
+import { lowercaseWorkItemType } from '../utils';
 
 export default {
   name: 'CreateWorkItemCancelConfirmationModal',
@@ -18,21 +19,21 @@ export default {
       required: true,
     },
   },
-  emits: ['continueEditing', 'discardDraft'],
+  emits: ['continue-editing', 'discard-draft'],
   computed: {
     cancelConfirmationText() {
       return sprintf(
         s__('WorkItem|Are you sure you want to cancel creating this %{workItemType}?'),
-        { workItemType: this.workItemType },
+        { workItemType: lowercaseWorkItemType(this.workItemType) },
       );
     },
   },
   methods: {
     handleCancelConfirmationAction(decision) {
       if (decision === 'continueEditing') {
-        this.$emit('continueEditing');
+        this.$emit('continue-editing');
       } else {
-        this.$emit('discardDraft');
+        this.$emit('discard-draft');
       }
     },
   },

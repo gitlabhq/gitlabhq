@@ -2,6 +2,7 @@ import { __, s__ } from '~/locale';
 
 export const DEBOUNCE_DELAY = 500;
 export const MAX_RECENT_TOKENS_SIZE = 3;
+export const MAX_HISTORY_SIZE = 5;
 
 export const FILTER_NONE = 'None';
 export const FILTER_ANY = 'Any';

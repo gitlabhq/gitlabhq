@@ -270,6 +270,39 @@ RSpec.shared_examples 'an elastic executor' do
 
       executor.send(:create_partition, 'test_partition', fields)
     end
+
+    # On Elasticsearch 9.2+ and OpenSearch 3.0+, new indices exclude vector
+    # fields from _source by default. Sending any _source configuration in the
+    # mappings, or index.mapping/derived-source settings, would override that
+    # server-side default and silently reinstate vector duplication
+    # (~6 KiB per document).
+    context 'with a vector field' do
+      let(:fields) do
+        [
+          ActiveContext::Databases::Field::Keyword.new(:title),
+          ActiveContext::Databases::Field::Vector.new(:embeddings_v1, dimensions: 768)
+        ]
+      end
+
+      it 'preserves server-side _source defaults for vector fields' do
+        expect(indices_client).to receive(:create) do |args|
+          expect(args[:body][:mappings]).not_to have_key(:_source)
+
+          settings_keys = []
+          collect_keys = ->(hash) do
+            hash.each do |key, value|
+              settings_keys << key.to_s
+              collect_keys.call(value) if value.is_a?(Hash)
+            end
+          end
+          collect_keys.call(args[:body][:settings])
+
+          expect(settings_keys).not_to include(a_string_matching(/mapping|source/))
+        end
+
+        executor.send(:create_partition, 'test_partition', fields)
+      end
+    end
   end
 
   describe '#create_alias' do

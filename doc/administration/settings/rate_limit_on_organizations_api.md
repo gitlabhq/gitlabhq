@@ -1,47 +1,13 @@
 ---
-stage: Tenant Scale
-group: Organizations
-info: To determine the technical writer assigned to the Stage/Group associated with this page, see <https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments>
-title: Rate limit on Organizations API
+redirect_to: '../../rate_limits/api/organizations.md'
+remove_date: '2026-11-20'
 ---
 
-{{< details >}}
+<!-- markdownlint-disable -->
 
-- Tier: Free, Premium, Ultimate
-- Offering: GitLab.com, GitLab Self-Managed
-- Status: Experiment
+This document was moved to [another location](../../rate_limits/api/organizations.md).
 
-{{< /details >}}
-
-{{< history >}}
-
-- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/470613) in GitLab 17.5 with a [flag](../feature_flags/_index.md) named `allow_organization_creation`. Disabled by default. This feature is an [experiment](../../policy/development_stages_support.md).
-- [Changed](https://gitlab.com/gitlab-org/gitlab/-/issues/549062) in GitLab 18.4. Feature flag `allow_organization_creation` consolidated and renamed to `organization_switching`.
-
-{{< /history >}}
-
-> [!flag]
-> The availability of this feature is controlled by a feature flag.
-> For more information, see the history.
-
-Requests over the rate limit are logged into the `auth.log` file.
-
-For example, if you set a limit of 400 for `POST /organizations`, requests to the API endpoint that
-exceed a rate of 400 within one minute are blocked. Access to the endpoint is restored after one minute.
-
-You can configure the per minute rate limit per user for requests to the [POST /organizations API](../../api/organizations.md#create-an-organization). The default is 10.
-
-## Change the rate limit
-
-Prerequisites:
-
-- Administrator access.
-
-To change the rate limit:
-
-1. In the upper-right corner, select **Admin**.
-1. In the left sidebar, select **Settings** > **Network**.
-1. Expand **Organizations API rate limits**.
-1. Change the value of any rate limit. The rate limits are per minute per user.
-   To disable a rate limit, set the value to `0`.
-1. Select **Save changes**.
+<!-- This redirect file can be deleted after <2026-11-20>. -->
+<!-- Redirects that point to other docs in the same project expire in three months. -->
+<!-- Redirects that point to docs in a different project or site (for example, link is not relative and starts with `https:`) expire in one year. -->
+<!-- Before deletion, see: https://docs.gitlab.com/development/documentation/redirects -->

@@ -37,7 +37,7 @@ The following sections describe the checks that are run.
 
 ### Praefect migrations
 
-Because Database migrations must be up to date for Praefect to work correctly, checks if Praefect migrations are up to date.
+Checks if Praefect migrations are up to date, because database migrations must be up to date for Praefect to work correctly.
 
 If this check fails:
 
@@ -53,7 +53,7 @@ If this check fails:
 1. Confirm the network addresses and tokens are set up correctly:
    - In the Praefect configuration.
    - In each Gitaly node's configuration.
-1. On the Gitaly nodes, check that the `gitaly` process being run as `git`. There might be a permissions issue that is preventing Gitaly from
+1. On the Gitaly nodes, check that the `gitaly` process is being run as `git`. There might be a permissions issue that is preventing Gitaly from
    accessing its storage directories.
 1. Confirm that there are no issues with the network that connects Praefect to Gitaly nodes.
 
@@ -83,7 +83,7 @@ Checks how many repositories are inaccessible because they are missing a primary
 If this check fails:
 
 1. See if any Gitaly nodes are down. Run `praefect ping-nodes` to check.
-1. Check if there is a high load on the Praefect database. If the Praefect database is slow to respond, it can lead health checks failing to persist
+1. Check if there is a high load on the Praefect database. If the Praefect database is slow to respond, it can lead to health checks failing to persist
    to the database, leading Praefect to think nodes are unhealthy.
 
 ## Error: `authoritative repository does not exist`
@@ -265,7 +265,7 @@ The documented examples specify `-virtual-storage default`. Check the Praefect s
 
 ## Check that repositories are in sync
 
-Is [some cases](_index.md#known-issues) the Praefect database can get out of sync with the underlying Gitaly nodes. To check that
+In [some cases](_index.md#known-issues) the Praefect database can get out of sync with the underlying Gitaly nodes. To check that
 a given repository is fully synced on all nodes, run the [`gitlab:praefect:replicas` Rake task](../../raketasks/praefect.md#replica-checksums) on your Rails node.
 This Rake task checksums the repository on all Gitaly nodes.
 
@@ -281,7 +281,7 @@ On GitLab 16.2 and later, you can safely delete this path. The `@failed-geo-sync
 
 ## Relation does not exist errors
 
-By default Praefect database tables are created automatically by `gitlab-ctl reconfigure` task.
+By default Praefect database tables are created automatically by the `gitlab-ctl reconfigure` task.
 
 However, the Praefect database tables are not created on initial reconfigure and can throw
 errors that relations do not exist if either:
@@ -369,7 +369,7 @@ Gitaly repositories with invalid objects can lead to replication failures with e
 - `exit status 128, stderr: "fatal: git upload-pack: not our ref"`.
 - `"fatal: bad object 58....e0f... ssh://gitaly/internal.git did not send all necessary objects`.
 
-As long one of the Gitaly nodes still has a healthy copy of the repository, these issues can be fixed by:
+As long as one of the Gitaly nodes still has a healthy copy of the repository, these issues can be fixed by:
 
 1. [Removing the repository from the Praefect database](recovery.md#manually-remove-repositories).
 1. Using the [Praefect `track-repository` subcommand](recovery.md#manually-add-a-single-repository-to-the-tracking-database) to re-track it.
@@ -404,7 +404,7 @@ Be sure a recent backup of the repository has been made before running these com
 
 ### Replication fails silently
 
-If the [Praefect `dataloss`](recovery.md#check-for-data-loss) shows [repositories partially unavailable](recovery.md#unavailable-replicas-of-available-repositories), and [`accept-dataloss` command](recovery.md#accept-data-loss) fails to synchronize the repository with no error present on the logs, this could be due to a mismatch in Praefect database in the `repository_id` field of the `storage_repositories` table. To check for a mismatch:
+If the [Praefect `dataloss`](recovery.md#check-for-data-loss) shows [repositories partially unavailable](recovery.md#unavailable-replicas-of-available-repositories), and [`accept-dataloss` command](recovery.md#accept-data-loss) fails to synchronize the repository with no error present on the logs, this could be due to a mismatch in the Praefect database, in the `repository_id` field of the `storage_repositories` table. To check for a mismatch:
 
 1. Connect to the Praefect database.
 1. Run the following query:

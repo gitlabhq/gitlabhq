@@ -51,7 +51,7 @@ class Project < ApplicationRecord
   include Namespaces::AdjournedDeletable
   include Cells::Claimable
 
-  cells_claims_attribute :id, type: CLAIMS_CLAIM_TYPE::CLAIM_TYPE_PROJECT_ID, feature_flag: :cells_claims_projects
+  cells_claims_attribute :id, type: CLAIMS_CLAIM_TYPE::CLAIM_TYPE_PROJECT_ID
 
   cells_claims_metadata subject_type: CLAIMS_SUBJECT_TYPE::ORGANIZATION, subject_key: :organization_id
 
@@ -154,6 +154,7 @@ class Project < ApplicationRecord
 
   after_validation :check_pending_delete
 
+  before_save :ensure_project_namespace_in_sync # in case validation is skipped
   before_save :ensure_runners_token
 
   after_create -> { create_or_load_association(:project_feature) }
@@ -335,6 +336,7 @@ class Project < ApplicationRecord
   has_one :error_tracking_setting, inverse_of: :project, class_name: 'ErrorTracking::ProjectErrorTrackingSetting'
   has_one :project_setting, inverse_of: :project, autosave: true
   has_one :service_desk_setting, class_name: 'ServiceDeskSetting'
+  has_one :observability_project_o11y_setting, class_name: 'Observability::ProjectO11ySetting', inverse_of: :project
   has_one :service_desk_custom_email_verification, class_name: 'ServiceDesk::CustomEmailVerification'
   has_one :service_desk_custom_email_credential, class_name: 'ServiceDesk::CustomEmailCredential'
 
@@ -611,6 +613,7 @@ class Project < ApplicationRecord
     with_options prefix: :ci do
       delegate :pipeline_variables_minimum_override_role, :pipeline_variables_minimum_override_role=
       delegate :push_repository_for_job_token_allowed, :push_repository_for_job_token_allowed=
+      delegate :push_pipelines_for_job_token_allowed, :push_pipelines_for_job_token_allowed=
       delegate :cross_project_push_for_job_token_allowed, :cross_project_push_for_job_token_allowed=
       delegate :default_git_depth, :default_git_depth=
       delegate :forward_deployment_enabled, :forward_deployment_enabled=
@@ -636,8 +639,10 @@ class Project < ApplicationRecord
     delegate :mr_default_target_self, :mr_default_target_self=
     delegate :previous_default_branch, :previous_default_branch=
     delegate :squash_option, :squash_option=
+    delegate :automatic_rebase_enabled, :automatic_rebase_enabled=
     delegate :extended_prat_expiry_webhooks_execute, :extended_prat_expiry_webhooks_execute=
     delegate :protect_merge_request_pipelines, :protect_merge_request_pipelines=, :protect_merge_request_pipelines?
+    delegate :feature_flags_minimum_role, :feature_flags_minimum_role=
 
     with_options allow_nil: true do
       delegate :merge_commit_template, :merge_commit_template=
@@ -967,14 +972,21 @@ class Project < ApplicationRecord
     with_project_feature.merge(ProjectFeature.with_feature_access_level(feature, level))
   }
 
-  # Picks projects which use the given programming language
+  # Non-NULL language_id values are authoritative; legacy IDs only apply to unbackfilled rows to avoid cross-cell clashes.
+  # Remove the fallback in 19.6: https://gitlab.com/gitlab-org/gitlab/-/work_items/614144
   scope :with_programming_language, ->(language_name) do
-    lang_id_query = ProgrammingLanguage
-        .with_name_case_insensitive(language_name)
-        .select(:id)
+    languages = ProgrammingLanguage.with_name_case_insensitive(language_name)
+    repository_languages = RepositoryLanguage.unscoped # Drops the unnecessary eager loading from the default scope.
+      .where(RepositoryLanguage.arel_table[:project_id].eq(arel_table[:id]))
 
-    joins(:repository_languages)
-        .where(repository_languages: { programming_language_id: lang_id_query })
+    matching_repository_languages = repository_languages
+      .where(language_id: languages.select(:language_id))
+      .or(repository_languages.where(
+        language_id: nil,
+        programming_language_id: languages.select(:id)
+      ))
+
+    where_exists(matching_repository_languages)
   end
 
   scope :service_desk_enabled, -> { where(service_desk_enabled: true) }
@@ -2176,10 +2188,6 @@ class Project < ApplicationRecord
     end
   end
 
-  def issue_exists?(issue_id)
-    get_issue(issue_id)
-  end
-
   def external_issue_reference_pattern
     external_issue_tracker.reference_pattern(only_long: issues_enabled?)
   end
@@ -2828,7 +2836,7 @@ class Project < ApplicationRecord
     params[:exported_by_admin] = current_user.can_admin_all_resources?
 
     job_id = Projects::ImportExport::CreateRelationExportsWorker
-                 .perform_async(current_user.id, self.id, after_export_strategy, params)
+                 .perform_async(current_user.id, self.id, after_export_strategy, params.stringify_keys)
 
     if job_id
       Gitlab::AppLogger.info "Export job started for project ID #{self.id} with job ID #{job_id}"
@@ -3350,12 +3358,14 @@ class Project < ApplicationRecord
   end
 
   def leave_pool_repository
-    return if pool_repository.blank?
+    pool = pool_repository
+    return if pool.blank?
 
     # Disconnecting the repository can be expensive, so let's skip it if
     # this repository is being deleted anyway.
-    pool_repository.unlink_repository(repository, disconnect: !pending_delete?)
-    update_column(:pool_repository_id, nil)
+    repository.disconnect_alternates unless pending_delete?
+
+    pool.remove_member(self)
   end
 
   # After repository is moved from shard to shard, disconnect it from the previous object pool and connect to the new pool
@@ -3678,8 +3688,12 @@ class Project < ApplicationRecord
     group&.allow_iframes_in_markdown_feature_flag_enabled? || Feature.enabled?(:allow_iframes_in_markdown, self, type: :wip)
   end
 
-  def sscs_malware_detection_feature_flag_enabled?
-    group&.sscs_malware_detection_feature_flag_enabled? || Feature.enabled?(:sscs_malware_detection, type: :wip)
+  def vulnerability_malware_detection_feature_flag_enabled?
+    group&.vulnerability_malware_detection_feature_flag_enabled? || Feature.enabled?(:vulnerability_malware_detection, self, type: :beta)
+  end
+
+  def dependency_malware_detection_feature_flag_enabled?
+    group&.dependency_malware_detection_feature_flag_enabled? || Feature.enabled?(:dependency_malware_detection, self, type: :beta)
   end
 
   def use_work_item_url?
@@ -4093,11 +4107,21 @@ class Project < ApplicationRecord
   end
 
   def cache_has_external_wiki
-    update_column(:has_external_wiki, integrations.external_wikis.any?) if Gitlab::Database.read_write?
+    return unless Gitlab::Database.read_write?
+
+    Gitlab::Database::QueryAnalyzers::PreventWritesOnGet.allow_write_on_get(
+      url: 'https://gitlab.com/gitlab-org/gitlab/-/issues/608670') do
+      update_column(:has_external_wiki, integrations.external_wikis.any?)
+    end
   end
 
   def cache_has_external_issue_tracker
-    update_column(:has_external_issue_tracker, integrations.external_issue_trackers.any?) if Gitlab::Database.read_write?
+    return unless Gitlab::Database.read_write?
+
+    Gitlab::Database::QueryAnalyzers::PreventWritesOnGet.allow_write_on_get(
+      url: 'https://gitlab.com/gitlab-org/gitlab/-/issues/608670') do
+      update_column(:has_external_issue_tracker, integrations.external_issue_trackers.any?)
+    end
   end
 
   def online_runners_with_tags

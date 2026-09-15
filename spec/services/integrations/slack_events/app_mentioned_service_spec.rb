@@ -33,7 +33,6 @@ RSpec.describe Integrations::SlackEvents::AppMentionedService, feature_category:
     let(:post_message_url) { "#{Slack::API::BASE_URL}/chat.postMessage" }
     let(:post_ephemeral_url) { "#{Slack::API::BASE_URL}/chat.postEphemeral" }
     let(:conversations_replies_url) { "#{Slack::API::BASE_URL}/conversations.replies" }
-    let(:conversations_info_url) { "#{Slack::API::BASE_URL}/conversations.info" }
 
     subject(:execute) { described_class.new(params).execute }
 
@@ -70,6 +69,10 @@ RSpec.describe Integrations::SlackEvents::AppMentionedService, feature_category:
       let(:slack_workspace_id) { 'UNKNOWN_WORKSPACE' }
 
       it_behaves_like 'does not call Slack API'
+
+      it 'does not track any internal events' do
+        expect { execute }.to not_trigger_internal_events('receive_slack_duo_mention', 'block_slack_duo_mention')
+      end
     end
 
     context 'when user is not authenticated' do
@@ -95,6 +98,14 @@ RSpec.describe Integrations::SlackEvents::AppMentionedService, feature_category:
             'text' => a_string_including('mention me again')
           )
         )
+      end
+
+      it 'tracks the received mention and the blocked mention without a user' do
+        expect { execute }
+          .to trigger_internal_events('receive_slack_duo_mention').with(user: nil)
+          .and trigger_internal_events('block_slack_duo_mention').with(
+            user: nil, additional_properties: { property: 'user_not_linked' }
+          )
       end
 
       context 'when authorize URL is nil' do
@@ -225,6 +236,14 @@ RSpec.describe Integrations::SlackEvents::AppMentionedService, feature_category:
             )
           )
         end
+
+        it 'tracks the blocked mention with the feature flag reason' do
+          expect { execute }
+            .to trigger_internal_events('receive_slack_duo_mention').with(user: user)
+            .and trigger_internal_events('block_slack_duo_mention').with(
+              user: user, additional_properties: { property: 'feature_flag_disabled' }
+            )
+        end
       end
 
       context 'when user cannot use slash commands' do
@@ -240,11 +259,53 @@ RSpec.describe Integrations::SlackEvents::AppMentionedService, feature_category:
 
           expect(WebMock).not_to have_requested(:post, reactions_add_url)
         end
+
+        it 'tracks the blocked mention with the permission reason' do
+          expect { execute }
+            .to trigger_internal_events('receive_slack_duo_mention').with(user: blocked_user)
+            .and trigger_internal_events('block_slack_duo_mention').with(
+              user: blocked_user, additional_properties: { property: 'no_permission' }
+            )
+        end
       end
 
-      context 'when feature flag is enabled' do
+      context 'when experiment and beta Duo features are turned off' do
         before do
-          stub_feature_flags(slack_duo_agent: user)
+          stub_request(:post, reactions_add_url).to_return(status: 200, body: { ok: true }.to_json,
+            headers: { 'Content-Type' => 'application/json' })
+          stub_request(:post, post_ephemeral_url).to_return(status: 200, body: { ok: true }.to_json,
+            headers: { 'Content-Type' => 'application/json' })
+        end
+
+        it 'adds lock reaction and posts ephemeral experiment features message' do
+          is_expected.to be_success
+
+          expect(WebMock).to have_requested(:post, reactions_add_url).with(
+            body: hash_including('name' => 'lock', 'channel' => channel_id, 'timestamp' => message_ts)
+          )
+          expect(WebMock).to have_requested(:post, post_ephemeral_url).with(
+            body: hash_including(
+              'channel' => channel_id,
+              'user' => slack_user_id,
+              'text' => a_string_including(
+                'This feature requires experiment and beta GitLab Duo features to be turned on.'
+              )
+            )
+          )
+        end
+
+        it 'tracks the blocked mention with the experiment features reason' do
+          expect { execute }.to trigger_internal_events('block_slack_duo_mention').with(
+            user: user, additional_properties: { property: 'experiment_features_disabled' }
+          )
+        end
+      end
+
+      context 'when experimental features are enabled' do
+        before do
+          allow_next_instance_of(described_class) do |service|
+            allow(service).to receive(:experiment_features_available?).and_return(true)
+          end
           allow_next_instance_of(ChatNames::FindUserService) do |service|
             allow(service).to receive(:execute).and_return(chat_name)
           end
@@ -257,10 +318,6 @@ RSpec.describe Integrations::SlackEvents::AppMentionedService, feature_category:
           stub_request(:post, post_message_url).to_return(status: 200, body: { ok: true }.to_json,
             headers: { 'Content-Type' => 'application/json' })
           stub_request(:post, post_ephemeral_url).to_return(status: 200, body: { ok: true }.to_json,
-            headers: { 'Content-Type' => 'application/json' })
-          stub_request(:get, conversations_info_url).with(query: { channel: channel_id }).to_return(
-            status: 200,
-            body: { ok: true, channel: { id: channel_id, is_channel: true, is_private: false } }.to_json,
             headers: { 'Content-Type' => 'application/json' })
         end
 
@@ -283,6 +340,12 @@ RSpec.describe Integrations::SlackEvents::AppMentionedService, feature_category:
               )
             )
           end
+
+          it 'tracks the blocked mention with the Duo seat reason' do
+            expect { execute }.to trigger_internal_events('block_slack_duo_mention').with(
+              user: user, additional_properties: { property: 'no_duo_seat' }
+            )
+          end
         end
 
         it 'does not call the Slack users.info API' do
@@ -293,218 +356,21 @@ RSpec.describe Integrations::SlackEvents::AppMentionedService, feature_category:
 
         it 'calls trigger_duo_flow and returns success' do
           expect_next_instance_of(described_class) do |service|
+            allow(service).to receive(:experiment_features_available?).and_return(true)
             expect(service).to receive(:trigger_duo_flow).with(user).and_call_original
           end
 
           is_expected.to be_success
         end
 
-        describe 'privacy notice for non-public channels' do
-          let(:duo_namespace) { instance_double(Namespace) }
-
-          before do
-            allow_next_instance_of(described_class) do |service|
-              allow(service).to receive(:duo_workspace_namespace).with(user).and_return(duo_namespace)
-            end
+        it 'tracks the received mention without a blocked event' do
+          allow_next_instance_of(described_class) do |service|
+            allow(service).to receive_messages(experiment_features_available?: true, trigger_duo_flow: nil)
           end
 
-          shared_examples 'posts the privacy notice instead of triggering the flow' do
-            it 'adds lock reaction and posts the ephemeral privacy notice with an acknowledge button' do
-              expect_next_instance_of(described_class) do |service|
-                allow(service).to receive(:duo_workspace_namespace).with(user).and_return(duo_namespace)
-                expect(service).not_to receive(:trigger_duo_flow)
-              end
-
-              is_expected.to be_success
-
-              expect(WebMock).to have_requested(:post, reactions_add_url).with(
-                body: hash_including('name' => 'lock', 'channel' => channel_id, 'timestamp' => message_ts)
-              )
-              expect(WebMock).to have_requested(:post, post_ephemeral_url).with(
-                body: hash_including(
-                  'channel' => channel_id,
-                  'user' => slack_user_id,
-                  'text' => a_string_including("visible to anyone with access to the project it's saved in")
-                )
-              )
-              expect(WebMock).to have_requested(:post, post_ephemeral_url).with(
-                body: a_string_including(described_class::PRIVACY_NOTICE_ACKNOWLEDGE_ACTION_ID)
-              )
-              expect(WebMock).to have_requested(:post, post_ephemeral_url).with(
-                body: a_string_including(described_class::PRIVACY_NOTICE_DECLINE_ACTION_ID)
-              )
-            end
-          end
-
-          def stub_conversation_info(body:, status: 200)
-            stub_request(:get, conversations_info_url).with(query: { channel: channel_id }).to_return(
-              status: status,
-              body: body.to_json,
-              headers: { 'Content-Type' => 'application/json' }
-            )
-          end
-
-          context 'when the channel is private' do
-            before do
-              stub_conversation_info(body: { ok: true, channel: { id: channel_id, is_private: true } })
-            end
-
-            it_behaves_like 'posts the privacy notice instead of triggering the flow'
-
-            it 'posts the notice without a thread_ts for a top-level mention' do
-              is_expected.to be_success
-
-              expect(WebMock).to have_requested(:post, post_ephemeral_url).with(
-                body: ->(body) { !Gitlab::Json::SafeParser.parse(body).key?('thread_ts') }
-              )
-            end
-
-            it 'stores a nil thread_ts in the button value for a top-level mention' do
-              is_expected.to be_success
-
-              expect(WebMock).to have_requested(:post, post_ephemeral_url).with(
-                body: ->(body) do
-                  button_value = Gitlab::Json::SafeParser.parse(
-                    Gitlab::Json::SafeParser.parse(body)['blocks'][1]['elements'][0]['value']
-                  )
-                  button_value['thread_ts'].nil?
-                end
-              )
-            end
-
-            context 'when the mention is inside a thread' do
-              let(:thread_ts) { '1234567890.000001' }
-
-              let(:params) do
-                {
-                  team_id: slack_workspace_id,
-                  event: {
-                    user: slack_user_id,
-                    channel: channel_id,
-                    ts: message_ts,
-                    thread_ts: thread_ts,
-                    text: event_text
-                  }
-                }
-              end
-
-              it 'posts the notice into the thread' do
-                is_expected.to be_success
-
-                expect(WebMock).to have_requested(:post, post_ephemeral_url).with(
-                  body: hash_including('thread_ts' => thread_ts)
-                )
-              end
-
-              it 'stores the thread_ts in the button value' do
-                is_expected.to be_success
-
-                expect(WebMock).to have_requested(:post, post_ephemeral_url).with(
-                  body: ->(body) do
-                    button_value = Gitlab::Json::SafeParser.parse(
-                      Gitlab::Json::SafeParser.parse(body)['blocks'][1]['elements'][0]['value']
-                    )
-                    button_value['thread_ts'] == thread_ts
-                  end
-                )
-              end
-            end
-          end
-
-          context 'when the conversation is a DM' do
-            before do
-              stub_conversation_info(body: { ok: true, channel: { id: channel_id, is_im: true } })
-            end
-
-            it_behaves_like 'posts the privacy notice instead of triggering the flow'
-          end
-
-          context 'when the conversation is a group DM' do
-            before do
-              stub_conversation_info(body: { ok: true, channel: { id: channel_id, is_mpim: true } })
-            end
-
-            it_behaves_like 'posts the privacy notice instead of triggering the flow'
-          end
-
-          context 'when the conversation is not a known public type (fails closed)' do
-            before do
-              stub_conversation_info(body: { ok: true, channel: { id: channel_id } })
-            end
-
-            it_behaves_like 'posts the privacy notice instead of triggering the flow'
-          end
-
-          context 'when conversations.info fails (fails closed)' do
-            before do
-              stub_conversation_info(body: { ok: false, error: 'missing_scope' })
-            end
-
-            it_behaves_like 'posts the privacy notice instead of triggering the flow'
-          end
-
-          context 'when conversations.info raises an HTTP error (fails closed)' do
-            before do
-              stub_request(:get, conversations_info_url)
-                .with(query: { channel: channel_id })
-                .to_raise(Errno::ECONNREFUSED.new('error'))
-            end
-
-            it_behaves_like 'posts the privacy notice instead of triggering the flow'
-          end
-
-          context 'when the channel is private but the user has acknowledged the notice' do
-            before do
-              allow(chat_name).to receive(:duo_privacy_notice_acknowledged?).and_return(true)
-              stub_conversation_info(body: { ok: true, channel: { id: channel_id, is_private: true } })
-            end
-
-            it 'does not check the channel type and triggers the flow' do
-              expect_next_instance_of(described_class) do |service|
-                allow(service).to receive(:duo_workspace_namespace).with(user).and_return(duo_namespace)
-                expect(service).to receive(:trigger_duo_flow).with(user).and_call_original
-              end
-
-              is_expected.to be_success
-
-              expect(WebMock).not_to have_requested(:get, conversations_info_url)
-            end
-          end
-
-          context 'when the channel is public' do
-            it 'triggers the flow without posting the notice' do
-              expect_next_instance_of(described_class) do |service|
-                allow(service).to receive(:duo_workspace_namespace).with(user).and_return(duo_namespace)
-                expect(service).to receive(:trigger_duo_flow).with(user).and_call_original
-              end
-
-              is_expected.to be_success
-
-              expect(WebMock).not_to have_requested(:post, post_ephemeral_url).with(
-                body: a_string_including(described_class::PRIVACY_NOTICE_ACKNOWLEDGE_ACTION_ID)
-              )
-            end
-          end
-
-          context 'when the channel is private but no Duo workspace namespace can be resolved' do
-            before do
-              stub_conversation_info(body: { ok: true, channel: { id: channel_id, is_private: true } })
-            end
-
-            it 'skips the notice and lets trigger_duo_flow surface the real error' do
-              expect_next_instance_of(described_class) do |service|
-                allow(service).to receive(:duo_workspace_namespace).with(user).and_return(nil)
-                expect(service).to receive(:trigger_duo_flow).with(user).and_call_original
-              end
-
-              is_expected.to be_success
-
-              expect(WebMock).not_to have_requested(:get, conversations_info_url)
-              expect(WebMock).not_to have_requested(:post, post_ephemeral_url).with(
-                body: a_string_including(described_class::PRIVACY_NOTICE_ACKNOWLEDGE_ACTION_ID)
-              )
-            end
-          end
+          expect { execute }
+            .to trigger_internal_events('receive_slack_duo_mention').with(user: user)
+            .and not_trigger_internal_events('block_slack_duo_mention')
         end
       end
 
@@ -564,7 +430,9 @@ RSpec.describe Integrations::SlackEvents::AppMentionedService, feature_category:
 
         context 'when user does not have Duo Agent Platform access' do
           before do
-            stub_feature_flags(slack_duo_agent: user)
+            allow_next_instance_of(described_class) do |service|
+              allow(service).to receive(:experiment_features_available?).and_return(true)
+            end
             allow_next_instance_of(ChatNames::FindUserService) do |service|
               allow(service).to receive(:execute).and_return(chat_name)
             end

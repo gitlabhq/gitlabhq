@@ -5,7 +5,7 @@ require 'spec_helper'
 RSpec.describe Gitlab::BlobHelper, feature_category: :source_code_management do
   include FakeBlobHelpers
 
-  let(:project) { create(:project) }
+  let(:project) { build_stubbed(:project, organization: build_stubbed(:organization)) }
   let(:blob) { fake_blob(path: 'file.txt') }
   let(:bmp_blob) { fake_blob(path: 'file.bmp') }
   let(:webp_blob) { fake_blob(path: 'file.webp') }
@@ -129,7 +129,7 @@ RSpec.describe Gitlab::BlobHelper, feature_category: :source_code_management do
 
   describe '#encoding' do
     it 'returns UTF-8' do
-      expect(blob.ruby_encoding).to eq('UTF-8')
+      expect(blob.encoding).to eq('UTF-8')
     end
   end
 

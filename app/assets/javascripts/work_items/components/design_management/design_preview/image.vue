@@ -111,7 +111,7 @@ export default {
       };
 
       this.$parent.$emit(
-        'setMaxScale',
+        'set-max-scale',
         Math.round(((height + width) / (naturalHeight + naturalWidth)) * 100) / 100,
       );
     },

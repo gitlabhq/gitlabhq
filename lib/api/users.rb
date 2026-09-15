@@ -47,7 +47,6 @@ module API
 
       before do
         authenticate_non_get!
-        set_current_organization
       end
 
       helpers Helpers::UsersHelpers
@@ -263,7 +262,7 @@ module API
 
         users = users.preload(:user_detail)
 
-        present paginate_with_strategies(users), options
+        present paginate_with_strategies(users), **options
       end
       # rubocop: enable CodeReuse/ActiveRecord
 
@@ -296,7 +295,7 @@ module API
         opts = { with: can_read_admin_user_data? ? Entities::UserDetailsWithAdmin : Entities::UserProfile, current_user: current_user }
         user, opts = with_custom_attributes(user, opts)
 
-        present user, opts
+        present user, **opts
       end
       # rubocop: enable CodeReuse/ActiveRecord
 
@@ -504,6 +503,7 @@ module API
 
         result = ::Users::UpdateService.new(current_user, user_params.merge(user: user)).execute do |user|
           user.send_only_admin_changed_your_password_notification! if admin_making_changes_for_another_user
+          user.skip_enterprise_user_email_change_restrictions!
         end
 
         if result[:status] == :success
@@ -1327,7 +1327,6 @@ module API
     resource :user do
       before do
         authenticate!
-        set_current_organization
       end
 
       helpers ::API::Helpers::PersonalAccessTokensHelpers

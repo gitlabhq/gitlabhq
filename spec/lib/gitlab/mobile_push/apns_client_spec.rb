@@ -87,6 +87,63 @@ RSpec.describe Gitlab::MobilePush::ApnsClient, feature_category: :notifications 
     end
   end
 
+  describe '#push APNs rejections' do
+    let(:subscription) { build_stubbed(:mobile_device_push_subscription, :sandbox) }
+
+    before do
+      allow(Apnotic::Connection).to receive(:development).and_return(connection)
+    end
+
+    context 'when APNs rejects the provider token' do
+      let(:response) do
+        instance_double(Apnotic::Response, ok?: false, status: '403', body: { 'reason' => 'BadEnvironmentKeyInToken' })
+      end
+
+      it 'returns :failed and logs the status and reason' do
+        expect(Gitlab::AppLogger).to receive(:warn).with(
+          hash_including(
+            message: 'APNs rejected mobile push notification',
+            subscription_id: subscription.id,
+            apns_environment: subscription.apns_environment,
+            apns_status: '403',
+            apns_reason: 'BadEnvironmentKeyInToken',
+            result: :failed
+          )
+        )
+
+        expect(client.push(subscription, payload)).to eq(:failed)
+      end
+    end
+
+    context 'when APNs reports a dead device token' do
+      let(:response) do
+        instance_double(Apnotic::Response, ok?: false, status: '410', body: { 'reason' => 'Unregistered' })
+      end
+
+      it 'returns :bad_token and logs the eviction at info level' do
+        expect(Gitlab::AppLogger).to receive(:info).with(
+          hash_including(apns_status: '410', apns_reason: 'Unregistered', result: :bad_token)
+        )
+
+        expect(client.push(subscription, payload)).to eq(:bad_token)
+      end
+    end
+
+    context 'when APNs does not answer' do
+      let(:response) { nil }
+
+      it 'returns :failed and logs the missing response' do
+        expect(Gitlab::AppLogger).to receive(:warn).with(
+          hash_including(
+            subscription_id: subscription.id, apns_status: nil, apns_reason: 'no response', result: :failed
+          )
+        )
+
+        expect(client.push(subscription, payload)).to eq(:failed)
+      end
+    end
+  end
+
   describe '#close' do
     it 'closes every opened connection' do
       subscription = build_stubbed(:mobile_device_push_subscription, :sandbox)

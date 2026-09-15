@@ -573,7 +573,7 @@ RSpec.describe 'Create a work item', feature_category: :team_planning do
     end
 
     context 'with due and start date widget input', :freeze_time do
-      let(:start_date) { Date.today }
+      let(:start_date) { Time.zone.today }
       let(:due_date) { 1.week.from_now.to_date }
       let(:fields) do
         <<~FIELDS

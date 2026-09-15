@@ -365,7 +365,7 @@ When you create a merge request, the workflow checks the name of the branch. If 
 branch name matches the workflow, the merge request targets the branch you specify. If the branch name does not match, the merge request targets the
 default branch of the project.
 
-Rules are processed on a "first-match" basis - if two rules match the same branch name, the top-most rule is applied.
+Rules are processed on a "first-match" basis. If two rules match the same branch name, the top-most rule is applied.
 
 Prerequisites:
 
@@ -505,7 +505,7 @@ git for-each-ref --format='%(authoremail)'  | sort | uniq -c | sort -g
 ### Error: `Failed to create branch 4:Deadline Exceeded`
 
 This error is caused by a timeout in Gitaly. It occurs when creating a branch
-take longer to complete than the configured timeout period.
+takes longer to complete than the configured timeout period.
 
 To resolve this issue, choose one of the following:
 

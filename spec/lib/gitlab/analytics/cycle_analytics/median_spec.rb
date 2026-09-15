@@ -19,7 +19,7 @@ RSpec.describe Gitlab::Analytics::CycleAnalytics::Median do
   subject { described_class.new(stage: stage, query: query).seconds }
 
   it 'retruns nil when no results' do
-    expect(subject).to eq(nil)
+    expect(subject).to be_nil
   end
 
   it 'returns median duration seconds as float' do

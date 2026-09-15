@@ -184,6 +184,11 @@ Example response:
 
 Creates a project snippet. The user must have permission to create snippets.
 
+Creating snippets is rate limited to 300 requests every hour for each authenticated user.
+The limit is shared between this endpoint, [creating a personal snippet](snippets.md#create-a-snippet),
+and the `createSnippet` GraphQL mutation, which is used by the GitLab UI.
+For more information, see [non-configurable rate limits](../rate_limits/non_configurable.md).
+
 ```plaintext
 POST /projects/:id/snippets
 ```

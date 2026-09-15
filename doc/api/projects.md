@@ -118,7 +118,10 @@ Use the alternative attributes instead.
 - `mr_default_title_template` [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/228442) in GitLab 18.11 [with a feature flag](../administration/feature_flags/_index.md) named `mr_default_title_template`. Disabled by default.
 - Feature flag `mr_default_title_template` [removed](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/235642) in GitLab 19.0.
 - `merge_train_enforcement` [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/597962) in GitLab 19.2 [with a feature flag](../administration/feature_flags/_index.md) named `merge_train_enforcement`. Disabled by default.
+- `reviewer_assignment_strategy` [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/601621) in GitLab 19.2.
 - `merge_train_enforcement` [generally available](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/245861) in GitLab 19.3. Feature flag `merge_train_enforcement` removed.
+- `automatic_rebase_enabled` [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/623568) in GitLab 19.4.
+- `dap_powered` value for `reviewer_assignment_strategy` [removed](https://gitlab.com/gitlab-org/gitlab/-/issues/607677) in GitLab 19.4.
 
 {{< /history >}}
 
@@ -258,6 +261,7 @@ following response attributes:
 | `ci_separated_caches` | boolean | Whether CI/CD caches are separated by branch. Only visible if you have administrator access or the Owner role for the project. |
 | `ci_allow_fork_pipelines_to_run_in_parent_project` | boolean | Whether fork pipelines can run in the parent project. Only visible if you have administrator access or the Owner role for the project. |
 | `ci_id_token_sub_claim_components` | array of strings | Components included in the CI/CD ID token subject claim. |
+| `ci_skip_branch_pipelines_for_mrs` | boolean | Whether [branch pipelines are skipped for merge requests](../ci/pipelines/settings.md#skip-branch-pipelines-for-merge-requests) when the branch has an open merge request. Only visible if you have administrator access or the Owner role for the project. |
 | `build_git_strategy` | string | Git strategy used for CI/CD builds (fetch or clone). Only visible if you have administrator access or the Owner role for the project. |
 | `keep_latest_artifact` | boolean | Indicates if the latest artifact is kept when a new one is created. Only visible if you have administrator access or the Owner role for the project. |
 | `restrict_user_defined_variables` | boolean | Whether user-defined variables are restricted. Only visible if you have administrator access or the Owner role for the project. |
@@ -290,6 +294,7 @@ following response attributes:
 | `merge_request_title_regex` | string | Regex pattern for validating merge request titles. |
 | `merge_request_title_regex_description` | string | Description of the merge request title regex validation. |
 | `squash_option` | string | Squash option for merge requests. |
+| `automatic_rebase_enabled` | boolean | Indicates if the source branch is automatically rebased before merge. |
 | `enforce_auth_checks_on_uploads` | boolean | Whether authentication checks are enforced on uploads. |
 | `suggestion_commit_message` | string | Custom commit message for suggestions. |
 | `merge_commit_template` | string | Template for merge commit messages. |
@@ -319,7 +324,7 @@ following response attributes:
 | `only_allow_merge_if_all_status_checks_passed` | boolean | Whether merges are allowed only if all status checks have passed. Ultimate only. |
 | `allow_pipeline_trigger_approve_deployment` | boolean | Whether pipeline triggers can approve deployments. |
 | `prevent_merge_without_jira_issue` | boolean | Indicates if merges require an associated Jira issue. |
-| `reviewer_assignment_strategy` | string | Strategy used to automatically assign reviewers to merge requests. One of `disabled`, `code_owners`, or `dap_powered`. Premium and Ultimate only. |
+| `reviewer_assignment_strategy` | string | Strategy used to automatically assign reviewers to merge requests. One of `disabled` or `code_owners`. This attribute can also return `dap_powered` for projects configured before GitLab 19.4. Premium and Ultimate only. |
 | `duo_remote_flows_enabled` | boolean | Indicates if GitLab Duo remote flows are enabled. |
 | `duo_foundational_flows_enabled` | boolean | Indicates if GitLab Duo foundational flows are enabled. |
 | `duo_sast_fp_detection_enabled` | boolean | Indicates if GitLab Duo SAST false positive detection is enabled. |
@@ -472,6 +477,7 @@ Example response:
   "ci_pipeline_variables_minimum_override_role": "maintainer",
   "ci_push_repository_for_job_token_allowed": false,
   "ci_display_pipeline_variables": false,
+  "ci_skip_branch_pipelines_for_mrs": false,
   "cicd_catalog_enabled": false,
   "protect_merge_request_pipelines": true,
   "public_jobs": true,
@@ -566,7 +572,10 @@ List projects and project attributes.
 - `mr_default_title_template` [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/228442) in GitLab 18.11 [with a feature flag](../administration/feature_flags/_index.md) named `mr_default_title_template`. Disabled by default.
 - Feature flag `mr_default_title_template` [removed](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/235642) in GitLab 19.0.
 - `merge_train_enforcement` [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/597962) in GitLab 19.2 [with a feature flag](../administration/feature_flags/_index.md) named `merge_train_enforcement`. Disabled by default.
+- `reviewer_assignment_strategy` [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/601621) in GitLab 19.2.
 - `merge_train_enforcement` [generally available](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/245861) in GitLab 19.3. Feature flag `merge_train_enforcement` removed.
+- `automatic_rebase_enabled` [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/623568) in GitLab 19.4.
+- `dap_powered` value for `reviewer_assignment_strategy` [removed](https://gitlab.com/gitlab-org/gitlab/-/issues/607677) in GitLab 19.4.
 
 {{< /history >}}
 
@@ -742,6 +751,7 @@ following response attributes:
 | `merge_request_title_regex` | string | Regex pattern for validating merge request titles. |
 | `merge_request_title_regex_description` | string | Description of the merge request title regex validation. |
 | `squash_option` | string | Squash option for merge requests. |
+| `automatic_rebase_enabled` | boolean | Indicates if the source branch is automatically rebased before merge. |
 | `enforce_auth_checks_on_uploads` | boolean | Whether authentication checks are enforced on uploads. |
 | `suggestion_commit_message` | string | Custom commit message for suggestions. |
 | `merge_commit_template` | string | Template for merge commit messages. |
@@ -768,7 +778,7 @@ following response attributes:
 | `only_allow_merge_if_all_status_checks_passed` | boolean | Whether merges are allowed only if all status checks have passed. Ultimate only. |
 | `allow_pipeline_trigger_approve_deployment` | boolean | Whether pipeline triggers can approve deployments. |
 | `prevent_merge_without_jira_issue` | boolean | Indicates if merges require an associated Jira issue. |
-| `reviewer_assignment_strategy` | string | Strategy used to automatically assign reviewers to merge requests. One of `disabled`, `code_owners`, or `dap_powered`. Premium and Ultimate only. |
+| `reviewer_assignment_strategy` | string | Strategy used to automatically assign reviewers to merge requests. One of `disabled` or `code_owners`. This attribute can also return `dap_powered` for projects configured before GitLab 19.4. Premium and Ultimate only. |
 | `duo_remote_flows_enabled` | boolean | Indicates if GitLab Duo remote flows are enabled. |
 | `duo_foundational_flows_enabled` | boolean | Indicates if GitLab Duo foundational flows are enabled. |
 | `duo_sast_fp_detection_enabled` | boolean | Indicates if GitLab Duo SAST false positive detection is enabled. |
@@ -897,6 +907,7 @@ Example response:
     "ci_pipeline_variables_minimum_override_role": "maintainer",
     "ci_push_repository_for_job_token_allowed": false,
     "ci_display_pipeline_variables": false,
+    "ci_skip_branch_pipelines_for_mrs": false,
     "protect_merge_request_pipelines": true,
     "public_jobs": true,
     "build_timeout": 3600,
@@ -956,7 +967,10 @@ Example response:
 - `mr_default_title_template` [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/228442) in GitLab 18.11 [with a feature flag](../administration/feature_flags/_index.md) named `mr_default_title_template`. Disabled by default.
 - Feature flag `mr_default_title_template` [removed](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/235642) in GitLab 19.0.
 - `merge_train_enforcement` [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/597962) in GitLab 19.2 [with a feature flag](../administration/feature_flags/_index.md) named `merge_train_enforcement`. Disabled by default.
+- `reviewer_assignment_strategy` [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/601621) in GitLab 19.2.
 - `merge_train_enforcement` [generally available](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/245861) in GitLab 19.3. Feature flag `merge_train_enforcement` removed.
+- `automatic_rebase_enabled` [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/623568) in GitLab 19.4.
+- `dap_powered` value for `reviewer_assignment_strategy` [removed](https://gitlab.com/gitlab-org/gitlab/-/issues/607677) in GitLab 19.4.
 
 {{< /history >}}
 
@@ -1127,6 +1141,7 @@ following response attributes:
 | `merge_request_title_regex` | string | Regex pattern for validating merge request titles. |
 | `merge_request_title_regex_description` | string | Description of the merge request title regex validation. |
 | `squash_option` | string | Squash option for merge requests. |
+| `automatic_rebase_enabled` | boolean | Indicates if the source branch is automatically rebased before merge. |
 | `enforce_auth_checks_on_uploads` | boolean | Whether authentication checks are enforced on uploads. |
 | `suggestion_commit_message` | string | Custom commit message for suggestions. |
 | `merge_commit_template` | string | Template for merge commit messages. |
@@ -1153,7 +1168,7 @@ following response attributes:
 | `only_allow_merge_if_all_status_checks_passed` | boolean | Whether merges are allowed only if all status checks have passed. Ultimate only. |
 | `allow_pipeline_trigger_approve_deployment` | boolean | Whether pipeline triggers can approve deployments. |
 | `prevent_merge_without_jira_issue` | boolean | Indicates if merges require an associated Jira issue. |
-| `reviewer_assignment_strategy` | string | Strategy used to automatically assign reviewers to merge requests. One of `disabled`, `code_owners`, or `dap_powered`. Premium and Ultimate only. |
+| `reviewer_assignment_strategy` | string | Strategy used to automatically assign reviewers to merge requests. One of `disabled` or `code_owners`. This attribute can also return `dap_powered` for projects configured before GitLab 19.4. Premium and Ultimate only. |
 | `duo_remote_flows_enabled` | boolean | Indicates if GitLab Duo remote flows are enabled. |
 | `duo_foundational_flows_enabled` | boolean | Indicates if GitLab Duo foundational flows are enabled. |
 | `duo_sast_fp_detection_enabled` | boolean | Indicates if GitLab Duo SAST false positive detection is enabled. |
@@ -1249,6 +1264,7 @@ Example response:
     "ci_pipeline_variables_minimum_override_role": "maintainer",
     "ci_push_repository_for_job_token_allowed": false,
     "ci_display_pipeline_variables": false,
+    "ci_skip_branch_pipelines_for_mrs": false,
     "protect_merge_request_pipelines": true,
     "public_jobs": true,
     "shared_with_groups": [],
@@ -1378,6 +1394,7 @@ Example response:
     "ci_pipeline_variables_minimum_override_role": "maintainer",
     "ci_push_repository_for_job_token_allowed": false,
     "ci_display_pipeline_variables": false,
+    "ci_skip_branch_pipelines_for_mrs": false,
     "protect_merge_request_pipelines": true,
     "public_jobs": true,
     "shared_with_groups": [],
@@ -1448,7 +1465,10 @@ Example response:
 - `mr_default_title_template` [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/228442) in GitLab 18.11 [with a feature flag](../administration/feature_flags/_index.md) named `mr_default_title_template`. Disabled by default.
 - Feature flag `mr_default_title_template` [removed](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/235642) in GitLab 19.0.
 - `merge_train_enforcement` [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/597962) in GitLab 19.2 [with a feature flag](../administration/feature_flags/_index.md) named `merge_train_enforcement`. Disabled by default.
+- `reviewer_assignment_strategy` [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/601621) in GitLab 19.2.
 - `merge_train_enforcement` [generally available](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/245861) in GitLab 19.3. Feature flag `merge_train_enforcement` removed.
+- `automatic_rebase_enabled` [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/623568) in GitLab 19.4.
+- `dap_powered` value for `reviewer_assignment_strategy` [removed](https://gitlab.com/gitlab-org/gitlab/-/issues/607677) in GitLab 19.4.
 
 {{< /history >}}
 
@@ -1594,6 +1614,7 @@ following response attributes:
 | `merge_request_title_regex` | string | Regex pattern for validating merge request titles. |
 | `merge_request_title_regex_description` | string | Description of the merge request title regex validation. |
 | `squash_option` | string | Squash option for merge requests. |
+| `automatic_rebase_enabled` | boolean | Indicates if the source branch is automatically rebased before merge. |
 | `enforce_auth_checks_on_uploads` | boolean | Whether authentication checks are enforced on uploads. |
 | `suggestion_commit_message` | string | Custom commit message for suggestions. |
 | `merge_commit_template` | string | Template for merge commit messages. |
@@ -1620,7 +1641,7 @@ following response attributes:
 | `only_allow_merge_if_all_status_checks_passed` | boolean | Whether merges are allowed only if all status checks have passed. Ultimate only. |
 | `allow_pipeline_trigger_approve_deployment` | boolean | Whether pipeline triggers can approve deployments. |
 | `prevent_merge_without_jira_issue` | boolean | Indicates if merges require an associated Jira issue. |
-| `reviewer_assignment_strategy` | string | Strategy used to automatically assign reviewers to merge requests. One of `disabled`, `code_owners`, or `dap_powered`. Premium and Ultimate only. |
+| `reviewer_assignment_strategy` | string | Strategy used to automatically assign reviewers to merge requests. One of `disabled` or `code_owners`. This attribute can also return `dap_powered` for projects configured before GitLab 19.4. Premium and Ultimate only. |
 | `duo_remote_flows_enabled` | boolean | Indicates if GitLab Duo remote flows are enabled. |
 | `duo_foundational_flows_enabled` | boolean | Indicates if GitLab Duo foundational flows are enabled. |
 | `duo_sast_fp_detection_enabled` | boolean | Indicates if GitLab Duo SAST false positive detection is enabled. |
@@ -2162,7 +2183,9 @@ Manage a project, including creation, deletion, and archival.
 - `packages_enabled` [deprecated](https://gitlab.com/gitlab-org/gitlab/-/issues/454759) in GitLab 17.10.
 - `package_registry_access_level` [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/454759) in GitLab 18.5.
 - `merge_train_enforcement` [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/597962) in GitLab 19.2 [with a feature flag](../administration/feature_flags/_index.md) named `merge_train_enforcement`. Disabled by default.
+- `reviewer_assignment_strategy` [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/601621) in GitLab 19.2.
 - `merge_train_enforcement` [generally available](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/245861) in GitLab 19.3. Feature flag `merge_train_enforcement` removed.
+- `dap_powered` value for `reviewer_assignment_strategy` [removed](https://gitlab.com/gitlab-org/gitlab/-/issues/607677) in GitLab 19.4.
 
 {{< /history >}}
 
@@ -2235,7 +2258,7 @@ Supported general project attributes:
 | `repository_storage`                               | string  | No                             | Which storage shard the repository is on. _(administrator only)_ |
 | `request_access_enabled`                           | boolean | No                             | Allow users to request member access. |
 | `resolve_outdated_diff_discussions`                | boolean | No                             | Automatically resolve merge request diffs discussions on lines changed with a push. |
-| `reviewer_assignment_strategy`                     | string  | No                             | Strategy used to automatically assign reviewers to merge requests. One of `disabled`, `code_owners`, or `dap_powered`. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/601621) in GitLab 19.2. Premium and Ultimate only. |
+| `reviewer_assignment_strategy`                     | string  | No                             | Strategy used to automatically assign reviewers to merge requests. One of `disabled` or `code_owners`. This attribute can also return `dap_powered` for projects configured before GitLab 19.4. Premium and Ultimate only. |
 | `shared_runners_enabled`                           | boolean | No                             | Enable instance runners for this project. |
 | `show_default_award_emojis`                        | boolean | No                             | Show default emoji reactions. |
 | `snippets_enabled`                                 | boolean | No                             | _(Deprecated)_ Enable snippets for this project. Use `snippets_access_level` instead. |
@@ -2366,9 +2389,13 @@ see [Project feature visibility level](#project-feature-visibility-level).
 - `protect_merge_request_pipelines` and `ci_display_pipeline_variables` [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/584488) in GitLab 18.10.
 - `mr_default_title_template` [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/228442) in GitLab 18.11 [with a feature flag](../administration/feature_flags/_index.md) named `mr_default_title_template`. Disabled by default.
 - Feature flag `mr_default_title_template` [removed](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/235642) in GitLab 19.0.
-- `reviewer_assignment_strategy` [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/601621) in GitLab 19.1.
 - `merge_train_enforcement` [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/597962) in GitLab 19.2 [with a feature flag](../administration/feature_flags/_index.md) named `merge_train_enforcement`. Disabled by default.
+- `reviewer_assignment_strategy` [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/601621) in GitLab 19.2.
 - `merge_train_enforcement` [generally available](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/245861) in GitLab 19.3. Feature flag `merge_train_enforcement` removed.
+- `automatic_rebase_enabled` [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/250632) in GitLab 19.4.
+- `dap_powered` value for `reviewer_assignment_strategy` [removed](https://gitlab.com/gitlab-org/gitlab/-/issues/607677) in GitLab 19.4.
+- `feature_flags_minimum_role` [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/8239) in GitLab 19.4 [with a feature flag](../administration/feature_flags/_index.md) named `feature_flag_management_permissions`. Disabled by default.
+- `ci_skip_branch_pipelines_for_mrs` [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/607869) in GitLab 19.4.
 
 {{< /history >}}
 
@@ -2396,6 +2423,7 @@ Supported general project attributes:
 | `auto_devops_enabled`                              | boolean           | No       | Enable Auto DevOps for this project. |
 | `auto_duo_code_review_enabled`                     | boolean           | No       | Enable automatic reviews by GitLab Duo on merge requests. See [GitLab Duo in merge requests](../user/project/merge_requests/duo_in_merge_requests.md#use-gitlab-duo-to-review-your-code). Ultimate only. |
 | `autoclose_referenced_issues`                      | boolean           | No       | Set whether auto-closing referenced issues on default branch. |
+| `automatic_rebase_enabled`                         | boolean           | No       | Enable automatic rebase of the source branch before merge. Applies when the merge method is fast-forward merge or merge commit with semi-linear history. |
 | `avatar`                                           | mixed             | No       | Image file for avatar of the project. |
 | `build_git_strategy`                               | string            | No       | The Git strategy. Defaults to `fetch`. |
 | `build_timeout`                                    | integer           | No       | The maximum amount of time, in seconds, that a job can run. |
@@ -2405,6 +2433,7 @@ Supported general project attributes:
 | `ci_display_pipeline_variables`                    | boolean           | No       | Display all manually-defined variables in the pipeline details page after running a pipeline manually. |
 | `ci_forward_deployment_enabled`                    | boolean           | No       | Enable or disable [prevent outdated deployment jobs](../ci/pipelines/settings.md#prevent-outdated-deployment-jobs). |
 | `ci_forward_deployment_rollback_allowed`           | boolean           | No       | Enable or disable [allow job retries for rollback deployments](../ci/pipelines/settings.md#prevent-outdated-deployment-jobs). |
+| `ci_skip_branch_pipelines_for_mrs`                 | boolean           | No       | Enable or disable [skip branch pipelines for merge requests](../ci/pipelines/settings.md#skip-branch-pipelines-for-merge-requests). |
 | `ci_allow_fork_pipelines_to_run_in_parent_project` | boolean           | No       | Enable or disable [running pipelines in the parent project for merge requests from forks](../ci/pipelines/merge_request_pipelines.md#run-pipelines-in-the-parent-project). |
 | `ci_id_token_sub_claim_components`                 | array             | No       | Fields included in the `sub` claim of the [ID Token](../ci/secrets/id_token_authentication.md). Accepts an array starting with `project_path` or `project_id`. The array might also include `ref_type`, `ref`, `ref_protected`, `environment_protected`, and `deployment_tier`. Defaults to `["project_path", "ref_type", "ref"]`. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/477260) in GitLab 17.10. Support for `environment_protected` and `deployment_tier` introduced in GitLab 18.7. Support for `project_id` as the first component [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/600358) in GitLab 19.1. |
 | `ci_separated_caches`                              | boolean           | No       | Set whether or not caches should be [separated](../ci/caching/_index.md#cache-key-names) by branch protection status. |
@@ -2419,11 +2448,12 @@ Supported general project attributes:
 | `duo_remote_flows_enabled`                         | boolean           | No       | Determine whether or not [flows](../user/duo_agent_platform/flows/_index.md) can run in your project. |
 | `duo_sast_fp_detection_enabled` | boolean | No | If `true`, turns on SAST false positive detection. Requires the Security Manager, Maintainer, or Owner role. See [turn on SAST false positive detection](../user/application_security/vulnerabilities/false_positive_detection.md#turn-on-for-a-project). |
 | `duo_secret_detection_fp_enabled` | boolean | No | If `true`, turns on secret detection false positive detection. Requires the Security Manager, Maintainer, or Owner role. See [turn on secret detection false positive detection](../user/application_security/vulnerabilities/secret_false_positive_detection.md#turn-on-for-a-project). |
-| `duo_sast_vr_workflow_enabled` | boolean | No | If `true`, turns on SAST vulnerability resolution workflow. Requires the Security Manager, Maintainer, or Owner role. See [turn on SAST vulnerability resolution workflow](../user/application_security/vulnerabilities/agentic_vulnerability_resolution.md#turn-on-for-a-project). |
+| `duo_sast_vr_workflow_enabled` | boolean | No | If `true`, turns on SAST vulnerability resolution workflow. Requires the Security Manager, Maintainer, or Owner role. See [turn on SAST vulnerability resolution workflow](../user/duo_agent_platform/flows/foundational_flows/_index.md#turn-foundational-flows-on-or-off). |
 | `emails_disabled`                                  | boolean           | No       | _(Deprecated)_ Disable email notifications. Use `emails_enabled` instead |
 | `emails_enabled`                                   | boolean           | No       | Enable email notifications. |
 | `enforce_auth_checks_on_uploads`                   | boolean           | No       | Enforce [auth checks](../security/user_file_uploads.md#enable-authorization-checks-for-all-media-files) on uploads. |
 | `external_authorization_classification_label`      | string            | No       | The classification label for the project. Premium and Ultimate only. |
+| `feature_flags_minimum_role`                       | string            | No       | Minimum role required to create, update, toggle, and delete [feature flags](../operations/feature_flags.md#restrict-who-can-manage-feature-flags). One of `no_one_allowed`, `developer`, `maintainer`, or `owner`. Defaults to `developer`. Requires the Owner role to change this setting away from `owner` or `no_one_allowed`. |
 | `group_runners_enabled`                            | boolean           | No       | Enable group runners for this project. |
 | `import_url`                                       | string            | No       | URL the repository was imported from. |
 | `issues_enabled`                                   | boolean           | No       | _(Deprecated)_ Enable issues for this project. Use `issues_access_level` instead. |
@@ -2464,7 +2494,7 @@ Supported general project attributes:
 | `request_access_enabled`                           | boolean           | No       | Allow users to request member access. |
 | `resolve_outdated_diff_discussions`                | boolean           | No       | Automatically resolve merge request diffs discussions on lines changed with a push. |
 | `restrict_user_defined_variables`                  | boolean           | No       | _([Deprecated](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/154510) in GitLab 17.7 in favour of `ci_pipeline_variables_minimum_override_role`)_ Allow only users with the Maintainer role to pass user-defined variables when triggering a pipeline. For example when the pipeline is triggered in the UI, with the API, or by a trigger token. |
-| `reviewer_assignment_strategy`                     | string            | No       | Strategy used to automatically assign reviewers to merge requests. One of `disabled`, `code_owners`, or `dap_powered`. Premium and Ultimate only. |
+| `reviewer_assignment_strategy`                     | string            | No       | Strategy used to automatically assign reviewers to merge requests. One of `disabled` or `code_owners`. This attribute can also return `dap_powered` for projects configured before GitLab 19.4. Premium and Ultimate only. |
 | `service_desk_enabled`                             | boolean           | No       | Enable or disable Service Desk feature. |
 | `shared_runners_enabled`                           | boolean           | No       | Enable instance runners for this project. |
 | `show_default_award_emojis`                        | boolean           | No       | Show default emoji reactions. |
@@ -2706,6 +2736,7 @@ Example response:
   "ci_pipeline_variables_minimum_override_role": "maintainer",
   "ci_push_repository_for_job_token_allowed": false,
   "ci_display_pipeline_variables": false,
+  "ci_skip_branch_pipelines_for_mrs": false,
   "cicd_catalog_enabled": false,
   "protect_merge_request_pipelines": true,
   "public_jobs": true,
@@ -2864,6 +2895,7 @@ Example response:
   "ci_pipeline_variables_minimum_override_role": "maintainer",
   "ci_push_repository_for_job_token_allowed": false,
   "ci_display_pipeline_variables": false,
+  "ci_skip_branch_pipelines_for_mrs": false,
   "cicd_catalog_enabled": false,
   "protect_merge_request_pipelines": true,
   "public_jobs": true,

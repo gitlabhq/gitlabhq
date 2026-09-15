@@ -1,0 +1,20 @@
+---
+description: Tracks when a user clicks a category filter inside the
+  feature library modal.
+internal_events: true
+action: click_category_filter_in_feature_library_modal
+identifiers:
+- user
+product_group: engagement
+product_categories:
+- navigation
+milestone: '19.4'
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/251663
+tiers:
+- free
+- premium
+- ultimate
+additional_properties:
+  label:
+    description: The id of the category filter that was clicked
+      (e.g. "all", "plan_menu", "code_menu").

@@ -56,7 +56,7 @@ RSpec.describe DiffHelper, feature_category: :code_review_workflow do
     end
 
     it 'returns no collapse true if expanded' do
-      allow(controller).to receive(:params) { { expanded: true } }
+      allow(controller).to receive(:params) { ActionController::Parameters.new(expanded: true) }
       expect(helper.diff_options).to include(expanded: true)
     end
 
@@ -70,12 +70,12 @@ RSpec.describe DiffHelper, feature_category: :code_review_workflow do
       end
 
       it 'returns paths if param old path' do
-        allow(controller).to receive(:params) { { old_path: 'lib/wadus.rb' } }
+        allow(controller).to receive(:params) { ActionController::Parameters.new(old_path: 'lib/wadus.rb') }
         expect(helper.diff_options[:paths]).to include('lib/wadus.rb')
       end
 
       it 'returns paths if param new path' do
-        allow(controller).to receive(:params) { { new_path: 'lib/wadus.rb' } }
+        allow(controller).to receive(:params) { ActionController::Parameters.new(new_path: 'lib/wadus.rb') }
         expect(helper.diff_options[:paths]).to include('lib/wadus.rb')
       end
 
@@ -85,7 +85,7 @@ RSpec.describe DiffHelper, feature_category: :code_review_workflow do
 
       context 'when file_identifier include .ipynb' do
         before do
-          allow(controller).to receive(:params) { { file_identifier: 'something.ipynb' } }
+          allow(controller).to receive(:params) { ActionController::Parameters.new(file_identifier: 'something.ipynb') }
         end
 
         it 'sets max_patch_bytes_for_file_extension' do

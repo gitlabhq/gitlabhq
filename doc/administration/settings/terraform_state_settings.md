@@ -46,6 +46,28 @@ To configure Terraform state encryption:
 > When you turn off encryption, the change affects only new Terraform state files.
 > Existing encrypted files remain encrypted and continue to work as expected.
 
+## Encryption key rotation
+
+You cannot rotate the Terraform state encryption key.
+
+The encryption key is derived from the `db_key_base` application secret and the
+project ID. For more information, see
+[decryption process](../terraform_state.md#decryption-process).
+Because the key is derived rather than stored directly, no standalone Terraform
+state key exists to rotate.
+
+Rotating `db_key_base` itself is not supported because it encrypts data across
+the entire instance, including CI/CD variables, integration and webhook
+credentials, and authentication tokens.
+
+> [!warning]
+> If you change `db_key_base`, existing Terraform state files become unreadable.
+> GitLab raises an error if more than one `db_key_base` is configured and no
+> re-encryption tool exists.
+
+Key rotation is proposed in
+[issue 25332](https://gitlab.com/gitlab-org/gitlab/-/issues/25332).
+
 ## Terraform state storage limits
 
 You can limit the total storage of [Terraform state files](../terraform_state.md).

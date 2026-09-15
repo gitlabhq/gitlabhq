@@ -663,4 +663,40 @@ RSpec.describe ApplicationSettings::UpdateService, feature_category: :shared do
       end
     end
   end
+
+  context 'when code_dropdown_custom_clients changes', feature_category: :source_code_management do
+    let(:event) { 'admin_updates_code_dropdown_custom_clients' }
+    let(:clients) { [{ 'name' => 'VSCodium', 'ssh_url_template' => 'vscodium://vscode.git/clone?url={url}' }] }
+
+    context 'when the setting is updated' do
+      let(:params) { { code_dropdown_custom_clients: clients } }
+
+      it 'tracks the internal event' do
+        expect { subject.execute }.to trigger_internal_events(event)
+          .with(user: admin, category: 'InternalEventTracking')
+      end
+
+      context 'when the update fails' do
+        before do
+          allow(application_settings).to receive(:save).and_return(false)
+        end
+
+        it 'does not track the internal event' do
+          expect { subject.execute }.to not_trigger_internal_events(event)
+        end
+      end
+    end
+
+    context 'when it is unchanged' do
+      let(:params) { { code_dropdown_custom_clients: clients } }
+
+      before do
+        application_settings.update!(code_dropdown_custom_clients: clients)
+      end
+
+      it 'does not track the internal event' do
+        expect { subject.execute }.to not_trigger_internal_events(event)
+      end
+    end
+  end
 end

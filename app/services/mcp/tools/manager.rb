@@ -37,30 +37,46 @@ module Mcp
 
       # Registry of all custom tools mapped to their service classes
       CUSTOM_TOOLS = {
+        'get_job' => ::Mcp::Tools::Jobs::GetJobService,
         'get_mcp_server_version' => ::Mcp::Tools::GetServerVersionService,
-        'get_merge_request_conflicts' => ::Mcp::Tools::MergeRequests::GetMergeRequestConflictsService
+        'get_merge_request_conflicts' => ::Mcp::Tools::MergeRequests::GetMergeRequestConflictsService,
+        'list_releases' => ::Mcp::Tools::Releases::ListReleasesService,
+        'list_tags' => ::Mcp::Tools::Repositories::Tags::ListTagsService
       }.freeze
 
       GRAPHQL_TOOLS = {
+        'accept_merge_request' => ::Mcp::Tools::MergeRequests::AcceptMergeRequestService,
         'add_branch' => ::Mcp::Tools::Repositories::Branches::AddBranchService,
-        'create_merge_request_note' => ::Mcp::Tools::MergeRequests::CreateMergeRequestNoteService,
-        'create_workitem_note' => ::Mcp::Tools::WorkItems::CreateWorkItemNoteService,
+        'add_commit' => ::Mcp::Tools::Repositories::AddCommitService,
+        'get_commit' => ::Mcp::Tools::Commits::GetCommitService,
         'get_merge_request' => ::Mcp::Tools::MergeRequests::GetMergeRequestService,
         'get_merge_request_notes' => ::Mcp::Tools::MergeRequests::GetMergeRequestNotesService,
         'get_repository_file' => ::Mcp::Tools::Repositories::GetRepositoryFileService,
         'get_pipeline' => ::Mcp::Tools::Pipelines::GetPipelineService,
+        'get_project' => ::Mcp::Tools::Projects::GetProjectService,
         'get_saved_view_work_items' => ::Mcp::Tools::WorkItems::GetSavedViewWorkItemsService,
+        'get_user' => ::Mcp::Tools::Users::GetUserService,
+        'get_work_item' => ::Mcp::Tools::WorkItems::GetWorkItemService,
         'get_workitem_notes' => ::Mcp::Tools::WorkItems::GetWorkItemNotesService,
         'get_work_item_types' => ::Mcp::Tools::WorkItems::GetWorkItemTypesService,
         'link_work_items' => ::Mcp::Tools::WorkItems::LinkWorkItemsService,
+        'list_commits' => ::Mcp::Tools::Commits::ListCommitsService,
+        'list_groups' => ::Mcp::Tools::Groups::ListGroupsService,
         'list_merge_requests' => ::Mcp::Tools::MergeRequests::ListMergeRequestsService,
+        'list_projects' => ::Mcp::Tools::Projects::ListProjectsService,
+        'list_repository_tree' => ::Mcp::Tools::Repositories::ListRepositoryTreeService,
+        'list_project_members' => ::Mcp::Tools::Projects::ListProjectMembersService,
         'list_wiki_pages' => ::Mcp::Tools::Wikis::ListWikiPagesService,
+        'list_work_items' => ::Mcp::Tools::WorkItems::ListWorkItemsService,
+        'save_merge_request_review' => ::Mcp::Tools::MergeRequests::SaveMergeRequestReviewService,
+        'save_note' => ::Mcp::Tools::Notes::SaveNoteService,
         'save_pipeline' => ::Mcp::Tools::Pipelines::SavePipelineService,
+        'save_work_item' => ::Mcp::Tools::WorkItems::SaveWorkItemService,
         'search_labels' => ::Mcp::Tools::Labels::SearchService
       }.freeze
 
       def initialize
-        # Do not call build_tools here. API::API.routes is lazily memoized by Grape, and
+        # Do not call build_tools here. API::Base.descendants is evaluated lazily, and
         # Manager is instantiated at class-definition time via namespace_setting in
         # API::Mcp::Base, before all routes are registered. Deferring to the first call
         # of #tools ensures a complete route list.
@@ -76,6 +92,13 @@ module Mcp
 
       def list_tools
         tools
+      end
+
+      def tools_in_toolsets(toolset_ids)
+        selected = Array(toolset_ids).map(&:to_sym) | Toolsets::ALWAYS_ON
+        tools.each_with_object([]) do |(name, tool), result|
+          result << name if selected.include?(tool.toolset)
+        end
       end
 
       def get_tool(name:, version: nil)
@@ -94,7 +117,23 @@ module Mcp
         raise ToolNotFoundError, name
       end
 
+      def resolve_alias(name)
+        return name if tools.key?(name)
+
+        alias_map[name] || name
+      end
+
+      def aliases_for(canonical_name)
+        reverse_alias_map.fetch(canonical_name, [])
+      end
+
       private
+
+      def reverse_alias_map
+        @reverse_alias_map ||= alias_map.each_with_object({}) do |(alias_name, canonical), map|
+          (map[canonical] ||= []) << alias_name
+        end
+      end
 
       def get_custom_tool(name, version)
         get_tool_from_registry(custom_tools, name, version)
@@ -133,10 +172,6 @@ module Mcp
         raise VersionNotFoundError.new(name, version, [tool_version]) if version && version != tool_version
 
         tool
-      end
-
-      def resolve_alias(name)
-        alias_map[name] || name
       end
 
       def build_alias_map
@@ -182,9 +217,7 @@ module Mcp
         @api_tools ||= begin
           api_tools = {}
 
-          ::API::API.routes.each do |route|
-            settings = route.app.route_setting(:mcp)
-            next if settings.blank?
+          mcp_routes.each do |route, settings|
             next if settings[:aggregators].present?
 
             name = settings[:tool_name].to_s
@@ -200,14 +233,11 @@ module Mcp
         @aggregated_api_tools ||= begin
           aggregated_api_tools = {}
 
-          ::API::API.routes.each do |route|
-            settings = route.app.route_setting(:mcp)
-            next if settings.blank?
-
-            name = settings[:tool_name].to_s
+          mcp_routes.each do |route, settings|
             aggregators = settings[:aggregators]
             next if aggregators.blank?
 
+            name = settings[:tool_name].to_s
             tool = Mcp::Tools::Base::ApiTool.new(name: name, route: route)
 
             aggregators.each do |aggregator|
@@ -219,6 +249,26 @@ module Mcp
           aggregated_api_tools.to_h do |klass, tools|
             [klass.tool_name, klass.new(tools: tools)]
           end.freeze
+        end
+      end
+
+      # Scans descendants and memoize instead of API::API.routes to ensure EE-only sub-apps are also discovered
+      def mcp_routes
+        @mcp_routes ||= begin
+          pairs = []
+
+          ::API::Base.descendants.each do |klass|
+            next if klass == ::API::API
+
+            klass.routes.each do |route|
+              settings = route.app.route_setting(:mcp)
+              next if settings.blank?
+
+              pairs << [route, settings]
+            end
+          end
+
+          pairs.freeze
         end
       end
 

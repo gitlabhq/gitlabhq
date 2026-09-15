@@ -40,7 +40,12 @@ module Projects
       end
 
       def installation_service
-        ::Integrations::SlackInstallation::ProjectService.new(project, current_user: current_user, params: params)
+        ::Integrations::SlackInstallation::ProjectService.new(project, current_user: current_user,
+          params: slack_installation_params)
+      end
+
+      def slack_installation_params
+        params.permit(:code)
       end
     end
   end

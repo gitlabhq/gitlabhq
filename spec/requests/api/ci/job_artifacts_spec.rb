@@ -457,6 +457,27 @@ RSpec.describe API::Ci::JobArtifacts, feature_category: :job_artifacts do
             end
           end
 
+          context 'when proxy download is enabled and direct mode is allowed' do
+            let(:proxy_download) { true }
+
+            before do
+              stub_artifacts_object_storage(proxy_download: proxy_download, allowed_download_modes: %w[proxy direct])
+            end
+
+            it 'returns location redirect when download_mode=direct is requested' do
+              get api("/projects/#{project.id}/jobs/#{job.id}/artifacts", api_user),
+                params: { download_mode: 'direct' }, headers: workhorse_headers
+
+              expect(response).to have_gitlab_http_status(:found)
+            end
+
+            it 'responds with the workhorse send-url when download_mode is not requested' do
+              get api("/projects/#{project.id}/jobs/#{job.id}/artifacts", api_user), headers: workhorse_headers
+
+              expect(response.headers[Gitlab::Workhorse::SEND_DATA_HEADER]).to start_with("send-url:")
+            end
+          end
+
           context 'when Google CDN is configured' do
             let(:cdn_config) do
               {
@@ -524,6 +545,87 @@ RSpec.describe API::Ci::JobArtifacts, feature_category: :job_artifacts do
           get api("/projects/#{project.id}/jobs/#{job.id}/artifacts", api_user), headers: workhorse_headers
 
           expect(response).to have_gitlab_http_status(:not_found)
+        end
+      end
+    end
+
+    context 'with file_type' do
+      let(:job) { create(:ci_build, :artifacts, pipeline: pipeline, project: project) }
+
+      subject(:request) do
+        get api("/projects/#{project.id}/jobs/#{job.id}/artifacts", api_user),
+          params: { file_type: file_type }, headers: workhorse_headers
+      end
+
+      context 'when the requested type is present' do
+        let!(:artifact) { create(:ci_job_artifact, :junit, job: job) }
+        let(:file_type) { 'junit' }
+
+        it 'serves that artifact instead of the archive' do
+          request
+
+          expect(response).to have_gitlab_http_status(:ok)
+          expect(response.headers['Content-Disposition']).to include(artifact.filename)
+          expect(response.headers['Content-Disposition']).not_to include('ci_build_artifacts.zip')
+        end
+      end
+
+      context 'when the requested type cannot be served' do
+        using RSpec::Parameterized::TableSyntax
+
+        where(:reason, :file_type, :status) do
+          'not present on the job' | 'dotenv' | :not_found
+          'not downloadable'       | 'trace'  | :bad_request
+          'unknown'                | 'bogus'  | :bad_request
+        end
+
+        with_them do
+          it 'returns an error' do
+            request
+
+            expect(response).to have_gitlab_http_status(status)
+          end
+        end
+      end
+
+      context 'when the archive is public but the requested artifact is not' do
+        let(:api_user) { guest }
+        let(:file_type) { 'dotenv' }
+
+        before do
+          create(:ci_job_artifact, :dotenv, :private, job: job)
+          project.update_column(:visibility_level, Gitlab::VisibilityLevel::PUBLIC)
+          project.update_column(:public_builds, true)
+        end
+
+        it 'rejects access to the non-public artifact' do
+          request
+
+          expect(response).to have_gitlab_http_status(:forbidden)
+        end
+
+        it 'still serves the public archive' do
+          get api("/projects/#{project.id}/jobs/#{job.id}/artifacts", api_user), headers: workhorse_headers
+
+          expect(response).to have_gitlab_http_status(:ok)
+        end
+      end
+
+      context 'when a job token is used' do
+        let(:other_job) { create(:ci_build, :running, user: user) }
+        let(:file_type) { 'junit' }
+
+        before do
+          create(:ci_job_artifact, :junit, job: job)
+          stub_licensed_features(cross_project_pipelines: true)
+          make_project_fully_accessible(other_job.project, job.project)
+        end
+
+        it 'serves the requested artifact' do
+          get api("/projects/#{project.id}/jobs/#{job.id}/artifacts", job_token: other_job.token),
+            params: { file_type: file_type }, headers: workhorse_headers
+
+          expect(response).to have_gitlab_http_status(:ok)
         end
       end
     end

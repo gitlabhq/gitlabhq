@@ -5,6 +5,26 @@ module WorkItems
     class Hierarchy < Base
       include Gitlab::Utils::StrongMemoize
 
+      def self.quick_action_commands
+        [:set_parent, :add_child, :remove_parent, :remove_child]
+      end
+
+      def self.quick_action_params
+        [:set_parent, :add_child, :remove_parent, :remove_child]
+      end
+
+      def self.process_quick_action_param(param_name, value)
+        return super unless param_name.in?(quick_action_params) && value.present?
+
+        if [:set_parent, :remove_parent].include?(param_name)
+          { parent: value.is_a?(WorkItem) ? value : nil }
+        elsif param_name == :remove_child
+          { remove_child: value }
+        else
+          { children: value }
+        end
+      end
+
       def parent
         work_item.work_item_parent
       end
@@ -33,26 +53,6 @@ module WorkItems
       def depth_limit_reached_by_type
         work_item.work_item_type.descendant_types(resource_parent: work_item.resource_parent).map do |child_type|
           { work_item_type: child_type, depth_limit_reached: work_item.max_depth_reached?(child_type) }
-        end
-      end
-
-      def self.quick_action_commands
-        [:set_parent, :add_child, :remove_parent, :remove_child]
-      end
-
-      def self.quick_action_params
-        [:set_parent, :add_child, :remove_parent, :remove_child]
-      end
-
-      def self.process_quick_action_param(param_name, value)
-        return super unless param_name.in?(quick_action_params) && value.present?
-
-        if [:set_parent, :remove_parent].include?(param_name)
-          { parent: value.is_a?(WorkItem) ? value : nil }
-        elsif param_name == :remove_child
-          { remove_child: value }
-        else
-          { children: value }
         end
       end
 

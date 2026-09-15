@@ -577,7 +577,7 @@ describe('note_app', () => {
 
     describe('when adding a new comment to an existing review', () => {
       it('sends the correct tracking event', () => {
-        notesEventHub.$emit('noteFormAddToReview', { name: 'noteFormAddToReview' });
+        notesEventHub.$emit('note-form-add-to-review', { name: 'note-form-add-to-review' });
 
         expect(trackingSpy).toHaveBeenCalledWith(
           undefined,
@@ -589,7 +589,7 @@ describe('note_app', () => {
 
     describe('when adding a comment to a new review', () => {
       it('sends the correct tracking event', () => {
-        notesEventHub.$emit('noteFormStartReview', { name: 'noteFormStartReview' });
+        notesEventHub.$emit('note-form-start-review', { name: 'note-form-start-review' });
 
         expect(trackingSpy).toHaveBeenCalledWith(
           undefined,

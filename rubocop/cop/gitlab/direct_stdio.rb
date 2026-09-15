@@ -20,7 +20,7 @@ module RuboCop
       class DirectStdio < ::RuboCop::Cop::Base
         MSG = 'Do not write to `stdout` or `stderr`. ' \
           'Use a structured JSON logger or an output wrapper method instead. ' \
-          'https://docs.gitlab.com/development/logging.html'
+          'https://docs.gitlab.com/development/logging/'
 
         GLOBAL_VARS = %i[$stdout $stderr].to_set
         CONST_VARS = %i[STDOUT STDERR].to_set

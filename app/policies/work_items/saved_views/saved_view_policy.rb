@@ -3,7 +3,7 @@
 module WorkItems
   module SavedViews
     class SavedViewPolicy < BasePolicy
-      delegate { saved_view_container }
+      delegate { @subject.resource_parent }
 
       # Require users be logged in before they can create, read, update or delete saved views
       rule { anonymous }.prevent_all
@@ -32,6 +32,9 @@ module WorkItems
       rule { ~can?(:_update_shared_saved_view) & ~is_author }.prevent :update_saved_view
       rule { ~can?(:_delete_shared_saved_view) & ~is_author }.prevent :delete_saved_view
 
+      rule { can?(:update_saved_view) }.enable :update_work_item_saved_view
+      rule { can?(:delete_saved_view) }.enable :delete_work_item_saved_view
+
       rule { ~is_private }.policy do
         enable :read_saved_view
       end
@@ -44,12 +47,9 @@ module WorkItems
         enable :reorder_saved_view
       end
 
-      private
-
-      def saved_view_container
-        namespace = @subject.namespace
-        namespace.is_a?(Group) ? namespace : namespace.project
-      end
+      rule { can?(:subscribe_saved_view) }.enable :subscribe_work_item_saved_view
+      rule { can?(:unsubscribe_saved_view) }.enable :unsubscribe_work_item_saved_view
+      rule { can?(:reorder_saved_view) }.enable :reorder_work_item_saved_view
     end
   end
 end

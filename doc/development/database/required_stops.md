@@ -12,11 +12,11 @@ in a comprehensive list of causes, refer to [causes of required stops](../avoidi
 
 ## Common database changes that require stops
 
-### Long running migrations being finalized
+### Long-running migrations being finalized
 
 If a migration takes a long time, it could cause a large number of customers to encounter timeouts
-during upgrades. The increased support volume may cause us to introduce a required stop. While any
-background migration may cause these issues with particularly large customers, we typically only
+during upgrades. The increased support volume might cause us to introduce a required stop. While any
+background migration might cause these issues with particularly large customers, we typically only
 introduce stops when the impact is widespread.
 
 - **Cause**: When an upgrade takes more than an hour, omnibus times out.
@@ -28,19 +28,19 @@ introduce stops when the impact is widespread.
 
 ### Improperly finalized background migrations
 
-You may need to introduce a required stop for mitigation when:
+You might need to introduce a required stop for mitigation when:
 
 - A background migration is not finalized, and
 - A migration is written that depends on that background migration.
-- **Cause**: The dependent migration may fail if the background migration is incomplete.
+- **Cause**: The dependent migration might fail if the background migration is incomplete.
 - **Mitigation**: Ensure that all background migrations are finalized before authoring dependent migrations.
 
 ### Remove a migration
 
-If a migration is removed, you may need to introduce a required stop to ensure customers
+If a migration is removed, you might need to introduce a required stop to ensure customers
 don't miss the required change.
 
-- **Cause**: Dependent migrations may fail, or the application may not function, because a required
+- **Cause**: Dependent migrations might fail, or the application might not function, because a required
   migration was removed.
 - **Mitigation**: Ensure migrations are only removed after they've been a part of a planned
   required stop.
@@ -48,19 +48,19 @@ don't miss the required change.
 ### A migration timestamp is very old
 
 If a migration timestamp is very old (> 3 weeks, or after a before the last stop),
-these scenarios may cause issues:
+these scenarios might cause issues:
 
 - If the migration depends on another migration with a newer timestamp but introduced in a
-  previous release after a required stop, then the new migration may run sequentially sooner
+  previous release after a required stop, then the new migration might run sequentially sooner
   than the prerequisite migration, and thus fail.
-- If the migration timestamp ID is before the last, it may be inadvertently squashed when the
+- If the migration timestamp ID is before the last, it might be inadvertently squashed when the
   team squashes other migrations from the required stop.
-- **Cause**: The migration may fail if it depends on a migration with a later timestamp introduced
-  in an earlier version. Or, the migration may be inadvertently squashed after a required stop.
+- **Cause**: The migration might fail if it depends on a migration with a later timestamp introduced
+  in an earlier version. Or, the migration might be inadvertently squashed after a required stop.
 - **Mitigation**: Aim for migration timestamps to fall inside the release dates and be sure that
   they are not dated prior to the last required stop.
 
-### Bugs in migration related tooling
+### Bugs in migration-related tooling
 
 In a few circumstances, bugs in migration related tooling have required us to introduce stops. While we aim
 to prevent these in testing, sometimes they happen.

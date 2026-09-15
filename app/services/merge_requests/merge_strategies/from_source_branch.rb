@@ -46,13 +46,26 @@ module MergeRequests
             merge_params: merge_params
           ).execute
 
-          raise_error(create_ref_result.message) if create_ref_result.error?
+          if create_ref_result.error?
+            unless create_ref_result.reason == MergeRequests::CreateRefService::REBASE_CONFLICT
+              # Non-conflict failures keep the generic widget message; the raw message is only logged
+              raise create_ref_result.message
+            end
+
+            raise_error('Automatic rebase before merge failed because the source branch conflicts ' \
+              'with the target branch. Rebase the source branch manually and resolve the conflicts.')
+          end
 
           payload = create_ref_result.payload
 
           src_sha = payload[:commit_sha]
 
-          payload[:commit_sha] = fast_forward!(src_sha)[:commit_sha]
+          begin
+            payload[:commit_sha] = fast_forward!(src_sha)[:commit_sha]
+          rescue StandardError
+            cleanup_generated_ref_commits
+            raise
+          end
 
           merge_request.schedule_cleanup_refs(only: [:rebase_on_merge_path])
 
@@ -134,6 +147,20 @@ module MergeRequests
         end
 
         { commit_sha: commit_sha }
+      end
+
+      # Rows are written before the target branch moves, so a fast-forward that
+      # never lands leaves commits resolving to this merge request through the
+      # state-filter-free by_related_commit_sha. Mirrors MergeTrains::Car#cleanup_ref.
+      def cleanup_generated_ref_commits
+        return unless Feature.enabled?(:generated_ref_commits_for_automatic_rebase, project)
+
+        ::MergeRequests::GeneratedRefCommit.delete_all_for(merge_request)
+      rescue StandardError => e
+        # Best-effort cleanup: raising here would replace the merge failure the
+        # caller is about to re-raise, downgrading a specific user-facing message
+        # to the generic one in MergeRequests::MergeService#try_merge.
+        ::Gitlab::ErrorTracking.track_exception(e, merge_request_id: merge_request.id)
       end
 
       def merge_commit!

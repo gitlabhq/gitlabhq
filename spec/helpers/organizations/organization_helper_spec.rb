@@ -60,9 +60,9 @@ RSpec.describe Organizations::OrganizationHelper, feature_category: :organizatio
         end
       end
 
-      context 'when organization_switching feature flag is disabled' do
+      context 'when org_creation release flag is disabled' do
         before do
-          stub_feature_flags(organization_switching: false)
+          stub_organization_release(org_creation: false)
         end
 
         it 'returns false for can_create_organization' do
@@ -133,8 +133,20 @@ RSpec.describe Organizations::OrganizationHelper, feature_category: :organizatio
   end
 
   describe '#organization_show_app_data' do
+    # rubocop:disable RSpec/FactoryBot/AvoidCreate -- needs persisted records
+    let_it_be(:organization) { create(:organization) }
+    let_it_be(:user) { create(:user, organization: create(:organization)) }
+    let_it_be(:organization_user) do
+      create(:organization_user, organization: organization, user: user)
+    end
+    # rubocop:enable RSpec/FactoryBot/AvoidCreate
+
     before do
-      allow(helper).to receive(:can?).with(user, :update_organization, organization).and_return(true)
+      allow(helper).to receive(:current_user).and_return(user)
+      allow(helper).to receive(:can?)
+        .with(user, :update_organization, organization).and_return(true)
+      allow(helper).to receive(:can?)
+        .with(user, :delete_organization_user, organization_user).and_return(true)
     end
 
     it 'returns expected json without artifact registry data', unless: Gitlab.ee? do
@@ -148,14 +160,47 @@ RSpec.describe Organizations::OrganizationHelper, feature_category: :organizatio
             'name' => organization.name,
             'path' => organization.path
           },
-          'can_admin_organization' => true
+          'can_admin_organization' => true,
+          'can_leave_organization' => true,
+          'organization_user_gid' => organization_user.to_global_id.to_s
         }
       )
+    end
+
+    context 'when the user cannot delete the organization user' do
+      before do
+        allow(helper).to receive(:can?).and_call_original
+        allow(helper).to receive(:can?)
+          .with(user, :delete_organization_user, organization_user).and_return(false)
+      end
+
+      it 'returns false for can_leave_organization' do
+        result = Gitlab::Json.parse(helper.organization_show_app_data(organization))
+
+        expect(result).to include('can_leave_organization' => false)
+      end
+    end
+
+    context 'when the user is not a member of the organization' do
+      let_it_be(:non_member) { create(:user, organization: create(:organization)) } # rubocop:disable RSpec/FactoryBot/AvoidCreate -- persisted user needed for the real membership query
+
+      before do
+        allow(helper).to receive_messages(current_user: non_member, can?: false)
+      end
+
+      it 'returns nil gid and false can_leave_organization' do
+        result = Gitlab::Json.parse(helper.organization_show_app_data(organization))
+
+        expect(result).to include(
+          'can_leave_organization' => false,
+          'organization_user_gid' => nil
+        )
+      end
     end
   end
 
   describe '#group_settings_create_organization_app_data' do
-    let_it_be(:group) { build_stubbed(:group, path: 'foo-bar') }
+    let_it_be(:group) { build_stubbed(:group, path: 'foo-bar', organization: organization) }
 
     it 'returns expected json' do
       expect(
@@ -165,7 +210,14 @@ RSpec.describe Organizations::OrganizationHelper, feature_category: :organizatio
       ).to eq(
         {
           'group_full_path' => group.full_path,
-          'group_gid' => "gid://gitlab/Group/#{group.id}"
+          'group_gid' => "gid://gitlab/Group/#{group.id}",
+          'group_organization' => {
+            'id' => "gid://gitlab/Organizations::Organization/#{organization.id}",
+            'name' => organization.name,
+            'path' => organization.path,
+            'visibility' => organization.visibility,
+            'avatar_url' => organization.avatar_url
+          }
         }
       )
     end
@@ -225,7 +277,6 @@ RSpec.describe Organizations::OrganizationHelper, feature_category: :organizatio
     it 'returns expected json' do
       expect(Gitlab::Json.parse(helper.organization_new_app_data)).to eq(
         {
-          'organizations_path' => '/o',
           'organizations_url' => 'http://test.host/o/',
           'preview_markdown_path' => '/o/-/preview_markdown'
         }
@@ -234,7 +285,7 @@ RSpec.describe Organizations::OrganizationHelper, feature_category: :organizatio
   end
 
   describe '#organization_settings_general_app_data' do
-    it 'returns expected json' do
+    it 'returns expected json', unless: Gitlab.ee? do
       expect(organization).to receive(:avatar_url).with(size: 192).and_return('avatar.jpg')
       expect(organization).to receive(:max_group_visibility_level).and_return(Gitlab::VisibilityLevel::PRIVATE)
 
@@ -323,7 +374,6 @@ RSpec.describe Organizations::OrganizationHelper, feature_category: :organizatio
           'base_path' => 'http://test.host/',
           'groups_and_projects_organization_path' =>
             "/o/#{organization.path}/-/groups_and_projects?display=groups",
-          'groups_organization_path' => "/o/#{organization.path}/-/groups",
           'available_visibility_levels' => [
             Gitlab::VisibilityLevel::PRIVATE,
             Gitlab::VisibilityLevel::INTERNAL,
@@ -457,6 +507,18 @@ RSpec.describe Organizations::OrganizationHelper, feature_category: :organizatio
         )
 
         helper.push_organization_breadcrumbs(organization)
+      end
+
+      it 'does not escape special characters such as ampersands in the name' do
+        organization_with_special_chars = build_stubbed(:organization, name: 'Tooling & Support')
+
+        expect(helper).to receive(:push_to_schema_breadcrumb).with(
+          'Tooling & Support',
+          organization_path(organization_with_special_chars),
+          organization_with_special_chars.avatar_url
+        )
+
+        helper.push_organization_breadcrumbs(organization_with_special_chars)
       end
     end
   end

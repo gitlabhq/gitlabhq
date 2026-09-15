@@ -435,6 +435,32 @@ RSpec.describe Projects::MergeRequestsController, feature_category: :code_review
 
           expect(controller.view_context.rapid_diffs_presenter).not_to be_lazy
         end
+
+        # Guards the permitted list in #rapid_diff_params. A key dropped from it would
+        # stop reaching the presenter silently rather than raising.
+        it 'forwards every permitted key to the presenter', :aggregate_failures do
+          filters = {
+            diff_id: '1', start_sha: 'abc123', commit_id: 'def456', only_context_commits: 'true',
+            old_path: 'old.rb', new_path: 'new.rb', file_path: 'file.rb', line: 'line_abc_20'
+          }
+
+          captured = nil
+          allow(RapidDiffs::MergeRequestPresenter).to receive(:new).and_wrap_original do |original, *args, **kwargs|
+            captured = kwargs[:request_params]
+            original.call(*args, **kwargs)
+          end
+
+          stub_feature_flags(rapid_diffs_on_mr_show: true)
+          get :diffs, params: {
+            namespace_id: project.namespace.to_param,
+            project_id: project,
+            id: merge_request.iid,
+            rapid_diffs: 'true'
+          }.merge(filters)
+
+          filters.each { |key, value| expect(captured[key]).to eq(value) }
+          expect(captured.keys).to match_array(filters.keys.map(&:to_s))
+        end
       end
 
       context 'when merge request has conflicts' do
@@ -1065,6 +1091,35 @@ RSpec.describe Projects::MergeRequestsController, feature_category: :code_review
 
       expect(response).to have_gitlab_http_status(:success)
       expect(json_response).to be_an Array
+    end
+
+    # Guards the permitted list in #context_commits_params. A key dropped from it would
+    # widen the search instead of failing.
+    it 'passes every permitted filter through to the finder' do
+      expect(ContextCommitsFinder).to receive(:new).with(
+        project, merge_request, {
+          search: 'readme',
+          author: 'alice',
+          committed_before: Time.utc(2026, 1, 2).to_i,
+          committed_after: Time.utc(2026, 1, 1).to_i,
+          limit: '10'
+        }
+      ).and_call_original
+
+      get :context_commits,
+        params: {
+          namespace_id: project.namespace.to_param,
+          project_id: project,
+          id: merge_request.iid,
+          search: 'readme',
+          author: 'alice',
+          committed_before: '2026-01-02',
+          committed_after: '2026-01-01',
+          limit: '10'
+        },
+        format: 'json'
+
+      expect(response).to have_gitlab_http_status(:success)
     end
   end
 

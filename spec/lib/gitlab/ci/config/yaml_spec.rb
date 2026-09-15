@@ -3,6 +3,12 @@
 require 'spec_helper'
 
 RSpec.describe Gitlab::Ci::Config::Yaml, feature_category: :pipeline_composition do
+  around do |example|
+    Gitlab::Ci::Config::FeatureFlags.with_actor(nil) do
+      example.run
+    end
+  end
+
   let(:default_context) { Gitlab::Ci::Config::Yaml::Context.new }
 
   describe '.load!' do

@@ -12,10 +12,6 @@ const CONTEXT_ALIASES = {
   'portal-vue': path.join(COMPAT_DIR, 'portal_vue_vue3.js'),
   'vue-demi': 'vue-demi/lib/v3/index.mjs',
   vuedraggable: '@gitlab/vuedraggable-vue3/src/vuedraggable.js',
-  'vendor/vue-virtual-scroller': path.join(
-    ROOT,
-    'vendor/assets/javascripts/vue-virtual-scroller-vue3/src/index.js',
-  ),
   'vue-virtual-scroll-list': path.join(
     ROOT,
     'app/assets/javascripts/vue_shared/vue_virtual_scroll_list_vue3.js',
@@ -27,6 +23,29 @@ const INFECTION_BLOCKLIST = [
   // Global state vars should not be duplicated
   'app/assets/javascripts/lib/utils/breadcrumbs_state.js',
   'app/assets/javascripts/super_sidebar/state.js',
+  // Memoises the one mounted invite modal. Two copies mount two apps on the same
+  // element, because each copy sees its own memo as empty.
+  'app/assets/javascripts/invite_members/init_invite_members_modal.js',
+  // Registers document listeners at module scope. Two copies handle one click
+  // twice, and the second handler reads state the first already changed, so the
+  // markdown preview opens and closes again.
+  'app/assets/javascripts/behaviors/preview_markdown.js',
+  // Holds the one work item Apollo cache. `super_sidebar` loads on every page and
+  // reaches it, so a migrated page would otherwise get a second cache. The provider
+  // in `issuable_client.js` stays per-lane, because VueApollo cannot be shared.
+  'app/assets/javascripts/graphql_shared/issuable_default_client.js',
+  // Holds the one `SidebarMediator.singleton`. The Vue 3 sidebar app writes it and
+  // `gfm_auto_complete` in `main.js` reads its store, so the two lanes must share
+  // it. Keeps `services/sidebar_service.js` and its Apollo client single too.
+  'app/assets/javascripts/sidebar/sidebar_mediator.js',
+  // Each configures one shared registry that throws on a second call in
+  // development. Global bundles import `~/commons`, so a Vue 3 lane would run them again.
+  'app/assets/javascripts/commons/duo_ui.js',
+  'app/assets/javascripts/commons/gitlab_ui.js',
 ];
 
-module.exports = { CONTEXT_ALIASES, INFECTABLE_RE, INFECTION_BLOCKLIST };
+module.exports = {
+  CONTEXT_ALIASES,
+  INFECTABLE_RE,
+  INFECTION_BLOCKLIST,
+};

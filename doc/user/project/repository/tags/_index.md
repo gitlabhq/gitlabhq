@@ -55,6 +55,20 @@ To view all existing tags for a project:
 1. In the top bar, select **Search or go to** and find your project.
 1. In the left sidebar, select **Code** > **Tags**.
 
+## Track tags with an RSS feed
+
+GitLab provides an RSS feed of a project's tags. The feed button appears
+only if the project has at least one tag.
+
+To view the feed:
+
+1. In the top bar, select **Search or go to** and find your project.
+1. In the left sidebar, select **Code** > **Tags**.
+1. In the upper-right corner, select the feed symbol ({{< icon name="rss" >}}).
+
+The feed URL contains a [feed token](../../../../security/tokens/_index.md#feed-token) that
+authenticates you as the feed reader.
+
 ## View tagged commits in the commits list
 
 1. In the top bar, select **Search or go to** and find your project.
@@ -113,7 +127,7 @@ GitLab enforces these additional rules on all tags:
 
 - No spaces are allowed in tag names.
 - Tag names starting with 40 or 64 hexadecimal characters are prohibited, because they are similar to Git commit hashes.
-- Tag names cannot start with `-`, `refs/heads/`, `refs/tags/`, or `refs/remotes/`
+- Tag names cannot start with `-`, `refs/heads/`, `refs/tags/`, or `refs/remotes/`.
 - Tag names are case-sensitive.
 
 ## Copy a tag name

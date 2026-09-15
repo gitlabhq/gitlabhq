@@ -96,7 +96,7 @@ module WorkItemsHelpers
 
   # Action helpers
   def create_work_item_with_type(type)
-    click_button "Create #{type}"
+    click_button "Create #{type.to_s.downcase}"
   end
 
   def click_bulk_edit

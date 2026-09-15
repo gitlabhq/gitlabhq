@@ -2,19 +2,17 @@
 
 RSpec.shared_examples 'comment on merge request file' do
   it 'adds a comment' do
-    click_diff_line(find_in_panel_by_scrolling("[id='#{sample_commit.line_code}']"))
+    line_holder = find_line(sample_commit.line_code, sample_commit.line_code_path)
+    click_diff_line(line_holder)
 
-    page.within('.js-discussion-note-form') do
-      fill_in(:note_note, with: 'Line is wrong')
-      find('.js-comment-button').click
-    end
+    discussion_row = next_discussion_row(line_holder)
+    discussion_row.fill_in('note[note]', with: 'Line is wrong')
+    click_button('Add comment now')
 
     wait_for_requests
 
-    page.within('.notes_holder') do
-      expect(page).to have_content('Line is wrong')
-      expect(page).not_to have_content('Comment on lines')
-    end
+    expect(discussion_row).to have_content('Line is wrong')
+    expect(discussion_row).not_to have_content('Comment on lines')
 
     visit(merge_request_path(merge_request))
 
@@ -24,7 +22,7 @@ RSpec.shared_examples 'comment on merge request file' do
       expect(page).to have_content('Line is wrong')
     end
 
-    page.within('.notes-tab .badge') do
+    within_testid('notes-tab') do
       expect(page).to have_content('1')
     end
   end

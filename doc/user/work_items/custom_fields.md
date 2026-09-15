@@ -1,6 +1,6 @@
 ---
 stage: Plan
-group: Project Management
+group: Work Items
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see <https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments>
 description: "Create and use custom fields for work items to track specific information unique to your workflow. Configure field types to enhance planning and reporting capabilities."
 title: Custom fields
@@ -124,7 +124,7 @@ To unarchive a custom field:
 1. In the top bar, select **Search or go to** and find your group.
    This group must be at the top level.
 1. In the left sidebar, select **Settings** > **Work items**.
-1. Select the **Archived** tab to list archived fields.
+1. Select **Archived** to list archived fields.
 1. Next to the field you want to unarchive, select **Unarchive `<field name>`** ({{< icon name="redo" >}}).
 
 ## Set custom field values for a work item

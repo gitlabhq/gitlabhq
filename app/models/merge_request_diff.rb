@@ -40,7 +40,7 @@ class MergeRequestDiff < ApplicationRecord
   has_many :merge_request_diff_commits, ->(diff) {
     scope = order(:merge_request_diff_id, :relative_order)
 
-    if diff.project_id && MergeRequestDiffCommit.project_id_pruning_enabled?(diff.project_id)
+    if diff.project_id && MergeRequestDiffCommit.read_new_commits_table?(diff.project_id)
       scope = scope.where(project_id: diff.project_id)
     end
 
@@ -118,10 +118,8 @@ class MergeRequestDiff < ApplicationRecord
                        ).where(merge_request_commits_metadata: { sha: serialized_shas })
 
     if project_ids_list.all? { |id| MergeRequestDiffCommit.read_new_commits_table?(id) }
-      if project_ids_list.all? { |id| MergeRequestDiffCommit.project_id_pruning_enabled?(id) }
-        # `merge_request_diff_commits` is partitioned by `project_id` on the new table;
-        metadata_query = metadata_query.where(merge_request_diff_commits: { project_id: project_ids_list })
-      end
+      # `merge_request_diff_commits` is partitioned by `project_id` on the new table
+      metadata_query = metadata_query.where(merge_request_diff_commits: { project_id: project_ids_list })
 
       # `from_union` wraps the result in `FROM (...) merge_request_diffs`, which preserves
       # outer chain context like the `EXISTS` correlation in `MergeRequest.by_commit_sha`.
@@ -274,6 +272,78 @@ class MergeRequestDiff < ApplicationRecord
   def self.find_by_diff_refs(diff_refs)
     find_by(start_commit_sha: diff_refs.start_sha, head_commit_sha: diff_refs.head_sha, base_commit_sha: diff_refs.base_sha)
   end
+
+  # Orders a revision within the scoped diffs, for callers comparing which of two
+  # head SHAs came later. Rows are ordered by id, as `recent` already assumes.
+  #
+  # The newest row wins: a force-push back to an earlier SHA creates a fresh row
+  # for it, and that SHA is then the current revision, not the superseded one.
+  # Returns nil when the SHA has no row here.
+  def self.ordinal_for(head_commit_sha)
+    by_head_commit_sha(head_commit_sha).maximum(:id)
+  end
+
+  # Batched counterpart to #includes_any_commits?: the Set of `merge_request_diffs.id`
+  # values containing at least one of `shas`. Resolving the shas once and matching
+  # every diff in the same query makes the cost independent of the diff count,
+  # instead of re-serializing the whole sha list once per diff per BATCH_SIZE chunk.
+  #
+  # The two-step fallback must stay in step with #includes_any_commits?: while
+  # mr_diff_commits_read_new_table is not the read source, a commit may exist only
+  # on merge_request_diff_commits.sha.
+  def self.ids_including_any_commits(diff_ids, shas, project:)
+    matched = Set.new
+    return matched if diff_ids.blank? || shas.blank?
+
+    remaining = diff_ids.uniq
+
+    shas.each_slice(BATCH_SIZE) do |batched_shas|
+      found = diff_ids_with_metadata_shas(remaining, batched_shas, project)
+
+      unless MergeRequestDiffCommit.read_new_commits_table?(project.id)
+        found += diff_ids_with_unmigrated_shas(remaining, batched_shas)
+      end
+
+      next if found.empty?
+
+      matched.merge(found)
+      # A diff that already matched needs no further lookups.
+      remaining -= found
+      break if remaining.empty?
+    end
+
+    matched
+  end
+
+  def self.diff_ids_with_metadata_shas(diff_ids, shas, project)
+    # The unique (project_id, sha) index caps this at one row per sha.
+    metadata_ids = MergeRequest::CommitsMetadata
+      .where(project_id: project.id, sha: shas)
+      .limit(shas.size)
+      .pluck(:id)
+    return [] if metadata_ids.empty?
+
+    relation = MergeRequestDiffCommit
+      .where(merge_request_diff_id: diff_ids, merge_request_commits_metadata_id: metadata_ids)
+
+    relation = relation.where(project_id: project.id) if MergeRequestDiffCommit.read_new_commits_table?(project.id)
+
+    # `distinct` gives a row per diff, not per matching commit, so the limit cannot
+    # truncate: the distinct count never exceeds the candidates.
+    relation.distinct.limit(diff_ids.size).pluck(:merge_request_diff_id)
+  end
+  private_class_method :diff_ids_with_metadata_shas
+
+  # Only reachable while mr_diff_commits_read_new_table is off - `sha` does not exist
+  # on the partitioned table.
+  def self.diff_ids_with_unmigrated_shas(diff_ids, shas)
+    MergeRequestDiffCommit
+      .where(merge_request_diff_id: diff_ids, sha: shas)
+      .distinct
+      .limit(diff_ids.size)
+      .pluck(:merge_request_diff_id)
+  end
+  private_class_method :diff_ids_with_unmigrated_shas
 
   def viewable?
     collected? || without_files? || overflow?
@@ -781,9 +851,9 @@ class MergeRequestDiff < ApplicationRecord
   end
 
   def read_new_commits_table?
-    return false unless merge_request&.target_project
+    return false unless project_id
 
-    Feature.enabled?(:mr_diff_commits_read_new_table, merge_request.target_project)
+    MergeRequestDiffCommit.read_new_commits_table?(project_id)
   end
   strong_memoize_attr :read_new_commits_table?
 
@@ -1126,7 +1196,7 @@ class MergeRequestDiff < ApplicationRecord
 
   def metadata_sha_exists?(shas)
     diff_commits_relation = MergeRequestDiffCommit.where(merge_request_diff_id: id)
-    if MergeRequestDiffCommit.project_id_pruning_enabled?(project_id)
+    if MergeRequestDiffCommit.read_new_commits_table?(project_id)
       diff_commits_relation = diff_commits_relation.where(project_id: project_id)
     end
 
@@ -1142,7 +1212,7 @@ class MergeRequestDiff < ApplicationRecord
   end
 
   def commit_shas_from_metadata(limit)
-    diff_commits_relation = if MergeRequestDiffCommit.project_id_pruning_enabled?(project_id)
+    diff_commits_relation = if MergeRequestDiffCommit.read_new_commits_table?(project_id)
                               MergeRequestDiffCommit.for_merge_request_diff(id, project_id)
                             else
                               MergeRequestDiffCommit.for_merge_request_diff(id)

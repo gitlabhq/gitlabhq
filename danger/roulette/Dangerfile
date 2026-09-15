@@ -1,5 +1,10 @@
 # frozen_string_literal: true
 
+require_relative '../../tooling/danger/roulette_experiment'
+
+REVIEWER_COLUMN_HIDDEN_LABEL = 'roulette-experiment::reviewer-column-hidden'
+REVIEWER_COLUMN_SHOWN_LABEL = 'roulette-experiment::reviewer-column-shown'
+
 REVIEW_ROULETTE_SECTION = <<MARKDOWN
 ## Reviewer roulette suggestions
 MARKDOWN
@@ -8,6 +13,12 @@ CATEGORY_TABLE = <<MARKDOWN
 
 | Category | Reviewer | Maintainer |
 | -------- | -------- | ---------- |
+MARKDOWN
+
+CATEGORY_TABLE_WITHOUT_REVIEWER = <<MARKDOWN
+
+| Category | Maintainer |
+| -------- | ---------- |
 MARKDOWN
 
 POST_TABLE_MESSAGE = <<MARKDOWN
@@ -60,8 +71,11 @@ def note_for_spin_role(spin, role, category)
   note || (template % { role: role })
 end
 
-def markdown_row_for_spin(category, spin)
+def markdown_row_for_spin(category, spin, hide_reviewer:)
   maintainer_note = note_for_spin_role(spin, :maintainer, category)
+
+  return "| #{helper.label_for_category(category)} | #{maintainer_note} |" if hide_reviewer
+
   reviewer_note = note_for_spin_role(spin, :reviewer, category)
 
   "| #{helper.label_for_category(category)} | #{reviewer_note} | #{maintainer_note} |"
@@ -85,13 +99,19 @@ categories.subtract([:database, :ux, :analytics_instrumentation]) if stable_bran
 
 if changes.any? || roulette.required_approvals.any?
   random_roulette_spins = roulette.spin(nil, categories)
+  spins = random_roulette_spins + roulette.required_approvals.map(&:spin)
+  spin_categories = random_roulette_spins.map(&:category) + roulette.required_approvals.map(&:category)
 
-  rows = random_roulette_spins.map do |spin|
-    markdown_row_for_spin(spin.category, spin)
+  # Deterministic per MR so the table doesn't flicker on re-runs; disabled locally
+  # so `danger dry_run` always shows the full table.
+  hide_reviewer = helper.ci? && ::Tooling::Danger::RouletteExperiment.hide_reviewer_column?(helper.mr_iid)
+
+  if spins.any?
+    helper.labels_to_add << (hide_reviewer ? REVIEWER_COLUMN_HIDDEN_LABEL : REVIEWER_COLUMN_SHOWN_LABEL)
   end
 
-  roulette.required_approvals.each do |approval|
-    rows << markdown_row_for_spin(approval.category, approval.spin)
+  rows = spin_categories.zip(spins).map do |category, spin|
+    markdown_row_for_spin(category, spin, hide_reviewer: hide_reviewer)
   end
 
   markdown(REVIEW_ROULETTE_SECTION)
@@ -99,7 +119,8 @@ if changes.any? || roulette.required_approvals.any?
   if rows.empty?
     markdown(NO_SUGGESTIONS)
   else
-    markdown(CATEGORY_TABLE + rows.join("\n"))
+    table = hide_reviewer ? CATEGORY_TABLE_WITHOUT_REVIEWER : CATEGORY_TABLE
+    markdown(table + rows.join("\n"))
     markdown(POST_TABLE_MESSAGE)
   end
 

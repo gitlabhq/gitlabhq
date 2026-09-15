@@ -9,7 +9,7 @@ class Projects::RunnerProjectsController < Projects::ApplicationController
   urgency :low
 
   def create
-    @runner = Ci::Runner.find(params[:runner_project][:runner_id])
+    @runner = Ci::Runner.find(runner_project_params[:runner_id])
 
     return head(:forbidden) unless can?(current_user, :assign_runner, @runner)
 
@@ -28,7 +28,7 @@ class Projects::RunnerProjectsController < Projects::ApplicationController
   end
 
   def destroy
-    runner_project = project.runner_projects.find(params[:id])
+    runner_project = project.runner_projects.find(id_param)
     path = project_runners_path(project)
 
     service_response = ::Ci::Runners::UnassignRunnerService.new(runner_project, current_user).execute
@@ -36,5 +36,15 @@ class Projects::RunnerProjectsController < Projects::ApplicationController
     return redirect_to path, alert: service_response.message, status: :found if service_response.error?
 
     redirect_to path, status: :found, flash: { success: s_('Runners|Runner unassigned from project.') }
+  end
+
+  private
+
+  def runner_project_params
+    params.require(:runner_project).permit(:runner_id)
+  end
+
+  def id_param
+    params.permit(:id)[:id]
   end
 end

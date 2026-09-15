@@ -1,6 +1,6 @@
 ---
 stage: Plan
-group: Project Management
+group: Work Items
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see <https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments>
 description: Learn how to manage GitLab issues including editing, moving, closing, bulk operations, and using various issue features like assignees, health status, and automation.
 title: Manage issues
@@ -79,7 +79,7 @@ Generate a detailed description for an issue based on a short summary you provid
 
 Prerequisites:
 
-- You must belong to at least one group with the [experiment and beta features setting](../../gitlab_duo/turn_on_off.md#turn-on-beta-and-experimental-features) enabled.
+- You must belong to at least one group with the [experiment and beta features setting](../../gitlab_duo/turn_on_off.md#turn-on-beta-and-experimental-features) turned on.
 - You must have permission to create an issue.
 - Only available for the plain text editor.
 - Only available when creating a new issue.
@@ -89,7 +89,7 @@ Prerequisites:
 To generate an issue description:
 
 1. Create a new issue.
-1. Above the **Description** field, select **GitLab Duo** ({{< icon name="tanuki-ai" >}}) > **Generate issue description**.
+1. Above the **Description** text box, select **GitLab Duo** ({{< icon name="tanuki-ai" >}}) > **Generate issue description**.
 1. Write a short description and select **Submit**.
 
 The issue description is replaced with AI-generated text.
@@ -148,6 +148,14 @@ When bulk editing issues, you can edit the following attributes:
 When you move an issue, it's closed and copied to the target project.
 The original issue is not deleted. A [system note](../system_notes.md), which indicates
 where it came from and went to, is added to both issues.
+
+GitLab also copies files attached to the issue's description or comments to the target
+project. Because [uploaded files are scoped to a project](../../../security/user_file_uploads.md),
+GitLab creates each copy with a new URL secret in the target project:
+
+- Direct links to the original attachment URLs return a `404` error.
+- The copied files are listed in the target project's
+  [Markdown uploads](../../../api/project_markdown_uploads.md), not the source project's.
 
 Be careful when moving an issue to a project with different access rules. Before moving the issue, make sure it does not contain sensitive data.
 
@@ -343,25 +351,33 @@ description:
 Alternatively, when you [create a merge request from an issue](../merge_requests/creating_merge_requests.md#from-an-issue),
 it inherits the issue's milestone and labels.
 
-For performance reasons, automatic issue closing is disabled for the very first
+For performance reasons, automatic issue closing is turned off for the very first
 push from an existing repository.
 
 #### User responsibility when merging
 
 When you merge a merge request, it's your responsibility to check that it's appropriate for any targeted issues
 to close. Users can include issue closing patterns in the merge request description, and also in the body
-of a commit message. Closing messages in commit messages are easy to miss. In both cases, the merge request widget
+of a commit message. Closing messages in commit messages are less visible. In both cases, the merge request widget
 shows information about the issue to close on merge:
 
 ![This merge request closes issue #2754.](img/closing_pattern_v17_4.png)
 
-When you merge a merge request, GitLab checks that you have permission to close the targeted issues.
+When you merge a merge request, GitLab checks that you have permission to close the issues targeted by a
+closing pattern.
 In public repositories, this check is important, because external users can create both merge requests
 and commits that contain closing patterns. When you are the user who merges, it's important
 that you are aware of the effects the merge has on both the code and issues in your project.
 
-When [auto-merge](../merge_requests/auto_merge.md) is enabled for a merge request, no further changes can be made to
-the list of issues that will be automatically closed.
+You can also link an issue to a merge request without a closing pattern.
+Use the GraphQL API, or the merge request's **Work items** widget.
+For links created either way, GitLab checks your permissions when you create the link, not when the
+merge request merges.
+The link persists, so the issue still closes on merge, even if you lose access to the issue's project.
+For more information, see [link work items manually](../../work_items/_index.md#link-work-items-manually).
+
+When [auto-merge](../merge_requests/auto_merge.md) is turned on for a merge request, no further changes can be made to
+the list of issues that are automatically closed.
 
 #### Default closing pattern
 
@@ -400,7 +416,7 @@ and https://gitlab.example.com/group/otherproject/-/issues/23.
 ```
 
 The previous commit message closes `#18`, `#19`, `#20`, and `#21` in the project this commit is pushed to,
-as well as `#22` and `#23` in `group/otherproject`. `#17` is not closed as it does
+and `#22` and `#23` in `group/otherproject`. `#17` is not closed as it does
 not match the pattern.
 
 You can use the closing patterns in multi-line commit messages or one-liners
@@ -414,14 +430,14 @@ The default issue closing pattern regex:
 
 #### Disable automatic issue closing
 
-You can disable the automatic issue closing feature on a per-project basis
+You can turn off the automatic issue closing feature on a per-project basis
 in the [project's settings](#disable-automatic-issue-closing).
 
 Prerequisites:
 
 - You must have the Maintainer or Owner role for the project.
 
-To disable automatic issue closing:
+To turn off automatic issue closing:
 
 1. In the top bar, select **Search or go to** and find your project.
 1. In the left sidebar, select **Settings** > **Repository**.
@@ -433,7 +449,7 @@ Referenced issues are still displayed, but are not closed automatically.
 
 Changing this setting applies only to new merge requests or commits. Already
 closed issues remain as they are.
-Disabling automatic issue closing only applies to issues in the project where the setting was disabled.
+Turning off automatic issue closing only applies to issues in the project where the setting was turned off.
 Merge requests and commits in this project can still close another project's issues.
 
 #### Customize the issue closing pattern
@@ -579,7 +595,7 @@ The following issue metadata is copied to the epic:
 Prerequisites:
 
 - The project to which the issue belongs must be in a group.
-- You must have the Planner, Reporter, Developer, Maintainer, or Owner role the project's immediate parent group.
+- You must have the Planner, Reporter, Developer, Maintainer, or Owner role for the project's immediate parent group.
 - You must either:
   - Have the Planner, Reporter, Developer, Maintainer, or Owner role for the project.
   - Be the author of the issue.
@@ -661,10 +677,9 @@ The following sections describe how to work with the issue list.
 
 {{< history >}}
 
-- OR filtering [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/23532) in GitLab 15.6 [with a feature flag](../../../administration/feature_flags/_index.md) named `or_issuable_queries`. Disabled by default.
-- OR filtering [enabled on GitLab.com and GitLab Self-Managed](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/104292) in GitLab 15.9.
 - OR filtering [generally available](https://gitlab.com/gitlab-org/gitlab/-/issues/296031) in GitLab 17.0. Feature flag `or_issuable_queries` removed.
 - Filtering the list of issues by custom status or the parent item [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/520791) in GitLab 18.7.
+- Filtering by created date, closed date, due date, and updated date [generally available](https://gitlab.com/gitlab-org/gitlab/-/issues/17758) in GitLab 19.4. Feature flag `issue_date_filter` removed.
 
 {{< /history >}}
 
@@ -676,8 +691,11 @@ To filter the list of issues:
    The following filters are available:
    - Assignee
    - Author
+   - Closed date
    - Confidential
    - [Contact](../../crm/_index.md)
+   - Created date
+   - Due date
    - [Health](#health-status)
    - Iteration
    - Label
@@ -690,6 +708,7 @@ To filter the list of issues:
    - Status
    - Subscribed
    - Type
+   - Updated date
    - Weight
    - [Custom fields](../../work_items/custom_fields.md)
 1. Select or type the operator to use for filtering the attribute. The following operators are
@@ -708,7 +727,7 @@ To filter the list of issues:
 
 #### Filter by title or description
 
-To filter the list issues for text in a title or description:
+To filter the list of issues for text in a title or description:
 
 1. In the top bar, select **Search or go to** and find your project.
 1. In the left sidebar, select **Plan** > **Work items**, then filter by **Type** = **Issue**.
@@ -767,6 +786,26 @@ To open the issue in full view:
   - In the upper-right corner, select **Open in full page** ({{< icon name="maximize" >}}).
 
 To always open issues in full page view, [configure your list display preferences](../../work_items/_index.md#configure-list-display-preferences).
+
+### Subscribe to an RSS feed of the issue list
+
+You can subscribe to an RSS feed of the issue list. The feed reflects any filters
+applied to the list.
+
+To subscribe to an RSS feed of a project's issue list:
+
+1. In the top bar, select **Search or go to** and find your project.
+1. In the left sidebar, select **Plan** > **Work items**, then filter by **Type** = **Issue**.
+1. Optional. Apply any filters.
+1. In the upper-right corner, select **Actions** ({{< icon name="ellipsis_v" >}}) > **Subscribe to RSS feed**.
+
+To subscribe to an RSS feed of a group's issue list, follow the same steps. In the top bar,
+select **Search or go to** and find your group instead of a project. For your personal issue
+list, in the left sidebar, select **Your work** > **Work items**, then use the same
+**Actions** > **Subscribe to RSS feed**.
+
+The feed URL contains a [feed token](../../../security/tokens/_index.md#feed-token) that
+authenticates you as the feed reader.
 
 ## Copy issue reference
 
@@ -883,7 +922,7 @@ You can see the issue's health status in:
 - Epic's **Child items** section
 - Issue cards in issue boards
 
-After an issue is closed, its health status can't be edited and the **Edit** button becomes disabled
+After an issue is closed, its health status can't be edited and **Edit** is not available
 until the issue is reopened.
 
 You can also set and clear health statuses using the [`/health_status`](../quick_actions.md#health_status) and [`/clear_health_status`](../quick_actions.md#clear_health_status)
@@ -962,7 +1001,7 @@ For more information, see [GitLab Status Page](../../../operations/incident_mana
 You can also use quick actions to manage issues.
 
 Some actions don't have corresponding UI buttons yet.
-You can do the following **only by using quick actions**:
+You can do the following only by using quick actions:
 
 - [Add or remove a Zoom meeting](associate_zoom_meeting.md) ([`/zoom` and `/remove_zoom`](../quick_actions.md#zoom)).
 - [Publish an issue](#publish-an-issue) ([`/publish`](../quick_actions.md#publish)).

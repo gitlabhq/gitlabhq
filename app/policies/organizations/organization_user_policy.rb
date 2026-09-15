@@ -4,16 +4,19 @@ module Organizations
   class OrganizationUserPolicy < BasePolicy
     delegate :organization
 
+    condition(:record_belongs_to_self) { @user && @subject.user == @user }
     condition(:last_owner) { @subject.last_owner? }
+    condition(:home_organization_membership) { @subject.organization_id == @subject.user&.organization_id }
 
-    # TODO - https://gitlab.com/gitlab-org/gitlab/-/issues/461792
-    # In Cells 1.0, the user will belong to a single organization so the organization owns that user.
-    # This will change in Cells 1.5 then users can belong to multiple organizations so the organizations would not
-    # necessarily own the user. Then we would have to update this rule.
-    rule { can?(:update_organization) & ~last_owner }.policy do
-      enable :update_organization_user
-      enable :delete_organization_user
-      enable :delete_user
+    rule { ~record_belongs_to_self }.prevent :_delete_own_organization_user
+
+    rule { can?(:_delete_own_organization_user) }.enable :delete_organization_user
+
+    rule { home_organization_membership }.prevent :delete_organization_user
+
+    rule { last_owner }.policy do
+      prevent :update_organization_user
+      prevent :delete_organization_user
     end
   end
 end

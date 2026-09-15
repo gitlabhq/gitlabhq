@@ -15,8 +15,15 @@ class Projects::ClustersController < ::Clusters::ClustersController
     @clusterable ||= project && ClusterablePresenter.fabricate(project, current_user: current_user)
   end
 
+  def project_path_params
+    params.permit(:namespace_id, :project_id)
+  end
+  strong_memoize_attr :project_path_params
+
   def project
-    @project ||= find_routable!(Project, File.join(params[:namespace_id], params[:project_id]), request.fullpath)
+    @project ||= find_routable!(
+      Project, File.join(project_path_params[:namespace_id], project_path_params[:project_id]), request.fullpath
+    )
   end
 
   def repository

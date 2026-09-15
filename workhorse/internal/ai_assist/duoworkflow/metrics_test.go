@@ -8,12 +8,14 @@ import (
 	"net/url"
 	"strings"
 	"testing"
+	"time"
 
 	"github.com/gorilla/websocket"
 	"github.com/prometheus/client_golang/prometheus"
 	"github.com/prometheus/client_golang/prometheus/testutil"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
+	pb "gitlab.com/gitlab-org/modelops/applied-ml/code-suggestions/ai-assist/clients/gopb/contract"
 	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/status"
 
@@ -35,10 +37,17 @@ func counterVecValue(t *testing.T, cv *prometheus.CounterVec, labels ...string) 
 }
 
 // newTestStreamManager returns a streamManager wrapping the given mock stream.
+// The gRPC client is real but never dialed, since grpc.NewClient connects
+// lazily, so that Close behaves like it does in production.
 func newTestStreamManager(t *testing.T, wf workflowStream) *streamManager {
 	t.Helper()
+
+	client, err := NewClient(&api.DuoWorkflowServiceConfig{URI: "localhost:1"}, "test-agent", "")
+	require.NoError(t, err)
+
 	return &streamManager{
 		wf:          wf,
+		client:      client,
 		originalReq: httptest.NewRequest(http.MethodGet, "/", nil),
 	}
 }
@@ -52,33 +61,6 @@ func testDuoWorkflowConfig(server *testServer) *api.DuoWorkflow {
 			Secure: false,
 		},
 	}
-}
-
-// newServerSideConn opens a loopback WebSocket pair and returns the server-side
-// *websocket.Conn. It is useful when a test needs a real conn to pass into
-// handler methods that call WriteMessage, without standing up a full handler.
-func newServerSideConn(t *testing.T) *websocket.Conn {
-	t.Helper()
-	connCh := make(chan *websocket.Conn, 1)
-	upgrader := websocket.Upgrader{}
-	srv := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-		c, err := upgrader.Upgrade(w, r, nil)
-		assert.NoError(t, err)
-		connCh <- c
-	}))
-	t.Cleanup(srv.Close)
-
-	wsURL := "ws" + strings.TrimPrefix(srv.URL, "http") + "/"
-	clientConn, resp, err := websocket.DefaultDialer.Dial(wsURL, nil)
-	if resp != nil {
-		_ = resp.Body.Close()
-	}
-	require.NoError(t, err)
-	t.Cleanup(func() { _ = clientConn.Close() })
-
-	serverConn := <-connCh
-	t.Cleanup(func() { _ = serverConn.Close() })
-	return serverConn
 }
 
 // dialTestHandler starts a full HTTP/WebSocket server backed by the given handler
@@ -126,84 +108,37 @@ func setupHandlerWithGRPC(t *testing.T, grpcServer *testServer) http.Handler {
 	return NewHandler(apiClient, initRdb(t), http.HandlerFunc(func(_ http.ResponseWriter, _ *http.Request) {}), "").Build()
 }
 
-// TestConnectionsTotal verifies that connectionsTotal increments once per
-// inbound request, before the WebSocket upgrade is attempted.
-func TestConnectionsTotal(t *testing.T) {
+func TestConnectionsOpen(t *testing.T) {
 	testhelper.ConfigureSecret()
 
 	grpcServer := setupTestServer(t)
+	released := make(chan struct{})
+	grpcServer.execWorkflowHandler = func(_ pb.DuoWorkflow_ExecuteWorkflowServer) error {
+		<-released
+		return nil
+	}
 	handler := setupHandlerWithGRPC(t, grpcServer)
 
-	before := counterValue(t, connectionsTotal)
+	openWebSocketConns := func() float64 {
+		return testutil.ToFloat64(connectionsOpen.WithLabelValues(transportWebSocket))
+	}
 
-	// The counter is incremented before Upgrade, so it is already bumped by the
-	// time the WebSocket dial returns.
-	_ = dialTestHandler(t, handler)
+	before := openWebSocketConns()
 
-	require.InDelta(t, before+1, counterValue(t, connectionsTotal), 0,
-		"connectionsTotal should increment by 1 per connection attempt")
-}
+	conn := dialTestHandler(t, handler)
 
-// TestConnectionErrorsTotal verifies that connectionErrorsTotal increments with
-// the correct error_type label in handleExecutionError, and does not increment
-// on a clean EOF.
-func TestConnectionErrorsTotal(t *testing.T) {
-	t.Run("increments with 'other' label on generic runner execution error", func(t *testing.T) {
-		t.Skip("Pending fix: https://gitlab.com/gitlab-org/gitlab/-/work_items/595283")
-		before := counterVecValue(t, connectionErrorsTotal, errorTypeOther)
+	require.Eventually(t, func() bool {
+		return openWebSocketConns() == before+1
+	}, 5*time.Second, time.Millisecond,
+		"connectionsOpen should increment while a connection is open")
 
-		h := &Handler{}
-		r := httptest.NewRequest(http.MethodGet, "/", nil)
-		grpcErr := status.Error(codes.Internal, "boom")
-		sm := newTestStreamManager(t, &mockWorkflowStream{recvError: grpcErr})
-		runner := &runner{streamManager: sm, ws: newWsManager(&mockWebSocketConn{})}
+	close(released)
+	require.NoError(t, conn.Close())
 
-		h.executeRunner(r, nil, runner)
-
-		require.InDelta(t, before+1, counterVecValue(t, connectionErrorsTotal, errorTypeOther), 0,
-			"connectionErrorsTotal{error_type=other} should increment on generic runner execution error")
-	})
-
-	t.Run("increments with 'quota_exceeded' label on usage quota exceeded error", func(t *testing.T) {
-		before := counterVecValue(t, connectionErrorsTotal, errorTypeQuotaExceeded)
-
-		h := &Handler{}
-		r := httptest.NewRequest(http.MethodGet, "/", nil)
-		h.handleExecutionError(r, newServerSideConn(t), errUsageQuotaExceededError)
-
-		require.InDelta(t, before+1, counterVecValue(t, connectionErrorsTotal, errorTypeQuotaExceeded), 0,
-			"connectionErrorsTotal{error_type=quota_exceeded} should increment on quota exceeded error")
-	})
-
-	t.Run("increments with 'locked' label on failed to acquire lock error", func(t *testing.T) {
-		before := counterVecValue(t, connectionErrorsTotal, errorTypeLocked)
-
-		h := &Handler{}
-		r := httptest.NewRequest(http.MethodGet, "/", nil)
-		h.handleExecutionError(r, newServerSideConn(t), errFailedToAcquireLockError)
-
-		require.InDelta(t, before+1, counterVecValue(t, connectionErrorsTotal, errorTypeLocked), 0,
-			"connectionErrorsTotal{error_type=locked} should increment on lock acquisition failure")
-	})
-
-	t.Run("does not increment on clean EOF", func(t *testing.T) {
-		seriesBefore := testutil.CollectAndCount(connectionErrorsTotal)
-
-		h := &Handler{}
-		r := httptest.NewRequest(http.MethodGet, "/", nil)
-		// Block the WebSocket reader so the gRPC EOF side wins the race and
-		// Execute returns nil — matching how the existing runner tests handle this.
-		sm := newTestStreamManager(t, &mockWorkflowStream{recvError: io.EOF})
-		runner := &runner{
-			streamManager: sm,
-			ws:            newWsManager(&mockWebSocketConn{blockCh: make(chan bool)}),
-		}
-
-		h.executeRunner(r, nil, runner)
-
-		require.Equal(t, seriesBefore, testutil.CollectAndCount(connectionErrorsTotal),
-			"connectionErrorsTotal must not create new series for a clean EOF")
-	})
+	require.Eventually(t, func() bool {
+		return openWebSocketConns() == before
+	}, 15*time.Second, time.Millisecond,
+		"connectionsOpen should return to its previous value once the connection closes")
 }
 
 // TestSessionsTotal verifies that sessionsTotal increments exactly once for each

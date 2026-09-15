@@ -352,7 +352,11 @@ export default {
         const reducedOld = reduceFilter(oldValue);
         for (const filter of reduceNew) {
           if (!reducedOld.has(filter)) {
-            this.track(INSTRUMENT_TODO_FILTER_CHANGE, { label: `filter_${filter}` });
+            this.track(INSTRUMENT_TODO_FILTER_CHANGE, {
+              label: `filter_${filter}`,
+              // Only the reason is recorded by value; the other filters hold raw IDs.
+              ...(filter === 'action' ? { property: newValue[filter][0] } : {}),
+            });
           }
         }
       },
@@ -477,8 +481,8 @@ export default {
         :sort-options="$options.SORT_OPTIONS"
         :sort-by="sortBy"
         :is-ascending="isAscending"
-        @sortByChange="onSortByChange"
-        @sortDirectionChange="onDirectionChange"
+        @sort-by-change="onSortByChange"
+        @sort-direction-change="onDirectionChange"
       />
     </div>
   </div>

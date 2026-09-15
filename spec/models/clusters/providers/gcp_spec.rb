@@ -15,7 +15,7 @@ RSpec.describe Clusters::Providers::Gcp do
       expect(gcp.zone).to eq('us-central1-a')
       expect(gcp.num_nodes).to eq(3)
       expect(gcp.machine_type).to eq('n1-standard-2')
-      expect(gcp.cloud_run).to eq(false)
+      expect(gcp.cloud_run).to be(false)
     end
   end
 

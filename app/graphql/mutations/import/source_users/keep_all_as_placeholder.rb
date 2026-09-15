@@ -17,6 +17,10 @@ module Mutations
 
         authorize :admin_namespace
 
+        authorize_granular_token permissions: :update_placeholder_reassignment,
+          boundary_argument: :namespace_id,
+          boundary_type: :group
+
         def resolve(args)
           namespace = authorized_find!(id: args[:namespace_id])
           result = ::Import::SourceUsers::KeepAllAsPlaceholderService.new(namespace, current_user: current_user).execute

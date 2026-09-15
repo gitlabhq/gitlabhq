@@ -152,42 +152,22 @@ RSpec.describe 'Admin::DatabaseDiagnostics', feature_category: :database do
         login_as(admin)
       end
 
-      context 'when the loose_foreign_keys_backlog_diagnostic flag is enabled' do
-        before do
-          stub_feature_flags(loose_foreign_keys_backlog_diagnostic: true)
-        end
+      it 'returns 200 response and schedules the worker' do
+        expect(::Database::LooseForeignKeysBacklogCheckerWorker).to receive(:perform_async).and_return('lfk_job_id')
 
-        it 'returns 200 response and schedules the worker' do
-          expect(::Database::LooseForeignKeysBacklogCheckerWorker).to receive(:perform_async).and_return('lfk_job_id')
+        send_request
 
-          send_request
-
-          expect(response).to have_gitlab_http_status(:ok)
-          expect(json_response).to include('status' => 'scheduled', 'job_id' => 'lfk_job_id')
-        end
-
-        it 'returns 500 response when worker fails to schedule' do
-          expect(::Database::LooseForeignKeysBacklogCheckerWorker).to receive(:perform_async).and_return(nil)
-
-          send_request
-
-          expect(response).to have_gitlab_http_status(:internal_server_error)
-          expect(json_response).to include('error' => 'Failed to schedule job')
-        end
+        expect(response).to have_gitlab_http_status(:ok)
+        expect(json_response).to include('status' => 'scheduled', 'job_id' => 'lfk_job_id')
       end
 
-      context 'when the loose_foreign_keys_backlog_diagnostic flag is disabled' do
-        before do
-          stub_feature_flags(loose_foreign_keys_backlog_diagnostic: false)
-        end
+      it 'returns 500 response when worker fails to schedule' do
+        expect(::Database::LooseForeignKeysBacklogCheckerWorker).to receive(:perform_async).and_return(nil)
 
-        it 'does not schedule the worker and returns 503' do
-          expect(::Database::LooseForeignKeysBacklogCheckerWorker).not_to receive(:perform_async)
+        send_request
 
-          send_request
-
-          expect(response).to have_gitlab_http_status(:service_unavailable)
-        end
+        expect(response).to have_gitlab_http_status(:internal_server_error)
+        expect(json_response).to include('error' => 'Failed to schedule job')
       end
     end
   end

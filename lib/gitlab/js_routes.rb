@@ -196,12 +196,14 @@ module Gitlab
         private_organization_path_helper_name = private_path_helper_name(organization_path_helper_name)
 
         # Adjust arguments in JSDoc to show projectPath as the argument
-        jsdoc = global_jsdoc
-          .sub(%r{\*namespace_id/:(?:project_)?id}, ':project_full_path')
-          .sub(
-            / \* @param {any} namespaceId\n \* @param {any} (?:project)?[Ii]d/,
-            ' * @param {string} projectFullPath'
-          )
+        jsdoc = annotate_jsdoc_with_organization_path_option(
+          global_jsdoc
+            .sub(%r{\*namespace_id/:(?:project_)?id}, ':project_full_path')
+            .sub(
+              / \* @param {any} namespaceId\n \* @param {any} (?:project)?[Ii]d/,
+              ' * @param {string} projectFullPath'
+            )
+        )
 
         project_path_helper_name = "#{shorthand_route_name}_path".camelize(:lower)
 
@@ -211,12 +213,13 @@ module Gitlab
               const #{private_global_path_helper_name} = #{global_path_helper};
 
               const { namespacePath, projectPath } = splitProjectFullPath(projectFullPath);
+              const { organizationPath, routeArgs } = resolveOrganizationScope(args);
 
-              if (hasOrganizationScopedPaths()) {
-                return #{private_organization_path_helper_name}(gon.current_organization.path, namespacePath, projectPath, ...args);
+              if (organizationPath) {
+                return #{private_organization_path_helper_name}(organizationPath, namespacePath, projectPath, ...routeArgs);
               }
 
-              return #{private_global_path_helper_name}(namespacePath, projectPath, ...args);
+              return #{private_global_path_helper_name}(namespacePath, projectPath, ...routeArgs);
             };
         JS
       end
@@ -231,15 +234,17 @@ module Gitlab
         private_organization_path_helper_name = private_path_helper_name(organization_path_helper_name)
 
         <<~JS
-          #{global_jsdoc}export const #{global_path_helper_name} = /*#__PURE__*/ (...args) => {
+          #{annotate_jsdoc_with_organization_path_option(global_jsdoc)}export const #{global_path_helper_name} = /*#__PURE__*/ (...args) => {
             const #{private_organization_path_helper_name} = #{organization_path_helper};
             const #{private_global_path_helper_name} = #{global_path_helper};
 
-            if (hasOrganizationScopedPaths()) {
-              return #{private_organization_path_helper_name}(gon.current_organization.path, ...args);
+            const { organizationPath, routeArgs } = resolveOrganizationScope(args);
+
+            if (organizationPath) {
+              return #{private_organization_path_helper_name}(organizationPath, ...routeArgs);
             }
 
-            return #{private_global_path_helper_name}(...args);
+            return #{private_global_path_helper_name}(...routeArgs);
           };
         JS
       end
@@ -286,6 +291,16 @@ module Gitlab
         end
       end
 
+      # Only helpers with an organization scoped counterpart run `resolveOrganizationScope`, so
+      # only those document `organizationPath`. Anywhere else it would be serialized into the
+      # query string rather than switching the scope.
+      def annotate_jsdoc_with_organization_path_option(jsdoc)
+        jsdoc.sub(/^ \* @param \{object \| undefined\} options\n/) do |options_param|
+          "#{options_param} * @param {string | null | undefined} options.organizationPath Path of organization to " \
+            "nest under. Pass `null` to remove path from URL params when outside of an organization data context.\n"
+        end
+      end
+
       def route_controller_action(global_route)
         controller = global_route.requirements[:controller]
         action = global_route.requirements[:action]
@@ -310,7 +325,7 @@ module Gitlab
       end
 
       def utils_import_statement(path_helpers)
-        imports = %w[hasOrganizationScopedPaths splitProjectFullPath].select do |name|
+        imports = %w[resolveOrganizationScope splitProjectFullPath].select do |name|
           path_helpers.include?(name)
         end
 
@@ -324,12 +339,44 @@ module Gitlab
       def javascript_utils
         <<~JS
           #{GENERATED_FILE_HEADER}
-          // Check if the current organization has a scoped path.
-          // Calls https://gitlab.com/gitlab-org/gitlab/-/blob/4202e37329fb343ae674db79593ce04427ebab6b/app/models/organizations/organization.rb#L127
-          // Used to support automatic swapping of organization scoped routes similar to what we do in
-          // https://gitlab.com/gitlab-org/gitlab/-/blob/4202e37329fb343ae674db79593ce04427ebab6b/app/helpers/routing/organizations_helper.rb#L92
-          export const hasOrganizationScopedPaths = () =>
-            gon?.current_organization?.has_scoped_paths ?? false;
+          // js-routes reads the trailing argument as a route parameter rather than an options
+          // hash when it carries `id`, `to_param` or `toParam`. Mirrors `looks_like_serialized_model`
+          // in `core.js`, which is where `extract_options` makes the same call.
+          const isOptionsObject = (value) =>
+            Object.prototype.toString.call(value) === '[object Object]' &&
+            ('_options' in value || !('id' in value || 'to_param' in value || 'toParam' in value));
+
+          // Mirror `::Current.data_context` and `::Current.organization_resolver&.from_organization_params&.path` in
+          // `Routing::OrganizationsHelper::MappedHelpers#scoped_path_for`.
+          const dataContextOrganizationPath = () => gon?.data_context_organization_path;
+          const requestOrganizationPath = () => gon?.organization_path;
+
+          // Strip `organizationPath` so js-routes does not turn it into a query parameter.
+          const withoutOrganizationPathOption = (args) => {
+            const { organizationPath, ...routeOptions } = args.at(-1);
+
+            return [...args.slice(0, -1), routeOptions];
+          };
+
+          // Mirrors `Routing::OrganizationsHelper::MappedHelpers#scoped_path_for`.
+          export const resolveOrganizationScope = (args) => {
+            const options = args.at(-1);
+            const hasOrganizationPathOption = isOptionsObject(options) && 'organizationPath' in options;
+            const routeArgs = hasOrganizationPathOption ? withoutOrganizationPathOption(args) : args;
+            const dataContextPath = dataContextOrganizationPath();
+
+            if (dataContextPath) {
+              return { organizationPath: dataContextPath, routeArgs };
+            }
+
+            // `null` opts out of organization scoping, `undefined` reads as "not specified"
+            // so that an unresolved value does not silently drop the request's own scope.
+            if (hasOrganizationPathOption && options.organizationPath !== undefined) {
+              return { organizationPath: options.organizationPath, routeArgs };
+            }
+
+            return { organizationPath: requestOrganizationPath(), routeArgs };
+          };
 
           // The private `namespaceProject` helpers expect separate `namespacePath`
           // and `projectPath` arguments. Typically we only have `project.fullPath`

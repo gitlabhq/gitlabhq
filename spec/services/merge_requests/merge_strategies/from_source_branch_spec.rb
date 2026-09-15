@@ -209,12 +209,19 @@ RSpec.describe MergeRequests::MergeStrategies::FromSourceBranch, feature_categor
           expect(strategy.execute_git_merge!).to eq({ commit_sha: '1234' })
         end
 
-        context 'and the create ref service returns an error' do
+        context 'and the create ref service returns a rebase conflict error' do
           let(:create_ref_service_response) do
-            instance_double(ServiceResponse, error?: true, message: 'rebase collapsed', payload: { commit_sha: '11' })
+            instance_double(
+              ServiceResponse,
+              error?: true,
+              message: '9:failed to rebase deadbeef on cafe1234 while preparing ' \
+                'refs/mr/1/rebase_on_merge due to conflict',
+              reason: MergeRequests::CreateRefService::REBASE_CONFLICT,
+              payload: { commit_sha: '11' }
+            )
           end
 
-          it 'raises a strategy error and does not attempt the fast-forward merge' do
+          it 'raises an actionable strategy error and does not attempt the fast-forward merge' do
             expect_next_instance_of(MergeRequests::CreateRefService) do |instance|
               expect(instance).to receive(:execute).and_return(create_ref_service_response)
             end
@@ -222,7 +229,34 @@ RSpec.describe MergeRequests::MergeStrategies::FromSourceBranch, feature_categor
             expect(merge_request.target_project.repository).not_to receive(:ff_merge)
 
             expect { strategy.execute_git_merge! }
-              .to raise_error(MergeRequests::MergeStrategies::StrategyError, 'rebase collapsed')
+              .to raise_error(
+                MergeRequests::MergeStrategies::StrategyError,
+                'Automatic rebase before merge failed because the source branch conflicts ' \
+                  'with the target branch. Rebase the source branch manually and resolve the conflicts.'
+              )
+          end
+        end
+
+        context 'and the create ref service returns a non-conflict error' do
+          let(:create_ref_service_response) do
+            instance_double(
+              ServiceResponse,
+              error?: true,
+              message: '9:some internal gitaly failure',
+              reason: nil,
+              payload: {}
+            )
+          end
+
+          it 'raises a non-strategy error so the generic merge error is shown' do
+            expect_next_instance_of(MergeRequests::CreateRefService) do |instance|
+              expect(instance).to receive(:execute).and_return(create_ref_service_response)
+            end
+
+            expect(merge_request.target_project.repository).not_to receive(:ff_merge)
+
+            expect { strategy.execute_git_merge! }
+              .to raise_error(RuntimeError, '9:some internal gitaly failure')
           end
         end
 
@@ -385,6 +419,126 @@ RSpec.describe MergeRequests::MergeStrategies::FromSourceBranch, feature_categor
             'Fast-forward merge did not advance the target branch'
           )
       end
+
+      context 'and deleting the generated ref commits fails' do
+        let(:cleanup_error) { ActiveRecord::StatementInvalid.new('PG::UnableToSend') }
+
+        before do
+          allow(MergeRequests::GeneratedRefCommit).to receive(:delete_all_for).and_raise(cleanup_error)
+        end
+
+        it 'reports the cleanup failure and still raises the merge error' do
+          expect_next_instance_of(MergeRequests::CreateRefService) do |instance|
+            expect(instance).to receive(:execute).and_return(create_ref_service_response)
+          end
+
+          expect(merge_request.target_project.repository)
+            .to receive(:ff_merge).and_return(target_branch_sha)
+
+          expect(Gitlab::ErrorTracking)
+            .to receive(:track_exception).with(cleanup_error, merge_request_id: merge_request.id)
+
+          expect { strategy.execute_git_merge! }
+            .to raise_exception(
+              MergeRequests::MergeStrategies::StrategyError,
+              'Fast-forward merge did not advance the target branch'
+            )
+        end
+      end
+    end
+  end
+
+  # The automatic-rebase path rewrites the source commits, so the merge request
+  # diff no longer names any SHA that reaches the target branch. Without a
+  # generated_ref_commits row per rewritten commit, nothing links them back.
+  # See https://gitlab.com/gitlab-com/request-for-help/-/work_items/5340.
+  describe 'commit to merge request association after an automatic rebase' do
+    # Not let_it_be: every example merges, which advances the target branch, and
+    # Gitaly repositories are not rolled back between examples. A shared
+    # repository would leave the second example with nothing to rebase.
+    let(:project) { create(:project, :empty_repo) }
+    let(:target_branch) { project.default_branch_or_main }
+    let(:source_branch) { 'feature' }
+
+    let(:merge_request) do
+      create(
+        :merge_request,
+        author: user,
+        source_project: project,
+        target_project: project,
+        source_branch: source_branch,
+        target_branch: target_branch
+      )
+    end
+
+    before do
+      commit_file('README.md', 'Base commit 1', target_branch)
+      project.repository.create_branch(source_branch, target_branch)
+      commit_file('a.txt', 'Feature commit 1', source_branch)
+      commit_file('b.txt', 'Feature commit 2', source_branch)
+      # Advance the target so the source branch is behind and a rebase is required.
+      commit_file('EXTRA', 'Base commit 2', target_branch)
+
+      project.project_setting.update!(automatic_rebase_enabled: true)
+    end
+
+    shared_examples 'links every merged commit to the merge request' do
+      it 'leaves no commit on the target branch without its merge request', :aggregate_failures do
+        target_sha_before = project.repository.commit(target_branch).sha
+
+        strategy.execute_git_merge!
+
+        merged_shas = project.repository
+          .commits_between(target_sha_before, project.repository.commit(target_branch).sha)
+          .map(&:sha)
+
+        found = merged_shas.index_with do |sha|
+          MergeRequest.by_related_commit_sha(project, sha).pluck(:iid)
+        end
+
+        expect(merged_shas).to be_present
+        expect(found).to eq(merged_shas.index_with { [merge_request.iid] })
+      end
+    end
+
+    context 'when the project uses semi-linear history' do
+      before do
+        project.merge_method = :rebase_merge
+        project.save!
+      end
+
+      it_behaves_like 'links every merged commit to the merge request'
+    end
+
+    context 'when the project uses fast-forward merges' do
+      before do
+        project.merge_method = :ff
+        project.save!
+      end
+
+      it_behaves_like 'links every merged commit to the merge request'
+    end
+
+    context 'when the fast-forward never lands' do
+      before do
+        project.merge_method = :ff
+        project.save!
+
+        # Gitaly can swallow a failed reference update and report no commit.
+        allow(merge_request.project.repository).to receive(:ff_merge).and_return(nil)
+      end
+
+      it 'deletes the generated ref commits recorded for the attempt' do
+        expect { strategy.execute_git_merge! }
+          .to raise_error(MergeRequests::MergeStrategies::StrategyError)
+
+        expect(MergeRequests::GeneratedRefCommit.where(project: project, merge_request: merge_request))
+          .to be_empty
+      end
+    end
+
+    def commit_file(path, message, branch)
+      project.repository.create_file(project.creator, path, '', message: message, branch_name: branch)
     end
   end
 end

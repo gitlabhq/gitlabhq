@@ -370,7 +370,7 @@ describe('JobArtifactsTable component', () => {
 
       await waitForPromises();
 
-      expect(findDownloadButton().attributes('disabled')).toBeDefined();
+      expect(findDownloadButton().attributes('aria-disabled')).toBe('true');
     });
   });
 
@@ -397,7 +397,7 @@ describe('JobArtifactsTable component', () => {
 
       await waitForPromises();
 
-      expect(findBrowseButton().attributes('disabled')).toBeDefined();
+      expect(findBrowseButton().attributes('aria-disabled')).toBe('true');
     });
 
     it('is disabled when job has no metadata.gz', async () => {
@@ -414,7 +414,7 @@ describe('JobArtifactsTable component', () => {
 
       await waitForPromises();
 
-      expect(findBrowseButton().attributes('disabled')).toBe('disabled');
+      expect(findBrowseButton().attributes('aria-disabled')).toBe('true');
     });
 
     it('is disabled when job has no artifacts', async () => {
@@ -431,7 +431,7 @@ describe('JobArtifactsTable component', () => {
 
       await waitForPromises();
 
-      expect(findBrowseButton().attributes('disabled')).toBe('disabled');
+      expect(findBrowseButton().attributes('aria-disabled')).toBe('true');
     });
   });
 
@@ -552,6 +552,15 @@ describe('JobArtifactsTable component', () => {
       });
 
       await waitForPromises();
+    });
+
+    it('gives the select-all and job checkboxes an accessible name', () => {
+      expect(findSelectAllCheckbox().find('input').attributes('aria-label')).toBe(
+        'Select all artifacts',
+      );
+      expect(findJobCheckbox().find('input').attributes('aria-label')).toBe(
+        `Select artifacts for ${job.name}`,
+      );
     });
 
     it('shows selected artifacts when a job is checked', async () => {

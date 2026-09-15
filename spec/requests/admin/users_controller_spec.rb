@@ -20,6 +20,14 @@ RSpec.describe Admin::UsersController, :enable_admin_mode, feature_category: :us
     end
   end
 
+  describe 'GET #index' do
+    it 'does not render the invite organization user button' do
+      get admin_users_path
+
+      expect(response.body).not_to include('js-admin-add-organization-users')
+    end
+  end
+
   describe 'PATCH #update' do
     let(:user) { create(:user) }
 

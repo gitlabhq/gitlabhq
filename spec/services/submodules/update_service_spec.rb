@@ -10,7 +10,6 @@ RSpec.describe Submodules::UpdateService, feature_category: :source_code_managem
   let(:submodule) { 'six' }
   let(:commit_sha) { 'e25eda1fece24ac7a03624ed1320f82396f35bd8' }
   let(:commit_message) { 'whatever' }
-  let(:current_sha) { repository.blob_at('HEAD', submodule).id }
   let(:commit_params) do
     {
       submodule: submodule,
@@ -122,7 +121,7 @@ RSpec.describe Submodules::UpdateService, feature_category: :source_code_managem
           end
 
           context 'is the same as the current ref' do
-            let(:commit_sha) { current_sha }
+            let(:commit_sha) { repository.blob_at(branch_name, submodule).id }
 
             it_behaves_like 'returns error result' do
               let(:error_message) { "The submodule #{submodule} is already at #{commit_sha}" }
@@ -206,6 +205,46 @@ RSpec.describe Submodules::UpdateService, feature_category: :source_code_managem
 
         it_behaves_like 'returns error result' do
           let(:error_message) { 'The repository is empty' }
+        end
+      end
+
+      context 'automatic race condition protection' do
+        let(:expected_old_oid) { repository.find_branch(branch_name)&.dereferenced_target&.id }
+
+        it 'always calculates expected_old_oid from the current branch tip' do
+          expect(repository).to receive(:update_submodule).with(
+            user,
+            submodule,
+            commit_sha,
+            message: commit_message,
+            branch: branch_name,
+            expected_old_oid: expected_old_oid
+          )
+
+          subject.execute
+        end
+
+        it 'provides race condition protection automatically' do
+          result = subject.execute
+
+          expect(result[:status]).to eq :success
+          expect(result[:result]).to eq repository.head_commit.id
+          expect(repository.blob_at('HEAD', submodule).id).to eq commit_sha
+        end
+
+        context 'when the branch moved after expected_old_oid was read' do
+          before do
+            stale_sha = repository.commit(branch_name).parent.sha
+            allow(subject).to receive(:expected_old_oid).and_return(stale_sha)
+          end
+
+          it 'returns an error and does not update the submodule' do
+            result = subject.execute
+
+            expect(result[:status]).to eq :error
+            expect(result[:message]).to eq "Could not update refs/heads/#{branch_name}. Please refresh and try again."
+            expect(repository.blob_at(branch_name, submodule).id).not_to eq commit_sha
+          end
         end
       end
     end

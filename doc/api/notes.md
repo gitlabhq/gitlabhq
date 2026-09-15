@@ -1,7 +1,8 @@
 ---
 stage: Plan
-group: Project Management
+group: Work Items
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see <https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments>
+description: REST API to manage comments on issues, merge requests, snippets, epics, and wikis.
 title: Notes API
 ---
 
@@ -51,7 +52,7 @@ Read more on [pagination](rest/_index.md#pagination).
 ## Rate limits
 
 To help avoid abuse, you can limit your users to a specific number of `Create` requests per minute.
-For more information, see [Rate limits on note creation](../administration/settings/rate_limit_on_notes_creation.md).
+For more information, see [content creation rate limits](../rate_limits/content_creation.md).
 
 ## Issues
 
@@ -222,7 +223,7 @@ curl --request DELETE --header "PRIVATE-TOKEN: <your_access_token>" \
 
 ## Snippets
 
-The Snippets Notes API is intended for project-level snippets, and not for personal snippets.
+The Snippets Notes API is intended for project snippets, not personal snippets.
 
 ### List all snippet notes
 

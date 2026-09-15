@@ -19,6 +19,7 @@ class RootController < Dashboard::ProjectsController
 
   before_action only: [:index] do
     push_frontend_feature_flag(:personal_homepage, current_user)
+    push_frontend_feature_flag(:homepage_pipelines_widget, current_user)
   end
 
   CACHE_CONTROL_HEADER = 'no-store'

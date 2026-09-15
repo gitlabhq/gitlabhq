@@ -22,12 +22,12 @@ Language Model (LLM) through the [AI Gateway](https://handbook.gitlab.com/handbo
 
 ## Which use cases lend themselves most to contributing to Chat?
 
-We aim to employ the Chat for all use cases and workflows that can benefit from a **conversational** interaction **between** **a user** and **an AI** that is driven by a large language model (LLM). Typically, these are:
+We aim to employ the Chat for all use cases and workflows that can benefit from a conversational interaction between a user and an AI that is driven by a large language model (LLM). Typically, these are:
 
-- **Creation and ideation** tasks as well as **Learning** tasks that are more effectively and more efficiently solved through iteration than through a one-shot interaction.
-- **Tasks** that are typically satisfiable with one-shot interactions but **that might need refinement or could turn into a conversation**.
-- Among the latter are tasks where the **AI may not get it right the first time but** where **users can easily course correct** by telling the AI more precisely what they need. For instance, "Explain this code" is a common question that most of the time would result in a satisfying answer, but sometimes the user may have additional questions.
-- **Tasks that benefit from the history of a conversation**, so neither the user nor the AI need to repeat themselves.
+- Creation and ideation tasks as well as learning tasks that are more effectively and more efficiently solved through iteration than through a one-shot interaction.
+- Tasks that are typically satisfiable with one-shot interactions but that might need refinement or could turn into a conversation.
+- Among the latter are tasks where the AI may not get it right the first time but where users can easily course correct by telling the AI more precisely what they need. For instance, "Explain this code" is a common question that most of the time would result in a satisfying answer, but sometimes the user may have additional questions.
+- Tasks that benefit from the history of a conversation, so neither the user nor the AI need to repeat themselves.
 
 Chat aims to be context aware and ultimately have access to all the resources in GitLab that the user has access to. Initially, this context was limited to the content of individual issues and epics, as well as GitLab documentation. Since then additional contexts have been added, such as code selection and code files. Currently, work is underway contributing vulnerability context and pipeline job context, so that users can ask questions about these contexts.
 
@@ -163,10 +163,10 @@ GitLab Duo Chat supports multiple conversations. Each conversation is represente
 - `conversation_type`: This allows for distinguishing between the different available GitLab Duo Chat conversation types. See the [thread conversation types list](../../api/graphql/reference/_index.md#aiconversationsthreadsconversationtype).
   - If your feature needs its own conversation type, contact the GitLab Duo Chat team.
 
-If your feature requires calling GraphQL API directly, the following queries and mutations are available, for which you **must** specify the `conversation_type`.
+If your feature requires calling GraphQL API directly, the following queries and mutations are available, for which you must specify the `conversation_type`.
 
 - [Query.aiConversationThreads](../../api/graphql/reference/_index.md#queryaiconversationthreads): lists threads
-- [Query.aiMessages](../../api/graphql/reference/_index.md#queryaimessages): lists one thread's messages. **Must** specify `threadId`.
+- [Query.aiMessages](../../api/graphql/reference/_index.md#queryaimessages): lists one thread's messages. Must specify `threadId`.
 - [Mutation.aiAction](../../api/graphql/reference/_index.md#mutationaiaction): creates one message. If `threadId` is specified the message is appended into that thread.
 
 All chat conversations have a retention period, controlled by the admin. The default retention period is 30 days after last reply.
@@ -180,7 +180,7 @@ All chat conversations have a retention period, controlled by the admin. The def
 ## Debugging
 
 To gather more insights about the full request, use the `Gitlab::Llm::Logger` file to debug logs.
-The default logging level on production is `INFO` and **must not** be used to log any data that could contain personal identifying information.
+The default logging level on production is `INFO` and must not be used to log any data that could contain personal identifying information.
 
 To follow the debugging messages related to the AI requests on the abstraction layer, you can use:
 
@@ -906,10 +906,7 @@ flow of how we construct a Chat prompt:
       1. The `request` method uses the `ai_request` instance
          that was injected into the `context` in `Llm::Completions::Chat`. For Chat,
          this is `Gitlab::Llm::Chain::Requests::AiGateway`. ([code](https://gitlab.com/gitlab-org/gitlab/-/blob/971d07aa37d9f300b108ed66304505f2d7022841/ee/lib/gitlab/llm/completions/chat.rb#L42)).
-      1. The tool indicates that `use_ai_gateway_agent_prompt=true` ([code](https://gitlab.com/gitlab-org/gitlab/-/blob/30817374f2feecdaedbd3a0efaad93feaed5e0a0/ee/lib/gitlab/llm/chain/tools/issue_reader/executor.rb#L121)).
-
-         This tells the `ai_request` to send the prompt to the `/v1/prompts/chat` endpoint ([code](https://gitlab.com/gitlab-org/gitlab/-/blob/30817374f2feecdaedbd3a0efaad93feaed5e0a0/ee/lib/gitlab/llm/chain/requests/ai_gateway.rb#L87)).
-
+      1. The `ai_request` sends the prompt to the `/v1/prompts/chat` endpoint ([code](https://gitlab.com/gitlab-org/gitlab/-/blob/master/ee/lib/gitlab/llm/chain/requests/ai_gateway.rb)).
       1. AI Gateway `/v1/prompts/chat` endpoint receives the request on `api.v1.prompts.invoke`
          ([code](https://gitlab.com/gitlab-org/modelops/applied-ml/code-suggestions/ai-assist/-/blob/989ead63fae493efab255180a51786b69a403b49/ai_gateway/api/v1/prompts/invoke.py#L41)).
       1. `api.v1.prompts.invoke` gets the correct tool prompt from the tool prompt registry ([code](https://gitlab.com/gitlab-org/modelops/applied-ml/code-suggestions/ai-assist/-/blob/989ead63fae493efab255180a51786b69a403b49/ai_gateway/api/v1/prompts/invoke.py#L49)).

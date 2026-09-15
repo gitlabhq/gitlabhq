@@ -20,18 +20,27 @@ class Groups::GroupLinksController < Groups::ApplicationController
   end
 
   def destroy
-    Groups::GroupLinks::DestroyService.new(group, current_user).execute(@group_link)
+    result = Groups::GroupLinks::DestroyService.new(group, current_user).execute(@group_link)
+    error = result.is_a?(Hash) && result[:status] == :error
 
     respond_to do |format|
       format.html do
-        redirect_to(
-          group_group_members_path(group),
-          status: :found,
-          notice: s_('InviteMembersModal|Group invite removed. ' \
-            'It might take a few minutes for the changes to user access levels to take effect.')
-        )
+        if error
+          redirect_to(
+            group_group_members_path(group),
+            status: :found,
+            alert: _('The group link could not be removed.')
+          )
+        else
+          redirect_to(
+            group_group_members_path(group),
+            status: :found,
+            notice: s_('InviteMembersModal|Group invite removed. ' \
+              'It might take a few minutes for the changes to user access levels to take effect.')
+          )
+        end
       end
-      format.js { head :ok }
+      format.js { head(error ? :not_found : :ok) }
     end
   end
 

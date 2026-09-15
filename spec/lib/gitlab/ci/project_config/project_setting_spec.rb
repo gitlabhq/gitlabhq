@@ -124,7 +124,7 @@ RSpec.describe Gitlab::Ci::ProjectConfig::ProjectSetting, feature_category: :pip
   describe '#source' do
     subject { config.source }
 
-    it { is_expected.to eq(nil) }
+    it { is_expected.to be_nil }
 
     context 'with repository config' do
       let(:files) { { '.gitlab-ci.yml' => 'content' } }
@@ -148,7 +148,7 @@ RSpec.describe Gitlab::Ci::ProjectConfig::ProjectSetting, feature_category: :pip
   describe '#internal_include_prepended?' do
     subject { config.internal_include_prepended? }
 
-    it { is_expected.to eq(true) }
+    it { is_expected.to be(true) }
   end
 
   describe '#inputs_for_pipeline_creation' do

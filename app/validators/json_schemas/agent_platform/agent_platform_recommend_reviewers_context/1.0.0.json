@@ -1,0 +1,120 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "description": "Current reviewers and approval-rule eligibility data for the recommend_reviewers flow.",
+  "type": "object",
+  "properties": {
+    "current_reviewers": {
+      "type": "array",
+      "description": "Reviewers already assigned to the merge request",
+      "items": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "integer"
+          },
+          "username": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "id",
+          "username"
+        ],
+        "additionalProperties": false
+      }
+    },
+    "approval_rules": {
+      "type": "array",
+      "description": "Approval rules requiring at least one approval, with eligible approvers",
+      "items": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "integer"
+          },
+          "type": {
+            "type": "string",
+            "enum": [
+              "project_rule",
+              "merge_request_rule"
+            ]
+          },
+          "name": {
+            "type": "string"
+          },
+          "section": {
+            "type": "string"
+          },
+          "approvals_required": {
+            "type": "integer"
+          },
+          "eligible_approvers": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "id": {
+                  "type": "integer"
+                },
+                "username": {
+                  "type": "string"
+                },
+                "busy": {
+                  "type": "boolean"
+                },
+                "status_emoji": {
+                  "type": [
+                    "string",
+                    "null"
+                  ]
+                },
+                "status_message": {
+                  "type": [
+                    "string",
+                    "null"
+                  ]
+                },
+                "pending_reviews": {
+                  "type": "integer"
+                },
+                "local_time": {
+                  "type": [
+                    "string",
+                    "null"
+                  ]
+                },
+                "last_activity_on": {
+                  "type": [
+                    "string",
+                    "null"
+                  ]
+                }
+              },
+              "required": [
+                "id",
+                "username",
+                "busy",
+                "pending_reviews"
+              ],
+              "additionalProperties": false
+            }
+          }
+        },
+        "required": [
+          "id",
+          "type",
+          "name",
+          "section",
+          "approvals_required",
+          "eligible_approvers"
+        ],
+        "additionalProperties": false
+      }
+    }
+  },
+  "required": [
+    "current_reviewers",
+    "approval_rules"
+  ],
+  "additionalProperties": false
+}

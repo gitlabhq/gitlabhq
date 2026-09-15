@@ -9,6 +9,10 @@ module Mutations
 
         authorize :delete_custom_attribute
 
+        authorize_granular_token permissions: :delete_custom_attribute,
+          boundary: :instance,
+          boundary_type: :instance
+
         argument :user_id, ::Types::GlobalIDType[::User],
           required: true,
           description: 'Global ID of the user.'

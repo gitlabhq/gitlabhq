@@ -5,7 +5,7 @@ class CreateSiphonSbomComponentVersionsWithTraversalPath < ClickHouse::Migration
     execute "DROP TABLE IF EXISTS siphon_sbom_component_versions"
 
     execute <<-SQL
-      CREATE TABLE siphon_sbom_component_versions
+      CREATE TABLE IF NOT EXISTS siphon_sbom_component_versions
       (
         id Int64 CODEC(DoubleDelta, ZSTD),
         created_at DateTime64(6, 'UTC') CODEC(Delta, ZSTD(1)),
@@ -32,7 +32,7 @@ class CreateSiphonSbomComponentVersionsWithTraversalPath < ClickHouse::Migration
     SQL
 
     execute <<-SQL
-      CREATE TABLE siphon_sbom_component_versions
+      CREATE TABLE IF NOT EXISTS siphon_sbom_component_versions
       (
         id Int64 CODEC(DoubleDelta, ZSTD),
         created_at DateTime64(6, 'UTC') CODEC(Delta, ZSTD(1)),

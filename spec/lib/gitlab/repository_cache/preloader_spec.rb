@@ -31,10 +31,10 @@ RSpec.describe Gitlab::RepositoryCache::Preloader, :use_clean_rails_repository_c
         expect(cache).not_to receive(:read)
         expect(cache).not_to receive(:write)
 
-        expect(repositories[0].exists?).to eq(true)
+        expect(repositories[0].exists?).to be(true)
         expect(repositories[0].readme_path).to eq('README.txt')
 
-        expect(repositories[1].exists?).to eq(true)
+        expect(repositories[1].exists?).to be(true)
         expect(repositories[1].readme_path).to eq('README.md')
       end
     end

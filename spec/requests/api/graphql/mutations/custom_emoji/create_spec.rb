@@ -31,6 +31,13 @@ RSpec.describe 'Creation of a new Custom Emoji', feature_category: :shared do
       group.add_developer(current_user)
     end
 
+    it_behaves_like 'authorizing granular token permissions for GraphQL', :create_custom_emoji do
+      let(:user) { current_user }
+      let(:boundary_object) { group }
+      let(:mutation) { graphql_mutation(:create_custom_emoji, attributes, 'errors') }
+      let(:request) { post_graphql_mutation(mutation, token: { personal_access_token: pat }) }
+    end
+
     it 'creates custom emoji' do
       expect { post_graphql_mutation(mutation, current_user: current_user) }.to change { CustomEmoji.count }.by(1)
 

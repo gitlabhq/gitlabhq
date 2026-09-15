@@ -6,7 +6,7 @@ import {
   MR_COMMITS_NEXT_COMMIT,
   MR_COMMITS_PREVIOUS_COMMIT,
 } from '~/behaviors/shortcuts/keybindings';
-import { shouldDisableShortcuts } from '~/behaviors/shortcuts/shortcuts_toggle';
+import { keyboardShortcutsDisabled } from '~/behaviors/shortcuts/shortcuts_disabled';
 import { sanitize } from '~/lib/dompurify';
 import { removeParams, setUrlParams } from '~/lib/utils/url_utility';
 
@@ -47,12 +47,12 @@ export default {
         : '';
     },
     previousCommitShortcutKey() {
-      return shouldDisableShortcuts() || !this.commit.prev_commit_id
+      return keyboardShortcutsDisabled() || !this.commit.prev_commit_id
         ? null
         : keysFor(MR_COMMITS_PREVIOUS_COMMIT)[0];
     },
     nextCommitShortcutKey() {
-      return shouldDisableShortcuts() || !this.commit.next_commit_id
+      return keyboardShortcutsDisabled() || !this.commit.next_commit_id
         ? null
         : keysFor(MR_COMMITS_NEXT_COMMIT)[0];
     },
@@ -117,16 +117,8 @@ export default {
         :href="previousCommitUrl"
         :disabled="!commit.prev_commit_id"
         size="small"
-        class="gl-relative"
         data-testid="prev-commit-button"
       >
-        <span
-          v-if="!commit.prev_commit_id"
-          v-gl-tooltip
-          class="!gl-absolute gl-left-0 gl-top-0 gl-h-full gl-w-full"
-          :title="previousCommitTitle"
-          data-testid="prev-commit-disabled-tooltip"
-        ></span>
         <gl-icon name="chevron-left" />
         {{ $options.i18n.previous }}
       </gl-button>
@@ -137,16 +129,8 @@ export default {
         :href="nextCommitUrl"
         :disabled="!commit.next_commit_id"
         size="small"
-        class="gl-relative"
         data-testid="next-commit-button"
       >
-        <span
-          v-if="!commit.next_commit_id"
-          v-gl-tooltip
-          class="!gl-absolute gl-left-0 gl-top-0 gl-h-full gl-w-full"
-          :title="nextCommitTitle"
-          data-testid="next-commit-disabled-tooltip"
-        ></span>
         {{ $options.i18n.next }}
         <gl-icon name="chevron-right" />
       </gl-button>

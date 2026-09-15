@@ -13,7 +13,7 @@ RSpec.describe Resolvers::FeatureFlagResolver, feature_category: :feature_flags 
     context 'when feature flag is unknown' do
       let(:feature_flag) { "unknown_feature" }
 
-      it { is_expected.to eq(false) }
+      it { is_expected.to be(false) }
     end
 
     context "on feature flag resolution" do
@@ -26,18 +26,18 @@ RSpec.describe Resolvers::FeatureFlagResolver, feature_category: :feature_flags 
       context "when feature flag disabled" do
         let(:enabled) { false }
 
-        it { is_expected.to eq(false) }
+        it { is_expected.to be(false) }
       end
 
       context "when feature flag enabled" do
         let(:enabled) { true }
 
-        it { is_expected.to eq(true) }
+        it { is_expected.to be(true) }
 
         context 'when user is not set' do
           let(:current_user) { nil }
 
-          it { is_expected.to eq(false) }
+          it { is_expected.to be(false) }
         end
       end
     end

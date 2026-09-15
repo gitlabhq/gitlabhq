@@ -1,0 +1,32 @@
+# frozen_string_literal: true
+
+require 'spec_helper'
+
+RSpec.describe 'ConfigureSast', feature_category: :static_application_security_testing do
+  include GraphqlHelpers
+
+  let_it_be(:project) { create(:project, :test_repo) }
+
+  let(:variables) { { project_path: project.full_path, configuration: {} } }
+  let(:mutation) { graphql_mutation(:configure_sast, variables) }
+  let(:mutation_response) { graphql_mutation_response(:configureSast) }
+
+  context 'when authorized' do
+    let_it_be(:user) { project.first_owner }
+
+    it 'creates a branch with sast configured' do
+      post_graphql_mutation(mutation, current_user: user)
+
+      expect(response).to have_gitlab_http_status(:success)
+      expect(mutation_response['errors']).to be_empty
+      expect(mutation_response['branch']).not_to be_empty
+      expect(mutation_response['successPath']).not_to be_empty
+    end
+
+    it_behaves_like 'authorizing granular token permissions for GraphQL', [:push_code, :create_branch] do
+      let(:user) { project.first_owner }
+      let(:boundary_object) { project }
+      let(:request) { post_graphql_mutation(mutation, token: { personal_access_token: pat }) }
+    end
+  end
+end

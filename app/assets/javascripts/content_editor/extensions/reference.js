@@ -160,7 +160,7 @@ export default Node.create({
   parseHTML() {
     return [
       {
-        tag: 'a.gfm:not([data-link=true])',
+        tag: 'a.gfm[data-reference-type]:not([data-link=true])',
         priority: PARSE_HTML_PRIORITY_HIGHEST,
       },
     ];

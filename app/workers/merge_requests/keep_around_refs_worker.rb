@@ -44,10 +44,7 @@ module MergeRequests
         source: source
       ).execute
 
-      # Only a project with `retry_failed_keep_around_ref_writes` enabled produces a
-      # `ServiceResponse`; a fully disabled job keeps the service's old return value,
-      # whatever it is. The type check goes away with the flag.
-      return unless response.is_a?(ServiceResponse) && response.error?
+      return unless response.error?
 
       unwritten_shas = response.payload[:unwritten_shas]
 

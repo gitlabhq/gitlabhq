@@ -1,7 +1,7 @@
 ---
 key_path: redis_hll_counters.ci_templates.p_ci_templates_jobs_sast
 description: ''
-product_group: static_analysis
+product_group: code_scanning
 product_categories:
 - static_application_security_testing
 value_type: number

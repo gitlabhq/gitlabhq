@@ -65,7 +65,7 @@ RSpec.describe Gitlab::Pages::VirtualHostFinder, feature_category: :pages do
         let(:domain) { "#{project.namespace.path}.something.io" }
 
         it 'returns no result' do
-          expect(virtual_domain).to eq(nil)
+          expect(virtual_domain).to be_nil
         end
       end
 
@@ -89,7 +89,7 @@ RSpec.describe Gitlab::Pages::VirtualHostFinder, feature_category: :pages do
         let(:domain) { "#{project.namespace.path}.something.io" }
 
         it 'returns no result' do
-          expect(virtual_domain).to eq(nil)
+          expect(virtual_domain).to be_nil
         end
       end
 

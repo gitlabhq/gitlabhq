@@ -1,0 +1,21 @@
+# @feature_category: source_code_management
+query getBranchMergeRequest($projectPath: ID!, $sourceBranch: String!, $targetBranch: String!) {
+  project(fullPath: $projectPath) {
+    id
+    userPermissions {
+      createMergeRequestFrom
+      createMergeRequestIn
+    }
+    mergeRequests(
+      state: opened
+      sourceBranches: [$sourceBranch]
+      targetBranches: [$targetBranch]
+      first: 1
+    ) {
+      nodes {
+        id
+        webPath
+      }
+    }
+  }
+}

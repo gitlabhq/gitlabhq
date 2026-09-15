@@ -1,0 +1,10 @@
+---
+name: limit_concurrent_project_exports
+description: Limit the number of project file exports that run concurrently
+feature_issue_url: https://gitlab.com/gitlab-org/gitlab/-/work_items/599092
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/250244
+rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/work_items/614166
+milestone: '19.4'
+group: group::import
+type: gitlab_com_derisk
+default_enabled: false

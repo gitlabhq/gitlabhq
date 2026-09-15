@@ -66,14 +66,14 @@ GitLab Duo group and project resources are also used by the [Central Evaluation 
 Some evaluation datasets refer to group or project resources (for instance, `Summarize issue #123` requires a corresponding issue record in PostgreSQL).
 
 Currently, this development seed file and evaluation datasets are managed separately.
-To ensure that the integration keeps working, this seeder has to create the **same** group/project resources every time.
+To ensure that the integration keeps working, this seeder has to create the same group/project resources every time.
 For example, ID and IID of the inserted PostgreSQL records must be the same every time we run this seeding process.
 
-When using the **default** group and project paths (`gitlab-duo/test`), the seeder assigns a fixed base ID of `1_000_000`
+When using the default group and project paths (`gitlab-duo/test`), the seeder assigns a fixed base ID of `1_000_000`
 to all seeded records (group, project, epic, issue, merge request, and so on). This guarantees deterministic IDs that
 the evaluation datasets depend on.
 
-When you provide **custom** paths through the environment variables above, fixed IDs are not applied and
+When you provide custom paths through the environment variables above, fixed IDs are not applied and
 PostgreSQL assigns IDs automatically.
 
 > [!note]

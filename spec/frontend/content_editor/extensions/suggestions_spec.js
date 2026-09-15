@@ -159,6 +159,45 @@ describe('content_editor/extensions/suggestions', () => {
     });
   });
 
+  describe('emoji autocomplete preference', () => {
+    const capturedChars = () =>
+      jest
+        .requireMock('@tiptap/suggestion')
+        .getCaptured()
+        .map((c) => c.char);
+
+    it('registers the emoji suggestion when the preference is enabled', () => {
+      window.gon = { emoji_autocomplete_enabled: true };
+      buildEditorWithExtension([]);
+
+      expect(capturedChars()).toContain(':');
+    });
+
+    it('registers the emoji suggestion when the preference is unset', () => {
+      window.gon = {};
+      buildEditorWithExtension([]);
+
+      expect(capturedChars()).toContain(':');
+    });
+
+    it('does not register the emoji suggestion when the preference is disabled', () => {
+      window.gon = { emoji_autocomplete_enabled: false };
+      buildEditorWithExtension([]);
+
+      expect(capturedChars()).not.toContain(':');
+    });
+
+    it('leaves other suggestions registered when emoji autocomplete is disabled', () => {
+      window.gon = { emoji_autocomplete_enabled: false };
+      buildEditorWithExtension([]);
+
+      const chars = capturedChars();
+      expect(chars).toContain('@');
+      expect(chars).toContain('/');
+      expect(chars).not.toContain(':');
+    });
+  });
+
   describe('popup positioning', () => {
     it('tippy menu keyboard navigation prevents page scrolling on smaller viewports', () => {
       tippy.mockReturnValue([{ setProps: jest.fn(), destroy: jest.fn(), hide: jest.fn() }]);

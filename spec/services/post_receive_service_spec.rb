@@ -230,9 +230,9 @@ RSpec.describe PostReceiveService, feature_category: :source_code_management do
         invalid_merge_request.errors.add(:base, 'my error')
         message = "WARNINGS:\nError encountered with push options 'merge_request.create': my error"
 
-        expect_any_instance_of(
-          MergeRequests::CreateService
-        ).to receive(:execute).and_return(invalid_merge_request)
+        expect_next_instance_of(MergeRequests::CreateService) do |service|
+          expect(service).to receive(:execute).and_return(invalid_merge_request)
+        end
 
         expect(subject).to include(build_alert_message(message))
       end

@@ -551,7 +551,7 @@ RSpec.describe Gitlab::ErrorTracking, feature_category: :observability do
       end
 
       it 'does not set traces_sample_rate' do
-        expect(Sentry.get_current_client.configuration.traces_sample_rate.present?).to eq false
+        expect(Sentry.get_current_client.configuration.traces_sample_rate.present?).to be false
       end
     end
 
@@ -562,7 +562,7 @@ RSpec.describe Gitlab::ErrorTracking, feature_category: :observability do
       end
 
       it 'sets traces_sample_rate' do
-        expect(Sentry.get_current_client.configuration.traces_sample_rate.present?).to eq true
+        expect(Sentry.get_current_client.configuration.traces_sample_rate.present?).to be true
       end
     end
   end

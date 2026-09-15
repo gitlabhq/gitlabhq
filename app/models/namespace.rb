@@ -27,7 +27,7 @@ class Namespace < ApplicationRecord
 
   extend Gitlab::Utils::Override
 
-  cells_claims_attribute :id, type: CLAIMS_CLAIM_TYPE::CLAIM_TYPE_NAMESPACE_ID, feature_flag: :cells_claims_namespaces
+  cells_claims_attribute :id, type: CLAIMS_CLAIM_TYPE::CLAIM_TYPE_NAMESPACE_ID
 
   cells_claims_metadata subject_type: CLAIMS_SUBJECT_TYPE::ORGANIZATION, subject_key: :organization_id
 
@@ -87,6 +87,9 @@ class Namespace < ApplicationRecord
 
   has_one :observability_group_o11y_setting, class_name: 'Observability::GroupO11ySetting',
     foreign_key: :group_id, inverse_of: :namespace
+
+  has_many :observability_project_o11y_settings, class_name: 'Observability::ProjectO11ySetting',
+    inverse_of: :namespace
 
   attribute :description
   accepts_nested_attributes_for :namespace_descendants, allow_destroy: true
@@ -1031,9 +1034,8 @@ class Namespace < ApplicationRecord
       AuthorizedProjectUpdate::ProjectRecalculateWorker.perform_async(project.id)
     end
 
-    # Until we compare the inconsistency rates of the new specialized worker and
-    # the old approach, we still run AuthorizedProjectsWorker
-    # but with some delay and lower urgency as a safety net.
+    # Low-priority safety net for the specialized refresh above, to catch
+    # authorizations it may have missed.
     enqueue_jobs_for_groups_requiring_authorizations_refresh(priority: UserProjectAccessChangedService::LOW_PRIORITY)
   end
 

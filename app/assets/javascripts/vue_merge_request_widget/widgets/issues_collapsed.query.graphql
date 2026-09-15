@@ -1,8 +1,0 @@
-query getProjectIssues($projectPath: ID!) {
-  project(fullPath: $projectPath) {
-    id
-    issues {
-      count
-    }
-  }
-}

@@ -6,6 +6,9 @@ module Types
     class ModelVersionType < ::Types::BaseObject
       graphql_name 'MlModelVersion'
       description 'Version of a machine learning model'
+
+      authorize_granular_token permissions: :read_model_version, boundary: :project, boundary_type: :project
+
       present_using ::Ml::ModelVersionPresenter
 
       connection_type_class Types::LimitedCountableConnectionType

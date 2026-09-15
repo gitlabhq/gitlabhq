@@ -7,7 +7,7 @@ RSpec.describe Ci::PipelineProcessing::AtomicProcessingService, feature_category
   include ExclusiveLeaseHelpers
 
   describe 'Pipeline Processing Service Tests With Yaml' do
-    let_it_be(:project) { create(:project, :repository) }
+    let_it_be(:project) { create(:project, :small_repo) }
     let_it_be(:user)    { project.first_owner }
 
     where(:test_file_path) do
@@ -87,8 +87,8 @@ RSpec.describe Ci::PipelineProcessing::AtomicProcessingService, feature_category
   end
 
   describe 'Pipeline Processing Service' do
-    let(:project) { create(:project, :repository) }
-    let(:user)    { project.first_owner }
+    let_it_be(:project) { create(:project, :repository) }
+    let_it_be(:user)    { project.first_owner }
 
     let(:pipeline) do
       create(:ci_empty_pipeline, ref: 'master', project: project)
@@ -656,6 +656,9 @@ RSpec.describe Ci::PipelineProcessing::AtomicProcessingService, feature_category
       end
 
       context 'when pipeline is promoted sequentially up to the end' do
+        let(:project) { create(:project, :small_repo) }
+        let(:user)    { project.first_owner }
+
         before do
           # Users need ability to merge into a branch in order to trigger
           # protected manual actions.

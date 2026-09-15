@@ -11,7 +11,7 @@ RSpec.describe Gitlab::Runtime, feature_category: :durability_metrics do
 
     it "does not identify as others" do
       (described_class::AVAILABLE_RUNTIMES - [runtime]).each do |runtime|
-        expect(subject.public_send("#{runtime}?")).to eq(false)
+        expect(subject.public_send("#{runtime}?")).to be(false)
       end
     end
 

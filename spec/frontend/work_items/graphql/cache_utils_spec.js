@@ -1,5 +1,6 @@
 import { cloneDeep } from 'lodash-es';
 import {
+  WIDGET_TYPE_CRM_CONTACTS,
   WIDGET_TYPE_HIERARCHY,
   WIDGET_TYPE_ITERATION,
   WIDGET_TYPE_STATUS,
@@ -530,6 +531,55 @@ describe('work items graphql cache utils', () => {
       const { features } = callForSupportedWidgetTypes([WIDGET_TYPE_WEIGHT]);
 
       expect(Object.keys(features)).toEqual(expect.arrayContaining(['status', 'iteration']));
+    });
+  });
+
+  describe('CRM contacts for legacyGetNewWorkItemSharedCache', () => {
+    const fullPath = 'gitlab-org';
+    const context = 'list-route';
+
+    const buildLegacyCache = () =>
+      legacyGetNewWorkItemSharedCache({
+        workItemAttributesWrapperOrder: [WIDGET_TYPE_CRM_CONTACTS],
+        widgetDefinitions: [
+          { __typename: 'WorkItemWidgetDefinitionGeneric', type: WIDGET_TYPE_CRM_CONTACTS },
+        ],
+        fullPath,
+        context,
+        workItemType: 'Issue',
+        relatedItemId: null,
+        isValidWorkItemDescription: false,
+        workItemDescription: '',
+      });
+
+    const setCachedWidgets = (widgets) => {
+      const widgetsKey = `autosave/${getNewWorkItemWidgetsAutoSaveKey({ fullPath, context, relatedItemId: null })}`;
+      localStorage.setItem(widgetsKey, JSON.stringify(widgets));
+    };
+
+    const findCrmWidget = (widgets) => widgets.find((w) => w.type === WIDGET_TYPE_CRM_CONTACTS);
+
+    beforeEach(() => {
+      localStorage.clear();
+    });
+
+    it('seeds empty contacts when there is no draft', () => {
+      expect(findCrmWidget(buildLegacyCache().widgets).contacts.nodes).toEqual([]);
+    });
+
+    it('seeds the drafted contacts', () => {
+      const contact = { id: 'gid://gitlab/CustomerRelations::Contact/1' };
+      setCachedWidgets({ [WIDGET_TYPE_CRM_CONTACTS]: { contacts: { nodes: [contact] } } });
+
+      expect(findCrmWidget(buildLegacyCache().widgets).contacts.nodes).toEqual([contact]);
+    });
+
+    // The base query no longer selects `contacts`, so a draft written from it has the widget
+    // entry without that key. Reading it unguarded threw and broke the whole create form.
+    it('seeds empty contacts when the draft entry has no contacts key', () => {
+      setCachedWidgets({ [WIDGET_TYPE_CRM_CONTACTS]: { contactsAvailable: false } });
+
+      expect(findCrmWidget(buildLegacyCache().widgets).contacts.nodes).toEqual([]);
     });
   });
 

@@ -1,6 +1,6 @@
 ---
-stage: AI-powered
-group: AI Framework
+stage: Security Governance
+Group: AI Control Plane
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see <https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments>
 description: Control GitLab Duo Agent Platform availability for groups, projects, and instances.
 title: Control GitLab Duo Agent Platform availability
@@ -16,12 +16,14 @@ title: Control GitLab Duo Agent Platform availability
 GitLab Duo Agent Platform is on by default.
 Agent Platform includes a [set of features](_index.md).
 
+To use Agent Platform, [GitLab Credits](../../subscriptions/gitlab_credits.md) are required.
+
 You can turn Agent Platform on or off:
 
 - On GitLab.com: For top-level groups.
 - On GitLab Self-Managed: For instances.
 
-To configure tool governance for Agent Platform, see [agent tool governance](agents/tool-governance.md).
+To configure tool governance for Agent Platform, see [agent tool governance](../ai-governance/tool-governance.md).
 
 ## Turn GitLab Duo Agent Platform on or off
 

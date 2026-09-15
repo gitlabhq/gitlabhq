@@ -5,8 +5,6 @@ require 'spec_helper'
 RSpec.describe Packages::Go::SyncPackagesService, feature_category: :package_registry do
   include_context 'basic Go module'
 
-  let(:params) { { info: true, mod: true, zip: true } }
-
   describe '#execute_async' do
     it 'schedules a package refresh' do
       expect(::Packages::Go::SyncPackagesWorker).to receive(:perform_async).once

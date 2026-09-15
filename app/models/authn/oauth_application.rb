@@ -33,6 +33,10 @@ module Authn
       where(id: application_id).pick(:uid)
     end
 
+    def self.exists_for_uid?(uid)
+      exists?(uid: uid)
+    end
+
     # Check whether the given plain text secret matches our stored secret
     #
     # @param input [#to_s] Plain secret provided by user

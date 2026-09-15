@@ -10,6 +10,7 @@ module Gitlab
       DEFAULT_MAX_VALUE = (2**63) - 1
       TRIGGER_NAME = 'alter_new_sequences_max_value'
       FUNCTION_NAME = 'alter_new_sequences_max_value'
+      MANAGED_SCHEMAS = ['public', *Gitlab::Database::EXTRA_SCHEMAS].freeze
 
       attr_reader :maxval, :connection, :sequence_names, :skip_trigger_install, :logger
 
@@ -85,6 +86,7 @@ module Gitlab
           AS $$
           DECLARE
             command_record RECORD;
+            sequence_schema text;
             sequence_name text;
             sequence_data_type text;
             current_minval BIGINT;
@@ -94,12 +96,23 @@ module Gitlab
             FOR command_record IN SELECT * FROM pg_event_trigger_ddl_commands () LOOP
               -- CREATE TABLE, ALTER TABLE will fire ALTER SEQUENCE event when SERIAL, BIGSERIAL IDs are used.
               IF command_record.command_tag IN ('CREATE SEQUENCE', 'ALTER SEQUENCE') THEN
-                sequence_name := substring(command_record.object_identity FROM '([^.]+)$');
+                SELECT pg_namespace.nspname, pg_class.relname
+                INTO sequence_schema, sequence_name
+                FROM pg_class
+                JOIN pg_namespace ON pg_namespace.oid = pg_class.relnamespace
+                WHERE pg_class.oid = command_record.objid
+                  AND pg_namespace.nspname IN (#{managed_schemas_list});
+
+                -- Skips if the sequence is not in schemas managed by gitlab application (eg: in third-party schemas)
+                IF NOT FOUND THEN
+                  CONTINUE;
+                END IF;
 
                 SELECT data_type::text, min_value, max_value, last_value
                 INTO sequence_data_type, current_minval, current_maxval, current_last_value
                 FROM pg_sequences
-                WHERE sequencename = sequence_name;
+                WHERE schemaname = sequence_schema
+                  AND sequencename = sequence_name;
 
                 -- Skip integer/smallint sequences as their max value (2^31-1) cannot hold our maxval.
                 IF sequence_data_type != 'bigint' THEN
@@ -116,8 +129,8 @@ module Gitlab
                 -- so we cannot assume minval=1. Sequences bumped to a higher range via
                 -- increase_sequences_range will have a (new) current_minval >= (previous) maxval and are left alone.
                 IF current_minval < #{maxval} THEN
-                  EXECUTE FORMAT('ALTER SEQUENCE %I MAXVALUE %s',
-                    sequence_name, #{maxval});
+                  EXECUTE FORMAT('ALTER SEQUENCE %I.%I MAXVALUE %s',
+                    sequence_schema, sequence_name, #{maxval});
                 END IF;
               END IF;
             END LOOP;
@@ -137,6 +150,10 @@ module Gitlab
       end
 
       private
+
+      def managed_schemas_list
+        MANAGED_SCHEMAS.map { |schema| connection.quote(schema) }.join(', ')
+      end
 
       def sequences
         if sequence_names.present?

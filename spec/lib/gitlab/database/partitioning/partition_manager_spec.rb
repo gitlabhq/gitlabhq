@@ -5,6 +5,7 @@ require 'spec_helper'
 RSpec.describe Gitlab::Database::Partitioning::PartitionManager, feature_category: :database do
   include ActiveSupport::Testing::TimeHelpers
   include Database::PartitioningHelpers
+  include Database::TriggerHelpers
   include ExclusiveLeaseHelpers
   include Gitlab::Database::MigrationHelpers::LooseForeignKeyHelpers
   using RSpec::Parameterized::TableSyntax
@@ -86,6 +87,53 @@ RSpec.describe Gitlab::Database::Partitioning::PartitionManager, feature_categor
           expect { sync_partitions }.not_to raise_error
         end
       end
+
+      context 'when the failure comes after the run has decided what to change' do
+        let(:partitioning_strategy) do
+          double(
+            missing_partitions: partitions,
+            extra_partitions: [
+              instance_double(Gitlab::Database::Partitioning::TimePartition, partition_name: 'foo0')
+            ],
+            after_adding_partitions: nil,
+            analyze_interval: nil
+          )
+        end
+
+        it 'names the partitions it had planned to create and detach' do
+          allow(connection).to receive(:execute).with('CREATE TABLE _partition_1')
+            .and_raise(ActiveRecord::StatementInvalid, 'statement timeout')
+
+          expect(Gitlab::AppLogger).to receive(:error).with(
+            hash_including(
+              'class_name' => described_class.name,
+              'message' => 'Failed to create / detach partition(s)',
+              'partitions_to_create' => %w[foo foo2],
+              'partitions_to_detach' => %w[foo0]
+            )
+          )
+
+          sync_partitions
+        end
+      end
+    end
+
+    context 'when the database is not reachable' do
+      # sync_partitions_ignore_db_error only rescues PG::Error, so anything else raised from here
+      # escapes it and aborts a boot that runs before the database exists
+      it 'logs empty partition lists rather than raising' do
+        expect(manager).to receive(:table_partitioned?).and_raise(PG::ConnectionBad, 'database does not exist')
+
+        expect(Gitlab::AppLogger).to receive(:error).with(
+          hash_including(
+            'message' => 'Failed to create / detach partition(s)',
+            'partitions_to_create' => [],
+            'partitions_to_detach' => []
+          )
+        )
+
+        expect { sync_partitions }.not_to raise_error
+      end
     end
 
     context 'when the table is not partitioned' do
@@ -95,9 +143,10 @@ RSpec.describe Gitlab::Database::Partitioning::PartitionManager, feature_categor
         expect(connection).not_to receive(:execute).with("LOCK TABLE \"#{table}\" IN ACCESS EXCLUSIVE MODE")
         expect(Gitlab::AppLogger).to receive(:warn).with(
           {
-            message: 'Skipping syncing partitions',
-            table_name: table,
-            connection_name: 'main'
+            'class_name' => described_class.name,
+            'message' => 'Skipping syncing partitions',
+            'table_name' => table,
+            'connection_name' => 'main'
           }
         )
 
@@ -141,7 +190,7 @@ RSpec.describe Gitlab::Database::Partitioning::PartitionManager, feature_categor
       end
 
       it 'attaches LFK trigger on the newly created partitions' do
-        expect(trigger_exists?(my_model.table_name, record_deletion_trigger_name(my_model.table_name))).to eq(true)
+        expect(trigger_exists?(my_model.table_name, record_deletion_trigger_name(my_model.table_name))).to be(true)
 
         expect { sync_partitions }.to change {
           find_partitions(my_model.table_name, schema: Gitlab::Database::DYNAMIC_PARTITIONS_SCHEMA).size
@@ -150,7 +199,59 @@ RSpec.describe Gitlab::Database::Partitioning::PartitionManager, feature_categor
         partitions = find_partitions(my_model.table_name, schema: Gitlab::Database::DYNAMIC_PARTITIONS_SCHEMA)
         partitions.each do |partition|
           partition_name = partition.first
-          expect(trigger_exists?(partition_name, record_deletion_trigger_name(partition_name), Gitlab::Database::DYNAMIC_PARTITIONS_SCHEMA)).to eq(true)
+          expect(trigger_exists?(partition_name, record_deletion_trigger_name(partition_name), Gitlab::Database::DYNAMIC_PARTITIONS_SCHEMA)).to be(true)
+        end
+      end
+    end
+
+    context 'when the partitioned table routes deleted records by sharding keys' do
+      # Three targets, one with source different from the target column, mirroring the richest
+      # real case (clusters: group_id routes to namespace_id).
+      let(:sharding_key_targets) do
+        [
+          { table: 'loose_foreign_keys_project_deleted_records', column: 'project_id', source: 'project_id' },
+          { table: 'loose_foreign_keys_namespace_deleted_records', column: 'namespace_id', source: 'group_id' },
+          { table: 'loose_foreign_keys_organization_deleted_records', column: 'organization_id',
+            source: 'organization_id' }
+        ]
+      end
+
+      let(:targets_json) { sharding_key_targets.to_json }
+
+      before do
+        my_model.table_name = partitioned_table_name
+        create_partitioned_table(connection, partitioned_table_name)
+
+        connection.execute(<<~SQL)
+          ALTER TABLE #{partitioned_table_name}
+            ADD COLUMN project_id bigint,
+            ADD COLUMN group_id bigint,
+            ADD COLUMN organization_id bigint;
+
+          CREATE TRIGGER #{record_deletion_trigger_name(partitioned_table_name)}
+          AFTER DELETE ON #{partitioned_table_name} REFERENCING OLD TABLE AS old_table
+          FOR EACH STATEMENT
+          EXECUTE FUNCTION insert_into_loose_foreign_keys_deleted_records_override_table('#{partitioned_table_name}', '#{targets_json}');
+        SQL
+
+        allow_next_instance_of(described_class) do |manager|
+          allow(manager).to receive(:sharding_keys_for).and_return(sharding_key_targets)
+        end
+      end
+
+      it 'attaches routed LFK triggers on the newly created partitions' do
+        expect { sync_partitions }.to change {
+          find_partitions(my_model.table_name, schema: Gitlab::Database::DYNAMIC_PARTITIONS_SCHEMA).size
+        }.from(0)
+
+        partitions = find_partitions(my_model.table_name, schema: Gitlab::Database::DYNAMIC_PARTITIONS_SCHEMA)
+        partitions.each do |partition|
+          partition_name = partition.first
+          action_statement = find_trigger_def(partition_name, record_deletion_trigger_name(partition_name))['action_statement']
+
+          expect(action_statement).to include('insert_into_loose_foreign_keys_deleted_records_override_table')
+          expect(action_statement).to include("'#{partitioned_table_name}'")
+          expect(action_statement).to include(targets_json)
         end
       end
     end
@@ -217,14 +318,14 @@ RSpec.describe Gitlab::Database::Partitioning::PartitionManager, feature_categor
           it "does not lock created partition" do
             sync_partitions
 
-            expect(partitions_locked_for_writes?).to eq(false)
+            expect(partitions_locked_for_writes?).to be(false)
           end
         end
       end
     end
   end
 
-  context 'detaching partitions (mocked)' do
+  context 'detaching partitions' do
     subject(:sync_partitions) { manager.sync_partitions }
 
     let(:manager) { described_class.new(model) }
@@ -232,7 +333,8 @@ RSpec.describe Gitlab::Database::Partitioning::PartitionManager, feature_categor
     let(:connection) { ActiveRecord::Base.connection }
     let(:table) { :_test_foo }
     let(:partitioning_strategy) do
-      double(extra_partitions: extra_partitions, missing_partitions: [], after_adding_partitions: nil, analyze_interval: nil)
+      double(extra_partitions: extra_partitions, missing_partitions: [], after_adding_partitions: nil,
+        analyze_interval: nil, detach_concurrently?: false, detachable_since: nil)
     end
 
     let(:extra_partitions) do
@@ -243,7 +345,7 @@ RSpec.describe Gitlab::Database::Partitioning::PartitionManager, feature_categor
     end
 
     before do
-      create_partitioned_table(connection, table)
+      create_parent_table
 
       allow(connection).to receive(:table_exists?).and_call_original
       allow(connection).to receive(:table_exists?).with(table).and_return(true)
@@ -252,28 +354,403 @@ RSpec.describe Gitlab::Database::Partitioning::PartitionManager, feature_categor
       stub_exclusive_lease(described_class::MANAGEMENT_LEASE_KEY % table, timeout: described_class::LEASE_TIMEOUT)
     end
 
+    def create_parent_table
+      create_partitioned_table(connection, table)
+    end
+
     it 'detaches each extra partition' do
       extra_partitions.each { |p| expect(manager).to receive(:detach_one_partition).with(p) }
 
       sync_partitions
     end
 
-    it 'logs an error if the partitions are not detachable' do
-      allow(Gitlab::Database::PostgresForeignKey).to receive(:by_referenced_table_identifier).with("public._test_foo")
-        .and_return([double(name: "fk_1", constrained_table_identifier: "public.constrainted_table_1")])
-
-      expect(Gitlab::AppLogger).to receive(:error).with(
-        {
-          message: "Failed to create / detach partition(s)",
-          connection_name: "main",
-          exception_class: Gitlab::Database::Partitioning::PartitionManager::UnsafeToDetachPartitionError,
-          exception_message:
-            "Cannot detach foo1, it would block while checking foreign key fk_1 on public.constrainted_table_1",
-          table_name: :_test_foo
-        }
-      )
+    it 'tells the eligibility check that the detach will not be concurrent' do
+      expect(Gitlab::Database::Partitioning::DetachEligibility).to receive(:new)
+        .with(anything, connection: connection, detach_concurrently: false)
+        .exactly(extra_partitions.size).times.and_call_original
 
       sync_partitions
+    end
+
+    context 'when the eligibility check hits a database error' do
+      before do
+        allow(Gitlab::ErrorTracking).to receive(:track_and_raise_for_dev_exception)
+
+        allow_next_instances_of(Gitlab::Database::Partitioning::DetachEligibility, extra_partitions.size) do |check|
+          allow(check).to receive(:detachable?).and_raise(ActiveRecord::StatementInvalid, 'statement timeout')
+        end
+      end
+
+      it 'does not detach the partitions' do
+        expect { sync_partitions }.not_to change { Postgresql::DetachedPartition.count }
+      end
+
+      it 'logs the error against each partition' do
+        allow(Gitlab::AppLogger).to receive(:error)
+
+        extra_partitions.each do |partition|
+          expect(Gitlab::AppLogger).to receive(:error).with(
+            hash_including(
+              'message' => 'Cannot detach partition',
+              'blocker_reason' => :database_error,
+              'exception_message' => /statement timeout/,
+              'partition_name' => partition.partition_name
+            )
+          )
+        end
+
+        sync_partitions
+      end
+    end
+
+    context 'when a partition is not detachable' do
+      let(:blocker_level) { :warn }
+      let(:blocker) do
+        Gitlab::Database::Partitioning::DetachEligibility::Blocker.new(
+          reason: :referencing_table_cannot_prune, level: blocker_level,
+          details: { referencing_table: 'public._test_bar', foreign_key_name: 'fk_test_referencing' }
+        )
+      end
+
+      before do
+        allow_next_instances_of(Gitlab::Database::Partitioning::DetachEligibility, extra_partitions.size) do |check|
+          allow(check).to receive_messages(detachable?: false, blocker: blocker)
+        end
+      end
+
+      it 'defers every partition without opening a transaction' do
+        expect(Gitlab::Database::Partitioning::WithPartitioningLockRetries).not_to receive(:new)
+
+        expect { sync_partitions }.not_to change { Postgresql::DetachedPartition.count }
+      end
+
+      it 'logs each deferral with the details of its blocker' do
+        allow(Gitlab::AppLogger).to receive(:warn)
+
+        extra_partitions.each do |partition|
+          expect(Gitlab::AppLogger).to receive(:warn).with({
+            'class_name' => described_class.name,
+            'message' => 'Deferred detaching partition',
+            'blocker_reason' => :referencing_table_cannot_prune,
+            'partition_name' => partition.partition_name,
+            'table_name' => table,
+            'connection_name' => 'main',
+            'referencing_table' => 'public._test_bar',
+            'foreign_key_name' => 'fk_test_referencing'
+          })
+        end
+
+        sync_partitions
+      end
+
+      context 'when the blocker is at error level' do
+        let(:blocker_level) { :error }
+
+        it 'reports one error for the whole run, naming every partition it could not detach' do
+          expect(Gitlab::ErrorTracking).to receive(:track_and_raise_for_dev_exception).once do |exception|
+            expect(exception).to be_a(described_class::UnableToDetachPartition)
+            expect(exception.message).to eq(
+              'Unable to detach partitions of _test_foo: ' \
+                'foo1 (referencing_table_cannot_prune), foo2 (referencing_table_cannot_prune)'
+            )
+          end
+
+          sync_partitions
+        end
+
+        it 'logs every blocker before it escalates' do
+          expect(Gitlab::AppLogger).to receive(:error)
+            .with(hash_including('message' => 'Cannot detach partition'))
+            .exactly(extra_partitions.size).times.ordered
+          expect(Gitlab::ErrorTracking).to receive(:track_and_raise_for_dev_exception).ordered
+
+          sync_partitions
+        end
+      end
+
+      context 'when the blocker asks for another log level' do
+        before do
+          allow(Gitlab::ErrorTracking).to receive(:track_and_raise_for_dev_exception)
+        end
+
+        where(:blocker_level, :log_method) do
+          :info  | :info
+          :error | :error
+        end
+
+        with_them do
+          it 'logs the blockers at that level' do
+            allow(Gitlab::AppLogger).to receive(log_method)
+
+            extra_partitions.each do |partition|
+              expect(Gitlab::AppLogger).to receive(log_method).with(
+                hash_including(
+                  'blocker_reason' => :referencing_table_cannot_prune,
+                  'partition_name' => partition.partition_name
+                )
+              )
+            end
+
+            sync_partitions
+          end
+        end
+      end
+
+      context 'when the partition has been deferred for longer than the referencing side can take' do
+        let(:max_detach_deferral) do
+          described_class::RETAIN_DETACHED_PARTITIONS_FOR + described_class::DETACH_DEFERRAL_GRACE
+        end
+
+        let(:blocker) do
+          Gitlab::Database::Partitioning::DetachEligibility::Blocker.new(
+            reason: :counterpart_partition_present, level: :info,
+            details: { referencing_table: 'public._test_bar', partition_id: 101 }
+          )
+        end
+
+        before do
+          allow(Gitlab::ErrorTracking).to receive(:track_and_raise_for_dev_exception)
+          allow(partitioning_strategy).to receive(:detachable_since).and_return(detachable_since)
+        end
+
+        context 'when the wait is still inside that window' do
+          let(:detachable_since) { max_detach_deferral.ago + 1.hour }
+
+          it 'reports the deferral at the level the blocker asked for' do
+            allow(Gitlab::AppLogger).to receive(:info)
+            expect(Gitlab::ErrorTracking).not_to receive(:track_and_raise_for_dev_exception)
+
+            extra_partitions.each do |partition|
+              expect(Gitlab::AppLogger).to receive(:info).with(
+                hash_including(
+                  'blocker_reason' => :counterpart_partition_present,
+                  'partition_name' => partition.partition_name
+                )
+              )
+            end
+
+            sync_partitions
+          end
+        end
+
+        context 'when the wait is past that window' do
+          let(:detachable_since) { max_detach_deferral.ago - 1.hour }
+
+          it 'reports the long wait separately from the deferral it logged' do
+            allow(Gitlab::AppLogger).to receive(:info)
+            allow(Gitlab::AppLogger).to receive(:error)
+
+            extra_partitions.each do |partition|
+              expect(Gitlab::AppLogger).to receive(:info).with(
+                hash_including(
+                  'message' => 'Deferred detaching partition',
+                  'blocker_reason' => :counterpart_partition_present,
+                  'partition_name' => partition.partition_name
+                )
+              )
+
+              expect(Gitlab::AppLogger).to receive(:error).with(
+                hash_including(
+                  'message' => 'Detach deferred for too long',
+                  'blocker_reason' => :counterpart_partition_present,
+                  'deferral_duration_s' => be_within(1.minute).of(max_detach_deferral + 1.hour),
+                  'partition_name' => partition.partition_name
+                )
+              )
+            end
+
+            sync_partitions
+          end
+
+          it 'names the long wait, not the blocker, in the error it reports' do
+            expect(Gitlab::ErrorTracking).to receive(:track_and_raise_for_dev_exception).once do |exception|
+              expect(exception.message).to eq(
+                'Unable to detach partitions of _test_foo: ' \
+                  'foo1 (deferred too long), foo2 (deferred too long)'
+              )
+            end
+
+            sync_partitions
+          end
+
+          context 'when the blocker is at error level' do
+            let(:blocker) do
+              Gitlab::Database::Partitioning::DetachEligibility::Blocker.new(
+                reason: :referencing_table_cannot_prune, level: :error, details: {}
+              )
+            end
+
+            it 'reports the blocker on its own, because an error is not a deferral' do
+              expect(Gitlab::ErrorTracking).to receive(:track_and_raise_for_dev_exception).once do |exception|
+                expect(exception.message).to eq(
+                  'Unable to detach partitions of _test_foo: ' \
+                    'foo1 (referencing_table_cannot_prune), foo2 (referencing_table_cannot_prune)'
+                )
+              end
+
+              sync_partitions
+            end
+          end
+        end
+      end
+    end
+
+    context 'when only one partition is blocked' do
+      let(:blocked_partition) { extra_partitions.first }
+
+      before do
+        allow(Gitlab::ErrorTracking).to receive(:track_and_raise_for_dev_exception)
+
+        allow(Gitlab::Database::Partitioning::DetachEligibility).to receive(:new)
+          .and_wrap_original do |method, partition, **kwargs|
+            method.call(partition, **kwargs).tap do |check|
+              next unless partition == blocked_partition
+
+              allow(check).to receive(:detachable?).and_raise(ActiveRecord::StatementInvalid, 'statement timeout')
+            end
+          end
+      end
+
+      it 'detaches the partition that is eligible' do
+        expect { sync_partitions }.to change { Postgresql::DetachedPartition.pluck(:table_name) }.to(%w[foo2])
+      end
+
+      it 'escalates the blocked one once the run is done' do
+        expect(Gitlab::ErrorTracking).to receive(:track_and_raise_for_dev_exception)
+
+        sync_partitions
+      end
+    end
+
+    context 'when the strategy detaches concurrently' do
+      let(:partitioning_strategy) do
+        double(extra_partitions: extra_partitions, missing_partitions: [], after_adding_partitions: nil,
+          analyze_interval: nil, detach_concurrently?: true)
+      end
+
+      let(:extra_partitions) do
+        %w[_test_foo1 _test_foo2].map do |partition_name|
+          instance_double(Gitlab::Database::Partitioning::MultipleNumericListPartition,
+            table: table, partition_name: partition_name, to_detach_sql: 'SELECT 1')
+        end
+      end
+
+      it 'tells the eligibility check that the detach will be concurrent' do
+        expect(Gitlab::Database::Partitioning::DetachEligibility).to receive(:new)
+          .with(anything, connection: connection, detach_concurrently: true)
+          .exactly(extra_partitions.size).times.and_call_original
+
+        sync_partitions
+      end
+
+      it 'asks each partition for the concurrent form of DETACH' do
+        first, second = extra_partitions
+
+        expect(first).to receive(:to_detach_sql).with(concurrently: true).and_return('SELECT 1')
+        expect(second).to receive(:to_detach_sql).with(concurrently: true).and_return('SELECT 2')
+
+        sync_partitions
+      end
+
+      it 'detaches without lock retries, which cannot wrap a statement running outside a transaction' do
+        expect(Gitlab::Database::Partitioning::WithPartitioningLockRetries).not_to receive(:new)
+
+        expect { sync_partitions }.to change { Postgresql::DetachedPartition.count }.by(2)
+      end
+
+      it 'keeps the cleanup record of a partition whose detach fails' do
+        allow(connection).to receive(:execute).and_call_original
+        allow(connection).to receive(:execute).with('SELECT 1').and_raise(ActiveRecord::StatementInvalid, 'boom')
+
+        expect { sync_partitions }.to change { Postgresql::DetachedPartition.pluck(:table_name) }
+          .to(%w[_test_foo1])
+      end
+
+      it 'records the concurrent form as a log field' do
+        allow(Gitlab::AppLogger).to receive(:info)
+
+        extra_partitions.each do |partition|
+          expect(Gitlab::AppLogger).to receive(:info).with(
+            hash_including(
+              'message' => 'Detached Partition',
+              'partition_name' => partition.partition_name,
+              'concurrent' => true
+            )
+          )
+        end
+
+        sync_partitions
+      end
+    end
+
+    # End-to-end safety net: everything above stubs the check, and the reasons themselves are covered
+    # in detach_eligibility_spec.rb
+    context 'when a partitioned table references the parent table' do
+      let(:table) { :_test_gitlab_main_referenced_parent }
+      let(:referencing_table) { :_test_gitlab_main_referencing_parent }
+      let(:dynamic_schema) { Gitlab::Database::DYNAMIC_PARTITIONS_SCHEMA }
+
+      let(:extra_partitions) do
+        [100, 101].map do |partition_id|
+          Gitlab::Database::Partitioning::MultipleNumericListPartition.new(
+            table, [partition_id], partition_name: "#{table}_#{partition_id}"
+          )
+        end
+      end
+
+      # The referencing table is partitioned on the same key and has nothing detached, so the two
+      # partitions differ only in whether their counterpart is still attached: 101's is, 100's is not
+      def create_parent_table
+        connection.execute(<<~SQL)
+          CREATE TABLE #{table} (
+            partition_id bigint NOT NULL,
+            id bigserial NOT NULL,
+            PRIMARY KEY (partition_id, id)
+          ) PARTITION BY LIST (partition_id);
+
+          CREATE TABLE #{dynamic_schema}.#{table}_100
+            PARTITION OF #{table} FOR VALUES IN (100);
+
+          CREATE TABLE #{dynamic_schema}.#{table}_101
+            PARTITION OF #{table} FOR VALUES IN (101);
+
+          CREATE TABLE #{referencing_table} (
+            partition_id bigint NOT NULL,
+            id bigserial NOT NULL,
+            referenced_id bigint NOT NULL,
+            PRIMARY KEY (partition_id, id),
+            CONSTRAINT fk_test_referencing FOREIGN KEY (partition_id, referenced_id)
+              REFERENCES #{table} (partition_id, id)
+          ) PARTITION BY LIST (partition_id);
+
+          CREATE TABLE #{dynamic_schema}.#{referencing_table}_101
+            PARTITION OF #{referencing_table} FOR VALUES IN (101);
+        SQL
+      end
+
+      it 'detaches only the partition that satisfies every condition' do
+        sync_partitions
+
+        expect(find_partitions(table).flatten).to contain_exactly("#{table}_101")
+      end
+
+      it 'keeps the cleanup record of the partition it detached' do
+        sync_partitions
+
+        expect(Postgresql::DetachedPartition.pluck(:table_name)).to contain_exactly("#{table}_100")
+      end
+
+      context 'when the eligible partition is awaiting FINALIZE' do
+        before do
+          mark_pending_detach("#{table}_100")
+        end
+
+        it 'defers it rather than failing the detach' do
+          expect { sync_partitions }.not_to change { Postgresql::DetachedPartition.count }
+
+          expect(find_partitions(table).flatten).to contain_exactly("#{table}_100", "#{table}_101")
+        end
+      end
     end
   end
 
@@ -376,7 +853,13 @@ RSpec.describe Gitlab::Database::Partitioning::PartitionManager, feature_categor
         SQL
       end
 
-      it 'does not detach partitions with a referenced foreign key' do
+      # A range-partitioned parent is outside what the eligibility check supports, so a partition
+      # of one that is referenced can never be detached
+      it 'reports an error and detaches nothing' do
+        expect(Gitlab::ErrorTracking).to receive(:track_and_raise_for_dev_exception).once do |exception|
+          expect(exception.message).to include('unsupported_partition_key')
+        end
+
         expect { subject }.not_to change { find_partitions(my_model.table_name).size }
       end
     end
@@ -500,6 +983,201 @@ RSpec.describe Gitlab::Database::Partitioning::PartitionManager, feature_categor
       let(:create_partition) { false }
 
       it_behaves_like 'run only once analyze within interval'
+    end
+
+    context 'when a partition is created within the analyze interval' do
+      let(:created_partition_identifier) { "gitlab_partitions_dynamic.#{analyze_table}_2" }
+      let(:created_partition_analyze_regex) do
+        /ANALYZE \(SKIP_LOCKED\) "gitlab_partitions_dynamic"\."#{analyze_table}_2"/
+      end
+
+      let(:my_model) do
+        interval = analyze_interval
+        Class.new(ApplicationRecord) do
+          include PartitionedTable
+
+          partitioned_by :partition_id,
+            strategy: :ci_sliding_list,
+            next_partition_if: proc { |partition| partition.values.max < 2 },
+            detach_partition_if: proc { false },
+            analyze_interval: interval
+        end
+      end
+
+      before do
+        allow_next_instance_of(described_class) do |instance|
+          allow(instance).to receive(:parent_table_has_loose_foreign_key?).and_return(false)
+        end
+
+        # Last analyze is recent, so the interval throttle skips the whole-table ANALYZE
+        allow(connection).to receive(:select_value).and_call_original
+        allow(connection).to receive(:select_value)
+          .with(/pg_stat_get_last_analyze_time/)
+          .and_return(Time.current)
+      end
+
+      it 'analyzes the created partition directly, bypassing the interval throttle' do
+        control = ActiveRecord::QueryRecorder.new do
+          described_class.new(my_model, connection: connection).sync_partitions(analyze: analyze)
+        end
+
+        expect(control.occurrences).to include(created_partition_analyze_regex)
+        expect(control.occurrences).not_to include(analyze_regex)
+
+        reltuples = connection.execute(
+          "SELECT reltuples FROM pg_class WHERE oid = '#{created_partition_identifier}'::regclass"
+        ).first['reltuples']
+        expect(reltuples).to be >= 0 # -1 means never analyzed
+      end
+
+      context 'when the model does not set analyze_interval' do
+        let(:my_model) do
+          Class.new(ApplicationRecord) do
+            include PartitionedTable
+
+            partitioned_by :partition_id,
+              strategy: :ci_sliding_list,
+              next_partition_if: proc { |partition| partition.values.max < 2 },
+              detach_partition_if: proc { false }
+          end
+        end
+
+        it 'does not analyze the created partition' do
+          control = ActiveRecord::QueryRecorder.new do
+            described_class.new(my_model, connection: connection).sync_partitions(analyze: analyze)
+          end
+
+          expect(control.occurrences).not_to include(created_partition_analyze_regex)
+          expect(control.occurrences).not_to include(analyze_regex)
+        end
+      end
+
+      context 'when analyze is false' do
+        let(:analyze) { false }
+
+        it 'does not analyze the created partition' do
+          control = ActiveRecord::QueryRecorder.new do
+            described_class.new(my_model, connection: connection).sync_partitions(analyze: analyze)
+          end
+
+          expect(control.occurrences).not_to include(created_partition_analyze_regex)
+          expect(control.occurrences).not_to include(analyze_regex)
+        end
+      end
+
+      context 'when the analyze_partitioned_tables_on_rotation flag is disabled' do
+        before do
+          stub_feature_flags(analyze_partitioned_tables_on_rotation: false)
+        end
+
+        it 'does not analyze the created partition' do
+          control = ActiveRecord::QueryRecorder.new do
+            described_class.new(my_model, connection: connection).sync_partitions(analyze: analyze)
+          end
+
+          expect(control.occurrences).not_to include(created_partition_analyze_regex)
+        end
+      end
+
+      context 'when the ANALYZE on the created partition fails' do
+        before do
+          allow(connection).to receive(:execute).and_call_original
+          allow(connection).to receive(:execute)
+            .with(/\AANALYZE \(SKIP_LOCKED\) "gitlab_partitions_dynamic"/)
+            .and_raise(ActiveRecord::StatementInvalid, 'analyze failed')
+        end
+
+        it 'logs an analyze failure and keeps the created partition' do
+          expect(Gitlab::AppLogger).to receive(:error).with(
+            hash_including('message' => 'Failed to run ANALYZE on created partitions')
+          )
+          expect(Gitlab::AppLogger).not_to receive(:error).with(
+            hash_including('message' => 'Failed to create / detach partition(s)')
+          )
+
+          described_class.new(my_model, connection: connection).sync_partitions(analyze: analyze)
+
+          created = connection.execute(
+            "SELECT to_regclass('#{created_partition_identifier}') IS NOT NULL AS present"
+          ).first['present']
+          expect(created).to be(true)
+        end
+
+        context 'when the whole-table ANALYZE is due' do
+          before do
+            allow(connection).to receive(:select_value)
+              .with(/pg_stat_get_last_analyze_time/)
+              .and_return(nil)
+          end
+
+          it 'still analyzes the partitioned table' do
+            expect(connection).to receive(:execute).with(analyze_regex).and_call_original
+
+            described_class.new(my_model, connection: connection).sync_partitions(analyze: analyze)
+          end
+        end
+      end
+
+      context 'when the whole-table ANALYZE is due but fails' do
+        before do
+          allow(connection).to receive(:select_value)
+            .with(/pg_stat_get_last_analyze_time/)
+            .and_return(nil)
+          allow(connection).to receive(:execute).and_call_original
+          allow(connection).to receive(:execute)
+            .with(/\AANALYZE \(SKIP_LOCKED\) "#{analyze_table}"/)
+            .and_raise(ActiveRecord::StatementInvalid, 'analyze failed')
+        end
+
+        it 'still analyzes the created partition' do
+          expect(Gitlab::AppLogger).to receive(:error).with(
+            hash_including('message' => 'Failed to run ANALYZE on partitioned table')
+          )
+
+          control = ActiveRecord::QueryRecorder.new do
+            described_class.new(my_model, connection: connection).sync_partitions(analyze: analyze)
+          end
+
+          expect(control.occurrences).to include(created_partition_analyze_regex)
+        end
+      end
+
+      context 'when the whole-table ANALYZE is due in the same run' do
+        before do
+          allow(connection).to receive(:select_value)
+            .with(/pg_stat_get_last_analyze_time/)
+            .and_return(nil)
+        end
+
+        it 'relies on the whole-table ANALYZE instead of analyzing the partition twice' do
+          control = ActiveRecord::QueryRecorder.new do
+            described_class.new(my_model, connection: connection).sync_partitions(analyze: analyze)
+          end
+
+          expect(control.occurrences).to include(analyze_regex)
+          expect(control.occurrences).not_to include(created_partition_analyze_regex)
+        end
+      end
+
+      context 'when SKIP_LOCKED makes the ANALYZE a no-op' do
+        before do
+          allow(connection).to receive(:execute).and_call_original
+          allow(connection).to receive(:execute)
+            .with(/\AANALYZE \(SKIP_LOCKED\) "gitlab_partitions_dynamic"/)
+            .and_return(nil)
+        end
+
+        it 'logs a warning for the statless partition' do
+          expect(Gitlab::AppLogger).to receive(:warn).with(
+            hash_including(
+              'message' => 'ANALYZE skipped on created partition',
+              'partition_name' => "#{analyze_table}_2"
+            )
+          )
+
+          described_class.new(my_model, connection: connection).sync_partitions(analyze: analyze)
+        end
+      end
     end
   end
 

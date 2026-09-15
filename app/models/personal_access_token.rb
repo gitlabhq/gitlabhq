@@ -131,6 +131,19 @@ class PersonalAccessToken < ApplicationRecord
     true
   end
 
+  # Sorting, deduping, and capping run in Ruby on the already-preloaded
+  # last_used_ips records (REST via the preload_last_used_ips scope, GraphQL via
+  # the resolver preloads). Rewriting this as a query on the association would
+  # issue one query per token, reintroducing an N+1.
+  def recent_used_ips
+    last_used_ips
+      .sort_by(&:created_at)
+      .reverse
+      .uniq(&:ip_address)
+      .first(::PersonalAccessTokens::LastUsedService::NUM_IPS_TO_STORE)
+      .map(&:ip_address)
+  end
+
   override :simple_sorts
   def self.simple_sorts
     super.merge(

@@ -321,22 +321,6 @@ RSpec.describe API::MarkdownUploads, feature_category: :team_planning do
     let(:headers) { workhorse_internal_api_request_header.merge({ 'HTTP_GITLAB_WORKHORSE' => 1 }) }
     let(:path) { "/groups/#{group.id}/uploads/authorize" }
 
-    before do
-      stub_feature_flags(group_uploads_api: group)
-    end
-
-    context 'when feature flag is disabled' do
-      before do
-        stub_feature_flags(group_uploads_api: false)
-      end
-
-      it 'returns 404' do
-        post api(path, user), headers: headers
-
-        expect(response).to have_gitlab_http_status(:not_found)
-      end
-    end
-
     context 'with authorized user' do
       it "returns 200" do
         post api(path, user), headers: headers
@@ -366,22 +350,6 @@ RSpec.describe API::MarkdownUploads, feature_category: :team_planning do
   describe "POST /groups/:id/uploads" do
     let(:file) { fixture_file_upload("spec/fixtures/dk.png", "image/png") }
     let(:path) { "/groups/#{group.id}/uploads" }
-
-    before do
-      stub_feature_flags(group_uploads_api: group)
-    end
-
-    context 'when feature flag is disabled' do
-      before do
-        stub_feature_flags(group_uploads_api: false)
-      end
-
-      it 'returns 404' do
-        post api(path, user), params: { file: file }
-
-        expect(response).to have_gitlab_http_status(:not_found)
-      end
-    end
 
     it "uploads the file through the upload service and returns its info" do
       expect(UploadService).to receive(:new)

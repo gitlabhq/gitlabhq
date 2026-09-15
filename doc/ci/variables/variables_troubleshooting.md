@@ -8,7 +8,7 @@ title: Troubleshooting CI/CD variables
 ## List all variables
 
 You can list all variables available to a script with the `export` command
-in Bash or `dir env:` in PowerShell. This exposes the values of **all** available
+in Bash or `dir env:` in PowerShell. This exposes the values of all available
 variables, which can be a [security risk](_index.md#cicd-variable-security).
 [Masked variables](_index.md#mask-a-cicd-variable) display as `[MASKED]`.
 

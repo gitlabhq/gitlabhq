@@ -1,0 +1,99 @@
+diff --git a/node_modules/@vue/compat/dist/vue.cjs.js b/node_modules/@vue/compat/dist/vue.cjs.js
+index aaaaaaa..bbbbbbb 100644
+--- a/node_modules/@vue/compat/dist/vue.cjs.js
++++ b/node_modules/@vue/compat/dist/vue.cjs.js
+@@ -6229,7 +6229,7 @@
+     } else if (key === "on" || key === "nativeOn") {
+       const listeners = legacyProps[key];
+       for (const event in listeners) {
+-        let handlerKey = convertLegacyEventKey(event);
++        let handlerKey = convertLegacyEventKey(event, type);
+         if (key === "nativeOn") handlerKey += `Native`;
+         const existing = converted[handlerKey];
+         const incoming = listeners[event];
+@@ -6265,7 +6265,7 @@
+   }
+   return converted;
+ }
+-function convertLegacyEventKey(event) {
++function convertLegacyEventKey(event, type) {
+   if (event[0] === "&") {
+     event = event.slice(1) + "Passive";
+   }
+@@ -6275,6 +6275,10 @@
+   if (event[0] === "!") {
+     event = event.slice(1) + "Capture";
+   }
++  /*! Only use on:${event} format for DOM elements to preserve case */
++  if (typeof type === "string" && /[A-Z]/.test(event)) {
++    return `on:${event}`;
++  }
+   return toHandlerKey(event);
+ }
+ function convertLegacyDirectives(vnode, props) {
+diff --git a/node_modules/@vue/compat/dist/vue.esm-bundler.js b/node_modules/@vue/compat/dist/vue.esm-bundler.js
+index aaaaaaa..bbbbbbb 100644
+--- a/node_modules/@vue/compat/dist/vue.esm-bundler.js
++++ b/node_modules/@vue/compat/dist/vue.esm-bundler.js
+@@ -6210,7 +6210,7 @@
+     } else if (key === "on" || key === "nativeOn") {
+       const listeners = legacyProps[key];
+       for (const event in listeners) {
+-        let handlerKey = convertLegacyEventKey(event);
++        let handlerKey = convertLegacyEventKey(event, type);
+         if (key === "nativeOn") handlerKey += `Native`;
+         const existing = converted[handlerKey];
+         const incoming = listeners[event];
+@@ -6246,7 +6246,7 @@
+   }
+   return converted;
+ }
+-function convertLegacyEventKey(event) {
++function convertLegacyEventKey(event, type) {
+   if (event[0] === "&") {
+     event = event.slice(1) + "Passive";
+   }
+@@ -6256,6 +6256,10 @@
+   if (event[0] === "!") {
+     event = event.slice(1) + "Capture";
+   }
++  /*! Only use on:${event} format for DOM elements to preserve case */
++  if (typeof type === "string" && /[A-Z]/.test(event)) {
++    return `on:${event}`;
++  }
+   return toHandlerKey(event);
+ }
+ function convertLegacyDirectives(vnode, props) {
+diff --git a/node_modules/@vue/compat/dist/vue.runtime.esm-bundler.js b/node_modules/@vue/compat/dist/vue.runtime.esm-bundler.js
+index aaaaaaa..bbbbbbb 100644
+--- a/node_modules/@vue/compat/dist/vue.runtime.esm-bundler.js
++++ b/node_modules/@vue/compat/dist/vue.runtime.esm-bundler.js
+@@ -6137,7 +6137,7 @@
+     } else if (key === "on" || key === "nativeOn") {
+       const listeners = legacyProps[key];
+       for (const event in listeners) {
+-        let handlerKey = convertLegacyEventKey(event);
++        let handlerKey = convertLegacyEventKey(event, type);
+         if (key === "nativeOn") handlerKey += `Native`;
+         const existing = converted[handlerKey];
+         const incoming = listeners[event];
+@@ -6173,7 +6173,7 @@
+   }
+   return converted;
+ }
+-function convertLegacyEventKey(event) {
++function convertLegacyEventKey(event, type) {
+   if (event[0] === "&") {
+     event = event.slice(1) + "Passive";
+   }
+@@ -6183,6 +6183,10 @@
+   if (event[0] === "!") {
+     event = event.slice(1) + "Capture";
+   }
++  /*! Only use on:${event} format for DOM elements to preserve case */
++  if (typeof type === "string" && /[A-Z]/.test(event)) {
++    return `on:${event}`;
++  }
+   return toHandlerKey(event);
+ }
+ function convertLegacyDirectives(vnode, props) {

@@ -118,7 +118,7 @@ MergeRequest.where(target_project_id: group.all_project_ids)
 
 ## Cache invalidation
 
-When the group hierarchy changes, for example when a new project or subgroup is added, the cache is invalidated within the same transaction. A periodic worker called [`Namespaces::ProcessOutdatedNamespaceDescendantsCronWorker`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/app/workers/namespaces/process_outdated_namespace_descendants_cron_worker.rb?ref_type=heads) will update the cache with a slight delay. The invalidation is implemented using ActiveRecord callbacks.
+When the group hierarchy changes, for example, when a new project or subgroup is added, the cache is invalidated within the same transaction. A periodic worker called [`Namespaces::ProcessOutdatedNamespaceDescendantsCronWorker`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/app/workers/namespaces/process_outdated_namespace_descendants_cron_worker.rb?ref_type=heads) will update the cache with a slight delay. The invalidation is implemented using ActiveRecord callbacks.
 
 While the cache is invalidated, the hierarchical database queries will continue returning consistent values using the uncached (unoptimized) `traversal_ids` based query.
 
@@ -145,7 +145,7 @@ SELECT COALESCE(
 )
 ```
 
-The query above returns immediately however, if the first subquery returns null, the DB will execute the second query:
+The query above returns immediately. However, if the first subquery returns null, the DB will execute the second query:
 
 ```sql
 SELECT COALESCE(
@@ -156,12 +156,12 @@ SELECT COALESCE(
 
 ## The `namespace_descendants` database table
 
-The cached subgroup and project ids are stored in the `namespace_descendants` database table as arrays, the most important columns:
+The cached subgroup and project ids are stored as arrays in the `namespace_descendants` database table. The most important columns are:
 
 - `namespace_id`: primary key, this can be a top-level group ID or a subgroup ID.
-- `self_and_descendant_group_ids`: all group IDs as an array
-- `all_project_ids`: all project IDs as an array
-- `outdated_at`: signals that the cache is outdated
+- `self_and_descendant_group_ids`: all group IDs as an array.
+- `all_project_ids`: all project IDs as an array.
+- `outdated_at`: signals that the cache is outdated.
 
 ## Cached database query
 

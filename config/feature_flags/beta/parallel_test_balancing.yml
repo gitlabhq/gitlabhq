@@ -1,0 +1,9 @@
+---
+name: parallel_test_balancing
+feature_issue_url: https://gitlab.com/gitlab-org/gitlab/-/work_items/606465
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/248198
+rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/work_items/606465
+milestone: '19.4'
+group: group::pipeline execution
+type: beta
+default_enabled: false

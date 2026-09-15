@@ -38,7 +38,7 @@ To configure the maximum number of projects in personal namespaces for new users
 1. Increase or decrease that **Default projects limit** value.
 
 If you set **Default projects limit** to 0, users are not allowed to create projects
-in their user's personal namespace. However, projects can still be created in a group.
+in their personal namespace. However, projects can still be created in a group.
 
 ### Projects limit for a user
 
@@ -115,7 +115,7 @@ For instance, consider the following workflow:
 1. Your team develops apps which require large files to be stored in
    the application repository.
 1. Although you have enabled [Git LFS](../../topics/git/lfs/_index.md)
-   to your project, your storage has grown significantly.
+   for your project, your storage has grown significantly.
 1. Before you exceed available storage, you set up a limit of 10 GB
    per repository.
 
@@ -332,7 +332,7 @@ When you require expiration dates for new access tokens:
 
 By default, GitLab deletes group and project access tokens and their [token family](../../api/personal_access_tokens.md#automatic-reuse-detection)
 30 days after the last active token in the token family becomes inactive. This deletion removes all
-tokens in the token family, the associated bot user, and moves any bot contributions to a
+tokens in the token family and the associated bot user, and moves any bot contributions to a
 [ghost user](../../user/profile/account/delete_account.md#associated-records).
 
 Prerequisites:
@@ -357,7 +357,7 @@ You can specify a prefix for personal access tokens. Benefits of using a custom 
 
 - Tokens are distinct and identifiable.
 - Leaked tokens are more easily identifiable during security scans.
-- Reduces the risk of token confusion between different instances.
+- Reduced risk of token confusion between different instances.
 
 The default prefix for personal access tokens is `glpat-` but administrators can change it.
 [Project access tokens](../../user/project/settings/project_access_tokens.md) and
@@ -401,7 +401,7 @@ using a custom prefix include:
 
 - Tokens are distinct and identifiable.
 - Leaked tokens are more easily identifiable during security scans.
-- Reduces the risk of token confusion between different instances.
+- Reduced risk of token confusion between different instances.
 
 > [!warning]
 > By default, client-side secret detection, secret push protection, and pipeline secret detection do
@@ -437,6 +437,10 @@ To set a custom token prefix:
 1. In the **Instance token prefix** field, enter your custom prefix.
 1. Select **Save changes**.
 
+`gl` is a reserved prefix.
+Instances that saved their application settings before GitLab changed the default instance token prefix from `gl` to no prefix still have `gl` stored as the value.
+GitLab now treats a stored `gl` value the same as no prefix, so you cannot set the instance token prefix to `gl`.
+
 ## Limit the lifetime of access tokens
 
 {{< details >}}
@@ -458,7 +462,7 @@ To set a custom token prefix:
 > The feature flag is not available on GitLab Dedicated.
 
 Users can optionally specify a maximum lifetime in days for
-access tokens, this includes [personal](../../user/profile/personal_access_tokens.md),
+access tokens. This includes [personal](../../user/profile/personal_access_tokens.md),
 [group](../../user/group/settings/group_access_tokens.md), and [project](../../user/project/settings/project_access_tokens.md) access tokens.
 This lifetime is not a requirement, and can be set to any value greater than 0 and less than or equal to:
 
@@ -491,9 +495,9 @@ To set a lifetime on how long access tokens are valid:
 
 After a lifetime for access tokens is set, GitLab:
 
-- Applies the lifetime for new personal access tokens, and require users to set an expiration date
+- Applies the lifetime for new personal access tokens, and requires users to set an expiration date
   and a date no later than the allowed lifetime.
-- After three hours, revoke old tokens with no expiration date or with a lifetime longer than the
+- After three hours, revokes old tokens with no expiration date or with a lifetime longer than the
   allowed lifetime. Three hours is given to allow administrators to change the allowed lifetime,
   or remove it, before revocation takes place.
 
@@ -768,6 +772,39 @@ users from deleting their own accounts:
 1. In the left sidebar, select **Settings** > **General**.
 1. Expand **Account and limit**.
 1. Clear the **Allows users to delete their own accounts** checkbox.
+
+## Automatically accept achievements for all users
+
+{{< details >}}
+
+- Tier: Free, Premium, Ultimate
+- Offering: GitLab Self-Managed, GitLab Dedicated
+
+{{< /details >}}
+
+{{< history >}}
+
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/work_items/607750) in GitLab 19.4.
+
+{{< /history >}}
+
+By default, users must explicitly accept an [achievement](../../user/profile/achievements.md) before it appears on
+their user profile. Instead, you can configure a setting to automatically accept newly awarded achievements for all
+users on the instance.
+
+When turned on, new achievements are accepted immediately and displayed on the recipient's user profile. GitLab
+still sends an email notification for the achievement, but the email no longer contains an acceptance link.
+This setting does not apply to achievements awarded before the setting was turned on.
+
+Recipients can still [hide the achievement from their profile](../../user/profile/achievements.md#change-visibility-of-specific-achievements).
+
+To automatically accept achievements for all users:
+
+1. In the upper-right corner, select **Admin**.
+1. In the left sidebar, select **Settings** > **General**.
+1. Expand **Account and limit**.
+1. Select the **Automatically accept achievements for all users** checkbox.
+1. Select **Save changes**.
 
 ## Troubleshooting
 

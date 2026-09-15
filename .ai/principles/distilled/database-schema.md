@@ -1,6 +1,6 @@
 ---
-source_checksum: 897da855b56a02f6
-distilled_at_sha: 2437a5545d9f350b76b314e8cf58cde7e0d785ac
+source_checksum: 982592b26eb8f4db
+distilled_at_sha: 829339e2e65aa85defcd3357097b75335668e334
 ---
 <!-- Auto-generated from docs.gitlab.com by gitlab-ai-principles-distiller — do not edit manually -->
 
@@ -140,4 +140,3 @@ For the full picture, see:
 - doc/development/database/serializing_data.md
 - doc/development/database/single_table_inheritance.md
 - doc/development/database/hash_indexes.md
-

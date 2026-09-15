@@ -22,15 +22,15 @@ module Resolvers
 
     def query_for(input)
       mr, args = input
-      # Both `resolve_pipelines` (via `Ci::PipelinesFinder`) and
-      # `mr.all_pipelines` (via `Ci::PipelinesForMergeRequestFinder`) apply the
-      # shared `Ci::Pipeline.merge_request_event_first` scope, so the MR
-      # Pipelines tab surfaces `merge_request_event`-sourced pipelines first,
-      # matching the legacy REST-based path. Because both relations carry the
-      # identical order values, ActiveRecord's `merge` de-duplicates them and
-      # the generated SQL contains the ORDER BY clause once.
-      resolve_pipelines(mr.source_project, args.merge(merge_request_event_first: true))
-        .merge(mr.all_pipelines)
+      finder = ::Ci::PipelinesForMergeRequestFinder.new(mr, current_user)
+
+      # Fork MRs can have pipelines in the target project too, so the finder's
+      # project scope is removed. `merge` must follow `unscope` - it re-adds
+      # the per-project `for_project` filter that `execute` uses to enforce
+      # `read_pipeline` on each project. Reversed, that filter is stripped.
+      resolve_pipelines(finder.authorizing_project, args.merge(merge_request_event_first: true))
+        .unscope(where: :project_id) # rubocop:disable CodeReuse/ActiveRecord -- removes Ci::PipelinesFinder's project scoping
+        .merge(finder.execute)
     end
 
     def model_class

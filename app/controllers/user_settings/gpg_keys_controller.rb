@@ -47,7 +47,7 @@ module UserSettings
     end
 
     def set_gpg_key
-      @gpg_key = current_user.gpg_keys.find(params[:id])
+      @gpg_key = current_user.gpg_keys.find(params.permit(:id)[:id])
     end
   end
 end

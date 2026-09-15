@@ -36,8 +36,6 @@ RSpec.describe Groups::Settings::MergeRequestsController, feature_category: :cod
       it { is_expected.to redirect_to(edit_group_path(group, anchor: 'js-merge-requests-settings')) }
 
       context 'when service execution went wrong' do
-        let(:update_service) { double }
-
         before do
           allow_next_instance_of(Groups::UpdateService) do |service|
             allow(service).to receive(:execute).and_return(false)

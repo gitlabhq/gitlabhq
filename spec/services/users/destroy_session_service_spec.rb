@@ -5,7 +5,6 @@ require 'spec_helper'
 RSpec.describe Users::DestroySessionService, :aggregate_failures, feature_category: :user_management do
   let_it_be(:user_with_session) { create(:user) }
   let(:session_id) { 'session_id' }
-  let(:plaintext) { "_gitlab_session=#{session_id}" }
   let(:rack_session) { Rack::Session::SessionId.new(session_id) }
   let(:session_hash) { { 'warden.user.user.key' => [[user_with_session.id], user_with_session.authenticatable_salt] } }
 

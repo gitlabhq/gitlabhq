@@ -2,7 +2,7 @@
 
 require 'fast_spec_helper'
 
-RSpec.describe Gitlab::Git::Conflict::Parser do
+RSpec.describe Gitlab::Git::Conflict::Parser, feature_category: :source_code_management do
   describe '.parse' do
     def parse_text(text)
       described_class.parse(text, our_path: 'README.md', their_path: 'README.md')

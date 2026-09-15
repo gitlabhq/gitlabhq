@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe BulkImports::Failure, type: :model, feature_category: :importers do
+RSpec.describe BulkImports::Failure, feature_category: :importers do
   let(:failure) { create(:bulk_import_failure) }
 
   describe 'associations' do

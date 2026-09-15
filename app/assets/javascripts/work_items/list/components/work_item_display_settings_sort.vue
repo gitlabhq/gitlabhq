@@ -64,14 +64,12 @@ export default {
     data-testid="display-settings-sort"
   >
     <span>{{ $options.i18n.sortByLabel }}</span>
-    <!-- eslint-disable vue/v-on-event-hyphenation -->
     <gl-sorting
       :sort-options="transformedSortOptions"
       :sort-by="sortById"
       :is-ascending="isAscending"
-      @sortByChange="onSortByChange"
-      @sortDirectionChange="onSortDirectionChange"
+      @sort-by-change="onSortByChange"
+      @sort-direction-change="onSortDirectionChange"
     />
-    <!-- eslint-enable vue/v-on-event-hyphenation -->
   </div>
 </template>

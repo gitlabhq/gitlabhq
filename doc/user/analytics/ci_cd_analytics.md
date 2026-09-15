@@ -96,7 +96,7 @@ This visualization helps you track the stability of your pipelines and identify 
 > To view CI/CD job performance metrics on GitLab Self-Managed and GitLab Dedicated instances, you must configure [ClickHouse](../../integration/clickhouse.md).
 
 CI/CD job performance trends enable developers to identify inefficient or problematic CI/CD jobs quickly. By including these capabilities
-directly in the GitLab UI, developers have the context to pinpoint and fix CI/CD performance problems
+directly in the GitLab UI, developers have the context to pinpoint and fix CI/CD performance problems.
 
 Job performance metrics let you identify bottlenecks, monitor job reliability, and focus optimization efforts on jobs with the highest
 impact on overall pipeline duration.

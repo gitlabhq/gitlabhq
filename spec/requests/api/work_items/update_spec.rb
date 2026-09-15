@@ -5,7 +5,7 @@ require 'spec_helper'
 RSpec.describe API::WorkItems::Update, feature_category: :portfolio_management do
   let_it_be(:user) { create(:user) }
   let_it_be(:group) { create(:group, :private, reporters: user) }
-  let_it_be(:project) { create(:project, :private, :repository, group: group, reporters: user) }
+  let_it_be(:project) { create(:project, :private, group: group, reporters: user) }
   let_it_be(:work_item) { create(:work_item, :task, project: project) }
 
   before do
@@ -285,7 +285,7 @@ RSpec.describe API::WorkItems::Update, feature_category: :portfolio_management d
       it 'returns 403' do
         patch api(api_request_path, user), params: { title: 'Updated title' }
 
-        expect(response).to have_gitlab_http_status(:forbidden)
+        expect(response).to have_gitlab_http_status(:not_found)
       end
     end
 

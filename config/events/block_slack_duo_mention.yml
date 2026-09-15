@@ -1,0 +1,25 @@
+---
+description: A Slack mention of the GitLab bot did not trigger a GitLab Duo flow.
+  The user identifier is only present when the Slack user has linked their GitLab
+  account.
+internal_events: true
+status: active
+action: block_slack_duo_mention
+classification: duo
+identifiers:
+- user
+additional_properties:
+  property:
+    description: Why the mention did not result in a Duo flow. Authorization drop-offs
+      (user_not_linked, no_permission, feature_flag_disabled, experiment_features_disabled,
+      no_duo_seat) or trigger failures (flow_resolver_<reason>, message_too_long,
+      flow_trigger_failed)
+product_group: ai_catalog
+product_categories:
+- duo_agent_platform
+milestone: '19.4'
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/253496
+tiers:
+- free
+- premium
+- ultimate

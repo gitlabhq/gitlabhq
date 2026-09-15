@@ -92,7 +92,7 @@ Configuring this depends on the cloud provider or service, but generally the fol
 This is the documentation for configuring a scalable Redis setup when
 you have installed Redis all by yourself and not using the bundled one that
 comes with the Linux packages, although using the Linux packages is
-highly recommend as we optimize them specifically for GitLab, and we take
+highly recommended as we optimize them specifically for GitLab, and we take
 care of upgrading Redis to the latest supported version.
 
 Note also that you may elect to override all references to
@@ -230,7 +230,7 @@ primary with IP `10.0.0.1` (some settings might overlap with the primary):
    ##   the moment a Sentinel detected the misconfiguration).
    ##
    ## * The time needed to cancel a failover that is already in progress but
-   ##   did not produced any configuration change (REPLICAOF NO ONE yet not
+   ##   did not produce any configuration change (REPLICAOF NO ONE yet not
    ##   acknowledged by the promoted replica).
    ##
    ## * The maximum time a failover in progress waits for all the replicas to be
@@ -250,7 +250,7 @@ installations. From the GitLab application perspective, all it requires is
 the correct credentials for the Sentinel nodes.
 
 While it doesn't require a list of all Sentinel nodes, in case of a failure,
-it needs to access at least one of listed ones.
+it needs to access at least one of the listed ones.
 
 The following steps should be performed in the GitLab application server
 which ideally should not have Redis or Sentinels in the same machine:

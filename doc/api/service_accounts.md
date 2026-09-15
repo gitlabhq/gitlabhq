@@ -92,12 +92,16 @@ Example response:
   {
     "id": 114,
     "username": "service_account_33",
-    "name": "Service account user"
+    "public_email": "",
+    "name": "Service account user",
+    "email": "service_account_33@noreply.gitlab.example.com"
   },
   {
     "id": 137,
     "username": "service_account_34",
-    "name": "john doe"
+    "public_email": "",
+    "name": "john doe",
+    "email": "service_account_34@noreply.gitlab.example.com"
   }
 ]
 ```
@@ -139,6 +143,7 @@ Example response:
 {
   "id": 57,
   "username": "service_account_6018816a18e515214e0c34c2b33523fc",
+  "public_email": "",
   "name": "Service account user",
   "email": "service_account_6018816a18e515214e0c34c2b33523fc@noreply.gitlab.example.com"
 }
@@ -185,6 +190,7 @@ Example response:
 {
   "id": 57,
   "username": "service_account_6018816a18e515214e0c34c2b33523fc",
+  "public_email": "",
   "name": "Updated Service Account",
   "email": "service_account_<random_hash>@noreply.gitlab.example.com",
   "unconfirmed_email": "custom_email@example.com"
@@ -250,17 +256,68 @@ Example response:
   {
     "id": 57,
     "username": "service_account_group_345_<random_hash>",
+    "public_email": "",
     "name": "Service account user",
     "email": "service_account_group_345_<random_hash>@noreply.gitlab.example.com"
   },
   {
     "id": 58,
     "username": "service_account_group_345_<random_hash>",
+    "public_email": "",
     "name": "Service account user",
     "email": "service_account_group_345_<random_hash>@noreply.gitlab.example.com",
     "unconfirmed_email": "custom_email@example.com"
   }
 ]
+```
+
+### Retrieve a group service account
+
+Retrieves a single service account in a specified group.
+
+```plaintext
+GET /groups/:id/service_accounts/:user_id
+```
+
+Supported attributes:
+
+| Attribute | Type              | Required | Description |
+| --------- | ----------------- | -------- | ----------- |
+| `id`      | integer or string | yes      | The ID or [URL-encoded path of the target group](rest/_index.md#namespaced-paths). |
+| `user_id` | integer           | yes      | The ID of the service account. |
+
+If successful, returns [`200 OK`](rest/troubleshooting.md#status-codes) and the following response attributes:
+
+| Attribute           | Type    | Description |
+| ------------------- | ------- | ----------- |
+| `email`             | string  | Email address of the service account. |
+| `id`                | integer | ID of the service account. |
+| `name`              | string  | Name of the service account. |
+| `public_email`      | string  | Public email address of the service account. |
+| `unconfirmed_email` | string  | Email address awaiting confirmation. Returned only when a confirmation is pending. |
+| `username`          | string  | Username of the service account. |
+
+Returns `404 Not Found` if the service account does not exist in the group, and `400 Bad Request` if the user
+exists in the group but is not a service account.
+
+Example request:
+
+```shell
+curl --request GET \
+  --header "PRIVATE-TOKEN: <your_access_token>" \
+  --url "https://gitlab.example.com/api/v4/groups/345/service_accounts/57"
+```
+
+Example response:
+
+```json
+{
+  "id": 57,
+  "username": "service_account_group_345_6018816a18e515214e0c34c2b33523fc",
+  "public_email": "",
+  "name": "Service account user",
+  "email": "service_account_group_345_6018816a18e515214e0c34c2b33523fc@noreply.gitlab.example.com"
+}
 ```
 
 ### Create a group service account
@@ -302,6 +359,7 @@ Example response:
 {
   "id": 57,
   "username": "service_account_group_345_6018816a18e515214e0c34c2b33523fc",
+  "public_email": "",
   "name": "Service account user",
   "email": "custom_email@example.com"
 }
@@ -352,6 +410,7 @@ Example response:
 {
   "id": 57,
   "username": "service_account_group_345_6018816a18e515214e0c34c2b33523fc",
+  "public_email": "",
   "name": "Updated Service Account",
   "email": "service_account_group_345_<random_hash>@noreply.gitlab.example.com",
   "unconfirmed_email": "custom_email@example.com"
@@ -393,6 +452,7 @@ curl --request DELETE \
 {{< history >}}
 
 - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/526924) in GitLab 17.11.
+- `last_used_ips` in the response [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/250307) in GitLab 19.4.
 
 {{< /history >}}
 
@@ -442,6 +502,7 @@ Example response:
         ],
         "user_id": 195,
         "last_used_at": null,
+        "last_used_ips": [],
         "active": true,
         "expires_at": null
     }
@@ -454,6 +515,12 @@ Example of unsuccessful responses:
 - `404 Group Not Found`
 
 ### Create a personal access token for a group service account
+
+{{< history >}}
+
+- `last_used_ips` in the response [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/250307) in GitLab 19.4.
+
+{{< /history >}}
 
 Creates a personal access token for an existing service account in a specified group.
 
@@ -493,6 +560,7 @@ Example response:
   "scopes":["api"],
   "user_id":71,
   "last_used_at":null,
+  "last_used_ips":[],
   "active":true,
   "expires_at":"2024-06-12",
   "token":"<token_value>"
@@ -540,6 +608,12 @@ Other possible responses:
 
 ### Rotate a personal access token for a group service account
 
+{{< history >}}
+
+- `last_used_ips` in the response [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/250307) in GitLab 19.4.
+
+{{< /history >}}
+
 Rotates a specified personal access token for an existing service account in a specified group. This revokes the existing token and creates a new token with the same name, description, and scopes.
 
 ```plaintext
@@ -574,6 +648,7 @@ Example response:
   "scopes":["api"],
   "user_id":71,
   "last_used_at":null,
+  "last_used_ips":[],
   "active":true,
   "expires_at":"2023-06-20",
   "token":"<token_value>"
@@ -632,17 +707,67 @@ Example response:
   {
     "id": 57,
     "username": "service_account_project_345_<random_hash>",
+    "public_email": "",
     "name": "Service account user",
     "email": "service_account_project_345_<random_hash>@noreply.gitlab.example.com"
   },
   {
     "id": 58,
     "username": "service_account_project_345_<random_hash>",
+    "public_email": "",
     "name": "Service account user",
     "email": "service_account_project_345_<random_hash>@noreply.gitlab.example.com",
     "unconfirmed_email": "custom_email@example.com"
   }
 ]
+```
+
+### Retrieve a project service account
+
+Retrieves a single service account in a specified project.
+
+```plaintext
+GET /projects/:id/service_accounts/:user_id
+```
+
+Supported attributes:
+
+| Attribute | Type              | Required | Description |
+| --------- | ----------------- | -------- | ----------- |
+| `id`      | integer or string | yes      | The ID or [URL-encoded path of the target project](rest/_index.md#namespaced-paths). |
+| `user_id` | integer           | yes      | The ID of the service account. |
+
+If successful, returns [`200 OK`](rest/troubleshooting.md#status-codes) and the following response attributes:
+
+| Attribute           | Type    | Description |
+| ------------------- | ------- | ----------- |
+| `email`             | string  | Email address of the service account. |
+| `id`                | integer | ID of the service account. |
+| `name`              | string  | Name of the service account. |
+| `public_email`      | string  | Public email address of the service account. |
+| `unconfirmed_email` | string  | Email address awaiting confirmation. Returned only when a confirmation is pending. |
+| `username`          | string  | Username of the service account. |
+
+Returns `404 Not Found` if the service account does not exist in the project.
+
+Example request:
+
+```shell
+curl --request GET \
+  --header "PRIVATE-TOKEN: <your_access_token>" \
+  --url "https://gitlab.example.com/api/v4/projects/345/service_accounts/57"
+```
+
+Example response:
+
+```json
+{
+  "id": 57,
+  "username": "service_account_project_345_6018816a18e515214e0c34c2b33523fc",
+  "public_email": "",
+  "name": "Service account user",
+  "email": "service_account_project_345_6018816a18e515214e0c34c2b33523fc@noreply.gitlab.example.com"
+}
 ```
 
 ### Create a project service account
@@ -677,6 +802,7 @@ Example response:
 {
   "id": 57,
   "username": "service_account_project_345_6018816a18e515214e0c34c2b33523fc",
+  "public_email": "",
   "name": "Service account user",
   "email": "custom_email@example.com"
 }
@@ -715,6 +841,7 @@ Example response:
 {
   "id": 57,
   "username": "service_account_project_345_6018816a18e515214e0c34c2b33523fc",
+  "public_email": "",
   "name": "Updated Service Account",
   "email": "service_account_project_345_<random_hash>@noreply.gitlab.example.com",
   "unconfirmed_email": "custom_email@example.com"
@@ -746,6 +873,12 @@ curl --request DELETE \
 ```
 
 ### List all personal access tokens for a project service account
+
+{{< history >}}
+
+- `last_used_ips` in the response [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/250307) in GitLab 19.4.
+
+{{< /history >}}
 
 Lists all personal access tokens for a service account in a project.
 
@@ -793,6 +926,7 @@ Example response:
         ],
         "user_id": 195,
         "last_used_at": null,
+        "last_used_ips": [],
         "active": true,
         "expires_at": null
     }
@@ -805,6 +939,12 @@ Example of unsuccessful responses:
 - `404 Project Not Found`
 
 ### Create a personal access token for a project service account
+
+{{< history >}}
+
+- `last_used_ips` in the response [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/250307) in GitLab 19.4.
+
+{{< /history >}}
 
 Creates a personal access token for an existing service account in a specified project.
 
@@ -844,6 +984,7 @@ Example response:
   "scopes":["api"],
   "user_id":71,
   "last_used_at":null,
+  "last_used_ips":[],
   "active":true,
   "expires_at":"2024-06-12",
   "token":"<token_value>"
@@ -885,6 +1026,12 @@ Other possible responses:
 
 ### Rotate a personal access token for a project service account
 
+{{< history >}}
+
+- `last_used_ips` in the response [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/250307) in GitLab 19.4.
+
+{{< /history >}}
+
 Rotates a personal access token for an existing service account in a specified project. This creates a new token valid for one week and revokes any existing tokens.
 
 ```plaintext
@@ -919,6 +1066,7 @@ Example response:
   "scopes":["api"],
   "user_id":71,
   "last_used_at":null,
+  "last_used_ips":[],
   "active":true,
   "expires_at":"2023-06-20",
   "token":"<token_value>"

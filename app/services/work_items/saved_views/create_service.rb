@@ -32,7 +32,11 @@ module WorkItems
 
         if saved_view.save
           auto_subscribe_creator(saved_view)
-          track_saved_view_create(saved_view)
+          ::Gitlab::WorkItems::Instrumentation::TrackingService.track_saved_view(
+            event: ::Gitlab::WorkItems::Instrumentation::EventActions::SAVED_VIEW_CREATE,
+            saved_view: saved_view,
+            user: current_user
+          )
           ServiceResponse.success(payload: { saved_view: saved_view })
         else
           ServiceResponse.error(message: saved_view.errors.full_messages)
@@ -47,20 +51,6 @@ module WorkItems
 
       def auto_subscribe_creator(saved_view)
         UserSavedView.subscribe(user: current_user, saved_view: saved_view, auto_unsubscribe: true)
-      end
-
-      def track_saved_view_create(saved_view)
-        ::Gitlab::WorkItems::Instrumentation::TrackingService.track(
-          event: ::Gitlab::WorkItems::Instrumentation::EventActions::SAVED_VIEW_CREATE,
-          properties: {
-            user: current_user,
-            namespace: saved_view.namespace,
-            project: container.is_a?(Project) ? container : nil,
-            additional_properties: {
-              property: saved_view.namespace.user_role(current_user)
-            }
-          }
-        )
       end
     end
   end

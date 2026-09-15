@@ -222,6 +222,38 @@ RSpec.describe Gitlab::Middleware::Go, feature_category: :source_code_management
                     end
                   end
 
+                  context 'with read_repository scope' do
+                    before do
+                      personal_access_token.update_attribute(:scopes, [:read_repository])
+                      project.team.add_maintainer(current_user)
+                    end
+
+                    it 'returns the full project path' do
+                      expect_response_with_path(go, enabled_protocol, project.full_path)
+                    end
+                  end
+
+                  context 'when the namespace enforces granular tokens' do
+                    let(:root_group) { create(:group) }
+                    let(:group) { create(:group, :nested, parent: root_group) }
+                    let!(:project) { create(:project, :public, :small_repo, namespace: group) }
+
+                    before do
+                      project.team.add_maintainer(current_user)
+
+                      stub_feature_flags(granular_personal_access_tokens_enforcement_saas: root_group)
+
+                      root_group.namespace_settings.update!(
+                        enforce_granular_tokens: true,
+                        granular_tokens_enforced_after: Date.current
+                      )
+                    end
+
+                    it 'returns 404' do
+                      expect_404_response(go)
+                    end
+                  end
+
                   context 'with a denylisted ip' do
                     let(:request) { ActionDispatch::Request.new(env) }
                     let(:attributes) do
@@ -244,6 +276,68 @@ RSpec.describe Gitlab::Middleware::Go, feature_category: :source_code_management
 
                       expect(response[0]).to eq(403)
                       expect(response[2]).to eq([err.message])
+                    end
+                  end
+                end
+
+                context 'using a granular personal access token' do
+                  let(:boundary) { Authz::Boundary.for(project) }
+                  let(:personal_access_token) do
+                    create(:granular_pat, user: current_user, boundary: boundary, permissions: permissions)
+                  end
+
+                  before do
+                    project.team.add_maintainer(current_user)
+                    env['REMOTE_ADDR'] = '192.168.0.1'
+                    env['HTTP_AUTHORIZATION'] = ActionController::HttpAuthentication::Basic.encode_credentials(current_user.username, personal_access_token.token)
+                  end
+
+                  context 'with download_code permission' do
+                    let(:permissions) { :download_code }
+
+                    it 'returns the full project path' do
+                      expect_response_with_path(go, enabled_protocol, project.full_path)
+                    end
+                  end
+
+                  context 'without download_code permission' do
+                    let(:permissions) { :read_code }
+
+                    it 'returns 404' do
+                      expect_404_response(go)
+                    end
+                  end
+
+                  context 'when the permission applies to a different project' do
+                    let(:boundary) { Authz::Boundary.for(create(:project, namespace: group)) }
+                    let(:permissions) { :download_code }
+
+                    it 'returns 404' do
+                      expect_404_response(go)
+                    end
+                  end
+
+                  context 'when granular personal access tokens are disabled' do
+                    let(:permissions) { :download_code }
+
+                    before do
+                      stub_feature_flags(granular_personal_access_tokens: false)
+                    end
+
+                    it 'returns 404' do
+                      expect_404_response(go)
+                    end
+                  end
+
+                  context 'when the user is not a member of the project' do
+                    let(:permissions) { :download_code }
+
+                    before do
+                      project.members.find_by!(user: current_user).destroy!
+                    end
+
+                    it 'returns 404' do
+                      expect_404_response(go)
                     end
                   end
                 end

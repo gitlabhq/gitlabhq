@@ -12,49 +12,86 @@ RSpec.describe UserProjectAccessChangedService, feature_category: :system_access
     end
 
     context 'for low priority operation' do
+      context 'when the feature flag `do_not_run_safety_net_auth_refresh_jobs` is enabled' do
+        before do
+          stub_feature_flags(do_not_run_safety_net_auth_refresh_jobs: true)
+        end
+
+        it 'does not queue users for reverification' do
+          expect { described_class.new([1, 2]).execute(priority: described_class::LOW_PRIORITY) }
+            .not_to change { Authz::ProjectAuthorizationReverification.count }
+        end
+
+        it 'does not enqueue safety net jobs' do
+          expect(AuthorizedProjectUpdate::UserRefreshFromReplicaWorker).not_to receive(:bulk_perform_in)
+
+          described_class.new([1, 2]).execute(priority: described_class::LOW_PRIORITY)
+        end
+      end
+
       context 'when the feature flag `do_not_run_safety_net_auth_refresh_jobs` is disabled' do
         before do
           stub_feature_flags(do_not_run_safety_net_auth_refresh_jobs: false)
         end
 
-        it 'permits low-priority operation' do
-          expect(AuthorizedProjectUpdate::UserRefreshFromReplicaWorker).to(
-            receive(:bulk_perform_in).with(
-              described_class::DELAY,
-              [[1], [2]],
-              { batch_delay: 30.seconds, batch_size: 100 }
-            )
-          )
+        context 'when the feature flag `use_db_to_queue_safety_net_auth_refresh` is enabled' do
+          let_it_be(:users) { create_list(:user, 2) }
 
-          described_class.new([1, 2]).execute(priority: described_class::LOW_PRIORITY)
+          it 'queues the users for reverification' do
+            expect { described_class.new(users.map(&:id)).execute(priority: described_class::LOW_PRIORITY) }
+              .to change { Authz::ProjectAuthorizationReverification.where(user: users).count }.by(2)
+          end
+
+          it 'does not enqueue safety net jobs' do
+            expect(AuthorizedProjectUpdate::UserRefreshFromReplicaWorker).not_to receive(:bulk_perform_in)
+
+            described_class.new(users.map(&:id)).execute(priority: described_class::LOW_PRIORITY)
+          end
         end
 
-        it 'sets the current caller_id as related_class in the context of all the enqueued jobs' do
-          Gitlab::ApplicationContext.with_context(caller_id: 'Foo') do
+        context 'when the feature flag `use_db_to_queue_safety_net_auth_refresh` is disabled' do
+          before do
+            stub_feature_flags(use_db_to_queue_safety_net_auth_refresh: false)
+          end
+
+          it 'does not queue users for reverification' do
+            expect { described_class.new([1, 2]).execute(priority: described_class::LOW_PRIORITY) }
+              .not_to change { Authz::ProjectAuthorizationReverification.count }
+          end
+
+          it 'enqueues safety net jobs' do
+            expect(AuthorizedProjectUpdate::UserRefreshFromReplicaWorker).to(
+              receive(:bulk_perform_in).with(
+                described_class::DELAY,
+                [[1], [2]],
+                { batch_delay: 30.seconds, batch_size: 100 }
+              )
+            )
+
             described_class.new([1, 2]).execute(priority: described_class::LOW_PRIORITY)
           end
 
-          expect(AuthorizedProjectUpdate::UserRefreshFromReplicaWorker.jobs).to all(
-            include(Labkit::Context.log_key(:related_class) => 'Foo')
-          )
-        end
+          it 'sets the current caller_id as related_class in the context of all the enqueued jobs' do
+            Gitlab::ApplicationContext.with_context(caller_id: 'Foo') do
+              described_class.new([1, 2]).execute(priority: described_class::LOW_PRIORITY)
+            end
 
-        it 'tags jobs with the safety-net refresh purpose' do
-          described_class.new([1, 2]).execute(priority: described_class::LOW_PRIORITY)
-
-          expect(AuthorizedProjectUpdate::UserRefreshFromReplicaWorker.jobs).to all(
-            include(
-              Labkit::Context.log_key(:authorized_projects_refresh_purpose) =>
-                described_class::SAFETY_NET_REFRESH_PURPOSE
+            expect(AuthorizedProjectUpdate::UserRefreshFromReplicaWorker.jobs).to all(
+              include(Labkit::Context.log_key(:related_class) => 'Foo')
             )
-          )
+          end
+
+          it 'tags jobs with the safety-net refresh purpose' do
+            described_class.new([1, 2]).execute(priority: described_class::LOW_PRIORITY)
+
+            expect(AuthorizedProjectUpdate::UserRefreshFromReplicaWorker.jobs).to all(
+              include(
+                Labkit::Context.log_key(:authorized_projects_refresh_purpose) =>
+                  described_class::SAFETY_NET_REFRESH_PURPOSE
+              )
+            )
+          end
         end
-      end
-
-      it 'does not perform low-priority operation' do
-        expect(AuthorizedProjectUpdate::UserRefreshFromReplicaWorker).not_to receive(:bulk_perform_in)
-
-        described_class.new([1, 2]).execute(priority: described_class::LOW_PRIORITY)
       end
     end
 

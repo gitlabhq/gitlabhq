@@ -1,8 +1,9 @@
 ---
 stage: Plan
-group: Project Management
+group: Work Items
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see <https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments>
 title: Emoji reactions
+description: React with emoji on issues, comments, and other items to give feedback without writing a long comment thread.
 ---
 
 {{< details >}}

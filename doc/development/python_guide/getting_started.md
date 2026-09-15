@@ -118,7 +118,7 @@ Refer to [Track and Propose Sessions for Python Learning Group](https://gitlab.c
 
 ### Python Review Office Hours
 
-- **Bi-weekly sessions** for code review and discussion, led by experienced Python developers.
+- Bi-weekly sessions for code review and discussion, led by experienced Python developers.
 - These sessions are designed to help you improve your Python skills through practical feedback.
 - Feel free to add the office hours to your calendar.
 

@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Types::WorkItemIdType do
+RSpec.describe Types::WorkItemIdType, feature_category: :team_planning do
   let_it_be(:project) { create(:project) }
   let_it_be(:work_item) { create(:work_item, project: project) }
   let_it_be(:issue) { create(:issue, project: project) }
@@ -28,7 +28,8 @@ RSpec.describe Types::WorkItemIdType do
       project_gid = project.to_gid
 
       expect { described_class.coerce_input(project_gid.to_s, ctx) }
-        .to raise_error(GraphQL::CoercionError, "#{project_gid.to_s.inspect} does not represent an instance of WorkItem")
+        .to raise_error(GraphQL::CoercionError,
+          "#{project_gid.to_s.inspect} does not represent an instance of WorkItem")
     end
   end
 

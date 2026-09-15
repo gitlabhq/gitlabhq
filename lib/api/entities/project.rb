@@ -144,6 +144,7 @@ module API
         expose :ci_push_repository_for_job_token_allowed, documentation: { type: 'Boolean' }
         expose :protect_merge_request_pipelines, documentation: { type: 'Boolean' }
         expose :ci_display_pipeline_variables, documentation: { type: 'Boolean' }
+        expose :ci_skip_branch_pipelines_for_mrs, documentation: { type: 'Boolean' }
       end
 
       with_options if: ->(_, _) { Ability.allowed?(options[:current_user], :read_runners_registration_token, project) } do
@@ -168,6 +169,7 @@ module API
       expose :printing_merge_request_link_enabled, documentation: { type: 'Boolean' }
       expose :merge_method, documentation: { type: 'String', example: 'merge' }
       expose :squash_option, documentation: { type: 'String', example: 'default_off' }
+      expose :automatic_rebase_enabled, documentation: { type: 'Boolean' }
       expose :enforce_auth_checks_on_uploads, documentation: { type: 'Boolean' }
       expose :suggestion_commit_message, documentation: { type: 'String', example: 'Suggestion message' }
       expose :merge_commit_template, documentation: { type: 'String', example: '%(title)' }

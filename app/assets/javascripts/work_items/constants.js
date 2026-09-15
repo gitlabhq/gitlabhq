@@ -54,6 +54,7 @@ export const WIDGET_TYPE_CRM_CONTACTS = 'CRM_CONTACTS';
 export const WIDGET_TYPE_EMAIL_PARTICIPANTS = 'EMAIL_PARTICIPANTS';
 export const WIDGET_TYPE_CUSTOM_FIELDS = 'CUSTOM_FIELDS';
 export const WIDGET_TYPE_VULNERABILITIES = 'VULNERABILITIES';
+export const WIDGET_TYPE_AGENT_PLAN = 'AGENT_PLAN';
 
 // Maps a `workItem.features` key to its widget `type`
 // for widgets shown as child/linked item metadata.
@@ -249,6 +250,9 @@ export const DETAIL_VIEW_DESIGN_VERSION_PARAM_NAME = 'version';
 
 export const WORK_ITEM_DETAIL_PANEL = 'work-item-detail';
 export const AGENT_PLAN_PANEL = 'agent-plan';
+export const DECISION_LOG_PANEL = 'decision-log';
+// Every value `show` can hold that is a panel key rather than an encoded child reference.
+export const CONTEXTUAL_PANEL_KEYS = [WORK_ITEM_DETAIL_PANEL, AGENT_PLAN_PANEL, DECISION_LOG_PANEL];
 export const ROUTES = {
   index: 'planningView',
   workItem: 'workItem',
@@ -368,84 +372,72 @@ export const WORK_ITEM_LIST_PREFERENCES_METADATA_FIELDS = [
     key: 'status',
     label: __('Status'),
     icon: 'status',
-    isPresentInGroup: true,
     isAvailableInBoard: true,
   },
   {
     key: 'assignee',
     label: __('Assignee'),
     icon: 'profile',
-    isPresentInGroup: true,
     isAvailableInBoard: true,
   },
   {
     key: 'labels',
     label: __('Labels'),
     icon: 'labels',
-    isPresentInGroup: true,
     isAvailableInBoard: true,
   },
   {
     key: 'weight',
     label: __('Weight'),
     icon: 'weight',
-    isPresentInGroup: false,
     isAvailableInBoard: true,
   },
   {
     key: 'milestone',
     label: __('Milestone'),
     icon: 'milestone',
-    isPresentInGroup: true,
     isAvailableInBoard: true,
   },
   {
     key: 'iteration',
     label: __('Iteration'),
     icon: 'iteration',
-    isPresentInGroup: false,
     isAvailableInBoard: true,
   },
   {
     key: 'dates',
     label: __('Dates'),
     icon: 'calendar',
-    isPresentInGroup: true,
     isAvailableInBoard: true,
   },
   {
     key: 'health',
     label: __('Health'),
     icon: 'status-health',
-    isPresentInGroup: true,
     isAvailableInBoard: true,
   },
   {
     key: 'blocked',
     label: s__('WorkItems|Blocked/Blocking'),
     icon: 'entity-blocked',
-    isPresentInGroup: true,
     isAvailableInBoard: true,
   },
   {
     key: 'parent',
     label: __('Parent'),
     icon: 'work-item-parent',
-    isPresentInGroup: true,
     isAvailableInBoard: true,
   },
   {
     key: 'comments',
     label: __('Comments'),
     icon: 'comments',
-    isPresentInGroup: true,
     isAvailableInBoard: false,
   },
   {
     key: 'popularity',
     label: __('Popularity'),
     icon: 'thumb-up',
-    isPresentInGroup: true,
     isAvailableInBoard: false,
   },
 ];
@@ -478,3 +470,7 @@ export const VIEW_CONTEXT = {
 
 export const VIEW_MODE_LIST = 'list';
 export const VIEW_MODE_BOARD = 'board';
+export const VIEW_MODE_TABLE = 'table';
+
+export const DISPLAY_SETTINGS_PAGE_ROOT = 'root';
+export const DISPLAY_SETTINGS_PAGE_GROUP_BY = 'groupBy';

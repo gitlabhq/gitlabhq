@@ -23,6 +23,10 @@ module ActiveContext
       end
     end
 
+    def self.retry_chain
+      [RetryQueue, SecondRetryQueue, ThirdRetryQueue, FourthRetryQueue]
+    end
+
     def self.register_all_queues!
       return if @queues_registered
 
@@ -30,7 +34,9 @@ module ActiveContext
         register!(q)
       end
 
-      register!(RetryQueue)
+      retry_chain.each do |q|
+        register!(q)
+      end
 
       @queues_registered = true
     end

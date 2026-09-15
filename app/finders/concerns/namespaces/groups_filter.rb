@@ -39,7 +39,7 @@ module Namespaces
     def sort(groups)
       return groups.order_id_desc unless params[:sort]
 
-      if params[:sort] == :similarity
+      if params[:sort].to_s == 'similarity'
         return groups.sorted_by_similarity_desc(params[:search]) if can_sort_by_similarity?
 
         return groups.order_id_desc

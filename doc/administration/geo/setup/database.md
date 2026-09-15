@@ -1,5 +1,5 @@
 ---
-stage: Tenant Scale
+stage: GitLab Dedicated
 group: Geo
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see <https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments>
 description: Learn how to set up, configure, and manage GitLab Geo database replication to keep primary and secondary sites synchronized, including requirements, replication methods, and troubleshooting guidance.
@@ -47,7 +47,7 @@ For example, the `patroni['password']` value configured on the primary
 site must be identical to the `patroni['password']` value on all secondary sites.
 
 These passwords are used for database authentication and replication between primary and secondary sites.
-Using different passwords causes replication failures and prevent Geo from functioning correctly.
+Using different passwords causes replication failures and prevents Geo from functioning correctly.
 
 ## Single instance database replication
 
@@ -96,7 +96,7 @@ The following guide assumes that:
    ```
 
 1. [Opt out of automatic PostgreSQL upgrades](https://docs.gitlab.com/omnibus/settings/database/#opt-out-of-automatic-postgresql-upgrades) to avoid unintended downtime when upgrading GitLab. Be aware of the known [caveats when upgrading PostgreSQL with Geo](https://docs.gitlab.com/omnibus/settings/database/#caveats-when-upgrading-postgresql-with-geo). Especially for larger environments, PostgreSQL upgrades must be planned and executed consciously. As a result and going forward, ensure PostgreSQL upgrades are part of the regular maintenance activities.
-1. Edit `/etc/gitlab/gitlab.rb` and add a **unique** name for your site:
+1. Edit `/etc/gitlab/gitlab.rb` and add a unique name for your site:
 
    ```ruby
    ##
@@ -296,7 +296,7 @@ The following guide assumes that:
 1. Re-enable migrations now that PostgreSQL is restarted and listening on the
    private address.
 
-   Edit `/etc/gitlab/gitlab.rb` and **change** the configuration to `true`:
+   Edit `/etc/gitlab/gitlab.rb` and change the configuration to `true`:
 
    ```ruby
    gitlab_rails['auto_migrate'] = true
@@ -399,7 +399,7 @@ The following guide assumes that:
 
    PostgreSQL now only recognizes that exact certificate when verifying TLS
    connections. The certificate can only be replicated by someone with access
-   to the private key, which is **only** present on the primary site.
+   to the private key, which is only present on the primary site.
 
    Because `gitlab-ctl replicate-geo-database` runs as root, install
    the certificate also for the root user. Otherwise, the replication
@@ -594,7 +594,7 @@ see [the relevant documentation](../../postgresql/replication_and_failover.md).
 ### Changing the replication password
 
 > [!warning]
-> When changing the replication password, you must update it on **all** Geo sites (primary and all secondaries) with the [same password value](#database-password-consistency-requirements). Failure to keep passwords synchronized breaks replication.
+> When changing the replication password, you must update it on all Geo sites (primary and all secondaries) with the [same password value](#database-password-consistency-requirements). Failure to keep passwords synchronized breaks replication.
 
 To change the password for the [replication user](https://www.postgresql.org/docs/16/warm-standby.html#STREAMING-REPLICATION)
 when using PostgreSQL instances managed by a Linux package installation:
@@ -681,7 +681,7 @@ With Patroni, this support is now possible. To migrate the existing PostgreSQL t
 1. [Configure a Standby Cluster](#step-4-configure-a-standby-cluster-on-the-secondary-site)
    on that single node machine.
 
-You end up with a **Standby Cluster** with a single node. That allows you to add additional Patroni nodes by following the same instructions listed previously.
+You end up with a Standby Cluster with a single node. That allows you to add additional Patroni nodes by following the same instructions listed previously.
 
 ### Patroni support
 
@@ -723,8 +723,8 @@ To set up database replication with Patroni on a secondary site, you must
 configure a permanent replication slot on the primary site's Patroni cluster,
 and ensure password authentication is used.
 
-On each node running a Patroni instance on the primary site **starting on the Patroni
-Leader instance**:
+On each node running a Patroni instance on the primary site, starting on the Patroni
+Leader instance:
 
 1. SSH into your Patroni instance and sign in as root:
 
@@ -1024,7 +1024,7 @@ For each node running a Patroni instance on the secondary site:
 
    When configuring `patroni['standby_cluster']['host']` and `patroni['standby_cluster']['port']`:
    - `INTERNAL_LOAD_BALANCER_PRIMARY_IP` must point to the primary internal load balancer IP.
-   - `INTERNAL_LOAD_BALANCER_PRIMARY_PORT` must point to the frontend port [configured for the primary Patroni cluster leader](#step-2-configure-the-internal-load-balancer-on-the-primary-site). **Do not** use the PgBouncer frontend port.
+   - `INTERNAL_LOAD_BALANCER_PRIMARY_PORT` must point to the frontend port [configured for the primary Patroni cluster leader](#step-2-configure-the-internal-load-balancer-on-the-primary-site). Do not use the PgBouncer frontend port.
 
 1. Reconfigure GitLab for the changes to take effect.
    This step is required to bootstrap PostgreSQL users and settings.

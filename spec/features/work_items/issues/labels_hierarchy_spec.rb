@@ -92,8 +92,13 @@ RSpec.describe 'Labels Hierarchy', :js, feature_category: :team_planning do
     let!(:group_label_3) { create(:group_label, group: child, title: 'Label_5') }
     let!(:project_label_3) { create(:label, project: project_3, title: 'Label_6') }
 
-    let!(:labeled_issue_2) { create(:labeled_issue, project: project_2, labels: [grandparent_group_label, parent_group_label, project_label_2]) }
-    let!(:labeled_issue_3) { create(:labeled_issue, project: project_3, labels: [grandparent_group_label, parent_group_label, group_label_3]) }
+    let!(:labeled_issue_2) do
+      create(:labeled_issue, project: project_2, labels: [grandparent_group_label, parent_group_label, project_label_2])
+    end
+
+    let!(:labeled_issue_3) do
+      create(:labeled_issue, project: project_3, labels: [grandparent_group_label, parent_group_label, group_label_3])
+    end
 
     let!(:issue_2) { create(:issue, project: project_2) }
 
@@ -201,7 +206,10 @@ RSpec.describe 'Labels Hierarchy', :js, feature_category: :team_planning do
   end
 
   context 'issuable filtering' do
-    let!(:labeled_issue) { create(:labeled_issue, project: project_1, labels: [grandparent_group_label, parent_group_label, project_label_1]) }
+    let!(:labeled_issue) do
+      create(:labeled_issue, project: project_1, labels: [grandparent_group_label, parent_group_label, project_label_1])
+    end
+
     let!(:issue) { create(:issue, project: project_1) }
 
     context 'on project issuable list' do

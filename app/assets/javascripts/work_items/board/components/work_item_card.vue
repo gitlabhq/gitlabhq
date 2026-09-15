@@ -3,11 +3,13 @@ import { defineAsyncComponent } from 'vue';
 import { uniqueId } from 'lodash-es';
 import { GlLabel, GlTruncate } from '@gitlab/ui';
 import { getIdFromGraphQLId } from '~/graphql_shared/utils';
+import { isScopedLabel } from '~/lib/utils/common_utils';
 import { visitUrl } from '~/lib/utils/url_utility';
-import { WIDGET_TYPE_LABELS, METADATA_KEYS } from '~/work_items/constants';
+import { METADATA_KEYS } from '~/work_items/constants';
 import {
   findAssigneesWidget,
   findStatusWidget,
+  findLabelsWidget,
   findMilestoneWidget,
   findStartAndDueDateWidget,
   findWeightWidget,
@@ -38,8 +40,8 @@ export default {
     IssueWeight: defineAsyncComponent(
       () => import('ee_component/issues/components/issue_weight.vue'),
     ),
-    IssueIteration: defineAsyncComponent(
-      () => import('ee_component/boards/components/issue_iteration.vue'),
+    WorkItemIterationAttribute: defineAsyncComponent(
+      () => import('ee_component/work_items/components/shared/work_item_iteration_attribute.vue'),
     ),
     IssueHealthStatus: defineAsyncComponent(
       () => import('ee_component/issues/components/issue_health_status.vue'),
@@ -77,9 +79,9 @@ export default {
   emits: ['set-active-item'],
   computed: {
     reference() {
-      // Items that live in the board's own namespace are shortened to `#iid`;
-      // items from a different namespace (e.g. on a group board) keep the full
-      // reference so their project is identifiable.
+      // An item in the board's own namespace just shows as `#iid`. An item from
+      // somewhere else (e.g. a different project on a group board) keeps its
+      // full reference, so you can still tell which project it's from.
       return getDisplayReference(this.rootPageFullPath, this.item.reference);
     },
     isActive() {
@@ -89,8 +91,10 @@ export default {
       );
     },
     labels() {
-      const widget = this.item.widgets?.find((w) => w.type === WIDGET_TYPE_LABELS);
-      return widget?.labels?.nodes ?? [];
+      return findLabelsWidget(this.item)?.labels?.nodes ?? [];
+    },
+    allowsScopedLabels() {
+      return Boolean(findLabelsWidget(this.item)?.allowsScopedLabels);
     },
     assignees() {
       return findAssigneesWidget(this.item)?.assignees?.nodes ?? [];
@@ -171,6 +175,9 @@ export default {
     isMetadataHidden(key) {
       return this.hiddenMetadataKeys.includes(key);
     },
+    showAsScopedLabel(label) {
+      return this.allowsScopedLabels && isScopedLabel(label);
+    },
     handleCardClick(event) {
       if (event.metaKey || event.ctrlKey || event.shiftKey || event.button === 1) {
         return;
@@ -190,7 +197,9 @@ export default {
   <li
     :data-work-item-id="item.id"
     data-testid="work-item-board-card"
-    :class="{ 'is-active !gl-bg-blue-50 hover:!gl-bg-blue-50': isActive }"
+    :class="{
+      '!gl-border-feedback-info !gl-bg-feedback-info hover:!gl-bg-feedback-info': isActive,
+    }"
     class="js-board-card gl-border gl-rounded-lg gl-border-section gl-bg-section hover:gl-bg-subtle"
   >
     <a
@@ -204,7 +213,8 @@ export default {
           v-if="item.workItemType"
           :work-item-type="item.workItemType.name"
           :type-icon-name="item.workItemType.iconName"
-          variant="subtle"
+          icon-variant="subtle"
+          show-tooltip-on-hover
         />
         <h4 class="gl-m-0 gl-min-w-0 gl-text-base gl-font-normal">
           <gl-truncate :text="item.title" with-tooltip />
@@ -226,12 +236,14 @@ export default {
           v-if="showMilestone"
           data-testid="work-item-milestone"
           :milestone="milestone"
-          class="gl-flex gl-max-w-15 gl-cursor-help gl-items-center gl-align-bottom"
+          class="!gl-max-w-28"
         />
-        <issue-iteration
+        <work-item-iteration-attribute
           v-if="showIteration"
           data-testid="work-item-iteration"
+          class="gl-max-w-15 gl-truncate"
           :iteration="iteration"
+          :namespace-path="rootPageFullPath"
         />
         <issue-due-date
           v-if="showDates"
@@ -247,6 +259,7 @@ export default {
           :background-color="label.color"
           :title="label.title"
           :description="label.description"
+          :scoped="showAsScopedLabel(label)"
         />
       </div>
       <div
@@ -268,7 +281,7 @@ export default {
           text-size="sm"
           :health-status="healthStatus"
         />
-        <!-- eslint-disable local-rules/vue-no-web-url -- WorkItemRelationshipIcons builds an absolute "view all linked items" link from this URL, so it needs webUrl rather than the relative webPath. -->
+        <!-- eslint-disable local-rules/vue-no-web-url -- WorkItemRelationshipIcons needs the full webUrl (not the relative webPath) to build the "view all linked items" link. -->
         <work-item-relationship-icons
           v-if="showRelationshipIcons"
           :work-item-type="item.workItemType.name"

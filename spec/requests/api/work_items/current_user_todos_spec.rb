@@ -15,6 +15,10 @@ RSpec.describe API::WorkItems::CurrentUserTodos, feature_category: :portfolio_ma
     create(:todo, :done, user: user, project: project, target: work_item, target_type: 'WorkItem')
   end
 
+  before do
+    stub_feature_flags(work_item_rest_api: true)
+  end
+
   shared_examples 'current_user_todos endpoint' do
     it 'returns the current user to-do items on the work item', :aggregate_failures do
       get api(api_request_path, user)
@@ -62,12 +66,12 @@ RSpec.describe API::WorkItems::CurrentUserTodos, feature_category: :portfolio_ma
       expect(response).to have_gitlab_http_status(:not_found)
     end
 
-    it 'returns forbidden when the feature flag is disabled' do
+    it 'returns not_found when the feature flag is disabled' do
       stub_feature_flags(work_item_rest_api: false)
 
       get api(api_request_path, user)
 
-      expect(response).to have_gitlab_http_status(:forbidden)
+      expect(response).to have_gitlab_http_status(:not_found)
     end
 
     it 'returns unauthorized when no token is provided' do

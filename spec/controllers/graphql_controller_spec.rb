@@ -395,8 +395,7 @@ RSpec.describe GraphqlController, feature_category: :api do
       let(:user) { create(:user, last_activity_on: last_activity_on) }
 
       before do
-        group = create(:group, require_two_factor_authentication: true)
-        group.add_developer(user)
+        create(:group, require_two_factor_authentication: true, developers: user)
 
         sign_in(user)
       end
@@ -555,12 +554,12 @@ RSpec.describe GraphqlController, feature_category: :api do
       end
 
       context 'when using composite identity OAuth token', :request_store do
-        let(:service_account) do
+        let_it_be_with_reload(:service_account) do
           create(:user, :service_account, composite_identity_enforced: true, organization: create(:organization))
         end
 
         let(:scoped_user) { create(:user, last_activity_on: last_activity_on) }
-        let(:oauth_app) { create(:oauth_application) }
+        let_it_be(:oauth_app) { create(:oauth_application) }
         let(:oauth_token) do
           create(:oauth_access_token,
             application: oauth_app,
@@ -847,7 +846,7 @@ RSpec.describe GraphqlController, feature_category: :api do
         end
 
         context 'when performing a multiplex query as an IntrospectionQuery' do
-          let(:user) { create(:user) }
+          let_it_be(:user) { create(:user) }
           let_it_be(:query) do
             <<~GQL
               mutation IntrospectionQuery{createSnippet(input:{title:"test" description:"test" visibilityLevel:public blobActions:[{action:create previousPath:"test" filePath:"test" content:"test new file"}]}){errors clientMutationId snippet{webUrl}}}

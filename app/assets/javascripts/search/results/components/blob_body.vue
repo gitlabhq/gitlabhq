@@ -43,10 +43,10 @@ export default {
     },
   },
   mounted() {
-    eventHub.$on('showMore', this.toggleShowMore);
+    eventHub.$on('show-more', this.toggleShowMore);
   },
   destroyed() {
-    eventHub.$off('showMore', this.toggleShowMore);
+    eventHub.$off('show-more', this.toggleShowMore);
   },
   methods: {
     toggleShowMore({ id, state }) {

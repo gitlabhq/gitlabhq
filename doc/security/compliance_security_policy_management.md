@@ -110,13 +110,13 @@ For detailed instructions on creating and managing centralized compliance framew
 
 Instance administrators can:
 
-1. **Designate a compliance and security policy group** from your existing top-level groups
-1. **Create security policies** in the designated group
-1. **Create compliance frameworks** in the designated group
-1. **Configure policy scope** to determine where policies apply
-1. **Scope policies to compliance frameworks** to enforce policies on projects with specific frameworks
-1. **View policy coverage** to understand which policies are active across groups and projects
-1. **Edit and manage** centralized policies and frameworks as needed
+- Designate a compliance and security policy group from your existing top-level groups.
+- Create security policies in the designated group.
+- Create compliance frameworks in the designated group.
+- Configure policy scope to determine where policies apply.
+- Scope policies to compliance frameworks to enforce policies on projects with specific frameworks.
+- View policy coverage to understand which policies are active across groups and projects.
+- Edit and manage centralized policies and frameworks as needed.
 
 ### Group administrators and owners
 

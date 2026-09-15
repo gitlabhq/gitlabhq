@@ -25,15 +25,15 @@ secret from GitHub:
 1. [Create an OAuth App](https://docs.github.com/en/apps/oauth-apps/building-oauth-apps/creating-an-oauth-app)
    and provide the following information:
    - The URL of your GitLab instance, such as `https://gitlab.example.com`.
-   - The authorization callback URL, such as, `https://gitlab.example.com/users/auth`.
+   - The authorization callback URL, such as `https://gitlab.example.com/users/auth/github/callback`.
      Include the port number if your GitLab instance uses a non-default port.
 
 ### Check for security vulnerabilities
 
 For some integrations, the [OAuth 2 covert redirect](https://oauth.net/advisories/2014-1-covert-redirect/)
 vulnerability can compromise GitLab accounts.
-To mitigate this vulnerability, append `/users/auth` to the authorization
-callback URL.
+To mitigate this vulnerability, append the full `/users/auth/github/callback`
+path to your GitLab instance URL.
 
 However, GitHub does not validate the subdomain part of the `redirect_uri`.
 Therefore, a subdomain takeover, an XSS, or an open redirect on any subdomain of

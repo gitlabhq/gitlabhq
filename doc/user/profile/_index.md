@@ -30,8 +30,8 @@ To access your profile:
 1. In the upper-right corner, select your avatar.
 1. Select your name or username.
 
-You can also access a users' profile page by using the ID instead of the username at `https://gitlab.example.com/-/u/<id>`.
-For example, if your username is `gitlab-user` has an ID `12345`, you can access the profile page either at
+You can also access a user's profile page by using the ID instead of the username at `https://gitlab.example.com/-/u/<id>`.
+For example, if your username is `gitlab-user` and your ID is `12345`, you can access the profile page either at
 `https://gitlab.example.com/gitlab-user` or `https://gitlab.example.com/-/u/12345`.
 
 ## Find the user ID
@@ -40,7 +40,7 @@ You might need the user ID if you want to interact with it using the [GitLab API
 
 To find the user ID:
 
-1. Go to the users' profile page.
+1. Go to the user's profile page.
 1. On the profile page, in the upper-right corner, select **Actions** ({{< icon name="ellipsis_v" >}}).
 1. Select **Copy user ID**.
 
@@ -228,9 +228,9 @@ To add links to other accounts:
 1. In the upper-right corner, select your avatar.
 1. Select **Edit profile**.
 1. In the **Main settings** section, add your:
-   - Discord [user ID](https://support.discord.com/hc/en-us/articles/206346498-Where-can-I-find-my-User-Server-Message-ID-).
+   - Discord [user ID](https://support.discord.com/hc/en-us/articles/206346498-Where-can-I-find-my-User-Server-Message-ID).
    - BlueSky [`did:plc` identifier](https://atproto.com/specs/did). To find your identifier, [resolve your user handle](https://bsky.social/xrpc/com.atproto.identity.resolveHandle?handle=USER_HANDLE).
-   - Discord [user ID](https://support.discord.com/hc/en-us/articles/206346498-Where-can-I-find-my-User-Server-Message-ID-).
+   - Discord [user ID](https://support.discord.com/hc/en-us/articles/206346498-Where-can-I-find-my-User-Server-Message-ID).
    - GitHub username.
    - LinkedIn profile name.
    - [Mastodon handle](#add-a-mastodon-handle).
@@ -448,6 +448,12 @@ To view your activity:
    - **Wiki**: Wiki pages you created and updated in your projects.
    - **Designs**: Designs you added, updated, and removed in your projects.
    - **Team**: Projects you joined and left.
+1. Optional. To subscribe to an RSS feed of this activity, in the upper-right corner,
+   select the feed symbol ({{< icon name="rss" >}}).
+
+The feed always contains all activity from projects you are a member of, regardless
+of the tab or filter you selected. The feed URL contains a
+[feed token](../../security/tokens/_index.md#feed-token) that authenticates you.
 
 ## Sign-in services
 

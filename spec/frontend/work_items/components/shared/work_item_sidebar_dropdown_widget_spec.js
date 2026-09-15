@@ -2,12 +2,12 @@ import { GlCollapsibleListbox } from '@gitlab/ui';
 import { nextTick } from 'vue';
 import { mountExtended } from 'helpers/vue_test_utils_helper';
 import { groupIterationsResponse } from 'jest/work_items/mock_data';
-import { shouldDisableShortcuts } from '~/behaviors/shortcuts/shortcuts_toggle';
+import { keyboardShortcutsDisabled } from '~/behaviors/shortcuts/shortcuts_disabled';
 import { keysFor } from '~/behaviors/shortcuts/keybindings';
 import WorkItemSidebarDropdownWidget from '~/work_items/components/shared/work_item_sidebar_dropdown_widget.vue';
 import WorkItemSidebarWidget from '~/work_items/components/shared/work_item_sidebar_widget.vue';
 
-jest.mock('~/behaviors/shortcuts/shortcuts_toggle');
+jest.mock('~/behaviors/shortcuts/shortcuts_disabled');
 jest.mock('~/behaviors/shortcuts/keybindings');
 jest.mock('~/lib/mousetrap');
 
@@ -27,8 +27,6 @@ describe('WorkItemSidebarDropdownWidget component', () => {
     showFooter = false,
     slots = {},
     multiSelect = false,
-    infiniteScroll = false,
-    infiniteScrollLoading = false,
     clearSearchOnItemSelect = false,
     listItems = [],
     shortcut = undefined,
@@ -45,8 +43,6 @@ describe('WorkItemSidebarDropdownWidget component', () => {
         headerText: 'Select iteration',
         showFooter,
         multiSelect,
-        infiniteScroll,
-        infiniteScrollLoading,
         clearSearchOnItemSelect,
         shortcut,
         noResetButton,
@@ -129,7 +125,6 @@ describe('WorkItemSidebarDropdownWidget component', () => {
         isCheckCentered: true,
         searchable: true,
         searching: false,
-        infiniteScroll: false,
         noResultsText: 'No matching results',
         searchPlaceholder: 'Search',
         resetButtonLabel: 'Clear',
@@ -170,20 +165,6 @@ describe('WorkItemSidebarDropdownWidget component', () => {
       expect(wrapper.emitted('search-started')).toEqual([[''], ['']]);
     });
 
-    it('supports infinite scrolling', async () => {
-      createComponent({ isEditing: true, infiniteScroll: true });
-      await nextTick();
-
-      expect(findCollapsibleListbox().props('infiniteScroll')).toBe(true);
-    });
-
-    it('shows loader when bottom reached', async () => {
-      createComponent({ isEditing: true, infiniteScroll: true, infiniteScrollLoading: true });
-      await nextTick();
-
-      expect(findCollapsibleListbox().props('infiniteScrollLoading')).toBe(true);
-    });
-
     it('displays default dropdown label when no value is selected', async () => {
       createComponent({ isEditing: true });
       await nextTick();
@@ -218,7 +199,7 @@ describe('WorkItemSidebarDropdownWidget component', () => {
     };
 
     beforeEach(() => {
-      shouldDisableShortcuts.mockReturnValue(false);
+      keyboardShortcutsDisabled.mockReturnValue(false);
       keysFor.mockReturnValue(['e']);
     });
 
@@ -240,7 +221,7 @@ describe('WorkItemSidebarDropdownWidget component', () => {
     });
 
     it('does not show tooltip when shortcuts are disabled', () => {
-      shouldDisableShortcuts.mockReturnValue(true);
+      keyboardShortcutsDisabled.mockReturnValue(true);
 
       createComponent({ canUpdate: true, shortcut });
 

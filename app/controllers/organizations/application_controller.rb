@@ -20,11 +20,11 @@ module Organizations
     strong_memoize_attr :organization
 
     def check_feature_flag!
-      access_denied! unless ui_for_organizations_enabled?
+      access_denied! unless Organizations::Release.enabled?(:org_pages, current_user)
     end
 
     def authorize_create_organization!
-      access_denied! unless Feature.enabled?(:organization_switching, current_user)
+      access_denied! unless Organizations::Release.enabled?(:org_creation, current_user)
       access_denied! unless can?(current_user, :create_organization)
     end
 

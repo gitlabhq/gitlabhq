@@ -26,7 +26,7 @@ module RuboCop
       class WorkerDataConsistency < RuboCop::Cop::Base
         include CodeReuseHelpers
 
-        HELP_LINK = 'https://docs.gitlab.com/ee/development/sidekiq/worker_attributes.html#job-data-consistency-strategies'
+        HELP_LINK = 'https://docs.gitlab.com/development/sidekiq/worker_attributes/#job-data-consistency-strategies'
 
         MISSING_DATA_CONSISTENCY_MSG = <<~MSG.freeze
           Should define data_consistency expectation.

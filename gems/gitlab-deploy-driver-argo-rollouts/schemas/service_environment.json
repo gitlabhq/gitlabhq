@@ -26,7 +26,7 @@
       }
     },
     "manifest_repository": {
-      "description": "The GitOps repository Argo CD reconciles for this (service, environment) pair. It holds this service's Argo Rollout manifest. The driver reads the Rollout CR from it, pins the new image versions and injects the Argo Rollouts canary/blue-green strategy, and commits the result back for Argo CD to sync. Modelled as a choice of access mechanism; the `type` of each option discriminates the variant.",
+      "description": "The GitOps repository Argo CD reconciles for this (service, environment) pair. It holds this service's Argo Rollout manifest. The driver reads the Rollout CR from it, pins the new image versions and writes the canary steps the flow's weights derive — one traffic weight per step, each gated by a pause — and commits the result back for Argo CD to sync. Every other key of the strategy is the manifest's own. Modelled as a choice of access mechanism; the `type` of each option discriminates the variant.",
       "oneOf": [
         {
           "title": "GitLab-hosted repository",
@@ -61,7 +61,7 @@
               "type": "string",
               "minLength": 1,
               "examples": ["main"],
-              "description": "Branch the Argo Rollout manifest is read from and that the pinned versions and generated Argo Rollouts strategy are committed back to. This is the revision Argo CD is pinned to. Must be a branch, never a tag or commit SHA, since the driver writes to it.",
+              "description": "Branch the Argo Rollout manifest is read from and that the pinned versions and generated Argo Rollouts strategy are committed back to, in one commit. This is the revision Argo CD is pinned to. Must be a branch, never a tag or commit SHA, since the driver writes to it.",
               "gitlab": {
                 "type": "com.gitlab.cd.text"
               }
@@ -70,7 +70,7 @@
               "type": "string",
               "pattern": "^[^/]",
               "not": { "pattern": "(^|/)\\.\\.(/|$)" },
-              "description": "Path to this service's Argo Rollout manifest(s), relative to the project root. Either a single manifest file or a directory of them (every top-level .yaml/.yml file in the directory is read). Not an absolute path, and cannot traverse outside the project. The driver reads the manifest(s), pins image versions and injects the deploy strategy, and commits them back.",
+              "description": "Path to this service's Argo Rollout manifest(s), relative to the project root. Either a single manifest file or a directory of them (every top-level .yaml/.yml file in the directory is read). Not an absolute path, and cannot traverse outside the project. The driver reads the manifest(s), pins image versions and writes the deploy strategy, and commits them back.",
               "examples": ["apps/payments/rollout.yaml", "apps/payments"],
               "gitlab": {
                 "type": "com.gitlab.cd.text"

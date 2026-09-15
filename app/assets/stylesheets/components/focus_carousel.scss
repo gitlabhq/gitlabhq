@@ -1,0 +1,73 @@
+// FocusCarousel (vue_shared/components/focus_carousel): the focused item's
+// display-scale title and the dimmed rail rows around it.
+
+// The component is its own size container, so the fluid title scales with
+// the space the embedder actually grants it, never the viewport.
+.focus-carousel {
+  container-type: inline-size;
+}
+
+// The design's display scale tops out above the type-scale tokens (tracked
+// design-system gap), so the size clamps fluidly against the component's
+// own width.
+.focus-carousel-item-title {
+  font-size: clamp(1.75rem, 7cqi, 2.5rem);
+  font-weight: var(--gl-font-weight-bold);
+  line-height: 1.05;
+  letter-spacing: -0.025em;
+  overflow-wrap: anywhere;
+}
+
+// Rail rows (previous and up-next) dim their titles toward the canvas,
+// restoring most of it on hover and keyboard focus; the timestamp stays at
+// full muted strength. Half alpha fails WCAG's 3:1 large-text threshold on
+// both canvases, so each mode lifts it to the value that clears it.
+.focus-carousel-rail-title {
+  font-size: 1.5rem;
+  font-weight: var(--gl-font-weight-bold);
+  line-height: 1.15;
+  letter-spacing: -0.01em;
+  color: var(--gl-text-color-subtle);
+  opacity: 0.75;
+  transition: opacity $gl-transition-duration-medium $gl-easing-out-cubic;
+
+  @include gl-prefers-reduced-motion-transition;
+
+  /* stylelint-disable-next-line gitlab/no-gl-class -- mode class, not utility */
+  .gl-dark & {
+    opacity: 0.65;
+  }
+
+  // Forced colors flattens the palette, so an alpha dim only degrades.
+  @media (forced-colors: active) {
+    opacity: 1;
+  }
+}
+
+.focus-carousel-rail-row:hover,
+.focus-carousel-rail-row:focus-visible {
+  border-color: var(--gl-border-color-default);
+
+  .focus-carousel-rail-title {
+    opacity: 0.9;
+  }
+}
+
+// Keyboard focus, activedescendant-style: DOM focus lives on the group, but
+// the visible ring marks the stage (the current item, the thing arrows change
+// and Enter opens), matching how tabs, listboxes, and grids indicate the item
+// rather than the container. Forced colors strips box-shadow rings and honors
+// outline suppression, so there the indicator stays on the real focus target
+// as a transparent outline the system repaints.
+.focus-carousel:focus-visible {
+  outline: none;
+
+  @media (forced-colors: active) {
+    outline: 2px solid transparent;
+  }
+
+  .focus-carousel-stage {
+    @apply gl-focus;
+  }
+}
+

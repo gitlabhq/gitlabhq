@@ -123,7 +123,8 @@ describe('DbInformationCard component', () => {
       );
     });
 
-    it('renders errors before warnings regardless of payload order', async () => {
+    it('renders findings in the order supplied, without reordering them', async () => {
+      // Ordering belongs to Gitlab::Database::Diagnostics::Checks::SchemaResolution.
       createComponent({
         props: {
           payload: {
@@ -134,14 +135,16 @@ describe('DbInformationCard component', () => {
               { severity: 'warning', code: 'a_warning', message: 'a warning' },
               { severity: 'error', code: 'an_error', message: 'an error' },
             ],
+            severity: 'error',
+            counts: { error: 1, warning: 1 },
           },
         },
       });
       await expand();
       const alerts = findAllAlerts().wrappers;
 
-      expect(alerts[0].text()).toBe('an error');
-      expect(alerts[1].text()).toBe('a warning');
+      expect(alerts[0].text()).toBe('a warning');
+      expect(alerts[1].text()).toBe('an error');
     });
   });
 
@@ -154,6 +157,8 @@ describe('DbInformationCard component', () => {
             search_path: 'public',
             schemas: [],
             findings: [{ severity: 'warning', code: 'a_warning', message: 'a warning' }],
+            severity: 'warning',
+            counts: { warning: 1 },
           },
         },
       });

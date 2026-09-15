@@ -51,6 +51,23 @@ RSpec.describe Namespaces::GroupsFilter, feature_category: :groups_and_projects 
           end
         end
 
+        # GraphQL declares `sort` as a String, so the symbol never arrives from the API.
+        context 'when sort is given as a string' do
+          let(:params) { { sort: 'similarity', search: 'group 3 foo', allow_similarity_sort: true } }
+
+          it 'sorts by similarity' do
+            expect(finder).to eq([group_3, group, group_2])
+          end
+        end
+
+        context 'when search is not defined' do
+          let(:params) { { sort: :similarity, allow_similarity_sort: true } }
+
+          it 'falls back to id_desc' do
+            expect(finder).to eq([group_3, group_2, group])
+          end
+        end
+
         context 'when current_user is not defined' do
           let(:current_user) { nil }
           let(:params) { { sort: :similarity, search: 'group 3 foo', allow_similarity_sort: true } }

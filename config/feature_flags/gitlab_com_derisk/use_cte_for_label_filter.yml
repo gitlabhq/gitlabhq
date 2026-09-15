@@ -1,0 +1,10 @@
+---
+name: use_cte_for_label_filter
+description: Apply the issuable label filter behind a CTE optimization fence when the query is not scoped to a project or group
+feature_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/603780
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/248316
+rollout_issue_url:
+milestone: '19.4'
+group: group::code review
+type: gitlab_com_derisk
+default_enabled: false

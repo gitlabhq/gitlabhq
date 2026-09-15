@@ -36,7 +36,7 @@ RSpec.describe Gitlab::Ci::Matching::RunnerMatcher do
 
       it { expect(matcher.private_projects_minutes_cost_factor).to eq(1) }
 
-      it { expect(matcher.run_untagged).to eq(false) }
+      it { expect(matcher.run_untagged).to be(false) }
 
       it { expect(matcher.access_level).to eq('ref_protected') }
 
@@ -120,7 +120,7 @@ RSpec.describe Gitlab::Ci::Matching::RunnerMatcher do
       end
 
       it 'parses the string and matches correctly' do
-        expect(subject).to eq(true)
+        expect(subject).to be(true)
       end
     end
 

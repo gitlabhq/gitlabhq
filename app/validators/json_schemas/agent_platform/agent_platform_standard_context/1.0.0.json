@@ -1,0 +1,30 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "description": "Standard context for flows in Duo Agent Platform. Always sent for every CI-workload flow session.",
+  "type": "object",
+  "properties": {
+    "session_owner_id": {
+      "type": "string",
+      "description": "User id that initiated the flow"
+    },
+    "service_account_name": {
+      "type": "string",
+      "description": "Username of the service account executing the flow."
+    },
+    "primary_branch": {
+      "type": "string",
+      "description": "Branch the workload branch is created from and the flow's changes are diffed against: the triggering branch if it still exists, otherwise the project's default branch. Example: \"feature-branch\", or \"main\" when the triggering branch no longer exists."
+    },
+    "workload_branch": {
+      "type": "string",
+      "description": "Ephemeral internal ref the flow commits to, branched off primary_branch. Lives under refs/workloads/, not refs/heads/, so it will not show up as a normal branch. Example: \"refs/workloads/abcdef12345\"."
+    }
+  },
+  "required": [
+    "session_owner_id",
+    "service_account_name",
+    "primary_branch",
+    "workload_branch"
+  ],
+  "additionalProperties": false
+}

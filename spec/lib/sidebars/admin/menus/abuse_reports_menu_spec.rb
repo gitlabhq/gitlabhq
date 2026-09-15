@@ -11,9 +11,15 @@ RSpec.describe Sidebars::Admin::Menus::AbuseReportsMenu, feature_category: :navi
   it_behaves_like 'Admin menu without sub menus', active_routes: { controller: :abuse_reports }
 
   describe '#pill_count' do
+    # Reports built from a bare `create(:user)` reporter land in :common_organization, so this is
+    # the organization the counted reports belong to.
+    let_it_be(:organization) { create(:common_organization) }
+
     let(:user) { build_stubbed(:user, :admin) }
 
-    let(:context) { Sidebars::Context.new(current_user: user, container: nil) }
+    let(:context) do
+      Sidebars::Context.new(current_user: user, container: nil, current_organization: organization)
+    end
 
     subject { described_class.new(context) }
 
@@ -42,6 +48,19 @@ RSpec.describe Sidebars::Admin::Menus::AbuseReportsMenu, feature_category: :navi
       it 'returns zero when all abuse reports are closed' do
         create_list(:abuse_report, 2, status: :closed)
 
+        expect(subject.pill_count).to eq 0
+      end
+    end
+
+    context 'when there are open abuse reports in another organization' do
+      let_it_be(:other_organization) { create(:organization) }
+
+      before do
+        create(:abuse_report, status: :open,
+          reporter: create(:user, organization: other_organization), organization: other_organization)
+      end
+
+      it 'excludes them from the count' do
         expect(subject.pill_count).to eq 0
       end
     end

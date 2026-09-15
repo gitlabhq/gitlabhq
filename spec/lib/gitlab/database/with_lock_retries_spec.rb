@@ -105,7 +105,7 @@ RSpec.describe Gitlab::Database::WithLockRetries, feature_category: :database do
           end
 
           expect(lock_attempts).to eq(retry_count)
-          expect(lock_acquired).to eq(true)
+          expect(lock_acquired).to be(true)
         end
       end
 
@@ -208,7 +208,7 @@ RSpec.describe Gitlab::Database::WithLockRetries, feature_category: :database do
           end.to raise_error(described_class::AttemptsExhaustedError)
 
           expect(lock_attempts).to eq(retry_count - 1)
-          expect(lock_acquired).to eq(false)
+          expect(lock_acquired).to be(false)
         end
       end
 
@@ -227,7 +227,7 @@ RSpec.describe Gitlab::Database::WithLockRetries, feature_category: :database do
             end.to raise_error(ActiveRecord::QueryCanceled)
           end
 
-          expect(lock_acquired).to eq(false)
+          expect(lock_acquired).to be(false)
         end
       end
     end

@@ -24,7 +24,7 @@ RSpec.describe Projects::GitDeduplicationService, feature_category: :source_code
         end
       end
 
-      context 'when the project has a pool repository' do
+      context 'when the project has a pool repository', :skip_gitaly_mvcc do
         let(:project) { create(:project, :small_repo, pool_repository: pool) }
 
         context 'when the project is a source project' do
@@ -116,6 +116,20 @@ RSpec.describe Projects::GitDeduplicationService, feature_category: :source_code
                 service.execute
               end
             end
+          end
+        end
+
+        context 'when the pool repository has no source project' do
+          before do
+            pool.update!(source_project: nil)
+          end
+
+          it 'does not raise and does not fetch' do
+            stub_exclusive_lease(lease_key, timeout: lease_timeout)
+            allow(service).to receive(:source_project?).and_return(true)
+
+            expect(pool.object_pool).not_to receive(:fetch)
+            expect { service.execute }.not_to raise_error
           end
         end
 

@@ -90,7 +90,7 @@ RSpec.describe ApplicationHelper, feature_category: :shared do
       end
 
       it 'returns true' do
-        expect(helper.admin_section?).to eq(true)
+        expect(helper.admin_section?).to be(true)
       end
     end
 
@@ -100,26 +100,8 @@ RSpec.describe ApplicationHelper, feature_category: :shared do
       end
 
       it 'returns true' do
-        expect(helper.admin_section?).to eq(false)
+        expect(helper.admin_section?).to be(false)
       end
-    end
-  end
-
-  describe 'simple_sanitize' do
-    let(:a_tag) { '<a href="#">Foo</a>' }
-
-    it 'allows the a tag' do
-      expect(helper.simple_sanitize(a_tag)).to eq(a_tag)
-    end
-
-    it 'allows the span tag' do
-      input = '<span class="foo">Bar</span>'
-      expect(helper.simple_sanitize(input)).to eq(input)
-    end
-
-    it 'disallows other tags' do
-      input = "<strike><b>#{a_tag}</b></strike>"
-      expect(helper.simple_sanitize(input)).to eq(a_tag)
     end
   end
 
@@ -171,7 +153,7 @@ RSpec.describe ApplicationHelper, feature_category: :shared do
       timeago_element = element(short_format: 'short')
 
       expect(timeago_element.attr('class')).to eq 'js-short-timeago'
-      expect(timeago_element.next_element).to eq nil
+      expect(timeago_element.next_element).to be_nil
     end
 
     it 'returns blank if time is nil' do
@@ -192,7 +174,7 @@ RSpec.describe ApplicationHelper, feature_category: :shared do
     context 'when editable object was not edited' do
       let(:merge_request) { build_stubbed(:merge_request, source_project: project) }
 
-      it { expect(helper.edited_time_ago_with_tooltip(merge_request)).to eq(nil) }
+      it { expect(helper.edited_time_ago_with_tooltip(merge_request)).to be_nil }
     end
 
     context 'when editable object was edited' do
@@ -207,7 +189,7 @@ RSpec.describe ApplicationHelper, feature_category: :shared do
 
   describe '#active_when' do
     it { expect(helper.active_when(true)).to eq('active') }
-    it { expect(helper.active_when(false)).to eq(nil) }
+    it { expect(helper.active_when(false)).to be_nil }
   end
 
   describe '#linkedin_name' do
@@ -458,8 +440,8 @@ RSpec.describe ApplicationHelper, feature_category: :shared do
     context 'when browser or platform are unknown' do
       it 'returns map containing JS flags representing falllbacks' do
         flags_list = helper.client_js_flags
-        expect(flags_list[:isGeneric]).to eq(true)
-        expect(flags_list[:isOther]).to eq(true)
+        expect(flags_list[:isGeneric]).to be(true)
+        expect(flags_list[:isOther]).to be(true)
       end
     end
 
@@ -470,8 +452,8 @@ RSpec.describe ApplicationHelper, feature_category: :shared do
 
       it 'returns map containing JS flags representing client browser and platform' do
         flags_list = helper.client_js_flags
-        expect(flags_list[:isChrome]).to eq(true)
-        expect(flags_list[:isLinux]).to eq(true)
+        expect(flags_list[:isChrome]).to be(true)
+        expect(flags_list[:isLinux]).to be(true)
       end
     end
   end
@@ -569,6 +551,14 @@ RSpec.describe ApplicationHelper, feature_category: :shared do
   end
 
   describe '#body_data' do
+    context 'when @ignore_password_managers is set' do
+      it 'asks 1Password to ignore the page' do
+        assign(:ignore_password_managers, true)
+
+        expect(helper.body_data).to include('1p_ignore': '')
+      end
+    end
+
     context 'when @project is not set' do
       it 'does not include project data in the body data elements' do
         expect(helper.body_data).to eq(
@@ -810,10 +800,6 @@ RSpec.describe ApplicationHelper, feature_category: :shared do
       it { is_expected.to include('page-with-panels') }
     end
 
-    describe 'page-theme-background' do
-      it { is_expected.to include('page-theme-background') }
-    end
-
     describe 'user-logged-in and user-logged-out' do
       context 'when current_user is present' do
         before do
@@ -831,20 +817,6 @@ RSpec.describe ApplicationHelper, feature_category: :shared do
 
         it { is_expected.to include('user-logged-out') }
         it { is_expected.not_to include('user-logged-in') }
-      end
-    end
-
-    describe 'aura-tinted-themes' do
-      context 'when the aura_tinted_themes feature flag is enabled' do
-        it { is_expected.to include('aura-tinted-themes') }
-      end
-
-      context 'when the aura_tinted_themes feature flag is disabled' do
-        before do
-          stub_feature_flags(aura_tinted_themes: false)
-        end
-
-        it { is_expected.not_to include('aura-tinted-themes') }
       end
     end
   end
@@ -960,26 +932,6 @@ RSpec.describe ApplicationHelper, feature_category: :shared do
     end
   end
 
-  describe 'ai_panel_expanded?' do
-    subject(:ai_panel_expanded?) { helper.ai_panel_expanded? }
-
-    context 'when ai_panel_active_tab cookie is set' do
-      before do
-        helper.request.cookies['ai_panel_active_tab'] = 'chat'
-      end
-
-      it { is_expected.to be true }
-    end
-
-    context 'when ai_panel_active_tab cookie is not set' do
-      before do
-        helper.request.cookies['ai_panel_active_tab'] = nil
-      end
-
-      it { is_expected.to be false }
-    end
-  end
-
   describe 'collapsed_super_sidebar?' do
     context 'when super_sidebar_collapsed cookie is true' do
       before do
@@ -987,7 +939,7 @@ RSpec.describe ApplicationHelper, feature_category: :shared do
       end
 
       it 'returns true' do
-        expect(helper.collapsed_super_sidebar?).to eq(true)
+        expect(helper.collapsed_super_sidebar?).to be(true)
       end
     end
 
@@ -997,7 +949,7 @@ RSpec.describe ApplicationHelper, feature_category: :shared do
       end
 
       it 'returns false' do
-        expect(helper.collapsed_super_sidebar?).to eq(false)
+        expect(helper.collapsed_super_sidebar?).to be(false)
       end
     end
   end

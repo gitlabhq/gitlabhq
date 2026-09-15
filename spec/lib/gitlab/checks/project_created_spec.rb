@@ -6,7 +6,6 @@ RSpec.describe Gitlab::Checks::ProjectCreated, :clean_gitlab_redis_shared_state,
   let_it_be(:user) { create(:user) }
   let_it_be(:project) { create(:project, :small_repo, namespace: user.namespace) }
 
-  let(:protocol) { 'http' }
   let(:git_user) { user }
   let(:repository) { project.repository }
 

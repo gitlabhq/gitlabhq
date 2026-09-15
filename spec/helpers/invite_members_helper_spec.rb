@@ -177,7 +177,7 @@ RSpec.describe InviteMembersHelper do
         end
 
         it 'returns true', :aggregate_failures do
-          expect(helper.can_invite_members_for_project?(project)).to eq true
+          expect(helper.can_invite_members_for_project?(project)).to be true
           expect(helper).to have_received(:can?).with(owner, :invite_project_members, project)
         end
       end
@@ -186,7 +186,7 @@ RSpec.describe InviteMembersHelper do
         it 'returns false' do
           expect(helper).to receive(:can?).with(owner, :invite_project_members, project).and_return(false)
 
-          expect(helper.can_invite_members_for_project?(project)).to eq false
+          expect(helper.can_invite_members_for_project?(project)).to be false
         end
       end
     end

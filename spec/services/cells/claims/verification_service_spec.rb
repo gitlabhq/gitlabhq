@@ -48,6 +48,56 @@ RSpec.describe Cells::Claims::VerificationService, feature_category: :cell do
       end
     end
 
+    context 'when every claim attribute is disabled' do
+      before do
+        allow(User).to receive(:cells_claims_enabled_for_attribute?).and_return(false)
+      end
+
+      it 'returns zero creates and destroys without listing records' do
+        expect(mock_claim_service).not_to receive(:list_records)
+
+        expect(service.execute).to include(created: 0, destroyed: 0, over_time: false)
+      end
+
+      it 'logs a warning' do
+        expect(Gitlab::AppLogger).to receive(:warn).with(
+          hash_including(message: /User has no enabled claim attributes/)
+        )
+
+        service.execute
+      end
+    end
+
+    context 'when only some claim attributes are enabled' do
+      let_it_be(:user) { create(:user) }
+
+      before do
+        allow(User).to receive(:cells_claims_enabled_for_attribute?).with(:id).and_return(true)
+        allow(User).to receive(:cells_claims_enabled_for_attribute?).with(:username).and_return(false)
+        stub_list_records([])
+        stub_commit
+      end
+
+      it 'only lists the enabled claim types' do
+        expect(mock_claim_service).to receive(:list_records)
+          .with(hash_including(claim_types: [user_id_claim_type]))
+          .and_return(Gitlab::Cells::TopologyService::Claims::V1::ListRecordsResponse.new(records: []))
+
+        service.execute
+      end
+
+      it 'only creates claims for the enabled attribute' do
+        expect(mock_claim_service).to receive(:begin_update) do |args|
+          claims = args[:create_records].map { |r| r[:claim].each_key.first }
+          expect(claims).to contain_exactly(:user_id)
+
+          begin_update_response
+        end
+
+        service.execute
+      end
+    end
+
     context 'when there are no local records' do
       before do
         stub_list_records([])

@@ -1,7 +1,7 @@
 <script>
 import { GlLoadingIcon } from '@gitlab/ui';
 import StatusIcon from '../widget/status_icon.vue';
-import { FAILURE_REASONS, ICON_NAMES } from './constants';
+import { CHECKING_REASONS, FAILURE_REASONS, ICON_NAMES } from './constants';
 
 export default {
   name: 'MergeChecksMessage',
@@ -19,8 +19,14 @@ export default {
     iconName() {
       return ICON_NAMES[this.check.status.toLowerCase()];
     },
-    failureReason() {
-      return FAILURE_REASONS[this.check.identifier.toLowerCase()];
+    displayText() {
+      const identifier = this.check.identifier.toLowerCase();
+
+      if (this.check.status === 'CHECKING' && CHECKING_REASONS[identifier]) {
+        return CHECKING_REASONS[identifier];
+      }
+
+      return FAILURE_REASONS[identifier];
     },
   },
 };
@@ -38,7 +44,7 @@ export default {
       />
       <status-icon v-else :icon-name="iconName" :level="2" />
       <div class="gl-w-full gl-min-w-0">
-        <div class="gl-flex">{{ failureReason }}</div>
+        <div class="gl-flex">{{ displayText }}</div>
         <slot name="reason-footer"></slot>
       </div>
       <slot></slot>

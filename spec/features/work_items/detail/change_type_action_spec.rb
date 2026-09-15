@@ -30,11 +30,11 @@ RSpec.describe 'Change type action', :js, feature_category: :portfolio_managemen
         it 'does not allow changing the type' do
           within_testid 'work-item-tree' do
             find_by_testid('add-tree-child-button').click
-            click_button "Existing Task"
+            click_button "Existing task"
             fill_in 'Search existing items', with: task.title
             click_button task.title
             send_keys :escape
-            click_button "Add Task"
+            click_button "Add task"
             wait_for_all_requests
           end
           page.refresh
@@ -90,7 +90,7 @@ RSpec.describe 'Change type action', :js, feature_category: :portfolio_managemen
 
         within_testid('change-type-warning-message', wait: 20) do
           message = _('Some fields are not present in %{type}. If you change type now, this information will be lost.')
-          expect(page).to have_content(format(message, type: 'Task'))
+          expect(page).to have_content(format(message, type: 'task'))
           expect(page).to have_content(s_('WorkItem|Designs'))
         end
       end

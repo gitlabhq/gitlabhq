@@ -464,9 +464,9 @@ describe('Container protection repository rules project settings', () => {
 
         await clickOnModalPrimaryBtn();
 
-        expect(findTableRowButtonDelete(0).attributes('disabled')).toBe('disabled');
+        expect(findTableRowButtonDelete(0).attributes('aria-disabled')).toBe('true');
 
-        expect(findTableRowButtonDelete(1).attributes('disabled')).toBeUndefined();
+        expect(findTableRowButtonDelete(1).attributes('aria-disabled')).toBeUndefined();
       });
 
       it('sends graphql mutation', async () => {

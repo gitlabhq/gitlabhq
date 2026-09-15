@@ -194,6 +194,7 @@ module Ci
 
     scope :not_timed_out_running_builds, -> do
       joins(:runtime_metadata)
+        .incomplete
         .where("#{Ci::RunningBuild.table_name}.created_at + INTERVAL \'1 second\' * #{table_name}.timeout > ?",
           Time.current)
         .where(arel_table[:partition_id].eq(Ci::RunningBuild.arel_table[:partition_id]))
@@ -265,7 +266,7 @@ module Ci
       end
 
       def supported_keyset_orderings
-        { id: [:desc] }
+        { id: [:asc, :desc] }
       end
 
       def latest_with_artifacts_for_ref(project, job_name, ref_name, limit: MAX_PIPELINES_TO_SEARCH)
@@ -376,6 +377,7 @@ module Ci
         # By only assigning the runner manager once the job starts running, we avoid the problem.
         transition.args.first.try do |runner_manager|
           build.runner_manager = runner_manager
+          build.record_runtime_environment_assignment(runner_manager)
         end
       end
 
@@ -1035,7 +1037,12 @@ module Ci
     def artifact_for_type(type)
       file_types = Ci::JobArtifact.associated_file_types_for(type)
       file_types_ids = file_types&.map { |file_type| Ci::JobArtifact.file_types[file_type] }
-      job_artifacts.find_by(file_type: file_types_ids)
+      artifacts = job_artifacts.where(file_type: file_types_ids).order(:id).to_a
+
+      # Some types share a group (`performance` and `browser_performance`) and a
+      # job can upload both, so prefer the exact type over whichever row the
+      # database happens to return first.
+      artifacts.find { |artifact| artifact.file_type == type.to_s } || artifacts.first
     end
 
     def steps
@@ -1276,6 +1283,20 @@ module Ci
       ::Ci::PendingBuild.upsert_from_build!(self)
     end
 
+    # Deferred to run_after_commit so that a failure here (validation or a
+    # database error such as a deadlock/timeout) can never roll back the
+    # transition to running: this is routing metadata for a future resumed
+    # job, not something the currently running build depends on.
+    def record_runtime_environment_assignment(runner_manager)
+      run_after_commit do
+        next unless Feature.enabled?(:ci_suspendable_environment_runner_routing, project, type: :gitlab_com_derisk)
+
+        job_runtime_environment&.update!(runner_manager: runner_manager)
+      rescue ActiveRecord::ActiveRecordError => e
+        Gitlab::ErrorTracking.track_exception(e, build_id: id, runner_machine_id: runner_manager.id)
+      end
+    end
+
     ##
     # We can have only one queuing entry or running build tracking entry,
     # because there is a unique index on `build_id` in each table, but we need
@@ -1377,6 +1398,19 @@ module Ci
       project_integrations['Integrations::DiffblueCover']
     end
 
+    def parallel_build?
+      options[:parallel].present?
+    end
+
+    def matrix_build?
+      # Jobs migrated from legacy data may store numeric `parallel` as a bare Integer.
+      options[:parallel].is_a?(Hash) && options.dig(:parallel, :matrix).present?
+    end
+
+    def node_total
+      Gitlab::Utils::Job.node_total(options)
+    end
+
     protected
 
     def run_status_commit_hooks!
@@ -1445,11 +1479,6 @@ module Ci
       ::Ci::JobToken::Jwt.encode(self)
     end
     strong_memoize_attr :encoded_jwt
-
-    def matrix_build?
-      # Jobs migrated from legacy data may store numeric `parallel` as a bare Integer.
-      options[:parallel].is_a?(Hash) && options.dig(:parallel, :matrix).present?
-    end
 
     def stick_build_if_status_changed
       return unless saved_change_to_status?

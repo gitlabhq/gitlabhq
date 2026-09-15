@@ -240,17 +240,15 @@ export default {
         @submit="handleFilter"
         @clear="handleFilterClear"
       />
-      <!-- eslint-disable vue/v-on-event-hyphenation -->
       <gl-sorting
         block
         dropdown-class="gl-w-full !gl-flex"
         :is-ascending="sort.isAsc"
         :sort-by="sort.value"
         :sort-options="$options.SORT_OPTIONS"
-        @sortByChange="handleSortChange"
-        @sortDirectionChange="handleSortDirectionChange"
+        @sort-by-change="handleSortChange"
+        @sort-direction-change="handleSortDirectionChange"
       />
-      <!-- eslint-enable vue/v-on-event-hyphenation -->
     </div>
 
     <crud-component :title="$options.i18n.pageTitle">

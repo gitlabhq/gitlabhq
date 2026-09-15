@@ -130,6 +130,15 @@ RSpec.describe Projects::LabelsController, feature_category: :team_planning do
       end
     end
 
+    context 'with a sort param' do
+      it 'sorts by the requested order instead of the default', :aggregate_failures do
+        get :index, params: { namespace_id: project.namespace.to_param, project_id: project, sort: 'name_desc' }
+
+        expect(assigns(:sort)).to eq('name_desc')
+        expect(assigns(:labels)).to eq [label_5, label_4, group_label_4, group_label_3]
+      end
+    end
+
     def list_labels
       get :index, params: { namespace_id: project.namespace.to_param, project_id: project }
     end
@@ -152,6 +161,34 @@ RSpec.describe Projects::LabelsController, feature_category: :team_planning do
 
         expect(response).to have_gitlab_http_status(:found)
       end
+    end
+  end
+
+  describe 'POST #set_priorities' do
+    let_it_be(:unprioritized_label) { create(:label, project: project, title: 'To prioritize') }
+
+    it 'prioritizes the labels passed in label_ids', :aggregate_failures do
+      post :set_priorities, params: {
+        namespace_id: project.namespace.to_param,
+        project_id: project,
+        label_ids: [unprioritized_label.id]
+      }, format: :json
+
+      expect(response).to have_gitlab_http_status(:ok)
+      expect(unprioritized_label.reload.priority(project)).to eq(0)
+    end
+
+    it 'ignores label ids the project cannot access', :aggregate_failures do
+      other_label = create(:label, project: create(:project))
+
+      post :set_priorities, params: {
+        namespace_id: project.namespace.to_param,
+        project_id: project,
+        label_ids: [other_label.id]
+      }, format: :json
+
+      expect(response).to have_gitlab_http_status(:ok)
+      expect(other_label.reload.priority(project)).to be_nil
     end
   end
 

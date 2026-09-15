@@ -47,11 +47,11 @@ RSpec.describe Projects::FeatureFlagsController, feature_category: :feature_flag
   describe 'GET #index.json' do
     subject { get(:index, params: view_params, format: :json) }
 
-    let!(:feature_flag_active) do
+    let_it_be(:feature_flag_active) do
       create(:operations_feature_flag, project: project, active: true, name: 'feature_flag_a')
     end
 
-    let!(:feature_flag_inactive) do
+    let_it_be(:feature_flag_inactive) do
       create(:operations_feature_flag, project: project, active: false, name: 'feature_flag_b')
     end
 
@@ -136,7 +136,7 @@ RSpec.describe Projects::FeatureFlagsController, feature_category: :feature_flag
     end
 
     context 'with version 1 and 2 feature flags' do
-      let!(:new_version_feature_flag) do
+      let_it_be(:new_version_feature_flag) do
         create(:operations_feature_flag, :new_version_flag, project: project, name: 'feature_flag_c')
       end
 
@@ -161,7 +161,7 @@ RSpec.describe Projects::FeatureFlagsController, feature_category: :feature_flag
   describe 'GET #show.json' do
     subject { get(:show, params: params, format: :json) }
 
-    let!(:feature_flag) do
+    let(:feature_flag) do
       create(:operations_feature_flag, project: project)
     end
 
@@ -226,7 +226,7 @@ RSpec.describe Projects::FeatureFlagsController, feature_category: :feature_flag
     end
 
     context 'with a version 2 feature flag' do
-      let!(:new_version_feature_flag) do
+      let_it_be(:new_version_feature_flag) do
         create(:operations_feature_flag, :new_version_flag, project: project)
       end
 
@@ -261,7 +261,7 @@ RSpec.describe Projects::FeatureFlagsController, feature_category: :feature_flag
     subject { get(:edit, params: params) }
 
     context 'with new version flags' do
-      let!(:feature_flag) { create(:operations_feature_flag, project: project) }
+      let_it_be(:feature_flag) { create(:operations_feature_flag, project: project) }
 
       let(:params) do
         {
@@ -307,7 +307,7 @@ RSpec.describe Projects::FeatureFlagsController, feature_category: :feature_flag
     end
 
     context 'when the same named feature flag has already existed' do
-      before do
+      before_all do
         create(:operations_feature_flag, name: 'my_feature_flag', project: project)
       end
 
@@ -478,7 +478,7 @@ RSpec.describe Projects::FeatureFlagsController, feature_category: :feature_flag
     end
 
     context 'when creating a version 2 feature flag with a gitlabUserList strategy' do
-      let!(:user_list) do
+      let_it_be(:user_list) do
         create(:operations_feature_flag_user_list, project: project, name: 'My List', user_xids: 'user1,user2')
       end
 
@@ -619,8 +619,12 @@ RSpec.describe Projects::FeatureFlagsController, feature_category: :feature_flag
     end
 
     context 'with a version 2 feature flag' do
-      let!(:new_version_flag) do
+      let_it_be(:new_version_flag) do
         create(:operations_feature_flag, name: 'new-feature', active: true, project: project)
+      end
+
+      let_it_be(:user_list) do
+        create(:operations_feature_flag_user_list, project: project, name: 'My List', user_xids: 'user1,user2')
       end
 
       it 'creates a new strategy and scope' do
@@ -680,8 +684,6 @@ RSpec.describe Projects::FeatureFlagsController, feature_category: :feature_flag
       end
 
       it 'creates a gitlabUserList strategy' do
-        user_list = create(:operations_feature_flag_user_list, project: project, name: 'My List', user_xids: 'user1,user2')
-
         put_request(new_version_flag, strategies_attributes: [{
           name: 'gitlabUserList',
           parameters: {},
@@ -704,7 +706,6 @@ RSpec.describe Projects::FeatureFlagsController, feature_category: :feature_flag
       end
 
       it 'supports switching the associated user list for an existing gitlabUserList strategy' do
-        user_list = create(:operations_feature_flag_user_list, project: project, name: 'My List', user_xids: 'user1,user2')
         strategy = create(:operations_strategy, feature_flag: new_version_flag, name: 'gitlabUserList', parameters: {}, user_list: user_list)
         other_user_list = create(:operations_feature_flag_user_list, project: project, name: 'Other List', user_xids: 'user3')
 
@@ -729,7 +730,6 @@ RSpec.describe Projects::FeatureFlagsController, feature_category: :feature_flag
       end
 
       it 'automatically dissociates the user list when switching the type of an existing gitlabUserList strategy' do
-        user_list = create(:operations_feature_flag_user_list, project: project, name: 'My List', user_xids: 'user1,user2')
         strategy = create(:operations_strategy, feature_flag: new_version_flag, name: 'gitlabUserList', parameters: {}, user_list: user_list)
 
         put_request(new_version_flag, strategies_attributes: [{
@@ -754,7 +754,6 @@ RSpec.describe Projects::FeatureFlagsController, feature_category: :feature_flag
       end
 
       it 'does not delete a user list when deleting a gitlabUserList strategy' do
-        user_list = create(:operations_feature_flag_user_list, project: project, name: 'My List', user_xids: 'user1,user2')
         strategy = create(:operations_strategy, feature_flag: new_version_flag, name: 'gitlabUserList', parameters: {}, user_list: user_list)
 
         put_request(new_version_flag, strategies_attributes: [{
@@ -780,7 +779,6 @@ RSpec.describe Projects::FeatureFlagsController, feature_category: :feature_flag
       end
 
       it 'returns not found when trying to update a gitlabUserList strategy with a user list from another project' do
-        user_list = create(:operations_feature_flag_user_list, project: project, name: 'My List', user_xids: 'user1,user2')
         strategy = create(:operations_strategy, feature_flag: new_version_flag, name: 'gitlabUserList', parameters: {}, user_list: user_list)
         other_project = create(:project)
         other_user_list = create(:operations_feature_flag_user_list, project: other_project, name: 'Other List', user_xids: 'some,one')

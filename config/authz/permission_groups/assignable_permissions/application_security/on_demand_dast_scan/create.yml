@@ -1,0 +1,14 @@
+---
+name: create_on_demand_dast_scan
+description: Grants the ability to create and run DAST on-demand scans, and create
+  their site profiles, scanner profiles, site tokens, and site validations
+boundaries:
+  - project
+available_for:
+  - granular_access_token
+permissions:
+  - create_on_demand_dast_scan
+  - create_dast_scanner_profile
+  - create_dast_site_profile
+  - create_dast_site_token
+  - create_dast_site_validation

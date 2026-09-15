@@ -74,7 +74,7 @@ greater than or equal to `1` and less than `20`.
 Now, if we look at the previous example query again, the database can
 use the `WHERE` to recognize that all matching rows are in the
 `merge_request_diff_files_1` partition. Rather than searching all the data
-in all the partitions. In a large table, this can
+in all the partitions, it can search only the data in the appropriate partition. In a large table, this can
 dramatically reduce the amount of data the database needs to access.
 
 ## ActiveRecord model

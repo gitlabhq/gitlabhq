@@ -1,8 +1,6 @@
-import { GlAvatarLabeled } from '@gitlab/ui';
 import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
 import NewUserOrganizationField from '~/admin/users/components/new_user_organization_field.vue';
-import OrganizationRoleField from '~/admin/users/components/organization_role_field.vue';
-import { AVATAR_SHAPE_OPTION_RECT } from '~/vue_shared/constants';
+import OrganizationUserTypeField from '~/admin/users/components/organization_user_type_field.vue';
 import OrganizationSelect from '~/vue_shared/components/entity_select/organization_select.vue';
 import organizationsQuery from '~/organizations/shared/graphql/queries/organizations.query.graphql';
 import { ACCESS_LEVEL_OWNER, ACCESS_LEVEL_DEFAULT } from '~/organizations/shared/constants';
@@ -26,27 +24,16 @@ describe('NewUserOrganizationField', () => {
     });
   };
 
-  const findAvatar = () => wrapper.findComponent(GlAvatarLabeled);
   const findHiddenOrganizationField = () =>
     wrapper.find('input[name="user[organization_id]"][type="hidden"]');
   const findHiddenOrganizationUserField = () =>
     wrapper.find('input[name="user[organization_users_attributes][][id]"][type="hidden"]');
   const findOrganizationSelect = () => wrapper.findComponent(OrganizationSelect);
-  const findOrganizationRoleField = () => wrapper.findComponent(OrganizationRoleField);
+  const findOrganizationUserTypeField = () => wrapper.findComponent(OrganizationUserTypeField);
 
   describe('when `hasMultipleOrganizations` prop is `false`', () => {
     beforeEach(() => {
       createComponent();
-    });
-
-    it('renders avatar', () => {
-      expect(findAvatar().props()).toMatchObject({
-        entityId: defaultPropsData.initialOrganization.id,
-        entityName: defaultPropsData.initialOrganization.name,
-        label: defaultPropsData.initialOrganization.name,
-        shape: AVATAR_SHAPE_OPTION_RECT,
-        src: defaultPropsData.initialOrganization.avatarUrl,
-      });
     });
 
     it('renders hidden field with initial organization id', () => {
@@ -54,11 +41,19 @@ describe('NewUserOrganizationField', () => {
         `${defaultPropsData.initialOrganization.id}`,
       );
     });
+
+    it('does not render organization select', () => {
+      expect(findOrganizationSelect().exists()).toBe(false);
+    });
   });
 
   describe('when `hasMultipleOrganizations` prop is `true`', () => {
     beforeEach(() => {
       createComponent({ propsData: { hasMultipleOrganizations: true } });
+    });
+
+    it('does not render hidden field with initial organization id', () => {
+      expect(findHiddenOrganizationField().exists()).toBe(false);
     });
 
     it('renders organization select with default organization selected', () => {
@@ -75,26 +70,26 @@ describe('NewUserOrganizationField', () => {
     });
   });
 
-  it('renders role field', () => {
+  it('renders organization user type field', () => {
     createComponent();
 
-    expect(findOrganizationRoleField().exists()).toBe(true);
+    expect(findOrganizationUserTypeField().exists()).toBe(true);
   });
 
-  it('passes initialAccessLevel prop to role field', () => {
+  it('passes initialAccessLevel prop to organization user type field', () => {
     createComponent();
 
-    expect(findOrganizationRoleField().props('initialAccessLevel')).toBe(ACCESS_LEVEL_DEFAULT);
+    expect(findOrganizationUserTypeField().props('initialAccessLevel')).toBe(ACCESS_LEVEL_DEFAULT);
   });
 
-  it('passes organizationRoleInputName prop to role field', () => {
+  it('passes organizationUserTypeInputName prop to organization user type field', () => {
     createComponent({
       propsData: {
-        organizationRoleInputName: 'user[organization_users_attributes][][access_level]',
+        organizationUserTypeInputName: 'user[organization_users_attributes][][access_level]',
       },
     });
 
-    expect(findOrganizationRoleField().props('inputName')).toBe(
+    expect(findOrganizationUserTypeField().props('inputName')).toBe(
       'user[organization_users_attributes][][access_level]',
     );
   });
@@ -118,8 +113,8 @@ describe('NewUserOrganizationField', () => {
       expect(findHiddenOrganizationUserField().element.value).toBe(organizationUser.id.toString());
     });
 
-    it('passes initialAccessLevel prop to role field', () => {
-      expect(findOrganizationRoleField().props('initialAccessLevel')).toBe(
+    it('passes initialAccessLevel prop to organization user type field', () => {
+      expect(findOrganizationUserTypeField().props('initialAccessLevel')).toBe(
         organizationUser.accessLevel,
       );
     });

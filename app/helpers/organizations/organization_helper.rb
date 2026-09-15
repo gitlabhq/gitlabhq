@@ -13,23 +13,28 @@ module Organizations
     end
 
     def organization_show_app_data(organization)
+      organization_user = organization.membership_for(current_user)
+
       {
         organization: organization.slice(:name, :path),
-        can_admin_organization: can?(current_user, :update_organization, organization)
+        can_admin_organization: can?(current_user, :update_organization, organization),
+        can_leave_organization: can?(current_user, :delete_organization_user, organization_user),
+        organization_user_gid: organization_user&.to_global_id
       }.to_json
     end
 
     def group_settings_create_organization_app_data(group)
       {
         group_full_path: group.full_path,
-        group_gid: group.to_global_id
+        group_gid: group.to_global_id,
+        group_organization: group.organization.slice(
+          :name, :path, :visibility, :avatar_url
+        ).merge({ id: group.organization.to_global_id })
       }.to_json
     end
 
     def organization_new_app_data
-      {
-        organizations_path: organizations_path
-      }.merge(shared_new_settings_general_app_data).to_json
+      shared_new_settings_general_app_data.to_json
     end
 
     def organization_settings_general_app_data(organization)
@@ -60,7 +65,8 @@ module Organizations
 
     def organization_groups_new_app_data(organization)
       {
-        default_visibility_level: default_group_visibility
+        default_visibility_level: default_group_visibility,
+        groups_organization_path: groups_organization_path(organization)
       }.merge(shared_organization_groups_app_data(organization)).to_json
     end
 
@@ -94,7 +100,7 @@ module Organizations
       return unless organization
 
       push_to_schema_breadcrumb(
-        simple_sanitize(organization.name),
+        organization.name,
         organization_path(organization),
         organization.try(:avatar_url)
       )
@@ -125,7 +131,7 @@ module Organizations
     def shared_organization_index_app_data
       {
         new_organization_url: new_organization_path,
-        can_create_organization: Feature.enabled?(:organization_switching, current_user) &&
+        can_create_organization: Organizations::Release.enabled?(:org_creation, current_user) &&
           can?(current_user, :create_organization)
       }
     end
@@ -135,7 +141,6 @@ module Organizations
         base_path: root_url,
         groups_and_projects_organization_path:
           groups_and_projects_organization_path(organization, { display: 'groups' }),
-        groups_organization_path: groups_organization_path(organization),
         available_visibility_levels: available_visibility_levels_for_group(organization),
         restricted_visibility_levels: restricted_visibility_levels,
         path_maxlength: ::Namespace::URL_MAX_LENGTH,

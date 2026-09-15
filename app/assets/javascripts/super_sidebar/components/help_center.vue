@@ -82,7 +82,7 @@ export default {
             },
             {
               text: this.$options.i18n.docs,
-              href: helpDocsPath(),
+              href: helpDocsPath({ organizationPath: null }),
               extraAttrs: {
                 ...this.trackingAttrs('gitlab_documentation'),
               },
@@ -132,7 +132,7 @@ export default {
             this.sidebarData.has_terms &&
               !this.isSaas && {
                 text: this.$options.i18n.terms,
-                href: termsPath(),
+                href: termsPath({ organizationPath: null }),
                 extraAttrs: {
                   ...this.trackingAttrs('terms'),
                 },

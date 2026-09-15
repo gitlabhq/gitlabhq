@@ -1,6 +1,6 @@
 ---
 stage: Plan
-group: Knowledge
+group: Planner Intelligence
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see <https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments>
 title: GitLab Flavored Markdown (GLFM)
 description: Formatting, inline HTML, GitLab-specific references, diagrams, and flowcharts.
@@ -114,7 +114,7 @@ Ensure that there is only one `h1` element on a page, that heading levels are no
 ### Accessible tables
 
 To keep tables accessible and scannable, tables should not have any empty cells.
-If there is no otherwise meaningful value for a cell, consider entering **N/A** for "not applicable" or **None**.
+If there is no otherwise meaningful value for a cell, consider entering "N/A" or "None".
 
 ### Accessible images and videos
 
@@ -570,7 +570,7 @@ When rendered, the example looks similar to:
 >
 >   5. First ordered list item
 
-<!-- markdownlint-disable MD029 -->
+<!-- markdownlint-enable MD029 -->
 
 If the blank line is missing, the second list item renders as part of the first one:
 
@@ -655,7 +655,7 @@ You can add task lists anywhere Markdown is supported.
 - In all other places, you cannot select the boxes. You must edit the Markdown manually
   by adding or removing an `x` in the brackets.
 
-Besides complete and incomplete, tasks can also be **inapplicable**. Selecting an inapplicable checkbox
+Besides complete and incomplete, tasks can also be inapplicable. Selecting an inapplicable checkbox
 in an issue, merge request, epic, or comment has no effect.
 
 To create a task list, follow the format of an ordered or unordered list:
@@ -928,9 +928,9 @@ When creating tables:
   - Each cell must contain at least one hyphen, but adding more hyphens to a cell does not change the cell's rendering.
   - Any content other than hyphens, whitespace, or colons is not allowed
 - The third, and any following lines, contain the cell values.
-  - You **can't** have cells separated over many lines in the Markdown, they must be kept to single lines, but they can be very long. You can also include HTML `<br>` tags to force newlines if needed.
-  - The cell sizes **don't** have to match each other. They are flexible, but must be separated by pipes (`|`).
-  - You **can** have blank cells.
+  - You cannot have cells separated over many lines in the Markdown, they must be kept to single lines, but they can be very long. You can also include HTML `<br>` tags to force newlines if needed.
+  - The cell sizes do not have to match each other. They are flexible, but must be separated by pipes (`|`).
+  - You can have blank cells.
 - Column widths are calculated dynamically based on the content of the cells.
 - To use the pipe character (`|`) in the text and not as table delimiter, you must [escape](#escape-characters) it with a backslash (`\|`).
 
@@ -1057,6 +1057,52 @@ Select the cells and copy them to your clipboard. Open a GitLab Markdown
 entry and paste the spreadsheet:
 
 ![Paste to Markdown table](img/markdown_paste_table_v12_7.png)
+
+### Sort tables
+
+{{< details >}}
+
+- Status: Beta
+
+{{< /details >}}
+
+{{< history >}}
+
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/239559) in GitLab 19.3 [with a feature flag](../administration/feature_flags/_index.md) named `markdown_sortable_table_columns`. Disabled by default. This feature is in [beta](../policy/development_stages_support.md).
+
+{{< /history >}}
+
+> [!flag]
+> The availability of this feature is controlled by a feature flag.
+> For more information, see the history.
+> This feature is available for testing, but not ready for production use.
+
+In a rendered table, you can sort the rows by the values in a column.
+
+To sort a table:
+
+1. Select a column header.
+   The rows sort in ascending order, and an arrow in the header shows the sort direction.
+1. To sort in descending order, select the same column header again.
+
+To sort with a keyboard, move the focus to a column header and press <kbd>Enter</kbd> or
+<kbd>Space</kbd>.
+
+Sorting behavior:
+
+- Values sort alphabetically and are case-insensitive.
+- Numbers and dates sort as text, not by their numeric or chronological value.
+- Empty cells always sort to the bottom of the table, in both ascending and descending order.
+
+You can sort by only one column at a time.
+When you sort by a different column, the previous sort clears.
+To restore the original order of the rows, reload the page.
+
+Exclusions:
+
+- Tables with fewer than two rows of data or more than 1,000 rows.
+- [JSON tables](#json-tables).
+- Tables in the [rich text editor](rich_text_editor.md).
 
 ### JSON tables
 
@@ -1494,6 +1540,76 @@ When rendered, the example looks similar to:
 > But let's throw in a <b>tag</b>.
 > ```
 
+## Embed code from a repository
+
+{{< history >}}
+
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/246838) in GitLab 19.4 [with a feature flag](../administration/feature_flags/_index.md) named `blob_permalink_embed`. Disabled by default.
+
+{{< /history >}}
+
+> [!flag]
+> The availability of this feature is controlled by a feature flag.
+> For more information, see the history.
+> This feature is available for testing, but not ready for production use.
+
+When you paste a [permalink](project/repository/files/_index.md#create-permalinks) to lines of a file
+in a repository, GitLab replaces the link with a syntax-highlighted snippet of those lines.
+The embed header shows the path to the file and the lines the embed displays.
+To go to the file at that commit, select the header or a line number.
+
+To embed code from a repository:
+
+1. [Create a permalink](project/repository/files/_index.md#create-permalinks) to a single line, or to
+   a range of lines, in a file.
+1. Paste the permalink in a comment or description, in a paragraph of its own.
+
+For example:
+
+```markdown
+The external URL is configured here:
+
+https://gitlab.com/gitlab-org/gitlab/-/blob/d768310246d88433a5534576776939d81846f19e/config/gitlab.yml.example#L35-37
+```
+
+The permalink must:
+
+- Point to a project on the same GitLab instance.
+- Contain the full 40-character commit SHA. Links that use a branch or tag name are not embedded.
+- End with a line or line range anchor, like `#L27` or `#L27-30`.
+- Be the only content in its paragraph, and its link text must match its URL.
+  A permalink pasted as plain text meets both of these conditions.
+
+### Limits
+
+GitLab does not embed:
+
+- Ranges of more than 100 lines, or ranges that end after line 5000.
+- Ranges that start after the last line of the file.
+- Binary files, files larger than 10 MB, and files stored in [Git LFS](../topics/git/lfs/_index.md).
+- More than 10 embeds in a single Markdown document.
+
+If a range ends after the last line of the file, GitLab still embeds it, and the embed stops at the
+last line.
+
+### Cross-project permalinks
+
+A permalink to a different project is embedded only for users who can view the code in that project.
+Other users see the permalink instead, so you and the readers of your comment might not see the same
+content.
+
+### Email notifications
+
+GitLab embeds code in an email notification only when diff previews are turned on for both of the following:
+
+- The project or group the notification comes from.
+- The project the permalink points to.
+
+GitLab never embeds code in Service Desk emails. In these situations, the email shows the permalink
+instead. You can turn off diff previews for a
+[project](project/settings/_index.md#turn-off-diff-previews-in-project-email-notifications) or for
+[all projects in a group](group/manage.md#disable-diff-previews-in-email-notifications).
+
 ## Diagrams and flowcharts
 
 You can generate diagrams from text by using:
@@ -1506,12 +1622,18 @@ In wikis, you can also add and edit diagrams created with the [diagrams.net edit
 
 ### Mermaid
 
+{{< history >}}
+
+- Support for `treeView-beta` diagrams [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/612879) in GitLab 19.4.
+
+{{< /history >}}
+
 Visit the [official page](https://mermaidjs.github.io/) for more details. The
 [Mermaid Live Editor](https://mermaid-js.github.io/mermaid-live-editor/) helps you
 learn Mermaid and debug issues in your Mermaid code. Use it to identify and resolve
 issues in your diagrams.
 
-GitLab.com supports Mermaid version 10.
+GitLab supports Mermaid version 11.
 
 To generate a diagram or flowchart, write your text inside the `mermaid` block:
 
@@ -1591,6 +1713,35 @@ graph TB
     Node2 --> SubGraph1[Jump to SubGraph1]
     SubGraph1 --> FinalThing[Final Thing]
   end
+```
+
+To render a file or directory tree, use a `treeView-beta` diagram.
+Indentation defines the hierarchy, and a trailing `/` marks a directory:
+
+````markdown
+```mermaid
+treeView-beta
+    accTitle: Mermaid file tree diagram
+    accDescr: A file tree with a project directory containing a src directory, index.js, package.json, and a README file.
+    my-project/
+        src/
+            index.js
+        package.json
+        README.md
+```
+````
+
+When rendered, the example looks similar to:
+
+```mermaid
+treeView-beta
+    accTitle: Mermaid file tree diagram
+    accDescr: A file tree with a project directory containing a src directory, index.js, package.json, and a README file.
+    my-project/
+        src/
+            index.js
+        package.json
+        README.md
 ```
 
 ### PlantUML

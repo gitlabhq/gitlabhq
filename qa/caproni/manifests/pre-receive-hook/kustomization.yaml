@@ -1,0 +1,7 @@
+# Gitaly server hook this rig owns, applied by the pre-receive-hook deployer in
+# caproni.yaml and mounted through global.gitaly.hooks.preReceive.configmap.
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+
+resources:
+  - configmap.yaml

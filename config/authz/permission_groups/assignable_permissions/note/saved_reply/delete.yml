@@ -1,0 +1,11 @@
+---
+name: delete_saved_reply
+description: Grants the ability to delete saved replies (comment templates)
+boundaries:
+  - user
+  - group
+  - project
+available_for:
+  - granular_access_token
+permissions:
+  - delete_saved_reply

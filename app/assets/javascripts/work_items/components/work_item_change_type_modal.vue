@@ -4,7 +4,12 @@ import { differenceBy } from 'lodash-es';
 import * as Sentry from '~/sentry/sentry_browser_wrapper';
 import { visitUrl } from '~/lib/utils/url_utility';
 import { __, n__, s__, sprintf } from '~/locale';
-import { findDesignsWidget, getParentGroupName, isMilestoneWidget } from '~/work_items/utils';
+import {
+  findDesignsWidget,
+  getParentGroupName,
+  isMilestoneWidget,
+  lowercaseWorkItemType,
+} from '~/work_items/utils';
 import glFeatureFlagMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
 import {
   WIDGET_TYPE_DESIGNS,
@@ -403,8 +408,8 @@ export default {
             'WorkItem|Parent item type %{parentWorkItemType} is not supported on %{workItemType}. Remove the parent item to change type.',
           ),
           {
-            workItemType: this.selectedWorkItemType.name,
-            parentWorkItemType: this.parentWorkItemType,
+            workItemType: lowercaseWorkItemType(this.selectedWorkItemType.name),
+            parentWorkItemType: lowercaseWorkItemType(this.parentWorkItemType),
           },
         );
 
@@ -444,7 +449,7 @@ export default {
           s__(
             'WorkItem|Some fields are not present in %{workItemType}. If you change type now, this information will be lost.',
           ),
-          { workItemType: this.selectedWorkItemType.name },
+          { workItemType: lowercaseWorkItemType(this.selectedWorkItemType.name) },
         );
       }
     },

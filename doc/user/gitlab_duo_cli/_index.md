@@ -59,7 +59,7 @@ the GitLab Duo Agent Platform, including `chat-rules.md`, `AGENTS.md`, and `SKIL
 
 ## Get started
 
-1. [Set up](set_up.md) the GitLab Duo CLI.
+1. [Install and set up](set_up.md) the GitLab Duo CLI.
 1. [Use](use.md) the GitLab Duo CLI, either in interactive or headless mode.
 1. [Customize](customize.md) the GitLab Duo CLI to better fit your workflow or use case.
 1. Review the [reference documentation](reference.md) to learn more about how you can use the GitLab Duo CLI.
@@ -94,6 +94,8 @@ Prerequisites:
 
 ## Update the GitLab Duo CLI
 
+To install the GitLab Duo CLI for the first time, see [set up](set_up.md).
+
 To manually update the GitLab Duo CLI to the latest version, run the command for your setup:
 
 {{< tabs >}}
@@ -108,9 +110,24 @@ glab duo cli --update
 
 {{< tab title="duo" >}}
 
+To update the compiled binary, run the install script again.
+
+On macOS and Linux:
+
 ```shell
-npm install --global @gitlab/duo-cli@latest
+bash <(curl --fail --silent --show-error --location "https://gitlab.com/gitlab-org/editor-extensions/gitlab-lsp/-/raw/main/packages/cli/scripts/install_duo_cli.sh")
 ```
+
+On Windows:
+
+```shell
+irm "https://gitlab.com/gitlab-org/editor-extensions/gitlab-lsp/-/raw/main/packages/cli/scripts/install_duo_cli.ps1" | iex
+```
+
+If you previously installed the GitLab Duo CLI through npm, it no longer receives updates.
+
+To get the latest version of the CLI, uninstall the npm package with `npm uninstall --global @gitlab/duo-cli`,
+then run the previous script to install the compiled binary instead.
 
 {{< /tab >}}
 

@@ -8,6 +8,7 @@ import {
   GlTooltipDirective,
 } from '@gitlab/ui';
 import { numberToHumanSize } from '~/lib/utils/number_utils';
+import { s__, sprintf } from '~/locale';
 import {
   I18N_EXPIRED,
   I18N_DOWNLOAD,
@@ -62,6 +63,16 @@ export default {
     },
     artifactSize() {
       return numberToHumanSize(this.artifact.size);
+    },
+    downloadLabel() {
+      return sprintf(s__('Artifacts|Download %{artifactName}'), {
+        artifactName: this.artifact.name,
+      });
+    },
+    deleteLabel() {
+      return sprintf(s__('Artifacts|Delete %{artifactName}'), {
+        artifactName: this.artifact.name,
+      });
     },
     canBulkDestroyArtifacts() {
       return this.canDestroyArtifacts;
@@ -121,7 +132,7 @@ export default {
             category="tertiary"
             icon="download"
             :title="$options.i18n.download"
-            :aria-label="$options.i18n.download"
+            :aria-label="downloadLabel"
             :href="artifact.downloadPath"
             data-testid="job-artifact-row-download-button"
           />
@@ -130,7 +141,7 @@ export default {
             category="tertiary"
             icon="remove"
             :title="$options.i18n.delete"
-            :aria-label="$options.i18n.delete"
+            :aria-label="deleteLabel"
             data-testid="job-artifact-row-delete-button"
             @click="$emit('delete')"
           />

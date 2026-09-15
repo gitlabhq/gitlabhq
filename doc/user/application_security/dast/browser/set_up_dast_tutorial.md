@@ -11,7 +11,7 @@ Learn how to integrate Dynamic Application Security Testing (DAST) into your CI/
 
 Static analysis finds vulnerabilities in source code. DAST identifies runtime security issues
 that only appear when your application runs in a real environment and interacts with services
-and user workflows. With GitLab-integrated DAST solution, you can set up GitLab DAST to
+and user workflows. With a GitLab-integrated DAST solution, you can set up GitLab DAST to
 automatically check for these issues every time you deploy code to a test environment.
 
 In this tutorial, you'll learn how to:

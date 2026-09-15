@@ -5,15 +5,14 @@ require 'spec_helper'
 RSpec.describe 'projects/pages/show' do
   include LetsEncryptHelpers
 
-  let(:project) { create(:project, :repository) }
-  let(:user) { create(:user) }
+  let_it_be(:user) { create(:user) }
+  let_it_be(:project) { create(:project, maintainers: user) }
   let(:domain) { create(:pages_domain, project: project) }
 
   before do
     allow(project).to receive(:pages_deployed?).and_return(true)
     stub_pages_setting(external_https: true)
     stub_lets_encrypt_settings
-    project.add_maintainer(user)
 
     assign(:project, project)
     allow(view).to receive(:current_user).and_return(user)

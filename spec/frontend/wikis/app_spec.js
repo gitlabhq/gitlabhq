@@ -1,5 +1,6 @@
 import { GlAlert } from '@gitlab/ui';
 import { nextTick } from 'vue';
+import { createWrapper as createRootWrapper } from '@vue/test-utils';
 import WikiApp from '~/wikis/app.vue';
 import WikiAlert from '~/wikis/components/wiki_alert.vue';
 import WikiHeader from '~/wikis/components/wiki_header.vue';
@@ -247,6 +248,32 @@ describe('WikiApp', () => {
       const pushedUrl = pushStateSpy.mock.calls[0][2];
       expect(pushedUrl).not.toContain('edit=');
       expect(pushedUrl).not.toContain('view=');
+    });
+  });
+
+  describe('when URL has open_clone_modal param', () => {
+    let replaceStateSpy;
+
+    beforeEach(() => {
+      setWindowLocation('?open_clone_modal=true');
+      replaceStateSpy = jest.spyOn(window.history, 'replaceState').mockImplementation(() => {});
+      createComponent();
+    });
+
+    afterEach(() => {
+      replaceStateSpy.mockRestore();
+    });
+
+    it('removes the open_clone_modal param from the URL', () => {
+      expect(replaceStateSpy).toHaveBeenCalled();
+      const replacedUrl = replaceStateSpy.mock.calls[0][2].toString();
+      expect(replacedUrl).not.toContain('open_clone_modal');
+    });
+
+    it('emits BV_SHOW_MODAL to open the clone modal', () => {
+      const emitted = createRootWrapper(wrapper.vm.$root).emitted('bv::show::modal');
+      expect(emitted).toHaveLength(1);
+      expect(emitted[0]).toContain('clone-wiki-modal');
     });
   });
 });

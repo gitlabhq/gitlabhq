@@ -17,6 +17,9 @@
         - if @scope == 'projects'
           .term
             = render 'shared/projects/list', projects: @search_objects, pipeline_status: false
+        - elsif @scope == 'groups'
+          .term
+            = render 'shared/groups/list', groups: @search_objects
         - elsif @scope === 'epics'
           - @search_objects.each_with_index do |result, index|
             = render partial: "search/results/work_item", locals: { result: result, index: index }
@@ -33,5 +36,5 @@
           - @search_objects.each_with_index do |result, index|
             = render_if_exists partial: "search/results/#{@scope.singularize}", locals: { result: result, index: index }
 
-    - if @scope != 'projects' && !should_show_zoekt_results?(@scope, @search_type)
+    - if %w[projects groups].exclude?(@scope) && !should_show_zoekt_results?(@scope, @search_type)
       = paginate_collection(@search_objects)

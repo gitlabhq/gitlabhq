@@ -4,7 +4,6 @@ require 'spec_helper'
 
 RSpec.describe AbuseReportsController, feature_category: :insider_threat do
   let(:reporter) { create(:user) }
-  let(:current_organization) { reporter.organization }
   let(:user) { create(:user) }
   let(:abuse_category) { 'spam' }
 

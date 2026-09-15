@@ -10,6 +10,7 @@ module Ci
     # Read more https://gitlab.com/gitlab-com/content-sites/handbook/-/blob/2f8156f76b80d344b6b0c6c06332b40aa446068b/content/handbook/engineering/architecture/design-documents/runner_suspendable_environments/_index.md?plain=1#L67
     PARTITION_DURATION = 1.day
     PARTITION_CLEANUP_THRESHOLD = 7.days
+    ENVIRONMENT_KEY_MAX_LENGTH = 512
 
     self.table_name = :p_ci_runtime_environments
     self.primary_key = :id
@@ -22,13 +23,17 @@ module Ci
     has_many :job_runtime_environments, class_name: 'Ci::JobRuntimeEnvironment',
       inverse_of: :runtime_environment
 
-    validates :environment_key, presence: true, length: { maximum: 512 }
+    validates :environment_key, presence: true, length: { maximum: ENVIRONMENT_KEY_MAX_LENGTH }
     validates :project, presence: true
 
     scope :for_partition, ->(partition) { where(partition: partition) }
 
-    def self.find_by_key_and_project(environment_key, project_id)
-      where(environment_key: environment_key, project_id: project_id).order(id: :desc).first
+    def self.find_by_key_and_project(runtime_environment_key, project_id)
+      where(environment_key: runtime_environment_key, project_id: project_id).order(id: :desc).first
+    end
+
+    def self.find_or_create_by_key_and_project!(runtime_environment_key, project_id)
+      find_or_create_by!(environment_key: runtime_environment_key, project_id: project_id)
     end
 
     partitioned_by :partition, strategy: :sliding_list,

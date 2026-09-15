@@ -11,9 +11,9 @@ RSpec.describe 'gitlab:artifacts rake tasks', feature_category: :job_artifacts d
     # rubocop:disable RSpec/AvoidTestProf -- group and project are created only once.
     let_it_be(:group) { create(:group) }
 
-    let_it_be(:project_1) { create(:project, :repository, group: group) }
+    let_it_be(:project_1) { create(:project, :small_repo, group: group) }
 
-    let_it_be(:project_2) { create(:project, :repository, group: group) }
+    let_it_be(:project_2) { create(:project, :small_repo, group: group) }
     # rubocop:enable RSpec/AvoidTestProf -- group and project are created only once.
 
     let(:pipeline_1) do

@@ -22,7 +22,7 @@ From the pipeline editor page you can:
 - Do a deeper [validation of your configuration](#validate-cicd-configuration), that verifies it with any configuration
   added with the [`include`](../yaml/_index.md#include) keyword.
 - View a [list of the CI/CD configuration added with the `include` keyword](#view-included-cicd-configuration).
-- See a [visualization](#visualize-ci-configuration) of the current configuration.
+- See a [visualization](#visualize-cicd-configuration) of the current configuration.
 - View the [full configuration](#view-full-configuration), which displays the configuration with any configuration from `include` added.
 - [Commit](#commit-changes-to-ci-configuration) the changes to a specific branch.
 
@@ -67,7 +67,7 @@ keyword in the pipeline editor. In the upper-right corner, select the file tree 
 to see a list of all included configuration files. Selected files open in a new tab
 for review.
 
-## Visualize CI configuration
+## Visualize CI/CD configuration
 
 To view a visualization of your `.gitlab-ci.yml` configuration, in your project,
 go to **Build** > **Pipeline editor**, and then select the **Visualize** tab. The
@@ -81,6 +81,9 @@ Hover over a job to highlight its `needs` relationships:
 
 If the configuration does not have any `needs` relationships, then no lines are drawn because
 each job depends only on the previous stage being completed successfully.
+
+Jobs from [pipeline execution policies](../../user/application_security/policies/pipeline_execution_policies.md)
+do not display in this visualization because they are not defined in the project `.gitlab-ci.yml` configuration.
 
 ## View full configuration
 

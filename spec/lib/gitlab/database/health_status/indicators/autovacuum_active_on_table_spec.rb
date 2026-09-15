@@ -66,5 +66,26 @@ RSpec.describe Gitlab::Database::HealthStatus::Indicators::AutovacuumActiveOnTab
         end
       end
     end
+
+    describe 'connection binding' do
+      it 'queries autovacuum activity on the connection from the context' do
+        expect(Gitlab::Database::SharedModel)
+          .to receive(:using_connection).with(connection).and_call_original
+
+        subject
+      end
+
+      context 'when autovacuum_indicator_uses_context_connection is disabled' do
+        before do
+          stub_feature_flags(autovacuum_indicator_uses_context_connection: false)
+        end
+
+        it 'does not bind the connection' do
+          expect(Gitlab::Database::SharedModel).not_to receive(:using_connection)
+
+          subject
+        end
+      end
+    end
   end
 end

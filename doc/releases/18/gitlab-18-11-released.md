@@ -252,7 +252,7 @@ GitLab Duo Agent Platform now supports Mistral AI as an LLM platform for self-ho
 
 - Tier: Premium, Ultimate
 - Offering: GitLab.com, GitLab Self-Managed, GitLab Dedicated, GitLab Dedicated for Government
-- Links: [Documentation](../../subscriptions/gitlab_credits.md#view-the-gitlab-credits-dashboard) | [Related issue](https://gitlab.com/gitlab-org/customers-gitlab-com/-/work_items/15910)
+- Links: [Documentation](../../subscriptions/gitlab_credits_dashboard.md#view-the-gitlab-credits-dashboard) | [Related issue](https://gitlab.com/gitlab-org/customers-gitlab-com/-/work_items/15910)
 
 {{< /details >}}
 
@@ -266,7 +266,7 @@ The GitLab Credits dashboard in Customers Portal now supports historical month n
 
 - Tier: Premium, Ultimate
 - Offering: GitLab.com, GitLab Self-Managed, GitLab Dedicated, GitLab Dedicated for Government
-- Links: [Documentation](../../subscriptions/gitlab_credits.md#usage-control-status)
+- Links: [Documentation](../../subscriptions/gitlab_credits_dashboard.md#usage-control-status)
 
 {{< /details >}}
 
@@ -280,7 +280,7 @@ Administrators can now set a monthly usage cap for On-Demand Credits at the subs
 
 - Tier: Premium, Ultimate
 - Offering: GitLab.com, GitLab Self-Managed, GitLab Dedicated, GitLab Dedicated for Government
-- Links: [Documentation](../../subscriptions/gitlab_credits.md#usage-control-status)
+- Links: [Documentation](../../subscriptions/gitlab_credits_dashboard.md#usage-control-status)
 
 {{< /details >}}
 

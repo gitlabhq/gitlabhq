@@ -614,20 +614,64 @@ namespace :gitlab do
       puts "Migrate using username #{username}"
       Rake::Task['db:drop'].invoke
       Rake::Task['db:create'].invoke
-      ActiveRecord::Base.configurations.configs_for(env_name: ActiveRecord::Tasks::DatabaseTasks.env).each do |db_config|
-        config = ActiveRecord::DatabaseConfigurations::HashConfig.new(
-          db_config.env_name,
-          db_config.name,
-          db_config.configuration_hash.merge(username: username)
-        )
 
-        ActiveRecord::Base.establish_connection(config) # rubocop: disable Database/EstablishConnection
+      env = ActiveRecord::Tasks::DatabaseTasks.env
+
+      # This task only verifies that migrations run; don't overwrite db/structure.sql from it.
+      ActiveRecord.dump_schema_after_migration = false
+
+      # db:create made the configured (super)user own the databases. Hand them over, like a real
+      # install (CREATE DATABASE ... OWNER gitlab): since PostgreSQL 15, public is owned by
+      # pg_database_owner, so owning the database is what grants CREATE on the public schema.
+      ActiveRecord::Tasks::DatabaseTasks.with_temporary_pool_for_each(env: env) do |pool|
+        pool.with_connection do |connection|
+          # quote_column_name quotes one identifier verbatim (PG::Connection.quote_ident);
+          # quote_table_name would split database or role names containing dots.
+          connection.execute(
+            "ALTER DATABASE #{connection.quote_column_name(pool.db_config.database)} " \
+              "OWNER TO #{connection.quote_column_name(username)}"
+          )
+        end
+      end
+
+      # db:migrate:<name> resolves its connection from ActiveRecord::Base.configurations, so the
+      # username override must live there; a connection established from a modified copy would be
+      # discarded. schema_dump: false keeps Rails 8's initialize_database from loading
+      # structure.sql and marking every migration as applied without running any.
+      ActiveRecord::Base.configurations = ActiveRecord::DatabaseConfigurations.new(
+        ActiveRecord::Base.configurations.configs_for(include_hidden: true).map do |db_config|
+          next db_config unless db_config.env_name == env
+
+          ActiveRecord::DatabaseConfigurations::HashConfig.new(
+            db_config.env_name,
+            db_config.name,
+            db_config.configuration_hash.merge(username: username, schema_dump: false)
+          )
+        end
+      )
+
+      ActiveRecord::Base.configurations.configs_for(env_name: env).each do |db_config|
+        # rubocop: disable Database/EstablishConnection -- the check must observe the migration user
+        ActiveRecord::Base.establish_connection(db_config)
+        # rubocop: enable Database/EstablishConnection
         Gitlab::Database.check_for_non_superuser
 
         if Rake::Task.task_defined?("db:migrate:#{db_config.name}")
           Rake::Task["db:migrate:#{db_config.name}"].invoke
         else
           Rake::Task["db:migrate"].invoke
+        end
+
+        # db:migrate tears down its connections when it finishes, so guard on a fresh pool.
+        ActiveRecord::Tasks::DatabaseTasks.with_temporary_pool_for_each(name: db_config.name) do |pool|
+          applied = pool.with_connection { |conn| conn.select_value('SELECT COUNT(*) FROM schema_migrations') }.to_i
+          puts "Applied #{applied} migration versions on the #{db_config.name} database"
+
+          raise "No migrations were applied on the #{db_config.name} database" if applied == 0
+
+          if pool.migration_context.needs_migration?
+            raise "Migrations are still pending on the #{db_config.name} database"
+          end
         end
       end
     end

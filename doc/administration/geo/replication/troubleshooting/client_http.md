@@ -1,5 +1,5 @@
 ---
-stage: Tenant Scale
+stage: GitLab Dedicated
 group: Geo
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see <https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments>
 title: Troubleshooting Geo client and HTTP response code errors
@@ -21,23 +21,6 @@ As noted in [this authentication issue](https://github.com/git-lfs/git-lfs/issue
 requests redirected from the secondary to the primary site do not properly send the
 Authorization header. This may result in either an infinite `Authorization <-> Redirect`
 loop, or Authorization error messages.
-
-### Error: `Net::ReadTimeout` when pushing through SSH on a Geo secondary
-
-When you push large repositories through SSH on a Geo secondary site, you may encounter a timeout.
-This is because Rails proxies the push to the primary and has a 60 second default timeout,
-[as described in this Geo issue](https://gitlab.com/gitlab-org/gitlab/-/issues/7405).
-
-Current workarounds are:
-
-- Push through HTTP instead, where Workhorse proxies the request to the primary (or redirects to the primary if Geo proxying is not enabled).
-- Push directly to the primary.
-
-Example log (`gitlab-shell.log`):
-
-```plaintext
-Failed to contact primary https://primary.domain.com/namespace/push_test.git\\nError: Net::ReadTimeout\",\"result\":null}" code=500 method=POST pid=5483 url="http://127.0.0.1:3000/api/v4/geo/proxy_git_push_ssh/push"
-```
 
 ### Repair OAuth authorization between Geo sites
 
@@ -114,13 +97,13 @@ To fix this issue, set the primary site's internal URL to a URL that is:
 
 ### Geo Admin area returns 404 error for a secondary site
 
-Sometimes `sudo gitlab-rake gitlab:geo:check` indicates that **Rails nodes of the secondary** sites are
+Sometimes `sudo gitlab-rake gitlab:geo:check` indicates that Rails nodes of the secondary sites are
 healthy, but a 404 Not Found error message for the secondary site is returned in the Geo **Admin** area on the web interface for
 the primary site.
 
 To resolve this issue:
 
-- Try restarting **each Rails, Sidekiq, and Gitaly nodes on your secondary site** using `sudo gitlab-ctl restart`.
+- Try restarting each Rails, Sidekiq, and Gitaly node on your secondary site using `sudo gitlab-ctl restart`.
 - Check `/var/log/gitlab/gitlab-rails/geo.log` on Sidekiq nodes to see if the secondary site is
   using IPv6 to send its status to the primary site. If it is, add an entry to
   the primary site using IPv4 in the `/etc/hosts` file. Alternatively, you should

@@ -16,6 +16,7 @@ module ApplicationSettings
       if result
         auto_approve_blocked_users
         cleanup_dynamically_registered_oauth_applications
+        track_code_dropdown_custom_clients_change
       end
 
       result
@@ -207,6 +208,15 @@ module ApplicationSettings
       enabled_previous, enabled_current = application_setting.previous_changes[:dynamic_client_registration_enabled]
 
       enabled_previous && !enabled_current
+    end
+
+    def track_code_dropdown_custom_clients_change
+      return unless application_setting.code_dropdown_custom_clients_previously_changed?
+
+      Gitlab::InternalEvents.track_event(
+        'admin_updates_code_dropdown_custom_clients',
+        user: current_user
+      )
     end
   end
 end

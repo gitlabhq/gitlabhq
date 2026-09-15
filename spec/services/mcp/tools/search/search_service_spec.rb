@@ -42,8 +42,8 @@ RSpec.describe Mcp::Tools::Search::SearchService, feature_category: :mcp_server 
           scope: {
             type: 'string',
             description: a_string_including(
-              'GitLab instance: projects, work_items, merge_requests, milestones, users, snippet_titles',
-              'Group: projects, work_items, merge_requests, milestones, users',
+              'GitLab instance: projects, groups, work_items, merge_requests, milestones, users, snippet_titles',
+              'Group: projects, groups, work_items, merge_requests, milestones, users',
               'Project: blobs, work_items, merge_requests, wiki_blobs, commits, notes, milestones, users',
               'Use "work_items" to search for issues, tasks, epics, and other work items'
             )

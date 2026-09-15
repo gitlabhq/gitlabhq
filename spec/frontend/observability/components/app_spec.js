@@ -526,11 +526,6 @@ describe('Observability App Component', () => {
           sessionEndpoint: DEFAULTS.SESSION_ENDPOINT,
         });
         await requestStartedPromise;
-        // In the Vue 2 test environment the beforeUnmount hook does not fire
-        // on destroy(), so invoke it directly (it sets pollingCancelled and is
-        // idempotent under Vue 3, where destroy() also runs it) -- same
-        // pattern as the 'deregisters iframe navigator on destroy' spec below.
-        wrapper.vm.$options.beforeUnmount.call(wrapper.vm);
         wrapper.destroy();
       });
 
@@ -784,7 +779,7 @@ describe('Observability App Component', () => {
       await clickEnterButton();
 
       const removeSpy = jest.spyOn(document, 'removeEventListener');
-      fullscreenWrapper.vm.$options.beforeUnmount.call(fullscreenWrapper.vm);
+      fullscreenWrapper.destroy();
 
       expect(document.documentElement.classList.contains('o11y-fullscreen')).toBe(false);
       expect(removeSpy).toHaveBeenCalledWith('keydown', expect.any(Function));
@@ -795,7 +790,7 @@ describe('Observability App Component', () => {
       const removeSpy = jest.spyOn(document, 'removeEventListener');
       await setupAuthenticated();
 
-      fullscreenWrapper.vm.$options.beforeUnmount.call(fullscreenWrapper.vm);
+      fullscreenWrapper.destroy();
 
       expect(removeSpy).not.toHaveBeenCalledWith('keydown', expect.any(Function));
       removeSpy.mockRestore();
@@ -846,7 +841,7 @@ describe('Observability App Component', () => {
     it('deregisters iframe navigator on destroy', async () => {
       await setupComponent();
 
-      wrapper.vm.$options.beforeUnmount.call(wrapper.vm);
+      wrapper.destroy();
 
       expect(iframeNavigator.deregister).toHaveBeenCalled();
     });

@@ -38,7 +38,8 @@ RSpec.describe Authn::IamService::AcceptLoginChallengeService, feature_category:
           challenge: challenge,
           subject: user.id.to_s,
           name: user.name,
-          email: user.email
+          email: user.email,
+          cell_id: Gitlab.config.cell.id.to_i
         )
       end
     end

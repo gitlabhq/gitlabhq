@@ -2,10 +2,7 @@
 
 class Admin::CohortsController < Admin::ApplicationController
   include ProductAnalyticsTracking
-
-  feature_category :devops_reports
-
-  urgency :low
+  include Admin::CohortsActions
 
   track_event :index,
     name: 'i_analytics_cohorts',
@@ -18,14 +15,6 @@ class Admin::CohortsController < Admin::ApplicationController
   end
 
   private
-
-  def load_cohorts
-    cohorts_results = Rails.cache.fetch('cohorts', expires_in: 1.day) do
-      CohortsService.new.execute
-    end
-
-    CohortsSerializer.new.represent(cohorts_results)
-  end
 
   def tracking_namespace_source
     nil

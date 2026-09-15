@@ -94,7 +94,7 @@ describe('Registry Search', () => {
     it('on sort change emits sorting-changed event', () => {
       mountComponent();
 
-      findPackageListSorting().vm.$emit('sortDirectionChange');
+      findPackageListSorting().vm.$emit('sort-direction-change');
       expect(wrapper.emitted('sorting-changed')).toEqual([[{ sort: 'desc' }]]);
       expect(wrapper.emitted('query-changed')).toEqual([
         [{ ...defaultQueryChangedPayload, sort: 'desc' }],
@@ -104,7 +104,7 @@ describe('Registry Search', () => {
     it('on sort item click emits sorting-changed event', () => {
       mountComponent();
 
-      findPackageListSorting().vm.$emit('sortByChange', 'bar');
+      findPackageListSorting().vm.$emit('sort-by-change', 'bar');
 
       expect(wrapper.emitted('sorting-changed')).toEqual([
         [{ orderBy: defaultProps.sortableFields[1].orderBy }],

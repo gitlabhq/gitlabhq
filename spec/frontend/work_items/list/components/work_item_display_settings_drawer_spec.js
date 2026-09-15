@@ -1,6 +1,12 @@
-import { GlDrawer, GlSegmentedControl } from '@gitlab/ui';
+import { GlButtonGroup, GlDrawer, GlSegmentedControl } from '@gitlab/ui';
 import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
-import { VIEW_MODE_LIST, VIEW_MODE_BOARD } from '~/work_items/constants';
+import {
+  DISPLAY_SETTINGS_PAGE_GROUP_BY,
+  DISPLAY_SETTINGS_PAGE_ROOT,
+  VIEW_MODE_LIST,
+  VIEW_MODE_BOARD,
+  VIEW_MODE_TABLE,
+} from '~/work_items/constants';
 import WorkItemDisplaySettingsDrawer from '~/work_items/list/components/work_item_display_settings_drawer.vue';
 import WorkItemDisplaySettingsSort from '~/work_items/list/components/work_item_display_settings_sort.vue';
 import WorkItemDisplaySettingsMetadata from '~/work_items/list/components/work_item_display_settings_metadata.vue';
@@ -30,6 +36,9 @@ describe('WorkItemDisplaySettingsDrawer', () => {
   const findMetadata = () => wrapper.findComponent(WorkItemDisplaySettingsMetadata);
   const findUserPreferences = () => wrapper.findComponent(WorkItemDisplaySettingsUserPreferences);
   const findViewModeToggle = () => wrapper.findComponent(GlSegmentedControl);
+  const findIconViewModeToggle = () => wrapper.findComponent(GlButtonGroup);
+  const findIconViewModeButton = (viewMode) =>
+    wrapper.findComponentByTestId(`view-mode-${viewMode}`);
   const findGroupByRow = () => wrapper.findByTestId('group-by-row');
   const findGroupByBackButton = () => wrapper.findComponentByTestId('group-by-back-button');
   const findGroupBy = () => wrapper.findComponent(WorkItemDisplaySettingsGroupBy);
@@ -102,6 +111,71 @@ describe('WorkItemDisplaySettingsDrawer', () => {
     });
   });
 
+  describe('icon-only view mode toggles', () => {
+    const createWithTableEnabled = ({ props = {}, planningViewBoards = true } = {}) =>
+      createComponent({
+        props,
+        provide: { glFeatures: { planningViewBoards, planningViewTable: true } },
+      });
+
+    describe('when planningViewTable feature flag is enabled', () => {
+      beforeEach(() => {
+        createWithTableEnabled();
+      });
+
+      it('replaces the labelled toggles with the icon-only ones', () => {
+        expect(findViewModeToggle().exists()).toBe(false);
+        expect(findIconViewModeToggle().exists()).toBe(true);
+      });
+
+      it.each`
+        viewMode           | icon                       | label
+        ${VIEW_MODE_LIST}  | ${'list-bulleted'}         | ${'List'}
+        ${VIEW_MODE_TABLE} | ${'table'}                 | ${'Table'}
+        ${VIEW_MODE_BOARD} | ${'work-item-issue-board'} | ${'Board (Beta)'}
+      `(
+        'renders $label as a $icon button labelled for assistive tech',
+        ({ viewMode, icon, label }) => {
+          expect(findIconViewModeButton(viewMode).props('icon')).toBe(icon);
+          expect(findIconViewModeButton(viewMode).attributes('aria-label')).toBe(label);
+          expect(findIconViewModeButton(viewMode).attributes('title')).toBe(label);
+        },
+      );
+
+      it.each([VIEW_MODE_TABLE, VIEW_MODE_BOARD])(
+        'switches view mode to %s on click',
+        (viewMode) => {
+          findIconViewModeButton(viewMode).vm.$emit('click');
+
+          expect(wrapper.emitted('toggle-view-mode')).toEqual([[viewMode]]);
+        },
+      );
+    });
+
+    describe('when the current view mode is table', () => {
+      beforeEach(() => {
+        createWithTableEnabled({ props: { viewMode: VIEW_MODE_TABLE } });
+      });
+
+      it('marks that view mode as pressed and selected', () => {
+        expect(findIconViewModeButton(VIEW_MODE_TABLE).props('selected')).toBe(true);
+        expect(findIconViewModeButton(VIEW_MODE_TABLE).attributes('aria-pressed')).toBe('true');
+        expect(findIconViewModeButton(VIEW_MODE_LIST).props('selected')).toBe(false);
+        expect(findIconViewModeButton(VIEW_MODE_LIST).attributes('aria-pressed')).toBe('false');
+      });
+    });
+
+    describe('when planningViewTable feature flag is disabled', () => {
+      beforeEach(() => {
+        createComponent();
+      });
+
+      it('does not render the icon-only toggles', () => {
+        expect(findIconViewModeToggle().exists()).toBe(false);
+      });
+    });
+  });
+
   describe('sort section', () => {
     it('does not render when sortOptions is empty', () => {
       createComponent();
@@ -137,7 +211,6 @@ describe('WorkItemDisplaySettingsDrawer', () => {
       createComponent({
         props: {
           namespacePreferences,
-          isGroup: true,
           isServiceDeskList: false,
           isSavedView: true,
           sortKey: 'CREATED_DESC',
@@ -147,7 +220,6 @@ describe('WorkItemDisplaySettingsDrawer', () => {
       expect(findMetadata().props()).toMatchObject({
         namespacePreferences,
         fullPath: 'gitlab-org/gitlab',
-        isGroup: true,
         isServiceDeskList: false,
         isSavedView: true,
         workItemTypeId: 'gid://gitlab/WorkItems::Type/8',
@@ -201,34 +273,57 @@ describe('WorkItemDisplaySettingsDrawer', () => {
       expect(findGroupByRow().text()).toContain('Status');
     });
 
-    it('navigates to the group by sub-page when the row is clicked', async () => {
-      createComponent({ props: { viewMode: VIEW_MODE_BOARD, fullPath: 'gitlab-org/gitlab' } });
+    it('emits page-change with groupBy when the row is clicked', async () => {
+      createComponent({ props: { viewMode: VIEW_MODE_BOARD } });
 
       await findGroupByRow().trigger('click');
 
-      expect(findTitle().text()).toBe('Group by');
-      expect(findGroupBy().props('fullPath')).toBe('gitlab-org/gitlab');
-      expect(findMetadata().exists()).toBe(false);
-      expect(findSort().exists()).toBe(false);
+      expect(wrapper.emitted('page-change')).toEqual([[DISPLAY_SETTINGS_PAGE_GROUP_BY]]);
     });
 
-    it('navigates back to the root page when the back button is clicked', async () => {
-      createComponent({ props: { viewMode: VIEW_MODE_BOARD } });
-      await findGroupByRow().trigger('click');
+    it('emits page-change with root when the back button is clicked', async () => {
+      createComponent({
+        props: { viewMode: VIEW_MODE_BOARD, page: DISPLAY_SETTINGS_PAGE_GROUP_BY },
+      });
 
       await findGroupByBackButton().vm.$emit('click');
 
-      expect(findTitle().text()).toBe('Display');
-      expect(findGroupBy().exists()).toBe(false);
+      expect(wrapper.emitted('page-change')).toEqual([[DISPLAY_SETTINGS_PAGE_ROOT]]);
     });
 
-    it('resets to the root page when the drawer closes', async () => {
-      createComponent({ props: { open: true, viewMode: VIEW_MODE_BOARD } });
-      await findGroupByRow().trigger('click');
+    describe('when the page prop is the group by page', () => {
+      beforeEach(() => {
+        createComponent({
+          props: {
+            viewMode: VIEW_MODE_BOARD,
+            fullPath: 'gitlab-org/gitlab',
+            page: DISPLAY_SETTINGS_PAGE_GROUP_BY,
+          },
+        });
+      });
 
-      await wrapper.setProps({ open: false });
+      it('renders the group by sub-page', () => {
+        expect(findTitle().text()).toBe('Group by');
+        expect(findGroupBy().props('fullPath')).toBe('gitlab-org/gitlab');
+        expect(findMetadata().exists()).toBe(false);
+        expect(findSort().exists()).toBe(false);
+      });
+    });
+
+    it('renders whichever page the page prop changes to, since the parent owns it', async () => {
+      createComponent({ props: { open: true, viewMode: VIEW_MODE_BOARD } });
 
       expect(findTitle().text()).toBe('Display');
+
+      await wrapper.setProps({ page: DISPLAY_SETTINGS_PAGE_GROUP_BY });
+
+      expect(findTitle().text()).toBe('Group by');
+      expect(findGroupBy().exists()).toBe(true);
+
+      await wrapper.setProps({ page: DISPLAY_SETTINGS_PAGE_ROOT });
+
+      expect(findTitle().text()).toBe('Display');
+      expect(findGroupBy().exists()).toBe(false);
     });
   });
 });

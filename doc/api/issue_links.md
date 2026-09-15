@@ -1,6 +1,6 @@
 ---
 stage: Plan
-group: Project Management
+group: Work Items
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see <https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments>
 description: Documentation for the REST API for issue links in GitLab.
 title: Issue links API
@@ -12,12 +12,6 @@ title: Issue links API
 - Offering: GitLab.com, GitLab Self-Managed, GitLab Dedicated
 
 {{< /details >}}
-
-{{< history >}}
-
-- The simple "relates to" relationship [moved](https://gitlab.com/gitlab-org/gitlab/-/issues/212329) to GitLab Free in 13.4.
-
-{{< /history >}}
 
 Use this API to manage [issue links](../user/project/issues/related_issues.md).
 
@@ -78,7 +72,6 @@ Parameters:
 
 {{< history >}}
 
-- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/88228) in GitLab 15.1.
 - `id` response attribute [introduced](https://gitlab.com/gitlab-org/gitlab/-/work_items/585093) in GitLab 18.9.
 
 {{< /history >}}

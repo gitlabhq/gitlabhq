@@ -92,6 +92,7 @@ RSpec.describe GenerateAsIfFossEnv, feature_category: :tooling do # rubocop:disa
         RUBY_VERSION: ENV['RUBY_VERSION'],
         FIND_CHANGES_MERGE_REQUEST_PROJECT_PATH: ENV['CI_MERGE_REQUEST_PROJECT_PATH'],
         FIND_CHANGES_MERGE_REQUEST_IID: ENV['CI_MERGE_REQUEST_IID'],
+        GLCI_USE_TEST_BALANCING: ENV['GLCI_USE_TEST_BALANCING'],
         ENABLE_RSPEC: 'true',
         ENABLE_RSPEC_FAST_SPEC_HELPER: 'true',
         ENABLE_RSPEC_UNIT: 'true',
@@ -144,6 +145,7 @@ RSpec.describe GenerateAsIfFossEnv, feature_category: :tooling do # rubocop:disa
           RUBY_VERSION: ENV['RUBY_VERSION'],
           FIND_CHANGES_MERGE_REQUEST_PROJECT_PATH: ENV['CI_MERGE_REQUEST_PROJECT_PATH'],
           FIND_CHANGES_MERGE_REQUEST_IID: ENV['CI_MERGE_REQUEST_IID'],
+          GLCI_USE_TEST_BALANCING: ENV['GLCI_USE_TEST_BALANCING'],
           ENABLE_JEST_INTEGRATION: 'true',
           ENABLE_JEST_PREDICTIVE: 'true'
         })
@@ -163,6 +165,7 @@ RSpec.describe GenerateAsIfFossEnv, feature_category: :tooling do # rubocop:disa
           RUBY_VERSION: ENV['RUBY_VERSION'],
           FIND_CHANGES_MERGE_REQUEST_PROJECT_PATH: ENV['CI_MERGE_REQUEST_PROJECT_PATH'],
           FIND_CHANGES_MERGE_REQUEST_IID: ENV['CI_MERGE_REQUEST_IID'],
+          GLCI_USE_TEST_BALANCING: ENV['GLCI_USE_TEST_BALANCING'],
           ENABLE_DETECT_TESTS: 'true',
           ENABLE_COMPILE_TEST_ASSETS: 'true',
           ENABLE_RSPEC_FRONTEND_FIXTURE: 'true',
@@ -207,6 +210,7 @@ RSpec.describe GenerateAsIfFossEnv, feature_category: :tooling do # rubocop:disa
         RUBY_VERSION=#{ENV['RUBY_VERSION']}
         FIND_CHANGES_MERGE_REQUEST_PROJECT_PATH=#{ENV['CI_MERGE_REQUEST_PROJECT_PATH']}
         FIND_CHANGES_MERGE_REQUEST_IID=#{ENV['CI_MERGE_REQUEST_IID']}
+        GLCI_USE_TEST_BALANCING=#{ENV['GLCI_USE_TEST_BALANCING']}
         ENABLE_RSPEC=true
         ENABLE_RSPEC_FAST_SPEC_HELPER=true
         ENABLE_RSPEC_UNIT=true

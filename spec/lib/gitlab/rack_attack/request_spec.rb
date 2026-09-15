@@ -19,161 +19,6 @@ RSpec.describe Gitlab::RackAttack::Request, feature_category: :rate_limiting do
     )
   end
 
-  describe 'FILES_PATH_REGEX' do
-    subject { described_class::FILES_PATH_REGEX }
-
-    it { is_expected.to match('/api/v4/projects/1/repository/files/README') }
-    it { is_expected.to match('/api/v4/projects/1/repository/files/README?ref=master') }
-    it { is_expected.to match('/api/v4/projects/1/repository/files/README/blame') }
-    it { is_expected.to match('/api/v4/projects/1/repository/files/README/raw') }
-    it { is_expected.to match('/api/v4/projects/some%2Fnested%2Frepo/repository/files/README') }
-    it { is_expected.not_to match('/api/v4/projects/some/nested/repo/repository/files/README') }
-  end
-
-  describe '#api_request?' do
-    subject { request.api_request? }
-
-    where(:path, :expected) do
-      '/'        | false
-      '/groups'  | false
-      '/foo/api' | false
-
-      '/api'             | false
-      '/api/'            | true
-      '/api/v4/groups/1' | true
-
-      '/oauth/tokens'    | true
-      '/oauth/userinfo'  | true
-    end
-
-    with_them do
-      it { is_expected.to eq(expected) }
-
-      context 'when the application is mounted at a relative URL' do
-        before do
-          stub_config_setting(relative_url_root: '/gitlab/root')
-        end
-
-        it { is_expected.to eq(expected) }
-      end
-    end
-  end
-
-  describe '#api_internal_request?' do
-    subject { request.api_internal_request? }
-
-    where(:path, :expected) do
-      '/'                    | false
-      '/groups'              | false
-      '/api'                 | false
-      '/api/v4/groups/1'     | false
-      '/api/v4/internal'     | false
-      '/foo/api/v4/internal' | false
-
-      '/api/v4/internal/'    | true
-      '/api/v4/internal/foo' | true
-      '/api/v1/internal/foo' | true
-    end
-
-    with_them do
-      it { is_expected.to eq(expected) }
-
-      context 'when the application is mounted at a relative URL' do
-        before do
-          stub_config_setting(relative_url_root: '/gitlab/root')
-        end
-
-        it { is_expected.to eq(expected) }
-      end
-    end
-  end
-
-  describe '#health_check_request?' do
-    subject { request.health_check_request? }
-
-    where(:path, :expected) do
-      '/'             | false
-      '/groups'       | false
-      '/foo/-/health' | false
-
-      '/-/health'        | true
-      '/-/liveness'      | true
-      '/-/readiness'     | true
-      '/-/metrics'       | true
-      '/-/health/foo'    | true
-      '/-/liveness/foo'  | true
-      '/-/readiness/foo' | true
-      '/-/metrics/foo'   | true
-    end
-
-    with_them do
-      it { is_expected.to eq(expected) }
-
-      context 'when the application is mounted at a relative URL' do
-        before do
-          stub_config_setting(relative_url_root: '/gitlab/root')
-        end
-
-        it { is_expected.to eq(expected) }
-      end
-    end
-  end
-
-  describe '#container_registry_event?' do
-    subject { request.container_registry_event? }
-
-    where(:path, :expected) do
-      '/'                                     | false
-      '/groups'                               | false
-      '/api/v4/container_registry_event'      | false
-      '/foo/api/v4/container_registry_event/' | false
-
-      '/api/v4/container_registry_event/'    | true
-      '/api/v4/container_registry_event/foo' | true
-      '/api/v1/container_registry_event/foo' | true
-    end
-
-    with_them do
-      it { is_expected.to eq(expected) }
-
-      context 'when the application is mounted at a relative URL' do
-        before do
-          stub_config_setting(relative_url_root: '/gitlab/root')
-        end
-
-        it { is_expected.to eq(expected) }
-      end
-    end
-  end
-
-  describe '#product_analytics_collector_request?' do
-    subject { request.product_analytics_collector_request? }
-
-    where(:path, :expected) do
-      '/'                  | false
-      '/groups'            | false
-      '/-/collector'       | false
-      '/-/collector/foo'   | false
-      '/foo/-/collector/i' | false
-
-      '/-/collector/i'     | true
-      '/-/collector/ifoo'  | true
-      '/-/collector/i/foo' | true
-    end
-
-    with_them do
-      it { is_expected.to eq(expected) }
-
-      context 'when the application is mounted at a relative URL' do
-        before do
-          stub_config_setting(relative_url_root: '/gitlab/root')
-        end
-
-        it { is_expected.to eq(expected) }
-      end
-    end
-  end
-
   describe '#should_be_skipped?' do
     where(
       api_internal_request: [true, false],
@@ -188,36 +33,6 @@ RSpec.describe Gitlab::RackAttack::Request, feature_category: :rate_limiting do
         allow(request).to receive(:container_registry_event?).and_return(container_registry_event)
 
         expect(request.should_be_skipped?).to be(api_internal_request || health_check_request || container_registry_event)
-      end
-    end
-  end
-
-  describe '#web_request?' do
-    subject { request.web_request? }
-
-    where(:path, :expected) do
-      '/'        | true
-      '/groups'  | true
-      '/foo/api' | true
-
-      '/api'             | true
-      '/api/'            | false
-      '/api/v4/groups/1' | false
-
-      '/-/collector/foo'   | true
-      '/-/collector/i'     | false
-      '/-/collector/i/foo' | false
-    end
-
-    with_them do
-      it { is_expected.to eq(expected) }
-
-      context 'when the application is mounted at a relative URL' do
-        before do
-          stub_config_setting(relative_url_root: '/gitlab/root')
-        end
-
-        it { is_expected.to eq(expected) }
       end
     end
   end
@@ -915,6 +730,74 @@ RSpec.describe Gitlab::RackAttack::Request, feature_category: :rate_limiting do
     end
   end
 
+  describe '#throttle_authenticated_dependency_proxy?' do
+    let_it_be(:group) { create(:group) }
+
+    let(:dependency_proxy_manifest_path) { "/v2/#{group.path}/dependency_proxy/containers/alpine/manifests/latest" }
+    let(:dependency_proxy_blob_path) { "/v2/#{group.path}/dependency_proxy/containers/alpine/blobs/sha256:cafebabe" }
+    let(:api_path) { '/api/v4/projects' }
+    let(:web_path) { '/users/sign_in' }
+
+    subject { request.throttle_authenticated_dependency_proxy? }
+
+    where(:path, :throttle_authenticated_dependency_proxy_enabled, :expected) do
+      # Dependency proxy paths are throttled when enabled
+      ref(:dependency_proxy_manifest_path) | true  | true
+      ref(:dependency_proxy_manifest_path) | false | false
+
+      ref(:dependency_proxy_blob_path) | true  | true
+      ref(:dependency_proxy_blob_path) | false | false
+
+      # Regular API paths are NOT throttled by the dependency proxy throttle
+      ref(:api_path) | true  | false
+      ref(:api_path) | false | false
+
+      # Web paths are NOT throttled by the dependency proxy throttle
+      ref(:web_path) | true  | false
+      ref(:web_path) | false | false
+    end
+
+    with_them do
+      before do
+        stub_application_setting(
+          throttle_authenticated_dependency_proxy_enabled: throttle_authenticated_dependency_proxy_enabled
+        )
+      end
+
+      it { is_expected.to eq expected }
+    end
+
+    # REGRESSION: the throttle_authenticated_dependency_proxy definition (see
+    # lib/gitlab/rack_attack.rb) resolves its discriminator with [:api, :rss, :ics],
+    # not [:api], because a manifest tag can end in .atom (the route's *tag glob is
+    # unconstrained). With the narrower list this request would resolve no
+    # identifier at all, escaping every throttle instead of being counted here.
+    context 'when the manifest tag ends in .atom and the request carries a feed_token' do
+      # tap(&:feed_token) so ensure_feed_token! runs at creation; a factory user
+      # has no persisted feed token otherwise.
+      let_it_be(:user) { create(:user).tap(&:feed_token) }
+
+      let(:path) { "/v2/#{group.path}/dependency_proxy/containers/alpine/manifests/latest.atom" }
+      let(:env) { { 'QUERY_STRING' => "feed_token=#{user.feed_token}" } }
+
+      before do
+        stub_application_setting(throttle_authenticated_dependency_proxy_enabled: true)
+      end
+
+      # Resolved through the registered definition rather than by calling
+      # throttled_identifer directly, so narrowing the definition's format list
+      # fails this example instead of leaving it passing against the wide one.
+      it 'is counted by the throttle rather than escaping it', :aggregate_failures do
+        is_expected.to be(true)
+
+        definition = Gitlab::RackAttack.all_throttle_definitions
+                                       .fetch('throttle_authenticated_dependency_proxy')
+
+        expect(definition.request_identifier.call(request)).to eq("user:#{user.id}")
+      end
+    end
+  end
+
   describe '#throttle_authenticated_git_http?' do
     let_it_be(:project) { create(:project) }
 
@@ -1028,68 +911,6 @@ RSpec.describe Gitlab::RackAttack::Request, feature_category: :rate_limiting do
       '/o/my-org/secure/'    | true
       '/o/my-org/secure/foo' | true
       '/o/org_with_underscores/protected' | true
-    end
-
-    with_them do
-      it { is_expected.to eq(expected) }
-
-      context 'when the application is mounted at a relative URL' do
-        before do
-          stub_config_setting(relative_url_root: '/gitlab/root')
-        end
-
-        it { is_expected.to eq(expected) }
-      end
-    end
-  end
-
-  describe '#frontend_request?', :allow_forgery_protection do
-    subject { request.send(:frontend_request?) }
-
-    let(:path) { '/' }
-
-    # Define these as local variables so we can use them in the `where` block.
-    valid_token = SecureRandom.base64(ActionController::RequestForgeryProtection::AUTHENTICITY_TOKEN_LENGTH)
-    other_token = SecureRandom.base64(ActionController::RequestForgeryProtection::AUTHENTICITY_TOKEN_LENGTH)
-
-    before do
-      allow(session).to receive(:enabled?).and_return(true)
-      allow(session).to receive(:loaded?).and_return(true)
-    end
-
-    where(:session, :env, :expected) do
-      {}                           | {}                                     | false
-      {}                           | { 'HTTP_X_CSRF_TOKEN' => valid_token } | false
-      { _csrf_token: valid_token } | { 'HTTP_X_CSRF_TOKEN' => other_token } | false
-      { _csrf_token: valid_token } | { 'HTTP_X_CSRF_TOKEN' => valid_token } | true
-    end
-
-    with_them do
-      it { is_expected.to eq(expected) }
-    end
-  end
-
-  describe '#deprecated_api_request?' do
-    subject { request.send(:deprecated_api_request?) }
-
-    let(:env) { { 'QUERY_STRING' => query } }
-
-    where(:path, :query, :expected) do
-      '/' | '' | false
-
-      '/api/v4/groups/1/'   | '' | true
-      '/api/v4/groups/1'    | '' | true
-      '/api/v4/groups/foo/' | '' | true
-      '/api/v4/groups/foo'  | '' | true
-
-      '/api/v4/groups/1'  | 'with_projects='  | true
-      '/api/v4/groups/1'  | 'with_projects=1' | true
-      '/api/v4/groups/1'  | 'with_projects=0' | false
-
-      '/foo/api/v4/groups/1' | '' | false
-      '/api/v4/groups/1/foo' | '' | false
-
-      '/api/v4/groups/nested%2Fgroup' | '' | true
     end
 
     with_them do

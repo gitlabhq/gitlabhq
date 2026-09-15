@@ -63,6 +63,20 @@ RSpec.describe Groups::GroupLinks::DestroyService, '#execute', feature_category:
         subject.execute(links)
       end
     end
+
+    context 'when the shared group has LDAP sync enabled' do
+      let!(:link) { create(:group_group_link, shared_group: shared_group, shared_with_group: group) }
+
+      before do
+        allow(shared_group).to receive(:ldap_synced?).and_return(true)
+      end
+
+      it 'still allows an owner to remove a group-to-group share link' do
+        expect { subject.execute(link) }.to change {
+          shared_group.shared_with_group_links.count
+        }.from(1).to(0)
+      end
+    end
   end
 
   context 'when skipping authorization' do

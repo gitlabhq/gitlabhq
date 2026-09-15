@@ -271,7 +271,7 @@ module GitalySetup
         storages: { 'default' => storage_path },
         options: {
           runtime_dir: runtime_dir,
-          prometheus_listen_addr: 'localhost:9236',
+          prometheus_listen_addr: ENV.fetch('GITALY_PROMETHEUS_LISTEN_ADDR', 'localhost:9236'),
           config_filename: config_name(:gitaly)
         }
       },

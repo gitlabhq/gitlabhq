@@ -123,7 +123,7 @@ When implementing a new package manager, it is tempting to create one large merg
 necessary endpoints and services necessary to support basic usage. Instead:
 
 1. Put the API endpoints behind a [feature flag](../feature_flags/_index.md).
-1. Submit each endpoint or behavior (download, upload, etc) in a different merge request to shorten the review process.
+1. Submit each endpoint or behavior, like download or upload, in a different merge request to shorten the review process.
 
 ### Analysis
 
@@ -157,7 +157,7 @@ During this phase, the idea is to collect as much information as possible about 
 
 The analysis usually takes a full milestone to complete, though it's not impossible to start the implementation in the same milestone.
 
-In particular, the upload request can have some [requirements in the GitLab Workhorse project](#file-uploads). This project has a different release cycle than the rails backend. It's strongly recommended that you open an issue there as soon as the upload request analysis is done. This way GitLab Workhorse is already ready when the upload request is implemented on the rails backend.
+In particular, the upload request can have some [requirements in the GitLab Workhorse project](#file-uploads). This project has a different release cycle than the Rails backend. It's strongly recommended that you open an issue there as soon as the upload request analysis is done. This way GitLab Workhorse is already ready when the upload request is implemented on the Rails backend.
 
 ### Implementation
 
@@ -187,7 +187,7 @@ against the project or group before continuing.
 
 #### Database and handling metadata
 
-The current database model allows you to store a name and a version for each package.
+You can use the current database model to store a name and a version for each package.
 Every time you upload a new package, you can either create a new record of `Package`
 or add files to an existing record. `PackageFile` should be able to store all file-related
 information like the file `name`, `side`, `sha1`, and so on.

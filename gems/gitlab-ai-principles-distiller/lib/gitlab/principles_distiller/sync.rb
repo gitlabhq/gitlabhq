@@ -21,6 +21,7 @@ require_relative 'sync/workflow'
 require_relative 'sync/reviewer_resolver'
 require_relative 'sync/auto_mr'
 require_relative 'sync/manifest'
+require_relative 'sync/baseline_rules'
 require_relative 'sync/validator'
 require_relative 'sync/artifacts'
 require_relative 'sync/child_pipeline'
@@ -64,11 +65,7 @@ module Gitlab
       # artifacts for the collect job to fan back in. Both are under tmp/ so they never pollute a publish diff.
       CHILD_PIPELINE_PATH = 'tmp/ai-principles-child-pipeline.yml'
       ARTIFACTS_DIR = 'tmp/ai-principles-distilled'
-
-      # A thematic break (`---`, `***`, or `___` alone on a line) is Markdown document scaffolding, not a rule, so
-      # `logical_units` treats it as a unit boundary rather than comparable baseline content (observed with
-      # testing-frontend-testing-hierarchy's `---` divider, job 15601793108).
-      THEMATIC_BREAK = /\A(?:-{3,}|\*{3,}|_{3,})\z/
+      DistillationRun = Data.define(:affected, :target_sha)
 
       def manifest
         @manifest ||= Manifest.new
@@ -82,7 +79,7 @@ module Gitlab
       # local runs and as the in-process fallback; scheduled CI now splits these stages across jobs (see
       # generate_child_pipeline / distill_one / collect).
       def distill_and_publish(options)
-        workflow.validate_config! unless options[:dry_run]
+        workflow.validate_config!(push: options[:push]) unless options[:dry_run]
 
         banner("Loading manifest from #{Manifest::MANIFEST_PATH}...")
         manifest.load
@@ -296,7 +293,13 @@ module Gitlab
         workflow.validate_config!
 
         banner("\nDistilling #{name}...")
-        affected = { name => { config: config, new_sources: manifest.new_sources_for(name, config) } }
+        affected = {
+          name => {
+            config: config,
+            prior_sha: manifest.prior_distillation_sha(name),
+            new_sources: manifest.new_sources_for(name, config)
+          }
+        }
         contents, failed = build_distilled_contents(affected)
 
         record_distill_artifact(name, contents[name], failed)
@@ -306,6 +309,8 @@ module Gitlab
       # that touches git, so the `git checkout -B` per team in `create_branch_and_mr` still operates on one working
       # tree, unchanged.
       def collect(expected, push: false)
+        workflow.validate_publish_config! if push
+
         banner("Loading manifest from #{Manifest::MANIFEST_PATH}...")
         manifest.load
 
@@ -364,7 +369,7 @@ module Gitlab
       def record_distill_artifact(name, content, failed)
         if failed.include?(name)
           artifacts.write(name, Artifacts::STATUS_FAILED)
-          abort "\n#{Rainbow("ERROR: #{name} failed distillation after retries").red}"
+          abort "\n#{Rainbow("ERROR: #{name} failed distillation").red}"
         end
 
         if content.nil?
@@ -381,7 +386,7 @@ module Gitlab
       # a principle that Duo could not distill from one whose job never got to run.
       def report_collected(result)
         if result.failed.any?
-          warn Rainbow("  #{result.failed.size} principle(s) failed distillation after retries: " \
+          warn Rainbow("  #{result.failed.size} principle(s) failed distillation: " \
             "#{result.failed.join(', ')}").red
         end
 
@@ -411,7 +416,7 @@ module Gitlab
       def abort_on_failures(failed)
         return if failed.empty?
 
-        abort "\n#{Rainbow("ERROR: #{failed.size} principle(s) failed after retries: #{failed.join(', ')}").red}"
+        abort "\n#{Rainbow("ERROR: #{failed.size} principle(s) failed distillation: #{failed.join(', ')}").red}"
       end
 
       # Emits the dotenv report read by the `ai-principles-report-failure` Slack job.
@@ -481,12 +486,14 @@ module Gitlab
         header = '<!-- Auto-generated from docs.gitlab.com by ' \
           "gitlab-ai-principles-distiller — do not edit manually -->\n\n"
 
-        results = parallel_distill(affected, rewrite: rewrite)
+        run = DistillationRun.new(affected: affected, target_sha: distillation_base_sha)
+        workflow.validate_commit_shas!([run.target_sha, *run.affected.values.filter_map { |info| info[:prior_sha] }])
+        results = parallel_distill(run, rewrite: rewrite)
 
         failed = []
         contents = {}
 
-        affected.each_key do |name|
+        run.affected.each_key do |name|
           current, updated = results[name]
 
           if updated.nil?
@@ -494,9 +501,9 @@ module Gitlab
             next
           end
 
-          updated = Diff.reduce_noise(current, updated) if current
-
           config = manifest.principle_config(name)
+
+          updated = Diff.reduce_noise(current, updated, source_text: principle_source_text(config)) if current
 
           # Assemble the full body (header + prerequisite note + sources footer) BEFORE the meaningful? gate.
           # `current` is read from disk with its footer intact (strip_frontmatter removes only the YAML), so comparing
@@ -513,7 +520,7 @@ module Gitlab
           contents[name] = <<~CONTENT
         ---
         source_checksum: #{checksum}
-        distilled_at_sha: #{distillation_base_sha}
+        distilled_at_sha: #{run.target_sha}
         ---
         #{assembled}
           CONTENT
@@ -522,10 +529,16 @@ module Gitlab
         [contents, failed]
       end
 
-      # Builds the full distilled body: auto-generated header, optional prerequisite note, the distilled checklist, and
-      # the authoritative sources footer.
-      # Matches what read_principles_file returns for an already-published file (sans YAML frontmatter), so the result
-      # can be compared against `current` by Diff.meaningful?.
+      # Concatenate SSOT sources and the baseline for inline-code verification.
+      def principle_source_text(config)
+        text = manifest.config_source_paths(config)
+          .filter_map { |path| manifest.read_repo_file(path) }
+          .join("\n")
+
+        text unless text.empty?
+      end
+
+      # Build the complete body so Diff.meaningful? compares symmetric inputs.
       def assemble_distilled_body(updated, config, name, header)
         note = manifest.prerequisite_note(name)
 
@@ -558,18 +571,18 @@ module Gitlab
       # Manifest#read_repo_file owns its own mutex for the SSOT file cache.
       # Manifest must be loaded before forking; otherwise the unsynchronized
       # `@data ||= load` in Manifest#data would race.
-      def parallel_distill(affected, rewrite: false)
+      def parallel_distill(run, rewrite: false)
         raise 'manifest must be loaded before parallel_distill' unless manifest.loaded?
 
         mutex = Mutex.new
         results = {}
 
-        affected.each_slice(MAX_CONCURRENT_DISTILLATIONS) do |batch|
+        run.affected.each_slice(MAX_CONCURRENT_DISTILLATIONS) do |batch|
           threads = batch.map do |name, info|
             Thread.new do
               current = read_principles_file(name)
-              updated = distill_principle(name, info[:config], new_sources: info[:new_sources] || [], mutex: mutex,
-                rewrite: rewrite)
+              updated = distill_principle(name, info[:config], prior_sha: info[:prior_sha], target_sha: run.target_sha,
+                new_sources: info[:new_sources] || [], mutex: mutex, rewrite: rewrite)
               mutex.synchronize { results[name] = [current, updated] }
             end
           end
@@ -579,12 +592,13 @@ module Gitlab
         results
       end
 
-      def distill_principle(name, config, new_sources: [], mutex: nil, rewrite: false)
+      def distill_principle(name, config, prior_sha:, target_sha:, new_sources: [], mutex: nil, rewrite: false)
         log = ->(msg) { mutex ? mutex.synchronize { puts msg } : puts(msg) }
         log_warn = ->(msg) { mutex ? mutex.synchronize { warn msg } : warn(msg) }
 
         announce_distillation_start(name, mutex)
         workflow.validate_sources!(config) # raises if any SSOT source is missing on disk
+        workflow.warn_if_sources_differ_from_pushed_branch(config, log_warn: log_warn)
 
         log_warn.call(Rainbow("  WARNING: --rewrite is a no-op with the Workflow API backend").yellow) if rewrite
 
@@ -598,7 +612,8 @@ module Gitlab
           end
 
           log.call("  Triggering Duo Workflow for #{name}#{" (retry #{attempt})" if attempt.positive?}...")
-          result = workflow.distill(name, config, new_sources: new_sources)
+          result = workflow.distill(name, config, prior_sha: prior_sha, target_sha: target_sha,
+            new_sources: new_sources)
 
           if result&.include?('## Checklist')
             baseline_missing = baseline_drift(config, result)
@@ -630,6 +645,13 @@ module Gitlab
         end
 
         repair_escape_artifacts(Diff.strip_preamble(updated), config, log_warn)
+      rescue Workflow::NonRetryableCreationError => e
+        warn_non_retryable_creation(name, e, log_warn)
+        nil
+      end
+
+      def warn_non_retryable_creation(name, error, log_warn)
+        log_warn.call(Rainbow("  ERROR: #{name}: #{error.message}; not retrying").red)
       end
 
       # Preserve literal escape artifacts copied from the SSOT while correcting entities and escaped quotes or brackets
@@ -722,57 +744,16 @@ module Gitlab
         logical_units(baseline_rules(baseline)).reject { |unit| occurrences[unit] == 1 }
       end
 
-      # Returns the rule-bearing portion of a baseline file: everything from its own `## Checklist` heading onward, or
-      # the whole file when no such heading exists (most baselines have none - they are already pure rule content with
-      # no title/prerequisite preamble).
       def baseline_rules(baseline)
-        heading = baseline.index(/^##\s+Checklist\s*$/)
-        heading ? baseline[heading..] : baseline
+        BaselineRules.baseline_rules(baseline)
       end
 
-      # Returns `content` truncated before the `## Authoritative sources` footer, so a footer-listed path cannot be
-      # counted as a duplicate of the same path appearing in the checklist body.
       def checklist_body(content)
-        content.split(/^##\s+Authoritative sources\s*$/, 2).first
+        BaselineRules.checklist_body(content)
       end
 
-      # Splits markdown into logical units: each list item or paragraph is one unit, with hard-wrapped continuation
-      # lines joined and inner whitespace collapsed.
-      # Heading lines and blank lines terminate the current unit and are excluded from the result.
-      #
-      # The leading list marker (-, *, +, or an ordered "1." / "1)") is stripped during normalization so a rule's
-      # identity is its TEXT, not its bullet-vs-paragraph presentation.
-      # A baseline may store a rule as a bare paragraph (e.g. an intro sentence ending in "For example:" that precedes
-      # nested sub-bullets), while every reasonable distillation renders that same rule as a bullet so the sub-bullets
-      # attach - a legitimate reformat, not corruption. Keeping the marker in the unit made those two forms compare
-      # unequal, so the guard flagged drift on byte-identical rule text and burned every retry (observed with the
-      # database-fundamentals baseline).
-      # Rewording, omission, and duplication still change the text itself and remain detected.
-      #
-      # A single trailing period is likewise stripped: the agent routinely appends one while rephrasing a baseline rule
-      # into a sentence, and that punctuation is presentation, not the rule's identity (observed across several
-      # baselines whose committed distilled form differs from the baseline only by a trailing ".").
-      # A reworded or truncated rule still differs by more than punctuation and remains detected.
       def logical_units(text)
-        units = []
-        current = nil
-
-        text.each_line do |raw|
-          line = raw.strip
-
-          if line.empty? || line.start_with?('#') || line.match?(THEMATIC_BREAK)
-            units << current if current
-            current = nil
-          elsif current.nil? || line.match?(/\A(?:[-*+]|\d+[.)])\s/)
-            units << current if current
-            current = line
-          else
-            current = "#{current} #{line}"
-          end
-        end
-
-        units << current if current
-        units.map { |unit| unit.sub(/\A(?:[-*+]|\d+[.)])\s+/, '').gsub(/\s+/, ' ').delete_suffix('.') }
+        BaselineRules.logical_units(text)
       end
 
       def warn_baseline_drift(name, drifted, attempt, log_warn)

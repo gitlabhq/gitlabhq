@@ -13,7 +13,6 @@ module Authn
 
       def self.enabled?
         Feature.enabled?(:chatgpt_siwc_login_redirect, :instance) &&
-          Feature.enabled?(:chatgpt_oauth_sign_in, :instance) &&
           ::Gitlab::Auth::OAuth::Provider.enabled?(PROVIDER)
       end
 

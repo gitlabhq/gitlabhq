@@ -1,6 +1,6 @@
 ---
-source_checksum: f2d87a2527122b97
-distilled_at_sha: 403f0ba78983ea28f47a927139b91425bb93dcef
+source_checksum: 9a5844604ad8c6ed
+distilled_at_sha: da75f7373628b035becb13fb3f0d21b4b3d3690f
 ---
 <!-- Auto-generated from docs.gitlab.com by gitlab-ai-principles-distiller — do not edit manually -->
 
@@ -34,8 +34,9 @@ distilled_at_sha: 403f0ba78983ea28f47a927139b91425bb93dcef
 ### Multi-version Compatibility
 
 - Ensure frontend and backend code for the same GraphQL feature are NOT shipped in the same release (deploy backend before frontend on GitLab.com).
-- Use the `@gl_introduced` directive on fields for Self-Managed/Dedicated to strip future nodes from queries hitting older backend versions.
-- DO NOT use `@gl_introduced` on arguments, fragments, or single future fields that are the only selection in a query or object.
+- Tag new fields with `@gl_introduced(version: "<major>.<minor>.0")` using the milestone in which the field merges; the directive covers the field's entire subtree.
+- Treat fields tagged for the backend's current or a later milestone as a compatibility window: resolve them normally when present and return `null` when absent; require fields tagged for an older milestone to exist.
+- DO NOT use `@gl_introduced` on arguments or fragments; apply it to fields used by fragments instead.
 - Treat non-nullable fields with `@gl_introduced` as still requiring null-checks on the frontend.
 
 ### Descriptions
@@ -128,6 +129,9 @@ distilled_at_sha: 403f0ba78983ea28f47a927139b91425bb93dcef
 - Add a request spec asserting no (or limited) N+1 queries for new collection fields.
 - Use different users for each request in N+1 `QueryRecorder` tests to avoid false positives from authentication queries.
 - DO NOT build queries through association proxies before applying `includes()`; build at the class level to avoid `Arel::Nodes::LeadingJoin` errors.
+- When reviewing MR changes to `.graphql` files under `app/assets/`, `ee/app/assets/`, or `app/graphql/queries/`: confirm each new nested association level is either paginated or batch-loaded; treat list-of-lists patterns (a fragment on a list type that also fetches a sub-list) as a strong N+1 signal.
+- **Blocker:** Confirm backend batch-loading exists for any new field added in a frontend `.graphql` change — look for `BatchLoader::GraphQL` in the resolver or type, or a `preloads`/`unconditional_includes` entry in the parent resolver's `LooksAhead`; if neither is present, the MR must add batch-loading before merging.
+- **Blocker:** Confirm `QueryRecorder` coverage exists in the matching request spec (`spec/requests/api/graphql/` or `ee/spec/requests/api/graphql/`) for any new field added in a frontend `.graphql` change — the spec must assert `not_to exceed_query_limit(N)` and create more than one parent record; if missing, the MR must add or fix the spec before merging.
 
 ### Testing
 
@@ -153,4 +157,3 @@ For the full picture, see:
 - doc/development/graphql_guide/batchloader.md
 - doc/development/graphql_guide/pagination.md
 - doc/development/graphql_guide/array_argument_validation.md
-

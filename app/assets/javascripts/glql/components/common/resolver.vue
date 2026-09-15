@@ -1,6 +1,7 @@
 <script>
 import { pick } from 'lodash-es';
 import { sha256 } from '~/lib/utils/text_utility';
+import * as Sentry from '~/sentry/sentry_browser_wrapper';
 import { InternalEvents } from '~/tracking';
 import {
   DEFAULT_PAGE_SIZE,
@@ -30,6 +31,25 @@ export default {
       type: String,
       default: '',
     },
+    /**
+     * Namespace to compile the query against, as `{ group }` or `{ project }`.
+     * When null, the namespace is derived from the current URL.
+     */
+    scope: {
+      required: false,
+      type: Object,
+      default: null,
+    },
+    /**
+     * Comparison settings: `query` is a second query run alongside `glqlQuery`, with its
+     * result exposed as `comparisonData`, and `metric` names the metric used for comparison.
+     * Only dashboard panels set this.
+     */
+    comparison: {
+      required: false,
+      type: Object,
+      default: null,
+    },
   },
   emits: ['change'],
   data() {
@@ -37,6 +57,7 @@ export default {
       loading: false,
 
       data: undefined,
+      comparisonData: undefined,
       query: undefined,
       config: undefined,
       variables: undefined,
@@ -66,6 +87,11 @@ export default {
     glqlQuery() {
       this.executeQuery();
     },
+    // The query string is unchanged when only the namespace changes, so without this the
+    // rendered results would still be those of the previously selected namespace.
+    scope() {
+      this.executeQuery();
+    },
   },
   mounted() {
     this.executeQuery();
@@ -73,6 +99,7 @@ export default {
   methods: {
     resetData() {
       this.data = undefined;
+      this.comparisonData = undefined;
       this.query = undefined;
       this.config = undefined;
       this.variables = undefined;
@@ -88,6 +115,7 @@ export default {
         pick(this, [
           'query',
           'data',
+          'comparisonData',
           'config',
           'variables',
           'fields',
@@ -114,7 +142,10 @@ export default {
       this.emitChange();
 
       try {
-        const { query, config, variables, fields, mode, source } = await parse(this.glqlQuery);
+        const { query, config, variables, fields, mode, source } = await parse(
+          this.glqlQuery,
+          this.scope,
+        );
 
         this.query = query;
         this.config = config;
@@ -139,6 +170,7 @@ export default {
           mode: this.mode,
           source: this.source,
         });
+        this.comparisonData = await this.fetchComparison();
 
         this.trackRender();
       } catch (error) {
@@ -147,6 +179,27 @@ export default {
       } finally {
         this.loading = false;
         this.emitChange();
+      }
+    },
+
+    // Runs once and is never paginated: `loadMore` pages the main query alone, since two result
+    // sets paged in step drift apart as soon as one page fails. A comparison that fails to
+    // compile or run is dropped and reported, so the main result still renders without it.
+    async fetchComparison() {
+      if (!this.comparison?.query) return undefined;
+
+      try {
+        const { query, variables, fields, mode, source } = await parse(
+          this.comparison.query,
+          this.scope,
+        );
+        const executionResult = await execute(query, variables);
+        const result = await transform(executionResult, { fields, mode, source });
+
+        return { ...result, metric: this.comparison.metric };
+      } catch (error) {
+        Sentry.captureException(error);
+        return undefined;
       }
     },
 
@@ -199,9 +252,11 @@ export default {
     <data-presenter
       v-if="hasDisplayType"
       :data="data"
+      :comparison-data="comparisonData"
       :fields="fields"
       :display-type="config.display"
       :display-config="config.displayConfig"
+      :source="source"
       :loading="loading"
       @error="handlePresenterError"
     />

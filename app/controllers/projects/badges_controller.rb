@@ -11,10 +11,10 @@ class Projects::BadgesController < Projects::ApplicationController
 
   def pipeline
     pipeline_status = Gitlab::Ci::Badge::Pipeline::Status
-      .new(project, params[:ref], opts: {
-        ignore_skipped: params[:ignore_skipped],
-        key_text: params[:key_text],
-        key_width: params[:key_width]
+      .new(project, pipeline_badge_params[:ref], opts: {
+        ignore_skipped: pipeline_badge_params[:ignore_skipped],
+        key_text: pipeline_badge_params[:key_text],
+        key_width: pipeline_badge_params[:key_width]
       })
 
     render_badge pipeline_status
@@ -22,13 +22,13 @@ class Projects::BadgesController < Projects::ApplicationController
 
   def coverage
     coverage_report = Gitlab::Ci::Badge::Coverage::Report
-      .new(project, params[:ref], opts: {
-        job: params[:job],
-        key_text: params[:key_text],
-        key_width: params[:key_width],
-        min_good: params[:min_good],
-        min_acceptable: params[:min_acceptable],
-        min_medium: params[:min_medium]
+      .new(project, coverage_badge_params[:ref], opts: {
+        job: coverage_badge_params[:job],
+        key_text: coverage_badge_params[:key_text],
+        key_width: coverage_badge_params[:key_width],
+        min_good: coverage_badge_params[:min_good],
+        min_acceptable: coverage_badge_params[:min_acceptable],
+        min_medium: coverage_badge_params[:min_medium]
       })
 
     render_badge coverage_report
@@ -37,10 +37,10 @@ class Projects::BadgesController < Projects::ApplicationController
   def release
     latest_release = Gitlab::Ci::Badge::Release::LatestRelease
       .new(project, current_user, opts: {
-        key_text: params[:key_text],
-        key_width: params[:key_width],
-        value_width: params[:value_width],
-        order_by: params[:order_by]
+        key_text: release_badge_params[:key_text],
+        key_width: release_badge_params[:key_width],
+        value_width: release_badge_params[:value_width],
+        order_by: release_badge_params[:order_by]
       })
 
     render_badge latest_release
@@ -49,12 +49,12 @@ class Projects::BadgesController < Projects::ApplicationController
   def custom
     custom_badge = Gitlab::Ci::Badge::Custom::CustomBadge
       .new(project, opts: {
-        key_text: params[:key_text],
-        key_width: params[:key_width],
-        key_color: params[:key_color],
-        value_text: params[:value_text],
-        value_width: params[:value_width],
-        value_color: params[:value_color]
+        key_text: custom_badge_params[:key_text],
+        key_width: custom_badge_params[:key_width],
+        key_color: custom_badge_params[:key_color],
+        value_text: custom_badge_params[:value_text],
+        value_width: custom_badge_params[:value_width],
+        value_color: custom_badge_params[:value_color]
       })
 
     render_badge custom_badge
@@ -62,8 +62,28 @@ class Projects::BadgesController < Projects::ApplicationController
 
   private
 
+  def pipeline_badge_params
+    params.permit(:ref, :ignore_skipped, :key_text, :key_width)
+  end
+
+  def coverage_badge_params
+    params.permit(:ref, :job, :key_text, :key_width, :min_good, :min_acceptable, :min_medium)
+  end
+
+  def release_badge_params
+    params.permit(:key_text, :key_width, :value_width, :order_by)
+  end
+
+  def custom_badge_params
+    params.permit(:key_text, :key_width, :key_color, :value_text, :value_width, :value_color)
+  end
+
+  def style_param
+    params.permit(:style)[:style]
+  end
+
   def badge_layout
-    case params[:style]
+    case style_param
     when 'flat'
       'badge'
     when 'flat-square'

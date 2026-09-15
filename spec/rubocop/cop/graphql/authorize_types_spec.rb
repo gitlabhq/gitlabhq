@@ -9,7 +9,7 @@ RSpec.describe RuboCop::Cop::Graphql::AuthorizeTypes, feature_category: :api do
     expect_offense(<<~RUBY)
       module Types
         class AType < BaseObject
-        ^^^^^^^^^^^^^^^^^^^^^^^^ Add an `authorize :ability` call to the type: https://docs.gitlab.com/ee/development/graphql_guide/authorization.html#type-authorization
+        ^^^^^^^^^^^^^^^^^^^^^^^^ Add an `authorize :ability` call to the type: https://docs.gitlab.com/development/graphql_guide/authorization/#type-authorization
           field :a_thing
           field :another_thing
         end
@@ -21,7 +21,7 @@ RSpec.describe RuboCop::Cop::Graphql::AuthorizeTypes, feature_category: :api do
     expect_offense(<<~TYPE.strip)
       module Types
         class AType < SuperClassWithFields
-        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ Add an `authorize :ability` call to the type: https://docs.gitlab.com/ee/development/graphql_guide/authorization.html#type-authorization
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ Add an `authorize :ability` call to the type: https://docs.gitlab.com/development/graphql_guide/authorization/#type-authorization
           authorize
         end
       end
@@ -32,7 +32,7 @@ RSpec.describe RuboCop::Cop::Graphql::AuthorizeTypes, feature_category: :api do
     expect_offense(<<~TYPE.strip)
       module Types
         class AType < SuperClassWithFields
-        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ Add an `authorize :ability` call to the type: https://docs.gitlab.com/ee/development/graphql_guide/authorization.html#type-authorization
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ Add an `authorize :ability` call to the type: https://docs.gitlab.com/development/graphql_guide/authorization/#type-authorization
           authorize []
         end
       end

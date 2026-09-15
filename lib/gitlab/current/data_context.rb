@@ -42,10 +42,8 @@ module Gitlab
       def home_organization
         return unless @user
 
-        # rubocop:disable Gitlab/AvoidUserOrganization -- DataContext is the canonical, deliberate
-        # place to resolve a User's home Organization against isolation, not a scattered call site.
-        organization_boundary(@user.organization)
-        # rubocop:enable Gitlab/AvoidUserOrganization
+        user_organization = ::Organizations::Organization.find_by_id_with_isolation_record(@user.organization_id)
+        organization_boundary(user_organization)
       end
 
       def anchor_organization

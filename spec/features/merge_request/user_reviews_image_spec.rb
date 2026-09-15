@@ -3,7 +3,6 @@
 require 'spec_helper'
 
 RSpec.describe 'Merge request > image review', :js, feature_category: :code_review_workflow do
-  include MergeRequestDiffHelpers
   include RepoHelpers
 
   let(:user) { project.first_owner }
@@ -21,17 +20,24 @@ RSpec.describe 'Merge request > image review', :js, feature_category: :code_revi
     wait_for_requests
   end
 
-  it 'leaves review' do
-    find('.js-add-image-diff-note-button', match: :first).click
+  it 'creates an image comment' do
+    click_button 'Add image comment', match: :first
 
-    find('.diff-content .note-textarea').native.send_keys('image diff test comment')
+    find_by_testid('reply-field').set('image diff test comment')
+    click_button 'Comment'
 
-    click_button('Start a review')
+    expect(page).to have_testid('image-comment-badge')
+    expect(page).to have_content('image diff test comment')
+  end
 
-    wait_for_requests
+  it 'leaves review',
+    skip: 'Rapid Diffs image comments cannot join a batch review; ' \
+      'https://gitlab.com/gitlab-org/gitlab/-/issues/628510' do
+    click_button 'Add image comment', match: :first
 
-    page.within(find('.draft-note')) do
-      expect(page).to have_content('image diff test comment')
-    end
+    find_by_testid('reply-field').set('image diff test comment')
+    click_button 'Start a review'
+
+    expect(page).to have_testid('draft-note', text: 'image diff test comment')
   end
 end

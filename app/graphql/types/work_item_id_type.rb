@@ -16,7 +16,7 @@ module Types
     DESC
 
     class << self
-      def coerce_result(gid, ctx)
+      def coerce_result(gid, _ctx)
         global_id = ::Gitlab::GlobalId.as_global_id(gid, model_name: 'WorkItem')
 
         raise GraphQL::CoercionError, "Expected a WorkItem ID, got #{global_id}" unless suitable?(global_id)

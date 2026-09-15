@@ -1,0 +1,4 @@
+status: rollout
+feature_flag: vue3_migrate_blob_edit
+group: group::source code
+migration_issue: https://gitlab.com/gitlab-org/gitlab/-/work_items/613675

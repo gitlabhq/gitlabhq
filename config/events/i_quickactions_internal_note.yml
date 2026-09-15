@@ -1,0 +1,15 @@
+---
+description: When the quickaction /internal_note is executed on a work item or merge request
+internal_events: true
+action: i_quickactions_internal_note
+identifiers:
+- user
+product_group: work_items
+product_categories:
+- team_planning
+milestone: '19.4'
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/243383
+tiers:
+- free
+- premium
+- ultimate

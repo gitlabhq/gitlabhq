@@ -29,6 +29,15 @@
 
   = render_if_exists 'groups/settings/ai/ai_settings'
 
+  = render ::Layouts::SettingsBlockComponent.new(s_('GroupSettings|AI context'),
+    id: 'js-ai-context-settings',
+    testid: 'ai-context-settings',
+    expanded: expanded) do |c|
+    - c.with_description do
+      = s_('GroupSettings|Provide custom instructions for AI agents that read this group and its projects.')
+    - c.with_body do
+      = render 'groups/settings/ai_context'
+
 - if can?(current_user, :manage_merge_request_settings, @group)
   = render_if_exists 'groups/settings/merge_requests/merge_requests', expanded: expanded, group: @group
   = render_if_exists 'groups/settings/merge_requests/merge_request_approval_settings', expanded: expanded, group: @group, user: current_user

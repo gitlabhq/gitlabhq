@@ -6,22 +6,15 @@ module Gitlab
   module PolicyStore
     # Compiles a policy's authored `policy_scope`, a plain jsonb hash, into
     # `scope_rego` text in the `package gitlab.scope` namespace.
+    #
+    # The compiled program's entire contract with the engine is one boolean rule,
+    # `applies`, kept total by `default applies := false` so that a context matching
+    # nothing is out of scope rather than undefined. Everything else a program carries
+    # (the `excluded`/`included` rules feeding `applies`, the comment naming the policy)
+    # is for whoever reads the stored text: the engine queries
+    # `data.gitlab.scope.applies` and nothing else.
     class ScopeTranspiler
-      # Rego indents with tabs, written here as `\t` escapes so the squiggly
-      # heredoc's dedent cannot absorb them.
-      SCOPE_PRELUDE = <<~REGO.chomp
-        package gitlab.scope
-
-        applicable := [result.policy | some result in results; result.applies]
-
-        not_applicable := [result.policy | some result in results; not result.applies]
-
-        applicability := {
-        \t"applicable": applicable,
-        \t"not_applicable": not_applicable,
-        \t"results": [result | some result in results],
-        }
-      REGO
+      PACKAGE = "package gitlab.scope"
 
       # Rego loop variables must be unique within a single AND body (match_mode
       # "all"), so each dimension carries its own.
@@ -35,7 +28,15 @@ module Gitlab
       MAX_BIGINT_ID = (2**63) - 1
       MAX_SIGNED_ID_LENGTH = MAX_BIGINT_ID.to_s.length + 1
       MAX_REPORTED_ID_LENGTH = 64
-      private_constant :MAX_BIGINT_ID, :MAX_SIGNED_ID_LENGTH, :MAX_REPORTED_ID_LENGTH
+
+      # Mirrors regorus's default max_col (DEFAULT_MAX_COL), which GLAZ inherits by not
+      # overriding it via set_policy_length_config. Lives upstream, so nothing catches drift.
+      MAX_LINE_COLUMNS = 1024
+      # Room for the indent and a prefix such as `input.project.id in ` ahead of the set.
+      SET_LINE_PREFIX_COLUMNS = 32
+
+      private_constant :MAX_BIGINT_ID, :MAX_SIGNED_ID_LENGTH, :MAX_REPORTED_ID_LENGTH,
+        :SET_LINE_PREFIX_COLUMNS
 
       # A nil or empty `policy_scope` is authored intent, not missing data: it means the
       # policy applies everywhere. `policy_name` is emitted into the generated program.
@@ -45,7 +46,13 @@ module Gitlab
       end
 
       def transpile
-        "#{SCOPE_PRELUDE}\n\n#{scope_block}\n"
+        "#{PACKAGE}\n\n#{scope_block}\n"
+      end
+
+      def scope_dimensions
+        return [] if unscoped?
+
+        (included_condition_entries + excluded_condition_entries).map { |entry| entry[:path] }.uniq
       end
 
       private
@@ -55,7 +62,7 @@ module Gitlab
       def scope_block
         return unscoped_block if unscoped?
 
-        statements = [header]
+        statements = ["#{header} (match_mode: #{match_mode})"]
 
         statements << "default #{excluded_rule} := false"
         excluded_conditions.each do |condition|
@@ -67,7 +74,6 @@ module Gitlab
 
         statements << "default #{applies_rule} := false"
         statements << "#{applies_rule} if {\n\tnot #{excluded_rule}\n\t#{included_rule}\n}"
-        statements << results_statement
 
         statements.join("\n\n")
       end
@@ -75,21 +81,8 @@ module Gitlab
       def unscoped_block
         <<~REGO.chomp
           #{header}
-          results contains {
-          \t"policy": #{policy_name.to_json},
-          \t"applies": true,
-          \t"reason": "no policy_scope: applies to all projects",
-          }
-        REGO
-      end
-
-      def results_statement
-        <<~REGO.chomp
-          results contains {
-          \t"policy": #{policy_name.to_json},
-          \t"applies": #{applies_rule},
-          \t"reason": sprintf("excluded=%v, included=%v (match_mode=#{match_mode})", [#{excluded_rule}, #{included_rule}]),
-          }
+          # no policy_scope: applies to all projects
+          #{applies_rule} := true
         REGO
       end
 
@@ -106,72 +99,90 @@ module Gitlab
       end
 
       def excluded_rule
-        "scope_excluded"
+        "excluded"
       end
 
       def included_rule
-        "scope_included"
+        "included"
       end
 
       def applies_rule
-        "scope_applies"
+        "applies"
       end
 
       def included_conditions
-        conditions = []
+        included_condition_entries.map { |entry| entry[:lines] }
+      end
+
+      def excluded_conditions
+        excluded_condition_entries.map { |entry| entry[:lines] }
+      end
+
+      def included_condition_entries
+        entries = []
 
         if emit?(compliance_frameworks, :including)
-          conditions << ["some framework_id in input.compliance_frameworks",
-            "framework_id in #{rego_set(compliance_frameworks[:ids])}"]
+          entries << { path: "compliance_frameworks", lines: ["some framework_id in input.compliance_frameworks",
+            "framework_id in #{rego_set(compliance_frameworks[:ids])}"] }
         end
 
         included_projects = projects[:including]
 
         if emit?(included_projects, :including)
-          conditions << ["input.project.id in #{rego_set(included_projects[:ids])}"]
+          entries << { path: "project.id", lines: ["input.project.id in #{rego_set(included_projects[:ids])}"] }
         end
 
         included_groups = groups[:including]
 
         if emit?(included_groups, :including)
-          conditions << ["some group_id in input.groups", "group_id in #{rego_set(included_groups[:ids])}"]
+          entries << { path: "groups",
+            lines: ["some group_id in input.groups", "group_id in #{rego_set(included_groups[:ids])}"] }
         end
 
-        conditions.concat(attribute_conditions(:including))
+        entries.concat(attribute_condition_entries(:including))
       end
 
-      def excluded_conditions
-        conditions = []
+      def excluded_condition_entries
+        entries = []
 
         excluded_projects = projects[:excluding]
 
         if emit?(excluded_projects, :excluding)
-          conditions << ["input.project.id in #{rego_set(excluded_projects[:ids])}"]
+          entries << { path: "project.id", lines: ["input.project.id in #{rego_set(excluded_projects[:ids])}"] }
         end
 
-        conditions << ["input.project.personal == true"] if projects[:exclude_personal]
-        conditions << ["input.project.archived == true"] if projects[:exclude_archived]
+        if projects[:exclude_personal]
+          entries << { path: "project.personal", lines: ["input.project.personal == true"] }
+        end
+
+        if projects[:exclude_archived]
+          entries << { path: "project.archived", lines: ["input.project.archived == true"] }
+        end
 
         excluded_groups = groups[:excluding]
 
         if emit?(excluded_groups, :excluding)
-          conditions << ["some group_id in input.groups", "group_id in #{rego_set(excluded_groups[:ids])}"]
+          entries << { path: "groups",
+            lines: ["some group_id in input.groups", "group_id in #{rego_set(excluded_groups[:ids])}"] }
         end
 
-        conditions.concat(attribute_conditions(:excluding))
+        entries.concat(attribute_condition_entries(:excluding))
       end
 
-      def attribute_conditions(direction)
+      def attribute_condition_entries(direction)
         ATTRIBUTE_DIMENSIONS.filter_map do |attribute|
           criterion = dimensions[attribute[:key]][direction]
           next unless emit?(criterion, direction)
 
           loop_variable = attribute[:loop_variable]
 
-          [
-            "some #{loop_variable} in input.security_attributes.#{attribute[:field]}",
-            "#{loop_variable} in #{rego_set(criterion[:ids])}"
-          ]
+          {
+            path: "security_attributes.#{attribute[:field]}",
+            lines: [
+              "some #{loop_variable} in input.security_attributes.#{attribute[:field]}",
+              "#{loop_variable} in #{rego_set(criterion[:ids])}"
+            ]
+          }
         end
       end
 
@@ -184,10 +195,18 @@ module Gitlab
 
       # `set()` is Rego's empty set literal, and membership against it is always
       # false. `{}` cannot be used for this: it is an empty object.
+      #
+      # The engine refuses a line over MAX_LINE_COLUMNS, which enough ids on one line would
+      # exceed, so a set that would is spread one member per line instead. Ids are bounded
+      # integers, so a single member can never overflow a line on its own.
       def rego_set(member_ids)
         return "set()" if member_ids.empty?
 
-        "{#{member_ids.uniq.sort.join(', ')}}"
+        members = member_ids.uniq.sort
+        inline = "{#{members.join(', ')}}"
+        return inline if inline.bytesize + SET_LINE_PREFIX_COLUMNS <= MAX_LINE_COLUMNS
+
+        "{\n#{members.map { |member| "\t\t#{member}" }.join(",\n")}\n\t}"
       end
 
       def indent(lines)

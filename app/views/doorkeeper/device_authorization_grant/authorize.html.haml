@@ -1,31 +1,33 @@
-= javascript_tag nonce: content_security_policy_nonce do
-  :plain
-    const enablePointerEvents = () => {
-      setTimeout(() => {
-        document.getElementById('container').classList.remove('gl-pointer-events-none');
-      }, 500)
-    }
+= render 'doorkeeper/pointer_events_guard'
 
-    window.addEventListener('focus', enablePointerEvents, { once: true });
-    window.addEventListener('mousemove', enablePointerEvents, { once: true });
-
-#container.gl-ml-auto.gl-mr-auto.gl-pointer-events-none{ class: '@sm/panel:gl-w-1/2' }
-  .gl-items-center
-    .gl-text-size-h1
-      = s_('DeviceAuth|Authorize device to access to your GitLab account.')
+- gitlab_provided = @application && Gitlab.com? && !@application.owner && !@application.dynamic?
+#container.gl-mx-auto.gl-pointer-events-none{ class: '@sm/panel:gl-w-1/2' }
+  .gl-text-size-h1
+    = s_('DeviceAuth|Authorize a device to access your GitLab account.')
+  .gl-mt-3
+    = s_('DeviceAuth|Only authorize if you started this yourself.')
+  .gl-flex.gl-items-center.gl-gap-2.gl-py-5
+    = render Pajamas::AvatarComponent.new(current_user, size: 24, avatar_options: { data: { testid: 'user_avatar_content' }, title: current_user.username })
+    .gl-pl-1
+      %strong= current_user.name
+    &middot;
     .gl-text-subtle
-      = s_('DeviceAuth|Please make sure that you intended to authorize this device.')
-    .gl-flex.gl-items-center.gl-gap-2.gl-py-5
-      = render Pajamas::AvatarComponent.new(current_user, size: 24, avatar_options: { data: { testid: 'user_avatar_content' }, title: current_user.username })
-      .gl-pl-1
-        %strong= current_user.name
-      &middot;
-      .gl-text-subtle
-        %span= current_user.to_reference
+      %span= current_user.to_reference
   - if current_user.admin?
-    = render Pajamas::AlertComponent.new(variant: :warning, dismissible: false, alert_options: { class: 'gl-mb-5'}) do |c|
+    = render Pajamas::AlertComponent.new(variant: :warning, dismissible: false, alert_options: { class: 'gl-mb-5' }) do |c|
       - c.with_body do
-        = s_('DeviceAuth|You are an administrator, which means authorizing access will allow it to interact with GitLab as an administrator as well.')
+        - if @application
+          = safe_format(_('You are an administrator. Authorizing %{strong_start}%{client_name}%{strong_end} will let it act as an administrator. Only continue if you trust this application.'),
+            { client_name: @application.name },
+            tag_pair(tag.strong, :strong_start, :strong_end))
+        - else
+          = s_('DeviceAuth|You are an administrator, which means authorizing access will allow it to interact with GitLab as an administrator as well.')
+  - elsif @application && !gitlab_provided
+    = render Pajamas::AlertComponent.new(variant: :warning, dismissible: false, alert_options: { class: 'gl-mb-5' }) do |c|
+      - c.with_body do
+        = safe_format(_('Make sure you trust %{strong_start}%{client_name}%{strong_end} before authorizing.'),
+          { client_name: @application.name },
+          tag_pair(tag.strong, :strong_start, :strong_end))
   - if @scopes.present?
     - @scopes.split.each do |scope|
       .js-experimental-setting-accordion.gl-mb-5
@@ -37,16 +39,10 @@
   - if @application
     .info-well
       .well-segment
-        - if Gitlab.com? && !@application.owner && !@application.dynamic?
+        - if gitlab_provided
           %p.gl-text-success
             = sprite_icon('tanuki-verified', css_class: 'gl-fill-icon-success')
             = _('This application is provided by GitLab.')
-        - else
-          %p.gl-text-warning
-            = sprite_icon('warning-solid')
-            = safe_format(_('Make sure you trust %{strong_start}%{client_name}%{strong_end} before authorizing.'),
-              { client_name: @application.name },
-              tag_pair(tag.strong, :strong_start, :strong_end))
         %p
           = safe_format(_('%{owner} %{created_date} ago.'),
             { owner: auth_app_owner_text(@application),

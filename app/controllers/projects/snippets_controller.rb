@@ -22,9 +22,9 @@ class Projects::SnippetsController < Projects::Snippets::ApplicationController
       .execute
 
     @snippets = SnippetsFinder.new(current_user, organization_id: Current.organization.id, project: @project,
-      scope: params[:scope], sort: sort_param)
+      scope: permitted_params[:scope], sort: sort_param)
       .execute
-      .page(params[:page])
+      .page(permitted_params[:page])
       .inc_author
       .inc_statistics
 
@@ -38,6 +38,10 @@ class Projects::SnippetsController < Projects::Snippets::ApplicationController
   end
 
   protected
+
+  def permitted_params
+    params.permit(:scope, :page)
+  end
 
   alias_method :awardable, :snippet
   alias_method :spammable, :snippet

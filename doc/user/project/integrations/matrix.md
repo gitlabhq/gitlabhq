@@ -28,7 +28,7 @@ Prerequisites:
 - The Owner role for group enablement.
 - The Maintainer or Owner role for project enablement.
 
-After you join to a Matrix room, you can configure GitLab to send notifications:
+After you join a Matrix room, you can configure GitLab to send notifications:
 
 1. To enable the integration:
    - **For your group or project**:
@@ -40,7 +40,7 @@ After you join to a Matrix room, you can configure GitLab to send notifications:
 1. Select **Matrix**.
 1. Under **Enable integration**, select the **Active** checkbox.
 1. Optional. In **Hostname**, enter the hostname of your server.
-1. In **Token**, paste the token value from the Matrix's user.
+1. In **Token**, paste the token value from the Matrix user.
 1. In the **Trigger** section, select the checkboxes for the GitLab events you want to receive in Matrix.
 1. In the **Notification settings** section:
    - In **Room identifier**, paste the Matrix room identifier.

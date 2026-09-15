@@ -126,3 +126,4 @@ export const DATE_RANGE_OPTION_KEYS = Object.keys(DATE_RANGE_OPTIONS);
 
 export const PROJECT_FILTER_QUERY_NAME = 'projects';
 export const GROUP_FILTER_QUERY_NAME = 'groups';
+export const SCOPE_FILTER_QUERY_NAME = 'scope';

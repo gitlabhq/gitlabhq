@@ -5,10 +5,9 @@ module Mcp
     module Pipelines
       class GetPipelineTool < Mcp::Tools::Base::GraphqlTool
         include Mcp::Tools::Concerns::ResourceFinder
+        include Mcp::Tools::Concerns::CursorPagination
         include Gitlab::Utils::StrongMemoize
 
-        DEFAULT_FIRST = 20
-        MAX_FIRST = 100
         FACETS = {
           includeJobs: 'jobs',
           includeDownstreamPipelines: 'downstream_pipelines',
@@ -33,8 +32,7 @@ module Mcp
             fullPath: project.full_path,
             pipelineId: "gid://gitlab/Ci::Pipeline/#{params[:pipeline_id]}",
             jobStatuses: params[:job_status].present? ? [params[:job_status].upcase] : nil,
-            first: first_value,
-            after: params[:after]
+            **resolve_pagination_direction
           ).compact
         end
 
@@ -50,12 +48,6 @@ module Mcp
           find_project(params[:id])
         end
         strong_memoize_attr :project
-
-        def first_value
-          return DEFAULT_FIRST unless params[:first].present?
-
-          params[:first].to_i.clamp(1, MAX_FIRST)
-        end
 
         def process_result(result)
           missing = missing_resource(result)
@@ -80,7 +72,7 @@ module Mcp
 
         def resource_not_found_error(resource)
           ::Mcp::Tools::Base::Response.error(
-            "#{resource} not found: it does not exist or you do not have access to it."
+            "#{resource} not found or inaccessible"
           )
         end
 

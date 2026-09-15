@@ -115,7 +115,7 @@ To create the new secret detection policy:
      SECRET_DETECTION_HISTORIC_SCAN: "true"
    ```
 
-The UI configuration is shown in this screen: ![Security Dashboard](img/secret_detection_policy_v17_9.png)
+The UI configuration is shown in this screen: ![Scan execution policy configured to run Secret Detection with custom rules for all projects in the group.](img/secret_detection_policy_v17_9.png)
 For detailed information about this CI variable, see [this document for details](../../user/application_security/secret_detection/pipeline/configure.md#with-a-remote-ruleset).
 
 1. Click **Create policy**.

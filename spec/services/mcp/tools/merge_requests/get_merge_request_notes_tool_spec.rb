@@ -46,12 +46,12 @@ RSpec.describe Mcp::Tools::MergeRequests::GetMergeRequestNotesTool, feature_cate
       expect(variables[:iid]).to eq(merge_request.iid.to_s)
     end
 
-    it 'omits pagination parameters when not provided', :aggregate_failures do
+    it 'defaults to forward pagination when no pagination params are provided', :aggregate_failures do
       variables = tool.build_variables
 
+      expect(variables[:first]).to eq(described_class::DEFAULT_NOTES_PAGE_SIZE)
       expect(variables).not_to have_key(:after)
       expect(variables).not_to have_key(:before)
-      expect(variables).not_to have_key(:first)
       expect(variables).not_to have_key(:last)
     end
 
@@ -110,6 +110,17 @@ RSpec.describe Mcp::Tools::MergeRequests::GetMergeRequestNotesTool, feature_cate
       expect(resolved_note['discussion']['resolvedBy']['username']).to eq(user.username)
 
       expect(nodes.map { |n| n['body'] }).to include('changed the description')
+    end
+
+    context 'when both first and last are provided' do
+      let(:params) { super().merge(first: 10, last: 5) }
+
+      it 'succeeds using forward pagination', :aggregate_failures do
+        result = tool.execute
+
+        expect(result[:isError]).to be(false)
+        expect(result[:structuredContent]['notes']['nodes']).to be_an(Array)
+      end
     end
 
     context 'when the merge request does not exist' do

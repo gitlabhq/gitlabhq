@@ -4,11 +4,13 @@ require 'spec_helper'
 
 RSpec.describe WorkItems::DataSync::Widgets::AwardEmoji, feature_category: :team_planning do
   let_it_be(:current_user) { create(:user) }
-  let_it_be_with_reload(:work_item) { create(:work_item) }
+  let_it_be(:source_project) { create(:project) }
+  let_it_be_with_reload(:work_item) { create(:work_item, project: source_project) }
   let_it_be_with_reload(:thumbs_up) { create(:award_emoji, name: 'thumbsup', awardable: work_item) }
   let_it_be_with_reload(:thumbs_down) { create(:award_emoji, name: 'thumbsdown', awardable: work_item) }
 
-  let_it_be(:target_work_item) { create(:work_item) }
+  let_it_be(:target_project) { create(:project) }
+  let_it_be(:target_work_item) { create(:work_item, project: target_project) }
   let(:params) { { operation: :move } }
 
   subject(:callback) do
@@ -29,10 +31,18 @@ RSpec.describe WorkItems::DataSync::Widgets::AwardEmoji, feature_category: :team
           expect(::AwardEmoji).to receive(:insert_all).and_call_original
 
           expected_result = work_item.reload.award_emoji.order(user_id: :asc, name: :asc).pluck(:user_id, :name)
-          callback.after_create
+          source_namespace_id = work_item.namespace_id
+          target_namespace_id = target_work_item.namespace_id
 
-          emojis = target_work_item.reload.award_emoji.order(user_id: :asc, name: :asc).pluck(:user_id, :name)
-          expect(emojis).to match_array(expected_result)
+          expect(source_namespace_id).not_to eq(target_namespace_id)
+
+          expect { callback.after_create }
+            .to change { target_work_item.award_emoji.where(namespace_id: target_namespace_id).count }
+            .from(0).to(expected_result.size)
+
+          emojis = target_work_item.reload.award_emoji.order(user_id: :asc, name: :asc)
+
+          expect(emojis.pluck(:user_id, :name)).to match_array(expected_result)
         end
       end
 

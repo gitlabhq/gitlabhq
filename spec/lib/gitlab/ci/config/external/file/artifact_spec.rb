@@ -3,6 +3,12 @@
 require 'spec_helper'
 
 RSpec.describe Gitlab::Ci::Config::External::File::Artifact, feature_category: :pipeline_composition do
+  around do |example|
+    Gitlab::Ci::Config::FeatureFlags.with_actor(nil) do
+      example.run
+    end
+  end
+
   let_it_be(:parent_pipeline) { create(:ci_pipeline) }
   let(:project) { parent_pipeline.project }
   let(:variables) { nil }
@@ -41,7 +47,7 @@ RSpec.describe Gitlab::Ci::Config::External::File::Artifact, feature_category: :
       it 'sets the expected error' do
         expect(valid?).to be_falsy
         expect(external_file.errors).to contain_exactly(expected_error)
-        expect(external_file.content).to eq(nil)
+        expect(external_file.content).to be_nil
       end
     end
 
@@ -159,6 +165,7 @@ RSpec.describe Gitlab::Ci::Config::External::File::Artifact, feature_category: :
                     expected_attrs = {
                       parent_file: external_file,
                       parent_pipeline: parent_pipeline,
+                      pipeline_policy_context: anything,
                       project: anything,
                       sha: anything,
                       user: anything,

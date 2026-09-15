@@ -81,7 +81,7 @@ RSpec.describe 'Navigation menu item pinning', :js, feature_category: :navigatio
 
       it 'shows the Pinned section as expanded by default' do
         within '#super-sidebar' do
-          expect(page).to have_content 'Your pinned items appear here.'
+          expect(page).to have_content 'Pin frequently used features for quick access.'
         end
       end
 
@@ -89,11 +89,11 @@ RSpec.describe 'Navigation menu item pinning', :js, feature_category: :navigatio
         within '#super-sidebar' do
           click_on 'Pinned'
           visit project_path(project)
-          expect(page).not_to have_content 'Your pinned items appear here.'
+          expect(page).not_to have_content 'Pin frequently used features for quick access.'
 
           click_on 'Pinned'
           visit project_path(project)
-          expect(page).to have_content 'Your pinned items appear here.'
+          expect(page).to have_content 'Pin frequently used features for quick access.'
         end
       end
     end
@@ -190,7 +190,6 @@ RSpec.describe 'Navigation menu item pinning', :js, feature_category: :navigatio
       end
 
       # --- Unpin Work items and Activity via keyboard ---
-      # Explicitly focus the Pinned section button.
       # Pinned section item order: Work items, Activity, Members.
       # Tab 1: Work items nav link, Tab 2: Work items unpin button.
       pinned_button = find(:button, id: 'menu-section-button-pinned')
@@ -199,13 +198,14 @@ RSpec.describe 'Navigation menu item pinning', :js, feature_category: :navigatio
       pinned_button.base.send_keys(:tab, :tab)
       expect(page.find(':focus')['aria-label']).to eq('Unpin Work items')
       page.find(':focus').send_keys(:space)
-      wait_for_requests
 
-      # Tab 1: Activity nav link, Tab 2: Activity unpin button.
-      page.find(':focus').send_keys(:tab, :tab)
+      # Unpinning moves focus to "More features", so tab back into the
+      # Pinned section to reach Activity's unpin button.
+      expect(page).to have_button('More features', focused: true)
+
+      pinned_button.base.send_keys(:tab, :tab)
       expect(page.find(':focus')['aria-label']).to eq('Unpin Activity')
       page.find(':focus').send_keys(:space)
-      wait_for_requests
 
       within_testid 'pinned-nav-items' do
         expect(page).not_to have_link 'Work items'

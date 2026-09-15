@@ -16,10 +16,11 @@ import { __ } from '~/locale';
 import CancelPipelineMutation from '~/ci/pipeline_details/graphql/mutations/cancel_pipeline.mutation.graphql';
 import RetryPipelineMutation from '~/ci/pipeline_details/graphql/mutations/retry_pipeline.mutation.graphql';
 import CiIcon from '~/vue_shared/components/ci_icon/ci_icon.vue';
-import { ACTION_FAILURE, DOWNSTREAM, UPSTREAM } from '../constants';
+import { ACTION_FAILURE, DOWNSTREAM, JOB_HOVER_CLASS, UPSTREAM } from '../constants';
 
 export default {
   name: 'LinkedPipeline',
+  hoverClass: JOB_HOVER_CLASS,
   directives: {
     GlTooltip: GlTooltipDirective,
   },
@@ -41,6 +42,11 @@ export default {
     isLoading: {
       type: Boolean,
       required: true,
+    },
+    jobHovered: {
+      type: String,
+      required: false,
+      default: '',
     },
     pipeline: {
       type: Object,
@@ -153,6 +159,9 @@ export default {
     },
     isRetryable() {
       return Boolean(this.pipeline?.retryable && this.hasUpdatePipelinePermissions);
+    },
+    isSourceJobHovered() {
+      return this.isDownstream && this.hasSourceJob && this.sourceJobName === this.jobHovered;
     },
     isMultiProject() {
       return this.pipeline.multiproject;
@@ -277,6 +286,7 @@ export default {
       'gl-flex-row-reverse': isUpstream,
       'gl-flex-row': !isUpstream,
       'gl-rounded-b-none @sm/panel:gl-rounded-b-lg': expanded,
+      [$options.hoverClass]: isSourceJobHovered,
     }"
     data-testid="linked-pipeline-container"
     :aria-expanded="expanded"

@@ -299,18 +299,6 @@ module Emails
       email_with_layout(to: @user.notification_email_or_default, subject: subject(_("New email address added")))
     end
 
-    def saml_extern_uid_changed_email(user, group_name)
-      return unless user
-
-      @user = user
-      @group_name = group_name
-
-      email_with_layout(
-        to: @user.notification_email_or_default,
-        subject: subject(_("SAML authentication identifier changed"))
-      )
-    end
-
     def new_achievement_email(user, achievement, user_achievement)
       return unless user&.active?
 
@@ -318,8 +306,10 @@ module Emails
       @achievement = achievement
       @user_achievement = user_achievement
 
-      token = @user_achievement.signed_id(purpose: :achievement_action, expires_in: 30.days)
-      @accept_url = accept_awarded_achievement_url(id: token)
+      unless @user_achievement.show_on_profile?
+        token = @user_achievement.signed_id(purpose: :achievement_action, expires_in: 30.days)
+        @accept_url = accept_awarded_achievement_url(id: token)
+      end
 
       email_with_layout(
         to: @user.notification_email_or_default,

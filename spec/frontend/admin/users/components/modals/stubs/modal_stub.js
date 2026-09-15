@@ -1,16 +1,31 @@
 const ModalStub = {
   inheritAttrs: false,
   name: 'glmodal-stub',
+  props: {
+    actionPrimary: {
+      type: Object,
+      required: false,
+      default: null,
+    },
+    actionCancel: {
+      type: Object,
+      required: false,
+      default: null,
+    },
+  },
   data() {
     return {
       showWasCalled: false,
+      hideWasCalled: false,
     };
   },
   methods: {
     show() {
       this.showWasCalled = true;
     },
-    hide() {},
+    hide() {
+      this.hideWasCalled = true;
+    },
   },
   render(h) {
     const children = [this.$slots.default, this.$slots['modal-footer']]

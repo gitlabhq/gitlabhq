@@ -73,18 +73,21 @@ class WikiPage
         known_slugs = [last_known_slug, wiki_page.slug].compact.uniq
         raise 'No slugs found! This should not be possible.' if known_slugs.empty?
 
-        transaction do
-          updates = wiki_page_updates(wiki_page)
-          found = find_by_canonical_slug(known_slugs, container)
-          meta = found || create!(updates.merge(container_attrs(container)))
+        ::Gitlab::Database::QueryAnalyzers::PreventWritesOnGet.allow_write_on_get(
+          url: 'https://gitlab.com/gitlab-org/gitlab/-/issues/608670') do
+          transaction do
+            updates = wiki_page_updates(wiki_page)
+            found = find_by_canonical_slug(known_slugs, container)
+            meta = found || create!(updates.merge(container_attrs(container)))
 
-          meta.update_state(found.nil?, known_slugs, wiki_page, updates)
+            meta.update_state(found.nil?, known_slugs, wiki_page, updates)
 
-          # We don't need to run validations here, since find_by_canonical_slug
-          # guarantees that there is no conflict in canonical_slug, and DB
-          # constraints on title and project_id/group_id enforce our other invariants
-          # This saves us a query.
-          meta
+            # We don't need to run validations here, since find_by_canonical_slug
+            # guarantees that there is no conflict in canonical_slug, and DB
+            # constraints on title and project_id/group_id enforce our other invariants
+            # This saves us a query.
+            meta
+          end
         end
       end
 

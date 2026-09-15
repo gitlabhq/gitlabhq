@@ -331,6 +331,22 @@ confidential issues, as if they were you. If you think your token
 has leaked, [reset the token](../../user/profile/contributions_calendar.md#reset-the-user-activity-feed-token)
 immediately.
 
+#### Feeds that use the feed token
+
+GitLab provides RSS feeds in the following places:
+
+- [Work item lists](../../user/work_items/_index.md#subscribe-to-an-rss-feed-of-the-work-item-list)
+- [Issue lists](../../user/project/issues/managing_issues.md#subscribe-to-an-rss-feed-of-the-issue-list)
+- [Merge request lists](../../user/project/merge_requests/_index.md#subscribe-to-an-rss-feed-of-the-merge-request-list)
+- [Project activity](../../user/project/working_with_projects.md#view-project-activity)
+- [Group activity](../../user/group/manage.md#view-group-activity)
+- [User activity](../../user/profile/contributions_calendar.md#retrieve-user-activity-as-a-feed)
+- [Your activity dashboard](../../user/profile/_index.md#view-your-activity)
+- [Commits](../../user/project/repository/commits/_index.md#access-commit-list-actions)
+- [Tags](../../user/project/repository/tags/_index.md#track-tags-with-an-rss-feed)
+- [Releases](../../user/project/releases/_index.md#track-releases-with-an-rss-feed)
+- [Project topics](../../user/project/project_topics.md#subscribe-to-a-topic)
+
 #### Disable a feed token
 
 Prerequisites:

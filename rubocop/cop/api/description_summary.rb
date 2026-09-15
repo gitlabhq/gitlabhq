@@ -42,9 +42,9 @@ module RuboCop
         MAX_SUMMARY_LENGTH = 120
 
         MSG_MISSING = 'API desc blocks must define a summary string. ' \
-          'https://docs.gitlab.com/development/api_styleguide#defining-endpoint-desc'
+          'https://docs.gitlab.com/development/api_styleguide/#defining-endpoint-desc'
         MSG_TOO_LONG = 'API desc summary must not exceed 120 characters. ' \
-          'https://docs.gitlab.com/development/api_styleguide#defining-endpoint-desc'
+          'https://docs.gitlab.com/development/api_styleguide/#defining-endpoint-desc'
 
         # @!method desc_with_summary(node)
         def_node_matcher :desc_with_summary, '(block (send nil? :desc ${str dstr}) ...)'

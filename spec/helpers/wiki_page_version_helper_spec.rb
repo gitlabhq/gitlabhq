@@ -3,7 +3,7 @@
 require 'spec_helper'
 
 RSpec.describe WikiPageVersionHelper, feature_category: :wiki do
-  let_it_be(:project) { create(:project, :public, :repository) }
+  let_it_be(:project) { create(:project, :public) }
   let_it_be(:user) { create(:user, username: 'foo') }
 
   let(:commit_with_user) { create(:commit, project: project, author: user) }

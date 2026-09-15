@@ -32,7 +32,7 @@ module Gitlab
       def unique_by_namespace(slug)
         path = Namespaces::RandomizedSuffixPath.new(slug).to_s
         Gitlab::Utils::Uniquify.new.string(path) do |s|
-          Namespace.all.find_by_path_or_name(s)
+          Namespace.username_reserved?(s)
         end
       end
 

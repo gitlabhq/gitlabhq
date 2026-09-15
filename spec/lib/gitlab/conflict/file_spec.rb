@@ -130,7 +130,7 @@ RSpec.describe Gitlab::Conflict::File do
     end
 
     it 'does not add a match line to the end of the section' do
-      expect(diff_line_types.last).to eq(nil)
+      expect(diff_line_types.last).to be_nil
     end
 
     context 'when there are unchanged trailing lines' do

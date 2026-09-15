@@ -54,6 +54,20 @@ RSpec.describe Import::BitbucketServerController, feature_category: :importers d
       expect(response).to have_gitlab_http_status(:ok)
     end
 
+    it 'passes the project key and repo slug explicitly and drops unpermitted params', :aggregate_failures do
+      expect(Import::BitbucketServerService).to receive(:new) do |_client, _user, service_params|
+        expect(service_params[:bitbucket_server_project]).to eq(project_key)
+        expect(service_params[:bitbucket_server_repo]).to eq(repo_slug)
+        expect(service_params.to_h).not_to have_key('admin')
+
+        double(execute: { status: :success, project: project })
+      end
+
+      post :create, params: params.merge(admin: true), format: :json
+
+      expect(response).to have_gitlab_http_status(:ok)
+    end
+
     context 'with project key with tildes' do
       let(:project_key) { '~someuser_123' }
 

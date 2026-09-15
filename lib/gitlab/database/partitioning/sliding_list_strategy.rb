@@ -4,16 +4,21 @@ module Gitlab
   module Database
     module Partitioning
       class SlidingListStrategy < BaseStrategy
+        include ::Gitlab::Loggable
+
         attr_reader :model, :partitioning_key, :next_partition_if, :detach_partition_if, :analyze_interval
 
         delegate :table_name, to: :model
 
-        def initialize(model, partitioning_key, next_partition_if:, detach_partition_if:, analyze_interval: nil)
+        def initialize(
+          model, partitioning_key, next_partition_if:, detach_partition_if:, analyze_interval: nil,
+          detach_concurrently: false)
           @model = model
           @partitioning_key = partitioning_key
           @next_partition_if = next_partition_if
           @detach_partition_if = detach_partition_if
           @analyze_interval = analyze_interval
+          @detach_concurrently = detach_concurrently
 
           ensure_partitioning_column_ignored_or_readonly!
         end
@@ -58,12 +63,16 @@ module Gitlab
           extra = possibly_extra.take_while { |p| detach_partition_if.call(p) }
 
           default_value = current_default_value
-          if extra.any? { |p| p.value == default_value }
+          partition_with_default_value = extra.find { |p| p.value == default_value }
+
+          if partition_with_default_value
             Gitlab::AppLogger.error(
-              message: "Inconsistent partition detected: partition with value #{current_default_value} should " \
-                        "not be deleted because it's used as the default value.",
-              partition_number: current_default_value,
-              table_name: model.table_name
+              log_payload(
+                message: "Inconsistent partition detected: partition with value #{current_default_value} should " \
+                          "not be deleted because it's used as the default value.",
+                partition_name: partition_with_default_value.partition_name,
+                partition_number: current_default_value
+              )
             )
 
             extra = extra.reject { |p| p.value == default_value }
@@ -84,11 +93,12 @@ module Gitlab
 
           if different_connection_names?
             Gitlab::AppLogger.warn(
-              message: 'Skipping changing column default because connections mismatch',
-              event: :partition_manager_after_adding_partitions_connection_mismatch,
-              model_connection_name: Gitlab::Database.db_config_name(model.connection),
-              shared_connection_name: Gitlab::Database.db_config_name(Gitlab::Database::SharedModel.connection),
-              table_name: model.table_name
+              log_payload(
+                message: 'Skipping changing column default because connections mismatch',
+                event: :partition_manager_after_adding_partitions_connection_mismatch,
+                model_connection_name: Gitlab::Database.db_config_name(model.connection),
+                shared_connection_name: Gitlab::Database.db_config_name(Gitlab::Database::SharedModel.connection)
+              )
             )
 
             return
@@ -117,11 +127,12 @@ module Gitlab
 
           if different_connection_names?
             Gitlab::AppLogger.warn(
-              message: 'Skipping fixing column default because connections mismatch',
-              event: :partition_manager_validate_and_fix_connection_mismatch,
-              model_connection_name: Gitlab::Database.db_config_name(model.connection),
-              shared_connection_name: Gitlab::Database.db_config_name(Gitlab::Database::SharedModel.connection),
-              table_name: model.table_name
+              log_payload(
+                message: 'Skipping fixing column default because connections mismatch',
+                event: :partition_manager_validate_and_fix_connection_mismatch,
+                model_connection_name: Gitlab::Database.db_config_name(model.connection),
+                shared_connection_name: Gitlab::Database.db_config_name(Gitlab::Database::SharedModel.connection)
+              )
             )
 
             return
@@ -141,21 +152,23 @@ module Gitlab
 
               if old_default_value == expected_default_value
                 Gitlab::AppLogger.warn(
-                  message: "Table partitions or partition key default value have been changed by another process",
-                  table_name: table_name,
-                  default_value: expected_default_value
+                  log_payload(
+                    message: 'Table partitions or partition key default value have been changed by another process',
+                    default_value: expected_default_value
+                  )
                 )
                 raise ActiveRecord::Rollback
               end
 
               model.connection.change_column_default(model.table_name, partitioning_key, expected_default_value)
               Gitlab::AppLogger.warn(
-                message: "Fixed default value of sliding_list_strategy partitioning_key",
-                column: partitioning_key,
-                table_name: table_name,
-                connection_name: model.connection.pool.db_config.name,
-                old_value: old_default_value,
-                new_value: expected_default_value
+                log_payload(
+                  message: 'Fixed default value of sliding_list_strategy partitioning_key',
+                  column: partitioning_key,
+                  connection_name: model.connection.pool.db_config.name,
+                  old_value: old_default_value,
+                  new_value: expected_default_value
+                )
               )
             end
           end
@@ -194,11 +207,16 @@ module Gitlab
           model.ignored_columns.include?(partitioning_key.to_s) || model.readonly_attribute?(partitioning_key.to_s)
         end
 
+        def log_payload(**params)
+          build_structured_payload_labkit(table_name: model.table_name, **params)
+        end
+
         def with_lock_retries(&block)
           Gitlab::Database::Partitioning::WithPartitioningLockRetries.new(
             klass: self.class,
             logger: Gitlab::AppLogger,
-            connection: model.connection
+            connection: model.connection,
+            extra_log_params: { table_name: model.table_name }
           ).run(raise_on_exhaustion: true, &block)
         end
       end

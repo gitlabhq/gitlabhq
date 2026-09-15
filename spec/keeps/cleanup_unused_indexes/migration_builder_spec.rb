@@ -74,16 +74,58 @@ RSpec.describe Keeps::CleanupUnusedIndexes::MigrationBuilder, feature_category: 
 
       expect(digest_io.string).to eq(Digest::SHA256.hexdigest('20260601000000'))
     end
+
+    context 'when the change is an async removal' do
+      let(:ctx) do
+        {
+          name: 'index_users_on_foo',
+          tablename: 'users',
+          columns: [:foo],
+          async_removal: true
+        }
+      end
+
+      before do
+        builder.build(ctx)
+      end
+
+      it 'names the migration as an async removal preparation' do
+        expect(::PostDeploymentMigration::PostDeploymentMigrationGenerator)
+          .to have_received(:new).with(['prepare_async_removal_index_users_on_foo'])
+      end
+
+      it 'schedules the removal with prepare_async_index_removal', :aggregate_failures do
+        expect(file_helper).to have_received(:replace_method_content).with(
+          :change,
+          a_string_matching(/prepare_async_index_removal\(TABLE_NAME, COLUMN_NAMES, name: INDEX_NAME\)/)
+            .and(a_string_matching(/unprepare_async_index_by_name\(TABLE_NAME, INDEX_NAME\)/)),
+          strip_comments_from_file: true
+        )
+      end
+
+      it 'does not disable the DDL transaction' do
+        expect(file_helper).to have_received(:replace_method_content).with(
+          :change,
+          satisfy { |body| body.exclude?('disable_ddl_transaction!') },
+          strip_comments_from_file: true
+        )
+      end
+    end
   end
 
   describe 'unique migration name (private)' do
     it 'returns the base name when short enough' do
-      expect(builder.send(:unique_migration_name_for, 'foo')).to eq('remove_unused_index_foo')
+      expect(builder.send(:unique_migration_name_for, { name: 'foo' })).to eq('remove_unused_index_foo')
+    end
+
+    it 'uses the async prefix for async removals' do
+      expect(builder.send(:unique_migration_name_for, { name: 'foo', async_removal: true }))
+        .to eq('prepare_async_removal_foo')
     end
 
     it 'truncates and appends a SHA suffix for long names', :aggregate_failures do
       long_name = "index_#{'x' * 100}"
-      result = builder.send(:unique_migration_name_for, long_name)
+      result = builder.send(:unique_migration_name_for, { name: long_name })
 
       expect(result.length).to be <= 100
       expect(result).to match(/_[0-9a-f]{8}\z/)

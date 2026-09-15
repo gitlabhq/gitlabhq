@@ -155,8 +155,7 @@ module Types
       complexity: 5,
       resolver: ::Resolvers::TimelogResolver
     field :saved_replies,
-      ::Types::Users::SavedReplyType.connection_type,
-      null: true,
+      resolver: Resolvers::Users::SavedRepliesResolver,
       description: 'Saved replies authored by the user.'
 
     field :saved_reply,

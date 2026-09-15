@@ -26,8 +26,7 @@ RSpec.describe Gitlab::Database::SchemaMigrations::Migrations do
 
         expect(File.exist?(old_version_filepath)).to be(true)
 
-        allow(context).to receive(:schema_directory).and_return(schema_directory)
-        allow(context).to receive(:versions_to_create).and_return([version1, version2])
+        allow(context).to receive_messages(schema_directory: schema_directory, versions_to_create: [version1, version2])
 
         migrations.touch_all
 

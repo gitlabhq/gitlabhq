@@ -33,11 +33,15 @@ describe('Repository last commit component', () => {
 
   const subscriptionHandler = jest.fn().mockResolvedValue(mockPipelineStatusUpdatedResponse);
 
-  const createComponent = (data = {}, pipelineSubscriptionHandler = subscriptionHandler) => {
+  const createComponent = (
+    data = {},
+    pipelineSubscriptionHandler = subscriptionHandler,
+    resolver = null,
+  ) => {
     const currentPath = 'path';
 
     commitData = createCommitData(data);
-    mockResolver = jest.fn().mockResolvedValue(commitData);
+    mockResolver = resolver || jest.fn().mockResolvedValue(commitData);
 
     apolloProvider = createMockApollo([
       [pathLastCommitQuery, mockResolver],
@@ -121,6 +125,19 @@ describe('Repository last commit component', () => {
 
     await waitForPromises();
 
+    expect(findPipelineStatus().exists()).toBe(false);
+  });
+
+  it('renders without pipeline components when the response has no project', async () => {
+    createComponent(
+      {},
+      subscriptionHandler,
+      jest.fn().mockResolvedValue({ data: { project: null } }),
+    );
+
+    await waitForPromises();
+
+    expect(findCommitInfo().exists()).toBe(true);
     expect(findPipelineStatus().exists()).toBe(false);
   });
 

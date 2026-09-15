@@ -40,11 +40,11 @@ describe('MRWidgetAutoMergeFailed', () => {
     jest.spyOn(eventHub, '$emit');
     findButton().vm.$emit('click');
 
-    expect(eventHub.$emit.mock.calls[0][0]).toBe('MRWidgetUpdateRequested');
+    expect(eventHub.$emit.mock.calls[0][0]).toBe('mr-widget-update-requested');
 
     await nextTick();
 
-    expect(findButton().attributes('disabled')).toBeDefined();
+    expect(findButton().attributes('aria-disabled')).toBe('true');
     expect(wrapper.findComponent(GlLoadingIcon).exists()).toBe(true);
   });
 });

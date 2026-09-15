@@ -92,3 +92,38 @@ accessibility-report-not-string:
   artifacts:
     reports:
       accessibility: 1
+
+# invalid artifacts:public
+artifacts-public-not-boolean:
+  artifacts:
+    public: "false"
+
+# invalid artifacts:reports:api_fuzzing
+api-fuzzing-report-left-blank:
+  artifacts:
+    reports:
+      api_fuzzing:
+
+api-fuzzing-report-not-string:
+  artifacts:
+    reports:
+      api_fuzzing: 1
+
+# invalid artifacts:reports:coverage_fuzzing
+coverage-fuzzing-report-left-blank:
+  artifacts:
+    reports:
+      coverage_fuzzing:
+
+coverage-fuzzing-report-not-a-list-of-strings:
+  artifacts:
+    reports:
+      coverage_fuzzing:
+        paths:
+          - gl-coverage-fuzzing-report.json
+
+# artifacts:access and artifacts:public are mutually exclusive
+artifacts-access-and-public-together:
+  artifacts:
+    access: developer
+    public: false

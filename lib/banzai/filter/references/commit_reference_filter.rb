@@ -10,6 +10,8 @@ module Banzai
         self.reference_type = :commit
         self.object_class   = Commit
 
+        EMPTY_SHA_SET = Set.new.freeze
+
         def references_in(text, pattern = object_reference_pattern)
           replace_references_in_text_with_html(Gitlab::Utils::Gsub.gsub_with_limit(text, pattern,
             limit: Banzai::Filter::FILTER_ITEM_LIMIT)) do |match_data|
@@ -31,15 +33,13 @@ module Banzai
           record
         end
 
+        # SHAs of the commits referenced in the text that belong to the noteable
+        # merge request, so that those references can link to the commit inside
+        # the merge request rather than to the standalone commit page.
         def referenced_merge_request_commit_shas
-          return [] unless noteable.is_a?(MergeRequest)
+          return EMPTY_SHA_SET unless noteable.is_a?(MergeRequest)
 
-          @referenced_merge_request_commit_shas ||= begin
-            referenced_shas = reference_cache.references_per_parent.values.reduce(:|).to_a
-            noteable.all_commit_shas.select do |sha|
-              referenced_shas.any? { |ref| Gitlab::Git.shas_eql?(sha, ref) }
-            end
-          end
+          @referenced_merge_request_commit_shas ||= noteable.existing_commit_shas(referenced_commit_shas).to_set
         end
 
         # The default behaviour is `#to_i` - we just pass the hash through.
@@ -86,6 +86,14 @@ module Banzai
         end
 
         private
+
+        # Full SHAs of the commits the references in the text resolved to within
+        # the merge request's project; references to other projects cannot belong
+        # to the merge request. The reference cache has already loaded these
+        # commits, so this adds no Gitaly calls.
+        def referenced_commit_shas
+          reference_cache.records_per_parent[noteable.project].values.map(&:id).uniq
+        end
 
         def noteable
           context[:noteable]

@@ -16,7 +16,7 @@ module RuboCop
     CONFIG_PATH = File.expand_path("../config/feature_categories.yml", __dir__)
 
     # List of feature categories which are not defined in config/feature_categories.yml
-    # https://docs.gitlab.com/ee/development/feature_categorization/#tooling-feature-category
+    # https://docs.gitlab.com/development/feature_categorization/#tooling-feature-category
     RSPEC_CATEGORIES = %w[
       tooling
       test_platform

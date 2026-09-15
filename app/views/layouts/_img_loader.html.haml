@@ -5,9 +5,11 @@
         img.loading = 'lazy';
         let imgUrl = img.dataset.src;
         // Only adding width + height for avatars for now
-        if (imgUrl.indexOf('/avatar/') > -1 && imgUrl.indexOf('?') === -1) {
+        // Keep this logic in sync with appendWidthToAvatarUrl in
+        // app/assets/javascripts/vue_shared/components/user_avatar/utils.js
+        if (imgUrl.indexOf('/avatar/') > -1 && !imgUrl.includes('width=')) {
           const targetWidth = img.getAttribute('width') || img.width;
-          imgUrl += `?width=${targetWidth}`;
+          imgUrl += imgUrl.includes('?') ? `&width=${targetWidth}` : `?width=${targetWidth}`;
         }
         img.src = imgUrl;
         img.removeAttribute('data-src');

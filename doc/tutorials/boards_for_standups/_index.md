@@ -1,16 +1,10 @@
 ---
 stage: Plan
-group: Project Management
+group: Work Items
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see <https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments>
+description: Configure an issue board with workflow labels and lists so a team can track tasks during daily stand-ups.
 title: 'Tutorial: Set up an issue board for a team stand-up'
 ---
-
-{{< details >}}
-
-- Tier: Premium, Ultimate
-- Offering: GitLab.com, GitLab Self-Managed, GitLab Dedicated
-
-{{< /details >}}
 
 <!-- vale gitlab_base.FutureTense = NO -->
 
@@ -79,7 +73,7 @@ To create a blank project:
 To track issue status during stand-ups, you need workflow labels.
 
 Create these labels in your `Paperclip Software Factory` group rather than the project.
-Group-level labels are available to all projects in the group, which helps establish consistent
+Group labels are available to all projects in the group, which helps establish consistent
 workflows across teams.
 
 To create a workflow label:
@@ -87,7 +81,7 @@ To create a workflow label:
 1. In the top bar, select **Search or go to** and find your **Paperclip Software Factory** group.
 1. Select **Manage** > **Labels**.
 1. Select **New label**.
-1. In the **Title** field, enter the label name.
+1. In the **Title** text box, enter the label name.
 1. Optional. Select a background color or enter a hex color value.
 1. Select **Create label**.
 
@@ -127,7 +121,7 @@ To create a group issue board:
 
 Your board now has lists for each workflow state, though they'll be empty until you add issues in later steps.
 
-![Issue board called "Team stand-up" with workflow lists but no issues](img/team_standup_board_with_workflow_lists_v17_8.png)
+![Issue board called "Team stand-up" with workflow lists but no issues.](img/team_standup_board_with_workflow_lists_v17_8.png)
 
 ## Configure your board lists
 
@@ -148,7 +142,7 @@ To configure your board:
 Your board now shows only issues that match your filters.
 For example, if you select a milestone, only issues assigned to that milestone appear in the board lists.
 
-![Issue board called "Team stand-up" with workflow lists](img/team_standup_board_with_workflow_lists_v17_8.png)
+![Issue board called "Team stand-up" with workflow lists.](img/team_standup_board_with_workflow_lists_v17_8.png)
 
 ## Create issues for team tasks
 
@@ -177,5 +171,5 @@ Your team can now use this board to run effective stand-ups.
 
 ## Related topics
 
-- [Plan and track work tutorials](../plan_and_track.md).
-- [Stand-ups, retrospectives, and velocity](../scrum_events/standups_retrospectives_velocity.md)
+- [Plan and track work tutorials](../plan_and_track.md)
+- [Tutorial: Facilitate stand-ups, retrospectives, and velocity tracking](../scrum_events/standups_retrospectives_velocity.md)

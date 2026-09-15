@@ -4,15 +4,11 @@ module CycleAnalyticsParams
   extend ActiveSupport::Concern
 
   def cycle_analytics_project_params
-    return {} unless params[:cycle_analytics].present?
-
-    params[:cycle_analytics].permit(:start_date, :created_after, :created_before, :branch_name)
+    cycle_analytics_project_filters.presence || {}
   end
 
   def cycle_analytics_group_params
-    return {} unless params.present?
-
-    params.permit(:group_id, :start_date, :created_after, :created_before, project_ids: [])
+    cycle_analytics_group_filters.presence || {}
   end
 
   def options(params)
@@ -32,6 +28,14 @@ module CycleAnalyticsParams
   end
 
   private
+
+  def cycle_analytics_project_filters
+    params.permit(cycle_analytics: [:start_date, :created_after, :created_before, :branch_name])[:cycle_analytics]
+  end
+
+  def cycle_analytics_group_filters
+    params.permit(:group_id, :start_date, :created_after, :created_before, project_ids: [])
+  end
 
   def start_date(params)
     case params[:start_date]

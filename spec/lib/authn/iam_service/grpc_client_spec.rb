@@ -18,6 +18,7 @@ RSpec.describe Authn::IamService::GrpcClient, feature_category: :system_access d
   before do
     allow(Authn::IamAuthService).to receive_messages(
       grpc_address: iam_service_address,
+      grpc_secure?: false,
       secret: iam_secret
     )
 
@@ -38,6 +39,7 @@ RSpec.describe Authn::IamService::GrpcClient, feature_category: :system_access d
       :create_oauth_application | :create_client | :oauth_clients_stub | ::Gitlab::Iam::Auth::V1::InternalOAuthClientsServiceCreateClientRequest | ::Gitlab::Iam::Auth::V1::InternalOAuthClientsServiceCreateClientResponse | { client_id: 'test-client-id' }
       :get_oauth_application    | :get_client    | :oauth_clients_stub | ::Gitlab::Iam::Auth::V1::InternalOAuthClientsServiceGetClientRequest    | ::Gitlab::Iam::Auth::V1::InternalOAuthClientsServiceGetClientResponse    | { client_id: 'test-client-id' }
       :delete_oauth_application | :delete_client | :oauth_clients_stub | ::Gitlab::Iam::Auth::V1::InternalOAuthClientsServiceDeleteClientRequest | ::Gitlab::Iam::Auth::V1::InternalOAuthClientsServiceDeleteClientResponse | { client_id: 'test-client-id' }
+      :upsert_oauth_application | :upsert_client | :oauth_clients_stub | ::Gitlab::Iam::Auth::V1::InternalOAuthClientsServiceUpsertClientRequest | ::Gitlab::Iam::Auth::V1::InternalOAuthClientsServiceUpsertClientResponse | { client_id: 'test-client-id' }
       # rubocop:enable Layout/LineLength
     end
 
@@ -57,34 +59,108 @@ RSpec.describe Authn::IamService::GrpcClient, feature_category: :system_access d
   end
 
   describe '#create_oauth_application' do
-    let_it_be(:application) { create(:oauth_application, scopes: 'api read_user') }
+    let(:created_at) { Google::Protobuf::Timestamp.new(seconds: 1.day.ago.to_i) }
+    let(:updated_at) { Google::Protobuf::Timestamp.new(seconds: Time.current.to_i) }
+    let(:organization_id) { Gitlab::Utils.uuid_v7 }
 
-    let(:response) do
-      ::Gitlab::Iam::Auth::V1::InternalOAuthClientsServiceCreateClientResponse.new(
-        client: ::Gitlab::Iam::Auth::V1::ManagedClient.new(
-          client_id: application.uid,
-          client_name: application.name,
-          redirect_uris: application.redirect_uri.split,
-          scopes: application.scopes.to_a
-        )
+    it 'forwards every client field on the request', :aggregate_failures do
+      expect(oauth_clients_stub).to receive(:create_client) do |request, **|
+        expect(request.client_id).to eq('client-id')
+        expect(request.hashed_client_secret).to eq('client-secret')
+        expect(request.client_name).to eq('Test App')
+        expect(request.redirect_uris.to_a).to eq(['https://example.com/callback'])
+        expect(request.grant_types.to_a).to eq(%w[authorization_code])
+        expect(request.response_types.to_a).to eq(%w[code])
+        expect(request.scopes.to_a).to eq(%w[api read_user])
+        expect(request.public).to be(true)
+        expect(request.trusted).to be(true)
+        expect(request.owner).to eq('owner-id')
+        expect(request.created_at).to eq(created_at)
+        expect(request.updated_at).to eq(updated_at)
+        expect(request.organization_id).to eq(organization_id)
+
+        ::Gitlab::Iam::Auth::V1::InternalOAuthClientsServiceCreateClientResponse.new
+      end
+
+      client.create_oauth_application(
+        client_id: 'client-id',
+        hashed_client_secret: 'client-secret',
+        client_name: 'Test App',
+        redirect_uris: ['https://example.com/callback'],
+        grant_types: %w[authorization_code],
+        response_types: %w[code],
+        scopes: %w[api read_user],
+        public: true,
+        trusted: true,
+        owner: 'owner-id',
+        created_at: created_at,
+        updated_at: updated_at,
+        organization_id: organization_id
       )
     end
+  end
 
-    it 'returns the managed client mirrored from the application', :aggregate_failures do
-      allow(oauth_clients_stub).to receive(:create_client).and_return(response)
+  describe '#upsert_oauth_application' do
+    let(:created_at) { Google::Protobuf::Timestamp.new(seconds: 1.day.ago.to_i) }
+    let(:updated_at) { Google::Protobuf::Timestamp.new(seconds: Time.current.to_i) }
+    let(:organization_id) { Gitlab::Utils.uuid_v7 }
 
-      result = client.create_oauth_application(
-        client_id: application.uid,
-        client_secret: application.secret,
-        client_name: application.name,
-        redirect_uris: application.redirect_uri.split,
-        scopes: application.scopes.to_a
+    it 'forwards every client field on the request', :aggregate_failures do
+      expect(oauth_clients_stub).to receive(:upsert_client) do |request, **|
+        expect(request.client_id).to eq('client-id')
+        expect(request.hashed_client_secret).to eq('client-secret')
+        expect(request.client_name).to eq('Test App')
+        expect(request.redirect_uris.to_a).to eq(['https://example.com/callback'])
+        expect(request.grant_types.to_a).to eq(%w[authorization_code])
+        expect(request.response_types.to_a).to eq(%w[code])
+        expect(request.scopes.to_a).to eq(%w[api read_user])
+        expect(request.public).to be(true)
+        expect(request.trusted).to be(true)
+        expect(request.owner).to eq('owner-id')
+        expect(request.created_at).to eq(created_at)
+        expect(request.updated_at).to eq(updated_at)
+        expect(request.organization_id).to eq(organization_id)
+
+        ::Gitlab::Iam::Auth::V1::InternalOAuthClientsServiceUpsertClientResponse.new
+      end
+
+      client.upsert_oauth_application(
+        client_id: 'client-id',
+        hashed_client_secret: 'client-secret',
+        client_name: 'Test App',
+        redirect_uris: ['https://example.com/callback'],
+        grant_types: %w[authorization_code],
+        response_types: %w[code],
+        scopes: %w[api read_user],
+        public: true,
+        trusted: true,
+        owner: 'owner-id',
+        created_at: created_at,
+        updated_at: updated_at,
+        organization_id: organization_id
       )
+    end
+  end
 
-      expect(result.client.client_id).to eq(application.uid)
-      expect(result.client.client_name).to eq(application.name)
-      expect(result.client.redirect_uris.to_a).to eq(application.redirect_uri.split)
-      expect(result.client.scopes.to_a).to eq(%w[api read_user])
+  describe '#accept_login_challenge' do
+    it 'sends all expected fields on the request' do
+      expect(login_stub).to receive(:accept) do |request, **|
+        expect(request.challenge).to eq('test-challenge')
+        expect(request.subject).to eq('42')
+        expect(request.name).to eq('Jane Doe')
+        expect(request.email).to eq('jane.doe@example.com')
+        expect(request.cell_id).to eq(7)
+
+        ::Gitlab::Iam::Auth::V1::LoginServiceAcceptResponse.new
+      end
+
+      client.accept_login_challenge(
+        challenge: 'test-challenge',
+        subject: '42',
+        name: 'Jane Doe',
+        email: 'jane.doe@example.com',
+        cell_id: 7
+      )
     end
   end
 
@@ -171,29 +247,29 @@ RSpec.describe Authn::IamService::GrpcClient, feature_category: :system_access d
   end
 
   describe 'channel credentials' do
-    where(:address, :expected_endpoint, :expects_tls) do
-      'localhost:5004'                  | 'localhost:5004'              | false
-      'tls://iam.example.com:5004'      | 'iam.example.com:5004'        | true
-      'tcp://iam.example.com:5004'      | 'iam.example.com:5004'        | false
-      ':::invalid'                      | ':::invalid'                  | false
+    let(:iam_service_address) { 'iam.example.com:5004' }
+
+    where(:secure, :expects_tls) do
+      true  | true
+      false | false
     end
 
     with_them do
-      let(:iam_service_address) { address }
       let(:tls_credentials) { instance_double(GRPC::Core::ChannelCredentials) }
 
       before do
+        allow(Authn::IamAuthService).to receive(:grpc_secure?).and_return(secure)
         allow(::Gitlab::X509::Certificate).to receive(:ca_certs_bundle).and_return('cert-data')
         allow(GRPC::Core::ChannelCredentials).to receive(:new).with('cert-data').and_return(tls_credentials)
         allow(auth_stub).to receive(:health).and_return(::Gitlab::Iam::Auth::V1::HealthResponse.new)
       end
 
-      it 'configures the gRPC channel with the expected endpoint and credentials' do
+      it 'configures the gRPC channel with the address as-is and the expected credentials' do
         client.health
 
         expected_credentials = expects_tls ? tls_credentials : :this_channel_is_insecure
         expect(::Gitlab::Iam::Auth::V1::AuthService::Stub).to have_received(:new).with(
-          expected_endpoint,
+          'iam.example.com:5004',
           expected_credentials,
           interceptors: [
             Labkit::Correlation::GRPC::ClientInterceptor.instance,
@@ -202,6 +278,26 @@ RSpec.describe Authn::IamService::GrpcClient, feature_category: :system_access d
           timeout: described_class::TIMEOUT_SECONDS
         )
       end
+    end
+  end
+
+  describe 'request timeout' do
+    before do
+      allow(auth_stub).to receive(:health).and_return(::Gitlab::Iam::Auth::V1::HealthResponse.new)
+    end
+
+    it 'defaults to TIMEOUT_SECONDS' do
+      described_class.new.health
+
+      expect(::Gitlab::Iam::Auth::V1::AuthService::Stub).to have_received(:new)
+        .with(anything, anything, a_hash_including(timeout: described_class::TIMEOUT_SECONDS))
+    end
+
+    it 'uses a caller-supplied timeout' do
+      described_class.new(timeout: 0.2).health
+
+      expect(::Gitlab::Iam::Auth::V1::AuthService::Stub).to have_received(:new)
+        .with(anything, anything, a_hash_including(timeout: 0.2))
     end
   end
 end

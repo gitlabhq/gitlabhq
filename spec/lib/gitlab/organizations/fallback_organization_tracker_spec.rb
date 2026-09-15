@@ -33,17 +33,18 @@ RSpec.describe Gitlab::Organizations::FallbackOrganizationTracker, :request_stor
   end
 
   describe '.trigger' do
-    let_it_be(:event) { 'fallback_current_organization_to_default' }
-    let_it_be(:category) { 'Organizations' }
-
-    subject { described_class.trigger }
+    subject(:trigger) { described_class.trigger }
 
     context 'when disabled' do
       before do
         described_class.disable
       end
 
-      it_behaves_like 'internal event not tracked'
+      it 'does not push organization_source to the application context' do
+        expect(Gitlab::ApplicationContext).not_to receive(:push).with(hash_including(:organization_source))
+
+        trigger
+      end
     end
 
     context 'when enabled' do
@@ -51,19 +52,27 @@ RSpec.describe Gitlab::Organizations::FallbackOrganizationTracker, :request_stor
         described_class.enable
       end
 
-      it_behaves_like 'internal event tracking'
+      it 'pushes organization_source to the application context' do
+        expect(Gitlab::ApplicationContext).to receive(:push).with(organization_source: 'fallback')
+
+        trigger
+      end
 
       context 'when `track_organization_fallback` flag is disabled' do
         before do
           stub_feature_flags(track_organization_fallback: false)
         end
 
-        it_behaves_like 'internal event not tracked'
+        it 'does not push organization_source to the application context' do
+          expect(Gitlab::ApplicationContext).not_to receive(:push).with(hash_including(:organization_source))
+
+          trigger
+        end
       end
 
       context 'when called multiple times' do
-        it 'does not call track_event multiple times' do
-          expect(Gitlab::InternalEvents).to receive(:track_event).once
+        it 'pushes organization_source only once' do
+          expect(Gitlab::ApplicationContext).to receive(:push).with(organization_source: 'fallback').once
 
           3.times { described_class.trigger }
         end
@@ -79,7 +88,11 @@ RSpec.describe Gitlab::Organizations::FallbackOrganizationTracker, :request_stor
         described_class.disable
       end
 
-      it_behaves_like 'internal event not tracked'
+      it 'does not push organization_source to the application context' do
+        expect(Gitlab::ApplicationContext).not_to receive(:push).with(hash_including(:organization_source))
+
+        trigger
+      end
     end
 
     context 'when enabled' do
@@ -87,7 +100,11 @@ RSpec.describe Gitlab::Organizations::FallbackOrganizationTracker, :request_stor
         described_class.enable
       end
 
-      it_behaves_like 'internal event not tracked'
+      it 'does not push organization_source to the application context' do
+        expect(Gitlab::ApplicationContext).not_to receive(:push).with(hash_including(:organization_source))
+
+        trigger
+      end
 
       it 'does not disable the tracker outside of the block' do
         trigger

@@ -3,12 +3,12 @@
 require 'spec_helper'
 
 RSpec.describe 'projects/jobs/show' do
-  let(:user) { create(:user) }
-  let(:project) { create(:project, :repository) }
+  let_it_be(:user) { create(:user) }
+  let_it_be(:project) { create(:project, :small_repo) }
   let(:build) { create(:ci_build, pipeline: pipeline) }
   let(:builds) { project.builds.present(current_user: user) }
 
-  let(:pipeline) do
+  let_it_be(:pipeline) do
     create(:ci_pipeline, project: project, sha: project.commit.id)
   end
 

@@ -94,6 +94,29 @@ module Import
         child_paths_for(parent_source_full_path, 'project_')
       end
 
+      # Returns the top-level groups in the export, that is, paths with no "/".
+      #
+      # @return [Array<String>] the source full path of each top-level group
+      def root_group_paths
+        entity_prefix_mapping.filter_map do |full_path, entity_prefix|
+          next if full_path.include?('/')
+          next unless entity_prefix.start_with?('group_')
+
+          full_path
+        end
+      end
+
+      # Returns the paths whose top-level ancestor was not exported. They cannot be
+      # imported without inventing the missing ancestor groups, so importing an
+      # entire export skips them.
+      #
+      # @return [Array<String>] the source full path of each unreachable entity
+      def paths_without_exported_root
+        roots = root_group_paths.to_set
+
+        entity_prefix_mapping.keys.reject { |full_path| roots.include?(full_path.split('/', 2).first) }
+      end
+
       def endpoint
         object_storage_credentials.with_indifferent_access[:endpoint] if object_storage_credentials.present?
       end

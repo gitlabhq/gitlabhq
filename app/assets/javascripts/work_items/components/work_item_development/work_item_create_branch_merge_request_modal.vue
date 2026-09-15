@@ -1,13 +1,14 @@
 <script>
 import { GlForm, GlFormInputGroup, GlFormGroup, GlModal, GlToastMixin } from '@gitlab/ui';
 import { debounce } from 'lodash-es';
+import { findTargetBranch } from 'ee_else_ce/merge_requests/utils/branch_finder';
 import axios from '~/lib/utils/axios_utils';
 import { createAlert } from '~/alert';
 import { REF_TYPE_BRANCHES, REF_TYPE_TAGS } from '~/vue_shared/components/ref/constants';
 
 import { visitUrl } from '~/lib/utils/url_utility';
 import { newProjectForkPath } from '~/lib/utils/path_helpers/project';
-import { createBranchMRApiPathHelper } from '~/work_items/utils';
+import { createBranchMRApiPathHelper, lowercaseWorkItemType } from '~/work_items/utils';
 import { helpPagePath } from '~/helpers/help_page_helper';
 import {
   findInvalidBranchNameCharacters,
@@ -180,6 +181,11 @@ export default {
     newForkPath() {
       return newProjectForkPath(this.workItemFullPath);
     },
+    projectFullPath() {
+      return this.isConfidentialWorkItem
+        ? confidentialMergeRequestState.selectedProject.pathWithNamespace
+        : this.workItemFullPath;
+    },
   },
   watch: {
     showModal(newVal, oldVal) {
@@ -213,15 +219,13 @@ export default {
         this.branchName = suggested_branch_name;
         /* eslint-enable camelcase */
         this.refName = this.defaultBranch;
+
+        this.fetchTargetBranch(this.branchName);
       }
     },
     async createBranch() {
       try {
-        const endpoint = createBranchMRApiPathHelper.createBranch(
-          this.isConfidentialWorkItem
-            ? confidentialMergeRequestState.selectedProject.pathWithNamespace
-            : this.workItemFullPath,
-        );
+        const endpoint = createBranchMRApiPathHelper.createBranch(this.projectFullPath);
 
         this.creatingBranch = true;
 
@@ -244,25 +248,30 @@ export default {
         });
 
         this.$emit('hide-modal');
+
+        return data.name;
       } catch {
         createAlert({
           message: sprintf(
             s__('WorkItem|Failed to create a branch for this %{workItemType}. Please try again.'),
-            { workItemType: this.workItemType },
+            { workItemType: lowercaseWorkItemType(this.workItemType) },
           ),
         });
+
+        return null;
       } finally {
         this.creatingBranch = false;
       }
     },
     async createMergeRequest() {
-      await this.createBranch();
+      // Prefer the branch name returned by the server (the branch actually created); fall
+      // back to the requested name so a later init() cannot repoint the MR at a stale name.
+      const createdBranch = await this.createBranch();
+      const sourceBranch = createdBranch || this.branchName;
       const path = createBranchMRApiPathHelper.createMR({
-        fullPath: this.isConfidentialWorkItem
-          ? confidentialMergeRequestState.selectedProject.pathWithNamespace
-          : this.workItemFullPath,
+        fullPath: this.projectFullPath,
         workItemIid: this.workItemIid,
-        sourceBranch: this.branchName,
+        sourceBranch,
         targetBranch: this.refName,
       });
 
@@ -288,9 +297,7 @@ export default {
       this.refCancelToken = axios.CancelToken.source();
 
       const refsPath = createBranchMRApiPathHelper.getRefs({
-        fullPath: this.isConfidentialWorkItem
-          ? confidentialMergeRequestState.selectedProject.pathWithNamespace
-          : this.workItemFullPath,
+        fullPath: this.projectFullPath,
       });
 
       axios
@@ -316,7 +323,25 @@ export default {
           this.checkingBranchValidity = false;
         });
     },
+    async fetchTargetBranch(branchName) {
+      if (this.showBranchFlow) return;
+
+      this.targetBranchCancelToken?.cancel();
+      this.targetBranchCancelToken = axios.CancelToken.source();
+
+      const targetBranchName = await findTargetBranch(
+        this.workItemFullPath,
+        branchName,
+        this.targetBranchCancelToken.token,
+      );
+
+      if (targetBranchName && branchName === this.branchName) {
+        this.refName = targetBranchName;
+      }
+    },
     checkBranchValidity: debounce(function debouncedCheckBranchValidity(refValue) {
+      this.fetchTargetBranch(refValue);
+
       return this.fetchRefs(refValue);
     }, 250),
     hideModal() {

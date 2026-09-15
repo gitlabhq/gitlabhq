@@ -47,6 +47,9 @@ module HasUserType
 
     scope :bots, -> { where(user_type: BOT_USER_TYPES) }
     scope :without_bots, -> { where(user_type: USER_TYPES.keys - BOT_USER_TYPES) }
+    scope :without_bots_except_service_accounts, -> do
+      where(user_type: USER_TYPES.keys - (BOT_USER_TYPES - ['service_account']))
+    end
     scope :non_internal, -> { where(user_type: NON_INTERNAL_USER_TYPES) }
     scope :with_duo_code_review_bot, -> { where(user_type: NON_INTERNAL_USER_TYPES + ['duo_code_review_bot']) }
     scope :without_ghosts, -> { where(user_type: USER_TYPES.keys - ['ghost']) }

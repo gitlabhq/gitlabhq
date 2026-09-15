@@ -212,8 +212,8 @@ module EventsHelper
   end
 
   def event_feed_summary(event)
-    if event.issue?
-      render "events/event_issue", issue: event.issue
+    if event.issue? || event.work_item?
+      render "events/event_issue", issue: event.target
     elsif event.push_action?
       render "events/event_push", event: event
     elsif event.merge_request?

@@ -37,13 +37,63 @@ To enable automatic pipeline instrumentation, add the `GITLAB_OBSERVABILITY_EXPO
    - **Environment scope**: All (or specific environments)
 1. Select **Add variable**.
 
-## Authenticate exported data (optional)
+## Authenticate exported data
 
-If your GitLab Observability instance requires bearer-token authorization on its
-OTLP endpoint, provide the token through the `GITLAB_OBSERVABILITY_TOKEN` CI/CD
-variable. When set, GitLab sends it as an `Authorization: Bearer <token>` header
-with the exported telemetry. When the variable is not set, GitLab exports the
-data without an `Authorization` header, exactly as before.
+By default, the GitLab Observability OpenTelemetry Protocol (OTLP) endpoint
+accepts telemetry without authentication. You can require callers to send a
+bearer token, so that only clients with a valid token can send pipeline
+telemetry to your instance.
+
+Authentication has two sides:
+
+- In GitLab Observability, you generate and manage the token, and turn
+  enforcement on or off per instance.
+- In GitLab, you store that token in a CI/CD variable so the pipeline
+  exporter sends it with the telemetry.
+
+When the `GITLAB_OBSERVABILITY_TOKEN` CI/CD variable is set, GitLab sends its
+value as an `Authorization: Bearer <token>` header on the exported telemetry.
+When the variable is not set, GitLab exports the data without an `Authorization`
+header.
+
+> [!note]
+> Enforcement is available only through the GitLab Observability API. The
+> examples that follow use `curl` and authenticate with the `SIGNOZ-API-KEY`
+> header. To get an API key, see [Access the Observability API](api_access.md).
+> Only users with the Editor role or administrator access can manage tokens or
+> change enforcement. Replace `<api_key>` and `<instance_url>` in the examples
+> with your own values.
+
+### Generate a token in GitLab Observability
+
+An ingest token is an API key on the `otel-ingest` service account. Generate one
+with the API:
+
+```shell
+curl --request POST \
+  --header "SIGNOZ-API-KEY: <api_key>" \
+  --header "Content-Type: application/json" \
+  --data '{"name": "ci-cd-export"}' \
+  --url "<instance_url>/api/v1/ingest_auth/tokens"
+```
+
+The response contains the token value in the `token` field. This value is
+returned only when you create the token, so copy it immediately.
+
+You can also create the token from the UI, in **Observe** > **API Keys**.
+
+Prefer a token with no expiry, which is the default. GitLab Observability does
+not notify you before a token expires, and an expired token stops being
+accepted, which silently breaks telemetry ingestion. To replace a token, use
+rotation instead of expiry. See [Rotate a token](#rotate-a-token).
+
+Keep enforcement disabled for now. Roll the token out to your pipelines before
+you enable enforcement, so the endpoint doesn't start rejecting unauthenticated
+telemetry.
+
+### Set the token in GitLab
+
+Add the token to the project or group that runs the instrumented pipelines:
 
 1. In the top bar, select **Search or go to** and find your project or group.
 1. In the left sidebar, select **Settings** > **CI/CD**.
@@ -51,10 +101,62 @@ data without an `Authorization` header, exactly as before.
 1. Select **Add variable**.
 1. Configure the variable:
    - **Key**: `GITLAB_OBSERVABILITY_TOKEN`
-   - **Value**: The token generated in your GitLab Observability instance.
+   - **Value**: The token you generated in GitLab Observability.
    - **Type**: Variable
    - **Flags**: Select **Mask variable** so the token is not exposed in job logs.
 1. Select **Add variable**.
+
+### Enable enforcement
+
+After the token is set in GitLab and any other clients that send telemetry to
+the instance have adopted it, turn on enforcement with the API:
+
+```shell
+curl --request PUT \
+  --header "SIGNOZ-API-KEY: <api_key>" \
+  --header "Content-Type: application/json" \
+  --data '{"enabled": true}' \
+  --url "<instance_url>/api/v1/ingest_auth/state"
+```
+
+To turn enforcement off again, send `{"enabled": false}` to the same endpoint.
+To check the current state, send a `GET` request to it.
+
+The change takes effect without a collector restart. After enforcement is on,
+the OTLP endpoint rejects any telemetry that does not include a valid token.
+
+> [!warning]
+> Enable enforcement only after every client that sends telemetry to the
+> instance has a valid token, including this pipeline export. Enabling
+> enforcement before a client has adopted the token causes that client's
+> telemetry to be rejected.
+
+### Rotate a token
+
+Rotate a token to replace it without dropping telemetry, because the instance
+accepts more than one valid token at a time:
+
+1. Generate a new token, as described in
+   [Generate a token in GitLab Observability](#generate-a-token-in-gitlab-observability).
+1. Update the `GITLAB_OBSERVABILITY_TOKEN` variable (and any other clients) to
+   the new token value. Both the old and new tokens remain valid while both
+   exist, so telemetry export has no gap.
+1. Revoke the old token. List the tokens to find its ID, then delete it:
+
+   ```shell
+   curl --request GET \
+     --header "SIGNOZ-API-KEY: <api_key>" \
+     --url "<instance_url>/api/v1/ingest_auth/tokens"
+
+   curl --request DELETE \
+     --header "SIGNOZ-API-KEY: <api_key>" \
+     --url "<instance_url>/api/v1/ingest_auth/tokens/<token_id>"
+   ```
+
+> [!note]
+> While enforcement is on, you cannot revoke the last remaining valid token.
+> Revoking it would reject all telemetry. Generate a replacement first, or
+> disable enforcement.
 
 ## Instrumentation types
 

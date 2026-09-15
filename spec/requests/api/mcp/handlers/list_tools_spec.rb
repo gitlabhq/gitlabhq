@@ -59,17 +59,21 @@ RSpec.describe API::Mcp, 'List tools request', feature_category: :mcp_server do
       expected_annotations = {
         # write, non-destructive
         'add_branch' => { 'readOnlyHint' => false, 'destructiveHint' => false },
-        'create_issue' => { 'readOnlyHint' => false, 'destructiveHint' => false },
-        'create_merge_request' => { 'readOnlyHint' => false, 'destructiveHint' => false },
-        'create_merge_request_note' => { 'readOnlyHint' => false, 'destructiveHint' => false },
-        'create_workitem_note' => { 'readOnlyHint' => false, 'destructiveHint' => false },
+        'save_merge_request' => { 'readOnlyHint' => false, 'destructiveHint' => false },
+        'fork_repository' => { 'readOnlyHint' => false, 'destructiveHint' => false },
         'link_work_items' => { 'readOnlyHint' => false, 'destructiveHint' => false },
+        'save_merge_request_review' => { 'readOnlyHint' => false, 'destructiveHint' => false },
+        'save_note' => { 'readOnlyHint' => false, 'destructiveHint' => false },
+        'save_work_item' => { 'readOnlyHint' => false, 'destructiveHint' => false },
         # write, destructive
+        'accept_merge_request' => { 'readOnlyHint' => false, 'destructiveHint' => true },
+        'add_commit' => { 'readOnlyHint' => false, 'destructiveHint' => true },
         'manage_pipeline' => { 'readOnlyHint' => false, 'destructiveHint' => true },
         'save_pipeline' => { 'readOnlyHint' => false, 'destructiveHint' => true },
         # read-only
+        'get_commit' => { 'readOnlyHint' => true },
         'get_issue' => { 'readOnlyHint' => true },
-        'get_job_log' => { 'readOnlyHint' => true },
+        'get_job' => { 'readOnlyHint' => true },
         'get_mcp_server_version' => { 'readOnlyHint' => true },
         'get_merge_request' => { 'readOnlyHint' => true },
         'get_merge_request_commits' => { 'readOnlyHint' => true },
@@ -79,12 +83,23 @@ RSpec.describe API::Mcp, 'List tools request', feature_category: :mcp_server do
         'get_merge_request_pipelines' => { 'readOnlyHint' => true },
         'get_pipeline' => { 'readOnlyHint' => true },
         'get_pipeline_jobs' => { 'readOnlyHint' => true },
+        'get_project' => { 'readOnlyHint' => true },
         'get_repository_file' => { 'readOnlyHint' => true },
         'get_saved_view_work_items' => { 'readOnlyHint' => true },
+        'get_user' => { 'readOnlyHint' => true },
+        'get_work_item' => { 'readOnlyHint' => true },
         'get_work_item_types' => { 'readOnlyHint' => true },
-        'get_workitem_notes' => { 'readOnlyHint' => true },
+        'list_commits' => { 'readOnlyHint' => true },
+        'list_branches' => { 'readOnlyHint' => true },
+        'list_groups' => { 'readOnlyHint' => true },
         'list_merge_requests' => { 'readOnlyHint' => true },
+        'list_project_members' => { 'readOnlyHint' => true },
         'list_pipelines' => { 'readOnlyHint' => true },
+        'list_projects' => { 'readOnlyHint' => true },
+        'list_releases' => { 'readOnlyHint' => true },
+        'list_repository_tree' => { 'readOnlyHint' => true },
+        'list_tags' => { 'readOnlyHint' => true },
+        'list_work_items' => { 'readOnlyHint' => true },
         'search' => { 'readOnlyHint' => true },
         'search_labels' => { 'readOnlyHint' => true },
         'list_wiki_pages' => { 'readOnlyHint' => true }
@@ -101,7 +116,7 @@ RSpec.describe API::Mcp, 'List tools request', feature_category: :mcp_server do
 
       api_tool_names = ::API::API.routes.filter_map do |route|
         settings = route.app.route_setting(:mcp)
-        next if settings.blank? || settings[:aggregators].present?
+        next if settings.blank? || settings[:aggregators].present? || settings[:unlisted].present?
 
         settings[:tool_name].to_s
       end.uniq
@@ -110,6 +125,66 @@ RSpec.describe API::Mcp, 'List tools request', feature_category: :mcp_server do
 
       expect(api_tool_names).not_to be_empty, 'No MCP-enabled API routes were discovered'
       expect(surfaced_names).to include(*api_tool_names)
+    end
+
+    it 'only lists save_merge_request params that its routes actually declare', :aggregate_failures do
+      save_mr_routes = ::API::API.routes.select do |route|
+        route.app.route_setting(:mcp)&.dig(:aggregators)&.include?(::Mcp::Tools::MergeRequests::SaveMergeRequestService)
+      end
+
+      expect(save_mr_routes.size).to eq(2), 'Expected save_merge_request to aggregate the create and update routes'
+
+      save_mr_routes.each do |route|
+        settings = route.app.route_setting(:mcp)
+        stale = settings[:params].map(&:to_s) - route.params.keys.map(&:to_s)
+
+        expect(stale).to be_empty,
+          "MCP tool '#{settings[:tool_name]}' lists params not declared on its route: #{stale.inspect}. " \
+            "Update the tool's mcp params list to match the route params."
+      end
+    end
+
+    it 'advertises the list_branches params', :aggregate_failures do
+      post_list_tools
+
+      schema = json_response['result']['tools'].find { |tool| tool['name'] == 'list_branches' }['inputSchema']
+
+      expect(schema['properties'].keys).to match_array(%w[id search page per_page])
+      expect(schema['required']).to contain_exactly('id')
+    end
+
+    it 'ensures every MCP-enabled route has a matching allow_mcp_access declaration',
+      :eager_load, :aggregate_failures do
+      method_to_access = {
+        'GET' => :get?,
+        'HEAD' => :head?,
+        'POST' => :post?,
+        'PUT' => :put?,
+        'PATCH' => :patch?,
+        'DELETE' => :delete?
+      }.freeze
+
+      ::API::API.routes.each do |route|
+        settings = route.app.route_setting(:mcp)
+        next if settings.blank?
+
+        http_method = route.request_method
+        next unless method_to_access.key?(http_method)
+
+        api_class = route.app.options[:for]
+        mcp_scopes = api_class.allowed_scopes.select { |s| s.name == :mcp }
+
+        request_double = instance_double(ActionDispatch::Request)
+        method_to_access.each_value { |m| allow(request_double).to receive(m).and_return(false) }
+        allow(request_double).to receive(method_to_access[http_method]).and_return(true)
+
+        matched = mcp_scopes.any? { |scope| scope.sufficient?([:mcp], request_double) }
+
+        expect(matched).to be(true),
+          "#{api_class} registers MCP tool '#{settings[:tool_name]}' on #{http_method} " \
+            "but has no allow_mcp_access_* declaration that permits #{http_method} requests. " \
+            "Add the appropriate allow_mcp_access_* call for the HTTP method."
+      end
     end
 
     it 'validates all array parameters have proper JSON Schema structure with items property' do
@@ -210,6 +285,38 @@ RSpec.describe API::Mcp, 'List tools request', feature_category: :mcp_server do
       end
     end
 
+    context 'with tools retired from the catalog' do
+      it 'does not advertise retired tools but keeps them callable' do
+        post_list_tools
+
+        tool_names = json_response['result']['tools'].pluck('name')
+        expect(tool_names).not_to include('create_issue', 'get_workitem_notes')
+        manager = ::Mcp::Tools::Manager.new
+        expect(manager.get_tool(name: 'create_issue')).to be_present
+        expect(manager.get_tool(name: 'get_workitem_notes')).to be_present
+      end
+    end
+
+    context 'when a tool is unlisted' do
+      let(:manager) do
+        ::Mcp::Tools::Manager.new.tap do |m|
+          allow(m.list_tools['get_mcp_server_version']).to receive(:unlisted?).and_return(true)
+        end
+      end
+
+      before do
+        handler = ::API::Mcp::Handlers::ListTools.new(manager)
+        allow(::API::Mcp::Handlers::ListTools).to receive(:new).and_return(handler)
+      end
+
+      it 'is excluded from the list' do
+        post_list_tools
+
+        tool_names = json_response['result']['tools'].pluck('name')
+        expect(tool_names).not_to include('get_mcp_server_version')
+      end
+    end
+
     context 'when x-gitlab-enabled-mcp-server-tools header is present' do
       def post_list_tools_with_allowed(allowed_tools)
         post api('/mcp', user, oauth_access_token: access_token),
@@ -218,17 +325,17 @@ RSpec.describe API::Mcp, 'List tools request', feature_category: :mcp_server do
       end
 
       it 'returns only the tools listed in the header' do
-        post_list_tools_with_allowed('get_issue,create_issue')
+        post_list_tools_with_allowed('get_issue,get_pipeline')
 
         tool_names = json_response['result']['tools'].pluck('name')
-        expect(tool_names).to contain_exactly('get_issue', 'create_issue')
+        expect(tool_names).to contain_exactly('get_issue', 'get_pipeline')
       end
 
       it 'excludes tools not in the allowed list' do
         post_list_tools_with_allowed('get_issue')
 
         tool_names = json_response['result']['tools'].pluck('name')
-        expect(tool_names).not_to include('create_issue', 'search', 'get_merge_request')
+        expect(tool_names).not_to include('get_pipeline', 'search', 'get_merge_request')
       end
 
       it 'handles a single tool correctly' do
@@ -250,7 +357,7 @@ RSpec.describe API::Mcp, 'List tools request', feature_category: :mcp_server do
           post_list_tools_with_allowed('')
 
           tool_names = json_response['result']['tools'].pluck('name')
-          expect(tool_names).to include('get_issue', 'create_issue', 'search', 'get_merge_request')
+          expect(tool_names).to include('get_issue', 'get_pipeline', 'search', 'get_merge_request')
         end
       end
     end
@@ -260,7 +367,7 @@ RSpec.describe API::Mcp, 'List tools request', feature_category: :mcp_server do
         post_list_tools
 
         tool_names = json_response['result']['tools'].pluck('name')
-        expect(tool_names).to include('get_issue', 'create_issue', 'search', 'get_merge_request')
+        expect(tool_names).to include('get_issue', 'get_pipeline', 'search', 'get_merge_request')
       end
     end
 

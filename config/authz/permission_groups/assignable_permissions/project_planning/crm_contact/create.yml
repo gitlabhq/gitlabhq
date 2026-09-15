@@ -1,0 +1,9 @@
+---
+name: create_crm_contact
+description: Grants the ability to create customer relations contacts
+boundaries:
+  - group
+available_for:
+  - granular_access_token
+permissions:
+  - create_crm_contact

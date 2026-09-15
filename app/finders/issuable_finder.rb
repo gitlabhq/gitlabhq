@@ -51,6 +51,7 @@ class IssuableFinder
   FULL_TEXT_SEARCH_TERM_PATTERN = '[\u0000-\u02FF\u1E00-\u1EFF\u2070-\u218F]*'
   FULL_TEXT_SEARCH_TERM_REGEX = /\A#{FULL_TEXT_SEARCH_TERM_PATTERN}\z/
   NEGATABLE_PARAMS_HELPER_KEYS = %i[project_id scope status include_subgroups].freeze
+  GROUPED_SORTS = %w[priority popularity upvotes downvotes].freeze
 
   attr_accessor :current_user, :params
   attr_reader :original_params
@@ -123,6 +124,8 @@ class IssuableFinder
     # Let's see if we have to negate anything
     items = filter_negated_items(items) if should_filter_negated_args?
 
+    items = by_label(items)
+
     # This has to be last as we use a CTE as an optimization fence
     # https://www.postgresql.org/docs/current/static/queries-with.html
     items = by_search(items)
@@ -144,7 +147,6 @@ class IssuableFinder
     items = by_iids(items)
     items = by_milestone(items)
     items = by_release(items)
-    items = by_label(items)
     items = by_my_reaction_emoji(items)
     items = by_crm_contact(items)
     items = by_subscribed(items)
@@ -445,7 +447,43 @@ class IssuableFinder
   # rubocop: enable CodeReuse/ActiveRecord
 
   def by_label(items)
+    if use_cte_for_label_filter? && !items.null_relation?
+      cte = Gitlab::SQL::CTE.new(:filtered_issuables, items)
+
+      items = klass.with(cte.to_arel).from(cte.alias_to(klass.arel_table)) # rubocop: disable CodeReuse/ActiveRecord -- the CTE fence has to be built here, a scope cannot replace the relation's FROM clause
+    end
+
     label_filter.filter(items)
+  end
+
+  def use_cte_for_label_filter?
+    return false unless params[:label_name].present?
+    return false if params.parent.present?
+    return false unless bounded_by_user_filter?
+    return false unless cte_safe_query?
+
+    Feature.enabled?(:use_cte_for_label_filter, current_user)
+  end
+  strong_memoize_attr :use_cte_for_label_filter?
+
+  def cte_safe_query?
+    GROUPED_SORTS.none? { |sort| params[:sort].to_s.include?(sort) }
+  end
+
+  def bounded_by_user_filter?
+    bounding_user_params.any? { |name| specific_user_filter?(name) }
+  end
+
+  def bounding_user_params
+    %i[assignee_id assignee_username author_id author_username]
+  end
+
+  def specific_user_filter?(name)
+    value = params[name]
+
+    return false if value.blank?
+
+    Array.wrap(value).none? { |entry| entry.to_s.downcase.in?([Params::FILTER_NONE, Params::FILTER_ANY]) }
   end
 
   def label_filter

@@ -73,7 +73,7 @@ RSpec.describe Gitlab::ImportExport::Saver, feature_category: :importers do
 
     expect(FileUtils).not_to have_received(:rm_rf).with(base_path)
     expect(FileUtils).to have_received(:rm_rf).with(archive_path)
-    expect(Dir.exist?(archive_path)).to eq(false)
+    expect(Dir.exist?(archive_path)).to be(false)
   end
 
   context 'when the export_file column saved but CarrierWave reports no file' do

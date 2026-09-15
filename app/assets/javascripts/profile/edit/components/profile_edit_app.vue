@@ -40,11 +40,6 @@ export default {
     'needsPasswordConfirmation',
     'emailHelpText',
   ],
-  provide() {
-    return {
-      i18n: this.$options.i18n,
-    };
-  },
   props: {
     profilePath: {
       type: String,

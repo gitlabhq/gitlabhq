@@ -1,6 +1,6 @@
 ---
-stage: AI-powered
-group: AI Framework
+stage: AI Platform
+group: AI Core Infra
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see <https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments>
 description: AIネイティブの機能と機能性。
 title: GitLab Duoのデータの使用
@@ -8,7 +8,7 @@ title: GitLab Duoのデータの使用
 
 GitLab Duoは生成AIを使用して、ベロシティを向上させ、生産性を高めます。各AIネイティブ機能は独立して動作し、他の機能の動作に依存しません。
 
-GitLabは、特定のタスクに適した大規模言語モデル（LLM）を使用します。これらのLLMは、[Anthropic Claude](https://claude.com/product/overview) 、[Fireworks AIでホストされるCodestral](https://mistral.ai/news/codestral) 、[Google Vertex AIモデル](https://docs.cloud.google.com/vertex-ai/generative-ai/docs/learn/overview) 、および[OpenAIモデル](https://platform.openai.com/docs/models)です。
+GitLabは、特定のタスクに適した大規模言語モデル（LLM）を使用します。これらの大規模言語モデルは、[Anthropic Claude](https://claude.com/product/overview)、[Fireworks AI-hosted Codestral](https://mistral.ai/news/codestral)、[Gemini Enterprise Agent Platformモデル](https://docs.cloud.google.com/gemini-enterprise-agent-platform/models/beginners-guide)、および[OpenAIモデル](https://platform.openai.com/docs/models)です。
 
 ## 段階的な機能拡張 {#progressive-enhancement}
 
@@ -20,40 +20,29 @@ GitLab DuoのAIネイティブ機能は、さまざまな[機能サポートレ�
 
 ## データプライバシー {#data-privacy}
 
-GitLab DuoのAIネイティブ機能は、生成AIモデルを搭載しています。すべての個人データの処理は、当社の[プライバシーに関する声明](https://about.gitlab.com/privacy/)に従って行われます。また、[サブプロセッサページ](https://about.gitlab.com/privacy/subprocessors/#third-party-sub-processors)で、これらの機能を提供するために使用するサブプロセッサのリストを確認できます。
+GitLab DuoのAIネイティブ機能は、生成AIモデルによって提供されます。GitLabは、[GitLabプライバシーに関する声明](https://about.gitlab.com/privacy/)に従って、あらゆる個人データを処理します。
+
+GitLabがこれらの機能を提供するために使用するAIモデルサブプロセッサのリストについては、[サードパーティのサブプロセッサ](https://about.gitlab.com/privacy/subprocessors/#third-party-sub-processors)を参照してください。
 
 ## データ保持 {#data-retention}
 
 ### モデルサブプロセッサ {#model-sub-processors}
 
-以下は、GitLab AIモデルの[サブプロセッサ](https://about.gitlab.com/privacy/subprocessors/#third-party-sub-processors)の現在の保持期間を反映したものです:
+GitLab Duoのリクエストについて、GitLabはFireworks AIとのゼロデータ保持ポリシーを定めています。Fireworks AIは、モデルの入力および出力データが提供された直後にそれを破棄し、悪用モニタリングのために入力および出力データを保存しません。このポリシーの例外は、プロンプトキャッシュがGitLab Duoコード提案およびGitLab Duo Agentic Chatに対して有効になっている場合です。OpenAIモデルの場合、プロンプトキャッシュをオフにすることはできません。
 
-GitLab Duoのリクエストの場合、GitLabはAnthropic、AWS、Fireworks AI、およびGoogleに対してデータゼロ保持ポリシーを適用しています。
-
-これらのベンダーは、出力が提供された直後にモデルの入力および出力データを破棄し、不正使用モニタリングのために入力および出力データを保存しません。このポリシーの例外は、Fireworks AIおよびVertex AIのプロンプトキャッシュがコード提案およびGitLab Duo Agentic Chatに対して有効になっている場合です。
-
-OpenAIモデルの場合、プロンプトキャッシュをオフにすることはできません。GPT-5.5およびGPT-5.5 Proを含む特定のOpenAIモデルは、[限定的なベンダー側データ保持](https://developers.openai.com/api/docs/guides/your-data#safety-retention)の対象となります。この限定的なベンダー側データ保持の対象となるモデルは、[GitLab Duo対応モデルドキュメント](model_selection.md#supported-models)に指定されています。
-
-すべてのGitLab AIモデルサブプロセッサは、モデルの入力と出力をモデルのトレーニングに使用することを制限されており、独自の独立した法的義務を履行する場合を除き、顧客コンテンツの使用を禁止するGitLabとのデータ保護契約の下にあります。
+AnthropicおよびOpenAIの一部のモデルは、Amazon BedrockおよびGemini Enterprise Agent Platformでホストされている場合を含め、ベンダー側の限定的なデータ保持の対象となります。これらのモデルの詳細については、[サポートされているGitLab Duo Agent PlatformのAIモデル](../duo_agent_platform/model_selection.md#supported-models)を参照してください。
 
 ### GitLab {#gitlab}
 
-GitLab Duo ChatとGitLab Duo Agent Platformは、以前に議論したトピックにすばやく戻れるように、それぞれチャット履歴とワークフロー履歴を保持します。GitLab Duo Chatインターフェースでチャットを削除できます。GitLab.comでは、チャットおよびワークフローの履歴は、不正防止目的で保持される場合があります。
+GitLab Duo ChatとGitLab Duo Agent Platformは、以前に議論したトピックに素早く戻るのに役立つように、チャットとワークフローの履歴を保持します。GitLab Duo Chatインターフェースでチャットを削除できます。GitLab.comでは、GitLabは不正使用防止のためにチャットとワークフローの履歴を保持します。GitLabは、顧客が[GitLabサポートチケット](https://about.gitlab.com/support/portal/)を通じて同意を提供しない限り、入力および出力データを保持しません。
 
-お客様がGitLabの[サポートチケット](https://about.gitlab.com/support/portal/)を通じて同意を提供しない限り、GitLabは入力および出力データを保持しません。
+GitLab Duo Agent Platformの拡張ロギングを有効にすると、GitLabはトレースデータを保持します。AI機能に関連するロギング情報は、GitLab AIモデルサブプロセッサとのゼロデータ保持ポリシーとは別です。詳細については、[GitLabログシステム](../../administration/logs/_index.md)を参照してください。
 
-グループまたはインスタンスでGitLab Duo Agent Platformワークフローの拡張ロギングを有効にすると、トレースデータが保持されます。これは、AIモデルサブプロセッサとのデータゼロ保持ポリシーとは別です。
-
-詳細については、[AI機能ログの生成](../../administration/logs/_index.md)を参照してください。
-
-## トレーニングデータ {#training-data}
+## モデルトレーニング {#model-training}
 
 GitLabは生成AIモデルをトレーニングしません。
 
-当社のAI[サブプロセッサ](https://about.gitlab.com/privacy/subprocessors/#third-party-sub-processors)の詳細については、以下を参照してください:
-
-- Google Vertex AIモデルAPIの[データガバナンス](https://cloud.google.com/vertex-ai/generative-ai/docs/data-governance)、[責任あるAI](https://cloud.google.com/vertex-ai/generative-ai/docs/learn/responsible-ai)、[基盤モデルのトレーニングに関する詳細](https://cloud.google.com/vertex-ai/generative-ai/docs/data-governance#foundation_model_training)、Googleの[セキュアAIフレームワーク（SAIF）](https://safety.google/cybersecurity-advancements/saif/)、および[リリースノート](https://cloud.google.com/vertex-ai/docs/release-notes)。
-- Anthropic Claudeの[Constitution](https://www.anthropic.com/news/claudes-constitution)、トレーニングデータ[FAQ](https://support.anthropic.com/en/articles/7996885-how-do-you-use-personal-data-in-model-training)、[モデル概要](https://docs.anthropic.com/en/docs/about-claude/models)、および[データの最新性に関する記事](https://support.anthropic.com/en/articles/8114494-how-up-to-date-is-claude-s-training-data)。
+すべてのGitLab AIモデルサブプロセッサは、モデルの入力および出力をモデルのトレーニングに使用することを制限されています。これらのサブプロセッサは、独自の目的で顧客コンテンツを使用することを禁止するGitLabとのデータ保護契約に基づいており、独立した法的義務を履行する場合を除きます。
 
 ## テレメトリ {#telemetry}
 
@@ -73,7 +62,7 @@ GitLab Duoは、Snowplowコレクターを介して、集約または匿名化�
 
 ## GitLab Model Context Protocolサーバー {#gitlab-model-context-protocol-server}
 
-以下の情報は、[GitLab Model Context Protocol（MCP）サーバー](model_context_protocol/mcp_server.md)のSelf-Managedインスタンスでの使用に適用されます。
+次の情報は、GitLab Self-Managedインスタンスでの[GitLab Model Context Protocol（MCP）サーバー](../model_context_protocol/mcp_server.md)の使用に適用されます。
 
 GitLab MCPサーバーが使用されている場合、GitLabはデータを送信、保存、保持、または処理しません。すべての通信は、MCPクライアントとお客様の環境にあるGitLab MCPサーバーの間で直接行われます。
 
@@ -120,7 +109,7 @@ GitLab Duoを使用する際、コードは事前スキャンセキュリティ�
 - CLI設定ロギング
 
 > [!note]
-> ウェブインターフェースを介してGitLab Duo Chatとやり取りする場合、シークレットスキャンは発生しません。
+> シークレットスキャンは、ウェブインターフェースを通じてGitLab Duo Chatを操作する際には行われません。
 
 ### 例外: シークレット誤検出判定 {#exception-secret-false-positive-detection}
 
@@ -151,7 +140,7 @@ GitLab Duoを使用する際、コードは事前スキャンセキュリティ�
 グループのデータ収集を有効にするには:
 
 1. 上部のバーで、**検索または移動先**を選択して、グループを見つけます。
-1. 左サイドバーで、**設定** > **GitLab Duo**を選択します。
+1. 左側のサイドバーで、**設定** > **GitLab Duo**を選択します。
 1. **設定の変更**を選択します。
 1. **データ収集**の下にある**使用状況データの収集**チェックボックスを選択します。
 1. **変更を保存**を選択します。
@@ -173,3 +162,45 @@ GitLab Duoを使用する際、コードは事前スキャンセキュリティ�
 - プロジェクトまたはネームスペース識別子。
 
 GitLabは、ユーザーが自身のプロンプトに含めた識別子を削除しません。
+
+## プロンプトキャッシュ {#prompt-caching}
+
+プロンプトキャッシュは、キャッシュされたプロンプトおよび入力データの再処理を回避することで、レイテンシーを改善します。プロンプトキャッシュを有効にすると、モデルベンダーはプロンプトデータを一時的にメモリに保存します。キャッシュされたデータは、永続ストレージに記録されません。
+
+プロンプトレジストリを使用するAgent Platform機能とコード提案の両方で、サポートされているモデルに対してトークンキャッシュが自動的に有効になります。
+
+### プロンプトキャッシュをオフにする {#turn-off-prompt-caching}
+
+デフォルトで、プロンプトキャッシュは有効になっています。プロンプトキャッシュは、トップレベルグループまたはインスタンスに対して無効にすることができます。
+
+{{< tabs >}}
+
+{{< tab title="トップレベルグループの場合" >}}
+
+前提条件: 
+
+- トップレベルグループのオーナーロール。
+
+1. 上部のバーで、**検索または移動先**を選択して、グループを見つけます。
+1. 左側のサイドバーで、**設定** > **GitLab Duo**を選択します。
+1. **設定の変更**を選択します。
+1. **データとプライバシー**セクションの**プロンプトキャッシュ**で、**プロンプトキャッシュを有効にする**チェックボックスをオフにします。
+1. **変更を保存**を選択します。
+
+{{< /tab >}}
+
+{{< tab title="インスタンスの場合" >}}
+
+前提条件: 
+
+- 管理者アクセス権。
+
+1. 右上隅で、**管理者**を選択します。
+1. 左側のサイドバーで、**GitLab Duo**を選択します。
+1. **設定の変更**を選択します。
+1. **データとプライバシー**セクションの**プロンプトキャッシュ**で、**プロンプトキャッシュを有効にする**チェックボックスをオフにします。
+1. **変更を保存**を選択します。
+
+{{< /tab >}}
+
+{{< /tabs >}}

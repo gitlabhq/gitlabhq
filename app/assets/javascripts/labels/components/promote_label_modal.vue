@@ -5,7 +5,6 @@ import axios from '~/lib/utils/axios_utils';
 import { visitUrl, getParameterByName } from '~/lib/utils/url_utility';
 import { stripQuotes } from '~/lib/utils/text_utility';
 import { s__, __, sprintf } from '~/locale';
-import eventHub from '../event_hub';
 
 export default {
   name: 'PromoteLabelModal',
@@ -63,21 +62,12 @@ export default {
   },
   methods: {
     onSubmit() {
-      eventHub.$emit('promoteLabelModal.requestStarted', this.url);
       return axios
         .post(this.url, { params: { format: 'json' }, page: getParameterByName('page') })
         .then((response) => {
-          eventHub.$emit('promoteLabelModal.requestFinished', {
-            labelUrl: this.url,
-            successful: true,
-          });
           visitUrl(response.data.url);
         })
         .catch((error) => {
-          eventHub.$emit('promoteLabelModal.requestFinished', {
-            labelUrl: this.url,
-            successful: false,
-          });
           createAlert({
             message: error,
           });

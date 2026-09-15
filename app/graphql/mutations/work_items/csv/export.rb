@@ -11,6 +11,8 @@ module Mutations
         include ::WorkItems::SharedFilterArguments
 
         authorize :export_work_items
+        authorize_granular_token permissions: :read_work_item, boundary_argument: :project_path,
+          boundary_type: :project
 
         argument :project_path, GraphQL::Types::ID,
           required: true,

@@ -18,15 +18,14 @@ RSpec.describe API::Wikis, feature_category: :wiki do
 
   let_it_be(:user) { create(:user) }
   let_it_be(:group, freeze: false) { create(:group, owners: user) }
-  let_it_be(:group_project, freeze: false) { create(:project, :wiki_repo, namespace: group) }
-
   let_it_be(:developer) { create(:user) }
   let_it_be(:maintainer) { create(:user) }
+  let_it_be(:group_project, freeze: false) do
+    create(:project, :wiki_repo, namespace: group, developers: developer, maintainers: maintainer)
+  end
+
   let_it_be(:project_wiki_disabled, freeze: false) do
-    create(:project, :wiki_repo, :wiki_disabled).tap do |project|
-      project.add_developer(developer)
-      project.add_maintainer(maintainer)
-    end
+    create(:project, :wiki_repo, :wiki_disabled, developers: developer, maintainers: maintainer)
   end
 
   let(:project_wiki) { create(:project_wiki, project: project, user: user) }
@@ -130,7 +129,6 @@ RSpec.describe API::Wikis, feature_category: :wiki do
       let(:user) { developer }
       let(:project) { group_project }
       let(:boundary_object) { project }
-      let!(:project_setup) { group_project.add_developer(user) }
       let(:request) { get api(url, personal_access_token: pat) }
     end
 
@@ -197,7 +195,7 @@ RSpec.describe API::Wikis, feature_category: :wiki do
       end
 
       context 'when user is developer' do
-        before do
+        before_all do
           project.add_developer(user)
         end
 
@@ -215,7 +213,7 @@ RSpec.describe API::Wikis, feature_category: :wiki do
       end
 
       context 'when user is maintainer' do
-        before do
+        before_all do
           project.add_maintainer(user)
         end
 
@@ -247,7 +245,7 @@ RSpec.describe API::Wikis, feature_category: :wiki do
       end
 
       context 'when user is developer' do
-        before do
+        before_all do
           project.add_developer(user)
         end
 
@@ -265,7 +263,7 @@ RSpec.describe API::Wikis, feature_category: :wiki do
       end
 
       context 'when user is maintainer' do
-        before do
+        before_all do
           project.add_maintainer(user)
         end
 
@@ -288,9 +286,11 @@ RSpec.describe API::Wikis, feature_category: :wiki do
         let(:page) { create(:wiki_page, wiki: project.wiki, title: 'page_with_ref', content: issue.to_reference) }
         let(:expected_content) { %r{<a href=".*#{issue.iid}".*>#{issue.to_reference}</a>} }
 
-        before do
+        before_all do
           project.add_developer(user)
+        end
 
+        before do
           request
         end
 
@@ -305,7 +305,6 @@ RSpec.describe API::Wikis, feature_category: :wiki do
       let(:user) { developer }
       let(:project) { group_project }
       let(:boundary_object) { project }
-      let!(:project_setup) { group_project.add_developer(user) }
       let(:request) { get api(url, personal_access_token: pat) }
     end
   end
@@ -346,7 +345,6 @@ RSpec.describe API::Wikis, feature_category: :wiki do
         let(:project) { group_project }
         let(:boundary_object) { project }
         let(:payload) { { title: "wiki-#{SecureRandom.hex(4)}", content: 'granular tokens' } }
-        let!(:project_setup) { group_project.add_developer(user) }
         let(:request) { post api(url, personal_access_token: pat), params: payload }
       end
     end
@@ -363,17 +361,13 @@ RSpec.describe API::Wikis, feature_category: :wiki do
       end
 
       context 'when user is developer' do
-        before do
-          project.add_developer(user)
-        end
+        let_it_be(:project) { create(:project, :wiki_private, :wiki_repo, developers: user) }
 
         include_examples 'wikis API creates wiki page'
       end
 
       context 'when user is maintainer' do
-        before do
-          project.add_maintainer(user)
-        end
+        let_it_be(:project) { create(:project, :wiki_private, :wiki_repo, maintainers: user) }
 
         include_examples 'wikis API creates wiki page'
       end
@@ -411,9 +405,7 @@ RSpec.describe API::Wikis, feature_category: :wiki do
       end
 
       context 'when user is maintainer' do
-        before do
-          project.add_maintainer(user)
-        end
+        let_it_be(:project) { create(:project, :wiki_repo, maintainers: user) }
 
         include_examples 'wikis API creates wiki page'
       end
@@ -426,7 +418,7 @@ RSpec.describe API::Wikis, feature_category: :wiki do
     let(:url) { "/projects/#{project.id}/wikis/#{page.slug}" }
 
     context 'when wiki is disabled' do
-      let(:project) { create(:project, :wiki_disabled, :wiki_repo) }
+      let(:project) { project_wiki_disabled }
 
       context 'when user is guest' do
         before do
@@ -577,7 +569,6 @@ RSpec.describe API::Wikis, feature_category: :wiki do
       let(:user) { developer }
       let(:project) { group_project }
       let(:boundary_object) { project }
-      let!(:project_setup) { group_project.add_developer(user) }
       let(:request) { put api(url, personal_access_token: pat), params: payload }
     end
   end
@@ -587,7 +578,7 @@ RSpec.describe API::Wikis, feature_category: :wiki do
     let(:url) { "/projects/#{project.id}/wikis/#{page.slug}" }
 
     context 'when wiki is disabled' do
-      let(:project) { create(:project, :wiki_disabled, :wiki_repo) }
+      let(:project) { project_wiki_disabled }
 
       context 'when user is guest' do
         before do
@@ -703,7 +694,7 @@ RSpec.describe API::Wikis, feature_category: :wiki do
     end
 
     context 'when wiki belongs to a group project' do
-      let(:project) { create(:project, :wiki_repo, namespace: group) }
+      let(:project) { group_project }
 
       before do
         delete(api(url, user))
@@ -716,7 +707,6 @@ RSpec.describe API::Wikis, feature_category: :wiki do
       let(:user) { maintainer }
       let(:project) { group_project }
       let(:boundary_object) { project }
-      let!(:project_setup) { project.add_maintainer(user) }
       let(:request) { delete api(url, personal_access_token: pat) }
     end
   end
@@ -739,7 +729,7 @@ RSpec.describe API::Wikis, feature_category: :wiki do
     end
 
     context 'when wiki is disabled' do
-      let(:project) { create(:project, :wiki_disabled, :wiki_repo) }
+      let(:project) { project_wiki_disabled }
 
       context 'when user is guest' do
         before do
@@ -828,20 +818,15 @@ RSpec.describe API::Wikis, feature_category: :wiki do
       let(:user) { developer }
       let(:project) { group_project }
       let(:boundary_object) { project }
-      let!(:project_setup) { project.add_developer(user) }
       let(:request) { post api(url, personal_access_token: pat), params: payload }
     end
   end
 
   context 'when authenticated with a token that has the ai_workflows scope' do
-    let_it_be(:project, freeze: false) { create(:project, :wiki_repo) }
+    let_it_be(:project, freeze: false) { create(:project, :wiki_repo, developers: user) }
     let_it_be(:wiki, freeze: false) { create(:project_wiki, project: project, user: user) }
     let_it_be(:wiki_page) { create(:wiki_page, wiki: wiki) }
-    let(:oauth_access_token) { create(:oauth_access_token, user: user, scopes: [:ai_workflows]) }
-
-    before do
-      project.add_developer(user)
-    end
+    let_it_be(:oauth_access_token) { create(:oauth_access_token, user: user, scopes: [:ai_workflows]) }
 
     it 'allows access to GET endpoint for listing wiki pages' do
       get api("/projects/#{project.id}/wikis", oauth_access_token: oauth_access_token)

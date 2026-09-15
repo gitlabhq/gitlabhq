@@ -39,7 +39,10 @@ module Users
       # See issue: https://gitlab.com/gitlab-org/gitlab/-/issues/441536
       return unless Gitlab::ExclusiveLease.skipping_transaction_check { lease.try_obtain }
 
-      user.update_attribute(:last_activity_on, Date.today)
+      Gitlab::Database::QueryAnalyzers::PreventWritesOnGet.allow_write_on_get(
+        url: 'https://gitlab.com/gitlab-org/gitlab/-/issues/608670') do
+        user.update_attribute(:last_activity_on, Date.today)
+      end
 
       Gitlab::UsageDataCounters::HLLRedisCounter.track_event('unique_active_user', values: user.id)
 

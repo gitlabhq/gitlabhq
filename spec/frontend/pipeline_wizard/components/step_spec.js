@@ -203,8 +203,8 @@ describe('Pipeline Wizard - Step Page', () => {
       findInputWrappers();
     });
 
-    it('injects the template when an input wrapper emits a beforeUpdate:compiled event', () => {
-      input1.vm.$emit('beforeUpdate:compiled');
+    it('injects the template when an input wrapper emits a before-update-compiled event', () => {
+      input1.vm.$emit('before-update-compiled');
 
       expect(wrapper.vm.compiled.toString()).toBe(compiledYamlAfterInitialLoad);
     });
@@ -214,7 +214,7 @@ describe('Pipeline Wizard - Step Page', () => {
 
       await input1.vm.$emit('update:compiled', compiled);
 
-      const updateEvents = wrapper.emitted()['update:compiled'];
+      const updateEvents = wrapper.emitted('update:compiled');
       const latestUpdateEvent = updateEvents[updateEvents.length - 1];
 
       expect(latestUpdateEvent[0].toString()).toBe(compiled.toString());

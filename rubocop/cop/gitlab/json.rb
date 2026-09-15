@@ -7,7 +7,7 @@ module RuboCop
         extend RuboCop::Cop::AutoCorrector
 
         MSG = <<~TEXT
-          Prefer `Gitlab::Json` over calling `JSON` directly. See https://docs.gitlab.com/ee/development/json.html
+          Prefer `Gitlab::Json` over calling `JSON` directly. See https://docs.gitlab.com/development/json/
         TEXT
 
         AVAILABLE_METHODS = %i[parse parse! load decode dump generate encode pretty_generate].to_set.freeze

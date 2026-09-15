@@ -1,0 +1,10 @@
+---
+name: member_prune_deletion_per_batch_authorized_projects_refresh
+description: When enabled, Members::PruneDeletionsWorker refreshes a user's project authorizations once per batch instead of enqueueing a separate refresh for every destroyed membership
+feature_issue_url: https://gitlab.com/gitlab-org/gitlab/-/work_items/627784
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/254125
+rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/628066
+milestone: '19.4'
+group: group::authorization
+type: gitlab_com_derisk
+default_enabled: false

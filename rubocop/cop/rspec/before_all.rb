@@ -8,14 +8,14 @@ module RuboCop
       # Forbids `before(:all)` in **regular** RSpec example groups and
       # autocorrects it to `before_all`, the TestProf helper that wraps the group
       # in a single DB transaction.  See:
-      # https://docs.gitlab.com/ee/development/testing_guide/best_practices.html#common-test-setup
+      # https://docs.gitlab.com/development/testing_guide/best_practices/#common-test-setup
       #
       # **Exception: migration specs**
       # Specs living under `spec/migrations/` (or tagged `:migration`)
       # cannot run inside a transaction, so TestProf helpers are disabled.
       # In those files you should keep using plain `before(:all)` (or `before`)
       # as documented here:
-      # https://docs.gitlab.com/ee/development/testing_guide/best_practices.html#testprof-in-migration-specs
+      # https://docs.gitlab.com/development/testing_guide/best_practices/#testprof-in-migration-specs
       #
       # @example
       #
@@ -30,7 +30,7 @@ module RuboCop
       class BeforeAll < RuboCop::Cop::Base
         extend RuboCop::Cop::AutoCorrector
 
-        MSG = "Prefer using `before_all` over `before(:all)`. See https://docs.gitlab.com/ee/development/testing_guide/best_practices.html#common-test-setup"
+        MSG = "Prefer using `before_all` over `before(:all)`. See https://docs.gitlab.com/development/testing_guide/best_practices/#common-test-setup"
 
         RESTRICT_ON_SEND = %i[before].freeze
 

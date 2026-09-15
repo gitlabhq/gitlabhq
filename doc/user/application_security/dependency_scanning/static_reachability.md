@@ -38,7 +38,7 @@ usage data. This enriched SBOM is then ingested by GitLab to supplement vulnerab
 
 An SBOM is enriched only when both the SBOM file and source code files belong to the same project
 directory tree. When multiple nested projects exist, the system selects the closest (deepest)
-project path to determine enrichment. static reachability analysis relies on
+project path to determine enrichment. Static reachability analysis relies on
 [metadata](https://gitlab.com/gitlab-org/security-products/static-reachability-metadata/-/tree/v1?ref_type=heads)
 that maps package names from SBOMs to their corresponding code import paths for Python and Java
 packages. This metadata is maintained with weekly updates.
@@ -162,7 +162,7 @@ language.
    [optional dependencies](https://setuptools.pypa.io/en/latest/userguide/dependency_management.html#optional-dependencies)
    are marked as direct dependencies instead of as transitive dependencies. Static reachability
    analysis might not identify those packages as in use. For example, requiring `passlib[bcrypt]`
-   may result in `passlib` being marked as `in_use` and `bcrypt` is marked as `not_found`. For more
+   may result in `passlib` being marked as `in_use` and `bcrypt` being marked as `not_found`. For more
    details, see [pip](dependency_scanning_sbom/_index.md#pip).
 1. For Python `pipenv`, static reachability analysis doesn't support `Pipfile.lock` files. Support
    is available only for `pipenv.graph.json` because it supports a dependency graph.

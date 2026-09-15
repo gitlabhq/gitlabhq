@@ -13,7 +13,7 @@ effective, understandable, maintainable, and secure.
 Before you begin, familiarize yourself with the
 [contribution acceptance criteria](contributing/merge_request_workflow.md#contribution-acceptance-criteria).
 
-Have your code **reviewed** by a
+Have your code reviewed by a
 [reviewer](https://handbook.gitlab.com/handbook/engineering/workflow/code-review/#reviewer)
 from your group or a [domain expert](#domain-experts).
 
@@ -56,8 +56,8 @@ by a reviewer before passing it to a maintainer as described in the
 | `~documentation` or `~UI text` changes                                                                                                                                           | [Technical writer](https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments) based on assignments in the appropriate [DevOps stage group](https://handbook.gitlab.com/handbook/product/categories/#devops-stages).                                                                                                                                                                                                                                                                                                                                            |
 | Changes to development guidelines                                                                                                                                                | Follow the [review process](development_processes.md#development-guidelines-review) and get the approvals accordingly.                                                                                                                                                                                                                                                                                                                                                                                                                                                              |
 | Changes to AI instruction files under `.ai/`                                                                                                                                     | AI harness DRI. Refer to the [AI instruction files review guidelines](ai_instruction_files_review.md) for more details.                                                                                                                                                                                                                                                                                                                                                                                                                                                             |
-| End-to-end **and** non-end-to-end changes <sup>4</sup>                                                                                                                           | [Software Engineer in Test](https://handbook.gitlab.com/handbook/engineering/quality/#individual-contributors).                                                                                                                                                                                                                                                                                                                                                                                                                                                                     |
-| Only End-to-end changes <sup>4</sup> **or** if the MR author is a [Software Engineer in Test](https://handbook.gitlab.com/handbook/engineering/quality/#individual-contributors) | [Quality maintainer](https://handbook.gitlab.com/handbook/engineering/projects/#gitlab_maintainers_qa).                                                                                                                                                                                                                                                                                                                                                                                                                                                                             |
+| End-to-end and non-end-to-end changes <sup>4</sup>                                                                                                                           | [Software Engineer in Test](https://handbook.gitlab.com/handbook/engineering/quality/#individual-contributors).                                                                                                                                                                                                                                                                                                                                                                                                                                                                     |
+| Only End-to-end changes <sup>4</sup> or if the MR author is a [Software Engineer in Test](https://handbook.gitlab.com/handbook/engineering/quality/#individual-contributors) | [Quality maintainer](https://handbook.gitlab.com/handbook/engineering/projects/#gitlab_maintainers_qa).                                                                                                                                                                                                                                                                                                                                                                                                                                                                             |
 | A new or updated [application limit](https://handbook.gitlab.com/handbook/product/product-processes/#introducing-application-limits)                                             | [Product manager](https://about.gitlab.com/company/team/).                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                          |
 | Analytics Instrumentation (telemetry or analytics) changes                                                                                                                       | [Analytics Instrumentation engineer](https://gitlab.com/gitlab-org/analytics-section/analytics-instrumentation/engineers).                                                                                                                                                                                                                                                                                                                                                                                                                                                          |
 | A new service to GitLab (Puma, Sidekiq, Gitaly are examples)                                                                                                                     | [Product manager](https://about.gitlab.com/company/team/). See the [process for adding a service component to GitLab](adding_service_component.md) for details.                                                                                                                                                                                                                                                                                                                                                                                                                     |
@@ -69,13 +69,13 @@ by a reviewer before passing it to a maintainer as described in the
    backend review.
 
    For Haml template changes specifically:
-   - **Request backend review** when changes include Ruby logic, method calls,
+   - Request backend review when changes include Ruby logic, method calls,
      variable assignments, conditionals, loops, data preparation, security checks,
      or any server-side processing in the template.
-   - **Request frontend review** when changes affect DOM structure, CSS classes,
+   - Request frontend review when changes affect DOM structure, CSS classes,
      HTML attributes, accessibility features, user interactions, and responsive design,
      or visual presentation.
-   - **Request both reviews** for complex changes that involve both Ruby logic and significant UI modifications, or when
+   - Request both reviews for complex changes that involve both Ruby logic and significant UI modifications, or when
      backend and frontend are intertwined (such as when backend serves data that is consumed by Vue or JavaScript), to
      ensure both the backend functionality and frontend user experience are properly evaluated.
      - **Example:** A Haml template that calls Ruby methods to prepare data attributes for
@@ -114,7 +114,7 @@ experience, refactors the existing code). Then:
 - Let the author know if changes are required following your review.
 
 > [!warning]
-> **If the merge request is from a fork, also check the [additional guidelines for community contributions](#community-contributions).**
+> If the merge request is from a fork, also check the [additional guidelines for community contributions](#community-contributions).
 
 ### GitLab-specific concerns
 
@@ -277,6 +277,13 @@ To find a domain expert:
 The [Danger bot](dangerbot.md) picks a reviewer and maintainer for each codebase area your MR
 touches. Override the suggestion if you know a better fit.
 
+We're running an experiment to evaluate whether the Reviewer column in the roulette suggestion
+table is still useful. For a portion of merge requests, controlled by a CI/CD variable, Danger
+hides the Reviewer column and shows only the Category and Maintainer columns. If your MR is
+affected, you can still find a reviewer using the Review Workload Dashboard linked above. Each MR
+in the experiment is tagged with a `roulette-experiment::reviewer-column-hidden` or
+`roulette-experiment::reviewer-column-shown` label so the outcome can be measured.
+
 The roulette skips people whose status contains `OOO`, `PTO`, `Parental Leave`, `Friends and
 Family`, or `Conference`, or who are at review capacity (set via a number status emoji: 2️⃣-5️⃣).
 
@@ -330,7 +337,7 @@ For further quality guidelines, see [testing](https://handbook.gitlab.com/handbo
 #### Security
 
 1. You have confirmed that if this MR contains changes to processing or storing of credentials or tokens, authorization, and authentication methods, or other items described in [the security review guidelines](https://handbook.gitlab.com/handbook/security/product-security/security-platforms-architecture/application-security/appsec-reviews/#what-should-be-reviewed), you have added the `~security` label and you have `@`-mentioned `@gitlab-com/gl-security/appsec`.
-1. You have reviewed the documentation regarding [internal application security reviews](https://handbook.gitlab.com/handbook/security/product-security/security-platforms-architecture/application-security/appsec-reviews/#internal-application-security-reviews) for **when** and **how** to request a security review and requested a security review if this is warranted for this change.
+1. You have reviewed the documentation regarding [internal application security reviews](https://handbook.gitlab.com/handbook/security/product-security/security-platforms-architecture/application-security/appsec-reviews/#internal-application-security-reviews) for when and how to request a security review and requested a security review if this is warranted for this change.
 1. If there are security scan results that are blocking the MR (due to the [merge request approval policies](https://gitlab.com/gitlab-com/gl-security/security-policies)):
    - For true positive findings, they should be corrected before the merge request is merged. This will remove the AppSec approval required by the merge request approval policy.
    - For false positive findings, something that should be discussed for risk acceptance, or anything questionable, ping `@gitlab-com/gl-security/appsec`.
@@ -361,6 +368,7 @@ For further quality guidelines, see [testing](https://handbook.gitlab.com/handbo
 - Explain why the code exists, not just what it does.
 - Try to respond to every comment. Only resolve threads you have fully addressed. If a comment can be
   addressed in a follow-up issue, work with the maintainer on a path forward.
+- Push feedback-based changes as isolated commits. Squashing commits can make it harder for your reviewer to quickly see changes.
 - Re-request review once you are ready for another round.
 - Address all GitLab Duo review comments before requesting a review from human reviewers.
 

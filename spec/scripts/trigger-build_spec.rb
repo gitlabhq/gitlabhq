@@ -373,6 +373,17 @@ RSpec.describe Trigger, feature_category: :tooling do
             expect(subject.variables['GITLAB_ASSETS_TAG']).to be_nil
           end
         end
+
+        context 'when GLCI_ASSETS_IMAGE_TAG is an unexpanded variable reference' do
+          before do
+            stub_env('GLCI_ASSETS_IMAGE_TAG', '$GLCI_ISTANBUL_ASSETS_IMAGE_TAG')
+          end
+
+          it 'sets COMPILE_ASSETS to true' do
+            expect(subject.variables['COMPILE_ASSETS']).to eq('true')
+            expect(subject.variables['GITLAB_ASSETS_TAG']).to be_nil
+          end
+        end
       end
 
       describe "GITLAB_TAG" do
@@ -498,12 +509,34 @@ RSpec.describe Trigger, feature_category: :tooling do
           expect(subject.variables).to include({
             "FULL_RUBY_VERSION" => RUBY_VERSION,
             "SKIP_JOB_REGEX" => "/^(final-images-listing)$/",
-            "DEBIAN_IMAGE" => "debian:bookworm-slim",
-            "ALPINE_IMAGE" => "alpine:3.20",
             "CONTAINER_VERSION_SUFFIX" => "project-path",
             "CACHE_BUSTER" => "false",
             "ARCH_LIST" => 'amd64,arm64'
           })
+        end
+
+        it 'does not set DEBIAN_IMAGE or ALPINE_IMAGE so CNG variables.yml stays authoritative' do
+          expect(subject.variables).not_to include("DEBIAN_IMAGE", "ALPINE_IMAGE")
+        end
+
+        context 'with CONTAINER_VERSION_SUFFIX set' do
+          before do
+            stub_env('CONTAINER_VERSION_SUFFIX', 'project-path-istanbul')
+          end
+
+          it 'prefers the explicit suffix over the project path slug' do
+            expect(subject.variables).to include("CONTAINER_VERSION_SUFFIX" => "project-path-istanbul")
+          end
+        end
+
+        context 'with CONTAINER_VERSION_SUFFIX set to an empty string' do
+          before do
+            stub_env('CONTAINER_VERSION_SUFFIX', '')
+          end
+
+          it 'falls back to the project path slug' do
+            expect(subject.variables).to include("CONTAINER_VERSION_SUFFIX" => "project-path")
+          end
         end
       end
 

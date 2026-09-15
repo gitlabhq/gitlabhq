@@ -60,7 +60,7 @@ RSpec.describe Ci::Bridge, feature_category: :continuous_integration do
     let_it_be_with_reload(:bridge) { create(:ci_bridge, :success) }
 
     it 'returns true' do
-      expect(bridge.retryable?).to eq(true)
+      expect(bridge.retryable?).to be(true)
     end
   end
 
@@ -69,7 +69,7 @@ RSpec.describe Ci::Bridge, feature_category: :continuous_integration do
 
     it 'returns false' do
       expect(bridge.failure_reason).to eq('pipeline_loop_detected')
-      expect(bridge.retryable?).to eq(false)
+      expect(bridge.retryable?).to be(false)
     end
   end
 
@@ -80,7 +80,7 @@ RSpec.describe Ci::Bridge, feature_category: :continuous_integration do
 
     it 'returns false' do
       expect(bridge.failure_reason).to eq('reached_max_descendant_pipelines_depth')
-      expect(bridge.retryable?).to eq(false)
+      expect(bridge.retryable?).to be(false)
     end
   end
 
@@ -367,7 +367,7 @@ RSpec.describe Ci::Bridge, feature_category: :continuous_integration do
       let(:downstream_status) { 'canceling' }
 
       it 'returns false' do
-        expect(subject).to eq(false)
+        expect(subject).to be(false)
       end
 
       it 'does not change the bridge status' do
@@ -1219,6 +1219,6 @@ RSpec.describe Ci::Bridge, feature_category: :continuous_integration do
   describe '#deployment_job?' do
     subject { bridge.deployment_job? }
 
-    it { is_expected.to eq(false) }
+    it { is_expected.to be(false) }
   end
 end

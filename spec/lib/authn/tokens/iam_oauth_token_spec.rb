@@ -5,13 +5,13 @@ require 'spec_helper'
 RSpec.describe Authn::Tokens::IamOauthToken, feature_category: :system_access do
   include_context 'with IAM authentication setup'
 
-  let_it_be(:user) { create(:user) }
+  let_it_be_with_reload(:user) { create(:user) }
 
   let(:scopes) { %w[api read_repository] }
   let(:expires_at) { 1.hour.from_now }
   let(:sub) { user.id.to_s }
   let(:valid_token_string) do
-    create_iam_jwt(user: user, scopes: scopes, expires_at: expires_at, issuer: iam_issuer,
+    create_iam_access_token(user: user, scopes: scopes, expires_at: expires_at, issuer: iam_issuer,
       private_key: private_key, kid: kid, sub: sub)
   end
 
@@ -26,6 +26,14 @@ RSpec.describe Authn::Tokens::IamOauthToken, feature_category: :system_access do
 
       it 'returns nil' do
         is_expected.to be_nil
+      end
+
+      it 'logs the authentication attempt' do
+        expect(Gitlab::AuthLogger).to receive(:info).with(
+          message: 'IAM JWT authentication attempt when disabled'
+        )
+
+        token
       end
     end
 
@@ -56,11 +64,18 @@ RSpec.describe Authn::Tokens::IamOauthToken, feature_category: :system_access do
           end
         end
 
-        context 'when token is not IAM-issued JWT format' do
+        context 'when token is missing the gliamat- prefix' do
           it 'returns nil' do
             expect(described_class.from_jwt('not-a-jwt')).to be_nil
             expect(described_class.from_jwt(nil)).to be_nil
             expect(described_class.from_jwt('only.two')).to be_nil
+            expect(described_class.from_jwt(valid_token_string.delete_prefix('gliamat-'))).to be_nil
+          end
+        end
+
+        context 'when token has the gliamat- prefix but is not a valid JWT' do
+          it 'returns nil' do
+            expect(described_class.from_jwt('gliamat-not-a-jwt')).to be_nil
           end
         end
 
@@ -78,6 +93,34 @@ RSpec.describe Authn::Tokens::IamOauthToken, feature_category: :system_access do
           end
         end
 
+        context 'when token has a non-numeric subject that collides with a real user via to_i coercion' do
+          # sub.to_i silently truncates trailing garbage (e.g. "#{user.id}x".to_i
+          # == user.id), so without the user_id.to_s == sub check this would
+          # resolve to a real, existing user rather than being rejected.
+          let(:sub) { "#{user.id}x" }
+
+          it 'returns nil rather than resolving to the colliding user' do
+            expect(token).to be_nil
+          end
+
+          it 'logs the validation failure' do
+            expect(Gitlab::AuthLogger).to receive(:error).with(
+              message: 'IAM JWT validation failed',
+              Labkit::Fields::ERROR_MESSAGE => 'Invalid token subject'
+            )
+
+            token
+          end
+        end
+
+        context 'when token subject is not a valid positive integer string' do
+          let(:sub) { '0' }
+
+          it 'returns nil' do
+            expect(token).to be_nil
+          end
+        end
+
         context 'when from_validated_jwt returns nil' do
           before do
             allow(described_class).to receive(:from_validated_jwt).and_return(nil)
@@ -87,6 +130,28 @@ RSpec.describe Authn::Tokens::IamOauthToken, feature_category: :system_access do
             expect(described_class.from_jwt(valid_token_string)).to be_nil
           end
         end
+      end
+    end
+  end
+
+  describe '#acceptable?' do
+    it 'returns true when the token is accessible and includes a required scope' do
+      expect(token.acceptable?([:api])).to be(true)
+    end
+
+    it 'returns true when no scopes are required' do
+      expect(token.acceptable?([])).to be(true)
+    end
+
+    it 'returns false when the token does not include any required scope' do
+      expect(token.acceptable?([:openid])).to be(false)
+    end
+
+    it 'returns false when the token is not accessible' do
+      token
+
+      travel_to(2.hours.from_now) do
+        expect(token.acceptable?([:api])).to be(false)
       end
     end
   end
@@ -103,6 +168,12 @@ RSpec.describe Authn::Tokens::IamOauthToken, feature_category: :system_access do
         expect(token.accessible?).to be(false)
       end
     end
+
+    it 'returns false when the user is blocked' do
+      user.block!
+
+      expect(token.accessible?).to be(false)
+    end
   end
 
   describe '#active?' do
@@ -116,6 +187,12 @@ RSpec.describe Authn::Tokens::IamOauthToken, feature_category: :system_access do
       travel_to(2.hours.from_now) do
         expect(token.active?).to be(false)
       end
+    end
+  end
+
+  describe '#application' do
+    it 'returns nil' do
+      expect(token.application).to be_nil
     end
   end
 
@@ -136,6 +213,20 @@ RSpec.describe Authn::Tokens::IamOauthToken, feature_category: :system_access do
   describe '#id' do
     it 'returns the id' do
       expect(token.id).to be_present
+    end
+  end
+
+  describe '#includes_scope?' do
+    it 'returns true when required scopes are blank' do
+      expect(token.includes_scope?).to be(true)
+    end
+
+    it 'returns true when any required scope matches' do
+      expect(token.includes_scope?(:openid, :api)).to be(true)
+    end
+
+    it 'returns false when no required scope matches' do
+      expect(token.includes_scope?(:openid, :profile)).to be(false)
     end
   end
 
@@ -206,6 +297,13 @@ RSpec.describe Authn::Tokens::IamOauthToken, feature_category: :system_access do
       it 'returns nil' do
         expect(token.scope_user).to be_nil
       end
+    end
+  end
+
+  describe '#scopes' do
+    it 'returns a Doorkeeper::OAuth::Scopes instance with the token scopes', :aggregate_failures do
+      expect(token.scopes).to be_a(Doorkeeper::OAuth::Scopes)
+      expect(token.scopes.to_a).to eq(scopes)
     end
   end
 

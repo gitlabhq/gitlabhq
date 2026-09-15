@@ -3,10 +3,13 @@
 class Dashboard::ApplicationController < ApplicationController
   include ControllerWithCrossProjectAccessCheck
   include RecordUserLastActivity
+  include SignInDashboardUxSli
 
   layout 'dashboard'
 
   requires_cross_project_access
+
+  after_action :observe_sign_in_dashboard_ux_sli
 
   private
 

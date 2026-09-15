@@ -1,0 +1,72 @@
+@import 'framework/variables';
+@import 'highlight_tokens';
+
+// This file avoids all descendant selectors (`table td`). This is because the
+// CSS inlining we use performs dramatically worse on descendant selectors than
+// the alternatives.
+// <https://gitlab.com/gitlab-org/gitlab/issues/490#note_12283632>
+//
+// DO NOT ADD ANY DESCENDANT SELECTORS TO THIS FILE. Instead, use (in order of
+// preference): plain class selectors, type (element name) selectors, or
+// explicit child selectors.
+
+.blob-embed {
+  margin: $gl-padding 0;
+  border: 1px solid $gl-border-color-default;
+  border-collapse: collapse;
+  font-family: $monospace-font;
+  -premailer-cellpadding: 0;
+  -premailer-cellspacing: 0;
+  -premailer-width: 100%;
+}
+
+.blob-embed-header {
+  padding: $gl-padding-8 $gl-padding-12;
+  background-color: $gl-background-color-subtle;
+  border-style: solid;
+  border-color: $gl-border-color-default;
+  border-width: 0 0 1px;
+  font-size: $code-font-size-fixed;
+  font-weight: $gl-font-weight-normal;
+  text-align: left;
+}
+
+.blob-embed-title {
+  word-break: break-all;
+}
+
+.blob-embed-range {
+  padding-left: $gl-padding-8;
+  color: $gl-text-color-subtle;
+}
+
+.blob-embed-num {
+  width: 1%;
+  padding: 0 $gl-padding-8;
+  background-color: $gl-background-color-subtle;
+  border-style: solid;
+  border-color: $gl-border-color-default;
+  border-width: 0 1px 0 0;
+  font-size: $code-font-size-fixed;
+  line-height: $code-line-height;
+  text-align: right;
+  vertical-align: top;
+  white-space: nowrap;
+}
+
+.blob-embed-num-link {
+  color: $gl-text-color-subtle;
+  text-decoration: none;
+}
+
+.blob-embed-line {
+  padding: 0 $gl-padding-8;
+  border-width: 0;
+  color: $gl-text-color-default;
+  font-size: $code-font-size-fixed;
+  line-height: $code-line-height;
+  vertical-align: top;
+  white-space: pre-wrap;
+  word-break: normal;
+  overflow-wrap: break-word;
+}

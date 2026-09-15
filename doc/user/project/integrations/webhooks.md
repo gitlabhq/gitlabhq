@@ -1,5 +1,5 @@
 ---
-stage: Create
+stage: GitLab Dedicated
 group: Import
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see <https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments>
 title: Webhooks
@@ -120,6 +120,11 @@ To create a webhook:
      This token is sent as plain text in the `X-Gitlab-Token` HTTP header and provides weaker
      security guarantees than a signing token. Use the signing token instead for new webhooks.
 1. In the **Trigger** section, select the events to trigger the webhook.
+1. Optional. To send GitLab Duo flow lifecycle events to this webhook, under
+   **GitLab Duo Agent Platform**, select the **Send Duo flow events to this webhook** checkbox.
+   This section appears only where
+   [GitLab Duo flow webhook callbacks](../../duo_agent_platform/flows/webhook_callbacks.md) are
+   available.
 1. Optional. To disable SSL verification, clear the **Enable SSL verification** checkbox.
 1. Select **Add webhook**.
 
@@ -140,9 +145,9 @@ both the authenticity and integrity of the received payload.
 GitLab webhook delivery follows the [Standard Webhooks](https://www.standardwebhooks.com/)
 specification. Every webhook request includes the `webhook-id` and `webhook-timestamp` headers.
 When a signing token is configured, GitLab also includes the `webhook-signature` header with the
-HMAC-SHA256 signature. Each signature has the format `v1,{base64_signature}`. The header may
+HMAC-SHA256 signature. Each signature has the format `v1,{base64_signature}`. The header might
 contain multiple space-separated signatures. GitLab currently sends one signature, but this
-may change in the future. The signature is computed over the string
+might change in the future. The signature is computed over the string
 `{message_id}.{timestamp}.{body}`, where:
 
 - `{message_id}` is the value of the `webhook-id` header.
@@ -344,7 +349,7 @@ To filter by using a regular expression:
 For example, to exclude the `main` branch, use:
 
 ```plaintext
-\b(?:m(?!ain\b)|ma(?!in\b)|mai(?!n\b)|[a-l]|[n-z])\w*|\b\w{1,3}\b|\W+
+^(?:.{0,3}|.{5,}|[^m].*|m[^a].*|ma[^i].*|mai[^n].*)$
 ```
 
 ### Configure webhooks to support mutual TLS
@@ -638,7 +643,7 @@ GitLab includes the following headers in webhook requests to your endpoint.
 
 | Header                   | Description                                                                                                                                                     | Example |
 |:-------------------------|:----------------------------------------------------------------------------------------------------------------------------------------------------------------|:--------|
-| `Idempotency-Key`        | Unique ID consistent across webhook retries. Available for legacy reasons; prefer `webhook-id`.                                                                 | `"f5e5f430-f57b-4e6e-9fac-d9128cd7232f"` |
+| `Idempotency-Key`        | Unique ID consistent across webhook retries. Available for legacy reasons. Prefer `webhook-id`.                                                                 | `"f5e5f430-f57b-4e6e-9fac-d9128cd7232f"` |
 | `User-Agent`             | User agent in the format `"Gitlab/<VERSION>"`.                                                                                                                  | `"GitLab/15.5.0-pre"` |
 | `webhook-id`             | Unique message ID consistent across webhook retries. Equal to `Idempotency-Key`.                                                                                | `"f5e5f430-f57b-4e6e-9fac-d9128cd7232f"` |
 | `webhook-signature`      | Space-separated list of HMAC-SHA256 signatures, each in the format `v1,{base64_signature}`. Included only when a [signing token](#signing-tokens) is configured. | `"v1,abc123def456=="` |

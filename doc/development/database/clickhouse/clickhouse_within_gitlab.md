@@ -16,7 +16,7 @@ This document gives a high-level overview of how to develop features using Click
 
 1. Install ClickHouse locally as described in [ClickHouse installation documentation](https://clickhouse.com/docs/en/install). If you use QuickInstall it will be installed in current directory, if you use Homebrew it will be installed to `/opt/homebrew/bin/clickhouse`
 1. Add ClickHouse section to your `gdk.yml`. See [`gdk.example.yml`](https://gitlab.com/gitlab-org/gitlab-development-kit/-/blob/main/gdk.example.yml)
-1. Adjust the `gdk.yml` ClickHouse configuration file to point to your local ClickHouse installation and local data storage. E.g.
+1. Adjust the `gdk.yml` ClickHouse configuration file to point to your local ClickHouse installation and local data storage. For example:
 
    ```yaml
    clickhouse:
@@ -103,7 +103,7 @@ You can create a migration by creating a Ruby migration file in `db/click_house/
 class CreateIssues < ClickHouse::Migration
   def up
     execute <<~SQL
-      CREATE TABLE issues
+      CREATE TABLE IF NOT EXISTS issues
       (
         id UInt64 DEFAULT 0,
         title String DEFAULT ''
@@ -115,7 +115,7 @@ class CreateIssues < ClickHouse::Migration
 
   def down
     execute <<~SQL
-      DROP TABLE sync_cursors
+      DROP TABLE IF EXISTS issues
     SQL
   end
 end
@@ -207,16 +207,16 @@ bundle exec rake gitlab:clickhouse:migrate
 
 ## Column Compression Guidelines
 
-When creating new tables, consider adjusting the compression settings for specific columns to improve storage efficiency. By default, ClickHouse compresses data using **LZ4** on self-managed instances and ClickHouse Cloud uses [`ZSTD`](https://clickhouse.com/docs/data-compression/compression-in-clickhouse#compression-in-clickhouse-cloud). Depending on the column type and its content, you can achieve significantly better compression ratios using specific codecs.
+When creating new tables, consider adjusting the compression settings for specific columns to improve storage efficiency. By default, ClickHouse compresses data using `LZ4` on self-managed instances and ClickHouse Cloud uses [`ZSTD`](https://clickhouse.com/docs/data-compression/compression-in-clickhouse#compression-in-clickhouse-cloud). Depending on the column type and its content, you can achieve significantly better compression ratios using specific codecs.
 
 ### Recommended Codecs by Data Type
 
-#### **Primary Keys (or Sorted Columns)**
+#### Primary Keys (or Sorted Columns)
 
 - **Integers / Timestamps:** `CODEC(DoubleDelta, ZSTD)` - Optimized for monotonically increasing sequences.
 - **Strings:** `CODEC(ZSTD(3))` - Provides a higher compression ratio for high-entropy strings.
 
-#### **Standard Columns**
+#### Standard Columns
 
 - **Booleans:** `CODEC(ZSTD(1))`
 - **Incremental Timestamps** (`created_at`, `updated_at`): `CODEC(Delta, ZSTD(1))` - Delta encoding makes incremental values much smaller before ZSTD compresses them.
@@ -683,6 +683,80 @@ end
 
 Additionally, to view the executed ClickHouse queries in web interactions, on the performance bar, next to the `ch` label select the count.
 
+### Query attribution with `log_comment`
+
+Every query GitLab sends to ClickHouse carries a `log_comment` setting, appended to the request URL
+in `ClickHouse::HttpClient.build_post_proc`. ClickHouse stores this value in the `log_comment`
+column of `system.query_log`, so a recorded query can be traced back to the GitLab request that
+issued it.
+
+The value is a JSON object. A key is omitted when its value is not available:
+
+| Key | Meaning |
+|---|---|
+| `correlation_id` | The request correlation ID. This is the same value used in other GitLab logs. |
+| `user_id` | Numeric ID of the current user. |
+| `root_namespace_id` | Numeric ID of the root namespace. |
+| `organization_id` | Numeric ID of the current organization. |
+| `application` | `web`, `sidekiq`, `console`, or `test`. |
+| `feature_category` | The feature category of the request. |
+
+For example, a web request produces:
+
+```json
+{
+  "correlation_id":"4b809c12c639dbec87b37274337aae0d",
+  "user_id":1,
+  "root_namespace_id":22,
+  "organization_id":1,
+  "application":"web",
+  "feature_category":"database"
+}
+```
+
+#### Namespace attribution for user-facing queries
+
+`root_namespace_id` is filled in automatically only when a namespace already exists in the
+application context. This is the case for group-scoped controller requests, where
+`ApplicationController#set_current_context` pushes the namespace from the `@group` instance
+variable, and for REST API requests that push a group.
+
+GraphQL requests are different: the GraphQL endpoint never sets `@group` or `@project`, so nothing
+gets attributed automatically there. Project-scoped requests are also inconsistent: the namespace
+is filled in only when the project's `namespace` association is already loaded, which is often not
+the case.
+
+When you add a user-facing ClickHouse query, wrap it so the namespace gets published. Use
+`Gitlab::ApplicationContext.with_context`, which is scoped to the block, instead of `push`, which
+applies to the rest of the request.
+
+For example, `ee/lib/gitlab/contribution_analytics/click_house_data_collector.rb` wraps its query
+this way:
+
+```ruby
+def totals_by_author_target_type_action
+  ::Gitlab::ApplicationContext.with_context(namespace: group) do
+    query = ::ClickHouse::Client::Query.new(raw_query: clickhouse_query, placeholders: placeholders)
+    ::ClickHouse::Client.select(query, :main)
+  end
+end
+```
+
+A namespace is not always available. Queries from background sync and ingest workers are
+instance-wide and have no namespace to attribute.
+
+To read the annotation back, you can run this query:
+
+```sql
+SELECT JSONExtractString(log_comment, 'correlation_id') AS correlation_id,
+       query_duration_ms,
+       query
+FROM system.query_log
+WHERE type = 'QueryFinish' AND log_comment != ''
+ORDER BY query_duration_ms DESC
+LIMIT 20
+```
+
 ## Data synchronization with Siphon
 
 GitLab uses [Siphon](https://gitlab.com/gitlab-org/analytics-section/siphon), a change data capture (CDC) tool,
@@ -694,6 +768,44 @@ Each replicated table has a configuration file in
 [`db/siphon/tables`](https://gitlab.com/gitlab-org/gitlab/-/tree/master/db/siphon/tables).
 To replicate a table and design its ClickHouse schema, see
 [ClickHouse table design with Siphon](clickhouse_table_design_with_siphon.md).
+
+### Check whether Siphon replication is available
+
+`Gitlab::ClickHouse.enabled_for_analytics?` tells you whether ClickHouse is configured and turned
+on for analytics. It does not tell you whether the Siphon-replicated data your feature reads is
+actually present. ClickHouse can be reachable while Siphon is misconfigured or paused for a
+given table.
+
+Use `Gitlab::ClickHouse.siphon_enabled?` to answer that second question. It checks Siphon's own
+replication metadata table, `siphon_internal_events`, instead of inspecting the replicated
+`siphon_*` tables directly:
+
+- `Gitlab::ClickHouse.siphon_enabled?` checks whether Siphon has replicated anything at all.
+- `Gitlab::ClickHouse.siphon_enabled?('duo_workflows_workflows')` checks whether Siphon has
+  replicated that specific PostgreSQL table. The argument is the PostgreSQL table name, the same
+  name used in `db/siphon/tables/<table>.yml`, not the `siphon_`-prefixed ClickHouse table name.
+
+The method returns `false` when ClickHouse is not configured, and `false` when the ClickHouse
+query fails. A failed query is written to the exception log.
+
+A `true` result is cached for the lifetime of the Ruby process. A `false` result is not cached,
+so a table that starts replicating later is picked up on the next call. A `true` result for any
+single table also satisfies the no-argument global check, without issuing another query.
+
+The check has three limitations:
+
+- It does not detect replication lag. A `true` result means Siphon has replicated the table at
+  some point, not that the data is fresh.
+- It does not detect that replication stopped. Once a table has replicated, the check keeps
+  returning `true`.
+- It does not handle partitioned tables. Siphon tracks each partition separately, so passing a
+  routing table name like `p_ci_builds` never matches.
+
+Use it as a guard at the start of a feature that reads a Siphon-replicated table:
+
+```ruby
+return unless Gitlab::ClickHouse.siphon_enabled?('duo_workflows_workflows')
+```
 
 ### Database migrations
 

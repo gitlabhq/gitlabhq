@@ -9,8 +9,7 @@ class PagesDomain < ApplicationRecord
 
   cells_claims_scope { where.not(domain: nil) }
 
-  cells_claims_attribute :domain, type: CLAIMS_CLAIM_TYPE::CLAIM_TYPE_PAGES_DOMAIN,
-    feature_flag: :cells_claims_pages_domains
+  cells_claims_attribute :domain, type: CLAIMS_CLAIM_TYPE::CLAIM_TYPE_PAGES_DOMAIN
 
   cells_claims_metadata subject_type: CLAIMS_SUBJECT_TYPE::PROJECT, subject_key: :project_id
 

@@ -49,12 +49,6 @@ To find subscribers, search the subscription files under
 |-------|-----------------|---------|-------------|
 | `Analytics::ClickHouseForAnalyticsEnabledEvent` | `value_stream_management` | EE | Published when the instance-wide setting `use_clickhouse_for_analytics` is toggled on, signalling that ClickHouse-backed analytics has just been enabled so downstream backfill jobs can run. |
 
-## Cd
-
-| Event | Feature category | Edition | Description |
-|-------|-----------------|---------|-------------|
-| `Cd::ArtifactPublishedEvent` | `continuous_delivery` | EE | Published when a new artifact version is available for a GitLab CD artifact source, so subscribers can create the corresponding cd_versions. Source-agnostic by design - today it is bridged from container registry pushes, but external artifact sources can publish the same event later. |
-
 ## Ci
 
 | Event | Feature category | Edition | Description |
@@ -81,6 +75,7 @@ To find subscribers, search the subscription files under
 
 | Event | Feature category | Edition | Description |
 |-------|-----------------|---------|-------------|
+| `GitlabSubscriptions::RenewedCloudEvent` | `subscription_management` | CE | CloudEvent published when a GitLab subscription is renewed. Fires only on genuine renewals - both start_date and end_date must change in the same update, with the new start_date >= the previous end_date. |
 | `GitlabSubscriptions::RenewedEvent` | `subscription_management` | CE | Published when a GitLab subscription is renewed. Fires only on genuine renewals - both start_date and end_date must change in the same update, with the new start_date >= the previous end_date. Deferred via run_after_commit. |
 
 ## Groups
@@ -101,6 +96,7 @@ To find subscribers, search the subscription files under
 | Event | Feature category | Edition | Description |
 |-------|-----------------|---------|-------------|
 | `Members::AcceptedInviteEvent` | `user_management` | CE | Published when a user accepts a membership invitation to a group or project. |
+| `Members::AddedCloudEvent` | `user_management` | CE | CloudEvent published after one or more members are added to a group or project. A single event carries all successfully created user IDs; skipped entirely when every invited user fails validation. |
 | `Members::DestroyedEvent` | `user_management` | CE | Published after a member record is removed from a group or project. Fires once per user per destroy operation; not published on recursive cascades (for example, when a parent group destroy removes child memberships). Deferred via run_after_commit_or_now. |
 | `Members::MembersAddedEvent` | `user_management` | CE | Published after one or more members are added to a group or project. A single event carries all successfully created user IDs; skipped entirely when every invited user fails validation. |
 | `Members::MembershipModifiedByAdminEvent` | `seat_cost_management` | EE | Published when an admin creates or promotes a member to a billable role while member-promotion-management is enabled, so pending approval workflows can be processed. |
@@ -111,6 +107,7 @@ To find subscribers, search the subscription files under
 
 | Event | Feature category | Edition | Description |
 |-------|-----------------|---------|-------------|
+| `MergeRequests::AfterCreateCloudEvent` | `code_suggestions` | CE | Published when a newly created merge request is ready for automation, with its diff built and its code-owner approval rules synced against it. Backs the **created** action for the `merge_request` trigger on the GitLab Duo Agent Platform. Uses the CloudEvents v1.0 envelope, and fires for draft merge requests too. |
 | `MergeRequests::ApprovalsResetEvent` | `code_review_workflow` | EE | Published when existing approvals on a merge request are reset, typically because new commits were pushed or other state changes invalidated prior approvals. |
 | `MergeRequests::ApprovedCloudEvent` | `code_suggestions` | CE | Published when a merge request receives all required approvals. CloudEvent counterpart of the legacy ApprovedEvent, using the CloudEvents v1.0 envelope with a richer payload that includes merge_request IID, project ID, and organization context. |
 | `MergeRequests::ApprovedEvent` | `code_review_workflow` | CE | Published when a user approves a merge request. Fires only when the approving user is eligible (not the author, satisfies any approval rules), the MR is not already merged, and the approval record is persisted. |
@@ -125,6 +122,7 @@ To find subscribers, search the subscription files under
 | `MergeRequests::ExternalStatusCheckPassedEvent` | `compliance_management` | EE | Published when an external status check response transitions to the passed state for a merge request. |
 | `MergeRequests::MergeRequestPreparedEvent` | `code_review_workflow` | CE | Represents a merge request ref being prepared after a push. Carries the project, user, old/new revisions, and the ref name. Not currently published anywhere in the codebase. |
 | `MergeRequests::MergeableEvent` | `code_review_workflow` | CE | Published when an asynchronous mergeability check completes with both auto_merge_enabled? and mergeability_checks_pass? true (typically after approvals become sufficient). |
+| `MergeRequests::MergedCloudEvent` | `code_suggestions` | CE | Published when a merge request is merged. CloudEvent counterpart of the legacy MergedEvent, using the CloudEvents v1.0 envelope with the acting user (who merged the MR) embedded in the event. |
 | `MergeRequests::MergedEvent` | `code_review_workflow` | EE | Published when a merge request has been merged and post-merge processing runs, allowing EE subscribers (such as compliance, security policy, and audit workers) to react. |
 | `MergeRequests::OverrideRequestedChangesStateEvent` | `code_review_workflow` | CE | Published when a reviewer's "requested changes" status is overridden on a merge request. |
 | `MergeRequests::PipelineCreationCompletedEvent` | `code_review_workflow` | CE | Published when an asynchronous MR-scoped pipeline creation attempt finishes. `pipeline_id` is set if a `Ci::Pipeline` row was persisted, nil if creation produced no pipeline (workflow:rules dropped, missing CI config, etc.). Used to re-trigger auto-merge when no `Ci::Pipeline.after_transition` will fire. |
@@ -157,14 +155,16 @@ To find subscribers, search the subscription files under
 
 | Event | Feature category | Edition | Description |
 |-------|-----------------|---------|-------------|
+| `Organizations::ActivatedEvent` | `organization` | CE | Published when an organization transitions from `confirmed` to `active`. Emitted by Organizations::ActivateService after the state transition is committed, once its group and user transfers have succeeded. Not published if activation fails or is rolled back. |
 | `Organizations::ConfirmedEvent` | `organization` | CE | Published when an organization transitions from `unconfirmed` to `confirmed`. Emitted by Organizations::ConfirmService after the state transition is committed. Not published if the confirmation fails or is rolled back. |
-| `Organizations::GroupTransferredEvent` | `organization` | CE | Published when a root group is transferred to a different organization. Fired once for the transferred group only - subscribers are responsible for traversing descendants if needed. Published via run_after_commit_or_now inside the transfer transaction, so it is never emitted on rollback. |
+| `Organizations::GroupTransferredEvent` | `organization` | CE | Published once per `organization_id` change on a root group. May be delivered more than once for the same group, so subscribers must be idempotent. Descendant namespaces and projects may not have moved yet, and subscribers are responsible for traversing them if needed. Not emitted when the surrounding transaction is rolled back. |
 
 ## Package Metadata
 
 | Event | Feature category | Edition | Description |
 |-------|-----------------|---------|-------------|
 | `PackageMetadata::IngestedAdvisoryEvent` | `software_composition_analysis` | CE | Published once per advisory record after package security advisories are ingested. Only fires for advisories whose published_date is within the last 14 days (PUBLISHED_ADVISORY_INTERVAL); older advisories are ingested without an event. |
+| `PackageMetadata::IngestedMalwareAdvisoryEvent` | `software_composition_analysis` | EE | Published for each malware advisory ingested inside the CVS publication-age window, so continuous vulnerability scanning can scan it against existing SBOM occurrences. Mirrors PackageMetadata::IngestedAdvisoryEvent for the malware advisory path. |
 
 ## Packages
 
@@ -238,6 +238,7 @@ To find subscribers, search the subscription files under
 | `Search::Zoekt::RepoToIndexEvent` | `global_search` | EE | Published when Zoekt repositories pending indexing are detected, so the subscribed worker can enqueue indexing tasks for them. |
 | `Search::Zoekt::RepoToReindexEvent` | `global_search` | EE | Published when Zoekt repositories require reindexing, so the subscribed worker can enqueue reindex tasks (one event per node for parallel processing). |
 | `Search::Zoekt::SaasRolloutEvent` | `global_search` | EE | Published periodically on GitLab.com to drive the SaaS rollout of Zoekt exact code search to enabled namespaces. |
+| `Search::Zoekt::TaskClaimExpiredEvent` | `global_search` | EE | Published when Zoekt indexing tasks are found holding an expired claim, so a worker can release them back to pending or fail them once retries are spent. |
 | `Search::Zoekt::TaskFailedEvent` | `global_search` | EE | Published when a Zoekt indexing task exhausts its retries and is moved to the failed state, so subscribers can react to the failure. |
 | `Search::Zoekt::TooManyReplicasEvent` | `global_search` | EE | Published when more Zoekt replicas exist for a namespace than the configured replica count, so the subscribed worker can prune the excess replicas. |
 | `Search::Zoekt::UpdateIndexUsedStorageBytesEvent` | `global_search` | EE | Published when Zoekt indices with stale used-storage statistics are detected, so the subscribed worker can refresh their `used_storage_bytes` from the underlying repositories. |
@@ -246,6 +247,7 @@ To find subscribers, search the subscription files under
 
 | Event | Feature category | Edition | Description |
 |-------|-----------------|---------|-------------|
+| `Security::PolicyConfigurationAssignedEvent` | `security_policy_management` | EE | Published when a security policy project is assigned to a project or group configuration, triggering a bulk sync of all policies. |
 | `Security::PolicyCreatedEvent` | `security_policy_management` | EE | Published when a new security policy is persisted as part of syncing a security policy project's configuration. |
 | `Security::PolicyDeletedEvent` | `security_policy_management` | EE | Published when a security policy is removed during synchronization of a security policy project's configuration. |
 | `Security::PolicyDismissalPreservedEvent` | `security_policy_management` | EE | Published when a Security::PolicyDismissal is preserved (transitioned to the `preserved` status) because it still applies to outstanding violations. |

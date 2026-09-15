@@ -1,7 +1,6 @@
 <script>
 import { GlButton } from '@gitlab/ui';
 import FileIcon from '~/vue_shared/components/file_icon.vue';
-import { createAlert } from '~/alert';
 import axios from '~/lib/utils/axios_utils';
 import { logError } from '~/lib/logger';
 import { contentTypeMultipartFormData } from '~/lib/utils/headers';
@@ -79,6 +78,7 @@ export default {
       filePreviewURL: null,
       loading: false,
       hasDirectoryUploadError: false,
+      error: null,
     };
   },
   computed: {
@@ -96,6 +96,7 @@ export default {
     },
     setFile(file) {
       this.file = file;
+      this.error = null;
 
       const fileUurlReader = new FileReader();
 
@@ -127,6 +128,7 @@ export default {
       this.filePreviewURL = null;
     },
     submitForm(formData) {
+      this.error = null;
       return this.replacePath ? this.replaceFile(formData) : this.uploadFile(formData);
     },
     submitRequest(method, url, formData) {
@@ -151,7 +153,10 @@ export default {
             `Failed to ${this.replacePath ? 'replace' : 'upload'} file. See exception details for more information.`,
             e,
           );
-          createAlert({ message: this.$options.i18n.ERROR_MESSAGE });
+          this.error =
+            e.response?.data?.message ||
+            e.response?.data?.error ||
+            this.$options.i18n.ERROR_MESSAGE;
         })
         .finally(() => {
           this.loading = false;
@@ -168,6 +173,7 @@ export default {
       return this.submitRequest('post', calculatedPath, formData);
     },
     handleModalClose() {
+      this.error = null;
       this.hasDirectoryUploadError = false;
     },
   },
@@ -186,6 +192,7 @@ export default {
     :valid="isValid"
     :loading="loading"
     :empty-repo="emptyRepo"
+    :error="error"
     data-testid="upload-blob-modal"
     @close-commit-changes-modal="handleModalClose"
     @submit-form="submitForm"

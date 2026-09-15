@@ -7,8 +7,7 @@ RSpec.describe 'shared/_broadcast_message.html.haml', feature_category: :notific
     let(:dismissal_data) { "[data-dismissal-path=\"#{broadcast_message_dismissals_path}\"]" }
 
     before do
-      allow(view).to receive(:current_user).and_return(current_user)
-      allow(view).to receive(:message).and_return(build(:broadcast_message, dismissable: true))
+      allow(view).to receive_messages(current_user: current_user, message: build(:broadcast_message, dismissable: true))
     end
 
     describe 'when user is authenticated' do

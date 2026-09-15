@@ -32,16 +32,16 @@ class Import::GithubController < Import::BaseController
   def callback
     auth_state = session.delete(auth_state_key)
 
-    if auth_state.blank? || !ActiveSupport::SecurityUtils.secure_compare(auth_state, params[:state])
+    if auth_state.blank? || !ActiveSupport::SecurityUtils.secure_compare(auth_state, callback_params[:state])
       provider_unauthorized
     else
-      session[access_token_key] = get_token(params[:code])
+      session[access_token_key] = get_token(callback_params[:code])
       redirect_to status_import_url
     end
   end
 
   def personal_access_token
-    session[access_token_key] = params[:personal_access_token]&.strip
+    session[access_token_key] = personal_access_token_param&.strip
     redirect_to status_import_url
   end
 
@@ -56,8 +56,9 @@ class Import::GithubController < Import::BaseController
       end
 
       format.html do
-        if params[:namespace_id].present?
-          @namespace = Namespace.find_by_id(params[:namespace_id])
+        namespace_id = namespace_id_param
+        if namespace_id.present?
+          @namespace = Namespace.find_by_id(namespace_id)
 
           render_404 unless current_user.can?(:import_projects, @namespace)
         end
@@ -163,7 +164,19 @@ class Import::GithubController < Import::BaseController
   private
 
   def project
-    @project ||= Project.imported_from(provider_name).find(params[:project_id])
+    @project ||= Project.imported_from(provider_name).find(project_id_param)
+  end
+
+  def callback_params
+    params.permit(:state, :code)
+  end
+
+  def personal_access_token_param
+    params.permit(:personal_access_token)[:personal_access_token]
+  end
+
+  def project_id_param
+    params.permit(:project_id)[:project_id]
   end
 
   def import_params
@@ -226,11 +239,11 @@ class Import::GithubController < Import::BaseController
   end
 
   def new_import_url
-    public_send("new_import_#{provider_name}_url", extra_import_params.merge({ namespace_id: params[:namespace_id] })) # rubocop:disable GitlabSecurity/PublicSend
+    public_send("new_import_#{provider_name}_url", extra_import_params.merge({ namespace_id: namespace_id_param })) # rubocop:disable GitlabSecurity/PublicSend -- provider_name comes from the subclass definition, not user input
   end
 
   def status_import_url
-    public_send("status_import_#{provider_name}_url", extra_import_params.merge({ namespace_id: params[:namespace_id].presence })) # rubocop:disable GitlabSecurity/PublicSend
+    public_send("status_import_#{provider_name}_url", extra_import_params.merge({ namespace_id: namespace_id_param.presence })) # rubocop:disable GitlabSecurity/PublicSend -- provider_name comes from the subclass definition, not user input
   end
 
   def provider_unauthorized
@@ -295,18 +308,26 @@ class Import::GithubController < Import::BaseController
     pagination_options.merge(relation_options)
   end
 
+  def pagination_params
+    params.permit(:before, :after)
+  end
+
   def pagination_options
     {
-      before: params[:before].presence,
-      after: params[:after].presence,
+      before: pagination_params[:before].presence,
+      after: pagination_params[:after].presence,
       first: PAGE_LENGTH
     }
   end
 
+  def relation_params
+    params.permit(:relation_type, :organization_login)
+  end
+
   def relation_options
     {
-      relation_type: params[:relation_type],
-      organization_login: sanitize_query_param(params[:organization_login])
+      relation_type: relation_params[:relation_type],
+      organization_login: sanitize_query_param(relation_params[:organization_login])
     }
   end
 end

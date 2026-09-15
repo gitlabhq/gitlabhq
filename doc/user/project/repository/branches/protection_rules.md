@@ -46,7 +46,7 @@ When a branch is protected, the default behavior enforces these restrictions:
 
 1. Users with the Developer role can create a project in a group, but might not be allowed to
    initially push to the [default branch](default.md).
-1. No one can delete a protected branch using Git commands, however, users with at least Maintainer
+1. No one can delete a protected branch using Git commands. However, users with at least Maintainer
    role can [delete a protected branch](protected.md#delete-protected-branches) from the UI or API.
 
 When you configure these permissions, selecting a role grants access to users with that role and all

@@ -75,13 +75,13 @@ RSpec.describe BulkImports::FileTransfer::ProjectConfig, feature_category: :impo
   describe '#tree_relation?' do
     context 'when it is a tree relation' do
       it 'returns true' do
-        expect(subject.tree_relation?('labels')).to eq(true)
+        expect(subject.tree_relation?('labels')).to be(true)
       end
     end
 
     context 'when it is not a tree relation' do
       it 'returns false' do
-        expect(subject.tree_relation?('example')).to eq(false)
+        expect(subject.tree_relation?('example')).to be(false)
       end
     end
   end
@@ -89,13 +89,13 @@ RSpec.describe BulkImports::FileTransfer::ProjectConfig, feature_category: :impo
   describe '#file_relation?' do
     context 'when it is a file relation' do
       it 'returns true' do
-        expect(subject.file_relation?('uploads')).to eq(true)
+        expect(subject.file_relation?('uploads')).to be(true)
       end
     end
 
     context 'when it is not a file relation' do
       it 'returns false' do
-        expect(subject.file_relation?('example')).to eq(false)
+        expect(subject.file_relation?('example')).to be(false)
       end
     end
   end
@@ -106,23 +106,23 @@ RSpec.describe BulkImports::FileTransfer::ProjectConfig, feature_category: :impo
     context 'when the relation has user contribitions' do
       let(:relation) { 'issues' }
 
-      it { is_expected.to eq(true) }
+      it { is_expected.to be(true) }
     end
 
     context 'when the relation does not have user contribitions' do
       let(:relation) { 'labels' }
 
-      it { is_expected.to eq(false) }
+      it { is_expected.to be(false) }
     end
   end
 
   describe '#user_contributions_relation?' do
     it 'returns true for the user_contributions relation' do
-      expect(subject.user_contributions_relation?('user_contributions')).to eq(true)
+      expect(subject.user_contributions_relation?('user_contributions')).to be(true)
     end
 
     it 'returns false for non user_contributions relations' do
-      expect(subject.user_contributions_relation?('milestones')).to eq(false)
+      expect(subject.user_contributions_relation?('milestones')).to be(false)
     end
   end
 
@@ -162,46 +162,46 @@ RSpec.describe BulkImports::FileTransfer::ProjectConfig, feature_category: :impo
 
   describe '#commit_notes_export_via_git?' do
     context 'when relation is commit_notes' do
-      it { expect(subject.commit_notes_export_via_git?('commit_notes')).to eq(true) }
+      it { expect(subject.commit_notes_export_via_git?('commit_notes')).to be(true) }
     end
 
     context 'when relation is not commit_notes' do
-      it { expect(subject.commit_notes_export_via_git?('issues')).to eq(false) }
+      it { expect(subject.commit_notes_export_via_git?('issues')).to be(false) }
     end
   end
 
   describe '#max_iids_relation?' do
     it 'returns true for max_iids' do
-      expect(subject.max_iids_relation?('max_iids')).to eq(true)
+      expect(subject.max_iids_relation?('max_iids')).to be(true)
     end
 
     it 'returns false for other relations' do
-      expect(subject.max_iids_relation?('issues')).to eq(false)
+      expect(subject.max_iids_relation?('issues')).to be(false)
     end
   end
 
   describe '#batchable_relation?' do
     context 'when relation is batchable' do
       it 'returns true' do
-        expect(subject.batchable_relation?('issues')).to eq(true)
+        expect(subject.batchable_relation?('issues')).to be(true)
       end
     end
 
     context 'when relation is not batchable' do
       it 'returns false' do
-        expect(subject.batchable_relation?('project_feature')).to eq(false)
+        expect(subject.batchable_relation?('project_feature')).to be(false)
       end
     end
 
     context 'when relation is not listed as portable' do
       it 'returns false' do
-        expect(subject.batchable_relation?('foo')).to eq(false)
+        expect(subject.batchable_relation?('foo')).to be(false)
       end
     end
 
     context 'when relation is commit_notes' do
       it 'returns true (overrides the reflect_on_association check for the method-defined relation)' do
-        expect(subject.batchable_relation?('commit_notes')).to eq(true)
+        expect(subject.batchable_relation?('commit_notes')).to be(true)
       end
     end
   end

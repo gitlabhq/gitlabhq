@@ -1,6 +1,6 @@
 ---
-source_checksum: 8e44ac42b591a3cd
-distilled_at_sha: e2c2d99ca92022373f943f7b13d7697d7cffa9ce
+source_checksum: e6667c1372494a2a
+distilled_at_sha: 3477a0d37b5792d9979852b021dc2f157963dc7d
 ---
 <!-- Auto-generated from docs.gitlab.com by gitlab-ai-principles-distiller — do not edit manually -->
 
@@ -59,7 +59,7 @@ distilled_at_sha: e2c2d99ca92022373f943f7b13d7697d7cffa9ce
 - Sanitize and validate URL schemes when calling `link_to` or `redirect_to` with user-controlled parameters.
 - Reject input that fails allowlist validation — DO NOT sanitize and accept it.
 - Invalidate cached Markdown HTML after fixing a stored XSS vulnerability.
-- Send each model field to its matching sink (HTML field to HTML sink, text field to text sink); DO NOT fall back from the HTML field to the raw text field in an HTML sink (e.g., `raw(description_html || description)` is XSS).
+- Send each model field to its matching sink (HTML field to HTML sink, text field to text sink); DO NOT fall back from the HTML field to the raw text field in an HTML sink (e.g., `raw(description_html || description)` is XSS). If the HTML field is always populated, treat a missing value as a bug to fix at its source — DO NOT add a fallback. If the HTML field can legitimately be absent, render it as HTML only when present and render the text field as text otherwise; DO NOT mix the two.
 
 ### XSS (JavaScript / Vue)
 

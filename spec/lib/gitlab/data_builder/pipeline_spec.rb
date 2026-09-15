@@ -47,7 +47,7 @@ RSpec.describe Gitlab::DataBuilder::Pipeline, feature_category: :continuous_inte
       expect(build_data[:failure_reason]).to be_nil
       expect(build_data[:allow_failure]).to eq(build.allow_failure)
       expect(build_data[:environment]).to be_nil
-      expect(runner_data).to eq(nil)
+      expect(runner_data).to be_nil
       expect(project_data).to eq(project.hook_attrs(backward: false))
       expect(data[:merge_request]).to be_nil
       expect(data[:user]).to eq({

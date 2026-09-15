@@ -125,8 +125,7 @@ RSpec.describe Gitlab::Database::LoadBalancing::LoadBalancer, :request_store, fe
 
       allow(lb).to receive(:host).and_return(host)
       allow(Rails.application.executor).to receive(:active?).and_return(true)
-      allow(host).to receive(:query_cache_enabled).and_return(false)
-      allow(host).to receive(:connection).and_return(connection)
+      allow(host).to receive_messages(query_cache_enabled: false, connection: connection)
 
       expect(host).to receive(:enable_query_cache!).once
 
@@ -139,8 +138,7 @@ RSpec.describe Gitlab::Database::LoadBalancing::LoadBalancer, :request_store, fe
 
       allow(lb).to receive(:host).and_return(host)
       allow(Rails.application.executor).to receive(:active?).and_return(false)
-      allow(host).to receive(:query_cache_enabled).and_return(false)
-      allow(host).to receive(:connection).and_return(connection)
+      allow(host).to receive_messages(query_cache_enabled: false, connection: connection)
 
       expect(host).not_to receive(:enable_query_cache!)
 
@@ -570,25 +568,25 @@ RSpec.describe Gitlab::Database::LoadBalancing::LoadBalancer, :request_store, fe
     it 'returns true for a connection error' do
       error = ActiveRecord::ConnectionNotEstablished.new
 
-      expect(lb.connection_error?(error)).to eq(true)
+      expect(lb.connection_error?(error)).to be(true)
     end
 
     it 'returns false for a missing database error' do
       error = ActiveRecord::NoDatabaseError.new
 
-      expect(lb.connection_error?(error)).to eq(false)
+      expect(lb.connection_error?(error)).to be(false)
     end
 
     it 'returns true for a wrapped connection error' do
       wrapped = wrapped_exception(ActiveRecord::StatementInvalid, ActiveRecord::ConnectionNotEstablished)
 
-      expect(lb.connection_error?(wrapped)).to eq(true)
+      expect(lb.connection_error?(wrapped)).to be(true)
     end
 
     it 'returns true for a wrapped connection error from a view' do
       wrapped = wrapped_exception(ActionView::Template::Error, ActiveRecord::ConnectionNotEstablished)
 
-      expect(lb.connection_error?(wrapped)).to eq(true)
+      expect(lb.connection_error?(wrapped)).to be(true)
     end
 
     it 'returns true for deeply wrapped/nested errors' do
@@ -598,25 +596,25 @@ RSpec.describe Gitlab::Database::LoadBalancing::LoadBalancer, :request_store, fe
         ActiveRecord::ConnectionNotEstablished
       )
 
-      expect(lb.connection_error?(top)).to eq(true)
+      expect(lb.connection_error?(top)).to be(true)
     end
 
     it 'returns true for an invalid encoding error' do
       error = RuntimeError.new('invalid encoding name: unicode')
 
-      expect(lb.connection_error?(error)).to eq(true)
+      expect(lb.connection_error?(error)).to be(true)
     end
 
     it 'returns false for errors not related to database connections' do
       error = RuntimeError.new
 
-      expect(lb.connection_error?(error)).to eq(false)
+      expect(lb.connection_error?(error)).to be(false)
     end
 
     it 'returns false for ActiveRecord errors without a cause' do
       error = ActiveRecord::RecordNotUnique.new
 
-      expect(lb.connection_error?(error)).to eq(false)
+      expect(lb.connection_error?(error)).to be(false)
     end
   end
 
@@ -631,13 +629,13 @@ RSpec.describe Gitlab::Database::LoadBalancing::LoadBalancer, :request_store, fe
     end
 
     it 'returns for a serialization error' do
-      expect(lb.serialization_failure?(conflict_error.new)).to eq(true)
+      expect(lb.serialization_failure?(conflict_error.new)).to be(true)
     end
 
     it 'returns true for a wrapped error' do
       wrapped = wrapped_exception(ActionView::Template::Error, conflict_error)
 
-      expect(lb.serialization_failure?(wrapped)).to eq(true)
+      expect(lb.serialization_failure?(wrapped)).to be(true)
     end
   end
 

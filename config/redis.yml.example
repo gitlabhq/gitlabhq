@@ -6,6 +6,8 @@ development:
   cache:
     cluster:
       - redis://localhost:7001
+  concurrency_limit:
+    url: redis://localhost:6379
   cluster_shared_state:
     cluster:
       - redis://localhost:7001
@@ -36,6 +38,8 @@ test:
   cache:
     cluster:
       - redis://localhost:7001
+  concurrency_limit:
+    url: redis://localhost:6379
   cluster_shared_state:
     cluster:
       - redis://localhost:7001

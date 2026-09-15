@@ -128,6 +128,9 @@ module ActiveContext
           raw_client.indices.delete(index: partition_name)
         end
 
+        # Deliberately empty: explicit index.mapping settings here (or _source
+        # in the mappings) would override the server-side default that excludes
+        # vector fields from _source (Elasticsearch 9.2+, OpenSearch 3.0+).
         def settings(_)
           {}
         end

@@ -9,11 +9,12 @@ module QA
       #
       # @param [Resource::User] user
       # @param [Integer] access_level
-      def add_member(user, access_level = AccessLevel::DEVELOPER)
+      # @param [String] expires_at membership expiry date (YYYY-MM-DD)
+      def add_member(user, access_level = AccessLevel::DEVELOPER, expires_at: nil)
         Support::Retrier.retry_until do
           QA::Runtime::Logger.info(%(Adding user #{user.username} to #{full_path} #{self.class.name}))
           response = post Runtime::API::Request.new(api_client, api_members_path).url,
-            { user_id: user.id, access_level: access_level }
+            { user_id: user.id, access_level: access_level, expires_at: expires_at }.compact
           break true if response.code == QA::Support::API::HTTP_STATUS_CREATED
           break true if response.body.include?('Member already exists')
         end

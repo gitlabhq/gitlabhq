@@ -24,7 +24,7 @@ module MergeRequests
           merge_request.invalidate_project_counter_caches
           cleanup_environments(merge_request)
           deactivate_pages_deployments(merge_request)
-          abort_auto_merge(merge_request, 'merge request was closed')
+          abort_auto_merge(merge_request, 'the merge request was closed.')
           cleanup_refs(merge_request)
           trigger_merge_request_merge_status_updated(merge_request)
         end

@@ -53,7 +53,11 @@ module API
 
           new_update = current_runner.ensure_runner_queue_value
 
-          ::Ci::RegisterJobService.new(current_runner, current_runner_manager).execute(runner_params).tap do |result|
+          service = ::Ci::RegisterJobService.new(
+            current_runner, current_runner_manager,
+            request_timeout_at: ::Gitlab::RequestContext.instance.request_timeout_at)
+
+          service.execute(runner_params).tap do |result|
             unless result.valid?
               # We received a build that is invalid due to a concurrency conflict
               ::Gitlab::Metrics.add_event(:build_invalid)

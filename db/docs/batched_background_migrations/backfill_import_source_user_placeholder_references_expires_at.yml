@@ -1,0 +1,9 @@
+---
+migration_job_name: BackfillImportSourceUserPlaceholderReferencesExpiresAt
+description: Backfills expires_at for existing import_source_user_placeholder_references rows
+feature_category: importers
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/253935
+milestone: '19.4'
+gitlab_schema: gitlab_main_org
+queued_migration_version: '20260907090600'
+finalized_by:

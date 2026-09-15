@@ -30,13 +30,13 @@ RSpec.describe Gitlab::Git::ChangedPath, feature_category: :source_code_manageme
       let(:status) { :ADDED }
 
       it 'returns true' do
-        expect(new_file?).to eq(true)
+        expect(new_file?).to be(true)
       end
     end
 
     context 'when it is not a new file' do
       it 'returns false' do
-        expect(new_file?).to eq(false)
+        expect(new_file?).to be(false)
       end
     end
   end
@@ -75,7 +75,7 @@ RSpec.describe Gitlab::Git::ChangedPath, feature_category: :source_code_manageme
     subject(:submodule_change?) { changed_path.submodule_change? }
 
     context 'with a regular file change' do
-      it { is_expected.to eq false }
+      it { is_expected.to be false }
     end
 
     context 'with a submodule addition' do
@@ -83,7 +83,7 @@ RSpec.describe Gitlab::Git::ChangedPath, feature_category: :source_code_manageme
       let(:old_mode) { '0' }
       let(:new_mode) { '160000' }
 
-      it { is_expected.to eq true }
+      it { is_expected.to be true }
     end
 
     context 'with a submodule deletion' do
@@ -91,7 +91,7 @@ RSpec.describe Gitlab::Git::ChangedPath, feature_category: :source_code_manageme
       let(:old_mode) { '160000' }
       let(:new_mode) { '0' }
 
-      it { is_expected.to eq true }
+      it { is_expected.to be true }
     end
   end
 

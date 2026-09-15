@@ -24,7 +24,7 @@ import { getIdFromGraphQLId } from '~/graphql_shared/utils';
 import { isLoggedIn } from '~/lib/utils/common_utils';
 import { addShortcutsExtension } from '~/behaviors/shortcuts';
 import { sanitize } from '~/lib/dompurify';
-import { shouldDisableShortcuts } from '~/behaviors/shortcuts/shortcuts_toggle';
+import { keyboardShortcutsDisabled } from '~/behaviors/shortcuts/shortcuts_disabled';
 import { keysFor, ISSUABLE_EDIT_DESCRIPTION } from '~/behaviors/shortcuts/keybindings';
 import ShortcutsWorkItems from '~/behaviors/shortcuts/shortcuts_work_items';
 import { glSlotsMixin } from '~/lib/utils/vue3compat/gl_slots_mixin';
@@ -62,7 +62,6 @@ import {
   findNotesWidget,
   activeWorkItemIds,
 } from '../utils';
-import { updateWorkItemCurrentTodosWidget } from '../graphql/cache_utils';
 
 import getWorkItemDesignListQuery from './design_management/graphql/design_collection.query.graphql';
 import uploadDesignMutation from './design_management/graphql/upload_design.mutation.graphql';
@@ -79,7 +78,7 @@ import {
 
 import WorkItemTree from './work_item_links/work_item_tree.vue';
 import WorkItemActions from './work_item_actions.vue';
-import TodosToggle from './shared/todos_toggle.vue';
+import WorkItemTodosWidget from './work_item_todos_widget.vue';
 import WorkItemNotificationsWidget from './work_item_notifications_widget.vue';
 import WorkItemAttributesWrapper from './work_item_attributes_wrapper.vue';
 import WorkItemCreatedUpdated from './work_item_created_updated.vue';
@@ -113,7 +112,6 @@ export default {
   directives: {
     GlTooltip: GlTooltipDirective,
   },
-  isLoggedIn: isLoggedIn(),
   VALID_DESIGN_FILE_MIMETYPE,
   SHOW_SIDEBAR_STORAGE_KEY: 'work_item_show_sidebar',
   ENABLE_TRUNCATION_STORAGE_KEY: 'work_item_truncate_descriptions',
@@ -129,7 +127,7 @@ export default {
     LocalStorageSync,
     PanelActionsPortal,
     WorkItemActions,
-    TodosToggle,
+    WorkItemTodosWidget,
     WorkItemNotificationsWidget,
     WorkItemCreatedUpdated,
     WorkItemDescription,
@@ -205,13 +203,11 @@ export default {
   emits: [
     'add-child',
     'attributes-updated',
-    'deleteWorkItem',
-    'promotedToObjective',
+    'delete-work-item',
     'work-item-emoji-updated',
     'work-item-updated',
     'work-item-state-updated',
     'work-item-type-changed',
-    'workItemUpdated',
   ],
   data() {
     return {
@@ -332,13 +328,16 @@ export default {
     },
   },
   computed: {
+    isLoggedIn() {
+      return isLoggedIn();
+    },
     showGenerateMrWithDuoButton() {
       if (!this.duoRemoteFlowsAvailability) return false;
 
-      const hasAgentPlan =
-        this.workItem?.features?.agentPlan || Boolean(this.findWidget('AGENT_PLAN'));
-
-      return !hasAgentPlan;
+      return !this.agentPlanWidget;
+    },
+    agentPlanWidget() {
+      return this.workItem?.features?.agentPlan || this.findWidget('AGENT_PLAN');
     },
     workItemProjectId() {
       return this.workItem?.project?.id;
@@ -430,10 +429,7 @@ export default {
       return findCurrentUserTodosWidget(this.workItem);
     },
     showWorkItemCurrentUserTodos() {
-      return Boolean(this.$options.isLoggedIn && this.workItemCurrentUserTodos);
-    },
-    currentUserTodos() {
-      return this.workItemCurrentUserTodos?.currentUserTodos?.nodes;
+      return Boolean(this.isLoggedIn && this.workItemCurrentUserTodos);
     },
     workItemAssignees() {
       return findAssigneesWidget(this.workItem);
@@ -444,8 +440,8 @@ export default {
     workItemErrorTracking() {
       return findErrorTrackingWidget(this.workItem) ?? {};
     },
-    workItemLinkedResources() {
-      return findLinkedResourcesWidget(this.workItem)?.linkedResources?.nodes ?? [];
+    hasLinkedResourcesWidget() {
+      return Boolean(findLinkedResourcesWidget(this.workItem));
     },
     workItemHierarchy() {
       return findHierarchyWidget(this.workItem);
@@ -497,12 +493,12 @@ export default {
       return !this.editMode && this.canUpdate;
     },
     editShortcutKey() {
-      return shouldDisableShortcuts() ? null : keysFor(ISSUABLE_EDIT_DESCRIPTION)[0];
+      return keyboardShortcutsDisabled() ? null : keysFor(ISSUABLE_EDIT_DESCRIPTION)[0];
     },
     editTooltip() {
       const description = __('Edit title and description');
       const key = this.editShortcutKey;
-      return shouldDisableShortcuts()
+      return keyboardShortcutsDisabled()
         ? description
         : sanitize(`${description} <kbd class="flat gl-ml-1" aria-hidden=true>${key}</kbd>`);
     },
@@ -602,7 +598,7 @@ export default {
     },
     showWidgets() {
       return (
-        this.workItemLinkedResources.length ||
+        this.hasLinkedResourcesWidget ||
         this.hasDesignWidget ||
         this.showWorkItemTree ||
         this.workItemLinkedItems ||
@@ -677,16 +673,13 @@ export default {
         .then(
           ({
             data: {
-              workItemUpdate: { errors, workItem },
+              workItemUpdate: { errors },
             },
           }) => {
             if (errors?.length) {
               throw new Error(errors[0]);
             }
 
-            this.$emit('workItemUpdated', {
-              confidential: workItem?.confidential,
-            });
             toast(this.confidentialityToggledText);
           },
         )
@@ -785,6 +778,39 @@ export default {
       this.draftData = {};
       this.editMode = false;
     },
+    async toggleWorkItemTaskListItem({ checked, lineSource, lineSourcepos, revert }) {
+      this.updateInProgress = true;
+      try {
+        const {
+          data: { workItemUpdate },
+        } = await this.$apollo.mutate({
+          mutation: updateWorkItemMutation,
+          variables: {
+            input: {
+              id: this.workItem.id,
+              descriptionWidget: {
+                taskListToggle: { checked, lineSource, lineSourcepos },
+              },
+            },
+            useWorkItemFeatures: Boolean(this.glFeatures.workItemFeaturesField),
+          },
+        });
+
+        if (workItemUpdate.errors?.length) {
+          this.updateError = workItemUpdate.errors.join('\n');
+        }
+
+        if (!workItemUpdate.workItem) {
+          revert();
+        }
+      } catch (error) {
+        revert();
+        this.updateError = i18n.updateError;
+        Sentry.captureException(error);
+      } finally {
+        this.updateInProgress = false;
+      }
+    },
     isValidDesignUpload(files) {
       if (!this.canAddDesign) return false;
 
@@ -850,14 +876,6 @@ export default {
       Sentry.captureException(error);
       this.resetFilesToBeSaved();
       this.designUploadError = UPLOAD_DESIGN_ERROR_MESSAGE;
-    },
-    updateWorkItemCurrentTodosWidgetCache({ cache, todos }) {
-      updateWorkItemCurrentTodosWidget({
-        cache,
-        todos,
-        fullPath: this.workItemFullPath,
-        iid: this.iid,
-      });
     },
     async deleteChildItem({ id }) {
       this.activeChildItem = null;
@@ -1004,8 +1022,8 @@ export default {
                 :is-detail-panel="isDetailPanel"
                 :title="workItem.title"
                 :title-html="workItem.titleHtml"
-                @updateWorkItem="updateWorkItem"
-                @updateDraft="updateDraft('title', $event)"
+                @update-work-item="updateWorkItem"
+                @update-draft="updateDraft('title', $event)"
                 @error="updateError = $event"
               />
             </div>
@@ -1018,8 +1036,8 @@ export default {
               :title="workItem.title"
               :title-html="workItem.titleHtml"
               @error="updateError = $event"
-              @updateWorkItem="updateWorkItem"
-              @updateDraft="updateDraft('title', $event)"
+              @update-work-item="updateWorkItem"
+              @update-draft="updateDraft('title', $event)"
             />
           </div>
         </template>
@@ -1062,11 +1080,26 @@ export default {
             >
               {{ __('Edit') }}
             </gl-button>
-            <todos-toggle
+            <slot
+              name="plan-cta"
+              :work-item="workItem"
+              :can-update="canUpdate"
+              :edit-mode="editMode"
+              :agent-plan-widget="agentPlanWidget"
+              :on-error="(e) => (updateError = e)"
+            ></slot>
+            <slot
+              name="header-actions"
+              :work-item="workItem"
+              :is-detail-panel="isDetailPanel"
+              :active-panel="activePanel"
+              :request-panel="requestPanel"
+            ></slot>
+            <work-item-todos-widget
               v-if="showWorkItemCurrentUserTodos"
-              :item-id="workItem.id"
-              :current-user-todos="currentUserTodos"
-              @todos-updated="updateWorkItemCurrentTodosWidgetCache"
+              :work-item-id="workItem.id"
+              :work-item-iid="iid"
+              :full-path="workItemFullPath"
               @error="updateError = $event"
             />
             <work-item-notifications-widget
@@ -1077,16 +1110,17 @@ export default {
               v-if="workItemPresent"
               v-bind="workItemActionProps"
               :update-in-progress="updateInProgress"
-              @deleteWorkItem="$emit('deleteWorkItem', { workItemType, workItemId: workItem.id })"
-              @toggleWorkItemConfidentiality="toggleConfidentiality"
+              @delete-work-item="
+                $emit('delete-work-item', { workItemType, workItemId: workItem.id })
+              "
+              @toggle-work-item-confidentiality="toggleConfidentiality"
               @error="updateError = $event"
-              @promotedToObjective="$emit('promotedToObjective', iid)"
               @work-item-state-updated="$emit('work-item-state-updated')"
               @work-item-type-changed="workItemTypeChanged"
-              @toggleReportAbuseModal="toggleReportAbuseModal"
+              @toggle-report-abuse-modal="toggleReportAbuseModal"
               @work-item-created="handleWorkItemCreated"
               @toggle-sidebar="handleToggleSidebar"
-              @toggleTruncationEnabled="handleTruncationEnabled"
+              @toggle-truncation-enabled="handleTruncationEnabled"
             />
           </panel-actions-portal>
         </template>
@@ -1118,7 +1152,7 @@ export default {
               class="gl-mb-3"
               variant="warning"
               :primary-button-text="__('Refresh')"
-              @primaryAction="$apollo.queries.workItem.refetch()"
+              @primary-action="$apollo.queries.workItem.refetch()"
               @dismiss="refetchError = null"
             >
               {{ refetchError }}
@@ -1147,8 +1181,10 @@ export default {
 
         <template v-if="showWidgets" #widgets>
           <work-item-linked-resources
-            v-if="workItemLinkedResources.length"
-            :linked-resources="workItemLinkedResources"
+            v-if="hasLinkedResourcesWidget"
+            :full-path="workItemFullPath"
+            :work-item-iid="iid"
+            @error="updateError = $event"
           />
 
           <design-widget
@@ -1200,6 +1236,7 @@ export default {
             :parent-iteration="workItemIteration"
             :parent-milestone="workItemMilestone"
             :active-child-item-id="activeChildItemId"
+            :active-panel="activePanel"
             :can-update="canUpdate"
             :can-update-children="canUpdateChildren"
             :confidential="workItem.confidential"
@@ -1218,6 +1255,7 @@ export default {
             :work-item-type="workItem.workItemType.name"
             :can-admin-work-item-link="canAdminWorkItemLink"
             :active-child-item-id="activeChildItemId"
+            :active-panel="activePanel"
             :has-blocked-work-items-feature="hasBlockedWorkItemsFeature"
             contextual-view-enabled
             @show-modal="openContextualView"
@@ -1257,7 +1295,7 @@ export default {
             :parent-id="parentWorkItemId"
             :hide-fullscreen-markdown-button="isDetailPanel"
             @error="updateError = $event"
-            @openReportAbuse="openReportAbuseModal"
+            @open-report-abuse="openReportAbuseModal"
             @start-editing="isAddingNotes = true"
             @stop-editing="isAddingNotes = false"
             @focus="isAddingNotes = true"
@@ -1298,12 +1336,13 @@ export default {
                   :without-heading-anchors="isDetailPanel"
                   :hide-fullscreen-markdown-button="isDetailPanel"
                   :truncation-enabled="truncationEnabled"
-                  @updateWorkItem="updateWorkItem"
-                  @updateDraft="updateDraft('description', $event)"
+                  @update-work-item="updateWorkItem"
+                  @update-draft="updateDraft('description', $event)"
                   @cancel-editing="cancelEditing"
+                  @task-item-toggled="toggleWorkItemTaskListItem"
                   @error="updateError = $event"
                 />
-                <div class="gl-mt-3 gl-flex gl-flex-wrap gl-justify-between gl-gap-y-3">
+                <div class="gl-mt-3 gl-flex gl-flex-wrap gl-justify-between gl-gap-5">
                   <work-item-award-emoji
                     v-if="workItemAwardEmoji"
                     :work-item-archived="workItem.archived"
@@ -1315,7 +1354,7 @@ export default {
                     @error="updateError = $event"
                     @emoji-updated="$emit('work-item-emoji-updated', $event)"
                   />
-                  <div class="gl-mt-2 gl-flex gl-flex-wrap gl-gap-3 gl-gap-y-3">
+                  <div class="gl-flex gl-flex-wrap gl-gap-3">
                     <gl-intersection-observer
                       v-if="showUploadDesign"
                       data-testid="design-upload-button-observer"
@@ -1338,15 +1377,13 @@ export default {
                       :is-confidential-work-item="workItem.confidential"
                       :project-id="workItemProjectId"
                     />
-                    <div>
-                      <duo-work-item-to-mr-action
-                        v-if="showGenerateMrWithDuoButton"
-                        :project-path="workItemFullPath"
-                        :work-item-iid="workItem.iid"
-                        :work-item-type="workItemType"
-                        :work-item-web-url="workItem.webUrl"
-                      />
-                    </div>
+                    <duo-work-item-to-mr-action
+                      v-if="showGenerateMrWithDuoButton"
+                      :project-path="workItemFullPath"
+                      :work-item-iid="workItem.iid"
+                      :work-item-type="workItemType"
+                      :work-item-web-url="workItem.webUrl"
+                    />
                   </div>
                 </div>
               </section>

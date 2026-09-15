@@ -11,7 +11,7 @@ Check for XML serialization/injection vulnerabilities.
 
 ## Remediation
 
-XML Injection is an attack technique used to manipulate or compromise the logic of an XML application or service. The injection of unintended XML content and/or structures into an XML message can alter the intend logic of the application. Further, XML injection can cause the insertion of malicious content into the resulting message/document.
+XML Injection is an attack technique used to manipulate or compromise the logic of an XML application or service. The injection of unintended XML content and/or structures into an XML message can alter the intended logic of the application. Further, XML injection can cause the insertion of malicious content into the resulting message/document.
 
 ## Links
 

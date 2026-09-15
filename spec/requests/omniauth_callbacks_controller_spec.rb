@@ -139,20 +139,6 @@ RSpec.describe OmniauthCallbacksController, :with_current_organization, :aggrega
         expect(session['identity_link_provider']).to be_nil
       end
     end
-
-    context 'when the link_omniauth_to_existing_user_on_login feature flag is disabled' do
-      before do
-        stub_feature_flags(link_omniauth_to_existing_user_on_login: false)
-      end
-
-      it 'falls back to the 422 failure page and does not stash an identity' do
-        post '/users/auth/atlassian_oauth2/callback'
-
-        expect(response).to have_gitlab_http_status(:unprocessable_entity)
-        expect(request.env['warden']).not_to be_authenticated
-        expect(session['identity_link_provider']).to be_nil
-      end
-    end
   end
 
   describe '#saml' do

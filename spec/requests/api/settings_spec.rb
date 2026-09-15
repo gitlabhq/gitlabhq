@@ -116,6 +116,7 @@ RSpec.describe API::Settings, 'Settings', :do_not_mock_admin_mode_setting, featu
       expect(json_response['concurrent_github_import_jobs_limit']).to eq(1000)
       expect(json_response['concurrent_bitbucket_import_jobs_limit']).to eq(100)
       expect(json_response['concurrent_bitbucket_server_import_jobs_limit']).to eq(100)
+      expect(json_response['concurrent_pull_request_import_jobs_limit']).to eq(200)
       expect(json_response['require_personal_access_token_expiry']).to be(true)
       expect(json_response['organization_cluster_agent_authorization_enabled']).to be(false)
       expect(json_response['terraform_state_encryption_enabled']).to be(true)
@@ -123,6 +124,7 @@ RSpec.describe API::Settings, 'Settings', :do_not_mock_admin_mode_setting, featu
       expect(json_response['iframe_rendering_allowlist']).to eq([])
       expect(json_response['email_otp_enabled']).to be(false)
       expect(json_response['authn_data_retention_cleanup_enabled']).to be(false)
+      expect(json_response['auto_accept_awarded_achievements']).to be(false)
       expect(json_response['allow_application_default_credentials_for_offline_transfer']).to be(false)
       expect(json_response['allow_s3_compatible_storage_for_offline_transfer']).to be(false)
       expect(json_response['offline_transfer_exports_enabled']).to be(false)
@@ -134,6 +136,57 @@ RSpec.describe API::Settings, 'Settings', :do_not_mock_admin_mode_setting, featu
 
   describe "PUT /application/settings" do
     let(:group) { create(:group) }
+
+    describe 'accepted parameters' do
+      # `optional_attributes` varies by build and by license, but an explicitly declared
+      # parameter is accepted everywhere. Declaring an EE-only attribute outside
+      # `optional_params_ee` makes FOSS accept and persist a parameter it otherwise drops,
+      # so this fails in an as-if-foss run. Nested `x[y]` keys are sub-keys of Hash
+      # parameters and never appear in `optional_attributes`.
+      # Declared explicitly but absent from `optional_attributes`. `signin_enabled` and
+      # `password_authentication_enabled` are legacy aliases the endpoint maps in its body;
+      # the rest predate this guard. Fix new offenders rather than adding to this list.
+      let(:known_exceptions) do
+        %w[
+          bulk_import_max_download_file
+          duo_workflows_default_image_registry
+          make_profile_private
+          password_authentication_enabled
+          security_policy_global_group_approvers_enabled
+          signin_enabled
+        ]
+      end
+
+      let(:top_level_params) do
+        described_class.routes
+          .find { |route| route.request_method == 'PUT' }
+          .params.keys.map(&:to_s).grep_v(/\[/)
+      end
+
+      it 'only accepts parameters that are in optional_attributes' do
+        allowed = API::Helpers::SettingsHelpers.optional_attributes.map(&:to_s) + known_exceptions
+
+        expect(top_level_params).not_to be_empty
+        expect(top_level_params - allowed).to be_empty
+      end
+    end
+
+    # jsonb_accessor attributes with no default are serialised as null by GET, so a
+    # client that replays the GET body verbatim must not be rejected.
+    it 'accepts the nulls that GET returns for unset jsonb_accessor attributes' do
+      get api('/application/settings', admin)
+
+      unset = json_response.slice('jira_connect_additional_audience_url', 'jira_forge_app_id')
+
+      expect(unset.keys).to match_array(%w[jira_connect_additional_audience_url jira_forge_app_id])
+      expect(unset.values).to all(be_nil)
+
+      put api('/application/settings', admin),
+        headers: { 'Content-Type' => 'application/json' },
+        params: unset.to_json
+
+      expect(response).to have_gitlab_http_status(:ok)
+    end
 
     it_behaves_like 'authorizing granular token permissions', :update_application_setting do
       let(:boundary_object) { :instance }
@@ -364,6 +417,7 @@ RSpec.describe API::Settings, 'Settings', :do_not_mock_admin_mode_setting, featu
             concurrent_github_import_jobs_limit: 2,
             concurrent_bitbucket_import_jobs_limit: 2,
             concurrent_bitbucket_server_import_jobs_limit: 2,
+            concurrent_pull_request_import_jobs_limit: 2,
             require_personal_access_token_expiry: false,
             vscode_extension_marketplace: {
               enabled: false,
@@ -371,6 +425,7 @@ RSpec.describe API::Settings, 'Settings', :do_not_mock_admin_mode_setting, featu
             },
             terraform_state_encryption_enabled: false,
             authn_data_retention_cleanup_enabled: true,
+            auto_accept_awarded_achievements: true,
             allow_s3_compatible_storage_for_offline_transfer: true,
             allow_application_default_credentials_for_offline_transfer: true,
             offline_transfer_exports_enabled: true,
@@ -470,10 +525,12 @@ RSpec.describe API::Settings, 'Settings', :do_not_mock_admin_mode_setting, featu
         expect(json_response['concurrent_github_import_jobs_limit']).to be(2)
         expect(json_response['concurrent_bitbucket_import_jobs_limit']).to be(2)
         expect(json_response['concurrent_bitbucket_server_import_jobs_limit']).to be(2)
+        expect(json_response['concurrent_pull_request_import_jobs_limit']).to be(2)
         expect(json_response['require_personal_access_token_expiry']).to be(false)
         expect(json_response['vscode_extension_marketplace']).to eq({ "enabled" => false, "preset" => 'open_vsx' })
         expect(json_response['terraform_state_encryption_enabled']).to be(false)
         expect(json_response['authn_data_retention_cleanup_enabled']).to be(true)
+        expect(json_response['auto_accept_awarded_achievements']).to be(true)
         expect(json_response['allow_s3_compatible_storage_for_offline_transfer']).to be(true)
         expect(json_response['allow_application_default_credentials_for_offline_transfer']).to be(true)
         expect(json_response['offline_transfer_exports_enabled']).to be(true)

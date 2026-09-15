@@ -325,7 +325,7 @@ describe('noteable_discussion component', () => {
 
         wrapper
           .findComponent(NoteForm)
-          .vm.$emit('handleFormUpdate', 'test reply with /merge', null, () => {});
+          .vm.$emit('handle-form-update', 'test reply with /merge', null, () => {});
 
         await waitForPromises();
 
@@ -353,7 +353,9 @@ describe('noteable_discussion component', () => {
         wrapper.findComponent(DiscussionReplyPlaceholder).vm.$emit('focus');
         await nextTick();
 
-        wrapper.findComponent(NoteForm).vm.$emit('handleFormUpdate', 'test reply', null, () => {});
+        wrapper
+          .findComponent(NoteForm)
+          .vm.$emit('handle-form-update', 'test reply', null, () => {});
 
         await waitForPromises();
 
@@ -383,7 +385,7 @@ describe('noteable_discussion component', () => {
 
         wrapper
           .findComponent(NoteForm)
-          .vm.$emit('handleFormUpdate', 'invalid note', null, () => {});
+          .vm.$emit('handle-form-update', 'invalid note', null, () => {});
 
         await waitForPromises();
       });

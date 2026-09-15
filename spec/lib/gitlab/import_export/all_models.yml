@@ -232,6 +232,7 @@ merge_requests:
 - merge_request_context_commit_diff_files
 - merge_request_stage_events
 - merge_schedule
+- risk_assessment
 - events
 - merge_request_issues
 - merge_request_closing_issues
@@ -286,6 +287,7 @@ merge_requests:
 - generated_ref_commits
 - policy_dismissals
 - duo_workflows
+- ai_suggested_reviewers
 - vulnerability_merge_request_links
 - duo_workflow_links
 - linked_duo_workflows
@@ -385,6 +387,8 @@ ci_pipelines: &pipeline_definition
 - project_mirror
 - workload
 - sbom_occurrence_refs
+- duo_workflow_links
+- linked_duo_workflows
 pipeline_metadata:
 - pipeline
 ci_refs:
@@ -765,7 +769,6 @@ project:
 - protected_environments
 - mirror_user
 - push_rule
-- project_push_rule
 - jenkins_integration
 - index_status
 - feature_usage
@@ -774,7 +777,6 @@ project:
 - approval_merge_request_rules
 - v2_approval_rules
 - v2_approval_rules_projects
-- audit_events
 - path_locks
 - wiki_repository
 - source_pipelines
@@ -905,6 +907,7 @@ project:
 - observability_metrics
 - observability_traces
 - observability_logs
+- observability_project_o11y_setting
 - security_exclusions
 - security_statistics
 - vulnerability_management_policies
@@ -1123,8 +1126,6 @@ issuable_sla:
   - issue
 push_rule:
   - organization
-project_push_rule:
-  - project
 bulk_import_export:
   - group
 service_desk_setting:

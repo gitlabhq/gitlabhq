@@ -5,8 +5,6 @@ require 'rubocop_spec_helper'
 require_relative '../../../../rubocop/cop/qa/element_with_pattern'
 
 RSpec.describe RuboCop::Cop::QA::ElementWithPattern, feature_category: :test_platform do
-  let(:source_file) { 'qa/page.rb' }
-
   context 'in a QA file' do
     before do
       allow(cop).to receive(:in_qa_file?).and_return(true)

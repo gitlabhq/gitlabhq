@@ -7,6 +7,8 @@ module Types
       graphql_name 'MLModelVersionLinks'
       description 'Represents links to perform actions on the model version'
 
+      authorize_granular_token skip_reason: :parent_authorizes
+
       present_using ::Ml::ModelVersionPresenter
 
       field :show_path, GraphQL::Types::String,

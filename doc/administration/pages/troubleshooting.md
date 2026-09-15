@@ -1,6 +1,6 @@
 ---
 stage: Plan
-group: Knowledge
+group: Planner Intelligence
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see <https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments>
 title: Troubleshooting GitLab Pages administration
 ---
@@ -424,8 +424,8 @@ If you get a 500 response from Pages and encounter an error similar to:
 ERRO[0145] cannot serve from disk                        error="gitlab: disk access is disabled via enable-disk=false" project_id=27 source_path="file:///shared/pages/@hashed/67/06/670671cd97404156226e507973f2ab8330d3022ca96e0c93bdbdb320c41adcaf/pages_deployments/14/artifacts.zip" source_type=zip
 ```
 
-It means that GitLab Rails is telling GitLab Pages to serve content from a location on disk,
-however, GitLab Pages was configured to disable disk access.
+It means that GitLab Rails is telling GitLab Pages to serve content from a location on disk.
+However, GitLab Pages was configured to disable disk access.
 
 To enable disk access:
 
@@ -449,7 +449,7 @@ And you run pages on the separate server syncing files via NFS, it may mean that
 the shared pages directory is mounted on a different path on the main GitLab server and the
 GitLab Pages server.
 
-In that case, it's highly recommended you to configure
+In that case, it's highly recommended that you configure
 [object storage and migrate any existing pages data to it](_index.md#object-storage-settings).
 
 Alternatively, you can mount the GitLab Pages shared directory to the same path on
@@ -514,6 +514,23 @@ To resolve this error:
 1. Save the file.
 1. [Reconfigure GitLab](../restart_gitlab.md) on both servers for the
    changes to take effect.
+
+## 404 error when viewing job artifacts
+
+Your Pages site might load correctly and authentication might succeed, but links to
+[job artifacts](../cicd/job_artifacts.md) return a `404` error.
+
+The Pages daemon proxies artifact requests to the GitLab API at
+[`artifacts_server_url`](_index.md#global-settings). Those requests use the
+[URL-encoded path of the project](../../api/rest/_index.md#namespaced-paths), so the
+project path contains an encoded slash (`%2F`). If a reverse proxy in front of GitLab
+decodes that character, the URL no longer matches an API route. The API then returns `404`.
+
+The Pages log records only the `404` response, not the URL the API received. To confirm
+the cause, check your reverse proxy logs for the request.
+
+For a complete configuration example, see
+[`404 Not Found` when using a reverse proxy](../../api/rest/troubleshooting.md#error-404-not-found-when-using-a-reverse-proxy).
 
 ## 503 error `Client authentication failed due to unknown client`
 

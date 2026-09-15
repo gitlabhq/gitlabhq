@@ -9,7 +9,7 @@ module Mcp
         include Mcp::Tools::Concerns::UrlParser
 
         PARENT_PARAMS = %i[url project_id].freeze
-        ACTIONS = %w[retry cancel].freeze
+        ACTIONS = %w[retry cancel update].freeze
 
         OPERATIONS = {
           create: {
@@ -56,7 +56,7 @@ module Mcp
           action = params[:action].to_s
 
           unless ACTIONS.include?(action)
-            raise ArgumentError, 'Provide action: "retry" or "cancel" when pipeline_id is set'
+            raise ArgumentError, 'Provide action: "retry", "cancel", or "update" when pipeline_id is set'
           end
 
           action.to_sym

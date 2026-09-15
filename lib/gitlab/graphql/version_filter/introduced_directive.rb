@@ -8,7 +8,8 @@ module Gitlab
         graphql_name "gl_introduced"
         description <<~DESC.squish
         Marks a field as introduced in a specific version.
-        Fields with a version higher than the current one will return null.
+        Fields tagged with the current milestone or a later one return null
+        when the field is absent from the schema.
         DESC
 
         argument :version,

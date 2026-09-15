@@ -49,6 +49,12 @@ RSpec.describe 'Resend notification to the reassigned user of an import source u
 
       expect(import_source_user['status']).to eq('AWAITING_APPROVAL')
     end
+
+    it_behaves_like 'authorizing granular token permissions for GraphQL', :update_placeholder_reassignment do
+      let(:user) { owner }
+      let(:boundary_object) { group }
+      let(:request) { post_graphql_mutation(mutation, token: { personal_access_token: pat }) }
+    end
   end
 
   context 'when user is not authorized' do

@@ -21,7 +21,7 @@ class CreateCiFinishedPipelinesHourlyMv < ClickHouse::Migration
 
   def down
     execute <<~SQL
-      DROP VIEW ci_finished_pipelines_hourly_mv
+      DROP VIEW IF EXISTS ci_finished_pipelines_hourly_mv
     SQL
   end
 end

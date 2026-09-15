@@ -349,7 +349,7 @@ To search environments by name:
 1. In the top bar, select **Search or go to** and find your project.
 1. In the left sidebar, select **Operate** > **Environments**.
 1. In the search bar, enter your search term.
-   - The length of your **search term should be 3 or more characters**.
+   - The length of your search term should be three or more characters.
    - Matching applies from the beginning of the environment name.
      - For example, `devel` matches the environment name `development`, but `elop` does not.
    - For environments with a folder name format, matching applies after the base folder name.
@@ -640,7 +640,7 @@ stop_review_app:
 
 ### Multiple stop actions for an environment
 
-To configure multiple **parallel** stop actions on an environment, specify the
+To configure multiple parallel stop actions on an environment, specify the
 [`on_stop`](../yaml/_index.md#environmenton_stop) keyword across multiple
 [deployment jobs](../jobs/_index.md#deployment-jobs) for the same `environment`, as defined in the
 `.gitlab-ci.yml` file.

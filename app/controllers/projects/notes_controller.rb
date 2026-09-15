@@ -20,8 +20,8 @@ class Projects::NotesController < Projects::ApplicationController
 
   override :feature_category
   def feature_category
-    if %w[index create].include?(params[:action])
-      category = feature_category_override_for_target_type(params[:target_type])
+    if %w[index create].include?(action_name)
+      category = feature_category_override_for_target_type(permitted_params[:target_type])
       return category if category
     end
 
@@ -70,14 +70,20 @@ class Projects::NotesController < Projects::ApplicationController
     render json: note_serializer.represent(note, render_truncated_diff_lines: true)
   end
 
+  def permitted_params
+    params.permit(:id, :target_type)
+  end
+
   def note
-    @note ||= @project.notes.find(params[:id])
+    @note ||= @project.notes.find(permitted_params[:id])
   end
 
   alias_method :awardable, :note
 
+  # Keys read by NotesFinder that the client may supply; the rest are set explicitly below.
+  # :target is deliberately absent, it is a noteable object rather than a request value.
   def finder_params
-    params.merge(
+    params.permit(:target_type, :target_id, :target_iid, :search, :sort, :group_id).merge(
       organization_id: Current.organization.id,
       project: project,
       last_fetched_at: last_fetched_at,

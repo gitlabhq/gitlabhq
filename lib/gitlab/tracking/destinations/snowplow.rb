@@ -146,7 +146,7 @@ module Gitlab
         end
 
         def billing_auth?
-          destination_configuration.billing? && Feature.enabled?(:billing_events_oidc_auth, :instance)
+          destination_configuration.billing?
         end
 
         def emitter_options

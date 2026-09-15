@@ -28,6 +28,11 @@ export default {
       required: false,
       default: false,
     },
+    withStars: {
+      type: Boolean,
+      required: false,
+      default: false,
+    },
   },
   computed: {
     starIcon() {
@@ -48,6 +53,7 @@ export default {
 <template>
   <div class="gl-inline-block gl-w-full gl-min-w-1 gl-flex-row gl-items-center sm:gl-flex">
     <gl-button
+      v-if="withStars"
       class="sm:gl-mr-3"
       category="tertiary"
       variant="default"

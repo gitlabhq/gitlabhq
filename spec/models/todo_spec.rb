@@ -3,12 +3,12 @@
 require 'spec_helper'
 
 RSpec.describe Todo, feature_category: :notifications do
-  let_it_be_with_reload(:issue) { create(:issue) }
   let_it_be(:user) { create(:user) }
   let_it_be(:user2) { create(:user) }
   let_it_be(:group) { create(:group, developers: user) }
   let_it_be_with_reload(:project) { create(:project, :repository, developers: user) }
   let_it_be(:project2) { create(:project) }
+  let_it_be(:issue) { create(:issue, project: project) }
 
   describe 'relationships' do
     it { is_expected.to belong_to(:author).class_name("User") }
@@ -156,7 +156,7 @@ RSpec.describe Todo, feature_category: :notifications do
     end
 
     context 'when bypassing activerecord' do
-      let(:duo_code_review_bot) { Users::Internal.in_organization(user.organization_id).duo_code_review_bot }
+      let_it_be(:duo_code_review_bot) { Users::Internal.in_organization(user.organization_id).duo_code_review_bot }
 
       it 'prefers project_id' do
         todos_attributes = [{
@@ -295,13 +295,13 @@ RSpec.describe Todo, feature_category: :notifications do
 
   describe '#done' do
     it 'changes state to done' do
-      todo = create(:todo, state: :pending)
+      todo = create(:todo, project: project, state: :pending, target: issue)
 
       expect { todo.done }.to change { todo.state }.from('pending').to('done')
     end
 
     it 'does not raise error when is already done' do
-      todo = create(:todo, state: :done)
+      todo = create(:todo, project: project, state: :done, target: issue)
 
       expect { todo.done }.not_to raise_error
     end
@@ -412,7 +412,7 @@ RSpec.describe Todo, feature_category: :notifications do
     end
 
     context 'when the todo is coming from an issue' do
-      let_it_be_with_reload(:issue) { create(:issue, project: project) }
+      let_it_be(:issue) { create(:issue, project: project) }
       let(:issue_path) { ::Gitlab::UrlBuilder.instance.issue_path(issue) }
 
       context 'when coming from the issue itself' do
@@ -656,8 +656,8 @@ RSpec.describe Todo, feature_category: :notifications do
   end
 
   describe '#done?' do
-    let_it_be(:todo1) { create(:todo, state: :pending) }
-    let_it_be(:todo2) { create(:todo, state: :done) }
+    let_it_be(:todo1) { create(:todo, project: project, target: issue, state: :pending) }
+    let_it_be(:todo2) { create(:todo, project: project, target: issue, state: :done) }
 
     it 'returns true for todos with done state' do
       expect(todo2.done?).to be_truthy
@@ -670,9 +670,9 @@ RSpec.describe Todo, feature_category: :notifications do
 
   describe '.for_action' do
     it 'returns the todos for a given action' do
-      create(:todo, action: Todo::MENTIONED)
+      create(:todo, project: project, action: Todo::MENTIONED, target: issue)
 
-      todo = create(:todo, action: Todo::ASSIGNED)
+      todo = create(:todo, project: project, action: Todo::ASSIGNED, target: issue)
 
       expect(described_class.for_action(Todo::ASSIGNED)).to eq([todo])
     end
@@ -680,11 +680,9 @@ RSpec.describe Todo, feature_category: :notifications do
 
   describe '.for_author' do
     it 'returns the todos for a given author' do
-      user = create(:user)
-      user2 = create(:user)
-      todo = create(:todo, author: user)
+      todo = create(:todo, project: project, author: user, target: issue)
 
-      create(:todo, author: user2)
+      create(:todo, project: project, author: user2, target: issue)
 
       expect(described_class.for_author(user)).to eq([todo])
     end
@@ -692,9 +690,9 @@ RSpec.describe Todo, feature_category: :notifications do
 
   describe '.for_project' do
     it 'returns the todos for a given project' do
-      todo = create(:todo, project: project)
+      todo = create(:todo, project: project, target: issue)
 
-      create(:todo, project: project2)
+      create(:todo, project: project2, target: issue)
 
       expect(described_class.for_project(project)).to eq([todo])
     end
@@ -702,20 +700,20 @@ RSpec.describe Todo, feature_category: :notifications do
     it 'returns the todos for many projects' do
       project3 = create(:project)
 
-      todo1 = create(:todo, project: project)
-      todo2 = create(:todo, project: project2)
-      create(:todo, project: project3)
+      todo1 = create(:todo, project: project, target: issue)
+      todo2 = create(:todo, project: project2, target: issue)
+      create(:todo, project: project3, target: issue)
 
       expect(described_class.for_project([project2, project])).to contain_exactly(todo2, todo1)
     end
   end
 
   describe '.for_undeleted_projects' do
-    let(:project3) { create(:project) }
+    let_it_be(:project3) { create(:project) }
 
-    let!(:todo1) { create(:todo, project: project) }
-    let!(:todo2) { create(:todo, project: project2) }
-    let!(:todo3) { create(:todo, project: project3) }
+    let_it_be(:todo1) { create(:todo, project: project, target: issue) }
+    let!(:todo2) { create(:todo, project: project2, target: issue) }
+    let_it_be(:todo3) { create(:todo, project: project3, target: issue) }
 
     it 'returns the todos for a given project' do
       expect(described_class.for_undeleted_projects).to contain_exactly(todo1, todo2, todo3)
@@ -733,9 +731,9 @@ RSpec.describe Todo, feature_category: :notifications do
   describe '.for_group' do
     it 'returns the todos for a given group' do
       group2 = create(:group)
-      todo = create(:todo, group: group)
+      todo = create(:todo, project: nil, group: group, user: user, target: issue)
 
-      create(:todo, group: group2)
+      create(:todo, project: nil, group: group2, user: user, target: issue)
 
       expect(described_class.for_group(group)).to eq([todo])
     end
@@ -743,9 +741,9 @@ RSpec.describe Todo, feature_category: :notifications do
 
   describe '.for_type' do
     it 'returns the todos for a given target type' do
-      todo = create(:todo, target: issue)
+      todo = create(:todo, project: project, target: issue)
 
-      create(:todo, target: create(:merge_request))
+      create(:todo, project: project, target: create(:merge_request, source_project: project))
 
       expect(described_class.for_type(Issue.name)).to eq([todo])
     end
@@ -753,9 +751,9 @@ RSpec.describe Todo, feature_category: :notifications do
 
   describe '.for_target' do
     it 'returns the todos for a given target' do
-      todo = create(:todo, target: issue)
+      todo = create(:todo, project: project, target: issue)
 
-      create(:todo, target: create(:merge_request))
+      create(:todo, project: project, target: create(:merge_request, source_project: project))
 
       expect(described_class.for_type(Issue.name).for_target(todo.target))
         .to contain_exactly(todo)
@@ -764,9 +762,9 @@ RSpec.describe Todo, feature_category: :notifications do
 
   describe '.for_commit' do
     it 'returns the todos for a commit ID' do
-      todo = create(:todo, commit_id: '123')
+      todo = create(:todo, project: project, commit_id: '123', target: issue)
 
-      create(:todo, commit_id: '456')
+      create(:todo, project: project, commit_id: '456', target: issue)
 
       expect(described_class.for_commit('123')).to eq([todo])
     end
@@ -774,12 +772,9 @@ RSpec.describe Todo, feature_category: :notifications do
 
   describe '.not_in_users' do
     it 'returns the expected todos' do
-      user = create(:user)
-      user2 = create(:user)
-
-      todo1 = create(:todo, user: user)
-      todo2 = create(:todo, user: user)
-      create(:todo, user: user2)
+      todo1 = create(:todo, project: project, user: user, target: issue)
+      todo2 = create(:todo, project: project, user: user, target: issue)
+      create(:todo, project: project, user: user2, target: issue)
 
       expect(described_class.not_in_users(user2)).to contain_exactly(todo1, todo2)
     end
@@ -790,8 +785,8 @@ RSpec.describe Todo, feature_category: :notifications do
       parent_group = group
       child_group = create(:group, parent: parent_group)
 
-      todo1 = create(:todo, group: parent_group)
-      todo2 = create(:todo, group: child_group)
+      todo1 = create(:todo, project: nil, group: parent_group, user: user, target: issue)
+      todo2 = create(:todo, project: nil, group: child_group, user: user, target: issue)
       todos = described_class.for_group_ids_and_descendants([parent_group.id])
 
       expect(todos).to contain_exactly(todo1, todo2)
@@ -800,10 +795,10 @@ RSpec.describe Todo, feature_category: :notifications do
 
   describe '.pending_for_expiring_ssh_keys' do
     it 'returns only todos matching the given key ids' do
-      todo1 = create(:todo, target_type: Key, target_id: 1, action: described_class::SSH_KEY_EXPIRING_SOON, state: :pending)
-      todo2 = create(:todo, target_type: Key, target_id: 2, action: described_class::SSH_KEY_EXPIRING_SOON, state: :pending)
-      create(:todo, target_type: Key, target_id: 3, action: described_class::SSH_KEY_EXPIRING_SOON, state: :done)
-      create(:todo, target_type: Issue, target_id: 1, action: described_class::ASSIGNED, state: :pending)
+      todo1 = create(:todo, project: project, target: issue, target_type: Key, target_id: 1, action: described_class::SSH_KEY_EXPIRING_SOON, state: :pending)
+      todo2 = create(:todo, project: project, target: issue, target_type: Key, target_id: 2, action: described_class::SSH_KEY_EXPIRING_SOON, state: :pending)
+      create(:todo, project: project, target: issue, target_type: Key, target_id: 3, action: described_class::SSH_KEY_EXPIRING_SOON, state: :done)
+      create(:todo, project: project, target: issue, target_type: Issue, target_id: 1, action: described_class::ASSIGNED, state: :pending)
       todos = described_class.pending_for_expiring_ssh_keys([1, 2, 3])
 
       expect(todos).to contain_exactly(todo1, todo2)
@@ -812,9 +807,9 @@ RSpec.describe Todo, feature_category: :notifications do
 
   describe '.for_user' do
     it 'returns the expected todos' do
-      todo1 = create(:todo, user: user)
-      todo2 = create(:todo, user: user)
-      create(:todo, user: user2)
+      todo1 = create(:todo, project: project, user: user, target: issue)
+      todo2 = create(:todo, project: project, user: user, target: issue)
+      create(:todo, project: project, user: user2, target: issue)
 
       expect(described_class.for_user(user)).to contain_exactly(todo1, todo2)
     end
@@ -824,9 +819,9 @@ RSpec.describe Todo, feature_category: :notifications do
     it 'returns todos that belongs to notes' do
       note_1 = create(:note, noteable: issue, project: issue.project)
       note_2 = create(:note, noteable: issue, project: issue.project)
-      todo_1 = create(:todo, note: note_1)
-      todo_2 = create(:todo, note: note_2)
-      create(:todo, note: create(:note))
+      todo_1 = create(:todo, project: project, note: note_1, target: issue)
+      todo_2 = create(:todo, project: project, note: note_2, target: issue)
+      create(:todo, project: project, note: create(:note, project: issue.project, noteable: issue), target: issue)
 
       expect(described_class.for_note([note_1, note_2])).to contain_exactly(todo_1, todo_2)
     end
@@ -834,10 +829,10 @@ RSpec.describe Todo, feature_category: :notifications do
 
   describe '.pending_count_by_user_id' do
     before do
-      create(:todo, user: user, state: :pending)
-      create(:todo, user: user, state: :pending)
-      create(:todo, user: user, state: :done)
-      create(:todo, user: user2, state: :pending)
+      create(:todo, project: project, user: user, state: :pending, target: issue)
+      create(:todo, project: project, user: user, state: :pending, target: issue)
+      create(:todo, project: project, user: user, state: :done, target: issue)
+      create(:todo, project: project, user: user2, state: :pending, target: issue)
     end
 
     specify do
@@ -847,21 +842,21 @@ RSpec.describe Todo, feature_category: :notifications do
 
   describe '.any_for_target?' do
     it 'returns true if there are todos for a given target' do
-      todo = create(:todo)
+      todo = create(:todo, project: project, target: issue)
 
       expect(described_class.any_for_target?(todo.target)).to be(true)
     end
 
     it 'returns true if there is at least one todo for a given target with state pending' do
-      create(:todo, state: :done, target: issue)
-      create(:todo, state: :pending, target: issue)
+      create(:todo, project: project, state: :done, target: issue)
+      create(:todo, project: project, state: :pending, target: issue)
 
       expect(described_class.any_for_target?(issue)).to be(true)
     end
 
     it 'returns false if there are only todos for a given target with state done while searching for pending' do
-      create(:todo, state: :done, target: issue)
-      create(:todo, state: :done, target: issue)
+      create(:todo, project: project, state: :done, target: issue)
+      create(:todo, project: project, state: :done, target: issue)
 
       expect(described_class.any_for_target?(issue, :pending)).to be(false)
     end
@@ -873,7 +868,7 @@ RSpec.describe Todo, feature_category: :notifications do
 
   describe '.batch_update' do
     it 'updates the state of todos' do
-      todo = create(:todo, :pending)
+      todo = create(:todo, :pending, project: project, target: issue)
       ids = described_class.batch_update(state: :done)
 
       todo.reload
@@ -883,13 +878,13 @@ RSpec.describe Todo, feature_category: :notifications do
     end
 
     it 'does not update todos that already have the given state' do
-      create(:todo, :pending)
+      create(:todo, :pending, project: project, target: issue)
 
       expect(described_class.batch_update(state: :pending)).to be_empty
     end
 
     it 'updates updated_at' do
-      create(:todo, :pending)
+      create(:todo, :pending, project: project, target: issue)
 
       travel_to(1.day.from_now) do
         expected_update_date = Time.current.utc
@@ -902,9 +897,9 @@ RSpec.describe Todo, feature_category: :notifications do
   end
 
   describe '.sort_by_snoozed_and_creation_dates' do
-    let_it_be(:todo1) { create(:todo) }
-    let_it_be(:todo2) { create(:todo, created_at: 3.hours.ago) }
-    let_it_be(:todo3) { create(:todo, snoozed_until: 1.hour.ago) }
+    let_it_be(:todo1) { create(:todo, project: project, target: issue) }
+    let_it_be(:todo2) { create(:todo, project: project, created_at: 3.hours.ago, target: issue) }
+    let_it_be(:todo3) { create(:todo, project: project, snoozed_until: 1.hour.ago, target: issue) }
 
     context 'when sorting by ascending date' do
       subject { described_class.sort_by_snoozed_and_creation_dates(direction: :asc) }
@@ -922,9 +917,11 @@ RSpec.describe Todo, feature_category: :notifications do
   describe '.distinct_user_ids' do
     subject { described_class.distinct_user_ids }
 
-    let_it_be(:todo) { create(:todo, user: user) }
-    let_it_be(:todo) { create(:todo, user: user) }
-    let_it_be(:todo) { create(:todo, user: user2) }
+    before_all do
+      create(:todo, project: project, user: user, target: issue)
+      create(:todo, project: project, user: user, target: issue)
+      create(:todo, project: project, user: user2, target: issue)
+    end
 
     it { is_expected.to contain_exactly(user.id, user2.id) }
   end
@@ -932,49 +929,43 @@ RSpec.describe Todo, feature_category: :notifications do
   describe '.for_internal_notes' do
     it 'returns todos created from internal notes' do
       internal_note = create(:note, confidential: true)
-      todo = create(:todo, note: internal_note)
-      create(:todo)
+      todo = create(:todo, project: project, note: internal_note, target: issue)
+      create(:todo, project: project, target: issue)
 
       expect(described_class.for_internal_notes).to contain_exactly(todo)
     end
   end
 
-  shared_context 'with todos authored by banned and unbanned users' do
-    let(:unbanned_author_pending_todo) { create(:todo, :pending) }
-    let(:unbanned_author_done_todo) { create(:todo, :done) }
-    let(:banned_user) { create(:user, :banned) }
-    let(:banned_author_pending_todo) { create(:todo, :pending, author: banned_user) }
-    let(:banned_author_done_todo) { create(:todo, :done, author: banned_user) }
-  end
+  context 'with todos authored by banned and unbanned users' do
+    let_it_be(:unbanned_author_pending_todo) { create(:todo, :pending, project: project, target: issue) }
+    let_it_be(:unbanned_author_done_todo) { create(:todo, :done, project: project, target: issue) }
+    let_it_be(:banned_user) { create(:user, :banned) }
+    let_it_be(:banned_author_pending_todo) { create(:todo, :pending, project: project, author: banned_user, target: issue) }
+    let_it_be(:banned_author_done_todo) { create(:todo, :done, project: project, author: banned_user, target: issue) }
 
-  describe '.without_banned_user' do
-    include_context 'with todos authored by banned and unbanned users'
-
-    it 'only returns todos that are not authored by a banned user' do
-      expect(described_class.without_banned_user).to contain_exactly(unbanned_author_pending_todo, unbanned_author_done_todo)
+    describe '.without_banned_user' do
+      it 'only returns todos that are not authored by a banned user' do
+        expect(described_class.without_banned_user).to contain_exactly(unbanned_author_pending_todo, unbanned_author_done_todo)
+      end
     end
-  end
 
-  describe '.pending_without_hidden' do
-    include_context 'with todos authored by banned and unbanned users'
-
-    it 'only returns todos that are not pending and authored by a banned user' do
-      expect(described_class.pending_without_hidden).to contain_exactly(unbanned_author_pending_todo)
+    describe '.pending_without_hidden' do
+      it 'only returns todos that are not pending and authored by a banned user' do
+        expect(described_class.pending_without_hidden).to contain_exactly(unbanned_author_pending_todo)
+      end
     end
-  end
 
-  describe '.all_without_hidden' do
-    include_context 'with todos authored by banned and unbanned users'
-
-    it 'only returns todos that are not pending and authored by a banned user' do
-      expect(described_class.all_without_hidden).to contain_exactly(unbanned_author_pending_todo, unbanned_author_done_todo, banned_author_done_todo)
+    describe '.all_without_hidden' do
+      it 'only returns todos that are not pending and authored by a banned user' do
+        expect(described_class.all_without_hidden).to contain_exactly(unbanned_author_pending_todo, unbanned_author_done_todo, banned_author_done_todo)
+      end
     end
   end
 
   describe 'snoozed and not_snoozed scopes' do
-    let_it_be(:snoozed_todo) { create(:todo, snoozed_until: 1.day.from_now) }
-    let_it_be(:unsnoozed_todo) { create(:todo, snoozed_until: 1.day.ago) }
-    let_it_be(:never_snoozed_todo) { create(:todo, snoozed_until: nil) }
+    let_it_be(:snoozed_todo) { create(:todo, project: project, snoozed_until: 1.day.from_now, target: issue) }
+    let_it_be(:unsnoozed_todo) { create(:todo, project: project, snoozed_until: 1.day.ago, target: issue) }
+    let_it_be(:never_snoozed_todo) { create(:todo, project: project, snoozed_until: nil, target: issue) }
 
     describe '.snoozed' do
       it 'only returns todos that are currently snoozed' do

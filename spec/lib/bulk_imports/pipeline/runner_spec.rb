@@ -110,8 +110,8 @@ RSpec.describe BulkImports::Pipeline::Runner, feature_category: :importers do
 
         subject.run
 
-        expect(entity.failed?).to eq(true)
-        expect(tracker.failed?).to eq(true)
+        expect(entity.failed?).to be(true)
+        expect(tracker.failed?).to be(true)
       end
     end
 
@@ -119,8 +119,8 @@ RSpec.describe BulkImports::Pipeline::Runner, feature_category: :importers do
       it 'does not mark tracker and entity as failed' do
         subject.run
 
-        expect(tracker.failed?).to eq(false)
-        expect(entity.failed?).to eq(false)
+        expect(tracker.failed?).to be(false)
+        expect(entity.failed?).to be(false)
       end
     end
 

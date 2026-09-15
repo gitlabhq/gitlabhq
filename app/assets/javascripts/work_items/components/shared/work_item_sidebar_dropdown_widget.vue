@@ -2,7 +2,7 @@
 import { GlCollapsibleListbox } from '@gitlab/ui';
 import { debounce, isEmpty } from 'lodash-es';
 import { keysFor } from '~/behaviors/shortcuts/keybindings';
-import { shouldDisableShortcuts } from '~/behaviors/shortcuts/shortcuts_toggle';
+import { keyboardShortcutsDisabled } from '~/behaviors/shortcuts/shortcuts_disabled';
 import { sanitize, titleInLinkSafeHtmlConfig } from '~/lib/dompurify';
 import { DEFAULT_DEBOUNCE_AND_THROTTLE_MS } from '~/lib/utils/constants';
 import { __, sprintf } from '~/locale';
@@ -82,16 +82,6 @@ export default {
       required: false,
       default: false,
     },
-    infiniteScroll: {
-      type: Boolean,
-      required: false,
-      default: false,
-    },
-    infiniteScrollLoading: {
-      type: Boolean,
-      required: false,
-      default: false,
-    },
     clearSearchOnItemSelect: {
       type: Boolean,
       required: false,
@@ -123,14 +113,7 @@ export default {
       default: false,
     },
   },
-  emits: [
-    'bottomReached',
-    'dropdown-hidden',
-    'dropdown-shown',
-    'search-started',
-    'updateSelected',
-    'update-value',
-  ],
+  emits: ['dropdown-hidden', 'dropdown-shown', 'search-started', 'update-selected', 'update-value'],
   data() {
     return {
       isEditing: false,
@@ -154,7 +137,7 @@ export default {
         : this.toggleDropdownText;
     },
     disableShortcuts() {
-      return shouldDisableShortcuts() || Object.keys(this.shortcut).length === 0;
+      return keyboardShortcutsDisabled() || Object.keys(this.shortcut).length === 0;
     },
     shortcutDescription() {
       return this.disableShortcuts ? null : this.shortcut.description;
@@ -203,7 +186,7 @@ export default {
         this.$emit('update-value', finalValue);
       } else {
         this.isDirty = true;
-        this.$emit('updateSelected', this.localSelectedItem);
+        this.$emit('update-selected', this.localSelectedItem);
         this.clearSearch();
       }
     },
@@ -240,7 +223,7 @@ export default {
     :is-updating="updateInProgress"
     :tooltip-text="tooltipText"
     @start-editing="isEditing = true"
-    @stopEditing="isEditing = false"
+    @stop-editing="isEditing = false"
   >
     <template #title>
       {{ dropdownLabel }}
@@ -262,7 +245,6 @@ export default {
           start-opened
           block
           is-check-centered
-          :infinite-scroll="infiniteScroll"
           :searching="loading"
           :header-text="headerText"
           :toggle-text="toggleText"
@@ -271,13 +253,11 @@ export default {
           :items="listItems"
           :selected="localSelectedItem"
           :reset-button-label="resetButton"
-          :infinite-scroll-loading="infiniteScrollLoading"
           @reset="unassignValue"
           @search="debouncedSearchKeyUpdate"
           @select="handleItemClick"
           @shown="onListboxShown"
           @hidden="onListboxHide"
-          @bottom-reached="$emit('bottomReached')"
         >
           <template #list-item="{ item }">
             <slot name="list-item" :item="item">

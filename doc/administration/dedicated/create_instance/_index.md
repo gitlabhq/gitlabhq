@@ -132,7 +132,7 @@ To create your GitLab Dedicated instance:
    1. Optional. Upload your `ssh_host_keys.json.age` file (recommended if you plan to use a
       custom domain).
 
-   For detailed instructions and troubleshooting, see [migrate to GitLab Dedicated with Geo](../geo_migration.md).
+   For detailed instructions and troubleshooting, see [collect Geo migration secrets](../migrate_with_geo/secrets.md).
 
 1. On the **Tenant summary** page, review all configuration details.
 

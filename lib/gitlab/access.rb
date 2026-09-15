@@ -55,6 +55,13 @@ module Gitlab
         options_with_owner.values
       end
 
+      # Returns all valid access level values for group sharing.
+      # In EE, this is overridden to also include MINIMAL_ACCESS (5),
+      # which is a valid base role for custom roles.
+      def values_with_minimal_access
+        all_values
+      end
+
       def all_keys
         options_with_owner.keys
       end

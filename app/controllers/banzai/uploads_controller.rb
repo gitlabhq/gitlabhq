@@ -31,8 +31,12 @@ module Banzai
       route_not_found
     end
 
+    def upload_params
+      params.permit(:model, :model_id)
+    end
+
     def upload_model_class
-      MODEL_CLASSES[params[:model]]
+      MODEL_CLASSES[upload_params[:model]]
     end
 
     def uploader_class
@@ -49,7 +53,7 @@ module Banzai
     end
 
     def find_model
-      upload_model_class.find(params[:model_id])
+      upload_model_class.find(upload_params[:model_id])
     end
   end
 end

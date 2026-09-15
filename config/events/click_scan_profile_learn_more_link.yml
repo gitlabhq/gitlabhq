@@ -5,7 +5,7 @@ status: active
 action: click_scan_profile_learn_more_link
 identifiers:
 - user
-product_group: security_platform_management
+product_group: security_controls
 product_categories:
 - security_asset_inventories
 - security_testing_configuration

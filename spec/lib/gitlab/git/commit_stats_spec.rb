@@ -2,7 +2,7 @@
 
 require "spec_helper"
 
-RSpec.describe Gitlab::Git::CommitStats do
+RSpec.describe Gitlab::Git::CommitStats, feature_category: :source_code_management do
   # `freeze: false` is required in this spec: one or more `let_it_be` subjects
   # cannot be frozen by default (deep_freeze traversal failure, a non-AR
   # subject, or an in-memory mutation that survives reload/refind). Do not

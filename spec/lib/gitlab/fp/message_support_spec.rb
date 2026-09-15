@@ -15,8 +15,6 @@ RSpec.describe Gitlab::Fp::MessageSupport, feature_category: :workspaces do
     end
   end
 
-  let(:object) { Object.new.extend(described_class) }
-
   describe '.generate_error_response_from_message' do
     context 'for an unsupported content which is not pattern matched' do
       let(:message) { Gitlab::Fp::Message.new(content: { unsupported: 'unmatched' }) }

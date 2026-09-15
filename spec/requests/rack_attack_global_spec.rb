@@ -41,7 +41,9 @@ RSpec.describe 'Rack Attack global throttles', :use_clean_rails_memory_store_cac
       throttle_unauthenticated_deprecated_api_requests_per_period: 100,
       throttle_unauthenticated_deprecated_api_period_in_seconds: 1,
       throttle_authenticated_deprecated_api_requests_per_period: 100,
-      throttle_authenticated_deprecated_api_period_in_seconds: 1
+      throttle_authenticated_deprecated_api_period_in_seconds: 1,
+      throttle_authenticated_dependency_proxy_requests_per_period: 100,
+      throttle_authenticated_dependency_proxy_period_in_seconds: 1
     }
   end
 
@@ -490,9 +492,9 @@ RSpec.describe 'Rack Attack global throttles', :use_clean_rails_memory_store_cac
 
         context 'when unauthenticated web throttle is enabled' do
           before do
-            settings_to_set[:throttle_unauthenticated_web_requests_per_period] = requests_per_period
-            settings_to_set[:throttle_unauthenticated_web_period_in_seconds] = period_in_seconds
-            settings_to_set[:throttle_unauthenticated_web_enabled] = true
+            settings_to_set[:throttle_unauthenticated_requests_per_period] = requests_per_period
+            settings_to_set[:throttle_unauthenticated_period_in_seconds] = period_in_seconds
+            settings_to_set[:throttle_unauthenticated_enabled] = true
             stub_application_setting(settings_to_set)
           end
 
@@ -689,6 +691,12 @@ RSpec.describe 'Rack Attack global throttles', :use_clean_rails_memory_store_cac
       end
 
       it_behaves_like 'rate-limited user based token-authenticated requests'
+
+      context 'with the dependency proxy throttle' do
+        let(:throttle_setting_prefix) { 'throttle_authenticated_dependency_proxy' }
+
+        it_behaves_like 'rate-limited user based token-authenticated requests'
+      end
     end
 
     context 'getting a blob' do
@@ -699,6 +707,69 @@ RSpec.describe 'Rack Attack global throttles', :use_clean_rails_memory_store_cac
       let(:other_path) { "/v2/#{other_blob.group.path}/dependency_proxy/containers/alpine/blobs/sha256:a0d0a0d46f8b52473982a3c466318f479767577551a53ffc9074c9fa7035982e" }
 
       it_behaves_like 'rate-limited user based token-authenticated requests'
+    end
+
+    context 'precedence over authenticated web throttle' do
+      let_it_be(:blob) { create(:dependency_proxy_blob) }
+
+      let(:path) { "/v2/#{blob.group.path}/dependency_proxy/containers/alpine/blobs/sha256:a0d0a0d46f8b52473982a3c466318f479767577551a53ffc9074c9fa7035982e" }
+
+      before do
+        settings_to_set[:throttle_authenticated_dependency_proxy_requests_per_period] = requests_per_period
+        settings_to_set[:throttle_authenticated_dependency_proxy_period_in_seconds] = period_in_seconds
+      end
+
+      def do_request
+        get path, headers: jwt_token_authorization_headers(jwt_token)
+      end
+
+      context 'when authenticated dependency proxy throttle is enabled' do
+        before do
+          settings_to_set[:throttle_authenticated_dependency_proxy_enabled] = true
+        end
+
+        context 'when authenticated web throttle is lower' do
+          before do
+            settings_to_set[:throttle_authenticated_web_requests_per_period] = 0
+            settings_to_set[:throttle_authenticated_web_period_in_seconds] = period_in_seconds
+            settings_to_set[:throttle_authenticated_web_enabled] = true
+            stub_application_setting(settings_to_set)
+          end
+
+          it 'ignores authenticated web throttle' do
+            requests_per_period.times do
+              do_request
+              expect(response).not_to have_gitlab_http_status(:too_many_requests)
+            end
+
+            expect_rejection('throttle_authenticated_dependency_proxy') { do_request }
+          end
+        end
+      end
+
+      context 'when authenticated dependency proxy throttle is disabled' do
+        before do
+          settings_to_set[:throttle_authenticated_dependency_proxy_enabled] = false
+        end
+
+        context 'when authenticated web throttle is enabled' do
+          before do
+            settings_to_set[:throttle_authenticated_web_requests_per_period] = requests_per_period
+            settings_to_set[:throttle_authenticated_web_period_in_seconds] = period_in_seconds
+            settings_to_set[:throttle_authenticated_web_enabled] = true
+            stub_application_setting(settings_to_set)
+          end
+
+          it 'rejects requests over the authenticated web rate limit' do
+            requests_per_period.times do
+              do_request
+              expect(response).not_to have_gitlab_http_status(:too_many_requests)
+            end
+
+            expect_rejection('throttle_authenticated_web') { do_request }
+          end
+        end
+      end
     end
   end
 
@@ -983,9 +1054,9 @@ RSpec.describe 'Rack Attack global throttles', :use_clean_rails_memory_store_cac
 
         context 'when unauthenticated web throttle is enabled' do
           before do
-            settings_to_set[:throttle_unauthenticated_web_requests_per_period] = requests_per_period
-            settings_to_set[:throttle_unauthenticated_web_period_in_seconds] = period_in_seconds
-            settings_to_set[:throttle_unauthenticated_web_enabled] = true
+            settings_to_set[:throttle_unauthenticated_requests_per_period] = requests_per_period
+            settings_to_set[:throttle_unauthenticated_period_in_seconds] = period_in_seconds
+            settings_to_set[:throttle_unauthenticated_enabled] = true
             stub_application_setting(settings_to_set)
           end
 
@@ -1180,9 +1251,9 @@ RSpec.describe 'Rack Attack global throttles', :use_clean_rails_memory_store_cac
 
         context 'when unauthenticated web throttle is enabled' do
           before do
-            settings_to_set[:throttle_unauthenticated_web_requests_per_period] = requests_per_period
-            settings_to_set[:throttle_unauthenticated_web_period_in_seconds] = period_in_seconds
-            settings_to_set[:throttle_unauthenticated_web_enabled] = true
+            settings_to_set[:throttle_unauthenticated_requests_per_period] = requests_per_period
+            settings_to_set[:throttle_unauthenticated_period_in_seconds] = period_in_seconds
+            settings_to_set[:throttle_unauthenticated_enabled] = true
             stub_application_setting(settings_to_set)
           end
 

@@ -1,0 +1,8 @@
+#import "~/work_items/graphql/work_item_parent_fields.fragment.graphql"
+
+# @feature_category: team_planning
+query boardInheritedParent($id: WorkItemID!) {
+  workItem(id: $id) {
+    ...WorkItemParentFields
+  }
+}

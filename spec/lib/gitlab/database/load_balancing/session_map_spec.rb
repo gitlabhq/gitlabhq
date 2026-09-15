@@ -90,7 +90,7 @@ RSpec.describe Gitlab::Database::LoadBalancing::SessionMap, feature_category: :d
     it 'clears instance from RequestStore' do
       described_class.clear_session
 
-      expect(RequestStore[described_class::CACHE_KEY]).to eq(nil)
+      expect(RequestStore[described_class::CACHE_KEY]).to be_nil
     end
   end
 
@@ -181,11 +181,11 @@ RSpec.describe Gitlab::Database::LoadBalancing::SessionMap, feature_category: :d
         with_sessions.use_primary!
 
         scoped_dbs.each do |db|
-          expect(described_class.current(db.load_balancer).use_primary?).to eq(true)
+          expect(described_class.current(db.load_balancer).use_primary?).to be(true)
         end
 
         (all_dbs - scoped_dbs).each do |db|
-          expect(described_class.current(db.load_balancer).use_primary?).to eq(false)
+          expect(described_class.current(db.load_balancer).use_primary?).to be(false)
         end
       end
     end
@@ -194,16 +194,16 @@ RSpec.describe Gitlab::Database::LoadBalancing::SessionMap, feature_category: :d
       it 'applies use_primary to all scoped sessions' do
         with_sessions.use_primary do
           scoped_dbs.each do |db|
-            expect(described_class.current(db.load_balancer).use_primary?).to eq(true)
+            expect(described_class.current(db.load_balancer).use_primary?).to be(true)
           end
 
           (all_dbs - scoped_dbs).each do |db|
-            expect(described_class.current(db.load_balancer).use_primary?).to eq(false)
+            expect(described_class.current(db.load_balancer).use_primary?).to be(false)
           end
         end
 
         all_dbs.each do |db|
-          expect(described_class.current(db.load_balancer).use_primary?).to eq(false)
+          expect(described_class.current(db.load_balancer).use_primary?).to be(false)
         end
       end
     end
@@ -216,13 +216,13 @@ RSpec.describe Gitlab::Database::LoadBalancing::SessionMap, feature_category: :d
           end
 
           scoped_dbs.each do |db|
-            expect(described_class.current(db.load_balancer).performed_write?).to eq(true)
-            expect(described_class.current(db.load_balancer).use_primary?).to eq(false)
+            expect(described_class.current(db.load_balancer).performed_write?).to be(true)
+            expect(described_class.current(db.load_balancer).use_primary?).to be(false)
           end
 
           (all_dbs - scoped_dbs).each do |db|
-            expect(described_class.current(db.load_balancer).performed_write?).to eq(true)
-            expect(described_class.current(db.load_balancer).use_primary?).to eq(true)
+            expect(described_class.current(db.load_balancer).performed_write?).to be(true)
+            expect(described_class.current(db.load_balancer).use_primary?).to be(true)
           end
         end
       end
@@ -232,16 +232,16 @@ RSpec.describe Gitlab::Database::LoadBalancing::SessionMap, feature_category: :d
       it 'applies use_replicas_for_read_queries to all scoped sessions' do
         with_sessions.use_replicas_for_read_queries do
           scoped_dbs.each do |db|
-            expect(described_class.current(db.load_balancer).use_replicas_for_read_queries?).to eq(true)
+            expect(described_class.current(db.load_balancer).use_replicas_for_read_queries?).to be(true)
           end
 
           (all_dbs - scoped_dbs).each do |db|
-            expect(described_class.current(db.load_balancer).use_replicas_for_read_queries?).to eq(false)
+            expect(described_class.current(db.load_balancer).use_replicas_for_read_queries?).to be(false)
           end
         end
 
         all_dbs.each do |db|
-          expect(described_class.current(db.load_balancer).use_replicas_for_read_queries?).to eq(false)
+          expect(described_class.current(db.load_balancer).use_replicas_for_read_queries?).to be(false)
         end
       end
     end
@@ -250,16 +250,16 @@ RSpec.describe Gitlab::Database::LoadBalancing::SessionMap, feature_category: :d
       it 'applies fallback_to_replicas_for_ambiguous_queries to all scoped sessions' do
         with_sessions.fallback_to_replicas_for_ambiguous_queries do
           scoped_dbs.each do |db|
-            expect(described_class.current(db.load_balancer).fallback_to_replicas_for_ambiguous_queries?).to eq(true)
+            expect(described_class.current(db.load_balancer).fallback_to_replicas_for_ambiguous_queries?).to be(true)
           end
 
           (all_dbs - scoped_dbs).each do |db|
-            expect(described_class.current(db.load_balancer).fallback_to_replicas_for_ambiguous_queries?).to eq(false)
+            expect(described_class.current(db.load_balancer).fallback_to_replicas_for_ambiguous_queries?).to be(false)
           end
         end
 
         all_dbs.each do |db|
-          expect(described_class.current(db.load_balancer).fallback_to_replicas_for_ambiguous_queries?).to eq(false)
+          expect(described_class.current(db.load_balancer).fallback_to_replicas_for_ambiguous_queries?).to be(false)
         end
       end
     end

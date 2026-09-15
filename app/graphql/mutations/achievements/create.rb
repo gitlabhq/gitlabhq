@@ -30,6 +30,10 @@ module Mutations
 
       authorize :admin_achievement
 
+      authorize_granular_token permissions: :create_achievement,
+        boundary_argument: :namespace_id,
+        boundary_type: :group
+
       def resolve(args)
         namespace = authorized_find!(id: args[:namespace_id])
 

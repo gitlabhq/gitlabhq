@@ -12,7 +12,7 @@ module Projects
         response = ::ServiceDesk::CustomEmails::CreateService.new(
           project: project,
           current_user: current_user,
-          params: params
+          params: create_params
         ).execute
 
         json_response(service_response: response)
@@ -46,6 +46,12 @@ module Projects
       end
 
       private
+
+      def create_params
+        params.permit(
+          :custom_email, :smtp_address, :smtp_port, :smtp_username, :smtp_password, :smtp_authentication
+        )
+      end
 
       def update_setting_params
         params.permit(:custom_email_enabled)

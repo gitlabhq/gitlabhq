@@ -1,0 +1,21 @@
+---
+description: User unsubscribed from a saved view
+internal_events: true
+status: active
+action: saved_view_unsubscribe
+identifiers:
+- project
+- namespace
+- user
+additional_properties:
+  property:
+    description: user role
+product_group: planning_views
+product_categories:
+- planning_views
+milestone: '19.4'
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/233220
+tiers:
+- free
+- premium
+- ultimate

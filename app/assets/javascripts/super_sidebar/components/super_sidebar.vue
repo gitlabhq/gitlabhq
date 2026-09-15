@@ -18,6 +18,7 @@ import {
 import { trackContextAccess } from '../utils';
 import SidebarPortalTarget from './sidebar_portal_target.vue';
 import IconOnlyToggle from './icon_only_toggle.vue';
+import ManageOrganizationButton from './manage_organization_button.vue';
 import HelpCenter from './help_center.vue';
 import SidebarMenu from './sidebar_menu.vue';
 import ScrollScrim from './scroll_scrim.vue';
@@ -26,6 +27,7 @@ export default {
   name: 'SuperSidebar',
   components: {
     IconOnlyToggle,
+    ManageOrganizationButton,
     HelpCenter,
     SidebarMenu,
     SidebarPortalTarget,
@@ -77,6 +79,9 @@ export default {
     },
     isIconOnly() {
       return this.canIconOnly && this.sidebarState.isIconOnly;
+    },
+    manageOrganizationPath() {
+      return this.sidebarData.manage_organization_link;
     },
   },
   watch: {
@@ -227,6 +232,9 @@ export default {
           <trial-widget
             class="gl-relative gl-mb-1 gl-flex gl-items-center gl-rounded-[.75rem] gl-p-3 gl-leading-normal !gl-text-default !gl-no-underline"
           />
+        </div>
+        <div v-if="manageOrganizationPath" class="gl-px-3 gl-pt-3">
+          <manage-organization-button :href="manageOrganizationPath" />
         </div>
         <help-center
           v-if="canIconOnly"

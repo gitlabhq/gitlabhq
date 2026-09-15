@@ -67,6 +67,28 @@ RSpec.describe Gitlab::Repositories::ArchiveCacheControl, feature_category: :sou
       end
     end
 
+    context 'when the same paths are excluded in a different order' do
+      subject(:cache) { described_class.new(project, ref: ref, metadata: metadata, exclude_paths: %w[test lib]) }
+
+      let(:other) { described_class.new(project, ref: ref, metadata: metadata, exclude_paths: %w[lib test]) }
+
+      it 'matches, since both resolve to one cached archive' do
+        expect(cache.etag_components).to eq(other.etag_components)
+        expect(cache.etag).to eq(other.etag)
+      end
+    end
+
+    context 'when the same path is excluded more than once' do
+      subject(:cache) { described_class.new(project, ref: ref, metadata: metadata, exclude_paths: %w[lib lib test]) }
+
+      let(:other) { described_class.new(project, ref: ref, metadata: metadata, exclude_paths: %w[test lib]) }
+
+      it 'matches, since duplicates do not change the archive' do
+        expect(cache.etag_components).to eq(other.etag_components)
+        expect(cache.etag).to eq(other.etag)
+      end
+    end
+
     context 'when LFS is excluded and paths are excluded' do
       subject(:cache) do
         described_class.new(project, ref: ref, metadata: metadata, include_lfs_blobs: false, exclude_paths: %w[lib])

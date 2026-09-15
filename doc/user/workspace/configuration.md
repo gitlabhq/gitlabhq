@@ -60,7 +60,7 @@ Prerequisites:
 {{< tab title="From a project" >}}
 
 1. In the top bar, select **Search or go to** and find your project.
-1. Select **Code** > **New workspace**.
+1. On the project page, select the **Code** dropdown in the upper-right corner, then in the **Workspaces** section, select **New workspace**.
 1. From the **Cluster agent** dropdown list, select a cluster agent owned by the group the project belongs to.
 1. From the **Git reference** dropdown list, select the branch, tag, or commit hash
    GitLab uses to create the workspace. By default, this is the branch you're viewing.

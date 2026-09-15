@@ -7,7 +7,6 @@ RSpec.describe 'Admin mode logout', :js, feature_category: :system_access do
   include UserLoginHelper
 
   let(:user) { create(:admin) }
-  let(:current_organization) { user.organization }
 
   before do
     sign_in(user)

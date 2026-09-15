@@ -1,0 +1,10 @@
+---
+name: update_secrets_permission
+description: Grants the ability to update secrets permissions
+boundaries:
+  - group
+  - project
+available_for:
+  - granular_access_token
+permissions:
+  - update_secrets_permission

@@ -11,6 +11,8 @@ export const initDatabaseDiagnosticsApp = () => {
     collationCheckResultsUrl,
     runSchemaCheckUrl,
     schemaCheckResultsUrl,
+    runLfkBacklogCheckUrl,
+    lfkBacklogCheckResultsUrl,
     databaseInformation,
   } = el.dataset;
 
@@ -22,6 +24,8 @@ export const initDatabaseDiagnosticsApp = () => {
       collationCheckResultsUrl,
       runSchemaCheckUrl,
       schemaCheckResultsUrl,
+      runLfkBacklogCheckUrl,
+      lfkBacklogCheckResultsUrl,
       databaseInformation: (() => {
         try {
           return JSON.parse(databaseInformation);

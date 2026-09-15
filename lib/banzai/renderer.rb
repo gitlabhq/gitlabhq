@@ -146,17 +146,31 @@ module Banzai
     #
     # Returns an HTML-safe String
     def self.post_process(html, context)
+      post_process_result(html, context)[:output]
+    end
+
+    # Same as `post_process`, but returns the whole pipeline result Hash.
+    def self.post_process_result(html, context)
       context = Pipeline[context[:pipeline]].transform_context(context)
 
       # Use a passed class for the pipeline or default to PostProcessPipeline
       pipeline = context.delete(:post_process_pipeline) || ::Banzai::Pipeline::PostProcessPipeline
 
       instrument_filters do
-        if context[:xhtml]
-          pipeline.to_document(html, context).to_html(save_with: Nokogiri::XML::Node::SaveOptions::AS_XHTML)
-        else
-          pipeline.to_html(html, context)
-        end.html_safe
+        result = pipeline.call(html, context)
+
+        output = result[:output]
+
+        html_output =
+          if context[:xhtml]
+            HTML::Pipeline.parse(output).to_html(save_with: Nokogiri::XML::Node::SaveOptions::AS_XHTML)
+          elsif output.is_a?(String)
+            output
+          else
+            output.to_html
+          end
+
+        result.merge(output: html_output.html_safe)
       end
     end
 

@@ -50,9 +50,11 @@ module ActiveContext
         self.class.perform_in(RESCHEDULE_INTERVAL, queue.to_s, shard)
       end
 
+      # Stop when there is nothing left, when the whole batch failed, or when
+      # the queue limits throughput.
       def should_re_enqueue?(queue, records_count, failures_count)
-        return false if failures_count&.positive?
         return false unless records_count&.positive?
+        return false if failures_count == records_count
         return false if queue.limit_throughput?
 
         ActiveContext::Config.re_enqueue_indexing_workers?

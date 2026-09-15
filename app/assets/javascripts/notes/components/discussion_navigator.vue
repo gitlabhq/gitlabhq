@@ -12,7 +12,7 @@ import { getSlotFunction, normalizeRender } from '~/lib/utils/vue3compat/normali
 export default normalizeRender({
   mixins: [discussionNavigation],
   created() {
-    eventHub.$on('jumpToFirstUnresolvedDiscussion', this.jumpToFirstUnresolvedDiscussion);
+    eventHub.$on('jump-to-first-unresolved-discussion', this.jumpToFirstUnresolvedDiscussion);
   },
   mounted() {
     Mousetrap.bind(keysFor(MR_NEXT_UNRESOLVED_DISCUSSION), this.jumpToNextDiscussion);
@@ -22,7 +22,7 @@ export default normalizeRender({
     Mousetrap.unbind(keysFor(MR_NEXT_UNRESOLVED_DISCUSSION));
     Mousetrap.unbind(keysFor(MR_PREVIOUS_UNRESOLVED_DISCUSSION));
 
-    eventHub.$off('jumpToFirstUnresolvedDiscussion', this.jumpToFirstUnresolvedDiscussion);
+    eventHub.$off('jump-to-first-unresolved-discussion', this.jumpToFirstUnresolvedDiscussion);
   },
   render() {
     return getSlotFunction(this)?.();

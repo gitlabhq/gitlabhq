@@ -1,7 +1,8 @@
 ---
 stage: Plan
-group: Project Management
+group: Work Items
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see <https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments>
+description: Create custom emoji for a group and query them with the GraphQL API.
 title: Use custom emoji with GraphQL
 ---
 

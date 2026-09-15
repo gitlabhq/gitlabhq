@@ -4,10 +4,9 @@ module Integrations
   module SlackEvents
     class AppMentionedService
       include Gitlab::Utils::StrongMemoize
+      include Gitlab::InternalEventsTracking
 
       DUO_SLACK_DOCS_URL = 'https://docs.gitlab.com/user/project/integrations/gitlab_slack_application/#gitlab-duo'
-      PRIVACY_NOTICE_ACKNOWLEDGE_ACTION_ID = 'duo_privacy_notice_acknowledge'
-      PRIVACY_NOTICE_DECLINE_ACTION_ID = 'duo_privacy_notice_decline'
 
       def initialize(params)
         @params = params.with_indifferent_access
@@ -35,39 +34,45 @@ module Integrations
         gitlab_user = slack_gitlab_user_connection&.user
 
         unless gitlab_user
+          track_blocked_mention(nil, 'user_not_linked')
           ensure_user_linked
           slack_api.add_reaction(channel: channel_id, name: 'lock', timestamp: message_ts)
           return ServiceResponse.success
         end
 
-        return ServiceResponse.success unless gitlab_user.can?(:use_slash_commands)
+        unless gitlab_user.can?(:use_slash_commands)
+          track_blocked_mention(gitlab_user, 'no_permission')
+          return ServiceResponse.success
+        end
 
         unless Feature.enabled?(:slack_duo_agent, gitlab_user)
-          slack_api.add_reaction(channel: channel_id, name: 'lock', timestamp: message_ts)
-          slack_api.post_ephemeral(
-            channel: channel_id, user: slack_user_id,
-            text: 'You do not have access to this feature yet. ' \
-              "For more information, see #{DUO_SLACK_DOCS_URL}",
-            thread_ts: ephemeral_thread_ts
+          track_blocked_mention(gitlab_user, 'feature_flag_disabled')
+          post_no_access_message(
+            'You do not have access to this feature yet. ' \
+              "For more information, see #{DUO_SLACK_DOCS_URL}"
+          )
+          return ServiceResponse.success
+        end
+
+        unless experiment_features_available?(gitlab_user)
+          track_blocked_mention(gitlab_user, 'experiment_features_disabled')
+          post_no_access_message(
+            'This feature requires experiment and beta GitLab Duo features to be turned on. ' \
+              "For more information, see #{DUO_SLACK_DOCS_URL}"
           )
           return ServiceResponse.success
         end
 
         unless gitlab_user.allowed_to_use?(:duo_agent_platform)
-          slack_api.add_reaction(channel: channel_id, name: 'lock', timestamp: message_ts)
-          slack_api.post_ephemeral(
-            channel: channel_id, user: slack_user_id,
-            text: 'This feature requires GitLab Duo Agent Platform. ' \
-              "For more information, see #{DUO_SLACK_DOCS_URL}",
-            thread_ts: ephemeral_thread_ts
+          track_blocked_mention(gitlab_user, 'no_duo_seat')
+          post_no_access_message(
+            'This feature requires GitLab Duo Agent Platform. ' \
+              "For more information, see #{DUO_SLACK_DOCS_URL}"
           )
           return ServiceResponse.success
         end
 
-        if requires_privacy_notice?(gitlab_user)
-          post_privacy_notice
-          return ServiceResponse.success
-        end
+        track_internal_event('receive_slack_duo_mention', user: gitlab_user)
 
         trigger_duo_flow(gitlab_user)
 
@@ -82,12 +87,41 @@ module Integrations
         slack_workspace_id.present? && slack_user_id.present? && channel_id.present? && thread_ts.present?
       end
 
+      def track_blocked_mention(gitlab_user, reason)
+        Gitlab::InternalEvents.with_batched_redis_writes do
+          track_internal_event('receive_slack_duo_mention', user: gitlab_user)
+          track_block_event(gitlab_user, reason)
+        end
+      end
+
+      # Standalone block event for paths where receive_slack_duo_mention has
+      # already fired, such as flow trigger failures in EE.
+      def track_block_event(gitlab_user, reason)
+        track_internal_event(
+          'block_slack_duo_mention',
+          user: gitlab_user,
+          additional_properties: { property: reason }
+        )
+      end
+
       # Returns the thread_ts to use for ephemeral messages, so they appear
       # inside the thread when the bot was mentioned within one. When the
       # mention is at the channel root (thread_ts == message_ts), returns nil
       # so the ephemeral is posted at the channel root (existing behaviour).
       def ephemeral_thread_ts
         thread_ts != message_ts ? thread_ts : nil
+      end
+
+      # Overridden in EE. GitLab Duo in Slack is an EE-only feature.
+      def experiment_features_available?(_gitlab_user)
+        false
+      end
+
+      def post_no_access_message(text)
+        slack_api.add_reaction(channel: channel_id, name: 'lock', timestamp: message_ts)
+        slack_api.post_ephemeral(
+          channel: channel_id, user: slack_user_id, text: text, thread_ts: ephemeral_thread_ts
+        )
       end
 
       def slack_installation
@@ -106,87 +140,6 @@ module Integrations
 
       # Override in EE to trigger a Duo flow.
       def trigger_duo_flow(_gitlab_user); end
-
-      # Override in EE to return the namespace whose duo-workspace project
-      # would record the session.
-      def duo_workspace_namespace(_gitlab_user); end
-
-      def requires_privacy_notice?(gitlab_user)
-        return false if slack_gitlab_user_connection.duo_privacy_notice_acknowledged?
-        return false unless duo_workspace_namespace(gitlab_user)
-
-        non_public_channel?
-      end
-
-      # Fails closed: only conversations positively identified as public
-      # channels skip the notice. Anything else (private channels, DMs,
-      # group DMs, unknown future conversation types, or an undeterminable
-      # channel type, for example an existing app installation without the
-      # conversation read scopes) is treated as non-public.
-      def non_public_channel?
-        response = slack_api.conversation_info(channel: channel_id)
-        return true unless response['ok']
-
-        channel = response['channel']
-        !(channel['is_channel'] && !channel['is_private'])
-      end
-
-      def post_privacy_notice
-        slack_api.add_reaction(channel: channel_id, name: 'lock', timestamp: message_ts)
-        options = {
-          channel: channel_id,
-          user: slack_user_id,
-          text: privacy_notice_text,
-          blocks: privacy_notice_blocks
-        }
-        options[:thread_ts] = thread_ts if slack_event[:thread_ts].present?
-
-        slack_api.post_ephemeral(**options)
-      end
-
-      def privacy_notice_text
-        s_("SlackIntegration|Heads up: your prompt and this thread's context are saved in a " \
-          "GitLab Duo session. These are visible to anyone with access to the project it's saved in, " \
-          'not just people in this conversation.')
-      end
-
-      def privacy_notice_blocks
-        [
-          {
-            type: 'section',
-            text: { type: 'mrkdwn', text: privacy_notice_text }
-          },
-          {
-            type: 'actions',
-            elements: [
-              {
-                type: 'button',
-                style: 'primary',
-                text: { type: 'plain_text', text: s_('SlackIntegration|Acknowledge and continue') },
-                action_id: PRIVACY_NOTICE_ACKNOWLEDGE_ACTION_ID,
-                value: privacy_notice_button_value
-              },
-              {
-                type: 'button',
-                text: { type: 'plain_text', text: s_('SlackIntegration|Cancel') },
-                action_id: PRIVACY_NOTICE_DECLINE_ACTION_ID,
-                value: privacy_notice_button_value
-              }
-            ]
-          }
-        ]
-      end
-
-      # `thread_ts` is only included when the mention was already inside a
-      # thread, so the re-enqueued event preserves the original top-level vs
-      # in-thread distinction.
-      def privacy_notice_button_value
-        Gitlab::Json.dump(
-          channel: channel_id,
-          ts: message_ts,
-          thread_ts: slack_event[:thread_ts]
-        )
-      end
 
       def ensure_user_linked
         url = ChatNames::AuthorizeUserService.new(authorize_params).execute

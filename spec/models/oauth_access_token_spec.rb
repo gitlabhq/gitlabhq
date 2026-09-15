@@ -23,6 +23,21 @@ RSpec.describe OauthAccessToken, feature_category: :system_access, factory_defau
           .to match_array([app_two_token2.id, app_three_token2.id])
       end
     end
+
+    describe '.preload_application' do
+      before_all do
+        create(:oauth_access_token, application: app_one)
+        create(:oauth_access_token, application: app_two)
+        create(:oauth_access_token, application: app_three)
+      end
+
+      it 'eager-loads the application owner to avoid N+1 queries' do
+        records = described_class.preload_application.to_a
+
+        expect { records.each { |record| record.application.owner } }
+          .not_to exceed_query_limit(0)
+      end
+    end
   end
 
   describe 'Doorkeeper secret storing' do

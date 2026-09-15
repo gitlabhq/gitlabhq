@@ -128,12 +128,13 @@ Every path helper accepts an optional `options` object as its final argument. Th
 separate from the route parameters. Each generated helper documents it as
 `@param {object | undefined} options`.
 
-The `options` object accepts three kinds of keys:
+The `options` object accepts four kinds of keys:
 
 - `format`: Fills the optional format segment. For example,
   `exploreCatalogIndexPath({ format: 'json' })` returns `/explore/catalog.json`.
 - Reserved URL options: `anchor`, `trailing_slash`, `subdomain`, `host`, `port`, `protocol`, and
   `script_name`. These shape the generated URL. For example, `anchor` appends a `#fragment`.
+- `organizationPath`: Path of organization to nest under. Pass `null` to remove path from URL parameters when outside of an organization data context. See [Organization scoped paths](#organization-scoped-paths).
 - Query parameters: Any other key is serialized into the query string. For example,
   `exploreCatalogIndexPath({ scope: 'all' })` returns `/explore/catalog?scope=all`.
 
@@ -141,6 +142,38 @@ To force an object to be treated as `options` rather than as route parameters, s
 key to `true`. This matters when a route parameter name collides with a reserved option.
 
 For more information, see the [js-routes documentation](https://github.com/railsware/js-routes#usage).
+
+#### Organization scoped paths
+
+Most global routes also have a counterpart nested under `/o/:organization_path/`. Path helpers
+decide which form to return using the same rules as
+`Routing::OrganizationsHelper::MappedHelpers.scoped_path_for` on the backend, in this order:
+
+1. The data context, if the current execution is in organization context. This always wins and
+   can't be overridden by the caller or by the page's URL. It matters for a user whose home
+   organization is isolated. That user has no existence outside it, so they always stay 
+   in the nested paths. On the frontend, this reads `gon.data_context_organization_path`.
+1. The `organizationPath` option. Pass `organizationPath: null` to force the global unnested path.
+1. The current page's own URL, if it's already nested under `/o/:organization_path/`. On
+   the frontend, this reads `gon.organization_path`.
+
+If none of these apply, the helper returns the global path.
+
+For example, `editGroupPath('foo/bar')` returns `/o/acme/groups/foo/bar/-/edit` when the page is
+nested under `/o/acme/` or the data context is `acme`. Pass `organizationPath: null` to force the
+global path when data context is not set:
+
+```javascript
+import { editGroupPath } from '~/lib/utils/path_helpers/group';
+
+editGroupPath('foo/bar', { organizationPath: null });
+// => '/groups/foo/bar/-/edit'
+```
+
+Routes with no organization-scoped counterpart are never nested. The same applies to route pairs
+that resolve to different controllers, such as instance admin under `/admin` and organization
+admin under `/o/:organization_path/admin`, which are separate features that share a naming
+convention. Neither the current page's URL nor the data context affects these routes.
 
 ### REST API path helpers
 

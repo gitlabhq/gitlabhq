@@ -126,6 +126,13 @@ RSpec.describe Resolvers::LabelsResolver do
     end
   end
 
+  describe '.authorization_scopes' do
+    it 'adds ai_workflows to the scopes inherited from BaseResolver', :aggregate_failures do
+      expect(described_class.authorization_scopes).to match_array([:api, :read_api, :ai_workflows])
+      expect(described_class.authorization.permitted_scopes).to match_array([:api, :read_api, :ai_workflows])
+    end
+  end
+
   def resolve_labels(parent, args = {}, context = { current_user: current_user })
     resolve(described_class, obj: parent, args: args, ctx: context)
   end

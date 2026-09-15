@@ -127,7 +127,7 @@ RSpec.describe Gitlab::Daemon do
         it 'does not start thread' do
           expect(subject).not_to receive(:run_thread)
 
-          expect(subject.start).to eq(nil)
+          expect(subject.start).to be_nil
         end
       end
     end

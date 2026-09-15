@@ -1,0 +1,15 @@
+---
+description: Admin updated the instance-wide Code dropdown custom clients list
+internal_events: true
+action: admin_updates_code_dropdown_custom_clients
+identifiers:
+  - user
+product_group: source_code
+product_categories:
+  - source_code_management
+milestone: '19.4'
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/244658
+tiers:
+  - free
+  - premium
+  - ultimate

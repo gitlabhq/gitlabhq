@@ -70,7 +70,7 @@ RSpec.describe BulkImports::Projects::Pipelines::RepositoryPipeline, feature_cat
 
         pipeline.run
 
-        expect(context.entity.failed?).to eq(true)
+        expect(context.entity.failed?).to be(true)
       end
     end
 
@@ -80,7 +80,7 @@ RSpec.describe BulkImports::Projects::Pipelines::RepositoryPipeline, feature_cat
       it 'prevents import' do
         pipeline.run
 
-        expect(context.entity.failed?).to eq(true)
+        expect(context.entity.failed?).to be(true)
         expect(context.entity.failures.first).to be_present
         expect(context.entity.failures.first.exception_message).to eq('Only allowed schemes are http, https')
       end

@@ -137,13 +137,13 @@ RSpec.describe API::BulkImports, :with_current_organization, feature_category: :
 
     before do
       allow_next_instance_of(BulkImports::Clients::HTTP) do |instance|
-        allow(instance)
-          .to receive(:instance_version)
-          .and_return(
-            Gitlab::VersionInfo.new(::BulkImport::MIN_MAJOR_VERSION, ::BulkImport::MIN_MINOR_VERSION_FOR_PROJECT))
-        allow(instance)
-          .to receive(:instance_enterprise)
-          .and_return(false)
+        allow(instance).to receive_messages(
+          instance_version: Gitlab::VersionInfo.new(
+            ::BulkImport::MIN_MAJOR_VERSION,
+            ::BulkImport::MIN_MINOR_VERSION_FOR_PROJECT
+          ),
+          instance_enterprise: false
+        )
       end
 
       allow_next_instance_of(BulkImports::Clients::Graphql) do |client|

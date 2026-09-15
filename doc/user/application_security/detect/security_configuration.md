@@ -119,7 +119,7 @@ methods:
 - [Scan execution policy](../policies/scan_execution_policies.md)
 - [Pipeline execution policy](../policies/pipeline_execution_policies.md)
 
-Each of these methods allow a CI/CD configuration, including security scanning, to be defined once
+Each of these methods allows a CI/CD configuration, including security scanning, to be defined once
 and applied to multiple projects and groups. These methods have several advantages over configuring
 each project individually, including:
 
@@ -157,7 +157,7 @@ GitLab application security tools have up to three template editions:
   include breaking changes that are planned for the next major release. This template allows you to
   try new features and updates before they become part of the stable release.
 - **Versioned**: A versioned template introduces breaking changes that are not backward compatible
-  with the stable template. Version templates have a version suffix (like `v2`, `v3`) in the
+  with the stable template. Versioned templates have a version suffix (like `v2`, `v3`) in the
   template name. Each version is stable in its major version, but you must opt in to adopt it
   because of breaking changes. Only dependency scanning provides a versioned template
   (`Dependency-Scanning.v2.gitlab-ci.yml`), which runs
@@ -187,7 +187,7 @@ To use them with [merge request pipelines](../../../ci/pipelines/merge_request_p
 either:
 
 - Set the CI/CD variable `AST_ENABLE_MR_PIPELINES` to `"true"` ([introduced in 18.0](https://gitlab.com/gitlab-org/gitlab/-/issues/410880)) (Recommended)
-- Use the [`latest` edition template](#template-editions) which enables merge request pipelines by default.
+- Use the [`latest` edition template](#template-editions), which enables merge request pipelines by default.
 
 For example, to run both SAST and dependency scanning with merge request pipelines enabled, the following configuration is used:
 

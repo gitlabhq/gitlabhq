@@ -90,5 +90,5 @@ Where:
 
 - `memwd_rss_bytes` is the actual amount of memory consumed.
 - `memwd_max_rss_bytes` is the RSS limit set through `per_worker_max_memory_mb`.
-- `running jobs` lists the jobs that were running at the time when the process
+- `running_jobs` lists the jobs that were running at the time when the process
   exceeded the RSS limit and started a graceful restart.

@@ -19,7 +19,7 @@ Use productivity analytics to identify:
 
 - Your development velocity based on how long it takes for a merge request to merge.
 - Potential causes of merge requests that take a long time to merge.
-- Authors, labels, or milestones that take the longest time to merge or contain most changes.
+- Authors, labels, or milestones that take the longest time to merge or contain the most changes.
 
 To view merge request data for projects, use [merge request analytics](merge_request_analytics.md).
 

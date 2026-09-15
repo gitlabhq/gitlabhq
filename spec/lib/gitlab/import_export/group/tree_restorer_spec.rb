@@ -175,7 +175,7 @@ RSpec.describe Gitlab::ImportExport::Group::TreeRestorer, feature: :subgroups, f
     end
 
     it 'imports the group while complying with the parent shared runners setting' do
-      expect(group_tree_restorer.restore).to eq(true)
+      expect(group_tree_restorer.restore).to be(true)
       expect(shared.errors).to be_empty
 
       group.reload
@@ -196,7 +196,7 @@ RSpec.describe Gitlab::ImportExport::Group::TreeRestorer, feature: :subgroups, f
 
         allow(shared).to receive(:export_path).and_return(tmpdir)
 
-        expect(group_tree_restorer.restore).to eq(false)
+        expect(group_tree_restorer.restore).to be(false)
         expect(shared.errors).to include('Invalid file')
       end
     end

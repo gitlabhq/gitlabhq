@@ -1,8 +1,9 @@
 ---
 stage: Plan
-group: Project Management
+group: Work Items
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see <https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments>
 title: Crosslinking issues
+description: Link issues to each other from commit messages, linked issues, merge requests, and branch names to track related work.
 ---
 
 {{< details >}}
@@ -27,6 +28,7 @@ You can create crosslinks through:
 - [Linked issues](#from-linked-issues)
 - [Merge requests](#from-merge-requests)
 - [Branch names](#from-branch-names)
+- [Explicit work item links](../../work_items/_index.md#work-items-in-merge-requests)
 
 ## From commit messages
 

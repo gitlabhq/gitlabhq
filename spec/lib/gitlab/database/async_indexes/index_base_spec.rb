@@ -34,8 +34,7 @@ RSpec.describe Gitlab::Database::AsyncIndexes::IndexBase, feature_category: :dat
 
     context 'when the table does not exist' do
       before do
-        allow(subject).to receive(:table_exists?).and_return(false)
-        allow(subject).to receive(:action_type).and_return('test')
+        allow(subject).to receive_messages(table_exists?: false, action_type: 'test')
       end
 
       it 'skips execution and destroys the queuing entry' do
@@ -66,8 +65,7 @@ RSpec.describe Gitlab::Database::AsyncIndexes::IndexBase, feature_category: :dat
 
     context 'with error handling' do
       before do
-        allow(subject).to receive(:preconditions_met?).and_return(true)
-        allow(subject).to receive(:action_type).and_return('test')
+        allow(subject).to receive_messages(preconditions_met?: true, action_type: 'test')
         allow(async_index.connection).to receive(:execute).and_call_original
 
         allow(async_index.connection)

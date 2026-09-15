@@ -97,31 +97,31 @@ the included services:
 - The `logrotate` service built into GitLab [manages all other logs](https://docs.gitlab.com/omnibus/settings/logs/#logrotate).
   Their archived versions are compressed into `<original-name>.<number>.gz` files.
 
-| Log type                                        | Managed by logrotate    | Managed by svlogd/runit |
-|:------------------------------------------------|:------------------------|:------------------------|
-| [Alertmanager logs](#alertmanager-logs)         | {{< icon name="dotted-circle" >}} No  | {{< icon name="check-circle" >}} Yes  |
-| [Consul logs](#consul-logs)                     | {{< icon name="dotted-circle" >}} No  | {{< icon name="check-circle" >}} Yes  |
-| [crond logs](#crond-logs)                       | {{< icon name="dotted-circle" >}} No  | {{< icon name="check-circle" >}} Yes  |
-| [Gitaly](#gitaly-logs)                          | {{< icon name="check-circle" >}} Yes  | {{< icon name="check-circle" >}} Yes  |
-| [GitLab Exporter for Linux package installations](#gitlab-exporter-logs) | {{< icon name="dotted-circle" >}} No  | {{< icon name="check-circle" >}} Yes  |
-| [GitLab Pages logs](#pages-logs)                | {{< icon name="check-circle" >}} Yes  | {{< icon name="check-circle" >}} Yes  |
-| GitLab Rails                                    | {{< icon name="check-circle" >}} Yes  | {{< icon name="dotted-circle" >}} No  |
-| [GitLab Shell logs](#gitlab-shelllog)           | {{< icon name="check-circle" >}} Yes  | {{< icon name="dotted-circle" >}} No  |
-| [Grafana logs](#grafana-logs)                   | {{< icon name="dotted-circle" >}} No  | {{< icon name="check-circle" >}} Yes  |
-| [LogRotate logs](#logrotate-logs)               | {{< icon name="dotted-circle" >}} No  | {{< icon name="check-circle" >}} Yes  |
-| [Mailroom](#mail_room_jsonlog-default)          | {{< icon name="check-circle" >}} Yes  | {{< icon name="check-circle" >}} Yes  |
-| [NGINX](#nginx-logs)                            | {{< icon name="check-circle" >}} Yes  | {{< icon name="check-circle" >}} Yes  |
-| [Patroni logs](#patroni-logs)                   | {{< icon name="dotted-circle" >}} No  | {{< icon name="check-circle" >}} Yes  |
-| [PgBouncer logs](#pgbouncer-logs)               | {{< icon name="dotted-circle" >}} No  | {{< icon name="check-circle" >}} Yes  |
-| [PostgreSQL logs](#postgresql-logs)             | {{< icon name="dotted-circle" >}} No  | {{< icon name="check-circle" >}} Yes  |
-| [Praefect logs](#praefect-logs)                 | {{< icon name="dotted-circle" >}} Yes | {{< icon name="check-circle" >}} Yes  |
-| [Prometheus logs](#prometheus-logs)             | {{< icon name="dotted-circle" >}} No  | {{< icon name="check-circle" >}} Yes  |
-| [Puma](#puma-logs)                              | {{< icon name="check-circle" >}} Yes  | {{< icon name="check-circle" >}} Yes  |
-| [Redis logs](#redis-logs)                       | {{< icon name="dotted-circle" >}} No  | {{< icon name="check-circle" >}} Yes  |
-| [Registry logs](#registry-logs)                 | {{< icon name="dotted-circle" >}} No  | {{< icon name="check-circle" >}} Yes  |
-| [Sentinel logs](#sentinel-logs)                 | {{< icon name="dotted-circle" >}} No  | {{< icon name="check-circle" >}} Yes  |
-| [Sidekiq logs](#sidekiq-logs)                   | {{< icon name="dotted-circle" >}} No  | {{< icon name="check-circle" >}} Yes  |
-| [Workhorse logs](#workhorse-logs)               | {{< icon name="check-circle" >}} Yes  | {{< icon name="check-circle" >}} Yes  |
+| Log type                                                                 | Managed by logrotate | Managed by svlogd/runit |
+|:-------------------------------------------------------------------------|:---------------------|:------------------------|
+| [Alertmanager logs](#alertmanager-logs)                                  | {{< no >}}           | {{< yes >}} |
+| [Consul logs](#consul-logs)                                              | {{< no >}}           | {{< yes >}} |
+| [crond logs](#crond-logs)                                                | {{< no >}}           | {{< yes >}} |
+| [Gitaly](#gitaly-logs)                                                   | {{< yes >}}          | {{< yes >}} |
+| [GitLab Exporter for Linux package installations](#gitlab-exporter-logs) | {{< no >}}           | {{< yes >}} |
+| [GitLab Pages logs](#pages-logs)                                         | {{< yes >}}          | {{< yes >}} |
+| GitLab Rails                                                             | {{< yes >}}          | {{< no >}}  |
+| [GitLab Shell logs](#gitlab-shelllog)                                    | {{< yes >}}          | {{< no >}}  |
+| [Grafana logs](#grafana-logs)                                            | {{< no >}}           | {{< yes >}} |
+| [LogRotate logs](#logrotate-logs)                                        | {{< no >}}           | {{< yes >}} |
+| [Mailroom](#mail_room_jsonlog-default)                                   | {{< yes >}}          | {{< yes >}} |
+| [NGINX](#nginx-logs)                                                     | {{< yes >}}          | {{< yes >}} |
+| [Patroni logs](#patroni-logs)                                            | {{< no >}}           | {{< yes >}} |
+| [PgBouncer logs](#pgbouncer-logs)                                        | {{< no >}}           | {{< yes >}} |
+| [PostgreSQL logs](#postgresql-logs)                                      | {{< no >}}           | {{< yes >}} |
+| [Praefect logs](#praefect-logs)                                          | {{< yes >}}          | {{< yes >}} |
+| [Prometheus logs](#prometheus-logs)                                      | {{< no >}}           | {{< yes >}} |
+| [Puma](#puma-logs)                                                       | {{< yes >}}          | {{< yes >}} |
+| [Redis logs](#redis-logs)                                                | {{< no >}}           | {{< yes >}} |
+| [Registry logs](#registry-logs)                                          | {{< no >}}           | {{< yes >}} |
+| [Sentinel logs](#sentinel-logs)                                          | {{< no >}}           | {{< yes >}} |
+| [Sidekiq logs](#sidekiq-logs)                                            | {{< no >}}           | {{< yes >}} |
+| [Workhorse logs](#workhorse-logs)                                        | {{< yes >}}          | {{< yes >}} |
 
 For more information on the services that generate these logs, see the [GitLab architecture overview](../../development/architecture.md).
 
@@ -237,18 +237,24 @@ seconds:
 
 User clone and fetch activity using HTTP transport appears in the log as `action: git_upload_pack`.
 
-In addition, the log contains the originating IP address,
+In addition, the log contains the originating IP address
 (`remote_ip`), the user's ID (`user_id`), and username (`username`).
 
 Some endpoints (such as `/search`) may make requests to Elasticsearch if using
 [advanced search](../../user/search/advanced_search.md). These
-additionally log `elasticsearch_calls` and `elasticsearch_call_duration_s`,
+additionally log `elasticsearch_calls` and `elasticsearch_duration_s`,
 which correspond to:
 
 - `elasticsearch_calls`: Total number of calls to Elasticsearch
 - `elasticsearch_duration_s`: Total time taken by Elasticsearch calls
 - `elasticsearch_timed_out_count`: Total number of calls to Elasticsearch that
   timed out and therefore returned partial results
+
+Requests that read or write secrets with the [GitLab Secrets Manager](../../ci/secrets/secrets_manager/_index.md)
+additionally log `openbao_calls` and `openbao_duration_s`, which correspond to:
+
+- `openbao_calls`: Total number of calls to OpenBao
+- `openbao_duration_s`: Total time taken by OpenBao calls
 
 ActionCable connection and subscription events are also logged to this file and they follow the
 previous format. The `method`, `path`, and `format` fields are not applicable, and are always empty.
@@ -913,7 +919,7 @@ This log is located:
 - In the `/home/git/gitlab/log/web_hooks.log` file on self-compiled installations.
 - On the Sidekiq pods under the `subcomponent="web_hooks"` key on Helm chart installations.
 
-The back-off, disablement, and re-enablement events for Webhook are recorded in this file. For example:
+The back-off, disablement, and re-enablement events for webhooks are recorded in this file. For example:
 
 ```json
 {"severity":"INFO","time":"2020-11-24T02:30:59.860Z","hook_id":12,"action":"backoff","disabled_until":"2020-11-24T04:30:59.860Z","recent_failures":2}
@@ -927,7 +933,7 @@ Reconfigure log files are in `/var/log/gitlab/reconfigure` for Linux package ins
 don't have reconfigure logs. A reconfigure log is populated whenever `gitlab-ctl reconfigure` is run manually or as part
 of an upgrade.
 
-Reconfigure logs files are named according to the UNIX timestamp of when the reconfigure
+Reconfigure log files are named according to the UNIX timestamp of when the reconfigure
 was initiated, such as `1509705644.log`
 
 ## `sidekiq_exporter.log` and `web_exporter.log`
@@ -1247,7 +1253,7 @@ This log is located:
 
 {{< /details >}}
 
-The `secret_push_protection.log` file logs information related to [secret push protection](../../user/application_security/secret_detection/secret_push_protection/_index.md) feature.
+The `secret_push_protection.log` file logs information related to the [secret push protection](../../user/application_security/secret_detection/secret_push_protection/_index.md) feature.
 
 This log is located:
 
@@ -1315,7 +1321,7 @@ This log is located:
 - In the `/home/git/gitlab/log/user_experience_slis.log` file on self-compiled installations.
 - On the Webservice pods under the `subcomponent="user_experience_slis"` key on Helm chart installations.
 
-It contains a JSON structured log for User Experience SLIs that match with its metrics.
+It contains a JSON structured log for User Experience SLIs that match with their metrics.
 
 Each line contains JSON that can be ingested by services like Elasticsearch.
 
@@ -1418,7 +1424,7 @@ For example:
 ## Product Usage Data log
 
 > [!note]
-> We recommend against using the raw logs for analysing feature usage, as the data quality has not yet been certified for accuracy.
+> We recommend against using the raw logs for analyzing feature usage, as the data quality has not yet been certified for accuracy.
 >
 > The list of events can change in each version based on new features or changes to existing features. Certified in-product adoption reports will be available after the data is ready for analysis.
 
@@ -1567,7 +1573,7 @@ in that file. For example:
 {"severity":"INFO","time":"2020-12-04T09:29:44.592Z","correlation_id":"33680b1490ccd35981b03639c406a697","filename":"app/models/ci/pipeline.rb","method_path":"app/models/ci/pipeline.rb:each_with_object","request_id":"rYHomD0VJS4","duration_ms":26.889,"count":2,"query_type": "active-record"}
 ```
 
-These statistics are logged on .com only, disabled on self-deployments.
+These statistics are logged on .com only, and are disabled on self-deployments.
 
 ## Gathering logs
 

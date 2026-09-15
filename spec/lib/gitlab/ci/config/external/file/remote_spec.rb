@@ -3,6 +3,12 @@
 require 'spec_helper'
 
 RSpec.describe Gitlab::Ci::Config::External::File::Remote, feature_category: :pipeline_composition do
+  around do |example|
+    Gitlab::Ci::Config::FeatureFlags.with_actor(nil) do
+      example.run
+    end
+  end
+
   include StubRequests
 
   let_it_be(:project) { create(:project, :small_repo) }
@@ -467,8 +473,8 @@ RSpec.describe Gitlab::Ci::Config::External::File::Remote, feature_category: :pi
 
     subject { remote_file.send(:expand_context_attrs) }
 
-    it 'includes parent_file' do
-      is_expected.to eq({ parent_file: remote_file })
+    it 'includes parent_file and pipeline_policy_context' do
+      is_expected.to eq({ parent_file: remote_file, pipeline_policy_context: nil })
     end
   end
 
@@ -565,6 +571,39 @@ RSpec.describe Gitlab::Ci::Config::External::File::Remote, feature_category: :pi
               rules: [{ exists: ['Dockerfile'] }] }
           ]
         )
+      end
+    end
+
+    context 'when it declares spec:include with a local location' do
+      let(:remote_file_content) do
+        <<~YAML
+          spec:
+            include:
+              - local: shared-inputs.yml
+          ---
+          rspec:
+            script: rspec --suite $[[ inputs.name ]]
+        YAML
+      end
+
+      subject(:errors) do
+        remote_file.preload_content
+        remote_file.load_and_validate_expanded_hash!
+        remote_file.errors
+      end
+
+      it 'reports that there is no repository to resolve the location against' do
+        expect(errors.first).to include('Local file `shared-inputs.yml` does not have project!')
+      end
+
+      context 'when the ci_spec_include_own_context feature flag is disabled' do
+        before do
+          stub_feature_flags(ci_spec_include_own_context: false)
+        end
+
+        it 'resolves the location in the project running the pipeline' do
+          expect(errors.first).to include('Local file `shared-inputs.yml` does not exist!')
+        end
       end
     end
   end

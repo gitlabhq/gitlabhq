@@ -1,6 +1,6 @@
 ---
-stage: AI-powered
-group: AI Framework
+stage: Security Governance
+group: AI Control Plane
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see <https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments>
 description: Turn off GitLab Duo features for instances, groups, and projects.
 title: Control GitLab Duo availability
@@ -111,7 +111,7 @@ Affected owners see a message that GitLab Duo is locked by a parent group.
 Only one lock can exist in any chain of ancestor and descendant groups.
 When you lock a subgroup:
 
-- If an ancestor group already has an lock, the lock is not applied.
+- If an ancestor group already has a lock, the lock is not applied.
   You must [clear the lock](#clear-the-lock-for-a-subgroup) from the ancestor group first.
 - If one or more descendant subgroups already have admin locks, you are prompted to confirm.
   When you confirm, the locks on those descendant subgroups are cleared,
@@ -127,7 +127,8 @@ To lock GitLab Duo off for a subgroup:
 
 1. In the upper-right corner, select **Admin**.
 1. In the left sidebar, select **GitLab Duo**.
-1. In the **Namespace availability overrides** section, find the subgroup.
+1. In the **GitLab Duo Core** section, select **Change configuration**.
+1. In the **Group Duo availability** section, select **Show groups**, then find the subgroup.
 1. In the row for the subgroup, under **GitLab Duo availability**, select **Always off**.
 
 ### Clear the lock for a subgroup
@@ -140,13 +141,24 @@ To clear the admin lock for a subgroup:
 
 1. In the upper-right corner, select **Admin**.
 1. In the left sidebar, select **GitLab Duo**.
-1. In the **Namespace availability overrides** section, find the subgroup.
+1. In the **GitLab Duo Core** section, select **Change configuration**.
+1. In the **Group Duo availability** section, find the subgroup.
 1. In the row for the subgroup, select **Reset override**.
 
 The subgroup returns to the instance default.
 Users with the Owner role for the subgroup can now control GitLab Duo availability.
 
 ## Turn GitLab Duo on or off
+
+On GitLab.com, a GitLab Duo seat belongs to the user it is assigned to, not to the
+group that assigned it. Turning GitLab Duo off for a group prevents members from
+using GitLab Duo features with that group's projects, but it does not revoke their
+seats. Members can still use GitLab Duo with projects in other groups where it is
+turned on.
+
+For Code Suggestions in the IDE, when the repository cannot be resolved to a GitLab
+project, GitLab uses the user's default namespace for GitLab Duo instead. If GitLab
+Duo is turned off for that namespace, Code Suggestions is unavailable.
 
 ### On GitLab.com
 

@@ -1,0 +1,35 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "description": "Admin-configurable 'Open with' clients in the project Code dropdown",
+  "type": "array",
+  "maxItems": 20,
+  "items": {
+    "type": "object",
+    "additionalProperties": false,
+    "required": ["name"],
+    "properties": {
+      "name": {
+        "type": "string",
+        "minLength": 1,
+        "maxLength": 50,
+        "pattern": "^[^\\u0000-\\u001F\\u007F]+$"
+      },
+      "ssh_url_template": {
+        "type": "string",
+        "minLength": 1,
+        "maxLength": 500,
+        "pattern": "^[^\\u0000-\\u001F\\u007F]*$"
+      },
+      "http_url_template": {
+        "type": "string",
+        "minLength": 1,
+        "maxLength": 500,
+        "pattern": "^[^\\u0000-\\u001F\\u007F]*$"
+      }
+    },
+    "anyOf": [
+      { "required": ["ssh_url_template"] },
+      { "required": ["http_url_template"] }
+    ]
+  }
+}

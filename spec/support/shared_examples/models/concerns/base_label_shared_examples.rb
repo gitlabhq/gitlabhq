@@ -136,5 +136,39 @@ RSpec.shared_examples 'BaseLabel' do |factory_name: :label|
         expect(labels).to match_array([other_label])
       end
     end
+
+    context 'with fuzzy_search' do
+      let_it_be(:scoped_label, freeze: false) { create(factory_name, title: 'bug::ux', description: 'design bugs') }
+
+      it 'matches labels containing the searched characters in order' do
+        labels = described_class.search('bgux', search_in: [:title], fuzzy_search: true)
+
+        expect(labels).to match_array([scoped_label])
+      end
+
+      it 'ignores whitespace in the query' do
+        labels = described_class.search('bug ux', search_in: [:title], fuzzy_search: true)
+
+        expect(labels).to match_array([scoped_label])
+      end
+
+      it 'escapes LIKE wildcard characters' do
+        labels = described_class.search('b%g', search_in: [:title], fuzzy_search: true)
+
+        expect(labels).to be_empty
+      end
+
+      it 'does not match when characters are out of order' do
+        labels = described_class.search('xugb', search_in: [:title], fuzzy_search: true)
+
+        expect(labels).to be_empty
+      end
+
+      it 'is not used when the option is absent' do
+        labels = described_class.search('bgux', search_in: [:title])
+
+        expect(labels).to be_empty
+      end
+    end
   end
 end

@@ -248,11 +248,11 @@ RSpec.describe Ci::Trigger, feature_category: :continuous_integration do
         project.add_developer(owner)
       end
 
-      it { is_expected.to eq(true) }
+      it { is_expected.to be(true) }
     end
 
     context 'and is not member of the project' do
-      it { is_expected.to eq(false) }
+      it { is_expected.to be(false) }
     end
   end
 

@@ -1,32 +1,34 @@
 <script>
 import { defineAsyncComponent } from 'vue';
 import { GlLoadingIcon } from '@gitlab/ui';
-import MRWidgetService from 'ee_else_ce/vue_merge_request_widget/services/mr_widget_service';
-import MRWidgetStore from 'ee_else_ce/vue_merge_request_widget/stores/mr_widget_store';
-import SmartInterval from '~/smart_interval';
-import { secondsToMilliseconds } from '~/lib/utils/datetime_utility';
-import { s__ } from '~/locale';
-import StatusIcon from '~/vue_merge_request_widget/components/widget/status_icon.vue';
+import mergeRequestData, { PIPELINE_STATE } from '~/merge_requests/reports/merge_request_data';
+import {
+  SECURITY_SCAN_ROUTE,
+  LICENSE_COMPLIANCE_ROUTE,
+  CODE_QUALITY_ROUTE,
+  LOAD_PERFORMANCE_ROUTE,
+  METRICS_ROUTE,
+  ROOT_ROUTE,
+  EMPTY_STATE_NO_PIPELINE,
+  EMPTY_STATE_PIPELINE_RUNNING,
+  EMPTY_STATE_NO_REPORTS,
+} from '../constants';
+import ReportsEmptyState from './reports_empty_state.vue';
 
-const PIPELINE_STATE = {
-  loading: 'LOADING',
-  noPipeline: 'NO_PIPELINE',
-  running: 'RUNNING',
-  complete: 'COMPLETE',
-};
-
-// 5s → 10s → 20s → 40s → 80s → 120s → repeats 120s until done
-const MR_POLLING_SETTINGS = {
-  startingInterval: secondsToMilliseconds(5), // Poll starts at 5s
-  incrementByFactorOf: 2, // Doubles each time
-  maxInterval: secondsToMilliseconds(120), // Caps at 2 mins
-};
+const REPORT_ROUTES = [
+  SECURITY_SCAN_ROUTE,
+  LICENSE_COMPLIANCE_ROUTE,
+  CODE_QUALITY_ROUTE,
+  LOAD_PERFORMANCE_ROUTE,
+  METRICS_ROUTE,
+];
+const OWNED_ROUTES = [ROOT_ROUTE, ...REPORT_ROUTES];
 
 export default {
   name: 'MergeRequestReportsApp',
   components: {
     GlLoadingIcon,
-    StatusIcon,
+    ReportsEmptyState,
     SecurityScansProvider: defineAsyncComponent(
       () =>
         import('ee_component/merge_requests/reports/security_scans/security_scans_provider.vue'),
@@ -48,109 +50,140 @@ export default {
     CodeQualityNavItem: defineAsyncComponent(
       () => import('~/merge_requests/reports/code_quality/code_quality_nav_item.vue'),
     ),
+    LoadPerformanceProvider: defineAsyncComponent(
+      () =>
+        import('ee_component/merge_requests/reports/load_performance/load_performance_provider.vue'),
+    ),
+    LoadPerformanceNavItem: defineAsyncComponent(
+      () =>
+        import('ee_component/merge_requests/reports/load_performance/load_performance_nav_item.vue'),
+    ),
+    MetricsProvider: defineAsyncComponent(
+      () => import('ee_component/merge_requests/reports/metrics/metrics_provider.vue'),
+    ),
+    MetricsNavItem: defineAsyncComponent(
+      () => import('ee_component/merge_requests/reports/metrics/metrics_nav_item.vue'),
+    ),
+  },
+  mixins: [mergeRequestData],
+  inject: {
+    basePath: { default: '' },
   },
   data() {
     return {
-      mr: null,
+      hasSecurityScans: null,
     };
   },
   computed: {
-    pipelineState() {
-      if (!this.mr) return PIPELINE_STATE.loading;
-      if (!this.mr.pipelineIid) return PIPELINE_STATE.noPipeline;
-      if (this.mr.isPipelineActive) return PIPELINE_STATE.running;
-      return PIPELINE_STATE.complete;
+    configuredRoutes() {
+      const isConfigured = {
+        [SECURITY_SCAN_ROUTE]: this.hasSecurityScans,
+        [LICENSE_COMPLIANCE_ROUTE]: this.hasLicenseComplianceReports,
+        [CODE_QUALITY_ROUTE]: this.hasCodeQualityReports,
+        [LOAD_PERFORMANCE_ROUTE]: this.hasLoadPerformanceReports,
+        [METRICS_ROUTE]: this.hasMetricsReports,
+      };
+
+      return REPORT_ROUTES.filter((route) => isConfigured[route]);
     },
-    statusMessage() {
-      if (this.pipelineState === PIPELINE_STATE.running) {
-        return s__('MrReports|Waiting for pipeline to complete.');
-      }
-      if (this.pipelineState === PIPELINE_STATE.noPipeline) {
-        return s__(
-          'MrReports|No pipelines started yet. Results will appear when a pipeline completes.',
-        );
-      }
+    isPipelineComplete() {
+      return this.pipelineState === PIPELINE_STATE.complete;
+    },
+    isSecurityScanStateKnown() {
+      return this.hasSecurityScans !== null;
+    },
+    hasConfiguredReports() {
+      return this.isPipelineComplete && this.configuredRoutes.length > 0;
+    },
+    emptyStateType() {
+      if (this.pipelineState === PIPELINE_STATE.noPipeline) return EMPTY_STATE_NO_PIPELINE;
+      if (this.pipelineState === PIPELINE_STATE.running) return EMPTY_STATE_PIPELINE_RUNNING;
+      if (this.isPipelineComplete && this.isSecurityScanStateKnown) return EMPTY_STATE_NO_REPORTS;
       return '';
     },
-  },
-  created() {
-    if (
-      window.gl?.mrWidgetData?.merge_request_cached_widget_path &&
-      window.gl?.mrWidgetData?.merge_request_widget_path
-    ) {
-      MRWidgetService.fetchInitialData()
-        .then(({ data }) => {
-          this.mr = new MRWidgetStore({ ...window.gl.mrWidgetData, ...data });
-          this.initMrPolling();
-        })
-        .catch(() => {});
-    }
-  },
-  beforeDestroy() {
-    this.mrPollingInterval?.destroy();
-  },
-  methods: {
-    initMrPolling() {
-      if (this.pipelineState === PIPELINE_STATE.complete) return;
-
-      this.mrPollingInterval = new SmartInterval({
-        callback: () =>
-          MRWidgetService.fetchInitialData()
-            .then(({ data }) => {
-              this.mr.setData({ ...window.gl.mrWidgetData, ...data });
-              if (this.pipelineState === PIPELINE_STATE.complete) {
-                this.mrPollingInterval.destroy();
-              }
-            })
-            .catch(() => {}),
-        ...MR_POLLING_SETTINGS,
-        immediateExecution: false,
-      });
+    pipelinePath() {
+      return this.mr?.pipeline?.path || '';
     },
   },
-  PIPELINE_STATE,
+  watch: {
+    $route() {
+      this.syncRouteWithConfiguredReports();
+    },
+  },
+  mounted() {
+    window.mrTabs?.eventHub.$on('MergeRequestTabChange', this.onTabChange);
+  },
+  beforeDestroy() {
+    window.mrTabs?.eventHub.$off('MergeRequestTabChange', this.onTabChange);
+  },
+  methods: {
+    onSecurityScansChange(hasScans) {
+      this.hasSecurityScans = hasScans;
+      this.syncRouteWithConfiguredReports();
+    },
+    onTabChange(action) {
+      if (action === 'reports') this.syncRouteWithConfiguredReports();
+    },
+    syncRouteWithConfiguredReports() {
+      if (!this.isPipelineComplete) return;
+      if (!this.isSecurityScanStateKnown) return;
+      if (!window.location.pathname.startsWith(this.basePath)) return;
+
+      const { name } = this.$route;
+      if (!OWNED_ROUTES.includes(name)) return;
+      if (this.configuredRoutes.includes(name)) return;
+
+      const [target = ROOT_ROUTE] = this.configuredRoutes;
+      if (name === target) return;
+
+      this.$router.replace({ name: target }).catch(() => {});
+    },
+  },
 };
 </script>
 
 <template>
   <div
-    class="gl-grid gl-grid-cols-[1fr] gl-gap-5 @md/panel:gl-min-h-31 @md/panel:gl-grid-cols-[200px,1fr]"
+    class="gl-grid gl-grid-cols-[1fr] gl-gap-5 @md/panel:gl-min-h-31"
+    :class="{ '@md/panel:gl-grid-cols-[200px,1fr]': hasConfiguredReports }"
   >
     <h2 class="gl-sr-only">{{ s__('MrReports|Reports') }}</h2>
     <aside
+      v-show="hasConfiguredReports"
       class="gl-border-b gl-border-default gl-pb-3 gl-pt-5 @md/panel:gl-border-r @md/panel:gl-border-0 @md/panel:gl-pr-5"
     >
       <nav>
-        <template v-if="pipelineState === $options.PIPELINE_STATE.complete">
-          <security-scans-provider :mr="mr">
-            <security-nav-item />
+        <template v-if="isPipelineComplete">
+          <security-scans-provider :mr="mr" @enabled-scans-change="onSecurityScansChange">
+            <security-nav-item v-if="hasSecurityScans" />
           </security-scans-provider>
-          <license-compliance-provider :mr="mr">
+          <license-compliance-provider v-if="hasLicenseComplianceReports" :mr="mr">
             <license-compliance-nav-item />
           </license-compliance-provider>
-          <code-quality-provider :mr="mr">
+          <code-quality-provider v-if="hasCodeQualityReports" :mr="mr">
             <code-quality-nav-item />
           </code-quality-provider>
+          <load-performance-provider v-if="hasLoadPerformanceReports" :mr="mr">
+            <load-performance-nav-item />
+          </load-performance-provider>
+          <metrics-provider v-if="hasMetricsReports" :mr="mr">
+            <metrics-nav-item />
+          </metrics-provider>
         </template>
       </nav>
     </aside>
     <section class="@md/panel:gl-pt-5">
-      <template v-if="pipelineState === $options.PIPELINE_STATE.complete">
-        <keep-alive>
-          <router-view :mr="mr" />
-        </keep-alive>
-      </template>
-      <div
-        v-show="statusMessage"
-        class="gl-flex gl-px-5 gl-py-4"
-        role="status"
-        aria-live="polite"
-        data-testid="status-message"
-      >
-        <status-icon v-if="pipelineState === $options.PIPELINE_STATE.running" :is-loading="true" />
-        <span>{{ statusMessage }}</span>
+      <keep-alive v-if="hasConfiguredReports">
+        <router-view :mr="mr" />
+      </keep-alive>
+      <div v-else role="status" aria-live="polite">
+        <reports-empty-state
+          v-if="emptyStateType"
+          :type="emptyStateType"
+          :pipeline-path="pipelinePath"
+        />
+        <gl-loading-icon v-else size="lg" />
       </div>
-      <gl-loading-icon v-if="pipelineState === $options.PIPELINE_STATE.loading" size="lg" />
     </section>
   </div>
 </template>

@@ -12,6 +12,7 @@ module SupplyChain
 
     belongs_to :project
     belongs_to :build, class_name: 'Ci::Build', optional: true
+    belongs_to :signing_certificate, class_name: 'SupplyChain::SigningCertificate', optional: true
 
     has_internal_id :iid, scope: :project
 

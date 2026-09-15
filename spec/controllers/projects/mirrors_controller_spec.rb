@@ -250,13 +250,19 @@ RSpec.describe Projects::MirrorsController, feature_category: :source_code_manag
       sign_in(project.first_owner)
     end
 
+    context 'when the SSH URL is missing' do
+      it 'returns an invalid URL error with a 400 response', :aggregate_failures do
+        get :ssh_host_keys,
+          params: { namespace_id: project.namespace, project_id: project }
+
+        expect(response).to have_gitlab_http_status(:bad_request)
+        expect(json_response).to eq('message' => 'Invalid URL')
+      end
+    end
+
     context 'invalid URLs' do
-      %w[
-        INVALID
-        git@example.com:foo/bar.git
-        ssh://git@example.com:foo/bar.git
-        ssh://127.0.0.1/foo/bar.git
-      ].each do |url|
+      ['', 'INVALID', 'git@example.com:foo/bar.git', 'ssh://git@example.com:foo/bar.git',
+        'ssh://127.0.0.1/foo/bar.git'].each do |url|
         it "returns an error with a 400 response for URL #{url.inspect}" do
           do_get(project, url)
 
@@ -301,8 +307,19 @@ RSpec.describe Projects::MirrorsController, feature_category: :source_code_manag
       end
     end
 
-    def do_get(project, url = 'ssh://example.com')
-      get :ssh_host_keys, params: { namespace_id: project.namespace, project_id: project, ssh_url: url }
+    context 'when compare_host_keys is given' do
+      it 'passes it to SshHostKey' do
+        expect(SshHostKey).to receive(:new)
+          .with(hash_including(compare_host_keys: 'true'))
+          .and_call_original
+
+        do_get(project, 'ssh://example.com', compare_host_keys: 'true')
+      end
+    end
+
+    def do_get(project, url = 'ssh://example.com', extra_params = {})
+      get :ssh_host_keys,
+        params: { namespace_id: project.namespace, project_id: project, ssh_url: url }.merge(extra_params)
     end
   end
 

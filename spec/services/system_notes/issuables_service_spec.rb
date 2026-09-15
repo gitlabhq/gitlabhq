@@ -159,6 +159,29 @@ RSpec.describe ::SystemNotes::IssuablesService, feature_category: :team_planning
           "assigned to @#{assignee3.username} and unassigned @#{assignee.username}, @#{assignee1.username}, and @#{assignee2.username}"
       end
     end
+
+    context 'when the assignees are unchanged' do
+      before do
+        issue.assignees = [assignee1, assignee2]
+      end
+
+      it 'does not create a note', :aggregate_failures do
+        expect(Gitlab::ErrorTracking).not_to receive(:track_exception)
+
+        result = nil
+        expect { result = service.change_issuable_assignees([assignee2, assignee1]) }
+          .not_to change { issue.notes.count }
+
+        expect(result).to be_nil
+      end
+
+      it 'still tracks the assignee changed event' do
+        expect(Gitlab::UsageDataCounters::IssueActivityUniqueCounter)
+          .to receive(:track_issue_assignee_changed_action).with(author: author, project: project)
+
+        service.change_issuable_assignees([assignee2, assignee1])
+      end
+    end
   end
 
   describe '#change_issuable_reviewers' do
@@ -216,6 +239,22 @@ RSpec.describe ::SystemNotes::IssuablesService, feature_category: :team_planning
         expect(build_note([reviewer, reviewer1, reviewer2], [reviewer3])).to(
           eq("requested review from @#{reviewer3.username} and removed review request for @#{reviewer.username}, @#{reviewer1.username}, and @#{reviewer2.username}")
         )
+      end
+    end
+
+    context 'when the reviewers are unchanged' do
+      before do
+        noteable.reviewers = [reviewer1, reviewer2]
+      end
+
+      it 'does not create a note', :aggregate_failures do
+        expect(Gitlab::ErrorTracking).not_to receive(:track_exception)
+
+        result = nil
+        expect { result = service.change_issuable_reviewers([reviewer2, reviewer1]) }
+          .not_to change { noteable.notes.count }
+
+        expect(result).to be_nil
       end
     end
   end

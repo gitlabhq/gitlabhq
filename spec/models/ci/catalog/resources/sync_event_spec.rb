@@ -105,7 +105,7 @@ RSpec.describe Ci::Catalog::Resources::SyncEvent, type: :model, feature_category
       subject(:value) { described_class.partitioning_strategy.next_partition_if.call(active_partition) }
 
       context 'when the partition is empty' do
-        it { is_expected.to eq(false) }
+        it { is_expected.to be(false) }
       end
 
       context 'when the partition has records' do
@@ -114,7 +114,7 @@ RSpec.describe Ci::Catalog::Resources::SyncEvent, type: :model, feature_category
           create(:ci_catalog_resource_sync_event, catalog_resource: resource1)
         end
 
-        it { is_expected.to eq(false) }
+        it { is_expected.to be(false) }
       end
 
       context 'when the first record of the partition is older than PARTITION_DURATION' do
@@ -123,7 +123,7 @@ RSpec.describe Ci::Catalog::Resources::SyncEvent, type: :model, feature_category
           described_class.first.update!(created_at: (described_class::PARTITION_DURATION + 1.day).ago)
         end
 
-        it { is_expected.to eq(true) }
+        it { is_expected.to be(true) }
       end
     end
 
@@ -138,7 +138,7 @@ RSpec.describe Ci::Catalog::Resources::SyncEvent, type: :model, feature_category
       end
 
       context 'when the partition contains unprocessed records' do
-        it { is_expected.to eq(false) }
+        it { is_expected.to be(false) }
       end
 
       context 'when the partition contains only processed records' do
@@ -146,7 +146,7 @@ RSpec.describe Ci::Catalog::Resources::SyncEvent, type: :model, feature_category
           described_class.update_all(status: :processed)
         end
 
-        it { is_expected.to eq(true) }
+        it { is_expected.to be(true) }
       end
     end
 

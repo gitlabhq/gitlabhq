@@ -34,3 +34,6 @@ path = "/gitleaks.toml"
     "AKIAIOSFODNN7EXAMPLE",
     "AWSKEY1234567890",
   ]
+  paths = [
+    '''doc/user/application_security/secret_detection/detected_secrets\.md'''
+  ]

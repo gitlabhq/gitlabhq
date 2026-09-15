@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Types::PermissionTypes::WorkItem do
+RSpec.describe Types::PermissionTypes::WorkItem, feature_category: :team_planning do
   it do
     expected_permissions = [
       :read_work_item, :update_work_item, :delete_work_item,

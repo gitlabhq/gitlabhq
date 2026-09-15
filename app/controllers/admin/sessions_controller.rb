@@ -56,11 +56,27 @@ class Admin::SessionsController < ApplicationController
     redirect_to_path = safe_redirect_path(stored_location_for(:redirect)) || safe_redirect_path_for_url(request.referer)
 
     if redirect_to_path &&
-        excluded_redirect_paths.none? { |excluded| redirect_to_path.include?(excluded) }
+        excluded_redirect_paths.none? { |excluded| redirect_to_path.include?(excluded) } &&
+        admin_route?(redirect_to_path)
       redirect_to_path
     else
       admin_root_path
     end
+  end
+
+  # Only honor a stored/referer redirect that points at an admin route, so that
+  # entering admin mode from a non-admin page lands in the admin interface
+  # instead of returning to that page.
+  def admin_route?(path)
+    match = Rails.application.routes.recognize_path(path)
+    return false if match[:unmatched_route].present?
+
+    match[:controller]&.start_with?('admin/') || false
+  rescue ActionController::RoutingError, URI::InvalidURIError, NoMethodError
+    # NoMethodError: a mounted Rack app under /admin (e.g. Sidekiq::Web) is guarded
+    # by a route constraint that reads request-context state (warden/session) absent
+    # from recognize_path's synthetic env, so evaluating it raises here.
+    false
   end
 
   def excluded_redirect_paths

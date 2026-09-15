@@ -45,6 +45,14 @@ module EnforcesAdminAuthentication
     return render_404 if in_admin_mode? || !current_user&.can_access_admin_area?
 
     current_user_mode.request_admin_mode!
+
+    # Without this guard the browser would follow the redirect itself
+    # and respond 200 OK to the caller, which is considered by the frontend as a success.
+    if request.xhr?
+      return render json: { message: _('Admin mode is inactive. Please re-authenticate.') },
+        status: :unauthorized
+    end
+
     store_location_for(:redirect, request.fullpath) if storable_location?
     redirect_to(new_admin_session_path, notice: _('Re-authentication required'))
   end

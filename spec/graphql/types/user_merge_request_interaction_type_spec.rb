@@ -21,6 +21,7 @@ RSpec.describe GitlabSchema.types['UserMergeRequestInteraction'], feature_catego
       review_state
       reviewed
       approved
+      approved_at
       updated_at
     ]
 
@@ -111,6 +112,27 @@ RSpec.describe GitlabSchema.types['UserMergeRequestInteraction'], feature_catego
       end
 
       it { is_expected.to be true }
+    end
+  end
+
+  describe '#approved_at' do
+    subject(:approved_at) { resolve(:approved_at) }
+
+    context 'when the user has not approved the MR' do
+      it { is_expected.to be_nil }
+    end
+
+    context 'when the user has approved the MR' do
+      before do
+        merge_request.approved_by_users << user
+      end
+
+      it 'returns the approval record timestamp', :aggregate_failures do
+        approval = merge_request.approvals.find_by(user_id: user.id)
+
+        expect(approval.created_at).not_to be_nil
+        expect(approved_at).to be_like_time(approval.created_at)
+      end
     end
   end
 

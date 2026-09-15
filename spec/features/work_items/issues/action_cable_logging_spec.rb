@@ -21,7 +21,8 @@ RSpec.describe 'ActionCable logging', :js, feature_category: :shared do
       username: user.username
     )
 
-    expect(ActiveSupport::Notifications).to receive(:instrument).with('subscribe.action_cable', subscription_data).at_least(:once)
+    expect(ActiveSupport::Notifications).to receive(:instrument).with('subscribe.action_cable',
+      subscription_data).at_least(:once)
 
     sign_in(user)
     visit project_issue_path(project, issue)

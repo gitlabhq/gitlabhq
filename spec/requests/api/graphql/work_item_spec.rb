@@ -1509,6 +1509,46 @@ RSpec.describe 'Query.work_item(id)', :with_current_organization, feature_catego
         end
       end
 
+      context 'when fetching persisted related merge request links' do
+        let_it_be(:related_mr) { create(:merge_request, source_project: project, target_branch: 'related-link') }
+        let_it_be(:related_link) do
+          create(:merge_requests_closing_issues,
+            issue: work_item, merge_request: related_mr, link_type: :related, from_mr_description: false)
+        end
+
+        let(:work_item_fields) do
+          <<~GRAPHQL
+            id
+            features {
+              development {
+                relatedMergeRequests { nodes { id } }
+              }
+            }
+          GRAPHQL
+        end
+
+        let(:related_mr_ids) do
+          work_item_data.dig('features', 'development', 'relatedMergeRequests', 'nodes').pluck('id')
+        end
+
+        it 'includes the explicitly related merge request' do
+          post_graphql(query, current_user: developer)
+
+          expect(related_mr_ids).to include(related_mr.to_gid.to_s)
+        end
+
+        context 'when the feature flag is disabled' do
+          before do
+            stub_feature_flags(explicit_mr_work_item_relations: false)
+            post_graphql(query, current_user: developer)
+          end
+
+          it 'excludes the explicitly related merge request' do
+            expect(related_mr_ids).not_to include(related_mr.to_gid.to_s)
+          end
+        end
+      end
+
       context 'when fetching closing merge requests' do
         let_it_be(:private_project) { create(:project, :repository, :private) }
         let_it_be(:private_merge_request) { create(:merge_request, source_project: private_project) }

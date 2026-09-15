@@ -13,6 +13,7 @@ import SidebarPortalTarget from '~/super_sidebar/components/sidebar_portal_targe
 import SidebarMenu from '~/super_sidebar/components/sidebar_menu.vue';
 import MenuSection from '~/super_sidebar/components/menu_section.vue';
 import IconOnlyToggle from '~/super_sidebar/components/icon_only_toggle.vue';
+import ManageOrganizationButton from '~/super_sidebar/components/manage_organization_button.vue';
 import { sidebarState } from '~/super_sidebar/state';
 import {
   toggleSuperSidebarCollapsed,
@@ -53,6 +54,7 @@ describe('SuperSidebar component', () => {
       .wrappers.find((w) => w.props('name') === 'super-sidebar-settings-disclosure');
   const findTrialWidget = () => wrapper.findByTestId(trialWidgetStubTestId);
   const findIconOnlyToggle = () => wrapper.findComponent(IconOnlyToggle);
+  const findManageOrganizationButton = () => wrapper.findComponent(ManageOrganizationButton);
   const findSidebarMenu = () => wrapper.findComponent(SidebarMenu);
   const findContextHeader = () => wrapper.find('#super-sidebar-context-header');
 
@@ -171,6 +173,21 @@ describe('SuperSidebar component', () => {
     it('renders icon-only toggle', () => {
       createWrapper();
       expect(findIconOnlyToggle().exists()).toBe(true);
+    });
+
+    it('does not render the manage organization button without a link', () => {
+      createWrapper();
+      expect(findManageOrganizationButton().exists()).toBe(false);
+    });
+
+    it('renders the manage organization button when a link is present', () => {
+      const manageOrganizationLink = '/o/my-org/admin';
+      createWrapper({
+        sidebarData: { ...mockSidebarData, manage_organization_link: manageOrganizationLink },
+      });
+
+      expect(findManageOrganizationButton().exists()).toBe(true);
+      expect(findManageOrganizationButton().props('href')).toBe(manageOrganizationLink);
     });
 
     it('renders the context header', () => {

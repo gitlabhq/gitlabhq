@@ -32,9 +32,7 @@ RSpec.describe Projects::Ml::ModelRegistryHelper, feature_category: :mlops do
         'projectPath' => project.full_path,
         'createModelPath' => "/#{project.full_path}/-/ml/models/new",
         'canWriteModelRegistry' => true,
-        'maxAllowedFileSize' => 10737418240,
-        'mlflowTrackingUrl' => "http://localhost/api/v4/projects/#{project.id}/ml/mlflow/",
-        'markdownPreviewPath' => "/#{project.full_path}/-/preview_markdown"
+        'mlflowTrackingUrl' => "http://localhost/api/v4/projects/#{project.id}/ml/mlflow/"
       })
     end
 
@@ -47,7 +45,7 @@ RSpec.describe Projects::Ml::ModelRegistryHelper, feature_category: :mlops do
       end
 
       it 'canWriteModelRegistry is false' do
-        expect(parsed['canWriteModelRegistry']).to eq(false)
+        expect(parsed['canWriteModelRegistry']).to be(false)
       end
     end
   end
@@ -79,7 +77,7 @@ RSpec.describe Projects::Ml::ModelRegistryHelper, feature_category: :mlops do
       end
 
       it 'canWriteModelRegistry is false' do
-        expect(parsed['canWriteModelRegistry']).to eq(false)
+        expect(parsed['canWriteModelRegistry']).to be(false)
       end
     end
   end
@@ -118,7 +116,7 @@ RSpec.describe Projects::Ml::ModelRegistryHelper, feature_category: :mlops do
       end
 
       it 'canWriteModelRegistry is false' do
-        expect(parsed['canWriteModelRegistry']).to eq(false)
+        expect(parsed['canWriteModelRegistry']).to be(false)
       end
     end
 
@@ -126,7 +124,7 @@ RSpec.describe Projects::Ml::ModelRegistryHelper, feature_category: :mlops do
       let_it_be(:user) { nil }
 
       it 'canWriteModelRegistry is false' do
-        expect(parsed['canWriteModelRegistry']).to eq(nil)
+        expect(parsed['canWriteModelRegistry']).to be_nil
       end
     end
   end
@@ -162,7 +160,7 @@ RSpec.describe Projects::Ml::ModelRegistryHelper, feature_category: :mlops do
       end
 
       it 'canWriteModelRegistry is false' do
-        expect(parsed['canWriteModelRegistry']).to eq(false)
+        expect(parsed['canWriteModelRegistry']).to be(false)
       end
     end
   end
@@ -252,7 +250,7 @@ RSpec.describe Projects::Ml::ModelRegistryHelper, feature_category: :mlops do
       end
 
       it 'canWriteModelRegistry is false' do
-        expect(parsed['canWriteModelRegistry']).to eq(false)
+        expect(parsed['canWriteModelRegistry']).to be(false)
       end
     end
   end

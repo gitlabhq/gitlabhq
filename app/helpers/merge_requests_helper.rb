@@ -220,10 +220,20 @@ module MergeRequestsHelper
     }
   end
 
-  def mr_compare_form_data(_, merge_request)
+  def code_dropdown_data(merge_request)
+    {
+      web_ide_path: (ide_merge_request_path(merge_request) if current_user),
+      gitpod_path: gitpod_merge_request_url(merge_request),
+      patches_path: merge_request_path(merge_request, format: :patch),
+      plain_diff_path: merge_request_path(merge_request, format: :diff)
+    }
+  end
+
+  def mr_compare_form_data(merge_request)
     {
       source_branch_url: project_new_merge_request_branch_from_path(merge_request.source_project),
-      target_branch_url: project_new_merge_request_branch_to_path(merge_request.source_project)
+      target_branch_url: project_new_merge_request_branch_to_path(merge_request.source_project),
+      target_project_full_path: merge_request.target_project.full_path
     }
   end
 
@@ -289,6 +299,14 @@ module MergeRequestsHelper
     { identity_verification_required: 'false' }
   end
 
+  def ai_overview_available?
+    false
+  end
+
+  def ai_overview_enabled?
+    false
+  end
+
   def sticky_header_data(project, merge_request)
     data = {
       iid: merge_request.iid,
@@ -336,7 +354,28 @@ module MergeRequestsHelper
     current_user.merge_request_dashboard_show_drafts
   end
 
+  def merge_request_dashboard_search_data
+    {
+      autocomplete_award_emojis_path: autocomplete_award_emojis_path,
+      autocomplete_users_path: autocomplete_users_path,
+      dashboard_labels_path: dashboard_labels_path(format: :json, include_ancestor_groups: true),
+      dashboard_milestones_path: dashboard_milestones_path(format: :json),
+      has_scoped_labels_feature: 'false',
+      initial_sort: default_merge_request_sort || current_user&.user_preference&.merge_requests_sort,
+      is_public_visibility_restricted:
+        Gitlab::CurrentSettings.restricted_visibility_levels&.include?(Gitlab::VisibilityLevel::PUBLIC).to_s,
+      is_signed_in: current_user.present?.to_s,
+      vue_search_enabled: Feature.enabled?(:mr_dashboard_vue_search, current_user).to_s
+    }
+  end
+
   private
+
+  def gitpod_merge_request_url(merge_request)
+    return unless Gitlab::CurrentSettings.gitpod_enabled && current_user&.gitpod_enabled
+
+    "#{Gitlab::CurrentSettings.gitpod_url}##{merge_request_url(merge_request)}"
+  end
 
   def default_suggestion_commit_message(project)
     project.suggestion_commit_message.presence || Gitlab::Suggestions::CommitMessage::DEFAULT_SUGGESTION_COMMIT_MESSAGE
@@ -381,12 +420,12 @@ module MergeRequestsHelper
     link_to branch,
       branch_path,
       title: branch_title,
-      class: 'ref-container gl-inline-block gl-truncate gl-max-w-26 gl-ml-2 gl-shrink-0'
+      class: 'ref-container gl-inline-block gl-truncate gl-ml-2 gl-flex-[0_999_auto] !gl-min-w-[6ch]'
   end
 
   def merge_request_header(merge_request)
     link_to_author = link_to_member(merge_request.author, size: 24, extra_class: 'gl-font-bold gl-mr-2', avatar: false)
-    target_branch_class = "ref-container gl-inline-block gl-truncate gl-max-w-26 gl-shrink-0"
+    target_branch_class = "ref-container gl-inline-block gl-truncate gl-flex-initial"
     copy_action_description = _('Copy branch name')
     copy_action_shortcut = 'b'
     copy_button_title = "#{copy_action_description} <kbd class='flat gl-ml-2' " \

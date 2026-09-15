@@ -43,7 +43,7 @@ class Projects::MergeRequests::ConflictsController < Projects::MergeRequests::Ap
   def conflict_for_path
     return render_404 unless @conflicts_list.can_be_resolved_in_ui?
 
-    file = @conflicts_list.file_for_path(params[:old_path], params[:new_path])
+    file = @conflicts_list.file_for_path(conflict_path_params[:old_path], conflict_path_params[:new_path])
 
     return render_404 unless file
 
@@ -64,7 +64,7 @@ class Projects::MergeRequests::ConflictsController < Projects::MergeRequests::Ap
     begin
       ::MergeRequests::Conflicts::ResolveService
         .new(merge_request)
-        .execute(current_user, params)
+        .execute(current_user, resolve_conflicts_params)
 
       flash[:notice] = _('All merge conflicts were resolved. The merge request can now be merged.')
 
@@ -77,6 +77,14 @@ class Projects::MergeRequests::ConflictsController < Projects::MergeRequests::Ap
   end
 
   private
+
+  def conflict_path_params
+    params.permit(:old_path, :new_path)
+  end
+
+  def resolve_conflicts_params
+    params.permit(:commit_message, files: [:old_path, :new_path, :content, { sections: {} }])
+  end
 
   alias_method :issuable, :merge_request
 

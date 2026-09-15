@@ -47,7 +47,7 @@ RSpec.describe GitlabSchema.types['Project'], feature_category: :groups_and_proj
       incident_management_timeline_event_tags visible_forks inherited_ci_variables autocomplete_users
       ci_cd_settings detailed_import_status value_streams ml_models
       allows_multiple_merge_request_assignees allows_multiple_merge_request_reviewers is_forked
-      protectable_branches available_deploy_keys explore_catalog_path is_published
+      unprotected_branches protectable_branches available_deploy_keys explore_catalog_path is_published
       container_protection_tag_rules pages_force_https pages_use_unique_domain ci_pipeline_creation_request
       ci_pipeline_creation_inputs marked_for_deletion_on permanent_deletion_date
       webhook custom_attributes
@@ -150,7 +150,7 @@ RSpec.describe GitlabSchema.types['Project'], feature_category: :groups_and_proj
 
       context 'with non member user' do
         it 'returns true' do
-          expect(subject.dig('data', 'project', 'containerRegistryEnabled')).to eq(true)
+          expect(subject.dig('data', 'project', 'containerRegistryEnabled')).to be(true)
         end
       end
     end
@@ -166,7 +166,7 @@ RSpec.describe GitlabSchema.types['Project'], feature_category: :groups_and_proj
         end
 
         it 'returns true' do
-          expect(subject.dig('data', 'project', 'containerRegistryEnabled')).to eq(true)
+          expect(subject.dig('data', 'project', 'containerRegistryEnabled')).to be(true)
         end
       end
 
@@ -176,7 +176,7 @@ RSpec.describe GitlabSchema.types['Project'], feature_category: :groups_and_proj
         end
 
         it 'returns false' do
-          expect(subject.dig('data', 'project', 'containerRegistryEnabled')).to eq(false)
+          expect(subject.dig('data', 'project', 'containerRegistryEnabled')).to be(false)
         end
       end
     end
@@ -271,7 +271,7 @@ RSpec.describe GitlabSchema.types['Project'], feature_category: :groups_and_proj
       analyzer = subject.dig('data', 'project', 'sastCiConfiguration', 'analyzers', 'nodes').first
       expect(analyzer['name']).to eq('brakeman')
       expect(analyzer['label']).to eq('Brakeman')
-      expect(analyzer['enabled']).to eq(true)
+      expect(analyzer['enabled']).to be(true)
     end
 
     context 'with guest user' do
@@ -585,7 +585,9 @@ RSpec.describe GitlabSchema.types['Project'], feature_category: :groups_and_proj
   end
 
   it_behaves_like 'a GraphQL type with labels' do
-    let(:labels_resolver_arguments) { [:search_term, :includeAncestorGroups, :searchIn, :title, :archived] }
+    let(:labels_resolver_arguments) do
+      [:search_term, :includeAncestorGroups, :searchIn, :title, :archived, :fuzzySearch]
+    end
   end
 
   describe 'jira_imports' do
@@ -1671,7 +1673,7 @@ RSpec.describe GitlabSchema.types['Project'], feature_category: :groups_and_proj
       let_it_be(:project) { create(:project, :public) }
       let_it_be(:catalog_resource) { create(:ci_catalog_resource, project: project) }
 
-      it { is_expected.to eq(false) }
+      it { is_expected.to be(false) }
     end
 
     context 'when project is a catalog resource and is published' do
@@ -1681,7 +1683,7 @@ RSpec.describe GitlabSchema.types['Project'], feature_category: :groups_and_proj
 
       let_it_be(:catalog_resource) { create(:ci_catalog_resource, project: project, state: :published) }
 
-      it { is_expected.to eq(true) }
+      it { is_expected.to be(true) }
     end
   end
 
@@ -1932,7 +1934,7 @@ RSpec.describe GitlabSchema.types['Project'], feature_category: :groups_and_proj
 
   describe 'fields with :ai_workflows scope' do
     %w[id fullPath workItems languages statisticsDetailsPaths
-      namespace group rootGroup pipelines pipeline].each do |field_name|
+      namespace group rootGroup pipelines pipeline labels].each do |field_name|
       it "includes :ai_workflows scope for the #{field_name} field" do
         field = described_class.fields[field_name]
         expect(field.instance_variable_get(:@scopes)).to include(:ai_workflows)

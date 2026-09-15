@@ -22,7 +22,7 @@ Enterprise Edition in a single Virtual Machine (VM).
 
 - An Azure account. Use one of the following methods:
   - If you or your company already have an account with a subscription, use that account.
-  - [Create a free account](https://azure.microsoft.com/en-us/free/), which grants you a $200 credit to explore Azure for 30 days. For more information, see [Azure free account](https://azure.microsoft.com/en-us/pricing/offers/ms-azr-0044p/).
+  - [Create a free account](https://azure.microsoft.com/en-us/pricing/purchase-options/azure-account?icid=azurefreeaccount), which grants you a $200 credit to explore Azure for 30 days. For more information, see [Azure free account](https://azure.microsoft.com/en-us/pricing/offers/ms-azr-0044p/).
   - If you have an MSDN subscription, activate your Azure subscriber benefits. Your MSDN
     subscription gives you recurring Azure credits every month.
 - Administrator access to maintain your GitLab instance.

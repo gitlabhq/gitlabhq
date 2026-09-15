@@ -4,7 +4,7 @@
 # for more information on how to write migrations for GitLab.
 
 class AddIndexJobArtifactStatesReverification < Gitlab::Database::Migration[2.3]
-  milestone '19.3'
+  milestone '19.4'
 
   disable_ddl_transaction!
 

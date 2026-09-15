@@ -31,6 +31,26 @@ describe('VacuumInformationApp component', () => {
     expect(findSections().at(0).props('vacuums')).toEqual(vacuumActivity);
   });
 
+  it('passes activityAvailable through to each section', () => {
+    expect(findSections().at(0).props('activityAvailable')).toBe(true);
+  });
+
+  it('marks activity unavailable when the payload flag is false', () => {
+    createComponent({
+      databaseInformation: {
+        databases: { main: { vacuums: [], vacuum_activity_available: false } },
+      },
+    });
+
+    expect(findSections().at(0).props('activityAvailable')).toBe(false);
+  });
+
+  it('defaults activityAvailable to true when the flag is absent', () => {
+    createComponent({ databaseInformation: { databases: { main: {} } } });
+
+    expect(findSections().at(0).props('activityAvailable')).toBe(true);
+  });
+
   it('falls back to an empty array when a database has no vacuum data', () => {
     createComponent({ databaseInformation: { databases: { main: {} } } });
 

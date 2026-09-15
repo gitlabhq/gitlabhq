@@ -6,6 +6,10 @@ module Mutations
       class Create < ::Mutations::BaseMutation
         graphql_name 'UserGroupCalloutCreate'
 
+        authorize_granular_token permissions: :dismiss_ui_notification,
+          boundary_argument: :group_id,
+          boundary_type: :group
+
         include Gitlab::Graphql::Authorize::AuthorizeResource
 
         argument :feature_name,

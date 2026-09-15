@@ -113,6 +113,35 @@ RSpec.describe API::Mcp::Base, feature_category: :mcp_server do
           expect(json_response['error']['code']).to eq(-32600)
           expect(json_response['error']['data']['validations']).to include('jsonrpc does not have a valid value')
         end
+
+        it 'echoes the request id' do
+          post api('/mcp', user, oauth_access_token: access_token),
+            params: { jsonrpc: '1.0', method: 'initialize', id: '1' }
+
+          expect(json_response['id']).to eq('1')
+        end
+      end
+
+      context 'when params are invalid' do
+        it 'returns JSON-RPC Invalid params error that echoes the request id' do
+          post api('/mcp', user, oauth_access_token: access_token),
+            params: { jsonrpc: '2.0', method: 'initialize', id: 'abc-123',
+                      params: { protocolVersion: '1999-01-01' } }
+
+          expect(response).to have_gitlab_http_status(:bad_request)
+          expect(json_response['error']['code']).to eq(-32602)
+          expect(json_response['id']).to eq('abc-123')
+        end
+
+        it 'preserves an integer request id' do
+          post api('/mcp', user, oauth_access_token: access_token),
+            params: { jsonrpc: '2.0', method: 'initialize', id: 7,
+                      params: { protocolVersion: '1999-01-01' } }.to_json,
+            headers: { 'Content-Type' => 'application/json' }
+
+          expect(response).to have_gitlab_http_status(:bad_request)
+          expect(json_response['id']).to eq(7)
+        end
       end
 
       context 'when required method param is missing' do
@@ -193,6 +222,7 @@ RSpec.describe API::Mcp::Base, feature_category: :mcp_server do
           expect(response).to have_gitlab_http_status(:bad_request)
           expect(json_response['error']['code']).to eq(-32600)
           expect(json_response['error']['data']['validations']).to include('id is invalid')
+          expect(json_response['id']).to be_nil
         end
       end
 

@@ -105,6 +105,25 @@ Check the [rules](https://github.com/vuejs/eslint-plugin-vue#bulb-rules) for mor
    consistent everywhere it is used. Tests can then assert on the public prop instead of on
    internal CSS classes.
 
+## Translated strings
+
+1. Put translation calls directly in the `<template>`. Move a string to `$options.i18n` only for a
+   specific reason, such as reusing it in both the template and a method.
+
+   ```html
+   // bad - a single-use string moved away from where it is rendered
+   <gl-button>{{ $options.i18n.buttonLabel }}</gl-button>
+
+   // good
+   <gl-button>{{ s__('Plan|Button label') }}</gl-button>
+   ```
+
+   The translation helpers are available in templates and in component JavaScript, and the `gettext`
+   extractor reads `<template>` blocks, so an inline string still reaches the `pot` file. For the
+   full list of cases that justify `$options.i18n`, see
+   [Vue single-file components](../../i18n/externalization.md#vue-single-file-components). For the
+   externalization helpers, see [Preparing a page for translation](../../i18n/externalization.md).
+
 ## Component `name` property
 
 Every Vue component should have a `name` property. Use PascalCase derived from the filename.
@@ -132,7 +151,7 @@ Instead of using a `<style>` tag you should use [Tailwind CSS utility classes](s
 
 Over time, a number of programming patterns and style preferences have emerged in our efforts to
 effectively test Vue components. The following guide describes some of these.
-**These are not strict guidelines**, but rather a collection of suggestions and good practices that
+These are not strict guidelines, but rather a collection of suggestions and good practices that
 aim to provide insight into how we write Vue tests at GitLab.
 
 ### Mounting a component
@@ -253,7 +272,7 @@ describe('MyComponent', () => {
    ```
 
 1. If you require both `mount` _and_ `shallowMount` within the same set of tests, it
-   can be useful define a `mountFn` parameter for the `createComponent` factory that accepts
+   can be useful to define a `mountFn` parameter for the `createComponent` factory that accepts
    the mounting function (`mount` or `shallowMount`) to be used to mount the component:
 
    ```javascript
@@ -316,7 +335,7 @@ describe('MyComponent', () => {
    ```
 
    The exception here is when you wish to test component reactivity in some way.
-   For example, you may want to test the output of a component when after a particular watcher has
+   For example, you may want to test the output of a component after a particular watcher has
    executed. Using `setProps` to test such behavior is okay.
 1. Avoid using [`setData`](https://v1.test-utils.vuejs.org/api/wrapper/#setdata) which sets the
    component's internal state and circumvents testing the actual I/O of the component.

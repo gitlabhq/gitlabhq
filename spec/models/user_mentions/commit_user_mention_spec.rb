@@ -8,7 +8,7 @@ RSpec.describe CommitUserMention, feature_category: :code_review_workflow do
   end
 
   it_behaves_like 'model with associated note' do
-    let_it_be(:project) { create(:project, :public, :repository) }
+    let_it_be(:project) { create(:project, :public, :small_repo) }
     let_it_be(:commit) { project.commit }
     let_it_be(:note, freeze: false) { create(:note_on_commit, commit_id: commit.id, project: project) }
 

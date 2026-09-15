@@ -248,7 +248,9 @@ test:
 In this example:
 
 - Variables are only evaluated after all the files are merged together. A job in an included file
-  might end up using a variable value defined in a different file.
+  might end up using a variable value defined in a different file. After the merge,
+  [CI/CD variable precedence](../variables/_index.md#cicd-variable-precedence) determines the final
+  value for each variable.
 - `rules` is an array so it cannot be merged. The top-level file takes precedence.
 - `artifacts` is a hash map so it can be deep merged.
 

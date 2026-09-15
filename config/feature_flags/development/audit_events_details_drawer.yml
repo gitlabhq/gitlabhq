@@ -1,0 +1,8 @@
+---
+name: audit_events_details_drawer
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/issues/498522
+rollout_issue_url:
+milestone: '19.4'
+type: development
+group: group::compliance
+default_enabled: false

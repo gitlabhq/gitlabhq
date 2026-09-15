@@ -1,0 +1,7 @@
+# every `spec:inputs:rules` rule must define a `default`
+spec:
+  inputs:
+    stage_by_branch:
+      rules:
+        - if: $CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH
+          options: ["deploy", "test"]

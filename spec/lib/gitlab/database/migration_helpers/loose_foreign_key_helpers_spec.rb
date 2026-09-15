@@ -301,6 +301,54 @@ RSpec.describe Gitlab::Database::MigrationHelpers::LooseForeignKeyHelpers, featu
     end
   end
 
+  describe '#partitioned_record_deletions_routed_by_sharding_keys?' do
+    subject(:routed) { migration.partitioned_record_deletions_routed_by_sharding_keys?(table_name) }
+
+    let(:targets_json) do
+      '[{"table":"loose_foreign_keys_project_deleted_records","column":"project_id","source":"project_id"}]'
+    end
+
+    it 'is false when the table has no LFK trigger' do
+      expect(routed).to be(false)
+    end
+
+    it 'is false for the plain trigger without arguments' do
+      migration.track_record_deletions(table_name)
+
+      expect(routed).to be(false)
+    end
+
+    it 'is false for the override trigger carrying only the table name' do
+      migration.track_record_deletions_override_table_name(table_name)
+
+      expect(routed).to be(false)
+    end
+
+    # The regular-table function on a partitioned parent is an invalid setup, in or out
+    # of the Cells context; the predicate only recognizes the override-table function.
+    it 'is false for the regular-table trigger even when it carries a targets argument' do
+      migration.connection.execute(<<~SQL)
+        CREATE TRIGGER #{table_name}_loose_fk_trigger
+        AFTER DELETE ON #{table_name} REFERENCING OLD TABLE AS old_table
+        FOR EACH STATEMENT
+        EXECUTE FUNCTION insert_into_loose_foreign_keys_deleted_records('#{targets_json}');
+      SQL
+
+      expect(routed).to be(false)
+    end
+
+    it 'is true for the override trigger carrying a targets argument' do
+      migration.connection.execute(<<~SQL)
+        CREATE TRIGGER #{table_name}_loose_fk_trigger
+        AFTER DELETE ON #{table_name} REFERENCING OLD TABLE AS old_table
+        FOR EACH STATEMENT
+        EXECUTE FUNCTION insert_into_loose_foreign_keys_deleted_records_override_table('#{table_name}', '#{targets_json}');
+      SQL
+
+      expect(routed).to be(true)
+    end
+  end
+
   describe '#sharding_keys_for' do
     it 'resolves a sharding key referencing projects to the project deleted-records table' do
       expect(migration.sharding_keys_for('project_repositories')).to contain_exactly(

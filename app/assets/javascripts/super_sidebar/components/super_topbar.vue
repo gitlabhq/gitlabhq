@@ -7,8 +7,8 @@ import BrandLogo from 'jh_else_ce/super_sidebar/components/brand_logo.vue';
 import { parseBoolean } from '~/lib/utils/common_utils';
 import { EVENT_OPEN_GLOBAL_SEARCH } from '~/vue_shared/global_search/constants';
 import { staticBreadcrumbs } from '~/lib/utils/breadcrumbs_state';
+import { RedirectScrollKeysToPanelDirective } from '~/vue_shared/directives/redirect_scroll_keys_to_panel';
 import { adminRootPath } from '~/lib/utils/path_helpers/instance_admin';
-import { exploreAnalyticsDashboardsPath } from '~/lib/utils/path_helpers/explore';
 import { newUserRegistrationPath, newUserSessionPath } from '~/lib/utils/path_helpers/routes';
 import SuperSidebarToggle from './super_sidebar_toggle.vue';
 import CreateMenu from './create_menu.vue';
@@ -44,6 +44,7 @@ export default {
   directives: {
     GlModal: GlModalDirective,
     GlTooltip: GlTooltipDirective,
+    RedirectScrollKeysToPanel: RedirectScrollKeysToPanelDirective,
   },
   mixins: [glFeatureFlagsMixin()],
   i18n: {
@@ -90,13 +91,21 @@ export default {
           this.sidebarData.admin_mode.admin_mode_active)
       );
     },
+    // Supplied by EE only, and only when the feature flag is on. The route
+    // itself is EE-only, so FOSS has no path helper to build it from.
+    analyticsDashboardsPath() {
+      return this.sidebarData.analytics_dashboards_path;
+    },
   },
   methods: {
-    adminRootPath,
-    exploreAnalyticsDashboardsPath,
-    newUserRegistrationPath,
+    adminRootPath() {
+      return adminRootPath({ organizationPath: null });
+    },
+    newUserRegistrationPath() {
+      return newUserRegistrationPath({ organizationPath: null });
+    },
     signInPath() {
-      return newUserSessionPath({ redirect_to_referer: 'yes' });
+      return newUserSessionPath({ redirect_to_referer: 'yes', organizationPath: null });
     },
     onSearchButtonDrop(event) {
       const text = event.dataTransfer.getData('text/plain');
@@ -112,6 +121,7 @@ export default {
 
 <template>
   <header
+    v-redirect-scroll-keys-to-panel
     class="super-topbar js-super-topbar gl-grid gl-grid-cols-[1fr_1fr] gl-items-center gl-gap-x-5 gl-outline-none sm:gl-grid-cols-[1fr_auto_1fr] forced-colors:gl-outline-0"
     tabindex="0"
     autofocus
@@ -194,9 +204,9 @@ export default {
       />
       <template v-if="isLoggedIn">
         <gl-button
-          v-if="glFeatures.exploreAnalyticsDashboards"
+          v-if="analyticsDashboardsPath"
           v-gl-tooltip.bottom="$options.i18n.analyticsDashboardsBtnText"
-          :href="exploreAnalyticsDashboardsPath()"
+          :href="analyticsDashboardsPath"
           :aria-label="$options.i18n.analyticsDashboardsBtnText"
           category="tertiary"
           icon="chart"

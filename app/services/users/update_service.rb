@@ -102,13 +102,22 @@ module Users
 
     def organization_users_error
       return if organization_users_attributes.blank?
-      return organization_permission_error unless current_user.can_admin_all_resources?
+      return organization_permission_error unless can_update_organization_users?
       return organization_users_limit_exceeded_error if organization_users_limit_exceeded?
       return organization_ids_invalid_error if organization_ids_invalid?
 
       nil
     end
     strong_memoize_attr :organization_users_error
+
+    def can_update_organization_users?
+      return true if current_user.can_admin_all_resources?
+      return false if organization_ids_invalid?
+
+      Organizations::Organization.id_in(organization_ids).all? do |organization|
+        current_user.can?(:update_organization, organization)
+      end
+    end
 
     def organization_ids
       organization_users_attributes.pluck(:organization_id).uniq # rubocop:disable Database/AvoidUsingPluckWithoutLimit, CodeReuse/ActiveRecord -- Capped to ORGANIZATION_USERS_LIMIT and plucks on an array of plain hashes

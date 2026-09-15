@@ -79,7 +79,7 @@ RSpec.describe Gitlab::Database::MigrationHelpers::V2, feature_category: :databa
         migration.send(operation, :_test_table, :original, :renamed)
         model.reset_column_information
 
-        expect(migration.column_exists?(:_test_table, added_column)).to eq(true)
+        expect(migration.column_exists?(:_test_table, added_column)).to be(true)
 
         expect(existing_record_1.reload).to have_attributes(status: 0, original: 'existing', renamed: 'existing')
         expect(existing_record_2.reload).to have_attributes(status: 0, original: 'default value', renamed: 'default value')
@@ -123,7 +123,7 @@ RSpec.describe Gitlab::Database::MigrationHelpers::V2, feature_category: :databa
         migration.send(operation, :_test_table, :original, :renamed)
         model.reset_column_information
 
-        expect(migration.column_exists?(:_test_table, added_column)).to eq(true)
+        expect(migration.column_exists?(:_test_table, added_column)).to be(true)
 
         expect(existing_record_1.reload).to have_attributes(status: 0, original: 'existing', renamed: 'existing')
         expect(existing_record_2.reload).to have_attributes(status: 0, original: nil, renamed: nil)
@@ -162,7 +162,7 @@ RSpec.describe Gitlab::Database::MigrationHelpers::V2, feature_category: :databa
       migration.send(operation, :_test_table, :original, :renamed)
       model.reset_column_information
 
-      expect(migration.column_exists?(:_test_table, added_column)).to eq(true)
+      expect(migration.column_exists?(:_test_table, added_column)).to be(true)
 
       expect(existing_record_1.reload).to have_attributes(status: 0, original: 'existing', renamed: 'existing')
       expect(existing_record_2.reload).to have_attributes(status: 0, original: nil, renamed: nil)
@@ -288,11 +288,11 @@ RSpec.describe Gitlab::Database::MigrationHelpers::V2, feature_category: :databa
           expect_valid_function_trigger(:_test_table, trigger_name, function_name, event)
         end
 
-        expect(migration.column_exists?(:_test_table, added_column)).to eq(true)
+        expect(migration.column_exists?(:_test_table, added_column)).to be(true)
 
         migration.public_send(operation, :_test_table, :original, :renamed)
 
-        expect(migration.column_exists?(:_test_table, added_column)).to eq(false)
+        expect(migration.column_exists?(:_test_table, added_column)).to be(false)
 
         triggers.each do |(trigger_name, function_name, _)|
           expect_trigger_not_to_exist(:_test_table, trigger_name)

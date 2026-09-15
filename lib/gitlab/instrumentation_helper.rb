@@ -16,6 +16,7 @@ module Gitlab
       instrument_redis(payload)
       instrument_elasticsearch(payload)
       instrument_zoekt(payload)
+      instrument_openbao(payload)
       instrument_throttle(payload)
       instrument_active_record(payload)
       instrument_external_http(payload)
@@ -73,6 +74,17 @@ module Gitlab
 
       payload[:zoekt_calls] = zoekt_calls
       payload[:zoekt_duration_s] = Gitlab::Instrumentation::Zoekt.query_time
+    end
+
+    def instrument_openbao(payload)
+      # OpenBao is only reachable from EE, but nothing the instrumentation
+      # touches lives in EE.
+      openbao_calls = Gitlab::Instrumentation::Openbao.get_request_count
+
+      return if openbao_calls == 0
+
+      payload[:openbao_calls] = openbao_calls
+      payload[:openbao_duration_s] = Gitlab::Instrumentation::Openbao.query_time
     end
 
     def instrument_external_http(payload)
@@ -166,13 +178,11 @@ module Gitlab
 
     def instrument_gvl(payload)
       context = Gitlab::RequestContext.instance
-      return unless context.gvl_local_timer_start && context.gvl_global_timer_start
-      return unless GVLTools::LocalTimer.enabled? && GVLTools::GlobalTimer.enabled?
+      return unless context.gvl_local_timer_start
+      return unless GVLTools::LocalTimer.enabled?
 
       payload[:gvl_thread_wait_s] =
         (GVLTools::LocalTimer.monotonic_time - context.gvl_local_timer_start) / 1_000_000_000.0
-      payload[:gvl_process_wait_s] =
-        (GVLTools::GlobalTimer.monotonic_time - context.gvl_global_timer_start) / 1_000_000_000.0
     end
 
     # Returns the total queuing duration for a Sidekiq job in seconds, as a float, if the

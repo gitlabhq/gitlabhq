@@ -282,6 +282,32 @@ RSpec.describe Projects::NotesController, type: :controller, feature_category: :
         expect { get :index, params: request_params }.not_to exceed_query_limit(control)
       end
     end
+
+    # Guards the permitted list in #finder_params. A key dropped from it would stop
+    # filtering silently rather than raising.
+    context 'with every permitted finder key' do
+      before do
+        sign_in(user)
+        project.add_developer(user)
+      end
+
+      it 'forwards each one to NotesFinder', :aggregate_failures do
+        filters = {
+          target_type: 'issue', target_id: issue.id.to_s, target_iid: issue.iid.to_s,
+          search: 'query', sort: 'created_desc', group_id: project.namespace_id.to_s
+        }
+
+        captured = nil
+        allow(NotesFinder).to receive(:new).and_wrap_original do |original, current_user, finder_params|
+          captured = finder_params
+          original.call(current_user, finder_params)
+        end
+
+        get :index, params: { namespace_id: project.namespace, project_id: project, format: 'json' }.merge(filters)
+
+        filters.each { |key, value| expect(captured[key]).to eq(value) }
+      end
+    end
   end
 
   describe 'POST create' do

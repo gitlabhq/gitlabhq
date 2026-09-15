@@ -46,7 +46,7 @@ In this document, we explain a two-step method to add a new database migration v
    migration version `Gitlab::Database::Migration[2.2]`.
 1. Make sure that [`migration_spec.rb`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/spec/db/migration_spec.rb)
    doesn't fail for the new database migrations by adding an open date range for
-   the **new database version**.
+   the new database version.
 
 ## Prevent the usage of the older database migration version
 

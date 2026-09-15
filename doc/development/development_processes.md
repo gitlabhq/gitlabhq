@@ -106,6 +106,22 @@ To update code owners in the `CODEOWNERS` file, follow the
 > Approvals are not reset when rebasing from the UI or with the
 > [`/rebase` quick action](../user/project/quick_actions.md#rebase).
 
+#### CODEOWNERS
+
+In the `gitlab-org/gitlab` project, we use a
+combination of CODEOWNERS approval rules plus [MR approval settings](#merge-request-approval-settings)
+in order to follow segregation of duties best practices.
+This section describes the process for updating the eligible approvers for CODEOWNERS changes for the `gitlab-org/gitlab` project.
+
+Changes to the
+[CODEOWNERS file](https://gitlab.com/gitlab-org/gitlab/-/blob/master/.gitlab/CODEOWNERS)
+will require an approval from the `@gitlab-org/development-leaders` group, which consists of
+team members from Senior Managers and above in the management track, and
+Distinguished Engineer and above in the individual contributor track in the
+development departments within Engineering.
+
+You are also encouraged to ping a security compliance team member for visibility.
+
 ### Reviewer values
 
 As a reviewer or as a reviewee, make sure to familiarize yourself with

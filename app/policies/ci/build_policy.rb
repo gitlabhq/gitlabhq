@@ -118,7 +118,7 @@ module Ci
       enable(*all_job_update_abilities)
     end
 
-    rule { can?(:update_build) & terminal & owner_of_job }.enable :create_build_terminal
+    rule { can?(:update_build) & terminal & (admin | owner_of_job) }.enable :create_build_terminal
 
     rule { is_web_ide_terminal & can?(:create_web_ide_terminal) & (admin | owner_of_job) }.policy do
       enable :read_web_ide_terminal

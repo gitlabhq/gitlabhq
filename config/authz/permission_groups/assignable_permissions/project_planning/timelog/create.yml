@@ -1,0 +1,10 @@
+---
+name: create_timelog
+description: Grants the ability to create timelogs to track time spent on issuables
+boundaries:
+  - group
+  - project
+available_for:
+  - granular_access_token
+permissions:
+  - create_timelog

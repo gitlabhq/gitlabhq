@@ -73,7 +73,7 @@ RSpec.describe "User views milestone", feature_category: :team_planning do
         visit(project_milestone_path(project, milestone))
 
         expect(page).to have_selector('#tab-issues li', count: 3)
-        expect(page).to have_selector('#milestone-issue-count-warning', text: 'Showing 3 of 6 items. View all')
+        expect(page).to have_selector('#milestone-issue-count-warning', text: 'Showing 3 of 3+ items. View all')
         expect(page).to have_link('View all', href: project_work_items_path(project, { milestone_title: milestone.title }))
         expect(page).not_to have_selector('#milestone-issue-count-warning [aria-label="Dismiss"]')
       end

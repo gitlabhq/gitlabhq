@@ -106,8 +106,7 @@ module API
         optional :assignee_id,  type: Integer, desc: '[Deprecated] The ID of a user to assign issue'
         optional :milestone_id, type: Integer, desc: 'The ID of a milestone to assign issue'
         optional :milestone, type: String, limit: 255,
-          desc: 'The title of a project or ancestor-group milestone to assign the issue to. ' \
-            'Mutually exclusive with `milestone_id`.'
+          desc: 'The title of a project or ancestor-group milestone to assign the issue to.'
         mutually_exclusive :milestone_id, :milestone
         optional :labels, type: Array[String], coerce_with: ::API::Validations::Types::CommaSeparatedToArray.coerce, desc: 'Comma-separated list of label names'
         optional :add_labels, type: Array[String], coerce_with: ::API::Validations::Types::CommaSeparatedToArray.coerce, desc: 'Comma-separated list of label names'
@@ -175,7 +174,7 @@ module API
           include_subscribed: false
         }
 
-        present issues, options
+        present issues, **options
       end
 
       desc 'Retrieve an issue' do
@@ -222,7 +221,7 @@ module API
           group: user_group
         }
 
-        present issues, options
+        present issues, **options
       end
 
       desc 'Retrieve issues statistics for a group' do
@@ -281,7 +280,7 @@ module API
           include_subscribed: false
         }
 
-        present paginate_with_strategies(issues), options
+        present paginate_with_strategies(issues), **options
       end
 
       desc 'Retrieve issues statistics for a project' do
@@ -309,7 +308,7 @@ module API
       params do
         requires :issue_iid, type: Integer, desc: 'The internal ID of a project issue'
       end
-      route_setting :mcp, tool_name: :get_issue, params: [:id, :issue_iid], resource_name: "issue"
+      route_setting :mcp, tool_name: :get_issue, toolset: :work_items, params: [:id, :issue_iid], resource_name: "issue"
       route_setting :authentication, job_token_allowed: true
       route_setting :authorization, permissions: :read_issue, boundary_type: :project, job_token_policies: :read_work_items, allow_public_access_for_enabled_project_features: :issues
       get ":id/issues/:issue_iid", as: :api_v4_project_issue do
@@ -335,8 +334,10 @@ module API
 
         use :issue_params
       end
-      route_setting :mcp, tool_name: :create_issue, params: Helpers::IssuesHelpers.create_issue_mcp_params,
-        annotations: { readOnlyHint: false, destructiveHint: false }, resource_name: "project"
+      # Unlisted pending removal: superseded by save_work_item (https://gitlab.com/gitlab-org/gitlab/-/work_items/625129).
+      route_setting :mcp, tool_name: :create_issue, toolset: :work_items,
+        params: Helpers::IssuesHelpers.create_issue_mcp_params,
+        annotations: { readOnlyHint: false, destructiveHint: false }, resource_name: "project", unlisted: true
       route_setting :authorization, permissions: :create_issue, boundary_type: :project
       post ':id/issues' do
         Gitlab::QueryLimiting.disable!('https://gitlab.com/gitlab-org/gitlab/-/issues/21140')
@@ -483,7 +484,7 @@ module API
 
           issue = response.payload[:work_item]
 
-          present issue, with: Entities::Issue, current_user: current_user, project: user_project
+          present issue, with: Entities::Issue, current_user: current_user, project: new_project
         end
       end
       # rubocop: enable CodeReuse/ActiveRecord
@@ -563,8 +564,7 @@ module API
 
         merge_requests = ::Issues::ReferencedMergeRequestsService
                            .new(container: user_project, current_user: current_user)
-                           .execute(issue)
-                           .first
+                           .related_merge_requests(issue)
 
         present paginate(::Kaminari.paginate_array(merge_requests)),
           with: Entities::MergeRequest,

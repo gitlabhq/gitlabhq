@@ -34,8 +34,9 @@ RSpec.describe 'Merge request > User edits assignees sidebar', :js, feature_cate
   let(:sidebar_assignee_tooltip) { sidebar_assignee_avatar_link['title'] || '' }
   let(:sidebar_assignee_merge_ability) { sidebar_assignee_avatar_link['data-cannot-merge'] || '' }
 
-  let(:sidebar_assignee_dropdown_item) { sidebar_assignee_block.find(".dropdown-item", text: assignee.username) }
-  let(:sidebar_assignee_dropdown_tooltip) { sidebar_assignee_dropdown_item['title'] }
+  let(:sidebar_assignee_dropdown_item) do
+    find_by_testid("listbox-item-#{assignee.username}", context: sidebar_assignee_block)
+  end
 
   context 'when user is an owner' do
     before do
@@ -50,7 +51,7 @@ RSpec.describe 'Merge request > User edits assignees sidebar', :js, feature_cate
       wait_for_requests
     end
 
-    shared_examples 'when assigned' do |expected_tooltip: '', expected_cannot_merge: ''|
+    shared_examples 'when assigned' do |expected_cannot_merge: '', cannot_merge_icons: 0|
       it 'shows assignee name' do
         expect(sidebar_assignee_block).to have_text(assignee.name)
       end
@@ -64,8 +65,9 @@ RSpec.describe 'Merge request > User edits assignees sidebar', :js, feature_cate
           open_assignees_dropdown
         end
 
-        it "shows assignee tooltip '#{expected_tooltip}" do
-          expect(sidebar_assignee_dropdown_tooltip).to eql(expected_tooltip)
+        it "shows the cannot merge icon #{cannot_merge_icons} time(s)" do
+          expect(sidebar_assignee_dropdown_item)
+            .to have_css('[aria-label="Cannot merge"]', count: cannot_merge_icons)
         end
       end
     end
@@ -73,13 +75,32 @@ RSpec.describe 'Merge request > User edits assignees sidebar', :js, feature_cate
     context 'when assigned to maintainer' do
       let(:assignee) { project_maintainers.last }
 
-      it_behaves_like 'when assigned', expected_tooltip: ''
+      it_behaves_like 'when assigned'
     end
 
     context 'when assigned to developer' do
       let(:assignee) { project_developers.last }
 
-      it_behaves_like 'when assigned', expected_tooltip: 'Cannot merge', expected_cannot_merge: 'true'
+      it_behaves_like 'when assigned', expected_cannot_merge: 'true', cannot_merge_icons: 1
+    end
+  end
+
+  context 'when the user selects an assignee' do
+    before do
+      sign_in(owner)
+
+      visit project_merge_request_path(project, merge_request)
+    end
+
+    it 'assigns the selected user', :aggregate_failures do
+      expect(sidebar_assignee_block).to have_button('Edit')
+
+      open_assignees_dropdown
+
+      find_by_testid("listbox-item-#{owner.username}").click
+
+      expect(sidebar_assignee_block).to have_text(owner.name)
+      expect(merge_request.reload.assignees).to contain_exactly(owner)
     end
   end
 
@@ -94,9 +115,8 @@ RSpec.describe 'Merge request > User edits assignees sidebar', :js, feature_cate
     end
 
     it 'contains the members shared into ancestors of the projects' do
-      page.within '.dropdown-menu-user' do
-        expect(page).to have_content shared_into_ancestor_user.name
-      end
+      expect(find_by_testid('base-dropdown-menu', context: sidebar_assignee_block))
+        .to have_content shared_into_ancestor_user.name
     end
   end
 

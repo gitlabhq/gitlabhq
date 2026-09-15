@@ -19,7 +19,7 @@ describe('VerificationLayout', () => {
   };
 
   const findIllustration = () => wrapper.find('img');
-  const findTitle = () => wrapper.find('h2');
+  const findTitle = () => wrapper.find('h1');
 
   beforeEach(() => {
     createComponent();
@@ -33,7 +33,9 @@ describe('VerificationLayout', () => {
     expect(findIllustration().attributes('alt')).toBe('');
   });
 
-  it('renders the title', () => {
+  // The title is the page heading on every screen that uses this layout: each is a
+  // standalone auth page rendering one instance, with no other h1 in the layout chain.
+  it('renders the title as the page heading', () => {
     expect(findTitle().text()).toBe('Enter authenticator app code');
   });
 

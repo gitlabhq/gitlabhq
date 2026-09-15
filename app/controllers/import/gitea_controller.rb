@@ -12,7 +12,7 @@ class Import::GiteaController < Import::GithubController
   end
 
   def personal_access_token
-    session[host_key] = params[host_key]
+    session[host_key] = host_url_param
     super
   end
 
@@ -25,8 +25,9 @@ class Import::GiteaController < Import::GithubController
       end
 
       format.html do
-        if params[:namespace_id].present?
-          @namespace = Namespace.find_by_id(params[:namespace_id])
+        namespace_id = namespace_id_param
+        if namespace_id.present?
+          @namespace = Namespace.find_by_id(namespace_id)
 
           render_404 unless current_user.can?(:import_projects, @namespace)
         end
@@ -45,6 +46,10 @@ class Import::GiteaController < Import::GithubController
 
   def host_key
     :"#{provider_name}_host_url"
+  end
+
+  def host_url_param
+    params.permit(host_key)[host_key]
   end
 
   override :provider_url

@@ -7,9 +7,6 @@ RSpec.describe Gitlab::BackgroundMigration::BackfillClustersKubernetesNamespaces
   tables :organizations, :namespaces, :projects, :clusters, :clusters_kubernetes_namespaces
 
   let(:connection) { ApplicationRecord.connection }
-  let(:function_name) { 'clusters_kubernetes_namespaces_sharding_key' }
-  let(:trigger_name) { "trigger_#{function_name}" }
-  let(:constraint_name) { 'check_8556b17a2a' }
 
   let(:organization) { organizations.create!(name: 'name', path: 'path') }
   let(:namespace) { namespaces.create!(name: 'name', path: 'path', organization_id: organization.id) }

@@ -6,7 +6,7 @@ module Sidebars
       class GroupsMenu < ::Sidebars::Menu
         override :link
         def link
-          dashboard_groups_path
+          dashboard_groups_path(organization_path: nil)
         end
 
         override :title

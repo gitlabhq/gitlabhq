@@ -20,7 +20,7 @@ module Notifications
     # regardless of the caller's casing.
     normalizes :device_token, with: ->(token) { token.downcase }
 
-    enum :platform, { ios: 0 }
+    enum :platform, { ios: 0, macos: 1 }
     enum :apns_environment, { production: 0, sandbox: 1 }, prefix: :apns
     enum :payload_mode, { full: 0, id_only: 1 }, suffix: :payload
 

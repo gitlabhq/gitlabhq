@@ -8,7 +8,7 @@ RSpec.describe BulkImports::ProcessService, feature_category: :importers do
   before do
     allow(BulkImports::SourceInternalUserFinder).to receive(:new)
       .and_return(source_internal_user_finder)
-    allow(source_internal_user_finder).to receive(:set_ghost_user_id)
+    allow(source_internal_user_finder).to receive(:fetch_and_cache_ghost_id_from_source_instance)
   end
 
   describe '#execute' do
@@ -208,7 +208,7 @@ RSpec.describe BulkImports::ProcessService, feature_category: :importers do
 
       it 'cached source ghost user id' do
         create(:bulk_import_entity, :created, bulk_import: bulk_import)
-        expect(source_internal_user_finder).to receive(:set_ghost_user_id).once
+        expect(source_internal_user_finder).to receive(:fetch_and_cache_ghost_id_from_source_instance).once
 
         subject.execute
       end
@@ -216,7 +216,7 @@ RSpec.describe BulkImports::ProcessService, feature_category: :importers do
       it 'does not cache source ghost user id for offline imports' do
         bulk_import.update!(source_type: :offline_export)
 
-        expect(source_internal_user_finder).not_to receive(:set_ghost_user_id)
+        expect(source_internal_user_finder).not_to receive(:fetch_and_cache_ghost_id_from_source_instance)
 
         subject.execute
       end

@@ -12,7 +12,6 @@ RSpec.describe BulkImports::Projects::Pipelines::ProjectAttributesPipeline, :wit
   let_it_be(:tracker, freeze: false) { create(:bulk_import_tracker, entity: entity) }
   let_it_be(:context, freeze: false) { BulkImports::Pipeline::Context.new(tracker) }
 
-  let(:tmpdir) { Dir.mktmpdir }
   let(:extra) { {} }
   let(:project_attributes) do
     {
@@ -85,7 +84,7 @@ RSpec.describe BulkImports::Projects::Pipelines::ProjectAttributesPipeline, :wit
       let(:extra) { { 'archived' => true } }
 
       it 'sets project as archived' do
-        expect(project.archived).to eq(true)
+        expect(project.archived).to be(true)
       end
     end
   end
@@ -115,7 +114,7 @@ RSpec.describe BulkImports::Projects::Pipelines::ProjectAttributesPipeline, :wit
 
       pipeline.load(context, project_attributes)
 
-      expect(project.importing?).to eq(true)
+      expect(project.importing?).to be(true)
     end
   end
 

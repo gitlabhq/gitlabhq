@@ -16,7 +16,8 @@ RSpec.describe Gitlab::ApplicationContext, feature_category: :shared do
         :http_router_rule_type,
         :auth_fail_token_type,
         :auth_fail_auth_header_type,
-        :duo_workflow_id
+        :duo_workflow_id,
+        :organization_source
       )
     end
   end
@@ -145,6 +146,20 @@ RSpec.describe Gitlab::ApplicationContext, feature_category: :shared do
       )
     end
 
+    it 're-resolves the user lambda instead of caching a nil result' do
+      current = nil
+      context = described_class.new(user: -> { current })
+
+      # First read happens before the user is known (e.g. before authentication).
+      expect(context.to_lazy_hash[:user].call).to be_nil
+
+      current = user
+
+      # A later read must pick up the now-known user, not a memoized nil.
+      expect(context.to_lazy_hash[:user].call).to eq(user.username)
+      expect(context.to_lazy_hash[Labkit::Fields::GL_USER_ID].call).to eq(user.id)
+    end
+
     it 'falls back to a projects namespace when a project is passed but no namespace' do
       context = described_class.new(project: project)
 
@@ -152,6 +167,48 @@ RSpec.describe Gitlab::ApplicationContext, feature_category: :shared do
         project: project.full_path,
         root_namespace: project.full_path_components.first
       )
+    end
+
+    it 'includes the root namespace id when a namespace is in the context' do
+      context = described_class.new(namespace: subgroup)
+
+      expect(result(context)[Labkit::Fields::GL_ROOT_NAMESPACE_ID]).to eq(namespace.id)
+    end
+
+    it 'has no root namespace id when only a project is given and its namespace is not loaded' do
+      context = described_class.new(project: Project.find(project.id))
+
+      expect(result(context)[Labkit::Fields::GL_ROOT_NAMESPACE_ID]).to be_nil
+    end
+
+    it 'drops the root namespace id from the emitted context when it has no value' do
+      described_class.with_context(project: Project.find(project.id)) do
+        expect(Labkit::Context.current.to_h)
+          .not_to have_key(Labkit::Context.log_key(Labkit::Fields::GL_ROOT_NAMESPACE_ID))
+      end
+    end
+
+    it 'includes the root namespace id for a group runner, as the path does' do
+      runner = create(:ci_runner, :group, groups: [subgroup])
+      context = described_class.new(runner: runner)
+
+      expect(result(context)).to include(
+        root_namespace: namespace.full_path,
+        Labkit::Fields::GL_ROOT_NAMESPACE_ID => namespace.id
+      )
+    end
+
+    it 'includes the root namespace id from a project whose namespace is already loaded' do
+      context = described_class.new(project: Project.includes(:namespace).find(project.id))
+
+      expect(result(context)[Labkit::Fields::GL_ROOT_NAMESPACE_ID]).to eq(project.namespace.id)
+    end
+
+    it 'does not query for the root namespace id' do
+      context = described_class.new(namespace: Group.find(subgroup.id))
+
+      expect { result(context)[Labkit::Fields::GL_ROOT_NAMESPACE_ID] }
+        .not_to exceed_query_limit(1) # the existing root_namespace path lookup
     end
 
     it 'contains known keys' do
@@ -343,6 +400,20 @@ RSpec.describe Gitlab::ApplicationContext, feature_category: :shared do
         context = described_class.new(project: project)
 
         expect(result(context)).not_to have_key(:duo_workflow_id)
+      end
+    end
+
+    context 'when using the organization source context' do
+      it 'sets the organization_source value' do
+        context = described_class.new(organization_source: 'fallback')
+
+        expect(result(context)).to include(organization_source: 'fallback')
+      end
+
+      it 'does not set the organization_source value when absent' do
+        context = described_class.new(project: project)
+
+        expect(result(context)).not_to have_key(:organization_source)
       end
     end
   end

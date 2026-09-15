@@ -6,19 +6,26 @@ module Mcp
       class ListMergeRequestsTool < Mcp::Tools::Base::GraphqlTool
         include Mcp::Tools::Concerns::ResourceFinder
         include Mcp::Tools::Concerns::UrlParser
+        include Mcp::Tools::Concerns::CursorPagination
 
-        PARENT_PARAMS = %i[url project_id].freeze
+        PARENT_PARAMS = %i[url project_id group_id].freeze
 
         register_version VERSIONS[:v0_1_0], {
-          graphql_operation: load_graphql('merge_requests/list_merge_requests.query.graphql'),
-          operation_name: 'project'
+          graphql_operation: load_graphql('merge_requests/list_merge_requests.query.graphql')
         }
+
+        # The response field depends on whether the parent is a project or group.
+        def operation_name
+          resolved_parent[:type].to_s
+        end
 
         def build_variables
           people = scoped_people
+          parent = resolved_parent
 
           {
-            fullPath: project_full_path,
+            fullPath: parent[:full_path],
+            isProject: parent[:type] == :project,
             authorUsername: people[:author],
             assigneeUsername: people[:assignee],
             reviewerUsername: people[:reviewer],
@@ -26,8 +33,7 @@ module Mcp
             milestoneTitle: params[:milestone],
             labelName: split_labels(params[:labels]),
             search: params[:search],
-            first: params[:first] || 20,
-            after: params[:after]
+            **resolve_pagination_direction
           }.compact
         end
 
@@ -39,18 +45,31 @@ module Mcp
 
         private
 
-        def project_full_path
-          @project_full_path ||= resolve_project.full_path
+        def resolved_parent
+          @resolved_parent ||= resolve_parent
         end
 
-        def resolve_project
+        def resolve_parent
           provided = PARENT_PARAMS.select { |key| params[key].present? }
 
-          raise ArgumentError, 'Provide exactly one of: url or project_id' unless provided.one?
+          raise ArgumentError, 'Provide exactly one of: url, project_id, or group_id' unless provided.one?
 
-          identifier = provided.first == :url ? parse_parent_url(params[:url])[:path] : params[:project_id]
+          type, identifier = parent_type_and_identifier(provided.first)
+          parent = find_parent_by_id_or_path!(type, identifier)
 
-          find_parent_by_id_or_path!(:project, identifier)
+          { type: type, full_path: parent.full_path }
+        end
+
+        def parent_type_and_identifier(provided_param)
+          case provided_param
+          when :url
+            parsed = parse_parent_url(params[:url])
+            [parsed[:type], parsed[:path]]
+          when :project_id
+            [:project, params[:project_id]]
+          when :group_id
+            [:group, params[:group_id]]
+          end
         end
 
         # The GraphQL mergeRequests connection has no `scope` argument, so
@@ -95,7 +114,7 @@ module Mcp
 
         def resource_not_found_error
           ::Mcp::Tools::Base::Response.error(
-            'Project not found: it does not exist or you do not have access to it.'
+            "#{resolved_parent[:type].to_s.capitalize} not found or inaccessible"
           )
         end
       end

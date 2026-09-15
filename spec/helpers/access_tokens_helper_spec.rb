@@ -17,6 +17,12 @@ RSpec.describe AccessTokensHelper, feature_category: :system_access do
     end
   end
 
+  describe '#show_project_access_token_upgrade_card?' do
+    it 'returns false by default' do
+      expect(helper.show_project_access_token_upgrade_card?(build_stubbed(:project))).to be(false)
+    end
+  end
+
   describe '#tokens_app_data' do
     let_it_be(:feed_token) { 'DUKu345VD73Py7zz3z89' }
     let_it_be(:incoming_email_token) { 'az4a2l5f8ssa0zvdfbhidbzlx' }

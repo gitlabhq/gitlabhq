@@ -121,7 +121,7 @@ RSpec.describe RuboCop::Cop::API::ParameterType, :config, feature_category: :api
       expect_offense(<<~RUBY)
         params do
           requires :name, type: :string, desc: 'Name'
-                                ^^^^^^^ Invalid type or types. API params types must be one of Grape supported param types. https://docs.gitlab.com/development/api_styleguide#methods-and-parameters-description.
+                                ^^^^^^^ Invalid type or types. API params types must be one of Grape supported param types. https://docs.gitlab.com/development/api_styleguide/#methods-and-parameters-description.
         end
       RUBY
     end
@@ -130,7 +130,7 @@ RSpec.describe RuboCop::Cop::API::ParameterType, :config, feature_category: :api
       expect_offense(<<~RUBY)
         params do
           requires :name, type: "string", desc: 'Name'
-                                ^^^^^^^^ Invalid type or types. API params types must be one of Grape supported param types. https://docs.gitlab.com/development/api_styleguide#methods-and-parameters-description.
+                                ^^^^^^^^ Invalid type or types. API params types must be one of Grape supported param types. https://docs.gitlab.com/development/api_styleguide/#methods-and-parameters-description.
         end
       RUBY
     end
@@ -139,8 +139,8 @@ RSpec.describe RuboCop::Cop::API::ParameterType, :config, feature_category: :api
       expect_offense(<<~RUBY)
         params do
           requires :id, types: [:string, :integer], desc: 'ID'
-                                         ^^^^^^^^ Invalid type or types. API params types must be one of Grape supported param types. https://docs.gitlab.com/development/api_styleguide#methods-and-parameters-description.
-                                ^^^^^^^ Invalid type or types. API params types must be one of Grape supported param types. https://docs.gitlab.com/development/api_styleguide#methods-and-parameters-description.
+                                         ^^^^^^^^ Invalid type or types. API params types must be one of Grape supported param types. https://docs.gitlab.com/development/api_styleguide/#methods-and-parameters-description.
+                                ^^^^^^^ Invalid type or types. API params types must be one of Grape supported param types. https://docs.gitlab.com/development/api_styleguide/#methods-and-parameters-description.
         end
       RUBY
     end
@@ -149,8 +149,8 @@ RSpec.describe RuboCop::Cop::API::ParameterType, :config, feature_category: :api
       expect_offense(<<~RUBY)
         params do
           requires :id, types: ["string", "integer"], desc: 'ID'
-                                          ^^^^^^^^^ Invalid type or types. API params types must be one of Grape supported param types. https://docs.gitlab.com/development/api_styleguide#methods-and-parameters-description.
-                                ^^^^^^^^ Invalid type or types. API params types must be one of Grape supported param types. https://docs.gitlab.com/development/api_styleguide#methods-and-parameters-description.
+                                          ^^^^^^^^^ Invalid type or types. API params types must be one of Grape supported param types. https://docs.gitlab.com/development/api_styleguide/#methods-and-parameters-description.
+                                ^^^^^^^^ Invalid type or types. API params types must be one of Grape supported param types. https://docs.gitlab.com/development/api_styleguide/#methods-and-parameters-description.
         end
       RUBY
     end
@@ -159,7 +159,7 @@ RSpec.describe RuboCop::Cop::API::ParameterType, :config, feature_category: :api
       expect_offense(<<~RUBY)
         params do
           requires :items, type: Array[:string], desc: 'Items'
-                                       ^^^^^^^ Invalid type or types. API params types must be one of Grape supported param types. https://docs.gitlab.com/development/api_styleguide#methods-and-parameters-description.
+                                       ^^^^^^^ Invalid type or types. API params types must be one of Grape supported param types. https://docs.gitlab.com/development/api_styleguide/#methods-and-parameters-description.
         end
       RUBY
     end
@@ -168,7 +168,7 @@ RSpec.describe RuboCop::Cop::API::ParameterType, :config, feature_category: :api
       expect_offense(<<~RUBY)
         params do
           requires :value, type: UndefinedType, desc: 'Value'
-                                 ^^^^^^^^^^^^^ Invalid type or types. API params types must be one of Grape supported param types. https://docs.gitlab.com/development/api_styleguide#methods-and-parameters-description.
+                                 ^^^^^^^^^^^^^ Invalid type or types. API params types must be one of Grape supported param types. https://docs.gitlab.com/development/api_styleguide/#methods-and-parameters-description.
         end
       RUBY
     end
@@ -177,7 +177,7 @@ RSpec.describe RuboCop::Cop::API::ParameterType, :config, feature_category: :api
       expect_offense(<<~RUBY)
         params do
           requires :items, type: Array[undefined_method], desc: 'Items'
-                                       ^^^^^^^^^^^^^^^^ Invalid type or types. API params types must be one of Grape supported param types. https://docs.gitlab.com/development/api_styleguide#methods-and-parameters-description.
+                                       ^^^^^^^^^^^^^^^^ Invalid type or types. API params types must be one of Grape supported param types. https://docs.gitlab.com/development/api_styleguide/#methods-and-parameters-description.
         end
       RUBY
     end

@@ -218,6 +218,20 @@ RSpec.describe TaskListToggleService, feature_category: :markdown do
     expect(toggler.execute).to be_falsey
   end
 
+  it 'returns falsey if a concurrent edit removed the targeted line' do
+    original_markdown = "Intro\n\n- [ ] Task to toggle"
+    current_markdown = 'Intro'
+    toggler = described_class.new(
+      current_markdown,
+      parse_markdown(current_markdown),
+      toggle_as_checked: true,
+      line_source: original_markdown.lines[2].chomp,
+      line_sourcepos: '3:4-3:4'
+    )
+
+    expect(toggler.execute).to be_falsey
+  end
+
   it 'returns falsey if there was nothing to change' do
     toggler = described_class.new(
       markdown, markdown_html,

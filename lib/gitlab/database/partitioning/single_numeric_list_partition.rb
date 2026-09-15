@@ -57,10 +57,10 @@ module Gitlab
           SQL
         end
 
-        def to_detach_sql
+        def to_detach_sql(concurrently: false)
           <<~SQL
             ALTER TABLE #{quote_table_name(table)}
-            DETACH PARTITION #{fully_qualified_partition}
+            DETACH PARTITION #{fully_qualified_partition}#{' CONCURRENTLY' if concurrently}
           SQL
         end
 

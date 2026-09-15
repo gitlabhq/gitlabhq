@@ -30,7 +30,11 @@ module Users
     end
 
     def approved?
-      merge_request.approvals.any? { |app| app.user_id == user.id }
+      approval.present?
+    end
+
+    def approved_at
+      approval&.created_at
     end
 
     def updated_at
@@ -38,6 +42,10 @@ module Users
     end
 
     private
+
+    def approval
+      @approval ||= merge_request.approvals.find { |app| app.user_id == user.id }
+    end
 
     def reviewer
       @reviewer ||= merge_request.merge_request_reviewers.find { |r| r.user_id == user.id }

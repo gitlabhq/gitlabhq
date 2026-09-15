@@ -74,7 +74,7 @@ describe('content_editor/components/toolbar_table_button', () => {
       });
 
       it('inserts a table with $tableSize rows and cols', () => {
-        expect(wrapper.emitted()['insert-table']).toEqual([
+        expect(wrapper.emitted('insert-table')).toEqual([
           [
             {
               rows: row,

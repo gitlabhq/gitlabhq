@@ -91,6 +91,7 @@ RSpec.describe Keeps::Helpers::PostgresAi, feature_category: :tooling do
           END AS classification
         FROM postgres_table_sizes
         WHERE table_name = $1::text
+          AND schema_name = 'public'
       SQL
     end
 
@@ -104,28 +105,40 @@ RSpec.describe Keeps::Helpers::PostgresAi, feature_category: :tooling do
     end
   end
 
-  describe '#table_has_data?' do
+  describe '#table_write_locked?' do
     let(:table_name) { "test_table" }
-    let(:table_name_quoted) { "\"table_name\"" }
-    let(:query) { "SELECT EXISTS (SELECT 1 FROM #{table_name_quoted} LIMIT 1)" }
+    let(:query) do
+      <<~SQL
+        SELECT EXISTS (
+          SELECT 1
+          FROM pg_trigger
+          INNER JOIN pg_class ON pg_class.oid = pg_trigger.tgrelid
+          INNER JOIN pg_namespace ON pg_namespace.oid = pg_class.relnamespace
+          INNER JOIN pg_proc ON pg_proc.oid = pg_trigger.tgfoid
+          WHERE pg_class.relname = $1::text
+            AND pg_namespace.nspname = 'public'
+            AND pg_proc.proname = 'gitlab_schema_prevent_write'
+        )
+      SQL
+    end
 
-    let(:query_response) { [{ 'exists' => 't' }] }
+    subject(:result) { described_class.new.table_write_locked?(table_name) }
 
-    subject(:result) { described_class.new.table_has_data?(table_name) }
-
-    context 'when the table contains data from Postgres AI' do
-      it 'return true', :aggregate_failures do
-        expect(pg_client).to receive(:exec_params).with(query).and_return(query_response)
-        expect(pg_client).to receive(:quote_ident).with(table_name).and_return(table_name_quoted)
+    context 'when the table has a lock-writes trigger' do
+      it 'returns true' do
+        expect(pg_client).to receive(:exec_params)
+          .with(query, [table_name])
+          .and_return([{ 'exists' => 't' }])
 
         expect(result).to be(true)
       end
     end
 
-    context 'when the table does not exist' do
-      it 'returns false', :aggregate_failures do
-        expect(pg_client).to receive(:exec_params).with(query).and_raise(PG::UndefinedTable)
-        expect(pg_client).to receive(:quote_ident).with(table_name).and_return(table_name_quoted)
+    context 'when the table has no lock-writes trigger' do
+      it 'returns false' do
+        expect(pg_client).to receive(:exec_params)
+          .with(query, [table_name])
+          .and_return([{ 'exists' => 'f' }])
 
         expect(result).to be(false)
       end

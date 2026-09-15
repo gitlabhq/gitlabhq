@@ -5,7 +5,6 @@
 - issue_type = local_assigns.fetch(:issue_type, nil)
 - signed_in = !!issuable_sidebar.dig(:current_user, :id)
 - can_edit_issuable = issuable_sidebar.dig(:current_user, :can_edit)
-- add_page_startup_api_call "#{issuable_sidebar[:issuable_json_path]}?serializer=sidebar_extras"
 - reviewers = local_assigns.fetch(:reviewers, nil)
 - in_group_context_with_iterations = @project.group.present? && issuable_sidebar[:supports_iterations]
 - is_merge_request = issuable_type === 'merge_request'
@@ -83,5 +82,4 @@
         .block
           .js-sidebar-move-issue-block{ data: { project_full_path: issuable_sidebar[:project_full_path], issue_iid: issuable_sidebar[:iid], issue_type: issue_type } }
 
-    -# haml-lint:disable InlineJavaScript
-    %script.js-sidebar-options{ type: "application/json" }= issuable_sidebar_options(issuable_sidebar, @project).to_json.html_safe
+    = render 'shared/issuable/sidebar_options', issuable_sidebar: issuable_sidebar

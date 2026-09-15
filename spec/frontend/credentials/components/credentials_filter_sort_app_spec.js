@@ -36,14 +36,14 @@ describe('CredentialsFilterSortApp', () => {
 
   it('reloads the page with correct parameters when sorting is changed', () => {
     createComponent();
-    findSorting().vm.$emit('sortByChange', 'name');
+    findSorting().vm.$emit('sort-by-change', 'name');
 
     expect(goTo).toHaveBeenCalledWith('name', true, []);
   });
 
   it('reloads the page with correct parameters when sorting direction is changed', () => {
     createComponent();
-    findSorting().vm.$emit('sortDirectionChange', false);
+    findSorting().vm.$emit('sort-direction-change', false);
 
     expect(goTo).toHaveBeenCalledWith('expires', false, []);
   });

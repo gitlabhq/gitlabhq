@@ -39,7 +39,9 @@ RSpec.describe Gitlab::PrinciplesDistiller::Sync::Diff do
   end
 
   describe '.reduce_noise' do
-    subject(:result) { described_class.reduce_noise(old_content, new_content) }
+    subject(:result) { described_class.reduce_noise(old_content, new_content, source_text: source_text) }
+
+    let(:source_text) { nil }
 
     context 'when new line is a close rephrase' do
       let(:old_content) { "### Section A\n\n- Query changes validated for performance at GitLab.com scale\n" }
@@ -75,6 +77,87 @@ RSpec.describe Gitlab::PrinciplesDistiller::Sync::Diff do
       it 'still collapses to the old wording', :aggregate_failures do
         expect(result).to include('- Query changes validated with `Gitlab::Json.parse` at scale')
         expect(result).not_to include('must be')
+      end
+    end
+
+    context 'with source_text grounding' do
+      let(:old_line) do
+        '- When deprecating a feature, add `(deprecated)` after the title, add an alert stating when it was ' \
+          'deprecated and when it will be removed, and wrap the content in ' \
+          "`<!--- start_remove The following content will be removed on remove_date: 'YYYY-MM-DD' -->` and " \
+          '`<!--- end_remove -->` HTML comments (set `remove_date` to three months after the planned removal release)'
+      end
+
+      let(:old_content) { "### Deprecations\n\n#{old_line}\n" }
+
+      let(:source_text) do
+        "Add the following HTML comments above and below the content.\n" \
+          "<!--- start_remove The following content will be removed on remove_date: 'YYYY-MM-DD' -->\n" \
+          "<!--- end_remove -->\n"
+      end
+
+      context 'when a close-match rewrite invents code spans absent from the sources' do
+        let(:new_content) do
+          "### Deprecations\n\n#{old_line
+            .sub("`<!--- start_remove The following content will be removed on remove_date: 'YYYY-MM-DD' -->`",
+              '`<!-- deprecation_notice -->`')
+            .sub('`<!--- end_remove -->`', '`<!-- end_deprecation_notice -->`')}\n"
+        end
+
+        it 'reverts to the prior wording', :aggregate_failures do
+          expect(result).to include('`<!--- start_remove')
+          expect(result).not_to include('deprecation_notice')
+        end
+      end
+
+      context 'when a close-match rewrite truncates a code span (workflow 6662632)' do
+        let(:new_content) do
+          "### Deprecations\n\n#{old_line
+            .sub("`<!--- start_remove The following content will be removed on remove_date: 'YYYY-MM-DD' -->`",
+              '`<!--`')
+            .sub('`<!--- end_remove -->`', '`-->`')}\n"
+        end
+
+        it 'reverts to the prior wording' do
+          expect(result).to include('`<!--- start_remove')
+        end
+      end
+
+      context 'when the introduced code spans exist verbatim in the sources' do
+        let(:old_content) { "### JSON\n\n- Use `Gitlab::Json.safe_parse` for untrusted input\n" }
+        let(:new_content) { "### JSON\n\n- Use `Gitlab::Json::SafeParser.parse` for untrusted input\n" }
+        let(:source_text) { "Call `Gitlab::Json::SafeParser.parse` on all untrusted input.\n" }
+
+        it 'keeps the new wording so the genuine SSOT change survives' do
+          expect(result).to include('`Gitlab::Json::SafeParser.parse`')
+        end
+      end
+
+      context 'when the new line only drops code spans without introducing any' do
+        let(:new_content) do
+          "### Deprecations\n\n#{old_line
+            .sub("`<!--- start_remove The following content will be removed on remove_date: 'YYYY-MM-DD' -->` and ",
+              '')}\n"
+        end
+
+        it 'keeps the new wording (nothing introduced to verify)' do
+          expect(result).not_to include('`<!--- start_remove')
+        end
+      end
+
+      context 'when source_text is nil' do
+        let(:source_text) { nil }
+
+        let(:new_content) do
+          "### Deprecations\n\n#{old_line
+            .sub("`<!--- start_remove The following content will be removed on remove_date: 'YYYY-MM-DD' -->`",
+              '`<!-- deprecation_notice -->`')
+            .sub('`<!--- end_remove -->`', '`<!-- end_deprecation_notice -->`')}\n"
+        end
+
+        it 'preserves the pre-guard behavior of keeping the new line' do
+          expect(result).to include('deprecation_notice')
+        end
       end
     end
 

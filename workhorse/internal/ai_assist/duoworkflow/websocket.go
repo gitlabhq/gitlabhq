@@ -36,6 +36,12 @@ const wsPingInterval = 20 * time.Second
 // broken.
 const wsPongTimeout = wsPingInterval + 10*time.Second
 
+// Start small and let MarshalAppend grow the buffer to the connection's actual
+// working set. Reserving the 4MB message ceiling up front costs that much live
+// heap per connection; shrinking it back after each write costs a full
+// reallocation per action, and gprd actions are routinely 1-2MB.
+const initialMarshalBufSize = 4 << 10
+
 var normalClosureErrCodes = []int{websocket.CloseGoingAway, websocket.CloseNormalClosure}
 
 var marshaler = protojson.MarshalOptions{
@@ -144,9 +150,12 @@ func intersectServerCapabilities(fromServer []string) []string {
 }
 
 // wsManager owns the WebSocket connection and all state needed to read from and
-// write to it. It mirrors the role of streamManager for the gRPC side.
+// write to it. It mirrors the role of streamManager for the gRPC side, and is
+// the WebSocket implementation of clientTransport.
 type wsManager struct {
-	conn   websocketConn
+	conn websocketConn
+	// closed records that a close frame was sent or the connection is known dead, so
+	// no further frames should be written. Close still releases the transport.
 	closed atomic.Bool
 	buf    []byte
 }
@@ -154,25 +163,33 @@ type wsManager struct {
 func newWsManager(conn websocketConn) *wsManager {
 	return &wsManager{
 		conn: conn,
-		buf:  make([]byte, ActionResponseBodyLimit),
+		buf:  make([]byte, 0, initialMarshalBufSize),
 	}
 }
 
-// SetPongHandler registers the pong callback on the underlying connection.
-// The callback resets the read deadline so a missing pong eventually causes
-// ReadClientEvent to time out and terminate the read loop.
-func (w *wsManager) SetPongHandler(h func(string) error) {
-	w.conn.SetPongHandler(h)
+// Start registers the pong callback and arms the initial read deadline. The
+// callback resets the deadline on every pong, so a missing pong eventually
+// causes ReadClientEvent to time out and terminate the read loop.
+//
+// In gorilla/websocket pong frames are dispatched inside ReadMessage, so the
+// handler has to be in place before the first read.
+func (w *wsManager) Start() error {
+	w.conn.SetPongHandler(func(string) error {
+		return w.conn.SetReadDeadline(time.Now().Add(wsPongTimeout))
+	})
+
+	return w.conn.SetReadDeadline(time.Now().Add(wsPongTimeout))
 }
 
-// SetReadDeadline sets the read deadline on the underlying connection.
-func (w *wsManager) SetReadDeadline(t time.Time) error {
-	return w.conn.SetReadDeadline(t)
+// KeepaliveInterval returns how often Keepalive should send a ping frame.
+func (w *wsManager) KeepaliveInterval() time.Duration {
+	return wsPingInterval
 }
 
-// Ping sends a single WebSocket ping control frame. It marks the connection as
-// closed if the write fails so that subsequent WriteAction calls are skipped.
-func (w *wsManager) Ping() error {
+// Keepalive sends a single WebSocket ping control frame. It marks the
+// connection as closed if the write fails so that subsequent WriteAction calls
+// are skipped.
+func (w *wsManager) Keepalive() error {
 	if err := w.conn.WriteControl(websocket.PingMessage, nil, time.Now().Add(wsWriteDeadline)); err != nil {
 		w.closed.Store(true)
 		return err
@@ -250,11 +267,18 @@ func (w *wsManager) ReadError(err error) (reason string, ok bool) {
 	return "", false
 }
 
-// SendGoingAway sends a CloseGoingAway (1001) frame to signal the client to
-// reconnect, and marks the connection as closed on success.
-func (w *wsManager) SendGoingAway() error {
+// Close reasons carried in the CloseGoingAway frame. The client reconnects on the
+// code alone; the text only tells client-side logs which side went away.
+const (
+	closeReasonWorkhorseShutdown = "server shutdown"
+	closeReasonDWSUnavailable    = "duo workflow service unavailable"
+)
+
+// SendGoingAway sends a CloseGoingAway (1001) frame with the given reason to
+// signal the client to reconnect, and marks the connection as closed on success.
+func (w *wsManager) SendGoingAway(reason string) error {
 	deadline := time.Now().Add(wsCloseTimeout)
-	closeMsg := websocket.FormatCloseMessage(websocket.CloseGoingAway, "server shutdown")
+	closeMsg := websocket.FormatCloseMessage(websocket.CloseGoingAway, truncateCloseReason(reason))
 	if err := w.conn.WriteControl(websocket.CloseMessage, closeMsg, deadline); err != nil {
 		return err
 	}
@@ -312,10 +336,15 @@ func (w *wsManager) SendInvalidRequest(reason string) error {
 	return nil
 }
 
-// Close sends CloseNormalClosure (1000) and closes the underlying connection.
-// It is a no-op if the connection is already marked closed.
+// Close closes the underlying connection, sending CloseNormalClosure (1000) first
+// unless a close frame was already sent or the connection is already known to be
+// dead. gorilla/websocket never closes the net.Conn on its own, so the transport
+// must be closed here in every case or the descriptor lives until the finalizer.
 func (w *wsManager) Close() error {
 	if w.closed.Load() {
+		if err := w.conn.Close(); err != nil {
+			return fmt.Errorf("failed to close connection: %w", err)
+		}
 		return nil
 	}
 

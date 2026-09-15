@@ -69,7 +69,6 @@ module API
           track_package_event(
             'pull_package',
             :rpm,
-            category: self.class.name,
             project: authorized_user_project,
             namespace: authorized_user_project.namespace
           )
@@ -101,7 +100,6 @@ module API
           track_package_event(
             'push_package',
             :rpm,
-            category: self.class.name,
             project: authorized_user_project,
             namespace: authorized_user_project.namespace
           )

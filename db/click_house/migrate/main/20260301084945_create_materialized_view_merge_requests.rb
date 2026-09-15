@@ -3,7 +3,7 @@
 class CreateMaterializedViewMergeRequests < ClickHouse::Migration
   def up
     execute <<~SQL
-      CREATE MATERIALIZED VIEW merge_requests_mv
+      CREATE MATERIALIZED VIEW IF NOT EXISTS merge_requests_mv
       TO merge_requests
       AS
       WITH

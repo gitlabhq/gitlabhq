@@ -98,7 +98,7 @@ export default {
 <template>
   <div
     v-gl-resize-observer="handleResize"
-    class="disclosure-hierarchy gl-relative gl-z-2 gl-flex gl-min-w-0 gl-grow-2"
+    class="disclosure-hierarchy gl-flex gl-min-w-0 gl-grow-2"
     data-testid="ancestors-breadcrumb"
   >
     <ul class="gl-relative gl-m-0 gl-inline-flex gl-max-w-full gl-list-none gl-flex-row gl-p-0">

@@ -42,7 +42,9 @@ class ProjectWiki < Wiki
     return unless ::Gitlab::Database.read_write?
     return if container.wiki_repository
 
-    # This is the ActiveRecord auto-generated method for a Project's has_one :wiki_repository
-    container.create_wiki_repository!
+    ::Gitlab::Database::QueryAnalyzers::PreventWritesOnGet.allow_write_on_get(
+      url: 'https://gitlab.com/gitlab-org/gitlab/-/issues/608670') do
+      container.create_wiki_repository!
+    end
   end
 end

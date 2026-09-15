@@ -23,12 +23,21 @@ module Mutations
       def resolve(args)
         authorize!(:global)
 
+        return error_feature_flag unless ::Organizations::Release.enabled?(:org_creation, current_user)
+
         result = ::Organizations::CreateService.new(
           current_user: current_user,
           params: args
         ).execute
 
         { organization: result.payload[:organization], errors: result.errors }
+      end
+
+      private
+
+      def error_feature_flag
+        # Don't translate feature flag error because it's temporary.
+        { organization: nil, errors: ['Organization creation is not enabled for this user.'] }
       end
     end
   end

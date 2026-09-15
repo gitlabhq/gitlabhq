@@ -25,8 +25,6 @@ export const FILTER_TYPE = {
   any: 'any',
 };
 
-export const MAX_HISTORY_SIZE = 5;
-
 export const FILTERED_SEARCH = {
   MERGE_REQUESTS: 'merge_requests',
   ISSUES: 'issues',

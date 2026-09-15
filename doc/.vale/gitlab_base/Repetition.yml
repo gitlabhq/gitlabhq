@@ -9,3 +9,7 @@ level: error
 alpha: true
 tokens:
   - '[^\s]+'
+# To avoid some false positive where UI text has 'Select' or 'Enable' in it.
+exceptions:
+  - Select Select
+  - Enable Enable

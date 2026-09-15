@@ -40,6 +40,17 @@ module Types
       description: 'Details about which files were changed in the merge request.' do
       argument :path, GraphQL::Types::String, required: false, description: 'Specific file path.'
     end
+    field :diffs, null: true, calls_gitaly: true,
+      resolver: Resolvers::MergeRequests::DiffsResolver,
+      connection_extension: Gitlab::Graphql::Extensions::ForwardOnlyExternallyPaginatedArrayExtension,
+      experiment: { milestone: '19.4' },
+      description: 'Diffs of the merge request, including per-file patch text. Files whose content is ' \
+        'omitted because they exceed size limits are reported with the `collapsed` or `too_large` flags. ' \
+        'When a page exceeds the diff size limits, later files are omitted entirely and the connection ' \
+        '`overflow` field is set. Supports forward-only pagination. This field can only be resolved 10 ' \
+        'times in any single request.' do
+      extension ::Gitlab::Graphql::Limit::FieldCallCount, limit: 10
+    end
     field :discussions_with_activity, ::Types::Notes::DiscussionType.connection_type,
       null: false,
       skip_type_authorization: [:read_note, :read_emoji],
@@ -228,6 +239,26 @@ module Types
       description: 'Indicates if auto merge is enabled for the merge request.'
     field :commit_count, GraphQL::Types::Int, null: true, method: :commits_count,
       description: 'Number of commits in the merge request.'
+    field :conflict_files,
+      [Types::MergeRequests::ConflictType],
+      null: true,
+      calls_gitaly: true,
+      resolver: Resolvers::MergeRequests::ConflictsResolver,
+      experiment: { milestone: '19.4' },
+      description: 'Files with conflicts that prevent the merge request from being merged, ' \
+        'including raw Git conflict markers. Null unless the merge request cannot be merged ' \
+        'and the current user can push to the source branch. This field can only be resolved ' \
+        'once per request.' do
+      extension ::Gitlab::Graphql::Limit::FieldCallCount, limit: 1
+    end
+    field :conflict_status,
+      Types::MergeRequests::ConflictStatusEnum,
+      null: true,
+      calls_gitaly: true,
+      resolver: Resolvers::MergeRequests::ConflictStatusResolver,
+      experiment: { milestone: '19.4' },
+      description: 'Why conflict files are or are not available. Use alongside conflictFiles ' \
+        'to distinguish permission errors, unchecked mergeability, and missing branches.'
     field :conflicts, GraphQL::Types::Boolean, null: false, method: :cannot_be_merged?,
       description: 'Indicates if the merge request has conflicts.'
     field :milestone, Types::MilestoneType, null: true,

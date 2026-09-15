@@ -95,6 +95,20 @@ RSpec.describe API::Internal::Ci::JobRouter, feature_category: :continuous_integ
       end
     end
 
+    context 'when the job and the runner are tagged' do
+      let_it_be(:runner) { create(:ci_runner, :instance, tag_list: %w[docker linux gpu]) }
+
+      let!(:job) { create(:ci_build, :pending, :queued, pipeline: pipeline, tag_list: %w[docker linux]) }
+
+      it 'exposes both tag lists for admission control', :aggregate_failures do
+        perform_request
+
+        expect(response).to have_gitlab_http_status(:created)
+        expect(json_response.dig('job_info', 'tags')).to match_array(%w[docker linux])
+        expect(json_response.dig('runner_info', 'tags')).to match_array(%w[docker linux gpu])
+      end
+    end
+
     context 'when no job is available' do
       it 'returns no content with a fresh queue update header', :aggregate_failures do
         perform_request

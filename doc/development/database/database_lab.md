@@ -37,9 +37,11 @@ To access the DLE's services, you can:
 - Perform query testing in the Postgres.ai web console.
   Employees access both services with their GitLab Google account. Query testing
   provides `EXPLAIN` (analyze, buffers) plans for queries executed there.
+- Perform query testing from your terminal with the
+  [Postgres.ai CLI](#use-the-postgresai-cli). You do not need an access request.
 - Migration testing by triggering a job as a part of a merge request.
 - Direct `psql` access to DLE instead of a production replica. Available to authorized users only.
-  To request `psql` access, file an [access request](https://handbook.gitlab.com/handbook/it/end-user-services/onboarding-access-requests/access-requests/#individual-or-bulk-access-request).
+  To request `psql` access, file an [access request](https://gitlab.com/gitlab-com/team-member-epics/access-requests/-/work_items/new?description_template=Database_Lab_Access_Request).
 
 For more assistance, use the `#database` Slack channel.
 
@@ -55,6 +57,65 @@ You can access Database Lab's query analysis features either:
 
 - In [the Postgres.ai web console](https://console.postgres.ai/gitlab/joe-instances).
   Shows only the commands you run.
+- From your terminal, with the [Postgres.ai CLI](#use-the-postgresai-cli).
+
+#### Use the Postgres.ai CLI
+
+With the [Postgres.ai CLI](https://postgres.ai/docs/reference-guides/postgresai-cli-reference),
+you can run Joe commands from your terminal without an access request or SSH configuration.
+Use the CLI when you generate many query plans at once,
+or when AI agents and scripts generate the plans for you.
+
+To set up the CLI:
+
+1. Install the [`postgresai` npm package](https://www.npmjs.com/package/postgresai):
+
+   ```shell
+   npm install -g postgresai
+   ```
+
+   To run the CLI without a global install, replace `postgresai` with `npx postgresai@latest`
+   in the following commands.
+
+1. Sign in to your Postgres.ai account:
+
+   ```shell
+   postgresai login
+   ```
+
+   This command opens a browser window.
+   Sign in with Google and select the GitLab organization.
+
+1. Optional. List the projects you can run Joe commands against, then set a default:
+
+   ```shell
+   postgresai projects
+   postgresai set-default-project gitlab-production-main
+   ```
+
+To run a Joe command, pass it to `postgresai joe` together with the project name:
+
+```shell
+postgresai joe explain "SELECT * FROM application_settings" --project gitlab-production-main
+```
+
+The CLI waits up to 25 seconds (the default budget) for the command to complete.
+If the command takes longer, the CLI prints a command ID instead.
+To fetch the result later, use the ID:
+
+```shell
+postgresai joe result <command-id>
+```
+
+If you set a default project, you can omit the `--project` option.
+
+The `explain`, `exec`, and `reset` commands described in the following sections
+work the same way in the CLI as in the web console.
+For `\d` meta-commands, use `postgresai joe describe <object_name>` instead.
+Add the `--json` flag to get machine-readable output for scripts and AI agents.
+
+The npm package also installs the shorter `pgai` command, which is unrelated to the
+[`pgai` Ruby gem](#simplified-access-through-pgai-ruby-gem).
 
 #### Generate query plans
 
@@ -70,7 +131,7 @@ does the following:
 
 #### Making schema changes
 
-Sometimes when testing queries, a contributor may realize that the query needs an index
+Sometimes when testing queries, a contributor might realize that the query needs an index
 or other schema change to make added queries more performant. To test the query, run the `exec` command.
 For example, running this command:
 
@@ -97,7 +158,7 @@ Caveats:
   [`ci_builds`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/db/docs/ci_builds.yml#L14),
   use `gitlab-production-ci`.
 - Database Lab typically has a small delay of a few hours. If more up-to-date information
-  is required, you can instead request access to a replica [via Teleport](https://gitlab.com/gitlab-com/runbooks/-/blob/master/docs/teleport/Connect_to_Database_Console_via_Teleport.md)
+  is required, you can instead request access to a replica [via Teleport](https://gitlab.com/gitlab-com/runbooks/-/blob/master/docs/teleport/Connect_to_Database_Console_via_Teleport.md).
 
 For example: `\d index_design_management_designs_on_project_id` produces:
 
@@ -163,7 +224,7 @@ Host *.gitlab-db-lab.internal
 
 #### Manual access through the Postgres.ai instances page
 
-Team members with [`psql` access](#access-database-lab-engine), can gain direct access
+Team members with [`psql` access](#access-database-lab-engine) can gain direct access
 to a clone via `psql`. Access to `psql` enables you to see data, not just metadata.
 
 To connect to a clone using `psql`:
@@ -175,7 +236,7 @@ To connect to a clone using `psql`:
       Clones are removed after 12 hours.
 1. In the **Clone details** page of the Postgres.ai web interface, copy and run
    the command to start SSH port forwarding for the clone.
-    1. You may notice that it's suggested to run the command with the `-N` flag, meaning no shell will be started,
+    1. You might notice that it's suggested to run the command with the `-N` flag, meaning no shell will be started,
        so you should not expect any output if it runs successfully.
     1. Optionally, you can add `LogLevel DEBUG3` to your `~/.ssh/config`
        to output detailed debugging information.
@@ -184,7 +245,7 @@ To connect to a clone using `psql`:
 1. In the **Clone details** page of the Postgres.ai web interface, copy and run the `psql` connection string.
    Use the password provided at setup and set the `dbname` to `gitlabhq_dblab` (or check what databases are available by using `psql -l` with the same query string but `dbname=postgres`).
 
-After you connect, use clone like you would any `psql` console in production, but with
+After you connect, use the clone like you would any `psql` console in production, but with
 the added benefit and safety of an isolated writeable environment.
 
 #### Simplified access through `pgai` Ruby gem

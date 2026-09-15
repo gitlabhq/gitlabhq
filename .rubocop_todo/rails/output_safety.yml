@@ -2,7 +2,6 @@
 Rails/OutputSafety:
   Exclude:
     - 'app/controllers/concerns/confirm_email_warning.rb'
-    - 'app/controllers/groups_controller.rb'
     - 'app/controllers/projects/protected_refs_controller.rb'
     - 'app/graphql/types/ci/job_trace_type.rb'
     - 'app/helpers/admin/broadcast_messages_helper.rb'

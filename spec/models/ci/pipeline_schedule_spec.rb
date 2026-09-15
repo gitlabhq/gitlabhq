@@ -343,7 +343,7 @@ RSpec.describe Ci::PipelineSchedule, feature_category: :continuous_integration d
         subject.ref = 'refs/tags/v1.0'
       end
 
-      it { expect(subject.for_tag?).to eq(true) }
+      it { expect(subject.for_tag?).to be(true) }
     end
 
     context 'when the target is a branch' do
@@ -351,7 +351,7 @@ RSpec.describe Ci::PipelineSchedule, feature_category: :continuous_integration d
         subject.ref = 'refs/heads/main'
       end
 
-      it { expect(subject.for_tag?).to eq(false) }
+      it { expect(subject.for_tag?).to be(false) }
     end
 
     context 'when there is no ref' do
@@ -359,7 +359,7 @@ RSpec.describe Ci::PipelineSchedule, feature_category: :continuous_integration d
         subject.ref = nil
       end
 
-      it { expect(subject.for_tag?).to eq(false) }
+      it { expect(subject.for_tag?).to be(false) }
     end
   end
 
@@ -393,7 +393,7 @@ RSpec.describe Ci::PipelineSchedule, feature_category: :continuous_integration d
         subject.ref = nil
       end
 
-      it { expect(subject.ref_for_display).to eq(nil) }
+      it { expect(subject.ref_for_display).to be_nil }
     end
   end
 

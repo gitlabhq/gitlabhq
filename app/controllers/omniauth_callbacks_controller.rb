@@ -392,18 +392,12 @@ class OmniauthCallbacksController < Devise::OmniauthCallbacksController
   def fail_login(user)
     log_failed_login(user.username, oauth['provider'])
 
-    return prompt_login_to_link_identity if prompt_login_to_link_identity?
+    return prompt_login_to_link_identity if existing_user_for_email_link
 
     @provider = Gitlab::Auth::OAuth::Provider.label_for(action_name)
     @error = user.errors.full_messages.to_sentence
 
     render 'errors/omniauth_error', layout: "oauth_error", status: :unprocessable_entity
-  end
-
-  def prompt_login_to_link_identity?
-    return false unless existing_user_for_email_link
-
-    Feature.enabled?(:link_omniauth_to_existing_user_on_login, existing_user_for_email_link)
   end
 
   def existing_user_for_email_link

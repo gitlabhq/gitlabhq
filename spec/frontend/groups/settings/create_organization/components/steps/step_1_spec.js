@@ -56,11 +56,41 @@ describe('ReconciliationStep1', () => {
       expect(findOrganizationCards().at(0).props('organization')).toEqual(mockNewOrganization);
     });
 
-    it('renders group stats for each group in the organization', () => {
-      const groups = mockNewOrganization.groups.nodes;
+    it('renders group stats for the organization group', () => {
+      const [group] = mockNewOrganization.groups.nodes;
 
-      expect(findAllGroupStats()).toHaveLength(groups.length);
-      expect(findAllGroupStats().at(0).props('group')).toEqual(groups[0]);
+      expect(findAllGroupStats()).toHaveLength(1);
+      expect(findAllGroupStats().at(0).props('group')).toEqual(group);
+    });
+  });
+
+  describe('when organization has multiple groups', () => {
+    it('renders group stats for the first group only', () => {
+      const [group] = mockNewOrganization.groups.nodes;
+
+      createComponent({
+        props: {
+          organization: {
+            ...mockNewOrganization,
+            groups: { nodes: [group, { ...group, id: 'gid://gitlab/Group/2' }] },
+          },
+        },
+      });
+
+      expect(findAllGroupStats()).toHaveLength(1);
+      expect(findAllGroupStats().at(0).props('group')).toEqual(group);
+    });
+  });
+
+  describe('when organization has no groups', () => {
+    it('does not render group stats', () => {
+      createComponent({
+        props: {
+          organization: { ...mockNewOrganization, groups: { nodes: [] } },
+        },
+      });
+
+      expect(findAllGroupStats()).toHaveLength(0);
     });
   });
 });

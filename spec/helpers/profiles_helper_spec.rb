@@ -117,7 +117,7 @@ RSpec.describe ProfilesHelper, feature_category: :user_profile do
     it 'returns false' do
       allow(helper).to receive(:current_user).and_return(nil)
 
-      expect(helper.prevent_delete_account?).to eq false
+      expect(helper.prevent_delete_account?).to be false
     end
   end
 

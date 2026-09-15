@@ -2110,23 +2110,6 @@ RSpec.describe Group, feature_category: :groups_and_projects do
     end
   end
 
-  context 'when analyzing blocked owners' do
-    let_it_be(:blocked_user) { create(:user, :blocked) }
-
-    describe '#blocked_owners' do
-      let_it_be(:user) { create(:user) }
-
-      before do
-        group.add_member(blocked_user, GroupMember::OWNER)
-        group.add_member(user, GroupMember::OWNER)
-      end
-
-      it 'has only blocked owners' do
-        expect(group.blocked_owners.map(&:user)).to match([blocked_user])
-      end
-    end
-  end
-
   describe '#service_accounts' do
     let!(:service_account) { create(:service_account, provisioned_by_group: group) }
     let!(:service_account_another_group) { create(:service_account, provisioned_by_group: create(:group)) }
@@ -4389,6 +4372,20 @@ RSpec.describe Group, feature_category: :groups_and_projects do
     it_behaves_like 'checks self and root ancestor feature flag' do
       let(:feature_flag) { :glql_load_on_click }
       let(:feature_flag_method) { :glql_load_on_click_feature_flag_enabled? }
+    end
+  end
+
+  describe '#vulnerability_malware_detection_feature_flag_enabled?' do
+    it_behaves_like 'checks self and root ancestor feature flag' do
+      let(:feature_flag) { :vulnerability_malware_detection }
+      let(:feature_flag_method) { :vulnerability_malware_detection_feature_flag_enabled? }
+    end
+  end
+
+  describe '#dependency_malware_detection_feature_flag_enabled?' do
+    it_behaves_like 'checks self and root ancestor feature flag' do
+      let(:feature_flag) { :dependency_malware_detection }
+      let(:feature_flag_method) { :dependency_malware_detection_feature_flag_enabled? }
     end
   end
 

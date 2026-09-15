@@ -12,7 +12,7 @@ global nav to browse the content.
 Research shows that people use Google to search for GitLab product documentation. When they land on a result,
 we want them to find topics nearby that are related to the content they're reading. The global nav provides this information.
 
-At the highest level, our global nav is **workflow-based**. Navigation needs to help users build a mental model of how to use GitLab.
+At the highest level, our global nav is workflow-based. Navigation needs to help users build a mental model of how to use GitLab.
 The levels under each of the higher workflow-based topics are the names of features. For example:
 
 **Use GitLab** (_workflow_) > **Build your application** (_workflow_) > **Get started** (_feature_) > **CI/CD** (_feature_) > **Pipelines** (_feature_)
@@ -43,7 +43,7 @@ The global nav is stored in the `gitlab-org/technical-writing/docs-gitlab-com` p
 `data/en-us/navigation.yaml` file. The documentation website at `docs.gitlab.com` is built using Hugo and assembles documentation
 content from several projects (including `charts`, `gitlab`, `gitlab-runner`, and `omnibus-gitlab`).
 
-**Do not** add items to the global nav without
+Do not add items to the global nav without
 the consent of one of the technical writers.
 
 To add a topic to the global navigation:
@@ -72,6 +72,10 @@ With these groups in mind, the following are general rules for where new items s
   - Accessing the rails console or running Rake tasks.
   - Doing things in the **Admin** area.
   - Tasks that can only be done by an instance administrator.
+- Subscription and billing documentation belongs under **Subscribe**.
+  This includes pages about plans and tiers, managing subscriptions, seats and billing accounts,
+  and general GitLab Credits concepts. Add pages about how a specific feature consumes GitLab
+  Credits under that feature’s section.
 - Other documentation belongs at the top-level, but care must be taken to not create an enormously
   long top-level navigation, which defeats the purpose of it.
 
@@ -194,7 +198,7 @@ at the same time.
 
 #### Syntax
 
-For all components, **respect the indentation** and the following syntax rules.
+For all components, respect the indentation and the following syntax rules.
 
 ##### Titles
 

@@ -96,5 +96,25 @@ RSpec.describe CohortsService, feature_category: :shared do
 
       expect(described_class.new.execute).to eq(months_included: 12, cohorts: expected_cohorts)
     end
+
+    context 'when scoped to an organization' do
+      let_it_be(:organization) { create(:organization) }
+      let_it_be(:other_organization) { create(:organization) }
+
+      it 'only counts users who are members of the organization' do
+        registration_month = month_start(2)
+
+        member = create(:user, created_at: registration_month, last_activity_on: Time.current)
+        create(:organization_user, organization: organization, user: member)
+
+        non_member = create(:user, created_at: registration_month, last_activity_on: Time.current)
+        create(:organization_user, organization: other_organization, user: non_member)
+
+        result = described_class.new(organization: organization).execute
+        cohort = result[:cohorts].find { |c| c[:registration_month] == registration_month }
+
+        expect(cohort[:total]).to eq(1)
+      end
+    end
   end
 end

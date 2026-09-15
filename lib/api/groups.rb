@@ -8,7 +8,6 @@ module API
 
     before do
       authenticate_non_get!
-      set_current_organization
     end
 
     allow_access_with_scope :ai_workflows, if: ->(request) { request.get? || request.head? }
@@ -127,7 +126,7 @@ module API
 
         projects, options = with_custom_attributes(projects, options)
 
-        present options[:with].prepare_relation(projects, options), options
+        present options[:with].prepare_relation(projects, options), **options
       end
 
       def present_groups(params, groups, serializer: Entities::Group)
@@ -140,7 +139,7 @@ module API
         groups = groups.with_statistics if options[:statistics]
         groups, options = with_custom_attributes(groups, options)
 
-        present paginate(groups), options
+        present paginate(groups), **options
       end
 
       def present_group_details(params, group, with_projects: true)
@@ -153,7 +152,7 @@ module API
 
         group, options = with_custom_attributes(group, options) if params[:with_custom_attributes]
 
-        present group, options
+        present group, **options
       end
 
       def present_groups_with_pagination_strategies(params, groups)
@@ -169,7 +168,7 @@ module API
 
         groups, options = with_custom_attributes(groups, options)
 
-        present paginate_with_strategies(groups), options
+        present paginate_with_strategies(groups), **options
       end
 
       def immediately_delete_subgroup_error(group)
@@ -272,17 +271,6 @@ module API
           present group, with: Entities::GroupDetail, current_user: current_user
         else
           render_api_error!(result.message, 400)
-        end
-      end
-
-      def execute_sync_transfer(group, new_parent_group)
-        service = ::Groups::TransferService.new(group, current_user)
-
-        if service.execute(new_parent_group)
-          group.preload_shared_group_links
-          present group, with: Entities::GroupDetail, current_user: current_user
-        else
-          render_api_error!(service.error, 400)
         end
       end
     end
@@ -717,11 +705,7 @@ module API
 
         new_parent_group = find_group!(params[:group_id]) if params[:group_id].present?
 
-        if Feature.enabled?(:groups_and_projects_async_transfer, group.root_ancestor)
-          enqueue_async_transfer(group, new_parent_group)
-        else
-          execute_sync_transfer(group, new_parent_group)
-        end
+        enqueue_async_transfer(group, new_parent_group)
       end
 
       desc 'Transfer a group to an organization' do
@@ -772,7 +756,7 @@ module API
       end
       params do
         requires :group_id, type: Integer, desc: 'The ID of the group to share'
-        requires :group_access, type: Integer, values: Gitlab::Access.all_values, desc: 'The group access level'
+        requires :group_access, type: Integer, values: Gitlab::Access.values_with_minimal_access, desc: 'The group access level'
         optional :expires_at, type: Date, desc: 'Share expiration date'
         optional :member_role_id, type: Integer, desc: 'The ID of the Member Role to be assigned to the group'
       end
@@ -812,9 +796,13 @@ module API
         link = shared_group.shared_with_group_links.find_by(shared_with_group_id: params[:group_id])
         not_found!('Group Link') unless link
 
-        ::Groups::GroupLinks::DestroyService.new(shared_group, current_user).execute(link)
+        result = ::Groups::GroupLinks::DestroyService.new(shared_group, current_user).execute(link)
 
-        no_content!
+        if result.is_a?(Hash) && result[:status] == :error
+          render_api_error!(result[:message], result[:http_status])
+        else
+          no_content!
+        end
       end
       # rubocop: enable CodeReuse/ActiveRecord
 

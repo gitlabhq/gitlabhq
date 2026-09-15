@@ -5,11 +5,36 @@ module Admin
     def admin_actions(user)
       return [] if user.internal?
 
-      @actions ||= ['edit']
+      @user = user
+      @actions = []
 
-      return @actions if user == current_user
+      organization_admin_area? ? organization_admin_actions : instance_admin_actions
 
-      @user ||= user
+      @actions
+    end
+
+    def organization_user_gid(user)
+      organization_user(user)&.to_global_id&.to_s
+    end
+
+    private
+
+    def organization_admin_actions
+      return if @user == current_user
+
+      organization_edit_actions
+      remove_from_organization_actions
+
+      @actions
+    end
+
+    def organization_edit_actions
+      @actions << 'edit' if current_user.can?(:update_organization_user, organization_user(@user))
+    end
+
+    def instance_admin_actions
+      edit_actions
+      return if @user == current_user
 
       blocked_actions
       deactivate_actions
@@ -17,13 +42,32 @@ module Admin
       delete_actions
       ban_actions
       trust_actions
-
-      @actions
     end
 
-    private
+    def organization_admin_area?
+      organization.present?
+    end
+
+    def organization
+      return unless respond_to?(:options)
+      return unless options[:authorization_context].is_a?(::Organizations::Organization)
+
+      options[:authorization_context]
+    end
+
+    def organization_user(user)
+      return unless organization
+
+      @organization_user ||= organization.organization_users.by_user(user).first
+    end
+
+    def edit_actions
+      @actions << 'edit' if can?(current_user, :admin_all_resources)
+    end
 
     def blocked_actions
+      return unless can?(current_user, :admin_all_resources)
+
       if @user.ldap_blocked?
         @actions << 'ldap'
       elsif @user.blocked? && @user.blocked_pending_approval?
@@ -37,6 +81,8 @@ module Admin
     end
 
     def deactivate_actions
+      return unless can?(current_user, :admin_all_resources)
+
       if @user.can_be_deactivated?
         @actions << 'deactivate'
       elsif @user.deactivated?
@@ -45,7 +91,7 @@ module Admin
     end
 
     def unlock_actions
-      @actions << 'unlock' if @user.access_locked?
+      @actions << 'unlock' if @user.access_locked? && can?(current_user, :admin_all_resources)
     end
 
     def delete_actions
@@ -56,7 +102,7 @@ module Admin
     end
 
     def ban_actions
-      return if @user.internal?
+      return if @user.internal? || !can?(current_user, :admin_all_resources)
 
       if @user.banned?
         @actions << 'unban'
@@ -67,6 +113,8 @@ module Admin
     end
 
     def trust_actions
+      return unless can?(current_user, :admin_all_resources)
+
       return if @user.internal? ||
         @user.blocked_pending_approval? ||
         @user.banned? ||
@@ -78,6 +126,12 @@ module Admin
                   else
                     'trust'
                   end
+    end
+
+    def remove_from_organization_actions
+      return unless current_user.can?(:delete_organization_user, organization_user(@user))
+
+      @actions << 'remove_from_organization'
     end
   end
 end

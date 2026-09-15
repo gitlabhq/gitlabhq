@@ -27,7 +27,7 @@ module UploadsActions
   end
 
   def create
-    uploader = UploadService.new(model, params[:file], uploader_class, uploaded_by_user_id: current_user&.id).execute
+    uploader = UploadService.new(model, file_param, uploader_class, uploaded_by_user_id: current_user&.id).execute
 
     respond_to do |format|
       if uploader
@@ -47,7 +47,7 @@ module UploadsActions
   #   - or redirect to its URL
   #
   def show
-    Gitlab::PathTraversal.check_path_traversal!(params[:filename])
+    Gitlab::PathTraversal.check_path_traversal!(filename_param)
 
     return render_404 unless uploader&.exists?
 
@@ -58,7 +58,7 @@ module UploadsActions
     expires_in ttl, directives
 
     file_uploader = [uploader, *uploader.versions.values].find do |version|
-      version.filename == params[:filename]
+      version.filename == filename_param
     end
 
     return render_404 unless file_uploader
@@ -80,6 +80,23 @@ module UploadsActions
   end
 
   private
+
+  # ActionController treats UploadedFile as a permitted scalar, so the file survives the permit.
+  def file_param
+    params.permit(:file)[:file]
+  end
+
+  def filename_param
+    params.permit(:filename)[:filename]
+  end
+
+  def secret_param
+    params.permit(:secret)[:secret]
+  end
+
+  def mounted_as_param
+    params.permit(:mounted_as)[:mounted_as]
+  end
 
   # Based on ActionDispatch::Http::MimeNegotiation. We have an
   # initializer that monkey-patches this method out (so that repository
@@ -110,7 +127,7 @@ module UploadsActions
   end
 
   def upload_mount
-    mounted_as = params[:mounted_as]
+    mounted_as = mounted_as_param
     mounted_as if UPLOAD_MOUNTS.include?(mounted_as)
   end
 
@@ -132,16 +149,16 @@ module UploadsActions
     uploader = build_uploader
     return unless uploader
 
-    upload_paths = uploader.upload_paths(params[:filename])
+    upload_paths = uploader.upload_paths(filename_param)
     upload = Upload.find_by(model: model, uploader: uploader_class.to_s, path: upload_paths)
     upload&.retrieve_uploader
   end
   # rubocop: enable CodeReuse/ActiveRecord
 
   def build_uploader
-    return unless params[:secret] && params[:filename]
+    return unless secret_param && filename_param
 
-    uploader = uploader_class.new(model, secret: params[:secret])
+    uploader = uploader_class.new(model, secret: secret_param)
 
     return unless uploader.model_valid?
 

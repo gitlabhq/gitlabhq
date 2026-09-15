@@ -16,7 +16,9 @@ RSpec.describe 'User paginates issue designs', :js, feature_category: :design_ma
   end
 
   it 'paginates to next design' do
-    expect(find('.js-previous-design')[:disabled]).to eq('true')
+    # `have_button(disabled:)` rather than reading the native attribute: these are GlButtons, which
+    # signal unavailability with `aria-disabled`. Capybara's filter knows both forms.
+    expect(page).to have_button('Go to previous design', disabled: true)
 
     page.within(find('.js-design-header')) do
       expect(page).to have_content('1 of 2')
@@ -24,7 +26,7 @@ RSpec.describe 'User paginates issue designs', :js, feature_category: :design_ma
 
     find('.js-next-design').click
 
-    expect(find('.js-previous-design')[:disabled]).not_to eq('true')
+    expect(page).to have_button('Go to previous design', disabled: false)
 
     page.within(find('.js-design-header')) do
       expect(page).to have_content('2 of 2')

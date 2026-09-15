@@ -25,25 +25,25 @@ RSpec.describe Gitlab::Config::Entry::Undefined do
 
   describe '#value' do
     it 'returns nil' do
-      expect(entry.value).to eq nil
+      expect(entry.value).to be_nil
     end
   end
 
   describe '#relevant?' do
     it 'is not relevant' do
-      expect(entry.relevant?).to eq false
+      expect(entry.relevant?).to be false
     end
   end
 
   describe '#specified?' do
     it 'is not defined' do
-      expect(entry.specified?).to eq false
+      expect(entry.specified?).to be false
     end
   end
 
   describe '#type' do
     it 'returns nil' do
-      expect(entry.type).to eq nil
+      expect(entry.type).to be_nil
     end
   end
 end

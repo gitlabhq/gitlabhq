@@ -9,7 +9,7 @@ const browseFilesPath = '/gitlab-org/gitlab/-/tree/main';
 describe('CommitListActions', () => {
   let wrapper;
 
-  const createComponent = ({ filePath = 'README.md' } = {}) => {
+  const createComponent = ({ filePath = 'README.md', mergeRequestAction = null } = {}) => {
     wrapper = shallowMountExtended(CommitListActions, {
       provide: {
         projectFullPath: 'gitlab-org/gitlab',
@@ -19,6 +19,7 @@ describe('CommitListActions', () => {
       },
       propsData: {
         filePath,
+        mergeRequestAction,
       },
     });
   };
@@ -68,6 +69,31 @@ describe('CommitListActions', () => {
       extraAttrs: {
         'data-testid': 'commits-feed-link',
       },
+    });
+  });
+
+  describe('merge request dropdown item', () => {
+    const mergeRequestAction = {
+      text: 'Create merge request',
+      href: '/gitlab-org/gitlab/-/merge_requests/new',
+      testid: 'create-merge-request-link',
+    };
+    const findMergeRequestItem = () => wrapper.findComponentByTestId(mergeRequestAction.testid);
+
+    it('does not render the item when no action is passed', () => {
+      expect(findMergeRequestItem().exists()).toBe(false);
+    });
+
+    it('renders the item hidden on wider viewports when an action is passed', () => {
+      createComponent({ mergeRequestAction });
+      const item = findMergeRequestItem();
+
+      expect(item.props('item')).toMatchObject({
+        text: 'Create merge request',
+        icon: 'merge-request',
+        href: '/gitlab-org/gitlab/-/merge_requests/new',
+      });
+      expect(item.classes()).toContain('@md/panel:gl-hidden');
     });
   });
 

@@ -6,7 +6,7 @@ RSpec.describe Resolvers::Ci::TestSuiteResolver do
   include GraphqlHelpers
 
   let_it_be(:user) { create(:user) }
-  let_it_be(:project) { create(:project, :public, :repository) }
+  let_it_be(:project) { create(:project, :public, :small_repo) }
 
   describe '#resolve' do
     subject(:test_suite) { resolve(described_class, obj: pipeline, args: { build_ids: build_ids }) }

@@ -1,6 +1,8 @@
 # frozen_string_literal: true
 
 RSpec.shared_examples 'stuck import job detection' do
+  let(:expected_terminal_status) { 'failed' }
+
   context 'when the job has completed' do
     context 'when the import status was already updated' do
       before do
@@ -27,7 +29,7 @@ RSpec.shared_examples 'stuck import job detection' do
       it 'marks the import as failed' do
         worker.perform
 
-        expect(import_state.reload.status).to eq('failed')
+        expect(import_state.reload.status).to eq(expected_terminal_status)
       end
     end
   end

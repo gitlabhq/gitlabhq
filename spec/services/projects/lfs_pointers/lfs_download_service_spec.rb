@@ -25,45 +25,29 @@ RSpec.describe Projects::LfsPointers::LfsDownloadService, feature_category: :sou
     allow(project).to receive(:lfs_enabled?).and_return(true)
   end
 
-  shared_examples 'lfs temporal file is removed' do
-    it 'removes temporary file when process is completed' do
-      subject.execute
+  shared_examples 'no lfs object is created' do
+    it 'does not create an lfs object, logs the error, and removes the temp file', :aggregate_failures do
+      expect(subject).to receive(:log_error)
 
+      result = nil
+      expect { result = subject.execute }.not_to change { LfsObject.count }
+
+      expect(result[:status]).to eq :error
       expect(File.exist?(subject.send(:tmp_filename))).to be false
     end
   end
 
-  shared_examples 'no lfs object is created' do
-    it 'keeps the same lfs object count' do
-      expect { subject.execute }.not_to change { LfsObject.count }
-    end
-
-    it 'returns error result' do
-      expect(subject.execute[:status]).to eq :error
-    end
-
-    it 'an error is logged' do
-      expect(subject).to receive(:log_error)
-
-      subject.execute
-    end
-
-    it_behaves_like 'lfs temporal file is removed'
-  end
-
   shared_examples 'lfs object is created' do
-    it 'creates and associate the LFS object to project' do
+    it 'creates and associates the LFS object to project, and removes the temp file', :aggregate_failures do
       expect(subject).to receive(:download_and_save_file!).and_call_original
 
-      expect { subject.execute }.to change { LfsObject.count }.by(1)
+      result = nil
+      expect { result = subject.execute }.to change { LfsObject.count }.by(1)
+
       expect(LfsObject.first.projects).to include(project)
+      expect(result[:status]).to eq :success
+      expect(File.exist?(subject.send(:tmp_filename))).to be false
     end
-
-    it 'returns success result' do
-      expect(subject.execute[:status]).to eq :success
-    end
-
-    it_behaves_like 'lfs temporal file is removed'
   end
 
   describe '#execute' do
@@ -74,21 +58,11 @@ RSpec.describe Projects::LfsPointers::LfsDownloadService, feature_category: :sou
 
       it_behaves_like 'lfs object is created'
 
-      it 'has the same oid' do
+      it 'stores the correct oid, size, and content', :aggregate_failures do
         subject.execute
 
         expect(LfsObject.first.oid).to eq oid
-      end
-
-      it 'has the same size' do
-        subject.execute
-
         expect(LfsObject.first.size).to eq size
-      end
-
-      it 'stores the content' do
-        subject.execute
-
         expect(File.binread(LfsObject.first.file.file.file)).to eq lfs_content
       end
 
@@ -189,7 +163,9 @@ RSpec.describe Projects::LfsPointers::LfsDownloadService, feature_category: :sou
     end
 
     context 'when an lfs object with the same oid already exists' do
-      let!(:existing_lfs_object) { create(:lfs_object, oid: oid) }
+      let_it_be(:lfs_content) { SecureRandom.random_bytes(10) }
+      let_it_be(:oid) { Digest::SHA256.hexdigest(lfs_content) }
+      let_it_be_with_reload(:existing_lfs_object) { create(:lfs_object, oid: oid) }
 
       before do
         stub_full_request(download_link).to_return(body: lfs_content)
@@ -293,9 +269,10 @@ RSpec.describe Projects::LfsPointers::LfsDownloadService, feature_category: :sou
     end
 
     context 'when a large lfs object with the same oid already exists' do
-      let!(:existing_lfs_object) { create(:lfs_object, :with_file, :correct_oid) }
+      let_it_be(:existing_lfs_object) { create(:lfs_object, :with_file, :correct_oid) }
 
       before do
+        project.reload
         stub_const("#{described_class}::LARGE_FILE_SIZE", 500)
         stub_full_request(download_link).to_return(body: lfs_content)
       end
@@ -309,12 +286,8 @@ RSpec.describe Projects::LfsPointers::LfsDownloadService, feature_category: :sou
           subject.execute
         end
 
-        it 'returns success' do
-          expect(subject.execute).to eq({ status: :success })
-        end
-
-        it 'links existing lfs object to the project' do
-          expect { subject.execute }
+        it 'returns success and links existing lfs object to the project' do
+          expect { expect(subject.execute).to eq({ status: :success }) }
             .to change { project.lfs_objects.include?(existing_lfs_object) }.from(false).to(true)
         end
       end
@@ -323,15 +296,13 @@ RSpec.describe Projects::LfsPointers::LfsDownloadService, feature_category: :sou
         let(:lfs_content) { SecureRandom.random_bytes(1000) }
         let(:oid) { existing_lfs_object.oid }
 
-        it 'raises oid mismatch error' do
-          expect(subject.execute).to eq({
-            status: :error,
-            message: "LFS file with oid #{oid} cannot be linked with an existing LFS object"
-          })
-        end
-
-        it 'does not change lfs objects' do
-          expect { subject.execute }.not_to change { project.lfs_objects }
+        it 'raises oid mismatch error without changing lfs objects' do
+          expect do
+            expect(subject.execute).to eq({
+              status: :error,
+              message: "LFS file with oid #{oid} cannot be linked with an existing LFS object"
+            })
+          end.not_to change { project.lfs_objects }
         end
       end
     end

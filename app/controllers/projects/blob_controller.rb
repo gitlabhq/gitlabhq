@@ -21,7 +21,7 @@ class Projects::BlobController < Projects::ApplicationController
 
   around_action :allow_gitaly_ref_name_caching, only: [:show]
 
-  before_action :require_non_empty_project, except: [:new, :create]
+  before_action :require_non_empty_project, except: [:new, :create, :preview]
   before_action :authorize_download_code!, except: [:show]
   before_action :authorize_read_code!, only: [:show]
 
@@ -33,8 +33,9 @@ class Projects::BlobController < Projects::ApplicationController
 
   before_action :authorize_edit_tree!, only: [:new, :create, :update, :destroy]
 
-  before_action :require_commit, except: [:new, :create]
-  before_action :require_blob, except: [:new, :create]
+  before_action :require_commit, except: [:new, :create, :preview]
+  before_action :require_commit_or_empty_repository, only: [:preview]
+  before_action :require_blob, except: [:new, :create, :preview]
   before_action :require_branch_head, only: [:edit, :update]
   before_action :editor_variables, except: [:show, :preview, :diff]
   before_action :validate_diff_params, only: :diff
@@ -97,7 +98,7 @@ class Projects::BlobController < Projects::ApplicationController
   end
 
   def update
-    @path = params[:file_path] if params[:file_path].present?
+    @path = permitted_params[:file_path] if permitted_params[:file_path].present?
 
     create_commit(
       Files::UpdateService, success_path: -> { after_edit_path },
@@ -112,14 +113,16 @@ class Projects::BlobController < Projects::ApplicationController
   end
 
   def preview
-    @content = params[:content]
+    @content = permitted_params[:content]
 
     if @content.bytesize >= MAX_PREVIEW_CONTENT
       return render json: { errors: ["Preview content too large"] }, status: :payload_too_large
     end
 
-    blob.load_all_data!
-    diffy = Diffy::Diff.new(blob.data, @content, diff: '-U 3', include_diff_info: true)
+    @preview_file_name = preview_file_name
+
+    blob&.load_all_data!
+    diffy = Diffy::Diff.new(blob&.data || '', @content, diff: '-U 3', include_diff_info: true)
     diff_lines = diffy.diff.scan(/.*\n/)[2..]
     diff_lines = Gitlab::Diff::Parser.new.parse(diff_lines).to_a
     @diff_lines = Gitlab::Diff::Highlight.new(diff_lines, repository: @repository).highlight
@@ -181,6 +184,15 @@ class Projects::BlobController < Projects::ApplicationController
 
   private
 
+  # Kept separate from the pre-existing diff_params/diff_lines_params, which are passed
+  # whole to Blobs::UnfoldPresenter and so must keep their exact key sets.
+  def permitted_params
+    params.permit(
+      :branch_name, :commit_message, :content, :encoding, :file, :file_name, :file_path,
+      :from_merge_request_iid, :full, :id, :last_commit_sha, :offset, :since, :to
+    )
+  end
+
   attr_reader :branch_name
 
   def blob
@@ -193,6 +205,13 @@ class Projects::BlobController < Projects::ApplicationController
 
   def require_blob
     redirect_to_project_tree_path unless blob
+  end
+
+  # Only the base name is used, which rules out path traversal.
+  def preview_file_name
+    file_path = params.permit(:file_path)[:file_path]
+
+    file_path.present? ? File.basename(file_path.to_s) : blob&.name || ''
   end
 
   def redirect_to_project_tree_path
@@ -216,13 +235,19 @@ class Projects::BlobController < Projects::ApplicationController
     render_404 unless commit
   end
 
+  def require_commit_or_empty_repository
+    return if @repository.empty?
+
+    require_commit
+  end
+
   def redirect_renamed_default_branch?
     action_name == 'show'
   end
 
   def assign_blob_vars
     ref_extractor = ExtractsRef::RefExtractor.new(@project, {})
-    @id = params[:id]
+    @id = permitted_params[:id]
 
     @ref, @path = ref_extractor.extract_ref(@id)
   rescue InvalidPathError
@@ -234,7 +259,7 @@ class Projects::BlobController < Projects::ApplicationController
     from_merge_request = MergeRequestsFinder.new(
       current_user,
       project_id: @project.id
-    ).find_by(iid: params[:from_merge_request_iid])
+    ).find_by(iid: permitted_params[:from_merge_request_iid])
 
     if from_merge_request && @branch_name == @ref
       diffs_project_merge_request_path(from_merge_request.target_project, from_merge_request) +
@@ -255,42 +280,43 @@ class Projects::BlobController < Projects::ApplicationController
   end
 
   def editor_variables
-    @branch_name = params[:branch_name]
+    @branch_name = permitted_params[:branch_name]
 
     @file_path = fetch_file_path
 
-    params[:content] = params[:file] if params[:file].present?
+    # rubocop:disable Rails/StrongParams -- in-place mutation; strong params syntax would write to a copy
+    params[:content] = permitted_params[:file] if permitted_params[:file].present?
+    # rubocop:enable Rails/StrongParams
 
     @commit_params = {
       file_path: @file_path,
-      commit_message: params[:commit_message],
+      commit_message: permitted_params[:commit_message],
       previous_path: @path,
-      file_content: params[:content],
-      file_content_encoding: params[:encoding],
-      last_commit_sha: params[:last_commit_sha]
+      file_content: permitted_params[:content],
+      file_content_encoding: permitted_params[:encoding],
+      last_commit_sha: permitted_params[:last_commit_sha]
     }
   end
 
   def fetch_file_path
-    file_params = params.permit(:file, :file_name, :file_path)
-
     if action_name.to_s == 'create'
-      file_name = file_params[:file].present? ? file_params[:file].original_filename : file_params[:file_name]
+      uploaded_file = permitted_params[:file]
+      file_name = uploaded_file.present? ? uploaded_file.original_filename : permitted_params[:file_name]
 
       return if file_name.nil?
 
       return File.join(@path, file_name)
     end
 
-    return file_params[:file_path] if file_params[:file_path].present?
+    return permitted_params[:file_path] if permitted_params[:file_path].present?
 
     @path
   end
 
   def validate_diff_params
-    return if params[:full]
+    return if permitted_params[:full]
 
-    head :ok if [:since, :to, :offset].any? { |key| params[key].blank? }
+    head :ok if [:since, :to, :offset].any? { |key| permitted_params[key].blank? }
   end
 
   def set_last_commit_sha

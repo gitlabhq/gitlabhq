@@ -20,15 +20,15 @@ and your OAuth 2.0 provider, or any OAuth 2.0 provider compatible with this gem.
 
 This strategy allows for the configuration of this OmniAuth SSO process:
 
-1. Strategy directs the client to your authorization URL (**configurable**), with
+1. Strategy directs the client to your authorization URL (configurable), with
    the specified ID and key.
 1. The OAuth 2.0 provider handles authentication of the request, user, and (optionally)
    authorization to access the user's profile.
 1. The OAuth 2.0 provider directs the client back to GitLab where Strategy
    retrieves the access token.
-1. Strategy requests user information from a **configurable** "user profile"
+1. Strategy requests user information from a configurable "user profile"
    URL using the access token.
-1. Strategy parses user information from the response using a **configurable**
+1. Strategy parses user information from the response using a configurable
    format.
 1. GitLab finds or creates the returned user and signs them in.
 

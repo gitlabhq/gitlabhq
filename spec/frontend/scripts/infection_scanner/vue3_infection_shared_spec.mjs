@@ -9,6 +9,7 @@ const {
   hasSpecialQuery,
   appendVue3Query,
   createIsInfectable,
+  applyAliasList,
 } = vue3InfectionShared;
 
 describe('config/helpers/vue3_infection_shared', () => {
@@ -98,6 +99,51 @@ describe('config/helpers/vue3_infection_shared', () => {
     });
   });
 
+  describe('applyAliasList', () => {
+    // Mirrors the real config: a `vendor` prefix alias shadowing a CONTEXT_ALIASES key.
+    const vendorRoot = '/repo/vendor/assets/javascripts';
+    const aliases = [
+      { find: /^jquery$/, replacement: 'jquery/dist/jquery.slim.js' },
+      { find: 'vendor', replacement: vendorRoot },
+      { find: '~', replacement: '/repo/app/assets/javascripts' },
+    ];
+
+    it('returns the specifier unchanged when nothing matches', () => {
+      expect(applyAliasList('vue-demi', aliases)).toBe('vue-demi');
+    });
+
+    it('returns the specifier unchanged for an empty alias list', () => {
+      expect(applyAliasList('vendor/vue-virtual-scroller', [])).toBe('vendor/vue-virtual-scroller');
+    });
+
+    it('expands a prefix alias', () => {
+      expect(applyAliasList('vendor/vue-virtual-scroller', aliases)).toBe(
+        `${vendorRoot}/vue-virtual-scroller`,
+      );
+    });
+
+    it('expands a bare specifier that equals the prefix', () => {
+      expect(applyAliasList('vendor', aliases)).toBe(vendorRoot);
+    });
+
+    it('does not treat a partial segment as a prefix match', () => {
+      expect(applyAliasList('vendored-thing/foo', aliases)).toBe('vendored-thing/foo');
+    });
+
+    it('applies a regular expression alias', () => {
+      expect(applyAliasList('jquery', aliases)).toBe('jquery/dist/jquery.slim.js');
+    });
+
+    it('applies only the first matching alias', () => {
+      const ordered = [
+        { find: 'vendor', replacement: '/first' },
+        { find: 'vendor', replacement: '/second' },
+      ];
+
+      expect(applyAliasList('vendor/x', ordered)).toBe('/first/x');
+    });
+  });
+
   describe('createIsInfectable', () => {
     // Pick a path that matches INFECTABLE_RE (`.js`/`.mjs`/`.vue`) and is not
     // on the INFECTION_BLOCKLIST, so the predicate's "interesting" branches run.
@@ -131,30 +177,39 @@ describe('config/helpers/vue3_infection_shared', () => {
     });
 
     it('returns the scanner graph entry value when the file is present', () => {
-      const graph = new Map([[INFECTABLE_PATH, { infected: true, appRoot: false }]]);
+      const graph = new Map([[INFECTABLE_PATH, { exposedToVue: true, appRoot: false }]]);
       const isInfectable = createIsInfectable(graph);
 
       expect(isInfectable(INFECTABLE_PATH)).toBe(true);
     });
 
-    it('returns false when the scanner graph marks the file as not infected', () => {
-      const graph = new Map([[INFECTABLE_PATH, { infected: false, appRoot: false }]]);
+    it('returns false when the scanner graph marks the file as not exposed to Vue', () => {
+      const graph = new Map([[INFECTABLE_PATH, { exposedToVue: false, appRoot: false }]]);
       const isInfectable = createIsInfectable(graph);
 
       expect(isInfectable(INFECTABLE_PATH)).toBe(false);
+    });
+
+    // The two flags answer different questions. This predicate is the downward one,
+    // where the app-root barrier baked into `infected` gives the wrong answer.
+    it('reads exposedToVue, not infected', () => {
+      const graph = new Map([
+        [INFECTABLE_PATH, { infected: false, exposedToVue: true, appRoot: true }],
+      ]);
+      const isInfectable = createIsInfectable(graph);
+
+      expect(isInfectable(INFECTABLE_PATH)).toBe(true);
     });
 
     it('throws when a file is not found in the scanner graph', () => {
       const graph = new Map();
       const isInfectable = createIsInfectable(graph);
 
-      expect(() => isInfectable(INFECTABLE_PATH)).toThrow(
-        /File not found in scanner data/,
-      );
+      expect(() => isInfectable(INFECTABLE_PATH)).toThrow(/File not found in scanner data/);
     });
 
     it('uses shouldExclude to short-circuit to false before consulting the graph', () => {
-      const graph = new Map([[INFECTABLE_PATH, { infected: true, appRoot: false }]]);
+      const graph = new Map([[INFECTABLE_PATH, { exposedToVue: true, appRoot: false }]]);
       const isInfectable = createIsInfectable(graph, {
         shouldExclude: (clean) => clean === INFECTABLE_PATH,
       });
@@ -172,7 +227,7 @@ describe('config/helpers/vue3_infection_shared', () => {
     });
 
     it('prefers shouldExclude over shouldBypass when both match', () => {
-      const graph = new Map([[INFECTABLE_PATH, { infected: true, appRoot: false }]]);
+      const graph = new Map([[INFECTABLE_PATH, { exposedToVue: true, appRoot: false }]]);
       const isInfectable = createIsInfectable(graph, {
         shouldExclude: () => true,
         shouldBypass: () => true,

@@ -3,11 +3,12 @@
 require 'spec_helper'
 
 RSpec.describe ::Packages::Helm::PackagesFinder, feature_category: :package_registry do
-  let_it_be(:project1) { create(:project) }
-  let_it_be(:project2) { create(:project) }
+  let_it_be(:namespace) { create(:namespace) }
+  let_it_be(:project1) { create(:project, namespace: namespace) }
+  let_it_be(:project2) { create(:project, namespace: namespace) }
   let_it_be(:helm_package) { create(:helm_package, project: project1) }
-  let_it_be(:npm_package) { create(:npm_package, project: project1) }
-  let_it_be(:npm_package) { create(:npm_package, project: project2) }
+  let_it_be(:npm_package_in_project1) { create(:npm_package, project: project1, package_files: []) }
+  let_it_be(:npm_package_in_project2) { create(:npm_package, project: project2, package_files: []) }
 
   let(:project) { project1 }
   let(:channel) { 'stable' }

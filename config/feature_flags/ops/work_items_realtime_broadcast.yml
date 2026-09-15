@@ -7,4 +7,4 @@ rollout_issue_url:
 milestone: '19.2'
 group: group::planning views
 type: ops
-default_enabled: false
+default_enabled: true

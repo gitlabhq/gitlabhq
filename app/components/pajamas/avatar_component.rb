@@ -54,7 +54,9 @@ module Pajamas
       elsif @item.is_a?(AvatarEmail)
         helpers.avatar_icon_for_email(@item.email, @size)
       elsif @item.try(:avatar_url)
-        "#{@item.avatar_url}?width=#{@size}"
+        url = @item.avatar_url
+        separator = url.include?('?') ? '&' : '?'
+        "#{url}#{separator}width=#{@size}"
       end
     end
     strong_memoize_attr :src

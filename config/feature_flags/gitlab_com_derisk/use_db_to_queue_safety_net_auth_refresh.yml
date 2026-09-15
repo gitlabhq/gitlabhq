@@ -1,0 +1,8 @@
+---
+name: use_db_to_queue_safety_net_auth_refresh
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/249045
+rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/work_items/617402
+milestone: '19.4'
+type: gitlab_com_derisk
+group: group::authorization
+default_enabled: false

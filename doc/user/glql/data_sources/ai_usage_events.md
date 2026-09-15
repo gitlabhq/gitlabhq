@@ -36,6 +36,8 @@ For more information, see [scopes](_index.md#scopes).
 
 ## Query fields
 
+Use these fields in the `query` parameter to filter your results.
+
 | Field                                | Name            | Operators                 |
 | ------------------------------------ | --------------- | ------------------------- |
 | [Event](#event)                      | `event`         | `=`, `in`                 |

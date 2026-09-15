@@ -10,9 +10,9 @@ function factory(propsData = {}) {
 describe('Branch divergence graph bar component', () => {
   it.each`
     position   | positionClass
-    ${'left'}  | ${'position-right-0'}
-    ${'right'} | ${'position-left-0'}
-    ${'full'}  | ${'position-left-0'}
+    ${'left'}  | ${'gl-right-0'}
+    ${'right'} | ${'gl-left-0'}
+    ${'full'}  | ${'gl-left-0'}
   `(
     'sets position class as $positionClass for position $position',
     ({ position, positionClass }) => {

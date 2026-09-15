@@ -35,7 +35,7 @@ Start by [importing the example project by URL](../../../import/third_party_syst
 To import the project:
 
 1. In GitLab, in the top bar, select **Search or go to**.
-1. Select **View all my projects**..
+1. Select **View all my projects**.
 1. On the right of the page, select **New project**.
 1. Select **Import project**.
 1. Select **Repository by URL**.

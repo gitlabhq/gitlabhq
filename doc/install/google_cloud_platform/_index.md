@@ -117,7 +117,7 @@ here's how you configure GitLab to be aware of the change:
    ```
 
 1. Set the `external_url` value to the domain name you wish GitLab to have
-   **without** `https`:
+   without `https`:
 
    ```ruby
    external_url 'http://gitlab.example.com'

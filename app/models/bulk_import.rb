@@ -5,6 +5,7 @@
 # user.
 class BulkImport < ApplicationRecord
   include AfterCommitQueue
+  include Gitlab::InternalEventsTracking
 
   MIN_MAJOR_VERSION = 14
   MIN_MINOR_VERSION_FOR_PROJECT = 4
@@ -64,6 +65,27 @@ class BulkImport < ApplicationRecord
       bulk_import.run_after_commit do
         bulk_import.propagate_cancel
         bulk_import.schedule_configuration_purge
+      end
+    end
+
+    # Registered after the has_failures update above so the label reflects the final state.
+    after_transition any => :finished do |bulk_import|
+      next unless bulk_import.offline?
+
+      bulk_import.run_after_commit do
+        bulk_import.track_internal_event(
+          'complete_offline_transfer_import',
+          user: bulk_import.user,
+          additional_properties: { label: bulk_import.has_failures? ? 'with_failures' : 'without_failures' }
+        )
+      end
+    end
+
+    after_transition any => :failed do |bulk_import|
+      next unless bulk_import.offline?
+
+      bulk_import.run_after_commit do
+        bulk_import.track_internal_event('fail_offline_transfer_import', user: bulk_import.user)
       end
     end
   end

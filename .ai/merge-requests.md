@@ -2,6 +2,8 @@
 
 ## Merge Request Description
 
+Base the description on a template from `.gitlab/merge_request_templates/`. List that directory and choose the most specific template that matches the change; the template names indicate their purpose. When no specific template fits, or when unsure, use `Default.md`. Read the chosen template file and keep all of its sections: fill in each section, or state briefly why it does not apply, rather than deleting it. Treat HTML comments in the template as instructions to follow, then remove them from the final description.
+
 If there are related issues, add their URLs to the description of the merge request under the heading `References`.
 
 Add quick commands at the bottom of the description:
@@ -13,6 +15,10 @@ Add quick commands at the bottom of the description:
 ## Pre-submission readiness checklist
 
 Before opening a merge request, verify each predicate that applies to your change. Each item states the action; follow the linked detail for the how.
+
+### Review
+
+- Before opening the merge request, review local changes using the reviewer sub-agent and fix findings that matter.
 
 ### Changelog
 

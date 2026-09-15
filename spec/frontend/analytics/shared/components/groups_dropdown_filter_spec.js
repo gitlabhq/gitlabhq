@@ -113,6 +113,22 @@ describe('GroupsDropdownFilter component', () => {
       );
     });
 
+    it('should rank results by relevance while searching', async () => {
+      findDropdown().vm.$emit('search', 'gitlab');
+
+      await waitForPromises();
+
+      expect(mockHandler).toHaveBeenCalledWith(
+        expect.objectContaining({ search: 'gitlab', sort: 'similarity' }),
+      );
+    });
+
+    it('should sort by name when there is no search term', () => {
+      expect(mockHandler).toHaveBeenCalledWith(
+        expect.objectContaining({ search: '', sort: 'name_asc' }),
+      );
+    });
+
     it('should not make an API call when search query is below minimum search length', async () => {
       mockHandler.mockClear();
 
@@ -283,13 +299,6 @@ describe('GroupsDropdownFilter component', () => {
 
       it('renders the highlighted items', () => {
         expect(findSelectedDropdownItems()).toHaveLength(1);
-      });
-
-      it('hides the unhighlighted items that do not match the string', () => {
-        expect(wrapper.find(`[name="Selected"]`).findAllComponents(GlListboxItem)).toHaveLength(1);
-        expect(wrapper.find(`[name="Unselected"]`).findAllComponents(GlListboxItem)).toHaveLength(
-          0,
-        );
       });
     });
 

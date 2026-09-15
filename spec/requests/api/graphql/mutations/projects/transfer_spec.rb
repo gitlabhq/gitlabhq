@@ -32,31 +32,16 @@ RSpec.describe 'ProjectTransfer', feature_category: :groups_and_projects do
   end
 
   describe 'observable state' do
-    context 'when groups_and_projects_async_transfer feature flag is enabled' do
-      it 'transitions the project namespace to transfer_scheduled state', :aggregate_failures do
-        post_graphql_mutation(mutation, current_user: current_user)
+    it 'transitions the project namespace to transfer_scheduled state', :aggregate_failures do
+      post_graphql_mutation(mutation, current_user: current_user)
 
-        expect(graphql_mutation_response(:project_transfer)['errors']).to be_empty
-        expect(project.project_namespace.reload.state).to eq('transfer_scheduled')
-      end
-
-      it 'enqueues a Projects::TransferWorker job' do
-        expect { post_graphql_mutation(mutation, current_user: current_user) }
-          .to change { Projects::TransferWorker.jobs.size }.by(1)
-      end
+      expect(graphql_mutation_response(:project_transfer)['errors']).to be_empty
+      expect(project.project_namespace.reload.state).to eq('transfer_scheduled')
     end
 
-    context 'when groups_and_projects_async_transfer feature flag is disabled' do
-      before do
-        stub_feature_flags(groups_and_projects_async_transfer: false)
-      end
-
-      it 'transfers the project synchronously and changes its namespace', :aggregate_failures do
-        post_graphql_mutation(mutation, current_user: current_user)
-
-        expect(graphql_mutation_response(:project_transfer)['errors']).to be_empty
-        expect(project.reload.namespace).to eq(target_namespace)
-      end
+    it 'enqueues a Projects::TransferWorker job' do
+      expect { post_graphql_mutation(mutation, current_user: current_user) }
+        .to change { Projects::TransferWorker.jobs.size }.by(1)
     end
 
     context 'when namespace_id resolves to a ProjectNamespace' do

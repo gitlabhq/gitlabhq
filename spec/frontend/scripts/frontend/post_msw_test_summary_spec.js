@@ -3,8 +3,14 @@ import {
   perFileFromReport,
   computeActionable,
   thresholdInfo,
+  formatDuration,
   buildComment,
+  buildCombinedComment,
+  COMBINED_MARKER,
+  spliceSection,
+  placeholderSection,
   formatSignedDuration,
+  buildDeletedFileRow,
   apiRequest,
 } from '../../../../scripts/frontend/post_msw_test_summary.mjs';
 
@@ -165,6 +171,107 @@ describe('computeActionable', () => {
     expect(result.addedTests).toBe(5);
     expect(result.perTestS).toBeCloseTo(28.4);
   });
+
+  describe('when a file modified by the MR has no baseline row', () => {
+    // new_spec.js ran in this job but is absent from the baseline. The diff says
+    // it is not a new file, so the missing row means "unknown", not "all added".
+    const changedFiles = [
+      {
+        path: 'spec/frontend/msw_integration/new_spec.js',
+        isNew: false,
+        oldPath: 'spec/frontend/msw_integration/new_spec.js',
+      },
+    ];
+
+    it('does not tag the file as new', () => {
+      const result = computeActionable({ changedFiles, report, baseline });
+
+      expect(result.files[0].isNew).toBe(false);
+    });
+
+    it('reports unknown deltas rather than diffing against zero', () => {
+      const result = computeActionable({ changedFiles, report, baseline });
+
+      expect(result.files[0]).toMatchObject({ deltaTests: null, deltaRuntimeS: null });
+    });
+
+    it('excludes the file from the actionable totals', () => {
+      const result = computeActionable({ changedFiles, report, baseline });
+
+      expect(result.addedTests).toBe(0);
+      expect(result.addedRuntimeS).toBe(0);
+      expect(result.perTestS).toBeNull();
+    });
+  });
+
+  describe('with deleted spec files', () => {
+    it('returns an empty deletedFiles array when no deleted files are provided', () => {
+      const result = computeActionable({ changedFiles: [], report, baseline });
+
+      expect(result.deletedFiles).toEqual([]);
+    });
+
+    it('ignores deleted files that have no master baseline entry', () => {
+      const deletedFiles = [{ path: 'spec/features/unknown_spec.rb' }];
+
+      const result = computeActionable({ changedFiles: [], deletedFiles, report, baseline });
+
+      expect(result.deletedFiles).toHaveLength(0);
+      expect(result.addedRuntimeS).toBe(0);
+      expect(result.addedTests).toBe(0);
+    });
+
+    it('includes deleted files that have a master baseline entry', () => {
+      // slow_spec.js is in the baseline with runtimeS: 40, testCount: 8.
+      const deletedFiles = [{ path: 'spec/frontend/msw_integration/slow_spec.js' }];
+
+      const result = computeActionable({ changedFiles: [], deletedFiles, report, baseline });
+
+      expect(result.deletedFiles).toHaveLength(1);
+      expect(result.deletedFiles[0]).toEqual({
+        path: 'spec/frontend/msw_integration/slow_spec.js',
+        masterRuntimeS: 40,
+        masterTests: 8,
+      });
+    });
+
+    it('subtracts deleted file runtime and tests from the net totals', () => {
+      // slow_spec.js baseline: runtimeS 40, testCount 8.
+      const deletedFiles = [{ path: 'spec/frontend/msw_integration/slow_spec.js' }];
+
+      const result = computeActionable({ changedFiles: [], deletedFiles, report, baseline });
+
+      expect(result.addedRuntimeS).toBe(-40);
+      expect(result.addedTests).toBe(-8);
+    });
+
+    it('sets perTestS to null when deletions outweigh additions (no net-new tests)', () => {
+      const deletedFiles = [{ path: 'spec/frontend/msw_integration/slow_spec.js' }];
+
+      const result = computeActionable({ changedFiles: [], deletedFiles, report, baseline });
+
+      expect(result.perTestS).toBeNull();
+    });
+
+    it('accounts for deletions when computing net totals alongside added files', () => {
+      // new_spec.js (new): +4 tests, +12s. slow_spec.js (deleted): -8 tests, -40s.
+      const changedFiles = [
+        {
+          path: 'spec/frontend/msw_integration/new_spec.js',
+          isNew: true,
+          oldPath: 'spec/frontend/msw_integration/new_spec.js',
+        },
+      ];
+      const deletedFiles = [{ path: 'spec/frontend/msw_integration/slow_spec.js' }];
+
+      const result = computeActionable({ changedFiles, deletedFiles, report, baseline });
+
+      // Net: 4 - 8 = -4 tests, 12 - 40 = -28s.
+      expect(result.addedTests).toBe(-4);
+      expect(result.addedRuntimeS).toBe(-28);
+      expect(result.perTestS).toBeNull();
+    });
+  });
 });
 
 describe('buildComment', () => {
@@ -200,7 +307,8 @@ describe('buildComment', () => {
 
     const comment = buildComment({ ...baseArgs, baseline, actionable });
 
-    expect(comment).toContain('<!-- msw-test-result-summary -->');
+    expect(comment).toContain('### MSW Test Result Summary');
+    expect(comment).not.toContain(COMBINED_MARKER);
     expect(comment).toContain('🔴 **Action required**');
     expect(comment).toContain('+1 new test');
     expect(comment).toContain('130s/test');
@@ -241,6 +349,106 @@ describe('buildComment', () => {
     const comment = buildComment({ ...baseArgs, baseline, actionable, truncated: false });
 
     expect(comment).not.toContain('per-file breakdown is truncated');
+  });
+
+  describe('with deleted spec files', () => {
+    const deletedFiles = [
+      {
+        path: 'spec/features/work_items/list/user_applies_filters_spec.rb',
+        masterRuntimeS: 90,
+        masterTests: 3,
+      },
+    ];
+
+    it('mentions time saved in the headline when there are deleted files with a baseline', () => {
+      const actionable = {
+        files: [
+          {
+            path: 'ee/spec/frontend/msw_integration/work_items_spec.js',
+            isNew: true,
+            currentRuntimeS: 3,
+            masterRuntimeS: null,
+            deltaRuntimeS: 3,
+            currentTests: 8,
+            masterTests: null,
+            deltaTests: 8,
+          },
+        ],
+        deletedFiles,
+        addedRuntimeS: -87, // 3 - 90
+        addedTests: 5, // 8 - 3
+        perTestS: -87 / 5,
+      };
+
+      const comment = buildComment({ ...baseArgs, baseline, actionable });
+
+      expect(comment).toContain('−1m 30s saved');
+      expect(comment).toContain('deleting 1 spec file');
+    });
+
+    it('includes deleted file rows in the per-file breakdown table', () => {
+      const actionable = {
+        files: [],
+        deletedFiles,
+        addedRuntimeS: -90,
+        addedTests: -3,
+        perTestS: null,
+      };
+
+      const comment = buildComment({ ...baseArgs, baseline, actionable });
+
+      expect(comment).toContain('(deleted)');
+      expect(comment).toContain('user_applies_filters_spec.rb');
+      expect(comment).toContain('3 → 0 (−3)');
+      expect(comment).toContain('1m 30s → 0s');
+    });
+
+    it('shows the per-file breakdown section when only deleted files are present', () => {
+      const actionable = {
+        files: [],
+        deletedFiles,
+        addedRuntimeS: -90,
+        addedTests: -3,
+        perTestS: null,
+      };
+
+      const comment = buildComment({ ...baseArgs, baseline, actionable });
+
+      expect(comment).toContain('<details><summary>Per-file breakdown</summary>');
+    });
+
+    it('omits the deleted suffix when no deleted files have a baseline', () => {
+      const actionable = {
+        files: [],
+        deletedFiles: [],
+        addedRuntimeS: 0,
+        addedTests: 0,
+        perTestS: null,
+      };
+
+      const comment = buildComment({ ...baseArgs, baseline, actionable });
+
+      expect(comment).not.toContain('saved');
+      expect(comment).not.toContain('deleted');
+    });
+  });
+});
+
+describe('buildDeletedFileRow', () => {
+  it('renders a table row with (deleted) tag, test count going to 0, and negative delta', () => {
+    const df = {
+      path: 'spec/features/work_items/list/user_applies_filters_spec.rb',
+      masterRuntimeS: 90,
+      masterTests: 3,
+    };
+
+    const row = buildDeletedFileRow(df);
+
+    expect(row).toContain('(deleted)');
+    expect(row).toContain('user_applies_filters_spec.rb');
+    expect(row).toContain('3 → 0 (−3)');
+    expect(row).toContain('1m 30s → 0s (−1m 30s)');
+    expect(row).toContain('−1m 30s');
   });
 });
 
@@ -302,5 +510,92 @@ describe('apiRequest', () => {
     await expect(promise).resolves.toThrow('ECONNRESET');
     // 1 initial call + 2 retries (MAX_API_ATTEMPTS = 3).
     expect(global.fetch).toHaveBeenCalledTimes(3);
+  });
+});
+
+describe('spliceSection', () => {
+  const existing = [
+    '<!-- test-result-summary -->',
+    '',
+    '## Test Result Summary',
+    '',
+    '<!-- section:msw -->',
+    '### MSW Test Result Summary',
+    '',
+    'stale msw body',
+    '<!-- /section:msw -->',
+    '',
+    '<!-- section:rspec -->',
+    '### RSpec Test Result Summary',
+    '',
+    'rspec body',
+    '<!-- /section:rspec -->',
+    '',
+  ].join('\n');
+
+  it('replaces only its own section', () => {
+    const result = spliceSection(existing, 'msw', 'fresh msw body');
+
+    expect(result).toContain('fresh msw body');
+    expect(result).not.toContain('stale msw body');
+  });
+
+  it('leaves the other section untouched', () => {
+    const result = spliceSection(existing, 'msw', 'fresh msw body');
+
+    expect(result).toContain(
+      '<!-- section:rspec -->\n### RSpec Test Result Summary\n\nrspec body\n<!-- /section:rspec -->',
+    );
+  });
+
+  it('appends the section when its markers are missing', () => {
+    const body =
+      '<!-- test-result-summary -->\n\n<!-- section:rspec -->\nrspec body\n<!-- /section:rspec -->\n';
+
+    const result = spliceSection(body, 'msw', 'msw body');
+
+    expect(result).toContain('<!-- section:msw -->');
+    expect(result).toContain('msw body');
+    expect(result).toContain('rspec body');
+  });
+});
+
+describe('placeholderSection', () => {
+  it('reports a counterpart job that is in the pipeline as pending', () => {
+    expect(placeholderSection('rspec', { jobPresent: true })).toContain('Pending');
+  });
+
+  it('reports a counterpart job absent from the pipeline as not run', () => {
+    expect(placeholderSection('rspec', { jobPresent: false })).toContain('Did not run');
+  });
+});
+
+describe('buildCombinedComment', () => {
+  it('carries the shared marker and both sections', () => {
+    const comment = buildCombinedComment('msw', 'msw body', { counterpartPresent: true });
+
+    expect(comment).toContain('<!-- test-result-summary -->');
+    expect(comment).toContain('## Test Result Summary');
+    expect(comment).toContain('<!-- section:msw -->');
+    expect(comment).toContain('msw body');
+    expect(comment).toContain('<!-- section:rspec -->');
+    expect(comment).toContain('Pending');
+  });
+});
+
+describe('formatDuration', () => {
+  it.each`
+    seconds   | expected
+    ${null}   | ${'—'}
+    ${-1}     | ${'—'}
+    ${0}      | ${'0s'}
+    ${59}     | ${'59s'}
+    ${90}     | ${'1m 30s'}
+    ${3599}   | ${'59m 59s'}
+    ${3600}   | ${'1h 0m 0s'}
+    ${3661}   | ${'1h 1m 1s'}
+    ${215142} | ${'59h 45m 42s'}
+  `('formats $seconds as "$expected"', ({ seconds, expected }) => {
+    expect(formatDuration(seconds)).toBe(expected);
   });
 });

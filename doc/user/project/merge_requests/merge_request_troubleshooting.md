@@ -173,7 +173,7 @@ greater than 1000. The cached value is rounded to thousands (or millions) and up
 ## Check out merge requests locally through the `head` ref
 
 A merge request contains all the history from a repository, plus the additional
-commits added to the branch associated with the merge request. Here's a few
+commits added to the branch associated with the merge request. Here are a few
 ways to check out a merge request locally.
 
 You can check out a merge request locally even if the source
@@ -214,7 +214,7 @@ from the `origin` remote, do:
 git mr origin 5
 ```
 
-This fetches the merge request into a local `mr-origin-5` branch and check
+This fetches the merge request into a local `mr-origin-5` branch and checks
 it out.
 
 ### Check out locally by modifying `.git/config` for a given repository
@@ -267,7 +267,7 @@ To check out a particular merge request:
 git checkout origin/merge-requests/1
 ```
 
-These commands can be also be done with the [`git-mr`](https://gitlab.com/glensc/git-mr) script.
+These commands can also be done with the [`git-mr`](https://gitlab.com/glensc/git-mr) script.
 
 ## Error: `source branch <branch_name> does not exist.` when the branch exists
 
@@ -338,5 +338,5 @@ For more information, see
 [multiple branches containing the same commit](../repository/branches/_index.md#multiple-branches-containing-the-same-commit).
 
 > [!note]
-> In some cases, GitLab may show `merged manually` instead of `Merged with !<merge_request_id>`.
+> In some cases, GitLab might show `merged manually` instead of `Merged with !<merge_request_id>`.
 > For more information, see [issue 456426](https://gitlab.com/gitlab-org/gitlab/-/issues/456426).

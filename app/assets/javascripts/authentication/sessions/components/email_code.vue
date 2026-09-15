@@ -5,6 +5,7 @@ import illustration from '@gitlab/svgs/dist/illustrations/email-verification-md.
 import { s__ } from '~/locale';
 import { createAlert, VARIANT_SUCCESS } from '~/alert';
 import { visitUrl } from '~/lib/utils/url_utility';
+import { applyDeepLinkFragment } from '~/authentication/sessions/post_signin_fragment';
 import axios from '~/lib/utils/axios_utils';
 import GlCountdown from '~/vue_shared/components/gl_countdown.vue';
 import {
@@ -120,7 +121,7 @@ export default {
           user: { verification_token: this.values[FIELD_KEY] },
         });
         if (data.status === SUCCESS_RESPONSE) {
-          visitUrl(data.redirect_path);
+          visitUrl(applyDeepLinkFragment(data.redirect_path));
         } else {
           this.handleError();
         }

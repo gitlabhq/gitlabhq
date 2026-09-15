@@ -125,7 +125,7 @@ RSpec.describe Gitlab::Ci::Pipeline::Chain::Populate, feature_category: :pipelin
       it 'does not protect the pipeline' do
         run_chain
 
-        expect(pipeline.protected).to eq(true)
+        expect(pipeline.protected).to be(true)
       end
     end
 
@@ -133,7 +133,7 @@ RSpec.describe Gitlab::Ci::Pipeline::Chain::Populate, feature_category: :pipelin
       it 'does not protect the pipeline' do
         run_chain
 
-        expect(pipeline.protected).to eq(false)
+        expect(pipeline.protected).to be(false)
       end
     end
   end

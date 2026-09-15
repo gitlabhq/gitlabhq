@@ -149,6 +149,123 @@ RSpec.describe PerTestCoverageArtifactDownloader, feature_category: :tooling do
       end
     end
 
+    context 'when the artifacts endpoint returns 404 for every shard' do
+      let(:matching_jobs) do
+        [
+          { 'id' => 100, 'name' => 'rspec unit per-test-coverage' },
+          { 'id' => 101, 'name' => 'rspec-ee unit per-test-coverage' }
+        ]
+      end
+
+      before do
+        stub_bridges([
+          { 'name' => described_class::BRIDGE_NAME,
+            'downstream_pipeline' => { 'id' => child_pipeline_id } }
+        ])
+        stub_jobs(matching_jobs)
+        stub_request(:get, %r{/projects/#{project_id}/jobs/(100|101)/artifacts})
+          .with(headers: { 'JOB-TOKEN' => job_token })
+          .to_return(status: 404, body: '{"message":"404 Not Found"}')
+      end
+
+      it 'returns 0 because an empty shard is a valid outcome', :aggregate_failures do
+        expect(downloader.run).to eq(0)
+        expect(downloader).to have_received(:puts)
+          .with(/no artifacts for rspec unit per-test-coverage \(100\)/)
+        expect(downloader).to have_received(:puts)
+          .with(/no artifacts for rspec-ee unit per-test-coverage \(101\)/)
+      end
+
+      it 'reports the skipped shards in the summary line' do
+        downloader.run
+
+        expect(downloader).to have_received(:puts).with(%r{0/2 jobs \(2 skipped: no artifacts\)})
+      end
+    end
+
+    context 'when one shard downloads and another returns 404' do
+      let(:matching_jobs) do
+        [
+          { 'id' => 100, 'name' => 'rspec unit per-test-coverage' },
+          { 'id' => 101, 'name' => 'rspec-ee unit per-test-coverage' }
+        ]
+      end
+
+      before do
+        stub_bridges([
+          { 'name' => described_class::BRIDGE_NAME,
+            'downstream_pipeline' => { 'id' => child_pipeline_id } }
+        ])
+        stub_jobs(matching_jobs)
+
+        stub_request(:get, "#{api_url}/projects/#{project_id}/jobs/100/artifacts")
+          .with(headers: { 'JOB-TOKEN' => job_token })
+          .to_return(status: 200, body: 'fake-zip-bytes')
+        stub_request(:get, "#{api_url}/projects/#{project_id}/jobs/101/artifacts")
+          .with(headers: { 'JOB-TOKEN' => job_token })
+          .to_return(status: 404, body: '{"message":"404 Not Found"}')
+
+        allow(downloader).to receive(:system).with('unzip', any_args).and_return(true)
+      end
+
+      it 'returns 0 and counts the 404 shard as skipped, not failed' do
+        expect(downloader.run).to eq(0)
+      end
+    end
+
+    context 'when one shard returns 404 and another hits a real download error' do
+      let(:matching_jobs) do
+        [
+          { 'id' => 100, 'name' => 'rspec unit per-test-coverage' },
+          { 'id' => 101, 'name' => 'rspec-ee unit per-test-coverage' }
+        ]
+      end
+
+      before do
+        stub_bridges([
+          { 'name' => described_class::BRIDGE_NAME,
+            'downstream_pipeline' => { 'id' => child_pipeline_id } }
+        ])
+        stub_jobs(matching_jobs)
+
+        stub_request(:get, "#{api_url}/projects/#{project_id}/jobs/100/artifacts")
+          .with(headers: { 'JOB-TOKEN' => job_token })
+          .to_return(status: 404, body: '{"message":"404 Not Found"}')
+        stub_request(:get, "#{api_url}/projects/#{project_id}/jobs/101/artifacts")
+          .with(headers: { 'JOB-TOKEN' => job_token })
+          .to_return(status: 500, body: 'boom')
+      end
+
+      it 'returns 1 because the real error must still surface' do
+        expect(downloader.run).to eq(1)
+      end
+    end
+
+    context 'when a post-redirect host returns 404' do
+      let(:matching_jobs) do
+        [{ 'id' => 100, 'name' => 'rspec unit per-test-coverage' }]
+      end
+
+      let(:gcs_url) { 'https://storage.googleapis.com/gitlab-artifacts/100.zip' }
+
+      before do
+        stub_bridges([
+          { 'name' => described_class::BRIDGE_NAME,
+            'downstream_pipeline' => { 'id' => child_pipeline_id } }
+        ])
+        stub_jobs(matching_jobs)
+
+        stub_request(:get, "#{api_url}/projects/#{project_id}/jobs/100/artifacts")
+          .with(headers: { 'JOB-TOKEN' => job_token })
+          .to_return(status: 302, headers: { 'Location' => gcs_url })
+        stub_request(:get, gcs_url).to_return(status: 404, body: 'NoSuchKey')
+      end
+
+      it 'returns 1 because only the API 404 means the job uploaded nothing' do
+        expect(downloader.run).to eq(1)
+      end
+    end
+
     context 'when some downloads succeed and others fail' do
       let(:matching_jobs) do
         [
@@ -389,6 +506,15 @@ RSpec.describe PerTestCoverageArtifactDownloader, feature_category: :tooling do
         allow(downloader).to receive(:system).with(process_command).and_return(false)
 
         expect(downloader.run).to eq(1)
+      end
+
+      it 'still runs the process command when every shard in the batch was skipped (404)' do
+        stub_request(:get, %r{/projects/#{project_id}/jobs/(100|101|102)/artifacts})
+          .with(headers: { 'JOB-TOKEN' => job_token })
+          .to_return(status: 404, body: '{"message":"404 Not Found"}')
+
+        expect(downloader.run).to eq(0)
+        expect(downloader).to have_received(:system).with(process_command).twice
       end
 
       it 'clears each batch before the next, so disk never holds more than one batch' do

@@ -2,7 +2,6 @@ import { oauthCallback } from '@gitlab/web-ide';
 import { IDE_ELEMENT_ID } from '~/ide/constants';
 import { createAlert } from '~/alert';
 import { s__ } from '~/locale';
-
 import { getBaseConfig, getOAuthConfig } from './lib/gitlab_web_ide';
 
 export const mountOAuthCallback = async () => {

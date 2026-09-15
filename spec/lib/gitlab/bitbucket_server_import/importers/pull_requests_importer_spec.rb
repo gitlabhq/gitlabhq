@@ -190,6 +190,81 @@ RSpec.describe Gitlab::BitbucketServerImport::Importers::PullRequestsImporter, :
         end
       end
 
+      context 'when there are more refs to fetch than MAX_REFS_PER_FETCH' do
+        let(:page_hash_1) do
+          { limit: 100, page_offset: 1 }
+        end
+
+        def pull_requests_with_refs(count)
+          (1..count).map do |i|
+            BitbucketServer::Representation::PullRequest.new(
+              {
+                'id' => i,
+                'state' => 'MERGED',
+                'fromRef' => { 'latestCommit' => "commit-#{i}-a" },
+                'toRef' => { 'latestCommit' => "commit-#{i}-b" }
+              }
+            )
+          end
+        end
+
+        def stub_pull_requests(pull_requests)
+          allow_next_instance_of(BitbucketServer::Client) do |client|
+            allow(client).to receive(:pull_requests).with('key', 'slug', page_hash_1).and_return(pull_requests)
+            allow(client).to receive(:pull_requests).with('key', 'slug', page_hash_2).and_return([])
+          end
+        end
+
+        it 'fetches refs in multiple batches capped at MAX_REFS_PER_FETCH' do
+          stub_pull_requests(pull_requests_with_refs(26))
+
+          fetched_refmaps = []
+          allow(repository).to receive(:fetch_remote) do |_, refmap:, **|
+            fetched_refmaps << refmap
+          end
+
+          importer.execute
+
+          expect(fetched_refmaps.map(&:size)).to eq([described_class::MAX_REFS_PER_FETCH, 2])
+        end
+
+        it 'fetches a single batch when refs equal MAX_REFS_PER_FETCH exactly' do
+          stub_pull_requests(pull_requests_with_refs(described_class::MAX_REFS_PER_FETCH / 2))
+
+          fetched_refmaps = []
+          allow(repository).to receive(:fetch_remote) do |_, refmap:, **|
+            fetched_refmaps << refmap
+          end
+
+          importer.execute
+
+          expect(fetched_refmaps.map(&:size)).to eq([described_class::MAX_REFS_PER_FETCH])
+        end
+
+        it 'continues fetching remaining batches when an earlier batch fails' do
+          stub_pull_requests(pull_requests_with_refs(26))
+
+          fetched_refmaps = []
+          call_count = 0
+          allow(repository).to receive(:fetch_remote) do |_, refmap:, **|
+            call_count += 1
+            raise ArgumentError, 'blank or empty URL' if call_count == 1
+
+            fetched_refmaps << refmap
+          end
+
+          expect(Gitlab::Import::ImportFailureService)
+            .to receive(:track)
+            .with(project_id: project.id, exception: instance_of(ArgumentError), error_source: described_class.name)
+            .and_call_original
+
+          importer.execute
+
+          expect(call_count).to eq(2)
+          expect(fetched_refmaps.map(&:size)).to eq([2])
+        end
+      end
+
       context 'when there are no commits to process' do
         before do
           Gitlab::Cache::Import::Caching.set_add(importer.already_processed_cache_key, 1)
@@ -240,6 +315,18 @@ RSpec.describe Gitlab::BitbucketServerImport::Importers::PullRequestsImporter, :
           importer.execute
         end
       end
+    end
+  end
+
+  describe '#concurrent_import_jobs_limit' do
+    it 'reads the pull-request-specific application setting' do
+      stub_application_setting(concurrent_pull_request_import_jobs_limit: 25)
+
+      expect(importer.send(:concurrent_import_jobs_limit)).to eq(25)
+    end
+
+    it 'defaults to 200 when the setting has not been overridden' do
+      expect(importer.send(:concurrent_import_jobs_limit)).to eq(200)
     end
   end
 end

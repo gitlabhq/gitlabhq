@@ -4,7 +4,7 @@ module RuboCop
   module Cop
     module Graphql
       # This cop checks for missing GraphQL descriptions and enforces the description style guide:
-      # https://docs.gitlab.com/ee/development/api_graphql_styleguide.html#description-style-guide
+      # https://docs.gitlab.com/development/api_graphql_styleguide/#description-style-guide
       #
       # @note
       # This cop is unsafe because not all cases of "this" can be substituted with
@@ -49,7 +49,7 @@ module RuboCop
       class Descriptions < RuboCop::Cop::Base
         extend RuboCop::Cop::AutoCorrector
 
-        MSG_STYLE_GUIDE_LINK = 'See the description style guide: https://docs.gitlab.com/ee/development/api_graphql_styleguide.html#description-style-guide'
+        MSG_STYLE_GUIDE_LINK = 'See the description style guide: https://docs.gitlab.com/development/api_graphql_styleguide/#description-style-guide'
         MSG_NO_DESCRIPTION = "Please add a `description` property. #{MSG_STYLE_GUIDE_LINK}".freeze
         MSG_NO_PERIOD = "`description` strings must end with a `.`. #{MSG_STYLE_GUIDE_LINK}".freeze
         MSG_BAD_START = "`description` strings should not start with \"A...\" or \"The...\". "\

@@ -60,7 +60,7 @@ describe('Sidebar Confidentiality Form', () => {
     createComponent();
     findCancelButton().vm.$emit('click');
 
-    expect(wrapper.emitted()['close-form']).toHaveLength(1);
+    expect(wrapper.emitted('close-form')).toHaveLength(1);
   });
 
   it('renders a loading state after clicking on turn on/off button', async () => {

@@ -466,4 +466,89 @@ RSpec.describe Gitlab::Gpg::Commit, feature_category: :source_code_management do
       end
     end
   end
+
+  describe '#lazy_signature' do
+    let(:mock_signature_data?) { false }
+    let!(:gpg_key) { nil }
+
+    let_it_be(:shared_gpg_key) { create(:gpg_key) }
+    let_it_be(:project1) { create(:project, :small_repo) }
+    let_it_be(:project2) { create(:project, :small_repo) }
+    let_it_be(:commit1) { create(:commit, project: project1, sha: '1234567890abcdef1234567890abcdef12345678') }
+    let_it_be(:commit2) { create(:commit, project: project1, sha: 'abcdef1234567890abcdef1234567890abcdef12') }
+    let_it_be(:commit3) { create(:commit, project: project2, sha: 'fedcba0987654321fedcba0987654321fedcba09') }
+
+    let_it_be(:signature1) do
+      create(:gpg_signature, project: project1, commit_sha: commit1.sha, gpg_key: shared_gpg_key,
+        verification_status: :verified)
+    end
+
+    let_it_be(:signature2) do
+      create(:gpg_signature, project: project1, commit_sha: commit2.sha, gpg_key: shared_gpg_key,
+        verification_status: :verified)
+    end
+
+    let_it_be(:signature3) do
+      create(:gpg_signature, project: project2, commit_sha: commit3.sha, gpg_key: shared_gpg_key,
+        verification_status: :verified)
+    end
+
+    before do
+      allow(Gitlab::Git::Commit).to receive(:extract_signature_lazily).and_return(nil)
+    end
+
+    it 'batches signature loading by project_id and commit_sha pairs' do
+      gpg_commit1 = described_class.new(commit1)
+      gpg_commit2 = described_class.new(commit2)
+      gpg_commit3 = described_class.new(commit3)
+
+      expect(CommitSignatures::GpgSignature).to receive(:by_commit_shas_and_project_ids).once.and_call_original
+
+      sig1 = gpg_commit1.send(:lazy_signature).itself
+      sig2 = gpg_commit2.send(:lazy_signature).itself
+      sig3 = gpg_commit3.send(:lazy_signature).itself
+
+      expect(sig1).to eq(signature1)
+      expect(sig1.project_id).to eq(project1.id)
+      expect(sig1.commit_sha).to eq(commit1.sha)
+
+      expect(sig2).to eq(signature2)
+      expect(sig2.project_id).to eq(project1.id)
+      expect(sig2.commit_sha).to eq(commit2.sha)
+
+      expect(sig3).to eq(signature3)
+      expect(sig3.project_id).to eq(project2.id)
+      expect(sig3.commit_sha).to eq(commit3.sha)
+    end
+
+    it 'correctly maps signatures to commits with same commit_sha in different projects' do
+      same_sha = '1111111111111111111111111111111111111111'
+      commit_proj1 = create(:commit, project: project1, sha: same_sha)
+      commit_proj2 = create(:commit, project: project2, sha: same_sha)
+      sig_proj1 = create(:gpg_signature, project: project1, commit_sha: same_sha, gpg_key: shared_gpg_key)
+      sig_proj2 = create(:gpg_signature, project: project2, commit_sha: same_sha, gpg_key: shared_gpg_key)
+
+      gpg_commit1 = described_class.new(commit_proj1)
+      gpg_commit2 = described_class.new(commit_proj2)
+
+      loaded_sig1 = gpg_commit1.send(:lazy_signature).itself
+      loaded_sig2 = gpg_commit2.send(:lazy_signature).itself
+
+      expect(loaded_sig1).to eq(sig_proj1)
+      expect(loaded_sig1.project_id).to eq(project1.id)
+
+      expect(loaded_sig2).to eq(sig_proj2)
+      expect(loaded_sig2.project_id).to eq(project2.id)
+
+      expect(loaded_sig1).not_to eq(loaded_sig2)
+      expect(loaded_sig1.commit_sha).to eq(loaded_sig2.commit_sha)
+    end
+
+    it 'returns nil when no signature exists for a commit' do
+      commit_without_sig = create(:commit, project: project1, sha: 'aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa')
+      gpg_commit = described_class.new(commit_without_sig)
+
+      expect(gpg_commit.send(:lazy_signature).itself).to be_nil
+    end
+  end
 end

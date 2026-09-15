@@ -70,7 +70,7 @@ module API
             page.last_version = last_commit if last_commit
           end
 
-          present pages, options
+          present pages, **options
         end
 
         desc "Retrieve a wiki page for a #{boundary_type}" do
@@ -98,7 +98,7 @@ module API
             current_user: current_user
           }
 
-          present wiki_page(params[:version]), options
+          present wiki_page(params[:version]), **options
         end
 
         desc "Create a wiki page for a #{boundary_type}" do

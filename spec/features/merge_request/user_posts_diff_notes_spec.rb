@@ -4,6 +4,7 @@ require 'spec_helper'
 
 RSpec.describe 'Merge request > User posts diff notes', :js, feature_category: :code_review_workflow do
   include Spec::Support::Helpers::ModalHelpers
+  include RapidDiffsDiscussionHelpers
 
   let_it_be(:merge_request) { create(:merge_request) }
   let(:project) { merge_request.source_project }
@@ -69,18 +70,20 @@ RSpec.describe 'Merge request > User posts diff notes', :js, feature_category: :
 
     context 'with an unfolded line' do
       before do
-        within_diff_file('a5cc2925ca8258af241be7e5b0381edf30266302') do
+        wait_for_requests # rubocop:disable RSpec/AvoidWaitForRequests -- Rapid Diffs streams diffs asynchronously
+        within_diff_file('.gitignore') do
           find('button[data-expand-direction]', match: :first).click
         end
+        wait_for_requests # rubocop:disable RSpec/AvoidWaitForRequests -- Rapid Diffs streams diffs asynchronously
       end
 
       it 'allows commenting on the left side' do
-        should_allow_commenting(first_unfolded_line('a5cc2925ca8258af241be7e5b0381edf30266302'), 'left')
+        should_allow_commenting(first_unfolded_line('.gitignore'), 'left')
       end
 
       it 'allows commenting on the right side' do
         # Automatically shifts comment box to left side.
-        should_allow_commenting(first_unfolded_line('a5cc2925ca8258af241be7e5b0381edf30266302'), 'right')
+        should_allow_commenting(first_unfolded_line('.gitignore'), 'right')
       end
     end
   end
@@ -133,14 +136,16 @@ RSpec.describe 'Merge request > User posts diff notes', :js, feature_category: :
 
     context 'with an unfolded line' do
       before do
-        within_diff_file('a5cc2925ca8258af241be7e5b0381edf30266302') do
+        wait_for_requests # rubocop:disable RSpec/AvoidWaitForRequests -- Rapid Diffs streams diffs asynchronously
+        within_diff_file('.gitignore') do
           find('button[data-expand-direction]', match: :first).click
         end
+        wait_for_requests # rubocop:disable RSpec/AvoidWaitForRequests -- Rapid Diffs streams diffs asynchronously
       end
 
       # The first expand button unfolds upwards, so the first line of the file
       # becomes the first hunk-lines row.
-      let(:line_holder) { first_unfolded_line('a5cc2925ca8258af241be7e5b0381edf30266302') }
+      let(:line_holder) { first_unfolded_line('.gitignore') }
 
       it 'allows commenting' do
         should_allow_commenting line_holder
@@ -194,12 +199,8 @@ RSpec.describe 'Merge request > User posts diff notes', :js, feature_category: :
     find("##{id}")
   end
 
-  def within_diff_file(file_hash, &block)
-    within("diff-file##{file_hash}", &block)
-  end
-
-  def first_unfolded_line(file_hash)
-    find("diff-file##{file_hash} [data-hunk-lines][data-expanded]", match: :first)
+  def first_unfolded_line(file_path)
+    diff_file(file_path).find('[data-hunk-lines][data-expanded]', match: :first)
   end
 
   def line_cell(line_holder, diff_side = nil)

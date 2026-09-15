@@ -206,7 +206,7 @@ Prerequisites:
 1. In your alternative `.gitconfig-gitlab` file, add the configuration overrides to
    use when you're committing to a GitLab repository. All settings from your
    main `~/.gitconfig` file are retained unless you explicitly override them.
-   In this example,
+   In this example:
 
    ```ini
    # Alternative ~/.gitconfig-gitlab file
@@ -336,4 +336,4 @@ If the password entry prompt doesn't appear:
    - Run `source ~/.bashrc` or `source ~/.zshrc`.
 
 > [!note]
-> The exact steps may vary depending on your operating system and shell configuration.
+> The exact steps might vary depending on your operating system and shell configuration.

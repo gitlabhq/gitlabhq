@@ -135,11 +135,11 @@ RSpec.describe 'File blob', :js, feature_category: :source_code_management do
     context 'when ref switch' do
       def switch_ref_to(ref_name)
         find('.ref-selector').click
-        wait_for_requests
 
         page.within('.ref-selector') do
-          fill_in 'Search by Git revision', with: ref_name
-          wait_for_requests
+          expect(page).to have_field(_('Search by Git revision'))
+
+          fill_in _('Search by Git revision'), with: ref_name
           find('li', text: ref_name, match: :prefer_exact).click
         end
       end

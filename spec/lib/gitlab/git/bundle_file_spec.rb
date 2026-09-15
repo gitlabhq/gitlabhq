@@ -2,7 +2,7 @@
 
 require 'fast_spec_helper'
 
-RSpec.describe Gitlab::Git::BundleFile do
+RSpec.describe Gitlab::Git::BundleFile, feature_category: :source_code_management do
   describe '.check!' do
     let(:valid_bundle) { Tempfile.new }
     let(:valid_bundle_path) { valid_bundle.path }

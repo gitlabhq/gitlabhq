@@ -11,7 +11,7 @@ def make_lines(old_lines, new_lines, texts = nil, types = nil)
   end
 end
 
-RSpec.describe Gitlab::Diff::Rendered::Notebook::DiffFileHelper do
+RSpec.describe Gitlab::Diff::Rendered::Notebook::DiffFileHelper, feature_category: :mlops do
   let(:dummy) { Class.new { include Gitlab::Diff::Rendered::Notebook::DiffFileHelper }.new }
 
   describe '#strip_diff_frontmatter' do

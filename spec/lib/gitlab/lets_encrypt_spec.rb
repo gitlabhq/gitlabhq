@@ -13,7 +13,7 @@ RSpec.describe ::Gitlab::LetsEncrypt, feature_category: :pages do
     subject { described_class.enabled? }
 
     context 'when terms of service are accepted' do
-      it { is_expected.to eq(true) }
+      it { is_expected.to be(true) }
     end
 
     context 'when terms of service are not accepted' do
@@ -21,7 +21,7 @@ RSpec.describe ::Gitlab::LetsEncrypt, feature_category: :pages do
         stub_application_setting(lets_encrypt_terms_of_service_accepted: false)
       end
 
-      it { is_expected.to eq(false) }
+      it { is_expected.to be(false) }
     end
   end
 

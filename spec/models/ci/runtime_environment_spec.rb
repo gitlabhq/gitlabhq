@@ -32,6 +32,47 @@ RSpec.describe Ci::RuntimeEnvironment, feature_category: :runner_core do
     end
   end
 
+  describe '.find_or_create_by_key_and_project!' do
+    let_it_be(:project) { create(:project) }
+
+    subject(:find_or_create) do
+      described_class.find_or_create_by_key_and_project!('some-key', project.id)
+    end
+
+    context 'when no record exists for the key and project' do
+      it 'creates a new record' do
+        expect { find_or_create }.to change { described_class.count }.by(1)
+
+        expect(find_or_create.environment_key).to eq('some-key')
+        expect(find_or_create.project_id).to eq(project.id)
+      end
+    end
+
+    context 'when a record already exists for the key and project' do
+      let_it_be(:existing) { create(:ci_runtime_environment, project: project, environment_key: 'some-key') }
+
+      it 'returns the existing record without creating a new one' do
+        expect { find_or_create }.not_to change { described_class.count }
+
+        expect(find_or_create).to eq(existing)
+      end
+    end
+
+    context 'when a record exists for the key but under a different project' do
+      let_it_be(:other_project) { create(:project) }
+      let_it_be(:other_project_record) do
+        create(:ci_runtime_environment, project: other_project, environment_key: 'some-key')
+      end
+
+      it 'creates a new record scoped to the requested project' do
+        expect { find_or_create }.to change { described_class.count }.by(1)
+
+        expect(find_or_create.project_id).to eq(project.id)
+        expect(find_or_create).not_to eq(other_project_record)
+      end
+    end
+  end
+
   describe 'partitioning' do
     it 'uses the sliding_list strategy on the partition column' do
       expect(described_class.partitioning_strategy)

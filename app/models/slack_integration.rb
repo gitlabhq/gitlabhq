@@ -13,10 +13,6 @@ class SlackIntegration < ApplicationRecord
   SCOPE_CHANNELS_HISTORY = 'channels:history'
   SCOPE_GROUPS_HISTORY = 'groups:history'
   SCOPE_REACTIONS_WRITE = 'reactions:write'
-  SCOPE_CHANNELS_READ = 'channels:read'
-  SCOPE_GROUPS_READ = 'groups:read'
-  SCOPE_IM_READ = 'im:read'
-  SCOPE_MPIM_READ = 'mpim:read'
   ORGANIZATION_ALIAS = 'gitlab-organization'
 
   # These scopes are requested when installing the app, additional scopes
@@ -33,11 +29,7 @@ class SlackIntegration < ApplicationRecord
     SCOPE_APP_MENTIONS_READ,
     SCOPE_CHANNELS_HISTORY,
     SCOPE_GROUPS_HISTORY,
-    SCOPE_REACTIONS_WRITE,
-    SCOPE_CHANNELS_READ,
-    SCOPE_GROUPS_READ,
-    SCOPE_IM_READ,
-    SCOPE_MPIM_READ
+    SCOPE_REACTIONS_WRITE
   ].freeze
   DATABASE_ATTRIBUTES = %w[
     team_id team_name user_id bot_user_id encrypted_bot_access_token encrypted_bot_access_token_iv

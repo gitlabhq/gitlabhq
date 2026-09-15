@@ -37,7 +37,7 @@ You can control which analytics pipelines run by setting these **Project CI/CD V
 1. Fork this repository.
 1. Go to **Project Settings → CI/CD → Variables**.
 1. Add the variables above with values appropriate for your environment.
-1. Configure a **scheduled pipeline** at your preferred interval. Duo usage collection can be heavy, so running **once per day** is recommended.
+1. Configure a scheduled pipeline at your preferred interval. Duo usage collection can be heavy, so running once per day is recommended.
 1. Run the scheduled pipeline manually, or wait for its schedule.
 1. After the pipeline completes, open the **Pages** application under **Deploy → Pages** to access the Duo Analytics dashboard.
 

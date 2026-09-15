@@ -64,7 +64,7 @@ RSpec.describe Gitlab::FileMarkdownLinkBuilder do
       let(:filename) { nil }
 
       it 'returns nil' do
-        expect(custom_class.markdown_link).to eq nil
+        expect(custom_class.markdown_link).to be_nil
       end
     end
   end
@@ -106,7 +106,7 @@ RSpec.describe Gitlab::FileMarkdownLinkBuilder do
       let(:filename) { nil }
 
       it 'returns nil' do
-        expect(custom_class.markdown_name).to eq nil
+        expect(custom_class.markdown_name).to be_nil
       end
     end
   end

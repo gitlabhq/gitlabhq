@@ -7,10 +7,16 @@ class Projects::DeployTokensController < Projects::ApplicationController
   urgency :low
 
   def revoke
-    @token = @project.deploy_tokens.find(params[:id])
+    @token = @project.deploy_tokens.find(id_param)
     @token.revoke!
 
     redirect_to project_settings_repository_path(project, anchor: 'js-deploy-tokens')
+  end
+
+  private
+
+  def id_param
+    params.permit(:id)[:id]
   end
 end
 

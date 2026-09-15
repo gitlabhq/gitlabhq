@@ -7,7 +7,7 @@ RSpec.describe Gitlab::QuickActions::TimelineTextAndDateTimeSeparator do
 
   shared_examples 'arg line with invalid parameters' do
     it 'returns nil' do
-      expect(timeline_text_and_datetime_separator.new(invalid_arg).execute).to eq(nil)
+      expect(timeline_text_and_datetime_separator.new(invalid_arg).execute).to be_nil
     end
   end
 

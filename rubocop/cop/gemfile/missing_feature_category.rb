@@ -19,7 +19,7 @@ module RuboCop
       #   gem 'bar', feature_category: :tooling
       #
       class MissingFeatureCategory < RuboCop::Cop::Base
-        DOCUMENT_LINK = 'https://docs.gitlab.com/ee/development/feature_categorization/#gemfile'
+        DOCUMENT_LINK = 'https://docs.gitlab.com/development/feature_categorization/#gemfile'
 
         # @!method send_gem(node)
         def_node_matcher :send_gem, <<~PATTERN

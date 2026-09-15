@@ -27,13 +27,18 @@ import WorkItemStickyHeader from '~/work_items/components/work_item_sticky_heade
 import WorkItemTitle from '~/work_items/components/work_item_title.vue';
 import WorkItemAbuseModal from '~/work_items/components/work_item_abuse_modal.vue';
 import WorkItemDetailPanel from '~/work_items/components/work_item_detail_panel.vue';
-import TodosToggle from '~/work_items/components/shared/todos_toggle.vue';
+import WorkItemTodosWidget from '~/work_items/components/work_item_todos_widget.vue';
 import DesignWidget from '~/work_items/components/design_management/design_management_widget.vue';
 import DesignUploadButton from '~/work_items/components//design_management/upload_button.vue';
 import WorkItemCreateBranchMergeRequestSplitButton from '~/work_items/components/work_item_development/work_item_create_branch_merge_request_split_button.vue';
 import DesignDropzone from '~/vue_shared/components/upload_dropzone/upload_dropzone.vue';
 import uploadDesignMutation from '~/work_items/components/design_management/graphql/upload_design.mutation.graphql';
-import { i18n, STATE_CLOSED, WIDGET_TYPE_MILESTONE } from '~/work_items/constants';
+import {
+  i18n,
+  STATE_CLOSED,
+  WIDGET_TYPE_MILESTONE,
+  WORK_ITEM_DETAIL_PANEL,
+} from '~/work_items/constants';
 import workItemByIdQuery from '~/work_items/graphql/work_item_by_id.query.graphql';
 import workItemByIidQuery from '~/work_items/graphql/work_item_by_iid.query.graphql';
 import updateWorkItemMutation from '~/work_items/graphql/update_work_item.mutation.graphql';
@@ -41,9 +46,12 @@ import workItemUpdatedSubscription from '~/work_items/graphql/work_item_updated.
 import getAllowedWorkItemChildTypes from '~/work_items/graphql/work_item_allowed_children.query.graphql';
 import workspacePermissionsQuery from '~/work_items/graphql/workspace_permissions.query.graphql';
 import workItemLinkedItemsQuery from '~/work_items/graphql/work_item_linked_items.query.graphql';
+import workItemLinkedResourcesQuery from '~/work_items/graphql/work_item_linked_resources.query.graphql';
+import workItemLinkedResourcesUpdatedSubscription from '~/work_items/graphql/work_item_linked_resources.subscription.graphql';
 
 import {
   workItemByIidResponseFactory,
+  workItemLinkedResourcesResponseFactory,
   workItemQueryResponse,
   mockParent,
   workItemLinkedItemsResponse,
@@ -129,7 +137,7 @@ describe('WorkItemDetail component', () => {
   const findWorkItemRelationships = () => wrapper.findComponent(WorkItemRelationships);
   const findNotesWidget = () => wrapper.findComponent(WorkItemNotes);
   const findWorkItemAbuseModal = () => wrapper.findComponent(WorkItemAbuseModal);
-  const findTodosToggle = () => wrapper.findComponent(TodosToggle);
+  const findTodosWidget = () => wrapper.findComponent(WorkItemTodosWidget);
   const findStickyHeader = () => wrapper.findComponent(WorkItemStickyHeader);
   const findWorkItemTwoColumnViewContainer = () => wrapper.findByTestId('work-item-overview');
   const findRightSidebar = () => wrapper.findByTestId('work-item-overview-right-sidebar');
@@ -154,6 +162,13 @@ describe('WorkItemDetail component', () => {
     return { dataTransfer: { types, files, items } };
   };
 
+  const linkedResourcesSuccessHandler = jest
+    .fn()
+    .mockResolvedValue(workItemLinkedResourcesResponseFactory());
+  const linkedResourcesSubscriptionHandler = jest
+    .fn()
+    .mockResolvedValue({ data: { workItemUpdated: null } });
+
   const createComponent = ({
     props = {},
     provide = {},
@@ -177,6 +192,8 @@ describe('WorkItemDetail component', () => {
       [workspacePermissionsQuery, workspacePermissionsHandler],
       [uploadDesignMutation, uploadDesignMutationHandler],
       [workItemLinkedItemsQuery, workItemLinkedItemsSuccessHandler],
+      [workItemLinkedResourcesQuery, linkedResourcesSuccessHandler],
+      [workItemLinkedResourcesUpdatedSubscription, linkedResourcesSubscriptionHandler],
     ]);
 
     wrapper = shallowMountExtended(WorkItemDetail, {
@@ -286,7 +303,7 @@ describe('WorkItemDetail component', () => {
     });
 
     it('renders todos widget if logged in', () => {
-      expect(findTodosToggle().exists()).toBe(true);
+      expect(findTodosWidget().exists()).toBe(true);
     });
 
     it('calls the work item updated subscription', () => {
@@ -358,23 +375,22 @@ describe('WorkItemDetail component', () => {
       createComponent({ mutationHandler });
       await mockApollo.resolveAll();
 
-      findWorkItemActions().vm.$emit('toggleWorkItemConfidentiality', true);
+      findWorkItemActions().vm.$emit('toggle-work-item-confidentiality', true);
       await nextTick();
 
       expect(findWorkItemActions().props('updateInProgress')).toBe(true);
     });
 
-    it('emits workItemUpdated when mutation is successful', async () => {
+    it('shows a toast when mutation is successful', async () => {
       createComponent({ mutationHandler });
       await mockApollo.resolveAll();
 
-      findWorkItemActions().vm.$emit('toggleWorkItemConfidentiality', true);
+      findWorkItemActions().vm.$emit('toggle-work-item-confidentiality', true);
       await mockApollo.resolveMutation(updateWorkItemMutation);
 
       await nextTick();
       expect(toast).toHaveBeenCalledWith('Confidentiality turned on.');
 
-      expect(wrapper.emitted('workItemUpdated')).toEqual([[{ confidential: true }]]);
       expect(mutationHandler).toHaveBeenCalledWith({
         input: {
           id: 'gid://gitlab/WorkItem/1',
@@ -388,10 +404,9 @@ describe('WorkItemDetail component', () => {
       createComponent({ mutationHandler: jest.fn() });
       await mockApollo.resolveAll();
 
-      findWorkItemActions().vm.$emit('toggleWorkItemConfidentiality', true);
+      findWorkItemActions().vm.$emit('toggle-work-item-confidentiality', true);
       await mockApollo.rejectMutation(updateWorkItemMutation, new Error(errorMessage));
 
-      expect(wrapper.emitted('workItemUpdated')).toBeUndefined();
       expect(findAlert().text()).toBe(errorMessage);
     });
   });
@@ -423,7 +438,7 @@ describe('WorkItemDetail component', () => {
       createComponent({ mutationHandler });
       await mockApollo.resolveAll();
 
-      findWorkItemDescription().vm.$emit('updateWorkItem', { clearDraft: clearDraftSpy });
+      findWorkItemDescription().vm.$emit('update-work-item', { clearDraft: clearDraftSpy });
       await mockApollo.resolveMutation(updateWorkItemMutation);
 
       expect(clearDraftSpy).toHaveBeenCalled();
@@ -435,10 +450,106 @@ describe('WorkItemDetail component', () => {
       createComponent({ mutationHandler });
       await mockApollo.resolveAll();
 
-      findWorkItemDescription().vm.$emit('updateWorkItem', { clearDraft: clearDraftSpy });
+      findWorkItemDescription().vm.$emit('update-work-item', { clearDraft: clearDraftSpy });
       await mockApollo.rejectMutation(updateWorkItemMutation);
 
       expect(clearDraftSpy).not.toHaveBeenCalled();
+    });
+
+    describe('task list item toggling', () => {
+      const taskListToggle = {
+        checked: true,
+        lineSource: '- [ ] todo 2',
+        lineSourcepos: '2:1-2:15',
+      };
+
+      let revert;
+
+      const emitTaskItemToggled = () =>
+        findWorkItemDescription().vm.$emit('task-item-toggled', { ...taskListToggle, revert });
+
+      const toggleTaskItem = async (mutationHandler) => {
+        createComponent({ mutationHandler });
+        await mockApollo.resolveAll();
+
+        emitTaskItemToggled();
+        await mockApollo.resolveMutation(updateWorkItemMutation);
+      };
+
+      beforeEach(() => {
+        revert = jest.fn();
+      });
+
+      describe('when the mutation succeeds', () => {
+        let mutationHandler;
+
+        beforeEach(async () => {
+          mutationHandler = jest.fn().mockReturnValue({
+            data: {
+              workItemUpdate: {
+                workItem: workItemByIidQueryResponse.data.namespace.workItem,
+                errors: [],
+              },
+            },
+          });
+
+          await toggleTaskItem(mutationHandler);
+        });
+
+        it('sends only the task list toggle in the mutation input', () => {
+          expect(mutationHandler).toHaveBeenCalledWith({
+            input: {
+              id: 'gid://gitlab/WorkItem/1',
+              descriptionWidget: { taskListToggle },
+            },
+            useWorkItemFeatures: false,
+          });
+        });
+      });
+
+      describe('when the mutation reports a conflict', () => {
+        const conflictMessage = 'Someone edited this issue at the same time you did.';
+
+        beforeEach(async () => {
+          await toggleTaskItem(
+            jest.fn().mockReturnValue({
+              data: {
+                workItemUpdate: {
+                  workItem: workItemByIidQueryResponse.data.namespace.workItem,
+                  errors: [conflictMessage],
+                },
+              },
+            }),
+          );
+        });
+
+        it('shows an alert', () => {
+          expect(findAlert().text()).toBe(conflictMessage);
+        });
+
+        it('does not revert the checkbox', () => {
+          expect(revert).not.toHaveBeenCalled();
+        });
+      });
+
+      describe('when the response has no work item to resync from', () => {
+        beforeEach(async () => {
+          await toggleTaskItem(
+            jest.fn().mockReturnValue({
+              data: {
+                workItemUpdate: {
+                  workItem: null,
+                  errors: ['Description is too long (maximum is 1048576 characters)'],
+                },
+              },
+            }),
+          );
+        });
+
+        it('reverts the checkbox', () => {
+          expect(revert).toHaveBeenCalled();
+        });
+      });
     });
   });
 
@@ -560,39 +671,24 @@ describe('WorkItemDetail component', () => {
     });
   });
 
-  it('renders the resources widget', async () => {
+  // The widget is registered with `defineAsyncComponent`, and its stub exposes no props under
+  // Vue 3, so this asserts on rendering rather than on the props the parent passes.
+  it('renders the resources widget when the work item has the widget', async () => {
     createComponent();
     await mockApollo.resolveAll();
 
     expect(findLinkedResourcesWidget().exists()).toBe(true);
   });
 
-  it('renders the resources widget from features', async () => {
-    const response = workItemByIidResponseFactory({
-      linkedResourcesWidgetPresent: false,
-      features: {
-        linkedResources: {
-          linkedResources: {
-            nodes: [
-              {
-                url: 'http://zoom.example.com/j/1234567890',
-                __typename: 'WorkItemLinkedResource',
-              },
-            ],
-            __typename: 'WorkItemLinkedResourceConnection',
-          },
-          __typename: 'WorkItemWidgetLinkedResources',
-        },
-      },
-    });
-
+  it('does not render the resources widget when the work item lacks the widget', async () => {
     createComponent({
-      handler: jest.fn().mockReturnValue(response),
-      provide: { glFeatures: { workItemFeaturesField: true } },
+      handler: jest
+        .fn()
+        .mockResolvedValue(workItemByIidResponseFactory({ linkedResourcesWidgetPresent: false })),
     });
     await mockApollo.resolveAll();
 
-    expect(findLinkedResourcesWidget().exists()).toBe(true);
+    expect(findLinkedResourcesWidget().exists()).toBe(false);
   });
 
   it('shows an error message when WorkItemTitle emits an `error` event', async () => {
@@ -819,6 +915,23 @@ describe('WorkItemDetail component', () => {
 
         expect(findDetailPanel().props('activeItem')).toEqual(child);
       });
+
+      // The widget uses activePanel to tell "the panel closed" from "another panel replaced it",
+      // and only scrolls back to the item in the first case.
+      it('passes the open panel down to the relationship widget', async () => {
+        createComponent({ handler });
+        await mockApollo.resolveAll();
+
+        expect(findWorkItemRelationships().props('activePanel')).toBe(null);
+
+        findWorkItemRelationships().vm.$emit('show-modal', {
+          event: { preventDefault: jest.fn() },
+          child: { id: 'childWorkItemId' },
+        });
+        await nextTick();
+
+        expect(findWorkItemRelationships().props('activePanel')).toBe(WORK_ITEM_DETAIL_PANEL);
+      });
     });
   });
 
@@ -888,8 +1001,8 @@ describe('WorkItemDetail component', () => {
       expect(findWorkItemAbuseModal().exists()).toBe(false);
     });
 
-    it('should be visible when the work item actions button emits `toggleReportAbuseModal` event', async () => {
-      findWorkItemActions().vm.$emit('toggleReportAbuseModal', true);
+    it('should be visible when the work item actions button emits `toggle-report-abuse-modal` event', async () => {
+      findWorkItemActions().vm.$emit('toggle-report-abuse-modal', true);
       await nextTick();
 
       expect(findWorkItemAbuseModal().exists()).toBe(true);
@@ -923,7 +1036,7 @@ describe('WorkItemDetail component', () => {
     });
 
     it('does not renders if not logged in', () => {
-      expect(findTodosToggle().exists()).toBe(false);
+      expect(findTodosWidget().exists()).toBe(false);
     });
   });
 
@@ -1391,7 +1504,7 @@ describe('WorkItemDetail component', () => {
       it('tracks when truncation setting is toggled', async () => {
         const { trackEventSpy } = bindInternalEventDocument(wrapper.element);
 
-        findWorkItemActions().vm.$emit('toggleTruncationEnabled');
+        findWorkItemActions().vm.$emit('toggle-truncation-enabled');
         await nextTick();
 
         expect(trackEventSpy).toHaveBeenCalledWith(
@@ -1402,7 +1515,7 @@ describe('WorkItemDetail component', () => {
           undefined,
         );
 
-        findWorkItemActions().vm.$emit('toggleTruncationEnabled');
+        findWorkItemActions().vm.$emit('toggle-truncation-enabled');
         await nextTick();
 
         expect(trackEventSpy).toHaveBeenCalledWith(
@@ -1478,7 +1591,7 @@ describe('WorkItemDetail component', () => {
 
     it('hides refetch alert on successful refetch', async () => {
       successHandler.mockReturnValueOnce(workItemByIidQueryResponse);
-      findRefetchAlert().findComponent(GlAlert).vm.$emit('primaryAction');
+      findRefetchAlert().findComponent(GlAlert).vm.$emit('primary-action');
       await mockApollo.resolveAll();
 
       expect(findRefetchAlert().exists()).toBe(false);

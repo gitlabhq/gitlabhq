@@ -93,7 +93,7 @@ RSpec.describe Gitlab::Zentao::Client, :clean_gitlab_redis_cache do
       end
 
       it 'responds with success' do
-        expect(client.ping[:success]).to eq true
+        expect(client.ping[:success]).to be true
       end
     end
 
@@ -104,7 +104,7 @@ RSpec.describe Gitlab::Zentao::Client, :clean_gitlab_redis_cache do
       end
 
       it 'responds with unsuccess' do
-        expect(client.ping[:success]).to eq false
+        expect(client.ping[:success]).to be false
       end
     end
   end

@@ -14,6 +14,22 @@ RSpec.describe ::API::Base do
     double(:endpoint, route: route, options: { for: api_handler, path: ["hi"] }, namespace: '/test')
   end
 
+  describe '.endpoint_id_for_route' do
+    it 'combines the request method and origin for a declared route' do
+      route = API::API.routes.find { |r| r.request_method == 'GET' }
+
+      expect(described_class.endpoint_id_for_route(route)).to match(%r{\AGET /api/:version/})
+    end
+
+    it 'returns nil for the routes Grape generates for OPTIONS and 405 responses' do
+      # allocate: GreedyRoute's constructor differs between Grape 2.4 and 3.x, and the
+      # guard returns before reading any of the route's state.
+      greedy_route = Grape::Router::GreedyRoute.allocate
+
+      expect(described_class.endpoint_id_for_route(greedy_route)).to be_nil
+    end
+  end
+
   describe 'declare feature categories at handler level for all routes' do
     let(:api_handler) do
       Class.new(described_class) do

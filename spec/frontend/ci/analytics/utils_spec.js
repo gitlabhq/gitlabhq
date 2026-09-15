@@ -69,6 +69,12 @@ describe('Stats formatting utilities', () => {
 
       expect(captureExceptionSpy).not.toHaveBeenCalled();
     });
+
+    it('does not report to Sentry when the denominator is zero', () => {
+      calculatePipelineCountPercentage('10', '0');
+
+      expect(captureExceptionSpy).not.toHaveBeenCalled();
+    });
   });
 
   describe('formatPipelineCountPercentage', () => {

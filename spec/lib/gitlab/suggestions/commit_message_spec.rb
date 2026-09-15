@@ -143,7 +143,6 @@ RSpec.describe Gitlab::Suggestions::CommitMessage, feature_category: :code_revie
       end
 
       context 'is specified and includes all placeholders' do
-        let(:suggestion_author) { suggestion_set.authors.first }
         let(:message) do
           <<~MESSAGE
           ***

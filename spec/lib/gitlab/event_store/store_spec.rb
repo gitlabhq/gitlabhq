@@ -107,8 +107,8 @@ RSpec.describe Gitlab::EventStore::Store, feature_category: :shared do
       subscription = subscriptions.first
       expect(subscription).to be_an_instance_of(Gitlab::EventStore::Subscription)
       expect(subscription.worker).to eq(worker)
-      expect(subscription.condition.call(double(data: { name: 'Bob' }))).to eq(false)
-      expect(subscription.condition.call(double(data: { name: 'Alice' }))).to eq(true)
+      expect(subscription.condition.call(double(data: { name: 'Bob' }))).to be(false)
+      expect(subscription.condition.call(double(data: { name: 'Alice' }))).to be(true)
     end
 
     it 'refuses the subscription if the target is not an Event object' do

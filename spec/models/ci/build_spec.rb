@@ -157,11 +157,22 @@ RSpec.describe Ci::Build, feature_category: :continuous_integration, factory_def
           created_at: timed_out_build.timeout.seconds.ago)
       end
 
+      let!(:completed_running_builds) do
+        described_class.completed_statuses.map do |status|
+          create(:ci_running_build, build: create(:ci_build, status, timeout: 600))
+        end
+      end
+
       let(:build) { create(:ci_build, :running, timeout: 600) }
       let(:timed_out_build) { create(:ci_build, :running, timeout: 300) }
 
       it 'only fetches the timed out builds' do
         expect(described_class.not_timed_out_running_builds.pluck(:id)).to contain_exactly(build.id)
+      end
+
+      it 'excludes completed builds that still have a running build entry' do
+        expect(described_class.not_timed_out_running_builds.pluck(:id))
+          .not_to include(*completed_running_builds.map(&:build_id))
       end
     end
 
@@ -2059,7 +2070,7 @@ RSpec.describe Ci::Build, feature_category: :continuous_integration, factory_def
       describe '#erasable?' do
         subject { build.erasable? }
 
-        it { is_expected.to eq false }
+        it { is_expected.to be false }
       end
     end
 
@@ -2296,6 +2307,14 @@ RSpec.describe Ci::Build, feature_category: :continuous_integration, factory_def
       sql = described_class.tag_names_array_query
 
       expect(sql).to include('::text[]')
+    end
+  end
+
+  describe '.supported_keyset_orderings' do
+    subject(:supported_keyset_orderings) { described_class.supported_keyset_orderings }
+
+    it 'supports ordering by id in both directions' do
+      expect(supported_keyset_orderings).to eq(id: [:asc, :desc])
     end
   end
 
@@ -2833,7 +2852,7 @@ RSpec.describe Ci::Build, feature_category: :continuous_integration, factory_def
     subject { build.has_expired_locked_archive_artifacts? }
 
     context 'when build does not have artifacts' do
-      it { is_expected.to eq(nil) }
+      it { is_expected.to be_nil }
     end
 
     context 'when build has artifacts' do
@@ -2846,7 +2865,7 @@ RSpec.describe Ci::Build, feature_category: :continuous_integration, factory_def
           build.pipeline.unlocked!
         end
 
-        it { is_expected.to eq(false) }
+        it { is_expected.to be(false) }
       end
 
       context 'when artifacts are locked' do
@@ -2863,7 +2882,7 @@ RSpec.describe Ci::Build, feature_category: :continuous_integration, factory_def
             build.update!(artifacts_expire_at: 1.day.from_now)
           end
 
-          it { is_expected.to eq(false) }
+          it { is_expected.to be(false) }
         end
 
         context 'when artifacts expired in the past' do
@@ -2871,7 +2890,7 @@ RSpec.describe Ci::Build, feature_category: :continuous_integration, factory_def
             build.update!(artifacts_expire_at: 1.day.ago)
           end
 
-          it { is_expected.to eq(true) }
+          it { is_expected.to be(true) }
         end
       end
     end
@@ -3457,15 +3476,7 @@ RSpec.describe Ci::Build, feature_category: :continuous_integration, factory_def
         create(:ci_variable, :protected, protected_variable.slice(:key, :value).merge(project: project))
       end
 
-      context 'when the branch is protected' do
-        before do
-          allow(build.pipeline.project).to receive(:protected_for?).with(ref).and_return(true)
-        end
-
-        it { is_expected.to include(protected_variable) }
-      end
-
-      context 'when the tag is protected' do
+      context 'when the ref is protected' do
         before do
           allow(build.pipeline.project).to receive(:protected_for?).with(ref).and_return(true)
         end
@@ -3501,15 +3512,7 @@ RSpec.describe Ci::Build, feature_category: :continuous_integration, factory_def
         create(:ci_group_variable, :protected, protected_variable.slice(:key, :value).merge(group: group))
       end
 
-      context 'when the branch is protected' do
-        before do
-          allow(build.pipeline.project).to receive(:protected_for?).with(ref).and_return(true)
-        end
-
-        it { is_expected.to include(protected_variable) }
-      end
-
-      context 'when the tag is protected' do
+      context 'when the ref is protected' do
         before do
           allow(build.pipeline.project).to receive(:protected_for?).with(ref).and_return(true)
         end
@@ -4658,6 +4661,102 @@ RSpec.describe Ci::Build, feature_category: :continuous_integration, factory_def
       end
 
       it_behaves_like 'saves data on transition'
+    end
+
+    context 'runner_machine_id audit write on job_runtime_environment' do
+      context 'when the build has a job_runtime_environment' do
+        let!(:job_runtime_environment) { create(:ci_job_runtime_environment, build: job) }
+
+        it 'sets runner_machine_id to the assigned runner_manager id' do
+          job.reload
+
+          run!
+
+          expect(job_runtime_environment.reload.runner_machine_id).to eq(runner_manager.id)
+        end
+      end
+
+      context 'when the feature flag is disabled for the project' do
+        let!(:job_runtime_environment) { create(:ci_job_runtime_environment, build: job) }
+
+        before do
+          stub_feature_flags(ci_suspendable_environment_runner_routing: false)
+        end
+
+        it 'does not touch job_runtime_environment' do
+          expect(job).not_to receive(:job_runtime_environment)
+
+          run!
+        end
+
+        it 'leaves runner_machine_id unset' do
+          run!
+
+          expect(job_runtime_environment.reload.runner_machine_id).to be_nil
+        end
+      end
+
+      context 'when the build has no job_runtime_environment (the common case)' do
+        it 'succeeds without error' do
+          expect { run! }.to change { job.reload.status }.to('running')
+        end
+      end
+
+      context 'when persisting runner_machine_id fails' do
+        let!(:job_runtime_environment) { create(:ci_job_runtime_environment, build: job) }
+        let(:db_error) { ActiveRecord::ActiveRecordError.new('deadlock detected') }
+
+        before do
+          allow(job).to receive(:job_runtime_environment).and_return(job_runtime_environment)
+          allow(job_runtime_environment).to receive(:update!).and_raise(db_error)
+          allow(Gitlab::ErrorTracking).to receive(:track_exception)
+        end
+
+        it 'still completes the running transition' do
+          expect { run! }.to change { job.reload.status }.to('running')
+        end
+
+        it 'tracks the exception' do
+          run!
+
+          expect(Gitlab::ErrorTracking).to have_received(:track_exception).with(
+            db_error, build_id: job.id, runner_machine_id: runner_manager.id
+          )
+        end
+      end
+
+      context 'when there is no runner_manager on the transition' do
+        let(:runner_manager) { nil }
+
+        it 'does not attempt to touch job_runtime_environment' do
+          expect(job).not_to receive(:job_runtime_environment)
+
+          run_job_without_exception
+        end
+      end
+
+      it 'does not check the routing feature flag when the transition is not to running' do
+        job
+
+        allow(Feature).to receive(:enabled?).and_call_original
+        expect(Feature).not_to receive(:enabled?)
+          .with(:ci_suspendable_environment_runner_routing, any_args)
+
+        job.drop!
+      end
+
+      it 'checks the feature flag outside the transaction' do
+        allow(Feature).to receive(:enabled?).and_call_original
+        expect(Feature).to receive(:enabled?)
+          .with(:ci_suspendable_environment_runner_routing, job.project, type: :gitlab_com_derisk)
+          .and_wrap_original do |method, *args, **kwargs|
+          expect(Ci::ApplicationRecord).not_to be_inside_transaction
+
+          method.call(*args, **kwargs)
+        end
+
+        run!
+      end
     end
   end
 
@@ -5873,14 +5972,14 @@ RSpec.describe Ci::Build, feature_category: :continuous_integration, factory_def
   describe '#debug_mode?' do
     subject { build.debug_mode? }
 
-    it { is_expected.to eq(false) }
+    it { is_expected.to be(false) }
 
     context 'when debug_trace_enabled? is true' do
       before do
         allow(build).to receive(:debug_trace_enabled?).and_return(true)
       end
 
-      it { is_expected.to eq(true) }
+      it { is_expected.to be(true) }
     end
 
     context 'when CI_DEBUG_TRACE=true is in variables' do
@@ -5888,37 +5987,37 @@ RSpec.describe Ci::Build, feature_category: :continuous_integration, factory_def
         it 'reflects instance variables' do
           create(:ci_instance_variable, key: 'CI_DEBUG_TRACE', value: value)
 
-          is_expected.to eq true
+          is_expected.to be true
         end
 
         it 'reflects group variables' do
           create(:ci_group_variable, key: 'CI_DEBUG_TRACE', value: value, group: project.group)
 
-          is_expected.to eq true
+          is_expected.to be true
         end
 
         it 'reflects pipeline variables' do
           create_or_replace_pipeline_variables(pipeline, { key: 'CI_DEBUG_TRACE', value: value })
 
-          is_expected.to eq true
+          is_expected.to be true
         end
 
         it 'reflects project variables' do
           create(:ci_variable, key: 'CI_DEBUG_TRACE', value: value, project: project)
 
-          is_expected.to eq true
+          is_expected.to be true
         end
 
         it 'reflects job variables' do
           create(:ci_job_variable, key: 'CI_DEBUG_TRACE', value: value, job: build)
 
-          is_expected.to eq true
+          is_expected.to be true
         end
 
         it 'when in yaml variables' do
           stub_ci_job_definition(build, yaml_variables: [{ key: 'CI_DEBUG_TRACE', value: value.to_s }])
 
-          is_expected.to eq true
+          is_expected.to be true
         end
       end
     end
@@ -5928,37 +6027,37 @@ RSpec.describe Ci::Build, feature_category: :continuous_integration, factory_def
         it 'reflects instance variables' do
           create(:ci_instance_variable, key: 'CI_DEBUG_SERVICES', value: value)
 
-          is_expected.to eq true
+          is_expected.to be true
         end
 
         it 'reflects group variables' do
           create(:ci_group_variable, key: 'CI_DEBUG_SERVICES', value: value, group: project.group)
 
-          is_expected.to eq true
+          is_expected.to be true
         end
 
         it 'reflects pipeline variables' do
           create_or_replace_pipeline_variables(pipeline, { key: 'CI_DEBUG_SERVICES', value: value })
 
-          is_expected.to eq true
+          is_expected.to be true
         end
 
         it 'reflects project variables' do
           create(:ci_variable, key: 'CI_DEBUG_SERVICES', value: value, project: project)
 
-          is_expected.to eq true
+          is_expected.to be true
         end
 
         it 'reflects job variables' do
           create(:ci_job_variable, key: 'CI_DEBUG_SERVICES', value: value, job: build)
 
-          is_expected.to eq true
+          is_expected.to be true
         end
 
         it 'when in yaml variables' do
           stub_ci_job_definition(build, yaml_variables: [{ key: 'CI_DEBUG_SERVICES', value: value.to_s }])
 
-          is_expected.to eq true
+          is_expected.to be true
         end
       end
     end
@@ -6502,6 +6601,22 @@ RSpec.describe Ci::Build, feature_category: :continuous_integration, factory_def
     end
   end
 
+  describe '#node_total' do
+    subject { build.node_total }
+
+    context 'when the job is parallelized' do
+      let(:build) { create(:ci_build, pipeline: pipeline, options: { parallel: { total: 5 } }) }
+
+      it { is_expected.to eq(5) }
+    end
+
+    context 'when the job is not parallelized' do
+      let(:build) { create(:ci_build, pipeline: pipeline, options: {}) }
+
+      it { is_expected.to eq(1) }
+    end
+  end
+
   describe '#runtime_hooks' do
     let(:build1) do
       FactoryBot.build(
@@ -6761,7 +6876,7 @@ RSpec.describe Ci::Build, feature_category: :continuous_integration, factory_def
     end
 
     it 'returns the value for normalized attribute' do
-      expect(job.send(:read_job_definition_attribute, :interruptible)).to eq(false)
+      expect(job.send(:read_job_definition_attribute, :interruptible)).to be(false)
     end
 
     it 'returns the value for non-normalized attribute' do
@@ -6774,7 +6889,7 @@ RSpec.describe Ci::Build, feature_category: :continuous_integration, factory_def
       end
 
       it 'returns the value for normalized attribute from temp_job_definition' do
-        expect(job.send(:read_job_definition_attribute, :interruptible)).to eq(true)
+        expect(job.send(:read_job_definition_attribute, :interruptible)).to be(true)
       end
 
       it 'returns the value for non-normalized attribute from temp_job_definition' do
@@ -6787,11 +6902,11 @@ RSpec.describe Ci::Build, feature_category: :continuous_integration, factory_def
         end
 
         it 'returns nil' do
-          expect(job.send(:read_job_definition_attribute, :interruptible)).to eq(nil)
+          expect(job.send(:read_job_definition_attribute, :interruptible)).to be_nil
         end
 
         it 'returns nil' do
-          expect(job.send(:read_job_definition_attribute, :tag_list)).to eq(nil)
+          expect(job.send(:read_job_definition_attribute, :tag_list)).to be_nil
         end
       end
     end

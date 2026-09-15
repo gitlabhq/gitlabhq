@@ -74,7 +74,7 @@ To commit your changes, first copy them:
 To copy files between branches, you create a merge request.
 How you do this depends on where you authored the code and the tools you use to create it.
 But the idea is to create a merge request that takes the contents of your source branch
-and proposes combining it into the target branch.
+and proposes combining them into the target branch.
 
 For more information, see:
 

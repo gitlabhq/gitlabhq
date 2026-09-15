@@ -1,6 +1,6 @@
 ---
 stage: Plan
-group: Project Management
+group: Work Items
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see <https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments>
 description: Learn how to assign multiple people to a single issue in GitLab to clarify ownership, improve collaboration, and track shared responsibilities in large teams.
 title: Multiple assignees for issues
@@ -17,10 +17,10 @@ In large teams with shared ownership, it can be difficult
 to track who is working on an issue, who's already done, or who hasn't started yet.
 
 You can add multiple [assignees](managing_issues.md#assignees) to an issue, making it easier to
-track, and making clearer who is accountable for it.
+track, and making it clearer who is accountable for it.
 
-Multiple assignees for issues makes collaboration smoother,
-and allows shared responsibilities to be clearly displayed.
+Multiple assignees for issues make collaboration smoother,
+and allow shared responsibilities to be clearly displayed.
 All assignees are shown across your team's workflows and receive notifications (as they
 would as single assignees), simplifying communication and ownership.
 

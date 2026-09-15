@@ -10,7 +10,7 @@ builder.author do
 end
 
 builder.summary work_item_detail.title
-builder.content markdown_field(work_item_detail, :description), type: 'html' if work_item_detail.description
+builder.content atom_markdown_field(work_item_detail, :description), type: 'html' if work_item_detail.description
 builder.milestone work_item_detail.milestone.title if work_item_detail.milestone
 
 # Work item specific fields

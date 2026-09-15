@@ -41,7 +41,9 @@ module Ci
         provided_specs = inputs_spec.slice(*provided_spec_keys)
         builder = ::Ci::Inputs::Builder.new(provided_specs)
 
-        builder.validate_input_params!(inputs)
+        ::Gitlab::Ci::Config::FeatureFlags.with_actor(job.project) do
+          builder.validate_input_params!(inputs)
+        end
 
         builder.errors.join(', ') if builder.errors.any?
       end

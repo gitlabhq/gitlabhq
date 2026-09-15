@@ -9,6 +9,9 @@ export default {
   components: {
     ProjectsDropdownFilter,
   },
+  inject: {
+    defaultProjectFullPath: { default: null },
+  },
   props: {
     groupNamespace: {
       type: String,
@@ -57,10 +60,25 @@ export default {
         allProjects = [allProjects];
       }
 
+      // If no default is set via the URL params, fall back to the app default project.
+      // Wait for a group namespace to be present first to avoid race conditions.
+      if (allProjects.length === 0 && this.groupNamespace && this.defaultProjectFullPath) {
+        allProjects = [this.defaultProjectFullPath];
+      }
+
       return this.multiSelect ? allProjects : allProjects.slice(0, 1);
     },
     isLoadingDefaultProjects() {
       return this.$apollo.queries.defaultProjects.loading;
+    },
+  },
+  watch: {
+    // Default selection is determined internally, but notify the dashboard
+    // once it's ready so the filter can be applied.
+    defaultProjects(projects) {
+      if (projects.length > 0) {
+        this.onProjectsSelected(projects);
+      }
     },
   },
   methods: {

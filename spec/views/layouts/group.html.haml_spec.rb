@@ -2,16 +2,18 @@
 
 require 'spec_helper'
 
-RSpec.describe 'layouts/group', feature_category: :groups_and_projects do
+RSpec.describe 'layouts/group', :with_current_organization, feature_category: :groups_and_projects do
   let_it_be(:group) { create(:group) } # rubocop:todo RSpec/FactoryBot/AvoidCreate
   let(:invite_member) { true }
   let(:user) { build_stubbed(:user) }
 
   before do
-    allow(view).to receive(:can_invite_group_member?).and_return(invite_member)
     assign(:group, group)
-    allow(view).to receive(:current_user_mode).and_return(Gitlab::Auth::CurrentUserMode.new(user))
-    allow(view).to receive(:current_user).and_return(user)
+    allow(view).to receive_messages(
+      can_invite_group_member?: invite_member,
+      current_user_mode: Gitlab::Auth::CurrentUserMode.new(user),
+      current_user: user
+    )
   end
 
   subject do

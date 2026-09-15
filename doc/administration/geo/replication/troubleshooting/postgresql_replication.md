@@ -1,5 +1,5 @@
 ---
-stage: Tenant Scale
+stage: GitLab Dedicated
 group: Geo
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see <https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments>
 title: Troubleshooting Geo PostgreSQL replication
@@ -89,7 +89,7 @@ secondary site by that name:
 FATAL:  could not start WAL streaming: ERROR:  replication slot "geo_secondary_my_domain_com" does not exist
 ```
 
-You may want to rerun the [replication process](../../setup/database.md) on the secondary site .
+You may want to rerun the [replication process](../../setup/database.md) on the secondary site.
 
 ## Message: `Command exceeded allowed execution time` when setting up replication?
 

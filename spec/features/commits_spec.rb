@@ -104,6 +104,46 @@ RSpec.describe 'Commits', feature_category: :source_code_management do
             end
           end
 
+          # Regression test for https://gitlab.com/gitlab-org/gitlab/-/issues/579690:
+          # a dangling-source pipeline (e.g. a security policy scan) newer than the
+          # commit's real CI pipeline must not determine the badge status.
+          context 'when a newer dangling pipeline exists' do
+            # Newer than the default-branch pipeline above, so it is the latest CI-source pipeline.
+            let!(:failed_ci_pipeline) do
+              create(
+                :ci_pipeline,
+                project: project,
+                ref: project.default_branch,
+                sha: project.commit.sha,
+                status: :failed,
+                source: :push
+              )
+            end
+
+            # Newest pipeline overall and green; a naive "latest of any source" would surface this.
+            let!(:dangling_pipeline) do
+              create(
+                :ci_pipeline,
+                project: project,
+                ref: project.default_branch,
+                sha: project.commit.sha,
+                status: :success,
+                source: :security_orchestration_policy
+              )
+            end
+
+            before do
+              visit project_commits_path(project, :master)
+            end
+
+            it 'shows the CI pipeline status and ignores the dangling pipeline', :aggregate_failures do
+              page.within("#commit-#{commit_short_id}") do
+                expect(page).to have_css("[data-testid='ci-icon']")
+                expect(page).to have_css('[data-testid="status_failed_borderless-icon"]')
+              end
+            end
+          end
+
           context 'while viewing a commit' do
             let_it_be(:sha) { project.commit.sha }
             let_it_be(:short_sha) { sha[..7] }

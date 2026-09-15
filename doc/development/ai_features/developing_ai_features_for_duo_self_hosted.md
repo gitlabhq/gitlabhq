@@ -12,6 +12,12 @@ This document outlines the process for developing AI features for GitLab Duo Sel
 For the current list of models available to GitLab team members for development purposes, see the
 [supported models documentation](../../administration/gitlab_duo_self_hosted/supported_models_and_hardware_requirements.md#supported-models).
 
+### Gaining access to OpenAI
+
+To gain access to OpenAI, first create an [access request](https://gitlab.com/gitlab-com/team-member-epics/access-requests/-/work_items) and assign to `@wortschi`, `@timzallmann`, or `@mnohr` once approved.
+
+Once access is granted, navigate to `https://platform.openai.com/api-keys` to create an API key.
+
 ### Gaining access to models on Fireworks AI
 
 To gain access to Fireworks AI, first create an [access request in the Lumos App Store](https://handbook.gitlab.com/handbook/security/corporate/systems/lumos/ar/).

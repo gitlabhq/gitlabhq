@@ -7,8 +7,7 @@ class GpgKey < ApplicationRecord
   include ShaAttribute
   include Cells::Claimable
 
-  cells_claims_attribute :fingerprint, type: CLAIMS_CLAIM_TYPE::CLAIM_TYPE_GPG_KEY_FINGERPRINT,
-    feature_flag: :cells_claims_keys
+  cells_claims_attribute :fingerprint, type: CLAIMS_CLAIM_TYPE::CLAIM_TYPE_GPG_KEY_FINGERPRINT
 
   cells_claims_metadata subject_type: CLAIMS_SUBJECT_TYPE::USER, subject_key: :user_id
 
@@ -20,7 +19,6 @@ class GpgKey < ApplicationRecord
   has_many :subkeys, class_name: 'GpgKeySubkey'
 
   scope :with_subkeys, -> { includes(:subkeys) }
-  scope :externally_invalid, -> { where(externally_verified: false) }
   scope :externally_valid, -> { where(externally_verified: true) }
 
   validates :user, presence: true

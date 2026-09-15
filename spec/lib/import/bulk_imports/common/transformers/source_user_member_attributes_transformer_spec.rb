@@ -83,7 +83,7 @@ RSpec.describe Import::BulkImports::Common::Transformers::SourceUserMemberAttrib
         end
 
         it 'ignores record' do
-          expect(subject.transform(context, data)).to eq(nil)
+          expect(subject.transform(context, data)).to be_nil
         end
       end
 
@@ -174,7 +174,7 @@ RSpec.describe Import::BulkImports::Common::Transformers::SourceUserMemberAttrib
       let(:data) { member_data(source_user_id: reassigned_project_bot_import_source_user.source_user_identifier) }
 
       it 'returns nil' do
-        expect(subject.transform(context, data)).to eq(nil)
+        expect(subject.transform(context, data)).to be_nil
       end
     end
 
@@ -182,7 +182,7 @@ RSpec.describe Import::BulkImports::Common::Transformers::SourceUserMemberAttrib
       let(:data) { nil }
 
       it 'returns nil' do
-        expect(subject.transform(context, data)).to eq(nil)
+        expect(subject.transform(context, data)).to be_nil
       end
 
       it 'does not create an import source user' do
@@ -194,7 +194,7 @@ RSpec.describe Import::BulkImports::Common::Transformers::SourceUserMemberAttrib
       let(:data) { member_data(source_user_id: nil) }
 
       it 'returns nil' do
-        expect(subject.transform(context, data)).to eq(nil)
+        expect(subject.transform(context, data)).to be_nil
       end
 
       it 'does not create an import source user' do

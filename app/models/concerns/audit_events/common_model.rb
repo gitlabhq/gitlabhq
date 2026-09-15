@@ -32,7 +32,7 @@ module AuditEvents
 
       serialize :details, type: Hash # rubocop:disable Cop/ActiveRecordSerialize -- We need this to serialize details stored in audit event.
 
-      belongs_to :user, foreign_key: :author_id, inverse_of: :audit_events
+      belongs_to :user, foreign_key: :author_id # rubocop:disable Rails/InverseOf -- no has_many :audit_events on User
 
       validates :author_id, presence: true
 

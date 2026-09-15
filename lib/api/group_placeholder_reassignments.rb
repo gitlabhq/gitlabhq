@@ -21,6 +21,7 @@ module API
       desc 'Retrieve pending reassignments' do
         detail 'Retrieves a CSV file with a list of pending reassignments. ' \
           'This feature was introduced in GitLab 17.10.'
+        produces %w[text/csv]
         success code: 200
         tags ['groups']
       end

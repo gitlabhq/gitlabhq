@@ -1,6 +1,6 @@
 ---
 stage: Plan
-group: Knowledge
+group: Planner Intelligence
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see <https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments>
 title: GitLab Pages SSL/TLS certificates
 ---
@@ -19,9 +19,9 @@ it secured by HTTPS, you must issue a certificate for that
 (sub)domain and install it on your project.
 
 > [!note]
-> Certificates are not required to add to your custom
-> (sub)domain on your GitLab Pages project, though they are
-> highly recommendable.
+> You don't have to add certificates to your custom
+> (sub)domain on your GitLab Pages project, though it is
+> highly recommended.
 
 ## Importance of HTTPS
 
@@ -71,10 +71,10 @@ for instance.
 
 Some certificate authorities offer free certificates, aiming to make the internet more secure
 to everyone. The most popular is [Let's Encrypt](https://letsencrypt.org/),
-which issues certificates trusted by most of browsers, it's open
+which issues certificates trusted by most browsers, is open
 source, and free to use. See [GitLab Pages integration with Let's Encrypt](lets_encrypt_integration.md) to enable HTTPS on your custom domain.
 
-Similarly popular are [certificates issued by Cloudflare](https://www.cloudflare.com/application-services/products/ssl/),
+Similarly popular are [certificates issued by Cloudflare](https://www.cloudflare.com/products/ssl/),
 which also offers a [free CDN service](https://blog.cloudflare.com/cloudflares-free-cdn-and-you/).
 Their certs are valid up to 15 years. See the tutorial on
 [how to add a Cloudflare Certificate to your GitLab Pages website](https://about.gitlab.com/blog/setting-up-gitlab-pages-with-cloudflare-certificates/).

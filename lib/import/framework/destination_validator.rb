@@ -35,6 +35,14 @@ module Import
         raise ::BulkImports::Error.destination_slug_validation_failure
       end
 
+      # Batched alternative to #validate_destination_full_path! for group destinations:
+      # one query for all candidate_full_paths, then a set lookup per call.
+      def validate_destination_full_path_in_batch!(full_path, candidate_full_paths)
+        return unless colliding_full_paths(candidate_full_paths).include?(full_path.downcase)
+
+        raise ::BulkImports::Error.destination_full_path_validation_failure(full_path)
+      end
+
       def validate_destination_full_path!(destination_namespace, destination_slug, destination_name, source_type)
         full_path = [
           destination_namespace,
@@ -56,6 +64,13 @@ module Import
       private
 
       attr_reader :current_user
+
+      def colliding_full_paths(candidate_full_paths)
+        @colliding_full_paths ||= {}
+        @colliding_full_paths[candidate_full_paths] ||=
+          Namespace.where_full_path_in(candidate_full_paths, preload_routes: false)
+            .map { |namespace| namespace.full_path.downcase }.to_set
+      end
     end
   end
 end

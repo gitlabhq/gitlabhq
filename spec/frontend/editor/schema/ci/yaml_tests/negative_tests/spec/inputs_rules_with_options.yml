@@ -1,0 +1,8 @@
+# `spec:inputs:rules` cannot be combined with top-level options
+spec:
+  inputs:
+    stage_by_branch:
+      options: ["test", "deploy"]
+      rules:
+        - options: ["test"]
+          default: "test"

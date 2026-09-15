@@ -41,17 +41,17 @@ have been updated yet, which can range from a minor UI issue to a customer-impac
 
 Follow this guidance when working with feature flags in external API consumers:
 
-1. **Prefer API fields or Application Settings.** Where possible, avoid querying a feature flag
-   from an external API consumer. Instead, introduce a dedicated API field or
-   [Application Setting](../application_settings.md) that the consumer can query. These values
-   persist after the flag is removed.
-1. **Implement fail-open behavior.** If a feature flag must be used in an external API consumer,
-   implement a "fail-open" mechanism: after the rollout milestone is finalized, the consumer should
-   default to treating the flag as enabled. Update the consumer as soon as the rollout milestone is
-   confirmed. See [an example in the GitLab Language Server](https://gitlab.com/gitlab-org/editor-extensions/gitlab-lsp/-/merge_requests/2558/diffs).
-1. **Consider user upgrade patterns before removal.** Before removing a flag that is used by an
-   external API consumer, assess how quickly users update their clients and determine the safest
-   timing for removal.
+- Prefer API fields or Application Settings. Where possible, avoid querying a feature flag
+  from an external API consumer. Instead, introduce a dedicated API field or
+  [Application Setting](../application_settings.md) that the consumer can query. These values
+  persist after the flag is removed.
+- Implement fail-open behavior. If a feature flag must be used in an external API consumer,
+  implement a "fail-open" mechanism: after the rollout milestone is finalized, the consumer should
+  default to treating the flag as enabled. Update the consumer as soon as the rollout milestone is
+  confirmed. See [an example in the GitLab Language Server](https://gitlab.com/gitlab-org/editor-extensions/gitlab-lsp/-/merge_requests/2558/diffs).
+- Consider user upgrade patterns before removal. Before removing a flag that is used by an
+  external API consumer, assess how quickly users update their clients and determine the safest
+  timing for removal.
 
 ### Do not use feature flags for long lived settings
 
@@ -73,7 +73,7 @@ which is another reason you should not use them as a replacement for settings.
 The following highlights should be considered when deciding if feature flags
 should be leveraged:
 
-- The feature flag must be **disabled by default**.
+- The feature flag must be disabled by default.
 - Feature flags should remain in the codebase for as short a period as possible
   to reduce the need for feature flag accounting.
 - The person operating the feature flag is responsible for clearly communicating
@@ -87,10 +87,10 @@ should be leveraged:
 When the feature implementation is delivered over multiple merge requests:
 
 1. [Create a new feature flag](#create-a-new-feature-flag)
-   which is **disabled** by default, in the first merge request which uses the flag.
+   which is disabled by default, in the first merge request which uses the flag.
    Flags [should not be added separately](#risk-of-a-broken-default-branch).
 1. Submit incremental changes via one or more merge requests, ensuring that any
-   new code added can only be reached if the feature flag is **enabled**.
+   new code added can only be reached if the feature flag is enabled.
    You can keep the feature flag enabled on your local GDK during development.
 1. When the feature is ready to be tested by other team members, [create the initial documentation](../documentation/feature_flags.md#when-to-document-features-behind-a-feature-flag).
    Include details about the status of the [feature flag](../documentation/feature_flags.md#how-to-add-feature-flag-documentation).
@@ -101,7 +101,7 @@ When the feature implementation is delivered over multiple merge requests:
 1. When the feature is ready for production use, including GitLab Self-Managed instances, open one merge request to:
    - Update the documentation to describe the latest flag status.
    - Add a [changelog entry](#changelog).
-   - Remove the feature flag to enable the new behavior, or flip the feature flag to be **enabled by default** (only for `ops` and `beta` feature flags).
+   - Remove the feature flag to enable the new behavior, or flip the feature flag to be enabled by default (only for `ops` and `beta` feature flags).
 
 When the feature flag removal is delivered over multiple merge requests:
 
@@ -112,8 +112,8 @@ One might be tempted to think that feature flags will delay the release of a
 feature by at least one month (= one release). This is not the case. A feature
 flag does not have to stick around for a specific amount of time
 (for example, at least one release). Instead, it should stick around until the feature
-is deemed stable. **Stable means it works on GitLab.com without causing any
-problems, such as outages.**
+is deemed stable. Stable means it works on GitLab.com without causing any
+problems, such as outages.
 
 ## Risk of a broken default branch
 
@@ -133,11 +133,11 @@ GitLab are of the `gitlab_com_derisk` type.
 
 #### Constraints
 
-- `default_enabled`: **Must not** be set to true. This kind of feature flag is meant to lower the risk on GitLab.com, thus there's no need to keep the flag in the codebase after it's been enabled on GitLab.com. `default_enabled: true` will not have any effect for this type of feature flag.
+- `default_enabled`: Must not be set to true. This kind of feature flag is meant to lower the risk on GitLab.com, thus there's no need to keep the flag in the codebase after it's been enabled on GitLab.com. `default_enabled: true` will not have any effect for this type of feature flag.
 - Maximum Lifespan: 2 months after it's merged into the default branch
 - Documentation: This type of feature flag doesn't need to be documented in the
   [All feature flags in GitLab](../../administration/feature_flags/list.md) page given they're short-lived and deployment-related.
-- Rollout issue: **Must** have a rollout issue created from the
+- Rollout issue: Must have a rollout issue created from the
   [Feature flag Roll Out template](https://gitlab.com/gitlab-org/gitlab/-/blob/master/.gitlab/issue_templates/Feature%20Flag%20Roll%20Out.md)
 
 #### Usage
@@ -181,7 +181,7 @@ Once the feature is complete, the feature flag type can be changed to the `gitla
 
 #### Constraints
 
-- `default_enabled`: **Must not** be set to true. If needed, this type can be changed to beta once the feature is complete.
+- `default_enabled`: Must not be set to true. If needed, this type can be changed to beta once the feature is complete.
 - Maximum Lifespan: 4 months after it's merged into the default branch
 - Documentation: This type of feature flag doesn't need to be documented in the
   [All feature flags in GitLab](../../administration/feature_flags/list.md) page given they're mostly hiding unfinished code.
@@ -213,11 +213,11 @@ Providing a flag in this case allows engineers and customers to disable the new 
   possibility to disable it in the case of scalability issues (ideally it should only be disabled for this
   reason on specific on-premise installations)
 - Maximum Lifespan: 6 months after it's merged into the default branch
-- Documentation: This type of feature flag **must** be documented in the
+- Documentation: This type of feature flag must be documented in the
   [All feature flags in GitLab](../../administration/feature_flags/list.md) page.
   That page is [auto-generated during the docs build](../documentation/site_architecture/automation.md) from the YAML definition files,
   so no manual edits to that page are needed.
-- Rollout issue: **Must** have a rollout issue
+- Rollout issue: Must have a rollout issue
   created from the
   [Feature flag Roll Out template](https://gitlab.com/gitlab-org/gitlab/-/blob/master/.gitlab/issue_templates/Feature%20Flag%20Roll%20Out.md)
 
@@ -252,7 +252,7 @@ confirm that the `ops` feature flag is still in use.
 - `default_enabled`: Should be set to `false` in most cases, and only enabled to resolve temporary scalability
   issues or help debug production issues.
 - Maximum Lifespan: Unlimited, but must be evaluated every 12 months
-- Documentation: This type of feature flag **must** be documented in the
+- Documentation: This type of feature flag must be documented in the
   [All feature flags in GitLab](../../administration/feature_flags/list.md) page as well as be associated with an operational
   runbook describing the circumstances when it can be used.
   That page is [auto-generated during the docs build](../documentation/site_architecture/automation.md) from the YAML definition files,
@@ -282,7 +282,7 @@ created using the [Experiment tracking template](https://gitlab.com/gitlab-org/g
 
 #### Constraints
 
-- `default_enabled`: **Must not** be set to `true`.
+- `default_enabled`: Must not be set to `true`.
 - Maximum Lifespan: 6 months after it's merged into the default branch
 
 ### `worker` type
@@ -310,7 +310,7 @@ The `development` type is deprecated in favor of the `gitlab_com_derisk`, `wip`,
 
 During development (`RAILS_ENV=development`) or testing (`RAILS_ENV=test`) all feature flag usage is being strictly validated.
 
-This process is meant to ensure consistent feature flag usage in the codebase. All feature flags **must**:
+This process is meant to ensure consistent feature flag usage in the codebase. All feature flags must:
 
 - Be known. Only use feature flags that are explicitly defined (except for feature flags of the types `experiment`, `worker`, and `undefined`).
 - Not be defined twice. They have to be defined either in FOSS or EE, but not both.
@@ -335,7 +335,7 @@ Each feature flag is defined in a separate YAML file consisting of a number of f
 | `group`             | yes      | The [group](https://handbook.gitlab.com/handbook/product/categories/#devops-stages) that owns the feature flag. |
 | `feature_issue_url` | no       | The URL to the original feature issue.                         |
 | `rollout_issue_url` | no       | The URL to the Issue covering the feature flag rollout.        |
-| `log_state_changes` | no       | Used to log the state of the feature flag                      |
+| `log_state_changes` | no       | Set to `true` to [log the state of the feature flag](#logging). |
 
 > [!note]
 > All validations are skipped when running in `RAILS_ENV=production`.
@@ -394,7 +394,7 @@ type: beta
 default_enabled: false
 ```
 
-All newly-introduced feature flags must be [**disabled by default**](https://handbook.gitlab.com/handbook/product-development-flow/feature-flag-lifecycle/).
+All newly-introduced feature flags must be [disabled by default](https://handbook.gitlab.com/handbook/product-development-flow/feature-flag-lifecycle/).
 
 Features that are developed and merged behind a feature flag
 should not include a changelog entry. The entry should be added either in the merge
@@ -410,7 +410,7 @@ the feature flag is set to enabled. If the feature contains any database migrati
 When choosing a name for a new feature flag, consider the following guidelines:
 
 - Describe the feature the feature flag is holding
-  - A long, **descriptive** name is better than a short but confusing one.
+  - A long, descriptive name is better than a short but confusing one.
 - Avoid names that indicate state/phase of the feature like `_mvc`, `_alpha`, `_beta`, etc
 - Write the name in snake case (`my_cool_feature_flag`).
 - Avoid using `disable` in the name to avoid having to think (or [document](../documentation/feature_flags.md))
@@ -424,7 +424,7 @@ When choosing a name for a new feature flag, consider the following guidelines:
 ### Risk of a broken master (main) branch
 
 > [!warning]
-> Feature flags **must** be used in the MR that introduces them. Not doing so causes a
+> Feature flags must be used in the MR that introduces them. Not doing so causes a
 > [broken master](https://handbook.gitlab.com/handbook/engineering/workflow/#broken-master) scenario due
 > to the `rspec:feature-flags` job that only runs on the `master` branch.
 
@@ -648,7 +648,7 @@ end
 
 ### Feature actors
 
-**It is strongly advised to use actors with feature flags.** Actors provide a simple
+It is strongly advised to use actors with feature flags. Actors provide a simple
 way to enable a feature flag only for a given project, group, or user. This makes debugging
 easier, as you can filter logs and errors for example, based on actors. This also makes it possible
 to enable the feature on the `gitlab-org` or `gitlab-com` groups first, while the rest of
@@ -880,25 +880,44 @@ Access `http://gdk.test:3000/rails/features` to see and manage the feature flag 
 
 ### Logging
 
-Usage and state of the feature flag are logged if either:
+When code calls `Feature.enabled?` or `Feature.disabled?` for a flag, GitLab records the checked state once per request.
+The state appears in structured logs as a `feature_flag_states` array, with entries like `my_feature_flag:1` for enabled or `my_feature_flag:0` for disabled.
+You can find this field in `production_json.log`, `api_json.log`, exception logs (as `exception.feature_flag_states`), and Sentry error events.
 
-- `log_state_changes` is set to `true` in the feature flag definition.
-- `milestone` refers to a milestone that is greater than or equal to the current GitLab version.
+GitLab logs a flag's state only when both of these conditions hold:
 
-When the state of a feature flag is logged, it can be identified by using the `"json.feature_flag_states": "feature_flag_name:1"` or `"json.feature_flag_states": "feature_flag_name:0"` condition in Kibana.
-You can see an example in [this](https://log.gprd.gitlab.net/app/discover#/?_g=(filters:!(),refreshInterval:(pause:!t,value:60000),time:(from:now-7d%2Fd,to:now))&_a=(columns:!(json.feature_flag_states),filters:!(('$state':(store:appState),meta:(alias:!n,disabled:!f,field:json.feature_flag_states,index:'7092c4e2-4eb5-46f2-8305-a7da2edad090',key:json.feature_flag_states,negate:!f,params:(query:'optimize_where_full_path_in:1'),type:phrase),query:(match_phrase:(json.feature_flag_states:'optimize_where_full_path_in:1')))),hideChart:!f,index:'7092c4e2-4eb5-46f2-8305-a7da2edad090',interval:auto,query:(language:kuery,query:''),sort:!(!(json.time,desc)))) link.
+- The [`feature_flag_state_logs`](https://gitlab.com/gitlab-org/gitlab/-/blob/6deb6ecbc69f05a80d920a295dfc1a6a303fc7a0/config/feature_flags/ops/feature_flag_state_logs.yml) `ops` feature flag is enabled for the request. This flag is disabled by default, and it applies to any GitLab instance, not only GitLab.com.
+- Either the flag definition sets `log_state_changes: true`, or the flag's `milestone` is greater than or equal to the current GitLab version.
+
+Because of the second condition, GitLab logs a flag's state automatically while its milestone is current or in the future.
+Set `log_state_changes: true` in the flag's definition file when you still need logs after the milestone has passed.
+For example, set it during a prolonged rollout, or while you debug an issue that you suspect relates to the flag.
+
+The logs can answer questions such as:
+
+- Whether the requests that raised an error or a Sentry event had the flag enabled or disabled.
+- Whether a percentage rollout reaches real traffic, and in what proportion.
+- Whether requests with the flag enabled behave differently from requests with it disabled, for example in request duration.
+- Impact that the feature flag changes might have on database metrics, such as count of database requests or duration of database calls.
 
 > [!note]
-> Only 20% of the requests log the state of the feature flags. This is controlled with the [`feature_flag_state_logs`](https://gitlab.com/gitlab-org/gitlab/-/blob/6deb6ecbc69f05a80d920a295dfc1a6a303fc7a0/config/feature_flags/ops/feature_flag_state_logs.yml) feature flag.
+> On GitLab.com, GitLab enables `feature_flag_state_logs` for 20% of requests.
+
+#### Search for feature flag states in Kibana
+
+When the state of a feature flag is logged, you can find it in Kibana with the `"json.feature_flag_states": "feature_flag_name:1"` or `"json.feature_flag_states": "feature_flag_name:0"` condition.
+For a library of saved visualizations, see the [FF Observability](https://log.gprd.gitlab.net/app/visualize#/?s=FF%20Observability) collection in Kibana.
+
+This search works on GitLab.com logs, available at [`log.gprd.gitlab.net`](https://log.gprd.gitlab.net).
 
 ## Changelog
 
 We want to avoid introducing a changelog when features are not accessible by an end-user either directly (example: ability to use the feature) or indirectly (examples: ability to take advantage of background jobs, performance improvements, or database migration updates).
 
-- Database migrations are always accessible by an end-user indirectly, as self-managed customers need to be aware of database changes before upgrading. For this reason, they **should** have a changelog entry.
-- Any change behind a feature flag **disabled** by default **should not** have a changelog entry.
-- Any change behind a feature flag that is **enabled** by default **should** have a changelog entry.
-- Changing the feature flag itself (flag removal, default-on setting) **should** have [a changelog entry](../changelog.md).
+- Database migrations are always accessible by an end-user indirectly, as self-managed customers need to be aware of database changes before upgrading. For this reason, they should have a changelog entry.
+- Any change behind a feature flag disabled by default should not have a changelog entry.
+- Any change behind a feature flag that is enabled by default should have a changelog entry.
+- Changing the feature flag itself (flag removal, default-on setting) should have [a changelog entry](../changelog.md).
   Use the flowchart to determine the changelog entry type.
 
   ```mermaid
@@ -930,7 +949,7 @@ We want to avoid introducing a changelog when features are not accessible by an 
 ## Feature flags in tests
 
 Introducing a feature flag into the codebase creates an additional code path that should be tested.
-Include automated tests for all code affected by a feature flag, both when **enabled** and **disabled**, but because flags are enabled by default in tests, the enabled state is the default scenario and needs no stub and no dedicated context.
+Include automated tests for all code affected by a feature flag, both when enabled and disabled, but because flags are enabled by default in tests, the enabled state is the default scenario and needs no stub and no dedicated context.
 Cover the disabled state in a separate, self-contained context that stubs the flag to `false`, so that removing the flag later is a single deletion (see the pattern below).
 If automated tests are not included for both states, the functionality associated with the untested code path should be manually tested before deployment to production.
 
@@ -1137,7 +1156,7 @@ The implementation can be found at [SkipJobs Sidekiq server middleware](https://
 > feature flag after the worker is deemed safe to continue processing.
 
 When set to false, 100% of the jobs are deferred. When you want processing to resume, you can
-use a **percentage of time** rollout. For example:
+use a percentage of time rollout. For example:
 
 ```shell
 # not running any jobs, deferring all 100% of the jobs

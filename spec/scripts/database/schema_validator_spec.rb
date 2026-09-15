@@ -9,8 +9,7 @@ RSpec.describe SchemaValidator, feature_category: :database do
 
   describe "#validate!" do
     before do
-      allow(validator).to receive(:committed_migrations).and_return(committed_migrations)
-      allow(validator).to receive(:run).and_return(schema_changes)
+      allow(validator).to receive_messages(committed_migrations: committed_migrations, run: schema_changes)
     end
 
     context 'when schema changes are introduced without migrations' do
@@ -25,8 +24,6 @@ RSpec.describe SchemaValidator, feature_category: :database do
     context 'when schema changes are introduced with migrations' do
       let(:committed_migrations) { ['20211006103122_my_migration.rb'] }
       let(:schema_changes) { 'db/structure.sql' }
-      let(:command) { 'git diff db/structure.sql -- db/structure.sql' }
-      let(:base_message) { 'db/structure.sql was changed, and no migrations were added' }
 
       before do
         allow(validator).to receive(:die)

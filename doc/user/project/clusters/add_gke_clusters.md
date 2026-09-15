@@ -56,7 +56,7 @@ Note the following:
   explicitly requests GKE to create clusters with basic authentication enabled and a client
   certificate.
 
-To create new Kubernetes clusters to your project, group, or instance, through
+To create new Kubernetes clusters for your project, group, or instance, through
 cluster certificates:
 
 1. Go to your:

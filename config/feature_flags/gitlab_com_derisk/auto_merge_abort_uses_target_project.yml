@@ -1,0 +1,12 @@
+---
+name: auto_merge_abort_uses_target_project
+description: Scopes the auto-merge abort service to the merge request's target project,
+  so the "aborted the automatic merge" system note is persisted for merge requests
+  opened from a fork instead of being silently rejected
+feature_issue_url: https://gitlab.com/gitlab-org/gitlab/-/work_items/614048
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/253849
+rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/work_items/627840
+milestone: '19.4'
+group: group::code review
+type: gitlab_com_derisk
+default_enabled: false

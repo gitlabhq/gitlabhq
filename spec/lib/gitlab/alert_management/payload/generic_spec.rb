@@ -159,13 +159,13 @@ RSpec.describe Gitlab::AlertManagement::Payload::Generic do
     subject { parsed_payload.resolved? }
 
     context 'without end time' do
-      it { is_expected.to eq(false) }
+      it { is_expected.to be(false) }
     end
 
     context 'with end time' do
       let(:raw_payload) { { 'end_time' => Time.current.to_s } }
 
-      it { is_expected.to eq(true) }
+      it { is_expected.to be(true) }
     end
   end
 

@@ -63,7 +63,7 @@ To make it possible to roll back GitLab if there's a problem with the upgrade, e
   installation method and make sure to back up the
   [secrets and configuration files](../administration/backup_restore/backup_gitlab.md#storing-configuration-files).
 - Create a snapshot of your instance. If you instance is multi-node installation, you must snapshot every node.
-  **This process is out of scope for GitLab Support**.
+  This process is out of scope for GitLab Support.
 
 #### Roll back GitLab
 
@@ -78,7 +78,7 @@ To restore your GitLab backup:
 1. Confirm that the [secrets and configuration files](../administration/backup_restore/backup_gitlab.md#storing-configuration-files)
    are also restored.
 
-If restoring from a snapshot, you must already know how to do this. **This process is out of scope for GitLab Support**.
+If restoring from a snapshot, you must already know how to do this. This process is out of scope for GitLab Support.
 
 ## Perform pre-upgrade steps
 
@@ -144,7 +144,7 @@ upgrading GitLab:
 
    After upgrading GitLab, you might have to upgrade
    [Elasticsearch if the new version breaks compatibility](../integration/advanced_search/elasticsearch.md#version-compatibility).
-   Updating Elasticsearch is **out of scope for GitLab Support**.
+   Updating Elasticsearch is out of scope for GitLab Support.
 
 ## Pause CI/CD pipelines and jobs
 

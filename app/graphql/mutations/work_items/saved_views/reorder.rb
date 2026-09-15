@@ -6,7 +6,12 @@ module Mutations
       class Reorder < BaseMutation
         graphql_name 'WorkItemSavedViewReorder'
 
-        authorize :reorder_saved_view
+        authorize :reorder_work_item_saved_view
+        authorize_granular_token permissions: :reorder_work_item_saved_view,
+          boundaries: [
+            { boundary_argument: :id, boundary: :resource_parent, boundary_type: :project },
+            { boundary_argument: :id, boundary: :resource_parent, boundary_type: :group }
+          ]
 
         description "Reorders a saved view for the current user."
 

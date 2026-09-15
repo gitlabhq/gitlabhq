@@ -57,7 +57,7 @@ Further steps:
 
 #### Create a new EKS cluster in GitLab
 
-To create new a EKS cluster for your project, group, or instance, through
+To create a new EKS cluster for your project, group, or instance, through
 cluster certificates:
 
 1. Go to your:
@@ -337,5 +337,5 @@ the role specified in **Role name** is not configured correctly.
 > [!note]
 > This role should be the role you created by following the
 > [EKS cluster IAM role](https://docs.aws.amazon.com/eks/latest/userguide/cluster-iam-role.html) guide.
-> In addition to the policies that guide suggests, you must also include the
+> In addition to the policies that the guide suggests, you must also include the
 > `AmazonEKSClusterPolicy` policy for this role in order for GitLab to manage the EKS cluster correctly.

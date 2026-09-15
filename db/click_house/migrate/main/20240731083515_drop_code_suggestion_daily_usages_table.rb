@@ -24,7 +24,7 @@ class DropCodeSuggestionDailyUsagesTable < ClickHouse::Migration
     SQL
 
     execute <<~SQL
-      CREATE MATERIALIZED VIEW code_suggestion_daily_usages_mv
+      CREATE MATERIALIZED VIEW IF NOT EXISTS code_suggestion_daily_usages_mv
       TO code_suggestion_daily_usages
       AS
       SELECT

@@ -252,7 +252,7 @@ RSpec.describe Gitlab::Kubernetes::RolloutStatus do
       let(:ingresses) { [kube_ingress(track: :canary)] }
 
       it 'returns true' do
-        expect(rollout_status.canary_ingress_exists?).to eq(true)
+        expect(rollout_status.canary_ingress_exists?).to be(true)
       end
     end
 
@@ -260,7 +260,7 @@ RSpec.describe Gitlab::Kubernetes::RolloutStatus do
       let(:ingresses) { [kube_ingress(track: :stable)] }
 
       it 'returns false' do
-        expect(rollout_status.canary_ingress_exists?).to eq(false)
+        expect(rollout_status.canary_ingress_exists?).to be(false)
       end
     end
   end

@@ -1,0 +1,20 @@
+---
+description: A Slack app_mention event for the GitLab bot was received from a workspace
+  with an installed GitLab for Slack app. Fired before any authorization checks, so
+  it measures the top of the GitLab Duo for Slack funnel. The user identifier is only
+  present when the Slack user has linked their GitLab account.
+internal_events: true
+status: active
+action: receive_slack_duo_mention
+classification: duo
+identifiers:
+- user
+product_group: ai_catalog
+product_categories:
+- duo_agent_platform
+milestone: '19.4'
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/253496
+tiers:
+- free
+- premium
+- ultimate

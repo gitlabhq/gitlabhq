@@ -164,7 +164,7 @@ Knowing the outcome you expect, try to replicate it manually using a browser on 
 
 DAST cannot scan correctly when:
 
-- There is a CAPTCHA. Turn these off in the testing environment for the application being scanned.
+- There is a CAPTCHA. Turn it off in the testing environment for the application being scanned.
 - It does not have access to the target application. Ensure the GitLab Runner can access the application using the URLs used in the DAST configuration.
 
 ### How does your application work?
@@ -340,7 +340,7 @@ For example, the following output shows that four anchor links discovered during
 > Logging DevTools messages is a security risk. The output contains secrets such as usernames, passwords, and authentication tokens.
 > The output is uploaded to the GitLab server and may be visible in job logs.
 
-The DAST Browser-based scanner orchestrates a Chromium browser using the [Chrome DevTools Protocol](https://chromedevtools.github.io/devtools-protocol/).
+The DAST browser-based scanner orchestrates a Chromium browser using the [Chrome DevTools Protocol](https://chromedevtools.github.io/devtools-protocol/).
 Logging DevTools messages helps provide transparency into what the browser is doing. For example, if selecting a button does not work, a DevTools message might show that the cause is a CORS error in a browser console log.
 Logs that contain DevTools messages can be very large in size. For this reason, it should only be enabled on jobs with a short duration.
 
@@ -440,7 +440,7 @@ dast:
 By default DAST processes HTTP requests where the HTTP response body is 10 MB or less. Otherwise, DAST blocks the response
 which can cause scans to fail. This constraint is intended to reduce memory consumption during a scan.
 
-An example log is as follows, where DAST blocked the JavaScript file found at `https://example.com/large.js` as it's size is greater than the limit:
+An example log is as follows, where DAST blocked the JavaScript file found at `https://example.com/large.js` as its size is greater than the limit:
 
 ```plaintext
 2022-12-05T06:28:43.093 WRN BROWS response body exceeds allowed size allowed_size_bytes=1000000 browser_id=752944257619431212 nav_id=ae23afe2acbce2c537657a9112926f1a of=1 request_id=interception-job-2.0 response_size_bytes=9333408 step=1 url=https://example.com/large.js
@@ -459,13 +459,13 @@ dast:
 
 #### Try disabling the cache
 
-If DAST incorrectly caches your application pages, it can lead to DAST being unable to properly crawl your application. If you see that some pages are unexpectedly not found by the crawler, try setting `DAST_USE_CACHE: "false"` variable to see if that helps. This can significantly decrease the performance of the scan. Make sure to only disable cache when absolutely necessary. If you have a subscription, [create a support ticket](https://support.gitlab.com/) to investigate why cache is preventing your website from being crawled.
+If DAST incorrectly caches your application pages, it can lead to DAST being unable to properly crawl your application. If you see that some pages are unexpectedly not found by the crawler, try setting the `DAST_USE_CACHE: "false"` variable to see if that helps. This can significantly decrease the performance of the scan. Make sure to only disable cache when absolutely necessary. If you have a subscription, [create a support ticket](https://support.gitlab.com/) to investigate why cache is preventing your website from being crawled.
 
 #### Specifying target paths directly
 
 The crawler typically begins at the defined target URL and attempts to find further pages by interacting with the site. However, there are two ways to specify paths directly for the crawler to start from:
 
-- Using a sitemap.xml: [Sitemap](https://www.sitemaps.org/protocol.html) is a well defined protocol to specify the pages in a website. DAST's crawler looks for a sitemap.xml file at `<target URL>/sitemap.xml` and takes all specified URLs as a starting point for the crawler. [Sitemap Index](https://www.sitemaps.org/protocol.html#index) files are not supported.
+- Using a sitemap.xml: [Sitemap](https://www.sitemaps.org/protocol.html) is a well-defined protocol to specify the pages in a website. DAST's crawler looks for a sitemap.xml file at `<target URL>/sitemap.xml` and takes all specified URLs as a starting point for the crawler. [Sitemap Index](https://www.sitemaps.org/protocol.html#index) files are not supported.
 - Using `DAST_TARGET_PATHS`: This configuration variable allows specifying input paths for the crawler. Example: `DAST_TARGET_PATHS: /,/page/1.html,/page/2.html`.
 
 #### Make sure requests are not getting blocked
@@ -477,11 +477,11 @@ By default DAST only allows requests to the target URL domain. If your website m
 The crawler has default limits on its activity and time spent on the target site:
 
 1. By default, the crawler processes 10,000 actions. An action can be selecting a link or filling out a form. If
-   the crawler breaches this limit, you see the debug level log `not adding navigation as it exceeds max actions`.
-1. By default, the crawler runs for a maximum of 24 hours. If it exceeds this time limit, you see the trace
-   level log `crawl complete, timed out`.
+   the crawler breaches this limit, you see the debug-level log `not adding navigation as it exceeds max actions`.
+1. By default, the crawler runs for a maximum of 24 hours. If it exceeds this time limit, you see the trace-level
+   log `crawl complete, timed out`.
 
-When the crawler reached either of these limits, the scanner stops and cannot cover the target website completely.
+When the crawler reaches either of these limits, the scanner stops and cannot cover the target website completely.
 Therefore, a breach of these limits might indicate a problem during the scan and a potential opportunity for optimization.
 
 If your application has template-based pages with similar structure but different data across pages or

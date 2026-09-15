@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Packages::Debian::FileEntry, type: :model do
+RSpec.describe Packages::Debian::FileEntry, type: :model, feature_category: :package_registry do
   let_it_be(:package_file) { create(:debian_package_file, :dsc) }
 
   let(:filename) { 'sample_1.2.3~alpha2.dsc' }

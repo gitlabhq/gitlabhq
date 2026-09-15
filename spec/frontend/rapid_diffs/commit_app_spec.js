@@ -12,6 +12,7 @@ import { initNewDiscussionToggle } from '~/rapid_diffs/app/init_new_discussions_
 import { INLINE_DIFF_VIEW_TYPE, PARALLEL_DIFF_VIEW_TYPE } from '~/diffs/constants';
 import { useDiffsList } from '~/rapid_diffs/stores/diffs_list';
 import { initTimeline } from '~/rapid_diffs/app/init_timeline';
+import { initHotkeys } from '~/rapid_diffs/app/init_hotkeys';
 import TaskList from '~/task_list';
 
 jest.mock('~/alert');
@@ -23,6 +24,7 @@ jest.mock('~/rapid_diffs/app/quirks/safari_fix');
 jest.mock('~/rapid_diffs/app/quirks/content_visibility_fix');
 jest.mock('~/rapid_diffs/app/init_new_discussions_toggle');
 jest.mock('~/rapid_diffs/app/init_timeline');
+jest.mock('~/rapid_diffs/app/init_hotkeys');
 jest.mock('~/task_list');
 
 describe('Commit Rapid Diffs app', () => {
@@ -142,6 +144,15 @@ describe('Commit Rapid Diffs app', () => {
         discussionsEndpoint: appData.discussionsEndpoint,
       }),
     );
+  });
+
+  it('initializes hotkeys without the merge request shortcuts', async () => {
+    axiosMock.onGet(appData.discussionsEndpoint).reply(HTTP_STATUS_OK, { discussions: [] });
+    createApp();
+
+    await app.init();
+
+    expect(initHotkeys).toHaveBeenCalledWith({ mergeRequestShortcuts: false });
   });
 
   describe('TaskList integration', () => {

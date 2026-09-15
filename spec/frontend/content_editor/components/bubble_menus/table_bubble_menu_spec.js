@@ -92,6 +92,7 @@ describe('content_editor/components/bubble_menus/table_bubble_menu', () => {
   };
 
   beforeEach(() => {
+    window.isSecureContext = true;
     buildEditor();
     buildWrapper();
   });
@@ -149,11 +150,13 @@ describe('content_editor/components/bubble_menus/table_bubble_menu', () => {
 
     describe('common actions', () => {
       describe.each`
-        label                    | action
-        ${'Insert column left'}  | ${'addColumnBefore'}
-        ${'Insert column right'} | ${'addColumnAfter'}
-        ${'Insert row below'}    | ${'addRowAfter'}
-        ${'Delete table'}        | ${'deleteTable'}
+        label                           | action
+        ${'Insert column left'}         | ${'addColumnBefore'}
+        ${'Insert column right'}        | ${'addColumnAfter'}
+        ${'Insert row below'}           | ${'addRowAfter'}
+        ${'Paste into cell'}            | ${'pasteFromClipboardIntoCell'}
+        ${'Paste and merge into table'} | ${'pasteFromClipboardIntoTable'}
+        ${'Delete table'}               | ${'deleteTable'}
       `('action: $label', ({ label, action }) => {
         const cells = [
           'Header 1',
@@ -189,6 +192,55 @@ describe('content_editor/components/bubble_menus/table_bubble_menu', () => {
             expect(commands[action]).toHaveBeenCalled();
           }
         });
+      });
+    });
+
+    describe('paste actions keyboard shortcut hints', () => {
+      it.each`
+        label                           | kbdText         | ariaKeyshortcuts
+        ${'Paste into cell'}            | ${'Ctrl+Alt+V'} | ${'Control+Alt+V'}
+        ${'Paste and merge into table'} | ${'Ctrl+V'}     | ${'Control+V'}
+      `(
+        'renders the $kbdText hint on the "$label" item',
+        async ({ label, kbdText, ariaKeyshortcuts }) => {
+          selectCellContaining('Row 1 Cell 1');
+          await showBubbleMenu();
+
+          const kbd = wrapper
+            .findAll('kbd')
+            .wrappers.find((w) => w.element.closest('li').textContent.includes(label));
+
+          expect(kbd.text()).toBe(kbdText);
+          expect(kbd.attributes('aria-hidden')).toBe('true');
+          expect(kbd.element.closest('button').getAttribute('aria-keyshortcuts')).toBe(
+            ariaKeyshortcuts,
+          );
+        },
+      );
+    });
+
+    describe('paste actions availability', () => {
+      it('are not visible in an insecure context', async () => {
+        window.isSecureContext = false;
+
+        selectCellContaining('Row 1 Cell 1');
+        await showBubbleMenu();
+
+        expect(wrapper.text()).not.toContain('Paste into cell');
+        expect(wrapper.text()).not.toContain('Paste and merge into table');
+      });
+
+      it('are not visible when clipboard.read is unavailable', async () => {
+        const { read } = navigator.clipboard;
+        delete navigator.clipboard.read;
+
+        selectCellContaining('Row 1 Cell 1');
+        await showBubbleMenu();
+
+        expect(wrapper.text()).not.toContain('Paste into cell');
+        expect(wrapper.text()).not.toContain('Paste and merge into table');
+
+        navigator.clipboard.read = read;
       });
     });
 

@@ -72,6 +72,12 @@ RSpec.describe "Add linked items to a work item", feature_category: :portfolio_m
       )
     end
 
+    it_behaves_like 'authorizing granular token permissions for GraphQL', :update_work_item do
+      let(:user) { current_user }
+      let(:boundary_object) { project }
+      let(:request) { post_graphql_mutation(mutation, token: { personal_access_token: pat }) }
+    end
+
     context 'when linking a work item fails' do
       let_it_be(:private_project) { create(:project, :private) }
       let_it_be(:related2) { create(:work_item, project: private_project) }

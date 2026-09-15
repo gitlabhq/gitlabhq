@@ -46,8 +46,7 @@ module SessionsHelper
   def passkey_authentication_data(params)
     {
       path: users_passkeys_sign_in_path,
-      remember_me: params.fetch(:remember_me, '0'),
-      sign_in_path: root_path
+      remember_me: params.fetch(:remember_me, '0')
     }
   end
 

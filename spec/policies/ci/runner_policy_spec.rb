@@ -96,6 +96,18 @@ RSpec.describe Ci::RunnerPolicy, feature_category: :runner_core do
     context 'with maintainer access' do
       let(:user) { maintainer }
 
+      context 'with a project runner associated with one project' do
+        let(:runner) { create(:ci_runner, :project, projects: [owner_project]) }
+
+        it { expect_allowed :update_runner }
+
+        context 'when user is only a developer in the owning project' do
+          let_it_be(:user, freeze: false) { create(:user, developer_of: owner_project) }
+
+          it { expect_disallowed :update_runner }
+        end
+      end
+
       context 'with instance runner' do
         let(:runner) { instance_runner }
 

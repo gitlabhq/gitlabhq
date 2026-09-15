@@ -91,8 +91,7 @@ RSpec.describe 'gitlab:smtp:secret rake tasks' do
 
   describe 'write' do
     before do
-      allow($stdin).to receive(:tty?).and_return(false)
-      allow($stdin).to receive(:read).and_return('username: foo')
+      allow($stdin).to receive_messages(tty?: false, read: 'username: foo')
     end
 
     it 'creates encrypted file from stdin' do

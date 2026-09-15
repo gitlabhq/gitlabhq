@@ -94,6 +94,16 @@ RSpec.describe 'Reorder a work item in the hierarchy tree', feature_category: :t
       it_behaves_like 'reorders item position', 'BEFORE' do
         let(:reorders_items) { [work_item, child1, child2] }
       end
+
+      it_behaves_like 'authorizing granular token permissions for GraphQL', :update_work_item do
+        let(:user) { current_user }
+        let(:boundary_object) { project }
+        let(:input) do
+          { 'adjacentWorkItemId' => child1.to_gid.to_s, 'relativePosition' => 'AFTER' }
+        end
+
+        let(:request) { post_graphql_mutation(mutation, token: { personal_access_token: pat }) }
+      end
     end
   end
 end

@@ -3,19 +3,14 @@
 module Gitlab
   module Audit
     module Logging
-      ENTITY_TYPE_TO_CLASS = {
-        'User' => ::AuditEvents::UserAuditEvent,
-        'Project' => ::AuditEvents::ProjectAuditEvent,
-        'Group' => ::AuditEvents::GroupAuditEvent,
-        'Gitlab::Audit::InstanceScope' => ::AuditEvents::InstanceAuditEvent
-      }.freeze
-
-      def log_to_new_tables(events, audit_operation)
+      # Persists audit events built by AuditEvents::BuildService, each of which is
+      # already an instance of the model backing its scope.
+      #
+      # @return [Array] the persisted events, or [] when the write failed
+      def persist_events(events, audit_operation)
         return [] if events.blank?
 
-        events.group_by(&:entity_type).flat_map do |entity_type, entity_events|
-          log_events(entity_type, entity_events)
-        end
+        events.group_by(&:class).flat_map { |event_class, scoped_events| log_events(event_class, scoped_events) }
       rescue ActiveRecord::RecordInvalid => e
         ::Gitlab::ErrorTracking.track_exception(e, audit_operation: audit_operation)
         []
@@ -23,49 +18,12 @@ module Gitlab
 
       private
 
-      def log_events(entity_type, entity_events)
-        event_class = ENTITY_TYPE_TO_CLASS[entity_type.to_s]
-
-        if entity_events.one?
-          [event_class.create!(build_event_attributes(entity_events.first))]
+      def log_events(event_class, events)
+        if events.one?
+          [events.first.tap(&:save!)]
         else
-          new_events = entity_events.map { |event| event_class.new(build_event_attributes(event)) }
-          event_ids = event_class.bulk_insert!(new_events, returns: :ids)
+          event_ids = event_class.bulk_insert!(events, returns: :ids)
           event_class.id_in(event_ids)
-        end
-      end
-
-      def build_event_attributes(event)
-        attributes = {
-          created_at: event.created_at,
-          author_id: event.author_id,
-          target_id: event.target_id,
-          event_name: event.details[:event_name],
-          details: event.details,
-          ip_address: event.ip_address,
-          author_name: event.author_name,
-          entity_path: event.entity_path,
-          target_details: event.target_details,
-          target_type: event.target_type
-        }.merge(additional_attributes(event))
-
-        # When legacy writes are skipped, events won't have an ID.
-        # Omit the id field so the new table uses its default sequence (shared_audit_event_id_seq).
-        attributes[:id] = event.id if event.id.present?
-
-        attributes
-      end
-
-      def additional_attributes(event)
-        case event.entity_type
-        when 'User'
-          { user_id: event.entity_id }
-        when 'Project'
-          { project_id: event.entity_id }
-        when 'Group'
-          { group_id: event.entity_id }
-        else
-          {}
         end
       end
     end

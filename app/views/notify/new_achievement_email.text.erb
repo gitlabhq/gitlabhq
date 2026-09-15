@@ -3,5 +3,7 @@
 <% if @user_achievement.award_message.present? %>
   <%= @user_achievement.award_message %>
 <% end %>
-<%= s_("Achievements|To show this achievement on your profile, accept it: %{url}") % { url: @accept_url } %>
-<%= s_("Achievements|If you do not wish to accept, simply ignore this email.") %>
+<% if @accept_url %>
+  <%= s_("Achievements|To show this achievement on your profile, accept it: %{url}") % { url: @accept_url } %>
+  <%= s_("Achievements|If you do not wish to accept, simply ignore this email.") %>
+<% end %>

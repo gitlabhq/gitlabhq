@@ -59,7 +59,7 @@ RSpec.describe BulkImports::Groups::Pipelines::NamespaceSettingsPipeline, featur
 
         transformed_data = pipeline.transform(context, namespace_settings_attributes)
 
-        expect(transformed_data).to eq(nil)
+        expect(transformed_data).to be_nil
       end
     end
   end

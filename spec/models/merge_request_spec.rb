@@ -7,6 +7,10 @@ RSpec.describe MergeRequest, factory_default: :keep, feature_category: :code_rev
   include ProjectForksHelper
   include ReactiveCachingHelpers
 
+  before do
+    stub_read_new_commits_table
+  end
+
   using RSpec::Parameterized::TableSyntax
 
   let_it_be(:namespace) { create_default(:namespace).freeze }
@@ -1326,19 +1330,6 @@ RSpec.describe MergeRequest, factory_default: :keep, feature_category: :code_rev
           expect(merge_request.errors[:base]).not_to include(branch_error)
         end
       end
-
-      context 'when the prevent_reopen_merge_request_without_branch feature flag is disabled' do
-        before do
-          stub_feature_flags(prevent_reopen_merge_request_without_branch: false)
-          allow(merge_request).to receive(:source_branch_exists?).and_return(false)
-        end
-
-        it 'skips the validation' do
-          merge_request.valid?
-
-          expect(merge_request.errors[:base]).not_to include(branch_error)
-        end
-      end
     end
   end
 
@@ -1546,53 +1537,65 @@ RSpec.describe MergeRequest, factory_default: :keep, feature_category: :code_rev
 
     let!(:merge_request) { create(:merge_request) }
 
-    context 'with sha contained in latest merge request diff' do
-      let(:commit) { merge_request.merge_request_diff.merge_request_diff_commits.last }
-      let(:sha) { commit.sha }
+    shared_examples 'by_commit_sha scope behavior' do
+      context 'with sha contained in latest merge request diff' do
+        let(:commit) { merge_request.merge_request_diff.merge_request_diff_commits.last }
+        let(:sha) { commit.sha }
 
-      context 'when sha is only present in diff commit metadata' do
-        before do
-          commit.update!(sha: nil)
+        context 'when sha is only present in diff commit metadata' do
+          before do
+            commit.update!(sha: nil)
+          end
+
+          it 'returns merge requests' do
+            expect(by_commit_sha).to eq([merge_request])
+          end
         end
 
-        it 'returns merge requests' do
-          expect(by_commit_sha).to eq([merge_request])
+        context 'when sha is only present in diff commit' do
+          before do
+            # Pre-backfill scenario: SHA lives only on `merge_request_diff_commits.sha`,
+            # not in `merge_request_commits_metadata`. The metadata-only read path
+            # (`mr_diff_commits_read_new_table`) is only enabled post-backfill, so
+            # stub it off to exercise the legacy union fallback.
+            stub_read_new_commits_table(false)
+
+            commit.update!(sha: sha)
+            commit.merge_request_commits_metadata.destroy!
+          end
+
+          it 'returns merge requests' do
+            expect(by_commit_sha).to eq([merge_request])
+          end
         end
       end
 
-      context 'when sha is only present in diff commit' do
-        before do
-          # Pre-backfill scenario: SHA lives only on `merge_request_diff_commits.sha`,
-          # not in `merge_request_commits_metadata`. The metadata-only read path
-          # (`mr_diff_commits_read_new_table`) is only enabled post-backfill, so
-          # stub it off to exercise the legacy union fallback.
-          stub_feature_flags(mr_diff_commits_read_new_table: false)
+      context 'with sha contained not in latest merge request diff' do
+        let(:sha) { 'b83d6e391c22777fca1ed3012fce84f633d7fed0' }
 
-          commit.update!(sha: sha)
-          commit.merge_request_commits_metadata.destroy!
+        before do
+          latest_merge_request_diff = merge_request.merge_request_diffs.create!
+          commits_metadata = MergeRequest::CommitsMetadata.where(sha: sha)
+          MergeRequestDiffCommit.where(
+            merge_request_diff_id: latest_merge_request_diff,
+            merge_request_commits_metadata: commits_metadata
+          ).delete_all
         end
 
-        it 'returns merge requests' do
-          expect(by_commit_sha).to eq([merge_request])
+        it 'returns empty requests' do
+          expect(by_commit_sha).to be_empty
         end
       end
     end
 
-    context 'with sha contained not in latest merge request diff' do
-      let(:sha) { 'b83d6e391c22777fca1ed3012fce84f633d7fed0' }
+    it_behaves_like 'by_commit_sha scope behavior'
 
-      before do
-        latest_merge_request_diff = merge_request.merge_request_diffs.create!
-        commits_metadata = MergeRequest::CommitsMetadata.where(sha: 'b83d6e391c22777fca1ed3012fce84f633d7fed0')
-        MergeRequestDiffCommit.where(
-          merge_request_diff_id: latest_merge_request_diff,
-          merge_request_commits_metadata: commits_metadata
-        ).delete_all
-      end
+    it 'generates ANY(ARRAY(...)) over diff IDs rather than EXISTS' do
+      sha = 'b83d6e391c22777fca1ed3012fce84f633d7fed0'
+      sql = described_class.by_commit_sha([merge_request.project.id], sha).to_sql
 
-      it 'returns empty requests' do
-        expect(by_commit_sha).to be_empty
-      end
+      expect(sql).to include('latest_merge_request_diff_id = ANY(ARRAY(')
+      expect(sql).not_to include('EXISTS')
     end
 
     context 'when commit_sha_scope_logger is disabled' do
@@ -1606,6 +1609,22 @@ RSpec.describe MergeRequest, factory_default: :keep, feature_category: :code_rev
         expect(Gitlab::AppLogger).not_to receive(:info)
 
         by_commit_sha
+      end
+    end
+
+    context 'when mr_by_commit_sha_use_array_subquery is disabled' do
+      before do
+        stub_feature_flags(mr_by_commit_sha_use_array_subquery: false)
+      end
+
+      it_behaves_like 'by_commit_sha scope behavior'
+
+      it 'generates an EXISTS correlated subquery' do
+        sha = 'b83d6e391c22777fca1ed3012fce84f633d7fed0'
+        sql = described_class.by_commit_sha([merge_request.project.id], sha).to_sql
+
+        expect(sql).to include('EXISTS (')
+        expect(sql).not_to include('ANY(ARRAY(')
       end
     end
   end
@@ -2188,6 +2207,19 @@ RSpec.describe MergeRequest, factory_default: :keep, feature_category: :code_rev
 
         related_issues
       end
+
+      it 'does not resolve hex words in commit messages as commits' do
+        commit_stub = double(
+          'commit1',
+          safe_message: "This reverts commit b83d6e391c22777fca1ed3012fce84f633d7fed0\n\n" \
+            "Fixes #{issue_referenced_in_mr_commit_msg.to_reference}"
+        )
+        allow(merge_request).to receive(:commits).and_return([commit_stub])
+
+        expect(Gitlab::Git::Commit).not_to receive(:batch_by_oid)
+
+        expect(related_issues).to include(issue_referenced_in_mr_commit_msg)
+      end
     end
 
     context 'for developer' do
@@ -2599,6 +2631,20 @@ RSpec.describe MergeRequest, factory_default: :keep, feature_category: :code_rev
 
         expect(subject.merge_request_issues.where(issue_id: mentioned_issue.id).pluck(:link_type))
           .to contain_exactly('closes')
+      end
+
+      it 'moves an issue from closes to mentioned when the description downgrades the reference',
+        :aggregate_failures do
+        subject.description = "Closes #{mentioned_issue.to_reference}"
+        subject.persist_merge_request_issues!(subject.author)
+        expect(subject.merge_request_issues.where(issue_id: mentioned_issue.id).pluck(:link_type))
+          .to contain_exactly('closes')
+
+        subject.description = "Relates to #{mentioned_issue.to_reference}"
+        subject.persist_merge_request_issues!(subject.author)
+
+        expect(subject.merge_request_issues.where(issue_id: mentioned_issue.id).pluck(:link_type))
+          .to contain_exactly('mentioned')
       end
 
       it 'is idempotent when the description is unchanged' do
@@ -3126,6 +3172,16 @@ RSpec.describe MergeRequest, factory_default: :keep, feature_category: :code_rev
 
         2.times { merge_request.changed_paths }
       end
+
+      it 'invalidates the cache when the diff_base_sha changes', :request_store do
+        expect(project.repository).to receive(:find_changed_paths).twice
+
+        2.times { merge_request.changed_paths }
+
+        allow(merge_request).to receive(:diff_base_sha).and_return('new_base_sha')
+
+        2.times { merge_request.changed_paths }
+      end
     end
 
     context 'when a file is added and then removed across commits within the MR', :request_store do
@@ -3150,55 +3206,6 @@ RSpec.describe MergeRequest, factory_default: :keep, feature_category: :code_rev
 
         expect(paths).to include('kept.txt')
         expect(paths).not_to include('reverted.txt')
-      end
-    end
-
-    context 'when the :mr_changed_paths_net_diff feature flag is disabled' do
-      before do
-        stub_feature_flags(mr_changed_paths_net_diff: false)
-      end
-
-      context 'when fetching paths from gitaly' do
-        let(:shas) { ['ade1c0b4b116209ed2a9958436b26f89085ec383'] }
-        let(:changed_paths) { [double(:changed_path, path: 'path.rb')] }
-        let(:merge_request) { build(:merge_request, id: 1, project: project) }
-
-        before do
-          allow(merge_request).to receive(:commit_shas).with(bypass_preloaded: true).and_return(shas)
-        end
-
-        it 'fetches the changed paths from gitaly using commit SHAs' do
-          expect(project.repository)
-            .to receive(:find_changed_paths).with(shas, merge_commit_diff_mode: :all_parents)
-            .once.and_return(changed_paths)
-
-          expect(merge_request.changed_paths).to eq(changed_paths)
-        end
-      end
-
-      context 'when a file is added and then removed across commits within the MR', :request_store do
-        let_it_be(:net_diff_project) { create(:project, :repository) }
-        let_it_be(:merge_request) do
-          user = net_diff_project.first_owner
-          repo = net_diff_project.repository
-
-          repo.create_file(user, 'kept.txt', 'keep',
-            message: 'Add kept file', branch_name: 'net-diff-source', start_branch_name: 'master')
-          repo.create_file(user, 'reverted.txt', 'temporary',
-            message: 'Add file that will be reverted', branch_name: 'net-diff-source')
-          repo.delete_file(user, 'reverted.txt',
-            message: 'Revert the temporary file', branch_name: 'net-diff-source')
-
-          create(:merge_request, source_project: net_diff_project, target_project: net_diff_project,
-            source_branch: 'net-diff-source', target_branch: 'master')
-        end
-
-        it 'returns the union of per-commit changes, including the reverted file' do
-          paths = merge_request.changed_paths.map(&:path)
-
-          expect(paths).to include('kept.txt')
-          expect(paths).to include('reverted.txt')
-        end
       end
     end
   end
@@ -3317,6 +3324,18 @@ RSpec.describe MergeRequest, factory_default: :keep, feature_category: :code_rev
       allow(subject.project).to receive(:default_branch)
         .and_return(subject.target_branch)
       subject.persist_merge_request_issues!
+
+      expect(subject.issues_mentioned_but_not_closing(subject.author)).to match_array([mentioned_issue])
+    end
+
+    it 'does not resolve hex words in the description as commits' do
+      subject.project.add_developer(subject.author)
+      subject.description = "Is related to #{mentioned_issue.to_reference} (86cf52818ce35ddc67a9aed6cc5ce19c)"
+
+      allow(subject).to receive(:commits).and_return([])
+      allow(subject.project).to receive(:default_branch).and_return(subject.target_branch)
+
+      expect(Gitlab::Git::Commit).not_to receive(:batch_by_oid)
 
       expect(subject.issues_mentioned_but_not_closing(subject.author)).to match_array([mentioned_issue])
     end
@@ -3449,8 +3468,11 @@ RSpec.describe MergeRequest, factory_default: :keep, feature_category: :code_rev
   describe "#draftless_title" do
     subject { build_stubbed(:merge_request) }
 
-    ['draft:', 'Draft: ', '[Draft]', '[DRAFT] '].each do |draft_prefix|
-      it "removes a '#{draft_prefix}' prefix" do
+    [
+      'draft:', 'Draft: ', '[Draft]', '[DRAFT] ',
+      'Draft: Draft: ', '[Draft] [Draft] ', '(Draft) (Draft) ', 'Draft:Draft: ', 'Draft: [Draft] (Draft) '
+    ].each do |draft_prefix|
+      it "removes the '#{draft_prefix}' prefix" do
         draftless_title = subject.title
         subject.title = "#{draft_prefix}#{subject.title}"
 
@@ -3481,6 +3503,12 @@ RSpec.describe MergeRequest, factory_default: :keep, feature_category: :code_rev
       expect(subject.draftless_title).to eq 'Implement feature called draft'
     end
 
+    it 'does not strip a bare draft word left over after removing real prefixes' do
+      subject.title = 'Draft: Draft: draft'
+
+      expect(subject.draftless_title).to eq 'draft'
+    end
+
     it 'does not remove WIP in the middle of the title' do
       subject.title = 'Something with WIP in the middle'
 
@@ -3503,6 +3531,19 @@ RSpec.describe MergeRequest, factory_default: :keep, feature_category: :code_rev
       subject.title = 'Something ends with Draft'
 
       expect(subject.draftless_title).to eq subject.title
+    end
+
+    it 'preserves real content that only exceeds the length limit because of the prefix' do
+      real_title = ('a' * Issuable::TITLE_LENGTH_MAX)
+      subject.title = "Draft: #{real_title}"
+
+      expect(subject.draftless_title).to eq real_title
+    end
+
+    it 'bounds the number of prefixes it will strip from an adversarial title' do
+      subject.title = "#{'Draft: ' * 100_000}Implement feature"
+
+      expect(subject.draftless_title).to start_with('Draft: ')
     end
   end
 
@@ -4136,7 +4177,7 @@ RSpec.describe MergeRequest, factory_default: :keep, feature_category: :code_rev
         # `committer_id` column on `merge_request_diff_commits`. Once
         # `mr_diff_commits_read_new_table` is enabled the union with that
         # path is removed, so this case is exercised with the FF off.
-        stub_feature_flags(mr_diff_commits_read_new_table: false)
+        stub_read_new_commits_table(false)
       end
 
       it_behaves_like 'committer filtering matches expected'
@@ -4207,7 +4248,7 @@ RSpec.describe MergeRequest, factory_default: :keep, feature_category: :code_rev
         # Pre-backfill mixed state: one commit via metadata, one only via the
         # direct `committer_id` column. The union covering both paths only
         # exists with the FF off; post-backfill the direct path is dropped.
-        stub_feature_flags(mr_diff_commits_read_new_table: false)
+        stub_read_new_commits_table(false)
       end
 
       it_behaves_like 'committer filtering matches expected'
@@ -4312,7 +4353,7 @@ RSpec.describe MergeRequest, factory_default: :keep, feature_category: :code_rev
         subject.clear_memoization(:committer_ids_to_filter_from_approvers)
         subject.clear_memoization(:committers_to_filter_from_approvers)
         subject.clear_memoization(:committer_emails_from_diff)
-        subject.clear_memoization(:project_id_pruning_enabled?)
+        subject.clear_memoization(:read_new_commits_table?)
       end
 
       it 'includes the committer reachable via metadata' do
@@ -4333,10 +4374,10 @@ RSpec.describe MergeRequest, factory_default: :keep, feature_category: :code_rev
           .not_to query_diff_commits_without_project_id
       end
 
-      context 'when mr_diff_commits_project_id_pruning is disabled' do
+      context 'when reading from the legacy commits table' do
         before do
-          stub_feature_flags(mr_diff_commits_project_id_pruning: false)
-          subject.clear_memoization(:project_id_pruning_enabled?)
+          stub_read_new_commits_table(false)
+          subject.clear_memoization(:read_new_commits_table?)
         end
 
         it 'returns correct committers' do
@@ -5582,156 +5623,6 @@ RSpec.describe MergeRequest, factory_default: :keep, feature_category: :code_rev
     end
   end
 
-  describe '#all_commit_shas' do
-    let_it_be_with_reload(:merge_request) { create(:merge_request, source_project: project) }
-    let(:shas_from_commits) do
-      merge_request.merge_request_diffs.flat_map(&:commits).map(&:sha).uniq
-    end
-
-    subject(:all_commit_shas) { merge_request.all_commit_shas }
-
-    context 'when merge request is not persisted' do
-      let_it_be(:project) { create(:project, :repository) }
-
-      context 'when compare commits are set in the service' do
-        let(:commit) { spy('commit') }
-        let(:merge_request) { build(:merge_request, source_project: project, compare_commits: [commit, commit]) }
-
-        it 'returns commits from compare commits temporary data' do
-          expect(all_commit_shas).to eq [commit, commit]
-        end
-      end
-
-      context 'when compare commits are not set in the service' do
-        let(:merge_request) { build(:merge_request, source_project: project) }
-
-        it 'returns array with diff head sha element only' do
-          expect(all_commit_shas).to eq [merge_request.diff_head_sha]
-        end
-      end
-    end
-
-    shared_examples 'persisted merge request' do
-      shared_examples 'returning all SHA' do
-        it 'returns all SHAs from all merge_request_diffs' do
-          expect(merge_request.merge_request_diffs.size).to eq(2)
-          expect(all_commit_shas).to match_array(shas_from_commits)
-        end
-      end
-
-      context 'with a completely different branch' do
-        before do
-          merge_request.update!(target_branch: 'csv')
-        end
-
-        it_behaves_like 'returning all SHA'
-      end
-
-      context 'with a branch having no difference' do
-        before do
-          merge_request.update!(target_branch: 'branch-merged')
-          merge_request.reload # make sure commits were not cached
-        end
-
-        it_behaves_like 'returning all SHA'
-      end
-    end
-
-    context 'when `sha` data is only present in `merge_request_diff_commits` table' do
-      let(:commit_ids) { merge_request.merge_request_diffs.flat_map(&:merge_request_diff_commits).pluck(:id) }
-
-      before do
-        MergeRequest::CommitsMetadata.where(merge_request_diff_commits: commit_ids).delete_all
-      end
-
-      it_behaves_like 'persisted merge request'
-    end
-
-    context 'when `sha` data is only present in `merge_request_commits_metadata` table' do
-      before do
-        merge_request.merge_request_diffs.flat_map(&:merge_request_diff_commits).map do |diff_commit|
-          diff_commit.update!(sha: nil)
-        end
-      end
-
-      it_behaves_like 'persisted merge request'
-    end
-
-    context 'when `sha` data is distributed across both tables' do
-      before do
-        # Mid-backfill state: a subset of diff commits still have their SHA only
-        # on `merge_request_diff_commits` (no metadata link yet). The fallback
-        # to that column is removed when `mr_diff_commits_read_new_table` is on,
-        # so we only assert this behaviour with the FF off.
-        stub_feature_flags(mr_diff_commits_read_new_table: false)
-
-        merge_request.merge_request_diffs.flat_map(&:merge_request_diff_commits).sample(10).map do |diff_commit|
-          diff_commit.update!(merge_request_commits_metadata_id: nil, sha: diff_commit.sha)
-        end
-      end
-
-      it_behaves_like 'persisted merge request'
-    end
-
-    context 'with a mix of migrated and unmigrated diff commits' do
-      let_it_be(:project) { create(:project, :repository) }
-      let(:merge_request) { create(:merge_request, source_project: project, target_project: project) }
-      let(:unmigrated_shas) do
-        # Mid-backfill state: nullify `merge_request_commits_metadata_id` on a subset of
-        # diff commits while keeping their `sha`. With the FF enabled, the metadata-only path
-        # excludes these rows; with the FF disabled, the legacy union path includes them.
-        merge_request.merge_request_diffs.flat_map(&:merge_request_diff_commits).sample(5).map do |dc|
-          dc.update!(merge_request_commits_metadata_id: nil, sha: dc.sha)
-          dc.sha
-        end
-      end
-
-      before do
-        unmigrated_shas
-        merge_request.clear_memoization(:read_new_commits_table?)
-      end
-
-      it 'excludes unmigrated diff commits (metadata-only path)' do
-        expect(merge_request.all_commit_shas).not_to include(*unmigrated_shas)
-      end
-
-      it 'does not reference columns missing from the new diff commits table' do
-        expect { merge_request.all_commit_shas }.not_to query_missing_diff_commit_columns
-      end
-
-      it 'includes a project_id filter on merge_request_diff_commits for partition pruning' do
-        expect { merge_request.all_commit_shas }.not_to query_diff_commits_without_project_id
-      end
-
-      context 'when mr_diff_commits_read_new_table is disabled' do
-        before do
-          stub_feature_flags(mr_diff_commits_read_new_table: false)
-          merge_request.clear_memoization(:read_new_commits_table?)
-        end
-
-        it 'includes unmigrated diff commits via the legacy union path' do
-          expect(merge_request.all_commit_shas).to include(*unmigrated_shas)
-        end
-      end
-
-      context 'when mr_diff_commits_project_id_pruning is disabled' do
-        before do
-          stub_feature_flags(mr_diff_commits_project_id_pruning: false)
-          merge_request.clear_memoization(:project_id_pruning_enabled?)
-        end
-
-        it 'excludes unmigrated diff commits' do
-          expect(merge_request.all_commit_shas).not_to include(*unmigrated_shas)
-        end
-
-        it 'omits the project_id filter on merge_request_diff_commits' do
-          expect { merge_request.all_commit_shas }
-            .to query_diff_commits_without_project_id
-        end
-      end
-    end
-  end
-
   describe '#merged_commit_sha' do
     it 'returns nil when not merged' do
       expect(subject.merged_commit_sha).to be_nil
@@ -6520,6 +6411,63 @@ RSpec.describe MergeRequest, factory_default: :keep, feature_category: :code_rev
 
     with_them do
       it { expect(subject.public_merge_status).to eq(public_status) }
+    end
+  end
+
+  describe '#merge_status_inputs' do
+    let(:merge_request) { create(:merge_request) }
+
+    it 'returns the target branch and the diff the source SHA is read from' do
+      expect(merge_request.merge_status_inputs).to eq([merge_request.target_branch, merge_request.merge_request_diff.id])
+    end
+
+    context 'when the diff the caller holds is no longer the latest' do
+      before do
+        merge_request.merge_request_diff # the caller loads the diff it will compute from
+
+        described_class.find(merge_request.id).create_merge_request_diff
+      end
+
+      it 'returns the diff the caller holds, not the latest one' do
+        latest_diff_id = described_class.where(id: merge_request.id).pick(:latest_merge_request_diff_id)
+
+        expect(merge_request.merge_status_inputs.last).not_to eq(latest_diff_id)
+      end
+    end
+  end
+
+  describe '#merge_status_inputs_current?' do
+    let(:merge_request) { create(:merge_request, merge_status: 'unchecked') }
+    let!(:inputs) { merge_request.merge_status_inputs } # captured before the status is computed
+
+    subject { merge_request.merge_status_inputs_current?(inputs) }
+
+    it { is_expected.to be(true) }
+
+    context 'when the target branch has moved on' do
+      before do
+        described_class.where(id: merge_request.id).update_all(target_branch: 'a-different-branch')
+      end
+
+      it { is_expected.to be(false) }
+    end
+
+    context 'when the record is refreshed after the inputs were captured' do
+      before do
+        described_class.where(id: merge_request.id).update_all(target_branch: 'a-different-branch')
+
+        merge_request.reset
+      end
+
+      it { is_expected.to be(false) }
+    end
+
+    context 'when the latest diff has moved on' do
+      before do
+        described_class.find(merge_request.id).create_merge_request_diff
+      end
+
+      it { is_expected.to be(false) }
     end
   end
 
@@ -9438,6 +9386,23 @@ RSpec.describe MergeRequest, factory_default: :keep, feature_category: :code_rev
     end
   end
 
+  describe '#find_or_create_reviewer' do
+    let_it_be_with_reload(:reviewer_merge_request) { create(:merge_request) }
+    let_it_be(:user) { create(:user) }
+
+    it 'creates the reviewer when none exists' do
+      expect { reviewer_merge_request.find_or_create_reviewer(user) }
+        .to change { reviewer_merge_request.merge_request_reviewers.where(user_id: user.id).count }.by(1)
+    end
+
+    it 'returns the existing reviewer without creating a duplicate', :aggregate_failures do
+      existing = reviewer_merge_request.merge_request_reviewers.create!(user_id: user.id)
+
+      expect { expect(reviewer_merge_request.find_or_create_reviewer(user)).to eq(existing) }
+        .not_to change { reviewer_merge_request.merge_request_reviewers.count }
+    end
+  end
+
   describe '#recent_diff_head_shas' do
     let_it_be(:merge_request_with_diffs) do
       params = {
@@ -10358,7 +10323,6 @@ RSpec.describe MergeRequest, factory_default: :keep, feature_category: :code_rev
 
     before do
       merge_request.clear_memoization(:read_new_commits_table?)
-      merge_request.clear_memoization(:project_id_pruning_enabled?)
     end
 
     it 'checks existence of commit by SHA from merge_request_commits_metadata table' do
@@ -10388,30 +10352,169 @@ RSpec.describe MergeRequest, factory_default: :keep, feature_category: :code_rev
         expect(merge_request.commit_exists?(orphan_diff_commit.sha)).to be(false)
       end
 
-      context 'when mr_diff_commits_read_new_table is disabled' do
+      context 'when reading from the legacy commits table' do
         before do
-          stub_feature_flags(mr_diff_commits_read_new_table: false)
+          stub_read_new_commits_table(false)
         end
 
         it 'checks existence of commit by SHA from merge_request_diff_commits table' do
           expect(merge_request.commit_exists?(orphan_diff_commit.sha)).to be(true)
         end
+
+        it 'omits the project_id filter on merge_request_diff_commits' do
+          expect { merge_request.commit_exists?(commits_metadata.sha) }
+            .to query_diff_commits_without_project_id
+        end
       end
     end
+  end
 
-    context 'when mr_diff_commits_project_id_pruning is disabled' do
-      before do
-        stub_feature_flags(mr_diff_commits_project_id_pruning: false)
-        merge_request.clear_memoization(:project_id_pruning_enabled?)
+  describe '#existing_commit_shas' do
+    let_it_be(:project) { create(:project) }
+    let_it_be(:merge_request) { create(:merge_request, source_project: project, target_project: project) }
+    let_it_be(:merge_request_diff) { create(:merge_request_diff, merge_request: merge_request) }
+
+    let_it_be(:commits_metadata) do
+      create(:merge_request_commits_metadata, project: project, sha: 'abc123')
+    end
+
+    let_it_be(:other_commits_metadata) do
+      create(:merge_request_commits_metadata, project: project, sha: 'def456')
+    end
+
+    let_it_be(:diff_commit_with_metadata) do
+      create(
+        :merge_request_diff_commit,
+        merge_request_diff: merge_request_diff,
+        merge_request_commits_metadata: commits_metadata,
+        relative_order: 0
+      )
+    end
+
+    let(:unknown_sha) { 'fff000' }
+
+    before do
+      merge_request.clear_memoization(:read_new_commits_table?)
+    end
+
+    it 'returns only the SHAs that belong to the merge request' do
+      # `other_commits_metadata` exists in the project but is not one of this
+      # merge request's diff commits.
+      shas = [commits_metadata.sha, other_commits_metadata.sha, unknown_sha]
+
+      expect(merge_request.existing_commit_shas(shas)).to contain_exactly(commits_metadata.sha)
+    end
+
+    it 'returns an empty array without querying when given no SHAs' do
+      recorder = ActiveRecord::QueryRecorder.new { expect(merge_request.existing_commit_shas([])).to eq([]) }
+
+      expect(recorder.count).to eq(0)
+    end
+
+    it 'does not issue more queries as the number of SHAs grows within a slice' do
+      one_sha = ActiveRecord::QueryRecorder.new { merge_request.existing_commit_shas([commits_metadata.sha]) }
+
+      many_shas = ActiveRecord::QueryRecorder.new do
+        merge_request.existing_commit_shas([commits_metadata.sha] + Array.new(25) { |i| format('%06x', i) })
       end
 
-      it 'checks commit existence' do
-        expect(merge_request.commit_exists?(commits_metadata.sha)).to be(true)
+      expect(many_shas.count).to eq(one_sha.count)
+    end
+
+    it 'issues one query per slice of MAX_PLUCK SHAs' do
+      stub_const('ApplicationRecord::MAX_PLUCK', 2)
+
+      one_slice = ActiveRecord::QueryRecorder.new do
+        merge_request.existing_commit_shas([commits_metadata.sha, unknown_sha])
       end
 
-      it 'omits the project_id filter on merge_request_diff_commits' do
-        expect { merge_request.commit_exists?(commits_metadata.sha) }
-          .to query_diff_commits_without_project_id
+      two_slices = ActiveRecord::QueryRecorder.new do
+        merge_request.existing_commit_shas([commits_metadata.sha, unknown_sha] + Array.new(2) { |i| format('%06x', i) })
+      end
+
+      expect(two_slices.count).to eq(one_slice.count + 1)
+    end
+
+    it 'includes a project_id filter on merge_request_diff_commits for partition pruning' do
+      expect { merge_request.existing_commit_shas([commits_metadata.sha]) }
+        .not_to query_diff_commits_without_project_id
+    end
+
+    it 'does not reference columns missing from the new diff commits table' do
+      expect { merge_request.existing_commit_shas([unknown_sha]) }
+        .not_to query_missing_diff_commit_columns
+    end
+
+    context 'when a SHA is only present in merge_request_diff_commits' do
+      let_it_be(:orphan_diff_commit) do
+        create(
+          :diff_commit_without_metadata,
+          merge_request_diff: merge_request_diff,
+          relative_order: 2,
+          sha: 'ghi789'
+        )
+      end
+
+      it 'excludes it, because the fallback to diff_commits.sha is skipped' do
+        expect(merge_request.existing_commit_shas([orphan_diff_commit.sha])).to eq([])
+      end
+
+      context 'when reading from the legacy commits table' do
+        before do
+          stub_read_new_commits_table(false)
+          merge_request.clear_memoization(:read_new_commits_table?)
+        end
+
+        it 'includes it via the fallback to merge_request_diff_commits' do
+          shas = [commits_metadata.sha, orphan_diff_commit.sha, unknown_sha]
+
+          expect(merge_request.existing_commit_shas(shas))
+            .to contain_exactly(commits_metadata.sha, orphan_diff_commit.sha)
+        end
+
+        it 'does not issue more queries as the number of SHAs grows' do
+          one_sha = ActiveRecord::QueryRecorder.new { merge_request.existing_commit_shas([unknown_sha]) }
+
+          many_shas = ActiveRecord::QueryRecorder.new do
+            merge_request.existing_commit_shas(Array.new(25) { |i| format('%06x', i) })
+          end
+
+          expect(many_shas.count).to eq(one_sha.count)
+        end
+
+        context 'when a SHA appears in multiple diff versions' do
+          let_it_be(:newer_merge_request_diff) { create(:merge_request_diff, merge_request: merge_request) }
+
+          let_it_be(:duplicated_diff_commit) do
+            create(
+              :diff_commit_without_metadata,
+              merge_request_diff: newer_merge_request_diff,
+              relative_order: 0,
+              sha: orphan_diff_commit.sha
+            )
+          end
+
+          let_it_be(:other_orphan_diff_commit) do
+            create(
+              :diff_commit_without_metadata,
+              merge_request_diff: merge_request_diff,
+              relative_order: 3,
+              sha: 'jkl012'
+            )
+          end
+
+          it 'returns each SHA once without duplicates crowding out other SHAs' do
+            shas = [orphan_diff_commit.sha, other_orphan_diff_commit.sha, unknown_sha]
+
+            expect(merge_request.existing_commit_shas(shas))
+              .to contain_exactly(orphan_diff_commit.sha, other_orphan_diff_commit.sha)
+          end
+        end
+
+        it 'omits the project_id filter on merge_request_diff_commits' do
+          expect { merge_request.existing_commit_shas([commits_metadata.sha]) }
+            .to query_diff_commits_without_project_id
+        end
       end
     end
   end

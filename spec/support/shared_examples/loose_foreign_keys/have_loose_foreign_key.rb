@@ -9,7 +9,15 @@ RSpec.shared_examples 'it has loose foreign keys' do
   let(:table_name) { described_class.table_name }
   let(:connection) { described_class.connection }
   let(:fully_qualified_table_name) { "#{connection.current_schema}.#{table_name}" }
-  let(:deleted_records) { LooseForeignKeys::DeletedRecord.where(fully_qualified_table_name: fully_qualified_table_name) }
+
+  # The trigger routes the deleted record to the deleted-records table of the row's sharding key,
+  # falling back to the cell-local table, so the lookup must fan out across all of them.
+  # A method instead of a `let` so `change { deleted_records.count }` sees fresh results.
+  def deleted_records
+    Gitlab::LooseForeignKeys::DeletedRecordStore::MODELS.flat_map do |model|
+      model.where(fully_qualified_table_name: fully_qualified_table_name).to_a
+    end
+  end
 
   around do |example|
     LooseForeignKeys::DeletedRecord.using_connection(connection) do
@@ -45,7 +53,7 @@ RSpec.shared_examples 'it has loose foreign keys' do
     # using delete to avoid cross-database modification errors when associations with dependent option are present
     model.delete
 
-    deleted_record = deleted_records.find_by(primary_key_value: model.id)
+    deleted_record = deleted_records.find { |record| record.primary_key_value == model.id }
 
     expect(deleted_record).not_to be_nil
   end
@@ -58,8 +66,10 @@ RSpec.shared_examples 'it has loose foreign keys' do
 
     process_loose_foreign_key_deletions(record: model, worker_class: worker_class)
 
-    expect(deleted_records.where(primary_key_value: model_id).status_pending.count).to eq(0)
-    expect(deleted_records.where(primary_key_value: model_id).status_processed.count).to eq(1)
+    records_for_model = deleted_records.select { |record| record.primary_key_value == model_id }
+
+    expect(records_for_model.count(&:status_pending?)).to eq(0)
+    expect(records_for_model.count(&:status_processed?)).to eq(1)
   end
 end
 

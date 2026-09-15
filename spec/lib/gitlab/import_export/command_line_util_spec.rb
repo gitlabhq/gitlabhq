@@ -260,7 +260,7 @@ RSpec.describe Gitlab::ImportExport::CommandLineUtil, feature_category: :importe
 
       subject.gzip(dir: path, filename: filename)
 
-      expect(File.exist?("#{tempfile.path}.gz")).to eq(true)
+      expect(File.exist?("#{tempfile.path}.gz")).to be(true)
     end
 
     context 'when exception occurs' do
@@ -284,7 +284,7 @@ RSpec.describe Gitlab::ImportExport::CommandLineUtil, feature_category: :importe
 
       subject.gunzip(dir: path, filename: filename)
 
-      expect(File.exist?(File.join(path, 'labels.ndjson'))).to eq(true)
+      expect(File.exist?(File.join(path, 'labels.ndjson'))).to be(true)
     end
 
     context 'when exception occurs' do
@@ -304,8 +304,8 @@ RSpec.describe Gitlab::ImportExport::CommandLineUtil, feature_category: :importe
 
       result = subject.tar_cf(archive: archive_file, dir: source_dir)
 
-      expect(result).to eq(true)
-      expect(File.exist?(archive_file)).to eq(true)
+      expect(result).to be(true)
+      expect(File.exist?(archive_file)).to be(true)
     end
 
     context 'when something goes wrong' do
@@ -357,10 +357,10 @@ RSpec.describe Gitlab::ImportExport::CommandLineUtil, feature_category: :importe
 
       result = subject.untar_xf(archive: archive_file, dir: archive_dir)
 
-      expect(result).to eq(true)
-      expect(File.exist?(archive_file)).to eq(true)
-      expect(File.exist?(File.join(archive_dir, 'project.json'))).to eq(true)
-      expect(Dir.exist?(File.join(archive_dir, 'uploads'))).to eq(true)
+      expect(result).to be(true)
+      expect(File.exist?(archive_file)).to be(true)
+      expect(File.exist?(File.join(archive_dir, 'project.json'))).to be(true)
+      expect(Dir.exist?(File.join(archive_dir, 'uploads'))).to be(true)
     end
 
     context 'when something goes wrong' do
@@ -387,7 +387,7 @@ RSpec.describe Gitlab::ImportExport::CommandLineUtil, feature_category: :importe
           end
         end.new
 
-        expect(klass.tar_czf(archive: 'test', dir: 'test')).to eq(false)
+        expect(klass.tar_czf(archive: 'test', dir: 'test')).to be(false)
         expect(klass.shared.errors).to eq(['Command exited with error code 1: Error'])
       end
     end

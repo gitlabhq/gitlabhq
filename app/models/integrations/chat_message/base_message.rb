@@ -5,12 +5,7 @@ module Integrations
     class BaseMessage
       RELATIVE_LINK_REGEX = Gitlab::UntrustedRegexp.new('!\[[^\]]*\]\((/uploads/[^\)]*)\)')
 
-      attr_reader :markdown
-      attr_reader :user_full_name
-      attr_reader :user_name
-      attr_reader :user_avatar
-      attr_reader :project_name
-      attr_reader :project_url
+      attr_reader :markdown, :user_full_name, :user_name, :user_avatar, :project_name, :project_url
 
       def initialize(params)
         @markdown = params[:markdown] || false

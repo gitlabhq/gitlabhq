@@ -60,7 +60,7 @@ RSpec.describe 'Project Pages Deployments query', feature_category: :pages do
       'fileCount' => deployment.file_count,
       'pathPrefix' => deployment.path_prefix,
       'rootDirectory' => deployment.root_directory,
-      'size' => deployment.size,
+      'size' => deployment.size.to_s,
       'updatedAt' => deployment.updated_at.iso8601,
       'expiresAt' => deployment.expires_at&.iso8601,
       'url' => deployment.url

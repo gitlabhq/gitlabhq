@@ -87,11 +87,11 @@ collect objects that are shared between forks.
 ### Workaround: Archive the project
 
 If you [archive](../working_with_projects.md#archive-a-project) before doing the
-cleanup, the repository will be read-only. This will ensure no one will make
+cleanup, the repository will be read-only. This ensures no one can make
 changes while the cleanup is in progress.
 
-Archiving a repository will also remove the fork relation. This would allow you
-the clean up data. But if the data was pulled up into a fork, cleanup would need
+Archiving a repository will also remove the fork relation. This means you can
+clean up the data. But if the data was pulled up into a fork, cleanup would need
 to happen there as well.
 
 ## Methods to reduce repository size
@@ -151,7 +151,7 @@ This process:
 Prerequisites:
 
 - The list of objects to remove. Use the [`git filter-repo`](https://github.com/newren/git-filter-repo)
-  to produce a list of objects in a`commit-map` file.
+  to produce a list of objects in a `commit-map` file.
 
 To clean up a repository:
 

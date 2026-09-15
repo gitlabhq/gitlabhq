@@ -158,16 +158,8 @@ repository to your GitLab project. For example, if your remote uses
 To resolve this issue, you can:
 
 - Change the remote to use HTTP or use SSH without a custom alias.
-- Configure a default GitLab Duo namespace in the extension.
-
-To configure a default namespace:
-
-1. [Determine the namespace your project is in](../../user/namespace/_index.md#determine-which-type-of-namespace-youre-in).
-1. In VS Code, open the Settings editor:
-   - For macOS, select **Code** > **Preferences** > **Settings**.
-   - For Windows or Linux, select **File** > **Preferences** > **Settings**
-1. Select **Extensions** > **GitLab** > **GitLab Duo**.
-1. Under **GitLab › Duo Agent Platform: Default Namespace**, enter your namespace.
+- [Set a default GitLab Duo namespace](../../user/profile/preferences.md#set-a-default-gitlab-duo-namespace)
+  in your GitLab user preferences.
 
 ### HTTPS project cloning works but SSH cloning fails
 

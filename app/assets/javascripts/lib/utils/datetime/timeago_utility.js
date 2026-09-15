@@ -213,8 +213,34 @@ export const localTimeAgo = (elements, updateTooltip = true) => {
   requestIdleCallback(addTimeAgoTooltip);
 };
 
-export const renderLocalDateTime = (el) => {
+/**
+ * Replaces an element's text with its `datetime` formatted in the reader's own locale and
+ * timezone. The timezone is part of the output so an absolute date is never ambiguous about
+ * which zone it is quoted in.
+ * @param {HTMLTimeElement} el element carrying a parsable `datetime` attribute, read through
+ *   its reflected `el.dateTime` property
+ * @throws {RangeError} when `datetime` is missing or cannot be parsed
+ */
+const renderLocalDateTime = (el) => {
   el.textContent = localeDateFormat.asDateTimeWithTimezone.format(newDate(el.dateTime));
+};
+
+/**
+ * Absolute-date counterpart to {@link localTimeAgo}: renders every `.js-local-datetime` element's
+ * `datetime` in the reader's locale and timezone, in place of the server-rendered UTC fallback
+ * text.
+ *
+ * An element whose `datetime` cannot be parsed keeps that fallback rather than taking the rest
+ * of the page down with it.
+ */
+export const initLocalDateTimes = () => {
+  document.querySelectorAll('.js-local-datetime').forEach((el) => {
+    try {
+      renderLocalDateTime(el);
+    } catch {
+      // Intentionally left as rendered.
+    }
+  });
 };
 
 /**

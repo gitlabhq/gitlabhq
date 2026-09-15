@@ -21,9 +21,9 @@ A step this driver cannot complete, and a flow it refuses up front, are both rep
 
 Every `reason` below sits under `com.gitlab.cd.argo.reason.`, this driver's namespace. A
 problem the platform found rather than the driver carries `com.gitlab.cd.reason.` instead,
-and the engine's README lists those. The two are worth telling apart because the engine
-reports its own refusals against a *driver's* step, so the `step_type` in the payload says
-nothing about which of the two owns the failure.
+and the engine's README lists those. Tell the two apart by the namespace: the engine reports
+its own refusals against a *driver's* step, so `step_type` does not say which owns the
+failure.
 
 The first group is refused before the flow reads, commits or syncs anything: they fold out
 of the flow's own steps and read no cluster. A refusal is reported against the first step
@@ -33,10 +33,9 @@ document to look.
 | `reason` | What happened |
 | --- | --- |
 | `com.gitlab.cd.argo.reason.step_environment_missing` | The step names no environment, which a deploy needs. |
-| `com.gitlab.cd.argo.reason.step_invalid` | The step names no services, or a service with no name, or a canary service with no whole-number weight. |
+| `com.gitlab.cd.argo.reason.step_invalid` | The step names no services, or a service with no name, or a canary service whose weight is not a whole number between 0 and 100. |
 | `com.gitlab.cd.argo.reason.environment_invalid` | The environment has no `cluster_agent_id`, or no configuration for a service the step deploys, or that configuration is missing a `namespace`, `application` or `manifest_repository` field, or names a `manifest_repository` variant other than `gitlab`. |
 | `com.gitlab.cd.argo.reason.version_set_invalid` | The version set has no entry for a service the step deploys, or an entry with no artifact carrying both a `version` and a `source.image`. |
-| `com.gitlab.cd.argo.reason.rolling_service_repeated` | One rolling step names the same service twice; a step names a service once. |
 | `com.gitlab.cd.argo.reason.canary_service_repeated` | One step names the same service twice; a step names a service once. |
 | `com.gitlab.cd.argo.reason.canary_ladder_incomplete` | A service's canary weights stop short of 100, leaving it serving a sliver of the new version indefinitely. |
 | `com.gitlab.cd.argo.reason.canary_deploy_repeated` | A second `canary.deploy` for one service; one deploy opens a canary and promotes climb it. |
@@ -48,19 +47,19 @@ The rest are found while the step runs.
 
 | `reason` | What happened |
 | --- | --- |
+| `com.gitlab.cd.argo.reason.application_missing` | The Argo CD `Application` could not be read: it is absent, or the cluster refused the read. |
 | `com.gitlab.cd.argo.reason.application_namespace_missing` | The Argo CD `Application` has no `spec.destination.namespace`, so its Rollouts cannot be resolved. |
+| `com.gitlab.cd.argo.reason.rollout_missing` | The `Rollout` could not be read: the cluster refused the read, or a promote step found it absent. |
 | `com.gitlab.cd.argo.reason.sync_failed` | The sync operation for the committed revision reached `Failed` or `Error`. |
-| `com.gitlab.cd.argo.reason.sync_timeout` | The `Application` did not sync to the committed revision within the poll bound. |
+| `com.gitlab.cd.argo.reason.sync_timeout` | The `Application` did not sync to the committed revision before the wait timed out. |
 | `com.gitlab.cd.argo.reason.rollout_degraded` | The `Rollout` went `Degraded` or was aborted. |
-| `com.gitlab.cd.argo.reason.rollout_timeout` | The `Rollout` reached no terminal state within the poll bound. |
-| `com.gitlab.cd.argo.reason.canary_timed_pause_unsupported` | The canary strategy uses a timed `pause`, whose self-advance would race the flow. |
-| `com.gitlab.cd.argo.reason.canary_strategy_missing` | The step is a canary one, but the `Rollout` runs no canary steps. |
-| `com.gitlab.cd.argo.reason.canary_weight_mismatch` | A `canary.deploy` weight does not match the `Rollout`'s first canary increment. |
-| `com.gitlab.cd.argo.reason.canary_weight_unreachable` | No promotion of this `Rollout` reaches the weight the step names. |
+| `com.gitlab.cd.argo.reason.rollout_timeout` | The `Rollout` reached no terminal state before the wait timed out. |
+| `com.gitlab.cd.argo.reason.state_unhandled` | The driver read a state it has no branch for, which is a defect in the driver rather than in the deploy. |
+| `com.gitlab.cd.argo.reason.canary_steps_unexpected` | The `Rollout`'s canary steps are not the ones the deploy generated, so a gate index no longer names the weight the deploy and its promotions assume. |
 | `com.gitlab.cd.argo.reason.canary_gate_unexpected` | The `Rollout` is parked at a canary step other than the one the flow expects. |
 | `com.gitlab.cd.argo.reason.canary_not_parked` | A `canary.promote` step found the `Rollout` not parked at a gate. |
 
-Most of these mean the flow definition and the customer's `Rollout` manifest have drifted.
+Most of these mean the cluster is not where the deploy left it.
 
 ## Usage
 

@@ -67,8 +67,91 @@ RSpec.describe API::Helpers, feature_category: :api do
     end
   end
 
+  describe '#declared_params' do
+    include Rack::Test::Methods
+
+    let(:declared_options) { {} }
+    let(:query) { 'parent_param=p&endpoint_param=set' }
+
+    let(:app) do
+      options = declared_options
+
+      Class.new(Grape::API::Instance) do
+        helpers API::Helpers
+        format :json
+
+        params do
+          optional :parent_param, type: String
+        end
+        namespace 'parent' do
+          params do
+            optional :endpoint_param, type: String
+            optional :switch, type: String
+            given :switch do
+              optional :dependent_param, type: String
+            end
+          end
+
+          get 'declared' do
+            declared_params(options)
+          end
+        end
+      end
+    end
+
+    subject(:declared) do
+      get "/parent/declared?#{query}"
+
+      Gitlab::Json.parse(last_response.body)
+    end
+
+    it 'returns only the params declared on the endpoint, including the missing ones' do
+      expect(declared).to eq(
+        'endpoint_param' => 'set',
+        'switch' => nil,
+        'dependent_param' => nil
+      )
+    end
+
+    context 'with include_parent_namespaces: true' do
+      let(:declared_options) { { include_parent_namespaces: true } }
+
+      it 'also returns params declared on the parent namespace' do
+        expect(declared).to include('parent_param' => 'p')
+      end
+    end
+
+    context 'with include_missing: false' do
+      let(:declared_options) { { include_missing: false } }
+
+      it 'omits declared params that were not passed' do
+        expect(declared).to eq('endpoint_param' => 'set')
+      end
+    end
+
+    context 'with evaluate_given: true' do
+      let(:declared_options) { { evaluate_given: true } }
+
+      it 'omits params whose given dependency is not met' do
+        expect(declared).to eq('endpoint_param' => 'set', 'switch' => nil)
+      end
+
+      context 'when the dependency is met' do
+        let(:query) { 'parent_param=p&endpoint_param=set&switch=on&dependent_param=dep' }
+
+        it 'includes the dependent params' do
+          expect(declared).to eq(
+            'endpoint_param' => 'set',
+            'switch' => 'on',
+            'dependent_param' => 'dep'
+          )
+        end
+      end
+    end
+  end
+
   describe '#find_project' do
-    let(:project) { create(:project) }
+    let_it_be(:project) { create(:project) }
 
     shared_examples 'project finder' do
       context 'when project exists' do
@@ -384,7 +467,7 @@ RSpec.describe API::Helpers, feature_category: :api do
     end
 
     context 'support for IDs and paths as argument' do
-      let_it_be_with_reload(:project) { create(:project) }
+      let_it_be(:project) { create(:project) }
 
       let(:user) { project.first_owner }
 
@@ -438,7 +521,7 @@ RSpec.describe API::Helpers, feature_category: :api do
   end
 
   describe '#find_pipeline' do
-    let(:pipeline) { create(:ci_pipeline) }
+    let_it_be(:pipeline) { create(:ci_pipeline) }
 
     shared_examples 'pipeline finder' do
       context 'when pipeline exists' do
@@ -553,7 +636,7 @@ RSpec.describe API::Helpers, feature_category: :api do
     end
 
     context 'support for IDs and paths as argument' do
-      let_it_be_with_reload(:project) { create(:project) }
+      let_it_be(:project) { create(:project) }
       let_it_be(:pipeline) { create(:ci_pipeline, project: project) }
 
       let(:user) { project.first_owner }
@@ -719,7 +802,7 @@ RSpec.describe API::Helpers, feature_category: :api do
     end
 
     context 'with support for IDs and paths as arguments' do
-      let_it_be_with_reload(:group) { create(:group) }
+      let_it_be(:group) { create(:group) }
 
       let(:user) { group.first_owner }
 
@@ -860,10 +943,33 @@ RSpec.describe API::Helpers, feature_category: :api do
         it_behaves_like 'private group without access'
       end
     end
+
+    context 'organization maintenance mode enforcement' do
+      before do
+        allow(helper).to receive(:current_user).and_return(user)
+        allow(helper).to receive(:initial_current_user).and_return(user)
+      end
+
+      it 'enforces maintenance mode on the accessible group' do
+        expect(helper).to receive(:check_organization_maintenance_mode_for!).with(group)
+
+        helper.find_group_by_full_path!(group.full_path)
+      end
+
+      it 'does not enforce maintenance mode when access is denied' do
+        group.update_column(:visibility_level, Gitlab::VisibilityLevel.level_value('private'))
+        allow(helper).to receive(:authenticate_non_public?).and_return(false)
+        allow(helper).to receive(:not_found!).and_raise('404')
+
+        expect(helper).not_to receive(:check_organization_maintenance_mode_for!)
+
+        expect { helper.find_group_by_full_path!(group.full_path) }.to raise_error('404')
+      end
+    end
   end
 
   describe '#find_namespace' do
-    let(:namespace) { create(:namespace) }
+    let_it_be(:namespace) { create(:namespace) }
 
     shared_examples 'namespace finder' do
       context 'when namespace exists' do
@@ -901,7 +1007,7 @@ RSpec.describe API::Helpers, feature_category: :api do
     end
 
     context 'when namespace is a project namespace' do
-      let_it_be_with_reload(:project) { create(:project) }
+      let_it_be(:project) { create(:project) }
 
       it 'returns nil by id by default' do
         expect(helper.find_namespace(project.project_namespace.id)).to be_nil
@@ -932,7 +1038,7 @@ RSpec.describe API::Helpers, feature_category: :api do
 
   describe '#find_namespace_by_path' do
     context 'when project namespaces are allowed' do
-      let_it_be_with_reload(:project) { create(:project, :private) }
+      let_it_be(:project) { create(:project, :private) }
 
       it 'falls back to the project namespace when not found via namespace lookup' do
         expect(::Namespace).to receive(:find_by_full_path).with(project.full_path).and_return(nil)
@@ -951,7 +1057,7 @@ RSpec.describe API::Helpers, feature_category: :api do
   end
 
   shared_examples 'user namespace finder' do
-    let(:user1) { create(:user) }
+    let_it_be(:user1) { create(:user) }
 
     before do
       allow(helper).to receive(:current_user).and_return(user1)
@@ -960,10 +1066,10 @@ RSpec.describe API::Helpers, feature_category: :api do
     end
 
     context 'when namespace is group' do
-      let(:namespace) { create(:group) }
+      let_it_be_with_reload(:namespace) { create(:group) }
 
       context 'when user has access to group' do
-        before do
+        before_all do
           namespace.add_guest(user1)
           namespace.save!
         end
@@ -981,7 +1087,7 @@ RSpec.describe API::Helpers, feature_category: :api do
     end
 
     context "when namespace is user's personal namespace" do
-      let(:namespace) { create(:namespace) }
+      let_it_be_with_reload(:namespace) { create(:namespace) }
 
       context 'when user owns the namespace' do
         before do
@@ -1010,7 +1116,7 @@ RSpec.describe API::Helpers, feature_category: :api do
     it_behaves_like 'user namespace finder'
 
     context 'when namespace is a project namespace' do
-      let_it_be_with_reload(:project) { create(:project, :private) }
+      let_it_be(:project) { create(:project, :private) }
       let(:current_user) { project.first_owner }
 
       before do
@@ -1067,11 +1173,62 @@ RSpec.describe API::Helpers, feature_category: :api do
         end
       end
     end
+
+    context 'organization maintenance mode enforcement' do
+      let_it_be(:group) { create(:group) }
+      let_it_be(:user) { create(:user) }
+
+      before_all do
+        group.add_guest(user)
+      end
+
+      before do
+        allow(helper).to receive(:current_user).and_return(user)
+        allow(helper).to receive(:initial_current_user).and_return(user)
+      end
+
+      it 'enforces maintenance mode on the accessible namespace' do
+        expect(helper).to receive(:check_organization_maintenance_mode_for!).with(group)
+
+        helper.find_namespace!(group.id)
+      end
+
+      it 'does not enforce maintenance mode when access is denied' do
+        allow(helper).to receive(:current_user).and_return(create(:user))
+        allow(helper).to receive(:not_found!).and_raise('404')
+
+        expect(helper).not_to receive(:check_organization_maintenance_mode_for!)
+
+        expect { helper.find_namespace!(group.id) }.to raise_error('404')
+      end
+
+      context 'when namespace is a project namespace' do
+        let_it_be_with_reload(:project) { create(:project, :private) }
+
+        it 'enforces maintenance mode on the accessible project namespace' do
+          project.add_developer(user)
+
+          expect(helper).to receive(:check_organization_maintenance_mode_for!).with(project.project_namespace)
+
+          helper.find_namespace!(project.project_namespace.id, allow_project_namespaces: true)
+        end
+
+        it 'does not enforce maintenance mode when project access is denied' do
+          allow(helper).to receive(:authenticate_non_public?).and_return(false)
+          allow(helper).to receive(:not_found!).and_raise('404')
+
+          expect(helper).not_to receive(:check_organization_maintenance_mode_for!)
+
+          expect { helper.find_namespace!(project.project_namespace.id, allow_project_namespaces: true) }
+            .to raise_error('404')
+        end
+      end
+    end
   end
 
   describe '#find_namespace_by_path!' do
     context 'when namespace is a project namespace' do
-      let_it_be_with_reload(:project) { create(:project, :private) }
+      let_it_be(:project) { create(:project, :private) }
       let(:current_user) { project.first_owner }
 
       before do
@@ -1128,10 +1285,39 @@ RSpec.describe API::Helpers, feature_category: :api do
         end
       end
     end
+
+    context 'organization maintenance mode enforcement' do
+      let_it_be(:group) { create(:group) }
+      let_it_be(:user) { create(:user) }
+
+      before_all do
+        group.add_guest(user)
+      end
+
+      before do
+        allow(helper).to receive(:current_user).and_return(user)
+        allow(helper).to receive(:initial_current_user).and_return(user)
+      end
+
+      it 'enforces maintenance mode on the accessible namespace' do
+        expect(helper).to receive(:check_organization_maintenance_mode_for!).with(group)
+
+        helper.find_namespace_by_path!(group.full_path)
+      end
+
+      it 'does not enforce maintenance mode when access is denied' do
+        allow(helper).to receive(:current_user).and_return(create(:user))
+        allow(helper).to receive(:not_found!).and_raise('404')
+
+        expect(helper).not_to receive(:check_organization_maintenance_mode_for!)
+
+        expect { helper.find_namespace_by_path!(group.full_path) }.to raise_error('404')
+      end
+    end
   end
 
   describe '#authorized_project_scope?' do
-    let_it_be_with_reload(:project) { create(:project) }
+    let_it_be(:project) { create(:project) }
     let_it_be(:other_project) { create(:project) }
     let_it_be(:job) { create(:ci_build) }
 
@@ -1292,7 +1478,7 @@ RSpec.describe API::Helpers, feature_category: :api do
   describe '#track_event' do
     let_it_be(:user) { create(:user) }
     let_it_be(:namespace) { create(:namespace) }
-    let_it_be_with_reload(:project) { create(:project) }
+    let_it_be(:project) { create(:project, namespace: namespace) }
     let(:event_name) { 'i_compliance_dashboard' }
     let(:unknown_event) { 'unknown' }
 
@@ -1743,6 +1929,20 @@ RSpec.describe API::Helpers, feature_category: :api do
             subject
           end
         end
+
+        context 'when requested with HEAD for an AWS-backed file' do
+          before do
+            allow(helper).to receive(:request).and_return(instance_double(Rack::Request, head?: true))
+          end
+
+          it 'redirects to a signed HEAD URL instead of the CDN/file URL' do
+            expect(ObjectStorage::S3).to receive(:signed_head_url).with(artifact.file).and_call_original
+            expect(ObjectStorage::CDN::FileUrl).not_to receive(:new)
+            expect(helper).to receive(:redirect).with(an_instance_of(String))
+
+            subject
+          end
+        end
       end
 
       context 'with direct upload not available' do
@@ -1850,6 +2050,226 @@ RSpec.describe API::Helpers, feature_category: :api do
             expect(helper).to receive(:header).with('Last-Modified', '0')
 
             subject
+          end
+        end
+      end
+
+      context 'when proxy_download is true' do
+        let(:supports_direct_download) { true }
+        let(:params) { {} }
+        let(:declared_params) { { download_mode: params[:download_mode] } }
+
+        before do
+          allow(helper).to receive(:params).and_return(params)
+          allow(helper).to receive(:declared).with(params, include_parent_namespaces: false).and_return(declared_params)
+          stub_artifacts_object_storage(
+            enabled: true,
+            proxy_download: true,
+            allowed_download_modes: allowed_download_modes
+          )
+        end
+
+        context 'when direct mode is not allowed' do
+          let(:allowed_download_modes) { %w[proxy] }
+
+          it 'sends a workhorse header even if download_mode=direct is requested' do
+            params[:download_mode] = 'direct'
+
+            expect(helper).to receive(:header).with(Gitlab::Workhorse::SEND_DATA_HEADER, an_instance_of(String))
+            expect(helper).to receive(:status).with(:ok)
+            expect(helper).to receive(:body).with('')
+
+            subject
+          end
+        end
+
+        context 'when direct mode is allowed' do
+          let(:allowed_download_modes) { %w[proxy direct] }
+
+          context 'when download_mode param is not provided' do
+            it 'sends a workhorse header' do
+              expect(helper).to receive(:header).with(Gitlab::Workhorse::SEND_DATA_HEADER, an_instance_of(String))
+              expect(helper).to receive(:status).with(:ok)
+              expect(helper).to receive(:body).with('')
+
+              subject
+            end
+          end
+
+          context 'when download_mode=direct is requested' do
+            let(:params) { { download_mode: 'direct' } }
+
+            it 'sends a redirect' do
+              expect(helper).to receive(:redirect).with(an_instance_of(String))
+
+              subject
+            end
+
+            context 'when supports_direct_download is false' do
+              let(:supports_direct_download) { false }
+
+              it 'sends a workhorse header' do
+                expect(helper).to receive(:header).with(Gitlab::Workhorse::SEND_DATA_HEADER, an_instance_of(String))
+                expect(helper).to receive(:status).with(:ok)
+                expect(helper).to receive(:body).with('')
+
+                subject
+              end
+            end
+          end
+
+          context 'when helper does not respond to params' do
+            before do
+              allow(helper).to receive(:respond_to?).and_call_original
+              allow(helper).to receive(:respond_to?).with(:params).and_return(false)
+            end
+
+            it 'sends a workhorse header' do
+              expect(helper).to receive(:header).with(Gitlab::Workhorse::SEND_DATA_HEADER, an_instance_of(String))
+              expect(helper).to receive(:status).with(:ok)
+              expect(helper).to receive(:body).with('')
+
+              subject
+            end
+          end
+        end
+      end
+    end
+  end
+
+  describe '#resolved_download_mode' do
+    let(:file) { instance_double(JobArtifactUploader, allowed_download_modes: allowed_download_modes, default_download_mode: default_download_mode) }
+    let(:declared_params) { { download_mode: params[:download_mode] } }
+
+    subject(:mode) { helper.send(:resolved_download_mode, file, supports_direct_download: supports_direct_download) }
+
+    before do
+      allow(helper).to receive(:respond_to?).and_call_original
+      allow(helper).to receive(:respond_to?).with(:params).and_return(true)
+      allow(helper).to receive(:params).and_return(params)
+      allow(helper).to receive(:respond_to?).with(:declared).and_return(true)
+      allow(helper).to receive(:declared).with(params, include_parent_namespaces: false).and_return(declared_params)
+    end
+
+    context 'when the client requests an allowed mode and the endpoint supports it' do
+      let(:allowed_download_modes) { %i[proxy direct] }
+      let(:default_download_mode) { :proxy }
+      let(:supports_direct_download) { true }
+      let(:params) { { download_mode: 'direct' } }
+
+      it 'returns the requested mode' do
+        expect(mode).to eq(:direct)
+      end
+    end
+
+    context 'when the endpoint does not support direct download' do
+      let(:allowed_download_modes) { %i[proxy direct] }
+      let(:default_download_mode) { :proxy }
+      let(:supports_direct_download) { false }
+      let(:params) { { download_mode: 'direct' } }
+
+      it 'excludes direct from the allowed modes and falls back to the default' do
+        expect(mode).to eq(:proxy)
+      end
+    end
+
+    context 'when no mode is requested' do
+      let(:allowed_download_modes) { %i[proxy direct] }
+      let(:default_download_mode) { :direct }
+      let(:supports_direct_download) { true }
+      let(:params) { {} }
+
+      it 'returns the default mode' do
+        expect(mode).to eq(:direct)
+      end
+    end
+
+    context 'when neither the requested nor the default mode is allowed' do
+      let(:allowed_download_modes) { [:proxy] }
+      let(:default_download_mode) { :direct }
+      let(:supports_direct_download) { true }
+      let(:params) { {} }
+
+      it 'falls back to :proxy' do
+        expect(mode).to eq(:proxy)
+      end
+    end
+  end
+
+  describe '#client_requested_download_mode' do
+    subject(:requested_mode) { helper.send(:client_requested_download_mode) }
+
+    context 'when the helper does not respond to params' do
+      it 'returns nil' do
+        expect(requested_mode).to be_nil
+      end
+    end
+
+    context 'when the helper responds to params' do
+      before do
+        allow(helper).to receive(:respond_to?).and_call_original
+        allow(helper).to receive(:respond_to?).with(:params).and_return(true)
+        allow(helper).to receive(:params).and_return(params)
+      end
+
+      context 'when the helper does not respond to declared' do
+        let(:params) { { download_mode: 'direct' } }
+
+        it 'returns nil' do
+          expect(requested_mode).to be_nil
+        end
+      end
+
+      context 'when the helper responds to declared' do
+        before do
+          allow(helper).to receive(:respond_to?).with(:declared).and_return(true)
+          allow(helper).to receive(:declared).with(params, include_parent_namespaces: false).and_return(declared_params)
+        end
+
+        context 'when download_mode is not declared on the endpoint' do
+          let(:params) { { download_mode: 'direct' } }
+          let(:declared_params) { {} }
+
+          it 'returns nil' do
+            expect(requested_mode).to be_nil
+          end
+        end
+
+        context 'when download_mode is declared on the endpoint' do
+          context 'when download_mode is not provided' do
+            let(:params) { {} }
+            let(:declared_params) { { download_mode: nil } }
+
+            it 'returns nil' do
+              expect(requested_mode).to be_nil
+            end
+          end
+
+          context 'when download_mode is provided with a valid value' do
+            let(:params) { { download_mode: 'direct' } }
+            let(:declared_params) { { download_mode: 'direct' } }
+
+            it 'returns the requested mode as a symbol' do
+              expect(requested_mode).to eq(:direct)
+            end
+          end
+
+          context 'when download_mode is provided with proxy' do
+            let(:params) { { download_mode: 'proxy' } }
+            let(:declared_params) { { download_mode: 'proxy' } }
+
+            it 'returns the requested mode as a symbol' do
+              expect(requested_mode).to eq(:proxy)
+            end
+          end
+
+          context 'when download_mode is provided with an unvalidated/arbitrary value' do
+            let(:params) { { download_mode: 'arbitrary_value' } }
+            let(:declared_params) { { download_mode: 'arbitrary_value' } }
+
+            it 'returns nil and does not convert to symbol' do
+              expect(requested_mode).to be_nil
+            end
           end
         end
       end
@@ -2195,8 +2615,8 @@ RSpec.describe API::Helpers, feature_category: :api do
   end
 
   describe '#boundaries_for_endpoint' do
-    let_it_be_with_reload(:project) { create(:project) }
-    let_it_be_with_reload(:group) { create(:group) }
+    let_it_be(:group) { create(:group) }
+    let_it_be(:project) { create(:project, group: group) }
     let(:access_token) { instance_double(PersonalAccessToken, granular?: true) }
 
     before do
@@ -2297,6 +2717,163 @@ RSpec.describe API::Helpers, feature_category: :api do
     end
   end
 
+  describe '#granular_token_requirements' do
+    let_it_be(:target_project) { create(:project) }
+
+    subject(:requirements) { helper.send(:granular_token_requirements) }
+
+    before do
+      allow(helper).to receive_messages(
+        params: { to_project_id: target_project.id },
+        find_project: target_project,
+        authorization_settings: settings
+      )
+    end
+
+    context 'without additional boundaries' do
+      let(:settings) { { permissions: [:read_project], boundary_type: :project } }
+
+      it 'returns only the primary requirement' do
+        expect(requirements.size).to eq(1)
+      end
+    end
+
+    context 'with an additional boundary' do
+      let(:settings) do
+        {
+          permissions: [:read_project], boundary_type: :project,
+          additional_scopes: [
+            { permissions: [:create_work_item], boundary_type: :project, boundary_param: :to_project_id }
+          ]
+        }
+      end
+
+      it 'appends the resolved boundary with its own permissions', :aggregate_failures do
+        boundaries, permissions = requirements.last
+
+        expect(boundaries).to be_a(Authz::Boundary::ProjectBoundary)
+        expect(permissions).to eq([:create_work_item])
+      end
+
+      context 'when the boundary cannot be resolved' do
+        before do
+          allow(helper).to receive(:find_project).and_return(nil)
+        end
+
+        it 'leaves it nil so the service reports it as missing' do
+          expect(requirements.last.first).to be_nil
+        end
+      end
+    end
+
+    context 'with an additional boundary resolved by a callable' do
+      let(:settings) do
+        {
+          permissions: [:read_project], boundary_type: :project,
+          additional_scopes: [
+            { permissions: [:assign_runner], boundary_type: :project, boundary: -> { runner_owner } }
+          ]
+        }
+      end
+
+      before do
+        allow(helper).to receive(:runner_owner).and_return(runner_owner)
+      end
+
+      context 'when the callable returns a boundary object' do
+        let(:runner_owner) { target_project }
+
+        it 'resolves the boundary from the callable', :aggregate_failures do
+          boundaries, permissions = requirements.last
+
+          expect(boundaries).to be_a(Authz::Boundary::ProjectBoundary)
+          expect(permissions).to eq([:assign_runner])
+        end
+      end
+
+      context 'when the callable returns nil' do
+        let(:runner_owner) { nil }
+
+        it 'leaves it nil so the service reports it as missing' do
+          expect(requirements.last.first).to be_nil
+        end
+      end
+
+      context 'when the callable returns something that is not a boundary' do
+        let(:runner_owner) { 'not a boundary' }
+
+        it 'leaves it nil rather than passing an invalid boundary to the service' do
+          expect(requirements.last.first).to be_nil
+        end
+      end
+
+      context 'when the callable returns an object of a different boundary type' do
+        let(:runner_owner) { create(:group) }
+
+        it 'leaves it nil rather than checking the wrong container type' do
+          expect(requirements.last.first).to be_nil
+        end
+      end
+    end
+  end
+
+  describe '#authorize_granular_token_scopes!' do
+    include Rack::Test::Methods
+
+    let_it_be(:user) { create(:user) }
+    let_it_be(:project) { create(:project, developers: user) }
+    let_it_be(:target_project) { create(:project, developers: user) }
+
+    let(:assignable) { ::Authz::PermissionGroups::Assignable.for_permission(:read_project).first.name }
+
+    let(:pat) do
+      create(:granular_pat, user: user, boundary: ::Authz::Boundary.for(project), permissions: [assignable])
+    end
+
+    let(:helper_app) do
+      Class.new(Grape::API::Instance) do
+        helpers API::Helpers
+        format :json
+
+        route_setting :authorization, permissions: :read_project, boundary_type: :project,
+          additional_scopes: [
+            { permissions: :read_project, boundary_type: :project, boundary_param: :to_project_id }
+          ]
+        get ':id/move' do
+          authorize_granular_token_scopes!(PersonalAccessToken.find_by_token(params[:token]))
+          { ok: true }
+        end
+      end
+    end
+
+    def app
+      helper_app
+    end
+
+    context 'when the additional boundary cannot be resolved' do
+      it 'denies with 404 without running the endpoint' do
+        get "/#{project.id}/move", token: pat.token, to_project_id: non_existing_record_id
+
+        expect(last_response.status).to eq(404)
+      end
+    end
+
+    context 'when the token is scoped to both boundaries' do
+      let(:pat) do
+        create(:granular_pat, user: user, boundary: ::Authz::Boundary.for(project), permissions: [assignable],
+          additional_scopes: [
+            { boundary: ::Authz::Boundary.for(target_project), permissions: [assignable] }
+          ])
+      end
+
+      it 'grants access' do
+        get "/#{project.id}/move", token: pat.token, to_project_id: target_project.id
+
+        expect(last_response.status).to eq(200)
+      end
+    end
+  end
+
   describe '#authenticate_by_gitlab_shell_or_workhorse_token!' do
     include GitlabShellHelpers
     include WorkhorseHelpers
@@ -2380,7 +2957,6 @@ RSpec.describe API::Helpers, feature_category: :api do
 
   describe '#authorize_granular_token?' do
     let(:token) { instance_double(PersonalAccessToken) }
-    let_it_be(:user) { create(:user) }
 
     before do
       allow(helper).to receive(:access_token).and_return(token)

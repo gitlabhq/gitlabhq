@@ -10,11 +10,7 @@ RSpec.describe Namespaces::PruneAggregationSchedulesWorker, '#perform', :clean_g
   subject(:worker) { described_class.new }
 
   before do
-    allow(Namespaces::RootStatisticsWorker)
-      .to receive(:perform_async).and_return(nil)
-
-    allow(Namespaces::RootStatisticsWorker)
-      .to receive(:perform_in).and_return(nil)
+    allow(Namespaces::RootStatisticsWorker).to receive_messages(perform_async: nil, perform_in: nil)
 
     namespaces.each do |namespace|
       lease_key = "namespace:namespaces_root_statistics:#{namespace.id}"

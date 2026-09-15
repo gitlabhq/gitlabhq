@@ -73,7 +73,7 @@ module Gitlab
           value.respond_to?(:call) && value.respond_to?(:arity) && value.arity >= 1
         end
 
-        def self.rule_definitions # rubocop:disable Metrics/AbcSize, -- static registry of rate-limit definitions
+        def self.rule_definitions # rubocop:disable Metrics/AbcSize, Metrics/CyclomaticComplexity -- static registry of rate-limit definitions
           {
             ai_action: ::Labkit::RateLimit::Rule.new(
               name: 'limit_ai_actions_by_user',
@@ -151,6 +151,13 @@ module Gitlab
               name: 'limit_code_suggestions_by_user',
               characteristics: %i[user],
               limit: -> { Gitlab::CurrentSettings.current_application_settings.code_suggestions_api_rate_limit },
+              period: 1.minute,
+              action: :limit
+            ),
+            collaborative_editing_update: ::Labkit::RateLimit::Rule.new(
+              name: 'limit_collaborative_editing_updates_by_user_document',
+              characteristics: %i[user document_key],
+              limit: 600,
               period: 1.minute,
               action: :limit
             ),
@@ -444,6 +451,13 @@ module Gitlab
               period: 1.minute,
               action: :limit
             ),
+            organization_user_create: ::Labkit::RateLimit::Rule.new(
+              name: 'limit_organization_user_creates_by_user',
+              characteristics: %i[user],
+              limit: 20,
+              period: 1.minute,
+              action: :limit
+            ),
             permanent_email_failure: ::Labkit::RateLimit::Rule.new(
               name: 'limit_permanent_email_failures_by_email',
               characteristics: %i[email],
@@ -591,6 +605,20 @@ module Gitlab
               period: 1.minute,
               action: :limit
             ),
+            project_repositories_changed_paths: ::Labkit::RateLimit::Rule.new(
+              name: 'limit_project_repository_changed_paths_by_user_project',
+              characteristics: %i[user project],
+              limit: 30,
+              period: 1.minute,
+              action: :limit
+            ),
+            project_repositories_diff_stats: ::Labkit::RateLimit::Rule.new(
+              name: 'limit_project_repository_diff_stats_by_user_project',
+              characteristics: %i[user project],
+              limit: 30,
+              period: 1.minute,
+              action: :limit
+            ),
             project_repositories_diverging_commits: ::Labkit::RateLimit::Rule.new(
               name: 'limit_project_repository_diverging_commits_by_user_project',
               characteristics: %i[user project],
@@ -696,6 +724,48 @@ module Gitlab
               characteristics: %i[user],
               limit: 10,
               period: 1.minute,
+              action: :limit
+            ),
+            # service_desk_outbound_emails_per_{hour,day} carry no static
+            # threshold: the limit is looked up per namespace from PlanLimits
+            # and passed in via the caller's `threshold:` argument, same
+            # pattern as web_hook_calls above.
+            service_desk_outbound_emails_per_hour: ::Labkit::RateLimit::Rule.new(
+              name: 'limit_service_desk_outbound_emails_per_hour_by_namespace',
+              characteristics: %i[namespace],
+              limit: ->(ctx) { ctx&.dig(:threshold) || 0 },
+              period: 1.hour,
+              action: :limit
+            ),
+            service_desk_outbound_emails_per_day: ::Labkit::RateLimit::Rule.new(
+              name: 'limit_service_desk_outbound_emails_per_day_by_namespace',
+              characteristics: %i[namespace],
+              limit: ->(ctx) { ctx&.dig(:threshold) || 0 },
+              period: 1.day,
+              action: :limit
+            ),
+            # Dedups the suppression note posted when Service Desk email is
+            # rate limited: at most one per work item per hour, regardless of
+            # how many suppressed sends happen in that window.
+            service_desk_suppression_notice: ::Labkit::RateLimit::Rule.new(
+              name: 'limit_service_desk_suppression_notices_by_work_item',
+              characteristics: %i[work_item],
+              limit: 1,
+              period: 1.hour,
+              action: :limit
+            ),
+            snippets_create: ::Labkit::RateLimit::Rule.new(
+              name: 'limit_snippets_created_by_user',
+              characteristics: %i[user],
+              limit: 300,
+              period: 1.hour,
+              action: :limit
+            ),
+            tags_create: ::Labkit::RateLimit::Rule.new(
+              name: 'limit_tag_creates_by_project',
+              characteristics: %i[project],
+              limit: -> { Gitlab::CurrentSettings.current_application_settings.tags_create_limit },
+              period: 30.minutes,
               action: :limit
             ),
             temporary_email_failure: ::Labkit::RateLimit::Rule.new(
@@ -875,6 +945,20 @@ module Gitlab
               period: 1.minute,
               action: :limit
             ),
+            work_item_delete: ::Labkit::RateLimit::Rule.new(
+              name: 'limit_work_item_deletes_by_user',
+              characteristics: %i[user],
+              limit: 300,
+              period: 1.minute,
+              action: :limit
+            ),
+            work_item_saved_view_broadcast: ::Labkit::RateLimit::Rule.new(
+              name: 'limit_work_item_saved_view_broadcasts_by_saved_view',
+              characteristics: %i[saved_view],
+              limit: 30,
+              period: 1.minute,
+              action: :limit
+            ),
             # Per-database Sidekiq resource-usage (DB duration) limits,
             # one Limiter per database. Cost-mode (the per-job DB duration is the
             # `check(cost:)` value, not a call count). threshold and interval are
@@ -923,7 +1007,7 @@ module Gitlab
 
         # A synthetic :skip rule ahead of the real throttle rule: bypass-header
         # traffic (identifier[:bypass_header] == '1') terminates here before
-        # touching Redis, so it stays visible via calls_total{action="skip"}
+        # touching Redis, so it stays visible via rule_evaluations_total{action="skip"}
         # without back-filling the real rule's rate. Named per key so each
         # limit's bypass volume is distinguishable in Prometheus/Grafana.
         def self.bypass_rule_for(key)

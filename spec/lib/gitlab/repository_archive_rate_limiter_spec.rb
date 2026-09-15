@@ -24,7 +24,7 @@ RSpec.describe ::Gitlab::RepositoryArchiveRateLimiter do
       it 'does not check rate limit' do
         expect(subject).not_to receive(:check_rate_limit!)
 
-        expect(check).to eq nil
+        expect(check).to be_nil
       end
     end
 

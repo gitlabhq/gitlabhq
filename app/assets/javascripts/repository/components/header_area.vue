@@ -4,7 +4,7 @@ import { GlButton, GlTooltipDirective } from '@gitlab/ui';
 import { mapActions, mapState } from 'pinia';
 import { __ } from '~/locale';
 import Shortcuts from '~/behaviors/shortcuts/shortcuts';
-import { shouldDisableShortcuts } from '~/behaviors/shortcuts/shortcuts_toggle';
+import { keyboardShortcutsDisabled } from '~/behaviors/shortcuts/shortcuts_disabled';
 import {
   keysFor,
   TOGGLE_FILE_TREE_BROWSER_VISIBILITY,
@@ -54,9 +54,6 @@ export default {
     ),
     LockDirectoryButton: defineAsyncComponent(
       () => import('ee_component/repository/components/lock_directory_button.vue'),
-    ),
-    HeaderLockIcon: defineAsyncComponent(
-      () => import('ee_component/repository/components/header_area/header_lock_icon.vue'),
     ),
     FileTreeBrowserToggle,
   },
@@ -132,12 +129,6 @@ export default {
       required: true,
     },
   },
-  data() {
-    return {
-      directoryLocked: false,
-      lockUser: null,
-    };
-  },
   computed: {
     ...mapState(useFileTreeBrowserVisibility, [
       'fileTreeBrowserIsVisible',
@@ -195,7 +186,7 @@ export default {
     findFileTooltip() {
       const { description } = START_SEARCH_PROJECT_FILE;
       const key = this.findFileShortcutKey;
-      return shouldDisableShortcuts()
+      return keyboardShortcutsDisabled()
         ? null
         : sanitize(`${description} <kbd class="flat gl-ml-1" aria-hidden=true>${key}</kbd>`);
     },
@@ -214,7 +205,7 @@ export default {
       return this.shortcutsEnabled ? keysFor(TOGGLE_FILE_TREE_BROWSER_VISIBILITY)[0] : null;
     },
     shortcutsEnabled() {
-      return !shouldDisableShortcuts();
+      return !keyboardShortcutsDisabled();
     },
   },
   mounted() {
@@ -260,10 +251,6 @@ export default {
     handleFindFile() {
       this.trackEvent(FIND_FILE_BUTTON_CLICK);
       Shortcuts.focusSearchFile();
-    },
-    onLockedDirectory({ isLocked, lockUser }) {
-      this.directoryLocked = isLocked;
-      this.lockUser = lockUser;
     },
   },
 };
@@ -328,11 +315,6 @@ export default {
           class="gl-inline-flex"
           :class="{ 'gl-text-subtle': isTreeView }"
         />{{ directoryName }}
-        <header-lock-icon
-          v-if="!isRoot && isTreeView"
-          :is-locked="directoryLocked"
-          :lock-user="lockUser"
-        />
       </h1>
       <!-- Tree controls -->
       <div
@@ -360,12 +342,7 @@ export default {
           :new-dir-path="newDirPath"
         />
         <!-- EE lock directory -->
-        <lock-directory-button
-          v-if="!isRoot"
-          :project-path="projectPath"
-          :path="currentPath"
-          @locked-directory="onLockedDirectory"
-        />
+        <lock-directory-button v-if="!isRoot" :project-path="projectPath" :path="currentPath" />
         <gl-button
           v-gl-tooltip.html="findFileTooltip"
           :aria-keyshortcuts="findFileShortcutKey"

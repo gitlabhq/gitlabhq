@@ -262,5 +262,26 @@ RSpec.describe WorkItems::CreateService, feature_category: :team_planning do
         )
       end
     end
+
+    context 'with the /internal_note quick action in the description' do
+      let_it_be(:project) { create(:project) }
+      let_it_be(:user) { project.creator }
+
+      let(:params) do
+        {
+          title: 'Awesome work_item',
+          description: "please fix\n/internal_note"
+        }
+      end
+
+      let(:widget_params) { {} }
+
+      it 'strips the quick action from the description and ignores it', :aggregate_failures do
+        service_result = service.execute
+
+        expect(service_result[:status]).to be(:success)
+        expect(service_result[:work_item].description).to eq('please fix')
+      end
+    end
   end
 end

@@ -34,7 +34,7 @@ website, or API to be scanned by DAST.
 A site profile contains:
 
 - **Profile name**: A name you assign to the site to be scanned. While a site profile is referenced
-  in either `.gitlab-ci.yml` or an on-demand scan, it **cannot** be renamed.
+  in either `.gitlab-ci.yml` or an on-demand scan, it cannot be renamed.
 - **Site type**: The type of target to be scanned, either website or API scan.
 - **Target URL**: The URL that DAST runs against.
 - **Excluded URLs**: A comma-separated list of URLs to exclude from the scan.
@@ -44,8 +44,8 @@ A site profile contains:
   - **Authenticated URL**: The URL of the page containing the sign-in HTML form on the target website. The username and password are submitted with the login form to create an authenticated scan.
   - **Username**: The username used to authenticate to the website.
   - **Password**: The password used to authenticate to the website.
-  - **Username form field**: The name of username field at the sign-in HTML form.
-  - **Password form field**: The name of password field at the sign-in HTML form.
+  - **Username form field**: The name of the username field at the sign-in HTML form.
+  - **Password form field**: The name of the password field at the sign-in HTML form.
   - **Submit form field**: The `id` or `name` of the element that when selected submits the sign-in HTML form.
 - **Scan method**: A type of method to perform API testing. The supported methods are OpenAPI, Postman Collections, HTTP Archive (HAR), or GraphQL.
   - **GraphQL endpoint path**: The path to the GraphQL endpoint. This path is concatenated with the target URL to provide the URI for the scan to test. The GraphQL endpoint must support introspection queries.
@@ -79,7 +79,7 @@ Site profile validation reduces the risk of running an active scan against the w
 
 Site profile validation is not a security feature. If necessary, you can run DAST against an unvalidated site with a [pipeline scan](browser/configuration/enabling_the_analyzer.md).
 
-Each of the site validation methods are equivalent in functionality, so use whichever is most suitable:
+Each of the site validation methods is equivalent in functionality, so use whichever is most suitable:
 
 - **Text file validation**: Requires a text file be uploaded to the target site. The text file is
   allocated a name and content that is unique to the project. The validation process checks the
@@ -266,7 +266,7 @@ A scanner profile defines the configuration details of a security scanner.
 A scanner profile contains:
 
 - **Profile name**: A name you give the scanner profile. For example, "Spider_15". While a scanner
-  profile is referenced in either `.gitlab-ci.yml` or an on-demand scan, it **cannot** be renamed.
+  profile is referenced in either `.gitlab-ci.yml` or an on-demand scan, it cannot be renamed.
 - **Scan mode**: A passive scan monitors all HTTP messages (requests and responses) sent to the target. An active scan attacks the target to find potential vulnerabilities.
 - **Crawl timeout**: The maximum number of minutes allowed for the crawler to traverse the site.
 - **Target timeout**: The maximum number of seconds DAST waits for the site to be available before

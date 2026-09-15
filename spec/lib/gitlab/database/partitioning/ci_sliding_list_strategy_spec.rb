@@ -36,6 +36,30 @@ RSpec.describe Gitlab::Database::Partitioning::CiSlidingListStrategy, feature_ca
     SQL
   end
 
+  describe '#detachable_since' do
+    let_it_be(:archived_partition) { create(:ci_partition, :archived, id: 128, updated_at: 4.weeks.ago) }
+
+    let(:partition) do
+      Gitlab::Database::Partitioning::MultipleNumericListPartition.new(table_name, values)
+    end
+
+    subject(:detachable_since) { strategy.detachable_since(partition) }
+
+    context 'when every id it holds is archived' do
+      let(:values) { [archived_partition.id] }
+
+      it 'returns when they were archived' do
+        expect(detachable_since).to be_within(1.second).of(archived_partition.updated_at)
+      end
+    end
+
+    context 'when an id it holds is not archived' do
+      let(:values) { [archived_partition.id, create(:ci_partition, :active).id] }
+
+      it { is_expected.to be_nil }
+    end
+  end
+
   describe '#current_partitions' do
     it 'detects both partitions' do
       expect(strategy.current_partitions).to eq(
@@ -147,13 +171,42 @@ RSpec.describe Gitlab::Database::Partitioning::CiSlidingListStrategy, feature_ca
     context 'when all partitions are true for detach_partition_if' do
       let(:detach_partition_if) { ->(_p) { true } }
 
-      it { expect(strategy.extra_partitions).to be_empty }
+      it 'keeps the most recent partition' do
+        expect(strategy.extra_partitions.map(&:values)).to eq([[100]])
+      end
     end
 
     context 'when all partitions are false for detach_partition_if' do
       let(:detach_partition_if) { proc { false } }
 
       it { expect(strategy.extra_partitions).to be_empty }
+    end
+
+    context 'when only one partition is left' do
+      let(:detach_partition_if) { ->(_p) { true } }
+
+      before do
+        connection.execute("drop table #{table_name}_101;")
+      end
+
+      it 'leaves the table with a partition to write to' do
+        expect(strategy.extra_partitions).to be_empty
+      end
+    end
+
+    context 'when a detachable partition follows one that is not detachable' do
+      let(:detach_partition_if) { ->(partition) { partition.values != [100] } }
+
+      before do
+        connection.execute(<<~SQL)
+          create table #{table_name}_102
+          partition of #{table_name} for values in (102);
+        SQL
+      end
+
+      it 'stops at the first partition that cannot be detached' do
+        expect(strategy.extra_partitions).to be_empty
+      end
     end
   end
 

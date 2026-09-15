@@ -395,8 +395,7 @@ diff-file:where([data-with-discussion-toggle], [data-line-range-dragging]) .rd-l
   --rd-line-background-color: var(--rd-line-removed-background-color);
 
   &::before {
-    // / "" allows us to not announce this with screen readers
-    content: "−" / "";
+    content: "−";
     color: var(--code-old-diff-sign-color, color.scale($line-number-old, $red: -30%, $green: -30%, $blue: -30%));
   }
 }
@@ -405,8 +404,7 @@ diff-file:where([data-with-discussion-toggle], [data-line-range-dragging]) .rd-l
   --rd-line-background-color: var(--rd-line-added-background-color);
 
   &::before {
-    // / "" allows us to not announce this with screen readers
-    content: "+" / "";
+    content: "+";
     color: var(--code-new-diff-sign-color, color.scale($line-number-new, $red: -30%, $green: -30%, $blue: -30%));
   }
 }

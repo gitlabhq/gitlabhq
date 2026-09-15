@@ -175,7 +175,7 @@ describe('CompareVersions', () => {
 
         const button = getPrevCommitNavElement();
 
-        expect(button.element.hasAttribute('disabled')).toEqual(true);
+        expect(button.element.getAttribute('aria-disabled')).toEqual('true');
       });
     });
 
@@ -205,7 +205,7 @@ describe('CompareVersions', () => {
 
         const button = getNextCommitNavElement();
 
-        expect(button.element.hasAttribute('disabled')).toEqual(true);
+        expect(button.element.getAttribute('aria-disabled')).toEqual('true');
       });
     });
   });

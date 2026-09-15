@@ -4,6 +4,10 @@ module AccessTokensHelper
   include AccountsHelper
   include ApplicationHelper
 
+  def show_group_access_tokens_premium_offer?(_group)
+    false
+  end
+
   def scope_description(prefix)
     case prefix
     when :project_access_token
@@ -76,6 +80,10 @@ module AccessTokensHelper
       max_expiration_days: max_expiration_days,
       pat_expiration_required: Gitlab::CurrentSettings.require_personal_access_token_expiry?.to_s
     }
+  end
+
+  def show_project_access_token_upgrade_card?(_project)
+    false
   end
 
   private

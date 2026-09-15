@@ -8,8 +8,6 @@ import BaseImageDiffOverlay from '~/diffs/components/base_image_diff_overlay.vue
 import NoteForm from '~/rapid_diffs/app/discussions/note_form.vue';
 import { useDiffDiscussions } from '~/rapid_diffs/stores/diff_discussions';
 import { clearDraft } from '~/lib/utils/autosave';
-import { createAlert } from '~/alert';
-import { SOMETHING_WENT_WRONG } from '~/diffs/i18n';
 import { stubComponent } from 'helpers/stub_component';
 
 jest.mock('~/lib/utils/autosave');
@@ -284,28 +282,14 @@ describe('ImageDiffViewerWithDiscussions', () => {
           store.createImageDiscussion.mockRejectedValue(new Error('fail'));
         });
 
-        it('shows alert on save failure', async () => {
+        it('propagates save failure and keeps the form open', async () => {
           createComponent();
           findOverlay().vm.$emit('image-click', formData);
           await nextTick();
 
-          await findNoteForm().props('saveNote')('My comment');
-
-          expect(createAlert).toHaveBeenCalledWith(
-            expect.objectContaining({
-              message: SOMETHING_WENT_WRONG,
-            }),
-          );
-        });
-
-        it('keeps form open on save failure', async () => {
-          createComponent();
-          findOverlay().vm.$emit('image-click', formData);
-          await nextTick();
-
-          await findNoteForm().props('saveNote')('My comment');
-
+          await expect(findNoteForm().props('saveNote')('My comment')).rejects.toThrow('fail');
           expect(findNoteForm().exists()).toBe(true);
+          expect(clearDraft).not.toHaveBeenCalled();
         });
       });
     });

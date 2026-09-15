@@ -196,7 +196,7 @@ You should use the [consolidated object storage settings](../object_storage.md#c
 ### Migrating to object storage
 
 You can migrate the job artifacts from local storage to object storage. The
-processing is done in a background worker and requires **no downtime**.
+processing is done in a background worker and requires no downtime.
 
 1. [Configure the object storage](#using-object-storage).
 1. Migrate the artifacts:

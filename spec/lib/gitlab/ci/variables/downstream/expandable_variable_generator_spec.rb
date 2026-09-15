@@ -33,6 +33,14 @@ RSpec.describe Gitlab::Ci::Variables::Downstream::ExpandableVariableGenerator, f
       end
     end
 
+    context 'when given a variable with a nil value' do
+      it 'returns an array containing the variable with the value unchanged' do
+        var = Gitlab::Ci::Variables::Collection::Item.fabricate({ key: 'VAR1', value: nil })
+
+        expect(generator.for(var)).to match_array([{ key: 'VAR1', value: nil }])
+      end
+    end
+
     context 'when given a variable with interpolation' do
       it 'returns an array containing the expanded variables' do
         var = Gitlab::Ci::Variables::Collection::Item.fabricate({ key: 'VAR1', value: '$REF1 $REF2 $REF3' })

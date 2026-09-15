@@ -5,3 +5,7 @@
 # This initializer explicitly loads the file so that subsequent initializers
 # (e.g. 0_migration_paths_additional.rb) find all expected methods on the module.
 require Rails.root.join('lib/gitlab/database')
+
+Rails.application.reloader.after_class_unload do
+  Gitlab::Database.clear_memoization!
+end

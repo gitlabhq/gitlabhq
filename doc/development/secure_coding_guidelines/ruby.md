@@ -206,7 +206,7 @@ the mitigations for a new feature.
 [`Gitlab::HTTP_V2::UrlBlocker`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/gems/gitlab-http/lib/gitlab/http_v2/url_blocker.rb) can be used to validate that a
 provided URL meets a set of constraints. Importantly, when `dns_rebind_protection` is `true`, the method returns a known-safe URI where the hostname
 has been replaced with an IP address. This prevents DNS rebinding attacks, because the DNS record has been resolved. However, if we ignore this returned
-value, we **will not** be protected against DNS rebinding.
+value, we will not be protected against DNS rebinding.
 
 This is the case with validators such as the `AddressableUrlValidator` (called with `validates :url, addressable_url: {opts}` or `public_url: {opts}`).
 Validation errors are only raised when validations are called, for example when a record is created or saved. If we ignore the value returned by the validation
@@ -919,7 +919,7 @@ class User
 end
 ```
 
-It might seem like this example has the same behavior as the first code example. However, there's one crucial difference: **because the delegators are meta-programmed after the class is loaded, it can overwrite existing methods**:
+It might seem like this example has the same behavior as the first code example. However, there's one crucial difference: because the delegators are meta-programmed after the class is loaded, it can overwrite existing methods:
 
 ```ruby
 User.new({name: "Jeeves"}).is_admin?

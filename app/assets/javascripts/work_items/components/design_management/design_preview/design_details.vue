@@ -429,7 +429,7 @@ export default {
               :disable-commenting="!isSidebarOpen"
               @open-comment-form="openCommentForm"
               @move-note="onMoveNote"
-              @setMaxScale="setMaxScale"
+              @set-max-scale="setMaxScale"
             />
           </div>
           <div
@@ -445,9 +445,9 @@ export default {
             :markdown-preview-path="markdownPreviewPath"
             :resolved-discussions-expanded="resolvedDiscussionsExpanded"
             :is-comment-form-present="isAnnotating"
-            @deleteNoteError="onDeleteNoteError"
-            @resolveDiscussionError="onResolveDiscussionError"
-            @toggleResolvedComments="toggleResolvedComments"
+            @delete-note-error="onDeleteNoteError"
+            @resolve-discussion-error="onResolveDiscussionError"
+            @toggle-resolved-comments="toggleResolvedComments"
           >
             <template #reply-form>
               <design-reply-form

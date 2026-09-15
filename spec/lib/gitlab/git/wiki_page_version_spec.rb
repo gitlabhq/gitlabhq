@@ -2,8 +2,8 @@
 
 require 'spec_helper'
 
-RSpec.describe Gitlab::Git::WikiPageVersion do
-  let_it_be(:project) { create(:project, :public, :repository) }
+RSpec.describe Gitlab::Git::WikiPageVersion, feature_category: :wiki do
+  let_it_be(:project) { create(:project, :public) }
   let_it_be(:user) { create(:user, username: 'someone') }
 
   describe '#author' do

@@ -13,6 +13,14 @@ module API
           expose :created_at, documentation: { type: 'DateTime', example: '2012-05-28T04:42:42-07:00' }
           expose :updated_at, documentation: { type: 'DateTime', example: '2012-05-28T04:42:42-07:00' }
           expose :has_failures, documentation: { type: 'Boolean', example: false }
+          expose :bucket, documentation: { type: 'String', example: 'gitlab-exports' } do |export|
+            export.configuration&.bucket
+          end
+          expose :export_prefix, documentation: {
+            type: 'String', example: '2012-05-28_04-42-42_export_ab12cd34'
+          } do |export|
+            export.configuration&.export_prefix
+          end
         end
       end
     end

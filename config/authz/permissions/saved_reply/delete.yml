@@ -1,0 +1,3 @@
+---
+name: delete_saved_reply
+description: Grants the ability to delete saved replies (comment templates)

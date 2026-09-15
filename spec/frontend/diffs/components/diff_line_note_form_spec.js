@@ -178,7 +178,7 @@ describe('DiffLineNoteForm', () => {
       };
 
       const noteBody = 'note body';
-      await findNoteForm().vm.$emit('handleFormUpdate', noteBody);
+      await findNoteForm().vm.$emit('handle-form-update', noteBody);
 
       expect(useLegacyDiffs().saveDiffDiscussion).toHaveBeenCalledWith({
         note: noteBody,
@@ -204,7 +204,7 @@ describe('DiffLineNoteForm', () => {
       createComponent();
       const noteBody = 'note body';
 
-      await findNoteForm().vm.$emit('handleFormUpdate', noteBody);
+      await findNoteForm().vm.$emit('handle-form-update', noteBody);
 
       expect(useLegacyDiffs().saveDiffDiscussion).toHaveBeenCalledWith({
         note: noteBody,
@@ -237,7 +237,7 @@ describe('DiffLineNoteForm', () => {
       });
     });
 
-    describe('when note-form emits `handleFormUpdate`', () => {
+    describe('when note-form emits `handle-form-update`', () => {
       const noteStub = 'invalid note';
       const parentElement = null;
       const errorCallback = jest.fn();
@@ -252,7 +252,12 @@ describe('DiffLineNoteForm', () => {
 
           createComponent();
 
-          await findNoteForm().vm.$emit('handleFormUpdate', noteStub, parentElement, errorCallback);
+          await findNoteForm().vm.$emit(
+            'handle-form-update',
+            noteStub,
+            parentElement,
+            errorCallback,
+          );
 
           await waitForPromises();
         });
@@ -279,7 +284,7 @@ describe('DiffLineNoteForm', () => {
     it('should not cancel the form', async () => {
       const noteBody = 'glpat-00000000000000000000';
 
-      await findNoteForm().vm.$emit('handleFormUpdate', noteBody);
+      await findNoteForm().vm.$emit('handle-form-update', noteBody);
       await waitForPromises();
 
       expect(useLegacyDiffs().saveDiffDiscussion).toHaveBeenCalledWith({

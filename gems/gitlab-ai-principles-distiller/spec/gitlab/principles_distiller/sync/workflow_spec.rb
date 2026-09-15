@@ -2,13 +2,41 @@
 
 require 'spec_helper'
 require_relative '../../../support/tmpdir'
+require_relative '../../../support/abort_capture'
 require_relative '../../../../lib/gitlab/principles_distiller/sync'
 
 RSpec.describe Gitlab::PrinciplesDistiller::Sync::Workflow do
   include TmpdirHelper
+  include AbortCaptureHelper
 
   let(:manifest) { Gitlab::PrinciplesDistiller::Sync::Manifest.new }
   let(:workflow) { described_class.new(manifest: manifest) }
+
+  describe '.distill' do
+    subject(:distill) do
+      workflow.distill('foo', {}, prior_sha: '1' * 40, target_sha: '2' * 40)
+    end
+
+    before do
+      allow(workflow).to receive(:build_goal).and_return('goal')
+      allow(workflow).to receive(:build_additional_context).and_raise('git diff failed')
+    end
+
+    it 'returns nil so the caller can retry preparation failures' do
+      expect { expect(distill).to be_nil }.to output(/Workflow preparation error for foo: git diff failed/).to_stderr
+    end
+  end
+
+  describe '.validate_commit_shas!' do
+    it 'accepts SHA-1, SHA-256, and nil values' do
+      expect { workflow.validate_commit_shas!(['1' * 40, '2' * 64, nil]) }.not_to raise_error
+    end
+
+    it 'rejects a non-object ID' do
+      expect { workflow.validate_commit_shas!(['main']) }
+        .to raise_error(/invalid distillation commit sha: "main".*40- or 64-character hex object id/)
+    end
+  end
 
   describe '.extract_assistant_content' do
     subject(:content) { workflow.extract_assistant_content(messages) }
@@ -199,6 +227,32 @@ RSpec.describe Gitlab::PrinciplesDistiller::Sync::Workflow do
       expect(output).to include('session: https://gitlab.com/gitlab-org/gitlab/-/automate/agent-sessions/12345')
     end
 
+    context 'with a terminal HTTP response' do
+      let(:response) { Net::HTTPUnauthorized.new('1.1', '401', 'Unauthorized') }
+
+      before do
+        allow(response).to receive(:body).and_return('authentication failed')
+        allow(workflow).to receive(:post_json).and_return(response)
+      end
+
+      it 'preserves the status and diagnostic in a typed error' do
+        expect { start }.to raise_error(described_class::NonRetryableCreationError) do |error|
+          expect(error.status).to eq(401)
+          expect(error.message).to eq('Workflow creation failed: HTTP 401: authentication failed')
+        end
+      end
+    end
+
+    context 'when the request times out' do
+      before do
+        allow(workflow).to receive(:post_json).and_raise(Net::ReadTimeout)
+      end
+
+      it 'returns nil for the caller to retry' do
+        expect { expect(start).to be_nil }.to output(/Workflow create error/).to_stderr
+      end
+    end
+
     def capture_stdout
       original = $stdout
       $stdout = StringIO.new
@@ -377,24 +431,37 @@ RSpec.describe Gitlab::PrinciplesDistiller::Sync::Workflow do
     context 'with newly declared sources' do
       let(:new_sources) { [{ 'path' => 'doc/development/feature_flags/new_source.md' }] }
 
-      it 'explains their diff is empty by construction' do
+      it 'explains that the prior distillation did not consider them' do
         expect(goal).to include('Newly declared SSOT sources this run:')
         expect(goal).to include('- doc/development/feature_flags/new_source.md')
-        expect(goal).to include('empty by construction')
+        expect(goal).to include('not considered by the prior distillation')
       end
     end
   end
 
   describe '.build_additional_context' do
-    subject(:context) { workflow.build_additional_context('foo', config, new_sources: new_sources) }
+    subject(:context) do
+      workflow.build_additional_context('foo', config, prior_sha: prior_sha, target_sha: target_sha,
+        new_sources: new_sources)
+    end
 
-    let(:new_sources) { [{ 'path' => 'doc/new.md' }] }
+    let(:new_sources) { [] }
+    let(:prior_sha) { '1' * 40 }
+    let(:target_sha) { '2' * 40 }
 
     let(:config) do
       {
         'sources' => [{ 'path' => 'doc/foo.md', 'url' => 'https://example.com/foo' }],
         'baseline' => '.ai/principles/baselines/foo.md'
       }
+    end
+
+    before do
+      allow(workflow).to receive(:ensure_commit_available!)
+      allow(manifest).to receive(:resolve_source_path).with('doc/foo.md').and_return('doc/foo.md')
+      allow(workflow).to receive(:source_diff)
+        .with(prior_sha, target_sha, 'doc/foo.md', 'doc/foo.md')
+        .and_return("diff --git a/doc/foo.md b/doc/foo.md\n")
     end
 
     it 'returns a one-element array' do
@@ -410,9 +477,182 @@ RSpec.describe Gitlab::PrinciplesDistiller::Sync::Workflow do
 
       expect(payload['principle']).to eq('foo')
       expect(payload['distilled_path']).to eq('.ai/principles/distilled/foo.md')
-      expect(payload['sources']).to eq([{ 'path' => 'doc/foo.md', 'url' => 'https://example.com/foo' }])
-      expect(payload['new_sources']).to eq([{ 'path' => 'doc/new.md' }])
+      expect(payload['prior_sha']).to eq(prior_sha)
+      expect(payload['target_sha']).to eq(target_sha)
+      expect(payload['sources']).to eq([{
+        'path' => 'doc/foo.md',
+        'url' => 'https://example.com/foo',
+        'resolved_path' => 'doc/foo.md',
+        'new_source' => false,
+        'diff' => "diff --git a/doc/foo.md b/doc/foo.md\n"
+      }])
       expect(payload['baseline_path']).to eq('.ai/principles/baselines/foo.md')
+    end
+
+    context 'with a newly declared source' do
+      let(:new_sources) { [{ 'path' => 'doc/foo.md' }] }
+
+      it 'marks the source as new without generating a historical diff' do
+        payload = JSON.parse(context[0][:Content])
+
+        expect(payload['sources'].first).to include('new_source' => true, 'diff' => nil)
+        expect(workflow).not_to have_received(:source_diff)
+      end
+    end
+
+    context 'without a prior SHA' do
+      let(:prior_sha) { nil }
+
+      it 'marks every source as new' do
+        payload = JSON.parse(context[0][:Content])
+
+        expect(payload['sources'].first).to include('new_source' => true, 'diff' => nil)
+        expect(workflow).not_to have_received(:source_diff)
+      end
+    end
+
+    context 'when the source path cannot be resolved' do
+      before do
+        allow(manifest).to receive(:resolve_source_path).with('doc/foo.md').and_return(nil)
+      end
+
+      it 'marks the source as new without generating a historical diff' do
+        payload = JSON.parse(context[0][:Content])
+
+        expect(payload['sources'].first).to include('resolved_path' => nil, 'new_source' => true, 'diff' => nil)
+        expect(workflow).not_to have_received(:source_diff)
+      end
+    end
+
+    context 'when the serialized context exceeds the warning threshold' do
+      before do
+        allow(workflow).to receive(:source_diff)
+          .and_return('x' * described_class::ADDITIONAL_CONTEXT_WARNING_BYTES)
+      end
+
+      it 'warns with the principle name and serialized size' do
+        expect { context }.to output(/WARNING: foo additional context is \d+ bytes/).to_stderr
+      end
+    end
+  end
+
+  describe '.source_diff' do
+    subject(:source_diff) { workflow.source_diff(prior_sha, target_sha, declared_path, resolved_path) }
+
+    let(:prior_sha) { '1' * 40 }
+    let(:target_sha) { '2' * 40 }
+    let(:declared_path) { 'doc/foo.md' }
+    let(:resolved_path) { declared_path }
+    let(:status) { instance_double(Process::Status, success?: true) }
+
+    before do
+      Gitlab::PrinciplesDistiller::Workspace.path = '/workspace'
+      allow(Open3).to receive(:capture3).and_return(['diff', '', status])
+    end
+
+    it 'diffs the resolved source path with rename detection' do
+      expect(source_diff).to eq('diff')
+      expect(Open3).to have_received(:capture3).with(
+        'git', 'diff', '--no-color', '--no-ext-diff', '--find-renames', '--unified=0',
+        "#{prior_sha}..#{target_sha}", '--', declared_path, chdir: '/workspace')
+    end
+
+    context 'when the source resolves through an index fallback' do
+      let(:resolved_path) { 'doc/foo/_index.md' }
+
+      it 'includes both paths so git can detect the rename' do
+        source_diff
+
+        expect(Open3).to have_received(:capture3).with(
+          'git', 'diff', '--no-color', '--no-ext-diff', '--find-renames', '--unified=0',
+          "#{prior_sha}..#{target_sha}", '--', declared_path, resolved_path, chdir: '/workspace')
+      end
+    end
+  end
+
+  describe '.ensure_commit_available!' do
+    let(:sha) { '3' * 40 }
+    let(:tmpdir) { mktmpdir }
+
+    before do
+      Gitlab::PrinciplesDistiller::Workspace.path = tmpdir
+    end
+
+    it 'rejects a value that is not a commit SHA before invoking git' do
+      expect(workflow).not_to receive(:system)
+
+      expect { workflow.ensure_commit_available!('main') }
+        .to raise_error(/invalid distillation commit sha: "main".*40- or 64-character hex object id/)
+    end
+
+    it 'accepts a SHA-256 object ID' do
+      sha256 = '4' * 64
+      expect(workflow).to receive(:system)
+        .with('git', 'cat-file', '-e', "#{sha256}^{commit}", hash_including(chdir: tmpdir))
+        .and_return(true)
+
+      workflow.ensure_commit_available!(sha256)
+    end
+
+    it 'runs git against the workspace rather than the process cwd' do
+      expect(workflow).to receive(:system)
+        .with('git', 'cat-file', '-e', "#{sha}^{commit}", hash_including(chdir: tmpdir))
+        .and_return(true)
+
+      workflow.ensure_commit_available!(sha)
+    end
+
+    it 'fetches the commit in the workspace when it is missing' do
+      allow(workflow).to receive(:system)
+        .with('git', 'cat-file', '-e', "#{sha}^{commit}", hash_including(chdir: tmpdir))
+        .and_return(false, true)
+
+      expect(workflow).to receive(:system)
+        .with('git', 'fetch', '--depth=1', 'origin', sha, hash_including(chdir: tmpdir))
+        .and_return(true)
+
+      workflow.ensure_commit_available!(sha)
+    end
+
+    it 'raises when the fetch fails' do
+      allow(workflow).to receive(:system).and_return(false)
+
+      expect { workflow.ensure_commit_available!(sha) }
+        .to raise_error(/could not fetch distillation commit/)
+    end
+
+    it 'raises when the commit is still missing after a successful fetch' do
+      allow(workflow).to receive(:system)
+        .with('git', 'cat-file', '-e', "#{sha}^{commit}", hash_including(chdir: tmpdir))
+        .and_return(false)
+      allow(workflow).to receive(:system)
+        .with('git', 'fetch', '--depth=1', 'origin', sha, hash_including(chdir: tmpdir))
+        .and_return(true)
+
+      expect { workflow.ensure_commit_available!(sha) }
+        .to raise_error(/is unavailable after fetch/)
+    end
+
+    it 'checks a given sha only once across repeated calls' do
+      expect(workflow).to receive(:system)
+        .with('git', 'cat-file', '-e', "#{sha}^{commit}", hash_including(chdir: tmpdir))
+        .once
+        .and_return(true)
+
+      3.times { workflow.ensure_commit_available!(sha) }
+    end
+
+    it 'serialises concurrent callers so only one fetch runs' do
+      allow(workflow).to receive(:system)
+        .with('git', 'cat-file', '-e', "#{sha}^{commit}", hash_including(chdir: tmpdir))
+        .and_return(false, true)
+
+      expect(workflow).to receive(:system)
+        .with('git', 'fetch', '--depth=1', 'origin', sha, hash_including(chdir: tmpdir))
+        .once
+        .and_return(true)
+
+      Array.new(4) { Thread.new { workflow.ensure_commit_available!(sha) } }.each(&:join)
     end
   end
 
@@ -469,38 +709,68 @@ RSpec.describe Gitlab::PrinciplesDistiller::Sync::Workflow do
   end
 
   describe '.validate_config!' do
-    subject(:validate) { workflow.validate_config! }
+    subject(:validate) { workflow.validate_config!(push: push) }
 
-    context 'when both env vars are set' do
-      before do
-        stub_const('ENV',
-          env_double('GITLAB_TOKEN' => 'token', 'AGENT_PRINCIPLES_CATALOG_ITEM_CONSUMER_ID' => '123'))
-      end
+    let(:push) { false }
+    let(:env) do
+      {
+        'GITLAB_TOKEN' => 'token',
+        'AGENT_PRINCIPLES_CATALOG_ITEM_CONSUMER_ID' => '123',
+        'AGENT_PRINCIPLES_CATALOG_PROJECT' => 'gitlab-org/gitlab',
+        'CI_DEFAULT_BRANCH' => 'master'
+      }
+    end
 
+    before do
+      stub_const('ENV', env_double(env))
+    end
+
+    context 'when every required variable is set' do
       it 'does not abort' do
         expect { validate }.not_to raise_error
       end
     end
 
-    context 'when GITLAB_TOKEN is missing' do
+    context 'when several variables are missing' do
       before do
-        stub_const('ENV',
-          env_double('GITLAB_TOKEN' => '', 'AGENT_PRINCIPLES_CATALOG_ITEM_CONSUMER_ID' => '123'))
+        env['GITLAB_TOKEN'] = ''
+        env['AGENT_PRINCIPLES_CATALOG_PROJECT'] = ''
       end
 
-      it 'aborts' do
-        expect { validate }.to raise_error(SystemExit)
+      it 'reports every missing variable and the token constraint once', :aggregate_failures do
+        message = capture_abort_stderr { validate }
+
+        expect(message).to include('Missing env: GITLAB_TOKEN, AGENT_PRINCIPLES_CATALOG_PROJECT')
+        expect(message).to include('export GITLAB_TOKEN=<value>')
+        expect(message).to include('export AGENT_PRINCIPLES_CATALOG_PROJECT=<value>')
+        expect(message).to include('GITLAB_TOKEN requires a classic personal access token with api scope')
+        expect(message).to include("api scope.\nUse gitlab-ai-principles-distiller-provision-flow")
       end
     end
 
-    context 'when AGENT_PRINCIPLES_CATALOG_ITEM_CONSUMER_ID is missing' do
+    context 'with push enabled' do
+      let(:push) { true }
+
       before do
-        stub_const('ENV',
-          env_double('GITLAB_TOKEN' => 'token', 'AGENT_PRINCIPLES_CATALOG_ITEM_CONSUMER_ID' => ''))
+        env['GITLAB_API_TOKEN'] = 'api-token'
+        env['CI_PROJECT_ID'] = '278964'
       end
 
-      it 'aborts' do
-        expect { validate }.to raise_error(SystemExit)
+      it 'does not abort when publish configuration is complete' do
+        expect { validate }.not_to raise_error
+      end
+
+      context 'when publish configuration is missing' do
+        before do
+          env['GITLAB_API_TOKEN'] = ''
+          env['CI_PROJECT_ID'] = ''
+        end
+
+        it 'reports both variables before distillation starts' do
+          message = capture_abort_stderr { validate }
+
+          expect(message).to include('Missing env: GITLAB_API_TOKEN, CI_PROJECT_ID')
+        end
       end
     end
 
@@ -529,6 +799,110 @@ RSpec.describe Gitlab::PrinciplesDistiller::Sync::Workflow do
           @env_hash.key?(key) && !@env_hash[key].to_s.empty?
         end
       end.new(env_hash)
+    end
+  end
+
+  describe '.validate_publish_config!' do
+    subject(:validate) { workflow.validate_publish_config! }
+
+    let(:env) do
+      {
+        'GITLAB_TOKEN' => 'token',
+        'AGENT_PRINCIPLES_CATALOG_PROJECT' => 'gitlab-org/gitlab',
+        'CI_DEFAULT_BRANCH' => 'master',
+        'GITLAB_API_TOKEN' => 'api-token',
+        'CI_PROJECT_ID' => '278964'
+      }
+    end
+
+    before do
+      stub_const('ENV', env)
+    end
+
+    it 'does not require the consumer ID' do
+      expect { validate }.not_to raise_error
+    end
+
+    context 'when publish configuration is missing' do
+      before do
+        env['GITLAB_API_TOKEN'] = ''
+        env['CI_PROJECT_ID'] = ''
+      end
+
+      it 'reports every missing publish variable without consumer ID guidance' do
+        message = capture_abort_stderr { validate }
+
+        expect(message).to include('Missing env: GITLAB_API_TOKEN, CI_PROJECT_ID')
+        expect(message).not_to include('--print-consumer-id')
+      end
+    end
+  end
+
+  describe '.warn_if_sources_differ_from_pushed_branch' do
+    subject(:warn_if_different) { workflow.warn_if_sources_differ_from_pushed_branch(config, **arguments) }
+
+    let(:arguments) { {} }
+    let(:config) do
+      {
+        'sources' => [{ 'path' => 'doc/changed.md' }, { 'path' => 'doc/unchanged.md' }],
+        'baseline' => '.ai/principles/baselines/changed.md'
+      }
+    end
+
+    before do
+      allow(workflow).to receive_messages(source_branch: 'feature-branch', system: true)
+    end
+
+    context 'when local sources differ from the pushed branch' do
+      before do
+        output = "doc/changed.md\n.ai/principles/baselines/changed.md\n"
+        allow(IO).to receive(:popen).and_return(output)
+      end
+
+      it 'warns with each changed path and continues' do
+        expect { warn_if_different }.to output(%r{doc/changed\.md.*baselines/changed\.md.*Push these changes}m)
+          .to_stderr
+      end
+
+      context 'with an injected warning logger' do
+        let(:log_warn) { instance_spy(Proc) }
+        let(:arguments) { { log_warn: log_warn } }
+
+        it 'routes the warning through the logger', :aggregate_failures do
+          expect { warn_if_different }.not_to output.to_stderr
+          expect(log_warn).to have_received(:call).with(%r{doc/changed\.md.*baselines/changed\.md.*Push these changes}m)
+        end
+      end
+    end
+
+    context 'when local sources match the pushed branch' do
+      before do
+        allow(IO).to receive(:popen).and_return('')
+      end
+
+      it 'does not warn' do
+        expect { warn_if_different }.not_to output.to_stderr
+      end
+    end
+
+    context 'when the pushed branch is unavailable' do
+      before do
+        allow(workflow).to receive(:system).and_return(true, false)
+      end
+
+      it 'warns that workflows cannot see local-only changes' do
+        expect { warn_if_different }.to output(/pushed source branch not found.*local-only/m).to_stderr
+      end
+    end
+
+    context 'when the workspace is not a Git repository' do
+      before do
+        allow(workflow).to receive(:system).and_return(false)
+      end
+
+      it 'does not warn' do
+        expect { warn_if_different }.not_to output.to_stderr
+      end
     end
   end
 end

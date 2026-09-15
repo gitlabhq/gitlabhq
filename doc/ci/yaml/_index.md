@@ -1260,6 +1260,7 @@ spec:
 
 - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/206931) in GitLab 18.6 [with a feature flag](../../administration/feature_flags/_index.md) named `ci_file_inputs`. Disabled by default.
 - [Generally available](https://gitlab.com/gitlab-org/gitlab/-/issues/579240) in GitLab 18.9. Feature flag `ci_file_inputs` removed.
+- [Changed](https://gitlab.com/gitlab-org/gitlab/-/issues/590532) in GitLab 19.4 [with a feature flag](../../administration/feature_flags/_index.md) named `ci_spec_include_own_context`. Disabled by default.
 
 {{< /history >}}
 
@@ -1314,6 +1315,12 @@ deploy:
 - When you include multiple input files, they are merged in the order specified.
 - Supports [`local`](#includelocal), [`remote`](#includeremote), and [`project`](#includeproject) include types.
   Does not support `template`, `component`, or `artifact` includes.
+- Include locations resolve against the repository and ref of the file that contains the `spec` section,
+  not the file that included it.
+  A `local` location is local to the file that declares `spec:include`.
+- You cannot use a `local` location in a file added with [`include:remote`](#includeremote) or
+  [`include:template`](#includetemplate), because those files have no repository to resolve against.
+  Use [`include:project`](#includeproject) instead.
 
 **Related topics**:
 
@@ -4652,14 +4659,14 @@ for `PROVIDER` and `STACK`:
 
 Use `release` to create a [release](../../user/project/releases/_index.md).
 
-The release job must have access to the [`glab` CLI](https://gitlab.com/gitlab-org/cli),
+The release job must have access to the [`glab` CLI](https://docs.gitlab.com/cli/),
 which must be in the `$PATH`.
 
 If you use the [Docker executor](https://docs.gitlab.com/runner/executors/docker/),
 you can use this image from the GitLab container registry: `registry.gitlab.com/gitlab-org/cli:latest`
 
 If you use the [Shell executor](https://docs.gitlab.com/runner/executors/shell/) or similar,
-[install `glab` CLI](https://gitlab.com/gitlab-org/cli#installation) on the server where the runner is registered.
+[install `glab` CLI](https://docs.gitlab.com/cli/#install-the-cli) on the server where the runner is registered.
 
 **Keyword type**: Job keyword. You can use it only as part of a job.
 
@@ -4710,10 +4717,18 @@ This example creates a release:
 - The `release` section executes after the `script` keyword and before the `after_script`.
 - A release is created only if the job's main script succeeds.
 - If the release already exists, it is not updated and the job with the `release` keyword fails.
+- The `release` keyword uses the [`glab` CLI](https://docs.gitlab.com/cli/) and creates the release with `glab release create`.
+  The release is authenticated with the [`CI_JOB_TOKEN`](../jobs/ci_job_token.md) by default.
+  If any of these CI/CD variable are defined in the job, `glab` uses that token instead,
+  in this order: `GITLAB_TOKEN`, `GITLAB_ACCESS_TOKEN`, or `OAUTH_TOKEN`. These tokens take
+  [precedence](https://docs.gitlab.com/cli/authentication/#token-precedence)
+  over `CI_JOB_TOKEN` in `glab`'s token resolution. If this token lacks the required API scopes,
+  the release can fail with an 401 Unauthorized error.
 
 **Related topics**:
 
 - [CI/CD example of the `release` keyword](../../user/project/releases/_index.md#creating-a-release-by-using-a-cicd-job).
+- [Migrate from `release-cli` to `glab` CLI](../../user/project/releases/release_cli.md)
 - [Create multiple releases in a single pipeline](../../user/project/releases/_index.md#create-multiple-releases-in-a-single-pipeline).
 - [Use a custom SSL CA certificate authority](../../user/project/releases/_index.md#use-a-custom-ssl-ca-certificate-authority).
 

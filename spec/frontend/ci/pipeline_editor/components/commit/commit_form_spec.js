@@ -129,7 +129,7 @@ describe('Pipeline Editor | Commit Form', () => {
     it('when the commit message is empty, submit button is disabled', async () => {
       await findCommitTextarea().setValue('');
 
-      expect(findSubmitBtn().attributes('disabled')).toBeDefined();
+      expect(findSubmitBtn().attributes('aria-disabled')).toBe('true');
     });
   });
 

@@ -23,6 +23,7 @@
 - Ai::UsageEventsFinder # Reason: The finder's data is coming from Clickhouse and not Postgres, no ActiveRelation involved
 - Ai::DuoWorkflows::SessionArtifactsFinder # Reason: Dispatches between Postgres and ClickHouse, may return a ClickHouse query builder
 - Ai::DuoWorkflows::SessionArtifacts::ClickHouseFinder # Reason: The finder's data is coming from ClickHouse and not Postgres, no ActiveRelation involved
+- Ai::FoundationalChatAgentsFinder # Reason: Foundational chat agents are a fixed-items model held in memory, not a table
 - AuditEvents::AiAuditEvents::ClickHouseFinder # Reason: The finder's data is coming from Clickhouse and not Postgres, no ActiveRelation involved
 - AuditEvents::AiAuditEvents::Finder # Reason: Dispatches between Postgres and Clickhouse, may return a Clickhouse query builder
 - WorkItems::TypesFinder # Reason: Types can come from system-defined or ActiveRecord, no ActiveRelation involved

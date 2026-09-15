@@ -41,31 +41,22 @@ similarly mitigated by a rate limit.
 
 ## Configuration options
 
-You can set most rate limits in the **Admin** area, and a few only through the API or the
-Rails console.
+You can set most rate limits in the **Admin** area. Some are available only through the API
+or the Rails console, and you set the GitLab Pages rate limits in a configuration file.
 
 ### Admin area
 
 You can set these rate limits in the **Admin** area of your instance:
 
-- [Import/Export rate limits](../administration/settings/import_export_rate_limits.md)
-- [Issue rate limits](../administration/settings/rate_limit_on_issues_creation.md)
-- [Note rate limits](../administration/settings/rate_limit_on_notes_creation.md)
+- [API rate limits](api/_index.md)
+- [Content creation rate limits](content_creation.md)
+- [Git operations rate limits](git.md)
+- [Import and export rate limits](../administration/settings/import_export_rate_limits.md)
+- [Incident management rate limits](../administration/settings/incident_management_rate_limits.md)
+- [Pipeline creation rate limits](../administration/cicd/limits.md#pipeline-creation-rate-limits)
 - [Protected paths](../administration/settings/protected_paths.md)
 - [Raw endpoints rate limits](../administration/settings/rate_limits_on_raw_endpoints.md)
 - [User and IP rate limits](../administration/settings/user_and_ip_rate_limits.md)
-- [Package registry rate limits](../administration/settings/package_registry_rate_limits.md)
-- [Git LFS rate limits](../administration/settings/git_lfs_rate_limits.md)
-- [Rate limits on Git SSH operations](../administration/settings/rate_limits_on_git_ssh_operations.md)
-- [Files API rate limits](../administration/settings/files_api_rate_limits.md)
-- [Deprecated API rate limits](../administration/settings/deprecated_api_rate_limits.md)
-- [GitLab Pages rate limits](../administration/pages/_index.md#rate-limits)
-- [Pipeline rate limits](../administration/cicd/limits.md#pipeline-creation-rate-limits)
-- [Incident management rate limits](../administration/settings/incident_management_rate_limits.md)
-- [Projects API rate limits](../administration/settings/rate_limit_on_projects_api.md)
-- [Groups API rate limits](../administration/settings/rate_limit_on_groups_api.md)
-- [Users API rate limits](../administration/settings/rate_limit_on_users_api.md)
-- [Organizations API rate limits](../administration/settings/rate_limit_on_organizations_api.md)
 - [Webhook operations rate limits](../administration/settings/rate-limit-on-webhook-operations.md)
 
 ### API and Rails console
@@ -75,11 +66,21 @@ You can set these rate limits with the [application settings API](../api/setting
 - [Autocomplete users rate limit](../administration/instance_limits.md#autocomplete-users-rate-limit)
 - [AI action](../api/settings.md#available-settings) (`ai_action_api_rate_limit`): 160 calls per
   8 hours per authenticated user. Applies to the GraphQL `aiAction` mutation.
+- [Create tag rate limit](../api/settings.md#available-settings) (`tags_create_limit`): 100 requests
+  per 30 minutes per project. Applies to the REST API endpoint for creating a tag, the
+  GraphQL `tagCreate` mutation, tag creation in the UI, and the `/tag` quick action.
 
 You can set this rate limit with the [plan limits API](../api/plan_limits.md) or the
 [Rails console](../administration/operations/rails_console.md#starting-a-rails-console-session):
 
 - [Webhook rate limit](../administration/instance_limits.md#webhook-rate-limit)
+
+### Configuration file
+
+You can set these rate limits only in the configuration file for your installation, for example
+`/etc/gitlab/gitlab.rb` in a Linux package installation:
+
+- [GitLab Pages rate limits](../administration/pages/rate-limits.md)
 
 ## Non-configurable limits
 

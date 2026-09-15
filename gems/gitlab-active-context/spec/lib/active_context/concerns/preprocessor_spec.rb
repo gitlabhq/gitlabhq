@@ -4,13 +4,15 @@ require 'spec_helper'
 
 RSpec.describe ActiveContext::Concerns::Preprocessor, :aggregate_failures do
   let(:test_ref_class) do
-    Class.new do
+    klass = Class.new do
       extend ActiveContext::Concerns::Preprocessor
 
       def self.preprocessors
         @preprocessors ||= []
       end
     end
+
+    stub_const('TestPreprocessorReferenceClass', klass)
   end
 
   describe '.add_preprocessor' do
@@ -165,6 +167,36 @@ RSpec.describe ActiveContext::Concerns::Preprocessor, :aggregate_failures do
       end
     end
 
+    context 'with a preprocessor that returns infinite_retry refs' do
+      before do
+        test_ref_class.add_preprocessor :infinite_retry do |refs|
+          { successful: [], failed: [], infinite_retry: refs }
+        end
+      end
+
+      it 'carries the infinite_retry refs through to the result' do
+        result = test_ref_class.preprocess(refs)
+
+        expect(result[:successful]).to be_empty
+        expect(result[:failed]).to be_empty
+        expect(result[:infinite_retry]).to eq(refs)
+      end
+    end
+
+    context 'with a preprocessor that returns a two-key hash' do
+      before do
+        test_ref_class.add_preprocessor :legacy do |refs|
+          { successful: refs, failed: [] }
+        end
+      end
+
+      it 'tolerates the missing infinite_retry key' do
+        result = test_ref_class.preprocess(refs)
+
+        expect(result[:infinite_retry]).to be_empty
+      end
+    end
+
     context 'with options passed to preprocess' do
       let(:call_log) { [] }
 
@@ -210,38 +242,6 @@ RSpec.describe ActiveContext::Concerns::Preprocessor, :aggregate_failures do
         expect(call_log).to include({ stage: 'second', next_model_only: true })
       end
     end
-
-    context 'with preprocessor that returns retryable refs' do
-      before do
-        test_ref_class.add_preprocessor :with_retryable do |refs|
-          { successful: [refs[0]], failed: [refs[1]], retryable: [refs[2]] }
-        end
-      end
-
-      it 'includes retryable refs in result' do
-        result = test_ref_class.preprocess([ref1, ref2, test_ref_class.new])
-
-        expect(result[:successful]).to eq([ref1])
-        expect(result[:failed]).to eq([ref2])
-        expect(result[:retryable].length).to eq(1)
-      end
-    end
-
-    context 'with preprocessor that does not return retryable key' do
-      before do
-        test_ref_class.add_preprocessor :without_retryable do |refs|
-          { successful: refs, failed: [] }
-        end
-      end
-
-      it 'handles missing retryable key gracefully' do
-        result = test_ref_class.preprocess(refs)
-
-        expect(result[:successful]).to eq(refs)
-        expect(result[:failed]).to be_empty
-        expect(result[:retryable]).to be_empty
-      end
-    end
   end
 
   describe '.with_batch_handling' do
@@ -250,7 +250,7 @@ RSpec.describe ActiveContext::Concerns::Preprocessor, :aggregate_failures do
     let(:refs) { [ref1, ref2] }
 
     before do
-      allow(ActiveContext::Logger).to receive(:retryable_exception)
+      allow(ActiveContext::Logger).to receive(:exception)
     end
 
     context 'when block succeeds' do
@@ -261,7 +261,7 @@ RSpec.describe ActiveContext::Concerns::Preprocessor, :aggregate_failures do
 
         expect(result[:successful]).to eq(refs)
         expect(result[:failed]).to be_empty
-        expect(result[:retryable]).to be_empty
+        expect(result[:infinite_retry]).to be_empty
       end
     end
 
@@ -273,15 +273,15 @@ RSpec.describe ActiveContext::Concerns::Preprocessor, :aggregate_failures do
 
         expect(result[:successful]).to be_empty
         expect(result[:failed]).to eq(refs)
-        expect(result[:retryable]).to be_empty
 
-        expect(ActiveContext::Logger).to have_received(:retryable_exception).with(
+        expect(ActiveContext::Logger).to have_received(:exception).with(
           instance_of(StandardError),
-          class_name: 'Class',
+          handling: :retryable,
+          class_name: 'TestPreprocessorReferenceClass',
           queue_name: nil,
           preprocessor: nil,
-          infinite_retry: false,
-          refs: ['ref:1', 'ref:2']
+          refs_count: 2,
+          refs_sample: ['ref:1', 'ref:2']
         )
       end
 
@@ -291,87 +291,120 @@ RSpec.describe ActiveContext::Concerns::Preprocessor, :aggregate_failures do
             raise StandardError, "some error"
           end
 
-          expect(ActiveContext::Logger).to have_received(:retryable_exception).with(
+          expect(ActiveContext::Logger).to have_received(:exception).with(
             instance_of(StandardError),
-            class_name: 'Class',
+            handling: :retryable,
+            class_name: 'TestPreprocessorReferenceClass',
             queue_name: 'test_queue',
             preprocessor: 'test_preprocessor',
-            infinite_retry: false,
-            refs: ['ref:1', 'ref:2']
+            refs_count: 2,
+            refs_sample: ['ref:1', 'ref:2']
+          )
+        end
+      end
+
+      context 'when the batch is larger than the logged sample size' do
+        let(:refs) { Array.new(12) { |i| double("ref#{i}", serialize: "ref:#{i}") } }
+
+        it 'logs the full count and a capped sample' do
+          test_ref_class.with_batch_handling(refs) do
+            raise StandardError, "some error"
+          end
+
+          expect(ActiveContext::Logger).to have_received(:exception).with(
+            instance_of(StandardError),
+            handling: :retryable,
+            class_name: 'TestPreprocessorReferenceClass',
+            queue_name: nil,
+            preprocessor: nil,
+            refs_count: 12,
+            refs_sample: %w[ref:0 ref:1 ref:2 ref:3 ref:4 ref:5 ref:6 ref:7 ref:8 ref:9]
           )
         end
       end
     end
 
-    context 'when block raises infinite retry error type' do
+    context 'with custom error_types' do
       let(:custom_error) { Class.new(StandardError) }
 
-      it 'returns all refs as retryable' do
-        result = test_ref_class.with_batch_handling(refs, infinite_retry_error_types: [custom_error]) do
-          raise custom_error, "transient error"
-        end
-
-        expect(result[:successful]).to be_empty
-        expect(result[:failed]).to be_empty
-        expect(result[:retryable]).to eq(refs)
-
-        expect(ActiveContext::Logger).to have_received(:retryable_exception).with(
-          instance_of(custom_error),
-          class_name: 'Class',
-          queue_name: nil,
-          preprocessor: nil,
-          infinite_retry: true,
-          refs: ['ref:1', 'ref:2']
-        )
-      end
-    end
-
-    context 'with multiple infinite retry error types' do
-      let(:error1) { Class.new(StandardError) }
-      let(:error2) { Class.new(StandardError) }
-
-      it 'catches any of the specified error types as retryable' do
-        result1 = test_ref_class.with_batch_handling(refs, infinite_retry_error_types: [error1, error2]) do
-          raise error1
-        end
-
-        result2 = test_ref_class.with_batch_handling(refs, infinite_retry_error_types: [error1, error2]) do
-          raise error2
-        end
-
-        expect(result1[:retryable]).to eq(refs)
-        expect(result2[:retryable]).to eq(refs)
-      end
-    end
-
-    context 'with custom error_types and infinite_retry_error_types' do
-      let(:retriable_error) { Class.new(StandardError) }
-      let(:custom_error) { Class.new(StandardError) }
-
-      it 'catches infinite retry errors before standard errors' do
-        result = test_ref_class.with_batch_handling(
-          refs,
-          error_types: [custom_error],
-          infinite_retry_error_types: [retriable_error]
-        ) do
-          raise retriable_error
-        end
-
-        expect(result[:retryable]).to eq(refs)
-        expect(result[:failed]).to be_empty
-      end
-
-      it 'catches custom errors as failed when not in infinite retry list' do
-        result = test_ref_class.with_batch_handling(
-          refs,
-          error_types: [custom_error],
-          infinite_retry_error_types: [retriable_error]
-        ) do
+      it 'catches custom errors as failed and logs them as retryable, not unexpected' do
+        result = test_ref_class.with_batch_handling(refs, error_types: [custom_error]) do
           raise custom_error
         end
 
         expect(result[:failed]).to eq(refs)
-        expect(result[:retryable]).to be_empty
+        expect(ActiveContext::Logger).to have_received(:exception).with(instance_of(custom_error),
+          hash_including(handling: :retryable))
+      end
+    end
+
+    context 'with an error outside the declared error_types' do
+      let(:declared_error) { Class.new(StandardError) }
+
+      it 'still fails the batch through the existing retry chain, but logs it loudly' do
+        result = test_ref_class.with_batch_handling(refs, error_types: [declared_error]) do
+          raise StandardError, "an unclassified bug"
+        end
+
+        expect(result[:successful]).to be_empty
+        expect(result[:failed]).to eq(refs)
+
+        expect(ActiveContext::Logger).to have_received(:exception).with(
+          instance_of(StandardError),
+          handling: :unexpected,
+          class_name: 'TestPreprocessorReferenceClass',
+          queue_name: nil,
+          preprocessor: nil,
+          refs_count: 2,
+          refs_sample: ['ref:1', 'ref:2']
+        )
+      end
+    end
+
+    context 'with infinite_retry_error_types' do
+      let(:rate_limit_error) { Class.new(StandardError) }
+
+      it 'routes matching errors to infinite_retry instead of failed, and logs them under that category' do
+        result = test_ref_class.with_batch_handling(refs, infinite_retry_error_types: [rate_limit_error]) do
+          raise rate_limit_error, "429 Too Many Requests"
+        end
+
+        expect(result[:successful]).to be_empty
+        expect(result[:failed]).to be_empty
+        expect(result[:infinite_retry]).to eq(refs)
+
+        expect(ActiveContext::Logger).to have_received(:exception).with(
+          instance_of(rate_limit_error),
+          handling: :infinite_retry,
+          class_name: 'TestPreprocessorReferenceClass',
+          queue_name: nil,
+          preprocessor: nil,
+          refs_count: 2,
+          refs_sample: ['ref:1', 'ref:2']
+        )
+      end
+
+      context 'when the error is also in error_types' do
+        it 'takes precedence over error_types' do
+          result = test_ref_class.with_batch_handling(
+            refs, error_types: [rate_limit_error], infinite_retry_error_types: [rate_limit_error]) do
+            raise rate_limit_error, "429 Too Many Requests"
+          end
+
+          expect(result[:failed]).to be_empty
+          expect(result[:infinite_retry]).to eq(refs)
+        end
+      end
+
+      context 'when the error is not in infinite_retry_error_types' do
+        it 'falls through to the StandardError fallback' do
+          result = test_ref_class.with_batch_handling(refs, infinite_retry_error_types: [rate_limit_error]) do
+            raise StandardError, "an unclassified bug"
+          end
+
+          expect(result[:infinite_retry]).to be_empty
+          expect(result[:failed]).to eq(refs)
+        end
       end
     end
 
@@ -379,14 +412,14 @@ RSpec.describe ActiveContext::Concerns::Preprocessor, :aggregate_failures do
       it 'returns empty result without executing block' do
         block_executed = false
 
-        result = test_ref_class.with_batch_handling([], infinite_retry_error_types: [StandardError]) do
+        result = test_ref_class.with_batch_handling([]) do
           block_executed = true
         end
 
         expect(block_executed).to be(false)
         expect(result[:successful]).to be_empty
         expect(result[:failed]).to be_empty
-        expect(result[:retryable]).to be_empty
+        expect(result[:infinite_retry]).to be_empty
       end
     end
   end
@@ -398,8 +431,7 @@ RSpec.describe ActiveContext::Concerns::Preprocessor, :aggregate_failures do
     let(:refs) { [ref1, ref2, ref3] }
 
     before do
-      allow(ActiveContext::Logger).to receive(:retryable_exception)
-      allow(ActiveContext::Logger).to receive(:skippable_exception)
+      allow(ActiveContext::Logger).to receive(:exception)
     end
 
     context 'when block succeeds for all refs' do
@@ -422,22 +454,22 @@ RSpec.describe ActiveContext::Concerns::Preprocessor, :aggregate_failures do
         expect(result[:successful]).to eq([ref1])
         expect(result[:failed]).to eq([ref2, ref3])
 
-        expect(ActiveContext::Logger).to have_received(:retryable_exception).with(
+        expect(ActiveContext::Logger).to have_received(:exception).with(
           instance_of(StandardError),
-          class_name: 'Class',
+          handling: :retryable,
+          class_name: 'TestPreprocessorReferenceClass',
           queue_name: nil,
           preprocessor: nil,
-          infinite_retry: false,
           reference: 'ref:2',
           reference_id: 'id:2'
         ).ordered
 
-        expect(ActiveContext::Logger).to have_received(:retryable_exception).with(
+        expect(ActiveContext::Logger).to have_received(:exception).with(
           instance_of(StandardError),
-          class_name: 'Class',
+          handling: :retryable,
+          class_name: 'TestPreprocessorReferenceClass',
           queue_name: nil,
           preprocessor: nil,
-          infinite_retry: false,
           reference: 'ref:3',
           reference_id: 'id:3'
         ).ordered
@@ -455,12 +487,12 @@ RSpec.describe ActiveContext::Concerns::Preprocessor, :aggregate_failures do
           expect(result[:successful]).to eq([ref2, ref3])
           expect(result[:failed]).to eq([ref1])
 
-          expect(ActiveContext::Logger).to have_received(:retryable_exception).with(
+          expect(ActiveContext::Logger).to have_received(:exception).with(
             instance_of(StandardError),
-            class_name: 'Class',
+            handling: :retryable,
+            class_name: 'TestPreprocessorReferenceClass',
             queue_name: 'test_queue',
             preprocessor: 'test_preprocessor',
-            infinite_retry: false,
             reference: 'ref:1',
             reference_id: 'id:1'
           )
@@ -471,7 +503,7 @@ RSpec.describe ActiveContext::Concerns::Preprocessor, :aggregate_failures do
     context 'when block raises skip error for some refs' do
       let(:skip_error) { Class.new(StandardError) }
 
-      it 'removes affected refs from the process and logs skippable exception' do
+      it 'removes affected refs from the process and logs a skipped exception' do
         result = test_ref_class.with_per_ref_handling(refs, skip_error_types: [skip_error]) do |ref|
           raise skip_error, "skip this" if ref == ref1
         end
@@ -479,9 +511,10 @@ RSpec.describe ActiveContext::Concerns::Preprocessor, :aggregate_failures do
         expect(result[:successful]).to eq([ref2, ref3])
         expect(result[:failed]).to be_empty
 
-        expect(ActiveContext::Logger).to have_received(:skippable_exception).with(
+        expect(ActiveContext::Logger).to have_received(:exception).with(
           instance_of(skip_error),
-          class_name: 'Class',
+          handling: :skipped,
+          class_name: 'TestPreprocessorReferenceClass',
           queue_name: nil,
           preprocessor: nil,
           reference: 'ref:1',
@@ -502,9 +535,10 @@ RSpec.describe ActiveContext::Concerns::Preprocessor, :aggregate_failures do
           expect(result[:successful]).to eq([ref2, ref3])
           expect(result[:failed]).to be_empty
 
-          expect(ActiveContext::Logger).to have_received(:skippable_exception).with(
+          expect(ActiveContext::Logger).to have_received(:exception).with(
             instance_of(skip_error),
-            class_name: 'Class',
+            handling: :skipped,
+            class_name: 'TestPreprocessorReferenceClass',
             queue_name: 'test_queue',
             preprocessor: 'test_preprocessor',
             reference: 'ref:1',

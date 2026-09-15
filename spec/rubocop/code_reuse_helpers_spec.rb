@@ -21,8 +21,6 @@ RSpec.describe RuboCop::CodeReuseHelpers, feature_category: :tooling do
     end.new
   end
 
-  let(:ee_file_path) { File.expand_path('../../ee/app/models/license.rb', __dir__) }
-
   describe '#send_to_constant?' do
     it 'returns true when sending to a constant' do
       node = build_and_parse_source('Foo.bar')

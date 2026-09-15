@@ -76,7 +76,7 @@ RSpec.describe Gitlab::GithubImport::Importer::SingleEndpointIssueEventsImporter
       it "doesn't assign event id" do
         subject.compose_associated_id!(issuable, event)
 
-        expect(event.id).to eq nil
+        expect(event.id).to be_nil
       end
     end
   end

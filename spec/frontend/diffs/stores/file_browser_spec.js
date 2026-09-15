@@ -290,4 +290,14 @@ describe('FileBrowser store', () => {
       expect(useFileBrowser().fileBrowserDrawerVisible).toBe(true);
     });
   });
+
+  describe('search focus', () => {
+    it('#requestSearchFocus increments the request counter', () => {
+      expect(useFileBrowser().focusSearchRequest).toBe(0);
+      useFileBrowser().requestSearchFocus();
+      expect(useFileBrowser().focusSearchRequest).toBe(1);
+      useFileBrowser().requestSearchFocus();
+      expect(useFileBrowser().focusSearchRequest).toBe(2);
+    });
+  });
 });

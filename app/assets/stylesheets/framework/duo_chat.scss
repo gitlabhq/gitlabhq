@@ -5,13 +5,23 @@
  * CSS Custom properties
  */
 :root {
-  --duo-chat-bubble-foreground-color-default: hsl(from var(--super-sidebar-theme-accent-color) h calc(s - 20) 20);
-  --duo-chat-bubble-background-color-default: hsla(from var(--super-sidebar-theme-accent-color) h s l / 16%);
+  --duo-chat-bubble-foreground-color-default: var(--gl-color-neutral-800);
+  --duo-chat-bubble-background-color-default: var(--gl-color-neutral-50);
 }
 
 :root.gl-dark {
-  --duo-chat-bubble-foreground-color-default: hsl(from var(--super-sidebar-theme-accent-color) h s 88);
-  --duo-chat-bubble-background-color-default: hsla(from var(--super-sidebar-theme-accent-color) h s calc(l + 20) / 25%);
+  --duo-chat-bubble-foreground-color-default: var(--gl-color-neutral-50);
+  --duo-chat-bubble-background-color-default: var(--gl-color-neutral-800);
+}
+
+:root.ui-neutral {
+  --duo-chat-bubble-foreground-color-default: var(--gl-color-blue-800);
+  --duo-chat-bubble-background-color-default: var(--gl-color-blue-50);
+}
+
+:root.ui-neutral.gl-dark {
+  --duo-chat-bubble-foreground-color-default: var(--gl-color-blue-50);
+  --duo-chat-bubble-background-color-default: var(--gl-color-blue-800);
 }
 
 .duo-chat-layout {
@@ -54,4 +64,12 @@
       color: var(--duo-chat-bubble-foreground-color-default);
     }
   }
+}
+
+/**
+ * Queued message styles — pending user prompts, matching your message bubbles
+ */
+.duo-chat-queued-message {
+  background-color: var(--duo-chat-bubble-background-color-default);
+  color: var(--duo-chat-bubble-foreground-color-default);
 }

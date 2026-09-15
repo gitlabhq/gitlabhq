@@ -36,6 +36,23 @@ RSpec.describe Gitlab::QueryLogs, feature_category: :database do
         expect(described_class.tags).not_to include(described_class::LINE_TAG)
       end
     end
+
+    # The handlers are captured once at boot, but in development Zeitwerk
+    # replaces this module tree on code reload. Stale handlers must resolve
+    # the freshly loaded module, not the unloaded one they were defined in.
+    it 'resolves the tag module at call time so handlers survive code reloading' do
+      allow(described_class).to receive(:line_enabled?).and_return(true)
+
+      handlers = described_class.tags.drop(1).reduce({}, :merge)
+      fresh_tags = Module.new
+      handlers.each_key { |key| fresh_tags.define_singleton_method(key) { |_context| key } }
+      fresh_query_logs = Module.new
+      fresh_query_logs.const_set(:Tags, fresh_tags)
+
+      stub_const('Gitlab::QueryLogs', fresh_query_logs)
+
+      expect(handlers.map { |_key, handler| handler.call(nil) }).to eq(handlers.keys)
+    end
   end
 
   describe '.line_enabled?' do

@@ -23,7 +23,7 @@ class CreateCiFinishedBuildsAggregatedQueueingDelayPercentilesByOwnerMv < ClickH
 
   def down
     execute <<~SQL
-      DROP VIEW #{VIEW_NAME}
+      DROP VIEW IF EXISTS #{VIEW_NAME}
     SQL
   end
 end

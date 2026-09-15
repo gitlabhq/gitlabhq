@@ -22,7 +22,7 @@
  *      Composition-API `inject('key')`), the provide is unconditionally
  *      removable. This is sound: nothing can consume a key nobody injects.
  *
- * 
+ *
  *   B) Import-graph reachability — when injectors do exist, we ask whether any
  *      of them is reachable in the *module import graph* starting from the
  *      provider file (using dependency-cruiser, which resolves webpack aliases
@@ -33,10 +33,29 @@
  *      unrelated components), so a reachable injector is reported as POSSIBLE
  *      and should be confirmed at runtime.
  *
- *   Soundness caveats (reported as INCONCLUSIVE boundaries): globally registered
- *   components (`Vue.component(...)`) and dependencies dependency-cruiser could
- *   not resolve (e.g. computed dynamic-import paths) break the "import ⟹
- *   reachable" guarantee.
+ *   Soundness caveats (reported as INCONCLUSIVE, not LIKELY-REMOVABLE): globally
+ *   registered components (`Vue.component(...)`) and dependencies dependency-cruiser
+ *   could not resolve (e.g. computed dynamic-import paths) break the "import ⟹
+ *   reachable" guarantee. So do three narrower patterns learned from false positives
+ *   found while acting on this script's own output:
+ *
+ *   - Vendor-package injectors: some GitLab-authored npm packages (e.g. `@gitlab/duo-ui`)
+ *     ship Vue components that inject keys *our* code provides. The reachability BFS
+ *     never follows into `node_modules` (by design — see `traverseImportGraph`), so an
+ *     injector found only in a package listed in `VENDOR_INJECT_ROOTS` can never be
+ *     proven reachable or unreachable; it's reported INCONCLUSIVE rather than assumed dead.
+ *   - Slot-forwarding wrapper components: a renderless component whose `render()` is
+ *     exactly `getSlotFunction(this)?.()` (see `isSlotForwardingComponent`) renders
+ *     whatever the *caller* passes as slot content — real descendants are invisible to
+ *     the static import graph, which only sees this file's own (typically tiny) import
+ *     list. Reachability is meaningless here, so LIKELY-REMOVABLE is downgraded to
+ *     INCONCLUSIVE for these files.
+ *   - Same-directory injectors: an "unreachable" injector that lives in the same
+ *     directory as the provider (or an ancestor/descendant directory of it) is a strong
+ *     signal that the reachability heuristic missed a real relationship — e.g. a
+ *     `foo/bundle.js` provider and a genuinely-rendered `foo/components/x.vue` injector
+ *     that the BFS didn't connect. Downgraded to INCONCLUSIVE rather than trusted as
+ *     LIKELY-REMOVABLE (see `sharesDirectoryLineage`).
  *
  *   `ee_else_ce`/`jh_else_ce`/`any_else_ce` aliases resolve to exactly one target
  *   per webpack config, but GitLab ships CE and EE builds from the same source —
@@ -64,10 +83,27 @@ const ROOT_PATH = path.resolve(import.meta.dirname, '../../');
 // EE and JH ship their frontend as optional source overlays that are absent on FOSS
 // checkouts (filtered out below). Centralised here so these paths live in exactly one
 // place and the rest of the script just works against "whatever roots exist".
-const ASSET_ROOTS = ['app/assets/javascripts', 'ee/app/assets/javascripts', 'jh/app/assets/javascripts'];
+const ASSET_ROOTS = [
+  'app/assets/javascripts',
+  'ee/app/assets/javascripts',
+  'jh/app/assets/javascripts',
+];
 const SEARCH_DIRS = ASSET_ROOTS.filter((dir) => fs.existsSync(path.join(ROOT_PATH, dir)));
 const HAS_EE = SEARCH_DIRS.includes('ee/app/assets/javascripts');
 const HAS_JH = HAS_EE && SEARCH_DIRS.includes('jh/app/assets/javascripts'); // mirrors config/helpers/is_jh_env.js
+
+// GitLab-authored npm packages known to ship Vue components that inject keys our own
+// code provides (e.g. duo-ui's chat components inject `markdownClass`/`renderGFM`,
+// supplied by our own chat state managers). Scanned for injectors (see
+// `findInjectorModules`) alongside our own asset roots, but never as reachability BFS
+// seeds/targets — dependency-cruiser doesn't follow into node_modules, so a match here
+// can only ever be reported INCONCLUSIVE, never proven reachable. `src/` is scanned
+// (checked-in, buildable source), not the compiled `dist/`. Add more packages here as
+// further instances of this pattern turn up.
+const VENDOR_INJECT_ROOTS = ['node_modules/@gitlab/duo-ui/src'].filter((dir) =>
+  fs.existsSync(path.join(ROOT_PATH, dir)),
+);
+const INJECTOR_SEARCH_DIRS = [...SEARCH_DIRS, ...VENDOR_INJECT_ROOTS];
 
 /**
  * `config/webpack.config.js` uses `NormalModuleReplacementPlugin` (not `resolve.alias`) to
@@ -136,6 +172,35 @@ function shortPath(repoRel) {
 }
 
 /**
+ * True if `repoRel` is a vendor package injector match (see `VENDOR_INJECT_ROOTS`).
+ * Reachability can never be assessed for these — dependency-cruiser doesn't follow
+ * into `node_modules` — so a match here is a boundary, not proof either way.
+ * @param {string} repoRel
+ * @returns {boolean}
+ */
+function isVendorPath(repoRel) {
+  return VENDOR_INJECT_ROOTS.some((root) => repoRel.startsWith(`${root}/`));
+}
+
+/**
+ * True if `a` and `b` live in the same directory, or one's directory is an ancestor
+ * of the other's. A same-directory (or parent/child-directory) "unreachable" injector
+ * is a strong signal the reachability BFS missed a real relationship — e.g. a
+ * `foo/bundle.js` provider and a genuinely-rendered `foo/components/x.vue` injector
+ * connected only through wiring the BFS can't see (a factory call, a dynamically
+ * built router, etc.). Callers treat a match as a reason to downgrade LIKELY-REMOVABLE
+ * to INCONCLUSIVE rather than proof of non-use.
+ * @param {string} a
+ * @param {string} b
+ * @returns {boolean}
+ */
+function sharesDirectoryLineage(a, b) {
+  const dirA = `${path.dirname(a)}/`;
+  const dirB = `${path.dirname(b)}/`;
+  return dirA === dirB || dirA.startsWith(dirB) || dirB.startsWith(dirA);
+}
+
+/**
  * Pull the contents of every `<script>` block out of an SFC (or return the file as-is for .js).
  * @param {string} filePath
  * @param {string} source
@@ -153,8 +218,7 @@ function extractScript(filePath, source) {
  * @returns {string}
  */
 function providedNameFromInjectEntry(property) {
-  const localName =
-    property.key.type === 'Identifier' ? property.key.name : property.key.value;
+  const localName = property.key.type === 'Identifier' ? property.key.name : property.key.value;
   if (property.value && property.value.type === 'ObjectExpression') {
     const fromProp = property.value.properties.find(
       (p) => p.type === 'ObjectProperty' && !p.computed && p.key.name === 'from',
@@ -210,6 +274,49 @@ function moduleInjectsKey(ast, key) {
   return injects;
 }
 
+/**
+ * True if `node` is a call to `getSlotFunction(...)`, optionally itself called
+ * (`getSlotFunction(this)?.()` or `getSlotFunction(this)()`) — the pattern GitLab's
+ * renderless "Provider" wrapper components use to forward their default slot verbatim.
+ * @param {import('@babel/types').Node | null | undefined} node
+ * @returns {boolean}
+ */
+function callsGetSlotFunction(node) {
+  if (!node) return false;
+  const isCall = node.type === 'CallExpression' || node.type === 'OptionalCallExpression';
+  if (!isCall) return false;
+  if (node.callee.type === 'Identifier' && node.callee.name === 'getSlotFunction') return true;
+  // The outer call in `getSlotFunction(this)?.()` is calling the *result* of
+  // getSlotFunction(this), so the getSlotFunction call itself is the callee.
+  return callsGetSlotFunction(node.callee);
+}
+
+/**
+ * True if the component's `render` is a pure pass-through of its default slot (the
+ * `getSlotFunction(this)?.()` pattern — see `callsGetSlotFunction`). Such a component's
+ * real descendants are whatever the *caller* passes as slot content: invisible to the
+ * static import graph, which only sees this file's own (typically tiny) import list.
+ * Import-graph unreachability proves nothing for these files.
+ * @param {import('@babel/types').File} ast
+ * @returns {boolean}
+ */
+function isSlotForwardingComponent(ast) {
+  let found = false;
+
+  traverse(ast, {
+    'ObjectProperty|ObjectMethod': function visitRender(p) {
+      const { node } = p;
+      if (node.computed || !node.key || node.key.name !== 'render') return;
+      const fn = node.type === 'ObjectMethod' ? node : node.value;
+      const body = fn.body && fn.body.type === 'BlockStatement' ? fn.body.body : [];
+      if (body.length !== 1 || body[0].type !== 'ReturnStatement') return;
+      if (callsGetSlotFunction(body[0].argument)) found = true;
+    },
+  });
+
+  return found;
+}
+
 /** Memoise injector lookups: the same key is often traced across multiple provider files. */
 const injectorCache = new Map();
 
@@ -225,7 +332,7 @@ function findInjectorModules(key) {
   try {
     const out = execFileSync(
       'rg',
-      ['-l', '--glob', '*.{vue,js}', '-F', key, ...SEARCH_DIRS],
+      ['-l', '--glob', '*.{vue,js}', '-F', key, ...INJECTOR_SEARCH_DIRS],
       { cwd: ROOT_PATH, encoding: 'utf-8', maxBuffer: 64 * 1024 * 1024 },
     );
     candidates = out.split('\n').filter(Boolean);
@@ -317,7 +424,9 @@ function getCeResolveOptions() {
       env: { ...process.env, FOSS_ONLY: 'true' },
       maxBuffer: 16 * 1024 * 1024,
     });
-    return JSON.parse(out.slice(out.indexOf(CE_RESOLVE_CONFIG_MARKER) + CE_RESOLVE_CONFIG_MARKER.length));
+    return JSON.parse(
+      out.slice(out.indexOf(CE_RESOLVE_CONFIG_MARKER) + CE_RESOLVE_CONFIG_MARKER.length),
+    );
   })();
   return ceResolveOptionsPromise;
 }
@@ -353,7 +462,12 @@ function findRouterModules(providerRel) {
 
   for (let level = 0; level < 6; level += 1) {
     for (const base of ['routes', 'router']) {
-      for (const candidate of [`${base}.js`, `${base}.mjs`, `${base}/index.js`, `${base}/index.mjs`]) {
+      for (const candidate of [
+        `${base}.js`,
+        `${base}.mjs`,
+        `${base}/index.js`,
+        `${base}/index.mjs`,
+      ]) {
         const abs = path.join(dir, candidate);
         if (fs.existsSync(abs)) {
           ceEeJhVariants(toRepoRelative(abs)).forEach((variant) => found.add(variant));
@@ -542,16 +656,25 @@ function returnedObject(fnNode) {
  * Extract the top-level provide keys declared in a file. Vue inject resolves by
  * top-level key only, so nested object fields are deliberately not descended into.
  * @param {string} providerRel
- * @returns {{ keys: string[], found: boolean, opaque: boolean, parseError?: string }}
+ * @returns {{ keys: string[], found: boolean, opaque: boolean, isSlotForwarder: boolean, parseError?: string }}
  */
 function extractProvideKeys(providerRel) {
   const source = fs.readFileSync(path.join(ROOT_PATH, providerRel), 'utf-8');
 
   let ast;
   try {
-    ast = parse(extractScript(providerRel, source), { sourceType: 'module', plugins: BABEL_PLUGINS });
+    ast = parse(extractScript(providerRel, source), {
+      sourceType: 'module',
+      plugins: BABEL_PLUGINS,
+    });
   } catch (error) {
-    return { keys: [], found: false, opaque: false, parseError: error.message };
+    return {
+      keys: [],
+      found: false,
+      opaque: false,
+      isSlotForwarder: false,
+      parseError: error.message,
+    };
   }
 
   const keys = new Set();
@@ -586,7 +709,7 @@ function extractProvideKeys(providerRel) {
     },
   });
 
-  return { keys: [...keys], found, opaque };
+  return { keys: [...keys], found, opaque, isSlotForwarder: isSlotForwardingComponent(ast) };
 }
 
 // Opaque verdict tokens; the human-readable text lives in SECTION_LABEL / SHORT.
@@ -609,7 +732,7 @@ const SECTION_LABEL = {
   [VERDICT.REMOVABLE]: '⚠️  REMOVABLE: Injected nowhere',
   [VERDICT.LIKELY_REMOVABLE]: '⚠️  LIKELY REMOVABLE: No injector reachable',
   [VERDICT.IN_USE]: '✅ IN USE: Injector reachable',
-  [VERDICT.INCONCLUSIVE]: '❓ INCONCLUSIVE: Dynamic boundary',
+  [VERDICT.INCONCLUSIVE]: '❓ INCONCLUSIVE: Needs manual review',
 };
 
 // Surface the actionable (dead) verdicts first within each file.
@@ -640,7 +763,7 @@ async function traceFile(providerRel) {
     );
     return { rows: [], status: 'skipped' };
   }
-  const { keys, opaque } = result;
+  const { keys, opaque, isSlotForwarder } = result;
 
   // Level 1: announce the file up front — the analysis below can take a while
   // (import-graph cruise), so printing now stops the script looking like it hung.
@@ -662,12 +785,30 @@ async function traceFile(providerRel) {
 
   const classified = perKey.map(({ key, injectors }) => {
     const reachableInjectors = injectors.filter((m) => reachable.has(m));
+    const vendorInjectors = injectors.filter((m) => isVendorPath(m));
+    const sameDirInjectors = injectors.filter((m) => sharesDirectoryLineage(providerRel, m));
     let verdict;
-    if (injectors.length === 0) verdict = VERDICT.REMOVABLE;
-    else if (reachableInjectors.length > 0) verdict = VERDICT.IN_USE;
-    else if (boundaries.length > 0) verdict = VERDICT.INCONCLUSIVE;
-    else verdict = VERDICT.LIKELY_REMOVABLE;
-    return { key, injectors, reachableInjectors, verdict };
+    let reason;
+    if (injectors.length === 0) {
+      verdict = VERDICT.REMOVABLE;
+    } else if (reachableInjectors.length > 0) {
+      verdict = VERDICT.IN_USE;
+    } else if (boundaries.length > 0) {
+      verdict = VERDICT.INCONCLUSIVE;
+      reason = 'dynamic boundary';
+    } else if (vendorInjectors.length > 0) {
+      verdict = VERDICT.INCONCLUSIVE;
+      reason = `vendor package injector: ${shortPath(vendorInjectors[0])}`;
+    } else if (isSlotForwarder) {
+      verdict = VERDICT.INCONCLUSIVE;
+      reason = 'slot-forwarding wrapper — real descendants come from the call site';
+    } else if (sameDirInjectors.length > 0) {
+      verdict = VERDICT.INCONCLUSIVE;
+      reason = `same-directory injector: ${shortPath(sameDirInjectors[0])}`;
+    } else {
+      verdict = VERDICT.LIKELY_REMOVABLE;
+    }
+    return { key, injectors, reachableInjectors, verdict, reason };
   });
 
   // Group keys under their verdict so each section can be scanned at a glance.
@@ -679,14 +820,15 @@ async function traceFile(providerRel) {
     if (entries.length === 0) continue;
     console.log(`\n  ${SECTION_LABEL[verdict]} (${entries.length})`);
 
-    for (const { key, injectors, reachableInjectors } of entries) {
+    for (const { key, injectors, reachableInjectors, reason } of entries) {
       if (verdict === VERDICT.REMOVABLE) {
         console.log(`    ${key}`);
         continue;
       }
       const list = verdict === VERDICT.IN_USE ? reachableInjectors : injectors;
       const label = verdict === VERDICT.IN_USE ? 'usages' : 'unrelated usages';
-      console.log(`    ${key} (${list.length} ${label})`);
+      const reasonSuffix = reason ? ` — ${reason}` : '';
+      console.log(`    ${key} (${list.length} ${label})${reasonSuffix}`);
       list.forEach((m) => {
         if (verdict !== VERDICT.IN_USE) {
           console.log(`      ← ${shortPath(m)}`);
@@ -737,7 +879,9 @@ async function main() {
   const patterns = process.argv.slice(2);
 
   if (patterns.length === 0) {
-    console.error('Usage: node scripts/frontend/trace_provide_inject_usage.mjs <file|glob> [<file|glob>…]');
+    console.error(
+      'Usage: node scripts/frontend/trace_provide_inject_usage.mjs <file|glob> [<file|glob>…]',
+    );
     process.exitCode = 1;
     return;
   }
@@ -775,9 +919,7 @@ async function main() {
       console.log(`${file}:`);
       // REMOVABLE before LIKELY-REMOVABLE so the surest wins read first.
       items.sort((a, b) => VERDICT_ORDER.indexOf(a.verdict) - VERDICT_ORDER.indexOf(b.verdict));
-      items.forEach(({ key, verdict }) =>
-        console.log(`  ${SHORT[verdict].padEnd(16)} ${key}`),
-      );
+      items.forEach(({ key, verdict }) => console.log(`  ${SHORT[verdict].padEnd(16)} ${key}`));
     }
   }
   console.log(

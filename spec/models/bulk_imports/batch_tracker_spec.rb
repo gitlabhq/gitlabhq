@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe BulkImports::BatchTracker, type: :model, feature_category: :importers do
+RSpec.describe BulkImports::BatchTracker, feature_category: :importers do
   describe 'associations' do
     it { is_expected.to belong_to(:tracker) }
   end
@@ -35,7 +35,7 @@ RSpec.describe BulkImports::BatchTracker, type: :model, feature_category: :impor
 
       batch.cancel!
 
-      expect(batch.reload.canceled?).to eq(true)
+      expect(batch.reload.canceled?).to be(true)
     end
   end
 end

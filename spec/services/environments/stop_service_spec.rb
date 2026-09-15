@@ -2,13 +2,13 @@
 
 require 'spec_helper'
 
-RSpec.describe Environments::StopService, feature_category: :continuous_delivery do
+RSpec.describe Environments::StopService, :with_current_organization, feature_category: :continuous_delivery do
   include CreateEnvironmentsHelpers
 
   let(:service) { described_class.new(project, user) }
 
   shared_examples_for 'stopping environment' do
-    let_it_be_with_reload(:project) { create(:project, :private, :repository) }
+    let_it_be_with_reload(:project) { create(:project, :private, :repository, organization: current_organization) }
     let_it_be(:developer) { create(:user, developer_of: project) }
     let_it_be(:reporter) { create(:user, reporter_of: project) }
 
@@ -106,7 +106,7 @@ RSpec.describe Environments::StopService, feature_category: :continuous_delivery
   end
 
   describe '#execute_for_branch' do
-    let_it_be_with_reload(:project) { create(:project, :private, :repository) }
+    let_it_be_with_reload(:project) { create(:project, :private, :repository, organization: current_organization) }
     let_it_be(:user) { create(:user) }
 
     context 'when environment with review app exists' do

@@ -1,8 +1,11 @@
 import Vue from 'vue';
 import VueRouter from 'vue-router';
+import VueApollo from 'vue-apollo';
 import { shallowMount } from '@vue/test-utils';
 import { initSinglePageApplication } from '~/vue_shared/spa';
+import createDefaultClient from '~/lib/graphql';
 import { injectVueAppBreadcrumbs } from '~/lib/utils/breadcrumbs';
+import SpaBreadcrumbs from '~/vue_shared/spa/components/spa_breadcrumbs.vue';
 import { activeNavigationWatcher } from '~/vue_shared/spa/utils/';
 import { resetHTMLFixture, setHTMLFixture } from 'helpers/fixtures';
 import RootComponent from '~/vue_shared/spa/components/spa_root.vue';
@@ -118,8 +121,30 @@ describe('initSinglePageApplication', () => {
         });
       });
 
-      it('calls the utility function for breadcrumbs', () => {
-        expect(injectVueAppBreadcrumbs).toHaveBeenCalled();
+      it('injects the default breadcrumbs component', () => {
+        expect(injectVueAppBreadcrumbs).toHaveBeenCalledWith(
+          mockRouter,
+          SpaBreadcrumbs,
+          expect.anything(),
+        );
+      });
+    });
+
+    describe('when breadcrumbComponent is provided', () => {
+      it('injects the provided component', () => {
+        const breadcrumbComponent = { name: 'CustomBreadcrumbs', render: (h) => h('div') };
+
+        initSinglePageApplication({
+          el: mockEl,
+          router: mockRouter,
+          breadcrumbComponent,
+        });
+
+        expect(injectVueAppBreadcrumbs).toHaveBeenCalledWith(
+          mockRouter,
+          breadcrumbComponent,
+          expect.anything(),
+        );
       });
     });
 
@@ -204,6 +229,29 @@ describe('initSinglePageApplication', () => {
         });
 
         expect(app.$options.apolloProvider).toBeDefined();
+      });
+    });
+
+    describe('when apolloProvider is provided', () => {
+      let app;
+      let providedApolloProvider;
+
+      beforeEach(() => {
+        providedApolloProvider = new VueApollo({ defaultClient: {} });
+
+        app = initSinglePageApplication({
+          el: mockEl,
+          router: mockRouter,
+          apolloProvider: providedApolloProvider,
+        });
+      });
+
+      it('uses the provided Apollo provider', () => {
+        expect(app.$options.apolloProvider).toBe(providedApolloProvider);
+      });
+
+      it('does not create another Apollo provider', () => {
+        expect(createDefaultClient).not.toHaveBeenCalled();
       });
     });
 

@@ -23,6 +23,18 @@ RSpec.describe Tasks::Gitlab::Permissions::Graphql::SpecPermissionScanner, featu
 
       expect(scanner.test_count(:read_project)).to eq(0)
     end
+
+    it 'counts additional scope permissions' do
+      content = <<~RUBY
+        it_behaves_like 'authorizing granular token permissions for GraphQL', :move_issue,
+          additional_scope_permissions: :create_work_item do
+        end
+      RUBY
+      allow(File).to receive(:read).with('test.rb').and_return(content)
+
+      expect(scanner.test_count(:move_issue)).to eq(1)
+      expect(scanner.test_count(:create_work_item)).to eq(1)
+    end
   end
 
   describe 'shared example multiplier' do

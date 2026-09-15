@@ -31,9 +31,17 @@ module Search
           group: %i[advanced basic]
         }
       },
+      groups: {
+        label: -> { _('Groups') },
+        sort: 2,
+        availability: {
+          global: %i[advanced basic],
+          group: %i[advanced basic]
+        }
+      },
       blobs: {
         label: -> { _('Code') },
-        sort: 2,
+        sort: 3,
         availability: {
           global: %i[zoekt advanced],
           group: %i[zoekt advanced],
@@ -42,7 +50,7 @@ module Search
       },
       work_items: {
         label: -> { _('Work items') },
-        sort: 3,
+        sort: 4,
         availability: {
           global: %i[advanced basic],
           group: %i[advanced basic],
@@ -135,7 +143,8 @@ module Search
       'work_items' => :global_search_work_items_enabled?,
       'merge_requests' => :global_search_merge_requests_enabled?,
       'snippet_titles' => :global_search_snippet_titles_enabled?,
-      'users' => :global_search_users_enabled?
+      'users' => :global_search_users_enabled?,
+      'groups' => :global_search_groups_enabled?
     }.freeze
 
     class << self

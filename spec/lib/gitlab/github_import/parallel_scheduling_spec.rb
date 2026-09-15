@@ -275,8 +275,6 @@ RSpec.describe Gitlab::GithubImport::ParallelScheduling, feature_category: :impo
     let(:repr_class) { double(:representation) }
     let(:worker_class) { double(:worker) }
     let(:object) { double(:object) }
-    let(:batch_size) { 1000 }
-    let(:batch_delay) { 1.minute }
 
     before do
       allow(importer).to receive(:representation_class).and_return(repr_class)
@@ -477,7 +475,7 @@ RSpec.describe Gitlab::GithubImport::ParallelScheduling, feature_category: :impo
         .and_return(object.id)
 
       expect(importer.already_imported?(object))
-        .to eq(false)
+        .to be(false)
     end
 
     it 'returns true when an object has already been imported' do
@@ -491,7 +489,7 @@ RSpec.describe Gitlab::GithubImport::ParallelScheduling, feature_category: :impo
       importer.mark_as_imported(object)
 
       expect(importer.already_imported?(object))
-        .to eq(true)
+        .to be(true)
     end
   end
 

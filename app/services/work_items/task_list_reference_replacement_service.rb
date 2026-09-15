@@ -4,7 +4,8 @@ module WorkItems
   class TaskListReferenceReplacementService
     STALE_OBJECT_MESSAGE = 'Stale work item. Check lock version'
 
-    def initialize(work_item:, current_user:, work_item_reference:, line_number_start:, line_number_end:, title:, lock_version:)
+    def initialize(
+      work_item:, current_user:, work_item_reference:, line_number_start:, line_number_end:, title:, lock_version:)
       @work_item = work_item
       @current_user = current_user
       @work_item_reference = work_item_reference
@@ -17,7 +18,11 @@ module WorkItems
     def execute
       return ::ServiceResponse.error(message: STALE_OBJECT_MESSAGE) if @work_item.lock_version > @lock_version
       return ::ServiceResponse.error(message: 'line_number_start must be greater than 0') if @line_number_start < 1
-      return ::ServiceResponse.error(message: 'line_number_end must be greater or equal to line_number_start') if @line_number_end < @line_number_start
+
+      if @line_number_end < @line_number_start
+        return ::ServiceResponse.error(message: 'line_number_end must be greater or equal to line_number_start')
+      end
+
       return ::ServiceResponse.error(message: "Work item description can't be blank") if @work_item.description.blank?
 
       source_lines = @work_item.description.split("\n")

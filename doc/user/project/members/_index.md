@@ -195,7 +195,7 @@ To view users pending promotion:
 
 1. In the top bar, select **Search or go to** and find your project.
 1. In the left sidebar, select **Manage** > **Members**.
-1. Select **Role promotions** tab.
+1. Select the **Role promotions** tab.
 
 If the **Role promotions** tab is not displayed, the project has no pending promotions.
 
@@ -259,7 +259,7 @@ To remove a member from a project:
    **Also unassign this user from related issues and merge requests** checkbox.
 1. To prevent leaks of sensitive information from private projects, verify the
    member has not forked the private repository or created webhooks. Existing forks continue to receive
-   changes from the upstream project, and webhooks continue to receive updates. You may also want to configure your project
+   changes from the upstream project, and webhooks continue to receive updates. You might also want to configure your project
    to prevent projects in a group
    [from being forked outside their group](../../group/access_and_permissions.md#prevent-project-forking-outside-group).
 1. Select **Remove member**.

@@ -1,0 +1,17 @@
+---
+description: User clicks `Create organization` from group settings
+internal_events: true
+status: active
+action: click_create_organization_from_group_settings
+identifiers:
+  - namespace
+  - user
+product_group: organizations
+product_categories:
+  - organization
+milestone: '19.4'
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/254597
+tiers:
+  - free
+  - premium
+  - ultimate

@@ -167,5 +167,5 @@ Project.find_by_full_path(<your-project-full-path>).deployments.where(archived: 
 ```
 
 GitLab might drop this support in the future for the performance concern.
-You can open an issue in [GitLab Issue Tracker](https://gitlab.com/gitlab-org/gitlab/-/issues/new)
+You can open an issue in [GitLab Issue Tracker](https://gitlab.com/gitlab-org/gitlab/-/work_items/new)
 to discuss the behavior of this feature.

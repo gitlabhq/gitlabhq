@@ -4,3 +4,7 @@ source "https://rubygems.org"
 
 # Specify your gem's dependencies in gitlab-database-lock_retries.gemspec
 gemspec
+
+# Test against the same ActiveRecord line the monorepo runs, even though the
+# gemspec stays permissive for consumers.
+gem 'activerecord', '~> 7.2.3' # rubocop:disable Gemfile/MissingFeatureCategory -- feature_category: :database is already specified in root Gemfile

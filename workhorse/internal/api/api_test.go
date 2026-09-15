@@ -9,6 +9,7 @@ import (
 	"net/http"
 	"net/http/httptest"
 	"net/url"
+	"os"
 	"regexp"
 	"strings"
 	"testing"
@@ -108,6 +109,37 @@ func TestPreAuthorizeFixedPath_Unauthorized(t *testing.T) {
 	require.Nil(t, resp)
 	preAuthError := &PreAuthorizeFixedPathError{StatusCode: 401, Status: "Unauthorized 401"}
 	require.ErrorAs(t, err, &preAuthError)
+}
+
+func TestNewRequest_StripsHTTPRouterHeaders(t *testing.T) {
+	// A decoy header that merely contains the router prefix string, but not as
+	// a leading prefix, must not be stripped.
+	const decoyHeader = "X-Something-X-Gitlab-Http-Router-Rule-Action"
+
+	routerHeaders := []string{
+		"X-Gitlab-Http-Router-Rule-Action",
+		"X-Gitlab-Http-Router-Rule-Type",
+		"X-Gitlab-Http-Router-Matched-Path",
+		"X-Gitlab-Http-Router-Something-New",
+	}
+
+	req, err := http.NewRequest("GET", "/original/request/path", nil)
+	require.NoError(t, err)
+
+	for _, header := range routerHeaders {
+		req.Header.Set(header, "some-value")
+	}
+	req.Header.Set("Authorization", "Bearer sometoken")
+	req.Header.Set(decoyHeader, "not-a-router-header")
+
+	api := NewAPI(helper.URLMustParse("http://backend"), "123", http.DefaultTransport)
+	authReq := api.newRequest(req, customPath)
+
+	for _, header := range routerHeaders {
+		require.Empty(t, authReq.Header.Get(header), "%s must not propagate to the subrequest", header)
+	}
+	require.Equal(t, "Bearer sometoken", authReq.Header.Get("Authorization"), "unrelated headers must still propagate")
+	require.Equal(t, "not-a-router-header", authReq.Header.Get(decoyHeader), "headers that merely contain the router prefix elsewhere must still propagate")
 }
 
 func TestPreAuthorizeHandler_NotFound(t *testing.T) {
@@ -281,4 +313,39 @@ func TestDuoWorkflowWithServerCapabilities(t *testing.T) {
 	require.Equal(t, []string{"advanced_search"}, duoWorkflow.ServerCapabilities)
 	require.True(t, duoWorkflow.LockConcurrentFlow)
 	require.NotNil(t, duoWorkflow.Service)
+}
+
+func TestResponseLocalTempDir(t *testing.T) {
+	tmpDir := t.TempDir()
+	otherDir := t.TempDir()
+
+	testCases := []struct {
+		desc     string
+		response Response
+		expected string
+	}{
+		{
+			desc:     "TempPath wins over LocalTempPath",
+			response: Response{TempPath: tmpDir, LocalTempPath: otherDir},
+			expected: tmpDir,
+		},
+		{
+			desc:     "LocalTempPath used when TempPath is empty",
+			response: Response{LocalTempPath: tmpDir},
+			expected: tmpDir,
+		},
+		{
+			desc:     "falls back to os.TempDir when both are empty",
+			response: Response{},
+			expected: os.TempDir(),
+		},
+	}
+
+	// Response holds a sync.Mutex via gitalypb.Repository, so range by index to avoid copying it.
+	for i := range testCases {
+		tc := &testCases[i]
+		t.Run(tc.desc, func(t *testing.T) {
+			require.Equal(t, tc.expected, tc.response.LocalTempDir())
+		})
+	}
 }

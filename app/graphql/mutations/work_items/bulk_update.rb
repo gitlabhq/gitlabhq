@@ -11,6 +11,12 @@ module Mutations
 
       description 'Allows updating several properties for a set of work items.'
 
+      authorize_granular_token permissions: :update_work_item,
+        boundaries: [
+          { boundary_argument: :full_path, boundary_type: :project },
+          { boundary_argument: :full_path, boundary_type: :group }
+        ]
+
       argument :assignees_widget,
         ::Types::WorkItems::Widgets::AssigneesInputType,
         required: false,

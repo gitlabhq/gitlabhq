@@ -40,7 +40,9 @@ RSpec.describe Gitlab::PrinciplesDistiller::Sync::ReviewerResolver do
         'project' => {
           'repository' => {
             'p0' => {
-              'nodes' => authors.map { |author| { 'author' => author } },
+              'nodes' => authors.map.with_index do |author, index|
+                { 'author' => author, 'authoredDate' => authored_date(index) }
+              end,
               'pageInfo' => { 'hasNextPage' => has_next_page }
             }
           }
@@ -74,7 +76,7 @@ RSpec.describe Gitlab::PrinciplesDistiller::Sync::ReviewerResolver do
         )
       end
 
-      it 'returns deduped @username mentions in author order' do
+      it 'returns deduped @username mentions by most recent commit' do
         expect(authors).to eq([{ username: 'ada', id: 1 }, { username: 'grace', id: 2 }])
       end
     end
@@ -118,6 +120,25 @@ RSpec.describe Gitlab::PrinciplesDistiller::Sync::ReviewerResolver do
       it 'still returns the authors from the first page but warns about the truncation', :aggregate_failures do
         expect { expect(authors).to eq([{ username: 'ada', id: 1 }]) }
           .to output(%r{doc/development/qa\.md has more than \d+ commits}).to_stderr
+      end
+    end
+
+    context 'when a commit has no authored date' do
+      before do
+        allow(workflow).to receive(:query_graphql).and_return(
+          'project' => {
+            'repository' => {
+              'p0' => commits_connection([
+                ['unknown-date', 1, nil],
+                ['dated', 2, '2026-08-20T00:00:00Z']
+              ])
+            }
+          }
+        )
+      end
+
+      it 'ranks the author after dated commits' do
+        expect(authors).to eq([{ username: 'dated', id: 2 }, { username: 'unknown-date', id: 1 }])
       end
     end
 
@@ -170,6 +191,60 @@ RSpec.describe Gitlab::PrinciplesDistiller::Sync::ReviewerResolver do
         ])
       end
     end
+
+    context 'when authors changed multiple source paths' do
+      let(:affected_entries) do
+        {
+          'graphql' => {
+            config: {},
+            changed_sources: [
+              { 'path' => 'doc/development/api_graphql_styleguide.md' },
+              { 'path' => 'doc/development/graphql_guide/reviewing.md' }
+            ],
+            prior_sha: '1111111111111111111111111111111111111111'
+          }
+        }
+      end
+
+      it 'ranks authors across all paths before applying the cap' do
+        allow(workflow).to receive(:query_graphql).and_return(
+          'project' => {
+            'repository' => {
+              'p0' => commits_connection([
+                ['ada', 1, '2026-08-20T00:00:00Z'],
+                ['grace', 2, '2026-08-19T00:00:00Z'],
+                ['linus', 3, '2026-08-18T00:00:00Z'],
+                ['marge', 4, '2026-08-17T00:00:00Z']
+              ]),
+              'p1' => commits_connection([['jessie', 5, '2026-08-21T00:00:00Z']])
+            }
+          }
+        )
+
+        expect(authors).to eq([
+          { username: 'jessie', id: 5 },
+          { username: 'ada', id: 1 },
+          { username: 'grace', id: 2 },
+          { username: 'linus', id: 3 }
+        ])
+      end
+
+      it 'keeps each author at their most recent commit date' do
+        allow(workflow).to receive(:query_graphql).and_return(
+          'project' => {
+            'repository' => {
+              'p0' => commits_connection([['ada', 1, '2026-08-18T00:00:00Z']]),
+              'p1' => commits_connection([
+                ['grace', 2, '2026-08-20T00:00:00Z'],
+                ['ada', 1, '2026-08-21T00:00:00Z']
+              ])
+            }
+          }
+        )
+
+        expect(authors).to eq([{ username: 'ada', id: 1 }, { username: 'grace', id: 2 }])
+      end
+    end
   end
 
   describe '#ssot_authors author limits' do
@@ -189,16 +264,18 @@ RSpec.describe Gitlab::PrinciplesDistiller::Sync::ReviewerResolver do
       allow(workflow).to receive(:catalog_project_path).and_return('gitlab-org/gitlab')
     end
 
-    it 'caps resolved authors at three' do
+    it 'caps resolved authors at four' do
       allow(workflow).to receive(:query_graphql).and_return(commits_response([
         { 'id' => 'gid://gitlab/User/1', 'username' => 'ada', 'bot' => false },
         { 'id' => 'gid://gitlab/User/2', 'username' => 'grace', 'bot' => false },
         { 'id' => 'gid://gitlab/User/3', 'username' => 'linus', 'bot' => false },
-        { 'id' => 'gid://gitlab/User/4', 'username' => 'marge', 'bot' => false }
+        { 'id' => 'gid://gitlab/User/4', 'username' => 'marge', 'bot' => false },
+        { 'id' => 'gid://gitlab/User/5', 'username' => 'mats', 'bot' => false }
       ]))
 
       expect(authors).to eq([
-        { username: 'ada', id: 1 }, { username: 'grace', id: 2 }, { username: 'linus', id: 3 }
+        { username: 'ada', id: 1 }, { username: 'grace', id: 2 },
+        { username: 'linus', id: 3 }, { username: 'marge', id: 4 }
       ])
     end
 
@@ -208,6 +285,14 @@ RSpec.describe Gitlab::PrinciplesDistiller::Sync::ReviewerResolver do
 
       expect { expect(authors).to eq([{ username: 'ada', id: nil }]) }
         .to output(/could not resolve reviewer ID for SSOT author @ada/).to_stderr
+    end
+
+    it 'keeps an author with a non-string authored date' do
+      response = commits_response([{ 'id' => 'gid://gitlab/User/1', 'username' => 'ada', 'bot' => false }])
+      response.dig('project', 'repository', 'p0', 'nodes').first['authoredDate'] = 123
+      allow(workflow).to receive(:query_graphql).and_return(response)
+
+      expect(authors).to eq([{ username: 'ada', id: 1 }])
     end
   end
 
@@ -380,11 +465,29 @@ RSpec.describe Gitlab::PrinciplesDistiller::Sync::ReviewerResolver do
       'project' => {
         'repository' => {
           'p0' => {
-            'nodes' => authors.map { |author| { 'author' => author } },
+            'nodes' => authors.map.with_index do |author, index|
+              { 'author' => author, 'authoredDate' => authored_date(index) }
+            end,
             'pageInfo' => { 'hasNextPage' => has_next_page }
           }
         }
       }
     }
+  end
+
+  def commits_connection(entries)
+    {
+      'nodes' => entries.map do |username, id, authored_date|
+        {
+          'author' => { 'id' => "gid://gitlab/User/#{id}", 'username' => username, 'bot' => false },
+          'authoredDate' => authored_date
+        }
+      end,
+      'pageInfo' => { 'hasNextPage' => false }
+    }
+  end
+
+  def authored_date(index)
+    (Time.utc(2026, 8, 20) - (index * 86_400)).iso8601
   end
 end

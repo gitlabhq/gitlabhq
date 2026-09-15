@@ -112,32 +112,28 @@ describe('CheckboxFilter', () => {
     });
   });
 
-  describe('non-filterable buckets', () => {
-    const findNonFilterableRows = () => wrapper.findAllByTestId('non-filterable-row');
+  describe('de-emphasised buckets', () => {
+    const findDeemphasized = () => wrapper.findAllByTestId('deemphasized-checkbox');
 
     beforeEach(() => {
-      // Mix filterable languages with a synthetic "Unknown" bucket that carries
-      // `filterable: false` (produced by the backend when Zoekt didn't detect a language).
-      const bucketsWithUnknown = [
-        ...MOCK_LANGUAGE_AGGREGATIONS_BUCKETS.slice(0, 2),
-        { key: 'Unknown', count: 850, filterable: false },
-      ];
       createComponent({
         ...defaultProps,
-        filtersData: convertFiltersData(bucketsWithUnknown),
+        filtersData: convertFiltersData([
+          ...MOCK_LANGUAGE_AGGREGATIONS_BUCKETS.slice(0, 2),
+          { key: 'Unknown', count: 850, deemphasized: true },
+        ]),
       });
     });
 
-    it('does not render non-filterable buckets as checkboxes', () => {
-      // The two filterable languages become checkboxes; the "Unknown" row does not.
-      expect(findAllCheckboxes()).toHaveLength(2);
+    it('still renders them as checkboxes', () => {
+      expect(findAllCheckboxes()).toHaveLength(3);
     });
 
-    it('renders non-filterable buckets as display-only rows with a count', () => {
-      const rows = findNonFilterableRows();
-      expect(rows).toHaveLength(1);
-      expect(rows.at(0).find('[data-testid="label"]').text()).toBe('Unknown');
-      expect(rows.at(0).find('[data-testid="labelCount"]').text()).toBe('850');
+    it('mutes only the de-emphasised one', () => {
+      const muted = findDeemphasized();
+
+      expect(muted).toHaveLength(1);
+      expect(muted.at(0).find('span').classes()).toContain('gl-text-subtle');
     });
   });
 });

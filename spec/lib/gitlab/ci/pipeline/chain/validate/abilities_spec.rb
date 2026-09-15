@@ -56,7 +56,7 @@ RSpec.describe Gitlab::Ci::Pipeline::Chain::Validate::Abilities, feature_categor
     end
 
     it 'breaks the pipeline builder chain' do
-      expect(step.break?).to eq true
+      expect(step.break?).to be true
     end
   end
 
@@ -72,7 +72,7 @@ RSpec.describe Gitlab::Ci::Pipeline::Chain::Validate::Abilities, feature_categor
     end
 
     it 'does not break the chain' do
-      expect(step.break?).to eq false
+      expect(step.break?).to be false
     end
 
     context 'when project is deleted' do
@@ -96,7 +96,7 @@ RSpec.describe Gitlab::Ci::Pipeline::Chain::Validate::Abilities, feature_categor
       end
 
       it 'breaks the pipeline builder chain' do
-        expect(step.break?).to eq true
+        expect(step.break?).to be true
       end
     end
 
@@ -112,7 +112,7 @@ RSpec.describe Gitlab::Ci::Pipeline::Chain::Validate::Abilities, feature_categor
       end
 
       it 'does not break the chain' do
-        expect(step.break?).to eq false
+        expect(step.break?).to be false
       end
     end
 
@@ -137,7 +137,7 @@ RSpec.describe Gitlab::Ci::Pipeline::Chain::Validate::Abilities, feature_categor
       end
 
       it 'breaks the pipeline builder chain' do
-        expect(step.break?).to eq true
+        expect(step.break?).to be true
       end
     end
   end

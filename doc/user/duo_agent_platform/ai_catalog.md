@@ -188,7 +188,56 @@ of the YAML.
 If your configuration exceeds the limit, GitLab displays an error and does not save the item.
 To resolve the error, reduce the size of your configuration.
 
-## Restrict the AI Catalog to a group hierarchy
+## Item visibility
+
+{{< history >}}
+
+- Restricted visibility [introduced](https://gitlab.com/gitlab-org/gitlab/-/work_items/603253) in GitLab 19.3 [with a feature flag](../../administration/feature_flags/_index.md) named `ai_catalog_internal_visibility`. Enabled by default.
+- Generally available in GitLab 19.4. Feature flag `ai_catalog_internal_visibility` removed.
+
+{{< /history >}}
+
+When you create an agent or flow, you select a project to manage it and choose whether the item is
+public, private, or restricted.
+Visibility controls who can view, enable, and run the item.
+These rules apply to custom agents, external agents, and flows.
+
+### Public items
+
+- Can be viewed by anyone and can be turned on in any project that meets the prerequisites.
+
+### Private items
+
+- Can be viewed only by members of the managing project who have the Guest, Planner, Reporter,
+  Developer, Maintainer, or Owner role.
+- Cannot be turned on in projects other than the managing project.
+
+You cannot make a public or restricted item private if the item has been turned on by a project other
+than the managing project.
+
+### Restricted items
+
+- Can be viewed and used by members of any project in the top-level group of the managing project.
+- Can be turned on in other projects in the same top-level group.
+- Cannot be viewed or turned on outside that top-level group.
+- Cannot be viewed in the AI Catalog in Explore.
+- Cannot be created from the AI Catalog in Explore.
+
+You cannot make a public item restricted if the item has been turned on by a project outside of that
+top-level group.
+
+#### Restricted items and shared projects or groups
+
+GitLab lets you [share a project or group](../project/members/sharing_projects_groups.md) into another
+project or group.
+The restricted visibility rules around enablement consider only the actual top-level group of the managing project.
+It does not consider shared project or group relationships.
+
+A collaborator who gains access to a project or group through a share can view, enable, and run restricted
+items only while working inside that shared container.
+The share does not extend restricted access into the collaborator's own top-level group.
+
+## Confine the AI Catalog to a group hierarchy
 
 {{< details >}}
 
@@ -202,7 +251,7 @@ To resolve the error, reduce the size of your configuration.
 
 {{< /history >}}
 
-In a top-level group, you can restrict the AI Catalog so that, for a project in that group hierarchy, users can
+In a top-level group, you can confine the AI Catalog so that, for a project in that group hierarchy, users can
 see, enable, and run only:
 
 - Foundational agents and flows maintained by GitLab.
@@ -222,12 +271,12 @@ Prerequisites:
 
 - You must have the Owner role for the top-level group.
 
-To restrict the AI Catalog to your group hierarchy:
+To confine the AI Catalog to your group hierarchy:
 
 1. In the top bar, select **Search or go to** and find your top-level group.
 1. Select **Settings** > **GitLab Duo**.
 1. Select **Change configuration**.
-1. In the **Data and privacy** section, under **AI Catalog**, select the **Restrict the AI Catalog to this group** checkbox.
+1. In the **Data and privacy** section, under **AI Catalog**, select the **Confine the AI Catalog to this group** checkbox.
 1. Select **Save changes**.
 
 ## Related topics

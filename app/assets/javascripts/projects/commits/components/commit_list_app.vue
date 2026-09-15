@@ -27,15 +27,22 @@ import {
   COMMIT_LIST_MEASURE_RENDER,
 } from '~/performance/constants';
 import { safeDecodeURIComponent } from '~/lib/utils/url_utility';
+import { BRANCH_REF_TYPE, TAG_REF_TYPE } from '~/vue_shared/components/ref/constants';
 import { extractFirstPathSegment } from '~/repository/utils/url_utility';
 import commitsQuery from '../graphql/queries/commits.query.graphql';
 import { groupCommitsByDay } from '../utils/commit_grouping';
 import CommitListRefSelector from './commit_list_ref_selector.vue';
 import CommitListActions from './commit_list_actions.vue';
+import CommitsMergeRequestButton from './commits_merge_request_button.vue';
 import CommitListItem from './commit_list_item.vue';
 import CommitFilteredSearch from './commit_filtered_search.vue';
 
 const DEFAULT_PAGE_SIZE = 20;
+
+const normalizeRefType = (refType) => {
+  const type = String(refType || '').toLowerCase();
+  return type === BRANCH_REF_TYPE || type === TAG_REF_TYPE ? type : '';
+};
 
 export default {
   name: 'CommitListApp',
@@ -46,6 +53,7 @@ export default {
     PageSizeSelector,
     CommitListRefSelector,
     CommitListActions,
+    CommitsMergeRequestButton,
     CommitListItem,
     CommitFilteredSearch,
   },
@@ -66,6 +74,7 @@ export default {
       pageSize: DEFAULT_PAGE_SIZE,
       cursors: [],
       currentCursor: null,
+      mergeRequestAction: null,
       currentRef: decodeURIComponent(this.escapedRef),
       currentRefType: this.injectedRefType || '',
       currentPath: null,
@@ -81,6 +90,13 @@ export default {
       // When the ref is a commit SHA, pass null so the query returns
       // the latest pipeline for the commit regardless of branch.
       return this.currentRefType ? this.currentRef : null;
+    },
+    // Fully qualify the ref so a branch and tag with the same name resolve
+    // unambiguously. Commit SHAs have no ref type and are sent as-is.
+    qualifiedRef() {
+      return this.currentRefType
+        ? `refs/${this.currentRefType}/${this.currentRef}`
+        : this.currentRef;
     },
     groupedCommits() {
       return groupCommitsByDay(this.commits);
@@ -109,7 +125,7 @@ export default {
       variables() {
         return {
           projectPath: this.projectFullPath,
-          ref: this.currentRef,
+          ref: this.qualifiedRef,
           pipelineRef: this.pipelineRef,
           first: this.pageSize,
           after: this.currentCursor,
@@ -122,9 +138,9 @@ export default {
       },
       watchLoading(isLoading) {
         if (isLoading) {
-          performanceMarkAndMeasure({
-            mark: COMMIT_LIST_MARK_FETCHING_DATA,
-          });
+          // sync: a rAF-deferred mark could still be absent (or mistimed) when
+          // result() measures against it, e.g. in background tabs.
+          performanceMarkAndMeasure({ sync: true, mark: COMMIT_LIST_MARK_FETCHING_DATA });
         }
       },
       update(data) {
@@ -135,19 +151,23 @@ export default {
 
         if (performance.getEntriesByName(COMMIT_LIST_MARK_RENDERING_DATA).length) return;
 
-        // Use performance.mark/measure directly instead of performanceMarkAndMeasure
-        // because the utility defers execution via requestAnimationFrame. The mark must
-        // exist synchronously so the measure on the next line can reference it, and so
-        // the $nextTick callback below can reliably compute the render duration from it.
-        performance.mark(COMMIT_LIST_MARK_RENDERING_DATA);
-        performance.measure(
-          COMMIT_LIST_MEASURE_DATA_FETCH,
-          COMMIT_LIST_MARK_FETCHING_DATA,
-          COMMIT_LIST_MARK_RENDERING_DATA,
-        );
+        // sync so the mark exists for the $nextTick render measure below. The fetch
+        // measure is skipped by the util when the start mark is missing (cache hit).
+        performanceMarkAndMeasure({
+          sync: true,
+          mark: COMMIT_LIST_MARK_RENDERING_DATA,
+          measures: [
+            {
+              name: COMMIT_LIST_MEASURE_DATA_FETCH,
+              start: COMMIT_LIST_MARK_FETCHING_DATA,
+              end: COMMIT_LIST_MARK_RENDERING_DATA,
+            },
+          ],
+        });
 
         this.$nextTick(() => {
           performanceMarkAndMeasure({
+            sync: true,
             mark: COMMIT_LIST_MARK_DATA_RENDERED,
             measures: [
               {
@@ -196,7 +216,7 @@ export default {
       // it for commit SHAs. Only fall back to the server-provided inject on the
       // initial load, where the SSR URL for the default branch may omit ref_type.
       const fallbackRefType = isInitial ? this.injectedRefType : '';
-      this.currentRefType = route.query.ref_type ?? fallbackRefType;
+      this.currentRefType = normalizeRefType(route.query.ref_type ?? fallbackRefType);
 
       // The static routes ('commitsPath' / 'commitsPathDecoded') are
       // hardcoded to the initial ref.  For refs containing '/' the route
@@ -357,7 +377,13 @@ export default {
       />
     </template>
     <template #actions>
-      <commit-list-actions :file-path="currentPath" />
+      <commits-merge-request-button
+        class="gl-hidden @md/panel:gl-inline-flex"
+        :current-ref="currentRef"
+        :ref-type="currentRefType"
+        @merge-request-action="mergeRequestAction = $event"
+      />
+      <commit-list-actions :file-path="currentPath" :merge-request-action="mergeRequestAction" />
     </template>
     <template #description>
       <commit-filtered-search :initial-filter-tokens="initialFilterTokens" @filter="handleFilter" />

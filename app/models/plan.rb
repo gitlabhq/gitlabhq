@@ -6,6 +6,7 @@ class Plan < ApplicationRecord
   has_one :limits, class_name: 'PlanLimits'
 
   scope :by_name, ->(name) { where(name: name) }
+  scope :by_plan_name_uid, ->(plan_name_uid) { where(plan_name_uid: plan_name_uid) }
 
   ALL_PLANS = [DEFAULT].freeze
   DEFAULT_PLANS = [DEFAULT].freeze
@@ -66,7 +67,7 @@ class Plan < ApplicationRecord
   # rubocop: disable Database/AvoidUsingPluckWithoutLimit -- This method is prepared for manual usage in
   # Rails console on SaaS. Using pluck without limit in this case should be enough safe.
   def self.ids_for_plan_name_uids(uids)
-    where(plan_name_uid: uids).pluck(:id)
+    by_plan_name_uid(uids).pluck(:id)
   end
   # rubocop: enable Database/AvoidUsingPluckWithoutLimit
 

@@ -158,7 +158,7 @@ RSpec.describe PoolRepository, feature_category: :source_code_management do
     end
   end
 
-  describe '#unlink_repository' do
+  describe '#unlink_repository', :skip_gitaly_mvcc do
     let(:pool) { create(:pool_repository, :ready) }
 
     before do
@@ -192,6 +192,44 @@ RSpec.describe PoolRepository, feature_category: :source_code_management do
         expect(pool.source_project.repository).to receive(:disconnect_alternates).and_call_original
 
         pool.unlink_repository(pool.source_project.repository)
+      end
+    end
+  end
+
+  describe '#remove_member' do
+    let(:pool) { create(:pool_repository) }
+    let(:member) { create(:project, pool_repository: pool) }
+
+    it 'clears the project membership' do
+      expect { pool.remove_member(member) }
+        .to change { member.reload.pool_repository }.from(pool).to(nil)
+    end
+
+    it 'does not disconnect alternates' do
+      expect(member.repository).not_to receive(:disconnect_alternates)
+
+      pool.remove_member(member)
+    end
+
+    context 'when other members remain' do
+      it 'does not mark the pool obsolete' do
+        pool.remove_member(member)
+
+        expect(pool.reload).not_to be_obsolete
+      end
+    end
+
+    context 'when the last member leaves' do
+      before do
+        pool.source_project.update_column(:pool_repository_id, nil)
+      end
+
+      it 'marks the pool obsolete and schedules its destruction' do
+        expect(ObjectPool::DestroyWorker).to receive(:perform_async).with(pool.id)
+
+        pool.remove_member(member)
+
+        expect(pool.reload).to be_obsolete
       end
     end
   end
@@ -252,7 +290,7 @@ RSpec.describe PoolRepository, feature_category: :source_code_management do
   end
 
   describe '#reinitialize' do
-    context 'when object_pool exists' do
+    context 'when object_pool exists', :skip_gitaly_mvcc do
       subject(:pool_repository) { create(:pool_repository, :ready) }
 
       it 'does not reinitialize' do
@@ -260,7 +298,7 @@ RSpec.describe PoolRepository, feature_category: :source_code_management do
       end
     end
 
-    context 'when object_pool does not exist' do
+    context 'when object_pool does not exist', :skip_gitaly_mvcc do
       subject(:pool_repository) { create(:pool_repository, :ready) }
 
       it 'allows reinitializing the state machine' do

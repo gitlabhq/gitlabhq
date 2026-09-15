@@ -104,6 +104,70 @@ RSpec.describe Gitlab::Database::AlterLegacyCellSequencesMaxValue, feature_categ
           end
         end
 
+        context 'with a sequence in an unmanaged schema' do
+          let(:other_schema) { 'random_schema' }
+
+          before do
+            connection.execute("CREATE SCHEMA #{other_schema}")
+          end
+
+          after do
+            connection.execute("DROP SCHEMA IF EXISTS #{other_schema} CASCADE")
+          end
+
+          it 'does not raise exception' do
+            expect do
+              connection.execute("CREATE TABLE #{other_schema}._test_random_table (id BIGSERIAL PRIMARY KEY)")
+            end.not_to raise_error
+          end
+
+          it 'leaves the sequence at the default max value' do
+            connection.execute("CREATE TABLE #{other_schema}._test_random_table (id BIGSERIAL PRIMARY KEY)")
+
+            sequence = connection.execute(
+              "SELECT * FROM pg_sequences WHERE schemaname = '#{other_schema}'"
+            ).first
+
+            expect(sequence['max_value']).to eq(default_max)
+          end
+
+          context 'when the sequence name is present in both managed and unmanaged schemas' do
+            let(:shared_name) { 'shared_name_seq' }
+
+            it 'alters only the sequence in the managed schema' do
+              connection.execute("CREATE SEQUENCE #{other_schema}.#{shared_name}")
+              connection.execute("CREATE SEQUENCE public.#{shared_name}")
+
+              sequences = connection.execute(
+                "SELECT schemaname, max_value FROM pg_sequences WHERE sequencename = '#{shared_name}'"
+              ).to_h { |row| row.values_at('schemaname', 'max_value') }
+
+              expect(sequences).to eq(other_schema => default_max, 'public' => maxval)
+            end
+          end
+        end
+
+        context 'with a sequence in a partition schema' do
+          let(:partition_sequence_name) { 'partition_schema_seq' }
+
+          after do
+            connection.execute(
+              "DROP SEQUENCE IF EXISTS gitlab_partitions_dynamic.#{partition_sequence_name}"
+            )
+          end
+
+          it 'alters the sequence' do
+            connection.execute("CREATE SEQUENCE gitlab_partitions_dynamic.#{partition_sequence_name}")
+
+            sequence = connection.execute(
+              "SELECT * FROM pg_sequences WHERE schemaname = 'gitlab_partitions_dynamic' " \
+                "AND sequencename = '#{partition_sequence_name}'"
+            ).first
+
+            expect(sequence['max_value']).to eq(maxval)
+          end
+        end
+
         context 'when a sequence is bumped to a higher range via increase_sequences_range' do
           let(:bumped_table_name) { '_test_bumped_legacy_max_value' }
           let(:bumped_sequence_name) { "#{bumped_table_name}_id_seq" }

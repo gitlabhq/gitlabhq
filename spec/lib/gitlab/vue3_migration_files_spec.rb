@@ -4,18 +4,21 @@ require 'fast_spec_helper'
 require 'yaml'
 require_relative '../../../lib/gitlab/vue3_migration'
 
-# Validates the `vue3_migration.yml` files that opt a page index.js entrypoint
-# into the Vue 3 migration. The schema is documented in `config/helpers/vue3_migration_file_validation.js`.
+# Validates the metadata files that opt an entrypoint into the Vue 3 migration.
+# The schema is documented in `config/helpers/vue3_migration_file_validation.js`.
 #
-# Pages without a `vue3_migration.yml` file are treated as Vue 2 only.
-# The yml file must always sit next to a `index.js` entrypoint.
+# The file name says which entry module it describes: `vue3_migration.yml` is
+# the `index.js` beside it, `<name>.vue3_migration.yml` is the `<name>.js`
+# beside it. That module must be a bundler entry. Entries with no metadata file
+# are treated as Vue 2 only.
 RSpec.describe 'vue3_migration.yml - vue 3 migration config verification', feature_category: :tooling do
   root = File.expand_path('../../..', __dir__)
   migration_filename = Gitlab::Vue3Migration::VUE3_MIGRATION_FILENAME
+  migration_glob = Gitlab::Vue3Migration::VUE3_MIGRATION_GLOB
   allowed_statuses = Gitlab::Vue3Migration::VUE3_MIGRATION_ALLOWED_STATUSES
   allowed_keys = Gitlab::Vue3Migration::VUE3_MIGRATION_ALLOWED_KEYS
 
-  pages_glob = Gitlab::Vue3Migration::VUE3_MIGRATION_PAGES_GLOB
+  pages_glob = "{#{Gitlab::Vue3Migration::JS_ROOTS.join(',')}}/pages"
   feature_flags_glob = '{,ee/,jh/}config/feature_flags/**/*.yml'
 
   # --------------------------------------------------------------------------
@@ -35,8 +38,8 @@ RSpec.describe 'vue3_migration.yml - vue 3 migration config verification', featu
   # File discovery
   # --------------------------------------------------------------------------
 
-  # All `vue3_migration.yml` files across editions
-  migration_files = Dir.glob(File.join(root, "#{pages_glob}/**/#{migration_filename}"))
+  # All migration metadata files across editions.
+  migration_files = Dir.glob(File.join(root, migration_glob))
 
   # All `index.js` entrypoints across editions
   index_files = Dir.glob(File.join(root, "#{pages_glob}/**/index.js"))
@@ -52,15 +55,23 @@ RSpec.describe 'vue3_migration.yml - vue 3 migration config verification', featu
                           .to_set
 
   describe 'file presence' do
-    it "does not have orphan #{migration_filename} files (must have sibling index.js)" do
+    it "does not have orphan #{migration_filename} files (must have a sibling entry file)" do
       orphans = migration_files.reject do |meta_file|
-        File.exist?(File.join(File.dirname(meta_file), 'index.js'))
+        File.exist?(Gitlab::Vue3Migration.entry_file_for(meta_file))
       end
 
       relative_orphans = orphans.map(&relative_to_root)
 
       expect(relative_orphans).to be_empty,
-        "Orphan #{migration_filename} files (no sibling index.js):\n  #{relative_orphans.join("\n  ")}"
+        "Orphan #{migration_filename} files (no sibling entry file):\n  #{relative_orphans.join("\n  ")}"
+    end
+
+    # Covers `main`, which has no bundle of its own, and any module that is not
+    # a bundler entry. `entry_name_for` raises with the reason.
+    it 'describes a bundler entry' do
+      migration_files.each do |meta_file|
+        expect { Gitlab::Vue3Migration.entry_name_for(meta_file) }.not_to raise_error
+      end
     end
   end
 

@@ -1,0 +1,18 @@
+---
+table_name: ci_test_balancing_assignments
+classes:
+- Ci::TestBalancing::Assignment
+feature_categories:
+- code_testing
+description: Durable, write-once record of claimed tests for parallel test balancing.
+  The pending work queue lives in Redis; each claim is persisted here as one row per
+  (pipeline, job group, test), stamped with the pipeline's start time as partition key
+  and the claiming parallel node in node_index. Rows are read-only history used to
+  replay the same set of tests on retry.
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/248189
+milestone: '19.4'
+gitlab_schema: gitlab_ci
+sharding_key:
+  project_id: projects
+table_size: small
+notes: Transient data with daily partitions dropped after 30 days.

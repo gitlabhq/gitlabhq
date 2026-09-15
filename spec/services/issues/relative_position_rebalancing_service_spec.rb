@@ -40,6 +40,10 @@ RSpec.describe Issues::RelativePositionRebalancingService, :clean_gitlab_redis_s
 
   subject(:service) { described_class.new(project.project_namespace) }
 
+  before do
+    stub_feature_flags(write_relative_positions_to_work_item_positions: false)
+  end
+
   context 'execute' do
     it 're-balances a set of issues with clumps at the end and start' do
       all_issues = start_clump + unclumped + end_clump.reverse
@@ -277,6 +281,26 @@ RSpec.describe Issues::RelativePositionRebalancingService, :clean_gitlab_redis_s
           # order is preserved
           expect(original_order).to match_array(issues_in_position_order.map(&:id))
         end
+      end
+    end
+
+    context 'when the write flag is on' do
+      let(:positioned_issue_ids) { project.issues.where.not(relative_position: nil).pluck(:id) }
+
+      before do
+        stub_feature_flags(write_relative_positions_to_work_item_positions: true)
+      end
+
+      it 'writes rebalanced positions to work_item_positions and leaves issues.relative_position untouched' do
+        issues_before = Issue.where(id: positioned_issue_ids).order(:id).pluck(:id, :relative_position)
+
+        service.execute
+
+        gaps = WorkItems::Position.where(work_item_id: positioned_issue_ids)
+          .order(:relative_position).pluck(:relative_position).each_cons(2).map { |a, b| b - a }
+
+        expect(gaps).to all(be > RelativePositioning::MIN_GAP)
+        expect(Issue.where(id: positioned_issue_ids).order(:id).pluck(:id, :relative_position)).to eq(issues_before)
       end
     end
   end

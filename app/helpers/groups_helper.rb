@@ -58,10 +58,10 @@ module GroupsHelper
 
   def push_group_breadcrumbs(group)
     sorted_ancestors(group).with_route.reverse_each do |parent|
-      push_to_schema_breadcrumb(simple_sanitize(parent.name), group_path(parent), parent.try(:avatar_url))
+      push_to_schema_breadcrumb(parent.name, group_path(parent), parent.try(:avatar_url))
     end
 
-    push_to_schema_breadcrumb(simple_sanitize(group.name), group_path(group), group.try(:avatar_url))
+    push_to_schema_breadcrumb(group.name, group_path(group), group.try(:avatar_url))
   end
 
   def projects_lfs_status(group)

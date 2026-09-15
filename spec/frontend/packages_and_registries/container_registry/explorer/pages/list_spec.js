@@ -31,7 +31,6 @@ import { FILTERED_SEARCH_TERM } from '~/vue_shared/components/filtered_search_ba
 import TitleArea from '~/vue_shared/components/registry/title_area.vue';
 import { createAlert } from '~/alert';
 
-import { $toast } from 'jest/packages_and_registries/shared/mocks';
 import {
   graphQLImageListMock,
   graphQLImageListNullContainerRepositoriesMock,
@@ -82,7 +81,6 @@ describe('List Page', () => {
   };
 
   const mountComponent = ({
-    mocks,
     resolver = jest.fn().mockResolvedValue(graphQLImageListMock),
     detailsResolver = jest.fn().mockResolvedValue(graphQLProjectImageRepositoriesDetailsMock),
     mutationResolver = jest.fn().mockResolvedValue(graphQLImageDeleteMock),
@@ -114,12 +112,10 @@ describe('List Page', () => {
         ContainerScanningCounts: true,
       },
       mocks: {
-        $toast,
         $route: {
           name: 'foo',
           query,
         },
-        ...mocks,
       },
       provide() {
         return {

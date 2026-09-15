@@ -46,6 +46,7 @@ ee/db/fixtures/
 scripts/
 !scripts/build_frontend_islands
 !scripts/frontend
+!scripts/lib/assets_heap_sizing.rb
 !scripts/lib/assets_sha.rb
 !scripts/lib/gitlab.rb
 

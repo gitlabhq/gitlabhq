@@ -8,14 +8,14 @@ RSpec.describe RuboCop::Cop::API::EntityFieldType, :config, feature_category: :a
     it 'registers an offense when documentation has no type' do
       expect_offense(<<~RUBY)
         expose :relation, documentation: { example: 'label' }
-        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ Entity field is missing type declaration. https://docs.gitlab.com/development/api_styleguide#defining-entity-fields.
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ Entity field is missing type declaration. https://docs.gitlab.com/development/api_styleguide/#defining-entity-fields.
       RUBY
     end
 
     it 'registers an offense when there is no documentation hash' do
       expect_offense(<<~RUBY)
         expose :relation, as: :other_name
-        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ Entity field is missing type declaration. https://docs.gitlab.com/development/api_styleguide#defining-entity-fields.
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ Entity field is missing type declaration. https://docs.gitlab.com/development/api_styleguide/#defining-entity-fields.
       RUBY
     end
   end
@@ -24,7 +24,7 @@ RSpec.describe RuboCop::Cop::API::EntityFieldType, :config, feature_category: :a
     it 'registers an offense for and corrects symbol type' do
       expect_offense(<<~RUBY)
         expose :relation, documentation: { type: :dateTime, example: 'label' }
-                                                 ^^^^^^^^^ Invalid type for entity field. https://docs.gitlab.com/development/api_styleguide#defining-entity-fields.
+                                                 ^^^^^^^^^ Invalid type for entity field. https://docs.gitlab.com/development/api_styleguide/#defining-entity-fields.
       RUBY
 
       expect_correction(<<~RUBY)
@@ -35,7 +35,7 @@ RSpec.describe RuboCop::Cop::API::EntityFieldType, :config, feature_category: :a
     it 'registers an offense for and corrects a lowercase string type' do
       expect_offense(<<~RUBY)
         expose :relation, documentation: { type: 'dateTime', example: 'label' }
-                                                 ^^^^^^^^^^ Invalid type for entity field. https://docs.gitlab.com/development/api_styleguide#defining-entity-fields.
+                                                 ^^^^^^^^^^ Invalid type for entity field. https://docs.gitlab.com/development/api_styleguide/#defining-entity-fields.
       RUBY
 
       expect_correction(<<~RUBY)
@@ -46,7 +46,7 @@ RSpec.describe RuboCop::Cop::API::EntityFieldType, :config, feature_category: :a
     it 'registers an offense for and corrects a primitive constant type' do
       expect_offense(<<~RUBY)
         expose :relation, documentation: { type: DateTime, example: 'label' }
-                                                 ^^^^^^^^ Invalid type for entity field. https://docs.gitlab.com/development/api_styleguide#defining-entity-fields.
+                                                 ^^^^^^^^ Invalid type for entity field. https://docs.gitlab.com/development/api_styleguide/#defining-entity-fields.
       RUBY
 
       expect_correction(<<~RUBY)
@@ -57,7 +57,7 @@ RSpec.describe RuboCop::Cop::API::EntityFieldType, :config, feature_category: :a
     it 'registers an offense for and corrects a API::Entities constant type' do
       expect_offense(<<~RUBY)
         expose :relation, documentation: { type: API::Entities::SomeEntity, example: 'label' }
-                                                 ^^^^^^^^^^^^^^^^^^^^^^^^^ Invalid type for entity field. https://docs.gitlab.com/development/api_styleguide#defining-entity-fields.
+                                                 ^^^^^^^^^^^^^^^^^^^^^^^^^ Invalid type for entity field. https://docs.gitlab.com/development/api_styleguide/#defining-entity-fields.
       RUBY
 
       expect_correction(<<~RUBY)
@@ -68,7 +68,7 @@ RSpec.describe RuboCop::Cop::API::EntityFieldType, :config, feature_category: :a
     it 'registers an offense for but does not correct an unknown class string' do
       expect_offense(<<~RUBY)
         expose :relation, documentation: { type: 'UnknownClass', example: 'label' }
-                                                 ^^^^^^^^^^^^^^ Invalid type for entity field. https://docs.gitlab.com/development/api_styleguide#defining-entity-fields.
+                                                 ^^^^^^^^^^^^^^ Invalid type for entity field. https://docs.gitlab.com/development/api_styleguide/#defining-entity-fields.
       RUBY
 
       expect_no_corrections
@@ -77,7 +77,7 @@ RSpec.describe RuboCop::Cop::API::EntityFieldType, :config, feature_category: :a
     it 'registers an offense for but does not correct an unknown constant' do
       expect_offense(<<~RUBY)
         expose :relation, documentation: { type: UnknownClass, example: 'label' }
-                                                 ^^^^^^^^^^^^ Invalid type for entity field. https://docs.gitlab.com/development/api_styleguide#defining-entity-fields.
+                                                 ^^^^^^^^^^^^ Invalid type for entity field. https://docs.gitlab.com/development/api_styleguide/#defining-entity-fields.
       RUBY
 
       expect_no_corrections
@@ -86,7 +86,7 @@ RSpec.describe RuboCop::Cop::API::EntityFieldType, :config, feature_category: :a
     it 'registers an offense but does not correct an unknown symbol' do
       expect_offense(<<~RUBY)
         expose :relation, documentation: { type: :full, example: 'label' }
-                                                 ^^^^^ Invalid type for entity field. https://docs.gitlab.com/development/api_styleguide#defining-entity-fields.
+                                                 ^^^^^ Invalid type for entity field. https://docs.gitlab.com/development/api_styleguide/#defining-entity-fields.
       RUBY
 
       expect_no_corrections
@@ -95,7 +95,7 @@ RSpec.describe RuboCop::Cop::API::EntityFieldType, :config, feature_category: :a
     it 'registers an offense for but does not correct an unknown string' do
       expect_offense(<<~RUBY)
         expose :relation, documentation: { type: 'full', example: 'label' }
-                                                 ^^^^^^ Invalid type for entity field. https://docs.gitlab.com/development/api_styleguide#defining-entity-fields.
+                                                 ^^^^^^ Invalid type for entity field. https://docs.gitlab.com/development/api_styleguide/#defining-entity-fields.
       RUBY
 
       expect_no_corrections
@@ -104,7 +104,7 @@ RSpec.describe RuboCop::Cop::API::EntityFieldType, :config, feature_category: :a
     it 'registers an offense for but does not correct an array type' do
       expect_offense(<<~RUBY)
         expose :relation, documentation: { type: ['String'], example: 'label' }
-                                                 ^^^^^^^^^^ Invalid type for entity field. https://docs.gitlab.com/development/api_styleguide#defining-entity-fields.
+                                                 ^^^^^^^^^^ Invalid type for entity field. https://docs.gitlab.com/development/api_styleguide/#defining-entity-fields.
       RUBY
 
       expect_no_corrections
@@ -207,7 +207,7 @@ RSpec.describe RuboCop::Cop::API::EntityFieldType, :config, feature_category: :a
     it 'registers an offense when the value is a constant without leading colons' do
       expect_offense(<<~RUBY)
         expose :group, using: API::Entities::BasicGroupDetails
-                              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ Invalid type for entity field. https://docs.gitlab.com/development/api_styleguide#defining-entity-fields.
+                              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ Invalid type for entity field. https://docs.gitlab.com/development/api_styleguide/#defining-entity-fields.
       RUBY
 
       expect_correction(<<~RUBY)
@@ -218,7 +218,7 @@ RSpec.describe RuboCop::Cop::API::EntityFieldType, :config, feature_category: :a
     it 'registers an offense when the value is an entity ref string' do
       expect_offense(<<~RUBY)
         expose :group, using: 'API::Entities::BasicGroupDetails'
-                              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ Invalid type for entity field. https://docs.gitlab.com/development/api_styleguide#defining-entity-fields.
+                              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ Invalid type for entity field. https://docs.gitlab.com/development/api_styleguide/#defining-entity-fields.
       RUBY
 
       expect_correction(<<~RUBY)
@@ -229,7 +229,7 @@ RSpec.describe RuboCop::Cop::API::EntityFieldType, :config, feature_category: :a
     it 'registers an offense when the value is an entity ref string with leading colons' do
       expect_offense(<<~RUBY)
         expose :group, using: '::API::Entities::BasicGroupDetails'
-                              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ Invalid type for entity field. https://docs.gitlab.com/development/api_styleguide#defining-entity-fields.
+                              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ Invalid type for entity field. https://docs.gitlab.com/development/api_styleguide/#defining-entity-fields.
       RUBY
 
       expect_correction(<<~RUBY)
@@ -240,7 +240,7 @@ RSpec.describe RuboCop::Cop::API::EntityFieldType, :config, feature_category: :a
     it 'registers an offense when the value is not an API::Entities reference' do
       expect_offense(<<~RUBY)
         expose :group, using: SomeOtherClass
-                              ^^^^^^^^^^^^^^ Invalid type for entity field. https://docs.gitlab.com/development/api_styleguide#defining-entity-fields.
+                              ^^^^^^^^^^^^^^ Invalid type for entity field. https://docs.gitlab.com/development/api_styleguide/#defining-entity-fields.
       RUBY
 
       expect_no_corrections
@@ -249,7 +249,7 @@ RSpec.describe RuboCop::Cop::API::EntityFieldType, :config, feature_category: :a
     it 'registers an offense when the value is a string not starting with API::Entities' do
       expect_offense(<<~RUBY)
         expose :group, using: 'SomeOtherClass'
-                              ^^^^^^^^^^^^^^^^ Invalid type for entity field. https://docs.gitlab.com/development/api_styleguide#defining-entity-fields.
+                              ^^^^^^^^^^^^^^^^ Invalid type for entity field. https://docs.gitlab.com/development/api_styleguide/#defining-entity-fields.
       RUBY
 
       expect_no_corrections
@@ -258,7 +258,7 @@ RSpec.describe RuboCop::Cop::API::EntityFieldType, :config, feature_category: :a
     it 'registers an offense when the value is a symbol' do
       expect_offense(<<~RUBY)
         expose :group, using: :some_type
-                              ^^^^^^^^^^ Invalid type for entity field. https://docs.gitlab.com/development/api_styleguide#defining-entity-fields.
+                              ^^^^^^^^^^ Invalid type for entity field. https://docs.gitlab.com/development/api_styleguide/#defining-entity-fields.
       RUBY
 
       expect_no_corrections

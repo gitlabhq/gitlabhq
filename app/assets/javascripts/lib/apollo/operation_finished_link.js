@@ -20,23 +20,34 @@ import { ApolloLink, Observable } from '@apollo/client/core';
  */
 export const getOperationFinishedLink = ({ started, finished } = {}) =>
   new ApolloLink((operation, forward) => {
-    started?.(operation);
-
     return new Observable((observer) => {
+      started?.(operation);
+
+      // `finished` must run exactly once, also when the operation is
+      // unsubscribed before completing, so counters cannot get stuck.
+      let isFinished = false;
+      const finish = () => {
+        if (!isFinished) {
+          isFinished = true;
+          finished?.(operation);
+        }
+      };
+
       const subscription = forward(operation).subscribe({
         next: (result) => {
           observer.next(result);
         },
         error: (error) => {
-          finished?.(operation);
+          finish();
           observer.error(error);
         },
         complete: () => {
-          finished?.(operation);
+          finish();
           observer.complete();
         },
       });
       return () => {
+        finish();
         subscription.unsubscribe();
       };
     });

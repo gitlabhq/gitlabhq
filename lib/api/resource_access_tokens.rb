@@ -11,6 +11,7 @@ module API
     feature_category :system_access
 
     helpers ::API::Helpers::PersonalAccessTokensHelpers
+    helpers ::API::Helpers::ResourceAccessTokensHelpers
 
     %w[project group].each do |source_type|
       resource source_type.pluralize, requirements: ::API::NAMESPACE_OR_PROJECT_REQUIREMENTS do
@@ -199,16 +200,6 @@ module API
             current_user.can_admin_all_resources? ? not_found! : unauthorized!
           end
         end
-      end
-    end
-
-    helpers do
-      def find_source(source_type, id)
-        public_send("find_#{source_type}!", id) # rubocop:disable GitlabSecurity/PublicSend
-      end
-
-      def find_token(resource, token_id)
-        PersonalAccessTokensFinder.new({ user: resource.bots, impersonation: false }).find_by_id(token_id)
       end
     end
   end

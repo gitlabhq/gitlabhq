@@ -40,16 +40,12 @@ const Template = ({
                 userPermissions: {
                   pushToSourceBranch,
                 },
-                pipelines: {
-                  nodes: [
-                    {
-                      id: '1',
-                      project: {
-                        id: '2',
-                        fullPath: 'gitlab/gitlab',
-                      },
-                    },
-                  ],
+                headPipeline: {
+                  id: '1',
+                  project: {
+                    id: '2',
+                    fullPath: 'gitlab/gitlab',
+                  },
                 },
               },
             },

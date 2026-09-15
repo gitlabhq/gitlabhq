@@ -461,7 +461,7 @@ module API
         }
 
         # GroupReleasesFinder has already ordered the data for us
-        present paginate(releases, skip_default_order: true), options
+        present paginate(releases, skip_default_order: true), **options
       end
     end
   end

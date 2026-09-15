@@ -82,9 +82,9 @@ describe('BoardFilteredSearch', () => {
       expect(findFilteredSearch().props('tokens')).toEqual(tokens);
     });
 
-    describe('when onFilter is emitted', () => {
+    describe('when on-filter is emitted', () => {
       it('calls historyPushState', () => {
-        findFilteredSearch().vm.$emit('onFilter', [{ value: { data: 'searchQuery' } }]);
+        findFilteredSearch().vm.$emit('on-filter', [{ value: { data: 'searchQuery' } }]);
 
         expect(updateHistory).toHaveBeenCalledWith({
           replace: true,
@@ -94,8 +94,8 @@ describe('BoardFilteredSearch', () => {
       });
     });
 
-    it('emits set-filters and updates URL when onFilter is emitted', () => {
-      findFilteredSearch().vm.$emit('onFilter', [{ value: { data: '' } }]);
+    it('emits set-filters and updates URL when on-filter is emitted', () => {
+      findFilteredSearch().vm.$emit('on-filter', [{ value: { data: '' } }]);
 
       expect(updateHistory).toHaveBeenCalledWith({
         title: '',
@@ -143,7 +143,7 @@ describe('BoardFilteredSearch', () => {
         { type: TOKEN_TYPE_HEALTH, value: { data: 'atRisk', operator: '!=' } },
       ];
 
-      findFilteredSearch().vm.$emit('onFilter', mockFilters);
+      findFilteredSearch().vm.$emit('on-filter', mockFilters);
 
       expect(updateHistory).toHaveBeenCalledWith({
         title: '',
@@ -164,7 +164,7 @@ describe('BoardFilteredSearch', () => {
           { type: TOKEN_TYPE_ASSIGNEE, value: { data: assigneeParam, operator: '=' } },
         ];
 
-        findFilteredSearch().vm.$emit('onFilter', mockFilters);
+        findFilteredSearch().vm.$emit('on-filter', mockFilters);
 
         expect(updateHistory).toHaveBeenCalledWith({
           title: '',
@@ -211,7 +211,7 @@ describe('BoardFilteredSearch', () => {
         { type: TOKEN_TYPE_ITERATION, value: { data: iterationParam, operator: '=' } },
       ];
 
-      findFilteredSearch().vm.$emit('onFilter', mockFilters);
+      findFilteredSearch().vm.$emit('on-filter', mockFilters);
 
       expect(updateHistory).toHaveBeenCalledWith({
         title: '',
@@ -248,8 +248,8 @@ describe('BoardFilteredSearch', () => {
       ]);
     });
 
-    it('updates url params after onFilter event', () => {
-      findFilteredSearch().vm.$emit('onFilter', [
+    it('updates url params after on-filter event', () => {
+      findFilteredSearch().vm.$emit('on-filter', [
         { type: 'custom-field[1]', value: { data: '2', operator: '=' } },
       ]);
 
@@ -279,8 +279,8 @@ describe('BoardFilteredSearch', () => {
       expect(findFilteredSearch().props('initialFilterValue')).toEqual([]);
     });
 
-    it('does not update url params after onFilter event', () => {
-      findFilteredSearch().vm.$emit('onFilter', [
+    it('does not update url params after on-filter event', () => {
+      findFilteredSearch().vm.$emit('on-filter', [
         { type: 'custom-field[1]', value: { data: '2', operator: '=' } },
       ]);
 

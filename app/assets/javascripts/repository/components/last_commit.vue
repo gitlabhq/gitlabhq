@@ -202,7 +202,7 @@ export default {
     <commit-info :commit="commit" class="gl-hidden @sm/panel:gl-flex">
       <div class="commit-actions gl-my-2 gl-flex gl-items-start gl-gap-3">
         <signature-badge v-if="commit.signature" :signature="commit.signature" class="gl-h-7" />
-        <div v-if="commit.pipeline.id" class="gl-flex gl-h-7 gl-items-center">
+        <div v-if="commit.pipeline?.id" class="gl-flex gl-h-7 gl-items-center">
           <ci-icon :status="commit.pipeline.detailedStatus" class="gl-mr-2" />
         </div>
         <gl-button-group class="js-commit-sha-group gl-flex gl-items-center">

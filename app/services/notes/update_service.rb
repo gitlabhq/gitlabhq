@@ -12,18 +12,15 @@ module Notes
 
       return note unless note.valid?
 
-      if note.for_issue?
-        track_note_edit_usage_for_issues(note)
-        track_work_item_note_update(note.noteable)
-      end
-
-      track_note_edit_usage_for_merge_requests(note) if note.for_merge_request?
+      track_note_edit_usage(note)
 
       only_commands = false
 
       quick_actions_service = QuickActionsService.new(project, current_user)
       if quick_actions_service.supported?(note)
         content, update_params, message, command_names = quick_actions_service.execute(note, {})
+
+        return note if wants_to_convert_to_internal_note?(note, update_params)
 
         only_commands = content.empty?
 
@@ -77,6 +74,23 @@ module Notes
     private
 
     attr_accessor :old_note_body
+
+    def wants_to_convert_to_internal_note?(note, update_params)
+      return false unless update_params.delete(:internal_note)
+      return false if note.confidential?
+
+      note.errors.add(:base, _('Cannot convert existing comment to an internal note'))
+      true
+    end
+
+    def track_note_edit_usage(note)
+      if note.for_issue?
+        track_note_edit_usage_for_issues(note)
+        track_work_item_note_update(note.noteable)
+      end
+
+      track_note_edit_usage_for_merge_requests(note) if note.for_merge_request?
+    end
 
     def updated_by_user
       @_updated_by_user ||= Gitlab::Auth::Identity.resolve_composite_identity_actor(current_user)

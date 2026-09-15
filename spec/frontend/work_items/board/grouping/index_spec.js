@@ -1,8 +1,8 @@
 import { groupingStrategyFor } from '~/work_items/board/grouping';
 
 describe('groupingStrategyFor', () => {
-  // The 'status' property resolves to a strategy in both editions (a placeholder
-  // in CE, the real strategy in EE), so this only covers the invariant case.
+  // 'status' resolves to a strategy in both editions (placeholder in CE, real
+  // strategy in EE), so the only case actually worth testing here is the unsupported one.
   it('returns null for an unsupported property', () => {
     expect(groupingStrategyFor('assignee')).toBe(null);
   });

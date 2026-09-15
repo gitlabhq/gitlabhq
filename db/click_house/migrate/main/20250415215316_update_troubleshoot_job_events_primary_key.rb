@@ -7,7 +7,7 @@ class UpdateTroubleshootJobEventsPrimaryKey < ClickHouse::Migration
     SQL
 
     execute <<-SQL
-      CREATE TABLE troubleshoot_job_events
+      CREATE TABLE IF NOT EXISTS troubleshoot_job_events
       (
         user_id UInt64 NOT NULL DEFAULT 0,
         timestamp DateTime64(6, 'UTC') NOT NULL DEFAULT now64(),
@@ -30,7 +30,7 @@ class UpdateTroubleshootJobEventsPrimaryKey < ClickHouse::Migration
     SQL
 
     execute <<-SQL
-      CREATE TABLE troubleshoot_job_events
+      CREATE TABLE IF NOT EXISTS troubleshoot_job_events
       (
         user_id UInt64 NOT NULL DEFAULT 0,
         timestamp DateTime64(6, 'UTC') NOT NULL DEFAULT now64(),

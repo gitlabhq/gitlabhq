@@ -1,0 +1,13 @@
+---
+table_name: ai_flow_schedules
+classes:
+- Ai::FlowSchedule
+feature_categories:
+- code_suggestions
+description: Standalone cron-based schedules that periodically execute AI flow triggers.
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/250227
+milestone: '19.4'
+gitlab_schema: gitlab_main_org
+sharding_key:
+  project_id: projects
+table_size: small

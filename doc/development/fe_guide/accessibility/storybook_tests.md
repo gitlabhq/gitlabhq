@@ -15,9 +15,9 @@ This approach allows us to test components in isolation and catch accessibility 
 
 Before running Storybook accessibility tests, ensure you have:
 
-1. All dependencies installed (`yarn install`). This needs to be done inside the storybook directory (`cd storybook`)
-1. Install `playwright` with `yarn playwright install chromium` (or `yarn playwright install` to install all browser engines)
-1. A built Storybook instance running
+1. All dependencies installed (`yarn install`). This needs to be done inside the storybook directory (`cd storybook`).
+1. Install `playwright` with `yarn playwright install chromium` (or `yarn playwright install` to install all browser engines).
+1. A built Storybook instance running.
 
 ### Running Storybook accessibility tests
 
@@ -69,18 +69,18 @@ The complete output of the test run can be found in `storybook/tmp/storybook-res
 
 ### Best practices for Storybook accessibility testing
 
-1. **Test all story variants**: Ensure each story in your component represents different states and configurations
-1. **Include interactive states**: Create stories that show hover, focus, active, and disabled states
-1. **Test with different data**: Use realistic data that reflects actual usage scenarios
-1. **Address violations immediately**: Fix accessibility issues as soon as they're identified
-1. **Document component accessibility**: Include accessibility considerations in your component's story documentation
+1. **Test all story variants**: Ensure each story in your component represents different states and configurations.
+1. **Include interactive states**: Create stories that show hover, focus, active, and disabled states.
+1. **Test with different data**: Use realistic data that reflects actual usage scenarios.
+1. **Address violations immediately**: Fix accessibility issues as soon as they're identified.
+1. **Document component accessibility**: Include accessibility considerations in your component's story documentation.
 
 ### Integration with development workflow
 
 Consider integrating Storybook accessibility testing into your development process:
 
-1. **During component development**: Run tests frequently to catch issues early
-1. **Before merge requests**: Ensure all new or modified components pass accessibility tests
+1. **During component development**: Run tests frequently to catch issues early.
+1. **Before merge requests**: Ensure all new or modified components pass accessibility tests.
 
 These tests will also run in CI, whenever you edit either `*.vue` or `*.stories.js` file.
 You can find them in `storybook-test` job, under `test-frontend` pipeline.
@@ -89,10 +89,10 @@ You can find them in `storybook-test` job, under `test-frontend` pipeline.
 
 If tests fail to run:
 
-1. **Check Storybook is running**: Ensure your Storybook server is accessible at the expected URL
-1. **Verify dependencies**: Run `yarn install` to ensure all packages are installed
-1. **Check for build errors**: Look for any errors in the Storybook build output
-1. **Clear cache**: Try restarting Storybook if you encounter unexpected issues
+1. **Check Storybook is running**: Ensure your Storybook server is accessible at the expected URL.
+1. **Verify dependencies**: Run `yarn install` to ensure all packages are installed.
+1. **Check for build errors**: Look for any errors in the Storybook build output.
+1. **Clear cache**: Try restarting Storybook if you encounter unexpected issues.
 
 ## Getting help
 

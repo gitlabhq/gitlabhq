@@ -168,6 +168,18 @@ module GraphqlTriggers
     )
   end
 
+  def self.work_item_saved_view_updated(saved_view)
+    return unless Feature.enabled?(:work_items_realtime_broadcast, saved_view.namespace.root_ancestor)
+
+    return if Gitlab::ApplicationRateLimiter.throttled?(
+      :work_item_saved_view_broadcast, scope: { saved_view: saved_view.id }
+    )
+
+    GitlabSchema.subscriptions.trigger(
+      :work_item_saved_view_updated, { saved_view_id: saved_view.to_gid }, saved_view
+    )
+  end
+
   def self.user_merge_request_updated(user, merge_request)
     GitlabSchema.subscriptions.trigger(:user_merge_request_updated, { user_id: user.to_gid }, merge_request)
   end

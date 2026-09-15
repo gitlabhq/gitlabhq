@@ -1,6 +1,6 @@
 ---
 stage: Plan
-group: Product Planning
+group: Portfolio Planning
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see <https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments>
 title: Linked issues
 ---
@@ -68,7 +68,7 @@ For more information, see [crosslinking issues](crosslinking_issues.md).
 ## Remove a linked issue
 
 In the **Linked items** section of an issue, select the remove button ({{< icon name="close" >}}) on the
-right-side of each issue token to remove.
+right side of each issue token to remove.
 
 Due to the bi-directional relationship, the relationship no longer appears in either issue.
 

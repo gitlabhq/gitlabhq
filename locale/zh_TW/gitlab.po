@@ -14,7 +14,7 @@ msgstr ""
 "X-Crowdin-Language: zh-TW\n"
 "X-Crowdin-File: /master/locale/gitlab.pot\n"
 "X-Crowdin-File-ID: 16\n"
-"PO-Revision-Date: 2026-08-12 08:53\n"
+"PO-Revision-Date: 2026-08-24 11:01\n"
 
 msgid " %{start} to %{end}"
 msgstr " %{start} 到 %{end}"
@@ -491,11 +491,11 @@ msgstr "%{actionText} %{actionDetail} %{timeago} 由 %{author}"
 msgid "%{actionText} & %{openOrClose} %{noteable}"
 msgstr "%{actionText} 和 %{openOrClose} %{noteable}"
 
-msgid "%{actionText} & close %{noteable}"
-msgstr "%{actionText} & 關閉 %{noteable}"
+msgid "%{actionText} and close %{noteable}"
+msgstr ""
 
-msgid "%{actionText} & reopen %{noteable}"
-msgstr "%{actionText} & 重新開啟 %{noteable}"
+msgid "%{actionText} and reopen %{noteable}"
+msgstr ""
 
 msgid "%{action} %{date}"
 msgstr ""
@@ -1224,6 +1224,9 @@ msgstr "已完成 %{percent}%%"
 msgid "%{percent}%{percentSymbol} complete"
 msgstr "%{percent}%{percentSymbol} 完成"
 
+msgid "%{permission} information"
+msgstr ""
+
 msgid "%{placeholder} is not a valid color mode"
 msgstr "%{placeholder} 不是有效的顏色模式"
 
@@ -1320,6 +1323,9 @@ msgstr "%{resolvedDiscussionsCount} 的%{resolvableDiscussionsCount}。"
 msgid "%{resolvedDiscussionsCount} of %{resolvableDiscussionsCount} thread resolved"
 msgid_plural "%{resolvedDiscussionsCount} of %{resolvableDiscussionsCount} threads resolved"
 msgstr[0] "已解決 %{resolvedDiscussionsCount} 的 %{resolvableDiscussionsCount} 話題"
+
+msgid "%{resource} information"
+msgstr ""
 
 msgid "%{retryButtonStart}Try again%{retryButtonEnd} or %{newFileButtonStart}attach a new file%{newFileButtonEnd}."
 msgstr "%{retryButtonStart}請重試%{retryButtonEnd}或%{newFileButtonStart}附加一個新的檔案%{newFileButtonEnd}。"
@@ -2354,6 +2360,9 @@ msgstr "AI 閘道器網址："
 msgid "AI gateway URL"
 msgstr "AI 閘道器網址"
 
+msgid "AI planning cannot be disabled once it has been enabled."
+msgstr ""
+
 msgid "AI-generated summary"
 msgstr "AI 生成的摘要"
 
@@ -2887,6 +2896,9 @@ msgstr "基礎"
 msgid "AICatalog|Foundational agents and flows must be enabled in the Admin area or group settings."
 msgstr ""
 
+msgid "AICatalog|Foundational flows can only be disabled for a group in the group's GitLab Duo settings"
+msgstr ""
+
 msgid "AICatalog|Frequently failing or nuisance activity."
 msgstr "經常失敗或造成困擾的活動。"
 
@@ -3271,8 +3283,8 @@ msgstr ""
 msgid "AICatalog|This %{itemType} is already enabled."
 msgstr ""
 
-msgid "AICatalog|This %{itemType} is private and can only be enabled in the project it was created in or its top-level group. Duplicate the agent to use the same configuration in other projects."
-msgstr "此 %{itemType} 為私有，僅能在創建它的專案或其頂層群組中啟用，複製 agent 以在其他專案中使用相同的配置。"
+msgid "AICatalog|This %{itemType} is private and can only be enabled in its managing project: %{projectName}. Duplicate the %{itemType} to use the same configuration in other projects."
+msgstr ""
 
 msgid "AICatalog|This %{itemType} was removed from the AI Catalog. You can still use it in this %{targetType}."
 msgstr "此 %{itemType} 已從 AI 目錄中移除。您仍可在 %{targetType} 中使用它。"
@@ -3477,6 +3489,12 @@ msgstr ""
 
 msgid "AICatalog|You are an expert in [domain]. Your communication style is [style]. When helping users, you should always... Your key strengths include... You approach problems by..."
 msgstr "您是 [domain] 領域的專家。您的溝通風格是 [style]。在協助使用者時，您應該總是... 您的主要優勢包括... 您處理問題的方法是..."
+
+msgid "AICatalog|You must have the Maintainer or Owner role to enable a flow in a project."
+msgstr ""
+
+msgid "AICatalog|You must have the Maintainer or Owner role to enable an agent in a project."
+msgstr ""
 
 msgid "AICatalog|You must provide a source version."
 msgstr ""
@@ -3882,6 +3900,9 @@ msgstr "AWS 密碼存取金鑰"
 
 msgid "AWS access key ID (Optional)"
 msgstr "AWS 存取金鑰 ID（可選）"
+
+msgid "AWS region must be a valid region code, for example us-east-1"
+msgstr ""
 
 msgid "AWS secret access key (Optional)"
 msgstr "AWS 私密存取金鑰（可選）"
@@ -5751,6 +5772,9 @@ msgstr ""
 msgid "AdminAIPoweredFeatures|Available models: %{featureTitle}"
 msgstr ""
 
+msgid "AdminAIPoweredFeatures|Clear all models"
+msgstr ""
+
 msgid "AdminAIPoweredFeatures|Code Suggestions"
 msgstr "程式碼建議"
 
@@ -5798,6 +5822,9 @@ msgstr ""
 
 msgid "AdminAIPoweredFeatures|Select a model"
 msgstr "選擇型號"
+
+msgid "AdminAIPoweredFeatures|Select all models"
+msgstr ""
 
 msgid "AdminAIPoweredFeatures|Successfully updated available models for %{title}"
 msgstr ""
@@ -6353,6 +6380,9 @@ msgstr "您確定要恢復為默認擴充功能主機網域嗎？"
 
 msgid "AdminSettings|Auto DevOps domain"
 msgstr "Auto DevOps 網域"
+
+msgid "AdminSettings|Automatically accept achievements for all users"
+msgstr ""
 
 msgid "AdminSettings|Built-in project templates"
 msgstr ""
@@ -7602,6 +7632,9 @@ msgstr "部署金鑰"
 msgid "Admin|Geo"
 msgstr "Geo"
 
+msgid "Admin|Instance overview"
+msgstr ""
+
 msgid "Admin|Kubernetes"
 msgstr "Kubernetes"
 
@@ -7619,9 +7652,6 @@ msgstr "監控"
 
 msgid "Admin|Note"
 msgstr "備註"
-
-msgid "Admin|Overview"
-msgstr "概覽"
 
 msgid "Admin|Push rules"
 msgstr "推送規則"
@@ -7767,6 +7797,9 @@ msgstr "找不到提供的 ID 代理。"
 msgid "Agent or flow already enabled"
 msgstr ""
 
+msgid "AgentArtifacts|%{author} on behalf of %{humanAuthor}"
+msgstr ""
+
 msgid "AgentArtifacts|%{workflowDefinition} session %{workflowId}"
 msgstr ""
 
@@ -7774,9 +7807,6 @@ msgid "AgentArtifacts|AI Item"
 msgstr ""
 
 msgid "AgentArtifacts|AI audit event storage is turned off, so no audit events are being recorded. %{linkStart}Turn on storage%{linkEnd} to start capturing audit events."
-msgstr ""
-
-msgid "AgentArtifacts|Agent audit events"
 msgstr ""
 
 msgid "AgentArtifacts|Audit events"
@@ -7828,6 +7858,12 @@ msgid "AgentArtifacts|GitLab Duo"
 msgstr ""
 
 msgid "AgentArtifacts|Goal"
+msgstr ""
+
+msgid "AgentArtifacts|Human author ID"
+msgstr ""
+
+msgid "AgentArtifacts|Human author name"
 msgstr ""
 
 msgid "AgentArtifacts|IP address"
@@ -7959,7 +7995,7 @@ msgstr ""
 msgid "AgentPlan|Score: %{score} / 100"
 msgstr ""
 
-msgid "AgentPlan|Shows how ready this workplan is for an agent to run. To raise the score, add more detail to the workplan steps. %{linkStart}Learn more%{linkEnd}."
+msgid "AgentPlan|Shows how ready this work item is for an agent to run. To raise the score, add more detail to the work item description and to the workplan steps. %{linkStart}Learn more%{linkEnd}."
 msgstr ""
 
 msgid "AgentPlan|What is a workplan?"
@@ -8016,6 +8052,9 @@ msgstr "發生意外錯誤，請再試一次。"
 msgid "AiFlowTriggers|Mention-triggered flows are not supported on group-level resources. They require a project-level item such as an issue or merge request."
 msgstr ""
 
+msgid "AiFlowTriggers|Your message is too long for me to process. Shorten it and mention me again."
+msgstr ""
+
 msgid "AiFlowTriggers|✅ %{flow_name} has started. You can view progress %{link_start}here%{link_end}."
 msgstr "✅ %{flow_name} 已啟動。您可以在%{link_start}這裡%{link_end}查看進度。"
 
@@ -8027,6 +8066,10 @@ msgstr "🔄 正在處理請求..."
 
 msgid "AiGovernance|%d audit event"
 msgid_plural "AiGovernance|%d audit events"
+msgstr[0] ""
+
+msgid "AiGovernance|%d session"
+msgid_plural "AiGovernance|%d sessions"
 msgstr[0] ""
 
 msgid "AiGovernance|%{change} this month"
@@ -8071,7 +8114,7 @@ msgstr ""
 msgid "AiGovernance|Audit events"
 msgstr ""
 
-msgid "AiGovernance|Audit trail"
+msgid "AiGovernance|Audit logs"
 msgstr ""
 
 msgid "AiGovernance|Block"
@@ -8104,6 +8147,9 @@ msgstr ""
 msgid "AiGovernance|Destroy"
 msgstr ""
 
+msgid "AiGovernance|Developer activity"
+msgstr ""
+
 msgid "AiGovernance|External"
 msgstr ""
 
@@ -8113,7 +8159,7 @@ msgstr ""
 msgid "AiGovernance|Failed to load agent inventory."
 msgstr ""
 
-msgid "AiGovernance|Failed to load audit trail."
+msgid "AiGovernance|Failed to load audit logs."
 msgstr ""
 
 msgid "AiGovernance|Failed to load tool rules."
@@ -8158,6 +8204,9 @@ msgstr ""
 msgid "AiGovernance|Overrides group"
 msgstr ""
 
+msgid "AiGovernance|Project exposure"
+msgstr ""
+
 msgid "AiGovernance|Read"
 msgstr ""
 
@@ -8197,7 +8246,13 @@ msgstr ""
 msgid "AiGovernance|View all agents"
 msgstr ""
 
-msgid "AiGovernance|View full audit log"
+msgid "AiGovernance|View all audit logs"
+msgstr ""
+
+msgid "AiGovernance|View all projects"
+msgstr ""
+
+msgid "AiGovernance|View all users"
 msgstr ""
 
 msgid "AiGovernance|Web access"
@@ -8854,13 +8909,13 @@ msgstr "移除"
 msgid "AiPowered|Reset"
 msgstr ""
 
-msgid "AiPowered|Reset %{groupName} to inherited value"
-msgstr ""
-
 msgid "AiPowered|Reset %{groupName} to inherited value?"
 msgstr ""
 
-msgid "AiPowered|Reset to inherited value"
+msgid "AiPowered|Reset override"
+msgstr ""
+
+msgid "AiPowered|Reset override for %{groupName}"
 msgstr ""
 
 msgid "AiPowered|Resets the group to its inherited value — the nearest ancestor with an override, or the instance default if none exists."
@@ -8947,7 +9002,7 @@ msgstr ""
 msgid "AiPowered|These settings are disabled because GitLab Duo availability is set to always on."
 msgstr ""
 
-msgid "AiPowered|This group has an admin lock. Click Reset to remove it."
+msgid "AiPowered|This group has an admin lock. Click '%{action}' to change this value."
 msgstr ""
 
 msgid "AiPowered|This setting applies to the entire instance. By turning on these features, you accept the %{termsLinkStart}GitLab Duo AI Terms%{termsLinkEnd} unless your organization has a separate agreement with GitLab that governs AI usage."
@@ -9563,6 +9618,9 @@ msgstr "獲得所有必要的核准"
 
 msgid "All required approvals must be given."
 msgstr "必須獲得所有必要的核准。"
+
+msgid "All secrets stored in GitLab Secrets Manager are permanently deleted. %{link_start}Learn more.%{link_end}"
+msgstr ""
 
 msgid "All security policy violations must be resolved."
 msgstr ""
@@ -10525,6 +10583,9 @@ msgstr ""
 msgid "AnalyticsDashboards|Chat (non-agentic)"
 msgstr ""
 
+msgid "AnalyticsDashboards|Choose a group or project above to see this dashboard."
+msgstr ""
+
 msgid "AnalyticsDashboards|Code Suggestions"
 msgstr ""
 
@@ -10616,6 +10677,9 @@ msgid "AnalyticsDashboards|Root Cause Analysis"
 msgstr ""
 
 msgid "AnalyticsDashboards|Save"
+msgstr ""
+
+msgid "AnalyticsDashboards|Select a group or project"
 msgstr ""
 
 msgid "AnalyticsDashboards|Settings"
@@ -11162,9 +11226,6 @@ msgstr "套用標記 (label)"
 msgid "Apply a template"
 msgstr "套用範本"
 
-msgid "Apply default profile to all"
-msgstr "將預設設定檔套用至所有項目"
-
 msgid "Apply filter globally to all notification events"
 msgstr ""
 
@@ -11564,7 +11625,10 @@ msgid "Are you sure you want to import %d repository?"
 msgid_plural "Are you sure you want to import %d repositories?"
 msgstr[0] "您確定要匯入%d 檔案庫嗎？"
 
-msgid "Are you sure you want to lock %{name}?"
+msgid "Are you sure you want to lock the \"%{name}\" directory?"
+msgstr ""
+
+msgid "Are you sure you want to lock the \"%{name}\" file?"
 msgstr ""
 
 msgid "Are you sure you want to lock this directory?"
@@ -11642,11 +11706,14 @@ msgstr "您確定要撤回此專案存取憑證 (access token)嗎？此動作無
 msgid "Are you sure you want to stop this environment?"
 msgstr "是否確定終止目前環境？"
 
-msgid "Are you sure you want to unlock %{name}?"
-msgstr ""
-
 msgid "Are you sure you want to unlock %{path_lock_path}?"
 msgstr "您確定要解鎖 %{path_lock_path} 嗎？"
+
+msgid "Are you sure you want to unlock the \"%{name}\" directory?"
+msgstr ""
+
+msgid "Are you sure you want to unlock the \"%{name}\" file?"
+msgstr ""
 
 msgid "Are you sure you want to unlock this directory?"
 msgstr "您確定要解鎖此目錄？"
@@ -11678,6 +11745,9 @@ msgstr ""
 msgid "Artifact was successfully deleted."
 msgstr "產物已成功刪除。"
 
+msgid "ArtifactRegistry|%{artifactType} for %{digest}"
+msgstr ""
+
 msgid "ArtifactRegistry|%{date} by %{user}"
 msgstr ""
 
@@ -11685,6 +11755,9 @@ msgid "ArtifactRegistry|A hosted repository directly hosts artifacts. You can pu
 msgstr ""
 
 msgid "ArtifactRegistry|A permanent, unique identifier used across every Artifact Registry URL and client config file."
+msgstr ""
+
+msgid "ArtifactRegistry|A remote repository points to an external registry. Create a remote repository and connect it to multiple virtual repositories."
 msgstr ""
 
 msgid "ArtifactRegistry|A unified registry for artifacts across all projects and groups in your organization. To get started, choose a registry handle."
@@ -11741,6 +11814,12 @@ msgstr ""
 msgid "ArtifactRegistry|Artifact Registry returned an error."
 msgstr ""
 
+msgid "ArtifactRegistry|Artifact Registry was disabled."
+msgstr ""
+
+msgid "ArtifactRegistry|Artifact Registry was enabled."
+msgstr ""
+
 msgid "ArtifactRegistry|Artifact list updated."
 msgstr ""
 
@@ -11786,6 +11865,9 @@ msgstr ""
 msgid "ArtifactRegistry|Copy and paste this inside your %{codeStart}pom.xml%{codeEnd} %{codeStart}dependencies%{codeEnd} block:"
 msgstr ""
 
+msgid "ArtifactRegistry|Copy digest"
+msgstr ""
+
 msgid "ArtifactRegistry|Copy registry URL"
 msgstr ""
 
@@ -11828,9 +11910,6 @@ msgstr ""
 msgid "ArtifactRegistry|Could not authenticate with the Artifact Registry service."
 msgstr ""
 
-msgid "ArtifactRegistry|Create hosted repository"
-msgstr ""
-
 msgid "ArtifactRegistry|Create repository"
 msgstr ""
 
@@ -11850,6 +11929,12 @@ msgid "ArtifactRegistry|Description (optional)"
 msgstr ""
 
 msgid "ArtifactRegistry|Description cannot be longer than %{maxLength} characters."
+msgstr ""
+
+msgid "ArtifactRegistry|Digest"
+msgstr ""
+
+msgid "ArtifactRegistry|Disable Artifact Registry"
 msgstr ""
 
 msgid "ArtifactRegistry|Docker"
@@ -11874,7 +11959,13 @@ msgstr ""
 msgid "ArtifactRegistry|Edit or clear your filters to see more repositories."
 msgstr ""
 
+msgid "ArtifactRegistry|Edit remote repository"
+msgstr ""
+
 msgid "ArtifactRegistry|Edit repository"
+msgstr ""
+
+msgid "ArtifactRegistry|Enable Artifact Registry"
 msgstr ""
 
 msgid "ArtifactRegistry|Enable Artifact registry"
@@ -11911,6 +12002,9 @@ msgid "ArtifactRegistry|Image"
 msgid_plural "ArtifactRegistry|Images"
 msgstr[0] ""
 
+msgid "ArtifactRegistry|Index"
+msgstr ""
+
 msgid "ArtifactRegistry|Install"
 msgstr ""
 
@@ -11920,10 +12014,16 @@ msgstr ""
 msgid "ArtifactRegistry|Last updated"
 msgstr ""
 
+msgid "ArtifactRegistry|Loading artifact details."
+msgstr ""
+
 msgid "ArtifactRegistry|Loading artifacts."
 msgstr ""
 
 msgid "ArtifactRegistry|Loading repositories."
+msgstr ""
+
+msgid "ArtifactRegistry|Loading versions."
 msgstr ""
 
 msgid "ArtifactRegistry|Lowercase letters, numbers, hyphens (-), and underscores (_) only. The repository name cannot be changed after creation."
@@ -11953,13 +12053,13 @@ msgstr ""
 msgid "ArtifactRegistry|Name cannot be longer than %{maxLength} characters."
 msgstr ""
 
-msgid "ArtifactRegistry|Name has already been taken."
-msgstr ""
-
-msgid "ArtifactRegistry|Name is required."
-msgstr ""
-
 msgid "ArtifactRegistry|Name must use lowercase letters, digits, periods, underscores, and hyphens, and start and end with a letter or digit."
+msgstr ""
+
+msgid "ArtifactRegistry|New hosted repository"
+msgstr ""
+
+msgid "ArtifactRegistry|New remote repository"
 msgstr ""
 
 msgid "ArtifactRegistry|New repository"
@@ -12008,10 +12108,16 @@ msgstr ""
 msgid "ArtifactRegistry|Publish your first package to get started."
 msgstr ""
 
+msgid "ArtifactRegistry|Published"
+msgstr ""
+
 msgid "ArtifactRegistry|Pull an image:"
 msgstr ""
 
 msgid "ArtifactRegistry|Push an image:"
+msgstr ""
+
+msgid "ArtifactRegistry|Referrer for %{digest}"
 msgstr ""
 
 msgid "ArtifactRegistry|Registry URL"
@@ -12032,6 +12138,9 @@ msgstr ""
 msgid "ArtifactRegistry|Remote"
 msgstr ""
 
+msgid "ArtifactRegistry|Remote repository"
+msgstr ""
+
 msgid "ArtifactRegistry|Repositories"
 msgstr ""
 
@@ -12044,7 +12153,10 @@ msgstr ""
 msgid "ArtifactRegistry|Repository details"
 msgstr ""
 
-msgid "ArtifactRegistry|Repository not found."
+msgid "ArtifactRegistry|Repository name"
+msgstr ""
+
+msgid "ArtifactRegistry|Repository name is required."
 msgstr ""
 
 msgid "ArtifactRegistry|Repository setup"
@@ -12065,6 +12177,12 @@ msgstr ""
 msgid "ArtifactRegistry|Revocation %{number} on resource %{resource_id}: %{message}"
 msgstr ""
 
+msgid "ArtifactRegistry|SBOM attestation for %{digest}"
+msgstr ""
+
+msgid "ArtifactRegistry|SLSA attestation for %{digest}"
+msgstr ""
+
 msgid "ArtifactRegistry|Set up Artifact registry"
 msgstr ""
 
@@ -12072,6 +12190,9 @@ msgid "ArtifactRegistry|Setup instructions"
 msgstr ""
 
 msgid "ArtifactRegistry|Sign in to the registry:"
+msgstr ""
+
+msgid "ArtifactRegistry|Signature for %{digest}"
 msgstr ""
 
 msgid "ArtifactRegistry|Size"
@@ -12128,6 +12249,9 @@ msgstr ""
 msgid "ArtifactRegistry|This organization has no repositories yet."
 msgstr ""
 
+msgid "ArtifactRegistry|This will affect all projects currently using this registry."
+msgstr ""
+
 msgid "ArtifactRegistry|Type"
 msgstr ""
 
@@ -12143,6 +12267,12 @@ msgstr ""
 msgid "ArtifactRegistry|Unknown Artifact Registry roles: %{roles}."
 msgstr ""
 
+msgid "ArtifactRegistry|Version"
+msgstr ""
+
+msgid "ArtifactRegistry|Version list for %{name} updated."
+msgstr ""
+
 msgid "ArtifactRegistry|Versions"
 msgstr ""
 
@@ -12156,6 +12286,9 @@ msgid "ArtifactRegistry|Visibility level"
 msgstr ""
 
 msgid "ArtifactRegistry|Where the registry handle appears"
+msgstr ""
+
+msgid "ArtifactRegistry|You are about to disable Artifact Registry."
 msgstr ""
 
 msgid "ArtifactRegistry|You are not authorized to grant this role on this resource."
@@ -13384,26 +13517,8 @@ msgstr "計費使用者"
 msgid "Billing"
 msgstr "計費"
 
-msgid "BillingPlans|$%{cost}/yr"
-msgstr ""
-
-msgid "BillingPlans|$12 in GitLab Credits per user per month"
-msgstr ""
-
-msgid "BillingPlans|$24 in GitLab Credits per user per month"
-msgstr ""
-
-msgid "BillingPlans|%{amount} × $%{pricePerCredit} = $%{cost}/mo"
-msgstr ""
-
-msgid "BillingPlans|%{creditsPerUser} credits/user/month included in plan for:"
-msgstr ""
-
 msgid "BillingPlans|%{group_name} is currently using the %{plan_name}"
 msgstr "%{group_name} 目前正在使用 %{plan_name}"
-
-msgid "BillingPlans|*Limited time offer. %{linkStart}See details and promo terms.%{linkEnd}"
-msgstr ""
 
 msgid "BillingPlans|10,000 Compute Minutes per Month"
 msgstr ""
@@ -13416,9 +13531,6 @@ msgstr "10000 計算分鐘"
 
 msgid "BillingPlans|400 compute minutes"
 msgstr "400 計算分鐘"
-
-msgid "BillingPlans|50,000 compute minutes per month"
-msgstr ""
 
 msgid "BillingPlans|50000 compute minutes"
 msgstr "50000 計算分鐘"
@@ -13459,16 +13571,7 @@ msgstr "進階 CI/CD"
 msgid "BillingPlans|Advanced application security"
 msgstr "進階應用程式安全"
 
-msgid "BillingPlans|Advanced security capabilities"
-msgstr ""
-
-msgid "BillingPlans|After purchasing your subscription, you'll complete a separate checkout for credits."
-msgstr ""
-
 msgid "BillingPlans|Agents"
-msgstr ""
-
-msgid "BillingPlans|All included credits, plus shared credits for:"
 msgstr ""
 
 msgid "BillingPlans|All stages of the DevOps lifecycle"
@@ -13489,9 +13592,6 @@ msgstr "自動從外部版本庫同步分支、標籤與 commit 到 GitLab。"
 msgid "BillingPlans|Automatically sync branches, tags, and commits from an external repository."
 msgstr ""
 
-msgid "BillingPlans|Best for teams just getting started with AI. Included in the cost of your %{planName} subscription.*"
-msgstr ""
-
 msgid "BillingPlans|Billing"
 msgstr "計費"
 
@@ -13505,9 +13605,6 @@ msgid "BillingPlans|Built to grow with your team"
 msgstr ""
 
 msgid "BillingPlans|Buy monthly credits for AI capabilities, additional compute, and GitLab add-ons. Credits from $1, with volume discounts."
-msgstr ""
-
-msgid "BillingPlans|Cannot exceed 999,999 credits"
 msgstr ""
 
 msgid "BillingPlans|Chat that can be used throughout the GitLab platform, granting a much more fluid and efficient workflow experience."
@@ -13534,9 +13631,6 @@ msgstr "恭喜，您的免費試用計畫已啟用。"
 msgid "BillingPlans|Consolidate your toolchain in one place"
 msgstr ""
 
-msgid "BillingPlans|Continue to checkout"
-msgstr ""
-
 msgid "BillingPlans|Control who can approve merge requests to ensure code quality and compliance."
 msgstr "控制誰可以核准合併請求，以確保程式碼品質與合規性。"
 
@@ -13553,9 +13647,6 @@ msgid "BillingPlans|Customizable pre-receive Git hooks that enforce commit conte
 msgstr ""
 
 msgid "BillingPlans|Customize approval workflows with rules defining who must review code before merging, including options to prevent self-approvals and require authentication."
-msgstr ""
-
-msgid "BillingPlans|Discounted bulk credits shared across your group, this is best for teams looking to scale their AI usage. Billed annually."
 msgstr ""
 
 msgid "BillingPlans|Discover Premium"
@@ -13606,9 +13697,6 @@ msgstr "功能包括："
 msgid "BillingPlans|Flows"
 msgstr ""
 
-msgid "BillingPlans|For enterprises requiring advanced security and compliance capabilities."
-msgstr ""
-
 msgid "BillingPlans|For individuals working on personal projects and open source contributions."
 msgstr "適合從事個人專案和開源貢獻的個人。"
 
@@ -13656,9 +13744,6 @@ msgstr "有問題嗎？我們隨時為您提供協助。"
 
 msgid "BillingPlans|If you would like to downgrade your plan please contact %{support_link_start}Customer Support%{support_link_end}."
 msgstr "如果您想要降級您的訂閱計劃，請聯絡%{support_link_start}客戶支援%{support_link_end}。"
-
-msgid "BillingPlans|Included credits"
-msgstr ""
 
 msgid "BillingPlans|Includes $12 in GitLab Credits per user per month"
 msgstr ""
@@ -13708,12 +13793,6 @@ msgstr "合併請求核准"
 msgid "BillingPlans|Merge trains"
 msgstr "合併隊列"
 
-msgid "BillingPlans|Minimum 5 credits"
-msgstr ""
-
-msgid "BillingPlans|Monthly commitment"
-msgstr ""
-
 msgid "BillingPlans|Monthly commitments offer significant discounts. Pool credits across your namespace for predictable costs, and keep them after your trial ends."
 msgstr ""
 
@@ -13722,9 +13801,6 @@ msgstr "多區域支援"
 
 msgid "BillingPlans|Multiple approval rules"
 msgstr "多重審核規則"
-
-msgid "BillingPlans|Must be a valid number"
-msgstr ""
 
 msgid "BillingPlans|No credit card required"
 msgstr "無需信用卡"
@@ -13778,12 +13854,6 @@ msgid "BillingPlans|See all %{plan_name} features"
 msgstr "查看 %{plan_name} 計劃中的功能"
 
 msgid "BillingPlans|See all features"
-msgstr ""
-
-msgid "BillingPlans|Select your credits"
-msgstr ""
-
-msgid "BillingPlans|Select your subscription"
 msgstr ""
 
 msgid "BillingPlans|Software Supply Chain Security"
@@ -13864,26 +13934,11 @@ msgstr ""
 msgid "BillingPlans|Unlimited licensed users"
 msgstr "無限制授權的使用者"
 
-msgid "BillingPlans|Up to %{maxCodeReviews} code reviews"
-msgstr ""
-
-msgid "BillingPlans|Up to %{maxCodeSuggestions} code suggestions"
-msgstr ""
-
-msgid "BillingPlans|Up to 4 additional code reviews per credit"
-msgstr ""
-
-msgid "BillingPlans|Up to 50 additional code suggestions per credit"
-msgstr ""
-
 msgid "BillingPlans|Upgrade and unlock advanced features that boost your team's productivity instantly."
 msgstr "升級並解鎖能立即提升團隊生產力的高級功能。"
 
 msgid "BillingPlans|Upgrade before your trial ends to maintain access to these Premium features."
 msgstr "在試用期結束前升級，以保持對這些高終功能的存取。"
-
-msgid "BillingPlans|Upgrade subscription"
-msgstr ""
 
 msgid "BillingPlans|Upgrade to Premium"
 msgstr "提升到高級"
@@ -13894,14 +13949,8 @@ msgstr "提升到旗艦級"
 msgid "BillingPlans|Visibility & Incident Response"
 msgstr ""
 
-msgid "BillingPlans|Volume discounts available"
-msgstr ""
-
 msgid "BillingPlans|Vulnerability Management"
 msgstr "漏洞管理"
-
-msgid "BillingPlans|We recommend starting with 20 credits per month."
-msgstr ""
 
 msgid "BillingPlans|You have an active monthly commitment of GitLab Credits shared across your group. You keep these credits when the trial ends."
 msgstr ""
@@ -13950,9 +13999,6 @@ msgstr "實例"
 
 msgid "BillingPlans|monthly"
 msgstr "每月"
-
-msgid "BillingPlans|per GitLab Credit"
-msgstr ""
 
 msgid "BillingPlans|per user"
 msgstr "每使用者"
@@ -19401,6 +19447,9 @@ msgstr "收合 %{name} 目錄"
 msgid "Collapse %{section} merge requests"
 msgstr "收折 %{section} 合併請求"
 
+msgid "Collapse all"
+msgstr ""
+
 msgid "Collapse all files"
 msgstr "折疊所有檔案"
 
@@ -22904,17 +22953,23 @@ msgstr ""
 msgid "Continuous Vulnerability Scanning for Dependency Scanning"
 msgstr ""
 
+msgid "ContinuousDeployment|%d environment"
+msgid_plural "ContinuousDeployment|%d environments"
+msgstr[0] ""
+
 msgid "ContinuousDeployment|%d service"
 msgid_plural "ContinuousDeployment|%d services"
 msgstr[0] ""
 
+msgid "ContinuousDeployment|%{count} env"
+msgid_plural "ContinuousDeployment|%{count} envs"
+msgstr[0] ""
+
+msgid "ContinuousDeployment|%{count} step"
+msgid_plural "ContinuousDeployment|%{count} steps"
+msgstr[0] ""
+
 msgid "ContinuousDeployment|%{environmentsCount} of %{totalEnvironmentsCount} environments"
-msgstr ""
-
-msgid "ContinuousDeployment|%{timeAgo}"
-msgstr ""
-
-msgid "ContinuousDeployment|%{timeAgo} by %{user}"
 msgstr ""
 
 msgid "ContinuousDeployment|+ Add another service"
@@ -22950,6 +23005,9 @@ msgstr ""
 msgid "ContinuousDeployment|All"
 msgstr ""
 
+msgid "ContinuousDeployment|All environments"
+msgstr ""
+
 msgid "ContinuousDeployment|All systems healthy"
 msgstr ""
 
@@ -22972,6 +23030,18 @@ msgid "ContinuousDeployment|Applications"
 msgstr ""
 
 msgid "ContinuousDeployment|Approval needed"
+msgstr ""
+
+msgid "ContinuousDeployment|Approve"
+msgstr ""
+
+msgid "ContinuousDeployment|Approved"
+msgstr ""
+
+msgid "ContinuousDeployment|Approved %{step}"
+msgstr ""
+
+msgid "ContinuousDeployment|Are you sure you want to delete %{name} link?"
 msgstr ""
 
 msgid "ContinuousDeployment|Artifact URL"
@@ -23085,9 +23155,6 @@ msgstr ""
 msgid "ContinuousDeployment|Docs"
 msgstr ""
 
-msgid "ContinuousDeployment|Drift detected"
-msgstr ""
-
 msgid "ContinuousDeployment|Edit"
 msgstr ""
 
@@ -23097,13 +23164,16 @@ msgstr ""
 msgid "ContinuousDeployment|Enter a valid URL that starts with http:// or https://"
 msgstr ""
 
-msgid "ContinuousDeployment|Environment %{id}"
-msgstr ""
-
 msgid "ContinuousDeployment|Environment identity"
 msgstr ""
 
 msgid "ContinuousDeployment|Environment name"
+msgstr ""
+
+msgid "ContinuousDeployment|Environment not found"
+msgstr ""
+
+msgid "ContinuousDeployment|Environment: %{name}"
 msgstr ""
 
 msgid "ContinuousDeployment|Environments"
@@ -23124,7 +23194,13 @@ msgstr ""
 msgid "ContinuousDeployment|Expand services"
 msgstr ""
 
+msgid "ContinuousDeployment|Explain why this rollout is being rejected"
+msgstr ""
+
 msgid "ContinuousDeployment|Failed"
+msgstr ""
+
+msgid "ContinuousDeployment|Failed to delete the link. Try again later."
 msgstr ""
 
 msgid "ContinuousDeployment|Failed to load GitLab agents. Refresh the page to try again."
@@ -23139,7 +23215,16 @@ msgstr ""
 msgid "ContinuousDeployment|Failed to load releases. Reload to try again."
 msgstr ""
 
+msgid "ContinuousDeployment|Failed to load services. Reload to try again."
+msgstr ""
+
 msgid "ContinuousDeployment|Failed to load the application. Please try again later."
+msgstr ""
+
+msgid "ContinuousDeployment|Failed to load the approval gate. Refresh to try again."
+msgstr ""
+
+msgid "ContinuousDeployment|Failed to record the decision. Please try again."
 msgstr ""
 
 msgid "ContinuousDeployment|Failed to save the link. Try again later."
@@ -23160,6 +23245,9 @@ msgstr ""
 msgid "ContinuousDeployment|Filter releases…"
 msgstr ""
 
+msgid "ContinuousDeployment|Filter services…"
+msgstr ""
+
 msgid "ContinuousDeployment|Flow editor"
 msgstr ""
 
@@ -23167,6 +23255,9 @@ msgid "ContinuousDeployment|Get started with environments"
 msgstr ""
 
 msgid "ContinuousDeployment|GitLab Agent"
+msgstr ""
+
+msgid "ContinuousDeployment|Grid view"
 msgstr ""
 
 msgid "ContinuousDeployment|Health"
@@ -23179,9 +23270,6 @@ msgid "ContinuousDeployment|ID"
 msgstr ""
 
 msgid "ContinuousDeployment|In progress"
-msgstr ""
-
-msgid "ContinuousDeployment|In sync"
 msgstr ""
 
 msgid "ContinuousDeployment|Issue tracker"
@@ -23203,6 +23291,9 @@ msgid "ContinuousDeployment|Last deployed %{time}"
 msgstr ""
 
 msgid "ContinuousDeployment|Links"
+msgstr ""
+
+msgid "ContinuousDeployment|List view"
 msgstr ""
 
 msgid "ContinuousDeployment|Name cannot exceed %{maxLength} characters."
@@ -23238,7 +23329,13 @@ msgstr ""
 msgid "ContinuousDeployment|No releases match your filter."
 msgstr ""
 
+msgid "ContinuousDeployment|No services available."
+msgstr ""
+
 msgid "ContinuousDeployment|No services in this release."
+msgstr ""
+
+msgid "ContinuousDeployment|No services match your filter."
 msgstr ""
 
 msgid "ContinuousDeployment|No services yet. Add at least one — a service is the deployable unit (Git repo with K8s manifests, or a container image)."
@@ -23253,9 +23350,6 @@ msgstr ""
 msgid "ContinuousDeployment|Other"
 msgstr ""
 
-msgid "ContinuousDeployment|Out of sync"
-msgstr ""
-
 msgid "ContinuousDeployment|Paused"
 msgstr ""
 
@@ -23268,6 +23362,9 @@ msgstr ""
 msgid "ContinuousDeployment|QA"
 msgstr ""
 
+msgid "ContinuousDeployment|Reason"
+msgstr ""
+
 msgid "ContinuousDeployment|Register application"
 msgstr ""
 
@@ -23278,6 +23375,18 @@ msgid "ContinuousDeployment|Register the cluster or cloud account where services
 msgstr ""
 
 msgid "ContinuousDeployment|Register your first environment"
+msgstr ""
+
+msgid "ContinuousDeployment|Reject"
+msgstr ""
+
+msgid "ContinuousDeployment|Reject this approval?"
+msgstr ""
+
+msgid "ContinuousDeployment|Rejected"
+msgstr ""
+
+msgid "ContinuousDeployment|Rejected %{step}"
 msgstr ""
 
 msgid "ContinuousDeployment|Release"
@@ -23302,6 +23411,12 @@ msgid "ContinuousDeployment|Runbook"
 msgstr ""
 
 msgid "ContinuousDeployment|Running"
+msgstr ""
+
+msgid "ContinuousDeployment|Running Apps"
+msgstr ""
+
+msgid "ContinuousDeployment|Save changes"
 msgstr ""
 
 msgid "ContinuousDeployment|Save service"
@@ -23337,6 +23452,9 @@ msgstr ""
 msgid "ContinuousDeployment|Show %{size} items"
 msgstr ""
 
+msgid "ContinuousDeployment|Skipped"
+msgstr ""
+
 msgid "ContinuousDeployment|Source"
 msgstr ""
 
@@ -23352,15 +23470,6 @@ msgstr ""
 msgid "ContinuousDeployment|Superseded"
 msgstr ""
 
-msgid "ContinuousDeployment|Sync"
-msgstr ""
-
-msgid "ContinuousDeployment|Sync status"
-msgstr ""
-
-msgid "ContinuousDeployment|Synced"
-msgstr ""
-
 msgid "ContinuousDeployment|Target"
 msgstr ""
 
@@ -23371,6 +23480,9 @@ msgid "ContinuousDeployment|The cluster that backs this environment. Deploy conn
 msgstr ""
 
 msgid "ContinuousDeployment|The deployable units. Each service has its own deployment strategy."
+msgstr ""
+
+msgid "ContinuousDeployment|The environment may have been removed or you may not have access to it."
 msgstr ""
 
 msgid "ContinuousDeployment|This deployment will honour all policies and approval gates configured for the target environments."
@@ -23930,6 +24042,9 @@ msgstr "語詞庫管理"
 
 msgid "Corpus Management|Are you sure you want to delete the corpus?"
 msgstr "確定要刪除語詞庫嗎？"
+
+msgid "Corpus management"
+msgstr ""
 
 msgid "CorpusManagement|A corpus is used by fuzz testing to improve coverage. Corpus files can be manually created or auto-generated. %{linkStart}Learn more%{linkEnd}"
 msgstr "模糊測試使用語詞庫來提高覆蓋率。語詞庫文件可以手動創建或自動生成。%{linkStart}瞭解更多%{linkEnd}"
@@ -24731,9 +24846,6 @@ msgstr "信用卡"
 
 msgid "Credit card validation record saved"
 msgstr "信用卡驗證紀錄已儲存"
-
-msgid "Credits per month"
-msgstr "每月額度"
 
 msgid "Critical - S1"
 msgstr "嚴重 - S1"
@@ -26461,7 +26573,10 @@ msgstr "遺失序列"
 msgid "DatabaseDiagnostics|More than one index pass means the dead-tuple store filled up. Consider increasing maintenance_work_mem or autovacuum_work_mem."
 msgstr ""
 
-msgid "DatabaseDiagnostics|More than one schema in the search path contains objects: %{schemas}. GitLab's objects should all live in a single schema. If they are split across multiple schemas, unqualified references can resolve unexpectedly."
+msgid "DatabaseDiagnostics|More than one schema in the search path contains GitLab objects: %{schemas}. GitLab's objects should all live in a single schema. When they are split across multiple schemas, unqualified references can resolve unexpectedly."
+msgstr ""
+
+msgid "DatabaseDiagnostics|More than one schema in the search path contains objects: %{schemas}. This can be intentional, but unqualified references resolve against the first match, so objects spread across schemas can resolve unexpectedly."
 msgstr ""
 
 msgid "DatabaseDiagnostics|No schema issues detected."
@@ -26501,6 +26616,9 @@ msgid "DatabaseDiagnostics|Schema health check"
 msgstr "資料庫診斷架構健康檢查"
 
 msgid "DatabaseDiagnostics|Schemas"
+msgstr ""
+
+msgid "DatabaseDiagnostics|Schemas outside the search path contain GitLab objects: %{schemas}. GitLab does not resolve unqualified references against these schemas, so these objects are never used. They may be leftovers from a restore or an earlier misconfiguration."
 msgstr ""
 
 msgid "DatabaseDiagnostics|Search path"
@@ -27011,6 +27129,9 @@ msgstr "移除專案程式碼片段失敗。請重試或聯繫管理員。"
 
 msgid "DeleteProject|Failed to remove some tags in project container registry. Please try again or contact administrator."
 msgstr "刪除項目容器鏡像庫中的某些標籤失敗。請重試或聯絡管理員。"
+
+msgid "DeleteProject|Failed to remove some tags in project container registry. The container registry at %{registry_url} could not be reached (%{error}). If the container registry is not in use, disable the integration to allow the project to be deleted."
+msgstr ""
 
 msgid "DeleteProject|Failed to remove webhooks. Please try again or contact administrator."
 msgstr "移除 Webhooks 失敗。請重試或聯繫管理員。"
@@ -27558,8 +27679,8 @@ msgstr "部署金鑰已成功更新。"
 msgid "Deploy keys"
 msgstr "部署金鑰"
 
-msgid "Deploy keys grant read/write access to all repositories in your instance, start by creating a new one above."
-msgstr "部署金鑰可以授予對執行個體中所有儲存庫的讀寫存取權限，請先建立一個新的金鑰。"
+msgid "Deploy keys grant read/write access to all repositories in your instance."
+msgstr ""
 
 msgid "Deploy progress not found. To see pods, ensure your environment matches %{linkStart}deploy board criteria%{linkEnd}."
 msgstr "未找到部署進度。要查看pod，請確保您的環境符合%{linkStart}部署看板條件%{linkEnd}。"
@@ -28315,17 +28436,11 @@ msgstr "指定的帳號 %{type} 已存在，您可以在下方的舊版聯絡人
 msgid "Designs"
 msgstr "設計"
 
-msgid "Destination"
-msgstr "目的地"
-
 msgid "Destination activated successfully."
 msgstr "目的地已成功啟用。"
 
 msgid "Destination deactivated successfully."
 msgstr "目的地已成功啟用。"
-
-msgid "Destination path"
-msgstr "目標路徑"
 
 msgid "Destroy"
 msgstr "刪除"
@@ -28747,9 +28862,6 @@ msgstr "方向"
 
 msgid "Directories cannot be uploaded. Please upload a single file instead."
 msgstr "目錄無法上傳，請改為上傳單一檔案。"
-
-msgid "Directory locked"
-msgstr "目錄已鎖定"
 
 msgid "Directory name"
 msgstr "目錄名稱"
@@ -29223,6 +29335,10 @@ msgstr ""
 msgid "Duo workflow"
 msgstr ""
 
+msgid "DuoAgentPlatform|%d MCP server is connected. Agents can use it in this project."
+msgid_plural "DuoAgentPlatform|%d MCP servers are connected. Agents can use them in this project."
+msgstr[0] ""
+
 msgid "DuoAgentPlatform|%{base} Attention required."
 msgstr ""
 
@@ -29248,6 +29364,15 @@ msgid "DuoAgentPlatform|%{linkStart}What are flows?%{linkEnd}"
 msgstr ""
 
 msgid "DuoAgentPlatform|%{text} by %{name}"
+msgstr ""
+
+msgid "DuoAgentPlatform|A knowledge graph that helps agents reason across your whole project."
+msgstr ""
+
+msgid "DuoAgentPlatform|A knowledge graph that helps agents reason across your whole project. Only a Group Owner can turn it on."
+msgstr ""
+
+msgid "DuoAgentPlatform|A runner is available and picking up jobs."
 msgstr ""
 
 msgid "DuoAgentPlatform|Action"
@@ -29277,6 +29402,9 @@ msgstr ""
 msgid "DuoAgentPlatform|Agents cannot run here until everything below is in place."
 msgstr ""
 
+msgid "DuoAgentPlatform|Agents get repo-wide context."
+msgstr ""
+
 msgid "DuoAgentPlatform|Allow GitLab Duo agents to execute flows in this project."
 msgstr "允許 GitLab Duo agents 執行此專案中的流程。"
 
@@ -29292,13 +29420,25 @@ msgstr "允許基礎流程"
 msgid "DuoAgentPlatform|Awaiting your input"
 msgstr ""
 
+msgid "DuoAgentPlatform|CI/CD runner"
+msgstr ""
+
 msgid "DuoAgentPlatform|Cancelled"
+msgstr ""
+
+msgid "DuoAgentPlatform|Check again"
 msgstr ""
 
 msgid "DuoAgentPlatform|Commit authored in a GitLab Duo Agent session"
 msgstr ""
 
 msgid "DuoAgentPlatform|Completed"
+msgstr ""
+
+msgid "DuoAgentPlatform|Could not check for a runner. Try again."
+msgstr ""
+
+msgid "DuoAgentPlatform|Could not check for a runner. You do not have permission to check this project."
 msgstr ""
 
 msgid "DuoAgentPlatform|Couldn't load sessions."
@@ -29322,8 +29462,14 @@ msgstr ""
 msgid "DuoAgentPlatform|Duo Agent Platform Settings have been saved"
 msgstr ""
 
+msgid "DuoAgentPlatform|Enable"
+msgstr ""
+
 msgid "DuoAgentPlatform|Error occurred when starting the flow."
 msgstr "啟動流程時發生錯誤。"
+
+msgid "DuoAgentPlatform|Experiment. Agents can connect to tools your team already uses, such as Jira or Linear."
+msgstr ""
 
 msgid "DuoAgentPlatform|Failed"
 msgstr ""
@@ -29335,6 +29481,9 @@ msgid "DuoAgentPlatform|Failed to load agent sessions for this pipeline."
 msgstr ""
 
 msgid "DuoAgentPlatform|Failed to load agent sessions for this work item."
+msgstr ""
+
+msgid "DuoAgentPlatform|Features that give your agent more context to work with."
 msgstr ""
 
 msgid "DuoAgentPlatform|Flow"
@@ -29355,7 +29504,13 @@ msgstr ""
 msgid "DuoAgentPlatform|GitLab Duo CLI"
 msgstr ""
 
+msgid "DuoAgentPlatform|GitLab Orbit"
+msgstr ""
+
 msgid "DuoAgentPlatform|Group settings"
+msgstr ""
+
+msgid "DuoAgentPlatform|How to connect"
 msgstr ""
 
 msgid "DuoAgentPlatform|IDE extensions"
@@ -29373,6 +29528,9 @@ msgstr ""
 msgid "DuoAgentPlatform|Implement work item with GitLab Duo"
 msgstr ""
 
+msgid "DuoAgentPlatform|Indexed %{timeAgo}. Agents get repo-wide context."
+msgstr ""
+
 msgid "DuoAgentPlatform|Install GitLab Duo CLI"
 msgstr ""
 
@@ -29385,10 +29543,19 @@ msgstr ""
 msgid "DuoAgentPlatform|Local setup"
 msgstr ""
 
+msgid "DuoAgentPlatform|MCP servers"
+msgstr ""
+
 msgid "DuoAgentPlatform|Manage merge requests, issues, and pipelines, and run Orbit Local from the terminal."
 msgstr ""
 
+msgid "DuoAgentPlatform|Needed once flow execution is on."
+msgstr ""
+
 msgid "DuoAgentPlatform|No GitLab Credits remain for this billing period. %{linkStart}Learn more.%{linkEnd}"
+msgstr ""
+
+msgid "DuoAgentPlatform|No runner this project can use, so flows would never start."
 msgstr ""
 
 msgid "DuoAgentPlatform|Off for this group. Only a Group Owner can turn it on."
@@ -29403,6 +29570,9 @@ msgstr ""
 msgid "DuoAgentPlatform|On for this instance. Administrators control it."
 msgstr ""
 
+msgid "DuoAgentPlatform|Optional"
+msgstr ""
+
 msgid "DuoAgentPlatform|Other Duo settings"
 msgstr ""
 
@@ -29410,6 +29580,9 @@ msgid "DuoAgentPlatform|Paused"
 msgstr ""
 
 msgid "DuoAgentPlatform|Project-wide behavior, unrelated to readiness."
+msgstr ""
+
+msgid "DuoAgentPlatform|Query graph"
 msgstr ""
 
 msgid "DuoAgentPlatform|Remote GitLab Duo Flows"
@@ -29460,6 +29633,9 @@ msgstr ""
 msgid "DuoAgentPlatform|Something went wrong saving Duo Agent Platform settings"
 msgstr ""
 
+msgid "DuoAgentPlatform|Something went wrong while turning on GitLab Orbit."
+msgstr ""
+
 msgid "DuoAgentPlatform|Starting job"
 msgstr ""
 
@@ -29500,6 +29676,12 @@ msgid "DuoAgentPlatform|View all sessions"
 msgstr ""
 
 msgid "DuoAgentPlatform|View details"
+msgstr ""
+
+msgid "DuoAgentPlatform|View runners"
+msgstr ""
+
+msgid "DuoAgentPlatform|View servers"
 msgstr ""
 
 msgid "DuoAgenticChat|%{count} character over limit."
@@ -29543,6 +29725,9 @@ msgstr ""
 msgid "DuoAgenticChat|Chat about different topics"
 msgstr "討論不同的話題"
 
+msgid "DuoAgenticChat|Chat could not be loaded"
+msgstr ""
+
 msgid "DuoAgenticChat|Chat history"
 msgstr ""
 
@@ -29553,6 +29738,9 @@ msgid "DuoAgenticChat|Chat with different agents"
 msgstr "與不同的 agents 進行聊天"
 
 msgid "DuoAgenticChat|Collaborate with AI agents to accomplish tasks and answer questions, or use a multi-agent flow to solve a complex problem."
+msgstr ""
+
+msgid "DuoAgenticChat|Connection lost"
 msgstr ""
 
 msgid "DuoAgenticChat|Current page"
@@ -29595,6 +29783,9 @@ msgid "DuoAgenticChat|GitLab Duo is disabled for this group. %{linkStart}Learn m
 msgstr ""
 
 msgid "DuoAgenticChat|GitLab Duo is disabled for this project. %{linkStart}Learn more%{linkEnd}."
+msgstr ""
+
+msgid "DuoAgenticChat|GitLab Duo will resume once reconnected."
 msgstr ""
 
 msgid "DuoAgenticChat|Go to Duo settings"
@@ -29642,10 +29833,16 @@ msgstr "深入瞭解"
 msgid "DuoAgenticChat|Let's work through this together..."
 msgstr ""
 
+msgid "DuoAgenticChat|Loading your conversation..."
+msgstr ""
+
 msgid "DuoAgenticChat|More actions"
 msgstr ""
 
 msgid "DuoAgenticChat|More active sessions"
+msgstr ""
+
+msgid "DuoAgenticChat|New chat"
 msgstr ""
 
 msgid "DuoAgenticChat|No credits remain for this billing period"
@@ -29678,10 +29875,19 @@ msgstr ""
 msgid "DuoAgenticChat|Ready when you are"
 msgstr ""
 
+msgid "DuoAgenticChat|Reconnect"
+msgstr ""
+
+msgid "DuoAgenticChat|Reconnect to continue this conversation."
+msgstr ""
+
 msgid "DuoAgenticChat|Repurchase Agent Platform"
 msgstr ""
 
 msgid "DuoAgenticChat|Responses may be inaccurate. Verify before use."
+msgstr ""
+
+msgid "DuoAgenticChat|Retry"
 msgstr ""
 
 msgid "DuoAgenticChat|Return to non-agentic Chat"
@@ -29730,6 +29936,9 @@ msgid "DuoAgenticChat|To continue collaborating with GitLab Duo Agent Platform, 
 msgstr ""
 
 msgid "DuoAgenticChat|To use Chat, select a default namespace in your %{preferencesLinkStart}user profile preferences%{preferencesLinkEnd}. Alternatively, turn off the %{agenticModeStart}Agentic toggle%{agenticModeEnd} to return to non-agentic Chat."
+msgstr ""
+
+msgid "DuoAgenticChat|To use Chat, select a default namespace in your user profile preferences."
 msgstr ""
 
 msgid "DuoAgenticChat|To use Chat, select a default namespace in your user profile preferences. Alternatively, turn off the Agentic toggle to return to non-agentic Chat."
@@ -29783,6 +29992,9 @@ msgstr ""
 msgid "DuoAgenticChat|Your GitLab Duo Agent Platform trial has ended"
 msgstr ""
 
+msgid "DuoAgenticChat|Your messages are still saved. Try again, or start a new chat."
+msgstr ""
+
 msgid "DuoAgenticChat|Your subscription has been cancelled. Repurchase to resume using GitLab Duo Agent Platform."
 msgstr ""
 
@@ -29801,6 +30013,33 @@ msgstr ""
 msgid "DuoAgenticChat|chat-rules.md was not found in this page"
 msgstr ""
 
+msgid "DuoAgentsPlatform|%{agentName} is investigating..."
+msgstr ""
+
+msgid "DuoAgentsPlatform|%{agentName} is paused"
+msgstr ""
+
+msgid "DuoAgentsPlatform|%{agentName} is pondering..."
+msgstr ""
+
+msgid "DuoAgentsPlatform|%{agentName} is thinking..."
+msgstr ""
+
+msgid "DuoAgentsPlatform|%{agentName} is working..."
+msgstr ""
+
+msgid "DuoAgentsPlatform|%{agentName} needs input"
+msgstr ""
+
+msgid "DuoAgentsPlatform|%{agentName} was unable to complete your request"
+msgstr ""
+
+msgid "DuoAgentsPlatform|%{event}: %{conditions}"
+msgstr ""
+
+msgid "DuoAgentsPlatform|(editing)"
+msgstr ""
+
 msgid "DuoAgentsPlatform|AI"
 msgstr ""
 
@@ -29815,6 +30054,18 @@ msgstr "動作"
 
 msgid "DuoAgentsPlatform|Actions"
 msgstr "動作"
+
+msgid "DuoAgentsPlatform|Add a condition so this %{itemType} knows when to run."
+msgstr ""
+
+msgid "DuoAgentsPlatform|Add condition"
+msgstr ""
+
+msgid "DuoAgentsPlatform|Add event"
+msgstr ""
+
+msgid "DuoAgentsPlatform|Add schedule"
+msgstr ""
 
 msgid "DuoAgentsPlatform|Agent Platform health checks pass and runners are available to this project."
 msgstr ""
@@ -29873,11 +30124,14 @@ msgstr ""
 msgid "DuoAgentsPlatform|Comment on work item"
 msgstr ""
 
+msgid "DuoAgentsPlatform|Commit to default branch"
+msgstr ""
+
 msgid "DuoAgentsPlatform|Complete multi-step tasks with flows"
 msgstr "與專業代理進行聊天"
 
-msgid "DuoAgentsPlatform|Config Path"
-msgstr "配置路徑"
+msgid "DuoAgentsPlatform|Conditions"
+msgstr ""
 
 msgid "DuoAgentsPlatform|Configuration path"
 msgstr "配置路徑"
@@ -29912,17 +30166,11 @@ msgstr "建立合併請求"
 msgid "DuoAgentsPlatform|Create trigger"
 msgstr "建立觸發器"
 
-msgid "DuoAgentsPlatform|Create triggers to automatically run pipelines when specified events occur in your project."
-msgstr "建立觸發器，以便在專案中發生特定事件時自動執行流水線。"
-
 msgid "DuoAgentsPlatform|Customize agents for this project"
 msgstr ""
 
 msgid "DuoAgentsPlatform|Data Analyst"
 msgstr ""
-
-msgid "DuoAgentsPlatform|Default"
-msgstr "預設"
 
 msgid "DuoAgentsPlatform|Delegated to subagent"
 msgstr ""
@@ -29936,8 +30184,14 @@ msgstr "描述"
 msgid "DuoAgentsPlatform|Description is required."
 msgstr ""
 
+msgid "DuoAgentsPlatform|Edit event"
+msgstr ""
+
 msgid "DuoAgentsPlatform|Edit file"
 msgstr "編輯檔案"
+
+msgid "DuoAgentsPlatform|Edit schedule"
+msgstr ""
 
 msgid "DuoAgentsPlatform|Edit trigger"
 msgstr "編輯觸發器"
@@ -29952,15 +30206,6 @@ msgid "DuoAgentsPlatform|Enter the path to your configuration file."
 msgstr "輸入您的配置文件路徑"
 
 msgid "DuoAgentsPlatform|Event"
-msgstr ""
-
-msgid "DuoAgentsPlatform|Event type"
-msgstr ""
-
-msgid "DuoAgentsPlatform|Event types are required."
-msgstr ""
-
-msgid "DuoAgentsPlatform|Events"
 msgstr ""
 
 msgid "DuoAgentsPlatform|Every 15 minutes"
@@ -29994,6 +30239,9 @@ msgid "DuoAgentsPlatform|Files that tune how agents read and act on this codebas
 msgstr ""
 
 msgid "DuoAgentsPlatform|Find files"
+msgstr ""
+
+msgid "DuoAgentsPlatform|Finish or cancel the open condition before saving."
 msgstr ""
 
 msgid "DuoAgentsPlatform|Fix a failing pipeline"
@@ -30056,17 +30304,17 @@ msgstr "列出目錄"
 msgid "DuoAgentsPlatform|List files"
 msgstr "列出檔案"
 
-msgid "DuoAgentsPlatform|Manage automated flows within your project."
-msgstr "管理專案內的自動化流程。"
-
-msgid "DuoAgentsPlatform|Merge request events configuration"
-msgstr ""
-
 msgid "DuoAgentsPlatform|Modify plan"
 msgstr ""
 
 msgid "DuoAgentsPlatform|New agent sessions will appear here."
 msgstr "新的 agent 工作階段將出現在此處。"
+
+msgid "DuoAgentsPlatform|New event"
+msgstr ""
+
+msgid "DuoAgentsPlatform|New schedule"
+msgstr ""
 
 msgid "DuoAgentsPlatform|New trigger"
 msgstr "新觸發器"
@@ -30074,11 +30322,20 @@ msgstr "新觸發器"
 msgid "DuoAgentsPlatform|No agent sessions yet"
 msgstr "尚無 agent 工作階段"
 
+msgid "DuoAgentsPlatform|No conditions yet. Add a schedule or an event."
+msgstr ""
+
 msgid "DuoAgentsPlatform|No runner is available to this project. You can still prepare the repository below while this is fixed."
 msgstr ""
 
 msgid "DuoAgentsPlatform|No triggers yet"
 msgstr "尚無觸發器"
+
+msgid "DuoAgentsPlatform|On a schedule"
+msgstr ""
+
+msgid "DuoAgentsPlatform|On an event"
+msgstr ""
 
 msgid "DuoAgentsPlatform|Onboarding"
 msgstr ""
@@ -30098,9 +30355,6 @@ msgstr "擁有者"
 msgid "DuoAgentsPlatform|Path to configuration file"
 msgstr "組態檔路徑"
 
-msgid "DuoAgentsPlatform|Pipeline events configuration"
-msgstr ""
-
 msgid "DuoAgentsPlatform|Plan updated"
 msgstr ""
 
@@ -30113,16 +30367,34 @@ msgstr ""
 msgid "DuoAgentsPlatform|Read file"
 msgstr "讀取檔案"
 
+msgid "DuoAgentsPlatform|Remove event"
+msgstr ""
+
+msgid "DuoAgentsPlatform|Remove schedule"
+msgstr ""
+
 msgid "DuoAgentsPlatform|Review a merge request"
 msgstr "審閱合併請求"
 
 msgid "DuoAgentsPlatform|Run at"
 msgstr ""
 
+msgid "DuoAgentsPlatform|Run at a recurring time."
+msgstr ""
+
+msgid "DuoAgentsPlatform|Run at set times, or when something happens in the project. Add as many as you need."
+msgstr ""
+
 msgid "DuoAgentsPlatform|Run command"
 msgstr ""
 
 msgid "DuoAgentsPlatform|Run on"
+msgstr ""
+
+msgid "DuoAgentsPlatform|Run when"
+msgstr ""
+
+msgid "DuoAgentsPlatform|Run when something happens in the project."
 msgstr ""
 
 msgid "DuoAgentsPlatform|Save changes"
@@ -30143,11 +30415,14 @@ msgstr "搜尋議題"
 msgid "DuoAgentsPlatform|Security Agent"
 msgstr "安全 Agemt"
 
-msgid "DuoAgentsPlatform|Select a condition"
-msgstr ""
-
 msgid "DuoAgentsPlatform|Select a service account"
 msgstr "選擇服務帳號"
+
+msgid "DuoAgentsPlatform|Select an event"
+msgstr ""
+
+msgid "DuoAgentsPlatform|Select an event."
+msgstr ""
 
 msgid "DuoAgentsPlatform|Select any flow or external agent enabled in this project."
 msgstr ""
@@ -30251,13 +30526,16 @@ msgstr "未找到觸發程序。"
 msgid "DuoAgentsPlatform|Trigger updated successfully."
 msgstr "觸發程序已成功更新。"
 
-msgid "DuoAgentsPlatform|Trigger when"
-msgstr ""
-
 msgid "DuoAgentsPlatform|Triggers"
 msgstr "觸發程序"
 
+msgid "DuoAgentsPlatform|Triggers connect flows or external agents to events in this project. Create a trigger to determine when your flows or external agents are run."
+msgstr ""
+
 msgid "DuoAgentsPlatform|Triggers might run a few minutes after the scheduled time to distribute load across the system."
+msgstr ""
+
+msgid "DuoAgentsPlatform|Triggers run a flow or external agent when defined events occur."
 msgstr ""
 
 msgid "DuoAgentsPlatform|Try GitLab Duo Agent Platform"
@@ -30265,6 +30543,9 @@ msgstr "試試 GitLab Duo Agent Platform"
 
 msgid "DuoAgentsPlatform|Unknown"
 msgstr "未知"
+
+msgid "DuoAgentsPlatform|Unknown event"
+msgstr ""
 
 msgid "DuoAgentsPlatform|Until your group enables it, agents and flows can't run on this project. You can still install local tools below, and review what setup is required."
 msgstr ""
@@ -30276,6 +30557,9 @@ msgid "DuoAgentsPlatform|Verify my account"
 msgstr ""
 
 msgid "DuoAgentsPlatform|View session"
+msgstr ""
+
+msgid "DuoAgentsPlatform|View session #%{sessionId}"
 msgstr ""
 
 msgid "DuoAgentsPlatform|We need to verify your account"
@@ -30290,17 +30574,11 @@ msgstr ""
 msgid "DuoAgentsPlatform|What this trigger runs."
 msgstr ""
 
-msgid "DuoAgentsPlatform|When this trigger runs."
-msgstr ""
-
 msgid "DuoAgentsPlatform|Who can grant you access"
 msgstr "誰可以授予您存取權限"
 
 msgid "DuoAgentsPlatform|With a trial you can chat with AI agents tailored to your development workflow, such as the following agents:"
 msgstr "透過試用，您可以與針對您的開發工作流程量身打造的AI agents 聊天，例如下列 agents："
-
-msgid "DuoAgentsPlatform|Work item events configuration"
-msgstr ""
 
 msgid "DuoAgentsPlatform|Write file"
 msgstr "寫入檔案"
@@ -30844,6 +31122,9 @@ msgstr ""
 msgid "DuoCodeReview|I have encountered some problems while I was reviewing. Please try again later."
 msgstr "我在審查過程中遇到一些問題。請稍後再試。"
 
+msgid "DuoCodeReview|I reviewed the changes since my last review and found no new issues. Previous findings:"
+msgstr ""
+
 msgid "DuoCodeReview|I'm already reviewing this merge request. I'll post my feedback when I'm done."
 msgstr ""
 
@@ -30870,6 +31151,9 @@ msgstr ""
 
 msgid "DuoCodeReview|You don't have access to GitLab Duo Code Review. Contact your administrator to verify your account has access to this feature."
 msgstr "您無法存取 GitLab Duo 程式碼審查，請聯絡您的管理員以驗證您的帳戶是否有權存取此功能。"
+
+msgid "DuoCodeReview|Your message is too long for me to process. Shorten it and mention me again."
+msgstr ""
 
 msgid "DuoCodeReview|is reviewing your merge request and will let you know when it's finished"
 msgstr "正在審查您的合併請求，並將在完成時通知您"
@@ -31369,6 +31653,12 @@ msgstr ""
 msgid "DuoTrialDiscover|Ask questions, explore concepts, test ideas, and receive instant feedback directly in your workflow."
 msgstr "探索問題、研究概念、測試想法，並在工作流程中直接獲得即時回饋。"
 
+msgid "DuoVulnerabilityContext|Analyze project codebase to generate security context for vulnerability prioritization"
+msgstr ""
+
+msgid "DuoVulnerabilityContext|Turn on Vulnerability Context Analysis"
+msgstr ""
+
 msgid "DuoWorkflowSettings|Allow external MCP tools"
 msgstr "允許外部MCP工具"
 
@@ -31589,6 +31879,9 @@ msgstr "編輯環境"
 msgid "Edit file"
 msgstr "編輯檔案"
 
+msgid "Edit file %{fileName}"
+msgstr ""
+
 msgid "Edit fork in Web IDE"
 msgstr "在Web IDE中編輯延生的分叉（Fork）"
 
@@ -31627,6 +31920,9 @@ msgstr "編輯合併請求"
 
 msgid "Edit milestone"
 msgstr "編輯里程碑"
+
+msgid "Edit policy"
+msgstr ""
 
 msgid "Edit project: %{project_name}"
 msgstr "編輯專案： %{project_name}"
@@ -32086,9 +32382,6 @@ msgstr "啟用版本庫檢查"
 
 msgid "Enable searching"
 msgstr "啟用搜尋"
-
-msgid "Enable the add-on"
-msgstr ""
 
 msgid "Enable to allow %{docs_link_start}Device authorization grant flow%{docs_link_end}."
 msgstr ""
@@ -33669,6 +33962,9 @@ msgstr "瀏覽群組"
 msgid "Explore paid plans"
 msgstr "瀏覽付費計劃"
 
+msgid "Explore paid plans or re-trial"
+msgstr ""
+
 msgid "Explore projects"
 msgstr "瀏覽專案"
 
@@ -34021,6 +34317,9 @@ msgstr "建立資源失敗"
 msgid "Failed to create security category"
 msgstr "無法建立安全類別"
 
+msgid "Failed to create the organization user"
+msgstr ""
+
 msgid "Failed to create wiki"
 msgstr "建立Wiki失敗"
 
@@ -34032,6 +34331,9 @@ msgstr "刪除自訂表情符號失敗。請再試一次。"
 
 msgid "Failed to delete file! Please try again."
 msgstr "無法刪除檔案！請重新嘗試。"
+
+msgid "Failed to delete the organization user"
+msgstr ""
 
 msgid "Failed to deploy to"
 msgstr "無法部署到"
@@ -34353,9 +34655,6 @@ msgstr "失敗: %{failed}"
 
 msgid "Failure"
 msgstr "失敗"
-
-msgid "Failures details"
-msgstr "失敗詳情"
 
 msgid "False"
 msgstr "偽(False)"
@@ -34746,9 +35045,6 @@ msgstr "文件掛鉤類似系統掛鉤，但會以檔案執行，而非傳送資
 msgid "File is too big (%{fileSize}MiB). Max filesize: %{maxFileSize}MiB."
 msgstr "文件太大 (%{fileSize}MiB)，最大文件大小： %{maxFileSize}MiB。"
 
-msgid "File locked"
-msgstr "檔案已鎖定"
-
 msgid "File mode changed from %{a_mode} to %{b_mode}"
 msgstr "文件模式從 %{a_mode} 變更為 %{b_mode}"
 
@@ -35026,6 +35322,12 @@ msgid "FlowEditor|No flow is defined for this application yet."
 msgstr ""
 
 msgid "FlowEditor|Save flow"
+msgstr ""
+
+msgid "FlowEditor|Stage"
+msgstr ""
+
+msgid "FlowEditor|Trigger"
 msgstr ""
 
 msgid "FlowEditor|Version %{version}"
@@ -35346,7 +35648,10 @@ msgstr ""
 msgid "FoundationalFlow|Analyze critical Secret Detection vulnerabilities."
 msgstr ""
 
-msgid "FoundationalFlow|Business Context Security Guidelines"
+msgid "FoundationalFlow|Analyze project codebase to generate security context for vulnerability prioritization."
+msgstr ""
+
+msgid "FoundationalFlow|Classify the risk of a merge request so review effort can be routed to the changes that warrant it."
 msgstr ""
 
 msgid "FoundationalFlow|Code Review"
@@ -35361,10 +35666,13 @@ msgstr ""
 msgid "FoundationalFlow|Diagnose and fix issues in your GitLab CI/CD pipeline."
 msgstr ""
 
+msgid "FoundationalFlow|Draft a Why/How/What workplan for a work item and write it to the Workplan widget."
+msgstr ""
+
 msgid "FoundationalFlow|Fix CI/CD Pipeline"
 msgstr ""
 
-msgid "FoundationalFlow|Generate business context security guidelines for a project."
+msgid "FoundationalFlow|Generate Workplan"
 msgstr ""
 
 msgid "FoundationalFlow|Migrate your Jenkins pipelines to GitLab CI/CD."
@@ -35388,6 +35696,9 @@ msgstr ""
 msgid "FoundationalFlow|Review merge request code changes for business logic security vulnerabilities."
 msgstr ""
 
+msgid "FoundationalFlow|Risk Classification"
+msgstr ""
+
 msgid "FoundationalFlow|SAST False Positive Detection"
 msgstr ""
 
@@ -35401,6 +35712,9 @@ msgid "FoundationalFlow|Streamline code reviews by analyzing code changes and re
 msgstr ""
 
 msgid "FoundationalFlow|Turn feedback into actionable merge requests or issues."
+msgstr ""
+
+msgid "FoundationalFlow|Vulnerability Context Analysis"
 msgstr ""
 
 msgid "Framework id(s) %{missing_ids} are invalid."
@@ -37807,6 +38121,9 @@ msgstr "現在無法複製來源分支名稱。"
 msgid "Globally-allowed IP ranges"
 msgstr "全球允許的 IP 範圍"
 
+msgid "Glql|GLQL query must be a string."
+msgstr ""
+
 msgid "Go Back"
 msgstr "返回"
 
@@ -38953,6 +39270,9 @@ msgstr ""
 
 msgid "GroupSettings|Add additional webhook triggers for group access token expiration"
 msgstr "為群組存取 token 到期新增額外的 Webhook 觸發條件"
+
+msgid "GroupSettings|All secrets stored in GitLab Secrets Manager for this group, its subgroups, and its projects are permanently deleted. %{link_start}Learn more.%{link_end}"
+msgstr ""
 
 msgid "GroupSettings|Allow connection to GitLab"
 msgstr ""
@@ -40213,9 +40533,6 @@ msgstr ""
 msgid "Homepage|Friday mode: activated"
 msgstr ""
 
-msgid "Homepage|Git happens"
-msgstr ""
-
 msgid "Homepage|Good afternoon"
 msgstr ""
 
@@ -40279,13 +40596,7 @@ msgstr ""
 msgid "Homepage|It all started with a commit"
 msgstr ""
 
-msgid "Homepage|It works on my machine"
-msgstr ""
-
 msgid "Homepage|It's Tuesday, let's code"
-msgstr ""
-
-msgid "Homepage|It's not a bug, it's a feature"
 msgstr ""
 
 msgid "Homepage|Late night coding session?"
@@ -40331,9 +40642,6 @@ msgid "Homepage|Ready when you are"
 msgstr ""
 
 msgid "Homepage|Ready, set, go"
-msgstr ""
-
-msgid "Homepage|Rebasing: still not fun"
 msgstr ""
 
 msgid "Homepage|Rise and ship!"
@@ -41369,15 +41677,6 @@ msgstr "正在匯入..."
 msgid "Import|An error occurred while fetching import details."
 msgstr "讀取匯匯入詳細訊息時發生錯誤。"
 
-msgid "Import|Close details"
-msgstr "關閉詳細資訊"
-
-msgid "Import|Complete"
-msgstr "完成"
-
-msgid "Import|Failed"
-msgstr "失敗"
-
 msgid "Import|Failures for %{id}"
 msgstr "%{id} 的失敗"
 
@@ -41392,12 +41691,6 @@ msgstr "從 %{hostname} 的匯入已完成"
 
 msgid "Import|Import source user has an invalid status for this operation"
 msgstr "匯入來源使用者對此操作的狀態無效"
-
-msgid "Import|Importing"
-msgstr "正在匯入"
-
-msgid "Import|In progress"
-msgstr "進行中"
 
 msgid "Import|Invalid credentials"
 msgstr "憑證無效"
@@ -41429,17 +41722,8 @@ msgstr "必須只包含來源GitLab執行個體的基本URL。"
 msgid "Import|No import details"
 msgstr "無匯入細節"
 
-msgid "Import|Not started"
-msgstr "未開始"
-
-msgid "Import|Open details"
-msgstr "開啟詳細資訊"
-
 msgid "Import|Partially completed"
 msgstr "部分完成"
-
-msgid "Import|Pending"
-msgstr "等待中"
 
 msgid "Import|Placeholder user record reassignment complete"
 msgstr "預置使用者記錄重新指派完成"
@@ -41986,6 +42270,9 @@ msgstr "基礎設施"
 
 msgid "Infrastructure as Code (IaC) Scanning"
 msgstr "基礎設施即程式碼 (IaC) 掃描"
+
+msgid "Infrastructure as Code (IaC) scanning"
+msgstr ""
 
 msgid "InfrastructureRegistry|Copy Terraform Command"
 msgstr "複製 Terraform 指令"
@@ -44848,6 +45135,9 @@ msgstr "保留分叉的refs"
 msgid "Keep review"
 msgstr "保持審閱"
 
+msgid "Keep running"
+msgstr ""
+
 msgid "Keep sidebar visible"
 msgstr "維持側邊欄可見"
 
@@ -45867,9 +46157,6 @@ msgstr "Let's Encrypt是一個免費、自動化和開放的憑證授權(CA)機�
 msgid "License"
 msgstr "授權許可"
 
-msgid "License Compliance"
-msgstr "授權條款合規"
-
 msgid "License Compliance| Used by %{dependencies}"
 msgstr "被 %{dependencies} 使用"
 
@@ -45903,52 +46190,52 @@ msgstr "可接受用於此專案"
 msgid "LicenseCompliance|Allowed"
 msgstr "已允許"
 
-msgid "LicenseCompliance|Collapse License Compliance details"
+msgid "LicenseCompliance|Collapse license compliance details"
 msgstr ""
 
 msgid "LicenseCompliance|Denied"
 msgstr "已拒絕"
 
-msgid "LicenseCompliance|Expand License Compliance details"
+msgid "LicenseCompliance|Expand license compliance details"
 msgstr ""
 
-msgid "LicenseCompliance|License Compliance detected %d license"
-msgid_plural "LicenseCompliance|License Compliance detected %d licenses"
-msgstr[0] "授權合規檢測到 %d 個授權"
+msgid "LicenseCompliance|License compliance detected %d license"
+msgid_plural "LicenseCompliance|License compliance detected %d licenses"
+msgstr[0] ""
 
-msgid "LicenseCompliance|License Compliance detected %d license and policy violation"
-msgid_plural "LicenseCompliance|License Compliance detected %d licenses and policy violations"
-msgstr[0] "授權合規性檢測到 %d 個授權和政策違規行為"
+msgid "LicenseCompliance|License compliance detected %d license and policy violation"
+msgid_plural "LicenseCompliance|License compliance detected %d licenses and policy violations"
+msgstr[0] ""
 
-msgid "LicenseCompliance|License Compliance detected %d license and policy violation for the source branch only"
-msgid_plural "LicenseCompliance|License Compliance detected %d licenses and policy violations for the source branch only"
-msgstr[0] "授權合規性僅檢測到源分支的 %d 個授權和政策違規"
+msgid "LicenseCompliance|License compliance detected %d license and policy violation for the source branch only"
+msgid_plural "LicenseCompliance|License compliance detected %d licenses and policy violations for the source branch only"
+msgstr[0] ""
 
-msgid "LicenseCompliance|License Compliance detected %d license and policy violation for the source branch only; approval required"
-msgid_plural "LicenseCompliance|License Compliance detected %d licenses and policy violations for the source branch only; approval required"
-msgstr[0] "授權合規檢查只在源分支上檢測到%d個授權及政策違規。需要核准。"
+msgid "LicenseCompliance|License compliance detected %d license and policy violation for the source branch only; approval required"
+msgid_plural "LicenseCompliance|License compliance detected %d licenses and policy violations for the source branch only; approval required"
+msgstr[0] ""
 
-msgid "LicenseCompliance|License Compliance detected %d license for the source branch only"
-msgid_plural "LicenseCompliance|License Compliance detected %d licenses for the source branch only"
-msgstr[0] "授權合規性僅檢測到源分支檢測到%d個授權"
+msgid "LicenseCompliance|License compliance detected %d license for the source branch only"
+msgid_plural "LicenseCompliance|License compliance detected %d licenses for the source branch only"
+msgstr[0] ""
 
-msgid "LicenseCompliance|License Compliance detected %d new license"
-msgid_plural "LicenseCompliance|License Compliance detected %d new licenses"
-msgstr[0] "授權合規性僅檢測到%d個新的授權"
+msgid "LicenseCompliance|License compliance detected %d new license"
+msgid_plural "LicenseCompliance|License compliance detected %d new licenses"
+msgstr[0] ""
 
-msgid "LicenseCompliance|License Compliance detected %d new license and policy violation"
-msgid_plural "LicenseCompliance|License Compliance detected %d new licenses and policy violations"
-msgstr[0] "授權合規性僅檢測到%d個新的授權及政策違規。"
+msgid "LicenseCompliance|License compliance detected %d new license and policy violation"
+msgid_plural "LicenseCompliance|License compliance detected %d new licenses and policy violations"
+msgstr[0] ""
 
-msgid "LicenseCompliance|License Compliance detected %d new license and policy violation; approval required"
-msgid_plural "LicenseCompliance|License Compliance detected %d new licenses and policy violations; approval required"
-msgstr[0] "授權合規性僅檢測到%d個新的授權及政策違規。需要核准。"
+msgid "LicenseCompliance|License compliance detected %d new license and policy violation; approval required"
+msgid_plural "LicenseCompliance|License compliance detected %d new licenses and policy violations; approval required"
+msgstr[0] ""
 
-msgid "LicenseCompliance|License Compliance detected no licenses for the source branch only"
-msgstr "授權條款合規僅在源分支未檢測到授權條款"
+msgid "LicenseCompliance|License compliance detected no licenses for the source branch only"
+msgstr ""
 
-msgid "LicenseCompliance|License Compliance detected no new licenses"
-msgstr "授權條款合規未檢測到新授權條款"
+msgid "LicenseCompliance|License compliance detected no new licenses"
+msgstr ""
 
 msgid "LicenseCompliance|No policy matches this license"
 msgstr "沒有符合此授權條款的政策"
@@ -48365,15 +48652,6 @@ msgstr "使用中的"
 msgid "MergeRequestsTab|Merged"
 msgstr "已合併的"
 
-msgid "MergeRequests|Assign all code owners as reviewers"
-msgstr ""
-
-msgid "MergeRequests|Assign every code owner defined in your CODEOWNERS file."
-msgstr ""
-
-msgid "MergeRequests|Assign reviewers with GitLab Duo Agent Platform"
-msgstr ""
-
 msgid "MergeRequests|Automatic reviewer assignment"
 msgstr ""
 
@@ -48401,9 +48679,6 @@ msgstr "提交還原失敗"
 msgid "MergeRequests|Create issue to resolve thread"
 msgstr "建立議題以解決主題"
 
-msgid "MergeRequests|Do not assign reviewers automatically"
-msgstr ""
-
 msgid "MergeRequests|Draft"
 msgstr "草稿"
 
@@ -48422,9 +48697,6 @@ msgstr "合併請求 cherry-pick (揀選) 失敗"
 msgid "MergeRequests|Merge request revert failed"
 msgstr "合併請求還原失敗"
 
-msgid "MergeRequests|Recommends the minimum number of reviewers required to satisfy each approval rule."
-msgstr ""
-
 msgid "MergeRequests|Reference copied"
 msgstr "已復制參照"
 
@@ -48436,9 +48708,6 @@ msgstr "要求合併檢查通過。"
 
 msgid "MergeRequests|Resolve thread"
 msgstr "解決話題"
-
-msgid "MergeRequests|Reviewer assignment strategy"
-msgstr ""
 
 msgid "MergeRequests|Squashing failed: Squash the commits locally, resolve any conflicts, then push the branch."
 msgstr "壓縮 (Squash) 失敗：壓縮本地提交，解決任何存在的衝突，然後推送分支。"
@@ -49893,15 +50162,6 @@ msgstr "此版本修改"
 msgid "Modify"
 msgstr ""
 
-msgid "Modify commit message"
-msgstr "修改提交訊息"
-
-msgid "Modify commit messages"
-msgstr "修改提交訊息"
-
-msgid "Modify merge commit"
-msgstr "修改合併提交"
-
 msgid "Mon"
 msgstr "星期一"
 
@@ -50459,6 +50719,12 @@ msgstr ""
 msgid "NamespaceTransfer|Change its visibility settings to match the new parent group."
 msgstr ""
 
+msgid "NamespaceTransfer|Permanently delete all secrets stored in GitLab Secrets Manager for this group, its subgroups, and its projects."
+msgstr ""
+
+msgid "NamespaceTransfer|Permanently delete all secrets stored in GitLab Secrets Manager."
+msgstr ""
+
 msgid "NamespaceTransfer|Select destination namespace"
 msgstr ""
 
@@ -50560,6 +50826,9 @@ msgstr "原始碼"
 
 msgid "Navigation|Collapse sidebar"
 msgstr "收合側邊欄"
+
+msgid "Navigation|Current page"
+msgstr ""
 
 msgid "Navigation|Deploy"
 msgstr "部署"
@@ -50786,6 +51055,9 @@ msgstr "新密碼"
 
 msgid "New pipeline has been triggered and will appear shortly."
 msgstr "新流水線已被觸發，將很快出現。"
+
+msgid "New policy"
+msgstr ""
 
 msgid "New project"
 msgstr "新建專案"
@@ -51248,9 +51520,6 @@ msgstr "沒有此名稱或描述的優先標記"
 
 msgid "No prioritized labels yet!"
 msgstr "還未設定優先標記！"
-
-msgid "No profile applied"
-msgstr "未套用任何設定檔"
 
 msgid "No project found"
 msgstr "沒有找到專案"
@@ -52918,6 +53187,9 @@ msgstr "載入中..."
 msgid "Observability|Logs"
 msgstr ""
 
+msgid "Observability|MCP URL override"
+msgstr ""
+
 msgid "Observability|MCP endpoint"
 msgstr ""
 
@@ -53014,6 +53286,9 @@ msgstr "O11y 服務設定"
 msgid "Observability|O11y service settings already exist"
 msgstr "O11y 服務設定已存在"
 
+msgid "Observability|OTel URL override"
+msgstr ""
+
 msgid "Observability|Observability"
 msgstr "可觀察性"
 
@@ -53063,6 +53338,12 @@ msgid "Observability|OpenTelemetry native"
 msgstr "OpenTelemetry 原生"
 
 msgid "Observability|OpenTelemetry workflow started"
+msgstr ""
+
+msgid "Observability|Optional. Overrides the default MCP endpoint."
+msgstr ""
+
+msgid "Observability|Optional. Overrides the default OTel endpoint for exported telemetry."
 msgstr ""
 
 msgid "Observability|Password for authentication with the o11y service."
@@ -53381,6 +53662,9 @@ msgstr ""
 msgid "OfflineTransferExport|Export history"
 msgstr ""
 
+msgid "OfflineTransferExport|Export started"
+msgstr ""
+
 msgid "OfflineTransferExport|Export your groups to an AWS S3 storage service you control. You can import them to any GitLab instance, even without a network connection between this instance and the destination instance. Each group is exported with all of its subgroups and projects."
 msgstr ""
 
@@ -53411,6 +53695,9 @@ msgstr ""
 msgid "OfflineTransferExport|Something went wrong retrieving your groups"
 msgstr ""
 
+msgid "OfflineTransferExport|Something went wrong. Try again later."
+msgstr ""
+
 msgid "OfflineTransferExport|Start export"
 msgstr ""
 
@@ -53432,6 +53719,13 @@ msgstr ""
 msgid "OfflineTransferExport|Use path-style URLs (optional)"
 msgstr ""
 
+msgid "OfflineTransferExport|View export status"
+msgstr ""
+
+msgid "OfflineTransferExport|You can leave this page. We'll email you when the export of the group is finished and the package is ready in bucket %{bucket}."
+msgid_plural "OfflineTransferExport|You can leave this page. We'll email you when the export of %{count} groups is finished and the package is ready in bucket %{bucket}."
+msgstr[0] ""
+
 msgid "OfflineTransferExport|You have no groups available to export"
 msgstr ""
 
@@ -53441,10 +53735,22 @@ msgstr ""
 msgid "OfflineTransferExport|Your object storage secret key."
 msgstr ""
 
-msgid "OfflineTransferImport|Import an offline transfer"
+msgid "OfflineTransferImport|Import for offline transfer"
 msgstr ""
 
-msgid "OfflineTransferImport|Import groups and projects from a previously exported offline transfer."
+msgid "OfflineTransferImport|Import has started."
+msgstr ""
+
+msgid "OfflineTransferImport|Import your exported groups from an AWS S3 storage service you control. Each group is imported with all of its subgroups and projects."
+msgstr ""
+
+msgid "OfflineTransferImport|Review and import"
+msgstr ""
+
+msgid "OfflineTransferImport|Select destination"
+msgstr ""
+
+msgid "OfflineTransferImport|Start import"
 msgstr ""
 
 msgid "OfflineTransferImport|The export was created on %{strong_open}%{hostname}%{strong_close}. This source is self-reported by the export and is not verified, so it may not be trustworthy."
@@ -55190,6 +55496,9 @@ msgstr ""
 msgid "Organization|%{organizationName} is your organization's home. Manage settings from the sidebar. %{linkStart}Learn more%{linkEnd}."
 msgstr ""
 
+msgid "Organization|* Name, URL, and admin roles can all be updated later from your Organization page."
+msgstr ""
+
 msgid "Organization|A group is a collection of several projects. If you organize your projects under a group, it works like a folder."
 msgstr "群組是多個專案的集合。若您將專案放在一個群組下，其運作方式就如同資料夾。"
 
@@ -55199,7 +55508,13 @@ msgstr "除外部使用者外，任何已登入的使用者均可存取。"
 msgid "Organization|Accessible without any authentication."
 msgstr "無需任何驗證即可存取。"
 
-msgid "Organization|Activate your Organizations"
+msgid "Organization|Admin"
+msgstr ""
+
+msgid "Organization|After confirmation, you cannot:"
+msgstr ""
+
+msgid "Organization|After you confirm your organization structure, your data will be transferred to your organization."
 msgstr ""
 
 msgid "Organization|An error occurred changing your organization URL. Please try again."
@@ -55259,19 +55574,28 @@ msgstr "選擇組織能見度等級。"
 msgid "Organization|Claim your org"
 msgstr ""
 
+msgid "Organization|Confirm your organization"
+msgstr ""
+
 msgid "Organization|Copy organization ID"
 msgstr "複製組織 ID"
 
 msgid "Organization|Create an organization to contain all of your groups and projects."
 msgstr "建立一個組織來包含您所有的群組與專案。"
 
+msgid "Organization|Create an organization to manage your top-level groups. You can set up your organization structure in the next step."
+msgstr ""
+
 msgid "Organization|Create organization"
 msgstr "建立組織"
+
+msgid "Organization|Create your Organizations"
+msgstr ""
 
 msgid "Organization|Current organization"
 msgstr "目前組織"
 
-msgid "Organization|Drag groups between Organizations to set up your structure. Most companies only need one."
+msgid "Organization|Delete the organization"
 msgstr ""
 
 msgid "Organization|Drop groups here"
@@ -55283,11 +55607,11 @@ msgstr "開始使用組織"
 msgid "Organization|Go to Artifact Registry"
 msgstr ""
 
+msgid "Organization|Group is already in an organization."
+msgstr ""
+
 msgid "Organization|Help improve Organizations"
 msgstr "請幫助我們改進組織功能"
-
-msgid "Organization|Here's your final structure. Activate when you're happy with it."
-msgstr ""
 
 msgid "Organization|If you proceed with this change you will lose your owner permissions for this organization, including access to this page."
 msgstr "如果您進行此變更，您將喪失此組織的擁有者權限，包括存取此頁面的權限。"
@@ -55316,6 +55640,9 @@ msgstr "僅組織成員可存取。"
 msgid "Organization|Only one organization is allowed on this instance."
 msgstr ""
 
+msgid "Organization|Only top-level groups can be moved to a new organization."
+msgstr ""
+
 msgid "Organization|Org ID"
 msgstr "組織 ID"
 
@@ -55333,6 +55660,12 @@ msgstr "組織 URL 太短了（最少 2 個字元）。"
 
 msgid "Organization|Organization URL successfully changed."
 msgstr "組織 URL 成功變更。"
+
+msgid "Organization|Organization administration"
+msgstr ""
+
+msgid "Organization|Organization administrators"
+msgstr ""
 
 msgid "Organization|Organization avatar"
 msgstr "組織頭像"
@@ -55367,9 +55700,6 @@ msgstr "組織設定"
 msgid "Organization|Organization successfully created."
 msgstr "組織已成功建立。"
 
-msgid "Organization|Organization summary"
-msgstr ""
-
 msgid "Organization|Organization user details"
 msgstr "組織使用者詳細資訊"
 
@@ -55399,6 +55729,9 @@ msgid "Organization|Organizations must have at least one owner. To delete the us
 msgid_plural "Organization|Organizations must have at least one owner. To delete the user, first assign a new owner to %{links} %{boldStart}and%{boldEnd} %{extrasCount} %{boldStart}other Organizations%{boldEnd}."
 msgstr[0] "組織至少需要有一名以上的擁有者，要刪除使用，請先將新的擁有者指定為 %{links} %{boldStart} 以及 %{boldEnd} %{extrasCount} %{boldStart} 在其他組織中 %{boldEnd}。"
 
+msgid "Organization|Other top-level groups"
+msgstr ""
+
 msgid "Organization|Overview"
 msgstr ""
 
@@ -55426,8 +55759,14 @@ msgstr "最近更新的群組"
 msgid "Organization|Recently updated projects"
 msgstr "最近更新的專案"
 
+msgid "Organization|Remove or add top-level groups. Contact support if you must make changes."
+msgstr ""
+
 msgid "Organization|Search for an organization"
 msgstr "搜尋組織"
+
+msgid "Organization|Search for users to invite"
+msgstr ""
 
 msgid "Organization|Select an organization"
 msgstr "選取組織"
@@ -55441,10 +55780,16 @@ msgstr ""
 msgid "Organization|Switch organizations"
 msgstr "切換組織"
 
-msgid "Organization|The visibility of this group will be changed to internal because the Organization is internal."
+msgid "Organization|This group will become internal to match the Organization's visibility."
 msgstr ""
 
-msgid "Organization|The visibility of this group will be changed to private because the Organization is private."
+msgid "Organization|This group will become private to match the Organization's visibility."
+msgstr ""
+
+msgid "Organization|Top-level groups"
+msgstr ""
+
+msgid "Organization|URL"
 msgstr ""
 
 msgid "Organization|Unable to fetch organizations. Reload the page to try again."
@@ -55456,16 +55801,19 @@ msgstr ""
 msgid "Organization|Update your organization name, description, and avatar. %{linkStart}Learn more about organizations%{linkEnd}."
 msgstr "更新您的組織名稱、說明與頭像。%{linkStart}了解更多關於組織的資訊%{linkEnd}。"
 
+msgid "Organization|User"
+msgstr ""
+
 msgid "Organization|View all"
 msgstr "查看全部"
 
 msgid "Organization|Visibility levels that are more restrictive than the groups in this Organization have been disabled."
 msgstr ""
 
-msgid "Organization|We'll create one Organization per top-level group. You can reassign groups between them in the next step."
+msgid "Organization|Welcome to %{organizationName}"
 msgstr ""
 
-msgid "Organization|Welcome to %{organizationName}"
+msgid "Organization|You are confirming:"
 msgstr ""
 
 msgid "Organization|You can now start using your new organization."
@@ -55477,8 +55825,9 @@ msgstr "您還沒有任何群組。"
 msgid "Organization|You don't have any projects yet."
 msgstr "您還沒有任何專案。"
 
-msgid "Organization|Your new structure"
-msgstr ""
+msgid "Organization|You have %{boldStart}%{count}%{boldEnd} other top-level group. Drag unassigned groups to your organization, or leave the structure as is. Unassigned groups will not be included in the organization."
+msgid_plural "Organization|You have %{boldStart}%{count}%{boldEnd} other top-level groups. Drag unassigned groups to your organization, or leave the structure as is. Unassigned groups will not be included in the organization."
+msgstr[0] ""
 
 msgid "Organization|my-organization"
 msgstr "我的組織"
@@ -58815,6 +59164,9 @@ msgstr "正在評估 `%{policyName}` 政策"
 msgid "Policy `%{policyName}` passed"
 msgstr "`%{policyName}` 政策已通過"
 
+msgid "Policy details"
+msgstr ""
+
 msgid "Policy management project does not have any policies in %{policy_path}"
 msgstr "政策管理專案在 %{policy_path} 中沒有任何政策"
 
@@ -58869,9 +59221,6 @@ msgstr ""
 msgid "PolicyStore|Advanced"
 msgstr ""
 
-msgid "PolicyStore|Advisory mode. Violations are flagged but progress is not blocked."
-msgstr ""
-
 msgid "PolicyStore|Affected projects"
 msgstr ""
 
@@ -58882,6 +59231,9 @@ msgid "PolicyStore|All projects"
 msgstr ""
 
 msgid "PolicyStore|All projects in the group"
+msgstr ""
+
+msgid "PolicyStore|Are you sure you want to delete %{name}? This action cannot be undone."
 msgstr ""
 
 msgid "PolicyStore|Audit"
@@ -58914,7 +59266,16 @@ msgstr ""
 msgid "PolicyStore|Choose individual projects to govern"
 msgstr ""
 
+msgid "PolicyStore|Comma-separated environment names this rule applies to. At least one name or tier is required."
+msgstr ""
+
+msgid "PolicyStore|Compiled scope Rego"
+msgstr ""
+
 msgid "PolicyStore|Continue editing"
+msgstr ""
+
+msgid "PolicyStore|Create a policy to enforce rules for deployments across your organization."
 msgstr ""
 
 msgid "PolicyStore|Create new policy"
@@ -58929,10 +59290,16 @@ msgstr ""
 msgid "PolicyStore|Default (all projects)"
 msgstr ""
 
+msgid "PolicyStore|Delete policy?"
+msgstr ""
+
 msgid "PolicyStore|Deployment"
 msgstr ""
 
 msgid "PolicyStore|Deployment Gate"
+msgstr ""
+
+msgid "PolicyStore|Deployment tiers this rule applies to. At least one name or tier is required."
 msgstr ""
 
 msgid "PolicyStore|Describe what this policy does"
@@ -58947,6 +59314,12 @@ msgstr ""
 msgid "PolicyStore|Developer"
 msgstr ""
 
+msgid "PolicyStore|Development"
+msgstr ""
+
+msgid "PolicyStore|Disable"
+msgstr ""
+
 msgid "PolicyStore|Disabled"
 msgstr ""
 
@@ -58959,7 +59332,13 @@ msgstr ""
 msgid "PolicyStore|Edit policy"
 msgstr ""
 
+msgid "PolicyStore|Enable"
+msgstr ""
+
 msgid "PolicyStore|Enforce"
+msgstr ""
+
+msgid "PolicyStore|Enforce the action when rules match"
 msgstr ""
 
 msgid "PolicyStore|Enforcement"
@@ -58968,13 +59347,13 @@ msgstr ""
 msgid "PolicyStore|Enforcement mode"
 msgstr ""
 
-msgid "PolicyStore|Environment"
-msgstr ""
-
 msgid "PolicyStore|Environment State"
 msgstr ""
 
-msgid "PolicyStore|Environment name or pattern this rule applies to."
+msgid "PolicyStore|Environment names"
+msgstr ""
+
+msgid "PolicyStore|Environment tiers"
 msgstr ""
 
 msgid "PolicyStore|Esc or click outside to save"
@@ -58995,10 +59374,13 @@ msgstr ""
 msgid "PolicyStore|Freeze Window"
 msgstr ""
 
-msgid "PolicyStore|Hard enforcement. Violations are blocked as defined."
+msgid "PolicyStore|Hide configuration details"
 msgstr ""
 
 msgid "PolicyStore|Last updated"
+msgstr ""
+
+msgid "PolicyStore|Log the violation. No user impact"
 msgstr ""
 
 msgid "PolicyStore|Maintainer"
@@ -59010,22 +59392,34 @@ msgstr ""
 msgid "PolicyStore|Mode"
 msgstr ""
 
-msgid "PolicyStore|Monitoring mode. No actions are taken. Violations are recorded in the audit log."
-msgstr ""
-
 msgid "PolicyStore|Most restrictive SLA wins when multiple policies match"
 msgstr ""
 
 msgid "PolicyStore|Name"
 msgstr ""
 
+msgid "PolicyStore|No actions configured"
+msgstr ""
+
 msgid "PolicyStore|No building blocks match your search."
+msgstr ""
+
+msgid "PolicyStore|No policies found"
+msgstr ""
+
+msgid "PolicyStore|No rules configured"
 msgstr ""
 
 msgid "PolicyStore|None added"
 msgstr ""
 
+msgid "PolicyStore|Notify the user and log the violation"
+msgstr ""
+
 msgid "PolicyStore|OPA/Rego policy evaluated server-side when the event is received. Maximum 32 KB."
+msgstr ""
+
+msgid "PolicyStore|Other"
 msgstr ""
 
 msgid "PolicyStore|Override groups"
@@ -59037,6 +59431,12 @@ msgstr ""
 msgid "PolicyStore|Policies"
 msgstr ""
 
+msgid "PolicyStore|Policy %{name} was created."
+msgstr ""
+
+msgid "PolicyStore|Policy %{name} was updated."
+msgstr ""
+
 msgid "PolicyStore|Policy configuration"
 msgstr ""
 
@@ -59046,6 +59446,9 @@ msgstr ""
 msgid "PolicyStore|Policy name"
 msgstr ""
 
+msgid "PolicyStore|Production"
+msgstr ""
+
 msgid "PolicyStore|Projects"
 msgstr ""
 
@@ -59053,6 +59456,9 @@ msgid "PolicyStore|Projects affected"
 msgstr ""
 
 msgid "PolicyStore|Projects to exempt from this policy"
+msgstr ""
+
+msgid "PolicyStore|Read-only Rego the store compiled from the scope. The policy engine evaluates this program to decide where the policy applies."
 msgstr ""
 
 msgid "PolicyStore|Recurring"
@@ -59085,6 +59491,9 @@ msgstr ""
 msgid "PolicyStore|Rules"
 msgstr ""
 
+msgid "PolicyStore|Save policy"
+msgstr ""
+
 msgid "PolicyStore|Scope"
 msgstr ""
 
@@ -59106,19 +59515,46 @@ msgstr ""
 msgid "PolicyStore|Select..."
 msgstr ""
 
+msgid "PolicyStore|Show configuration details"
+msgstr ""
+
 msgid "PolicyStore|Showing the first %{shown} of %{total} projects."
 msgstr ""
 
 msgid "PolicyStore|Specific projects"
 msgstr ""
 
+msgid "PolicyStore|Staging"
+msgstr ""
+
 msgid "PolicyStore|Start from scratch"
+msgstr ""
+
+msgid "PolicyStore|Status"
 msgstr ""
 
 msgid "PolicyStore|Targeted"
 msgstr ""
 
+msgid "PolicyStore|Testing"
+msgstr ""
+
 msgid "PolicyStore|The available %{catalog} could not be fetched from the Policy Store API. Refresh the page to try again."
+msgstr ""
+
+msgid "PolicyStore|The policies could not be fetched from the Policy Store API."
+msgstr ""
+
+msgid "PolicyStore|The policy could not be deleted. Try again."
+msgstr ""
+
+msgid "PolicyStore|The policy could not be loaded from the Policy Store API. Refresh the page to try again."
+msgstr ""
+
+msgid "PolicyStore|The policy could not be saved. Try again."
+msgstr ""
+
+msgid "PolicyStore|The policy could not be updated. Try again."
 msgstr ""
 
 msgid "PolicyStore|This policy will be enabled for %{scope} in Audit mode. Events will be logged only."
@@ -59134,6 +59570,9 @@ msgid "PolicyStore|This step is coming soon."
 msgstr ""
 
 msgid "PolicyStore|Timezone"
+msgstr ""
+
+msgid "PolicyStore|Trigger"
 msgstr ""
 
 msgid "PolicyStore|Triggers"
@@ -59178,6 +59617,9 @@ msgstr ""
 msgid "PolicyStore|You"
 msgstr ""
 
+msgid "PolicyStore|You do not have permission to view the policies of this organization."
+msgstr ""
+
 msgid "PolicyStore|Your progress will be lost if you leave without saving."
 msgstr ""
 
@@ -59199,7 +59641,7 @@ msgstr ""
 msgid "PolicyStore|e.g. America/New_York"
 msgstr ""
 
-msgid "PolicyStore|e.g. production, prod-*"
+msgid "PolicyStore|e.g. production, staging"
 msgstr ""
 
 msgid "PolicyStore|e.g. security-leads, engineering-leads"
@@ -59406,8 +59848,8 @@ msgstr "自定義系統佈局和預設視圖的行為。"
 msgid "Preferences|Dark color scheme"
 msgstr "深色模式"
 
-msgid "Preferences|Default GitLab Duo namespace"
-msgstr "預設 GitLab Duo 命名空間"
+msgid "Preferences|Default GitLab Duo group"
+msgstr ""
 
 msgid "Preferences|Default text editor"
 msgstr "預設文字編輯器"
@@ -59423,6 +59865,9 @@ msgstr "啟用 Ona 整合"
 
 msgid "Preferences|Enable default text editor"
 msgstr "啟用預設文字編輯器"
+
+msgid "Preferences|Enable emoji autocomplete"
+msgstr ""
 
 msgid "Preferences|Enable extension marketplace"
 msgstr "啟用擴展市場"
@@ -59447,9 +59892,6 @@ msgstr "例如：30分鐘前"
 
 msgid "Preferences|Homepage"
 msgstr "首頁"
-
-msgid "Preferences|If you are assigned a GitLab Duo seat in multiple namespaces, you must select a default namespace."
-msgstr "如果您在多個命名空間中分配有 GitLab Duo 席位，則必須選擇一個預設命名空間。"
 
 msgid "Preferences|Instead of all the files changed, show only one file at a time. To switch between files, use the file browser."
 msgstr "一次僅顯示一個文件，而不是所有更改的文件；要在文件之間切換，請使用文件瀏覽器。"
@@ -59514,8 +59956,8 @@ msgstr "在 Web IDE 繪製空白字元"
 msgid "Preferences|Select a billable Orbit namespace..."
 msgstr ""
 
-msgid "Preferences|Select a default Duo namespace..."
-msgstr "選擇預設的 Duo 命名空間..."
+msgid "Preferences|Select a group"
+msgstr ""
 
 msgid "Preferences|Select the accent color for the application interface."
 msgstr "選擇應用程式介面的強調顏色。"
@@ -59543,6 +59985,9 @@ msgstr "Tab 寬度"
 
 msgid "Preferences|Theme"
 msgstr "主題"
+
+msgid "Preferences|This determines where your GitLab Duo usage is tracked."
+msgstr ""
 
 msgid "Preferences|This feature is experimental and translations are not yet complete."
 msgstr "此功能是實驗性的，翻譯尚未完成。"
@@ -59575,6 +60020,9 @@ msgid "Preferences|Web IDE and Workspaces"
 msgstr "Web IDE 與 Workspaces"
 
 msgid "Preferences|When enabled, you can choose which Orbit-powered features to use below. Turning this off disables all Orbit features."
+msgstr ""
+
+msgid "Preferences|When you type a colon (:) in a description or comment box, a list of matching emoji is suggested."
 msgstr ""
 
 msgid "Preferences|When you type in a description or comment box, pressing %{kbdOpen}Enter%{kbdClose} creates a new line indented the same as the previous line."
@@ -59633,9 +60081,6 @@ msgstr "Markdown預覽"
 
 msgid "Preview changes"
 msgstr "預覽變更"
-
-msgid "Preview default profile"
-msgstr "預覽預設設定檔"
 
 msgid "Preview diagram"
 msgstr "預覽圖"
@@ -60165,6 +60610,9 @@ msgstr "無法刪除指定的帳號受益人。"
 msgid "Profiles|Failed to generate new Support PIN."
 msgstr "無法生成新的支援 PIN。"
 
+msgid "Profiles|Failed to upload avatar. Please try again."
+msgstr ""
+
 msgid "Profiles|Feed token could not be reset"
 msgstr "Feed 令牌無法重置"
 
@@ -60246,8 +60694,8 @@ msgstr "未指定帳號管理員。"
 msgid "Profiles|No designated account successor assigned."
 msgstr "未指定帳號繼承人。"
 
-msgid "Profiles|No eligible namespaces available"
-msgstr "無可用的合格命名空間"
+msgid "Profiles|No eligible groups available"
+msgstr ""
 
 msgid "Profiles|No file chosen."
 msgstr "未選擇文件。"
@@ -60372,6 +60820,12 @@ msgstr "在 250 個字以內介紹您自己。"
 msgid "Profiles|The ability to update your name has been disabled by your administrator."
 msgstr "管理員限制了您更新名稱的權利。"
 
+msgid "Profiles|The file format is not supported. Please try one of the following formats: %{formats}"
+msgstr ""
+
+msgid "Profiles|The file is too large. The maximum file size allowed is 200 KiB."
+msgstr ""
+
 msgid "Profiles|The ideal image size is 192 x 192 pixels."
 msgstr "理想的影像尺寸是 192 x 192 像素。"
 
@@ -60483,8 +60937,8 @@ msgstr "可以在這裡上傳您的頭像或者從 %{gravatar_link} 修改頭像
 msgid "Profiles|You do not own any active scheduled pipelines."
 msgstr "您目前沒有任何有效的排程流水線。"
 
-msgid "Profiles|You don't have access to any namespaces eligible for GitLab Duo."
-msgstr "您無法存取任何符合 GitLab Duo 資格的命名空間。"
+msgid "Profiles|You don't have access to any groups eligible for GitLab Duo."
+msgstr ""
 
 msgid "Profiles|You don't have access to delete this user."
 msgstr "您無權刪除此使用者。"
@@ -60841,7 +61295,7 @@ msgid "ProjectImportByURL|Connection failed: %{error}"
 msgstr "連線失敗：%{error}"
 
 msgid "ProjectImportByURL|Connection successful."
-msgstr ""
+msgstr "連線成功。"
 
 msgid "ProjectImportByURL|Enter a valid URL"
 msgstr "請輸入有效的網址"
@@ -61431,6 +61885,9 @@ msgstr "僅快進式（Fast-forward）合併。"
 msgid "ProjectSettings|Feature flags"
 msgstr "特性標籤"
 
+msgid "ProjectSettings|Feature visibility cannot be changed while the project is private."
+msgstr ""
+
 msgid "ProjectSettings|For Gitaly, location of data on the storage. For Gitaly Cluster, location of data on the virtual storage."
 msgstr "對於 Gitaly，資料在儲存上的位置。對於 Gitaly 叢集，資料在虛擬儲存上的位置。"
 
@@ -61590,6 +62047,9 @@ msgstr "防止直接鏈接到可能敏感的媒體檔案"
 msgid "ProjectSettings|Private"
 msgstr "私有的"
 
+msgid "ProjectSettings|Project description (optional)"
+msgstr ""
+
 msgid "ProjectSettings|Project topics"
 msgstr "專案主題"
 
@@ -61634,6 +62094,9 @@ msgstr ""
 
 msgid "ProjectSettings|Roll out new features without redeploying with feature flags."
 msgstr "無需使用特性標籤重新部署即可推出新功能。"
+
+msgid "ProjectSettings|Save changes for naming, description, topics"
+msgstr ""
 
 msgid "ProjectSettings|Search for topic"
 msgstr "搜尋主題"
@@ -61712,6 +62175,9 @@ msgstr "這些檢查必須在合併請求可以合併之前通過。子群組和
 
 msgid "ProjectSettings|This feature is an experiment. When you enable this, you accept the %{link}."
 msgstr "此功能是一項實驗，當您啟用此功能時，表示您接受 %{link}。"
+
+msgid "ProjectSettings|This feature requires the repository to be enabled."
+msgstr ""
 
 msgid "ProjectSettings|This project"
 msgstr "該專案"
@@ -63606,9 +64072,6 @@ msgstr "最近使用"
 msgid "Recently viewed"
 msgstr "最近查看"
 
-msgid "Recommended"
-msgstr ""
-
 msgid "Recommended. Permanently delete an item:"
 msgstr "建議，永久刪除項目："
 
@@ -63881,6 +64344,9 @@ msgstr ""
 msgid "ReleaseCreation|Description cannot exceed %{maxLength} characters."
 msgstr ""
 
+msgid "ReleaseCreation|Failed to add the version. Please try again."
+msgstr ""
+
 msgid "ReleaseCreation|Failed to create the release. Refresh the page to try again."
 msgstr ""
 
@@ -63899,6 +64365,9 @@ msgstr ""
 msgid "ReleaseCreation|Release"
 msgstr ""
 
+msgid "ReleaseCreation|Search version"
+msgstr ""
+
 msgid "ReleaseCreation|Select version"
 msgstr ""
 
@@ -63908,10 +64377,10 @@ msgstr ""
 msgid "ReleaseCreation|Services and versions"
 msgstr ""
 
-msgid "ReleaseCreation|Version"
+msgid "ReleaseCreation|Use \"%{name}\""
 msgstr ""
 
-msgid "ReleaseCreation|Version must be a valid SemVer, e.g. 1.2.3 or v1.2.3."
+msgid "ReleaseCreation|Version"
 msgstr ""
 
 msgid "ReleaseCreation|Version name cannot exceed %{maxLength} characters."
@@ -63924,6 +64393,12 @@ msgid "ReleaseCreation|e.g. eu-west-1-prod"
 msgstr ""
 
 msgid "ReleaseCreation|e.g. v1.2.3"
+msgstr ""
+
+msgid "ReleaseCreation|not deployed"
+msgstr ""
+
+msgid "ReleaseCreation|unverified version"
 msgstr ""
 
 msgid "Released"
@@ -65391,7 +65866,7 @@ msgstr ""
 msgid "Rollout cannot be started because its environments use different deploy drivers."
 msgstr ""
 
-msgid "Rollout is not awaiting approval."
+msgid "Rollout has no open approval gate."
 msgstr ""
 
 msgid "Root Moved Permanently redirection response"
@@ -66951,6 +67426,9 @@ msgstr "儲存密碼"
 msgid "Saving"
 msgstr "儲存中"
 
+msgid "Saving changes"
+msgstr ""
+
 msgid "Saving project."
 msgstr "正在儲存專案。"
 
@@ -67218,7 +67696,7 @@ msgstr ""
 msgid "ScanProfiles|Block secrets such as keys and API tokens from being pushed to your repositories. Secret detection is triggered when commits are pushed to a repository. If any secrets are detected, the push is blocked."
 msgstr ""
 
-msgid "ScanProfiles|Branch Pipelines (default only)"
+msgid "ScanProfiles|Branch pipelines (default only)"
 msgstr ""
 
 msgid "ScanProfiles|Configuration profiles are reusable settings templates for security tools. Create and manage profiles once, then apply them to multiple projects to ensure consistent security coverage."
@@ -67249,6 +67727,9 @@ msgid "ScanProfiles|Results:"
 msgstr ""
 
 msgid "ScanProfiles|Scan all Git push events and block pushes with detected secrets."
+msgstr ""
+
+msgid "ScanProfiles|Scan profile details"
 msgstr ""
 
 msgid "ScanProfiles|Scan triggers"
@@ -68296,9 +68777,6 @@ msgstr "秒"
 msgid "Secret"
 msgstr "保密"
 
-msgid "Secret Detection"
-msgstr "保密檢測"
-
 msgid "Secret detection"
 msgstr ""
 
@@ -68564,10 +69042,16 @@ msgstr ""
 msgid "SecretsManagerTrial|0 credits left in secrets manager trial"
 msgstr ""
 
+msgid "SecretsManagerTrial|All trial credits used"
+msgstr ""
+
 msgid "SecretsManagerTrial|Contact your billing administrator to enable on-demand billing and avoid disruption."
 msgstr ""
 
 msgid "SecretsManagerTrial|On-demand billing is disabled"
+msgstr ""
+
+msgid "SecretsManagerTrial|On-demand billing is enabled, and you are incurring charges for continued usage. %{linkStart}How is secrets manager billed?%{linkEnd}"
 msgstr ""
 
 msgid "SecretsManagerTrial|On-demand billing is enabled, and you will incur charges after the trial period ends. %{linkStart}How is secrets manager billed?%{linkEnd}"
@@ -68603,6 +69087,12 @@ msgstr ""
 msgid "SecretsManager|Add secret"
 msgstr ""
 
+msgid "SecretsManager|After %{cutoffDate}, GitLab Secrets Manager usage will consume GitLab credits. Without an eligible plan, your secrets manager will be disabled. To avoid a service disruption, start a trial to keep access."
+msgstr ""
+
+msgid "SecretsManager|After the trial period, GitLab Secrets Manager consumes GitLab credits to store and fetch secrets. Enable on-demand billing to avoid a service interruption when the trial ends."
+msgstr ""
+
 msgid "SecretsManager|Allow GitLab Secrets Manager to be used in groups and projects."
 msgstr ""
 
@@ -68618,6 +69108,9 @@ msgstr ""
 msgid "SecretsManager|Are you sure you want to update secret %{secretName}? Saving these changes could cause disruptions, such as loss of access to connected services or failed deployments, if the value is rejected by the services."
 msgstr ""
 
+msgid "SecretsManager|By default, all subgroups and projects can use stored secrets in their pipelines."
+msgstr ""
+
 msgid "SecretsManager|Cannot connect to OpenBao"
 msgstr ""
 
@@ -68630,7 +69123,13 @@ msgstr ""
 msgid "SecretsManager|Contact your GitLab administrator for a trial."
 msgstr ""
 
+msgid "SecretsManager|Contact your administrator to start a trial."
+msgstr ""
+
 msgid "SecretsManager|Delete secret"
+msgstr ""
+
+msgid "SecretsManager|Do not close this page until Secrets Manager is finished setting up."
 msgstr ""
 
 msgid "SecretsManager|Edit %{name}"
@@ -68640,6 +69139,12 @@ msgid "SecretsManager|Enable Secrets Manager for this instance. When enabled, th
 msgstr ""
 
 msgid "SecretsManager|Enable on-demand billing to try GitLab Secrets Manager"
+msgstr ""
+
+msgid "SecretsManager|Enabling GitLab Secrets Manager"
+msgstr ""
+
+msgid "SecretsManager|Enabling GitLab Secrets Manager trial"
 msgstr ""
 
 msgid "SecretsManager|Enter a new value to update secret"
@@ -68666,19 +69171,25 @@ msgstr ""
 msgid "SecretsManager|GitLab Secrets Manager"
 msgstr ""
 
+msgid "SecretsManager|GitLab Secrets Manager has been enabled for this group. %{linkStart}Manage permissions.%{linkEnd}"
+msgstr ""
+
+msgid "SecretsManager|GitLab Secrets Manager has been enabled for this project. %{linkStart}Manage permissions.%{linkEnd}"
+msgstr ""
+
 msgid "SecretsManager|GitLab Secrets Manager is free during open beta, but will consume %{linkStart}GitLab Credits%{linkEnd} when it becomes generally available. Credits will be consumed only if you opt in. You will receive advance notice before general availability."
 msgstr ""
 
-msgid "SecretsManager|GitLab Secrets Manager will consume GitLab credits when you store or fetch secrets. %{linkStart}How is secrets manager billed?%{linkEnd}"
-msgstr ""
-
-msgid "SecretsManager|Introducing GitLab Secrets Manager"
+msgid "SecretsManager|How is GitLab Secrets Manager billed?"
 msgstr ""
 
 msgid "SecretsManager|Keep secrets secure with GitLab Secrets Manager"
 msgstr ""
 
 msgid "SecretsManager|Learn more about GitLab Secrets Manager."
+msgstr ""
+
+msgid "SecretsManager|Learn more about the 30-day trial"
 msgstr ""
 
 msgid "SecretsManager|Maximum 200 characters."
@@ -68690,16 +69201,13 @@ msgstr ""
 msgid "SecretsManager|On-demand is enabled"
 msgstr ""
 
-msgid "SecretsManager|Please wait while the secrets manager is provisioned. You can refresh at any time."
+msgid "SecretsManager|Please wait while the secrets manager is enabled."
 msgstr ""
 
 msgid "SecretsManager|Protect your organization from potential leaks."
 msgstr ""
 
 msgid "SecretsManager|Protected Branches"
-msgstr ""
-
-msgid "SecretsManager|Provisioning in progress"
 msgstr ""
 
 msgid "SecretsManager|Secret %{secretName} has been deleted."
@@ -68741,7 +69249,16 @@ msgstr ""
 msgid "SecretsManager|Secure your sensitive information"
 msgstr ""
 
+msgid "SecretsManager|Something went wrong while setting up the secrets manager. Please try again."
+msgstr ""
+
+msgid "SecretsManager|Start a 30-day trial to continue using GitLab Secrets Manager and avoid service disruption."
+msgstr ""
+
 msgid "SecretsManager|Stored secrets"
+msgstr ""
+
+msgid "SecretsManager|The GitLab Secrets Manager trial has been enabled for all groups and projects within this namespace. %{linkStart}Manage group permissions.%{linkEnd}"
 msgstr ""
 
 msgid "SecretsManager|The name should be unique within this group and can contain only letters, digits, and '_'."
@@ -68750,20 +69267,28 @@ msgstr ""
 msgid "SecretsManager|The name should be unique within this project and can contain only letters, digits, and '_'."
 msgstr ""
 
+msgid "SecretsManager|There was a problem enabling the GitLab Secrets Manager. Try again later."
+msgstr ""
+
 msgid "SecretsManager|This field is required and must be 200 characters or less."
 msgstr ""
 
 msgid "SecretsManager|To confirm, enter %{secretName}:"
 msgstr ""
 
-msgid "SecretsManager|Trial enabled. Redirecting to secrets manager..."
-msgstr ""
-
-msgid "SecretsManager|Use the GitLab Secrets Manager to securely store and manage secrets and credentials for your projects and groups."
-msgstr ""
-
 msgid "SecretsManager|Use the secrets manager to store your sensitive credentials, and then safely use them in your processes."
 msgstr ""
+
+msgid "SecretsManager|Your Beta period is over and GitLab Secrets Manager has been disabled"
+msgstr ""
+
+msgid "SecretsManager|Your free beta ends in %{count} day. Start a trial now."
+msgid_plural "SecretsManager|Your free beta ends in %{count} days. Start a trial now."
+msgstr[0] ""
+
+msgid "SecretsManager|Your free beta ends in %{count} hour. Start a trial now."
+msgid_plural "SecretsManager|Your free beta ends in %{count} hours. Start a trial now."
+msgstr[0] ""
 
 msgid "Secure Code Warrior"
 msgstr "安全代碼"
@@ -69195,9 +69720,6 @@ msgstr ""
 msgid "SecurityConfiguration|Available with Ultimate"
 msgstr "適用於旗艦版"
 
-msgid "SecurityConfiguration|Available with Ultimate. Enabled by default for all public projects."
-msgstr ""
-
 msgid "SecurityConfiguration|Choose exactly which projects and scanners to enable and which profiles to apply. We'll guide you through each step."
 msgstr ""
 
@@ -69573,10 +70095,10 @@ msgstr ""
 msgid "SecurityConfiguration|Vulnerabilities are retained in the database for one year after the last update. After one year of inactivity, vulnerabilities are archived on the first of each month. Archives are removed after five years."
 msgstr ""
 
-msgid "SecurityConfiguration|Vulnerability Management"
-msgstr "漏洞管理"
-
 msgid "SecurityConfiguration|Vulnerability archives"
+msgstr ""
+
+msgid "SecurityConfiguration|Vulnerability management"
 msgstr ""
 
 msgid "SecurityConfiguration|Warning"
@@ -73162,6 +73684,15 @@ msgstr ""
 msgid "SecurityProfiles|Apply default profile"
 msgstr ""
 
+msgid "SecurityProfiles|Apply default profile to all"
+msgstr ""
+
+msgid "SecurityProfiles|Apply profile"
+msgstr ""
+
+msgid "SecurityProfiles|Apply profile to all"
+msgstr ""
+
 msgid "SecurityProfiles|Apply profile to enable"
 msgstr ""
 
@@ -73180,7 +73711,7 @@ msgstr ""
 msgid "SecurityProfiles|Coverage may be outdated"
 msgstr ""
 
-msgid "SecurityProfiles|Dependency Scanning"
+msgid "SecurityProfiles|Dependency scanning"
 msgstr ""
 
 msgid "SecurityProfiles|Disable"
@@ -73278,13 +73809,13 @@ msgstr ""
 msgid "SecurityProfiles|Scans your source code using GitLab-managed rules to identify common vulnerabilities like injection flaws and hardcoded secrets. %{linkStart}Learn more%{linkEnd}."
 msgstr ""
 
-msgid "SecurityProfiles|Secret Detection"
+msgid "SecurityProfiles|Secret detection"
 msgstr ""
 
 msgid "SecurityProfiles|Security configuration illustration"
 msgstr ""
 
-msgid "SecurityProfiles|Static Application Security Testing (SAST)"
+msgid "SecurityProfiles|Static application security testing (SAST)"
 msgstr ""
 
 msgid "SecurityProfiles|The job link failed to load. Please try again."
@@ -73308,10 +73839,10 @@ msgstr ""
 msgid "SecurityProfiles|What are configuration profiles?"
 msgstr ""
 
-msgid "SecurityProfiles|What is Dependency Scanning?"
+msgid "SecurityProfiles|What is SAST?"
 msgstr ""
 
-msgid "SecurityProfiles|What is SAST?"
+msgid "SecurityProfiles|What is dependency scanning?"
 msgstr ""
 
 msgid "SecurityProfiles|What is secret push protection?"
@@ -73336,6 +73867,9 @@ msgstr "%{count}+"
 msgid "SecurityReports|%{count}+ projects"
 msgstr "%{count}+ 專案"
 
+msgid "SecurityReports|%{failed} could not be processed"
+msgstr ""
+
 msgid "SecurityReports|%{firstProject} and %{secondProject}"
 msgstr "%{firstProject}和%{secondProject}"
 
@@ -73346,6 +73880,9 @@ msgid "SecurityReports|%{nrVulnerabilities} vulnerabilities attached to %{nrIssu
 msgstr ""
 
 msgid "SecurityReports|%{nrVulnerabilities} vulnerabilities attached to 1 issue"
+msgstr ""
+
+msgid "SecurityReports|%{processed} of %{total} vulnerabilities processed"
 msgstr ""
 
 msgid "SecurityReports|%{rating} risk score"
@@ -73384,9 +73921,6 @@ msgstr ""
 msgid "SecurityReports|90 days"
 msgstr ""
 
-msgid "SecurityReports|A Vulnerability Resolution is already in progress for this project. Wait for it to finish before starting a new one."
-msgstr ""
-
 msgid "SecurityReports|A comment is required when changing the severity."
 msgstr ""
 
@@ -73395,6 +73929,9 @@ msgstr "駁回時需要發表評論。"
 
 msgid "SecurityReports|A dismissal reason is required."
 msgstr "需要一個解除原因。"
+
+msgid "SecurityReports|A run is already in progress for this project and you can cancel it from the progress bar."
+msgstr ""
 
 msgid "SecurityReports|AI evaluates for false positives, helping to tune the noise to signal ratio."
 msgstr ""
@@ -73465,8 +74002,17 @@ msgstr ""
 msgid "SecurityReports|Branches"
 msgstr ""
 
+msgid "SecurityReports|Bulk action in progress"
+msgstr ""
+
 msgid "SecurityReports|CVSS v%{version}:"
 msgstr "通用漏洞評分系統(CVSS) v%{version}:"
+
+msgid "SecurityReports|Cancel run"
+msgstr ""
+
+msgid "SecurityReports|Cancel the current run?"
+msgstr ""
 
 msgid "SecurityReports|Change severity"
 msgstr ""
@@ -73554,6 +74100,9 @@ msgstr ""
 
 msgid "SecurityReports|Detected in external sources such as running containers and URLs. These vulnerabilities are not necessarily associated with your GitLab project."
 msgstr "在外部來源中檢測到，例如正在執行的容器和網址。這些漏洞不一定與您的 GitLab 專案相關。"
+
+msgid "SecurityReports|Detecting false positives"
+msgstr ""
 
 msgid "SecurityReports|Detection"
 msgstr "檢測"
@@ -73669,6 +74218,9 @@ msgstr ""
 msgid "SecurityReports|Filter results..."
 msgstr ""
 
+msgid "SecurityReports|Findings already processed will keep their results. Only the remaining work will be canceled."
+msgstr ""
+
 msgid "SecurityReports|From AI-created MRs"
 msgstr ""
 
@@ -73759,6 +74311,9 @@ msgstr ""
 
 msgid "SecurityReports|Merge Request"
 msgstr "合併請求"
+
+msgid "SecurityReports|Merge requests created by this run will remain open and will not be reverted or closed. Only the ongoing run will be canceled."
+msgstr ""
 
 msgid "SecurityReports|Monitor vulnerabilities in all of your projects"
 msgstr "監控您所有專案中的漏洞"
@@ -73898,6 +74453,9 @@ msgstr ""
 msgid "SecurityReports|Resolve with AI"
 msgstr ""
 
+msgid "SecurityReports|Resolving vulnerabilities with AI"
+msgstr ""
+
 msgid "SecurityReports|Results show vulnerability findings from the latest successful %{helpPageLinkStart}pipeline%{helpPageLinkEnd}."
 msgstr "結果顯示從最新成功的 %{helpPageLinkStart}流水線%{helpPageLinkEnd}中發現的漏洞。"
 
@@ -73908,9 +74466,6 @@ msgid "SecurityReports|Risk score formula"
 msgstr ""
 
 msgid "SecurityReports|Run SAST False Positive Detection"
-msgstr ""
-
-msgid "SecurityReports|SAST false positive detection is already in progress for this project. Wait for it to finish before starting a new one."
 msgstr ""
 
 msgid "SecurityReports|SAST triage and remediation funnel"
@@ -74009,6 +74564,9 @@ msgstr "下列 SBOM 報告無法解析，因此報告的弱點清單可能不完
 msgid "SecurityReports|The following security reports contain one or more vulnerability findings that could not be parsed and were not recorded. To investigate a report, download the artifacts in the job output. Ensure the security report conforms to the relevant %{helpPageLinkStart}JSON schema%{helpPageLinkEnd}."
 msgstr "安全報告包含一個或多個無法解析且未記錄的漏洞發現。查看報告，請下載該作業項的產出物，確保建立的安全報告都符合相關的 %{helpPageLinkStart}JSON 綱要%{helpPageLinkEnd}。"
 
+msgid "SecurityReports|The run has been canceled."
+msgstr ""
+
 msgid "SecurityReports|The security report for this pipeline has %{helpPageLinkStart}expired%{helpPageLinkEnd}. Re-run the pipeline to generate a new security report."
 msgstr "此流水線的安全報告 %{helpPageLinkStart}已過期%{helpPageLinkEnd}。重新執行流水線來產生新的安全報告。"
 
@@ -74048,11 +74606,14 @@ msgstr "此專案已達到可包含漏洞的最大數量，有些漏洞無法被
 msgid "SecurityReports|This project has reached the maximum number of vulnerabilities it can contain. New vulnerabilities will not be created."
 msgstr "這個專案已達到可以包含的最大漏洞數量，新的漏洞將不會被生成。"
 
-msgid "SecurityReports|This project is public. GitLab Duo will generate merge requests with suggested fixes that may be visible to anyone."
+msgid "SecurityReports|This project is public. GitLab Duo merge requests with suggested fixes might be visible to anyone."
 msgstr ""
 
 msgid "SecurityReports|This project is reaching the maximum number of vulnerabilities it can contain."
 msgstr "這個專案能夠容納的弱點數量已經達到上限。"
+
+msgid "SecurityReports|This run has already finished."
+msgstr ""
 
 msgid "SecurityReports|This selection is required."
 msgstr "這個選擇是必需的。"
@@ -74060,7 +74621,7 @@ msgstr "這個選擇是必需的。"
 msgid "SecurityReports|Time period"
 msgstr ""
 
-msgid "SecurityReports|To create the MR privately, see %{linkStart}Resolving a vulnerability privately%{linkEnd}."
+msgid "SecurityReports|To create the merge request privately, see %{linkStart}resolve a vulnerability privately%{linkEnd}."
 msgstr ""
 
 msgid "SecurityReports|To learn more about this CWE, view the %{linkStart}MITRE definition.%{linkEnd}"
@@ -74141,6 +74702,9 @@ msgstr ""
 msgid "SecurityReports|Warning parsing security reports"
 msgstr "警告解析安全報告"
 
+msgid "SecurityReports|We could not cancel the run. Try again or refresh the page."
+msgstr ""
+
 msgid "SecurityReports|Yes"
 msgstr ""
 
@@ -74152,6 +74716,12 @@ msgstr "掃描資源"
 
 msgid "SecurityReports|security scanning prerequisites"
 msgstr "安全掃描的先決條件"
+
+msgid "SecurityScanProfile|Cannot delete a GitLab-recommended scan profile."
+msgstr ""
+
+msgid "SecurityScanProfile|Configuration is not allowed for the %{trigger_type} trigger"
+msgstr ""
 
 msgid "SecurityScanProfile|Default GitLab-recommended profiles are not editable."
 msgstr ""
@@ -74982,6 +75552,15 @@ msgstr "建立服務帳號"
 
 msgid "Service account generated successfully"
 msgstr "服務帳號產生成功"
+
+msgid "Service account must be a member of the target project"
+msgstr ""
+
+msgid "Service account must be active"
+msgstr ""
+
+msgid "Service account must be group or project scoped, not instance-wide"
+msgstr ""
 
 msgid "Service account was successfully updated."
 msgstr ""
@@ -76950,9 +77529,6 @@ msgstr "版本程式碼(%{fileExtension})"
 msgid "Source is not available"
 msgstr "來源不可用"
 
-msgid "Source name"
-msgstr ""
-
 msgid "Source project"
 msgstr "來源專案"
 
@@ -77170,6 +77746,9 @@ msgstr "收藏(星號)使用者"
 msgid "Stars"
 msgstr "星號"
 
+msgid "Start 30-day trial"
+msgstr ""
+
 msgid "Start Date"
 msgstr "開始日期"
 
@@ -77277,6 +77856,9 @@ msgstr "輸入訊息以啟用"
 
 msgid "Static Application Security Testing (SAST)"
 msgstr "靜態應用程式安全測試(SAST)"
+
+msgid "Static application security testing (SAST)"
+msgstr ""
 
 msgid "Statistics"
 msgstr "統計"
@@ -79067,6 +79649,12 @@ msgstr "%{count}個失敗"
 msgid "TestReports|%{count} tests"
 msgstr "%{count}項測試"
 
+msgid "TestReports|%{label}, sorted ascending"
+msgstr ""
+
+msgid "TestReports|%{label}, sorted descending"
+msgstr ""
+
 msgid "TestReports|%{rate}%{sign} success rate"
 msgstr "%{rate}%{sign}成功率"
 
@@ -79090,6 +79678,9 @@ msgstr "了解有關流水線測試報告的更多訊息"
 
 msgid "TestReports|No test cases were found in the test report."
 msgstr "在測試報告中沒有找到測試案例。"
+
+msgid "TestReports|Sort by %{label}"
+msgstr ""
 
 msgid "TestReports|Test reports require job artifacts but all artifacts are expired. %{linkStart}Learn more%{linkEnd}"
 msgstr "測試報告需要作業工件，但所有工件都已過期。 %{linkStart}了解更多%{linkEnd}"
@@ -79156,6 +79747,9 @@ msgstr "感謝購買！"
 
 msgid "That's OK, I don't want to renew"
 msgstr "好的，我不想續訂"
+
+msgid "The %{name} is a managed setting and cannot be changed."
+msgstr ""
 
 msgid "The %{plan_name} is no longer available to purchase. For more information about how this will impact you, check our %{faq_link_start}frequently asked questions%{faq_link_end}."
 msgstr "%{plan_name} 已無法購買。欲了解更多關於這將如何影響您的訊息，請查看我們的 %{faq_link_start}常見問題%{faq_link_end}。"
@@ -79487,6 +80081,9 @@ msgstr "群組的匯出可以從以下位置下載："
 msgid "The group has already been shared with this group"
 msgstr "該群組已與此群組共享"
 
+msgid "The group link could not be removed."
+msgstr ""
+
 msgid "The group_project_ids parameter is only allowed for a group"
 msgstr "group_project_ids 參數只允許用於一個群組"
 
@@ -79673,6 +80270,9 @@ msgstr ""
 
 msgid "The page could not be displayed because it timed out."
 msgstr "頁面已逾時，無法顯示。"
+
+msgid "The parent directory \"%{path}\" is locked. To unlock this directory, unlock \"%{path}\"."
+msgstr ""
 
 msgid "The parent group is archived. This group and its data are %{strong_open}read-only%{strong_close}."
 msgstr ""
@@ -79877,6 +80477,15 @@ msgstr "更新操作將在 %{number_of_minutes} 分鐘後逾時。對於大型�
 
 msgid "The uploaded file was invalid. Supported file extensions are %{extensions}."
 msgstr "上傳的文件無效。支援的文件擴展名為%{extensions}。"
+
+msgid "The user cannot be added because their home organization is isolated"
+msgstr ""
+
+msgid "The user could not be found"
+msgstr ""
+
+msgid "The user is already a member of the organization"
+msgstr ""
 
 msgid "The user is being deleted."
 msgstr "使用者正在被刪除。"
@@ -80817,6 +81426,9 @@ msgstr ""
 msgid "This license has already expired."
 msgstr "該授權許可已過期。"
 
+msgid "This limit is not enforced until the %{flag} feature flag is enabled."
+msgstr ""
+
 msgid "This link points to external content"
 msgstr "該連結指向外部內容"
 
@@ -80871,13 +81483,10 @@ msgstr "合併請求已合併。要應用此建議，請直接編輯此文件。
 msgid "This only applies to repository indexing operations."
 msgstr "這僅適用於版本庫索引操作。"
 
-msgid "This organization is currently in read-only mode. New account creation via SSO is currently unavailable."
+msgid "This organization is temporarily unavailable due to maintenance."
 msgstr ""
 
-msgid "This organization is currently in read-only mode. Write operations are disabled."
-msgstr ""
-
-msgid "This organization is currently in read-only mode. Write operations are temporarily disabled."
+msgid "This organization is unavailable."
 msgstr ""
 
 msgid "This page is hosted on GitLab pages but contains user-generated content and may contain malicious code. Do not accept unless you trust the author and source."
@@ -81029,6 +81638,12 @@ msgid "This setting is configured for the group. To make changes, go to %{linkSt
 msgstr ""
 
 msgid "This setting is configured for the group. To make changes, go to group repository settings."
+msgstr ""
+
+msgid "This setting is managed and cannot be changed from here."
+msgstr ""
+
+msgid "This setting is managed by %{managed_by} and cannot be changed from here."
 msgstr ""
 
 msgid "This stage has one or more manual jobs that require confirmation before retrying. Do you want to proceed?"
@@ -82202,9 +82817,6 @@ msgstr "切換鍵盤快捷鍵幫助對話框"
 msgid "Toggle project select"
 msgstr "切換專案選擇"
 
-msgid "Toggle shortcuts"
-msgstr "切換快捷鍵"
-
 msgid "Toggle sidebar"
 msgstr "切換側邊欄"
 
@@ -82692,6 +83304,9 @@ msgstr ""
 msgid "TransferProject|Cannot transfer project: failed to connect to the container registry. Please try again later."
 msgstr ""
 
+msgid "TransferProject|Failed to transfer project. The container registry at %{registry_url} could not be reached (%{error}). If the container registry is not in use, disable the integration to allow the project to be transferred."
+msgstr ""
+
 msgid "TransferProject|Please select a new namespace for your project."
 msgstr "請為專案選擇新命名空間。"
 
@@ -82784,6 +83399,9 @@ msgstr ""
 
 msgid "Trial|Activate my trial"
 msgstr "啟用我的試用版"
+
+msgid "Trial|Add a few more details to activate your trial. You can change them later."
+msgstr ""
 
 msgid "Trial|Allowed characters: +, 0-9, -, and spaces."
 msgstr "允許的字元：+、0-9、- 和空格。"
@@ -84083,6 +84701,9 @@ msgstr ""
 msgid "UsageBilling|Credit amount"
 msgstr ""
 
+msgid "UsageBilling|Credit caps"
+msgstr ""
+
 msgid "UsageBilling|Credits"
 msgstr ""
 
@@ -84397,8 +85018,8 @@ msgstr ""
 msgid "UsageQuota|Additional compute minutes"
 msgstr ""
 
-msgid "UsageQuota|An error occured while loading the storage usage details. Please refresh the page to try again."
-msgstr "載入儲存使用詳細資料時發生錯誤，請刷新頁面重試。"
+msgid "UsageQuota|An error occurred while loading the storage usage details. Please refresh the page to try again."
+msgstr ""
 
 msgid "UsageQuota|Any additional purchased storage will be displayed here."
 msgstr "任何額外購買的儲存空間將顯示在此。"
@@ -85124,6 +85745,9 @@ msgstr "使用者列表%{name}將被移除，確定繼續嗎？"
 
 msgid "User map"
 msgstr "使用者映射"
+
+msgid "User must be a service account"
+msgstr ""
 
 msgid "User must have permission to use Duo Workflows in the project."
 msgstr ""
@@ -86323,6 +86947,9 @@ msgstr "查看當前使用資源的工作"
 
 msgid "View labels"
 msgstr "查看標記"
+
+msgid "View lock"
+msgstr ""
 
 msgid "View logs"
 msgstr ""
@@ -87900,12 +88527,6 @@ msgstr ""
 msgid "Vulnerability|High"
 msgstr ""
 
-msgid "Vulnerability|How the component determines what an authenticated user or service is allowed to access or do. This includes the roles, permissions, or privilege level required to reach the code."
-msgstr ""
-
-msgid "Vulnerability|How the component verifies the identity of a user or service before allowing access. This indicates whether the vulnerable code requires authentication and what authentication model is used."
-msgstr ""
-
 msgid "Vulnerability|Identifier"
 msgstr "標識"
 
@@ -87928,6 +88549,15 @@ msgid "Vulnerability|Image: %{linkStart}%{image}%{linkEnd}"
 msgstr "映像: %{linkStart}%{image}%{linkEnd}"
 
 msgid "Vulnerability|Inactive secret"
+msgstr ""
+
+msgid "Vulnerability|Indicates whether elevated privileges are required to exploit the vulnerable code."
+msgstr ""
+
+msgid "Vulnerability|Indicates whether the component handles data that could cause harm if exposed or misused, like personal information, credentials, secrets, tokens, payment data, or health data."
+msgstr ""
+
+msgid "Vulnerability|Indicates whether the component verifies the identity of a user or service before allowing access, and therefore whether the vulnerable code requires authentication."
 msgstr ""
 
 msgid "Vulnerability|Information related to how the vulnerability was discovered and its impact on the system."
@@ -87959,6 +88589,9 @@ msgstr ""
 
 msgid "Vulnerability|Namespace:"
 msgstr "命名空間:"
+
+msgid "Vulnerability|No available solution"
+msgstr ""
 
 msgid "Vulnerability|None"
 msgstr ""
@@ -88178,9 +88811,6 @@ msgstr ""
 
 msgid "Vulnerability|What is code flow?"
 msgstr "什麼是程式碼流程？"
-
-msgid "Vulnerability|Whether the component handles data that could cause harm if exposed or misused, such as personal information, credentials, secrets, tokens, payment data, or health data."
-msgstr ""
 
 msgid "Vulnerability|circular dependency"
 msgstr ""
@@ -89449,10 +90079,16 @@ msgstr ""
 msgid "WorkItemBoard|Column actions"
 msgstr ""
 
+msgid "WorkItemBoard|Hide list"
+msgstr ""
+
 msgid "WorkItemBoard|Move left"
 msgstr ""
 
 msgid "WorkItemBoard|Move right"
+msgstr ""
+
+msgid "WorkItemBoard|Moved %{reference} to %{targetGroup}"
 msgstr ""
 
 msgid "WorkItemBoard|No items"
@@ -89507,6 +90143,36 @@ msgid "WorkItemCustomField|Type"
 msgstr "類型"
 
 msgid "WorkItemCustomField|Use on"
+msgstr ""
+
+msgid "WorkItemDecisionLog|Decision log"
+msgstr ""
+
+msgid "WorkItemDecisionLog|Decisions show up here once an open question gets answered or a comment is marked as a decision. Each one keeps the background behind it and a link back to where it was made."
+msgstr ""
+
+msgid "WorkItemDecisionLog|No decisions yet"
+msgstr ""
+
+msgid "WorkItemDuoQuestion|An answer is required to submit"
+msgstr ""
+
+msgid "WorkItemDuoQuestion|Answer in your own words"
+msgstr ""
+
+msgid "WorkItemDuoQuestion|Recommended"
+msgstr ""
+
+msgid "WorkItemDuoQuestion|Send answer"
+msgstr ""
+
+msgid "WorkItemDuoQuestion|Something went wrong while sending your answer. Please try again."
+msgstr ""
+
+msgid "WorkItemDuoQuestion|Type your answer here…"
+msgstr ""
+
+msgid "WorkItemDuoQuestion|Your answer was posted, but the thread could not be resolved. Resolve it manually so GitLab Duo can continue."
 msgstr ""
 
 msgid "WorkItemPlanningView|Board (Beta)"
@@ -89964,11 +90630,11 @@ msgstr "咖啡色"
 msgid "WorkItem|Color"
 msgstr "顏色"
 
-msgid "WorkItem|Comment & close %{workItemType}"
-msgstr "評論並關閉 %{workItemType}"
+msgid "WorkItem|Comment and close %{workItemType}"
+msgstr ""
 
-msgid "WorkItem|Comment & reopen %{workItemType}"
-msgstr "評論並重新開啟 %{workItemType}"
+msgid "WorkItem|Comment and reopen %{workItemType}"
+msgstr ""
 
 msgid "WorkItem|Comments and threads"
 msgstr "評論與主題"
@@ -91814,6 +92480,9 @@ msgstr ""
 msgid "You can also use project access tokens with Git to authenticate over HTTP(S). %{link_start}Learn more.%{link_end}"
 msgstr "您還可以將專案存取令牌與 Git 結合使用以通過 HTTP(S) 進行身份驗證。 %{link_start}了解更多。%{link_end}"
 
+msgid "You can assign only one service account at a time."
+msgstr ""
+
 msgid "You can check it in your %{pat_link_start}personal access tokens%{pat_link_end} settings."
 msgstr "您可以在 %{pat_link_start}個人存取令牌%{pat_link_end} 中查看它。"
 
@@ -91994,6 +92663,12 @@ msgstr "您無法在個人命名空間中建立新專案，因為您已達到個
 msgid "You cannot create projects in your personal namespace. Contact your GitLab administrator."
 msgstr "您無法在您的個人命名空間中建立專案，請聯絡您的 GitLab 管理員。"
 
+msgid "You cannot delete a user from their home organization"
+msgstr ""
+
+msgid "You cannot delete the last owner of the organization"
+msgstr ""
+
 msgid "You cannot edit files in archived projects"
 msgstr ""
 
@@ -92019,6 +92694,9 @@ msgid "You cannot invite a new member to %{strong_start}%{group_name}%{strong_en
 msgstr ""
 
 msgid "You cannot invite a new member to %{strong_start}%{project_name}%{strong_end}. User invitations are disabled by the %{actor}."
+msgstr ""
+
+msgid "You cannot lock this directory because \"%{path}\" inside it is locked."
 msgstr ""
 
 msgid "You cannot mirror a repository to itself."
@@ -92228,11 +92906,20 @@ msgstr "您沒有足夠的權限為此專案建立HTTP整合"
 msgid "You have insufficient permissions to create an on-call schedule for this project"
 msgstr "您沒有足夠的權限來建立此專案的 on-call 排程"
 
+msgid "You have insufficient permissions to create an organization from this group."
+msgstr ""
+
+msgid "You have insufficient permissions to create an organization user"
+msgstr ""
+
 msgid "You have insufficient permissions to create organizations"
 msgstr "您沒有足夠的權限來建立組織"
 
 msgid "You have insufficient permissions to delete a branch target"
 msgstr "您沒有足夠的權限來刪除分支目標"
+
+msgid "You have insufficient permissions to delete the organization user"
+msgstr ""
 
 msgid "You have insufficient permissions to manage alerts for this project"
 msgstr "您的權限不足以管理該專案的警示"
@@ -92308,6 +92995,9 @@ msgstr "您已經從「%{membershipable_human_name}」 %{source_type}退出。"
 
 msgid "You may close the milestone now."
 msgstr "您現在可以關閉這個里程碑。"
+
+msgid "You may only invite up to %{max} users at a time."
+msgstr ""
 
 msgid "You must %{docs_link} before using Security features."
 msgstr ""
@@ -92916,7 +93606,7 @@ msgstr "您的個人存取令牌將在 %{days_to_expire} 天或更短的時間�
 msgid "Your private namespace is over %{link_start}the %{free_limit} user limit%{link_end}. Contact your group Owner to reduce the number of users in the namespace, make the namespace public, or upgrade to a paid tier."
 msgstr ""
 
-msgid "Your private namespace is over %{link_start}the %{free_limit} user limit%{link_end}. To remove the read-only state, an Owner can reduce the number of users in the namespace to %{free_limit} or fewer, make the namespace public, or upgrade to a paid tier. If you need more time, you can start a free %{duration}-day Ultimate trial to get unlimited users. %{seat_usage_link_start}View your seat usage%{seat_usage_link_end} to see who counts toward the limit across your namespace."
+msgid "Your private namespace is over %{link_start}the %{free_limit} user limit%{link_end}. To remove the read-only state, an Owner can reduce the number of users in the namespace to %{free_limit} or fewer, make the namespace public, or upgrade to a paid tier. If you need more time, you can start a free %{duration}-day Ultimate trial or re-trial (available %{retrial_window} days after your last trial started) to get unlimited users. %{seat_usage_link_start}View your seat usage%{seat_usage_link_end} to see who counts toward the limit across your namespace."
 msgstr ""
 
 msgid "Your project %{project_name} has been marked for deletion and will be removed in %{days}."
@@ -94329,6 +95019,9 @@ msgstr "不是"
 msgid "is not a descendant of the Group owning the template"
 msgstr "不是擁有範本的群組子成員"
 
+msgid "is not a predefined compliance control."
+msgstr ""
+
 msgid "is not a recognized deploy driver."
 msgstr ""
 
@@ -94362,7 +95055,7 @@ msgstr "未連結至 SAML 帳號或具有不活躍的 SCIM 身份。要取得如
 msgid "is not one of"
 msgstr "不是其中之一"
 
-msgid "is not valid."
+msgid "is not valid YAML: %{message}"
 msgstr ""
 
 msgid "is not valid. The iteration group has to match the iteration cadence group."
@@ -94709,6 +95402,9 @@ msgstr "在 %{mergeAfter} 之前無法合併。"
 
 msgid "mrWidget|Checking if merge request can be merged…"
 msgstr "正在檢查合併請求是否可以合併…"
+
+msgid "mrWidget|Checking merge options…"
+msgstr ""
 
 msgid "mrWidget|Cherry-pick"
 msgstr "揀選 (Cherry-pick)"
@@ -95143,9 +95839,6 @@ msgstr "我的群組"
 
 msgid "my-channel"
 msgstr "我的頻道"
-
-msgid "my-hosted-repository"
-msgstr ""
 
 msgid "my-topic"
 msgstr "我的主題"

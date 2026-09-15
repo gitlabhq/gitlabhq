@@ -110,11 +110,33 @@ RSpec.describe 'User edits a merge request', :js, feature_category: :code_review
   end
 
   context 'with rich text editor' do
+    include RichTextEditorHelpers
+
     before do
       visit(edit_project_merge_request_path(project, merge_request))
     end
 
     it_behaves_like 'rich text editor - common'
+
+    it 'keeps images and links to repository files when switching editors', feature_category: :markdown do
+      markdown = '![logo](files/images/logo-black.png) and [readme](README.md)'
+
+      find('textarea').set(markdown)
+      switch_to_content_editor
+
+      page.within content_editor_testid do
+        expect(page).to have_css('img[src$="/-/raw/master/files/images/logo-black.png"]')
+        expect(page).to have_link('readme', href: %r{/-/blob/master/README\.md\z})
+      end
+
+      type_in_content_editor :end
+      type_in_content_editor ' and an edit'
+      wait_until_hidden_field_is_updated(/and an edit/)
+
+      switch_to_markdown_editor
+
+      expect(page).to have_field(type: 'textarea', with: "#{markdown} and an edit")
+    end
   end
 
   describe 'when deleting merge request' do

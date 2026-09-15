@@ -23,7 +23,7 @@ module Projects
       private
 
       def stage
-        @stage ||= pipeline.stage(params[:stage_name]).presence || render_404
+        @stage ||= pipeline.stage(params.permit(:stage_name)[:stage_name]).presence || render_404
       end
     end
   end

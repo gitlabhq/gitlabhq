@@ -2,8 +2,9 @@
 
 require 'spec_helper'
 
-RSpec.describe Environments::EnvironmentsFinder do
-  let_it_be(:project) { create(:project) }
+RSpec.describe Environments::EnvironmentsFinder, :with_current_organization,
+  feature_category: :environment_management do
+  let_it_be(:project) { create(:project, organization: current_organization) }
   let_it_be(:user) { project.creator }
   let_it_be(:environment) { create(:environment, :available, project: project) }
   let_it_be(:environment_stopped) { create(:environment, :stopped, name: 'test/test2', project: project) }

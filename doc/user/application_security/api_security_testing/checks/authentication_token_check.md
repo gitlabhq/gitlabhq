@@ -15,12 +15,12 @@ API tokens must be unpredictable (random enough) to prevent guessing attacks, wh
 
 The authentication token may have been:
 
-- modified to an invalid value.
-- removed from request.
-- not match length requirements.
-- configured as a signature.
+- Modified to an invalid value.
+- Removed from the request.
+- Not matched length requirements.
+- Configured as a signature.
 
-An API operation failed to property restrict access using an authentication token. This allows an attacker to bypass authentication gaining access to information or even the ability to modify data.
+An API operation failed to properly restrict access using an authentication token. This allows an attacker to bypass authentication gaining access to information or even the ability to modify data.
 
 ## Links
 

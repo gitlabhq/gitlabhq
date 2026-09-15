@@ -4,37 +4,46 @@ require 'spec_helper'
 require './keeps/generate_rubocop_todos'
 
 RSpec.describe Keeps::GenerateRubocopTodos, feature_category: :tooling do
-  let(:rake_task) { instance_double(Rake::Task) }
   let(:roulette) { instance_double(Keeps::Helpers::ReviewerRoulette) }
+  let(:todo_generator) { instance_double(Keeps::Helpers::RubocopTodoGenerator, generate: nil) }
+  let(:grace_period_remover) { instance_double(Keeps::Helpers::RubocopGracePeriodRemover, remove_overdue: nil) }
   let(:backend_reviewer) { 'john_doe' }
   let(:backend_maintainer) { 'raymond_smith' }
 
   subject(:keep) { described_class.new }
 
   before do
-    allow(Rake::Task).to receive(:[]).with('rubocop:todo:generate').and_return(rake_task)
+    allow(Keeps::Helpers::RubocopTodoGenerator).to receive(:new).and_return(todo_generator)
+    allow(Keeps::Helpers::RubocopGracePeriodRemover).to receive(:new).and_return(grace_period_remover)
 
     # Reset singleton to create a fresh instance
     Singleton.__init__(Keeps::Helpers::ReviewerRoulette)
     allow(Keeps::Helpers::ReviewerRoulette).to receive(:instance).and_return(roulette)
   end
 
-  describe '#each_identified_change' do
+  describe '#make_change!' do
+    it 'regenerates todos and removes overdue grace periods' do
+      expect(todo_generator).to receive(:generate)
+      expect(grace_period_remover).to receive(:remove_overdue)
+      allow(::Gitlab::Housekeeper::Shell).to receive(:execute)
+        .with('git', 'status', '--short', described_class::RUBOCOP_TODO_DIR)
+        .and_return('')
+
+      keep.each_identified_change { |change| keep.make_change!(change) }
+    end
+
     context 'when there are changes in the rubocop_todo directory' do
       before do
         allow(::Gitlab::Housekeeper::Shell).to receive(:execute)
-                                                 .with('git', 'status', '--short', described_class::RUBOCOP_TODO_DIR)
-                                                 .and_return('M .rubocop_todo/some_cop.yml')
+          .with('git', 'status', '--short', described_class::RUBOCOP_TODO_DIR)
+          .and_return('M .rubocop_todo/some_cop.yml')
 
         allow(roulette).to receive(:random_reviewer_for).with('trainee maintainer::backend').and_return(nil)
         allow(roulette).to receive(:random_reviewer_for).with('reviewer::backend').and_return(backend_reviewer)
         allow(roulette).to receive(:random_reviewer_for).with('maintainer::backend').and_return(backend_maintainer)
       end
 
-      it 'yields a Gitlab::Housekeeper::Change', :freeze_time do
-        expect(Gitlab::Application).to receive(:load_tasks)
-        expect(rake_task).to receive(:invoke)
-
+      it 'yields a populated Gitlab::Housekeeper::Change', :freeze_time do
         actual_change = nil
         keep.each_identified_change do |change|
           keep.make_change!(change)
@@ -55,14 +64,11 @@ RSpec.describe Keeps::GenerateRubocopTodos, feature_category: :tooling do
     context 'when there are no changes in the rubocop_todo directory' do
       before do
         allow(::Gitlab::Housekeeper::Shell).to receive(:execute)
-                                                 .with('git', 'status', '--short', described_class::RUBOCOP_TODO_DIR)
-                                                 .and_return('')
+          .with('git', 'status', '--short', described_class::RUBOCOP_TODO_DIR)
+          .and_return('')
       end
 
-      it 'yields nil' do
-        expect(Gitlab::Application).to receive(:load_tasks)
-        expect(rake_task).to receive(:invoke)
-
+      it 'leaves the change unpopulated' do
         actual_change = nil
         keep.each_identified_change do |change|
           keep.make_change!(change)

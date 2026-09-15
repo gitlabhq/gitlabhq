@@ -5,6 +5,7 @@ import { findWidget } from '~/work_items/list/utils';
 import { newDate, toISODateFormat } from '~/lib/utils/datetime_utility';
 import { updateDraft } from '~/lib/utils/autosave';
 import {
+  findCrmContactsWidget,
   findCustomFieldsWidget,
   findStartAndDueDateWidget,
   getNewWorkItemAutoSaveKey,
@@ -32,6 +33,7 @@ import {
   WIDGET_TYPE_STATUS,
 } from '../constants';
 import workItemByIidQuery from './work_item_by_iid.query.graphql';
+import workItemCrmContactsQuery from './work_item_crm_contacts.query.graphql';
 
 // Explicit mapping of widget type constants to feature attribute names
 // This ensures the transformation from WIDGET_TYPE_* constants to camelCase feature keys is intentional
@@ -92,6 +94,25 @@ const updateDatesWidget = (draftData, dates) => {
     rollUp: dates.rollUp,
     __typename: 'WorkItemWidgetStartAndDueDate',
   });
+};
+
+// Writes the selection through to the CRM contacts query and returns the widget for the draft.
+const updateCrmContactsWidget = ({ cache, variables, crmContacts, useWorkItemFeatures }) => {
+  if (crmContacts !== undefined) {
+    cache.updateQuery({ query: workItemCrmContactsQuery, variables }, (sourceData) =>
+      sourceData
+        ? produce(sourceData, (draftData) => {
+            const updateFn = useWorkItemFeatures ? updateFeatures : updateWidget;
+
+            updateFn(draftData, WIDGET_TYPE_CRM_CONTACTS, crmContacts, 'contacts.nodes');
+          })
+        : sourceData,
+    );
+  }
+
+  return findCrmContactsWidget(
+    cache.readQuery({ query: workItemCrmContactsQuery, variables })?.namespace?.workItem,
+  );
 };
 
 const updateCustomFieldsWidget = (sourceData, draftData, customField) => {
@@ -177,11 +198,6 @@ export const updateNewWorkItemCache = (input, cache) => {
             nodePath: 'color',
           },
           {
-            widgetType: WIDGET_TYPE_CRM_CONTACTS,
-            newData: crmContacts,
-            nodePath: 'contacts.nodes',
-          },
-          {
             widgetType: WIDGET_TYPE_DESCRIPTION,
             newData: description,
             nodePath: 'description',
@@ -235,6 +251,13 @@ export const updateNewWorkItemCache = (input, cache) => {
       }),
     );
 
+    const crmContactsWidget = updateCrmContactsWidget({
+      cache,
+      variables,
+      crmContacts,
+      useWorkItemFeatures,
+    });
+
     const newData = cache.readQuery({ query, variables });
 
     const autosaveKey = getNewWorkItemAutoSaveKey({
@@ -250,12 +273,19 @@ export const updateNewWorkItemCache = (input, cache) => {
       const cacheFn = newData?.namespace?.workItem?.features
         ? getWorkItemFeatures
         : getWorkItemWidgets;
-      const featuresData = JSON.stringify(cacheFn(newData));
+      const draftWidgets = cacheFn(newData);
+
+      if (crmContactsWidget) {
+        draftWidgets[WIDGET_TYPE_CRM_CONTACTS] = {
+          ...draftWidgets[WIDGET_TYPE_CRM_CONTACTS],
+          ...crmContactsWidget,
+        };
+      }
 
       updateDraft(autosaveKey, JSON.stringify(newData));
       updateDraft(
         getNewWorkItemWidgetsAutoSaveKey({ fullPath, context, relatedItemId }),
-        featuresData,
+        JSON.stringify(draftWidgets),
       );
     }
   } catch (e) {

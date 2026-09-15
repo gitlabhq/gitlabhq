@@ -68,7 +68,7 @@ describe('pipeline graph action component', () => {
 
       await waitForPromises();
 
-      expect(wrapper.emitted()['pipeline-action-request-complete']).toHaveLength(1);
+      expect(wrapper.emitted('pipeline-action-request-complete')).toHaveLength(1);
     });
 
     it('displays a loading icon/disabled button while waiting for request', async () => {
@@ -102,11 +102,11 @@ describe('pipeline graph action component', () => {
       });
 
       it('emits `show-action-confirmation-modal` event', () => {
-        expect(wrapper.emitted()['show-action-confirmation-modal']).toHaveLength(1);
+        expect(wrapper.emitted('show-action-confirmation-modal')).toHaveLength(1);
       });
 
       it('does not emit `pipeline-action-request-complete` event', () => {
-        expect(wrapper.emitted()['pipeline-action-request-complete']).toBeUndefined();
+        expect(wrapper.emitted('pipeline-action-request-complete')).toBeUndefined();
       });
     });
 
@@ -116,11 +116,11 @@ describe('pipeline graph action component', () => {
       });
 
       it('does not emit `show-action-confirmation-modal` event', () => {
-        expect(wrapper.emitted()['show-action-confirmation-modal']).toBeUndefined();
+        expect(wrapper.emitted('show-action-confirmation-modal')).toBeUndefined();
       });
 
       it('emits `action-button-clicked` event', () => {
-        expect(wrapper.emitted()['action-button-clicked']).toHaveLength(1);
+        expect(wrapper.emitted('action-button-clicked')).toHaveLength(1);
       });
     });
   });

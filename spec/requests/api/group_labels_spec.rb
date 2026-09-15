@@ -9,13 +9,12 @@ RSpec.describe API::GroupLabels, feature_category: :team_planning do
   let_it_be(:valid_subgroup_label_title_1) { 'Support label foobar:sub::v.1' }
   let_it_be(:valid_new_label_title) { 'New & foo:feature::v.3' }
 
-  let(:user) { create(:user) }
-  let(:group) { create(:group) }
-  let(:subgroup) { create(:group, parent: group) }
-  let!(:group_member) { create(:group_member, group: group, user: user) }
-  let!(:group_label1) { create(:group_label, title: valid_group_label_title_1, group: group) }
-  let!(:group_label2) { create(:group_label, title: valid_group_label_title_2, group: group) }
-  let!(:subgroup_label) { create(:group_label, title: valid_subgroup_label_title_1, group: subgroup) }
+  let_it_be(:user) { create(:user) }
+  let_it_be(:group) { create(:group, owners: user) }
+  let_it_be(:subgroup) { create(:group, parent: group) }
+  let_it_be_with_reload(:group_label1) { create(:group_label, title: valid_group_label_title_1, group: group) }
+  let_it_be(:group_label2) { create(:group_label, title: valid_group_label_title_2, group: group) }
+  let_it_be(:subgroup_label) { create(:group_label, title: valid_subgroup_label_title_1, group: subgroup) }
 
   describe 'GET :id/labels' do
     context 'get current group labels' do
@@ -71,9 +70,9 @@ RSpec.describe API::GroupLabels, feature_category: :team_planning do
       end
 
       context 'when include_descendant_groups param is provided' do
-        let!(:project) { create(:project, group: group) }
-        let!(:project_label1) { create(:label, title: 'project-label1', project: project, priority: 3) }
-        let!(:project_label2) { create(:label, title: 'project-bug', project: project) }
+        let_it_be(:project) { create(:project, group: group, creator: user) }
+        let_it_be(:project_label1) { create(:label, title: 'project-label1', project: project, priority: 3) }
+        let_it_be(:project_label2) { create(:label, title: 'project-bug', project: project) }
 
         let(:request) { get api("/groups/#{group.id}/labels", user), params: { include_descendant_groups: true } }
         let(:expected_labels) { [group_label1.name, group_label2.name, subgroup_label.name] }
@@ -517,7 +516,7 @@ RSpec.describe API::GroupLabels, feature_category: :team_planning do
   end
 
   describe 'POST /groups/:id/labels/:label_id/unsubscribe' do
-    before do
+    before_all do
       group_label1.subscribe(user)
     end
 

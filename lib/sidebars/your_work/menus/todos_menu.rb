@@ -8,7 +8,7 @@ module Sidebars
 
         override :link
         def link
-          dashboard_todos_path
+          dashboard_todos_path(organization_path: nil)
         end
 
         override :title

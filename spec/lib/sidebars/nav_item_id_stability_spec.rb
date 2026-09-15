@@ -88,8 +88,10 @@ KNOWN_STABLE_CE_IDS = %i[
   o11y_settings
   observability_alerts
   observability_dashboard
+  organization_admin_dashboard
+  organization_admin_settings_general
+  organization_admin_users
   organization_overview
-  organization_settings_general
   organization_users
   organizations
   packages_and_registries
@@ -128,7 +130,6 @@ KNOWN_STABLE_CE_IDS = %i[
 ].freeze
 
 KNOWN_STABLE_EE_IDS = %i[
-  agents_onboarding
   agents_runs
   ai_agents
   ai_catalog_agents

@@ -81,7 +81,7 @@ Gitlab::Experiment.configure do |config|
   config.tracking_behavior = ->(action, event_args) do
     Gitlab::Tracking.event(name, action, **event_args.merge(
       context: (event_args[:context] || []) << SnowplowTracker::SelfDescribingJson.new(
-        'iglu:com.gitlab/gitlab_experiment/jsonschema/1-0-0', signature
+        'iglu:com.gitlab/gitlab_experiment/jsonschema/1-0-3', signature
       )
     ))
   end

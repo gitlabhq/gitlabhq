@@ -151,6 +151,80 @@ RSpec.describe Profiles::TwoFactorAuthsController, feature_category: :system_acc
     it_behaves_like 'user must first verify their primary email address' do
       let(:go) { get :show }
     end
+
+    context 'when two-factor authentication is enforced globally' do
+      before do
+        stub_application_setting(require_two_factor_authentication: true)
+      end
+
+      it 'titles the enforcement banner' do
+        get :show
+
+        expect(flash[:alert][:title]).to eq(_('Secure your account with two-factor authentication (2FA)'))
+      end
+    end
+
+    context 'when a group enforces two-factor authentication' do
+      render_views
+
+      let_it_be_with_reload(:user) { create(:user, :with_namespace) }
+      let_it_be(:group) { create(:group, require_two_factor_authentication: true) }
+
+      before_all do
+        group.add_developer(user)
+      end
+
+      it 'offers the enforcing groups for review' do
+        get :show
+
+        expect(flash[:alert][:title]).to eq(_('Secure your account with two-factor authentication (2FA)'))
+        expect(flash[:alert][:message]).to include(_('Review and leave groups'))
+        expect(flash[:alert][:message]).to include(group.full_name)
+      end
+    end
+
+    context 'when the group requirement outlives the groups behind it' do
+      render_views
+
+      let_it_be_with_reload(:user) { create(:user, :with_namespace) }
+
+      before do
+        user.update!(require_two_factor_authentication_from_group: true)
+      end
+
+      it 'drops the review wording and renders no group list' do
+        get :show
+
+        expect(flash[:alert][:message]).to include(
+          _('One or more groups require you to add 2FA to your account. Choose your preferred method below.')
+        )
+        expect(flash[:alert][:message]).not_to include(_('Review and leave groups'))
+        expect(flash[:alert][:message]).not_to include(_('Review groups'))
+      end
+    end
+
+    context 'when none of the enforcing groups can be left' do
+      render_views
+
+      let_it_be_with_reload(:user) { create(:user, :with_namespace) }
+      let_it_be(:group) { create(:group, require_two_factor_authentication: true) }
+
+      before_all do
+        group.add_owner(user)
+      end
+
+      it 'lists the groups for reference without inviting the user to leave' do
+        get :show
+
+        expect(flash[:alert][:message]).to include(
+          _('One or more groups require you to add 2FA to your account. Choose your preferred method below.')
+        )
+        expect(flash[:alert][:message]).not_to include(_('Review and leave groups'))
+        expect(flash[:alert][:message]).to include(_('Review groups'))
+        expect(flash[:alert][:message]).to include(group.full_name)
+        expect(flash[:alert][:message]).to include(_('You cannot leave this group'))
+      end
+    end
   end
 
   describe 'POST create' do

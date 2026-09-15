@@ -1,0 +1,13 @@
+---
+table_name: cd_rollout_incoming_events
+classes:
+- Cd::RolloutIncomingEvent
+feature_categories:
+- continuous_delivery
+description: Claims each relay/KAS workflow event callback by (rollout_id, idempotency_key), so a redelivered event is processed at most once
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/252788
+milestone: '19.4'
+gitlab_schema: gitlab_main_org
+sharding_key:
+  organization_id: organizations
+table_size: small

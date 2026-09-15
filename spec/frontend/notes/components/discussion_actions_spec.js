@@ -93,7 +93,7 @@ describe('DiscussionActions', () => {
       createComponent({}, { attachTo: document.body });
 
       wrapper.findComponent(DiscussionReplyPlaceholder).find('input').trigger('focus');
-      expect(wrapper.emitted()['show-reply-form']).toHaveLength(1);
+      expect(wrapper.emitted('show-reply-form')).toHaveLength(1);
     });
 
     it('emits resolve event when clicking on resolve button', () => {

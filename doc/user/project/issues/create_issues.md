@@ -1,8 +1,9 @@
 ---
 stage: Plan
-group: Project Management
+group: Work Items
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see <https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments>
 title: Create an issue
+description: Create an issue from a project, group, another issue, an issue board, email, a prefilled URL, or Service Desk.
 ---
 
 {{< details >}}
@@ -153,7 +154,7 @@ You can save this address as a contact in your email client to use it again.
 
 > [!warning]
 > The email address you see is a private email address, generated just for you.
-> **Keep it to yourself**, because anyone who knows it can create issues or merge requests as if they
+> Keep it to yourself, because anyone who knows it can create issues or merge requests as if they
 > were you.
 > If you suspect this private email address was leaked, reset the token immediately.
 
@@ -171,7 +172,7 @@ HTML page to create issues with certain fields prefilled.
 To build the URL to create an issue with prefilled values, combine:
 
 1. The project's or group's Issues page URL, followed by `/new`.
-   For example: `https://gitlab.com/gitlab-org/gitlab/-/issues/new`
+   For example: `https://gitlab.com/gitlab-org/gitlab/-/work_items/new`
 
 1. `?` to start listing parameters.
 1. URL parameter, followed by `=` and value.
@@ -183,7 +184,7 @@ To build the URL to create an issue with prefilled values, combine:
 | Title                                                                                          | `issue[title]`         | Must be [URL-encoded](../../../api/rest/_index.md#namespaced-paths). |
 | Issue type                                                                                     | `issue[issue_type]`    | Either `incident` or `issue`. |
 | Description template (issues, incidents, and merge requests)                                   | `issuable_template`    | Must be [URL-encoded](../../../api/rest/_index.md#namespaced-paths). |
-| Description template (tasks, OKRs, issues, and epics. | `description_template` | Must be [URL-encoded](../../../api/rest/_index.md#namespaced-paths). [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/513095) in GitLab 17.9. |
+| Description template (tasks, OKRs, issues, and epics) | `description_template` | Must be [URL-encoded](../../../api/rest/_index.md#namespaced-paths). [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/513095) in GitLab 17.9. |
 | Description | `issue[description]` | Must be [URL-encoded](../../../api/rest/_index.md#namespaced-paths). If used in combination with `issuable_template` or a [default issue template](../description_templates.md#set-a-default-template-for-merge-requests-and-issues), the `issue[description]` value overwrites the template. |
 | Confidential                                                                                   | `issue[confidential]`  | If `true`, the issue is marked as confidential. |
 | Relate to…                                                                                     | `add_related_issue`    | A numeric issue ID. If present, the issue form shows a [**Relate to** checkbox](#from-another-issue-or-incident) to optionally link the new issue to the specified existing issue. |
@@ -197,24 +198,24 @@ To create an issue in the GitLab project:
 - With a prefilled title and description:
 
   ```plaintext
-  https://gitlab.com/gitlab-org/gitlab/-/issues/new?issue[title]=Whoa%2C%20we%27re%20half-way%20there&issue[description]=Whoa%2C%20livin%27%20in%20a%20URL
+  https://gitlab.com/gitlab-org/gitlab/-/work_items/new?issue[title]=Whoa%2C%20we%27re%20half-way%20there&issue[description]=Whoa%2C%20livin%27%20in%20a%20URL
   ```
 
 - With a prefilled title and description template:
 
   ```plaintext
-  https://gitlab.com/gitlab-org/gitlab/-/issues/new?issue[title]=Validate%20new%20concept&issuable_template=Feature%20Proposal%20-%20basic
+  https://gitlab.com/gitlab-org/gitlab/-/work_items/new?issue[title]=Validate%20new%20concept&issuable_template=Feature%20Proposal%20-%20basic
   ```
 
 - With a prefilled title, description, and marked as confidential:
 
   ```plaintext
-  https://gitlab.com/gitlab-org/gitlab/-/issues/new?issue[title]=Validate%20new%20concept&issue[description]=Research%20idea&issue[confidential]=true
+  https://gitlab.com/gitlab-org/gitlab/-/work_items/new?issue[title]=Validate%20new%20concept&issue[description]=Research%20idea&issue[confidential]=true
   ```
 
 ## Using Service Desk
 
-To offer email support, enable [Service Desk](../service_desk/_index.md) for your project.
+To offer email support, turn on [Service Desk](../service_desk/_index.md) for your project.
 
 Now, when your customer sends a new email, a new issue can be created in
 the appropriate project and followed up from there.

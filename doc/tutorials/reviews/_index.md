@@ -131,7 +131,7 @@ more information, scan through the issue descriptions.
   you can gain some idea of what aspects of the proposed changes need your attention.
 
   In this example, both Thomas and Nick are reviewers. Thomas has not yet reviewed
-  ({{< icon name="dotted-circle" >}}) the merge request. Nick has reviewed and approved ({{< icon name="check-circle" >}}):
+  ({{< no >}}) the merge request. Nick has reviewed and approved ({{< yes >}}):
 
   ![The Reviewers section of a merge request, listing 2 reviewers](img/reviewer_list_v17_0.png)
 
@@ -159,7 +159,7 @@ expect before you begin to read changes line by line.
 
 When you first open the **Changes** page, focus on the broader details first:
 
-- **What files have changed**? Expand the file browser ({{< icon name="file-tree" >}}) to see
+- What files have changed? Expand the file browser ({{< icon name="file-tree" >}}) to see
   the list of changed files. Are you familiar with these files? What part of the
   codebase are these files in?
 

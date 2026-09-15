@@ -5,6 +5,7 @@ module Mcp
     module WorkItems
       class GetSavedViewWorkItemsService < Base::GraphqlService
         register_version '0.1.0', {
+          toolset: :work_items,
           description: 'Fetch a saved view and its work items list from a namespace',
           input_schema: {
             type: 'object',
@@ -30,17 +31,7 @@ module Mcp
                   'The global ID of the saved view (format: gid://gitlab/WorkItems::SavedViews::SavedView/<id>).'
               },
 
-              # Pagination parameters
-              after: {
-                type: 'string',
-                description: 'Cursor for forward pagination. Use endCursor from previous response.'
-              },
-              first: {
-                type: 'integer',
-                description: 'Number of work items to return (forward pagination, max 100)',
-                minimum: 1,
-                maximum: 100
-              }
+              **Mcp::Tools::Concerns::CursorPagination.input_schema_params(items: 'work items')
             },
             required: [
               'saved_view_id'

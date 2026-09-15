@@ -458,7 +458,7 @@ RSpec.describe ProjectsHelper, feature_category: :source_code_management do
       let(:user) { nil }
 
       it 'returns nil' do
-        expect(helper.last_push_event).to eq(nil)
+        expect(helper.last_push_event).to be_nil
       end
     end
 
@@ -488,19 +488,19 @@ RSpec.describe ProjectsHelper, feature_category: :source_code_management do
 
   describe '#any_projects?' do
     it 'returns true when projects will be returned' do
-      expect(helper.any_projects?(Project.all)).to eq(true)
+      expect(helper.any_projects?(Project.all)).to be(true)
     end
 
     it 'returns false when no projects will be returned' do
-      expect(helper.any_projects?(Project.none)).to eq(false)
+      expect(helper.any_projects?(Project.none)).to be(false)
     end
 
     it 'returns true when using a non-empty Array' do
-      expect(helper.any_projects?([project])).to eq(true)
+      expect(helper.any_projects?([project])).to be(true)
     end
 
     it 'returns false when using an empty Array' do
-      expect(helper.any_projects?([])).to eq(false)
+      expect(helper.any_projects?([])).to be(false)
     end
 
     it 'only executes a single query when a LIMIT is applied' do
@@ -564,13 +564,13 @@ RSpec.describe ProjectsHelper, feature_category: :source_code_management do
       it 'returns false if the visitor is not using macos' do
         allow(helper).to receive(:browser).and_return(Browser.new(ios_ua))
 
-        expect(helper.show_xcode_link?(project)).to eq(false)
+        expect(helper.show_xcode_link?(project)).to be(false)
       end
 
       it 'returns true if the visitor is using macos' do
         allow(helper).to receive(:browser).and_return(Browser.new(mac_ua))
 
-        expect(helper.show_xcode_link?(project)).to eq(true)
+        expect(helper.show_xcode_link?(project)).to be(true)
       end
     end
 
@@ -582,13 +582,13 @@ RSpec.describe ProjectsHelper, feature_category: :source_code_management do
       it 'returns false if the visitor is not using macos' do
         allow(helper).to receive(:browser).and_return(Browser.new(ios_ua))
 
-        expect(helper.show_xcode_link?(project)).to eq(false)
+        expect(helper.show_xcode_link?(project)).to be(false)
       end
 
       it 'returns false if the visitor is using macos' do
         allow(helper).to receive(:browser).and_return(Browser.new(mac_ua))
 
-        expect(helper.show_xcode_link?(project)).to eq(false)
+        expect(helper.show_xcode_link?(project)).to be(false)
       end
     end
   end
@@ -799,6 +799,18 @@ RSpec.describe ProjectsHelper, feature_category: :source_code_management do
         subject
       end
     end
+
+    it 'does not escape special characters such as ampersands in the project name' do
+      project_with_special_chars = create(:project)
+      project_with_special_chars.update_column(:name, 'R & D')
+
+      allow(helper).to receive(:push_to_schema_breadcrumb)
+
+      helper.push_project_breadcrumbs(project_with_special_chars)
+
+      expect(helper).to have_received(:push_to_schema_breadcrumb)
+        .with('R & D', project_path(project_with_special_chars), nil)
+    end
   end
 
   describe '#remove_project_message' do
@@ -865,10 +877,6 @@ RSpec.describe ProjectsHelper, feature_category: :source_code_management do
 
     it 'includes membersPagePath' do
       expect(subject).to include(membersPagePath: project_project_members_path(project))
-    end
-
-    it 'includes groupPathRegex' do
-      expect(subject).to include(groupPathRegex: JsRegex.new(Gitlab::PathRegex::FULL_NAMESPACE_FORMAT_REGEX).source)
     end
 
     it 'includes canAddCatalogResource' do
@@ -1141,12 +1149,8 @@ RSpec.describe ProjectsHelper, feature_category: :source_code_management do
         {
           admin_path: (admin_project_path(project) if has_admin_path),
           can_read_project: can_read_project.to_s,
-          cicd_catalog_path: nil,
-          project_avatar: nil,
           is_project_empty: is_empty_repo.to_s,
           project_id: project.id,
-          project_name: project.name,
-          project_visibility_level: "private",
           project_full_path: project.full_path
         }
       end
@@ -1154,26 +1158,6 @@ RSpec.describe ProjectsHelper, feature_category: :source_code_management do
       subject { helper.home_panel_data_attributes }
 
       it { is_expected.to include(expected) }
-    end
-
-    context "when project is not marked for deletion" do
-      before do
-        allow(project).to receive(:self_deletion_scheduled?).and_return(false)
-      end
-
-      subject { helper.home_panel_data_attributes }
-
-      it { is_expected.to include({ is_project_marked_for_deletion: "false" }) }
-    end
-
-    context "when project is marked for deletion" do
-      before do
-        allow(project).to receive(:self_deletion_scheduled?).and_return(true)
-      end
-
-      subject { helper.home_panel_data_attributes }
-
-      it { is_expected.to include({ is_project_marked_for_deletion: "true" }) }
     end
 
     describe 'dropdown attributes' do

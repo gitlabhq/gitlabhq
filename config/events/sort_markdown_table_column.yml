@@ -1,0 +1,18 @@
+---
+description: User sorts a markdown table by clicking a column header
+internal_events: true
+action: sort_markdown_table_column
+identifiers:
+  - user
+additional_properties:
+  property:
+    description: Sort direction applied ("ascending" or "descending")
+product_group: planner_intelligence
+product_categories:
+  - markdown
+milestone: '19.4'
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/252187
+tiers:
+  - free
+  - premium
+  - ultimate

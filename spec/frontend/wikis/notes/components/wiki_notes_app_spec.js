@@ -213,7 +213,7 @@ describe('WikiNotesApp', () => {
       const errorAlert = wrapper.findComponent(GlAlert);
 
       jest.spyOn(wrapper.vm.$apollo.queries.wikiPage, 'refetch');
-      await errorAlert.vm.$emit('primaryAction');
+      await errorAlert.vm.$emit('primary-action');
       expect(wrapper.vm.$apollo.queries.wikiPage.refetch).toHaveBeenCalled();
     });
   });

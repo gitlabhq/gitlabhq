@@ -34,17 +34,26 @@ This indicates that something is wrong with your SSH setup.
 
 ## `Could not resolve hostname` error
 
-You may receive the following error when you [verify your SSH connection](ssh.md#verify-your-ssh-connection):
+You might receive the following error when you [verify your SSH connection](ssh.md#verify-your-ssh-connection):
 
 ```shell
 ssh: Could not resolve hostname gitlab.example.com: nodename nor servname provided, or not known
 ```
 
-If you receive this error, restart your terminal and try the command again.
+If you receive this error, SSH could not find a host with the name you gave it.
+The name SSH tried to resolve is the text that follows `Could not resolve hostname`.
+Compare that name against the following causes.
 
-### `Key enrollment failed: invalid format` error
+| Cause | Resolution |
+|-------|------------|
+| The name includes a repository path, like `gitlab.com:alice/my-project.git`. This happens when you copy a clone URL into the command. | Use the host on its own, like `ssh -T git@gitlab.com`. |
+| The name is misspelled, or is not the URL of your GitLab instance. | Correct the name, then run the command again. |
+| Your network cannot resolve the name. This cause is more likely on GitLab Self-Managed and GitLab Dedicated. | Confirm that you can reach the instance, and connect to any VPN it requires. |
+| Your terminal holds a stale name resolution cache. | Restart your terminal, then run the command again. |
 
-You may receive the following error when [generating an SSH key pair for a FIDO2 hardware security key](ssh_advanced.md#generate-an-ssh-key-pair-for-a-fido2-hardware-security-key):
+## `Key enrollment failed: invalid format` error
+
+You might receive the following error when [generating an SSH key pair for a FIDO2 hardware security key](ssh_advanced.md#generate-an-ssh-key-pair-for-a-fido2-hardware-security-key):
 
 ```shell
 Key enrollment failed: invalid format

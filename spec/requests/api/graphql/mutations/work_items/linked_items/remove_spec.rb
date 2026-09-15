@@ -82,6 +82,12 @@ RSpec.describe "Remove items linked to a work item", feature_category: :portfoli
       )
     end
 
+    it_behaves_like 'authorizing granular token permissions for GraphQL', :update_work_item do
+      let(:user) { current_user }
+      let(:boundary_object) { project }
+      let(:request) { post_graphql_mutation(mutation, token: { personal_access_token: pat }) }
+    end
+
     context 'when some items fail' do
       let_it_be(:other_project) { create(:project, :private) }
       let_it_be(:not_related) { create(:work_item, project: project) }

@@ -19,12 +19,16 @@ module ExternalRedirect
 
     private
 
+    def redirect_params
+      params.permit(:rel, :url)
+    end
+
     def relme_keywords
-      params['rel']&.strip
+      redirect_params[:rel]&.strip
     end
 
     def url_param
-      params['url']&.strip
+      redirect_params[:url]&.strip
     end
 
     def known_url?

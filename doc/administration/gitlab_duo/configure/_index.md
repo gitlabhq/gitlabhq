@@ -1,6 +1,6 @@
 ---
-stage: AI-powered
-group: AI Framework
+stage: AI Platform
+group: AI Model Services
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see <https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments>
 description: Configure GitLab Duo for your GitLab instance.
 title: Configure GitLab Duo
@@ -33,7 +33,7 @@ You can configure GitLab Duo to use:
 ## Allow outbound connections from the GitLab instance to GitLab Duo
 
 - GitLab application nodes must connect to the GitLab Duo Workflow at `https://duo-workflow-svc.runway.gitlab.net` with HTTP/2. The application and service communicate with gRPC.
-- For GitLab Duo Agent Platform features your firewalls and HTTP/S proxy servers must allow outbound
+- For GitLab Duo Agent Platform features, your firewalls and HTTP/S proxy servers must allow outbound
   connections to `duo-workflow-svc.runway.gitlab.net` on port `443` with `https://` and support for
   HTTP/2 traffic.
 - If your instance connects through an HTTP/S proxy server, the host must still be
@@ -89,12 +89,12 @@ In addition, runners must be able to connect to:
 
 | Destination | Port | Purpose |
 |-------------|------|---------|
-| `registry.npmjs.org` | `443` | Download the Duo CLI package at runtime |
+| `gitlab.com` | `443` | Download the GitLab Duo CLI binary from the package registry at runtime |
 | `registry.gitlab.com` | `443` | Download the default Docker image (unless using a [custom image](../../../user/duo_agent_platform/flows/execution/images.md#change-the-default-docker-image)) |
 
-If your organization cannot allow access to the public npm registry, you can use a
+If your organization cannot allow access to `gitlab.com`, you can use a
 [custom Docker image](../../../user/duo_agent_platform/flows/execution/images.md#change-the-default-docker-image)
-with the required dependencies already installed.
+with the GitLab Duo CLI already installed.
 
 > [!note]
 > The runner's connection to the GitLab Duo Agent Platform Service is routed through the

@@ -1,0 +1,8 @@
+---
+name: use_primary_store_as_default_for_concurrency_limit
+feature_issue_url: https://gitlab.com/groups/gitlab-com/gl-infra/tenant-scale/tenant-services/-/work_items/72
+introduced_by_url: https://gitlab.com/groups/gitlab-com/gl-infra/tenant-scale/tenant-services/-/work_items/481
+milestone: '19.4'
+type: gitlab_com_derisk
+group: group::tenant_scale
+default_enabled: false

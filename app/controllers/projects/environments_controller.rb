@@ -39,14 +39,14 @@ class Projects::EnvironmentsController < Projects::ApplicationController
     respond_to do |format|
       format.html
       format.json do
-        states = SCOPES_TO_STATES.fetch(params[:scope], ACTIVE_STATES)
+        states = SCOPES_TO_STATES.fetch(permitted_params[:scope], ACTIVE_STATES)
         @environments = search_environments.with_state(states)
 
         environments_count_by_state = search_environments.count_by_state
 
         Gitlab::PollingInterval.set_header(response, interval: 3_000)
         render json: {
-          environments: serialize_environments(request, response, params[:nested]),
+          environments: serialize_environments(request, response, permitted_params[:nested]),
           review_app: serialize_review_app,
           can_stop_stale_environments: can?(current_user, :stop_environment, @project),
           available_count: environments_count_by_state[:available],
@@ -60,13 +60,13 @@ class Projects::EnvironmentsController < Projects::ApplicationController
   # Returns all environments for a given folder
   # rubocop: disable CodeReuse/ActiveRecord
   def folder
-    @folder = params[:id]
+    @folder = permitted_params[:id]
 
     respond_to do |format|
       format.html
       format.json do
-        states = SCOPES_TO_STATES.fetch(params[:scope], ACTIVE_STATES)
-        folder_environments = search_environments(type: params[:id])
+        states = SCOPES_TO_STATES.fetch(permitted_params[:scope], ACTIVE_STATES)
+        folder_environments = search_environments(type: permitted_params[:id])
 
         @environments = folder_environments.with_state(states)
           .order(:name)
@@ -187,12 +187,17 @@ class Projects::EnvironmentsController < Projects::ApplicationController
 
   private
 
+  def permitted_params
+    params.permit(:id, :scope, :search, :nested, :page, :query)
+  end
+  strong_memoize_attr :permitted_params
+
   def deployments
     environment
       .deployments
       .with_environment_page_associations
       .ordered
-      .page(params[:page])
+      .page(permitted_params[:page])
   end
 
   def verify_api_request!
@@ -217,11 +222,12 @@ class Projects::EnvironmentsController < Projects::ApplicationController
   end
 
   def environment
-    @environment ||= project.environments.find(params[:id])
+    @environment ||= project.environments.find(permitted_params[:id])
   end
 
   def search_environments(type: nil)
-    search = params[:search] if params[:search] && params[:search].length >= MIN_SEARCH_LENGTH
+    search_term = permitted_params[:search]
+    search = search_term if search_term && search_term.length >= MIN_SEARCH_LENGTH
 
     @search_environments ||= Environments::EnvironmentsFinder.new(
       project,
@@ -231,14 +237,11 @@ class Projects::EnvironmentsController < Projects::ApplicationController
     ).execute
   end
 
-  def include_all_dashboards?
-    !params[:embedded]
-  end
-
   def search_environment_names
-    return [] unless params[:query]
+    query = permitted_params[:query]
+    return [] unless query
 
-    project.environments.for_name_like(params[:query]).pluck_names
+    project.environments.for_name_like(query).pluck_names
   end
 
   def serialize_environments(request, response, nested = false)

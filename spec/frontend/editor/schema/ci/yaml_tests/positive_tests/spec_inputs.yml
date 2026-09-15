@@ -1,5 +1,17 @@
 # Global component: spec section with inputs
 spec:
+  description: "Builds and publishes the project"
+  component: ["name", "sha", "version", "reference"]
+  include:
+    - local: "inputs/common.yml"
+    - project: "group/project"
+      file: "inputs/shared.yml"
+      ref: "main"
+    - remote: "https://gitlab.com/example/-/raw/main/inputs.yml"
+      cache: true
+    - remote: "https://gitlab.com/example/-/raw/main/other-inputs.yml"
+      cache: "1 day"
+      integrity: "sha256-ChmuF9dGyFCsA9tIcMuiFc8vGDagbG9EAMGoVCLKfNQ="
   inputs:
     string_input:
       type: string
@@ -17,6 +29,14 @@ spec:
       default: "rails"
       description: "Framework to use"
       options: ["rails", "sinatra", "hanami"]
+    stage_by_branch:
+      description: "Stage chosen by branch"
+      rules:
+        - if: $CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH
+          options: ["deploy", "test"]
+          default: "deploy"
+        - options: ["test"]
+          default: "test"
 
 # Global component: include with inputs
 include:

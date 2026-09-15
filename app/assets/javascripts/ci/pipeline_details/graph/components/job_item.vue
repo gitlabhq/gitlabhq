@@ -16,7 +16,13 @@ import CiIcon from '~/vue_shared/components/ci_icon/ci_icon.vue';
 import JobSourceBadge from '~/ci/job_details/components/job_source_badge.vue';
 import ActionComponent from '../../../common/private/job_action_component.vue';
 import JobNameComponent from '../../../common/private/job_name_component.vue';
-import { BRIDGE_KIND, RETRY_ACTION_TITLE, SINGLE_JOB, SKIP_RETRY_MODAL_KEY } from '../constants';
+import {
+  BRIDGE_KIND,
+  JOB_HOVER_CLASS,
+  RETRY_ACTION_TITLE,
+  SINGLE_JOB,
+  SKIP_RETRY_MODAL_KEY,
+} from '../constants';
 
 /**
  * Renders the badge for the pipeline graph and the job's dropdown.
@@ -68,7 +74,7 @@ export default {
     },
     runAgainTooltipText: __('Run again'),
   },
-  hoverClass: 'gl-shadow-x0-y0-b3-s1-blue-500',
+  hoverClass: JOB_HOVER_CLASS,
   components: {
     ActionComponent,
     CiIcon,

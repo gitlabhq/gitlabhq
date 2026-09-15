@@ -330,7 +330,7 @@ RSpec.describe API::Internal::Base, feature_category: :system_access do
         end
 
         it 'returns a 404 when the container does not support LFS' do
-          snippet = create(:project_snippet)
+          snippet = create(:project_snippet, project: project)
           lfs_auth_user(user.id, snippet)
 
           expect(response).to have_gitlab_http_status(:not_found)
@@ -807,7 +807,7 @@ RSpec.describe API::Internal::Base, feature_category: :system_access do
           end
 
           it "has the flag set to false for other projects" do
-            other_project = create(:project, :public, :repository)
+            other_project = create(:project, :public, :small_repo)
 
             pull(key, other_project)
 
@@ -1056,7 +1056,7 @@ RSpec.describe API::Internal::Base, feature_category: :system_access do
     end
 
     context "blocked user" do
-      let(:personal_project) { create(:project, namespace: user.namespace) }
+      let_it_be(:personal_project) { create(:project, namespace: user.namespace) }
 
       before do
         user.block
@@ -1117,9 +1117,12 @@ RSpec.describe API::Internal::Base, feature_category: :system_access do
     end
 
     context "archived project" do
+      before_all do
+        ::Projects::UpdateService.new(project, user, archived: true).execute
+      end
+
       before do
         project.add_developer(user) # -- Does not work in before_all
-        ::Projects::UpdateService.new(project, user, archived: true).execute
       end
 
       context "git pull" do
@@ -1142,10 +1145,10 @@ RSpec.describe API::Internal::Base, feature_category: :system_access do
     end
 
     context "deploy key" do
-      let(:key) { create(:deploy_key) }
+      let_it_be_with_reload(:key) { create(:deploy_key) }
 
       context "added to project" do
-        before do
+        before_all do
           key.projects << project
         end
 
@@ -1185,7 +1188,7 @@ RSpec.describe API::Internal::Base, feature_category: :system_access do
     end
 
     context 'project does not exist' do
-      let_it_be(:destroy_project) { create(:project, :repository, :wiki_repo) }
+      let_it_be(:destroy_project) { create(:project) }
 
       context 'git pull' do
         it 'returns a 200 response with status: false' do
@@ -1359,11 +1362,10 @@ RSpec.describe API::Internal::Base, feature_category: :system_access do
     end
 
     context 'the project path was changed' do
-      let(:project) { create(:project, :repository, :legacy_storage) }
-      let!(:repository) { project.repository }
+      let_it_be_with_reload(:project) { create(:project, :repository, :legacy_storage, developers: user) }
+      let_it_be_with_reload(:repository) { project.repository }
 
-      before do
-        project.add_developer(user) # -- Does not work in before_all
+      before_all do
         project.path = 'new_path'
         project.save!
       end
@@ -1431,7 +1433,7 @@ RSpec.describe API::Internal::Base, feature_category: :system_access do
 
       context 'application setting :admin_mode is enabled' do
         context 'with an admin user' do
-          let(:user) { create(:admin) }
+          let_it_be(:user) { create(:admin) }
 
           context 'is member of the project' do
             before do
@@ -1467,7 +1469,7 @@ RSpec.describe API::Internal::Base, feature_category: :system_access do
         end
 
         context 'with an admin user' do
-          let(:user) { create(:admin) }
+          let_it_be(:user) { create(:admin) }
 
           context 'is member of the project' do
             before do
@@ -1910,6 +1912,60 @@ RSpec.describe API::Internal::Base, feature_category: :system_access do
       subject
 
       expect(json_response['success']).to be_falsey
+    end
+  end
+
+  describe 'GET /internal/authorized_certs', feature_category: :source_code_management do
+    let_it_be(:cert) { create(:instance_ssh_certificate) }
+
+    let(:params) { { key: cert.fingerprint, user_identifier: user.username } }
+
+    shared_examples 'a certificate not found response' do
+      it 'returns 404', :aggregate_failures do
+        get(api('/internal/authorized_certs'), params: params, headers: gitlab_shell_internal_api_request_header)
+
+        expect(response).to have_gitlab_http_status(:not_found)
+        expect(json_response['message']).to eq('Certificate Not Found')
+      end
+    end
+
+    it 'finds the user and reports no namespace', :aggregate_failures do
+      get(api('/internal/authorized_certs'), params: params, headers: gitlab_shell_internal_api_request_header)
+
+      expect(response).to have_gitlab_http_status(:ok)
+      expect(json_response['success']).to be(true)
+      expect(json_response['instance']).to be(true)
+      expect(json_response['username']).to eq(user.username)
+      expect(json_response).not_to have_key('namespace')
+    end
+
+    context 'when no certificate matches the fingerprint' do
+      let(:params) { super().merge(key: 'invalid') }
+
+      it_behaves_like 'a certificate not found response'
+    end
+
+    context 'when the user is not found' do
+      let(:params) { super().merge(user_identifier: 'invalid') }
+
+      it 'returns 404', :aggregate_failures do
+        get(api('/internal/authorized_certs'), params: params, headers: gitlab_shell_internal_api_request_header)
+
+        expect(response).to have_gitlab_http_status(:not_found)
+        expect(json_response['message']).to eq('User Not Found')
+      end
+    end
+
+    context 'when the feature flag is disabled' do
+      before do
+        stub_feature_flags(instance_ssh_certificates: false)
+      end
+
+      it_behaves_like 'a certificate not found response'
+    end
+
+    context 'on GitLab.com', :saas do
+      it_behaves_like 'a certificate not found response'
     end
   end
 

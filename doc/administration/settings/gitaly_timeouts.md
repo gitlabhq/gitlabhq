@@ -106,8 +106,8 @@ Gitaly can sometimes be briefly unavailable. For example, during GitLab upgrades
 where a Pod starts and restarts take a couple of seconds.
 
 To prevent GitLab from returning errors to clients when briefly unavailable, configure Gitaly client retries. When
-Gitaly client retries are configured and Gitaly is unavailable, Gitaly client such as Rails (GitLab application),
-Workhorse, and GitLab Shell retry request in an exponential backoff fashion.
+Gitaly client retries are configured and Gitaly is unavailable, Gitaly clients such as Rails (GitLab application),
+Workhorse, and GitLab Shell retry requests in an exponential backoff fashion.
 
 Two parameters can be configured:
 
@@ -126,7 +126,7 @@ occurs:
   time includes how long it takes for the volume to be attached and mounted on the Pod.
 - For Linux package instances, Gitaly might restart much faster because restarting Gitaly is a process restart.
 
-Also keep in mind is that Gitaly can be configured with a graceful shutdown timeout. When Gitaly is shutting down, new
+Also keep in mind that Gitaly can be configured with a graceful shutdown timeout. When Gitaly is shutting down, new
 requests are rejected but the gRPC server keeps processing in-flight requests until either:
 
 - They are all served.
@@ -134,7 +134,7 @@ requests are rejected but the gRPC server keeps processing in-flight requests un
 
 This graceful shutdown timeout can play a role in how long Gitaly remains unavailable for new requests.
 
-You should configure client retry with a `max_backoff` that is equal to or greater than sum of the graceful shutdown +
+You should configure client retry with a `max_backoff` that is equal to or greater than the sum of the graceful shutdown +
 the (re)start time.
 
 ### Configure client retries
@@ -197,7 +197,7 @@ This limit is imposed by three interacting timeouts:
 - `puma['worker_timeout']`: Per-worker Puma timeout. Default is `60` seconds. For more information,
   see [change the worker timeout](../operations/puma.md#change-the-worker-timeout).
 - `gitlab_rails['max_request_duration_seconds']`#GitLab application setting that limits the Gitaly
-  **Default** timeout. Defaults is `(worker_timeout * 0.95).ceil` = `57` seconds. This setting must be
+  **Default** timeout. Default is `(worker_timeout * 0.95).ceil` = `57` seconds. This setting must be
   strictly less than `puma['worker_timeout']`.
 - `GITLAB_RAILS_RACK_TIMEOUT`: `Rack::Timeout` middleware `service_timeout`. Default is `60` seconds.
   This timeout is independent of the other two and it terminates the request at this value regardless

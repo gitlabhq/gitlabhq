@@ -182,9 +182,11 @@ RSpec.describe Projects::Security::ConfigurationPresenter, feature_category: :so
         with_them do
           before do
             allow_next_instance_of(described_class) do |presenter|
-              allow(presenter).to receive(:can?).and_return(is_admin)
-              allow(presenter).to receive(:archived?).and_return(archived)
-              allow(presenter).to receive(:feature_available?).and_return(feature_available)
+              allow(presenter).to receive_messages(
+                can?: is_admin,
+                archived?: archived,
+                feature_available?: feature_available
+              )
             end
           end
 
@@ -237,10 +239,8 @@ RSpec.describe Projects::Security::ConfigurationPresenter, feature_category: :so
       end
 
       context 'when the job has more than one report' do
-        let(:features) { Gitlab::Json.parse(html_data[:features]) }
-        let(:project) { create(:project, :repository) }
-
-        let(:pipeline) do
+        let_it_be(:project) { create(:project, :repository) }
+        let_it_be(:pipeline) do
           create(
             :ci_pipeline,
             project: project,
@@ -249,11 +249,12 @@ RSpec.describe Projects::Security::ConfigurationPresenter, feature_category: :so
           )
         end
 
-        let!(:artifacts) do
+        let(:features) { Gitlab::Json.parse(html_data[:features]) }
+        let(:artifacts) do
           { artifacts: { reports: { annotations: ['gl-other-report.json'], sast: ['gl-sast-report.json'] } } }
         end
 
-        let!(:complicated_job) { build_stubbed(:ci_build, name: 'semgrep-sast', options: artifacts) }
+        let(:complicated_job) { build_stubbed(:ci_build, name: 'semgrep-sast', options: artifacts) }
 
         before do
           allow_next_instance_of(::Security::SecurityJobsFinder) do |finder|
@@ -350,9 +351,9 @@ RSpec.describe Projects::Security::ConfigurationPresenter, feature_category: :so
         )
       end
 
-      let!(:build_sast) { create(:ci_build, :sast, name: 'semgrep-sast', pipeline: pipeline, status: 'success') }
-      let!(:build_dast) { create(:ci_build, :dast, pipeline: pipeline, status: 'success') }
-      let!(:ci_build) { create(:ci_build, :secret_detection, pipeline: pipeline, status: 'pending') }
+      let_it_be(:build_sast) { create(:ci_build, :sast, name: 'semgrep-sast', pipeline: pipeline, status: 'success') }
+      let_it_be(:build_dast) { create(:ci_build, :dast, pipeline: pipeline, status: 'success') }
+      let_it_be(:ci_build) { create(:ci_build, :secret_detection, pipeline: pipeline, status: 'pending') }
 
       it 'reports that auto devops is enabled' do
         expect(html_data[:auto_devops_enabled]).to be_truthy

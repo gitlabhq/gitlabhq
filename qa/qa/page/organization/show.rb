@@ -6,7 +6,7 @@ module QA
       class Show < QA::Page::Base
         include QA::Page::Component::Dropdown
 
-        view 'app/assets/javascripts/organizations/show/components/organization_avatar.vue' do
+        view 'app/assets/javascripts/organizations/show/components/app.vue' do
           element 'organization-name'
         end
 

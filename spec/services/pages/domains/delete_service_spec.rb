@@ -34,7 +34,8 @@ RSpec.describe ::Pages::Domains::DeleteService, feature_category: :pages do
         result_match = -> { expect(service.execute(pages_domain)).not_to be_nil }
 
         expect(&result_match)
-          .to publish_event(::Pages::Domains::PagesDomainDeletedEvent)
+          .to change { PagesDomain.count }.by(-1)
+          .and publish_event(::Pages::Domains::PagesDomainDeletedEvent)
           .with(
             project_id: pages_domain.project.id,
             namespace_id: pages_domain.project.namespace.id,
@@ -42,6 +43,18 @@ RSpec.describe ::Pages::Domains::DeleteService, feature_category: :pages do
             domain_id: pages_domain.id,
             domain: pages_domain.domain
           )
+      end
+    end
+
+    context 'when the domain fails to be destroyed' do
+      before do
+        allow(pages_domain).to receive(:destroy).and_return(false)
+      end
+
+      it 'does not publish a PagesDomainDeletedEvent' do
+        expect { service.execute(pages_domain) }
+          .to not_change { PagesDomain.count }
+          .and not_publish_event(::Pages::Domains::PagesDomainDeletedEvent)
       end
     end
   end

@@ -13,7 +13,6 @@ import DesignDescription from './design_description.vue';
 
 export default {
   name: 'DesignSidebar',
-  isLoggedIn: isLoggedIn(),
   components: {
     DesignDescription,
     DesignDisclosure,
@@ -55,19 +54,16 @@ export default {
       required: true,
     },
   },
-  emits: [
-    'deleteNoteError',
-    'onDesignDiscussionError',
-    'resolveDiscussionError',
-    'toggleResolvedComments',
-    'updateNoteError',
-  ],
+  emits: ['delete-note-error', 'resolve-discussion-error', 'toggle-resolved-comments'],
   data() {
     return {
       discussionWithOpenForm: '',
     };
   },
   computed: {
+    isLoggedIn() {
+      return isLoggedIn();
+    },
     showDescriptionForm() {
       // user either has permission to add or update description,
       // or the existing description should be shown read-only.
@@ -99,7 +95,7 @@ export default {
         return this.resolvedDiscussionsExpanded;
       },
       set(isExpanded) {
-        this.$emit('toggleResolvedComments', isExpanded);
+        this.$emit('toggle-resolved-comments', isExpanded);
       },
     },
   },
@@ -152,9 +148,7 @@ export default {
             {{ unresolvedDiscussionsCount }}
           </h3>
           <gl-empty-state
-            v-if="
-              $options.isLoggedIn && unresolvedDiscussions.length === 0 && !isCommentFormPresent
-            "
+            v-if="isLoggedIn && unresolvedDiscussions.length === 0 && !isCommentFormPresent"
             data-testid="new-discussion-disclaimer"
             :svg-path="$options.EMPTY_DISCUSSION_URL"
           >
@@ -163,7 +157,7 @@ export default {
             </template>
           </gl-empty-state>
           <design-note-signed-out
-            v-if="!$options.isLoggedIn"
+            v-if="!isLoggedIn"
             class="gl-mb-4"
             :register-path="registerPath"
             :sign-in-path="signInPath"
@@ -181,10 +175,8 @@ export default {
             :resolved-discussions-expanded="resolvedDiscussionsExpanded"
             :discussion-with-open-form="discussionWithOpenForm"
             data-testid="unresolved-discussion"
-            @create-note-error="$emit('onDesignDiscussionError', $event)"
-            @update-note-error="$emit('updateNoteError', $event)"
-            @delete-note-error="$emit('deleteNoteError', $event)"
-            @resolve-discussion-error="$emit('resolveDiscussionError', $event)"
+            @delete-note-error="$emit('delete-note-error', $event)"
+            @resolve-discussion-error="$emit('resolve-discussion-error', $event)"
             @update-active-discussion="updateActiveDesignDiscussion(discussion)"
             @open-form="updateDiscussionWithOpenForm"
           />
@@ -207,9 +199,7 @@ export default {
                 :resolved-discussions-expanded="resolvedDiscussionsExpanded"
                 :discussion-with-open-form="discussionWithOpenForm"
                 data-testid="resolved-discussion"
-                @error="$emit('onDesignDiscussionError', $event)"
-                @update-note-error="$emit('updateNoteError', $event)"
-                @delete-note-error="$emit('deleteNoteError', $event)"
+                @delete-note-error="$emit('delete-note-error', $event)"
                 @update-active-discussion="updateActiveDesignDiscussion(discussion)"
                 @open-form="updateDiscussionWithOpenForm"
               />

@@ -10,16 +10,29 @@ title: Hosted runners for GitLab Dedicated
 
 - Tier: Ultimate
 - Offering: GitLab Dedicated
-- Status: Limited availability
 
 {{< /details >}}
 
 > [!note]
-> To use this feature, you must purchase a subscription for Hosted Runners for GitLab Dedicated. To participate in the limited availability of Hosted Runners for Dedicated, reach out to your Customer Success Manager or Account representative.
+> To use this feature, contact your customer success manager or account representative.
 
-You can run your CI/CD jobs on GitLab-hosted [runners](../../ci/runners/_index.md). These runners are managed by GitLab and fully integrated with your GitLab Dedicated instance.
-GitLab-hosted runners for Dedicated are autoscaling [instance runners](../../ci/runners/runners_scope.md#instance-runners),
-running on AWS EC2 in the same region as the GitLab Dedicated instance.
+Hosted runners for GitLab Dedicated are [GitLab-hosted runners](../../ci/runners/_index.md) that are managed by GitLab and fully integrated with your GitLab Dedicated instance.
+Hosted runners are autoscaling [instance runners](../../ci/runners/runners_scope.md#instance-runners),
+running on AWS EC2 in the same region as your instance.
+
+Key benefits include:
+
+- Provisioning, patching, scaling, and monitoring managed by GitLab
+- Single-tenant runners with the same data residency as your GitLab Dedicated instance
+- Ephemeral runners destroyed after each job, with a secure network connection through outbound PrivateLink
+- Automatic scaling for consistent performance during peak periods
+- 99.9% uptime SLA backed by a highly available runner architecture
+- GitLab Credits consumption tracked on the GitLab Credits dashboard
+- Pay only for what you use through GitLab Credits
+
+<i class="fa-vimeo" aria-hidden="true"></i>
+For an overview, see [demo: hosted runners for GitLab Dedicated](https://player.vimeo.com/video/1219640416).
+<!-- Video published on 2026-08-24 -->
 
 When you use hosted runners:
 
@@ -79,7 +92,22 @@ To avoid rate limits, instead use:
 
 The runners are configured to run in `privileged` mode to support [Docker in Docker](../../ci/docker/using_docker_build.md#use-docker-in-docker) to build Docker images natively or run multiple containers within your isolated job.
 
+## Plan runner stack concurrency
+
+Each production runner stack supports up to 1,000 concurrently running jobs. The limit applies
+to running jobs, not submitted jobs. When a stack reaches the limit, any additional jobs stay
+queued until capacity becomes available.
+
+To send jobs to a specific stack, use that stack's runner tag. If you expect more than 1,000 jobs
+to run at the same time, use runner tags to distribute jobs across multiple stacks.
+
+For service level agreement (SLA) calculations, a job that takes more than 5 minutes to start is
+not counted as a slow job if the stack was already running 1,000 jobs when the job entered the
+pending state.
+
 ## Manage hosted runners
+
+You can create and view hosted runners in Switchboard, and view and configure them in GitLab. You can also disable hosted runners for specific projects or groups.
 
 ### Manage hosted runners in Switchboard
 
@@ -87,7 +115,7 @@ You can create and view hosted runners for your GitLab Dedicated instance using 
 
 Prerequisites:
 
-- You must purchase a subscription for Hosted Runners for GitLab Dedicated.
+- Your customer success manager or account representative has enabled hosted runners for your instance.
 
 #### Create hosted runners in Switchboard
 
@@ -156,15 +184,14 @@ GitLab maintainers can disable hosted runners for a [project](../../ci/runners/r
 
 ## Security and Network
 
-Hosted runners for GitLab Dedicated have built-in layers that harden the security of the GitLab Runner build environment.
-
-Hosted runners for GitLab Dedicated have the following configurations:
+Hosted runners for GitLab Dedicated have built-in layers that harden the security of the GitLab Runner build environment:
 
 - Firewall rules allow only outbound communication from the ephemeral VM to the public internet.
 - Firewall rules do not allow inbound communication from the public internet to the ephemeral VM.
 - Firewall rules do not allow communication between VMs.
 - Only the runner manager can communicate with the ephemeral VMs.
 - Ephemeral runner VMs only serve a single job and are deleted after the job execution.
+- Runners are single-tenant and are not shared with other GitLab Dedicated instances.
 
 You can also [enable PrivateLink connections](#outbound-privatelink-connections) from hosted runners to your AWS account.
 
@@ -189,9 +216,14 @@ These connections are pre-configured and cannot be modified. The tenant's Promet
 To use an outbound PrivateLink connection with other VPC services for hosted runners,
 [manual configuration is required with a support request](configure_instance/network_security.md#configure-outbound-privatelink-connections-with-a-support-request).
 
-### IP ranges
+### Inbound and outbound connections
 
-IP ranges for hosted runners for GitLab Dedicated are available upon request. IP ranges are maintained on a best-effort basis and may change at any time due to changes in the infrastructure. For more information, reach out to your Customer Success Manager or Account representative.
+Inbound connections to hosted runners for GitLab Dedicated from the public internet or other untrusted sources are blocked.
+The runner manager is the only exception, and can communicate with the ephemeral VMs.
+
+Outbound connections are open by default. To block specific IP addresses or ranges, submit a [support ticket](https://support.gitlab.com/)
+with the details of the range you want blocked. GitLab maintains this deny list on a best-effort basis. For more
+information, reach out to your customer success manager or account representative.
 
 ## Use hosted runners
 
@@ -219,18 +251,36 @@ If you see your job is stuck with the error message `no runners that match all o
 1. Verify if you've selected the correct tag
 1. Confirm if [instance runners are enabled for your project or group](../../ci/runners/runners_scope.md#enable-instance-runners-for-a-project).
 
-## Upgrades
+## Service level agreement
 
-Runner version upgrades require a short downtime.
-Runners are upgraded during the scheduled maintenance windows of a GitLab Dedicated tenant.
-An [issue](https://gitlab.com/gitlab-com/gl-infra/gitlab-dedicated/team/-/issues/4505) exists to implement zero downtime upgrades.
+Hosted runners for GitLab Dedicated are backed by a 99.9% uptime SLA, supported by a
+highly available (HA) runner architecture. GitLab calculates the hosted runners SLA separately from the GitLab
+Dedicated instance SLA, so downtime for hosted runners does not count as downtime for the GitLab Dedicated instance.
+For the full definition, including the availability measure, valid job population, excluded minutes, and Service
+Credits, see the [hosted runners for GitLab Dedicated SLA definition](https://handbook.gitlab.com/handbook/engineering/infrastructure-platforms/service-level-agreement/#hosted-runners-for-gitlab-dedicated-service-level-agreement---availability-definition).
+
+## Usage and monitoring
+
+> [!note]
+> Hosted runners for GitLab Dedicated keep running jobs after you deplete your Monthly Commitment Pool of GitLab
+> Credits, so your CI/CD pipelines are not interrupted, provided you have accepted the usage billing terms.
+
+If you're at risk of overage, monitor your usage on the GitLab Credits dashboard and do one of the following:
+
+- Purchase a larger monthly credit commitment.
+- Accept the overage and continue running jobs on on-demand credits.
+- Point your CI/CD jobs to different self-hosted runners.
+
+To track GitLab Credits consumption for hosted runners, see the
+[GitLab Credits dashboard](../../subscriptions/gitlab_credits.md).
+For compute usage, see [compute usage for GitLab-hosted runners on GitLab Dedicated](../../ci/pipelines/dedicated_hosted_runner_compute_minutes.md).
+
+### Usage cap exemptions
+
+Hosted runners for GitLab Dedicated are exempt from usage caps because interrupting them would break a critical part of your workflow.
+A subscription or per-user cap does not stop CI/CD jobs from running. Jobs continue after the Monthly Commitment Pool is depleted, drawing On-Demand credits in the usual order.
+Because caps do not apply, you can't use cap-based controls to limit this spend. Monitor consumption in the GitLab Credits dashboard instead.
 
 ## Pricing
 
 For pricing details, reach out to your account representative.
-
-We offer a 30-day free trial for GitLab Dedicated customers. The trial includes:
-
-- Small, Medium, and Large Linux x86-64 runners
-- Small and Medium Linux Arm runners
-- Limited autoscaling configuration that supports up to 100 concurrent jobs

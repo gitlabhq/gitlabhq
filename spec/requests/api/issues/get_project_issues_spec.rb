@@ -3,22 +3,22 @@
 require 'spec_helper'
 
 RSpec.describe API::Issues, feature_category: :team_planning do
-  let_it_be(:user, freeze: false) { create(:user) }
+  let_it_be_with_reload(:user) { create(:user) }
   let_it_be_with_reload(:project) { create(:project, :public, :repository, creator_id: user.id, namespace: user.namespace, reporters: user) }
   let_it_be(:private_mrs_project, freeze: false) do
     create(:project, :public, :repository, creator_id: user.id, namespace: user.namespace, merge_requests_access_level: ProjectFeature::PRIVATE, reporters: user)
   end
 
-  let_it_be(:group, freeze: false) { create(:group, :public, reporters: user) }
+  let_it_be_with_reload(:group) { create(:group, :public, reporters: user) }
 
-  let_it_be(:user2, freeze: false)       { create(:user) }
-  let_it_be(:non_member, freeze: false)  { create(:user) }
-  let_it_be(:guest, freeze: false)       { create(:user, guest_of: [group, project, private_mrs_project]) }
-  let_it_be(:author, freeze: false)      { create(:author) }
-  let_it_be(:assignee, freeze: false)    { create(:assignee) }
-  let_it_be(:admin, freeze: false)       { create(:user, :admin) }
+  let_it_be_with_reload(:user2)       { create(:user) }
+  let_it_be_with_reload(:non_member)  { create(:user) }
+  let_it_be_with_reload(:guest)       { create(:user, guest_of: [group, project, private_mrs_project]) }
+  let_it_be_with_reload(:author)      { create(:author) }
+  let_it_be_with_reload(:assignee)    { create(:assignee) }
+  let_it_be_with_reload(:admin)       { create(:user, :admin) }
 
-  let_it_be(:milestone, freeze: false) { create(:milestone, title: '1.0.0', project: project) }
+  let_it_be_with_reload(:milestone) { create(:milestone, title: '1.0.0', project: project) }
   let_it_be(:empty_milestone, freeze: false) do
     create(:milestone, title: '2.0.0', project: project)
   end
@@ -62,10 +62,10 @@ RSpec.describe API::Issues, feature_category: :team_planning do
       description: issue_description
   end
 
-  let_it_be(:label, freeze: false) { create(:label, title: 'label', color: '#FFAABB', project: project) }
-  let_it_be(:label_link, freeze: false) { create(:label_link, label: label, target: issue) }
+  let_it_be_with_reload(:label) { create(:label, title: 'label', color: '#FFAABB', project: project) }
+  let_it_be_with_reload(:label_link) { create(:label_link, label: label, target: issue) }
 
-  let_it_be(:note, freeze: false) { create(:note_on_issue, author: user, project: project, noteable: issue) }
+  let_it_be_with_reload(:note) { create(:note_on_issue, author: user, project: project, noteable: issue) }
 
   let_it_be(:merge_request1, freeze: false) do
     create(
@@ -200,10 +200,6 @@ RSpec.describe API::Issues, feature_category: :team_planning do
     end
 
     context 'when user is an inherited member from the group' do
-      let!(:open_issue) { create(:issue, project: group_project) }
-      let!(:confidential_issue) { create(:issue, :confidential, project: group_project) }
-      let!(:closed_issue) { create(:issue, state: :closed, project: group_project) }
-
       let!(:api_url) { "/projects/#{group_project.id}/issues" }
 
       context 'and group project is public and issues are private' do
@@ -211,12 +207,20 @@ RSpec.describe API::Issues, feature_category: :team_planning do
           create(:project, :public, issues_access_level: ProjectFeature::PRIVATE, group: group)
         end
 
+        let_it_be(:open_issue) { create(:issue, project: group_project) }
+        let_it_be(:confidential_issue) { create(:issue, :confidential, project: group_project) }
+        let_it_be(:closed_issue) { create(:issue, state: :closed, project: group_project) }
+
         it_behaves_like 'returns project issues without confidential issues for guests'
         it_behaves_like 'returns all project issues for reporters'
       end
 
       context 'and group project is private' do
-        let_it_be(:group_project, freeze: false) { create(:project, :private, group: group) }
+        let_it_be_with_reload(:group_project) { create(:project, :private, group: group) }
+
+        let_it_be(:open_issue) { create(:issue, project: group_project) }
+        let_it_be(:confidential_issue) { create(:issue, :confidential, project: group_project) }
+        let_it_be(:closed_issue) { create(:issue, state: :closed, project: group_project) }
 
         it_behaves_like 'returns project issues without confidential issues for guests'
         it_behaves_like 'returns all project issues for reporters'
@@ -340,16 +344,18 @@ RSpec.describe API::Issues, feature_category: :team_planning do
     end
 
     context 'with labeled issues' do
-      let(:issue2) { create :issue, project: project }
-      let(:label_b) { create(:label, title: 'foo', project: project) }
-      let(:label_c) { create(:label, title: 'bar', project: project) }
+      let_it_be(:issue2) { create(:issue, project: project) }
+      let_it_be(:label_b) { create(:label, title: 'foo', project: project) }
+      let_it_be(:label_c) { create(:label, title: 'bar', project: project) }
 
-      before do
+      before_all do
         create(:label_link, label: label, target: issue2)
         create(:label_link, label: label_b, target: issue)
         create(:label_link, label: label_b, target: issue2)
         create(:label_link, label: label_c, target: issue)
+      end
 
+      before do
         get api('/issues', user), params: params
       end
 
@@ -480,7 +486,7 @@ RSpec.describe API::Issues, feature_category: :team_planning do
       end
 
       context 'with 2 issues with same created_at' do
-        let!(:closed_issue2) do
+        let_it_be(:closed_issue2) do
           create :closed_issue,
             author: user,
             assignees: [user],
@@ -607,10 +613,10 @@ RSpec.describe API::Issues, feature_category: :team_planning do
     end
 
     context 'filtering by assignee_username' do
-      let(:another_assignee) { create(:assignee) }
-      let!(:issue1) { create(:issue, author: user2, project: project, created_at: 3.days.ago) }
-      let!(:issue2) { create(:issue, author: user2, project: project, created_at: 2.days.ago) }
-      let!(:issue3) { create(:issue, author: user2, assignees: [assignee, another_assignee], project: project, created_at: 1.day.ago) }
+      let_it_be_with_reload(:another_assignee) { create(:assignee) }
+      let_it_be(:issue1) { create(:issue, author: user2, project: project, created_at: 3.days.ago) }
+      let_it_be(:issue2) { create(:issue, author: user2, project: project, created_at: 2.days.ago) }
+      let_it_be_with_reload(:issue3) { create(:issue, author: user2, assignees: [assignee, another_assignee], project: project, created_at: 1.day.ago) }
 
       it 'returns issues by assignee_username', :aggregate_failures do
         get api("/issues", user), params: { assignee_username: [assignee.username], scope: 'all' }
@@ -847,7 +853,7 @@ RSpec.describe API::Issues, feature_category: :team_planning do
       get api("/projects/#{project_id}/issues/#{issue_iid}/related_merge_requests", user)
     end
 
-    def create_referencing_mr(user, project, issue)
+    def create_referencing_mr(user, project, issue, overrides = {})
       attributes = {
         author: user,
         source_project: project,
@@ -855,13 +861,20 @@ RSpec.describe API::Issues, feature_category: :team_planning do
         source_branch: 'master',
         target_branch: 'test',
         description: "See #{issue.to_reference}"
-      }
+      }.merge(overrides)
       create(:merge_request, attributes).tap do |merge_request|
         create(:note, :system, project: issue.project, noteable: issue, author: user, note: merge_request.to_reference(full: true))
       end
     end
 
-    let!(:related_mr) { create_referencing_mr(user, project, issue) }
+    def create_explicitly_related_mr(project, issue, overrides = {})
+      create(:merge_request, { source_project: project, target_project: project }.merge(overrides)).tap do |merge_request|
+        create(:merge_requests_closing_issues,
+          issue: issue, merge_request: merge_request, link_type: :related, from_mr_description: false)
+      end
+    end
+
+    let_it_be(:related_mr) { create_referencing_mr(user, project, issue) }
 
     it_behaves_like 'authorizing granular token permissions', :read_issue_merge_request do
       let(:boundary_object) { project }
@@ -912,6 +925,62 @@ RSpec.describe API::Issues, feature_category: :team_planning do
       expect_paginated_array_response(related_mr.id)
     end
 
+    context 'with an explicitly related merge request' do
+      let!(:explicitly_related_mr) do
+        create_explicitly_related_mr(project, issue, source_branch: 'improve/awesome', target_branch: 'markdown')
+      end
+
+      it 'returns the referenced and the explicitly related merge requests' do
+        get_related_merge_requests(project.id, issue.iid, user)
+
+        expect_paginated_array_response([related_mr.id, explicitly_related_mr.id])
+      end
+
+      context 'when the explicit_mr_work_item_relations feature flag is disabled' do
+        before do
+          stub_feature_flags(explicit_mr_work_item_relations: false)
+        end
+
+        it 'excludes explicitly related merge requests' do
+          get_related_merge_requests(project.id, issue.iid, user)
+
+          expect_paginated_array_response(related_mr.id)
+        end
+      end
+    end
+
+    it 'returns a merge request that is both referenced and explicitly related only once' do
+      create(:merge_requests_closing_issues,
+        issue: issue, merge_request: related_mr, link_type: :related, from_mr_description: false)
+
+      get_related_merge_requests(project.id, issue.iid, user)
+
+      expect_paginated_array_response(related_mr.id)
+    end
+
+    # The endpoint renders Entities::MergeRequest, which issues a fixed number of queries per
+    # merge request regardless of how the collection was built. This guards the new persisted
+    # `related` link path against costing more than the pre-existing text-reference path.
+    it 'does not issue more queries than the equivalent text-referenced merge requests' do
+      referenced_issue = create(:issue, project: project, author: user)
+      related_issue = create(:issue, project: project, author: user)
+
+      3.times do |i|
+        create_referencing_mr(user, project, referenced_issue, source_branch: "referenced-#{i}", target_branch: 'markdown')
+        create_explicitly_related_mr(project, related_issue, source_branch: "related-#{i}", target_branch: 'markdown')
+      end
+
+      get_related_merge_requests(project.id, referenced_issue.iid, user)
+      get_related_merge_requests(project.id, related_issue.iid, user)
+
+      control = ActiveRecord::QueryRecorder.new(skip_cached: false) do
+        get_related_merge_requests(project.id, referenced_issue.iid, user)
+      end
+
+      expect { get_related_merge_requests(project.id, related_issue.iid, user) }
+        .not_to exceed_all_query_limit(control)
+    end
+
     context 'no merge request mentioned a issue' do
       it 'returns empty array' do
         get_related_merge_requests(project.id, closed_issue.iid, user)
@@ -928,7 +997,7 @@ RSpec.describe API::Issues, feature_category: :team_planning do
   end
 
   describe 'GET /projects/:id/issues/:issue_iid/user_agent_detail' do
-    let!(:user_agent_detail) { create(:user_agent_detail, subject: issue) }
+    let_it_be(:user_agent_detail) { create(:user_agent_detail, subject: issue) }
 
     it_behaves_like 'GET request permissions for admin mode' do
       let(:path) { "/projects/#{project.id}/issues/#{issue.iid}/user_agent_detail" }
@@ -981,7 +1050,7 @@ RSpec.describe API::Issues, feature_category: :team_planning do
     end
 
     context 'with a confidential note' do
-      let!(:note) do
+      let_it_be(:note) do
         create(
           :note,
           :confidential,

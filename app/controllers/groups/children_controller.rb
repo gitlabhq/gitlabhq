@@ -39,10 +39,20 @@ module Groups
       true
     end
 
-    def parent
-      return @group unless params[:parent_id].present?
+    def parent_id_param
+      params.permit(:parent_id)[:parent_id]
+    end
 
-      GroupFinder.new(current_user).execute(id: params[:parent_id])
+    def per_page_params
+      params.permit(:per_page)
+    end
+    strong_memoize_attr :per_page_params
+
+    def parent
+      parent_id = parent_id_param
+      return @group unless parent_id.present?
+
+      GroupFinder.new(current_user).execute(id: parent_id)
     end
     strong_memoize_attr :parent
 
@@ -73,10 +83,10 @@ module Groups
     end
 
     def validate_per_page
-      return unless params.key?(:per_page)
+      return unless per_page_params.key?(:per_page)
 
       per_page = begin
-        Integer(params[:per_page])
+        Integer(per_page_params[:per_page])
       rescue ArgumentError, TypeError
         0
       end

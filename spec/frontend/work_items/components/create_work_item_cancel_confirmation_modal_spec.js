@@ -49,7 +49,7 @@ describe('CreateWorkItemCancelConfirmationModal', () => {
     it('displays the correct content in the modal body', () => {
       createComponent({ workItemType: WORK_ITEM_TYPE_NAME_EPIC });
 
-      expect(wrapper.text()).toContain('Are you sure you want to cancel creating this Epic?');
+      expect(wrapper.text()).toContain('Are you sure you want to cancel creating this epic?');
     });
 
     it('displays the action buttons', () => {
@@ -66,7 +66,7 @@ describe('CreateWorkItemCancelConfirmationModal', () => {
 
       findContinueEditingButton().vm.$emit('click');
 
-      expect(wrapper.emitted('continueEditing')).toHaveLength(1);
+      expect(wrapper.emitted('continue-editing')).toHaveLength(1);
     });
 
     it('emits proper event when "Discard changes" button is clicked', async () => {
@@ -74,7 +74,7 @@ describe('CreateWorkItemCancelConfirmationModal', () => {
 
       await findDiscardButton().vm.$emit('click');
 
-      expect(wrapper.emitted('discardDraft')).toHaveLength(1);
+      expect(wrapper.emitted('discard-draft')).toHaveLength(1);
     });
   });
 });

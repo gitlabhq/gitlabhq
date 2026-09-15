@@ -5,6 +5,10 @@ module Packages
     class Package < Packages::Package
       self.allow_legacy_sti_class = true
 
+      # `deprecated` is npm-only, so excluding it keeps NuGet lookups on the
+      # `status = ANY (ARRAY[0, 1])` partial index (idx_pkgs_project_id_lower_name_when_nuget_installable_version).
+      INSTALLABLE_STATUSES = [:default, :hidden].freeze
+
       has_many :installable_nuget_package_files, -> {
         installable.with_nuget_format
       }, class_name: 'Packages::PackageFile', inverse_of: :package
@@ -35,6 +39,10 @@ module Packages
 
       scope :preload_nuget_metadatum, -> { preload(:nuget_metadatum) }
       scope :preload_nuget_files, -> { preload(:installable_nuget_package_files) }
+
+      def self.installable_statuses
+        INSTALLABLE_STATUSES
+      end
 
       def normalized_nuget_version
         nuget_metadatum&.normalized_version

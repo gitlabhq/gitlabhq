@@ -180,11 +180,9 @@ module Projects
         end
 
         AuthorizedProjectUpdate::ProjectRecalculateWorker.perform_async(@project.id)
-        # AuthorizedProjectsWorker uses an exclusive lease per user but
-        # specialized workers might have synchronization issues. Until we
-        # compare the inconsistency rates of both approaches, we still run
-        # AuthorizedProjectsWorker but with some delay and lower urgency as a
-        # safety net.
+
+        # Low-priority safety net for the specialized refresh above, to catch
+        # authorizations it may have missed.
         AuthorizedProjectUpdate::EnqueueGroupMembersRefreshAuthorizedProjectsWorker.perform_async(@project.group.id)
       else
         owner_user = @project.namespace.owner

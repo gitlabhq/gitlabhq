@@ -27,14 +27,14 @@ This job is not allowed to fail, but it can throw some false positives.
 
 1. When we drop a column and then roll back, the column is always
    re-added at the end of the list of columns. If the column was previously not the last column,
-   the rollback can't return the schema back exactly to its previous state. Reference: [job failure](https://gitlab.com/gitlab-org/gitlab/-/jobs/2006544972#L138).
+   the rollback can't return the schema exactly to its previous state. Reference: [job failure](https://gitlab.com/gitlab-org/gitlab/-/jobs/2006544972#L138).
 1. Sometimes pg_dump can change how it orders the constraints and other database objects in minor PostgreSQL version upgrades.
    This causes the job to fail by complaining about the ordering of statements in the schema that are not related
    to the MR. Reference: [job failure](https://gitlab.com/gitlab-org/gitlab/-/jobs/12192481127).
-   - Do report this in the #database Slack channel or create an issue, if not already done by someone else, since this will
+   - Do report this in the `#database` Slack channel or create an issue, if not already done by someone else, since this will
      affect all the feature MRs.
 
-In such cases it's safer to add the `pipeline:skip-check-migrations` label to the MR to skip this job.
+In such cases, it's safer to add the `pipeline:skip-check-migrations` label to the MR to skip this job.
 
 ### Schema dump comparison fails after rollback
 

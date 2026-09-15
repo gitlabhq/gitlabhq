@@ -1,17 +1,20 @@
-import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
+import { mountExtended, shallowMountExtended } from 'helpers/vue_test_utils_helper';
 import AreaChartPresenter from '~/glql/components/presenters/area_chart.vue';
 import BarChartPresenter from '~/glql/components/presenters/bar_chart.vue';
+import BarListPresenter from '~/glql/components/presenters/bar_list.vue';
 import ColumnChartPresenter from '~/glql/components/presenters/column_chart.vue';
 import LineChartPresenter from '~/glql/components/presenters/line_chart.vue';
 import ListPresenter from '~/glql/components/presenters/list.vue';
 import StatPresenter from '~/glql/components/presenters/stat.vue';
 import TablePresenter from '~/glql/components/presenters/table.vue';
+import HeatMapPresenter from '~/glql/components/presenters/heat_map.vue';
 import DataPresenter from '~/glql/components/presenters/data.vue';
 import {
   MOCK_FIELDS,
   MOCK_ISSUES,
   MOCK_AGGREGATED_FIELDS_ONE_DIM_ONE_METRIC,
   MOCK_AGGREGATED_DATA_ONE_DIM,
+  MOCK_AGGREGATED_FIELDS_TWO_DIMS_ONE_METRIC,
 } from '../../mock_data';
 
 const MOCK_STAT_FIELDS = [
@@ -20,15 +23,17 @@ const MOCK_STAT_FIELDS = [
 
 describe('DataPresenter', () => {
   it.each`
-    displayType      | fields                                       | presenterProps                                           | PresenterComponent
-    ${'list'}        | ${MOCK_FIELDS}                               | ${{ fields: MOCK_FIELDS, listType: 'ul' }}               | ${ListPresenter}
-    ${'orderedList'} | ${MOCK_FIELDS}                               | ${{ fields: MOCK_FIELDS, listType: 'ol' }}               | ${ListPresenter}
-    ${'table'}       | ${MOCK_FIELDS}                               | ${{ fields: MOCK_FIELDS }}                               | ${TablePresenter}
-    ${'stat'}        | ${MOCK_STAT_FIELDS}                          | ${{ fields: MOCK_STAT_FIELDS }}                          | ${StatPresenter}
-    ${'columnChart'} | ${MOCK_AGGREGATED_FIELDS_ONE_DIM_ONE_METRIC} | ${{ fields: MOCK_AGGREGATED_FIELDS_ONE_DIM_ONE_METRIC }} | ${ColumnChartPresenter}
-    ${'lineChart'}   | ${MOCK_AGGREGATED_FIELDS_ONE_DIM_ONE_METRIC} | ${{ fields: MOCK_AGGREGATED_FIELDS_ONE_DIM_ONE_METRIC }} | ${LineChartPresenter}
-    ${'barChart'}    | ${MOCK_AGGREGATED_FIELDS_ONE_DIM_ONE_METRIC} | ${{ fields: MOCK_AGGREGATED_FIELDS_ONE_DIM_ONE_METRIC }} | ${BarChartPresenter}
-    ${'areaChart'}   | ${MOCK_AGGREGATED_FIELDS_ONE_DIM_ONE_METRIC} | ${{ fields: MOCK_AGGREGATED_FIELDS_ONE_DIM_ONE_METRIC }} | ${AreaChartPresenter}
+    displayType      | fields                                        | presenterProps                                            | PresenterComponent
+    ${'list'}        | ${MOCK_FIELDS}                                | ${{ fields: MOCK_FIELDS, listType: 'ul' }}                | ${ListPresenter}
+    ${'orderedList'} | ${MOCK_FIELDS}                                | ${{ fields: MOCK_FIELDS, listType: 'ol' }}                | ${ListPresenter}
+    ${'table'}       | ${MOCK_FIELDS}                                | ${{ fields: MOCK_FIELDS }}                                | ${TablePresenter}
+    ${'stat'}        | ${MOCK_STAT_FIELDS}                           | ${{ fields: MOCK_STAT_FIELDS }}                           | ${StatPresenter}
+    ${'columnChart'} | ${MOCK_AGGREGATED_FIELDS_ONE_DIM_ONE_METRIC}  | ${{ fields: MOCK_AGGREGATED_FIELDS_ONE_DIM_ONE_METRIC }}  | ${ColumnChartPresenter}
+    ${'lineChart'}   | ${MOCK_AGGREGATED_FIELDS_ONE_DIM_ONE_METRIC}  | ${{ fields: MOCK_AGGREGATED_FIELDS_ONE_DIM_ONE_METRIC }}  | ${LineChartPresenter}
+    ${'barChart'}    | ${MOCK_AGGREGATED_FIELDS_ONE_DIM_ONE_METRIC}  | ${{ fields: MOCK_AGGREGATED_FIELDS_ONE_DIM_ONE_METRIC }}  | ${BarChartPresenter}
+    ${'barList'}     | ${MOCK_AGGREGATED_FIELDS_ONE_DIM_ONE_METRIC}  | ${{ fields: MOCK_AGGREGATED_FIELDS_ONE_DIM_ONE_METRIC }}  | ${BarListPresenter}
+    ${'areaChart'}   | ${MOCK_AGGREGATED_FIELDS_ONE_DIM_ONE_METRIC}  | ${{ fields: MOCK_AGGREGATED_FIELDS_ONE_DIM_ONE_METRIC }}  | ${AreaChartPresenter}
+    ${'heatMap'}     | ${MOCK_AGGREGATED_FIELDS_TWO_DIMS_ONE_METRIC} | ${{ fields: MOCK_AGGREGATED_FIELDS_TWO_DIMS_ONE_METRIC }} | ${HeatMapPresenter}
   `(
     'inits appropriate presenter for displayType: $displayType',
     ({ displayType, fields, presenterProps, PresenterComponent }) => {
@@ -53,7 +58,9 @@ describe('DataPresenter', () => {
     displayType      | PresenterComponent
     ${'columnChart'} | ${ColumnChartPresenter}
     ${'barChart'}    | ${BarChartPresenter}
+    ${'barList'}     | ${BarListPresenter}
     ${'areaChart'}   | ${AreaChartPresenter}
+    ${'heatMap'}     | ${HeatMapPresenter}
   `('$displayType', ({ displayType, PresenterComponent }) => {
     it('forwards displayConfig to the presenter', () => {
       const displayConfig = { stacked: true };
@@ -87,6 +94,61 @@ describe('DataPresenter', () => {
   });
 
   describe('stat', () => {
+    it('forwards displayConfig to the stat presenter', () => {
+      const displayConfig = { title: 'Total suggestions' };
+
+      const wrapper = shallowMountExtended(DataPresenter, {
+        propsData: {
+          data: MOCK_AGGREGATED_DATA_ONE_DIM,
+          displayType: 'stat',
+          fields: MOCK_STAT_FIELDS,
+          displayConfig,
+        },
+      });
+
+      expect(wrapper.findComponent(StatPresenter).props('displayConfig')).toBe(displayConfig);
+    });
+
+    it('forwards the query data source to the stat presenter', () => {
+      const wrapper = shallowMountExtended(DataPresenter, {
+        propsData: {
+          data: MOCK_AGGREGATED_DATA_ONE_DIM,
+          displayType: 'stat',
+          fields: MOCK_STAT_FIELDS,
+          source: 'CodeSuggestions',
+        },
+      });
+
+      expect(wrapper.findComponent(StatPresenter).props('source')).toBe('CodeSuggestions');
+    });
+
+    it('forwards the comparison data to the stat presenter', () => {
+      const comparisonData = { nodes: [{ totalCount: 4 }] };
+      const wrapper = shallowMountExtended(DataPresenter, {
+        propsData: {
+          data: { nodes: [{ totalCount: 5 }] },
+          comparisonData,
+          displayType: 'stat',
+          fields: MOCK_STAT_FIELDS,
+        },
+      });
+
+      expect(wrapper.findComponent(StatPresenter).props('comparisonData')).toBe(comparisonData);
+    });
+
+    it('declares displayConfig, so it does not leak into the DOM as an attribute', () => {
+      const wrapper = mountExtended(DataPresenter, {
+        propsData: {
+          data: { nodes: [{ totalCount: 5 }] },
+          displayType: 'stat',
+          fields: MOCK_STAT_FIELDS,
+          displayConfig: { title: 'Total suggestions' },
+        },
+      });
+
+      expect(wrapper.findComponent(StatPresenter).attributes('display-config')).toBeUndefined();
+    });
+
     it('re-emits errors from the stat presenter', () => {
       const wrapper = shallowMountExtended(DataPresenter, {
         propsData: {
@@ -98,6 +160,41 @@ describe('DataPresenter', () => {
 
       const error = new Error('boom');
       wrapper.findComponent(StatPresenter).vm.$emit('error', error);
+
+      expect(wrapper.emitted('error')).toEqual([[error]]);
+    });
+  });
+
+  describe('table', () => {
+    const createTableWrapper = (propsData) =>
+      shallowMountExtended(DataPresenter, {
+        propsData: {
+          data: MOCK_AGGREGATED_DATA_ONE_DIM,
+          displayType: 'table',
+          fields: MOCK_AGGREGATED_FIELDS_ONE_DIM_ONE_METRIC,
+          ...propsData,
+        },
+      });
+
+    it('forwards the comparison data to the table presenter', () => {
+      const comparisonData = { nodes: [{ language: 'ruby', totalCount: 4 }] };
+
+      const wrapper = createTableWrapper({ comparisonData });
+
+      expect(wrapper.findComponent(TablePresenter).props('comparisonData')).toBe(comparisonData);
+    });
+
+    it('forwards the query data source to the table presenter', () => {
+      const wrapper = createTableWrapper({ source: 'CodeSuggestions' });
+
+      expect(wrapper.findComponent(TablePresenter).props('source')).toBe('CodeSuggestions');
+    });
+
+    it('re-emits errors from the table presenter', () => {
+      const wrapper = createTableWrapper();
+
+      const error = new Error('boom');
+      wrapper.findComponent(TablePresenter).vm.$emit('error', error);
 
       expect(wrapper.emitted('error')).toEqual([[error]]);
     });
@@ -136,7 +233,7 @@ describe('DataPresenter', () => {
       expect(error.message).toBe(
         'Unknown display type: `pieChart`. Supported display types are: ' +
           '`list`, `orderedList`, `table`, `stat`, `columnChart`, `lineChart`, `barChart`, ' +
-          '`areaChart`.',
+          '`barList`, `areaChart`, `heatMap`, `divergingBarChart`.',
       );
     });
 
@@ -147,6 +244,7 @@ describe('DataPresenter', () => {
       expect(wrapper.findComponent(ColumnChartPresenter).exists()).toBe(false);
       expect(wrapper.findComponent(LineChartPresenter).exists()).toBe(false);
       expect(wrapper.findComponent(BarChartPresenter).exists()).toBe(false);
+      expect(wrapper.findComponent(BarListPresenter).exists()).toBe(false);
       expect(wrapper.findComponent(AreaChartPresenter).exists()).toBe(false);
     });
   });

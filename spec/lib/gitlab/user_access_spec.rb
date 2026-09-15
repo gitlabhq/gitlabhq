@@ -216,6 +216,36 @@ RSpec.describe Gitlab::UserAccess, feature_category: :system_access do
     end
   end
 
+  describe '#can_update_branch?' do
+    let(:branch) { create(:protected_branch, project: project, name: 'test') }
+
+    context 'when the user is an instance administrator' do
+      before do
+        user.update!(admin: true)
+      end
+
+      context 'when admin mode is enabled', :enable_admin_mode do
+        it 'returns false on a protected branch' do
+          expect(access.can_update_branch?(branch.name)).to be_falsey
+        end
+
+        it 'returns true on an unprotected branch' do
+          expect(access.can_update_branch?('random_branch')).to be_truthy
+        end
+      end
+
+      context 'when admin mode is disabled' do
+        it 'returns false on a protected branch' do
+          expect(access.can_update_branch?(branch.name)).to be_falsey
+        end
+
+        it 'returns false on an unprotected branch' do
+          expect(access.can_update_branch?('random_branch')).to be_falsey
+        end
+      end
+    end
+  end
+
   describe '#can_create_tag?' do
     describe 'push to none protected tag' do
       it 'returns true if user is a maintainer' do
@@ -239,7 +269,6 @@ RSpec.describe Gitlab::UserAccess, feature_category: :system_access do
 
     describe 'push to protected tag' do
       let(:tag) { create(:protected_tag, project: project, name: "test") }
-      let(:not_existing_tag) { create :protected_tag, project: project }
 
       it 'returns true if user is a maintainer' do
         project.add_member(user, :maintainer)

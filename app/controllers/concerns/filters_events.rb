@@ -8,7 +8,10 @@ module FiltersEvents
   private
 
   def new_event_filter
-    active_filter = params[:event_filter].presence || cookies[:event_filter]
-    EventFilter.new(active_filter)
+    EventFilter.new(event_filter_param.presence || cookies[:event_filter])
+  end
+
+  def event_filter_param
+    params.permit(:event_filter)[:event_filter]
   end
 end

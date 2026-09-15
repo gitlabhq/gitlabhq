@@ -178,17 +178,17 @@ export default {
       :should-discard-draft="shouldDiscardDraft"
       :always-show-work-item-type-select="!isEpic"
       :show-project-selector="isNewGroupWorkItem"
-      @updateType="updateWorkItemType($event)"
-      @confirmCancel="handleConfirmCancellation"
-      @discardDraft="handleDiscardDraft('createPage')"
+      @update-type="updateWorkItemType($event)"
+      @confirm-cancel="handleConfirmCancellation"
+      @discard-draft="handleDiscardDraft('createPage')"
       @work-item-created="workItemCreated"
     />
     <create-work-item-cancel-confirmation-modal
       v-if="workItemType"
       :is-visible="isCancelConfirmationModalVisible"
       :work-item-type="workItemType"
-      @continueEditing="handleContinueEditing"
-      @discardDraft="handleDiscardDraft('confirmModal')"
+      @continue-editing="handleContinueEditing"
+      @discard-draft="handleDiscardDraft('confirmModal')"
     />
   </div>
 </template>

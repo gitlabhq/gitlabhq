@@ -29,43 +29,13 @@ module Gitlab
         def print_table(data, headers: true)
           return if data.nil? || data.empty?
 
-          puts
-
-          # Convert all elements to strings and handle nil values
-          string_data = data.map { |row| row.map(&:to_s) }
-
-          # Calculate the maximum width for each column
-          column_widths = []
-          string_data.each do |row|
-            row.each_with_index do |cell, index|
-              column_widths[index] = [column_widths[index] || 0, cell.length].max
-            end
-          end
-
-          if headers
-            # Print header row
-            header = string_data.first
-            print_row(header, column_widths)
-
-            # Print separator line
-            separator = column_widths.map { |width| '-' * width }.join('-|-')
-            puts separator
-          end
-
-          # Print data rows
-          start = headers ? 1 : 0
-          string_data[start..].each do |row|
-            print_row(row, column_widths)
-          end
+          rows = data.dup
+          header_row = rows.shift if headers
+          table = AsciiTable.new(rows, headers: header_row, gap: ' | ', rule_gap: '-|-')
 
           puts
-        end
-
-        def print_row(row, column_widths)
-          formatted_cells = row.each_with_index.map do |cell, index|
-            cell.ljust(column_widths[index])
-          end
-          puts formatted_cells.join(' | ')
+          table.lines.each { |line| puts line }
+          puts
         end
         # rubocop:enable Rails/Output
       end

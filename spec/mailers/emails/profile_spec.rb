@@ -872,33 +872,6 @@ RSpec.describe Emails::Profile, feature_category: :user_profile do
     end
   end
 
-  describe 'SAML extern_uid changed' do
-    let_it_be_with_reload(:user) { create(:user) }
-    let(:group_name) { 'My Group' }
-
-    subject { Notify.saml_extern_uid_changed_email(user, group_name) }
-
-    it_behaves_like 'an email sent from GitLab'
-    it_behaves_like 'it should not have Gmail Actions links'
-    it_behaves_like 'a user cannot unsubscribe through footer link'
-
-    it 'is sent to the user' do
-      is_expected.to deliver_to user.email
-    end
-
-    it 'has the correct subject' do
-      is_expected.to have_subject(/SAML authentication identifier changed/i)
-    end
-
-    it 'includes the group name' do
-      is_expected.to have_body_text(/My Group/)
-    end
-
-    it 'includes the re-link instruction' do
-      is_expected.to have_body_text(/sign in with your GitLab credentials/)
-    end
-  end
-
   describe 'awarded a new achievement' do
     let_it_be(:group) { create(:group) }
     let_it_be_with_reload(:user) { create(:user) }
@@ -931,6 +904,20 @@ RSpec.describe Emails::Profile, feature_category: :user_profile do
 
     it 'includes the ignore message' do
       is_expected.to have_body_text('simply ignore this email')
+    end
+
+    context 'when the achievement was already accepted' do
+      let_it_be(:user_achievement) do
+        create(:user_achievement, user: user, achievement: achievement, show_on_profile: true)
+      end
+
+      it 'does not include an accept link' do
+        is_expected.not_to have_body_text(%r{awarded_achievements/.*/accept})
+      end
+
+      it 'does not include the ignore message' do
+        is_expected.not_to have_body_text('simply ignore this email')
+      end
     end
 
     context 'when award message is present' do

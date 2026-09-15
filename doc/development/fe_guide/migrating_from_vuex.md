@@ -71,7 +71,7 @@ The easiest type of values to migrate are static values, either:
   a better practice to add such values to a `constants.js` file and import it when needed.
 - Rails-injected dataset: These are values that we may need to provide to our Vue apps.
   They are static, so adding them to the VueX store is not necessary and it could instead
-  be done easily through the `provide/inject` Vue API, which would be equivalent but without the VueX overhead. This should **only** be injected inside the top-most JS file that mounts our component.
+  be done easily through the `provide/inject` Vue API, which would be equivalent but without the VueX overhead. This should only be injected inside the top-most JS file that mounts our component.
 
 If we take a look at our example above, we can already see that two properties contain `Endpoint` in their name, which probably means that these come from our Rails dataset. To confirm this, we would search the codebase for these properties and see where they are defined, which is the case in our example. Additionally, `blobPath` is also a static property, and a little less obvious here is that `pageInfo` is actually a constant! It is never modified and is only used as a default value that we use inside our getter:
 
@@ -99,7 +99,7 @@ These values are especially useful when used by a lot of different components, s
 
 #### Simple read/write values
 
-If we go back to our example, `selectedSuiteIndex` is only used by **one component** and also **once inside a getter**. Additionally, this getter is only used once itself! It would be quite easy to translate this logic to Vue because this could become a `data` property on the component instance. For the getter, we can use a computed property instead, or a method on the component that returns the right item because we will have access to the index there as well. This is a perfect example of how the VueX store here complicates the application by adding a lot of abstractions when really everything could live inside the same component.
+If we go back to our example, `selectedSuiteIndex` is only used by one component and also once inside a getter. Additionally, this getter is only used once itself! It would be quite easy to translate this logic to Vue because this could become a `data` property on the component instance. For the getter, we can use a computed property instead, or a method on the component that returns the right item because we will have access to the index there as well. This is a perfect example of how the VueX store here complicates the application by adding a lot of abstractions when really everything could live inside the same component.
 
 Luckily, in our example all properties could live inside the same component. However, there are cases where it will not be possible. When this happens, we can use Vue events and props to communicate between sibling components. Store the data in question inside a parent component that should know about the state, and when a child component wants to write to the component, it can `$emit` an event with the new value and let the parent update. Then, by cascading props down to all of its children, all instances of the sibling components will share the same data.
 
@@ -124,7 +124,7 @@ const apolloProvider = new VueApollo({
 });
 ```
 
-For our example, let's call our field `app.status`, and we need is to define queries and mutations that use the `@client` directives. Let's create them right now:
+For our example, let's call our field `app.status`, and what we need is to define queries and mutations that use the `@client` directives. Let's create them right now:
 
 ```javascript
 // get_app_status.query.graphql
@@ -142,7 +142,7 @@ mutation updateAppStatus($appStatus: String) {
 }
 ```
 
-For fields that **do not exist in our schema**, we need to set up `typeDefs`. For example:
+For fields that do not exist in our schema, we need to set up `typeDefs`. For example:
 
 ```javascript
 // typedefs.graphql
@@ -248,9 +248,9 @@ export const fetchSummary = ({ state, commit, dispatch }) => {
 };
 ```
 
-We have two options here. If this action is only used once, there is nothing preventing us from just moving all of this code from the `actions.js` file to the component that does the fetching. Then, it would be easy to remove all the state related code in favor of `data` properties. In that case, `isLoading` and `errorMessages` would both live along with it because it's only used once.
+We have two options here. If this action is only used once, there is nothing preventing us from just moving all of this code from the `actions.js` file to the component that does the fetching. Then, it would be easy to remove all the state related code in favor of `data` properties. In that case, `isLoading` and `errorMessage` would both live along with it because it's only used once.
 
-If we are reusing this function multiple time (or plan to), then that Apollo Client can be leveraged to do what it does best: network calls and caching. In this section, we assume Apollo Client knowledge and that you know how to set it up, but feel free to read through [the GraphQL documentation](graphql.md).
+If we are reusing this function multiple times (or plan to), then Apollo Client can be leveraged to do what it does best: network calls and caching. In this section, we assume Apollo Client knowledge and that you know how to set it up, but feel free to read through [the GraphQL documentation](graphql.md).
 
 We can use a local GraphQL query (with an `@client` directive) to structure how we want to receive the data, and then use a client-side resolver to tell Apollo Client how to resolve that query. We can take a look at our REST call in the browser network tab and determine which structure suits the use case. In our example, we could write our query like:
 
@@ -274,11 +274,11 @@ query getTestReportSummary($fullPath: ID!, $iid: ID!, endpoint: String!) {
 }
 ```
 
-The structure here is arbitrary in the sense that we could write this however we want. It might be tempting to skip the `project.pipeline.testReportSummary` because this is not how the REST call is structured. However, by making the query structure compliant with the `GraphQL` API, we will not need to modify our query if we do decide to transition to `GraphQL` later, and can simply remove the `@client` directive. This also gives us **caching for free** because if we try to fetch the summary again for the same pipeline, Apollo Client knows that we already have the result!
+The structure here is arbitrary in the sense that we could write this however we want. It might be tempting to skip the `project.pipeline.testReportSummary` because this is not how the REST call is structured. However, by making the query structure compliant with the `GraphQL` API, we will not need to modify our query if we do decide to transition to `GraphQL` later, and can simply remove the `@client` directive. This also gives us caching for free because if we try to fetch the summary again for the same pipeline, Apollo Client knows that we already have the result!
 
 Additionally, we are passing an `endpoint` argument to our field `testReportSummary`. This would not be necessary in pure `GraphQL`, but our resolver is going to need that information to make the `REST` call later.
 
-Now we need to write a client-side resolver. When we mark a field with an `@client` directive, it is **not sent to the server**, and Apollo Client instead expects us to [define our own code to resolve the value](graphql.md#using-client-side-resolvers). We can write a client-side resolver for `testReportSummary` inside the `cacheConfig` object that we pass to Apollo Client. We want this resolver to make the Axios call and return whatever data structure we want. That this is also the perfect place to transfer a getter if it was always used when accessing the API data or massaging the data structure:
+Now we need to write a client-side resolver. When we mark a field with an `@client` directive, it is not sent to the server, and Apollo Client instead expects us to [define our own code to resolve the value](graphql.md#using-client-side-resolvers). We can write a client-side resolver for `testReportSummary` inside the `cacheConfig` object that we pass to Apollo Client. We want this resolver to make the Axios call and return whatever data structure we want. This is also the perfect place to transfer a getter if it was always used when accessing the API data or massaging the data structure:
 
 ```javascript
 // graphql_config.js
@@ -294,7 +294,7 @@ export const resolvers = {
 
 Any time we make a call to the `testReportSummary @client` field, this resolver is executed and returns the result of the operation, which is essentially doing the same job as the `VueX` action did.
 
-If we assume that our GraphQL call is stored inside a data property called `testReportSummary`, we can replace `isLoading` with `this.$apollo.queries.testReportSummary.lodaing` in any component that fires this query. Errors can be handled inside the `error` hook of the Query.
+If we assume that our GraphQL call is stored inside a data property called `testReportSummary`, we can replace `isLoading` with `this.$apollo.queries.testReportSummary.loading` in any component that fires this query. Errors can be handled inside the `error` hook of the Query.
 
 ### Migration strategy
 
@@ -307,4 +307,4 @@ Now that we have gone through each type of data, let's review how to plan for th
 1. Replace shared read/write operations with Apollo Client `@client` directives.
 1. Replace network data with Apollo Client, either with actual GraphQL calls when available or by using client-side resolvers to make REST calls.
 
-If it is impossible to quickly replace shared read/write operations or network data (for example in one or two milestones), consider making a different Vue component behind a feature flag that is exclusively functional with Apollo Client, and rename the current component that uses VueX with a `legacy-` prefix. The newer component might not be able to implement all functionality right away, but we can progressively add them as we make MRs. This way, our legacy component is exclusively using VueX as a store and the new one is only Apollo. After the new component has re-implemented all the logic, we can turn the Feature Flag on and ensure that it behaves as expected.
+If it is impossible to quickly replace shared read/write operations or network data (for example in one or two milestones), consider making a different Vue component behind a feature flag that is exclusively functional with Apollo Client, and rename the current component that uses VueX with a `legacy-` prefix. The newer component might not be able to implement all functionality right away, but we can progressively add functionality as we make MRs. This way, our legacy component is exclusively using VueX as a store and the new one is only Apollo. After the new component has re-implemented all the logic, we can turn the Feature Flag on and ensure that it behaves as expected.

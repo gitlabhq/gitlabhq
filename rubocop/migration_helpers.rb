@@ -54,6 +54,12 @@ module RuboCop
       dirname(node).end_with?('db/post_migrate', 'db/embedding/post_migrate', 'db/geo/post_migrate')
     end
 
+    # ClickHouse migrations sit one level deeper than Postgres ones, in a
+    # directory named after the database: db/click_house/migrate/main.
+    def in_click_house_migration?(node)
+      dirname(node).match?(%r{db/click_house/(post_)?migrate(/|\z)})
+    end
+
     # Returns true if we've defined an 'EnforcedSince' variable in rubocop.yml and the migration version
     # is greater.
     def time_enforced?(node)

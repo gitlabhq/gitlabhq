@@ -49,6 +49,8 @@ RSpec.shared_context 'with claiming tools' do
 
   before do
     stub_config_cell(enabled: true)
+    # Current memoizes this, and let_it_be's before(:all) runs while the cell is
+    # still disabled, so the cached false has to be overridden explicitly.
     allow(Current).to receive(:cells_claims_leases?).and_return(true)
     allow(GRPC::Core::TimeConsts).to receive(:from_relative_time).and_return(deadline)
   end

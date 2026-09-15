@@ -8,7 +8,7 @@ module Gitlab
         # but if they weren't, the routes will be drawn and available for the rest of
         # application.
         API::API.compile!
-        API::API.reset_routes!
+        API::API.send(:reset_routes!) # rubocop:disable GitlabSecurity/PublicSend -- private Grape API, no public alternative
         API::API.routes.select { |route| route.app.options[:for] < API::Base }
       end
 

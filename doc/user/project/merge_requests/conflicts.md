@@ -49,7 +49,7 @@ To resolve a conflict, delete:
 
 You can resolve merge conflicts in the GitLab UI if the conflicting file:
 
-- Is a non binary text file.
+- Is a non-binary text file.
 - Is less than 200 KB in size with conflict markers added.
 - Uses UTF-8 compatible encoding.
 - Doesn't contain conflict markers.
@@ -82,12 +82,9 @@ in the user interface, and you can also resolve conflicts using the following me
 - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/235919) in GitLab 19.0
   [with a feature flag](../../../administration/feature_flags/_index.md) named `mr_ai_resolve_conflicts`. Enabled by default.
 - [Generally available](https://gitlab.com/gitlab-org/gitlab/-/work_items/596465) in GitLab 19.3.
+- Feature flag `mr_ai_resolve_conflicts` [removed](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/251062/) in GitLab 19.4.
 
 {{< /history >}}
-
-> [!flag]
-> The availability of this feature is controlled by a feature flag.
-> For more information, see the history.
 
 GitLab Duo can autonomously analyze merge conflicts, edit the conflicting files,
 create a commit, and push to the source branch.

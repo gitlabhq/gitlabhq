@@ -3,8 +3,6 @@
 require 'spec_helper'
 
 RSpec.describe AuthorizedProjectUpdate::ProjectRecalculateWorker, feature_category: :permissions do
-  include ExclusiveLeaseHelpers
-
   let_it_be(:project) { create(:project) }
 
   subject(:worker) { described_class.new }

@@ -21,7 +21,7 @@ RSpec.describe Gitlab::Ci::Reports::Security::FindingSignature, feature_category
 
       describe '#valid?' do
         it 'returns true' do
-          expect(subject.valid?).to eq(true)
+          expect(subject.valid?).to be(true)
         end
       end
     end
@@ -48,7 +48,7 @@ RSpec.describe Gitlab::Ci::Reports::Security::FindingSignature, feature_category
   describe '#valid?' do
     context 'when supported algorithm_type is given' do
       it 'is valid' do
-        expect(subject.valid?).to eq(true)
+        expect(subject.valid?).to be(true)
       end
     end
 
@@ -61,7 +61,7 @@ RSpec.describe Gitlab::Ci::Reports::Security::FindingSignature, feature_category
       end
 
       it 'is not valid' do
-        expect(subject.valid?).to eq(false)
+        expect(subject.valid?).to be(false)
       end
     end
   end

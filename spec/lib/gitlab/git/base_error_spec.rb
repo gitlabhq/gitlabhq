@@ -3,7 +3,7 @@
 require 'fast_spec_helper'
 require 'rspec-parameterized'
 
-RSpec.describe Gitlab::Git::BaseError do
+RSpec.describe Gitlab::Git::BaseError, feature_category: :source_code_management do
   using RSpec::Parameterized::TableSyntax
 
   subject { described_class.new(message).to_s }

@@ -966,7 +966,7 @@ RSpec.describe Gitlab::GitalyClient::CommitService, feature_category: :gitaly do
             end
           end
 
-          expect(commit).to eq(nil)
+          expect(commit).to be_nil
         end
 
         it 'returns a cached commit' do
@@ -1073,6 +1073,22 @@ RSpec.describe Gitlab::GitalyClient::CommitService, feature_category: :gitaly do
         end
 
         client.list_commits('master', { path: '' })
+      end
+    end
+
+    context 'with non-ASCII commit message patterns' do
+      before do
+        ::Gitlab::GitalyClient.clear_stubs!
+      end
+
+      it 'encodes the patterns as binary' do
+        expect_next_instance_of(Gitaly::CommitService::Stub) do |service|
+          expect(service).to receive(:list_commits) do |request, _options|
+            expect(request.commit_message_patterns).to eq([Gitlab::EncodingHelper.encode_binary('허용')])
+          end.and_return(instance_double(GRPC::ActiveCall::Operation, execute: [], trailing_metadata: {}))
+        end
+
+        client.list_commits('master', { commit_message_patterns: '허용' })
       end
     end
 
@@ -1304,22 +1320,6 @@ RSpec.describe Gitlab::GitalyClient::CommitService, feature_category: :gitaly do
         .with(request, kind_of(Hash)).and_return(instance_double(GRPC::ActiveCall::Operation, execute: [], trailing_metadata: {}))
 
       client.find_commits(order: 'default', author: "Billy Baggins <bilbo@shire.com>")
-    end
-
-    it 'sends an RPC request with a message_regex' do
-      request = Gitaly::FindCommitsRequest.new(
-        repository: repository_message,
-        disable_walk: true,
-        order: 'NONE',
-        message_regex: '^foo',
-        global_options: Gitaly::GlobalOptions.new(literal_pathspecs: false)
-      )
-
-      expect_any_instance_of(Gitaly::CommitService::Stub)
-        .to receive(:find_commits).with(request, kind_of(Hash))
-        .and_return(instance_double(GRPC::ActiveCall::Operation, execute: [], trailing_metadata: {}))
-
-      client.find_commits(message_regex: '^foo')
     end
 
     it 'sends an RPC request with a whitespace-only path' do

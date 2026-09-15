@@ -225,7 +225,7 @@ rake gitlab:seed:merge_trains:project
 
 ### Automation
 
-If you're very sure that you want to **wipe the current database** and refill
+If you're very sure that you want to wipe the current database and refill
 seeds, you can set the `FORCE` environment variable to `yes`:
 
 ```shell

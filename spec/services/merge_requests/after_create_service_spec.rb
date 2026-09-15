@@ -186,6 +186,34 @@ RSpec.describe MergeRequests::AfterCreateService, feature_category: :code_review
         .with(merge_request).at_least(:once)
     end
 
+    describe 'the MergeRequests::AfterCreateCloudEvent', :clean_gitlab_redis_shared_state do
+      before do
+        # A newly-created merge request is `preparing` until this service marks it
+        # prepared, which is what makes it schedule the mergeability check that
+        # publishes the event.
+        merge_request.update!(merge_status: :preparing)
+      end
+
+      it 'defers publishing to the mergeability check' do
+        expect { execute_service }.not_to publish_event(MergeRequests::AfterCreateCloudEvent)
+
+        expect { MergeRequests::AfterCreateEventPublisher.new(merge_request).publish_deferred }
+          .to publish_event(MergeRequests::AfterCreateCloudEvent)
+      end
+
+      it 'defers before scheduling the mergeability check that publishes it' do
+        calls = []
+        allow_next_instance_of(MergeRequests::AfterCreateEventPublisher) do |publisher|
+          allow(publisher).to receive(:defer_to_mergeability_check) { calls << :defer }
+        end
+        allow(merge_request).to receive(:check_mergeability) { calls << :check_mergeability }
+
+        execute_service
+
+        expect(calls).to eq([:defer, :check_mergeability])
+      end
+    end
+
     it_behaves_like 'internal event tracking' do
       let(:user) { merge_request.author }
       let(:event) { 'create_merge_request' }

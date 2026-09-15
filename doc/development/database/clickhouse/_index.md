@@ -42,7 +42,7 @@ ClickHouse also offers ["Dictionaries"](https://clickhouse.com/docs/en/sql-refer
 
 ## Data types & Partitioning
 
-ClickHouse offers SQL-compatible [data types](https://clickhouse.com/docs/en/sql-reference/data-types) and few specialized data types like:
+ClickHouse offers SQL-compatible [data types](https://clickhouse.com/docs/en/sql-reference/data-types) and a few specialized data types like:
 
 - [`LowCardinality`](https://clickhouse.com/docs/en/sql-reference/data-types/lowcardinality)
 - [UUID](https://clickhouse.com/docs/en/sql-reference/data-types/uuid)
@@ -62,9 +62,9 @@ Sharding is a feature that allows splitting the data into multiple ClickHouse no
 
 See [the ClickHouse documentation](https://clickhouse.com/docs/en/engines/table-engines/special/distributed) and this section on [replication and sharding](https://clickhouse.com/docs/en/architecture/replication#replication-and-sharding-configuration). ClickHouse can use either Zookeeper or its own compatible API via a component called [ClickHouse Keeper](https://clickhouse.com/docs/en/operations/clickhouse-keeper) to maintain consensus.
 
-After nodes are set up, they can become invisible from the Clients and both write and read queries can be issued to any node.
+After nodes are set up, they can become invisible from the clients and both write and read queries can be issued to any node.
 
-In most cases, clusters usually start with a fixed number of nodes(~ shards). [Rebalancing shards](https://clickhouse.com/docs/en/guides/sre/scaling-clusters) is operationally heavy and requires rigorous testing.
+In most cases, clusters usually start with a fixed number of nodes (~ shards). [Rebalancing shards](https://clickhouse.com/docs/en/guides/sre/scaling-clusters) is operationally heavy and requires rigorous testing.
 
 Replication is supported by MergeTree Table engine, see the [replication section](https://clickhouse.com/docs/en/engines/table-engines/mergetree-family/replication) in documentation for details on how to define them.
 ClickHouse relies on a distributed coordination component (either Zookeeper or ClickHouse Keeper) to track the participating nodes in the quorum. Replication is asynchronous and multi-leader. Inserts can be issued to any node and they can appear on other nodes with some latency. If desired, stickiness to a specific node can be used to make sure that reads observe the latest written data.
@@ -73,7 +73,7 @@ ClickHouse relies on a distributed coordination component (either Zookeeper or C
 
 One of the defining features of ClickHouse is materialized views. Functionally they resemble insert triggers for ClickHouse.
 
-We recommended reading the [views](https://clickhouse.com/docs/en/sql-reference/statements/create/view#materialized-view) section from the official documentation to get a better understanding of how they work.
+We recommend reading the [views](https://clickhouse.com/docs/en/sql-reference/statements/create/view#materialized-view) section from the official documentation to get a better understanding of how they work.
 
 Quoting the [documentation](https://clickhouse.com/docs/en/sql-reference/statements/create/view#materialized-view):
 
@@ -92,9 +92,9 @@ Files: `users.xml` and `config.xml`.
 
 | Topic | Security Requirement | Reason |
 | ----- | -------------------- | ------ |
-| [`user_name/password`](https://clickhouse.com/docs/en/operations/settings/settings-users#user-namepassword) | Usernames **must not** be blank. Passwords **must** use `password_sha256_hex` and **must not** be blank. | `plaintext` and `password_double_sha1_hex` are insecure. If username isn't specified, [`default` is used with no password](https://clickhouse.com/docs/en/operations/settings/settings-users). |
+| [`user_name/password`](https://clickhouse.com/docs/en/operations/settings/settings-users#user-namepassword) | Usernames must not be blank. Passwords must use `password_sha256_hex` and must not be blank. | `plaintext` and `password_double_sha1_hex` are insecure. If username isn't specified, [`default` is used with no password](https://clickhouse.com/docs/en/operations/settings/settings-users). |
 | [`access_management`](https://clickhouse.com/docs/en/operations/settings/settings-users#access_management-user-setting) | Use Server [configuration files](https://clickhouse.com/docs/en/operations/configuration-files) `users.xml` and `config.xml`. Avoid SQL-driven workflow. | SQL-driven workflow implies that at least one user has `access_management` which can be avoided via configuration files. These files are easier to audit and monitor too, considering that ["You can't manage the same access entity by both configuration methods simultaneously."](https://clickhouse.com/docs/en/operations/access-rights#access-control). |
-| [`user_name/networks`](https://clickhouse.com/docs/en/operations/settings/settings-users#user-namenetworks) | At least one of `<ip>`, `<host>`, `<host_regexp>` **must** be set. Do not use `<ip>::/0</ip>` to open access for any network. | Network controls. ([Trust cautiously](https://handbook.gitlab.com/handbook/security/architecture/#trust-cautiously) principle) |
+| [`user_name/networks`](https://clickhouse.com/docs/en/operations/settings/settings-users#user-namenetworks) | At least one of `<ip>`, `<host>`, `<host_regexp>` must be set. Do not use `<ip>::/0</ip>` to open access for any network. | Network controls. ([Trust cautiously](https://handbook.gitlab.com/handbook/security/architecture/#trust-cautiously) principle) |
 | [`user_name/profile`](https://clickhouse.com/docs/en/operations/settings/settings-users#user-nameprofile) | Use profiles to set similar properties across multiple users and set limits (from the user interface). | [Least privilege](https://handbook.gitlab.com/handbook/security/architecture/#assign-the-least-privilege-possible) principle and limits. |
 | [`user_name/quota`](https://clickhouse.com/docs/en/operations/settings/settings-users#user-namequota) | Set quotas for users whenever possible. | Limit resource usage over a period of time or track the use of resources. |
 | [`user_name/databases`](https://clickhouse.com/docs/en/operations/settings/settings-users#user-namedatabases) | Restrict access to data, and avoid users with full access. | [Least privilege](https://handbook.gitlab.com/handbook/security/architecture/#assign-the-least-privilege-possible) principle. |
@@ -121,9 +121,9 @@ Files: `config.xml`
 
 | Topic | Security Requirement | Reason |
 | ----- | -------------------- | ------ |
-| `logger` | `Log` and `errorlog` **must** be defined and writable by `clickhouse`. | Make sure logs are stored. |
-| SIEM  | If hosted on GitLab.com, the ClickHouse instance or cluster **must** report [logs to our SIEM](https://internal.gitlab.com/handbook/security/security_operations/security_logging/tooling/devo/) (internal link). | [GitLab logs critical information system activity](https://handbook.gitlab.com/handbook/security/audit-logging-policy/). |
-| Log sensitive data | Query masking rules **must** be used if sensitive data can be logged. See [example masking rules](#example-masking-rules). | [Column level encryption](https://clickhouse.com/docs/en/sql-reference/functions/encryption-functions) can be used and leak sensitive data (keys) in logs. |
+| `logger` | `Log` and `errorlog` must be defined and writable by `clickhouse`. | Make sure logs are stored. |
+| SIEM  | If hosted on GitLab.com, the ClickHouse instance or cluster must report [logs to our SIEM](https://internal.gitlab.com/handbook/security/security_operations/security_logging/tooling/devo/) (internal link). | [GitLab logs critical information system activity](https://handbook.gitlab.com/handbook/security/audit-logging-policy/). |
+| Log sensitive data | Query masking rules must be used if sensitive data can be logged. See [example masking rules](#example-masking-rules). | [Column level encryption](https://clickhouse.com/docs/en/sql-reference/functions/encryption-functions) can be used and leak sensitive data (keys) in logs. |
 
 #### Example masking rules
 

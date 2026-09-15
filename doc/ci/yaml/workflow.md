@@ -66,7 +66,7 @@ workflow:
 ```
 
 This example prevents pipelines for schedules or `push` (branches and tags) pipelines.
-The final `when: always` rule runs all other pipeline types, **including** merge
+The final `when: always` rule runs all other pipeline types, including merge
 request pipelines.
 
 ### Switch between branch pipelines and merge request pipelines

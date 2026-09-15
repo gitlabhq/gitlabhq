@@ -107,8 +107,8 @@ CI/CD job tokens can access the following REST API endpoints:
 | ---------- | ------------ | --------------- | ----- |
 | Download a specific file from artifacts archive | `GET /projects/:id/jobs/:job_id/artifacts/*artifact_path` | `READ_JOBS` | Read |
 | Download a specific file from artifacts archive from a ref | `GET /projects/:id/jobs/artifacts/:ref_name/raw/*artifact_path` | `READ_JOBS` | Read |
+| Download an artifact from a job | `GET /projects/:id/jobs/:job_id/artifacts` | `READ_JOBS` | Read |
 | Download job artifacts | `GET /jobs/:id/artifacts` | `READ_JOBS` | Read |
-| Download the artifacts archive from a job | `GET /projects/:id/jobs/:job_id/artifacts` | `READ_JOBS` | Read |
 | List all files in an artifacts archive | `GET /projects/:id/jobs/:job_id/artifacts/tree` | `READ_JOBS` | Read |
 | List all jobs by pipeline | `GET /projects/:id/pipelines/:pipeline_id/jobs` | `READ_JOBS` | Read |
 | List all jobs for a project | `GET /projects/:id/jobs` | `READ_JOBS` | Read |
@@ -258,6 +258,7 @@ CI/CD job tokens can access the following REST API endpoints:
 | ---------- | ------------ | --------------- | ----- |
 | List all merge requests associated with a commit | `GET /projects/:id/repository/commits/:sha/merge_requests` | `READ_REPOSITORIES` | Read |
 | List all project repository tags | `GET /projects/:id/repository/tags` | `READ_REPOSITORIES` | Read |
+| List all references a commit is pushed to | `GET /projects/:id/repository/commits/:sha/refs` | `READ_REPOSITORIES` | Read |
 | List all repository branches | `GET /projects/:id/repository/branches` | `READ_REPOSITORIES` | Read |
 | Retrieve a commit | `GET /projects/:id/repository/commits/:sha` | `READ_REPOSITORIES` | Read |
 | Retrieve a raw file from a repository | `GET /projects/:id/repository/files/:file_path/raw` | `READ_REPOSITORIES` | Read |
@@ -293,9 +294,10 @@ CI/CD job tokens can access the following REST API endpoints:
 | List all project issues | `GET /projects/:id/issues` | `READ_WORK_ITEMS` | Read |
 | Retrieve a project issue | `GET /projects/:id/issues/:issue_iid` | `READ_WORK_ITEMS` | Read |
 
-## Unavailable API endpoints
+## Endpoints without fine-grained permissions
 
-CI/CD job tokens cannot access the following endpoints:
+The following endpoints do not have fine-grained permissions. CI/CD job tokens can always access
+these endpoints, and the permissions on an allowlist entry do not restrict that access:
 
 | Permission | API endpoint |
 | ---------- | ------------ |
@@ -317,6 +319,7 @@ CI/CD job tokens cannot access the following endpoints:
 | Retrieve an authentication token | `GET /packages/conan/v1/users/authenticate` |
 | Verify authentication credentials | `GET /packages/conan/v1/users/check_credentials` |
 | NPM registry metadata endpoint | `GET /packages/npm/*package_name` |
+| Retrieve status of Dependency Firewall for a project | `GET /projects/:id/dependency_firewall/enablement` |
 | Search for a Conan package | `GET /projects/:id/packages/conan/v1/conans/search` |
 | Verify availability of a Conan repository | `GET /projects/:id/packages/conan/v1/ping` |
 | Retrieve an authentication token | `GET /projects/:id/packages/conan/v1/users/authenticate` |
@@ -328,4 +331,7 @@ CI/CD job tokens cannot access the following endpoints:
 | List all registry repository tags for a project | `GET /projects/:id/registry/repositories/:repository_id/tags` |
 | Retrieve details of a registry repository tag | `GET /projects/:id/registry/repositories/:repository_id/tags/:tag_name` |
 | Transition a DAST site validation to a new state | `POST /internal/dast/site_validations/:id/transition` |
+| Initialize test balancing for a parallel job | `POST /job/test_balancing/initialize` |
+| Request the next batch of test splits for a parallel job | `POST /job/test_balancing/request` |
+| Evaluate a package against Dependency Firewall policies for a project | `POST /projects/:id/dependency_firewall/evaluate` |
 | Issue a short-lived JWT for a single modular-service audience | `POST /token_exchange` |

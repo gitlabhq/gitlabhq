@@ -20,6 +20,7 @@ export const useFileBrowser = defineStore('fileBrowser', {
       renderTreeList: true,
       fileBrowserVisible: true,
       fileBrowserDrawerVisible: false,
+      focusSearchRequest: 0,
     };
   },
   actions: {
@@ -69,6 +70,9 @@ export const useFileBrowser = defineStore('fileBrowser', {
     },
     toggleFileBrowserDrawerVisibility() {
       this.fileBrowserDrawerVisible = !this.fileBrowserDrawerVisible;
+    },
+    requestSearchFocus() {
+      this.focusSearchRequest += 1;
     },
     toggleFileBrowserVisibility() {
       this.fileBrowserVisible = !this.fileBrowserVisible;

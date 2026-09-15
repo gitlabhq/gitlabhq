@@ -1,5 +1,5 @@
 ---
-stage: Tenant Scale
+stage: GitLab Dedicated
 group: Geo
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see <https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments>
 title: Setting up Geo
@@ -16,7 +16,7 @@ title: Setting up Geo
 
 - Two (or more) independently working GitLab sites:
   - One GitLab site serves as the Geo primary site. Use the [GitLab reference architectures documentation](../../reference_architectures/_index.md) to set this up. You can use different reference architecture sizes for each Geo site. If you already have a working GitLab instance that is in-use, it can be used as a primary site.
-  - The second GitLab site serves as the Geo secondary site. Use the [GitLab reference architectures documentation](../../reference_architectures/_index.md) to set this up. It's a good idea to sign in and test it. However, be aware that **all of the data on the secondary are lost** as part of the process of replicating from the primary site.
+  - The second GitLab site serves as the Geo secondary site. Use the [GitLab reference architectures documentation](../../reference_architectures/_index.md) to set this up. It's a good idea to sign in and test it. However, be aware that all of the data on the secondary are lost as part of the process of replicating from the primary site.
 
     > [!note]
     > Geo supports multiple secondaries. You can follow the same steps and make any changes accordingly.

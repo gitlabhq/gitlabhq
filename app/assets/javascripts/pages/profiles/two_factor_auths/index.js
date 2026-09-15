@@ -4,7 +4,6 @@ import {
   initClose2faSuccessMessage,
   initTwoFactorConfirm,
   initEmailOtpConfirm,
-  initTwoFactorGraceDeadline,
 } from '~/authentication/two_factor_auth';
 
 initClose2faSuccessMessage();
@@ -12,4 +11,3 @@ initWebAuthnRegistration();
 initRecoveryCodes();
 initTwoFactorConfirm();
 initEmailOtpConfirm();
-initTwoFactorGraceDeadline();

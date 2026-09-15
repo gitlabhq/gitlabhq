@@ -7,7 +7,6 @@ RSpec.describe MergeRequests::AddContextService, feature_category: :code_review_
   let(:admin) { create(:admin) }
   let(:merge_request) { create(:merge_request, source_project: project, target_project: project, author: admin) }
   let(:commits) { ["874797c3a73b60d2187ed6e2fcabd289ff75171e"] }
-  let(:raw_repository) { project.repository.raw }
 
   subject(:service) { described_class.new(project: project, current_user: admin, params: { merge_request: merge_request, commits: commits }) }
 
@@ -30,7 +29,6 @@ RSpec.describe MergeRequests::AddContextService, feature_category: :code_review_
 
     context "when user doesn't have permission to update merge request" do
       let(:user) { create(:user) }
-      let(:merge_request1) { create(:merge_request, source_project: project, author: user) }
 
       subject(:service) { described_class.new(project: project, current_user: user, params: { merge_request: merge_request, commits: commits }) }
 

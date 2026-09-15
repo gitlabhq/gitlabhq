@@ -3,8 +3,11 @@
 require 'fast_spec_helper'
 require 'oj'
 require_relative Rails.root.join('lib/ci/inputs/builder.rb')
+require_relative '../../../support/shared_contexts/lib/ci/inputs/reject_yaml_tags_flag_shared_context'
 
 RSpec.describe Ci::Inputs::Builder, feature_category: :pipeline_composition do
+  include_context 'with ci_reject_yaml_tags_in_inputs enabled'
+
   subject(:spec_inputs) { described_class.new(specs) }
 
   let(:string_input_spec) { { type: 'string', default: 'test' } }

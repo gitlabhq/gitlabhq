@@ -18,7 +18,7 @@ class HealthController < BaseActionController
   def readiness
     # readiness check is a collection of application-level checks
     # and optionally all service checks
-    render_checks(params[:all] ? ALL_CHECKS : CHECKS)
+    render_checks(params.permit(:all)[:all] ? ALL_CHECKS : CHECKS)
   end
 
   def liveness

@@ -1,0 +1,13 @@
+---
+api_type: object
+attr: orbit_settings
+clusterwide: false
+column: orbit_settings
+db_type: jsonb
+default: "'{}'::jsonb"
+description: Orbit settings. Check `ee/app/validators/json_schemas/application_setting_orbit_settings.json`
+  for the schema definition.
+encrypted: false
+gitlab_com_different_than_default: false
+jihu: false
+not_null: true

@@ -161,21 +161,21 @@ describe('DiscussionNotes', () => {
         findNoteableNotes().at(0).vm.$emit('handle-delete-note');
 
         await nextTick();
-        expect(wrapper.emitted()['delete-note']).toHaveLength(1);
+        expect(wrapper.emitted('delete-note')).toHaveLength(1);
       });
 
       it('emits start-replying when first note emits start-replying', async () => {
         findNoteableNotes().at(0).vm.$emit('start-replying');
 
         await nextTick();
-        expect(wrapper.emitted()['start-replying']).toHaveLength(1);
+        expect(wrapper.emitted('start-replying')).toHaveLength(1);
       });
 
       it('emits delete-note when second note emits handle-delete-note', async () => {
         findNoteableNotes().at(1).vm.$emit('handle-delete-note');
 
         await nextTick();
-        expect(wrapper.emitted()['delete-note']).toHaveLength(1);
+        expect(wrapper.emitted('delete-note')).toHaveLength(1);
       });
     });
 
@@ -190,7 +190,7 @@ describe('DiscussionNotes', () => {
         note.vm.$emit('handle-delete-note');
 
         await nextTick();
-        expect(wrapper.emitted()['delete-note']).toHaveLength(1);
+        expect(wrapper.emitted('delete-note')).toHaveLength(1);
       });
     });
   });

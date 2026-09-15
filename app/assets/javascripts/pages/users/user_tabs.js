@@ -152,14 +152,14 @@ export default class UserTabs {
       .then((data) => UserTabs.renderActivityCalendar(data, $calendarWrap))
       .catch(() => {
         const cWrap = $calendarWrap[0];
-        cWrap.querySelector('.gl-spinner').classList.add('!gl-invisible');
+        cWrap.querySelector('.js-calendar-loading').classList.add('gl-hidden');
         cWrap.querySelector('.user-calendar-error').classList.remove('!gl-invisible');
         cWrap
           .querySelector('.user-calendar-error .js-retry-load')
           .addEventListener('click', (e) => {
             e.preventDefault();
             cWrap.querySelector('.user-calendar-error').classList.add('!gl-invisible');
-            cWrap.querySelector('.gl-spinner').classList.remove('!gl-invisible');
+            cWrap.querySelector('.js-calendar-loading').classList.remove('gl-hidden');
             this.loadActivityCalendar();
           });
       });

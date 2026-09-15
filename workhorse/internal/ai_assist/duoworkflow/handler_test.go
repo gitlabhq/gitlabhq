@@ -388,3 +388,105 @@ func waitDone(t *testing.T, done chan bool) {
 		t.Fatal("time out waiting request to arrive")
 	}
 }
+
+func TestHandler_CheckOriginByForwardedHost_AllowsMatchingForwardedHost(t *testing.T) {
+	testhelper.ConfigureSecret()
+
+	server := setupTestServer(t)
+
+	apiServer, apiClient := setupAPIServer(t, `{
+		"DuoWorkflow": {
+			"Service": {
+				"URI": "`+server.Addr+`",
+				"Headers": {"Authorization": "Bearer test"},
+				"Secure": false
+			}
+		}
+	}`)
+	defer apiServer.Close()
+
+	httpServer := httptest.NewServer(NewHandler(apiClient, initRdb(t), http.HandlerFunc(func(_ http.ResponseWriter, _ *http.Request) {}), "", "public.example.com").Build())
+	defer httpServer.Close()
+
+	wsURL := "ws" + strings.TrimPrefix(httpServer.URL, "http") + "/duo"
+
+	dialer := websocket.Dialer{}
+	reqHeader := http.Header{}
+	reqHeader.Set("Origin", "http://public.example.com")
+	reqHeader.Set("X-Forwarded-Host", "public.example.com")
+
+	wsConn, resp, err := dialer.Dial(wsURL, reqHeader)
+	if resp != nil {
+		_ = resp.Body.Close()
+	}
+	require.NoError(t, err, "expected WebSocket upgrade to succeed when Origin matches trusted X-Forwarded-Host")
+	defer wsConn.Close()
+}
+
+func TestHandler_CheckOriginByForwardedHost_RejectsMismatchedOrigin(t *testing.T) {
+	testhelper.ConfigureSecret()
+
+	server := setupTestServer(t)
+
+	apiServer, apiClient := setupAPIServer(t, `{
+		"DuoWorkflow": {
+			"Service": {
+				"URI": "`+server.Addr+`",
+				"Headers": {"Authorization": "Bearer test"},
+				"Secure": false
+			}
+		}
+	}`)
+	defer apiServer.Close()
+
+	httpServer := httptest.NewServer(NewHandler(apiClient, initRdb(t), http.HandlerFunc(func(_ http.ResponseWriter, _ *http.Request) {}), "", "public.example.com").Build())
+	defer httpServer.Close()
+
+	wsURL := "ws" + strings.TrimPrefix(httpServer.URL, "http") + "/duo"
+
+	dialer := websocket.Dialer{}
+	reqHeader := http.Header{}
+	reqHeader.Set("Origin", "http://evil.example.com")
+	reqHeader.Set("X-Forwarded-Host", "public.example.com")
+
+	_, resp, err := dialer.Dial(wsURL, reqHeader)
+	if resp != nil {
+		defer resp.Body.Close()
+	}
+	require.Error(t, err, "expected WebSocket upgrade to fail when Origin does not match X-Forwarded-Host")
+	require.Equal(t, http.StatusForbidden, resp.StatusCode)
+}
+
+func TestHandler_CheckOriginByForwardedHost_IgnoresForwardedHostWhenNoTrustedHostsConfigured(t *testing.T) {
+	testhelper.ConfigureSecret()
+
+	server := setupTestServer(t)
+
+	apiServer, apiClient := setupAPIServer(t, `{
+		"DuoWorkflow": {
+			"Service": {
+				"URI": "`+server.Addr+`",
+				"Headers": {"Authorization": "Bearer test"},
+				"Secure": false
+			}
+		}
+	}`)
+	defer apiServer.Close()
+
+	httpServer := httptest.NewServer(NewHandler(apiClient, initRdb(t), http.HandlerFunc(func(_ http.ResponseWriter, _ *http.Request) {}), "").Build())
+	defer httpServer.Close()
+
+	wsURL := "ws" + strings.TrimPrefix(httpServer.URL, "http") + "/duo"
+
+	dialer := websocket.Dialer{}
+	reqHeader := http.Header{}
+	reqHeader.Set("Origin", "http://public.example.com")
+	reqHeader.Set("X-Forwarded-Host", "public.example.com")
+
+	_, resp, err := dialer.Dial(wsURL, reqHeader)
+	if resp != nil {
+		defer resp.Body.Close()
+	}
+	require.Error(t, err, "expected WebSocket upgrade to fail when trusted_forwarded_hosts is unset, regardless of X-Forwarded-Host")
+	require.Equal(t, http.StatusForbidden, resp.StatusCode)
+}

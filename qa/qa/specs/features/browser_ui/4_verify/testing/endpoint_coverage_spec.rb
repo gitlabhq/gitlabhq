@@ -13,6 +13,7 @@ module QA
     context 'Endpoint Coverage' do
       let!(:project) { create(:project, name: 'endpoint-coverage') }
       let!(:runner) { create(:project_runner, project: project, name: project.name, tags: [project.name]) }
+      let!(:runner_online) { runner.wait_until_online }
 
       before do
         Flow::Login.sign_in
@@ -56,11 +57,15 @@ module QA
         end
 
         Flow::Pipeline.wait_for_pipeline_creation_via_api(project: project)
+        # Confirm the job finished and uploaded its artifacts before reading the UI, so a slow
+        # runner or artifact upload can't be mistaken for the page failing to render.
+        Flow::Pipeline.wait_for_latest_pipeline_to_have_status(project: project, status: 'success')
+
         project.visit_job('test')
 
         Page::Project::Job::Show.perform do |show|
           # user views job succeeding
-          expect(show).to have_passed(timeout: 120)
+          expect(show).to have_passed
 
           expect(show).to have_browse_button
           show.click_browse_button

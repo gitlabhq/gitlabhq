@@ -36,7 +36,9 @@ RSpec.describe Banzai::Pipeline::PostProcessPipeline, feature_category: :markdow
     end
 
     let(:doc) { Banzai::PipelineBase.parse(html) }
-    let(:non_related_xpath_calls) { 2 }
+    # 1x each from RepositoryBlobEmbedFilter, IssuableReferenceExpansionFilter
+    # and SuggestionFilter.
+    let(:non_related_xpath_calls) { 3 }
 
     it 'searches for attributes only once' do
       expect(doc).to receive(:xpath).exactly(non_related_xpath_calls + 1).times

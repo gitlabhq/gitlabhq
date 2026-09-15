@@ -48,8 +48,7 @@ module Mcp
 
         def resource_not_found_error
           resource_type = params[:is_project] ? 'Project' : 'Group'
-          message = "#{resource_type} not found: the provided #{resource_type.downcase} path " \
-            "\"#{params[:full_path]}\" does not exist or you do not have access to it."
+          message = "#{resource_type} '#{params[:full_path]}' not found or inaccessible"
           ::Mcp::Tools::Base::Response.error(message)
         end
       end

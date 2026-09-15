@@ -938,18 +938,25 @@ class NotificationService
     return unless note.project && ::ServiceDesk.enabled?(note.project)
 
     work_item = note.noteable
-    recipients = work_item.issue_email_participants
-
-    return unless recipients.any?
 
     # Only populated if note is from external participant
     note_external_author = note.note_metadata&.email_participant&.downcase
 
-    recipients.each do |recipient|
-      # Don't send Service Desk notification if the recipient is the author of the note.
-      # We store emails as-is but compare downcased versions.
-      next if recipient.email.downcase == note_external_author
+    # Don't send Service Desk notification if the recipient is the author of the note.
+    # We store emails as-is but compare downcased versions.
+    recipients = work_item.issue_email_participants.reject do |recipient|
+      recipient.email.downcase == note_external_author
+    end
 
+    return if recipients.empty?
+
+    rate_limiter = ::ServiceDesk::EmailRateLimiter.new(note.project)
+    if rate_limiter.rate_limit_batch!(recipients.size)
+      rate_limiter.post_suppression_notice(work_item)
+      return
+    end
+
+    recipients.each do |recipient|
       mailer.service_desk_new_note_email(work_item.id, note.id, recipient).deliver_later
       Gitlab::Metrics::BackgroundTransaction.current&.add_event(:service_desk_new_note_email)
     end

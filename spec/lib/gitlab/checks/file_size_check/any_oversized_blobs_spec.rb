@@ -15,8 +15,7 @@ RSpec.describe Gitlab::Checks::FileSizeCheck::AnyOversizedBlobs, feature_categor
     subject { any_blob.find }
 
     # SHA of the 2-mb-file branch
-    let(:newrev)    { 'bf12d2567099e26f59692896f73ac819bae45b00' }
-    let(:timeout) { nil }
+    let(:newrev) { 'bf12d2567099e26f59692896f73ac819bae45b00' }
 
     before do
       # Delete branch so Repository#new_blobs can return results

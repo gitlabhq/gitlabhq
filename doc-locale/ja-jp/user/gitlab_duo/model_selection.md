@@ -1,6 +1,6 @@
 ---
-stage: AI-powered
-group: Custom Models
+stage: AI Platform
+group: AI Model Services
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see <https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments>
 description: GitLab Duo機能の大規模言語モデルを設定する。
 title: GitLab Duo AIモデル
@@ -23,25 +23,25 @@ title: GitLab Duo AIモデル
 | 機能 | モデル |
 |---------|---------------|
 | **コード提案** | |
-| コード生成 | Claude Sonnet 4 Vertex |
+| コード生成 | Claude Sonnet 4.6 Vertex |
 | コード補完 | Codestral 25.08 Fireworks |
 | **GitLab Duo Chat** | |
-| 一般チャット | Claude Sonnet 4.5 Vertex |
-| コード説明 | Claude Sonnet 4 |
-| テスト生成 | Claude Sonnet 4.5 Vertex |
-| コードのリファクタリング | Claude Sonnet 4.5 Vertex |
-| コード修正 | Claude Sonnet 4.5 Vertex |
-| 根本原因分析 | Claude Sonnet 4 Vertex |
+| 一般チャット | Claude Sonnet 4.6 Vertex |
+| コード説明 | Claude Sonnet 4.6 Vertex |
+| テスト生成 | Claude Sonnet 4.6 Vertex |
+| コードのリファクタリング | Claude Sonnet 4.6 Vertex |
+| コード修正 | Claude Sonnet 4.6 Vertex |
+| 根本原因分析 | Claude Sonnet 4.6 Vertex |
 | **マージリクエストのためのGitLab Duo** | |
-| マージコミットメッセージ生成 | Claude Sonnet 4 Vertex|
-| マージリクエストサマリー | Claude Sonnet 4 Vertex |
-| コードレビューサマリー | Claude Sonnet 4 Vertex |
-| コードレビュー | Claude Sonnet 4.6 Vertex |
+| マージコミットメッセージ生成 | Claude Sonnet 4.6 Vertex|
+| マージリクエストサマリー | Claude Sonnet 4.6 Vertex |
+| コードレビューサマリー | Claude Sonnet 4.6 Vertex |
+| コードレビュー | Claude Sonnet 4.5 Vertex |
 | **GitLab Duoのその他の機能** | |
-| 脆弱性の説明 | Claude Sonnet 4.5 Vertex |
-| 脆弱性の修正 | Claude Sonnet 4.5 |
-| ディスカッションサマリー | Claude Sonnet 4.5 Vertex |
-| GitLab Duo for CLI | Claude Haiku 4.5 |
+| 脆弱性の説明 | Claude Sonnet 4.6 Vertex |
+| 脆弱性の修正 | Claude Sonnet 4.6 Vertex |
+| ディスカッションサマリー | Claude Sonnet 4.6 Vertex |
+| GitLab Duo for CLI | Claude Sonnet 4.6 Vertex |
 
 ## サポートされているモデル {#supported-models}
 
@@ -51,9 +51,6 @@ title: GitLab Duo AIモデル
 
 | モデル | コード生成 | コード補完 |
 |------------|-----------------|-----------------|
-| Claude Sonnet 4 | {{< yes >}} | {{< yes >}} |
-| Claude Sonnet 4 Vertex | {{< yes >}} | {{< yes >}} |
-| Claude Sonnet 4 Bedrock | {{< yes >}} | {{< yes >}} |
 | Claude Sonnet 4.5 | {{< yes >}} | {{< yes >}} |
 | Codestral 25.01 Fireworks | {{< no >}} | {{< yes >}} |
 | Codestral 25.08 Fireworks | {{< no >}} | {{< yes >}} |
@@ -66,18 +63,19 @@ title: GitLab Duo AIモデル
 |------------|--------------|------------------|-----------------|---------------|----------|---------------------|
 | Claude Haiku 4.5 | {{< yes >}} | {{< no >}} | | | {{< no >}} | |
 | Claude Sonnet 3 | {{< no >}} | | | {{< no >}} | | {{< yes >}} |
-| Claude Sonnet 4 | {{< yes >}} | {{< yes >}} | {{< yes >}} | {{< yes >}} | {{< yes >}} | {{< yes >}} |
-| Claude Sonnet 4 Vertex | {{< yes >}} | {{< yes >}} | {{< yes >}} | {{< yes >}} | {{< yes >}} | {{< yes >}} |
 | Claude Sonnet 4.5 | {{< yes >}} | {{< yes >}} | {{< yes >}} | {{< yes >}} | {{< yes >}} | {{< yes >}} |
 | Claude Sonnet 4.5 Vertex | {{< yes >}} | {{< yes >}} | {{< yes >}} | {{< yes >}} | {{< yes >}} |  |
+| Claude Sonnet 4.6 | {{< yes >}} | {{< yes >}} | {{< yes >}} | {{< yes >}} | {{< yes >}} | {{< yes >}} |
+| Claude Sonnet 4.6 Vertex | {{< yes >}} | {{< yes >}} | {{< yes >}} | {{< yes >}} | {{< yes >}} |  |
 
 ### GitLab Duo forマージリクエスト {#gitlab-duo-for-merge-requests}
 
 | モデル | マージコミットメッセージ生成 | マージリクエストサマリー | コードレビューサマリー | コードレビュー |
 |------------|--------------------------------|------------------------|---------------------|-------------|
-| Claude Sonnet 4 | {{< yes >}} | {{< yes >}} | {{< yes >}} | {{< yes >}} |
-| Claude Sonnet 4 Vertex | {{< yes >}} | {{< yes >}} | {{< yes >}} | {{< yes >}} |
 | Claude Sonnet 4.5 | {{< yes >}} | {{< yes >}} | {{< yes >}} | {{< yes >}} |
+| Claude Sonnet 4.5 Vertex | {{< no >}} | {{< no >}} | {{< no >}} | {{< yes >}} |
+| Claude Sonnet 4.6 | {{< no >}} | {{< no >}} | {{< no >}} | {{< yes >}} |
+| Claude Sonnet 4.6 Vertex | {{< no >}} | {{< no >}} | {{< no >}} | {{< yes >}} |
 
 ### その他のGitLab Duo機能 {#other-gitlab-duo-features}
 
@@ -85,10 +83,10 @@ title: GitLab Duo AIモデル
 |------------|----------------------------|--------------------------|-------------------|---------------------|
 | Claude Haiku 3 | {{< yes >}} | {{< no >}} | {{< yes >}} | {{< no >}} |
 | Claude Haiku 4.5 | {{< no >}} | | {{< yes >}} | {{< no >}} |
-| Claude Sonnet 4 |  | {{< yes >}} | {{< yes >}} | {{< yes >}} |
-| Claude Sonnet 4 Vertex | {{< yes >}} |  | {{< yes >}} | {{< yes >}} |
 | Claude Sonnet 4.5 | {{< yes >}} | {{< yes >}} | {{< yes >}} | {{< yes >}} |
 | Claude Sonnet 4.5 Vertex | {{< yes >}} |  |  | {{< yes >}} |
+| Claude Sonnet 4.6 | {{< yes >}} | {{< yes >}} | {{< yes >}} | {{< yes >}} |
+| Claude Sonnet 4.6 Vertex | {{< yes >}} |  |  | {{< yes >}} |
 
 ## 機能のモデルを選択する {#select-a-model-for-a-feature}
 
@@ -100,11 +98,11 @@ title: GitLab Duo AIモデル
 
 {{< history >}}
 
-- `ai_model_switching`[フラグ](../../administration/feature_flags/_index.md)とともに、GitLab 18.1でトップレベルグループ向けに[導入](https://gitlab.com/groups/gitlab-org/-/epics/17570)されました。デフォルトでは無効になっています。
+- `ai_model_switching`[フラグ](../../administration/feature_flags/_index.md)とともに、GitLab 18.1でトップレベルグループ向けに[導入](https://gitlab.com/groups/gitlab-org/-/work_items/17570)されました。デフォルトでは無効になっています。
 - GitLab 18.4でベータ版に[変更](https://gitlab.com/gitlab-org/gitlab/-/issues/526307)されました。
 - GitLab 18.4で[有効](https://gitlab.com/gitlab-org/gitlab/-/issues/526307)になりました。
-- GitLab 18.5で[一般提供](https://gitlab.com/groups/gitlab-org/-/epics/18818)になりました。機能フラグ`ai_model_switching`が有効になりました。
-- GitLab 18.7で機能フラグ`ai_model_switching`が[削除](https://gitlab.com/gitlab-org/gitlab/-/issues/526307)されました。
+- GitLab 18.5で[一般提供](https://gitlab.com/groups/gitlab-org/-/work_items/18818)になりました。機能フラグ`ai_model_switching`が有効になりました。
+- 機能フラグ`ai_model_switching`はGitLab 18.7で[削除](https://gitlab.com/gitlab-org/gitlab/-/issues/526307)されました。
 
 {{< /history >}}
 
@@ -119,10 +117,25 @@ title: GitLab Duo AIモデル
 機能のモデルを選択するには:
 
 1. 上部のバーで、**検索または移動先**を選択して、グループを見つけます。
-1. **設定** > **GitLab Duo**を選択します。
+1. 左側のサイドバーで、**設定** > **GitLab Duo**を選択します。
 1. **機能を設定**を選択します。
 1. 設定したい機能について、ドロップダウンリストからモデルを選択します。
 1. オプション。セクション内のすべての機能にモデルを適用するには、**すべてに適用**を選択します。
+
+### 適切なモデルを選択する {#selecting-the-right-model}
+
+多くのユースケースでは、Claude Haiku 4.5やGPT-5.4 Miniのような、より高速でコスト効率の高いモデルから始めるのが最適な方法です。この方法を使用する場合:
+
+1. Claude Haiku 4.5またはGPT-5.4 Miniを選択します。
+1. ユースケースを十分にテストします。
+1. パフォーマンスが要件を満たしているかを評価します。
+1. 特定の機能が不足している場合にのみ、必要に応じてアップグレードします。
+
+この方法は次の用途に使用できます:
+
+- 探索的なタスクや大量のタスク
+- 厳格なレイテンシー要件があるアプリケーション
+- コストを重視する実装
 
 ## トラブルシューティング {#troubleshooting}
 

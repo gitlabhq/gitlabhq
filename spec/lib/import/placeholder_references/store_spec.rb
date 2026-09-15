@@ -55,20 +55,20 @@ RSpec.describe Import::PlaceholderReferences::Store, :clean_gitlab_redis_shared_
 
   describe '#empty?' do
     it 'returns true if the set is empty' do
-      expect(store.empty?).to eq(true)
+      expect(store.empty?).to be(true)
     end
 
     it 'returns false if the set is not empty' do
       cache.set_add(cache_key, 'foo')
 
-      expect(store.empty?).to eq(false)
+      expect(store.empty?).to be(false)
     end
   end
 
   describe '#any?' do
     it 'returns the inverse of #empty?' do
       expect(store).to receive(:empty?).and_return(true)
-      expect(store.any?).to eq(false)
+      expect(store.any?).to be(false)
     end
   end
 

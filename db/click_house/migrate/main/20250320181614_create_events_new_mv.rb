@@ -3,7 +3,7 @@
 class CreateEventsNewMv < ClickHouse::Migration
   def up
     execute <<-SQL
-      CREATE MATERIALIZED VIEW events_new_mv
+      CREATE MATERIALIZED VIEW IF NOT EXISTS events_new_mv
       TO events_new
       AS
       WITH cte AS (

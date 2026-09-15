@@ -140,7 +140,8 @@ RSpec.describe 'GFM autocomplete', :js, feature_category: :text_editors do
     end
 
     describe 'autocomplete highlighting' do
-      it 'auto-selects the first item when there is a query, and only for assignees with no query', :aggregate_failures do
+      it 'auto-selects the first item when there is a query, and only for assignees with no query',
+        :aggregate_failures do
         fill_in 'Add a reply', with: ':'
         expect(find_autocomplete_menu).not_to have_css('.cur')
 
@@ -222,7 +223,8 @@ RSpec.describe 'GFM autocomplete', :js, feature_category: :text_editors do
       let!(:wiki_page1) { create(:wiki_page, project: project, title: 'Home') }
       let!(:wiki_page2) { create(:wiki_page, project: project, title: 'How to use GitLab') }
 
-      it 'shows wiki pages in the autocomplete menu', quarantine: 'https://gitlab.com/gitlab-org/quality/test-failure-issues/-/issues/3859' do
+      it 'shows wiki pages in the autocomplete menu',
+        quarantine: 'https://gitlab.com/gitlab-org/quality/test-failure-issues/-/issues/3859' do
         fill_in 'Add a reply', with: '[[ho'
 
         expect(find_autocomplete_menu).to have_text('Home')
@@ -235,7 +237,8 @@ RSpec.describe 'GFM autocomplete', :js, feature_category: :text_editors do
     end
 
     context 'if a selected value has special characters' do
-      it 'wraps the result in double quotes', quarantine: 'https://gitlab.com/gitlab-org/quality/test-failure-issues/-/issues/4070' do
+      it 'wraps the result in double quotes',
+        quarantine: 'https://gitlab.com/gitlab-org/quality/test-failure-issues/-/issues/4070' do
         fill_in 'Add a reply', with: "~#{label.title[0..2]}"
 
         find_highlighted_autocomplete_item.click

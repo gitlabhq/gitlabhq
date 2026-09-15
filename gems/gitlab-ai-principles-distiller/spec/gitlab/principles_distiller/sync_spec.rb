@@ -2,13 +2,36 @@
 
 require 'spec_helper'
 require_relative '../../support/tmpdir'
+require_relative '../../support/abort_capture'
 require_relative '../../../lib/gitlab/principles_distiller/sync'
 
 RSpec.describe Gitlab::PrinciplesDistiller::Sync do
   include TmpdirHelper
+  include AbortCaptureHelper
 
   let(:tmpdir) { mktmpdir }
   let(:sync) { described_class.new }
+
+  describe '.principle_source_text' do
+    let(:config) do
+      {
+        'sources' => [{ 'path' => 'doc/source.md' }],
+        'baseline' => '.ai/principles/baselines/example.md'
+      }
+    end
+
+    it 'concatenates the readable sources and baseline' do
+      allow(sync.manifest).to receive(:read_repo_file).and_return('source', 'baseline')
+
+      expect(sync.send(:principle_source_text, config)).to eq("source\nbaseline")
+    end
+
+    it 'returns nil when none of the source files are readable' do
+      allow(sync.manifest).to receive(:read_repo_file).and_return(nil)
+
+      expect(sync.send(:principle_source_text, config)).to be_nil
+    end
+  end
 
   describe '.distill_and_write_principles' do
     let(:principles_dir) { File.join(tmpdir, '.ai/principles/distilled') }
@@ -37,8 +60,23 @@ RSpec.describe Gitlab::PrinciplesDistiller::Sync do
       FileUtils.mkdir_p(principles_dir)
       sync.manifest.data = manifest
 
-      allow(sync).to receive(:parallel_distill)
-        .and_return({ 'qa' => [existing_content, distilled_content] })
+      allow(sync).to receive_messages(distillation_base_sha: '2' * 40,
+        parallel_distill: { 'qa' => [existing_content, distilled_content] })
+    end
+
+    it 'passes the same target SHA to distillation and frontmatter' do
+      sync.distill_and_write_principles(affected)
+
+      expect(sync).to have_received(:parallel_distill).with(
+        an_object_having_attributes(affected: affected, target_sha: '2' * 40), rewrite: false)
+      expect(File.read(File.join(principles_dir, 'qa.md'))).to include("distilled_at_sha: #{'2' * 40}")
+    end
+
+    it 'validates every commit SHA before starting parallel distillation' do
+      affected['qa'][:prior_sha] = 'main'
+
+      expect { sync.distill_and_write_principles(affected) }.to raise_error(/invalid distillation commit sha: "main"/)
+      expect(sync).not_to have_received(:parallel_distill)
     end
 
     it 'writes the file with frontmatter, header, content, and sources footer', :aggregate_failures do
@@ -182,6 +220,14 @@ RSpec.describe Gitlab::PrinciplesDistiller::Sync do
       allow(sync).to receive(:regenerate_static_artifacts)
     end
 
+    it 'preflights publish configuration' do
+      allow(sync).to receive(:distill).and_return([{}, []])
+
+      sync.distill_and_publish(push: true)
+
+      expect(sync.workflow).to have_received(:validate_config!).with(push: true)
+    end
+
     def run_report
       path = File.join(tmpdir, described_class::RUN_REPORT_PATH)
       File.exist?(path) ? File.read(path) : nil
@@ -283,7 +329,7 @@ RSpec.describe Gitlab::PrinciplesDistiller::Sync do
 
     before do
       Gitlab::PrinciplesDistiller::Workspace.path = tmpdir
-      allow(sync.workflow).to receive(:validate_config!)
+      allow(sync.workflow).to receive_messages(validate_config!: nil, validate_publish_config!: nil)
     end
 
     describe '.generate_child_pipeline' do
@@ -341,6 +387,8 @@ RSpec.describe Gitlab::PrinciplesDistiller::Sync do
     end
 
     describe '.distill_one' do
+      subject(:distill_one) { sync.distill_one('qa') }
+
       let(:config) { { 'sources' => [{ 'path' => 'doc/qa.md' }] } }
       # [contents, failed] as build_distilled_contents returns it.
       # Each context below overrides this to pick the outcome it exercises.
@@ -361,7 +409,7 @@ RSpec.describe Gitlab::PrinciplesDistiller::Sync do
           sync.distill_one('qa')
 
           expect(sync).to have_received(:build_distilled_contents).with(
-            'qa' => { config: config, new_sources: [{ 'path' => 'doc/new.md' }] }
+            'qa' => { config: config, prior_sha: nil, new_sources: [{ 'path' => 'doc/new.md' }] }
           )
         end
 
@@ -409,6 +457,38 @@ RSpec.describe Gitlab::PrinciplesDistiller::Sync do
         end
       end
 
+      context 'when workflow creation fails permanently' do
+        let(:response) { Net::HTTPUnauthorized.new('1.1', '401', 'Unauthorized') }
+
+        before do
+          allow(sync).to receive(:build_distilled_contents).and_call_original
+          allow(sync).to receive(:distillation_base_sha).and_return('2' * 40)
+          allow(sync.manifest).to receive(:loaded?).and_return(true)
+          allow(response).to receive(:body).and_return('Unauthorized')
+          stub_const('ENV', { 'GITLAB_TOKEN' => 'token' })
+          allow(sync.workflow).to receive_messages(
+            validate_sources!: nil, warn_if_sources_differ_from_pushed_branch: nil,
+            build_goal: 'goal', build_additional_context: [], catalog_project_path: 'gitlab-org/gitlab',
+            source_branch: 'master', catalog_item_consumer_id: '7368818', post_json: response,
+            sleep_with_heartbeat: nil, poll: nil)
+        end
+
+        it 'records failure and exits nonzero without misleading retry or content diagnostics', :aggregate_failures do
+          output = capture_abort_stderr do
+            expect { distill_one }.to raise_error(SystemExit) { |error| expect(error.status).to eq(1) }
+          end
+
+          expect(output).to include('HTTP 401', 'not retrying', 'qa failed distillation')
+          expect(output).not_to include('invalid content', 'after retries')
+
+          expect(status_of('qa')).to eq(described_class::Artifacts::STATUS_FAILED)
+          expect(File.exist?(File.join(artifacts_dir, 'qa.md'))).to be(false)
+          expect(sync.workflow).to have_received(:post_json).once
+          expect(sync.workflow).not_to have_received(:poll)
+          expect(sync.workflow).not_to have_received(:sleep_with_heartbeat)
+        end
+      end
+
       # A generated pipeline naming a principle the manifest does not have means the two have diverged.
       # Succeeding quietly would let collect report it as "never ran" and skip it every single week.
       context 'when the principle is not in the manifest' do
@@ -439,6 +519,25 @@ RSpec.describe Gitlab::PrinciplesDistiller::Sync do
 
       def run_report
         File.read(File.join(tmpdir, described_class::RUN_REPORT_PATH))
+      end
+
+      context 'with --push' do
+        before do
+          allow(sync.workflow).to receive(:validate_publish_config!).and_raise('invalid publish configuration')
+        end
+
+        it 'validates publish configuration before reading artifacts' do
+          expect { sync.collect(expected, push: true) }.to raise_error('invalid publish configuration')
+          expect(sync.manifest).not_to have_received(:load)
+        end
+      end
+
+      context 'without --push' do
+        it 'does not validate publish configuration' do
+          sync.collect(expected, push: false)
+
+          expect(sync.workflow).not_to have_received(:validate_publish_config!)
+        end
       end
 
       context 'when one principle succeeded, one failed, and one never ran' do
@@ -557,10 +656,15 @@ RSpec.describe Gitlab::PrinciplesDistiller::Sync do
     # `distill_principle` is private (it's an internal step of parallel_distill), so specs reach it via `send`.
     # The retry loop is the most failure-prone control flow in the gem: any of the three Duo invocations can return nil,
     # return content missing the required heading, or succeed.
-    subject(:distill) { sync.send(:distill_principle, 'qa', config, new_sources: new_sources) }
+    subject(:distill) do
+      sync.send(:distill_principle, 'qa', config, prior_sha: prior_sha, target_sha: target_sha,
+        new_sources: new_sources)
+    end
 
     let(:config) { { 'sources' => [{ 'path' => 'doc/qa.md' }] } }
     let(:new_sources) { [] }
+    let(:prior_sha) { '1' * 40 }
+    let(:target_sha) { '2' * 40 }
     let(:valid_content) { "# QA Principles\n\n## Checklist\n\n- Do thing\n" }
 
     before do
@@ -592,7 +696,7 @@ RSpec.describe Gitlab::PrinciplesDistiller::Sync do
           distill
 
           expect(sync.workflow).to have_received(:distill)
-            .with('qa', config, new_sources: new_sources)
+            .with('qa', config, prior_sha: prior_sha, target_sha: target_sha, new_sources: new_sources)
         end
       end
     end
@@ -608,6 +712,47 @@ RSpec.describe Gitlab::PrinciplesDistiller::Sync do
         expect(sync.workflow).to have_received(:sleep_with_heartbeat)
           .with(described_class::DISTILL_RETRY_BACKOFF_SECONDS[0], anything, anything)
           .once
+      end
+    end
+
+    context 'with workflow creation responses' do
+      let(:response) { Net::HTTPResponse.new('1.1', status.to_s, 'Response') }
+
+      before do
+        stub_const('ENV', { 'GITLAB_TOKEN' => 'token' })
+        allow(response).to receive(:body).and_return('creation error')
+        allow(sync.workflow).to receive_messages(
+          build_goal: 'goal', build_additional_context: [], catalog_project_path: 'gitlab-org/gitlab',
+          source_branch: 'master', catalog_item_consumer_id: '7368818', post_json: response, poll: valid_content)
+      end
+
+      [401, 403, 404, 405, 410, 413, 414, 415, 431].each do |http_status|
+        context "when creation returns HTTP #{http_status}" do
+          let(:status) { http_status }
+
+          it 'stops after one request without polling or retrying', :aggregate_failures do
+            expect { expect(distill).to be_nil }
+              .to output(/qa: Workflow creation failed: HTTP #{status}: creation error; not retrying/).to_stderr
+
+            expect(sync.workflow).to have_received(:post_json).once
+            expect(sync.workflow).not_to have_received(:poll)
+            expect(sync.workflow).not_to have_received(:sleep_with_heartbeat)
+          end
+        end
+      end
+
+      [400, 408, 409, 422, 429, 500, 502, 503, 504].each do |http_status|
+        context "when creation returns HTTP #{http_status}" do
+          let(:status) { http_status }
+
+          it 'retains the creation retry policy', :aggregate_failures do
+            expect(distill).to be_nil
+
+            expect(sync.workflow).to have_received(:post_json).exactly(3).times
+            expect(sync.workflow).to have_received(:sleep_with_heartbeat).twice
+            expect(sync.workflow).not_to have_received(:poll)
+          end
+        end
       end
     end
 

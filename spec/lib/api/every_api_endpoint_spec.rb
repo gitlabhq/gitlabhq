@@ -70,6 +70,45 @@ RSpec.describe 'Every API endpoint', feature_category: :scalability do
     end
   end
 
+  # On Grape 3.x a route-level `format:` stops constraining the implicit `(.:format)` suffix,
+  # so any extension matches. See ::API::JSON_FORMAT_SUFFIX_REQUIREMENT.
+  context 'format suffixes' do
+    # Mustermann compiles an unconstrained suffix to its default segment capture.
+    let(:unconstrained_capture) { '(?<format>[^' }
+
+    let(:routes_not_enforcing_their_format) do
+      API::API.routes.select do |route|
+        route.options[:format].present? &&
+          route.pattern.to_regexp.source.include?(unconstrained_capture)
+      end
+    end
+
+    # The guard below cannot fail on 2.4, so pin the sentinel against real Mustermann output:
+    # if its rendering ever changes, this fails instead of the guard silently matching nothing.
+    it 'matches how Mustermann renders an unconstrained suffix' do
+      pattern = Mustermann.new('/x(.:format)', type: :grape)
+
+      expect(pattern.to_regexp.source).to include(unconstrained_capture)
+    end
+
+    it 'constrains the URL suffix on every route that declares a format' do
+      message = -> do
+        list = routes_not_enforcing_their_format.map do |route|
+          "- #{route.options[:for]} #{route.request_method} #{route.origin} (format: #{route.options[:format]})"
+        end
+
+        <<~MESSAGE
+          These routes declare a format but accept any URL suffix, so an unknown extension
+          returns the endpoint's body instead of a 404. Add a matching `requirements` to each
+          (see ::API::JSON_FORMAT_SUFFIX_REQUIREMENT):
+          #{list.join("\n")}
+        MESSAGE
+      end
+
+      expect(routes_not_enforcing_their_format).to be_empty, message
+    end
+  end
+
   def paths_defined_in_feature_category_config(klass)
     (klass.try(:class_attributes) || {}).fetch(:feature_category_config, {})
       .values

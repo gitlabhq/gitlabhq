@@ -25,6 +25,9 @@ module Search
       %w[closed_at desc] => :closed_at_desc,
       %w[due_date asc] => :due_date_asc,
       %w[due_date desc] => :due_date_desc,
+      %w[similarity asc] => :similarity,
+      %w[similarity desc] => :similarity,
+      %w[similarity] => :similarity,
       # sort only combinations
       [nil, 'created_asc'] => :created_at_asc,
       [nil, 'created_desc'] => :created_at_desc,

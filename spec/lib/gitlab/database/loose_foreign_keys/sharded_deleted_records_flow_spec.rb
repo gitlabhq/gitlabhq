@@ -189,28 +189,6 @@ RSpec.describe 'Loose foreign keys deleted records routed by sharding key', feat
     expect(LooseForeignKeys::ProjectDeletedRecord.status_pending.count).to eq(0)
   end
 
-  context 'when the use_loose_foreign_keys_deleted_record_store flag is disabled' do
-    before do
-      stub_feature_flags(use_loose_foreign_keys_deleted_record_store: false)
-    end
-
-    it 'leaves routed records unconsumed while still consuming cell-local ones' do
-      sharded = sharded_parent.create!(project_id: 101)
-      cell_local = cell_local_parent.create!
-      deleted_child.create!(parent_id: sharded.id)
-      cell_local_child.create!(parent_id: cell_local.id)
-
-      sharded_parent.delete_all
-      cell_local_parent.delete_all
-
-      perform_cleanup
-
-      expect(deleted_child.count).to eq(1)
-      expect(LooseForeignKeys::ProjectDeletedRecord.status_pending.count).to eq(1)
-      expect(cell_local_child.count).to eq(0)
-    end
-  end
-
   def loose_foreign_key(child_table, parent_table, on_delete)
     ActiveRecord::ConnectionAdapters::ForeignKeyDefinition.new(
       child_table.to_s,

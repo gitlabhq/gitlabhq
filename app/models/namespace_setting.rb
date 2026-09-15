@@ -10,6 +10,8 @@ class NamespaceSetting < ApplicationRecord
 
   columns_changing_default :require_dpop_for_manage_api_endpoints
 
+  MAX_AI_CUSTOM_INSTRUCTIONS_LENGTH = 2_000
+
   ignore_column :token_expiry_notify_inherited, remove_with: '17.9', remove_after: '2025-01-11'
   enum :pipeline_variables_default_role, ProjectCiCdSetting::PIPELINE_VARIABLES_OVERRIDE_ROLES, prefix: true
   enum :enable_duo_code_review_by_default, {
@@ -61,6 +63,7 @@ class NamespaceSetting < ApplicationRecord
 
   attribute :default_branch_protection_defaults, default: -> { {} }
 
+  validates :ai_custom_instructions, length: { maximum: MAX_AI_CUSTOM_INSTRUCTIONS_LENGTH }, allow_blank: true
   validates :enabled_git_access_protocol, inclusion: { in: enabled_git_access_protocols.keys }
   validates :default_branch_protection_defaults, json_schema: { filename: 'default_branch_protection_defaults' }
   validates :default_branch_protection_defaults, bytesize: { maximum: -> { DEFAULT_BRANCH_PROTECTIONS_DEFAULT_MAX_SIZE } }
@@ -127,6 +130,7 @@ class NamespaceSetting < ApplicationRecord
     lock_require_sha_for_merge
     enforce_granular_tokens
     granular_tokens_enforced_after
+    ai_custom_instructions
   ].freeze
 
   # matches the size set in the database constraint

@@ -96,7 +96,7 @@ This section is for links to information elsewhere in the GitLab documentation.
 - [Database procedures for Linux package installations](https://docs.gitlab.com/omnibus/settings/database/) including:
   - SSL: enabling, disabling, and verifying.
   - Enabling Write Ahead Log (WAL) archiving.
-  - Using an external (non-Omnibus) PostgreSQL installation; and backing it up.
+  - Using an external (non-Omnibus) PostgreSQL installation and backing it up.
   - Listening on TCP/IP as well as or instead of sockets.
   - Storing data in another location.
   - Destructively reseeding the GitLab database.

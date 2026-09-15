@@ -78,7 +78,7 @@ that uses it, directly or transitively. For example, adding a single `expose`
 call to `UserBasic` would affect 212 endpoints, and to `CustomAttribute` 238.
 
 To prevent uncontrolled growth of API response payloads, a set of
-**high-impact entities** is protected by the
+high-impact entities is protected by the
 [`API/EntityExposureGrowth`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/rubocop/cop/api/entity_exposure_growth.rb)
 RuboCop cop. The cop maintains an allowlist of permitted fields per entity in
 [`api_entity_exposure_baseline.yml`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/rubocop/cop/api/config/api_entity_exposure_baseline.yml).
@@ -96,11 +96,51 @@ triggers an offense.
   and embedding (`expose :author, using: UserBasic`). A single field added to
   `UserBasic` cascades to `User`, `UserPublic`, and every entity that embeds it.
 
-#### Recommended pattern
+#### Recommended solutions
 
-Instead of adding fields to a high-impact entity, create a
-**feature-bounded entity**: a new, purpose-built entity class that
-is used only by the endpoints that need the new field.
+Try these solutions, in order:
+
+1. Consider moving the new field to a new endpoint, with a new entity,
+   rather than appending to an existing one.
+1. Make the field opt-in: serialize it only when explicitly requested, for
+   example through a query parameter, so most consumers pay no cost.
+1. If neither solution fits, create a **feature-bounded entity**: a new,
+   purpose-built entity class that is used only by the endpoints that need
+   the new field.
+
+##### Opt-in field example
+
+Guard the `expose` call with an `if:` option, and only enable it when the
+caller asks for the field through a query parameter:
+
+```ruby
+module API
+  module Entities
+    class UserBasic < UserSafe
+      expose :state
+      expose :avatar_url
+      expose :web_url
+      expose :notification_email, if: ->(_, options) { options[:with_emails] }
+    end
+  end
+end
+```
+
+```ruby
+# In your API endpoint file
+params do
+  optional :with_emails, type: Boolean, default: false,
+    desc: 'Include email-related fields in the response'
+end
+get ':id/users' do
+  present users, with: Entities::UserBasic, with_emails: params[:with_emails]
+end
+```
+
+Callers that do not pass `with_emails=true` get the same payload as before,
+so the field costs nothing for the majority of consumers.
+
+##### Feature-bounded entity example
 
 The simplest approach is to create a new entity that inherits from the
 foundational one and adds the fields you need:
@@ -130,7 +170,7 @@ module API
 end
 ```
 
-Name the entity after **what it represents** in its domain context (for example,
+Name the entity after what it represents in its domain context (for example,
 `Ci::JobOwner`), not after the fields it contains (for example,
 `UserWithNotificationEmail`). A name like `UserWithNotificationEmail` invites
 reuse across unrelated domains, which re-creates the cascade problem. A
@@ -445,7 +485,7 @@ For more information about development stages, see
 Every endpoint must have at least one value defined in `tags` per `desc` block.
 The tags should describe the type of objects being acted upon in the API call, in their plural form.
 
-**In most cases, the filename of the API is sufficient** but can also be too granular.
+In most cases, the filename of the API is sufficient but can also be too granular.
 
 #### Good tag names
 
@@ -575,8 +615,10 @@ Some examples of breaking changes are:
 - Adding new redirects (not all clients follow redirects).
 - Changing the content type of any response.
 - Changing the type of fields in the response. In a JSON response, this would be a change of any `Number`, `String`, `Boolean`, `Array`, or `Object` type to another type.
-- Adding a new **required** argument.
+- Adding a new required argument.
 - Changing authentication, authorization, or other header requirements.
+  This covers changes to what an endpoint requires, not changes that broaden what it accepts.
+  For the latter, see [what is not a breaking change](#what-is-not-a-breaking-change).
 - Changing [any status code](../api/rest/troubleshooting.md#status-codes) other than `500`.
 
 ## What is not a breaking change
@@ -584,6 +626,8 @@ Some examples of breaking changes are:
 Some examples of non-breaking changes:
 
 - Any additive change, such as adding endpoints, non-required arguments, fields, or enum values.
+- Adding support for an additional authentication method to an existing endpoint, such as [CI/CD job token](../ci/jobs/ci_job_token.md) authentication, including any resulting status code changes.
+  Requests that do not present the new credential type must be unaffected.
 - Changes to error messages.
 - Changes from a `500` status code to [any supported status code](../api/rest/troubleshooting.md#status-codes) (this is a bugfix).
 - Changes to the order of fields returned in a response.
@@ -896,5 +940,5 @@ Also see [verifying N+1 performance](#verifying-with-tests) in tests.
 
 ## Include a changelog entry
 
-All client-facing changes **must** include a [changelog entry](changelog.md).
+All client-facing changes must include a [changelog entry](changelog.md).
 This does not include internal APIs.

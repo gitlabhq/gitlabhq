@@ -1,5 +1,5 @@
 import { GlDisclosureDropdown } from '@gitlab/ui';
-import { shallowMount } from '@vue/test-utils';
+import { mount, shallowMount } from '@vue/test-utils';
 import { nextTick } from 'vue';
 import { setHTMLFixture, resetHTMLFixture } from 'helpers/fixtures';
 import TableContents from '~/blob/components/table_contents.vue';
@@ -88,8 +88,8 @@ const MULTI_FILE_FIXTURE = `
   </div>
 `;
 
-function createComponent() {
-  wrapper = shallowMount(TableContents, {
+function createComponent({ mountFn = shallowMount } = {}) {
+  wrapper = mountFn(TableContents, {
     attachTo: '#toc-mount-point',
   });
 }
@@ -162,14 +162,23 @@ describe('Markdown table of contents component', () => {
     });
 
     it('sets padding for dropdown items', async () => {
-      createComponent();
+      document
+        .querySelector('.blob-viewer')
+        .insertAdjacentHTML('beforeend', '<h6><a id="deep" class="anchor">$</a> Deep</h6>');
+      createComponent({ mountFn: mount });
 
       await setLoaded(true);
 
-      expect(findDropdownItems()[0].extraAttrs.style.paddingLeft).toBe('16px');
-      expect(findDropdownItems()[1].extraAttrs.style.paddingLeft).toBe('24px');
-      expect(findDropdownItems()[2].extraAttrs.style.paddingLeft).toBe('32px');
-      expect(findDropdownItems()[3].extraAttrs.style.paddingLeft).toBe('24px');
+      const paddingClasses = findDropdown()
+        .findAll('[data-testid="disclosure-dropdown-item"]')
+        .wrappers.map((item) =>
+          item
+            .find('a')
+            .classes()
+            .find((c) => c.startsWith('!gl-pl-')),
+        );
+
+      expect(paddingClasses).toEqual(['!gl-pl-5', '!gl-pl-6', '!gl-pl-7', '!gl-pl-6', '!gl-pl-10']);
     });
 
     it('excludes headings without nested anchor elements', async () => {

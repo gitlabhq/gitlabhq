@@ -1896,6 +1896,34 @@
                   "defaultValue": null
                 },
                 {
+                  "name": "reviewState",
+                  "description": "Reviewer state of the merge request.",
+                  "type": {
+                    "kind": "ENUM",
+                    "name": "MergeRequestReviewState",
+                    "ofType": null
+                  },
+                  "defaultValue": null
+                },
+                {
+                  "name": "reviewStates",
+                  "description": "Reviewer states of the merge request.",
+                  "type": {
+                    "kind": "LIST",
+                    "name": null,
+                    "ofType": {
+                      "kind": "NON_NULL",
+                      "name": null,
+                      "ofType": {
+                        "kind": "ENUM",
+                        "name": "MergeRequestReviewState",
+                        "ofType": null
+                      }
+                    }
+                  },
+                  "defaultValue": null
+                },
+                {
                   "name": "sort",
                   "description": "Sort merge requests by the criteria.",
                   "type": {
@@ -2377,6 +2405,34 @@
                     "kind": "ENUM",
                     "name": "MilestoneWildcardId",
                     "ofType": null
+                  },
+                  "defaultValue": null
+                },
+                {
+                  "name": "reviewState",
+                  "description": "Reviewer state of the merge request.",
+                  "type": {
+                    "kind": "ENUM",
+                    "name": "MergeRequestReviewState",
+                    "ofType": null
+                  },
+                  "defaultValue": null
+                },
+                {
+                  "name": "reviewStates",
+                  "description": "Reviewer states of the merge request.",
+                  "type": {
+                    "kind": "LIST",
+                    "name": null,
+                    "ofType": {
+                      "kind": "NON_NULL",
+                      "name": null,
+                      "ofType": {
+                        "kind": "ENUM",
+                        "name": "MergeRequestReviewState",
+                        "ofType": null
+                      }
+                    }
                   },
                   "defaultValue": null
                 },
@@ -3849,6 +3905,34 @@
                   "defaultValue": null
                 },
                 {
+                  "name": "reviewState",
+                  "description": "Reviewer state of the merge request.",
+                  "type": {
+                    "kind": "ENUM",
+                    "name": "MergeRequestReviewState",
+                    "ofType": null
+                  },
+                  "defaultValue": null
+                },
+                {
+                  "name": "reviewStates",
+                  "description": "Reviewer states of the merge request.",
+                  "type": {
+                    "kind": "LIST",
+                    "name": null,
+                    "ofType": {
+                      "kind": "NON_NULL",
+                      "name": null,
+                      "ofType": {
+                        "kind": "ENUM",
+                        "name": "MergeRequestReviewState",
+                        "ofType": null
+                      }
+                    }
+                  },
+                  "defaultValue": null
+                },
+                {
                   "name": "sort",
                   "description": "Sort merge requests by the criteria.",
                   "type": {
@@ -5266,6 +5350,16 @@
             {
               "name": "rootNamespace",
               "description": "Delete jobs matching root_namespace in the context metadata.",
+              "type": {
+                "kind": "SCALAR",
+                "name": "String",
+                "ofType": null
+              },
+              "defaultValue": null
+            },
+            {
+              "name": "glRootNamespaceId",
+              "description": "Delete jobs matching gl_root_namespace_id in the context metadata.",
               "type": {
                 "kind": "SCALAR",
                 "name": "String",
@@ -11185,6 +11279,34 @@
                   "defaultValue": null
                 },
                 {
+                  "name": "reviewState",
+                  "description": "Reviewer state of the merge request.",
+                  "type": {
+                    "kind": "ENUM",
+                    "name": "MergeRequestReviewState",
+                    "ofType": null
+                  },
+                  "defaultValue": null
+                },
+                {
+                  "name": "reviewStates",
+                  "description": "Reviewer states of the merge request.",
+                  "type": {
+                    "kind": "LIST",
+                    "name": null,
+                    "ofType": {
+                      "kind": "NON_NULL",
+                      "name": null,
+                      "ofType": {
+                        "kind": "ENUM",
+                        "name": "MergeRequestReviewState",
+                        "ofType": null
+                      }
+                    }
+                  },
+                  "defaultValue": null
+                },
+                {
                   "name": "sort",
                   "description": "Sort merge requests by the criteria.",
                   "type": {
@@ -11666,6 +11788,34 @@
                     "kind": "ENUM",
                     "name": "MilestoneWildcardId",
                     "ofType": null
+                  },
+                  "defaultValue": null
+                },
+                {
+                  "name": "reviewState",
+                  "description": "Reviewer state of the merge request.",
+                  "type": {
+                    "kind": "ENUM",
+                    "name": "MergeRequestReviewState",
+                    "ofType": null
+                  },
+                  "defaultValue": null
+                },
+                {
+                  "name": "reviewStates",
+                  "description": "Reviewer states of the merge request.",
+                  "type": {
+                    "kind": "LIST",
+                    "name": null,
+                    "ofType": {
+                      "kind": "NON_NULL",
+                      "name": null,
+                      "ofType": {
+                        "kind": "ENUM",
+                        "name": "MergeRequestReviewState",
+                        "ofType": null
+                      }
+                    }
                   },
                   "defaultValue": null
                 },
@@ -13141,6 +13291,34 @@
                     "kind": "ENUM",
                     "name": "MilestoneWildcardId",
                     "ofType": null
+                  },
+                  "defaultValue": null
+                },
+                {
+                  "name": "reviewState",
+                  "description": "Reviewer state of the merge request.",
+                  "type": {
+                    "kind": "ENUM",
+                    "name": "MergeRequestReviewState",
+                    "ofType": null
+                  },
+                  "defaultValue": null
+                },
+                {
+                  "name": "reviewStates",
+                  "description": "Reviewer states of the merge request.",
+                  "type": {
+                    "kind": "LIST",
+                    "name": null,
+                    "ofType": {
+                      "kind": "NON_NULL",
+                      "name": null,
+                      "ofType": {
+                        "kind": "ENUM",
+                        "name": "MergeRequestReviewState",
+                        "ofType": null
+                      }
+                    }
                   },
                   "defaultValue": null
                 },
@@ -27712,6 +27890,18 @@
               "deprecationReason": null
             },
             {
+              "name": "id",
+              "description": "Unique ID of the pipeline creation request.",
+              "args": [],
+              "type": {
+                "kind": "SCALAR",
+                "name": "String",
+                "ofType": null
+              },
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
               "name": "pipeline",
               "description": "Pipeline object created by the request.",
               "args": [],
@@ -27745,6 +27935,22 @@
                 "ofType": {
                   "kind": "ENUM",
                   "name": "CiPipelineCreationStatus",
+                  "ofType": null
+                }
+              },
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "userInitiated",
+              "description": "Indicates whether the pipeline creation was explicitly requested by a user.",
+              "args": [],
+              "type": {
+                "kind": "NON_NULL",
+                "name": null,
+                "ofType": {
+                  "kind": "SCALAR",
+                  "name": "Boolean",
                   "ofType": null
                 }
               },
@@ -34095,6 +34301,38 @@
               "deprecationReason": null
             },
             {
+              "name": "diffStats",
+              "description": "Details about which files were changed in the commit. This field can only be resolved for 10 commits in any single request.",
+              "args": [],
+              "type": {
+                "kind": "LIST",
+                "name": null,
+                "ofType": {
+                  "kind": "NON_NULL",
+                  "name": null,
+                  "ofType": {
+                    "kind": "OBJECT",
+                    "name": "DiffStats",
+                    "ofType": null
+                  }
+                }
+              },
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "diffStatsSummary",
+              "description": "Summary of which files were changed in the commit. This field can only be resolved for 10 commits in any single request.",
+              "args": [],
+              "type": {
+                "kind": "OBJECT",
+                "name": "DiffStatsSummary",
+                "ofType": null
+              },
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
               "name": "diffs",
               "description": "Diffs contained within the commit. This field can only be resolved for 10 diffs in any single request.",
               "args": [],
@@ -34902,6 +35140,26 @@
               "type": {
                 "kind": "SCALAR",
                 "name": "String",
+                "ofType": null
+              },
+              "defaultValue": null
+            },
+            {
+              "name": "startSha",
+              "description": "SHA of the commit to start the new branch from. Mutually exclusive with startBranch.",
+              "type": {
+                "kind": "SCALAR",
+                "name": "String",
+                "ofType": null
+              },
+              "defaultValue": null
+            },
+            {
+              "name": "startProjectPath",
+              "description": "Full path of the project to start the commit from. Must be the project itself or a project it was forked from.",
+              "type": {
+                "kind": "SCALAR",
+                "name": "ID",
                 "ofType": null
               },
               "defaultValue": null
@@ -46279,6 +46537,34 @@
                   "defaultValue": null
                 },
                 {
+                  "name": "reviewState",
+                  "description": "Reviewer state of the merge request.",
+                  "type": {
+                    "kind": "ENUM",
+                    "name": "MergeRequestReviewState",
+                    "ofType": null
+                  },
+                  "defaultValue": null
+                },
+                {
+                  "name": "reviewStates",
+                  "description": "Reviewer states of the merge request.",
+                  "type": {
+                    "kind": "LIST",
+                    "name": null,
+                    "ofType": {
+                      "kind": "NON_NULL",
+                      "name": null,
+                      "ofType": {
+                        "kind": "ENUM",
+                        "name": "MergeRequestReviewState",
+                        "ofType": null
+                      }
+                    }
+                  },
+                  "defaultValue": null
+                },
+                {
                   "name": "sort",
                   "description": "Sort merge requests by the criteria.",
                   "type": {
@@ -46760,6 +47046,34 @@
                     "kind": "ENUM",
                     "name": "MilestoneWildcardId",
                     "ofType": null
+                  },
+                  "defaultValue": null
+                },
+                {
+                  "name": "reviewState",
+                  "description": "Reviewer state of the merge request.",
+                  "type": {
+                    "kind": "ENUM",
+                    "name": "MergeRequestReviewState",
+                    "ofType": null
+                  },
+                  "defaultValue": null
+                },
+                {
+                  "name": "reviewStates",
+                  "description": "Reviewer states of the merge request.",
+                  "type": {
+                    "kind": "LIST",
+                    "name": null,
+                    "ofType": {
+                      "kind": "NON_NULL",
+                      "name": null,
+                      "ofType": {
+                        "kind": "ENUM",
+                        "name": "MergeRequestReviewState",
+                        "ofType": null
+                      }
+                    }
                   },
                   "defaultValue": null
                 },
@@ -47251,6 +47565,34 @@
                     "kind": "ENUM",
                     "name": "MilestoneWildcardId",
                     "ofType": null
+                  },
+                  "defaultValue": null
+                },
+                {
+                  "name": "reviewState",
+                  "description": "Reviewer state of the merge request.",
+                  "type": {
+                    "kind": "ENUM",
+                    "name": "MergeRequestReviewState",
+                    "ofType": null
+                  },
+                  "defaultValue": null
+                },
+                {
+                  "name": "reviewStates",
+                  "description": "Reviewer states of the merge request.",
+                  "type": {
+                    "kind": "LIST",
+                    "name": null,
+                    "ofType": {
+                      "kind": "NON_NULL",
+                      "name": null,
+                      "ofType": {
+                        "kind": "ENUM",
+                        "name": "MergeRequestReviewState",
+                        "ofType": null
+                      }
+                    }
                   },
                   "defaultValue": null
                 },
@@ -48731,6 +49073,34 @@
                     "kind": "ENUM",
                     "name": "MilestoneWildcardId",
                     "ofType": null
+                  },
+                  "defaultValue": null
+                },
+                {
+                  "name": "reviewState",
+                  "description": "Reviewer state of the merge request.",
+                  "type": {
+                    "kind": "ENUM",
+                    "name": "MergeRequestReviewState",
+                    "ofType": null
+                  },
+                  "defaultValue": null
+                },
+                {
+                  "name": "reviewStates",
+                  "description": "Reviewer states of the merge request.",
+                  "type": {
+                    "kind": "LIST",
+                    "name": null,
+                    "ofType": {
+                      "kind": "NON_NULL",
+                      "name": null,
+                      "ofType": {
+                        "kind": "ENUM",
+                        "name": "MergeRequestReviewState",
+                        "ofType": null
+                      }
+                    }
                   },
                   "defaultValue": null
                 },
@@ -66656,6 +67026,69 @@
               "deprecationReason": null
             },
             {
+              "name": "pipelineLinks",
+              "description": "Pipelines linked to the session.",
+              "args": [
+                {
+                  "name": "linkType",
+                  "description": "Filter links by their link type.",
+                  "type": {
+                    "kind": "ENUM",
+                    "name": "DuoWorkflowPipelineLinkType",
+                    "ofType": null
+                  },
+                  "defaultValue": null
+                },
+                {
+                  "name": "after",
+                  "description": "Returns the elements in the list that come after the specified cursor.",
+                  "type": {
+                    "kind": "SCALAR",
+                    "name": "String",
+                    "ofType": null
+                  },
+                  "defaultValue": null
+                },
+                {
+                  "name": "before",
+                  "description": "Returns the elements in the list that come before the specified cursor.",
+                  "type": {
+                    "kind": "SCALAR",
+                    "name": "String",
+                    "ofType": null
+                  },
+                  "defaultValue": null
+                },
+                {
+                  "name": "first",
+                  "description": "Returns the first _n_ elements from the list.",
+                  "type": {
+                    "kind": "SCALAR",
+                    "name": "Int",
+                    "ofType": null
+                  },
+                  "defaultValue": null
+                },
+                {
+                  "name": "last",
+                  "description": "Returns the last _n_ elements from the list.",
+                  "type": {
+                    "kind": "SCALAR",
+                    "name": "Int",
+                    "ofType": null
+                  },
+                  "defaultValue": null
+                }
+              ],
+              "type": {
+                "kind": "OBJECT",
+                "name": "DuoWorkflowPipelineLinkConnection",
+                "ofType": null
+              },
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
               "name": "preApprovedAgentPrivilegesNames",
               "description": "Privileges pre-approved for the agent during execution.",
               "args": [],
@@ -67799,6 +68232,188 @@
           "inputFields": null,
           "interfaces": [],
           "enumValues": null,
+          "possibleTypes": null
+        },
+        {
+          "kind": "OBJECT",
+          "name": "DuoWorkflowPipelineLink",
+          "description": "Link between a GitLab Duo Agent Platform session and a pipeline.",
+          "fields": [
+            {
+              "name": "createdAt",
+              "description": "Timestamp of when the link was created.",
+              "args": [],
+              "type": {
+                "kind": "NON_NULL",
+                "name": null,
+                "ofType": {
+                  "kind": "SCALAR",
+                  "name": "Time",
+                  "ofType": null
+                }
+              },
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "linkType",
+              "description": "How the pipeline relates to the session.",
+              "args": [],
+              "type": {
+                "kind": "NON_NULL",
+                "name": null,
+                "ofType": {
+                  "kind": "ENUM",
+                  "name": "DuoWorkflowPipelineLinkType",
+                  "ofType": null
+                }
+              },
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "pipeline",
+              "description": "Linked pipeline.",
+              "args": [],
+              "type": {
+                "kind": "OBJECT",
+                "name": "Pipeline",
+                "ofType": null
+              },
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "workflow",
+              "description": "Linked GitLab Duo Agent Platform session.",
+              "args": [],
+              "type": {
+                "kind": "OBJECT",
+                "name": "DuoWorkflow",
+                "ofType": null
+              },
+              "isDeprecated": false,
+              "deprecationReason": null
+            }
+          ],
+          "inputFields": null,
+          "interfaces": [],
+          "enumValues": null,
+          "possibleTypes": null
+        },
+        {
+          "kind": "OBJECT",
+          "name": "DuoWorkflowPipelineLinkConnection",
+          "description": "The connection type for DuoWorkflowPipelineLink.",
+          "fields": [
+            {
+              "name": "edges",
+              "description": "A list of edges.",
+              "args": [],
+              "type": {
+                "kind": "LIST",
+                "name": null,
+                "ofType": {
+                  "kind": "OBJECT",
+                  "name": "DuoWorkflowPipelineLinkEdge",
+                  "ofType": null
+                }
+              },
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "nodes",
+              "description": "A list of nodes.",
+              "args": [],
+              "type": {
+                "kind": "LIST",
+                "name": null,
+                "ofType": {
+                  "kind": "OBJECT",
+                  "name": "DuoWorkflowPipelineLink",
+                  "ofType": null
+                }
+              },
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "pageInfo",
+              "description": "Information to aid in pagination.",
+              "args": [],
+              "type": {
+                "kind": "NON_NULL",
+                "name": null,
+                "ofType": {
+                  "kind": "OBJECT",
+                  "name": "PageInfo",
+                  "ofType": null
+                }
+              },
+              "isDeprecated": false,
+              "deprecationReason": null
+            }
+          ],
+          "inputFields": null,
+          "interfaces": [],
+          "enumValues": null,
+          "possibleTypes": null
+        },
+        {
+          "kind": "OBJECT",
+          "name": "DuoWorkflowPipelineLinkEdge",
+          "description": "An edge in a connection.",
+          "fields": [
+            {
+              "name": "cursor",
+              "description": "A cursor for use in pagination.",
+              "args": [],
+              "type": {
+                "kind": "NON_NULL",
+                "name": null,
+                "ofType": {
+                  "kind": "SCALAR",
+                  "name": "String",
+                  "ofType": null
+                }
+              },
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "node",
+              "description": "The item at the end of the edge.",
+              "args": [],
+              "type": {
+                "kind": "OBJECT",
+                "name": "DuoWorkflowPipelineLink",
+                "ofType": null
+              },
+              "isDeprecated": false,
+              "deprecationReason": null
+            }
+          ],
+          "inputFields": null,
+          "interfaces": [],
+          "enumValues": null,
+          "possibleTypes": null
+        },
+        {
+          "kind": "ENUM",
+          "name": "DuoWorkflowPipelineLinkType",
+          "description": "Type of link between a GitLab Duo Agent Platform session and a pipeline.",
+          "fields": null,
+          "inputFields": null,
+          "interfaces": null,
+          "enumValues": [
+            {
+              "name": "SOURCE",
+              "description": "Link of type `source` between a session and a pipeline.",
+              "isDeprecated": false,
+              "deprecationReason": null
+            }
+          ],
           "possibleTypes": null
         },
         {
@@ -83053,6 +83668,16 @@
                   "defaultValue": null
                 },
                 {
+                  "name": "fuzzySearch",
+                  "description": "Match `searchTerm` fuzzily: labels match when they contain the searched characters in order, but not necessarily contiguously (for example, `bugu` matches `bug::ux`). Ignored if using `title`.",
+                  "type": {
+                    "kind": "SCALAR",
+                    "name": "Boolean",
+                    "ofType": null
+                  },
+                  "defaultValue": "false"
+                },
+                {
                   "name": "searchIn",
                   "description": "Specify which fields to search in. Ignored if using `title`.",
                   "type": {
@@ -83615,6 +84240,34 @@
                     "kind": "ENUM",
                     "name": "MilestoneWildcardId",
                     "ofType": null
+                  },
+                  "defaultValue": null
+                },
+                {
+                  "name": "reviewState",
+                  "description": "Reviewer state of the merge request.",
+                  "type": {
+                    "kind": "ENUM",
+                    "name": "MergeRequestReviewState",
+                    "ofType": null
+                  },
+                  "defaultValue": null
+                },
+                {
+                  "name": "reviewStates",
+                  "description": "Reviewer states of the merge request.",
+                  "type": {
+                    "kind": "LIST",
+                    "name": null,
+                    "ofType": {
+                      "kind": "NON_NULL",
+                      "name": null,
+                      "ofType": {
+                        "kind": "ENUM",
+                        "name": "MergeRequestReviewState",
+                        "ofType": null
+                      }
+                    }
                   },
                   "defaultValue": null
                 },
@@ -91120,7 +91773,7 @@
             },
             {
               "name": "principal",
-              "description": "Who is provided access to. For eg: User/Role/MemberRole/Group.",
+              "description": "Who is provided access to. For eg: User/Role/MemberRole.",
               "args": [],
               "type": {
                 "kind": "NON_NULL",
@@ -91280,7 +91933,7 @@
             },
             {
               "name": "principal",
-              "description": "User/MemberRole/Role/Group that is provided access.",
+              "description": "User/MemberRole/Role that is provided access.",
               "type": {
                 "kind": "NON_NULL",
                 "name": null,
@@ -109833,6 +110486,34 @@
                   "defaultValue": null
                 },
                 {
+                  "name": "reviewState",
+                  "description": "Reviewer state of the merge request.",
+                  "type": {
+                    "kind": "ENUM",
+                    "name": "MergeRequestReviewState",
+                    "ofType": null
+                  },
+                  "defaultValue": null
+                },
+                {
+                  "name": "reviewStates",
+                  "description": "Reviewer states of the merge request.",
+                  "type": {
+                    "kind": "LIST",
+                    "name": null,
+                    "ofType": {
+                      "kind": "NON_NULL",
+                      "name": null,
+                      "ofType": {
+                        "kind": "ENUM",
+                        "name": "MergeRequestReviewState",
+                        "ofType": null
+                      }
+                    }
+                  },
+                  "defaultValue": null
+                },
+                {
                   "name": "sort",
                   "description": "Sort merge requests by the criteria.",
                   "type": {
@@ -110314,6 +110995,34 @@
                     "kind": "ENUM",
                     "name": "MilestoneWildcardId",
                     "ofType": null
+                  },
+                  "defaultValue": null
+                },
+                {
+                  "name": "reviewState",
+                  "description": "Reviewer state of the merge request.",
+                  "type": {
+                    "kind": "ENUM",
+                    "name": "MergeRequestReviewState",
+                    "ofType": null
+                  },
+                  "defaultValue": null
+                },
+                {
+                  "name": "reviewStates",
+                  "description": "Reviewer states of the merge request.",
+                  "type": {
+                    "kind": "LIST",
+                    "name": null,
+                    "ofType": {
+                      "kind": "NON_NULL",
+                      "name": null,
+                      "ofType": {
+                        "kind": "ENUM",
+                        "name": "MergeRequestReviewState",
+                        "ofType": null
+                      }
+                    }
                   },
                   "defaultValue": null
                 },
@@ -111770,6 +112479,34 @@
                     "kind": "ENUM",
                     "name": "MilestoneWildcardId",
                     "ofType": null
+                  },
+                  "defaultValue": null
+                },
+                {
+                  "name": "reviewState",
+                  "description": "Reviewer state of the merge request.",
+                  "type": {
+                    "kind": "ENUM",
+                    "name": "MergeRequestReviewState",
+                    "ofType": null
+                  },
+                  "defaultValue": null
+                },
+                {
+                  "name": "reviewStates",
+                  "description": "Reviewer states of the merge request.",
+                  "type": {
+                    "kind": "LIST",
+                    "name": null,
+                    "ofType": {
+                      "kind": "NON_NULL",
+                      "name": null,
+                      "ofType": {
+                        "kind": "ENUM",
+                        "name": "MergeRequestReviewState",
+                        "ofType": null
+                      }
+                    }
                   },
                   "defaultValue": null
                 },
@@ -113344,6 +114081,34 @@
                   "defaultValue": null
                 },
                 {
+                  "name": "reviewState",
+                  "description": "Reviewer state of the merge request.",
+                  "type": {
+                    "kind": "ENUM",
+                    "name": "MergeRequestReviewState",
+                    "ofType": null
+                  },
+                  "defaultValue": null
+                },
+                {
+                  "name": "reviewStates",
+                  "description": "Reviewer states of the merge request.",
+                  "type": {
+                    "kind": "LIST",
+                    "name": null,
+                    "ofType": {
+                      "kind": "NON_NULL",
+                      "name": null,
+                      "ofType": {
+                        "kind": "ENUM",
+                        "name": "MergeRequestReviewState",
+                        "ofType": null
+                      }
+                    }
+                  },
+                  "defaultValue": null
+                },
+                {
                   "name": "sort",
                   "description": "Sort merge requests by the criteria.",
                   "type": {
@@ -113825,6 +114590,34 @@
                     "kind": "ENUM",
                     "name": "MilestoneWildcardId",
                     "ofType": null
+                  },
+                  "defaultValue": null
+                },
+                {
+                  "name": "reviewState",
+                  "description": "Reviewer state of the merge request.",
+                  "type": {
+                    "kind": "ENUM",
+                    "name": "MergeRequestReviewState",
+                    "ofType": null
+                  },
+                  "defaultValue": null
+                },
+                {
+                  "name": "reviewStates",
+                  "description": "Reviewer states of the merge request.",
+                  "type": {
+                    "kind": "LIST",
+                    "name": null,
+                    "ofType": {
+                      "kind": "NON_NULL",
+                      "name": null,
+                      "ofType": {
+                        "kind": "ENUM",
+                        "name": "MergeRequestReviewState",
+                        "ofType": null
+                      }
+                    }
                   },
                   "defaultValue": null
                 },
@@ -115281,6 +116074,34 @@
                     "kind": "ENUM",
                     "name": "MilestoneWildcardId",
                     "ofType": null
+                  },
+                  "defaultValue": null
+                },
+                {
+                  "name": "reviewState",
+                  "description": "Reviewer state of the merge request.",
+                  "type": {
+                    "kind": "ENUM",
+                    "name": "MergeRequestReviewState",
+                    "ofType": null
+                  },
+                  "defaultValue": null
+                },
+                {
+                  "name": "reviewStates",
+                  "description": "Reviewer states of the merge request.",
+                  "type": {
+                    "kind": "LIST",
+                    "name": null,
+                    "ofType": {
+                      "kind": "NON_NULL",
+                      "name": null,
+                      "ofType": {
+                        "kind": "ENUM",
+                        "name": "MergeRequestReviewState",
+                        "ofType": null
+                      }
+                    }
                   },
                   "defaultValue": null
                 },
@@ -117886,6 +118707,34 @@
                   "defaultValue": null
                 },
                 {
+                  "name": "reviewState",
+                  "description": "Reviewer state of the merge request.",
+                  "type": {
+                    "kind": "ENUM",
+                    "name": "MergeRequestReviewState",
+                    "ofType": null
+                  },
+                  "defaultValue": null
+                },
+                {
+                  "name": "reviewStates",
+                  "description": "Reviewer states of the merge request.",
+                  "type": {
+                    "kind": "LIST",
+                    "name": null,
+                    "ofType": {
+                      "kind": "NON_NULL",
+                      "name": null,
+                      "ofType": {
+                        "kind": "ENUM",
+                        "name": "MergeRequestReviewState",
+                        "ofType": null
+                      }
+                    }
+                  },
+                  "defaultValue": null
+                },
+                {
                   "name": "sort",
                   "description": "Sort merge requests by the criteria.",
                   "type": {
@@ -118367,6 +119216,34 @@
                     "kind": "ENUM",
                     "name": "MilestoneWildcardId",
                     "ofType": null
+                  },
+                  "defaultValue": null
+                },
+                {
+                  "name": "reviewState",
+                  "description": "Reviewer state of the merge request.",
+                  "type": {
+                    "kind": "ENUM",
+                    "name": "MergeRequestReviewState",
+                    "ofType": null
+                  },
+                  "defaultValue": null
+                },
+                {
+                  "name": "reviewStates",
+                  "description": "Reviewer states of the merge request.",
+                  "type": {
+                    "kind": "LIST",
+                    "name": null,
+                    "ofType": {
+                      "kind": "NON_NULL",
+                      "name": null,
+                      "ofType": {
+                        "kind": "ENUM",
+                        "name": "MergeRequestReviewState",
+                        "ofType": null
+                      }
+                    }
                   },
                   "defaultValue": null
                 },
@@ -119823,6 +120700,34 @@
                     "kind": "ENUM",
                     "name": "MilestoneWildcardId",
                     "ofType": null
+                  },
+                  "defaultValue": null
+                },
+                {
+                  "name": "reviewState",
+                  "description": "Reviewer state of the merge request.",
+                  "type": {
+                    "kind": "ENUM",
+                    "name": "MergeRequestReviewState",
+                    "ofType": null
+                  },
+                  "defaultValue": null
+                },
+                {
+                  "name": "reviewStates",
+                  "description": "Reviewer states of the merge request.",
+                  "type": {
+                    "kind": "LIST",
+                    "name": null,
+                    "ofType": {
+                      "kind": "NON_NULL",
+                      "name": null,
+                      "ofType": {
+                        "kind": "ENUM",
+                        "name": "MergeRequestReviewState",
+                        "ofType": null
+                      }
+                    }
                   },
                   "defaultValue": null
                 },
@@ -121723,6 +122628,34 @@
                   "defaultValue": null
                 },
                 {
+                  "name": "reviewState",
+                  "description": "Reviewer state of the merge request.",
+                  "type": {
+                    "kind": "ENUM",
+                    "name": "MergeRequestReviewState",
+                    "ofType": null
+                  },
+                  "defaultValue": null
+                },
+                {
+                  "name": "reviewStates",
+                  "description": "Reviewer states of the merge request.",
+                  "type": {
+                    "kind": "LIST",
+                    "name": null,
+                    "ofType": {
+                      "kind": "NON_NULL",
+                      "name": null,
+                      "ofType": {
+                        "kind": "ENUM",
+                        "name": "MergeRequestReviewState",
+                        "ofType": null
+                      }
+                    }
+                  },
+                  "defaultValue": null
+                },
+                {
                   "name": "sort",
                   "description": "Sort merge requests by the criteria.",
                   "type": {
@@ -122204,6 +123137,34 @@
                     "kind": "ENUM",
                     "name": "MilestoneWildcardId",
                     "ofType": null
+                  },
+                  "defaultValue": null
+                },
+                {
+                  "name": "reviewState",
+                  "description": "Reviewer state of the merge request.",
+                  "type": {
+                    "kind": "ENUM",
+                    "name": "MergeRequestReviewState",
+                    "ofType": null
+                  },
+                  "defaultValue": null
+                },
+                {
+                  "name": "reviewStates",
+                  "description": "Reviewer states of the merge request.",
+                  "type": {
+                    "kind": "LIST",
+                    "name": null,
+                    "ofType": {
+                      "kind": "NON_NULL",
+                      "name": null,
+                      "ofType": {
+                        "kind": "ENUM",
+                        "name": "MergeRequestReviewState",
+                        "ofType": null
+                      }
+                    }
                   },
                   "defaultValue": null
                 },
@@ -123660,6 +124621,34 @@
                     "kind": "ENUM",
                     "name": "MilestoneWildcardId",
                     "ofType": null
+                  },
+                  "defaultValue": null
+                },
+                {
+                  "name": "reviewState",
+                  "description": "Reviewer state of the merge request.",
+                  "type": {
+                    "kind": "ENUM",
+                    "name": "MergeRequestReviewState",
+                    "ofType": null
+                  },
+                  "defaultValue": null
+                },
+                {
+                  "name": "reviewStates",
+                  "description": "Reviewer states of the merge request.",
+                  "type": {
+                    "kind": "LIST",
+                    "name": null,
+                    "ofType": {
+                      "kind": "NON_NULL",
+                      "name": null,
+                      "ofType": {
+                        "kind": "ENUM",
+                        "name": "MergeRequestReviewState",
+                        "ofType": null
+                      }
+                    }
                   },
                   "defaultValue": null
                 },
@@ -125838,7 +126827,7 @@
             },
             {
               "name": "reviewerUsernames",
-              "description": "Usernames of reviewers to assign. Replaces existing reviewers by default.",
+              "description": "Usernames of reviewers to assign. Replaces existing reviewers by default. Usernames that do not match a visible user are reported in `errors` and not assigned.",
               "type": {
                 "kind": "NON_NULL",
                 "name": null,
@@ -136222,7 +137211,7 @@
             },
             {
               "name": "tagCreate",
-              "description": null,
+              "description": "Creates a tag in a project repository.\nRate limited per project by the `tags_create_limit` application setting.\n",
               "args": [
                 {
                   "name": "input",
@@ -139113,6 +140102,18 @@
               "deprecationReason": null
             },
             {
+              "name": "webPath",
+              "description": "Path of the namespace relative to the instance root.",
+              "args": [],
+              "type": {
+                "kind": "SCALAR",
+                "name": "String",
+                "ofType": null
+              },
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
               "name": "webUrl",
               "description": "URL of the namespace.",
               "args": [],
@@ -141788,6 +142789,18 @@
               "type": {
                 "kind": "OBJECT",
                 "name": "Discussion",
+                "ofType": null
+              },
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "duoCreatedSession",
+              "description": "GitLab Duo Agent Platform session that created the note.",
+              "args": [],
+              "type": {
+                "kind": "OBJECT",
+                "name": "DuoWorkflow",
                 "ofType": null
               },
               "isDeprecated": false,
@@ -147783,7 +148796,7 @@
             },
             {
               "name": "genericDuplicateExceptionRegex",
-              "description": "When generic_duplicates_allowed is false, you can publish duplicate packages with names that match this regex. Otherwise, this setting has no effect.",
+              "description": "When generic_duplicates_allowed is false, you can publish duplicate packages with names or versions that match this regex. When generic_duplicates_allowed is true, duplicate packages with names or versions that match this regex are rejected.",
               "args": [],
               "type": {
                 "kind": "SCALAR",
@@ -147875,7 +148888,7 @@
             },
             {
               "name": "mavenDuplicateExceptionRegex",
-              "description": "When maven_duplicates_allowed is false, you can publish duplicate packages with names that match this regex. Otherwise, this setting has no effect.",
+              "description": "When maven_duplicates_allowed is false, you can publish duplicate packages with names or versions that match this regex. When maven_duplicates_allowed is true, duplicate packages with names or versions that match this regex are rejected.",
               "args": [],
               "type": {
                 "kind": "SCALAR",
@@ -147959,7 +148972,7 @@
             },
             {
               "name": "nugetDuplicateExceptionRegex",
-              "description": "When nuget_duplicates_allowed is false, you can publish duplicate packages with names that match this regex. Otherwise, this setting has no effect. ",
+              "description": "When nuget_duplicates_allowed is false, you can publish duplicate packages with names or versions that match this regex. When nuget_duplicates_allowed is true, duplicate packages with names or versions that match this regex are rejected.",
               "args": [],
               "type": {
                 "kind": "SCALAR",
@@ -148059,7 +149072,7 @@
             },
             {
               "name": "terraformModuleDuplicateExceptionRegex",
-              "description": "When terraform_module_duplicates_allowed is false, you can publish duplicate packages with names that match this regex. Otherwise, this setting has no effect.",
+              "description": "When terraform_module_duplicates_allowed is false, you can publish duplicate packages with names that match this regex. When terraform_module_duplicates_allowed is true, duplicate packages with names that match this regex are rejected.",
               "args": [],
               "type": {
                 "kind": "SCALAR",
@@ -149824,7 +150837,7 @@
               "args": [],
               "type": {
                 "kind": "SCALAR",
-                "name": "Int",
+                "name": "BigInt",
                 "ofType": null
               },
               "isDeprecated": false,
@@ -151717,6 +152730,69 @@
               "type": {
                 "kind": "OBJECT",
                 "name": "PipelineConnection",
+                "ofType": null
+              },
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "duoWorkflowLinks",
+              "description": "GitLab Duo Agent Platform sessions linked to the pipeline.",
+              "args": [
+                {
+                  "name": "linkType",
+                  "description": "Filter links by their link type.",
+                  "type": {
+                    "kind": "ENUM",
+                    "name": "DuoWorkflowPipelineLinkType",
+                    "ofType": null
+                  },
+                  "defaultValue": null
+                },
+                {
+                  "name": "after",
+                  "description": "Returns the elements in the list that come after the specified cursor.",
+                  "type": {
+                    "kind": "SCALAR",
+                    "name": "String",
+                    "ofType": null
+                  },
+                  "defaultValue": null
+                },
+                {
+                  "name": "before",
+                  "description": "Returns the elements in the list that come before the specified cursor.",
+                  "type": {
+                    "kind": "SCALAR",
+                    "name": "String",
+                    "ofType": null
+                  },
+                  "defaultValue": null
+                },
+                {
+                  "name": "first",
+                  "description": "Returns the first _n_ elements from the list.",
+                  "type": {
+                    "kind": "SCALAR",
+                    "name": "Int",
+                    "ofType": null
+                  },
+                  "defaultValue": null
+                },
+                {
+                  "name": "last",
+                  "description": "Returns the last _n_ elements from the list.",
+                  "type": {
+                    "kind": "SCALAR",
+                    "name": "Int",
+                    "ofType": null
+                  },
+                  "defaultValue": null
+                }
+              ],
+              "type": {
+                "kind": "OBJECT",
+                "name": "DuoWorkflowPipelineLinkConnection",
                 "ofType": null
               },
               "isDeprecated": false,
@@ -158995,23 +160071,11 @@
         {
           "kind": "OBJECT",
           "name": "Principal",
-          "description": "Representation of who is provided access to. For eg: User/Role/MemberRole/Group.",
+          "description": "Representation of who is provided access to. For eg: User/Role/MemberRole.",
           "fields": [
             {
-              "name": "group",
-              "description": "Group who is provided access to.",
-              "args": [],
-              "type": {
-                "kind": "OBJECT",
-                "name": "Group",
-                "ofType": null
-              },
-              "isDeprecated": false,
-              "deprecationReason": null
-            },
-            {
               "name": "id",
-              "description": "ID of the principal (User, MemberRole, Role, Group).",
+              "description": "ID of the principal (User, MemberRole, Role).",
               "args": [],
               "type": {
                 "kind": "NON_NULL",
@@ -159027,7 +160091,7 @@
             },
             {
               "name": "type",
-              "description": "Name of the principal (User, MemberRole, Role, Group).",
+              "description": "Name of the principal (User, MemberRole, Role).",
               "args": [],
               "type": {
                 "kind": "NON_NULL",
@@ -159074,26 +160138,20 @@
         {
           "kind": "INPUT_OBJECT",
           "name": "PrincipalInput",
-          "description": "Representation of who is provided access to. For eg: User/Role/MemberRole/Group.",
+          "description": "Representation of who is provided access to. For eg: User/Role/MemberRole.",
           "fields": null,
           "inputFields": [
             {
               "name": "id",
-              "description": "ID of the principal. Required unless group_path is provided for Group type.",
+              "description": "ID of the principal.",
               "type": {
-                "kind": "SCALAR",
-                "name": "Int",
-                "ofType": null
-              },
-              "defaultValue": null
-            },
-            {
-              "name": "groupPath",
-              "description": "Full path of the group principal. Only used when type is GROUP.",
-              "type": {
-                "kind": "SCALAR",
-                "name": "ID",
-                "ofType": null
+                "kind": "NON_NULL",
+                "name": null,
+                "ofType": {
+                  "kind": "SCALAR",
+                  "name": "Int",
+                  "ofType": null
+                }
               },
               "defaultValue": null
             },
@@ -159127,12 +160185,6 @@
             {
               "name": "USER",
               "description": "user.",
-              "isDeprecated": false,
-              "deprecationReason": null
-            },
-            {
-              "name": "GROUP",
-              "description": "group.",
               "isDeprecated": false,
               "deprecationReason": null
             },
@@ -164591,6 +165643,16 @@
                   "defaultValue": null
                 },
                 {
+                  "name": "fuzzySearch",
+                  "description": "Match `searchTerm` fuzzily: labels match when they contain the searched characters in order, but not necessarily contiguously (for example, `bugu` matches `bug::ux`). Ignored if using `title`.",
+                  "type": {
+                    "kind": "SCALAR",
+                    "name": "Boolean",
+                    "ofType": null
+                  },
+                  "defaultValue": "false"
+                },
+                {
                   "name": "searchIn",
                   "description": "Specify which fields to search in. Ignored if using `title`.",
                   "type": {
@@ -165192,6 +166254,34 @@
                     "kind": "ENUM",
                     "name": "MilestoneWildcardId",
                     "ofType": null
+                  },
+                  "defaultValue": null
+                },
+                {
+                  "name": "reviewState",
+                  "description": "Reviewer state of the merge request.",
+                  "type": {
+                    "kind": "ENUM",
+                    "name": "MergeRequestReviewState",
+                    "ofType": null
+                  },
+                  "defaultValue": null
+                },
+                {
+                  "name": "reviewStates",
+                  "description": "Reviewer states of the merge request.",
+                  "type": {
+                    "kind": "LIST",
+                    "name": null,
+                    "ofType": {
+                      "kind": "NON_NULL",
+                      "name": null,
+                      "ofType": {
+                        "kind": "ENUM",
+                        "name": "MergeRequestReviewState",
+                        "ofType": null
+                      }
+                    }
                   },
                   "defaultValue": null
                 },
@@ -174232,7 +175322,7 @@
             },
             {
               "name": "principal",
-              "description": "Who is provided access to. For eg: User/Role/MemberRole/Group.",
+              "description": "Who is provided access to. For eg: User/Role/MemberRole.",
               "args": [],
               "type": {
                 "kind": "NON_NULL",
@@ -174300,7 +175390,7 @@
             },
             {
               "name": "principal",
-              "description": "User/MemberRole/Role/Group whose access is being removed.",
+              "description": "User/MemberRole/Role whose access is being removed.",
               "type": {
                 "kind": "NON_NULL",
                 "name": null,
@@ -174408,7 +175498,7 @@
             },
             {
               "name": "principal",
-              "description": "User/MemberRole/Role/Group that is provided access.",
+              "description": "User/MemberRole/Role that is provided access.",
               "type": {
                 "kind": "NON_NULL",
                 "name": null,
@@ -178291,6 +179381,26 @@
                     "ofType": null
                   },
                   "defaultValue": null
+                },
+                {
+                  "name": "namespaceId",
+                  "description": "Global ID of the namespace the user is acting on.",
+                  "type": {
+                    "kind": "SCALAR",
+                    "name": "NamespaceID",
+                    "ofType": null
+                  },
+                  "defaultValue": null
+                },
+                {
+                  "name": "foundationalAgentReference",
+                  "description": "Reference of the selected foundational chat agent.",
+                  "type": {
+                    "kind": "SCALAR",
+                    "name": "String",
+                    "ofType": null
+                  },
+                  "defaultValue": null
                 }
               ],
               "type": {
@@ -179417,7 +180527,7 @@
                 },
                 {
                   "name": "sort",
-                  "description": "Sort order of results. Format: `<field_name>_<sort_direction>`, for example: `id_desc` or `name_asc`",
+                  "description": "Sort order of results. Format: `<field_name>_<sort_direction>`, for example: `id_desc` or `name_asc`. Use `similarity` to rank results by closeness to `search`. `similarity` applies only when `search` is given and results are already scoped to the current user's memberships, such as with `ownedOnly: true` or `allAvailable: false`. Filtering by `visibilityLevel` to public or internal groups only disables `similarity`, because the results are then no longer scoped by membership. Results fall back to `id_desc` when `similarity` does not apply.",
                   "type": {
                     "kind": "SCALAR",
                     "name": "String",
@@ -191148,7 +192258,7 @@
             },
             {
               "name": "principal",
-              "description": "Who is provided access to. For eg: User/Role/MemberRole/Group.",
+              "description": "Who is provided access to. For eg: User/Role/MemberRole.",
               "args": [],
               "type": {
                 "kind": "NON_NULL",
@@ -191324,7 +192434,7 @@
             },
             {
               "name": "principal",
-              "description": "User/MemberRole/Role/Group that is provided access.",
+              "description": "User/MemberRole/Role that is provided access.",
               "type": {
                 "kind": "NON_NULL",
                 "name": null,
@@ -211674,7 +212784,7 @@
             },
             {
               "name": "mavenDuplicateExceptionRegex",
-              "description": "When maven_duplicates_allowed is false, you can publish duplicate packages with names that match this regex. Otherwise, this setting has no effect.",
+              "description": "When maven_duplicates_allowed is false, you can publish duplicate packages with names or versions that match this regex. When maven_duplicates_allowed is true, duplicate packages with names or versions that match this regex are rejected.",
               "type": {
                 "kind": "SCALAR",
                 "name": "UntrustedRegexp",
@@ -211694,7 +212804,7 @@
             },
             {
               "name": "genericDuplicateExceptionRegex",
-              "description": "When generic_duplicates_allowed is false, you can publish duplicate packages with names that match this regex. Otherwise, this setting has no effect.",
+              "description": "When generic_duplicates_allowed is false, you can publish duplicate packages with names or versions that match this regex. When generic_duplicates_allowed is true, duplicate packages with names or versions that match this regex are rejected.",
               "type": {
                 "kind": "SCALAR",
                 "name": "UntrustedRegexp",
@@ -211714,7 +212824,7 @@
             },
             {
               "name": "nugetDuplicateExceptionRegex",
-              "description": "When nuget_duplicates_allowed is false, you can publish duplicate packages with names that match this regex. Otherwise, this setting has no effect. ",
+              "description": "When nuget_duplicates_allowed is false, you can publish duplicate packages with names or versions that match this regex. When nuget_duplicates_allowed is true, duplicate packages with names or versions that match this regex are rejected.",
               "type": {
                 "kind": "SCALAR",
                 "name": "UntrustedRegexp",
@@ -211734,7 +212844,7 @@
             },
             {
               "name": "terraformModuleDuplicateExceptionRegex",
-              "description": "When terraform_module_duplicates_allowed is false, you can publish duplicate packages with names that match this regex. Otherwise, this setting has no effect.",
+              "description": "When terraform_module_duplicates_allowed is false, you can publish duplicate packages with names that match this regex. When terraform_module_duplicates_allowed is true, duplicate packages with names that match this regex are rejected.",
               "type": {
                 "kind": "SCALAR",
                 "name": "UntrustedRegexp",
@@ -213807,6 +214917,34 @@
                   "defaultValue": null
                 },
                 {
+                  "name": "reviewState",
+                  "description": "Reviewer state of the merge request.",
+                  "type": {
+                    "kind": "ENUM",
+                    "name": "MergeRequestReviewState",
+                    "ofType": null
+                  },
+                  "defaultValue": null
+                },
+                {
+                  "name": "reviewStates",
+                  "description": "Reviewer states of the merge request.",
+                  "type": {
+                    "kind": "LIST",
+                    "name": null,
+                    "ofType": {
+                      "kind": "NON_NULL",
+                      "name": null,
+                      "ofType": {
+                        "kind": "ENUM",
+                        "name": "MergeRequestReviewState",
+                        "ofType": null
+                      }
+                    }
+                  },
+                  "defaultValue": null
+                },
+                {
                   "name": "sort",
                   "description": "Sort merge requests by the criteria.",
                   "type": {
@@ -214288,6 +215426,34 @@
                     "kind": "ENUM",
                     "name": "MilestoneWildcardId",
                     "ofType": null
+                  },
+                  "defaultValue": null
+                },
+                {
+                  "name": "reviewState",
+                  "description": "Reviewer state of the merge request.",
+                  "type": {
+                    "kind": "ENUM",
+                    "name": "MergeRequestReviewState",
+                    "ofType": null
+                  },
+                  "defaultValue": null
+                },
+                {
+                  "name": "reviewStates",
+                  "description": "Reviewer states of the merge request.",
+                  "type": {
+                    "kind": "LIST",
+                    "name": null,
+                    "ofType": {
+                      "kind": "NON_NULL",
+                      "name": null,
+                      "ofType": {
+                        "kind": "ENUM",
+                        "name": "MergeRequestReviewState",
+                        "ofType": null
+                      }
+                    }
                   },
                   "defaultValue": null
                 },
@@ -215712,6 +216878,34 @@
                     "kind": "ENUM",
                     "name": "MilestoneWildcardId",
                     "ofType": null
+                  },
+                  "defaultValue": null
+                },
+                {
+                  "name": "reviewState",
+                  "description": "Reviewer state of the merge request.",
+                  "type": {
+                    "kind": "ENUM",
+                    "name": "MergeRequestReviewState",
+                    "ofType": null
+                  },
+                  "defaultValue": null
+                },
+                {
+                  "name": "reviewStates",
+                  "description": "Reviewer states of the merge request.",
+                  "type": {
+                    "kind": "LIST",
+                    "name": null,
+                    "ofType": {
+                      "kind": "NON_NULL",
+                      "name": null,
+                      "ofType": {
+                        "kind": "ENUM",
+                        "name": "MergeRequestReviewState",
+                        "ofType": null
+                      }
+                    }
                   },
                   "defaultValue": null
                 },
@@ -218924,6 +220118,34 @@
                   "defaultValue": null
                 },
                 {
+                  "name": "reviewState",
+                  "description": "Reviewer state of the merge request.",
+                  "type": {
+                    "kind": "ENUM",
+                    "name": "MergeRequestReviewState",
+                    "ofType": null
+                  },
+                  "defaultValue": null
+                },
+                {
+                  "name": "reviewStates",
+                  "description": "Reviewer states of the merge request.",
+                  "type": {
+                    "kind": "LIST",
+                    "name": null,
+                    "ofType": {
+                      "kind": "NON_NULL",
+                      "name": null,
+                      "ofType": {
+                        "kind": "ENUM",
+                        "name": "MergeRequestReviewState",
+                        "ofType": null
+                      }
+                    }
+                  },
+                  "defaultValue": null
+                },
+                {
                   "name": "sort",
                   "description": "Sort merge requests by the criteria.",
                   "type": {
@@ -219405,6 +220627,34 @@
                     "kind": "ENUM",
                     "name": "MilestoneWildcardId",
                     "ofType": null
+                  },
+                  "defaultValue": null
+                },
+                {
+                  "name": "reviewState",
+                  "description": "Reviewer state of the merge request.",
+                  "type": {
+                    "kind": "ENUM",
+                    "name": "MergeRequestReviewState",
+                    "ofType": null
+                  },
+                  "defaultValue": null
+                },
+                {
+                  "name": "reviewStates",
+                  "description": "Reviewer states of the merge request.",
+                  "type": {
+                    "kind": "LIST",
+                    "name": null,
+                    "ofType": {
+                      "kind": "NON_NULL",
+                      "name": null,
+                      "ofType": {
+                        "kind": "ENUM",
+                        "name": "MergeRequestReviewState",
+                        "ofType": null
+                      }
+                    }
                   },
                   "defaultValue": null
                 },
@@ -220849,6 +222099,34 @@
                     "kind": "ENUM",
                     "name": "MilestoneWildcardId",
                     "ofType": null
+                  },
+                  "defaultValue": null
+                },
+                {
+                  "name": "reviewState",
+                  "description": "Reviewer state of the merge request.",
+                  "type": {
+                    "kind": "ENUM",
+                    "name": "MergeRequestReviewState",
+                    "ofType": null
+                  },
+                  "defaultValue": null
+                },
+                {
+                  "name": "reviewStates",
+                  "description": "Reviewer states of the merge request.",
+                  "type": {
+                    "kind": "LIST",
+                    "name": null,
+                    "ofType": {
+                      "kind": "NON_NULL",
+                      "name": null,
+                      "ofType": {
+                        "kind": "ENUM",
+                        "name": "MergeRequestReviewState",
+                        "ofType": null
+                      }
+                    }
                   },
                   "defaultValue": null
                 },
@@ -222641,6 +223919,12 @@
               "description": "Callout feature name for overage_seat_count_threshold.",
               "isDeprecated": false,
               "deprecationReason": null
+            },
+            {
+              "name": "BILLING_RETRIAL_CARD",
+              "description": "Callout feature name for billing_retrial_card.",
+              "isDeprecated": false,
+              "deprecationReason": null
             }
           ],
           "possibleTypes": null
@@ -222692,6 +223976,18 @@
                   "name": "Boolean",
                   "ofType": null
                 }
+              },
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "approvedAt",
+              "description": "Timestamp of when the user approved the merge request. Returns `null` if the user has not approved it.",
+              "args": [],
+              "type": {
+                "kind": "SCALAR",
+                "name": "Time",
+                "ofType": null
               },
               "isDeprecated": false,
               "deprecationReason": null
@@ -232862,6 +234158,18 @@
               "deprecationReason": null
             },
             {
+              "name": "content",
+              "description": "Content of the wiki page.",
+              "args": [],
+              "type": {
+                "kind": "SCALAR",
+                "name": "String",
+                "ofType": null
+              },
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
               "name": "discussions",
               "description": "All discussions on the noteable.",
               "args": [
@@ -235245,6 +236553,11 @@
             },
             {
               "kind": "OBJECT",
+              "name": "WorkItemWidgetDecisionLog",
+              "ofType": null
+            },
+            {
+              "kind": "OBJECT",
               "name": "WorkItemWidgetDescription",
               "ofType": null
             },
@@ -236006,6 +237319,35 @@
           "possibleTypes": null
         },
         {
+          "kind": "OBJECT",
+          "name": "WorkItemWidgetDecisionLog",
+          "description": "Represents a decision log widget",
+          "fields": [
+            {
+              "name": "type",
+              "description": "Widget type.",
+              "args": [],
+              "type": {
+                "kind": "ENUM",
+                "name": "WorkItemWidgetType",
+                "ofType": null
+              },
+              "isDeprecated": false,
+              "deprecationReason": null
+            }
+          ],
+          "inputFields": null,
+          "interfaces": [
+            {
+              "kind": "INTERFACE",
+              "name": "WorkItemWidget",
+              "ofType": null
+            }
+          ],
+          "enumValues": null,
+          "possibleTypes": null
+        },
+        {
           "kind": "INTERFACE",
           "name": "WorkItemWidgetDefinition",
           "description": null,
@@ -236733,6 +238075,22 @@
                 "kind": "OBJECT",
                 "name": "WorkItemClosingMergeRequestConnection",
                 "ofType": null
+              },
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "closingMergeRequestsCount",
+              "description": "Number of merge requests that will close the work item when merged.",
+              "args": [],
+              "type": {
+                "kind": "NON_NULL",
+                "name": null,
+                "ofType": {
+                  "kind": "SCALAR",
+                  "name": "Int",
+                  "ofType": null
+                }
               },
               "isDeprecated": false,
               "deprecationReason": null
@@ -238497,6 +239855,12 @@
             {
               "name": "CUSTOM_FIELDS",
               "description": "Custom Fields widget.",
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "DECISION_LOG",
+              "description": "Decision Log widget.",
               "isDeprecated": false,
               "deprecationReason": null
             },
@@ -240994,7 +242358,7 @@
         },
         {
           "name": "gl_introduced",
-          "description": "Marks a field as introduced in a specific version. Fields with a version higher than the current one will return null.",
+          "description": "Marks a field as introduced in a specific version. Fields tagged with the current milestone or a later one return null when the field is absent from the schema.",
           "locations": [
             "FIELD",
             "INLINE_FRAGMENT"
@@ -241083,12 +242447,30 @@
               "defaultValue": null
             },
             {
-              "name": "traversal",
-              "description": "When true, this directive only verifies the token is scoped to the boundary (read_boundary), without enforcing the listed permissions. Use for entry-point fields like Query.group(fullPath:) where downstream fields enforce the real permissions. Only applies to project and group boundary types. All other boundary types fall back to the regular permission check.",
+              "name": "requirementGroup",
+              "description": "Label grouping directives that are alternative boundaries for the same requirement. The token must be authorized on any one boundary in a group, and on every group. Absent means the primary group. Set for a second container, such as a move target.",
               "type": {
                 "kind": "SCALAR",
-                "name": "Boolean",
+                "name": "String",
                 "ofType": null
+              },
+              "defaultValue": null
+            },
+            {
+              "name": "assignableWhen",
+              "description": "Conditions the current user must meet for the permissions to be offered in the token creation UI. Not a security control: the type, mutation, or field must still enforce the conditions. Valid values: admin, gitlab_team_member, saas, self_managed.",
+              "type": {
+                "kind": "LIST",
+                "name": null,
+                "ofType": {
+                  "kind": "NON_NULL",
+                  "name": null,
+                  "ofType": {
+                    "kind": "SCALAR",
+                    "name": "String",
+                    "ofType": null
+                  }
+                }
               },
               "defaultValue": null
             }

@@ -136,6 +136,52 @@ Set the limit to `0` to disable it.
 
 - **Default rate limit**: Disabled (unlimited).
 
+### Service Desk email rate limit
+
+{{< history >}}
+
+- Introduced in GitLab 19.4 [with a feature flag](feature_flags/_index.md) named `service_desk_email_rate_limit`. Disabled by default.
+
+{{< /history >}}
+
+> [!flag]
+> The availability of this feature is controlled by a feature flag.
+> For more information, see the history.
+
+Limit the number of outbound Service Desk notification emails that a
+top-level namespace can send per hour and per day. This includes the
+ticket creation confirmation email, new comment notification emails,
+and new participant notification emails. All projects and subgroups in
+the namespace share these limits. Each email sent counts as one
+increment, so a comment that notifies 10 participants counts as 10
+emails.
+
+When a namespace reaches either limit, GitLab suppresses the outbound
+email but still creates the ticket, processes the comment, or adds the
+participant. GitLab adds an internal note to the affected ticket to
+record that email sending was suppressed, at most once per ticket per
+hour.
+
+To set these limits for a GitLab Self-Managed instance, use the
+[Plan Limits API](../api/plan_limits.md) or run the following in the
+[GitLab Rails console](operations/rails_console.md#starting-a-rails-console-session):
+
+```ruby
+# If limits don't exist for the default plan, you can create one with:
+# Plan.default.create_limits!
+
+Plan.default.actual_limits.update!(
+  service_desk_outbound_emails_per_hour: 100,
+  service_desk_outbound_emails_per_day: 1000
+)
+```
+
+Set a limit to `0` to disable it.
+
+- **Default rate limit**: Disabled (unlimited) on GitLab Self-Managed.
+  For GitLab.com plan-specific limits, see
+  [Rate limits on GitLab.com](../user/gitlab_com/_index.md#service-desk-email-rate-limit).
+
 ### Search rate limit
 
 This setting limits search requests as follows:
@@ -172,6 +218,15 @@ Autocomplete requests that exceed the autocomplete rate limit per minute return 
 ```plaintext
 This endpoint has been requested too many times. Try again later.
 ```
+
+### Dependency proxy rate limit
+
+Authenticated requests to the
+[dependency proxy for container images](../user/packages/dependency_proxy/_index.md) can use a
+[dedicated rate limit](settings/user_and_ip_rate_limits.md#enable-authenticated-dependency-proxy-request-rate-limit)
+instead of the authenticated web request rate limit.
+
+- **Default rate limit**: Disabled. When enabled, defaults to 1,000 requests per 15 seconds per user.
 
 ## Gitaly concurrency limit
 
@@ -985,6 +1040,29 @@ The Commits and Files APIs enforce maximum size and rate limits on the following
 - **Rate limit**: 3 requests per 30 seconds for requests above 20 MB.
 
 The maximum request size is configurable on GitLab Self-Managed by setting the `GITLAB_COMMITS_MAX_REQUEST_SIZE_BYTES` environment variable. This variable sets the maximum request size in bytes. Instructions on how to set an environment variable can be found in [HTTP Request Limits](#http-request-limits).
+
+## Secrets Manager limits
+
+{{< history >}}
+
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/219436) in GitLab 18.9.
+
+{{< /history >}}
+
+[GitLab Secrets Manager](../ci/secrets/secrets_manager/_index.md) enforces these limits:
+
+| Limit               | Default              | Configurable |
+|:--------------------|:---------------------|:-------------|
+| Secrets per project | 100                  | {{< yes >}}  |
+| Secrets per group   | 500                  | {{< yes >}}  |
+| Secret value size   | 10 KB (10,000 bytes) | {{< no >}}   |
+
+To change the secret count limits, use the `project_secrets_limit` and `group_secrets_limit`
+settings in the [application settings API](../api/settings.md). These settings apply to every
+project and group on the instance.
+
+> [!warning]
+> Setting `project_secrets_limit` or `group_secrets_limit` to `0` removes the limit entirely. Without a limit, users can create an unlimited number of secrets, which can exhaust instance resources.
 
 ## List all instance limits
 

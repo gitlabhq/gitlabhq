@@ -1,0 +1,60 @@
+diff --git a/node_modules/@vue/compat/dist/vue.cjs.js b/node_modules/@vue/compat/dist/vue.cjs.js
+index aaaaaaa..bbbbbbb 100644
+--- a/node_modules/@vue/compat/dist/vue.cjs.js
++++ b/node_modules/@vue/compat/dist/vue.cjs.js
+@@ -6242,7 +6242,14 @@
+         }
+       }
+     } else if (!skipLegacyRootLevelProps(key)) {
+-      converted[key] = legacyProps[key];
++      if (isOn(key) && converted[key] && converted[key] !== legacyProps[key]) {
++        converted[key] = [].concat(
++          converted[key],
++          legacyProps[key]
++        );
++      } else {
++        converted[key] = legacyProps[key];
++      }
+     }
+   }
+   if (legacyProps.staticClass) {
+diff --git a/node_modules/@vue/compat/dist/vue.esm-bundler.js b/node_modules/@vue/compat/dist/vue.esm-bundler.js
+index aaaaaaa..bbbbbbb 100644
+--- a/node_modules/@vue/compat/dist/vue.esm-bundler.js
++++ b/node_modules/@vue/compat/dist/vue.esm-bundler.js
+@@ -6223,7 +6223,14 @@
+         }
+       }
+     } else if (!skipLegacyRootLevelProps(key)) {
+-      converted[key] = legacyProps[key];
++      if (isOn(key) && converted[key] && converted[key] !== legacyProps[key]) {
++        converted[key] = [].concat(
++          converted[key],
++          legacyProps[key]
++        );
++      } else {
++        converted[key] = legacyProps[key];
++      }
+     }
+   }
+   if (legacyProps.staticClass) {
+diff --git a/node_modules/@vue/compat/dist/vue.runtime.esm-bundler.js b/node_modules/@vue/compat/dist/vue.runtime.esm-bundler.js
+index aaaaaaa..bbbbbbb 100644
+--- a/node_modules/@vue/compat/dist/vue.runtime.esm-bundler.js
++++ b/node_modules/@vue/compat/dist/vue.runtime.esm-bundler.js
+@@ -6150,7 +6150,14 @@
+         }
+       }
+     } else if (!skipLegacyRootLevelProps(key)) {
+-      converted[key] = legacyProps[key];
++      if (isOn(key) && converted[key] && converted[key] !== legacyProps[key]) {
++        converted[key] = [].concat(
++          converted[key],
++          legacyProps[key]
++        );
++      } else {
++        converted[key] = legacyProps[key];
++      }
+     }
+   }
+   if (legacyProps.staticClass) {

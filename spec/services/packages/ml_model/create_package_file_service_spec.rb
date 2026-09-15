@@ -20,7 +20,6 @@ RSpec.describe Packages::MlModel::CreatePackageFileService, feature_category: :m
     let(:sha256) { '440e5e148a25331bbd7991575f7d54933c0ebf6cc735a18ee5066ac1381bb590' }
     let(:temp_file) { Tempfile.new("test") }
     let(:file) { UploadedFile.new(temp_file.path, sha256: sha256) }
-    let(:package_service) { double }
 
     subject(:execute_service) { described_class.new(project, user, params).execute }
 

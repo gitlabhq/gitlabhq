@@ -164,7 +164,7 @@ Follow the [official guide](https://docs.conan.io/2.17/examples/runners/docker/b
 ### Re-publishing a package with the same recipe
 
 When you publish a package that has the same recipe (`package-name/version@user/channel`)
-as an existing package, Conan skips the upload because they are already in the server.
+as an existing package, Conan skips the upload because they are already on the server.
 
 ## Install a Conan 2 package
 

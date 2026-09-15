@@ -41,19 +41,19 @@ RSpec.describe 'User uploads new design', :js, feature_category: :design_managem
   end
 
   def logo_fixture
-    Rails.root.join('spec', 'fixtures', 'dk.png')
+    Rails.root.join('spec/fixtures/dk.png')
   end
 
   def gif_fixture
-    Rails.root.join('spec', 'fixtures', 'banana_sample.gif')
+    Rails.root.join('spec/fixtures/banana_sample.gif')
   end
 
   def logo_svg_fixture
-    Rails.root.join('spec', 'fixtures', 'logo_sample.svg')
+    Rails.root.join('spec/fixtures/logo_sample.svg')
   end
 
   def big_image_fixture
-    Rails.root.join('spec', 'fixtures', 'big-image.png')
+    Rails.root.join('spec/fixtures/big-image.png')
   end
 
   def upload_design(fixtures, count:)

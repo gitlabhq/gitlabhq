@@ -494,7 +494,7 @@ The following guidelines explain how exclusion patterns behave:
 
 ## Entry owners
 
-Entries must have one or more owners These can be groups, subgroups,
+Entries must have one or more owners. These can be groups, subgroups,
 and users.
 
 ```plaintext

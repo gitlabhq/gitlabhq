@@ -9,7 +9,7 @@ RSpec.describe Import::BulkImports::EphemeralData, :clean_gitlab_redis_shared_st
     it 'enables importer_user_mapping' do
       ephemeral_data.enable_importer_user_mapping
 
-      expect(ephemeral_data.importer_user_mapping_enabled?).to eq(true)
+      expect(ephemeral_data.importer_user_mapping_enabled?).to be(true)
     end
   end
 
@@ -20,13 +20,13 @@ RSpec.describe Import::BulkImports::EphemeralData, :clean_gitlab_redis_shared_st
       end
 
       it 'returns true' do
-        expect(ephemeral_data.importer_user_mapping_enabled?).to eq(true)
+        expect(ephemeral_data.importer_user_mapping_enabled?).to be(true)
       end
     end
 
     context 'when importer_user_mapping is not enabled' do
       it 'returns false' do
-        expect(ephemeral_data.importer_user_mapping_enabled?).to eq(false)
+        expect(ephemeral_data.importer_user_mapping_enabled?).to be(false)
       end
     end
 
@@ -36,7 +36,7 @@ RSpec.describe Import::BulkImports::EphemeralData, :clean_gitlab_redis_shared_st
       end
 
       it 'returns false' do
-        expect(described_class.new(456).importer_user_mapping_enabled?).to eq(false)
+        expect(described_class.new(456).importer_user_mapping_enabled?).to be(false)
       end
     end
   end

@@ -4,7 +4,7 @@ module RuboCop
   module Cop
     module Graphql
       # This cop enforces the enum naming conventions from the enum style guide:
-      # https://docs.gitlab.com/ee/development/api_graphql_styleguide.html#enums
+      # https://docs.gitlab.com/development/api_graphql_styleguide/#enums
       #
       # @example
       #
@@ -32,7 +32,7 @@ module RuboCop
       #     declarative_enum NiceDeclarativeEnum
       #   end
       class EnumNames < RuboCop::Cop::Base
-        SEE_SG_MSG = "See https://docs.gitlab.com/ee/development/api_graphql_styleguide.html#enums"
+        SEE_SG_MSG = "See https://docs.gitlab.com/development/api_graphql_styleguide/#enums"
         CLASS_NAME_SUFFIX_MSG = "Enum class names must end with `Enum`. #{SEE_SG_MSG}".freeze
         GRAPHQL_NAME_MISSING_MSG = "A `graphql_name` must be defined for a GraphQL enum. #{SEE_SG_MSG}".freeze
         GRAPHQL_NAME_WITH_ENUM_MSG = "The `graphql_name` must not contain the string \"Enum\". #{SEE_SG_MSG}".freeze

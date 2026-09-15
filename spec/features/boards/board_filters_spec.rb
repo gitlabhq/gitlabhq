@@ -16,8 +16,11 @@ RSpec.describe 'Issue board filters', :js, feature_category: :planning_views do
   let_it_be(:issue_2) { create(:labeled_issue, project: project, milestone: milestone_2, assignees: [user], labels: [project_label], confidential: true) }
   let_it_be(:award_emoji1) { create(:award_emoji, name: AwardEmoji::THUMBS_UP, user: user, awardable: issue_1) }
 
-  let(:filtered_search) { find_by_testid('issue-board-filtered-search') }
   let(:filter_submit) { find('.gl-search-box-by-click-search-button') }
+
+  def filtered_search
+    find_by_testid('issue-board-filtered-search')
+  end
 
   def filter_input
     gl_filtered_search_input(filtered_search)
@@ -39,7 +42,7 @@ RSpec.describe 'Issue board filters', :js, feature_category: :planning_views do
       sign_in(user)
 
       visit project_board_path(project, board)
-      wait_for_requests
+      wait_for_board_to_load
     end
 
     shared_examples 'loads all the users when opened' do
@@ -217,13 +220,21 @@ RSpec.describe 'Issue board filters', :js, feature_category: :planning_views do
     context 'when filtering by assignee' do
       it 'includes descendant project members in autocomplete' do
         visit group_board_path(group, board)
-        wait_for_requests
+        wait_for_board_to_load
 
         set_filter('assignee')
 
         expect(page).to have_css('.gl-filtered-search-suggestion', text: child_project_member.name)
       end
     end
+  end
+
+  # The search bar is rebuilt when the board query resolves, invalidating anything already found inside it. A bare
+  # `wait_for_requests` returns before those queries are even issued.
+  def wait_for_board_to_load
+    expect(page).to have_testid('board-list')
+    expect(page).to have_no_testid('board_list_loading')
+    wait_for_requests
   end
 
   def set_filter(filter)

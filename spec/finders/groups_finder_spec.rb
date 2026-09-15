@@ -624,6 +624,86 @@ RSpec.describe GroupsFinder, feature_category: :groups_and_projects do
       end
     end
 
+    describe 'sorting by similarity' do
+      # Named so the closest match is the older record, which makes similarity
+      # ordering distinguishable from the `id_desc` fallback.
+      let_it_be(:member) { create(:user) }
+      let_it_be(:closest_match) { create(:group, :private, name: 'alpha', path: 'alpha', developers: member) }
+      let_it_be(:weaker_match) do
+        create(:group, :private, name: 'alpha beta gamma', path: 'alpha-beta-gamma', developers: member)
+      end
+
+      let(:base_params) { { sort: 'similarity', search: 'alpha', allow_similarity_sort: true } }
+      let(:params) { base_params.merge(all_available: false) }
+
+      subject(:result) { described_class.new(member, params).execute.to_a }
+
+      it 'ranks the closest match first' do
+        expect(result).to eq([closest_match, weaker_match])
+      end
+
+      context 'when scoped to owned groups' do
+        let_it_be(:owned_closest_match) do
+          create(:group, :private, name: 'alpha owned', path: 'alpha-owned', owners: member)
+        end
+
+        let_it_be(:owned_weaker_match) do
+          create(:group, :private, name: 'alpha owned beta gamma', path: 'alpha-owned-beta-gamma', owners: member)
+        end
+
+        let(:params) { base_params.merge(owned: true) }
+
+        it 'ranks the closest match first' do
+          expect(result).to eq([owned_closest_match, owned_weaker_match])
+        end
+      end
+
+      context 'when scoped by minimum access level' do
+        let(:params) { base_params.merge(min_access_level: Gitlab::Access::DEVELOPER) }
+
+        it 'ranks the closest match first' do
+          expect(result).to eq([closest_match, weaker_match])
+        end
+      end
+
+      context 'when all available groups are requested' do
+        let(:params) { base_params.merge(all_available: true) }
+
+        it 'falls back to id_desc' do
+          expect(result).to eq([weaker_match, closest_match])
+        end
+      end
+
+      context 'when the user can read all groups' do
+        let_it_be(:admin) { create(:admin) }
+
+        let(:params) { base_params.merge(all_available: true) }
+
+        subject(:result) { described_class.new(admin, params).execute.to_a }
+
+        before do
+          enable_admin_mode!(admin)
+        end
+
+        it 'falls back to id_desc' do
+          expect(result).to eq([weaker_match, closest_match])
+        end
+      end
+
+      context 'when filtered to public groups only' do
+        let_it_be(:public_closest_match) { create(:group, :public, name: 'alpha public', path: 'alpha-public') }
+        let_it_be(:public_weaker_match) do
+          create(:group, :public, name: 'alpha public beta gamma', path: 'alpha-public-beta-gamma')
+        end
+
+        let(:params) { base_params.merge(all_available: false, visibility: 'public') }
+
+        it 'falls back to id_desc' do
+          expect(result).to eq([public_weaker_match, public_closest_match])
+        end
+      end
+    end
+
     describe 'with_statistics' do
       let_it_be(:group) { create(:group, :public) }
 

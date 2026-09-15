@@ -152,10 +152,26 @@ haml-lint:
     paths:
       - tmp/feature_flags/
 
-rubocop:
+update-static-analysis-cache:
   extends:
     - .static-analysis-base
     - .rubocop-job-cache-push
+    - .caching:rules:rubocop-cache-update
+  stage: prepare
+  needs:
+    - !reference [.lint-base, needs]
+    - job: cache:ruby-gems
+      optional: true
+  script:
+    # Silence cop offenses for rules with "grace period".
+    # This will notify Slack if offenses were silenced.
+    # For the moment we only cache `tmp/rubocop_cache` so we don't need to run all the tasks.
+    - fail_on_warnings bundle exec rake rubocop:check:graceful
+
+rubocop:
+  extends:
+    - .static-analysis-base
+    - .rubocop-job-cache
     - .static-analysis:rules:rubocop
   needs:
     - !reference [.lint-base, needs]
@@ -349,6 +365,7 @@ ci-job-token-policies-verify:
 api-high-impact-entity-baseline-check:
   variables:
     SETUP_DB: "false"
+    DRIFT_ENV_FILE: check_job.env
   extends:
     - .default-retry
     - .ruby-cache
@@ -375,6 +392,11 @@ api-high-impact-entity-baseline-check:notify:
     - job: api-high-impact-entity-baseline-check
       artifacts: true
   script:
+    - |
+      if [ "${BASELINE_DRIFT}" != "true" ]; then
+        echo "Check job failed without reporting drift (for example a clone or setup failure). Skipping the alert."
+        exit 0
+      fi
     - 'scripts/slack alerts-api-platform ":warning: New high-impact API entities detected. Baseline drift found in weekly check. See ${CHECK_JOB_URL}" warning "GitLab Bot"'
 
 templates-shellcheck:
@@ -412,6 +434,9 @@ ping-appsec-for-sast-findings:
     # Requires SAST_TRIAGE_ENABLED=1 (verdicts only exist once shadow-mode triage has run).
     # See: scripts/semgrep_result_processor.rb and work item gitlab-com/gl-security/product-security/appsec/appsec-team#1647
     SAST_TRIAGE_COMMENT_ENABLED: "0"
+    # Set SAST_TRIAGE_ACTIONS_ENABLED=1 to let high-confidence Duo verdicts act on findings:
+    # Requires SAST_TRIAGE_ENABLED=1 and SAST_TRIAGE_COMMENT_ENABLED=1
+    SAST_TRIAGE_ACTIONS_ENABLED: "0"
   needs:
     - !reference [.lint-base, needs]
     - semgrep-appsec-custom-rules

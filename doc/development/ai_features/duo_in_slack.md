@@ -24,10 +24,10 @@ To test the feature locally, you must:
   [Configure runners to execute flows](../../user/duo_agent_platform/flows/execution/_index.md#configure-runners-to-execute-flows).
 - A Slack workspace where you are an administrator. Use a
   [Slack developer sandbox](#use-a-slack-developer-sandbox), not the GitLab workspace.
-- The `slack_duo_agent` [feature flag](../feature_flags/_index.md) enabled globally:
+- Experiment and beta GitLab Duo features turned on. In a GDK, this is the instance-level setting:
 
   ```ruby
-  Feature.enable(:slack_duo_agent)
+  ApplicationSetting.current.update!(instance_level_ai_beta_features_enabled: true)
   ```
 
 - A [default GitLab Duo namespace](../../user/profile/preferences.md#set-a-default-gitlab-duo-namespace)
@@ -62,10 +62,17 @@ Slack must reach your GDK, so you need a reverse tunnel that gives your GDK a pu
 > prohibit circumventing the local firewall. Stop the tunnel when you finish.
 > See this [past security exception request](https://gitlab.com/gitlab-com/gl-security/corp/issue-tracker/-/work_items/5009) as an example.
 
-The following steps use [`ngrok`](https://ngrok.com/), but any tunnel that terminates TLS and
-forwards to your GDK works.
+Any tunnel that terminates TLS and forwards to your GDK works. The following steps cover
+`ngrok` and `cloudflared`. `ngrok` is blocked on GitLab-managed macOS devices: running it shows a
+dialog that says `ngrok is not allowed for use at GitLab` and points to the `#it_security_help`
+Slack channel. On a managed Mac, use `cloudflared` instead.
 
-1. Install `ngrok`, then add the authentication token from your
+In the following commands, replace `gdk.test:8080` with the host and port your GDK listens on.
+For example, if you run GDK without NGINX, use `gdk.test:3000`.
+
+### Use `ngrok`
+
+1. Install [`ngrok`](https://ngrok.com/), then add the authentication token from your
    [`ngrok` dashboard](https://dashboard.ngrok.com/get-started/your-authtoken):
 
    ```shell
@@ -82,15 +89,49 @@ forwards to your GDK works.
    ngrok http gdk.test:8080 --url=<your_static_domain>.ngrok-free.app
    ```
 
-1. Start GDK with the `RAILS_HOSTS` set to your `ngrok` domain:
+### Use `cloudflared`
+
+1. Install [`cloudflared`](https://developers.cloudflare.com/cloudflare-one/connections/connect-networks/):
 
    ```shell
-   RAILS_HOSTS=<your_static_domain>.ngrok-free.app gdk start
+   brew install cloudflared
    ```
+
+1. Start a Quick Tunnel to the host and port your GDK listens on:
+
+   ```shell
+   cloudflared tunnel --url "http://gdk.test:8080"
+   ```
+
+   The command prints a random `https://<random-words>.trycloudflare.com` hostname. Leave the
+   process running, because stopping it closes the tunnel.
+
+A Quick Tunnel has no static hostname, so every restart produces a new one. Each new hostname
+means you must update `RAILS_HOSTS` and the Slack app manifest, and reinstall the app both in
+Slack and from GitLab. For a stable hostname, create a
+[Cloudflare named tunnel](https://developers.cloudflare.com/cloudflare-one/connections/connect-apps/),
+which requires a Cloudflare account and a domain. GitLab team members can purchase a
+[non-trademark domain name](https://internal.gitlab.com/handbook/security/product_security/infrastructure_security/guides/domains-dns/#non-trademark-domain-names)
+without approval.
+
+### Allow the tunnel host in Rails
+
+1. Start GDK with `RAILS_HOSTS` set to your tunnel hostname:
+
+   ```shell
+   RAILS_HOSTS=<your_tunnel_hostname> gdk start
+   ```
+
+   `RAILS_HOSTS` takes a bare hostname, not a URL. With an `https://` prefix, the hostname never
+   matches and Rails keeps blocking the host.
 
 1. Confirm that the tunnel reaches your GDK by opening the tunnel URL in a browser. You should see your GDK sign-in page (It's fine if assets don't load).
 
 ## Create the Slack app
+
+> [!note]
+> The **Create Slack app** button does not appear when `GITLAB_SIMULATE_SAAS` is set.
+> If you don't see it, unset that variable and restart GDK before continuing.
 
 1. In your GDK, in the upper-right corner, select **Admin**.
 1. Select **Settings** > **General**, then expand **GitLab for Slack app**.
@@ -142,6 +183,27 @@ Run the first mention as a user who can create projects in the default GitLab Du
 mentions carry no project context, so `Ai::Messaging::DefaultProjectFlowResolver` derives one from
 your default GitLab Duo namespace and calls `Ai::Messaging::WorkspaceProjectService`, which finds the
 `duo-workspace` project in that namespace or creates it.
+
+## Reset your local setup
+
+To start over from scratch, remove all Slack integration data from your GDK and delete the app from Slack:
+
+1. In a Rails console, run:
+
+   ```ruby
+   SlackIntegration.delete_all
+   Integrations::GitlabSlackApplication.delete_all
+   ChatName.delete_all
+   ApplicationSetting.current.update!(
+     slack_app_enabled: false,
+     slack_app_id: nil,
+     slack_app_secret: nil,
+     slack_app_signing_secret: nil,
+     slack_app_verification_token: nil
+   )
+   ```
+
+1. Go to [**Your Apps**](https://api.slack.com/apps) in Slack, open the app, and delete it.
 
 ## Troubleshooting
 

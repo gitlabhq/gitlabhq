@@ -60,6 +60,15 @@ module RapidDiffs
       "code-review-#{@diff_file.code_review_id[0..8]}"
     end
 
+    def viewed_checkbox_tooltip
+      description = s_('MergeRequest|Viewed by me')
+      user = helpers.current_user
+
+      return description if user && !user.keyboard_shortcuts_enabled
+
+      "#{description} <kbd class='flat gl-ml-1' aria-hidden=true>v</kbd>"
+    end
+
     def additional_menu_items
       [edit_in_sfe].compact
     end

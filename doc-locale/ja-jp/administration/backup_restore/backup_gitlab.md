@@ -27,7 +27,6 @@ GitLabのバックアップは、データを保護し、ディザスターリ�
 
 {{< history >}}
 
-- セキュアファイルはGitLab 16.1で[導入されました](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/121142)。
 - 外部マージリクエストの差分はGitLab 17.1で[導入されました](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/154914)。
 
 {{< /history >}}
@@ -50,9 +49,8 @@ GitLabは、インスタンス全体をバックアップするためのコマ�
 ## バックアップに含まれないデータ {#data-not-included-in-a-backup}
 
 > [!warning]
-> 設定ファイルを個別にバックアップするために、[設定ファイルの保存](#storing-configuration-files)について読むことを強くお勧めします。
+> 別途[設定ファイルを保存](#storing-configuration-files)する方法を読むことを強くお勧めします。
 
-- [Mattermostのデータ](../../integration/mattermost/_index.md#back-up-gitlab-mattermost)
 - Redis（およびそれに依存するSidekiqジョブ）
 - Linuxパッケージ（Omnibus）/Docker/自己コンパイルによるインストール環境の[オブジェクトストレージ](#object-storage)
 - [グローバルサーバーフック](../server_hooks.md#create-global-server-hooks-for-all-repositories)
@@ -69,7 +67,7 @@ GitLabは、インスタンス全体をバックアップするためのコマ�
 1. 該当する場合は、オブジェクトストレージをバックアップします。
 1. システム設定ファイルを手動でバックアップします。
 
-こちらも参照してください。
+関連トピック: 
 
 - [1kリファレンスアーキテクチャ](../reference_architectures/1k_users.md)
 - [バックアップコマンドの詳細](#backup-command)
@@ -104,7 +102,7 @@ GitLabの最も単純なケースでは、他のすべてのGitLabサービス�
 
 PostgreSQLは、HTMLレンダリングされたMarkdownなどのキャッシュデータや、デフォルトではマージリクエストの差分も保持します。ただし、マージリクエストの差分は、ファイルシステムまたはオブジェクトストレージに[オフロード](#blobs)するように設定することもできます。
 
-Gitaly Cluster (Praefect)は、PostgreSQLデータベースを信頼できる唯一の情報源として使用して、Gitalyノードを管理します。
+Gitaly Cluster (Praefect) は、PostgreSQLデータベースを信頼できる唯一の情報源として使用して、Gitalyノードを管理します。
 
 一般的なPostgreSQLユーティリティである[`pg_dump`](https://www.postgresql.org/docs/16/app-pgdump.html)は、PostgreSQLデータベースの復元に使用できるバックアップファイルを生成します。[バックアップコマンド](#backup-command)は、内部でこのユーティリティを使用しています。
 
@@ -150,9 +148,9 @@ GitLabは、イシューの添付ファイルやLFSオブジェクトなどのbl
 
 - [Amazon S3のバックアップ](https://docs.aws.amazon.com/aws-backup/latest/devguide/s3-backups.html)
 - [Google Cloud Storage Transfer Service](https://cloud.google.com/storage-transfer-service)
-- [Google Cloud Storageバージョニング](https://cloud.google.com/storage/docs/object-versioning)
+- [Google Cloud Storage Object Versioning](https://docs.cloud.google.com/storage/docs/object-versioning)
 
-こちらも参照してください。
+関連トピック: 
 
 - [バックアップコマンドの詳細](#backup-command)
 - [オブジェクトストレージの設定](../object_storage.md)
@@ -171,12 +169,12 @@ GitLabコンテナレジストリのストレージは、次のいずれかの�
 
 #### メタデータデータベース {#metadata-database}
 
-[コンテナレジストリメタデータデータベース](https://docs.gitlab.com/charts/charts/registry/metadata_database)を有効にしている場合は、バックアップ中にレジストリデータベースへのアクセスを設定する必要があります。必要な認証情報を設定するには、GitLabインスタンスの指示に従ってください:
+[コンテナレジストリメタデータデータベース](https://docs.gitlab.com/charts/charts/registry/metadata_database/)を有効にしている場合は、レジストリデータベースへのアクセスをバックアップ中に設定する必要があります。必要な認証情報を設定するには、GitLabインスタンスの指示に従ってください:
 
 - [Linuxパッケージの指示](https://docs.gitlab.com/omnibus/settings/backups/#container-registry-metadata-database-backup-credentials)
 - [GitLab Helmチャート](https://docs.gitlab.com/charts/charts/gitlab/toolbox/#registry-metadata-database-credentials)
 
-こちらも参照してください。
+関連トピック: 
 
 - [GitLabコンテナレジストリ](../packages/container_registry.md)
 - [オブジェクトストレージの設定](../object_storage.md)
@@ -184,7 +182,7 @@ GitLabコンテナレジストリのストレージは、次のいずれかの�
 ### 設定ファイルの保存 {#storing-configuration-files}
 
 > [!warning]
-> GitLabが提供するバックアップRakeタスクは、設定ファイルを保存しません。その主な理由は、データベースには、2要素認証やCI/CDセキュア変数の暗号化情報を含むアイテムが保存されているためです。暗号化キーと同じ場所に暗号化情報を保存すると、そもそも暗号化を行う意味がなくなります。たとえば、シークレットファイルにはデータベースの暗号化キーが含まれています。このファイルを失うと、GitLabアプリケーションはデータベース内の暗号化された値を復号化できなくなります。
+> GitLabが提供するバックアップのRakeタスクは、設定ファイルを保存しません。その主な理由は、データベースには、2要素認証やCI/CDセキュア変数の暗号化情報を含むアイテムが保存されているためです。暗号化キーと同じ場所に暗号化情報を保存すると、そもそも暗号化を行う意味がなくなります。たとえば、シークレットファイルにはデータベースの暗号化キーが含まれています。このファイルを失うと、GitLabアプリケーションはデータベース内の暗号化された値を復号化できなくなります。
 >
 > さらに、シークレットファイルはアップグレード後に変更される可能性があります。
 
@@ -237,7 +235,7 @@ Elasticsearchは、高度な検索のためのオプションのデータベー�
 - [Redisバックアップ手順](https://redis.io/docs/latest/operate/oss_and_stack/management/persistence/#backing-up-redis-data)
 - [Elasticsearchバックアップ手順](https://www.elastic.co/guide/en/elasticsearch/reference/current/snapshot-restore.html)
 
-こちらも参照してください。[バックアップコマンドの詳細](#backup-command)。
+関連トピック: [バックアップコマンドの詳細](#backup-command)。
 
 ### 要件 {#requirements}
 
@@ -248,7 +246,7 @@ Elasticsearchは、高度な検索のためのオプションのデータベー�
 
 ### バックアップコマンド {#backup-command}
 
-- バックアップコマンドは、Linuxパッケージ (Omnibus) / Docker / セルフコンパイルインストールのオブジェクトストレージ内の項目をバックアップしません。
+- バックアップコマンドは、Linuxパッケージ（Omnibus）/ Docker / セルフコンパイルインストールのオブジェクトストレージ内の項目をバックアップしません。
 - バックアップコマンドは、パフォーマンス上の理由から、またはPatroniクラスターとともにPgBouncerを使用している場合、追加のパラメータを必要とします。
 - バックアップは、作成時とまったく同じバージョンおよびタイプ（CE/EE）のGitLabにのみ復元できます。
 
@@ -353,7 +351,7 @@ sudo gitlab-backup create STRATEGY=copy
 #### バックアップファイル名 {#backup-filename}
 
 > [!warning]
-> カスタムバックアップファイル名を使用している場合、[バックアップのライフタイムを制限](#limit-backup-lifetime-for-local-files-prune-old-backups)することはできません。
+> カスタムのバックアップファイル名を使用すると、バックアップの[ライフタイム](#limit-backup-lifetime-for-local-files-prune-old-backups)を制限することはできません。
 
 バックアップファイルは、[特定のデフォルト](backup_archive_process.md#backup-id)の命名規則に従って作成されます。ただし、`BACKUP`環境変数を設定することで、ファイル名の`<backup-id>`部分をオーバーライドできます。例: 
 
@@ -368,9 +366,9 @@ sudo gitlab-backup create BACKUP=dump
 デフォルトでは、次のバックアップ時に、Gzipの高速圧縮を適用します。
 
 - PostgreSQLデータベースのダンプ。
-- blob（例：アップロード、ジョブアーティファクト、外部マージリクエストの差分）。
+- blob（例: アップロード、ジョブアーティファクト、外部マージリクエストの差分）。
 
-こちらも参照してください。
+関連トピック: 
 
 - [PostgreSQLデータベース](#postgresql-databases)
 - [blob](#blobs)
@@ -422,7 +420,7 @@ DECOMPRESS_CMD=tee gitlab-backup restore
 ##### `pigz`を使用した並列圧縮 {#parallel-compression-with-pigz}
 
 > [!warning]
-> デフォルトのGzip圧縮ライブラリをオーバーライドするために`COMPRESS_CMD`と`DECOMPRESS_CMD`の使用をサポートしていますが、ルーチンベースではデフォルトオプションのGzipライブラリのみをテストしています。バックアップの実行可能性については、ユーザー自身がテストおよび検証する必要があります。圧縮コマンドをオーバーライドするかどうかにかかわらず、一般的なバックアップのベストプラクティスとして、ユーザー自身でテストと検証を行うことを強くおすすめします。別の圧縮ライブラリで問題が発生した場合は、デフォルトのライブラリに戻すことをおすすめします。代替ライブラリを使用した場合のトラブルシューティングやエラーの修正は、GitLabにとって優先度が低くなります。
+> `COMPRESS_CMD`および`DECOMPRESS_CMD`を使用してデフォルトのGzip圧縮ライブラリをオーバーライドすることをサポートしていますが、ルーチンベースではデフォルトオプションのデフォルトGzipライブラリのみをテストしています。バックアップの実行可能性については、ユーザー自身がテストおよび検証する必要があります。圧縮コマンドをオーバーライドするかどうかにかかわらず、一般的なバックアップのベストプラクティスとして、ユーザー自身でテストと検証を行うことを強くおすすめします。別の圧縮ライブラリで問題が発生した場合は、デフォルトのライブラリに戻すことをおすすめします。代替ライブラリを使用した場合のトラブルシューティングやエラーの修正は、GitLabにとって優先度が低くなります。
 
 `pigz`を使用して4つの並列プロセスでバックアップを圧縮する例: 
 
@@ -442,7 +440,7 @@ sudo DECOMPRESS_CMD="pigz --decompress --stdout" gitlab-backup restore
 ##### `zstd`を使用した並列圧縮 {#parallel-compression-with-zstd}
 
 > [!warning]
-> デフォルトのGzip圧縮ライブラリをオーバーライドするために`COMPRESS_CMD`と`DECOMPRESS_CMD`の使用をサポートしていますが、ルーチンベースではデフォルトオプションのGzipライブラリのみをテストしています。バックアップの実行可能性については、ユーザー自身がテストおよび検証する必要があります。圧縮コマンドをオーバーライドするかどうかにかかわらず、一般的なバックアップのベストプラクティスとして、ユーザー自身でテストと検証を行うことを強くおすすめします。別の圧縮ライブラリで問題が発生した場合は、デフォルトのライブラリに戻すことをおすすめします。代替ライブラリを使用した場合のトラブルシューティングやエラーの修正は、GitLabにとって優先度が低くなります。
+> `COMPRESS_CMD`および`DECOMPRESS_CMD`を使用してデフォルトのGzip圧縮ライブラリをオーバーライドすることをサポートしていますが、ルーチンベースではデフォルトオプションのデフォルトGzipライブラリのみをテストしています。バックアップの実行可能性については、ユーザー自身がテストおよび検証する必要があります。圧縮コマンドをオーバーライドするかどうかにかかわらず、一般的なバックアップのベストプラクティスとして、ユーザー自身でテストと検証を行うことを強くおすすめします。別の圧縮ライブラリで問題が発生した場合は、デフォルトのライブラリに戻すことをおすすめします。代替ライブラリを使用した場合のトラブルシューティングやエラーの修正は、GitLabにとって優先度が低くなります。
 
 `zstd`を使用して4つのスレッドでバックアップを圧縮する例: 
 
@@ -490,6 +488,7 @@ sudo gitlab-backup create BACKUP=dump GZIP_RSYNCABLE=yes
 - `registry`（コンテナレジストリイメージ）
 - `packages`（パッケージ）
 - `ci_secure_files`（プロジェクトレベルの安全なファイル）
+- `agent_plan_content`（作業アイテムのエージェントプランコンテンツ）
 - `external_diffs`（外部マージリクエストの差分）
 
 {{< /tab >}}
@@ -508,6 +507,7 @@ sudo gitlab-backup create BACKUP=dump GZIP_RSYNCABLE=yes
 - `registry`（コンテナレジストリイメージ）
 - `packages`（パッケージレジストリ）
 - `ci_secure_files`（プロジェクトレベルの安全なファイル）
+- `agent_plan_content`（作業アイテムのエージェントプランコンテンツ）
 - `external_diffs`（マージリクエストの差分）
 
 {{< /tab >}}
@@ -581,9 +581,6 @@ sudo -u git -H bundle exec rake gitlab:backup:create SKIP=tar RAILS_ENV=producti
 
 {{< history >}}
 
-- GitLab 16.3で、`gitlab-backup`に[導入](https://gitlab.com/gitlab-org/gitaly/-/issues/4941)されました。
-- GitLab 16.6で、最新のバックアップではなく指定したバックアップを復元するためのサーバー側のサポートが`gitlab-backup`に[導入](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/132188)されました。
-- GitLab 16.6で、増分バックアップを作成するためのサーバー側のサポートが`gitlab-backup`に[導入](https://gitlab.com/gitlab-org/gitaly/-/merge_requests/6475)されました。
 - GitLab 17.0で、サーバー側のサポートが`backup-utility`に[導入](https://gitlab.com/gitlab-org/gitlab/-/issues/438393)されました。
 
 {{< /history >}}
@@ -668,14 +665,8 @@ toolbox:
 
 #### リポジトリの増分バックアップ {#incremental-repository-backups}
 
-{{< history >}}
-
-- GitLab 16.6で増分バックアップを作成するためのサーバー側のサポートが[導入](https://gitlab.com/gitlab-org/gitaly/-/issues/5461)されました。
-
-{{< /history >}}
-
 > [!note]
-> リポジトリのみが増分バックアップをサポートします。そのため、`INCREMENTAL=yes`を使用した場合でも、タスクは自己完結型のバックアップtarアーカイブを作成します。これは、リポジトリ以外のすべてのサブタスクが依然としてフルバックアップを作成している（既存のフルバックアップを上書きする）ためです。すべてのサブタスクに対する増分バックアップのサポートに関する機能リクエストについては、[イシュー19256](https://gitlab.com/gitlab-org/gitlab/-/issues/19256)を参照してください。
+> インクリメンタルバックアップをサポートしているのはリポジトリのみです。そのため、`INCREMENTAL=yes`を使用した場合でも、タスクは自己完結型のバックアップtarアーカイブを作成します。これは、リポジトリ以外のすべてのサブタスクが依然としてフルバックアップを作成している（既存のフルバックアップを上書きする）ためです。すべてのサブタスクに対する増分バックアップのサポートに関する機能リクエストについては、[イシュー19256](https://gitlab.com/gitlab-org/gitlab/-/issues/19256)を参照してください。
 
 リポジトリの増分バックアップは、前回のバックアップ以降の変更のみを、各リポジトリのバックアップバンドルにパック化するため、フルリポジトリバックアップよりも高速になる場合があります。`gitlab-backup`によって生成されたバックアップアーカイブは、元の完全なバックアップ以降の各リポジトリを復元するために必要なすべての手順が含まれているため、自己完結型でポータブルです。
 
@@ -684,7 +675,7 @@ toolbox:
 サーバーサイドリポジトリバックアップでは、増分リポジトリバックアップファイルはオブジェクトストレージに個別に保存されます。各増分は、元の完全なバックアップまでのすべての先行ステップに依存します。
 
 > [!warning]
-> オブジェクトストレージから増分バックアップファイルを削除しないでください。中間ファイルが削除された場合（例えば、オブジェクトストレージライフタイムポリシーによる）、バックアップチェーンが壊れ、バックアップを復元できなくなります。
+> オブジェクトストレージからインクリメンタルバックアップファイルを削除しないでください。中間ファイルが削除された場合（例えば、オブジェクトストレージライフタイムポリシーによる）、バックアップチェーンが壊れ、バックアップを復元できなくなります。
 
 詳細については、[増分リポジトリバックアップの復元](restore_gitlab.md#restoring-an-incremental-repository-backup)を参照してください。
 
@@ -703,12 +694,6 @@ sudo gitlab-backup create INCREMENTAL=yes SKIP=tar
 ```
 
 #### 特定のリポジトリのストレージをバックアップする {#back-up-specific-repository-storages}
-
-{{< history >}}
-
-- GitLab 15.0で[導入](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/86896)されました。
-
-{{< /history >}}
 
 [複数のリポジトリのストレージ](../repository_storage_paths.md)を使用している場合、`REPOSITORIES_STORAGES`オプションを使用することで、特定のリポジトリのストレージにあるリポジトリのみを個別にバックアップできます。このオプションは、カンマ区切りのストレージ名のリストを受け入れます。
 
@@ -736,13 +721,6 @@ sudo -u git -H bundle exec rake gitlab:backup:create REPOSITORIES_STORAGES=stora
 
 #### 特定のリポジトリをバックアップする {#back-up-specific-repositories}
 
-{{< history >}}
-
-- GitLab 15.1で[導入](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/88094)されました。
-- GitLab 16.1で[特定のリポジトリのスキップ機能が追加](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/121865)されました。
-
-{{< /history >}}
-
 `REPOSITORIES_PATHS`オプションを使用して、特定のリポジトリをバックアップできます。同様に、`SKIP_REPOSITORIES_PATHS`を使用して、特定のリポジトリをスキップできます。これらのオプションには、プロジェクトまたはグループのパスをカンマ区切りリストで指定します。グループのパスを指定した場合、使用するオプションに応じて、そのグループおよび下位グループ内のすべてのプロジェクトに含まれるすべてのリポジトリが、バックアップ対象に含まれるかスキップされます。
 
 たとえば、グループA（`group-a`）内のすべてのプロジェクトのすべてのリポジトリと、グループB（`group-b/project-c`）内のプロジェクトCのリポジトリをバックアップし、グループA（`group-a/project-d`）内のプロジェクトDをスキップする場合、次のように指定します。
@@ -768,7 +746,7 @@ sudo -u git -H bundle exec rake gitlab:backup:create REPOSITORIES_PATHS=group-a,
 {{< tab title="Helmチャート（Kubernetes）" >}}
 
 ```shell
-REPOSITORIES_PATHS=group-a SKIP_REPOSITORIES_PATHS=group-a/project_a2 backup-utility --skip db,registry,uploads,artifacts,lfs,packages,external_diffs,terraform_state,ci_secure_files,pages
+REPOSITORIES_PATHS=group-a SKIP_REPOSITORIES_PATHS=group-a/project_a2 backup-utility --skip db,registry,uploads,artifacts,lfs,packages,external_diffs,terraform_state,ci_secure_files,agent_plan_content,pages
 ```
 
 {{< /tab >}}
@@ -778,11 +756,11 @@ REPOSITORIES_PATHS=group-a SKIP_REPOSITORIES_PATHS=group-a/project_a2 backup-uti
 #### リモート（クラウド）ストレージにバックアップをアップロードする {#upload-backups-to-a-remote-cloud-storage}
 
 > [!note]
-> バックアップにオブジェクトストレージを使用する場合、[tarファイルの作成をスキップする](#skipping-tar-creation)ことはできません。
+> バックアップにオブジェクトストレージを使用する場合、[tar作成をスキップ](#skipping-tar-creation)することはできません。
 
 バックアップスクリプトは、作成した`.tar`ファイルをリモートストレージにアップロードできます。以下の例では、ストレージにAmazon S3を使用していますが、Google Cloud StorageやAzureなどの他のクラウドプロバイダー、またはローカルマウントされた共有を使用することもできます。
 
-こちらも参照してください。
+関連トピック: 
 
 - [Fogライブラリドキュメント](https://fog.github.io/)
 - [その他のストレージプロバイダー](https://fog.github.io/storage/)
@@ -916,7 +894,7 @@ Digital Ocean Spacesを使用している場合に`400 Bad Request`（不正な�
 
 自己コンパイルによるインストールの場合: 
 
-1. `home/git/gitlab/config/gitlab.yml`を編集します。
+1. `home/git/gitlab/config/gitlab.yml`を編集します:
 
    ```yaml
      backup:
@@ -968,7 +946,7 @@ Google Cloud Storageを使用してバックアップを保存するには、ま
 
 Linuxパッケージ（Omnibus）の場合: 
 
-1. `/etc/gitlab/gitlab.rb`を編集します。
+1. `/etc/gitlab/gitlab.rb`を編集します:
 
    ```ruby
    gitlab_rails['backup_upload_connection'] = {
@@ -989,7 +967,7 @@ Linuxパッケージ（Omnibus）の場合:
 
 自己コンパイルによるインストールの場合: 
 
-1. `home/git/gitlab/config/gitlab.yml`を編集します。
+1. `home/git/gitlab/config/gitlab.yml`を編集します:
 
    ```yaml
      backup:
@@ -1009,7 +987,7 @@ Linuxパッケージ（Omnibus）の場合:
 
 {{< tab title="Linuxパッケージ（Omnibus）" >}}
 
-1. `/etc/gitlab/gitlab.rb`を編集します。
+1. `/etc/gitlab/gitlab.rb`を編集します:
 
    ```ruby
    gitlab_rails['backup_upload_connection'] = {
@@ -1038,7 +1016,7 @@ Linuxパッケージ（Omnibus）の場合:
 
 {{< tab title="自己コンパイル" >}}
 
-1. `home/git/gitlab/config/gitlab.yml`を編集します。
+1. `home/git/gitlab/config/gitlab.yml`を編集します:
 
    ```yaml
      backup:
@@ -1124,7 +1102,7 @@ Fog [`Local`](https://github.com/fog/fog-local#usage)ストレージプロバイ
 
 {{< tab title="Linuxパッケージ（Omnibus）" >}}
 
-1. `/etc/gitlab/gitlab.rb`を編集します。
+1. `/etc/gitlab/gitlab.rb`を編集します:
 
    ```ruby
    gitlab_rails['backup_upload_connection'] = {
@@ -1143,7 +1121,7 @@ Fog [`Local`](https://github.com/fog/fog-local#usage)ストレージプロバイ
 
 {{< tab title="自己コンパイル" >}}
 
-1. `home/git/gitlab/config/gitlab.yml`を編集します。
+1. `home/git/gitlab/config/gitlab.yml`を編集します:
 
    ```yaml
    backup:
@@ -1171,7 +1149,7 @@ GitLabによって作成されるバックアップアーカイブ（`1393513186
 
 {{< tab title="Linuxパッケージ（Omnibus）" >}}
 
-1. `/etc/gitlab/gitlab.rb`を編集します。
+1. `/etc/gitlab/gitlab.rb`を編集します:
 
    ```ruby
    gitlab_rails['backup_archive_permissions'] = 0644 # Makes the backup archives world-readable
@@ -1183,7 +1161,7 @@ GitLabによって作成されるバックアップアーカイブ（`1393513186
 
 {{< tab title="自己コンパイル" >}}
 
-1. `/home/git/gitlab/config/gitlab.yml`を編集します。
+1. `/home/git/gitlab/config/gitlab.yml`を編集します:
 
    ```yaml
    backup:
@@ -1199,9 +1177,9 @@ GitLabによって作成されるバックアップアーカイブ（`1393513186
 #### 毎日バックアップを実行するようcronを設定する {#configuring-cron-to-make-daily-backups}
 
 > [!warning]
-> 以下のcronジョブは、GitLab設定ファイルやSSHホストキーをバックアップしません。
+> 次のcronジョブでは、GitLabの設定ファイルやSSHホストキーはバックアップされません。
 
-**重要:** 以下もバックアップすることを忘れないでください:
+**重要:**以下もバックアップすることを忘れないでください:
 
 - [GitLab設定ファイル](#storing-configuration-files)
 - [SSHホストキー](https://superuser.com/questions/532040/copy-ssh-keys-from-one-server-to-another-server/532079#532079)
@@ -1251,23 +1229,23 @@ GitLabによって作成されるバックアップアーカイブ（`1393513186
 #### ローカルファイルのバックアップライフタイムを制限する（古いバックアップを削除する） {#limit-backup-lifetime-for-local-files-prune-old-backups}
 
 > [!warning]
-> このセクションで説明されているプロセスは、カスタムバックアップファイル名を使用した場合機能しません。
+> このセクションで説明されているプロセスは、バックアップにカスタムファイル名を使用した場合機能しません。
 
 定期的なバックアップがディスク容量を使い切ってしまわないように、バックアップのライフタイムを制限しておくとよいでしょう。それにより、次回のバックアップタスクの実行時に、`backup_keep_time`より古いバックアップは削除されます。
 
 この設定オプションで管理できるのは、ローカルファイルのみです。GitLabは、サードパーティのオブジェクトストレージに保存されている古いファイルをプルーニングしません。これは、ユーザーにファイルのリストと削除の権限がない場合があるためです。オブジェクトストレージに適した保持ポリシーを設定することをお勧めします。
 
-こちらも参照してください。
+関連トピック: 
 
 - [カスタムファイル名の設定](#backup-filename)
 - [リモートストレージへのバックアップのアップロード](#upload-backups-to-a-remote-cloud-storage)
-- [AWS S3ライフタイムポリシー](https://docs.aws.amazon.com/AmazonS3/latest/user-guide/create-lifecycle.html)
+- [AWS S3ライフサイクルポリシー](https://docs.aws.amazon.com/AmazonS3/latest/userguide/object-lifecycle-mgmt.html)
 
 {{< tabs >}}
 
 {{< tab title="Linuxパッケージ（Omnibus）" >}}
 
-1. `/etc/gitlab/gitlab.rb`を編集します。
+1. `/etc/gitlab/gitlab.rb`を編集します:
 
    ```ruby
    ## Limit backup lifetime to 7 days - 604800 seconds
@@ -1280,7 +1258,7 @@ GitLabによって作成されるバックアップアーカイブ（`1393513186
 
 {{< tab title="自己コンパイル" >}}
 
-1. `/home/git/gitlab/config/gitlab.yml`を編集します。
+1. `/home/git/gitlab/config/gitlab.yml`を編集します:
 
    ```yaml
    backup:
@@ -1327,12 +1305,6 @@ ERROR: relation "tablename" does not exist at character 123
 1. ノードを再設定して、[PostgreSQLプライマリデータベースノードに直接接続](../postgresql/pgbouncer.md#procedure-for-bypassing-pgbouncer)する。
 
 ###### 環境変数をオーバーライドする {#environment-variable-overrides}
-
-{{< history >}}
-
-- GitLab 16.5で複数のデータベースのサポートが[導入](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/133177)されました。
-
-{{< /history >}}
 
 デフォルトでは、GitLabは設定ファイル（`database.yml`）に保存されたデータベース設定を使用します。ただし、`GITLAB_BACKUP_`をプレフィックスとして付けて環境変数を設定することで、バックアップタスクと復元タスクのデータベース設定をオーバーライドできます。
 
@@ -1381,7 +1353,7 @@ sudo GITLAB_BACKUP_MAIN_PGHOST=192.168.1.10 GITLAB_BACKUP_CI_PGHOST=192.168.1.12
 
 例えば、Amazon RDSを使用している場合、GitLabのPostgreSQLデータベースデータを処理するために、組み込みのバックアップおよび復元機能を使用し、バックアップコマンド使用時にPostgreSQLデータベースデータを除外することを選択できます。
 
-こちらも参照してください。
+関連トピック: 
 
 - [バックアップする必要があるデータ](#what-data-needs-to-be-backed-up)
 - [PostgreSQLデータベース](#postgresql-databases)
@@ -1395,7 +1367,7 @@ sudo GITLAB_BACKUP_MAIN_PGHOST=192.168.1.10 GITLAB_BACKUP_CI_PGHOST=192.168.1.12
 - GitLabインスタンスに問題があり、通常のバックアップタスクとインポート用Rakeタスクを使用できない。
 
 > [!warning]
-> Gitalyクラスター (Praefect) は[スナップショットのバックアップをサポートしていません](../gitaly/praefect/_index.md#snapshot-backup-and-recovery)。
+> Gitaly Cluster (Praefect) は[スナップショットバックアップをサポートしていません](../gitaly/praefect/_index.md#snapshot-backup-and-recovery)。
 
 ファイルシステムのデータ転送またはスナップショットの使用を検討する場合は、次の点に注意してください。
 
@@ -1415,7 +1387,7 @@ sudo GITLAB_BACKUP_MAIN_PGHOST=192.168.1.10 GITLAB_BACKUP_CI_PGHOST=192.168.1.12
 - rsyncを使用して`/var/opt/gitlab`ディレクトリをレプリケートしても、rsyncの実行中に変更されるファイルが多すぎるため、信頼できません。
 - そのため、rsyncで`/var/opt/gitlab`をレプリケートする代わりに、一時的なLVMスナップショットを作成し、`/mnt/gitlab_backup`に読み取り専用ファイルシステムとしてマウントします。
 - これで、長時間実行されるrsyncジョブを実行して、リモートサーバー上に一貫性のあるレプリカを作成できるようになります。
-- このレプリカには、すべてのリポジトリ、アップロード、PostgreSQLのデータが含まれます。
+- レプリカには、すべてのリポジトリ、アップロード、およびPostgreSQLデータが含まれます。
 
 仮想サーバー上でGitLabを実行している場合は、GitLabサーバー全体の仮想マシン（VM）スナップショットを作成できる場合もあります。ただし、仮想マシン（VM）スナップショットを作成するにはサーバーをシャットダウンしなければならないことが多くあります。そのため、このソリューションは実用性に制約があります。
 
@@ -1445,14 +1417,32 @@ sudo -u git -H bundle exec rake gitlab:backup:create SKIP=repositories RAILS_ENV
 
 ディスク上のGitリポジトリデータを手動でバックアップするには、複数の戦略が考えられます。
 
-- 前述の例のように、Amazon EBSドライブのスナップショットやLVMスナップショット+ rsyncなど、スナップショットを使用する。
 - [GitLab Geo](../geo/_index.md)を使用し、Geoセカンダリサイトのリポジトリデータに依存する。
 - [書き込みを防止し、Gitリポジトリデータをコピーする](#prevent-writes-and-copy-the-git-repository-data)。
 - [リポジトリを読み取り専用としてマークし、オンラインバックアップを作成する（実験的機能）](#online-backup-through-marking-repositories-as-read-only-experimental)。
+- Gitalyストレージディスクの[ディスクスナップショット](#disk-snapshots)を撮ります。
+
+#### ディスクスナップショット {#disk-snapshots}
+
+ディスクスナップショットは、次の場合における最善のバックアップ戦略です:
+
+- 通常のGitLabのバックアップスクリプトが使用できない場合。
+- スタンドアロンのGitalyを使用しており、バックアップ期間中、すべてのリポジトリを読み取り専用としてマークできない場合。
+- 他のバックアップ戦略（`rsync`、`tar`、または`scp`など）では、レイテンシーが大きくなりすぎる場合。
+
+ディスクスナップショットを撮る前に、GitLabを[読み取り専用状態にする](../read_only_gitlab.md)必要があります。Gitは、ファイルシステムのアクティビティに関わらず、ディスク上のファイルが物理的に一貫性を保つようにします。リポジトリの破損が発生する可能性は低いですが、Gitalyのディスクスナップショットは、GitLabアプリケーションが期待するものと論理的に矛盾する可能性があります。復元されたGitalyのスナップショットを他のGitLabコンポーネントと一致させるのは困難です。
+
+ディスクスナップショットは、スタンドアロンのGitalyノードでのみサポートされています。Gitaly Cluster (Praefect) でのディスクスナップショットのサポートは、[イシュー7128](https://gitlab.com/gitlab-org/gitaly/-/work_items/7128)で追跡されています。
+
+ディスクスナップショットを撮る方法は、Gitalyノードがどこにデプロイされているかによって異なります。すべての主要なクラウドプロバイダーは、稼働中のインスタンスにアタッチされたディスクのスナップショットを撮るメカニズムを提供していますので、使用しているクラウドプロバイダーのドキュメントを確認してください。
+
+一部の顧客は[ハイブリッドアプローチを推奨](https://gitlab.com/gitlab-org/gitaly/-/work_items/1476)しており、各バックアップ間隔で2つのディスクスナップショットが取得されます。Gitalyがアクティブにトラフィックを処理している間、初期スナップショットが取得されます。このスナップショットには、2つの差分のうち大きい方が含まれており、時間がかかります。最初のスナップショットが撮られた後、GitLabはメンテナンスモードになり、2回目のスナップショットが撮られ、これははるかに早く完了します。この戦略はダウンタイムを削減できますが、GitLabは内部的にこのアプローチを使用していません。
+
+ディスクスナップショットから復元する場合、復元されたリポジトリの整合性を検証する必要があります。`git-fsck(1)`を使用してこのチェックを実行できます。詳細については、[コマンドラインを使用してチェックを実行する](../repository_checks.md#run-a-check-using-the-command-line)を参照してください。
 
 #### 書き込みを防止し、Gitリポジトリデータをコピーする {#prevent-writes-and-copy-the-git-repository-data}
 
-Gitリポジトリは、一貫した方法でコピーする必要があります。同時書き込み操作中にGitリポジトリをコピーした場合、不整合や破損の問題が発生する可能性があります。これにより、リポジトリの破損、コミットの欠落、または不完全なバックアップデータが発生する可能性があります。
+Gitリポジトリは、一貫した方法でコピーする必要があります。同時書き込み操作中にリポジトリがコピーされると、不整合が発生する可能性があります。これは、論理的な破損、不足しているコミット、または不完全なバックアップデータにつながる可能性があります。
 
 Gitリポジトリデータへの書き込みを防ぐには、次の2つの方法があります。
 

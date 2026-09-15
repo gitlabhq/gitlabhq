@@ -1,6 +1,6 @@
 ---
-stage: AI-powered
-group: Custom Models
+stage: AI Platform
+group: AI Model Services
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see <https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments>
 description: GitLab Duo Self-Hostedのデプロイに関するトラブルシューティングのヒント
 title: セルフホストモデルのトラブルシューティング
@@ -9,18 +9,19 @@ title: セルフホストモデルのトラブルシューティング
 {{< details >}}
 
 - プラン: Premium、Ultimate
-- 提供形態: GitLab Self-Managed
+- 提供形態: GitLab Self-Managed、GitLab Dedicated for Government
 
 {{< /details >}}
 
 {{< history >}}
 
-- GitLab 17.1で`ai_custom_model`[フラグ](../feature_flags/_index.md)とともに[導入](https://gitlab.com/groups/gitlab-org/-/epics/12972)されました。デフォルトでは無効になっています。
-- GitLab 17.6の[GitLab Self-Managedで有効](https://gitlab.com/groups/gitlab-org/-/epics/15176)になりました。
+- GitLab 17.1で`ai_custom_model`[機能フラグ](../feature_flags/_index.md)とともに[導入](https://gitlab.com/groups/gitlab-org/-/work_items/12972)されました。デフォルトでは無効になっています。
+- GitLab 17.6の[GitLab Self-Managedで有効](https://gitlab.com/groups/gitlab-org/-/work_items/15176)になりました。
 - GitLab 17.6以降、GitLab Duoアドオンが必須になりました。
 - 機能フラグ`ai_custom_model`は、GitLab 17.8で削除されました。
 - GitLab 17.9で一般提供になりました。
 - GitLab 18.0でPremiumを含むように変更されました。
+- GitLab 18.5の[GitLab Dedicated for Government](https://gitlab.com/gitlab-org/gitlab/-/issues/569874)で有効になりました。
 
 {{< /history >}}
 
@@ -101,7 +102,7 @@ GitLab Duoのトラブルシューティングの詳細については、以下�
 トラブルシューティングが完了したら、AIゲートウェイコンテナを停止して、`AIGW_AUTH__BYPASS_EXTERNAL=true`**なし**で再起動します。
 
 > [!warning]
-> 本番環境では認証をバイパスしないでください。
+> 本番環境で認証をバイパスすることはできません。
 
 コマンドの出力を検証し、必要に応じて修正します。
 
@@ -124,7 +125,7 @@ model_name = "<your_model_name>"
 model_endpoint = "<your_model_endpoint>"
 model_api_key = "<your_model_api_key>"
 body = {:prompt_components=>[{:type=>"prompt", :metadata=>{:source=>"GitLab EE", :version=>"17.3.0"}, :payload=>{:content=>[{:role=>:user, :content=>"Hello"}], :provider=>:litellm, :model=>model_name, :model_endpoint=>model_endpoint, :model_api_key=>model_api_key}}]}
-ai_gateway_url = Ai::Setting.instance.ai_gateway_url # Verify that the AI Gateway URL is set in the database
+ai_gateway_url = ApplicationSetting.current.ai_gateway_url # Verify that the AI Gateway URL is set in the database
 client = Gitlab::Llm::AiGateway::Client.new(User.find_by_id(1), unit_primitive_name: :self_hosted_models)
 client.complete(url: "#{ai_gateway_url}/v1/chat/agent", body: body)
 ```
@@ -166,12 +167,12 @@ User.find_by_id("<user_id>").can?(:access_code_suggestions)
 
 前提条件: 
 
-- 管理者アクセス権が必要です。
+- 管理者アクセス権。
 
 GitLab Duoが正しく設定されているかどうかを確認するには:
 
 1. 右上隅で、**管理者**を選択します。
-1. 左サイドバーで、**セルフホストモデル**を選択します。
+1. 左側のサイドバーで、**セルフホストモデル**を選択します。
 1. **AIネイティブ機能**を展開します。
 1. **機能**で、**コード提案**と**コード生成**が**セルフホストモデル**に設定されていることを確認します。
 
@@ -180,7 +181,7 @@ GitLab Duoが正しく設定されているかどうかを確認するには:
 AIゲートウェイURLが正しいことを確認するには、GitLab Railsコンソールで以下を実行します:
 
 ```ruby
-Ai::Setting.instance.ai_gateway_url == "<your-ai-gateway-instance-url>"
+ApplicationSetting.current.ai_gateway_url == "<your-ai-gateway-instance-url>"
 ```
 
 AIゲートウェイがセットアップされていない場合は、[AIゲートウェイにアクセスするようにGitLabインスタンスを設定](configure_duo_features.md#configure-access-to-the-local-ai-gateway)します。
@@ -190,7 +191,7 @@ AIゲートウェイがセットアップされていない場合は、[AIゲー
 Agent PlatformサービスのURLが正しいことを確認するには、GitLab Railsコンソールで以下を実行します:
 
 ```ruby
-Ai::Setting.instance.duo_agent_platform_service_url == "<your-duo-agent-platform-instance-url>"
+ApplicationSetting.current.duo_agent_platform_service_url == "<your-duo-agent-platform-instance-url>"
 ```
 
 Agent PlatformサービスのURLはTCP URLであり、`http://`または`https://`のプレフィックスを持つことはできません。
@@ -370,11 +371,28 @@ vLLMの使用中に**404エラー**が発生した場合は、次の手順に従
 タイムアウトエラーを解決するには:
 
 1. [より高いAIゲートウェイタイムアウト値を設定します](configure_duo_features.md#configure-timeout-for-the-ai-gateway)。タイムアウトは60秒から600秒（10分）の間に設定できます。
+1. GitLab Duo Chatでは、リクエストがまだタイムアウトする場合は、AIゲートウェイで[チャットモデルのリクエストタイムアウトを増やして](configure_duo_features.md#configure-the-chat-model-request-timeout)ください。
 1. タイムアウトを調整した後、ログをモニタリングしてエラーが解決されたことを確認します。
 1. より高いタイムアウト値を設定してもタイムアウトエラーが解決しない場合:
    - モデルのパフォーマンスとリソース割り当てを確認します。
    - AIゲートウェイとモデルエンドポイント間のネットワーク接続を確認します。
    - よりパフォーマンスの高いモデルまたはデプロイ設定の使用を検討してください。
+
+`A1000`で失敗するのではなく、エラーなしでレスポンスが途中で切れている場合は、[エラーなしでレスポンスが切り詰められる](#responses-are-truncated-without-an-error)を参照してください。
+
+## エラーなしで応答が切り詰められる {#responses-are-truncated-without-an-error}
+
+特に大規模なモデルや推論モデルからの長い応答は、エラーメッセージなしで途中で停止することがあります。モデルが完了する前にストリームが終了し、部分的な応答が完了しているように見えることがあります。
+
+このイシューは、モデルが応答を終える前に、コンポーネント間のプロキシ、ロードバランサー、またはファイアウォールが接続を終了するときに発生します。GitLabが中断されたストリームを検出すると、待機タイムアウトした場合は[`Error A1000`](#error-a1000)を、ストリーム自体が失敗した場合は[`Error A1003`](../../user/gitlab_duo_chat/troubleshooting.md#error-a1003)を返します。
+
+各ホップでのタイムアウトを確認し、エラーが表示されるかどうかを調べてください。この問題を解決するには、次の手順に従います:
+
+1. AIゲートウェイでは、GitLabがゲートウェイを十分に待機できるように、[より高いタイムアウト値を設定して](configure_duo_features.md#configure-timeout-for-the-ai-gateway)ください。
+1. GitLab Duo Chatでは、AIゲートウェイがモデルを十分に待機できるように、[チャットモデルのリクエストタイムアウトを増やして](configure_duo_features.md#configure-the-chat-model-request-timeout)ください。
+1. AIゲートウェイの前にあるリバースプロキシまたはロードバランサーを確認してください。[NGINXリバースプロキシ](../../install/install_ai_gateway.md#set-up-docker-with-nginx-and-ssl)を使用している場合は、応答チャンク間の最長のポーズをカバーするために`proxy_read_timeout`を引き上げ、`proxy_buffering off`を維持してください。
+1. AIゲートウェイとモデル提供プラットフォームの間にあるプロキシまたはロードバランサーで、類似のリクエストまたはアイドルタイムアウトを確認してください。
+1. GitLab Duo Agentic Chatの場合は、GitLabの前にあるリバースプロキシで、長いストリーミング応答を遮断する可能性のあるWebSocketのアイドルまたは読み取りタイムアウトを確認してください。詳細については、[Agentic ChatからのレスポンスがUIに表示されない](#response-from-agentic-chat-does-not-display-in-the-ui)を参照してください。
 
 ## GitLabのセットアップを検証する {#verify-gitlab-setup}
 
@@ -452,7 +470,7 @@ Invocation of model ID meta.llama3-3-70b-instruct-v1:0 with on-demand throughput
 
 1. この問題を解決するには、次の手順に従います:
    - GitLabチームのメンバーである場合は、[`#g_custom_models` Slackチャンネル](https://gitlab.enterprise.slack.com/archives/C06DCB3N96F)を通じて、カスタムモデルチームに連絡してください。
-   - お客様の場合は、[GitLabサポート](https://about.gitlab.com/support/)を通じて問題を報告してください。
+   - お客様の場合は、[GitLabサポート](https://support.gitlab.com/)を通じて問題を報告してください。
 
 ## エラー: このワークフローの認証トークンのフェッチ中にエラーが発生しました {#error-an-error-occurred-while-fetching-an-authentication-token-for-this-workflow}
 

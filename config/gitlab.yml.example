@@ -375,6 +375,7 @@ production: &base
   # object_store:
   #   enabled: false
   #   proxy_download: false # Passthrough all downloads via GitLab instead of using Redirects to Object Storage
+  #   allowed_download_modes: [direct, proxy] # Transfer modes API clients may request via the `download_mode` param. Unset by default, which only allows the mode implied by `proxy_download`. Only set this to expand beyond that default.
   #   connection:
   #     provider: AWS
   #     aws_access_key_id: AWS_ACCESS_KEY_ID
@@ -400,6 +401,8 @@ production: &base
   #       bucket: dependency_proxy
   #     agent_plan_content:
   #       bucket: agent-plan-content
+  #     ci_catalog_bundles:
+  #       bucket: ci-catalog-bundles
 
   ## Consolidated object store config for Google Cloud Storage
   # object_store:
@@ -432,6 +435,8 @@ production: &base
   #       bucket: gitlab-pages
   #     agent_plan_content:
   #       bucket: gitlab-agent-plan-content
+  #     ci_catalog_bundles:
+  #       bucket: gitlab-ci-catalog-bundles
 
   ## Build Artifacts
   artifacts:
@@ -617,6 +622,7 @@ production: &base
         # aws_signature_version: 4 # For creation of signed URLs. Set to 2 if provider does not support v4.
         # path_style: true # Use 'host/bucket_name/object' instead of 'bucket_name.host/object'
 
+  ## CI Catalog Bundles (object storage for compiled CI/CD component bundles)
   ci_catalog_bundles:
     # storage_path: shared/ci_catalog_bundles
     object_store:
@@ -863,6 +869,10 @@ production: &base
   artifact_registry:
     # api_url: https://artifact-registry.example.com # internal address of the Artifact Registry API
 
+    # File that contains the secret token for authenticating with the Artifact Registry internal API.
+    # service_token:
+    #   secret_file: /etc/gitlab/artifact-registry/.gitlab_artifact_registry_secret
+
   ## Error Reporting and Logging with Sentry
   sentry:
     # enabled: false
@@ -918,9 +928,11 @@ production: &base
     #   port: 8084
 
     # IAM auth service gRPC endpoint (reserved for future use)
+    # Defaults to true; set false only on a trusted network.
     # grpc:
     #   host: localhost
     #   port: 8085
+    #   secure: true
 
     # Expected JWT audience claim
     # jwt_audience: gitlab-rails
@@ -933,9 +945,11 @@ production: &base
     # secret_file: /etc/gitlab/iam-data-access/.gitlab_iam_data_access_secret
 
     # IAM data access service gRPC endpoint
+    # Defaults to true; set false only on a trusted network.
     # grpc:
     #   host: localhost
     #   port: 5005
+    #   secure: true
 
   ## LDAP settings
   # You can test connections and inspect a sample of the LDAP users with login
@@ -1113,6 +1127,13 @@ production: &base
         #   Ex. ou=Groups,dc=gitlab,dc=example
         #
         group_base: ''
+
+        # Filter LDAP groups searched under group_base
+        #
+        #   Format: RFC 4515 https://www.rfc-editor.org/rfc/rfc4515
+        #   Ex. (objectclass=group)
+        #
+        group_filter: ''
 
         # LDAP group of users who should be admins in GitLab
         #
@@ -1607,6 +1628,9 @@ production: &base
   # on a given port instead of serving directly from /assets/webpack. This is only indended for use
   # in development.
   webpack:
+    # Which bundler compiled the assets: 'webpack' (default) or 'rspack'.
+    # Rspack writes its manifest under a different filename.
+    # bundler: rspack
     # dev_server:
     #   enabled: true
     #   host: localhost
@@ -1978,6 +2002,7 @@ test:
         base: 'dc=example,dc=com'
         user_filter: ''
         group_base: 'ou=groups,dc=example,dc=com'
+        group_filter: ''
         admin_group: ''
   prometheus:
     enabled: true

@@ -222,9 +222,11 @@ RSpec.describe Project, factory_default: :keep, feature_category: :groups_and_pr
       let(:expected_lfs_enabled) { true }
     end
 
-    it_behaves_like 'model with wiki' do
-      let_it_be_with_reload(:container) { create(:project, :wiki_repo, namespace: create(:group)) }
-      let(:container_without_wiki) { create(:project) }
+    describe 'model with wiki', quarantine: { issue: 'https://gitlab.com/gitlab-org/quality/test-failure-issues/-/issues/43943', type: :flaky } do
+      it_behaves_like 'model with wiki' do
+        let_it_be_with_reload(:container) { create(:project, :wiki_repo, namespace: create(:group)) }
+        let(:container_without_wiki) { create(:project) }
+      end
     end
 
     it_behaves_like 'can move repository storage' do
@@ -424,6 +426,25 @@ RSpec.describe Project, factory_default: :keep, feature_category: :groups_and_pr
           project.update!(organization_id: new_org.id)
 
           expect(project.reload.project_namespace).to be_in_sync_with_project(project)
+        end
+
+        it 'syncs changed attributes even when validation is skipped' do
+          project.assign_attributes(name: "New project name", path: "new_project_path")
+          project.save!(validate: false)
+
+          expect(project.reload.project_namespace).to be_in_sync_with_project(project)
+        end
+
+        it 'syncs namespace_id to the project namespace parent_id and traversal_ids when validation is skipped' do
+          new_parent = create(:group)
+
+          project.assign_attributes(namespace_id: new_parent.id)
+          project.save!(validate: false)
+
+          project_namespace = project.reload.project_namespace
+          expect(project_namespace).to be_in_sync_with_project(project)
+          expect(project_namespace.parent_id).to eq(new_parent.id)
+          expect(project_namespace.traversal_ids).to match_array([*new_parent.traversal_ids, project_namespace.id])
         end
       end
     end
@@ -2033,43 +2054,46 @@ RSpec.describe Project, factory_default: :keep, feature_category: :groups_and_pr
       end
     end
 
-    include_examples 'ci_cd_settings delegation' do
-      let(:attributes_with_prefix) do
-        {
-          'allow_composite_identities_to_run_pipelines' => '',
-          'group_runners_enabled' => '',
-          'default_git_depth' => 'ci_',
-          'forward_deployment_enabled' => 'ci_',
-          'forward_deployment_rollback_allowed' => 'ci_',
-          'keep_latest_artifact' => '',
-          'pipeline_variables_minimum_override_role' => 'ci_',
-          'runner_token_expiration_interval' => '',
-          'separated_caches' => 'ci_',
-          'allow_fork_pipelines_to_run_in_parent_project' => 'ci_',
-          'cross_project_push_for_job_token_allowed' => 'ci_',
-          'inbound_job_token_scope_enabled' => 'ci_',
-          'push_repository_for_job_token_allowed' => 'ci_',
-          'job_token_scope_enabled' => 'ci_outbound_',
-          'id_token_sub_claim_components' => 'ci_',
-          'delete_pipelines_in_seconds' => 'ci_',
-          'display_pipeline_variables' => 'ci_',
-          'skip_branch_pipelines_for_mrs' => 'ci_',
-          'resource_group_default_process_mode' => ''
-        }
-      end
+    describe 'ci_cd_settings delegation' do
+      include_examples 'ci_cd_settings delegation' do
+        let(:attributes_with_prefix) do
+          {
+            'allow_composite_identities_to_run_pipelines' => '',
+            'group_runners_enabled' => '',
+            'default_git_depth' => 'ci_',
+            'forward_deployment_enabled' => 'ci_',
+            'forward_deployment_rollback_allowed' => 'ci_',
+            'keep_latest_artifact' => '',
+            'pipeline_variables_minimum_override_role' => 'ci_',
+            'runner_token_expiration_interval' => '',
+            'separated_caches' => 'ci_',
+            'allow_fork_pipelines_to_run_in_parent_project' => 'ci_',
+            'cross_project_push_for_job_token_allowed' => 'ci_',
+            'inbound_job_token_scope_enabled' => 'ci_',
+            'push_repository_for_job_token_allowed' => 'ci_',
+            'push_pipelines_for_job_token_allowed' => 'ci_',
+            'job_token_scope_enabled' => 'ci_outbound_',
+            'id_token_sub_claim_components' => 'ci_',
+            'delete_pipelines_in_seconds' => 'ci_',
+            'display_pipeline_variables' => 'ci_',
+            'skip_branch_pipelines_for_mrs' => 'ci_',
+            'resource_group_default_process_mode' => ''
+          }
+        end
 
-      let(:exclude_attributes) do
-        # Skip attributes defined in EE code
-        %w[
-          merge_pipelines_enabled
-          merge_trains_enabled
-          auto_rollback_enabled
-          merge_trains_skip_train_allowed
-          merge_train_enforcement
-          max_pipelines_per_merge_train
-          restrict_pipeline_cancellation_role
-          max_pipelines_per_merge_train
-        ]
+        let(:exclude_attributes) do
+          # Skip attributes defined in EE code
+          %w[
+            merge_pipelines_enabled
+            merge_trains_enabled
+            auto_rollback_enabled
+            merge_trains_skip_train_allowed
+            merge_train_enforcement
+            max_pipelines_per_merge_train
+            restrict_pipeline_cancellation_role
+            max_pipelines_per_merge_train
+          ]
+        end
       end
     end
 
@@ -2530,7 +2554,7 @@ RSpec.describe Project, factory_default: :keep, feature_category: :groups_and_pr
       context 'when no README exists' do
         let(:project) { create(:project, :empty_repo) }
 
-        it 'returns nil' do
+        it 'returns nil', quarantine: { issue: 'https://gitlab.com/gitlab-org/quality/test-failure-issues/-/issues/43943', type: :flaky } do
           expect(project.readme_url).to be_nil
         end
       end
@@ -2703,20 +2727,6 @@ RSpec.describe Project, factory_default: :keep, feature_category: :groups_and_pr
       project = build(:project)
 
       expect(project.open_merge_requests_count).to eq 0
-    end
-  end
-
-  describe '#issue_exists?' do
-    let_it_be(:project) { create(:project) }
-
-    it 'is truthy when issue exists' do
-      expect(project).to receive(:get_issue).and_return(double)
-      expect(project.issue_exists?(1)).to be_truthy
-    end
-
-    it 'is falsey when issue does not exist' do
-      expect(project).to receive(:get_issue).and_return(nil)
-      expect(project.issue_exists?(1)).to be_falsey
     end
   end
 
@@ -3263,6 +3273,47 @@ RSpec.describe Project, factory_default: :keep, feature_category: :groups_and_pr
     end
   end
 
+  describe '.with_programming_language' do
+    let_it_be(:ruby) { create(:programming_language, name: 'Ruby') }
+    let_it_be(:python) { create(:programming_language, name: 'Python') }
+    let_it_be(:backfilled_project) { create(:project) }
+    let_it_be(:mismatched_ids_project) { create(:project) }
+    let_it_be(:legacy_id_project) { create(:project) }
+
+    before_all do
+      create(:repository_language,
+        project: backfilled_project,
+        programming_language: ruby,
+        language_id: ruby.language_id)
+      create(:repository_language,
+        project: mismatched_ids_project,
+        programming_language: python,
+        language_id: ruby.language_id)
+      create(:repository_language,
+        project: mismatched_ids_project,
+        programming_language: ruby,
+        language_id: nil)
+      create(:repository_language,
+        project: legacy_id_project,
+        programming_language: ruby,
+        language_id: nil)
+    end
+
+    it 'matches the stable language ID and falls back to the legacy ID for unbackfilled rows' do
+      projects = described_class.with_programming_language('rUbY')
+
+      expect(projects).to contain_exactly(
+        backfilled_project,
+        mismatched_ids_project,
+        legacy_id_project
+      )
+    end
+
+    it 'does not fall back to the legacy ID when language_id is present' do
+      expect(described_class.with_programming_language('Python')).to be_empty
+    end
+  end
+
   describe '.with_remote_mirrors' do
     let_it_be(:project) { create(:project, :repository) }
 
@@ -3300,8 +3351,8 @@ RSpec.describe Project, factory_default: :keep, feature_category: :groups_and_pr
   end
 
   describe '.by_name' do
-    let_it_be(:project1) { create(:project, :small_repo, name: 'Project 1') }
-    let_it_be(:project2) { create(:project, :small_repo, name: 'Project 2') }
+    let_it_be(:project1) { create(:project, name: 'Project 1') }
+    let_it_be(:project2) { create(:project, name: 'Project 2') }
 
     it 'includes correct projects' do
       expect(described_class.by_name(project1.name)).to eq([project1])
@@ -4252,7 +4303,7 @@ RSpec.describe Project, factory_default: :keep, feature_category: :groups_and_pr
     end
   end
 
-  describe '#track_project_repository' do
+  describe '#track_project_repository', quarantine: { issue: 'https://gitlab.com/gitlab-org/quality/test-failure-issues/-/issues/43943', type: :flaky } do
     shared_examples 'tracks storage location' do
       context 'when a project repository entry does not exist' do
         before do
@@ -4645,7 +4696,9 @@ RSpec.describe Project, factory_default: :keep, feature_category: :groups_and_pr
     let_it_be(:project) { create(:project, :repository) }
     let_it_be(:pipeline) { create_pipeline(project) }
 
-    it_behaves_like 'latest successful build for sha or ref'
+    describe 'latest successful build for sha or ref', quarantine: { issue: 'https://gitlab.com/gitlab-org/quality/test-failure-issues/-/issues/43943', type: :flaky } do
+      it_behaves_like 'latest successful build for sha or ref'
+    end
 
     subject { project.latest_successful_build_for_ref(build_name) }
 
@@ -8173,7 +8226,7 @@ RSpec.describe Project, factory_default: :keep, feature_category: :groups_and_pr
   end
 
   describe '#branch_allows_collaboration?' do
-    context 'when there are open merge requests that have their source/target branches point to each other' do
+    context 'when there are open merge requests that have their source/target branches point to each other', quarantine: { issue: 'https://gitlab.com/gitlab-org/quality/test-failure-issues/-/issues/43943', type: :flaky } do
       let_it_be(:project) { create(:project, :repository) }
       let_it_be(:developer) { create(:user) }
       let_it_be(:reporter) { create(:user) }
@@ -8905,12 +8958,6 @@ RSpec.describe Project, factory_default: :keep, feature_category: :groups_and_pr
 
       it { is_expected.to be_git_objects_poolable }
     end
-
-    context 'when objects are poolable' do
-      let(:project) { create(:project, :repository, :public) }
-
-      it { is_expected.to be_git_objects_poolable }
-    end
   end
 
   describe '#swap_pool_repository!' do
@@ -8985,18 +9032,49 @@ RSpec.describe Project, factory_default: :keep, feature_category: :groups_and_pr
     subject { project.leave_pool_repository }
 
     it 'removes the membership and disconnects alternates' do
-      expect(pool).to receive(:unlink_repository).with(project.repository, disconnect: true).and_call_original
+      expect(project.repository).to receive(:disconnect_alternates).and_call_original
 
       subject
 
       expect(pool.member_projects.reload).not_to include(project)
     end
 
+    it 'does not mark the pool obsolete when other members remain' do
+      subject
+
+      expect(pool.reload).not_to be_obsolete
+    end
+
+    context 'when the project is the last member' do
+      before do
+        pool.source_project.update_column(:pool_repository_id, nil)
+      end
+
+      it 'marks the pool obsolete and schedules its destruction' do
+        expect(ObjectPool::DestroyWorker).to receive(:perform_async).with(pool.id)
+
+        subject
+
+        expect(pool.reload).to be_obsolete
+      end
+    end
+
+    context 'when disconnecting alternates fails' do
+      it 'does not remove the membership' do
+        expect(project.repository).to receive(:disconnect_alternates).and_raise(GRPC::Internal)
+
+        expect { subject }.to raise_error(GRPC::Internal)
+
+        expect(pool.member_projects.reload).to include(project)
+        expect(pool.reload).not_to be_obsolete
+      end
+    end
+
     context 'when the project is pending delete' do
       it 'removes the membership and does not disconnect alternates' do
         project.pending_delete = true
 
-        expect(pool).to receive(:unlink_repository).with(project.repository, disconnect: false).and_call_original
+        expect(project.repository).not_to receive(:disconnect_alternates)
 
         subject
 
@@ -9180,7 +9258,7 @@ RSpec.describe Project, factory_default: :keep, feature_category: :groups_and_pr
       expect(subject.has_pool_repository?).to be false
     end
 
-    it 'returns true when it has a pool repository' do
+    it 'returns true when it has a pool repository', :skip_gitaly_mvcc do
       pool    = create(:pool_repository, :ready)
       subject = create(:project, :repository, pool_repository: pool)
 
@@ -9488,7 +9566,7 @@ RSpec.describe Project, factory_default: :keep, feature_category: :groups_and_pr
     it 'enqueues CreateionProjectExportWorker' do
       expect(Projects::ImportExport::CreateRelationExportsWorker)
         .to receive(:perform_async)
-        .with(user.id, project.id, nil, { exported_by_admin: false })
+        .with(user.id, project.id, nil, { 'exported_by_admin' => false })
 
       project.add_export_job(current_user: user)
     end
@@ -9499,7 +9577,7 @@ RSpec.describe Project, factory_default: :keep, feature_category: :groups_and_pr
       it 'passes `exported_by_admin` correctly in the `params` hash' do
         expect(Projects::ImportExport::CreateRelationExportsWorker)
         .to receive(:perform_async)
-        .with(user.id, project.id, nil, { exported_by_admin: true })
+        .with(user.id, project.id, nil, { 'exported_by_admin' => true })
 
         project.add_export_job(current_user: user)
       end
@@ -9510,7 +9588,7 @@ RSpec.describe Project, factory_default: :keep, feature_category: :groups_and_pr
         stub_application_setting(max_export_size: 1)
         allow(project.statistics).to receive(:storage_size).and_return(0.megabytes)
 
-        expect(Projects::ImportExport::CreateRelationExportsWorker).to receive(:perform_async).with(user.id, project.id, nil, { exported_by_admin: false })
+        expect(Projects::ImportExport::CreateRelationExportsWorker).to receive(:perform_async).with(user.id, project.id, nil, { 'exported_by_admin' => false })
 
         project.add_export_job(current_user: user)
       end
@@ -9529,7 +9607,7 @@ RSpec.describe Project, factory_default: :keep, feature_category: :groups_and_pr
     context 'when application setting max_export_size is not set' do
       it 'starts project export worker' do
         allow(project.statistics).to receive(:storage_size).and_return(2.megabytes)
-        expect(Projects::ImportExport::CreateRelationExportsWorker).to receive(:perform_async).with(user.id, project.id, nil, { exported_by_admin: false })
+        expect(Projects::ImportExport::CreateRelationExportsWorker).to receive(:perform_async).with(user.id, project.id, nil, { 'exported_by_admin' => false })
 
         project.add_export_job(current_user: user)
       end
@@ -10493,6 +10571,26 @@ RSpec.describe Project, factory_default: :keep, feature_category: :groups_and_pr
     end
   end
 
+  describe '#vulnerability_malware_detection_feature_flag_enabled?' do
+    let_it_be(:group_project) { create(:project, :in_subgroup) }
+
+    it_behaves_like 'checks parent group and self feature flag' do
+      let(:feature_flag_method) { :vulnerability_malware_detection_feature_flag_enabled? }
+      let(:feature_flag) { :vulnerability_malware_detection }
+      let(:subject_project) { group_project }
+    end
+  end
+
+  describe '#dependency_malware_detection_feature_flag_enabled?' do
+    let_it_be(:group_project) { create(:project, :in_subgroup) }
+
+    it_behaves_like 'checks parent group and self feature flag' do
+      let(:feature_flag_method) { :dependency_malware_detection_feature_flag_enabled? }
+      let(:feature_flag) { :dependency_malware_detection }
+      let(:subject_project) { group_project }
+    end
+  end
+
   describe 'serialization' do
     let(:object) { build(:project) }
 
@@ -11328,7 +11426,7 @@ RSpec.describe Project, factory_default: :keep, feature_category: :groups_and_pr
     def expect_worker_to_be_enqueued(user = current_user)
       expect(Projects::ImportExport::CreateRelationExportsWorker)
         .to receive(:perform_async)
-        .with(user.id, project.id, nil, { exported_by_admin: false })
+        .with(user.id, project.id, nil, { 'exported_by_admin' => false })
     end
 
     shared_examples 'blocks duplicate export' do |status|

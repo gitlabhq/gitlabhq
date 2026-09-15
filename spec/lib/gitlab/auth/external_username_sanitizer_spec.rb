@@ -39,4 +39,15 @@ RSpec.describe Gitlab::Auth::ExternalUsernameSanitizer, feature_category: :syste
 
     it { is_expected.to eq('carly_the_capybara1') }
   end
+
+  context 'with a nested project sharing the same path segment' do
+    let_it_be(:group) { create(:group) }
+    let_it_be(:project) { create(:project, group: group, path: 'quokka') }
+
+    let(:external_username) { 'quokka' }
+
+    it 'does not treat the nested project namespace as a collision' do
+      expect(sanitized_name).to eq('quokka')
+    end
+  end
 end

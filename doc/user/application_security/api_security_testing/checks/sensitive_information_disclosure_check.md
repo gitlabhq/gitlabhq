@@ -18,11 +18,11 @@ prevented whenever possible. Information Leakage, in its most common form,
 is the result of differences in page responses for valid versus invalid data.
 
 Pages that provide different responses based on the validity of the data can
-also lead to Information Leakage; specifically when data deemed confidential is
+also lead to Information Leakage, specifically when data deemed confidential is
 being revealed as a result of the web application's design. Examples of
-sensitive data includes (but is not limited to): account numbers, user
-identifiers (Drivers license number, Passport number, Social Security Numbers,
-etc.) and user-specific information (passwords, sessions, addresses).
+sensitive data include (but is not limited to): account numbers, user
+identifiers (Driver's license number, Passport number, Social Security Numbers,
+etc.), and user-specific information (passwords, sessions, addresses).
 Information Leakage in this context deals with exposure of key user data deemed
 confidential, or secret, that should not be exposed in plain view, even to the
 user. Credit card numbers and other heavily regulated information are prime

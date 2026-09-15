@@ -4,6 +4,8 @@ module Mcp
   module Tools
     module Base
       class ApiTool
+        include Mcp::Tools::Concerns::GovernanceNamespaceResolver
+
         attr_reader :name, :route, :settings, :version
 
         # Grape types are represented as a string by calling `.to_s` on a type
@@ -30,6 +32,14 @@ module Mcp
           @route = route
           @settings = route.app.route_setting(:mcp)
           @version = @settings[:version] || "0.1.0"
+        end
+
+        def namespace_arguments
+          case route_boundary_type
+          when :project then { project: :id }
+          when :group then { group: :id }
+          else super
+          end
         end
 
         def description
@@ -73,7 +83,7 @@ module Mcp
 
           original_format = request.env['api.format']
           begin
-            status, _, body = route.exec(request.env)
+            status, _, body = route.app.call(request.env)
           ensure
             request.env['api.format'] = original_format
           end
@@ -92,7 +102,21 @@ module Mcp
           auto_annotations
         end
 
+        def toolset
+          settings[:toolset] || Toolsets::UNASSIGNED
+        end
+
+        def unlisted?
+          settings[:unlisted].present?
+        end
+
         private
+
+        def route_boundary_type
+          authorization = route.app.route_setting(:authorization)
+
+          authorization[:boundary_type] if authorization.is_a?(Hash)
+        end
 
         def parse_type(type)
           return TYPE_CONVERSIONS[type] if TYPE_CONVERSIONS.key?(type)

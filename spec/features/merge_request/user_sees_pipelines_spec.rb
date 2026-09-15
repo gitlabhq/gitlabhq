@@ -332,7 +332,7 @@ RSpec.describe 'Merge request > User sees pipelines', :js, feature_category: :co
       context 'when actor is a developer in parent project' do
         let(:actor) { developer_in_parent }
 
-        it 'creates a pipeline in the parent project when user proceeds with the warning', quarantine: 'https://gitlab.com/gitlab-org/quality/test-failure-issues/-/issues/2144' do
+        it 'creates a pipeline in the parent project when user proceeds with the warning' do
           visit project_merge_request_path(parent_project, merge_request)
 
           create_merge_request_pipeline
@@ -368,7 +368,7 @@ RSpec.describe 'Merge request > User sees pipelines', :js, feature_category: :co
       context 'when actor is a reporter in parent project and a developer in fork project' do
         let(:actor) { reporter_in_parent_and_developer_in_fork }
 
-        it 'creates a pipeline in the fork project', quarantine: 'https://gitlab.com/gitlab-org/quality/test-failure-issues/-/issues/2261' do
+        it 'creates a pipeline in the fork project' do
           visit project_merge_request_path(parent_project, merge_request)
 
           create_merge_request_pipeline
@@ -400,10 +400,12 @@ RSpec.describe 'Merge request > User sees pipelines', :js, feature_category: :co
       end
 
       def check_head_pipeline(expected_project:)
-        page.within('.merge-request-tabs') { click_link('Overview') }
+        # The widget mounted before the pipeline existed and only refreshes its
+        # pipeline data on a poll, so reload rather than switching tabs.
+        visit project_merge_request_path(parent_project, merge_request)
 
-        page.within('.ci-widget-content') do
-          expect(page.find('.pipeline-id')[:href]).to include(expected_project.full_path)
+        within_testid('pipeline-info-container') do
+          expect(page).to have_link(href: %r{/#{Regexp.escape(expected_project.full_path)}/-/pipelines/})
         end
       end
 
@@ -541,6 +543,49 @@ RSpec.describe 'Merge request > User sees pipelines', :js, feature_category: :co
         click_button 'Run pipeline'
 
         expect(page).to have_testid('pipeline-url-link', count: 2)
+      end
+    end
+
+    context 'when pipeline creation requests fail', :sidekiq_inline do
+      let(:failed_alert_message) { 'Pipeline creation failed. Please try again.' }
+
+      before do
+        # A tag-only rule produces no jobs for merge request pipelines, so creation fails.
+        stub_ci_pipeline_yaml_file(YAML.dump({ test: { script: 'test', rules: [{ if: '$CI_COMMIT_TAG' }] } }))
+      end
+
+      context 'when the request was automatic' do
+        before do
+          MergeRequests::CreatePipelineService
+            .new(project: project, current_user: user, params: { allow_duplicate: true })
+            .execute_async(merge_request)
+        end
+
+        it 'does not show the failure alert' do
+          # visit_pipelines_tab waits for the subscription, which only registers
+          # once the creation requests query has resolved.
+          visit_pipelines_tab('ciPipelineCreationRequestsUpdated')
+
+          expect(page).not_to have_content(failed_alert_message)
+        end
+      end
+
+      context 'when the request was user-initiated' do
+        it 'shows the failure alert and keeps its dismissal across reloads', :aggregate_failures do
+          visit_pipelines_tab('ciPipelineCreationRequestsUpdated')
+
+          click_button 'Run pipeline'
+
+          expect(page).to have_content(failed_alert_message)
+
+          click_button 'Dismiss'
+
+          expect(page).not_to have_content(failed_alert_message)
+
+          visit_pipelines_tab('ciPipelineCreationRequestsUpdated')
+
+          expect(page).not_to have_content(failed_alert_message)
+        end
       end
     end
 

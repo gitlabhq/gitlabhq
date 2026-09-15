@@ -64,6 +64,7 @@ module API
         desc 'Download the spec index file' do
           detail 'Downloads a RubyGems spec index file (specs.4.8.gz, latest_specs.4.8.gz, or ' \
             'prerelease_specs.4.8.gz) for a project.'
+          produces %w[application/octet-stream]
           success code: 200
           failure [
             { code: 400, message: 'Bad Request' },
@@ -93,6 +94,7 @@ module API
 
         desc 'Download a gemspec file' do
           detail 'Downloads a gemspec file in Marshal format for a specified gem version.'
+          produces %w[application/octet-stream]
           success code: 200
           failure [
             { code: 401, message: 'Unauthorized' },
@@ -120,6 +122,7 @@ module API
 
         desc 'Download a gem file' do
           detail 'Downloads a specified gem file for a project.'
+          produces %w[application/octet-stream]
           success code: 200
           failure [
             { code: 401, message: 'Unauthorized' },
@@ -217,6 +220,7 @@ module API
             detail 'Retrieves a list of dependencies for specified gems. The response is a marshalled array of ' \
               'hashes for all versions of the requested gems. Because the response is marshalled, you can store it in ' \
               'a file.'
+            produces %w[application/octet-stream]
             success code: 200
             failure [
               { code: 401, message: 'Unauthorized' },

@@ -91,6 +91,26 @@ RSpec.describe Gitlab::Database::Partitioning::TimePartition, feature_category: 
     end
   end
 
+  describe '#to_detach_sql' do
+    subject(:partition) { described_class.new('foo', '2020-04-01', '2020-05-01', partition_name: 'foo_202004') }
+
+    it 'generates SQL' do
+      expect(partition.to_detach_sql).to eq(<<~SQL)
+        ALTER TABLE "foo"
+        DETACH PARTITION "#{Gitlab::Database::DYNAMIC_PARTITIONS_SCHEMA}"."foo_202004"
+      SQL
+    end
+
+    context 'when detaching concurrently' do
+      it 'generates SQL' do
+        expect(partition.to_detach_sql(concurrently: true)).to eq(<<~SQL)
+          ALTER TABLE "foo"
+          DETACH PARTITION "#{Gitlab::Database::DYNAMIC_PARTITIONS_SCHEMA}"."foo_202004" CONCURRENTLY
+        SQL
+      end
+    end
+  end
+
   describe 'object equality - #eql' do
     def expect_inequality(actual, other)
       expect(actual.eql?(other)).to be_falsey

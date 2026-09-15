@@ -4,8 +4,6 @@ import { PiniaVuePlugin } from 'pinia';
 import { createTestingPinia } from '@pinia/testing';
 import { isLoggedIn } from '~/lib/utils/common_utils';
 import { detectAndConfirmSensitiveTokens } from '~/lib/utils/secret_detection';
-import { createAlert } from '~/alert';
-import { COMMENT_FORM } from '~/notes/i18n';
 import CommitTimeline from '~/rapid_diffs/app/discussions/timeline.vue';
 import DiffDiscussions from '~/rapid_diffs/app/discussions/diff_discussions.vue';
 import NoteForm from '~/rapid_diffs/app/discussions/note_form.vue';
@@ -76,16 +74,12 @@ describe('CommitTimeline', () => {
       expect(store.createNewDiscussion).toHaveBeenCalledWith({ note: 'test note' });
     });
 
-    it('shows alert when save fails', async () => {
+    it('propagates save failure to the form', async () => {
       store.createNewDiscussion.mockRejectedValue(new Error('fail'));
       createComponent([createDiscussion()]);
 
-      await wrapper.findComponent(NoteForm).props('saveNote')('test note');
-
-      expect(createAlert).toHaveBeenCalledWith(
-        expect.objectContaining({
-          message: COMMENT_FORM.GENERIC_UNSUBMITTABLE_NETWORK,
-        }),
+      await expect(wrapper.findComponent(NoteForm).props('saveNote')('test note')).rejects.toThrow(
+        'fail',
       );
     });
   });

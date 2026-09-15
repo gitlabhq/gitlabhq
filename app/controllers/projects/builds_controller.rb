@@ -22,6 +22,6 @@ class Projects::BuildsController < Projects::ApplicationController
   private
 
   def job
-    @job ||= project.builds.find(params[:id])
+    @job ||= project.builds.find(params.permit(:id)[:id])
   end
 end

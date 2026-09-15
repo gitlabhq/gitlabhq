@@ -196,6 +196,27 @@ RSpec.describe Gitlab::Auth::Ldap::User do
     end
   end
 
+  describe 'updating location' do
+    before do
+      stub_omniauth_setting(sync_profile_attributes: true)
+    end
+
+    context 'when the LDAP strategy sets its synthetic location value' do
+      before do
+        # The gitlab_omniauth-ldap strategy always assigns a joined pattern
+        # string to the location field, even when the directory entry has no
+        # address data.
+        info[:location] = ', , ,  '
+      end
+
+      it 'does not sync the location', :aggregate_failures do
+        expect(gl_user.location).to be_blank
+        expect(gl_user.user_synced_attributes_metadata.location_synced).to be_falsey
+        expect(gl_user.read_only_attribute?(:location)).to be_falsey
+      end
+    end
+  end
+
   describe 'blocking' do
     def configure_block(value)
       stub_ldap_config(block_auto_created_users: value)

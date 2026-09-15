@@ -1,0 +1,13 @@
+---
+table_name: ai_compliance_anthropic_integrations
+classes:
+- Ai::Compliance::AnthropicIntegration
+feature_categories:
+- compliance_management
+description: Per-top-level-group Anthropic Compliance API credential and ingestion sync state for Claude Code transcript ingestion
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/252079
+milestone: '19.4'
+gitlab_schema: gitlab_main_org
+sharding_key:
+  namespace_id: namespaces
+table_size: small

@@ -49,7 +49,11 @@ module Keeps
       database_entries.each do |entry|
         connection = Gitlab::Database.schemas_to_base_models[entry.gitlab_schema]&.first&.connection
         next unless connection
-        next unless table_has_data?(entry.table_name)
+        # Write-locked tables belong to another database, where they may well be non-empty, so
+        # classifying them from here would wrongly demote them (see
+        # https://gitlab.com/gitlab-org/gitlab/-/issues/526457). Genuinely empty tables (for
+        # example, truncated ones) carry no lock trigger and are still reclassified.
+        next if table_write_locked?(entry.table_name)
 
         table_classification = fetch_table_classification(entry.table_name)
         next unless table_classification
@@ -61,14 +65,14 @@ module Keeps
     end
     strong_memoize_attr :table_sizes
 
-    def table_has_data?(table_name)
-      postgres_ai.table_has_data?(table_name)
+    def table_write_locked?(table_name)
+      postgres_ai.table_write_locked?(table_name)
     end
 
     def fetch_table_classification(table_name)
       result = postgres_ai.fetch_postgres_table_size(table_name)
 
-      result.first.fetch('classification')
+      result.first&.fetch('classification')
     end
 
     def database_entries

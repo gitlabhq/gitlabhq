@@ -21,7 +21,7 @@ class CreateCiUsedMinutesMv < ClickHouse::Migration
 
   def down
     execute <<~SQL
-      DROP VIEW ci_used_minutes_mv
+      DROP VIEW IF EXISTS ci_used_minutes_mv
     SQL
   end
 end

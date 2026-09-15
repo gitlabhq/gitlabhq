@@ -31,7 +31,7 @@ module RuboCop
       class DescriptionDetail < RuboCop::Cop::Base
         include CodeReuseHelpers
 
-        MSG = 'API desc blocks must define a valid detail string. https://docs.gitlab.com/development/api_styleguide#defining-endpoint-details.'
+        MSG = 'API desc blocks must define a valid detail string. https://docs.gitlab.com/development/api_styleguide/#defining-endpoint-details.'
 
         # @!method has_valid_detail?(node)
         def_node_matcher :has_valid_detail?, '`(send nil? :detail {(str _) (dstr ...)})'

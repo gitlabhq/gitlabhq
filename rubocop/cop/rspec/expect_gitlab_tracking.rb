@@ -32,7 +32,7 @@ module RuboCop
       class ExpectGitlabTracking < RuboCop::Cop::Base
         MSG = 'Do not expect directly on `Gitlab::Tracking#event`, add the `snowplow` annotation and use ' \
               '`expect_snowplow_event` instead. ' \
-              'See https://docs.gitlab.com/ee/development/testing_guide/best_practices.html#test-snowplow-events'
+              'See https://docs.gitlab.com/development/testing_guide/best_practices/#test-snowplow-events'
 
         # @!method expect_gitlab_tracking?(node)
         def_node_matcher :expect_gitlab_tracking?, <<~PATTERN

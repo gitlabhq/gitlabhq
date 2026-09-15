@@ -19,7 +19,7 @@ RSpec.describe Gitlab::Auth::Atlassian::TokenRefresher, feature_category: :integ
         atlassian_identity.expires_at = 6.minutes.from_now
       end
 
-      it { is_expected.to eq(false) }
+      it { is_expected.to be(false) }
     end
 
     context 'when the token is expiring in less than 5 minutes' do
@@ -27,7 +27,7 @@ RSpec.describe Gitlab::Auth::Atlassian::TokenRefresher, feature_category: :integ
         atlassian_identity.expires_at = 4.minutes.from_now
       end
 
-      it { is_expected.to eq(true) }
+      it { is_expected.to be(true) }
     end
 
     context 'when the token has already expired' do
@@ -35,7 +35,7 @@ RSpec.describe Gitlab::Auth::Atlassian::TokenRefresher, feature_category: :integ
         atlassian_identity.expires_at = 1.hour.ago
       end
 
-      it { is_expected.to eq(true) }
+      it { is_expected.to be(true) }
     end
   end
 

@@ -17,17 +17,20 @@ Some protections block a client for a period of time instead of slowing requests
 
 ## Failed authentication ban for Git and container registry
 
-GitLab returns HTTP status code `403` for 1 hour, if 30 failed authentication requests were received
-in a 3-minute period from a single IP address. This applies only to combined:
+By default, GitLab returns HTTP status code `403` for 1 hour, if 10 failed authentication requests
+were received in a 1-minute period from a single IP address. All three values are configurable.
+This applies only to combined:
 
 - Git requests.
 - Container registry (`/jwt/auth`) requests.
 
 This limit:
 
-- Is reset by requests that authenticate successfully. For example, 29 failed authentication
-  requests followed by 1 successful request, followed by 29 more failed authentication requests
-  would not trigger a ban.
+- Is reset by requests that authenticate successfully, until a ban starts. For example, 9 failed
+  authentication requests followed by 1 successful request, followed by 9 more failed
+  authentication requests would not trigger a ban.
+- Cannot be cleared by authenticating once a ban has started. The ban is checked before the
+  credentials are, so a banned IP receives `403` even with valid credentials, until the ban expires.
 - Does not apply to JWT requests authenticated by `gitlab-ci-token`.
 - Is disabled by default.
 
@@ -68,11 +71,15 @@ To remove a blocked IP:
    grep "Rack_Attack" /var/log/gitlab/gitlab-rails/auth.log
    ```
 
-1. The denylist is stored in Redis, so you must open up `redis-cli`:
+1. The denylist is stored in the rate limiting Redis instance, so you must open up `redis-cli`
+   against it. On an installation that does not separate instances, this is the default Redis:
 
    ```shell
    /opt/gitlab/embedded/bin/redis-cli -s /var/opt/gitlab/redis/redis.socket
    ```
+
+   If you have configured `gitlab_rails['redis_rate_limiting_instance']`, connect to that instance
+   instead. Deleting the key from the wrong instance appears to succeed and leaves the ban in place.
 
 1. You can remove the block using the following syntax, replacing `<ip>` with
    the actual IP that is denylisted:

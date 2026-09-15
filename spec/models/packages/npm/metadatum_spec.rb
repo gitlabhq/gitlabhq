@@ -57,16 +57,4 @@ RSpec.describe Packages::Npm::Metadatum, type: :model, feature_category: :packag
       end
     end
   end
-
-  describe 'scopes' do
-    describe '.package_id_in' do
-      let_it_be(:package) { create(:npm_package) }
-      let_it_be(:metadatum_1) { create(:npm_metadatum, package: package) }
-      let_it_be(:metadatum_2) { create(:npm_metadatum) }
-
-      it 'returns metadatums with the given package ids' do
-        expect(described_class.package_id_in([package.id])).to contain_exactly(metadatum_1)
-      end
-    end
-  end
 end

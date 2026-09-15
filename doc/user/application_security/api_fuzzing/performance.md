@@ -13,7 +13,7 @@ Security tools that perform API fuzz testing, such as API fuzzing, perform testi
   - How many operations your API is comprised of
   - How many fields are in each operation (think JSON bodies, headers, query string, cookies, etc.)
 
-If API fuzzing testing job still takes longer than expected after following the advice in this performance guide, reach out to support for further assistance.
+If the API fuzzing testing job still takes longer than expected after following the advice in this performance guide, reach out to support for further assistance.
 
 ## Diagnosing performance issues
 
@@ -22,7 +22,7 @@ The first step to resolving performance issues is to understand what is contribu
 - API fuzzing is running on a low-vCPU runner
 - The application deployed to a slow/single-CPU instance and is not able to keep up with the testing load
 - The application contains a slow operation that impacts the overall test speed (> 1/2 second)
-- The application contains an operation that returns a large amount of data (> 500K+)
+- The application contains an operation that returns a large amount of data (> 500K)
 - The application contains a large number of operations (> 40)
 
 ### The application contains a slow operation that impacts the overall test speed (> 1/2 second)
@@ -52,7 +52,7 @@ An average response time of two seconds is an initial indicator that this specif
 
 For this issue, the team might decide to:
 
-- Use a runner with more vCPUs, because this allows API fuzzing to parallelize the work being performed. This helps lower the test time, but getting the test down under 10 minutes might still be problematic without moving to a high CPU machine due to how long the operation takes to test. While larger runners are more costly, you also pay for less minutes if the job executions are quicker.
+- Use a runner with more vCPUs, because this allows API fuzzing to parallelize the work being performed. This helps lower the test time, but getting the test down under 10 minutes might still be problematic without moving to a high CPU machine due to how long the operation takes to test. While larger runners are more costly, you also pay for fewer minutes if the job executions are quicker.
 - [Exclude this operation](#excluding-slow-operations) from the API fuzzing test. While this is the simplest, it has the downside of a gap in security test coverage.
 - [Exclude the operation from feature branch API fuzzing tests, but include it in the default branch test](#excluding-operations-in-feature-branches-but-not-default-branch).
 - [Split up the API fuzzing testing into multiple jobs](#splitting-a-test-into-multiple-jobs).

@@ -102,6 +102,10 @@ module Projects
 
       private
 
+      def ref_param
+        params.permit(:ref)[:ref]
+      end
+
       def audit_project_cicd_settings_access
         audit_context = {
           name: 'project_ci_cd_settings_accessed',
@@ -222,7 +226,7 @@ module Projects
       end
 
       def define_badges_variables
-        @ref = params[:ref] || @project.default_branch_or_main
+        @ref = ref_param || @project.default_branch_or_main
 
         @badges = [Gitlab::Ci::Badge::Pipeline::Status,
           Gitlab::Ci::Badge::Coverage::Report]

@@ -1,4 +1,4 @@
-= render ::Layouts::CrudComponent.new(_('Settings'), body_options: { class: '!gl-my-5' }) do |c|
+= render ::Layouts::CrudComponent.new(_('Settings')) do |c|
   - c.with_body do
     = gitlab_ui_form_for @project, url: project_pages_path(@project, anchor: 'domains-settings'), html: { class: 'gl-inline-block', title: pages_https_only_title } do |f|
       - if Gitlab.config.pages.custom_domain_mode || Gitlab.config.pages.external_http || Gitlab.config.pages.external_https

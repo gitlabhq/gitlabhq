@@ -26,7 +26,7 @@ RSpec.describe Appearance do
     it { expect(appearance.footer_message).to eq('') }
     it { expect(appearance.message_background_color).to eq('#E75E40') }
     it { expect(appearance.message_font_color).to eq('#FFFFFF') }
-    it { expect(appearance.email_header_and_footer_enabled).to eq(false) }
+    it { expect(appearance.email_header_and_footer_enabled).to be(false) }
     it { expect(Appearance::ALLOWED_PWA_ICON_SCALER_WIDTHS).to match_array([192, 512]) }
   end
 
@@ -37,7 +37,7 @@ RSpec.describe Appearance do
       new_row = build(:appearance)
       expect { new_row.save! }.to raise_error(ActiveRecord::RecordInvalid, 'Validation failed: Only 1 appearances row can exist')
 
-      expect(new_row.valid?).to eq(false)
+      expect(new_row.valid?).to be(false)
     end
   end
 
@@ -158,7 +158,7 @@ RSpec.describe Appearance do
       it 'returns email_header_and_footer_enabled as true' do
         appearance = build(:appearance)
 
-        expect(appearance.email_header_and_footer_enabled?).to eq(false)
+        expect(appearance.email_header_and_footer_enabled?).to be(false)
       end
     end
 
@@ -166,7 +166,7 @@ RSpec.describe Appearance do
       it 'returns email_header_and_footer_enabled as true' do
         appearance = build(:appearance, email_header_and_footer_enabled: true)
 
-        expect(appearance.email_header_and_footer_enabled?).to eq(true)
+        expect(appearance.email_header_and_footer_enabled?).to be(true)
       end
     end
   end

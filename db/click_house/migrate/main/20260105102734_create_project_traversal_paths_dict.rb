@@ -35,6 +35,6 @@ class CreateProjectTraversalPathsDict < ClickHouse::Migration
   end
 
   def down
-    execute('DROP DICTIONARY project_traversal_paths_dict')
+    execute('DROP DICTIONARY IF EXISTS project_traversal_paths_dict')
   end
 end

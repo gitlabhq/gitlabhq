@@ -55,7 +55,7 @@ The external parameters:
 |--------------|-------|
 | `source`     | The URL of the project. |
 | `entryPoint` | The name of the CI/CD job that triggered the build. |
-| `variables`  | The names and values of any CI/CD or environment variables available during the build command execution. If the variable is [masked or hidden](../../../variables/_index.md) the value of the variable is set to `[MASKED]`. |
+| `variables`  | The values of these CI/CD variables for the build: `CI_PIPELINE_ID`, `CI_PIPELINE_URL`, `CI_JOB_ID`, `CI_JOB_URL`, `CI_JOB_NAME`, `CI_PROJECT_ID`, and `CI_PROJECT_NAME`. |
 
 ### Internal parameters
 
@@ -94,12 +94,10 @@ This example shows the format of a GitLab-generated provenance statement:
           "CI_PIPELINE_ID": "576",
           "CI_PIPELINE_URL": "http://gdk.test:3000/root/repo_name/-/pipelines/576",
           "CI_JOB_ID": "412",
-
-          [... additional environment variables ...]
-
-          "masked_and_hidden_variable": "[MASKED]",
-          "masked_variable": "[MASKED]",
-          "visible_variable": "visible_variable",
+          "CI_JOB_URL": "http://gdk.test:3000/root/repo_name/-/jobs/987",
+          "CI_JOB_NAME": "job_name",
+          "CI_PROJECT_ID": "123",
+          "CI_PROJECT_NAME": "repo_name",
         }
       },
       "internalParameters": {

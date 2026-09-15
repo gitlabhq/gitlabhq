@@ -10,9 +10,7 @@ module Projects
           projectPath: project.full_path,
           create_model_path: new_project_ml_model_path(project),
           can_write_model_registry: can_write_model_registry?(user, project),
-          mlflow_tracking_url: mlflow_tracking_url(project),
-          max_allowed_file_size: max_allowed_file_size(project),
-          markdown_preview_path: preview_markdown_path(project)
+          mlflow_tracking_url: mlflow_tracking_url(project)
         }
 
         to_json(data)

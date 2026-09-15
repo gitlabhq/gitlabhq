@@ -41,7 +41,7 @@ For a video explanation, see [DORA metrics: User analytics](https://www.youtube.
 
 Deployment frequency is the frequency of successful deployments to production over the given date range (hourly, daily, weekly, monthly, or yearly).
 
-Software leaders can use the deployment frequency metric to understand how often the team successfully deploys software to production, and how quickly the teams can respond to customers' requests or new market opportunities.
+Software leaders can use the deployment frequency metric to understand how often the team successfully deploys software to production, and how quickly the team can respond to customers' requests or new market opportunities.
 High deployment frequency means you can get feedback sooner and iterate faster to deliver improvements and features.
 
 ### How deployment frequency is calculated
@@ -54,7 +54,7 @@ The calculation takes into account the production `environment tier` or the envi
 You can configure DORA metrics for different environments by specifying `other` under the `environment_tiers` parameter in the [`.gitlab/insights.yml` file](../project/insights/_index.md#configuration).
 
 > [!note]
-> Deployment frequency is calculated as the **average (mean)**, unlike the other DORA metrics that use the median, which is preferred because it provides a more accurate and reliable view of performance.
+> Deployment frequency is calculated as the average (mean), unlike the other DORA metrics that use the median, which is preferred because it provides a more accurate and reliable view of performance.
 > This difference is because deployment frequency was added to GitLab prior to adopting the DORA framework, and the calculation of this metric remained unchanged when it was incorporated into other reports.
 > [Issue 499591](https://gitlab.com/gitlab-org/gitlab/-/issues/499591) proposes offering the option to customize the calculation method for each metric, choosing between mean and median.
 

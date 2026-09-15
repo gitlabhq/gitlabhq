@@ -168,7 +168,7 @@ To publish comments to the Status Page Incident:
 - Create a comment on the incident.
 - When you're ready to publish the comment, mark the comment for publication by
   adding a microphone [emoji reaction](../../user/emoji_reactions.md)
-  reaction (`:microphone:` 🎤) to the comment.
+  (`:microphone:` 🎤) to the comment.
 - Any files attached to the comment (up to 5000 per incident) are also published.
 
 > [!warning]

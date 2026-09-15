@@ -50,7 +50,7 @@ This indicates to all GitLab analyzers that they are to output all messages. For
 see [logging level](#logging-level).
 
 <!--
-The below subsection(`### Secure job failing with exit code 1`) documentation URL is referred
+The below subsection (`### Secure job failing with exit code 1`) documentation URL is referred to
 in the [`/gitlab-org/security-products/analyzers/command`](https://gitlab.com/gitlab-org/security-products/analyzers/command/-/blob/main/command.go#L19)
 repository. If this section/subsection changes, ensure to update the corresponding URL in the mentioned
 repository.

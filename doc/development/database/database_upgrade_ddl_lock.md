@@ -40,7 +40,7 @@ When `block_level: only_pdm` is set:
 - Merge requests that add files under `db/post_migrate/` or `ee/db/post_migrate/` are blocked.
 - The block applies to added files only. Modifications and deletions to existing PDMs are not blocked.
 - A warning appears during the warning period and a failure during the lock period.
-- DDL changes are not blocked by a `only_pdm` lock.
+- DDL changes are not blocked by an `only_pdm` lock.
 
 The default `block_level` is `only_ddl`, which matches the original PostgreSQL upgrade behavior.
 

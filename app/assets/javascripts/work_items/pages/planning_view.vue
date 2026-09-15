@@ -6,7 +6,7 @@ import {
   GlIntersectionObserver,
   GlToastMixin,
 } from '@gitlab/ui';
-import { isEmpty, isEqual } from 'lodash-es';
+import { debounce, isEmpty, isEqual } from 'lodash-es';
 import fuzzaldrinPlus from 'fuzzaldrin-plus';
 import axios from '~/lib/utils/axios_utils';
 import { s__, __, n__, formatNumber, sprintf } from '~/locale';
@@ -14,7 +14,7 @@ import * as Sentry from '~/sentry/sentry_browser_wrapper';
 import glFeatureFlagMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
 import { InternalEvents } from '~/tracking';
 import { createAlert, VARIANT_INFO } from '~/alert';
-import { TYPENAME_USER, TYPENAME_NAMESPACE } from '~/graphql_shared/constants';
+import { TYPENAME_USER, TYPENAME_WORK_ITEMS_TYPE } from '~/graphql_shared/constants';
 import { getParameterByName, removeParams, updateHistory } from '~/lib/utils/url_utility';
 import {
   STATUS_ALL,
@@ -97,7 +97,6 @@ import IssuableTabs from '~/vue_shared/issuable/list/components/issuable_tabs.vu
 import {
   convertLegacyTypeFormat,
   convertOldTypeTokenEnumToGid,
-  convertNumberToGid,
   getSortOptions,
   getInitialPageParams,
   isCursorCompatibleWithApi,
@@ -145,10 +144,20 @@ import {
   preferencesChanged,
 } from '~/work_items/list/view_change_detection';
 import { persistSortPreference } from '~/work_items/list/display_settings_preferences';
-import updateVisibleGroupsMutation from '~/work_items/board/grouping/graphql/client/update_visible_groups.mutation.graphql';
 import { buildInitialViewState } from '~/work_items/list/saved_view_config';
 
 import searchProjectsQuery from '../list/graphql/search_projects.query.graphql';
+import namespaceWorkItemChangesSubscription from '../list/graphql/namespace_work_item_changes.subscription.graphql';
+import {
+  dropMatchCacheEntries,
+  evictNamespaceWorkItems,
+  evictWorkItem,
+  groupWorkItemChanges,
+  isWorkItemCached,
+  mergeWorkItemChangeAction,
+  findMatchingWorkItems,
+  removeWorkItemFromNamespaceLists,
+} from '../list/graphql/cache_updates';
 
 import SavedViewsNotFoundModal from '../list/components/work_items_saved_views_not_found_modal.vue';
 import SavedViewsLimitWarningModal from '../list/components/work_items_saved_views_limit_warning_modal.vue';
@@ -176,10 +185,14 @@ import {
   VIEW_CONTEXT,
   VIEW_MODE_LIST,
   VIEW_MODE_BOARD,
+  VIEW_MODE_TABLE,
+  DISPLAY_SETTINGS_PAGE_ROOT,
+  DISPLAY_SETTINGS_PAGE_GROUP_BY,
 } from '../constants';
 
 const ListView = () => import('ee_else_ce/work_items/list/list_view.vue');
-const BoardView = () => import('ee_else_ce/work_items/board/board_view.vue');
+const BoardView = () => import('~/work_items/board/board_view.vue');
+const TableView = () => import('~/work_items/table/table_view.vue');
 const DateToken = () => import('~/vue_shared/components/filtered_search_bar/tokens/date_token.vue');
 const EmojiToken = () =>
   import('~/vue_shared/components/filtered_search_bar/tokens/emoji_token.vue');
@@ -200,6 +213,10 @@ const WorkItemParentToken = () =>
   import('~/vue_shared/components/filtered_search_bar/tokens/work_item_parent_token.vue');
 const WorkItemTypeToken = () =>
   import('~/vue_shared/components/filtered_search_bar/tokens/work_item_type_token.vue');
+
+// Coalesces a burst of events into one refetch. For work item changes this also outlasts the
+// backend's broadcast rate limit (50/minute per namespace), so a steady stream can't starve it.
+const REALTIME_DEBOUNCE_MS = 500;
 
 export default {
   issuableListTabs,
@@ -235,6 +252,7 @@ export default {
     IssuableTabs,
     ListView,
     BoardView,
+    TableView,
     WorkItemDetailPanel,
   },
   mixins: [glFeatureFlagMixin(), InternalEvents.mixin(), GlToastMixin],
@@ -251,7 +269,6 @@ export default {
     'releasesPath',
     'hasBlockedIssuesFeature',
     'hasIssuableHealthStatusFeature',
-    'hasIssueDateFilterFeature',
     'hasIssueWeightsFeature',
     'hasOkrsFeature',
     'hasCustomFieldsFeature',
@@ -305,6 +322,7 @@ export default {
       workItemsCount: 0,
       hasWorkItems: false,
       pageParams: {},
+      listPageInfo: {},
       state: STATUS_OPEN,
       pageSize: DEFAULT_PAGE_SIZE,
       savedView: null,
@@ -331,6 +349,7 @@ export default {
       currentWorkItemsCount: 0,
       currentWorkItemIds: [],
       isDisplayDrawerOpen: false,
+      displayDrawerPage: DISPLAY_SETTINGS_PAGE_ROOT,
       drawerTopOffset: '0px',
       boardUpdatedItem: null,
     };
@@ -367,7 +386,9 @@ export default {
         return data?.namespace?.workItems.nodes.length > 0 || false;
       },
       result({ data }) {
-        this.namespaceId = data.namespace?.id;
+        const namespaceId = data.namespace?.id;
+        this.namespaceId = namespaceId;
+        this.subscribeToWorkItemChanges(namespaceId);
       },
       error(error) {
         this.error = s__('WorkItem|An error occurred while getting work item counts.');
@@ -398,8 +419,11 @@ export default {
           const isDisabledBoardView =
             savedView?.displaySettings?.viewMode === VIEW_MODE_BOARD &&
             !this.isPlanningViewBoardEnabled;
+          const isDisabledTableView =
+            savedView?.displaySettings?.viewMode === VIEW_MODE_TABLE &&
+            !this.isPlanningViewTableEnabled;
 
-          if (!savedView || isDisabledBoardView) {
+          if (!savedView || isDisabledBoardView || isDisabledTableView) {
             this.handleSavedViewNotFound();
             return;
           }
@@ -471,6 +495,19 @@ export default {
         if (!this.isSavedView) {
           if (!planningViewAllItemsFilters.value) {
             this.sortKey = sortKey;
+            const persistedViewMode =
+              data?.currentUser?.workItemPreferences?.displaySettings?.viewMode;
+            const isPersistedBoardModeUnavailable =
+              persistedViewMode === VIEW_MODE_BOARD && !this.isPlanningViewBoardEnabled;
+            const isPersistedTableModeUnavailable =
+              persistedViewMode === VIEW_MODE_TABLE && !this.isPlanningViewTableEnabled;
+            if (
+              persistedViewMode &&
+              !isPersistedBoardModeUnavailable &&
+              !isPersistedTableModeUnavailable
+            ) {
+              this.viewMode = persistedViewMode;
+            }
             // Sync default sort to URL on fresh load so the URL always reflects current state.
             // Guard against overwriting existing params (e.g. sv_limit_id on redirect from saved view).
             if (!Object.keys(this.$route.query).length) {
@@ -498,15 +535,27 @@ export default {
     isPlanningViewBoardEnabled() {
       return Boolean(this.glFeatures.planningViewBoards);
     },
+    isPlanningViewTableEnabled() {
+      return Boolean(this.glFeatures.planningViewTable);
+    },
     isBoardView() {
       return this.viewMode === VIEW_MODE_BOARD && this.isPlanningViewBoardEnabled;
+    },
+    isTableView() {
+      return this.viewMode === VIEW_MODE_TABLE && this.isPlanningViewTableEnabled;
+    },
+    // `afterCursor` alone answers forward pagination. Backward pagination needs `hasPreviousPage`
+    // too: paging next then back to page 1 leaves a real `beforeCursor` set (see
+    // list_view.vue's handlePreviousPage), which would otherwise read as "not page 1".
+    isViewingFirstPage() {
+      return !this.pageParams.afterCursor && !this.listPageInfo.hasPreviousPage;
     },
     detailPanelViewContext() {
       return this.isBoardView ? VIEW_CONTEXT.drawerBoard : VIEW_CONTEXT.drawerList;
     },
-    // The board only supports Manual ordering, so it always reads/displays Manual sort
-    // regardless of the list's sort. We override here rather than mutating sortKey, so the
-    // list restores the user's sort on return and their preference is never overwritten.
+    // The board can only be sorted manually, so it always shows Manual sort here,
+    // no matter what sort the list is actually using. We only override the display,
+    // not this.sortKey itself, so switching back to list view restores the user's real sort.
     effectiveSortKey() {
       return this.isBoardView ? RELATIVE_POSITION_ASC : this.sortKey;
     },
@@ -617,6 +666,9 @@ export default {
     },
     initialLoadWasFiltered() {
       return this.filterTokens.length > 0;
+    },
+    hasActiveFilters() {
+      return !isEmpty(this.apiFilterParams);
     },
     workItemTotalStateCount() {
       if (this.workItemsCount === null) {
@@ -874,47 +926,45 @@ export default {
         ],
       });
 
-      if (this.hasIssueDateFilterFeature) {
-        tokens.push({
-          order: 18,
-          type: TOKEN_TYPE_CLOSED,
-          title: TOKEN_TITLE_CLOSED,
-          icon: 'history',
-          unique: true,
-          token: DateToken,
-          operators: OPERATORS_AFTER_BEFORE,
-        });
+      tokens.push({
+        order: 18,
+        type: TOKEN_TYPE_CLOSED,
+        title: TOKEN_TITLE_CLOSED,
+        icon: 'history',
+        unique: true,
+        token: DateToken,
+        operators: OPERATORS_AFTER_BEFORE,
+      });
 
-        tokens.push({
-          order: 19,
-          type: TOKEN_TYPE_CREATED,
-          title: TOKEN_TITLE_CREATED,
-          icon: 'history',
-          unique: true,
-          token: DateToken,
-          operators: OPERATORS_AFTER_BEFORE,
-        });
+      tokens.push({
+        order: 19,
+        type: TOKEN_TYPE_CREATED,
+        title: TOKEN_TITLE_CREATED,
+        icon: 'history',
+        unique: true,
+        token: DateToken,
+        operators: OPERATORS_AFTER_BEFORE,
+      });
 
-        tokens.push({
-          order: 20,
-          type: TOKEN_TYPE_DUE_DATE,
-          title: TOKEN_TITLE_DUE_DATE,
-          icon: 'calendar',
-          unique: true,
-          token: DateToken,
-          operators: OPERATORS_AFTER_BEFORE,
-        });
+      tokens.push({
+        order: 20,
+        type: TOKEN_TYPE_DUE_DATE,
+        title: TOKEN_TITLE_DUE_DATE,
+        icon: 'calendar',
+        unique: true,
+        token: DateToken,
+        operators: OPERATORS_AFTER_BEFORE,
+      });
 
-        tokens.push({
-          order: 21,
-          type: TOKEN_TYPE_UPDATED,
-          title: TOKEN_TITLE_UPDATED,
-          icon: 'history',
-          unique: true,
-          token: DateToken,
-          operators: OPERATORS_AFTER_BEFORE,
-        });
-      }
+      tokens.push({
+        order: 21,
+        type: TOKEN_TYPE_UPDATED,
+        title: TOKEN_TITLE_UPDATED,
+        icon: 'history',
+        unique: true,
+        token: DateToken,
+        operators: OPERATORS_AFTER_BEFORE,
+      });
 
       if (this.canReadCrmOrganization) {
         tokens.push({
@@ -972,7 +1022,19 @@ export default {
       // We should not be using ENUM and change the mount of work item type lists
       // with id instead since that is immutable
       const workItemTypeName = this.workItemType || WORK_ITEM_TYPE_NAME_ISSUE;
-      return this.getWorkItemTypeConfiguration(workItemTypeName)?.id || '';
+      const typeIdByName = this.getWorkItemTypeConfiguration(workItemTypeName)?.id;
+      if (typeIdByName) {
+        return typeIdByName;
+      }
+
+      // A namespace can rename the Issue type. The name lookup then misses, but the
+      // renamed type keeps the id of the system type it was converted from.
+      if (workItemTypeName === WORK_ITEM_TYPE_NAME_ISSUE) {
+        const issueTypeGid = convertToGraphQLId(TYPENAME_WORK_ITEMS_TYPE, 1);
+        return this.workItemTypesConfiguration?.find((type) => type?.id === issueTypeGid)?.id || '';
+      }
+
+      return '';
     },
     displaySettingsSoT() {
       return this.isSavedView
@@ -1025,24 +1087,15 @@ export default {
       return convertToSearchQuery(this.filterTokens);
     },
     apiFilterParams() {
-      const params = convertToApiParams(this.filterTokens, {
+      return convertToApiParams(this.filterTokens, {
         hasCustomFieldsFeature: this.hasCustomFieldsFeature,
       });
-      if (params.types) {
-        params.workItemTypeIds = convertNumberToGid(params.types);
-        delete params.types;
-      }
-      if (params.not?.types) {
-        params.not.workItemTypeIds = convertNumberToGid(params.not.types);
-        delete params.not.types;
-      }
-      return params;
     },
     apiTypesArgument() {
       const singleWorkItemType = this.getWorkItemTypeConfiguration(this.workItemType)?.id;
-      const field = 'workItemTypeIds';
       return {
-        [field]: this.apiFilterParams[field] || singleWorkItemType || this.defaultWorkItemTypes,
+        workItemTypeIds:
+          this.apiFilterParams.workItemTypeIds || singleWorkItemType || this.defaultWorkItemTypes,
       };
     },
     showWorkItemByEmail() {
@@ -1135,21 +1188,6 @@ export default {
         this.restoreViewDraft();
       }
     },
-    // Ensures the local visibility cache is seeded with the saved view's visibleGroups.
-    // Held off until preferencesLoaded, since visibleGroups reads `{}` (i.e. "no
-    // selection") before displaySettings has actually resolved — writing that early
-    // would tell board_view the selection is known when it isn't, and it would fetch
-    // unscoped before this settles.
-    visibleGroups(visibleGroups) {
-      if (this.preferencesLoaded) {
-        this.syncVisibleGroupsToCache(visibleGroups);
-      }
-    },
-    preferencesLoaded(loaded) {
-      if (loaded) {
-        this.syncVisibleGroupsToCache(this.visibleGroups);
-      }
-    },
     eeSearchTokens() {
       if (this.isSavedView && Boolean(this.savedView)) {
         this.applySavedViewState(this.savedView);
@@ -1175,8 +1213,8 @@ export default {
       },
     },
     isDisplayDrawerOpen(isOpen) {
-      // The drawer is fixed, we need to keep its top edge aligned with the bottom of the
-      // search bar (which scrolls in-flow, then becomes the sticky filter bar) while it is open.
+      // The drawer is fixed, we need to keep its top edge below the header rows (which scroll
+      // in-flow, then hand off to the sticky filter bar) while it is open.
       if (isOpen) {
         this.updateDrawerTopOffset();
         this.bindDrawerOffsetListeners();
@@ -1233,10 +1271,16 @@ export default {
     if (this.$route.query.sv_not_found) {
       this.showSavedViewNotFoundModal = true;
     }
+
+    document.addEventListener('actioncable:reconnected', this.debouncedRefetchAfterReconnect);
   },
   beforeDestroy() {
     setPageDefaultWidth();
     this.unbindDrawerOffsetListeners();
+    this.debouncedProcessWorkItemChanges.cancel();
+    document.removeEventListener('actioncable:reconnected', this.debouncedRefetchAfterReconnect);
+    this.debouncedRefetchAfterReconnect.cancel();
+    this.workItemChangesSubscription?.unsubscribe();
   },
 
   created() {
@@ -1255,25 +1299,33 @@ export default {
     this.releasesCache = [];
     this.areReleasesFetched = false;
     this.drawerOffsetFrameId = null;
+    this.drawerScroller = null;
     // Anonymous users never fetch displaySettings (see its `skip`), so there's no
     // preferences query to wait on — the answer ("no persisted visibleGroups") is
     // already known.
     if (!this.isLoggedIn) {
       this.preferencesLoaded = true;
     }
+    // The types are provided above the keyed router-view, so on a remount they are already
+    // resolved and the watcher never fires. With no type id the preferences query stays
+    // skipped, so nothing else would ever clear the loading state of the list or the board.
+    if (this.isLoggedIn && this.workItemTypesConfiguration?.length > 0 && !this.workItemTypeId) {
+      this.isSortKeyInitialized = true;
+      this.preferencesLoaded = true;
+    }
+    this.pendingWorkItemChanges = new Map();
+    this.workItemChangesSubscription = null;
+    this.debouncedProcessWorkItemChanges = debounce(
+      this.processWorkItemChanges,
+      REALTIME_DEBOUNCE_MS,
+    );
+    this.debouncedRefetchAfterReconnect = debounce(
+      this.refetchAfterReconnect,
+      REALTIME_DEBOUNCE_MS,
+    );
   },
 
   methods: {
-    syncVisibleGroupsToCache(visibleGroups) {
-      this.$apollo.mutate({
-        mutation: updateVisibleGroupsMutation,
-        variables: { visibleGroups },
-        // Client-only mutation: the resolver writes to the cache itself, so we never read the result.
-        // Caching it makes a later work item refetch overwrite unrelated edits. We have not pinned
-        // down why, but skipping the cache write stops it.
-        fetchPolicy: 'no-cache',
-      });
-    },
     saveSessionFilters(tokens) {
       if (this.isSavedView) {
         setSavedViewSessionFilters(this.$route.params.view_id, tokens);
@@ -1287,12 +1339,17 @@ export default {
       }
     },
     handleToggleViewMode(newViewMode) {
+      this.trackEvent('switch_view_mode_on_work_item_planning_view', { label: newViewMode });
       this.viewMode = newViewMode;
       if (this.isSavedView) {
         this.persistSavedViewDraft();
-      } else {
-        this.saveSessionFilters(this.filterTokens);
+        return;
       }
+      this.saveSessionFilters(this.filterTokens);
+      this.persistNamespaceDisplaySettings({
+        ...this.namespacePreferences,
+        viewMode: newViewMode,
+      });
     },
     handleSetActiveItem(item) {
       this.activeItem = item;
@@ -1329,7 +1386,16 @@ export default {
       this.isStickyHeaderVisible = isVisible;
     },
     toggleDisplayDrawer() {
+      this.displayDrawerPage = DISPLAY_SETTINGS_PAGE_ROOT;
       this.isDisplayDrawerOpen = !this.isDisplayDrawerOpen;
+    },
+    openGroupByDisplaySettings() {
+      this.displayDrawerPage = DISPLAY_SETTINGS_PAGE_GROUP_BY;
+      this.isDisplayDrawerOpen = true;
+    },
+    closeDisplayDrawer() {
+      this.isDisplayDrawerOpen = false;
+      this.displayDrawerPage = DISPLAY_SETTINGS_PAGE_ROOT;
     },
     updateDrawerTopOffset() {
       // Keep the drawer in its original position on mobile
@@ -1356,13 +1422,13 @@ export default {
         this.drawerTopOffset = `${Math.max(Math.round(stickyBottom) + 8, 0)}px`;
         return;
       }
+      const anchor = this.$refs.stateCountRow || el;
       // Need to measure drawer's position based on the `.panel-content`, not the whole viewport.
       // Here we subtract the difference so the drawer's top edge lines up with the
-      // search bar's bottom regardless of the containing block.
-      const containingBlock = el.closest('.panel-content');
+      // anchor's bottom regardless of the containing block.
+      const containingBlock = anchor.closest('.panel-content');
       const offsetTop = containingBlock ? containingBlock.getBoundingClientRect().top : 0;
-      const scroller = el.closest('.panel-content-inner');
-      const bottom = el.getBoundingClientRect().bottom + (scroller ? scroller.scrollTop : 0);
+      const { bottom } = anchor.getBoundingClientRect();
 
       this.drawerTopOffset = `${Math.max(Math.round(bottom - offsetTop) + 8, 0)}px`;
     },
@@ -1376,15 +1442,18 @@ export default {
       });
     },
     bindDrawerOffsetListeners() {
-      // The offset is anchored to the bar's resting position, so scrolling never changes it.
-      // Only resize and the mobile/desktop breakpoint move the bar, so we listen for those.
-      // (The sticky handoff is handled separately by the `isStickyHeaderVisible` watcher.)
       window.addEventListener('resize', this.scheduleDrawerOffsetUpdate, { passive: true });
       PanelBreakpointInstance.addBreakpointListener(this.scheduleDrawerOffsetUpdate);
+      this.drawerScroller = this.$refs.stateCountRow?.closest('.panel-content-inner');
+      this.drawerScroller?.addEventListener('scroll', this.scheduleDrawerOffsetUpdate, {
+        passive: true,
+      });
     },
     unbindDrawerOffsetListeners() {
       window.removeEventListener('resize', this.scheduleDrawerOffsetUpdate);
       PanelBreakpointInstance.removeBreakpointListener(this.scheduleDrawerOffsetUpdate);
+      this.drawerScroller?.removeEventListener('scroll', this.scheduleDrawerOffsetUpdate);
+      this.drawerScroller = null;
       if (this.drawerOffsetFrameId) {
         window.cancelAnimationFrame(this.drawerOffsetFrameId);
         this.drawerOffsetFrameId = null;
@@ -1466,13 +1535,18 @@ export default {
 
       const isDraftBoardModeUnavailable =
         draft.viewMode === VIEW_MODE_BOARD && !this.isPlanningViewBoardEnabled;
+      const isDraftTableModeUnavailable =
+        draft.viewMode === VIEW_MODE_TABLE && !this.isPlanningViewTableEnabled;
 
       this.sortKey = draft.sortKey;
       this.localDisplaySettings = draft.displaySettings;
-      // A genuinely inaccessible board saved view is already redirected to "not found" by
-      // the savedView query result handler, so an unavailable board draft here means the
-      // persisted view itself is a list view with a stale/invalid draft view mode.
-      this.viewMode = isDraftBoardModeUnavailable ? VIEW_MODE_LIST : draft.viewMode;
+      // If the board itself were unavailable we'd already have been redirected to "not found"
+      // earlier. So getting here with an unavailable board draft means the saved view is
+      // actually a list view with some stale, invalid board draft data left over.
+      this.viewMode =
+        isDraftBoardModeUnavailable || isDraftTableModeUnavailable
+          ? VIEW_MODE_LIST
+          : draft.viewMode;
     },
     handleClickTab(state) {
       if (this.state === state) {
@@ -1826,6 +1900,16 @@ export default {
 
       this.persistNamespaceDisplaySettings(newSettings);
     },
+    handleHideGroup(visibleGroups) {
+      const newSettings = { ...this.namespacePreferences, visibleGroups };
+
+      if (this.isSavedView) {
+        this.handleLocalDisplayPreferencesUpdate(newSettings);
+        return;
+      }
+
+      this.persistNamespaceDisplaySettings(newSettings);
+    },
     async persistNamespaceDisplaySettings(displaySettings) {
       if (!this.isLoggedIn) {
         return;
@@ -1888,7 +1972,7 @@ export default {
         this.persistSavedViewDraft();
       }
 
-      // onFilter fires on every search submit (search icon / Enter). When the
+      // on-filter fires on every search submit (search icon / Enter). When the
       // variables change, Apollo re-runs the list query on its own. When they
       // don't, force a reload so the query still re-runs on every submit.
       if (isEqual(previousQueryVariables, this.queryVariables)) {
@@ -1999,13 +2083,128 @@ export default {
         this.handleEvictCache();
       }
     },
+    subscribeToWorkItemChanges(namespaceId) {
+      if (
+        this.workItemChangesSubscription ||
+        !namespaceId ||
+        !this.glFeatures.workItemsRealtime ||
+        !this.isLoggedIn
+      ) {
+        return;
+      }
+
+      this.workItemChangesSubscription = this.$apollo
+        .subscribe({
+          query: namespaceWorkItemChangesSubscription,
+          variables: { namespaceId },
+        })
+        .subscribe({
+          next: ({ data }) => this.recordWorkItemChange(data?.namespaceWorkItemChanges),
+          error: (error) => Sentry.captureException(error),
+        });
+    },
+    // A reconnect doesn't replay what was missed while disconnected, so the list can look live
+    // but be stale. Reload everything rather than working out what changed.
+    refetchAfterReconnect() {
+      if (!this.glFeatures.workItemsRealtime) {
+        return;
+      }
+
+      this.refetchItems({ refetchCounts: true });
+    },
+    // Events arrive for every work item in the namespace and its descendants, so a bulk edit can
+    // fire many changes at once — buffer them and process together instead of one at a time.
+    recordWorkItemChange(change) {
+      if (!change?.workItemId) {
+        return;
+      }
+
+      const { workItemId, action } = change;
+      this.pendingWorkItemChanges.set(
+        workItemId,
+        mergeWorkItemChangeAction(this.pendingWorkItemChanges.get(workItemId), action),
+      );
+      this.debouncedProcessWorkItemChanges();
+    },
+    async processWorkItemChanges() {
+      try {
+        const changes = new Map(this.pendingWorkItemChanges);
+        this.pendingWorkItemChanges.clear();
+
+        const { created, updated, deleted } = groupWorkItemChanges(changes);
+        const client = this.$apollo.provider.defaultClient;
+        const { cache } = client;
+
+        const visibleDeleted = deleted.filter((id) => isWorkItemCached(cache, id));
+        const visibleUpdated = updated.filter((id) => isWorkItemCached(cache, id));
+        // Boards don't show one page at a time — they join every page together, so a new item
+        // could always end up visible there.
+        const canShowNewItems = this.isBoardView || this.isViewingFirstPage;
+        const checkableCreated = canShowNewItems ? created : [];
+
+        // Close the drawer before evicting, otherwise its query reads an incomplete work item.
+        if (this.activeItem && visibleDeleted.includes(this.activeItem.id)) {
+          this.activeItem = null;
+          await this.$nextTick();
+        }
+
+        let needsListRefetch = false;
+        if (checkableCreated.length > 0 || visibleUpdated.length > 0) {
+          try {
+            const matches = await findMatchingWorkItems({
+              client,
+              queryVariables: this.queryVariables,
+              ids: [...checkableCreated, ...visibleUpdated],
+              useRestApi: this.useRestApi,
+              isBoardView: this.isBoardView,
+              glFeatures: this.glFeatures,
+            });
+
+            if (matches === null) {
+              // Too many changed items to check in one go — treat it as a bulk change and reload.
+              needsListRefetch = true;
+            } else {
+              needsListRefetch = checkableCreated.some((id) => matches.has(id));
+              // A match already patched the item for free; a miss means it no longer belongs in
+              // the current filters, so it needs to leave every cached page and board column.
+              visibleUpdated
+                .filter((id) => !matches.has(id))
+                .forEach((id) => removeWorkItemFromNamespaceLists(cache, this.namespaceId, id));
+            }
+          } catch (error) {
+            // No answer means the changed items won't reflect correctly until the next event or
+            // a reconnect, but the deletions and counts below still need handling.
+            Sentry.captureException(error);
+          } finally {
+            dropMatchCacheEntries(cache, this.namespaceId);
+          }
+        }
+
+        if (needsListRefetch) {
+          this.refetchItems({ refetchCounts: true });
+          return;
+        }
+
+        if (visibleDeleted.length > 0) {
+          visibleDeleted.forEach((id) => evictWorkItem(cache, id));
+          cache.gc();
+        }
+
+        // A change we ignored can still move the counts, and the payload doesn't say which
+        // fields changed, so counts always refresh. Using `refetchQueries` instead of a single
+        // query's `.refetch()` also catches every board column's own count query.
+        client.refetchQueries({ include: [getWorkItemsCountOnlyQuery] });
+        if (created.length > 0 || deleted.length > 0) {
+          this.$apollo.queries.hasWorkItems.refetch();
+        }
+      } catch (error) {
+        Sentry.captureException(error);
+      }
+    },
     handleEvictCache() {
-      const { cache } = this.$apollo.provider.defaultClient;
-      cache.evict({
-        id: cache.identify({ __typename: TYPENAME_NAMESPACE, id: this.namespaceId }),
-        fieldName: 'workItems',
+      evictNamespaceWorkItems(this.$apollo.provider.defaultClient.cache, this.namespaceId, {
+        useRestApi: this.useRestApi,
       });
-      cache.gc();
     },
   },
 };
@@ -2126,7 +2325,6 @@ export default {
           </template>
         </saved-views-selectors>
       </template>
-      <!-- eslint-disable vue/v-on-event-hyphenation -->
       <filtered-search-bar
         ref="filteredSearchBar"
         :namespace="rootPageFullPath"
@@ -2143,10 +2341,9 @@ export default {
         class="row-content-block gl-grow gl-border-t-0 @sm/panel:gl-flex"
         data-testid="issuable-search-container"
         @checked-input="handleAllIssuablesCheckedInput"
-        @onFilter="handleFilter"
-        @onSort="handleSort"
+        @on-filter="handleFilter"
+        @on-sort="handleSort"
       >
-        <!-- eslint-enable vue/v-on-event-hyphenation -->
         <template #user-preference>
           <gl-button
             icon="preferences"
@@ -2167,7 +2364,6 @@ export default {
             v-if="isStickyHeaderVisible"
             class="sticky-filter gl-fixed gl-left-auto gl-right-auto gl-z-3 gl-hidden @sm/panel:gl-block"
           >
-            <!-- eslint-disable vue/v-on-event-hyphenation -->
             <filtered-search-bar
               ref="stickyFilteredSearchBar"
               :namespace="rootPageFullPath"
@@ -2184,10 +2380,9 @@ export default {
               class="row-content-block gl-grow gl-border-t-0 @sm/panel:gl-flex"
               data-testid="issuable-sticky-search-container"
               @checked-input="handleAllIssuablesCheckedInput"
-              @onFilter="handleFilter"
-              @onSort="handleSort"
+              @on-filter="handleFilter"
+              @on-sort="handleSort"
             >
-              <!-- eslint-enable vue/v-on-event-hyphenation -->
               <template #user-preference>
                 <gl-button
                   icon="preferences"
@@ -2206,7 +2401,10 @@ export default {
     <template v-if="!isServiceDeskList">
       <!-- state-count -->
       <div
-        class="gl-border-b gl-flex gl-flex-wrap gl-justify-between gl-gap-y-3 gl-py-3 sm:gl-flex-nowrap"
+        ref="stateCountRow"
+        class="gl-flex gl-h-8 gl-flex-wrap gl-justify-between gl-gap-y-3 gl-py-3 sm:gl-flex-nowrap"
+        :class="{ 'gl-border-b': !isTableView }"
+        data-testid="state-count-row"
       >
         <div class="gl-flex gl-items-center gl-gap-3">
           <span data-testid="work-item-count" class="gl-mr-3">{{ workItemTotalStateCount }}</span>
@@ -2289,7 +2487,8 @@ export default {
         </template>
       </div>
     </template>
-    <list-view
+    <component
+      :is="isTableView ? 'table-view' : 'list-view'"
       v-if="viewMode !== $options.VIEW_MODE_BOARD"
       data-testid="list-view"
       :root-page-full-path="rootPageFullPath"
@@ -2317,6 +2516,7 @@ export default {
       @update-tokens="($evt) => (filterTokens = $evt)"
       @set-checked-issuable-ids="($evt) => (checkedIssuableIds = $evt)"
       @set-page-params="handleSetPageParams"
+      @page-info="($evt) => (listPageInfo = $evt)"
       @set-page-size="($evt) => (pageSize = $evt)"
       @select-item="handleSetActiveItem"
       @set-active-item="handleSetActiveItem"
@@ -2387,28 +2587,34 @@ export default {
           </template>
         </empty-state-without-any-issues>
       </template>
-    </list-view>
+    </component>
     <board-view
       v-if="viewMode === $options.VIEW_MODE_BOARD && isPlanningViewBoardEnabled"
       :root-page-full-path="rootPageFullPath"
       :query-variables="queryVariables"
       :collapsed-groups="collapsedGroups"
       :group-order="groupOrder"
-      :can-reorder="isLoggedIn"
+      :visible-groups="visibleGroups"
+      :visible-groups-loaded="preferencesLoaded"
+      :can-manage-columns="isLoggedIn"
       :hidden-metadata-keys="hiddenMetadataKeys"
       :active-item="activeItem"
       :detail-panel-enabled="workItemDetailPanelEnabled"
       :updated-work-item="boardUpdatedItem"
+      :has-active-filters="hasActiveFilters"
       :preselected-work-item-type="preselectedWorkItemType"
       :can-create-work-item="showProjectNewWorkItem"
       @set-error="($evt) => (error = $evt)"
       @set-active-item="handleSetActiveItem"
       @toggle-collapse="handleToggleGroupCollapse"
       @reorder-groups="handleReorderGroups"
+      @hide-group="handleHideGroup"
       @work-item-created="handleBoardWorkItemCreated"
+      @open-group-by-settings="openGroupByDisplaySettings"
     />
     <work-item-display-settings-drawer
       :open="isDisplayDrawerOpen"
+      :page="displayDrawerPage"
       :header-height="drawerTopOffset"
       :view-mode="viewMode"
       :sort-options="drawerSortOptions"
@@ -2416,11 +2622,11 @@ export default {
       :namespace-preferences="namespacePreferences"
       :common-preferences="displaySettings.commonPreferences"
       :full-path="rootPageFullPath"
-      :is-group="isGroup"
       :is-service-desk-list="isServiceDeskList"
       :is-saved-view="isSavedView"
       :work-item-type-id="workItemTypeId"
-      @close="isDisplayDrawerOpen = false"
+      @close="closeDisplayDrawer"
+      @page-change="displayDrawerPage = $event"
       @sort="handleSort"
       @update-settings="handleLocalDisplayPreferencesUpdate"
       @toggle-view-mode="handleToggleViewMode"

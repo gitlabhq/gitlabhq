@@ -181,8 +181,26 @@ Example response:
 
 ## Authorized Certs
 
-This endpoint is called by the GitLab Shell to get the namespace that has a particular CA SSH certificate
-configured. It also accepts `user_identifier` to return a GitLab user for specified identifier.
+This endpoint is called by GitLab Shell to resolve an SSH certificate authority (CA)
+fingerprint and a user identifier to a GitLab user. A CA can be registered at two scopes:
+
+- Group level. This is a licensed Premium feature (`ssh_certificates`) and requires
+  the user to be an enterprise user of the group.
+- Instance level. This requires the `instance_ssh_certificates` feature flag, which
+  is disabled by default, and is not available on GitLab.com.
+
+The endpoint checks the group scope first. If a group CA matches the fingerprint and
+authorizes the user, the response contains the group result and the group `namespace`.
+Every group failure falls through to the instance scope, whether no group CA matches the
+fingerprint, the user is not a member of the group, the user is not an enterprise user of
+the group, or the group is not licensed for `ssh_certificates`. The same fingerprint can
+be registered by any number of groups, so a group claim on a fingerprint does not withhold
+the instance-wide trust an administrator granted for the same CA.
+
+When both scopes fail, the endpoint returns the error from the scope that matched the
+fingerprint. If no CA matches in either scope, the response is `404` with
+`Certificate Not Found`. If an instance CA matches the fingerprint but the user identifier
+resolves to no user, the response is `404` with `User Not Found`.
 
 | Attribute             | Type   | Required | Description |
 |:----------------------|:-------|:---------|:------------|
@@ -199,15 +217,34 @@ Example request:
 curl --request GET --header "Gitlab-Shell-Api-Request: <JWT token>" "http://localhost:3001/api/v4/internal/authorized_certs?key=<key>&user_identifier=<user_identifier>"
 ```
 
-Example response:
+Example response for a group CA:
 
 ```json
 {
   "success": true,
+  "instance": false,
   "namespace": "gitlab-org",
   "username": "root"
 }
 ```
+
+The `instance` field is `false` on a group match even though `namespace` already identifies
+the group. The field is additive, so an older GitLab Shell that ignores it keeps working.
+Reading `instance` and rejecting a group-scoped response that arrives with a blank
+`namespace`, rather than treating it as instance-wide trust, is proposed in
+[issue 867](https://gitlab.com/gitlab-org/gitlab-shell/-/work_items/867).
+
+Example response for an instance CA:
+
+```json
+{
+  "success": true,
+  "instance": true,
+  "username": "root"
+}
+```
+
+The response has no `namespace` key because an instance-level CA is not scoped to a group.
 
 ### Known consumers
 

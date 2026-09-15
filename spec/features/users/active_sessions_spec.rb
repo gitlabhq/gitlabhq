@@ -4,7 +4,6 @@ require 'spec_helper'
 
 RSpec.describe 'Active user sessions', :clean_gitlab_redis_sessions, feature_category: :system_access do
   let(:user) { create(:user) }
-  let(:current_organization) { user.organization }
 
   it 'successful login adds a new active user login', :js do
     now = Time.zone.now.change(usec: 0)

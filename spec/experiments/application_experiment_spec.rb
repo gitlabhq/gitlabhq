@@ -85,7 +85,7 @@ RSpec.describe ApplicationExperiment, :experiment, feature_category: :acquisitio
             data: { data: '_data_' }
           },
           {
-            schema: 'iglu:com.gitlab/gitlab_experiment/jsonschema/1-0-0',
+            schema: 'iglu:com.gitlab/gitlab_experiment/jsonschema/1-0-3',
             data: {
               experiment: 'namespaced/stub',
               key: '300b002687ba1f68591adb2f45ae67f1e56be05ad55f317cc00f1c4aa38f081a',

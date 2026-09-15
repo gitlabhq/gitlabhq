@@ -1,6 +1,6 @@
 import { countBy, debounce } from 'lodash-es';
 import { __ } from '~/locale';
-import { getBaseURL, relativePathToAbsolute } from '~/lib/utils/url_utility';
+import { getBaseURL, isValidURL, relativePathToAbsolute, visitUrl } from '~/lib/utils/url_utility';
 import { sandboxMermaidV11Path } from '~/lib/utils/path_helpers/routes';
 import { darkModeEnabled } from '~/lib/utils/color_utils';
 import { setAttributes, isElementVisible } from '~/lib/utils/dom_utils';
@@ -8,6 +8,7 @@ import { createAlert, VARIANT_WARNING } from '~/alert';
 import { DEFAULT_DEBOUNCE_AND_THROTTLE_MS } from '~/lib/utils/constants';
 import { PanelBreakpointInstance } from '~/panel_breakpoint_instance';
 import { unrestrictedPages } from './constants';
+import { getRenderedMermaidBlocks, incrementRenderedMermaidBlocks } from './mermaid_render_count';
 
 // Renders diagrams and flowcharts from text using Mermaid in any element with the
 // `js-render-mermaid` class.
@@ -33,14 +34,35 @@ export const MAX_MERMAID_BLOCK_LIMIT = 50;
 const MAX_CHAINING_OF_LINKS_LIMIT = 30;
 
 export const BUFFER_IFRAME_HEIGHT = 10;
-export const SANDBOX_ATTRIBUTES = 'allow-scripts allow-popups';
+export const SANDBOX_ATTRIBUTES = 'allow-scripts';
+
+// Messages other than the height payload can also arrive
+// from the sandboxed iframe (such as those injected by Chrome for iOS).
+export function getIframeHeightFromMessage(data) {
+  const h = data?.h;
+  return Number.isFinite(h) ? h + BUFFER_IFRAME_HEIGHT : null;
+}
+
+// Link clicks inside the sandboxed iframe are delegated to the parent
+// because links can't open from within the sandbox. Validate the URL here,
+// outside the reach of the diagram source, before opening it.
+export function openLinkFromMessage(data) {
+  const href = data?.href;
+  // visitUrl re-validates the URL, but throws;
+  // check first so non-link messages are silently ignored.
+  if (typeof href !== 'string' || !isValidURL(href)) {
+    return false;
+  }
+
+  visitUrl(href, true);
+  return true;
+}
 
 const ALERT_CONTAINER_CLASS = 'mermaid-alert-container';
 export const LAZY_ALERT_SHOWN_CLASS = 'lazy-alert-shown';
 
 // Keep a map of mermaid blocks we've already rendered.
 const elsProcessingMap = new WeakMap();
-let renderedMermaidBlocks = 0;
 
 /**
  * Determines whether a given Mermaid diagram is visible.
@@ -133,8 +155,14 @@ function renderMermaidEl(el, source) {
       if (event.origin !== 'null' || event.source !== iframeEl.contentWindow) {
         return;
       }
-      const { h } = event.data;
-      iframeEl.height = `${h + BUFFER_IFRAME_HEIGHT}px`;
+      if (openLinkFromMessage(event.data)) {
+        return;
+      }
+      const height = getIframeHeightFromMessage(event.data);
+      if (height === null) {
+        return;
+      }
+      iframeEl.height = `${height}px`;
     },
     false,
   );
@@ -179,7 +207,7 @@ function renderMermaids(els) {
       !unrestrictedPages.includes(pageName) &&
       ((source && source.length > MAX_CHAR_LIMIT) ||
         renderedChars > MAX_CHAR_LIMIT ||
-        renderedMermaidBlocks >= MAX_MERMAID_BLOCK_LIMIT ||
+        getRenderedMermaidBlocks() >= MAX_MERMAID_BLOCK_LIMIT ||
         shouldLazyLoadMermaidBlock(source))
     ) {
       const parent = el.parentNode;
@@ -212,7 +240,7 @@ function renderMermaids(els) {
     }
 
     renderedChars += source.length;
-    renderedMermaidBlocks += 1;
+    incrementRenderedMermaidBlocks();
 
     const requestId = window.requestIdleCallback(() => {
       renderMermaidEl(el, source);

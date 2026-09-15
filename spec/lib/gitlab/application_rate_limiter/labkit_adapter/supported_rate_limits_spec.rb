@@ -17,6 +17,8 @@ RSpec.describe Gitlab::ApplicationRateLimiter::LabkitAdapter::SupportedRateLimit
       web_hook_calls
       web_hook_calls_low
       web_hook_calls_mid
+      service_desk_outbound_emails_per_hour
+      service_desk_outbound_emails_per_day
     ]
   end
 
@@ -141,7 +143,7 @@ RSpec.describe Gitlab::ApplicationRateLimiter::LabkitAdapter::SupportedRateLimit
         expect(result.rule.name).to eq('users_get_by_id_bypass')
 
         count = Gitlab::Redis::RateLimiting.with do |r|
-          r.get("labkit:rl:applimiter_users_get_by_id:limit_user_lookups_by_user:user:#{user.id}")
+          r.get("labkit:rl:{applimiter_users_get_by_id:limit_user_lookups_by_user:user:#{user.id}}")
         end
         expect(count.to_i).to eq(1) # unchanged by the bypassed peek
       end

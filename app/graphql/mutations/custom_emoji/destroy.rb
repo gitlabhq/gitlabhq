@@ -7,6 +7,11 @@ module Mutations
 
       authorize :delete_custom_emoji
 
+      authorize_granular_token permissions: :delete_custom_emoji,
+        boundary_argument: :id,
+        boundary: :group,
+        boundary_type: :group
+
       field :custom_emoji,
         Types::CustomEmojiType,
         null: true,
@@ -22,7 +27,8 @@ module Mutations
         custom_emoji.destroy!
 
         {
-          custom_emoji: custom_emoji
+          custom_emoji: custom_emoji,
+          errors: []
         }
       end
     end

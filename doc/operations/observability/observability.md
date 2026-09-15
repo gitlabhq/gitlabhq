@@ -131,7 +131,7 @@ These trails are valuable for compliance requirements and post-incident analysis
 
 - [Access the Observability API](api_access.md). Query traces, metrics, and logs programmatically.
 - [Observability MCP server](mcp_server.md). Query your observability data from AI assistants with natural language.
-- [OpenTelemetry documentation](https://opentelemetry.io/docs/instrumentation/). Language-specific instrumentation guides.
+- [OpenTelemetry documentation](https://opentelemetry.io/docs/languages/). Language-specific instrumentation guides.
 - [GitLab Observability Templates](https://gitlab.com/gitlab-org/embody-team/experimental-observability/o11y-templates/). Pre-built dashboards and examples.
 - [Proposed features](https://gitlab.com/gitlab-org/embody-team/experimental-observability/gitlab_o11y/-/issues/8)
 

@@ -67,7 +67,7 @@ function appendParam(params, key, value) {
   }
 }
 
-function appendWorkItemTypeIds(params, key, gids) {
+function appendNumericIdsFromGids(params, key, gids) {
   const values = Array.isArray(gids) ? gids : [gids];
   values.forEach((gid) => {
     const numericId = getIdFromGraphQLId(gid);
@@ -86,7 +86,7 @@ function appendNestedFilterParams(params, prefix, filters) {
 
     // Special handling for fields that need numeric IDs extracted from GIDs
     if (restKey === 'work_item_type_ids' || restKey === 'parent_ids') {
-      appendWorkItemTypeIds(params, `${prefix}[${restKey}][]`, value);
+      appendNumericIdsFromGids(params, `${prefix}[${restKey}][]`, value);
     } else if (restKey === 'milestone_wildcard_id') {
       params.append(`${prefix}[${restKey}]`, WILDCARD_MAP[value] ?? value);
     } else {
@@ -142,6 +142,10 @@ export function convertGraphQLVarsToRestParams(vars) {
     appendParam(params, 'iids[]', vars.iid);
   }
 
+  if (vars.ids) {
+    appendNumericIdsFromGids(params, 'ids[]', vars.ids);
+  }
+
   appendParam(params, 'assignee_usernames', vars.assigneeUsernames);
   appendParam(params, 'assignee_wildcard_id', WILDCARD_MAP[vars.assigneeWildcardId]);
   appendParam(params, 'author_username', vars.authorUsername);
@@ -165,7 +169,7 @@ export function convertGraphQLVarsToRestParams(vars) {
   appendParam(params, 'due_before', vars.dueBefore);
 
   if (vars.workItemTypeIds) {
-    appendWorkItemTypeIds(params, 'work_item_type_ids[]', vars.workItemTypeIds);
+    appendNumericIdsFromGids(params, 'work_item_type_ids[]', vars.workItemTypeIds);
   }
 
   appendParam(params, 'crm_contact_id', vars.crmContactId);
@@ -174,7 +178,7 @@ export function convertGraphQLVarsToRestParams(vars) {
   appendParam(params, 'release_tag_wildcard_id', WILDCARD_MAP[vars.releaseTagWildcardId]);
 
   if (vars.hierarchyFilters?.parentIds) {
-    appendWorkItemTypeIds(params, 'parent_ids[]', vars.hierarchyFilters.parentIds);
+    appendNumericIdsFromGids(params, 'parent_ids[]', vars.hierarchyFilters.parentIds);
   }
 
   if (vars.hierarchyFilters?.parentWildcardId) {

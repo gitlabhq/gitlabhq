@@ -15,7 +15,7 @@ RSpec.describe Organizations::OrganizationsController, feature_category: :organi
         let_it_be(:user) { create(:admin) }
 
         it_behaves_like 'organization - successful response'
-        it_behaves_like 'organization - action disabled by ui_for_organizations_enabled?'
+        it_behaves_like 'organization - action disabled by org_pages release flag'
       end
 
       context 'as an organization owner' do
@@ -26,7 +26,7 @@ RSpec.describe Organizations::OrganizationsController, feature_category: :organi
         end
 
         it_behaves_like 'organization - successful response'
-        it_behaves_like 'organization - action disabled by ui_for_organizations_enabled?'
+        it_behaves_like 'organization - action disabled by org_pages release flag'
       end
     end
   end
@@ -35,9 +35,9 @@ RSpec.describe Organizations::OrganizationsController, feature_category: :organi
     context 'when the user is not signed in' do
       it_behaves_like 'organization - redirects to sign in page'
 
-      context 'when `ui_for_organizations` feature flag is disabled' do
+      context 'when the org_pages release flag is disabled' do
         before do
-          stub_feature_flags(ui_for_organizations: false)
+          stub_organization_release(org_pages: false)
         end
 
         it_behaves_like 'organization - redirects to sign in page'
@@ -59,7 +59,7 @@ RSpec.describe Organizations::OrganizationsController, feature_category: :organi
         let_it_be(:user) { create(:user) }
 
         it_behaves_like 'organization - not found response'
-        it_behaves_like 'organization - action disabled by ui_for_organizations_enabled?'
+        it_behaves_like 'organization - action disabled by org_pages release flag'
       end
     end
   end
@@ -76,7 +76,7 @@ RSpec.describe Organizations::OrganizationsController, feature_category: :organi
         let_it_be(:user) { create(:user) }
 
         it_behaves_like 'organization - successful response'
-        it_behaves_like 'organization - action disabled by ui_for_organizations_enabled?'
+        it_behaves_like 'organization - action disabled by org_pages release flag'
       end
     end
   end
@@ -84,7 +84,7 @@ RSpec.describe Organizations::OrganizationsController, feature_category: :organi
   shared_examples 'controller action that does not require authentication' do
     context 'when the user is not logged in' do
       it_behaves_like 'organization - not found response'
-      it_behaves_like 'organization - action disabled by ui_for_organizations_enabled?'
+      it_behaves_like 'organization - action disabled by org_pages release flag'
     end
 
     it_behaves_like 'when the user is signed in'
@@ -284,13 +284,43 @@ RSpec.describe Organizations::OrganizationsController, feature_category: :organi
     subject(:gitlab_request) { get new_organization_path }
 
     context 'when on GitLab.com', :saas do
-      it_behaves_like 'controller action that requires authentication by any user'
+      context 'when the user is not signed in' do
+        it_behaves_like 'organization - redirects to sign in page'
+      end
 
-      context 'when user is signed in and `organization_switching` feature flag is disabled' do
+      context 'when the user is signed in' do
+        before do
+          sign_in(user)
+        end
+
+        context 'as as admin', :enable_admin_mode do
+          let_it_be(:user) { create(:admin) }
+
+          it_behaves_like 'organization - successful response'
+        end
+
+        context 'as an organization owner' do
+          let_it_be(:user) { create(:user) }
+
+          before do
+            create(:organization_owner, organization: organization, user: user)
+          end
+
+          it_behaves_like 'organization - successful response'
+        end
+
+        context 'with no association to an organization' do
+          let_it_be(:user) { create(:user) }
+
+          it_behaves_like 'organization - successful response'
+        end
+      end
+
+      context 'when user is signed in and `org_creation` release flag is disabled' do
         let_it_be(:user) { create(:user) }
 
         before do
-          stub_feature_flags(organization_switching: false)
+          stub_organization_release(org_creation: false)
           sign_in(user)
         end
 
@@ -302,9 +332,9 @@ RSpec.describe Organizations::OrganizationsController, feature_category: :organi
       context 'when the user is not signed in' do
         it_behaves_like 'organization - redirects to sign in page'
 
-        context 'when `ui_for_organizations` feature flag is disabled' do
+        context 'when the org_pages release flag is disabled' do
           before do
-            stub_feature_flags(ui_for_organizations: false)
+            stub_organization_release(org_pages: false)
           end
 
           it_behaves_like 'organization - redirects to sign in page'

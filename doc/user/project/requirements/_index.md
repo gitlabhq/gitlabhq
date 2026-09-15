@@ -1,6 +1,6 @@
 ---
 stage: Plan
-group: Product Planning
+group: Portfolio Planning
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see <https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments>
 title: Requirements management
 description: Acceptance criteria, requirements test reports, and CSV import.
@@ -16,7 +16,7 @@ description: Acceptance criteria, requirements test reports, and CSV import.
 With requirements, you can set criteria to check your products against. They can be based on users,
 stakeholders, system, software, or anything else you find important to capture.
 
-A requirement is an artifact in GitLab which describes the specific behavior of your product.
+A requirement is an artifact in GitLab that describes the specific behavior of your product.
 Requirements are long-lived and don't disappear unless manually cleared.
 
 If an industry standard requires that your application has a certain feature or behavior, you can
@@ -31,7 +31,7 @@ For an overview, see [Requirements Management](https://www.youtube.com/watch?v=u
 For a more in-depth walkthrough see [GitLab Requirements Traceability Walkthrough](https://youtu.be/VIiuTQYFVa0).
 <!-- Video published on 2020-02-12 -->
 
-![requirements list view](img/requirements_list_v13_5.png)
+![The requirements list view with tabs displaying open, archived, and all requirements.](img/requirements_list_v13_5.png)
 
 ## Create a requirement
 
@@ -54,9 +54,9 @@ To create a requirement:
 1. Select **New requirement**.
 1. Enter a title and description and select **New requirement**.
 
-![requirement create view](img/requirement_create_v13_5.png)
+![The requirement form in a right-side panel, where you enter a title and description.](img/requirement_create_v13_5.png)
 
-You can see the newly created requirement on the top of the list, with the requirements
+You can see the newly created requirement at the top of the list, with the requirements
 list being sorted by creation date, in descending order.
 
 ## View a requirement
@@ -85,7 +85,7 @@ Prerequisites:
 To edit a requirement:
 
 1. From the requirements list, select the **Edit** icon ({{< icon name="pencil" >}}).
-1. Update the title and description in text input field. You can also mark a
+1. Update the title and description in the text input field. You can also mark a
    requirement as satisfied in the edit form by using the checkbox **Satisfied**.
 1. Select **Save changes**.
 

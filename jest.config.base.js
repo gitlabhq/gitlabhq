@@ -1,6 +1,7 @@
 const IS_EE = require('./config/helpers/is_ee_env');
 const isESLint = require('./config/helpers/is_eslint');
 const IS_JH = require('./config/helpers/is_jh_env');
+const { CONTEXT_ALIASES } = require('./config/helpers/context_aliases_shared');
 
 const { VUE_VERSION: EXPLICIT_VUE_VERSION } = process.env;
 const { VUE_COMPILER_VERSION } = process.env;
@@ -43,20 +44,26 @@ module.exports = (path, options = {}) => {
 
   if (USE_VUE_3) {
     setupFilesAfterEnv.unshift('<rootDir>/spec/frontend/vue_compat_test_setup.js');
-    Object.assign(vueModuleNameMappers, {
-      '^vue$': '<rootDir>/app/assets/javascripts/lib/utils/vue3compat/vue.js',
-      '^@vue/test-utils$': '@vue/test-utils-vue3',
 
-      // Library wrappers
-      '^vuex$': '<rootDir>/app/assets/javascripts/lib/utils/vue3compat/vuex.js',
-      '^vue-apollo$': '<rootDir>/app/assets/javascripts/lib/utils/vue3compat/vue_apollo.js',
-      '^vue-router$': '<rootDir>/app/assets/javascripts/lib/utils/vue3compat/vue_router.js',
-      '^vendor/vue-virtual-scroller$':
-        '<rootDir>/vendor/assets/javascripts/vue-virtual-scroller-vue3/src/index.js',
-      '^vue-virtual-scroll-list$':
-        '<rootDir>/app/assets/javascripts/vue_shared/vue_virtual_scroll_list_vue3.js',
-      '^portal-vue$': '<rootDir>/app/assets/javascripts/lib/utils/vue3compat/portal_vue_vue3.js',
-      '^vue-demi$': 'vue-demi/lib/v3/index.mjs',
+    const contextAliasMappers = Object.fromEntries(
+      Object.entries(CONTEXT_ALIASES)
+        // Skip `@vue/compat`: CONTEXT_ALIASES points it at the ESM-bundler build. Forcing
+        // Jest to require() that file breaks (its export syntax isn't covered by
+        // transformIgnorePatterns). Jest never needed an entry for it,
+        // `vue3compat/vue.js` is its only importer.
+        .filter(([specifier]) => specifier !== '@vue/compat')
+
+        // Skip `vuedraggable`: its Vue 3 replacement (`@gitlab/vuedraggable-vue3`) itself
+        // imports `sortablejs` with raw ESM `import` syntax, which
+        // transformIgnorePatterns also doesn't cover.
+        .filter(([specifier]) => specifier !== 'vuedraggable')
+        .map(([specifier, target]) => [`^${specifier}$`, target]),
+    );
+
+    Object.assign(vueModuleNameMappers, {
+      ...contextAliasMappers,
+      // Jest-only: not part of the Vite/webpack build, so not in CONTEXT_ALIASES.
+      '^@vue/test-utils$': '@vue/test-utils-vue3',
     });
     if (USE_VUE3_COMPILER) {
       Object.assign(globals, {

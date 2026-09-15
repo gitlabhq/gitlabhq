@@ -1,6 +1,6 @@
 ---
 stage: Plan
-group: Knowledge
+group: Planner Intelligence
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see <https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments>
 title: GitLab Pages
 description: Publish static websites from your repository with automatic CI/CD deployment.
@@ -155,10 +155,10 @@ To ensure each project uses different cookies, enable the Pages [unique domains]
 
 {{< /history >}}
 
-By default, every new project uses pages unique domains to avoid projects on the same group
-to share cookies.
+By default, every new project uses Pages unique domains to prevent projects in the same group
+from sharing cookies.
 
-The project maintainer can disable this feature on:
+The project maintainer can disable this feature:
 
 1. In the top bar, select **Search or go to** and find your project.
 1. In the left sidebar, select **Deploy** > **Pages**.

@@ -1,6 +1,7 @@
 import MockAdapter from 'axios-mock-adapter';
 import {
   memberName,
+  groupErrorsByMessage,
   searchUsers,
   triggerExternalAlert,
   baseBindingAttributes,
@@ -18,6 +19,49 @@ describe('Member Name', () => {
     [{}, undefined],
   ])(`returns name from supplied member token: %j`, (member, result) => {
     expect(memberName(member)).toBe(result);
+  });
+});
+
+describe('groupErrorsByMessage', () => {
+  const toDisplayName = (member) => `@${member}`;
+
+  it('returns one entry per distinct message, in first-appearance order', () => {
+    expect(groupErrorsByMessage({ alice: 'error one', bob: 'error two' }, toDisplayName)).toEqual([
+      { id: 'alice', displayedMemberNames: '@alice', message: 'error one' },
+      { id: 'bob', displayedMemberNames: '@bob', message: 'error two' },
+    ]);
+  });
+
+  it('groups members that share a message into one entry', () => {
+    expect(
+      groupErrorsByMessage(
+        { alice: 'shared error', bob: 'other error', carol: 'shared error', dan: 'shared error' },
+        toDisplayName,
+      ),
+    ).toEqual([
+      {
+        id: 'alice,carol,dan',
+        displayedMemberNames: '@alice, @carol, and @dan',
+        message: 'shared error',
+      },
+      { id: 'bob', displayedMemberNames: '@bob', message: 'other error' },
+    ]);
+  });
+
+  it('joins two members with "and"', () => {
+    expect(groupErrorsByMessage({ alice: 'error', bob: 'error' }, toDisplayName)).toEqual([
+      { id: 'alice,bob', displayedMemberNames: '@alice and @bob', message: 'error' },
+    ]);
+  });
+
+  it('omits members the resolver cannot name', () => {
+    expect(groupErrorsByMessage({ alice: 'error', bob: 'error' }, () => undefined)).toEqual([
+      { id: 'alice,bob', displayedMemberNames: '', message: 'error' },
+    ]);
+  });
+
+  it('returns an empty list for no errors', () => {
+    expect(groupErrorsByMessage({}, toDisplayName)).toEqual([]);
   });
 });
 

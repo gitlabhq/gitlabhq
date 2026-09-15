@@ -67,7 +67,7 @@ RSpec.describe Gitlab::GithubImport::Representation::Issue, feature_category: :i
       end
 
       it 'is not a pull request' do
-        expect(issue.pull_request?).to eq(false)
+        expect(issue.pull_request?).to be(false)
       end
     end
   end
@@ -150,13 +150,13 @@ RSpec.describe Gitlab::GithubImport::Representation::Issue, feature_category: :i
     it 'returns true when the issue has labels assigned' do
       issue = described_class.new(label_names: %w[bug])
 
-      expect(issue.labels?).to eq(true)
+      expect(issue.labels?).to be(true)
     end
 
     it 'returns false when the issue has no labels assigned' do
       issue = described_class.new(label_names: [])
 
-      expect(issue.labels?).to eq(false)
+      expect(issue.labels?).to be(false)
     end
   end
 
@@ -164,13 +164,13 @@ RSpec.describe Gitlab::GithubImport::Representation::Issue, feature_category: :i
     it 'returns false for an issue' do
       issue = described_class.new(pull_request: false)
 
-      expect(issue.pull_request?).to eq(false)
+      expect(issue.pull_request?).to be(false)
     end
 
     it 'returns true for a pull request' do
       issue = described_class.new(pull_request: true)
 
-      expect(issue.pull_request?).to eq(true)
+      expect(issue.pull_request?).to be(true)
     end
   end
 

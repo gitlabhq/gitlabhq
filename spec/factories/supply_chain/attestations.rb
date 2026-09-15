@@ -10,6 +10,10 @@ FactoryBot.define do
     file { fixture_file_upload('spec/fixtures/supply_chain/attestation.json') }
     predicate_file { fixture_file_upload('spec/fixtures/supply_chain/predicate.json') }
 
+    trait :with_signing_certificate do
+      signing_certificate { association(:supply_chain_signing_certificate, project: project) }
+    end
+
     trait :with_error_status do
       status { 'error' }
     end

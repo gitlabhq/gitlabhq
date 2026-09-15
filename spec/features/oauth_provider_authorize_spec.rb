@@ -43,6 +43,68 @@ RSpec.describe 'OAuth Provider', :with_current_organization, feature_category: :
     end
 
     it_behaves_like 'Secure Device OAuth Authorizations'
+
+    context 'when confirming a real device grant' do
+      # A non-admin sees the standalone app-trust alert; an admin folds it into the escalation warning.
+      let(:user) { create(:user, organizations: [current_organization]) }
+      let_it_be(:oauth_application) { create(:oauth_application, scopes: 'read_user') }
+
+      let!(:device_grant) do
+        Doorkeeper::DeviceAuthorizationGrant::DeviceGrant.create!(
+          application: oauth_application,
+          user_code: user_code,
+          device_code: SecureRandom.hex,
+          expires_in: 300,
+          scopes: 'read_user',
+          organization: current_organization
+        )
+      end
+
+      before do
+        find_by_testid('authorization-button').click
+      end
+
+      it 'renders the app-trust alert, scopes accordion, and app metadata', :aggregate_failures do
+        expect(page).to have_content(
+          format(_('Make sure you trust %{client_name} before authorizing.'), client_name: oauth_application.name)
+        )
+        expect(page).to have_content(I18n.t('doorkeeper.scopes.read_user'))
+        expect(page).to have_css('.info-well')
+      end
+
+      context 'when the confirming user is an administrator' do
+        let(:user) { create(:admin, organizations: [current_organization]) }
+
+        # rubocop:disable Layout/LineLength -- It is a string
+        it 'folds the app name into the admin escalation warning' do
+          expect(page).to have_content(
+            format(
+              _('You are an administrator. Authorizing %{strong_start}%{client_name}%{strong_end} will let it act as an administrator. Only continue if you trust this application.'),
+              strong_start: '', strong_end: '', client_name: oauth_application.name
+            )
+          )
+        end
+        # rubocop:enable Layout/LineLength
+      end
+    end
+
+    context 'when confirming an unknown device code as an administrator' do
+      # No matching device grant, so @application is nil: the admin warning must
+      # stay a complete sentence instead of interpolating a blank client name.
+      let(:user) { create(:admin, organizations: [current_organization]) }
+
+      before do
+        find_by_testid('authorization-button').click
+      end
+
+      # rubocop:disable Layout/LineLength -- It is a string
+      it 'shows the generic admin escalation warning without a blank name' do
+        expect(page).to have_content(
+          s_('DeviceAuth|You are an administrator, which means authorizing access will allow it to interact with GitLab as an administrator as well.')
+        )
+      end
+      # rubocop:enable Layout/LineLength
+    end
   end
 
   context 'when the OAuth application has HTML in the name' do
@@ -64,22 +126,26 @@ RSpec.describe 'OAuth Provider', :with_current_organization, feature_category: :
     end
 
     # rubocop:disable Layout/LineLength -- It is a string
-    it 'sanitizes the HTML in the warning text' do
+    it 'sanitizes the HTML in the admin warning text' do
       expect(page).to have_content(
         format(
-          _('You are an administrator, which means authorizing access to %{client_name} will allow it to interact with GitLab as an administrator as well.'),
+          _('You are an administrator. Authorizing %{client_name} will let it act as an administrator. Only continue if you trust this application.'),
           client_name: client_name
         )
       )
     end
     # rubocop:enable Layout/LineLength
 
-    it 'sanitizes the trust text HTML' do
-      expect(page).to have_content(
-        format(
-          _('Make sure you trust %{client_name} before authorizing.'),
-          client_name: client_name
-        ))
+    context 'when the user is not an administrator' do
+      let(:user) { create(:user, organizations: [current_organization]) }
+
+      it 'sanitizes the trust text HTML' do
+        expect(page).to have_content(
+          format(
+            _('Make sure you trust %{client_name} before authorizing.'),
+            client_name: client_name
+          ))
+      end
     end
   end
 

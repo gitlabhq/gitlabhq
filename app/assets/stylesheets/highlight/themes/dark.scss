@@ -318,11 +318,6 @@ $dark-il: #de935f;
 
   @include conflict-colors('dark');
 
-  // highlight line via anchor
-  pre .hll {
-    background-color: $dark-pre-hll-bg !important;
-  }
-
   // mark lines via mark_multiple_lines
   pre.dark code {
     .selected-inline-section-marker {

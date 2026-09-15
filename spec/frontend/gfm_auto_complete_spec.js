@@ -1414,6 +1414,52 @@ describe('GfmAutoComplete', () => {
     });
   });
 
+  describe('emoji autocomplete preference', () => {
+    let $textarea;
+    let autocomplete;
+
+    beforeEach(() => {
+      setHTMLFixture('<textarea></textarea>');
+      $textarea = $('textarea');
+      autocomplete = new GfmAutoComplete({});
+      jest.spyOn(autocomplete, 'setupEmoji').mockImplementation(() => {});
+      jest.spyOn(autocomplete, 'setupMembers').mockImplementation(() => {});
+    });
+
+    it('sets up emoji autocomplete when the preference is enabled', () => {
+      window.gon.emoji_autocomplete_enabled = true;
+      autocomplete.setup($textarea, { emojis: true });
+      autocomplete.setupAtWho($textarea);
+
+      expect(autocomplete.setupEmoji).toHaveBeenCalled();
+    });
+
+    it('sets up emoji autocomplete when the preference is unset', () => {
+      delete window.gon.emoji_autocomplete_enabled;
+      autocomplete.setup($textarea, { emojis: true });
+      autocomplete.setupAtWho($textarea);
+
+      expect(autocomplete.setupEmoji).toHaveBeenCalled();
+    });
+
+    it('does not set up emoji autocomplete when the preference is disabled', () => {
+      window.gon.emoji_autocomplete_enabled = false;
+      autocomplete.setup($textarea, { emojis: true });
+      autocomplete.setupAtWho($textarea);
+
+      expect(autocomplete.setupEmoji).not.toHaveBeenCalled();
+    });
+
+    it('leaves other autocompletes unaffected when the preference is disabled', () => {
+      window.gon.emoji_autocomplete_enabled = false;
+      autocomplete.setup($textarea, { emojis: true, members: true });
+      autocomplete.setupAtWho($textarea);
+
+      expect(autocomplete.setupEmoji).not.toHaveBeenCalled();
+      expect(autocomplete.setupMembers).toHaveBeenCalled();
+    });
+  });
+
   describe('updateDataSources', () => {
     const dataSources = {
       labels: `${TEST_HOST}/autocomplete_sources/labels`,

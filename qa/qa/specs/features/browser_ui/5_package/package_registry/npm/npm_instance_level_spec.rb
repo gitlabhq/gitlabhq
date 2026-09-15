@@ -2,8 +2,7 @@
 
 module QA
   RSpec.describe 'Package', feature_category: :package_registry do
-    describe 'npm Registry instance level endpoint', :object_storage, :external_api_calls,
-      feature_category: :subscription_management do
+    describe 'npm Registry instance level endpoint', :object_storage, :external_api_calls do
       include Runtime::Fixtures
 
       let!(:project) { create(:project, name: 'npm-instance-publish') }

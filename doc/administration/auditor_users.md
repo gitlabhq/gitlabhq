@@ -22,7 +22,7 @@ Auditor users:
 - Can have additional [permissions](../user/permissions.md) to groups and projects based on their assigned role.
 - Can create groups, projects, or snippets in their personal namespace.
 - Cannot view the Admin area or perform any administration actions.
-- Cannot access group or projects settings.
+- Cannot access group or project settings.
 - Cannot view job logs when [debug logging](../ci/variables/variables_troubleshooting.md#enable-debug-logging) is enabled.
 - Cannot access areas designed for editing, including the [pipeline editor](../ci/pipeline_editor/_index.md).
 

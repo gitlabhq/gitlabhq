@@ -72,7 +72,9 @@ module CloudSeed
       end
 
       def pipeline_content(include_path)
-        gitlab_ci_yml = ::Gitlab::Ci::Config::Yaml::Loader.new(default_branch_gitlab_ci_yml || '{}').load
+        gitlab_ci_yml = ::Gitlab::Ci::Config::FeatureFlags.with_actor(project) do
+          ::Gitlab::Ci::Config::Yaml::Loader.new(default_branch_gitlab_ci_yml || '{}').load
+        end
 
         append_remote_include(
           gitlab_ci_yml.content,

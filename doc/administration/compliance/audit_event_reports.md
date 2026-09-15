@@ -41,7 +41,7 @@ Instance audit events can also be accessed using the [instance audit events API]
 {{< /details >}}
 
 You can export the current view (including filters) of your instance audit events as a
-CSV(comma-separated values) file. To export the instance audit events to CSV:
+CSV (comma-separated values) file. To export the instance audit events to CSV:
 
 1. In the upper-right corner, select **Admin**.
 1. In the left sidebar, select **Monitoring** > **Audit events**.

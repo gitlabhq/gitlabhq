@@ -1,10 +1,6 @@
-import Vue from 'vue';
-import { GlToast } from '@gitlab/ui';
 import { initVueApp } from '~/lib/utils/vue3compat/init_vue_app';
 import { GlTabsBehavior } from '~/tabs';
 import QuickStartSnippets from '~/observability/setup/components/quick_start_snippets.vue';
-
-Vue.use(GlToast);
 
 const tabNavs = document.querySelectorAll('.js-o11y-endpoint-tabs, .js-o11y-curl-tabs');
 tabNavs.forEach((el) => new GlTabsBehavior(el));

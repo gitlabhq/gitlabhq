@@ -6,8 +6,7 @@ RSpec.describe 'user_settings/ssh_keys/_key.html.haml', feature_category: :syste
   let_it_be(:user) { build_stubbed(:user) }
 
   before do
-    allow(view).to receive(:key).and_return(key)
-    allow(view).to receive(:is_admin).and_return(false)
+    allow(view).to receive_messages(key: key, is_admin: false)
   end
 
   context 'when the key partial is used' do

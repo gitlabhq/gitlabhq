@@ -12,7 +12,7 @@ RSpec.describe API::Ci::ResourceGroups, feature_category: :continuous_delivery d
   describe 'GET /projects/:id/resource_groups' do
     subject { get api("/projects/#{project.id}/resource_groups", user) }
 
-    let!(:resource_groups) { create_list(:ci_resource_group, 3, project: project) }
+    let_it_be(:resource_groups) { create_list(:ci_resource_group, 3, project: project) }
 
     it 'returns all resource groups for this project', :aggregate_failures do
       subject
@@ -47,7 +47,7 @@ RSpec.describe API::Ci::ResourceGroups, feature_category: :continuous_delivery d
   describe 'GET /projects/:id/resource_groups/:key' do
     subject { get api("/projects/#{project.id}/resource_groups/#{key}", user) }
 
-    let!(:resource_group) { create(:ci_resource_group, project: project) }
+    let_it_be(:resource_group) { create(:ci_resource_group, project: project) }
     let(:key) { resource_group.key }
 
     it 'returns a resource group', :aggregate_failures do
@@ -114,7 +114,10 @@ RSpec.describe API::Ci::ResourceGroups, feature_category: :continuous_delivery d
 
   describe 'GET /projects/:id/resource_groups/:key/current_job' do
     let_it_be(:resource_group, freeze: true) { create(:ci_resource_group, project: project) }
-    let_it_be(:current_processable, freeze: true) { create(:ci_build, :running) }
+    let_it_be(:current_processable, freeze: true) do
+      create(:ci_build, :running, pipeline: create(:ci_pipeline, project: project))
+    end
+
     let_it_be(:resource, freeze: true) do
       create(:ci_resource,
         resource_group: resource_group,
@@ -141,7 +144,10 @@ RSpec.describe API::Ci::ResourceGroups, feature_category: :continuous_delivery d
 
     context 'when resource group key contains a slash' do
       let_it_be(:resource_group) { create(:ci_resource_group, project: project, key: 'test/test') }
-      let_it_be(:current_processable) { create(:ci_build, :running) }
+      let_it_be(:current_processable) do
+        create(:ci_build, :running, pipeline: create(:ci_pipeline, project: project))
+      end
+
       let_it_be(:resource) do
         create(:ci_resource,
           resource_group: resource_group,
@@ -188,9 +194,12 @@ RSpec.describe API::Ci::ResourceGroups, feature_category: :continuous_delivery d
   end
 
   describe 'GET /projects/:id/resource_groups/:key/upcoming_jobs' do
+    let_it_be(:pipeline) { create(:ci_pipeline, project: project) }
     let_it_be(:resource_group) { create(:ci_resource_group, project: project) }
-    let_it_be(:processable) { create(:ci_processable, resource_group: resource_group) }
-    let_it_be(:upcoming_processable) { create(:ci_processable, :waiting_for_resource, resource_group: resource_group) }
+    let_it_be(:processable) { create(:ci_processable, resource_group: resource_group, pipeline: pipeline) }
+    let_it_be(:upcoming_processable) do
+      create(:ci_processable, :waiting_for_resource, resource_group: resource_group, pipeline: pipeline)
+    end
 
     let(:path) { "/projects/#{project.id}/resource_groups/#{key}/upcoming_jobs" }
     let(:key) { resource_group.key }
@@ -212,7 +221,8 @@ RSpec.describe API::Ci::ResourceGroups, feature_category: :continuous_delivery d
     context 'when resource group key contains a slash' do
       let_it_be(:resource_group) { create(:ci_resource_group, project: project, key: 'test/test') }
       let_it_be(:upcoming_processable) do
-        create(:ci_processable, :waiting_for_resource, resource_group: resource_group)
+        create(:ci_processable, :waiting_for_resource, resource_group: resource_group,
+          pipeline: create(:ci_pipeline, project: project))
       end
 
       let(:key) { 'test%2Ftest' }
@@ -255,7 +265,7 @@ RSpec.describe API::Ci::ResourceGroups, feature_category: :continuous_delivery d
   describe 'PUT /projects/:id/resource_groups/:key' do
     subject { put api("/projects/#{project.id}/resource_groups/#{key}", user), params: params }
 
-    let!(:resource_group) { create(:ci_resource_group, project: project) }
+    let_it_be_with_reload(:resource_group) { create(:ci_resource_group, project: project) }
     let(:key) { resource_group.key }
     let(:params) { { process_mode: :oldest_first } }
 

@@ -99,6 +99,12 @@ module Types
       description: 'Triggered when a work item in a namespace is created, updated, or deleted.',
       experiment: { milestone: '19.3' }
 
+    field :work_item_saved_view_updated,
+      subscription: Subscriptions::WorkItems::SavedViewUpdated,
+      null: true,
+      description: 'Triggered when the configuration of a work item saved view is updated.',
+      experiment: { milestone: '19.4' }
+
     field :merge_request_reviewers_updated,
       subscription: Subscriptions::IssuableUpdated, null: true,
       description: 'Triggered when the reviewers of a merge request are updated.'

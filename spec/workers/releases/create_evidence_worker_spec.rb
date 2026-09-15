@@ -3,9 +3,9 @@
 require 'spec_helper'
 
 RSpec.describe Releases::CreateEvidenceWorker, feature_category: :release_evidence do
-  let(:project) { create(:project, :repository) }
-  let(:release) { create(:release, project: project) }
-  let(:pipeline) { create(:ci_empty_pipeline, sha: release.sha, project: project) }
+  let_it_be_with_reload(:project) { create(:project) }
+  let_it_be(:release) { create(:release, project: project) }
+  let_it_be(:pipeline) { create(:ci_empty_pipeline, sha: release.sha, project: project) }
 
   # support old scheduled workers without pipeline
   it 'creates a new Evidence record' do

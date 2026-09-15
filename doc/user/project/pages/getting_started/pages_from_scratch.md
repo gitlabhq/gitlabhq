@@ -1,6 +1,6 @@
 ---
 stage: Plan
-group: Knowledge
+group: Planner Intelligence
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see <https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments>
 title: 'Tutorial: Create a GitLab Pages website from scratch'
 ---
@@ -212,7 +212,7 @@ The following sections show other options you can add to your CI/CD file.
 
 ### Deploy specific branches to a Pages site
 
-You may want to deploy to a Pages site only from specific branches.
+You might want to deploy to a Pages site only from specific branches.
 
 First, add a `workflow` section to force the pipeline to run only when changes are
 pushed to branches:
@@ -287,7 +287,7 @@ create-pages:
 ```
 
 Now add another job to the CI file, telling it to
-test every push to every branch **except** the `main` branch:
+test every push to every branch except the `main` branch:
 
 ```yaml
 default:
@@ -325,6 +325,16 @@ When the `test` job runs in the `test` stage, Jekyll
 builds the site in a directory called `test`. The job affects
 all branches except `main`.
 
+The `test` job does not publish to GitLab Pages, so its output is stored only as a job artifact.
+To view the built site,
+[browse the contents of the artifacts archive](../../../../ci/jobs/job_artifacts.md#browse-the-contents-of-the-artifacts-archive).
+If GitLab Pages is turned on for your instance, you can preview `.html` files directly in your
+browser. For a private or internal project, an administrator must also turn on
+[GitLab Pages access control](../pages_access_control.md) for the instance.
+
+To publish a branch as a separate Pages site with its own URL, use
+[parallel deployments](../parallel_deployments.md) instead.
+
 When you apply stages to different jobs, every job in the same
 stage builds in parallel. If your web application needs more than
 one test before being deployed, you can run all your tests at the
@@ -336,7 +346,7 @@ To avoid duplicating the same `before_script` commands in every job, you can add
 to the default section.
 
 In the example, `gem install bundler` and `bundle install` were running
-for both jobs, `pages` and `test`.
+for both jobs, `create-pages` and `test`.
 
 Move these commands to the `default` section:
 
@@ -428,9 +438,9 @@ exclude:
 
 Now GitLab CI/CD not only builds the website, but also:
 
-- Pushes with **continuous tests** to feature branches.
-- **Caches** dependencies installed with Bundler.
-- **Continuously deploys** every push to the `main` branch.
+- Pushes with continuous tests to feature branches.
+- Caches dependencies installed with Bundler.
+- Continuously deploys every push to the `main` branch.
 
 To view the HTML and other assets that were created for the site,
 [download the job artifacts](../../../../ci/jobs/job_artifacts.md#download-job-artifacts).

@@ -19,11 +19,16 @@ class Projects::DesignManagement::DesignsController < Projects::ApplicationContr
     access_denied! unless can?(current_user, :read_design, design)
   end
 
+  def design_params
+    params.permit(:design_id, :sha)
+  end
+  strong_memoize_attr :design_params
+
   def design
-    @design ||= project.designs.find(params[:design_id])
+    @design ||= project.designs.find(design_params[:design_id])
   end
 
   def sha
-    params[:sha].presence
+    design_params[:sha].presence
   end
 end

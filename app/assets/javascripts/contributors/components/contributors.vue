@@ -17,8 +17,7 @@ import IndividualChart from './individual_chart.vue';
 const GRAPHS_PATH_REGEX = /^(.*?)\/-\/graphs/g;
 
 export default {
-  // eslint-disable-next-line @gitlab/require-i18n-strings
-  name: 'Contributors',
+  name: 'ContributorsChart',
   MASTER_CHART_HEIGHT,
   i18n: {
     history: __('History'),

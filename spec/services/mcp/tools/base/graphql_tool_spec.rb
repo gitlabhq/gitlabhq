@@ -54,14 +54,14 @@ RSpec.describe Mcp::Tools::Base::GraphqlTool, feature_category: :mcp_server do
 
   describe '.load_graphql' do
     it 'reads a real query file and returns a frozen string' do
-      operation = described_class.load_graphql('work_items/create_note.mutation.graphql')
+      operation = described_class.load_graphql('notes/create_note.mutation.graphql')
 
       expect(operation).to include('mutation createNote')
       expect(operation).to be_frozen
     end
 
     it 'raises Errno::ENOENT for a missing path' do
-      expect { described_class.load_graphql('work_items/does_not_exist.query.graphql') }
+      expect { described_class.load_graphql('notes/does_not_exist.query.graphql') }
         .to raise_error(Errno::ENOENT)
     end
   end
@@ -246,7 +246,8 @@ RSpec.describe Mcp::Tools::Base::GraphqlTool, feature_category: :mcp_server do
         variables: { input: { projectPath: 'gitlab-org/gitlab' } },
         context: {
           current_user: user,
-          is_sessionless_user: false
+          is_sessionless_user: false,
+          mcp_tool: nil
         }
       )
     end

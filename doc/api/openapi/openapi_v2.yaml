@@ -11698,6 +11698,40 @@ paths:
       tags:
       - ci_jobs
       operationId: getApiV4ProjectsIdJobsJobId
+  "/api/v4/projects/{id}/jobs/{job_id}/runtime_environment_key":
+    get:
+      summary: Get the runtime environment key for a job
+      description: Retrieves the runtime environment key linked to a job, if the job
+        is resuming a suspended environment.
+      produces:
+      - application/json
+      parameters:
+      - in: path
+        name: job_id
+        description: The ID of a job
+        type: integer
+        format: int32
+        required: true
+        example: 88
+      - in: path
+        name: id
+        type: integer
+        format: int32
+        required: true
+      responses:
+        '200':
+          description: Get the runtime environment key for a job
+          schema:
+            "$ref": "#/definitions/API_Entities_Ci_RuntimeEnvironmentKey"
+        '401':
+          description: Unauthorized
+        '403':
+          description: Forbidden
+        '404':
+          description: Not found
+      tags:
+      - ci_jobs
+      operationId: getApiV4ProjectsIdJobsJobIdRuntimeEnvironmentKey
   "/api/v4/projects/{id}/jobs/{job_id}/trace":
     get:
       summary: Get a trace of a specific job of a project
@@ -39083,6 +39117,72 @@ paths:
       tags:
       - repositories
       operationId: postApiV4ProjectsIdRepositoryBlobsBatch
+  "/api/v4/projects/{id}/repository/changed_paths":
+    get:
+      summary: List files changed between two commits
+      description: Returns the path, change status, and file modes for every path
+        that differs between two refs.
+      produces:
+      - application/json
+      parameters:
+      - in: path
+        name: id
+        description: The ID or URL-encoded path of the project
+        type: string
+        required: true
+        example: 1
+      - in: query
+        name: from
+        description: The commit SHA or branch/tag to compare from
+        type: string
+        required: true
+        example: main
+      - in: query
+        name: to
+        description: The commit SHA or branch/tag to compare to
+        type: string
+        required: true
+        example: feature
+      - in: query
+        name: find_renames
+        description: If true, detect file renames
+        type: boolean
+        default: false
+        required: false
+      - in: query
+        name: page
+        description: Current page number
+        type: integer
+        format: int32
+        default: 1
+        required: false
+        example: 1
+      - in: query
+        name: per_page
+        description: Number of items per page
+        type: integer
+        format: int32
+        default: 20
+        required: false
+        example: 20
+      responses:
+        '200':
+          description: List files changed between two commits
+          schema:
+            "$ref": "#/definitions/API_Entities_ChangedPath"
+        '400':
+          description: Bad Request
+        '401':
+          description: Unauthorized
+        '403':
+          description: Forbidden
+        '404':
+          description: Not Found
+        '429':
+          description: Too Many Requests
+      tags:
+      - repositories
+      operationId: getApiV4ProjectsIdRepositoryChangedPaths
   "/api/v4/projects/{id}/repository/diverging_commits":
     get:
       description: Retrieve diverging commit counts between two refs
@@ -39134,6 +39234,66 @@ paths:
       tags:
       - repositories
       operationId: getApiV4ProjectsIdRepositoryDivergingCommits
+  "/api/v4/projects/{id}/repository/diff_stats":
+    get:
+      summary: Get diff statistics between two commits
+      description: Returns the number of added and deleted lines for every file that
+        differs between two refs.
+      produces:
+      - application/json
+      parameters:
+      - in: path
+        name: id
+        description: The ID or URL-encoded path of the project
+        type: string
+        required: true
+        example: 1
+      - in: query
+        name: from
+        description: The commit SHA or branch/tag to compare from
+        type: string
+        required: true
+        example: main
+      - in: query
+        name: to
+        description: The commit SHA or branch/tag to compare to
+        type: string
+        required: true
+        example: feature
+      - in: query
+        name: page
+        description: Current page number
+        type: integer
+        format: int32
+        default: 1
+        required: false
+        example: 1
+      - in: query
+        name: per_page
+        description: Number of items per page
+        type: integer
+        format: int32
+        default: 20
+        required: false
+        example: 20
+      responses:
+        '200':
+          description: Get diff statistics between two commits
+          schema:
+            "$ref": "#/definitions/API_Entities_DiffStat"
+        '400':
+          description: Bad request
+        '401':
+          description: Unauthorized
+        '403':
+          description: Forbidden
+        '404':
+          description: Not found
+        '429':
+          description: Too many requests
+      tags:
+      - repositories
+      operationId: getApiV4ProjectsIdRepositoryDiffStats
   "/api/v4/projects/{id}/repository/changelog":
     get:
       summary: Generate changelog data
@@ -47406,7 +47566,7 @@ paths:
         '200':
           description: Retrieve a personal access token
           schema:
-            "$ref": "#/definitions/API_Entities_PersonalAccessTokenWithLastUsedIps"
+            "$ref": "#/definitions/API_Entities_PersonalAccessToken"
         '401':
           description: Unauthorized
         '404':
@@ -47614,7 +47774,7 @@ paths:
           schema:
             type: array
             items:
-              "$ref": "#/definitions/API_Entities_PersonalAccessTokenWithLastUsedIps"
+              "$ref": "#/definitions/API_Entities_PersonalAccessToken"
         '401':
           description: Unauthorized
       tags:
@@ -47639,7 +47799,7 @@ paths:
         '200':
           description: Retrieve a personal access token
           schema:
-            "$ref": "#/definitions/API_Entities_PersonalAccessTokenWithLastUsedIps"
+            "$ref": "#/definitions/API_Entities_PersonalAccessToken"
         '401':
           description: Unauthorized
         '404':
@@ -49913,6 +50073,8 @@ definitions:
         "$ref": "#/definitions/API_Entities_UserBasic"
       expires_at:
         type: string
+      two_factor_enabled:
+        type: boolean
       group_saml_identity:
         "$ref": "#/definitions/API_Entities_Identity"
       group_scim_identity:
@@ -50815,10 +50977,10 @@ definitions:
         description: Duo availability. One of `default_on`, `default_off`, `never_on`
           or `always_on`
         enum:
+        - always_on
         - default_on
         - default_off
         - never_on
-        - always_on
       duo_remote_flows_availability:
         type: boolean
         description: Enable GitLab Duo remote flows for this group
@@ -50881,8 +51043,11 @@ definitions:
             description: Enable AI usage data collection for this namespace
           ai_catalog_restricted_to_group_hierarchy:
             type: boolean
-            description: Restrict the AI Catalog to items within this top-level group
+            description: Confine the AI Catalog to items within this top-level group
               hierarchy
+          web_search_enabled:
+            type: boolean
+            description: Allow web search in GitLab Duo Chat for this top-level group
           foundational_agents_default_enabled:
             type: boolean
             description: Whether new foundational agents are enabled by default
@@ -51134,10 +51299,10 @@ definitions:
         description: Duo availability. One of `default_on`, `default_off`, `never_on`
           or `always_on`
         enum:
+        - always_on
         - default_on
         - default_off
         - never_on
-        - always_on
       duo_remote_flows_availability:
         type: boolean
         description: Enable GitLab Duo remote flows for this group
@@ -51200,8 +51365,11 @@ definitions:
             description: Enable AI usage data collection for this namespace
           ai_catalog_restricted_to_group_hierarchy:
             type: boolean
-            description: Restrict the AI Catalog to items within this top-level group
+            description: Confine the AI Catalog to items within this top-level group
               hierarchy
+          web_search_enabled:
+            type: boolean
+            description: Allow web search in GitLab Duo Chat for this top-level group
           foundational_agents_default_enabled:
             type: boolean
             description: Whether new foundational agents are enabled by default
@@ -52469,6 +52637,9 @@ definitions:
       prompt_injection_protection_level:
         type: string
         example: no_checks
+      web_search_enabled:
+        type: boolean
+        example: false
       include_recommended_allowed:
         type: boolean
         example: false
@@ -52497,6 +52668,7 @@ definitions:
     - ai_catalog_restricted_to_group_hierarchy
     - ai_usage_data_collection_enabled
     - prompt_injection_protection_level
+    - web_search_enabled
     - include_recommended_allowed
     - allow_all_unix_sockets
     - allow_project_extension
@@ -57356,14 +57528,6 @@ definitions:
         type: string
         format: date-time
         example: '2020-08-31T15:53:00.073Z'
-      active:
-        type: boolean
-      granular:
-        type: boolean
-      expires_at:
-        type: string
-        format: date-time
-        example: '2020-08-31T15:53:00.073Z'
       last_used_ips:
         type: array
         items:
@@ -57375,10 +57539,18 @@ definitions:
         description: The five most recent unique IP addresses that have authenticated
           with this token. When the limit is reached, the oldest IP address is removed.
           The list updates once per minute per token.
+      active:
+        type: boolean
+      granular:
+        type: boolean
       granular_scopes:
         type: array
         items:
           "$ref": "#/definitions/API_Entities_PersonalAccessTokenGranularScope"
+      expires_at:
+        type: string
+        format: date-time
+        example: '2020-08-31T15:53:00.073Z'
       access_level:
         type: integer
         format: int32
@@ -57410,6 +57582,7 @@ definitions:
     - scopes
     - user_id
     - last_used_at
+    - last_used_ips
     - active
     - granular
     - expires_at
@@ -58221,6 +58394,15 @@ definitions:
     - status
     - job_execution_status
     description: API_Entities_Ci_RunnerManager model
+  API_Entities_Ci_RuntimeEnvironmentKey:
+    type: object
+    properties:
+      runtime_environment_key:
+        type: string
+        example: 42/s_machineid/data
+    required:
+    - runtime_environment_key
+    description: API_Entities_Ci_RuntimeEnvironmentKey model
   postApiV4ProjectsIdJobsJobIdCancel:
     type: object
     properties:
@@ -73590,6 +73772,31 @@ definitions:
     - encoding
     - content
     description: API_Entities_BatchBlob model
+  API_Entities_ChangedPath:
+    type: object
+    properties:
+      status:
+        type: string
+        example: MODIFIED
+      path:
+        type: string
+        example: app/models/user.rb
+      old_path:
+        type: string
+        example: app/models/user.rb
+      old_mode:
+        type: string
+        example: '100644'
+      new_mode:
+        type: string
+        example: '100644'
+    required:
+    - status
+    - path
+    - old_path
+    - old_mode
+    - new_mode
+    description: API_Entities_ChangedPath model
   API_Entities_DivergingCommitCount:
     type: object
     properties:
@@ -73605,6 +73812,29 @@ definitions:
     - behind
     - ahead
     description: API_Entities_DivergingCommitCount model
+  API_Entities_DiffStat:
+    type: object
+    properties:
+      path:
+        type: string
+        example: app/models/user.rb
+      old_path:
+        type: string
+        example: app/models/user.rb
+      additions:
+        type: integer
+        format: int32
+        example: 10
+      deletions:
+        type: integer
+        format: int32
+        example: 3
+    required:
+    - path
+    - old_path
+    - additions
+    - deletions
+    description: API_Entities_DiffStat model
   API_Entities_Changelog:
     type: object
     properties:
@@ -75618,6 +75848,9 @@ definitions:
         type: integer
         format: int32
         description: Job's exit code
+      runtime_environment_key:
+        type: string
+        description: Runtime environment key emitted by the runner on job suspension
     required:
     - token
     description: Update a job
@@ -79107,6 +79340,8 @@ definitions:
         type: integer
         format: int32
         example: 133
+      ci_minutes_usage:
+        "$ref": "#/definitions/API_Entities_Ci_Minutes_Usage"
       extra_shared_runners_minutes_limit:
         type: integer
         format: int32
@@ -79159,6 +79394,25 @@ definitions:
     - web_url
     - billable_members_count
     description: API_Entities_Namespace model
+  API_Entities_Ci_Minutes_Usage:
+    type: object
+    properties:
+      total_minutes_used:
+        type: integer
+        format: int32
+        example: 105
+      monthly_minutes_used:
+        type: integer
+        format: int32
+        example: 100
+      purchased_minutes_used:
+        type: integer
+        format: int32
+        example: 5
+    required:
+    - total_minutes_used
+    - monthly_minutes_used
+    - purchased_minutes_used
   API_Entities_GitlabSubscription:
     type: object
     properties:
@@ -79634,72 +79888,6 @@ definitions:
     required:
     - expired
     - expiration
-  API_Entities_PersonalAccessTokenWithLastUsedIps:
-    type: object
-    properties:
-      id:
-        type: integer
-        format: int64
-        example: 2
-      name:
-        type: string
-        example: John Doe
-      revoked:
-        type: boolean
-      created_at:
-        type: string
-        format: date-time
-      description:
-        type: string
-        example: Token to manage api
-      scopes:
-        type: array
-        example:
-        - api
-      user_id:
-        type: integer
-        format: int64
-        example: 3
-      last_used_at:
-        type: string
-        format: date-time
-        example: '2020-08-31T15:53:00.073Z'
-      active:
-        type: boolean
-      granular:
-        type: boolean
-      expires_at:
-        type: string
-        format: date-time
-        example: '2020-08-31T15:53:00.073Z'
-      last_used_ips:
-        type: array
-        items:
-          type: string
-        example:
-        - 127.0.0.1
-        - 127.0.0.2
-        - 127.0.0.3
-        description: The five most recent unique IP addresses that have authenticated
-          with this token. When the limit is reached, the oldest IP address is removed.
-          The list updates once per minute per token.
-      granular_scopes:
-        type: array
-        items:
-          "$ref": "#/definitions/API_Entities_PersonalAccessTokenGranularScope"
-    required:
-    - id
-    - name
-    - revoked
-    - created_at
-    - description
-    - scopes
-    - user_id
-    - last_used_at
-    - active
-    - granular
-    - expires_at
-    description: API_Entities_PersonalAccessTokenWithLastUsedIps model
   API_Entities_PersonalAccessToken:
     type: object
     properties:
@@ -79730,10 +79918,25 @@ definitions:
         type: string
         format: date-time
         example: '2020-08-31T15:53:00.073Z'
+      last_used_ips:
+        type: array
+        items:
+          type: string
+        example:
+        - 127.0.0.1
+        - 127.0.0.2
+        - 127.0.0.3
+        description: The five most recent unique IP addresses that have authenticated
+          with this token. When the limit is reached, the oldest IP address is removed.
+          The list updates once per minute per token.
       active:
         type: boolean
       granular:
         type: boolean
+      granular_scopes:
+        type: array
+        items:
+          "$ref": "#/definitions/API_Entities_PersonalAccessTokenGranularScope"
       expires_at:
         type: string
         format: date-time
@@ -79747,6 +79950,7 @@ definitions:
     - scopes
     - user_id
     - last_used_at
+    - last_used_ips
     - active
     - granular
     - expires_at
@@ -79790,20 +79994,31 @@ definitions:
         type: string
         format: date-time
         example: '2020-08-31T15:53:00.073Z'
+      last_used_ips:
+        type: array
+        items:
+          type: string
+        example:
+        - 127.0.0.1
+        - 127.0.0.2
+        - 127.0.0.3
+        description: The five most recent unique IP addresses that have authenticated
+          with this token. When the limit is reached, the oldest IP address is removed.
+          The list updates once per minute per token.
       active:
         type: boolean
       granular:
         type: boolean
+      granular_scopes:
+        type: array
+        items:
+          "$ref": "#/definitions/API_Entities_PersonalAccessTokenGranularScope"
       expires_at:
         type: string
         format: date-time
         example: '2020-08-31T15:53:00.073Z'
       token:
         type: string
-      granular_scopes:
-        type: array
-        items:
-          "$ref": "#/definitions/API_Entities_PersonalAccessTokenGranularScope"
     required:
     - id
     - name
@@ -79813,6 +80028,7 @@ definitions:
     - scopes
     - user_id
     - last_used_at
+    - last_used_ips
     - active
     - granular
     - expires_at

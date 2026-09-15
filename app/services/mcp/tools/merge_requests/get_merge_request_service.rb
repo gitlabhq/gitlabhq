@@ -5,9 +5,10 @@ module Mcp
     module MergeRequests
       class GetMergeRequestService < Base::GraphqlService
         register_version '0.1.0', {
-          description: 'Get a merge request and optionally its diffs, commits, notes, pipelines, or discussions. ' \
-            'By default only the base merge request metadata is returned; request associated data through the ' \
-            '`include` parameter so nothing extra is fetched unless asked for.',
+          toolset: :merge_requests,
+          description: 'Get a merge request and optionally its diffs, commits, notes, pipelines, discussions, ' \
+            'approvals, or conflicts. By default only the base merge request metadata is returned; request ' \
+            'associated data through the `include` parameter so nothing extra is fetched unless asked for.',
           input_schema: {
             type: 'object',
             required: [],
@@ -27,28 +28,37 @@ module Mcp
               },
               include: {
                 type: 'array',
-                description: 'Associated facets to fetch inline, one per call. diffs returns change ' \
-                  'stats only (totals and per-file additions and deletions), not patch text: use the ' \
-                  'get_merge_request_diffs tool for patch text and get_merge_request_conflicts for conflicts. ' \
-                  'notes supports pagination (notes_after/notes_first).',
+                description: 'Associated facets to fetch inline, one per call. diffs returns aggregate change ' \
+                  'stats and a per-file breakdown by default; set detail=full_patch for raw per-file patch ' \
+                  'text or detail=none for summary counts only. conflicts returns raw conflict file content ' \
+                  '(Git conflict markers), only when the merge request cannot be merged and the caller can ' \
+                  'push to the source branch. notes supports pagination (notes_after/notes_first). ' \
+                  'approvals returns approved and approvedBy on every tier. approvalsRequired, approvalsLeft, and ' \
+                  'the rule breakdown in approvalState need GitLab Premium or Ultimate; otherwise ' \
+                  'these keys are present but zeroed or empty, not omitted.',
                 items: {
                   type: 'string',
-                  enum: %w[diffs commits notes pipelines discussions]
+                  enum: %w[diffs commits notes pipelines discussions approvals conflicts]
                 },
                 maxItems: 1
               },
-              notes_after: {
+              detail: {
                 type: 'string',
-                description: 'Cursor for forward pagination of notes. ' \
-                  'Use endCursor from a previous response. Applies only when notes is in include.'
+                description: 'Level of diff detail, applies only when diffs is in include. ' \
+                  'none: summary counts only; stats: per-file additions and deletions (default); ' \
+                  'full_patch: per-file patch text (raw diff), plus the per-file stats.',
+                enum: %w[none stats full_patch]
               },
-              notes_first: {
-                type: 'integer',
-                description: 'Number of notes to return after the cursor (max 100). ' \
-                  'Applies only when notes is in include.',
-                minimum: 1,
-                maximum: 100
-              }
+              **Mcp::Tools::Concerns::CursorPagination.input_schema_params(
+                items: 'files',
+                prefix: 'diffs_',
+                applies_to: 'diffs is in include and detail is full_patch'
+              ),
+              **Mcp::Tools::Concerns::CursorPagination.input_schema_params(
+                items: 'notes',
+                prefix: 'notes_',
+                applies_to: 'notes is in include'
+              )
             }
           },
           annotations: {

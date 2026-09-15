@@ -89,7 +89,6 @@ RSpec.describe Gitlab::GonHelper, feature_category: :navigation do
       it 'exposes current_organization' do
         expect(gon).to receive(:current_organization=).with(
           current_organization.slice(:id, :name, :path, :full_path, :web_url, :avatar_url)
-            .merge({ has_scoped_paths: true })
         )
 
         add_gon_variables
@@ -122,6 +121,90 @@ RSpec.describe Gitlab::GonHelper, feature_category: :navigation do
       end
     end
 
+    describe 'organization scoped path helpers' do
+      context 'when the request has an organization_path param' do
+        before do
+          organization = build_stubbed(:organization, path: 'acme')
+          allow(Current).to receive(:organization_resolver)
+            .and_return(instance_double(Gitlab::Current::Organization, from_organization_params: organization))
+        end
+
+        it 'exposes organization_path' do
+          expect(gon).to receive(:organization_path=).with('acme')
+
+          helper.add_gon_variables
+        end
+      end
+
+      context 'when the request has no organization_path param' do
+        before do
+          allow(Current).to receive(:organization_resolver)
+            .and_return(instance_double(Gitlab::Current::Organization, from_organization_params: nil))
+        end
+
+        it 'exposes a nil organization_path' do
+          expect(gon).to receive(:organization_path=).with(nil)
+
+          helper.add_gon_variables
+        end
+      end
+
+      context 'when the data context is an organization' do
+        before do
+          allow(Current).to receive(:data_context).and_return(
+            Gitlab::Current::DataContext.new(organization: build_stubbed(:organization, :isolated, path: 'acme'))
+          )
+        end
+
+        it 'exposes data_context_organization_path' do
+          expect(gon).to receive(:data_context_organization_path=).with('acme')
+
+          helper.add_gon_variables
+        end
+      end
+
+      context 'when the data context is not an organization' do
+        before do
+          allow(Current).to receive(:data_context).and_return(Gitlab::Current::DataContext.new)
+        end
+
+        it 'exposes a nil data_context_organization_path' do
+          expect(gon).to receive(:data_context_organization_path=).with(nil)
+
+          helper.add_gon_variables
+        end
+      end
+
+      context 'when there is no data context' do
+        it 'exposes a nil data_context_organization_path' do
+          expect(gon).to receive(:data_context_organization_path=).with(nil)
+
+          helper.add_gon_variables
+        end
+      end
+
+      context 'when ui_for_organizations_enabled? is false', :ui_for_organizations_disabled do
+        before do
+          organization = build_stubbed(:organization, path: 'acme')
+          allow(Current).to receive(:organization_resolver)
+            .and_return(instance_double(Gitlab::Current::Organization,
+              from_organization_params: organization))
+
+          allow(Current).to receive(:data_context).and_return(
+            Gitlab::Current::DataContext.new(organization: build_stubbed(:organization, :isolated,
+              path: 'acme'))
+          )
+        end
+
+        it 'does not expose organization_path or data_context_organization_path' do
+          expect(gon).not_to receive(:organization_path=)
+          expect(gon).not_to receive(:data_context_organization_path=)
+
+          helper.add_gon_variables
+        end
+      end
+    end
+
     describe 'fluid_layout' do
       context 'when there is no current_user' do
         it 'sets gon.fluid_layout to false' do
@@ -150,6 +233,40 @@ RSpec.describe Gitlab::GonHelper, feature_category: :navigation do
 
         it 'sets gon.fluid_layout to false' do
           expect(gon).to receive(:fluid_layout=).with(false).twice
+
+          helper.add_gon_variables
+        end
+      end
+    end
+
+    describe 'emoji_autocomplete_enabled' do
+      context 'when there is no current_user' do
+        it 'defaults gon.emoji_autocomplete_enabled to true' do
+          expect(gon).to receive(:emoji_autocomplete_enabled=).with(true)
+
+          helper.add_gon_variables
+        end
+      end
+
+      context 'when the current_user has the preference enabled' do
+        before do
+          allow(helper).to receive(:current_user).and_return(build_stubbed(:user, emoji_autocomplete_enabled: true))
+        end
+
+        it 'sets gon.emoji_autocomplete_enabled to true' do
+          expect(gon).to receive(:emoji_autocomplete_enabled=).with(true)
+
+          helper.add_gon_variables
+        end
+      end
+
+      context 'when the current_user has the preference disabled' do
+        before do
+          allow(helper).to receive(:current_user).and_return(build_stubbed(:user, emoji_autocomplete_enabled: false))
+        end
+
+        it 'sets gon.emoji_autocomplete_enabled to false' do
+          expect(gon).to receive(:emoji_autocomplete_enabled=).with(false)
 
           helper.add_gon_variables
         end

@@ -3,8 +3,6 @@
 require 'spec_helper'
 
 RSpec.describe ::Gitlab::Security::DastVariables, feature_category: :dynamic_application_security_testing do
-  let(:dast_variables) { described_class }
-
   describe '#additional_site_variables' do
     [:site, :scanner].each do |type|
       it "contains additional #{type} variables" do

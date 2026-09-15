@@ -28,7 +28,7 @@ title: Validity checks
 > The availability of this feature is controlled by a feature flag.
 > For more information, see the history.
 
-GitLab validity checks determines whether a secret, like an access token, is active.
+GitLab validity checks determine whether a secret, like an access token, is active.
 A secret is active when:
 
 - It is not expired.
@@ -75,12 +75,12 @@ mutation {
 {{< history >}}
 
 - [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/16890) support for external service tokens in GitLab 18.7 [with a feature flag](../../../api/feature_flags.md) named `secret_detection_partner_token_verification`. Enabled by default.
+- [Generally available](https://gitlab.com/gitlab-org/gitlab/-/work_items/567736) in GitLab 18.8. 
+- [Expanded](https://gitlab.com/gitlab-org/gitlab/-/work_items/612115) validity checks for external service tokens in GitLab 19.3.
+- Feature flag `secret_detection_partner_token_verification` [removed](https://gitlab.com/gitlab-org/gitlab/-/work_items/619506) in GitLab 19.4.
+- [Expanded](https://gitlab.com/gitlab-org/gitlab/-/work_items/624216) validity checks to more GitHub token types in GitLab 19.4.
 
 {{< /history >}}
-
-> [!flag]
-> The availability of this feature is controlled by a feature flag.
-> For more information, see the history.
 
 Validity checks support the following secret types:
 
@@ -100,8 +100,26 @@ Validity checks support the following secret types:
 
 **External service tokens:**
 
-- AWS IAM access key IDs
+- Anthropic API keys
+- AWS IAM long-term access key IDs (beginning with `AKIA`)
+- Datadog API keys
+- GitHub App installation tokens
+- GitHub fine-grained personal access tokens
+- GitHub OAuth access tokens
+- GitHub personal access tokens (classic)
+- Google Cloud API keys
+- Heroku API keys
+- OpenAI project API keys
 - Postman API tokens
+- SendGrid API tokens
+- Stripe live secret keys
+
+Validity checks for AWS IAM access key IDs, Google Cloud API keys, and Postman API tokens
+work with any secret detection analyzer.
+GitLab validates all other external service token types, including token types added in the
+future, only when
+[GitLab Secret Scanning for Source Code](../secret_detection/gitlab_secret_scanner/_index.md)
+detects the secret.
 
 ### Configure outbound network access
 
@@ -112,9 +130,17 @@ If your GitLab instance is behind a firewall but has internet access, allowlist 
 for each partner's validation API.
 The supported URLs are:
 
-- `https://sts.amazonaws.com/`
-- `https://oauth2.googleapis.com/tokeninfo`
+- `https://api.anthropic.com/v1/models`
+- `https://api.datadoghq.com/api/v1/validate`
 - `https://api.getpostman.com/me`
+- `https://api.github.com/installation/repositories`
+- `https://api.github.com/user`
+- `https://api.heroku.com/account`
+- `https://api.openai.com/v1/models`
+- `https://api.sendgrid.com/v3/scopes`
+- `https://api.stripe.com/v1/balance`
+- `https://sts.amazonaws.com/`
+- `https://www.googleapis.com/discovery/v1/apis`
 
 If you cannot allow outbound access to these endpoints, do not enable this feature.
 Enabling validity checks in a restricted network environment causes network errors during
@@ -154,13 +180,13 @@ flowchart TD
 
 {{< /history >}}
 
-After validity checks runs, the status of a token is not automatically updated, even if the token is revoked or expires.
+After validity checks run, the status of a token is not automatically updated, even if the token is revoked or expires.
 To update a token, you can manually refresh the status:
 
 1. On the vulnerability report, select the vulnerability you want to refresh.
 1. Next to the token status, select **Retry** ({{< icon name="retry" >}}).
 
-Validity checks is re-run, and the token status is updated.
+Validity checks are re-run, and the token status is updated.
 
 ## Troubleshooting
 

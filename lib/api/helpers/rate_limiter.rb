@@ -16,7 +16,7 @@ module API
         yield if block_given?
 
         interval_value = options[:interval] || Gitlab::ApplicationRateLimiter.period_for(key)
-        error_message = message || _('This endpoint has been requested too many times. Try again later.')
+        error_message = message || ::Gitlab::ApplicationRateLimiter.throttled_error_message
 
         too_many_requests!({ error: error_message }, retry_after: interval_value)
       end

@@ -1,11 +1,10 @@
 import Vue from 'vue';
 import VueApollo from 'vue-apollo';
-import { GlToast } from '@gitlab/ui';
 import { initVueApp } from '~/lib/utils/vue3compat/init_vue_app';
 import AnalyticsDashboardsBreadcrumbs from '~/analytics/shared/components/analytics_dashboards_breadcrumbs.vue';
 import createDefaultClient from '~/lib/graphql';
 import { injectVueAppBreadcrumbs } from '~/lib/utils/breadcrumbs';
-import { convertObjectPropsToCamelCase } from '~/lib/utils/common_utils';
+import { convertObjectPropsToCamelCase, parseBoolean } from '~/lib/utils/common_utils';
 import { observable } from '~/lib/utils/observable';
 import { convertToGraphQLId } from '~/graphql_shared/utils';
 import { TYPENAME_USER } from '~/graphql_shared/constants';
@@ -19,10 +18,12 @@ export default () => {
     return false;
   }
 
-  const { exploreAnalyticsDashboardsPath } = convertObjectPropsToCamelCase(el.dataset);
+  const { exploreAnalyticsDashboardsPath, dataSourceClickhouse } = convertObjectPropsToCamelCase(
+    el.dataset,
+  );
+  const { groupFullPath, projectFullPath } = document.body.dataset;
 
   Vue.use(VueApollo);
-  Vue.use(GlToast);
   const apolloProvider = new VueApollo({
     defaultClient: createDefaultClient(),
   });
@@ -50,6 +51,9 @@ export default () => {
     provide: {
       exploreAnalyticsDashboardsPath,
       breadcrumbState,
+      defaultGroupFullPath: groupFullPath ?? null,
+      defaultProjectFullPath: projectFullPath ?? null,
+      dataSourceClickhouse: parseBoolean(dataSourceClickhouse),
     },
     component: App,
     props: {

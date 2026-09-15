@@ -7,11 +7,7 @@ RSpec.describe Notes::QuickActionsService, feature_category: :text_editors do
 
   shared_context 'note on noteable' do
     let_it_be(:maintainer) { create(:user, maintainer_of: project) }
-    let_it_be(:assignee) { create(:user) }
-
-    before_all do
-      project.add_maintainer(assignee)
-    end
+    let_it_be(:assignee) { create(:user, maintainer_of: project) }
   end
 
   shared_examples 'note on noteable that supports quick actions' do
@@ -19,8 +15,8 @@ RSpec.describe Notes::QuickActionsService, feature_category: :text_editors do
       note.note = note_text
     end
 
-    let!(:milestone) { create(:milestone, project: project) }
-    let!(:labels) { create_pair(:label, project: project) }
+    let_it_be(:milestone) { create(:milestone, project: project) }
+    let_it_be(:labels) { create_pair(:label, project: project) }
 
     describe 'note with only command' do
       describe '/close, /label, /assign & /milestone' do
@@ -150,7 +146,6 @@ RSpec.describe Notes::QuickActionsService, feature_category: :text_editors do
 
     describe '/estimate' do
       before do
-        # reset to 10 minutes before each test
         note.noteable.update!(time_estimate: 600)
       end
 
@@ -212,12 +207,8 @@ RSpec.describe Notes::QuickActionsService, feature_category: :text_editors do
       let(:note) { create(:note, noteable: noteable, project: project, note: note_text) }
 
       context 'when work item does not have children' do
-        it 'leaves the note empty' do
-          expect(execute(note)).to be_empty
-        end
-
-        it 'marks work item as confidential' do
-          expect { execute(note) }.to change { noteable.reload.confidential }.from(false).to(true)
+        it 'leaves the note empty and marks work item as confidential', :aggregate_failures do
+          expect { expect(execute(note)).to be_empty }.to change { noteable.reload.confidential }.from(false).to(true)
         end
       end
 
@@ -280,21 +271,17 @@ RSpec.describe Notes::QuickActionsService, feature_category: :text_editors do
     end
 
     describe '/milestone' do
-      let(:issue) { create(:issue, project: project) }
+      let_it_be_with_reload(:issue) { create(:issue, project: project) }
       let(:note_text) { %(/milestone %"#{milestone.name}") }
       let(:note) { create(:note_on_issue, noteable: issue, project: project, note: note_text) }
 
       context 'on an incident' do
-        before do
+        before_all do
           issue.update!(work_item_type_id: build(:work_item_system_defined_type, :incident).id)
         end
 
-        it 'leaves the note empty' do
-          expect(execute(note)).to be_empty
-        end
-
-        it 'assigns the milestone' do
-          expect { execute(note) }.to change { issue.reload.milestone }.from(nil).to(milestone)
+        it 'leaves the note empty and assigns the milestone', :aggregate_failures do
+          expect { expect(execute(note)).to be_empty }.to change { issue.reload.milestone }.from(nil).to(milestone)
         end
       end
 
@@ -312,31 +299,23 @@ RSpec.describe Notes::QuickActionsService, feature_category: :text_editors do
     end
 
     describe '/remove_milestone' do
-      let(:issue) { create(:issue, project: project, milestone: milestone) }
+      let_it_be_with_reload(:issue) { create(:issue, project: project, milestone: milestone) }
       let(:note_text) { '/remove_milestone' }
       let(:note) { create(:note_on_issue, noteable: issue, project: project, note: note_text) }
 
       context 'on an issue' do
-        it 'leaves the note empty' do
-          expect(execute(note)).to be_empty
-        end
-
-        it 'removes the milestone' do
-          expect { execute(note) }.to change { issue.reload.milestone }.from(milestone).to(nil)
+        it 'leaves the note empty and removes the milestone', :aggregate_failures do
+          expect { expect(execute(note)).to be_empty }.to change { issue.reload.milestone }.from(milestone).to(nil)
         end
       end
 
       context 'on an incident' do
-        before do
+        before_all do
           issue.update!(work_item_type_id: build(:work_item_system_defined_type, :incident).id)
         end
 
-        it 'leaves the note empty' do
-          expect(execute(note)).to be_empty
-        end
-
-        it 'removes the milestone' do
-          expect { execute(note) }.to change { issue.reload.milestone }.from(milestone).to(nil)
+        it 'leaves the note empty and removes the milestone', :aggregate_failures do
+          expect { expect(execute(note)).to be_empty }.to change { issue.reload.milestone }.from(milestone).to(nil)
         end
       end
 
@@ -386,17 +365,13 @@ RSpec.describe Notes::QuickActionsService, feature_category: :text_editors do
       let_it_be(:note_text) { "/remove_child #{child.to_reference}" }
       let(:note) { build(:note, noteable: noteable, project: project, note: note_text) }
 
-      before do
+      before_all do
         create(:parent_link, work_item_parent: noteable, work_item: child)
       end
 
       shared_examples 'removes child work item' do
-        it 'leaves the note empty' do
-          expect(execute(note)).to be_empty
-        end
-
-        it 'removes child work item' do
-          expect { execute(note) }.to change { WorkItems::ParentLink.count }.by(-1)
+        it 'leaves the note empty and removes child work item', :aggregate_failures do
+          expect { expect(execute(note)).to be_empty }.to change { WorkItems::ParentLink.count }.by(-1)
 
           expect(noteable.valid?).to be_truthy
           expect(noteable.work_item_children).to be_empty
@@ -424,7 +399,7 @@ RSpec.describe Notes::QuickActionsService, feature_category: :text_editors do
 
     describe '/set_parent' do
       let_it_be_with_reload(:noteable) { create(:work_item, :task, project: project) }
-      let_it_be_with_reload(:parent) { create(:work_item, :issue, project: project) }
+      let_it_be(:parent) { create(:work_item, :issue, project: project) }
       let_it_be(:note_text) { "/set_parent #{parent.to_reference}" }
       let(:note) { build(:note, noteable: noteable, project: project, note: note_text) }
 
@@ -467,16 +442,12 @@ RSpec.describe Notes::QuickActionsService, feature_category: :text_editors do
       let_it_be(:note_text) { "/remove_parent" }
       let(:note) { create(:note, noteable: noteable, project: project, note: note_text) }
 
-      before do
+      before_all do
         create(:parent_link, work_item_parent: parent, work_item: noteable)
       end
 
-      it 'leaves the note empty' do
+      it 'leaves the note empty and removes work item parent', :aggregate_failures do
         expect(execute(note)).to be_empty
-      end
-
-      it 'removes work item parent' do
-        execute(note)
 
         expect(noteable.valid?).to be_truthy
         expect(noteable.work_item_parent).to be_nil
@@ -498,12 +469,8 @@ RSpec.describe Notes::QuickActionsService, feature_category: :text_editors do
 
     describe '/promote_to' do
       shared_examples 'promotes work item' do |from:, to:|
-        it 'leaves the note empty' do
-          expect(execute(note)).to be_empty
-        end
-
-        it 'promotes to provided type' do
-          expect { execute(note) }.to change { noteable.work_item_type.base_type }.from(from).to(to)
+        it 'leaves the note empty and promotes to provided type', :aggregate_failures do
+          expect { expect(execute(note)).to be_empty }.to change { noteable.work_item_type.base_type }.from(from).to(to)
         end
       end
 
@@ -687,7 +654,7 @@ RSpec.describe Notes::QuickActionsService, feature_category: :text_editors do
 
       let(:note) { build(:note_on_work_item, project: project, noteable: work_item) }
 
-      let!(:labels) { create_pair(:label, project: project) }
+      let_it_be(:labels) { create_pair(:label, project: project) }
 
       before do
         note.note = note_text
@@ -761,14 +728,10 @@ RSpec.describe Notes::QuickActionsService, feature_category: :text_editors do
 
       describe '/subscribe or /unsubscribe' do
         shared_examples 'when applying to work_item' do
-          it 'leaves the note empty' do
-            expect(execute(note)).to be_empty
-          end
-
-          it 'triggers work item updated subscription' do
+          it 'leaves the note empty and triggers work item updated subscription', :aggregate_failures do
             expect(GraphqlTriggers).to receive(:work_item_updated).with(work_item)
 
-            execute(note)
+            expect(execute(note)).to be_empty
           end
         end
 
@@ -781,7 +744,7 @@ RSpec.describe Notes::QuickActionsService, feature_category: :text_editors do
         describe '/unsubscribe' do
           let_it_be(:note_text) { '/unsubscribe' }
 
-          before do
+          before_all do
             work_item.subscribe(maintainer, project)
           end
 
@@ -797,10 +760,10 @@ RSpec.describe Notes::QuickActionsService, feature_category: :text_editors do
     let_it_be_with_reload(:issue) { create(:issue, project: project) }
     let_it_be_with_reload(:work_item) { create(:work_item, :issue, project: project) }
     let_it_be_with_reload(:merge_request) { create(:merge_request, source_project: project) }
-    let_it_be_with_reload(:issue_note) { create(:note_on_issue, project: project, noteable: issue) }
+    let_it_be(:issue_note) { create(:note_on_issue, project: project, noteable: issue) }
     let_it_be_with_reload(:work_item_note) { create(:note, project: project, noteable: work_item) }
-    let_it_be_with_reload(:mr_note) { create(:note_on_merge_request, project: project, noteable: merge_request) }
-    let_it_be_with_reload(:commit_note) { create(:note_on_commit, project: project) }
+    let_it_be(:mr_note) { create(:note_on_merge_request, project: project, noteable: merge_request) }
+    let_it_be(:commit_note) { create(:note_on_commit, project: project) }
     let(:update_params) { {} }
 
     subject(:apply_updates) { described_class.new(project, maintainer).apply_updates(update_params, note) }
@@ -875,18 +838,13 @@ RSpec.describe Notes::QuickActionsService, feature_category: :text_editors do
 
   context 'CE restriction for issue assignees' do
     describe '/assign' do
-      let_it_be(:assignee) { create(:user) }
-      let_it_be(:maintainer) { create(:user) }
+      let_it_be(:assignee) { create(:user, maintainer_of: project) }
+      let_it_be(:maintainer) { create(:user, maintainer_of: project) }
       let(:service) { described_class.new(project, maintainer) }
       let(:note) { create(:note_on_issue, note: note_text, project: project) }
 
       let(:note_text) do
         %(/assign @#{assignee.username} @#{maintainer.username}\n")
-      end
-
-      before_all do
-        project.add_maintainer(maintainer)
-        project.add_maintainer(assignee)
       end
 
       before do

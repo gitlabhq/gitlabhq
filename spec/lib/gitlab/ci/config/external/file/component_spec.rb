@@ -3,6 +3,12 @@
 require 'spec_helper'
 
 RSpec.describe Gitlab::Ci::Config::External::File::Component, feature_category: :pipeline_composition do
+  around do |example|
+    Gitlab::Ci::Config::FeatureFlags.with_actor(nil) do
+      example.run
+    end
+  end
+
   let_it_be(:context_project) { create(:project) }
   let_it_be(:project) { create(:project) }
   let_it_be(:user) { create(:user) }
@@ -47,7 +53,9 @@ RSpec.describe Gitlab::Ci::Config::External::File::Component, feature_category: 
       .with(
         address: params[:component],
         current_user: context.user,
-        logger: context.logger
+        logger: context.logger,
+        requesting_project: context.project,
+        pipeline_policy_context: context.pipeline_policy_context
       ).and_return(fetch_service)
 
     allow(fetch_service).to receive(:execute).and_return(response)

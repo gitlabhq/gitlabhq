@@ -820,7 +820,7 @@ RSpec.describe WebHookService, :request_store, :clean_gitlab_redis_shared_state,
 
       expect(service_instance.execute).to have_attributes(
         status: :success,
-        payload: { http_status: 200 },
+        payload: { http_status: 200, response_category: :ok },
         message: 'Success'
       )
     end
@@ -830,8 +830,28 @@ RSpec.describe WebHookService, :request_store, :clean_gitlab_redis_shared_state,
 
       expect(service_instance.execute).to have_attributes(
         status: :success,
-        payload: { http_status: 201 },
+        payload: { http_status: 201, response_category: :ok },
         message: 'Success'
+      )
+    end
+
+    it 'categorises a redirection as accepted' do
+      stub_full_request(project_hook.url, method: :post).to_return(status: 301, body: 'Moved')
+
+      expect(service_instance.execute).to have_attributes(
+        status: :success,
+        payload: { http_status: 301, response_category: :ok }
+      )
+    end
+
+    # The ServiceResponse stays successful because the request itself completed.
+    # Only response_category tells the caller the receiver rejected the delivery.
+    it 'categorises a rejected response as an error' do
+      stub_full_request(project_hook.url, method: :post).to_return(status: 503, body: 'Unavailable')
+
+      expect(service_instance.execute).to have_attributes(
+        status: :success,
+        payload: { http_status: 503, response_category: :error }
       )
     end
 

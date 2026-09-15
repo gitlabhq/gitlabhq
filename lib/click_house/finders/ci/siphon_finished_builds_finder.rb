@@ -3,7 +3,7 @@
 module ClickHouse # rubocop:disable Gitlab/BoundedContexts -- existing module
   module Finders
     module Ci
-      # Siphon-backed equivalent of FinishedBuildsDeduplicatedFinder. Reads
+      # Siphon-backed finder that deduplicates finished builds. Reads
       # finished builds from siphon_p_ci_builds, with optional joins to
       # siphon_p_ci_pipelines (source/ref filtering) and siphon_p_ci_stages
       # (stage_name) that callers opt into via #filter_by_pipeline_attrs and

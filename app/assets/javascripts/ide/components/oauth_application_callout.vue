@@ -68,7 +68,7 @@ export default {
       class="gl-my-5"
       :dismissible="false"
       :primary-button-text="$options.i18n.alertButtonText"
-      @primaryAction="displayModal"
+      @primary-action="displayModal"
     >
       <p>{{ $options.i18n.alertTitle }}</p>
       <ul class="gl-m-0">

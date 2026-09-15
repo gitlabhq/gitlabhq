@@ -9,7 +9,9 @@ module Resolvers
     argument :id, Types::GlobalIDType[AbuseReport], required: true, description: 'ID of the abuse report.'
 
     def resolve(id:)
-      ::AbuseReport.find_by_id(extract_abuse_report_id(id))
+      ::AbuseReport
+        .in_organization(Current.organization)
+        .find_by_id(extract_abuse_report_id(id))
     end
 
     private

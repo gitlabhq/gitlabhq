@@ -26,6 +26,9 @@ class SshHostKey
 
   include ReactiveCaching
 
+  INVALID_URL_MESSAGE = "Invalid URL"
+  private_constant :INVALID_URL_MESSAGE
+
   self.reactive_cache_key = ->(key) { [key.class.to_s, key.id] }
 
   # Do not refresh the data in the background - it is not expected to change.
@@ -137,6 +140,8 @@ class SshHostKey
   end
 
   def normalize_url(url)
+    raise ArgumentError, INVALID_URL_MESSAGE if url.blank?
+
     url, real_hostname = Gitlab::HTTP_V2::UrlBlocker.validate!(
       url,
       schemes: %w[ssh],
@@ -159,7 +164,7 @@ class SshHostKey
 
     [url, ip]
   rescue Gitlab::HTTP_V2::UrlBlocker::BlockedUrlError
-    raise ArgumentError, "Invalid URL"
+    raise ArgumentError, INVALID_URL_MESSAGE
   end
 
   def allow_local_requests?

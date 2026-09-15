@@ -8,7 +8,6 @@ fragment WorkItemAvailableFeatures on NamespaceAvailableFeatures {
   hasScopedLabelsFeature
   hasQualityManagementFeature
   hasLinkedItemsEpicsFeature
-  hasIssueDateFilterFeature
   hasBlockedIssuesFeature
   hasGroupBulkEditFeature
   hasCustomFieldsFeature
@@ -30,7 +29,6 @@ fragment WorkItemLinkPaths on NamespacesLinkPaths {
   calendarPath
   rssPath
   autocompleteAwardEmojisPath
-  newTrialPath
   newIssuePath
   groupPath
   namespaceFullPath

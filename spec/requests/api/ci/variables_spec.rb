@@ -3,11 +3,9 @@
 require 'spec_helper'
 
 RSpec.describe API::Ci::Variables, feature_category: :pipeline_composition do
-  let(:user) { create(:user) }
-  let(:user2) { create(:user) }
-  let!(:project) { create(:project, creator_id: user.id) }
-  let!(:maintainer) { create(:project_member, :maintainer, user: user, project: project) }
-  let!(:developer) { create(:project_member, :developer, user: user2, project: project) }
+  let_it_be(:user) { create(:user) }
+  let_it_be(:user2) { create(:user) }
+  let_it_be_with_reload(:project) { create(:project, creator_id: user.id, maintainers: user, developers: user2) }
   let(:is_hidden_variable) { true }
   let(:is_masked_variable) { true }
   let!(:variable) { create(:ci_variable, project: project, hidden: is_hidden_variable, masked: is_masked_variable) }
@@ -117,8 +115,13 @@ RSpec.describe API::Ci::Variables, feature_category: :pipeline_composition do
       end
 
       context 'when there are two variables with the same key on different env' do
-        let!(:var1) { create(:ci_variable, project: project, key: 'key1', environment_scope: 'staging') }
-        let!(:var2) { create(:ci_variable, project: project, key: 'key1', environment_scope: 'production') }
+        let_it_be_with_reload(:var1) do
+          create(:ci_variable, project: project, key: 'key1', environment_scope: 'staging')
+        end
+
+        let_it_be_with_reload(:var2) do
+          create(:ci_variable, project: project, key: 'key1', environment_scope: 'production')
+        end
 
         context 'when filter[environment_scope] is not passed' do
           it 'returns 409' do
@@ -383,8 +386,13 @@ RSpec.describe API::Ci::Variables, feature_category: :pipeline_composition do
       end
 
       context 'when there are two variables with the same key on different env' do
-        let!(:var1) { create(:ci_variable, project: project, key: 'key1', environment_scope: 'staging') }
-        let!(:var2) { create(:ci_variable, project: project, key: 'key1', environment_scope: 'production') }
+        let_it_be_with_reload(:var1) do
+          create(:ci_variable, project: project, key: 'key1', environment_scope: 'staging')
+        end
+
+        let_it_be_with_reload(:var2) do
+          create(:ci_variable, project: project, key: 'key1', environment_scope: 'production')
+        end
 
         context 'when filter[environment_scope] is not passed' do
           it 'returns 409' do
@@ -465,8 +473,13 @@ RSpec.describe API::Ci::Variables, feature_category: :pipeline_composition do
       end
 
       context 'when there are two variables with the same key on different env' do
-        let!(:var1) { create(:ci_variable, project: project, key: 'key1', environment_scope: 'staging') }
-        let!(:var2) { create(:ci_variable, project: project, key: 'key1', environment_scope: 'production') }
+        let_it_be_with_reload(:var1) do
+          create(:ci_variable, project: project, key: 'key1', environment_scope: 'staging')
+        end
+
+        let_it_be_with_reload(:var2) do
+          create(:ci_variable, project: project, key: 'key1', environment_scope: 'production')
+        end
 
         context 'when filter[environment_scope] is not passed' do
           it 'returns 409' do

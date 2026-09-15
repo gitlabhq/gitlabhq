@@ -5,7 +5,7 @@ info: Any user with at least the Maintainer role can merge updates to this conte
 title: Maintenance operations
 ---
 
-This page details various database related operations that may relate to development.
+This page details various database-related operations that might relate to development.
 
 ## Disabling an index is not safe
 

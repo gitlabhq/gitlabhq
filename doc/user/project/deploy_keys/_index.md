@@ -226,13 +226,13 @@ To resolve this issue:
 There are a few scenarios where a deploy key fails to push to a
 [protected branch](../repository/branches/protected.md).
 
-- The owner associated to a deploy key does not have [membership](../members/_index.md) to the project of the protected branch.
-- The owner associated to a deploy key has [project membership permissions](../../permissions.md#project-permissions) lower than required to **View project code**.
+- The owner associated with a deploy key does not have [membership](../members/_index.md) to the project of the protected branch.
+- The owner associated with a deploy key has [project membership permissions](../../permissions.md#project-permissions) lower than required to **View project code**.
 - The deploy key does not have [read-write permissions for the project](#edit-project-access-permissions-of-a-deploy-key).
 - The deploy key has been [revoked](#revoke-project-access-of-a-deploy-key).
 - **No one** is selected in [the **Allowed to push and merge** section](../repository/branches/protected.md#protect-a-branch) of the protected branch.
 
-This issue occurs because all deploy keys are associated to an account. Because the permissions for an account can change, this might lead to scenarios where a deploy key that was working is suddenly unable to push to a protected branch.
+This issue occurs because all deploy keys are associated with an account. Because the permissions for an account can change, this might lead to scenarios where a deploy key that was working is suddenly unable to push to a protected branch.
 
 To resolve this issue, you can use the deploy keys API to create deploy keys for project service account users, instead of for your own users:
 

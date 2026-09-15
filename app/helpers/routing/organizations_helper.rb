@@ -4,12 +4,20 @@ module Routing
   module OrganizationsHelper
     extend ActiveSupport::Concern
 
-    # Provides organization-aware url helpers by automatically switching between
-    # organization-scoped routes (/o/:organization_path/...) and global routes
-    # based on the current organization context.
+    # Provides organization-aware url helpers, switching between
+    # organization-scoped routes (/o/:organization_path/...) and global ones.
+    # See https://handbook.gitlab.com/handbook/engineering/architecture/design-documents/organization/contexts/.
     #
-    # This class iterates through existing URL helpers and maps between global
-    # and Organization helpers by matching helper names.
+    # Wired up for every route pair sharing a name by convention (see
+    # MappedHelpers.build_route_pairs) - this does not yet verify that a
+    # pair actually resolves to the same controller/action.
+    #
+    # For a paired route, nesting is decided in order by:
+    # 1. Current.data_context, if it resolves to Organization context -
+    #    inescapable, see Gitlab::Current::DataContext.
+    # 2. `foo_path(organization_path: ...)`, an explicit per-call override
+    #    (including `nil`, to force the global path).
+    # 3. The request's own URL, if it already names an organization_path.
     class MappedHelpers
       ORGANIZATION_PATH_PATTERN = '/o/:organization_path'
       ORGANIZATION_PATH_REGEX = %r{(?<=^|_)organizations?_}
@@ -44,12 +52,6 @@ module Routing
         url_helpers.alias_method(unscoped_method, existing_method)
       end
 
-      def self.current_organization
-        # rubocop:disable Gitlab/AvoidCurrentOrganization -- Current organization not available earlier.
-        Current.organization_assigned && Current.organization
-        # rubocop:enable Gitlab/AvoidCurrentOrganization
-      end
-
       def self.find_route_pairs
         all_routes = Rails.application.routes.routes
         org_routes, global_routes = all_routes.partition { |route| organization_route?(route) }
@@ -66,7 +68,6 @@ module Routing
         org_route_names = organization_routes.map(&:name)
         global_route_names = global_routes.map(&:name)
 
-        # Global route => Organization route
         org_route_names.each_with_object({}) do |org_route_name, route_pairs|
           global_route_name = extract_global_route_name(org_route_name)
           next unless global_route_names.include?(global_route_name)
@@ -85,6 +86,19 @@ module Routing
         org_route_name.sub(ORGANIZATION_PATH_REGEX, '')
       end
 
+      # The organization_path to nest under, if any - see the class comment
+      # above for the rule order. from_organization_params, not from_request:
+      # the latter also infers an Organization from a group/project's own
+      # namespace, which isn't what the URL itself named.
+      def self.scoped_path_for(kwargs)
+        data_context = ::Current.data_context
+        return data_context.context.path if data_context&.type == :organization
+
+        return kwargs[:organization_path] if kwargs.key?(:organization_path)
+
+        ::Current.organization_resolver&.from_organization_params&.path
+      end
+
       # Build a module that overrides URL helpers with organization-aware versions
       def self.build_override_module(route_pairs)
         Module.new do
@@ -94,15 +108,12 @@ module Routing
               org_method_name = "#{org_route}#{suffix}"
 
               define_method(method_name) do |*args, **kwargs|
-                current_organization = Routing::OrganizationsHelper::MappedHelpers.current_organization
-
                 # Handle Ruby 2.4+ keyword argument compatibility
                 # If kwargs is empty but last arg is a hash, treat it as kwargs
                 kwargs = args.pop if kwargs.empty? && args.last.is_a?(Hash) && !args.last.frozen?
 
-                if current_organization && current_organization.scoped_paths?
-                  kwargs[:organization_path] ||= current_organization.path
-                end
+                scoped_path = Routing::OrganizationsHelper::MappedHelpers.scoped_path_for(kwargs)
+                kwargs[:organization_path] = scoped_path if scoped_path.present?
 
                 if kwargs[:organization_path]
                   # Call the Organization helper method

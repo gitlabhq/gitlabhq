@@ -1,4 +1,9 @@
-import { isGroupVisible, toggleGroupVisibility } from '~/work_items/board/grouping/visibility';
+import {
+  effectiveVisibleGroups,
+  exceedsGroupLimit,
+  isGroupVisible,
+  toggleGroupVisibility,
+} from '~/work_items/board/grouping/visibility';
 
 describe('work_items/board/grouping/visibility', () => {
   const groupBy = { property: 'status' };
@@ -35,6 +40,37 @@ describe('work_items/board/grouping/visibility', () => {
     });
   });
 
+  describe('exceedsGroupLimit', () => {
+    it.each`
+      groupCount | expected
+      ${0}       | ${false}
+      ${25}      | ${false}
+      ${26}      | ${true}
+    `('returns $expected for $groupCount groups', ({ groupCount, expected }) => {
+      expect(exceedsGroupLimit(groupCount)).toBe(expected);
+    });
+  });
+
+  describe('effectiveVisibleGroups', () => {
+    describe('when visibleGroups is null', () => {
+      it('stays null while the group count is within the limit', () => {
+        expect(effectiveVisibleGroups(null, 25)).toBeNull();
+      });
+
+      it('becomes an empty list once the group count passes the limit', () => {
+        expect(effectiveVisibleGroups(null, 26)).toEqual([]);
+      });
+    });
+
+    describe('when visibleGroups is an explicit list', () => {
+      it('returns the list unchanged whatever the group count', () => {
+        const visibleGroups = [groupId(values[0])];
+
+        expect(effectiveVisibleGroups(visibleGroups, 26)).toBe(visibleGroups);
+      });
+    });
+  });
+
   describe('toggleGroupVisibility', () => {
     describe('when every group is visible', () => {
       it('excludes the toggled value', () => {
@@ -43,7 +79,7 @@ describe('work_items/board/grouping/visibility', () => {
             visibleGroups: null,
             groupBy,
             value: values[1],
-            allValues: values,
+            allGroups: values,
           }),
         ).toEqual([groupId(values[0]), groupId(values[2])]);
       });
@@ -57,7 +93,7 @@ describe('work_items/board/grouping/visibility', () => {
           visibleGroups: null,
           groupBy,
           value: values[1],
-          allValues: values,
+          allGroups: values,
         });
       });
 
@@ -67,7 +103,7 @@ describe('work_items/board/grouping/visibility', () => {
             visibleGroups: afterFirstToggle,
             groupBy,
             value: values[1],
-            allValues: values,
+            allGroups: values,
           }),
         ).toBeNull();
       });
@@ -82,15 +118,26 @@ describe('work_items/board/grouping/visibility', () => {
             visibleGroups: [groupId(values[0])],
             groupBy,
             value: values[1],
-            allValues: values,
+            allGroups: values,
           }),
         ).toEqual([groupId(values[0]), groupId(values[1])]);
       });
 
       it('removes a visible value from the list', () => {
         expect(
-          toggleGroupVisibility({ visibleGroups, groupBy, value: values[0], allValues: values }),
+          toggleGroupVisibility({ visibleGroups, groupBy, value: values[0], allGroups: values }),
         ).toEqual([groupId(values[1])]);
+      });
+
+      it('returns an empty list, not null, when the last visible value is removed', () => {
+        expect(
+          toggleGroupVisibility({
+            visibleGroups: [groupId(values[0])],
+            groupBy,
+            value: values[0],
+            allGroups: values,
+          }),
+        ).toEqual([]);
       });
     });
   });

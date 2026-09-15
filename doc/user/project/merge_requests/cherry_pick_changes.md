@@ -81,9 +81,9 @@ a downstream fork.
 
 Prerequisites:
 
-- You must have a role for the project that allows you to edit merge requests, and add
+- You must have a role for the project that allows you to edit merge requests and add
   code to the repository.
-- Your project must use the [merge commit](methods/_index.md#merge-commit) method.
+- Your project must use the [merge commit](methods/_index.md#merge-commit) method,
   which is set in the project's **Settings** > **Merge requests**.
 
   Fast-forwarded commits can be cherry-picked from the GitLab UI only when they are squashed or when the
@@ -104,6 +104,9 @@ To do this:
    ![Cherry-pick merge request](img/cherry_pick_v15_4.png)
 1. On the dialog, select the project and branch to cherry-pick into.
 1. Optional. Select **Start a new merge request with these changes**.
+1. Optional. Select **Copy merge request description** to start the new merge request
+   from the description of the merge request you cherry-pick, instead of from the
+   description templates. Available only when you start a new merge request.
 1. Select **Cherry-pick**.
 
 ## Cherry-pick a single commit

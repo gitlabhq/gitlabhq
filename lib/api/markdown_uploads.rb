@@ -214,7 +214,7 @@ module API
       end
       route_setting :authorization, skip_granular_token_authorization: :workhorse_pre_authorization
       post ':id/uploads/authorize' do
-        not_found! unless Feature.enabled?(:group_uploads_api, user_group)
+        not_found! unless can?(current_user, :read_group, user_group)
 
         require_gitlab_workhorse!
 
@@ -241,8 +241,6 @@ module API
       end
       route_setting :authorization, permissions: :create_markdown_upload, boundary_type: :group
       post ':id/uploads' do
-        not_found! unless Feature.enabled?(:group_uploads_api, user_group)
-
         upload = UploadService.new(user_group, params[:file], NamespaceFileUploader,
           uploaded_by_user_id: current_user.id).execute
 

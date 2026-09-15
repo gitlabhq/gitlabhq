@@ -45,7 +45,7 @@ export default {
       default: true,
     },
   },
-  emits: ['updateDraft', 'updateWorkItem'],
+  emits: ['update-draft', 'update-work-item'],
   data() {
     return {
       inputId: uniqueId('work-item-title-'),
@@ -64,7 +64,7 @@ export default {
       return n__('%d character over limit.', '%d characters over limit.', count);
     },
     emitField($event) {
-      this.$emit('updateDraft', $event);
+      this.$emit('update-draft', $event);
     },
     // Used in ./create_work_item.vue
     // eslint-disable-next-line vue/no-unused-properties
@@ -93,8 +93,8 @@ export default {
       autofocus
       aria-describedby="character-count-text"
       data-testid="work-item-title-input"
-      @keydown.meta.enter="$emit('updateWorkItem')"
-      @keydown.ctrl.enter="$emit('updateWorkItem')"
+      @keydown.meta.enter="$emit('update-work-item')"
+      @keydown.ctrl.enter="$emit('update-work-item')"
       @input="emitField"
     />
     <template #description>

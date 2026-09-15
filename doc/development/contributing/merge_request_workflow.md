@@ -73,7 +73,7 @@ For a walkthrough of the contribution process, see [Tutorial: Make a GitLab cont
 
 ### Keep it simple
 
-*Live by smaller iterations.* Keep the amount of changes in a single MR **as small as possible**.
+Live by smaller iterations. Keep the amount of changes in a single MR as small as possible.
 If you want to contribute a large feature, think very carefully about what the
 [minimum valuable change](https://handbook.gitlab.com/handbook/product/product-principles/#the-minimal-valuable-change-mvc)
 is. Can you split the functionality into two smaller MRs? Can you submit only the
@@ -101,6 +101,9 @@ Commit messages should follow the guidelines below, for reasons explained by Chr
 - Use issues, milestones, and merge requests' full URLs instead of short references,
   as they are displayed as plain text outside of GitLab.
 - The merge request should not contain more than 10 commit messages.
+  If your work spans multiple distinct logical pieces, consider
+  [stacked MRs](../../user/project/merge_requests/stacked_diffs.md) rather than
+  accumulating many commits in a single MR.
 - The commit subject should contain at least 3 words.
 
 **Important notes**:
@@ -169,8 +172,12 @@ the contribution acceptance criteria below:
      may resolve the failure, or if it has not been fixed yet, ask a developer to
      help you fix the test.
 1. The MR contains a few logically organized commits, or has [squashing commits enabled](../../user/project/merge_requests/squash_and_merge.md).
+   During review, push feedback-based changes as isolated commits. Do not squash until
+   ready to merge. MR diff versions are a less reliable alternative: they break when
+   you rebase (the version diff includes rebased changes, not just feedback-driven ones)
+   and can be inaccurate in practice.
 1. The changes can merge without problems. If not, you should rebase if you're the
-   only one working on your feature branch, otherwise merge the default branch into the MR branch.
+   only one working on your feature branch. Otherwise, merge the default branch into the MR branch.
 1. Only one specific issue is fixed or one specific feature is implemented. Do not
    combine things; send separate merge requests for each issue or feature.
 1. Migrations should do only one thing (for example, create a table, move data to a new
@@ -229,7 +236,7 @@ requirements.
    before the MR is reviewed.
    If the review leads to large changes in the MR, execute the migrations again
    after the review is complete.
-1. If your merge request adds new validations to existing models, to make sure the
+1. If your merge request adds new validations to existing models, make sure the
    data processing is backwards compatible:
 
    - Ask in the [`#database`](https://gitlab.slack.com/archives/CNZ8E900G) Slack channel
@@ -255,7 +262,7 @@ requirements.
    Upgrade stops are sometimes requested when a GitLab code change is dependent
    upon a background migration being already complete. Ideally, changes causing required
    upgrade stops should be held for the next major release, or
-   [at least a 3 milestones notice in advance if unavoidable](../../update/upgrade_paths.md).
+   [at least a 3-milestone notice in advance if unavoidable](../../update/upgrade_paths.md).
 
 ### Testing
 
@@ -315,7 +322,7 @@ requirements.
 The following items are checked after the merge request has been merged:
 
 1. Confirmed to be working in staging before implementing the change in production, where possible.
-1. Confirmed to be working in the production with no new [Sentry](https://handbook.gitlab.com/handbook/engineering/monitoring/#sentry) errors after the contribution is deployed.
+1. Confirmed to be working in production with no new [Sentry](https://handbook.gitlab.com/handbook/engineering/monitoring/#sentry) errors after the contribution is deployed.
 1. Confirmed that the [rollout plan](https://handbook.gitlab.com/handbook/engineering/development/processes/rollout-plans/) has been completed.
 1. If there is a performance risk in the change, you have analyzed the performance of the system before and after the change.
 1. *If the merge request uses feature flags, per-project or per-group enablement, and a staged rollout:*

@@ -1,5 +1,5 @@
 ---
-stage: Tenant Scale
+stage: GitLab Dedicated
 group: Geo
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see <https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments>
 gitlab_dedicated: no
@@ -14,18 +14,18 @@ title: Automatic background verification
 {{< /details >}}
 
 Automatic background verification ensures that the transferred data matches a
-calculated checksum. If the checksum of the data on the primary site matches checksum of the
+calculated checksum. If the checksum of the data on the primary site matches the checksum of the
 data on the secondary site, the data transferred successfully. Following a planned failover,
-any corrupted data may be **lost**, depending on the extent of the corruption.
+any corrupted data may be lost, depending on the extent of the corruption.
 
 If verification fails on the primary site, this indicates Geo is replicating a corrupted object.
 You can restore it from backup or remove it from the primary site to resolve the issue.
 
 If verification succeeds on the primary site but fails on the secondary site,
 this indicates that the object was corrupted during the replication process.
-Geo actively try to correct verification failures marking the repository to
+Geo actively tries to correct verification failures marking the repository to
 be resynced with a back-off period. If you want to reset the verification for
-these failures, so you should follow [these instructions](#reset-verification-for-projects-where-verification-has-failed).
+these failures, you should follow [these instructions](#reset-verification-for-projects-where-verification-has-failed).
 
 If verification is lagging significantly behind replication, consider giving
 the site more time before scheduling a planned failover.
@@ -70,18 +70,16 @@ in sync.
 Due to bugs or transient infrastructure failures, it is possible for Git
 repositories to change unexpectedly without being marked for verification.
 Geo constantly reverifies the repositories to ensure the integrity of the
-data. The default and recommended re-verification interval is 7 days, though
-an interval as short as 1 day can be set. Shorter intervals reduce risk but
-increase load and vice versa.
+data. The default re-verification interval is 90 days, though an interval as
+short as 1 day can be set. Shorter intervals reduce risk but increase load
+and vice versa.
 
 On the primary site:
 
 1. In the upper-right corner, select **Admin**.
 1. In the left sidebar, select **Geo** > **Sites**.
 1. Select **Edit** for the primary site to customize the minimum
-   re-verification interval:
-
-   ![Window with configuration attributes of a Geo node.](img/reverification-interval_v11_6.png)
+   re-verification interval.
 
 ## Reset verification for projects where verification has failed
 

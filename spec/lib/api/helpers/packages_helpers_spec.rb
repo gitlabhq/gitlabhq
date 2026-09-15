@@ -20,7 +20,7 @@ RSpec.describe API::Helpers::PackagesHelpers, feature_category: :package_registr
       expect(helper).to receive(:require_packages_enabled!)
       expect(helper).to receive(:authorize_read_package!).with(project)
 
-      expect(subject).to eq nil
+      expect(subject).to be_nil
     end
 
     context 'with an allowed required permission' do
@@ -31,7 +31,7 @@ RSpec.describe API::Helpers::PackagesHelpers, feature_category: :package_registr
         expect(helper).not_to receive(:authorize_read_package!)
         expect(helper).to receive(:authorize!).with(:read_group, project)
 
-        expect(subject).to eq nil
+        expect(subject).to be_nil
       end
     end
 
@@ -44,7 +44,7 @@ RSpec.describe API::Helpers::PackagesHelpers, feature_category: :package_registr
         expect(helper).not_to receive(:authorize!).with(:test_permission, project)
         expect(helper).to receive(:forbidden!)
 
-        expect(subject).to eq nil
+        expect(subject).to be_nil
       end
     end
 
@@ -55,7 +55,7 @@ RSpec.describe API::Helpers::PackagesHelpers, feature_category: :package_registr
         expect(helper).to receive(:require_packages_enabled!)
         expect(helper).to receive(:authorize!).with(:read_package_within_public_registries, instance_of(::Packages::Policies::Group))
 
-        expect(subject).to eq nil
+        expect(subject).to be_nil
       end
     end
   end
@@ -73,7 +73,7 @@ RSpec.describe API::Helpers::PackagesHelpers, feature_category: :package_registr
       it 'calls authorize! with correct subject' do
         expect(helper).to receive(:authorize!).with(:read_package, have_attributes(id: subject.id, class: expected_class))
 
-        expect(helper.send(:authorize_read_package!, subject)).to eq nil
+        expect(helper.send(:authorize_read_package!, subject)).to be_nil
       end
     end
   end
@@ -85,7 +85,7 @@ RSpec.describe API::Helpers::PackagesHelpers, feature_category: :package_registr
       it 'calls authorize!' do
         expect(helper).to receive(:authorize!).with(action, project)
 
-        expect(subject).to eq nil
+        expect(subject).to be_nil
       end
     end
   end
@@ -103,7 +103,7 @@ RSpec.describe API::Helpers::PackagesHelpers, feature_category: :package_registr
       it "doesn't call not_found!" do
         expect(helper).not_to receive(:not_found!)
 
-        expect(subject).to eq nil
+        expect(subject).to be_nil
       end
     end
 
@@ -140,7 +140,7 @@ RSpec.describe API::Helpers::PackagesHelpers, feature_category: :package_registr
         expect(Gitlab::Workhorse).to receive(:verify_api_request!).with(request.headers)
         expect(::Packages::PackageFileUploader).to receive(:workhorse_authorize).with(workhorse_authorize_params)
 
-        expect(subject).to eq nil
+        expect(subject).to be_nil
         expect(env['api.format']).to eq(:json)
       end
     end
@@ -179,7 +179,7 @@ RSpec.describe API::Helpers::PackagesHelpers, feature_category: :package_registr
       expect(helper).to receive(:authorize_create_package!).with(project)
       expect(helper).to receive(:require_gitlab_workhorse!)
 
-      expect(subject).to eq nil
+      expect(subject).to be_nil
     end
   end
 

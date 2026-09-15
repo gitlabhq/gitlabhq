@@ -12,17 +12,19 @@ module Gitlab
             test_suite = test_report.get_suite(job.test_suite_name)
             root = XmlConverter.new(xml_data).to_h
             total_parsed = 0
+            total_test_case_time = 0.0
             max_test_cases = job.max_test_cases_per_report
 
             all_cases(root) do |test_case|
               test_case = create_test_case(test_case, test_suite, job)
               test_suite.add_test_case(test_case)
               total_parsed += 1
+              total_test_case_time += test_case.execution_time
 
               ensure_test_cases_limited!(total_parsed, max_test_cases)
             end
 
-            set_total_time_from_xml(root, test_suite)
+            add_total_time_from_xml(root, test_suite, total_test_case_time)
 
           rescue Nokogiri::XML::SyntaxError => e
             test_suite.set_suite_error("JUnit XML parsing failed: #{e}")
@@ -32,20 +34,30 @@ module Gitlab
 
           private
 
-          def set_total_time_from_xml(root, test_suite)
+          # A job can carry several JUnit report files, each parsed into the same TestSuite.
+          # The XML-declared time is more authoritative than the sum of the case times, so it
+          # replaces this file's contribution to the running total. `add_test_case` already
+          # added `total_test_case_time`, hence the subtraction.
+          # A zero means the XML declares no time we can read, e.g. nested <testsuite> elements
+          # without a `time` attribute, so the accumulated case times have to stand.
+          def add_total_time_from_xml(root, test_suite, total_test_case_time)
             return unless root
 
-            if dig_into_testsuites(root, 'time')
-              test_suite.total_time = dig_into_testsuites(root, 'time').to_f
-              return
-            end
+            xml_time = total_time_from_xml(root)
+            return unless xml_time > 0
+
+            test_suite.total_time += xml_time - total_test_case_time
+          end
+
+          def total_time_from_xml(root)
+            return dig_into_testsuites(root, 'time').to_f if dig_into_testsuites(root, 'time')
 
             testsuites = collect_all_testsuites(root)
             total_time = testsuites.sum { |suite| suite['time']&.to_f || 0 }
 
-            total_time = add_testcase_times(testsuites) if total_time == 0
+            return add_testcase_times(testsuites) if total_time == 0
 
-            test_suite.total_time = total_time if total_time > 0
+            total_time
           end
 
           def collect_all_testsuites(root)

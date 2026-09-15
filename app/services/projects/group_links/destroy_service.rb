@@ -20,9 +20,8 @@ module Projects
 
         refresh_project_authorizations_asynchronously(link.project)
 
-        # Until we compare the inconsistency rates of the new specialized worker and
-        # the old approach, we still run AuthorizedProjectsWorker
-        # but with some delay and lower urgency as a safety net.
+        # Low-priority safety net for the specialized refresh above, to catch
+        # authorizations it may have missed.
         AuthorizedProjectUpdate::EnqueueGroupMembersRefreshAuthorizedProjectsWorker.perform_async(link.group.id)
 
         ServiceResponse.success(payload: { link: link })

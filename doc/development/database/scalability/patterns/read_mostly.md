@@ -2,7 +2,7 @@
 stage: Data Access
 group: Database Frameworks
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see <https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments>
-description: Learn how to scale operating on read-mostly data at scale
+description: Learn how to operate on read-mostly data at scale
 title: Read-mostly data
 ---
 
@@ -22,7 +22,7 @@ with large datasets here, even though they often have a "write once, read often"
 
 ### Example: license data
 
-Let's introduce a canonical example: license data in GitLab. A GitLab instance may have a license
+Let's introduce a canonical example: license data in GitLab. A GitLab instance might have a license
 attached to use GitLab enterprise features. This license data is held instance-wide, that
 is, there typically only exist a few relevant records. This information is kept in a table
 `licenses` which is very small.
@@ -42,9 +42,9 @@ not around database I/O overhead, because we typically don't read data from disk
 However, considering the high frequency reads, this has potential to incur overhead in terms of
 database CPU load and database context switches. Additionally, those high frequency queries go
 through the whole database stack. They also cause overhead on the database connection
-multiplexing components and load balancers. Also, the application spends cycles in preparing and
-sending queries to retrieve the data, deserialize the results and allocate new objects to represent
-the information gathered - all in a high frequency fashion.
+multiplexing components and load balancers. Also, the application spends cycles preparing and
+sending queries to retrieve the data, deserializing the results, and allocating new objects to represent
+the information gathered, all in a high frequency fashion.
 
 In the example of license data above, the query to read license data was
 [identified](https://gitlab.com/gitlab-org/gitlab/-/issues/292900) to stand out in terms of query
@@ -92,7 +92,7 @@ primary):
 
 ![An example list of the top 20 read-mostly tables.](img/read_mostly_readwriteratio_v14_2.png)
 
-From here, we can [zoom](https://bit.ly/2VmloX1) into for example `gitlab_subscriptions` and realize that index reads peak at above 10k tuples per second overall (there are no seq scans):
+From here, we can [zoom](https://bit.ly/2VmloX1) into, for example, `gitlab_subscriptions` and realize that index reads peak at above 10k tuples per second overall (there are no seq scans):
 
 ![A graph showing the range of index reads of GitLab subscription table.](img/read_mostly_subscriptions_reads_v14_2.png)
 
@@ -100,7 +100,7 @@ We very rarely write to the table (there are no seq scans):
 
 ![A graph showing the range of index writes of GitLab subscription table.](img/read_mostly_subscriptions_writes_v14_2.png)
 
-Additionally, the table is only 400 MB in size - so this may be another candidate we may want to
+Additionally, the table is only 400 MB in size, so this might be another candidate we might want to
 consider in this pattern (see [#327483](https://gitlab.com/gitlab-org/gitlab/-/issues/327483)).
 
 ## Best practices for handling read-mostly data at scale

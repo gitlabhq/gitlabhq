@@ -128,9 +128,42 @@ RSpec.describe 'Get a list of personal access tokens that belong to a user', fea
         a_hash_including({
           'name' => legacy_token_expired.name,
           'active' => false,
-          'lastUsedIps' => legacy_token_expired.last_used_ips.map(&:ip_address)
+          'lastUsedIps' => match_array(legacy_token_expired.last_used_ips.map { |ip| ip.ip_address.to_s })
         })
       )
+    end
+
+    it 'caps lastUsedIps to the 5 most recent' do
+      token = create(:personal_access_token, user: user)
+      7.times do |i|
+        create(:personal_access_token_last_used_ip,
+          personal_access_token: token, ip_address: "192.0.2.#{i}", created_at: i.minutes.ago
+        )
+      end
+
+      send_query
+
+      node = personal_access_tokens_data.find { |n| n['id'] == token.to_gid.to_s }
+      expect(node['lastUsedIps'])
+        .to match_array(%w[192.0.2.0 192.0.2.1 192.0.2.2 192.0.2.3 192.0.2.4])
+    end
+
+    it 'de-duplicates lastUsedIps' do
+      token = create(:personal_access_token, user: user)
+      create(:personal_access_token_last_used_ip,
+        personal_access_token: token, ip_address: '192.0.2.1', created_at: 2.minutes.ago
+      )
+      create(:personal_access_token_last_used_ip,
+        personal_access_token: token, ip_address: '192.0.2.1', created_at: 1.minute.ago
+      )
+      create(:personal_access_token_last_used_ip,
+        personal_access_token: token, ip_address: '192.0.2.2', created_at: 3.minutes.ago
+      )
+
+      send_query
+
+      node = personal_access_tokens_data.find { |n| n['id'] == token.to_gid.to_s }
+      expect(node['lastUsedIps']).to match_array(%w[192.0.2.1 192.0.2.2])
     end
 
     describe 'count field' do

@@ -44,6 +44,7 @@ import {
   getDisplayReference,
   getNewWorkItemAutoSaveKey,
   getNewWorkItemWidgetsAutoSaveKey,
+  lowercaseWorkItemType,
   updateDraftWorkItemType,
   newWorkItemFullPath,
   getLastUsedWorkItemTypeIdForNamespace,
@@ -88,6 +89,7 @@ import createWorkItemMutation from '../graphql/create_work_item.mutation.graphql
 import namespaceWorkItemTypesQuery from '../graphql/namespace_work_item_types.query.graphql';
 import workItemTypesConfigurationQuery from '../graphql/work_item_types_configuration.query.graphql';
 import workItemByIidQuery from '../graphql/work_item_by_iid.query.graphql';
+import workItemCrmContactsQuery from '../graphql/work_item_crm_contacts.query.graphql';
 import updateNewWorkItemMutation from '../graphql/update_new_work_item.mutation.graphql';
 import TitleSuggestions from './title_suggestions.vue';
 import WorkItemProjectsListbox from './work_item_links/work_item_projects_listbox.vue';
@@ -179,6 +181,11 @@ export default {
   },
   props: {
     alwaysShowWorkItemTypeSelect: {
+      type: Boolean,
+      required: false,
+      default: false,
+    },
+    confidential: {
       type: Boolean,
       required: false,
       default: false,
@@ -282,17 +289,18 @@ export default {
     },
   },
   emits: [
-    'changeType',
-    'confirmCancel',
-    'discardDraft',
+    'change-type',
+    'confirm-cancel',
+    'discard-draft',
     'error',
-    'updateType',
+    'update-type',
     'work-item-created',
   ],
   data() {
     return {
       isTitleValid: true,
       isConfidential:
+        this.confidential ||
         Boolean(getParameterByName('vulnerability_id')) ||
         parseBoolean(getParameterByName('issue[confidential]')),
       isRelatedToItem: true,
@@ -300,6 +308,7 @@ export default {
       localDescription: this.description || '',
       error: null,
       workItem: {},
+      crmContactsWorkItem: {},
       namespace: null,
       workItemTypesConfiguration: {},
       selectedProjectFullPath: this.initialSelectedProject(),
@@ -394,12 +403,29 @@ export default {
         );
       },
     },
+    crmContactsWorkItem: {
+      query: workItemCrmContactsQuery,
+      fetchPolicy: fetchPolicies.CACHE_ONLY,
+      variables() {
+        return {
+          fullPath: this.newWorkItemPath,
+          iid: NEW_WORK_ITEM_IID,
+          useWorkItemFeatures: this.useWorkItemFeatures,
+        };
+      },
+      skip() {
+        return this.skipWorkItemQuery;
+      },
+      update(data) {
+        return data?.namespace?.workItem ?? {};
+      },
+    },
   },
   computed: {
     isNamespaceTypeGroup() {
       // When user selects a namespace from the Namespace selector dropdown,
       // selectedNamespaceObject is set to the full namespace object within
-      // handleNamespaceSelect called via the dropdown's `selectNamespace`
+      // handleNamespaceSelect called via the dropdown's `select-namespace`
       // event.
       // We check __typename === 'Group' to reliably identify groups
       // as there's no other field that can represent a group correctly.
@@ -461,7 +487,7 @@ export default {
       return getDisplayReference(this.selectedProjectFullPath, this.relatedItem.reference);
     },
     relatedItemType() {
-      return this.relatedItem?.type;
+      return lowercaseWorkItemType(this.relatedItem?.type);
     },
     workItemAssignees() {
       return findAssigneesWidget(this.workItem);
@@ -550,7 +576,7 @@ export default {
     },
     createWorkItemText() {
       return sprintf(s__('WorkItem|Create %{workItemType}'), {
-        workItemType: this.selectedWorkItemTypeName,
+        workItemType: lowercaseWorkItemType(this.selectedWorkItemTypeName),
       });
     },
     makeConfidentialText() {
@@ -563,7 +589,7 @@ export default {
     },
     titleText() {
       return sprintf(s__('WorkItem|New %{workItemType}'), {
-        workItemType: this.selectedWorkItemTypeName,
+        workItemType: lowercaseWorkItemType(this.selectedWorkItemTypeName),
       });
     },
     canUpdate() {
@@ -592,7 +618,10 @@ export default {
       return this.workItemMilestone?.milestone?.id || this.selectedParentMilestone?.id || null;
     },
     workItemCrmContactIds() {
-      return this.workItemCrmContacts?.contacts?.nodes?.map((item) => item.id) || [];
+      return (
+        findCrmContactsWidget(this.crmContactsWorkItem)?.contacts?.nodes?.map((item) => item.id) ||
+        []
+      );
     },
     workItemParent() {
       return this.workItemHierarchy?.parent || null;
@@ -653,7 +682,7 @@ export default {
           ? this.$options.i18n.resolveOneThreadText
           : this.$options.i18n.resolveAllThreadsText;
       return sprintf(warning, {
-        workItemType: this.selectedWorkItemTypeName,
+        workItemType: lowercaseWorkItemType(this.selectedWorkItemTypeName),
       });
     },
     isFormFilled() {
@@ -759,13 +788,13 @@ export default {
       as you can choose the work item type in the dropdown
     */
     selectedWorkItemTypeName(newValue) {
-      this.$emit('updateType', newValue);
+      this.$emit('update-type', newValue);
     },
     selectedWorkItemTypeId(newId) {
       if (newId) {
         // Whenever the ID changes, find the name and tell the parent
         const typeName = this.findWorkItemTypeById(newId)?.name;
-        this.$emit('changeType', typeName);
+        this.$emit('change-type', typeName);
       }
     },
   },
@@ -812,7 +841,7 @@ export default {
           (type) => type?.name === WORK_ITEM_TYPE_NAME_ISSUE || type?.id === issueTypeGid,
         ) || this.creatableWorkItemTypes.at(0);
       this.selectedWorkItemTypeId = defaultSelectedWorkItemType?.id;
-      this.$emit('changeType', defaultSelectedWorkItemType?.name);
+      this.$emit('change-type', defaultSelectedWorkItemType?.name);
     },
     processWorkItemTypes() {
       // Only process if both queries have completed
@@ -885,7 +914,7 @@ export default {
 
       if (selectedWorkItemType) {
         this.selectedWorkItemTypeId = selectedWorkItemType?.id;
-        this.$emit('changeType', selectedWorkItemType.name);
+        this.$emit('change-type', selectedWorkItemType.name);
       } else {
         this.showWorkItemTypeSelect = true;
         this.setDefaultWorkItemType();
@@ -966,7 +995,7 @@ export default {
         },
       });
 
-      this.$emit('changeType', this.selectedWorkItemTypeName);
+      this.$emit('change-type', this.selectedWorkItemTypeName);
     },
     async updateDraftData(type, value) {
       // loading is set to true at the start of createWorkItem and intentionally
@@ -1217,9 +1246,9 @@ export default {
        * if they want to discard the draft
        */
       if (this.isFormFilled) {
-        this.$emit('confirmCancel');
+        this.$emit('confirm-cancel');
       } else {
-        this.$emit('discardDraft');
+        this.$emit('discard-draft');
         this.handleDiscardDraft();
       }
     },
@@ -1273,7 +1302,7 @@ export default {
                 :limit-to-current-namespace="!allowAnyNamespace"
                 :projects-only="allowProjectsOnly"
                 toggle-id="create-work-item-namespace"
-                @selectNamespace="handleNamespaceSelect"
+                @select-namespace="handleNamespaceSelect"
               />
             </gl-form-group>
           </template>
@@ -1327,7 +1356,7 @@ export default {
               is-editing
               :is-valid="isTitleValid"
               :title="workItemTitle"
-              @updateDraft="updateDraftData('title', $event)"
+              @update-draft="updateDraftData('title', $event)"
             />
             <title-suggestions
               :project-path="selectedProjectFullPath"
@@ -1353,7 +1382,7 @@ export default {
                 :work-item-widgets-auto-save-key="workItemWidgetsAutoSaveKey"
                 @error="updateError = $event"
                 @cancel-create="handleCancelClick"
-                @updateDraft="updateDraftData('description', $event)"
+                @update-draft="updateDraftData('description', $event)"
               />
               <div
                 v-if="numberOfDiscussionsResolved && resolvingMRDiscussionLink"

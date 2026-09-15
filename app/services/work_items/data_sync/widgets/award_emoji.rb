@@ -25,6 +25,7 @@ module WorkItems
           awards_batch.map do |award|
             award.attributes.except("id").tap do |attr|
               attr['awardable_id'] = target_work_item.id
+              attr['namespace_id'] = target_work_item.namespace_id
               # we want to explicitly set this because for legacy Epic we can have some emoji linked to the
               # Epic Work Item(i.e. target_type=Issue) and some to the legacy Epic(i.e target_type=Epic)
               attr['awardable_type'] = target_work_item.class.base_class.name

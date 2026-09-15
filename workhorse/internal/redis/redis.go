@@ -300,15 +300,31 @@ func configureRedis(cfg *config.RedisConfig) (*redis.Client, error) {
 
 	// Explicit TLS configuration takes precedence over scheme-based detection
 	if cfg.TLS != nil {
-		tlsConfig, err := redisTLSOptions(cfg.TLS)
-		if err != nil {
-			return nil, err
+		tlsConfig, tlsErr := redisTLSOptions(cfg.TLS)
+		if tlsErr != nil {
+			return nil, tlsErr
 		}
 		opt.TLSConfig = tlsConfig
 	}
 
 	// ParseURL seeds TLSConfig if scheme is rediss
 	opt.Dialer = createDialer([]string{}, nil, opt.TLSConfig)
+
+	// A cloud credentials provider (for example Microsoft Entra), when
+	// configured, takes precedence over the static username/password and
+	// re-authenticates live connections as the token rotates.
+	if cfg.CredentialsProvider != nil {
+		// The token is a bearer credential used as the Redis password; refuse to
+		// send it over a plaintext connection.
+		if opt.TLSConfig == nil {
+			return nil, fmt.Errorf("redis credentials_provider requires TLS (use a rediss:// URL or configure [redis.tls])")
+		}
+		provider, err := credentialsProvider(cfg.CredentialsProvider)
+		if err != nil {
+			return nil, err
+		}
+		opt.StreamingCredentialsProvider = provider
+	}
 
 	client := redis.NewClient(opt)
 	client.AddHook(instrumentationHook{isSentinel: false})
@@ -317,6 +333,16 @@ func configureRedis(cfg *config.RedisConfig) (*redis.Client, error) {
 }
 
 func configureSentinel(cfg *config.Config) (*redis.Client, error) {
+	// Cloud credential providers target managed Redis (for example Azure Cache
+	// for Redis / Azure Managed Redis), which is reached through a single
+	// endpoint (their HA is internal and not exposed as Sentinel). A
+	// client-visible Sentinel topology means self-managed Redis, which does not
+	// validate these tokens, so the two are never combined. Point the Redis URL
+	// at the managed endpoint instead of configuring Sentinel.
+	if cfg.Redis.CredentialsProvider != nil {
+		return nil, fmt.Errorf("credentials_provider authentication is not supported with Redis Sentinel; connect to the managed Redis endpoint directly")
+	}
+
 	options, err := sentinelOptions(cfg)
 	if err != nil {
 		return nil, err

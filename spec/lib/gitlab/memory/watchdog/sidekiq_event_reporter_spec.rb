@@ -21,7 +21,6 @@ RSpec.describe Gitlab::Memory::Watchdog::SidekiqEventReporter, feature_category:
     let(:sidekiq_event_reporter) { described_class.new(logger: logger) }
     let(:sidekiq_watchdog_running_jobs_counter) { instance_double(::Prometheus::Client::Counter) }
     let(:logger) { instance_double(::Logger) }
-    let(:queue) { 'default' }
     let(:jid) { SecureRandom.hex }
     let(:running_jobs) { { jid => { worker_class: DummyWorker } } }
     let(:sidekiq_daemon_monitor) { instance_double(Gitlab::SidekiqDaemon::Monitor) }

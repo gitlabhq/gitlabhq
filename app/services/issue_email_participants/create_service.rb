@@ -32,11 +32,19 @@ module IssueEmailParticipants
       existing_emails_count = existing_emails.size
       added_emails = []
 
+      # Charge the limiter with the number of records that can actually be
+      # created under MAX_NUMBER_OF_RECORDS, not emails_to_add.size, so a
+      # request adding more addresses than remaining slots doesn't
+      # over-consume budget. A create failure inside the loop below can
+      # still overcount by one record (rare, errs toward over-throttling).
+      creatable_count = [emails_to_add.size, MAX_NUMBER_OF_RECORDS - existing_emails_count].min
+      rate_limited = rate_limiter.rate_limit_batch!(creatable_count) if creatable_count > 0
+
       emails_to_add.each do |email|
         if existing_emails_count >= MAX_NUMBER_OF_RECORDS
           log_above_limit_count(emails_to_add.size - added_emails.size)
 
-          return added_emails
+          break
         end
 
         new_participant = target.issue_email_participants.create(email: email)
@@ -45,12 +53,21 @@ module IssueEmailParticipants
         added_emails << email
         existing_emails_count += 1
 
+        next if rate_limited
+
         Notify.service_desk_new_participant_email(target.id, new_participant).deliver_later
         Gitlab::Metrics::BackgroundTransaction.current&.add_event(:service_desk_new_participant_email)
       end
 
+      rate_limiter.post_suppression_notice(target) if rate_limited && added_emails.any?
+
       added_emails
     end
+
+    def rate_limiter
+      ::ServiceDesk::EmailRateLimiter.new(project)
+    end
+    strong_memoize_attr :rate_limiter
 
     def existing_emails
       target.email_participants_emails_downcase

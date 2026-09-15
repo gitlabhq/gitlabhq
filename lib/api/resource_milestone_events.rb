@@ -9,7 +9,6 @@ module API
     resource_milestone_events_tags = %w[resource_events]
     before do
       authenticate!
-      set_current_organization
     end
 
     {

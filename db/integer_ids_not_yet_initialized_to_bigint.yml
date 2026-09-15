@@ -195,18 +195,10 @@ deploy_keys_projects:
 - project_id
 deploy_tokens:
 - id
-deployment_clusters:
-- cluster_id
-- deployment_id
 deployment_merge_requests:
 - deployment_id
 - environment_id
 - merge_request_id
-deployments:
-- environment_id
-- id
-- project_id
-- user_id
 description_versions:
 - epic_id
 - issue_id

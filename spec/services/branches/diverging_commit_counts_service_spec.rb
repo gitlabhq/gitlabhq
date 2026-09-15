@@ -27,6 +27,18 @@ RSpec.describe Branches::DivergingCommitCountsService, feature_category: :source
 
       service.call(diverged_branch)
     end
+
+    context 'when the root ref does not resolve to a commit' do
+      before do
+        allow(repository).to receive(:head_commit).and_return(nil)
+      end
+
+      it 'returns nil without raising' do
+        expect(repository.raw_repository).not_to receive(:diverging_commit_count)
+
+        expect(service.call(diverged_branch)).to be_nil
+      end
+    end
   end
 
   describe '#diverging_counts' do

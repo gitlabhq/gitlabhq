@@ -12,8 +12,7 @@ RSpec.describe Projects::ServiceDeskController, feature_category: :service_desk 
   let_it_be(:user) { create(:user, maintainer_of: project) }
 
   before do
-    allow(Gitlab::Email::IncomingEmail).to receive(:enabled?).and_return(true)
-    allow(Gitlab::Email::IncomingEmail).to receive(:supports_wildcard?).and_return(true)
+    allow(Gitlab::Email::IncomingEmail).to receive_messages(enabled?: true, supports_wildcard?: true)
 
     sign_in(user)
   end

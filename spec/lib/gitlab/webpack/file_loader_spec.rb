@@ -42,6 +42,26 @@ RSpec.describe Gitlab::Webpack::FileLoader do
     it "raises error when errors out" do
       expect { described_class.load(error_file_path) }.to raise_error(Gitlab::Webpack::FileLoader::DevServerLoadError)
     end
+
+    it "bounds how long it waits to connect" do
+      expect(HTTParty).to receive(:get)
+        .with(anything, hash_including(open_timeout: described_class::OPEN_TIMEOUT))
+        .and_return(instance_double(HTTParty::Response, code: 200, body: file_contents))
+
+      described_class.load(file_path)
+    end
+
+    it "does not bound how long it waits for a response" do
+      # The dev server holds the request open while it compiles, which can take
+      # minutes on a cold build.
+      expect(HTTParty).to receive(:get) do |_url, options|
+        expect(options).not_to have_key(:read_timeout)
+
+        instance_double(HTTParty::Response, code: 200, body: file_contents)
+      end
+
+      described_class.load(file_path)
+    end
   end
 
   context "with dev server enabled and https" do

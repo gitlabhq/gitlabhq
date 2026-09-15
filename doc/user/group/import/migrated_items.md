@@ -1,5 +1,5 @@
 ---
-stage: Create
+stage: GitLab Dedicated
 group: Import
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see <https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments>
 title: Items migrated when using direct transfer
@@ -92,7 +92,7 @@ In addition, users and any [personal access tokens](../../profile/personal_acces
 If you choose to migrate projects when you [select groups to migrate](direct_transfer_migrations.md#select-the-groups-and-projects-to-import),
 project items are migrated with the projects.
 
-The project items that are migrated depends on the version of GitLab you use on the destination. To determine if a
+The project items that are migrated depend on the version of GitLab you use on the destination. To determine if a
 specific project item is migrated:
 
 1. Check the [`projects/stage.rb`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/lib/bulk_imports/projects/stage.rb)
@@ -123,10 +123,13 @@ Project items that are migrated to the destination GitLab instance include:
   > These settings might cause an unprotected branch to be imported as protected.
 
 - CI pipelines
+  - Pipeline and job records, such as status, stage, and timestamps, are migrated.
+    Job logs and job artifacts are not migrated.
 
-  > [!note]
-  > Pipeline and job records, such as status, stage, and timestamps, are migrated.
-  > Job logs and job artifacts are not migrated. For more information, see [excluded items](#excluded-items-1).
+  > [!warning]
+  > Imported pipelines for merge requests retain their source status and can satisfy **Pipelines must succeed** and
+  > the [security policy pipeline check](../../application_security/policies/pipeline_execution_policies.md#security-policy-pipeline-check)
+  > on the destination instance without running again. Run a new pipeline on any imported merge requests before you merge them.
 
 - Commit comments
 - Designs

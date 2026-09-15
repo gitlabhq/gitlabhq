@@ -222,7 +222,7 @@ RSpec.describe Projects::ParticipantsService, feature_category: :groups_and_proj
 
         it 'returns an url for the avatar' do
           expect(group_items.size).to eq 1
-          expect(group_items.first[:avatar_url]).to eq("/uploads/-/system/group/avatar/#{group.id}/dk.png")
+          expect(group_items.first[:avatar_url]).to eq(group.avatar_path)
         end
 
         it 'returns an url for the avatar with relative url' do
@@ -230,7 +230,7 @@ RSpec.describe Projects::ParticipantsService, feature_category: :groups_and_proj
           stub_config_setting(url: Settings.send(:build_gitlab_url))
 
           expect(group_items.size).to eq 1
-          expect(group_items.first[:avatar_url]).to eq("/gitlab/uploads/-/system/group/avatar/#{group.id}/dk.png")
+          expect(group_items.first[:avatar_url]).to eq(group.avatar_path)
         end
       end
 

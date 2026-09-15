@@ -1,0 +1,9 @@
+---
+name: delete_ai_self_hosted_model
+description: Grants the ability to delete self-hosted models
+available_for:
+  - granular_access_token
+permissions:
+  - delete_ai_self_hosted_model
+boundaries:
+  - instance

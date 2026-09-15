@@ -159,6 +159,7 @@ RSpec.describe Mcp::Tools::Base::CustomService, :aggregate_failures, feature_cat
         end
 
         context 'when user lacks permission' do
+          let(:current_user) { create(:user, guest_of: project) }
           let(:arguments) { { arguments: { project_id: project.id.to_s } } }
 
           it 'raises Gitlab::Access::AccessDeniedError' do
@@ -170,6 +171,23 @@ RSpec.describe Mcp::Tools::Base::CustomService, :aggregate_failures, feature_cat
                     "does not have permission to read_code for target #{project.id}",
                   type: "text"
                 }
+              ],
+              structuredContent: {},
+              isError: true
+            })
+          end
+        end
+
+        context 'when the user cannot read the project' do
+          let(:current_user) { create(:user) }
+          let(:arguments) { { arguments: { project_id: project.id.to_s } } }
+
+          it 'returns a uniform not-found error without revealing the project exists' do
+            result = service.execute(request: nil, params: arguments)
+
+            expect(result).to eq({
+              content: [
+                { text: "Tool execution failed: Project '#{project.id}' not found or inaccessible", type: "text" }
               ],
               structuredContent: {},
               isError: true

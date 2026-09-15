@@ -67,7 +67,7 @@ describe('Merge Requests Artifacts list app', () => {
     it('renders disabled buttons', () => {
       const buttons = findButtons();
       expect(buttons.at(0).attributes('aria-disabled')).toBe('true');
-      expect(buttons.at(1).attributes('disabled')).toBeDefined();
+      expect(buttons.at(1).attributes('aria-disabled')).toBe('true');
     });
   });
 
@@ -86,8 +86,8 @@ describe('Merge Requests Artifacts list app', () => {
 
     it('renders both buttons enabled', () => {
       const buttons = findButtons();
-      expect(buttons.at(0).attributes('disabled')).toBe(undefined);
-      expect(buttons.at(1).attributes('disabled')).toBe(undefined);
+      expect(buttons.at(0).attributes('aria-disabled')).toBeUndefined();
+      expect(buttons.at(1).attributes('aria-disabled')).toBeUndefined();
     });
 
     describe('on click', () => {

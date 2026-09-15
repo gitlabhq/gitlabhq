@@ -87,7 +87,11 @@ class Compare
 
   def raw_diffs(diff_options = {})
     diff_options = (diff_options || {}).to_h
-    diff_options[:merge_base] = @base_sha if !@straight && @base_sha.present?
+
+    unless @straight
+      merge_base = base_or_start_sha(diff_refs)
+      diff_options[:merge_base] = merge_base if merge_base.present?
+    end
 
     @compare.diffs(diff_options)
   end
@@ -105,7 +109,7 @@ class Compare
 
   def diff_refs
     Gitlab::Diff::DiffRefs.new(
-      base_sha: @straight ? start_commit_sha : base_commit_sha,
+      base_sha: @straight ? start_commit_sha : (base_commit_sha || start_commit_sha),
       start_sha: start_commit_sha,
       head_sha: head_commit_sha
     )
@@ -119,10 +123,12 @@ class Compare
   strong_memoize_attr(:diff_stats)
 
   def changed_paths
+    refs = diff_refs
+
     project
       .repository
       .find_changed_paths(
-        [Gitlab::Git::DiffTree.new(diff_refs.base_sha, diff_refs.head_sha)],
+        [Gitlab::Git::DiffTree.new(base_or_start_sha(refs), refs.head_sha)],
         find_renames: true
       )
   end
@@ -138,5 +144,11 @@ class Compare
 
   def first_diffs_slice(limit, diff_options = {})
     diffs(diff_options.merge(max_files: limit))
+  end
+
+  private
+
+  def base_or_start_sha(refs)
+    refs.base_sha || refs.start_sha
   end
 end

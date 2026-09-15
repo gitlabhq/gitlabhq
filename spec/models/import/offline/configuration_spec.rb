@@ -726,4 +726,71 @@ RSpec.describe Import::Offline::Configuration, feature_category: :importers do
       end
     end
   end
+
+  describe '#root_group_paths' do
+    let(:configuration) do
+      build(:offline_configuration, entity_prefix_mapping: {
+        'root-group' => 'group_1',
+        'root-group/source-group' => 'group_2',
+        'root-group/source-group/project' => 'project_1',
+        'other-root-group' => 'group_3',
+        'orphaned-root/orphaned-subgroup' => 'group_4',
+        'orphaned-root/orphaned-subgroup/project' => 'project_2'
+      })
+    end
+
+    it 'returns the top-level group paths' do
+      expect(configuration.root_group_paths).to contain_exactly('root-group', 'other-root-group')
+    end
+
+    context 'when a top-level path is not a group' do
+      let(:configuration) do
+        build(:offline_configuration, entity_prefix_mapping: { 'root-group' => 'project_1' })
+      end
+
+      it 'is excluded' do
+        expect(configuration.root_group_paths).to eq([])
+      end
+    end
+
+    context 'when the mapping is empty' do
+      let(:configuration) { build(:offline_configuration, entity_prefix_mapping: {}) }
+
+      it 'returns an empty array' do
+        expect(configuration.root_group_paths).to eq([])
+      end
+    end
+  end
+
+  describe '#paths_without_exported_root' do
+    let(:configuration) do
+      build(:offline_configuration, entity_prefix_mapping: {
+        'root-group' => 'group_1',
+        'root-group/source-group' => 'group_2',
+        'root-group/source-group/project' => 'project_1',
+        'orphaned-root/orphaned-subgroup' => 'group_3',
+        'orphaned-root/orphaned-subgroup/project' => 'project_2'
+      })
+    end
+
+    it 'returns the paths whose top-level group was not exported' do
+      expect(configuration.paths_without_exported_root).to contain_exactly(
+        'orphaned-root/orphaned-subgroup',
+        'orphaned-root/orphaned-subgroup/project'
+      )
+    end
+
+    context 'when every path has an exported top-level group' do
+      let(:configuration) do
+        build(:offline_configuration, entity_prefix_mapping: {
+          'root-group' => 'group_1',
+          'root-group/source-group' => 'group_2'
+        })
+      end
+
+      it 'returns an empty array' do
+        expect(configuration.paths_without_exported_root).to eq([])
+      end
+    end
+  end
 end

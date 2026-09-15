@@ -60,7 +60,6 @@ RSpec.describe WebIde::Settings::ExtensionMarketplaceGenerator, feature_category
 
   describe 'without setting requested' do
     let(:requested_setting_names) { [] }
-    let(:settings_flag) { true }
     let(:app_setting) { custom_app_settings }
 
     it { is_expected.to be_nil }

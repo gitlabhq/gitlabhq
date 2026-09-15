@@ -64,7 +64,6 @@ RSpec.describe 'Projects tree', :js, feature_category: :web_ide do
   context "with a tree that contains pathspec characters" do
     let(:path) { ':wq' }
     let(:filename) { File.join(path, 'test.txt') }
-    let(:newrev) { project.repository.commit('master').sha }
     let(:short_newrev) { project.repository.commit('master').short_id }
     let(:message) { 'Glob characters' }
 

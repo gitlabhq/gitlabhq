@@ -1,6 +1,9 @@
 <script>
 import { GlButton } from '@gitlab/ui';
+import { InternalEvents } from '~/tracking';
 import ReconciliationModal from './modal.vue';
+
+const trackingMixin = InternalEvents.mixin();
 
 export default {
   name: 'GroupSettingsCreateOrganization',
@@ -8,6 +11,7 @@ export default {
     GlButton,
     ReconciliationModal,
   },
+  mixins: [trackingMixin],
   props: {
     groupFullPath: {
       type: String,
@@ -15,6 +19,10 @@ export default {
     },
     groupGid: {
       type: String,
+      required: true,
+    },
+    groupOrganization: {
+      type: Object,
       required: true,
     },
   },
@@ -25,6 +33,7 @@ export default {
   },
   methods: {
     openReconciliationModal() {
+      this.trackEvent('click_create_organization_from_group_settings');
       this.showReconciliationModal = true;
     },
   },
@@ -43,6 +52,7 @@ export default {
       v-model="showReconciliationModal"
       :group-full-path="groupFullPath"
       :group-gid="groupGid"
+      :group-organization="groupOrganization"
     />
   </div>
 </template>

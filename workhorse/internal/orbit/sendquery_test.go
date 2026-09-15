@@ -4,6 +4,7 @@ import (
 	"context"
 	"encoding/base64"
 	"encoding/json"
+	"fmt"
 	"io"
 	"net"
 	"net/http"
@@ -13,9 +14,12 @@ import (
 	"time"
 
 	"github.com/stretchr/testify/require"
+	"google.golang.org/genproto/googleapis/rpc/errdetails"
 	"google.golang.org/grpc"
+	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/credentials/insecure"
 	"google.golang.org/grpc/metadata"
+	"google.golang.org/grpc/status"
 
 	orbitpb "gitlab.com/gitlab-org/orbit/knowledge-graph/clients/orbitpb"
 
@@ -553,6 +557,137 @@ func TestBuildOutgoingContext(t *testing.T) {
 		require.False(t, ok, "expected no outgoing metadata")
 		require.Empty(t, md)
 	})
+}
+
+func quotaExhaustedStatus(t *testing.T) error {
+	t.Helper()
+
+	st, err := status.New(codes.ResourceExhausted, "GitLab credits exhausted").WithDetails(&errdetails.ErrorInfo{
+		Reason: reasonGitLabCreditsExhausted,
+		Domain: "BILLING",
+	})
+	require.NoError(t, err)
+	return st.Err()
+}
+
+func TestInjectRESTGrpcErrors(t *testing.T) {
+	tests := []struct {
+		name        string
+		mockErr     func(t *testing.T) error
+		wantStatus  int
+		wantCode    string
+		wantMessage string
+		wantReason  string
+	}{
+		{
+			name:        "quota exhausted with matching ErrorInfo reason",
+			mockErr:     quotaExhaustedStatus,
+			wantStatus:  http.StatusPaymentRequired,
+			wantCode:    "quota_exhausted",
+			wantMessage: "GitLab credits exhausted",
+			wantReason:  reasonGitLabCreditsExhausted,
+		},
+		{
+			name: "resource exhausted without quota reason falls through to bad gateway",
+			mockErr: func(_ *testing.T) error {
+				// No ErrorInfo attached: e.g. grpc-go's own "received message
+				// larger than max" error, or any other transport-level
+				// ResourceExhausted unrelated to GKG's billing quota gate.
+				return status.Error(codes.ResourceExhausted, "grpc: received message larger than max")
+			},
+			wantStatus: http.StatusBadGateway,
+		},
+		{
+			name: "non-quota grpc trailer error",
+			mockErr: func(_ *testing.T) error {
+				return status.Error(codes.Internal, "something went wrong")
+			},
+			wantStatus: http.StatusBadGateway,
+		},
+	}
+
+	for i, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			testAddress := fmt.Sprintf("test-rest-grpc-error-%d:50051", i)
+			mockErr := tt.mockErr(t)
+
+			lis := startMockGKGServer(t, func(stream grpc.BidiStreamingServer[orbitpb.ExecuteQueryMessage, orbitpb.ExecuteQueryMessage]) error {
+				if _, err := stream.Recv(); err != nil {
+					return err
+				}
+				return mockErr
+			})
+			injectTestClient(t, lis, testAddress)
+
+			myAPI := newTestAPI(t, "http://unused.test")
+			sq := NewSendQuery(myAPI, "test-version")
+
+			sendData := buildSendData(t, sendQueryParams{
+				GkgServer: GkgServer{Address: testAddress},
+				Query:     `{"match":{}}`,
+			})
+
+			recorder := httptest.NewRecorder()
+			req := httptest.NewRequest(http.MethodPost, "/api/v4/orbit/query", nil)
+			sq.Inject(recorder, req, sendData)
+
+			require.Equal(t, tt.wantStatus, recorder.Code)
+			if tt.wantCode == "" {
+				return
+			}
+
+			require.Equal(t, "application/json", recorder.Header().Get("Content-Type"))
+			var errResp queryErrorResponse
+			require.NoError(t, json.NewDecoder(recorder.Body).Decode(&errResp))
+			require.Equal(t, tt.wantCode, errResp.Code)
+			require.Equal(t, tt.wantMessage, errResp.Message)
+			require.Equal(t, tt.wantReason, errResp.Reason)
+		})
+	}
+}
+
+func TestInjectQuotaExhaustedMCP(t *testing.T) {
+	const testAddress = "test-quota-mcp:50051"
+	quotaErr := quotaExhaustedStatus(t)
+
+	lis := startMockGKGServer(t, func(stream grpc.BidiStreamingServer[orbitpb.ExecuteQueryMessage, orbitpb.ExecuteQueryMessage]) error {
+		if _, err := stream.Recv(); err != nil {
+			return err
+		}
+		return quotaErr
+	})
+	injectTestClient(t, lis, testAddress)
+
+	myAPI := newTestAPI(t, "http://unused.test")
+	sq := NewSendQuery(myAPI, "test-version")
+
+	sendData := buildSendData(t, sendQueryParams{
+		GkgServer: GkgServer{Address: testAddress},
+		Query:     `{"match":{}}`,
+		McpID:     "req-1",
+	})
+
+	recorder := httptest.NewRecorder()
+	req := httptest.NewRequest(http.MethodPost, "/api/v4/orbit/query", nil)
+	sq.Inject(recorder, req, sendData)
+
+	require.Equal(t, http.StatusOK, recorder.Code)
+	require.Equal(t, "application/json", recorder.Header().Get("Content-Type"))
+
+	var resp mcpResponse
+	require.NoError(t, json.NewDecoder(recorder.Body).Decode(&resp))
+	require.Equal(t, "2.0", resp.JSONRPC)
+	require.Equal(t, "req-1", resp.ID)
+
+	toolResult, ok := resp.Result.(map[string]any)
+	require.True(t, ok, "MCP Result must decode as object")
+	require.Equal(t, true, toolResult["isError"])
+	content, ok := toolResult["content"].([]any)
+	require.True(t, ok)
+	require.Len(t, content, 1)
+	first := content[0].(map[string]any)
+	require.Equal(t, "text", first["type"])
+	require.Equal(t, "GitLab credits exhausted", first["text"])
 }
 
 func TestInjectHeaders(t *testing.T) {

@@ -185,7 +185,9 @@ RSpec.shared_examples 'work items labels' do |namespace_type|
   end
 
   it 'adds and removes a label', :aggregate_failures do
-    within_testid 'work-item-labels' do
+    # Tag-qualified: the Edit button's tooltip also carries data-testid="work-item-labels" and is
+    # teleported to the top of <body>, so a bare testid scope can resolve to that <div> instead.
+    within 'section[data-testid="work-item-labels"]' do
       expect(page).not_to have_css '.gl-label', text: label2.title
 
       click_button 'Edit'
@@ -234,7 +236,7 @@ RSpec.shared_examples 'work items labels' do |namespace_type|
       expect(page).not_to have_css '.gl-label', text: label2.title
     end
 
-    within_testid 'work-item-labels' do
+    within 'section[data-testid="work-item-labels"]' do
       click_button 'Edit'
       select_listbox_item(label2.title)
       click_button 'Apply'
@@ -250,7 +252,7 @@ RSpec.shared_examples 'work items labels' do |namespace_type|
   end
 
   it 'creates, auto-selects, and adds new label' do
-    within_testid 'work-item-labels' do
+    within 'section[data-testid="work-item-labels"]' do
       click_button 'Edit'
       expect(page).to have_selector('.gl-new-dropdown-item[role="option"]', minimum: 1)
 
@@ -427,7 +429,7 @@ RSpec.shared_examples 'authored work item guest user permissions' do
       expect(page).not_to have_button 'Turn on confidentiality'
       expect(page).to have_button 'Copy reference'
       expect(page).not_to have_button 'Report abuse'
-      expect(page).to have_button 'Delete Key Result'
+      expect(page).to have_button 'Delete key result'
     end
 
     page.within('.main-notes-list') do
@@ -647,30 +649,8 @@ def find_and_click_clear(selector, button_name = 'Clear')
   end
 end
 
-RSpec.shared_examples 'work items weight' do
-  it 'updates and clears a weight', :aggregate_failures do
-    within_testid 'work-item-weight' do
-      click_button 'Edit'
-      find_field('weight-widget-input').native.send_keys(3, :enter)
-
-      expect(page).to have_text(3)
-
-      click_button 'Edit'
-      find_field('weight-widget-input').native.send_keys(:backspace, 0, :enter)
-
-      expect(page).to have_text(0)
-      expect(page).not_to have_text('None')
-
-      click_button 'Edit'
-      find_field('weight-widget-input').native.send_keys(:backspace, :enter)
-
-      expect(page).to have_text('None')
-    end
-  end
-end
-
+# Axe checks need to be in capybara because they need a real browser
 RSpec.shared_examples 'work items iteration' do
-  include Features::IterationHelpers
   let(:work_item_iteration_selector) { '[data-testid="work-item-iteration"]' }
   let_it_be_with_refind(:iteration_cadence) { create(:iterations_cadence, group: group, active: true) }
   let_it_be_with_refind(:iteration) do
@@ -680,18 +660,6 @@ RSpec.shared_examples 'work items iteration' do
       group: group,
       start_date: 1.day.from_now,
       due_date: 2.days.from_now
-    )
-  end
-
-  let_it_be_with_refind(:iteration2) do
-    create(
-      :iteration,
-      iterations_cadence: iteration_cadence,
-      group: group,
-      start_date: 2.days.ago,
-      due_date: 1.day.ago,
-      state: 'closed',
-      skip_future_date_validation: true
     )
   end
 
@@ -706,24 +674,6 @@ RSpec.shared_examples 'work items iteration' do
       wait_for_requests
 
       expect(page).to be_axe_clean.within(work_item_iteration_selector)
-    end
-  end
-
-  it 'adds and removes an iteration', :aggregate_failures do
-    within_testid 'work-item-iteration' do
-      click_button 'Edit'
-      send_keys(iteration.title)
-      select_listbox_item(iteration_period(iteration, use_thin_space: false))
-
-      expect(page).to have_text(iteration_cadence.title)
-      expect(page).to have_text(iteration_period(iteration, use_thin_space: false))
-
-      click_button 'Edit'
-      click_button 'Clear'
-
-      expect(page).to have_content('None')
-      expect(page).not_to have_text(iteration_cadence.title)
-      expect(page).not_to have_text(iteration_period(iteration, use_thin_space: false))
     end
   end
 end
@@ -1152,11 +1102,11 @@ RSpec.shared_examples 'work items hierarchy' do |testid, type|
   it 'adds an existing child item', :aggregate_failures do
     within_testid testid do
       find_by_testid('add-tree-child-button').click
-      click_button "Existing #{type.to_s.capitalize}"
+      click_button "Existing #{type}"
       fill_in 'Search existing items', with: child_item.title
       click_button child_item.title
       send_keys :escape
-      click_button "Add #{type.to_s.capitalize}"
+      click_button "Add #{type}"
 
       expect(page).to have_link child_item.title
     end
@@ -1188,9 +1138,9 @@ RSpec.shared_examples 'work items hierarchy' do |testid, type|
 
   def create_child(type, title)
     find_by_testid('add-tree-child-button').click
-    click_button "New #{type.to_s.capitalize}"
+    click_button "New #{type}"
     fill_in 'Add a title', with: title
-    click_button "Create #{type.to_s.capitalize}"
+    click_button "Create #{type}"
     expect(page).to have_link title
   end
 end

@@ -4,25 +4,27 @@ module Gitlab
   module Ci
     module Catalog
       module Bundle
-        # Object-store keys are case-sensitive, so a segment is downcased only where
-        # the database's unique index is under `lower()`. Downcasing `component_name`
-        # or `semver` would collide two distinct rows onto one key.
+        # Object-store keys are case-sensitive. The natural key columns are stored
+        # lowercase, but `component_name` and `semver` are not: downcasing either
+        # would collide two distinct rows onto one key.
         class ObjectKey
           PREFIX = 'catalog/bundles'
+
+          def self.dir_for(bundled_resource, semver)
+            File.join(
+              PREFIX,
+              bundled_resource.server_fqdn.downcase,
+              bundled_resource.full_path.downcase,
+              semver.to_s
+            )
+          end
 
           def initialize(component)
             @component = component
           end
 
           def dir
-            bundled_resource = @component.bundled_resource
-
-            File.join(
-              PREFIX,
-              bundled_resource.server_fqdn.downcase,
-              bundled_resource.full_path.downcase,
-              @component.version.semver.to_s
-            )
+            self.class.dir_for(@component.bundled_resource, @component.version.semver)
           end
 
           def filename

@@ -12,5 +12,5 @@ xml.entry do
     xml.email commit.author_email
   end
 
-  xml.summary markdown_field(commit, :description), type: 'html'
+  xml.summary atom_markdown_field(commit, :description), type: 'html'
 end

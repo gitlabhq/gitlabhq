@@ -48,6 +48,20 @@ RSpec.describe 'admin/registrations/profiles/new', feature_category: :onboarding
     expect(rendered).not_to have_css('label', text: 'Business email')
   end
 
+  it 'does not prefill the email field with the account address', :aggregate_failures do
+    render
+
+    expect(rendered).to have_field('user[email]')
+    expect(rendered).not_to have_css("input[name='user[email]'][value]")
+  end
+
+  it 'lets the browser autofill the email and explains which address to use', :aggregate_failures do
+    render
+
+    expect(rendered).to have_css("input[name='user[email]'][autocomplete='email']")
+    expect(rendered).to have_content(_('Please use an email address or domain you control.'))
+  end
+
   it 'renders the organization name field with label "Organization name" (not "Company name")' do
     render
 

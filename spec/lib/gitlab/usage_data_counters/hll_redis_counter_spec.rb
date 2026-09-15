@@ -79,19 +79,11 @@ RSpec.describe Gitlab::UsageDataCounters::HLLRedisCounter, :clean_gitlab_redis_s
   describe 'known_events' do
     let(:weekly_event) { 'g_analytics_contribution' }
     let(:daily_event) { 'g_analytics_issues' }
-    let(:analytics_slot_event) { 'g_analytics_contribution' }
     let(:compliance_slot_event) { 'g_compliance_dashboard' }
-    let(:category_analytics_event) { 'g_analytics_issues' }
     let(:category_productivity_event) { 'g_analytics_productivity' }
     let(:no_slot) { 'no_slot' }
     let(:different_aggregation) { 'different_aggregation' }
-    let(:custom_daily_event) { 'g_analytics_custom' }
     let(:event_overridden_for_user) { 'user_created_custom_dashboard' }
-    let(:global_category) { 'global' }
-    let(:compliance_category) { 'compliance' }
-    let(:productivity_category) { 'productivity' }
-    let(:analytics_category) { 'analytics' }
-    let(:other_category) { 'other' }
 
     let(:known_events) do
       [

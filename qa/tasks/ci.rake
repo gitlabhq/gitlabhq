@@ -128,6 +128,9 @@ namespace :ci do
   task :export_frontend_code_paths_mapping, [:glob] do |_, args|
     raise("Code paths mapping JSON glob pattern is required") unless args[:glob]
 
+    # The job allows failure, so this warns without breaking the schedule
+    raise("No coverage files matched #{args[:glob]}, assets likely not instrumented") if Dir.glob(args[:glob]).empty?
+
     filename = File.basename(args[:glob])
     prefix = "#{filename.split('*').first}merged-pipeline"
     QA::Tools::Ci::CodePathsMapping.export(args[:glob], bucket: "code-path-mappings",

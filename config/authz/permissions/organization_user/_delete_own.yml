@@ -1,0 +1,4 @@
+---
+name: _delete_own_organization_user
+description: Grants the ability to delete your own organization membership
+conditionally_enables: delete_organization_user

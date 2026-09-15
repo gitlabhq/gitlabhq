@@ -58,6 +58,8 @@ module API
 
         desc 'Download a secure file' do
           detail 'Downloads the contents of a specified secure file in a project.'
+          produces %w[application/octet-stream]
+          success code: 200
           failure [{ code: 404, message: '404 Not found' }]
           tags %w[secure_files]
         end

@@ -112,7 +112,7 @@ export default {
     getSectionIcon(section) {
       return {
         name: section.issues.length > 0 ? 'warning' : 'check-circle-filled',
-        class: section.issues.length > 0 ? 'gl-text-orange-500' : 'gl-text-green-500',
+        variant: section.issues.length > 0 ? 'warning' : 'success',
       };
     },
     getSequenceOwnershipTableItems(issues) {
@@ -176,7 +176,7 @@ export default {
             <div v-if="subsection.issues.length > 0" class="gl-p-3">
               <!-- Subsection Header -->
               <h5 class="gl-heading-5 gl-flex gl-items-center gl-gap-2">
-                <gl-icon name="warning" :size="16" class="gl-text-orange-500" />
+                <gl-icon name="warning" :size="16" variant="warning" />
                 {{ subsection.title }}
                 <gl-badge :data-testid="`${subsection.key}-count`">
                   {{ subsection.issues.length }}
@@ -226,7 +226,7 @@ export default {
         >
           <div class="gl-mb-2">
             <h5 class="gl-heading-5 !gl-mb-0">
-              <gl-icon name="warning" :size="16" class="gl-mr-2 gl-text-orange-500" />
+              <gl-icon name="warning" :size="16" class="gl-mr-2" variant="warning" />
               {{ section.issueLabel }}
             </h5>
           </div>

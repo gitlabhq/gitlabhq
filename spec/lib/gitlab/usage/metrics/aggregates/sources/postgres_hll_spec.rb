@@ -11,8 +11,6 @@ RSpec.describe Gitlab::Usage::Metrics::Aggregates::Sources::PostgresHll, :clean_
 
   let(:metric_1) { 'metric_1' }
   let(:metric_2) { 'metric_2' }
-  let(:metric_names) { [metric_1, metric_2] }
-  let(:error_rate) { Gitlab::Database::PostgresHll::BatchDistinctCounter::ERROR_RATE }
 
   describe '.save_aggregated_metrics' do
     subject(:save_aggregated_metrics) do

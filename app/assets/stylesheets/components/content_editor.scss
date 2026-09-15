@@ -500,3 +500,32 @@
   @apply gl-absolute;
   top: -9999px;
 }
+
+.collaboration-cursor-caret {
+  @apply gl-pointer-events-none;
+  @apply gl-relative;
+  @apply gl-break-normal;
+  // The caret sits between two characters, so it is pulled back over its own
+  // border width to avoid nudging the surrounding text.
+  margin-left: -1px;
+  margin-right: -1px;
+  border-left: 1px solid;
+  border-right: 1px solid;
+}
+
+.collaboration-cursor-label {
+  @apply gl-absolute;
+  @apply gl-select-none;
+  @apply gl-whitespace-nowrap;
+  @apply gl-px-1;
+  @apply gl-text-sm;
+  @apply gl-font-bold;
+  @apply gl-not-italic;
+  @apply gl-text-white;
+  // Sits above the caret, with the bottom-left corner squared off so the label
+  // reads as a flag attached to it.
+  top: -1.4em;
+  left: -1px;
+  border-radius: $gl-border-radius-base $gl-border-radius-base $gl-border-radius-base 0;
+  line-height: 1.4;
+}

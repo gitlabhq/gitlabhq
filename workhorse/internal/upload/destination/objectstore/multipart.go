@@ -117,7 +117,9 @@ func (m *Multipart) readAndUploadOnePart(ctx context.Context, partURL string, pu
 	if err != nil {
 		return nil, fmt.Errorf("copy to temporary buffer file: %v", err)
 	}
-	if n == 0 {
+	// S3 rejects CompleteMultipartUpload without at least one part, so a zero
+	// byte object still has to upload an empty first part.
+	if n == 0 && partNumber > 1 {
 		return nil, nil
 	}
 

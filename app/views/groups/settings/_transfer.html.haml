@@ -19,6 +19,9 @@
         %li= s_('GroupSettings|You must have the Owner role in the target group')
         %li= s_('GroupSettings|You will need to update your local repositories to point to the new location.')
         %li= s_("GroupSettings|If the parent group's visibility is lower than the group's current visibility, visibility levels for subgroups and projects will be changed to match the new parent group's visibility.")
+        %li
+          - secrets_manager_link = link_to('', help_page_path('ci/secrets/secrets_manager/_index.md', anchor: 'transfer-of-a-project-or-group'), target: '_blank', rel: 'noopener noreferrer')
+          = safe_format(s_('GroupSettings|All secrets stored in GitLab Secrets Manager for this group, its subgroups, and its projects are permanently deleted. %{link_start}Learn more.%{link_end}'), tag_pair(secrets_manager_link, :link_start, :link_end))
       - if group.paid?
         = render Pajamas::AlertComponent.new(variant: :tip, dismissible: false, alert_options: { class: 'gl-mb-5' }) do |c|
           - c.with_body do

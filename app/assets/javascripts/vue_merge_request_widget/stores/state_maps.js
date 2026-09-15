@@ -9,7 +9,6 @@ export const stateToComponentMap = {
   checking: 'mr-widget-checking',
   preparing: 'mr-widget-preparing',
   pipelineFailed: 'mr-widget-pipeline-failed',
-  failedToMerge: 'mr-widget-failed-to-merge',
   shaMismatch: 'sha-mismatch',
   mergeChecksFailed: 'mergeChecksFailed',
 };

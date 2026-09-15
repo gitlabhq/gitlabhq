@@ -5,12 +5,7 @@
 
 fragment BaseWorkItemFeatures on WorkItemFeatures {
   currentUserTodos {
-    currentUserTodos(state: pending) {
-      nodes {
-        id
-        state
-      }
-    }
+    type
   }
   description {
     description
@@ -78,29 +73,9 @@ fragment BaseWorkItemFeatures on WorkItemFeatures {
   }
   crmContacts {
     contactsAvailable
-    contacts {
-      nodes {
-        id
-        email
-        firstName
-        lastName
-        phone
-        description
-        organization {
-          id
-          name
-          description
-          defaultRate
-        }
-      }
-    }
   }
   linkedResources {
-    linkedResources {
-      nodes {
-        url
-      }
-    }
+    type
   }
   labels {
     allowsScopedLabels

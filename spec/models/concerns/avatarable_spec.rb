@@ -35,9 +35,11 @@ RSpec.describe Avatarable, feature_category: :shared do
   end
 
   describe '#avatar_path' do
+    let(:version_suffix) { "?v=#{project.updated_at.to_i}" }
+
     context 'with caching enabled', :request_store do
-      let!(:avatar_path) { [relative_url_root, project.avatar.local_url].join }
-      let!(:avatar_url) { [gitlab_host, relative_url_root, project.avatar.local_url].join }
+      let!(:avatar_path) { [relative_url_root, project.avatar.local_url].join + version_suffix }
+      let!(:avatar_url) { [gitlab_host, relative_url_root, project.avatar.local_url].join + version_suffix }
 
       it 'only calls local_url once' do
         expect(project.avatar).to receive(:local_url).once.and_call_original
@@ -54,11 +56,15 @@ RSpec.describe Avatarable, feature_category: :shared do
         expect(project.avatar_path(only_path: false)).to eq(avatar_url)
       end
 
-      it 'calls local_url twice for different sizes' do
+      it 'calls local_url twice for different sizes', :aggregate_failures do
         expect(project.avatar).to receive(:local_url).twice.and_call_original
 
         expect(project.avatar_path).to eq(avatar_path)
-        expect(project.avatar_path(size: 32)).to eq(avatar_path + "?width=32")
+
+        path_with_size = project.avatar_path(size: 32)
+        expect(path_with_size).to start_with(avatar_path.sub(version_suffix, ''))
+        expect(path_with_size).to include("width=32")
+        expect(path_with_size).to include("v=#{project.updated_at.to_i}")
       end
 
       it 'handles unpersisted objects' do
@@ -96,14 +102,16 @@ RSpec.describe Avatarable, feature_category: :shared do
         project.visibility_level = visibility_level
       end
 
-      let(:avatar_path) { (avatar_path_prefix + [project.avatar.local_url]).join }
+      let(:avatar_path) { (avatar_path_prefix + [project.avatar.local_url]).join + version_suffix }
 
       it 'returns the expected avatar path' do
         expect(project.avatar_path(only_path: only_path)).to eq(avatar_path)
       end
 
-      it 'returns the expected avatar path with width parameter' do
-        expect(project.avatar_path(only_path: only_path, size: 128)).to eq(avatar_path + "?width=128")
+      it 'returns the expected avatar path with width parameter', :aggregate_failures do
+        result = project.avatar_path(only_path: only_path, size: 128)
+        expect(result).to include("width=128")
+        expect(result).to include("v=#{project.updated_at.to_i}")
       end
 
       context "when avatar is stored remotely" do
@@ -117,6 +125,14 @@ RSpec.describe Avatarable, feature_category: :shared do
           expect(project.avatar_url(only_path: only_path)).to eq(avatar_path)
         end
       end
+    end
+
+    it 'changes the URL when updated_at changes' do
+      original_path = project.avatar_path
+      project.update_column(:updated_at, 1.hour.from_now)
+      project.reload
+
+      expect(project.avatar_path).not_to eq(original_path)
     end
   end
 end

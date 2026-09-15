@@ -133,7 +133,7 @@ module Banzai
 
         def wrap_link(link, label)
           presenter = label.present(issuable_subject: project || group)
-          LabelsHelper.wrap_label_html(link, label: presenter)
+          LabelsHelper.wrap_label_html(link, label: presenter, for_email: context[:for_email])
         end
 
         def full_path_ref?(matches)

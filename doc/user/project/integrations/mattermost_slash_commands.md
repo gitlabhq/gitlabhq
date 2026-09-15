@@ -1,6 +1,6 @@
 ---
 stage: Plan
-group: Project Management
+group: Work Items
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see <https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments>
 title: Mattermost slash commands
 description: "Configure Mattermost slash commands to run common GitLab operations from a Mattermost chat environment."
@@ -27,7 +27,7 @@ To configure slash commands in Mattermost, you must perform the following steps.
 
 ### Enable custom slash commands in Mattermost
 
-To enable custom slash commands from the Mattermost administrator console:
+To turn on custom slash commands from the Mattermost administrator console:
 
 1. Sign in to Mattermost as a user with administrator privileges.
 1. In the upper left corner, select the Mattermost logo, and then

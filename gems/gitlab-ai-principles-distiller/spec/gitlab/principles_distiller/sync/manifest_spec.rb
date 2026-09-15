@@ -248,6 +248,38 @@ RSpec.describe Gitlab::PrinciplesDistiller::Sync::Manifest do
     end
   end
 
+  describe '.resolve_source_path' do
+    subject(:resolved_path) { manifest.resolve_source_path(path) }
+
+    let(:path) { 'doc/backend.md' }
+
+    before do
+      Gitlab::PrinciplesDistiller::Workspace.path = tmpdir
+    end
+
+    context 'when the declared file exists' do
+      before do
+        FileUtils.mkdir_p(File.join(tmpdir, 'doc'))
+        File.write(File.join(tmpdir, path), 'content')
+      end
+
+      it { is_expected.to eq(path) }
+    end
+
+    context 'when the file was converted to a directory with an _index.md' do
+      before do
+        FileUtils.mkdir_p(File.join(tmpdir, 'doc', 'backend'))
+        File.write(File.join(tmpdir, 'doc', 'backend', '_index.md'), 'content')
+      end
+
+      it { is_expected.to eq('doc/backend/_index.md') }
+    end
+
+    context 'when neither path exists' do
+      it { is_expected.to be_nil }
+    end
+  end
+
   describe '.missing_source_files' do
     subject(:missing) { manifest.missing_source_files }
 
@@ -564,6 +596,46 @@ RSpec.describe Gitlab::PrinciplesDistiller::Sync::Manifest do
       File.write(File.join(tmpdir, 'principles', 'qa.md'), "# QA Principles\n\n## Authoritative sources\n")
 
       expect(manifest.prior_source_paths('qa')).to eq([])
+    end
+  end
+
+  describe '.prior_distillation_sha' do
+    subject(:prior_sha) { manifest.prior_distillation_sha('qa') }
+
+    let(:principles_dir) { File.join(tmpdir, '.ai', 'principles', 'distilled') }
+    let(:principle_path) { File.join(principles_dir, 'qa.md') }
+
+    before do
+      Gitlab::PrinciplesDistiller::Workspace.path = tmpdir
+      FileUtils.mkdir_p(principles_dir)
+    end
+
+    context 'when the distilled file has a recorded SHA' do
+      before do
+        File.write(principle_path, "---\ndistilled_at_sha: abc123\n---\n# QA")
+      end
+
+      it { is_expected.to eq('abc123') }
+    end
+
+    context 'when the distilled file is missing' do
+      it { is_expected.to be_nil }
+    end
+
+    context 'when the distilled file has no frontmatter' do
+      before do
+        File.write(principle_path, '# QA')
+      end
+
+      it { is_expected.to be_nil }
+    end
+
+    context 'when the frontmatter has no recorded SHA' do
+      before do
+        File.write(principle_path, "---\nsource_checksum: abc123\n---\n# QA")
+      end
+
+      it { is_expected.to be_nil }
     end
   end
 

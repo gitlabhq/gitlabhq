@@ -176,7 +176,7 @@ describe('Filter bar', () => {
         { type: TOKEN_TYPE_LABEL, value: { data: selectedLabelList[0].title, operator: '=' } },
       ];
 
-      findFilteredSearch().vm.$emit('onFilter', filters);
+      findFilteredSearch().vm.$emit('on-filter', filters);
 
       expect(utils.processFilters).toHaveBeenCalledWith(filters);
 

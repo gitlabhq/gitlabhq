@@ -26,6 +26,9 @@ export const IID_FAILURE = 'missing_iid';
 export const RETRY_ACTION_TITLE = 'Retry';
 export const MANUAL_ACTION_TITLE = 'Run';
 
+// Highlights both ends of a trigger job <-> downstream pipeline correlation on hover
+export const JOB_HOVER_CLASS = 'gl-shadow-x0-y0-b3-s1-blue-500';
+
 /*
   this poll interval is shared between the graph,
   pipeline header, jobs tab and failed jobs tab to

@@ -101,19 +101,19 @@ RSpec.describe Gitlab::Email::Message::RepositoryPush, feature_category: :source
     describe '#reverse_compare?' do
       subject { message.reverse_compare? }
 
-      it { is_expected.to eq false }
+      it { is_expected.to be false }
     end
 
     describe '#disable_diffs?' do
       subject { message.disable_diffs? }
 
-      it { is_expected.to eq false }
+      it { is_expected.to be false }
     end
 
     describe '#send_from_committer_email?' do
       subject { message.send_from_committer_email? }
 
-      it { is_expected.to eq true }
+      it { is_expected.to be true }
     end
 
     describe '#action_name' do

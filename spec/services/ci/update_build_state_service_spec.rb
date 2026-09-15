@@ -16,6 +16,30 @@ RSpec.describe Ci::UpdateBuildStateService, '#execute', feature_category: :conti
     stub_application_setting(ci_job_live_trace_enabled: true)
   end
 
+  context 'when build state is success' do
+    let(:params) { { state: 'success', runtime_environment_key: '22/s_system-xid-abc/acquisition-key="test-key"' } }
+
+    it 'delegates to RecordSuccessfulSuspensionService' do
+      expect(Ci::RuntimeEnvironments::RecordSuccessfulSuspensionService).to receive(:new)
+        .with(build, environment_key: '22/s_system-xid-abc/acquisition-key="test-key"')
+        .and_return(instance_double(Ci::RuntimeEnvironments::RecordSuccessfulSuspensionService, execute: nil))
+
+      execute
+    end
+  end
+
+  context 'when build state is failed' do
+    let(:params) { { state: 'failed', runtime_environment_key: '22/s_system-xid-abc/acquisition-key="test-key"' } }
+
+    it 'delegates to RecordFailedSuspensionService' do
+      expect(Ci::RuntimeEnvironments::RecordFailedSuspensionService).to receive(:new)
+        .with(build, environment_key: '22/s_system-xid-abc/acquisition-key="test-key"')
+        .and_return(instance_double(Ci::RuntimeEnvironments::RecordFailedSuspensionService, execute: nil))
+
+      execute
+    end
+  end
+
   context 'when build has unknown failure reason' do
     let(:params) do
       {

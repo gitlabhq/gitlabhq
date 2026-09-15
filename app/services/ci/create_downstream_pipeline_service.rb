@@ -138,9 +138,14 @@ module Ci
     end
 
     def can_create_downstream_pipeline?(target_ref)
-      can?(current_user, :update_pipeline, project) &&
+      allowed_to_manage_source_pipeline? &&
         can?(current_user, :create_pipeline, downstream_project) &&
         can_write_ref?(target_ref)
+    end
+
+    def allowed_to_manage_source_pipeline?
+      can?(current_user, :update_pipeline, project) ||
+        can?(current_user, :create_bot_pipeline, project)
     end
 
     def can_write_ref?(target_ref)

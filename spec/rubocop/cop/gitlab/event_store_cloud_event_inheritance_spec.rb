@@ -8,7 +8,7 @@ RSpec.describe RuboCop::Cop::Gitlab::EventStoreCloudEventInheritance, feature_ca
     'Inherit from `Gitlab::EventStore::CloudEvent` (or a descendant) instead of ' \
       '`Gitlab::EventStore::Event`. ' \
       'All events must comply with the CloudEvents spec. ' \
-      'See https://docs.gitlab.com/ee/development/eventstore/'
+      'See https://docs.gitlab.com/development/eventstore/'
   end
 
   context 'when a class inherits from Gitlab::EventStore::Event' do

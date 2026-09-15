@@ -46,7 +46,14 @@ module Gitlab
           return unless from_address
 
           add_email_participants
-          send_thank_you_email unless reply_email?
+
+          return if reply_email?
+
+          if email_rate_limiter.rate_limit_batch!(1)
+            email_rate_limiter.post_suppression_notice(@work_item)
+          else
+            send_thank_you_email
+          end
         end
 
         def metrics_event
@@ -96,13 +103,37 @@ module Gitlab
         def project_from_key
           return unless match = service_desk_key.match(PROJECT_KEY_PATTERN)
 
-          Project.with_service_desk_key(match[:key]).find do |project|
+          projects = Project.with_service_desk_key(match[:key]).select do |project|
             valid_project_key?(project, match[:slug])
           end
+
+          # A lossy full_path_slug means different routes can collapse to the
+          # same service desk address (for example an ancestor group rename on a
+          # self-managed instance without a Topology Service claim). Refuse to
+          # route to an arbitrary match: fail closed so the sender receives a
+          # generic ProjectNotFound rejection instead of the email reaching the
+          # wrong project.
+          if projects.size > 1
+            log_service_desk_key_collision(match, projects)
+            return
+          end
+
+          projects.first
         end
 
         def valid_project_key?(project, slug)
           project.present? && slug == project.full_path_slug
+        end
+
+        def log_service_desk_key_collision(match, projects)
+          logger.warn(
+            build_structured_payload_labkit(
+              Labkit::Fields::LOG_MESSAGE => 'Service desk email address slug collision, refusing to route',
+              Labkit::Fields::ADDITIONAL_DETAILS =>
+                "slug: '#{match[:slug]}', key: '#{match[:key]}', " \
+                "colliding_project_ids: #{projects.map(&:id).sort.join(', ')}"
+            )
+          )
         end
 
         def create_work_item_or_note
@@ -127,7 +158,7 @@ module Gitlab
             current_user: support_bot,
             params: {
               work_item_type_id: work_item_type_id,
-              title: mail.subject,
+              title: mail.subject.presence || _("(no subject)"),
               description: message_including_template,
               confidential: ticket_confidential?,
               external_author: from_address,
@@ -266,6 +297,11 @@ module Gitlab
           Users::Internal.in_organization(project.organization_id).support_bot
         end
         strong_memoize_attr :support_bot
+
+        def email_rate_limiter
+          ::ServiceDesk::EmailRateLimiter.new(project)
+        end
+        strong_memoize_attr :email_rate_limiter
       end
     end
   end

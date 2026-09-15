@@ -338,7 +338,7 @@ func configureRoutes(u *upstream) {
 	proxy := buildProxy(u.Backend, u.Version, signingTripper, u.Config, dependencyProxyInjector, api, proxyOpts...)
 	cableProxy := proxypkg.NewProxy(u.CableBackend, u.Version, u.CableRoundTripper)
 
-	dwHandler := duoworkflow.NewHandler(api, u.rdb, u, string(u.URLPrefix))
+	dwHandler := duoworkflow.NewHandler(api, u.rdb, u, string(u.URLPrefix), u.TrustedForwardedHosts...)
 	if u.upgradedConnsManager != nil {
 		u.upgradedConnsManager.Register(dwHandler)
 	}
@@ -455,19 +455,25 @@ func configureRoutes(u *upstream) {
 		// Terminal websocket
 		u.wsRoute(
 			newRoute(projectPattern+`-/environments/[0-9]+/terminal.ws\z`, "project_environments_terminal_ws", railsBackend),
-			channel.Handler(api)),
+			channel.Handler(api, u.TrustedForwardedHosts...)),
 		u.wsRoute(newRoute(projectPattern+`-/jobs/[0-9]+/terminal.ws\z`, "project_jobs_terminal_ws", railsBackend),
-			channel.Handler(api)),
+			channel.Handler(api, u.TrustedForwardedHosts...)),
 
 		// Proxy Job Services
 		u.wsRoute(
 			newRoute(projectPattern+`-/jobs/[0-9]+/proxy.ws\z`, "project_jobs_proxy_ws", railsBackend),
-			channel.Handler(api)),
+			channel.Handler(api, u.TrustedForwardedHosts...)),
 
 		// Duo Workflow websocket
 		u.wsRoute(
 			newRoute(apiPattern+`v4/ai/duo_workflows/ws\z`, "duo_workflow_ws", railsBackend),
 			dwHandler.Build()),
+
+		// Duo Workflow server-side execution: workhorse runs the flow itself and
+		// streams the actions back, for callers that cannot execute them.
+		u.route("POST",
+			newRoute(apiPattern+`v4/ai/duo_workflows/workflows/\d+/execute\z`, "duo_workflow_execute", railsBackend),
+			dwHandler.BuildHTTP()),
 
 		// Long poll and limit capacity given to jobs/request and builds/register.json
 		u.route("",

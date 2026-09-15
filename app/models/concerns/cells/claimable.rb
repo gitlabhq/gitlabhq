@@ -134,9 +134,12 @@ module Cells
       end
     end
 
-    # Returns an array of metadata for all claim attributes
+    # Returns an array of metadata for all currently claimable attributes. Attributes held
+    # back by a rollout feature flag are excluded, so verification never writes a claim the
+    # live save path would not have written.
     def cells_claims_metadata
       self.class.cells_claims_attributes.filter_map do |attribute, config|
+        next unless self.class.cells_claims_enabled_for_attribute?(attribute)
         next unless cells_claims_attribute_claimable?(attribute, config)
 
         cells_claims_metadata_for(config[:type], self[attribute])

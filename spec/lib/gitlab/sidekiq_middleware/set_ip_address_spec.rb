@@ -16,7 +16,7 @@ RSpec.describe Gitlab::SidekiqMiddleware::SetIpAddress, feature_category: :syste
         expect(::Gitlab::IpAddressState.current).to eq(ip_address)
       end
 
-      expect(::Gitlab::IpAddressState.current).to eq(nil)
+      expect(::Gitlab::IpAddressState.current).to be_nil
     end
 
     context 'when the ip_address_state key is absent' do
@@ -26,10 +26,10 @@ RSpec.describe Gitlab::SidekiqMiddleware::SetIpAddress, feature_category: :syste
         expect(::Gitlab::IpAddressState).not_to receive(:with).with(ip_address)
 
         described_class.new.call(worker, job, queue) do
-          expect(::Gitlab::IpAddressState.current).to eq(nil)
+          expect(::Gitlab::IpAddressState.current).to be_nil
         end
 
-        expect(::Gitlab::IpAddressState.current).to eq(nil)
+        expect(::Gitlab::IpAddressState.current).to be_nil
       end
     end
 
@@ -40,10 +40,10 @@ RSpec.describe Gitlab::SidekiqMiddleware::SetIpAddress, feature_category: :syste
         expect(::Gitlab::IpAddressState).to receive(:with).once.and_call_original
 
         described_class.new.call(worker, job, queue) do
-          expect(::Gitlab::IpAddressState.current).to eq(nil)
+          expect(::Gitlab::IpAddressState.current).to be_nil
         end
 
-        expect(::Gitlab::IpAddressState.current).to eq(nil)
+        expect(::Gitlab::IpAddressState.current).to be_nil
       end
     end
   end

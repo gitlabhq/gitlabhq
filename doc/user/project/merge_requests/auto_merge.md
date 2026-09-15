@@ -175,6 +175,10 @@ merge request pipelines take precedence over other pipeline types. For example,
 an older but successful merge request pipeline allows a merge request to merge,
 despite a newer but failed branch pipeline.
 
+Similarly, a pipeline [imported with the project](../../group/import/migrated_items.md#migrated-project-items) retains
+its source status and can satisfy this check without running on the destination.
+Run a new pipeline on any imported merge requests before you merge them.
+
 ### Allow merge after skipped pipelines
 
 When you set **Pipelines must succeed** for a project,

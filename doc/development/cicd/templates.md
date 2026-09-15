@@ -257,7 +257,7 @@ job1:
 ### Backward compatibility
 
 A template might be dynamically included with the `include:template:` keyword. If
-you make a change to an existing template, you **must** make sure that it doesn't break
+you make a change to an existing template, you must make sure that it doesn't break
 CI/CD in existing projects.
 
 For example, changing a job name in a template could break pipelines in an existing project.
@@ -339,7 +339,7 @@ Templates marked as `latest` can be updated in any release, even with
 it's considered the latest version, for example `Jobs/Deploy.latest.gitlab-ci.yml`.
 
 When you introduce [a breaking change](#backward-compatibility),
-you **must** test and document [the upgrade path](#verify-breaking-changes).
+you must test and document [the upgrade path](#verify-breaking-changes).
 In general, we should not promote the latest template as the best option, as it could surprise users with unexpected problems.
 
 If the `latest` template does not exist yet, you can copy [the stable template](#stable-version).

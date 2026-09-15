@@ -22,11 +22,40 @@ and how it can cause incidents, like [Sidebar wasn't loading for some users](mul
 
 #### Mitigation
 
-To reduce the risks of an incident, on GitLab Self-Managed and GitLab Dedicated, the `@gl_introduced` directive can be used to
-indicate to the backend in which GitLab version the node was introduced. This way, when the query hits an older backend
-version, that future node is stripped out from the query.
+To reduce the risks of an incident, on GitLab Self-Managed and GitLab Dedicated, use the `@gl_introduced` directive to
+tag the GitLab milestone that introduced a node. The backend compares this tagged milestone with its own milestone
+(major.minor of the GitLab version, ignoring the patch) and decides what to do with the node:
 
-This does not mitigate the problem on GitLab.com. New GraphQL fields still need to be deployed to GitLab.com by the backend before the frontend.
+| Tagged milestone vs. backend milestone | Behavior |
+|----------------------------------------|----------|
+| Older than the backend | The field must exist. A missing field causes an `undefinedField` error. |
+| The backend's milestone or later | The field resolves normally if the schema has it, and returns `null` if it doesn't. |
+
+The backend can't tell from a version string alone whether a field exists partway through a milestone. GitLab.com runs
+`-pre` builds, and CI runs stale merge request branches, so two backends can report the same milestone while only one of
+them has the field. That's why the backend's own milestone falls back to `null` instead of an error. A typo'd or
+removed field only returns `null` until the backend moves past the tagged milestone, then errors again.
+
+Tag a new field with the milestone in which its merge request merges.
+
+For example, a field tagged with the 19.4 milestone:
+
+```graphql
+newField @gl_introduced(version: "19.4.0")
+```
+
+behaves like this:
+
+| Backend version | Result |
+|---|---|
+| 19.3.x | `null` |
+| 19.4.0-pre, field's MR deployed | Normal value |
+| 19.4.0-pre, field's MR not deployed | `null` |
+| 19.5.x, field exists | Normal value |
+| 19.5.x, field removed or misspelled | `undefinedField` error |
+
+The directive covers the tagged node's whole subtree. When the backend strips a tagged node, nothing inside it is
+validated: an unknown field or type inside the subtree returns `null` instead of an error.
 
 You can use the `@gl_introduced` directive on any field, for example:
 
@@ -66,136 +95,6 @@ You shouldn't use the directive with:
 
 - Arguments: Executable directives don't support arguments.
 - Fragments: Instead, use the directive in the fragment nodes.
-- Single future fields, in the query or in objects, for example:
-
-  ```graphql
-  query fetchData {
-    futureField @gl_introduced(version: "99.9.9")
-  }
-  ```
-
-  Response:
-
-  ```json
-  {
-    "errors": [
-      {
-        "graphQLErrors": [
-          {
-            "message": "Field must have selections (query 'fetchData' returns Query but has no selections. Did you mean 'fetchData { ... }'?)",
-            "locations": [
-              {
-                "line": 1,
-                "column": 1
-              }
-            ],
-            "path": [
-              "query fetchData"
-            ],
-            "extensions": {
-              "code": "selectionMismatch",
-              "nodeName": "query 'fetchData'",
-              "typeName": "Query"
-            }
-          }
-        ],
-        "clientErrors": [],
-        "networkError": null,
-        "message": "Field must have selections (query 'fetchData' returns Query but has no selections. Did you mean 'fetchData { ... }'?)",
-        "stack": "<REDACTED>"
-      }
-    ]
-  }
-  ```
-
-  Query:
-
-  ```graphql
-  query fetchData {
-    futureField @gl_introduced(version: "99.9.9") {
-      id
-    }
-  }
-  ```
-
-  Response:
-
-  ```json
-  {
-    "errors": [
-      {
-        "graphQLErrors": [
-          {
-            "message": "Field must have selections (query 'fetchData' returns Query but has no selections. Did you mean 'fetchData { ... }'?)",
-            "locations": [
-              {
-                "line": 1,
-                "column": 1
-              }
-            ],
-            "path": [
-              "query fetchData"
-            ],
-            "extensions": {
-              "code": "selectionMismatch",
-              "nodeName": "query 'fetchData'",
-              "typeName": "Query"
-            }
-          }
-        ],
-        "clientErrors": [],
-        "networkError": null,
-        "message": "Field must have selections (query 'fetchData' returns Query but has no selections. Did you mean 'fetchData { ... }'?)",
-        "stack": "<REDACTED>"
-      }
-    ]
-  }
-  ```
-
-  Query:
-
-  ```graphql
-  query fetchData {
-    project(fullPath: "gitlab-org/gitlab") {
-      futureField @gl_introduced(version: "99.9.9")
-    }
-  }
-  ```
-
-  Response:
-
-  ```json
-  {
-    "errors": [
-      {
-        "graphQLErrors": [
-          {
-            "message": "Field must have selections (field 'project' returns Project but has no selections. Did you mean 'project { ... }'?)",
-            "locations": [
-              {
-                "line": 2,
-                "column": 3
-              }
-            ],
-            "path": [
-              "query fetchData",
-              "project"
-            ],
-            "extensions": {
-              "code": "selectionMismatch",
-              "nodeName": "field 'project'",
-              "typeName": "Project"
-            }
-          }
-        ],
-        "clientErrors": [],
-        "networkError": null,
-        "message": "Field must have selections (field 'project' returns Project but has no selections. Did you mean 'project { ... }'?)",
-        "stack": "<REDACTED>"
-      }
-    ]
-  }
-  ```
 
 ##### Non-nullable fields
 
@@ -490,14 +389,14 @@ the context.
 ### Nullable fields
 
 GraphQL allows fields to be "nullable" or "non-nullable". The former means
-that `null` may be returned instead of a value of the specified type. **In
-general**, you should prefer using nullable fields to non-nullable ones, for
+that `null` may be returned instead of a value of the specified type. In
+general, you should prefer using nullable fields to non-nullable ones, for
 the following reasons:
 
 - It's common for data to switch from required to not-required, and back again
-- Even when there is no prospect of a field becoming optional, it may not be **available** at query time
+- Even when there is no prospect of a field becoming optional, it may not be available at query time
   - For instance, the `content` of a blob may need to be looked up from Gitaly
-  - If the `content` is nullable, we can return a **partial** response, instead of failing the whole query
+  - If the `content` is nullable, we can return a partial response, instead of failing the whole query
 - Changing from a non-nullable field to a nullable field is difficult with a versionless schema
 
 Non-nullable fields should only be used when a field is required, very unlikely
@@ -570,9 +469,9 @@ This is summarized in the following table:
 
 | Field purpose | Use `GraphQL::Types::ID`? |
 |---------------|---------------------------|
-| Full path | {{< icon name="check-circle" >}} Yes |
-| Database ID | {{< icon name="dotted-circle" >}} No |
-| IID | {{< icon name="dotted-circle" >}} No |
+| Full path     | {{< yes >}}               |
+| Database ID   | {{< no >}}                |
+| IID           | {{< no >}}                |
 
 ### `markdown_field`
 
@@ -961,7 +860,7 @@ See also:
 
 ### Create a deprecation issue
 
-Every GraphQL deprecation should have a deprecation issue created [using the `Deprecations` issue template](https://gitlab.com/gitlab-org/gitlab/-/issues/new?issuable_template=Deprecations) to track its deprecation and removal.
+Every GraphQL deprecation should have a deprecation issue created [using the `Deprecations` issue template](https://gitlab.com/gitlab-org/gitlab/-/work_items/new?issuable_template=Deprecations) to track its deprecation and removal.
 
 Apply these two labels to the deprecation issue:
 
@@ -1479,7 +1378,7 @@ The one special case is permission errors. In the REST API we return
 `404 Not Found` for any resources that the user does not have permission to
 access. The equivalent behavior in GraphQL is for us to return `null` for
 all absent or unauthorized resources.
-Query resolvers **should not raise errors for unauthorized resources**.
+Query resolvers should not raise errors for unauthorized resources.
 
 The rationale for this is that clients must not be able to distinguish between
 the absence of a record and the presence of one they do not have access to. To
@@ -2635,7 +2534,7 @@ end
   Authenticating a user with the `current_user:` argument for `post_graphql`
   generates more queries on the first request than on subsequent requests on that
   same user. If you are testing for N+1 queries using
-  [QueryRecorder](database/query_recorder.md), use a **different** user for each request.
+  [QueryRecorder](database/query_recorder.md), use a different user for each request.
 
   The below example shows how a test for avoiding N+1 queries should look:
 
@@ -2764,7 +2663,7 @@ For guidance, see the [GraphQL API](documentation/graphql_styleguide.md) page.
 
 ## Include a changelog entry
 
-All client-facing changes **must** include a [changelog entry](changelog.md).
+All client-facing changes must include a [changelog entry](changelog.md).
 
 ## Laziness
 

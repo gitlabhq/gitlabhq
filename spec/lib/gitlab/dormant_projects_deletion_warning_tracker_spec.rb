@@ -35,11 +35,11 @@ RSpec.describe Gitlab::DormantProjectsDeletionWarningTracker, :freeze_time, feat
     end
 
     it 'returns true if the project has already been notified' do
-      expect(described_class.new(project_id).notified?).to eq(true)
+      expect(described_class.new(project_id).notified?).to be(true)
     end
 
     it 'returns false if the project has not been notified' do
-      expect(described_class.new(2).notified?).to eq(false)
+      expect(described_class.new(2).notified?).to be(false)
     end
   end
 
@@ -47,7 +47,7 @@ RSpec.describe Gitlab::DormantProjectsDeletionWarningTracker, :freeze_time, feat
     it 'marks the project as being notified' do
       described_class.new(project_id).mark_notified
 
-      expect(described_class.new(project_id).notified?).to eq(true)
+      expect(described_class.new(project_id).notified?).to be(true)
     end
   end
 
@@ -61,7 +61,7 @@ RSpec.describe Gitlab::DormantProjectsDeletionWarningTracker, :freeze_time, feat
     end
 
     it 'returns nil if a deletion warning email has not been sent for a given project' do
-      expect(described_class.new(2).notification_date).to eq(nil)
+      expect(described_class.new(2).notification_date).to be_nil
     end
   end
 
@@ -99,7 +99,7 @@ RSpec.describe Gitlab::DormantProjectsDeletionWarningTracker, :freeze_time, feat
     it 'resets the project as not being notified' do
       described_class.new(project_id).reset
 
-      expect(described_class.new(project_id).notified?).to eq(false)
+      expect(described_class.new(project_id).notified?).to be(false)
     end
   end
 end

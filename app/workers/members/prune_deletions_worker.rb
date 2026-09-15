@@ -48,22 +48,27 @@ module Members
       memberships = ::Member.in_hierarchy(namespace).with_user(user).limit(MEMBER_BATCH_SIZE)
 
       destroyed_count = 0
+      single_refresh = Feature.enabled?(:member_prune_deletion_per_batch_authorized_projects_refresh, namespace)
       destroy_duration = Benchmark.realtime do
         memberships.each do |member|
           # limit deletion to execute only for 60s (execution_tracker::MAX_RUNTIME)
           break if execution_tracker.over_limit?
 
-          destroy_member(member, member_deletion_schedule)
+          destroy_member(member, member_deletion_schedule, skip_authorized_projects_refresh: single_refresh)
           destroyed_count += 1
         end
       end
 
-      log_monitoring_data(user.id, namespace.id, destroyed_count, destroy_duration)
+      log_monitoring_data(user.id, namespace.id, destroyed_count, destroy_duration, single_refresh)
 
       # when all memberships removed, cleanup schedule:
       cleanup_schedule(member_deletion_schedule) if memberships.count === 0
     rescue Gitlab::Access::AccessDeniedError
       cleanup_schedule(member_deletion_schedule)
+    ensure
+      if single_refresh && (destroyed_count > 0 || member_deletion_schedule.destroyed?)
+        refresh_authorized_projects(user)
+      end
     end
 
     def member_deletion_schedules
@@ -71,19 +76,29 @@ module Members
     end
     strong_memoize_attr :member_deletion_schedules
 
-    def destroy_member(member, member_deletion_schedule)
+    def destroy_member(member, member_deletion_schedule, skip_authorized_projects_refresh:)
       scheduled_by = member_deletion_schedule.scheduled_by
 
-      ::Members::DestroyService.new(member, current_user: scheduled_by, skip_subresources: true).execute
+      ::Members::DestroyService.new(
+        member,
+        current_user: scheduled_by,
+        skip_subresources: true,
+        skip_authorized_projects_refresh: skip_authorized_projects_refresh
+      ).execute
     end
 
-    def log_monitoring_data(user_id, namespace_id, destroyed_count, destroy_duration)
+    def refresh_authorized_projects(user)
+      UserProjectAccessChangedService.new(user.id).execute(priority: UserProjectAccessChangedService::MEDIUM_PRIORITY)
+    end
+
+    def log_monitoring_data(user_id, namespace_id, destroyed_count, destroy_duration, single_refresh)
       Gitlab::AppLogger.info(
         message: 'Processed scheduled member deletion',
         user_id: user_id,
         namespace_id: namespace_id,
         destroyed_count: destroyed_count,
-        destroy_duration_s: destroy_duration
+        destroy_duration_s: destroy_duration,
+        single_authorized_projects_refresh: single_refresh
       )
     end
 

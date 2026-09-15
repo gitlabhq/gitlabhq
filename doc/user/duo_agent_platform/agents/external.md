@@ -32,6 +32,7 @@ title: External agents
 - **Work item created** trigger event type [introduced](https://gitlab.com/gitlab-org/gitlab/-/work_items/599985) in GitLab 19.1.
 - **Merge request ready** trigger event type [generally available](https://gitlab.com/gitlab-org/gitlab/-/work_items/598421) in GitLab 19.1. Feature flag `merge_request_ready_flow_trigger` removed.
 - **Work item status changed** trigger event type [introduced](https://gitlab.com/gitlab-org/gitlab/-/work_items/599983) in GitLab 19.2.
+- **Merge request** trigger event type with the **Created** action [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/242698) in GitLab 19.4.
 
 {{< /history >}}
 
@@ -239,6 +240,8 @@ The following environment variables are automatically injected when `injectGatew
 
 GitLab-managed credentials are available for only Anthropic Claude and OpenAI Codex.
 
+To authenticate an agent to the GitLab API, see [Authenticate to the GitLab API](#authenticate-to-the-gitlab-api).
+
 ### Supported models
 
 For GitLab-managed credentials, the following AI models are supported:
@@ -310,6 +313,34 @@ The following CI/CD variables are available:
 | Google Gemini CLI          | `GOOGLE_CLOUD_PROJECT`       | Google Cloud project ID. |
 | Google Gemini CLI          | `GOOGLE_CLOUD_LOCATION`      | Google Cloud project location. |
 
+## Authenticate to the GitLab API
+
+Every external agent receives a GitLab OAuth token set as the environment variable `AI_FLOW_GITLAB_TOKEN`.
+These tokens are limited to the scope granted to them. They can only access
+[GitLab API endpoints with the `ai_workflows` scope](../flows/foundational_flows/software_development.md#apis-that-the-flow-has-access-to).
+Endpoints outside that scope are refused even when the token is sent correctly.
+
+To call the GitLab API from an external agent, send `AI_FLOW_GITLAB_TOKEN` as an `Authorization: Bearer` token.
+If you use the `PRIVATE-TOKEN` header to send the token, the API returns `401 Unauthorized`.
+
+```shell
+curl --header "Authorization: Bearer $AI_FLOW_GITLAB_TOKEN" \
+  "https://$AI_FLOW_GITLAB_HOSTNAME/api/v4/user"
+```
+
+To use the `glab` CLI in your agent, write the token to `~/.config/glab-cli/config.yml`
+and set `is_oauth2: "true"` so that `glab` sends the token correctly:
+
+```yaml
+hosts:
+  $AI_FLOW_GITLAB_HOSTNAME:
+    token: $AI_FLOW_GITLAB_TOKEN
+    is_oauth2: "true"
+```
+
+The GitLab-managed Claude and Codex agents use this same pattern.
+For working examples, see [external agent configuration examples](external_examples.md).
+
 ## Authenticate with ID tokens
 
 {{< history >}}
@@ -353,12 +384,9 @@ For more information about the token payload, see
 {{< history >}}
 
 - Enabling a public agent for multiple projects [introduced](https://gitlab.com/gitlab-org/gitlab/-/work_items/600526) in GitLab 19.2 [with a feature flag](../../../administration/feature_flags/_index.md) named `ai_catalog_bulk_item_consumer_create`. Enabled by default.
+- Feature flag `ai_catalog_bulk_item_consumer_create` removed in GitLab 19.4.
 
 {{< /history >}}
-
-> [!flag]
-> The availability of this feature is controlled by a feature flag.
-> For more information, see the history.
 
 Enable an agent to trigger it from an issue, merge request, or discussion.
 
@@ -501,12 +529,9 @@ If you'd prefer, you can [create an external agent manually](#create-an-external
 
 - Roles that can view private agents [expanded](https://gitlab.com/gitlab-org/gitlab/-/work_items/582507) in GitLab 18.7.
 - Restricted visibility [introduced](https://gitlab.com/gitlab-org/gitlab/-/work_items/603253) in GitLab 19.3 [with a feature flag](../../../administration/feature_flags/_index.md) named `ai_catalog_internal_visibility`. Enabled by default.
+- Generally available in GitLab 19.4. Feature flag `ai_catalog_internal_visibility` removed.
 
 {{< /history >}}
-
-> [!flag]
-> The **Restricted** visibility option is controlled by a feature flag named `ai_catalog_internal_visibility`.
-> For more information, see the history.
 
 When you create a custom external agent, you select a project to manage it and choose
 whether the agent is public, private, or restricted.
@@ -538,12 +563,9 @@ You cannot make a public or restricted agent private if the agent has been turne
 {{< history >}}
 
 - Restricted visibility [introduced](https://gitlab.com/gitlab-org/gitlab/-/work_items/603253) in GitLab 19.3 [with a feature flag](../../../administration/feature_flags/_index.md) named `ai_catalog_internal_visibility`. Enabled by default.
+- Generally available in GitLab 19.4. Feature flag `ai_catalog_internal_visibility` removed.
 
 {{< /history >}}
-
-> [!flag]
-> The **Restricted** visibility option is controlled by a feature flag named `ai_catalog_internal_visibility`.
-> For more information, see the history.
 
 Start by creating the external agent in the AI Catalog.
 

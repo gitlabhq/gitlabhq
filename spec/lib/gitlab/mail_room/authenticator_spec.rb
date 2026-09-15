@@ -119,29 +119,29 @@ RSpec.describe Gitlab::MailRoom::Authenticator, feature_category: :service_desk 
       it 'returns false for a token signed with the wrong secret' do
         token = symmetric_token(secret: 'wrong secret')
 
-        expect(described_class.verify_api_request(headers_for(token), 'incoming_email')).to eq(false)
+        expect(described_class.verify_api_request(headers_for(token), 'incoming_email')).to be(false)
       end
 
       it 'returns false for a valid token with the wrong issuer' do
         token = symmetric_token(data: { iss: 'invalid_issuer' })
 
-        expect(described_class.verify_api_request(headers_for(token), 'incoming_email')).to eq(false)
+        expect(described_class.verify_api_request(headers_for(token), 'incoming_email')).to be(false)
       end
 
       it 'returns false for an expired token' do
         token = symmetric_token(data: payload.merge(iat: (Time.current - 5.minutes - 1.second).to_i))
 
-        expect(described_class.verify_api_request(headers_for(token), 'incoming_email')).to eq(false)
+        expect(described_class.verify_api_request(headers_for(token), 'incoming_email')).to be(false)
       end
 
       it 'returns false when the token is in the wrong header field' do
         headers = { 'a-wrong-header' => symmetric_token }
 
-        expect(described_class.verify_api_request(headers, 'incoming_email')).to eq(false)
+        expect(described_class.verify_api_request(headers, 'incoming_email')).to be(false)
       end
 
       it 'does not attempt asymmetric verification even if the token carries a kid' do
-        expect(described_class.verify_api_request(headers_for(asymmetric_token), 'incoming_email')).to eq(false)
+        expect(described_class.verify_api_request(headers_for(asymmetric_token), 'incoming_email')).to be(false)
       end
     end
 
@@ -156,23 +156,23 @@ RSpec.describe Gitlab::MailRoom::Authenticator, feature_category: :service_desk 
       it 'returns false for a token signed with a different private key' do
         token = asymmetric_token(key: OpenSSL::PKey::EC.generate('prime256v1'))
 
-        expect(described_class.verify_api_request(headers_for(token), 'incoming_email')).to eq(false)
+        expect(described_class.verify_api_request(headers_for(token), 'incoming_email')).to be(false)
       end
 
       it 'returns false for a token with an unknown kid' do
         token = asymmetric_token(kid: 'unknown-kid')
 
-        expect(described_class.verify_api_request(headers_for(token), 'incoming_email')).to eq(false)
+        expect(described_class.verify_api_request(headers_for(token), 'incoming_email')).to be(false)
       end
 
       it 'does not attempt symmetric verification for a token without a kid' do
         token = asymmetric_token(kid: nil)
 
-        expect(described_class.verify_api_request(headers_for(token), 'incoming_email')).to eq(false)
+        expect(described_class.verify_api_request(headers_for(token), 'incoming_email')).to be(false)
       end
 
       it 'returns false for an HS256 token (rejects token-chosen algorithm)' do
-        expect(described_class.verify_api_request(headers_for(symmetric_token), 'incoming_email')).to eq(false)
+        expect(described_class.verify_api_request(headers_for(symmetric_token), 'incoming_email')).to be(false)
       end
     end
 
@@ -192,7 +192,7 @@ RSpec.describe Gitlab::MailRoom::Authenticator, feature_category: :service_desk 
       it 'returns false for an HS256 token that carries a kid (routed to asymmetric)' do
         token = JWT.encode(payload, incoming_email_secret, 'HS256', { kid: kid_for(public_key) })
 
-        expect(described_class.verify_api_request(headers_for(token), 'incoming_email')).to eq(false)
+        expect(described_class.verify_api_request(headers_for(token), 'incoming_email')).to be(false)
       end
     end
 
@@ -226,25 +226,25 @@ RSpec.describe Gitlab::MailRoom::Authenticator, feature_category: :service_desk 
       it 'rejects an incoming_email symmetric token on the service_desk_email mailbox' do
         token = symmetric_token(secret: incoming_email_secret)
 
-        expect(described_class.verify_api_request(headers_for(token), 'service_desk_email')).to eq(false)
+        expect(described_class.verify_api_request(headers_for(token), 'service_desk_email')).to be(false)
       end
 
       it 'rejects a service_desk_email symmetric token on the incoming_email mailbox' do
         token = symmetric_token(secret: service_desk_email_secret)
 
-        expect(described_class.verify_api_request(headers_for(token), 'incoming_email')).to eq(false)
+        expect(described_class.verify_api_request(headers_for(token), 'incoming_email')).to be(false)
       end
 
       it 'rejects an incoming_email asymmetric token on the service_desk_email mailbox' do
         token = asymmetric_token(key: private_key, kid: kid_for(public_key))
 
-        expect(described_class.verify_api_request(headers_for(token), 'service_desk_email')).to eq(false)
+        expect(described_class.verify_api_request(headers_for(token), 'service_desk_email')).to be(false)
       end
 
       it 'rejects a service_desk_email asymmetric token on the incoming_email mailbox' do
         token = asymmetric_token(key: service_desk_private_key, kid: kid_for(service_desk_public_key))
 
-        expect(described_class.verify_api_request(headers_for(token), 'incoming_email')).to eq(false)
+        expect(described_class.verify_api_request(headers_for(token), 'incoming_email')).to be(false)
       end
     end
 
@@ -252,13 +252,13 @@ RSpec.describe Gitlab::MailRoom::Authenticator, feature_category: :service_desk 
       let(:configs) { {} }
 
       it 'returns false' do
-        expect(described_class.verify_api_request(headers_for(symmetric_token), 'incoming_email')).to eq(false)
+        expect(described_class.verify_api_request(headers_for(symmetric_token), 'incoming_email')).to be(false)
       end
     end
 
     context 'when the mailbox type does not exist' do
       it 'returns false' do
-        expect(described_class.verify_api_request(headers_for('something'), 'invalid_mailbox_type')).to eq(false)
+        expect(described_class.verify_api_request(headers_for('something'), 'invalid_mailbox_type')).to be(false)
       end
     end
 

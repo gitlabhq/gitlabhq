@@ -6,6 +6,10 @@ module Mutations
       class Create < ::Mutations::SavedReplies::Create
         graphql_name 'SavedReplyCreate'
 
+        authorize_granular_token permissions: :create_saved_reply,
+          boundary: :user,
+          boundary_type: :user
+
         field :saved_reply, ::Types::Users::SavedReplyType,
           null: true,
           description: 'Saved reply after mutation.'

@@ -4,6 +4,8 @@ module Mcp
   module Tools
     module Base
       class BaseService
+        include Mcp::Tools::Concerns::GovernanceNamespaceResolver
+
         # override this method when renaming tools
         def self.tool_aliases
           []
@@ -62,6 +64,14 @@ module Mcp
         # Tools should override this method if they need to check for specific conditions.
         def available?
           true
+        end
+
+        def toolset
+          Toolsets::UNASSIGNED
+        end
+
+        def unlisted?
+          false
         end
 
         # Returns tool annotations (e.g., readOnly flag for governance controls).

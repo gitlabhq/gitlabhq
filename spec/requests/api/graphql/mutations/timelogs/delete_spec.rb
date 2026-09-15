@@ -35,4 +35,17 @@ RSpec.describe 'Delete a timelog', feature_category: :team_planning do
       expect(mutation_response['timelog']).to include('id' => timelog.to_global_id.to_s)
     end
   end
+
+  it_behaves_like 'authorizing granular token permissions for GraphQL', :delete_timelog do
+    let!(:timelog) { create(:timelog, user: author, issue: issue, time_spent: 1800) }
+
+    let(:user) { author }
+    let(:boundary_object) { project }
+    let(:request) { post_graphql_mutation(mutation, token: { personal_access_token: pat }) }
+
+    before_all do
+      # Granular token permissions only apply to members of the boundary.
+      project.add_developer(author)
+    end
+  end
 end

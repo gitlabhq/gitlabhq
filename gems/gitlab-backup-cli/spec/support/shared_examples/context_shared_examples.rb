@@ -143,6 +143,32 @@ RSpec.shared_examples "context exposing all common configuration methods" do
     end
   end
 
+  describe '#ci_catalog_bundles_path' do
+    context 'with a missing configuration value' do
+      it 'returns the default value in full path' do
+        use_gitlab_config_fixture('gitlab-missingconfigs.yml')
+
+        expect(context.ci_catalog_bundles_path).to eq(fake_gitlab_basepath.join('test-shared/ci_catalog_bundles'))
+      end
+    end
+
+    context 'with a relative path configured in gitlab.yml' do
+      it 'returns a full path based on gitlab basepath' do
+        use_gitlab_config_fixture('gitlab-relativepaths.yml')
+
+        expect(context.ci_catalog_bundles_path).to eq(fake_gitlab_basepath.join('tmp/tests/ci_catalog_bundles'))
+      end
+    end
+
+    context 'with a full path configured in gitlab.yml' do
+      it 'returns a full path as configured in gitlab.yml' do
+        use_gitlab_config_fixture('config/gitlab.yml')
+
+        expect(context.ci_catalog_bundles_path).to eq(Pathname('/tmp/gitlab/full/ci_catalog_bundles'))
+      end
+    end
+  end
+
   describe '#ci_lfs_path' do
     context 'with a missing configuration value' do
       it 'returns the default value in full path' do

@@ -3,7 +3,7 @@
 require 'spec_helper'
 require_migration!
 
-RSpec.describe BackfillVisibilityOnAiCatalogItems, feature_category: :workflow_catalog do
+RSpec.describe BackfillVisibilityOnAiCatalogItems, feature_category: :ai_catalog_curation do
   let(:ai_catalog_items) { table(:ai_catalog_items) }
   let(:organizations) { table(:organizations) }
 

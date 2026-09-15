@@ -138,7 +138,7 @@ kubectl get kustomizations.kustomize.toolkit.fluxcd.io -n flux-system
 
 You might encounter an issue if your legacy agent-based GitOps setup
 refers to a `default_namespace` in the agent configuration, but omits this
-namespace in the manifests itself. This causes an error where
+namespace in the manifests themselves. This causes an error where
 your bootstrapped Flux doesn't know that your existing manifests are applied
 to the `default_namespace`.
 

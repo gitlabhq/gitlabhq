@@ -12,7 +12,7 @@ module AuthorizedProjectUpdate
     queue_namespace :authorized_project_update
 
     idempotent!
-    deduplicate :until_executing, including_scheduled: true
+    deduplicate :until_executed, if_deduplicated: :reschedule_once, including_scheduled: true
 
     def perform(user_id)
       ::Gitlab::Database::LoadBalancing::SessionMap.use_replica_if_available do

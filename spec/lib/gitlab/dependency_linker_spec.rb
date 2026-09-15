@@ -108,6 +108,29 @@ RSpec.describe Gitlab::DependencyLinker do
       described_class.link(blob_name, nil, nil)
     end
 
+    it 'links using a preselected linker', :aggregate_failures do
+      dependency_linker = class_double(described_class::GemfileLinker)
+
+      expect(described_class).not_to receive(:linker)
+      expect(dependency_linker).to receive(:link)
+        .with('plain text', 'highlighted text')
+        .and_return('linked text')
+
+      result = described_class.link('Gemfile', 'plain text', 'highlighted text', linker: dependency_linker)
+
+      expect(result).to eq('linked text')
+    end
+
+    it 'selects a linker when an explicit linker is nil', :aggregate_failures do
+      expect(described_class::GemfileLinker).to receive(:link)
+        .with('plain text', 'highlighted text')
+        .and_return('linked text')
+
+      result = described_class.link('Gemfile', 'plain text', 'highlighted text', linker: nil)
+
+      expect(result).to eq('linked text')
+    end
+
     it 'increments usage counter based on specified used_on', :prometheus do
       allow(described_class::GemfileLinker).to receive(:link)
 

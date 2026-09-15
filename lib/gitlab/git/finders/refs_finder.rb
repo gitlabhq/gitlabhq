@@ -17,6 +17,8 @@ module Gitlab
         # @param ref_names [Array<String>] List of specific ref names to find (exact match, overrides search)
         # @param max_per_page [Integer, nil] Maximum allowed results per page for pagination
         # @param ignore_case [Boolean] When true, makes pattern matching and sorting case-insensitive
+        # @param exclude_ref_names [Array<String>] Unqualified ref names to exclude from results (exact match);
+        #   the finder prepends the ref prefix automatically
         #
         # @example Basic search
         #   RefsFinder.new(repo, ref_type: :branches, search: "feat")
@@ -29,7 +31,8 @@ module Gitlab
         # rubocop:disable Metrics/ParameterLists -- explicit keywords keep the finder initializer contract clear
         def initialize(
           repository, ref_type:, search: nil, sort_by: nil, per_page: nil, page_token: nil,
-          ref_names: [], max_per_page: nil, ignore_case: false)
+          ref_names: [], max_per_page: nil, ignore_case: false,
+          exclude_ref_names: [])
           @repository = repository
           @search = search
           @ref_type = ref_type
@@ -39,6 +42,7 @@ module Gitlab
           @ref_names = Array(ref_names)
           @max_per_page = max_per_page
           @ignore_case = ignore_case
+          @exclude_ref_names = Array(exclude_ref_names)
 
           validate_sort_by!
         end
@@ -51,7 +55,8 @@ module Gitlab
             patterns,
             sort_by: sort_by,
             pagination_params: pagination_params,
-            ignore_case: ignore_case
+            ignore_case: ignore_case,
+            exclude_patterns: all_exclude_patterns
           )
           @next_cursor = raw_refs.next_cursor
 
@@ -64,7 +69,8 @@ module Gitlab
 
         private
 
-        attr_reader :repository, :search, :ref_type, :sort_by, :page_token, :ref_names, :max_per_page, :ignore_case
+        attr_reader :repository, :search, :ref_type, :sort_by, :page_token, :ref_names, :max_per_page, :ignore_case,
+          :exclude_ref_names
 
         def validate_sort_by!
           return if sort_by.blank?
@@ -90,10 +96,18 @@ module Gitlab
           end
         end
 
+        def all_exclude_patterns
+          exclude_ref_names.map { |name| [prefix, glob_escape(name)].join }
+        end
+
+        # Escape every git-wildmatch metacharacter except '*' so Gitaly's ListRefs agrees with RefMatcher.
+        # wildmatch has no brace expansion, so {} stay literal in both engines.
+        def glob_escape(value)
+          value.gsub(/[?\[\]\\]/) { |char| "\\#{char}" }
+        end
+
         def glob_safe_search
-          # Escape every git-wildmatch metacharacter except '*' so Gitaly's ListRefs agrees with RefMatcher.
-          # wildmatch has no brace expansion, so {} stay literal in both engines.
-          search&.gsub(/[?\[\]\\]/) { |char| "\\#{char}" }
+          glob_escape(search) if search
         end
 
         def wildcard_search?

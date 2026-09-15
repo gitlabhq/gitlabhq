@@ -473,7 +473,7 @@ content:
 ```
 
 Update the `config.toml` file to mount the file to
-`/etc/docker/daemon.json`. This mounts the file for **every**
+`/etc/docker/daemon.json`. This mounts the file for every
 container created by GitLab Runner. The configuration is
 detected by the `dind` service.
 
@@ -517,7 +517,7 @@ kubectl create configmap docker-daemon --namespace gitlab-runner --from-file /tm
 
 After the ConfigMap is created, you can update the `config.toml`
 file to mount the file to `/etc/docker/daemon.json`. This update
-mounts the file for **every** container created by GitLab Runner.
+mounts the file for every container created by GitLab Runner.
 The `dind` service detects this configuration.
 
 ```toml

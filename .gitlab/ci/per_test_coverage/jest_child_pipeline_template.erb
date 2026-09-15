@@ -7,8 +7,8 @@
 # Jest's --coverage flag (the reporter needs testResult.coverage populated).
 # jest_ci.js runs jest with --shard so each parallel instance runs its slice
 # of the queue. Each shard writes tmp/per-test-coverage-jest-{slug}-{hex}.json
-# as a regular job artifact, pulled by the parent pipeline's export job via
-# cross-pipeline `needs:` (see related team#663 work).
+# as a regular job artifact, downloaded by the parent pipeline's export job
+# by job-name pattern (scripts/coverage/download_per_test_coverage_artifacts.rb).
 
 include:
   - local: .gitlab/ci/per_test_coverage/jest_test_base.gitlab-ci.yml
@@ -36,9 +36,22 @@ workflow:
         on_new_commit: none
     - when: always
 
-jest per-test-coverage:
+.jest-per-test-coverage-base:
   extends:
     - .frontend-test-base
+  rules:
+    - when: always
+  variables:
+    GLCI_PER_TEST_COVERAGE: "true"
+  artifacts:
+    expire_in: 7d
+    paths:
+      - tmp/per-test-coverage-jest-*.json
+    when: always
+
+jest per-test-coverage:
+  extends:
+    - .jest-per-test-coverage-base
   needs:
   <% if repo_from_artifacts %>
     - pipeline: $PARENT_PIPELINE_ID
@@ -51,15 +64,36 @@ jest per-test-coverage:
       job: compile-fe-islands
     - pipeline: $PARENT_PIPELINE_ID
       job: per-test-coverage:pipeline-generate
-  rules:
-    - when: always
-  variables:
-    GLCI_PER_TEST_COVERAGE: "true"
   parallel: <%= parallelism %>
   script:
     - scripts/frontend/jest_ci.js --coverage --filter-file "${GLCI_PER_TEST_COVERAGE_QUEUE_JEST_PATH}"
-  artifacts:
-    expire_in: 7d
-    paths:
-      - tmp/per-test-coverage-jest-*.json
-    when: always
+
+# fixture_ci_sequencer.js partitions the suite on JEST_FIXTURE_JOBS_ONLY.
+# Without this job, every fixture-using spec in the queue would be
+# filtered out of the capture and its coverage data would go stale.
+jest-with-fixtures per-test-coverage:
+  extends:
+    - .jest-per-test-coverage-base
+  needs:
+  <% if repo_from_artifacts %>
+    - pipeline: $PARENT_PIPELINE_ID
+      job: clone-gitlab-repo
+  <% end %>
+    - pipeline: $PARENT_PIPELINE_ID
+      job: compile-fe-islands
+    - pipeline: $PARENT_PIPELINE_ID
+      job: per-test-coverage:pipeline-generate
+    # The fixture files (tmp/tests/frontend) are built by the parent
+    # pipeline's rspec-all frontend_fixture shards, and each shard writes a
+    # different slice, so this job needs all of them. A cross-pipeline need
+    # matches exactly one build name and cannot expand a parallel job the
+    # way a same-pipeline need can, so each shard is listed individually.
+  <%- fixture_shard_count.times do |i| -%>
+    - pipeline: $PARENT_PIPELINE_ID
+      job: rspec-all frontend_fixture <%= i + 1 %>/<%= fixture_shard_count %>
+  <%- end -%>
+    - pipeline: $PARENT_PIPELINE_ID
+      job: rspec-all frontend_fixture clickhouse
+  parallel: <%= fixture_parallelism %>
+  script:
+    - scripts/frontend/jest_ci.js --coverage --fixtures --filter-file "${GLCI_PER_TEST_COVERAGE_QUEUE_JEST_PATH}"

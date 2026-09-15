@@ -2,17 +2,15 @@
 
 require 'spec_helper'
 
-RSpec.describe Gitlab::Git::CrossRepo do
+RSpec.describe Gitlab::Git::CrossRepo, feature_category: :source_code_management do
   let_it_be(:source_project) { create(:project, :repository) }
   let_it_be(:target_project) { create(:project, :repository) }
 
   let(:source_repo) { source_project.repository.raw_repository }
   let(:target_repo) { target_project.repository.raw_repository }
 
-  let(:source_branch) { 'feature' }
   let(:target_branch) { target_repo.root_ref }
 
-  let(:source_commit) { source_repo.commit(source_branch) }
   let(:target_commit) { source_repo.commit(target_branch) }
 
   def execute(&block)

@@ -365,6 +365,60 @@ RSpec.describe Members::DestroyService, feature_category: :groups_and_projects d
           end
         end
       end
+
+      describe 'authorized projects refresh' do
+        subject(:destroy_member) { described_class.new(member, current_user: current_user, **opts).execute }
+
+        # StubbedMember runs the per-member refresh inline, so a project that stays
+        # authorized after the destroy shows the service left the refresh to the caller
+        context 'with skip_authorized_projects_refresh: true' do
+          let(:opts) { { skip_authorized_projects_refresh: true } }
+
+          context 'with a project member' do
+            let!(:member) { group_project.add_developer(member_user) }
+
+            it 'leaves the refresh to the caller' do
+              expect { destroy_member }
+                .to change { group_project.members.count }.by(-1)
+                .and not_change { member_user.authorized_projects.include?(group_project) }.from(true)
+            end
+          end
+
+          context 'with a group member' do
+            let!(:member) { group.add_developer(member_user) }
+
+            it 'leaves the refresh to the caller' do
+              expect { destroy_member }
+                .to change { group.members.count }.by(-1)
+                .and not_change { member_user.authorized_projects.include?(group_project) }.from(true)
+            end
+
+            context 'with skip_subresources: false' do
+              let(:opts) { { skip_authorized_projects_refresh: true, skip_subresources: false } }
+
+              before do
+                group_project.add_maintainer(member_user)
+              end
+
+              it 'leaves the refresh to the caller for the subresource memberships too' do
+                expect { destroy_member }
+                  .to change { Member.with_user(member_user).count }.by(-2)
+                  .and not_change { member_user.authorized_projects.include?(group_project) }.from(true)
+              end
+            end
+          end
+        end
+
+        context 'without skip_authorized_projects_refresh' do
+          let(:opts) { {} }
+          let!(:member) { group.add_developer(member_user) }
+
+          it 'refreshes after the destroy' do
+            expect { destroy_member }
+              .to change { member_user.authorized_projects.include?(group_project) }.from(true).to(false)
+          end
+        end
+      end
     end
   end
 

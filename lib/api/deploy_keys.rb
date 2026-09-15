@@ -7,7 +7,6 @@ module API
     deploy_keys_tags = %w[deploy_resources]
     before do
       authenticate!
-      set_current_organization
     end
 
     feature_category :continuous_delivery

@@ -8,7 +8,7 @@
       at
       = event.created_at.to_fs(:short)
   - unless event.rm_ref?
-    .blockquote= markdown(escape_once(event.commit_title), pipeline: :atom, project: event.project, author: event.author)
+    .blockquote= atom_markdown(escape_once(event.commit_title), project: event.project, author: event.author)
     - if event.commits_count > 1
       %p
         %i

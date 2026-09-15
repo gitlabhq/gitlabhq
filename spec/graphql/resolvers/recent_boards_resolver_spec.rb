@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Resolvers::RecentBoardsResolver do
+RSpec.describe Resolvers::RecentBoardsResolver, feature_category: :planning_views do
   include GraphqlHelpers
 
   let_it_be(:user) { create(:user) }

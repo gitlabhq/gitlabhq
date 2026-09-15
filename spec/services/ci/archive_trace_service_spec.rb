@@ -15,8 +15,6 @@ RSpec.describe Ci::ArchiveTraceService, '#execute', feature_category: :continuou
     end
 
     it 'does not schedule an organization isolation status check' do
-      stub_feature_flags(isolation_status_check: true)
-
       expect(::Organizations::CheckOrganizationIsolationStatusWorker).not_to receive(:perform_async)
 
       subject

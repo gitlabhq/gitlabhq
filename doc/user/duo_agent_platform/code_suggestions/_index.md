@@ -154,7 +154,7 @@ Different language models can be the source for Code Suggestions.
 
 - On GitLab.com: GitLab hosts the models and connects to them through the cloud-based AI Gateway.
 - On GitLab Self-Managed, two options exist:
-  - GitLab can [host the models and connects to them through the cloud-based AI Gateway](../../project/repository/code_suggestions/set_up.md).
+  - GitLab can [host the models and connect to them through the cloud-based AI Gateway](../../project/repository/code_suggestions/set_up.md).
   - Your organization can use [self-hosted models](../../../administration/gitlab_duo_self_hosted/_index.md),
     which means you host the AI Gateway and language models. You can use GitLab-managed models,
     other supported language models, or bring your own compatible model.

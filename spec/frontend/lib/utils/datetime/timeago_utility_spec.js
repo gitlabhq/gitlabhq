@@ -2,6 +2,7 @@ import {
   getTimeago,
   localTimeAgo,
   initTimeagoPrintHandler,
+  initLocalDateTimes,
   timeFor,
   duration,
 } from '~/lib/utils/datetime/timeago_utility';
@@ -284,6 +285,30 @@ describe('TimeAgo utils', () => {
 
         expect(element.innerText).toBe(text);
       });
+    });
+  });
+
+  describe('initLocalDateTimes', () => {
+    it('replaces the server-rendered fallback with the local absolute date', () => {
+      document.body.innerHTML =
+        '<time class="js-local-datetime" datetime="2020-02-18T22:22:32Z">February 18, 2020 22:22 UTC</time>';
+
+      initLocalDateTimes();
+
+      expect(document.querySelector('time').textContent).toBe('Feb 18, 2020, 10:22 PM GMT');
+    });
+
+    it('keeps the fallback text of an element with an invalid datetime, and renders the rest', () => {
+      document.body.innerHTML = `
+        <time class="js-local-datetime" datetime="not-a-date">soon</time>
+        <time class="js-local-datetime" datetime="2020-02-18T22:22:32Z">February 18, 2020 22:22 UTC</time>
+      `;
+
+      expect(() => initLocalDateTimes()).not.toThrow();
+
+      const [invalid, valid] = document.querySelectorAll('time');
+      expect(invalid.textContent).toBe('soon');
+      expect(valid.textContent).toBe('Feb 18, 2020, 10:22 PM GMT');
     });
   });
 });

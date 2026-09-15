@@ -11,7 +11,6 @@ describe('MRWidgetMerged', () => {
   let wrapper;
   const targetBranch = 'foo';
   const mr = {
-    isRemovingSourceBranch: false,
     cherryPickInForkPath: false,
     canCherryPickInCurrentMR: true,
     revertInForkPath: false,
@@ -91,16 +90,6 @@ describe('MRWidgetMerged', () => {
       createComponent({ sourceBranchRemoved: false, canRemoveSourceBranch: true });
 
       await findRemoveSourceBranchButton().trigger('click');
-
-      expect(findRemoveSourceBranchButton()).toBe(undefined);
-    });
-
-    it('is not displayed when all are true', () => {
-      createComponent({
-        isRemovingSourceBranch: true,
-        sourceBranchRemoved: false,
-        canRemoveSourceBranch: true,
-      });
 
       expect(findRemoveSourceBranchButton()).toBe(undefined);
     });

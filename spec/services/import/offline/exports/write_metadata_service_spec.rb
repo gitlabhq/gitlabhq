@@ -27,6 +27,7 @@ RSpec.describe Import::Offline::Exports::WriteMetadataService, feature_category:
     end
 
     let(:client) { instance_double(Import::Clients::ObjectStorage, store_file: true) }
+    let(:ghost_user) { Users::Internal.in_organization(offline_export.organization_id).ghost }
     let(:tmpdir) { Dir.mktmpdir }
 
     before do
@@ -62,6 +63,7 @@ RSpec.describe Import::Offline::Exports::WriteMetadataService, feature_category:
               'instance_enterprise' => Gitlab.ee?,
               'export_prefix' => offline_export.configuration.export_prefix,
               'source_hostname' => expected_source_hostname,
+              'source_ghost_user_id' => ghost_user.id,
               'entities_mapping' => hash_including(expected_entities_mapping)
             }
           ).and_call_original

@@ -44,13 +44,6 @@ module Admin
       ci_cd reporting metrics_and_profiling
       network preferences].freeze
 
-    # The current size of a sidekiq job's jid is 24 characters. The size of the
-    # jid is an internal detail of Sidekiq, and they do not guarantee that it'll
-    # stay the same. We chose 50 to give us room in case the size of the jid
-    # increases. The jid is alphanumeric, so 50 is very generous. There is a spec
-    # that ensures that the constant value is more than the size of an actual jid.
-    PARAM_JOB_ID_MAX_SIZE = 50
-
     VALID_SETTING_PANELS.each do |action|
       define_method(action) { perform_update if submitted? }
     end
@@ -145,8 +138,9 @@ module Admin
       @plans = Plan.all
     end
 
+    # Overridden in EE. GitLab Duo in Slack is an EE-only feature.
     def duo_enabled_for_manifest?
-      Feature.enabled?(:slack_duo_agent, current_user)
+      false
     end
 
     def disable_query_limiting
@@ -154,6 +148,7 @@ module Admin
     end
 
     def application_setting_params # rubocop:disable Metrics/AbcSize, Metrics/PerceivedComplexity
+      # rubocop:disable Rails/StrongParams -- In-place normalization of the nested application_setting hash
       params[:application_setting] ||= {}
 
       if params[:application_setting].key?(:enabled_oauth_sign_in_sources)
@@ -186,14 +181,19 @@ module Admin
       params.delete(:domain_allowlist_raw) if params[:domain_allowlist]
 
       params[:application_setting].permit(visible_application_setting_attributes)
+      # rubocop:enable Rails/StrongParams
     end
 
     def recheck_user_consent?
       return false unless session[:ask_for_usage_stats_consent]
-      return false unless params[:application_setting]
+      return false unless usage_stats_consent_params
 
-      params[:application_setting].key?(:usage_ping_enabled) ||
-        params[:application_setting].key?(:version_check_enabled)
+      usage_stats_consent_params.key?(:usage_ping_enabled) ||
+        usage_stats_consent_params.key?(:version_check_enabled)
+    end
+
+    def usage_stats_consent_params
+      params.permit(application_setting: [:usage_ping_enabled, :version_check_enabled])[:application_setting]
     end
 
     def visible_application_setting_attributes
@@ -263,7 +263,9 @@ module Admin
     end
 
     def remove_blank_params_for!(*keys)
+      # rubocop:disable Rails/StrongParams -- In-place mutation of the raw nested hash
       params[:application_setting].delete_if { |setting, value| setting.to_sym.in?(keys) && value.blank? }
+      # rubocop:enable Rails/StrongParams
     end
 
     # overridden in EE

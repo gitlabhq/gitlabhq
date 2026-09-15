@@ -40,7 +40,7 @@ RSpec.describe Gitlab::Database::HealthStatus::Indicators::PrometheusAlertIndica
     end
 
     it 'returns the defined value for valid indicator' do
-      expect(valid_indicator.send(:enabled?)).to eq(true)
+      expect(valid_indicator.send(:enabled?)).to be(true)
     end
   end
 

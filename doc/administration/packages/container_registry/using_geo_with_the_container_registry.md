@@ -73,7 +73,7 @@ To add Geo support to an existing instance and container registry to the seconda
 
 1. Set up Geo for the existing instance (primary) and add a secondary site. For more information, see [Set up Geo for two single-node sites](../../geo/setup/two_single_node_sites.md).
 1. On the secondary site:
-   1. [enable the container registry](../container_registry.md#enable-the-container-registry).
+   1. [Enable the container registry](../container_registry.md#enable-the-container-registry).
    1. Set up [the metadata database](../container_registry_metadata_database_new_install.md) using a separate, [external database](../container_registry_metadata_database.md#using-an-external-database).
 1. Configure [container registry replication](../../geo/replication/container_registry.md#configure-container-registry-replication).
 
@@ -113,6 +113,6 @@ During migration, the rest of Geo replication continues.
 
 To migrate your metadata database:
 
-1. On secondary site, [migrate the existing legacy metadata to the new metadata database](../container_registry_metadata_database.md#enable-the-database-for-existing-registries).
+1. On the secondary site, [migrate the existing legacy metadata to the new metadata database](../container_registry_metadata_database.md#enable-the-database-for-existing-registries).
 1. On the primary site, [migrate the existing legacy metadata to the new metadata database](../container_registry_metadata_database.md#enable-the-database-for-existing-registries).
 1. Verify Geo replication continues working.

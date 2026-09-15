@@ -3,6 +3,8 @@
 require 'spec_helper'
 
 RSpec.describe 'User views diffs', :js, feature_category: :code_review_workflow do
+  include RapidDiffsHelpers
+
   let(:merge_request) do
     create(:merge_request_with_diffs, source_project: project, target_project: project, source_branch: 'merge-test')
   end
@@ -20,55 +22,55 @@ RSpec.describe 'User views diffs', :js, feature_category: :code_review_workflow 
 
   shared_examples 'unfold diffs' do
     it 'unfolds diffs upwards' do
-      first('.js-unfold').click
+      within_diff_file('files/ruby/popen.rb') do
+        find('button[data-expand-direction="up"]', match: :first).click
 
-      page.within('.file-holder[id="2f6fcd96b88b36ce98c38da085c795a27d92a3dd"]') do
-        expect(find('.text-file')).to have_content('fileutils')
-        expect(page).to have_selector('[data-interop-type="new"] [data-linenumber="1"]')
+        expect(page).to have_content('fileutils')
+        expect(page).to have_selector('[data-position="new"] [data-line-number="1"]')
       end
     end
 
     it 'unfolds diffs in the middle' do
-      page.within('.file-holder[id="2f6fcd96b88b36ce98c38da085c795a27d92a3dd"]') do
-        first('.js-unfold-all').click
+      within_diff_file('files/ruby/popen.rb') do
+        find('button[data-expand-direction="both"]', match: :first).click
 
-        expect(page).to have_selector('[data-interop-type="new"] [data-linenumber="24"]', count: 1)
-        expect(page).not_to have_selector('[data-interop-type="new"] [data-linenumber="1"]')
+        expect(page).to have_selector('[data-position="new"] [data-line-number="24"]', count: 1)
+        expect(page).not_to have_selector('[data-position="new"] [data-line-number="1"]')
       end
     end
 
     it 'unfolds diffs downwards' do
-      first('.js-unfold-down').click
-      expect(find('.file-holder[id="2f6fcd96b88b36ce98c38da085c795a27d92a3dd"] .text-file')).to have_content('.popen3')
+      within_diff_file('files/ruby/popen.rb') do
+        find('button[data-expand-direction="down"]', match: :first).click
+
+        expect(page).to have_content('.popen3')
+      end
     end
 
     it 'unfolds diffs to the end' do
-      page.all('.js-unfold-down').last
-      expect(find('.file-holder[id="6eb14e00385d2fb284765eb1cd8d420d33d63fc9"] .text-file')).to have_content('end')
+      within_diff_file('files/ruby/regex.rb') do
+        expect(page).to have_content('end')
+      end
     end
   end
 
   it 'shows diffs' do
-    find('.js-show-diff-settings').click
+    open_diff_view_preferences
 
-    expect(page).to have_css('.tab-content #diffs.active')
-    expect(page).to have_selector('li', text: 'Side-by-side')
-    expect(page).to have_selector('li', text: 'Inline')
+    expect(page).to have_css('[role="option"]', text: 'Side-by-side')
+    expect(page).to have_css('[role="option"]', text: 'Inline')
   end
 
   it 'hides loading spinner after load' do
     expect(page).not_to have_selector('.mr-loading-status .loading', visible: :visible)
   end
 
-  it 'expands all diffs', quarantine: 'https://gitlab.com/gitlab-org/quality/test-failure-issues/-/issues/9314' do
-    first('.diff-toggle-caret').click
+  it 'expands all diffs' do
+    find('button[aria-label="Collapse all files"]').click
+    expect(page).to have_no_css('diff-file details[open]', visible: :all)
 
-    expect(page).to have_button('Expand all')
-
-    click_button 'Expand all'
-    wait_for_requests
-
-    expect(page).not_to have_button('Expand all')
+    find('button[aria-label="Expand all files"]').click
+    expect(page).to have_css('diff-file details[open]', visible: :all)
   end
 
   context 'when in the inline view' do
@@ -79,7 +81,7 @@ RSpec.describe 'User views diffs', :js, feature_category: :code_review_workflow 
     let(:view) { 'parallel' }
 
     it 'shows diffs in parallel' do
-      expect(page).to have_css('.parallel')
+      expect(page).to have_css('[data-testid="hunk-lines-parallel"]')
     end
 
     it 'toggles container class' do

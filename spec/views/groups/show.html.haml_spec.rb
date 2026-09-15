@@ -13,8 +13,7 @@ RSpec.describe 'groups/show', feature_category: :groups_and_projects do
 
     context 'with readme project' do
       before do
-        allow(group).to receive(:group_readme).and_return(readme_project)
-        allow(group).to receive(:readme_project).and_return(readme_project)
+        allow(group).to receive_messages(group_readme: readme_project, readme_project: readme_project)
       end
 
       it 'renders #js-group-readme' do

@@ -3,7 +3,7 @@
 require 'spec_helper'
 require_migration!
 
-RSpec.describe DeleteUserIdFromTriggersWithItemConsumers, feature_category: :workflow_catalog do
+RSpec.describe DeleteUserIdFromTriggersWithItemConsumers, feature_category: :ai_catalog_curation do
   let(:namespaces) { table(:namespaces) }
   let(:projects) { table(:projects) }
   let(:organizations) { table(:organizations) }

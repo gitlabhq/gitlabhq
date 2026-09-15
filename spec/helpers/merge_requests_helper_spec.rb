@@ -510,4 +510,99 @@ RSpec.describe MergeRequestsHelper, feature_category: :code_review_workflow do
       it { is_expected.to eq(expected) }
     end
   end
+
+  describe '#merge_request_dashboard_search_data' do
+    subject(:data) { helper.merge_request_dashboard_search_data }
+
+    before do
+      allow(helper).to receive(:current_user).and_return(current_user)
+      allow(helper).to receive(:default_merge_request_sort).and_return(nil)
+    end
+
+    it 'returns the paths and flags the search list needs' do
+      expect(data).to include(
+        has_scoped_labels_feature: 'false',
+        is_public_visibility_restricted: 'false',
+        is_signed_in: 'true',
+        vue_search_enabled: 'true'
+      )
+      expect(data[:autocomplete_users_path]).to be_present
+    end
+
+    context 'when the feature flag is disabled' do
+      before do
+        stub_feature_flags(mr_dashboard_vue_search: false)
+      end
+
+      it { expect(data[:vue_search_enabled]).to eq('false') }
+    end
+
+    context 'when there is no current user' do
+      let(:current_user) { nil }
+
+      it { expect(data[:is_signed_in]).to eq('false') }
+    end
+
+    context 'when public visibility is restricted' do
+      before do
+        stub_application_setting(restricted_visibility_levels: [Gitlab::VisibilityLevel::PUBLIC])
+      end
+
+      it { expect(data[:is_public_visibility_restricted]).to eq('true') }
+    end
+
+    context 'when a default sort is set' do
+      before do
+        allow(helper).to receive(:default_merge_request_sort).and_return('merged_at_desc')
+      end
+
+      it { expect(data[:initial_sort]).to eq('merged_at_desc') }
+    end
+
+    context 'when the user has a sort preference' do
+      before do
+        current_user.user_preference.update!(merge_requests_sort: 'created_asc')
+      end
+
+      it { expect(data[:initial_sort]).to eq('created_asc') }
+    end
+  end
+
+  describe '#code_dropdown_data' do
+    let_it_be(:merge_request) { build_stubbed(:merge_request) }
+
+    subject(:data) { helper.code_dropdown_data(merge_request) }
+
+    before do
+      allow(helper).to receive(:current_user).and_return(current_user)
+    end
+
+    it 'returns the review and download paths' do
+      expect(data).to eq(
+        web_ide_path: helper.ide_merge_request_path(merge_request),
+        gitpod_path: nil,
+        patches_path: merge_request_path(merge_request, format: :patch),
+        plain_diff_path: merge_request_path(merge_request, format: :diff)
+      )
+    end
+
+    context 'when there is no current user' do
+      let(:current_user) { nil }
+
+      it 'omits the Web IDE path' do
+        expect(data[:web_ide_path]).to be_nil
+      end
+    end
+
+    context 'when Ona is enabled for the instance and the user' do
+      before do
+        stub_application_setting(gitpod_enabled: true, gitpod_url: 'https://gitpod.example.com')
+        allow(current_user).to receive(:gitpod_enabled).and_return(true)
+      end
+
+      it 'returns the Ona path' do
+        expect(data[:gitpod_path]).to eq("https://gitpod.example.com##{merge_request_url(merge_request)}")
+      end
+    end
+  end
 end

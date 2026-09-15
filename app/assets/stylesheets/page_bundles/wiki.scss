@@ -95,15 +95,27 @@
   }
 
   &.sidebar-expanded {
-    /* Hide the open toggle. It can be both a descendant... */
+    /* Hide the open toggle. It can be both a descendant...
+    visibility (not just opacity/clipping) so the hidden toggle also leaves
+    the tab order and cannot anchor its tooltip; with transition: all in
+    place it flips hidden only after the collapse animation ends. */
     .wiki-sidebar-toggle.toggle-action-open {
       @apply gl-opacity-0;
+      @apply gl-invisible;
     }
 
-    /* ...as well as a descendant of a sibling to the wiki sidebar */
+    /* ...as well as a descendant of a sibling to the wiki sidebar. Clipping
+    must apply here too, not only under .transition-enabled: in the settled
+    expanded state (e.g. page load with the sidebar open) the zero-width box
+    otherwise keeps overflow: visible and paints the toggle under the title. */
     + * .toggle-with-hide-transition {
       @apply gl-w-0;
       @apply gl-px-0;
+      @apply gl-overflow-hidden;
+
+      .wiki-sidebar-toggle {
+        @apply gl-invisible;
+      }
     }
   }
 

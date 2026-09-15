@@ -106,6 +106,7 @@ module Gitlab
     require_dependency Rails.root.join('lib/gitlab/redis/cache')
     require_dependency Rails.root.join('lib/gitlab/redis/queues')
     require_dependency Rails.root.join('lib/gitlab/redis/shared_state')
+    require_dependency Rails.root.join('lib/gitlab/redis/concurrency_limit')
     require_dependency Rails.root.join('lib/gitlab/redis/trace_chunks')
     require_dependency Rails.root.join('lib/gitlab/redis/rate_limiting')
     require_dependency Rails.root.join('lib/gitlab/redis/sessions')
@@ -327,6 +328,7 @@ module Gitlab
     config.assets.precompile << "tailwind.css"
 
     config.assets.precompile << "print.css"
+    config.assets.precompile << "mailers/blob_embed.css"
     config.assets.precompile << "mailers/highlighted_diff_email.css"
     config.assets.precompile << "mailers/mailer.css"
     config.assets.precompile << "mailers/mailer_client_specific.css"

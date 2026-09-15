@@ -7,7 +7,6 @@ RSpec.describe Sidebars::Organizations::Menus::SettingsMenu, feature_category: :
 
   let(:user) { build(:user) }
   let(:context) { Sidebars::Context.new(current_user: user, container: organization) }
-  let(:items) { subject.instance_variable_get(:@items) }
 
   subject { described_class.new(context) }
 
@@ -17,36 +16,8 @@ RSpec.describe Sidebars::Organizations::Menus::SettingsMenu, feature_category: :
   end
 
   describe '#render?' do
-    context 'when user is signed out' do
-      let(:user) { nil }
-
-      it 'returns false' do
-        expect(subject.render?).to eq false
-      end
-    end
-
-    context 'when `current_user` is an admin', :enable_admin_mode do
-      let(:user) { build(:admin) }
-
-      it 'returns true' do
-        expect(subject.render?).to eq true
-      end
-    end
-
-    context 'when `current_user` not an admin' do
-      it 'returns false' do
-        expect(subject.render?).to eq false
-      end
-    end
-  end
-
-  describe 'Menu items' do
-    subject { described_class.new(context).renderable_items.find { |e| e.item_id == item_id } }
-
-    describe 'General' do
-      let(:item_id) { :organization_settings_general }
-
-      it { is_expected.not_to be_nil }
+    it 'does not render without any menu items in CE' do
+      expect(subject.render?).to be false
     end
   end
 end

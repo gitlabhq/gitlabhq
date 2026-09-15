@@ -33,7 +33,37 @@ module Gitlab
       # Sentinel telling the request enumerator to stop forwarding acks.
       STREAM_CLOSED = :stream_closed
 
+      # Length Relay's StartWorkflowRequest.token_binding rule demands, exactly.
+      WORKFLOW_TOKEN_BINDING_BYTES = 64
+
+      # Only Unavailable is retried in-process: it is usually an instant connection blip, and the
+      # AutoFlow RPCs' idempotency keys make re-sends safe. Slower failures like DeadlineExceeded
+      # are left to the callers' Sidekiq backoff rather than pinning the thread for another timeout.
+      UNARY_GRPC_RETRIES = 3
+      UNARY_GRPC_RETRIABLE_ERRORS = [GRPC::Unavailable].freeze
+
+      # Statuses that no retry can fix, at any layer. Shared with classify_grpc_error and callers
+      # that must decide whether re-enqueueing a failed RPC is worthwhile.
+      PERMANENT_GRPC_ERRORS = [
+        GRPC::InvalidArgument, GRPC::NotFound, GRPC::PermissionDenied, GRPC::FailedPrecondition
+      ].freeze
+
       ConfigurationError = Class.new(StandardError)
+
+      # Mints a token binding for {start_workflow}. Kept here so every caller binds at the
+      # length Relay's schema demands rather than picking its own.
+      #
+      # Hex rather than raw bytes: callers persist this before submitting, and an
+      # encrypted attribute serializes through JSON, which raw bytes are not valid
+      # UTF-8 for. Hex is plain ASCII, so it stores and round-trips unchanged while
+      # still being exactly WORKFLOW_TOKEN_BINDING_BYTES on the wire. Relay treats the
+      # value as opaque bytes and only ever compares it, so the encoding is ours to
+      # pick; the entropy is half the length, which is 256 bits.
+      #
+      # @return [String] WORKFLOW_TOKEN_BINDING_BYTES ASCII hex characters.
+      def self.generate_workflow_token_binding
+        SecureRandom.hex(WORKFLOW_TOKEN_BINDING_BYTES / 2)
+      end
 
       def initialize
         raise ConfigurationError, 'GitLab KAS is not enabled' unless Gitlab::Kas.enabled?
@@ -306,17 +336,58 @@ module Gitlab
       #   (e.g. ["production", 3])
       # @param kwargs [Hash{String => Object}] named arguments bound to the workflow's main().
       #   (e.g. { "environment" => { "id" => "42" }, "version_set" => { "services" => [...] } })
-      # @return [Gitlab::Agent::AutoFlow::Rpc::StartWorkflowResponse]
-      def start_workflow(idempotency_key:, workflow_definition:, namespace_id:, args: [], kwargs: {})
+      # @param token_binding [String] WORKFLOW_TOKEN_BINDING_BYTES random ASCII characters that bind the
+      #   workflow's tokens to this caller. Relay hands the workflow's tokens to a later
+      #   submission under the same idempotency_key only if it presents this same value, so it
+      #   must be stored before the call and must not be derivable from anything a user
+      #   influences. Use {generate_workflow_token_binding}.
+      # @return [Gitlab::Agent::AutoFlow::Rpc::StartWorkflowResponse] carries workflow_key and
+      #   workflow_token; the latter is what the other AutoFlow RPCs require.
+      #
+      # Transient failures (UNARY_GRPC_RETRIABLE_ERRORS) retry in-process with the same request
+      # before raising.
+      def start_workflow(idempotency_key:, workflow_definition:, namespace_id:, token_binding:, args: [], kwargs: {})
         request = Gitlab::Agent::AutoFlow::Rpc::StartWorkflowRequest.new(
           idempotency_key: idempotency_key,
           workflow_definition: workflow_definition,
           namespace_id: namespace_id,
+          token_binding: token_binding,
           args: Autoflow::ValueConverter.values(args),
           kwargs: Autoflow::ValueConverter.kwargs(kwargs)
         )
 
-        stub_for(:autoflow).start_workflow(request, metadata: metadata)
+        retry_unary_grpc { stub_for(:autoflow).start_workflow(request, metadata: metadata) }
+      end
+
+      # Sends a message to a running AutoFlow workflow's channel on GitLab Relay.
+      #
+      # Fire-and-forget: a successful return means the message was accepted, not that the
+      # workflow has processed it -- the workflow only observes it on its next replay round.
+      #
+      # @param idempotency_key [String] caller-chosen key that deduplicates the submission;
+      #   retries must reuse the same key verbatim.
+      # @param channel_token [String] token identifying the target channel, taken from
+      #   `PostValueBody.channel_tokens`.
+      # @param workflow_token [String] the workflow token returned by {start_workflow}. The
+      #   channel_token alone names no principal this RPC can check, so this is the whole
+      #   of the authorization.
+      # @param value [Object] the decision payload, converted via {Autoflow::ValueConverter}.
+      #   Must not be a channel value; that invariant is enforced server-side, not here.
+      # @raise [GRPC::InvalidArgument] if either token is malformed, expired, or the wrong kind.
+      # @raise [GRPC::NotFound] if the workflow no longer exists.
+      # @return [Gitlab::Agent::AutoFlow::Rpc::SendToWorkflowChannelResponse]
+      #
+      # Transient failures are retried in-process automatically using the same idempotency key;
+      # the @raise errors above are permanent and raise immediately without retry.
+      def send_to_workflow_channel(idempotency_key:, channel_token:, workflow_token:, value:)
+        request = Gitlab::Agent::AutoFlow::Rpc::SendToWorkflowChannelRequest.new(
+          idempotency_key: idempotency_key,
+          channel_token: channel_token,
+          workflow_token: workflow_token,
+          value: Autoflow::ValueConverter.to_value(value)
+        )
+
+        retry_unary_grpc { stub_for(:autoflow).send_to_workflow_channel(request, metadata: metadata) }
       end
 
       private
@@ -388,6 +459,13 @@ module Gitlab
         Gitlab::Kas::ExponentialBackoff.new(min: 1, max: 30, jitter: true)
       end
 
+      # Only for unary RPCs whose request carries an idempotency key, so re-sending is safe.
+      # Re-raises the last error once retries are exhausted. Backoff intervals deliberately come
+      # from Retriable's defaults (0.5s base), which the test suite zeroes globally.
+      def retry_unary_grpc(&block)
+        Retriable.retriable(on: UNARY_GRPC_RETRIABLE_ERRORS, tries: UNARY_GRPC_RETRIES, &block)
+      end
+
       # Absolute deadline as seconds-from-epoch. gRPC rejects an `ActiveSupport::TimeWithZone` (from
       # `Time.current`) with "bad input: (time)->c_timeval"; CLOCK_REALTIME also matches the clock the
       # gRPC c-core reads and is immune to Timecop in specs.
@@ -408,8 +486,7 @@ module Gitlab
           :retry
         when GRPC::Cancelled
           :stop
-        when GRPC::InvalidArgument, GRPC::NotFound, GRPC::PermissionDenied,
-          GRPC::FailedPrecondition
+        when *PERMANENT_GRPC_ERRORS
           :raise
         else
           :retry # default: be optimistic, surface in logs

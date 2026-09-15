@@ -65,7 +65,7 @@ Each merge request higher in the stack targets the branch below it, so it can me
 that branch merges.
 
 Bottom-up is the recommended order because when a merge request merges, GitLab automatically sets the default branch as the target for the next one in the stack.
-If required, you can merge in a different order. For example, you may want to change the order to apply a fix that a lower merge
+If required, you can merge in a different order. For example, you might want to change the order to apply a fix that a lower merge
 request depends on.
 
 To merge a stack from the bottom up:

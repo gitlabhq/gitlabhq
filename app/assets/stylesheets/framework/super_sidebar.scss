@@ -10,159 +10,11 @@ $command-palette-spacing: px-to-rem(14px);
  * CSS Custom properties
  */
 :root {
-  --body-background-color: var(--gl-background-color-strong);
-
-  --super-sidebar-theme-color: var(--gl-color-neutral-500);
-  --super-sidebar-theme-accent-color: var(--gl-color-blue-500);
-  --super-sidebar-theme-accent-badge-color: var(--super-sidebar-theme-accent-color);
-
-  --super-sidebar-accent-foreground-color: hsl(from var(--super-sidebar-theme-accent-color) h calc(s - 20) 20);
-  --super-sidebar-accent-background-color: hsla(from var(--super-sidebar-theme-accent-color) h s l / 16%);
-
-  --super-sidebar-hr-border-color: var(--gl-color-alpha-dark-8);
-  --super-sidebar-hr-mix-blend-mode: multiply;
+  --super-sidebar-hr-border-color: var(--gl-color-neutral-100);
 }
 
 :root.gl-dark {
-  --body-background-color: var(--gl-background-color-subtle);
-
-  --super-sidebar-theme-color: var(--gl-color-neutral-500);
-  --super-sidebar-theme-accent-color: var(--gl-color-blue-500);
-  --super-sidebar-theme-accent-badge-color: hsl(from var(--super-sidebar-theme-accent-color) h calc(s - 10) calc(l + 20));
-
-  --super-sidebar-accent-foreground-color: hsl(from var(--super-sidebar-theme-accent-color) h s 88);
-  --super-sidebar-accent-background-color: hsla(from var(--super-sidebar-theme-accent-color) h s l / 32%);
-
-  --super-sidebar-hr-border-color: var(--gl-color-alpha-light-16);
-  --super-sidebar-hr-mix-blend-mode: color-dodge;
-}
-
-/**
- * Themes
- */
-@mixin super-sidebar-theme(
-  $theme-color,
-  $theme-accent-color,
-  $background,
-  $accent-foreground-color,
-  $accent-background-color,
-  $accent-notification-dot: $accent-foreground-color,
-) {
-  --super-sidebar-theme-color: #{$theme-color};
-  --super-sidebar-theme-accent-color: #{$theme-accent-color};
-  --body-background-color: #{$background};
-  --super-sidebar-accent-foreground-color: #{$accent-foreground-color};
-  --super-sidebar-accent-background-color: #{$accent-background-color};
-}
-
-.ui-indigo {
-  @include super-sidebar-theme(
-    $theme-color: var(--gl-color-purple-500),
-    $theme-accent-color: var(--gl-color-purple-500),
-    $background: var(--gl-color-purple-50),
-    $accent-foreground-color: var(--gl-color-purple-800),
-    $accent-background-color: var(--gl-color-purple-100),
-    $accent-notification-dot: var(--gl-color-purple-500),
-  );
-
-  &.gl-dark {
-    @include super-sidebar-theme(
-      $theme-color: var(--gl-color-purple-500),
-      $theme-accent-color: var(--gl-color-purple-500),
-      $background: var(--gl-background-color-subtle),
-      $accent-foreground-color: var(--gl-color-purple-200),
-      $accent-background-color: var(--gl-background-color-subtle),
-      $accent-notification-dot: var(--gl-color-purple-200),
-    );
-  }
-}
-
-.ui-blue {
-  @include super-sidebar-theme(
-    $theme-color: var(--gl-color-blue-500),
-    $theme-accent-color: var(--gl-color-blue-500),
-    $background: var(--gl-color-blue-50),
-    $accent-foreground-color: var(--gl-color-blue-900),
-    $accent-background-color: var(--gl-color-blue-100),
-    $accent-notification-dot: var(--gl-color-blue-500),
-  );
-
-  &.gl-dark {
-    @include super-sidebar-theme(
-      $theme-color: var(--gl-color-blue-500),
-      $theme-accent-color: var(--gl-color-blue-500),
-      $background: var(--gl-background-color-subtle),
-      $accent-foreground-color: var(--gl-color-blue-100),
-      $accent-background-color: var(--gl-background-color-subtle),
-      $accent-notification-dot: var(--gl-color-blue-200),
-    );
-  }
-}
-
-.ui-green {
-  @include super-sidebar-theme(
-    $theme-color: var(--gl-color-green-500),
-    $theme-accent-color: var(--gl-color-green-500),
-    $background: var(--gl-color-green-50),
-    $accent-foreground-color: var(--gl-color-green-900),
-    $accent-background-color: var(--gl-color-green-100),
-    $accent-notification-dot: var(--gl-color-green-500),
-  );
-
-  &.gl-dark {
-    @include super-sidebar-theme(
-      $theme-color: var(--gl-color-green-400),
-      $theme-accent-color: var(--gl-color-green-400),
-      $background: var(--gl-background-color-subtle),
-      $accent-foreground-color: var(--gl-color-green-200),
-      $accent-background-color: var(--gl-background-color-subtle),
-      $accent-notification-dot: var(--gl-color-green-200),
-    );
-  }
-}
-
-.ui-red {
-  @include super-sidebar-theme(
-    $theme-color: var(--gl-color-red-500),
-    $theme-accent-color: var(--gl-color-red-500),
-    $background: var(--gl-color-red-50),
-    $accent-foreground-color: var(--gl-color-red-800),
-    $accent-background-color: var(--gl-color-red-100),
-    $accent-notification-dot: var(--gl-color-red-600),
-  );
-
-  &.gl-dark {
-    @include super-sidebar-theme(
-      $theme-color: var(--gl-color-red-500),
-      $theme-accent-color: var(--gl-color-red-500),
-      $background: var(--gl-background-color-subtle),
-      $accent-foreground-color: var(--gl-color-red-200),
-      $accent-background-color: var(--gl-background-color-subtle),
-      $accent-notification-dot: var(--gl-color-red-200),
-    );
-  }
-}
-
-.ui-gray {
-  @include super-sidebar-theme(
-    $theme-color: var(--gl-color-neutral-500),
-    $theme-accent-color: var(--gl-color-neutral-500),
-    $background: var(--gl-background-color-strong),
-    $accent-foreground-color: var(--gl-color-neutral-800),
-    $accent-background-color: var(--gl-color-neutral-100),
-    $accent-notification-dot: var(--gl-color-neutral-500),
-  );
-
-  &.gl-dark {
-    @include super-sidebar-theme(
-      $theme-color: var(--gl-color-neutral-500),
-      $theme-accent-color: var(--gl-color-neutral-500),
-      $background: var(--gl-background-color-subtle),
-      $accent-foreground-color: var(--gl-color-neutral-100),
-      $accent-background-color: var(--gl-background-color-subtle),
-      $accent-notification-dot: var(--gl-color-neutral-200),
-    );
-  }
+  --super-sidebar-hr-border-color: var(--gl-color-neutral-900);
 }
 
 /**
@@ -221,7 +73,7 @@ $command-palette-spacing: px-to-rem(14px);
   left: 0;
   @apply gl-h-full;
   @apply xl:-gl-ml-3;
-  background-color: var(--body-background-color);
+  @apply gl-bg-application-chrome;
   @apply xl:gl-bg-transparent;
   transform: translate3d(0, 0, 0);
   z-index: $super-sidebar-z-index;
@@ -240,6 +92,21 @@ $command-palette-spacing: px-to-rem(14px);
     // Only target top-level nav items, not those inside flyout menus
     > * .super-sidebar-nav-item:not(.nav-flyout-menu .super-sidebar-nav-item) {
       z-index: $super-sidebar-nav-item-z-index;
+    }
+  }
+
+  // Ensure selected styles on parent GlNavItem when flyout menu is open
+  .gl-nav-item {
+    &.with-mouse-over-flyout {
+      color: var(--gl-nav-item-foreground-color-hover);
+      background-color: var(--gl-nav-item-background-color-hover);
+    }
+
+    &.selected {
+      &.with-mouse-over-flyout {
+        color: var(--gl-nav-item-selected-foreground-color-hover);
+        background-color: var(--gl-nav-item-selected-background-color-hover);
+      }
     }
   }
 
@@ -288,7 +155,6 @@ $command-palette-spacing: px-to-rem(14px);
 
   hr {
     border-color: var(--super-sidebar-hr-border-color);
-    mix-blend-mode: var(--super-sidebar-hr-mix-blend-mode);
   }
 
   #trial-status-sidebar-widget:hover {
@@ -301,25 +167,6 @@ $command-palette-spacing: px-to-rem(14px);
   .page-with-super-sidebar:not(.super-sidebar-has-css-transitions-blocked) .super-sidebar {
     position: fixed;
     @apply gl-rounded-r-[1rem];
-  }
-}
-
-/**
- * Context header
- */
-.super-sidebar-context-header {
-  color: var(--super-sidebar-accent-foreground-color);
-}
-
-/**
- * What's new badge
- */
-.super-sidebar-whats-new-badge {
-  color: var(--gl-color-neutral-0) !important;
-  background-color: var(--super-sidebar-theme-accent-badge-color) !important;
-
-  .gl-dark & {
-    color: var(--gl-color-neutral-900) !important;
   }
 }
 
@@ -768,9 +615,9 @@ $scroll-scrim-height: 2.25rem;
 }
 
 .feature-library-shimmer {
-  --super-sidebar-shimmer-base-color: hsla(from var(--super-sidebar-theme-accent-color) h s l / 32%);
-  --super-sidebar-shimmer-peak-color: hsla(from var(--super-sidebar-theme-accent-color) h s l / 8%);
-  --super-sidebar-shimmer-border-color: hsla(from var(--super-sidebar-theme-accent-color) h s l / 24%);
+  --super-sidebar-shimmer-base-color: hsla(from var(--gl-color-blue-500) h s l / 32%);
+  --super-sidebar-shimmer-peak-color: hsla(from var(--gl-color-blue-500) h s l / 8%);
+  --super-sidebar-shimmer-border-color: hsla(from var(--gl-color-blue-500) h s l / 24%);
 
   position: relative;
 

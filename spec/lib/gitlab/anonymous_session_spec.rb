@@ -3,9 +3,6 @@
 require 'spec_helper'
 
 RSpec.describe Gitlab::AnonymousSession, :clean_gitlab_redis_sessions do
-  let(:default_session_id) { '6919a6f1bb119dd7396fadc38fd18d0d' }
-  let(:additional_session_id) { '7919a6f1bb119dd7396fadc38fd18d0d' }
-
   subject { new_anonymous_session }
 
   def new_anonymous_session
@@ -61,7 +58,7 @@ RSpec.describe Gitlab::AnonymousSession, :clean_gitlab_redis_sessions do
     subject.cleanup_session_per_ip_count
 
     Gitlab::Redis::Sessions.with do |redis|
-      expect(redis.exists?("session:lookup:ip:gitlab2:127.0.0.1")).to eq(false)
+      expect(redis.exists?("session:lookup:ip:gitlab2:127.0.0.1")).to be(false)
     end
   end
 end

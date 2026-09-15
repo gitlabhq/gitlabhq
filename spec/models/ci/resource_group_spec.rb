@@ -31,7 +31,7 @@ RSpec.describe Ci::ResourceGroup, feature_category: :continuous_delivery, factor
       resource_group = create(:ci_resource_group)
 
       expect(resource_group.resources.count).to eq(1)
-      expect(resource_group.resources.all?(&:persisted?)).to eq(true)
+      expect(resource_group.resources.all?(&:persisted?)).to be(true)
     end
   end
 
@@ -51,7 +51,7 @@ RSpec.describe Ci::ResourceGroup, feature_category: :continuous_delivery, factor
       expect(resource_group.resources.first.processable).to be_nil
       expect(resource_group.resources.first.partition_id).to be_nil
 
-      is_expected.to eq(true)
+      is_expected.to be(true)
 
       expect(resource_group.resources.first.processable).to eq(build)
       expect(resource_group.resources.first.partition_id).to eq(build.partition_id)
@@ -63,7 +63,7 @@ RSpec.describe Ci::ResourceGroup, feature_category: :continuous_delivery, factor
       end
 
       it 'fails to retain resource' do
-        is_expected.to eq(false)
+        is_expected.to be(false)
       end
     end
 
@@ -97,7 +97,7 @@ RSpec.describe Ci::ResourceGroup, feature_category: :continuous_delivery, factor
         expect(resource_group.resources.first.processable).to eq(build)
         expect(resource_group.resources.first.partition_id).to eq(build.partition_id)
 
-        is_expected.to eq(true)
+        is_expected.to be(true)
 
         expect(resource_group.resources.first.processable).to be_nil
         expect(resource_group.resources.first.partition_id).to be_nil
@@ -106,7 +106,7 @@ RSpec.describe Ci::ResourceGroup, feature_category: :continuous_delivery, factor
 
     context 'when the build has already released a resource' do
       it 'fails to release resource' do
-        is_expected.to eq(false)
+        is_expected.to be(false)
       end
     end
   end

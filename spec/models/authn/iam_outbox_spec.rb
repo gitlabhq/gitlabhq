@@ -49,5 +49,28 @@ RSpec.describe Authn::IamOutbox, feature_category: :system_access do
         expect(described_class.l2_undelivered).to contain_exactly(pending)
       end
     end
+
+    describe '.l0_undelivered_lookup' do
+      let_it_be(:matching) do
+        create(:iam_outbox, entity_type: 'oauth_application', entity_id: 42, event_type: :upsert)
+      end
+
+      let_it_be(:other_event) do
+        create(:iam_outbox, entity_type: 'oauth_application', entity_id: 42, event_type: :delete)
+      end
+
+      let_it_be(:other_entity) do
+        create(:iam_outbox, entity_type: 'oauth_application', entity_id: 43, event_type: :upsert)
+      end
+
+      let_it_be(:already_delivered) do
+        create(:iam_outbox, entity_type: 'oauth_application', entity_id: 42, event_type: :upsert,
+          l0_delivered_at: Time.current)
+      end
+
+      it 'returns only undelivered rows matching the entity type, id, and event type' do
+        expect(described_class.l0_undelivered_lookup('oauth_application', 42, :upsert)).to contain_exactly(matching)
+      end
+    end
   end
 end

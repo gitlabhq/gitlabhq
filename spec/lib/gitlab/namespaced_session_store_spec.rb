@@ -89,7 +89,7 @@ RSpec.describe Gitlab::NamespacedSessionStore do
       end
 
       it 'does not create namespace key when reading a value' do
-        expect(subject[:non_existent_key]).to eq(nil)
+        expect(subject[:non_existent_key]).to be_nil
         expect(Thread.current[:session_storage]).to eq({})
       end
 

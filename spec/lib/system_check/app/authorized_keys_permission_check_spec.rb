@@ -9,7 +9,7 @@ RSpec.describe SystemCheck::App::AuthorizedKeysPermissionCheck do
     subject { system_check.skip? }
 
     context 'authorized keys enabled' do
-      it { is_expected.to eq(false) }
+      it { is_expected.to be(false) }
     end
 
     context 'authorized keys not enabled' do
@@ -17,7 +17,7 @@ RSpec.describe SystemCheck::App::AuthorizedKeysPermissionCheck do
         stub_application_setting(authorized_keys_enabled: false)
       end
 
-      it { is_expected.to eq(true) }
+      it { is_expected.to be(true) }
     end
   end
 
@@ -33,13 +33,13 @@ RSpec.describe SystemCheck::App::AuthorizedKeysPermissionCheck do
     context 'authorized keys is accessible' do
       let(:accessible?) { true }
 
-      it { is_expected.to eq(true) }
+      it { is_expected.to be(true) }
     end
 
     context 'authorized keys is not accessible' do
       let(:accessible?) { false }
 
-      it { is_expected.to eq(false) }
+      it { is_expected.to be(false) }
     end
   end
 
@@ -55,13 +55,13 @@ RSpec.describe SystemCheck::App::AuthorizedKeysPermissionCheck do
     context 'authorized_keys file created' do
       let(:created) { true }
 
-      it { is_expected.to eq(true) }
+      it { is_expected.to be(true) }
     end
 
     context 'authorized_keys file is not created' do
       let(:created) { false }
 
-      it { is_expected.to eq(false) }
+      it { is_expected.to be(false) }
     end
   end
 end

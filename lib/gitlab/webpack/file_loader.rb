@@ -20,6 +20,11 @@ module Gitlab
       DevServerLoadError = Class.new(BaseError)
       DevServerSSLError = Class.new(BaseError)
 
+      # A local dev server connects in milliseconds. The default of 60s matches the
+      # request budget, so one unreachable address exhausts the request rather than
+      # reporting that the dev server could not be reached.
+      OPEN_TIMEOUT = 5
+
       def self.load(path)
         if Gitlab.config.webpack.dev_server.enabled
           self.load_from_dev_server(path)
@@ -35,7 +40,7 @@ module Gitlab
         uri = Addressable::URI.new(scheme: scheme, host: host, port: port, path: self.dev_server_path(path))
 
         # localhost could be blocked via Gitlab::HTTP
-        response = HTTParty.get(uri.to_s, verify: false) # rubocop:disable Gitlab/HTTParty
+        response = HTTParty.get(uri.to_s, verify: false, open_timeout: OPEN_TIMEOUT) # rubocop:disable Gitlab/HTTParty
 
         return response.body if response.code == 200
 

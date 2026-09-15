@@ -10,7 +10,7 @@ GitLab Duo uses generative AI to help increase your velocity and make you more p
 
 GitLab uses the right large language models (LLMs) for specific tasks.
 These LLMs are [Anthropic Claude](https://claude.com/product/overview),
-[Fireworks AI-hosted Codestral](https://mistral.ai/news/codestral),
+[Fireworks AI-hosted Codestral](https://mistral.ai/news/codestral/),
 [Gemini Enterprise Agent Platform models](https://docs.cloud.google.com/gemini-enterprise-agent-platform/models/beginners-guide),
 and [OpenAI models](https://platform.openai.com/docs/models).
 
@@ -77,7 +77,7 @@ GitLab Duo collects aggregated or de-identified first-party usage data through a
 - Prompt and suffix lengths
 - Model used
 - Status code responses
-- API responses times
+- API response times
 - Code Suggestions also collects:
   - Language the suggestion was in (for example, Python)
   - Editor being used (for example, VS Code)
@@ -103,7 +103,7 @@ Generative AI may produce unexpected results that may be:
 - Low-quality
 - Incoherent
 - Incomplete
-- Produce failed pipelines
+- Failed pipelines
 - Insecure code
 - Offensive or insensitive
 - Out of date information

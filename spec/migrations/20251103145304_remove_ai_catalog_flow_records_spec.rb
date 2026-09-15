@@ -3,7 +3,7 @@
 require 'spec_helper'
 require_migration!
 
-RSpec.describe RemoveAiCatalogFlowRecords, migration: :gitlab_main, feature_category: :workflow_catalog do
+RSpec.describe RemoveAiCatalogFlowRecords, migration: :gitlab_main, feature_category: :ai_catalog_curation do
   let(:organizations) { table(:organizations) }
   let(:projects) { table(:projects) }
   let(:namespaces) { table(:namespaces) }

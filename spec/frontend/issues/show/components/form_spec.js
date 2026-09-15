@@ -144,17 +144,13 @@ describe('Inline edit form component', () => {
     it('calls reset on autosave when eventHub emits appropriate events', () => {
       createComponent();
 
-      eventHub.$emit('close.form');
+      eventHub.$emit('close-form');
 
       expect(clearDraft).toHaveBeenCalledTimes(2);
 
-      eventHub.$emit('delete.issuable');
+      eventHub.$emit('update-issuable');
 
       expect(clearDraft).toHaveBeenCalledTimes(4);
-
-      eventHub.$emit('update.issuable');
-
-      expect(clearDraft).toHaveBeenCalledTimes(6);
     });
 
     describe('outdated description', () => {
@@ -189,7 +185,7 @@ describe('Inline edit form component', () => {
 
           await nextTick();
 
-          findAlert().vm.$emit('secondaryAction');
+          findAlert().vm.$emit('secondary-action');
         });
 
         it('hides the warning alert', () => {

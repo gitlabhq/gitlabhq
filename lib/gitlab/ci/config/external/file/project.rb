@@ -31,7 +31,7 @@ module Gitlab
             end
 
             def include_type
-              :file
+              :project
             end
 
             def metadata

@@ -14,6 +14,12 @@ title: Troubleshooting Zoekt
 {{< /details >}}
 
 When working with Zoekt, you might encounter the following issues.
+
+To understand how the Zoekt components interact when you diagnose an error, see
+[Use Zoekt for code search](https://handbook.gitlab.com/handbook/engineering/architecture/design-documents/code_search_with_zoekt/).
+This design document describes the full architecture, including which component
+calls which, and what content each one holds.
+
 For preliminary debugging:
 
 - [Run a health check](_index.md#run-a-health-check) to understand
@@ -316,7 +322,7 @@ They're NGINX proxies that distribute requests across multiple Zoekt webserver i
 and handle routing, load balancing, and optional TLS termination.
 
 For more information about the Zoekt architecture design, see
-[use Zoekt For code search](https://handbook.gitlab.com/handbook/engineering/architecture/design-documents/code_search_with_zoekt/).
+[Use Zoekt for code search](https://handbook.gitlab.com/handbook/engineering/architecture/design-documents/code_search_with_zoekt/).
 
 ### Verify network reachability
 

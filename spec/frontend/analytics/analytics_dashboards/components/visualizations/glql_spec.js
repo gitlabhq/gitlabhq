@@ -34,7 +34,78 @@ describe('GlqlVisualization', () => {
     expect(findResolver().exists()).toBe(true);
     expect(findResolver().props()).toEqual({
       glqlQuery,
+      comparison: null,
       trackingEventName: 'render_analytics_dashboard_glql_panel',
+      scope: null,
+    });
+  });
+
+  describe('comparison', () => {
+    const comparisonQuery = 'type = Issue AND created >= "2026-01-01"';
+
+    it("bundles the derived query and the panel's metric for the resolver", () => {
+      createWrapper({
+        data: 'type = Issue AND created >= "2026-02-01"',
+        options: { comparisonQuery, trendMetric: 'totalCount' },
+      });
+
+      expect(findResolver().props('comparison')).toEqual({
+        query: comparisonQuery,
+        metric: 'totalCount',
+      });
+    });
+
+    it('leaves the metric out when the panel selects a single metric', () => {
+      createWrapper({
+        data: 'type = Issue AND created >= "2026-02-01"',
+        options: { comparisonQuery },
+      });
+
+      expect(findResolver().props('comparison')).toEqual({
+        query: comparisonQuery,
+        metric: undefined,
+      });
+    });
+
+    // The data source only derives a query for a panel that asked for trends, so a metric
+    // on its own is not a comparison.
+    it('is null without a derived query', () => {
+      createWrapper({
+        data: 'type = Issue AND created >= "2026-02-01"',
+        options: { trendMetric: 'totalCount' },
+      });
+
+      expect(findResolver().props('comparison')).toBe(null);
+    });
+  });
+
+  describe('scope', () => {
+    const glqlQuery = 'type = Issue AND state = opened';
+
+    // Without a namespace the resolver falls back to deriving one from the URL, which is what
+    // group and project dashboards already rely on.
+    it('is null when no namespace is given', () => {
+      createWrapper({ data: glqlQuery });
+
+      expect(findResolver().props('scope')).toBe(null);
+    });
+
+    it('is null when the given namespace is empty', () => {
+      createWrapper({ data: glqlQuery, namespace: '', isProject: false });
+
+      expect(findResolver().props('scope')).toBe(null);
+    });
+
+    it('is a group scope for a group namespace', () => {
+      createWrapper({ data: glqlQuery, namespace: 'gitlab-org', isProject: false });
+
+      expect(findResolver().props('scope')).toEqual({ group: 'gitlab-org' });
+    });
+
+    it('is a project scope for a project namespace', () => {
+      createWrapper({ data: glqlQuery, namespace: 'gitlab-org/gitlab', isProject: true });
+
+      expect(findResolver().props('scope')).toEqual({ project: 'gitlab-org/gitlab' });
     });
   });
 
@@ -119,6 +190,23 @@ describe('GlqlVisualization', () => {
       expect(findEmptyState().exists()).toBe(false);
       expect(findResolver().exists()).toBe(true);
     });
+
+    // The empty state unmounts the resolver, so without this reset the resolver could never run
+    // its own scope watcher and the panel would stay empty for the newly selected namespace.
+    it('resets the resolver data when the namespace changes', async () => {
+      createWrapper({ data: 'type = Issue AND state = opened', namespace: 'gitlab-org' });
+
+      findResolver().vm.$emit('change', { data: { nodes: [] } });
+      await nextTick();
+
+      expect(findEmptyState().exists()).toBe(true);
+
+      wrapper.setProps({ namespace: 'gitlab-com' });
+      await nextTick();
+
+      expect(findEmptyState().exists()).toBe(false);
+      expect(findResolver().exists()).toBe(true);
+    });
   });
 
   describe('panel actions', () => {
@@ -173,6 +261,59 @@ describe('GlqlVisualization', () => {
       findAction('Reload').action();
 
       expect(wrapper.emitted('reload')).toEqual([[]]);
+    });
+
+    describe('when the panel opts out with showActions: false', () => {
+      const createOptedOutWrapper = async (change) => {
+        createWrapper({ data: glqlQuery, options: { showActions: false } });
+
+        findResolver().vm.$emit('change', change);
+        await nextTick();
+      };
+
+      it('emits no actions once the resolver returns results', async () => {
+        await createOptedOutWrapper({ data: { count: 2, nodes: [{ id: 1 }, { id: 2 }] } });
+
+        expect(lastActions()).toEqual([]);
+      });
+
+      // Otherwise the dropdown a panel asked to hide would reappear the moment it broke.
+      it('emits no actions when the resolver reports an error', async () => {
+        await createOptedOutWrapper({ error: new Error('Something went wrong') });
+
+        expect(lastActions()).toEqual([]);
+      });
+
+      // The kebab's Reload is gone, so the alert popover's Retry has to stand in for it.
+      it('forwards a resolver error to the panel with a retry offered', async () => {
+        const error = new Error('Something went wrong');
+
+        await createOptedOutWrapper({ error });
+
+        expect(wrapper.emitted('set-alerts')).toEqual([
+          [
+            {
+              errors: [error],
+              title: 'An error occurred when trying to display this panel',
+              description: 'Something went wrong',
+              canRetry: true,
+            },
+          ],
+        ]);
+      });
+    });
+
+    it('emits the base set of actions when the panel opts in with showActions: true', async () => {
+      createWrapper({ data: glqlQuery, options: { showActions: true } });
+
+      findResolver().vm.$emit('change', { data: undefined });
+      await nextTick();
+
+      expect(lastActions().map((action) => action.text)).toEqual([
+        'View source',
+        'Copy source',
+        'Reload',
+      ]);
     });
   });
 

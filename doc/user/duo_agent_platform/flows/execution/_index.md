@@ -30,9 +30,16 @@ You can also [use your own runners](#configure-runners-to-execute-flows), and
 
 ## Executor architecture
 
+{{< history >}}
+
+- [Changed](https://gitlab.com/gitlab-org/gitlab/-/issues/600436) to a precompiled binary instead of an `npm` package in GitLab 19.4.
+
+{{< /history >}}
+
 When a flow runs in CI/CD, the runner:
 
-1. Downloads the `@gitlab/duo-cli` package from the `npm` registry.
+1. Downloads the GitLab Duo CLI binary for its operating system and architecture from the
+   GitLab package registry. Node.js and `npm` are not needed.
 1. Runs the GitLab Duo CLI, which uses WebSocket to connect to the GitLab Duo Workflow Service.
 1. Executes tools (file operations, Git commands) as directed by the AI model.
 
@@ -244,7 +251,6 @@ To configure your own runner for flows:
    - For an existing runner, [edit the jobs the runner can run](../../../../ci/runners/configure_runners.md#control-jobs-that-a-runner-can-run)
      and enter `gitlab--duo` in the **Tags** field.
    - If you configure runners with a `config.toml` file, add the tag to the `[[runners]]` section:
-     <!-- markdownlint-disable MD044 -->
 
      ```toml
      [[runners]]
@@ -252,7 +258,6 @@ To configure your own runner for flows:
        tags = ["gitlab--duo"]
      ```
 
-     <!-- markdownlint-enable MD044 -->
 1. Configure the runner to use an [executor](https://docs.gitlab.com/runner/executors/) that
    supports Docker images, like `docker`, `docker-autoscaler`, or `kubernetes`.
    The `shell` executor is not supported.
@@ -272,12 +277,12 @@ to secure flows executed on runners.
 To use the sandbox, you must use one of the following images:
 
 - Default Docker base image for the Agent Platform
+- [Hardened UBI 9 Minimal image](images.md#use-a-red-hat-universal-base-image-9-minimal)
 - A [custom image with SRT installed](../../environment_sandbox.md#install-anthropic-sandbox-runtime-srt-on-a-custom-image)
 
 To configure runners to use the sandbox, set `privileged = true` in your [runner configuration](https://docs.gitlab.com/runner/configuration/advanced-configuration/).
 
 For example:
-<!-- markdownlint-disable MD044 -->
 
 ```toml
 [[runners]]
@@ -287,8 +292,32 @@ For example:
     privileged = true
 ```
 
-<!-- markdownlint-enable MD044 -->
-You cannot use the sandbox with the following images:
+You cannot use the sandbox with custom images that do not have SRT installed.
 
-- Custom images without SRT installed
-- Hardened UBI 9 Minimal image
+### Sandbox requirements without privileged mode
+
+Privileged mode is one way to meet the sandbox requirements, but it is not sufficient 
+on its own and is not always necessary.
+
+The sandbox's requirement is that the job can create user and mount namespaces.
+At runtime, the sandbox probes for `unshare -m` first, then falls back to `unshare -rm`:
+
+- `unshare -m` requires `CAP_SYS_ADMIN`, which a container running as root has when the
+  runner is configured with `privileged = true`.
+- `unshare -rm` creates an unprivileged user namespace and works for images that run as a
+  non-root user, such as the hardened UBI 9 Minimal image. `unshare -rm` maps the container
+  user to root inside the new namespace only. It grants no privilege on the runner host.
+
+A `privileged = true` setting does not guarantee the sandbox initializes. It still fails when:
+
+- The runner host has `user.max_user_namespaces` set to `0`.
+- A seccomp or AppArmor profile blocks the `CLONE_NEWUSER` flag.
+- Privileged mode is set on the runner but does not reach the job container. This can happen
+  with some `docker-autoscaler` and `kubernetes` executor configurations.
+
+If no namespace mode is available, the flow runs without the sandbox and the job log contains
+the following warning:
+
+```plaintext
+Warning: SRT found but can't create sandbox (insufficient privileges), running command directly
+```

@@ -10,9 +10,11 @@ module OauthApplications
   end
 
   def prepare_scopes
-    scopes = params.fetch(:authn_oauth_application, {}).fetch(:scopes, nil)
+    scopes = params.permit(authn_oauth_application: { scopes: [] }).dig(:authn_oauth_application, :scopes)
 
-    params[:authn_oauth_application][:scopes] = scopes.join(' ') if scopes
+    # Written back in place because Doorkeeper expects a single space-separated
+    # string, while the form submits one checkbox value per scope.
+    params.require(:authn_oauth_application)[:scopes] = scopes.join(' ') if scopes
   end
 
   def set_created_session

@@ -64,7 +64,7 @@ RSpec.describe Gitlab::Application, feature_category: :scalability do # rubocop:
 
         clear_active_connections_again.run
 
-        expect(ActiveRecord::Base.connection_handler.active_connections?).to eq(false)
+        expect(ActiveRecord::Base.connection_handler.active_connections?).to be(false)
       end
     end
   end

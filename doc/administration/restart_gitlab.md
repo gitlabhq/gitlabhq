@@ -58,7 +58,7 @@ ok: run: puma: (pid 11338) 0s
 ```
 
 To restart a component separately, you can append its service name to the
-`restart` command. For example, to restart **only** NGINX you would run:
+`restart` command. For example, to restart only NGINX you would run:
 
 ```shell
 sudo gitlab-ctl restart nginx

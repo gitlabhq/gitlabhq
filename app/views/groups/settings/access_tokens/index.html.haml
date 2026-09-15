@@ -8,7 +8,7 @@
     - if current_user.can?(:create_resource_access_tokens, @group)
       = _('Generate group access tokens scoped to this group for your applications that need access to the GitLab API.')
       = html_escape(_('You can also use group access tokens with Git to authenticate over HTTP(S). %{link_start}Learn more.%{link_end}')) % { link_start: help_link_start, link_end: '</a>'.html_safe }
-    - else
+    - elsif !show_group_access_tokens_premium_offer?(@group)
       = _('Group access token creation is disabled in this group.')
       - root_group = @group.root_ancestor
       - if current_user.can?(:admin_group, root_group)
@@ -18,6 +18,8 @@
       = html_escape(_('You can still use and manage existing tokens. %{link_start}Learn more.%{link_end}')) % { link_start: help_link_start, link_end: '</a>'.html_safe }
 
   - c.with_body do
+    - if show_group_access_tokens_premium_offer?(@group)
+      = render_if_exists 'groups/settings/access_tokens/premium_offer', group: @group
     #js-new-access-token-app{ data: { access_token_type: type } }
 
     = render ::Layouts::CrudComponent.new(_('Active group access tokens'),

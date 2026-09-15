@@ -39,18 +39,18 @@ For a full list of reference architectures, see
 
 <!-- Disable ordered list rule <https://github.com/DavidAnson/markdownlint/blob/main/doc/Rules.md#md029---ordered-list-item-prefix> -->
 <!-- markdownlint-disable MD029 -->
-1. Machine type examples are given for illustration purposes. These types are used in [validation and testing](_index.md#validation-and-test-results) but are not intended as prescriptive defaults. Switching to other machine types that meet the requirements as listed is supported, including ARM variants if available. See [Supported machine types](_index.md#supported-machine-types) for more information.
+1. Machine type examples are given for illustration purposes. These types are used in [validation and testing](_index.md#how-specifications-are-derived) but are not intended as prescriptive defaults. Switching to other machine types that meet the requirements as listed is supported, including ARM variants if available. See [Supported machine types](_index.md#how-specifications-are-derived) for more information.
 2. Can be optionally run on reputable third-party external PaaS PostgreSQL solutions. See [Provide your own PostgreSQL instance](#provide-your-own-postgresql-instance) and [Infrastructure and services](_index.md#infrastructure-and-services) for more information.
 3. Can be optionally run on reputable third-party external PaaS Redis solutions. See [Provide your own Redis instance](#provide-your-own-redis-instance) and [Infrastructure and services](_index.md#infrastructure-and-services) for more information.
 4. Recommended to be run with a reputable third-party load balancer or service (LB PaaS).
-   Sizing depends on selected Load Balancer and additional factors such as Network Bandwidth. See [Load Balancers](_index.md#load-balancers) for more information.
+   Sizing depends on selected Load Balancer and additional factors such as Network Bandwidth.
 5. Should be run on reputable Cloud Provider or Self Managed solutions. See [Configure the object storage](#configure-the-object-storage) for more information.
 6. Gitaly specifications are based on the use of normal-sized repositories in good health.
-   However, if you have large monorepos (larger than several gigabytes) this can **significantly** impact Git and Gitaly performance and an increase of specifications will likely be required.
-   Refer to [large monorepos](_index.md#large-monorepos) for more information.
-7. Can be placed in Auto Scaling Groups (ASGs) as the component doesn't store any [stateful data](_index.md#autoscaling-of-stateful-nodes).
+   However, if you have large monorepos (larger than several gigabytes) this can significantly impact Git and Gitaly performance and an increase of specifications will likely be required.
+   Refer to [large monorepos](../../install/sizing.md#large-monorepos) for more information.
+7. Can be placed in Auto Scaling Groups (ASGs) as the component doesn't store any [stateful data](../../install/sizing.md#autoscaling).
    However, [Cloud Native Hybrid setups](#cloud-native-hybrid-reference-architecture-with-helm-charts-alternative) are generally preferred as certain components
-   such as like [migrations](#gitlab-rails-post-configuration) and [Mailroom](../incoming_email.md) can only be run on one node, which is handled better in Kubernetes.
+   such as [migrations](#gitlab-rails-post-configuration) and [Mailroom](../incoming_email.md) can only be run on one node, which is handled better in Kubernetes.
 <!-- markdownlint-enable MD029 -->
 
 > [!note]
@@ -113,14 +113,14 @@ The 40 RPS / 2k user reference architecture is designed to accommodate most comm
 
 These targets are based on actual customer data reflecting total environmental loads for the specified user count, including CI pipelines and other workloads. This represents a typical workload composition. For guidance on atypical workload patterns, see [Understanding RPS composition](../../install/sizing.md#understanding-rps-composition-and-workload-patterns).
 
-For more information about our testing methodology, see the [validation and test results](_index.md#validation-and-test-results) section.
+For more information about our testing methodology, see the [validation and test results](_index.md#how-specifications-are-derived) section.
 
 ### Performance considerations
 
 You may need additional adjustments if your environment has:
 
 - Consistently higher throughput than the listed targets
-- [Large monorepos](_index.md#large-monorepos)
+- [Large monorepos](../../install/sizing.md#large-monorepos)
 - Significant [additional workloads](_index.md#additional-workloads)
 
 In these cases, refer to [scaling an environment](_index.md#scaling-an-environment) for more information. If you believe these considerations may apply to you, contact us for additional guidance as required.
@@ -291,7 +291,7 @@ Use a reputable provider that runs a [supported PostgreSQL version](../../instal
 For more information, including guidance on high availability and database load balancing, see:
 
 - [Infrastructure and services](_index.md#infrastructure-and-services).
-- [Best practices for the database services](_index.md#best-practices-for-the-database-services).
+- [Best practices for the database services](../../install/cloud-services.md#use-managed-cloud-postgresql).
 
 If you use a third party external service:
 
@@ -432,7 +432,7 @@ specifically the number of projects and those projects' sizes.
 
 > [!warning]
 > Gitaly specifications are based on high percentiles of both usage patterns and repository sizes in good health.
-> However, if you have [large monorepos](_index.md#large-monorepos) (larger than several gigabytes) or [additional workloads](_index.md#additional-workloads) these can significantly impact the performance of the environment and further adjustments may be required.
+> However, if you have [large monorepos](../../install/sizing.md#large-monorepos) (larger than several gigabytes) or [additional workloads](_index.md#additional-workloads) these can significantly impact the performance of the environment and further adjustments may be required.
 > If you believe this applies to you, contact us for additional guidance as required.
 
 Gitaly has certain [disk requirements](../gitaly/_index.md#disk-requirements) for Gitaly storages.
@@ -604,7 +604,7 @@ To configure Gitaly with TLS:
 
 ## Configure Sidekiq
 
-Sidekiq requires connection to the [Redis](#configure-redis),
+Sidekiq requires a connection to the [Redis](#configure-redis),
 [PostgreSQL](#configure-postgresql) and [Gitaly](#configure-gitaly) instances.
 It also requires a connection to [Object Storage](#configure-the-object-storage) as recommended.
 
@@ -1092,8 +1092,8 @@ between Kubernetes and the backend components.
 
 > [!note]
 >
-> - This is an **advanced** setup. Running services in Kubernetes is well known
->   to be complex. **This setup is only recommended** if you have strong working
+> - This is an advanced setup. Running services in Kubernetes is well known
+>   to be complex. This setup is only recommended if you have strong working
 >   knowledge and experience in Kubernetes. The rest of this
 >   section assumes this.
 > - The 2,000 reference architecture is not a highly-available setup. To achieve HA,
@@ -1115,12 +1115,12 @@ the overall makeup as desired as long as the minimum CPU and Memory requirements
 | Sidekiq              | 3.6 vCPU<br/>8 GB memory (request)<br/>16 GB memory (limit) | 2 x `n1-standard-4` | 2 x `m5.xlarge`  |
 | Supporting services  | 4 vCPU<br/>15 GB memory | 2 x `n1-standard-2` | 2 x `m5.large`   |
 
-- For this setup, we regularly [test](_index.md#validation-and-test-results) and recommend [Google Kubernetes Engine (GKE)](https://cloud.google.com/kubernetes-engine) and [Amazon Elastic Kubernetes Service (EKS)](https://aws.amazon.com/eks/). Other Kubernetes services may also work, but your mileage may vary.
-- Machine type examples are given for illustration purposes. These types are used in [validation and testing](_index.md#validation-and-test-results) but are not intended as prescriptive defaults. Switching to other machine types that meet the requirements as listed is supported. See [Supported Machine Types](_index.md#supported-machine-types) for more information.
+- For this setup, we regularly [test](_index.md#how-specifications-are-derived) and recommend [Google Kubernetes Engine (GKE)](https://cloud.google.com/kubernetes-engine) and [Amazon Elastic Kubernetes Service (EKS)](https://aws.amazon.com/eks/). Other Kubernetes services may also work, but your mileage may vary.
+- Machine type examples are given for illustration purposes. These types are used in [validation and testing](_index.md#how-specifications-are-derived) but are not intended as prescriptive defaults. Switching to other machine types that meet the requirements as listed is supported. See [Supported Machine Types](_index.md#how-specifications-are-derived) for more information.
 - The [Webservice](#webservice) and [Sidekiq](#sidekiq) target node pool totals are given for GitLab components only. Additional resources are required for the chosen Kubernetes provider's system processes. The given examples take this into account.
 - The [Supporting](#supporting) target node pool total is given generally to accommodate several resources for supporting the GitLab deployment and any additional deployments you may wish to make depending on your requirements. Similar to the other node pools, the chosen Kubernetes provider's system processes also require resources. The given examples take this into account.
 - In production deployments, it's not required to assign pods to specific nodes. However, it is recommended to have several nodes in each pool spread across different availability zones to align with resilient cloud architecture practices.
-- Enabling autoscaling, such as Cluster Autoscaler, for efficiency reasons is encouraged, but it's generally recommended targeting a floor of 75% for Webservice and Sidekiq pods to ensure ongoing performance.
+- Enabling autoscaling, such as Cluster Autoscaler, for efficiency reasons is encouraged, but it's generally recommended to target a floor of 75% for Webservice and Sidekiq pods to ensure ongoing performance.
 
 Next are the backend components that run on static compute VMs using the Linux package (or External PaaS
 services where applicable):
@@ -1136,13 +1136,13 @@ services where applicable):
 
 <!-- Disable ordered list rule <https://github.com/DavidAnson/markdownlint/blob/main/doc/Rules.md#md029---ordered-list-item-prefix> -->
 <!-- markdownlint-disable MD029 -->
-1. Machine type examples are given for illustration purposes. These types are used in [validation and testing](_index.md#validation-and-test-results) but are not intended as prescriptive defaults. Switching to other machine types that meet the requirements as listed is supported, including ARM variants if available. See [Supported Machine Types](_index.md#supported-machine-types) for more information.
+1. Machine type examples are given for illustration purposes. These types are used in [validation and testing](_index.md#how-specifications-are-derived) but are not intended as prescriptive defaults. Switching to other machine types that meet the requirements as listed is supported, including ARM variants if available. See [Supported Machine Types](_index.md#how-specifications-are-derived) for more information.
 2. Can be optionally run on reputable third-party external PaaS PostgreSQL solutions. See [Provide your own PostgreSQL instance](#provide-your-own-postgresql-instance) and [Infrastructure and services](_index.md#infrastructure-and-services) for more information.
 3. Can be optionally run on reputable third-party external PaaS Redis solutions. See [Provide your own Redis instance](#provide-your-own-redis-instance) and [Infrastructure and services](_index.md#infrastructure-and-services) for more information.
 4. Should be run on reputable Cloud Provider or Self Managed solutions. See [Configure the object storage](#configure-the-object-storage) for more information.
 5. Gitaly specifications are based on the use of normal-sized repositories in good health.
-   However, if you have large monorepos (larger than several gigabytes) this can **significantly** impact Git and Gitaly performance and an increase of specifications will likely be required.
-   Refer to [large monorepos](_index.md#large-monorepos) for more information.
+   However, if you have large monorepos (larger than several gigabytes) this can significantly impact Git and Gitaly performance and an increase of specifications will likely be required.
+   Refer to [large monorepos](../../install/sizing.md#large-monorepos) for more information.
 <!-- markdownlint-enable MD029 -->
 
 > [!note]
@@ -1203,7 +1203,7 @@ For further information on Webservice resource usage, see the Charts documentati
 
 ##### Gateway API / Ingress
 
-It's also recommended deploying the Gateway API or Ingress controller pods across the Webservice nodes as a DaemonSet. This allows the controllers to scale dynamically with the Webservice pods they serve, and takes advantage of the higher network bandwidth larger machine types typically have.
+It's also recommended to deploy the Gateway API or Ingress controller pods across the Webservice nodes as a DaemonSet. This allows the controllers to scale dynamically with the Webservice pods they serve, and takes advantage of the higher network bandwidth larger machine types typically have.
 
 This isn't a strict requirement. The Gateway API or Ingress controller pods can be deployed as desired as long as they have enough resources to handle the web traffic.
 

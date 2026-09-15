@@ -2,6 +2,7 @@
 
 module API
   class Projects < ::API::Base
+    include ::API::Concerns::McpAccess
     include PaginationParams
     include Helpers::CustomAttributes
     include APIGuard
@@ -10,9 +11,9 @@ module API
 
     before do
       authenticate_non_get!
-      set_current_organization(user: current_user)
     end
 
+    allow_mcp_access_create
     allow_access_with_scope :ai_workflows, if: ->(request) { request.get? || request.head? }
 
     feature_category :groups_and_projects, %w[
@@ -220,7 +221,7 @@ module API
       def present_project(project, options = {})
         options[:with].preload_resource(project) if options[:with].respond_to?(:preload_resource)
 
-        present project, options
+        present project, **options
       end
 
       def present_projects(projects, options = {})
@@ -243,7 +244,7 @@ module API
           [options[:with].prepare_relation(projects, options), options]
         end
 
-        present records, options
+        present records, **options
       end
 
       def present_groups(groups)
@@ -254,7 +255,7 @@ module API
 
         groups, options = with_custom_attributes(groups, options)
 
-        present paginate(groups), options
+        present paginate(groups), **options
       end
 
       def translate_params_for_compatibility(params)
@@ -315,16 +316,6 @@ module API
           present_project project, with: Entities::Project, current_user: current_user
         else
           render_api_error!(result.message, 400)
-        end
-      end
-
-      def execute_sync_transfer(project, namespace)
-        result = ::Projects::TransferService.new(project, current_user).execute(namespace)
-
-        if result
-          present_project project, with: Entities::Project, current_user: current_user
-        else
-          render_api_error!("Failed to transfer project #{project.errors.messages}", 400)
         end
       end
     end
@@ -639,6 +630,9 @@ module API
         optional :mr_default_target_self, type: Boolean, desc: 'Merge requests of this forked project targets itself by default'
         optional :branches, type: String, desc: 'Branches to fork'
       end
+      route_setting :mcp, tool_name: :fork_repository, toolset: :repository,
+        params: [:id, :namespace_id, :namespace_path, :name, :path, :description, :visibility],
+        annotations: { readOnlyHint: false, destructiveHint: false }, resource_name: "project"
       route_setting :authorization, permissions: :create_fork, boundary_type: :project
       post ':id/fork', feature_category: :source_code_management do
         Gitlab::QueryLimiting.disable!('https://gitlab.com/gitlab-org/gitlab/-/issues/20759')
@@ -1217,11 +1211,7 @@ module API
 
         namespace = find_namespace!(params[:namespace])
 
-        if Feature.enabled?(:groups_and_projects_async_transfer, user_project.root_ancestor)
-          enqueue_async_transfer(user_project, namespace)
-        else
-          execute_sync_transfer(user_project, namespace)
-        end
+        enqueue_async_transfer(user_project, namespace)
       end
 
       desc 'List all transferable namespaces for a project' do

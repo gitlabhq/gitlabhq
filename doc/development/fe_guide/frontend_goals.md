@@ -89,7 +89,7 @@ We'll continue using HAML over Vue when appropriate. See [when to add a Vue appl
 
 ### Complete removal of jQuery
 
-In 2019 we committed to no longer use jQuery, however we have not prioritized full removal. Our goal here is to no longer have any references to it in the primary GitLab codebase.
+In 2019 we committed to no longer use jQuery. However, we have not prioritized full removal. Our goal here is to no longer have any references to it in the primary GitLab codebase.
 
 **Current Status**
 
@@ -145,13 +145,13 @@ Similar to keeping on the latest major version of Vue, we should try to keep as 
 
 ### Cluster SPAs
 
-Currently, GitLab mostly follows Rails architecture and Rails routing which means every single time we're changing route, we have page reload. This results in long loading times because we are:
+Currently, GitLab mostly follows Rails architecture and Rails routing which means every single time we're changing route, we have a page reload. This results in long loading times because we are:
 
-- rendering HAML page;
+- rendering a HAML page;
 - mounting Vue applications if we have any;
 - fetching data for these applications
 
-Ideally, we should reduce the number of times user needs to go through this long process. This would be possible with converting GitLab into a single-page application but this would require significant refactoring and is not an achievable short/mid-term goal.
+Ideally, we should reduce the number of times the user needs to go through this long process. This would be possible with converting GitLab into a single-page application but this would require significant refactoring and is not an achievable short/mid-term goal.
 
 The realistic goal is to move to _multiple SPAs_ experience where we define the _clusters_ of pages that form the user flow, and move this cluster from Rails routing to a single-page application with client-side routing. This way, we can load all the relevant context from HAML only once, and fetch all the additional data from the API depending on the route. An example of a cluster could be the following pages:
 
@@ -161,7 +161,7 @@ The realistic goal is to move to _multiple SPAs_ experience where we define the 
 - **New issue** page
 - editing an issue
 
-All of them have the same context (project path, current user etc.), we could easily fetch more data with issue-specific parameter (issue `iid`) and store the results on the client (so that opening the same issue won't require more API calls). This leads to a smooth user experience for navigating through issues.
+All of them have the same context (project path, current user, etc.). We could easily fetch more data with an issue-specific parameter (issue `iid`) and store the results on the client (so that opening the same issue won't require more API calls). This leads to a smooth user experience for navigating through issues.
 
 For navigation between clusters, we can still rely on Rails routing. These cases should be relatively more scarce than navigation within clusters.
 
@@ -279,7 +279,7 @@ We're early in the process of adding visual testing, but we should have a framew
 
 ### Accessibility testing
 
-Since 2023 we've been working on determining the tooling for accessibility testing. We opted for a axe-core based [comprehensive, multi-level approach to ensure accessibility compliance](accessibility/_index.md#how-our-accessibility-tools-work-together). Each tool serves a specific purpose in our development workflow, working together to provide complete coverage from development to production.
+Since 2023 we've been working on determining the tooling for accessibility testing. We opted for an axe-core based [comprehensive, multi-level approach to ensure accessibility compliance](accessibility/_index.md#how-our-accessibility-tools-work-together). Each tool serves a specific purpose in our development workflow, working together to provide complete coverage from development to production.
 
 **Current Status**
 

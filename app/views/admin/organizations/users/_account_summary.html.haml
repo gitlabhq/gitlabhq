@@ -1,0 +1,6 @@
+= render Pajamas::CardComponent.new(card_options: { class: 'gl-mb-5' }, body_options: { class: 'gl-py-2'}) do |c|
+  - c.with_header do
+    = @user.name
+  - c.with_body do
+    %ul.content-list
+      = render 'admin/users/summary_details'

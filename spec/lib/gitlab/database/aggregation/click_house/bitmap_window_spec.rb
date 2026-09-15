@@ -7,6 +7,11 @@ RSpec.describe Gitlab::Database::Aggregation::ClickHouse::BitmapWindow, feature_
   let(:context) { { scope: scope_table, inner_query_name: 'ch_aggregation_inner_query' } }
   let(:lag_metric) { described_class.new(:users, :integer, nil, operation: :lag, over: :event_date) }
   let(:intersection_metric) { described_class.new(:users, :integer, nil, operation: :intersection, over: :event_date) }
+  let(:difference_metric) { described_class.new(:users, :integer, nil, operation: :difference, over: :event_date) }
+
+  let(:reverse_difference_metric) do
+    described_class.new(:users, :integer, nil, operation: :reverse_difference, over: :event_date)
+  end
 
   describe '.new' do
     it 'initializes with valid :lag operation' do
@@ -17,6 +22,14 @@ RSpec.describe Gitlab::Database::Aggregation::ClickHouse::BitmapWindow, feature_
 
     it 'initializes with valid :intersection operation' do
       expect(intersection_metric.operation).to eq(:intersection)
+    end
+
+    it 'initializes with valid :difference operation' do
+      expect(difference_metric.operation).to eq(:difference)
+    end
+
+    it 'initializes with valid :reverse_difference operation' do
+      expect(reverse_difference_metric.operation).to eq(:reverse_difference)
     end
 
     it 'accepts a custom lag_offset' do
@@ -111,6 +124,46 @@ RSpec.describe Gitlab::Database::Aggregation::ClickHouse::BitmapWindow, feature_
       end
     end
 
+    context 'with :difference operation' do
+      it 'counts current-period values absent from the lagged array' do
+        sql = difference_metric.build_window_sql(context, 'aeq_users_count', over_alias: 'aeq_event_date_daily')
+
+        expect(sql).to eq("length(arrayDistinct(aeq_users_count)) - " \
+          "length(arrayIntersect(aeq_users_count, lagInFrame(aeq_users_count, 1, []) OVER (" \
+          "ORDER BY aeq_event_date_daily ASC)))")
+      end
+
+      it 'generates SQL with a custom lag_offset' do
+        metric = described_class.new(:users, :integer, nil,
+          operation: :difference, over: :event_date, lag_offset: 3)
+
+        sql = metric.build_window_sql(context, 'aeq_users_count', over_alias: 'aeq_event_date_daily')
+
+        expect(sql).to include('lagInFrame(aeq_users_count, 3, [])')
+      end
+    end
+
+    context 'with :reverse_difference operation' do
+      it 'counts lagged values absent from the current-period array' do
+        sql = reverse_difference_metric.build_window_sql(context, 'aeq_users_count',
+          over_alias: 'aeq_event_date_daily')
+
+        expect(sql).to eq("length(arrayDistinct(lagInFrame(aeq_users_count, 1, []) OVER (" \
+          "ORDER BY aeq_event_date_daily ASC))) - " \
+          "length(arrayIntersect(aeq_users_count, lagInFrame(aeq_users_count, 1, []) OVER (" \
+          "ORDER BY aeq_event_date_daily ASC)))")
+      end
+
+      it 'generates SQL with a custom lag_offset' do
+        metric = described_class.new(:users, :integer, nil,
+          operation: :reverse_difference, over: :event_date, lag_offset: 3)
+
+        sql = metric.build_window_sql(context, 'aeq_users_count', over_alias: 'aeq_event_date_daily')
+
+        expect(sql).to include('lagInFrame(aeq_users_count, 3, [])')
+      end
+    end
+
     context 'with partition_aliases' do
       it 'includes PARTITION BY in lag window SQL' do
         sql = lag_metric.build_window_sql(context, 'aeq_users_count',
@@ -125,6 +178,25 @@ RSpec.describe Gitlab::Database::Aggregation::ClickHouse::BitmapWindow, feature_
           over_alias: 'aeq_event_date_daily', partition_aliases: ['aeq_feature'])
 
         expect(sql).to eq("length(arrayIntersect(aeq_users_count, lagInFrame(aeq_users_count, 1, []) OVER (" \
+          "PARTITION BY aeq_feature ORDER BY aeq_event_date_daily ASC)))")
+      end
+
+      it 'includes PARTITION BY in difference window SQL' do
+        sql = difference_metric.build_window_sql(context, 'aeq_users_count',
+          over_alias: 'aeq_event_date_daily', partition_aliases: ['aeq_feature'])
+
+        expect(sql).to eq("length(arrayDistinct(aeq_users_count)) - " \
+          "length(arrayIntersect(aeq_users_count, lagInFrame(aeq_users_count, 1, []) OVER (" \
+          "PARTITION BY aeq_feature ORDER BY aeq_event_date_daily ASC)))")
+      end
+
+      it 'includes PARTITION BY in reverse difference window SQL' do
+        sql = reverse_difference_metric.build_window_sql(context, 'aeq_users_count',
+          over_alias: 'aeq_event_date_daily', partition_aliases: ['aeq_feature'])
+
+        expect(sql).to eq("length(arrayDistinct(lagInFrame(aeq_users_count, 1, []) OVER (" \
+          "PARTITION BY aeq_feature ORDER BY aeq_event_date_daily ASC))) - " \
+          "length(arrayIntersect(aeq_users_count, lagInFrame(aeq_users_count, 1, []) OVER (" \
           "PARTITION BY aeq_feature ORDER BY aeq_event_date_daily ASC)))")
       end
 
@@ -153,10 +225,11 @@ RSpec.describe Gitlab::Database::Aggregation::ClickHouse::BitmapWindow, feature_
       end
     end
 
-    context 'with :intersection operation' do
-      it 'wraps alias in finalizeAggregation(...)' do
-        expect(intersection_metric.finalization_sql('aeq_users_count'))
-          .to eq('finalizeAggregation(aeq_users_count)')
+    context 'with the array operations' do
+      it 'wraps alias in finalizeAggregation(...)', :aggregate_failures do
+        [intersection_metric, difference_metric, reverse_difference_metric].each do |metric|
+          expect(metric.finalization_sql('aeq_users_count')).to eq('finalizeAggregation(aeq_users_count)')
+        end
       end
     end
   end

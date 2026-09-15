@@ -483,6 +483,18 @@ RSpec.describe AbuseReport, feature_category: :insider_threat do
     it 'returns past closed reports for the same user' do
       expect(report.past_closed_reports_for_user).to match_array(report_3)
     end
+
+    context 'when the same user has a closed report in another organization' do
+      let(:other_organization) { create(:organization) }
+      let!(:other_org_report) do
+        create(:abuse_report, :closed, user: report.user,
+          reporter: create(:user, organization: other_organization))
+      end
+
+      it 'excludes the report belonging to the other organization' do
+        expect(report.past_closed_reports_for_user).not_to include(other_org_report)
+      end
+    end
   end
 
   describe '#similar_open_reports_for_user' do
@@ -497,6 +509,18 @@ RSpec.describe AbuseReport, feature_category: :insider_threat do
 
     it 'returns no abuse reports when the report is closed' do
       expect(report_4.similar_open_reports_for_user).to match_array(described_class.none)
+    end
+
+    context 'when the same user has a similar open report in another organization' do
+      let(:other_organization) { create(:organization) }
+      let!(:other_org_report) do
+        create(:abuse_report, category: report.category, user: report.user,
+          reporter: create(:user, organization: other_organization))
+      end
+
+      it 'excludes the report belonging to the other organization' do
+        expect(report.similar_open_reports_for_user).not_to include(other_org_report)
+      end
     end
   end
 

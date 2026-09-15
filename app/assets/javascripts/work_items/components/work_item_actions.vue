@@ -19,7 +19,7 @@ import * as Sentry from '~/sentry/sentry_browser_wrapper';
 import { __, s__, sprintf } from '~/locale';
 import { getModifierKey } from '~/constants';
 import Tracking from '~/tracking';
-import { shouldDisableShortcuts } from '~/behaviors/shortcuts/shortcuts_toggle';
+import { keyboardShortcutsDisabled } from '~/behaviors/shortcuts/shortcuts_disabled';
 import glFeatureFlagMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
 import toast from '~/vue_shared/plugins/global_toast';
 import { isLoggedIn } from '~/lib/utils/common_utils';
@@ -38,7 +38,7 @@ import updateWorkItemNotificationsMutation from '../graphql/update_work_item_not
 import convertWorkItemMutation from '../graphql/work_item_convert.mutation.graphql';
 import namespaceWorkItemTypesQuery from '../graphql/namespace_work_item_types.query.graphql';
 import getWorkItemNotificationsByIdQuery from '../graphql/get_work_item_notifications_by_id.query.graphql';
-import { findNotificationsWidget } from '../utils';
+import { findNotificationsWidget, lowercaseWorkItemType } from '../utils';
 import WorkItemStateToggle from './work_item_state_toggle.vue';
 import CreateWorkItemModal from './create_work_item_modal.vue';
 import MoveWorkItemModal from './move_work_item_modal.vue';
@@ -81,7 +81,6 @@ export default {
     GlTooltip: GlTooltipDirective,
   },
   mixins: [glFeatureFlagMixin(), Tracking.mixin({ label: 'actions_menu' }), GlToastMixin],
-  isLoggedIn: isLoggedIn(),
   inject: {
     getWorkItemTypeConfiguration: {
       default: () => {},
@@ -242,14 +241,13 @@ export default {
     },
   },
   emits: [
-    'deleteWorkItem',
+    'delete-work-item',
     'dropdown-show',
     'error',
-    'promotedToObjective',
-    'toggleReportAbuseModal',
+    'toggle-report-abuse-modal',
     'toggle-sidebar',
-    'toggleTruncationEnabled',
-    'toggleWorkItemConfidentiality',
+    'toggle-truncation-enabled',
+    'toggle-work-item-confidentiality',
     'work-item-created',
     'work-item-state-updated',
     'work-item-type-changed',
@@ -302,6 +300,9 @@ export default {
     },
   },
   computed: {
+    isLoggedIn() {
+      return isLoggedIn();
+    },
     // eslint-disable-next-line vue/no-unused-properties
     tracking() {
       return {
@@ -311,28 +312,28 @@ export default {
     i18n() {
       return {
         deleteWorkItem: sprintf(s__('WorkItem|Delete %{workItemType}'), {
-          workItemType: this.workItemType,
+          workItemType: lowercaseWorkItemType(this.workItemType),
         }),
         convertError: sprintf(
           s__(
             'WorkItem|Something went wrong while promoting the %{workItemType}. Please try again.',
           ),
-          { workItemType: this.workItemType },
+          { workItemType: lowercaseWorkItemType(this.workItemType) },
         ),
         copyCreateNoteEmail: sprintf(s__('WorkItem|Copy %{workItemType} email address'), {
-          workItemType: this.workItemType,
+          workItemType: lowercaseWorkItemType(this.workItemType),
         }),
         copyReferenceError: sprintf(
           s__(
             'WorkItem|Something went wrong while copying the %{workItemType} reference. Please try again.',
           ),
-          { workItemType: this.workItemType },
+          { workItemType: lowercaseWorkItemType(this.workItemType) },
         ),
         copyCreateNoteEmailError: sprintf(
           s__(
             'WorkItem|Something went wrong while copying the %{workItemType} email address. Please try again.',
           ),
-          { workItemType: this.workItemType },
+          { workItemType: lowercaseWorkItemType(this.workItemType) },
         ),
       };
     },
@@ -345,7 +346,7 @@ export default {
             'WorkItem|Are you sure you want to delete the %{workItemType}? This action cannot be reversed.',
           );
       return sprintf(message, {
-        workItemType: this.workItemType,
+        workItemType: lowercaseWorkItemType(this.workItemType),
       });
     },
     workItemTypeConfiguration() {
@@ -428,7 +429,7 @@ export default {
     },
     toggleSidebarKeys() {
       const modifierKey = getModifierKey();
-      return shouldDisableShortcuts() ? null : `${modifierKey}/`;
+      return keyboardShortcutsDisabled() ? null : `${modifierKey}/`;
     },
   },
   watch: {
@@ -450,7 +451,7 @@ export default {
     },
     async handleToggleWorkItemConfidentiality() {
       this.track('click_toggle_work_item_confidentiality');
-      this.$emit('toggleWorkItemConfidentiality', !this.isConfidential);
+      this.$emit('toggle-work-item-confidentiality', !this.isConfidential);
 
       await nextTick();
 
@@ -468,7 +469,7 @@ export default {
     },
     handleDeleteWorkItem() {
       this.track('click_delete_work_item');
-      this.$emit('deleteWorkItem');
+      this.$emit('delete-work-item');
     },
     handleCancelDeleteWorkItem({ trigger }) {
       if (trigger !== 'ok') {
@@ -585,7 +586,6 @@ export default {
         }
         this.$toast.show(s__('WorkItem|Promoted to objective.'));
         this.track('promote_kr_to_objective');
-        this.$emit('promotedToObjective');
       } catch (error) {
         this.throwConvertError();
         Sentry.captureException(error);
@@ -604,7 +604,7 @@ export default {
       this.$emit('error', error);
     },
     handleToggleReportAbuseModal() {
-      this.$emit('toggleReportAbuseModal', true);
+      this.$emit('toggle-report-abuse-modal', true);
       this.closeDropdown();
     },
     showChangeTypeModal() {
@@ -631,7 +631,7 @@ export default {
       @shown="showDropdown"
       @hidden="hideDropdown"
     >
-      <template v-if="$options.isLoggedIn && !hideSubscribe">
+      <template v-if="isLoggedIn && !hideSubscribe">
         <gl-disclosure-dropdown-item
           class="gl-flex gl-w-full gl-justify-end"
           data-testid="notifications-toggle-form"
@@ -760,7 +760,7 @@ export default {
       </gl-disclosure-dropdown-item>
 
       <gl-disclosure-dropdown-item
-        v-if="$options.isLoggedIn && workItemCreateNoteEmail"
+        v-if="isLoggedIn && workItemCreateNoteEmail"
         data-testid="copy-create-note-email-action"
         :data-clipboard-text="workItemCreateNoteEmail"
         @action="copyToClipboard(workItemCreateNoteEmail, $options.i18n.emailAddressCopied)"
@@ -819,7 +819,7 @@ export default {
         <gl-disclosure-dropdown-item
           class="gl-flex gl-w-full gl-justify-end"
           data-testid="truncation-toggle-action"
-          @action="$emit('toggleTruncationEnabled')"
+          @action="$emit('toggle-truncation-enabled')"
         >
           <template #list-item>
             <gl-toggle

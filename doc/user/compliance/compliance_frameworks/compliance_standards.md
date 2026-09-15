@@ -303,7 +303,7 @@ to create a compliance framework for this standard.
 
 The National Institute of Standards and Technology (NIST) Information Technology Laboratory (ITL) provides standards,
 measurements, and testing for information systems, focusing on interoperability, security, usability, and reliability.
-These compliance standards involves implementing security and privacy controls across various areas, including:
+These compliance standards involve implementing security and privacy controls across various areas, including:
 
 - Risk management
 - Identification and authentication

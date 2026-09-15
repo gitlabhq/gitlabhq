@@ -28,8 +28,9 @@ import markdownEditorEventHub from '~/vue_shared/components/markdown/eventhub';
 import { updateText } from '~/lib/utils/text_markdown';
 import { useNotes } from '~/notes/store/legacy_notes';
 import diffsEventHub from '~/diffs/event_hub';
+import { getIdFromGraphQLId } from '~/graphql_shared/utils';
 import { EVT_REVIEW_DRAWER_APPROVED } from '../../diffs/constants';
-import userCanApproveQuery from '../queries/can_approve.query.graphql';
+import reviewDrawerQuery from '../queries/review_drawer.query.graphql';
 
 const REVIEW_STATES = {
   REVIEWED: 'reviewed',
@@ -44,16 +45,16 @@ const NOTIFY_EVENTS = {
 export default {
   name: 'ReviewDrawer',
   apollo: {
-    userPermissions: {
+    mergeRequest: {
       fetchPolicy: fetchPolicies.NETWORK_ONLY,
-      query: userCanApproveQuery,
+      query: reviewDrawerQuery,
       variables() {
         return {
           projectPath: this.projectPath,
           iid: `${this.getNoteableData.iid}`,
         };
       },
-      update: (data) => data.project?.mergeRequest?.userPermissions ?? {},
+      update: (data) => data.project?.mergeRequest ?? {},
     },
   },
   components: {
@@ -83,7 +84,7 @@ export default {
       isSubmitting: false,
       summarizeReviewLoading: false,
       showMarkdownEditor: false,
-      userPermissions: {},
+      mergeRequest: {},
       noteData: {
         noteable_type: '',
         noteable_id: '',
@@ -99,7 +100,12 @@ export default {
   computed: {
     ...mapState(useLegacyDiffs, ['projectPath']),
     ...mapState(useBatchComments, ['sortedDrafts', 'draftsCount', 'drawerOpened']),
-    ...mapState(useNotes, ['getNoteableData', 'getNotesData', 'getCurrentUserLastNote']),
+    ...mapState(useNotes, [
+      'getNoteableData',
+      'getNotesData',
+      'getCurrentUserLastNote',
+      'getUserData',
+    ]),
     getDrawerHeaderHeight() {
       if (!this.drawerOpened) return '0';
 
@@ -110,6 +116,42 @@ export default {
     },
     autosaveKey() {
       return `submit_review_dropdown/${this.getNoteableData.id}`;
+    },
+    userPermissions() {
+      return this.mergeRequest.userPermissions ?? {};
+    },
+    reviewers() {
+      return this.mergeRequest.reviewers?.nodes ?? [];
+    },
+    currentUserIsReviewer() {
+      const currentUserId = this.getUserData?.id;
+
+      if (!currentUserId) return false;
+
+      return this.reviewers.some((reviewer) => getIdFromGraphQLId(reviewer.id) === currentUserId);
+    },
+    currentUserIsAuthor() {
+      const currentUserId = this.getUserData?.id;
+      const authorId = this.mergeRequest.author?.id;
+
+      if (!currentUserId || !authorId) return false;
+
+      return getIdFromGraphQLId(authorId) === currentUserId;
+    },
+    canBeAddedAsReviewer() {
+      // Mirrors the backend can_add_reviewer?; the numeric cap is enforced server-side.
+      return this.mergeRequest.allowsMultipleReviewers || this.reviewers.length === 0;
+    },
+    showAssignReviewerHint() {
+      // Avoid flashing the hint before the reviewers query resolves.
+      if (this.$apollo.queries.mergeRequest.loading) return false;
+
+      return (
+        this.userPermissions.updateMergeRequest &&
+        !this.currentUserIsAuthor &&
+        !this.currentUserIsReviewer &&
+        this.canBeAddedAsReviewer
+      );
     },
     radioGroupOptions() {
       return [
@@ -353,6 +395,13 @@ export default {
               @focus="showMarkdownEditor = true"
             />
           </div>
+          <p
+            v-if="showAssignReviewerHint"
+            class="gl-mb-0 gl-mt-3 gl-text-subtle"
+            data-testid="assign-reviewer-hint"
+          >
+            {{ __('You will be added as a reviewer.') }}
+          </p>
           <div class="gl-mt-3 gl-flex gl-gap-3">
             <gl-button
               type="submit"

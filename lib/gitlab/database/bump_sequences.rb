@@ -32,6 +32,10 @@ module Gitlab
         sequences = []
 
         tables.each do |table|
+          # Some dictionary entries (e.g. merge_request_diff_commits_archived) are created by
+          # migrations guarded to run only on GitLab.com, so the table doesn't exist on every connection.
+          next unless base_model.connection.table_exists?(table)
+
           model = Class.new(base_model) do
             self.table_name = table
           end

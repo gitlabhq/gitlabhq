@@ -79,10 +79,12 @@ module Cells
       "cells:claims:verification_service:last_processed_id:#{@model_name}"
     end
 
+    # Fast path only. VerificationService enforces the same rule per attribute; checking here
+    # avoids taking the exclusive lease for a model with nothing to reconcile.
     def enabled?(model)
-      Gitlab.config.cell.enabled &&
-        Feature.enabled?("cells_claims_verification_worker_#{Gitlab::Utils.param_key(model)}", # rubocop:disable Gitlab/FeatureFlagKeyDynamic -- Need to check against model names dynamically
-          :instance)
+      return false unless Cells::Claimable.models_with_claims.include?(model)
+
+      model.cells_claims_attributes.any? { |attribute, _| model.cells_claims_enabled_for_attribute?(attribute) }
     end
   end
 end

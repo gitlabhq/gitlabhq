@@ -61,7 +61,8 @@ module Groups
         :enable_namespace_descendants_cache,
         :step_up_auth_required_oauth_provider,
         :enforce_granular_tokens,
-        :granular_tokens_enforced_after
+        :granular_tokens_enforced_after,
+        :ai_custom_instructions
       ] + [group_feature_attributes: group_feature_attributes]
     end
 

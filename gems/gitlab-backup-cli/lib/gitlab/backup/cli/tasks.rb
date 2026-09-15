@@ -7,6 +7,7 @@ module Gitlab
         autoload :AgentPlanContent, 'gitlab/backup/cli/tasks/agent_plan_content'
         autoload :Artifacts, 'gitlab/backup/cli/tasks/artifacts'
         autoload :Builds, 'gitlab/backup/cli/tasks/builds'
+        autoload :CiCatalogBundles, 'gitlab/backup/cli/tasks/ci_catalog_bundles'
         autoload :CiSecureFiles, 'gitlab/backup/cli/tasks/ci_secure_files'
         autoload :Database, 'gitlab/backup/cli/tasks/database'
         autoload :Lfs, 'gitlab/backup/cli/tasks/lfs'
@@ -30,7 +31,8 @@ module Gitlab
           Gitlab::Backup::Cli::Tasks::Registry.id => Gitlab::Backup::Cli::Tasks::Registry,
           Gitlab::Backup::Cli::Tasks::Packages.id => Gitlab::Backup::Cli::Tasks::Packages,
           Gitlab::Backup::Cli::Tasks::CiSecureFiles.id => Gitlab::Backup::Cli::Tasks::CiSecureFiles,
-          Gitlab::Backup::Cli::Tasks::AgentPlanContent.id => Gitlab::Backup::Cli::Tasks::AgentPlanContent
+          Gitlab::Backup::Cli::Tasks::AgentPlanContent.id => Gitlab::Backup::Cli::Tasks::AgentPlanContent,
+          Gitlab::Backup::Cli::Tasks::CiCatalogBundles.id => Gitlab::Backup::Cli::Tasks::CiCatalogBundles
         }.freeze
 
         def self.all

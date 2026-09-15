@@ -1,0 +1,10 @@
+---
+name: service_desk_restrict_custom_templates
+description: Gates the restriction of custom Service Desk email templates for new free and trial root namespaces
+feature_issue_url: https://gitlab.com/gitlab-org/gitlab/-/work_items/627335
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/254265
+rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/work_items/628200
+milestone: '19.4'
+group: group::work items
+type: wip
+default_enabled: false

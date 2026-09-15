@@ -7,6 +7,7 @@ RSpec.describe Gitlab::DuoAgentPlatform::Config, feature_category: :duo_agent_pl
 
   let(:config) { described_class.new(project) }
   let(:config_path) { '.gitlab/duo/agent-config.yml' }
+  let(:candidate_path) { '.gitlab/duo/agent-config-candidate.yml' }
   let(:default_branch) { 'main' }
   let(:commit_sha) { 'abc123' }
 
@@ -14,6 +15,109 @@ RSpec.describe Gitlab::DuoAgentPlatform::Config, feature_category: :duo_agent_pl
     allow(project).to receive(:default_branch).and_return(default_branch)
     commit = Struct.new(:sha).new(commit_sha)
     allow(project.repository).to receive(:commit).with(default_branch).and_return(commit)
+    # dap_agent_config_candidate is on by default in specs and no candidate file exists, so
+    # every example below also exercises the fallback to CONFIG_FILE_NAME.
+    allow(project.repository).to receive(:blob_data_at)
+                                   .with(default_branch, candidate_path)
+                                   .and_return(nil)
+  end
+
+  context 'when the repository is empty' do
+    let_it_be(:project) { create(:project, :empty_repo) }
+
+    before do
+      # Let default_branch fall through to the group or instance preference, as it
+      # does in production, so the guard is exercised rather than asserted. The
+      # commit lookup for cache_key then really resolves to nothing.
+      allow(project).to receive(:default_branch).and_call_original
+      allow(project.repository).to receive(:commit).and_call_original
+    end
+
+    it 'does not ask Gitaly for either config file' do
+      expect(project.repository).not_to receive(:blob_data_at)
+
+      expect(config.config_present?).to be(false)
+    end
+  end
+
+  describe 'candidate config file' do
+    before do
+      allow(project.repository).to receive(:blob_data_at)
+                                     .with(default_branch, config_path)
+                                     .and_return("image: primary:1.0")
+    end
+
+    context 'when the flag is disabled' do
+      before do
+        stub_feature_flags(dap_agent_config_candidate: false)
+      end
+
+      it 'reads the primary file and never looks for the candidate' do
+        expect(project.repository).not_to receive(:blob_data_at).with(default_branch, candidate_path)
+
+        expect(config.default_image).to eq('primary:1.0')
+      end
+    end
+
+    context 'when the flag is enabled for the project' do
+      before do
+        stub_feature_flags(dap_agent_config_candidate: project)
+      end
+
+      it 'reads the candidate file' do
+        allow(project.repository).to receive(:blob_data_at)
+                                       .with(default_branch, candidate_path)
+                                       .and_return("image: candidate:2.0")
+
+        expect(config.default_image).to eq('candidate:2.0')
+      end
+
+      it 'falls back to the primary file when the candidate is absent' do
+        allow(project.repository).to receive(:blob_data_at)
+                                       .with(default_branch, candidate_path)
+                                       .and_return(nil)
+
+        expect(config.default_image).to eq('primary:1.0')
+      end
+
+      it 'is not read for a different project' do
+        other_project = create(:project, :repository)
+        allow(other_project).to receive(:default_branch).and_return(default_branch)
+        allow(other_project.repository).to receive(:blob_data_at)
+                                             .with(default_branch, config_path)
+                                             .and_return("image: other:1.0")
+
+        expect(other_project.repository).not_to receive(:blob_data_at).with(default_branch, candidate_path)
+
+        expect(described_class.new(other_project).default_image).to eq('other:1.0')
+      end
+    end
+
+    # Guards the rollback path: the flag flip does not move the SHA, so a shared key
+    # would keep serving the other file until CACHE_EXPIRY.
+    describe 'cache isolation', :use_clean_rails_memory_store_caching do
+      before do
+        allow(project.repository).to receive(:blob_data_at)
+                                       .with(default_branch, candidate_path)
+                                       .and_return("image: candidate:2.0")
+      end
+
+      it 'does not serve a cached candidate config after the flag is disabled' do
+        stub_feature_flags(dap_agent_config_candidate: project)
+        expect(described_class.new(project).default_image).to eq('candidate:2.0')
+
+        stub_feature_flags(dap_agent_config_candidate: false)
+        expect(described_class.new(project).default_image).to eq('primary:1.0')
+      end
+
+      it 'does not serve a cached primary config after the flag is enabled' do
+        stub_feature_flags(dap_agent_config_candidate: false)
+        expect(described_class.new(project).default_image).to eq('primary:1.0')
+
+        stub_feature_flags(dap_agent_config_candidate: project)
+        expect(described_class.new(project).default_image).to eq('candidate:2.0')
+      end
+    end
   end
 
   describe '#default_image' do
@@ -114,6 +218,53 @@ RSpec.describe Gitlab::DuoAgentPlatform::Config, feature_category: :duo_agent_pl
 
       it 'returns nil' do
         expect(config.id_tokens).to be_nil
+      end
+    end
+  end
+
+  describe '#variables' do
+    context 'when config contains a variables allowlist' do
+      let(:config_content) do
+        <<~YAML
+          variables:
+            - MY_API_KEY
+            - DATABASE_URL
+            - MY_API_KEY
+        YAML
+      end
+
+      before do
+        allow(project.repository).to receive(:blob_data_at)
+                                       .with(default_branch, config_path)
+                                       .and_return(config_content)
+      end
+
+      it 'returns the unique list of variable names as strings' do
+        expect(config.variables).to eq(%w[MY_API_KEY DATABASE_URL])
+      end
+    end
+
+    context 'when config does not contain variables' do
+      before do
+        allow(project.repository).to receive(:blob_data_at)
+                                       .with(default_branch, config_path)
+                                       .and_return("image: ruby:3.0")
+      end
+
+      it 'returns an empty array' do
+        expect(config.variables).to eq([])
+      end
+    end
+
+    context 'when config file does not exist' do
+      before do
+        allow(project.repository).to receive(:blob_data_at)
+                                       .with(default_branch, config_path)
+                                       .and_return(nil)
+      end
+
+      it 'returns an empty array' do
+        expect(config.variables).to eq([])
       end
     end
   end
@@ -623,6 +774,82 @@ RSpec.describe Gitlab::DuoAgentPlatform::Config, feature_category: :duo_agent_pl
       let(:config_content) do
         tokens = (1..21).map { |i| "  TOKEN_#{i}:\n    aud: sigstore" }.join("\n")
         "id_tokens:\n#{tokens}\n"
+      end
+
+      before do
+        allow(project.repository).to receive(:blob_data_at)
+                                       .with(default_branch, config_path)
+                                       .and_return(config_content)
+      end
+
+      it 'returns false' do
+        expect(config.valid_format?).to be false
+      end
+    end
+
+    context 'with a variables allowlist' do
+      let(:config_content) do
+        <<~YAML
+          variables:
+            - MY_API_KEY
+            - _DATABASE_URL
+        YAML
+      end
+
+      before do
+        allow(project.repository).to receive(:blob_data_at)
+                                       .with(default_branch, config_path)
+                                       .and_return(config_content)
+      end
+
+      it 'returns true' do
+        expect(config.valid_format?).to be true
+      end
+    end
+
+    context 'with a variables entry that is not a valid CI variable name' do
+      let(:config_content) do
+        <<~YAML
+          variables:
+            - 1invalid
+        YAML
+      end
+
+      before do
+        allow(project.repository).to receive(:blob_data_at)
+                                       .with(default_branch, config_path)
+                                       .and_return(config_content)
+      end
+
+      it 'returns false' do
+        expect(config.valid_format?).to be false
+      end
+    end
+
+    context 'with duplicate variables entries' do
+      let(:config_content) do
+        <<~YAML
+          variables:
+            - MY_API_KEY
+            - MY_API_KEY
+        YAML
+      end
+
+      before do
+        allow(project.repository).to receive(:blob_data_at)
+                                       .with(default_branch, config_path)
+                                       .and_return(config_content)
+      end
+
+      it 'returns false' do
+        expect(config.valid_format?).to be false
+      end
+    end
+
+    context 'with more variables than the maximum allowed' do
+      let(:config_content) do
+        variables = (1..51).map { |i| "  - VAR_#{i}" }.join("\n")
+        "variables:\n#{variables}\n"
       end
 
       before do
@@ -1339,6 +1566,8 @@ RSpec.describe Gitlab::DuoAgentPlatform::Config, feature_category: :duo_agent_pl
     let(:cache_key) { "duo_config:#{project.id}:#{commit_sha}" }
 
     before do
+      # The candidate variant appends ':candidate'; 'cache isolation' above covers it.
+      stub_feature_flags(dap_agent_config_candidate: false)
       allow(project.repository).to receive(:blob_data_at)
                                      .with(default_branch, config_path)
                                      .and_return("image: cached-image")

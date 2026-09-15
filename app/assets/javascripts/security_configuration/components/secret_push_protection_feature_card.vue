@@ -106,9 +106,6 @@ export default {
       return '';
     },
     availabilityText() {
-      if (this.isGitlabCom) {
-        return this.$options.i18n.availableWithUltimateAndPublic;
-      }
       return this.$options.i18n.availableWith;
     },
     statusText() {
@@ -187,9 +184,6 @@ export default {
     disabledAtInstance: s__('SecurityConfiguration|Restricted by administrator'),
     notEnabled: s__('SecurityConfiguration|Not enabled'),
     availableWith: s__('SecurityConfiguration|Available with Ultimate'),
-    availableWithUltimateAndPublic: s__(
-      'SecurityConfiguration|Available with Ultimate. Enabled by default for all public projects.',
-    ),
     learnMore: __('Learn more'),
     tooltipTitle: s__('SecretDetection|Action unavailable'),
     tooltipDescription: s__(

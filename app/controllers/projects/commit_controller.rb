@@ -31,7 +31,6 @@ class Projects::CommitController < Projects::ApplicationController
   before_action :authorize_edit_tree!, only: [:revert, :cherry_pick]
   before_action :rate_limit_for_expanded_diff_files, only: :diff_files
 
-  BRANCH_SEARCH_LIMIT = 1000
   COMMIT_DIFFS_PER_PAGE = 20
 
   feature_category :source_code_management
@@ -192,6 +191,11 @@ class Projects::CommitController < Projects::ApplicationController
 
   private
 
+  # Keys RapidDiffs::BasePresenter reads; :line drives linked-line unfolding.
+  def rapid_diffs_request_params
+    params.permit(:old_path, :new_path, :file_path, :line)
+  end
+
   def rapid_diffs_presenter
     return if @commit.nil?
 
@@ -199,7 +203,7 @@ class Projects::CommitController < Projects::ApplicationController
       @commit,
       diff_view: diff_view,
       diff_options: commit_diff_options,
-      request_params: params,
+      request_params: rapid_diffs_request_params,
       current_user: current_user,
       environment: define_environment
     )
@@ -239,7 +243,7 @@ class Projects::CommitController < Projects::ApplicationController
       :note,
       position: [:old_path, :new_path, :old_line, :new_line, :position_type, :x, :y, :width, :height]
     ).tap do |create_params|
-      enrich_note_params(create_params, params[:in_reply_to_discussion_id])
+      enrich_note_params(create_params, params.permit(:in_reply_to_discussion_id)[:in_reply_to_discussion_id])
     end
   end
 
@@ -281,7 +285,7 @@ class Projects::CommitController < Projects::ApplicationController
 
   def commit_diff_options
     opts = diff_options
-    opts[:ignore_whitespace_change] = true if params[:format] == 'diff'
+    opts[:ignore_whitespace_change] = true if params.permit(:format)[:format] == 'diff'
     opts[:use_extra_viewer_as_main] = false
     opts
   end
@@ -302,6 +306,32 @@ class Projects::CommitController < Projects::ApplicationController
     if merge_request = @commit.merged_merge_request(current_user)
       project_merge_request_url(merge_request.target_project, merge_request)
     end
+  end
+
+  def new_merge_request_extra_params
+    return super unless action_name == 'cherry_pick' && copy_merge_request_description?
+
+    picked = picked_merge_request
+    return super unless picked
+
+    { cherry_picked_merge_request_id: picked.id }
+  end
+
+  def copy_merge_request_description?
+    ActiveModel::Type::Boolean.new.cast(
+      params.permit(:copy_merge_request_description)[:copy_merge_request_description]
+    )
+  end
+
+  # Several merge requests can record the same sha after a fast-forward merge.
+  # Take the oldest, the one the change came from, rather than a backport of it.
+  def picked_merge_request
+    MergeRequestsFinder
+      .new(current_user, project_id: project.id)
+      .execute
+      .by_merged_or_merge_or_squash_commit_sha(commit.sha)
+      .order_id_asc
+      .first
   end
 
   def commit

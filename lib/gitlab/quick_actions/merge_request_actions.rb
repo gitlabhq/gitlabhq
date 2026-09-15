@@ -436,7 +436,7 @@ module Gitlab
           create_pipeline_service.allowed?(quick_action_target)
         end
         command :run_pipeline do
-          create_pipeline_service.execute_async(quick_action_target)
+          create_pipeline_service.execute_async(quick_action_target, user_initiated: true)
 
           @execution_message[:run_pipeline] = _('New pipeline has been triggered and will appear shortly.')
         end

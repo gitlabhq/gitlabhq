@@ -52,6 +52,46 @@ RSpec.describe MergeRequests::PostMergeService, feature_category: :code_review_w
       subject
     end
 
+    context 'when publishing MergedCloudEvent' do
+      let_it_be(:merger) { create(:user) }
+
+      before_all do
+        project.add_maintainer(merger)
+      end
+
+      subject(:execute_as_merger) do
+        described_class.new(project: project, current_user: merger, params: params).execute(merge_request)
+      end
+
+      context 'when merge_request_merged_flow_trigger feature flag is enabled' do
+        it 'publishes MergedCloudEvent with the merging user' do
+          expect(MergeRequests::MergedCloudEvent)
+            .to receive(:build)
+            .with(merge_request: merge_request, current_user: merger)
+            .and_call_original
+
+          execute_as_merger
+        end
+
+        it 'publishes MergedCloudEvent' do
+          expect { execute_as_merger }.to publish_event(MergeRequests::MergedCloudEvent)
+            .with(merge_request_id: merge_request.id,
+              merge_request_iid: merge_request.iid,
+              project_id: merge_request.project_id)
+        end
+      end
+
+      context 'when merge_request_merged_flow_trigger feature flag is disabled' do
+        before do
+          stub_feature_flags(merge_request_merged_flow_trigger: false)
+        end
+
+        it 'does not publish MergedCloudEvent' do
+          expect { execute_as_merger }.not_to publish_event(MergeRequests::MergedCloudEvent)
+        end
+      end
+    end
+
     it 'deletes non-latest diffs' do
       diff_removal_service = instance_double(MergeRequests::DeleteNonLatestDiffsService, execute: nil)
 
@@ -250,6 +290,63 @@ RSpec.describe MergeRequests::PostMergeService, feature_category: :code_review_w
         expect(merge_request.source_project.merge_requests.with_auto_merge_enabled).to contain_exactly(mr_1, mr_2, mr_3)
         subject
         expect(merge_request.source_project.merge_requests.with_auto_merge_enabled).to contain_exactly(mr_1, mr_2, mr_3)
+      end
+    end
+  end
+
+  context 'when an auto merge MR in the fork targets the merged branch' do
+    let_it_be(:upstream_project) { create(:project, :repository, maintainers: user) }
+    let_it_be(:forked_project) { fork_project(upstream_project, user, repository: true) }
+
+    let_it_be_with_reload(:merged_merge_request) do
+      create(:merge_request, source_project: forked_project, target_project: upstream_project)
+    end
+
+    let_it_be_with_reload(:targetting_merge_request) do
+      create(
+        :merge_request,
+        :merge_when_checks_pass,
+        source_project: forked_project,
+        target_project: forked_project,
+        source_branch: 'feature',
+        target_branch: merged_merge_request.source_branch
+      )
+    end
+
+    subject(:post_merge) do
+      described_class.new(
+        project: merged_merge_request.target_project,
+        current_user: user,
+        params: { delete_source_branch: true }
+      ).execute(merged_merge_request)
+    end
+
+    def abort_note
+      targetting_merge_request.notes.find { |note| note.note.include?('aborted the automatic merge') }
+    end
+
+    it 'files the abort note against the fork that owns the merge request', :aggregate_failures do
+      post_merge
+
+      expect(abort_note).to be_present
+      expect(abort_note.project).to eq(forked_project)
+    end
+
+    it 'names the merged merge request with a reference that resolves in the note project' do
+      post_merge
+
+      expect(abort_note.all_references(user).merge_requests).to include(merged_merge_request)
+    end
+
+    context 'when auto_merge_abort_uses_target_project is disabled' do
+      before do
+        stub_feature_flags(auto_merge_abort_uses_target_project: false)
+      end
+
+      it 'does not persist the abort note' do
+        post_merge
+
+        expect(abort_note).to be_nil
       end
     end
   end

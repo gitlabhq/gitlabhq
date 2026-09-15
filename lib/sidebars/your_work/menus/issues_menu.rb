@@ -8,7 +8,7 @@ module Sidebars
 
         override :link
         def link
-          work_items_dashboard_path(assignee_username: @context.current_user.username)
+          work_items_dashboard_path(assignee_username: @context.current_user.username, organization_path: nil)
         end
 
         override :title

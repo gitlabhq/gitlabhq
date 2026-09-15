@@ -99,7 +99,7 @@ describe('AlertManagementEmptyState', () => {
   const findStatusFilterBadge = () => wrapper.findAllComponents(GlBadge);
 
   const handleFilterItems = (filters) => {
-    findFilteredSearchBar().vm.$emit('onFilter', filters);
+    findFilteredSearchBar().vm.$emit('on-filter', filters);
     return nextTick();
   };
 

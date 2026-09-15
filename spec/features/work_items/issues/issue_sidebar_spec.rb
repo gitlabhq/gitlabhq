@@ -12,7 +12,6 @@ RSpec.describe 'Issue Sidebar', :js, feature_category: :team_planning do
   let_it_be(:user) { create(:user) }
   let_it_be(:issue) { create(:issue, project: project) }
   let_it_be(:label) { create(:label, project: project, name: 'Label') }
-  let_it_be(:mock_date) { Date.today.at_beginning_of_month + 2.days }
 
   before do
     stub_incoming_email_setting(enabled: true, address: "p+%{key}@gl.ab")

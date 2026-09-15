@@ -1,0 +1,5 @@
+-# Everything the sidebar bundle needs to boot. Rendered even when the sidebar itself is not, so the
+-# controls it owns outside the sidebar - lock, to-do, subscribe, submit review - still initialise.
+- add_page_startup_api_call "#{issuable_sidebar[:issuable_json_path]}?serializer=sidebar_extras"
+-# haml-lint:disable InlineJavaScript
+%script.js-sidebar-options{ type: "application/json" }= issuable_sidebar_options(issuable_sidebar, @project).to_json.html_safe

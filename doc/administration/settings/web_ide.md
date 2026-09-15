@@ -92,7 +92,7 @@ extension host is used by the editor.
 
 By default, the Web IDE runs in multi-origin mode, which serves VS Code static assets from a separate extension host domain. This isolation prevents malicious actors from exploiting the extension host to make authenticated requests to the GitLab instance.
 
-However, when the extension host domain is unreachable due to network or CORS restrictions, the Web IDE automatically falls back to single-origin mode. In this mode, the WebIDE serves VS Code assets from the same origin as the GitLab application, which increases the attack surface and creates security vulnerabilities.
+However, when the extension host domain is unreachable due to network or CORS restrictions, the Web IDE automatically falls back to single-origin mode. In this mode, the Web IDE serves VS Code assets from the same origin as the GitLab application, which increases the attack surface and creates security vulnerabilities.
 
 The **Enable single origin fallback** setting controls whether the Web IDE can fall back to single-origin mode when the extension host domain is unreachable.
 

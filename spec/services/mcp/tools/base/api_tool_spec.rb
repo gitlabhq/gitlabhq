@@ -18,8 +18,7 @@ RSpec.describe Mcp::Tools::Base::ApiTool, feature_category: :ai_agents do
       app: app,
       description: 'Test API endpoint',
       params: route_params,
-      request_method: 'POST',
-      exec: [200, {}, ['{"success": true}']])
+      request_method: 'POST')
   end
 
   before do
@@ -71,6 +70,20 @@ RSpec.describe Mcp::Tools::Base::ApiTool, feature_category: :ai_agents do
 
       expect(icons).to be_an(Array)
       expect(icons.first).to include(:mimeType, :src, :theme)
+    end
+  end
+
+  describe '#unlisted?' do
+    it 'returns false when the route does not opt in' do
+      expect(api_tool.unlisted?).to be(false)
+    end
+
+    context 'when the route marks the tool unlisted' do
+      let(:mcp_settings) { { params: [:param1, :param2], tool_name: 'test_tool', unlisted: true } }
+
+      it 'returns true' do
+        expect(api_tool.unlisted?).to be(true)
+      end
     end
   end
 
@@ -224,7 +237,7 @@ RSpec.describe Mcp::Tools::Base::ApiTool, feature_category: :ai_agents do
 
     context 'with successful response' do
       before do
-        allow(route).to receive(:exec).with(request_env).and_return([200, {}, ['{"result": "success"}']])
+        allow(app).to receive(:call).with(request_env).and_return([200, {}, ['{"result": "success"}']])
       end
 
       it 'merges arguments into routing args, sets request method, and executes route' do
@@ -253,12 +266,11 @@ RSpec.describe Mcp::Tools::Base::ApiTool, feature_category: :ai_agents do
           app: app,
           description: 'Test API endpoint',
           params: route_params,
-          request_method: 'GET',
-          exec: [200, {}, ['{"result": "success"}']])
+          request_method: 'GET')
       end
 
       before do
-        allow(route).to receive(:exec).with(request_env).and_return([200, {}, ['{"result": "success"}']])
+        allow(app).to receive(:call).with(request_env).and_return([200, {}, ['{"result": "success"}']])
       end
 
       it 'sets the correct request method in environment' do
@@ -270,7 +282,7 @@ RSpec.describe Mcp::Tools::Base::ApiTool, feature_category: :ai_agents do
 
     context 'with error response' do
       before do
-        allow(route).to receive(:exec).with(request_env).and_return([400, {}, ['{"error": "Bad request"}']])
+        allow(app).to receive(:call).with(request_env).and_return([400, {}, ['{"error": "Bad request"}']])
       end
 
       it 'returns error response with parsed message' do
@@ -283,7 +295,7 @@ RSpec.describe Mcp::Tools::Base::ApiTool, feature_category: :ai_agents do
 
     context 'with error response containing message field' do
       before do
-        allow(route).to receive(:exec).with(request_env).and_return([422, {}, ['{"message": "Validation failed"}']])
+        allow(app).to receive(:call).with(request_env).and_return([422, {}, ['{"message": "Validation failed"}']])
       end
 
       it 'uses message field for error' do
@@ -296,7 +308,7 @@ RSpec.describe Mcp::Tools::Base::ApiTool, feature_category: :ai_agents do
 
     context 'with error response without error or message fields' do
       before do
-        allow(route).to receive(:exec).with(request_env).and_return([500, {}, ['{"details": "Internal error"}']])
+        allow(app).to receive(:call).with(request_env).and_return([500, {}, ['{"details": "Internal error"}']])
       end
 
       it 'falls back to HTTP status message' do
@@ -308,7 +320,7 @@ RSpec.describe Mcp::Tools::Base::ApiTool, feature_category: :ai_agents do
 
     shared_examples 'a 404 response with stubbed Not Found body' do
       before do
-        allow(route).to receive(:exec).with(request_env).and_return(
+        allow(app).to receive(:call).with(request_env).and_return(
           [404, {}, ['{"message": "404 Not Found"}']]
         )
       end
@@ -346,7 +358,7 @@ RSpec.describe Mcp::Tools::Base::ApiTool, feature_category: :ai_agents do
       let(:mcp_settings) { { params: [:param1, :param2], tool_name: 'test_tool', resource_name: "issue" } }
 
       before do
-        allow(route).to receive(:exec).with(request_env).and_return(
+        allow(app).to receive(:call).with(request_env).and_return(
           [404, {}, ['{"details": "extra info"}']]
         )
       end
@@ -364,7 +376,7 @@ RSpec.describe Mcp::Tools::Base::ApiTool, feature_category: :ai_agents do
       let(:mcp_settings) { { params: [:param1, :param2], tool_name: 'test_tool', resource_name: "issue" } }
 
       before do
-        allow(route).to receive(:exec).with(request_env).and_return(
+        allow(app).to receive(:call).with(request_env).and_return(
           [404, {}, ['{"message": "404 Project Not Found"}']]
         )
       end
@@ -382,7 +394,7 @@ RSpec.describe Mcp::Tools::Base::ApiTool, feature_category: :ai_agents do
       let(:mcp_settings) { { params: [:param1, :param2], tool_name: 'test_tool', resource_name: "issue" } }
 
       before do
-        allow(route).to receive(:exec).with(request_env).and_return(
+        allow(app).to receive(:call).with(request_env).and_return(
           [422, {}, ['{"message": "Validation failed"}']]
         )
       end
@@ -398,7 +410,7 @@ RSpec.describe Mcp::Tools::Base::ApiTool, feature_category: :ai_agents do
 
     context 'with plain text success response' do
       before do
-        allow(route).to receive(:exec).with(request_env)
+        allow(app).to receive(:call).with(request_env)
           .and_return([200, {}, ["Running job...\nStep 1 complete\nDone."]])
       end
 
@@ -413,7 +425,7 @@ RSpec.describe Mcp::Tools::Base::ApiTool, feature_category: :ai_agents do
 
     context 'with plain text error response' do
       before do
-        allow(route).to receive(:exec).with(request_env).and_return([500, {}, ['Internal Server Error']])
+        allow(app).to receive(:call).with(request_env).and_return([500, {}, ['Internal Server Error']])
       end
 
       it 'returns an error with the plain text body' do
@@ -429,7 +441,7 @@ RSpec.describe Mcp::Tools::Base::ApiTool, feature_category: :ai_agents do
       let(:params) { {} }
 
       before do
-        allow(route).to receive(:exec).with(request_env).and_return([200, {}, [{ 'result' => 'success' }.to_json]])
+        allow(app).to receive(:call).with(request_env).and_return([200, {}, [{ 'result' => 'success' }.to_json]])
       end
 
       it 'handles nil arguments gracefully' do
@@ -453,7 +465,7 @@ RSpec.describe Mcp::Tools::Base::ApiTool, feature_category: :ai_agents do
       let(:params) { { arguments: { param1: 'value1', param2: 42, unauthorized_param: 'hack' } } }
 
       before do
-        allow(route).to receive(:exec).with(request_env).and_return([200, {}, [{ 'result' => 'success' }.to_json]])
+        allow(app).to receive(:call).with(request_env).and_return([200, {}, [{ 'result' => 'success' }.to_json]])
       end
 
       it 'only includes params specified in settings' do
@@ -538,8 +550,7 @@ RSpec.describe Mcp::Tools::Base::ApiTool, feature_category: :ai_agents do
           app: app,
           description: 'Test GET endpoint',
           params: route_params,
-          request_method: 'GET',
-          exec: [200, {}, ['{"success": true}']])
+          request_method: 'GET')
       end
 
       it 'returns readOnlyHint annotation' do
@@ -553,8 +564,7 @@ RSpec.describe Mcp::Tools::Base::ApiTool, feature_category: :ai_agents do
           app: app,
           description: 'Test POST endpoint',
           params: route_params,
-          request_method: 'POST',
-          exec: [200, {}, ['{"success": true}']])
+          request_method: 'POST')
       end
 
       it 'returns empty annotations' do
@@ -568,8 +578,7 @@ RSpec.describe Mcp::Tools::Base::ApiTool, feature_category: :ai_agents do
           app: app,
           description: 'Test PUT endpoint',
           params: route_params,
-          request_method: 'PUT',
-          exec: [200, {}, ['{"success": true}']])
+          request_method: 'PUT')
       end
 
       it 'returns empty annotations' do
@@ -583,8 +592,7 @@ RSpec.describe Mcp::Tools::Base::ApiTool, feature_category: :ai_agents do
           app: app,
           description: 'Test DELETE endpoint',
           params: route_params,
-          request_method: 'DELETE',
-          exec: [200, {}, ['{"success": true}']])
+          request_method: 'DELETE')
       end
 
       it 'returns empty annotations' do
@@ -605,8 +613,7 @@ RSpec.describe Mcp::Tools::Base::ApiTool, feature_category: :ai_agents do
           app: app,
           description: 'Test endpoint with explicit annotations',
           params: route_params,
-          request_method: 'POST',
-          exec: [200, {}, ['{"success": true}']])
+          request_method: 'POST')
       end
 
       it 'returns explicit annotations overriding auto-detection' do
@@ -627,8 +634,7 @@ RSpec.describe Mcp::Tools::Base::ApiTool, feature_category: :ai_agents do
           app: app,
           description: 'Test GET endpoint with empty explicit annotations',
           params: route_params,
-          request_method: 'GET',
-          exec: [200, {}, ['{"success": true}']])
+          request_method: 'GET')
       end
 
       it 'uses auto-detection when explicit annotations are empty' do
@@ -641,9 +647,9 @@ RSpec.describe Mcp::Tools::Base::ApiTool, feature_category: :ai_agents do
     let(:request) { instance_double(Rack::Request, env: { 'grape.routing_args' => {} }) }
     let(:params) { { arguments: { param1: 'test' } } }
 
-    context 'when route.exec raises an exception' do
+    context 'when the route app raises an exception' do
       before do
-        allow(route).to receive(:exec).and_raise(StandardError.new('Route execution failed'))
+        allow(app).to receive(:call).and_raise(StandardError.new('Route execution failed'))
       end
 
       it 'does not rescue the exception' do
@@ -671,6 +677,46 @@ RSpec.describe Mcp::Tools::Base::ApiTool, feature_category: :ai_agents do
 
         expect(schema[:properties]).to eq({})
       end
+    end
+  end
+
+  describe '#namespace_arguments' do
+    subject(:declared) { described_class.new(name: 'test_tool', route: route).namespace_arguments }
+
+    let(:default) { Mcp::Tools::Concerns::GovernanceNamespaceResolver::DEFAULT_NAMESPACE_ARGUMENTS }
+
+    before do
+      allow(app).to receive(:route_setting).with(:authorization).and_return(authorization)
+    end
+
+    context 'when the route declares a project boundary' do
+      let(:authorization) { { permissions: :read_project, boundary_type: :project } }
+
+      it { is_expected.to eq({ project: :id }) }
+    end
+
+    context 'when the route declares a group boundary' do
+      let(:authorization) { { permissions: :read_group, boundary_type: :group } }
+
+      it { is_expected.to eq({ group: :id }) }
+    end
+
+    context 'when the route declares a boundary that names no container' do
+      let(:authorization) { { permissions: :read_user, boundary_type: :user } }
+
+      it { is_expected.to eq(default) }
+    end
+
+    context 'when the route declares authorization without a boundary' do
+      let(:authorization) { { permissions: :read_project } }
+
+      it { is_expected.to eq(default) }
+    end
+
+    context 'when the route declares no authorization at all' do
+      let(:authorization) { nil }
+
+      it { is_expected.to eq(default) }
     end
   end
 end

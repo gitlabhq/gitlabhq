@@ -221,7 +221,7 @@ To set as default (or remove the default) from [compliance framework report](../
 
 ## Remove a compliance framework from a project
 
-To remove a compliance framework from one or multiple project in a group, remove the compliance framework through the
+To remove a compliance framework from one or multiple projects in a group, remove the compliance framework through the
 [compliance projects report](../compliance_center/compliance_projects_report.md#remove-a-compliance-framework-from-projects-in-a-group).
 
 ## Export a compliance framework as a JSON file
@@ -394,6 +394,7 @@ Combine GitLab compliance controls to help you meet
 | Default branch protected from direct push                | `default_branch_protected_from_direct_push`                | [Prevents direct pushes to the default branch](../../project/repository/branches/protected.md). |
 | Default branch users can merge                           | `default_branch_users_can_merge`                           | Controls [whether users can merge changes to the default branch](../../project/repository/branches/protected.md). |
 | Default branch users can push                            | `default_branch_users_can_push`                            | Controls [whether users can push directly to the default branch](../../project/repository/branches/protected.md). |
+| Duo Agentic Flow audit events streaming                  | `duo_agentic_flow_audit_events_streaming`                  | Ensures that an active [audit event streaming destination](../audit_event_streaming.md) at the group level captures GitLab Duo Agent Platform events. Passes when the Agent Platform is disabled for the group. |
 | Dependency scanning running                              | `scanner_dep_scanning_running`                             | Ensures that [dependency scanning](../../application_security/dependency_scanning/_index.md) is configured and running in the project's default branch pipeline. **Note**: On GitLab Self-Managed instances (from 18.4), this control may fail when using [SBOM-based dependency scanning](../../application_security/dependency_scanning/dependency_scanning_sbom/_index.md) due to artifact differences. See [compatibility considerations](../../application_security/dependency_scanning/dependency_scanning_sbom/troubleshooting_ds_sbom_analyzer.md#compliance-framework-compatibility). |
 | Ensure two administrators per repository                 | `ensure_2_admins_per_repo`                                 | Ensures that [at least two Owners](../../project/members/_index.md) are assigned to each project. |
 | Error tracking enabled                                   | `error_tracking_enabled`                                   | Ensures that [error tracking](../../../operations/error_tracking.md) is enabled for the project. |
@@ -408,6 +409,8 @@ Combine GitLab compliance controls to help you meet
 | Merge request commit resets approvals                    | `merge_request_commit_reset_approvals`                     | Ensures that [new commits to merge requests reset approvals](../../project/merge_requests/approvals/settings.md). |
 | Merge requests approval rules prevent editing            | `merge_requests_approval_rules_prevent_editing`            | Ensures that [merge request approval rules](../../project/merge_requests/approvals/settings.md) can't be edited. |
 | Merge requests require code owner approval               | `merge_requests_require_code_owner_approval`               | Ensures that merge requests require approval from [code owners](../../project/codeowners/_index.md). |
+| Model experiments access level configured                | `model_experiments_access_level_configured`                | Ensures the [ML model experiments](../../project/ml/experiment_tracking/_index.md) are restricted to project members only. |
+| Model registry access level configured                   | `model_registry_access_level_configured`                   | Ensures the [ML model registry](../../project/ml/model_registry/_index.md) is restricted to project members only. |
 | More members than admins                                 | `more_members_than_admins`                                 | Ensures fewer Administrators [(Owners or Maintainers)](../../project/members/_index.md) are assigned to the project than total members. |
 | Package Hunter no findings untriaged                     | `package_hunter_no_findings_untriaged`                     | Ensures that all [Package Hunter](../../application_security/triage/_index.md) findings are triaged. |
 | Project not archived                                     | `project_archived`                                         | Checks whether the [project is archived](../../project/settings/_index.md). Typically `false` is compliant. |
@@ -449,7 +452,7 @@ Combine GitLab compliance controls to help you meet
 
 External controls are API calls to external systems that request the status of an external control or requirement.
 
-You can create a external control that sends data to third-party tools.
+You can create an external control that sends data to third-party tools.
 
 When the [compliance scans](../compliance_center/compliance_status_report.md#scan-timing-and-triggers) are run, GitLab sends a notification. The users or automated workflows can then update the status of control from outside of GitLab.
 
@@ -489,7 +492,7 @@ The **Ping enabled** setting controls whether GitLab requests external control s
 
 #### External control lifecycle
 
-External controls have an **asynchronous** workflow. [Compliance scans](../compliance_center/compliance_status_report.md#scan-timing-and-triggers) emit a payload to an external service whenever.
+External controls have an asynchronous workflow. [Compliance scans](../compliance_center/compliance_status_report.md#scan-timing-and-triggers) emit a payload to an external service whenever.
 
 ```mermaid
 %%{init: { "fontFamily": "GitLab Sans" }}%%

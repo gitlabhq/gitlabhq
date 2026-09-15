@@ -153,6 +153,9 @@ RSpec.describe Routes::RenameDescendantsService, feature_category: :groups_and_p
     context 'when cells claims are enabled' do
       before do
         stub_config_cell(enabled: true)
+        # Only the bulk claims path is under test here, so keep the save-time
+        # claim callbacks from reaching Topology Service.
+        allow(Cells::TransactionRecord).to receive(:current_transaction).and_return(nil)
       end
 
       let!(:changes) do
@@ -193,7 +196,7 @@ RSpec.describe Routes::RenameDescendantsService, feature_category: :groups_and_p
           allow(Route).to receive(:cells_claims_attributes).and_return({
             path: {
               type: Cells::Claimable::CLAIMS_CLAIM_TYPE::CLAIM_TYPE_ROUTE,
-              feature_flag: :cells_claims_routes,
+              feature_flag: nil,
               if: ->(_record) { true }
             }
           })

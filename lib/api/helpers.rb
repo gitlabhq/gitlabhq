@@ -34,7 +34,8 @@ module API
 
     def declared_params(options = {})
       options = { include_parent_namespaces: false }.merge(options)
-      declared(params, options).to_h.symbolize_keys
+      # Splatted: Grape 3.x takes these as keywords, Grape 2.4 as a positional hash. `**` satisfies both.
+      declared(params, **options).to_h.symbolize_keys
     end
 
     def check_unmodified_since!(last_modified)
@@ -115,7 +116,7 @@ module API
         rack_env: request.env
       ).organization
 
-      check_organization_read_only!
+      check_organization_maintenance_mode!
     end
 
     def save_current_user_in_env(user)
@@ -182,7 +183,7 @@ module API
         return redirect!(url_with_project_id(project))
       end
 
-      check_organization_read_only_for!(project)
+      check_organization_maintenance_mode_for!(project)
 
       project
     end
@@ -245,14 +246,18 @@ module API
       ::Gitlab::ApplicationContext.push(namespace: group) if group
       result = check_group_access(group)
 
-      check_organization_read_only_for!(result)
+      check_organization_maintenance_mode_for!(result)
 
       result
     end
 
     def find_group_by_full_path!(full_path)
       group = Group.find_by_full_path(full_path)
-      check_group_access(group)
+      result = check_group_access(group)
+
+      check_organization_maintenance_mode_for!(result)
+
+      result
     end
 
     def check_group_access(group)
@@ -300,27 +305,31 @@ module API
     def find_namespace!(id, allow_project_namespaces: false)
       namespace = find_namespace(id, allow_project_namespaces: allow_project_namespaces)
 
-      if namespace.is_a?(::Namespaces::ProjectNamespace)
-        return namespace if can?(current_user, read_project_ability, namespace)
-        return unauthorized! if authenticate_non_public?
-
-        return not_found!('Project')
-      end
-
-      check_namespace_access(namespace)
+      resolve_namespace_access!(namespace)
     end
 
     def find_namespace_by_path!(path, allow_project_namespaces: false)
       namespace = find_namespace_by_path(path, allow_project_namespaces: allow_project_namespaces)
 
+      resolve_namespace_access!(namespace)
+    end
+
+    def resolve_namespace_access!(namespace)
       if namespace.is_a?(::Namespaces::ProjectNamespace)
-        return namespace if can?(current_user, read_project_ability, namespace)
+        if can?(current_user, read_project_ability, namespace)
+          check_organization_maintenance_mode_for!(namespace)
+          return namespace
+        end
+
         return unauthorized! if authenticate_non_public?
 
         return not_found!('Project')
       end
 
-      check_namespace_access(namespace)
+      accessible_namespace = check_namespace_access(namespace)
+      check_organization_maintenance_mode_for!(accessible_namespace)
+
+      accessible_namespace
     end
 
     def find_branch!(branch_name)
@@ -617,55 +626,40 @@ module API
       render_api_error!(message || '503 Service Unavailable', 503)
     end
 
-    def check_organization_read_only!
-      return unless write_request?
-
+    def check_organization_maintenance_mode!
       organization = ::Current.organization
-      return unless organization_read_only_enforced?(organization)
+      return unless organization_maintenance_mode_enforced?(organization)
 
-      render_organization_read_only_error!(organization)
+      render_organization_maintenance_mode_error!(organization)
     end
 
     # Guards the resource's own organization, which can differ from
     # Current.organization (already checked in set_current_organization) when a
     # request targets a project or group outside the caller's current
     # organization. The extra organization load is intentional defense-in-depth.
-    def check_organization_read_only_for!(resource)
-      return unless write_request?
+    def check_organization_maintenance_mode_for!(resource)
       return unless resource.respond_to?(:organization)
 
       organization = resource.organization
-      return unless organization_read_only_enforced?(organization)
+      return unless organization_maintenance_mode_enforced?(organization)
 
-      render_organization_read_only_error!(organization)
+      render_organization_maintenance_mode_error!(organization)
     end
 
-    def organization_read_only_enforced?(organization)
-      return false unless organization&.read_only?
+    def organization_maintenance_mode_enforced?(organization)
+      return false unless organization
 
-      Feature.enabled?(:organization_read_only_enforcement, organization)
+      organization.under_maintenance?
     end
 
     # Time-bounded reasons are retryable (503 + Retry-After); indefinite reasons
     # are not (403).
-    def render_organization_read_only_error!(organization)
-      if organization.read_only_time_bounded?
-        header 'Retry-After', '60'
-        service_unavailable!(read_only_organization_message(time_bounded: true))
+    def render_organization_maintenance_mode_error!(organization)
+      if organization.maintenance_time_bounded?
+        header 'Retry-After', ::Organizations::Organization::MAINTENANCE_MODE_RETRY_AFTER_SECONDS.to_s
+        service_unavailable!(organization.maintenance_message)
       else
-        forbidden!(read_only_organization_message(time_bounded: false))
-      end
-    end
-
-    def write_request?
-      %w[POST PATCH PUT DELETE].include?(request.request_method)
-    end
-
-    def read_only_organization_message(time_bounded:)
-      if time_bounded
-        _('This organization is currently in read-only mode. Write operations are temporarily disabled.')
-      else
-        _('This organization is currently in read-only mode. Write operations are disabled.')
+        forbidden!(organization.maintenance_message)
       end
     end
 
@@ -858,7 +852,7 @@ module API
 
       if file.file_storage?
         present_disk_file!(file.path, file.filename, content_type: content_type, extra_response_headers: extra_response_headers)
-      elsif supports_direct_download && file.direct_download_enabled?
+      elsif resolved_download_mode(file, supports_direct_download: supports_direct_download) == :direct
         return redirect(ObjectStorage::S3.signed_head_url(file)) if request.head? && file.fog_credentials[:provider] == 'AWS'
 
         redirect_params = {}
@@ -1004,6 +998,33 @@ module API
     end
 
     private
+
+    # Decides which transfer mode (:proxy or :direct) to use for a given file, honoring:
+    # * the object storage type's allowed modes (admin policy)
+    # * the endpoint's capability (supports_direct_download)
+    # * the client's requested mode (download_mode param), when allowed
+    def resolved_download_mode(file, supports_direct_download:)
+      allowed = file.allowed_download_modes.dup
+      allowed -= [:direct] unless supports_direct_download
+
+      requested = client_requested_download_mode
+      mode = requested if allowed.include?(requested)
+      mode ||= file.default_download_mode
+
+      allowed.include?(mode) ? mode : :proxy
+    end
+
+    def client_requested_download_mode
+      return unless respond_to?(:params)
+      # Only honor the override on endpoints that explicitly declare this parameter.
+      return unless respond_to?(:declared) &&
+        declared(params, include_parent_namespaces: false).key?(:download_mode)
+
+      mode = params[:download_mode]
+      return unless mode.in?(%w[proxy direct])
+
+      mode.to_sym
+    end
 
     # rubocop:disable Gitlab/ModuleWithInstanceVariables
     def initial_current_user
@@ -1318,16 +1339,38 @@ module API
     def authorize_granular_token_scopes!(token)
       return unless authorize_granular_token?(token)
 
-      result = ::Authz::Tokens::AuthorizeGranularScopesService.new(
-        boundaries: boundaries_for_endpoint, permissions: permissions_for_endpoint, token: token
-      ).execute
-      return unless result.error?
+      granular_token_requirements.each do |boundaries, permissions|
+        result = ::Authz::Tokens::AuthorizeGranularScopesService.new(
+          boundaries: boundaries, permissions: permissions, token: token
+        ).execute
+        next unless result.error?
 
-      not_found! if result.reason == :resource_not_found
+        not_found! if result.reason == :resource_not_found
 
-      Current.add_granular_denied_permissions(result.payload[:denied_permissions])
+        Current.add_granular_denied_permissions(result.payload[:denied_permissions])
 
-      raise Gitlab::Auth::GranularPermissionsError, result.message
+        raise Gitlab::Auth::GranularPermissionsError, result.message
+      end
+    end
+
+    def granular_token_requirements
+      [[boundaries_for_endpoint, permissions_for_endpoint]] +
+        Array(authorization_settings[:additional_scopes]).map do |spec|
+          [resolve_additional_boundary(spec), Array(spec[:permissions])]
+        end
+    end
+
+    def resolve_additional_boundary(spec)
+      return build_boundary(spec[:boundary_type], spec[:boundary_param]) unless spec[:boundary].respond_to?(:call)
+
+      boundary_object = instance_exec(&spec[:boundary])
+      boundary = ::Authz::Boundary.for(boundary_object) if boundary_object
+      return unless boundary
+
+      # Mirrors GraphQL's BoundaryExtractor: a callable result whose type disagrees
+      # with the declared boundary_type resolves to no boundary, denying with 404.
+      expected_class = ::Authz::Boundary.strategy_for_type(spec[:boundary_type])
+      boundary if expected_class.nil? || boundary.instance_of?(expected_class)
     end
 
     def permissions_for_endpoint

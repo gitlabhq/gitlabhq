@@ -46,7 +46,7 @@ bindings to widgets or to their child components. This includes Vuex mappings an
 ## Widget responsibility
 
 A widget is responsible for fetching and updating an entity it's designed for (assignees, iterations, and so on).
-This means a widget should **always** fetch data (if it's not in Apollo cache already).
+This means a widget should always fetch data (if it's not in Apollo cache already).
 Even if we provide an initial value to the widget, it should perform a GraphQL query in the background
 to be stored in Apollo cache.
 
@@ -72,7 +72,7 @@ export const assigneesQueries = {
 };
 ```
 
-To handle the same logic for query updates, we **alias** query fields. For example:
+To handle the same logic for query updates, we alias query fields. For example:
 
 - `group` or `project` become `namespace`
 - `issue`, `epic`, or `mergeRequest` become `issuable`
@@ -111,7 +111,7 @@ updateAssignees(assigneeUsernames) {
 }
 ```
 
-Sometimes, we want to listen to the changes on the different Vue application like `NotesApp`.
+Sometimes, we want to listen to the changes on a different Vue application, like `NotesApp`.
 In this case, we can use a renderless component that imports a client and listens to a certain query:
 
 ```javascript

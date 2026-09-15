@@ -179,7 +179,7 @@ describe('Create work item component', () => {
   };
 
   const updateWorkItemTitle = async (title = 'Test title') => {
-    findTitleInput().vm.$emit('updateDraft', title);
+    findTitleInput().vm.$emit('update-draft', title);
     await nextTick();
     await waitForPromises();
   };
@@ -255,17 +255,17 @@ describe('Create work item component', () => {
       });
     });
 
-    it('emits "confirmCancel" event on Cancel button click if form is filled', async () => {
+    it('emits `confirm-cancel` event on Cancel button click if form is filled', async () => {
       await updateWorkItemTitle();
       findCancelButton().vm.$emit('click');
 
-      expect(wrapper.emitted('confirmCancel')).toEqual([[]]);
+      expect(wrapper.emitted('confirm-cancel')).toEqual([[]]);
     });
 
-    it('emits "discardDraft" event on Cancel button click if form is filled', () => {
+    it('emits `discard-draft` event on Cancel button click if form is filled', () => {
       findCancelButton().vm.$emit('click');
 
-      expect(wrapper.emitted('discardDraft')).toEqual([[]]);
+      expect(wrapper.emitted('discard-draft')).toEqual([[]]);
     });
 
     it.each`
@@ -345,6 +345,28 @@ describe('Create work item component', () => {
         );
       },
     );
+  });
+
+  describe('confidentiality', () => {
+    it('seeds the new work item as confidential when the confidential prop is set', async () => {
+      createComponent({ props: { confidential: true } });
+      await resolveAll();
+
+      expect(findConfidentialCheckbox().props('checked')).toBe(true);
+      expect(setNewWorkItemCache).toHaveBeenCalledWith(
+        expect.objectContaining({ confidential: true }),
+      );
+    });
+
+    it('does not seed the new work item as confidential by default', async () => {
+      createComponent();
+      await resolveAll();
+
+      expect(findConfidentialCheckbox().props('checked')).toBe(false);
+      expect(setNewWorkItemCache).toHaveBeenCalledWith(
+        expect.objectContaining({ confidential: false }),
+      );
+    });
   });
 
   describe('When there is no work item type', () => {
@@ -461,7 +483,7 @@ describe('Create work item component', () => {
       });
       await resolveAll();
 
-      findGroupProjectSelector().vm.$emit('selectNamespace', 'other-namespace/path');
+      findGroupProjectSelector().vm.$emit('select-namespace', 'other-namespace/path');
       await nextTick();
       await resolveAll();
 
@@ -483,7 +505,7 @@ describe('Create work item component', () => {
         await setupGroupForm();
 
         await updateWorkItemTitle('Preserved title');
-        findGroupProjectSelector().vm.$emit('selectNamespace', 'other-namespace/path');
+        findGroupProjectSelector().vm.$emit('select-namespace', 'other-namespace/path');
         await nextTick();
         await resolveAll();
 
@@ -498,11 +520,11 @@ describe('Create work item component', () => {
       it('includes the typed description in the create mutation after namespace change', async () => {
         await setupGroupForm();
 
-        findDescriptionWidget().vm.$emit('updateDraft', 'Preserved description');
+        findDescriptionWidget().vm.$emit('update-draft', 'Preserved description');
         await nextTick();
         await waitForPromises();
 
-        findGroupProjectSelector().vm.$emit('selectNamespace', 'other-namespace/path');
+        findGroupProjectSelector().vm.$emit('select-namespace', 'other-namespace/path');
         await nextTick();
         await resolveAll();
 
@@ -533,7 +555,7 @@ describe('Create work item component', () => {
           await resolveAll();
 
           findGroupProjectSelector().vm.$emit(
-            'selectNamespace',
+            'select-namespace',
             namespaceObject.fullPath,
             namespaceObject,
           );
@@ -623,7 +645,7 @@ describe('Create work item component', () => {
       expect(findSelect().attributes('value')).toBe(mockId);
     });
 
-    it('sets new work item cache and emits changeType on select', async () => {
+    it('sets new work item cache and emits `change-type` on select', async () => {
       createComponent({ props: { preselectedWorkItemType: null, relatedItem: mockRelatedItem } });
       await resolveAll();
       const mockId = 'Issue';
@@ -643,7 +665,7 @@ describe('Create work item component', () => {
         }),
       );
 
-      expect(wrapper.emitted('changeType')).toBeDefined();
+      expect(wrapper.emitted('change-type')).toBeDefined();
     });
 
     it('sets selected work item type in localStorage draft', async () => {
@@ -678,10 +700,10 @@ describe('Create work item component', () => {
       await resolveAll();
 
       expect(findSelect().exists()).toBe(false);
-      expect(findFormTitle().text()).toBe('New Epic');
+      expect(findFormTitle().text()).toBe('New epic');
     });
 
-    it('emits "changeType" with the type name when "selectedWorkItemTypeId" changes', async () => {
+    it('emits `change-type` with the type name when "selectedWorkItemTypeId" changes', async () => {
       // Initialize component without a preselected type so the dropdown is active
       createComponent({ props: { preselectedWorkItemType: null } });
       await resolveAll();
@@ -694,7 +716,21 @@ describe('Create work item component', () => {
       findSelect().vm.$emit('input', mockIssueType.id);
       await nextTick();
 
-      expect(wrapper.emitted('changeType')).toContainEqual([WORK_ITEM_TYPE_NAME_ISSUE]);
+      expect(wrapper.emitted('change-type')).toContainEqual([WORK_ITEM_TYPE_NAME_ISSUE]);
+    });
+
+    it('emits `update-type` with the type name when "selectedWorkItemTypeName" changes', async () => {
+      createComponent({ props: { preselectedWorkItemType: null } });
+      await resolveAll();
+
+      const mockIssueType = namespaceWorkItemTypes.find(
+        (type) => type.name === WORK_ITEM_TYPE_NAME_ISSUE,
+      );
+
+      findSelect().vm.$emit('input', mockIssueType.id);
+      await nextTick();
+
+      expect(wrapper.emitted('update-type')).toContainEqual([WORK_ITEM_TYPE_NAME_ISSUE]);
     });
   });
 
@@ -711,7 +747,7 @@ describe('Create work item component', () => {
       createComponent();
       await resolveAll();
 
-      findTitleInput().vm.$emit('updateDraft', 'Test title');
+      findTitleInput().vm.$emit('update-draft', 'Test title');
       await waitForPromises();
       await submitCreateForm();
 
@@ -737,7 +773,7 @@ describe('Create work item component', () => {
       });
       await resolveAll();
 
-      findTitleInput().vm.$emit('updateDraft', 'Test title');
+      findTitleInput().vm.$emit('update-draft', 'Test title');
       await waitForPromises();
       await submitCreateForm();
 
@@ -1203,7 +1239,7 @@ describe('Create work item component', () => {
 
     it('renders the correct text for the checkbox', () => {
       expect(findRelatesToCheckbox().text()).toMatchInterpolatedText(
-        'Mark this item as related to: Epic #1',
+        'Mark this item as related to: epic #1',
       );
     });
 
@@ -1264,7 +1300,7 @@ describe('Create work item component', () => {
       expect(findFormButtons().classes('gl-sticky')).toBe(true);
       expect(findFormButtons().classes('gl-justify-between')).toBe(true);
       expect(findFormButtons().findAllComponents(GlButton).at(0).text()).toBe('Cancel');
-      expect(findFormButtons().findAllComponents(GlButton).at(1).text()).toBe('Create Epic');
+      expect(findFormButtons().findAllComponents(GlButton).at(1).text()).toBe('Create epic');
     });
 
     it('shows buttons on left and sticky when not isModal', async () => {
@@ -1273,7 +1309,7 @@ describe('Create work item component', () => {
 
       expect(findFormButtons().classes('gl-sticky')).toBe(true);
       expect(findFormButtons().classes('gl-justify-between')).toBe(true);
-      expect(findFormButtons().findAllComponents(GlButton).at(0).text()).toBe('Create Epic');
+      expect(findFormButtons().findAllComponents(GlButton).at(0).text()).toBe('Create epic');
       expect(findFormButtons().findAllComponents(GlButton).at(1).text()).toBe('Cancel');
     });
 
@@ -1331,7 +1367,7 @@ describe('Create work item component', () => {
       wrapper.find('form').trigger('submit');
 
       apolloProvider.defaultClient.mutate.mockClear();
-      findTitleInput().vm.$emit('updateDraft', 'new title');
+      findTitleInput().vm.$emit('update-draft', 'new title');
       await nextTick();
 
       expect(apolloProvider.defaultClient.mutate).not.toHaveBeenCalledWith(
@@ -1548,7 +1584,7 @@ describe('Create work item component', () => {
 
       it('renders text', () => {
         expect(findResolveDiscussionSection().text()).toMatchInterpolatedText(
-          'Creating this Issue will resolve the thread in !1 (discussion 1224)',
+          'Creating this issue will resolve the thread in !1 (discussion 1224)',
         );
       });
 
@@ -1602,7 +1638,7 @@ describe('Create work item component', () => {
         expect(localStorage.getItem).toHaveBeenCalledWith('freq-wi-type:full-path');
       });
       it('when selecting a different namespace', async () => {
-        findGroupProjectSelector().vm.$emit('selectNamespace', 'other-namespace/path');
+        findGroupProjectSelector().vm.$emit('select-namespace', 'other-namespace/path');
         await nextTick();
         await resolveAll();
         expect(localStorage.getItem).toHaveBeenCalledWith('freq-wi-type:other-namespace/path');

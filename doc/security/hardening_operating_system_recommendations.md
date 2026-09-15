@@ -71,6 +71,12 @@ Macs hmac-sha2-256,hmac-sha2-512
 
 ```
 
+These settings apply to OpenSSH.
+If `gitlab-sshd` also serves Git SSH traffic on your instance, configure its algorithms
+separately.
+For more information, see
+[Configure SSH algorithms](../administration/operations/gitlab_sshd.md#configure-ssh-algorithms).
+
 ## Firewall Rules
 
 For firewall rules, only TCP ports `80` and `443` need to be open for basic usage. By
@@ -104,7 +110,7 @@ be blocked, or at least restricted to specific ranges. For more information on p
   all IP addresses in the [list of IP ranges Cloudflare publishes](https://www.cloudflare.com/ips/).
 - To use an HTTP/S proxy, both `gitlab_workhorse` and `gitlab_rails` must have the necessary
   [web proxy environment variables](https://docs.gitlab.com/omnibus/settings/environment-variables/) set.
-- In multi-node GitLab installations, configure the HTTP/S proxy on all **Rails** and **Sidekiq** nodes.
+- In multi-node GitLab installations, configure the HTTP/S proxy on all Rails and Sidekiq nodes.
 - To configure GitLab Duo on GitLab Self-Managed, [allow outbound connections from the GitLab instance to GitLab Duo](../administration/gitlab_duo/configure/_index.md#allow-outbound-connections-from-the-gitlab-instance-to-gitlab-duo).
 
 ### Firewall Additions

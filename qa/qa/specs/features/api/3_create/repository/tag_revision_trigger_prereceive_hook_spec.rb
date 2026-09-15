@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 module QA
-  RSpec.describe 'Create', feature_category: :source_code_management do
+  RSpec.describe 'Create', :skip_dedicated, feature_category: :source_code_management do
     describe 'Prereceive hook' do
       # NOTE: this test requires a global server hook to be configured in the target test environment.
       # If running this test against a local GDK installation, please follow the instructions in the

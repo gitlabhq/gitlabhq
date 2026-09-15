@@ -12,6 +12,7 @@ import { stubComponent } from 'helpers/stub_component';
 import { mockLabels } from './mock_data';
 
 const showDropdown = jest.fn();
+const hideDropdown = jest.fn();
 const focusInput = jest.fn();
 
 const GlDropdownStub = {
@@ -24,7 +25,7 @@ const GlDropdownStub = {
   `,
   methods: {
     show: showDropdown,
-    hide: jest.fn(),
+    hide: hideDropdown,
   },
 };
 
@@ -124,6 +125,17 @@ describe('DropdownContent', () => {
     expect(wrapper.emitted('set-labels')).toEqual([[[updatedLabel]]]);
   });
 
+  describe('when the header emits `close-dropdown`', () => {
+    beforeEach(() => {
+      createComponent();
+      findDropdownHeader().vm.$emit('close-dropdown');
+    });
+
+    it('hides the dropdown', () => {
+      expect(hideDropdown).toHaveBeenCalled();
+    });
+  });
+
   it('renders header', () => {
     createComponent();
 
@@ -181,8 +193,8 @@ describe('DropdownContent', () => {
       expect(findLabelsView().exists()).toBe(true);
     });
 
-    it('changes the view to Labels view on `hideCreateView` event', async () => {
-      findCreateView().vm.$emit('hideCreateView');
+    it('changes the view to Labels view on `hide-create-view` event', async () => {
+      findCreateView().vm.$emit('hide-create-view');
       await nextTick();
 
       expect(findCreateView().exists()).toBe(false);
@@ -198,7 +210,7 @@ describe('DropdownContent', () => {
         textColor: '#FFFFFF',
       };
 
-      findCreateView().vm.$emit('labelCreated', createdLabel);
+      findCreateView().vm.$emit('label-created', createdLabel);
       await nextTick();
 
       expect(findLabelsView().props('localSelectedLabels')).toContain(createdLabel);

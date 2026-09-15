@@ -66,21 +66,21 @@ RSpec.describe ObjectStorage::PendingDirectUpload, :direct_uploads, :clean_gitla
       let(:given_identifier) { location_identifier }
       let(:given_path) { path }
 
-      it { is_expected.to eq(true) }
+      it { is_expected.to be(true) }
     end
 
     context 'when there is a matching redis entry for the given path under a different location identifier' do
       let(:given_identifier) { :uploads }
       let(:given_path) { path }
 
-      it { is_expected.to eq(false) }
+      it { is_expected.to be(false) }
     end
 
     context 'when there is no matching redis entry for the given path under the location identifier' do
       let(:given_identifier) { location_identifier }
       let(:given_path) { 'wrong/path/123' }
 
-      it { is_expected.to eq(false) }
+      it { is_expected.to be(false) }
     end
   end
 
@@ -88,7 +88,7 @@ RSpec.describe ObjectStorage::PendingDirectUpload, :direct_uploads, :clean_gitla
     it 'deletes the redis entry for the given path' do
       described_class.prepare(location_identifier, path)
 
-      expect(described_class.exists?(location_identifier, path)).to eq(true)
+      expect(described_class.exists?(location_identifier, path)).to be(true)
 
       redis_key = described_class.redis_key(location_identifier, path)
 
@@ -96,7 +96,7 @@ RSpec.describe ObjectStorage::PendingDirectUpload, :direct_uploads, :clean_gitla
 
       described_class.complete(location_identifier, path)
 
-      expect(described_class.exists?(location_identifier, path)).to eq(false)
+      expect(described_class.exists?(location_identifier, path)).to be(false)
     end
   end
 
@@ -133,13 +133,13 @@ RSpec.describe ObjectStorage::PendingDirectUpload, :direct_uploads, :clean_gitla
     context 'when timestamp is older than 3 hours ago' do
       let(:timestamp) { 4.hours.ago.utc.to_i }
 
-      it { is_expected.to eq(true) }
+      it { is_expected.to be(true) }
     end
 
     context 'when timestamp is not older than 3 hours ago' do
       let(:timestamp) { 2.hours.ago.utc.to_i }
 
-      it { is_expected.to eq(false) }
+      it { is_expected.to be(false) }
     end
   end
 

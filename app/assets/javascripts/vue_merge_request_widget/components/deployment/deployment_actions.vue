@@ -128,7 +128,7 @@ export default {
             });
           })
           .finally(() => {
-            eventHub.$emit('FetchDeployments');
+            eventHub.$emit('fetch-deployments');
             this.actionInProgress = null;
           });
       }

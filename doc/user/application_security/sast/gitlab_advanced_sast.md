@@ -170,6 +170,9 @@ The code flow information is shown in the **Data flow** tab and includes:
 {{< history >}}
 
 - C# version support [increased from 10.0 to 13.0](https://gitlab.com/gitlab-org/gitlab/-/issues/570499) in GitLab 18.6.
+- Support for Dart [added](https://gitlab.com/gitlab-org/security-products/analyzers/static-analysis-toolkit/-/work_items/62) in GitLab 19.4 as a [beta](../../../policy/development_stages_support.md#beta).
+- Support for Scala [added](https://gitlab.com/gitlab-org/security-products/analyzers/static-analysis-toolkit/-/work_items/63) in GitLab 19.4 as a [beta](../../../policy/development_stages_support.md#beta).
+- Support for Kotlin [added](https://gitlab.com/groups/gitlab-org/-/work_items/23283) in GitLab 19.4 as a [beta](../../../policy/development_stages_support.md#beta).
 
 {{< /history >}}
 
@@ -177,24 +180,34 @@ GitLab Advanced SAST supports the following languages:
 
 - C# (up to and including 13.0)
 - C/C++
+- Dart (beta)
 - Go
 - Java, including Java Server Pages (JSP)
 - JavaScript, TypeScript
+- Kotlin (beta)
 - Objective-C (beta)
 - PHP
 - Python
 - Ruby
+- Scala (beta)
 - Swift (beta)
 
 GitLab Advanced SAST CPP requires additional configuration, including a compilation database. For
 details, see [C/C++ configuration](advanced_sast_cpp.md). GitLab Advanced SAST CPP and Semgrep both
 run for C/C++ projects, each with different rule sets.
 
-Swift and Objective-C support is in [beta](../../../policy/development_stages_support.md#beta).
+Dart, Kotlin, Objective-C, Scala, and Swift support is in
+[beta](../../../policy/development_stages_support.md#beta).
 Analysis runs as a separate CI/CD job, `gitlab-advanced-sast-ext`, when GitLab Advanced SAST is
-enabled and the repository contains Swift or Objective-C files. No additional variable is required.
-For more information, see
+enabled and the repository contains files for one of these languages. No additional variable is
+required. For Swift and Objective-C, see
 [Swift and Objective-C configuration](advanced_sast_swift_objc.md).
+
+While a language is in beta, `gitlab-advanced-sast-ext` runs alongside `semgrep-sast` and defers to
+it for the weaknesses Semgrep already reports for that language, so the same weakness class is not
+reported twice. For Kotlin these are CWE-89, CWE-78, CWE-22, CWE-79, CWE-327, and CWE-295. For Swift
+it is the Keychain accessibility check (CWE-922). Use `GITLAB_ADVANCED_SAST_EXT_DEDUP_LANGUAGES` to
+change or turn off this behavior.
 
 ### PHP known issues
 
@@ -213,6 +226,38 @@ When analyzing PHP code, GitLab Advanced SAST has the following known issues:
 GitLab Advanced SAST scanning performance is determined primarily by code coverage and runner
 resources. To improve GitLab Advanced SAST scan performance, you can tune code coverage and runner
 resources.
+
+### Diagnose scan performance
+
+Find what is slow before you change any settings. GitLab Advanced SAST can produce two timing
+artifacts for each scan, which show where scan time goes. These artifacts are not uploaded by default.
+
+To collect them, add the paths to the job's existing `artifacts` configuration in your
+`.gitlab-ci.yml` file:
+
+```yaml
+gitlab-advanced-sast:
+  artifacts:
+    paths:
+      - '**/scan_metrics.csv'
+      - '**/lightz_times.json'
+    when: always
+```
+
+If you already override `artifacts` for this job (for example, for incremental scanning), add these
+paths to the existing `artifacts.paths` list. Adding a second `gitlab-advanced-sast` block can drop
+other artifacts, such as the SAST report.
+
+`scan_metrics.csv` and `lightz_times.json` contain timing information for each rule and file. You can use
+this information to find which rules and files take the most time to scan. `scan_metrics.csv` is sortable in a
+spreadsheet by its timing column. `lightz_times.json` holds more detailed timing for each file that
+GitLab Support can help interpret. The analyzer produces these artifacts only when the job completes
+successfully. A job that times out does not produce them. If your job is timing out, first raise
+the job [`timeout`](../../../ci/yaml/_index.md#timeout) so a scan can complete, then collect the
+artifacts.
+
+After you identify the slowest rules and files, you can [exclude paths](#exclude-paths) or
+[disable specific rules](customize_rulesets.md#disable-specific-default-gitlab-advanced-sast-rules).
 
 ### Tune code coverage
 
@@ -261,6 +306,10 @@ contain vulnerabilities.
 When excluding paths, be selective to avoid hiding vulnerabilities. Make changes incrementally and
 test the effect on scan duration after each exclusion.
 
+GitLab Advanced SAST excludes many common paths by default, including tests, `node_modules`,
+`vendor`, and build output. Use `SAST_EXCLUDED_PATHS` for additional paths specific to your
+project that the defaults do not cover.
+
 Consider excluding paths containing the following:
 
 - Database migrations
@@ -272,6 +321,16 @@ Consider excluding paths containing the following:
 - Test data
 - Infrastructure-as-code
 
+To identify exclusion candidates, list your repository's file-type distribution:
+
+```shell
+git ls-files | grep -o '\.[^.]*$' | sort | uniq -c | sort -nr
+```
+
+Bundled UI dependencies are common candidates. For example, excluding `swagger-ui` or
+`swagger-ui-dist/` directories can reduce scan time, because their bundled files inflate it.
+The wildcard pattern `**/*.min.js` also excludes minified content.
+
 Prerequisites:
 
 - The Maintainer or Owner role for the project.
@@ -280,6 +339,15 @@ To exclude paths:
 
 - List the excluded paths in the [`SAST_EXCLUDED_PATHS`](_index.md#vulnerability-filters) CI/CD
   variable.
+
+After you add exclusions, compare the finding count with a previous full scan. A drop can indicate
+that you excluded paths that contained real code. Review what each pattern removed and narrow the
+exclusions if needed.
+
+Finding counts do not map directly to the number of files excluded. Judge by which paths a change
+affected rather than by the totals. Expect some run-to-run variation, because under load, a rule that
+reaches its timeout for each file (`GITLAB_ADVANCED_SAST_RULE_TIMEOUT`) can be skipped.
+A persistent drop tied to specific excluded paths is more likely to indicate lost coverage.
 
 #### Exclude lines
 
@@ -413,6 +481,21 @@ Incremental scanning works like this:
 1. Subsequent scans (warm runs): The analyzer searches previous commits for a successful pipeline
    containing a cache artifact. If found, the cache is fetched and unchanged results are reused.
    After the scan completes, the updated cache is stored as a new artifact.
+
+If the analyzer cannot retrieve the cache, it runs a full scan and you see no improvement in scan
+speed. This can happen when:
+
+- No previous pipeline has a cache artifact yet (for example, on the first run).
+- The cache artifact expired or falls outside `GITLAB_ADV_SAST_INCR_SCAN_SEARCH_PERIOD`.
+- The job was renamed without setting `GITLAB_ADV_SAST_INCR_SCAN_CUSTOM_JOB_NAME`.
+- The cache exceeds the artifact size limit.
+
+If incremental scanning does not improve scan speed, check the job log for a line that starts with
+the following. Read the reason after the colon:
+
+```plaintext
+Failed to retrieve cache, continuing without cache:
+```
 
 ##### Cache invalidation
 
@@ -615,6 +698,13 @@ GitLab Advanced SAST entries. For example:
 [INFO] [GitLab Advanced SAST] [2026-03-30T02:38:09Z] ▶ No Memory limit is detected
 ```
 
+#### Recommended starting point
+
+For a large repository with slow scans, start with several CPU cores and enough memory for 4 GB per
+core. Then adjust based on the scan duration you observe. For an example configuration, see
+[configure runner resource settings](#configure-runner-resource-settings). Set the job
+[`timeout`](../../../ci/yaml/_index.md#timeout) high enough for a first full scan to complete.
+
 #### Configure runner resource settings
 
 You can manually tune the analyzer's CPU and memory settings by using CI/CD variables when:
@@ -652,19 +742,58 @@ variables:
   ADVANCED_SAST_AVAILABLE_MEMORY: '16384'  # 16 GB for 4 cores
 ```
 
+#### Verify runner resource tuning took effect
+
+After you set `ADVANCED_SAST_AVAILABLE_CPUS` or `ADVANCED_SAST_AVAILABLE_MEMORY`, confirm the
+effective values in the `gitlab-advanced-sast` job log. The log reports the detected CPU and, when
+memory is set, the detected memory. For example:
+
+```plaintext
+Detected 2 CPU Cores
+Detected 8192 MB of Memory
+```
+
+If the effective values are lower than you requested:
+
+1. Confirm the runner's actual CPU and memory. The analyzer applies your override as set and does
+   not cap it to the runner's capacity. A value above the real capacity causes resource
+   contention rather than a faster scan. For GitLab-hosted runners, see the
+   [hosted runner specifications](../../../ci/runners/hosted_runners/linux.md). On self-managed
+   runners, check `nproc` and the cgroup limits on the runner host.
+1. Confirm the variable is set at the
+   [correct scope](../../../ci/variables/_index.md#cicd-variable-precedence) and that nothing else
+   overrides it.
+
+By default, the analyzer uses at most one core less than `MAX_UNVERIFIED_CORES` (default `4`), so it
+uses three cores. This behavior can make the job log show a line like the following even when you have
+not changed any settings:
+
+```plaintext
+Detected 8 cores but using 3; set --multi-core or MAX_UNVERIFIED_CORES for more
+```
+
+To use more cores, raise `MAX_UNVERIFIED_CORES`, or request a specific number with `--multi-core`
+through `SAST_SCANNER_ALLOWED_CLI_OPTS`:
+
+```yaml
+variables:
+  SAST_SCANNER_ALLOWED_CLI_OPTS: "--multi-core 6"
+```
+
 ## Configuration
 
 You can adjust GitLab Advanced SAST behavior using the following variables:
 
 | CI/CD variable                              | Default                | Description                                                                                                                                                                                     |
 |---------------------------------------------|------------------------|-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
-| `GITLAB_ADVANCED_SAST_ENABLED`              | `false`                | Enable GitLab Advanced SAST scanning for all supported languages except C and C++. Swift and Objective-C analysis runs as a separate `gitlab-advanced-sast-ext` job. |
+| `GITLAB_ADVANCED_SAST_ENABLED`              | `false`                | Enable GitLab Advanced SAST scanning for all supported languages except C and C++. Dart, Kotlin, Objective-C, Scala, and Swift analysis runs as a separate `gitlab-advanced-sast-ext` job. |
 | `GITLAB_ADVANCED_SAST_CPP_ENABLED`          | `false`                | Enable GitLab Advanced SAST scanning specifically for C and C++ projects.                                                                                                                       |
-| `GITLAB_ADVANCED_SAST_EXT_INCREMENTAL_ENABLED` | `true` | Set to `false` to turn off [incremental scanning](advanced_sast_swift_objc.md#incremental-scanning) for the Swift and Objective-C (`gitlab-advanced-sast-ext`) analyzer. |
+| `GITLAB_ADV_SAST_INCR_SCAN`                 | `false`                | Enable [incremental scanning](#incremental-scanning) to cache taint signatures between pipeline runs. |
+| `GITLAB_ADVANCED_SAST_EXT_INCREMENTAL_ENABLED` | `true` | Applies only to the `gitlab-advanced-sast-ext` analyzer (Swift, Objective-C, Dart, Scala, and Kotlin), which has [incremental scanning](advanced_sast_swift_objc.md#incremental-scanning) enabled by default. Set to `false` to turn it off. Has no effect on repositories without files for those languages. For other languages, use `GITLAB_ADV_SAST_INCR_SCAN` instead. |
+| `GITLAB_ADVANCED_SAST_EXT_DEDUP_LANGUAGES` | `kotlin,swift` | Applies only to the `gitlab-advanced-sast-ext` analyzer. Comma-separated list of beta languages for which the analyzer defers to `semgrep-sast` for the weaknesses Semgrep already reports, so they are not reported twice. For Kotlin: CWE-89, CWE-78, CWE-22, CWE-79, CWE-327, and CWE-295. For Swift: the Keychain accessibility check (CWE-922). Set to an empty value to turn the de-duplication off, for example when benchmarking. |
 | `ADVANCED_SAST_PARTIAL_SCAN`                | `false`                | Enable GitLab Advanced SAST diff-scanning mode by setting to `differential`.                                                                                                                    |
 | `GITLAB_ADVANCED_SAST_RULE_TIMEOUT`         | `30`                   | Timeout in seconds per rule per file. When exceeded, that analysis is skipped.                                                                                                                  |
 | `REPORT_UNVERIFIED_VULNS`                   | `false`                | Include unverified findings in scan results. Set to `true`, `1`, or `True` to enable.                                                                                                           |
-| `GITLAB_ADV_SAST_INCR_SCAN`                 | `false`                | Enable [incremental scanning](#incremental-scanning) to cache taint signatures between pipeline runs.                                                                                           |
 | `GITLAB_ADV_SAST_INCR_SCAN_SEARCH_PERIOD`   | `3 days`               | How far back to search for a cached taint signature artifact. Supported format: number followed by `d`, `day`, or `days` (for example, `7 days`). Should not exceed the artifact expiry period. |
 | `GITLAB_ADV_SAST_INCR_SCAN_CUSTOM_JOB_NAME` | `gitlab-advanced-sast` | Custom job name for cache artifact lookup. Set this if you renamed the `gitlab-advanced-sast` job.                                                                                              |
 | `GITLAB_ADV_SAST_INCR_SCAN_STORAGE`         | Not set                | Cache storage backend. Set to `s3` to store the cache in AWS S3 instead of CI/CD artifacts. For details, see [store cache in external object storage](#store-cache-in-external-object-storage).           |

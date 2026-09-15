@@ -103,7 +103,7 @@ RSpec.describe API::Entities::User do
     end
 
     it 'exposes user as a bot' do
-      expect(subject[:bot]).to eq(true)
+      expect(subject[:bot]).to be(true)
     end
 
     context 'when the requester is not an admin' do
@@ -150,7 +150,7 @@ RSpec.describe API::Entities::User do
     end
 
     it 'exposes user as a bot' do
-      expect(subject[:bot]).to eq(true)
+      expect(subject[:bot]).to be(true)
     end
 
     context 'when the requester is not a group member' do

@@ -79,6 +79,15 @@ A request made with a composite identity token is authorized only if both are tr
 - The service account has access to the resource.
 - The human user identified by `user:$ID` in the token scopes has access to the resource.
 
+## How many identities a single request can link
+
+A request links a composite identity for one of two reasons, and the number of allowed links differs:
+
+- One `:authentication` link, at most. This link records the principal the request acts as. If a second service account tries to claim it, the account raises `Gitlab::Auth::Identity::TooManyIdentitiesLinkedError`.
+- Any number of `:permission_check` links. A human can name several AI service accounts in one action, for example by requesting a review from two AI reviewers in a single quick action. Each account is linked so `Ability` can confirm the account has access to the resource.
+
+When more than one identity is linked, `Gitlab::Auth::Identity.currently_linked` returns the authenticated identity. If the request has no authenticated identity, it returns the most recently linked one, so work started for a given service account propagates that account to Gitaly, Workhorse, and background jobs. Because a background job carries a single identity, code that must act as a specific service account should link that account immediately before it starts the work.
+
 ## Request context and current_user
 
 When a request includes a composite identity OAuth token, the Rails request context overrides `current_user` to the human user extracted from the `user:$ID` scope. While the token itself still belongs to the service account, the user who originated the request is considered the current user. This means:
@@ -94,7 +103,7 @@ Always use `resolve_composite_identity_actor` to resolve the actor for any write
 actor = Gitlab::Auth::Identity.resolve_composite_identity_actor(current_user)
 ```
 
-Use the returned `actor` wherever you set authorship (for example: notes, issues/MRs, commits, pipeline user context).
+Use the returned `actor` wherever you set authorship (for example: notes, system notes, pipeline user context).
 
 The method returns the correct actor for the situation:
 
@@ -103,6 +112,40 @@ The method returns the correct actor for the situation:
 - **No composite identity**: returns `current_user` unchanged.
 
 You never need to call this method differently depending on the scenario - the identity system records the context when the request is authenticated, and `resolve_composite_identity_actor` uses it automatically.
+
+#### MR authorship and Git commit authorship exception
+
+> [!warning]
+> Do not use `resolve_composite_identity_actor` to set the **author of a merge request**.
+> MR author must always be the human user (`current_user` before composite identity resolution),
+> even when the request is made in the `:authentication` context (service account token).
+
+This exception exists for compliance and segregation-of-duties reasons.
+GitLab enforces that a user cannot approve their own MR (`merge_requests_author_approval` defaults to false).
+If the service account were set as the MR author, the human user could approve the MR themselves, bypassing the self-approval check.
+By keeping the human as the MR author, the self-approval guard remains effective.
+This is the primary compliance guarantee for human-initiated triggers.
+
+For commits the executor pushes directly via the Git CLI, Git records a separate `author` and `committer`,
+and the two get different actors.
+
+- The human user must be the commit `committer`. When `merge_requests_disable_committers_approval`
+  is enabled on a project, GitLab filters approvers by the Git committer email, so keeping the human
+  as the committer keeps them out of the approver pool and preserves segregation of duties.
+  Note that this setting is opt-in and has no database default.
+- In the `:authentication` context, the Git `author` is the service account, because
+  `resolve_composite_identity_actor` returns the service account. This reflects that the agent
+  generated the change.
+
+This committer rule applies only to commits the executor pushes directly via the Git CLI.
+For commits made through the GitLab API or UI, Gitaly may replace the committer with the instance
+identity when signing; the approver filter falls back to the Git author email on that path.
+
+For **autonomous triggers** (no human-initiated request), the service account is both `author` and
+`committer`. The human-as-committer rule applies only to human-initiated triggers.
+
+For the user-facing description of the attribution model, see
+[Understanding the attribution model](../../user/duo_agent_platform/composite_identity.md#understanding-the-attribution-model).
 
 Audit events follow the same attribution rules (GitLab 19.3 and later):
 

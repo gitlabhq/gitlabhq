@@ -6,7 +6,12 @@ module Mutations
       class Subscribe < BaseMutation
         graphql_name 'WorkItemSavedViewSubscribe'
 
-        authorize :subscribe_saved_view
+        authorize :subscribe_work_item_saved_view
+        authorize_granular_token permissions: :subscribe_work_item_saved_view,
+          boundaries: [
+            { boundary_argument: :id, boundary: :resource_parent, boundary_type: :project },
+            { boundary_argument: :id, boundary: :resource_parent, boundary_type: :group }
+          ]
 
         description "Subscribes the current user to a saved view."
 
@@ -33,6 +38,11 @@ module Mutations
           subscription = ::WorkItems::SavedViews::UserSavedView.subscribe(user: current_user, saved_view: saved_view)
 
           if subscription
+            ::Gitlab::WorkItems::Instrumentation::TrackingService.track_saved_view(
+              event: ::Gitlab::WorkItems::Instrumentation::EventActions::SAVED_VIEW_SUBSCRIBE,
+              saved_view: saved_view,
+              user: current_user
+            )
             { saved_view: saved_view, errors: [] }
           else
             { saved_view: nil, errors: [_('Subscribed saved view limit exceeded.')] }

@@ -23,7 +23,7 @@ RSpec.describe GitlabSchema.types['MergeRequest'], feature_category: :code_revie
       target_branch target_branch_path draft merge_when_pipeline_succeeds diff_head_sha
       merge_commit_sha user_notes_count user_discussions_count should_remove_source_branch
       resolvable_discussions_count resolved_discussions_count
-      diff_refs diff_stats diff_stats_summary
+      diff_refs diff_stats diff_stats_summary diffs
       force_remove_source_branch
       merge_status merge_status_enum
       in_progress_merge_commit_sha
@@ -50,6 +50,18 @@ RSpec.describe GitlabSchema.types['MergeRequest'], feature_category: :code_revie
     subject { described_class.fields['pipelines'] }
 
     it { is_expected.to have_attributes(max_page_size: 500) }
+  end
+
+  describe '#diffs' do
+    subject(:field) { described_class.fields['diffs'] }
+
+    it { is_expected.to have_attributes(calls_gitaly?: true) }
+
+    it { is_expected.to have_attributes(resolver: Resolvers::MergeRequests::DiffsResolver) }
+
+    it 'limits field call count to avoid N+1 Gitaly calls' do
+      expect(field.extensions).to include(a_kind_of(::Gitlab::Graphql::Limit::FieldCallCount))
+    end
   end
 
   describe '#target_branch_path' do

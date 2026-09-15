@@ -129,7 +129,7 @@ end
 
 RSpec.shared_examples 'aborted merge requests for auto merges' do
   let(:aborted_message) do
-    /aborted the automatic merge because target branch was updated/
+    /aborted the automatic merge because the target branch was updated/
   end
 
   it 'aborts auto_merge' do

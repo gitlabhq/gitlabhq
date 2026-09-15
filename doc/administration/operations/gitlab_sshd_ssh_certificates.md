@@ -283,7 +283,7 @@ security considerations before you deploy.
 
 > [!warning]
 > Anyone with access to the CA private key can sign certificates
-> for **any** GitLab user on the instance. Protect the CA private
+> for any GitLab user on the instance. Protect the CA private
 > key with appropriate access controls, such as restrictive file
 > permissions, hardware security modules (HSMs), or an
 > offline environment.

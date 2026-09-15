@@ -33,12 +33,14 @@ class Groups::UploadsController < Groups::ApplicationController
     NamespaceFileUploader
   end
 
+  def group_id_param
+    params.permit(:group_id)[:group_id]
+  end
+
   def find_model
     return @group if @group
 
-    group_id = params[:group_id]
-
-    Group.find_by_full_path(group_id)
+    Group.find_by_full_path(group_id_param)
   end
 
   def authorize_upload_file!

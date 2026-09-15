@@ -1,0 +1,8 @@
+---
+migration_job_name: BackfillEmailsOrganizationId
+description: Backfill the organization_id sharding key on the emails table from the associated user
+feature_category: user_profile
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/245971
+milestone: '19.4'
+queued_migration_version: 20260824205030
+gitlab_schema: gitlab_main_user

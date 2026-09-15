@@ -63,11 +63,8 @@ sudo -u git -H bundle exec rails console -e production
 {{< tab title="Helm chart (Kubernetes)" >}}
 
 ```shell
-# find the pod
-kubectl get pods --namespace <namespace> -lapp=toolbox
-
-# open the Rails console
-kubectl exec -it -c toolbox <toolbox-pod-name> -- gitlab-rails console
+namespace=<namespace>
+kubectl exec -it --namespace "$namespace" -c toolbox "$(kubectl get pods --namespace "$namespace" -lapp=toolbox -o jsonpath='{.items[0].metadata.name}')" -- gitlab-rails console
 ```
 
 {{< /tab >}}

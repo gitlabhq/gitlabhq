@@ -1,0 +1,9 @@
+---
+name: detect_writes_on_get
+feature_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/608670
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/250734
+rollout_issue_url:
+milestone: '19.3'
+group: group::database frameworks
+type: ops
+default_enabled: false

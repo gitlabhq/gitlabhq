@@ -4,6 +4,7 @@ import CompareApp from './components/app.vue';
 
 export default function init() {
   const el = document.getElementById('js-compare-selector');
+  if (!el) return null;
 
   const {
     sourceProjectRefsPath,

@@ -44,7 +44,7 @@ RSpec.describe Admin::BackgroundMigrationsHelper, feature_category: :database do
       let(:migration) { build(:batched_background_migration, :active, total_tuple_count: nil) }
 
       it 'returns nil' do
-        expect(subject).to eq(nil)
+        expect(subject).to be_nil
       end
 
       context 'when there are no completed rows' do

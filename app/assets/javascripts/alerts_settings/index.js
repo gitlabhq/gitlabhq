@@ -1,5 +1,3 @@
-import { GlToast } from '@gitlab/ui';
-import Vue from 'vue';
 import IncidentsSettingsService from '~/incidents_settings/incidents_settings_service';
 import { parseBoolean } from '~/lib/utils/common_utils';
 import { initVueApp } from '~/lib/utils/vue3compat/init_vue_app';
@@ -13,8 +11,6 @@ apolloProvider.clients.defaultClient.cache.writeQuery({
     currentIntegration: null,
   },
 });
-
-Vue.use(GlToast);
 
 export default (el) => {
   if (!el) {

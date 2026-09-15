@@ -155,7 +155,7 @@ automatically claimed by the group as enterprise users. No direct action is need
 group Owners.
 
 Any existing group members with an email address from a different domain retain their existing
-access, but can not be managed by group Owners. To claim these users, they must update their
+access, but cannot be managed by group Owners. To claim these users, they must update their
 primary email address to match your group domain.
 
 The claim process can take up to four days to trigger. You can immediately run this process by manually [re-verifying the group domain](#edit-group-domains).
@@ -249,7 +249,7 @@ Prerequisites:
 
 You can use the [group enterprise users API](../../api/group_enterprise_users.md#delete-an-enterprise-user)
 to delete an enterprise user and permanently remove the account from GitLab. This action is different from
-releasing the user which only removes the enterprise management features from the user. When you delete
+releasing the user, which only removes the enterprise management features from the user. When you delete
 the user, you can choose to either:
 
 - Permanently delete the user and their
@@ -318,12 +318,9 @@ To hide email addresses for enterprise users:
 {{< history >}}
 
 - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/241926) in GitLab 19.2 [with a flag](../../administration/feature_flags/_index.md) named `deleting_account_disabled_for_enterprise_users`. Disabled by default.
+- [Generally available](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/248605) in GitLab 19.4. Feature flag `deleting_account_disabled_for_enterprise_users` removed.
 
 {{< /history >}}
-
-> [!flag]
-> The availability of this feature is controlled by a feature flag.
-> For more information, see the history.
 
 Group Owners can prevent enterprise users in their group from deleting their own accounts.
 When this setting is disabled, enterprise users cannot delete their account from their user settings.

@@ -5,7 +5,7 @@ info: Any user with at least the Maintainer role can merge updates to this conte
 title: Distributed tracing development guidelines
 ---
 
-GitLab is instrumented for distributed tracing. Distributed tracing in GitLab is currently considered **experimental**, as it has not yet been tested at scale on GitLab.com.
+GitLab is instrumented for distributed tracing. Distributed tracing in GitLab is currently considered experimental, as it has not yet been tested at scale on GitLab.com.
 
 According to [Open Tracing](https://opentracing.io/docs/overview/what-is-tracing/):
 
@@ -215,7 +215,7 @@ This configuration string uses the Jaeger driver `opentracing://jaeger` with the
 | `sampler` | `const` | Configures Jaeger to use the constant sampler (either on or off). |
 | `sampler_param` | `1` | Configures the `const` sampler to sample all traces. Using `0` would sample no traces. |
 
-**Other parameter values are also possible**:
+Other parameter values are also possible:
 
 | Name | Example | Description |
 |------|-------|-------------|

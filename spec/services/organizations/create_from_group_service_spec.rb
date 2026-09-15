@@ -36,6 +36,19 @@ RSpec.describe Organizations::CreateFromGroupService, feature_category: :organiz
       expect(group.reload.organization).to eq(organization)
     end
 
+    it 'publishes a GroupTransferredEvent for the transferred group' do
+      published = []
+      expect(Gitlab::EventStore).to receive(:publish_group) { |events| published = events }
+
+      organization = result.payload[:organization]
+
+      expect(published.map(&:data)).to contain_exactly(
+        { group_id: group.id,
+          old_organization_id: default_organization.id,
+          new_organization_id: organization.id }
+      )
+    end
+
     context 'when the group path is reserved for organizations' do
       let_it_be_with_reload(:group) { create(:group, path: 'badges', organization: default_organization) }
 

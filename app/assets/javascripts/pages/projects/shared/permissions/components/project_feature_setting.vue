@@ -1,5 +1,6 @@
 <script>
-import { GlIcon, GlToggle } from '@gitlab/ui';
+import { GlIcon, GlToggle, GlTooltipDirective } from '@gitlab/ui';
+import { s__ } from '~/locale';
 import { featureAccessLevelNone } from '../constants';
 
 export default {
@@ -7,6 +8,17 @@ export default {
   components: {
     GlIcon,
     GlToggle,
+  },
+  directives: {
+    GlTooltip: GlTooltipDirective,
+  },
+  i18n: {
+    disabledWhenNoRepository: s__(
+      'ProjectSettings|This feature requires the repository to be enabled.',
+    ),
+    disabledWhenPrivate: s__(
+      'ProjectSettings|Feature visibility cannot be changed while the project is private.',
+    ),
   },
   model: {
     prop: 'value',
@@ -89,6 +101,19 @@ export default {
         this.displayOptions.length < 2
       );
     },
+    // Explains only the external causes the parent signals (repository off, project
+    // private); a feature that is simply toggled off needs no tooltip.
+    disabledReason() {
+      if (this.disabledInput) {
+        return this.$options.i18n.disabledWhenNoRepository;
+      }
+
+      if (this.disabledSelectInput) {
+        return this.$options.i18n.disabledWhenPrivate;
+      }
+
+      return '';
+    },
     valueWhenFeatureEnabled() {
       if (this.options.length === 0) {
         return this.valueWhenFeatureLastEnabled;
@@ -134,7 +159,11 @@ export default {
       label-position="hidden"
       @change="toggleFeature"
     />
-    <div class="select-wrapper gl-grow">
+    <div
+      v-gl-tooltip="{ disabled: !disabledReason, title: disabledReason }"
+      class="select-wrapper gl-grow gl-rounded-base focus:gl-focus"
+      :tabindex="disabledReason ? 0 : null"
+    >
       <select
         :id="id"
         v-model="internalValue"

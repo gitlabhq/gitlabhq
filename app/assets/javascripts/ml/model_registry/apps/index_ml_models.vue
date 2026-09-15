@@ -36,8 +36,6 @@ export default {
     return {
       mlflowTrackingUrl: this.mlflowTrackingUrl,
       projectPath: this.projectPath,
-      maxAllowedFileSize: this.maxAllowedFileSize,
-      markdownPreviewPath: this.markdownPreviewPath,
       canWriteModelRegistry: this.canWriteModelRegistry,
     };
   },
@@ -56,15 +54,7 @@ export default {
       required: false,
       default: '',
     },
-    maxAllowedFileSize: {
-      type: Number,
-      required: true,
-    },
     createModelPath: {
-      type: String,
-      required: true,
-    },
-    markdownPreviewPath: {
       type: String,
       required: true,
     },

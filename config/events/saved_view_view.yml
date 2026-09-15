@@ -10,9 +10,9 @@ identifiers:
 additional_properties:
   property:
     description: user role
-product_group: portfolio_planning
+product_group: planning_views
 product_categories:
-- portfolio_management
+- planning_views
 milestone: '18.11'
 introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/225736
 tiers:

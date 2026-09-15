@@ -1,18 +1,44 @@
 // This is the only file allowed to import directly from the package.
 // eslint-disable-next-line no-restricted-imports
 import Mousetrap from 'mousetrap';
-import { shouldDisableShortcuts } from '~/behaviors/shortcuts/shortcuts_disabled';
+import { keyboardShortcutsDisabled } from '~/behaviors/shortcuts/shortcuts_disabled';
 
 const additionalStopCallbacks = [];
 const originalStopCallback = Mousetrap.prototype.stopCallback;
 
+// Counted, not boolean: user preferences and Zen mode pause independently.
+let pauseCount = 0;
+
 Mousetrap.prototype.stopCallback = function customStopCallback(e, element, combo) {
+  // Before the chain: a callback returning a boolean ends the loop, skipping a check placed inside.
+  if (pauseCount > 0) return true;
+
   for (const callback of additionalStopCallbacks) {
     const returnValue = callback.call(this, e, element, combo);
     if (returnValue !== undefined) return returnValue;
   }
 
   return originalStopCallback.call(this, e, element, combo);
+};
+
+/**
+ * Suppress every Mousetrap shortcut until each caller that paused has unpaused.
+ *
+ * Bindings stay registered; they are short-circuited while paused.
+ */
+Mousetrap.pause = () => {
+  pauseCount += 1;
+};
+
+/** Lift one caller's suppression. Shortcuts resume once every caller has unpaused. */
+Mousetrap.unpause = () => {
+  // Floored so a stray unpause cannot resume shortcuts another caller still needs suppressed.
+  pauseCount = Math.max(0, pauseCount - 1);
+};
+
+/** Resets the pause count. Used only for tests. */
+export const clearPausesForTests = () => {
+  pauseCount = 0;
 };
 
 /**
@@ -30,13 +56,8 @@ Mousetrap.prototype.stopCallback = function customStopCallback(e, element, combo
  * consulted instead. If a boolean is returned, no other stop callbacks are
  * called.
  *
- * Note: This approach does not always work as expected when coupled with
- * Mousetrap's pause plugin, which is used for enabling/disabling all keyboard
- * shortcuts. That plugin assumes it's the first to execute and overwrite
- * Mousetrap's `stopCallback` method, whereas to work correctly with this, it
- * must execute last. This is not guaranteed or even attempted.
- *
- * To work correctly, we may need to reimplement the pause plugin here.
+ * Note: a stop callback cannot re-enable a shortcut while paused. `Mousetrap.pause` is checked
+ * before this chain runs, so returning `false` here has no effect until every caller has unpaused.
  *
  * @param {(e: Event, element: Element, combo: string) => boolean|undefined}
  *     stopCallback The additional stop callback function to add to the chain
@@ -124,7 +145,7 @@ const ensureInputFocusLockInitialized = () => {
 export const suppressShortcutsUntilInputFocus = ({
   timeoutMs = INPUT_FOCUS_LOCK_DEFAULT_TIMEOUT_MS,
 } = {}) => {
-  if (shouldDisableShortcuts()) return;
+  if (keyboardShortcutsDisabled()) return;
 
   ensureInputFocusLockInitialized();
   inputFocusLockSuppressed = true;

@@ -28,7 +28,7 @@ Make sure you have the following before you complete this tutorial:
 
 ## Install and configure Flux
 
-[Flux](https://fluxcd.io/flux/) is the recommended tool for GitOps deployments (also called pull-based deployments). Flux is a matured CNCF project.
+[Flux](https://fluxcd.io/flux/) is the recommended tool for GitOps deployments (also called pull-based deployments). Flux is a mature CNCF project.
 
 To install Flux:
 

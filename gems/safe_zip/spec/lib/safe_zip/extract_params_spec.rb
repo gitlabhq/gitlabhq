@@ -37,22 +37,22 @@ RSpec.describe SafeZip::ExtractParams do
   end
 
   describe '#target_directories' do
-    subject { params.target_directories }
+    subject(:target_directories) { params.target_directories }
 
     it 'starts with target_path' do
-      is_expected.to all(start_with(real_target_path + '/'))
+      expect(target_directories).to all(start_with("#{real_target_path}/"))
     end
 
     it 'ends with / for all paths' do
-      is_expected.to all(end_with('/'))
+      expect(target_directories).to all(end_with('/'))
     end
   end
 
   describe '#directories_wildcard' do
-    subject { params.directories_wildcard }
+    subject(:directories_wildcard) { params.directories_wildcard }
 
     it 'adds * for all paths' do
-      is_expected.to all(end_with('/*'))
+      expect(directories_wildcard).to all(end_with('/*'))
     end
   end
 

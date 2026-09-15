@@ -89,6 +89,7 @@ RSpec.describe Types::Ci::PipelineType, feature_category: :continuous_integratio
         code_quality_report_summary
         compute_minutes
         duo_workflows
+        duo_workflow_links
       ]
     end
 
@@ -244,7 +245,7 @@ RSpec.describe Types::Ci::PipelineType, feature_category: :continuous_integratio
       it 'returns the manual variables with nil values' do
         expect(manual_variables.size).to eq(1)
         expect(manual_variables.first['key']).to eq('KEY_1')
-        expect(manual_variables.first['value']).to eq(nil)
+        expect(manual_variables.first['value']).to be_nil
         expect(manual_variables.first.keys).to match_array(%w[id key value])
       end
     end
@@ -344,7 +345,7 @@ RSpec.describe Types::Ci::PipelineType, feature_category: :continuous_integratio
 
       it 'returns false without querying builds' do
         expect(::Ci::Build).not_to receive(:retryable_pipeline_keys)
-        expect(retryable).to eq(false)
+        expect(retryable).to be(false)
       end
     end
 
@@ -354,7 +355,7 @@ RSpec.describe Types::Ci::PipelineType, feature_category: :continuous_integratio
       end
 
       it 'returns false' do
-        expect(retryable).to eq(false)
+        expect(retryable).to be(false)
       end
     end
 
@@ -364,7 +365,7 @@ RSpec.describe Types::Ci::PipelineType, feature_category: :continuous_integratio
       end
 
       it 'returns true' do
-        expect(retryable).to eq(true)
+        expect(retryable).to be(true)
       end
     end
 
@@ -374,7 +375,7 @@ RSpec.describe Types::Ci::PipelineType, feature_category: :continuous_integratio
       end
 
       it 'returns true' do
-        expect(retryable).to eq(true)
+        expect(retryable).to be(true)
       end
     end
 
@@ -506,7 +507,7 @@ RSpec.describe Types::Ci::PipelineType, feature_category: :continuous_integratio
       end
 
       it 'returns false' do
-        expect(stuck).to eq(false)
+        expect(stuck).to be(false)
       end
     end
 
@@ -516,7 +517,7 @@ RSpec.describe Types::Ci::PipelineType, feature_category: :continuous_integratio
       end
 
       it 'returns true' do
-        expect(stuck).to eq(true)
+        expect(stuck).to be(true)
       end
     end
 
@@ -528,7 +529,7 @@ RSpec.describe Types::Ci::PipelineType, feature_category: :continuous_integratio
       end
 
       it 'returns false' do
-        expect(stuck).to eq(false)
+        expect(stuck).to be(false)
       end
     end
 
@@ -542,7 +543,7 @@ RSpec.describe Types::Ci::PipelineType, feature_category: :continuous_integratio
       end
 
       it 'returns true' do
-        expect(stuck).to eq(true)
+        expect(stuck).to be(true)
       end
     end
 

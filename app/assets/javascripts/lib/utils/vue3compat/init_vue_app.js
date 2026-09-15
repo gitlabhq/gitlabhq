@@ -250,9 +250,7 @@ export function initVueApp({
   // The root option above still matters — the vue-apollo compat shim
   // resolves a component's own `apolloProvider` option first (vue-apollo v3
   // parent-chain semantics), with the app-level install as the fallback.
-  // Under @vue/compat the vue-apollo shim installs the provider from the
-  // root option itself; the explicit install would warn as a duplicate.
-  if (apolloProvider && typeof Vue.configureCompat !== 'function') {
+  if (apolloProvider) {
     app.use(apolloProvider);
   }
 

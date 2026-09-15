@@ -3,9 +3,6 @@
 require 'spec_helper'
 
 RSpec.describe Gitlab::Git, feature_category: :source_code_management do
-  let(:committer_email) { 'user@example.org' }
-  let(:committer_name) { 'John Doe' }
-
   describe '.ref_name' do
     let(:ref) { Gitlab::Git::BRANCH_REF_PREFIX + "an_invalid_ref_\xE5" }
 

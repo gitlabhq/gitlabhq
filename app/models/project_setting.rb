@@ -12,8 +12,7 @@ class ProjectSetting < ApplicationRecord
 
   cells_claims_scope { where.not(pages_unique_domain: nil) }
 
-  cells_claims_attribute :pages_unique_domain, type: CLAIMS_CLAIM_TYPE::CLAIM_TYPE_PAGES_UNIQUE_DOMAIN,
-    feature_flag: :cells_claims_project_settings_pages_unique_domains
+  cells_claims_attribute :pages_unique_domain, type: CLAIMS_CLAIM_TYPE::CLAIM_TYPE_PAGES_UNIQUE_DOMAIN
 
   cells_claims_metadata subject_type: CLAIMS_SUBJECT_TYPE::PROJECT, subject_key: :project_id
 
@@ -22,6 +21,8 @@ class ProjectSetting < ApplicationRecord
   REVIEWER_ASSIGNMENT_STRATEGIES = {
     disabled: 0,
     code_owners: 1,
+    # Deprecated: no longer selectable, but the value still occurs in the
+    # database. Kept mapped so those rows read back as a label rather than nil.
     dap_powered: 2
   }.freeze
 
@@ -177,7 +178,7 @@ class ProjectSetting < ApplicationRecord
   end
 
   def reviewer_auto_assignment_enabled?
-    reviewer_auto_assignment_available? && reviewer_assignment_strategy != 'disabled'
+    reviewer_auto_assignment_available? && reviewer_assignment_code_owners?
   end
 
   private

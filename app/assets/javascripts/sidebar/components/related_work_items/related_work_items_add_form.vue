@@ -1,11 +1,15 @@
 <script>
-import { GlModal, GlFormGroup, GlButton, GlCollapsibleListbox, GlIcon } from '@gitlab/ui';
+import { GlAlert, GlModal, GlFormGroup, GlButton, GlCollapsibleListbox, GlIcon } from '@gitlab/ui';
 import { createAlert } from '~/alert';
 import { __, s__ } from '~/locale';
+import * as Sentry from '~/sentry/sentry_browser_wrapper';
+import glFeatureFlagsMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
 import CreateWorkItemModal from '~/work_items/components/create_work_item_modal.vue';
 import WorkItemTokenInput from '~/work_items/components/shared/work_item_token_input.vue';
 import { CREATION_CONTEXT_RELATED_ITEM } from '~/work_items/constants';
 import recentlyViewedWorkItemsQuery from '~/sidebar/queries/recently_viewed_work_items.query.graphql';
+import mergeRequestRelatedWorkItemsQuery from '~/sidebar/queries/merge_request_related_work_items.query.graphql';
+import createMergeRequestWorkItemRelationMutation from '~/sidebar/queries/create_merge_request_work_item_relation.mutation.graphql';
 import {
   MR_WORK_ITEM_RELATIONSHIP_TYPES,
   MR_WORK_ITEM_RELATIONSHIP_OPTIONS,
@@ -14,6 +18,7 @@ import {
 export default {
   name: 'RelatedWorkItemsAddForm',
   components: {
+    GlAlert,
     GlModal,
     GlFormGroup,
     GlButton,
@@ -22,6 +27,7 @@ export default {
     CreateWorkItemModal,
     WorkItemTokenInput,
   },
+  mixins: [glFeatureFlagsMixin()],
   props: {
     visible: {
       type: Boolean,
@@ -33,6 +39,10 @@ export default {
       required: true,
     },
     mergeRequestId: {
+      type: String,
+      required: true,
+    },
+    mergeRequestIid: {
       type: String,
       required: true,
     },
@@ -57,7 +67,7 @@ export default {
       default: () => MR_WORK_ITEM_RELATIONSHIP_OPTIONS,
     },
   },
-  emits: ['hide', 'link', 'created'],
+  emits: ['hide', 'linked', 'created'],
   modalId: 'add-related-work-item-modal',
   creationContext: CREATION_CONTEXT_RELATED_ITEM,
   i18n: {
@@ -68,6 +78,7 @@ export default {
     add: __('Add'),
     cancel: __('Cancel'),
     fetchError: s__('WorkItem|Something went wrong while fetching recently viewed items.'),
+    linkError: __('Something went wrong while linking the work item.'),
   },
   data() {
     return {
@@ -76,6 +87,8 @@ export default {
       selectedRelationship: MR_WORK_ITEM_RELATIONSHIP_TYPES.closing,
       selectedNamespace: null,
       recentlyViewedItems: [],
+      error: null,
+      isSubmitting: false,
     };
   },
   apollo: {
@@ -113,7 +126,14 @@ export default {
     },
   },
   watch: {
+    /**
+     * The form outlives a single open/close cycle, so the error is cleared in
+     * both directions. A request that fails after the user closes the modal
+     * must not greet them the next time they open it.
+     */
     visible(newVal) {
+      this.error = null;
+
       if (!newVal) {
         this.workItemsToAdd = [];
       }
@@ -124,15 +144,107 @@ export default {
       this.$emit('hide');
     },
     handleAdd() {
-      this.$emit('link', {
-        workItems: this.workItemsToAdd,
-        linkType: this.selectedRelationship,
-      });
+      this.linkWorkItems(this.workItemsToAdd);
     },
     handleSelectItem(item) {
-      this.$emit('link', {
-        workItems: [item],
-        linkType: this.selectedRelationship,
+      this.linkWorkItems([item]);
+    },
+    /**
+     * The error is shown in the modal rather than in a page alert, so it stays
+     * next to the selection the user has to correct before they retry.
+     */
+    async linkWorkItems(workItems) {
+      if (this.isSubmitting) {
+        return;
+      }
+
+      this.error = null;
+      this.isSubmitting = true;
+
+      try {
+        const { data } = await this.$apollo.mutate({
+          mutation: createMergeRequestWorkItemRelationMutation,
+          variables: {
+            projectPath: this.fullPath,
+            iid: this.mergeRequestIid,
+            workItemIds: workItems.map((item) => item.id),
+            linkType: this.selectedRelationship,
+          },
+          update: (cache, { data: result }) => this.updateRelationsCache(cache, result),
+        });
+
+        const errors = data?.mergeRequestCreateWorkItemRelations?.errors || [];
+        if (errors.length) {
+          this.error = errors.join(' ');
+          return;
+        }
+
+        this.$emit('linked', { count: workItems.length });
+      } catch (error) {
+        this.error = this.$options.i18n.linkError;
+        Sentry.captureException(error);
+      } finally {
+        this.isSubmitting = false;
+      }
+    },
+    updateRelationsCache(cache, result) {
+      const created = result?.mergeRequestCreateWorkItemRelations?.workItemRelations || [];
+      if (!created.length) {
+        return;
+      }
+
+      const variables = {
+        id: this.mergeRequestId,
+        explicitMrWorkItemRelations: Boolean(this.glFeatures.explicitMrWorkItemRelations),
+      };
+
+      const existing = cache.readQuery({ query: mergeRequestRelatedWorkItemsQuery, variables });
+      if (!existing?.mergeRequest) {
+        return;
+      }
+
+      if (this.glFeatures.explicitMrWorkItemRelations) {
+        const existingNodes = existing.mergeRequest.workItemRelations?.nodes || [];
+        const existingIds = new Set(existingNodes.map((node) => node.workItem?.id));
+        const newNodes = created.filter(
+          (relation) => relation.workItem && !existingIds.has(relation.workItem.id),
+        );
+
+        cache.writeQuery({
+          query: mergeRequestRelatedWorkItemsQuery,
+          variables,
+          data: {
+            mergeRequest: {
+              ...existing.mergeRequest,
+              workItemRelations: {
+                __typename: 'MergeRequestWorkItemRelationConnection',
+                nodes: [...existingNodes, ...newNodes],
+              },
+            },
+          },
+        });
+        return;
+      }
+
+      const existingLinks = existing.mergeRequest.linkedWorkItems || [];
+      const existingIds = new Set(existingLinks.map((link) => link.workItem?.id));
+      const newLinks = created
+        .filter((relation) => relation.workItem && !existingIds.has(relation.workItem.id))
+        .map((relation) => ({
+          __typename: 'LinkedWorkItem',
+          linkType: relation.linkType,
+          workItem: relation.workItem,
+        }));
+
+      cache.writeQuery({
+        query: mergeRequestRelatedWorkItemsQuery,
+        variables,
+        data: {
+          mergeRequest: {
+            ...existing.mergeRequest,
+            linkedWorkItems: [...existingLinks, ...newLinks],
+          },
+        },
       });
     },
     openCreateModal() {
@@ -159,6 +271,16 @@ export default {
       hide-footer
       @hide="handleHide"
     >
+      <gl-alert
+        v-if="error"
+        variant="danger"
+        class="gl-mb-4"
+        data-testid="link-error"
+        @dismiss="error = null"
+      >
+        {{ error }}
+      </gl-alert>
+
       <!-- Relationship selector -->
       <gl-form-group :label="$options.i18n.relationshipLabel" class="gl-w-1/3">
         <gl-collapsible-listbox
@@ -230,6 +352,7 @@ export default {
           <gl-button
             variant="confirm"
             :disabled="!hasSelection"
+            :loading="isSubmitting"
             data-testid="add-work-item-confirm"
             @click="handleAdd"
           >

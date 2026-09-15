@@ -7,12 +7,6 @@ RSpec.describe Gitlab::Repositories::RepoType, feature_category: :source_code_ma
   let_it_be(:personal_snippet) { create(:personal_snippet, author: project.first_owner) }
   let_it_be(:project_snippet) { create(:project_snippet, project: project, author: project.first_owner) }
 
-  let(:project_path) { project.repository.full_path }
-  let(:wiki_path) { project.wiki.repository.full_path }
-  let(:design_path) { project.design_repository.full_path }
-  let(:personal_snippet_path) { "snippets/#{personal_snippet.id}" }
-  let(:project_snippet_path) { "#{project.full_path}/snippets/#{project_snippet.id}" }
-
   subject(:repo_type) { described_class.new }
 
   context 'with abstract methods' do

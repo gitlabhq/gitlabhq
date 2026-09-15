@@ -14,7 +14,7 @@ module Gitlab
 
             # Allocate next IID. This operation must be outside of transactions of pipeline creations.
             logger.instrument(:pipeline_allocate_seed_attributes, once: true) do
-              pipeline.ensure_project_iid!
+              pipeline.ensure_project_iid! unless @command.readonly?
               pipeline.ensure_ci_ref!
             end
 
@@ -55,8 +55,7 @@ module Gitlab
             Gitlab::Ci::Pipeline::Seed::Context.new(
               pipeline,
               root_variables: root_variables,
-              logger: logger,
-              suspend_options: @command.suspend_options
+              logger: logger
             )
           end
 

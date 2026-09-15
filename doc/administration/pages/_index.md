@@ -1,6 +1,6 @@
 ---
 stage: Plan
-group: Knowledge
+group: Planner Intelligence
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see <https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments>
 title: GitLab Pages administration
 ---
@@ -75,21 +75,21 @@ Before configuring Pages for wildcard domains, you must:
 
    | GitLab domain        | Pages domain        | Does it work? |
    | -------------------- | ------------------- | ------------- |
-   | `example.com`        | `example.io`        | {{< icon name="check-circle" >}} Yes |
-   | `example.com`        | `pages.example.com` | {{< icon name="dotted-circle" >}} No <sup>1</sup> |
-   | `gitlab.example.com` | `pages.example.com` | {{< icon name="check-circle" >}} Yes |
+   | `example.com`        | `example.io`        | {{< yes >}}   |
+   | `example.com`        | `pages.example.com` | {{< no >}} <sup>1</sup> |
+   | `gitlab.example.com` | `pages.example.com` | {{< yes >}}   |
 
    **Footnotes**:
 
    1. If the Pages domain is a subdomain of your GitLab instance domain,
       all deployed Pages sites can access GitLab session cookies.
 
-1. Configure a **wildcard DNS record**.
-1. Optional. Have a **wildcard certificate** for that domain if you decide to
+1. Configure a wildcard DNS record.
+1. Optional. Have a wildcard certificate for that domain if you decide to
    serve Pages under HTTPS.
 1. Optional but recommended. Enable [instance runners](../../ci/runners/_index.md)
    so that your users do not have to bring their own.
-1. For custom domains, have a **secondary IP**.
+1. For custom domains, have a secondary IP.
 
 ### Single-domain sites
 
@@ -102,21 +102,21 @@ Before configuring Pages for single-domain sites, you must:
 1. Have a domain for Pages that is not a subdomain of your GitLab instance domain.
 
    | GitLab domain        | Pages domain        | Supported |
-   | -------------------- | ------------------- | ------------- |
-   | `example.com`        | `example.io`        | {{< icon name="check-circle" >}} Yes |
-   | `example.com`        | `pages.example.com` | {{< icon name="dotted-circle" >}} No <sup>1</sup> |
-   | `gitlab.example.com` | `pages.example.com` | {{< icon name="check-circle" >}} Yes |
+   | -------------------- | ------------------- | --------- |
+   | `example.com`        | `example.io`        | {{< yes >}} |
+   | `example.com`        | `pages.example.com` | {{< no >}} <sup>1</sup> |
+   | `gitlab.example.com` | `pages.example.com` | {{< yes >}} |
 
    **Footnotes**:
 
    1. If the Pages domain is a subdomain of your GitLab instance domain,
       all deployed Pages sites can access GitLab session cookies.
 
-1. Configure a **DNS record**.
-1. Optional. If you decide to serve Pages under HTTPS, have a **TLS certificate** for that domain.
+1. Configure a DNS record.
+1. Optional. If you decide to serve Pages under HTTPS, have a TLS certificate for that domain.
 1. Optional but recommended. Enable [instance runners](../../ci/runners/_index.md)
    so that your users do not have to bring their own.
-1. For custom domains, have a **secondary IP**.
+1. For custom domains, have a secondary IP.
 
 ### Add the domain to the Public Suffix List
 
@@ -135,7 +135,7 @@ added `gitlab.io` [in 2016](https://gitlab.com/gitlab-com/gl-infra/reliability/-
 
 ### DNS configuration
 
-GitLab Pages run on their own virtual host. In your DNS server or provider, add a
+GitLab Pages runs on its own virtual host. In your DNS server or provider, add a
 [wildcard DNS `A` record](https://en.wikipedia.org/wiki/Wildcard_DNS_record) pointing to the host
 that GitLab runs on. For example:
 
@@ -429,6 +429,9 @@ and take effect after you [reconfigure GitLab](../restart_gitlab.md#reconfigure-
 Most of these settings do not have to be configured manually unless you need more granular
 control over how the Pages daemon runs and serves content in your environment.
 
+For more information, see
+[GitLab Pages rate limits](rate-limits.md).
+
 | Setting                                 | Default                                               | Description |
 |-----------------------------------------|-------------------------------------------------------|-------------|
 | `pages_external_url` <sup>1</sup>       | Not applicable                                        | The URL where GitLab Pages is accessible, including protocol (HTTP / HTTPS). If `https://` is used, additional configuration is required. For more information, see [wildcard domains with TLS support](#wildcard-domains-with-tls-support) and [custom domains with TLS support](#custom-domains-with-tls-support). |
@@ -520,7 +523,7 @@ control over how the Pages daemon runs and serves content in your environment.
 ## Advanced configuration
 
 In addition to wildcard domains, you can configure GitLab Pages to work with custom domains, with
-or without TLS certificates. In either case, you need a **secondary IP**. If you have both IPv6 and
+or without TLS certificates. In either case, you need a secondary IP. If you have both IPv6 and
 IPv4 addresses, you can use them both.
 
 ### Custom domains
@@ -1344,110 +1347,13 @@ stored every time a Pages site is updated.
 
 ## Backup
 
-GitLab Pages are part of the [regular backup](../backup_restore/_index.md), so there is no
+GitLab Pages is part of the [regular backup](../backup_restore/_index.md), so there is no
 separate backup to configure.
 
 ## Security
 
 You should strongly consider running GitLab Pages under a different hostname
 than GitLab to prevent XSS attacks.
-
-### Rate limits
-
-{{< history >}}
-
-- [Changed](https://gitlab.com/groups/gitlab-org/-/work_items/14653) in GitLab 17.3: You can exclude subnets from Pages rate limits.
-
-{{< /history >}}
-
-You can enforce rate limits to help minimize the risk of a Denial of Service (DoS) attack. GitLab Pages
-uses a token bucket algorithm to enforce rate limiting. By default,
-requests or TLS connections that exceed the specified limits are reported and rejected.
-
-GitLab Pages supports the following types of rate limiting:
-
-- For each `source_ip`: Limits requests or TLS connections from a single client IP address.
-- For each `domain`: Limits requests or TLS connections per domain hosted on GitLab Pages. This can be a
-  custom domain like `example.com`, or a group domain like `group.gitlab.io`.
-
-HTTP request-based rate limits are enforced using the following settings:
-
-- `rate_limit_source_ip`: Maximum requests per client IP per second. Set to `0` to disable.
-- `rate_limit_source_ip_burst`: Maximum requests allowed in an initial burst per client IP, for
-  example when a page loads multiple resources simultaneously.
-- `rate_limit_domain`: Maximum requests per hosted Pages domain per second. Set to `0` to disable.
-- `rate_limit_domain_burst`: Maximum requests allowed in an initial burst per hosted Pages domain.
-
-TLS connection-based rate limits are enforced using the following settings:
-
-- `rate_limit_tls_source_ip`: Maximum TLS connections per client IP per second. Set to `0` to
-  disable.
-- `rate_limit_tls_source_ip_burst`: Maximum TLS connections allowed in an initial burst per client
-  IP.
-- `rate_limit_tls_domain`: Maximum TLS connections per hosted Pages domain per second. Set to `0`
-  to disable.
-- `rate_limit_tls_domain_burst`: Maximum TLS connections allowed in an initial burst per hosted
-  Pages domain.
-
-To allow certain IP ranges (subnets) to bypass all rate limits, use `rate_limit_subnets_allow_list`.
-For example, `['1.2.3.4/24', '2001:db8::1/32']`. An
-[example GitLab Pages chart](https://docs.gitlab.com/charts/charts/gitlab/gitlab-pages/#configure-rate-limits-subnets-allow-list)
-is available.
-
-If the client's IP address is IPv6, the limit is applied to the IPv6 prefix with a length of 64,
-rather than the entire address.
-
-#### Enable HTTP requests rate limits by source IP
-
-To set rate limits in `/etc/gitlab/gitlab.rb`:
-
-1. Add the following:
-
-   ```ruby
-   gitlab_pages['rate_limit_source_ip'] = 20.0
-   gitlab_pages['rate_limit_source_ip_burst'] = 600
-   ```
-
-1. Save the file and [reconfigure GitLab](../restart_gitlab.md#reconfigure-a-linux-package-installation) for the changes to take effect.
-
-#### Enable HTTP requests rate limits by domain
-
-To set rate limits in `/etc/gitlab/gitlab.rb`:
-
-1. Add:
-
-   ```ruby
-   gitlab_pages['rate_limit_domain'] = 1000
-   gitlab_pages['rate_limit_domain_burst'] = 5000
-   ```
-
-1. Save the file and [reconfigure GitLab](../restart_gitlab.md#reconfigure-a-linux-package-installation) for the changes to take effect.
-
-#### Enable TLS connections rate limits by source IP
-
-To set rate limits in `/etc/gitlab/gitlab.rb`:
-
-1. Add:
-
-   ```ruby
-   gitlab_pages['rate_limit_tls_source_ip'] = 20.0
-   gitlab_pages['rate_limit_tls_source_ip_burst'] = 600
-   ```
-
-1. Save the file and [reconfigure GitLab](../restart_gitlab.md#reconfigure-a-linux-package-installation) for the changes to take effect.
-
-#### Enable TLS connections rate limits by domain
-
-To set rate limits in `/etc/gitlab/gitlab.rb`:
-
-1. Add:
-
-   ```ruby
-   gitlab_pages['rate_limit_tls_domain'] = 1000
-   gitlab_pages['rate_limit_tls_domain_burst'] = 5000
-   ```
-
-1. Save the file and [reconfigure GitLab](../restart_gitlab.md#reconfigure-a-linux-package-installation) for the changes to take effect.
 
 ## Related topics
 

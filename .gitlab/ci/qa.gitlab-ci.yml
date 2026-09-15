@@ -219,6 +219,8 @@ e2e:test-on-cng:
   stage: qa
   needs:
     - compile-production-assets
+    - job: compile-production-assets istanbul
+      optional: true
     - e2e-test-pipeline-generate
     - job: coverage-frontend
       optional: true
@@ -226,6 +228,7 @@ e2e:test-on-cng:
     QA_RUN_TYPE: e2e-test-on-cng
     PIPELINE_NAME: E2E CNG
     DYNAMIC_PIPELINE_YML: ${CI_PROJECT_DIR}/qa/tmp/test-on-cng-pipeline.yml
+    GLCI_ISTANBUL_ASSETS_IMAGE_TAG: $GLCI_ISTANBUL_ASSETS_IMAGE_TAG
 
 e2e:perf-on-cng:
   extends:

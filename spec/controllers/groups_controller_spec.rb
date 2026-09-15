@@ -158,7 +158,7 @@ RSpec.describe GroupsController, factory_default: :keep, feature_category: :code
         sign_in(admin)
 
         allow(Gitlab::ApplicationRateLimiter).to receive(:throttled?)
-          .with(:group_download_export, scope: anything).and_return(true)
+          .with(:group_download_export, scope: [admin, group]).and_return(true)
       end
 
       it 'throttles the endpoint' do
@@ -201,6 +201,43 @@ RSpec.describe GroupsController, factory_default: :keep, feature_category: :code
         get_activity
 
         expect(json_response['count']).to eq(3)
+      end
+
+      # Guards against silent drift: the permitted list in event_projects_finder_params is
+      # hand-maintained, so a dropped or wrongly-typed key would stop filtering without error.
+      it 'forwards every permitted filter to the project finder', :aggregate_failures do
+        scalar_filters = {
+          visibility_level: '20', topic: 'topic', topic_id: '1', personal: 'true', search: 'q',
+          non_archived: 'true', archived: 'true', owned: 'true', non_public: 'true',
+          min_access_level: '30', starred: 'true', with_issues_enabled: 'true',
+          with_merge_requests_enabled: 'true', namespace_path: 'g', include_pending_delete: 'true',
+          id_after: '1', id_before: '9', marked_for_deletion_on: '2026-01-01',
+          aimed_for_deletion: 'true', not_aimed_for_deletion: 'true',
+          last_activity_after: '2026-01-01', last_activity_before: '2026-02-01',
+          repository_storage: 'default', language_name: 'Ruby', active: 'true',
+          last_repository_check_failed: 'true', with_security_reports: 'true',
+          include_hidden: 'true', duo_licensed_feature: 'x',
+          filter_expired_saml_session_projects: 'true', name: 'n',
+          minimum_search_length: '3', search_namespaces: 'true',
+          updated_before: '2026-02-01', updated_after: '2026-01-01'
+        }
+        array_filters = {
+          full_paths: ['g/p'], plans: ['ultimate'], feature_available: ['x'],
+          custom_attributes: { 'k' => 'v' }
+        }
+
+        captured = nil
+        allow(GroupProjectsFinder).to receive(:new).and_wrap_original do |original, **kwargs|
+          captured = kwargs[:params]
+          original.call(**kwargs)
+        end
+
+        get :activity, params: { format: :json, id: group.to_param }
+                         .merge(scalar_filters).merge(array_filters)
+
+        captured = captured.to_h.symbolize_keys
+        scalar_filters.each { |key, value| expect(captured[key]).to eq(value) }
+        array_filters.each { |key, value| expect(captured[key]).to eq(value) }
       end
     end
   end

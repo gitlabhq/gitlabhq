@@ -184,23 +184,23 @@ RSpec.describe Feature, :clean_gitlab_redis_feature_flag, stub_feature_flags: fa
       it 'returns true when feature name is a string' do
         described_class.enable('foo')
 
-        expect(described_class.persisted_name?('foo')).to eq(true)
+        expect(described_class.persisted_name?('foo')).to be(true)
       end
 
       it 'returns true when feature name is a symbol' do
         described_class.enable('foo')
 
-        expect(described_class.persisted_name?(:foo)).to eq(true)
+        expect(described_class.persisted_name?(:foo)).to be(true)
       end
     end
 
     context 'when the feature is not persisted' do
       it 'returns false when feature name is a string' do
-        expect(described_class.persisted_name?('foo')).to eq(false)
+        expect(described_class.persisted_name?('foo')).to be(false)
       end
 
       it 'returns false when feature name is a symbol' do
-        expect(described_class.persisted_name?(:bar)).to eq(false)
+        expect(described_class.persisted_name?(:bar)).to be(false)
       end
     end
   end
@@ -225,7 +225,7 @@ RSpec.describe Feature, :clean_gitlab_redis_feature_flag, stub_feature_flags: fa
           described_class.flipper
         end
 
-        expect(described_class.flipper.adapter.memoizing?).to eq(false)
+        expect(described_class.flipper.adapter.memoizing?).to be(false)
       end
     end
 
@@ -237,7 +237,7 @@ RSpec.describe Feature, :clean_gitlab_redis_feature_flag, stub_feature_flags: fa
         described_class.instance_variable_set(:@flipper, nil)
         described_class.flipper
 
-        expect(described_class.flipper.adapter.memoizing?).to eq(true)
+        expect(described_class.flipper.adapter.memoizing?).to be(true)
       end
     end
   end
@@ -268,7 +268,7 @@ RSpec.describe Feature, :clean_gitlab_redis_feature_flag, stub_feature_flags: fa
       end
 
       it 'returns the default value' do
-        expect(described_class.enabled?(:enabled_feature_flag)).to eq true
+        expect(described_class.enabled?(:enabled_feature_flag)).to be true
       end
 
       it 'detects self recursion' do
@@ -637,7 +637,7 @@ RSpec.describe Feature, :clean_gitlab_redis_feature_flag, stub_feature_flags: fa
         let(:default_enabled) { true }
 
         it 'reads the default from the YAML definition' do
-          expect(described_class.enabled?(:my_feature_flag)).to eq(true)
+          expect(described_class.enabled?(:my_feature_flag)).to be(true)
         end
 
         context 'and feature has been disabled' do
@@ -646,7 +646,7 @@ RSpec.describe Feature, :clean_gitlab_redis_feature_flag, stub_feature_flags: fa
           end
 
           it 'is not enabled' do
-            expect(described_class.enabled?(:my_feature_flag)).to eq(false)
+            expect(described_class.enabled?(:my_feature_flag)).to be(false)
           end
         end
 
@@ -658,7 +658,7 @@ RSpec.describe Feature, :clean_gitlab_redis_feature_flag, stub_feature_flags: fa
           it 'reads new default value' do
             allow(definition).to receive(:default_enabled).and_return(true)
 
-            expect(described_class.enabled?(:my_feature_flag)).to eq(true)
+            expect(described_class.enabled?(:my_feature_flag)).to be(true)
           end
         end
 
@@ -688,7 +688,7 @@ RSpec.describe Feature, :clean_gitlab_redis_feature_flag, stub_feature_flags: fa
               it 'checks the persisted status and returns false' do
                 expect(described_class).to receive(:with_feature).with(:non_existent_flag).and_call_original
 
-                expect(described_class.enabled?(:non_existent_flag, type: optional_type)).to eq(false)
+                expect(described_class.enabled?(:non_existent_flag, type: optional_type)).to be(false)
               end
             end
 
@@ -700,7 +700,7 @@ RSpec.describe Feature, :clean_gitlab_redis_feature_flag, stub_feature_flags: fa
               it 'returns false without checking the status in the database' do
                 expect(described_class).not_to receive(:get)
 
-                expect(described_class.enabled?(:non_existent_flag, type: optional_type)).to eq(false)
+                expect(described_class.enabled?(:non_existent_flag, type: optional_type)).to be(false)
               end
             end
           end

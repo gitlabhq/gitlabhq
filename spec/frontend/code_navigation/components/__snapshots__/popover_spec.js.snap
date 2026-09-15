@@ -55,6 +55,7 @@ exports[`Code navigation popover component renders popover 1`] = `
         class="!gl-border-t !gl-border-t-gray-300 popover-body"
       >
         <gl-button-stub
+          accessibledisabled="true"
           buttontextclasses=""
           category="primary"
           class="gl-w-full"

@@ -112,7 +112,7 @@ deploy:
   script: cap deploy
 ```
 
-But the `environment` keyword can be also expanded into another level of
+But the `environment` keyword can also be expanded into another level of
 configuration that can offer more flexibility.
 
 ```yaml
@@ -150,7 +150,7 @@ importance of metrics when doing incremental rollouts.
 Making data produced by our CI/CD platform durable is important. We recognize that
 data generated in the CI/CD by users and customers is
 something important and we must protect it. This data is not only important
-because it can contain important information, we also do have compliance and
+because it can contain important information. We also have compliance and
 auditing responsibilities.
 
 Therefore we must take extra care when we are writing migrations
@@ -178,7 +178,7 @@ could be merged sooner.
 
 ### Get your changes reviewed
 
-When your merge request is ready for reviews you must assign reviewers and then
+When your merge request is ready for review you must assign reviewers and then
 maintainers. Depending on the complexity of a change, you might want to involve
 the people that know the most about the codebase area you are changing. We do
 have many domain experts and maintainers in Verify and it is absolutely
@@ -232,17 +232,17 @@ and you have not memoized the result of a check in a single place.
 
 During one of the first GitLab Contributes events we had a discussion about the importance
 of keeping CI/CD pipeline, stage, and job statuses accurate. We considered a hypothetical
-scenario relating to a software being built by one of our [early customers](https://about.gitlab.com/blog/gitlab-adoption-growing-at-cern/):
+scenario relating to software being built by one of our [early customers](https://about.gitlab.com/blog/gitlab-adoption-growing-at-cern/):
 
-> What happens if software deployed to the [Large Hadron Collider (LHC)](https://en.wikipedia.org/wiki/Large_Hadron_Collider),
+> What happens if software deployed to the [Large Hadron Collider (LHC)](https://en.wikipedia.org/wiki/Large_Hadron_Collider)
 > breaks because of a bug in GitLab CI/CD that showed that a pipeline
 > passed, but this data was not accurate and the software deployed was actually
 > invalid? A problem like this could cause the LHC to malfunction, which
 > could generate a new particle that would then cause the universe to implode.
 
 That would be quite an undesirable outcome of a small bug in GitLab CI/CD status
-processing. Take extra care when you are working on CI/CD statuses,
-we don't want to implode our Universe!
+processing. Take extra care when you are working on CI/CD statuses.
+We don't want to implode our Universe!
 
 This is an extreme and unlikely scenario, but presenting data that is not accurate
 can potentially cause a myriad of problems through the

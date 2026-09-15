@@ -79,7 +79,7 @@ module ApplicationSettingsHelper
   end
 
   def global_search_settings_checkboxes(form)
-    [
+    checkboxes = [
       form.gitlab_ui_checkbox_component(
         :anonymous_searches_allowed,
         _("Allow unauthenticated users to use search"),
@@ -115,6 +115,16 @@ module ApplicationSettingsHelper
         checkbox_options: { checked: @application_setting.global_search_users_enabled, multiple: false }
       )
     ]
+
+    if ::Feature.enabled?(:elasticsearch_group_search, current_user)
+      checkboxes << form.gitlab_ui_checkbox_component(
+        :global_search_groups_enabled,
+        _("Show groups in global search results"),
+        checkbox_options: { checked: @application_setting.global_search_groups_enabled, multiple: false }
+      )
+    end
+
+    checkboxes
   end
 
   def default_search_scope_options_for_select
@@ -298,9 +308,11 @@ module ApplicationSettingsHelper
       :ci_delete_pipelines_in_seconds_limit_human_readable,
       :ci_job_live_trace_enabled,
       :ci_partitions_in_seconds_limit_human_readable,
+      :code_dropdown_custom_clients,
       :concurrent_github_import_jobs_limit,
       :concurrent_bitbucket_import_jobs_limit,
       :concurrent_bitbucket_server_import_jobs_limit,
+      :concurrent_pull_request_import_jobs_limit,
       :import_jobs_concurrency_limit,
       :container_expiration_policies_enable_historic_entries,
       :container_registry_expiration_policies_caching,
@@ -327,6 +339,7 @@ module ApplicationSettingsHelper
       :disable_admin_oauth_scopes,
       :disable_feed_token,
       :disable_password_authentication_for_users_with_sso_identities,
+      :block_jwt_for_reclaimed_paths,
       :root_moved_permanently_redirection,
       :disabled_oauth_sign_in_sources,
       :domain_denylist,
@@ -490,6 +503,9 @@ module ApplicationSettingsHelper
       :throttle_authenticated_git_http_enabled,
       :throttle_authenticated_git_http_period_in_seconds,
       :throttle_authenticated_git_http_requests_per_period,
+      :throttle_authenticated_dependency_proxy_enabled,
+      :throttle_authenticated_dependency_proxy_period_in_seconds,
+      :throttle_authenticated_dependency_proxy_requests_per_period,
       :throttle_authenticated_git_lfs_enabled,
       :throttle_authenticated_git_lfs_period_in_seconds,
       :throttle_authenticated_git_lfs_requests_per_period,
@@ -620,6 +636,7 @@ module ApplicationSettingsHelper
       :can_create_organization,
       :bulk_import_concurrent_pipeline_batch_limit,
       :concurrent_relation_batch_export_limit,
+      :concurrent_relation_export_limit,
       :relation_export_batch_size,
       :bulk_import_enabled,
       :bulk_import_max_download_file_size,
@@ -656,6 +673,7 @@ module ApplicationSettingsHelper
       :users_api_limit_ssh_key,
       :users_api_limit_gpg_keys,
       :users_api_limit_gpg_key,
+      :tags_create_limit,
       :web_hook_event_resend_limit,
       :web_hook_test_limit,
       :gitlab_dedicated_instance,
@@ -678,6 +696,7 @@ module ApplicationSettingsHelper
       :show_migrate_from_jenkins_banner,
       :global_search_snippet_titles_enabled,
       :global_search_users_enabled,
+      :global_search_groups_enabled,
       :global_search_work_items_enabled,
       :global_search_merge_requests_enabled,
       :global_search_block_anonymous_searches_enabled,
@@ -701,7 +720,8 @@ module ApplicationSettingsHelper
       :enforce_granular_tokens,
       :granular_tokens_enforced_after,
       :logging_field_schema_version,
-      :logging_field_dual_emit_target
+      :logging_field_dual_emit_target,
+      :auto_accept_awarded_achievements
     ].tap do |settings|
       unless Gitlab.com?
         settings << :deactivate_dormant_users

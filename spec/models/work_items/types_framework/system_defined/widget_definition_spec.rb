@@ -63,7 +63,6 @@ RSpec.describe WorkItems::TypesFramework::SystemDefined::WidgetDefinition, featu
     let(:fixed_items) { described_class.fixed_items }
     let(:issue_type) { build(:work_item_system_defined_type, :issue) }
     let(:task_type) { build(:work_item_system_defined_type, :task) }
-    let(:incident_type) { build(:work_item_system_defined_type, :incident) }
 
     it 'generates widget definitions for all work item types' do
       work_item_type_ids = ::WorkItems::TypesFramework::Provider.new.all.map(&:id)

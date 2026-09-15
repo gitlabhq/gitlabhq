@@ -61,7 +61,7 @@ For Maven packages:
 |---------------------------------------------------------------------------------------------------------------------------------------|-----------------------------|
 | [GitLab](../../maven_repository/_index.md)                                                                                            | {{< yes >}} |
 | [Maven Central](https://mvnrepository.com/repos/central)                                                                              | {{< yes >}} |
-| [Artifactory](https://jfrog.com/integration/maven-repository/)                                                                        | {{< yes >}} |
+| [Artifactory](https://jfrog.com/integrations/maven-repository/)                                                                        | {{< yes >}} |
 | [Sonatype Nexus](https://help.sonatype.com/en/maven-repositories.html)                                                                | {{< yes >}} |
 | [GitHub Packages](https://docs.github.com/en/packages/working-with-a-github-packages-registry/working-with-the-apache-maven-registry) | {{< no >}} |
 

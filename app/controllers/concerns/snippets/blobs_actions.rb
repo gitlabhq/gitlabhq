@@ -18,8 +18,12 @@ module Snippets::BlobsActions
 
   private
 
+  def ref_extractor_params
+    params.permit(:id, :ref, :path, :ref_type)
+  end
+
   def blob
-    ref_extractor = ExtractsRef::RefExtractor.new(snippet, params.permit(:id, :ref, :path, :ref_type))
+    ref_extractor = ExtractsRef::RefExtractor.new(snippet, ref_extractor_params)
     ref_extractor.extract!
     return unless ref_extractor.commit
 
@@ -42,7 +46,7 @@ module Snippets::BlobsActions
   end
 
   def snippet_id
-    params[:snippet_id]
+    params.permit(:snippet_id)[:snippet_id]
   end
 end
 

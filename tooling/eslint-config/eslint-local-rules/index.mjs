@@ -10,6 +10,7 @@ import { noMixedJestAliases } from './no_mixed_jest_aliases.mjs';
 import { pageEntrypointMustExecute } from './page_entrypoint_must_execute.mjs';
 import { noApolloMock } from './no_apollo_mock.mjs';
 import { vueNoUnusedInjects } from './vue_no_unused_injects.mjs';
+import { vueNoRouterViewListenersOrSlots } from './vue_no_router_view_listeners_or_slots.mjs';
 import { vue3FindComponentUpgrade } from './vue3_find_component_upgrade.mjs';
 import { vue3GlSlots } from './vue3_gl_slots.mjs';
 import { vue3GlSlotsMixinPairing } from './vue3_gl_slots_mixin_pairing.mjs';
@@ -33,6 +34,7 @@ export const eslintLocalRules = {
     'page-entrypoint-must-execute': pageEntrypointMustExecute,
     'no-apollo-mock': noApolloMock,
     'vue-no-unused-injects': vueNoUnusedInjects,
+    'vue-no-router-view-listeners-or-slots': vueNoRouterViewListenersOrSlots,
     'vue3-find-component-upgrade': vue3FindComponentUpgrade,
     'vue3-gl-slots': vue3GlSlots,
     'vue3-gl-slots-mixin-pairing': vue3GlSlotsMixinPairing,

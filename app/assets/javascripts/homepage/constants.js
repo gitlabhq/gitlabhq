@@ -40,10 +40,6 @@ export const GREETING_MESSAGES = [
   s__('Homepage|Come on in'),
   s__('Homepage|Small contributions beat big intentions'),
   s__('Homepage|It all started with a commit'),
-  s__('Homepage|Rebasing: still not fun'),
-  s__('Homepage|Git happens'),
-  s__('Homepage|It works on my machine'),
-  s__("Homepage|It's not a bug, it's a feature"),
 ];
 
 export const HAPPY_DAY_GREETINGS = [

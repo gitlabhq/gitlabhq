@@ -131,7 +131,7 @@ module Repositories
     def git_command
       case action_name
       when 'info_refs'
-        params[:service]
+        params.permit(:service)[:service]
       when 'ssh_upload_pack'
         'git-upload-pack'
       when 'ssh_receive_pack'

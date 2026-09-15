@@ -202,6 +202,10 @@ module QA
         enabled?(ENV['SIGNUP_DISABLED'], default: false)
       end
 
+      def running_on_dedicated?
+        enabled?(ENV['QA_RUNNING_ON_DEDICATED'], default: false)
+      end
+
       # PATs are disabled for FedRamp
       def personal_access_tokens_disabled?
         enabled?(ENV['PERSONAL_ACCESS_TOKENS_DISABLED'], default: false)

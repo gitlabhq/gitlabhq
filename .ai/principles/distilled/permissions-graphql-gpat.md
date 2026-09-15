@@ -1,6 +1,6 @@
 ---
-source_checksum: 73d062f7c41319ed
-distilled_at_sha: 403f0ba78983ea28f47a927139b91425bb93dcef
+source_checksum: af5a81372e0e22b0
+distilled_at_sha: da75f7373628b035becb13fb3f0d21b4b3d3690f
 ---
 <!-- Auto-generated from docs.gitlab.com by gitlab-ai-principles-distiller — do not edit manually -->
 
@@ -37,6 +37,7 @@ distilled_at_sha: 403f0ba78983ea28f47a927139b91425bb93dcef
 - Add a resource `.metadata.yml` only when the resource name contains an acronym, brand name, or unconventional action that titleizes or pluralizes incorrectly, or when the generated description needs a custom noun.
 - Include `<actions>` interpolation in any custom `description` field in a resource `.metadata.yml` so the action list stays in sync automatically.
 - Ensure the `boundaries` field on an assignable permission covers the union of all `boundary_type` values declared by its raw permissions' endpoints and directives; the Lefthook pre-push validation catches mismatches.
+- Use the optional `assignable_when` field to declare conditions a user must meet for the permission to be offered in the token creation UI (available conditions: `admin`, `gitlab_team_member`, `saas`, `self_managed`); every boundary listed in `assignable_when` must also appear in the permission's `boundaries` field. Note: `assignable_when` is NOT a security control — endpoints must still enforce the same conditions at request time.
 
 ### Assignable Permission Lifecycle
 
@@ -58,8 +59,7 @@ distilled_at_sha: 403f0ba78983ea28f47a927139b91425bb93dcef
 - Ensure `boundary_type` matches at least one boundary declared in the corresponding assignable permission's `boundaries` field; the Lefthook pre-push validation catches mismatches.
 - Use `skip_reason: :parent_authorizes` (alone, without `permissions:` or a boundary) on types whose data is only reachable through a parent type that already declares its own directive; valid reasons are defined in `lib/tasks/gitlab/permissions/graphql/skip_reasons.rb`.
 - DO NOT declare `permissions:` alongside `skip_reason:`; use `skip_reason:` alone on types that intentionally opt out of granular-token authorization.
-- Use `traversal: true` on entry-point fields (e.g., `Query.group(fullPath:)`, `Query.project(fullPath:)`) that resolve a boundary from a path argument but do not expose data themselves; pass it via `granular_scope_directive(traversal: true)` on the field definition. Note: `traversal: true` only applies to `project` and `group` boundary types and is not currently enforced — a field marked `traversal: true` enforces the listed permissions like any other field pending reimplementation.
-- DO NOT pass `traversal: true` to a type-level `authorize_granular_token`; use `granular_scope_directive(traversal: true)` on the field definition instead (passing it at the type level raises `ArgumentError`).
+- Ensure each `additional_scopes` entry declares its own `boundary_type` and locates its boundary using either `boundary_argument` or `boundary`; DO NOT share a `boundary_argument` value between two entries in the same `additional_scopes` list (run `bundle exec rake gitlab:permissions:validate` to catch violations before they silently deny requests with `404 Not Found`).
 
 ### Traversal Between Authorized Types
 
@@ -86,6 +86,7 @@ distilled_at_sha: 403f0ba78983ea28f47a927139b91425bb93dcef
 - Use the `'authorizing granular token permissions for GraphQL with a skipped child type'` shared example for types that declare `skip_reason: :parent_authorizes`; provide `user`, `boundary_object`, `request`, and `skipped_data_path` let-bindings.
 - Set `boundary_object` to match the `boundary_type`: `project` for `:project`, `group` for `:group`, `:user` for `:user`, `:instance` for `:instance`.
 - Ensure the `user` is a member of the `boundary_object` namespace (project or group) when the boundary type is `:project` or `:group`; authorization is denied otherwise.
+- To test a mutation that declares `additional_scopes`, pass `additional_scope_permissions:` to the shared example and define `additional_scope_requirements`; the shared example scopes the token to every boundary and adds an example asserting that a token holding only the primary boundary's scope is denied.
 - Verify that the shared example covers: legacy PATs still grant access, legacy tokens are denied when the boundary's top-level group enforces fine-grained tokens, granular PATs with the required permission grant access, granular PATs without the required permission are denied (unauthorized queries return `null` data with a `200` response; unauthorized mutations return a top-level GraphQL error), and the `granular_personal_access_tokens` feature flag is enforced.
 
 ## Authoritative sources

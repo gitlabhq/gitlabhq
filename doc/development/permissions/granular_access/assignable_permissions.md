@@ -7,7 +7,7 @@ title: Assignable Permissions
 
 ## Assignable Permissions
 
-Assignable permissions bundle one or more raw permissions into user-facing permission groups. They allow you to adjust the level of granularity presented to users, letting the product group decide whether to group permissions finely (e.g., read issue and read snippet permissions separately) or more broadly (e.g., all read work item permissions together). This maintains fine-grained control at the code level while providing a user-friendly experience in the UI.
+Assignable permissions bundle one or more raw permissions into user-facing permission groups. You can use them to adjust the level of granularity presented to users, letting the product group decide whether to group permissions finely (e.g., read issue and read snippet permissions separately) or more broadly (e.g., all read work item permissions together). This maintains fine-grained control at the code level while providing a user-friendly experience in the UI.
 
 ### Create the Assignable Permission File
 
@@ -34,6 +34,7 @@ boundaries:
 | `permissions` | Array of raw permissions included in this assignable permission (must already exist as [raw permission definition files](permission_definitions.md#permission-definition-file)) |
 | `boundaries` | List of organizational levels where the assignable permission applies |
 | `available_for` | Consumers that may use this permission: `granular_access_token` (granular PATs), `role` (standard and custom roles), or both. An assignable permission that declares `granular_access_token` must have at least one of its raw permissions referenced by a REST authorization decorator or GraphQL granular scope directive. |
+| `assignable_when` | Optional. Conditions the current user must meet for the permission to be offered in the token creation UI. See [Conditionally Assignable Permissions](#conditionally-assignable-permissions). |
 | `deprecated` | Optional. When set to `true`, hides the assignable permission from the UI so users can no longer select it when creating new tokens. Existing tokens that already have this permission continue to work. Use this during [rename migrations](#renaming-assignable-permissions) or when phasing out a permission. |
 
 ### Understanding the Directory Structure
@@ -52,7 +53,7 @@ The directory structure uses three levels: `<category>/<resource>/<action>.yml`
 
 **Category Level:** The `<category>` subfolder represents the name of the category displayed in the UI where assignable permissions are grouped. The folder name is titleized when displayed (e.g., `project_management` becomes "Project Management"). This category name is displayed in permission selection UIs, helping users organize and find permissions by functional area.
 
-Create a `.metadata.yml` file in the category folder **only if** titleization produces an incorrect display name. For example, acronyms or abbreviations that don't titleize well:
+Create a `.metadata.yml` file in the category folder only if titleization produces an incorrect display name. For example, acronyms or abbreviations that don't titleize well:
 
 ```yaml
 ---
@@ -119,9 +120,88 @@ The `boundaries` field specifies which organizational levels support this assign
 **Selecting Boundaries:**
 Review the endpoint routes in your API file or the GraphQL types and mutations you are protecting. If endpoints follow patterns like `/projects/:id/...`, include `project`. If endpoints follow `/groups/:id/...`, include `group`. For GraphQL, check the `boundary_type` declared in your directives. Only include boundaries that your endpoints actually support.
 
+### Conditionally Assignable Permissions
+
+Some endpoints are only available to certain users, for example instance-level
+audit event endpoints require administrator access, while the group-level and
+project-level endpoints of the same resource do not. Exposing such a permission
+to every user in the token creation UI adds noise without adding value.
+
+Use the optional `assignable_when` field to declare the conditions a user must
+meet for the permission to be offered in the token creation UI:
+
+```yaml
+---
+name: read_audit_event
+description: Grants the ability to read audit events
+boundaries:
+  - group
+  - project
+  - instance
+available_for:
+  - granular_access_token
+permissions:
+  - read_audit_event
+assignable_when:
+  - condition: admin
+    boundaries:
+      - instance
+```
+
+Each entry declares one `condition` and, optionally, the `boundaries` it applies
+to. When `boundaries` is omitted, the condition applies to every boundary of the
+permission. Multiple entries that apply to the same boundary must all be met.
+Every boundary listed in `assignable_when` must also appear in the permission's
+`boundaries` field.
+
+**Available conditions:**
+
+| Condition | The permission is offered when |
+|-----------|--------------------------------|
+| `admin` | The current user can access the Admin area, as an instance administrator or through a custom admin role. |
+| `gitlab_team_member` | The current user is a GitLab team member. |
+| `saas` | The instance is GitLab.com. |
+| `self_managed` | The instance is not GitLab.com. |
+
+**Effects of `assignable_when`:**
+
+- The token creation UI only offers the permission at boundaries where the
+  current user meets the conditions. In the example above, a regular user can
+  select `read_audit_event` for groups and projects, but the permission does not
+  appear in the instance-wide section. An administrator sees it everywhere.
+- Token creation, validation, documentation generation, and runtime
+  authorization are not affected. The API accepts granular scopes containing
+  the permission regardless of the conditions; calls to its endpoints fail
+  with `403 Forbidden` when the endpoint's own checks reject the user.
+  Existing tokens that already hold the permission continue to work even if
+  the owner no longer meets the conditions.
+- REST endpoints and GraphQL types, mutations, and fields declare the same
+  conditions with `assignable_when` on their
+  [authorization decorator](rest_api_implementation_guide.md#tagging-conditionally-available-endpoints)
+  or [directive](graphql_implementation_guide.md#tag-conditionally-available-types-and-mutations).
+
+The validation task checks that, for each boundary of an assignable
+permission available to granular access tokens, the YAML conditions equal
+the conditions shared by every REST endpoint and GraphQL type, mutation, or
+field using the permission at that boundary. A boundary that no endpoint or
+directive uses cannot declare conditions. Permissions listed in
+`GRANULAR_TOKEN_NON_API_CONSUMERS` in
+`lib/tasks/gitlab/permissions/assignable/validate_task.rb` are exempt
+because their consumers cannot be tagged. When you tag an endpoint or
+directive, declare the matching condition in the YAML file in the same
+merge request, and vice versa. Untagged code and permissions without
+conditions are always consistent, so untagged existing code passes
+validation unchanged.
+
+> [!warning]
+> `assignable_when` is not a security control. It only controls which
+> permissions the token creation UI offers. Endpoints must still enforce the
+> same conditions at request time (for example, with
+> `authenticated_as_admin!`).
+
 ### Important Constraints
 
-- Each raw permission included in the assignable permission **must already exist** (created as a [raw permission definition file](permission_definitions.md#permission-definition-file))
+- Each raw permission included in the assignable permission must already exist (created as a [raw permission definition file](permission_definitions.md#permission-definition-file))
 - Only raw permissions assigned to assignable permissions can be used for token authorization
 - Use consistent naming across related assignable permissions
 
@@ -138,6 +218,7 @@ The validation task enforces several constraints:
 - Assignable permissions must be at exactly: `config/authz/permission_groups/assignable_permissions/<category>/<resource>/<action>.yml`
 - No extra directories allowed between the base path and the final filename
 - Each REST API route's `boundary_type` and each GraphQL directive's `boundary_type` must match at least one boundary in the assignable permission's `boundaries` field (e.g., if a route or directive declares `boundary_type: :project`, the assignable permission must include `project` in its boundaries)
+- The YAML `assignable_when` conditions for each boundary must match the tags on the REST endpoints and GraphQL declarations that use the permission there (see Conditionally Assignable Permissions above)
 
 ### Maintaining Assignable Permissions
 
@@ -147,7 +228,7 @@ Assignable permissions might need changes over time. This section covers common 
 
 Understanding how tokens store and resolve permissions is essential before making changes.
 
-Tokens store **assignable permission names** (not raw permissions) in the database. At request time, the system dynamically resolves these names to raw permissions using the current YAML definitions. This means changes to YAML files take effect immediately for all existing tokens without requiring a migration.
+Tokens store assignable permission names (not raw permissions) in the database. At request time, the system dynamically resolves these names to raw permissions using the current YAML definitions. This means changes to YAML files take effect immediately for all existing tokens without requiring a migration.
 
 This is implemented in `app/models/authz/granular_scope.rb`:
 
@@ -169,13 +250,13 @@ Adding a new assignable permission is safe. New YAML files are automatically dis
 
 #### Removing assignable permissions
 
-Removing an assignable permission is a **breaking change**. Tokens created with that assignable permission lose all API access the included raw permissions granted, because `Assignable.get(p)` returns `nil` for the removed name.
+Removing an assignable permission is a breaking change. Tokens created with that assignable permission lose all API access the included raw permissions granted, because `Assignable.get(p)` returns `nil` for the removed name.
 
 Only remove assignable permissions when the underlying API functionality is also being removed.
 
 #### Renaming assignable permissions
 
-Renaming an assignable permission is a **breaking change**. Tokens created with the old name lose access because the stored name no longer matches any YAML definition.
+Renaming an assignable permission is a breaking change. Tokens created with the old name lose access because the stored name no longer matches any YAML definition.
 
 This requires a three-step process:
 
@@ -268,7 +349,7 @@ Only add raw permissions when adding support for new API endpoints. Add the raw 
 
 #### Removing raw permissions from an assignable permission
 
-Removing raw permissions from an assignable permission is a **breaking change**. Tokens with that assignable permission immediately lose access that the removed raw permissions granted.
+Removing raw permissions from an assignable permission is a breaking change. Tokens with that assignable permission immediately lose access that the removed raw permissions granted.
 
 This can be mitigated by using the `rename_granular_scope_permission` migration to replace the old assignable permission with a combination of the old permission (minus the removed raw permissions) and a new assignable permission that includes the moved raw permissions.
 
@@ -277,7 +358,7 @@ This can be mitigated by using the `rename_granular_scope_permission` migration 
 
 #### Changing the boundary type of an endpoint or directive
 
-Changing the `boundary_type` of a REST API `route_setting` or GraphQL `authorize_granular_token` directive can be a **breaking change** for existing tokens.
+Changing the `boundary_type` of a REST API `route_setting` or GraphQL `authorize_granular_token` directive can be a breaking change for existing tokens.
 
 The `boundaries` field on an assignable permission must cover the union of all `boundary_type` values declared by its raw permissions' endpoints and directives. You don't change assignable permission boundaries directly - they change as a consequence of endpoints adding or changing their `boundary_type`, or raw permissions being added to or removed from the assignable permission. The Lefthook pre-push validation catches any mismatches.
 
@@ -285,7 +366,7 @@ Tokens store granular scopes as a combination of a boundary (namespace) and assi
 
 **Changing between `project` and `group`** is safe. Because projects belong to groups, a token with a group-bound granular scope also covers projects within that group, and a project-bound scope is unaffected by group endpoints.
 
-**Changing to or from `user` or `instance`** (e.g., from `project` to `instance`) is a **breaking change**. Tokens created with a project-bound granular scope for that permission no longer have access. The token holder would need to create a new scope at the new boundary.
+**Changing to or from `user` or `instance`** (e.g., from `project` to `instance`) is a breaking change. Tokens created with a project-bound granular scope for that permission no longer have access. The token holder would need to create a new scope at the new boundary.
 
 #### Renaming raw permissions used in API authorization
 

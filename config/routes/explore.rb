@@ -25,8 +25,6 @@ namespace :explore do
   end
   resources :snippets, only: [:index]
 
-  resources :analytics_dashboards, path: 'analytics_dashboards(/*vueroute)', only: [:index]
-
   root to: 'projects#index'
 end
 

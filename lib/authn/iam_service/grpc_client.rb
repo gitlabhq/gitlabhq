@@ -45,8 +45,20 @@ module Authn
         reject_consent_challenge: ::Gitlab::Iam::Auth::V1::ConsentServiceRejectRequest,
         create_oauth_application: ::Gitlab::Iam::Auth::V1::InternalOAuthClientsServiceCreateClientRequest,
         get_oauth_application: ::Gitlab::Iam::Auth::V1::InternalOAuthClientsServiceGetClientRequest,
-        delete_oauth_application: ::Gitlab::Iam::Auth::V1::InternalOAuthClientsServiceDeleteClientRequest
+        delete_oauth_application: ::Gitlab::Iam::Auth::V1::InternalOAuthClientsServiceDeleteClientRequest,
+        upsert_oauth_application: ::Gitlab::Iam::Auth::V1::InternalOAuthClientsServiceUpsertClientRequest
       }.freeze
+
+      # Only RequestError carries a machine-readable reason; anything else falls back to the class name.
+      def self.error_label(error)
+        return error.reason.to_s if error.is_a?(RequestError)
+
+        error.class.name
+      end
+
+      def initialize(timeout: nil)
+        @timeout = timeout || TIMEOUT_SECONDS
+      end
 
       def health(**kwargs)
         call(:health, kwargs)
@@ -80,6 +92,10 @@ module Authn
         call(:delete_oauth_application, kwargs)
       end
 
+      def upsert_oauth_application(**kwargs)
+        call(:upsert_oauth_application, kwargs)
+      end
+
       private
 
       def call(method_name, kwargs)
@@ -95,6 +111,7 @@ module Authn
         when :create_oauth_application then oauth_clients_stub.create_client(request, **options)
         when :get_oauth_application then oauth_clients_stub.get_client(request, **options)
         when :delete_oauth_application then oauth_clients_stub.delete_client(request, **options)
+        when :upsert_oauth_application then oauth_clients_stub.upsert_client(request, **options)
         else raise ArgumentError, "Unknown gRPC method: #{method_name}"
         end
       rescue Authn::IamAuthService::ConfigurationError => e
@@ -109,23 +126,27 @@ module Authn
       end
 
       def stub
-        build_stub(::Gitlab::Iam::Auth::V1::AuthService::Stub, grpc_address, timeout: TIMEOUT_SECONDS)
+        build_stub(::Gitlab::Iam::Auth::V1::AuthService::Stub, grpc_address, timeout: @timeout)
       end
 
       def login_stub
-        build_stub(::Gitlab::Iam::Auth::V1::LoginService::Stub, grpc_address, timeout: TIMEOUT_SECONDS)
+        build_stub(::Gitlab::Iam::Auth::V1::LoginService::Stub, grpc_address, timeout: @timeout)
       end
 
       def consent_stub
-        build_stub(::Gitlab::Iam::Auth::V1::ConsentService::Stub, grpc_address, timeout: TIMEOUT_SECONDS)
+        build_stub(::Gitlab::Iam::Auth::V1::ConsentService::Stub, grpc_address, timeout: @timeout)
       end
 
       def oauth_clients_stub
-        build_stub(::Gitlab::Iam::Auth::V1::InternalOAuthClientsService::Stub, grpc_address, timeout: TIMEOUT_SECONDS)
+        build_stub(::Gitlab::Iam::Auth::V1::InternalOAuthClientsService::Stub, grpc_address, timeout: @timeout)
       end
 
       def grpc_address
         Authn::IamAuthService.grpc_address
+      end
+
+      def secure_transport?
+        Authn::IamAuthService.grpc_secure?
       end
 
       def metadata

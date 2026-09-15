@@ -5,7 +5,7 @@ class CreateProjectPushRules < Gitlab::Database::Migration[2.3]
   milestone '18.6'
 
   def up
-    create_table :project_push_rules, if_not_exists: true do |t|
+    create_table :project_push_rules, if_not_exists: true do |t| # rubocop:disable Migration/EnsureFactoryForTable -- factory removed with the model; table dropped in https://gitlab.com/gitlab-org/gitlab/-/merge_requests/250405
       t.timestamps_with_timezone null: false
 
       t.bigint :project_id, null: false

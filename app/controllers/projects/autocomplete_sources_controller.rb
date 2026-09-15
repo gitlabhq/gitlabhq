@@ -16,7 +16,7 @@ class Projects::AutocompleteSourcesController < Projects::ApplicationController
   urgency :low, [:issues, :labels, :milestones, :commands, :contacts]
 
   def members
-    render json: ::Projects::ParticipantsService.new(@project, current_user, params).execute(target)
+    render json: ::Projects::ParticipantsService.new(@project, current_user, participants_params).execute(target)
   end
 
   def issues
@@ -53,6 +53,20 @@ class Projects::AutocompleteSourcesController < Projects::ApplicationController
 
   private
 
+  # ParticipantsService#mentioned_users reads :mentioned to keep already-@-mentioned
+  # users in the payload, so it must be permitted alongside :search.
+  def participants_params
+    params.permit(:search, mentioned: [])
+  end
+
+  def work_item_type_params
+    params.permit(:work_item_type_id)
+  end
+
+  def type_id_param
+    params.permit(:type_id)[:type_id]
+  end
+
   def issuable_serializer
     ::Autocomplete::IssuableSerializer.new
   end
@@ -61,8 +75,13 @@ class Projects::AutocompleteSourcesController < Projects::ApplicationController
     @autocomplete_service ||= ::Projects::AutocompleteService.new(
       @project,
       current_user,
-      params.merge(organization_id: Current.organization.id)
+      autocomplete_service_params.merge(organization_id: Current.organization.id)
     )
+  end
+
+  # AutocompleteService reads :search; :organization_id is injected above.
+  def autocomplete_service_params
+    params.permit(:search)
   end
 
   def target
@@ -72,8 +91,8 @@ class Projects::AutocompleteSourcesController < Projects::ApplicationController
     # TODO https://gitlab.com/gitlab-org/gitlab/-/issues/388541
     # type_id is a misnomer. QuickActions::TargetService actually requires an iid.
     QuickActions::TargetService
-      .new(container: project, current_user: current_user, params: params)
-      .execute(target_type, params[:type_id])
+      .new(container: project, current_user: current_user, params: work_item_type_params)
+      .execute(target_type, type_id_param)
   end
 
   def authorize_read_crm_contact!

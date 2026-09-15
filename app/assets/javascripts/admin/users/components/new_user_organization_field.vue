@@ -1,14 +1,11 @@
 <script>
-import { GlAvatarLabeled } from '@gitlab/ui';
 import OrganizationSelect from '~/vue_shared/components/entity_select/organization_select.vue';
-import { AVATAR_SHAPE_OPTION_RECT } from '~/vue_shared/constants';
 import { s__ } from '~/locale';
 import organizationsQuery from '~/organizations/shared/graphql/queries/organizations.query.graphql';
-import OrganizationRoleField from './organization_role_field.vue';
+import OrganizationUserTypeField from './organization_user_type_field.vue';
 
 export default {
   name: 'NewUserOrganizationField',
-  AVATAR_SHAPE_OPTION_RECT,
   organizationsQuery,
   organizationInputId: 'user_organization_id',
   organizationUserInputId: 'user_organization_users_id',
@@ -16,7 +13,7 @@ export default {
   i18n: {
     organizationSelectLabel: s__('Organization|Select an organization'),
   },
-  components: { GlAvatarLabeled, OrganizationSelect, OrganizationRoleField },
+  components: { OrganizationSelect, OrganizationUserTypeField },
   props: {
     hasMultipleOrganizations: {
       type: Boolean,
@@ -38,7 +35,7 @@ export default {
       required: false,
       default: 'user[organization_id]',
     },
-    organizationRoleInputName: {
+    organizationUserTypeInputName: {
       type: String,
       required: false,
       default: undefined,
@@ -82,26 +79,16 @@ export default {
         <span class="gl-sr-only">{{ $options.i18n.organizationSelectLabel }}</span>
       </template>
     </organization-select>
-    <div v-else>
-      <gl-avatar-labeled
-        class="gl-mb-5"
-        :entity-id="initialOrganization.id"
-        :entity-name="initialOrganization.name"
-        :label="initialOrganization.name"
-        :shape="$options.AVATAR_SHAPE_OPTION_RECT"
-        :size="48"
-        :src="initialOrganization.avatarUrl"
-      />
-      <input
-        :id="$options.organizationInputId"
-        :name="organizationInputName"
-        :value="initialOrganization.id"
-        type="hidden"
-      />
-    </div>
-    <organization-role-field
+    <input
+      v-else
+      :id="$options.organizationInputId"
+      :name="organizationInputName"
+      :value="initialOrganization.id"
+      type="hidden"
+    />
+    <organization-user-type-field
       :initial-access-level="organizationUser.accessLevel"
-      :input-name="organizationRoleInputName"
+      :input-name="organizationUserTypeInputName"
     />
   </div>
 </template>

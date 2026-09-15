@@ -22,7 +22,10 @@ module Pages
 
         domain = project.pages_domains.create(params)
 
-        publish_event(domain) if domain.persisted?
+        if domain.persisted?
+          publish_event(domain)
+          log_audit_event(domain, 'created')
+        end
 
         domain
       end

@@ -11,7 +11,7 @@ Check for JSON serialization/injection vulnerabilities.
 
 ## Remediation
 
-JSON injection is an attack technique used to manipulate or compromise the logic of a JSON application or service. The injection of unintended JSON content and/or structures into an JSON message can alter the intend logic of the application. Further, JSON injection can cause the insertion of malicious content into the resulting message/document.
+JSON injection is an attack technique used to manipulate or compromise the logic of a JSON application or service. The injection of unintended JSON content and/or structures into a JSON message can alter the intended logic of the application. Further, JSON injection can cause the insertion of malicious content into the resulting message/document.
 
 ## Links
 

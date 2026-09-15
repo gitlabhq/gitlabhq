@@ -105,6 +105,13 @@ export const EDITING_MODE_KEY = 'gl-markdown-editor-mode';
 export const EDITING_MODE_MARKDOWN_FIELD = 'markdownField';
 export const EDITING_MODE_CONTENT_EDITOR = 'contentEditor';
 
+// The mode values above are persisted in localStorage under EDITING_MODE_KEY, so they
+// cannot be renamed. This maps them to the kebab-case events MarkdownEditor emits.
+export const EDITING_MODE_EVENTS = {
+  [EDITING_MODE_MARKDOWN_FIELD]: 'markdown-field',
+  [EDITING_MODE_CONTENT_EDITOR]: 'content-editor',
+};
+
 export const CLEAR_AUTOSAVE_ENTRY_EVENT = 'markdown_clear_autosave_entry';
 export const CONTENT_EDITOR_READY_EVENT = 'content_editor_ready';
 export const CONTENT_EDITOR_PASTE = 'content_editor_paste';

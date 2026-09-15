@@ -9,6 +9,7 @@ available_for:
 permissions:
   - clone_issue
   - create_work_item
+  - create_custom_field
   - create_epic
   - create_epic_award_emoji
   - create_epic_discussion
@@ -26,6 +27,7 @@ permissions:
   - create_issue_link
   - create_issue_note
   - create_issue_note_award_emoji
+  - create_iteration
   - create_iteration_cadence
   - create_merge_request_award_emoji
   - create_merge_request_note
@@ -33,9 +35,13 @@ permissions:
   - create_milestone
   - create_note
   - create_related_epic_link
+  - create_requirement
   - create_snippet_award_emoji
   - create_snippet_discussion
   - create_snippet_discussion_note
   - create_snippet_note
   - create_snippet_note_award_emoji
+  - create_test_case
   - create_wiki_page_meta_note
+  - create_work_item_lifecycle
+  - create_work_item_type

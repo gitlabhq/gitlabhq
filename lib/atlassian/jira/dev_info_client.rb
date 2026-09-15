@@ -152,8 +152,9 @@ module Atlassian
 
       def post(path, payload)
         uri = build_uri(path)
+        body = PayloadSanitizer.sanitize(metadata.merge(payload))
 
-        Integrations::Clients::HTTP.post(uri, headers: headers(uri), body: metadata.merge(payload).to_json)
+        Integrations::Clients::HTTP.post(uri, headers: headers(uri), body: body.to_json)
       end
 
       def delete(path)

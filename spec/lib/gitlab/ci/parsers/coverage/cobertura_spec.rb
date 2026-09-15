@@ -3,7 +3,7 @@
 require 'fast_spec_helper'
 
 RSpec.describe Gitlab::Ci::Parsers::Coverage::Cobertura do
-  let(:xml_data) { double }
+  let(:xml_data) { '<coverage></coverage>' }
   let(:coverage_report) { double }
   let(:project_path) { double }
   let(:paths) { double }
@@ -20,5 +20,15 @@ RSpec.describe Gitlab::Ci::Parsers::Coverage::Cobertura do
     expect(Gitlab::Ci::Parsers::Coverage::Documents::CoberturaDocument).to receive(:new)
 
     parse_report
+  end
+
+  context 'when the XML data is empty' do
+    let(:xml_data) { '' }
+
+    it 'skips parsing' do
+      expect(Nokogiri::XML::SAX::Parser).not_to receive(:new)
+
+      expect { parse_report }.not_to raise_error
+    end
   end
 end

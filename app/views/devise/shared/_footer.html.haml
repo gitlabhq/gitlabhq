@@ -1,14 +1,17 @@
-.footer-container.gl-w-full.gl-self-end
-  %hr.gl-m-0
-  .container.gl-py-5.gl-flex.gl-justify-between.gl-items-start
-    .gl-hidden.md:gl-flex.gl-gap-5.gl-flex-wrap
-      - unless public_visibility_restricted?
-        = link_to _("Explore"), explore_root_path
-        = link_to _("Help"), help_path
-      = link_to _("About GitLab"), promo_url
-      = link_to _("GitLab community forum"), ApplicationHelper.community_forum, target: '_blank', class: '!gl-whitespace-nowrap', rel: 'noopener noreferrer'
-    - if one_trust_enabled?
-      = render Pajamas::ButtonComponent.new(category: :tertiary, size: :small, button_options: { class: 'ot-sdk-show-settings' }) do
-        = _("Cookie Preferences")
-    = render 'devise/shared/language_switcher'
-= footer_message
+-# A single root keeps the footer links and the system footer message on one
+-# flex line, so they settle together at the bottom of the page.
+.gl-w-full.gl-self-end
+  .footer-container
+    %hr.gl-m-0
+    .container.gl-py-5.gl-flex.gl-justify-between.gl-items-start
+      .gl-hidden.md:gl-flex.gl-gap-5.gl-flex-wrap
+        - unless public_visibility_restricted?
+          = link_to _("Explore"), explore_root_path
+          = link_to _("Help"), help_path
+        = link_to _("About GitLab"), promo_url
+        = link_to _("GitLab community forum"), ApplicationHelper.community_forum, target: '_blank', class: '!gl-whitespace-nowrap', rel: 'noopener noreferrer'
+      - if one_trust_enabled?
+        = render Pajamas::ButtonComponent.new(category: :tertiary, size: :small, button_options: { class: 'ot-sdk-show-settings' }) do
+          = _("Cookie Preferences")
+      = render 'devise/shared/language_switcher'
+  = footer_message

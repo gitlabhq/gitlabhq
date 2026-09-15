@@ -1,0 +1,20 @@
+---
+key_path: counts.count_total_sort_markdown_table_column_monthly
+description: Monthly count of markdown table column sorts
+product_group: planner_intelligence
+product_categories:
+  - markdown
+performance_indicator_type: []
+value_type: number
+status: active
+milestone: '19.4'
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/252187
+time_frame: 28d
+data_source: internal_events
+data_category: optional
+tiers:
+  - free
+  - premium
+  - ultimate
+events:
+  - name: sort_markdown_table_column

@@ -32,7 +32,7 @@ You should ban a user when you want to block them from the group.
 
 A banned user:
 
-- Cannot access the group or any of repositories.
+- Cannot access the group or any of its repositories.
 - Cannot use [slash commands](../project/integrations/gitlab_slack_application.md#slash-commands).
 - Does not occupy a [seat](../free_user_limit.md).
 

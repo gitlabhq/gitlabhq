@@ -80,6 +80,101 @@ RSpec.describe ProjectExportJob, feature_category: :importers, type: :model do
         )
       end
     end
+
+    describe '.started_and_not_timed_out' do
+      let_it_be(:fresh_started_job) { create(:project_export_job, :started) }
+      let_it_be(:stale_started_job) do
+        stale_at = (StuckExportJobsWorker::EXPORT_JOBS_EXPIRATION + 1.minute).ago
+        create(:project_export_job, :started, updated_at: stale_at)
+      end
+
+      let_it_be(:queued_job) { create(:project_export_job, :queued) }
+
+      it 'returns started jobs updated within the expiration window' do
+        expect(described_class.started_and_not_timed_out).to contain_exactly(fresh_started_job)
+      end
+    end
+
+    describe '.queued_and_not_timed_out' do
+      let_it_be(:fresh_queued_job) { create(:project_export_job, :queued) }
+      let_it_be(:stale_queued_job) { create(:project_export_job, :queued, updated_at: 31.minutes.ago) }
+      let_it_be(:started_job) { create(:project_export_job, :started) }
+
+      it 'returns queued jobs updated within the given timeout' do
+        expect(described_class.queued_and_not_timed_out(30.minutes)).to contain_exactly(fresh_queued_job)
+      end
+    end
+  end
+
+  describe '#next_in_queue?' do
+    let_it_be(:project) { create(:project) }
+
+    let(:timeout) { 30.minutes }
+    let(:current_time) { Time.current }
+
+    around do |example|
+      travel_to(current_time) { example.run }
+    end
+
+    context 'when available_capacity is exactly at the boundary' do
+      let!(:started_job) { create(:project_export_job, :started, project: project) }
+      let!(:queued_job) { create(:project_export_job, :queued, project: project) }
+
+      it 'returns false when the limit is already fully occupied' do
+        expect(queued_job.next_in_queue?(limit: 1, timeout: timeout)).to be(false)
+      end
+
+      it 'returns true when a slot is available' do
+        expect(queued_job.next_in_queue?(limit: 2, timeout: timeout)).to be(true)
+      end
+    end
+
+    context 'when several queued jobs share the same updated_at' do
+      let!(:queued_jobs) do
+        Array.new(3) { create(:project_export_job, :queued, project: project, updated_at: current_time) }
+      end
+
+      it 'breaks the tie by id, admitting only the oldest ids up to the available capacity' do
+        oldest_two = queued_jobs.sort_by(&:id).first(2)
+
+        expect(queued_jobs.map { |job| job.next_in_queue?(limit: 2, timeout: timeout) }).to eq(
+          queued_jobs.map { |job| oldest_two.include?(job) }
+        )
+      end
+    end
+
+    context 'when a queued job is past its timeout' do
+      let!(:timed_out_job) do
+        create(:project_export_job, :queued, project: project, updated_at: (timeout + 1.minute).ago)
+      end
+
+      let!(:fresh_job) { create(:project_export_job, :queued, project: project) }
+
+      it 'excludes the timed-out job from the ordering pool instead of ranking it last' do
+        expect(timed_out_job.next_in_queue?(limit: 1, timeout: timeout)).to be(false)
+        expect(fresh_job.next_in_queue?(limit: 1, timeout: timeout)).to be(true)
+      end
+    end
+
+    context 'when the started and queued timeouts expire independently' do
+      let!(:timed_out_started_job) do
+        stale_at = (StuckExportJobsWorker::EXPORT_JOBS_EXPIRATION + 1.minute).ago
+        create(:project_export_job, :started, project: project, updated_at: stale_at)
+      end
+
+      let!(:timed_out_queued_job) do
+        create(:project_export_job, :queued, project: project, updated_at: (timeout + 1.minute).ago)
+      end
+
+      let!(:fresh_queued_job) { create(:project_export_job, :queued, project: project) }
+
+      it 'does not let the queued timeout affect the started scope, or vice versa' do
+        expect(described_class.started_and_not_timed_out).to be_empty
+        expect(described_class.queued_and_not_timed_out(timeout)).to contain_exactly(fresh_queued_job)
+
+        expect(fresh_queued_job.next_in_queue?(limit: 1, timeout: timeout)).to be(true)
+      end
+    end
   end
 
   describe 'status transitions' do

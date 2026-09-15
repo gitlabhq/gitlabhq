@@ -95,7 +95,7 @@ RSpec.describe API::Conan::V2::ProjectPackages, feature_category: :package_regis
 
     context 'when the limit is reached' do
       before do
-        stub_const("#{described_class}::MAX_FILES_COUNT", 1)
+        stub_const("#{described_class.name}::MAX_FILES_COUNT", 1)
       end
 
       it 'limits the number of files to MAX_FILES_COUNT' do
@@ -559,7 +559,7 @@ RSpec.describe API::Conan::V2::ProjectPackages, feature_category: :package_regis
 
       context 'when the number of files to delete is greater than the maximum allowed' do
         before do
-          stub_const("#{described_class}::MAX_FILES_COUNT", 1)
+          stub_const("#{described_class.name}::MAX_FILES_COUNT", 1)
         end
 
         it_behaves_like 'conan structured error response', status: :unprocessable_entity,
@@ -660,7 +660,7 @@ RSpec.describe API::Conan::V2::ProjectPackages, feature_category: :package_regis
 
     context 'when the max revisions count is reached' do
       before do
-        stub_const("#{described_class}::MAX_PACKAGE_REVISIONS_COUNT", 1)
+        stub_const("#{described_class.name}::MAX_PACKAGE_REVISIONS_COUNT", 1)
       end
 
       it 'limits the number of files to MAX_PACKAGE_REVISIONS_COUNT' do
@@ -1073,7 +1073,7 @@ RSpec.describe API::Conan::V2::ProjectPackages, feature_category: :package_regis
 
       context 'when the number of files to delete is greater than the maximum allowed' do
         before do
-          stub_const("#{described_class}::MAX_FILES_COUNT", 1)
+          stub_const("#{described_class.name}::MAX_FILES_COUNT", 1)
         end
 
         it_behaves_like 'conan structured error response', status: :unprocessable_entity,

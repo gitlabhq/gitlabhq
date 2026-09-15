@@ -1,0 +1,10 @@
+---
+name: cap_code_completion_context
+description: Cap additional code completion context (open tabs, imports) at 2,048 tokens in the AI gateway to reduce inference costs.
+feature_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/607984
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/248955
+rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/607984
+milestone: '19.4'
+group: group::dap repository flows
+type: gitlab_com_derisk
+default_enabled: false

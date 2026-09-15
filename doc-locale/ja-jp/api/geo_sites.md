@@ -12,12 +12,6 @@ title: GeoサイトAPI
 
 {{< /details >}}
 
-{{< history >}}
-
-- GitLab 16.0で[導入](https://gitlab.com/gitlab-org/gitlab/-/issues/369140)されました。
-
-{{< /history >}}
-
 このAPIを使用して[Geoサイト](../administration/geo/_index.md)を管理します。
 
 前提条件: 
@@ -46,7 +40,7 @@ curl --header "PRIVATE-TOKEN: <your_access_token>" \
      -d "url=https://another-node.example.com/"
 ```
 
-| 属性                             | 型    | 必須 | 説明                                                                                                                                            |
+| 属性                             | タイプ    | 必須 | 説明                                                                                                                                            |
 |---------------------------------------|---------|----------|--------------------------------------------------------------------------------------------------------------------------------------------------------|
 | `primary`                             | ブール値 | いいえ       | このサイトがプライマリであるかどうかを指定します。デフォルトはfalseです。                                                                                     |
 | `enabled`                             | ブール値 | いいえ       | Geoサイトが有効になっているかどうかを示すフラグ。デフォルトはtrueです。                                                                                          |
@@ -64,7 +58,7 @@ curl --header "PRIVATE-TOKEN: <your_access_token>" \
 | `minimum_reverification_interval`     | 整数 | いいえ       | リポジトリ検証が有効である間隔（日数）。期限が切れると再検証されます。セカンダリサイトで設定した場合、これは効果がありません。 |
 | `blob_download_timeout`               | 整数 | いいえ       | blobレプリケーションのタイムアウト（秒）。デフォルトは28800です。最大は86400です。                                                                    |
 
-レスポンス例: 
+レスポンス例:
 
 ```json
 {
@@ -108,7 +102,7 @@ curl --header "PRIVATE-TOKEN: <your_access_token>" \
      --url "https://primary.example.com/api/v4/geo_sites"
 ```
 
-レスポンス例: 
+レスポンス例:
 
 ```json
 [
@@ -178,7 +172,7 @@ curl --header "PRIVATE-TOKEN: <your_access_token>" \
      --url "https://primary.example.com/api/v4/geo_sites/1"
 ```
 
-レスポンス例: 
+レスポンス例:
 
 ```json
 {
@@ -221,7 +215,7 @@ curl --header "PRIVATE-TOKEN: <your_access_token>" \
 PUT /geo_sites/:id
 ```
 
-| 属性                             | 型    | 必須 | 説明                                                                                                                                            |
+| 属性                             | タイプ    | 必須 | 説明                                                                                                                                            |
 |---------------------------------------|---------|----------|--------------------------------------------------------------------------------------------------------------------------------------------------------|
 | `id`                                  | 整数 | はい      | GeoサイトのID。                                                                                                                                |
 | `enabled`                             | ブール値 | いいえ       | Geoサイトが有効になっているかどうかを示すフラグ。                                                                                                            |
@@ -238,7 +232,7 @@ PUT /geo_sites/:id
 | `minimum_reverification_interval`     | 整数 | いいえ       | リポジトリ検証が有効である間隔（日数）。期限が切れると再検証されます。セカンダリサイトで設定した場合、これは効果がありません。 |
 | `blob_download_timeout`               | 整数 | いいえ       | blobレプリケーションのタイムアウト（秒）。デフォルトは28800です。最大は86400です。                                                                    |
 
-レスポンス例: 
+レスポンス例:
 
 ```json
 {
@@ -276,7 +270,7 @@ Geoサイトを削除します。
 DELETE /geo_sites/:id
 ```
 
-| 属性 | 型    | 必須 | 説明             |
+| 属性 | タイプ    | 必須 | 説明             |
 |-----------|---------|----------|-------------------------|
 | `id`      | 整数 | はい      | GeoサイトのID。 |
 
@@ -292,7 +286,7 @@ There are no OAuth application defined for this Geo node.
 POST /geo_sites/:id/repair
 ```
 
-レスポンス例: 
+レスポンス例:
 
 ```json
 {
@@ -330,7 +324,7 @@ curl --header "PRIVATE-TOKEN: <your_access_token>" \
      --url "https://primary.example.com/api/v4/geo_sites/status"
 ```
 
-レスポンス例: 
+レスポンス例:
 
 ```json
 [
@@ -743,6 +737,19 @@ curl --header "PRIVATE-TOKEN: <your_access_token>" \
     "personal_snippet_uploads_synced_in_percentage": "0.00%",
     "personal_snippet_uploads_verified_in_percentage": "0.00%",
     "personal_snippet_uploads_oldest_unsynced_time": null,
+    "project_topic_uploads_count": 0,
+    "project_topic_uploads_checksum_total_count": 0,
+    "project_topic_uploads_checksummed_count": 0,
+    "project_topic_uploads_checksum_failed_count": 0,
+    "project_topic_uploads_synced_count": null,
+    "project_topic_uploads_failed_count": null,
+    "project_topic_uploads_registry_count": null,
+    "project_topic_uploads_verification_total_count": null,
+    "project_topic_uploads_verified_count": null,
+    "project_topic_uploads_verification_failed_count": null,
+    "project_topic_uploads_synced_in_percentage": "0.00%",
+    "project_topic_uploads_verified_in_percentage": "0.00%",
+    "project_topic_uploads_oldest_unsynced_time": null,
     "organization_detail_uploads_count": 0,
     "organization_detail_uploads_checksum_total_count": 0,
     "organization_detail_uploads_checksummed_count": 0,
@@ -782,6 +789,19 @@ curl --header "PRIVATE-TOKEN: <your_access_token>" \
 "vulnerability_remediation_uploads_synced_in_percentage": "0.00%",
 "vulnerability_remediation_uploads_verified_in_percentage": "0.00%",
 "vulnerability_remediation_uploads_oldest_unsynced_time": null,
+    "appearance_uploads_count": 0,
+    "appearance_uploads_checksum_total_count": 0,
+    "appearance_uploads_checksummed_count": 0,
+    "appearance_uploads_checksum_failed_count": 0,
+    "appearance_uploads_synced_count": null,
+    "appearance_uploads_failed_count": null,
+    "appearance_uploads_registry_count": null,
+    "appearance_uploads_verification_total_count": null,
+    "appearance_uploads_verified_count": null,
+    "appearance_uploads_verification_failed_count": null,
+    "appearance_uploads_synced_in_percentage": "0.00%",
+    "appearance_uploads_verified_in_percentage": "0.00%",
+    "appearance_uploads_oldest_unsynced_time": null,
     "git_fetch_event_count_weekly": null,
     "git_push_event_count_weekly": null,
     "proxy_remote_requests_event_count_weekly": null,
@@ -1245,6 +1265,19 @@ curl --header "PRIVATE-TOKEN: <your_access_token>" \
     "personal_snippet_uploads_synced_in_percentage": "0.00%",
     "personal_snippet_uploads_verified_in_percentage": "0.00%",
     "personal_snippet_uploads_oldest_unsynced_time": null,
+    "project_topic_uploads_count": 0,
+    "project_topic_uploads_checksum_total_count": 0,
+    "project_topic_uploads_checksummed_count": 0,
+    "project_topic_uploads_checksum_failed_count": 0,
+    "project_topic_uploads_synced_count": null,
+    "project_topic_uploads_failed_count": null,
+    "project_topic_uploads_registry_count": null,
+    "project_topic_uploads_verification_total_count": null,
+    "project_topic_uploads_verified_count": null,
+    "project_topic_uploads_verification_failed_count": null,
+    "project_topic_uploads_synced_in_percentage": "0.00%",
+    "project_topic_uploads_verified_in_percentage": "0.00%",
+    "project_topic_uploads_oldest_unsynced_time": null,
     "dependency_list_export_uploads_count": 0,
     "dependency_list_export_uploads_checksum_total_count": 0,
     "dependency_list_export_uploads_checksummed_count": 0,
@@ -1297,6 +1330,19 @@ curl --header "PRIVATE-TOKEN: <your_access_token>" \
 "vulnerability_remediation_uploads_synced_in_percentage": "0.00%",
 "vulnerability_remediation_uploads_verified_in_percentage": "0.00%",
 "vulnerability_remediation_uploads_oldest_unsynced_time": null,
+    "appearance_uploads_count": 0,
+    "appearance_uploads_checksum_total_count": 0,
+    "appearance_uploads_checksummed_count": 0,
+    "appearance_uploads_checksum_failed_count": 0,
+    "appearance_uploads_synced_count": null,
+    "appearance_uploads_failed_count": null,
+    "appearance_uploads_registry_count": null,
+    "appearance_uploads_verification_total_count": null,
+    "appearance_uploads_verified_count": null,
+    "appearance_uploads_verification_failed_count": null,
+    "appearance_uploads_synced_in_percentage": "0.00%",
+    "appearance_uploads_verified_in_percentage": "0.00%",
+    "appearance_uploads_oldest_unsynced_time": null,
     "git_fetch_event_count_weekly": 0,
     "git_push_event_count_weekly": 0,
     "proxy_remote_requests_event_count_weekly": 0,
@@ -1380,7 +1426,7 @@ curl --header "PRIVATE-TOKEN: <your_access_token>" \
      --url "https://primary.example.com/api/v4/geo_sites/2/status"
 ```
 
-レスポンス例: 
+レスポンス例:
 
 ```json
   {
@@ -1779,6 +1825,19 @@ curl --header "PRIVATE-TOKEN: <your_access_token>" \
     "personal_snippet_uploads_synced_in_percentage": "0.00%",
     "personal_snippet_uploads_verified_in_percentage": "0.00%",
     "personal_snippet_uploads_oldest_unsynced_time": null,
+    "project_topic_uploads_count": 0,
+    "project_topic_uploads_checksum_total_count": 0,
+    "project_topic_uploads_checksummed_count": 0,
+    "project_topic_uploads_checksum_failed_count": 0,
+    "project_topic_uploads_synced_count": null,
+    "project_topic_uploads_failed_count": null,
+    "project_topic_uploads_registry_count": null,
+    "project_topic_uploads_verification_total_count": null,
+    "project_topic_uploads_verified_count": null,
+    "project_topic_uploads_verification_failed_count": null,
+    "project_topic_uploads_synced_in_percentage": "0.00%",
+    "project_topic_uploads_verified_in_percentage": "0.00%",
+    "project_topic_uploads_oldest_unsynced_time": null,
     "dependency_list_export_uploads_count": 0,
     "dependency_list_export_uploads_checksum_total_count": 0,
     "dependency_list_export_uploads_checksummed_count": 0,
@@ -1831,6 +1890,19 @@ curl --header "PRIVATE-TOKEN: <your_access_token>" \
 "vulnerability_remediation_uploads_synced_in_percentage": "0.00%",
 "vulnerability_remediation_uploads_verified_in_percentage": "0.00%",
 "vulnerability_remediation_uploads_oldest_unsynced_time": null,
+    "appearance_uploads_count": 0,
+    "appearance_uploads_checksum_total_count": 0,
+    "appearance_uploads_checksummed_count": 0,
+    "appearance_uploads_checksum_failed_count": 0,
+    "appearance_uploads_synced_count": null,
+    "appearance_uploads_failed_count": null,
+    "appearance_uploads_registry_count": null,
+    "appearance_uploads_verification_total_count": null,
+    "appearance_uploads_verified_count": null,
+    "appearance_uploads_verification_failed_count": null,
+    "appearance_uploads_synced_in_percentage": "0.00%",
+    "appearance_uploads_verified_in_percentage": "0.00%",
+    "appearance_uploads_oldest_unsynced_time": null,
     "git_fetch_event_count_weekly": 0,
     "git_push_event_count_weekly": 0,
     "proxy_remote_requests_event_count_weekly": 0,

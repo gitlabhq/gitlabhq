@@ -35,6 +35,6 @@ class CreateNamespaceTraversalPathsDict < ClickHouse::Migration
   end
 
   def down
-    execute('DROP DICTIONARY namespace_traversal_paths_dict')
+    execute('DROP DICTIONARY IF EXISTS namespace_traversal_paths_dict')
   end
 end

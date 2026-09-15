@@ -9,13 +9,13 @@
 #   GitLab.com gitlab-org/gitlab-foss Project
 #     Master Pipeline Triggered by Push
 #     Scheduled Master Pipeline
-#     Scheduled ruby3_2 branch scheduled pipeline
 #     Stable branch pipeline
 #
 #   GitLab.com gitlab-org/gitlab Master Pipeline
 #     Default Master Pipeline Triggered by Push
 #     Scheduled pipeline - Nightly
 #     Scheduled pipeline - Maintenance
+#     Scheduled ruby-next branch pipeline
 #
 #   GitLab.com gitlab-org/security/gitlab
 #     Default Master Pipeline
@@ -38,7 +38,11 @@
 #   MR Labeled with pipeline:run-as-if-foss Changing app/models/user.rb
 #   MR Labeled with pipeline:force-run-as-if-jh Changing app/models/user.rb
 #   MR Labeled with pipeline:run-as-if-jh and pipeline::tier-2 Changing app/models/user.rb
-#   MR Labeled with pipeline:run-in-ruby3_2 Changing app/models/user.rb
+#   MR Labeled with pipeline:run-with-ruby-next Changing app/models/user.rb
+#   MR Labeled with pipeline:run-in-ruby3_3 Changing app/models/user.rb
+#   Ruby version resolution (RUBY_VERSION_DEFAULT vs RUBY_VERSION_NEXT) for
+#     unlabeled, database, Community contribution, pipeline:run-with-ruby-next,
+#     and merge train MRs
 #
 # Automated MR
 #   MR Created from release-tools/update-gitaly Source Branch Changing GITALY_SERVER_VERSION

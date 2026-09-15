@@ -66,9 +66,6 @@ RSpec.describe Glql::BaseController, feature_category: :api do
   describe 'POST #execute' do
     let(:user) { create(:user, last_activity_on: 2.days.ago.to_date) }
     let(:endpoint_id) { 'Glql::BaseController#execute' }
-    let(:qlql_sli_labels) do
-      { endpoint_id: endpoint_id, feature_category: 'not_owned', query_urgency: :low }
-    end
 
     context 'with session' do
       before do
@@ -229,22 +226,6 @@ RSpec.describe Glql::BaseController, feature_category: :api do
     end
 
     context 'when GraphQL execution succeeds' do
-      let(:expected_logs) do
-        [
-          {
-            operation_name: 'GLQL',
-            complexity: 1,
-            depth: 1,
-            used_deprecated_arguments: [],
-            used_deprecated_fields: [],
-            used_fields: ['Query.__typename'],
-            variables: '{}',
-            glql_referer: 'path',
-            glql_query_sha: query_sha
-          }
-        ]
-      end
-
       before do
         # Mock the GraphQL logs that would be created by the QueryService
         RequestStore.store[:graphql_logs] = [

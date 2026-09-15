@@ -17,6 +17,60 @@ RSpec.describe Gitlab::PrinciplesDistiller::Workspace do
     FileUtils.remove_entry(tmpdir)
   end
 
+  describe '.path=' do
+    subject(:set_path) { described_class.path = workspace_path }
+
+    context 'with a relative path' do
+      let(:workspace_path) { 'relative/workspace' }
+
+      it 'stores an absolute path' do
+        set_path
+
+        expect(described_class.path).to eq(File.expand_path(workspace_path))
+      end
+    end
+
+    context 'with a path that starts with a dash' do
+      let(:workspace_path) { '-c' }
+
+      it 'stores an absolute path' do
+        set_path
+
+        expect(described_class.path).to eq(File.expand_path(workspace_path))
+        expect(described_class.path).not_to start_with('-')
+      end
+    end
+  end
+
+  describe '.path' do
+    subject(:path) { described_class.path }
+
+    before do
+      described_class.instance_variable_set(:@path, nil)
+    end
+
+    context 'with CI_PROJECT_DIR set to a relative path' do
+      let(:workspace_path) { 'relative/workspace' }
+
+      before do
+        stub_const("#{described_class}::ENV", { Gitlab::PrinciplesDistiller::Env::CI_PROJECT_DIR => workspace_path })
+      end
+
+      it { is_expected.to eq(File.expand_path(workspace_path)) }
+    end
+
+    context 'without CI_PROJECT_DIR' do
+      before do
+        stub_const("#{described_class}::ENV", {})
+      end
+
+      it 'aborts with guidance' do
+        expect { path }.to raise_error(SystemExit)
+          .and output(/workspace path not set/).to_stderr
+      end
+    end
+  end
+
   describe '.safe_join' do
     subject(:safe_join) { described_class.safe_join(*segments) }
 

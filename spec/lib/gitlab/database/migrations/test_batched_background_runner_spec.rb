@@ -422,8 +422,6 @@ RSpec.describe Gitlab::Database::Migrations::TestBatchedBackgroundRunner, :freez
         end
       end
 
-      let(:from_cursor) { [0, 0] }
-
       before do
         connection.execute(<<~SQL)
           CREATE TABLE #{table_name} (

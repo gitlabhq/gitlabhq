@@ -65,12 +65,15 @@ module Gitlab
         end
 
         def allow_webpack_dev_server(directives)
-          secure = Settings.webpack.dev_server['https']
-          host_and_port = "#{Settings.webpack.dev_server['host']}:#{Settings.webpack.dev_server['port']}"
-          http_url = "#{secure ? 'https' : 'http'}://#{host_and_port}"
-          ws_url = "#{secure ? 'wss' : 'ws'}://#{host_and_port}"
+          host = Settings.webpack.dev_server['host']
+          http_scheme = Settings.webpack.dev_server['https'] ? 'https' : 'http'
+          http_url = "#{http_scheme}://#{host}:#{Settings.webpack.dev_server['port']}"
 
-          append_to_directive(directives, 'connect_src', "#{http_url} #{ws_url}")
+          # Some local setups (e.g. GDK with rspack behind a reverse proxy) serve the dev
+          # server's HMR websocket on a different, proxied port than the configured one,
+          # possibly with TLS added by the proxy, so allow any port (and ws/wss scheme)
+          # on the dev server host.
+          append_to_directive(directives, 'connect_src', "#{http_url} ws://#{host}:* wss://#{host}:*")
         end
 
         def allow_vite_dev_server(directives)

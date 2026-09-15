@@ -55,6 +55,11 @@ title: Database development guidelines
 - [Int range (deprecated)](partitioning/int_range.md)
 - [List](partitioning/list.md)
 
+## Database growth control
+
+- [Overview](database_growth_control/_index.md)
+- [Data retention policy](database_growth_control/data_retention_policy.md)
+
 ## Debugging
 
 - [Accessing the database](database_debugging.md#manually-access-the-database)

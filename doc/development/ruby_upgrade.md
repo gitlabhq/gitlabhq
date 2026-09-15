@@ -252,17 +252,17 @@ For GitLab.com, GitLab team members can inspect these log events in Kibana
 
 During the upgrade process, consider the following recommendations:
 
-- **Front-load as many changes as possible.** Especially for minor and major releases, it is likely that application
+- Front-load as many changes as possible. Especially for minor and major releases, it is likely that application
   code will break or change. Any changes that are backward compatible should be merged into the main branch and
   released independently ahead of the Ruby version upgrade. This ensures that we move in small increments and
   get feedback from production environments early.
-- **Create an experimental branch for larger updates.** We generally try to avoid long-running topic branches,
+- Create an experimental branch for larger updates. We generally try to avoid long-running topic branches,
   but for purposes of feedback and experimentation, it can be useful to have such a branch to get regular
   feedback from CI/CD when running a newer Ruby. This can be helpful when first assessing what problems
   we might run into, as [this MR](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/50640) demonstrates.
   These experimental branches are not intended to be merged; they can be closed once all required changes have been broken out
   and merged back independently.
-- **Give yourself enough time to fix problems ahead of a milestone release.** GitLab moves fast.
+- Give yourself enough time to fix problems ahead of a milestone release. GitLab moves fast.
   As a Ruby upgrade requires many MRs to be sent and reviewed, make sure all changes are merged at least a week
   before release day. This gives us extra time to act if something breaks. If in doubt, it is better to
   postpone the upgrade to the following month, as we [prioritize availability over velocity](https://handbook.gitlab.com/handbook/engineering/development/principles/#prioritizing-technical-decisions).

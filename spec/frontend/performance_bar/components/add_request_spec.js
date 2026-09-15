@@ -51,8 +51,8 @@ describe('add request form', () => {
       });
 
       it('emits an event to add the request', () => {
-        expect(wrapper.emitted()['add-request']).toHaveLength(1);
-        expect(wrapper.emitted()['add-request'][0]).toEqual([
+        expect(wrapper.emitted('add-request')).toHaveLength(1);
+        expect(wrapper.emitted('add-request')[0]).toEqual([
           'http://gitlab.example.com/users/root/calendar.json',
         ]);
       });

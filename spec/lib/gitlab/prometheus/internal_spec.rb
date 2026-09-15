@@ -63,7 +63,7 @@ RSpec.describe Gitlab::Prometheus::Internal do
 
   describe '.prometheus_enabled?' do
     it 'returns correct value' do
-      expect(described_class.prometheus_enabled?).to eq(true)
+      expect(described_class.prometheus_enabled?).to be(true)
     end
 
     context 'when prometheus setting is disabled in gitlab.yml' do
@@ -75,7 +75,7 @@ RSpec.describe Gitlab::Prometheus::Internal do
       end
 
       it 'returns correct value' do
-        expect(described_class.prometheus_enabled?).to eq(false)
+        expect(described_class.prometheus_enabled?).to be(false)
       end
     end
 
@@ -85,7 +85,7 @@ RSpec.describe Gitlab::Prometheus::Internal do
       end
 
       it 'does not fail' do
-        expect(described_class.prometheus_enabled?).to eq(false)
+        expect(described_class.prometheus_enabled?).to be(false)
       end
     end
   end

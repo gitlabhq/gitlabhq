@@ -1264,7 +1264,7 @@ RSpec.describe SearchHelper, :with_current_organization, feature_category: :glob
 
       it 'returns items in order' do
         expect(Gitlab::Json.safe_parse(search_navigation_json).keys)
-          .to eq(%w[projects blobs work_items merge_requests wiki_blobs commits notes milestones users snippet_titles])
+          .to eq(%w[projects groups blobs work_items merge_requests wiki_blobs commits notes milestones users snippet_titles])
       end
     end
   end

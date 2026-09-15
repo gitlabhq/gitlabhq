@@ -2,7 +2,7 @@
 
 require 'fast_spec_helper'
 
-RSpec.describe Gitlab::Diff::FileCollectionSorter do
+RSpec.describe Gitlab::Diff::FileCollectionSorter, feature_category: :code_review_workflow do
   let(:diffs) do
     [
       double(new_path: 'README', old_path: 'README'),

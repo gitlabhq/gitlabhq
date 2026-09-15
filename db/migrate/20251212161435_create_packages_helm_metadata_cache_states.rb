@@ -11,7 +11,7 @@ class CreatePackagesHelmMetadataCacheStates < Gitlab::Database::Migration[2.3]
   FOREIGN_KEY_INDEX_NAME = "idx_pkgs_helm_metadata_cache_states_on_helm_metadata_cache_id"
 
   def up
-    create_table :packages_helm_metadata_cache_states do |t| # rubocop:disable Migration/EnsureFactoryForTable,Lint/RedundantCopDisableDirective -- TBA in followup MR
+    create_table :packages_helm_metadata_cache_states do |t|
       t.datetime_with_timezone :verification_started_at
       t.datetime_with_timezone :verification_retry_at
       t.datetime_with_timezone :verified_at

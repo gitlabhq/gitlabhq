@@ -139,6 +139,44 @@ existing feature that needs to allow moving data you will need to reach out to
 the Tenant Scale team early on to discuss options for how to manage the
 sharding key.
 
+### When the sharding key value comes from a parent table
+
+Before you add a direct foreign key from a new sharding key column to its
+target table (`projects`, `namespaces`, `organizations`, or `users`), check
+whether the table already references a parent table that carries the same
+sharding key. If it does, populate the sharding key from that parent using
+[`desired_sharding_key.backfill_via.parent`](#define-a-desired_sharding_key-configuration)
+and rely on the parent's foreign key. The column is still a normal sharding key
+and keeps all other requirements, like the `NOT NULL` constraint and
+immutability. Only the duplicate foreign key is omitted.
+
+A duplicate foreign key can break upgrades. When the parent's own reference to
+the target table is maintained by a
+[loose foreign key](../../database/loose_foreign_keys.md), cleanup is eventually
+consistent, so a parent row can validly reference a row that is already deleted.
+A backfill that copies that value into a column protected by a hard foreign key
+fails with a foreign key violation, which blocks the upgrade
+([issue 605940](https://gitlab.com/gitlab-org/gitlab/-/issues/605940)).
+
+Duplicate foreign keys also accumulate on the target tables, which makes lock
+contention worse for migrations
+([issue 599943](https://gitlab.com/gitlab-org/gitlab/-/issues/599943)).
+
+Add a direct foreign key to the target table only when:
+
+- The table has no parent that already carries the sharding key, or
+- The direct reference is intentionally a different entity than the one
+  reachable through the parent (for example, cross-namespace sharing targets,
+  template projects, custom-template namespaces, or mirror sources). In this
+  case the direct foreign key is meaningful denormalization and should stay.
+
+These requirements are enforced by
+`spec/lib/gitlab/organizations/sharding_key_spec.rb`, which requires a direct
+foreign key by default. When the sharding key value comes from a parent table
+that the table already references with a foreign key or loose foreign key to the
+same target, the spec detects the parent chain and waives the direct foreign key
+requirement for you. You do not need to add the column to an exception list.
+
 ### Using `namespace_id` as sharding key
 
 The `namespaces` table has rows that can refer to a `Group`, a `ProjectNamespace`,
@@ -187,8 +225,8 @@ a sharding key to an existing table.
 
 When you add a new table or modify an existing table to be sharded by `organization_id`, you must:
 
-1. **Add transfer service support**: Update records' `organization_id` when a group or users transfer to a new organization.
-1. **Use common organization in factories**: Ensure RSpec factories automatically associate with the common organization. See the after build block in the Namespaces factory.
+1. Add transfer service support. Update records' `organization_id` when a group or users transfer to a new organization.
+1. Use common organization in factories. Ensure RSpec factories automatically associate with the common organization. See the after build block in the Namespaces factory.
 
 ## Cross-schema references
 
@@ -199,8 +237,8 @@ Cross schema references are not allowed, in general.
 
 When an organization moves to a different cell, all its data stored in organization-level tables must be transferred. This means:
 
-1. **Organization data cannot depend on cell-local data** unless that dependency is consistent or self-healing.
-1. **Cell-local data can reference organization data** because organization data is stable and moves with the organization.
+- Organization data cannot depend on cell-local data unless that dependency is consistent or self-healing.
+- Cell-local data can reference organization data because organization data is stable and moves with the organization.
 
 ### Acceptable patterns
 
@@ -706,7 +744,10 @@ When you omit a foreign key for this reason, add the column to `allowed_to_be_mi
    during organization transfers (when users or groups move between organizations).
    - Set to `supported` if you've implemented the transfer logic in one of the transfer services
      at `{,ee/}app/services/**/organizations/transfer/*_service.rb`.
-   - Set to `todo` if the table needs transfer support but doesn't have it yet (only for existing tables - new tables must be `supported`)
+   - Set to `no_work_needed` if the table requires no changes for organization transfers.
+   - For existing tables where transfer support is not yet implemented, set to a tracking issue
+     URL in the format `https://gitlab.com/gitlab-org/gitlab/-/issues/<id>` or `/-/work_items/<id>`.
+     New tables must use `supported`.
 
    Add an entry in alphabetical order:
 

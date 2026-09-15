@@ -5,7 +5,7 @@ require 'spec_helper'
 RSpec.describe Banzai::Filter::AsciidocFilter, feature_category: :wiki do
   include FakeBlobHelpers
 
-  let(:project) { create(:project, :repository) }
+  let_it_be(:project) { create(:project) }
   let(:context) { { project: project, current_user: project.first_owner } }
 
   describe '#call' do

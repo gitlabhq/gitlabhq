@@ -2,7 +2,7 @@
 
 require 'fast_spec_helper'
 
-RSpec.describe Gitlab::Diff::PairSelector do
+RSpec.describe Gitlab::Diff::PairSelector, feature_category: :source_code_management do
   subject(:selector) { described_class.new(lines) }
 
   describe '#to_a' do

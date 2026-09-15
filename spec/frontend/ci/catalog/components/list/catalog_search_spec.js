@@ -195,11 +195,11 @@ describe('CatalogSearch', () => {
       it('changes the `isAscending` prop to the sorting component', async () => {
         expect(findSorting().props().isAscending).toBe(false);
 
-        await findSorting().vm.$emit('sortDirectionChange');
+        await findSorting().vm.$emit('sort-direction-change');
 
         expect(findSorting().props().isAscending).toBe(true);
 
-        await findSorting().vm.$emit('sortDirectionChange');
+        await findSorting().vm.$emit('sort-direction-change');
 
         expect(findSorting().props().isAscending).toBe(false);
       });
@@ -207,8 +207,8 @@ describe('CatalogSearch', () => {
       it('emits an `update-sorting` event with the new direction', async () => {
         expect(wrapper.emitted('update-sorting')).toBeUndefined();
 
-        await findSorting().vm.$emit('sortDirectionChange');
-        await findSorting().vm.$emit('sortDirectionChange');
+        await findSorting().vm.$emit('sort-direction-change');
+        await findSorting().vm.$emit('sort-direction-change');
 
         expect(wrapper.emitted('update-sorting')).toEqual([
           [`${SORT_OPTION_POPULARITY}_${SORT_ASC}`],
@@ -223,7 +223,7 @@ describe('CatalogSearch', () => {
         ${SORT_OPTION_RELEASED}   | ${'Released date'}
         ${SORT_OPTION_STAR_COUNT} | ${'Star count'}
       `('changes the sort option to `$label`', async ({ sortOption, label }) => {
-        await findSorting().vm.$emit('sortByChange', sortOption);
+        await findSorting().vm.$emit('sort-by-change', sortOption);
 
         expect(findSorting().props('sortBy')).toBe(sortOption);
         expect(findSorting().props('text')).toBe(label);

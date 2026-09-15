@@ -370,13 +370,11 @@ RSpec.describe ProjectMember, feature_category: :groups_and_projects do
       end
     end
 
-    shared_examples_for 'calls AuthorizedProjectUpdate::UserRefreshFromReplicaWorker with a delay to update project authorizations' do
-      it 'calls AuthorizedProjectUpdate::UserRefreshFromReplicaWorker' do
-        stub_feature_flags(do_not_run_safety_net_auth_refresh_jobs: false)
-
-        expect(AuthorizedProjectUpdate::UserRefreshFromReplicaWorker).to(
-          receive(:bulk_perform_in).with(1.hour, [[user.id]], batch_delay: 30.seconds, batch_size: 100)
-        )
+    shared_examples_for 'calls UserProjectAccessChangedService with a delay to update project authorizations' do
+      it 'calls UserProjectAccessChangedService' do
+        expect_next_instance_of(UserProjectAccessChangedService, user.id) do |service|
+          expect(service).to receive(:execute).with(priority: UserProjectAccessChangedService::LOW_PRIORITY)
+        end
 
         action
       end
@@ -390,7 +388,7 @@ RSpec.describe ProjectMember, feature_category: :groups_and_projects do
       end
 
       it_behaves_like 'calls AuthorizedProjectUpdate::ProjectRecalculatePerUserWorker inline to recalculate authorizations'
-      it_behaves_like 'calls AuthorizedProjectUpdate::UserRefreshFromReplicaWorker with a delay to update project authorizations'
+      it_behaves_like 'calls UserProjectAccessChangedService with a delay to update project authorizations'
     end
 
     context 'on update' do
@@ -405,7 +403,7 @@ RSpec.describe ProjectMember, feature_category: :groups_and_projects do
       end
 
       it_behaves_like 'calls AuthorizedProjectUpdate::ProjectRecalculatePerUserWorker inline to recalculate authorizations'
-      it_behaves_like 'calls AuthorizedProjectUpdate::UserRefreshFromReplicaWorker with a delay to update project authorizations'
+      it_behaves_like 'calls UserProjectAccessChangedService with a delay to update project authorizations'
     end
 
     context 'on destroy' do
@@ -420,7 +418,7 @@ RSpec.describe ProjectMember, feature_category: :groups_and_projects do
       end
 
       it_behaves_like 'calls AuthorizedProjectUpdate::ProjectRecalculatePerUserWorker inline to recalculate authorizations'
-      it_behaves_like 'calls AuthorizedProjectUpdate::UserRefreshFromReplicaWorker with a delay to update project authorizations'
+      it_behaves_like 'calls UserProjectAccessChangedService with a delay to update project authorizations'
     end
   end
 

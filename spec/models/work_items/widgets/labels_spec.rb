@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe WorkItems::Widgets::Labels do
+RSpec.describe WorkItems::Widgets::Labels, feature_category: :team_planning do
   let_it_be(:work_item) { create(:work_item, labels: [create(:label)]) }
 
   describe '.type' do

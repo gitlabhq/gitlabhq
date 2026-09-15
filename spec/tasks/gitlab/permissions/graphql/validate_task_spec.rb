@@ -5,12 +5,13 @@ require 'spec_helper'
 RSpec.describe Tasks::Gitlab::Permissions::Graphql::ValidateTask, :silence_stdout, feature_category: :permissions do
   let(:task) { described_class.new }
 
-  def mock_directive(permissions:, boundary_type:)
+  def mock_directive(permissions:, boundary_type:, assignable_when: nil)
     Class.new(Directives::Authz::GranularScope).allocate.tap do |d|
-      allow(d).to receive(:arguments).and_return(
+      allow(d).to receive(:arguments).and_return({
         permissions: Array(permissions).map(&:to_s).map(&:upcase),
-        boundary_type: boundary_type.to_s
-      )
+        boundary_type: boundary_type.to_s,
+        assignable_when: assignable_when&.map(&:to_s)
+      }.compact)
     end
   end
 
@@ -185,6 +186,130 @@ RSpec.describe Tasks::Gitlab::Permissions::Graphql::ValidateTask, :silence_stdou
   describe '#format_graphql_errors' do
     it 'returns empty string when there are no violations' do
       expect(task.send(:format_graphql_errors, :invalid_permission)).to eq('')
+    end
+  end
+
+  describe '#validate_additional_scope' do
+    let(:item) { { kind: 'mutation', name: 'IssueMove', source: 'app/graphql/mutations/issues/move.rb' } }
+
+    def additional_directive(arguments)
+      Class.new(Directives::Authz::GranularScope).allocate.tap do |d|
+        allow(d).to receive(:arguments).and_return(arguments)
+      end
+    end
+
+    def scope_violations
+      task.send(:violations)[:invalid_additional_scope]
+    end
+
+    context 'when the entry declares a boundary_type and a boundary_argument' do
+      it 'does not add a violation' do
+        directive = additional_directive(permissions: ['CREATE_WORK_ITEM'], boundary_type: 'PROJECT',
+          boundary_argument: 'target_project_path', requirement_group: 'target_project_path')
+
+        expect { task.send(:validate_additional_scope, item, directive) }.not_to change { scope_violations.length }
+      end
+    end
+
+    context 'when the entry declares a boundary method' do
+      it 'does not add a violation' do
+        directive = additional_directive(permissions: ['CREATE_WORK_ITEM'], boundary_type: 'PROJECT',
+          boundary: 'target_project', requirement_group: 'additional_0')
+
+        expect { task.send(:validate_additional_scope, item, directive) }.not_to change { scope_violations.length }
+      end
+    end
+
+    context 'when the entry is missing a boundary_type' do
+      it 'adds a violation' do
+        directive = additional_directive(permissions: ['CREATE_WORK_ITEM'],
+          boundary_argument: 'target_project_path', requirement_group: 'target_project_path')
+
+        task.send(:validate_additional_scope, item, directive)
+
+        expect(scope_violations).to contain_exactly(item.merge(reason: 'missing boundary_type'))
+      end
+    end
+
+    context 'when the entry has neither boundary nor boundary_argument' do
+      it 'adds a violation' do
+        directive = additional_directive(permissions: ['CREATE_WORK_ITEM'], boundary_type: 'PROJECT',
+          requirement_group: 'additional_0')
+
+        task.send(:validate_additional_scope, item, directive)
+
+        expect(scope_violations).to contain_exactly(item.merge(reason: 'missing boundary or boundary_argument'))
+      end
+    end
+
+    context 'when two entries share a requirement group with identical permissions and different boundary types' do
+      it 'does not add a violation' do
+        project_directive = additional_directive(permissions: ['CREATE_WORK_ITEM'], boundary_type: 'PROJECT',
+          boundary_argument: 'target_full_path', requirement_group: 'target_full_path')
+        group_directive = additional_directive(permissions: ['CREATE_WORK_ITEM'], boundary_type: 'GROUP',
+          boundary_argument: 'target_full_path', requirement_group: 'target_full_path')
+
+        task.send(:validate_additional_scope, item, project_directive)
+        task.send(:validate_additional_scope, item, group_directive)
+
+        expect(scope_violations).to be_empty
+      end
+    end
+
+    context 'when two entries share a requirement group with identical permissions and boundary types' do
+      it 'adds a violation for the second entry' do
+        directive = additional_directive(permissions: ['CREATE_WORK_ITEM'], boundary_type: 'PROJECT',
+          boundary_argument: 'target_full_path', requirement_group: 'target_full_path')
+
+        task.send(:validate_additional_scope, item, directive)
+        task.send(:validate_additional_scope, item, directive)
+
+        expect(scope_violations).to contain_exactly(
+          item.merge(reason: "duplicate boundary_type 'PROJECT' in requirement_group 'target_full_path'")
+        )
+      end
+    end
+
+    context 'when two entries share a requirement group with different permissions' do
+      it 'adds a violation for the second entry' do
+        project_directive = additional_directive(permissions: ['CREATE_WORK_ITEM'], boundary_type: 'PROJECT',
+          boundary_argument: 'target_full_path', requirement_group: 'target_full_path')
+        group_directive = additional_directive(permissions: ['CREATE_EPIC'], boundary_type: 'GROUP',
+          boundary_argument: 'target_full_path', requirement_group: 'target_full_path')
+
+        task.send(:validate_additional_scope, item, project_directive)
+        task.send(:validate_additional_scope, item, group_directive)
+
+        expect(scope_violations)
+          .to contain_exactly(item.merge(reason: "conflicting permissions for requirement_group 'target_full_path'"))
+      end
+    end
+
+    context 'when the same group name appears on different items' do
+      it 'does not add a violation' do
+        directive = additional_directive(permissions: ['CREATE_WORK_ITEM'], boundary_type: 'PROJECT',
+          boundary_argument: 'target_project_path', requirement_group: 'target_project_path')
+        other_item = item.merge(name: 'EpicMove')
+
+        task.send(:validate_additional_scope, item, directive)
+        task.send(:validate_additional_scope, other_item, directive)
+
+        expect(scope_violations).to be_empty
+      end
+    end
+  end
+
+  describe '#register_test_coverage' do
+    let(:item) { { kind: 'mutation', name: 'IssueMove', source: 'app/graphql/mutations/issues/move.rb' } }
+
+    it 'includes the requirement group in the endpoint id' do
+      scanner = task.send(:spec_permission_scanner)
+      allow(scanner).to receive(:add_endpoint)
+
+      task.send(:register_test_coverage, item, :create_work_item, :project, 'target_project_path')
+
+      expect(scanner).to have_received(:add_endpoint)
+        .with(hash_including(endpoint_id: 'mutation:IssueMove project target_project_path'))
     end
   end
 
@@ -472,6 +597,51 @@ RSpec.describe Tasks::Gitlab::Permissions::Graphql::ValidateTask, :silence_stdou
 
       it 'completes successfully' do
         expect { run }.to output(/GraphQL permissions are valid/).to_stdout
+      end
+    end
+
+    context 'when a directive declares known assignable_when conditions' do
+      let(:directive) { mock_directive(permissions: :read_project, boundary_type: :project, assignable_when: [:admin]) }
+      let(:type) { mock_type('ProjectType', directive: directive) }
+      let(:mock_assignable) { instance_double(Authz::PermissionGroups::Assignable, boundaries: %w[project]) }
+
+      before do
+        allow(GitlabSchema).to receive(:types).and_return({ 'ProjectType' => type, 'Mutation' => empty_mutation_type })
+        allow(Authz::PermissionGroups::Assignable).to receive(:available_for_permission)
+          .with(:read_project).and_return([mock_assignable])
+      end
+
+      it 'completes successfully' do
+        expect { run }.to output(/GraphQL permissions are valid/).to_stdout
+      end
+    end
+
+    context 'when a directive declares an unknown assignable_when condition' do
+      let(:directive) do
+        mock_directive(permissions: :read_project, boundary_type: :project, assignable_when: [:unknown])
+      end
+
+      let(:type) { mock_type('ProjectType', directive: directive) }
+      let(:mock_assignable) { instance_double(Authz::PermissionGroups::Assignable, boundaries: %w[project]) }
+
+      before do
+        allow(GitlabSchema).to receive(:types).and_return({ 'ProjectType' => type, 'Mutation' => empty_mutation_type })
+        allow(Authz::PermissionGroups::Assignable).to receive(:available_for_permission)
+          .with(:read_project).and_return([mock_assignable])
+      end
+
+      it 'returns an error' do
+        expect { run }.to raise_error(SystemExit).and output(<<~OUTPUT).to_stdout
+          #######################################################################
+          #
+          #  The following GraphQL types/mutations/fields use an unknown assignable_when condition.
+          #  Use one of: :admin, :gitlab_team_member, :saas, :self_managed
+          #  Learn more: https://docs.gitlab.com/development/permissions/granular_access/assignable_permissions/#conditionally-assignable-permissions
+          #
+          #    - [type] ProjectType: unknown (app/graphql/types/test_type.rb)
+          #
+          #######################################################################
+        OUTPUT
       end
     end
 

@@ -95,6 +95,62 @@ RSpec.describe DashboardController, feature_category: :system_access do
         get merge_requests_search_dashboard_path, params: { scope: 'issues', search: 'test' }
       end
     end
+
+    describe 'mr_dashboard_vue_search feature flag' do
+      let_it_be(:current_user) { create(:user) }
+
+      before do
+        sign_in current_user
+      end
+
+      context 'when disabled' do
+        before do
+          stub_feature_flags(mr_dashboard_vue_search: false)
+        end
+
+        it 'runs the finder and renders the legacy search bar' do
+          expect(MergeRequestsFinder).to receive(:new).at_least(:once).and_call_original
+
+          get merge_requests_search_dashboard_path, params: { assignee_username: current_user.username }
+
+          expect(response).to have_gitlab_http_status(:ok)
+          expect(response.body).not_to include('js-merge-request-dashboard')
+          expect(response.body).to include('filtered-search-merge_requests')
+        end
+
+        it 'still asks for a filter when none is set' do
+          get merge_requests_search_dashboard_path
+
+          expect(response.body).to include(_('Please select at least one filter to see results'))
+        end
+      end
+
+      context 'when enabled' do
+        it 'mounts the Vue app without building the finder query' do
+          expect(MergeRequestsFinder).not_to receive(:new)
+
+          get merge_requests_search_dashboard_path, params: { assignee_username: current_user.username }
+
+          expect(response).to have_gitlab_http_status(:ok)
+          expect(response.body).to include('js-merge-request-dashboard')
+        end
+
+        it 'mounts the Vue app when no filters are set, leaving the guard to the client' do
+          expect(MergeRequestsFinder).not_to receive(:new)
+
+          get merge_requests_search_dashboard_path
+
+          expect(response).to have_gitlab_http_status(:ok)
+          expect(response.body).to include('js-merge-request-dashboard')
+        end
+
+        it 'leaves the no-filter guard in place for the other dashboard actions' do
+          get work_items_dashboard_path(format: :atom)
+
+          expect(response).to have_gitlab_http_status(:bad_request)
+        end
+      end
+    end
   end
 
   shared_examples 'load project events' do

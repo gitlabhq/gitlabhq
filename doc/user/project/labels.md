@@ -1,6 +1,6 @@
 ---
 stage: Plan
-group: Project Management
+group: Work Items
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see <https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments>
 title: Labels
 description: Project labels, group labels, nested scopes, and filtering.
@@ -116,12 +116,12 @@ To create a project label:
 1. In the top bar, select **Search or go to** and find your project.
 1. In the left sidebar, select **Manage** > **Labels**.
 1. Select **New label**.
-1. In the **Title** field, enter a short, descriptive name for the label. You
-   can also use this field to create [scoped, mutually exclusive labels](#scoped-labels).
-1. Optional. In the **Description** field, enter additional
+1. In the **Title** text box, enter a short, descriptive name for the label. You
+   can also use this text box to create [scoped, mutually exclusive labels](#scoped-labels).
+1. Optional. In the **Description** text box, enter additional
    information about how and when to use this label.
 1. Optional. Select a color by selecting from the available colors, or enter a hex color value for
-   a specific color in the **Background color** field.
+   a specific color in the **Background color** text box.
 1. Select **Create label**.
 
 ### Create a project label from an issue or merge request
@@ -156,12 +156,12 @@ To create a group label:
 1. In the top bar, select **Search or go to** and find your group.
 1. In the left sidebar, select **Manage** > **Labels**.
 1. Select **New label**.
-1. In the **Title** field, enter a short, descriptive name for the label. You
-   can also use this field to create [scoped, mutually exclusive labels](#scoped-labels).
-1. Optional. In the **Description** field, enter additional
+1. In the **Title** text box, enter a short, descriptive name for the label. You
+   can also use this text box to create [scoped, mutually exclusive labels](#scoped-labels).
+1. Optional. In the **Description** text box, enter additional
    information about how and when to use this label.
 1. Optional. Select a color by selecting from the available colors, or enter a hex color value for
-   a specific color in the **Background color** field.
+   a specific color in the **Background color** text box.
 1. Select **Create label**.
 
 ### Create a group label from an epic
@@ -248,7 +248,7 @@ To delete a **project** label:
 
 1. In the top bar, select **Search or go to** and find your project.
 1. In the left sidebar, select **Manage** > **Labels**.
-1. Next to the **Subscribe** button, select ({{< icon name="ellipsis_v" >}}), and then select **Delete**.
+1. Next to **Subscribe**, select ({{< icon name="ellipsis_v" >}}), and then select **Delete**.
 
 ### Delete a group label
 
@@ -258,7 +258,7 @@ To delete a **group** label:
 1. In the left sidebar, select **Manage** > **Labels**.
 1. Either:
 
-   - Next to the **Subscribe** button, select ({{< icon name="ellipsis_v" >}}).
+   - Next to **Subscribe**, select ({{< icon name="ellipsis_v" >}}).
    - Next to the label you want to edit, select **Edit** ({{< icon name="pencil" >}}).
 
 1. Select **Delete**.
@@ -310,7 +310,7 @@ To view archived labels:
 1. In the top bar, select **Search or go to** and find your project or group.
 1. In the left sidebar, select **Manage** > **Labels**.
 1. Go to the labels page for your project or group.
-1. Select the **Archived** tab.
+1. Select **Archived**.
 
 ### Unarchive a label
 
@@ -322,7 +322,7 @@ To unarchive a label:
 
 1. In the top bar, select **Search or go to** and find your project.
 1. In the left sidebar, select **Manage** > **Labels**.
-1. Select the **Archived** tab.
+1. Select **Archived**.
 1. Next to the label you want to unarchive, select **Edit** ({{< icon name="pencil" >}}).
 1. Clear the **Archived** checkbox.
 1. Select Save changes.
@@ -354,7 +354,7 @@ To promote a project label to a group label:
 
 1. In the top bar, select **Search or go to** and find your project.
 1. In the left sidebar, select **Manage** > **Labels**.
-1. Next to the **Subscribe** button, select the three dots ({{< icon name="ellipsis_v" >}}) and
+1. Next to **Subscribe**, select the three dots ({{< icon name="ellipsis_v" >}}) and
    select **Promote to group label**.
 
 All issues, merge requests, issue board lists, issue board filters, and label subscriptions
@@ -442,7 +442,7 @@ The following labels are created:
 Teams can use scoped labels to annotate issues, merge requests, and epics with mutually exclusive
 labels. By preventing certain labels from being used together, you can create more complex workflows.
 
-![Scoped labels](img/labels_key_value_v13_5.png)
+![A list of scoped labels.](img/labels_key_value_v13_5.png)
 
 A scoped label uses a double-colon (`::`) syntax in its title, for example: `workflow::in-review`.
 
@@ -466,14 +466,14 @@ For example, filtering by the `platform::*` label returns issues that have `plat
 `platform::Android`, or `platform::Linux` labels.
 
 > [!note]
-> Filtering by scoped labels not available on the issues or merge requests dashboard pages.
+> Filtering by scoped labels is not available on the issues or merge requests dashboard pages.
 
 ### Scoped labels examples
 
 **Example 1**. Updating issue priority:
 
 1. You decide that an issue is of low priority, and assign it the `priority::low` label.
-1. After more review, you realize the issue's priority is higher increased, and you assign it the
+1. After more review, you realize the issue's priority is higher, and you assign it the
    `priority::high` label.
 1. Because an issue shouldn't have two priority labels at the same time, GitLab removes the
    `priority::low` label.
@@ -487,7 +487,7 @@ You create three labels:
 - `platform::Android`
 - `platform::Linux`
 
-If you assign any of these labels to an issue automatically removes any other existing label that
+If you assign any of these labels to an issue, it automatically removes any other existing label that
 starts with `platform::`.
 
 **Example 3**. You can use scoped labels to represent the workflow states of your teams.
@@ -499,7 +499,7 @@ Suppose you have the following labels:
 - `workflow::deployed`
 
 If an issue already has the label `workflow::development` and a developer wants to show that the
-issue is now under review, they assign the `workflow::review`, and the `workflow::development` label
+issue is now under review, they assign the `workflow::review` label, and the `workflow::development` label
 is removed.
 
 The same happens when you move issues across label lists in an
@@ -526,10 +526,10 @@ For example, if your project has these labels:
 - `workflow::backend::development`
 - `workflow::frontend::review`
 
-An issue **can't** have both `workflow::backend::review` and `workflow::backend::development`
+An issue cannot have both `workflow::backend::review` and `workflow::backend::development`
 labels at the same time, because they both share the same scope: `workflow::backend`.
 
-On the other hand, an issue **can** have both `workflow::backend::review` and `workflow::frontend::review`
+On the other hand, an issue can have both `workflow::backend::review` and `workflow::frontend::review`
 labels at the same time, because they both have different scopes: `workflow::frontend` and `workflow::backend`.
 
 ## Receive notifications when a label is used
@@ -573,7 +573,7 @@ To prioritize a label:
 1. In the left sidebar, select **Manage** > **Labels**.
 1. Next to a label you want to prioritize, select the star ({{< icon name="star-o" >}}).
 
-![Labels prioritized](img/labels_prioritized_v13_5.png)
+![A list of labels set as prioritized.](img/labels_prioritized_v13_5.png)
 
 This label now appears at the top of the label list, under **Prioritized Labels**.
 

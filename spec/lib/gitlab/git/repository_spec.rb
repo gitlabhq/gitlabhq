@@ -172,6 +172,60 @@ RSpec.describe Gitlab::Git::Repository, feature_category: :source_code_managemen
       end
     end
 
+    describe 'contents that deviate from the defaults' do
+      def path_for(**kwargs)
+        repository.archive_metadata(
+          ref, storage_path, 'gitlab-git-test', format, append_sha: append_sha, path: path, **kwargs
+        )['ArchivePath']
+      end
+
+      it 'keeps the default archive on its existing path' do
+        expect(path_for).to eq(expected_path)
+        expect(path_for(include_lfs_blobs: true, exclude_paths: [])).to eq(expected_path)
+      end
+
+      it 'moves an archive without LFS blobs off the default path' do
+        expect(path_for(include_lfs_blobs: false)).not_to eq(expected_path)
+      end
+
+      it 'moves an archive with exclusions off the default path' do
+        expect(path_for(exclude_paths: %w[spec])).not_to eq(expected_path)
+      end
+
+      it 'separates the two attributes from each other' do
+        expect(path_for(include_lfs_blobs: false)).not_to eq(path_for(exclude_paths: %w[spec]))
+      end
+
+      it 'keeps the filename so Workhorse still derives the format from it' do
+        expect(File.basename(path_for(include_lfs_blobs: false))).to eq(expected_filename)
+      end
+
+      it 'stays at the depth the Workhorse archive cleaner sweeps' do
+        variant_path = path_for(include_lfs_blobs: false, exclude_paths: %w[spec docs])
+        depth = Pathname.new(variant_path).relative_path_from(Pathname.new(storage_path)).each_filename.count
+
+        expect(depth).to eq(Pathname.new(expected_path).relative_path_from(Pathname.new(storage_path))
+          .each_filename.count)
+        expect(depth).to eq(4)
+      end
+
+      it 'treats exclusions as a set, so ordering does not fragment the cache' do
+        expect(path_for(exclude_paths: %w[spec docs])).to eq(path_for(exclude_paths: %w[docs spec]))
+      end
+
+      it 'gives different exclusions different paths' do
+        expect(path_for(exclude_paths: %w[spec])).not_to eq(path_for(exclude_paths: %w[docs]))
+      end
+
+      it 'ignores duplicate exclusions, which do not change the archive' do
+        expect(path_for(exclude_paths: %w[spec spec docs])).to eq(path_for(exclude_paths: %w[docs spec]))
+      end
+
+      it 'treats a nil exclusion list as no exclusions' do
+        expect(path_for(exclude_paths: nil)).to eq(expected_path)
+      end
+    end
+
     context 'append_sha varies archive path and filename' do
       where(:append_sha, :ref, :expected_prefix) do
         sha = TestEnv::BRANCH_SHA['master']
@@ -1219,33 +1273,6 @@ RSpec.describe Gitlab::Git::Repository, feature_category: :source_code_managemen
         commits = repository.log({ all: true, limit: 50 })
 
         expect(commits.size).to eq(50)
-      end
-    end
-
-    context 'with message_regex' do
-      context 'which is valid' do
-        it 'returns a filtered list of commits' do
-          commits = repository.log(message_regex: 'changelog$')
-
-          expect(commits.size).to eq(2)
-          expect(commits.first).to eq(commit_with_new_name)
-          expect(commits.last).to eq(commit_with_old_name)
-        end
-      end
-
-      context 'which is invalid' do
-        it 'raises an argument error' do
-          expect { repository.log(message_regex: '[') }
-            .to raise_error(ArgumentError, 'Invalid message_regex pattern')
-        end
-      end
-
-      context 'which does not match any commits' do
-        it 'does not raise an error and returns an empty list' do
-          commits = repository.log(message_regex: 'fizz buzz fizzbuzz')
-
-          expect(commits.size).to eq(0)
-        end
       end
     end
   end
@@ -2872,7 +2899,7 @@ RSpec.describe Gitlab::Git::Repository, feature_category: :source_code_managemen
       expect { repository.disconnect_alternates }.not_to raise_error
     end
 
-    it 'can still access objects in the object pool' do
+    it 'can still access objects in the object pool', :skip_gitaly_mvcc do
       # Create a commit into a separate repository and fetch it into the object pool.
       # Writing directly to an object pool fails as we don't support them in the
       # authorization checks. Gitaly's pre-receive hook fails as a gl_repository is
@@ -3098,7 +3125,7 @@ RSpec.describe Gitlab::Git::Repository, feature_category: :source_code_managemen
       it { is_expected.to be_nil }
     end
 
-    context 'when pool repository exists' do
+    context 'when pool repository exists', :skip_gitaly_mvcc do
       let!(:pool) { create(:pool_repository, :ready, source_project: project) }
 
       it { is_expected.to be_nil }

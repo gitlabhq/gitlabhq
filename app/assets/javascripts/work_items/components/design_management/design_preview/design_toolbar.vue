@@ -16,7 +16,6 @@ export default {
     showCommentsButtonLabel: s__('DesignManagement|Show comments'),
     archiveButtonLabel: s__('DesignManagement|Archive design'),
   },
-  isLoggedIn: isLoggedIn(),
   components: {
     GlButton,
     GlIcon,
@@ -68,6 +67,9 @@ export default {
   },
   emits: ['archive-design', 'todos-updated', 'toggle-sidebar'],
   computed: {
+    isLoggedIn() {
+      return isLoggedIn();
+    },
     toggleCommentsButtonLabel() {
       return this.isSidebarOpen
         ? this.$options.i18n.hideCommentsButtonLabel
@@ -100,7 +102,7 @@ export default {
       class="gl-mr-5 gl-flex gl-shrink-0 md:gl-ml-auto md:gl-flex-row"
     >
       <todos-toggle
-        v-if="$options.isLoggedIn"
+        v-if="isLoggedIn"
         :item-id="design.id"
         :current-user-todos="currentUserDesignTodos"
         todos-button-type="tertiary"

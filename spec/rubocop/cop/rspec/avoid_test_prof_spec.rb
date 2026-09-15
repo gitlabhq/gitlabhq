@@ -20,7 +20,7 @@ RSpec.describe RuboCop::Cop::RSpec::AvoidTestProf, feature_category: :shared do
       it 'registers the offense' do
         error_message = "Prefer #{alternatives} over `#{method_name}` in migration specs. " \
                         'See ' \
-                        'https://docs.gitlab.com/ee/development/testing_guide/best_practices.html' \
+                        'https://docs.gitlab.com/development/testing_guide/best_practices/' \
                         '#testprof-in-migration-specs'
 
         expect_offense(<<~RUBY)

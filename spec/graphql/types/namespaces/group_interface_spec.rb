@@ -13,6 +13,16 @@ RSpec.describe Types::Namespaces::GroupInterface, feature_category: :groups_and_
     expect(described_class.own_fields.keys.map(&:underscore)).to match_array(expected_fields)
   end
 
+  describe 'fields with :ai_workflows scope' do
+    %w[id name fullPath].each do |field_name|
+      it "includes :ai_workflows scope for the #{field_name} field" do
+        field = described_class.fields[field_name]
+
+        expect(field.instance_variable_get(:@scopes)).to include(:ai_workflows)
+      end
+    end
+  end
+
   describe ".resolve_type" do
     let_it_be(:user) { build(:user) }
     let_it_be(:group) { build(:group) }

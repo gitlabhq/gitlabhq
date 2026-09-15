@@ -41,9 +41,9 @@ describe('notes/components/discussion_navigator', () => {
       vm = new Vue(DiscussionNavigator);
     });
 
-    it('listens for jumpToFirstUnresolvedDiscussion events', () => {
+    it('listens for `jump-to-first-unresolved-discussion` events', () => {
       expect(onSpy).toHaveBeenCalledWith(
-        'jumpToFirstUnresolvedDiscussion',
+        'jump-to-first-unresolved-discussion',
         vm.jumpToFirstUnresolvedDiscussion,
       );
     });
@@ -87,7 +87,7 @@ describe('notes/components/discussion_navigator', () => {
     });
 
     it('unbinds event hub listeners', () => {
-      expect(eventHub.$off).toHaveBeenCalledWith('jumpToFirstUnresolvedDiscussion', jumpFn);
+      expect(eventHub.$off).toHaveBeenCalledWith('jump-to-first-unresolved-discussion', jumpFn);
     });
 
     it('does not call jumpToNextDiscussion when pressing `n`', () => {

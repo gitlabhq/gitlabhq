@@ -27,6 +27,18 @@
     "AmazonS3ConfigurationType",
     "InstanceAmazonS3ConfigurationType"
   ],
+  "ArtifactRegistryPackage": [
+    "ArtifactRegistryMavenPackage",
+    "ArtifactRegistryNpmPackage"
+  ],
+  "ArtifactRegistryPackageDetails": [
+    "ArtifactRegistryMavenPackageDetails",
+    "ArtifactRegistryNpmPackageDetails"
+  ],
+  "ArtifactRegistryVersionFile": [
+    "ArtifactRegistryMavenVersionFile",
+    "ArtifactRegistryNpmVersionFile"
+  ],
   "AuditEventStreamingDestinationInterface": [
     "GroupAuditEventStreamingDestination",
     "InstanceAuditEventStreamingDestination"
@@ -337,7 +349,12 @@
   ],
   "ScanProfileConfiguration": [
     "AutoRemediationConfiguration",
-    "SecretDetectionConfiguration"
+    "SastConfiguration",
+    "SastFalsePositiveConfiguration",
+    "SastVulnerabilityResolutionConfiguration",
+    "SecretDetectionConfiguration",
+    "SecretDetectionFalsePositiveConfiguration",
+    "VulnerabilityEnrichmentConfiguration"
   ],
   "SecurityPolicySource": [
     "GroupSecurityPolicySource",
@@ -446,6 +463,7 @@
     "WorkItemWidgetCrmContacts",
     "WorkItemWidgetCurrentUserTodos",
     "WorkItemWidgetCustomFields",
+    "WorkItemWidgetDecisionLog",
     "WorkItemWidgetDescription",
     "WorkItemWidgetDesigns",
     "WorkItemWidgetDevelopment",

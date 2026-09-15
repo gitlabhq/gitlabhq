@@ -5,8 +5,6 @@ require 'rubocop_spec_helper'
 require_relative '../../../../rubocop/cop/qa/ambiguous_page_object_name'
 
 RSpec.describe RuboCop::Cop::QA::AmbiguousPageObjectName, feature_category: :test_platform do
-  let(:source_file) { 'qa/page.rb' }
-
   context 'in a QA file' do
     before do
       allow(cop).to receive(:in_qa_file?).and_return(true)

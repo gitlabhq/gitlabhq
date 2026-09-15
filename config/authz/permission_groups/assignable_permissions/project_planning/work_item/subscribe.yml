@@ -1,0 +1,10 @@
+---
+name: subscribe_work_item
+description: Grants the ability to subscribe to work items
+boundaries:
+  - group
+  - project
+available_for:
+  - granular_access_token
+permissions:
+  - subscribe_work_item

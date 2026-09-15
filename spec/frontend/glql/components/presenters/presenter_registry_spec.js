@@ -126,6 +126,12 @@ describe('presenter_registry', () => {
         ${'durationQuantile'}         | ${3661}          | ${DurationPresenter}
         ${'timeToMergeQuantile'}      | ${250000}        | ${DurationMsPresenter}
         ${'queuedDuration'}           | ${90}            | ${DurationPresenter}
+        ${'completionRate'}           | ${0.6}           | ${PercentagePresenter}
+        ${'finishedCount'}            | ${789}           | ${NumberPresenter}
+        ${'durationMean'}             | ${90}            | ${DurationPresenter}
+        ${'durationMin'}              | ${30}            | ${DurationPresenter}
+        ${'durationMax'}              | ${3600}          | ${DurationPresenter}
+        ${'durationSum'}              | ${3661}          | ${DurationPresenter}
       `(
         'resolves field key $fieldKey to the matching presenter',
         ({ fieldKey, field, presenter }) => {
@@ -170,6 +176,15 @@ describe('presenter_registry', () => {
 
       it('resolves user on Duo usage events dimensions to UserAvatarPresenter', () => {
         expect(presenterFor(MOCK_DUO_USAGE_EVENTS_DIMENSIONS, 'user')).toBe(UserAvatarPresenter);
+      });
+
+      it('resolves user on agent platform sessions dimensions to UserAvatarPresenter', () => {
+        expect(
+          presenterFor(
+            { __typename: 'AgentPlatformSessionsAggregationResponseDimensions', user: MOCK_USER },
+            'user',
+          ),
+        ).toBe(UserAvatarPresenter);
       });
 
       it('resolves user on other typenames to UserPresenter', () => {

@@ -8,10 +8,12 @@ module Mcp
 
         private
 
-        def find_project!(project_id)
+        def find_project!(project_id, ability: :read_project)
           project = find_project(project_id)
 
-          raise StandardError, "Project '#{project_id}' not found or inaccessible" unless project
+          unless project && Ability.allowed?(current_user, ability, project)
+            raise StandardError, "Project '#{project_id}' not found or inaccessible"
+          end
 
           project
         end
@@ -22,20 +24,18 @@ module Mcp
           lookup_project(project_id)
         end
 
-        def find_group!(group_id)
+        def find_group!(group_id, ability: :read_group)
           group = lookup_group(group_id)
 
-          raise StandardError, "Group '#{group_id}' not found or inaccessible" unless group
+          unless group && Ability.allowed?(current_user, ability, group)
+            raise StandardError, "Group '#{group_id}' not found or inaccessible"
+          end
 
           group
         end
 
         def find_parent_by_id_or_path!(parent_type, identifier)
-          parent = parent_type == :project ? find_project!(identifier) : find_group!(identifier)
-
-          authorize_parent_access!(parent, parent_type, identifier)
-
-          parent
+          parent_type == :project ? find_project!(identifier) : find_group!(identifier)
         end
 
         def find_work_item_in_parent!(parent, iid)
@@ -46,7 +46,7 @@ module Mcp
             finder_params
           ).execute.find_by_iid(iid)
 
-          raise ArgumentError, "Work item ##{iid} not found" unless work_item
+          raise ArgumentError, "Work item ##{iid} not found or inaccessible" unless work_item
 
           work_item
         end
@@ -59,17 +59,6 @@ module Mcp
           else
             {}
           end
-        end
-
-        def authorize_parent_access!(parent, parent_type, identifier)
-          return if can_read_parent?(parent, parent_type)
-
-          raise ArgumentError, "Access denied to #{parent_type}: '#{identifier}'"
-        end
-
-        def can_read_parent?(parent, parent_type)
-          permission = parent_type == :project ? :read_project : :read_group
-          Ability.allowed?(current_user, permission, parent)
         end
       end
     end

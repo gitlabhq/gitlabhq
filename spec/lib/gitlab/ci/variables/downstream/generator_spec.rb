@@ -136,5 +136,23 @@ RSpec.describe Gitlab::Ci::Variables::Downstream::Generator, feature_category: :
         expect(generator.calculate).to contain_exactly(*expected)
       end
     end
+
+    context 'with variables that have a nil value' do
+      let(:yaml_variables) { [{ key: 'NIL_VAR', value: nil }] }
+      let(:pipeline_variables) { [{ key: 'PIPELINE_NIL_VAR', value: nil }] }
+      let(:pipeline_schedule_variables) { [{ key: 'PIPELINE_SCHEDULE_NIL_VAR', value: nil }] }
+      let(:pipeline_dotenv_variables) { [{ key: 'PIPELINE_DOTENV_NIL_VAR', value: nil }] }
+
+      it 'forwards the variables with the nil value unchanged' do
+        expected = [
+          { key: 'NIL_VAR', value: nil },
+          { key: 'PIPELINE_NIL_VAR', value: nil },
+          { key: 'PIPELINE_SCHEDULE_NIL_VAR', value: nil },
+          { key: 'PIPELINE_DOTENV_NIL_VAR', value: nil }
+        ]
+
+        expect(generator.calculate).to contain_exactly(*expected)
+      end
+    end
   end
 end

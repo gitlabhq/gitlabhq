@@ -150,12 +150,10 @@ module Resolvers
       description: 'Filter issues by milestone ID wildcard. Incompatible with milestoneTitle.'
     argument :review_state, ::Types::MergeRequestReviewStateEnum,
       required: false,
-      description: 'Reviewer state of the merge request.',
-      experiment: { milestone: '17.0' }
+      description: 'Reviewer state of the merge request.'
     argument :review_states, [::Types::MergeRequestReviewStateEnum],
       required: false,
-      description: 'Reviewer states of the merge request.',
-      experiment: { milestone: '17.0' }
+      description: 'Reviewer states of the merge request.'
     argument :sort, Types::MergeRequestSortEnum,
       description: 'Sort merge requests by the criteria.',
       required: false,

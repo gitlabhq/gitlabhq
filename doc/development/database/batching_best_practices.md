@@ -5,11 +5,11 @@ info: Any user with at least the Maintainer role can merge updates to this conte
 title: Batching best practices
 ---
 
-This document gives an overview about the available batching strategies we use at GitLab. We list the pros and cons of each strategy so engineers can pick the ideal approach for their use case.
+This document gives an overview of the available batching strategies we use at GitLab. We list the pros and cons of each strategy so engineers can pick the ideal approach for their use case.
 
 ## Why do we need batching
 
-When dealing with a large volume of records, reading, updating, or deleting the records in one database query can be challenging; the operation could easily time out. To avoid this problem, we should process the records in batches. Batching usually happens in background jobs, where runtime constraints are more relaxed than during web requests.
+When dealing with a large volume of records, reading, updating, or deleting the records in one database query can be challenging. The operation could easily time out. To avoid this problem, we should process the records in batches. Batching usually happens in background jobs, where runtime constraints are more relaxed than during web requests.
 
 ### Use batching in background jobs and not in web requests
 
@@ -23,7 +23,7 @@ Batching performance is closely related to pagination performance since the unde
 
 There are two main aspects to consider when implementing batching in background jobs: total runtime and data modification volume.
 
-Background jobs shouldn't run for a long time. A Sidekiq process can crash or it can be forcefully stopped (for example, on restart or deployment). Additionally, due to our [error budget](../stage_group_observability/_index.md#error-budget) rules, after 5 minutes of runtime, error budget violations will be added to the group where the feature is registered. When implementing batching in background jobs, make sure that you're familiar with our guidelines related to [idempotent jobs](../sidekiq/idempotent_jobs.md)
+Background jobs shouldn't run for a long time. A Sidekiq process can crash or it can be forcefully stopped (for example, on restart or deployment). Additionally, due to our [error budget](../stage_group_observability/_index.md#error-budget) rules, after 5 minutes of runtime, error budget violations will be added to the group where the feature is registered. When implementing batching in background jobs, make sure that you're familiar with our guidelines related to [idempotent jobs](../sidekiq/idempotent_jobs.md).
 
 Updating or deleting a large volume of records can increase database replication lag and it can add extra strain to the primary database. It's advisable to limit the total number of records we process (or batch over) within the background job.
 
@@ -31,7 +31,7 @@ To address the potential issues mentioned above the following measures should be
 
 - Limit the total runtime for the job.
 - Limit record modifications.
-- Rest period between batches. (a few milliseconds)
+- Add a rest period between batches (a few milliseconds).
 
 When applying limits, it's important to mention that long-running background jobs should implement a "continue later" mechanism where a new job is scheduled after the limit is reached to continue the work where the batching was stopped. This is important when a job is so long that it's very likely that it won't fit into the 5 minutes runtime.
 
@@ -72,10 +72,10 @@ end
 
 Implementing a "continue later" mechanism can add significant complexity to the implementation. Hence, before committing to this work, analyze the existing data in the production database and try to extrapolate data growth. A few examples:
 
-- Mark all `pending` todos for a given user as `done` does not need a "continue later" mechanism.
+- Marking all `pending` todos for a given user as `done` does not need a "continue later" mechanism.
   - Reasoning: The number of pending todos will most likely not be over a few thousand database rows, even for the busiest users. Updating these rows would finish 99.9% of the time under 1 minute.
-- Store CI build records in a CSV files within a given project might require a "continue later" mechanism.
-  - Reasoning: for very active projects, CI job count can grow at a very high rate into millions of rows.
+- Storing CI build records in a CSV file within a given project might require a "continue later" mechanism.
+  - Reasoning: For very active projects, CI job count can grow at a very high rate into millions of rows.
 
 When a very large volume of updates happen in the background job, it's advisable (not a strict requirement) to add some sleep to the code and limit the total number of records we update. This reduces the pressure on the primary databases and gives a small window for potential database migrations to acquire heavier locks.
 
@@ -179,7 +179,7 @@ def execute
 end
 ```
 
-This approach is not crash-safe, the item would not be enqueued if the application crashes right after the transaction commits.
+This approach is not crash-safe. The item would not be enqueued if the application crashes right after the transaction commits.
 
 Pros:
 
@@ -208,7 +208,7 @@ Cons:
   - Consider the [sliding-window partitioning strategy](loose_foreign_keys.md#database-partitioning).
   - Complex, cross-partition queries.
 
-Example: set up reliable way of sending emails
+Example: set up a reliable way of sending emails
 
 ```ruby
 # In a service
@@ -457,7 +457,7 @@ Cons:
 
 ## Offset batching
 
-This batching technique uses [offset pagination](pagination_guidelines.md#offset-pagination) when loading new records. Offset pagination should be used only as a last resort when the given query cannot be paginated via `EachBatch` or via keyset-pagination. One reason for choosing this technique is when there is no suitable index available for the SQL query to use a different batching technique. Example: in a background job we load too many records without limit and it started to time out. The order of the records are important.
+This batching technique uses [offset pagination](pagination_guidelines.md#offset-pagination) when loading new records. Offset pagination should be used only as a last resort when the given query cannot be paginated via `EachBatch` or via keyset-pagination. One reason for choosing this technique is when there is no suitable index available for the SQL query to use a different batching technique. Example: in a background job we load too many records without limit and it started to time out. The order of the records is important.
 
 ```ruby
 def perform(project_id)
@@ -471,7 +471,7 @@ def perform(project_id)
 end
 ```
 
-As the number of issues within the project grows, the query gets slower and eventually times out. Using a different batching technique such as keyset-pagination is not possible because the `ORDER BY` clause is depending on a `timestamp` column which is not unique (see the [tie-breaker](pagination_performance_guidelines.md#tie-breaker-column) section). Ideally, we should order on the `created_at, id` columns, however we don't have that index available. In a time-sensitive scenario (such as an incident) it might not be feasible to introduce a new index right away so as a last resort we can attempt offset pagination.
+As the number of issues within the project grows, the query gets slower and eventually times out. Using a different batching technique such as keyset-pagination is not possible because the `ORDER BY` clause is depending on a `timestamp` column which is not unique (see the [tie-breaker](pagination_performance_guidelines.md#tie-breaker-column) section). Ideally, we should order on the `created_at, id` columns, however we don't have that index available. In a time-sensitive scenario (such as an incident), it might not be feasible to introduce a new index right away, so as a last resort we can attempt offset pagination.
 
 ```ruby
 def perform(project_id)
@@ -487,7 +487,7 @@ def perform(project_id)
 end
 ```
 
-The snippet above can be a short term fix until a proper solution is in place. Offset pagination gets slower as the page number increases which means that there might be a chance where the offset paginated query times out the same way as the original query. The chances are reduced to some extent by the database buffer cache which keeps the previously loaded records in memory. Thus, the consecutive (short-term) lookup of the same rows will not have very high impact on the performance.
+The snippet above can be a short term fix until a proper solution is in place. Offset pagination gets slower as the page number increases which means that there might be a chance where the offset paginated query times out the same way as the original query. The chances are reduced to some extent by the database buffer cache which keeps the previously loaded records in memory. Thus, the consecutive (short-term) lookup of the same rows will not have a very high impact on the performance.
 
 Pros:
 
@@ -497,7 +497,7 @@ Cons:
 
 - Performance degrades linearly as the page number is increased.
 - This is only a stop-gap measure which shouldn't be used for new features.
-- You can store the page number as the cursor but restoring the processing from the previous point can be unreliable.
+- You can store the page number as the cursor, but restoring the processing from the previous point can be unreliable.
 
 ## Batching over the Group hierarchy
 

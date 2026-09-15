@@ -7,29 +7,29 @@ RSpec.describe Gitlab::FileTypeDetection do
     let(:extensions) { %w[foo bar] }
 
     it 'returns false when filename is blank' do
-      expect(described_class.extension_match?(nil, extensions)).to eq(false)
-      expect(described_class.extension_match?('', extensions)).to eq(false)
+      expect(described_class.extension_match?(nil, extensions)).to be(false)
+      expect(described_class.extension_match?('', extensions)).to be(false)
     end
 
     it 'returns true when filename matches extensions' do
-      expect(described_class.extension_match?('file.foo', extensions)).to eq(true)
-      expect(described_class.extension_match?('file.bar', extensions)).to eq(true)
+      expect(described_class.extension_match?('file.foo', extensions)).to be(true)
+      expect(described_class.extension_match?('file.bar', extensions)).to be(true)
     end
 
     it 'returns false when filename does not match extensions' do
-      expect(described_class.extension_match?('file.baz', extensions)).to eq(false)
+      expect(described_class.extension_match?('file.baz', extensions)).to be(false)
     end
 
     it 'can match case insensitive filenames' do
-      expect(described_class.extension_match?('file.FOO', extensions)).to eq(true)
+      expect(described_class.extension_match?('file.FOO', extensions)).to be(true)
     end
 
     it 'can match filenames with periods' do
-      expect(described_class.extension_match?('my.file.foo', extensions)).to eq(true)
+      expect(described_class.extension_match?('my.file.foo', extensions)).to be(true)
     end
 
     it 'can match filenames with directories' do
-      expect(described_class.extension_match?('my/file.foo', extensions)).to eq(true)
+      expect(described_class.extension_match?('my/file.foo', extensions)).to be(true)
     end
   end
 

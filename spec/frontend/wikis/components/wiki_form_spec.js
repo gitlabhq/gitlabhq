@@ -457,7 +457,7 @@ describe('WikiForm', () => {
     beforeEach(async () => {
       createWrapper({ mountFn: mountExtended, persisted: true });
 
-      await findMarkdownEditor().vm.$emit('contentEditor');
+      await findMarkdownEditor().vm.$emit('content-editor');
     });
 
     it('disables the format dropdown', () => {

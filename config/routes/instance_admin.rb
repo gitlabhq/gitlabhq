@@ -98,6 +98,8 @@ namespace :admin do
 
   resources :deploy_keys, only: [:index, :new, :create, :edit, :update, :destroy]
 
+  resources :ssh_certificates, only: [:index]
+
   resources :hooks, only: [:index, :create, :edit, :update, :destroy] do
     member do
       post :test

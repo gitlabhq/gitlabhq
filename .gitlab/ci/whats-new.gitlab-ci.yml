@@ -1,0 +1,52 @@
+# Generates the release-week What's New YAML from all feature docs under
+# doc/releases/, and opens an MR with it. Both jobs run scripts/update_whats_new_content.rb,
+# which writes to data/whats_new/, then force-push a branch and open an MR via git push
+# Both use the same branch name, so re-running updates the existing branch/MR.
+#
+# update-whats-new-content runs automatically.
+# Trigger: pipeline schedule on master, every Thursday, with SCHEDULE_TYPE=whats-new.
+# The script only generates a file when today is a release date in releases.yml, so on
+# every other week it writes nothing, there is no diff, and the job exits without
+# opening an MR.
+#
+
+.update-whats-new-content:base:
+  stage: prepare
+  needs: []
+  image: ${GITLAB_DEPENDENCY_PROXY_ADDRESS}ruby:${RUBY_VERSION}-alpine
+  before_script:
+    - apk add --no-cache git
+    - git config --global user.email "gitlab-bot@gitlab.com"
+    - git config --global user.name "GitLab Release Tooling"
+  script:
+    - ruby scripts/update_whats_new_content.rb
+    - |
+      if [ -z "$(git status --porcelain data/whats_new)" ]; then
+        echo "No What's New changes to publish."
+        exit 0
+      fi
+    - |
+      file=$(git status --porcelain data/whats_new | awk '{ print $2 }' | head -1)
+      release=$(basename "$file" .yml)
+      branch="whats-new-${release}"
+
+      git checkout -b "$branch"
+      git add data/whats_new
+      git commit -m "Add What's New entries for ${release}"
+
+      # Force-push so a re-run updates the existing branch/MR rather than failing.
+      git push -f \
+        "https://gitlab-ci-token:${PROJECT_TOKEN_FOR_CI_SCRIPTS_API_USAGE}@${CI_SERVER_HOST}/${CI_PROJECT_PATH}.git" \
+        "HEAD:refs/heads/${branch}" \
+        -o merge_request.create \
+        -o merge_request.target="$CI_DEFAULT_BRANCH" \
+        -o merge_request.title="Add What's New entries for ${release}" \
+        -o merge_request.remove_source_branch \
+        -o merge_request.label="type::maintenance" \
+        -o merge_request.label="release post" \
+        -o merge_request.label="automation:bot-authored"
+
+update-whats-new-content:
+  extends: .update-whats-new-content:base
+  rules:
+    - !reference ['.whats-new:rules:scheduled', rules]

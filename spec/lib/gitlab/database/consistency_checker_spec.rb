@@ -35,8 +35,8 @@ RSpec.describe Gitlab::Database::ConsistencyChecker, feature_category: :cell do
     it 'returns true only if the running time has exceeded MAX_RUNTIME' do
       allow(consistency_checker).to receive(:monotonic_time).and_return(0, max_runtime - 1, max_runtime + 1)
       expect(consistency_checker.monotonic_time).to eq(0)
-      expect(consistency_checker.send(:over_time_limit?)).to eq(false)
-      expect(consistency_checker.send(:over_time_limit?)).to eq(true)
+      expect(consistency_checker.send(:over_time_limit?)).to be(false)
+      expect(consistency_checker.send(:over_time_limit?)).to be(true)
     end
   end
 

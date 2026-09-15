@@ -12,7 +12,7 @@ RSpec.describe Gitlab::Diff::FileCollection::Base, feature_category: :code_revie
 
     context 'when it is not overflown' do
       it 'returns false' do
-        expect(overflown).to eq(false)
+        expect(overflown).to be(false)
       end
     end
 
@@ -20,7 +20,7 @@ RSpec.describe Gitlab::Diff::FileCollection::Base, feature_category: :code_revie
       let(:diff_options) { { max_files: 1 } }
 
       it 'returns true' do
-        expect(overflown).to eq(true)
+        expect(overflown).to be(true)
       end
     end
   end

@@ -61,7 +61,7 @@ class Import::GitlabGroupsController < ApplicationController
 
   def check_import_rate_limit!
     check_rate_limit!(:group_import, scope: current_user) do
-      redirect_to new_group_path, alert: _('This endpoint has been requested too many times. Try again later.')
+      redirect_to new_group_path, alert: Gitlab::ApplicationRateLimiter.throttled_error_message
     end
   end
 

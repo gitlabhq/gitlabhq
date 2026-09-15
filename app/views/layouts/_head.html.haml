@@ -52,6 +52,12 @@
   = universal_stylesheet_link_tag "test_environment", media: "all" if Rails.env.test?
   = universal_stylesheet_link_tag "fonts"
 
+  - if Feature.enabled?(:view_transitions, current_user)
+    :css
+      @media (prefers-reduced-motion: no-preference) {
+        @view-transition { navigation: auto; }
+      }
+
   - if user_application_system_mode?
     = universal_stylesheet_link_tag "highlight/themes/#{user_light_color_scheme}", media: "(prefers-color-scheme: light)"
     = universal_stylesheet_link_tag "highlight/themes/#{user_dark_color_scheme}", media: "(prefers-color-scheme: dark)"
@@ -67,7 +73,10 @@
     = webpack_bundle_tag 'sentry'
   = webpack_bundle_tag 'performance_bar' if performance_bar_enabled?
 
-  = webpack_bundle_tag 'super_sidebar'
+  - if Feature.enabled?(:view_transitions, current_user)
+    = webpack_bundle_tag 'super_sidebar', blocking: 'render'
+  - else
+    = webpack_bundle_tag 'super_sidebar'
 
   - if ENV['BABEL_ENV'] == 'istanbul'
     = webpack_bundle_tag 'coverage_persistence'
@@ -101,14 +110,14 @@
   = csp_meta_tag
   = action_cable_meta_tag
 
-  %link{ rel: 'manifest', href: manifest_path(format: :json) }
+  %link{ rel: 'manifest', href: manifest_path(format: :json), crossorigin: 'use-credentials' }
   = favicon_link_tag favicon, id: 'favicon', data: { original_href: favicon }, type: 'image/png'
 
   -# Apple Safari/iOS home screen icons
   = appearance_apple_touch_icon
 
   -# OpenSearch
-  %link{ href: search_opensearch_path(format: :xml), rel: 'search', title: 'Search GitLab', type: 'application/opensearchdescription+xml' }
+  %link{ href: search_opensearch_path(format: :xml), rel: 'search', title: 'Search GitLab', type: 'application/opensearchdescription+xml', crossorigin: 'use-credentials' }
 
   = yield :meta_tags
 

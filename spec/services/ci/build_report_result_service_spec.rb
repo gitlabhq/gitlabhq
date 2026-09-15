@@ -56,6 +56,15 @@ RSpec.describe Ci::BuildReportResultService, feature_category: :continuous_integ
         end
       end
 
+      context 'and the test report artifact contains multiple JUnit files' do
+        let(:build) { create(:ci_build, :success, :test_reports_with_three_testsuites) }
+
+        # The three <testsuite> elements declare time="0.001670", "0.202645" and "0.001691".
+        it 'persists the summed duration of all files' do
+          expect(build_report_result.tests_duration).to be_within(0.000001).of(0.206006)
+        end
+      end
+
       context 'when data has already been persisted' do
         it 'raises an error and do not persist the same data twice' do
           expect { 2.times { described_class.new.execute(build) } }.to raise_error(ActiveRecord::RecordNotUnique)

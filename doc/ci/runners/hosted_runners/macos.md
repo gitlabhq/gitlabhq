@@ -87,7 +87,7 @@ test:
 
 ## Code signing iOS Projects with fastlane
 
-Before you can integrate GitLab with Apple services, install to a device, or deploy to the Apple App Store, you must [code sign](https://developer.apple.com/documentation/security/code_signing_services) your application.
+Before you can integrate GitLab with Apple services, install to a device, or deploy to the Apple App Store, you must [code sign](https://developer.apple.com/documentation/security/code-signing-services) your application.
 
 Included in each runner on macOS VM image is [fastlane](https://fastlane.tools/),
 an open-source solution aimed at simplifying mobile app deployment.

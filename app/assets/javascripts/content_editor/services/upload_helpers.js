@@ -1,4 +1,5 @@
 import { uniqueId } from 'lodash-es';
+import { NodeSelection } from '@tiptap/pm/state';
 import { VARIANT_DANGER } from '~/alert';
 import axios from '~/lib/utils/axios_utils';
 import { __, sprintf } from '~/locale';
@@ -9,29 +10,55 @@ import { ALERT_EVENT } from '../constants';
 
 const chain = (editor) => editor.chain().setMeta('preventAutolink', true);
 
-const findUploadedFilePosition = (editor, fileId) => {
-  let position;
-  let node;
+// every occurrence of an upload placeholder in document order: media nodes
+// carry the file id in their attrs, attachment text carries it on its link
+// mark. `descendants` keeps walking after a match, so collect instead of
+// returning early; every copy of a placeholder must resolve with the upload
+const findUploadedFileOccurrences = (editor, fileId) => {
+  const occurrences = [];
 
-  editor.view.state.doc.descendants((descendant, pos) => {
-    if (descendant.attrs.uploading === fileId) {
-      position = pos;
-      node = descendant;
-      return false;
-    }
+  editor.view.state.doc.descendants((node, position) => {
+    const isPlaceholder =
+      node.attrs.uploading === fileId ||
+      node.marks.some((mark) => mark.type.name === 'link' && mark.attrs.uploading === fileId);
 
-    for (const mark of descendant.marks) {
-      if (mark.type.name === 'link' && mark.attrs.uploading === fileId) {
-        position = pos + 1;
-        node = descendant;
-        return false;
-      }
-    }
-
-    return true;
+    if (isPlaceholder) occurrences.push({ node, position });
   });
 
-  return { position, node };
+  return occurrences;
+};
+
+// patches every occurrence in one transaction (leaf nodes keep their size, so
+// the positions hold); a node selection sitting on one of them is restored
+// because it does not survive setNodeMarkup mapping
+const updateUploadedNodeAttrs = ({ editor, occurrences, attrs }) => {
+  const { selection } = editor.state;
+  const tr = editor.state.tr.setMeta('preventAutolink', true);
+  let selectedPosition;
+
+  occurrences.forEach(({ node, position }) => {
+    if (selection.node === node && selection.from === position) selectedPosition = position;
+
+    tr.setNodeMarkup(position, undefined, { ...node.attrs, ...attrs });
+  });
+
+  if (selectedPosition !== undefined) {
+    tr.setSelection(NodeSelection.create(tr.doc, selectedPosition));
+  }
+
+  editor.view.dispatch(tr);
+};
+
+// removes every occurrence in one transaction, later ones first so the
+// earlier positions stay valid
+const deleteUploadedFileOccurrences = (editor, occurrences) => {
+  const tr = editor.state.tr.setMeta('preventAutolink', true);
+
+  [...occurrences].reverse().forEach(({ node, position }) => {
+    tr.delete(position, position + node.nodeSize);
+  });
+
+  editor.view.dispatch(tr);
 };
 
 export const acceptedMimes = {
@@ -156,8 +183,7 @@ const uploadMedia = async ({ type, editor, file, uploadsPath, renderMarkdown, ev
   const currentNode = selection.$to.node();
   const fileId = uniqueId(type);
 
-  let position = selection.to;
-  let node;
+  const position = selection.to;
   let content = {
     type,
     attrs: { uploading: fileId, src: objectUrl, alt: file.name },
@@ -169,21 +195,10 @@ const uploadMedia = async ({ type, editor, file, uploadsPath, renderMarkdown, ev
 
       // Target the node by its fileId rather than the current selection, which
       // may have moved to a subsequently dropped media before this resolves.
-      const { node: uploadedNode, position: uploadedPosition } = findUploadedFilePosition(
-        editor,
-        fileId,
-      );
-      if (!uploadedNode) return;
+      const occurrences = findUploadedFileOccurrences(editor, fileId);
+      if (!occurrences.length) return;
 
-      editor.view.dispatch(
-        editor.state.tr
-          .setMeta('preventAutolink', true)
-          .setNodeMarkup(uploadedPosition, undefined, {
-            ...uploadedNode.attrs,
-            width,
-            height,
-          }),
-      );
+      updateUploadedNodeAttrs({ editor, occurrences, attrs: { width, height } });
     })
     .catch(() => {});
 
@@ -207,28 +222,23 @@ const uploadMedia = async ({ type, editor, file, uploadsPath, renderMarkdown, ev
     })
     .then(({ canonicalSrc, src }) => {
       // the position might have changed while uploading, so we need to find it again
-      ({ node, position } = findUploadedFilePosition(editor, fileId));
+      const occurrences = findUploadedFileOccurrences(editor, fileId);
 
       uploadingStates[fileId] = true;
 
-      editor.view.dispatch(
-        editor.state.tr.setMeta('preventAutolink', true).setNodeMarkup(position, undefined, {
-          ...node.attrs,
-          uploading: false,
-          src,
-          alt: file.name,
-          canonicalSrc,
-        }),
-      );
+      // placeholder deleted mid-upload: discard the upload result
+      if (!occurrences.length) return;
 
-      chain(editor).setNodeSelection(position).run();
+      updateUploadedNodeAttrs({
+        editor,
+        occurrences,
+        attrs: { uploading: false, src, alt: file.name, canonicalSrc },
+      });
     })
     .catch((e) => {
-      ({ position } = findUploadedFilePosition(editor, fileId));
+      const occurrences = findUploadedFileOccurrences(editor, fileId);
 
-      chain(editor)
-        .deleteRange({ from: position, to: position + 1 })
-        .run();
+      if (occurrences.length) deleteUploadedFileOccurrences(editor, occurrences);
 
       notifyUploadError(eventHub, e);
     });
@@ -245,7 +255,7 @@ const uploadAttachment = async ({ editor, file, uploadsPath, renderMarkdown, eve
 
   uploadingStates[fileId] = true;
 
-  let position = selection.to;
+  const position = selection.to;
   let content = {
     type: 'text',
     text: file.name,
@@ -268,23 +278,31 @@ const uploadAttachment = async ({ editor, file, uploadsPath, renderMarkdown, eve
     })
     .then(({ src, canonicalSrc }) => {
       // the position might have changed while uploading, so we need to find it again
-      ({ position } = findUploadedFilePosition(editor, fileId));
+      const occurrences = findUploadedFileOccurrences(editor, fileId);
 
-      chain(editor)
-        .setTextSelection(position)
-        .extendMarkRange('link')
-        .updateAttributes('link', { href: src, canonicalSrc, uploading: false })
-        .run();
+      // placeholder link deleted mid-upload: discard the upload result
+      if (!occurrences.length) return;
+
+      // styling or edits may have split the link into several text nodes;
+      // each carries the mark, so each is patched
+      const tr = editor.state.tr.setMeta('preventAutolink', true);
+
+      occurrences.forEach(({ node, position: from }) => {
+        const linkMark = node.marks.find((mark) => mark.type.name === 'link');
+
+        tr.addMark(
+          from,
+          from + node.nodeSize,
+          linkMark.type.create({ ...linkMark.attrs, href: src, canonicalSrc, uploading: false }),
+        );
+      });
+
+      editor.view.dispatch(tr);
     })
     .catch((e) => {
-      ({ position } = findUploadedFilePosition(editor, fileId));
+      const occurrences = findUploadedFileOccurrences(editor, fileId);
 
-      chain(editor)
-        .setTextSelection(position)
-        .extendMarkRange('link')
-        .unsetLink()
-        .deleteSelection()
-        .run();
+      if (occurrences.length) deleteUploadedFileOccurrences(editor, occurrences);
 
       notifyUploadError(eventHub, e);
     });

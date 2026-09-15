@@ -1,5 +1,5 @@
 ---
-stage: Tenant Scale
+stage: GitLab Dedicated
 group: Geo
 info: Any user with at least the Maintainer role can merge updates to this content. For details, see <https://docs.gitlab.com/development/development_processes/#development-guidelines-review>.
 title: Geo self-service framework
@@ -19,7 +19,7 @@ minimal effort of the engineer who created a data type.
 
 ## Geo is a requirement in the definition of done
 
-Geo is the GitLab solution for [disaster recovery](https://about.gitlab.com/direction/geo/disaster_recovery/). A robust disaster recovery solution must replicate **all GitLab data** such that all GitLab services can be successfully restored in their entirety with minimal data loss in the event of a disaster.
+Geo is the GitLab solution for [disaster recovery](https://about.gitlab.com/direction/geo/disaster_recovery/). A robust disaster recovery solution must replicate all GitLab data such that all GitLab services can be successfully restored in their entirety with minimal data loss in the event of a disaster.
 
 For this reason, Geo replication and verification support for GitLab generated data is part of the [definition of done](../contributing/merge_request_workflow.md#definition-of-done). This ensures that new features ship with Geo support and our customers are not exposed to data loss.
 
@@ -165,7 +165,7 @@ Models that use [CarrierWave's](https://github.com/carrierwaveuploader/carrierwa
 
 Each file is expected to have its own primary ID and model. Geo strongly recommends treating every single file as a first-class citizen, because in our experience this greatly simplifies tracking replication and verification state.
 
-To implement Geo replication of a new blob-type Model, [open an issue with the provided issue template](https://gitlab.com/gitlab-org/gitlab/-/issues/new?description_template=Geo%20Replicate%20a%20new%20blob%20type).
+To implement Geo replication of a new blob-type Model, [open an issue with the provided issue template](https://gitlab.com/gitlab-org/gitlab/-/work_items/new?description_template=Geo%20Replicate%20a%20new%20blob%20type).
 
 To view the implementation steps without opening an issue, [view the issue template file](https://gitlab.com/gitlab-org/gitlab/-/blob/master/.gitlab/issue_templates/Geo%20Replicate%20a%20new%20blob%20type.md).
 
@@ -177,6 +177,6 @@ Each Git repository is expected to have its own primary ID and model.
 
 For a detailed explanation of the repository sync flow, exclusive lease mechanism, and troubleshooting orphaned lease keys, see the [repository synchronization documentation](repository_sync.md).
 
-To implement Geo replication of a new Git repository-type Model, [open an issue with the provided issue template](https://gitlab.com/gitlab-org/gitlab/-/issues/new?description_template=Geo%20Replicate%20a%20new%20Git%20repository%20type).
+To implement Geo replication of a new Git repository-type Model, [open an issue with the provided issue template](https://gitlab.com/gitlab-org/gitlab/-/work_items/new?description_template=Geo%20Replicate%20a%20new%20Git%20repository%20type).
 
 To view the implementation steps without opening an issue, [view the issue template file](https://gitlab.com/gitlab-org/gitlab/-/blob/master/.gitlab/issue_templates/Geo%20Replicate%20a%20new%20Git%20repository%20type.md).

@@ -240,7 +240,7 @@ You can now use the Gemini 2.5 Flash model on GitLab Duo Agent Platform with Git
 
 - Tier: Free, Premium, Ultimate
 - Offering: GitLab.com, GitLab Self-Managed, GitLab Dedicated, GitLab Dedicated for Government
-- Links: [Documentation](../../administration/settings/rate_limit_on_projects_api.md#configure-rate-limits-on-listing-project-members) | [Related issue](https://gitlab.com/gitlab-org/gitlab/-/issues/580116)
+- Links: [Documentation](../../rate_limits/api/projects.md#configure-rate-limits-on-listing-project-members) | [Related issue](https://gitlab.com/gitlab-org/gitlab/-/issues/580116)
 
 {{< /details >}}
 

@@ -1,0 +1,9 @@
+---
+name: delete_ai_flow_schedule
+description: Grants the ability to delete schedules of AI flow triggers
+available_for:
+  - granular_access_token
+permissions:
+  - delete_ai_flow_schedule
+boundaries:
+  - project

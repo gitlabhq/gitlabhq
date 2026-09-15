@@ -84,7 +84,7 @@ describe('stage column component', () => {
     });
 
     it('should emit updateMeasurements event on mount', () => {
-      expect(wrapper.emitted()['update-measurements']).toHaveLength(1);
+      expect(wrapper.emitted('update-measurements')).toHaveLength(1);
     });
   });
 
@@ -107,7 +107,7 @@ describe('stage column component', () => {
     });
 
     it('emits refresh-pipeline-graph', () => {
-      expect(wrapper.emitted()['refresh-pipeline-graph']).toHaveLength(1);
+      expect(wrapper.emitted('refresh-pipeline-graph')).toHaveLength(1);
     });
   });
 
@@ -192,9 +192,9 @@ describe('stage column component', () => {
 
       it('emits job-hover event on mouseenter and mouseleave', async () => {
         await findStageColumnGroup().trigger('mouseenter');
-        expect(wrapper.emitted()['job-hover']).toEqual([[defaultProps.groups[0].name]]);
+        expect(wrapper.emitted('job-hover')).toEqual([[defaultProps.groups[0].name]]);
         await findStageColumnGroup().trigger('mouseleave');
-        expect(wrapper.emitted()['job-hover']).toEqual([[defaultProps.groups[0].name], ['']]);
+        expect(wrapper.emitted('job-hover')).toEqual([[defaultProps.groups[0].name], ['']]);
       });
     });
   });

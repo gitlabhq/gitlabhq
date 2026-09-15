@@ -139,6 +139,52 @@ RSpec.describe API::Ci::Runner, :clean_gitlab_redis_shared_state, feature_catego
         end
       end
 
+      context 'when the runner organization is in maintenance mode' do
+        let_it_be_with_reload(:organization) { create(:organization) }
+
+        let(:params) { { token: runner.token } }
+        let(:success_status) { :ok }
+
+        def request
+          verify
+        end
+
+        context 'with a group runner' do
+          let_it_be(:group) { create(:group, organization: organization) }
+          let_it_be_with_reload(:runner) do
+            create(:ci_runner, :group, groups: [group], token_expires_at: 3.days.from_now)
+          end
+
+          it_behaves_like 'an API request enforcing organization maintenance mode'
+        end
+
+        context 'with a project runner' do
+          let_it_be(:project) { create(:project, organization: organization) }
+          let_it_be_with_reload(:runner) do
+            create(:ci_runner, :project, projects: [project], token_expires_at: 3.days.from_now)
+          end
+
+          it_behaves_like 'an API request enforcing organization maintenance mode'
+        end
+
+        context 'with an instance runner whose organization is not resolved' do
+          let_it_be_with_reload(:runner) do
+            create(:ci_runner, :instance, token_expires_at: 3.days.from_now)
+          end
+
+          before do
+            organization.start_maintenance(maintenance_reason: 'migration')
+            organization.confirm_maintenance
+          end
+
+          it 'is not affected by maintenance mode enforcement' do
+            verify
+
+            expect(response).to have_gitlab_http_status(:ok)
+          end
+        end
+      end
+
       context 'when non-expired token is provided' do
         let(:params) { { token: runner.token } }
 

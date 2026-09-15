@@ -56,9 +56,12 @@ export const useDiffsList = defineStore('diffsList', {
       500,
       { leading: true },
     ),
-    addLoadedFile({ target }) {
-      if (this.status === statuses.fetching) return;
-      this.loadedFiles = { ...this.loadedFiles, [target.id]: true };
+    addLoadedFiles(ids) {
+      if (this.status === statuses.fetching || ids.length === 0) return;
+      this.loadedFiles = {
+        ...this.loadedFiles,
+        ...Object.fromEntries(ids.map((id) => [id, true])),
+      };
     },
     setLinkedFileData(data) {
       this.linkedFileData = data;

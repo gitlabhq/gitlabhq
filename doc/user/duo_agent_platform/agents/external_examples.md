@@ -27,6 +27,9 @@ These examples contain the following variables:
   - In issues or epics, the comments (up to a limit)
 - `$AI_FLOW_EVENT`: the type of trigger event (for example, `mention`)
 - `$AI_FLOW_INPUT`: the prompt the user enters as a comment in the merge request, issue, or epic
+- `$AI_FLOW_GITLAB_TOKEN`: the OAuth token for authenticating to the GitLab API
+- `$AI_FLOW_GITLAB_HOSTNAME`: the hostname of the GitLab instance (for example, `gitlab.com`)
+- `$AI_FLOW_PROJECT_PATH`: the full path of the project (for example, `my-group/my-project`)
 
 ## Integrated with GitLab
 

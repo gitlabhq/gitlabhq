@@ -92,7 +92,7 @@ flowchart TD
 This diagram shows the four main implementation layers:
 
 - **CE (Green)**: Community Edition features with no licensing requirements.
-  If your target audience is **free users on GitLab.com**, follow the **SaaS** decision path
+  If your target audience is free users on GitLab.com, follow the SaaS decision path
 - **EE (Orange)**: Enterprise Edition features requiring Premium/Ultimate licenses
 - **SaaS (Pink)**: Features exclusive to GitLab.com instances
 - **Dedicated (Blue)**: Features that behave differently on GitLab Dedicated instances
@@ -131,7 +131,7 @@ context rich definitions around the reason the feature is SaaS-only.
 
 #### SaaS-only feature definition and validation
 
-This process is meant to ensure consistent SaaS feature usage in the codebase. All SaaS features **must**:
+This process is meant to ensure consistent SaaS feature usage in the codebase. All SaaS features must:
 
 - Be known. Only use SaaS features that are explicitly defined.
 - Have an owner.
@@ -193,11 +193,11 @@ See [extending CE with EE guide](#extend-ce-features-with-ee-backend-code).
 ### SaaS-only features in tests
 
 Introducing a SaaS-only feature into the codebase creates an additional code path that should be tested.
-Include automated tests for all code affected by a SaaS-only feature, both when the feature is **enabled**
-and **disabled** to ensure the feature works properly.
+Include automated tests for all code affected by a SaaS-only feature, both when the feature is enabled
+and disabled to ensure the feature works properly.
 
 Just as we use `Gitlab::Saas.feature_available?(:specific_feature)` instead of `Gitlab.com?` in application code
-to convey **why** something is SaaS-only, we should use specific SaaS feature metadata tags in tests for the same
+to convey why something is SaaS-only, we should use specific SaaS feature metadata tags in tests for the same
 reason.
 This creates a clear connection between the feature implementation and its tests, making the codebase more maintainable
 and self-documenting.
@@ -390,7 +390,7 @@ the feature behaves differently for Dedicated instances.
 
 #### Dedicated feature definition and validation
 
-This process ensures consistent Dedicated feature usage in the codebase. All Dedicated features **must**:
+This process ensures consistent Dedicated feature usage in the codebase. All Dedicated features must:
 
 - Be known. Only use Dedicated features that are explicitly defined in `FEATURES`.
 - Have an owner.
@@ -1814,7 +1814,7 @@ export default {
 
 - this way the correct component is included for either the CE or EE implementation
 
-**For EE components that need different results for the same computed values, we can pass in props to the CE wrapper as seen in the example.**
+For EE components that need different results for the same computed values, we can pass in props to the CE wrapper as seen in the example.
 
 - **EE extra HTML**
   - For the templates that have extra HTML in EE we should move it into a new component and use the `ee_else_ce` import alias
@@ -1875,7 +1875,7 @@ export const myFunction = () => {
 
 #### Testing modules using EE/CE aliases
 
-When writing Frontend tests, if the module under test imports other modules with `ee_else_ce/...` and these modules are also needed by the relevant test, then the relevant test **must** import these modules with `ee_else_ce/...`. This avoids unexpected EE or FOSS failures, and helps ensure the EE behaves like CE when it is unlicensed.
+When writing Frontend tests, if the module under test imports other modules with `ee_else_ce/...` and these modules are also needed by the relevant test, then the relevant test must import these modules with `ee_else_ce/...`. This avoids unexpected EE or FOSS failures, and helps ensure the EE behaves like CE when it is unlicensed.
 
 For example:
 

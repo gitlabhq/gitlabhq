@@ -56,6 +56,8 @@ RSpec.describe 'Projects > Files > User wants to edit a file', :js, feature_cate
         end
 
         it 'renders an error message' do
+          expect(page).to have_field('file_path', with: '.gitignore')
+
           click_button 'Commit changes'
 
           within_testid('commit-change-modal') do

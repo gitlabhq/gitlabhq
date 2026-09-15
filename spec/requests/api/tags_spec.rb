@@ -555,6 +555,54 @@ RSpec.describe API::Tags, feature_category: :source_code_management do
         end
       end
     end
+
+    context 'when rate limited' do
+      it_behaves_like 'rate limited endpoint', rate_limit_key: :tags_create do
+        let(:current_user) { user }
+        let_it_be(:user) { create(:user) }
+        let_it_be(:other_project) { create(:project, :repository, creator: user, developers: user) }
+
+        def request
+          post api(route, current_user), params: { tag_name: 'rate-limited-tag', ref: 'master' }
+        end
+
+        def request_with_second_scope
+          post api("/projects/#{other_project.id}/repository/tags", current_user),
+            params: { tag_name: 'rate-limited-tag-2', ref: 'master' }
+        end
+      end
+
+      context 'with the real limit applied', :clean_gitlab_redis_rate_limiting do
+        let(:other_developer) { create(:user, developer_of: project) }
+
+        before do
+          stub_application_setting(tags_create_limit: 1)
+        end
+
+        it 'shares the bucket between users of the same project' do
+          post api(route, user), params: { tag_name: 'shared-bucket-1', ref: 'master' }
+
+          expect(response).to have_gitlab_http_status(:created)
+
+          post api(route, other_developer), params: { tag_name: 'shared-bucket-2', ref: 'master' }
+
+          expect(response).to have_gitlab_http_status(:too_many_requests)
+        end
+
+        it 'does not consume the budget for requests rejected by authorization' do
+          public_project = create(:project, :repository, :public, creator: user, developers: user)
+          public_route = "/projects/#{public_project.id}/repository/tags"
+
+          post api(public_route), params: { tag_name: 'anonymous-tag', ref: 'master' }
+
+          expect(response).to have_gitlab_http_status(:forbidden)
+
+          post api(public_route, user), params: { tag_name: 'authorized-tag', ref: 'master' }
+
+          expect(response).to have_gitlab_http_status(:created)
+        end
+      end
+    end
   end
 
   describe 'DELETE /projects/:id/repository/tags/:tag_name' do

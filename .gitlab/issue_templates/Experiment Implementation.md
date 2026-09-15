@@ -13,6 +13,13 @@
 |---------|-----------|
 | | |
 
+# Proposed engineering direction
+<!-- Engineering direction for whoever implements this (a person or an agent): where the change goes (page, component,
+     service, entry point) and how control and candidate differ in code terms.
+     Call out anything that cannot be discovered from this repository alone -- behaviour of other projects or services
+     (e.g. CustomersDot / the Customers Portal), URL or API contracts, default values, existing helpers to reuse -- and
+     link the source where possible. Open decisions can be left as questions; they are settled during implementation planning. -->
+
 # UX Transition Considerations
 <!-- Consider what happens to users when they move between control and candidate groups, or when the experiment is cleaned up.
      Some experiments involve persistent user state (e.g. pinned items, saved settings, layout preferences) that is tied to

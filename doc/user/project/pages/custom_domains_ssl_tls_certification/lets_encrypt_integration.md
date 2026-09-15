@@ -1,6 +1,6 @@
 ---
 stage: Plan
-group: Knowledge
+group: Planner Intelligence
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see <https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments>
 description: Automatic Let's Encrypt SSL certificates for GitLab Pages.
 title: GitLab Pages Let's Encrypt certificates
@@ -15,14 +15,14 @@ title: GitLab Pages Let's Encrypt certificates
 
 The GitLab Pages integration with Let's Encrypt (LE) allows you
 to use LE certificates for your Pages website with custom domains
-without the hassle of having to issue and update them yourself;
+without the hassle of having to issue and update them yourself.
 GitLab does it for you, out-of-the-box.
 
 [Let's Encrypt](https://letsencrypt.org) is a free, automated, and
 open source Certificate Authority.
 
 > [!warning]
-> This feature covers only certificates for **custom domains**, not the wildcard certificate required to run
+> This feature covers only certificates for custom domains, not the wildcard certificate required to run
 > [Pages daemon](../../../../administration/pages/_index.md) (GitLab Self-Managed, Free, Premium, and Ultimate only). Wildcard
 > certificate generation is tracked in [this issue](https://gitlab.com/gitlab-org/omnibus-gitlab/-/issues/3342).
 
@@ -56,13 +56,13 @@ After you've met the requirements, enable Let's Encrypt integration:
 
 1. Select **Save changes**.
 
-Once enabled, GitLab obtains a LE certificate and add it to the
+Once enabled, GitLab obtains a LE certificate and adds it to the
 associated Pages domain. GitLab also renews it automatically.
 
 > [!note]
 > Issuing the certificate and updating Pages configuration
-> **can take up to an hour**.
-> If you already have an SSL certificate in domain settings it
+> can take up to an hour.
+> If you already have an SSL certificate in domain settings, it
 > continues to work until replaced by the Let's Encrypt certificate.
 
 ## Troubleshooting
@@ -114,7 +114,7 @@ Remove and add the domain for GitLab Pages again by following these steps:
 1. [Enable Let's Encrypt integration for your domain](#enabling-lets-encrypt-integration-for-your-custom-domain).
 1. If you're still getting the same error:
    1. Make sure you have properly set only one `CNAME` or `A` DNS record for your domain.
-   1. Make sure your domain **doesn't have** an `AAAA` DNS record.
+   1. Make sure your domain does not have an `AAAA` DNS record.
    1. If you have a `CAA` DNS record for your domain or any higher level domains, make sure [it includes `letsencrypt.org`](https://letsencrypt.org/docs/caa/).
    1. Go to step 1.
 

@@ -58,7 +58,6 @@ RSpec.describe 'Users > Terms', :js, feature_category: :user_profile do
 
   context 'when signed in' do
     let(:user) { create(:user) }
-    let(:current_organization) { user.organization }
 
     before do
       sign_in(user)

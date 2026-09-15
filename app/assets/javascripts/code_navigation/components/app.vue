@@ -52,13 +52,13 @@ export default {
 
     this.body = document.body;
 
-    eventHub.$on('showBlobInteractionZones', this.showCodeNavigation);
+    eventHub.$on('show-blob-interaction-zones', this.showCodeNavigation);
 
     this.addGlobalEventListeners();
     this.fetchData();
   },
   beforeDestroy() {
-    eventHub.$off('showBlobInteractionZones', this.showCodeNavigation);
+    eventHub.$off('show-blob-interaction-zones', this.showCodeNavigation);
     this.removeGlobalEventListeners();
   },
   methods: {

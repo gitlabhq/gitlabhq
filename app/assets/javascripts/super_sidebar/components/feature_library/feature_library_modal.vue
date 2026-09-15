@@ -10,7 +10,7 @@ import {
   GlLoadingIcon,
 } from '@gitlab/ui';
 import * as Sentry from '~/sentry/sentry_browser_wrapper';
-import { s__ } from '~/locale';
+import { s__, n__, sprintf } from '~/locale';
 import axios from '~/lib/utils/axios_utils';
 import { DEFAULT_DEBOUNCE_AND_THROTTLE_MS } from '~/lib/utils/constants';
 import { HTTP_STATUS_TOO_MANY_REQUESTS } from '~/lib/utils/http_status';
@@ -22,6 +22,7 @@ import { InternalEvents } from '~/tracking';
 import {
   EVENT_OPEN_FEATURE_LIBRARY_MODAL,
   EVENT_SEARCH_FEATURES_IN_FEATURE_LIBRARY_MODAL,
+  EVENT_CLICK_CATEGORY_FILTER_IN_FEATURE_LIBRARY_MODAL,
   EVENT_PIN_ITEM_IN_FEATURE_LIBRARY_MODAL,
   EVENT_UNPIN_ITEM_IN_FEATURE_LIBRARY_MODAL,
   EVENT_NAVIGATE_TO_FEATURE_FROM_FEATURE_LIBRARY_MODAL,
@@ -36,6 +37,7 @@ import FeatureLibraryItem from './feature_library_item.vue';
 const SETTINGS_MENU_ID = 'settings_menu';
 const trackingMixin = InternalEvents.mixin();
 const MIN_SEARCH_QUERY_LENGTH = 2;
+const ALL_CATEGORIES = 'all';
 
 export default {
   name: 'FeatureLibraryModal',
@@ -55,10 +57,15 @@ export default {
   modalId: MODAL_ID,
   DEFAULT_DEBOUNCE_AND_THROTTLE_MS,
   FEEDBACK_ISSUE_URL,
+  searchInputDescriptionId: 'feature-library-search-input-description',
   i18n: {
     geminiSearching: s__('FeatureLibrary|Searching with Gemini …'),
+    searchInProgress: s__('FeatureLibrary|Searching for features …'),
     geminiEmptyState: s__(
       "FeatureLibrary|Gemini couldn't find a matching feature. Try different keywords.",
+    ),
+    searchInputDescription: s__(
+      'FeatureLibrary|Press Enter or the down arrow key to move to the first search result.',
     ),
   },
   inject: {
@@ -92,6 +99,7 @@ export default {
   data() {
     return {
       searchQuery: '',
+      selectedCategory: ALL_CATEGORIES,
       collapsedSectionIds: [],
       searchResultIds: [],
       isSearching: false,
@@ -155,11 +163,22 @@ export default {
     catalogById() {
       return Object.fromEntries(this.catalog.map((item) => [item.id, item]));
     },
+    categoryOptions() {
+      return [
+        { id: ALL_CATEGORIES, title: s__('FeatureLibrary|All') },
+        ...this.catalogSections.map((section) => ({ id: section.id, title: section.title })),
+      ];
+    },
+    scopedCatalog() {
+      if (this.selectedCategory === ALL_CATEGORIES) return this.catalog;
+
+      return this.catalog.filter((item) => item.category === this.selectedCategory);
+    },
     filteredItems() {
-      if (!this.trimmedQuery) return this.catalog;
+      if (!this.trimmedQuery) return this.scopedCatalog;
 
       return rankSearchResults({
-        catalog: this.catalog,
+        catalog: this.scopedCatalog,
         query: this.trimmedQuery,
         synonymIds: this.searchResultIds,
       });
@@ -184,11 +203,38 @@ export default {
         return { id: section.id, title: section.title, items };
       });
     },
+    hasActiveCategoryFilter() {
+      return this.selectedCategory !== ALL_CATEGORIES;
+    },
+    selectedCategoryLabel() {
+      return this.categoryOptions.find((option) => option.id === this.selectedCategory)?.title;
+    },
+    categoryStatusMessage() {
+      if (this.isSearching || !this.hasActiveCategoryFilter) return '';
+
+      const count = this.filteredItems.length;
+      return sprintf(
+        n__(
+          'FeatureLibrary|Showing %{count} feature in %{category}',
+          'FeatureLibrary|Showing %{count} features in %{category}',
+          count,
+        ),
+        { count, category: this.selectedCategoryLabel },
+      );
+    },
+    showResultsGrid() {
+      return !this.isSearching && (Boolean(this.trimmedQuery) || this.hasActiveCategoryFilter);
+    },
+    // The !isSearching guard stops the grouped view flashing in behind the
+    // loading spinner while a search request is in flight.
+    showGroupedSections() {
+      return !this.isSearching && !this.showResultsGrid;
+    },
     showEmptyState() {
       return (
         !this.isSearching &&
         !this.isGeminiSearching &&
-        this.hasSearchableQuery &&
+        (this.hasSearchableQuery || this.hasActiveCategoryFilter) &&
         this.filteredItems.length === 0 &&
         !this.showGeminiEmptyState
       );
@@ -197,10 +243,12 @@ export default {
       if (!this.geminiResultIds.length) return [];
 
       const shownIds = new Set(this.filteredItems.map((item) => item.id));
+      const inScope = (item) =>
+        this.selectedCategory === ALL_CATEGORIES || item.category === this.selectedCategory;
 
       return this.geminiResultIds
         .map((id) => this.catalogById[id])
-        .filter((item) => item && !shownIds.has(item.id));
+        .filter((item) => item && inScope(item) && !shownIds.has(item.id));
     },
     showGeminiSection() {
       return (
@@ -235,6 +283,25 @@ export default {
     emptyStateTitle() {
       return s__('FeatureLibrary|No features match your search');
     },
+    searchStatusMessage() {
+      if (!this.trimmedQuery) {
+        return '';
+      }
+
+      if (this.isSearching) {
+        return this.$options.i18n.searchInProgress;
+      }
+
+      if (this.filteredItems.length === 0) {
+        return this.emptyStateTitle;
+      }
+
+      return n__(
+        'FeatureLibrary|%d feature found.',
+        'FeatureLibrary|%d features found.',
+        this.filteredItems.length,
+      );
+    },
     showGeminiTopBorder() {
       // showEmptyState already requires !showGeminiEmptyState, so the two are
       // mutually exclusive: no need to check showEmptyState separately here.
@@ -258,13 +325,17 @@ export default {
       }
 
       if (this.geminiItems.length > 0) {
-        return s__('FeatureLibrary|Gemini found matching features.');
+        return n__(
+          'FeatureLibrary|Gemini found %d matching feature.',
+          'FeatureLibrary|Gemini found %d matching features.',
+          this.geminiItems.length,
+        );
       }
 
       return '';
     },
   },
-  beforeUnmount() {
+  beforeDestroy() {
     this.cancelReveal();
   },
   methods: {
@@ -281,26 +352,44 @@ export default {
         this.collapsedSectionIds = this.collapsedSectionIds.filter((id) => id !== sectionId);
       }
     },
+    isCategorySelected(categoryId) {
+      return this.selectedCategory === categoryId;
+    },
+    selectCategory(categoryId) {
+      const next = this.isCategorySelected(categoryId) ? ALL_CATEGORIES : categoryId;
+      this.selectedCategory = next;
+      this.trackEvent(EVENT_CLICK_CATEGORY_FILTER_IN_FEATURE_LIBRARY_MODAL, { label: next });
+      this.$refs.searchBox?.focusInput?.();
+    },
     onShown() {
       this.$refs.searchBox?.focusInput();
       this.revealRemainingItems();
       this.trackEvent(EVENT_OPEN_FEATURE_LIBRARY_MODAL);
     },
-    onSearchEnter() {
-      if (!this.trimmedQuery || this.isSearching || !this.filteredItems.length) return;
+    focusFirstResult(event) {
+      if (!this.trimmedQuery || this.isSearching) return;
 
       // Move focus into the results instead of navigating away: focusing the
       // first result lets keyboard users continue from there
-      // (e.g. Tab to its pin action, or Enter again to open it).
-      //
-      // Match by id rather than taking $refs.searchResultItems[0]: Vue 2's
-      // v-for ref arrays reflect registration order, which isn't guaranteed
-      // to track the current (re-ranked) filteredItems order.
-      const [firstDisplayedItem] = this.filteredItems;
-      const firstResultComponent = (this.$refs.searchResultItems || []).find(
-        (component) => component.item.id === firstDisplayedItem.id,
-      );
-      firstResultComponent?.focus();
+      // (e.g. Tab to its pin action, or Enter again to open it). When the
+      // main grid is empty, fall through to the first Gemini suggestion; a
+      // hidden Gemini section renders no refs, so this no-ops and both keys
+      // keep their default behavior.
+      const target =
+        this.findResultComponent(this.$refs.searchResultItems, this.filteredItems[0]) ||
+        this.findResultComponent(this.$refs.geminiResultItems, this.geminiItems[0]);
+
+      if (!target) return;
+
+      event.preventDefault();
+      target.focus();
+    },
+    // Match by id rather than taking refs[0]: Vue 2's v-for ref arrays
+    // reflect registration order, which isn't guaranteed to track the
+    // current (re-ranked) item order.
+    findResultComponent(components, item) {
+      if (!item) return null;
+      return (components || []).find((component) => component.item.id === item.id) || null;
     },
     revealRemainingItems() {
       if (this.renderLimit >= this.catalog.length) return;
@@ -356,6 +445,7 @@ export default {
       this.resetGeminiState();
       this.cancelReveal();
       this.searchQuery = '';
+      this.selectedCategory = ALL_CATEGORIES;
       this.collapsedSectionIds = [];
       this.renderLimit = ITEMS_PER_RENDER_FRAME;
     },
@@ -459,19 +549,66 @@ export default {
       ref="searchBox"
       :value="searchQuery"
       :placeholder="searchPlaceholder"
+      :aria-describedby="$options.searchInputDescriptionId"
       :debounce="$options.DEFAULT_DEBOUNCE_AND_THROTTLE_MS"
-      class="gl-mb-4 gl-mt-3"
+      class="gl-mt-3"
       @input="onSearchInput"
-      @keydown.enter="onSearchEnter"
+      @keydown.enter="focusFirstResult"
+      @keydown.down="focusFirstResult"
     />
+    <span :id="$options.searchInputDescriptionId" class="gl-sr-only">
+      {{ $options.i18n.searchInputDescription }}
+    </span>
+    <div
+      role="group"
+      :aria-label="s__('FeatureLibrary|Filter features by category')"
+      data-testid="feature-library-category-filters"
+      class="-gl-ml-2 gl-mb-1 gl-mt-1 gl-flex gl-shrink-0 gl-gap-2 gl-overflow-x-auto gl-p-2"
+    >
+      <gl-button
+        v-for="category in categoryOptions"
+        :key="category.id"
+        category="secondary"
+        size="small"
+        class="gl-shrink-0"
+        :selected="isCategorySelected(category.id)"
+        :aria-pressed="isCategorySelected(category.id) ? 'true' : 'false'"
+        data-testid="feature-library-category-filter"
+        @click="selectCategory(category.id)"
+      >
+        {{ category.title }}
+      </gl-button>
+    </div>
+    <!-- Announced via a live region since focus returns to the search input,
+         not the filter button, on category selection. -->
+    <div
+      role="status"
+      aria-live="polite"
+      aria-atomic="true"
+      data-testid="feature-library-category-status"
+      class="gl-sr-only"
+    >
+      {{ categoryStatusMessage }}
+    </div>
+    <!-- Always present in the DOM for the same mount-timing reason as the
+         Gemini status region below. -->
+    <div
+      role="status"
+      aria-live="polite"
+      aria-atomic="true"
+      data-testid="search-status-region"
+      class="gl-sr-only"
+    >
+      {{ searchStatusMessage }}
+    </div>
     <scroll-scrim
       data-testid="feature-library-scroll-area"
       class="feature-library-scroll-area feature-library-scroll-bleed gl-min-h-0 gl-grow"
     >
       <div class="feature-library-scroll-inset">
-        <!-- Search results: a single flat, ranked grid. -->
+        <!-- Search results or a category filter: a single flat, ranked grid. -->
         <ul
-          v-if="trimmedQuery && !isSearching && filteredItems.length > 0"
+          v-if="showResultsGrid && filteredItems.length > 0"
           data-testid="feature-library-grid"
           class="gl-grid gl-list-none gl-grid-cols-1 gl-gap-3 gl-p-0 sm:gl-grid-cols-2 md:gl-grid-cols-3"
         >
@@ -487,7 +624,7 @@ export default {
           />
         </ul>
         <!-- Browsing: features grouped by category, each in a collapsible section. -->
-        <template v-else-if="!trimmedQuery">
+        <template v-else-if="showGroupedSections">
           <section
             v-for="section in groupedSections"
             :key="section.id"
@@ -592,6 +729,7 @@ export default {
               <feature-library-item
                 v-for="item in geminiItems"
                 :key="item.id"
+                ref="geminiResultItems"
                 :item="item"
                 :pinned="isPinned(item.id)"
                 @pin-toggle="onPinToggle"

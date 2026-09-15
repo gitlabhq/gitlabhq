@@ -12,6 +12,18 @@ additional_properties:
     description: Subcommand used - e.g. 'view'
   command_and_subcommand:
     description: Command and subcommand used - e.g. 'mr view'
+  coding_agent:
+    description: AI coding agent driving the CLI - e.g. 'claude-code', 'codex', 'cursor'. Omitted when no agent was detected.
+  cli_version:
+    description: Version of the glab binary - e.g. 'v1.116.0'
+  platform:
+    description: Operating system the binary was built for - e.g. 'darwin', 'linux'
+  architecture:
+    description: Architecture the binary was built for - e.g. 'arm64', 'amd64'
+  api_endpoint:
+    description: For 'glab api' only, the templated API route called - e.g. '/projects/{}/merge_requests'. Matched against a known route table; unrecognised paths are reported as 'unmatched' so raw paths are never sent.
+  http_method:
+    description: For 'glab api' only, the HTTP method of the request - e.g. 'GET', 'POST'
 product_group: code_review
 product_categories:
   - gitlab_cli

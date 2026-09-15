@@ -1,6 +1,6 @@
 ---
 stage: Plan
-group: Project Management
+group: Work Items
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see <https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments>
 title: Telegram
 description: "Configure the Telegram integration to receive notifications from GitLab in Telegram chats or channels."
@@ -36,7 +36,7 @@ To configure the bot in Telegram:
 1. Add the bot as an administrator to a new or existing channel.
 1. Assign the bot `Post Messages` rights to receive events.
 1. Create an identifier for the channel.
-   - For public channels, enter a public link and copy the channel identifier (for example, `https:/t.me/MY_IDENTIFIER`).
+   - For public channels, enter a public link and copy the channel identifier (for example, `https://t.me/MY_IDENTIFIER`).
    - For private channels, use the [`getUpdates`](https://telegram-bot-sdk.readme.io/reference/getupdates) method with your API token and copy the channel identifier (for example, `-2241293890657`).
 
 ## Set up the Telegram integration in GitLab
@@ -49,17 +49,17 @@ To configure the bot in Telegram:
 
 Prerequisites:
 
-- Administrator access for instance enablement.
-- The Owner role for group enablement.
-- The Maintainer or Owner role for project enablement.
+- Administrator access to turn on the integration for an instance.
+- The Owner role to turn on the integration for a group.
+- The Maintainer or Owner role to turn on the integration for a project.
 
 After you invite the bot to a Telegram channel, you can configure GitLab to send notifications:
 
-1. To enable the integration:
-   - **For your group or project**:
+1. To turn on the integration:
+   - For your group or project:
      1. In the top bar, select **Search or go to** and find your project or group.
      1. Select **Settings** > **Integrations**.
-   - **For your instance**:
+   - For your instance:
      1. In the upper-right corner, select **Admin**.
      1. Select **Settings** > **Integrations**.
 1. Select **Telegram**.

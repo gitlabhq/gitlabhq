@@ -3,8 +3,6 @@
 require 'spec_helper'
 
 RSpec.describe Projects::Security::ConfigurationController, :routing, feature_category: :security_testing_configuration do
-  let(:base_params) { { namespace_id: 'gitlab', project_id: 'gitlabhq' } }
-
   before do
     allow(Project).to receive(:find_by_full_path).with('gitlab/gitlabhq', any_args).and_return(true)
   end

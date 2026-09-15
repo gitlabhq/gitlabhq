@@ -67,7 +67,6 @@ RSpec.describe Authn::TokenField::Digest, feature_category: :system_access do
   end
 
   describe '#set_token' do
-    let(:token_prefix) { nil }
     let(:new_token) { 'bar' }
 
     context 'when token_digest does not exist' do

@@ -145,6 +145,50 @@ RSpec.describe Mcp::Tools::Concerns::UrlParser, feature_category: :mcp_server do
         expect(result).to eq({ type: :group, path: 'namespace/group' })
       end
     end
+
+    context 'with a bare group URL (no groups/ prefix)' do
+      it 'resolves it as a group by checking the namespace' do
+        url = "https://gitlab.com/#{group.full_path}"
+        result = service.send(:parse_parent_url, url)
+
+        expect(result).to eq({ type: :group, path: group.full_path })
+      end
+
+      it 'still resolves an existing project as a project' do
+        url = "https://gitlab.com/#{project.full_path}"
+        result = service.send(:parse_parent_url, url)
+
+        expect(result).to eq({ type: :project, path: project.full_path })
+      end
+
+      it 'defaults to project for a path that matches no namespace at all' do
+        url = 'https://gitlab.com/does-not-exist/at-all'
+        result = service.send(:parse_parent_url, url)
+
+        expect(result).to eq({ type: :project, path: 'does-not-exist/at-all' })
+      end
+
+      it 'follows a redirect for a renamed group' do
+        renamed_group = create(:group)
+        old_path = renamed_group.full_path
+        renamed_group.update!(path: 'renamed-group')
+
+        url = "https://gitlab.com/#{old_path}"
+        result = service.send(:parse_parent_url, url)
+
+        expect(result).to eq({ type: :group, path: renamed_group.full_path })
+      end
+    end
+
+    context 'with an explicit groups/ prefix for a namespace that does not exist' do
+      it 'still classifies it as a group, trusting the explicit signal', :aggregate_failures do
+        url = 'https://gitlab.com/groups/no-such-group-at-all'
+        result = service.send(:parse_parent_url, url)
+
+        expect(result[:type]).to eq(:group)
+        expect(result[:path]).to eq('no-such-group-at-all')
+      end
+    end
   end
 
   describe '#parse_work_item_url' do
@@ -168,6 +212,17 @@ RSpec.describe Mcp::Tools::Concerns::UrlParser, feature_category: :mcp_server do
           parent_type: :project,
           parent_path: 'parent/child/project',
           work_item_iid: 999
+        })
+      end
+
+      it 'parses project issue URL' do
+        url = 'https://gitlab.com/namespace/project/-/issues/42'
+        result = service.send(:parse_work_item_url, url)
+
+        expect(result).to eq({
+          parent_type: :project,
+          parent_path: 'namespace/project',
+          work_item_iid: 42
         })
       end
     end
@@ -194,11 +249,36 @@ RSpec.describe Mcp::Tools::Concerns::UrlParser, feature_category: :mcp_server do
           work_item_iid: 456
         })
       end
+
+      it 'parses group epic URL' do
+        url = 'https://gitlab.com/groups/namespace/group/-/epics/123'
+        result = service.send(:parse_work_item_url, url)
+
+        expect(result).to eq({
+          parent_type: :group,
+          parent_path: 'namespace/group',
+          work_item_iid: 123
+        })
+      end
     end
 
     context 'with invalid URLs' do
-      it 'raises ArgumentError for missing work_items segment' do
-        url = 'https://gitlab.com/namespace/project/-/issues/42'
+      it 'raises ArgumentError for an epic segment on a project URL' do
+        url = 'https://gitlab.com/namespace/project/-/epics/42'
+
+        expect { service.send(:parse_work_item_url, url) }
+          .to raise_error(ArgumentError, /Invalid work item URL format/)
+      end
+
+      it 'raises ArgumentError for an issue segment on a group URL' do
+        url = 'https://gitlab.com/groups/namespace/group/-/issues/42'
+
+        expect { service.send(:parse_work_item_url, url) }
+          .to raise_error(ArgumentError, /Invalid work item URL format/)
+      end
+
+      it 'raises ArgumentError for a non-work-item resource segment' do
+        url = 'https://gitlab.com/namespace/project/-/merge_requests/42'
 
         expect { service.send(:parse_work_item_url, url) }
           .to raise_error(ArgumentError, /Invalid work item URL format/)
@@ -402,11 +482,11 @@ RSpec.describe Mcp::Tools::Concerns::UrlParser, feature_category: :mcp_server do
     context 'with access control' do
       let_it_be(:private_project) { create(:project, :private) }
 
-      it 'raises ArgumentError when user lacks access to project' do
+      it 'raises a uniform not-found error when user lacks access to project' do
         url = "https://gitlab.com/#{private_project.full_path}"
 
         expect { service.send(:resolve_parent_from_url, url) }
-          .to raise_error(ArgumentError, /Access denied to project/)
+          .to raise_error(StandardError, /not found or inaccessible/)
       end
     end
   end
@@ -415,6 +495,13 @@ RSpec.describe Mcp::Tools::Concerns::UrlParser, feature_category: :mcp_server do
     context 'with valid project work item URL' do
       it 'resolves work item and returns global ID' do
         url = "https://gitlab.com/#{project.full_path}/-/work_items/#{work_item.iid}"
+        result = service.send(:resolve_work_item_from_url, url)
+
+        expect(result).to eq(work_item.to_global_id.to_s)
+      end
+
+      it 'resolves the same work item through its issue URL' do
+        url = "https://gitlab.com/#{project.full_path}/-/issues/#{work_item.iid}"
         result = service.send(:resolve_work_item_from_url, url)
 
         expect(result).to eq(work_item.to_global_id.to_s)
@@ -447,11 +534,11 @@ RSpec.describe Mcp::Tools::Concerns::UrlParser, feature_category: :mcp_server do
       let_it_be(:private_project) { create(:project, :private) }
       let(:private_work_item) { create(:work_item, :issue, project: private_project, iid: 1) }
 
-      it 'raises ArgumentError when user lacks access to parent' do
+      it 'raises a uniform not-found error when user lacks access to parent' do
         url = "https://gitlab.com/#{private_project.full_path}/-/work_items/#{private_work_item.iid}"
 
         expect { service.send(:resolve_work_item_from_url, url) }
-          .to raise_error(ArgumentError, /Access denied to project/)
+          .to raise_error(StandardError, /not found or inaccessible/)
       end
     end
   end

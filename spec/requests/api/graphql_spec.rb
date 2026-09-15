@@ -39,7 +39,7 @@ RSpec.describe 'GraphQL', feature_category: :shared do
       end
 
       it 'logs a query with the expected params' do
-        expect(Gitlab::GraphqlLogger).to receive(:info).with(expected_execute_query_log).once
+        expect(Gitlab::GraphqlLogger).to receive(:info).with(a_hash_including(expected_execute_query_log)).once
 
         post_graphql(query, variables: variables)
       end

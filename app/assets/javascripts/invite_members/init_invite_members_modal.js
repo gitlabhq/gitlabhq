@@ -1,11 +1,7 @@
-import { GlToast } from '@gitlab/ui';
-import Vue from 'vue';
 import { initVueApp } from '~/lib/utils/vue3compat/init_vue_app';
 import { membersProvideData } from 'ee_else_ce/invite_members/utils';
 import InviteMembersModal from '~/invite_members/components/invite_members_modal.vue';
 import { parseBoolean, convertObjectPropsToCamelCase } from '~/lib/utils/common_utils';
-
-Vue.use(GlToast);
 
 export default (function initInviteMembersModal() {
   let inviteMembersModal;

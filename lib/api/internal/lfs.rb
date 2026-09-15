@@ -5,9 +5,16 @@ module API
     class Lfs < ::API::Base
       use Rack::Sendfile, 'X-Sendfile'
 
+      # gitlab-shell authenticates via a shared secret, so the global
+      # organization hook has no user; derive from gl_repository instead.
+      skip_global_organization_setup!
+
       before { authenticate_by_gitlab_shell_token! }
+      before { set_current_organization_from_repository }
 
       feature_category :source_code_management
+
+      helpers ::API::Helpers::InternalHelpers
 
       helpers do
         def find_lfs_object(lfs_oid)
@@ -29,8 +36,6 @@ module API
             lfs_object = find_lfs_object(params[:oid])
 
             not_found! unless lfs_object
-
-            _, project, repo_type = Gitlab::GlRepository.parse(params[:gl_repository])
 
             not_found! unless repo_type.project? && project
             not_found! unless lfs_object.project_allowed_access?(project)

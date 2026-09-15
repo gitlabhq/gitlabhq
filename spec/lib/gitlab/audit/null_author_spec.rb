@@ -6,7 +6,7 @@ RSpec.describe Gitlab::Audit::NullAuthor, feature_category: :compliance_manageme
   subject { described_class }
 
   describe '.for' do
-    let(:audit_event) { instance_double(AuditEvent) }
+    let(:audit_event) { instance_double(AuditEvents::UserAuditEvent) }
 
     it 'returns an DeletedAuthor' do
       allow(audit_event).to receive(:[]).with(:author_name).and_return('Old Hat')

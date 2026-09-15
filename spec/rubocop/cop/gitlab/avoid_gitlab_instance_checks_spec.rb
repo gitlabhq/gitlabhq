@@ -5,8 +5,6 @@ require 'rspec-parameterized'
 require_relative '../../../../rubocop/cop/gitlab/avoid_gitlab_instance_checks'
 
 RSpec.describe RuboCop::Cop::Gitlab::AvoidGitlabInstanceChecks, feature_category: :shared do
-  let(:msg) { described_class::MSG }
-
   describe 'bad examples' do
     where(:code) do
       %w[

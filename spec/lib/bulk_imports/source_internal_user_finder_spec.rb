@@ -15,6 +15,28 @@ RSpec.describe BulkImports::SourceInternalUserFinder, feature_category: :importe
     allow(BulkImports::Clients::Graphql).to receive(:new).with(url: url, token: token).and_return(client)
   end
 
+  describe '.cache_ghost_user_id' do
+    it 'caches the ghost user ID by bulk import ID' do
+      expect(Gitlab::Cache::Import::Caching).to receive(:write).with(cache_key, '210')
+
+      described_class.cache_ghost_user_id(bulk_import.id, '210')
+    end
+  end
+
+  describe '.cached_ghost_user_id' do
+    it 'returns the ghost user ID cached by bulk import ID' do
+      expect(Gitlab::Cache::Import::Caching).to receive(:read).with(cache_key).and_return('210')
+
+      expect(described_class.cached_ghost_user_id(bulk_import.id)).to eq('210')
+    end
+
+    it 'returns nil when no ghost user ID is cached' do
+      expect(Gitlab::Cache::Import::Caching).to receive(:read).with(cache_key).and_return(nil)
+
+      expect(described_class.cached_ghost_user_id(bulk_import.id)).to be_nil
+    end
+  end
+
   describe '#fetch_ghost_user' do
     let(:query) do
       <<~GRAPHQL
@@ -119,7 +141,7 @@ RSpec.describe BulkImports::SourceInternalUserFinder, feature_category: :importe
     end
   end
 
-  describe '#set_ghost_user_id' do
+  describe '#fetch_and_cache_ghost_id_from_source_instance' do
     let(:ghost_user) { { 'id' => 'gid://gitlab/User/210', 'username' => 'ghost', 'type' => 'GHOST' } }
 
     context 'when ghost user is found' do
@@ -127,7 +149,7 @@ RSpec.describe BulkImports::SourceInternalUserFinder, feature_category: :importe
         expect(service).to receive(:fetch_ghost_user).and_return(ghost_user)
         expect(Gitlab::Cache::Import::Caching).to receive(:write).with(cache_key, '210')
 
-        service.set_ghost_user_id
+        service.fetch_and_cache_ghost_id_from_source_instance
       end
     end
 
@@ -136,7 +158,7 @@ RSpec.describe BulkImports::SourceInternalUserFinder, feature_category: :importe
         expect(service).to receive(:fetch_ghost_user).and_return(nil)
         expect(Gitlab::Cache::Import::Caching).not_to receive(:write)
 
-        result = service.set_ghost_user_id
+        result = service.fetch_and_cache_ghost_id_from_source_instance
 
         expect(result).to be_nil
       end
@@ -149,10 +171,10 @@ RSpec.describe BulkImports::SourceInternalUserFinder, feature_category: :importe
         expect(service).to receive(:fetch_ghost_user).and_raise(error)
         expect(Gitlab::ErrorTracking).to receive(:track_exception).with(
           error,
-          { message: "Failed to set source ghost user ID", bulk_import_id: bulk_import.id }
+          { message: "Failed to fetch and cache source ghost user ID", bulk_import_id: bulk_import.id }
         )
 
-        result = service.set_ghost_user_id
+        result = service.fetch_and_cache_ghost_id_from_source_instance
 
         expect(result).to be_nil
       end

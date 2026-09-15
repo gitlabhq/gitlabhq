@@ -120,6 +120,30 @@ RSpec.describe Resolvers::Repositories::CommitsResolver, feature_category: :sour
         end
       end
 
+      describe 'first_parent' do
+        let(:arguments) { { ref: ref, first_parent: true } }
+
+        it 'passes first_parent to list_commits' do
+          expect(repository).to receive(:list_commits)
+            .with(hash_including(first_parent: true))
+            .and_call_original
+
+          commits
+        end
+      end
+
+      describe 'order' do
+        let(:arguments) { { ref: ref, order: 'topo' } }
+
+        it 'passes order to list_commits' do
+          expect(repository).to receive(:list_commits)
+            .with(hash_including(order: 'topo'))
+            .and_call_original
+
+          commits
+        end
+      end
+
       describe 'pagination params' do
         before do
           allow(repository).to receive(:list_commits).and_call_original

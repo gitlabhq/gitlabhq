@@ -71,7 +71,7 @@ RSpec.describe Gitlab::GithubGistsImport::Importer::GistImporter, feature_catego
           result = subject.execute
 
           expect(user.snippets.count).to eq(0)
-          expect(result.error?).to eq(true)
+          expect(result.error?).to be(true)
           expect(result.errors).to match_array(['Snippet maximum file count exceeded'])
         end
       end
@@ -89,7 +89,7 @@ RSpec.describe Gitlab::GithubGistsImport::Importer::GistImporter, feature_catego
 
           result = subject.execute
 
-          expect(result.error?).to eq(true)
+          expect(result.error?).to be(true)
           expect(result.errors).to match_array(['Snippet repository size exceeded'])
         end
       end

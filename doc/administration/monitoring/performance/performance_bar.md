@@ -183,5 +183,5 @@ for a given group:
 1. Expand **Profiling - Performance bar**.
 1. Select **Allow non-administrators access to the performance bar**.
 1. In the **Allow access to members of the following group** field, provide the full path of the
-   group allowed to access the performance.
+   group allowed to access the performance bar.
 1. Select **Save changes**.

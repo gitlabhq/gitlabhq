@@ -4,6 +4,7 @@ module Gitlab
   module Database
     module Partitioning
       class PartitionImporter
+        include ::Gitlab::Loggable
         include Gitlab::Database::MigrationHelpers::LooseForeignKeyHelpers
         include PartitionKeyColumnTypes
         include EnsureUtcSession
@@ -58,10 +59,12 @@ module Gitlab
           totals[:skipped] += partitions_data.size - missing.size
         rescue StandardError => e
           Gitlab::AppLogger.error(
-            message: 'Failed to import partitions',
-            table_name: table_name,
-            exception_class: e.class,
-            exception_message: e.message
+            build_structured_payload_labkit(
+              message: 'Failed to import partitions',
+              table_name: table_name,
+              exception_class: e.class,
+              exception_message: e.message
+            )
           )
 
           errors << format('table=%<table>s error=%<class>s: %<message>s',
@@ -126,7 +129,8 @@ module Gitlab
             WithPartitioningLockRetries.new(
               klass: self.class,
               logger: Gitlab::AppLogger,
-              connection: connection
+              connection: connection,
+              extra_log_params: { table_name: partitions.first.table }
             ).run(raise_on_exhaustion: true) do
               connection.transaction(requires_new: false) do
                 partitions.each do |partition|
@@ -135,9 +139,11 @@ module Gitlab
                   process_created_partition(partition)
 
                   Gitlab::AppLogger.info(
-                    message: 'Imported partition',
-                    partition_name: partition.partition_name,
-                    table_name: partition.table
+                    build_structured_payload_labkit(
+                      message: 'Imported partition',
+                      partition_name: partition.partition_name,
+                      table_name: partition.table
+                    )
                   )
                 end
               end
@@ -147,10 +153,13 @@ module Gitlab
 
         def log_dry_run(partitions)
           partitions.each do |partition|
-            Gitlab::AppLogger.info({
-              message: 'Dry run: would create partition',
-              table_name: partition.table
-            }.merge(partition.export_definition))
+            Gitlab::AppLogger.info(
+              build_structured_payload_labkit(
+                message: 'Dry run: would create partition',
+                table_name: partition.table,
+                **partition.export_definition
+              )
+            )
           end
         end
 
@@ -165,15 +174,17 @@ module Gitlab
 
           return unless has_loose_foreign_key?(partition.table)
 
-          track_record_deletions_override_table_name(partition_identifier, partition.table)
+          track_record_deletions_for_partition(partition_identifier, partition.table)
         end
 
         def track_invalid_partition_definition_error(table_name, partition_name, partition_data)
           Gitlab::AppLogger.warn(
-            message: 'Skipping invalid partition definition',
-            table_name: table_name,
-            partition_name: partition_name,
-            partition_data: partition_data
+            build_structured_payload_labkit(
+              message: 'Skipping invalid partition definition',
+              table_name: table_name,
+              partition_name: partition_name,
+              partition_data: partition_data
+            )
           )
 
           format('table=%<table>s partition=%<partition>s data=%<data>p (invalid definition)',
@@ -184,12 +195,14 @@ module Gitlab
 
         def track_invalid_partition_error(table_name, partition_name, partition_data, exception)
           Gitlab::AppLogger.warn(
-            message: 'Skipping invalid partition bounds',
-            table_name: table_name,
-            partition_name: partition_name,
-            partition_data: partition_data,
-            exception_class: exception.class,
-            exception_message: exception.message
+            build_structured_payload_labkit(
+              message: 'Skipping invalid partition bounds',
+              table_name: table_name,
+              partition_name: partition_name,
+              partition_data: partition_data,
+              exception_class: exception.class,
+              exception_message: exception.message
+            )
           )
 
           format('table=%<table>s partition=%<partition>s data=%<data>p (%<class>s: %<message>s)',

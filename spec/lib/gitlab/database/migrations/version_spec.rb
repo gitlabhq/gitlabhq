@@ -85,8 +85,8 @@ RSpec.describe Gitlab::Database::Migrations::Version, feature_category: :databas
 
       it 'correctly identifies the migration type' do
         expect(subject.type).to eq(:regular)
-        expect(subject.regular?).to eq(true)
-        expect(subject.post_deployment?).to eq(false)
+        expect(subject.regular?).to be(true)
+        expect(subject.post_deployment?).to be(false)
       end
     end
 
@@ -95,8 +95,8 @@ RSpec.describe Gitlab::Database::Migrations::Version, feature_category: :databas
 
       it 'correctly identifies the migration type' do
         expect(subject.type).to eq(:post)
-        expect(subject.regular?).to eq(false)
-        expect(subject.post_deployment?).to eq(true)
+        expect(subject.regular?).to be(false)
+        expect(subject.post_deployment?).to be(true)
       end
     end
   end

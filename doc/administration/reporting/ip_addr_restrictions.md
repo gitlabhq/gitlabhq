@@ -12,7 +12,7 @@ title: IP address restrictions
 
 {{< /details >}}
 
-IP address restrictions help prevent malicious users hiding their activities behind multiple IP addresses.
+IP address restrictions help prevent malicious users from hiding their activities behind multiple IP addresses.
 
 GitLab maintains a list of the unique IP addresses used by a user to make requests over a specified period. When the
 specified limit is reached, any requests made by the user from a new IP address are rejected with a `403 Forbidden` error.

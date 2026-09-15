@@ -74,6 +74,8 @@ module API
 
           @runner = result.payload[:runner]
           if @runner.persisted?
+            set_current_organization_from_runner(@runner)
+
             present @runner, with: Entities::Ci::RunnerRegistrationDetails
           else
             render_validation_error!(@runner)
@@ -260,6 +262,8 @@ module API
             optional :bytesize, type: Integer, desc: "Job's trace size in bytes"
           end
           optional :exit_code, type: Integer, desc: "Job's exit code"
+          optional :runtime_environment_key, type: String, limit: ::Ci::RuntimeEnvironment::ENVIRONMENT_KEY_MAX_LENGTH,
+            desc: "Runtime environment key emitted by the runner on job suspension"
         end
         route_setting :authorization, skip_granular_token_authorization: :job_token_auth
         put '/:id', urgency: :low, feature_category: :continuous_integration do
@@ -414,6 +418,7 @@ module API
 
         desc 'Download job artifacts' do
           detail 'Downloads artifacts for a specified job.'
+          produces %w[application/octet-stream]
           success [
             { code: 200, message: 'Download allowed' },
             { code: 302, message: 'Found' }

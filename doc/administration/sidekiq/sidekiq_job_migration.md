@@ -29,7 +29,7 @@ If the Sidekiq routing rules are changed, administrators should be cautious with
 
 ## Migrate queued and future jobs
 
-Step 4 involves rewriting some Sidekiq job data for jobs that are already stored in Redis, but due to run in the future. The two sets of jobs that are due to run in the future: scheduled jobs and jobs to be retried. We provide a separate Rake task to migrate each set:
+Step 4 involves rewriting some Sidekiq job data for jobs that are already stored in Redis, but due to run in the future. The two sets of jobs that are due to run in the future are scheduled jobs and jobs to be retried. We provide a separate Rake task to migrate each set:
 
 - `gitlab:sidekiq:migrate_jobs:retry` for jobs to be retried.
 - `gitlab:sidekiq:migrate_jobs:schedule` for scheduled jobs.

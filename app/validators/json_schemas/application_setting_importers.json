@@ -18,6 +18,9 @@
     "relation_export_batch_size": {
       "type": "integer"
     },
+    "concurrent_relation_export_limit": {
+      "type": "integer"
+    },
     "allow_s3_compatible_storage_for_offline_transfer": {
       "type": "boolean"
     },

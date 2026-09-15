@@ -46,7 +46,7 @@ export default {
       default: '',
     },
   },
-  emits: ['hideCreateView', 'labelCreated'],
+  emits: ['hide-create-view', 'label-created'],
   data() {
     return {
       labelTitle: this.searchKey,
@@ -88,6 +88,11 @@ export default {
         variables: { fullPath: this.fullPath, searchTerm: '' },
       });
 
+      // Nothing cached to amend while the labels query is still in flight.
+      if (!sourceData) {
+        return;
+      }
+
       const collator = new Intl.Collator('en');
       const data = produce(sourceData, (draftData) => {
         const { nodes } = get(draftData, dataPath);
@@ -125,7 +130,7 @@ export default {
         if (labelCreate.errors.length) {
           [this.error] = labelCreate.errors;
         } else {
-          this.$emit('labelCreated', labelCreate.label);
+          this.$emit('label-created', labelCreate.label);
         }
       } catch {
         createAlert({ message: errorMessage });
@@ -160,7 +165,7 @@ export default {
         class="js-btn-cancel-create"
         size="small"
         data-testid="cancel-button"
-        @click.stop="$emit('hideCreateView')"
+        @click.stop="$emit('hide-create-view')"
       >
         {{ __('Cancel') }}
       </gl-button>

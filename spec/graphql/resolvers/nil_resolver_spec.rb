@@ -6,7 +6,7 @@ RSpec.describe Resolvers::NilResolver, feature_category: :api do
   include GraphqlHelpers
 
   specify do
-    expect(described_class).to have_nullable_graphql_type(::GraphQL::Types::Boolean)
+    expect(described_class).to have_nullable_graphql_type(::Gitlab::Graphql::VersionFilter::NilObjectType)
   end
 
   describe '#resolve' do

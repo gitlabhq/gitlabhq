@@ -90,6 +90,20 @@ module Types
         extension ::Gitlab::Graphql::Limit::FieldCallCount, limit: 10
       end
 
+      field :diff_stats, [Types::DiffStatsType], null: true, calls_gitaly: true,
+        description: 'Details about which files were changed in the commit. ' \
+          'This field can only be resolved for 10 commits in any single request.' do
+        # Each resolution shells out to Gitaly, so limit the calls per request to
+        # bound the N+1 when selected across a page of commits (as `diffs` does).
+        extension ::Gitlab::Graphql::Limit::FieldCallCount, limit: 10
+      end
+
+      field :diff_stats_summary, Types::DiffStatsSummaryType, null: true, calls_gitaly: true,
+        description: 'Summary of which files were changed in the commit. ' \
+          'This field can only be resolved for 10 commits in any single request.' do
+        extension ::Gitlab::Graphql::Limit::FieldCallCount, limit: 10
+      end
+
       field :pipelines,
         null: true,
         description: 'Pipelines of the commit ordered latest first.',
@@ -114,6 +128,23 @@ module Types
 
       def diffs
         object.diffs.diffs
+      end
+
+      # `Commit#diff_stats` is memoized on the model, so selecting both
+      # `diffStats` and `diffStatsSummary` triggers a single Gitaly call.
+      def diff_stats
+        object.diff_stats&.to_a
+      end
+
+      def diff_stats_summary
+        stats = object.diff_stats
+        return unless stats
+
+        {
+          additions: stats.sum(&:additions),
+          deletions: stats.sum(&:deletions),
+          file_count: stats.paths.size
+        }
       end
 
       # Mirrors Ci::CommitWithPipeline#lazy_latest_pipeline, but resolves lazily

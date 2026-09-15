@@ -307,7 +307,6 @@ RSpec.describe Gitlab::SidekiqLogging::StructuredLogger, feature_category: :shar
           'completed_at' => timestamp.to_f,
           'cpu_s' => 1.111112,
           'gvl_thread_wait_s' => be >= 0,
-          'gvl_process_wait_s' => be >= 0,
           'rate_limiting_gates' => [],
           'worker_id' => "process_#{Process.pid}"
         )

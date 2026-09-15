@@ -43,7 +43,7 @@ for a description on what each tag semantically means.
 
 ### Button type
 
-Button tags requires a `type` attribute according to the [W3C HTML specification](https://www.w3.org/TR/2011/WD-html5-20110525/the-button-element.html#dom-button-type).
+Button tags require a `type` attribute according to the [W3C HTML specification](https://www.w3.org/TR/2011/WD-html5-20110525/the-button-element.html#dom-button-type).
 
 ```html
 // bad
@@ -76,7 +76,7 @@ When using `gl-link`, using `target="_blank"` is sufficient as it automatically 
 
 ### Fake links
 
-**Do not use fake links.** Use a button tag if a link only invokes JavaScript click event handlers, which is more semantic.
+Do not use fake links. Use a button tag if a link only invokes JavaScript click event handlers, which is more semantic.
 
 ```html
 // bad

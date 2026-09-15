@@ -4,7 +4,15 @@ description: Grants the ability to read information about a secrets manager
 boundaries:
   - group
   - project
+  - instance
 available_for:
   - granular_access_token
+assignable_when:
+  - condition: admin
+    boundaries:
+      - instance
+  - condition: self_managed
+    boundaries:
+      - instance
 permissions:
   - read_secrets_manager

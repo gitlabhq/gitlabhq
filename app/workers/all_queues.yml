@@ -23,16 +23,6 @@
   :idempotent: true
   :tags: []
   :queue_namespace: :authorized_project_update
-- :name: authorized_project_update:authorized_project_update_enqueue_users_refresh_authorized_projects
-  :worker_name: AuthorizedProjectUpdate::EnqueueUsersRefreshAuthorizedProjectsWorker
-  :feature_category: :permissions
-  :has_external_dependencies: false
-  :urgency: :low
-  :resource_boundary: :unknown
-  :weight: 1
-  :idempotent: true
-  :tags: []
-  :queue_namespace: :authorized_project_update
 - :name: authorized_project_update:authorized_project_update_project_recalculate
   :worker_name: AuthorizedProjectUpdate::ProjectRecalculateWorker
   :feature_category: :permissions
@@ -397,6 +387,16 @@
   :queue_namespace: :cronjob
 - :name: cronjob:authorized_project_update_periodic_recalculate
   :worker_name: AuthorizedProjectUpdate::PeriodicRecalculateWorker
+  :feature_category: :permissions
+  :has_external_dependencies: false
+  :urgency: :low
+  :resource_boundary: :unknown
+  :weight: 1
+  :idempotent: true
+  :tags: []
+  :queue_namespace: :cronjob
+- :name: cronjob:authz_reverify_project_authorizations_cron
+  :worker_name: Authz::ReverifyProjectAuthorizationsCronWorker
   :feature_category: :permissions
   :has_external_dependencies: false
   :urgency: :low
@@ -1808,16 +1808,6 @@
   :idempotent: false
   :tags: []
   :queue_namespace: :github_importer
-- :name: github_importer:github_import_import_note
-  :worker_name: Gitlab::GithubImport::ImportNoteWorker
-  :feature_category: :importers
-  :has_external_dependencies: true
-  :urgency: :low
-  :resource_boundary: :unknown
-  :weight: 1
-  :idempotent: false
-  :tags: []
-  :queue_namespace: :github_importer
 - :name: github_importer:github_import_import_protected_branch
   :worker_name: Gitlab::GithubImport::ImportProtectedBranchWorker
   :feature_category: :importers
@@ -1834,36 +1824,6 @@
   :has_external_dependencies: true
   :urgency: :low
   :resource_boundary: :unknown
-  :weight: 1
-  :idempotent: false
-  :tags: []
-  :queue_namespace: :github_importer
-- :name: github_importer:github_import_pull_requests_import_merged_by
-  :worker_name: Gitlab::GithubImport::PullRequests::ImportMergedByWorker
-  :feature_category: :importers
-  :has_external_dependencies: true
-  :urgency: :low
-  :resource_boundary: :cpu
-  :weight: 1
-  :idempotent: false
-  :tags: []
-  :queue_namespace: :github_importer
-- :name: github_importer:github_import_pull_requests_import_review
-  :worker_name: Gitlab::GithubImport::PullRequests::ImportReviewWorker
-  :feature_category: :importers
-  :has_external_dependencies: true
-  :urgency: :low
-  :resource_boundary: :cpu
-  :weight: 1
-  :idempotent: false
-  :tags: []
-  :queue_namespace: :github_importer
-- :name: github_importer:github_import_pull_requests_import_review_request
-  :worker_name: Gitlab::GithubImport::PullRequests::ImportReviewRequestWorker
-  :feature_category: :importers
-  :has_external_dependencies: true
-  :urgency: :low
-  :resource_boundary: :cpu
   :weight: 1
   :idempotent: false
   :tags: []
@@ -1958,16 +1918,6 @@
   :idempotent: false
   :tags: []
   :queue_namespace: :github_importer
-- :name: github_importer:github_import_stage_import_notes
-  :worker_name: Gitlab::GithubImport::Stage::ImportNotesWorker
-  :feature_category: :importers
-  :has_external_dependencies: false
-  :urgency: :low
-  :resource_boundary: :unknown
-  :weight: 1
-  :idempotent: false
-  :tags: []
-  :queue_namespace: :github_importer
 - :name: github_importer:github_import_stage_import_protected_branches
   :worker_name: Gitlab::GithubImport::Stage::ImportProtectedBranchesWorker
   :feature_category: :importers
@@ -1980,36 +1930,6 @@
   :queue_namespace: :github_importer
 - :name: github_importer:github_import_stage_import_pull_requests
   :worker_name: Gitlab::GithubImport::Stage::ImportPullRequestsWorker
-  :feature_category: :importers
-  :has_external_dependencies: false
-  :urgency: :low
-  :resource_boundary: :unknown
-  :weight: 1
-  :idempotent: false
-  :tags: []
-  :queue_namespace: :github_importer
-- :name: github_importer:github_import_stage_import_pull_requests_merged_by
-  :worker_name: Gitlab::GithubImport::Stage::ImportPullRequestsMergedByWorker
-  :feature_category: :importers
-  :has_external_dependencies: false
-  :urgency: :low
-  :resource_boundary: :unknown
-  :weight: 1
-  :idempotent: false
-  :tags: []
-  :queue_namespace: :github_importer
-- :name: github_importer:github_import_stage_import_pull_requests_review_requests
-  :worker_name: Gitlab::GithubImport::Stage::ImportPullRequestsReviewRequestsWorker
-  :feature_category: :importers
-  :has_external_dependencies: false
-  :urgency: :low
-  :resource_boundary: :unknown
-  :weight: 1
-  :idempotent: false
-  :tags: []
-  :queue_namespace: :github_importer
-- :name: github_importer:github_import_stage_import_pull_requests_reviews
-  :worker_name: Gitlab::GithubImport::Stage::ImportPullRequestsReviewsWorker
   :feature_category: :importers
   :has_external_dependencies: false
   :urgency: :low
@@ -2305,7 +2225,7 @@
   :urgency: :low
   :resource_boundary: :unknown
   :weight: 1
-  :idempotent: false
+  :idempotent: true
   :tags: []
   :queue_namespace: :object_pool
 - :name: object_pool:object_pool_join
@@ -3219,6 +3139,16 @@
   :worker_name: ApproveBlockedPendingApprovalUsersWorker
   :feature_category: :user_profile
   :has_external_dependencies: false
+  :urgency: :low
+  :resource_boundary: :unknown
+  :weight: 1
+  :idempotent: true
+  :tags: []
+  :queue_namespace:
+- :name: authn_iam_replication_drain
+  :worker_name: Authn::IamReplication::DrainWorker
+  :feature_category: :system_access
+  :has_external_dependencies: true
   :urgency: :low
   :resource_boundary: :unknown
   :weight: 1
@@ -4954,6 +4884,16 @@
   :idempotent: true
   :tags: []
   :queue_namespace:
+- :name: organizations_activation_email
+  :worker_name: Organizations::ActivationEmailWorker
+  :feature_category: :organization
+  :has_external_dependencies: false
+  :urgency: :low
+  :resource_boundary: :unknown
+  :weight: 1
+  :idempotent: true
+  :tags: []
+  :queue_namespace:
 - :name: organizations_check_organization_isolation_status
   :worker_name: Organizations::CheckOrganizationIsolationStatusWorker
   :feature_category: :organization
@@ -5007,6 +4947,16 @@
 - :name: organizations_transfer_topic_avatar
   :worker_name: Organizations::TransferTopicAvatarWorker
   :feature_category: :organization
+  :has_external_dependencies: false
+  :urgency: :low
+  :resource_boundary: :unknown
+  :weight: 1
+  :idempotent: true
+  :tags: []
+  :queue_namespace:
+- :name: organizations_transfer_user_agent_details
+  :worker_name: Organizations::TransferUserAgentDetailsWorker
+  :feature_category: :instance_resiliency
   :has_external_dependencies: false
   :urgency: :low
   :resource_boundary: :unknown

@@ -40,11 +40,10 @@ class Projects::MergeRequests::DiffsController < Projects::MergeRequests::Applic
   end
 
   def diff_by_file_hash
-    diff_file = @compare.diffs.diff_files.find { |file| file.file_hash == params[:file_hash] }
-    params[:old_path] = diff_file&.old_path
-    params[:new_path] = diff_file&.new_path
+    file_hash = permitted_params[:file_hash]
+    diff_file = @compare.diffs.diff_files.find { |file| file.file_hash == file_hash }
 
-    render_diffs
+    render_diffs(paths: [diff_file&.old_path, diff_file&.new_path])
   end
 
   def diff_for_path
@@ -53,9 +52,11 @@ class Projects::MergeRequests::DiffsController < Projects::MergeRequests::Applic
 
   def diffs_batch
     diff_options_hash = diff_options
-    diff_options_hash[:paths] = params[:paths] if params[:paths]
+    diff_options_hash[:paths] = diffs_batch_params[:paths] if diffs_batch_params[:paths]
 
-    diffs = @compare.diffs_in_batch(params[:page], params[:per_page], diff_options: diff_options_hash)
+    diffs = @compare.diffs_in_batch(
+      diffs_batch_params[:page], diffs_batch_params[:per_page], diff_options: diff_options_hash
+    )
 
     unfoldable_positions = Gitlab::Metrics.measure(:diffs_unfoldable_positions) do
       @merge_request.note_positions_for_paths(diffs.diff_file_paths, current_user).unfoldable
@@ -75,10 +76,10 @@ class Projects::MergeRequests::DiffsController < Projects::MergeRequests::Applic
       current_user&.cache_key,
       unfoldable_positions.map(&:to_h),
       diff_view,
-      params[:w],
-      params[:expanded],
-      params[:page],
-      params[:per_page],
+      diff_options_hash[:ignore_whitespace_change],
+      diff_options_hash[:expanded],
+      diffs_batch_params[:page],
+      diffs_batch_params[:per_page],
       options[:merge_ref_head_diff]
     ]
 
@@ -113,13 +114,25 @@ class Projects::MergeRequests::DiffsController < Projects::MergeRequests::Applic
 
   private
 
+  def diff_version_params
+    params.permit(:diff_id, :diff_head, :start_sha)
+  end
+
+  def diffs_batch_params
+    @diffs_batch_params ||= params.permit(:page, :per_page, paths: [])
+  end
+
+  def permitted_params
+    params.permit(:file_hash, :ck)
+  end
+
   def preloadable_mr_relations
     [{ source_project: :namespace }, { target_project: :namespace }]
   end
 
   # Deprecated: https://gitlab.com/gitlab-org/gitlab/issues/37735
-  def render_diffs
-    diffs = @compare.diffs(diff_options)
+  def render_diffs(extra_diff_options = {})
+    diffs = @compare.diffs(diff_options.merge(extra_diff_options))
 
     diffs.unfold_diff_files(note_positions.unfoldable)
     diffs.write_cache
@@ -152,9 +165,10 @@ class Projects::MergeRequests::DiffsController < Projects::MergeRequests::Applic
   #
   # Deprecated: https://gitlab.com/gitlab-org/gitlab/issues/37735
   def find_merge_request_diff_compare
+    diff_id = diff_version_params[:diff_id]
     @merge_request_diff =
-      if params[:diff_id].present?
-        @merge_request.merge_request_diffs.viewable.find_by(id: params[:diff_id])
+      if diff_id.present?
+        @merge_request.merge_request_diffs.viewable.find_by(id: diff_id)
       else
         @merge_request.merge_request_diff
       end
@@ -163,7 +177,7 @@ class Projects::MergeRequests::DiffsController < Projects::MergeRequests::Applic
 
     @comparable_diffs = @merge_request_diffs.select { |diff| diff.id < @merge_request_diff.id }
 
-    if @start_sha = params[:start_sha].presence
+    if @start_sha = diff_version_params[:start_sha].presence
       @start_version = @comparable_diffs.find { |diff| diff.head_commit_sha == @start_sha }
 
       unless @start_version
@@ -219,15 +233,15 @@ class Projects::MergeRequests::DiffsController < Projects::MergeRequests::Applic
   end
 
   def render_merge_ref_head_diff?
-    params[:diff_id].blank? &&
-      Gitlab::Utils.to_boolean(params[:diff_head]) &&
+    diff_version_params[:diff_id].blank? &&
+      Gitlab::Utils.to_boolean(diff_version_params[:diff_head]) &&
       @merge_request.diffable_merge_ref? &&
       @start_sha.nil?
   end
 
   def latest_diff_with_merge_head?
-    return false if params[:diff_id].blank?
-    return false if Gitlab::Utils.to_boolean(params[:diff_head])
+    return false if diff_version_params[:diff_id].blank?
+    return false if Gitlab::Utils.to_boolean(diff_version_params[:diff_head])
     return false unless @merge_request_diff.id == @merge_request.merge_request_diff&.id
     return false unless @merge_request.diffable_merge_ref?
 
@@ -277,7 +291,7 @@ class Projects::MergeRequests::DiffsController < Projects::MergeRequests::Applic
 
   def cache_with_max_age?
     @merge_request.diffs_batch_cache_with_max_age? &&
-      params[:ck].present? &&
+      permitted_params[:ck].present? &&
       render_merge_ref_head_diff?
   end
 end

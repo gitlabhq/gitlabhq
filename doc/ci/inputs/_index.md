@@ -751,6 +751,47 @@ spec:
 > [!note]
 > You cannot use `spec:include` for [CI/CD component](../components/_index.md#component-spec-section) inputs.
 
+##### Use external input files in configuration from another project
+
+{{< history >}}
+
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/590532) in GitLab 19.4 [with a feature flag](../../administration/feature_flags/_index.md) named `ci_spec_include_own_context`. Disabled by default.
+
+{{< /history >}}
+
+> [!flag]
+> The availability of this feature is controlled by a feature flag.
+> For more information, see the history.
+
+When a configuration file is included from another project, the `spec:include` locations in that file
+resolve in the other project's repository and ref.
+The project that runs the pipeline does not affect this resolution.
+
+For example, the `templates/deploy.yml` file in the `my-group/pipelines` project defines its inputs in
+an external file:
+
+```yaml
+spec:
+  include:
+    - local: shared-inputs.yml
+---
+
+deploy:
+  script: echo "Deploying to $[[ inputs.environment ]]"
+```
+
+Another project includes that file in its own `.gitlab-ci.yml` file:
+
+```yaml
+include:
+  - project: 'my-group/pipelines'
+    ref: main
+    file: '/templates/deploy.yml'
+```
+
+In this example, `shared-inputs.yml` is read from the `my-group/pipelines` project, not from the project
+that runs the pipeline.
+
 #### Override inputs from an external file
 
 {{< history >}}

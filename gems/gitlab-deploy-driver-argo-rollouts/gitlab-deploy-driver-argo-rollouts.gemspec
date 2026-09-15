@@ -2,7 +2,7 @@
 
 Gem::Specification.new do |spec|
   spec.name        = "gitlab-deploy-driver-argo-rollouts"
-  spec.version     = "0.6.0"
+  spec.version     = "0.7.0"
   spec.authors     = ["GitLab Engineers"]
   spec.email       = ["engineering@gitlab.com"]
 

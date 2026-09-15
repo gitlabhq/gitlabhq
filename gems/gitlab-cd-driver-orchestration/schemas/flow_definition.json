@@ -80,7 +80,7 @@
       "properties": {
         "type": {
           "type": "string",
-          "description": "The driver step type, such as 'com.gitlab.cd.argo.rolling.deploy'."
+          "description": "The driver step type, such as 'com.gitlab.cd.argo.canary.deploy'."
         },
         "environment": {
           "type": "string",
@@ -92,7 +92,8 @@
     "commonStep": {
       "description": "A driver-agnostic step handled by the orchestration engine. Common steps never target an environment.",
       "oneOf": [
-        { "$ref": "#/$defs/waitStep" }
+        { "$ref": "#/$defs/waitStep" },
+        { "$ref": "#/$defs/approvalStep" }
       ]
     },
 
@@ -108,6 +109,22 @@
           "type": "integer",
           "minimum": 0,
           "description": "How long to wait, in seconds."
+        }
+      }
+    },
+
+    "approvalStep": {
+      "type": "object",
+      "title": "Approval",
+      "description": "Parks the flow until a person approves or rejects it.",
+      "required": ["type"],
+      "additionalProperties": false,
+      "properties": {
+        "type": { "const": "com.gitlab.cd.steps.approval" },
+        "reason": {
+          "type": "string",
+          "minLength": 1,
+          "description": "A human-readable reason shown to the person deciding. Omit it and the engine sends one naming what the approval gates."
         }
       }
     }

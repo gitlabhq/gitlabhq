@@ -56,13 +56,13 @@ describe('Pipeline Wizard - Step Navigation Component', () => {
   it('enables the next button if nextButtonEnabled ist set to true', () => {
     createComponent({ nextButtonEnabled: true });
 
-    expect(nextButton.attributes('disabled')).toBeUndefined();
+    expect(nextButton.attributes('aria-disabled')).toBeUndefined();
   });
 
   it('disables the next button if nextButtonEnabled ist set to false', () => {
     createComponent({ nextButtonEnabled: false });
 
-    expect(nextButton.attributes('disabled')).toBeDefined();
+    expect(nextButton.attributes('aria-disabled')).toBe('true');
   });
 
   it('does not emit "next" event when clicking next button while nextButtonEnabled ist set to false', async () => {

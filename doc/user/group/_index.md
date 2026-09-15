@@ -132,6 +132,12 @@ For group shares:
 - If a new subgroup does not inherit permissions from a shared group, change the
   share's role to a different value and then back again to trigger a permission
   recalculation.
+- When you perform many group-share operations at once, such as bulk operations or automation,
+  run them one at a time or with limited concurrency instead of all in parallel.
+  Many simultaneous share operations against a group with large membership can create
+  database contention and degrade instance responsiveness.
+- Expect access from a group-to-group (nested) share to take longer to propagate than
+  a direct project share, because it is applied as a delayed batch update.
 
 For large hierarchies synced from an identity provider:
 

@@ -7,7 +7,7 @@ RSpec.describe RuboCop::Cop::Database::AvoidInheritanceColumn, feature_category:
   it 'flags when :inheritance_column is used' do
     src = <<~SRC
       self.inheritance_column = 'some_column'
-      ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ Do not use Single Table Inheritance https://docs.gitlab.com/ee/development/database/single_table_inheritance.html
+      ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ Do not use Single Table Inheritance https://docs.gitlab.com/development/database/single_table_inheritance/
     SRC
 
     expect_offense(src)

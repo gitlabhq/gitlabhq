@@ -6,7 +6,7 @@ class RecreateContributionsNewWithYearPartitioning < ClickHouse::Migration
     execute 'DROP TABLE IF EXISTS contributions_new'
 
     execute <<~SQL
-      CREATE TABLE contributions_new
+      CREATE TABLE IF NOT EXISTS contributions_new
       (
         id Int64 CODEC(DoubleDelta, ZSTD),
         path String CODEC(ZSTD(3)),
@@ -24,7 +24,7 @@ class RecreateContributionsNewWithYearPartitioning < ClickHouse::Migration
     SQL
 
     execute <<~SQL
-      CREATE MATERIALIZED VIEW contributions_new_mv
+      CREATE MATERIALIZED VIEW IF NOT EXISTS contributions_new_mv
       TO contributions_new
       AS
       WITH
@@ -60,7 +60,7 @@ class RecreateContributionsNewWithYearPartitioning < ClickHouse::Migration
     execute 'DROP TABLE IF EXISTS contributions_new'
 
     execute <<~SQL
-      CREATE TABLE contributions_new
+      CREATE TABLE IF NOT EXISTS contributions_new
       (
         id Int64 CODEC(DoubleDelta, ZSTD),
         path String CODEC(ZSTD(3)),
@@ -78,7 +78,7 @@ class RecreateContributionsNewWithYearPartitioning < ClickHouse::Migration
     SQL
 
     execute <<~SQL
-      CREATE MATERIALIZED VIEW contributions_new_mv
+      CREATE MATERIALIZED VIEW IF NOT EXISTS contributions_new_mv
       TO contributions_new
       AS
       WITH

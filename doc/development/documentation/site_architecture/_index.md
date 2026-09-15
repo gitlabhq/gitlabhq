@@ -26,12 +26,13 @@ The documentation source files are in the same repositories as the product code.
 | [GitLab Operator](https://gitlab.com/gitlab-org/cloud-native/gitlab-operator) | [`/doc`](https://gitlab.com/gitlab-org/cloud-native/gitlab-operator/-/tree/master/doc) |
 | [GitLab CLI (glab)](https://gitlab.com/gitlab-org/cli/) | [`/docs/source`](https://gitlab.com/gitlab-org/cli/-/tree/main/docs/source) |
 | [Artifact Registry](https://gitlab.com/gitlab-org/ops/artifact-registry/) | [`/docs`](https://gitlab.com/gitlab-org/ops/artifact-registry/-/tree/main/docs) |
+| [Orbit](https://gitlab.com/gitlab-org/orbit/knowledge-graph) | [`/docs`](https://gitlab.com/gitlab-org/orbit/knowledge-graph/-/tree/main/docs/source) |
 
 Documentation issues and merge requests are part of their respective repositories and all have the label `Documentation`.
 
 ## Publication
 
-Documentation for GitLab, GitLab Runner, GitLab Operator, Omnibus GitLab, and Charts is published to <https://docs.gitlab.com>.
+Documentation for GitLab, GitLab Runner, GitLab Operator, Omnibus GitLab, Charts, GitLab Orbit, Artifact Registry is published to <https://docs.gitlab.com>.
 
 The same documentation is included in the application. To view the in-product help,
 go to the URL and add `/help` at the end.

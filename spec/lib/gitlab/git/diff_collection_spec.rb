@@ -716,7 +716,7 @@ RSpec.describe Gitlab::Git::DiffCollection, feature_category: :source_code_manag
 
       it 'sets the diff as generated' do
         collection.each do |diff|
-          expect(diff.generated).to eq true
+          expect(diff.generated).to be true
         end
       end
     end
@@ -834,7 +834,7 @@ RSpec.describe Gitlab::Git::DiffCollection, feature_category: :source_code_manag
               end
             end
 
-            expect(subject.collapsed_safe_files?).to eq(true)
+            expect(subject.collapsed_safe_files?).to be(true)
           end
         end
 
@@ -863,7 +863,7 @@ RSpec.describe Gitlab::Git::DiffCollection, feature_category: :source_code_manag
               end
             end
 
-            expect(subject.collapsed_safe_lines?).to eq(true)
+            expect(subject.collapsed_safe_lines?).to be(true)
           end
         end
 
@@ -894,7 +894,7 @@ RSpec.describe Gitlab::Git::DiffCollection, feature_category: :source_code_manag
               end
             end
 
-            expect(subject.collapsed_safe_bytes?).to eq(true)
+            expect(subject.collapsed_safe_bytes?).to be(true)
           end
         end
       end
@@ -1007,7 +1007,7 @@ RSpec.describe Gitlab::Git::DiffCollection, feature_category: :source_code_manag
 
       it 'sets @collapsed_safe_limits' do
         subject.to_a
-        expect(subject.collapsed_safe_limits?).to eq(true)
+        expect(subject.collapsed_safe_limits?).to be(true)
       end
     end
   end

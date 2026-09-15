@@ -1,6 +1,6 @@
 ---
-source_checksum: 6bba7c96b055930c
-distilled_at_sha: a12edd3cd641812cf27868b59ce605d439d981b5
+source_checksum: 861acd9c167c4e50
+distilled_at_sha: 3477a0d37b5792d9979852b021dc2f157963dc7d
 ---
 <!-- Auto-generated from docs.gitlab.com by gitlab-ai-principles-distiller — do not edit manually -->
 
@@ -102,7 +102,7 @@ distilled_at_sha: a12edd3cd641812cf27868b59ce605d439d981b5
 
 ### MSW Integration Tests
 
-- Default to MSW integration tests (`spec/frontend/msw_integration/`) over Capybara feature tests; use Capybara only when real backend state, navigation across server-rendered pages, server-side validations, or multi-Vue-app behavior on the same page is required.
+- Default to MSW integration tests (`ee/spec/frontend/msw_integration/`, EE-only) over Capybara feature tests; use Capybara only when real backend state, navigation across server-rendered pages, server-side validations, multi-Vue-app behavior on the same page, or FOSS-versus-licensed behavior differences are required. DO NOT place MSW test files under `spec/frontend/msw_integration/` — ESLint enforces EE-only placement and fails CI on violations.
 - Use `fullMount` from `test_helpers.js` (wraps `mount` and attaches to `document.body`) to mount the root component with the real `apolloProvider`.
 - Use native DOM APIs for all interactions and assertions in MSW integration tests; DO NOT use VTU wrapper methods (`wrapper.find()`, `wrapper.trigger()`, `wrapper.text()`, etc.).
 - DO NOT mock child components in MSW integration tests.
@@ -119,6 +119,9 @@ distilled_at_sha: a12edd3cd641812cf27868b59ce605d439d981b5
 - Place MSW integration fixture generators in `ee/spec/frontend/fixtures/`; generate their JSON output to `tmp/tests/frontend/fixtures-ee/graphql/` by running the fixture spec (`bin/rspec ee/spec/frontend/fixtures/<file>.rb`).
 - Use `snapshotRequests` and `expectGraphQLCalls` from `operation_helpers.js` to assert Apollo cache integrity and verify that mutations do not trigger unwanted network calls.
 - Run all MSW integration tests with `yarn jest:msw-integration`; in CI these run in the `jest-msw-integration` job.
+- Declare fixture variants using `defineFixtureVariants({ query, variants })` in a file at `ee/spec/frontend/msw_integration/<feature>/fixture_variants/<query>.js`; always include a `BASE` key. Build variants with `setFixtureData`, `setFixtureErrors`, or `setFixtureItemsCount` from `fixture_utils.js` — each helper deep-clones its input, so DO NOT clone or mutate the imported fixture directly.
+- Activate a fixture variant in a test with `setQueryVariant('operationName', 'VARIANT_KEY')` from `ee_jest/msw_integration/setup_utils`; the active variant resets to `BASE` automatically in `afterEach`.
+- Generate a manifest of registered queries and variant keys with `yarn msw:variants` (writes to `tmp/tests/frontend/msw_variants.manifest.json`); use it to discover which variants exist for which queries.
 
 ### Capybara Feature Tests
 
@@ -151,7 +154,7 @@ distilled_at_sha: a12edd3cd641812cf27868b59ce605d439d981b5
 
 ### Path Helpers
 
-- Do not mock JavaScript path helpers imported from `app/assets/javascripts/lib/utils/path_helpers` or `ee/app/assets/javascripts/lib/utils/path_helpers` in Jest tests. You can assume that `gon.current_organization.has_scoped_paths` will be `false` and that `window.gon?.relative_url_root` will be `''` in Jest tests. There may be existing tests for the `relative_url_root` functionality, for these you can use `useConfigurePathHelpers` in `spec/frontend/__helpers__/configure_path_helpers.js`.
+- Do not mock JavaScript path helpers imported from `app/assets/javascripts/lib/utils/path_helpers` or `ee/app/assets/javascripts/lib/utils/path_helpers` in Jest tests. You can assume that `gon.organization_path` and `gon.data_context_organization_path` are both `undefined`, so generated paths are never nested under `/o/:organization_path/`, and that `window.gon?.relative_url_root` will be `''` in Jest tests. There may be existing tests for the `relative_url_root` functionality, for these you can use `useConfigurePathHelpers` in `spec/frontend/__helpers__/configure_path_helpers.js`.
 
 ### Test structure
 
@@ -169,6 +172,8 @@ describe('when X', () => {
   it('does Y', () => { ... });
 });
 ```
+
+- When "when X" appears inside an `it` block description, extract the condition into its own `describe` block with a `beforeEach` that performs the setup; DO NOT re-create the component inside an `it` block when an outer `beforeEach` already does so — move it into its own `describe` with dedicated setup instead.
 
 ## Authoritative sources
 

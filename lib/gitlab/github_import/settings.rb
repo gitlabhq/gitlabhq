@@ -4,7 +4,6 @@ module Gitlab
   module GithubImport
     class Settings
       OPTIONAL_STAGES = {
-        single_endpoint_notes_import: { selected: false },
         attachments_import: { selected: false },
         collaborators_import: { selected: true }
       }.freeze
@@ -22,7 +21,6 @@ module Gitlab
 
       def self.stage_label(stage_name)
         {
-          single_endpoint_notes_import: s_('GitHubImporter|Use alternative comments import method'),
           attachments_import: s_('GitHubImporter|Import Markdown attachments (links)'),
           collaborators_import: s_('GitHubImporter|Import collaborators')
         }[stage_name]
@@ -31,8 +29,6 @@ module Gitlab
 
       def self.stage_details(stage_name)
         {
-          single_endpoint_notes_import: s_('GitHubImporter|The default method can skip some comments in large ' \
-            'projects because of limitations of the GitHub API.'),
           attachments_import: s_('GitHubImporter|Import Markdown attachments (links) from repository ' \
             'comments, release posts, issue descriptions, and pull request ' \
             'descriptions. These can include images, text, or binary attachments. ' \
@@ -54,6 +50,11 @@ module Gitlab
         user_settings = user_settings.to_h.with_indifferent_access
 
         optional_stages = fetch_stages_from_params(user_settings[:optional_stages])
+
+        # Phase 1 of https://gitlab.com/gitlab-org/gitlab/-/work_items/617148: force this on for all
+        # new imports at write-time only. Remove once DiffNotesImporter and the related branching
+        # are deleted in phase 2.
+        optional_stages[:single_endpoint_notes_import] = true
 
         import_data = project.build_or_assign_import_data(
           data: {

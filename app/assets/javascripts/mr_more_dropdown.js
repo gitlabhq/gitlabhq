@@ -1,4 +1,5 @@
 import Vue from 'vue';
+import { parseBoolean } from '~/lib/utils/common_utils';
 import { initReportAbuse } from '~/projects/report_abuse';
 import MrMoreDropdown from '~/vue_shared/components/mr_more_dropdown.vue';
 
@@ -20,6 +21,8 @@ export const initMrMoreDropdown = () => {
     sourceProjectMissing,
     clipboardText,
     reportedUserId,
+    aiOverviewAvailable,
+    aiOverviewEnabled,
   } = el.dataset;
 
   let mr;
@@ -52,6 +55,8 @@ export const initMrMoreDropdown = () => {
           sourceProjectMissing,
           clipboardText,
           reportedUserId: Number(reportedUserId),
+          aiOverviewAvailable: parseBoolean(aiOverviewAvailable),
+          aiOverviewEnabled: parseBoolean(aiOverviewEnabled),
         },
       }),
   });

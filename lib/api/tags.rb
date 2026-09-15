@@ -106,7 +106,8 @@ module API
         failure [
           { code: 400, message: 'Bad request' },
           { code: 403, message: 'Unauthenticated' },
-          { code: 404, message: 'Not found' }
+          { code: 404, message: 'Not found' },
+          { code: 429, message: 'Too many requests' }
         ]
         tags %w[tags]
       end
@@ -118,6 +119,7 @@ module API
       route_setting :authorization, permissions: :create_repository_tag, boundary_type: :project
       post ':id/repository/tags', :release_orchestration do
         authorize_admin_tag
+        check_rate_limit!(:tags_create, scope: { project: user_project })
 
         result = ::Tags::CreateService.new(user_project, current_user)
           .execute(params[:tag_name], params[:ref], params[:message])

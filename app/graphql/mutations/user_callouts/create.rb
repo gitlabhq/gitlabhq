@@ -5,6 +5,10 @@ module Mutations
     class Create < ::Mutations::BaseMutation
       graphql_name 'UserCalloutCreate'
 
+      authorize_granular_token permissions: :dismiss_ui_notification,
+        boundary: :user,
+        boundary_type: :user
+
       argument :feature_name,
         GraphQL::Types::String,
         required: true,

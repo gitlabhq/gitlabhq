@@ -1,16 +1,10 @@
 ---
 stage: Plan
-group: Project Management
+group: Work Items
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see <https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments>
+description: Set up scoped labels and an issue board across a group's subgroups and their projects to triage issues by type, severity, and priority.
 title: 'Tutorial: Set up a complex group with subgroups for issue triage'
 ---
-
-{{< details >}}
-
-- Tier: Free, Premium, Ultimate
-- Offering: GitLab.com, GitLab Self-Managed, GitLab Dedicated
-
-{{< /details >}}
 
 <!-- vale gitlab_base.FutureTense = NO -->
 
@@ -41,7 +35,7 @@ To set up GitLab for a complex group with subgroups for issue triage:
 ## Create a group
 
 A [group](../../user/group/_index.md) is, in essence, a container for multiple projects.
-It allows users to manage multiple projects and communicate with group members all at once.
+With a group, you can manage multiple projects and communicate with group members all at once.
 
 To create a new group:
 
@@ -97,7 +91,7 @@ For this tutorial, suppose you've decided on the following:
 - Priority: `1`, `2`, `3`, and `4`
 - Severity: `1`, `2`, `3`, and `4`
 
-For inspiration, see how we define these at GitLab:
+For inspiration, see how GitLab defines these:
 
 - [Types and subtypes](https://handbook.gitlab.com/handbook/engineering/metrics/#work-type-classification)
 - [Priority](https://handbook.gitlab.com/handbook/product-development/how-we-work/issue-triage/#priority)
@@ -150,9 +144,9 @@ To create each label:
 1. In the top bar, select **Search or go to** and find your **Web App Dev** group.
 1. Select **Manage** > **Labels**.
 1. Select **New label**.
-1. In the **Title** field, enter the name of the label. Start with `type::bug`.
+1. In the **Title** text box, enter the name of the label. Start with `type::bug`.
 1. Optional. Select a color from the available colors, or enter a hex color value for
-   a specific color in the **Background color** field.
+   a specific color in the **Background color** text box.
 1. Select **Create label**.
 
 Repeat steps 3-6 to create all the labels you need.
@@ -188,7 +182,7 @@ To prioritize labels:
 1. Prioritize all the labels you previously created.
    Make sure that labels of higher priority and severity are higher on the list than those of lower values.
 
-![List of eleven prioritized scoped labels](img/priority_labels_v16_3.png)
+![List of eleven prioritized scoped labels.](img/priority_labels_v16_3.png)
 
 ## Create a parent group issue triage board
 
@@ -204,7 +198,7 @@ To set up your issue board:
 1. Select **Plan** > **Issue board**.
 1. In the upper-left corner of the issue board page, select the dropdown list with the current board name.
 1. Select **Create new board**.
-1. In the **Title** field, enter `Issue triage (by severity)`.
+1. In the **Title** text box, enter `Issue triage (by severity)`.
 1. Keep the **Show the Open list** checkbox selected and clear the **Show the Closed list** one.
 1. Select **Create board**. You should see an empty board.
 1. Create a list for the `severity::1` label:
@@ -233,11 +227,11 @@ To create an issue from your **Issue triage (by severity)** board:
    that label's list.
    Keep in mind that each issue created from a label list is given that label.
 
-   For now, we'll proceed with using the **Open** list.
+   For now, proceed with the **Open** list.
 1. On the **Open** list, select the **Create new issue** icon ({{< icon name="plus" >}}).
 1. Complete the fields:
    - Under **Title**, enter `Dark mode toggle`.
-   - Select the project to which this issue applies. We will select `Frontend / Web UI`.
+   - Select the project to which this issue applies. This example uses `Frontend / Web UI`.
 1. Select **Create issue**.
 1. Repeat these steps to create a few more issues.
 
@@ -266,7 +260,7 @@ Your first triage issue board is ready!
 Try it out by dragging some issues from the **Open** list to one of the label lists to add one of
 the severity labels.
 
-![Issue board with unlabeled issues and prioritized "severity" labels for labeling issues](img/triage_board_v16_3.png)
+![Issue board with unlabeled issues and prioritized "severity" labels for labeling issues.](img/triage_board_v16_3.png)
 
 ## Next steps
 
@@ -287,7 +281,7 @@ Next, you can:
 - Create policies that help automate issue triage in a project with the [`gitlab-triage` gem](https://gitlab.com/gitlab-org/ruby/gems/gitlab-triage).
   Generate summary reports with heatmaps like the following:
 
-  ![Diagonal heatmap for issues with "priority" and "severity" labels](img/triage_report_v16_3.png)
+  ![Diagonal heatmap for issues with "priority" and "severity" labels.](img/triage_report_v16_3.png)
 
 To learn more about issue triage at GitLab, see [issue triage](https://handbook.gitlab.com/handbook/product-development/how-we-work/issue-triage/)
 and [triage operations](https://handbook.gitlab.com/handbook/engineering/infrastructure-platforms/developer-experience/triage-operations/).

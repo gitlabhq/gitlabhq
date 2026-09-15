@@ -2,7 +2,7 @@
 stage: Data Access
 group: Database Frameworks
 info: Any user with at least the Maintainer role can merge updates to this content. For details, see <https://docs.gitlab.com/development/development_processes/#development-guidelines-review>.
-title: Polymorphic Associations
+title: Polymorphic associations
 ---
 
 **Summary**: always use separate tables instead of polymorphic associations.
@@ -18,21 +18,21 @@ target ID. For example, at the time of writing we have such a setup for
   example, when `source_type` is `Project` then `source_id` contains a
   project ID.
 
-While such a setup may appear to be useful, it comes with many drawbacks; enough
+While such a setup might appear to be useful, it comes with many drawbacks, enough
 that you should avoid this at all costs.
 
-## Space Wasted
+## Space wasted
 
 Because this setup relies on string values to determine the model to use, it
 wastes a lot of space. For example, for `Project` and `Namespace` the
 maximum size is 9 bytes, plus 1 extra byte for every string when using
-PostgreSQL. While this may only be 10 bytes per row, given enough tables and
+PostgreSQL. While this might only be 10 bytes per row, given enough tables and
 rows using such a setup we can end up wasting quite a bit of disk space and
 memory (for any indexes).
 
 ## Indexes
 
-Because our associations are broken up into two columns this may result in
+Because our associations are broken up into two columns, this might result in
 requiring composite indexes for queries to be performed efficiently. While
 composite indexes are not wrong at all, they can be tricky to set up as the
 ordering of columns in these indexes is important to ensure optimal performance.
@@ -48,10 +48,10 @@ Enforcing consistency on the database level is absolutely crucial for
 maintaining a healthy environment, and thus is another reason to avoid
 polymorphic associations.
 
-## Query Overhead
+## Query overhead
 
 When using polymorphic associations you always need to filter using both
-columns. For example, you may end up writing a query like this:
+columns. For example, you might end up writing a query like this:
 
 ```sql
 SELECT *
@@ -61,21 +61,21 @@ AND source_id = 13083;
 ```
 
 Here PostgreSQL can perform the query quite efficiently if both columns are
-indexed. As the query gets more complex, it may not be able to use these
+indexed. As the query gets more complex, it might not be able to use these
 indexes effectively.
 
-## Mixed Responsibilities
+## Mixed responsibilities
 
 Similar to functions and classes, a table should have a single responsibility:
 storing data with a certain set of pre-defined columns. When using polymorphic
 associations, you are storing different types of data (possibly with
 different columns set) in the same table.
 
-## The Solution
+## The solution
 
 Fortunately, there is a solution to these problems: use a
 separate table for every type you would otherwise store in the same table. Using
-a separate table allows you to use everything a database may provide to ensure
+a separate table, you can use everything a database might provide to ensure
 consistency and query data efficiently, without any additional application logic
 being necessary.
 

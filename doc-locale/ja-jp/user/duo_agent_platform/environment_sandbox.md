@@ -1,6 +1,6 @@
 ---
-stage: AI-powered
-group: Agent Foundations
+stage: Agent Foundations
+group: Agent Execution
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see <https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments>
 title: リモート実行環境サンドボックス
 ---
@@ -13,6 +13,10 @@ title: リモート実行環境サンドボックス
 - GitLab 18.8で[一般提供](https://gitlab.com/gitlab-org/gitlab/-/work_items/585273)になりました。
 - `network_policy`設定がGitLab 18.10で[導入されました](https://gitlab.com/gitlab-org/gitlab/-/work_items/590021)。
 - `allow_all_unix_sockets`ネットワークポリシー設定がGitLab 18.11で[導入されました](https://gitlab.com/gitlab-org/gitlab/-/work_items/590871)。
+- インスタンスレベルとグループレベルのネットワークアクセス制御は、GitLab 18.11で[導入され](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/229531)、`dap_instance_network_access_controls`および`dap_group_network_access_controls`という名前の[機能フラグ](../../administration/feature_flags/_index.md)が付いています。デフォルトでは無効になっています。
+- 機能フラグ`dap_instance_network_access_controls`および`dap_group_network_access_controls`は、GitLab 19.0で[有効化されました](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/235670)。
+- 機能フラグ`dap_group_network_access_controls`は、19.2で[削除されました](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/243118)。
+- 機能フラグ`dap_instance_network_access_controls`は、19.3で[削除されました](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/244957)。
 
 {{< /history >}}
 
@@ -20,22 +24,22 @@ title: リモート実行環境サンドボックス
 
 ## サンドボックスが適用される条件 {#when-the-sandbox-is-applied}
 
-Anthropic Sandbox Runtime (SRT)がインストールされている互換性のあるDockerイメージを使用すると、実行環境サンドボックスが自動的に適用されます。これには、デフォルトのGitLab Dockerイメージ（リリース[v0.0.6](https://gitlab.com/gitlab-org/duo-workflow/default-docker-image/-/tags/v0.0.6)以降）または[カスタムイメージにSRTがインストールされたもの](#install-anthropic-sandbox-runtime-srt-on-a-custom-image)の使用が含まれます。
+Anthropic Sandbox Runtime（SRT）がインストールされている互換性のあるDockerイメージを使用すると、実行環境サンドボックスが自動的に適用されます。これには、デフォルトのGitLab Dockerイメージ（リリース[v0.0.6](https://gitlab.com/gitlab-org/duo-workflow/default-docker-image/-/tags/v0.0.6)以降）または[カスタムイメージにSRTがインストールされたもの](#install-anthropic-sandbox-runtime-srt-on-a-custom-image)の使用が含まれます。
 
 サンドボックスは、次の条件を満たす場合に有効になります:
 
-- Anthropic Sandbox Runtime (SRT)はDockerイメージで利用可能です。
+- Anthropic Sandbox Runtime（SRT）はDockerイメージで利用可能です。
 - GitLab Duo Agent PlatformのセッションがRunner上で実行されている（ローカル環境はサンドボックス化されません）。
 
-デフォルトとカスタムイメージの設定におけるCI/CD変数の違いについては、[Flow execution variables](flows/execution_variables.md)を参照してください。
+デフォルトとカスタムイメージの設定におけるCI/CD変数の違いについては、[フロー実行変数](flows/execution/execution-variables.md)を参照してください。
 
 ## 前提条件 {#prerequisites}
 
 実行環境サンドボックスを使用するには、次の条件を満たしている必要があります:
 
 - プロジェクトでGitLab Duo Agent Platformが有効になっていること。
-- 特権Runnerモードが有効になっていること。これは[サンドボックスを機能させるために必須](flows/execution.md#configure-runners)です。
-- 互換性のあるDockerイメージ: [デフォルトGitLab Docker](https://gitlab.com/gitlab-org/duo-workflow/default-docker-image/container_registry)イメージのバージョン`v0.0.6`以降、または[Anthropic Sandbox Runtime (SRT)がインストールされたカスタムイメージ](#install-anthropic-sandbox-runtime-srt-on-a-custom-image)が該当します。
+- 特権Runnerモードが有効になっていること。これは[サンドボックスを機能させるために必須](flows/execution/_index.md#configure-runners-to-execute-flows)です。
+- 互換性のあるDockerイメージ: [デフォルトGitLab Docker](https://gitlab.com/gitlab-org/duo-workflow/default-docker-image/container_registry)イメージのバージョン`v0.0.6`以降、または[Anthropic Sandbox Runtime（SRT）がインストールされたカスタムイメージ](#install-anthropic-sandbox-runtime-srt-on-a-custom-image)が該当します。
 
 ## 仕組み {#how-it-works}
 
@@ -45,9 +49,9 @@ Anthropic Sandbox Runtime (SRT)がインストールされている互換性の�
 - ファイルシステムの制限: 特定のディレクトリへの読み取りおよび書き込みアクセスを制限し、機密ファイルへのアクセスをブロックします。
 - グレースフルフォールバック: SRTが使用できない場合や必要なオペレーティングシステムの権限が不足している場合でも、警告メッセージを表示したうえでフローを直接実行します。
 
-## カスタムイメージにAnthropic Sandbox Runtime (SRT)をインストールする {#install-anthropic-sandbox-runtime-srt-on-a-custom-image}
+## カスタムイメージにAnthropic Sandbox Runtime（SRT）をインストールする {#install-anthropic-sandbox-runtime-srt-on-a-custom-image}
 
-たとえば、[`agent-config.yml`](flows/execution.md#create-the-configuration-file)を使用するカスタムイメージを使用する場合、Anthropic SRTバージョン`0.0.20`以降がインストールされ、環境で利用可能である必要があります。
+たとえば、[`agent-config.yml`](flows/execution/_index.md#create-the-agent-configuration-file)を使用するカスタムイメージを使用する場合、Anthropic SRTバージョン`0.0.20`以降がインストールされ、利用可能な状態になっている必要があります。
 
 SRTは`npm`を介して`@anthropic-ai/sandbox-runtime`として利用できます。次の例は、Dockerfileでのインストールステージを示しています:
 
@@ -67,7 +71,7 @@ RUN npm cache clean --force && \
 $ if which srt > /dev/null; then
 $ echo "SRT found, creating config..."
 SRT found, creating config...
-$ echo '{"network":{"allowedDomains":["host.docker.internal","localhost","gitlab.com","*.gitlab.com","duo-workflow-svc.runway.gitlab.net"],"deniedDomains":[],"allowAllUnixSockets":false},"filesystem":{"denyRead":["~/.ssh"],"allowWrite":["./","/tmp/gitlab_duo_agent_platform"],"denyWrite":[],"allowGitConfig":true}}' > /tmp/gitlab_duo_agent_platform/srt-settings.json
+$ echo '{"network":{"allowedDomains":["host.docker.internal","localhost","gitlab.com","*.gitlab.com","duo-workflow-svc.runway.gitlab.net"],"deniedDomains":[],"allowAllUnixSockets":false},"filesystem":{"denyRead":["~/.ssh"],"allowWrite":["./","/tmp"],"denyWrite":["/var/tmp/.gitlab-sandbox"],"allowGitConfig":true}}' > /var/tmp/.gitlab-sandbox/srt-settings.json
 $ echo "Testing SRT sandbox capabilities..."
 Testing SRT sandbox capabilities...
 ```
@@ -104,7 +108,7 @@ Warning: SRT found but can't create sandbox (insufficient privileges), running c
 
 ### サンドボックス設定を構成する {#configure-sandbox-settings}
 
-サンドボックスの設定の一部を構成するには、[`agent-config.yml`](flows/execution.md#create-the-configuration-file)ファイルを使用します。
+サンドボックスの設定の一部を構成するには、[`agent-config.yml`](flows/execution/_index.md#create-the-agent-configuration-file)ファイルを使用します。
 
 デフォルトでは、サンドボックスは次の設定へのアクセスを許可します:
 
@@ -119,7 +123,8 @@ DAPおよびGit操作の実行に必要な環境変数とパラメータのみ�
 サンドボックスでは、次のファイルシステムの制限が適用されます:
 
 - 読み取り制限: SSHキー（`~/.ssh`）へのアクセスはブロックされます。
-- 書き込み許可: 現在のディレクトリ（`./`）および一時ディレクトリ（`/tmp/gitlab_duo_agent_platform`）。
+- 書き込み許可: 現在のディレクトリ（`./`）および`/tmp`。
+- 書き込み制限: `/var/tmp/.gitlab-sandbox`（サンドボックス設定などのプラットフォーム内部ファイルに使用されます）。
 - Git設定へのアクセス: 許可されます。
 
 ### ネットワークポリシーを構成する {#configure-a-network-policy}
@@ -130,15 +135,35 @@ SRTがインストールされている場合、フローはデフォルトで�
 
 - `localhost`
 - `host.docker.internal`
-- お使いのGitLabインスタンスドメイン（例: `gitlab.com`, `*.gitlab.com`）
-- The GitLab DuoワークフローService domain
+- お使いのGitLabインスタンスドメイン（例: `gitlab.com`、`*.gitlab.com`）
+- GitLab Duo Workflow Serviceドメイン
 
 SRTを使用しないカスタムイメージを使用する場合、ネットワーク制限は適用されず、フローはRunnerから到達可能な任意のドメインにアクセスできます。
 
-追加のドメインを許可または拒否するには、`network_policy`を`agent-config.yml`ファイルに追加します。
-
 > [!note]
-> `network_policy`は、`allowed_domains`または`denied_domains`で`"*"`を許可しません。SRTは、すべてのネットワークトラフィックを有効にすることをサポートしていません。ただし、ドメインの一部としてワイルドカードは許可されます。例: `"*.domain.com"`。
+> `network_policy`では、`allowed_domains`または`denied_domains`に`"*"`を許可しません。SRTは、すべてのネットワークトラフィックを有効にすることをサポートしていません。ただし、ドメインの一部としてワイルドカードは許可されます。例: `"*.domain.com"`。
+
+#### 管理者のネットワークアクセス制御 {#administrator-network-policy-controls}
+
+GitLab.comのトップレベルグループオーナーまたはGitLab Self-Managedのインスタンス管理者がネットワークアクセス制御を構成すると、これらの設定がすべてのフローのベースラインポリシーを定義します。**プロジェクトがネットワークサンドボックス設定を拡張することを許可する**チェックボックスは、プロジェクトのオーナーが`agent-config.yml`で設定を構成する際に、どの設定が適用されるかを決定します。
+
+**柔軟モード**（**プロジェクトがネットワークサンドボックス設定を拡張することを許可する**が有効）:
+
+- `agent-config.yml`の`allowed_domains`は管理者の許可リストとマージされます。
+- `agent-config.yml`の`denied_domains`は管理者の拒否リストとマージされます。
+- `agent-config.yml`の`include_recommended_allowed`は、管理者の設定を上書きします。
+- `agent-config.yml`の`allow_all_unix_sockets`は、管理者の設定を上書きします。
+
+**厳格モード**（**プロジェクトがネットワークサンドボックス設定を拡張することを許可する**が無効）:
+
+- `agent-config.yml`の`denied_domains`は管理者の拒否リストとマージされます。
+- `include_recommended_allowed`は、管理者が有効にした設定を厳格化するためにのみ`false`に設定できます。管理者が無効にしている場合、これは効果がありません。
+- `allow_all_unix_sockets`は、管理者が有効にした設定を厳格化するためにのみ`false`に設定できます。管理者が無効にしている場合、これは効果がありません。
+- `agent-config.yml`からの`allowed_domains`は無視されます。
+
+#### プロジェクトレベルの設定 {#configure-project-level-settings}
+
+追加のドメインを許可または拒否するには、`agent-config.yml`ファイルに`network_policy`を追加します:
 
 ```yaml
 network_policy:
@@ -157,11 +182,64 @@ network_policy:
 > [!warning]
 > `allow_all_unix_sockets`を有効にすると、すべてのUnixソケットへのアクセスが許可されます。これは必要な場合、かつ信頼できる環境でのみ有効にしてください。
 
+### インスタンスまたはグループのネットワークアクセス制御を構成する {#configure-network-access-controls-for-your-instance-or-group}
+
+{{< history >}}
+
+- インスタンスレベルとグループレベルのネットワークアクセス制御は、GitLab 18.11で[導入され](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/229531)、`dap_instance_network_access_controls`および`dap_group_network_access_controls`という名前の[機能フラグ](../../administration/feature_flags/_index.md)が付いています。デフォルトでは無効になっています。
+
+{{< /history >}}
+
+[プロジェクトレベルの`agent-config.yml`設定](#configure-a-network-policy)に加えて、管理者とトップレベルグループのオーナーは、GitLab UIを通じてネットワークアクセス制御を管理できます。これらの設定は、インスタンスレベル（GitLab Self-Managed）またはトップレベルグループレベル（GitLab.com）に保存され、その配下のすべてのプロジェクトに継承されます。
+
+これらの設定とプロジェクトレベルの`agent-config.yml`を組み合わせる方法については、[管理者のネットワークポリシー制御](#administrator-network-policy-controls)を参照してください。
+
+#### インスタンスレベルのネットワークアクセス制御を設定する {#configure-instance-level-network-access-controls}
+
+前提条件: 
+
+- 管理者である必要があります。
+
+インスタンスレベルのネットワークアクセス制御を設定するには:
+
+1. 右上隅で、**管理者**を選択します。
+1. 左側のサイドバーで、**GitLab Duo**を選択します。
+1. **設定の変更**を選択します。
+1. **データとプライバシー**の下にある**ネットワークアクセス**セクションで、以下の設定を構成します:
+   - **推奨ドメインを許可リストに含める**: 推奨ドメインの厳選された許可リストは、自動的に許可リストに含まれます。
+   - **すべてのUnixソケットを許可する**: GitLab Duo Agent Platformの操作では、すべてのUnixソケットが許可されます。
+   - **プロジェクトがネットワークサンドボックス設定を拡張することを許可する**: プロジェクトのメンテナーまたはオーナーロールを持つユーザーは、`agent-config.yml`ファイルを通じて推奨ドメインを含めたり、追加のドメインを追加したり、すべてのUnixソケットを許可したりできます。
+1. オプション。**許可されたドメイン**の下で、許可リストからドメインを追加または削除します。**ブロックされたドメイン**の下で、拒否リストからドメインを追加または削除します。
+1. **変更を保存**を選択します。
+
+#### トップレベルグループのネットワークアクセス制御（GitLab.com）を構成する {#configure-top-level-group-network-access-controls-gitlabcom}
+
+前提条件: 
+
+- トップレベルグループのオーナーロールが必要です。
+- グループはGitLab.comのトップレベルグループである必要があります。サブグループはトップレベルグループから設定を継承します。
+
+グループレベルのネットワークアクセス制御を構成するには:
+
+1. 上部のバーで、**検索または移動先**を選択して、トップレベルグループを見つけます。
+1. 左側のサイドバーで**設定**を選択し、次に**GitLab Duo**を選択します。
+1. **設定の変更**を選択します。
+1. **データとプライバシー**にある**ネットワークアクセス**セクションで、[インスタンスレベルのネットワークアクセス制御を設定する](#configure-instance-level-network-access-controls)で説明されているのと同じ設定を行います。
+1. **変更を保存**を選択します。
+
+#### 関連するAPIリソース {#related-api-resources}
+
+- インスタンスレベルのブール値: [`duoSettingsUpdate`](../../api/graphql/reference/_index.md#mutationduosettingsupdate) GraphQLミューテーション。
+- グループレベルのブール値: `ai_settings_attributes`パラメータを使用して、[グループ属性を更新](../../api/groups.md#update-group-attributes) REST API。
+- ドメインの許可リストと拒否リスト: [`aiDomainSettingsInstanceUpdate`](../../api/graphql/reference/_index.md#mutationaidomainsettingsinstanceupdate)および[`aiDomainSettingsNamespaceUpdate`](../../api/graphql/reference/_index.md#mutationaidomainsettingsnamespaceupdate) GraphQLミューテーション。
+
 ### 許可されたドメインを有効にする {#turn-on-allowed-domains}
 
 パッケージレジストリや開発ツールで使用される外部ドメインへのフローアクセスを許可するには、`include_recommended_allowed`設定を有効にします。
 
-この設定はデフォルトで無効になっています(`false`)。これを有効にするには、`agent-config.yml`ファイルで`include_recommended_allowed`を`true`に設定します。
+この設定はデフォルトで無効になっています（`false`）。これを有効にするには、`agent-config.yml`ファイルで`include_recommended_allowed`を`true`に設定します。
+
+ネットワークアクセス制御が厳格モード（**プロジェクトがネットワークサンドボックス設定を拡張することを許可する**が無効）で有効になっている場合、`include_recommended_allowed`のみを無効にできます。設定を`true`にしても、管理者が無効にしている場合は効果がありません。
 
 > [!warning]
 > `include_recommended_allowed`を有効にすると、広範な外部ドメインへのネットワークアクセスが許可されます。これらのエグレスエンドポイントは、環境からデータを抜き出すために悪用される可能性があります。これは必要な場合、かつ信頼できる環境でのみ有効にしてください。

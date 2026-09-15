@@ -20,7 +20,7 @@ ${sprintf(s__('HelloMessage|%{handshake_emoji} Contribute to GitLab: %{contribut
 })}
 ${sprintf(s__('HelloMessage|%{magnifier_emoji} Create a new GitLab issue: %{new_issue_link}'), {
   magnifier_emoji: `${MAG}`,
-  new_issue_link: 'https://gitlab.com/gitlab-org/gitlab/-/issues/new',
+  new_issue_link: 'https://gitlab.com/gitlab-org/gitlab/-/work_items/new',
 })}
 ${
   window.gon?.dot_com

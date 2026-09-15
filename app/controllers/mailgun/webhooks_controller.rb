@@ -19,7 +19,7 @@ module Mailgun
 
     def process_webhook
       WEBHOOK_PROCESSORS.each do |processor_class|
-        processor_class.new(params['event-data']).execute
+        processor_class.new(event_data_params).execute
       end
 
       head :ok
@@ -40,11 +40,26 @@ module Mailgun
 
       # per this guide: https://documentation.mailgun.com/en/latest/user_manual.html#webhooks
       digest = OpenSSL::Digest.new('SHA256')
-      data = [params.dig(:signature, :timestamp), params.dig(:signature, :token)].join
+      data = [signature_params[:timestamp], signature_params[:token]].join
 
       hmac_digest = OpenSSL::HMAC.hexdigest(digest, Gitlab::CurrentSettings.mailgun_signing_key, data)
 
-      ActiveSupport::SecurityUtils.secure_compare(params.dig(:signature, :signature), hmac_digest)
+      ActiveSupport::SecurityUtils.secure_compare(signature_params[:signature], hmac_digest)
+    end
+
+    def signature_params
+      params.permit(signature: [:timestamp, :token, :signature]).fetch(:signature, {})
+    end
+
+    def event_data_params
+      params.permit(
+        'event-data': [
+          :event, :severity, :recipient, :id, :reason,
+          { tags: [],
+            'delivery-status': [:code, :message],
+            'user-variables': [::Members::Mailgun::INVITE_EMAIL_TOKEN_KEY] }
+        ]
+      )['event-data']
     end
 
     def render_406

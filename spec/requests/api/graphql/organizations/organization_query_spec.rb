@@ -259,6 +259,66 @@ RSpec.describe 'getting organization information', feature_category: :organizati
         end
       end
 
+      context 'with `ownedOnly` argument' do
+        shared_examples 'filtering groups by owner role' do
+          let(:organization_fields) do
+            <<~FIELDS
+              id
+              path
+              groups(ownedOnly: #{owned_only}) {
+                nodes {
+                  id
+                }
+              }
+            FIELDS
+          end
+
+          context 'when `ownedOnly` is true' do
+            let(:owned_only) { true }
+
+            it 'returns only groups where the current user is an owner' do
+              request_organization
+
+              expect(groups).to contain_exactly(a_graphql_entity_for(owned_group))
+            end
+          end
+
+          context 'when `ownedOnly` is false' do
+            let(:owned_only) { false }
+
+            it 'returns all accessible groups' do
+              request_organization
+
+              expect(groups.pluck('id')).to include(
+                owned_group.to_global_id.to_s,
+                developer_group.to_global_id.to_s
+              )
+            end
+          end
+        end
+
+        context 'when organization is not the default organization' do
+          let_it_be(:owned_group) { create(:group, organization: organization, owners: user) }
+          let_it_be(:developer_group) { create(:group, organization: organization, developers: user) }
+
+          it_behaves_like 'filtering groups by owner role'
+        end
+
+        context 'when organization is the default organization' do
+          # rubocop:disable Gitlab/RSpec/AvoidCreateDefaultOrganization -- Organizations::GroupsFinder branches on
+          # `organization.default?`, so the default organization needs its own coverage.
+          let_it_be(:default_organization) { create(:organization, :default) }
+          # rubocop:enable Gitlab/RSpec/AvoidCreateDefaultOrganization
+          let_it_be(:owned_group) { create(:group, organization: default_organization, owners: user) }
+          let_it_be(:developer_group) { create(:group, organization: default_organization, developers: user) }
+
+          let(:organization) { default_organization }
+          let(:query_param) { { 'id' => default_organization.to_gid } }
+
+          it_behaves_like 'filtering groups by owner role'
+        end
+      end
+
       describe 'group sorting' do
         let_it_be(:authorized_groups) { [parent_group, public_group, private_group, other_group, organization_group] }
         let_it_be(:first_param) { 2 }

@@ -32,6 +32,7 @@ Put files for a specific product area into the related folder:
 | `doc/install/`        | Instructions for installing GitLab. |
 | `doc/update/`         | Instructions for updating GitLab. |
 | `doc/tutorials/`         | Tutorials for how to use GitLab. |
+| `doc/subscriptions/`  | Documentation about subscriptions and billing, including choosing a plan, managing a subscription, seats and billing accounts, and how features generally consume GitLab Credits. For feature-specific billing, add the documentation in the respective feature's folder. |
 
 The following are legacy or deprecated folders.
 Do not add new content to these folders:

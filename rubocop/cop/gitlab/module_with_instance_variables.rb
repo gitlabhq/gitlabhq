@@ -8,7 +8,7 @@ module RuboCop
           Do not use instance variables in a module. Please read this
           for the rationale behind it:
 
-          https://docs.gitlab.com/ee/development/module_with_instance_variables.html
+          https://docs.gitlab.com/development/module_with_instance_variables/
         TEXT
 
         def on_module(node)

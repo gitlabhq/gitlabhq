@@ -131,7 +131,6 @@ const restrictedGlobals = [
 
 const restrictedImportsPaths = [
   { name: 'axios', message: 'Import axios from ~/lib/utils/axios_utils instead.' },
-  { name: 'mousetrap', message: 'Import { Mousetrap } from ~/lib/mousetrap instead.' },
   {
     name: '@sentry/browser',
     message: 'Use "import * as Sentry from \'~/sentry/sentry_browser_wrapper\';" instead',
@@ -156,6 +155,12 @@ const restrictedImportsPatterns = [
   {
     group: ['lodash', 'lodash/*'],
     message: 'Use lodash-es instead of lodash',
+  },
+  {
+    // Leading slash anchors the match; without it `~/lib/mousetrap` is caught too.
+    group: ['/mousetrap', '/mousetrap/*'],
+    message:
+      'Import { Mousetrap } from ~/lib/mousetrap instead, and add any plugin behaviour there.',
   },
 ];
 
@@ -591,6 +596,7 @@ export default [
       ],
       // Mirrors `vue/no-unused-properties` for `inject` declarations
       'local-rules/vue-no-unused-injects': 'error',
+      'local-rules/vue-no-router-view-listeners-or-slots': 'error',
       'vue/no-undef-components': [
         'error',
         {

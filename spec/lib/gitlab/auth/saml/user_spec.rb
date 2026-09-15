@@ -436,6 +436,34 @@ RSpec.describe Gitlab::Auth::Saml::User, feature_category: :system_access do
     end
   end
 
+  describe 'updating location' do
+    let_it_be(:existing_user) { create(:omniauth_user, extern_uid: 'my-uid', provider: 'saml') }
+
+    before do
+      stub_basic_saml_config
+      stub_omniauth_config(sync_profile_from_provider: ['saml'])
+      stub_omniauth_config(sync_profile_attributes: true)
+    end
+
+    context 'when the SAML response sets a location' do
+      before do
+        info_hash[:location] = 'some city, some country'
+      end
+
+      it 'updates the user location', :aggregate_failures do
+        expect(gl_user.location).to eq('some city, some country')
+        expect(gl_user.user_synced_attributes_metadata.location_synced).to be(true)
+      end
+    end
+
+    context "when the SAML response doesn't set a location" do
+      it 'does not update the user location', :aggregate_failures do
+        expect(gl_user.location).to be_blank
+        expect(gl_user.user_synced_attributes_metadata.location_synced).to be(false)
+      end
+    end
+  end
+
   describe '#find_user' do
     context 'raw info hash attributes empty' do
       let(:raw_info_attr) { {} }

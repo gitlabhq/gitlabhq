@@ -15,7 +15,9 @@ title: Code Review Flow
 {{< collapsible title="Model information" >}}
 
 - LLM: Anthropic Claude Sonnet 5 Vertex
-- [Select a different model](../../../model_selection.md) using the **Agentic Code Review** setting.
+- LLM for GitLab 19.0 or earlier: [Default LLM](../../../../gitlab_duo/model_selection.md#default-models) for GitLab Duo Code Review, the non-agentic version.
+- On GitLab.com, [select a different model](../../../model_selection.md#select-a-model-for-a-feature) using the **Agentic Code Review** setting.
+- On GitLab Self-Managed and GitLab Dedicated, [select a different model](../../../../../administration/gitlab_duo/model_selection.md#select-a-model-for-code-review-flow) using the setting appropriate for your GitLab version.
 - Available on [GitLab Duo with self-hosted models](../../../../../administration/gitlab_duo_self_hosted/_index.md)
 
 {{< /collapsible >}}
@@ -25,8 +27,8 @@ title: Code Review Flow
 - Introduced as [a beta](../../../../../policy/development_stages_support.md) in GitLab [18.7](https://gitlab.com/groups/gitlab-org/-/epics/18645) [with a feature flag](../../../../../administration/feature_flags/_index.md) named `duo_code_review_on_agent_platform`. Disabled by default.
 - [Generally available](https://gitlab.com/gitlab-org/gitlab/-/work_items/585273) in GitLab 18.8. Feature flag `duo_code_review_on_agent_platform` [removed](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/217209).
 - Available on the Free tier on GitLab.com with GitLab Credits in GitLab 18.10.
-- LLM [updated](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/236876) to Claude Sonnet 4.6 Vertex in GitLab 19.1.
-- LLM [updated](https://gitlab.com/gitlab-org/modelops/applied-ml/code-suggestions/ai-assist/-/merge_requests/6422) to Claude Sonnet 5 Vertex in GitLab 19.3.
+- LLM [updated](https://gitlab.com/gitlab-org/modelops/applied-ml/code-suggestions/ai-assist/-/merge_requests/5555) to Claude Sonnet 4.6 Vertex on May 20, 2026.
+- LLM [updated](https://gitlab.com/gitlab-org/modelops/applied-ml/code-suggestions/ai-assist/-/merge_requests/6422) to Claude Sonnet 5 Vertex on August 6, 2026.
 
 {{< /history >}}
 
@@ -50,8 +52,6 @@ This flow:
 - Delivers detailed review comments with actionable feedback.
 - Supports custom review instructions tailored to your project.
 
-This flow is available in the GitLab UI only.
-
 ## Prerequisites
 
 - Meet the [prerequisites for the GitLab Duo Agent Platform](../../../_index.md#prerequisites).
@@ -64,6 +64,10 @@ This flow is available in the GitLab UI only.
 
 ## Use the flow
 
+The Code Review Flow is available in the GitLab UI and through the REST API.
+
+### Request a review in the GitLab UI
+
 {{< history >}}
 
 - Using a flow in a GitLab Duo Agentic Chat conversation [introduced](https://gitlab.com/groups/gitlab-org/-/work_items/20484) in GitLab 19.2 [with a feature flag](../../../../../administration/feature_flags/_index.md) named `agentic_foundational_flow_tool`. Enabled by default.
@@ -74,7 +78,7 @@ This flow is available in the GitLab UI only.
 > The availability of this feature is controlled by a feature flag.
 > For more information, see the history.
 
-To use the Code Review Flow on a merge request:
+To request a review in the GitLab UI:
 
 1. In the left sidebar, select **Code** > **Merge requests** and find your merge request.
 1. Use one of these methods to request a review:
@@ -89,24 +93,50 @@ To use the Code Review Flow on a merge request:
    - See the progress in the Chat conversation.
    - Select **View Agent Session** in the conversation.
 
-## Interact with GitLab Duo in reviews
+### Request a review through the REST API
+
+{{< details >}}
+
+- Status: Experiment
+
+{{< /details >}}
 
 {{< history >}}
 
-- Comment interactions [updated](https://gitlab.com/gitlab-org/gitlab/-/work_items/601102) to use GitLab Duo Agent Platform in GitLab 19.1.
+- Trigger code review through the REST API [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/250117) in GitLab 19.4.
 
 {{< /history >}}
 
-In addition to assigning GitLab Duo as a reviewer, you can interact with GitLab Duo
-by:
+To request a review through the REST API, [trigger the flow](../../../../../api/duo_agent_platform_flows.md#trigger-a-flow)
+with these parameters:
 
-- Replying to review comments to ask for clarification or alternative approaches.
-- Mentioning `@GitLabDuo` in any discussion thread to ask follow-up questions.
+- Set `project_id` to the project that contains the merge request.
+- Set `goal` to either the IID of the merge request to review, or the full URL of that merge request.
+- Set `workflow_definition` to `code_review/v1`. Alternatively, set `ai_catalog_item_consumer_id`
+  to the [consumer ID](../../../../../api/duo_agent_platform_flows.md#look-up-the-consumer-id) for Code Review Flow.
+- Set `start_workflow` to `true` to start the review immediately.
 
-Discussions with GitLab Duo in comments use GitLab Duo Agent Platform and [consume credits](../../../../../subscriptions/gitlab_credits.md).
+The following example triggers a code review of merge request `42`:
 
-Feedback provided to GitLab Duo does not influence later reviews of other merge requests.
-Adding this functionality is proposed in [issue 560116](https://gitlab.com/gitlab-org/gitlab/-/issues/560116).
+```shell
+curl --request POST \
+  --header "PRIVATE-TOKEN: <your_access_token>" \
+  --header "Content-Type: application/json" \
+  --data '{
+    "project_id": "5",
+    "goal": "42",
+    "workflow_definition": "code_review/v1",
+    "start_workflow": true
+  }' \
+  --url "https://gitlab.example.com/api/v4/ai/duo_workflows/workflows"
+```
+
+## Interact with GitLab Duo in reviews
+
+After a review, you can discuss the feedback with GitLab Duo in comment interactions.
+Interactions are a separate feature from Code Review Flow.
+
+For more information, see [interact with GitLab Duo](../../../../project/merge_requests/duo_in_merge_requests.md#interact-with-gitlab-duo).
 
 ## Contextual awareness
 
@@ -146,6 +176,9 @@ risk:
 - Split the merge request into smaller merge requests.
 - [Exclude context](../../../context.md#exclude-context-from-gitlab-duo) for files that are not
   relevant to the review.
+- Ask a group Owner or instance administrator to select a different model for
+  [GitLab.com](../../../model_selection.md#select-a-model-for-a-feature)
+  or [GitLab Self-Managed and GitLab Dedicated](../../../../../administration/gitlab_duo/model_selection.md#select-a-model-for-code-review-flow).
 
 ## Custom code review instructions
 
@@ -167,13 +200,13 @@ To configure custom instructions, see [customize review instructions for GitLab 
 {{< history >}}
 
 - [Changed](https://gitlab.com/gitlab-org/gitlab/-/issues/506537) automatic reviews for projects to a UI setting in GitLab 18.0.
-- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/554070) automatic reviews for groups and instances in GitLab 18.4 as a [beta](../../../../../policy/development_stages_support.md#beta) [with a feature flag](../../../../../administration/feature_flags/_index.md) named `cascading_auto_duo_code_review_settings`. Disabled by default.
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/554070) automatic reviews for groups in GitLab 18.4 as a [beta](../../../../../policy/development_stages_support.md#beta) [with a feature flag](../../../../../administration/feature_flags/_index.md) named `cascading_auto_duo_code_review_settings`. Disabled by default.
 - Feature flag `cascading_auto_duo_code_review_settings` [removed](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/213240) in GitLab 18.7.
 - Automatic reviews for groups and applications [turned on by default](https://gitlab.com/gitlab-org/gitlab/-/work_items/592822) for new GitLab Duo trials on GitLab.com in GitLab 19.1.
 
 {{< /history >}}
 
-Automatic reviews from GitLab Duo ensure that all merge requests in your project, group, or instance
+Automatic reviews from GitLab Duo ensure that all merge requests in your project or group,
 receive an initial review.
 
 When a user creates a merge request, GitLab Duo automatically reviews it unless:
@@ -218,23 +251,6 @@ To turn on automatic reviews for a group:
 1. Select **Save changes**.
 
 Settings cascade from group to project. More specific settings override broader ones.
-
-{{< /tab >}}
-
-{{< tab title="Instance" >}}
-
-Prerequisites:
-
-- Administrator access
-
-To turn on automatic reviews for an instance:
-
-1. In the upper-right corner, select **Admin**.
-1. In the left sidebar, select **Settings** > **General**.
-1. In the **GitLab Duo Code Review** section, select **Enable automatic reviews by GitLab Duo**.
-1. Select **Save changes**.
-
-Settings cascade from instance to group to project. More specific settings override broader ones.
 
 {{< /tab >}}
 
@@ -330,11 +346,42 @@ Prerequisites:
 
 To configure exclusion rules for a group:
 
-1. In the top bar, select **Search or go to** and find your group.
-1. In the left sidebar, select **Settings** > **General** > **GitLab Duo features**.
+{{< tabs >}}
+
+{{< tab title="GitLab.com" >}}
+
+For a top-level group:
+
+1. In the top bar, select **Search or go to** and find your top-level group.
+1. In the left sidebar, select **Settings** > **GitLab Duo**.
+1. Select **Change configuration**.
+1. Under **GitLab Duo features** > **Customize code review**, select the project that contains
+   the `.gitlab/duo/mr-review-automated-rules.yaml` file.
+1. Select **Save changes**.
+
+For a group or subgroup:
+
+1. In the top bar, select **Search or go to** and find your group or subgroup.
+1. In the left sidebar, select **Settings** > **General**.
+1. Expand **GitLab Duo features**.
 1. Under **Customize code review**, select the project that contains the
    `.gitlab/duo/mr-review-automated-rules.yaml` file.
 1. Select **Save changes**.
+
+{{< /tab >}}
+
+{{< tab title="GitLab Self-Managed and GitLab Dedicated" >}}
+
+1. In the top bar, select **Search or go to** and find your group or subgroup.
+1. In the left sidebar, select **Settings** > **General**.
+1. Expand **GitLab Duo features**.
+1. Under **Customize code review**, select the project that contains the
+   `.gitlab/duo/mr-review-automated-rules.yaml` file.
+1. Select **Save changes**.
+
+{{< /tab >}}
+
+{{< /tabs >}}
 
 ## Troubleshooting
 

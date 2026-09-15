@@ -127,7 +127,7 @@ To set up a webhook with PagerDuty:
 1. Turn on the **Active** toggle.
 1. Select **Save integration**.
 1. Copy the value of **Webhook URL** for use in a later step.
-1. To add the webhook URL to a PagerDuty webhook integration, follow the steps described in the [PagerDuty documentation](https://support.pagerduty.com/docs/webhooks#manage-v3-webhook-subscriptions).
+1. To add the webhook URL to a PagerDuty webhook integration, follow the steps described in the [PagerDuty documentation](https://support.pagerduty.com/main/docs/webhooks#manage-v3-webhook-subscriptions).
 
 To confirm the integration is successful, trigger a test incident from PagerDuty to
 check if a GitLab incident is created from the incident.

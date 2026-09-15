@@ -47,6 +47,25 @@ module Authz
         available_for.include?(consumer.to_sym)
       end
 
+      def assignable_when
+        Array(definition[:assignable_when])
+      end
+
+      def assignable_boundaries_for(user)
+        boundaries.select do |boundary|
+          AssignableCondition.satisfied?(conditions_for(boundary), user)
+        end
+      end
+
+      def conditions_for(boundary)
+        assignable_when.filter_map do |entry|
+          entry_boundaries = entry[:boundaries]
+          next unless entry_boundaries.nil? || entry_boundaries.map(&:to_sym).include?(boundary.to_sym)
+
+          entry[:condition].to_sym
+        end
+      end
+
       def category
         source_file                     # path/to/<base_path>/**/resource/action.yml'
           .split(self.class::BASE_PATH) # [..., '**/resource/action.yml']

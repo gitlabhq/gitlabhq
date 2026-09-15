@@ -8,6 +8,14 @@ module MergeRequests
 
     CreateRefError = Class.new(StandardError)
 
+    REBASE_CONFLICT = :rebase_conflict
+
+    # UserRebaseToRef reports conflicts only via this message text (no
+    # structured error detail). The merge step is not classified: it runs on
+    # the already-rebased head so it cannot conflict here, and UserMergeToRef
+    # reports one generic message for all failures anyway.
+    CONFLICT_MESSAGE_PATTERN = /failed to rebase .* due to conflict/
+
     def initialize(
       current_user:, merge_request:, target_ref:, first_parent_ref:, source_sha: nil, merge_params: {}
     )
@@ -18,6 +26,7 @@ module MergeRequests
       @first_parent_ref = first_parent_ref
       @first_parent_sha = target_project.commit(first_parent_ref)&.sha
       @merge_params = merge_params
+      @rebase_performed = false
     end
 
     def execute
@@ -46,10 +55,16 @@ module MergeRequests
 
       ServiceResponse.success(payload: result)
     rescue CreateRefError => error
-      ServiceResponse.error(message: error.message)
+      ServiceResponse.error(message: error.message, reason: error_reason(error))
     end
 
     private
+
+    # Anything not matching the conflict pattern carries no reason and keeps
+    # the caller's generic error handling.
+    def error_reason(error)
+      REBASE_CONFLICT if error.message.match?(CONFLICT_MESSAGE_PATTERN)
+    end
 
     # When the source is rebased onto the target tip but carries no unique
     # commits (e.g. it was branched off another MR whose changes are now in the
@@ -70,9 +85,17 @@ module MergeRequests
       store_generated_ref_commits(final_commit_sha)
     end
 
-    # Default CE implementation - can be overridden in EE
+    # A rebase rewrites the source commits onto a temporary ref that is then
+    # thrown away, so the rewritten SHAs are only recoverable from here.
+    # EE widens this for merge trains.
     def should_store_generated_ref_commits?
-      false # only available in ee for merge trains for now
+      return false unless Feature.enabled?(:generated_ref_commits_for_automatic_rebase, target_project)
+
+      rebase_performed?
+    end
+
+    def rebase_performed?
+      @rebase_performed
     end
 
     attr_reader :current_user, :merge_request, :target_ref, :first_parent_ref, :first_parent_sha, :source_sha,
@@ -138,6 +161,8 @@ module MergeRequests
 
     def maybe_rebase!(commit_sha:, expected_old_oid:, squash_commit_sha: nil, **rest)
       if target_project.ff_merge_must_be_possible?
+        @rebase_performed = true
+
         commit_sha = safe_gitaly_operation do
           repository.rebase_to_ref(
             current_user,

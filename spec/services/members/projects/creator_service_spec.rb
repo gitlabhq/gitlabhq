@@ -30,10 +30,10 @@ RSpec.describe Members::Projects::CreatorService, feature_category: :groups_and_
     end
 
     context 'authorized projects update' do
-      it 'schedules a single project authorization update job when called multiple times' do
-        stub_feature_flags(do_not_run_safety_net_auth_refresh_jobs: false)
-
-        expect(AuthorizedProjectUpdate::UserRefreshFromReplicaWorker).to receive(:bulk_perform_in).once
+      it 'triggers a single low-priority safety-net refresh when called multiple times' do
+        expect_next_instances_of(UserProjectAccessChangedService, 1, false, user.id) do |service|
+          expect(service).to receive(:execute).with(priority: UserProjectAccessChangedService::LOW_PRIORITY)
+        end
 
         1.upto(3) do
           described_class.add_member(source, user, :maintainer)

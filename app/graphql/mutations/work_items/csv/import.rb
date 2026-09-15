@@ -11,6 +11,8 @@ module Mutations
         EXTENSION_ALLOWLIST = %w[csv].map(&:downcase).freeze
 
         authorize :import_work_items
+        authorize_granular_token permissions: :create_work_item, boundary_argument: :project_path,
+          boundary_type: :project
 
         argument :project_path, GraphQL::Types::ID,
           required: true,

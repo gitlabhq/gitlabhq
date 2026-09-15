@@ -72,11 +72,13 @@ module WorkItems
       end
 
       def verify_target_work_item_type
-        return success({}) if skip_target_work_item_type_resolution?
-        return success({}) if skip_target_work_item_type_resolution_for_epic?
-
+        # Consume these before any early return: leftover keys end up in the
+        # copied work item's create params and raise UnknownAttributeError.
         target_type_id_param = params.delete(:target_work_item_type_id)
         target_type_name_param = params.delete(:target_work_item_type_name)
+
+        return success({}) if skip_target_work_item_type_resolution?
+        return success({}) if skip_target_work_item_type_resolution_for_epic?
 
         # A type _name_ comes from the `/move` and `/clone` quick actions,
         # where the user typed `[type:NAME]` and expects an actionable error

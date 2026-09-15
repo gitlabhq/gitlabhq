@@ -257,6 +257,7 @@ Additional response attributes:
     "ai_catalog_restricted_to_group_hierarchy": false,
     "ai_usage_data_collection_enabled": false,
     "prompt_injection_protection_level": "no_checks",
+    "web_search_enabled": false,
     "include_recommended_allowed": false,
     "allow_all_unix_sockets": false,
     "allow_project_extension": true,
@@ -298,6 +299,7 @@ when GitLab Duo Agent Platform is available for the group. The object contains t
 | `minimum_access_level_execute_async` | string | The minimum access level required to execute GitLab Duo Agent Platform features in CI/CD. One of `developer`, `maintainer`, or `owner`. Returned when the `dap_group_customizable_permissions` feature flag is enabled. |
 | `minimum_access_level_manage` | string | The minimum access level required to manage GitLab Duo Agent Platform. One of `developer`, `maintainer`, or `owner`. Returned when the `dap_group_customizable_permissions` feature flag is enabled. |
 | `prompt_injection_protection_level` | string | The prompt injection protection level. One of `no_checks`, `log_only`, or `interrupt`. |
+| `web_search_enabled` | boolean | When `true`, web search is enabled in GitLab Duo Chat for this group. |
 
 When adding the parameter `with_projects=false`, projects aren't returned.
 
@@ -2053,6 +2055,7 @@ The `shared_runners_setting` attribute determines whether instance runners are e
 - `ai_usage_data_collection_enabled` [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/222459) in GitLab 18.9.
 - `include_recommended_allowed`, `allow_all_unix_sockets`, and `allow_project_extension` [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/234867) in GitLab 19.0.
 - `ai_catalog_restricted_to_group_hierarchy` [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/233914) in GitLab 19.0.
+- `web_search_enabled` [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/253643) in GitLab 19.4.
 
 {{< /history >}}
 
@@ -2074,6 +2077,7 @@ All attributes are optional.
 | `minimum_access_level_execute_async` | integer | The minimum access level required to execute GitLab Duo Agent Platform features in CI/CD. Valid values: `30` (Developer), `40` (Maintainer), `50` (Owner). Available when the `dap_group_customizable_permissions` feature flag is enabled. |
 | `minimum_access_level_manage` | integer | The minimum access level required to manage GitLab Duo Agent Platform. Valid values: `30` (Developer), `40` (Maintainer), `50` (Owner). Available when the `dap_group_customizable_permissions` feature flag is enabled. |
 | `prompt_injection_protection_level` | string | The prompt injection protection level. Valid values: `no_checks`, `log_only`, `interrupt`. |
+| `web_search_enabled` | boolean | When `true`, enables web search in GitLab Duo Chat for this group. Can only be set on top-level groups. |
 
 ## Update group avatars
 
@@ -2175,6 +2179,12 @@ Prerequisites:
 
 ### List all personal access tokens for a group
 
+{{< history >}}
+
+- `last_used_ips` in the response [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/250307) in GitLab 19.4.
+
+{{< /history >}}
+
 Lists all personal access tokens associated with enterprise users in a top-level group.
 
 ```plaintext
@@ -2215,6 +2225,7 @@ Example response:
     ],
     "user_id": 3,
     "last_used_at": "2021-10-06T17:58:37.550Z",
+    "last_used_ips": ["192.0.2.10"],
     "active": true,
     "expires_at": "2025-11-08"
   }
@@ -2385,6 +2396,12 @@ Other possible responses:
 
 ### Rotate a personal access token for an enterprise user
 
+{{< history >}}
+
+- `last_used_ips` in the response [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/250307) in GitLab 19.4.
+
+{{< /history >}}
+
 Rotates a specified personal access token for an enterprise user associated with the top-level group. This revokes the previous token and creates a new token
 that expires after one week.
 
@@ -2415,6 +2432,7 @@ Example response:
     "scopes": ["api"],
     "user_id": 1337,
     "last_used_at": null,
+    "last_used_ips": [],
     "active": true,
     "expires_at": "2023-08-15",
     "token": "s3cr3t"

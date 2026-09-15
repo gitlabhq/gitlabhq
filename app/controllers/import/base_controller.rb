@@ -22,8 +22,9 @@ class Import::BaseController < ApplicationController
                        incompatible_repos: serialized_incompatible_repos }
       end
       format.html do
-        if params[:namespace_id].present?
-          @namespace = Namespace.find_by_id(params[:namespace_id])
+        namespace_id = namespace_id_param
+        if namespace_id.present?
+          @namespace = Namespace.find_by_id(namespace_id)
 
           render_404 unless current_user.can?(:import_projects, @namespace)
         end
@@ -61,8 +62,20 @@ class Import::BaseController < ApplicationController
 
   private
 
+  def namespace_id_param
+    params.permit(:namespace_id)[:namespace_id]
+  end
+
+  def target_namespace_param
+    params.permit(:target_namespace)[:target_namespace]
+  end
+
+  def filter_param
+    params.permit(:filter)[:filter]
+  end
+
   def sanitized_filter_param
-    @filter ||= sanitize(params[:filter])&.downcase
+    @filter ||= sanitize(filter_param)&.downcase
   end
 
   def filtered(collection)
@@ -107,7 +120,7 @@ class Import::BaseController < ApplicationController
 
   # deprecated: being replaced by app/services/import/base_service.rb
   def find_or_create_namespace(names, owner)
-    names = params[:target_namespace].presence || names
+    names = target_namespace_param.presence || names
 
     return current_user.namespace if names == owner
 

@@ -4,11 +4,11 @@ import PermalinkDropdownItem from '~/repository/components/header_area/permalink
 import { useMockInternalEventsTracking } from 'helpers/tracking_internal_events_helper';
 import Shortcuts from '~/behaviors/shortcuts/shortcuts';
 import { keysFor, START_SEARCH_PROJECT_FILE } from '~/behaviors/shortcuts/keybindings';
-import { shouldDisableShortcuts } from '~/behaviors/shortcuts/shortcuts_toggle';
+import { keyboardShortcutsDisabled } from '~/behaviors/shortcuts/shortcuts_disabled';
 import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
 import { blobControlsDataMock } from 'ee_else_ce_jest/repository/mock_data';
 
-jest.mock('~/behaviors/shortcuts/shortcuts_toggle');
+jest.mock('~/behaviors/shortcuts/shortcuts_disabled');
 
 const relativePermalinkPath =
   'flightjs/Flight/-/blob/46ca9ebd5a43ec240ee8d64e2bb829169dff744e/bower.json';
@@ -28,6 +28,9 @@ describe('BlobRepositoryActionsGroup', () => {
       stubs: {
         GlDisclosureDropdownGroup,
         PermalinkDropdownItem,
+      },
+      mocks: {
+        $route: { query: {} },
       },
     });
   };
@@ -104,7 +107,7 @@ describe('BlobRepositoryActionsGroup', () => {
   });
 
   it('displays the shortcut key when shortcuts are not disabled', () => {
-    shouldDisableShortcuts.mockReturnValue(false);
+    keyboardShortcutsDisabled.mockReturnValue(false);
     createComponent();
     expect(findFindFileDropdownItem().find('kbd').exists()).toBe(true);
     expect(findFindFileDropdownItem().find('kbd').text()).toBe(
@@ -113,7 +116,7 @@ describe('BlobRepositoryActionsGroup', () => {
   });
 
   it('does not display the shortcut key when shortcuts are disabled', () => {
-    shouldDisableShortcuts.mockReturnValue(true);
+    keyboardShortcutsDisabled.mockReturnValue(true);
     createComponent();
     expect(findFindFileDropdownItem().find('kbd').exists()).toBe(false);
   });

@@ -58,7 +58,7 @@ RSpec.describe Gitlab::Auth::OAuth::User, :aggregate_failures, feature_category:
 
     context 'when user does not exist for given uid and provider' do
       it 'returns nil' do
-        expect(described_class.find_by_uid_and_provider('unknown-uid', provider)).to eq nil
+        expect(described_class.find_by_uid_and_provider('unknown-uid', provider)).to be_nil
       end
     end
 
@@ -1255,6 +1255,19 @@ RSpec.describe Gitlab::Auth::OAuth::User, :aggregate_failures, feature_category:
       it "updates the user location" do
         expect(gl_user.location).to eq(info_hash[:address][:locality] + ', ' + info_hash[:address][:country])
         expect(gl_user.user_synced_attributes_metadata.location_synced).to be(true)
+      end
+    end
+
+    context "when provider sets a location in the location attribute instead of the address attribute" do
+      before do
+        info_hash.delete(:address)
+        info_hash[:location] = 'some city, some country'
+      end
+
+      it "does not update the user location" do
+        expect(gl_user.location).to be_blank
+        expect(gl_user.user_synced_attributes_metadata.location_synced).to be(false)
+        expect(gl_user.read_only_attribute?(:location)).to be(false)
       end
     end
 

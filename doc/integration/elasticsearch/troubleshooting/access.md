@@ -116,8 +116,8 @@ To verify that your GitLab instance is using Elasticsearch:
 
   The output from the last command is the key here. If it shows:
 
-  - `ActiveRecord::Relation`, **it is not** using Elasticsearch.
-  - `Kaminari::PaginatableArray`, **it is** using Elasticsearch.
+  - `ActiveRecord::Relation`, it is not using Elasticsearch.
+  - `Kaminari::PaginatableArray`, it is using Elasticsearch.
 - If Elasticsearch is limited to specific namespaces and you need to know if
   Elasticsearch is being used for a specific project or namespace, you can use
   the Rails console:
@@ -224,3 +224,18 @@ For more information, see [issue 550805](https://gitlab.com/gitlab-org/gitlab/-/
 
 To resolve this issue, set
 [`elasticsearch_client_adapter`](../../../api/settings.md#available-settings) to `net_http`.
+
+## `gitlab:elastic:info` reports Elasticsearch even when the search cluster is OpenSearch
+
+When [compatibility mode is enabled in Amazon OpenSearch Service](https://docs.aws.amazon.com/opensearch-service/latest/developerguide/rename.html#rename-upgrade), the OpenSearch cluster reports its version as 7.10.2 and its distribution as Elasticsearch to any client.
+Running `gitlab:elastic:info` indicates `Server distribution` as Elasticsearch and its version.
+To check if compatibility mode is enabled, query the cluster's settings directly:
+
+```json
+curl --user "<username>:<password>" \
+  "<opensearch_url>/_cluster/settings?include_defaults=true&pretty" \
+  | grep -A2 override_main_response_version
+```
+
+If `compatibility.override_main_response_version` is `true`, the cluster is running OpenSearch and masking its identity for compatibility with Elasticsearch-targeting clients.
+To make `gitlab:elastic:info` report accurately, disable compatibility mode by setting it to `false`.

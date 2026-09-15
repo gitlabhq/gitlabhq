@@ -304,6 +304,22 @@ RSpec.describe 'Update a work item', feature_category: :team_planning do
         end
       end
 
+      context 'when a concurrent edit removed the targeted line' do
+        before do
+          mutation_work_item.update!(description: 'Intro')
+        end
+
+        it 'returns a conflict error along with the current work item state' do
+          expect do
+            post_graphql_mutation(mutation, current_user: current_user)
+            mutation_work_item.reload
+          end.not_to change { mutation_work_item.description }
+
+          expect(mutation_response['errors'].first).to include('Someone edited this')
+          expect(mutation_response['workItem']['description']).to eq('Intro')
+        end
+      end
+
       context 'when combined with a description' do
         let(:input) do
           {
@@ -361,6 +377,20 @@ RSpec.describe 'Update a work item', feature_category: :team_planning do
           post_graphql_mutation(mutation, current_user: current_user)
 
           expect(graphql_errors.first['message']).to include('work_items_task_list_toggle')
+        end
+      end
+
+      context 'when the work_items_task_list_toggle feature flag is enabled for the root ancestor only' do
+        before do
+          stub_feature_flags(work_items_task_list_toggle: group)
+        end
+
+        it 'toggles the item' do
+          expect do
+            post_graphql_mutation(mutation, current_user: current_user)
+            mutation_work_item.reload
+          end.to change { mutation_work_item.description }
+            .to("Intro\n\n- [x] Task 1\n- [x] Task 2")
         end
       end
     end
@@ -781,8 +811,11 @@ RSpec.describe 'Update a work item', feature_category: :team_planning do
       end
 
       let_it_be(:valid_parent) { create(:work_item, project: project) }
-      let_it_be(:valid_child1) { create(:work_item, :task, project: project, created_at: 5.minutes.ago) }
-      let_it_be(:valid_child2) { create(:work_item, :task, project: project, created_at: 5.minutes.from_now) }
+      let_it_be_with_reload(:valid_child1) { create(:work_item, :task, project: project, created_at: 5.minutes.ago) }
+      let_it_be_with_reload(:valid_child2) do
+        create(:work_item, :task, project: project, created_at: 5.minutes.from_now)
+      end
+
       let(:input_base) { { parentId: valid_parent.to_gid.to_s } }
       let(:child1_ref) { { adjacentWorkItemId: valid_child1.to_global_id.to_s } }
       let(:child2_ref) { { adjacentWorkItemId: valid_child2.to_global_id.to_s } }

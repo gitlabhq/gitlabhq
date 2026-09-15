@@ -10,6 +10,7 @@ import NoteActions from '~/notes/components/note_actions.vue';
 import NoteBody from '~/notes/components/note_body.vue';
 import NoteHeader from '~/notes/components/note_header.vue';
 import issueNote from '~/notes/components/noteable_note.vue';
+import eventHub from '~/notes/event_hub';
 import { createAlert } from '~/alert';
 import { UPDATE_COMMENT_FORM } from '~/notes/i18n';
 import { sprintf } from '~/locale';
@@ -54,10 +55,11 @@ describe('issue_note', () => {
   const REPORT_ABUSE_PATH = '/abuse_reports/add_category';
 
   const findNoteBody = () => wrapper.findComponent(NoteBody);
+  const findNoteSessionBar = () => wrapper.findComponent({ name: 'NoteSessionBar' });
 
   const findMultilineComment = () => wrapper.findByTestId('multiline-comment');
 
-  const createWrapper = (props = {}) => {
+  const createWrapper = (props = {}, provide = {}) => {
     // the component overwrites the `note` prop with every action, hence create a copy
     const noteCopy = clone(props.note || note);
 
@@ -67,15 +69,21 @@ describe('issue_note', () => {
         note: noteCopy,
         ...props,
       },
-      stubs: [
-        'note-header',
-        'user-avatar-link',
-        'note-actions',
-        'note-body',
-        'multiline-comment-form',
-      ],
+      stubs: {
+        NoteHeader: true,
+        UserAvatarLink: true,
+        NoteActions: true,
+        NoteBody: true,
+        MultilineCommentForm: true,
+        NoteSessionBar: {
+          name: 'NoteSessionBar',
+          props: ['agentName', 'sessionId', 'status', 'isReply'],
+          template: '<div></div>',
+        },
+      },
       provide: {
         reportAbusePath: REPORT_ABUSE_PATH,
+        ...provide,
       },
     });
   };
@@ -347,7 +355,7 @@ describe('issue_note', () => {
         '<img src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" onload="alert(1)" />';
       const alertSpy = jest.spyOn(window, 'alert').mockImplementation(() => {});
 
-      findNoteBody().vm.$emit('handleFormUpdate', {
+      findNoteBody().vm.$emit('handle-form-update', {
         noteText: noteBody,
         parentElement: null,
         callback: () => {},
@@ -390,7 +398,7 @@ describe('issue_note', () => {
     it('emits handle-update-note', async () => {
       const updatedNote = { ...note, note_html: `<p dir="auto">${params.noteText}</p>\n` };
 
-      findNoteBody().vm.$emit('handleFormUpdate', params);
+      findNoteBody().vm.$emit('handle-form-update', params);
       await nextTick();
       await waitForPromises();
 
@@ -409,7 +417,7 @@ describe('issue_note', () => {
     });
 
     it('updates note content', async () => {
-      findNoteBody().vm.$emit('handleFormUpdate', params);
+      findNoteBody().vm.$emit('handle-form-update', params);
 
       await nextTick();
       await waitForPromises();
@@ -428,7 +436,7 @@ describe('issue_note', () => {
 
       // Attempt to update note with sensitive content
       const updatedNote = { ...params, noteText: sensitiveMessage };
-      findNoteBody().vm.$emit('handleFormUpdate', updatedNote);
+      findNoteBody().vm.$emit('handle-form-update', updatedNote);
 
       await nextTick();
       await waitForPromises();
@@ -457,7 +465,7 @@ describe('issue_note', () => {
       });
 
       beforeEach(() => {
-        findNoteBody().vm.$emit('handleFormUpdate', { ...params, noteText: 'invalid note' });
+        findNoteBody().vm.$emit('handle-form-update', { ...params, noteText: 'invalid note' });
       });
 
       it('renders error message and restores content of updated note', async () => {
@@ -511,6 +519,26 @@ describe('issue_note', () => {
       expect(findNoteBody().props('isEditing')).toBe(true);
     });
 
+    describe('when the notes event hub asks for edit mode', () => {
+      it('enters edit mode on `enter-edit-mode` for this note', async () => {
+        createWrapper();
+
+        eventHub.$emit('enter-edit-mode', { noteId: note.id });
+        await nextTick();
+
+        expect(findNoteBody().props('isEditing')).toBe(true);
+      });
+
+      it('ignores `enter-edit-mode` for another note', async () => {
+        createWrapper();
+
+        eventHub.$emit('enter-edit-mode', { noteId: `${note.id}-other` });
+        await nextTick();
+
+        expect(findNoteBody().props('isEditing')).toBe(false);
+      });
+    });
+
     it('passes down restoreFromAutosave', () => {
       createWrapper({
         note: { ...note },
@@ -556,7 +584,7 @@ describe('issue_note', () => {
     it('emits `update-success` once the note update succeeds', async () => {
       createWrapper();
 
-      findNoteBody().vm.$emit('handleFormUpdate', {
+      findNoteBody().vm.$emit('handle-form-update', {
         noteText: 'updated note text',
         parentElement: null,
         callback: jest.fn(),
@@ -565,6 +593,104 @@ describe('issue_note', () => {
       await waitForPromises();
 
       expect(wrapper.emitted('update-success')).toHaveLength(1);
+    });
+  });
+
+  describe('NoteSessionBar', () => {
+    const SESSION_ID = 42;
+    const AGENT_NAME = 'Duo Developer';
+
+    const sessionNote = {
+      ...note,
+      duo_session_id_triggered: SESSION_ID,
+      duo_session_agent_name: AGENT_NAME,
+      duo_session_status: 'running',
+    };
+
+    describe('when noteAgentSessionBar feature flag is disabled', () => {
+      beforeEach(() => {
+        createWrapper({ note: sessionNote }, { glFeatures: { noteAgentSessionBar: false } });
+      });
+
+      it('does not render', () => {
+        expect(findNoteSessionBar().exists()).toBe(false);
+      });
+    });
+
+    describe('when noteAgentSessionBar feature flag is enabled', () => {
+      const createSessionWrapper = (props = {}) =>
+        createWrapper(
+          { note: sessionNote, ...props },
+          { glFeatures: { noteAgentSessionBar: true } },
+        );
+
+      describe('when duo_session_id_triggered is absent', () => {
+        beforeEach(() => {
+          createSessionWrapper({ note: { ...sessionNote, duo_session_id_triggered: null } });
+        });
+
+        it('does not render', () => {
+          expect(findNoteSessionBar().exists()).toBe(false);
+        });
+      });
+
+      describe('when duo_session_agent_name is absent', () => {
+        beforeEach(() => {
+          createSessionWrapper({ note: { ...sessionNote, duo_session_agent_name: null } });
+        });
+
+        it('does not render', () => {
+          expect(findNoteSessionBar().exists()).toBe(false);
+        });
+      });
+
+      describe('when session fields are present', () => {
+        beforeEach(() => {
+          createSessionWrapper();
+        });
+
+        it('renders', () => {
+          expect(findNoteSessionBar().exists()).toBe(true);
+        });
+
+        it('passes correct props', () => {
+          expect(findNoteSessionBar().props()).toMatchObject({
+            agentName: AGENT_NAME,
+            sessionId: SESSION_ID,
+            status: 'running',
+          });
+        });
+      });
+
+      describe('when status is finished', () => {
+        beforeEach(() => {
+          createSessionWrapper({ note: { ...sessionNote, duo_session_status: 'finished' } });
+        });
+
+        it('renders (NoteSessionBar handles its own visibility)', () => {
+          expect(findNoteSessionBar().exists()).toBe(true);
+        });
+      });
+
+      describe('when discussionRoot is true', () => {
+        beforeEach(() => {
+          createSessionWrapper({ discussionRoot: true });
+        });
+
+        it('passes isReply as false', () => {
+          expect(findNoteSessionBar().props('isReply')).toBe(false);
+        });
+      });
+
+      describe('when discussionRoot is false', () => {
+        beforeEach(() => {
+          createSessionWrapper({ discussionRoot: false });
+        });
+
+        it('passes isReply as true', () => {
+          expect(findNoteSessionBar().props('isReply')).toBe(true);
+        });
+      });
     });
   });
 });

@@ -686,8 +686,10 @@ describe('import table', () => {
       await waitForPromises();
       expect(findSelectionCount().text()).toMatchInterpolatedText('0 selected');
       await triggerSelectAllCheckbox();
+      await waitForPromises();
       expect(findSelectionCount().text()).toMatchInterpolatedText('2 selected');
       await triggerSelectAllCheckbox(false);
+      await waitForPromises();
       expect(findSelectionCount().text()).toMatchInterpolatedText('0 selected');
     });
 
@@ -715,6 +717,7 @@ describe('import table', () => {
       await waitForPromises();
 
       await selectRow(0);
+      await waitForPromises();
 
       expect(findImportAllSelectedDropdown().props().disabled).toBe(false);
     });

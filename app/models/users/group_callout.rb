@@ -49,7 +49,8 @@ module Users
       # 38 removed in https://gitlab.com/gitlab-org/gitlab/-/merge_requests/221172
       duo_code_review_enabled_by_default: 39, # EE-only
       reached_seat_count_threshold: 40, # EE-only
-      overage_seat_count_threshold: 41 # EE-only
+      overage_seat_count_threshold: 41, # EE-only
+      billing_retrial_card: 42 # EE-only
     }
 
     validates :group, presence: true

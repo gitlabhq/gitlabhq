@@ -7,6 +7,7 @@ module Gitlab
         class AutovacuumActiveOnTable
           def initialize(context)
             @tables = context.tables
+            @connection = context.connection
           end
 
           def evaluate
@@ -23,14 +24,30 @@ module Gitlab
 
           private
 
-          attr_reader :tables
+          attr_reader :tables, :connection
 
           def enabled?
             Feature.enabled?(:batched_migrations_health_status_autovacuum, type: :ops)
           end
 
           def active_autovacuums_for(tables)
+            return autovacuum_activity_for(tables) unless bind_to_context_connection?
+
+            # PostgresAutovacuumActivity is a SharedModel, so without this it resolves
+            # against ActiveRecord::Base and can only ever observe the main database.
+            Gitlab::Database::SharedModel.using_connection(connection) do
+              autovacuum_activity_for(tables)
+            end
+          end
+
+          def autovacuum_activity_for(tables)
             Gitlab::Database::PostgresAutovacuumActivity.for_tables(tables)
+          end
+
+          def bind_to_context_connection?
+            return false unless connection
+
+            Feature.enabled?(:autovacuum_indicator_uses_context_connection, type: :ops)
           end
         end
       end

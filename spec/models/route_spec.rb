@@ -270,6 +270,9 @@ RSpec.describe Route do
     context 'when cells claims are enabled for RedirectRoute' do
       before do
         stub_config_cell(enabled: true)
+        # Only the bulk claims path is under test here, so keep the save-time
+        # claim callbacks from reaching Topology Service.
+        allow(Cells::TransactionRecord).to receive(:current_transaction).and_return(nil)
       end
 
       it 'collects destroy metadata from conflicting redirects' do

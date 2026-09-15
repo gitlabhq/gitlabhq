@@ -118,6 +118,13 @@ RSpec.describe Gitlab::Database::Partitioning::MultipleNumericListPartition, fea
       sql = 'ALTER TABLE "table" DETACH PARTITION "gitlab_partitions_dynamic"."table_10"'
       expect(partition.to_detach_sql).to eq(sql)
     end
+
+    context 'when detaching concurrently' do
+      it 'generates SQL' do
+        sql = 'ALTER TABLE "table" DETACH PARTITION "gitlab_partitions_dynamic"."table_10" CONCURRENTLY'
+        expect(partition.to_detach_sql(concurrently: true)).to eq(sql)
+      end
+    end
   end
 
   describe '#before?' do

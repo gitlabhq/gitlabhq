@@ -145,7 +145,7 @@ sudo apt-get install -y \
 echo 'export PATH=/usr/local/cuda/bin:$PATH' >> ~/.bashrc
 echo 'export LD_LIBRARY_PATH=/usr/local/cuda/lib64:$LD_LIBRARY_PATH' >> ~/.bashrc
 
-# Keep GPU initialised between jobs (reduces cold-start latency)
+# Keep GPU initialized between jobs (reduces cold-start latency)
 sudo systemctl enable nvidia-persistenced
 
 echo "Rebooting to load NVIDIA kernel modules..."

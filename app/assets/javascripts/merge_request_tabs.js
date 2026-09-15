@@ -16,6 +16,7 @@ import { findApplicablePosition } from '~/rapid_diffs/utils/discussion_position'
 import { useNotes } from '~/notes/store/legacy_notes';
 import { useBatchComments } from '~/batch_comments/store';
 import { useLegacyDiffs } from '~/diffs/stores/legacy_diffs';
+import { getAiOverviewEl } from '~/merge_requests/utils/ai_overview';
 import {
   removeLinkedFileUrlParams,
   withLinkedFileUrlParams,
@@ -198,7 +199,18 @@ export function getActionFromHref(pathName) {
 }
 
 export const pageBundles = {
-  show: () => import(/* webpackPrefetch: true */ '~/mr_notes/mount_app'),
+  // The AI overview replaces the whole Overview tab, so the notes app is not mounted alongside it.
+  show: () => {
+    const aiOverviewEl = getAiOverviewEl();
+
+    if (!aiOverviewEl) {
+      return import(/* webpackPrefetch: true */ '~/mr_notes/mount_app');
+    }
+
+    return import('ee_else_ce/merge_requests/ai_overview').then(({ default: init }) => ({
+      default: () => init(aiOverviewEl),
+    }));
+  },
   diffs: () => import(/* webpackPrefetch: true */ '~/diffs'),
   reports: () => import('~/merge_requests/reports'),
 };

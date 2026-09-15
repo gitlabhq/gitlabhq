@@ -19,9 +19,9 @@ RSpec.describe 'Projects > Files > User previews file while editing in single fi
     MERMAID
   end
 
-  let(:expected_mermaid_graph) do
+  let(:mermaid_frame_selector) do
     src_prefix = "http://#{Capybara.current_session.server.host}:#{Capybara.current_session.server.port}#{sandbox_mermaid_v11_path}"
-    %r{<iframe src="#{Regexp.escape(src_prefix)}(?:\?darkMode=true)?" sandbox="allow-scripts allow-popups"}
+    "iframe[src^='#{src_prefix}'][sandbox='allow-scripts']"
   end
 
   before_all do
@@ -65,10 +65,9 @@ RSpec.describe 'Projects > Files > User previews file while editing in single fi
     it 'renders mermaid graphs correctly' do
       fill_editor(content_mermaid_graph)
       click_link 'Preview'
-      wait_for_requests
 
       page.within('.js-markdown-code') do
-        expect(page.html).to match(expected_mermaid_graph)
+        expect(page).to have_css(mermaid_frame_selector)
       end
     end
   end

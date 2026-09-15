@@ -86,6 +86,22 @@ For GitLab Duo Code Suggestions, [review the additional prerequisites and setup 
 To approve Agentic Chat tools once per session instead of individually,
 see [tool approvals](../../user/gitlab_duo_chat/agentic_chat.md#tool-approvals).
 
+### Connect GitLab Duo directly
+
+By default, traffic for GitLab Duo and other GitLab features handled by the GitLab Language Server
+uses the proxy settings from your JetBrains IDE or system environment.
+If your proxy blocks this traffic, you can configure your editor extension to bypass the proxy
+for those requests.
+
+To connect GitLab Duo directly:
+
+1. In your JetBrains IDE, go to **Settings** > **Tools** > **GitLab Duo**.
+1. Under **Advanced** > **GitLab Language Server**, select **Connect GitLab Duo directly from the Language Server**.
+1. Select **OK** or **Apply**.
+
+This setting only affects traffic handled by the GitLab Language Server.
+Other editor extension network requests continue to use the proxy configuration for the editor.
+
 ## Install alpha versions of the plugin
 
 GitLab publishes pre-release (alpha) builds of the plugin to the

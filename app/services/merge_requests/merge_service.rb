@@ -11,6 +11,7 @@ module MergeRequests
     include Gitlab::Utils::StrongMemoize
 
     GENERIC_ERROR_MESSAGE = 'An error occurred while merging'
+    CONFLICT_ERROR_MESSAGE = 'This merge request has merge conflicts. Rebase the source branch or resolve the conflicts before merging'
 
     delegate :merge_jid, :state, to: :@merge_request
 
@@ -109,6 +110,13 @@ module MergeRequests
       yield
     rescue Gitlab::Git::PreReceiveError => e
       raise MergeError, "Something went wrong during merge pre-receive hook. #{e.message}".strip
+    rescue MergeRequests::MergeStrategies::StrategyError
+      # Strategy messages are user-facing; re-raise so the outer rescue
+      # saves them on the merge request instead of the generic message.
+      raise
+    rescue Gitlab::Git::MergeConflictError => e
+      handle_merge_error(log_message: e.message)
+      raise_error(CONFLICT_ERROR_MESSAGE)
     rescue StandardError => e
       handle_merge_error(log_message: e.message)
       raise_error(GENERIC_ERROR_MESSAGE)

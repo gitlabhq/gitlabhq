@@ -5,8 +5,6 @@ require 'rspec-parameterized'
 require_relative '../../../../rubocop/cop/gitlab/license_available_usage'
 
 RSpec.describe RuboCop::Cop::Gitlab::LicenseAvailableUsage, feature_category: :shared do
-  let(:msg) { described_class::MSG }
-
   describe 'uses license check' do
     it 'registers an offense' do
       expect_offense(<<~RUBY)

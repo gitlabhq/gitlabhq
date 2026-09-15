@@ -71,10 +71,19 @@ When using spring and guard together, use `SPRING=1 bundle exec guard` instead t
 - Use `focus: true` to isolate parts of the specs you want to run.
 - Use [`:aggregate_failures`](https://rspec.info/features/3-12/rspec-core/expectation-framework-integration/aggregating-failures/) when there is more than one expectation in a test.
 - For [empty test description blocks](https://github.com/rubocop-hq/rspec-style-guide#it-and-specify), use `specify` rather than `it do` if the test is self-explanatory.
-- Use `non_existing_record_id`/`non_existing_record_iid`/`non_existing_record_access_level`
-  when you need an ID/IID/access level that doesn't actually exist. Using 123, 1234,
-  or even 999 is brittle as these IDs could actually exist in the database in the
-  context of a CI run.
+- Use `non_existing_record_id`, `non_existing_record_iid`, or
+  `non_existing_record_access_level` when you need a value that doesn't exist.
+  Use `non_existing_project_hashed_path` when you need a valid hashed storage path
+  that no project uses.
+- Don't use arbitrary values like `123`, `1234`, or `999` for records that shouldn't
+  exist.
+  These values can exist in the CI database.
+- Don't calculate an unused ID with queries like `Model.maximum(:id) + 1` or
+  `Model.last.id + 1`.
+  These queries can race with concurrent database writes and add an unnecessary query.
+  Use the non-existing record helpers instead.
+- The non-existing record ID helpers return `ACTIVE_MODEL_INTEGER_MAX`, the maximum
+  value for a 32-bit integer, which no sequence reaches in a CI run.
 - When writing a new test, verify it fails in the way you expect before asserting it passes.
   Run the spec with the condition inverted or the behavior under test removed to confirm the failure message is meaningful.
   A test that cannot fail is not providing coverage.
@@ -1028,7 +1037,7 @@ Keep setup proportional to what is being asserted.
 A spec that assigns many instance variables and stubs several helpers to assert a single element
 is a signal that the view has too many responsibilities.
 
-**Do not** include the following in view specs:
+Do not include the following in view specs:
 
 - `ActiveRecord::QueryRecorder` or `exceed_query_limit` assertions.
   Query performance belongs in request or controller specs, not view specs.
@@ -1773,7 +1782,7 @@ One consequence of using these strategies, instead of the well-known
 reset across specs. So if you create a project in spec A, then create a project
 in spec B, the first has `id=1`, while the second has `id=2`.
 
-This means that specs should **never** rely on the value of an ID, or any other
+This means that specs should never rely on the value of an ID, or any other
 sequence-generated column. To avoid accidental conflicts, specs should also
 avoid manually specifying any values in these kinds of columns. Instead, leave
 them unspecified, and look up the value after the row is created.
@@ -1961,7 +1970,7 @@ managed in the same way. With hashed storage enabled in the specs, they are
 written to disk in locations determined by ID, so conflicts should not occur.
 
 Some specs disable hashed storage by passing the `:legacy_storage` trait to the
-`projects` factory. Specs that do this must **never** override the `path` of the
+`projects` factory. Specs that do this must never override the `path` of the
 project, or any of its groups. The default path includes the project ID, so it
 does not conflict. If two specs create a `:legacy_storage` project with the same
 path, they use the same repository on disk and lead to test environment
@@ -2156,6 +2165,12 @@ For example, if we need to test the below Haml,
 ```
 
 When you want to ensure that tracking isn't assigned, you can use `not_to` with the above matchers.
+
+None of the matchers above observe an event that was actually emitted.
+`expect_snowplow_event` asserts on a mock of `Gitlab::Tracking`, and `have_tracking` asserts on
+rendered markup.
+To assert the payloads GitLab emits, from the backend and the frontend alike, see
+[Capturing Snowplow events in feature specs](../internal_analytics/capturing_snowplow_events_in_specs.md).
 
 #### Test Snowplow context against the schema
 
@@ -2377,6 +2392,72 @@ Guidelines:
 - Treat a slow widely-included shared example like a factory cascade: a small fix
   in one place yields large aggregate savings across the suite. See
   [Optimize factory usage](#optimize-factory-usage).
+
+#### CE/EE shared-examples convention
+
+When a spec file has an EE mirror (a matching file under `ee/spec/`), reuse the
+shared examples that cover core behavior instead of duplicating them. Define
+those shared examples in `spec/support/shared_examples/`, then:
+
+- The CE spec uses `it_behaves_like` for the cases that exist in CE.
+- The EE mirror uses `it_behaves_like` for the EE-only cases, wrapping
+  license-gated ones in `stub_licensed_features`.
+
+`spec/support/shared_examples/` is the right home because `spec/spec_helper.rb`
+requires every file under `spec/support/`, and also requires
+`ee/spec/spec_helper.rb` when `Gitlab.ee?`. Both CE and EE runs therefore load
+the CE support tree, and EE runs additionally load `ee/spec/support/`.
+
+Do not define a shared example in one spec file and use it from another. RSpec
+loads only the spec files in the current run, and a spec file never requires
+another spec file, so the shared example is unresolved whenever the defining file
+isn't part of the run: `bundle exec rspec ee/spec/requests/api/notes_spec.rb` on
+its own fails with `Could not find shared examples`. A `shared_examples` call
+inside an example group is scoped to that group as well, so it isn't visible to a
+`describe` in another file even when both files are loaded.
+
+For example, `spec/support/shared_examples/requests/api/notes_shared_examples.rb`
+defines the core endpoint behavior:
+
+```ruby
+RSpec.shared_examples 'noteable API' do |parent_type, noteable_type, id_name|
+  # core endpoint behavior
+end
+```
+
+`spec/requests/api/notes_spec.rb` uses it for the noteables available in CE:
+
+```ruby
+it_behaves_like 'noteable API', 'projects', 'wiki_pages', 'id' do
+  let(:parent) { project }
+  let(:noteable) { wiki_page_meta }
+  let(:note) { wiki_page_meta_note }
+end
+```
+
+And `ee/spec/requests/api/notes_spec.rb` uses the same shared example for an
+EE-only noteable:
+
+```ruby
+context 'when noteable is a WikiPage::Meta for a group wiki' do
+  before do
+    stub_licensed_features(group_wikis: true)
+  end
+
+  it_behaves_like 'noteable API', 'groups', 'wiki_pages', 'id' do
+    let(:parent) { group }
+    let(:noteable) { wiki_page_meta }
+    let(:note) { wiki_page_meta_note }
+  end
+end
+```
+
+When you move an existing shared example into `spec/support/shared_examples/`,
+check that no other top-level `RSpec.shared_examples` already uses the name. RSpec
+doesn't fail on a duplicate: it prints a warning and the later definition silently
+overwrites the earlier one. This matters most for names that a CE spec and its EE
+mirror both define today, because those definitions are group-scoped and do not
+collide as written. Rename one side before promoting either to a support file.
 
 ### Helpers
 

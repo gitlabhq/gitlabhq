@@ -2,6 +2,7 @@
 
 module Milestoneish
   DISPLAY_ISSUES_LIMIT = 500
+  DISPLAY_MERGE_REQUESTS_LIMIT = 1000
 
   def total_issues_count
     @total_issues_count ||= Milestones::IssuesCountService.new(self).count
@@ -13,6 +14,10 @@ module Milestoneish
 
   def opened_issues_count
     total_issues_count - closed_issues_count
+  end
+
+  def total_merge_requests_count
+    @total_merge_requests_count ||= Milestones::MergeRequestsCountService.new(self).count
   end
 
   def complete?
@@ -71,6 +76,24 @@ module Milestoneish
       MergeRequestsFinder.new(user, issues_finder_params)
         .execute.where(milestone_id: milestoneish_id)
     end
+  end
+
+  def merge_requests_count_for_display(user)
+    # Materializing the milestone's MRs first forces a plan driven by
+    # index_merge_requests_on_milestone_id; the planner otherwise walks every
+    # project in the hierarchy, which times out for large groups.
+    cte = Gitlab::SQL::CTE.new(
+      :milestone_merge_requests,
+      MergeRequest.select(:id, :milestone_id, :target_project_id, :author_id)
+        .where(milestone_id: milestoneish_id)
+    )
+
+    merge_requests_visible_to_user(user)
+      .with(cte.to_arel)
+      .from(cte.alias_to(MergeRequest.arel_table))
+      .reorder(nil)
+      .limit(DISPLAY_MERGE_REQUESTS_LIMIT + 1)
+      .count
   end
 
   def upcoming?

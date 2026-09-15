@@ -37,8 +37,8 @@ RSpec.describe Gitlab::Usage::Metrics::Instrumentations::DatabaseMetric, feature
 
       subject.value
 
-      expect(Rails.cache.read('metric_instrumentation/special_issue_count_minimum_id')).to eq(nil)
-      expect(Rails.cache.read('metric_instrumentation/special_issue_count_maximum_id')).to eq(nil)
+      expect(Rails.cache.read('metric_instrumentation/special_issue_count_minimum_id')).to be_nil
+      expect(Rails.cache.read('metric_instrumentation/special_issue_count_maximum_id')).to be_nil
     end
 
     context 'with metric options specified with custom batch_size' do
@@ -86,7 +86,7 @@ RSpec.describe Gitlab::Usage::Metrics::Instrumentations::DatabaseMetric, feature
       end
 
       it 'responds to #available? properly' do
-        expect(subject.available?).to eq(false)
+        expect(subject.available?).to be(false)
       end
     end
 
@@ -99,7 +99,7 @@ RSpec.describe Gitlab::Usage::Metrics::Instrumentations::DatabaseMetric, feature
       end
 
       it 'responds to #available? properly' do
-        expect(subject.available?).to eq(true)
+        expect(subject.available?).to be(true)
       end
     end
 

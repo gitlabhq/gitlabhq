@@ -25,8 +25,7 @@ module Gitlab
         skip_merges: false,
         after: nil,
         before: nil,
-        all: false,
-        message_regex: nil
+        all: false
       }.freeze
 
       NoRepository = Class.new(::Gitlab::Git::BaseError)
@@ -263,7 +262,10 @@ module Gitlab
         end
       end
 
-      def archive_metadata(ref, storage_path, project_path, format = "tar.gz", append_sha:, path: nil, ref_type: nil)
+      def archive_metadata( # rubocop:disable Metrics/ParameterLists -- all arguments needed
+        ref, storage_path, project_path, format = "tar.gz",
+        append_sha:, path: nil, ref_type: nil, include_lfs_blobs: true, exclude_paths: []
+      )
         ref = ref.presence || root_ref
         return {} if ref.blank?
 
@@ -277,7 +279,10 @@ module Gitlab
 
         {
           'ArchivePrefix' => prefix,
-          'ArchivePath' => archive_file_path(storage_path, commit.id, prefix, format),
+          'ArchivePath' => archive_file_path(
+            storage_path, commit.id, prefix, format,
+            include_lfs_blobs: include_lfs_blobs, exclude_paths: exclude_paths
+          ),
           'CommitId' => commit.id,
           'GitalyRepository' => gitaly_repository.to_h,
           'StoragePath' => storage_path
@@ -315,7 +320,7 @@ module Gitlab
       # be resolved by either removing the cache, or moving the implementation
       # into Gitaly and removing the ArchivePath parameter from the git-archive
       # senddata response.
-      def archive_file_path(storage_path, sha, name, format = "tar.gz")
+      def archive_file_path(storage_path, sha, name, format = "tar.gz", include_lfs_blobs: true, exclude_paths: [])
         # Build file path
         return unless name
 
@@ -333,9 +338,22 @@ module Gitlab
           end
 
         file_name = "#{name}.#{extension}"
-        File.join(storage_path, self.gl_repository, sha, archive_version_path, file_name)
+        File.join(
+          storage_path, self.gl_repository, sha,
+          archive_variant_path(include_lfs_blobs, exclude_paths), file_name
+        )
       end
       private :archive_file_path
+
+      def archive_variant_path(include_lfs_blobs, exclude_paths)
+        exclude_paths = Array(exclude_paths).uniq.sort
+        return archive_version_path if include_lfs_blobs && exclude_paths.empty?
+
+        variant = { include_lfs_blobs: include_lfs_blobs, exclude_paths: exclude_paths }
+
+        "#{archive_version_path}-#{Digest::SHA256.hexdigest(variant.to_json)[0, 16]}"
+      end
+      private :archive_variant_path
 
       def archive_version_path
         '@v2'
@@ -380,12 +398,9 @@ module Gitlab
       #     path: 'app/models',
       #     limit: 10,
       #     offset: 5,
-      #     after: Time.new(2016, 4, 21, 14, 32, 10),
-      #     message_regex: 'project'
+      #     after: Time.new(2016, 4, 21, 14, 32, 10)
       #   )
       def log(options)
-        raise ArgumentError, 'Invalid message_regex pattern' unless valid_message_regex?(options[:message_regex])
-
         options = DEFAULT_LOG_OPTIONS.merge(options)
 
         limit = options[:limit]
@@ -738,13 +753,14 @@ module Gitlab
         end
       end
 
-      def update_submodule(user:, submodule:, commit_sha:, message:, branch:)
+      def update_submodule(user:, submodule:, commit_sha:, message:, branch:, expected_old_oid: '')
         args = {
           user: user,
           submodule: submodule,
           commit_sha: commit_sha,
           branch: branch,
-          message: message
+          message: message,
+          expected_old_oid: expected_old_oid
         }
 
         wrapped_gitaly_errors do
@@ -1313,14 +1329,6 @@ module Gitlab
       # rubocop: enable CodeReuse/ActiveRecord
 
       private
-
-      def valid_message_regex?(pattern)
-        return true unless pattern
-
-        !!Gitlab::UntrustedRegexp.new(pattern)
-      rescue RegexpError
-        false
-      end
 
       def check_blobs_generated(base, head, changed_paths)
         wrapped_gitaly_errors do

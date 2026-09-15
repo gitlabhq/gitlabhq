@@ -14,26 +14,26 @@ title: GitLab Duoを設定する
 
 GitLab Duoは、ソフトウェア開発ライフサイクル全体を支援する、AIネイティブなアシスタントです。
 
-GitLab Duoを構成して以下を使用できます:
+GitLab Duoは、以下の構成で使用できます:
 
-- クラウドベースのAIゲートウェイ（デフォルト）: ベンダーの言語モデルを備えた、GitLabがホストするAIゲートウェイを使用します。
-- セルフホストモデル: 独自のAIゲートウェイと言語モデルを使用し、データとセキュリティを完全に管理できます。
+- クラウドベースのAIゲートウェイ（デフォルト）: GitLabがホストするAIゲートウェイと、ベンダーの言語モデルを使用します。
+- セルフホストモデル: 独自のAIゲートウェイと言語モデルを使用し、データとセキュリティを完全に制御します。
 - ハイブリッド構成: 一部の機能にはセルフホストモデル、その他の機能にはクラウドベースのモデルを使用します。
 
 ## 前提条件 {#prerequisites}
 
-- サイレントモードは[無効になっています](../../silent_mode/_index.md#turn-off-silent-mode)。
-- [お使いのインスタンスがアクティベーションコードで有効化されています](../../license.md#activate-gitlab-ee)。
+- サイレントモードが[オフ](../../silent_mode/_index.md#turn-off-silent-mode)になっている。
+- [アクティベーションコードでインスタンスをアクティブ化](../../license.md#activate-gitlab-ee)している。
   - ライセンスキーは使用できません。
-  - オフラインライセンスではGitLab Duoを使用できません。[GitLab Duo Self-Hosted](../../gitlab_duo_self_hosted/_index.md)は例外です。
-- インスタンスを実行するホストは、HTTP/Sプロキシサーバーを使用している場合でも、DNSでパブリックホスト名を解決することができます。
+  - [GitLab Duo Self-Hosted](../../gitlab_duo_self_hosted/_index.md)を除き、オフラインライセンスではGitLab Duoを使用できません。
+- HTTP/Sプロキシサーバーを使用している場合でも、インスタンスを実行するホストがDNSでパブリックホスト名を解決できる。
 
 ## GitLabインスタンスからGitLab Duoへの送信接続を許可する {#allow-outbound-connections-from-the-gitlab-instance-to-gitlab-duo}
 
 - GitLabアプリケーションノードは、HTTP/2を使用して`https://duo-workflow-svc.runway.gitlab.net`にあるGitLab Duo Workflowに接続する必要があります。アプリケーションとサービスはgRPCを使用して通信します。
-- GitLab Duo Agent Platformの機能を使用するには、ファイアウォールとHTTP/Sプロキシサーバーにおいて、ポート`443`経由で`duo-workflow-svc.runway.gitlab.net`を使用した`https://`への送信接続を許可し、HTTP/2トラフィックをサポートする必要があります。
-- お使いのインスタンスがHTTP/Sプロキシサーバー経由で接続している場合でも、ホストはパブリックホスト名をDNSで解決する必要があります。ホスト名がプロキシサーバー経由でのみ解決することができる場合、GitLab Duoヘルスチェック、GitLabクレジットダッシュボード、GitLab Duo Agent PlatformなどのGitLab Duo機能がタイムアウトしたり、失敗したりする可能性があります。詳細については、[イシュー602538](https://gitlab.com/gitlab-org/gitlab/-/issues/602538)を参照してください。
-- AI機能は、永続的なHTTP接続で応答をストリームします。最大リクエスト期間またはアイドルタイムアウトを強制するHTTP/Sプロキシサーバーまたはファイアウォールは、エラーなしに長い応答を遮断することがあります。パス内の他のコンポーネントよりも長いタイムアウトでプロキシを設定してください。
+- GitLab Duo Agent Platformの機能を使用するには、ファイアウォールとHTTP/Sプロキシサーバーにおいて、`https://`とHTTP/2トラフィックをサポートし、ポート`443`で`duo-workflow-svc.runway.gitlab.net`への送信接続を許可する必要があります。
+- インスタンスがHTTP/Sプロキシサーバー経由で接続する場合でも、ホストがDNSを使用してパブリックホスト名を解決できる必要があります。ホスト名をプロキシサーバー経由でしか解決できない場合、GitLab Duoのヘルスチェック、GitLabクレジットダッシュボード、GitLab Duo Agent PlatformなどのGitLab Duo機能がタイムアウトしたり、失敗したりする可能性があります。詳細については、[イシュー602538](https://gitlab.com/gitlab-org/gitlab/-/issues/602538)を参照してください。
+- AI機能は、長時間維持されるHTTP接続を介してレスポンスをストリーミングします。リクエストの最大継続時間やアイドルタイムアウトを適用するHTTP/Sプロキシサーバーまたはファイアウォールでは、エラーを表示せずに長いレスポンスが切断される可能性があります。プロキシには、経路上にある他のコンポーネントよりも長いタイムアウトを設定してください。
 
 ## クライアントからGitLabインスタンスへの受信接続を許可する {#allow-inbound-connections-from-clients-to-the-gitlab-instance}
 
@@ -71,17 +71,17 @@ GitLabインスタンスは、IDEクライアントからの受信接続を許�
 
 [クライアントからGitLabインスタンスへの受信接続](#allow-inbound-connections-from-clients-to-the-gitlab-instance)として許可されているものと同じ接続を、RunnerからGitLabインスタンスへの送信接続としても許可する必要があります。
 
-加えて、Runnerは以下に接続できる必要があります:
+さらに、Runnerは以下に接続できる必要があります:
 
 | 宛先 | ポート | 目的 |
 |-------------|------|---------|
-| `registry.npmjs.org` | `443` | ランタイムにDuo CLIパッケージをダウンロードする |
-| `registry.gitlab.com` | `443` | デフォルトのDockerイメージをダウンロードする（[カスタムイメージ](../../../user/duo_agent_platform/flows/execution.md#change-the-default-docker-image)を使用しない限り） |
+| `registry.npmjs.org` | `443` | 実行時にDuo CLIパッケージをダウンロードする |
+| `registry.gitlab.com` | `443` | デフォルトのDockerイメージをダウンロードする（[カスタムイメージ](../../../user/duo_agent_platform/flows/execution/images.md#change-the-default-docker-image)を使用する場合を除く） |
 
-組織がパブリックnpmレジストリへのアクセスを許可できない場合、必要な依存関係がすでにインストールされている[カスタムDockerイメージ](../../../user/duo_agent_platform/flows/execution.md#change-the-default-docker-image)を使用できます。
+組織でパブリックnpmレジストリへのアクセスを許可できない場合は、必要な依存関係がすでにインストールされている[カスタムDockerイメージ](../../../user/duo_agent_platform/flows/execution/images.md#change-the-default-docker-image)を使用できます。
 
 > [!note]
-> RunnerのGitLab Duo Agent Platformサービスへの接続は、GitLabインスタンスを介してルーティングされます。Runnerは`duo-workflow-svc.runway.gitlab.net`に直接接続しません。`duo-workflow-svc.runway.gitlab.net`のポート`443`に対するファイアウォールの要件は、RunnerではなくGitLabインスタンスに適用されます。お使いのRunnerのネットワーク設定は、GitLabインスタンスへの送信HTTPSトラフィックを許可する必要があります。
+> RunnerからGitLab Duo Agent Platformサービスへの接続は、GitLabインスタンスを経由します。Runnerが`duo-workflow-svc.runway.gitlab.net`に直接接続することはありません。ポート`443`で`duo-workflow-svc.runway.gitlab.net`への接続を許可するファイアウォール要件は、RunnerではなくGitLabインスタンスに適用されます。Runnerのネットワーク設定では、GitLabインスタンスへの送信HTTPSトラフィックを許可する必要があります。
 
 ## GitLabと使用状況データを共有する {#share-usage-data-with-gitlab}
 
@@ -93,27 +93,27 @@ GitLabインスタンスは、IDEクライアントからの受信接続を許�
 
 サービス品質の向上に役立つよう、GitLab Duo Agent Platform機能に関する使用状況データをGitLabと共有できます。
 
-データ収集を有効にすると、GitLabはGitLab Duo機能の利用状況に関する情報を記録します。このデータは、サービス改善およびデバッグのみに使用され、AIモデルのトレーニングには使用されません。
+データ収集をオンにすると、GitLabはGitLab Duo機能の使用状況に関する情報を記録します。このデータは、サービス改善およびデバッグのみに使用され、AIモデルのトレーニングには使用されません。
 
-収集されるデータの詳細については、[エージェントプラットフォームの利用状況データ](../../../user/gitlab_duo/data_usage.md#agent-platform-usage-data)を参照してください。
+収集されるデータの詳細については、[Agent Platformの使用状況データ](../../../user/gitlab_duo/data_usage.md#agent-platform-usage-data)を参照してください。
 
 前提条件: 
 
 - GitLab 18.9.1以降が必要です。
 
-拡張ロギングを有効にするには:
+拡張ロギングをオンにするには:
 
 1. 右上隅で、**管理者**を選択します。
 1. 左側のサイドバーで、**GitLab Duo**を選択します。
 1. **設定の変更**を選択します。
-1. **Collect usage data**チェックボックスを選択します。
+1. **使用状況データを収集**チェックボックスを選択します。
 1. **変更を保存**を選択します。
 
-### セルフホストモデルでのデータ使用 {#data-usage-with-self-hosted-models}
+### セルフホストモデルでのデータの使用 {#data-usage-with-self-hosted-models}
 
-AIゲートウェイとセルフホストモデルをセルフホストで使用している場合、詳細なログはインフラストラクチャに保存され、GitLabと共有されません。GitLabとデータを共有するには、セルフホストのAIゲートウェイを構成して、外部の可観測性サービスにトレースを送信する必要があります。
+セルフホストAIゲートウェイとセルフホストモデルを使用する場合、詳細なログは自身のインフラストラクチャに保存され、GitLabとは共有されません。GitLabとデータを共有するには、外部の可観測性サービスにトレースを送信するように、セルフホストAIゲートウェイを設定する必要があります。
 
-[Service Ping](../../settings/usage_statistics.md#service-ping)を使用して、利用状況データをGitLabに送信できます。このデータは[テレメトリーデータ](../../../user/gitlab_duo/data_usage.md#telemetry)とは異なります。
+[Service Ping](../../settings/usage_statistics.md#service-ping)を使用して、使用状況データをGitLabに送信できます。このデータは[テレメトリデータ](../../../user/gitlab_duo/data_usage.md#telemetry)とは異なります。
 
 ## GitLab Duoのヘルスチェックを実行する {#run-a-health-check-for-gitlab-duo}
 
@@ -154,9 +154,9 @@ AIゲートウェイとセルフホストモデルをセルフホストで使用
 | ネットワーク                   | インスタンスが`customers.gitlab.com`および`cloud.gitlab.com`に接続できるかどうかをテストします。<br><br>インスタンスがいずれかの宛先に接続できない場合は、ファイアウォールまたはプロキシサーバーの設定が[接続を許可](#allow-outbound-connections-from-the-gitlab-instance-to-gitlab-duo)していることを確認してください。 |
 | 同期           | サブスクリプションが次の条件を満たしているかどうかをテストします:<br>\- アクティベーションコードでアクティブ化されており、`customers.gitlab.com`と同期できる。<br>\- 正しいアクセス認証情報を持っている。<br>\- 最近同期されている。そうでない場合、またはアクセス認証情報がないか期限切れになっている場合は、サブスクリプションデータを[手動で同期](../../../subscriptions/manage_subscription.md#manually-synchronize-subscription-data)できます。 |
 | コード提案          | GitLab Duo Self-Hostedモデルのみ。コード提案が利用可能かどうかをテストします:<br>\- ライセンスにコード提案機能へのアクセスが含まれている。<br>\- この機能を使用するために必要な権限を持っている。 |
-| GitLab Duo Agent Platform | バックエンドサービスが稼働中でアクセス可能かどうかをテストします。このサービスは、エージェントプラットフォームやGitLab Duo Agentic Chatのようなエージェント型の機能に必要です。<br><br>GitLab Duo Self-Hostedの場合、[GitLab Duo Agent Platform機能のセルフホストモデルを選択](../../gitlab_duo_self_hosted/configure_duo_features.md#select-a-self-hosted-model-for-a-feature)するまで、このテストは合格しません。<br><br>以下の基本フローの前提条件も検証されます:<br>\- インスタンスレベルのフロー実行設定が有効になっています。<br>\- インスタンスレベルの基本フロー設定が有効になっています。<br>- `gitlab--duo`タグを持つアクティブなインスタンスRunnerが少なくとも1つ登録および接続されており、Docker互換のexecutorを使用しています。|
+| GitLab Duo Agent Platform | バックエンドサービスが稼働中でアクセス可能かどうかをテストします。このサービスは、Agent PlatformやGitLab Duo Agentic Chatなど、エージェント型の機能に必要です。<br><br>GitLab Duo Self-Hostedでは、[GitLab Duo Agent Platform機能に使用するセルフホストモデルを選択](../../gitlab_duo_self_hosted/configure_duo_features.md#select-a-self-hosted-model-for-a-feature)するまで、このテストは合格しません。<br><br>また、次の基本フローの前提条件も検証します:<br>\- インスタンスレベルのフロー実行設定が有効になっている。<br>\- インスタンスレベルの基本フロー設定が有効になっている。<br>- `gitlab--duo`タグが設定され、アクティブなインスタンスRunnerが1つ以上登録および接続されており、Docker互換のexecutorを使用している。|
 | システム連携           | インスタンスでコード提案を使用できるかどうかをテストします。システム連携アセスメントが失敗した場合、ユーザーはGitLab Duo機能を使用できない可能性があります。 |
-| 使用量課金           | インスタンスがカスタマーポータル、AIゲートウェイ、Duo Workflow Serviceを含む使用量課金エンドポイントに接続できるかどうかをテストします。 |
+| 使用量課金           | インスタンスがカスタマーポータル、AIゲートウェイ、Duo Workflowサービスを含む使用量課金エンドポイントに接続できるかどうかをテストします。 |
 
 バージョン17.10より前のGitLabインスタンスで、ヘルスチェックに問題が発生した場合は、[トラブルシューティングページ](../../../user/gitlab_duo/troubleshooting.md)を参照してください。
 
@@ -164,16 +164,16 @@ AIゲートウェイとセルフホストモデルをセルフホストで使用
 
 デフォルトでは、GitLab DuoはサポートされているAIベンダーの言語モデルを使用し、GitLabがホストするクラウドベースのAIゲートウェイを介してデータを送信します。
 
-独自の言語モデルまたはAIゲートウェイをホストしたい場合:
+独自の言語モデルまたはAIゲートウェイをホストする場合:
 
-- [GitLab Duo Self-Hostedを使用して、AIゲートウェイをホストし、サポートされている任意のセルフホストモデルを使用できます](../../gitlab_duo_self_hosted/_index.md#self-hosted-ai-gateway-and-llms)。このオプションを選択すると、データとセキュリティを完全に制御できます。
-- [ハイブリッド構成](../../gitlab_duo_self_hosted/_index.md#hybrid-ai-gateway-and-model-configuration)を使用します。この構成では、一部の機能については独自のAIゲートウェイとモデルをホストし、その他の機能についてはGitLabAIゲートウェイとベンダーモデルを使用するように構成します。
+- [GitLab Duo Self-Hostedを使用してAIゲートウェイをホストし、サポートされているセルフホストモデルを使用](../../gitlab_duo_self_hosted/_index.md#self-hosted-ai-gateway-and-llms)できます。このオプションを選択すると、データとセキュリティを完全に制御できます。
+- [ハイブリッド構成](../../gitlab_duo_self_hosted/_index.md#hybrid-ai-gateway-and-model-configuration)を使用します。一部の機能には独自のAIゲートウェイとモデルをホストしますが、他の機能にはGitLab AIゲートウェイとAIベンダーモデルを使用します。
 
 ## GitLab Dedicated for Government {#gitlab-dedicated-for-government}
 
-GitLab Dedicated for Governmentの場合、FedRAMP承認済みモデルでGitLab Duo Self-Hostedを使用する必要があります。クラウドベースのAIゲートウェイおよびベンダーモデルは、GitLab Dedicated for Governmentでは利用できません。
+GitLab Dedicated for Governmentでは、GitLab Duo Self-HostedをFedRAMP承認済みモデルと組み合わせて使用する必要があります。クラウドベースのAIゲートウェイとベンダーモデルは、GitLab Dedicated for Governmentでは使用できません。
 
-詳細については、[GitLab Dedicated for GovernmentでGitLab Duoを設定](gitlab_dedicated_for_government.md)を参照してください。
+詳細については、[GitLab Dedicated for GovernmentでGitLab Duoを設定する](gitlab_dedicated_for_government.md)を参照してください。
 
 ## 関連トピック {#related-topics}
 

@@ -15,6 +15,8 @@ RSpec.describe Mutations::WorkItems::SavedViews::Subscribe, feature_category: :p
     resolve(described_class, args: args, ctx: current_ctx)
   end
 
+  specify { expect(described_class).to require_graphql_authorizations(:subscribe_work_item_saved_view) }
+
   describe '#resolve' do
     context 'when the user is not logged in' do
       let(:current_ctx) { { current_user: nil } }
@@ -53,6 +55,22 @@ RSpec.describe Mutations::WorkItems::SavedViews::Subscribe, feature_category: :p
 
         expect(result[:saved_view]).to eq(saved_view)
         expect(result[:errors]).to be_empty
+      end
+
+      it 'tracks the saved_view_subscribe internal event', :clean_gitlab_redis_shared_state do
+        expect { resolve_mutation(id: saved_view.to_global_id) }
+          .to trigger_internal_events('saved_view_subscribe')
+          .with(
+            category: 'Gitlab::WorkItems::Instrumentation::TrackingService',
+            user: current_user,
+            namespace: saved_view.namespace,
+            project: project,
+            additional_properties: { property: 'Planner' }
+          )
+          .and increment_usage_metrics(
+            'redis_hll_counters.count_distinct_user_id_from_saved_view_subscribe_weekly',
+            'redis_hll_counters.count_distinct_user_id_from_saved_view_subscribe_monthly'
+          )
       end
 
       it 'creates a user saved view record' do
@@ -94,6 +112,19 @@ RSpec.describe Mutations::WorkItems::SavedViews::Subscribe, feature_category: :p
           expect(result[:saved_view]).to eq(saved_view)
           expect(result[:errors]).to be_empty
         end
+
+        # Unlike the unsubscribe path, a redundant subscribe is intentionally still tracked.
+        it 'still tracks the saved_view_subscribe event' do
+          expect { resolve_mutation(id: saved_view.to_global_id) }
+            .to trigger_internal_events('saved_view_subscribe')
+            .with(
+              category: 'Gitlab::WorkItems::Instrumentation::TrackingService',
+              user: current_user,
+              namespace: saved_view.namespace,
+              project: project,
+              additional_properties: { property: 'Planner' }
+            )
+        end
       end
 
       context 'when the subscription limit is reached' do
@@ -117,6 +148,11 @@ RSpec.describe Mutations::WorkItems::SavedViews::Subscribe, feature_category: :p
         it 'does not create a new subscription' do
           expect { resolve_mutation(id: saved_view.to_global_id) }
             .not_to change { WorkItems::SavedViews::UserSavedView.count }
+        end
+
+        it 'does not track the saved_view_subscribe event' do
+          expect { resolve_mutation(id: saved_view.to_global_id) }
+            .not_to trigger_internal_events('saved_view_subscribe')
         end
       end
     end

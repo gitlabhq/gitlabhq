@@ -1,5 +1,5 @@
 ---
-stage: Tenant Scale
+stage: GitLab Dedicated
 group: Geo
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see <https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments>
 title: Troubleshooting Geo failover
@@ -74,7 +74,7 @@ secondary site than on the Geo primary site, you can use the Rake task
 to [cleanup orphan artifact files](../../raketasks/cleanup.md#remove-orphan-artifact-files)
 
 On a Geo secondary site, this command also cleans up all Geo
-registry record related to the orphan files on disk.
+registry records related to the orphan files on disk.
 
 ### Fixing sign in errors
 
@@ -112,16 +112,16 @@ The partial failover to a secondary Geo site may be the result of a temporary/tr
      sudo gitlab-ctl geo promote
      ```
 
-   - To promote the secondary site to primary **without any further confirmation**:
+   - To promote the secondary site to primary without any further confirmation:
 
      ```shell
      sudo gitlab-ctl geo promote --force
      ```
 
 1. Verify you can connect to the newly-promoted primary site using the URL used previously for the secondary site.
-1. If **successful**, the secondary site is now promoted to the primary site.
+1. If successful, the secondary site is now promoted to the primary site.
 
-If the previous steps are **not successful**, proceed through the next steps:
+If the previous steps are not successful, proceed through the next steps:
 
 1. SSH to every Sidekiq, PostgreSQL, Gitaly, and Rails node in the secondary site and perform the following operations:
 

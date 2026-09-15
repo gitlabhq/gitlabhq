@@ -144,6 +144,36 @@ describe('DateRangeFilter', () => {
           defaultEndDate: endDate,
         });
       });
+
+      describe('once a custom range is selected', () => {
+        const customRange = {
+          startDate: new Date(Date.UTC(2026, 0, 5)),
+          endDate: new Date(Date.UTC(2026, 2, 31)),
+        };
+
+        beforeEach(async () => {
+          await findCollapsibleListBox().vm.$emit('select', customRangeOption.key);
+        });
+
+        it('emits the range the picker sets', () => {
+          findDateRangePicker().vm.$emit('input', customRange);
+
+          expect(wrapper.emitted('change')).toStrictEqual([
+            [{ ...customRange, dateRangeOption: 'custom' }],
+          ]);
+        });
+
+        // The picker emits each bound as it is picked, and a panel would fill the missing one
+        // with a default, querying a window nobody asked for.
+        it.each([
+          ['start', { ...customRange, startDate: null }],
+          ['end', { ...customRange, endDate: null }],
+        ])('does not emit a range that is still missing its %s', (_, halfFilledRange) => {
+          findDateRangePicker().vm.$emit('input', halfFilledRange);
+
+          expect(wrapper.emitted('change')).toBeUndefined();
+        });
+      });
     });
 
     describe.each([

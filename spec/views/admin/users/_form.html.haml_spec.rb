@@ -9,6 +9,8 @@ RSpec.describe 'admin/users/_form.html.haml', feature_category: :user_management
     assign(:user, user)
   end
 
+  it_behaves_like 'admin user form with the account, password and profile sections'
+
   describe 'Access' do
     describe 'user top level group creation setting' do
       context 'when the user is not allowed to create a group' do

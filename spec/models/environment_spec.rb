@@ -2,14 +2,14 @@
 
 require 'spec_helper'
 
-RSpec.describe Environment, :use_clean_rails_memory_store_caching, feature_category: :environment_management do
+RSpec.describe Environment, :use_clean_rails_memory_store_caching, :with_current_organization, feature_category: :environment_management do
   include ReactiveCachingHelpers
   using RSpec::Parameterized::TableSyntax
   include RepoHelpers
   include StubENV
   include CreateEnvironmentsHelpers
 
-  let(:project) { create(:project, :repository) }
+  let(:project) { create(:project, :repository, organization: current_organization) }
 
   subject(:environment) { create(:environment, project: project) }
 
@@ -175,7 +175,7 @@ RSpec.describe Environment, :use_clean_rails_memory_store_caching, feature_categ
   end
 
   describe '.order_by_last_deployed_at' do
-    let_it_be_with_reload(:project) { create(:project, :repository) }
+    let_it_be_with_reload(:project) { create(:project, :repository, organization: current_organization) }
     let_it_be(:environment1) { create(:environment, project: project) }
     let_it_be(:environment2) { create(:environment, project: project) }
     let_it_be(:environment3) { create(:environment, project: project) }
@@ -224,7 +224,7 @@ RSpec.describe Environment, :use_clean_rails_memory_store_caching, feature_categ
   end
 
   describe ".stopped_review_apps" do
-    let_it_be_with_reload(:project) { create(:project, :repository) }
+    let_it_be_with_reload(:project) { create(:project, :repository, organization: current_organization) }
     let_it_be(:old_stopped_review_env) { create(:environment, :with_review_app, :stopped, created_at: 31.days.ago, project: project) }
     let_it_be(:new_stopped_review_env) { create(:environment, :with_review_app, :stopped, project: project) }
     let_it_be(:old_active_review_env) { create(:environment, :with_review_app, :available, created_at: 31.days.ago, project: project) }
@@ -312,7 +312,7 @@ RSpec.describe Environment, :use_clean_rails_memory_store_caching, feature_categ
   describe '.for_name_like' do
     subject { project.environments.for_name_like(query, limit: limit) }
 
-    let_it_be_with_reload(:project) { create(:project, :repository) }
+    let_it_be_with_reload(:project) { create(:project, :repository, organization: current_organization) }
     let_it_be(:environment) { create(:environment, name: 'production', project: project) }
     let(:query) { 'pro' }
     let(:limit) { 5 }
@@ -373,7 +373,7 @@ RSpec.describe Environment, :use_clean_rails_memory_store_caching, feature_categ
   describe '.for_name_like_within_folder' do
     subject { project.environments.for_name_like_within_folder(query, limit: limit) }
 
-    let_it_be_with_reload(:project) { create(:project, :repository) }
+    let_it_be_with_reload(:project) { create(:project, :repository, organization: current_organization) }
     let!(:environment) { create(:environment, name: 'review/test-app', project: project) }
     let!(:environment_a) { create(:environment, name: 'test-app', project: project) }
     let(:query) { 'test' }
@@ -474,7 +474,7 @@ RSpec.describe Environment, :use_clean_rails_memory_store_caching, feature_categ
   describe '.long_stopping' do
     subject { described_class.long_stopping }
 
-    let_it_be_with_reload(:project) { create(:project) }
+    let_it_be_with_reload(:project) { create(:project, organization: current_organization) }
     let(:environment) { create(:environment, project: project) }
     let(:long) { (described_class::LONG_STOP + 1.day).ago }
     let(:short) { (described_class::LONG_STOP - 1.day).ago }
@@ -523,7 +523,7 @@ RSpec.describe Environment, :use_clean_rails_memory_store_caching, feature_categ
   end
 
   describe '.with_deployment_accessible_project_features' do
-    let_it_be_with_reload(:project) { create(:project) }
+    let_it_be_with_reload(:project) { create(:project, organization: current_organization) }
     let_it_be(:environment) { create(:environment, project: project) }
 
     subject(:result) { described_class.with_deployment_accessible_project_features }
@@ -758,7 +758,7 @@ RSpec.describe Environment, :use_clean_rails_memory_store_caching, feature_categ
   end
 
   describe '#includes_commit?' do
-    let(:project) { create(:project, :repository) }
+    let_it_be(:project) { create(:project, :repository, organization: current_organization) }
 
     context 'without a last deployment' do
       it "returns false" do
@@ -1161,7 +1161,7 @@ RSpec.describe Environment, :use_clean_rails_memory_store_caching, feature_categ
         stop_action
       end
 
-      let_it_be_with_reload(:project) { create(:project, :repository) }
+      let_it_be_with_reload(:project) { create(:project, :repository, organization: current_organization) }
       let_it_be(:environment) { create(:environment, project: project) }
 
       let_it_be(:successful_pipeline) { create(:ci_pipeline, project: project) }
@@ -1970,7 +1970,7 @@ RSpec.describe Environment, :use_clean_rails_memory_store_caching, feature_categ
   describe '#has_opened_alert?' do
     subject { environment.has_opened_alert? }
 
-    let_it_be_with_reload(:project) { create(:project) }
+    let_it_be_with_reload(:project) { create(:project, organization: current_organization) }
     let_it_be_with_reload(:environment) { create(:environment, project: project) }
 
     context 'when environment has an triggered alert' do
@@ -1993,7 +1993,7 @@ RSpec.describe Environment, :use_clean_rails_memory_store_caching, feature_categ
   describe '#cancel_deployment_jobs!' do
     subject { environment.cancel_deployment_jobs! }
 
-    let_it_be_with_reload(:project) { create(:project, :repository) }
+    let_it_be_with_reload(:project) { create(:project, :repository, organization: current_organization) }
     let_it_be_with_reload(:environment) { create(:environment, project: project) }
 
     let!(:deployment) { create(:deployment, project: project, environment: environment, deployable: job) }

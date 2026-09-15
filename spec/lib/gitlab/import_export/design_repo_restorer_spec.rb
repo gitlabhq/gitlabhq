@@ -30,7 +30,7 @@ RSpec.describe Gitlab::ImportExport::DesignRepoRestorer do
     end
 
     it 'restores the repo successfully' do
-      expect(restorer.restore).to eq(true)
+      expect(restorer.restore).to be(true)
     end
   end
 end

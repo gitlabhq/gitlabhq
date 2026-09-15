@@ -64,9 +64,13 @@ The following metrics are available:
 | `gitaly_circuit_breaker_requests_total`                                        | Counter   |  18.9 | `circuit_state`, `result`, `reason`                                     | Total Gitaly requests processed by circuit breaker. `result` can be `allowed`, `rejected`, or `error`. `reason` provides error detail (for example, `resource_exhausted`) |
 | `gitaly_circuit_breaker_transitions_total`                                     | Counter   |  18.9 | `from_state`, `to_state`                                                | Total circuit breaker state transitions. States are `closed`, `open`. Detailed endpoint and storage information is available in structured logs |
 | `gitlab_audit_event_streaming_nats_consumer_lag_seconds`                       | Histogram |  19.3 | `feature_category`                                                      | Audit event streaming NATS consumer lag (publish to dispatch) in seconds |
+| `gitlab_audit_event_streaming_nats_consumer_unreachable_total`                 | Counter   |  19.4 | `feature_category`                                                      | Audit event consumer drains aborted because NATS was unreachable |
+| `gitlab_audit_event_streaming_nats_dispatch_destination_error_total`           | Counter   |  19.4 | `feature_category`                                                      | Audit event batch dispatches that failed due to a destination-side error (a degradation ratio, not an error) |
+| `gitlab_audit_event_streaming_nats_publish_duration_seconds`                   | Histogram |  19.4 | `feature_category`                                                      | Audit event streaming NATS synchronous publish duration in seconds |
 | `gitlab_audit_event_streaming_nats_publish_fallback_total`                     | Counter   |  19.3 | `feature_category`                                                      | Audit event publishes that fell back from NATS to Sidekiq (a degradation ratio, not an error) |
 | `gitlab_audit_event_streaming_nats_publish_total`                              | Counter   |  19.3 | `feature_category`                                                      | Audit event publish attempts through NATS |
 | `gitlab_authorized_projects_safety_net_refresh_rows_total`                     | Counter   |  19.3 | `trigger`, `direction`                                                  | Total number of `project_authorizations` rows added or deleted by a safety-net refresh |
+| `gitlab_blob_embeds_total`                                                     | Counter   |  19.4 | `outcome`                                                               | Total number of blob embed render attempts. Outcome can be `rendered`, `unrenderable`, `unauthorized`, `project_not_found`, `embed_limit_exceeded`, `email_preview_disabled`. |
 | `gitlab_bootsnap_compile_cache_events_total`                                   | Counter   |  19.3 | `event`                                                                 | Number of Bootsnap compile cache events observed during boot, by type (`hit`, `revalidated`, `miss`, `stale`). The hit rate is `(hit + revalidated) / total` |
 | `gitlab_cache_misses_total`                                                    | Counter   |  10.2 | `controller`, `action`, `store`, `endpoint_id`                          | Cache read miss |
 | `gitlab_cache_operation_duration_seconds`                                      | Histogram |  10.2 | `operation`, `store`, `endpoint_id`                                     | Cache access time |
@@ -75,11 +79,12 @@ The following metrics are available:
 | `gitlab_ci_active_jobs`                                                        | Histogram |  14.2 |                                                                         | Count of active jobs when pipeline is created |
 | `gitlab_ci_build_trace_errors_total`                                           | Counter   |  14.4 | `error_reason`                                                          | Total amount of different error types on a build trace |
 | `gitlab_ci_current_queue_size`                                                 | Gauge     |  16.3 |                                                                         | Current size of initialized CI/CD builds queue |
-| `gitlab_ci_job_failure_reasons`                                                | Counter   |  19.3 | `reason`, `runner_type`                                                 | Counter of job failure reasons by runner type |
+| `gitlab_ci_job_failure_reasons`                                                | Counter   | 13.11 | `reason`, `runner_type`                                                 | Counter of job failure reasons. The `runner_type` label was [added](https://gitlab.com/gitlab-org/gitlab/-/work_items/603882) in GitLab 19.3. For `reason` label values, see [CI/CD failure reason metrics](#cicd-failure-reason-metrics) |
 | `gitlab_ci_job_token_authorization_failures`                                   | Counter   | 17.11 | `same_root_ancestor`                                                    | Count of failed authorization attempts via CI JOB Token |
 | `gitlab_ci_job_token_inbound_access`                                           | Counter   |  17.2 |                                                                         | Count of inbound accesses via CI job token |
 | `gitlab_ci_pipeline_builder_scoped_variables_duration`                         | Histogram |  14.5 |                                                                         | Time in seconds it takes to create the scoped variables for a CI/CD job |
 | `gitlab_ci_pipeline_creation_duration_seconds`                                 | Histogram |  13.0 | `gitlab`                                                                | Time in seconds it takes to create a CI/CD pipeline |
+| `gitlab_ci_pipeline_failure_reasons`                                           | Counter   | 13.11 | `reason`                                                                | Counter of pipeline failure reasons. For `reason` label values, see [CI/CD failure reason metrics](#cicd-failure-reason-metrics) |
 | `gitlab_ci_pipeline_security_orchestration_policy_processing_duration_seconds` | Histogram | 13.12 |                                                                         | Time in seconds it takes to process Security Policies in CI/CD pipeline |
 | `gitlab_ci_pipeline_size_builds`                                               | Histogram |  13.1 | `source`                                                                | Total number of builds within a pipeline grouped by a pipeline source |
 | `gitlab_ci_pipeline_time_to_finished_seconds`                                  | Histogram |  19.2 | `source`, `status`                                                      | Wall-clock time in seconds from pipeline creation to a finished status (success, failed, or canceled) |
@@ -122,6 +127,9 @@ The following metrics are available:
 | `gitlab_memwd_violations_total`                                                | Counter   |  15.9 |                                                                         | Total number of times a Ruby process violated a memory threshold |
 | `gitlab_method_call_duration_seconds`                                          | Histogram |  10.2 | `controller`, `action`, `module`, `method`                              | Method calls real duration |
 | `gitlab_omniauth_login_total`                                                  | Counter   |  16.1 | `omniauth_provider`, `status`                                           | Total number of OmniAuth logins attempts |
+| `gitlab_openbao_request_duration_seconds`                                      | Histogram |  19.4 | `operation`, `outcome`                                                  | Duration in seconds of each HTTP call from Rails to OpenBao. Premium and Ultimate only. |
+| `gitlab_openbao_request_errors_total`                                          | Counter   |  19.4 | `operation`, `error_type`                                               | Failed HTTP calls from Rails to OpenBao, by fault type. Premium and Ultimate only. |
+| `gitlab_openbao_requests_total`                                                | Counter   |  19.4 | `operation`, `method`, `outcome`                                        | Total number of HTTP calls from Rails to OpenBao. Premium and Ultimate only. |
 | `gitlab_page_out_of_bounds`                                                    | Counter   |  12.8 | `controller`, `action`, `bot`                                           | Counter for the PageLimiter pagination limit being hit |
 | `gitlab_presentable_object_cacheless_render_real_duration_seconds`             | Histogram |  15.3 | `controller`, `action`, `endpoint_id`                                   | Duration of real time spent caching and representing specific web request objects |
 | `gitlab_rack_attack_events_total`                                              | Counter   |  17.6 | `event_type`, `event_name`                                              | Counts the total number of events handled by Rack Attack. |
@@ -129,8 +137,12 @@ The following metrics are available:
 | `gitlab_rack_attack_throttle_period_seconds`                                   | Gauge     |  17.6 | `event_name`                                                            | Reports the duration over which requests for a client are counted before Rack Attack throttles them. |
 | `gitlab_rails_boot_time_seconds`                                               | Gauge     |  14.8 |                                                                         | Time elapsed for Rails primary process to finish startup |
 | `gitlab_rails_queue_duration_seconds`                                          | Histogram |   9.4 |                                                                         | Measures latency between GitLab Workhorse forwarding a request to Rails |
+| `gitlab_rate_limiter_git_basic_auth_ban_events_total`                                 | Counter   |  19.4 | `event`                                                                 | Counts Git and container registry authentication IP ban events. `event` is one of `failure`, `ban`, `blocked`, `already_banned`, or `reset` |
+| `gitlab_ref_cache_operations_total`                                            | Counter   |  19.4 | `operation`, `ref_type`, `status`                                       | Counts ref cache operations by outcome. `operation` is `fetch`, `search`, `include`, `update`, or `rebuild`. `ref_type` is `branch`, `tag`, or `unknown`. Status values depend on the operation. For `update`, `skipped` includes dual-writes queued during a rebuild and later applied by reconciliation. |
+| `gitlab_ref_cache_trust_events_total`                                          | Counter   |  19.4 | `ref_type`, `event`                                                     | Total ref cache trust lifecycle events. `ref_type` is `branch`, `tag`, or `unknown`. `event` is `granted`, `revoked`, or `grant_skipped`. |
 | `gitlab_ruby_threads_max_expected_threads`                                     | Gauge     |  13.3 |                                                                         | Maximum number of threads expected to be running and performing application work |
 | `gitlab_ruby_threads_running_threads`                                          | Gauge     |  13.3 |                                                                         | Number of running Ruby threads by name |
+| `gitlab_secrets_manager_entitlement_resolutions_total`                         | Counter   |  19.4 | `source`                                                                | Secrets Manager entitlement resolutions that queried Customers Portal; offline and cached resolutions are not counted. `source` is `live` (Customers Portal answered), `lkg_stale` (Customers Portal was unreachable, so GitLab reused its last known good answer), or `fail_closed` (the resolution failed, so GitLab denied access). Premium and Ultimate only. |
 | `gitlab_security_policies_policy_creation_duration_seconds`                    | Histogram |  17.6 |                                                                         | The amount of time to create policy-related configuration |
 | `gitlab_security_policies_policy_deletion_duration_seconds`                    | Histogram |  17.6 |                                                                         | The amount of time to delete policy-related configuration |
 | `gitlab_security_policies_policy_sync_duration_seconds`                        | Histogram |  17.6 |                                                                         | The amount of time to sync policy changes for a policy configuration |
@@ -138,6 +150,8 @@ The following metrics are available:
 | `gitlab_security_policies_scan_result_process_duration_seconds`                | Histogram |  16.7 |                                                                         | The amount of time to process merge request approval policies |
 | `gitlab_security_policies_sync_opened_merge_requests_duration_seconds`         | Histogram |  17.6 |                                                                         | The amount of time to sync opened merge requests after policy changes |
 | `gitlab_security_policies_update_configuration_duration_seconds`               | Histogram |  17.6 |                                                                         | The amount of time to schedule sync for a policy configuration change |
+| `gitlab_sli_openbao_client_calls_error_total`                                  | Counter   |  19.4 | `operation`                                                             | Failed HTTP calls from Rails to OpenBao, measured as an application SLI. Premium and Ultimate only. |
+| `gitlab_sli_openbao_client_calls_total`                                        | Counter   |  19.4 | `operation`                                                             | Total number of HTTP calls from Rails to OpenBao, measured as an application SLI. Premium and Ultimate only. |
 | `gitlab_sli_rails_request_apdex_success_total`                                 | Counter   |  14.4 | `endpoint_id`, `feature_category`, `request_urgency`                    | Total number of successful requests that met the target duration for their urgency. Divide by `gitlab_sli_rails_requests_apdex_total` to get a success ratio |
 | `gitlab_sli_rails_request_apdex_total`                                         | Counter   |  14.4 | `endpoint_id`, `feature_category`, `request_urgency`                    | Total number of request Apdex measurements. |
 | `gitlab_sli_rails_request_error_total`                                         | Counter   |  15.7 | `endpoint_id`, `feature_category`, `request_urgency`, `error`           | Total number of request error measurements. |
@@ -179,7 +193,7 @@ The following metrics are available:
 | `gitlab_transaction_event_rails_exception_total`                               | Counter   |   9.4 |                                                                         | Counter for number of rails exceptions |
 | `gitlab_transaction_event_remove_branch_total`                                 | Counter   |   9.4 |                                                                         | Counter when a branch is removed for any repository |
 | `gitlab_transaction_event_remove_repository_total`                             | Counter   |   9.4 |                                                                         | Counter when a repository is removed |
-| `gitlab_transaction_event_remove_tag_total`                                    | Counter   |   9.4 |                                                                         | Counter when a tag is remove for any repository |
+| `gitlab_transaction_event_remove_tag_total`                                    | Counter   |   9.4 |                                                                         | Counter when a tag is removed for any repository |
 | `gitlab_transaction_event_sidekiq_exception_total`                             | Counter   |   9.4 |                                                                         | Counter of Sidekiq exceptions |
 | `gitlab_transaction_event_stuck_import_jobs_total`                             | Counter   |   9.4 | `projects_without_jid_count`, `projects_with_jid_count`                 | Count of stuck import jobs |
 | `gitlab_transaction_event_update_build_total`                                  | Counter   |   9.4 |                                                                         | Counter for update build for API `/jobs/request/:id` |
@@ -191,8 +205,8 @@ The following metrics are available:
 | `gitlab_vulnerability_report_branch_comparison_real_duration_seconds`          | Histogram | 15.11 |                                                                         | Wall clock execution duration of vulnerability report on default branch SQL query |
 | `http_elasticsearch_requests_duration_seconds`                                 | Histogram |  13.1 | `controller`, `action`, `endpoint_id`                                   | Elasticsearch requests duration during web transactions. Premium and Ultimate only. |
 | `http_elasticsearch_requests_total`                                            | Counter   |  13.1 | `controller`, `action`, `endpoint_id`                                   | Elasticsearch requests count during web transactions. Premium and Ultimate only. |
-| `http_zoekt_requests_duration_seconds`                                         | Histogram |  19.2 | `controller`, `action`, `endpoint_id`                                   | Query time for Zoekt servers during web transactions. Premium and Ultimate only. |
-| `http_zoekt_requests_total`                                                    | Counter   |  19.2 | `controller`, `action`, `endpoint_id`                                   | Amount of calls to Zoekt servers during web transactions. Premium and Ultimate only. |
+| `http_zoekt_requests_duration_seconds`                                         | Histogram |  19.2 | `controller`, `action`, `feature_category`, `endpoint_id`               | Query time for Zoekt servers during web transactions. Premium and Ultimate only. |
+| `http_zoekt_requests_total`                                                    | Counter   |  19.2 | `controller`, `action`, `feature_category`, `endpoint_id`               | Amount of calls to Zoekt servers during web transactions. Premium and Ultimate only. |
 | `http_request_duration_seconds`                                                | Histogram |   9.4 | `method`                                                                | HTTP response time from rack middleware for successful requests |
 | `http_requests_total`                                                          | Counter   |   9.4 | `method`, `status`                                                      | Rack request count |
 | `job_queue_duration_seconds`                                                   | Histogram |   9.5 |                                                                         | Request handling execution time |
@@ -218,6 +232,61 @@ The following metrics are available:
 | `validity_check_partner_api_requests_total`                                    | Counter   |  18.6 | `partner`, `status`, `error_type`                                       | Total partner API verification requests with success/failure status. Ultimate only. |
 | `validity_check_rate_limit_hits_total`                                         | Counter   |  18.6 | `limit_type`                                              | Total rate limit hits during partner token verification. Ultimate only. |
 
+### CI/CD failure reason metrics
+
+The `gitlab_ci_job_failure_reasons` and `gitlab_ci_pipeline_failure_reasons` counters record why CI/CD
+jobs and pipelines fail. Whichever process handles the failure increments the counter, so the same
+metric appears on both the Rails (Puma) and Sidekiq metrics endpoints. For example, runner job status
+updates are handled by the Rails API, while downstream pipeline creation runs in Sidekiq. The label
+values have the same meaning on both endpoints. Dashboards should sum the values from all endpoints.
+
+#### Job failure reasons
+
+The `reason` label of `gitlab_ci_job_failure_reasons` records the failure reason of a job.
+Common values:
+
+- `script_failure`: The job script commands returned a non-zero exit code. For the `docker`,
+  `docker+machine`, and `kubernetes` executors, this value also covers Docker image pull failures.
+  In GitLab 19.1 and later, pull failures caused by an invalid image or tag are recorded as
+  `runner_configuration_error`, and pull failures caused by an unreachable registry are recorded as
+  `runner_external_dependency_failure`.
+- `api_failure`: The runner could not communicate with the GitLab API during the job, for example when
+  sending the job trace, uploading artifacts, or reporting the job status.
+- `runner_system_failure`: The runner failed while preparing the build environment or executor,
+  unrelated to the job script.
+- `job_execution_timeout`: The job exceeded the maximum execution time set for the job.
+- `downstream_pipeline_creation_failed`: A trigger job could not create the downstream pipeline.
+- `unknown_failure`: No specific failure reason was recorded.
+
+For the full list of values, see [`retry:when`](../../../ci/yaml/_index.md#retrywhen).
+
+#### Pipeline failure reasons
+
+The `reason` label of `gitlab_ci_pipeline_failure_reasons` records the failure reason of a pipeline:
+
+| Value                           | Description |
+|:--------------------------------|:------------|
+| `unknown_failure`               | The reason for the pipeline failure is unknown. |
+| `config_error`                  | The pipeline failed because of an error in the CI/CD configuration file. |
+| `external_validation_failure`   | External pipeline validation failed. |
+| `user_not_verified`             | The pipeline failed because the user is not verified. |
+| `size_limit_exceeded`           | The pipeline size limit was exceeded. |
+| `job_activity_limit_exceeded`   | The pipeline job activity limit was exceeded. |
+| `deployments_limit_exceeded`    | The pipeline deployments limit was exceeded. |
+| `project_deleted`               | The project associated with the pipeline was deleted. |
+| `filtered_by_rules`             | Every job was excluded by `rules`, so the pipeline was not created. This value is expected behavior. |
+| `filtered_by_workflow_rules`    | Top-level `workflow:rules` prevented the pipeline from running. This value is expected behavior. |
+| `composite_identity_forbidden`  | The pipeline did not run because the code must be reviewed by a non-AI user first. |
+| `pipeline_ref_creation_failure` | GitLab could not create the pipeline ref. |
+| `filtered_by_no_pipeline`       | The commit was pushed with the `ci.no_pipeline` option, so the pipeline did not run. This value is expected behavior. |
+| `gitaly_unavailable`            | Gitaly was temporarily unavailable when the pipeline was created. |
+
+The `filtered_by_rules`, `filtered_by_workflow_rules`, `filtered_by_no_pipeline`, and
+`gitaly_unavailable` reasons are counted by the metric, but GitLab does not persist a failed pipeline
+for them, so they never appear as failed pipelines in the UI.
+
+Both counters are also listed in the [Sidekiq metrics](#sidekiq-metrics) table.
+
 ## Zoekt metrics
 
 {{< details >}}
@@ -242,10 +311,10 @@ node, both from web/Grape requests and from Sidekiq jobs.
 
 | Metric | Type | Since | Labels | Description |
 |:-------|:-----|------:|:-------|:------------|
-| `http_zoekt_requests_total` | Counter | 19.2 | `controller`, `action`, `endpoint_id` | Amount of calls to Zoekt servers during web transactions. Premium and Ultimate only. |
-| `http_zoekt_requests_duration_seconds` | Histogram | 19.2 | `controller`, `action`, `endpoint_id` | Query time for Zoekt servers during web transactions. Premium and Ultimate only. |
-| `sidekiq_zoekt_requests_total` | Counter | 19.2 | `queue`, `boundary`, `external_dependencies`, `feature_category`, `job_status`, `urgency` | Zoekt requests during a Sidekiq job execution. Premium and Ultimate only. |
-| `sidekiq_zoekt_requests_duration_seconds` | Histogram | 19.2 | `queue`, `boundary`, `external_dependencies`, `feature_category`, `job_status`, `urgency` | Duration in seconds that a Sidekiq job spent in requests to a Zoekt server. Premium and Ultimate only. |
+| `http_zoekt_requests_total` | Counter | 19.2 | `controller`, `action`, `feature_category`, `endpoint_id` | Amount of calls to Zoekt servers during web transactions. Premium and Ultimate only. |
+| `http_zoekt_requests_duration_seconds` | Histogram | 19.2 | `controller`, `action`, `feature_category`, `endpoint_id` | Query time for Zoekt servers during web transactions. Premium and Ultimate only. |
+| `sidekiq_zoekt_requests_total` | Counter | 19.2 | `queue`, `boundary`, `external_dependencies`, `feature_category`, `job_status`, `urgency`, `destination_shard_redis` | Zoekt requests during a Sidekiq job execution. Premium and Ultimate only. |
+| `sidekiq_zoekt_requests_duration_seconds` | Histogram | 19.2 | `queue`, `boundary`, `external_dependencies`, `feature_category`, `job_status`, `urgency`, `destination_shard_redis` | Duration in seconds that a Sidekiq job spent in requests to a Zoekt server. Premium and Ultimate only. |
 
 The two `sidekiq_zoekt_*` rows are also listed in the Sidekiq metrics table
 alongside the equivalent Elasticsearch and Redis metrics.
@@ -283,15 +352,20 @@ For more information, see [Application SLIs](../../../development/application_sl
 | `gitlab_sli_global_search_apdex_success_total` | Counter | 14.4 | `search_type`, `search_level`, `search_scope`, `endpoint_id` | Total number of Zoekt searches that met the latency target (15.52 seconds for code search). Filter by `search_type="zoekt"` |
 | `gitlab_sli_global_search_apdex_total` | Counter | 14.4 | `search_type`, `search_level`, `search_scope`, `endpoint_id` | Total number of Zoekt search Apdex measurements. Filter by `search_type="zoekt"` |
 | `gitlab_sli_global_search_error_total` | Counter | 14.4 | `search_type`, `search_level`, `search_scope`, `endpoint_id` | Total number of Zoekt search error measurements. Filter by `search_type="zoekt"` |
+| `gitlab_sli_global_search_total` | Counter | 14.4 | `search_type`, `search_level`, `search_scope`, `endpoint_id` | Total number of global search error-rate measurements. Divide `gitlab_sli_global_search_error_total` by `gitlab_sli_global_search_total` to get an error ratio. Filter by `search_type="zoekt"` |
 
 ### Zoekt task SLI metrics
 
+The Apdex target for these metrics is `APDEX_THRESHOLD_S` in
+`ee/lib/gitlab/metrics/zoekt_tasks_slis.rb`. Update this section when that constant changes.
+
 | Metric | Type | Since | Labels | Description |
 |:-------|:-----|------:|:-------|:------------|
-| `gitlab_sli_search_zoekt_tasks_apdex_success_total` | Counter | 16.0 | `zoekt_node`, `task_type` | Total number of Zoekt indexing tasks that completed within the 30-minute target |
-| `gitlab_sli_search_zoekt_tasks_apdex_total` | Counter | 16.0 | `zoekt_node`, `task_type` | Total number of Zoekt indexing task Apdex measurements |
-| `gitlab_sli_search_zoekt_tasks_error_total` | Counter | 16.0 | `zoekt_node`, `task_type` | Total number of Zoekt indexing task errors |
-| `gitlab_sli_search_zoekt_tasks_requests_total` | Counter | 16.0 | `zoekt_node`, `task_type` | Total number of Zoekt tasks added to the queue |
+| `gitlab_sli_search_zoekt_tasks_apdex_success_total` | Counter | 18.10 | `zoekt_node`, `task_type` | Total number of Zoekt indexing tasks that completed within the 7200-second (two-hour) target |
+| `gitlab_sli_search_zoekt_tasks_apdex_total` | Counter | 18.10 | `zoekt_node`, `task_type` | Total number of Zoekt indexing task Apdex measurements |
+| `gitlab_sli_search_zoekt_tasks_error_total` | Counter | 18.10 | `zoekt_node`, `task_type` | Total number of Zoekt indexing task errors |
+| `gitlab_sli_search_zoekt_tasks_total` | Counter | 18.10 | `zoekt_node`, `task_type` | Total number of Zoekt indexing task error-rate measurements. Divide `gitlab_sli_search_zoekt_tasks_error_total` by `gitlab_sli_search_zoekt_tasks_total` to get an error ratio |
+| `gitlab_sli_search_zoekt_tasks_requests_total` | Counter | 18.10 | `zoekt_node`, `task_type` | Total number of Zoekt tasks added to the queue |
 
 ### Audit event streaming SLI metrics
 
@@ -321,6 +395,7 @@ The following metrics can be controlled by feature flags:
 | `gitlab_ci_queue_active_runners_total`       | `gitlab_ci_builds_queuing_metrics` |
 | `gitaly_circuit_breaker_requests_total`      | `add_circuit_breaker_to_gitaly`    |
 | `gitaly_circuit_breaker_transitions_total`   | `add_circuit_breaker_to_gitaly`    |
+| `ruby_gvl_wait_seconds_total`                | `enable_sidekiq_gvl_metrics`       |
 
 ## Praefect metrics
 
@@ -767,6 +842,8 @@ configuration option in `gitlab.yml`. These metrics are served from the
 | `geo_uploads_verified`                                   | Gauge     | 14.6  | `url`                                                                                     | Number of uploads successfully verified on secondary |
 | `geo_uploads`                                            | Gauge     | 14.1  | `url`                                                                                     | Number of uploads on primary |
 | `gitlab_audit_event_streaming_worker_total`              | Counter   | 18.9  | `should_stream`, `should_persist`, `streamable`                                           | Audit events processed by streaming worker |
+| `gitlab_ci_job_failure_reasons`                          | Counter   | 13.11 | `reason`, `runner_type`                                                                   | Counter of job failure reasons. Also exported by the Rails process. For `reason` label values, see [CI/CD failure reason metrics](#cicd-failure-reason-metrics) |
+| `gitlab_ci_pipeline_failure_reasons`                     | Counter   | 13.11 | `reason`                                                                                  | Counter of pipeline failure reasons. Also exported by the Rails process. For `reason` label values, see [CI/CD failure reason metrics](#cicd-failure-reason-metrics) |
 | `gitlab_ci_queue_active_runners_total`                   | Histogram | 16.3  |                                                                                           | The number of active runners that can process the CI/CD queue in a project |
 | `gitlab_maintenance_mode`                                | Gauge     | 15.11 |                                                                                           | Is GitLab Maintenance Mode enabled? |
 | `gitlab_memwd_violations_handled_total`                  | Counter   | 15.9  |                                                                                           | Total number of times Sidekiq process memory violations were handled |
@@ -798,8 +875,8 @@ configuration option in `gitlab.yml`. These metrics are served from the
 | `sidekiq_concurrency`                                    | Gauge     | 12.5  |                                                                                           | Maximum number of Sidekiq jobs |
 | `sidekiq_elasticsearch_requests_duration_seconds`        | Histogram | 13.1  | `queue`, `boundary`, `external_dependencies`, `feature_category`, `job_status`, `urgency` | Duration in seconds that a Sidekiq job spent in requests to an Elasticsearch server |
 | `sidekiq_elasticsearch_requests_total`                   | Counter   | 13.1  | `queue`, `boundary`, `external_dependencies`, `feature_category`, `job_status`, `urgency` | Elasticsearch requests during a Sidekiq job execution |
-| `sidekiq_zoekt_requests_duration_seconds`                | Histogram | 19.2  | `queue`, `boundary`, `external_dependencies`, `feature_category`, `job_status`, `urgency` | Duration in seconds that a Sidekiq job spent in requests to a Zoekt server. |
-| `sidekiq_zoekt_requests_total`                           | Counter   | 19.2  | `queue`, `boundary`, `external_dependencies`, `feature_category`, `job_status`, `urgency` | Zoekt requests during a Sidekiq job execution. |
+| `sidekiq_zoekt_requests_duration_seconds`                | Histogram | 19.2  | `queue`, `boundary`, `external_dependencies`, `feature_category`, `job_status`, `urgency`, `destination_shard_redis` | Duration in seconds that a Sidekiq job spent in requests to a Zoekt server. |
+| `sidekiq_zoekt_requests_total`                           | Counter   | 19.2  | `queue`, `boundary`, `external_dependencies`, `feature_category`, `job_status`, `urgency`, `destination_shard_redis` | Zoekt requests during a Sidekiq job execution. |
 | `sidekiq_jobs_completion_seconds`                        | Histogram | 12.2  | `queue`, `boundary`, `external_dependencies`, `feature_category`, `job_status`, `urgency` | Seconds to complete Sidekiq job |
 | `sidekiq_jobs_cpu_seconds`                               | Histogram | 12.4  | `queue`, `boundary`, `external_dependencies`, `feature_category`, `job_status`, `urgency` | Seconds of CPU time to run Sidekiq job |
 | `sidekiq_jobs_db_seconds`                                | Histogram | 12.9  | `queue`, `boundary`, `external_dependencies`, `feature_category`, `job_status`, `urgency` | Seconds of DB time to run Sidekiq job |
@@ -929,6 +1006,7 @@ Some basic Ruby runtime metrics are available:
 | `ruby_gc_duration_seconds`                | Counter | 11.1  | Time spent by Ruby in GC |
 | `ruby_gc_stat_...`                        | Gauge   | 11.1  | Various metrics from [GC.stat](https://ruby-doc.org/core-2.6.5/GC.html#method-c-stat) |
 | `ruby_gc_stat_ext_heap_fragmentation`     | Gauge   | 15.2  | Degree of Ruby heap fragmentation as live objects versus eden slots (range 0 to 1) |
+| `ruby_gvl_wait_seconds_total`             | Gauge   | 19.4  | Seconds all threads in this process spent waiting for the Global VM Lock. [Controlled by a feature flag](#metrics-controlled-by-a-feature-flag) |
 | `ruby_file_descriptors`                   | Gauge   | 11.1  | File descriptors per process |
 | `ruby_sampler_duration_seconds`           | Counter | 11.1  | Time spent collecting stats |
 | `ruby_process_cpu_seconds_total`          | Gauge   | 12.0  | Total amount of CPU time per process |
@@ -1020,7 +1098,7 @@ The `partner` label can have the following values:
 
 The GitLab Prometheus client requires a directory to store metrics data shared between multi-process services.
 Those files are shared among all instances running under Puma server.
-The directory must be accessible to all running Puma's processes, or
+The directory must be accessible to all running Puma processes, or
 metrics can't function correctly.
 
 This directory's location is configured using environment variable `prometheus_multiproc_dir`.

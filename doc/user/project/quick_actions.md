@@ -1,6 +1,6 @@
 ---
 stage: Plan
-group: Project Management
+group: Work Items
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see <https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments>
 title: GitLab quick actions
 description: Commands, shortcuts, and inline actions.
@@ -131,7 +131,6 @@ Add one or more active CRM contacts.
 
 {{< history >}}
 
-- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/350460) in GitLab 13.8 [with a feature flag](../../administration/feature_flags/list.md) named `issue_email_participants`. Enabled by default.
 - [Generally available](https://gitlab.com/gitlab-org/gitlab/-/issues/350460) in GitLab 18.10. Feature flag `issue_email_participants` removed.
 
 {{< /history >}}
@@ -241,7 +240,7 @@ Assign one or more users to the work item.
 
 Assign one or more users as reviewers, or request a new review from existing reviewers.
 
-**Alias for [`/request_review`](#request_review).**
+**Alias for [`/request_review`](#request_review)**.
 
 **Availability**:
 
@@ -464,7 +463,7 @@ Schedule check-in reminders for objectives.
   /checkin_reminder weekly
   ```
 
-- Disable reminders:
+- Turn off reminders:
 
   ```plaintext
   /checkin_reminder never
@@ -576,10 +575,10 @@ Clone the work item to a given group or project.
   fails if the type is not available in the target namespace.
 - The `[type:...]` value is matched case-insensitively against the names of
   the work item types available in the target namespace.
-- The clone fails if the resolved type is disabled in the target namespace
-  (archived, admin-disabled, or not visible in the destination context).
+- The clone fails if the resolved type is turned off in the target namespace
+  (archived, turned off by an administrator, or not visible in the destination context).
 - When cloning to the same namespace, the `[type:...]` argument is validated
-  but no conversion is performed; the clone keeps the source work item type.
+  but no conversion is performed. The clone keeps the source work item type.
 - Basic type conversion between built-in types (for example, `Issue`, `Task`,
   `Incident`) is available on all tiers.
 - Custom work item types and per-namespace type visibility are Premium and
@@ -963,6 +962,43 @@ Set the health status.
 
 - For more information, see [health status](issues/managing_issues.md#health-status).
 
+### `internal_note`
+
+{{< history >}}
+
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/work_items/553068) in GitLab 19.4.
+
+{{< /history >}}
+
+Make a comment an internal note.
+
+**Availability**:
+
+- Epic
+- Incident
+- Issue
+- Merge request
+- Task
+- Ticket
+- Objective
+- Key Result
+
+**Examples**:
+
+- Make a comment an internal note:
+
+  ```plaintext
+  This is an internal comment.
+  /internal_note
+  ```
+
+**Additional details**:
+
+- You must have the Planner, Reporter, Developer, Maintainer, or Owner role.
+- You can't use `/internal_note` in a description, as a reply in a non-internal discussion, or when editing an existing comment.
+- You can't convert internal notes to regular comments.
+- For more information, see [internal notes](../discussions/_index.md#add-an-internal-note).
+
 ### `iteration`
 
 Set the iteration.
@@ -1109,7 +1145,7 @@ Merge the changes.
 
 **Additional details**:
 
-- Depending on the project setting, this may be [when the pipeline succeeds](merge_requests/auto_merge.md), or adding to a [merge train](../../ci/pipelines/merge_trains.md).
+- Depending on the project setting, this might be [when the pipeline succeeds](merge_requests/auto_merge.md), or adding to a [merge train](../../ci/pipelines/merge_trains.md).
 
 ### `milestone`
 
@@ -1192,10 +1228,10 @@ Move the work item to another group or project.
   fails if the type is not available in the target namespace.
 - The `[type:...]` value is matched case-insensitively against the names of
   the work item types available in the target namespace.
-- The move fails if the resolved type is disabled in the target namespace
-  (archived, admin-disabled, or not visible in the destination context).
+- The move fails if the resolved type is turned off in the target namespace
+  (archived, turned off by an administrator, or not visible in the destination context).
 - When moving to the same namespace, the `[type:...]` argument is validated
-  but no conversion is performed; the work item keeps its existing type.
+  but no conversion is performed. The work item keeps its existing type.
 - Basic type conversion between built-in types (for example, `Issue`, `Task`,
   `Incident`) is available on all tiers.
 - Custom work item types and per-namespace type visibility are Premium and
@@ -1611,7 +1647,6 @@ Remove the due date.
 
 {{< history >}}
 
-- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/350460) in GitLab 13.8 [with a feature flag](../../administration/feature_flags/list.md) named `issue_email_participants`. Enabled by default.
 - [Generally available](https://gitlab.com/gitlab-org/gitlab/-/issues/350460) in GitLab 18.10. Feature flag `issue_email_participants` removed.
 
 {{< /history >}}
@@ -2253,6 +2288,7 @@ Convert a work item to a specified type.
 **Additional details**:
 
 - To convert an issue to an epic or incident, use [`/promote_to`](#promote_to).
+- `/type Epic` also converts an issue to an epic, the same as `/promote_to Epic`.
 
 ### `unapprove`
 
@@ -2573,6 +2609,13 @@ Create a Git tag pointing to the commented commit.
 
   This comment creates a Git tag named `v2.1.1` pointing to the commit, with the
   message "Security patch release".
+
+**Additional details**:
+
+- Tag creation is rate limited for each project, with a default of 100 requests every 30 minutes.
+  An administrator can change the limit with the `tags_create_limit` [application setting](../../api/settings.md#available-settings).
+- The limit is shared between the [REST API](../../api/tags.md#create-a-new-tag), the GraphQL `tagCreate` mutation, tag creation in the UI, and this quick action.
+- If you exceed the limit, your comment is still added, but the tag is not created.
 
 ## Troubleshooting
 

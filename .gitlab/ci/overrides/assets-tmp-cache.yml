@@ -1,0 +1,3 @@
+# allows to override partial assets cache definition to push only, currently used to push this cache from master pipeline only
+.assets-tmp-cache:
+  policy: push

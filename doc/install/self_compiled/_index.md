@@ -14,18 +14,18 @@ title: Self-compiled installation
 {{< /details >}}
 
 This is the official installation guide to set up a production GitLab server
-using the source files. It was created for and tested on **Debian/Ubuntu** operating systems.
+using the source files. It was created for and tested on Debian/Ubuntu operating systems.
 Read [requirements.md](../requirements.md) for hardware and operating system requirements.
 If you want to install on RHEL/CentOS, you should use the [Linux packages](https://about.gitlab.com/install/).
 For many other installation options, see the [main installation page](../_index.md).
 
 This guide is long because it covers many cases and includes all commands you
-need. The following steps have been known to work. **Use caution when you deviate**
+need. The following steps have been known to work. Use caution when you deviate
 from this guide. Make sure you don't violate any assumptions GitLab makes about
 its environment. For example, many people run into permission problems because
 they changed the location of directories or run services as the wrong user.
 
-If you find a bug/error in this guide, **submit a merge request**
+If you find a bug/error in this guide, submit a merge request
 following the
 [contributing guide](https://gitlab.com/gitlab-org/gitlab/-/blob/master/CONTRIBUTING.md).
 
@@ -78,8 +78,8 @@ The following directories are created as you go through the installation steps:
   cloning and other functionality.
 - `/home/git/repositories` - Bare repositories for all projects organized by
   namespace. This directory is where the Git repositories which are pushed/pulled are
-  maintained for all projects. **This area contains critical data for projects.
-  [Keep a backup](../../administration/backup_restore/_index.md)**.
+  maintained for all projects. This area contains critical data for projects.
+  [Keep a backup](../../administration/backup_restore/_index.md).
 
 The default locations for repositories can be configured in `config/gitlab.yml`
 of GitLab and `config.yml` of GitLab Shell.
@@ -1040,10 +1040,8 @@ you are redirected to a password reset screen to provide the password for the
 initial administrator account. Enter your desired password and you are
 redirected back to the login screen.
 
-The default account's username is **root**. Provide the password you created
+The default account's username is `root`. Provide the password you created
 earlier and log in. After login, you can change the username if you wish.
-
-**Enjoy!**
 
 To start and stop GitLab when using:
 

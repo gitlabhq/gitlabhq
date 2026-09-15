@@ -7,7 +7,7 @@ title: Offset pagination optimization
 
 In many REST APIs endpoints, we use [offset-based pagination](pagination_guidelines.md#offset-pagination) which uses the `page` URL parameter to paginate through the results. Offset pagination [scales linearly](pagination_guidelines.md#offset-on-a-large-dataset), the higher the page number, the slower the database query gets. This means that for large page numbers, the database query can time out. This usually happens when third-party integrations and scripts interact with the system as users are unlikely to deliberately visit a high page number.
 
-The ideal way of dealing with scalability problems related to offset pagination is switching to [keyset pagination](pagination_guidelines.md#keyset-pagination). However, this means a breaking API change. To provide a temporary, stop-gap measure, you can use the [`Gitlab::Pagination::Offset::PaginationWithIndexOnlyScan`](https://gitlab.com/gitlab-org/gitlab/-/tree/master/lib/gitlab/pagination/offset/pagination_with_index_only_scan.rb) class. The optimization can help in certain cases to improve the performance of offset-paginated queries when high `OFFSET` value is present. The performance improvement means that the queries will continue to scale linearly with improved query timings, which means that reaching database timeout will happen at a much higher `page` number if it happens at all.
+The ideal way of dealing with scalability problems related to offset pagination is switching to [keyset pagination](pagination_guidelines.md#keyset-pagination). However, this means a breaking API change. To provide a temporary, stop-gap measure, you can use the [`Gitlab::Pagination::Offset::PaginationWithIndexOnlyScan`](https://gitlab.com/gitlab-org/gitlab/-/tree/master/lib/gitlab/pagination/offset/pagination_with_index_only_scan.rb) class. The optimization can help in certain cases to improve the performance of offset-paginated queries when a high `OFFSET` value is present. The performance improvement means that the queries will continue to scale linearly with improved query timings, which means that reaching database timeout will happen at a much higher `page` number if it happens at all.
 
 ## Requirements for using the optimization
 
@@ -50,7 +50,7 @@ The optimization takes the passed `ActiveRecord::Relation` object and moves it i
 select the `ORDER BY` columns. This will make it possible for the database to use an index only scan.
 
 When the query is executed, the query within the CTE is evaluated first, the CTE will contain `LIMIT` number of rows with the selected columns.
-Using the `ORDER BY` values, a `LATERAL` query will locate the full rows one by one. `LATERAL` query is used here in order to force out
+Using the `ORDER BY` values, a `LATERAL` query will locate the full rows one by one. A `LATERAL` query is used here in order to force out
 a nested loop: for each row in the CTE, look up a full row in the table.
 
 Original query:

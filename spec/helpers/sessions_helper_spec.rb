@@ -248,8 +248,7 @@ RSpec.describe SessionsHelper, feature_category: :system_access do
           remember_me: '1'
         })).to match(a_hash_including({
           path: users_passkeys_sign_in_path,
-          remember_me: '1',
-          sign_in_path: root_path
+          remember_me: '1'
         }))
       end
     end
@@ -258,8 +257,7 @@ RSpec.describe SessionsHelper, feature_category: :system_access do
       it 'returns correct data' do
         expect(helper.passkey_authentication_data({})).to match(a_hash_including({
           path: users_passkeys_sign_in_path,
-          remember_me: '0',
-          sign_in_path: root_path
+          remember_me: '0'
         }))
       end
     end

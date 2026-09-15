@@ -9,32 +9,16 @@ class QueueMigrateProjectAuthorizations < Gitlab::Database::Migration[2.3]
   MIGRATION = "MigrateProjectAuthorizations"
 
   def up
-    max_user_id, max_project_id, max_access_level = define_batchable_model(TABLE_NAME)
-                            .order(user_id: :desc, project_id: :desc, access_level: :desc)
-                            .pick(:user_id, :project_id, :access_level)
-
-    max_user_id ||= 0
-    max_project_id ||= 0
-    max_access_level ||= 0
-
-    Gitlab::Database::BackgroundMigration::BatchedMigration.create!(
-      gitlab_schema: :gitlab_main,
-      job_class_name: MIGRATION,
-      job_arguments: [],
-      table_name: TABLE_NAME.to_sym,
-      column_name: :user_id,
-      min_cursor: [0, 0, 0],
-      max_cursor: [max_user_id, max_project_id, max_access_level],
-      interval: BATCH_MIN_DELAY,
-      pause_ms: 100,
-      batch_class_name: BATCH_CLASS_NAME,
-      batch_size: BATCH_SIZE,
-      sub_batch_size: SUB_BATCH_SIZE,
-      status_event: :execute
-    )
+    # no-op because rows synced by the trigger on `project_authorizations`
+    # could get lost from `project_authorizations_for_migration`, so the
+    # batched background migration was requeued by
+    # RequeueMigrateProjectAuthorizations.
+    # See https://gitlab.com/gitlab-org/gitlab/-/work_items/526000
   end
 
   def down
-    delete_batched_background_migration(MIGRATION, :project_authorizations, :user_id, [])
+    # no-op because the batched background migration was requeued by
+    # RequeueMigrateProjectAuthorizations.
+    # See https://gitlab.com/gitlab-org/gitlab/-/work_items/526000
   end
 end

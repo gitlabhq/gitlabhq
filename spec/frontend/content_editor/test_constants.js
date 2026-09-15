@@ -125,3 +125,52 @@ export const PARAGRAPHS_HTML = `<p data-sourcepos="1:1-1:233" dir="auto">
   <del data-sourcepos="5:49-5:59">discard</del> <s>destroy</s> <del>delete</del>
   <strike>remove</strike> preserve the original markdown style.
 </p>`;
+
+// Rendered by the markdown API on GitLab.com for the project gitlab-org/gitlab (2026-09-08).
+// Paths into the repository carry the `data-canonical-src` that RepositoryLinkFilter
+// records, so the editor can write the path back as the author typed it.
+export const REPOSITORY_RELATIVE_IMAGE_HTML = `<p data-sourcepos="1:1-1:35" dir="auto"><a class="no-attachment-icon gfm" href="https://gitlab.com/gitlab-org/gitlab/-/raw/master/app/assets/images/logo.svg" target="_blank" rel="noopener noreferrer" data-canonical-src="app/assets/images/logo.svg"><img data-sourcepos="1:1-1:35" src="data:image/gif;base64,R0lGODlhAQABAAAAACH5BAEKAAEALAAAAAABAAEAAAICTAEAOw==" alt="logo" decoding="async" class="lazy gfm" data-src="/gitlab-org/gitlab/-/raw/master/app/assets/images/logo.svg" data-canonical-src="app/assets/images/logo.svg"></a></p>`;
+
+export const REPOSITORY_RELATIVE_IMAGE_WITHOUT_CANONICAL_SRC_HTML = `<p data-sourcepos="1:1-1:35" dir="auto"><a class="no-attachment-icon gfm" href="https://gitlab.com/gitlab-org/gitlab/-/raw/master/app/assets/images/logo.svg" target="_blank" rel="noopener noreferrer"><img data-sourcepos="1:1-1:35" src="data:image/gif;base64,R0lGODlhAQABAAAAACH5BAEKAAEALAAAAAABAAEAAAICTAEAOw==" alt="logo" decoding="async" class="lazy gfm" data-src="/gitlab-org/gitlab/-/raw/master/app/assets/images/logo.svg"></a></p>`;
+
+export const REPOSITORY_RELATIVE_LINK_HTML = `<p data-sourcepos="1:1-1:19" dir="auto"><a data-sourcepos="1:1-1:19" href="https://gitlab.com/gitlab-org/gitlab/-/blob/master/README.md" class="gfm" data-canonical-src="README.md">readme</a></p>`;
+
+export const REPOSITORY_RELATIVE_LINK_WITH_TITLE_HTML = `<p data-sourcepos="1:1-1:33" dir="auto"><a data-sourcepos="1:1-1:33" href="https://gitlab.com/gitlab-org/gitlab/-/blob/master/README.md" title="the *title*" class="gfm" data-canonical-src="README.md">readme</a></p>`;
+
+export const REPOSITORY_RELATIVE_LINKED_IMAGE_HTML = `<p data-sourcepos="1:1-1:57" dir="auto"><a data-sourcepos="1:1-1:57" href="https://gitlab.com"><img data-sourcepos="1:2-1:36" src="data:image/gif;base64,R0lGODlhAQABAAAAACH5BAEKAAEALAAAAAABAAEAAAICTAEAOw==" alt="logo" decoding="async" class="lazy gfm" data-src="/gitlab-org/gitlab/-/raw/master/app/assets/images/logo.svg" data-canonical-src="app/assets/images/logo.svg"></a></p>`;
+
+export const REPOSITORY_RELATIVE_IMAGE_IN_LIST_HTML = `<ul data-sourcepos="1:1-3:46" dir="auto">
+<li data-sourcepos="1:1-1:10">item one</li>
+<li data-sourcepos="2:1-3:46">item with <a class="no-attachment-icon gfm" href="https://gitlab.com/gitlab-org/gitlab/-/raw/master/app/assets/images/logo.svg" target="_blank" rel="noopener noreferrer" data-canonical-src="app/assets/images/logo.svg"><img data-sourcepos="2:13-2:47" src="data:image/gif;base64,R0lGODlhAQABAAAAACH5BAEKAAEALAAAAAABAAEAAAICTAEAOw==" alt="logo" decoding="async" class="lazy gfm" data-src="/gitlab-org/gitlab/-/raw/master/app/assets/images/logo.svg" data-canonical-src="app/assets/images/logo.svg"></a> inline
+<ul data-sourcepos="3:3-3:46">
+<li data-sourcepos="3:3-3:46">nested <a class="no-attachment-icon gfm" href="https://gitlab.com/gitlab-org/gitlab/-/raw/master/app/assets/images/logo.svg" target="_blank" rel="noopener noreferrer" data-canonical-src="app/assets/images/logo.svg"><img data-sourcepos="3:12-3:46" src="data:image/gif;base64,R0lGODlhAQABAAAAACH5BAEKAAEALAAAAAABAAEAAAICTAEAOw==" alt="logo" decoding="async" class="lazy gfm" data-src="/gitlab-org/gitlab/-/raw/master/app/assets/images/logo.svg" data-canonical-src="app/assets/images/logo.svg"></a></li>
+</ul>
+</li>
+</ul>`;
+
+export const REPOSITORY_RELATIVE_IMAGE_IN_TABLE_HTML = `<table data-sourcepos="1:1-3:46" dir="auto">
+<thead>
+<tr data-sourcepos="1:1-1:9">
+<th data-sourcepos="1:2-1:4">a</th>
+<th data-sourcepos="1:6-1:8">b</th>
+</tr>
+</thead>
+<tbody>
+<tr data-sourcepos="3:1-3:46">
+<td data-sourcepos="3:2-3:38"><a class="no-attachment-icon gfm" href="https://gitlab.com/gitlab-org/gitlab/-/raw/master/app/assets/images/logo.svg" target="_blank" rel="noopener noreferrer" data-canonical-src="app/assets/images/logo.svg"><img data-sourcepos="3:3-3:37" src="data:image/gif;base64,R0lGODlhAQABAAAAACH5BAEKAAEALAAAAAABAAEAAAICTAEAOw==" alt="logo" decoding="async" class="lazy gfm" data-src="/gitlab-org/gitlab/-/raw/master/app/assets/images/logo.svg" data-canonical-src="app/assets/images/logo.svg"></a></td>
+<td data-sourcepos="3:40-3:45">text</td>
+</tr>
+</tbody>
+</table>`;
+
+export const REPOSITORY_RELATIVE_IMAGE_WITH_TITLE_HTML = `<p data-sourcepos="1:1-1:68" dir="auto"><a class="no-attachment-icon gfm" href="https://gitlab.com/gitlab-org/gitlab/-/raw/master/app/assets/images/logo.svg" target="_blank" rel="noopener noreferrer" data-canonical-src="app/assets/images/logo.svg"><img data-sourcepos="1:1-1:68" src="data:image/gif;base64,R0lGODlhAQABAAAAACH5BAEKAAEALAAAAAABAAEAAAICTAEAOw==" alt="alt with md [chars]" title="the *title*" decoding="async" class="lazy gfm" data-src="/gitlab-org/gitlab/-/raw/master/app/assets/images/logo.svg" data-canonical-src="app/assets/images/logo.svg"></a></p>`;
+
+export const REPOSITORY_RELATIVE_MIXED_PARAGRAPH_HTML = `<p data-sourcepos="1:1-1:73" dir="auto">Read <a data-sourcepos="1:6-1:28" href="https://gitlab.com/gitlab-org/gitlab/-/blob/master/README.md" class="gfm" data-canonical-src="README.md">the readme</a> and <a class="no-attachment-icon gfm" href="https://gitlab.com/gitlab-org/gitlab/-/raw/master/app/assets/images/logo.svg" target="_blank" rel="noopener noreferrer" data-canonical-src="app/assets/images/logo.svg"><img data-sourcepos="1:34-1:68" src="data:image/gif;base64,R0lGODlhAQABAAAAACH5BAEKAAEALAAAAAABAAEAAAICTAEAOw==" alt="logo" decoding="async" class="lazy gfm" data-src="/gitlab-org/gitlab/-/raw/master/app/assets/images/logo.svg" data-canonical-src="app/assets/images/logo.svg"></a> here</p>`;
+
+export const UPLOAD_IMAGE_HTML = `<p data-sourcepos="1:1-1:54" dir="auto"><a class="no-attachment-icon gfm" href="https://gitlab.com/-/project/278964/uploads/0123456789abcdef0123456789abcdef/x.png" target="_blank" rel="noopener noreferrer" data-canonical-src="/uploads/0123456789abcdef0123456789abcdef/x.png" data-link="true"><img data-sourcepos="1:1-1:54" src="data:image/gif;base64,R0lGODlhAQABAAAAACH5BAEKAAEALAAAAAABAAEAAAICTAEAOw==" alt="up" decoding="async" class="lazy gfm" data-src="https://gitlab.com/-/project/278964/uploads/0123456789abcdef0123456789abcdef/x.png" data-canonical-src="/uploads/0123456789abcdef0123456789abcdef/x.png"></a></p>`;
+
+export const ASSET_PROXIED_IMAGE_HTML = `<p data-sourcepos="1:1-1:33" dir="auto"><a class="no-attachment-icon" href="https://user-content.gitlab-static.net/fda89c571ee4bb0bb2acf1b7e12b3039af6a5ffc/68747470733a2f2f6578616d706c652e636f6d2f612e706e67" target="_blank" rel="nofollow noreferrer noopener" data-canonical-src="https://example.com/a.png"><img data-sourcepos="1:1-1:33" src="data:image/gif;base64,R0lGODlhAQABAAAAACH5BAEKAAEALAAAAAABAAEAAAICTAEAOw==" alt="abs" data-canonical-src="https://example.com/a.png" decoding="async" class="lazy" data-src="https://user-content.gitlab-static.net/fda89c571ee4bb0bb2acf1b7e12b3039af6a5ffc/68747470733a2f2f6578616d706c652e636f6d2f612e706e67"></a></p>`;
+
+export const RESOLVED_REFERENCES_PARAGRAPH_HTML = `<p data-sourcepos="1:1-1:48" dir="auto">See <a href="https://gitlab.com/gitlab-org/gitlab/-/work_items/1" title="500 error on MR approvers edit page" class="gfm gfm-issue" data-original="#1" data-link="false" data-link-reference="false" data-issue="382515" data-project="278964" data-iid="1" data-namespace-path="gitlab-org/gitlab" data-project-path="gitlab-org/gitlab" data-issue-type="issue" data-container="body" data-placement="top" data-reference-type="issue">#1</a> and <a href="https://gitlab.com/gitlab-org/gitlab/-/merge_requests/1" title="Enhance the LDAP group synchronization" class="gfm gfm-merge_request" data-original="!1" data-link="false" data-link-reference="false" data-merge-request="83382" data-project="278964" data-project-path="gitlab-org/gitlab" data-iid="1" data-container="body" data-placement="top" data-reference-type="merge_request">!1</a> by <a href="https://gitlab.com/root" title="Renaud AUBIN" class="gfm gfm-project_member js-user-link" data-user="781" data-original="@root" data-container="body" data-placement="top" data-reference-type="user">@root</a> with <span class="gl-label"><a href="https://gitlab.com/gitlab-org/gitlab/-/issues?label_name=bug" title="" class="gfm gfm-label has-tooltip gl-link gl-label-link" data-original="~bug" data-link="false" data-link-reference="false" data-label="50017361" data-project="278964" data-html="true" data-container="body" data-placement="top" data-reference-type="label"><span class="gl-label-text gl-label-text-light" data-container="body" data-html="true" style="background-color: #6699cc">bug</span></a></span> in <a href="https://gitlab.com/gitlab-org/gitlab/-/commit/b51c8ef205756c8e1d35b0b4fc81a6ec6c8f414e" title="Merge branch 'hmehra-gpat-mlops-graphql-type' into 'master' " class="gfm gfm-commit has-tooltip" data-original="b51c8ef20575" data-link="false" data-link-reference="false" data-commit="b51c8ef205756c8e1d35b0b4fc81a6ec6c8f414e" data-project="278964" data-project-path="gitlab-org/gitlab" data-container="body" data-placement="top" data-reference-type="commit">b51c8ef2</a></p>`;
+
+export const LINK_REFERENCE_HTML = `<p data-sourcepos="1:1-1:60" dir="auto"><a href="https://gitlab.com/gitlab-org/gitlab/-/issues/1" title="500 error on MR approvers edit page" class="gfm gfm-issue" data-original="the issue" data-link="true" data-original-href="https://gitlab.com/gitlab-org/gitlab/-/issues/1" data-link-reference="true" data-issue="382515" data-project="278964" data-iid="1" data-namespace-path="gitlab-org/gitlab" data-project-path="gitlab-org/gitlab" data-issue-type="issue" data-container="body" data-placement="top" data-reference-type="issue">the issue</a></p>`;

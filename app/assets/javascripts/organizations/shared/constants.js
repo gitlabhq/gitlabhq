@@ -56,6 +56,7 @@ export const FORM_FIELD_DESCRIPTION_VALIDATORS = [
 ];
 
 export const ORGANIZATION_STATE_UNCONFIRMED = 'UNCONFIRMED';
+export const ORGANIZATION_STATE_ACTIVE = 'ACTIVE';
 
 export const SORT_DIRECTION_ASC = 'asc';
 export const SORT_DIRECTION_DESC = 'desc';

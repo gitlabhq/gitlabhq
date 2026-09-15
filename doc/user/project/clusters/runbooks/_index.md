@@ -25,13 +25,13 @@ Historically, runbooks took the form of a decision tree or a detailed
 step-by-step guide depending on the condition or system.
 
 Modern implementations have introduced the concept of an "executable
-runbooks", where, along with a well-defined process, operators can execute
+runbook", where, along with a well-defined process, operators can execute
 pre-written code blocks or database queries against a given environment.
 
 ## Executable Runbooks
 
 The JupyterHub app offered with the GitLab Kubernetes integration now ships
-with Nurtch's Rubix library, providing a simple way to create DevOps
+with Nurtch Rubix library, providing a simple way to create DevOps
 runbooks. A sample runbook is provided, showcasing common operations. While
 Rubix makes it simple to create common Kubernetes and AWS workflows, you can
 also create them manually without Rubix.
@@ -49,7 +49,7 @@ To create an executable runbook, you need:
   [GitLab agent for Kubernetes](../../../clusters/agent/_index.md).
 - **Ingress** - Ingress can provide load balancing, SSL termination, and name-based
   virtual hosting. It acts as a web proxy for your applications.
-- **JupyterHub** - [JupyterHub](https://jupyterhub.readthedocs.io/) is a multi-user
+- **JupyterHub** - [JupyterHub](https://jupyterhub.readthedocs.io/en/stable/) is a multi-user
   service for managing notebooks across a team. Jupyter Notebooks provide a
   web-based interactive programming environment used for data analysis,
   visualization, and machine learning.
@@ -211,4 +211,4 @@ the components outlined previously and the pre-loaded demo runbook.
 
 You can try other operations, such as running shell scripts or interacting with a
 Kubernetes cluster. Visit the
-[Nurtch Documentation](https://docs.nurtch.com/) for more information.
+[Nurtch Documentation](https://docs.nurtch.com/en/latest/) for more information.

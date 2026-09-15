@@ -21,8 +21,16 @@ const defaultArgs = {
 export const Default = Template.bind({});
 Default.args = defaultArgs;
 
-export const NotStarred = Template.bind({});
-NotStarred.args = {
+export const WithStars = Template.bind({});
+WithStars.args = {
   ...defaultArgs,
+  withStars: true,
   isStarred: false,
+};
+
+export const Starred = Template.bind({});
+Starred.args = {
+  ...defaultArgs,
+  withStars: true,
+  isStarred: true,
 };

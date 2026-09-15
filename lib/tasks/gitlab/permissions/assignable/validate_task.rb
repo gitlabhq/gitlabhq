@@ -5,6 +5,8 @@ module Tasks
     module Permissions
       module Assignable
         class ValidateTask < ::Tasks::Gitlab::Permissions::BaseValidateTask
+          include Graphql::SchemaDirectives
+
           PERMISSION_DIR = ::Authz::PermissionGroups::Assignable::BASE_PATH
           PERMISSION_NAME_REGEX = ::Authz::Validation::PERMISSION_NAME_REGEX
           DISALLOWED_ACTIONS = ::Authz::Validation::DISALLOWED_ACTIONS
@@ -16,10 +18,12 @@ module Tasks
           #   - `download_code` via `Gitlab::GitAccess` (git protocol commands)
           #   - `create_editor_telemetry` via `EventForwardController`
           #   - `read_dependency_proxy` via `Auth::ContainerProxyAuthenticationService` (dependency proxy JWT flow)
+          #   - `archive_work_item_type` via `Mutations::WorkItems::Types::Update` (optional `archive` argument)
           GRANULAR_TOKEN_NON_API_CONSUMERS = Set[
             :download_code,
             :create_editor_telemetry,
-            :read_dependency_proxy
+            :read_dependency_proxy,
+            :archive_work_item_type
           ].freeze
 
           def initialize
@@ -28,6 +32,7 @@ module Tasks
               name: [],
               action: {},
               boundary_in_name: {},
+              invalid_assignable_when: {},
               duplicate_name: [],
               duplicate_raw_permission: {},
               file: {},
@@ -36,10 +41,12 @@ module Tasks
               category_metadata_schema: {},
               empty_resource_directory: [],
               empty_category_directory: [],
-              granular_access_token_unused: []
+              granular_access_token_unused: [],
+              assignable_when_mismatch: []
             }
             @resources = []
             @categories = []
+            @rest_source_locations = {}.compare_by_identity
           end
 
           private
@@ -57,6 +64,7 @@ module Tasks
             validate_empty_resource_directories
             validate_empty_category_directories
             validate_granular_access_token_consumers
+            validate_assignable_when_consistency
 
             super
           end
@@ -78,7 +86,7 @@ module Tasks
           end
 
           def rest_granular_raw_permissions
-            rest_endpoint_routes(::API::API.endpoints).flat_map do |route|
+            rest_routes.flat_map do |route|
               authorization = route.settings[:authorization]
               next [] unless authorization
               next [] if authorization[:skip_granular_token_authorization]
@@ -87,11 +95,17 @@ module Tasks
             end
           end
 
+          def rest_routes
+            @rest_routes ||= rest_endpoint_routes(::API::API.endpoints)
+          end
+
           def rest_endpoint_routes(endpoints)
             endpoints.flat_map do |endpoint|
               if endpoint.respond_to?(:endpoints) && endpoint.endpoints
                 rest_endpoint_routes(endpoint.endpoints)
               else
+                location = endpoint.source.source_location
+                endpoint.routes.each { |route| @rest_source_locations[route] = location }
                 endpoint.routes
               end
             end
@@ -129,11 +143,103 @@ module Tasks
             directives
           end
 
+          # Per boundary, the YAML conditions must equal the conditions shared by every REST endpoint and
+          # GraphQL declaration using the permission there, so a boundary without consumers is unconditional.
+          # Permissions in GRANULAR_TOKEN_NON_API_CONSUMERS are skipped: their consumers cannot be tagged.
+          def validate_assignable_when_consistency
+            consumers = assignable_when_consumers
+
+            ::Authz::PermissionGroups::Assignable.available_definitions.each do |assignable|
+              next unless assignable.available_for?(:granular_access_token)
+              next if GRANULAR_TOKEN_NON_API_CONSUMERS.intersect?(assignable.permissions)
+
+              assignable.boundaries.each do |boundary|
+                entries = assignable.permissions.flat_map { |permission| consumers[[permission, boundary.to_sym]] }
+                consumer_conditions = (entries.map { |entry| entry[:conditions].uniq }.reduce(:&) || []).sort
+                yaml_conditions = assignable.conditions_for(boundary).uniq.sort
+                next if yaml_conditions == consumer_conditions
+
+                violations[:assignable_when_mismatch] << {
+                  assignable: assignable.name,
+                  boundary: boundary,
+                  yaml_conditions: yaml_conditions,
+                  consumer_conditions: consumer_conditions,
+                  consumers: entries.map { |entry| entry[:label] }.uniq
+                }
+              end
+            end
+          end
+
+          def assignable_when_consumers
+            consumers = Hash.new { |hash, key| hash[key] = [] }
+            collect_rest_assignable_when_consumers(consumers)
+            collect_graphql_assignable_when_consumers(consumers)
+            consumers
+          end
+
+          def collect_rest_assignable_when_consumers(consumers)
+            rest_routes.each do |route|
+              authorization = route.settings[:authorization]
+              next unless authorization
+              next if authorization[:skip_granular_token_authorization]
+
+              entry = {
+                conditions: Array(authorization[:assignable_when]).map(&:to_sym),
+                label: rest_route_label(route)
+              }
+
+              [authorization, *Array(authorization[:additional_scopes])].each do |scope|
+                Array(scope[:permissions]).product(rest_boundary_types(scope)).each do |permission, boundary_type|
+                  consumers[[permission.to_sym, boundary_type.to_sym]] << entry
+                end
+              end
+            end
+          end
+
+          def rest_boundary_types(scope)
+            if scope[:boundaries]
+              scope[:boundaries].filter_map { |b| b[:boundary_type] }.uniq
+            else
+              Array(scope[:boundary_type])
+            end
+          end
+
+          def rest_route_label(route)
+            label = "#{route.request_method} #{route.origin.delete_prefix('/api/:version')}"
+            location = @rest_source_locations[route]
+            return label unless location
+
+            file, line = location
+            "#{label} (#{relative_path(file)}:#{line})"
+          end
+
+          def collect_graphql_assignable_when_consumers(consumers)
+            each_granular_directive do |item, directive|
+              args = directive.arguments
+              next if args[:skip_reason].present? || args[:boundary_type].blank?
+
+              entry = {
+                conditions: Array(args[:assignable_when]).map(&:to_sym),
+                label: graphql_item_label(item)
+              }
+
+              Array(args[:permissions]).each do |permission|
+                consumers[[permission.to_s.downcase.to_sym, args[:boundary_type].to_sym]] << entry
+              end
+            end
+          end
+
+          def graphql_item_label(item)
+            label = "[#{item[:kind]}] #{item[:name]}"
+            item[:source] ? "#{label} (#{item[:source]})" : label
+          end
+
           def validate_permission(permission)
             validate_schema(permission)
             validate_name(permission)
             validate_action(permission)
             validate_boundary_in_name(permission)
+            validate_assignable_when(permission)
             validate_file(permission)
             validate_name_path(permission)
 
@@ -155,6 +261,16 @@ module Tasks
             return unless boundary
 
             violations[:boundary_in_name][permission.name] = boundary
+          end
+
+          def validate_assignable_when(permission)
+            unknown_boundaries = permission.assignable_when
+              .flat_map { |entry| Array(entry[:boundaries]) }
+              .uniq - permission.boundaries
+
+            return if unknown_boundaries.empty?
+
+            violations[:invalid_assignable_when][permission.name] = unknown_boundaries
           end
 
           def validate_file(permission)
@@ -264,6 +380,8 @@ module Tasks
             out += format_error_list_with_source(:name)
             out += format_action_errors
             out += format_boundary_in_name_errors
+            out += format_invalid_assignable_when_errors
+            out += format_assignable_when_mismatch_errors
             out += format_duplicate_name_errors
             out += format_duplicate_raw_permission_errors
             out += format_file_errors
@@ -300,6 +418,40 @@ module Tasks
               source = assignable_source_path(permission)
 
               out += "  - #{permission}: Resource should not start with boundary '#{boundary}'. (#{source})\n"
+            end
+
+            "#{out}\n"
+          end
+
+          def format_invalid_assignable_when_errors
+            return '' if violations[:invalid_assignable_when].empty?
+
+            out = "#{error_messages[:invalid_assignable_when]}\n\n"
+
+            violations[:invalid_assignable_when].each do |permission, unknown_boundaries|
+              source = assignable_source_path(permission)
+
+              out += "  - #{permission}: #{unknown_boundaries.join(', ')} (#{source})\n"
+            end
+
+            "#{out}\n"
+          end
+
+          def format_assignable_when_mismatch_errors
+            return '' if violations[:assignable_when_mismatch].empty?
+
+            out = "#{error_messages[:assignable_when_mismatch]}\n\n"
+
+            violations[:assignable_when_mismatch].each do |v|
+              out += "  - #{v[:assignable]}, #{v[:boundary]} boundary (#{assignable_source_path(v[:assignable])})\n"
+              out += "      YAML conditions: [#{v[:yaml_conditions].join(', ')}]\n"
+              out += "      Consumer conditions: [#{v[:consumer_conditions].join(', ')}]\n"
+
+              if v[:consumers].empty?
+                out += "      No REST endpoint or GraphQL declaration uses this permission at this boundary\n"
+              else
+                v[:consumers].each { |label| out += "      #{label}\n" }
+              end
             end
 
             "#{out}\n"
@@ -371,6 +523,10 @@ module Tasks
               boundary_in_name: "The following assignable permissions encode a resource boundary in their name." \
                 "\nThe permission name should not include the boundary (project, group, user) as a prefix." \
                 "\n#{conventions_link(anchor: 'avoiding-resource-boundaries-in-permission-names')}",
+              invalid_assignable_when: "The following assignable permissions reference boundaries in " \
+                "`assignable_when` that are not declared in `boundaries`." \
+                "\nRemove the unknown boundaries or add them to the `boundaries` field." \
+                "\n#{assignable_permissions_link(anchor: 'assignable-permission-file-fields')}",
               duplicate_name: "The following permissions have duplicate names." \
                 "\nAssignable permissions must have unique names." \
                 "\n#{assignable_permissions_link(anchor: 'important-constraints')}",
@@ -396,6 +552,13 @@ module Tasks
                 "The following category directories contain only a .metadata.yml file with no resource " \
                 "subdirectories.\nEither add resource subdirectories or remove the directory." \
                 "\n#{assignable_permissions_link(anchor: 'understanding-the-directory-structure')}",
+              assignable_when_mismatch:
+                "The following assignable permissions have `assignable_when` conditions inconsistent with the REST " \
+                "endpoints and GraphQL types, mutations, and fields that use their permissions." \
+                "\nFor each boundary, the YAML conditions must equal the conditions shared by every endpoint and " \
+                "directive at that boundary." \
+                "\nTag the endpoints and directives, or update the assignable permission YAML file." \
+                "\n#{assignable_permissions_link(anchor: 'conditionally-assignable-permissions')}",
               granular_access_token_unused:
                 "The following assignable permissions declare `available_for: granular_access_token` but none " \
                 "of their raw permissions are referenced by any REST authorization or GraphQL granular scope " \

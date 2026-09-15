@@ -24,7 +24,7 @@ Quoting from the [MergeTree documentation](https://clickhouse.com/docs/en/engine
 When used with remote storage backends such as
 [Amazon S3](https://clickhouse.com/docs/en/engines/table-engines/mergetree-family/mergetree#table_engine-mergetree-s3),
 this makes a very efficient storage scheme. It allows for storage policies, which
-allow data to be on local disks for a period of time and then move it to object storage.
+allow data to be on local disks for a period of time and then moved to object storage.
 
 An [example configuration](https://clickhouse.com/docs/en/engines/table-engines/mergetree-family/mergetree#table_engine-mergetree-multiple-volumes_configure) can look like this:
 
@@ -85,7 +85,7 @@ SETTINGS storage_policy = 'move_from_local_disks_to_gcs'
 
 This approach is possible with
 [Table TTLs](https://clickhouse.com/docs/en/engines/table-engines/mergetree-family/mergetree#mergetree-table-ttl),
-which are also available with MergeTree table engine.
+which are also available with the MergeTree table engine.
 
 The ClickHouse documentation shows this feature in detail, in the example of
 [implementing a hot - warm - cold architecture](https://clickhouse.com/docs/en/guides/developer/ttl#implementing-a-hotwarmcold-architecture).

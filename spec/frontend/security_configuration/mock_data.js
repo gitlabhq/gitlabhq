@@ -153,7 +153,6 @@ export const pipelineSecretDetectionMock = {
 };
 
 export const provideMock = {
-  upgradePath: '/upgrade',
   autoDevopsHelpPagePath: '/autoDevopsHelpPagePath',
   autoDevopsPath: '/autoDevopsPath',
   projectFullPath: 'namespace/project',

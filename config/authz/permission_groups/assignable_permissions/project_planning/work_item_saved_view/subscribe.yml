@@ -1,0 +1,12 @@
+---
+name: subscribe_work_item_saved_view
+description: Grants the ability to subscribe to, unsubscribe from, and reorder work item saved views
+boundaries:
+  - group
+  - project
+available_for:
+  - granular_access_token
+permissions:
+  - reorder_work_item_saved_view
+  - subscribe_work_item_saved_view
+  - unsubscribe_work_item_saved_view

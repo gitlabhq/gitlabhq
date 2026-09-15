@@ -23,7 +23,7 @@ achieve. For more information, review the [guidance on tokens](../package_regist
 ### Configure Yarn for publication
 
 To configure Yarn to publish to the package registry, edit your `.yarnrc.yml` file.
-You can find this file in root directory of your project, in the same place as the `package.json` file.
+You can find this file in the root directory of your project, in the same place as the `package.json` file.
 
 - Edit `.yarnrc.yml` and add the following configuration:
 

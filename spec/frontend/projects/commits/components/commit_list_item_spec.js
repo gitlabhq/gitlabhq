@@ -117,6 +117,32 @@ describe('CommitListItem', () => {
       expect(titleLink.classes()).toContain('@md/panel:gl-truncate');
       expect(titleLink.attributes('title')).toBe(mockCommit.title);
     });
+
+    it('renders reference links from titleHtml', () => {
+      createComponent({
+        commit: {
+          ...mockCommit,
+          title: 'Fix PROJ-123 typo',
+          titleHtml: 'Fix <a href="https://tracker.example/PROJ-123" class="gfm">PROJ-123</a> typo',
+        },
+      });
+
+      const referenceLink = findCommitTitleLink().find('a.gfm');
+
+      expect(referenceLink.attributes('href')).toBe('https://tracker.example/PROJ-123');
+      expect(referenceLink.text()).toBe('PROJ-123');
+    });
+
+    it('sanitizes titleHtml', () => {
+      createComponent({
+        commit: {
+          ...mockCommit,
+          titleHtml: 'Fix <img src="x" onerror="alert(1)"> bug',
+        },
+      });
+
+      expect(findCommitTitleLink().element.innerHTML).not.toContain('onerror');
+    });
   });
 
   describe('author information', () => {

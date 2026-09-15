@@ -17,5 +17,6 @@ RSpec.shared_context 'with transfer batch size of 1' do
     stub_const('Organizations::Transfer::GroupsService::BATCH_SIZE', 1)
     stub_const('Organizations::Transfer::OrganizationUsersService::BATCH_SIZE', 1)
     stub_const('Organizations::Transfer::TopLevelGroupService::BATCH_SIZE', 1)
+    stub_const('ApplicationRecord::MAX_PLUCK', 1)
   end
 end

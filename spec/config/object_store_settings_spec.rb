@@ -27,6 +27,7 @@ RSpec.describe ObjectStoreSettings, feature_category: :shared do
           'pages' => { 'enabled' => true },
           'ci_secure_files' => { 'enabled' => true },
           'agent_plan_content' => { 'enabled' => true },
+          'ci_catalog_bundles' => { 'enabled' => true },
           'object_store' => {
             'enabled' => true,
             'connection' => connection,
@@ -51,6 +52,9 @@ RSpec.describe ObjectStoreSettings, feature_category: :shared do
               },
               'agent_plan_content' => {
                 'bucket' => 'agent-plan-content'
+              },
+              'ci_catalog_bundles' => {
+                'bucket' => 'ci-catalog-bundles'
               }
             }
           }
@@ -82,7 +86,7 @@ RSpec.describe ObjectStoreSettings, feature_category: :shared do
         expect(settings.artifacts['object_store']['direct_upload']).to be true
         expect(settings.artifacts['object_store']['proxy_download']).to be false
         expect(settings.artifacts['object_store']['remote_directory']).to eq('artifacts')
-        expect(settings.artifacts['object_store']['bucket_prefix']).to eq(nil)
+        expect(settings.artifacts['object_store']['bucket_prefix']).to be_nil
         expect(settings.artifacts['object_store']['consolidated_settings']).to be true
         expect(settings.artifacts).to eq(settings['artifacts'])
 
@@ -92,7 +96,7 @@ RSpec.describe ObjectStoreSettings, feature_category: :shared do
         expect(settings.lfs['object_store']['direct_upload']).to be true
         expect(settings.lfs['object_store']['proxy_download']).to be true
         expect(settings.lfs['object_store']['remote_directory']).to eq('lfs-objects')
-        expect(settings.lfs['object_store']['bucket_prefix']).to eq(nil)
+        expect(settings.lfs['object_store']['bucket_prefix']).to be_nil
         expect(settings.lfs['object_store']['consolidated_settings']).to be true
         expect(settings.lfs).to eq(settings['lfs'])
 
@@ -102,15 +106,25 @@ RSpec.describe ObjectStoreSettings, feature_category: :shared do
         expect(settings.agent_plan_content['object_store']['direct_upload']).to be true
         expect(settings.agent_plan_content['object_store']['proxy_download']).to be true
         expect(settings.agent_plan_content['object_store']['remote_directory']).to eq('agent-plan-content')
-        expect(settings.agent_plan_content['object_store']['bucket_prefix']).to eq(nil)
+        expect(settings.agent_plan_content['object_store']['bucket_prefix']).to be_nil
         expect(settings.agent_plan_content['object_store']['consolidated_settings']).to be true
         expect(settings.agent_plan_content).to eq(settings['agent_plan_content'])
+
+        expect(settings.ci_catalog_bundles['enabled']).to be true
+        expect(settings.ci_catalog_bundles['object_store']['enabled']).to be true
+        expect(settings.ci_catalog_bundles['object_store']['connection'].to_hash).to eq(connection)
+        expect(settings.ci_catalog_bundles['object_store']['direct_upload']).to be true
+        expect(settings.ci_catalog_bundles['object_store']['proxy_download']).to be true
+        expect(settings.ci_catalog_bundles['object_store']['remote_directory']).to eq('ci-catalog-bundles')
+        expect(settings.ci_catalog_bundles['object_store']['bucket_prefix']).to be_nil
+        expect(settings.ci_catalog_bundles['object_store']['consolidated_settings']).to be true
+        expect(settings.ci_catalog_bundles).to eq(settings['ci_catalog_bundles'])
 
         expect(settings.pages['enabled']).to be true
         expect(settings.pages['object_store']['enabled']).to be true
         expect(settings.pages['object_store']['connection'].to_hash).to eq(connection)
         expect(settings.pages['object_store']['remote_directory']).to eq('pages')
-        expect(settings.pages['object_store']['bucket_prefix']).to eq(nil)
+        expect(settings.pages['object_store']['bucket_prefix']).to be_nil
         expect(settings.pages['object_store']['consolidated_settings']).to be true
         expect(settings.pages).to eq(settings['pages'])
 
@@ -220,6 +234,74 @@ RSpec.describe ObjectStoreSettings, feature_category: :shared do
         end
       end
 
+      context 'when allowed_download_modes is specified in object overrides' do
+        before do
+          config['object_store']['objects']['artifacts']['allowed_download_modes'] = %w[proxy direct]
+        end
+
+        it 'passes through the configured value' do
+          subject
+
+          expect(settings.artifacts['object_store']['allowed_download_modes']).to eq(%w[proxy direct])
+        end
+      end
+
+      context 'when allowed_download_modes is not specified' do
+        it 'leaves it unset so the uploader falls back to its default download mode' do
+          subject
+
+          expect(settings.artifacts['object_store']['allowed_download_modes']).to be_nil
+        end
+      end
+
+      context 'when allowed_download_modes is a plain string in the common config' do
+        before do
+          config['object_store']['allowed_download_modes'] = 'proxy'
+        end
+
+        it 'raises a config error' do
+          expect { subject }.to raise_error(/object_store: `allowed_download_modes` must be an array/)
+        end
+      end
+
+      context 'when allowed_download_modes contains invalid values in object overrides' do
+        before do
+          config['object_store']['objects']['artifacts']['allowed_download_modes'] = %w[proxy directt]
+        end
+
+        it 'raises a config error' do
+          expect { subject }.to raise_error(
+            /object_store\.objects\.artifacts: `allowed_download_modes` contains invalid values: \["directt"\]/
+          )
+        end
+      end
+
+      context 'when allowed_download_modes excludes the proxied default mode in object overrides' do
+        before do
+          config['object_store']['objects']['artifacts']['proxy_download'] = true
+          config['object_store']['objects']['artifacts']['allowed_download_modes'] = %w[direct]
+        end
+
+        it 'raises a config error' do
+          expect { subject }.to raise_error(
+            /object_store\.objects\.artifacts: `allowed_download_modes` must include "proxy"/
+          )
+        end
+      end
+
+      context 'when allowed_download_modes excludes the direct default mode in object overrides' do
+        before do
+          config['object_store']['objects']['artifacts']['proxy_download'] = false
+          config['object_store']['objects']['artifacts']['allowed_download_modes'] = %w[proxy]
+        end
+
+        it 'raises a config error' do
+          expect { subject }.to raise_error(
+            /object_store\.objects\.artifacts: `allowed_download_modes` must include "direct"/
+          )
+        end
+      end
+
       it 'raises an error when a bucket is missing' do
         config['object_store']['objects']['lfs'].delete('bucket')
 
@@ -230,14 +312,21 @@ RSpec.describe ObjectStoreSettings, feature_category: :shared do
         config['object_store']['objects']['pages'].delete('bucket')
 
         expect { subject }.not_to raise_error
-        expect(settings.pages['object_store']).to eq(nil)
+        expect(settings.pages['object_store']).to be_nil
       end
 
       it 'does not raise error if ci_secure_files config is missing' do
         config['object_store']['objects'].delete('ci_secure_files')
 
         expect { subject }.not_to raise_error
-        expect(settings.ci_secure_files['object_store']).to eq(nil)
+        expect(settings.ci_secure_files['object_store']).to be_nil
+      end
+
+      it 'does not raise error if ci_catalog_bundles config is missing' do
+        config['object_store']['objects'].delete('ci_catalog_bundles')
+
+        expect { subject }.not_to raise_error
+        expect(settings.ci_catalog_bundles['object_store']).to be_nil
       end
 
       context 'GitLab Pages' do
@@ -331,8 +420,8 @@ RSpec.describe ObjectStoreSettings, feature_category: :shared do
 
           expect(settings.artifacts['object_store']).to be_nil
           expect(settings.lfs['object_store']['remote_directory']).to eq('some-bucket')
-          expect(settings.lfs['object_store']['bucket_prefix']).to eq(nil)
-          expect(settings.lfs['object_store']['direct_upload']).to eq(true)
+          expect(settings.lfs['object_store']['bucket_prefix']).to be_nil
+          expect(settings.lfs['object_store']['direct_upload']).to be(true)
           expect(settings.external_diffs['object_store']).to be_nil
         end
       end
@@ -345,6 +434,7 @@ RSpec.describe ObjectStoreSettings, feature_category: :shared do
 
       expect(settings['enabled']).to be false
       expect(settings['direct_upload']).to be true
+      expect(settings['proxy_download']).to be false
       expect(settings['remote_directory']).to be_nil
       expect(settings['bucket_prefix']).to be_nil
     end
@@ -352,13 +442,15 @@ RSpec.describe ObjectStoreSettings, feature_category: :shared do
     it 'respects original values' do
       original_settings = Gitlab::Configs.build_options({
         'enabled' => true,
-        'remote_directory' => 'artifacts'
+        'remote_directory' => 'artifacts',
+        'allowed_download_modes' => %w[proxy direct]
       })
 
       settings = described_class.legacy_parse(original_settings, 'artifacts')
 
       expect(settings['enabled']).to be true
       expect(settings['direct_upload']).to be true
+      expect(settings['allowed_download_modes']).to eq(%w[proxy direct])
       expect(settings['remote_directory']).to eq 'artifacts'
       expect(settings['bucket_prefix']).to be_nil
     end
@@ -372,6 +464,26 @@ RSpec.describe ObjectStoreSettings, feature_category: :shared do
       settings = described_class.legacy_parse(original_settings, 'artifacts')
       expect(settings['remote_directory']).to eq 'gitlab'
       expect(settings['bucket_prefix']).to eq 'artifacts'
+    end
+
+    it 'raises a config error when allowed_download_modes is a plain string' do
+      original_settings = Gitlab::Configs.build_options({
+        'enabled' => true,
+        'allowed_download_modes' => 'proxy'
+      })
+
+      expect { described_class.legacy_parse(original_settings, 'artifacts') }
+        .to raise_error(/artifacts: `allowed_download_modes` must be an array/)
+    end
+
+    it 'raises a config error when allowed_download_modes contains invalid values' do
+      original_settings = Gitlab::Configs.build_options({
+        'enabled' => true,
+        'allowed_download_modes' => %w[proxy none]
+      })
+
+      expect { described_class.legacy_parse(original_settings, 'artifacts') }
+        .to raise_error(/artifacts: `allowed_download_modes` contains invalid values: \["none"\]/)
     end
   end
 

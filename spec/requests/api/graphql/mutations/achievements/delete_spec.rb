@@ -20,6 +20,12 @@ RSpec.describe Mutations::Achievements::Delete, feature_category: :user_profile 
     graphql_mutation_response(:achievements_delete)
   end
 
+  it_behaves_like 'authorizing granular token permissions for GraphQL', :delete_achievement do
+    let(:user) { maintainer }
+    let(:boundary_object) { group }
+    let(:request) { post_graphql_mutation(mutation, token: { personal_access_token: pat }) }
+  end
+
   context 'when the user does not have permission' do
     let(:current_user) { developer }
 

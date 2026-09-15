@@ -151,6 +151,23 @@ RSpec.describe API::Mcp, 'Call tool request', feature_category: :mcp_server do
       end
     end
 
+    context 'when the tool is unlisted' do
+      let(:tool_params) { { name: 'get_mcp_server_version', arguments: {} } }
+
+      before do
+        allow_next_instance_of(::Mcp::Tools::GetServerVersionService) do |tool|
+          allow(tool).to receive(:unlisted?).and_return(true)
+        end
+      end
+
+      it 'still executes because unlisted only affects discovery' do
+        post api('/mcp', user, oauth_access_token: access_token), params: params
+
+        expect(response).to have_gitlab_http_status(:ok)
+        expect(json_response['result']['isError']).to be_falsey
+      end
+    end
+
     context 'with unknown tool name' do
       let(:params) do
         {
@@ -270,6 +287,44 @@ RSpec.describe API::Mcp, 'Call tool request', feature_category: :mcp_server do
     end
   end
 
+  describe 'commit tools' do
+    let_it_be(:commit) { project.commit }
+
+    describe '#get_commit' do
+      let(:tool_params) do
+        { name: 'get_commit', arguments: { project_id: project.full_path, commit_sha: commit.sha } }
+      end
+
+      it 'returns success response', :aggregate_failures do
+        post api('/mcp', user, oauth_access_token: access_token), params: params
+
+        expect(response).to have_gitlab_http_status(:ok)
+        expect(json_response['result']['structuredContent']['sha']).to eq(commit.sha)
+        expect(json_response['result']['content'].first['text']).to include(commit.sha)
+        expect(json_response['result']['isError']).to be_falsey
+      end
+
+      context 'with the diff facet and stats detail' do
+        let(:tool_params) do
+          {
+            name: 'get_commit',
+            arguments: {
+              project_id: project.full_path, commit_sha: commit.sha, include: ['diff'], diff_detail: 'stats'
+            }
+          }
+        end
+
+        it 'includes diff stats', :aggregate_failures do
+          post api('/mcp', user, oauth_access_token: access_token), params: params
+
+          expect(response).to have_gitlab_http_status(:ok)
+          expect(json_response['result']['structuredContent']['diffStatsSummary']).to include('additions', 'deletions')
+          expect(json_response['result']['isError']).to be_falsey
+        end
+      end
+    end
+  end
+
   describe 'issue tools' do
     let_it_be(:milestone) { create(:milestone, group: group) }
     let_it_be(:label) { create(:group_label, group: group) }
@@ -303,6 +358,134 @@ RSpec.describe API::Mcp, 'Call tool request', feature_category: :mcp_server do
         expect(issue.assignees).to eq([user])
         expect(issue.labels).to contain_exactly(label, label2)
         expect(issue.milestone).to eq(milestone)
+      end
+    end
+  end
+
+  describe '#fork_repository' do
+    let_it_be(:target_group) { create(:group, maintainers: [user]) }
+
+    let(:tool_params) do
+      { name: 'fork_repository', arguments: { id: project.full_path, namespace_id: target_group.id } }
+    end
+
+    it 'forks the project into the target namespace', :aggregate_failures do
+      post api('/mcp', user, oauth_access_token: access_token), params: params
+
+      expect(response).to have_gitlab_http_status(:ok)
+      expect(json_response['result']['isError']).to be_falsey
+      structured_content = json_response['result']['structuredContent']
+      expect(structured_content['forked_from_project']['id']).to eq(project.id)
+      expect(structured_content['namespace']['id']).to eq(target_group.id)
+      expect(structured_content['import_status']).to eq('scheduled')
+    end
+
+    context 'when the target namespace is given as a path' do
+      let(:tool_params) do
+        { name: 'fork_repository', arguments: { id: project.full_path, namespace_path: target_group.full_path } }
+      end
+
+      it 'forks the project into the target namespace', :aggregate_failures do
+        post api('/mcp', user, oauth_access_token: access_token), params: params
+
+        expect(response).to have_gitlab_http_status(:ok)
+        expect(json_response['result']['isError']).to be_falsey
+        structured_content = json_response['result']['structuredContent']
+        expect(structured_content['forked_from_project']['id']).to eq(project.id)
+        expect(structured_content['namespace']['id']).to eq(target_group.id)
+      end
+    end
+
+    context 'when the target namespace already has a project with the same path' do
+      let_it_be(:existing_project) do
+        create(:project, name: project.name, path: project.path, namespace: target_group)
+      end
+
+      it 'returns a conflict error', :aggregate_failures do
+        post api('/mcp', user, oauth_access_token: access_token), params: params
+
+        expect(response).to have_gitlab_http_status(:ok)
+        expect(json_response['result']['isError']).to be_truthy
+        expect(json_response['result']['content'].first['text']).to include('has already been taken')
+      end
+    end
+
+    context 'when the project does not exist' do
+      let(:tool_params) do
+        { name: 'fork_repository', arguments: { id: non_existing_record_id } }
+      end
+
+      it 'returns a not found error', :aggregate_failures do
+        post api('/mcp', user, oauth_access_token: access_token), params: params
+
+        expect(response).to have_gitlab_http_status(:ok)
+        expect(json_response['result']['isError']).to be_truthy
+        expect(json_response['result']['content'].first['text']).to include('404 Project Not Found')
+      end
+    end
+
+    context 'when the user does not have create-project rights in the target namespace' do
+      let_it_be(:other_group) { create(:group, guests: [user]) }
+
+      let(:tool_params) do
+        { name: 'fork_repository', arguments: { id: project.full_path, namespace_id: other_group.id } }
+      end
+
+      it 'returns a not found error', :aggregate_failures do
+        post api('/mcp', user, oauth_access_token: access_token), params: params
+
+        expect(response).to have_gitlab_http_status(:ok)
+        expect(json_response['result']['isError']).to be_truthy
+        expect(json_response['result']['content'].first['text']).to include('404 Target Namespace Not Found')
+      end
+    end
+  end
+
+  describe '#accept_merge_request' do
+    let_it_be(:merge_project) { create(:project, :repository, group: group, maintainers: [user]) }
+
+    let(:merge_request) { create(:merge_request, source_project: merge_project) }
+
+    context 'when merging immediately', :sidekiq_inline do
+      let(:tool_params) do
+        {
+          name: 'accept_merge_request',
+          arguments: {
+            project_id: merge_project.full_path,
+            merge_request_iid: merge_request.iid,
+            sha: merge_request.diff_head_sha
+          }
+        }
+      end
+
+      it 'merges the merge request' do
+        post api('/mcp', user, oauth_access_token: access_token), params: params, as: :json
+
+        expect(response).to have_gitlab_http_status(:ok)
+        expect(json_response['result']['isError']).to be_falsey
+        expect(json_response['result']['structuredContent']['status']).to eq('merging')
+        expect(merge_request.reload).to be_merged
+      end
+    end
+
+    context 'when the sha is stale' do
+      let(:tool_params) do
+        {
+          name: 'accept_merge_request',
+          arguments: {
+            project_id: merge_project.full_path,
+            merge_request_iid: merge_request.iid,
+            sha: 'deadbeef'
+          }
+        }
+      end
+
+      it 'refuses the merge' do
+        post api('/mcp', user, oauth_access_token: access_token), params: params, as: :json
+
+        expect(response).to have_gitlab_http_status(:ok)
+        expect(json_response['result']['isError']).to be(true)
+        expect(merge_request.reload).not_to be_merged
       end
     end
   end
@@ -354,6 +537,28 @@ RSpec.describe API::Mcp, 'Call tool request', feature_category: :mcp_server do
         expect(response).to have_gitlab_http_status(:ok)
         expect(json_response['result']['isError']).to be_falsey
         expect(pipeline.reload.status).to be_in(%w[canceling canceled])
+      end
+    end
+
+    context 'when renaming a pipeline' do
+      let(:tool_params) do
+        {
+          name: 'save_pipeline',
+          arguments: {
+            pipeline_id: pipeline.id,
+            action: 'update',
+            name: 'Nightly build'
+          }
+        }
+      end
+
+      it 'renames the pipeline', :aggregate_failures do
+        post api('/mcp', user, oauth_access_token: access_token), params: params, as: :json
+
+        expect(response).to have_gitlab_http_status(:ok)
+        expect(json_response['result']['isError']).to be_falsey
+        expect(json_response['result']['structuredContent']['name']).to eq('Nightly build')
+        expect(pipeline.reload.name).to eq('Nightly build')
       end
     end
 
@@ -410,7 +615,7 @@ RSpec.describe API::Mcp, 'Call tool request', feature_category: :mcp_server do
           expect(response).to have_gitlab_http_status(:ok)
           expect(json_response['result']['isError']).to be_truthy
           expect(json_response['result']['content'].first['text']).to include(
-            'Provide action: "retry" or "cancel" when pipeline_id is set'
+            'Provide action: "retry", "cancel", or "update" when pipeline_id is set'
           )
         end
       end
@@ -535,6 +740,133 @@ RSpec.describe API::Mcp, 'Call tool request', feature_category: :mcp_server do
           expect(json_response['result']['isError']).to be_truthy
           expect(json_response['result']['content'].first['text']).to include('Pipeline Not Found')
         end
+      end
+    end
+  end
+
+  describe '#list_branches' do
+    let(:tool_params) do
+      { name: 'list_branches', arguments: { id: project.full_path } }
+    end
+
+    shared_examples 'listing the project branches' do
+      it 'returns the project branches', :aggregate_failures do
+        post api('/mcp', user, oauth_access_token: access_token), params: params
+
+        expect(response).to have_gitlab_http_status(:ok)
+        expect(json_response['result']['isError']).to be_falsey
+
+        # The default page size is smaller than the fixture's branch count, so assert
+        # the page belongs to this repository rather than naming a specific branch.
+        items = json_response['result']['structuredContent']['items']
+        expect(items).to be_present
+        expect(project.repository.branch_names).to include(*items.pluck('name'))
+        expect(items.first.keys).to include('name', 'default', 'protected', 'commit')
+      end
+    end
+
+    context 'when branch_list_keyset_pagination is enabled' do
+      before do
+        stub_feature_flags(branch_list_keyset_pagination: project)
+      end
+
+      it_behaves_like 'listing the project branches'
+    end
+
+    context 'when branch_list_keyset_pagination is disabled' do
+      before do
+        stub_feature_flags(branch_list_keyset_pagination: false)
+      end
+
+      it_behaves_like 'listing the project branches'
+    end
+
+    context 'when filtering by name' do
+      let(:tool_params) do
+        { name: 'list_branches', arguments: { id: project.full_path, search: project.default_branch } }
+      end
+
+      it 'returns only branches matching the search term' do
+        post api('/mcp', user, oauth_access_token: access_token), params: params
+
+        expect(response).to have_gitlab_http_status(:ok)
+        expect(json_response['result']['structuredContent']['items'].pluck('name'))
+          .to contain_exactly(project.default_branch)
+      end
+    end
+
+    context 'when the search term matches nothing' do
+      let(:tool_params) do
+        { name: 'list_branches', arguments: { id: project.full_path, search: 'does-not-exist' } }
+      end
+
+      it 'returns an empty list' do
+        post api('/mcp', user, oauth_access_token: access_token), params: params
+
+        expect(response).to have_gitlab_http_status(:ok)
+        expect(json_response['result']['structuredContent']['items']).to be_empty
+      end
+    end
+
+    context 'with pagination' do
+      let(:tool_params) do
+        { name: 'list_branches', arguments: { id: project.full_path, per_page: 2, page: 1 } }
+      end
+
+      # Page 1 is served by the Gitaly offset-header path while later pages fall back to
+      # Kaminari, so the flag is pinned off to keep both pages on the same ordering.
+      before do
+        stub_feature_flags(branch_list_keyset_pagination: false)
+      end
+
+      it 'returns the requested page size' do
+        post api('/mcp', user, oauth_access_token: access_token), params: params
+
+        expect(response).to have_gitlab_http_status(:ok)
+        expect(json_response['result']['structuredContent']['items'].size).to eq(2)
+      end
+
+      it 'returns a different page of branches for page 2', :aggregate_failures do
+        post api('/mcp', user, oauth_access_token: access_token), params: params
+        first_page = json_response['result']['structuredContent']['items'].pluck('name')
+
+        post api('/mcp', user, oauth_access_token: access_token),
+          params: params.deep_merge(params: { arguments: { page: 2 } })
+        second_page = json_response['result']['structuredContent']['items'].pluck('name')
+
+        expect(first_page.size).to eq(2)
+        expect(second_page.size).to eq(2)
+        expect(first_page & second_page).to be_empty
+      end
+
+      context 'when per_page exceeds the API maximum' do
+        let(:tool_params) do
+          { name: 'list_branches', arguments: { id: project.full_path, per_page: 500 } }
+        end
+
+        # The tool advertises no per_page ceiling of its own; the endpoint clamps to
+        # Kaminari's max_per_page rather than rejecting the request.
+        it 'clamps the page size instead of erroring', :aggregate_failures do
+          post api('/mcp', user, oauth_access_token: access_token), params: params
+
+          expect(response).to have_gitlab_http_status(:ok)
+          expect(json_response['result']['isError']).to be_falsey
+          expect(json_response['result']['structuredContent']['items'].size)
+            .to be_between(1, Kaminari.config.max_per_page)
+        end
+      end
+    end
+
+    context 'when caller does not have permission to read the repository' do
+      let_it_be(:unauthorized_user) { create(:user) }
+      let_it_be(:unauthorized_access_token) { create(:oauth_access_token, user: unauthorized_user, scopes: [:mcp]) }
+
+      it 'returns a non-leaky not found error', :aggregate_failures do
+        post api('/mcp', unauthorized_user, oauth_access_token: unauthorized_access_token), params: params
+
+        expect(response).to have_gitlab_http_status(:ok)
+        expect(json_response['result']['isError']).to be_truthy
+        expect(json_response['result']['content'].first['text']).to include('404 Project Not Found')
       end
     end
   end
@@ -762,6 +1094,411 @@ RSpec.describe API::Mcp, 'Call tool request', feature_category: :mcp_server do
     end
   end
 
+  describe '#list_project_members' do
+    let_it_be(:inherited_developer) { create(:user, developer_of: group) }
+
+    let(:tool_params) do
+      { name: 'list_project_members', arguments: { project_id: project.full_path } }
+    end
+
+    it 'returns the direct project members with their roles', :aggregate_failures do
+      post api('/mcp', user, oauth_access_token: access_token), params: params
+
+      expect(response).to have_gitlab_http_status(:ok)
+      expect(json_response['result']['isError']).to be_falsey
+
+      items = json_response['result']['structuredContent']['items']
+      expect(items.pluck('username')).to contain_exactly(user.username)
+      expect(items.first).to include(
+        'id' => user.id,
+        'name' => user.name,
+        'access_level' => Gitlab::Access::MAINTAINER,
+        'access_level_name' => 'Maintainer',
+        'expires_at' => nil
+      )
+    end
+
+    context 'when include_inherited is true' do
+      let(:tool_params) do
+        { name: 'list_project_members', arguments: { project_id: project.full_path, include_inherited: true } }
+      end
+
+      it 'also returns members inherited from the parent group' do
+        post api('/mcp', user, oauth_access_token: access_token), params: params, as: :json
+
+        expect(response).to have_gitlab_http_status(:ok)
+        expect(json_response['result']['structuredContent']['items'].pluck('username'))
+          .to include(inherited_developer.username)
+      end
+    end
+
+    context 'when the caller cannot see the project' do
+      let_it_be(:other_project) { create(:project, :private) }
+      let_it_be(:unauthorized_user) { create(:user) }
+      let_it_be(:unauthorized_access_token) do
+        create(:oauth_access_token, user: unauthorized_user, scopes: [:mcp])
+      end
+
+      let(:tool_params) do
+        { name: 'list_project_members', arguments: { project_id: other_project.full_path } }
+      end
+
+      it 'returns a non-leaky not found error', :aggregate_failures do
+        post api('/mcp', unauthorized_user, oauth_access_token: unauthorized_access_token), params: params
+
+        expect(response).to have_gitlab_http_status(:ok)
+        expect(json_response['result']['isError']).to be_truthy
+        expect(json_response['result']['content'].first['text']).to include('not found or inaccessible')
+      end
+    end
+  end
+
+  describe '#list_releases' do
+    # `Release belongs_to :project, touch: true`, so creating one writes to the project.
+    # These projects cannot be frozen by `let_it_be`.
+    let_it_be(:releases_project, freeze: false) do
+      create(:project, :repository, group: group, maintainers: [user])
+    end
+
+    let_it_be(:other_project, freeze: false) { create(:project, :repository, maintainers: [user]) }
+
+    let_it_be(:release_v1) do
+      create(:release, project: releases_project, tag: 'v1.0', author: user, released_at: 3.days.ago)
+    end
+
+    let_it_be(:release_v2) do
+      create(:release, project: releases_project, tag: 'v2.0', author: user, released_at: 2.days.ago)
+    end
+
+    let_it_be(:release_v3, freeze: false) do
+      create(:release, project: releases_project, tag: 'v3.0', author: user, released_at: 1.day.ago)
+    end
+
+    let_it_be(:other_project_release) do
+      create(:release, project: other_project, tag: 'v9.0', author: user)
+    end
+
+    let_it_be(:release_link) do
+      create(:release_link, release: release_v3, name: 'Binary', url: 'https://example.com/v3.0/binary')
+    end
+
+    let(:tool_params) do
+      { name: 'list_releases', arguments: { project_id: releases_project.full_path } }
+    end
+
+    let(:structured_content) { json_response['result']['structuredContent'] }
+
+    it 'returns only the requested project releases, most recent first', :aggregate_failures do
+      post api('/mcp', user, oauth_access_token: access_token), params: params
+
+      expect(response).to have_gitlab_http_status(:ok)
+      expect(json_response['result']['isError']).to be_falsey
+      expect(structured_content['releases'].pluck('tag_name')).to eq(%w[v3.0 v2.0 v1.0])
+    end
+
+    it 'returns metadata-only entries with asset links', :aggregate_failures do
+      post api('/mcp', user, oauth_access_token: access_token), params: params
+
+      entry = structured_content['releases'].first
+      expect(entry.keys).to match_array(%w[tag_name name released_at upcoming assets])
+      expect(entry['assets']).to eq(
+        'count' => 1,
+        'links' => [{ 'name' => 'Binary', 'url' => 'https://example.com/v3.0/binary' }]
+      )
+    end
+
+    it 'reports pagination state' do
+      post api('/mcp', user, oauth_access_token: access_token), params: params
+
+      expect(structured_content['metadata']).to eq(
+        'page' => 1, 'per_page' => 20, 'has_more' => false
+      )
+    end
+
+    context 'when identified by url instead of project_id' do
+      let(:tool_params) do
+        { name: 'list_releases', arguments: { url: releases_project.web_url } }
+      end
+
+      it 'resolves the project from the url' do
+        post api('/mcp', user, oauth_access_token: access_token), params: params
+
+        expect(structured_content['releases'].pluck('tag_name')).to eq(%w[v3.0 v2.0 v1.0])
+      end
+    end
+
+    context 'when neither url nor project_id is given' do
+      let(:tool_params) { { name: 'list_releases', arguments: {} } }
+
+      it 'returns an error naming the requirement', :aggregate_failures do
+        post api('/mcp', user, oauth_access_token: access_token), params: params
+
+        expect(json_response['result']['isError']).to be_truthy
+        expect(json_response['result']['content'].first['text'])
+          .to include('Provide exactly one of: url or project_id')
+      end
+    end
+
+    context 'when arguments are omitted entirely' do
+      let(:tool_params) { { name: 'list_releases' } }
+
+      it 'returns an error naming the requirement', :aggregate_failures do
+        post api('/mcp', user, oauth_access_token: access_token), params: params
+
+        expect(json_response['result']['isError']).to be_truthy
+        expect(json_response['result']['content'].first['text'])
+          .to include('Provide exactly one of: url or project_id')
+      end
+    end
+
+    context 'when both url and project_id are given' do
+      let(:tool_params) do
+        {
+          name: 'list_releases',
+          arguments: { url: releases_project.web_url, project_id: releases_project.full_path }
+        }
+      end
+
+      it 'returns an error naming the requirement' do
+        post api('/mcp', user, oauth_access_token: access_token), params: params
+
+        expect(json_response['result']['content'].first['text'])
+          .to include('Provide exactly one of: url or project_id')
+      end
+    end
+
+    context 'with pagination' do
+      let(:tool_params) do
+        { name: 'list_releases', arguments: { project_id: releases_project.full_path, per_page: 2 } }
+      end
+
+      it 'bounds the page and reports that more remain', :aggregate_failures do
+        post api('/mcp', user, oauth_access_token: access_token), params: params, as: :json
+
+        expect(structured_content['releases'].pluck('tag_name')).to eq(%w[v3.0 v2.0])
+        expect(structured_content['metadata']).to eq(
+          'page' => 1, 'per_page' => 2, 'has_more' => true
+        )
+      end
+
+      it 'returns the remainder on the last page, with has_more false', :aggregate_failures do
+        # `as: :json` matters: form encoding would send per_page as "2", and the schema requires
+        # an integer.
+        post api('/mcp', user, oauth_access_token: access_token),
+          params: params.deep_merge(params: { arguments: { page: 2 } }), as: :json
+
+        expect(structured_content['releases'].pluck('tag_name')).to eq(%w[v1.0])
+        expect(structured_content['metadata']['has_more']).to be false
+      end
+    end
+
+    context 'when per_page exceeds the maximum' do
+      let(:tool_params) do
+        { name: 'list_releases', arguments: { project_id: releases_project.full_path, per_page: 101 } }
+      end
+
+      it 'rejects the call rather than silently clamping', :aggregate_failures do
+        post api('/mcp', user, oauth_access_token: access_token), params: params, as: :json
+
+        expect(json_response['result']['isError']).to be_truthy
+        expect(json_response['result']['content'].first['text']).to include('per_page')
+      end
+    end
+
+    context 'when the project has no releases' do
+      let_it_be(:empty_project) { create(:project, maintainers: [user]) }
+
+      let(:tool_params) do
+        { name: 'list_releases', arguments: { project_id: empty_project.full_path } }
+      end
+
+      it 'returns an empty list', :aggregate_failures do
+        post api('/mcp', user, oauth_access_token: access_token), params: params
+
+        expect(json_response['result']['isError']).to be_falsey
+        expect(structured_content['releases']).to eq([])
+        expect(structured_content['metadata']['has_more']).to be false
+      end
+    end
+
+    context 'when the url points at a group' do
+      let(:tool_params) do
+        { name: 'list_releases', arguments: { url: group.web_url } }
+      end
+
+      it 'returns an error' do
+        post api('/mcp', user, oauth_access_token: access_token), params: params
+
+        expect(json_response['result']['isError']).to be_truthy
+      end
+    end
+
+    context 'when caller cannot read the project' do
+      let_it_be(:unauthorized_user) { create(:user) }
+      let_it_be(:unauthorized_access_token) { create(:oauth_access_token, user: unauthorized_user, scopes: [:mcp]) }
+      let_it_be(:private_project, freeze: false) { create(:project, :private) }
+      let_it_be(:private_release) { create(:release, project: private_project, tag: 'v1.0') }
+
+      let(:tool_params) do
+        { name: 'list_releases', arguments: { project_id: private_project.full_path } }
+      end
+
+      it 'answers a private project exactly as it answers a missing one', :aggregate_failures do
+        post api('/mcp', unauthorized_user, oauth_access_token: unauthorized_access_token), params: params
+        denied = json_response['result']['content'].first['text']
+
+        post api('/mcp', unauthorized_user, oauth_access_token: unauthorized_access_token),
+          params: params.deep_merge(params: { arguments: { project_id: 'no/such-project' } })
+        missing = json_response['result']['content'].first['text']
+
+        expect(denied).to eq("Tool execution failed: Project '#{private_project.full_path}' not found or inaccessible")
+        expect(missing).to eq("Tool execution failed: Project 'no/such-project' not found or inaccessible")
+      end
+    end
+  end
+
+  describe '#list_tags' do
+    let(:tool_params) do
+      { name: 'list_tags', arguments: { project_id: project.full_path } }
+    end
+
+    let(:structured_content) { json_response['result']['structuredContent'] }
+
+    it 'returns the project tags, most recently updated first', :aggregate_failures do
+      post api('/mcp', user, oauth_access_token: access_token), params: params
+
+      expect(response).to have_gitlab_http_status(:ok)
+      expect(json_response['result']['isError']).to be_falsey
+      expect(structured_content['tags'].pluck('name')).to eq(%w[v1.1.1 v1.1.0 v1.0.0])
+    end
+
+    it 'returns metadata-only entries with the tip commit', :aggregate_failures do
+      post api('/mcp', user, oauth_access_token: access_token), params: params
+
+      entry = structured_content['tags'].last
+      expect(entry.keys).to match_array(%w[name commit])
+      expect(entry['commit']).to eq(
+        'sha' => '6f6d7e7ed97bb5f0054f2b1df789b39ca89b6ff9',
+        'title' => 'More submodules'
+      )
+    end
+
+    it 'reports pagination state' do
+      post api('/mcp', user, oauth_access_token: access_token), params: params
+
+      expect(structured_content['metadata']).to eq(
+        'has_next_page' => false, 'end_cursor' => nil
+      )
+    end
+
+    context 'when identified by url instead of project_id' do
+      let(:tool_params) do
+        { name: 'list_tags', arguments: { url: project.web_url } }
+      end
+
+      it 'resolves the project from the url' do
+        post api('/mcp', user, oauth_access_token: access_token), params: params
+
+        expect(structured_content['tags'].pluck('name')).to eq(%w[v1.1.1 v1.1.0 v1.0.0])
+      end
+    end
+
+    context 'when filtering by name' do
+      let(:tool_params) do
+        { name: 'list_tags', arguments: { project_id: project.full_path, search: 'v1.1' } }
+      end
+
+      it 'returns only matching tags' do
+        post api('/mcp', user, oauth_access_token: access_token), params: params
+
+        expect(structured_content['tags'].pluck('name')).to eq(%w[v1.1.1 v1.1.0])
+      end
+    end
+
+    context 'with pagination' do
+      let(:tool_params) do
+        { name: 'list_tags', arguments: { project_id: project.full_path, first: 2 } }
+      end
+
+      it 'bounds the page and returns a cursor for the next one', :aggregate_failures do
+        post api('/mcp', user, oauth_access_token: access_token), params: params, as: :json
+
+        expect(structured_content['tags'].pluck('name')).to eq(%w[v1.1.1 v1.1.0])
+        expect(structured_content['metadata']).to eq(
+          'has_next_page' => true, 'end_cursor' => 'v1.1.0'
+        )
+      end
+
+      it 'returns the remainder after the cursor, with has_next_page false', :aggregate_failures do
+        post api('/mcp', user, oauth_access_token: access_token),
+          params: params.deep_merge(params: { arguments: { after: 'v1.1.0' } }), as: :json
+
+        expect(structured_content['tags'].pluck('name')).to eq(%w[v1.0.0])
+        expect(structured_content['metadata']).to eq(
+          'has_next_page' => false, 'end_cursor' => nil
+        )
+      end
+    end
+
+    context 'when neither url nor project_id is given' do
+      let(:tool_params) { { name: 'list_tags', arguments: {} } }
+
+      it 'returns an error naming the requirement', :aggregate_failures do
+        post api('/mcp', user, oauth_access_token: access_token), params: params
+
+        expect(json_response['result']['isError']).to be_truthy
+        expect(json_response['result']['content'].first['text'])
+          .to include('Provide exactly one of: url or project_id')
+      end
+    end
+
+    context 'when arguments are omitted entirely' do
+      let(:tool_params) { { name: 'list_tags' } }
+
+      it 'returns an error naming the requirement' do
+        post api('/mcp', user, oauth_access_token: access_token), params: params
+
+        expect(json_response['result']['content'].first['text'])
+          .to include('Provide exactly one of: url or project_id')
+      end
+    end
+
+    context 'when first exceeds the maximum' do
+      let(:tool_params) do
+        { name: 'list_tags', arguments: { project_id: project.full_path, first: 101 } }
+      end
+
+      it 'rejects the call rather than silently clamping', :aggregate_failures do
+        post api('/mcp', user, oauth_access_token: access_token), params: params, as: :json
+
+        expect(json_response['result']['isError']).to be_truthy
+        expect(json_response['result']['content'].first['text']).to include('first')
+      end
+    end
+
+    context 'when caller cannot read the project' do
+      let_it_be(:unauthorized_user) { create(:user) }
+      let_it_be(:unauthorized_access_token) { create(:oauth_access_token, user: unauthorized_user, scopes: [:mcp]) }
+      let_it_be(:private_project) { create(:project, :repository, :private) }
+
+      let(:tool_params) do
+        { name: 'list_tags', arguments: { project_id: private_project.full_path } }
+      end
+
+      it 'answers a private project exactly as it answers a missing one', :aggregate_failures do
+        post api('/mcp', unauthorized_user, oauth_access_token: unauthorized_access_token), params: params
+        denied = json_response['result']['content'].first['text']
+
+        post api('/mcp', unauthorized_user, oauth_access_token: unauthorized_access_token),
+          params: params.deep_merge(params: { arguments: { project_id: 'no/such-project' } })
+        missing = json_response['result']['content'].first['text']
+
+        expect(denied).to eq("Tool execution failed: Project '#{private_project.full_path}' not found or inaccessible")
+        expect(missing).to eq("Tool execution failed: Project 'no/such-project' not found or inaccessible")
+      end
+    end
+  end
+
   describe '#add_branch' do
     let(:tool_params) do
       { name: 'add_branch', arguments: { project_id: project.full_path, branch: 'my-feature', ref: 'master' } }
@@ -827,6 +1564,145 @@ RSpec.describe API::Mcp, 'Call tool request', feature_category: :mcp_server do
     end
   end
 
+  describe '#get_job' do
+    let_it_be(:pipeline) { create(:ci_pipeline, project: project) }
+    # `let` rather than `let_it_be`, because a live trace does not survive between examples.
+    let(:job) { create(:ci_build, :trace_live, :failed, pipeline: pipeline, name: 'rspec') }
+
+    let(:arguments) { { id: project.full_path, job_id: job.id } }
+    let(:tool_params) { { name: 'get_job', arguments: arguments } }
+
+    it 'returns success response' do
+      post api('/mcp', user, oauth_access_token: access_token), params: params, as: :json
+
+      expect(response).to have_gitlab_http_status(:ok)
+      expect(json_response['result']['isError']).to be_falsey
+      expect(json_response['result']['structuredContent']).to include('id' => job.id, 'status' => 'failed')
+      expect(json_response['result']['structuredContent']).not_to have_key('log')
+    end
+
+    context 'with the log facet' do
+      let(:arguments) { super().merge(include: ['log']) }
+
+      it 'returns the job log' do
+        post api('/mcp', user, oauth_access_token: access_token), params: params, as: :json
+
+        expect(response).to have_gitlab_http_status(:ok)
+        expect(json_response['result']['structuredContent']['log']['content']).to eq('BUILD TRACE')
+      end
+    end
+
+    context 'when called as the get_job_log alias' do
+      let(:tool_params) { { name: 'get_job_log', arguments: arguments } }
+
+      it 'resolves to get_job and returns the log without an explicit include' do
+        post api('/mcp', user, oauth_access_token: access_token), params: params, as: :json
+
+        expect(response).to have_gitlab_http_status(:ok)
+        expect(json_response['result']['structuredContent']['log']['content']).to eq('BUILD TRACE')
+      end
+    end
+
+    context 'when caller does not have permission to read the job' do
+      let_it_be(:unauthorized_user) { create(:user) }
+      let_it_be(:unauthorized_access_token) { create(:oauth_access_token, user: unauthorized_user, scopes: [:mcp]) }
+
+      it 'returns a non-leaky not-found error' do
+        post api('/mcp', unauthorized_user, oauth_access_token: unauthorized_access_token), params: params, as: :json
+
+        expect(response).to have_gitlab_http_status(:ok)
+        expect(json_response['result']['isError']).to be_truthy
+        expect(json_response['result']['content'].first['text']).to include('not found or inaccessible')
+      end
+    end
+  end
+
+  describe '#save_note' do
+    let_it_be(:merge_request) { create(:merge_request, source_project: project) }
+    let_it_be(:work_item) { create(:work_item, :issue, project: project) }
+
+    context 'with a merge request target' do
+      let(:tool_params) do
+        {
+          name: 'save_note',
+          arguments: { project_id: project.full_path, merge_request_iid: merge_request.iid, body: 'LGTM' }
+        }
+      end
+
+      it 'creates the note' do
+        post api('/mcp', user, oauth_access_token: access_token), params: params, as: :json
+
+        expect(response).to have_gitlab_http_status(:ok)
+        expect(json_response['result']['isError']).to be_falsey
+        expect(json_response['result']['structuredContent']['note']['body']).to eq('LGTM')
+      end
+
+      context 'when called as the create_merge_request_note alias' do
+        let(:tool_params) do
+          {
+            name: 'create_merge_request_note',
+            arguments: { project_id: project.full_path, merge_request_iid: merge_request.iid, body: 'LGTM' }
+          }
+        end
+
+        it 'creates the note' do
+          post api('/mcp', user, oauth_access_token: access_token), params: params, as: :json
+
+          expect(response).to have_gitlab_http_status(:ok)
+          expect(json_response['result']['isError']).to be_falsey
+          expect(json_response['result']['structuredContent']['note']['body']).to eq('LGTM')
+        end
+      end
+    end
+
+    context 'with a work item target' do
+      let(:tool_params) do
+        {
+          name: 'save_note',
+          arguments: { project_id: project.full_path, work_item_iid: work_item.iid, body: 'Needs a rebase' }
+        }
+      end
+
+      it 'creates the note' do
+        post api('/mcp', user, oauth_access_token: access_token), params: params, as: :json
+
+        expect(response).to have_gitlab_http_status(:ok)
+        expect(json_response['result']['isError']).to be_falsey
+        expect(json_response['result']['structuredContent']['note']['body']).to eq('Needs a rebase')
+      end
+
+      context 'when called as the create_workitem_note alias' do
+        let(:tool_params) do
+          {
+            name: 'create_workitem_note',
+            arguments: { project_id: project.full_path, work_item_iid: work_item.iid, body: 'Needs a rebase' }
+          }
+        end
+
+        it 'creates the note' do
+          post api('/mcp', user, oauth_access_token: access_token), params: params, as: :json
+
+          expect(response).to have_gitlab_http_status(:ok)
+          expect(json_response['result']['isError']).to be_falsey
+          expect(json_response['result']['structuredContent']['note']['body']).to eq('Needs a rebase')
+        end
+      end
+    end
+
+    context 'when neither a merge request nor a work item identifier is provided' do
+      let(:tool_params) do
+        { name: 'save_note', arguments: { project_id: project.full_path, body: 'LGTM' } }
+      end
+
+      it 'returns an error' do
+        post api('/mcp', user, oauth_access_token: access_token), params: params, as: :json
+
+        expect(response).to have_gitlab_http_status(:ok)
+        expect(json_response['result']['isError']).to be_truthy
+      end
+    end
+  end
+
   # Facet, filter, and pagination behaviour is covered in the tool spec. These examples only cover
   # what the tool spec cannot: that arguments survive the JSON-RPC round trip and that the endpoint
   # enforces access.
@@ -869,6 +1745,124 @@ RSpec.describe API::Mcp, 'Call tool request', feature_category: :mcp_server do
         expect(json_response['result']['isError']).to be_truthy
         expect(json_response['result']['content'].first['text']).to include('Project not found')
       end
+    end
+  end
+
+  describe '#get_project' do
+    let(:arguments) { { project_id: project.full_path } }
+    let(:tool_params) { { name: 'get_project', arguments: arguments } }
+
+    it 'returns the project metadata', :aggregate_failures do
+      post api('/mcp', user, oauth_access_token: access_token), params: params, as: :json
+
+      expect(response).to have_gitlab_http_status(:ok)
+      expect(json_response['result']['isError']).to be_falsey
+      expect(json_response['result']['structuredContent']).to eq(
+        'id' => project.id,
+        'path_with_namespace' => project.full_path,
+        'default_branch' => project.default_branch,
+        'visibility' => project.visibility,
+        'web_url' => project.web_url
+      )
+    end
+
+    context 'with a project URL' do
+      let(:arguments) { { url: project.web_url } }
+
+      it 'resolves the project from the URL' do
+        post api('/mcp', user, oauth_access_token: access_token), params: params, as: :json
+
+        expect(response).to have_gitlab_http_status(:ok)
+        expect(json_response['result']['isError']).to be_falsey
+        expect(json_response['result']['structuredContent']['path_with_namespace']).to eq(project.full_path)
+      end
+    end
+
+    context 'when neither url nor project_id is given' do
+      let(:arguments) { {} }
+
+      it 'returns an error' do
+        post api('/mcp', user, oauth_access_token: access_token), params: params, as: :json
+
+        expect(response).to have_gitlab_http_status(:ok)
+        expect(json_response['result']['isError']).to be_truthy
+        expect(json_response['result']['content'].first['text']).to include('Provide exactly one of')
+      end
+    end
+
+    context 'when caller does not have access to the project' do
+      let_it_be(:unauthorized_user) { create(:user) }
+      let_it_be(:unauthorized_access_token) { create(:oauth_access_token, user: unauthorized_user, scopes: [:mcp]) }
+
+      it 'returns a non-leaky not found error', :aggregate_failures do
+        post api('/mcp', unauthorized_user, oauth_access_token: unauthorized_access_token), params: params, as: :json
+
+        expect(response).to have_gitlab_http_status(:ok)
+        expect(json_response['result']['isError']).to be_truthy
+        expect(json_response['result']['content'].first['text']).to include('not found or inaccessible')
+      end
+    end
+  end
+
+  describe '#list_repository_tree' do
+    let(:arguments) { { project_id: project.full_path, path: 'files', ref: 'master' } }
+    let(:tool_params) { { name: 'list_repository_tree', arguments: arguments } }
+
+    it 'returns the tree entries at the requested path', :aggregate_failures do
+      post api('/mcp', user, oauth_access_token: access_token), params: params, as: :json
+
+      expect(response).to have_gitlab_http_status(:ok)
+      expect(json_response['result']['isError']).to be_falsey
+      expect(json_response['result']['structuredContent']['entries']).to include(
+        a_hash_including('type' => 'tree', 'path' => 'files/ruby')
+      )
+      expect(json_response['result']['structuredContent']['pageInfo']).to include('hasNextPage' => false)
+    end
+
+    context 'when caller does not have access to the project' do
+      let_it_be(:unauthorized_user) { create(:user) }
+      let_it_be(:unauthorized_access_token) { create(:oauth_access_token, user: unauthorized_user, scopes: [:mcp]) }
+
+      it 'returns an error without listing the tree' do
+        post api('/mcp', unauthorized_user, oauth_access_token: unauthorized_access_token), params: params, as: :json
+
+        expect(response).to have_gitlab_http_status(:ok)
+        expect(json_response['result']['isError']).to be_truthy
+        expect(json_response['result']['content'].first['text']).to include('not found or inaccessible')
+      end
+    end
+  end
+
+  describe '#add_commit' do
+    let_it_be(:guest) { create(:user) }
+    let_it_be(:guest_access_token) { create(:oauth_access_token, user: guest, scopes: [:mcp]) }
+
+    let(:tool_params) do
+      {
+        name: 'add_commit',
+        arguments: {
+          project_id: project.full_path,
+          branch: project.default_branch,
+          commit_message: 'Add MCP test file',
+          actions: [{ action: 'create', file_path: 'mcp-test.txt', content: 'Test content' }]
+        }
+      }
+    end
+
+    before_all do
+      project.add_guest(guest)
+    end
+
+    it 'returns an error when the user cannot push code' do
+      expect do
+        post api('/mcp', guest, oauth_access_token: guest_access_token), params: params, as: :json
+      end.not_to change { project.repository.commit_count }
+
+      expect(response).to have_gitlab_http_status(:ok)
+      expect(json_response['result']['isError']).to be_truthy
+      expect(json_response['result']['content'].first['text']).to include(
+        "does not exist or you don't have permission to perform this action"
+      )
     end
   end
 end

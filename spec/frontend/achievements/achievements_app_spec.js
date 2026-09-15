@@ -116,7 +116,7 @@ describe('Achievements app', () => {
       const achievements = wrapper.findAllComponents(CrudComponent);
 
       expect(achievements.at(0).text()).toContain('Legend');
-      expect(achievements.at(0).findComponent(GlAvatar).props('src')).toMatch(/\/dk.png$/);
+      expect(achievements.at(0).findComponent(GlAvatar).props('src')).toMatch(/\/dk\.png(\?.*)?$/);
     });
 
     it('should render the correct achievement name and avatar (when not present)', async () => {

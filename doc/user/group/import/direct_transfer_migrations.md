@@ -1,5 +1,5 @@
 ---
-stage: Create
+stage: GitLab Dedicated
 group: Import
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see <https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments>
 title: Migrate groups and projects by using direct transfer
@@ -85,7 +85,7 @@ This requirement does not apply for migrations from GitLab.com to GitLab Dedicat
   (imported-3d-1770206299)`. To avoid this, rename the milestone in the source group or project before initiating a direct transfer.
 - Ensure either that:
   - The source and destination namespaces belong to the same organization.
-  - When the source and designation namespaces belong to different organisations, that neither
+  - When the source and destination namespaces belong to different organizations, that neither
     organization is marked as isolated.
 
 ## User membership mapping

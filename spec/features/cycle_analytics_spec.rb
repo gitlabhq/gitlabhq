@@ -102,8 +102,6 @@ RSpec.describe 'Value Stream Analytics', :js, feature_category: :value_stream_ma
         wait_for_requests
       end
 
-      let(:stage_table_events) { stage_table.all(stage_table_event_selector) }
-
       it 'displays metrics' do
         expect(page).to have_selector metrics_selector
 

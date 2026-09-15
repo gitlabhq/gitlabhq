@@ -37,7 +37,7 @@ module RuboCop
       class AvoidTestProf < RuboCop::Cop::Base
         MESSAGE = "Prefer %{alternatives} over `%{method}` in migration specs. " \
                   'See ' \
-                  'https://docs.gitlab.com/ee/development/testing_guide/best_practices.html#testprof-in-migration-specs'
+                  'https://docs.gitlab.com/development/testing_guide/best_practices/#testprof-in-migration-specs'
 
         LET_ALTERNATIVES = %w[`let` `let!`].freeze
         ALTERNATIVES = {

@@ -344,9 +344,18 @@ describe('Diffs list store', () => {
     });
   });
 
-  it('#addLoadedFile', () => {
-    store.addLoadedFile({ target: { id: 'foo' } });
-    expect(store.loadedFiles.foo).toBe(true);
+  describe('#addLoadedFiles', () => {
+    it('marks every given file as loaded', () => {
+      store.addLoadedFiles(['foo']);
+      store.addLoadedFiles(['bar', 'baz']);
+      expect(store.loadedFiles).toEqual({ foo: true, bar: true, baz: true });
+    });
+
+    it('ignores files while fetching', () => {
+      store.status = statuses.fetching;
+      store.addLoadedFiles(['foo']);
+      expect(store.loadedFiles).toEqual({});
+    });
   });
 
   it('#isEmpty', () => {

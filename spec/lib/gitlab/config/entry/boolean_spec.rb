@@ -11,7 +11,7 @@ RSpec.describe Gitlab::Config::Entry::Boolean do
 
       describe '#value' do
         it 'returns key value' do
-          expect(entry.value).to eq false
+          expect(entry.value).to be false
         end
       end
 

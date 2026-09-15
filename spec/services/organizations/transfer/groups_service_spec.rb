@@ -198,6 +198,18 @@ RSpec.describe Organizations::Transfer::GroupsService, :aggregate_failures, feat
           )
       end
 
+      # Organizations::ActivateService wraps this service in its own transaction and
+      # rolls it back when a later step fails.
+      it 'does not publish a GroupTransferredEvent when a wrapping transaction rolls back' do
+        expect do
+          ApplicationRecord.transaction do
+            expect(service.execute).to be_success
+
+            raise ActiveRecord::Rollback
+          end
+        end.not_to publish_event(Organizations::GroupTransferredEvent)
+      end
+
       context 'for runner transfers' do
         it 'enqueues TransferOrganizationWorker with correct arguments' do
           expect(Ci::Runners::TransferOrganizationWorker).to receive(:perform_async).with(
@@ -205,6 +217,16 @@ RSpec.describe Organizations::Transfer::GroupsService, :aggregate_failures, feat
           )
 
           service.execute
+        end
+
+        it 'does not enqueue TransferOrganizationWorker when the transfer fails' do
+          # Raised from the last step inside the transaction, so anything scheduled
+          # before it would already have been enqueued.
+          allow(service).to receive(:publish_event).and_raise(StandardError, 'Transfer failed')
+
+          expect(Ci::Runners::TransferOrganizationWorker).not_to receive(:perform_async)
+
+          expect(service.execute).to be_error
         end
       end
 
@@ -233,24 +255,56 @@ RSpec.describe Organizations::Transfer::GroupsService, :aggregate_failures, feat
           expect { service.execute }.not_to change { user_app.reload.organization_id }
         end
 
-        context 'when IAM replication is enabled' do
-          before do
-            stub_feature_flags(iam_data_replication: true)
-          end
+        it 'records an upsert outbox row carrying the new organization for the moved application',
+          :aggregate_failures do
+          app = create(:oauth_application, owner_id: group.id, owner_type: 'Namespace',
+            organization: old_organization)
 
-          it 'records an upsert outbox row carrying the new organization for the moved application',
-            :aggregate_failures do
-            app = create(:oauth_application, owner_id: group.id, owner_type: 'Namespace',
-              organization: old_organization)
+          expect { service.execute }
+            .to change { Authn::IamOutbox.where(entity_id: app.id, event_type: :upsert).count }.by(1)
 
-            expect { service.execute }
-              .to change { Authn::IamOutbox.where(entity_id: app.id, event_type: :upsert).count }.by(1)
+          row = Authn::IamOutbox.where(
+            entity_id: app.id, event_type: :upsert, organization_id: new_organization.id
+          ).sole
+          expect(row).to have_attributes(entity_type: 'oauth_application', payload: {})
+        end
 
-            row = Authn::IamOutbox.where(
+        it 'schedules an upsert drain for the moved application' do
+          app = create(:oauth_application, owner_id: group.id, owner_type: 'Namespace',
+            organization: old_organization)
+
+          expect(Authn::IamReplication::DrainWorker).to receive(:bulk_perform_in)
+            .with(Authn::IamReplication::DrainWorker::SCHEDULE_DELAY,
+              include(['oauth_application', app.id, 'upsert']))
+
+          service.execute
+        end
+
+        it 'records no additional outbox row when the transfer is replayed after a successful run' do
+          app = create(:oauth_application, owner_id: group.id, owner_type: 'Namespace',
+            organization: old_organization)
+
+          service.execute
+
+          replay = described_class.new(group: group.reset, new_organization: new_organization, current_user: user)
+
+          expect { replay.execute }.not_to change {
+            Authn::IamOutbox.where(
               entity_id: app.id, event_type: :upsert, organization_id: new_organization.id
-            ).sole
-            expect(row).to have_attributes(entity_type: 'oauth_application', payload: {})
-          end
+            ).count
+          }
+        end
+
+        it 'schedules no drain when the transfer rolls back' do
+          create(:oauth_application, owner_id: group.id, owner_type: 'Namespace',
+            organization: old_organization)
+
+          # Raised after the applications are captured, but still inside the transaction.
+          allow(service).to receive(:publish_event).and_raise(ActiveRecord::Rollback)
+
+          expect(Authn::IamReplication::DrainWorker).not_to receive(:bulk_perform_in)
+
+          service.execute
         end
 
         context 'when IAM replication is disabled' do
@@ -309,6 +363,499 @@ RSpec.describe Organizations::Transfer::GroupsService, :aggregate_failures, feat
         it_behaves_like 'generates batched transfer queries'
       end
 
+      context 'for cycle analytics stage event hashes' do
+        let_it_be_with_refind(:stage) { create(:cycle_analytics_stage, namespace: group) }
+
+        it 'duplicates the hash into the new organization and updates the stage' do
+          old_hash = Analytics::CycleAnalytics::StageEventHash.create!(
+            organization: old_organization,
+            hash_sha256: Digest::SHA256.hexdigest("organization-transfer-#{stage.id}")
+          )
+          stage.update_column(:stage_event_hash_id, old_hash.id)
+
+          service.execute
+
+          new_hash = stage.reload.stage_event_hash
+          expect(new_hash.id).not_to eq(old_hash.id)
+          expect(new_hash.organization_id).to eq(new_organization.id)
+          expect(new_hash.hash_sha256).to eq(old_hash.hash_sha256)
+          expect(old_hash.reload.organization_id).to eq(old_organization.id)
+        end
+
+        it 'updates stages in subgroups' do
+          subgroup_stage = create(:cycle_analytics_stage, namespace: subgroup)
+          old_hash = subgroup_stage.stage_event_hash
+
+          service.execute
+
+          new_hash = subgroup_stage.reload.stage_event_hash
+          expect(new_hash.id).not_to eq(old_hash.id)
+          expect(new_hash.organization_id).to eq(new_organization.id)
+          expect(new_hash.hash_sha256).to eq(old_hash.hash_sha256)
+        end
+
+        it 'reuses a matching hash in the new organization' do
+          matching_hash = Analytics::CycleAnalytics::StageEventHash.create!(
+            organization: new_organization,
+            hash_sha256: stage.stage_event_hash.hash_sha256
+          )
+
+          service.execute
+
+          expect(stage.reload.stage_event_hash_id).to eq(matching_hash.id)
+        end
+
+        it 'handles new and existing target hashes in the same batch' do
+          second_stage = create(:cycle_analytics_stage, namespace: group)
+          second_old_hash = Analytics::CycleAnalytics::StageEventHash.create!(
+            organization: old_organization,
+            hash_sha256: Digest::SHA256.hexdigest("organization-transfer-#{second_stage.id}")
+          )
+          second_stage.update_column(:stage_event_hash_id, second_old_hash.id)
+          matching_hash = Analytics::CycleAnalytics::StageEventHash.create!(
+            organization: new_organization,
+            hash_sha256: stage.stage_event_hash.hash_sha256
+          )
+
+          service.execute
+
+          expect(stage.reload.stage_event_hash_id).to eq(matching_hash.id)
+          expect(second_stage.reload.stage_event_hash.organization_id).to eq(new_organization.id)
+          expect(second_stage.stage_event_hash.hash_sha256).to eq(second_old_hash.hash_sha256)
+        end
+
+        it 'does not update stages outside the group' do
+          other_group = create(:group, organization: old_organization)
+          other_stage = create(:cycle_analytics_stage, namespace: other_group)
+          old_hash_id = other_stage.stage_event_hash_id
+
+          service.execute
+
+          expect(other_stage.reload.stage_event_hash_id).to eq(old_hash_id)
+        end
+
+        it 'does not update stages in another organization' do
+          unrelated_organization = create(:organization)
+          unrelated_group = create(:group, organization: unrelated_organization)
+          unrelated_stage = create(:cycle_analytics_stage, namespace: unrelated_group)
+          old_hash_id = unrelated_stage.stage_event_hash_id
+
+          service.execute
+
+          expect(unrelated_stage.reload.stage_event_hash_id).to eq(old_hash_id)
+        end
+
+        it 'repoints issue stage events to the new hash' do
+          old_hash = stage.stage_event_hash
+          issue = create(:issue, project: project)
+          create(:cycle_analytics_issue_stage_event,
+            stage_event_hash_id: old_hash.id,
+            issue_id: issue.id,
+            group_id: group.id,
+            project_id: project.id
+          )
+
+          service.execute
+
+          new_hash = stage.reload.stage_event_hash
+          repointed_event = Analytics::CycleAnalytics::IssueStageEvent
+            .find_by(stage_event_hash_id: new_hash.id, issue_id: issue.id)
+          expect(repointed_event).to be_present
+          expect(Analytics::CycleAnalytics::IssueStageEvent
+            .find_by(stage_event_hash_id: old_hash.id, issue_id: issue.id)).to be_nil
+        end
+
+        it 'repoints merge request stage events to the new hash' do
+          old_hash = stage.stage_event_hash
+          merge_request = create(:merge_request, source_project: project)
+          create(:cycle_analytics_merge_request_stage_event,
+            stage_event_hash_id: old_hash.id,
+            merge_request_id: merge_request.id,
+            group_id: group.id,
+            project_id: project.id
+          )
+
+          service.execute
+
+          new_hash = stage.reload.stage_event_hash
+          repointed_event = Analytics::CycleAnalytics::MergeRequestStageEvent
+            .find_by(stage_event_hash_id: new_hash.id, merge_request_id: merge_request.id)
+          expect(repointed_event).to be_present
+          expect(Analytics::CycleAnalytics::MergeRequestStageEvent
+            .find_by(stage_event_hash_id: old_hash.id, merge_request_id: merge_request.id)).to be_nil
+        end
+
+        it 'does not repoint events belonging to other groups sharing the same hash' do
+          old_hash = stage.stage_event_hash
+          other_group = create(:group, organization: old_organization)
+          other_project = create(:project, group: other_group, organization: old_organization)
+          other_stage = create(:cycle_analytics_stage, namespace: other_group)
+          other_stage.update_column(:stage_event_hash_id, old_hash.id)
+          other_issue = create(:issue, project: other_project)
+          create(:cycle_analytics_issue_stage_event,
+            stage_event_hash_id: old_hash.id,
+            issue_id: other_issue.id,
+            group_id: other_group.id,
+            project_id: other_project.id
+          )
+
+          service.execute
+
+          expect(Analytics::CycleAnalytics::IssueStageEvent
+            .find_by(stage_event_hash_id: old_hash.id, issue_id: other_issue.id)).to be_present
+        end
+
+        it 'covers all StageEventModel implementors' do
+          Rails.autoloaders.main.eager_load_namespace(Analytics::CycleAnalytics)
+
+          all_stage_event_models = ObjectSpace.each_object(Class).select do |klass|
+            klass < ApplicationRecord && klass.included_modules.include?(Analytics::CycleAnalytics::StageEventModel)
+          end
+
+          expect(described_class.new(
+            group: group, new_organization: new_organization, current_user: user
+          ).send(:stage_event_models)).to match_array(all_stage_event_models)
+        end
+
+        it 'repoints events for every StageEventModel class' do
+          old_hash = stage.stage_event_hash
+          issuable_map = {
+            Analytics::CycleAnalytics::IssueStageEvent => {
+              factory: :cycle_analytics_issue_stage_event,
+              issuable_key: :issue_id,
+              issuable: create(:issue, project: project)
+            },
+            Analytics::CycleAnalytics::MergeRequestStageEvent => {
+              factory: :cycle_analytics_merge_request_stage_event,
+              issuable_key: :merge_request_id,
+              issuable: create(:merge_request, source_project: project)
+            }
+          }
+
+          events = described_class.new(
+            group: group, new_organization: new_organization, current_user: user
+          ).send(:stage_event_models).map do |model|
+            config = issuable_map.fetch(model)
+            create(config[:factory],
+              stage_event_hash_id: old_hash.id,
+              config[:issuable_key] => config[:issuable].id,
+              group_id: group.id,
+              project_id: project.id
+            )
+            { model: model, issuable_key: config[:issuable_key], issuable_id: config[:issuable].id }
+          end
+
+          service.execute
+
+          new_hash = stage.reload.stage_event_hash
+          events.each do |event_info|
+            repointed = event_info[:model].find_by(
+              stage_event_hash_id: new_hash.id,
+              event_info[:issuable_key] => event_info[:issuable_id]
+            )
+            expect(repointed).to be_present,
+              "expected #{event_info[:model]} event to be repointed to new hash #{new_hash.id}"
+          end
+        end
+
+        context 'when batching stage event hash transfers' do
+          include_context 'with transfer batch size of 1'
+
+          let_it_be_with_refind(:batch_stages) do
+            Array.new(3) do
+              batch_group = create(:group, parent: group, organization: old_organization)
+              create(:cycle_analytics_stage, namespace: batch_group)
+            end
+          end
+
+          let(:execute_service) { service.execute }
+          let(:expected_batch_queries) do
+            { 'analytics_cycle_analytics_group_stages' => 3 }
+          end
+
+          it 'processes all records across multiple batches' do
+            service.execute
+
+            batch_stages.each do |batch_stage|
+              expect(batch_stage.reload.stage_event_hash.organization_id).to eq(new_organization.id)
+            end
+          end
+
+          it_behaves_like 'generates batched transfer queries'
+        end
+
+        context 'when batching hashes and stages' do
+          include_context 'with transfer batch size of 1'
+
+          let_it_be_with_refind(:stages_across_hash_batches) do
+            Array.new(3).flat_map do
+              batch_stages = Array.new(2) { create(:cycle_analytics_stage, namespace: group) }
+              old_hash = Analytics::CycleAnalytics::StageEventHash.create!(
+                organization: old_organization,
+                hash_sha256: Digest::SHA256.hexdigest("organization-transfer-batch-#{batch_stages.first.id}")
+              )
+
+              batch_stages.each { |batch_stage| batch_stage.update_column(:stage_event_hash_id, old_hash.id) }
+            end
+          end
+
+          let(:execute_service) { service.execute }
+          let(:expected_batch_queries) do
+            { 'analytics_cycle_analytics_group_stages' => 6 }
+          end
+
+          let(:expected_upsert_queries) do
+            { 'analytics_cycle_analytics_stage_event_hashes' => 3 }
+          end
+
+          it 'processes multiple hash and stage batches' do
+            service.execute
+
+            stages_across_hash_batches.each do |batch_stage|
+              expect(batch_stage.reload.stage_event_hash.organization_id).to eq(new_organization.id)
+            end
+          end
+
+          it_behaves_like 'generates batched transfer queries'
+          it_behaves_like 'generates batched upsert queries'
+        end
+      end
+
+      context 'for burned project routes' do
+        it 'updates organization_id for burned routes of transferred projects' do
+          burned_route = create(:burned_project_route, :owned_by_project, project: project)
+
+          result = service.execute
+
+          expect(result).to be_success
+          expect(burned_route.reload.organization_id).to eq(new_organization.id)
+        end
+
+        it 'updates organization_id for burned routes in subgroups' do
+          burned_route = create(:burned_project_route, :owned_by_project, project: subgroup_project)
+
+          result = service.execute
+
+          expect(result).to be_success
+          expect(burned_route.reload.organization_id).to eq(new_organization.id)
+        end
+
+        it 'does not match sibling groups whose path differs only in the escaped character' do
+          group.update!(path: 'my_group')
+          decoy_group = create(:group, organization: old_organization, path: 'myXgroup')
+          decoy_project = create(:project, namespace: decoy_group, organization: old_organization)
+          decoy_burn = create(:burned_project_route,
+            organization: old_organization,
+            path: "#{decoy_group.full_path}/some-project",
+            project_id: decoy_project.id
+          )
+
+          service.execute
+
+          expect(decoy_burn.reload.organization_id).to eq(old_organization.id)
+        end
+
+        it 'matches burned routes case-insensitively against the group path' do
+          group.update!(path: 'MixedCase-Group')
+          burned_route = create(:burned_project_route,
+            organization: old_organization,
+            path: "#{group.reload.full_path}/Some-Project",
+            project_id: project.id
+          )
+
+          service.execute
+
+          expect(burned_route.reload.organization_id).to eq(new_organization.id)
+        end
+
+        it 'updates burned routes for deleted projects (tombstones) whose path is under the group' do
+          tombstone = create(:burned_project_route,
+            organization: old_organization,
+            path: "#{group.full_path}/deleted-project",
+            project_id: non_existing_record_id
+          )
+
+          result = service.execute
+
+          expect(result).to be_success
+
+          expect(tombstone.reload.organization_id).to eq(new_organization.id)
+        end
+
+        it 'does not update burned routes whose path is outside the group even if project_id matches' do
+          external_burn = create(:burned_project_route,
+            organization: old_organization,
+            path: 'some-other-namespace/old-project',
+            project_id: project.id
+          )
+
+          service.execute
+
+          expect(external_burn.reload.organization_id).to eq(old_organization.id)
+        end
+
+        it 'does not update burned routes belonging to other groups in the same org' do
+          other_group = create(:group, organization: old_organization)
+          other_project = create(:project, namespace: other_group, organization: old_organization)
+          other_route = create(:burned_project_route, :owned_by_project, project: other_project)
+
+          service.execute
+
+          expect(other_route.reload.organization_id).to eq(old_organization.id)
+        end
+
+        it 'does not update burned routes belonging to an unrelated organization' do
+          unrelated_organization = create(:organization)
+          unrelated_project = create(:project, organization: unrelated_organization)
+          unrelated_route = create(:burned_project_route, :owned_by_project, project: unrelated_project)
+
+          service.execute
+
+          expect(unrelated_route.reload.organization_id).to eq(unrelated_organization.id)
+        end
+
+        it 'deletes source-org burn and keeps target-org burn when both exist for the same path' do
+          path = project.full_path
+          old_burn = create(:burned_project_route, organization: old_organization, path: path, project_id: project.id)
+          new_burn = create(:burned_project_route, organization: new_organization, path: path, project_id: project.id)
+
+          service.execute
+
+          expect { old_burn.reload }.to raise_error(ActiveRecord::RecordNotFound)
+          expect(new_burn.reload.organization_id).to eq(new_organization.id)
+        end
+
+        context 'when batching burned route transfers' do
+          include_context 'with transfer batch size of 1'
+
+          let_it_be(:batch_burned_routes) do
+            Array.new(3) do |i|
+              create(:burned_project_route,
+                organization: old_organization,
+                path: "#{group.full_path}/batch-route-#{i}",
+                project_id: project.id
+              )
+            end
+          end
+
+          let(:execute_service) { service.execute }
+          let(:expected_batch_queries) do
+            { 'burned_project_routes' => 3 }
+          end
+
+          it 'transfers across multiple batches and removes conflicts' do
+            conflicting_old = Array.new(3) do |i|
+              p = "#{group.full_path}/conflict-#{i}"
+              create(:burned_project_route, organization: old_organization, path: p, project_id: project.id)
+            end
+            conflicting_new = conflicting_old.map do |route|
+              create(:burned_project_route, organization: new_organization, path: route.path, project_id: project.id)
+            end
+
+            unique_routes = Array.new(3) do |i|
+              create(:burned_project_route,
+                organization: old_organization,
+                path: "#{group.full_path}/unique-#{i}",
+                project_id: project.id
+              )
+            end
+
+            service.execute
+
+            conflicting_old.each { |r| expect { r.reload }.to raise_error(ActiveRecord::RecordNotFound) }
+            conflicting_new.each { |r| expect(r.reload.organization_id).to eq(new_organization.id) }
+            unique_routes.each { |r| expect(r.reload.organization_id).to eq(new_organization.id) }
+          end
+
+          it_behaves_like 'generates batched transfer queries'
+        end
+      end
+
+      context 'for agent organization authorizations' do
+        it 'updates organization_id for agent authorizations linked to transferred projects' do
+          agent = create(:cluster_agent, project: project)
+          auth = create(:agent_ci_access_organization_authorization, agent: agent)
+
+          service.execute
+
+          expect(auth.reload.organization_id).to eq(new_organization.id)
+        end
+
+        it 'updates organization_id for agent authorizations in subgroups' do
+          agent = create(:cluster_agent, project: subgroup_project)
+          auth = create(:agent_ci_access_organization_authorization, agent: agent)
+
+          service.execute
+
+          expect(auth.reload.organization_id).to eq(new_organization.id)
+        end
+
+        it 'does not update agent authorizations belonging to other projects' do
+          other_group = create(:group, organization: old_organization)
+          other_project = create(:project, namespace: other_group, organization: old_organization)
+          agent = create(:cluster_agent, project: other_project)
+          auth = create(:agent_ci_access_organization_authorization, agent: agent)
+
+          service.execute
+
+          expect(auth.reload.organization_id).to eq(old_organization.id)
+        end
+
+        it 'does not update agent authorizations belonging to an unrelated organization' do
+          unrelated_organization = create(:organization)
+          unrelated_project = create(:project, organization: unrelated_organization)
+          agent = create(:cluster_agent, project: unrelated_project)
+          auth = create(:agent_ci_access_organization_authorization, agent: agent)
+
+          service.execute
+
+          expect(auth.reload.organization_id).to eq(unrelated_organization.id)
+        end
+
+        context 'when batching updates' do
+          include_context 'with transfer batch size of 1'
+
+          let_it_be(:batch_agent_auths) do
+            Array.new(3) do
+              agent = create(:cluster_agent, project: project)
+              create(:agent_ci_access_organization_authorization, agent: agent)
+            end
+          end
+
+          let(:execute_service) { service.execute }
+          let(:expected_batch_queries) do
+            { 'agent_organization_authorizations' => 3 }
+          end
+
+          it 'processes all records across multiple batches' do
+            service.execute
+
+            batch_agent_auths.each { |a| expect(a.reload.organization_id).to eq(new_organization.id) }
+          end
+
+          it_behaves_like 'generates batched transfer queries'
+        end
+
+        context 'when namespaces.traversal_ids is an integer array' do
+          # integer[] is still real on GitLab.com and pre-17.4 self-managed: the bigint
+          # migration only ever ran under Gitlab.dev_or_test_env?, so recreate the old type here.
+          before do
+            ApplicationRecord.connection.execute(<<~SQL)
+              DROP TRIGGER trigger_namespaces_traversal_ids_on_update ON namespaces;
+              ALTER TABLE namespaces ALTER COLUMN traversal_ids TYPE integer[];
+            SQL
+          end
+
+          it 'updates organization_id for agent authorizations linked to transferred projects' do
+            agent = create(:cluster_agent, project: project)
+            auth = create(:agent_ci_access_organization_authorization, agent: agent)
+
+            expect(service.execute).to be_success
+            expect(auth.reload.organization_id).to eq(new_organization.id)
+          end
+        end
+      end
+
       context 'when transferring topics' do
         let!(:old_topic) { create(:topic, name: 'rails', organization: old_organization) }
         let!(:project_topic) { create(:project_topic, project: project, topic: old_topic) }
@@ -332,6 +879,167 @@ RSpec.describe Organizations::Transfer::GroupsService, :aggregate_failures, feat
 
           it 'enqueues Organizations::TransferTopicAvatarWorker' do
             expect { service.execute }.to change { Organizations::TransferTopicAvatarWorker.jobs.size }.by(1)
+          end
+
+          it 'does not enqueue the worker when the transfer fails' do
+            # Raised from the last step inside the transaction, so anything scheduled
+            # before it would already have been enqueued.
+            allow(service).to receive(:publish_event).and_raise(StandardError, 'Transfer failed')
+
+            expect(Organizations::TransferTopicAvatarWorker).not_to receive(:perform_async)
+
+            expect(service.execute).to be_error
+          end
+        end
+      end
+
+      context 'for slack api scope transfers' do
+        let_it_be(:slack_scope) do
+          create(:slack_integration, :group, :all_features_supported, group: group)
+            .slack_api_scopes.first
+        end
+
+        let_it_be(:slack_integration) { SlackIntegration.find_by(group_id: group.id) }
+
+        it 'duplicates scope records into the new org and repoints the join table' do
+          old_scope_id = slack_scope.id
+          old_scope_name = slack_scope.name
+
+          service.execute
+
+          new_scope = Integrations::SlackWorkspace::ApiScope.find_by(
+            organization_id: new_organization.id, name: old_scope_name
+          )
+
+          expect(new_scope).to be_present
+          expect(new_scope.id).not_to eq(old_scope_id)
+
+          repointed_ids = slack_integration.reload.slack_integrations_scopes.pluck(:slack_api_scope_id)
+          expect(repointed_ids).to all(satisfy { |id|
+            Integrations::SlackWorkspace::ApiScope.find(id).organization_id == new_organization.id
+          })
+        end
+
+        it 'does not modify the original scope record' do
+          expect { service.execute }.not_to change { slack_scope.reload.organization_id }
+        end
+
+        context 'when matching scopes already exist in the new org' do
+          before do
+            scope_names = slack_integration.slack_api_scopes.pluck(:name)
+            Integrations::SlackWorkspace::ApiScope.find_or_initialize_by_names(
+              scope_names, organization_id: new_organization.id
+            )
+          end
+
+          it 'repoints to existing scopes without creating duplicates' do
+            expect { service.execute }.not_to change {
+              Integrations::SlackWorkspace::ApiScope.where(organization_id: new_organization.id).count
+            }
+          end
+        end
+
+        context 'when scope is referenced by a project integration' do
+          let_it_be(:project_slack) do
+            create(:slack_integration, :project, :all_features_supported,
+              project: create(:project, namespace: group, organization: old_organization)
+            )
+          end
+
+          it 'repoints project-level scopes to the new org' do
+            service.execute
+
+            repointed_ids = project_slack.reload.slack_integrations_scopes.pluck(:slack_api_scope_id)
+            expect(repointed_ids).to all(satisfy { |id|
+              Integrations::SlackWorkspace::ApiScope.find(id).organization_id == new_organization.id
+            })
+          end
+        end
+
+        context 'when multiple scopes are transferred' do
+          let_it_be(:second_slack_integration) do
+            create(:slack_integration, :group, :all_features_supported,
+              group: create(:group, parent: group, organization: old_organization)
+            )
+          end
+
+          it 'repoints all scope references across multiple integrations' do
+            all_old_scope_ids = (slack_integration.slack_integrations_scopes.pluck(:slack_api_scope_id) +
+              second_slack_integration.slack_integrations_scopes.pluck(:slack_api_scope_id)).uniq
+
+            service.execute
+
+            [slack_integration, second_slack_integration].each do |si|
+              repointed_ids = si.reload.slack_integrations_scopes.pluck(:slack_api_scope_id)
+
+              expect(repointed_ids).to all(satisfy { |id|
+                Integrations::SlackWorkspace::ApiScope.find(id).organization_id == new_organization.id
+              })
+            end
+
+            new_scope_names = Integrations::SlackWorkspace::ApiScope
+              .where(organization_id: new_organization.id)
+              .pluck(:name)
+
+            old_scope_names = Integrations::SlackWorkspace::ApiScope
+              .where(id: all_old_scope_ids)
+              .pluck(:name)
+
+            expect(new_scope_names).to match_array(old_scope_names)
+          end
+        end
+
+        context 'when scope is referenced by a group outside the transfer' do
+          let_it_be(:other_group) { create(:group, organization: old_organization) }
+          let_it_be(:other_slack) do
+            create(:slack_integration, :group, :all_features_supported, group: other_group)
+          end
+
+          it 'does not repoint scopes outside the transferred hierarchy' do
+            service.execute
+
+            repointed_ids = other_slack.reload.slack_integrations_scopes.pluck(:slack_api_scope_id)
+
+            expect(repointed_ids).to all(satisfy { |id|
+              Integrations::SlackWorkspace::ApiScope.find(id).organization_id == old_organization.id
+            })
+          end
+        end
+      end
+
+      context 'for user agent details' do
+        it 'enqueues TransferUserAgentDetailsWorker with correct arguments' do
+          expect(Organizations::TransferUserAgentDetailsWorker).to receive(:perform_async).with(
+            group.id, old_organization.id, new_organization.id
+          )
+
+          service.execute
+        end
+
+        it 'does not move the rows inside the transaction' do
+          detail = create(:user_agent_detail,
+            subject: create(:issue, project: nested_project), organization: old_organization)
+
+          expect { service.execute }.not_to change { detail.reload.organization_id }
+        end
+
+        it 'does not enqueue the worker when the transfer fails' do
+          allow(service).to receive(:publish_event).and_raise(StandardError, 'Transfer failed')
+
+          expect(Organizations::TransferUserAgentDetailsWorker).not_to receive(:perform_async)
+
+          expect(service.execute).to be_error
+        end
+
+        # Organizations::ActivateService wraps this service in its own transaction and
+        # rolls it back when a later step fails.
+        it 'does not enqueue the worker when a wrapping transaction rolls back' do
+          expect(Organizations::TransferUserAgentDetailsWorker).not_to receive(:perform_async)
+
+          ApplicationRecord.transaction do
+            expect(service.execute).to be_success
+
+            raise ActiveRecord::Rollback
           end
         end
       end
@@ -694,6 +1402,23 @@ RSpec.describe Organizations::Transfer::GroupsService, :aggregate_failures, feat
         end
       end
 
+      context 'with slack api scope duplication' do
+        let_it_be(:slack_integration) do
+          create(:slack_integration, :group, :all_features_supported, group: group)
+        end
+
+        it 'rolls back duplicated scopes and repointed join table rows' do
+          original_scope_ids = slack_integration.slack_integrations_scopes.pluck(:slack_api_scope_id)
+
+          expect { service.execute }.not_to change {
+            Integrations::SlackWorkspace::ApiScope.where(organization_id: new_organization.id).count
+          }
+
+          expect(slack_integration.reload.slack_integrations_scopes.pluck(:slack_api_scope_id))
+            .to match_array(original_scope_ids)
+        end
+      end
+
       context "with visibility level changes that would have been made" do
         let_it_be(:new_organization) { create(:organization, visibility_level: Gitlab::VisibilityLevel::PRIVATE, owners: user) }
         let_it_be_with_refind(:public_subgroup) do
@@ -725,6 +1450,22 @@ RSpec.describe Organizations::Transfer::GroupsService, :aggregate_failures, feat
 
       it 'does not publish a GroupTransferredEvent' do
         expect { service.execute }.not_to publish_event(Organizations::GroupTransferredEvent)
+      end
+
+      context 'when a project is linked to a pool repository' do
+        let_it_be_with_reload(:pooled_project) do
+          create(:project, namespace: group, organization: old_organization)
+        end
+
+        let_it_be(:pool_repository) { create(:pool_repository, source_project: pooled_project) }
+
+        # Disconnecting is scheduled before ForkNetwork raises, so this only holds
+        # while the enqueue is deferred past the commit.
+        it 'does not enqueue Repositories::LeavePoolRepositoryWorker' do
+          expect(Repositories::LeavePoolRepositoryWorker).not_to receive(:perform_async)
+
+          expect(service.execute).to be_error
+        end
       end
     end
 
@@ -801,8 +1542,8 @@ RSpec.describe Organizations::Transfer::GroupsService, :aggregate_failures, feat
         create(:project, :small_repo, namespace: group, organization: old_organization)
       end
 
-      context 'when linked to pool repository' do
-        let_it_be_with_reload(:pool_repository) do
+      context 'when linked to pool repository', :skip_gitaly_mvcc do
+        let!(:pool_repository) do
           create(:pool_repository, :ready, source_project: project)
         end
 

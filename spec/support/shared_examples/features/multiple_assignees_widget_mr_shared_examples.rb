@@ -19,28 +19,23 @@ RSpec.shared_examples 'multiple assignees widget merge request' do |action, save
 
     click_button save_button_title
 
-    page.within '.issuable-sidebar' do
-      page.within '.assignee' do
-        expect(page).to have_content '2 Assignees'
+    page.within '.issuable-sidebar .assignee' do
+      expect(page).to have_content '2 Assignees'
 
-        click_button('Edit')
+      click_button('Edit')
 
+      within_testid('base-dropdown-menu') do
         expect(page).to have_content user.name
         expect(page).to have_content user2.name
+
+        find_by_testid("listbox-item-#{user.username}").click
       end
-    end
 
-    page.within '.dropdown-menu-user' do
-      click_button user.name
-    end
+      # Closing the dropdown persists the assignees
+      click_button('Edit')
 
-    page.within '.issuable-sidebar' do
-      page.within '.assignee' do
-        # Closing dropdown to persist
-        click_button('Apply')
-
-        expect(page).to have_content user2.name
-      end
+      expect(page).to have_content user2.name
+      expect(page).to have_no_content user.name
     end
   end
 end

@@ -28,7 +28,7 @@ All the registries follow an architecture pattern that includes four component t
   connect to the API.
 - Presentationals: represent a portion of the UI. They receive all their data with `props` or through
   `inject`, and do not connect to the API.
-- Shared components: presentational components that accept a various array of configurations and are
+- Shared components: presentational components that accept a varied array of configurations and are
   shared across all of the registries.
 
 ### Communicating with the API

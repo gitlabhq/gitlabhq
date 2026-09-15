@@ -52,12 +52,51 @@ RSpec.describe API::WorkItems::RelatedMergeRequests, feature_category: :portfoli
     it 'matches Issues::ReferencedMergeRequestsService (parity by construction)' do
       expected = ::Issues::ReferencedMergeRequestsService
         .new(container: project, current_user: user)
-        .referenced_merge_requests(work_item)
+        .related_merge_requests(work_item)
 
       get api(api_request_path, user)
 
       expect(response).to have_gitlab_http_status(:ok)
       expect(json_response.pluck('id')).to match_array(expected.map(&:id))
+    end
+
+    context 'with an explicitly related merge request' do
+      let_it_be(:explicitly_related_mr) do
+        create(:merge_request, source_project: project, source_branch: 'markdown').tap do |merge_request|
+          create(:merge_requests_closing_issues,
+            issue: work_item, merge_request: merge_request, link_type: :related, from_mr_description: false)
+        end
+      end
+
+      it 'returns the referenced and the explicitly related merge requests' do
+        get api(api_request_path, user)
+
+        expect(response).to have_gitlab_http_status(:ok)
+        expect(json_response.pluck('id')).to contain_exactly(referenced_mr.id, other_mr.id, explicitly_related_mr.id)
+      end
+
+      context 'when the explicit_mr_work_item_relations feature flag is disabled' do
+        before do
+          stub_feature_flags(explicit_mr_work_item_relations: false)
+        end
+
+        it 'returns only the referenced merge requests' do
+          get api(api_request_path, user)
+
+          expect(response).to have_gitlab_http_status(:ok)
+          expect(json_response.pluck('id')).to contain_exactly(referenced_mr.id, other_mr.id)
+        end
+      end
+    end
+
+    it 'deduplicates a merge request that is both referenced and explicitly related' do
+      create(:merge_requests_closing_issues,
+        issue: work_item, merge_request: referenced_mr, link_type: :related, from_mr_description: false)
+
+      get api(api_request_path, user)
+
+      expect(response).to have_gitlab_http_status(:ok)
+      expect(json_response.pluck('id')).to contain_exactly(referenced_mr.id, other_mr.id)
     end
 
     it 'orders merge requests by iid rather than by reference discovery order' do

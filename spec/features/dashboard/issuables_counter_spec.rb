@@ -9,6 +9,8 @@ RSpec.describe 'Navigation bar counter', :use_clean_rails_memory_store_caching, 
   let(:merge_request) { create(:merge_request, source_project: project) }
 
   before do
+    stub_feature_flags(mr_dashboard_vue_search: false)
+
     issue.assignees = [user]
     merge_request.update!(assignees: [user])
     sign_in(user)

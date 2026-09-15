@@ -18,8 +18,8 @@ module DraftNotes
       # `handle_notifications` publishes MergeRequests::DraftNotePublishedEvent,
       # which enqueues MergeRequests::ProcessDraftNotePublishedWorker. Report
       # back whether that async delivery was scheduled so the caller knows the
-      # submit_mr_review_ui experience will be completed in the worker rather
-      # than synchronously.
+      # submit_and_notify_mr_review_ui experience will be completed in the worker
+      # rather than synchronously.
       async_notifications = (draft || review).present?
       handle_notifications(current_user, merge_request, review) if async_notifications
       success(async_notifications: async_notifications)

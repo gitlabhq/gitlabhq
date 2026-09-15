@@ -30,7 +30,7 @@ module Explore
     end
 
     def catalog_resource
-      ::Ci::Catalog::Listing.new(current_user).find_resource(full_path: params[:full_path])
+      ::Ci::Catalog::Listing.new(current_user).find_resource(full_path: params.permit(:full_path)[:full_path])
     end
 
     def tracking_namespace_source

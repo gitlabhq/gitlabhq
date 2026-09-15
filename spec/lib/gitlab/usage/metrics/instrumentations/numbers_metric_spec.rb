@@ -45,7 +45,7 @@ RSpec.describe Gitlab::Usage::Metrics::Instrumentations::NumbersMetric, feature_
       end
 
       it 'responds to #available? properly' do
-        expect(subject.available?).to eq(false)
+        expect(subject.available?).to be(false)
       end
     end
 
@@ -58,7 +58,7 @@ RSpec.describe Gitlab::Usage::Metrics::Instrumentations::NumbersMetric, feature_
       end
 
       it 'responds to #available? properly' do
-        expect(subject.available?).to eq(true)
+        expect(subject.available?).to be(true)
       end
     end
   end

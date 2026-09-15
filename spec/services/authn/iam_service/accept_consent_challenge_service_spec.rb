@@ -75,6 +75,15 @@ RSpec.describe Authn::IamService::AcceptConsentChallengeService, feature_categor
         expect(consent).to be_authorized
       end
 
+      context 'when the client_id has no local oauth_applications row (cross-cell client)' do
+        let(:client_id) { 'iam-only-nonexistent-uid' }
+
+        it 'persists the consent record without a local application', :aggregate_failures do
+          expect { result }.to change { Authn::OauthConsent.count }.by(1)
+          expect(Authn::OauthConsent.last.client_id).to eq(client_id)
+        end
+      end
+
       it 'emits an audit event' do
         expect(::Gitlab::Audit::Auditor).to receive(:audit).with({
           name: 'user_authorized_iam_oauth_application',

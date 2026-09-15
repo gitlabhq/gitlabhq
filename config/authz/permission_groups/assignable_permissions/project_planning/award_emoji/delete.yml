@@ -1,0 +1,10 @@
+---
+name: delete_award_emoji
+description: Grants the ability to remove emoji reactions
+boundaries:
+  - group
+  - project
+available_for:
+  - granular_access_token
+permissions:
+  - delete_award_emoji

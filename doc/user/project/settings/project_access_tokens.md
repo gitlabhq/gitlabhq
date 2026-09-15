@@ -4,11 +4,11 @@ group: Authentication
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see <https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments>
 title: Project access tokens
 description: Authentication, create, revoke, and token expiration.
+availability_details: no
 ---
 
 {{< details >}}
 
-Tier: Free, Premium, Ultimate
 Offering: GitLab.com, GitLab Self-Managed, GitLab Dedicated
 
 {{< /details >}}
@@ -92,13 +92,13 @@ From this page, you can perform the following actions:
 
 - Create, rotate, and revoke project access tokens.
 - View all active and inactive project access tokens.
-- View token information, including, scopes, assigned roles, and expiration dates.
-- View usage information, including usage dates, and of the last five distinct connection IP addresses.
+- View token information including scopes, assigned roles, and expiration dates.
+- View usage information including usage dates and the last five distinct connection IP addresses.
   > [!note]
   > GitLab periodically updates token usage information when the token performs a Git operation or
   > authenticates an operation with the [REST](../../../api/rest/_index.md) or
-  > [GraphQL](../../../api/graphql/_index.md) API. Token usage times are updated every 10 minutes,
-  > token usage IP addresses update every minute.
+  > [GraphQL](../../../api/graphql/_index.md) API. Token usage times are updated every 10 minutes.
+  > Token usage IP addresses update every minute.
 
 To view your project access tokens:
 

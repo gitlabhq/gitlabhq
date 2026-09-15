@@ -6,7 +6,7 @@ RSpec.describe API::Entities::Branch do
   describe '#as_json' do
     subject { entity.as_json }
 
-    let(:project) { create(:project, :public, :repository) }
+    let_it_be_with_reload(:project) { create(:project, :public, :small_repo) }
     let(:repository) { project.repository }
     let(:branch) { repository.find_branch('master') }
     let(:entity) { described_class.new(branch, project: project) }

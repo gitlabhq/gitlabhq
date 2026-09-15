@@ -315,7 +315,9 @@ describe('ide/init_gitlab_web_ide', () => {
       createSubject();
     });
 
-    it('shows alert', () => {
+    it('shows alert', async () => {
+      await waitForPromises();
+
       expect(start).toHaveBeenCalledTimes(1);
       expect(renderWebIdeError).toHaveBeenCalledTimes(1);
       expect(renderWebIdeError).toHaveBeenCalledWith({

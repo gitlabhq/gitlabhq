@@ -159,6 +159,15 @@ RSpec.describe Organizations::RootGroupOrganizationBackfillWorker, feature_categ
         expect(group.organization).to eq(default_organization)
       end
 
+      it 'publishes a GroupTransferredEvent for the reverted group' do
+        expect { consume_event(subscriber: described_class, event: event) }
+          .to publish_event(Organizations::GroupTransferredEvent).with(
+            group_id: group.id,
+            old_organization_id: unconfirmed_org.id,
+            new_organization_id: default_organization.id
+          )
+      end
+
       it 'deletes unconfirmed organization if empty' do
         consume_event(subscriber: described_class, event: event)
 

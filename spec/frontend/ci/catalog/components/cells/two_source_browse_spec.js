@@ -142,7 +142,7 @@ describe('TwoSourceBrowse', () => {
     });
 
     it('reverses the order when the sort direction is toggled', async () => {
-      findSorting().vm.$emit('sortDirectionChange', true);
+      findSorting().vm.$emit('sort-direction-change', true);
       await waitForPromises();
 
       expect(renderedNames()).toEqual(['older', 'newer']);

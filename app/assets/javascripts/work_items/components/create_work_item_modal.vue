@@ -12,7 +12,12 @@ import { __, s__, sprintf } from '~/locale';
 import { isMetaClick } from '~/lib/utils/common_utils';
 import glFeatureFlagMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
 import { MR_WORK_ITEM_RELATIONSHIP_TYPES } from '~/sidebar/constants';
-import { newWorkItemPath, canRouterNav, getDraftWorkItemType } from '~/work_items/utils';
+import {
+  newWorkItemPath,
+  canRouterNav,
+  getDraftWorkItemType,
+  lowercaseWorkItemType,
+} from '~/work_items/utils';
 
 import {
   RELATED_ITEM_ID_URL_QUERY_PARAM,
@@ -39,6 +44,11 @@ export default {
   mixins: [glFeatureFlagMixin(), GlToastMixin],
   props: {
     alwaysShowWorkItemTypeSelect: {
+      type: Boolean,
+      required: false,
+      default: false,
+    },
+    confidential: {
       type: Boolean,
       required: false,
       default: false,
@@ -209,7 +219,7 @@ export default {
     },
     newWorkItemText() {
       return sprintf(s__('WorkItem|New %{workItemType}'), {
-        workItemType: this.selectedWorkItemTypeName,
+        workItemType: lowercaseWorkItemType(this.selectedWorkItemTypeName),
       });
     },
     showMergeRequestRelationshipNote() {
@@ -421,6 +431,7 @@ export default {
       <create-work-item
         :always-show-work-item-type-select="alwaysShowWorkItemTypeSelect"
         :creation-context="creationContext"
+        :confidential="confidential"
         :description="description"
         :full-path="fullPath"
         hide-form-title
@@ -440,17 +451,17 @@ export default {
         :allow-any-namespace="allowAnyNamespace"
         :allow-projects-only="allowProjectsOnly"
         :create-source="createSource"
-        @changeType="selectedWorkItemTypeName = $event"
-        @confirmCancel="handleConfirmCancellation"
-        @discardDraft="handleDiscardDraft('createModal')"
+        @change-type="selectedWorkItemTypeName = $event"
+        @confirm-cancel="handleConfirmCancellation"
+        @discard-draft="handleDiscardDraft('createModal')"
         @work-item-created="handleCreated"
       />
     </gl-modal>
     <create-work-item-cancel-confirmation-modal
       :is-visible="isConfirmationModalVisible"
       :work-item-type="selectedWorkItemTypeName || ''"
-      @continueEditing="handleContinueEditing"
-      @discardDraft="handleDiscardDraft('confirmModal')"
+      @continue-editing="handleContinueEditing"
+      @discard-draft="handleDiscardDraft('confirmModal')"
     />
   </div>
 </template>

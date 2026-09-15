@@ -5,7 +5,7 @@ status: active
 action: preview_scan_profile
 identifiers:
 - user
-product_group: security_platform_management
+product_group: security_controls
 product_categories:
 - security_asset_inventories
 - security_testing_configuration

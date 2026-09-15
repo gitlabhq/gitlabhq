@@ -56,7 +56,7 @@ module RuboCop
         STRUCTURES = %w[Hash Array Set].freeze
         SPECIAL = %w[JSON File Rack::Multipart::UploadedFile].freeze
 
-        MSG = 'Invalid type or types. API params types must be one of Grape supported param types. https://docs.gitlab.com/development/api_styleguide#methods-and-parameters-description.'
+        MSG = 'Invalid type or types. API params types must be one of Grape supported param types. https://docs.gitlab.com/development/api_styleguide/#methods-and-parameters-description.'
         MISSING_TYPE = 'API parameter is missing type declaration.'
         DUPLICATE_TYPES = 'Duplicate type definitions. API params must only define one of type or types.'
 

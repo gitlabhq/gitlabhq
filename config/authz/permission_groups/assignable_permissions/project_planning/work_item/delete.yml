@@ -36,3 +36,4 @@ permissions:
   - delete_snippet_note
   - delete_snippet_note_award_emoji
   - delete_wiki_page_meta_note
+  - delete_work_item_lifecycle

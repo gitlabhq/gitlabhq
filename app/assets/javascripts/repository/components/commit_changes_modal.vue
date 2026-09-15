@@ -307,7 +307,12 @@ export default {
             :disabled="loading"
             required
           />
-          <p v-if="error" class="gl-mt-3 gl-text-red-600" data-testid="error">{{ error }}</p>
+          <p
+            v-if="error"
+            class="gl-mt-3 gl-whitespace-pre-line gl-text-danger"
+            data-testid="error"
+            v-text="error"
+          ></p>
           <p v-if="showHint" class="form-text gl-text-subtle" data-testid="hint">
             {{ $options.i18n.COMMIT_MESSAGE_HINT }}
           </p>

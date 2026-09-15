@@ -152,18 +152,13 @@ export default {
       required: false,
       default: '',
     },
+    collaborationProvider: {
+      type: Object,
+      required: false,
+      default: null,
+    },
   },
-  emits: [
-    'blur',
-    'change',
-    'enable-markdown-editor',
-    'focus',
-    'initialized',
-    'keydown',
-    'loading',
-    'loadingError',
-    'loadingSuccess',
-  ],
+  emits: ['blur', 'change', 'enable-markdown-editor', 'focus', 'initialized', 'keydown', 'loading'],
   data() {
     return {
       focused: false,
@@ -173,6 +168,9 @@ export default {
   },
   computed: {
     showPlaceholder() {
+      // The markdown prop lags the CRDT document, so it is not reliable.
+      if (this.collaborationProvider) return false;
+
       return this.placeholder && !this.markdown && !this.focused;
     },
     editorAriaAttributes() {
@@ -193,8 +191,12 @@ export default {
       }
     },
     markdown(markdown) {
+      // The markdown prop lags the CRDT document, so it is not reliable.
+      if (this.collaborationProvider) return;
+
+      // A replacement while editing (a template, a saved reply) stays undoable; the load does not.
       if (markdown !== this.latestMarkdown) {
-        this.setSerializedContent(markdown);
+        this.setSerializedContent(markdown, { addToHistory: true });
       }
     },
     editable(value) {
@@ -230,6 +232,7 @@ export default {
       enableAutocomplete,
       autocompleteDataSources,
       codeSuggestionsConfig,
+      collaborationProvider,
     } = this;
 
     // This is a non-reactive attribute intentionally since this is a complex object.
@@ -244,6 +247,7 @@ export default {
         enableAutocomplete,
         autocompleteDataSources,
         codeSuggestionsConfig,
+        collaborationProvider,
         sidebarMediator: SidebarMediator.singleton,
         tiptapOptions: {
           autofocus,
@@ -321,11 +325,11 @@ export default {
     pasteContent(content) {
       this.contentEditor.tiptapEditor.chain().focus().pasteContent(content).run();
     },
-    async setSerializedContent(markdown) {
+    async setSerializedContent(markdown, options) {
       this.notifyLoading();
 
       try {
-        await this.contentEditor.setSerializedContent(markdown);
+        await this.contentEditor.setSerializedContent(markdown, options);
         this.notifyLoadingSuccess();
         this.latestMarkdown = markdown;
       } catch {
@@ -338,7 +342,7 @@ export default {
           actionLabel: __('Retry'),
           action: () => {
             this.contentEditor.setEditable(true);
-            this.setSerializedContent(markdown);
+            this.setSerializedContent(markdown, options);
           },
         });
         this.notifyLoadingError();
@@ -362,11 +366,9 @@ export default {
     },
     notifyLoadingSuccess() {
       this.isLoading = false;
-      this.$emit('loadingSuccess');
     },
-    notifyLoadingError(error) {
+    notifyLoadingError() {
       this.isLoading = false;
-      this.$emit('loadingError', error);
     },
     notifyChange() {
       this.latestMarkdown = this.contentEditor.getSerializedContent();
@@ -401,7 +403,11 @@ export default {
         @keydown="$emit('keydown', $event)"
       />
       <content-editor-alert />
-      <div data-testid="content-editor" :class="{ 'is-focused': focused }" class="gl-relative">
+      <div
+        data-testid="content-editor"
+        :class="{ 'is-focused': focused }"
+        class="content-editor-body gl-relative"
+      >
         <div
           data-testid="content-editor-header"
           :class="{

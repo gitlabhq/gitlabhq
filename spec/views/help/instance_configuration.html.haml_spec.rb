@@ -70,9 +70,9 @@ RSpec.describe 'help/instance_configuration', feature_category: :configuration d
       end
     end
 
-    context 'when organization_switching feature flag is disabled' do
+    context 'when org_creation release flag is disabled' do
       before do
-        stub_feature_flags(organization_switching: false)
+        stub_organization_release(org_creation: false)
       end
 
       it 'does not have link to organizations API rate limits section' do

@@ -57,7 +57,6 @@
         = render_if_exists 'groups/settings/extensions_marketplace', f: f, group: @group
         = render_if_exists 'groups/settings/allow_personal_snippets', f: f, group: @group
         = render_if_exists 'groups/settings/prevent_enterprise_user_account_deletion', f: f, group: @group
-    = render_if_exists 'groups/settings/policy_store_experiment', f: f, group: @group
     = render_if_exists 'groups/settings/personal_access_tokens', f: f, group: @group
     = render 'groups/settings/resource_access_token_creation', f: f, group: @group
     = render 'groups/settings/granular_tokens_enforced_after', f: f, group: @group
@@ -70,11 +69,13 @@
       = render 'groups/settings/step_up_authentication', f: f, group: @group
     = render 'groups/settings/membership', f: f, group: @group
     = render_if_exists 'groups/settings/placeholder_confirmation_bypass', f: f, group: @group
+    = render_if_exists 'groups/settings/non_enterprise_placeholder_reassignment', f: f, group: @group
     = render_if_exists 'groups/settings/remove_dormant_members', f: f, group: @group
     = render_if_exists 'groups/settings/disable_invite_members', f: f, group: @group
     = render_if_exists 'groups/settings/pages_access_control', f: f, group: @group
     = render_if_exists 'groups/settings/crm', f: f, group: @group
-    = render_if_exists 'groups/settings/secret_manager', f: f, group: @group
+    - unless @group.root?
+      = render_if_exists 'groups/settings/secret_manager', f: f, group: @group
     = render_if_exists 'groups/settings/gitlab_credits_dashboard', f: f, group: @group
 
   = f.submit _('Save changes'), pajamas_button: true, class: 'gl-mt-3', data: { testid: 'save-permissions-changes-button' }

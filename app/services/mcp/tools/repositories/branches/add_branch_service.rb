@@ -8,6 +8,7 @@ module Mcp
           extend ::Gitlab::Utils::Override
 
           register_version '0.1.0', {
+            toolset: :repository,
             description: <<~DESC.strip,
               Add a branch to a GitLab project from a source ref.
 

@@ -84,12 +84,14 @@ Features available on the Free tier require the purchase of [GitLab Credits](../
 | [Software Development Flow](flows/foundational_flows/software_development.md) <br /> Create a full, multi-step plan before executing it. | {{< yes >}} | {{< yes >}}  | {{< yes >}} |
 | [MCP clients](../gitlab_duo/model_context_protocol/mcp_clients.md) <br /> Access GitLab resources and tools from any MCP-compatible AI client or IDE extension. <sup>1</sup> | {{< yes >}} | {{< yes >}} | {{< yes >}} |
 | [Custom flows](flows/custom.md) <br /> Combine multiple agents to solve your business problems. | {{< yes >}} | {{< yes >}} | {{< yes >}} |
+| [Interactions in merge requests](../project/merge_requests/duo_in_merge_requests.md#interact-with-gitlab-duo) <br /> Ask questions and discuss feedback in merge request comment threads. | {{< yes >}} | {{< yes >}} | {{< yes >}} |
 | [Resolve merge conflicts](../project/merge_requests/conflicts.md#resolve-conflicts-with-gitlab-duo) <br /> Autonomously analyze merge conflicts, edit conflicting files, and push a resolution commit. | {{< no >}} | {{< yes >}} | {{< yes >}} |
 | [Flow Creator Agent](agents/foundational_agents/flow_creator.md) <br /> Create custom flows for the AI Catalog. | {{< no >}} | {{< yes >}}  | {{< yes >}} |
 | [Resolve review discussions](../project/merge_requests/duo_in_merge_requests.md#resolve-a-discussion-with-gitlab-duo) <br /> Autonomously analyze a review discussion, push the requested changes, and resolve the thread. | {{< no >}} | {{< yes >}} | {{< yes >}} |
-| [SAST False Positive Detection Flow](flows/foundational_flows/sast_false_positive_detection.md) <br /> Automatically identify and filter out false positives in SAST security scans. | {{< no >}} | {{< no >}}  | {{< yes >}} |
+| [SAST False Positive Detection Flow](../application_security/vulnerabilities/false_positive_detection.md) <br /> Automatically identify and filter out false positives in SAST security scans. | {{< no >}} | {{< no >}}  | {{< yes >}} |
 | [SAST Vulnerability Resolution Flow](flows/foundational_flows/agentic_sast_vulnerability_resolution.md) <br /> Automatically generate fixes and remediation steps for SAST vulnerabilities. | {{< no >}} | {{< no >}}  | {{< yes >}} |
-| [Secret False Positive Detection Flow](flows/foundational_flows/secret_false_positive_detection.md) <br /> Automatically analyze secret detection findings to identify potential false positives. | {{< no >}} | {{< yes >}} | {{< yes >}} |
+| [Secret False Positive Detection Flow](flows/foundational_flows/secret_false_positive_detection.md) <br /> Automatically identify and filter false positives in secret detection findings. | {{< no >}} | {{< no >}}  | {{< yes >}} |
+| [Permissions Assistant](agents/foundational_agents/permissions_assistant.md) <br /> Select the right permissions when creating a fine-grained personal access token. | {{< no >}} | {{< no >}}  | {{< yes >}} |
 | [Security Analyst Agent](agents/foundational_agents/security_analyst_agent.md) <br /> Automate repetitive security tasks: Triage issues, analyze vulnerabilities, and generate fixes. | {{< no >}} | {{< no >}}  | {{< yes >}} |
 
 **Footnotes**:
@@ -117,8 +119,11 @@ but you require credits in your Monthly Commitment Pool to access them.
 
 | Feature | Free | Premium | Ultimate |
 |---------|---|---|---|
-| [Agent tool governance](agents/tool-governance.md) <br /> Configure tool-level approval policies to gate sensitive agent actions with human approval at execution time. | {{< yes >}} | {{< yes >}} | {{< yes >}} |
-| [AI audit event report](ai-audit-events.md) <br /> Browse and filter a unified record of GitLab Duo agent activity for compliance and governance purposes. | {{< no >}} | {{< yes >}} | {{< yes >}} |
+| [Agent tool governance](../ai-governance/tool-governance.md) <br /> Configure tool-level approval policies to gate sensitive agent actions with human approval at execution time. | {{< yes >}} | {{< yes >}} | {{< yes >}} |
+| [AI audit event report](../ai-governance/ai-audit-events.md) <br /> Browse and filter a unified record of GitLab Duo agent activity for compliance and governance purposes. | {{< no >}} | {{< yes >}} | {{< yes >}} |
+| [AI Governance Dashboard](../ai-governance/governance-dashboard.md) <br /> Monitor AI agent sessions, audit logs, and developer exposure across a group. | {{< no >}} | {{< no >}} | {{< yes >}} |
 | [CI Expert Agent](agents/foundational_agents/ci_expert_agent.md) <br /> Create, debug, and optimize GitLab CI/CD pipelines. | {{< yes >}} | {{< yes >}} | {{< yes >}} |
 | [External MCP servers](../gitlab_duo/model_context_protocol/ai_catalog_mcp_servers.md) <br /> Connect custom agents to external data sources and third-party services using MCP servers. | {{< no >}} | {{< yes >}} | {{< yes >}} |
 | [Agentic Breaking Change Resolution Flow](flows/foundational_flows/agentic-breaking-change-resolution.md) <br /> Analyze pipeline failures on dependency bump merge requests and create code fixes to resolve breaking changes introduced by the dependency update. | {{< no >}} | {{< no >}} | {{< yes >}} |
+| [Support Assistant](agents/foundational_agents/support_assistant.md) <br /> Diagnose and resolve GitLab product problems. | {{< no >}} | {{< yes >}} | {{< yes >}} |
+| [Recommend Reviewers Flow](../project/merge_requests/reviews/automatic_reviewer_assignment.md#assign-reviewers-with-the-recommend-reviewers-flow) <br /> Recommend and assign the reviewers best suited to review a merge request. | {{< no >}} | {{< yes >}} | {{< yes >}} |

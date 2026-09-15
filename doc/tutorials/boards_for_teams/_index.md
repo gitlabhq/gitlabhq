@@ -1,16 +1,10 @@
 ---
 stage: Plan
-group: Project Management
+group: Work Items
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see <https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments>
+description: Configure separate issue boards and workflow labels so two teams can hand off issues to each other in sequence.
 title: 'Tutorial: Set up issue boards for team hand-off'
 ---
-
-{{< details >}}
-
-- Tier: Premium, Ultimate
-- Offering: GitLab.com, GitLab Self-Managed, GitLab Dedicated
-
-{{< /details >}}
 
 <!-- vale gitlab_base.FutureTense = NO -->
 
@@ -35,13 +29,13 @@ To set up issue boards for multiple teams:
 
 ## The goal workflow
 
-After you set up everything, the two teams will be able to hand off issues from one board to another, for example, like this:
+After you set up everything, the two teams can hand off issues from one board to another, for example, like this:
 
 1. The project lead adds the `Workflow::Ready for design` and `Frontend` labels to a feature issue called **Redesign user profile page**.
 1. A product designer on the UX team:
    1. Checks the `Workflow::Ready for design` list on the **UX workflow** board and decides to work on the profile page redesign.
 
-      !["UX workflow" issue board with three issues across three workflow columns](img/ux_board_filled_v16_0.png)
+      !["UX workflow" issue board with three issues across three workflow columns.](img/ux_board_filled_v16_0.png)
 
    1. Assigns themselves to the **Redesign user profile page** issue.
    1. Drags the issue card to the `Workflow::Design` list. The previous workflow label is automatically removed.
@@ -52,7 +46,7 @@ After you set up everything, the two teams will be able to hand off issues from 
 1. A developer on the Frontend team:
    1. Checks the `Workflow::Ready for development` list on the **Frontend workflow** board and chooses an issue to work on.
 
-      !["Frontend workflow" issue board with two issues from "UX workflow" board in "Ready for development" column](img/frontend_board_filled_v16_0.png)
+      !["Frontend workflow" issue board with two issues from "UX workflow" board in "Ready for development" column.](img/frontend_board_filled_v16_0.png)
 
    1. Assigns themselves to the **Redesign user profile page** issue.
    1. Drags the issue card to the `Workflow::In development` list. The previous workflow label is automatically removed.
@@ -86,7 +80,7 @@ To create a blank project:
    **In this group** > **New project/repository**.
 1. Select **Create blank project**.
 1. Enter the project details:
-   - In the **Project name** field, name your project `Paperclip Assistant`.
+   - In the **Project name** text box, name your project `Paperclip Assistant`.
 1. Select **Create project**.
 
 ## Create labels
@@ -102,9 +96,9 @@ To create each label:
 1. In the top bar, select **Search or go to** and find your **Paperclip Software Factory** group.
 1. Select **Manage** > **Labels**.
 1. Select **New label**.
-1. In the **Title** field, enter the name of the label. Start with `Frontend`.
+1. In the **Title** text box, enter the name of the label. Start with `Frontend`.
 1. Optional. Select a color by selecting from the available colors, or enter a hex color value for
-   a specific color in the **Background color** field.
+   a specific color in the **Background color** text box.
 1. Select **Create label**.
 
 Repeat these steps to create all the labels you'll need:
@@ -119,8 +113,8 @@ Repeat these steps to create all the labels you'll need:
 ## Create team issue boards
 
 Like with labels, you could create your issue boards in the **Paperclip Assistant** project,
-but it can be better to have them in the **Paperclip Software Factory** group. This way, you'll be able
-to manage issues from all the projects that you might create later in this group.
+but it can be better to have them in the **Paperclip Software Factory** group. This way, you can
+manage issues from all the projects that you might create later in this group.
 
 To create a new group issue board:
 
@@ -141,7 +135,7 @@ To create the **UX workflow** issue board:
    1. Select **Add to board**.
 1. Repeat the previous step for labels `Workflow::Design` and `Workflow::Ready for development`.
 
-![Empty "UX workflow" issue board with three workflow columns](img/ux_board_empty_v16_0.png)
+![Empty "UX workflow" issue board with three workflow columns.](img/ux_board_empty_v16_0.png)
 
 To create the **Frontend workflow** board:
 
@@ -158,7 +152,7 @@ To create the **Frontend workflow** board:
    1. Select **Add to board**.
 1. Repeat the previous step for labels `Workflow::In development` and `Workflow::Complete`.
 
-![Empty "Frontend workflow" issue board with three workflow columns](img/frontend_board_empty_v16_0.png)
+![Empty "Frontend workflow" issue board with three workflow columns.](img/frontend_board_empty_v16_0.png)
 
 For now, lists in both your boards should be empty. Next, you'll populate them with some issues.
 

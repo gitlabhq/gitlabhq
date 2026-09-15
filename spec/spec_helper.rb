@@ -117,7 +117,6 @@ RSpec.configure do |config|
   # Auto-include organization URL helpers for spec types that need organization-scoped paths.
   # Feature specs are excluded: they drive the app through Capybara rather than the get/post helpers
   # this context relies on, so the request-capture stub can never resolve an organization there.
-  # Instead they use 'with unscoped Organization paths for feature specs' (see current_organization_context).
   [:request, :controller].each do |spec_type|
     config.define_derived_metadata(type: spec_type) do |metadata|
       metadata[:with_organization_url_helpers] = true
@@ -135,6 +134,7 @@ RSpec.configure do |config|
   config.include NextFoundInstanceOf
   config.include NextInstanceOf
   config.include FileReadHelpers
+  config.include AtomFeedHelpers
   config.include Database::MultipleDatabasesHelpers
   config.include Database::WithoutCheckConstraint
   config.include Devise::Test::ControllerHelpers, type: :controller
@@ -319,14 +319,7 @@ RSpec.configure do |config|
       # FF is temporary until we add a proper UI setting to enable/disable pipeline running for composite identities.
       stub_feature_flags(forbid_composite_identities_to_run_pipelines: false)
 
-      # Using the new indexes causes many specs to fail on the group issues list when joining on project in the finder
-      # Default to false, since switching the finders over is still a WIP
-      stub_feature_flags(use_namespace_id_for_issue_and_work_item_finders: false)
-
       stub_feature_flags(merge_widget_stop_polling: false)
-
-      # This feature has global impact and most tests aren't ready for it yet
-      stub_feature_flags(cells_unique_claims: false)
 
       # Org migration target cell mode is only enabled in Cells on GitLab.com
       stub_feature_flags(org_migration_target_cell: false)
@@ -345,21 +338,9 @@ RSpec.configure do |config|
       # This feature is wip and should not be enabled in tests by default
       stub_feature_flags(iam_svc_login: false)
 
-      # accessible_disabled_button switches GlButton from the native `disabled` attribute
-      # to `aria-disabled`, which breaks Capybara `disabled:` button matchers suite-wide.
-      # Default off in tests during rollout; see
-      # https://gitlab.com/gitlab-org/gitlab/-/work_items/600158
-      stub_feature_flags(accessible_disabled_button: false)
-
       # This middleware fires use_pat for every PAT-authenticated request
       # enabling it by default breaks existing specs that use strict receive(:track_event) expectations
       stub_feature_flags(track_api_request_from_personal_access_token: false)
-
-      # Rapid Diffs is not yet the default on the merge request Changes tab. Leaving this on makes
-      # MergeRequestsController#rapid_diffs_page_enabled? resolve the whole suite to Rapid Diffs, so keep
-      # it off until the merge request specs are migrated; see
-      # https://gitlab.com/gitlab-org/gitlab/-/issues/602723
-      stub_feature_flags(rapid_diffs_default_on_mr_show: false)
 
     else
       unstub_all_feature_flags
@@ -496,6 +477,7 @@ RSpec.configure do |config|
 
       chain.insert_after ::Gitlab::SidekiqMiddleware::RequestStoreMiddleware, IsolatedRequestStore
       chain.insert_after ::Gitlab::SidekiqMiddleware::RequestStoreMiddleware, IsolatedCurrent
+      chain.insert_after ::Gitlab::SidekiqMiddleware::RequestStoreMiddleware, SuppressWritesOnGetAnalyzer
 
       example.run
     end
@@ -509,6 +491,9 @@ RSpec.configure do |config|
 
   config.after do
     Fog.unmock! if Fog.mock?
+    # Reset the process-level Fog connection cache so a connection warmed by one
+    # example (e.g. via the :fog_with_data factory trait) cannot leak into another.
+    Ci::BuildTraceChunks::Fog.connections.clear
     Gitlab::ApplicationSettingFetcher.clear_in_memory_application_settings!
 
     # Reset all feature flag stubs to default for testing

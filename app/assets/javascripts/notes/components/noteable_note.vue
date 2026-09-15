@@ -1,5 +1,6 @@
 <script>
 import { GlSprintf, GlAvatarLink, GlAvatar } from '@gitlab/ui';
+import { defineAsyncComponent } from 'vue';
 import { escape } from 'lodash-es';
 import { mapState, mapActions } from 'pinia';
 import { getIdFromGraphQLId } from '~/graphql_shared/utils';
@@ -15,6 +16,7 @@ import { renderGFM } from '~/behaviors/markdown/render_gfm';
 import { detectAndConfirmSensitiveTokens } from '~/lib/utils/secret_detection';
 import { useLegacyDiffs } from '~/diffs/stores/legacy_diffs';
 import { useNotes } from '~/notes/store/legacy_notes';
+import glFeatureFlagsMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
 import { glSlotsMixin } from '~/lib/utils/vue3compat/gl_slots_mixin';
 import eventHub from '../event_hub';
 import noteable from '../mixins/noteable';
@@ -32,6 +34,9 @@ export default {
     NoteHeader,
     NoteActions,
     NoteBody,
+    NoteSessionBar: defineAsyncComponent(
+      () => import('ee_component/ai/shared/widgets/note_session_bar.vue'),
+    ),
     TimelineEntryItem,
     GlAvatarLink,
     GlAvatar,
@@ -39,7 +44,7 @@ export default {
   directives: {
     SafeHtml,
   },
-  mixins: [noteable, resolvable, glSlotsMixin],
+  mixins: [noteable, resolvable, glSlotsMixin, glFeatureFlagsMixin()],
   inject: {
     reportAbusePath: {
       default: '',
@@ -254,6 +259,12 @@ export default {
     isAmazonQCodeReview() {
       return this.author.username === 'amazon-q';
     },
+    hasSession() {
+      return (
+        this.glFeatures.noteAgentSessionBar &&
+        Boolean(this.note.duo_session_id_triggered && this.note.duo_session_agent_name)
+      );
+    },
   },
   created() {
     const line = this.note.position?.line_range?.start || this.line;
@@ -267,7 +278,7 @@ export default {
         }
       : {};
 
-    eventHub.$on('enterEditMode', ({ noteId }) => {
+    eventHub.$on('enter-edit-mode', ({ noteId }) => {
       if (noteId === this.note.id) {
         this.isEditing = true;
         this.setSelectedCommentPositionHover();
@@ -552,7 +563,7 @@ export default {
             :autosave-key="autosaveKey"
             :restore-from-autosave="restoreFromAutosave"
             :help-page-path="helpPagePath"
-            @handleFormUpdate="formUpdateHandler"
+            @handle-form-update="formUpdateHandler"
             @cancel-form="formCancelHandler"
           />
         </slot>
@@ -560,6 +571,13 @@ export default {
           <slot name="after-note-body"></slot>
         </div>
       </div>
+      <note-session-bar
+        v-if="hasSession"
+        :agent-name="note.duo_session_agent_name"
+        :session-id="note.duo_session_id_triggered"
+        :status="note.duo_session_status"
+        :is-reply="!discussionRoot"
+      />
     </div>
   </timeline-entry-item>
 </template>

@@ -11,7 +11,7 @@ module AuditEvents
     end
 
     # Gitlab::Audit::InstanceScope is EE-only, so the name is hardcoded here to
-    # match the key used in Gitlab::Audit::Logging::ENTITY_TYPE_TO_CLASS.
+    # match the key used in AuditEvents::BuildService::ENTITY_TYPE_TO_MODEL.
     def entity_type
       'Gitlab::Audit::InstanceScope'
     end

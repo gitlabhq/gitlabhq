@@ -1,68 +1,13 @@
 ---
-stage: Security Risk Management
-group: Security Insights
-info: To determine the technical writer assigned to the Stage/Group associated with this page, see <https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments>
-title: SAST False Positive Detection Flow
+redirect_to: '../../../application_security/vulnerabilities/false_positive_detection.md'
+remove_date: '2026-11-18'
 ---
 
-{{< details >}}
+<!-- markdownlint-disable -->
 
-- Tier: Ultimate
-- Offering: GitLab.com, GitLab Self-Managed, GitLab Dedicated
+This document was moved to [another location](../../../application_security/vulnerabilities/false_positive_detection.md).
 
-{{< /details >}}
-
-{{< history >}}
-
-- [Introduced](https://gitlab.com/groups/gitlab-org/-/work_items/18977) in GitLab 18.7 as a [beta](../../../../policy/development_stages_support.md#beta) feature [with feature flags](../../../../administration/feature_flags/_index.md) named `enable_vulnerability_fp_detection` and `ai_experiment_sast_fp_detection`. Enabled by default.
-- [Generally available](https://gitlab.com/groups/gitlab-org/-/work_items/19789) in GitLab 18.10.
-- Feature flags [`ai_experiment_sast_fp_detection`](https://gitlab.com/gitlab-org/gitlab/-/work_items/584344) and [`enable_vulnerability_fp_detection`](https://gitlab.com/gitlab-org/gitlab/-/work_items/584343) removed in GitLab 19.1.
-
-{{< /history >}}
-
-The SAST False Positive Detection Flow automatically analyzes critical and high severity SAST vulnerabilities to identify potential false positives. This process reduces noise in your vulnerability report by flagging vulnerabilities that are likely not actual security risks.
-
-When a SAST security scan runs, GitLab Duo automatically analyzes each vulnerability to determine the likelihood that it's a false positive. Detection is available for vulnerabilities from [GitLab-supported SAST analyzers](../../../application_security/sast/analyzers.md).
-
-The GitLab Duo assessment includes:
-
-- Confidence score: A numerical score indicating the likelihood that the finding is a false positive.
-- Explanation: Contextual reasoning about why the finding may or may not be a true positive.
-- Visual indicator: In the vulnerability report, a badge that shows the assessment.
-
-Results are based on AI analysis and should be reviewed by security professionals. This feature requires GitLab Duo with an active subscription.
-
-For a click-through demo, see [SAST False Positive Detection Flow](https://gitlab.navattic.com/sast-fp-detection-flow).
-
-> [!note]
-> You can't trigger this flow by mentioning, assigning, or requesting a review from its service account. The flow runs automatically after security scans complete. To run it manually, on a vulnerability page, select **AI actions**, then select **Check for false positive**.
-
-<!-- Demo published on 2026-02-17 -->
-
-## Prerequisites
-
-- Meet the [prerequisites for the GitLab Duo Agent Platform](../../_index.md#prerequisites).
-- Turn on **Allow foundational flows** and **SAST False Positive Detection** [for the top-level group](_index.md#turn-foundational-flows-on-or-off).
-- [Configure push rules to allow a service account](../../troubleshooting.md#configure-push-rules-to-allow-a-service-account).
-- [Configure your own runners](../execution/_index.md#configure-runners-to-execute-flows) or turn on [GitLab hosted runners](../../../../ci/runners/hosted_runners/_index.md) for your project.
-
-## Run SAST False Positive Detection
-
-The flow runs automatically when:
-
-- A SAST security scan completes successfully on the default branch.
-- The scan detects Critical or High severity vulnerabilities.
-- GitLab Duo features are enabled for the project or group.
-
-You can also manually trigger analysis for existing vulnerabilities:
-
-1. In the top bar, select **Search or go to** and find your project.
-1. In the left sidebar, select **Secure** > **Vulnerability report**.
-1. Select the vulnerability you want to analyze.
-1. In the upper-right corner, select **AI actions**, then select **Check for false positive**.
-
-## Related topics
-
-- [SAST false positive detection](../../../application_security/vulnerabilities/false_positive_detection.md).
-- [Vulnerability report](../../../application_security/vulnerability_report/_index.md).
-- [SAST](../../../application_security/sast/_index.md).
+<!-- This redirect file can be deleted after <2026-11-18>. -->
+<!-- Redirects that point to other docs in the same project expire in three months. -->
+<!-- Redirects that point to docs in a different project or site (for example, link is not relative and starts with `https:`) expire in one year. -->
+<!-- Before deletion, see: https://docs.gitlab.com/development/documentation/redirects -->

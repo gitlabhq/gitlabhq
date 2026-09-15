@@ -386,7 +386,6 @@ RSpec.describe Projects::DeployKeysController, feature_category: :continuous_del
           subject { put :update, params: hacked_params }
 
           context 'and that deploy key id exists' do
-            let(:other_project) { create(:project) }
             let(:other_deploy_key) do
               key = create(:deploy_key)
               project.deploy_keys << key

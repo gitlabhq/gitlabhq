@@ -1,6 +1,6 @@
 ---
 stage: Plan
-group: Knowledge
+group: Planner Intelligence
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see <https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments>
 title: GitLab Pages administration for self-compiled installations
 ---
@@ -51,17 +51,17 @@ Before proceeding with the Pages configuration, make sure that:
 
 - You have a separate domain to serve GitLab Pages from. In this document, this domain is
   `example.io`.
-- You have configured a **wildcard DNS record** for that domain.
+- You have configured a wildcard DNS record for that domain.
 - You have installed the `zip` and `unzip` packages on the same server where GitLab is installed.
   The packages are required to compress and decompress Pages artifacts.
-- Optional. You have a **wildcard certificate** for the Pages domain (`*.example.io`) if you decide
+- Optional. You have a wildcard certificate for the Pages domain (`*.example.io`) if you decide
   to serve Pages under HTTPS.
 - Optional but recommended. You have configured and enabled
   [instance runners](../../ci/runners/_index.md) so your users do not have to bring their own.
 
 ### DNS configuration
 
-GitLab Pages must run on their own virtual host. In your DNS server or provider, add a
+GitLab Pages must run on its own virtual host. In your DNS server or provider, add a
 [wildcard DNS `A` record](https://en.wikipedia.org/wiki/Wildcard_DNS_record) pointing to the host
 that GitLab runs on. For example:
 

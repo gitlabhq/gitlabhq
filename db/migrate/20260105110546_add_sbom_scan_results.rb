@@ -5,7 +5,7 @@ class AddSbomScanResults < Gitlab::Database::Migration[2.3]
   milestone '18.9'
 
   def up
-    create_table :sbom_vulnerability_scan_results do |t| # rubocop:disable Migration/EnsureFactoryForTable -- Factory exists but matches naming structure of SbomScan model
+    create_table :sbom_vulnerability_scan_results do |t|
       t.timestamps_with_timezone null: false
       t.bigint :project_id, null: false
       t.integer :result_file_store, default: 1, limit: 2

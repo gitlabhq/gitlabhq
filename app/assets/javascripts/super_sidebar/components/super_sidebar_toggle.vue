@@ -72,7 +72,7 @@ export default {
   mounted() {
     this.$root.$on('bv::tooltip::show', this.onTooltipShow);
   },
-  beforeUnmount() {
+  beforeDestroy() {
     this.$root.$off('bv::tooltip::show', this.onTooltipShow);
   },
 

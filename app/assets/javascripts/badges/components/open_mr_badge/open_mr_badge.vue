@@ -86,8 +86,8 @@ export default {
       variables() {
         return this.queryVariables;
       },
-      update({ project: { mergeRequests: { count } = {} } = {} } = {}) {
-        return count;
+      update(data) {
+        return data?.project?.mergeRequests?.count;
       },
       result() {
         if (this.openMrsCount > 0) {

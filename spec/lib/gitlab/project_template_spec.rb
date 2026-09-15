@@ -22,7 +22,7 @@ RSpec.describe Gitlab::ProjectTemplate, feature_category: :source_code_managemen
     context "when `preview` is `nil`" do
       subject { described_class.new('name', 'title', 'description', nil).project_host }
 
-      it { is_expected.to eq nil }
+      it { is_expected.to be_nil }
     end
   end
 

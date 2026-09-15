@@ -23,9 +23,8 @@ description: "プロジェクトのREST APIを使用したインテグレーシ�
 
 {{< history >}}
 
-- `vulnerability_events`フィールドはGitLab 16.4で[導入](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/131831)されました。
-- `inherited`パラメータはGitLab 17.2で[フラグ](../administration/feature_flags/_index.md) `integration_api_inheritance`とともに[導入](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/154915)されました。デフォルトでは無効になっています。
-- `inherited`フィールドはGitLab 17.3で[一般提供](https://gitlab.com/gitlab-org/gitlab/-/issues/467186)されました。機能フラグ`integration_api_inheritance`は削除されました。
+- GitLab 17.2で`inherited`フィールドが`integration_api_inheritance`[機能フラグ](../administration/feature_flags/_index.md)とともに[導入](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/154915)されました。デフォルトでは無効になっています。
+- `inherited`フィールドはGitLab 17.3で[一般提供](https://gitlab.com/gitlab-org/gitlab/-/work_items/467186)されました。機能フラグ`integration_api_inheritance`は削除されました。
 
 {{< /history >}}
 
@@ -94,8 +93,8 @@ GET /projects/:id/integrations
 
 {{< history >}}
 
-- `use_inherited_settings`パラメータはGitLab 17.2で[フラグ](../administration/feature_flags/_index.md) `integration_api_inheritance`とともに[導入](https://gitlab.com/gitlab-org/gitlab/-/issues/467089)されました。デフォルトでは無効になっています。
-- `use_inherited_settings`パラメータはGitLab 17.3で[一般提供](https://gitlab.com/gitlab-org/gitlab/-/issues/467186)されました。機能フラグ`integration_api_inheritance`は削除されました。
+- GitLab 17.2で`use_inherited_settings`パラメータが`integration_api_inheritance`[機能フラグ](../administration/feature_flags/_index.md)とともに[導入](https://gitlab.com/gitlab-org/gitlab/-/work_items/467089)されました。デフォルトでは無効になっています。
+- `use_inherited_settings`パラメータはGitLab 17.3で[一般提供](https://gitlab.com/gitlab-org/gitlab/-/work_items/467186)になりました。機能フラグ`integration_api_inheritance`は削除されました。
 
 {{< /history >}}
 
@@ -138,8 +137,8 @@ GET /projects/:id/integrations/apple_app_store
 
 {{< history >}}
 
-- `use_inherited_settings`パラメータはGitLab 17.2で[フラグ](../administration/feature_flags/_index.md) `integration_api_inheritance`とともに[導入](https://gitlab.com/gitlab-org/gitlab/-/issues/467089)されました。デフォルトでは無効になっています。
-- `use_inherited_settings`パラメータはGitLab 17.3で[一般提供](https://gitlab.com/gitlab-org/gitlab/-/issues/467186)されました。機能フラグ`integration_api_inheritance`は削除されました。
+- GitLab 17.2で`use_inherited_settings`パラメータが`integration_api_inheritance`[機能フラグ](../administration/feature_flags/_index.md)とともに[導入](https://gitlab.com/gitlab-org/gitlab/-/work_items/467089)されました。デフォルトでは無効になっています。
+- `use_inherited_settings`パラメータはGitLab 17.3で[一般提供](https://gitlab.com/gitlab-org/gitlab/-/work_items/467186)になりました。機能フラグ`integration_api_inheritance`は削除されました。
 
 {{< /history >}}
 
@@ -179,8 +178,8 @@ GET /projects/:id/integrations/asana
 
 {{< history >}}
 
-- `use_inherited_settings`パラメータはGitLab 17.2で[フラグ](../administration/feature_flags/_index.md) `integration_api_inheritance`とともに[導入](https://gitlab.com/gitlab-org/gitlab/-/issues/467089)されました。デフォルトでは無効になっています。
-- `use_inherited_settings`パラメータはGitLab 17.3で[一般提供](https://gitlab.com/gitlab-org/gitlab/-/issues/467186)されました。機能フラグ`integration_api_inheritance`は削除されました。
+- GitLab 17.2で`use_inherited_settings`パラメータが`integration_api_inheritance`[機能フラグ](../administration/feature_flags/_index.md)とともに[導入](https://gitlab.com/gitlab-org/gitlab/-/work_items/467089)されました。デフォルトでは無効になっています。
+- `use_inherited_settings`パラメータはGitLab 17.3で[一般提供](https://gitlab.com/gitlab-org/gitlab/-/work_items/467186)になりました。機能フラグ`integration_api_inheritance`は削除されました。
 
 {{< /history >}}
 
@@ -220,8 +219,8 @@ GET /projects/:id/integrations/assembla
 
 {{< history >}}
 
-- `use_inherited_settings`パラメータはGitLab 17.2で[フラグ](../administration/feature_flags/_index.md) `integration_api_inheritance`とともに[導入](https://gitlab.com/gitlab-org/gitlab/-/issues/467089)されました。デフォルトでは無効になっています。
-- `use_inherited_settings`パラメータはGitLab 17.3で[一般提供](https://gitlab.com/gitlab-org/gitlab/-/issues/467186)されました。機能フラグ`integration_api_inheritance`は削除されました。
+- GitLab 17.2で`use_inherited_settings`パラメータが`integration_api_inheritance`[機能フラグ](../administration/feature_flags/_index.md)とともに[導入](https://gitlab.com/gitlab-org/gitlab/-/work_items/467089)されました。デフォルトでは無効になっています。
+- `use_inherited_settings`パラメータはGitLab 17.3で[一般提供](https://gitlab.com/gitlab-org/gitlab/-/work_items/467186)になりました。機能フラグ`integration_api_inheritance`は削除されました。
 
 {{< /history >}}
 
@@ -266,8 +265,8 @@ GET /projects/:id/integrations/bamboo
 
 {{< history >}}
 
-- `use_inherited_settings`パラメータはGitLab 17.2で[フラグ](../administration/feature_flags/_index.md) `integration_api_inheritance`とともに[導入](https://gitlab.com/gitlab-org/gitlab/-/issues/467089)されました。デフォルトでは無効になっています。
-- `use_inherited_settings`パラメータはGitLab 17.3で[一般提供](https://gitlab.com/gitlab-org/gitlab/-/issues/467186)されました。機能フラグ`integration_api_inheritance`は削除されました。
+- GitLab 17.2で`use_inherited_settings`パラメータが`integration_api_inheritance`[機能フラグ](../administration/feature_flags/_index.md)とともに[導入](https://gitlab.com/gitlab-org/gitlab/-/work_items/467089)されました。デフォルトでは無効になっています。
+- `use_inherited_settings`パラメータはGitLab 17.3で[一般提供](https://gitlab.com/gitlab-org/gitlab/-/work_items/467186)になりました。機能フラグ`integration_api_inheritance`は削除されました。
 
 {{< /history >}}
 
@@ -308,8 +307,8 @@ GET /projects/:id/integrations/bugzilla
 
 {{< history >}}
 
-- `use_inherited_settings`パラメータはGitLab 17.2で[フラグ](../administration/feature_flags/_index.md) `integration_api_inheritance`とともに[導入](https://gitlab.com/gitlab-org/gitlab/-/issues/467089)されました。デフォルトでは無効になっています。
-- `use_inherited_settings`パラメータはGitLab 17.3で[一般提供](https://gitlab.com/gitlab-org/gitlab/-/issues/467186)されました。機能フラグ`integration_api_inheritance`は削除されました。
+- GitLab 17.2で`use_inherited_settings`パラメータが`integration_api_inheritance`[機能フラグ](../administration/feature_flags/_index.md)とともに[導入](https://gitlab.com/gitlab-org/gitlab/-/work_items/467089)されました。デフォルトでは無効になっています。
+- `use_inherited_settings`パラメータはGitLab 17.3で[一般提供](https://gitlab.com/gitlab-org/gitlab/-/work_items/467186)になりました。機能フラグ`integration_api_inheritance`は削除されました。
 
 {{< /history >}}
 
@@ -353,8 +352,8 @@ GET /projects/:id/integrations/buildkite
 
 {{< history >}}
 
-- `use_inherited_settings`パラメータはGitLab 17.2で[フラグ](../administration/feature_flags/_index.md) `integration_api_inheritance`とともに[導入](https://gitlab.com/gitlab-org/gitlab/-/issues/467089)されました。デフォルトでは無効になっています。
-- `use_inherited_settings`パラメータはGitLab 17.3で[一般提供](https://gitlab.com/gitlab-org/gitlab/-/issues/467186)されました。機能フラグ`integration_api_inheritance`は削除されました。
+- GitLab 17.2で`use_inherited_settings`パラメータが`integration_api_inheritance`[機能フラグ](../administration/feature_flags/_index.md)とともに[導入](https://gitlab.com/gitlab-org/gitlab/-/work_items/467089)されました。デフォルトでは無効になっています。
+- `use_inherited_settings`パラメータはGitLab 17.3で[一般提供](https://gitlab.com/gitlab-org/gitlab/-/work_items/467186)になりました。機能フラグ`integration_api_inheritance`は削除されました。
 
 {{< /history >}}
 
@@ -397,9 +396,8 @@ GET /projects/:id/integrations/campfire
 
 {{< history >}}
 
-- GitLab 16.1で[導入](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/120732)されました。
-- `use_inherited_settings`パラメータはGitLab 17.2で[フラグ](../administration/feature_flags/_index.md) `integration_api_inheritance`とともに[導入](https://gitlab.com/gitlab-org/gitlab/-/issues/467089)されました。デフォルトでは無効になっています。
-- `use_inherited_settings`パラメータはGitLab 17.3で[一般提供](https://gitlab.com/gitlab-org/gitlab/-/issues/467186)されました。機能フラグ`integration_api_inheritance`は削除されました。
+- GitLab 17.2で`use_inherited_settings`パラメータが`integration_api_inheritance`[機能フラグ](../administration/feature_flags/_index.md)とともに[導入](https://gitlab.com/gitlab-org/gitlab/-/work_items/467089)されました。デフォルトでは無効になっています。
+- `use_inherited_settings`パラメータはGitLab 17.3で[一般提供](https://gitlab.com/gitlab-org/gitlab/-/work_items/467186)になりました。機能フラグ`integration_api_inheritance`は削除されました。
 
 {{< /history >}}
 
@@ -439,8 +437,8 @@ GET /projects/:id/integrations/clickup
 
 {{< history >}}
 
-- `use_inherited_settings`パラメータはGitLab 17.2で[フラグ](../administration/feature_flags/_index.md) `integration_api_inheritance`とともに[導入](https://gitlab.com/gitlab-org/gitlab/-/issues/467089)されました。デフォルトでは無効になっています。
-- `use_inherited_settings`パラメータはGitLab 17.3で[一般提供](https://gitlab.com/gitlab-org/gitlab/-/issues/467186)されました。機能フラグ`integration_api_inheritance`は削除されました。
+- GitLab 17.2で`use_inherited_settings`パラメータが`integration_api_inheritance`[機能フラグ](../administration/feature_flags/_index.md)とともに[導入](https://gitlab.com/gitlab-org/gitlab/-/work_items/467089)されました。デフォルトでは無効になっています。
+- `use_inherited_settings`パラメータはGitLab 17.3で[一般提供](https://gitlab.com/gitlab-org/gitlab/-/work_items/467186)になりました。機能フラグ`integration_api_inheritance`は削除されました。
 
 {{< /history >}}
 
@@ -481,8 +479,8 @@ GET /projects/:id/integrations/confluence
 
 {{< history >}}
 
-- `use_inherited_settings`パラメータはGitLab 17.2で[フラグ](../administration/feature_flags/_index.md) `integration_api_inheritance`とともに[導入](https://gitlab.com/gitlab-org/gitlab/-/issues/467089)されました。デフォルトでは無効になっています。
-- `use_inherited_settings`パラメータはGitLab 17.3で[一般提供](https://gitlab.com/gitlab-org/gitlab/-/issues/467186)されました。機能フラグ`integration_api_inheritance`は削除されました。
+- GitLab 17.2で`use_inherited_settings`パラメータが`integration_api_inheritance`[機能フラグ](../administration/feature_flags/_index.md)とともに[導入](https://gitlab.com/gitlab-org/gitlab/-/work_items/467089)されました。デフォルトでは無効になっています。
+- `use_inherited_settings`パラメータはGitLab 17.3で[一般提供](https://gitlab.com/gitlab-org/gitlab/-/work_items/467186)になりました。機能フラグ`integration_api_inheritance`は削除されました。
 
 {{< /history >}}
 
@@ -523,8 +521,8 @@ GET /projects/:id/integrations/custom-issue-tracker
 
 {{< history >}}
 
-- `use_inherited_settings`パラメータはGitLab 17.2で[フラグ](../administration/feature_flags/_index.md) `integration_api_inheritance`とともに[導入](https://gitlab.com/gitlab-org/gitlab/-/issues/467089)されました。デフォルトでは無効になっています。
-- `use_inherited_settings`パラメータはGitLab 17.3で[一般提供](https://gitlab.com/gitlab-org/gitlab/-/issues/467186)されました。機能フラグ`integration_api_inheritance`は削除されました。
+- GitLab 17.2で`use_inherited_settings`パラメータが`integration_api_inheritance`[機能フラグ](../administration/feature_flags/_index.md)とともに[導入](https://gitlab.com/gitlab-org/gitlab/-/work_items/467089)されました。デフォルトでは無効になっています。
+- `use_inherited_settings`パラメータはGitLab 17.3で[一般提供](https://gitlab.com/gitlab-org/gitlab/-/work_items/467186)になりました。機能フラグ`integration_api_inheritance`は削除されました。
 
 {{< /history >}}
 
@@ -547,7 +545,7 @@ PUT /projects/:id/integrations/datadog
 | `datadog_service`      | 文字列  | いいえ    | Datadogでそこからのすべてのデータにタグ付けするGitLabインスタンス。複数の自己管理型デプロイを管理する場合に使用できます。 |
 | `datadog_site`         | 文字列  | いいえ    | データを送信するDatadogサイト。EUサイトにデータを送信するには、`datadoghq.eu`を使用します。 |
 | `datadog_tags`         | 文字列  | いいえ    | Datadogでのカスタムタグ。`key:value\nkey2:value2`の形式で1行につき1つのタグを指定します。 |
-| `archive_trace_events` | ブール値 | いいえ    | 有効にすると、ジョブログがDatadogによって収集され、パイプライン実行トレースとともに表示されます（GitLab 15.3で[導入](https://gitlab.com/gitlab-org/gitlab/-/issues/346339)）。 |
+| `archive_trace_events` | ブール値 | いいえ    | 有効にすると、ジョブログはDatadogによって収集され、パイプライン実行トレースとともに表示されます。 |
 | `use_inherited_settings` | ブール値 | いいえ | デフォルトの設定を継承するかどうかを示します。`false`がデフォルトです。 |
 
 ### Datadogを無効化 {#disable-datadog}
@@ -570,8 +568,8 @@ GET /projects/:id/integrations/datadog
 
 {{< history >}}
 
-- `use_inherited_settings`パラメータはGitLab 17.2で[フラグ](../administration/feature_flags/_index.md) `integration_api_inheritance`とともに[導入](https://gitlab.com/gitlab-org/gitlab/-/issues/467089)されました。デフォルトでは無効になっています。
-- `use_inherited_settings`パラメータはGitLab 17.3で[一般提供](https://gitlab.com/gitlab-org/gitlab/-/issues/467186)されました。機能フラグ`integration_api_inheritance`は削除されました。
+- GitLab 17.2で`use_inherited_settings`パラメータが`integration_api_inheritance`[機能フラグ](../administration/feature_flags/_index.md)とともに[導入](https://gitlab.com/gitlab-org/gitlab/-/work_items/467089)されました。デフォルトでは無効になっています。
+- `use_inherited_settings`パラメータはGitLab 17.3で[一般提供](https://gitlab.com/gitlab-org/gitlab/-/work_items/467186)になりました。機能フラグ`integration_api_inheritance`は削除されました。
 
 {{< /history >}}
 
@@ -612,9 +610,8 @@ GET /projects/:id/integrations/diffblue-cover
 
 {{< history >}}
 
-- `_channel`パラメータはGitLab 16.3で[導入](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/125621)されました。
-- `use_inherited_settings`パラメータはGitLab 17.2で[フラグ](../administration/feature_flags/_index.md) `integration_api_inheritance`とともに[導入](https://gitlab.com/gitlab-org/gitlab/-/issues/467089)されました。デフォルトでは無効になっています。
-- `use_inherited_settings`パラメータはGitLab 17.3で[一般提供](https://gitlab.com/gitlab-org/gitlab/-/issues/467186)されました。機能フラグ`integration_api_inheritance`は削除されました。
+- GitLab 17.2で`use_inherited_settings`パラメータが`integration_api_inheritance`[機能フラグ](../administration/feature_flags/_index.md)とともに[導入](https://gitlab.com/gitlab-org/gitlab/-/work_items/467089)されました。デフォルトでは無効になっています。
+- `use_inherited_settings`パラメータはGitLab 17.3で[一般提供](https://gitlab.com/gitlab-org/gitlab/-/work_items/467186)になりました。機能フラグ`integration_api_inheritance`は削除されました。
 
 {{< /history >}}
 
@@ -680,8 +677,8 @@ GET /projects/:id/integrations/discord
 
 {{< history >}}
 
-- `use_inherited_settings`パラメータはGitLab 17.2で[フラグ](../administration/feature_flags/_index.md) `integration_api_inheritance`とともに[導入](https://gitlab.com/gitlab-org/gitlab/-/issues/467089)されました。デフォルトでは無効になっています。
-- `use_inherited_settings`パラメータはGitLab 17.3で[一般提供](https://gitlab.com/gitlab-org/gitlab/-/issues/467186)されました。機能フラグ`integration_api_inheritance`は削除されました。
+- GitLab 17.2で`use_inherited_settings`パラメータが`integration_api_inheritance`[機能フラグ](../administration/feature_flags/_index.md)とともに[導入](https://gitlab.com/gitlab-org/gitlab/-/work_items/467089)されました。デフォルトでは無効になっています。
+- `use_inherited_settings`パラメータはGitLab 17.3で[一般提供](https://gitlab.com/gitlab-org/gitlab/-/work_items/467186)になりました。機能フラグ`integration_api_inheritance`は削除されました。
 
 {{< /history >}}
 
@@ -725,8 +722,8 @@ GET /projects/:id/integrations/drone-ci
 
 {{< history >}}
 
-- `use_inherited_settings`パラメータはGitLab 17.2で[フラグ](../administration/feature_flags/_index.md) `integration_api_inheritance`とともに[導入](https://gitlab.com/gitlab-org/gitlab/-/issues/467089)されました。デフォルトでは無効になっています。
-- `use_inherited_settings`パラメータはGitLab 17.3で[一般提供](https://gitlab.com/gitlab-org/gitlab/-/issues/467186)されました。機能フラグ`integration_api_inheritance`は削除されました。
+- GitLab 17.2で`use_inherited_settings`パラメータが`integration_api_inheritance`[機能フラグ](../administration/feature_flags/_index.md)とともに[導入](https://gitlab.com/gitlab-org/gitlab/-/work_items/467089)されました。デフォルトでは無効になっています。
+- `use_inherited_settings`パラメータはGitLab 17.3で[一般提供](https://gitlab.com/gitlab-org/gitlab/-/work_items/467186)になりました。機能フラグ`integration_api_inheritance`は削除されました。
 
 {{< /history >}}
 
@@ -766,12 +763,12 @@ DELETE /projects/:id/integrations/emails-on-push
 GET /projects/:id/integrations/emails-on-push
 ```
 
-## EngineeringワークフローManagement (EWM) {#engineering-workflow-management-ewm}
+## Engineering Workflow Management（EWM） {#engineering-workflow-management-ewm}
 
 {{< history >}}
 
-- `use_inherited_settings`パラメータはGitLab 17.2で[フラグ](../administration/feature_flags/_index.md) `integration_api_inheritance`とともに[導入](https://gitlab.com/gitlab-org/gitlab/-/issues/467089)されました。デフォルトでは無効になっています。
-- `use_inherited_settings`パラメータはGitLab 17.3で[一般提供](https://gitlab.com/gitlab-org/gitlab/-/issues/467186)されました。機能フラグ`integration_api_inheritance`は削除されました。
+- GitLab 17.2で`use_inherited_settings`パラメータが`integration_api_inheritance`[機能フラグ](../administration/feature_flags/_index.md)とともに[導入](https://gitlab.com/gitlab-org/gitlab/-/work_items/467089)されました。デフォルトでは無効になっています。
+- `use_inherited_settings`パラメータはGitLab 17.3で[一般提供](https://gitlab.com/gitlab-org/gitlab/-/work_items/467186)になりました。機能フラグ`integration_api_inheritance`は削除されました。
 
 {{< /history >}}
 
@@ -812,8 +809,8 @@ GET /projects/:id/integrations/ewm
 
 {{< history >}}
 
-- `use_inherited_settings`パラメータはGitLab 17.2で[フラグ](../administration/feature_flags/_index.md) `integration_api_inheritance`とともに[導入](https://gitlab.com/gitlab-org/gitlab/-/issues/467089)されました。デフォルトでは無効になっています。
-- `use_inherited_settings`パラメータはGitLab 17.3で[一般提供](https://gitlab.com/gitlab-org/gitlab/-/issues/467186)されました。機能フラグ`integration_api_inheritance`は削除されました。
+- GitLab 17.2で`use_inherited_settings`パラメータが`integration_api_inheritance`[機能フラグ](../administration/feature_flags/_index.md)とともに[導入](https://gitlab.com/gitlab-org/gitlab/-/work_items/467089)されました。デフォルトでは無効になっています。
+- `use_inherited_settings`パラメータはGitLab 17.3で[一般提供](https://gitlab.com/gitlab-org/gitlab/-/work_items/467186)になりました。機能フラグ`integration_api_inheritance`は削除されました。
 
 {{< /history >}}
 
@@ -859,11 +856,11 @@ GET /projects/:id/integrations/external-wiki
 
 {{< history >}}
 
-- GitLab 16.9で`git_guardian_integration`[フラグ](../administration/feature_flags/_index.md)とともに[導入](https://gitlab.com/gitlab-org/gitlab/-/issues/435706)されました。デフォルトでは有効になっています。GitLab.comで無効になりました。
+- [GitLab 16.9で導入](https://gitlab.com/gitlab-org/gitlab/-/issues/435706)されました。`git_guardian_integration`という名前の[機能フラグとともに](../administration/feature_flags/_index.md)。デフォルトでは有効になっています。GitLab.comで無効になりました。
 - GitLab.com 17.7の[GitLab.comで有効](https://gitlab.com/gitlab-org/gitlab/-/issues/438695#note_2226917025)になりました。
 - GitLab 17.8で[一般提供](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/176391)になりました。機能フラグ`git_guardian_integration`は削除されました。
-- `use_inherited_settings`パラメータはGitLab 17.2で[フラグ](../administration/feature_flags/_index.md) `integration_api_inheritance`とともに[導入](https://gitlab.com/gitlab-org/gitlab/-/issues/467089)されました。デフォルトでは無効になっています。
-- `use_inherited_settings`パラメータはGitLab 17.3で[一般提供](https://gitlab.com/gitlab-org/gitlab/-/issues/467186)されました。機能フラグ`integration_api_inheritance`は削除されました。
+- GitLab 17.2で`use_inherited_settings`パラメータが`integration_api_inheritance`[機能フラグ](../administration/feature_flags/_index.md)とともに[導入](https://gitlab.com/gitlab-org/gitlab/-/work_items/467089)されました。デフォルトでは無効になっています。
+- `use_inherited_settings`パラメータはGitLab 17.3で[一般提供](https://gitlab.com/gitlab-org/gitlab/-/work_items/467186)になりました。機能フラグ`integration_api_inheritance`は削除されました。
 - `api_url`パラメータはGitLab 19.1で[導入](https://gitlab.com/gitlab-org/gitlab/-/issues/599742)されました。
 
 {{< /history >}}
@@ -917,8 +914,8 @@ GET /projects/:id/integrations/git-guardian
 
 {{< history >}}
 
-- `use_inherited_settings`パラメータはGitLab 17.2で[フラグ](../administration/feature_flags/_index.md) `integration_api_inheritance`とともに[導入](https://gitlab.com/gitlab-org/gitlab/-/issues/467089)されました。デフォルトでは無効になっています。
-- `use_inherited_settings`パラメータはGitLab 17.3で[一般提供](https://gitlab.com/gitlab-org/gitlab/-/issues/467186)されました。機能フラグ`integration_api_inheritance`は削除されました。
+- GitLab 17.2で`use_inherited_settings`パラメータが`integration_api_inheritance`[機能フラグ](../administration/feature_flags/_index.md)とともに[導入](https://gitlab.com/gitlab-org/gitlab/-/work_items/467089)されました。デフォルトでは無効になっています。
+- `use_inherited_settings`パラメータはGitLab 17.3で[一般提供](https://gitlab.com/gitlab-org/gitlab/-/work_items/467186)になりました。機能フラグ`integration_api_inheritance`は削除されました。
 
 {{< /history >}}
 
@@ -987,8 +984,8 @@ GET /projects/:id/integrations/jira-cloud-app
 
 {{< history >}}
 
-- `use_inherited_settings`パラメータはGitLab 17.2で[フラグ](../administration/feature_flags/_index.md) `integration_api_inheritance`とともに[導入](https://gitlab.com/gitlab-org/gitlab/-/issues/467089)されました。デフォルトでは無効になっています。
-- `use_inherited_settings`パラメータはGitLab 17.3で[一般提供](https://gitlab.com/gitlab-org/gitlab/-/issues/467186)されました。機能フラグ`integration_api_inheritance`は削除されました。
+- GitLab 17.2で`use_inherited_settings`パラメータが`integration_api_inheritance`[機能フラグ](../administration/feature_flags/_index.md)とともに[導入](https://gitlab.com/gitlab-org/gitlab/-/work_items/467089)されました。デフォルトでは無効になっています。
+- `use_inherited_settings`パラメータはGitLab 17.3で[一般提供](https://gitlab.com/gitlab-org/gitlab/-/work_items/467186)になりました。機能フラグ`integration_api_inheritance`は削除されました。
 
 {{< /history >}}
 
@@ -1061,8 +1058,8 @@ GET /projects/:id/integrations/gitlab-slack-application
 
 {{< history >}}
 
-- `use_inherited_settings`パラメータはGitLab 17.2で[フラグ](../administration/feature_flags/_index.md) `integration_api_inheritance`とともに[導入](https://gitlab.com/gitlab-org/gitlab/-/issues/467089)されました。デフォルトでは無効になっています。
-- `use_inherited_settings`パラメータはGitLab 17.3で[一般提供](https://gitlab.com/gitlab-org/gitlab/-/issues/467186)されました。機能フラグ`integration_api_inheritance`は削除されました。
+- GitLab 17.2で`use_inherited_settings`パラメータが`integration_api_inheritance`[機能フラグ](../administration/feature_flags/_index.md)とともに[導入](https://gitlab.com/gitlab-org/gitlab/-/work_items/467089)されました。デフォルトでは無効になっています。
+- `use_inherited_settings`パラメータはGitLab 17.3で[一般提供](https://gitlab.com/gitlab-org/gitlab/-/work_items/467186)になりました。機能フラグ`integration_api_inheritance`は削除されました。
 
 {{< /history >}}
 
@@ -1122,10 +1119,10 @@ GET /projects/:id/integrations/hangouts-chat
 
 {{< history >}}
 
-- GitLab 16.9で`google_cloud_support_feature_flag`[フラグ](../administration/feature_flags/_index.md)とともに[ベータ版](../policy/development_stages_support.md)機能として[導入](https://gitlab.com/gitlab-org/gitlab/-/issues/425066)されました。デフォルトでは無効になっています。
+- GitLab 16.9で[導入](https://gitlab.com/gitlab-org/gitlab/-/issues/425066)されました。[ベータ](../policy/development_stages_support.md)機能として、`google_cloud_support_feature_flag`という名前の[機能フラグとともに](../administration/feature_flags/_index.md)。デフォルトでは無効になっています。
 - GitLab 17.1の[GitLab.comで有効](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/150472)になりました。機能フラグ`google_cloud_support_feature_flag`は削除されました。
-- `use_inherited_settings`パラメータはGitLab 17.2で[フラグ](../administration/feature_flags/_index.md) `integration_api_inheritance`とともに[導入](https://gitlab.com/gitlab-org/gitlab/-/issues/467089)されました。デフォルトでは無効になっています。
-- `use_inherited_settings`パラメータはGitLab 17.3で[一般提供](https://gitlab.com/gitlab-org/gitlab/-/issues/467186)されました。機能フラグ`integration_api_inheritance`は削除されました。
+- GitLab 17.2で`use_inherited_settings`パラメータが`integration_api_inheritance`[機能フラグ](../administration/feature_flags/_index.md)とともに[導入](https://gitlab.com/gitlab-org/gitlab/-/work_items/467089)されました。デフォルトでは無効になっています。
+- `use_inherited_settings`パラメータはGitLab 17.3で[一般提供](https://gitlab.com/gitlab-org/gitlab/-/work_items/467186)になりました。機能フラグ`integration_api_inheritance`は削除されました。
 
 {{< /history >}}
 
@@ -1176,10 +1173,10 @@ GET /projects/:id/integrations/google-cloud-platform-artifact-registry
 
 {{< history >}}
 
-- GitLab 16.10で[導入](../policy/development_stages_support.md)された、`google_cloud_support_feature_flag`という名前の[フラグ](../administration/feature_flags/_index.md)付きベータ機能。デフォルトでは無効になっています。
+- GitLab 16.10で[ベータ版](../policy/development_stages_support.md)機能として、`google_cloud_support_feature_flag`[機能フラグ](../administration/feature_flags/_index.md)とともに導入されました。デフォルトでは無効になっています。
 - GitLab 17.1の[GitLab.comで有効](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/150472)になりました。機能フラグ`google_cloud_support_feature_flag`は削除されました。
-- `use_inherited_settings`パラメータはGitLab 17.2で[フラグ](../administration/feature_flags/_index.md) `integration_api_inheritance`とともに[導入](https://gitlab.com/gitlab-org/gitlab/-/issues/467089)されました。デフォルトでは無効になっています。
-- `use_inherited_settings`パラメータはGitLab 17.3で[一般提供](https://gitlab.com/gitlab-org/gitlab/-/issues/467186)されました。機能フラグ`integration_api_inheritance`は削除されました。
+- GitLab 17.2で`use_inherited_settings`パラメータが`integration_api_inheritance`[機能フラグ](../administration/feature_flags/_index.md)とともに[導入](https://gitlab.com/gitlab-org/gitlab/-/work_items/467089)されました。デフォルトでは無効になっています。
+- `use_inherited_settings`パラメータはGitLab 17.3で[一般提供](https://gitlab.com/gitlab-org/gitlab/-/work_items/467186)になりました。機能フラグ`integration_api_inheritance`は削除されました。
 
 {{< /history >}}
 
@@ -1223,8 +1220,8 @@ GET /projects/:id/integration/google-cloud-platform-workload-identity-federation
 
 {{< history >}}
 
-- `use_inherited_settings`パラメータはGitLab 17.2で[フラグ](../administration/feature_flags/_index.md) `integration_api_inheritance`とともに[導入](https://gitlab.com/gitlab-org/gitlab/-/issues/467089)されました。デフォルトでは無効になっています。
-- `use_inherited_settings`パラメータはGitLab 17.3で[一般提供](https://gitlab.com/gitlab-org/gitlab/-/issues/467186)されました。機能フラグ`integration_api_inheritance`は削除されました。
+- GitLab 17.2で`use_inherited_settings`パラメータが`integration_api_inheritance`[機能フラグ](../administration/feature_flags/_index.md)とともに[導入](https://gitlab.com/gitlab-org/gitlab/-/work_items/467089)されました。デフォルトでは無効になっています。
+- `use_inherited_settings`パラメータはGitLab 17.3で[一般提供](https://gitlab.com/gitlab-org/gitlab/-/work_items/467186)になりました。機能フラグ`integration_api_inheritance`は削除されました。
 
 {{< /history >}}
 
@@ -1266,8 +1263,8 @@ GET /projects/:id/integrations/google-play
 
 {{< history >}}
 
-- `use_inherited_settings`パラメータはGitLab 17.2で[フラグ](../administration/feature_flags/_index.md) `integration_api_inheritance`とともに[導入](https://gitlab.com/gitlab-org/gitlab/-/issues/467089)されました。デフォルトでは無効になっています。
-- `use_inherited_settings`パラメータはGitLab 17.3で[一般提供](https://gitlab.com/gitlab-org/gitlab/-/issues/467186)されました。機能フラグ`integration_api_inheritance`は削除されました。
+- GitLab 17.2で`use_inherited_settings`パラメータが`integration_api_inheritance`[機能フラグ](../administration/feature_flags/_index.md)とともに[導入](https://gitlab.com/gitlab-org/gitlab/-/work_items/467089)されました。デフォルトでは無効になっています。
+- `use_inherited_settings`パラメータはGitLab 17.3で[一般提供](https://gitlab.com/gitlab-org/gitlab/-/work_items/467186)になりました。機能フラグ`integration_api_inheritance`は削除されました。
 
 {{< /history >}}
 
@@ -1305,12 +1302,12 @@ DELETE /projects/:id/integrations/harbor
 GET /projects/:id/integrations/harbor
 ```
 
-## irker (IRCゲートウェイ) {#irker-irc-gateway}
+## irker（IRCゲートウェイ） {#irker-irc-gateway}
 
 {{< history >}}
 
-- `use_inherited_settings`パラメータはGitLab 17.2で[フラグ](../administration/feature_flags/_index.md) `integration_api_inheritance`とともに[導入](https://gitlab.com/gitlab-org/gitlab/-/issues/467089)されました。デフォルトでは無効になっています。
-- `use_inherited_settings`パラメータはGitLab 17.3で[一般提供](https://gitlab.com/gitlab-org/gitlab/-/issues/467186)されました。機能フラグ`integration_api_inheritance`は削除されました。
+- GitLab 17.2で`use_inherited_settings`パラメータが`integration_api_inheritance`[機能フラグ](../administration/feature_flags/_index.md)とともに[導入](https://gitlab.com/gitlab-org/gitlab/-/work_items/467089)されました。デフォルトでは無効になっています。
+- `use_inherited_settings`パラメータはGitLab 17.3で[一般提供](https://gitlab.com/gitlab-org/gitlab/-/work_items/467186)になりました。機能フラグ`integration_api_inheritance`は削除されました。
 
 {{< /history >}}
 
@@ -1353,8 +1350,8 @@ GET /projects/:id/integrations/irker
 
 {{< history >}}
 
-- `use_inherited_settings`パラメータはGitLab 17.2で[フラグ](../administration/feature_flags/_index.md) `integration_api_inheritance`とともに[導入](https://gitlab.com/gitlab-org/gitlab/-/issues/467089)されました。デフォルトでは無効になっています。
-- `use_inherited_settings`パラメータはGitLab 17.3で[一般提供](https://gitlab.com/gitlab-org/gitlab/-/issues/467186)されました。機能フラグ`integration_api_inheritance`は削除されました。
+- GitLab 17.2で`use_inherited_settings`パラメータが`integration_api_inheritance`[機能フラグ](../administration/feature_flags/_index.md)とともに[導入](https://gitlab.com/gitlab-org/gitlab/-/work_items/467089)されました。デフォルトでは無効になっています。
+- `use_inherited_settings`パラメータはGitLab 17.3で[一般提供](https://gitlab.com/gitlab-org/gitlab/-/work_items/467186)になりました。機能フラグ`integration_api_inheritance`は削除されました。
 
 {{< /history >}}
 
@@ -1400,8 +1397,8 @@ GET /projects/:id/integrations/jenkins
 
 {{< history >}}
 
-- `use_inherited_settings`パラメータはGitLab 17.2で[フラグ](../administration/feature_flags/_index.md) `integration_api_inheritance`とともに[導入](https://gitlab.com/gitlab-org/gitlab/-/issues/467089)されました。デフォルトでは無効になっています。
-- `use_inherited_settings`パラメータはGitLab 17.3で[一般提供](https://gitlab.com/gitlab-org/gitlab/-/issues/467186)されました。機能フラグ`integration_api_inheritance`は削除されました。
+- GitLab 17.2で`use_inherited_settings`パラメータが`integration_api_inheritance`[機能フラグ](../administration/feature_flags/_index.md)とともに[導入](https://gitlab.com/gitlab-org/gitlab/-/work_items/467089)されました。デフォルトでは無効になっています。
+- `use_inherited_settings`パラメータはGitLab 17.3で[一般提供](https://gitlab.com/gitlab-org/gitlab/-/work_items/467186)になりました。機能フラグ`integration_api_inheritance`は削除されました。
 
 {{< /history >}}
 
@@ -1419,7 +1416,7 @@ PUT /projects/:id/integrations/teamcity
 
 | パラメータ | 型 | 必須 | 説明 |
 | --------- | ---- | -------- | ----------- |
-| `teamcity_url` | 文字列 | はい | TeamCityルートURL (例: `https://teamcity.example.com`)。 |
+| `teamcity_url` | 文字列 | はい | TeamCityルートURL（例: `https://teamcity.example.com`）。 |
 | `enable_ssl_verification` | ブール値 | いいえ | SSL検証を有効にします。デフォルトは`true`（有効）です。 |
 | `build_type` | 文字列 | はい | TeamCityプロジェクトのビルド設定ID。 |
 | `username` | 文字列 | はい | 手動ビルドをトリガーする権限を持つユーザー。 |
@@ -1448,8 +1445,8 @@ GET /projects/:id/integrations/teamcity
 
 {{< history >}}
 
-- `use_inherited_settings`パラメータはGitLab 17.2で[フラグ](../administration/feature_flags/_index.md) `integration_api_inheritance`とともに[導入](https://gitlab.com/gitlab-org/gitlab/-/issues/467089)されました。デフォルトでは無効になっています。
-- `use_inherited_settings`パラメータはGitLab 17.3で[一般提供](https://gitlab.com/gitlab-org/gitlab/-/issues/467186)されました。機能フラグ`integration_api_inheritance`は削除されました。
+- GitLab 17.2で`use_inherited_settings`パラメータが`integration_api_inheritance`[機能フラグ](../administration/feature_flags/_index.md)とともに[導入](https://gitlab.com/gitlab-org/gitlab/-/work_items/467089)されました。デフォルトでは無効になっています。
+- `use_inherited_settings`パラメータはGitLab 17.3で[一般提供](https://gitlab.com/gitlab-org/gitlab/-/work_items/467186)になりました。機能フラグ`integration_api_inheritance`は削除されました。
 
 {{< /history >}}
 
@@ -1465,22 +1462,22 @@ PUT /projects/:id/integrations/jira
 
 | パラメータ | 型 | 必須 | 説明 |
 | --------- | ---- | -------- | ----------- |
-| `url`           | 文字列 | はい | このGitLabプロジェクトにリンクされているJiraプロジェクトのURL (例: `https://jira.example.com`)。 |
-| `api_url`   | 文字列 | いいえ | JiraインスタンスAPIへのベースURL。設定されていない場合、Web URL値が使用されます (例: `https://jira-api.example.com`)。 |
-| `username`      | 文字列 | いいえ   | Jiraで使用するメールまたはユーザー名。Jira Cloudにはメールを、Jira Data CenterおよびJira Serverにはユーザー名を使用します。Basic認証 (`jira_auth_type`が`0`) を使用する場合に必須です。 |
-| `password`      | 文字列 | はい  | Jiraで使用するJira APIトークン、パスワード、またはパーソナルアクセストークン。基本認証 (`jira_auth_type`が`0`) の場合、Jira CloudにはAPIトークンを、Jira Data CenterまたはJira Serverにはパスワードを使用します。Jiraパーソナルアクセストークン認証 (`jira_auth_type`が`1`) の場合、パーソナルアクセストークンを使用します。Jira Cloudサービスアカウント認証の場合、APIトークンを使用します。 |
+| `url`           | 文字列 | はい | このGitLabプロジェクトにリンクされているJiraプロジェクトのURL（例: `https://jira.example.com`）。 |
+| `api_url`   | 文字列 | いいえ | JiraインスタンスAPIへのベースURL。設定されていない場合、Web URL値が使用されます（例: `https://jira-api.example.com`）。 |
+| `username`      | 文字列 | いいえ   | Jiraで使用するメールまたはユーザー名。Jira Cloudにはメールを、Jira Data CenterおよびJira Serverにはユーザー名を使用します。Basic認証（`jira_auth_type`が`0`）を使用する場合に必須です。 |
+| `password`      | 文字列 | はい  | Jiraで使用するJira APIトークン、パスワード、またはパーソナルアクセストークン。基本認証（`jira_auth_type`が`0`）の場合、Jira CloudにはAPIトークンを、Jira Data CenterまたはJira Serverにはパスワードを使用します。Jiraパーソナルアクセストークン認証（`jira_auth_type`が`1`）の場合、パーソナルアクセストークンを使用します。Jira Cloudサービスアカウント認証の場合、APIトークンを使用します。 |
 | `jira_auth_type`| 整数 | いいえ  | Jiraで使用する認証方法。Basic認証には`0`、Jiraパーソナルアクセストークンには`1`、Jira Cloudサービスアカウントには`2`を使用します。`0`がデフォルトです。 |
 | `jira_issue_prefix` | 文字列 | いいえ | Jiraイシューキーに一致するプレフィックス。 |
 | `jira_issue_regex` | 文字列 | いいえ | Jiraイシューキーに一致する正規表現。 |
 | `jira_issue_transition_automatic` | ブール値 | いいえ | 自動イシュー[移行](../integration/jira/issues.md#automatic-issue-transitions)を有効にする。有効な場合、`jira_issue_transition_id`より優先されます。`false`がデフォルトです。 |
-| `jira_issue_transition_id` | 文字列 | いいえ | [カスタムイシュー移行](../integration/jira/issues.md#custom-issue-transitions)の1つまたは複数の移行ID。`jira_issue_transition_automatic`が有効な場合は無視されます。デフォルトは空の文字列で、カスタム移行を無効にします。 |
+| `jira_issue_transition_id` | 文字列 | いいえ | [カスタムイシュー移行](../integration/jira/issues.md#custom-issue-transitions)のための1つ以上の移行のID。`jira_issue_transition_automatic`が有効な場合は無視されます。デフォルトでは空白の文字列であり、カスタム移行が無効になります。 |
 | `commit_events` | ブール値 | いいえ | コミットイベントの通知を有効にします。 |
 | `merge_requests_events` | ブール値 | いいえ | マージリクエストイベントの通知を有効にします。 |
-| `comment_on_event_enabled` | ブール値 | いいえ | 各GitLabイベント (コミットまたはマージリクエスト) でJiraイシューにコメントを有効にします。 |
+| `comment_on_event_enabled` | ブール値 | いいえ | 各GitLabイベント（コミットまたはマージリクエスト）でJiraイシューにコメントを有効にします。 |
 | `issues_enabled` | ブール値 | いいえ | GitLabでJiraイシューの表示を有効にする。GitLab 17.0で[導入](https://gitlab.com/gitlab-org/gitlab/-/issues/267015)されました。 |
 | `project_keys` | 文字列の配列 | いいえ | Jiraプロジェクトのキー。`issues_enabled`が`true`の場合、この設定は、GitLabでイシューを表示するJiraプロジェクトを指定します。GitLab 17.0で[導入](https://gitlab.com/gitlab-org/gitlab/-/issues/267015)されました。 |
 | `use_inherited_settings` | ブール値 | いいえ | デフォルトの設定を継承するかどうかを示します。`false`がデフォルトです。 |
-| `vulnerabilities_enabled` | ブール値 | いいえ | GitLab EEでのみ利用可能です。`true`に設定すると、GitLabの脆弱性に対してJiraイシューが作成されます。|
+| `vulnerabilities_enabled` | ブール値 | いいえ | GitLab EEでのみ利用可能です。`true`に設定すると、GitLabの脆弱性に対してJiraイシューが作成されます。 |
 | `vulnerabilities_issuetype` | 数値 | いいえ | GitLab EEでのみ利用可能です。脆弱性からイシューを作成する際に使用するJiraイシュータイプのID。 |
 | `project_key` | 文字列 | いいえ | GitLab EEでのみ利用可能です。脆弱性からイシューを作成する際に使用するプロジェクトのキー。脆弱性からイシューを作成するためにインテグレーションを使用する場合、このパラメータは必須です。 |
 | `customize_jira_issue_enabled` | ブール値 | いいえ | GitLab EEでのみ利用可能です。`true`に設定すると、脆弱性からJiraイシューを作成する際に、Jiraインスタンスで事前入力されたフォームが開きます。 |
@@ -1544,8 +1541,8 @@ GET /projects/:id/integrations/linear
 
 {{< history >}}
 
-- `use_inherited_settings`パラメータはGitLab 17.2で[フラグ](../administration/feature_flags/_index.md) `integration_api_inheritance`とともに[導入](https://gitlab.com/gitlab-org/gitlab/-/issues/467089)されました。デフォルトでは無効になっています。
-- `use_inherited_settings`パラメータはGitLab 17.3で[一般提供](https://gitlab.com/gitlab-org/gitlab/-/issues/467186)されました。機能フラグ`integration_api_inheritance`は削除されました。
+- GitLab 17.2で`use_inherited_settings`パラメータが`integration_api_inheritance`[機能フラグ](../administration/feature_flags/_index.md)とともに[導入](https://gitlab.com/gitlab-org/gitlab/-/work_items/467089)されました。デフォルトでは無効になっています。
+- `use_inherited_settings`パラメータはGitLab 17.3で[一般提供](https://gitlab.com/gitlab-org/gitlab/-/work_items/467186)になりました。機能フラグ`integration_api_inheritance`は削除されました。
 
 {{< /history >}}
 
@@ -1562,8 +1559,8 @@ PUT /projects/:id/integrations/matrix
 | パラメータ | 型 | 必須 | 説明 |
 | --------- | ---- | -------- | ----------- |
 | `hostname`   | 文字列 | いいえ | Matrixサーバーのカスタムホスト名。デフォルト値は`https://matrix.org`です。 |
-| `token`   | 文字列 | はい | Matrixアクセストークン (例: `syt-zyx57W2v1u123ew11`)。 |
-| `room` | 文字列 | はい | ターゲットルームの固有識別子 (形式: `!qPKKM111FFKKsfoCVy:matrix.org`)。 |
+| `token`   | 文字列 | はい | Matrixアクセストークン（例: `syt-zyx57W2v1u123ew11`）。 |
+| `room` | 文字列 | はい | ターゲットルームの固有識別子（形式: `!qPKKM111FFKKsfoCVy:matrix.org`）。 |
 | `notify_only_broken_pipelines` | ブール値 | いいえ | 破損したパイプラインの通知を送信します。 |
 | `notify_only_when_pipeline_status_changes` | ブール値 | いいえ | リファレンスのパイプラインステータスが変更された場合にのみ通知を送信します。 |
 | `branches_to_be_notified` | 文字列 | いいえ | 通知を送信するブランチ。有効なオプションは`all`、`default`、`protected`、および`default_and_protected`です。デフォルト値は`default`です。 |
@@ -1598,8 +1595,8 @@ GET /projects/:id/integrations/matrix
 
 {{< history >}}
 
-- `use_inherited_settings`パラメータはGitLab 17.2で[フラグ](../administration/feature_flags/_index.md) `integration_api_inheritance`とともに[導入](https://gitlab.com/gitlab-org/gitlab/-/issues/467089)されました。デフォルトでは無効になっています。
-- `use_inherited_settings`パラメータはGitLab 17.3で[一般提供](https://gitlab.com/gitlab-org/gitlab/-/issues/467186)されました。機能フラグ`integration_api_inheritance`は削除されました。
+- GitLab 17.2で`use_inherited_settings`パラメータが`integration_api_inheritance`[機能フラグ](../administration/feature_flags/_index.md)とともに[導入](https://gitlab.com/gitlab-org/gitlab/-/work_items/467089)されました。デフォルトでは無効になっています。
+- `use_inherited_settings`パラメータはGitLab 17.3で[一般提供](https://gitlab.com/gitlab-org/gitlab/-/work_items/467186)になりました。機能フラグ`integration_api_inheritance`は削除されました。
 
 {{< /history >}}
 
@@ -1615,7 +1612,7 @@ PUT /projects/:id/integrations/mattermost
 
 | パラメータ | 型 | 必須 | 説明 |
 | --------- | ---- | -------- | ----------- |
-| `webhook` | 文字列 | はい | Mattermost通知Webhook (例: `http://mattermost.example.com/hooks/...`)。 |
+| `webhook` | 文字列 | はい | Mattermost通知Webhook（例: `http://mattermost.example.com/hooks/...`）。 |
 | `username` | 文字列 | いいえ | Mattermost通知ユーザー名。 |
 | `channel` | 文字列 | いいえ | 他のチャンネルが設定されていない場合に使用するデフォルトのチャンネル。 |
 | `notify_only_broken_pipelines` | ブール値 | いいえ | 破損したパイプラインの通知を送信します。 |
@@ -1664,8 +1661,8 @@ GET /projects/:id/integrations/mattermost
 
 {{< history >}}
 
-- `use_inherited_settings`パラメータはGitLab 17.2で[フラグ](../administration/feature_flags/_index.md) `integration_api_inheritance`とともに[導入](https://gitlab.com/gitlab-org/gitlab/-/issues/467089)されました。デフォルトでは無効になっています。
-- `use_inherited_settings`パラメータはGitLab 17.3で[一般提供](https://gitlab.com/gitlab-org/gitlab/-/issues/467186)されました。機能フラグ`integration_api_inheritance`は削除されました。
+- GitLab 17.2で`use_inherited_settings`パラメータが`integration_api_inheritance`[機能フラグ](../administration/feature_flags/_index.md)とともに[導入](https://gitlab.com/gitlab-org/gitlab/-/work_items/467089)されました。デフォルトでは無効になっています。
+- `use_inherited_settings`パラメータはGitLab 17.3で[一般提供](https://gitlab.com/gitlab-org/gitlab/-/work_items/467186)になりました。機能フラグ`integration_api_inheritance`は削除されました。
 
 {{< /history >}}
 
@@ -1704,8 +1701,8 @@ GET /projects/:id/integrations/mattermost-slash-commands
 
 {{< history >}}
 
-- `use_inherited_settings`パラメータはGitLab 17.2で[フラグ](../administration/feature_flags/_index.md) `integration_api_inheritance`とともに[導入](https://gitlab.com/gitlab-org/gitlab/-/issues/467089)されました。デフォルトでは無効になっています。
-- `use_inherited_settings`パラメータはGitLab 17.3で[一般提供](https://gitlab.com/gitlab-org/gitlab/-/issues/467186)されました。機能フラグ`integration_api_inheritance`は削除されました。
+- GitLab 17.2で`use_inherited_settings`パラメータが`integration_api_inheritance`[機能フラグ](../administration/feature_flags/_index.md)とともに[導入](https://gitlab.com/gitlab-org/gitlab/-/work_items/467089)されました。デフォルトでは無効になっています。
+- `use_inherited_settings`パラメータはGitLab 17.3で[一般提供](https://gitlab.com/gitlab-org/gitlab/-/work_items/467186)になりました。機能フラグ`integration_api_inheritance`は削除されました。
 
 {{< /history >}}
 
@@ -1721,7 +1718,7 @@ PUT /projects/:id/integrations/microsoft-teams
 
 | パラメータ | 型 | 必須 | 説明 |
 | --------- | ---- | -------- | ----------- |
-| `webhook` | 文字列 | はい | Microsoft Teams Webhook (例: `https://outlook.office.com/webhook/...`)。 |
+| `webhook` | 文字列 | はい | Microsoft Teams Webhook（例: `https://outlook.office.com/webhook/...`）。 |
 | `notify_only_broken_pipelines` | ブール値 | いいえ | 破損したパイプラインの通知を送信します。 |
 | `notify_only_when_pipeline_status_changes` | ブール値 | いいえ | リファレンスのパイプラインステータスが変更された場合にのみ通知を送信します。 |
 | `notify_only_default_branch` | ブール値 | いいえ | **非推奨**: このパラメータは`branches_to_be_notified`に置き換えられました。 |
@@ -1757,8 +1754,8 @@ GET /projects/:id/integrations/microsoft-teams
 
 {{< history >}}
 
-- `use_inherited_settings`パラメータはGitLab 17.2で[フラグ](../administration/feature_flags/_index.md) `integration_api_inheritance`とともに[導入](https://gitlab.com/gitlab-org/gitlab/-/issues/467089)されました。デフォルトでは無効になっています。
-- `use_inherited_settings`パラメータはGitLab 17.3で[一般提供](https://gitlab.com/gitlab-org/gitlab/-/issues/467186)されました。機能フラグ`integration_api_inheritance`は削除されました。
+- GitLab 17.2で`use_inherited_settings`パラメータが`integration_api_inheritance`[機能フラグ](../administration/feature_flags/_index.md)とともに[導入](https://gitlab.com/gitlab-org/gitlab/-/work_items/467089)されました。デフォルトでは無効になっています。
+- `use_inherited_settings`パラメータはGitLab 17.3で[一般提供](https://gitlab.com/gitlab-org/gitlab/-/work_items/467186)になりました。機能フラグ`integration_api_inheritance`は削除されました。
 
 {{< /history >}}
 
@@ -1800,8 +1797,8 @@ GET /projects/:id/integrations/mock-ci
 
 {{< history >}}
 
-- `use_inherited_settings`パラメータはGitLab 17.2で[フラグ](../administration/feature_flags/_index.md) `integration_api_inheritance`とともに[導入](https://gitlab.com/gitlab-org/gitlab/-/issues/467089)されました。デフォルトでは無効になっています。
-- `use_inherited_settings`パラメータはGitLab 17.3で[一般提供](https://gitlab.com/gitlab-org/gitlab/-/issues/467186)されました。機能フラグ`integration_api_inheritance`は削除されました。
+- GitLab 17.2で`use_inherited_settings`パラメータが`integration_api_inheritance`[機能フラグ](../administration/feature_flags/_index.md)とともに[導入](https://gitlab.com/gitlab-org/gitlab/-/work_items/467089)されました。デフォルトでは無効になっています。
+- `use_inherited_settings`パラメータはGitLab 17.3で[一般提供](https://gitlab.com/gitlab-org/gitlab/-/work_items/467186)になりました。機能フラグ`integration_api_inheritance`は削除されました。
 
 {{< /history >}}
 
@@ -1845,9 +1842,8 @@ GET /projects/:id/integrations/packagist
 
 {{< history >}}
 
-- GitLab 16.11で[導入](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/145863)されました。
-- `use_inherited_settings`パラメータはGitLab 17.2で[フラグ](../administration/feature_flags/_index.md) `integration_api_inheritance`とともに[導入](https://gitlab.com/gitlab-org/gitlab/-/issues/467089)されました。デフォルトでは無効になっています。
-- `use_inherited_settings`パラメータはGitLab 17.3で[一般提供](https://gitlab.com/gitlab-org/gitlab/-/issues/467186)されました。機能フラグ`integration_api_inheritance`は削除されました。
+- GitLab 17.2で`use_inherited_settings`パラメータが`integration_api_inheritance`[機能フラグ](../administration/feature_flags/_index.md)とともに[導入](https://gitlab.com/gitlab-org/gitlab/-/work_items/467089)されました。デフォルトでは無効になっています。
+- `use_inherited_settings`パラメータはGitLab 17.3で[一般提供](https://gitlab.com/gitlab-org/gitlab/-/work_items/467186)になりました。機能フラグ`integration_api_inheritance`は削除されました。
 
 {{< /history >}}
 
@@ -1887,8 +1883,8 @@ GET /projects/:id/integrations/phorge
 
 {{< history >}}
 
-- `use_inherited_settings`パラメータはGitLab 17.2で[フラグ](../administration/feature_flags/_index.md) `integration_api_inheritance`とともに[導入](https://gitlab.com/gitlab-org/gitlab/-/issues/467089)されました。デフォルトでは無効になっています。
-- `use_inherited_settings`パラメータはGitLab 17.3で[一般提供](https://gitlab.com/gitlab-org/gitlab/-/issues/467186)されました。機能フラグ`integration_api_inheritance`は削除されました。
+- GitLab 17.2で`use_inherited_settings`パラメータが`integration_api_inheritance`[機能フラグ](../administration/feature_flags/_index.md)とともに[導入](https://gitlab.com/gitlab-org/gitlab/-/work_items/467089)されました。デフォルトでは無効になっています。
+- `use_inherited_settings`パラメータはGitLab 17.3で[一般提供](https://gitlab.com/gitlab-org/gitlab/-/work_items/467186)になりました。機能フラグ`integration_api_inheritance`は削除されました。
 
 {{< /history >}}
 
@@ -1931,8 +1927,8 @@ GET /projects/:id/integrations/pipelines-email
 
 {{< history >}}
 
-- `use_inherited_settings`パラメータはGitLab 17.2で[フラグ](../administration/feature_flags/_index.md) `integration_api_inheritance`とともに[導入](https://gitlab.com/gitlab-org/gitlab/-/issues/467089)されました。デフォルトでは無効になっています。
-- `use_inherited_settings`パラメータはGitLab 17.3で[一般提供](https://gitlab.com/gitlab-org/gitlab/-/issues/467186)されました。機能フラグ`integration_api_inheritance`は削除されました。
+- GitLab 17.2で`use_inherited_settings`パラメータが`integration_api_inheritance`[機能フラグ](../administration/feature_flags/_index.md)とともに[導入](https://gitlab.com/gitlab-org/gitlab/-/work_items/467089)されました。デフォルトでは無効になっています。
+- `use_inherited_settings`パラメータはGitLab 17.3で[一般提供](https://gitlab.com/gitlab-org/gitlab/-/work_items/467186)になりました。機能フラグ`integration_api_inheritance`は削除されました。
 
 {{< /history >}}
 
@@ -1972,8 +1968,8 @@ GET /projects/:id/integrations/pivotaltracker
 
 {{< history >}}
 
-- `use_inherited_settings`パラメータはGitLab 17.2で[フラグ](../administration/feature_flags/_index.md) `integration_api_inheritance`とともに[導入](https://gitlab.com/gitlab-org/gitlab/-/issues/467089)されました。デフォルトでは無効になっています。
-- `use_inherited_settings`パラメータはGitLab 17.3で[一般提供](https://gitlab.com/gitlab-org/gitlab/-/issues/467186)されました。機能フラグ`integration_api_inheritance`は削除されました。
+- GitLab 17.2で`use_inherited_settings`パラメータが`integration_api_inheritance`[機能フラグ](../administration/feature_flags/_index.md)とともに[導入](https://gitlab.com/gitlab-org/gitlab/-/work_items/467089)されました。デフォルトでは無効になっています。
+- `use_inherited_settings`パラメータはGitLab 17.3で[一般提供](https://gitlab.com/gitlab-org/gitlab/-/work_items/467186)になりました。機能フラグ`integration_api_inheritance`は削除されました。
 
 {{< /history >}}
 
@@ -1989,7 +1985,7 @@ PUT /projects/:id/integrations/pumble
 
 | パラメータ | 型 | 必須 | 説明 |
 | --------- | ---- | -------- | ----------- |
-| `webhook` | 文字列 | はい | Pumble Webhook (例: `https://api.pumble.com/workspaces/x/...`)。 |
+| `webhook` | 文字列 | はい | Pumble Webhook（例: `https://api.pumble.com/workspaces/x/...`）。 |
 | `branches_to_be_notified` | 文字列 | いいえ | 通知を送信するブランチ。有効なオプションは`all`、`default`、`protected`、および`default_and_protected`です。デフォルトは`default`です。 |
 | `confidential_issues_events` | ブール値 | いいえ | 機密イシューイベントの通知を有効にします。 |
 | `confidential_note_events` | ブール値 | いいえ | 機密ノートイベントの通知を有効にします。 |
@@ -2023,8 +2019,8 @@ GET /projects/:id/integrations/pumble
 
 {{< history >}}
 
-- `use_inherited_settings`パラメータはGitLab 17.2で[フラグ](../administration/feature_flags/_index.md) `integration_api_inheritance`とともに[導入](https://gitlab.com/gitlab-org/gitlab/-/issues/467089)されました。デフォルトでは無効になっています。
-- `use_inherited_settings`パラメータはGitLab 17.3で[一般提供](https://gitlab.com/gitlab-org/gitlab/-/issues/467186)されました。機能フラグ`integration_api_inheritance`は削除されました。
+- GitLab 17.2で`use_inherited_settings`パラメータが`integration_api_inheritance`[機能フラグ](../administration/feature_flags/_index.md)とともに[導入](https://gitlab.com/gitlab-org/gitlab/-/work_items/467089)されました。デフォルトでは無効になっています。
+- `use_inherited_settings`パラメータはGitLab 17.3で[一般提供](https://gitlab.com/gitlab-org/gitlab/-/work_items/467186)になりました。機能フラグ`integration_api_inheritance`は削除されました。
 
 {{< /history >}}
 
@@ -2067,8 +2063,8 @@ GET /projects/:id/integrations/pushover
 
 {{< history >}}
 
-- `use_inherited_settings`パラメータはGitLab 17.2で[フラグ](../administration/feature_flags/_index.md) `integration_api_inheritance`とともに[導入](https://gitlab.com/gitlab-org/gitlab/-/issues/467089)されました。デフォルトでは無効になっています。
-- `use_inherited_settings`パラメータはGitLab 17.3で[一般提供](https://gitlab.com/gitlab-org/gitlab/-/issues/467186)されました。機能フラグ`integration_api_inheritance`は削除されました。
+- GitLab 17.2で`use_inherited_settings`パラメータが`integration_api_inheritance`[機能フラグ](../administration/feature_flags/_index.md)とともに[導入](https://gitlab.com/gitlab-org/gitlab/-/work_items/467089)されました。デフォルトでは無効になっています。
+- `use_inherited_settings`パラメータはGitLab 17.3で[一般提供](https://gitlab.com/gitlab-org/gitlab/-/work_items/467186)になりました。機能フラグ`integration_api_inheritance`は削除されました。
 
 {{< /history >}}
 
@@ -2109,8 +2105,8 @@ GET /projects/:id/integrations/redmine
 
 {{< history >}}
 
-- `use_inherited_settings`パラメータはGitLab 17.2で[フラグ](../administration/feature_flags/_index.md) `integration_api_inheritance`とともに[導入](https://gitlab.com/gitlab-org/gitlab/-/issues/467089)されました。デフォルトでは無効になっています。
-- `use_inherited_settings`パラメータはGitLab 17.3で[一般提供](https://gitlab.com/gitlab-org/gitlab/-/issues/467186)されました。機能フラグ`integration_api_inheritance`は削除されました。
+- GitLab 17.2で`use_inherited_settings`パラメータが`integration_api_inheritance`[機能フラグ](../administration/feature_flags/_index.md)とともに[導入](https://gitlab.com/gitlab-org/gitlab/-/work_items/467089)されました。デフォルトでは無効になっています。
+- `use_inherited_settings`パラメータはGitLab 17.3で[一般提供](https://gitlab.com/gitlab-org/gitlab/-/work_items/467186)になりました。機能フラグ`integration_api_inheritance`は削除されました。
 
 {{< /history >}}
 
@@ -2126,7 +2122,7 @@ PUT /projects/:id/integrations/slack
 
 | パラメータ | 型 | 必須 | 説明 |
 | --------- | ---- | -------- | ----------- |
-| `webhook` | 文字列 | はい | Slack通知Webhook (例: `https://hooks.slack.com/services/...`)。 |
+| `webhook` | 文字列 | はい | Slack通知Webhook（例: `https://hooks.slack.com/services/...`）。 |
 | `username` | 文字列 | いいえ | Slack通知ユーザー名。 |
 | `channel` | 文字列 | いいえ | 他のチャンネルが設定されていない場合に使用するデフォルトのチャンネル。 |
 | `notify_only_broken_pipelines` | ブール値 | いいえ | 破損したパイプラインの通知を送信します。 |
@@ -2183,9 +2179,8 @@ GET /projects/:id/integrations/slack
 
 {{< history >}}
 
-- GitLab 15.10で[導入](https://gitlab.com/gitlab-org/gitlab/-/issues/337855)されました。
-- `use_inherited_settings`パラメータはGitLab 17.2で[フラグ](../administration/feature_flags/_index.md) `integration_api_inheritance`とともに[導入](https://gitlab.com/gitlab-org/gitlab/-/issues/467089)されました。デフォルトでは無効になっています。
-- `use_inherited_settings`パラメータはGitLab 17.3で[一般提供](https://gitlab.com/gitlab-org/gitlab/-/issues/467186)されました。機能フラグ`integration_api_inheritance`は削除されました。
+- GitLab 17.2で`use_inherited_settings`パラメータが`integration_api_inheritance`[機能フラグ](../administration/feature_flags/_index.md)とともに[導入](https://gitlab.com/gitlab-org/gitlab/-/work_items/467089)されました。デフォルトでは無効になっています。
+- `use_inherited_settings`パラメータはGitLab 17.3で[一般提供](https://gitlab.com/gitlab-org/gitlab/-/work_items/467186)になりました。機能フラグ`integration_api_inheritance`は削除されました。
 
 {{< /history >}}
 
@@ -2225,8 +2220,8 @@ GET /projects/:id/integrations/squash-tm
 
 {{< history >}}
 
-- `use_inherited_settings`パラメータはGitLab 17.2で[フラグ](../administration/feature_flags/_index.md) `integration_api_inheritance`とともに[導入](https://gitlab.com/gitlab-org/gitlab/-/issues/467089)されました。デフォルトでは無効になっています。
-- `use_inherited_settings`パラメータはGitLab 17.3で[一般提供](https://gitlab.com/gitlab-org/gitlab/-/issues/467186)されました。機能フラグ`integration_api_inheritance`は削除されました。
+- GitLab 17.2で`use_inherited_settings`パラメータが`integration_api_inheritance`[機能フラグ](../administration/feature_flags/_index.md)とともに[導入](https://gitlab.com/gitlab-org/gitlab/-/work_items/467089)されました。デフォルトでは無効になっています。
+- `use_inherited_settings`パラメータはGitLab 17.3で[一般提供](https://gitlab.com/gitlab-org/gitlab/-/work_items/467186)になりました。機能フラグ`integration_api_inheritance`は削除されました。
 
 {{< /history >}}
 
@@ -2242,13 +2237,13 @@ PUT /projects/:id/integrations/telegram
 
 | パラメータ | 型 | 必須 | 説明 |
 | --------- | ---- | -------- | ----------- |
-| `hostname`   | 文字列 | いいえ | Telegram APIのカスタムホスト名 (GitLab 17.1で[導入](https://gitlab.com/gitlab-org/gitlab/-/issues/461313))。デフォルト値は`https://api.telegram.org`です。 |
+| `hostname`   | 文字列 | いいえ | Telegram APIのカスタムホスト名（GitLab 17.1で[導入](https://gitlab.com/gitlab-org/gitlab/-/issues/461313)）。デフォルト値は`https://api.telegram.org`です。 |
 | `token`   | 文字列 | はい | Telegramボットのトークン（例: `123456:ABC-DEF1234ghIkl-zyx57W2v1u123ew11`）。 |
 | `room` | 文字列 | はい | ターゲットチャットの固有識別子、またはターゲットチャンネルのユーザー名（`@channelusername`の形式）。 |
-| `thread` | 整数 | いいえ | ターゲットメッセージスレッドの固有識別子（フォーラムスーパーグループ内のトピック）。GitLab 16.11で[導入](https://gitlab.com/gitlab-org/gitlab/-/issues/441097)されました。 |
+| `thread` | 整数 | いいえ | ターゲットメッセージスレッドの固有識別子（フォーラムスーパーグループ内のトピック）。 |
 | `notify_only_broken_pipelines` | ブール値 | いいえ | 破損したパイプラインの通知を送信します。 |
 | `notify_only_when_pipeline_status_changes` | ブール値 | いいえ | リファレンスのパイプラインステータスが変更された場合にのみ通知を送信します。 |
-| `branches_to_be_notified` | 文字列 | いいえ | ブランチへの通知を送信 ([GitLab 16.5で導入](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/134361))。有効なオプションは`all`、`default`、`protected`、および`default_and_protected`です。デフォルト値は`default`です。 |
+| `branches_to_be_notified` | 文字列 | いいえ | 通知を送信するブランチ。有効なオプションは`all`、`default`、`protected`、および`default_and_protected`です。デフォルト値は`default`です。 |
 | `push_events` | ブール値 | はい | プッシュイベントの通知を有効にします。 |
 | `issues_events` | ブール値 | はい | イシューイベントの通知を有効にします。 |
 | `confidential_issues_events` | ブール値 | はい | 機密イシューイベントの通知を有効にします。 |
@@ -2280,8 +2275,8 @@ GET /projects/:id/integrations/telegram
 
 {{< history >}}
 
-- `use_inherited_settings`パラメータはGitLab 17.2で[フラグ](../administration/feature_flags/_index.md) `integration_api_inheritance`とともに[導入](https://gitlab.com/gitlab-org/gitlab/-/issues/467089)されました。デフォルトでは無効になっています。
-- `use_inherited_settings`パラメータはGitLab 17.3で[一般提供](https://gitlab.com/gitlab-org/gitlab/-/issues/467186)されました。機能フラグ`integration_api_inheritance`は削除されました。
+- GitLab 17.2で`use_inherited_settings`パラメータが`integration_api_inheritance`[機能フラグ](../administration/feature_flags/_index.md)とともに[導入](https://gitlab.com/gitlab-org/gitlab/-/work_items/467089)されました。デフォルトでは無効になっています。
+- `use_inherited_settings`パラメータはGitLab 17.3で[一般提供](https://gitlab.com/gitlab-org/gitlab/-/work_items/467186)になりました。機能フラグ`integration_api_inheritance`は削除されました。
 
 {{< /history >}}
 
@@ -2332,8 +2327,8 @@ GET /projects/:id/integrations/unify-circuit
 
 {{< history >}}
 
-- `use_inherited_settings`パラメータはGitLab 17.2で[フラグ](../administration/feature_flags/_index.md) `integration_api_inheritance`とともに[導入](https://gitlab.com/gitlab-org/gitlab/-/issues/467089)されました。デフォルトでは無効になっています。
-- `use_inherited_settings`パラメータはGitLab 17.3で[一般提供](https://gitlab.com/gitlab-org/gitlab/-/issues/467186)されました。機能フラグ`integration_api_inheritance`は削除されました。
+- GitLab 17.2で`use_inherited_settings`パラメータが`integration_api_inheritance`[機能フラグ](../administration/feature_flags/_index.md)とともに[導入](https://gitlab.com/gitlab-org/gitlab/-/work_items/467089)されました。デフォルトでは無効になっています。
+- `use_inherited_settings`パラメータはGitLab 17.3で[一般提供](https://gitlab.com/gitlab-org/gitlab/-/work_items/467186)になりました。機能フラグ`integration_api_inheritance`は削除されました。
 
 {{< /history >}}
 
@@ -2383,8 +2378,8 @@ GET /projects/:id/integrations/webex-teams
 
 {{< history >}}
 
-- `use_inherited_settings`パラメータはGitLab 17.2で[フラグ](../administration/feature_flags/_index.md) `integration_api_inheritance`とともに[導入](https://gitlab.com/gitlab-org/gitlab/-/issues/467089)されました。デフォルトでは無効になっています。
-- `use_inherited_settings`パラメータはGitLab 17.3で[一般提供](https://gitlab.com/gitlab-org/gitlab/-/issues/467186)されました。機能フラグ`integration_api_inheritance`は削除されました。
+- GitLab 17.2で`use_inherited_settings`パラメータが`integration_api_inheritance`[機能フラグ](../administration/feature_flags/_index.md)とともに[導入](https://gitlab.com/gitlab-org/gitlab/-/work_items/467089)されました。デフォルトでは無効になっています。
+- `use_inherited_settings`パラメータはGitLab 17.3で[一般提供](https://gitlab.com/gitlab-org/gitlab/-/work_items/467186)になりました。機能フラグ`integration_api_inheritance`は削除されました。
 
 {{< /history >}}
 

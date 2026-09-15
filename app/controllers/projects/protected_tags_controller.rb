@@ -16,7 +16,7 @@ class Projects::ProtectedTagsController < Projects::ProtectedRefsController
   end
 
   def load_protected_ref
-    @protected_ref = @project.protected_tags.find(params[:id])
+    @protected_ref = @project.protected_tags.find(params.permit(:id)[:id])
   end
 
   def access_levels

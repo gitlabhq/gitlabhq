@@ -1,4 +1,4 @@
-export const clusterList = [
+const clusterList = [
   {
     name: 'My Cluster 1',
     environment_scope: '*',

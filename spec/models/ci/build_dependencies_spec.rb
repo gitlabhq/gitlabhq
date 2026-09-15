@@ -470,14 +470,14 @@ RSpec.describe Ci::BuildDependencies, feature_category: :continuous_integration 
 
     let(:job) { rspec_test }
 
-    it { is_expected.to eq(true) }
+    it { is_expected.to be(true) }
 
     context 'when a local dependency is invalid' do
       before do
         build.update_column(:erased_at, Time.current)
       end
 
-      it { is_expected.to eq(false) }
+      it { is_expected.to be(false) }
     end
   end
 end

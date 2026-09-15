@@ -87,7 +87,7 @@ end
 - `file_value` is the value of the nested `file` entry.
 - `token` is the value of the basic `token` attribute.
 
-**It is important** that we should always use the `xxx_value` method to get the value of a nested entry.
+It is important that we should always use the `xxx_value` method to get the value of a nested entry.
 
 ## Feature Flag Usage
 

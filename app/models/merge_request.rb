@@ -332,6 +332,28 @@ class MergeRequest < ApplicationRecord
     # rubocop: enable Style/SymbolProc
   end
 
+  # The source and target a merge status is about to be computed from. Capture
+  # these before computing; the record can be refreshed while we wait on Gitaly, which
+  # would otherwise move what the computed status is judged against.
+  #
+  # The diff stands in for the source SHA, which no column records: `diff_head_sha`
+  # reads it from `merge_request_diff`, and that is whichever diff is loaded here,
+  # not necessarily the latest one.
+  def merge_status_inputs
+    [target_branch, merge_request_diff.id]
+  end
+
+  # Does the row still have the inputs a merge status was computed from? Callers hold
+  # a record they may have loaded much earlier, so a retarget in the meantime leaves
+  # them about to write a status for a branch this no longer targets.
+  #
+  # Locks the row, so this has to run inside the transaction that writes the status:
+  # anything retargeting the merge request updates this row and so waits for that
+  # transaction, which leaves no window between the answer and the write.
+  def merge_status_inputs_current?(inputs)
+    self.class.where(id: id).lock.pick(:target_branch, :latest_merge_request_diff_id) == inputs
+  end
+
   # NOTE: Batch transition merge_status to unchecked/cannot_be_merged_recheck.
   # This bypasses state machine callbacks for performance but mimics their behavior.
   #
@@ -458,8 +480,19 @@ class MergeRequest < ApplicationRecord
       )
     end
 
-    where('EXISTS (?)', MergeRequestDiff.select(1).where('merge_requests.latest_merge_request_diff_id = merge_request_diffs.id').by_commit_sha(target_project_id, sha)).reorder(nil)
+    project_ids_list = Array.wrap(target_project_id)
+
+    # Avoids planner mis-estimation by collecting diff IDs first
+    # via ARRAY(subquery), then matching with = ANY(...)
+
+    if project_ids_list.all? { |id| Feature.enabled?(:mr_by_commit_sha_use_array_subquery, Project.actor_from_id(id)) }
+      diff_ids_query = MergeRequestDiff.by_commit_sha(target_project_id, sha).select(:id)
+      where(Arel.sql("latest_merge_request_diff_id = ANY(ARRAY(#{diff_ids_query.to_sql}))")).reorder(nil)
+    else
+      where('EXISTS (?)', MergeRequestDiff.select(1).where('merge_requests.latest_merge_request_diff_id = merge_request_diffs.id').by_commit_sha(target_project_id, sha)).reorder(nil)
+    end
   end
+
   scope :by_merge_commit_sha, ->(sha) do
     where(merge_commit_sha: sha)
   end
@@ -729,14 +762,6 @@ class MergeRequest < ApplicationRecord
       .where(merge_request_diff_files: { old_path: path })
   end
 
-  # Optimization support, see: https://docs.gitlab.com/development/database/efficient_in_operator_queries/
-  scope :in_optimization_array_mapping_scope, ->(id_expression) {
-    where(arel_table[:target_project_id].eq(id_expression))
-  }
-  scope :in_optimization_finder_query, ->(_created_at_expression, id_expression) {
-    where(arel_table[:id].eq(id_expression))
-  }
-
   scope :with_closed_between, ->(closed_after = nil, closed_before = nil) do
     return all unless closed_after || closed_before
 
@@ -944,8 +969,21 @@ class MergeRequest < ApplicationRecord
     !!(title =~ DRAFT_REGEX)
   end
 
+  # No legitimate title stacks anywhere near this many draft prefixes; it only
+  # bounds the loop below against an adversarial title (title length isn't
+  # validated yet at this point).
+  MAX_DRAFT_PREFIX_STRIPS = 20
+
   def self.draftless_title(title)
-    title.sub(DRAFT_REGEX, "")
+    MAX_DRAFT_PREFIX_STRIPS.times do
+      # Loop because DRAFT_REGEX uses \A and can't match multiple prefixes in one pass
+      new_title = title.sub(DRAFT_REGEX, "")
+      break if new_title == title
+
+      title = new_title
+    end
+
+    title
   end
 
   def self.draft_title(title)
@@ -1225,15 +1263,17 @@ class MergeRequest < ApplicationRecord
   end
 
   def changed_paths
-    if Feature.enabled?(:mr_changed_paths_net_diff, project) && diff_base_sha && diff_head_sha
+    if diff_base_sha && diff_head_sha
       return project.repository.find_changed_paths([Gitlab::Git::DiffTree.new(diff_base_sha, diff_head_sha)])
     end
 
+    # This may list extra files. Running a CI job we didn't need is safer
+    # than skipping one that should have run.
     project.repository.find_changed_paths(
       commit_shas(bypass_preloaded: true), merge_commit_diff_mode: :all_parents
     )
   end
-  request_cache(:changed_paths) { [id, diff_head_sha] }
+  request_cache(:changed_paths) { [id, diff_base_sha, diff_head_sha] }
 
   def new_paths
     diffs.diff_files.map(&:new_path)
@@ -1432,7 +1472,6 @@ class MergeRequest < ApplicationRecord
   # UI surface a clear reopen error.
   def validate_required_branch_existence
     return unless require_existing_branches
-    return unless Feature.enabled?(:prevent_reopen_merge_request_without_branch, project)
     return if nonexistent_branches.empty?
 
     errors.add(:base, _('Cannot reopen this merge request because the source or target branch no longer exists.'))
@@ -1928,7 +1967,7 @@ class MergeRequest < ApplicationRecord
     messages += commits(load_from_gitaly: true).map(&:safe_message) if merge_request_diff.persisted?
 
     ext = Gitlab::ReferenceExtractor.new(project, user)
-    ext.analyze(messages.join("\n"))
+    ext.analyze(messages.join("\n"), pipeline: :issue_reference_extraction)
 
     issues_from(ext)
   end
@@ -2424,19 +2463,10 @@ class MergeRequest < ApplicationRecord
       .where(merge_request_diff: merge_request_diffs.recent)
       .limit(10_000)
 
-    relation = relation.where(project_id: target_project_id) if project_id_pruning_enabled?
+    relation = relation.where(project_id: target_project_id) if read_new_commits_table?
 
     relation
   end
-
-  # Note that this could also return SHA from now dangling commits
-  #
-  def all_commit_shas
-    return commit_shas unless persisted?
-
-    all_commit_shas_from_metadata
-  end
-  strong_memoize_attr :all_commit_shas
 
   def merge_commit
     @merge_commit ||= project.commit(merge_commit_sha) if merge_commit_sha
@@ -2722,6 +2752,12 @@ class MergeRequest < ApplicationRecord
     merge_request_reviewers.find_by(user_id: user.id)
   end
 
+  def find_or_create_reviewer(user)
+    merge_request_reviewers.find_or_create_by(user_id: user.id)
+  rescue ActiveRecord::RecordNotUnique
+    merge_request_reviewers.find_by(user_id: user.id)
+  end
+
   def merge_request_reviewers_with(user_ids)
     merge_request_reviewers.where(user_id: user_ids)
   end
@@ -2917,26 +2953,48 @@ class MergeRequest < ApplicationRecord
   end
 
   def commit_exists?(sha)
+    existing_commit_shas([sha]).any?
+  end
+
+  # Returns the subset of `shas` that belong to this merge request's commits.
+  #
+  # SHAs are matched exactly, so callers must pass full SHAs. The number of
+  # queries depends on how many SHAs are given, not on how many commits the
+  # merge request has.
+  def existing_commit_shas(shas)
+    return [] if shas.empty?
+
     diff_commits_subquery = MergeRequestDiffCommit
       .where('merge_request_diff_commits.merge_request_commits_metadata_id = merge_request_commits_metadata.id')
       .where_exists(
         merge_request_diffs.where('merge_request_diffs.id = merge_request_diff_commits.merge_request_diff_id')
       )
 
-    diff_commits_subquery = diff_commits_subquery.where(project_id: target_project_id) if project_id_pruning_enabled?
+    diff_commits_subquery = diff_commits_subquery.where(project_id: target_project_id) if read_new_commits_table?
 
     # Data can be found in either table until backfill completes. First look for SHAs in table
-    # `merge_request_commits_metadata`, if not found look in `merge_request_diff_commits`.
-    return true if MergeRequest::CommitsMetadata
-      .where(project: project, sha: sha)
-      .where_exists(diff_commits_subquery)
-      .exists?
+    # `merge_request_commits_metadata`, then look for the ones we did not find in
+    # `merge_request_diff_commits`.
+    found_shas = shas.each_slice(MAX_PLUCK).flat_map do |slice|
+      MergeRequest::CommitsMetadata
+        .where(project: project, sha: slice)
+        .where_exists(diff_commits_subquery)
+        .limit(slice.size)
+        .pluck(:sha)
+    end
 
-    # We skip querying `merge_request_diff_commits` table when FF `mr_diff_commits_read_new_table` is enabled.
-    # This flag will only be enabled when new table is fully populated
-    return false if read_new_commits_table?
+    # Once the table is swapped, the metadata lookup above is authoritative and there is
+    # no legacy `sha` column left to fall back to.
+    return found_shas if read_new_commits_table?
 
-    all_commits.exists?(sha: sha)
+    missing_shas = shas - found_shas
+    return found_shas if missing_shas.empty?
+
+    # The same SHA is stored once per diff version, so without `distinct` the
+    # LIMIT could be filled by duplicates before all matches are found.
+    found_shas + missing_shas.each_slice(MAX_PLUCK).flat_map do |slice|
+      all_commits.where(sha: slice).distinct.limit(slice.size).pluck(:sha)
+    end
   end
 
   %w[
@@ -3154,7 +3212,7 @@ class MergeRequest < ApplicationRecord
       .where(dc[:merge_request_diff_id].eq(merge_request_diff.id))
       .where(u[:email].not_eq(nil))
 
-    query = query.where(dc[:project_id].eq(target_project_id)) if project_id_pruning_enabled?
+    query = query.where(dc[:project_id].eq(target_project_id)) if read_new_commits_table?
 
     query
   end
@@ -3190,7 +3248,7 @@ class MergeRequest < ApplicationRecord
     # ReferenceExtractor is expensive.
     strong_memoize_with(:referenced_issues_in_description, current_user&.id) do
       ext = Gitlab::ReferenceExtractor.new(project, current_user)
-      ext.analyze("#{title}\n#{description}")
+      ext.analyze("#{title}\n#{description}", pipeline: :issue_reference_extraction)
 
       issues_from(ext)
     end
@@ -3399,25 +3457,6 @@ class MergeRequest < ApplicationRecord
       &.exists?
   end
 
-  def all_commit_shas_from_metadata
-    commits_subquery = all_commits.select(:merge_request_commits_metadata_id)
-    migrated_shas = MergeRequest::CommitsMetadata
-                      .joins(
-                        "INNER JOIN (#{commits_subquery.to_sql}) AS diff_commits " \
-                          "ON diff_commits.merge_request_commits_metadata_id = merge_request_commits_metadata.id"
-                      )
-                      .where(project_id: project_id)
-                      .pluck(:sha)
-
-    return migrated_shas.uniq if read_new_commits_table?
-
-    # We need to query SHAs from `merge_request_diff_commits` table to account
-    # for records that don't have `merge_request_commits_metadata_id` populated yet
-    unmigrated_shas = all_commits.where(merge_request_commits_metadata_id: nil).pluck(:sha)
-
-    (migrated_shas + unmigrated_shas).uniq
-  end
-
   def resolve_diff_version(diff_options = {})
     params = {
       diff_id: diff_options.delete(:diff_id),
@@ -3429,14 +3468,9 @@ class MergeRequest < ApplicationRecord
   end
 
   def read_new_commits_table?
-    Feature.enabled?(:mr_diff_commits_read_new_table, project)
+    MergeRequestDiffCommit.read_new_commits_table?(target_project_id)
   end
   strong_memoize_attr :read_new_commits_table?
-
-  def project_id_pruning_enabled?
-    MergeRequestDiffCommit.project_id_pruning_enabled?(target_project_id)
-  end
-  strong_memoize_attr :project_id_pruning_enabled?
 end
 
 MergeRequest.prepend_mod_with('MergeRequest')

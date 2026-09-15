@@ -17,6 +17,11 @@ module Mutations
 
         authorize :admin_import_source_user
 
+        authorize_granular_token permissions: :update_placeholder_reassignment,
+          boundary_argument: :id,
+          boundary: :namespace,
+          boundary_type: :group
+
         def resolve(args)
           import_source_user = authorized_find!(id: args[:id])
 
@@ -35,7 +40,7 @@ module Mutations
             :import_source_user_notification, scope: [import_source_user]
           )
 
-          raise_resource_not_available_error! _('This endpoint has been requested too many times. Try again later.')
+          raise_resource_not_available_error! Gitlab::ApplicationRateLimiter.throttled_error_message
         end
       end
     end

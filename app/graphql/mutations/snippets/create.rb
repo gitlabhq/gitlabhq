@@ -52,6 +52,8 @@ module Mutations
           authorize!(:global)
         end
 
+        verify_rate_limit!
+
         process_args_for_params!(args)
 
         service = ::Snippets::CreateService.new(project: project, current_user: current_user, params: args)
@@ -79,6 +81,16 @@ module Mutations
 
       def find_object(full_path)
         Project.find_by_full_path(full_path)
+      end
+
+      def verify_rate_limit!
+        return unless rate_limit_throttled?
+
+        raise_resource_not_available_error!(Gitlab::ApplicationRateLimiter.throttled_error_message)
+      end
+
+      def rate_limit_throttled?
+        ::Gitlab::ApplicationRateLimiter.throttled?(:snippets_create, scope: [current_user])
       end
 
       # process_args_for_params!(args)    -> nil

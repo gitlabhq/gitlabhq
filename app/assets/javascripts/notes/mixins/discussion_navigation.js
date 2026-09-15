@@ -1,3 +1,4 @@
+import { nextTick } from 'vue';
 import { mapActions } from 'pinia';
 import { contentTop } from '~/lib/utils/common_utils';
 import { useLegacyDiffs } from '~/diffs/stores/legacy_diffs';
@@ -42,8 +43,26 @@ function getVisibleDiscussions() {
   return getAllDiscussionElements().filter(isVisible);
 }
 
-function scrollToDiscussion(target) {
+const ACTIVE_TOLERANCE = 4;
+
+function usesLegacyStrategy() {
+  return isOverviewPage() || !isRapidDiffs();
+}
+
+function nextFrame() {
+  return new Promise((resolve) => {
+    requestAnimationFrame(resolve);
+  });
+}
+
+async function scrollToDiscussion(target) {
   target.scrollIntoView(true);
+  scrollPastCoveringElements(target);
+  // Sticky headers (e.g. the merge request title bar) can toggle their own
+  // visibility asynchronously, after this scroll, via an IntersectionObserver.
+  // Re-run the correction once that settles so a header that appears late
+  // doesn't permanently obscure the target.
+  await nextFrame();
   scrollPastCoveringElements(target);
 }
 
@@ -52,21 +71,52 @@ function hasReachedPageEnd() {
   return panel.scrollHeight <= Math.ceil(panel.scrollTop + panel.clientHeight);
 }
 
+function isStickyOrFixed(el) {
+  const { position } = getComputedStyle(el);
+  return position === 'sticky' || position === 'fixed';
+}
+
+function findStickyAncestor(el) {
+  let current = el;
+  while (current && current !== document.body) {
+    if (isStickyOrFixed(current)) return current;
+    current = current.offsetParent;
+  }
+  return null;
+}
+
+// The line a navigated thread comes to rest on is set by scrollPastCoveringElements,
+// which hit-tests the live sticky header to clear it. Measure the current thread
+// against that same hit-tested line so navigation and scrolling share one reference,
+// falling back to the summed-selector estimate contentTop() when nothing is covering.
+function getTopOffset() {
+  let offset = null;
+
+  offset = withHiddenTooltips(() => {
+    const panelRect = getPanel().getBoundingClientRect();
+    const hit = document.elementFromPoint(panelRect.left + 1, panelRect.top + 1);
+    const sticky = hit ? findStickyAncestor(hit) : null;
+
+    return sticky ? sticky.getBoundingClientRect().bottom : null;
+  });
+
+  if (offset === null) {
+    offset = contentTop();
+  }
+
+  return offset;
+}
+
 function findNextClosestVisibleDiscussion(elements) {
-  const offsetHeight = contentTop();
+  const offsetHeight = getTopOffset();
   let isActive;
   const index = elements.findIndex((element) => {
     const { y } = element.getBoundingClientRect();
     const visibleOffset = Math.ceil(y) - offsetHeight;
-    isActive = visibleOffset < 2;
-    return visibleOffset >= 0;
+    isActive = visibleOffset < ACTIVE_TOLERANCE;
+    return visibleOffset >= -ACTIVE_TOLERANCE;
   });
   return { element: elements[index], index, isActive };
-}
-
-function isStickyOrFixed(el) {
-  const { position } = getComputedStyle(el);
-  return position === 'sticky' || position === 'fixed';
 }
 
 function hasNonStickyAncestor(el, stopAt) {
@@ -146,8 +196,7 @@ const strategies = {
 };
 
 function getNavigationStrategy() {
-  if (isOverviewPage()) return strategies.legacy;
-  return isRapidDiffs() ? strategies.rapidDiffs : strategies.legacy;
+  return usesLegacyStrategy() ? strategies.legacy : strategies.rapidDiffs;
 }
 
 function getNextDiscussion() {
@@ -162,11 +211,11 @@ function getPreviousDiscussion() {
   return getNavigationStrategy().getPrevious(elements);
 }
 
-function handleJumpForBothPages(getDiscussion, ctx) {
+async function handleJumpForBothPages(getDiscussion, ctx) {
   const discussion = getDiscussion();
 
   if (!isOverviewPage() && !discussion) {
-    window.mrTabs?.eventHub.$once('NotesAppReady', () => {
+    window.mrTabs?.eventHub.$once('notes-app-ready', () => {
       handleJumpForBothPages(getDiscussion, ctx);
     });
     window.mrTabs?.setCurrentAction('show');
@@ -177,7 +226,11 @@ function handleJumpForBothPages(getDiscussion, ctx) {
   if (discussion) {
     const id = discussion.dataset.discussionId;
     ctx.expandDiscussion({ discussionId: id });
-    scrollToDiscussion(discussion);
+    // Wait for Vue to render the expanded discussion before measuring its
+    // position, otherwise the scroll correction below runs against stale
+    // layout and can leave the discussion under a sticky header.
+    await nextTick();
+    await scrollToDiscussion(discussion);
   }
 }
 
@@ -189,18 +242,18 @@ export default {
     async jumpToNextDiscussion() {
       await this.disableVirtualScroller();
 
-      handleJumpForBothPages(getNextDiscussion, this);
+      await handleJumpForBothPages(getNextDiscussion, this);
     },
 
     async jumpToPreviousDiscussion() {
       await this.disableVirtualScroller();
 
-      handleJumpForBothPages(getPreviousDiscussion, this);
+      await handleJumpForBothPages(getPreviousDiscussion, this);
     },
 
     jumpToFirstUnresolvedDiscussion() {
       this.setCurrentDiscussionId(null);
-      this.jumpToNextDiscussion();
+      return this.jumpToNextDiscussion();
     },
   },
 };

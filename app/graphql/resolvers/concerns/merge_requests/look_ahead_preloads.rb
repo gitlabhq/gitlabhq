@@ -50,7 +50,17 @@ module MergeRequests
         squash_read_only: { target_project: :project_setting },
         web_url: { target_project: [:route, { namespace: [:route] }] },
         reference: { target_project: [:route, { namespace: [:route] }] },
-        project: { target_project: [:route, { namespace: [:route] }] }
+        project: { target_project: [:route, { namespace: [:route] }] },
+        risk_assessment: [
+          :risk_assessment,
+          {
+            target_project: [
+              :project_setting,
+              :enabled_foundational_flow_records,
+              { namespace: :enabled_foundational_flow_records }
+            ]
+          }
+        ]
       }
     end
   end

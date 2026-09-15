@@ -42,3 +42,5 @@ module Organizations
     end
   end
 end
+
+Organizations::OrganizationUsers::UpdateService.prepend_mod

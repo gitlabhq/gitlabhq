@@ -2,12 +2,12 @@
 stage: Data Access
 group: Database Frameworks
 info: Any user with at least the Maintainer role can merge updates to this content. For details, see <https://docs.gitlab.com/development/development_processes/#development-guidelines-review>.
-title: Swapping Tables
+title: Swapping tables
 ---
 
 Sometimes you need to replace one table with another. For example, when
 migrating data in a very large table it's often better to create a copy of the
-table and insert & migrate the data into this new table in the background.
+table and insert and migrate the data into this new table in the background.
 
 > [!note]
 > First, verify whether the table is replicated to ClickHouse with Siphon. The table is replicated
@@ -18,11 +18,11 @@ table and insert & migrate the data into this new table in the background.
 
 For example, to swap a table called `events` with another table called `events_for_migration`, you would need to:
 
-1. Rename `events` to `events_temporary`
-1. Rename `events_for_migration` to `events`
-1. Rename `events_temporary` to `events_for_migration`
+1. Rename `events` to `events_temporary`.
+1. Rename `events_for_migration` to `events`.
+1. Rename `events_temporary` to `events_for_migration`.
 
-Rails allows you to do this using the `rename_table` method:
+You can do this in Rails using the `rename_table` method:
 
 ```ruby
 rename_table :events, :events_temporary
@@ -32,7 +32,7 @@ rename_table :events_temporary, :events_for_migration
 
 This does not require any downtime as long as the 3 `rename_table` calls are
 executed in the same database transaction. Rails by default uses database
-transactions for migrations, but if it doesn't you need to start one
+transactions for migrations, but if it doesn't, you need to start one
 manually:
 
 ```ruby
@@ -43,7 +43,7 @@ Event.transaction do
 end
 ```
 
-Once swapped you _have to_ reset the primary key of the new table. For
+Once swapped, you _have to_ reset the primary key of the new table. For
 PostgreSQL you can use the `reset_pk_sequence!` method like so:
 
 ```ruby

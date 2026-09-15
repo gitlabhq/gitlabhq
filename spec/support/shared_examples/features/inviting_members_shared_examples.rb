@@ -212,50 +212,58 @@ RSpec.shared_examples 'inviting members' do |snowplow_invite_label|
 
           invite_member([user2.name, user3.name, user4.name, user6.name, user7.name], role: role)
 
-          # we have more than 2 errors, so one will be hidden
+          # failures group by message: user2 fails with the Developer-membership
+          # message, while user3, user6, and user7 share the Maintainer one, so
+          # four failed members render as two grouped error entries
+          maintainer_message = "Access level should be greater than or equal to Maintainer " \
+            "inherited membership from group #{group.name}"
+          developer_message = "Access level should be greater than or equal to Developer " \
+            "inherited membership from group #{group.name}"
+
           invite_modal = page.find(invite_modal_selector)
           expect(invite_modal).to have_text("The following 4 members couldn't be invited")
           expect(invite_modal).to have_selector(limited_invite_error_selector, count: 2, visible: :visible)
-          expect(invite_modal).to have_selector(expanded_invite_error_selector, count: 2, visible: :hidden)
-          # unpredictability of return order means we can't rely on message showing in any order here
-          # so we will not expect on the message
+          expect(invite_modal).to have_text(maintainer_message, count: 1)
+          expect(invite_modal).to have_text(developer_message, count: 1)
+          expect(invite_modal).to have_no_selector(expanded_invite_error_selector, visible: :all)
+          expect(invite_modal).to have_no_selector(more_invite_errors_button_selector)
+
+          grouped_error = invite_modal.find(limited_invite_error_selector, text: maintainer_message)
+          expect(grouped_error).to have_text(user3.name)
+          expect(grouped_error).to have_text(user6.name)
+          expect(grouped_error).to have_text(user7.name)
+          expect(grouped_error).to have_no_text(user2.name)
+
           expect_to_have_invalid_invite_indicator(invite_modal, user2, message: false)
           expect_to_have_invalid_invite_indicator(invite_modal, user3, message: false)
           expect_to_have_invalid_invite_indicator(invite_modal, user6, message: false)
           expect_to_have_invalid_invite_indicator(invite_modal, user7, message: false)
           expect_to_have_successful_invite_indicator(invite_modal, user4)
-          expect(invite_modal).to have_button('Show more (2)')
 
-          # now we want to test the show more errors count logic
+          # removing a member updates the count and drops them from their grouped entry
           remove_token(user7.id)
 
-          # count decreases from 4 to 3 and 2 to 1
           expect(invite_modal).to have_text("The following 3 members couldn't be invited")
-          expect(invite_modal).to have_button('Show more (1)')
-
-          # we want to show this error now for user6
-          invite_modal.find(more_invite_errors_button_selector).click
-
-          # now we should see the error for all users and our collapse button text
           expect(invite_modal).to have_selector(limited_invite_error_selector, count: 2, visible: :visible)
-          expect(invite_modal).to have_selector(expanded_invite_error_selector, count: 1, visible: :visible)
-          expect_to_have_invalid_invite_indicator(invite_modal, user2, message: true)
-          expect_to_have_invalid_invite_indicator(invite_modal, user3, message: true)
-          expect_to_have_invalid_invite_indicator(invite_modal, user6, message: true)
-          expect(invite_modal).to have_button('Show less')
+
+          grouped_error = invite_modal.find(limited_invite_error_selector, text: maintainer_message)
+          expect(grouped_error).to have_text(user6.name)
+          expect(grouped_error).to have_no_text(user7.name)
 
           # adds new token, but doesn't submit
           select_members(user5.name)
 
           expect_to_have_normal_invite_indicator(invite_modal, user5)
 
+          # removing the only member of a grouped entry removes the whole entry
           remove_token(user2.id)
 
           expect(invite_modal).to have_text("The following 2 members couldn't be invited")
-          expect(invite_modal).not_to have_selector(more_invite_errors_button_selector)
+          expect(invite_modal).to have_selector(limited_invite_error_selector, count: 1, visible: :visible)
+          expect(invite_modal).to have_no_text(developer_message)
           expect_to_have_invite_removed(invite_modal, user2)
-          expect_to_have_invalid_invite_indicator(invite_modal, user3)
-          expect_to_have_invalid_invite_indicator(invite_modal, user6)
+          expect_to_have_invalid_invite_indicator(invite_modal, user3, message: false)
+          expect_to_have_invalid_invite_indicator(invite_modal, user6, message: false)
           expect_to_have_successful_invite_indicator(invite_modal, user4)
           expect_to_have_normal_invite_indicator(invite_modal, user5)
 

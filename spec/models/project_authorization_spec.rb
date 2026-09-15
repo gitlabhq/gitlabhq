@@ -177,6 +177,76 @@ RSpec.describe ProjectAuthorization, feature_category: :groups_and_projects do
     end
   end
 
+  describe '.project_ids_and_access_levels_for' do
+    let_it_be(:other_user) { create(:user) }
+    let_it_be(:project_1) { create(:project) }
+    let_it_be(:project_2) { create(:project) }
+
+    let_it_be(:auth_1) do
+      create(:project_authorization, user: other_user, project: project_1,
+        access_level: Gitlab::Access::DEVELOPER)
+    end
+
+    let_it_be(:auth_2) do
+      create(:project_authorization, user: other_user, project: project_2,
+        access_level: Gitlab::Access::MAINTAINER)
+    end
+
+    it 'returns [project_id, access_level] pairs rather than records' do
+      expect(described_class.project_ids_and_access_levels_for(other_user.id)).to match_array([
+        [project_1.id, Gitlab::Access::DEVELOPER],
+        [project_2.id, Gitlab::Access::MAINTAINER]
+      ])
+    end
+
+    it 'only returns rows for the given user' do
+      unrelated_user = create(:user)
+      create(:project_authorization, user: unrelated_user, project: project_1)
+
+      pairs = described_class.project_ids_and_access_levels_for(unrelated_user.id)
+
+      expect(pairs.map(&:first)).to contain_exactly(project_1.id)
+    end
+
+    it 'returns an empty array for a user with no authorizations' do
+      expect(described_class.project_ids_and_access_levels_for(non_existing_record_id)).to eq([])
+    end
+  end
+
+  describe '.access_levels_by_project' do
+    let_it_be(:other_user) { create(:user) }
+    let_it_be(:other_project) { create(:project) }
+
+    let_it_be(:authorization) do
+      create(:project_authorization, user: other_user, project: other_project,
+        access_level: Gitlab::Access::REPORTER)
+    end
+
+    let(:relation) do
+      described_class.for_user(other_user.id).select(:project_id, :access_level)
+    end
+
+    it 'maps project IDs to access levels' do
+      expect(described_class.access_levels_by_project(relation))
+        .to eq({ other_project.id => Gitlab::Access::REPORTER })
+    end
+
+    it 'returns an empty hash when the relation matches nothing' do
+      empty = described_class.for_user(non_existing_record_id).select(:project_id, :access_level)
+
+      expect(described_class.access_levels_by_project(empty)).to eq({})
+    end
+
+    context 'when the relation does not select the expected columns' do
+      it 'raises rather than mapping the wrong values' do
+        wrong_order = described_class.for_user(other_user.id).select(:access_level, :project_id)
+
+        expect { described_class.access_levels_by_project(wrong_order) }
+          .to raise_error(ArgumentError, /expected project_id, access_level/)
+      end
+    end
+  end
+
   describe '.insert_all' do
     let_it_be(:user) { create(:user) }
     let_it_be(:project_1) { create(:project) }

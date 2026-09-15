@@ -22,6 +22,7 @@ The following limits are disabled by default:
 - [Unauthenticated web requests (per IP)](#enable-unauthenticated-web-request-rate-limit).
 - [Authenticated API requests (per user)](#enable-authenticated-api-request-rate-limit).
 - [Authenticated web requests (per user)](#enable-authenticated-web-request-rate-limit).
+- [Authenticated dependency proxy requests (per user)](#enable-authenticated-dependency-proxy-request-rate-limit).
 
 > [!note]
 > By default, all Git operations are first tried unauthenticated. Because of this, HTTP Git operations
@@ -90,6 +91,41 @@ To enable the authenticated request rate limit:
    - Optional. Update the **Authenticated web rate limit period in seconds** value.
      Defaults to `3600`.
 
+## Enable authenticated dependency proxy request rate limit
+
+Authenticated requests to the
+[dependency proxy for container images](../../user/packages/dependency_proxy/_index.md) count
+against the [authenticated web request rate limit](#enable-authenticated-web-request-rate-limit)
+by default. Container image pulls then share a budget with a user's other web traffic. Parallel
+CI/CD pulls can exhaust that budget and fail with a `429` error.
+
+To give dependency proxy traffic its own budget, enable a rate limit dedicated to the container
+image manifest and blob endpoints under `/v2/<group>/dependency_proxy/containers/`. This limit
+applies only to authenticated requests. GitLab does not provide a rate limit for unauthenticated
+dependency proxy requests.
+
+To enable the authenticated dependency proxy rate limit:
+
+1. In the upper-right corner, select **Admin**.
+1. In the left sidebar, select **Settings** > **Network**.
+1. Expand **Dependency proxy rate limits**.
+1. Select **Enable authenticated dependency proxy request rate limit**.
+
+   - Optional. Update the **Max authenticated dependency proxy requests per period per user** value.
+     Defaults to `1000`.
+   - Optional. Update the **Authenticated dependency proxy rate limit period in seconds** value.
+     Defaults to `15`.
+
+While this limit is disabled, dependency proxy requests continue to count against the
+authenticated web request rate limit.
+
+> [!note]
+> When you upgrade to GitLab 19.4 or later, GitLab automatically enables this limit if the
+> authenticated web request rate limit is already enabled on your instance, and copies its
+> requests-per-period and period-in-seconds values. This can only loosen limits: dependency proxy
+> traffic that previously shared a budget with web traffic gets its own budget of the same size.
+> If the authenticated web request rate limit is disabled, this limit remains disabled.
+
 ## Use a custom rate limit response
 
 A request that exceeds a rate limit returns a `429` response code and a
@@ -149,7 +185,7 @@ The following headers are included in all responses to help clients track their 
 |:----------------------|:-----------------------------|:------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
 | `RateLimit-Limit`     | `60`                         | The request quota for the client each minute. If the rate limit period set in the **Admin** area is different from 1 minute, the value of this header is adjusted to approximately the nearest 60-minute period. |
 | `RateLimit-Name`      | `throttle_authenticated_api` | Name of the throttle applied to the request.                                                                                                                                                                     |
-| `RateLimit-Observed`  | `67`                         | Number of requests associated to the client in the time window.                                                                                                                                                  |
+| `RateLimit-Observed`  | `67`                         | Number of requests associated with the client in the time window.                                                                                                                                                  |
 | `RateLimit-Remaining` | `33`                         | Remaining quota in the time window. The result of `RateLimit-Limit` - `RateLimit-Observed`.                                                                                                                     |
 | `RateLimit-Reset`     | `1609844400`                 | [Unix time](https://en.wikipedia.org/wiki/Unix_time)-formatted time when the request quota is reset.                                                                                                             |
 
@@ -247,8 +283,8 @@ The possible names are:
 - `throttle_unauthenticated_git_http`
 - `throttle_authenticated_git_http`
 
-For example, to try out throttles for all authenticated requests to
-non-protected paths can be done by setting
+For example, you can try out throttles for all authenticated requests to
+non-protected paths by setting
 `GITLAB_THROTTLE_DRY_RUN='throttle_authenticated_web,throttle_authenticated_api'`.
 
 To enable dry run mode for all throttles, the variable can be set to `*`.
@@ -256,7 +292,7 @@ To enable dry run mode for all throttles, the variable can be set to `*`.
 Setting a throttle to dry run mode logs a message to the
 [`auth.log`](../logs/_index.md#authlog) when it would hit the limit, while letting the
 request continue. The log message contains an `env` field set to `track`. The `matched`
-field contains the name of throttle that was hit.
+field contains the name of the throttle that was hit.
 
 It is important to set the environment variable before enabling
 the rate limiting in the settings. The settings in the **Admin** area

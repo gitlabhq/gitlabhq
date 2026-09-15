@@ -9,12 +9,18 @@ class Projects::RedirectController < ::ApplicationController
   feature_category :groups_and_projects
 
   def redirect_from_id
-    project = Project.find(params[:id])
+    project = Project.find(id_param)
 
     if can?(current_user, :read_project, project)
       redirect_to project
     else
       render_404
     end
+  end
+
+  private
+
+  def id_param
+    params.permit(:id)[:id]
   end
 end

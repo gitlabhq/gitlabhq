@@ -273,7 +273,7 @@ module API
         mr_params = declared_params.merge(deployment_id: params[:deployment_id])
         merge_requests = MergeRequestsFinder.new(current_user, mr_params).execute
 
-        present paginate(merge_requests), { with: Entities::MergeRequestBasic, current_user: current_user }
+        present paginate(merge_requests), with: Entities::MergeRequestBasic, current_user: current_user
       end
     end
   end

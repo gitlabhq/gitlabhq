@@ -26,6 +26,7 @@
   - bundle exec rake gitlab:clickhouse:schema:load
   - section_end "setup-clickhouse"
   - section_start "seeding-db" "Seeding DB";  bundle exec rake db:seed_fu; section_end "seeding-db";
+  - section_start "fixture-coverage" "Fixture coverage for new tables"; bundle exec rake "gitlab:seed:coverage_report"; section_end "fixture-coverage";
 run-dev-fixtures:
   extends:
     - .run-dev-fixtures

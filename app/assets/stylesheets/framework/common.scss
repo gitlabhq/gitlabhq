@@ -105,14 +105,6 @@ hr {
 
 .item-title { font-weight: $gl-font-weight-bold; }
 
-table {
-  a code {
-    position: relative;
-    top: -2px;
-    margin-right: 3px;
-  }
-}
-
 .loading {
   margin: 20px auto;
   height: 40px;
@@ -295,12 +287,6 @@ li.note {
 // By default flex items don't shrink below their minimum content size.
 // To change this, these clases set a min-width or min-height
 .min-height-0 { min-height: 0; }
-
-/** COMMON POSITIONING CLASSES */
-.position-bottom-0 { bottom: 0 !important; }
-.position-left-0 { left: 0 !important; }
-.position-right-0 { right: 0 !important; }
-.position-top-0 { top: 0 !important; }
 
 .drag-handle {
   width: 4px;

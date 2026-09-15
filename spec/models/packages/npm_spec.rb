@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Packages::Npm do
+RSpec.describe Packages::Npm, feature_category: :package_registry do
   using RSpec::Parameterized::TableSyntax
 
   describe '.scope_of' do

@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe ApplicationSetting, feature_category: :settings, type: :model do
+RSpec.describe ApplicationSetting, feature_category: :settings do
   using RSpec::Parameterized::TableSyntax
 
   subject(:setting) { described_class.create_from_defaults }
@@ -42,6 +42,7 @@ RSpec.describe ApplicationSetting, feature_category: :settings, type: :model do
         asciidoc_max_includes: 32,
         authn_data_retention_cleanup_enabled: false,
         authorized_keys_enabled: true,
+        auto_accept_awarded_achievements: false,
         autocomplete_users_limit: 300,
         autocomplete_users_unauthenticated_limit: 100,
         background_operations_max_jobs: 10,
@@ -59,8 +60,10 @@ RSpec.describe ApplicationSetting, feature_category: :settings, type: :model do
         commit_email_hostname: "users.noreply.#{Gitlab.config.gitlab.host}",
         concurrent_bitbucket_import_jobs_limit: 100,
         concurrent_bitbucket_server_import_jobs_limit: 100,
+        concurrent_pull_request_import_jobs_limit: 200,
         concurrent_github_import_jobs_limit: 1000,
         concurrent_relation_batch_export_limit: 8,
+        concurrent_relation_export_limit: 25,
         container_registry_cleanup_tags_service_max_list_size: 200,
         container_registry_db_enabled: false,
         container_registry_delete_tags_service_timeout: 250,
@@ -105,6 +108,7 @@ RSpec.describe ApplicationSetting, feature_category: :settings, type: :model do
         disable_feed_token: false,
         disable_invite_members: false,
         disable_password_authentication_for_users_with_sso_identities: false,
+        block_jwt_for_reclaimed_paths: true,
         disabled_oauth_sign_in_sources: [],
         dns_rebinding_protection_enabled: Settings.gitlab['dns_rebinding_protection_enabled'],
         domain_allowlist: Settings.gitlab['domain_allowlist'],
@@ -136,6 +140,7 @@ RSpec.describe ApplicationSetting, feature_category: :settings, type: :model do
         gitlab_product_usage_data_enabled: Settings.gitlab['initial_gitlab_product_usage_data'],
         gitlab_shell_operation_limit: 600,
         global_search_block_anonymous_searches_enabled: false,
+        global_search_groups_enabled: true,
         global_search_work_items_enabled: true,
         global_search_merge_requests_enabled: true,
         global_search_snippet_titles_enabled: true,
@@ -288,12 +293,18 @@ RSpec.describe ApplicationSetting, feature_category: :settings, type: :model do
         sourcegraph_enabled: false,
         sourcegraph_public_only: true,
         spam_check_endpoint_enabled: false,
+        tags_create_limit: 100,
         terminal_max_session_time: 0,
         throttle_authenticated_git_http_enabled: false,
         throttle_authenticated_git_http_requests_per_period:
           ApplicationSetting::DEFAULT_AUTHENTICATED_GIT_HTTP_LIMIT,
         throttle_authenticated_git_http_period_in_seconds:
           ApplicationSetting::DEFAULT_AUTHENTICATED_GIT_HTTP_PERIOD,
+        throttle_authenticated_dependency_proxy_enabled: false,
+        throttle_authenticated_dependency_proxy_requests_per_period:
+          ApplicationSetting::DEFAULT_AUTHENTICATED_DEPENDENCY_PROXY_LIMIT,
+        throttle_authenticated_dependency_proxy_period_in_seconds:
+          ApplicationSetting::DEFAULT_AUTHENTICATED_DEPENDENCY_PROXY_PERIOD,
         throttle_unauthenticated_git_http_enabled: false,
         throttle_unauthenticated_git_http_period_in_seconds: 3600,
         throttle_unauthenticated_git_http_requests_per_period: 3600,
@@ -517,6 +528,24 @@ RSpec.describe ApplicationSetting, feature_category: :settings, type: :model do
     it { is_expected.not_to allow_value('ari:cloud:ecosystem::app/too-short').for(:jira_forge_app_id) }
     it { is_expected.not_to allow_value("ari:cloud:ecosystem::app/#{'a' * 300}").for(:jira_forge_app_id) }
 
+    # These have no jsonb_accessor default, so GET serialises them as null and a
+    # replayed PUT must not be rejected by the integrations schema.
+    %i[jira_connect_additional_audience_url jira_forge_app_id].each do |attribute|
+      it "keeps the integrations schema valid when #{attribute} is nil" do
+        setting.public_send(:"#{attribute}=", nil)
+
+        expect(setting).to be_valid
+        expect(setting.integrations).to include(attribute.to_s => nil)
+      end
+    end
+
+    it 'reports the integrations schema error once' do
+      setting.integrations = setting.integrations.merge('jira_forge_app_id' => 123)
+
+      expect(setting).not_to be_valid
+      expect(setting.errors[:integrations]).to contain_exactly('must be a valid json schema')
+    end
+
     it { is_expected.not_to allow_value(apdex_slo: '10').for(:prometheus_alert_db_indicators_settings) }
     it { is_expected.to allow_value(nil).for(:prometheus_alert_db_indicators_settings) }
 
@@ -736,7 +765,9 @@ RSpec.describe ApplicationSetting, feature_category: :settings, type: :model do
           code_suggestions_api_rate_limit
           concurrent_bitbucket_import_jobs_limit
           concurrent_bitbucket_server_import_jobs_limit
+          concurrent_pull_request_import_jobs_limit
           concurrent_github_import_jobs_limit
+          concurrent_relation_export_limit
           container_registry_token_expire_delay
           diff_max_commits
           diff_max_versions
@@ -753,6 +784,8 @@ RSpec.describe ApplicationSetting, feature_category: :settings, type: :model do
           snippet_size_limit
           throttle_authenticated_api_period_in_seconds
           throttle_authenticated_api_requests_per_period
+          throttle_authenticated_dependency_proxy_period_in_seconds
+          throttle_authenticated_dependency_proxy_requests_per_period
           throttle_authenticated_deprecated_api_period_in_seconds
           throttle_authenticated_deprecated_api_requests_per_period
           throttle_authenticated_files_api_period_in_seconds
@@ -925,8 +958,8 @@ RSpec.describe ApplicationSetting, feature_category: :settings, type: :model do
       end
 
       it 'allows valid scopes' do
-        %w[blobs commits merge_requests milestones projects snippet_titles users wiki_blobs work_items
-          notes].each do |scope|
+        %w[projects groups blobs work_items merge_requests wiki_blobs commits notes milestones users
+          snippet_titles].each do |scope|
           setting.default_search_scope = scope
 
           expect(setting).to be_valid, "expected #{scope} to be valid"
@@ -1881,6 +1914,15 @@ RSpec.describe ApplicationSetting, feature_category: :settings, type: :model do
       end
     end
 
+    context 'for auto_accept_awarded_achievements' do
+      it { is_expected.to allow_value({ auto_accept_awarded_achievements: true }).for(:default_profile_preferences) }
+      it { is_expected.to allow_value({ auto_accept_awarded_achievements: false }).for(:default_profile_preferences) }
+
+      it 'does not allow a non-boolean value' do
+        is_expected.not_to allow_value({ auto_accept_awarded_achievements: 'true' }).for(:default_profile_preferences)
+      end
+    end
+
     context 'for default_branch_protections_defaults validations' do
       let(:charset) { [*'a'..'z'] + [*0..9] }
       let(:value) { Array.new(byte_size) { charset.sample }.join }
@@ -1965,6 +2007,12 @@ RSpec.describe ApplicationSetting, feature_category: :settings, type: :model do
       describe 'ci_partitions_in_seconds_limit default value' do
         it 'has correct default for ci_partitions_in_seconds_limit' do
           expect(setting.ci_partitions_in_seconds_limit).to eq(ChronicDuration.parse('1 month'))
+        end
+      end
+
+      describe 'block_jwt_for_reclaimed_paths' do
+        it 'defaults to true' do
+          expect(setting.block_jwt_for_reclaimed_paths).to be(true)
         end
       end
 
@@ -2848,6 +2896,135 @@ RSpec.describe ApplicationSetting, feature_category: :settings, type: :model do
     it { is_expected.not_to allow_value(invalid_custom_urls).for(:vscode_extension_marketplace) }
   end
 
+  describe '#code_dropdown_custom_clients' do
+    let(:valid_entry) do
+      {
+        'name' => 'VSCodium',
+        'ssh_url_template' => 'vscodium://vscode.git/clone?url={url}',
+        'http_url_template' => 'vscodium://vscode.git/clone?url={url}'
+      }
+    end
+
+    it { is_expected.to allow_value([]).for(:code_dropdown_custom_clients) }
+    it { is_expected.to allow_value([valid_entry]).for(:code_dropdown_custom_clients) }
+
+    it 'rejects entries missing both URL templates' do
+      expect(setting).not_to allow_value([{ 'name' => 'X' }]).for(:code_dropdown_custom_clients)
+    end
+
+    # A blank template is skipped by the entry validation, so without a schema minimum an entry
+    # holding only a blank template would save and then render no link at all.
+    it 'rejects entries whose only URL template is blank' do
+      %w[ssh_url_template http_url_template].each do |key|
+        expect(setting).not_to allow_value([{ 'name' => 'X', key => '' }]).for(:code_dropdown_custom_clients)
+      end
+    end
+
+    it 'rejects more than 20 entries' do
+      entries = Array.new(21) { |i| valid_entry.merge('name' => "C#{i}") }
+      expect(setting).not_to allow_value(entries).for(:code_dropdown_custom_clients)
+    end
+
+    it 'rejects templates without {url} placeholder' do
+      bad = { 'name' => 'X', 'http_url_template' => 'https://example.com/' }
+      setting.code_dropdown_custom_clients = [bad]
+      expect(setting).not_to be_valid
+      expect(setting.errors[:code_dropdown_custom_clients].join).to include('{url}')
+    end
+
+    it 'accepts any URL scheme an admin chooses' do
+      # Git clients register their own schemes and new ones keep appearing, so admins must not
+      # be limited to a list GitLab ships.
+      [
+        'vscode://vscode.git/clone?url={url}',
+        'sourcetree://cloneRepo/{url}',
+        'gittower://openRepo/{url}',
+        'x-github-client://openRepo/{url}',
+        'futureclient://whatever/{url}'
+      ].each do |template|
+        client = { 'name' => "C#{template}", 'http_url_template' => template }
+
+        expect(setting).to allow_value([client]).for(:code_dropdown_custom_clients)
+      end
+    end
+
+    # #security -- an instance admin controls this value and it is rendered as a link href,
+    # so a script-executing scheme here would be stored XSS for every user of the instance.
+    it 'rejects every blocked URL scheme' do
+      described_class::CODE_DROPDOWN_BLOCKED_SCHEMES.each do |scheme|
+        setting.code_dropdown_custom_clients = [
+          { 'name' => 'Evil', 'http_url_template' => "#{scheme}:payload/{url}" }
+        ]
+
+        expect(setting).not_to be_valid
+        expect(setting.errors[:code_dropdown_custom_clients].join).to include('is not allowed')
+      end
+    end
+
+    # #security -- these bypass the scheme check by casing or by smuggling a newline, so they
+    # are listed explicitly rather than derived from the constant.
+    it 'rejects blocked schemes disguised by casing or encoded characters' do
+      [
+        'JaVaScRiPt:alert(1)/{url}',
+        'javascript://example.com%0aalert(1)?{url}',
+        'DATA:text/html,<script>alert(1)</script>?{url}'
+      ].each do |payload|
+        setting.code_dropdown_custom_clients = [{ 'name' => 'Evil', 'http_url_template' => payload }]
+
+        expect(setting).not_to be_valid
+        expect(setting.errors[:code_dropdown_custom_clients].join).to include('is not allowed')
+      end
+    end
+
+    it 'rejects templates that are not parsable URLs' do
+      ['vscode://a b/clone?url={url}', "vscode://a\tb?url={url}", '{url}'].each do |payload|
+        setting.code_dropdown_custom_clients = [{ 'name' => 'X', 'http_url_template' => payload }]
+
+        expect(setting).not_to be_valid
+        expect(setting.errors[:code_dropdown_custom_clients].join).to include('must be a valid URL')
+      end
+    end
+
+    it 'rejects duplicate names case-insensitively and names the first entry' do
+      duplicate = [
+        valid_entry,
+        valid_entry.merge('name' => '  vscodium  ', 'ssh_url_template' => 'tower://open/{url}',
+          'http_url_template' => 'tower://open/{url}')
+      ]
+      setting.code_dropdown_custom_clients = duplicate
+
+      expect(setting).not_to be_valid
+      expect(setting.errors[:code_dropdown_custom_clients].join)
+        .to include('entry 2', 'is already used by entry 1')
+    end
+
+    it 'rejects the same template reused by a different entry' do
+      duplicate = [valid_entry, valid_entry.merge('name' => 'Other')]
+      setting.code_dropdown_custom_clients = duplicate
+
+      expect(setting).not_to be_valid
+      expect(setting.errors[:code_dropdown_custom_clients].join).to include('is already used by entry 1')
+    end
+
+    it 'allows one entry to reuse its own template for SSH and HTTPS' do
+      shared = 'vscodium://vscode.git/clone?url={url}'
+      client = { 'name' => 'VSCodium', 'ssh_url_template' => shared, 'http_url_template' => shared }
+
+      expect(setting).to allow_value([client]).for(:code_dropdown_custom_clients)
+    end
+
+    it 'rejects payloads over the serialized byte limit' do
+      # `maxLength` in the JSON schema counts characters, so multi-byte input can satisfy the
+      # schema while still blowing past the byte budget for the settings row.
+      wide = valid_entry.merge('name' => '😀' * 50, 'ssh_url_template' => "vscodium://#{'😀' * 480}{url}")
+      entries = Array.new(20) { |i| wide.merge('http_url_template' => "vscodium://#{i}/{url}") }
+      setting.code_dropdown_custom_clients = entries
+
+      expect(setting).not_to be_valid
+      expect(setting.errors[:code_dropdown_custom_clients].join).to include('is too large. Maximum size allowed is')
+    end
+  end
+
   describe '#vscode_extension_marketplace_enabled' do
     it 'is updated when underlying vscode_extension_marketplace changes' do
       expect(setting.vscode_extension_marketplace_enabled).to be(false)
@@ -2995,6 +3172,33 @@ RSpec.describe ApplicationSetting, feature_category: :settings, type: :model do
   context 'with personal accesss token prefix' do
     it 'sets the correct default value' do
       expect(setting.personal_access_token_prefix).to eql('glpat-')
+    end
+  end
+
+  context 'with instance token prefix' do
+    it 'defaults to an empty string' do
+      expect(setting.instance_token_prefix).to eq('')
+    end
+
+    it { is_expected.to allow_value('', 'acme', 'STAGING').for(:instance_token_prefix) }
+    it { is_expected.not_to allow_value('gl').for(:instance_token_prefix) }
+    it { is_expected.not_to allow_value('has-hyphen').for(:instance_token_prefix) }
+    it { is_expected.not_to allow_value('a' * 21).for(:instance_token_prefix) }
+
+    it 'does not block saving other settings while the legacy "gl" value is still persisted' do
+      setting.save!(validate: false) if setting.new_record?
+      setting.update_column(:token_prefixes, setting.token_prefixes.merge('instance_token_prefix' => 'gl'))
+      setting.reload
+
+      expect(setting.instance_token_prefix).to eq('gl')
+      expect { setting.update!(home_page_url: 'https://example.com') }.not_to raise_error
+    end
+
+    it 'allows changing away from a persisted legacy "gl" value' do
+      setting.save!(validate: false) if setting.new_record?
+      setting.update_column(:token_prefixes, setting.token_prefixes.merge('instance_token_prefix' => 'gl'))
+
+      expect { setting.reload.update!(instance_token_prefix: 'acme') }.not_to raise_error
     end
   end
 

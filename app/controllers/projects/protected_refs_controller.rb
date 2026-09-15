@@ -22,13 +22,13 @@ class Projects::ProtectedRefsController < Projects::ApplicationController
     flash[:alert] = protected_ref.errors.full_messages.join(', ').html_safe unless protected_ref.persisted?
 
     respond_to do |format|
-      format.html { redirect_to_repository_settings(@project, anchor: params[:update_section]) }
+      format.html { redirect_to_repository_settings(@project, anchor: update_section_params[:update_section]) }
       format.json { head :ok }
     end
   end
 
   def show
-    service_params = params.merge(ref_type: ref_type, search: @protected_ref.name)
+    service_params = refs_pagination_params.merge(ref_type: ref_type, search: @protected_ref.name)
 
     @matching_refs, @prev_path, @next_path = Projects::RefsByPaginationService.new(
       @protected_ref,
@@ -53,12 +53,20 @@ class Projects::ProtectedRefsController < Projects::ApplicationController
     destroy_service_class.new(@project, current_user).execute(@protected_ref)
 
     respond_to do |format|
-      format.html { redirect_to_repository_settings(@project, anchor: params[:update_section]) }
+      format.html { redirect_to_repository_settings(@project, anchor: update_section_params[:update_section]) }
       format.js { head :ok }
     end
   end
 
   protected
+
+  def update_section_params
+    params.permit(:update_section)
+  end
+
+  def refs_pagination_params
+    params.permit(:per_page, :page_token, :sort)
+  end
 
   def create_service_class
     service_namespace::CreateService

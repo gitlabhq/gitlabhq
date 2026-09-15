@@ -9,12 +9,12 @@ A concept introduces a single feature or concept.
 
 A concept should answer the questions:
 
-- **What** is this?
-- **Why** would you use it?
+- What is this?
+- Why would you use it?
 
 Think of everything someone might want to know if they've never heard of this concept before.
 
-Don't tell them **how** to do this thing. Tell them **what it is**.
+Don't tell them how to do this thing. Tell them what it is.
 
 If you start describing another concept, start a new concept and link to it.
 
@@ -29,9 +29,9 @@ title: Title (a noun, like "Widgets")
 A paragraph or two that explains what this thing is and why you would use it.
 
 If you start to describe another concept, stop yourself.
-Each concept should be about **one concept only**.
+Each concept should be about one concept only.
 
-If you start to describe **how to use the thing**, stop yourself.
+If you start to describe how to use the thing, stop yourself.
 Task topics explain how to use something, not concept topics.
 
 Do not include links to related tasks. The navigation provides links to tasks.

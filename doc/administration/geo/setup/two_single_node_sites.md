@@ -1,5 +1,5 @@
 ---
-stage: Tenant Scale
+stage: GitLab Dedicated
 group: Geo
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see <https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments>
 description: Configure GitLab Geo replication between two single-node sites for disaster recovery, supporting Linux package and Docker installations.
@@ -177,7 +177,7 @@ Prerequisites:
       Depending on your network configuration, the suggested addresses might
       be incorrect. If your primary and secondary sites connect over a local
       area network, or a virtual network connecting availability zones like the
-      [Amazon VPC](https://aws.amazon.com/vpc/) or the [Google VPC](https://cloud.google.com/vpc/),
+      [Amazon VPC](https://aws.amazon.com/vpc/) or the [Google VPC](https://cloud.google.com/vpc),
       you should use the secondary site private address for `postgresql['md5_auth_cidr_addresses']`.
 
    1. Add the following lines to `/etc/gitlab/gitlab.rb`. Be sure to replace the IP
@@ -634,7 +634,7 @@ You must manually replicate the secret file across all of your secondary sites, 
    1. In **Name**, enter the value for `gitlab_rails['geo_node_name']` in
       `/etc/gitlab/gitlab.rb`. The values must match exactly.
    1. In **External URL**, enter the value for `external_url` in `/etc/gitlab/gitlab.rb`.
-      It's okay if one values ends in `/` and the other doesn't. Otherwise, the values must
+      It's okay if one value ends in `/` and the other doesn't. Otherwise, the values must
       match exactly.
    1. Optional. In **Internal URL (optional)**, enter an internal URL for the primary site.
    1. Optional. Select which groups or storage shards should be replicated by the
@@ -676,8 +676,8 @@ secondary site with the same credentials as were used with the primary site.
 
 This step allows websockets to work seamlessly from primary and secondary sites.
 
-1. Collect the **external URLs** of your sites (primary and secondary). You can find them in the Site pages in the Admin area, as mentioned in the section above.
-1. SSH into each Rails and Sidekiq node on your **primary site** and sign in as root:
+1. Collect the external URLs of your sites (primary and secondary). You can find them in the Site pages in the Admin area, as mentioned in the section above.
+1. SSH into each Rails and Sidekiq node on your primary site and sign in as root:
 
    ```shell
    sudo -i

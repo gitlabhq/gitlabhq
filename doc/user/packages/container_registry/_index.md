@@ -44,7 +44,10 @@ You can use the container registry **Tag Details** page to view a list of tags a
 You can view details about each tag, such as when it was published, how much storage it consumes,
 and the manifest and configuration digests.
 
-You can search, sort (by tag name), and delete tags on this page.
+You can search, sort, and delete tags on this page.
+Tags sort by **Name**.
+If the container registry metadata database is enabled, you can also sort by **Published**,
+which is the default and lists the most recently published tags first.
 You can share a filtered view by copying the URL from your browser.
 
 ### View supported platforms for multi-architecture images
@@ -85,7 +88,7 @@ To download and run a container image hosted in the container registry:
 
 1. In the top bar, select **Search or go to** and find your project or group.
 1. In the left sidebar, select **Deploy** > **Container Registry**.
-1. Find the container image you want to work with and select **Copy image path** （{{< icon name="copy-to-clipboard" >}}）.
+1. Find the container image you want to work with and select **Copy image path** ({{< icon name="copy-to-clipboard" >}}).
 1. Use `docker run` with the copied link:
 
    ```shell

@@ -1,0 +1,10 @@
+---
+name: database_capture
+description: Capture SQL query traffic into chunks and upload them to object storage for database traffic replay testing
+feature_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/548606
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/246680
+rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/571197
+milestone: '19.3'
+group: group::database frameworks
+type: ops
+default_enabled: false

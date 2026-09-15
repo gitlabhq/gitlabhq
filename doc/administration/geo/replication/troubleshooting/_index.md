@@ -1,5 +1,5 @@
 ---
-stage: Tenant Scale
+stage: GitLab Dedicated
 group: Geo
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see <https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments>
 title: Troubleshooting Geo
@@ -18,3 +18,4 @@ When working with Geo, you might encounter the following issues:
 - [Client and HTTP response code errors](client_http.md)
 - [PostgreSQL replication errors](postgresql_replication.md)
 - [Synchronization and verification errors](synchronization_verification.md)
+- [SSH proxying](ssh_proxying.md)

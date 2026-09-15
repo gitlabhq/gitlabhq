@@ -6,12 +6,8 @@ title: Claiming an attribute for a cell
 ---
 
 > [!flag]
-> Both [cells](https://gitlab.com/gitlab-org/gitlab-development-kit/-/blob/main/doc/howto/cells.md#setting-up-cells-locally)
-> and feature flag `Feature.enabled?(:cells_unique_claims)` have to be enabled
-> for this to take effect.
->
-> Additionally, individual model claiming is controlled by model-specific feature flags.
-> See [Feature flags](#feature-flags) for the complete list.
+> [Cells](https://gitlab.com/gitlab-org/gitlab-development-kit/-/blob/main/doc/howto/cells.md#setting-up-cells-locally)
+> must be enabled for claiming to take effect.
 
 ## Why we need to claim attributes
 
@@ -39,15 +35,16 @@ Consider whether the attribute is:
 
 ## Rollout lifecycle
 
-Claiming a new attribute requires two phases. Each phase has its own
-feature flag and serves a distinct purpose.
+Claiming a new attribute requires two phases, each serving a distinct purpose.
+The per-attribute `feature_flag:` gates both phases: live claiming skips a
+disabled attribute, and so does verification.
 
 ### Phase 1: Live request claiming
 
-Add the `Cells::Claimable` concern to the model and create a
-model-specific feature flag. When enabled, Rails `after_save` and
-`before_destroy` callbacks claim and release attributes in Topology
-Service for every create, update, and delete.
+Add the `Cells::Claimable` concern to the model and, optionally, a temporary
+`feature_flag:` for the new attribute's rollout. When claiming is enabled,
+Rails `after_save` and `before_destroy` callbacks claim and release
+attributes in Topology Service for every create, update, and delete.
 
 This phase only covers new writes. Existing records in the database are
 not claimed until phase 2.
@@ -65,9 +62,8 @@ For details on how to configure the model, see
 
 ### Phase 2: Backfilling and verification
 
-Enable the verification worker feature flag
-(`cells_claims_verification_worker_<model_name>`) to start the
-verification service. On its first run, the service scans every local
+The verification service starts automatically once the model has at least one
+claimable attribute enabled. On its first run, the service scans every local
 record in the model, finds no matching claims in Topology Service, and
 creates them. This acts as the backfill for existing data.
 
@@ -76,72 +72,37 @@ on a cron schedule. It reconciles local records with Topology Service
 claims to detect and correct drift, such as missing claims, orphaned
 claims, or changed values.
 
+The service only reconciles attributes that are currently enabled. An
+attribute still behind its `feature_flag:` is skipped by backfill and
+drift correction, the same as it is by live claiming.
+
 For details on verification, see
 [Verification and backfilling](#verification-and-backfilling).
 
 ### Rollout ownership
 
 The feature-owning team owns the rollout of both phases. This includes
-creating the feature flags, enabling them, and monitoring that claims
-work correctly after enablement.
+creating any temporary rollout feature flag, enabling it, and monitoring
+that claims work correctly after enablement.
 
 The Cells Infrastructure team is available to help, but ownership of the
 rollout and ensuring correctness belongs to the feature-owning team.
 
-## Feature flags
+## Enabling claims
 
-The claims system uses a hierarchical feature flag structure for
-granular control:
-
-### Global feature flag
-
-| Feature flag | Description |
-|--------------|-------------|
-| `cells_unique_claims` | Primary switch for the entire claims system. Must be enabled for any claims to work. |
-
-### Model-specific feature flags
-
-Each claimable model type has its own feature flag, allowing independent rollout:
-
-| Feature flag | Models | Description |
-|--------------|----------|-------------|
-| `cells_claims_users` | `User` | Controls claiming of user IDs and usernames |
-| `cells_claims_emails` | `Email` | Controls claiming of email addresses |
-| `cells_claims_organizations` | `Organization` | Controls claiming of organization paths |
-| `cells_claims_namespaces` | `Namespace`, `Group`, `UserNamespace` | Controls claiming of namespace/group IDs |
-| `cells_claims_projects` | `Project` | Controls claiming of project IDs |
-| `cells_claims_routes` | `Route`, `RedirectRoute` | Controls claiming of route and redirect route paths |
-| `cells_claims_keys` | `Key`, `GpgKey`, `DeployKey` | Controls claiming of SSH, GPG and Deploy keys |
-
-### Verification worker feature flags
-
-Each model has a separate feature flag for the verification worker:
-
-| Feature flag | Description |
-|--------------|-------------|
-| `cells_claims_verification_worker_<model_name>` | Controls whether the verification worker runs for a specific model. Replace `<model_name>` with the [`param_key`](https://gitlab.com/gitlab-org/gitlab/blob/3b96a040fd0a8b8155e77ef733f8cc1275068379/gems/gitlab-utils/lib/gitlab/utils.rb#L75-77). Example: `cells_claims_verification_worker_user` |
-
-### Enabling claims
-
-To enable claims for a specific model, both the global flag and the
-model-specific flag must be enabled:
+With cells enabled, a model's attributes are claimed without any further
+configuration, unless an individual attribute still carries a temporary
+`feature_flag:` for rollout (see
+[How to claim attributes](#how-to-claim-attributes)).
+The verification worker for a model runs automatically when at least one of
+the model's attributes is enabled, so there's no separate step to
+enable it. See
+[Enable the verification worker](#enable-the-verification-worker).
 
 ```ruby
 # In Rails console
 
-# 1. Enable the global claims system
-Feature.enable(:cells_unique_claims)
-
-# 2. Enable claims for specific models
-Feature.enable(:cells_claims_users)
-Feature.enable(:cells_claims_emails)
-Feature.enable(:cells_claims_organizations)
-
-# 3. Enable verification workers for backfilling and ongoing consistency
-Feature.enable(:cells_claims_verification_worker_user)
-Feature.enable(:cells_claims_verification_worker_email)
-
-# Check all cells claims feature flags
+# Check for any temporary per-attribute rollout flags
 Feature.all.select { |f| f.name.start_with?('cells_claims') }
 ```
 
@@ -149,16 +110,17 @@ Feature.all.select { |f| f.name.start_with?('cells_claims') }
 
 We claim three things for each attribute:
 
-- **The value of the attribute** (defined by `cells_claims_attribute` with required `type` and `feature_flag` parameters)
+- **The value of the attribute** (defined by `cells_claims_attribute` with a
+  required `type` parameter and an optional `feature_flag` parameter)
 - **The subject of the record** (defined by `cells_claims_metadata`)
 - **The source of the record** (defined by `cells_claims_metadata`)
 
 >[!note]
-> Every `cells_claims_attribute` must specify a `type` (claim type). A
-> `feature_flag` (model-specific control flag) is added for deployment safety
-> when first rolling out claims for an attribute. It is part of the rollout
-> lifecycle, not a permanent requirement, and can be removed once the attribute
-> has been validated and stable in production. See
+> Every `cells_claims_attribute` must specify a `type` (claim type). An
+> optional `feature_flag` can be added for deployment safety when first
+> rolling out claims for a new attribute. It is part of the rollout
+> lifecycle, not a permanent requirement, and should be removed once the
+> attribute has been validated and stable in production. See
 > [Removing the feature flag](#removing-the-feature-flag).
 
 ### Rails
@@ -169,8 +131,8 @@ Using `User` as an example:
 class User < ApplicationRecord
   include Cells::Claimable
 
-  cells_claims_attribute :id, type: CLAIMS_CLAIM_TYPE::CLAIM_TYPE_USER_ID, feature_flag: :cells_claims_users
-  cells_claims_attribute :username, type: CLAIMS_CLAIM_TYPE::CLAIM_TYPE_USERNAME, feature_flag: :cells_claims_users
+  cells_claims_attribute :id, type: CLAIMS_CLAIM_TYPE::CLAIM_TYPE_USER_ID
+  cells_claims_attribute :username, type: CLAIMS_CLAIM_TYPE::CLAIM_TYPE_USERNAME
 
   cells_claims_metadata subject_type: CLAIMS_SUBJECT_TYPE::USER, subject_key: :id
 end
@@ -178,10 +140,12 @@ end
 
 First, include `Cells::Claimable` in the model.
 
-Here we claim two attributes: `id` and `username`. Each attribute requires:
-
-- A `type` (claim type), which is defined in Topology Service (covered below)
-- A `feature_flag` to control when this claim is active (follows naming convention `cells_claims_<model>s`)
+Here we claim two attributes: `id` and `username`. Each attribute requires a
+`type` (claim type), which is defined in Topology Service (covered below).
+Neither attribute has a `feature_flag` here because both were validated in
+production and their temporary rollout flags were removed. See
+[Adding a new claimable model](#adding-a-new-claimable-model) for an example
+that still uses `feature_flag`.
 
 Second, define the metadata with `cells_claims_metadata`. Normally you only
 need to set `subject_type` and `subject_key`; `source_type` and the source
@@ -199,27 +163,12 @@ judgment when the sharding key doesn't apply.
 
 When adding claims to a new model:
 
-1. **Create a feature flag** for the model if one doesn't exist:
+1. **Create a temporary feature flag** for the new attribute's rollout:
 
    ```yaml
    # config/feature_flags/beta/cells_claims_<model>s.yml
    ---
    name: cells_claims_<model>s
-   feature_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/XXX
-   introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/XXX
-   rollout_issue_url: https://gitlab.com/gitlab-com/gl-infra/tenant-scale/cells-infrastructure/team/-/issues/XXX
-   milestone: 'XX.X'
-   group: group::cells infrastructure
-   type: beta
-   default_enabled: false
-   ```
-
-1. **Create a feature flag** for the verification worker:
-
-   ```yaml
-   # config/feature_flags/beta/cells_claims_verification_worker_<model_name>.yml
-   ---
-   name: cells_claims_verification_worker_<model_name>
    feature_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/XXX
    introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/XXX
    rollout_issue_url: https://gitlab.com/gitlab-com/gl-infra/tenant-scale/cells-infrastructure/team/-/issues/XXX
@@ -248,7 +197,12 @@ When adding claims to a new model:
 
 #### Removing the feature flag
 
-The per-attribute `feature_flag:` exists for deployment safety during rollout.
+A new claimable attribute should always be introduced behind a temporary
+`feature_flag:`, so the rollout can be controlled and reverted independently
+of the rest of the model. This is a step in the rollout lifecycle, not a
+permanent requirement: the flag exists for deployment safety and is removed
+once the attribute has been validated in production.
+
 After enabling the flag globally in production, validate that the attribute
 lifecycle works end to end:
 
@@ -261,6 +215,10 @@ the per-attribute `feature_flag:` and delete the flag's YAML file. After removal
 only `Gitlab.config.cell.enabled` controls claiming, as
 `cells_claims_enabled_for_attribute?` returns `true` when no `feature_flag` is
 set. See [`Cells::Claimable`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/app/models/concerns/cells/claimable.rb).
+
+Because the same flag gates verification, removing it also starts backfill
+and drift correction for the attribute, in addition to live claiming. See
+[Enable the verification worker](#enable-the-verification-worker).
 
 For an example of this cleanup, see [merge request 240942](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/240942),
 which removed the `cells_claims_service_desk_settings` flag from `ServiceDeskSetting`.
@@ -281,7 +239,6 @@ class Route < ApplicationRecord
   include Cells::Claimable
 
   cells_claims_attribute :path, type: CLAIMS_CLAIM_TYPE::CLAIM_TYPE_ROUTE,
-    feature_flag: :cells_claims_routes,
     if: ->(record) { record.path.exclude?('/') }
 end
 ```
@@ -314,7 +271,6 @@ class Route < ApplicationRecord
   end
 
   cells_claims_attribute :path, type: CLAIMS_CLAIM_TYPE::CLAIM_TYPE_ROUTE,
-    feature_flag: :cells_claims_routes,
     if: ->(record) { record.path.exclude?('/') }
 end
 ```
@@ -471,18 +427,20 @@ tests can be omitted.
 
 ##### Testing feature flag behavior
 
-To test that claims respect feature flags:
+If your new attribute is introduced behind a temporary `feature_flag:`, test
+that claims respect it. Replace `cells_claims_your_new_attribute` with the
+flag you created:
 
 ```ruby
 RSpec.describe 'Claim for YourModel', feature_category: :cell do
-  context 'when cells_claims_your_model feature flag is enabled' do
+  context 'when cells_claims_your_new_attribute feature flag is enabled' do
     it_behaves_like 'creating new claims'
     it_behaves_like 'deleting existing claims'
   end
 
-  context 'when cells_claims_your_model feature flag is disabled' do
+  context 'when cells_claims_your_new_attribute feature flag is disabled' do
     before do
-      stub_feature_flags(cells_claims_your_model: false)
+      stub_feature_flags(cells_claims_your_new_attribute: false)
     end
 
     it_behaves_like 'not creating claims'
@@ -490,6 +448,8 @@ RSpec.describe 'Claim for YourModel', feature_category: :cell do
   end
 end
 ```
+
+Once the flag is removed, these examples for the disabled state no longer apply.
 
 ### Topology Service
 
@@ -517,6 +477,21 @@ Here's the workflow to make new types available for Rails:
 - After it's reviewed and merged, it should be available in the GitLab
   default branch
 
+### HTTP Router
+
+The [HTTP router](https://gitlab.com/gitlab-org/cells/http-router) is a
+separate consumer of the same claim types: it routes requests by matching
+claims returned from Topology Service.
+It consumes the generated TypeScript client the same way Rails consumes the
+gem, so a new claim type is only available to the router after its vendored
+client is re-synced:
+
+- Create a merge request in the HTTP router to update the
+  vendored Topology Service client, by running
+  `scripts/update-topology-service-client.sh` in the merge request branch
+- After it's reviewed and merged, it should be available in the router's
+  default branch
+
 ## Verification and backfilling
 
 The verification service (`Cells::Claims::VerificationService`) reconciles
@@ -528,6 +503,11 @@ two purposes:
   creates them.
 - **Ongoing consistency:** After backfilling, the service continues to run
   on a cron schedule to detect and correct drift.
+
+The service only reconciles attributes where `cells_claims_enabled_for_attribute?`
+is `true`. If every attribute of a model is disabled, the service logs a
+warning and skips the model. Claims already written for an attribute that is
+later disabled are left in place. They are not fetched or destroyed.
 
 ### How verification works
 
@@ -555,17 +535,28 @@ Each worker run:
 
 ### Enable the verification worker
 
-Create a feature flag for the verification worker and enable it after
-the model-specific claiming flag is active:
+There's no separate step to enable the verification worker.
+`Cells::ClaimsVerificationWorker#enabled?` determines whether verification
+runs for a model:
 
 ```ruby
-# Enable after the model claiming flag is already enabled
-Feature.enable(:cells_claims_verification_worker_user)
+def enabled?(model)
+  return false unless Cells::Claimable.models_with_claims.include?(model)
+
+  model.cells_claims_attributes.any? { |attribute, _| model.cells_claims_enabled_for_attribute?(attribute) }
+end
 ```
 
-The verification worker flag follows the naming convention
-`cells_claims_verification_worker_<model_name>`, where `<model_name>`
-is the parameterized model name (for example, `user`, `email`, `route`).
+Verification runs for a model when the model is registered in
+`Cells::Claimable.models_with_claims` (declaring a `cells_claims_attribute`
+registers it) and at least one of its attributes is currently claimable, as
+determined by `cells_claims_enabled_for_attribute?`. Within a run, the service
+reconciles only the attributes that are enabled, so an attribute still behind a
+`feature_flag:` is skipped without holding back the rest of the model.
+
+For a model whose attributes carry no temporary `feature_flag:`, verification
+runs as soon as `Gitlab.config.cell.enabled` is `true`, with no further
+configuration.
 
 ## Validation
 
@@ -588,17 +579,22 @@ working as expected.
 
 ### Claims not being created
 
-1. **Check global feature flag:**
+1. **Check the cell configuration:**
 
    ```ruby
-   Feature.enabled?(:cells_unique_claims)
+   Gitlab.config.cell.enabled
    ```
 
-1. **Check model-specific feature flag:**
+1. **Check whether the attribute is claimable:**
 
    ```ruby
-   Feature.enabled?(:cells_claims_users)  # Replace with your model's flag
+   # Replace User and :id with your model and attribute
+   User.cells_claims_enabled_for_attribute?(:id)
    ```
+
+   This returns `false` unless `Gitlab.config.cell.enabled` is `true`, and,
+   if the attribute still has a temporary `feature_flag:`, unless that flag
+   is also enabled.
 
 1. **Verify Topology Service is running:**
 
@@ -614,11 +610,18 @@ working as expected.
 
 ### Backfill not progressing
 
-1. **Check the verification worker feature flag:**
+1. **Check whether verification is enabled for the model:**
 
    ```ruby
-   Feature.enabled?(:cells_claims_verification_worker_user)  # Replace with your model
+   # Replace User with your model
+   User.cells_claims_attributes.each do |attribute, _|
+     puts "#{attribute}: #{User.cells_claims_enabled_for_attribute?(attribute)}"
+   end
    ```
+
+   Verification only runs when if at least one attribute prints `true`. A single
+   attribute stuck behind a temporary `feature_flag:` pauses verification
+   for the whole model.
 
 1. **Check verification worker logs** for batch progress. Look for
    `Cells::Claims::VerificationService batch processed` log entries

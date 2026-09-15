@@ -18,7 +18,11 @@ import { logHelloDeferred } from 'jh_else_ce/lib/logger/hello_deferred';
 import initAlertHandler from './alert_handler';
 import initLayoutNav from './layout_nav';
 import { handleLocationHash, addSelectOnFocusBehaviour } from './lib/utils/common_utils';
-import { localTimeAgo, initTimeagoPrintHandler } from './lib/utils/datetime/timeago_utility';
+import {
+  localTimeAgo,
+  initLocalDateTimes,
+  initTimeagoPrintHandler,
+} from './lib/utils/datetime/timeago_utility';
 import { getLocationHash, visitUrl, mergeUrlParams } from './lib/utils/url_utility';
 
 // everything else
@@ -34,6 +38,7 @@ import { initCopyCodeButton } from './behaviors/copy_code';
 import initGitlabVersionCheck from './gitlab_version_check';
 import { initExpireSessionModal } from './authentication/sessions';
 import initPanelHeightCalc from './panel_height_calc';
+import initPanelResizers from './panel_resizers';
 import 'ee_else_ce/main_ee';
 import 'jh_else_ce/main_jh';
 
@@ -128,6 +133,7 @@ function deferredInitialisation() {
   initGitlabVersionCheck();
   initExpireSessionModal();
   initPanelHeightCalc();
+  initPanelResizers();
 
   // The right sidebar's initialisation is delayed slightly to ensure it's in the proper state
   // depending on the page's content's width. This should probably be done differently, but this is
@@ -182,6 +188,7 @@ $('.btn').click(function clickDisabledButtonCallback(e) {
 });
 
 localTimeAgo(document.querySelectorAll('abbr.timeago, .js-timeago'), true);
+initLocalDateTimes();
 initTimeagoPrintHandler();
 
 /**
@@ -190,11 +197,18 @@ initTimeagoPrintHandler();
  *
  * TODO: Defer execution, migrate to behaviors, and add sentry logging
  */
-$body.on('ajax:complete, ajax:beforeSend, submit', 'form', function ajaxCompleteCallback(e) {
-  const $buttons = $('[type="submit"], .js-disable-on-submit', this).not('.js-no-auto-disable');
+$body.on('ajax:complete ajax:beforeSend submit', 'form', function ajaxCompleteCallback(e) {
+  // An `aria-disabled` button (GlButton, Pajamas::ButtonComponent) owns its disabled state,
+  // and the native `disabled` toggled below is invisible to it.
+  const $buttons = $('[type="submit"], .js-disable-on-submit', this).not(
+    '.js-no-auto-disable, [aria-disabled="true"]',
+  );
   switch (e.type) {
     case 'ajax:beforeSend':
     case 'submit':
+      // A form that prevents its own default (Vue `@submit.prevent` + axios) never reaches
+      // `ajax:complete`, so there would be no event left to re-enable on.
+      if (e.isDefaultPrevented()) return $buttons;
       return $buttons.disable();
     default:
       return $buttons.enable();

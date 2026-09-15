@@ -28,7 +28,7 @@ enforce your organization's standards.
 
 Higher GitLab tiers have access to additional tools to apply comprehensive security scanning,
 enforce compliance, and manage vulnerabilities across multiple projects and groups.
-In these environments, some of the protection methods may already be enforced by your organization.
+In these environments, some of the protection methods might already be enforced by your organization.
 For details on these advanced security tools, see [secure your application](../../application_security/secure_your_application.md).
 
 ## Protection methods

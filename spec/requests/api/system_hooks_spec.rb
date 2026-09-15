@@ -74,4 +74,29 @@ RSpec.describe API::SystemHooks, feature_category: :webhooks do
     it_behaves_like 'POST webhook API endpoints with a branch filter', ''
     it_behaves_like 'PUT webhook API endpoints with a branch filter', ''
   end
+
+  # System hooks share the web_hooks table, so the column exists on them, but this
+  # endpoint does not declare the attribute and has no container to gate it on. Sending
+  # it must stay a no-op rather than start failing the request.
+  describe 'duo_flow_callback_enabled' do
+    it 'ignores the attribute on create' do
+      post api('/hooks', admin, admin_mode: true), params: {
+        url: 'http://example.com/system-hook',
+        duo_flow_callback_enabled: true
+      }
+
+      expect(response).to have_gitlab_http_status(:created)
+      expect(SystemHook.last.duo_flow_callback_enabled).to be(false)
+    end
+
+    it 'ignores the attribute on update' do
+      put api("/hooks/#{hook.id}", admin, admin_mode: true), params: {
+        duo_flow_callback_enabled: true,
+        push_events: false
+      }
+
+      expect(response).to have_gitlab_http_status(:ok)
+      expect(hook.reload.duo_flow_callback_enabled).to be(false)
+    end
+  end
 end

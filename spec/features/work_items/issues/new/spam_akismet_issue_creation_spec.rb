@@ -33,7 +33,8 @@ RSpec.describe 'Spam detection on issue creation', :js, feature_category: :team_
 
   shared_examples 'allows issue creation with CAPTCHA' do
     it 'allows issue creation' do
-      find_button('Create Issue').click # `click_button` would wait for the request to complete and would timeout with CAPTCHA being enabled
+      # `click_button` would wait for the request to complete and would timeout with CAPTCHA being enabled
+      find_button('Create issue').click
 
       # it is impossible to test reCAPTCHA automatically and there is no possibility to fill in recaptcha
       # so just confirm the reCAPTCHA modal appears
@@ -46,13 +47,22 @@ RSpec.describe 'Spam detection on issue creation', :js, feature_category: :team_
 
   shared_examples 'allows issue creation without CAPTCHA' do
     it 'allows issue creation without need to solve CAPTCHA' do
-      click_button 'Create Issue'
+      click_button 'Create issue'
 
       expect(page).not_to have_css('.recaptcha')
       expect(page).to have_css('h1', text: 'issue title')
       within_testid('work-item-description') do
         expect(page).to have_text('issue description')
       end
+    end
+  end
+
+  shared_examples 'disallows issue creation' do
+    it 'disallows issue creation' do
+      click_button 'Create issue'
+
+      expect(find('.gl-alert-danger')).to have_content('Request denied. Spam detected')
+      expect(page).not_to have_css('h1', text: 'issue title')
     end
   end
 
@@ -106,12 +116,12 @@ RSpec.describe 'Spam detection on issue creation', :js, feature_category: :team_
     # ALLOW, false, true, false, false
     # TODO: Add example for NOOP verdict when we add support for testing SpamCheck - see https://gitlab.com/groups/gitlab-org/-/epics/5527#lacking-coverage-for-spamcheck-vs-akismet
 
-    context 'DISALLOW: spam_flagged=true, captcha_enabled=true, allow_possible_spam=true' do
+    context 'DISALLOW: spam_flagged=true, captcha_enabled=false, allow_possible_spam=false' do
       include_context 'when spammable is identified as possible spam'
-      include_context 'when CAPTCHA is enabled'
-      include_context 'when allow_possible_spam application setting is true'
+      include_context 'when CAPTCHA is not enabled'
+      include_context 'when allow_possible_spam application setting is false'
 
-      it_behaves_like 'allows issue creation without CAPTCHA'
+      it_behaves_like 'disallows issue creation'
     end
 
     context 'CONDITIONAL_ALLOW: spam_flagged=true, captcha_enabled=true, allow_possible_spam=false' do

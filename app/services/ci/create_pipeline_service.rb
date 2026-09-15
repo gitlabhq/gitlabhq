@@ -7,6 +7,8 @@ module Ci
     LOG_MAX_DURATION_THRESHOLD = 3.seconds
     LOG_MAX_PIPELINE_SIZE = 2_000
     LOG_MAX_CREATION_THRESHOLD = 20.seconds
+    LOG_MAX_PIPELINE_VARIABLES = 500
+    LOG_MAX_PIPELINE_VARIABLE_VALUE_BYTESIZE = 200.kilobytes
     SEQUENCE = [Gitlab::Ci::Pipeline::Chain::Build,
       Gitlab::Ci::Pipeline::Chain::Validate::Abilities,
       Gitlab::Ci::Pipeline::Chain::Validate::Repository,
@@ -204,6 +206,20 @@ module Ci
           next false unless duration
 
           duration >= LOG_MAX_CREATION_THRESHOLD
+        end
+
+        l.log_when do |observations|
+          count = observations['pipeline_variables_count']
+          next false unless count
+
+          count >= LOG_MAX_PIPELINE_VARIABLES
+        end
+
+        l.log_when do |observations|
+          bytesize = observations['pipeline_variables_max_value_bytesize']
+          next false unless bytesize
+
+          bytesize >= LOG_MAX_PIPELINE_VARIABLE_VALUE_BYTESIZE
         end
       end
     end

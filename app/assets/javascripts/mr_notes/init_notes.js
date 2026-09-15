@@ -84,7 +84,7 @@ export default () => {
       this.setEndpoints(this.endpoints);
 
       if (!this.isNotesFetched) {
-        notesEventHub.$emit('fetchNotesData');
+        notesEventHub.$emit('fetch-notes-data');
       }
 
       this.fetchMrMetadata();

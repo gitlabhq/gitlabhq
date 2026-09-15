@@ -1,6 +1,6 @@
 ---
-stage: AI-powered
-group: Custom Models
+stage: AI Platform
+group: AI Model Services
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see <https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments>
 description: GitLab Duo機能の大規模言語モデルを設定する。
 title: モデル選択
@@ -33,10 +33,10 @@ GitLabは、機能のパフォーマンスを最適化するために、この�
 
 {{< /history >}}
 
-インスタンス全体に適用される機能のモデルを選択できます。特定のモデルを選択しない場合、すべてのGitLab Duo機能はデフォルトのGitLabモデルを使用します。
+特定機能のデフォルトモデルを選択でき、そのデフォルトはインスタンス全体に適用されます。特定のモデルを選択しない場合、すべてのGitLab Duo機能はデフォルトのGitLabモデルを使用します。
 
 > [!note]
-> オフラインライセンスを持つGitLab Self-Managedインスタンスの場合、GitLab Duo Agent Platformの機能のモデルを変更するには、[GitLab Duo Agent Platform Self-Hosted](../../subscriptions/subscription-add-ons.md)アドオンが必要です。
+> GitLab Self-Managedインスタンスでオフラインライセンスをお持ちの場合、GitLab Duo Agent Platformの機能のモデルを変更するには、[GitLab Duo Agent Platform Self-Hosted](../../subscriptions/subscription-add-ons.md)アドオンが必要です。
 
 前提条件: 
 
@@ -47,5 +47,27 @@ GitLabは、機能のパフォーマンスを最適化するために、この�
 1. 右上隅で、**管理者**を選択します。
 1. 左側のサイドバーで、**GitLab Duo**を選択します。
 1. **AI機能の設定**で、**GitLab Duoのモデルを設定する**を選択します。**AI機能の設定**が表示されない場合は、GitLab Duo Enterpriseアドオンがインスタンスに設定されていることを確認してください。
-1. 設定したい機能について、ドロップダウンリストからモデルを選択します。
+1. 設定したい機能について、ドロップダウンリストからデフォルトとして設定するモデルを選択します。
 1. オプション。セクション内のすべての機能にモデルを適用するには、**すべてに適用**を選択します。
+
+### Agentic Chatのモデルを選択する {#select-a-model-for-agentic-chat}
+
+{{< history >}}
+
+- GitLab 19.1で、GitLab Duo Agentic Chatで使用できるモデルを特定のモデルに制限する機能が[追加](https://gitlab.com/groups/gitlab-org/-/work_items/22028)されました。
+
+{{< /history >}}
+
+1. 右上隅で、**管理者**を選択します。
+1. 左側のサイドバーで、**GitLab Duo**を選択します。
+1. **Configure AI features**で、**GitLab Duo Agentic Chat**セクションに移動します。
+1. ドロップダウンリストからモデルを選択し、デフォルトモデルとして設定します。他のモデルへのアクセスを制限する予定がある場合は、GitLab管理のモデルをデフォルトとして選択します。
+1. オプション。Agentic Chatでユーザーが選択できるその他のモデルを制限するには:
+
+   1. **利用可能なモデル**の下で、**設定**を選択します。
+   1. **利用可能なモデル: Agentic Chat**ダイアログで、**特定のモデルに制限**チェックボックスをオンにします。
+   1. Agentic Chatで使用できるようにするモデルを選択します。
+   1. **保存**を選択します。
+
+   > [!note]
+   > Agentic Chatを特定のモデルに制限するには、GitLab管理のモデルをデフォルトのモデルとして選択する必要があります。Agentic Chatを特定のモデルに制限しない場合、ユーザーはすべてのGitLab管理のモデルから選択できます。

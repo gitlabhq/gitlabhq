@@ -9,7 +9,6 @@ RSpec.describe LinkedProjectIssueEntity do
   let_it_be(:issue_link) { create(:issue_link) }
 
   let(:request) { double('request') }
-  let(:issue_type) { :task }
   let(:related_issue) { issue_link.source.related_issues(user).first }
   let(:entity) { described_class.new(related_issue, request: request, current_user: user) }
 

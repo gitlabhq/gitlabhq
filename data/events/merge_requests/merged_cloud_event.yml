@@ -1,0 +1,6 @@
+---
+event: MergeRequests::MergedCloudEvent
+description: Published when a merge request is merged. CloudEvent counterpart of the
+  legacy MergedEvent, using the CloudEvents v1.0 envelope with the acting user (who
+  merged the MR) embedded in the event.
+feature_category: code_suggestions

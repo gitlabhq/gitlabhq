@@ -7,7 +7,6 @@ import waitForPromises from 'helpers/wait_for_promises';
 import { confirmAction } from '~/lib/utils/confirm_via_gl_modal/confirm_via_gl_modal';
 import { detectAndConfirmSensitiveTokens } from '~/lib/utils/secret_detection';
 import { createAlert } from '~/alert';
-import { COMMENT_FORM } from '~/notes/i18n';
 import DiscussionReplyPlaceholder from '~/notes/components/discussion_reply_placeholder.vue';
 import ResolveDiscussionButton from '~/notes/components/resolve_discussion_button.vue';
 import ResolveWithIssueButton from '~/notes/components/discussion_resolve_with_issue_button.vue';
@@ -16,12 +15,14 @@ import NoteSignedOutWidget from '~/rapid_diffs/app/discussions/note_signed_out_w
 import NoteableDiscussion from '~/rapid_diffs/app/discussions/noteable_discussion.vue';
 import DiscussionNotes from '~/rapid_diffs/app/discussions/discussion_notes.vue';
 import { isLoggedIn } from '~/lib/utils/common_utils';
+import { CopyAsGFM } from '~/behaviors/markdown/copy_as_gfm';
 
 jest.mock('~/alert');
 jest.mock('~/lib/utils/confirm_via_gl_modal/confirm_via_gl_modal');
 jest.mock('~/lib/utils/secret_detection');
 jest.mock('~/lib/utils/common_utils');
 jest.mock('~/lib/utils/autosave');
+jest.mock('~/behaviors/markdown/copy_as_gfm');
 
 describe('NoteableDiscussion', () => {
   let wrapper;
@@ -41,13 +42,20 @@ describe('NoteableDiscussion', () => {
     endpoints: { createNote: '/api/notes' },
   };
 
-  const createComponent = ({ props = {}, provide = {}, repliesVisible = true } = {}) => {
+  const createComponent = ({
+    props = {},
+    provide = {},
+    stubs = {},
+    listeners = {},
+    repliesVisible = true,
+  } = {}) => {
     wrapper = shallowMount(NoteableDiscussion, {
       propsData: {
         ...defaultProps,
         discussion: createDiscussion(),
         ...props,
       },
+      listeners,
       provide: merge({ store }, defaultProvide, provide),
       stubs: {
         DiscussionNotes: stubComponent(DiscussionNotes, {
@@ -57,6 +65,7 @@ describe('NoteableDiscussion', () => {
           template: `<ul><slot name="footer" :repliesVisible="repliesVisible"></slot></ul>`,
         }),
         ResolveWithDuoDropdownItem: true,
+        ...stubs,
       },
     });
   };
@@ -183,6 +192,53 @@ describe('NoteableDiscussion', () => {
     expect(wrapper.emitted('note-edited')).toStrictEqual([[{ note, value }]]);
   });
 
+  describe('quote reply', () => {
+    beforeEach(() => {
+      jest.spyOn(window, 'requestAnimationFrame').mockImplementation((cb) => cb());
+      CopyAsGFM.selectionToGfm.mockResolvedValue('> quoted text');
+    });
+
+    it('opens the reply form with the quoted selection when quoteReply fires', async () => {
+      const append = jest.fn();
+      createComponent({
+        props: { discussion: createDiscussion({ isReplying: true }) },
+        stubs: { NoteForm: stubComponent(NoteForm, { methods: { append } }) },
+      });
+
+      wrapper
+        .find('[data-testid="discussion-content"]')
+        .element.dispatchEvent(new CustomEvent('quoteReply'));
+      await waitForPromises();
+      await nextTick();
+
+      expect(wrapper.emitted('start-replying')).toStrictEqual([[]]);
+      expect(append).toHaveBeenCalledWith('> quoted text');
+    });
+
+    it('opens the reply form and quotes the selection when quoteReply fires while not replying', async () => {
+      const append = jest.fn();
+      const discussion = createDiscussion({ isReplying: false });
+      createComponent({
+        props: { discussion },
+        listeners: {
+          'start-replying': () => {
+            wrapper.setProps({ discussion: { ...discussion, isReplying: true } });
+          },
+        },
+        stubs: { NoteForm: stubComponent(NoteForm, { methods: { append } }) },
+      });
+
+      wrapper
+        .find('[data-testid="discussion-content"]')
+        .element.dispatchEvent(new CustomEvent('quoteReply'));
+      await waitForPromises();
+      await nextTick();
+
+      expect(wrapper.emitted('start-replying')).toStrictEqual([[]]);
+      expect(append).toHaveBeenCalledWith('> quoted text');
+    });
+  });
+
   describe('timelineLayout prop', () => {
     it('passes timelineLayout to DiscussionNotes', () => {
       createComponent({ props: { timelineLayout: true } });
@@ -227,32 +283,12 @@ describe('NoteableDiscussion', () => {
       expect(store.replyToDiscussion).not.toHaveBeenCalled();
     });
 
-    it('shows alert when save fails', async () => {
-      store.replyToDiscussion.mockRejectedValue({
-        response: { data: {}, status: 500 },
-      });
-      createComponent({ props: { discussion: createDiscussion({ isReplying: true }) } });
-
-      await wrapper.findComponent(NoteForm).props('saveNote')('test note');
-
-      expect(createAlert).toHaveBeenCalledWith(
-        expect.objectContaining({
-          message: COMMENT_FORM.GENERIC_UNSUBMITTABLE_NETWORK,
-        }),
-      );
-      expect(wrapper.emitted('stop-replying')).toBe(undefined);
-    });
-
-    it('shows generic alert when save fails without a response', async () => {
+    it('propagates save failure and keeps the form open', async () => {
       store.replyToDiscussion.mockRejectedValue(new Error('fail'));
       createComponent({ props: { discussion: createDiscussion({ isReplying: true }) } });
 
-      await wrapper.findComponent(NoteForm).props('saveNote')('test note');
-
-      expect(createAlert).toHaveBeenCalledWith(
-        expect.objectContaining({
-          message: COMMENT_FORM.GENERIC_UNSUBMITTABLE_NETWORK,
-        }),
+      await expect(wrapper.findComponent(NoteForm).props('saveNote')('test note')).rejects.toThrow(
+        'fail',
       );
       expect(wrapper.emitted('stop-replying')).toBe(undefined);
     });
@@ -340,29 +376,15 @@ describe('NoteableDiscussion', () => {
         expect(store.addDraftToDiscussion).not.toHaveBeenCalled();
       });
 
-      it('shows alert when draft save fails', async () => {
-        store.addDraftToDiscussion.mockRejectedValue({
-          response: { data: {}, status: 500 },
-        });
-        createComponent({
-          props: { discussion: createDiscussion({ isReplying: true }) },
-        });
-        await wrapper.findComponent(NoteForm).props('saveDraft')('draft text');
-        expect(createAlert).toHaveBeenCalled();
-        expect(wrapper.emitted('stop-replying')).toBe(undefined);
-      });
-
-      it('shows generic alert when draft save fails without a response', async () => {
+      it('propagates draft save failure and keeps the form open', async () => {
         store.addDraftToDiscussion.mockRejectedValue(new Error('fail'));
         createComponent({
           props: { discussion: createDiscussion({ isReplying: true }) },
         });
-        await wrapper.findComponent(NoteForm).props('saveDraft')('draft text');
-        expect(createAlert).toHaveBeenCalledWith(
-          expect.objectContaining({
-            message: COMMENT_FORM.GENERIC_UNSUBMITTABLE_NETWORK,
-          }),
-        );
+
+        await expect(
+          wrapper.findComponent(NoteForm).props('saveDraft')('draft text'),
+        ).rejects.toThrow('fail');
         expect(wrapper.emitted('stop-replying')).toBe(undefined);
       });
 

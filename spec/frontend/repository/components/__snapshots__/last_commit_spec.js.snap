@@ -23,6 +23,7 @@ exports[`Repository last commit component renders commit widget 1`] = `
         class="gl-flex gl-items-center js-commit-sha-group"
       >
         <gl-button-stub
+          accessibledisabled="true"
           buttontextclasses=""
           category="primary"
           class="dark:!gl-bg-strong gl-font-monospace"
@@ -48,6 +49,7 @@ exports[`Repository last commit component renders commit widget 1`] = `
         />
       </gl-button-group-stub>
       <gl-button-stub
+        accessibledisabled="true"
         buttontextclasses=""
         category="secondary"
         class="!gl-ml-0"

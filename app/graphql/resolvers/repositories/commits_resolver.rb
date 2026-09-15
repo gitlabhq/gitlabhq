@@ -31,6 +31,14 @@ module Resolvers
         required: false,
         description: 'Commits created after an ISO8601 formatted time or date.'
 
+      argument :first_parent, GraphQL::Types::Boolean,
+        required: false,
+        description: 'Follow only the first parent of merge commits.'
+
+      argument :order, Types::Repositories::CommitOrderEnum,
+        required: false,
+        description: 'Order the commits are returned in. Defaults to reverse chronological.'
+
       calls_gitaly!
 
       alias_method :repository, :object

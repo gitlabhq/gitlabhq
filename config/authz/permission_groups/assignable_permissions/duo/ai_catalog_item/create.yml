@@ -1,0 +1,10 @@
+---
+name: create_ai_catalog_item
+description: Grants the ability to create AI catalog items
+available_for:
+  - granular_access_token
+permissions:
+  - create_ai_catalog_agent
+  - create_ai_catalog_flow
+boundaries:
+  - project

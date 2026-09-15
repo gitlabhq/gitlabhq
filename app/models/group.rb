@@ -184,6 +184,8 @@ class Group < Namespace
   has_one :group_feature, inverse_of: :group, class_name: 'Groups::FeatureSetting'
 
   delegate(
+    :ai_custom_instructions,
+    :ai_custom_instructions=,
     :default_branch_name,
     :jobs_to_be_done,
     :new_user_signups_cap,
@@ -762,10 +764,6 @@ class Group < Namespace
     members_with_parents.all_owners.exists?(user_id: user)
   end
 
-  def blocked_owners
-    members.blocked.where(access_level: Gitlab::Access::OWNER)
-  end
-
   def has_container_repository_including_subgroups?
     ::ContainerRepository.for_group_and_its_subgroups(self).exists?
   end
@@ -1162,8 +1160,12 @@ class Group < Namespace
     feature_flag_enabled_for_self_or_ancestor?(:allow_iframes_in_markdown, type: :wip)
   end
 
-  def sscs_malware_detection_feature_flag_enabled?
-    feature_flag_enabled_for_self_or_ancestor?(:sscs_malware_detection, type: :wip)
+  def vulnerability_malware_detection_feature_flag_enabled?
+    feature_flag_enabled_for_self_or_ancestor?(:vulnerability_malware_detection, type: :beta)
+  end
+
+  def dependency_malware_detection_feature_flag_enabled?
+    feature_flag_enabled_for_self_or_ancestor?(:dependency_malware_detection, type: :beta)
   end
 
   def use_work_item_url?

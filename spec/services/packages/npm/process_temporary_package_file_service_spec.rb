@@ -29,10 +29,6 @@ RSpec.describe Packages::Npm::ProcessTemporaryPackageFileService, feature_catego
   let!(:file) { temp_file('payload', content:) }
   let!(:package_file) { create(:package_file, :processing, file: file, package: temp_package, file_fixture: nil) }
 
-  let(:json_doc_filtered) do
-    json_doc.deep_dup.tap { |p| p['versions'].slice!('1.0.1') }
-  end
-
   let(:deprecate) { true }
   let(:params) { { deprecate: } }
 

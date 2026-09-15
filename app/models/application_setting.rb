@@ -39,12 +39,31 @@ class ApplicationSetting < ApplicationRecord
   # matches the size set in the database constraint
   DEFAULT_BRANCH_PROTECTIONS_DEFAULT_MAX_SIZE = 1.kilobyte
 
+  CODE_DROPDOWN_PLACEHOLDER = '{url}'
+  # Backstop for the serialized column. Sized to exceed what the JSON schema permits:
+  # 20 entries x (50-char name + two 500-char templates) serializes to 22141 bytes of ASCII.
+  # `maxLength` counts characters while this counts bytes, so multi-byte or JSON-escaped
+  # input can still be rejected here even though it satisfies the schema.
+  CODE_DROPDOWN_MAX_SERIALIZED_BYTES = 24.kilobytes
+  # Scheme syntax per RFC 3986 section 3.1.
+  CODE_DROPDOWN_SCHEME_FORMAT = /\A[a-z][a-z0-9+.-]*\z/i
+  # Git clients each register their own scheme, and new ones appear all the time, so admins are
+  # deliberately not restricted to a fixed list. What is refused is the small, fixed set of
+  # schemes a browser can execute or read local files from -- those would turn an admin-supplied
+  # template into stored XSS once it is rendered as a link.
+  CODE_DROPDOWN_BLOCKED_SCHEMES = %w[
+    javascript data vbscript file blob filesystem about
+  ].freeze
+
   USERS_UNCONFIRMED_SECONDARY_EMAILS_DELETE_AFTER_DAYS = 3
 
   DEFAULT_HELM_MAX_PACKAGES_COUNT = 1000
 
   DEFAULT_AUTHENTICATED_GIT_HTTP_LIMIT = 3600
   DEFAULT_AUTHENTICATED_GIT_HTTP_PERIOD = 3600
+
+  DEFAULT_AUTHENTICATED_DEPENDENCY_PROXY_LIMIT = 1000
+  DEFAULT_AUTHENTICATED_DEPENDENCY_PROXY_PERIOD = 15
 
   DEFAULT_RAW_BLOB_UNAUTHENTICATED_REQUEST_LIMIT = 800
 
@@ -71,7 +90,6 @@ class ApplicationSetting < ApplicationRecord
   add_authentication_token_field :static_objects_external_storage_auth_token, encrypted: :required # rubocop:disable Gitlab/TokenWithoutPrefix -- https://gitlab.com/gitlab-org/gitlab/-/issues/439292
   add_authentication_token_field :error_tracking_access_token, encrypted: :required # rubocop:disable Gitlab/TokenWithoutPrefix -- https://gitlab.com/gitlab-org/gitlab/-/issues/439292
 
-  belongs_to :push_rule
   belongs_to :web_ide_oauth_application, class_name: 'Authn::OauthApplication'
   belongs_to :o11y_oauth_application, class_name: 'Authn::OauthApplication', optional: true
 
@@ -384,6 +402,15 @@ class ApplicationSetting < ApplicationRecord
     length: { maximum: 20, message: N_('is too long (maximum is %{count} characters)') },
     allow_blank: true
 
+  # In a previous iteration, the default token prefix was 'gl'. To prevent accidentally creating tokens in the form of
+  # 'gl-glpat', the prefix 'gl' is now reserved.
+  validates :instance_token_prefix,
+    exclusion: {
+      in: [Authn::TokenField::PrefixHelper::LEGACY_DEFAULT_PREFIX],
+      message: N_('is reserved and cannot be used')
+    },
+    if: :instance_token_prefix_changed?
+
   validates :commit_email_hostname, format: { with: /\A[^@]+\z/ }
 
   validates :archive_builds_in_seconds,
@@ -431,6 +458,8 @@ class ApplicationSetting < ApplicationRecord
   validates :wiki_page_max_content_bytes, numericality: { only_integer: true, greater_than_or_equal_to: 1.kilobyte }
   validates :wiki_asciidoc_allow_uri_includes, inclusion: { in: [true, false], message: N_('must be a boolean value') }
   validates :secrets_manager_instance_enrolled, inclusion: { in: [true, false], message: N_('must be a boolean value') }
+  validates :secrets_manager_instance_beta_enrolled,
+    inclusion: { in: [true, false], message: N_('must be a boolean value') }
 
   validates :email_restrictions, untrusted_regexp: true
 
@@ -574,7 +603,8 @@ class ApplicationSetting < ApplicationRecord
       ci_partitions_in_seconds_limit: [:integer, { default: ChronicDuration.parse('1 month') }],
       ci_delete_pipelines_in_seconds_limit: [:integer, { default: ChronicDuration.parse('1 year') }],
       git_push_pipeline_limit: [:integer, { default: 4 }],
-      ci_max_caches_per_job: [:integer, { default: 4 }]
+      ci_max_caches_per_job: [:integer, { default: 4 }],
+      block_jwt_for_reclaimed_paths: [:boolean, { default: true }]
     }
   end
 
@@ -661,8 +691,10 @@ class ApplicationSetting < ApplicationRecord
       :code_suggestions_api_rate_limit,
       :concurrent_bitbucket_import_jobs_limit,
       :concurrent_bitbucket_server_import_jobs_limit,
+      :concurrent_pull_request_import_jobs_limit,
       :concurrent_github_import_jobs_limit,
       :concurrent_relation_batch_export_limit,
+      :concurrent_relation_export_limit,
       :container_registry_token_expire_delay,
       :housekeeping_optimize_repository_period,
       :import_jobs_concurrency_limit,
@@ -680,6 +712,8 @@ class ApplicationSetting < ApplicationRecord
       :snippet_size_limit,
       :throttle_authenticated_api_period_in_seconds,
       :throttle_authenticated_api_requests_per_period,
+      :throttle_authenticated_dependency_proxy_period_in_seconds,
+      :throttle_authenticated_dependency_proxy_requests_per_period,
       :throttle_authenticated_deprecated_api_period_in_seconds,
       :throttle_authenticated_deprecated_api_requests_per_period,
       :throttle_authenticated_files_api_period_in_seconds,
@@ -768,6 +802,7 @@ class ApplicationSetting < ApplicationRecord
       :search_rate_limit_unauthenticated,
       :sidekiq_job_limiter_compression_threshold_bytes,
       :sidekiq_job_limiter_limit_bytes,
+      :tags_create_limit,
       :terminal_max_session_time,
       :user_contributed_projects_api_limit,
       :user_projects_api_limit,
@@ -887,6 +922,7 @@ class ApplicationSetting < ApplicationRecord
     allow_contribution_mapping_to_admins: [:boolean, { default: false }],
     allow_bypass_placeholder_confirmation: [:boolean, { default: false }],
     relation_export_batch_size: [:integer, { default: 50 }],
+    concurrent_relation_export_limit: [:integer, { default: 25 }],
     allow_s3_compatible_storage_for_offline_transfer: [:boolean, { default: false }],
     allow_application_default_credentials_for_offline_transfer: [:boolean, { default: false }],
     offline_transfer_exports_enabled: [:boolean, { default: false }],
@@ -906,6 +942,7 @@ class ApplicationSetting < ApplicationRecord
     global_search_merge_requests_enabled: [:boolean, { default: true }],
     global_search_snippet_titles_enabled: [:boolean, { default: true }],
     global_search_users_enabled: [:boolean, { default: true }],
+    global_search_groups_enabled: [:boolean, { default: true }],
     global_search_block_anonymous_searches_enabled: [:boolean, { default: false }],
     anonymous_searches_allowed: [:boolean, { default: true }],
     default_search_scope: [:string, { default: SEARCH_SCOPE_SYSTEM_DEFAULT }]
@@ -1177,7 +1214,8 @@ class ApplicationSetting < ApplicationRecord
     inclusion: { in: [true, false], message: N_('must be a boolean value') }
 
   jsonb_accessor :default_profile_preferences,
-    default_dark_syntax_highlighting_theme: [:integer, { default: 2 }]
+    default_dark_syntax_highlighting_theme: [:integer, { default: 2 }],
+    auto_accept_awarded_achievements: [:boolean, { default: false }]
 
   validates :default_profile_preferences, json_schema: { filename: "application_setting_default_profile_preferences" }
 
@@ -1254,6 +1292,15 @@ class ApplicationSetting < ApplicationRecord
 
   validates :terraform_state_settings,
     json_schema: { filename: 'application_setting_terraform_state_settings', detail_errors: true }
+
+  validates :code_dropdown_custom_clients,
+    json_schema: {
+      filename: 'application_setting_code_dropdown_custom_clients',
+      detail_errors: true,
+      size_limit: CODE_DROPDOWN_MAX_SERIALIZED_BYTES
+    }
+
+  validate :validate_code_dropdown_custom_clients
 
   before_validation :ensure_uuid!
   before_validation :coerce_repository_storages_weighted, if: :repository_storages_weighted_changed?
@@ -1333,8 +1380,11 @@ class ApplicationSetting < ApplicationRecord
 
     check_schema!
 
-    transaction(requires_new: true) do # rubocop:disable Performance/ActiveRecordSubtransactions
-      super
+    Gitlab::Database::QueryAnalyzers::PreventWritesOnGet.allow_write_on_get(
+      url: 'https://gitlab.com/gitlab-org/gitlab/-/issues/608670') do
+      transaction(requires_new: true) do # rubocop:disable Performance/ActiveRecordSubtransactions
+        super
+      end
     end
   rescue ActiveRecord::RecordNotUnique
     # We already have an ApplicationSetting record, so just return it.
@@ -1382,6 +1432,7 @@ class ApplicationSetting < ApplicationRecord
       autocomplete_users_unauthenticated_limit: [:integer, { default: 100 }],
       concurrent_bitbucket_import_jobs_limit: [:integer, { default: 100 }],
       concurrent_bitbucket_server_import_jobs_limit: [:integer, { default: 100 }],
+      concurrent_pull_request_import_jobs_limit: [:integer, { default: 200 }],
       concurrent_github_import_jobs_limit: [:integer, { default: 1000 }],
       concurrent_relation_batch_export_limit: [:integer, { default: 8 }],
       ci_lint_limit_per_user: [:integer, { default: 0 }],
@@ -1404,11 +1455,17 @@ class ApplicationSetting < ApplicationRecord
       runner_jobs_request_api_limit: [:integer, { default: 2000 }],
       runner_jobs_patch_trace_api_limit: [:integer, { default: 200 }],
       runner_jobs_endpoints_api_limit: [:integer, { default: 200 }],
+      tags_create_limit: [:integer, { default: 100 }],
       throttle_authenticated_git_http_enabled: [:boolean, { default: false }],
       throttle_authenticated_git_http_requests_per_period:
         [:integer, { default: DEFAULT_AUTHENTICATED_GIT_HTTP_LIMIT }],
       throttle_authenticated_git_http_period_in_seconds:
         [:integer, { default: DEFAULT_AUTHENTICATED_GIT_HTTP_PERIOD }],
+      throttle_authenticated_dependency_proxy_enabled: [:boolean, { default: false }],
+      throttle_authenticated_dependency_proxy_requests_per_period:
+        [:integer, { default: DEFAULT_AUTHENTICATED_DEPENDENCY_PROXY_LIMIT }],
+      throttle_authenticated_dependency_proxy_period_in_seconds:
+        [:integer, { default: DEFAULT_AUTHENTICATED_DEPENDENCY_PROXY_PERIOD }],
       user_contributed_projects_api_limit: [:integer, { default: 100 }],
       user_projects_api_limit: [:integer, { default: 300 }],
       user_starred_projects_api_limit: [:integer, { default: 100 }],
@@ -1477,13 +1534,6 @@ class ApplicationSetting < ApplicationRecord
     remember_me_enabled?
   end
 
-  # Overrides the belongs_to :push_rule association.
-  # This method and the push_rule_id column from application_settings should be removed together.
-  # See https://gitlab.com/gitlab-org/gitlab/-/work_items/601603
-  def push_rule
-    nil
-  end
-
   def custom_default_search_scope_set?
     ::Search::Scopes.all_scope_names.include?(default_search_scope)
   end
@@ -1495,6 +1545,94 @@ class ApplicationSetting < ApplicationRecord
   end
 
   private
+
+  # https://docs.gitlab.com/development/i18n/externalization/#keep-translations-dynamic
+  def code_dropdown_template_labels
+    {
+      'ssh_url_template' => _('SSH URL template'),
+      'http_url_template' => _('HTTPS URL template')
+    }.freeze
+  end
+
+  def validate_code_dropdown_custom_clients
+    return unless code_dropdown_custom_clients.is_a?(Array)
+
+    labels = code_dropdown_template_labels
+    seen_names = {}
+    seen_templates = {}
+
+    code_dropdown_custom_clients.each_with_index do |entry, index|
+      next unless entry.is_a?(Hash)
+
+      validate_code_dropdown_entry_name(entry, index, seen_names)
+
+      labels.each do |key, label|
+        next if entry[key].blank?
+
+        validate_code_dropdown_entry_template(entry[key], index, label, seen_templates)
+      end
+    end
+  end
+
+  def validate_code_dropdown_entry_name(entry, index, seen_names)
+    name = entry['name'].to_s.strip
+    # A missing name is already reported by the JSON schema; don't report it twice.
+    return if name.blank?
+
+    first_index = seen_names[name.downcase]
+
+    if first_index
+      errors.add(:code_dropdown_custom_clients,
+        format(_('entry %{index}: name "%{name}" is already used by entry %{first_index}'),
+          index: index + 1, name: name, first_index: first_index + 1))
+    else
+      seen_names[name.downcase] = index
+    end
+  end
+
+  def validate_code_dropdown_entry_template(template, index, label, seen_templates)
+    return unless template.is_a?(String)
+
+    unless template.scan(CODE_DROPDOWN_PLACEHOLDER).one?
+      errors.add(:code_dropdown_custom_clients,
+        format(_('entry %{index} %{label}: must contain "{url}" exactly once'), index: index + 1, label: label))
+      return
+    end
+
+    return unless validate_code_dropdown_template_url(template, index, label)
+
+    # The same template may legitimately be used for both SSH and HTTPS within one entry,
+    # so only flag it when a *different* entry already claimed it.
+    first_index = seen_templates[template.downcase]
+
+    if first_index && first_index != index
+      errors.add(:code_dropdown_custom_clients,
+        format(_('entry %{index} %{label}: is already used by entry %{first_index}'),
+          index: index + 1, label: label, first_index: first_index + 1))
+    else
+      seen_templates[template.downcase] ||= index
+    end
+  end
+
+  # A parsable URL is not enough on its own: `javascript:`, `data:` and `vbscript:` all parse
+  # cleanly, so the scheme is checked separately to keep script-executing URLs out of the
+  # rendered href. See doc/development/secure_coding_guidelines.md.
+  def validate_code_dropdown_template_url(template, index, label)
+    scheme = Gitlab::Utils.parse_url(template)&.scheme
+
+    if scheme.blank? || !scheme.match?(CODE_DROPDOWN_SCHEME_FORMAT)
+      errors.add(:code_dropdown_custom_clients,
+        format(_('entry %{index} %{label}: must be a valid URL with a scheme'), index: index + 1, label: label))
+      return false
+    end
+
+    return true unless CODE_DROPDOWN_BLOCKED_SCHEMES.include?(scheme.downcase)
+
+    errors.add(:code_dropdown_custom_clients,
+      format(_('entry %{index} %{label}: scheme "%{scheme}" is not allowed'),
+        index: index + 1, label: label, scheme: scheme))
+    false
+  end
 
   def parsed_grafana_url
     @parsed_grafana_url ||= Gitlab::Utils.parse_url(grafana_url)

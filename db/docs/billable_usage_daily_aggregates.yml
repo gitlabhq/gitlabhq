@@ -1,0 +1,12 @@
+---
+table_name: billable_usage_daily_aggregates
+classes:
+- Utilization::BillableUsage::DailyAggregate
+feature_categories:
+- consumables_cost_management
+description: Daily aggregated billable usage events retained on air-gapped self-managed instances for later export.
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/248498
+milestone: '19.4'
+gitlab_schema: gitlab_main_cell_local
+notes: Exempted because Cell local table storing instance level-aggregations
+table_size: small

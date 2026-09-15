@@ -21,7 +21,7 @@ module RuboCop
         #   # OK
         #   Rails.logger.level
         MSG = 'Use a structured JSON logger instead of `Rails.logger`. ' \
-          'https://docs.gitlab.com/ee/development/logging.html'
+          'https://docs.gitlab.com/development/logging/'
 
         # See supported log methods:
         # https://ruby-doc.org/stdlib-2.6.6/libdoc/logger/rdoc/Logger.html

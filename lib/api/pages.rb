@@ -64,8 +64,10 @@ module API
 
         if response.success?
           present ::Pages::ProjectSettings.new(response.payload[:project]), with: Entities::Pages::ProjectSettings
-        else
+        elsif response.reason == :forbidden
           forbidden!(response.message)
+        else
+          unprocessable_entity!(response.message)
         end
       end
 

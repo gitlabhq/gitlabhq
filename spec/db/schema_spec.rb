@@ -34,6 +34,7 @@ RSpec.describe 'Database schema',
       ai_audit_events: %w[author_id workflow_id cloud_event_id],
       ai_usage_events: %w[user_id],
       ai_events_counts: %w[user_id namespace_id],
+      ai_flow_schedules: %w[project_id],
       application_settings: %w[performance_bar_allowed_group_id slack_app_id snowplow_app_id eks_account_id
         eks_access_key_id],
       ascp_component_dependencies: %w[project_id], # Uses loose FK for async deletion (config/gitlab_loose_foreign_keys.yml)
@@ -58,25 +59,23 @@ RSpec.describe 'Database schema',
         stage_event_hash_id state_id sprint_id],
       analytics_cycle_analytics_stage_aggregations: %w[last_issues_id last_merge_requests_id],
       audit_events: %w[author_id entity_id target_id],
-      # organization_id FK dropped in gitlab-org/gitlab#604997 (unnecessary sharding key).
-      # Column removal follows in https://gitlab.com/gitlab-org/gitlab/-/issues/606167
-      bulk_import_exports: %w[organization_id],
       user_audit_events: %w[author_id user_id target_id],
       group_audit_events: %w[author_id group_id target_id],
       project_audit_events: %w[author_id project_id target_id],
       iam_outbox: %w[entity_id], # generic source-row id (entity_type, entity_id), not a single-table FK
       govern_policy_enforcements: %w[project_id], # No FK: the Policy Store owns its integrity so it can be extracted, per GOVERN-008
+      govern_policy_evaluations: %w[project_id environment_id user_id], # No FK per GOVERN-008; audit-style rows keep their scope/principal refs after deletion
       instance_audit_events: %w[author_id target_id],
       project_compliance_violations: %w[audit_event_id], # audit_events table doesn't have id as the primary key instead the primary key is btree (id, created_at)
       award_emoji: %w[awardable_id user_id],
       aws_roles: %w[role_external_id],
+      # No FK: deleting a namespace must not delete billing data that has not been exported yet.
+      billable_usage_daily_aggregates: %w[root_namespace_id],
       boards: %w[milestone_id iteration_id],
       burned_project_routes: %w[project_id], # No FK constraint: tombstones must outlive the project they reference.
       catalog_resource_component_last_usages: %w[used_by_project_id], # No FK constraint because we want to preserve usage data even if project is deleted.
       chat_names: %w[chat_id team_id],
       chat_teams: %w[team_id],
-      cd_deployment_transitions: %w[principal_id], # Pending removal in 19.3
-      cd_rollout_transitions: %w[principal_id], # Pending removal in 19.3
       ci_build_pending_states: %w[project_id],
       ci_build_trace_chunks: %w[project_id],
       ci_builds_runner_session: %w[project_id],
@@ -88,11 +87,10 @@ RSpec.describe 'Database schema',
       ci_pipeline_schedule_variables: %w[project_id],
       ci_pipelines_config: %w[partition_id project_id],
       ci_secure_file_states: %w[project_id],
+      ci_test_balancing_assignments: %w[project_id pipeline_id test_split_id job_group_id], # No FKs needed as rows are dropped after retention period
       ci_unit_test_failures: %w[project_id],
       ci_resources: %w[project_id],
       p_ci_pipelines: %w[partition_id trigger_id],
-      # Table is unused and awaiting removal in a later milestone
-      ci_build_runtime_environments: %w[build_id partition_id runtime_environment_id runner_machine_id project_id],
       p_ci_job_runtime_environments: %w[partition_id runtime_environment_id], # runtime_environment_id is a bare pointer that may dangle after the runtime env partition is dropped
       p_ci_runner_machine_builds: %w[project_id],
       ci_pending_builds: %w[runner_machine_id], # runner_machine_id has no FK: ci_runner_machines is gitlab_ci_cell_local, a different schema from gitlab_ci; cross-schema FKs are disallowed
@@ -121,7 +119,12 @@ RSpec.describe 'Database schema',
       deploy_keys_projects: %w[deploy_key_id],
       deployments: %w[deployable_id user_id],
       draft_notes: %w[discussion_id commit_id],
-      duo_workflows_workflows: %w[trigger_flow_trigger_id], # No FK to preserve attribution when the trigger is deleted
+      # workflow_id references duo_workflows_workflows, but this table is
+      # gitlab_main_cell_setting and the workflow is gitlab_main_org, so the
+      # reference is a loose foreign key rather than a DB-level FK.
+      duo_agent_platform_functional_verification_runs: %w[workflow_id],
+      # No FK to preserve attribution when the trigger/schedule is deleted
+      duo_workflows_workflows: %w[trigger_flow_trigger_id trigger_flow_schedule_id],
       epics: %w[updated_by_id last_edited_by_id state_id],
       events: %w[target_id],
       forked_project_links: %w[forked_from_project_id],
@@ -132,7 +135,8 @@ RSpec.describe 'Database schema',
       gitlab_subscription_histories: %w[gitlab_subscription_id hosted_plan_id namespace_id],
       issues: %w[last_edited_by_id state_id work_item_type_id],
       issue_emails: %w[email_message_id],
-      jira_connect_installations: %w[cloud_id], # cloud_id is the Jira site (cloud) id, not a GitLab foreign key
+      # Jira site (cloud) id: an Atlassian identifier, not a GitLab foreign key
+      jira_connect_installations: %w[cloud_id],
       jira_tracker_data: %w[jira_issue_transition_id],
       keys: %w[user_id],
       label_links: %w[target_id],
@@ -143,10 +147,8 @@ RSpec.describe 'Database schema',
       merge_request_diff_commits: %w[project_id commit_author_id committer_id merge_request_commits_metadata_id],
       # merge_request_diff_commits_b5377a7a34 is the temporary table for the merge_request_diff_commits partitioning
       # backfill. It will get foreign keys after the partitioning is finished.
-      merge_request_diff_commits_b5377a7a34: %w[merge_request_commits_metadata_id merge_request_diff_id project_id],
-      # merge_request_diff_files_99208b8fac is a partitioned table. Foreign keys exist on partitions
-      # but are not detected on the parent table by PostgresForeignKey.by_constrained_table_name.
-      merge_request_diff_files_99208b8fac: %w[merge_request_diff_id project_id],
+      merge_request_diff_commits_b5377a7a34: %w[merge_request_commits_metadata_id merge_request_diff_id project_id
+        commit_author_id committer_id],
       # file_template_project_id and custom_project_templates_group_id will be removed from namespaces
       # as part of https://gitlab.com/gitlab-org/gitlab/-/work_items/592091
       namespaces: %w[owner_id file_template_project_id custom_project_templates_group_id],
@@ -157,6 +159,9 @@ RSpec.describe 'Database schema',
       oauth_access_grants: %w[resource_owner_id application_id],
       oauth_access_tokens: %w[resource_owner_id application_id],
       oauth_applications: %w[owner_id],
+      # client_id FK dropped for cross-cell consents in gitlab-org/gitlab#597595.
+      # Cross-cell orphan cleanup is tracked in gitlab-org/gitlab#598601.
+      oauth_consents: %w[client_id],
       oauth_device_grants: %w[resource_owner_id],
       packages_nuget_symbols: %w[project_id],
       packages_package_files: %w[project_id],
@@ -165,6 +170,10 @@ RSpec.describe 'Database schema',
       # https://gitlab.com/gitlab-org/gitlab/-/work_items/606941
       packages_nuget_symbol_states: %w[project_id],
       packages_package_file_states: %w[project_id],
+      # packages_helm_metadata_caches lacks a hard FK for a different reason: its LFK marks
+      # the parent pending_destruction, CleanupStaleMetadataCacheWorker destroys it, and this
+      # child row is removed via the ON DELETE CASCADE on packages_helm_metadata_cache_id.
+      packages_helm_metadata_cache_states: %w[project_id],
       p_ci_build_needs: %w[project_id],
       p_ci_builds: %w[erased_by_id scoped_user_id],
       p_ci_build_trace_metadata: %w[project_id],
@@ -192,6 +201,7 @@ RSpec.describe 'Database schema',
       project_error_tracking_settings: %w[sentry_project_id],
       project_statistics: %w[namespace_id],
       projects: %w[mirror_user_id],
+      push_rules: %w[organization_id], # Legacy column; org rules live in organization_push_rules. Column drop tracked in gitlab-org/gitlab#623433
       redirect_routes: %w[source_id],
       repository_languages: %w[programming_language_id language_id],
       routes: %w[source_id],
@@ -201,8 +211,18 @@ RSpec.describe 'Database schema',
       p_sent_notifications: %w[project_id noteable_id recipient_id commit_id in_reply_to_discussion_id],
       slack_integrations: %w[team_id user_id bot_user_id], # these are external Slack IDs
       snippets: %w[author_id],
+      # snippet_organization_id is copied from snippets.organization_id, which has no hard FK to organizations.
+      # Cleanup happens via the hard snippet_id -> snippets ON DELETE CASCADE FK.
+      # https://gitlab.com/gitlab-org/gitlab/-/work_items/613747
+      snippet_repositories: %w[snippet_organization_id],
+      snippet_repository_storage_moves: %w[snippet_organization_id],
+      snippet_statistics: %w[snippet_organization_id],
+      snippet_user_mentions: %w[snippet_organization_id],
       spam_logs: %w[target_id],
       status_check_responses: %w[external_approval_rule_id],
+      # FK removed while the table is converted to a FixedItemsModel
+      # https://gitlab.com/groups/gitlab-org/-/work_items/19981
+      subscription_add_on_purchases: %w[subscription_add_on_id],
       subscriptions: %w[subscribable_id],
       suggestions: %w[commit_id],
       timelogs: %w[user_id],
@@ -300,6 +320,7 @@ RSpec.describe 'Database schema',
       # system_defined_status_id reference to fixed items model which is stored in code
       work_item_current_statuses: %w[system_defined_status_id],
       work_item_positions: %w[relative_positioning_namespace_id], # denormalized positioning root; row lifecycle is tied to work_item_id (cascade), so no FK needed
+      work_item_decisions: %w[discussion_id], # discussion_id is a SHA (as on notes)
       # we can't use a foreign key reference because we want to preserve namespace_id  for asynchronous deletion
       p_knowledge_graph_replicas: %w[namespace_id],
       # temp entry, removing FK on source_type_id and target_type_id until table is dropped in follow up MR
@@ -350,7 +371,10 @@ RSpec.describe 'Database schema',
       project_type_ci_runners: 17,
       projects: 54, # Decrement by 2 after the removal of temporary indexes https://gitlab.com/gitlab-org/gitlab/-/merge_requests/217449
       sbom_occurrences: 25,
-      users: 34, # Decrement by 1 after the removal of a temporary index https://gitlab.com/gitlab-org/gitlab/-/merge_requests/184848
+      # Decrement by 2 after the removal of the temporary indexes from
+      # https://gitlab.com/gitlab-org/gitlab/-/merge_requests/184848 and
+      # https://gitlab.com/gitlab-org/gitlab/-/merge_requests/250028
+      users: 35,
       vulnerability_reads: 25 # Increased by one for tmp index on BBM https://gitlab.com/gitlab-org/gitlab/-/merge_requests/235514
     }.with_indifferent_access.freeze
   end

@@ -11,8 +11,8 @@ module QA
         # (the new project, or root), where Page::Main::Menu validation can succeed.
         #
         # Only required fields are filled. The EE email opt-in checkbox is optional and
-        # left untouched. `email` is required but pre-populated for the admin user, so it
-        # is only filled when blank. The EE `country` select is required but absent on CE.
+        # left untouched. `email` is required and not pre-filled, so it is always filled.
+        # The EE `country` select is required but absent on CE.
         class Profile < QA::Page::Base
           view 'app/views/admin/registrations/profiles/new.html.haml' do
             element 'first-name'
@@ -40,7 +40,7 @@ module QA
             fill_element('first-name', first_name)
             fill_element('last-name', last_name)
             fill_element('organization-name', organization)
-            fill_email_if_blank
+            fill_email
             select_first_country
 
             click_element('submit-button')
@@ -49,11 +49,9 @@ module QA
 
           private
 
-          # `email` is required but normally pre-filled for the admin user; only fill it
-          # if the instance left it blank, to avoid changing an existing admin email.
-          def fill_email_if_blank
-            return if find_element('email').value.present?
-
+          # The onboarding form deliberately does not pre-fill the admin's email, so this
+          # always supplies one.
+          def fill_email
             fill_element('email', "qa-onboarding-#{SecureRandom.hex(4)}@example.com")
           end
 

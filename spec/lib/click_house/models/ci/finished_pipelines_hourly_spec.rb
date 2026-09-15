@@ -12,14 +12,14 @@ RSpec.describe ClickHouse::Models::Ci::FinishedPipelinesHourly, feature_category
       let(:from_time) { (1.hour - 1.second).before(1.week.ago) }
       let(:to_time) { Time.current }
 
-      it { is_expected.to eq true }
+      it { is_expected.to be true }
     end
 
     context 'with time window of one week and 1 hour' do
       let(:from_time) { 1.hour.before(1.week.ago) }
       let(:to_time) { Time.current }
 
-      it { is_expected.to eq false }
+      it { is_expected.to be false }
     end
   end
 

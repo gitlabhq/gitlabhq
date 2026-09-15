@@ -8,8 +8,7 @@ RSpec.describe Gitlab::Config::Entry::Validator, feature_category: :pipeline_com
   let(:node) { spy('node') }
 
   before do
-    allow(node).to receive(:key).and_return('node')
-    allow(node).to receive(:ancestors).and_return([])
+    allow(node).to receive_messages(key: 'node', ancestors: [])
   end
 
   describe 'delegated validator' do

@@ -3,7 +3,7 @@
 // To regenerate, run: bin/rake gitlab:js:routes
 
 import { __jsr } from '~/lib/utils/path_helpers/core';
-import { hasOrganizationScopedPaths } from '~/lib/utils/path_helpers/utils';
+import { resolveOrganizationScope } from '~/lib/utils/path_helpers/utils';
 
 
 /**
@@ -15,17 +15,20 @@ import { hasOrganizationScopedPaths } from '~/lib/utils/path_helpers/utils';
  * - controller#action: `iam/consent#accept`
  *
  * @param {object | undefined} options
+ * @param {string | null | undefined} options.organizationPath Path of organization to nest under. Pass `null` to remove path from URL params when outside of an organization data context.
  * @returns {string} route path
  */
 export const acceptIamConsentPath = /*#__PURE__*/ (...args) => {
   const _acceptOrganizationIamConsentPath = /*#__PURE__*/ __jsr.r({"organization_path":{"r":true},"format":{}}, [2,[7,"/"],[2,[6,"o"],[2,[7,"/"],[2,[3,"organization_path"],[2,[7,"/"],[2,[6,"-"],[2,[7,"/"],[2,[6,"iam"],[2,[7,"/"],[2,[6,"consent"],[2,[7,"/"],[2,[6,"accept"],[1,[2,[8,"."],[3,"format"]]]]]]]]]]]]]]]);
   const _acceptIamConsentPath = /*#__PURE__*/ __jsr.r({"format":{}}, [2,[7,"/"],[2,[6,"-"],[2,[7,"/"],[2,[6,"iam"],[2,[7,"/"],[2,[6,"consent"],[2,[7,"/"],[2,[6,"accept"],[1,[2,[8,"."],[3,"format"]]]]]]]]]]]);
 
-  if (hasOrganizationScopedPaths()) {
-    return _acceptOrganizationIamConsentPath(gon.current_organization.path, ...args);
+  const { organizationPath, routeArgs } = resolveOrganizationScope(args);
+
+  if (organizationPath) {
+    return _acceptOrganizationIamConsentPath(organizationPath, ...routeArgs);
   }
 
-  return _acceptIamConsentPath(...args);
+  return _acceptIamConsentPath(...routeArgs);
 };
 
 /**
@@ -37,17 +40,20 @@ export const acceptIamConsentPath = /*#__PURE__*/ (...args) => {
  * - controller#action: `iam/consent#reject`
  *
  * @param {object | undefined} options
+ * @param {string | null | undefined} options.organizationPath Path of organization to nest under. Pass `null` to remove path from URL params when outside of an organization data context.
  * @returns {string} route path
  */
 export const rejectIamConsentPath = /*#__PURE__*/ (...args) => {
   const _rejectOrganizationIamConsentPath = /*#__PURE__*/ __jsr.r({"organization_path":{"r":true},"format":{}}, [2,[7,"/"],[2,[6,"o"],[2,[7,"/"],[2,[3,"organization_path"],[2,[7,"/"],[2,[6,"-"],[2,[7,"/"],[2,[6,"iam"],[2,[7,"/"],[2,[6,"consent"],[2,[7,"/"],[2,[6,"reject"],[1,[2,[8,"."],[3,"format"]]]]]]]]]]]]]]]);
   const _rejectIamConsentPath = /*#__PURE__*/ __jsr.r({"format":{}}, [2,[7,"/"],[2,[6,"-"],[2,[7,"/"],[2,[6,"iam"],[2,[7,"/"],[2,[6,"consent"],[2,[7,"/"],[2,[6,"reject"],[1,[2,[8,"."],[3,"format"]]]]]]]]]]]);
 
-  if (hasOrganizationScopedPaths()) {
-    return _rejectOrganizationIamConsentPath(gon.current_organization.path, ...args);
+  const { organizationPath, routeArgs } = resolveOrganizationScope(args);
+
+  if (organizationPath) {
+    return _rejectOrganizationIamConsentPath(organizationPath, ...routeArgs);
   }
 
-  return _rejectIamConsentPath(...args);
+  return _rejectIamConsentPath(...routeArgs);
 };
 
 /**
@@ -59,16 +65,19 @@ export const rejectIamConsentPath = /*#__PURE__*/ (...args) => {
  * - controller#action: `iam/consent#show`
  *
  * @param {object | undefined} options
+ * @param {string | null | undefined} options.organizationPath Path of organization to nest under. Pass `null` to remove path from URL params when outside of an organization data context.
  * @returns {string} route path
  */
 export const iamConsentPath = /*#__PURE__*/ (...args) => {
   const _organizationIamConsentPath = /*#__PURE__*/ __jsr.r({"organization_path":{"r":true},"format":{}}, [2,[7,"/"],[2,[6,"o"],[2,[7,"/"],[2,[3,"organization_path"],[2,[7,"/"],[2,[6,"-"],[2,[7,"/"],[2,[6,"iam"],[2,[7,"/"],[2,[6,"consent"],[1,[2,[8,"."],[3,"format"]]]]]]]]]]]]]);
   const _iamConsentPath = /*#__PURE__*/ __jsr.r({"format":{}}, [2,[7,"/"],[2,[6,"-"],[2,[7,"/"],[2,[6,"iam"],[2,[7,"/"],[2,[6,"consent"],[1,[2,[8,"."],[3,"format"]]]]]]]]]);
 
-  if (hasOrganizationScopedPaths()) {
-    return _organizationIamConsentPath(gon.current_organization.path, ...args);
+  const { organizationPath, routeArgs } = resolveOrganizationScope(args);
+
+  if (organizationPath) {
+    return _organizationIamConsentPath(organizationPath, ...routeArgs);
   }
 
-  return _iamConsentPath(...args);
+  return _iamConsentPath(...routeArgs);
 };
 

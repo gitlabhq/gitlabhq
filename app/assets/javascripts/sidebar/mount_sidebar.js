@@ -172,6 +172,7 @@ function mountSidebarReviewers(mediator) {
     fullPath,
     multipleApprovalRulesAvailable = false,
     directlyInviteMembers = false,
+    aiSuggestedReviewersAvailable = false,
   } = getSidebarOptions();
   // eslint-disable-next-line no-new
   new Vue({
@@ -185,6 +186,7 @@ function mountSidebarReviewers(mediator) {
       projectPath: fullPath,
       multipleApprovalRulesAvailable: parseBoolean(multipleApprovalRulesAvailable),
       directlyInviteMembers: parseBoolean(directlyInviteMembers),
+      aiSuggestedReviewersAvailable: parseBoolean(aiSuggestedReviewersAvailable),
     },
     render: (createElement) =>
       createElement(SidebarReviewers, {

@@ -7,7 +7,7 @@ RSpec.describe Emails::AutoDevops do
 
   describe '#auto_devops_disabled_email' do
     let_it_be(:owner) { create(:user) }
-    let_it_be(:project) { create(:project, :repository, :auto_devops) }
+    let_it_be(:project) { create(:project, :auto_devops) }
     let(:pipeline) { create(:ci_pipeline, :failed, project: project) }
 
     subject { Notify.autodevops_disabled_email(pipeline, owner.email) }

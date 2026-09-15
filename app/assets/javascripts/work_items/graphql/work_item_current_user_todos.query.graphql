@@ -1,0 +1,23 @@
+#import "./work_item_current_user_todos.fragment.graphql"
+
+# @feature_category: team_planning
+query workItemCurrentUserTodos(
+  $fullPath: ID!
+  $iid: String!
+  $useWorkItemFeatures: Boolean = false
+) {
+  namespace(fullPath: $fullPath) {
+    id
+    workItem(iid: $iid) {
+      id
+      widgets(onlyTypes: [CURRENT_USER_TODOS]) @skip(if: $useWorkItemFeatures) {
+        ...WorkItemCurrentUserTodos
+      }
+      features @include(if: $useWorkItemFeatures) {
+        currentUserTodos {
+          ...WorkItemCurrentUserTodos
+        }
+      }
+    }
+  }
+}

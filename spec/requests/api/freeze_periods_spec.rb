@@ -6,6 +6,7 @@ RSpec.describe API::FreezePeriods, :aggregate_failures, :with_current_organizati
   let_it_be(:project) { create(:project, :private) }
   let_it_be(:user) { create(:user) }
   let_it_be(:admin) { create(:admin) }
+  let_it_be(:public_project) { create(:project, :public) }
 
   let(:api_user) { user }
   let(:invalid_cron) { '0 0 0 * *' }
@@ -15,12 +16,12 @@ RSpec.describe API::FreezePeriods, :aggregate_failures, :with_current_organizati
     let(:path) { "/projects/#{project.id}/freeze_periods" }
 
     it_behaves_like 'GET request permissions for admin mode' do
-      let!(:freeze_period) { create(:ci_freeze_period, project: project, created_at: 2.days.ago) }
+      let_it_be(:freeze_period) { create(:ci_freeze_period, project: project, created_at: 2.days.ago) }
       let(:failed_status_code) { :not_found }
     end
 
     context 'when the user is the admin' do
-      let!(:freeze_period) { create(:ci_freeze_period, project: project, created_at: 2.days.ago) }
+      let_it_be(:freeze_period) { create(:ci_freeze_period, project: project, created_at: 2.days.ago) }
 
       it 'returns 200 HTTP status' do
         get api(path, admin, admin_mode: true)
@@ -30,7 +31,7 @@ RSpec.describe API::FreezePeriods, :aggregate_failures, :with_current_organizati
     end
 
     context 'when the user is the maintainer' do
-      before do
+      before_all do
         project.add_maintainer(user)
       end
 
@@ -40,8 +41,8 @@ RSpec.describe API::FreezePeriods, :aggregate_failures, :with_current_organizati
       end
 
       context 'when there are two freeze_periods' do
-        let!(:freeze_period_1) { create(:ci_freeze_period, project: project, created_at: 2.days.ago) }
-        let!(:freeze_period_2) { create(:ci_freeze_period, project: project, created_at: 1.day.ago) }
+        let_it_be(:freeze_period_1) { create(:ci_freeze_period, project: project, created_at: 2.days.ago) }
+        let_it_be(:freeze_period_2) { create(:ci_freeze_period, project: project, created_at: 1.day.ago) }
 
         it 'returns 200 HTTP status' do
           get api(path, user)
@@ -79,11 +80,11 @@ RSpec.describe API::FreezePeriods, :aggregate_failures, :with_current_organizati
     end
 
     context 'when user is a guest' do
-      before do
+      before_all do
         project.add_guest(user)
       end
 
-      let!(:freeze_period) do
+      let_it_be(:freeze_period) do
         create(:ci_freeze_period, project: project)
       end
 
@@ -102,7 +103,7 @@ RSpec.describe API::FreezePeriods, :aggregate_failures, :with_current_organizati
       end
 
       context 'when project is public' do
-        let(:project) { create(:project, :public) }
+        let(:project) { public_project }
 
         it 'responds 403 Forbidden' do
           get api(path, user)
@@ -117,7 +118,7 @@ RSpec.describe API::FreezePeriods, :aggregate_failures, :with_current_organizati
     let(:path) { "/projects/#{project.id}/freeze_periods/#{freeze_period.id}" }
 
     it_behaves_like 'GET request permissions for admin mode' do
-      let!(:freeze_period) do
+      let_it_be(:freeze_period) do
         create(:ci_freeze_period, project: project)
       end
 
@@ -125,12 +126,12 @@ RSpec.describe API::FreezePeriods, :aggregate_failures, :with_current_organizati
     end
 
     context 'when there is a freeze period' do
-      let!(:freeze_period) do
+      let(:freeze_period) do
         create(:ci_freeze_period, project: project)
       end
 
       context 'when the user is the admin' do
-        let!(:freeze_period) { create(:ci_freeze_period, project: project, created_at: 2.days.ago) }
+        let_it_be(:freeze_period) { create(:ci_freeze_period, project: project, created_at: 2.days.ago) }
 
         it 'responds 200 OK' do
           get api(path, admin, admin_mode: true)
@@ -140,7 +141,7 @@ RSpec.describe API::FreezePeriods, :aggregate_failures, :with_current_organizati
       end
 
       context 'when the user is the maintainer' do
-        before do
+        before_all do
           project.add_maintainer(user)
         end
 
@@ -184,7 +185,7 @@ RSpec.describe API::FreezePeriods, :aggregate_failures, :with_current_organizati
         end
 
         context 'when project is public' do
-          let(:project) { create(:project, :public) }
+          let(:project) { public_project }
 
           context 'when freeze_period exists' do
             it 'responds 403 Forbidden' do
@@ -236,7 +237,7 @@ RSpec.describe API::FreezePeriods, :aggregate_failures, :with_current_organizati
     end
 
     context 'when user is the maintainer' do
-      before do
+      before_all do
         project.add_maintainer(user)
       end
 
@@ -304,7 +305,7 @@ RSpec.describe API::FreezePeriods, :aggregate_failures, :with_current_organizati
     end
 
     context 'when user is a developer' do
-      before do
+      before_all do
         project.add_developer(user)
       end
 
@@ -316,7 +317,7 @@ RSpec.describe API::FreezePeriods, :aggregate_failures, :with_current_organizati
     end
 
     context 'when user is a reporter' do
-      before do
+      before_all do
         project.add_reporter(user)
       end
 
@@ -335,7 +336,7 @@ RSpec.describe API::FreezePeriods, :aggregate_failures, :with_current_organizati
       end
 
       context 'when project is public' do
-        let(:project) { create(:project, :public) }
+        let(:project) { public_project }
 
         it 'responds 403 Forbidden' do
           subject
@@ -366,7 +367,7 @@ RSpec.describe API::FreezePeriods, :aggregate_failures, :with_current_organizati
     end
 
     context 'when user is the maintainer' do
-      before do
+      before_all do
         project.add_maintainer(user)
       end
 
@@ -414,7 +415,7 @@ RSpec.describe API::FreezePeriods, :aggregate_failures, :with_current_organizati
     end
 
     context 'when user is a reporter' do
-      before do
+      before_all do
         project.add_reporter(user)
       end
 
@@ -433,7 +434,7 @@ RSpec.describe API::FreezePeriods, :aggregate_failures, :with_current_organizati
       end
 
       context 'when project is public' do
-        let(:project) { create(:project, :public) }
+        let(:project) { public_project }
 
         it 'responds 403 Forbidden' do
           subject
@@ -463,7 +464,7 @@ RSpec.describe API::FreezePeriods, :aggregate_failures, :with_current_organizati
     end
 
     context 'when user is the maintainer' do
-      before do
+      before_all do
         project.add_maintainer(user)
       end
 
@@ -498,7 +499,7 @@ RSpec.describe API::FreezePeriods, :aggregate_failures, :with_current_organizati
     end
 
     context 'when user is a reporter' do
-      before do
+      before_all do
         project.add_reporter(user)
       end
 
@@ -517,7 +518,7 @@ RSpec.describe API::FreezePeriods, :aggregate_failures, :with_current_organizati
       end
 
       context 'when project is public' do
-        let(:project) { create(:project, :public) }
+        let(:project) { public_project }
 
         it 'responds 403 Forbidden' do
           subject

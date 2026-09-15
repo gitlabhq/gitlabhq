@@ -129,6 +129,16 @@ module Ci
       end
 
       def run_validations(value, all_params = {}, default: false)
+        if reject_tags_enabled?
+          # Checked before coercion, which would stringify the tag and hide it.
+          unresolved_tag = ::Gitlab::Ci::Config::Yaml::Tags.find_unresolved_tag(value)
+
+          if unresolved_tag
+            error("#{default ? 'default' : 'provided'} value cannot contain a #{unresolved_tag.class.tag} tag")
+            return
+          end
+        end
+
         value = coerced_value(value)
 
         validate_type(value, default)
@@ -161,6 +171,10 @@ module Ci
 
       def error(message)
         @errors.push("`#{name}` input: #{message}")
+      end
+
+      def reject_tags_enabled?
+        ::Gitlab::Ci::Config::FeatureFlags.enabled?(:ci_reject_yaml_tags_in_inputs)
       end
 
       def coerced_value(value)

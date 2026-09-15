@@ -8,13 +8,9 @@ class FinalizeMigrateProjectAuthorizations < Gitlab::Database::Migration[2.3]
   restrict_gitlab_migration gitlab_schema: :gitlab_main
 
   def up
-    ensure_batched_background_migration_is_finished(
-      job_class_name: 'MigrateProjectAuthorizations',
-      table_name: :project_authorizations,
-      column_name: :user_id,
-      job_arguments: [],
-      finalize: true
-    )
+    # no-op because the batched background migration was requeued by
+    # RequeueMigrateProjectAuthorizations.
+    # See https://gitlab.com/gitlab-org/gitlab/-/work_items/526000
   end
 
   def down

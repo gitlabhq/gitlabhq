@@ -2,13 +2,13 @@ import { nextTick } from 'vue';
 import { GlDisclosureDropdownItem } from '@gitlab/ui';
 import PermalinkDropdownItem from '~/repository/components/header_area/permalink_dropdown_item.vue';
 import { keysFor, PROJECT_FILES_COPY_FILE_PERMALINK } from '~/behaviors/shortcuts/keybindings';
-import { shouldDisableShortcuts } from '~/behaviors/shortcuts/shortcuts_toggle';
+import { keyboardShortcutsDisabled } from '~/behaviors/shortcuts/shortcuts_disabled';
 import { Mousetrap } from '~/lib/mousetrap';
 import { hashState, updateHash } from '~/blob/state';
 import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
 import { useMockInternalEventsTracking } from 'helpers/tracking_internal_events_helper';
 
-jest.mock('~/behaviors/shortcuts/shortcuts_toggle');
+jest.mock('~/behaviors/shortcuts/shortcuts_disabled');
 jest.mock('~/blob/state');
 
 const relativePermalinkPath =
@@ -211,14 +211,14 @@ describe('PermalinkDropdownItem', () => {
   });
 
   it('displays the shortcut key when shortcuts are not disabled', () => {
-    shouldDisableShortcuts.mockReturnValue(false);
+    keyboardShortcutsDisabled.mockReturnValue(false);
     createComponent();
     expect(wrapper.find('kbd').exists()).toBe(true);
     expect(wrapper.find('kbd').text()).toBe(keysFor(PROJECT_FILES_COPY_FILE_PERMALINK)[0]);
   });
 
   it('does not display the shortcut key when shortcuts are disabled', () => {
-    shouldDisableShortcuts.mockReturnValue(true);
+    keyboardShortcutsDisabled.mockReturnValue(true);
     createComponent();
     expect(wrapper.find('kbd').exists()).toBe(false);
   });

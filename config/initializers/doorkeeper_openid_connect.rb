@@ -27,6 +27,10 @@ Doorkeeper::OpenidConnect.configure do
 
   expiration Gitlab.config.oidc_provider.openid_id_token_expire_in_seconds
 
+  # The "Included in ID Token" claims defined here are duplicated in
+  # Authn::IamService::UserinfoClaimsBuilder for the IAM-token-only
+  # /iam/userinfo endpoint. Keep both in sync -- drift is caught by
+  # spec/services/authn/iam_service/userinfo_claims_builder_parity_spec.rb.
   claims do
     with_options scope: :openid do |o|
       o.claim(:sub_legacy, response: [:id_token, :user_info]) do |user|
@@ -72,9 +76,7 @@ Doorkeeper::OpenidConnect.configure do
           .map(&:full_path)
       end
       o.claim(:groups_direct, response: [:id_token]) do |user|
-        user.groups.joins(:route).with_route
-        .allow_cross_joins_across_databases(url: "https://gitlab.com/gitlab-org/gitlab/-/issues/420046")
-        .map(&:full_path)
+        user.direct_groups_full_paths
       end
       o.claim('https://gitlab.org/claims/groups/owner') do |user|
         user.owned_groups.joins(:route).with_route

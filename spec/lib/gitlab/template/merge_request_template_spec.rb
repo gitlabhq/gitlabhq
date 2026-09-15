@@ -3,7 +3,8 @@
 require 'spec_helper'
 
 RSpec.describe Gitlab::Template::MergeRequestTemplate do
-  let(:project) { create(:project, :repository, create_templates: :merge_request) }
+  let_it_be(:project) { create(:project, :repository, create_templates: :merge_request) }
+  let_it_be(:empty_project) { create(:project) }
 
   describe '.all' do
     it 'strips the md suffix' do
@@ -39,8 +40,6 @@ RSpec.describe Gitlab::Template::MergeRequestTemplate do
     end
 
     context 'when repo is bare or empty' do
-      let(:empty_project) { create(:project) }
-
       it "returns empty array" do
         templates = described_class.by_category('', empty_project)
 
@@ -63,8 +62,6 @@ RSpec.describe Gitlab::Template::MergeRequestTemplate do
     end
 
     context "when repo is empty" do
-      let(:empty_project) { create(:project) }
-
       it "raises file not found" do
         issue_template = described_class.new('.gitlab/merge_request_templates/not_existent.md', empty_project)
 

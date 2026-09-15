@@ -64,6 +64,12 @@ RSpec.describe 'Keep all import source users in a namespace as placeholders', fe
 
       expect(updated_import_source_user_count).to eq(0)
     end
+
+    it_behaves_like 'authorizing granular token permissions for GraphQL', :update_placeholder_reassignment do
+      let(:user) { current_user }
+      let(:boundary_object) { group }
+      let(:request) { post_graphql_mutation(mutation, token: { personal_access_token: pat }) }
+    end
   end
 
   context 'when user is not authorized' do

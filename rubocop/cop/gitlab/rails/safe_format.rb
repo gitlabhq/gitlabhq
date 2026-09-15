@@ -23,7 +23,7 @@ module RuboCop
           extend RuboCop::Cop::AutoCorrector
 
           MSG = 'Use `safe_format` to interpolate externalized strings. ' \
-                'See https://docs.gitlab.com/ee/development/i18n/externalization.html#html'
+                'See https://docs.gitlab.com/development/i18n/externalization/#html'
 
           RESTRICT_ON_SEND = %i[_ s_ N_ n_].freeze
 

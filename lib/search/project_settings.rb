@@ -67,6 +67,12 @@ module Search
         { text: _("Runners"), href: project_settings_ci_cd_path(project, anchor: 'js-runners-settings') },
         { text: _("Artifacts"),     href: project_settings_ci_cd_path(project, anchor: 'js-artifacts-settings') },
         { text: _("Variables"),     href: project_settings_ci_cd_path(project, anchor: 'js-cicd-variables-settings') },
+
+        (if ::Feature.enabled?(:feature_flag_management_permissions, project)
+           { text: _("Feature flags"),
+             href: project_settings_ci_cd_path(project, anchor: 'js-feature-flags-settings') }
+         end),
+
         { text: _("Pipeline trigger tokens"),
           href: project_settings_ci_cd_path(project, anchor: 'js-pipeline-triggers') },
         { text: _("Deploy freezes"),
@@ -74,7 +80,7 @@ module Search
         { text: _("Job token permissions"), href: project_settings_ci_cd_path(project, anchor: 'js-token-access') },
         { text: _("Secure files"),
           href: project_settings_ci_cd_path(project, anchor: 'js-secure-files') }
-      ]
+      ].compact
     end
 
     def monitor_settings

@@ -111,6 +111,43 @@ RSpec.describe Gitlab::Metrics::Samplers::RubySampler do
 
       sampler.sample
     end
+
+    context 'when GVL instrumentation is enabled' do
+      before do
+        allow(GVLTools::GlobalTimer).to receive(:enabled?).and_return(true)
+      end
+
+      it 'adds a metric containing the process-wide GVL wait time in seconds' do
+        expect(GVLTools::GlobalTimer).to receive(:monotonic_time).and_return(1_500_000_000)
+        expect(sampler.metrics[:gvl_wait_seconds]).to receive(:set).with({}, 1.5)
+
+        sampler.sample
+      end
+    end
+
+    context 'when GVL instrumentation is disabled' do
+      before do
+        allow(GVLTools::GlobalTimer).to receive(:enabled?).and_return(false)
+      end
+
+      it 'does not report a GVL wait time' do
+        expect(sampler.metrics[:gvl_wait_seconds]).not_to receive(:set)
+
+        sampler.sample
+      end
+    end
+
+    context 'when GVLTools is not loaded, as in the metrics server' do
+      before do
+        hide_const('GVLTools')
+      end
+
+      it 'does not report a GVL wait time' do
+        expect(sampler.metrics[:gvl_wait_seconds]).not_to receive(:set)
+
+        expect { sampler.sample }.not_to raise_error
+      end
+    end
   end
 
   describe '#sample_gc' do

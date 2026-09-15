@@ -13,8 +13,8 @@ RSpec.describe Gitlab::Database::QueryAnalyzers::LogLargeInLists, query_analyzer
     stub_const("#{described_class}::MIN_QUERY_SIZE", 50)
     stub_const("#{described_class}::IN_SIZE_LIMIT", 5)
     stub_const("#{described_class}::REGEX", /\bIN\s*\((?:\s*\$?\d+\s*,){4,}\s*\$?\d+\s*\)/i)
-    allow(analyzer).to receive(:backtrace).and_return([])
-    allow(analyzer).to receive(:suppressed?).and_return(true) # bypass suppressed? method to avoid false positives
+    # bypass suppressed? method to avoid false positives
+    allow(analyzer).to receive_messages(backtrace: [], suppressed?: true)
   end
 
   after do

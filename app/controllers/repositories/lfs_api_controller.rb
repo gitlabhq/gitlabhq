@@ -11,7 +11,7 @@ module Repositories
     # The 1h should be enough to download 100 objects.
     LFS_DIRECT_BATCH_EXPIRE_IN = 3600.seconds
 
-    skip_before_action :lfs_check_access!, only: [:deprecated]
+    skip_before_action :lfs_check_access!, :check_organization_maintenance_mode!, only: [:deprecated]
     before_action :lfs_check_batch_operation!, only: [:batch]
 
     # added here as a part of the refactor, will be removed
@@ -47,12 +47,16 @@ module Repositories
 
     private
 
+    def operation_param
+      params.permit(:operation)[:operation]
+    end
+
     def download_request?
-      params[:operation] == 'download'
+      operation_param == 'download'
     end
 
     def upload_request?
-      params[:operation] == 'upload'
+      operation_param == 'upload'
     end
 
     def download_objects!

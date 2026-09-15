@@ -89,6 +89,23 @@ RSpec.describe Pajamas::AvatarComponent, type: :component, feature_category: :de
           )
         end
       end
+
+      context "when avatar_url already has query params" do
+        before do
+          allow(item).to receive(:avatar_url).and_return "/example.png?v=123"
+          render_inline(described_class.new(item, **options))
+        end
+
+        it "appends width with & separator" do
+          expect(page).to have_css "img.gl-avatar[src='/example.png?v=123&width=64']"
+        end
+
+        it "uses correct srcset with & separator" do
+          expect(page).to have_css(
+            "img.gl-avatar[srcset='/example.png?v=123&width=64 1x, /example.png?v=123&width=128 2x']"
+          )
+        end
+      end
     end
 
     context "when a project or group has no uploaded image" do

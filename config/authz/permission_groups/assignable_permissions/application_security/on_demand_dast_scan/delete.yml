@@ -1,0 +1,13 @@
+---
+name: delete_on_demand_dast_scan
+description: Grants the ability to delete DAST on-demand scans and their site and
+  scanner profiles, and to revoke site validations
+boundaries:
+  - project
+available_for:
+  - granular_access_token
+permissions:
+  - delete_on_demand_dast_scan
+  - delete_dast_scanner_profile
+  - delete_dast_site_profile
+  - revoke_dast_site_validation

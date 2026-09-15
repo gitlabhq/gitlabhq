@@ -4,6 +4,8 @@ require 'spec_helper'
 require_relative './shared_context_and_examples'
 
 RSpec.describe 'CI configuration validation - branch pipelines', feature_category: :tooling do
+  using RSpec::Parameterized::TableSyntax
+
   include ProjectForksHelper
   include CiConfigurationValidationHelper
 
@@ -130,13 +132,89 @@ RSpec.describe 'CI configuration validation - branch pipelines', feature_categor
     it_behaves_like 'merge train pipeline'
   end
 
-  context 'when MR labeled with `pipeline:run-in-ruby3_2` is changing app/models/user.rb' do
-    let(:mr_labels) { ['pipeline:run-in-ruby3_2'] }
+  context 'when MR labeled with `pipeline:run-with-ruby-next` is changing app/models/user.rb' do
+    let(:mr_labels) { ['pipeline:run-with-ruby-next'] }
     let(:changed_files) { ['app/models/user.rb'] }
     let(:expected_job_name) { 'e2e-test-pipeline-generate' }
 
     it_behaves_like 'merge request pipeline'
 
     it_behaves_like 'merge train pipeline'
+  end
+
+  context 'when MR labeled with `pipeline:run-in-ruby3_3` is changing app/models/user.rb' do
+    let(:mr_labels) { ['pipeline:run-in-ruby3_3'] }
+    let(:changed_files) { ['app/models/user.rb'] }
+    let(:expected_job_name) { 'e2e-test-pipeline-generate' }
+
+    it_behaves_like 'merge request pipeline'
+
+    it_behaves_like 'merge train pipeline'
+  end
+
+  describe 'Ruby version resolution' do
+    let(:changed_files) { ['app/models/user.rb'] }
+
+    # Override both version variables so the assertions distinguish default
+    # from next even when the repo values are momentarily equal.
+    let(:mr_pipeline_variables_attributes) do
+      base_attributes = super()
+      base_attributes << { key: 'RUBY_VERSION_DEFAULT', value: '3.98.8' }
+      base_attributes << { key: 'RUBY_VERSION_NEXT', value: '3.99.9' }
+    end
+
+    def resolved_ruby_version(job_name)
+      expect(pipeline.yaml_errors).to be_nil
+      expect(pipeline.errors).to be_empty
+
+      job = pipeline.stages.flat_map(&:statuses).find { |status| status.name == job_name }
+
+      raise ArgumentError, "job #{job_name} not found in pipeline" unless job
+
+      job.scoped_variables.sort_and_expand_all['RUBY_VERSION']&.value
+    end
+
+    context 'when the MR labels keep the default Ruby version' do
+      where(:case_name, :mr_labels) do
+        'unlabelled'             | []
+        'database'               | ['database']
+        'Community contribution' | ['Community contribution']
+        'rails-next label'       | ['pipeline:run-with-rails-next']
+      end
+
+      with_them do
+        it 'resolves RUBY_VERSION to RUBY_VERSION_DEFAULT' do
+          expect(resolved_ruby_version('setup-test-env')).to eq('3.98.8')
+        end
+      end
+    end
+
+    context 'when MR is labeled with `pipeline:run-with-ruby-next`' do
+      let(:mr_labels) { ['pipeline:run-with-ruby-next'] }
+
+      it 'resolves RUBY_VERSION to RUBY_VERSION_NEXT' do
+        expect(resolved_ruby_version('setup-test-env')).to eq('3.99.9')
+      end
+
+      context 'when the pipeline runs on a merge train' do
+        let(:ci_merge_request_event_type) { 'merge_train' }
+
+        it 'resolves RUBY_VERSION to RUBY_VERSION_DEFAULT' do
+          expect(resolved_ruby_version('pre-merge-checks')).to eq('3.98.8')
+        end
+      end
+
+      context 'with an as-if-foss pipeline' do
+        let(:mr_labels) { ['pipeline:run-with-ruby-next', 'pipeline::tier-3'] }
+
+        let(:mr_pipeline_variables_attributes) do
+          super() << { key: 'AS_IF_FOSS_TOKEN', value: 'foss token' }
+        end
+
+        it 'forwards RUBY_VERSION_NEXT to the as-if-foss child pipeline' do
+          expect(resolved_ruby_version('start-as-if-foss')).to eq('3.99.9')
+        end
+      end
+    end
   end
 end

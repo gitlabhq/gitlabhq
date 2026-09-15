@@ -14,7 +14,7 @@ potential problems and ensuring compliance with security best practices.
 ## Including external resources
 
 External fonts, CSS, and JavaScript should never be used with the exception of
-Google Analytics and Matomo - and only when the instance has enabled it. Assets
+Google Analytics and Matomo - and only when the instance has enabled them. Assets
 should always be hosted and served locally from the GitLab instance. Embedded
 resources via `iframes` should never be used except in certain circumstances
 such as with reCAPTCHA, which cannot be used without an `iframe`.
@@ -36,7 +36,7 @@ readability.
 
 If you need to output raw HTML, you should sanitize it.
 
-If you are using Vue, you can use the[`v-safe-html` directive](https://gitlab.com/gitlab-org/gitlab/-/blob/master/app/assets/javascripts/vue_shared/directives/safe_html.js).
+If you are using Vue, you can use the [`v-safe-html` directive](https://gitlab.com/gitlab-org/gitlab/-/blob/master/app/assets/javascripts/vue_shared/directives/safe_html.js).
 
 For other use cases, wrap a preconfigured version of [`dompurify`](https://www.npmjs.com/package/dompurify)
 that also allows the icons to be rendered:

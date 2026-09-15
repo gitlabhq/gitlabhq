@@ -1,0 +1,7 @@
+---
+retention_window: 90
+enforcement_strategy: delete_rows
+enforcing: false
+pause_mechanism:
+  type: feature_flag
+work_item: https://gitlab.com/gitlab-org/gitlab/-/work_items/601405

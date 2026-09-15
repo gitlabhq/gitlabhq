@@ -1,0 +1,51 @@
+# @feature_category: mcp_server
+query listCommits(
+  $fullPath: ID!
+  $ref: String!
+  $path: String
+  $author: String
+  $committedBefore: Time
+  $committedAfter: Time
+  $firstParent: Boolean
+  $order: CommitOrder
+  $withStats: Boolean = false
+  $first: Int
+  $after: String
+) {
+  project(fullPath: $fullPath) {
+    id
+    repository {
+      commits(
+        ref: $ref
+        path: $path
+        author: $author
+        committedBefore: $committedBefore
+        committedAfter: $committedAfter
+        firstParent: $firstParent
+        order: $order
+        first: $first
+        after: $after
+      ) {
+        pageInfo {
+          hasNextPage
+          endCursor
+        }
+        nodes {
+          id
+          sha
+          shortId
+          title
+          authorName
+          authoredDate
+          committedDate
+          webUrl
+          diffStatsSummary @include(if: $withStats) {
+            additions
+            deletions
+            fileCount
+          }
+        }
+      }
+    }
+  }
+}

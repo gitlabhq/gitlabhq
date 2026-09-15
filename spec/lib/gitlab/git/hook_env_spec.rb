@@ -143,7 +143,7 @@ RSpec.describe Gitlab::Git::HookEnv, feature_category: :source_code_management d
           if output
             expect(subject.fetch(key)).to eq(output)
           else
-            expect(subject.has_key?(key)).to eq(false)
+            expect(subject.has_key?(key)).to be(false)
           end
         end
       end

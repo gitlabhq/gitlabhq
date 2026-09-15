@@ -4,7 +4,7 @@ require 'spec_helper'
 
 module Ci
   RSpec.describe CreatePipelineService, feature_category: :pipeline_composition do
-    let_it_be(:project) { create(:project, :repository) }
+    let_it_be(:project) { create(:project, :small_repo) }
     let_it_be(:user) { project.first_owner }
 
     let(:pipeline) { service.execute(:push).payload }

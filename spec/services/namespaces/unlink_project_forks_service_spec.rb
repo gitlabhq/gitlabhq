@@ -7,7 +7,7 @@ RSpec.describe Namespaces::UnlinkProjectForksService, feature_category: :source_
 
   let_it_be(:user) { create(:user) }
   let_it_be(:group) { create(:group) }
-  let_it_be(:source_project) { create(:project, :repository) }
+  let_it_be(:source_project) { create(:project, :small_repo) }
 
   let_it_be(:fork_project1) do
     source_project.add_developer(user)

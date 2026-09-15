@@ -15,8 +15,20 @@ RSpec.describe API::Ci::Runner, :clean_gitlab_redis_shared_state, feature_catego
     stub_application_setting(ci_job_live_trace_enabled: true)
     stub_gitlab_calls
     allow_any_instance_of(::Ci::Runner).to receive(:cache_attributes)
-    allow(Ci::Build).to receive(:find_by!).and_call_original
-    allow(Ci::Build).to receive(:find_by!).with(partition_id: instance_of(Integer), id: job.id).and_return(job)
+    # Mirror production's preload: preload it here (outside the request's query
+    # budget) so the stubbed find_by! below returns a `job` double that already has
+    # the association loaded, same as a real preloaded find would.
+    job.job_runtime_environment&.runtime_environment
+
+    allow(Ci::Build).to receive(:preload).and_call_original
+    allow(Ci::Build).to receive(:preload).with(job_runtime_environment: :runtime_environment).and_wrap_original do |method, *args|
+      relation = method.call(*args)
+
+      allow(relation).to receive(:find_by!).and_call_original
+      allow(relation).to receive(:find_by!).with(partition_id: instance_of(Integer), id: job.id).and_return(job)
+
+      relation
+    end
     allow(Gitlab::GlobalAnonymousId).to receive_messages(instance_id: instance_id, instance_uuid: instance_uuid)
   end
 
@@ -243,7 +255,7 @@ RSpec.describe API::Ci::Runner, :clean_gitlab_redis_shared_state, feature_catego
         end
 
         context 'when shared runner requests job for project without shared_runners_enabled' do
-          let(:runner) { create(:ci_runner, :instance) }
+          let_it_be(:runner) { create(:ci_runner, :instance) }
 
           it_behaves_like 'no jobs available'
         end
@@ -583,7 +595,7 @@ RSpec.describe API::Ci::Runner, :clean_gitlab_redis_shared_state, feature_catego
           end
 
           context 'with run keyword' do
-            let(:job_definition) { create(:ci_job_definition, :with_step_and_script) }
+            let_it_be(:job_definition) { create(:ci_job_definition, :with_step_and_script) }
 
             context 'when job has run_steps' do
               let(:job) do
@@ -1424,29 +1436,67 @@ RSpec.describe API::Ci::Runner, :clean_gitlab_redis_shared_state, feature_catego
           end
         end
 
+        context 'with the request timeout for job assignment phases' do
+          # Rack::Timeout does not run in tests, so stand in for what it leaves
+          # in the Rack env.
+          def request_job_under_rack_timeout
+            post api('/jobs/request'),
+              params: { token: runner.token }.to_json,
+              headers: {
+                'User-Agent' => user_agent,
+                'Content-Type' => 'application/json',
+                ::Rack::Timeout::ENV_INFO_KEY => ::Rack::Timeout::RequestDetails.new(nil, nil, nil, 60)
+              }
+          end
+
+          it 'passes the timeout Rack::Timeout computed for the request' do
+            expect(::Ci::RegisterJobService).to receive(:new)
+              .with(anything, anything, request_timeout_at: a_kind_of(Float))
+              .and_call_original
+
+            request_job_under_rack_timeout
+          end
+
+          it 'leaves job assignment untimed when Rack::Timeout enforces no timeout' do
+            expect(::Ci::RegisterJobService).to receive(:new)
+              .with(anything, anything, request_timeout_at: nil)
+              .and_call_original
+
+            request_job
+          end
+        end
+
         def request_job(token = runner.token, **params)
           new_params = params.merge(token: token, last_update: last_update)
           post api('/jobs/request'), params: new_params.to_json, headers: { 'User-Agent' => user_agent, 'Content-Type': 'application/json' }
         end
       end
 
-      describe 'routing via environment_key', feature_category: :runner_core do
+      describe 'routing via ci_pending_builds.runner_machine_id', feature_category: :runner_core do
         let_it_be(:resume_project) { create(:project, :repository, shared_runners_enabled: false) }
-        let(:resume_pipeline) { create(:ci_pipeline, project: resume_project) }
-        let(:correct_runner)  { create(:ci_runner, :project, projects: [resume_project]) }
-        let(:wrong_runner)    { create(:ci_runner, :project, projects: [resume_project]) }
+        let_it_be(:resume_pipeline) { create(:ci_pipeline, project: resume_project) }
+        let_it_be(:correct_runner)  { create(:ci_runner, :project, projects: [resume_project]) }
+        let_it_be(:wrong_runner)    { create(:ci_runner, :project, projects: [resume_project]) }
 
         let(:system_xid) { 's_testmachine01' }
         let(:env_key)    { "#{correct_runner.id}/#{system_xid}/executor-specific-data" }
 
-        let!(:resume_job) do
-          create(:ci_build, :pending, :queued, pipeline: resume_pipeline,
-            options: { suspend_options: { environment_key: env_key } })
+        let!(:correct_runner_machine) { create(:ci_runner_machine, runner: correct_runner, system_xid: system_xid) }
+        let!(:wrong_runner_machine) { create(:ci_runner_machine, runner: wrong_runner, system_xid: 's_othermachine') }
+
+        let!(:suspending_job_runtime_environment) do
+          suspending_build = create(:ci_build, pipeline: resume_pipeline)
+          runtime_environment = create(:ci_runtime_environment, project: resume_project, environment_key: env_key)
+          create(:ci_job_runtime_environment, build: suspending_build, runtime_environment: runtime_environment,
+            runner_machine_id: correct_runner_machine.id)
         end
 
-        before do
-          create(:ci_runner_machine, runner: correct_runner, system_xid: system_xid)
-          create(:ci_runner_machine, runner: wrong_runner,   system_xid: 's_othermachine')
+        let!(:resume_job) do
+          build = create(:ci_build, :pending, pipeline: resume_pipeline)
+          create(:ci_job_runtime_environment, build: build,
+            runtime_environment: suspending_job_runtime_environment.runtime_environment)
+          build.create_queuing_entry!
+          build
         end
 
         context 'when the correct runner requests the job' do

@@ -26,6 +26,12 @@ RSpec.describe Mutations::Achievements::UpdateUserAchievementPriorities, feature
     graphql_mutation_response(:user_achievement_priorities_update)
   end
 
+  # The outer `user` is the achievement recipient the shared example expects.
+  it_behaves_like 'authorizing granular token permissions for GraphQL', :update_user_achievement do
+    let(:boundary_object) { :user }
+    let(:request) { post_graphql_mutation(mutation, token: { personal_access_token: pat }) }
+  end
+
   context 'when the user is not the user achievement owner' do
     let(:current_user) { create(:user) }
 

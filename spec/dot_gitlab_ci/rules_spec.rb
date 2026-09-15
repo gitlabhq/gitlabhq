@@ -10,6 +10,7 @@ PatternsList = Struct.new(:name, :patterns)
 RSpec.describe '.gitlab/ci/rules.gitlab-ci.yml', :unlimited_max_formatted_output_length, feature_category: :tooling do
   config = YAML.safe_load_file(
     File.expand_path('../../.gitlab/ci/rules.gitlab-ci.yml', __dir__),
+    permitted_classes: [Gitlab::Ci::Config::Yaml::Tags::Reference],
     aliases: true
   ).freeze
 
@@ -142,8 +143,6 @@ RSpec.describe '.gitlab/ci/rules.gitlab-ci.yml', :unlimited_max_formatted_output
         '.gitlab_workhorse_secret',
         '.gitlab_suggested_reviewers_secret',
         '.gitlab/changelog_config.yml',
-        'scripts/lint/excluded_methods.yml',
-        'scripts/lint/potential_methods_to_remove.yml',
         '.gitleaksignore',
         '.gitpod.yml',
         '.graphqlrc',
@@ -286,6 +285,19 @@ RSpec.describe '.gitlab/ci/rules.gitlab-ci.yml', :unlimited_max_formatted_output
         backstage_files = config['.code-backstage-spec-patterns'].flat_map { |pattern| Dir.glob(pattern) }
 
         expect(jest_files - backstage_files).to be_empty
+      end
+    end
+
+    describe '.rails:rules:rspec-test-summary' do
+      # Must use *code-backstage-spec-patterns (not *code-backstage-patterns) so
+      # the summary job is scheduled for spec-only MRs - the exact case where it
+      # is most useful. See https://gitlab.com/gitlab-org/gitlab/-/issues/622058
+      it 'uses code-backstage-spec-patterns so it triggers on spec-only MRs' do
+        summary_rule = config['.rails:rules:rspec-test-summary']
+        default_refs_rule = summary_rule['rules'].find { |r| r.is_a?(Hash) && r['changes'] }
+        spec_patterns = config['.code-backstage-spec-patterns']
+
+        expect(default_refs_rule['changes']).to eq(spec_patterns)
       end
     end
   end

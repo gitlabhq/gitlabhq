@@ -139,7 +139,7 @@ export default {
       @highlight="onHighlight"
       @update:valid="(validationState) => onInputValidationStateChange(i, validationState)"
       @update:compiled="onUpdate"
-      @beforeUpdate:compiled.once="compile"
+      @before-update-compiled="compile"
     />
     <step-nav
       :next-button-enabled="isValid"

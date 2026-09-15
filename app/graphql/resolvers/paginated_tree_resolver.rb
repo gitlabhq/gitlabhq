@@ -43,23 +43,10 @@ module Resolvers
 
       next_cursor = tree.cursor&.next_cursor
       Gitlab::Graphql::ExternallyPaginatedArray.new(cursor, next_cursor, *tree)
-    rescue Gitlab::Git::CommandError => e
+    rescue Gitlab::Git::CommandError, Gitlab::Git::InvalidPageToken => e
       raise Gitlab::Graphql::Errors::BaseError.new(
         e,
         extensions: { code: e.code, gitaly_code: e.status, service: e.service }
-      )
-    rescue Gitlab::Git::InvalidPageToken => e
-      # The gRPC status is lost when WrapsGitalyErrors flattens Gitaly's
-      # InvalidArgument, so the extensions are rebuilt to keep the error shape.
-      gitaly_code = GRPC::Core::StatusCodes::INVALID_ARGUMENT
-
-      raise Gitlab::Graphql::Errors::BaseError.new(
-        e.message,
-        extensions: {
-          code: Gitlab::Git::BaseError::GRPC_CODES[gitaly_code.to_s],
-          gitaly_code: gitaly_code,
-          service: 'git'
-        }
       )
     end
   end

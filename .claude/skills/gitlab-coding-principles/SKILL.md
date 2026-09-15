@@ -22,6 +22,10 @@ ALWAYS load Database principles regardless of which files you are editing.
 - **Cells architecture sharding keys, organization data ownership, routable requests, and cell isolation when adding tables or customer-owned resources**: Read .ai/principles/distilled/cells-fundamentals.md *(load for any cells work)*
 - **Cells globally-unique attribute claims (Cells::Claimable), claim rollout lifecycle, and feature flags for cross-cell uniqueness**: Read .ai/principles/distilled/cells-claims.md *(also load: .ai/principles/distilled/cells-fundamentals.md)*
 
+**Organizations:**
+- **Organization-level feature scoping, Current.organization, organization-scoped routing, and organization data isolation (data_isolation gem)**: Read .ai/principles/distilled/organizations-fundamentals.md *(load for any organizations work)*
+- **Releasing an organization feature behind an organization flag (Organizations::Release, the Experimental-to-GA stage ladder), and current organization-creation paths**: Read .ai/principles/distilled/organizations-release-process.md *(also load: .ai/principles/distilled/organizations-fundamentals.md)*
+
 **Security:**
 - **Security vulnerabilities and secure coding**: Read .ai/principles/distilled/security.md
 - **Authentication, authorization, token handling, OAuth, SAML, identity linking, composite identity, session management, 2FA, MFA, password management**: Read .ai/principles/distilled/authentication.md
@@ -55,6 +59,9 @@ ALWAYS load Database principles regardless of which files you are editing.
 - **CSS/SCSS, Tailwind, dark mode**: Read .ai/principles/distilled/frontend-style.md *(also load: .ai/principles/distilled/frontend-vue.md)*
 - **HAML templates, ViewComponents, Pajamas**: Read .ai/principles/distilled/frontend-haml.md *(also load: .ai/principles/distilled/frontend-vue.md)*
 - **Frontend accessibility patterns and requirements**: Read .ai/principles/distilled/frontend-a11y.md *(also load: .ai/principles/distilled/frontend-vue.md)*
+
+**Internationalization:**
+- **Internationalization across Ruby, Haml, ERB, Vue, JavaScript, TypeScript, and locale/gitlab.pot (externalization, interpolation, sentence boundaries, and pluralization)**: Read .ai/principles/distilled/internationalization.md
 
 **Testing:**
 - **RSpec patterns, factories, shared examples**: Read .ai/principles/distilled/testing-rspec.md

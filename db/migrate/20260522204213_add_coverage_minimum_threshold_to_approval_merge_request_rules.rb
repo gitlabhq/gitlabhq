@@ -4,7 +4,7 @@ class AddCoverageMinimumThresholdToApprovalMergeRequestRules < Gitlab::Database:
   milestone '19.1'
 
   def up
-    add_column :approval_merge_request_rules, :coverage_minimum_threshold, :float, null: true, if_not_exists: true
+    add_column :approval_merge_request_rules, :coverage_minimum_threshold, :float, null: true, if_not_exists: true # rubocop:disable Migration/PreventAddingColumns -- table size was reclassified after this migration was created
   end
 
   def down

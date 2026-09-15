@@ -172,6 +172,7 @@ You can create personal access tokens with the user tokens API. For more informa
 {{< history >}}
 
 - `granular_scopes` in the response [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/589500) in GitLab 19.2.
+- `last_used_ips` in the response [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/250307) in GitLab 19.4.
 
 {{< /history >}}
 
@@ -206,6 +207,7 @@ Example response:
     "scopes": ["api"],
     "user_id": 1337,
     "last_used_at": null,
+    "last_used_ips": [],
     "active": true,
     "expires_at": "2023-08-15",
     "token": "s3cr3t"

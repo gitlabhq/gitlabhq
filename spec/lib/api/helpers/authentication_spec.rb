@@ -239,7 +239,7 @@ RSpec.describe API::Helpers::Authentication do
 
       it 'returns nil if #token_from_namespace_inheritable is not a ci build' do
         expect(object).to receive(:token_from_namespace_inheritable).and_return(personal_access_token)
-        expect(subject).to eq(nil)
+        expect(subject).to be_nil
       end
     end
 

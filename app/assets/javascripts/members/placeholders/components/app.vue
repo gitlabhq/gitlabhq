@@ -374,8 +374,8 @@ export default {
           terms-as-tokens
           sync-filter-and-sort
           class="row-content-block gl-grow gl-border-t-0 @sm/panel:gl-flex"
-          @onFilter="onFilter"
-          @onSort="onSort"
+          @on-filter="onFilter"
+          @on-sort="onSort"
         />
         <placeholders-table
           key="unassigned"
@@ -404,8 +404,8 @@ export default {
           terms-as-tokens
           sync-filter-and-sort
           class="row-content-block gl-grow gl-border-t-0 @sm/panel:gl-flex"
-          @onFilter="onFilter"
-          @onSort="onSort"
+          @on-filter="onFilter"
+          @on-sort="onSort"
         />
         <placeholders-table
           key="reassigned"

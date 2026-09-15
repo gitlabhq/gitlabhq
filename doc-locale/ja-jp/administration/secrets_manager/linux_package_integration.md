@@ -1,6 +1,6 @@
 ---
-stage: Sec
-group: Pipeline Security
+stage: Security Platform
+group: Secrets Manager OpenBao
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see <https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments>
 title: LinuxパッケージデプロイのGitLab向けOpenBaoをインストールする
 ---
@@ -23,8 +23,8 @@ LinuxパッケージでインストールされたGitLabインスタンスと連
 
 OpenBaoを次の2つの方法のいずれかで実行します:
 
-- **Colocated cluster**: ローカルのKubernetesディストリビューション（k3sなど）は、Linuxパッケージインスタンスと同じホストで実行されます。LinuxパッケージにバンドルされたNGINXは、OpenBaoの外部URLのTLS終端リバースプロキシとして機能します。GitLabアプリケーションは、Kubernetesが共有ネットワーク上で公開するエンドポイントを介してOpenBaoに接続します。
-- **External Kubernetes cluster**: OpenBaoは別のKubernetesクラスターで実行されます。クラスターのIngressとTLS終端を設計します。GitLab RailsとSidekiqは、公開するOpenBao URLに接続します。マルチノードのLinuxパッケージデプロイを使用している場合や、クラウドプロバイダーのマネージドKubernetesサービスの使用を希望する場合は、このアプローチを検討してください。
+- **同一ホスト上のクラスター**: ローカルKubernetesディストリビューション（k3sなど）が、Linuxパッケージインスタンスと同じホスト上で実行されます。LinuxパッケージにバンドルされたNGINXは、OpenBaoの外部URLのTLS終端リバースプロキシとして機能します。GitLabアプリケーションは、Kubernetesが共有ネットワーク上で公開するエンドポイントを介してOpenBaoに接続します。
+- **外部Kubernetesクラスター**: OpenBaoが別のKubernetesクラスターで実行されます。クラスターのIngressとTLS終端を設計します。GitLab RailsとSidekiqは、公開するOpenBao URLに接続します。マルチノードのLinuxパッケージデプロイを使用している場合や、クラウドプロバイダーのマネージドKubernetesサービスの使用を希望する場合は、このアプローチを検討してください。
 
 > [!note]
 > Linuxパッケージ管理の[PostgreSQLクラスター](../postgresql/replication_and_failover.md)は、OpenBaoデータベースのバックエンドとしてサポートされていません。GitLabにそのようなクラスターを使用する場合は、OpenBao用に個別のPostgreSQLインスタンスをプロビジョニングしてください。これはセルフマネージドまたはマネージドクラウドデータベースサービスとして提供されます。詳細については、[イシュー7292](https://gitlab.com/gitlab-org/omnibus-gitlab/-/work_items/7292)を参照してください。
@@ -78,6 +78,8 @@ OpenBaoをインストールする前に、セットアップが以下の要件�
 {{< /tab >}}
 
 {{< /tabs >}}
+
+本番環境に移行する前に、[セキュリティ強化](#security-hardening)を見直し、特にコンポーネントが複数のホストにまたがる場合のデプロイに関する追加の推奨事項を確認してください。
 
 ## はじめる前 {#before-you-begin}
 
@@ -170,7 +172,6 @@ Helmを使用してOpenBaoをインストールするには:
            port: 5432
            database: openbao
            username: openbao
-           sslMode: "disable"
            password:
              secret: openbao-db-secret
              key: password
@@ -325,7 +326,7 @@ gitlab_rails['openbao'] = {
 - `oak['components']['openbao']['internal_url']`は、GitLabアプリケーションがOpenBaoと通信するために使用するURLです。
 - `gitlab_rails['openbao']['url']`は、GitLabアプリケーションが使用するOpenBao URLです。
 
-GitLabの`external_url`設定が`https://`を使用している場合、Let's Encryptはすでに有効になっています。OpenBaoの`external_url`スキームを`https://`に設定するだけで十分です。GitLabは、既存のLet's Encrypt証明書にOpenBaoドメインをSubject Alternative Name (SAN) として自動的に追加します。
+GitLabの`external_url`設定が`https://`を使用している場合、Let's Encryptはすでに有効になっています。OpenBaoの`external_url`スキームを`https://`に設定するだけで十分です。GitLabは、既存のLet's Encrypt証明書にOpenBaoドメインをSubject Alternative Name（SAN）として自動的に追加します。
 
 代わりにカスタム証明書を使用するには、以下を追加します:
 
@@ -433,3 +434,40 @@ kubectl -n openbao rollout status deployment openbao
    ```
 
 1. [GitLab Secrets Manager](../../ci/secrets/secrets_manager/_index.md#enable-gitlab-secrets-manager)を有効にします。
+
+## セキュリティ強化 {#security-hardening}
+
+次の推奨事項は、本番環境でLinuxパッケージと共にOpenBaoを実行する際のリスクを軽減するのに役立ちます。ほとんどの基盤となるコントロールは、Kubernetesディストリビューションおよび周辺インフラストラクチャにおける選択に依存しており、それらはGitLabが管理するものではありません。
+
+GitLabの一般的な強化に関する推奨事項については、[GitLabの強化に関する推奨事項](../../security/hardening.md)を参照してください。
+
+### コンポーネント間のトラフィックを暗号化する {#encrypt-traffic-between-components}
+
+単一ホストのコロケーションインストールでは、Rails、Sidekiq、OpenBao、およびPostgreSQL間のトラフィックはホストの共有ネットワーク上に留まり、ホスト外には公開されません。トポロジーが複数のホスト（例えば、外部クラスターまたは外部PostgreSQLインスタンス）にまたがるようになると、コンポーネント間の未暗号化のトラフィックはネットワーク上を流れ、アクセス権を持つすべてのユーザーに公開されます。
+
+OpenBaoとPostgreSQLの接続を含め、コンポーネント間のトラフィックを暗号化するには、以下のいずれかを使用します:
+
+- アプリケーションレイヤーmTLS。
+- TLSとロードバランサーのオフロード。
+- 専用のネットワークレイヤー。
+
+マルチノードトポロジーでは、Kubernetesポッド、ノード、およびLinuxパッケージノード間のトラフィックに暗号化が適用されます。環境に適用される設定手順については、Kubernetesディストリビューション、CNI、およびデータベースドキュメントを参照してください。
+
+### Kubernetesデータストアを暗号化する {#encrypt-the-kubernetes-datastore}
+
+Kubernetesデータストア（ほとんどのディストリビューションでは`etcd`）は、Kubernetes `Secret`オブジェクトをデフォルトで暗号化せずに保存します。OpenBao Helmチャートは、アンシールキーをKubernetes `Secret`として保存します。そのため、データストアが侵害されると、OpenBao Vault全体へのアクセスを許可するキーが公開されます。
+
+ディストリビューションでKubernetes Secretsの保存時暗号化を有効にします。あるいは、OpenBaoの自動アンシールをキー管理サービス（KMS）で設定し、アンシールキーがKubernetesシークレットに保存されないようにします。チャートオプションについては、[OpenBao Helmチャートドキュメント](https://docs.gitlab.com/charts/charts/openbao/)を参照してください。
+
+### ポッドからホストへのネットワークアクセスを制限する {#restrict-pod-to-host-network-access}
+
+LinuxパッケージのPostgreSQLは、`postgresql['md5_auth_cidr_addresses']`で設定したKubernetesポッドCIDR全体からのTCP接続を受け入れます。そのクラスターでスケジュールされた任意のポッドは、OpenBaoとは無関係なワークロードを含め、共有ネットワーク上のPostgreSQLおよびNGINXに到達できます。PostgreSQLパスワードやJWT検証などのアプリケーションレイヤーコントロールのみが、他のポッドからのアクセスからこれらのサービスを保護します。
+
+この露出を制限するには:
+
+- クラスターが他のワークロードと共有されている場合は、Kubernetes `NetworkPolicy`を適用するCNIを使用してください。一部のディストリビューションでは、デフォルトで`NetworkPolicy`が適用されません。これには、k3sとそのデフォルトのCNIも含まれます。
+- `postgresql['md5_auth_cidr_addresses']`をOpenBaoポッドをカバーする最小のCIDRに絞り込みます。
+
+### Kubernetes APIサーバーの露出を制限する {#limit-kubernetes-api-server-exposure}
+
+いくつかのKubernetesディストリビューションでは、デフォルトでAPIサーバーを`0.0.0.0`にバインドします。公開されたAPIサーバーは、クラスターへの直接パスを提供し、ひいてはOpenBaoへの直接パスも提供します。APIサーバーをローカルインターフェースまたは共有ネットワークIPにバインドし、ファイアウォールまたはセキュリティグループルールで到達可能性を制限します。

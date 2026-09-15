@@ -63,7 +63,7 @@ socket or `localhost`. Read more in [accessing the services](#accessing-the-serv
 
 ## How the health check of services works
 
-Services are designed to provide additional features which are **network accessible**.
+Services are designed to provide additional features which are network accessible.
 They may be a database like MySQL, or Redis, and even `docker:dind` which
 allows you to use Docker-in-Docker (DinD). It can be practically anything that's
 required for the CI/CD job to proceed, and is accessed by network.
@@ -100,7 +100,7 @@ Services stop at the end of the job, even if the job fails.
 
 ## Using software provided by a service image
 
-When you specify the `service`, this provides **network accessible**
+When you specify the `service`, this provides network accessible
 services. A database is the simplest example of such a service.
 
 The services feature does not add any software from the

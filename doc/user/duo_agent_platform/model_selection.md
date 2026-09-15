@@ -13,14 +13,19 @@ title: Agent Platform AI models
 
 {{< /details >}}
 
-Every GitLab Duo feature uses a default model. GitLab might update default models to optimize performance. For some features, you can select a different model, which persists until you change it.
+Every GitLab Duo feature uses a default model. GitLab might update default models to optimize performance.
+Model changes come from the GitLab AI Gateway and take effect regardless of your GitLab version,
+unless otherwise noted.
+
+For some features, you can select a different model, which persists until you change it.
 
 ## Default models
 
 {{< history >}}
 
-- Default LLM for Code Review Flow [updated](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/236876) to Claude Sonnet 4.6 Gemini Enterprise Agent Platform in GitLab 19.1.
-- Default LLM for Code Review Flow [updated](https://gitlab.com/gitlab-org/modelops/applied-ml/code-suggestions/ai-assist/-/merge_requests/6422) to Claude Sonnet 5 Gemini Enterprise Agent Platform in GitLab 19.3.
+- [Separate model setting](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/236876) for Code Review Flow introduced in GitLab 19.1.
+- Default LLM for Code Review Flow [updated](https://gitlab.com/gitlab-org/modelops/applied-ml/code-suggestions/ai-assist/-/merge_requests/5555) to Claude Sonnet 4.6 Gemini Enterprise Agent Platform on May 20, 2026.
+- Default LLM for Code Review Flow [updated](https://gitlab.com/gitlab-org/modelops/applied-ml/code-suggestions/ai-assist/-/merge_requests/6422) to Claude Sonnet 5 Gemini Enterprise Agent Platform on August 6, 2026.
 
 {{< /history >}}
 
@@ -29,26 +34,33 @@ This table lists the default model for each feature in the Agent Platform.
 | Feature | Model |
 |-------|--------------|
 | GitLab Duo Agentic Chat | Claude Sonnet 4.6 Gemini Enterprise Agent Platform |
-| Code Review Flow | Claude Sonnet 5 Gemini Enterprise Agent Platform |
+| Code Review Flow <sup>1</sup> | Claude Sonnet 5 Gemini Enterprise Agent Platform |
 | Security Review Flow | Claude Sonnet 4.6 Gemini Enterprise Agent Platform |
 | All other agents | Claude Sonnet 4.6 Gemini Enterprise Agent Platform |
+
+**Footnotes**:
+
+1. For GitLab 19.0 or earlier, Code Review Flow uses the [default LLM](../gitlab_duo/model_selection.md#default-models)
+   set for GitLab Duo Code Review, the non-agentic version.
 
 ## Supported models
 
 {{< history >}}
 
-- GPT-5.2 and GPT-5.3 Codex [added](https://gitlab.com/gitlab-org/modelops/applied-ml/code-suggestions/ai-assist/-/merge_requests/5652) as supported models for Code Review Flow in GitLab 19.1.
-- Claude Sonnet 5 [added](https://gitlab.com/gitlab-org/modelops/applied-ml/code-suggestions/ai-assist/-/merge_requests/6383) as a supported model for Code Review Flow in GitLab 19.3.
+- GPT-5.2 and GPT-5.3 Codex [added](https://gitlab.com/gitlab-org/modelops/applied-ml/code-suggestions/ai-assist/-/merge_requests/5652) as supported models for Code Review Flow on May 26, 2026.
+- Claude Sonnet 5 [added](https://gitlab.com/gitlab-org/modelops/applied-ml/code-suggestions/ai-assist/-/merge_requests/6383) as a supported model for Code Review Flow on August 3, 2026.
+- Claude Sonnet 4.5 as a supported model for Code Review Flow [deprecated](https://gitlab.com/gitlab-org/modelops/applied-ml/code-suggestions/ai-assist/-/merge_requests/6483) on August 10, 2026 and [removed](https://gitlab.com/gitlab-org/modelops/applied-ml/code-suggestions/ai-assist/-/merge_requests/6621) on August 25, 2026.
 
 {{< /history >}}
 
 This table lists the models you can select for features
 in the Agent Platform.
 
-| Model                       | GitLab Duo<br> Agentic Chat | Code Review Flow | Security Review Flow | All other agents |
+| Model                       | GitLab Duo<br> Agentic Chat | Code Review Flow <sup>1</sup> | Security Review Flow | All other agents |
 |-----------------------------|-------------------------|------------------|----------------------|------------------|
-| Claude Fable 5 <sup>1</sup> | {{< yes >}}             | {{< no >}}       | {{< no >}}           | {{< yes >}}      |
-| Claude Sonnet 4.5           | {{< yes >}}             | {{< yes >}} <sup>2</sup>      | {{< yes >}}          | {{< yes >}}      |
+| Claude Fable 5 <sup>2</sup> | {{< yes >}}             | {{< no >}}       | {{< no >}}           | {{< yes >}}      |
+| Claude Fable 5.1 <sup>2</sup> | {{< yes >}}             | {{< no >}}       | {{< no >}}           | {{< yes >}}      |
+| Claude Sonnet 4.5           | {{< yes >}}             | {{< no >}}      | {{< yes >}}          | {{< yes >}}      |
 | Claude Sonnet 4.6           | {{< yes >}}             | {{< yes >}}      | {{< yes >}}          | {{< yes >}}      |
 | Claude Sonnet 5             | {{< yes >}}             | {{< yes >}}      | {{< no >}}           | {{< yes >}}      |
 | Claude Haiku 4.5            | {{< yes >}}             | {{< no >}}       | {{< no >}}           | {{< yes >}}      |
@@ -60,6 +72,7 @@ in the Agent Platform.
 | Gemini 3.5 Flash            | {{< yes >}}             | {{< no >}}       | {{< no >}}           | {{< yes >}}      |
 | Gemini 3.6 Flash            | {{< yes >}}             | {{< no >}}       | {{< no >}}           | {{< yes >}}      |
 | Gemini 3.7 Flash            | {{< yes >}}             | {{< no >}}       | {{< no >}}           | {{< yes >}}      |
+| Gemini 3.8 Flash            | {{< yes >}}             | {{< no >}}       | {{< no >}}           | {{< yes >}}      |
 | GPT-5                       | {{< yes >}}             | {{< no >}}       | {{< no >}}           | {{< yes >}}      |
 | GPT-5.1                     | {{< yes >}}             | {{< no >}}       | {{< no >}}           | {{< yes >}}      |
 | GPT-5.2                     | {{< yes >}}             | {{< yes >}}      | {{< yes >}}          | {{< yes >}}      |
@@ -69,15 +82,17 @@ in the Agent Platform.
 | GPT-5 Mini                  | {{< yes >}}             | {{< no >}}       | {{< no >}}           | {{< yes >}}      |
 | GPT-5.4 Mini                | {{< yes >}}             | {{< no >}}       | {{< no >}}           | {{< yes >}}      |
 | GPT-5.4 Nano                | {{< yes >}}             | {{< no >}}       | {{< no >}}           | {{< yes >}}      |
-| GPT-5.5 <sup>1</sup>        | {{< yes >}}             | {{< no >}}       | {{< no >}}           | {{< yes >}}      |
-| GPT-5.6 Sol <sup>1</sup>    | {{< yes >}}             | {{< no >}}       | {{< no >}}           | {{< yes >}}      |
-| GPT-5.6 Terra <sup>1</sup>  | {{< yes >}}             | {{< no >}}       | {{< no >}}           | {{< yes >}}      |
-| GPT-5.6 Luna <sup>1</sup>   | {{< yes >}}             | {{< no >}}       | {{< no >}}           | {{< yes >}}      |
+| GPT-5.5 <sup>2</sup>        | {{< yes >}}             | {{< no >}}       | {{< no >}}           | {{< yes >}}      |
+| GPT-5.6 Sol <sup>2</sup>    | {{< yes >}}             | {{< no >}}       | {{< no >}}           | {{< yes >}}      |
+| GPT-5.6 Terra <sup>2</sup>  | {{< yes >}}             | {{< no >}}       | {{< no >}}           | {{< yes >}}      |
+| GPT-5.6 Luna <sup>2</sup>   | {{< yes >}}             | {{< no >}}       | {{< no >}}           | {{< yes >}}      |
+| GPT-6 Astra <sup>2</sup>    | {{< yes >}}             | {{< no >}}       | {{< no >}}           | {{< yes >}}      |
 
 **Footnotes**:
 
+1. For GitLab 19.0 or earlier, Code Review Flow can only use the [models available](../gitlab_duo/model_selection.md#gitlab-duo-for-merge-requests)
+   for GitLab Duo Code Review, the non-agentic version.
 1. This model is subject to [limited vendor-side data retention](../gitlab_duo/data_usage.md#data-retention).
-1. Support for Claude Sonnet 4.5 with Code Review Flow was [deprecated](https://gitlab.com/gitlab-org/modelops/applied-ml/code-suggestions/ai-assist/-/merge_requests/6483) in GitLab 19.3 and is planned for removal in 19.4.
 
 ## Select a model for a feature
 
@@ -97,7 +112,7 @@ in the Agent Platform.
 - Feature flag `duo_agent_platform_model_selection` [enabled](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/212051) in GitLab 18.6.
 - Feature flag `ai_model_switching` [removed](https://gitlab.com/gitlab-org/gitlab/-/issues/526307) in GitLab 18.7.
 - Feature flag `duo_agent_platform_model_selection` [removed](https://gitlab.com/gitlab-org/gitlab/-/issues/218591) in GitLab 18.9.
-- [Separate model selection](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/236876) from GitLab Duo Code Review introduced for Code Review Flow in GitLab 19.1, using the **Agentic Code Review** setting.
+- [Separate model setting](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/236876) for Code Review Flow introduced in GitLab 19.1, using the **Agentic Code Review** setting.
 - Ability to restrict GitLab Duo Agentic Chat to specific models [added](https://gitlab.com/groups/gitlab-org/-/work_items/22028) in GitLab 19.1.
 - Security Review Flow [added](https://gitlab.com/gitlab-org/gitlab/-/issues/603981) to model selection in GitLab 19.2.
 
@@ -105,6 +120,9 @@ in the Agent Platform.
 
 You can select a model to be the default model for a feature in a top-level group.
 The model that you select applies to that feature for all child groups and projects.
+
+To set a model for an instance on GitLab Self-Managed or GitLab Dedicated, see
+[model selection](../../administration/gitlab_duo/model_selection.md).
 
 Prerequisites:
 
@@ -118,7 +136,7 @@ To select a model for Agentic Chat:
 
 1. In the top bar, select **Search or go to** and find your group.
 1. In the left sidebar, select **Settings** > **GitLab Duo**.
-1. Select **Manage models**.
+1. Under **Model selection**, select **Manage models**.
 1. Go to the **GitLab Duo Agentic Chat** section.
 1. Select a model from the dropdown list to set as the default model.
 1. Optional. To restrict what other models users can select for Agentic Chat:
@@ -140,16 +158,16 @@ To select a model for Agentic Chat:
    > If you do not restrict Agentic Chat to specific models, users can choose from
    > all GitLab-managed models.
 
-### Select a model for a non-Agentic Chat feature
+### Select a model for other agentic features
 
-To select a model for a non-Agentic Chat feature:
+To select a model for other agentic features:
 
 1. In the top bar, select **Search or go to** and find your group.
 1. In the left sidebar, select **Settings** > **GitLab Duo**.
-1. Select **Configure features**.
-1. Go to the **GitLab Duo Agent Platform** section.
+1. Under **Model selection**, select **Manage models**.
+1. Find the feature you want to configure under **GitLab Duo Agent Platform**.
 1. Select a model from the dropdown list to set as the default model.
-1. Optional. To apply the model to all features in the section, select **Apply to all**.
+1. Optional. To apply the model to all features in a section, select **Apply to all**.
 
 To specify a model for the GitLab Duo CLI, see [select a model](../gitlab_duo_cli/use.md#select-a-model).
 

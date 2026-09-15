@@ -1,0 +1,73 @@
+:root {
+  /**
+   * Bloom backgrounds
+   */
+
+  // The two bloom variants are rendered as fixed, full-viewport pseudo-element
+  // layers so toggling the AI panel cross-fades them via opacity instead of
+  // swapping a (non-animatable) background-image.
+  //
+  // The z-index: -1 layers stay visible because body's background-color
+  // propagates to the canvas (html has no background of its own), so body
+  // itself paints no background over them.
+  &.with-bloom body {
+    @apply gl-bg-application-chrome;
+
+    &::before,
+    &::after {
+      content: '';
+      position: fixed;
+      inset: 0;
+      z-index: -1;
+      pointer-events: none;
+      background-repeat: no-repeat;
+
+      @media (prefers-reduced-motion: no-preference) {
+        transition: opacity 0.6s ease-in-out;
+      }
+    }
+
+    // Default view when AI features are available
+    &::before {
+      opacity: 0;
+
+      @include media-breakpoint-up(lg) {
+        background-image: url('blooms/bloom-side.png');
+        background-position: top right;
+        background-size: 350px 600px;
+        opacity: 1;
+      }
+    }
+
+    // AI panel is open
+    &::after {
+      background-image: url('blooms/bloom-bottom.png');
+      background-position: bottom right -300px;
+      background-size: 1200px 400px;
+      opacity: 0;
+    }
+  }
+
+  &.with-bloom.ai-panel-is-open body {
+    &::before {
+      opacity: 0;
+    }
+
+    &::after {
+      opacity: 1;
+    }
+  }
+
+  // Sign in/up pages
+  &.html-devise-layout body {
+    @apply gl-bg-application-chrome;
+    background-image: url('blooms/bloom-grand-ambient.png');
+    background-position: bottom center;
+    background-size: 1440px 525px;
+    background-repeat: no-repeat;
+  }
+
+  &.html-devise-layout .footer-container hr {
+    display: none;
+  }
+}

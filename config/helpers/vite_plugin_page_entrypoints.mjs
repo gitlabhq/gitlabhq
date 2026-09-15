@@ -1,9 +1,10 @@
 import path from 'node:path';
 import { createRequire } from 'node:module';
-import { generateEntries } from '../webpack.helpers';
+import { generateEntries, applyVue3Migrations } from '../webpack.helpers';
 
 const require = createRequire(import.meta.url);
-const { appendVue3Query } = require('./vue3_migration_loader');
+const { appendVue3Query, loadVue3Migrations } = require('./vue3_migration_loader');
+const { baseEntryPoints } = require('./entry_points');
 
 const entrypointsDir = '/javascripts/entrypoints/';
 const actualDirRoot = path.resolve(__dirname, '../../app/assets/javascripts/');
@@ -34,20 +35,31 @@ const actualDirRoot = path.resolve(__dirname, '../../app/assets/javascripts/');
  */
 export function PageEntrypointsPlugin() {
   const comment = '/* this is a virtual module used by Vite, it exists only in dev mode */\n';
-  const entrypoints = Object.entries(generateEntries().entries).reduce(
-    (acc, [entryName, imports]) => {
-      const modulePath = imports[imports.length - 1];
-      const importPath = modulePath.startsWith('./') ? `~/${modulePath.substring(2)}` : modulePath;
-      const isVue3Variant = entryName.endsWith('.vue3');
-      const entryImport = isVue3Variant ? appendVue3Query(importPath) : importPath;
-      acc[`${entryName}.js`] = {
-        virtual: `${comment}/* ${modulePath} */ import '${entryImport}';\n`,
-        actual: `${entryImport.replace('~/', `${actualDirRoot}/`)}`,
-      };
-      return acc;
-    },
-    {},
+  // Vite serves the global bundles straight from `entrypoints/` (see
+  // `entrypointsDir` in `config/vite.json`). Only the entries the migration
+  // changed need a virtual module: a `.vue3` sibling, or a `migrated` bundle
+  // whose own key now points at the `?vue3` build. Page entries need one either way.
+  const migrations = loadVue3Migrations();
+  const globalVue3Entries = Object.fromEntries(
+    Object.entries(applyVue3Migrations(baseEntryPoints, { migrations })).filter(
+      ([entryName, modulePath]) => baseEntryPoints[entryName] !== modulePath,
+    ),
   );
+  const entrypoints = Object.entries({
+    ...generateEntries([], { migrations }).entries,
+    ...globalVue3Entries,
+  }).reduce((acc, [entryName, imports]) => {
+    const modulePaths = Array.isArray(imports) ? imports : [imports];
+    const modulePath = modulePaths[modulePaths.length - 1];
+    const importPath = modulePath.startsWith('./') ? `~/${modulePath.substring(2)}` : modulePath;
+    const isVue3Variant = entryName.endsWith('.vue3');
+    const entryImport = isVue3Variant ? appendVue3Query(importPath) : importPath;
+    acc[`${entryName}.js`] = {
+      virtual: `${comment}/* ${modulePath} */ import '${entryImport}';\n`,
+      actual: `${entryImport.replace('~/', `${actualDirRoot}/`)}`,
+    };
+    return acc;
+  }, {});
 
   const inputOptions = Object.keys(entrypoints).reduce((acc, key) => {
     acc[key.replace('.js', '')] = entrypoints[key].actual;
@@ -68,7 +80,9 @@ export function PageEntrypointsPlugin() {
     // Vite dev server can not recognize entrypoint names from the URL
     // so we create a virtual file that imports the real entrypoint file
     load(id) {
-      if (!id.startsWith('pages.')) {
+      // Virtual entry ids are bare entry names. Anything with a separator is a
+      // real module and belongs to Vite.
+      if (id.includes('/')) {
         return undefined;
       }
 
@@ -78,7 +92,7 @@ export function PageEntrypointsPlugin() {
 
       // Rails asks for every ancestor route segment, so most misses are
       // expected. A `.vue3` miss is not: Rails only asks for one when the
-      // page's feature flag is on, and an empty module would leave the page
+      // entry's feature flag is on, and an empty module would leave the page
       // with no Vue app and nothing in the console to say why.
       if (id.endsWith('.vue3.js')) {
         return `${comment}throw new Error(${JSON.stringify(
@@ -86,13 +100,25 @@ export function PageEntrypointsPlugin() {
         )});\n`;
       }
 
-      return `/* doesn't exist */`;
+      if (id.startsWith('pages.')) {
+        return `/* doesn't exist */`;
+      }
+
+      return undefined;
     },
     resolveId(source) {
-      if (!source.startsWith(`${entrypointsDir}pages.`)) {
+      if (!source.startsWith(entrypointsDir)) {
         return undefined;
       }
-      return { id: source.replace(entrypointsDir, '') };
+
+      const id = source.slice(entrypointsDir.length);
+      // Page entries are always virtual. Global bundles only are when a migration
+      // changed them; the rest resolve to their file on disk.
+      if (id.startsWith('pages.') || entrypoints[id]) {
+        return { id };
+      }
+
+      return undefined;
     },
   };
 }

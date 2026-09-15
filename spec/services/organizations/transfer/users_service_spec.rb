@@ -64,6 +64,21 @@ RSpec.describe Organizations::Transfer::UsersService, :aggregate_failures, featu
       end
     end
 
+    context 'when users are already in the target organization' do
+      let_it_be_with_refind(:user1) { create(:user, organization: new_organization) }
+
+      let(:users) { User.id_in([user1.id]) }
+
+      it 'returns error ServiceResponse with appropriate message' do
+        result = service.execute
+
+        expect(result).to be_error
+        expect(result.message).to eq(
+          s_("TransferOrganization|Users are already in the target organization.")
+        )
+      end
+    end
+
     context 'when called within an existing transaction (outer transaction)' do
       let_it_be_with_refind(:user1) { create(:user, organization: old_organization) }
 
@@ -582,6 +597,33 @@ RSpec.describe Organizations::Transfer::UsersService, :aggregate_failures, featu
           expect { service.execute }.not_to change { non_group_mention.reload.snippet_organization_id }
         end
       end
+
+      context 'for user agent details' do
+        it 'updates organization_id for details on personal snippets of transferred users' do
+          detail = create(:user_agent_detail, subject: personal_snippet, organization: old_organization)
+
+          expect(detail.subject_type).to eq('Snippet')
+
+          service.execute
+
+          expect(detail.reload.organization_id).to eq(new_organization.id)
+        end
+
+        it 'does not update details on personal snippets of users not in the group' do
+          detail = create(:user_agent_detail, subject: non_group_snippet, organization: old_organization)
+
+          expect { service.execute }.not_to change { detail.reload.organization_id }
+        end
+
+        it 'does not update details on project snippets' do
+          project = create(:project, namespace: group, organization: old_organization)
+          detail = create(:user_agent_detail,
+            subject: create(:project_snippet, project: project, author: user1),
+            organization: old_organization)
+
+          expect { service.execute }.not_to change { detail.reload.organization_id }
+        end
+      end
     end
 
     context 'with cluster transfers' do
@@ -681,6 +723,41 @@ RSpec.describe Organizations::Transfer::UsersService, :aggregate_failures, featu
 
         expect { service.execute }.not_to change { reported_report.reload.organization_id }
       end
+
+      it 'updates organization_id for screenshots of transferred reports' do
+        abuse_report = create(:abuse_report, reporter: user1, organization: old_organization)
+        upload = create_screenshot_upload(abuse_report)
+
+        service.execute
+
+        expect(upload.reload.organization_id).to eq(new_organization.id)
+      end
+
+      it 'does not update screenshots of abuse reports filed by users not in the group' do
+        non_group_report = create(:abuse_report, reporter: non_group_user, organization: old_organization)
+        non_group_upload = create_screenshot_upload(non_group_report)
+
+        expect { service.execute }.not_to change { non_group_upload.reload.organization_id }
+      end
+
+      context 'when batching screenshot updates' do
+        include_context 'with transfer batch size of 1'
+
+        let(:execute_service) { service.execute }
+        let(:expected_batch_queries) { { 'abuse_report_uploads' => 3 } }
+
+        before do
+          3.times do
+            create_screenshot_upload(create(:abuse_report, reporter: user1, organization: old_organization))
+          end
+        end
+
+        it_behaves_like 'generates batched transfer queries'
+      end
+
+      def create_screenshot_upload(abuse_report)
+        create(:upload, model: abuse_report, uploader: 'AttachmentUploader', mount_point: :screenshot)
+      end
     end
 
     context 'with associated organization_id updates', :aggregate_failures do
@@ -735,24 +812,55 @@ RSpec.describe Organizations::Transfer::UsersService, :aggregate_failures, featu
           expect { service.execute }.not_to change { group_app.reload.organization_id }
         end
 
-        context 'when IAM replication is enabled' do
-          before do
-            stub_feature_flags(iam_data_replication: true)
-          end
+        it 'records upsert outbox rows carrying the new organization for the moved applications',
+          :aggregate_failures do
+          app1 = create(:oauth_application, owner: user1, organization: old_organization)
+          app2 = create(:oauth_application, owner: user2, organization: old_organization)
 
-          it 'records upsert outbox rows carrying the new organization for the moved applications',
-            :aggregate_failures do
-            app1 = create(:oauth_application, owner: user1, organization: old_organization)
-            app2 = create(:oauth_application, owner: user2, organization: old_organization)
+          expect { service.execute }.to change {
+            Authn::IamOutbox.where(entity_id: [app1.id, app2.id], event_type: :upsert).count
+          }.by(2)
 
-            expect { service.execute }.to change {
-              Authn::IamOutbox.where(entity_id: [app1.id, app2.id], event_type: :upsert).count
-            }.by(2)
+          rows = Authn::IamOutbox.where(
+            entity_id: [app1.id, app2.id], event_type: :upsert, organization_id: new_organization.id
+          )
+          expect(rows).to all(have_attributes(entity_type: 'oauth_application', payload: {}))
+        end
 
-            rows = Authn::IamOutbox.where(
+        it 'schedules an upsert drain per moved application' do
+          app1 = create(:oauth_application, owner: user1, organization: old_organization)
+          app2 = create(:oauth_application, owner: user2, organization: old_organization)
+
+          expect(Authn::IamReplication::DrainWorker).to receive(:bulk_perform_in)
+            .with(Authn::IamReplication::DrainWorker::SCHEDULE_DELAY,
+              include(['oauth_application', app1.id, 'upsert'], ['oauth_application', app2.id, 'upsert']))
+
+          service.execute
+        end
+
+        it 'records no additional outbox rows when the transfer is replayed after a successful run' do
+          app1 = create(:oauth_application, owner: user1, organization: old_organization)
+          app2 = create(:oauth_application, owner: user2, organization: old_organization)
+
+          service.execute
+
+          replay = described_class.new(users: users, new_organization: new_organization)
+
+          expect { replay.execute }.not_to change {
+            Authn::IamOutbox.where(
               entity_id: [app1.id, app2.id], event_type: :upsert, organization_id: new_organization.id
-            )
-            expect(rows).to all(have_attributes(entity_type: 'oauth_application', payload: {}))
+            ).count
+          }
+        end
+
+        it 'schedules no drain when the transfer rolls back' do
+          create(:oauth_application, owner: user1, organization: old_organization)
+
+          expect(Authn::IamReplication::DrainWorker).not_to receive(:bulk_perform_in)
+
+          ApplicationRecord.transaction do
+            service.execute
+            raise ActiveRecord::Rollback
           end
         end
 
@@ -1012,8 +1120,7 @@ RSpec.describe Organizations::Transfer::UsersService, :aggregate_failures, featu
             "Ai::UsageEvent",
             "Analytics::CustomDashboards::DashboardVersion",
             "LDAPKey",
-            "RemoteDevelopment::OrganizationClusterAgentMapping",
-            "Vulnerabilities::Export"
+            "RemoteDevelopment::OrganizationClusterAgentMapping"
           ]
         end
 
@@ -1032,13 +1139,15 @@ RSpec.describe Organizations::Transfer::UsersService, :aggregate_failures, featu
               'GitlabSubscriptions::AddOnPurchase',
               'GitlabSubscriptions::SeatAssignment',
               'GitlabSubscriptions::UserAddOnAssignment',
+              'Govern::PolicyEvaluation',
               'Group',
               'ImportFailure',
               'MemberRole',
               'Project',
               'ProjectSnippet',
               'Snippet',
-              'User'
+              'User',
+              'Vulnerabilities::Export'
             ]
           end
 
@@ -1079,6 +1188,14 @@ RSpec.describe Organizations::Transfer::UsersService, :aggregate_failures, featu
             expect(model_names & skipped_models).to be_empty
           end
 
+          def find_factory(model_class)
+            FactoryBot.factories.detect do |f|
+              f.build_class.to_s == model_class.to_s
+            rescue NameError
+              false
+            end
+          end
+
           def find_user_assoc(model_class)
             model_class.reflect_on_all_associations.find do |association|
               association.class_name == "User"
@@ -1086,20 +1203,20 @@ RSpec.describe Organizations::Transfer::UsersService, :aggregate_failures, featu
           end
 
           it 'updates organization_id for all migratable models' do
-            described_class.migratable_models.each do |model_class|
-              factory = FactoryBot.factories.detect do |f|
-                f.build_class.to_s == model_class.to_s
-              rescue NameError
-                false
-              end
-
+            instances = described_class.migratable_models.map do |model_class|
+              factory = find_factory(model_class)
               user_assoc = find_user_assoc(model_class)
 
-              instance1 = create(factory.name, organization: old_organization, user_assoc.name => user1)
-              instance2 = create(factory.name, organization: old_organization, user_assoc.name => user2)
+              [
+                model_class,
+                create(factory.name, organization: old_organization, user_assoc.name => user1),
+                create(factory.name, organization: old_organization, user_assoc.name => user2)
+              ]
+            end
 
-              service.execute
+            service.execute
 
+            instances.each do |model_class, instance1, instance2|
               expect(instance1.reload.organization_id).to eq(new_organization.id),
                 "Expected #{model_class} organization_id to be updated"
               expect(instance2.reload.organization_id).to eq(new_organization.id),
@@ -1108,18 +1225,17 @@ RSpec.describe Organizations::Transfer::UsersService, :aggregate_failures, featu
           end
 
           it 'does not update migratable models for users outside the group' do
-            described_class.migratable_models.each do |model_class|
-              factory = FactoryBot.factories.detect do |f|
-                f.build_class.to_s == model_class.to_s
-              rescue NameError
-                false
-              end
-
+            instances = described_class.migratable_models.map do |model_class|
+              factory = find_factory(model_class)
               user_assoc = find_user_assoc(model_class)
 
-              instance = create(factory.name, organization: old_organization, user_assoc.name => non_group_user)
+              [model_class, create(factory.name, organization: old_organization, user_assoc.name => non_group_user)]
+            end
 
-              expect { service.execute }.not_to change { instance.reload.organization_id },
+            service.execute
+
+            instances.each do |model_class, instance|
+              expect(instance.reload.organization_id).to eq(old_organization.id),
                 "Expected #{model_class} organization_id to not change for users outside the group"
             end
           end

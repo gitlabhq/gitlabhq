@@ -68,7 +68,7 @@ const appendVue3Query = (resource) => {
 
 /**
  * Load and parse the infection scanner JSON data.
- * @returns {Map<string, {infected: boolean, appRoot: string}>}
+ * @returns {Map<string, {infected: boolean, exposedToVue: boolean, appRoot: boolean, imports: Array}>}
  */
 function loadScannerData() {
   if (!existsSync(SCANNER_JSON_PATH)) {
@@ -80,16 +80,31 @@ function loadScannerData() {
   const data = JSON.parse(readFileSync(SCANNER_JSON_PATH, 'utf-8'));
   const graph = new Map();
   for (const [filePath, entry] of Object.entries(data.graph)) {
+    // Refuse data that predates `exposedToVue` rather than falling back to `infected`.
+    // A missing flag reads as falsy, which would mark every module clean and render
+    // every Vue 3 page with Vue 2 silently, with no error anywhere.
+    if (!('exposedToVue' in entry)) {
+      throw new Error(
+        `[vue3-infection] Scanner data at ${SCANNER_JSON_PATH} predates the exposedToVue ` +
+          `flag. Delete it and re-run: ` +
+          `node scripts/frontend/infection_scanner/infection_scanner.mjs`,
+      );
+    }
     // Keep the resolved import edges (sans the bulky `alternatives`) so the loader can
     // propagate infection via the scanner's resolution instead of re-resolving.
     const imports = Array.isArray(entry.imports)
       ? entry.imports.map((e) => ({ source: e.source, resolved: e.resolved, dynamic: e.dynamic }))
       : [];
-    graph.set(filePath, { infected: entry.infected, appRoot: entry.appRoot, imports });
+    graph.set(filePath, {
+      infected: entry.infected,
+      exposedToVue: entry.exposedToVue,
+      appRoot: entry.appRoot,
+      imports,
+    });
   }
   console.log(
     `[vue3-infection] Loaded scanner data: ${graph.size} files, ` +
-      `${[...graph.values()].filter((e) => e.infected).length} infected`,
+      `${[...graph.values()].filter((e) => e.exposedToVue).length} exposed to Vue`,
   );
   return graph;
 }
@@ -136,6 +151,30 @@ function runInfectionScanner() {
  *   infectable (e.g. loader-injected packages in Webpack like core-js).
  * @returns {function(string): boolean}
  */
+/**
+ * Apply a Vite/webpack style alias list to a specifier, mirroring how
+ * `@rollup/plugin-alias` matches: exact or `/`-delimited prefix for string
+ * patterns, `String.replace` for regular expressions. First match wins.
+ *
+ * Vite applies `resolve.alias` before plugins that declare `enforce: 'pre'`, so
+ * a `CONTEXT_ALIASES` key that a global alias also matches reaches `resolveId`
+ * already expanded and no longer equals its key.
+ *
+ * @param {string} specifier
+ * @param {Array<{find: string|RegExp, replacement: string}>} aliasEntries
+ * @returns {string} the specifier with the first matching alias applied
+ */
+const applyAliasList = (specifier, aliasEntries) => {
+  for (const { find, replacement } of aliasEntries) {
+    if (find instanceof RegExp) {
+      if (find.test(specifier)) return specifier.replace(find, replacement);
+    } else if (specifier === find || specifier.startsWith(`${find}/`)) {
+      return `${replacement}${specifier.slice(find.length)}`;
+    }
+  }
+  return specifier;
+};
+
 const createIsInfectable = (scannerGraph, { shouldExclude, shouldBypass } = {}) => {
   return (id) => {
     const clean = stripQuery(id);
@@ -151,7 +190,10 @@ const createIsInfectable = (scannerGraph, { shouldExclude, shouldBypass } = {}) 
           `Re-run: node scripts/frontend/infection_scanner/infection_scanner.mjs`,
       );
     }
-    return entry.infected;
+    // `exposedToVue`, not `infected`: this predicate answers the downward question
+    // ("a Vue 3 module imports this, so must the copy be Vue 3?"), and `infected` is
+    // computed with an app-root barrier that is only correct for the upward one.
+    return entry.exposedToVue;
   };
 };
 
@@ -181,4 +223,5 @@ module.exports = {
   runInfectionScanner,
   createIsInfectable,
   logInfectionStats,
+  applyAliasList,
 };

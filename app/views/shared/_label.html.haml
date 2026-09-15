@@ -8,7 +8,7 @@
 - group = label.group || label.project&.group
 
 %li.js-label-list-item.gl-list-none.gl-border-b.last-of-type:gl-border-b-0{ id: label_css_id, data: { id: label.id } }
-  .label-content.gl-pl-3.gl-pr-2.gl-py-3
+  .label-content.gl-flex.gl-justify-between.gl-pl-3.gl-pr-2.gl-py-3
     = render "shared/label_row", label: label, force_priority: force_priority
     %ul.label-actions-list{ class: '@md/panel:gl-mt-4' }
       - if can?(current_user, :admin_label, @project) && !label.archived

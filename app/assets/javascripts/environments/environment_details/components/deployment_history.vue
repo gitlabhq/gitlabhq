@@ -211,8 +211,8 @@ export default {
           :is-ascending="isDirectionAscending"
           :sort-options="$options.sortOptions"
           :sort-by="activeSortOption.value"
-          @sortDirectionChange="onDirectionChange"
-          @sortByChange="onSortItemClick"
+          @sort-direction-change="onDirectionChange"
+          @sort-by-change="onSortItemClick"
         />
       </div>
 

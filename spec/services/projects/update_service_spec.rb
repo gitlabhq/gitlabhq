@@ -137,6 +137,88 @@ RSpec.describe Projects::UpdateService, feature_category: :groups_and_projects d
       end
     end
 
+    context 'when changing feature_flags_minimum_role' do
+      let(:error_message) { 'Changing the feature_flags_minimum_role is not allowed' }
+
+      before do
+        project.add_maintainer(maintainer)
+        project.add_developer(developer)
+        project.add_owner(owner)
+      end
+
+      it 'allows owner to change the setting' do
+        result = update_project(project, owner, feature_flags_minimum_role: 'maintainer')
+
+        expect(result[:status]).to eq(:success)
+        expect(project.reload.feature_flags_minimum_role).to eq('maintainer')
+      end
+
+      it 'allows maintainer to change the setting' do
+        result = update_project(project, maintainer, feature_flags_minimum_role: 'maintainer')
+
+        expect(result[:status]).to eq(:success)
+        expect(project.reload.feature_flags_minimum_role).to eq('maintainer')
+      end
+
+      it 'prevents developer from changing the setting' do
+        result = update_project(project, developer, feature_flags_minimum_role: 'maintainer')
+
+        expect(result[:status]).to eq(:api_error)
+        expect(result[:message]).to include(error_message)
+        expect(project.reload.feature_flags_minimum_role).to eq('developer')
+      end
+
+      it 'does not run the check when the value is unchanged' do
+        result = update_project(project, developer, feature_flags_minimum_role: 'developer')
+
+        expect(result[:status]).to eq(:success)
+      end
+
+      it 'does not run the check when the param is absent' do
+        result = update_project(project, developer, description: 'new description')
+
+        expect(result[:status]).to eq(:success)
+      end
+
+      context 'when maintainer sets a privileged role' do
+        it 'allows maintainer to set the role to owner' do
+          result = update_project(project, maintainer, feature_flags_minimum_role: 'owner')
+
+          expect(result[:status]).to eq(:success)
+        end
+
+        it 'prevents maintainer from undoing the change after self-lockout' do
+          update_project(project, maintainer, feature_flags_minimum_role: 'owner')
+
+          result = update_project(project, maintainer, feature_flags_minimum_role: 'developer')
+
+          expect(result[:status]).to eq(:api_error)
+          expect(result[:message]).to include(error_message)
+        end
+      end
+
+      context 'when the setting is already at a privileged role' do
+        before do
+          project.project_setting.feature_flags_minimum_role_no_one_allowed!
+        end
+
+        it 'prevents maintainer from loosening it' do
+          result = update_project(project, maintainer, feature_flags_minimum_role: 'developer')
+
+          expect(result[:status]).to eq(:api_error)
+          expect(result[:message]).to include(error_message)
+          expect(project.reload.feature_flags_minimum_role).to eq('no_one_allowed')
+        end
+
+        it 'allows owner to loosen it' do
+          result = update_project(project, owner, feature_flags_minimum_role: 'developer')
+
+          expect(result[:status]).to eq(:success)
+          expect(project.reload.feature_flags_minimum_role).to eq('developer')
+        end
+      end
+    end
+
     context 'when changing visibility level' do
       context 'when visibility_level changes to INTERNAL' do
         it 'updates the project to internal' do

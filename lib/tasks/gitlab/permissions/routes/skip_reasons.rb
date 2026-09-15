@@ -17,6 +17,7 @@ module Tasks
             geo_proxy_auth: 'Geo proxy',
             gitlab_shared_secret_auth: 'GitLab shared secret',
             gitlab_shell_token_auth: 'GitLab Shell token',
+            iam_oauth_token_auth: 'IAM OAuth token',
             integration_token_auth: 'Project integration token',
             internal_testing: 'Internal testing',
             jira_forge_app_auth: 'GitLab for Jira (Forge) app token',

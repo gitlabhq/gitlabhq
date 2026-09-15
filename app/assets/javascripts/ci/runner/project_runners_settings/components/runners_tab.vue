@@ -66,6 +66,10 @@ export default {
         return this.useAssignableQuery ? projectAssignableRunnersQuery : projectRunnersQuery;
       },
       fetchPolicy: fetchPolicies.NETWORK_ONLY,
+      // Keep deduplication off: assigning then quickly unassigning a runner calls
+      // refresh() twice. Deduplicating the second call would resolve it with the
+      // first response, undoing the second mutation in the list.
+      context: { queryDeduplication: false },
       loadingKey: 'loading',
       variables() {
         return this.variables;

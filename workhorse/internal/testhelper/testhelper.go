@@ -16,7 +16,7 @@ import (
 	"syscall"
 	"testing"
 
-	"github.com/dlclark/regexp2"
+	"github.com/dlclark/regexp2/v2"
 	jwt "github.com/golang-jwt/jwt/v5"
 	"github.com/stretchr/testify/require"
 	"gitlab.com/gitlab-org/labkit/v2/fields"

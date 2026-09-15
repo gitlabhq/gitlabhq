@@ -134,6 +134,6 @@ export default {
     :search-button-attributes="$options.searchButtonAttributes"
     :search-input-attributes="$options.searchInputAttributes"
     data-testid="members-filtered-search-bar"
-    @onFilter="handleFilter"
+    @on-filter="handleFilter"
   />
 </template>

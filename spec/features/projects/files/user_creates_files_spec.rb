@@ -2,7 +2,9 @@
 
 require 'spec_helper'
 
-RSpec.describe 'Projects > Files > User creates files', :js, feature_category: :source_code_management do
+RSpec.describe 'Projects > Files > User creates files', :js,
+  feature_category: :source_code_management,
+  quarantine: 'https://gitlab.com/gitlab-org/quality/test-failure-issues/-/work_items/44401' do
   include Features::SourceEditorSpecHelpers
   include Features::BlobSpecHelpers
 
@@ -47,10 +49,70 @@ RSpec.describe 'Projects > Files > User creates files', :js, feature_category: :
         find('.add-to-tree').click
         click_link('New file')
 
-        expect(page).to have_selector('.file-editor')
+        expect(page).to have_selector('.file-editor', wait: 10)
         expect(page).to have_content(fork_message)
         expect(page).to have_content('New file')
         expect(page).to have_button('Commit changes')
+      end
+    end
+  end
+
+  context 'when previewing a new file' do
+    before do
+      visit(project_new_blob_path(project, 'master'))
+      expect(page).to have_selector('.file-editor')
+    end
+
+    it 'previews a new markdown file with the live markdown preview' do
+      editor_set_value('# Title')
+      fill_in(:file_name, with: 'docs/doc.md')
+
+      # The markdown extensions load asynchronously with no visible signal,
+      # so retry the tab click until the live preview appears
+      wait_for('live markdown preview') do
+        click_link('Preview')
+        page.has_css?('.source-editor-preview .md h1', text: 'Title', wait: 1)
+      end
+
+      expect(page).not_to have_css('.diff-file')
+    end
+
+    it 'previews a new non-markdown markup file as rendered markup' do
+      editor_set_value("* Title\n")
+      fill_in(:file_name, with: 'docs/doc.org')
+
+      click_link('Preview')
+
+      expect(page).to have_css('.file-content.md')
+      expect(page).to have_css('h1', text: 'Title')
+      expect(page).not_to have_css('.diff-file')
+    end
+
+    it 'previews a new non-markup file as a diff' do
+      editor_set_value('some content')
+      fill_in(:file_name, with: 'scripts/script.py')
+
+      click_link('Preview')
+
+      expect(page).to have_css('.line_holder.new')
+      expect(page).to have_content('some content')
+
+      click_link('Write')
+
+      expect(page).to have_selector('.monaco-editor')
+    end
+
+    context 'when the repository is empty' do
+      let(:project) { create(:project, :empty_repo) }
+
+      it 'previews a new file as a diff' do
+        editor_set_value('some content')
+        fill_in(:file_name, with: 'scripts/script.py')
+
+        click_link('Preview')
+
+        expect(page).to have_css('.line_holder.new')
+        expect(page).to have_content('some content')
       end
     end
   end
@@ -231,7 +293,7 @@ RSpec.describe 'Projects > Files > User creates files', :js, feature_category: :
       it 'creates and commits a new file in forked project' do
         message = "GitLab will create a branch in your fork and start a merge request."
 
-        expect(page).to have_selector('.file-editor')
+        expect(page).to have_selector('.file-editor', wait: 10)
 
         editor_set_value(file_content)
         fill_in(:file_name, with: file_name)

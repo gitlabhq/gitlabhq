@@ -727,7 +727,7 @@ RSpec.describe Gitlab::Auth::AuthFinders, feature_category: :system_access do
 
       let(:iam_scopes) { %w[api] }
       let(:iam_jwt_token) do
-        create_iam_jwt(user: user, scopes: iam_scopes, issuer: iam_issuer, private_key: private_key, kid: kid)
+        create_iam_access_token(user: user, scopes: iam_scopes, issuer: iam_issuer, private_key: private_key, kid: kid)
       end
 
       before do
@@ -855,7 +855,7 @@ RSpec.describe Gitlab::Auth::AuthFinders, feature_category: :system_access do
 
           let(:iam_scopes) { %w[api] }
           let(:iam_jwt_token) do
-            create_iam_jwt(user: user, scopes: iam_scopes, issuer: iam_issuer, private_key: private_key, kid: kid)
+            create_iam_access_token(user: user, scopes: iam_scopes, issuer: iam_issuer, private_key: private_key, kid: kid)
           end
 
           before do
@@ -1036,7 +1036,7 @@ RSpec.describe Gitlab::Auth::AuthFinders, feature_category: :system_access do
 
       let(:iam_scopes) { %w[api] }
       let(:iam_jwt_token) do
-        create_iam_jwt(user: user, scopes: iam_scopes, issuer: iam_issuer, private_key: private_key, kid: kid)
+        create_iam_access_token(user: user, scopes: iam_scopes, issuer: iam_issuer, private_key: private_key, kid: kid)
       end
 
       before do
@@ -1081,7 +1081,7 @@ RSpec.describe Gitlab::Auth::AuthFinders, feature_category: :system_access do
           let_it_be(:scoped_user) { create(:user) }
           let(:iam_scopes) { ['api', "user:#{scoped_user.id}"] }
           let(:iam_jwt_token) do
-            create_iam_jwt(user: service_account, scopes: iam_scopes,
+            create_iam_access_token(user: service_account, scopes: iam_scopes,
               issuer: iam_issuer, private_key: private_key, kid: kid)
           end
 

@@ -42,7 +42,9 @@ RSpec.describe "User creates issue", :js, feature_category: :team_planning do
           .and have_content("Labels")
           .and have_content("Milestone")
           .and have_content("Dates")
-          .and have_unchecked_field("Turn on confidentiality: Limit visibility to project members with at least the Planner role.")
+          .and have_unchecked_field(
+            "Turn on confidentiality: Limit visibility to project members with at least the Planner role."
+          )
       end
     end
 
@@ -88,7 +90,7 @@ RSpec.describe "User creates issue", :js, feature_category: :team_planning do
           select_listbox_item label_titles.first
           send_keys(:escape)
         end
-        click_button("Create Issue")
+        click_button("Create issue")
 
         expect(page).to have_content(issue_title)
                     .and have_content(user.name)
@@ -111,7 +113,7 @@ RSpec.describe "User creates issue", :js, feature_category: :team_planning do
         end
         click_button date.day
         click_button 'Apply'
-        click_button 'Create Issue'
+        click_button 'Create issue'
 
         expect(page).to have_text date.to_fs(:medium)
       end
@@ -123,20 +125,20 @@ RSpec.describe "User creates issue", :js, feature_category: :team_planning do
       end
 
       it 'uploads file when dragging into textarea' do
-        dropzone_file Rails.root.join('spec', 'fixtures', 'banana_sample.gif')
+        dropzone_file Rails.root.join('spec/fixtures/banana_sample.gif')
 
         expect(page).to have_field('Description', with: /banana_sample/)
       end
 
       it "doesn't add double newline to end of a single attachment markdown" do
-        dropzone_file Rails.root.join('spec', 'fixtures', 'banana_sample.gif')
+        dropzone_file Rails.root.join('spec/fixtures/banana_sample.gif')
 
         expect(page.find_field("Description").value).not_to match(/\n\n$/)
       end
 
       it "cancels a file upload correctly", :capybara_ignore_server_errors do
         slow_requests do
-          dropzone_file([Rails.root.join('spec', 'fixtures', 'dk.png')], 0, false)
+          dropzone_file([Rails.root.join('spec/fixtures/dk.png')], 0, false)
 
           within_testid 'markdown-field' do
             click_button 'Cancel'
@@ -218,7 +220,7 @@ RSpec.describe "User creates issue", :js, feature_category: :team_planning do
         fill_in 'Title', with: 'bug 345'
         fill_in 'Description', with: 'bug description'
 
-        click_button 'Create Issue'
+        click_button 'Create issue'
         expect(page).to have_content('bug 345')
       end
     end

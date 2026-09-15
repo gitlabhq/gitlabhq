@@ -31,7 +31,7 @@ Your instance has the following capabilities:
 GitLab Dedicated for Government is authorized under the following programs,
 so your agency can procure and deploy without additional compliance reviews:
 
-[FedRAMP Moderate](https://marketplace.fedramp.gov/products/FR2411959145?cache=true)
+[FedRAMP Moderate](https://marketplace.fedramp.gov/products/FR2411959145/?cache=true)
 : Meets federal security requirements for cloud services, with Authority to Operate (ATO).
 
 [GovRAMP](https://govramp.org/product-list/) (Package ID: SR25098)

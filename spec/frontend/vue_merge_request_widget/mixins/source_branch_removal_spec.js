@@ -13,7 +13,6 @@ function createMr(overrides = {}) {
   return {
     sourceBranchRemoved: false,
     canRemoveSourceBranch: true,
-    isRemovingSourceBranch: false,
     ...overrides,
   };
 }
@@ -54,15 +53,6 @@ describe('sourceBranchRemovalMixin', () => {
 
     it('is false when canRemoveSourceBranch is false', () => {
       const wrapper = createComponent({ mr: createMr({ canRemoveSourceBranch: false }), service });
-
-      expect(wrapper.vm.shouldShowRemoveSourceBranch).toBe(false);
-    });
-
-    it('is false when isRemovingSourceBranch is true', () => {
-      const wrapper = createComponent({
-        mr: createMr({ isRemovingSourceBranch: true }),
-        service,
-      });
 
       expect(wrapper.vm.shouldShowRemoveSourceBranch).toBe(false);
     });

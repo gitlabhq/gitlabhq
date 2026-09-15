@@ -10,7 +10,7 @@ Analysis is the third phase of the vulnerability management lifecycle: detect, t
 remediate.
 
 Analysis is the process of evaluating the details of a vulnerability to determine if it can and
-should be remediated. Vulnerabilities can be triaged in bulk but analysis must be done individually.
+should be remediated. Vulnerabilities can be triaged in bulk, but analysis must be done individually.
 As part of a risk management framework, analysis helps ensure resources are applied where they're
 most effective. Use the data contained in the security dashboard and the vulnerability report to
 prioritize analysis of vulnerabilities according to their severity and associated risk.
@@ -101,7 +101,7 @@ The following tips may also help you analyze a vulnerability:
   provided by third-party training vendors to help understand the nature of a specific
   vulnerability.
 
-After analyzing each confirmed vulnerability you should either:
+After analyzing each confirmed vulnerability, you should either:
 
 - Leave its status as **Confirmed** if you decide it should be remediated.
 - Change its status to **Dismissed** if you decide it should not be remediated.
@@ -112,7 +112,7 @@ If you confirm a vulnerability:
    track, document, and manage the remediation work.
 1. Continue to the remediation phase of the vulnerability management lifecycle.
 
-If you dismiss a vulnerability you must provide a brief comment that states why you've dismissed it.
+If you dismiss a vulnerability, you must provide a brief comment that states why you've dismissed it.
 Dismissed vulnerabilities are ignored if detected again. Vulnerability records are retained for
 audit purposes (until they are archived). You can manage their lifecycle by updating their status as
 needed.

@@ -264,7 +264,6 @@
 - "Organizations::OrganizationsController#index"
 - "Organizations::OrganizationsController#new"
 - "Organizations::OrganizationsController#users"
-- "Organizations::SettingsController#general"
 - "PATCH /api/:version/groups/:id/protected_branches/:name"
 - "PATCH /api/:version/projects/:id/error_tracking/settings"
 - "PATCH /api/:version/projects/:id/managed_licenses/:managed_license_id"

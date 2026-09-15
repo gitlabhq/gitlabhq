@@ -25,7 +25,7 @@ RSpec.describe Gitlab::Redis::ClusterStore, :clean_gitlab_redis_cache,
     end
 
     it 'extends Serialization by default' do
-      expect(store.is_a?(::Redis::Store::Serialization)).to eq(true)
+      expect(store.is_a?(::Redis::Store::Serialization)).to be(true)
     end
 
     it 'sets a default serializer when left empty' do
@@ -52,7 +52,7 @@ RSpec.describe Gitlab::Redis::ClusterStore, :clean_gitlab_redis_cache,
       let(:params) { ::Gitlab::Redis::Cache.params.merge(marshalling: false, serializer: Class) }
 
       it 'overrides serializer with Marshal' do
-        expect(store.instance_variable_get(:@serializer)).to eq(nil)
+        expect(store.instance_variable_get(:@serializer)).to be_nil
       end
     end
 
@@ -60,7 +60,7 @@ RSpec.describe Gitlab::Redis::ClusterStore, :clean_gitlab_redis_cache,
       let(:params) { ::Gitlab::Redis::Cache.params.merge(namespace: 'testing') }
 
       it 'extends namespace' do
-        expect(store.is_a?(::Redis::Store::Namespace)).to eq(true)
+        expect(store.is_a?(::Redis::Store::Namespace)).to be(true)
       end
 
       it 'write keys with namespace' do
@@ -105,8 +105,8 @@ RSpec.describe Gitlab::Redis::ClusterStore, :clean_gitlab_redis_cache,
 
     context 'when there is no ttl' do
       it 'writes the key if not exists' do
-        expect(store.setnx('test', 1)).to eq(true)
-        expect(store.setnx('test', 1)).to eq(false)
+        expect(store.setnx('test', 1)).to be(true)
+        expect(store.setnx('test', 1)).to be(false)
 
         expect(store.get('test')).to eq(1)
         expect(store.ttl('test')).to eq(-1)

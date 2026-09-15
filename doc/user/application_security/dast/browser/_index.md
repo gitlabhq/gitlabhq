@@ -81,7 +81,7 @@ You can review vulnerabilities in a pipeline:
    - Scanner: Identifies which analyzer detected the vulnerability.
    - Method: Establishes the vulnerable server interaction type.
    - URL: Shows the location of the vulnerability.
-   - Evidence: Describes test case to prove the presence of a given vulnerability.
+   - Evidence: Describes a test case to prove the presence of a given vulnerability.
    - Identifiers: A list of references used to classify the vulnerability, such as CWE identifiers.
 
 You can also download the security scan results:
@@ -175,6 +175,6 @@ A simplified timing attack works as follows:
 1. The crawl phase records the HTTP request `https://example.com?search=people`.
 1. DAST analyzes the URL and finds a URL parameter injection location `https://example.com?search=[INJECT]`.
 1. The active check defines a payload, `sleep 10`, that attempts to get a Linux host to sleep.
-1. DAST send a new HTTP request to the target application with the injected payload `https://example.com?search=sleep%2010`.
-1. The target application is vulnerable if it executes the query parameter value as a system command without validation, for example, `system(params[:search])`
+1. DAST sends a new HTTP request to the target application with the injected payload `https://example.com?search=sleep%2010`.
+1. The target application is vulnerable if it executes the query parameter value as a system command without validation, for example, `system(params[:search])`.
 1. DAST creates a finding if the response time takes longer than 10 seconds.

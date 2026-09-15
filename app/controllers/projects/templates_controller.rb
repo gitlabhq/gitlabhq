@@ -17,7 +17,7 @@ class Projects::TemplatesController < Projects::ApplicationController
   end
 
   def show
-    template = @template_type.find(params[:key], project)
+    template = @template_type.find(key_param, project)
 
     respond_to do |format|
       format.json { render json: Gitlab::Json.dump(template) }
@@ -26,7 +26,7 @@ class Projects::TemplatesController < Projects::ApplicationController
 
   def names
     respond_to do |format|
-      format.json { render json: TemplateFinder.all_template_names(project, params[:template_type].to_s.pluralize) }
+      format.json { render json: TemplateFinder.all_template_names(project, template_type_param.to_s.pluralize) }
     end
   end
 
@@ -39,7 +39,7 @@ class Projects::TemplatesController < Projects::ApplicationController
   # Note params[:template_type] has a route constraint to limit it to
   # `merge_request` or `issue`
   def authorize_can_read_issuable!
-    action = [:read_, params[:template_type]].join
+    action = [:read_, template_type_param].join
 
     authorize_action!(action)
   end
@@ -47,6 +47,14 @@ class Projects::TemplatesController < Projects::ApplicationController
   def get_template_class
     template_types = { issue: Gitlab::Template::IssueTemplate,
                        merge_request: Gitlab::Template::MergeRequestTemplate }.with_indifferent_access
-    @template_type = template_types[params[:template_type]]
+    @template_type = template_types[template_type_param]
+  end
+
+  def template_type_param
+    params.permit(:template_type)[:template_type]
+  end
+
+  def key_param
+    params.permit(:key)[:key]
   end
 end

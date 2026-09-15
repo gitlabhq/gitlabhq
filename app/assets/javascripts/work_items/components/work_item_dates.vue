@@ -248,7 +248,7 @@ export default {
     :can-update="canUpdate"
     :is-updating="isUpdating"
     data-testid="work-item-due-dates"
-    @stopEditing="updateDates"
+    @stop-editing="updateDates"
   >
     <template #title>
       {{ s__('WorkItem|Dates') }}

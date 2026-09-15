@@ -86,10 +86,15 @@ module GroupTree
   end
 
   def safe_params
-    params.merge(
-      active: Gitlab::Utils.to_boolean(params[:active]),
-      archived: Gitlab::Utils.to_boolean(params[:archived], default: params[:archived])
-    ).permit(:sort, :filter, :parent_id, :page, :archived, :active, :cursor, :pagination)
+    filters = group_tree_filters
+    filters.merge(
+      active: Gitlab::Utils.to_boolean(filters[:active]),
+      archived: Gitlab::Utils.to_boolean(filters[:archived], default: filters[:archived])
+    )
   end
   strong_memoize_attr :safe_params
+
+  def group_tree_filters
+    params.permit(:sort, :filter, :parent_id, :page, :archived, :active, :cursor, :pagination)
+  end
 end

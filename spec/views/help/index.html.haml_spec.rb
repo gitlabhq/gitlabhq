@@ -70,7 +70,9 @@ RSpec.describe 'help/index' do
   end
 
   def stub_helpers
-    allow(view).to receive(:markdown).and_return('')
-    allow(view).to receive(:current_application_settings).and_return(Gitlab::CurrentSettings.current_application_settings)
+    allow(view).to receive_messages(
+      markdown: '',
+      current_application_settings: Gitlab::CurrentSettings.current_application_settings
+    )
   end
 end

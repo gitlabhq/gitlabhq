@@ -34,7 +34,7 @@ argument :assignee_usernames, [GraphQL::Types::String],
 
 #### Automatic Validation (Transition Period)
 
-During the transition period, array arguments **without** explicit `validates: { length: { maximum: ... } }` will automatically be limited to 100 items by `BaseArgument`.
+During the transition period, array arguments without explicit `validates: { length: { maximum: ... } }` will automatically be limited to 100 items by `BaseArgument`.
 
 ```ruby
 # This will automatically be limited to 100 items

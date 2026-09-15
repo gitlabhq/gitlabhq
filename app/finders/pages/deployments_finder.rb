@@ -38,7 +38,7 @@ module Pages
     def by_active_status(deployments)
       return deployments if params[:active].nil?
 
-      params[:active] ? deployments.active : deployments.deactivated
+      params[:active] ? deployments.active : deployments.inactive
     end
 
     def find_versioned(deployments)

@@ -84,7 +84,7 @@ For the naming conventions, see [Naming Permissions](../conventions.md#naming-pe
 
 #### Determining the Resource Name for Endpoints
 
-When implementing granular PAT authorization, name permissions based on what the endpoint **modifies or returns**, not the route structure.
+When implementing granular PAT authorization, name permissions based on what the endpoint modifies or returns, not the route structure.
 
 **Examples:**
 
@@ -147,8 +147,10 @@ end
 | `boundary_param` | Optional. The request parameter containing the boundary identifier. Defaults to `:project_id` with a fallback to `:id` for projects, and `:group_id` with a fallback to `:id` for groups |
 | `boundaries` | Alternative to `boundary_type` for endpoints supporting multiple boundaries (see below) |
 | `boundary` | Alternative to `boundary_type` for endpoints where the boundary cannot be determined through standard parameter lookup. A callable object (proc, lambda, or method) that returns the boundary object |
+| `additional_scopes` | Optional. Array of scopes that must all be authorized in addition to the primary boundary, for endpoints that act on a second container. Each entry declares its own `permissions` and `boundary_type`, with either `boundary_param` or a callable `boundary` (see below) |
 | `skip_granular_token_authorization` | Optional. A symbol naming the reason why granular PATs can access the endpoint without requiring specific permissions, for example `:public_endpoint` (see below) |
 | `todo` | Optional. A non-empty string (an issue link or a short reason) that defers a decision on granular token authorization. While present, granular PATs are denied access to the endpoint (see below) |
+| `assignable_when` | Optional. An array of conditions the endpoint enforces on the current user, for example `[:admin]` for endpoints behind `authenticated_as_admin!`. Applies to every boundary type declared by the endpoint. The validation task requires the endpoint tags and the assignable permission's [`assignable_when` conditions](assignable_permissions.md#conditionally-assignable-permissions) to stay consistent (see below) |
 
 Example with custom `boundary_param`:
 
@@ -192,6 +194,64 @@ When multiple boundaries are defined:
 - Every boundary that can be resolved from the request parameters is considered (`user` and `instance` boundaries always resolve)
 - The resolved boundaries are evaluated in priority order (`project` > `group` > `user` > `instance`) and access is granted when the token's scopes grant all required permissions on any one of them
 
+#### Additional Required Scopes
+
+Some endpoints act on a second container named in the request, separate from the boundary in the URL. For example, moving an issue to another project reads the source project from the URL but also writes to a target project named in a parameter. Use `additional_scopes` to require authorization on that second container as well.
+
+`boundaries` and `additional_scopes` serve different purposes:
+
+- `boundaries` lists alternatives. Access is granted when the token satisfies any one of them. Use it for a resource that can live in different container types.
+- `additional_scopes` lists cumulative requirements. Every entry must be authorized, in addition to the primary boundary. Use it when an endpoint acts on more than one container at once.
+
+You can combine both: the primary boundary can still be a `boundaries` alternation, while each entry in `additional_scopes` is separately required.
+
+```ruby
+route_setting :authorization, permissions: :move_issue, boundary_type: :project,
+  additional_scopes: [
+    { permissions: :create_work_item, boundary_type: :project, boundary_param: :to_project_id }
+  ]
+post ':id/issues/:issue_iid/move' do
+  # The token must be scoped to the project in the URL and to params[:to_project_id]
+end
+```
+
+- Every entry in `additional_scopes` must authorize successfully, on top of the primary boundary, for the request to proceed.
+- Each entry declares its own `permissions` key. The permission needed on the target of a move can differ from the permission needed on the source, so a single shared permission list would be wrong.
+- When an additional scope's boundary cannot be resolved from the request, for example when the target project doesn't exist, the request is denied with `404 Not Found` instead of skipping the requirement.
+
+A `:project` or `:group` entry must declare `boundary_param` or `boundary`. Without one, the
+entry falls back to the same request parameters as the primary boundary
+(`params[:project_id] || params[:id]`, or `params[:group_id] || params[:id]`) and re-checks the
+same container, instead of the second container it's meant to guard; `gitlab:permissions:validate`
+rejects such entries. `:user` and `:instance` entries need no parameter, because they resolve
+standalone.
+
+Use `boundary` when the second container cannot be read from a request parameter, for example when the parameter identifies another record that owns it. It takes a callable returning the boundary object, the same as the primary `boundary` option:
+
+```ruby
+def runner_to_assign_owner
+  ::Ci::Runner.find_by_id(params[:runner_id])&.owner
+end
+
+route_setting :authorization, permissions: :assign_runner, boundary_type: :project,
+  additional_scopes: [
+    { permissions: :assign_runner, boundary_type: :project, boundary: -> { runner_to_assign_owner } }
+  ]
+post ':id/runners' do
+end
+```
+
+The callable must not raise when the record is missing. Use a finder that returns `nil`
+on a miss, such as `find_by_id`, instead of one that raises, such as `find`. This lets
+the framework deny the request with the same generic `404 Not Found` it uses everywhere
+else, instead of revealing which lookup failed.
+
+When the callable returns `nil`, or a value that is not a project, group, user, or
+instance boundary, the entry resolves to no boundary and the request is denied with
+`404 Not Found`. The same happens when the callable returns a boundary whose type does
+not match the entry's declared `boundary_type`, for example a group returned for a
+`boundary_type: :project` entry. GraphQL behaves the same way.
+
 #### Skipping Granular Token Authorization
 
 Some endpoints don't require authentication and are publicly accessible, or do not implement token authentication. Since token authentication is skipped for these endpoints, defining granular permissions doesn't make sense. However, to maintain coverage tracking for all endpoints, use the `skip_granular_token_authorization` option with a symbol that names the reason for skipping:
@@ -228,6 +288,28 @@ The value must be a non-empty string, such as an issue link or a short reason. A
 
 A granular PAT that calls the endpoint receives a `403 Forbidden` response, because the authorization service finds no permissions to check. Replace `todo` with `permissions` and a `boundary_type` (or `skip_granular_token_authorization`) once you decide how the endpoint should behave.
 
+#### Tagging Conditionally Available Endpoints
+
+When an endpoint restricts access beyond membership, for example with
+`authenticated_as_admin!`, tag it with `assignable_when` so the restriction is
+visible to the permissions tooling:
+
+```ruby
+route_setting :authorization, permissions: :read_audit_event, boundary_type: :instance, assignable_when: [:admin]
+get 'audit_events' do
+  # endpoint requires authenticated_as_admin!
+end
+```
+
+The tag describes the restriction; it does not enforce it. The endpoint must
+still perform the check at request time.
+
+The validation task checks these tags against the conditions declared in
+the assignable permission YAML file. For more information, see
+[Conditionally Assignable Permissions](assignable_permissions.md#conditionally-assignable-permissions).
+To tag GraphQL types and mutations, see
+[Tag conditionally available types and mutations](graphql_implementation_guide.md#tag-conditionally-available-types-and-mutations).
+
 #### Allowing Access on Publicly Visible Resources
 
 Permissions listed in `config/authz/roles/public_anonymous.yml` are granted to a fine-grained PAT, even one without a matching scope, when the target Project or Group is publicly visible and the relevant feature is enabled. This mirrors the access an anonymous caller has on the same resource: `Authz::BoundaryPolicy` grants a permission on the boundary whenever `Users::Anonymous` is allowed that same permission on the underlying Project or Group.
@@ -254,10 +336,11 @@ The bypass is gated to `:project` and `:group` boundaries. `:user` and `:instanc
 
 **Important Notes:**
 
-- Add the decorator to **every endpoint** individually, even if multiple endpoints use the same permission
-- The decorator goes **immediately before** the HTTP method definition (`get`, `post`, `put`, `delete`)
+- Add the decorator to every endpoint individually, even if multiple endpoints use the same permission
+- The decorator goes immediately before the HTTP method definition (`get`, `post`, `put`, `delete`)
 - Use the exact permission name (symbol) defined in your YAML files
-- Use `boundary_type` or `boundary` for single-boundary endpoints; use `boundaries` array for multi-boundary endpoints
+- Use `boundary_type` or `boundary` for single-boundary endpoints. Use the `boundaries` array for multi-boundary endpoints
+- `boundaries` entries are alternatives, where any one satisfies the requirement, while `additional_scopes` entries are all required, in addition to the primary boundary
 - Use `skip_granular_token_authorization` exclusively for endpoints that are unauthenticated or authenticate by other means than a personal access token. Never use it to bypass permission checks on an endpoint that accepts PAT authentication
 
 ### Step 6: Add Authorization Tests
@@ -306,6 +389,25 @@ it_behaves_like 'authorizing granular token permissions', :create_release, expec
 The "granting access" assertion expects a real success response, so supply valid `params` and make
 sure any resource the request path references exists. Reuse the `let` definitions and setup of the
 `describe` block that already tests the endpoint, and place the shared example inside that block.
+
+#### Endpoints with Additional Scopes
+
+For an endpoint declaring `additional_scopes`, pass `additional_scope_permissions:` to the shared example and define `additional_scope_requirements`. The shared example scopes the token to every boundary, and adds an example asserting that a token holding only the primary boundary's scope is denied:
+
+```ruby
+it_behaves_like 'authorizing granular token permissions', :move_issue,
+  additional_scope_permissions: :create_work_item do
+  let(:boundary_object) { source_project }
+  let(:user) { developer }
+  let(:additional_scope_requirements) do
+    [{ boundary_object: target_project, permissions: :create_work_item }]
+  end
+  let(:request) do
+    post api("/projects/#{source_project.id}/issues/#{issue.iid}/move", personal_access_token: pat),
+      params: { to_project_id: target_project.id }
+  end
+end
+```
 
 #### Boundary Object Mapping
 
@@ -389,4 +491,5 @@ IO.popen('pbcopy', 'w') { |f| f.puts "curl \"http://#{Gitlab.host_with_port}/api
    - An endpoint's permission has no authorization test. Each endpoint declaration needs its own
      test per boundary type. Routes generated from a single declaration (for example, a shared
      concern mounted at both instance and project level) count as one endpoint.
+   - The `assignable_when` conditions do not match the tags on the code using the permission.
    - The generated reference documentation is out of date.

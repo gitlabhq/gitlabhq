@@ -31,7 +31,7 @@ RSpec.describe Resolvers::ErrorTracking::SentryErrorsResolver do
       let(:current_user) { create(:user) }
 
       it 'returns nil' do
-        expect(resolve_errors).to eq nil
+        expect(resolve_errors).to be_nil
       end
     end
 
@@ -57,7 +57,7 @@ RSpec.describe Resolvers::ErrorTracking::SentryErrorsResolver do
         it 'returns nil' do
           expect(list_issues_service).to receive(:execute).and_return(issues: nil)
 
-          expect(resolve_errors).to eq nil
+          expect(resolve_errors).to be_nil
         end
       end
 

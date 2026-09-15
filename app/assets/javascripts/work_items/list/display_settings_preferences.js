@@ -10,9 +10,9 @@ import {
   VIEW_MODE_BOARD,
 } from '~/work_items/constants';
 
-// Shared helpers for persisting work item list display settings. These wrap the Apollo mutations
-// and the getUserWorkItemsPreferences cache update so the drawer sub-components and planning_view
-// don't each re-implement the same optimistic-response / cache.updateQuery plumbing.
+// Helpers for saving work item list display settings. Saving a setting always means running
+// the same Apollo mutation and updating the cache the same way, so this module does that once
+// instead of the drawer sub-components and planning_view each writing their own copy.
 
 export const alertPreferenceError = (error) =>
   createAlert({
@@ -21,16 +21,16 @@ export const alertPreferenceError = (error) =>
     error,
   });
 
-export const applicableMetadataFields = ({ isGroup, isServiceDeskList, viewMode }) =>
+export const applicableMetadataFields = ({ isServiceDeskList, viewMode }) =>
   WORK_ITEM_LIST_PREFERENCES_METADATA_FIELDS_SORTED.filter((item) => {
-    // Some fields are tailored to the list view only, so they are not offered
-    // as toggles while the board view is active.
+    // The board card has no markup for some fields, so they get no toggle there.
     if (viewMode === VIEW_MODE_BOARD && !item.isAvailableInBoard) {
       return false;
     }
-    return item.key === METADATA_KEYS.STATUS
-      ? !isServiceDeskList
-      : !isGroup || item.isPresentInGroup;
+    if (item.key === METADATA_KEYS.STATUS) {
+      return !isServiceDeskList;
+    }
+    return true;
   });
 
 const updateUserPreferencesCache = (

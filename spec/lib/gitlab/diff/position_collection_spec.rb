@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Gitlab::Diff::PositionCollection do
+RSpec.describe Gitlab::Diff::PositionCollection, feature_category: :code_review_workflow do
   let(:merge_request) { build(:merge_request) }
 
   let(:text_position) do

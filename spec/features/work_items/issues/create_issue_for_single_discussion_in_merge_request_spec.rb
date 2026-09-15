@@ -10,7 +10,8 @@ RSpec.describe 'Resolve an open thread in a merge request by creating an issue',
 
   def resolve_discussion_selector
     title = 'Create issue to resolve thread'
-    url = new_project_issue_path(project, discussion_to_resolve: discussion.id, merge_request_to_resolve_discussions_of: merge_request.iid, merge_request_id: merge_request.id)
+    url = new_project_issue_path(project, discussion_to_resolve: discussion.id,
+      merge_request_to_resolve_discussions_of: merge_request.iid, merge_request_id: merge_request.id)
     "a[title=\"#{title}\"][href=\"#{url}\"]"
   end
 
@@ -38,7 +39,8 @@ RSpec.describe 'Resolve an open thread in a merge request by creating an issue',
 
     context 'resolving the thread' do
       it 'hides and shows the link for creating a new issue' do
-        issue_link_href = new_project_issue_path(project, discussion_to_resolve: discussion.id, merge_request_to_resolve_discussions_of: merge_request.iid, merge_request_id: merge_request.id)
+        issue_link_href = new_project_issue_path(project, discussion_to_resolve: discussion.id,
+          merge_request_to_resolve_discussions_of: merge_request.iid, merge_request_id: merge_request.id)
 
         within_testid('reply-wrapper') do
           expect(page).to have_link('Create issue to resolve thread', href: issue_link_href)
@@ -71,11 +73,11 @@ RSpec.describe 'Resolve an open thread in a merge request by creating an issue',
 
         expect(find_field('Title').value).to include(merge_request.title)
         expect(find_field('Description').value).to include(discussion.first_note.note)
-        expect(page).to have_text("Creating this Issue will resolve the thread in !#{merge_request.iid}")
+        expect(page).to have_text("Creating this issue will resolve the thread in !#{merge_request.iid}")
 
         expect do
           # Actually creates an issue for the project
-          click_button 'Create Issue'
+          click_button 'Create issue'
 
           # Issue title includes MR title
           expect(page).to have_content(%(Follow-up from "#{merge_request.title}"))

@@ -145,8 +145,7 @@ RSpec.describe Gitlab::Database::LoadBalancing::ConnectionProxy, feature_categor
       let(:replica) { double(:connection) }
 
       before do
-        allow(session).to receive(:fallback_to_replicas_for_ambiguous_queries?).and_return(true)
-        allow(session).to receive(:use_primary?).and_return(false)
+        allow(session).to receive_messages(fallback_to_replicas_for_ambiguous_queries?: true, use_primary?: false)
         allow(replica).to receive(:transaction).and_yield
         allow(replica).to receive(:select)
       end
@@ -178,9 +177,11 @@ RSpec.describe Gitlab::Database::LoadBalancing::ConnectionProxy, feature_categor
       let(:primary) { double(:connection) }
 
       before do
-        allow(session).to receive(:fallback_to_replicas_for_ambiguous_queries?).and_return(false)
-        allow(session).to receive(:use_replicas_for_read_queries?).and_return(false)
-        allow(session).to receive(:use_primary?).and_return(true)
+        allow(session).to receive_messages(
+          fallback_to_replicas_for_ambiguous_queries?: false,
+          use_replicas_for_read_queries?: false,
+          use_primary?: true
+        )
         allow(primary).to receive(:transaction).and_yield
         allow(primary).to receive(:select)
         allow(primary).to receive(:insert)
@@ -233,8 +234,7 @@ RSpec.describe Gitlab::Database::LoadBalancing::ConnectionProxy, feature_categor
       before do
         allow(Gitlab::Database::LoadBalancing::SessionMap).to receive(:current).with(load_balancer)
           .and_return(session)
-        allow(session).to receive(:fallback_to_replicas_for_ambiguous_queries?).and_return(true)
-        allow(session).to receive(:use_primary?).and_return(false)
+        allow(session).to receive_messages(fallback_to_replicas_for_ambiguous_queries?: true, use_primary?: false)
       end
 
       it 'runs the query on the replica' do
@@ -265,8 +265,7 @@ RSpec.describe Gitlab::Database::LoadBalancing::ConnectionProxy, feature_categor
 
     context 'with a regular session' do
       it 'uses a secondary' do
-        allow(session).to receive(:use_primary?).and_return(false)
-        allow(session).to receive(:use_replicas_for_read_queries?).and_return(false)
+        allow(session).to receive_messages(use_primary?: false, use_replicas_for_read_queries?: false)
 
         expect(connection).to receive(:foo).with('foo')
         expect(load_balancer).to receive(:read).and_yield(connection)
@@ -277,8 +276,7 @@ RSpec.describe Gitlab::Database::LoadBalancing::ConnectionProxy, feature_categor
 
     context 'with a regular session and forcing all reads to replicas' do
       it 'uses a secondary' do
-        allow(session).to receive(:use_primary?).and_return(false)
-        allow(session).to receive(:use_replicas_for_read_queries?).and_return(true)
+        allow(session).to receive_messages(use_primary?: false, use_replicas_for_read_queries?: true)
 
         expect(connection).to receive(:foo).with('foo')
         expect(load_balancer).to receive(:read).and_yield(connection)
@@ -289,8 +287,7 @@ RSpec.describe Gitlab::Database::LoadBalancing::ConnectionProxy, feature_categor
 
     context 'with a session using the primary but forcing all reads to replicas' do
       it 'uses a secondary' do
-        allow(session).to receive(:use_primary?).and_return(true)
-        allow(session).to receive(:use_replicas_for_read_queries?).and_return(true)
+        allow(session).to receive_messages(use_primary?: true, use_replicas_for_read_queries?: true)
 
         expect(connection).to receive(:foo).with('foo')
         expect(load_balancer).to receive(:read).and_yield(connection)
@@ -301,8 +298,7 @@ RSpec.describe Gitlab::Database::LoadBalancing::ConnectionProxy, feature_categor
 
     describe 'with a session using the primary' do
       it 'uses the primary' do
-        allow(session).to receive(:use_primary?).and_return(true)
-        allow(session).to receive(:use_replicas_for_read_queries?).and_return(false)
+        allow(session).to receive_messages(use_primary?: true, use_replicas_for_read_queries?: false)
 
         expect(connection).to receive(:foo).with('foo')
 

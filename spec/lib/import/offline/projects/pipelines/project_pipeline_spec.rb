@@ -7,7 +7,7 @@ RSpec.describe Import::Offline::Projects::Pipelines::ProjectPipeline, feature_ca
 
   describe '#run', :clean_gitlab_redis_shared_state do
     let_it_be(:group) { create(:group, :public) }
-    let_it_be_with_reload(:bulk_import) { create(:bulk_import, user: user) }
+    let_it_be_with_reload(:bulk_import) { create(:bulk_import, :with_offline_configuration, user: user) }
 
     let_it_be_with_reload(:entity) do
       create(
@@ -76,6 +76,23 @@ RSpec.describe Import::Offline::Projects::Pipelines::ProjectPipeline, feature_ca
     it 'skips duplicates on pipeline rerun' do
       expect { pipeline.run }.to change { Project.count }.by(1)
       expect { pipeline.run }.not_to change { Project.count }
+    end
+
+    it 'tracks the start_project_import internal event, labeled as offline_transfer' do
+      imported_project = create(:project, namespace: group, import_type: 'offline_transfer')
+
+      allow_next_instance_of(::Projects::CreateService) do |service|
+        allow(service).to receive(:execute).and_return(imported_project)
+      end
+
+      expect { pipeline.run }
+        .to trigger_internal_events('start_project_import')
+        .with(
+          project: imported_project,
+          user: user,
+          namespace: group,
+          additional_properties: { label: 'offline_transfer', property: entity.hashed_import_source }
+        )
     end
 
     context 'when project creation fails' do

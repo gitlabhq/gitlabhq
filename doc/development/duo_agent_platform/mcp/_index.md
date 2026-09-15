@@ -121,7 +121,7 @@ npx -y @modelcontextprotocol/inspector npx
 Our current development guidelines remain in early development. As we continue establishing tool development standards - especially for custom and
 aggregated tools - we've created an interim `mcp-tool-review-board` committee to evaluate proposed tools before implementation and guide teams planning new MCP tools.
 
-To add a new tool, please create a [MCP Tool Proposal issue](https://gitlab.com/gitlab-org/gitlab/-/issues/new?related_item_id=undefined&type=ISSUE&description_template=MCP%20Tool%20Proposal)
+To add a new tool, please create a [MCP Tool Proposal issue](https://gitlab.com/gitlab-org/gitlab/-/work_items/new?related_item_id=undefined&type=ISSUE&description_template=MCP%20Tool%20Proposal)
 and follow the template instructions.
 
 > [!note]
@@ -174,6 +174,13 @@ single `id`. They are different values (`iid`/`sha` is scoped to a project and i
 and IDs are supplied they are cross-validated and a mismatch raises an error. Work-item tools accept
 `group_id` or `project_id` in the same group.
 
+`ResourceFinder#find_project!` and `#find_group!` fold authorization into the DB lookup.
+If the record is missing or the caller lacks the required ability, both raise the same error:
+`"'<id>' not found or inaccessible"`. This prevents an authenticated caller from enumerating
+private projects or groups by comparing error strings. Do not add a separate authorization check
+after calling these finders. If you need a non-default ability, pass it with the `ability:` keyword:
+`find_project!(project_id, ability: :read_merge_request)`.
+
 **Optional parameters:** `Base::BaseService` treats an explicit `null` or `""` value for an
 optional parameter the same as an omitted key, so a caller that fills in every schema property
 still passes validation for an optional `enum` parameter.
@@ -191,12 +198,18 @@ still passes validation for an optional `enum` parameter.
 - Independent collections that can be queried on their own get their own `list_` tool (for example
   `list_merge_requests`, `list_pipelines`).
 - Facet-scoped pagination lives on the `get_` reader and applies only to the relevant `include`
-  value. Document this in the parameter description.
+  value. Document this in the parameter description. Name the parameters `<facet>_first` and
+  `<facet>_after`, and add `<facet>_last`/`<facet>_before` when reading from the end matters
+  (for example the newest notes). Build these parameters with
+  `Mcp::Tools::Concerns::CursorPagination.input_schema_params`, which enforces the shared bounds.
+  Return the connection's `pageInfo` alongside the nodes. See the `notes` facet of
+  `get_merge_request` (forward-only) and of `get_work_item` (bidirectional) for worked examples.
 - Add a `detail` enum (`none`/`stats`/`full_patch`) on diff-bearing reads where the diff dominates
   the payload (for example the `diff` facet of `get_commit` and the `diffs` facet of
   `get_merge_request`). Do not retrofit `detail` where a better-suited knob already exists: file
   content uses line pagination (`offset`/`limit`) and job logs use byte pagination
-  (`byte_offset`/`byte_limit`), because those APIs have no diff-style verbosity levels.
+  (`byte_offset`/`byte_limit`), because those APIs have no diff-style verbosity levels. See
+  `get_job` (`include: log`) for a worked example of a single-purpose reader promoted to a facet.
 - Prefer a filter parameter over a new facet or tool when one facet is a subset of another (for
   example a `job_status: failed` filter instead of a separate `failing_jobs` facet).
 
@@ -207,11 +220,13 @@ gaining cursor stability, and misleads the caller about the guarantees the endpo
 
 - **REST-backed tools** use offset pagination with `page` (1-based, default `1`) and `per_page`
   (default `20`, capped at `100`), and return a `metadata` object with `page`, `per_page`, and
-  `has_more`. Applies to tools such as `list_repository_tree`, `list_branches`, `list_commits`,
-  `list_pipelines`, and `search`.
+  `has_more`. Applies to tools such as `list_branches`, `list_pipelines`, and `search`.
 - **GraphQL-backed tools** use native cursor pagination with `first` (default `20`, capped at `100`)
   and `after` (an opaque cursor), and return a `pageInfo` object with `endCursor` and `hasNextPage`.
-  Applies to tools such as `list_work_items` and `list_merge_requests`.
+  Applies to tools such as `list_work_items`, `list_merge_requests`, `list_commits`, and
+  `list_repository_tree`.
+  `list_repository_tree` takes no `first` parameter because its underlying connection fixes the
+  page size at 100.
 - **Content readers** use a range window suited to their payload instead of item pagination: file
   content uses line pagination (`offset`/`limit`) and job logs use byte pagination
   (`byte_offset`/`byte_limit`). Return a `system_instruction` telling the caller how to fetch the
@@ -219,6 +234,15 @@ gaining cursor stability, and misleads the caller about the guarantees the endpo
 - Facet-scoped pagination on a `get_` reader is prefixed with the facet name (for example
   `notes_page`/`notes_per_page` on `get_merge_request`, `comments_page`/`comments_per_page` on
   `get_commit`) and follows the scheme of the endpoint backing that facet.
+
+**Output IDs (GraphQL-backed tools):** unwrap GIDs to numeric integers in `process_result` for
+resources that tools address by their global numeric ID — groups, projects, and pipelines — so
+the output chains directly back into inputs such as `project_id` or `group_id`
+(`GlobalID.parse(node['id']).model_id.to_i`; see `get_project_tool`, `list_groups_tool`, and
+`list_projects_tool`). Do not unwrap IDs of iid-addressed resources (work items, merge
+requests, issues): for those, `GlobalID#model_id` returns the global database key, not the iid,
+and an agent that feeds it back as an `*_iid` parameter silently operates on the wrong record.
+Expose `iid` alongside the GID instead.
 
 **Consolidation over proliferation:**
 
@@ -246,6 +270,35 @@ route_setting :mcp, tool_name: :get_issue, params: [:id, :issue_iid], resource_n
 - The optional `resource_name` field provides a resource-specific 404 error message (for example, `"404 Issue Not Found"` instead of a generic `"404 Not Found"`). Use a lowercase string such as `"issue"` or `"merge request"`. The first letter is capitalized in the rendered message.
 
 This [merge request](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/203055) provides more examples.
+
+##### Declare MCP token access for the route's HTTP method
+
+MCP-scoped tokens require explicit access declarations on the API class
+for each HTTP method used by its MCP routes. Without these declarations,
+MCP token requests are rejected even though the `route_setting :mcp` is present.
+
+Add the matching `allow_mcp_access_*` call to the API class that contains the route:
+
+| HTTP method | Required call |
+|---|---|
+| `GET` / `HEAD` | `allow_mcp_access_read` |
+| `POST` | `allow_mcp_access_create` |
+| `PUT` / `PATCH` | `allow_mcp_access_update` |
+| `DELETE` | `allow_mcp_access_delete` |
+
+For example, an API class with both a `GET` route and a `PUT` route exposed as MCP tools
+must include both declarations:
+
+```ruby
+class MergeRequests < ::API::Base
+  include ::API::Concerns::McpAccess
+
+  allow_mcp_access_read
+  allow_mcp_access_create
+  allow_mcp_access_update
+  # ...
+end
+```
 
 #### Implement an aggregated REST API tool
 
@@ -343,6 +396,121 @@ you do not install anything:
 
 The guidelines are the source of truth.
 If the skill and the guidelines disagree, follow the guidelines and update the skill.
+
+#### Declare the namespace that governs the tool
+
+Administrators can set tool rules (Allow, Ask, Deny) on a project or group. To apply a rule
+to a call, the server has to know which project or group the call acts on, and it learns
+that from the tool's own declaration. The handler cannot guess that `list_vulnerabilities`
+names its project with `project_full_path` while `search_labels` names it with `full_path`.
+A tool that declares nothing usable resolves no namespace. It is served ungoverned, and no
+tool rule ever applies to its calls.
+
+The contract lives in `Mcp::Tools::Concerns::GovernanceNamespaceResolver`, which every tool
+includes. It exposes a class-level `namespace_arguments` method and the `resolve_governance_containers`
+method that reads it.
+
+**The default.** Every tool inherits:
+
+```ruby
+{ project: :project_id, group: :group_id }
+```
+
+If your tool's input schema already names its arguments `project_id` or `group_id`, you don't
+need to change anything. The resolver accepts a numeric ID, a full path, or a Global ID for
+either argument.
+
+**Overriding.** When your tool names its arguments differently, override
+`self.namespace_arguments` on the service class and return a hash. For example,
+`list_vulnerabilities` identifies its project with `project_full_path` instead of `project_id`:
+
+```ruby
+module Mcp
+  module Tools
+    module Security
+      class ListVulnerabilitiesService < Base::GraphqlService
+        def self.namespace_arguments
+          { project: :project_full_path }
+        end
+
+        # ...
+      end
+    end
+  end
+end
+```
+
+A tool doesn't have to name a project and a group separately. `search_labels` accepts one
+argument, `full_path`, that can point at either, so it declares a single `:project_or_group`
+entry instead:
+
+```ruby
+class SearchService < Base::GraphqlService
+  def self.namespace_arguments
+    { project_or_group: :full_path }
+  end
+end
+```
+
+**Recognized container kinds.** `resolve_governance_containers` only reads the following keys.
+Any other key is ignored, so the tool resolves nothing and is never governed:
+
+| Kind | Resolves as |
+|---|---|
+| `:project` | A project. |
+| `:group` | A group. |
+| `:project_or_group` | One argument that may name either a project or a group, resolved as a project first and then as a group. |
+
+A Global ID's own class must match the declared kind. A group's Global ID given in a
+`:project` argument resolves to nothing, rather than being looked up as a project by numeric
+ID. For a `:project_or_group` argument, a full path can't collide between the two, so an
+identifier the project lookup doesn't claim is offered to the group lookup.
+
+**Route-backed tools.** A tool created from a REST route with `route_setting :mcp` needs no
+declaration. `ApiTool` reads `boundary_type` from the route's `route_setting :authorization`
+and maps `:project` and `:group` onto the route's `:id` parameter. When the route sets no
+boundary type, `ApiTool` falls back to the default `{ project: :project_id, group: :group_id }`.
+
+**List arguments.** An argument can hold a list of identifiers instead of a single one. The
+resolver looks up every entry in the list, not just the first, and skips any entry that
+doesn't resolve to a real project or group rather than treating it as an error.
+`attach_scan_profile` uses a list argument to accept several projects and several groups in
+one call:
+
+```ruby
+class AttachScanProfileService < Base::GraphqlService
+  def self.namespace_arguments
+    { project: :project_ids, group: :group_ids }
+  end
+end
+```
+
+**Tools that cannot be governed.** When no argument on a tool names a project or a group, mark
+the class `ungovernable!` instead of declaring `namespace_arguments`. `GetServerVersionService`
+is an example, since it takes no arguments at all:
+
+```ruby
+class GetServerVersionService < Base::CustomService
+  ungovernable!
+
+  # ...
+end
+```
+
+> [!note]
+> Tools that take only a record ID, such as `get_duo_session` and `get_vulnerability`, are
+> currently marked `ungovernable!` too. Resolving their owning project would mean loading the
+> record first, and the resolver doesn't do that today. This is tracked in [issue 628447](https://gitlab.com/gitlab-org/gitlab/-/issues/628447).
+
+**The guardrail.** `ee/spec/lib/ai/tool_rules/governable_tools_namespace_spec.rb` asserts, for
+every governed tool:
+
+- The tool declares a namespace argument or is marked `ungovernable!`.
+- The declared argument is one the tool actually accepts.
+- The declaration is keyed on a recognized kind.
+
+If this spec fails on your tool, declare the argument that actually carries the project or
+group, or mark the tool `ungovernable!` if nothing on it names a container.
 
 ### Implement a custom tool
 
@@ -566,14 +734,85 @@ route_setting :mcp, tool_name: :new_name,
 - `tool_aliases:` on a route that also sets `aggregators:` has no effect: the aggregated tool's
   aliases come from the aggregator class's `self.tool_aliases`
 - The alias resolution happens in `Manager#resolve_alias` which checks all tool registries
-- Plan to remove aliases in a future release after sufficient time for clients to update
 
-**Deprecation timeline:**
+**When can I remove an alias?**
 
-Release M: Add alias and rename tool
-Release M+1: Remove alias (after clients have had time to refresh their tool lists)
+Not yet. Aliases currently serve two purposes:
 
-This approach ensures zero downtime for connected clients during tool renames.
+1. Backward compatibility for MCP clients that cached the old tool name.
+1. Identity mapping for any feature which resolves MCP tool names through `tool_aliases`. For example, tool governance for AI Catalog.
+
+Removing an alias that governance depends on silently breaks deny, ask, and
+allow rules for that tool. Until a dedicated identity mechanism decouples
+governance from rename aliases
+([work item 609451](https://gitlab.com/gitlab-org/gitlab/-/work_items/609451)), keep
+every alias in place.
+
+### Gating a tool's availability
+
+Override `available?` to control whether a tool is offered to a given user. It defaults to `true`.
+Before `available?` is called, the request sets the tool's credentials with `set_cred(current_user:)`,
+so the check can depend on the current user, licensing, or other request state:
+
+```ruby
+module Mcp
+  module Tools
+    class ExampleService < Base::CustomService
+      def available?
+        Feature.enabled?(:example_tool, current_user)
+      end
+    end
+  end
+end
+```
+
+`available?` filters the `tools/list` response only:
+
+- It is not checked by `tools/call`, so a client that already knows a tool name can still call it
+  even when the tool reports unavailable.
+- It is not consulted by the AI Catalog tool picker, which sources tools from a per-request cached
+  snapshot with no user context.
+- Custom, GraphQL, and aggregated tools support `available?`. API tools defined through route
+  settings are always considered available.
+
+### Hiding a tool from discovery
+
+Mark a tool as *unlisted* to hide it from discovery while keeping it fully callable. An unlisted
+tool is omitted from the `tools/list` response and from the AI Catalog tool picker, but it stays
+resolvable through `get_tool`, remains in the Duo Workflow allowlist, and can still be called
+through `tools/call`. Use this to stage a tool before it is ready to be advertised.
+
+`unlisted?` differs from [`available?`](#gating-a-tools-availability): `available?` is a per-user
+check that gates whether a user is offered a tool in `tools/list`, whereas `unlisted?` is a static
+property that hides the tool from `tools/list` for everyone *and* from the AI Catalog picker. The
+picker distinction matters because it reads a user-less cached snapshot, so it can honor a static
+flag like `unlisted?` but not a per-user check like `available?`. Neither blocks `tools/call`.
+
+For custom, GraphQL, and aggregated tools, override `unlisted?`:
+
+```ruby
+module Mcp
+  module Tools
+    class ExampleService < Base::CustomService
+      def unlisted?
+        true
+      end
+    end
+  end
+end
+```
+
+For API tools, set `unlisted` in the route setting:
+
+```ruby
+route_setting :mcp, tool_name: :example_tool, params: [:id], unlisted: true
+```
+
+The default is `false`, so existing tools remain listed until they opt in.
+
+> [!note]
+> Keep `unlisted?` static. Do not drive it from a per-user or credential-dependent check, because
+> the AI Catalog picker cannot evaluate one.
 
 ### Splitting an action out of an aggregated tool
 

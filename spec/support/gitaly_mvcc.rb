@@ -15,4 +15,12 @@ module GitalyMvcc
   end
 end
 
-Gitlab::GitalyClient.singleton_class.prepend(GitalyMvcc::RequestKwargsPatch) if GitalySetup.mvcc_repositories?
+if GitalySetup.mvcc_repositories?
+  Gitlab::GitalyClient.singleton_class.prepend(GitalyMvcc::RequestKwargsPatch)
+
+  RSpec.configure do |config|
+    # See https://gitlab.com/gitlab-org/gitaly/-/work_items/7369 and https://gitlab.com/gitlab-org/gitaly/-/work_items/7342
+    # Use filter_run_excluding so we can skip before(:all) blocks too.
+    config.filter_run_excluding :skip_gitaly_mvcc
+  end
+end

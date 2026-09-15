@@ -156,6 +156,8 @@ To install extensions, PostgreSQL requires superuser privileges. For instruction
 [Gitaly Cluster](../administration/gitaly/praefect/_index.md) requires a dedicated PostgreSQL instance separate from the main GitLab database.
 For full HA, use a third-party PostgreSQL solution.
 A non-HA PostgreSQL instance using the Linux package is sufficient for environments that don't require database-level redundancy for Gitaly.
+For more details, see [`omnibus-gitlab#7292`](https://gitlab.com/gitlab-org/omnibus-gitlab/-/issues/7292) and
+[`gitaly#3398`](https://gitlab.com/gitlab-org/gitaly/-/issues/3398).
 
 ### Redis or Valkey
 

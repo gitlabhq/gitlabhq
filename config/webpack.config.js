@@ -46,7 +46,8 @@ const {
   DEV_SERVER_LIVERELOAD,
 } = require('./webpack.constants');
 const { PDF_JS_WORKER_PUBLIC_PATH, PDF_JS_CMAPS_PUBLIC_PATH } = require('./pdfjs.constants');
-const { generateEntries } = require('./webpack.helpers');
+const { generateEntries, applyVue3Migrations } = require('./webpack.helpers');
+const { loadVue3Migrations } = require('./helpers/vue3_migration_loader');
 
 const createIncrementalWebpackCompiler = require('./helpers/incremental_webpack_compiler');
 const vendorDllHash = require('./helpers/vendor_dll_hash');
@@ -70,6 +71,7 @@ const INCREMENTAL_COMPILER_RECORD_HISTORY = IS_DEV_SERVER && !process.env.CI;
 const WEBPACK_REPORT = process.env.WEBPACK_REPORT && process.env.WEBPACK_REPORT !== 'false';
 const WEBPACK_MEMORY_TEST =
   process.env.WEBPACK_MEMORY_TEST && process.env.WEBPACK_MEMORY_TEST !== 'false';
+const NO_MINIFY = process.env.NO_MINIFY && process.env.NO_MINIFY !== 'false';
 let NO_COMPRESSION = process.env.NO_COMPRESSION && process.env.NO_COMPRESSION !== 'false';
 let NO_SOURCEMAPS = process.env.NO_SOURCEMAPS && process.env.NO_SOURCEMAPS !== 'false';
 let NO_HASHED_CHUNKS = process.env.NO_HASHED_CHUNKS && process.env.NO_HASHED_CHUNKS !== 'false';
@@ -111,24 +113,22 @@ Object.assign(alias, {
   ),
   // ELK's lazily loaded chunk imports the bare `mermaid` package; map it to the aliased install.
   mermaid$: 'mermaid-v11',
-  '@chevrotain/cst-dts-gen': path.join(
-    ROOT_PATH,
-    'node_modules/@chevrotain/cst-dts-gen/lib/src/api.js',
-  ),
-  '@chevrotain/gast': path.join(ROOT_PATH, 'node_modules/@chevrotain/gast/lib/src/api.js'),
-  '@chevrotain/regexp-to-ast': path.join(
-    ROOT_PATH,
-    'node_modules/@chevrotain/regexp-to-ast/lib/src/api.js',
-  ),
-  '@chevrotain/utils': path.join(ROOT_PATH, 'node_modules/@chevrotain/utils/lib/src/api.js'),
-  chevrotain: path.join(ROOT_PATH, 'node_modules/chevrotain/lib/src/api.js'),
-  'chevrotain-allstar': path.join(ROOT_PATH, 'node_modules/chevrotain-allstar/lib/index.js'),
-  langium: path.join(ROOT_PATH, 'node_modules/langium/lib/index.js'),
   // @json-render/vue imports `@json-render/core/store-utils`, an "exports"-only
   // subpath of @json-render/core.
   '@json-render/core/store-utils': path.join(
     ROOT_PATH,
     'node_modules/@json-render/core/dist/store-utils.mjs',
+  ),
+  // vscode-languageserver-* ship UMD + ESM builds. Webpack 4 falls back to the
+  // UMD "main" field and emits a critical-dependency warning for the dynamic
+  // require() inside it. Point webpack directly at the clean ESM build.
+  'vscode-languageserver-types': path.join(
+    ROOT_PATH,
+    'node_modules/vscode-languageserver-types/lib/esm/main.js',
+  ),
+  'vscode-languageserver-textdocument': path.join(
+    ROOT_PATH,
+    'node_modules/vscode-languageserver-textdocument/lib/esm/main.js',
   ),
 });
 
@@ -256,10 +256,11 @@ module.exports = {
     Note 2: If you are using web-workers, you might need to reset the public path, see:
     https://gitlab.com/gitlab-org/gitlab/-/issues/321656
      */
-    const generated = generateEntries(baseEntryPoints.default);
+    const migrations = loadVue3Migrations();
+    const generated = generateEntries(baseEntryPoints.default, { migrations });
     entriesState = generated.entriesState;
     return {
-      ...baseEntryPoints,
+      ...applyVue3Migrations(baseEntryPoints, { migrations }),
       ...incrementalCompiler.filterEntryPoints(generated.entries),
     };
   },
@@ -303,11 +304,6 @@ module.exports = {
         loader: 'babel-loader',
       },
       {
-        test: /(@cubejs-client\/(vue|core)).*\.(js)?$/,
-        include: /node_modules/,
-        loader: 'babel-loader',
-      },
-      {
         test: /gridstack\/.*\.js$/,
         include: /node_modules/,
         loader: 'babel-loader',
@@ -333,9 +329,10 @@ module.exports = {
       },
       {
         // mermaid v11 and its transitive deps (@mermaid-js/parser, @iconify/utils,
-        // langium, etc.) use modern syntax (optional chaining, static blocks) that
+        // es-toolkit) use modern syntax (optional chaining, static blocks) that
         // webpack 4 can't parse. Transpile them along with both mermaid versions.
-        test: /(mermaid(-v11)?|@mermaid-js|@iconify\/utils|langium|vscode-\w+|chevrotain(-allstar)?|@chevrotain)\/.*\.m?js$/,
+        // vscode-uri (pulled by monaco-yaml) ships the same kind of syntax in its UMD build.
+        test: /(mermaid(-v11)?|@mermaid-js|@iconify\/utils|es-toolkit|vscode-\w+)\/.*\.m?js$/,
         include: /node_modules/,
         loader: 'babel-loader',
       },
@@ -408,6 +405,14 @@ module.exports = {
         // in both its ESM and CJS builds, which webpack 4's parser can't read.
         test: /\.[mc]?js$/,
         include: /node_modules\/zod\//,
+        loader: 'babel-loader',
+        options: defaultJsOptions,
+      },
+      {
+        // The Yjs CRDT stack ships untranspiled `?.` and `??`, which webpack 4's
+        // parser can't read. y-prosemirror publishes its `src/` directly.
+        test: /\.[mc]?js$/,
+        include: /node_modules\/(yjs|y-prosemirror|y-protocols|lib0)\//,
         loader: 'babel-loader',
         options: defaultJsOptions,
       },
@@ -529,6 +534,9 @@ module.exports = {
   },
 
   optimization: {
+    // Terser forks (CPU count - 1) workers that run outside the main Node heap,
+    // so scripts/lib/assets_heap_sizing.rb must leave memory for them.
+    minimize: IS_PRODUCTION && !NO_MINIFY,
     // Replace 'hashed' with 'deterministic' in webpack 5
     moduleIds: 'hashed',
     chunkIds: 'named', // at least makes named chunks stable,

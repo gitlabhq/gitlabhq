@@ -10,6 +10,7 @@ class Oauth::TokensController < Doorkeeper::TokensController
   # before enforcing the minimum.
   PKCE_MIN_CODE_VERIFIER_LENGTH = 43
 
+  before_action :explain_missing_dynamic_client, only: [:create]
   before_action :validate_pkce_for_dynamic_applications, only: [:create]
   before_action :track_short_pkce_verifier, only: [:create]
 
@@ -54,6 +55,27 @@ class Oauth::TokensController < Doorkeeper::TokensController
     # rubocop:enable Rails/StrongParams
 
     payload
+  end
+
+  def explain_missing_dynamic_client
+    return if ::Gitlab::CurrentSettings.dynamic_client_registration_enabled?
+
+    client_id = params.permit(:client_id)[:client_id]
+    return if client_id.blank?
+    return if Authn::OauthApplication.exists_for_uid?(client_id)
+
+    docs_url = help_page_url(
+      'user/model_context_protocol/mcp_server.md',
+      anchor: 'reuse-a-single-oauth-application'
+    )
+
+    render json: {
+      error: 'invalid_client',
+      error_description: 'The OAuth client is not recognized. When dynamic client ' \
+        'registration is disabled, clients registered that way are removed and new ones ' \
+        'cannot register. Create an OAuth application and configure your MCP client with ' \
+        "its client ID: #{docs_url}"
+    }, status: :unauthorized
   end
 
   def validate_pkce_for_dynamic_applications

@@ -1,0 +1,9 @@
+---
+name: update_ai_flow_schedule
+description: Grants the ability to update schedules of AI flow triggers
+available_for:
+  - granular_access_token
+permissions:
+  - update_ai_flow_schedule
+boundaries:
+  - project

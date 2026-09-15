@@ -147,7 +147,13 @@ module Users
     def unique_internal(scope, username, email_pattern, &block)
       scope = scope.in_organization(@organization_id) if @organization_id
 
-      scope.first || create_unique_internal(scope, username, email_pattern, &block)
+      existing = scope.first
+      return existing if existing
+
+      Gitlab::Database::QueryAnalyzers::PreventWritesOnGet.allow_write_on_get(
+        url: 'https://gitlab.com/gitlab-org/gitlab/-/issues/608670') do
+        create_unique_internal(scope, username, email_pattern, &block)
+      end
     end
 
     def username_with_organization_suffix(username)

@@ -48,6 +48,17 @@ RSpec.describe Boards::Issues::ListService, feature_category: :planning_views do
 
       it_behaves_like 'issues list service'
 
+      context 'when reading positions from work_item_positions' do
+        let_it_be(:positioned_issue) { create(:issue, project: project, relative_position: 500) }
+        let_it_be(:unpositioned_issue) { create(:issue, project: project, relative_position: nil) }
+
+        it 'scopes by the project positioning root and keeps unpositioned issues' do
+          result = described_class.new(parent, user, board_id: board.id, id: backlog.id).execute
+
+          expect(result).to include(positioned_issue, unpositioned_issue)
+        end
+      end
+
       context 'when project is archived' do
         before do
           project.update!(archived: true)

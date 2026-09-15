@@ -4,12 +4,6 @@ require 'rubocop_spec_helper'
 require_relative '../../../../rubocop/cop/api/lifecycle_in_description'
 
 RSpec.describe RuboCop::Cop::API::LifecycleInDescription, :config, feature_category: :api do
-  let(:msg) do
-    'Do not use lifecycle terms (experiment, beta, general availability, GA) in API descriptions. ' \
-      'Use `route_setting :lifecycle, :experiment` or `route_setting :lifecycle, :beta` instead. ' \
-      'https://docs.gitlab.com/development/api_styleguide/#marking-endpoint-lifecycle'
-  end
-
   context 'when detail contains lifecycle terms' do
     it 'registers an offense for experimental in detail' do
       expect_offense(<<~RUBY)

@@ -1,0 +1,8 @@
+---
+migration_job_name: BackfillAgentTypeOnDuoWorkflowSessionArtifacts
+description: Copies agent_type from duo_workflows_workflows onto duo_workflow_session_artifacts rows synced before the column existed
+feature_category: compliance_management
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/252345
+milestone: '19.4'
+queued_migration_version: 20260903145403
+finalized_by: # version of the migration that finalized this BBM

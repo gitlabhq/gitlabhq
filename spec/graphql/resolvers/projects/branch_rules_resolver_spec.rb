@@ -5,10 +5,10 @@ require 'spec_helper'
 RSpec.describe Resolvers::Projects::BranchRulesResolver, feature_category: :source_code_management do
   include GraphqlHelpers
 
-  let_it_be(:project, freeze: false) { create(:project, :repository) }
+  let_it_be_with_reload(:project) { create(:project) }
   let_it_be(:current_user) { create(:user) }
 
-  let_it_be(:protected_branch_a, freeze: false) { create(:protected_branch, project: project, name: 'a') }
+  let_it_be(:protected_branch_a) { create(:protected_branch, project: project, name: 'a') }
   let_it_be(:protected_branch_b) { create(:protected_branch, project: project, name: 'b') }
   let_it_be(:protected_branch_c) { create(:protected_branch, project: project, name: 'g') }
   let_it_be(:protected_branch_d) { create(:protected_branch, project: project, name: 'd') }

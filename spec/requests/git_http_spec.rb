@@ -2186,4 +2186,94 @@ RSpec.describe 'Git HTTP requests', feature_category: :source_code_management do
       it_behaves_like 'pulls are allowed'
     end
   end
+
+  describe 'Current.organization resolution' do
+    let_it_be(:organization) { create(:organization) }
+    let_it_be(:top_level_group) { create(:group, :public, organization: organization) }
+    let_it_be(:subgroup) { create(:group, :public, parent: top_level_group, organization: organization) }
+    let_it_be(:project) { create(:project, :public, :empty_repo, group: subgroup, organization: organization) }
+    let_it_be(:user) { create(:user, maintainer_of: top_level_group) }
+
+    before do
+      # Keep the application context readable after the request finishes
+      allow(Labkit::Context).to receive(:pop)
+    end
+
+    it 'resolves the organization owning the repository from the URL path' do
+      clone_get("#{project.full_path}.git")
+
+      expect(response).to have_gitlab_http_status(:ok)
+      expect(Gitlab::ApplicationContext.current).to include('meta.organization_id' => organization.id)
+    end
+
+    it 'resolves the organization when the URL path differs in case', :aggregate_failures do
+      clone_get("#{project.full_path.upcase}.git")
+
+      expect(response).to have_gitlab_http_status(:ok)
+      expect(Gitlab::ApplicationContext.current).to include('meta.organization_id' => organization.id)
+    end
+
+    context 'when the top-level group was renamed' do
+      let_it_be(:renamed_organization) { create(:organization) }
+      let_it_be_with_reload(:renamed_group) { create(:group, :public, organization: renamed_organization) }
+      let_it_be_with_reload(:renamed_project) do
+        create(:project, :public, :empty_repo, group: renamed_group, organization: renamed_organization)
+      end
+
+      it 'resolves the organization for the old path via its redirect route', :aggregate_failures do
+        old_path = "#{renamed_project.full_path}.git"
+        renamed_group.update!(path: "#{renamed_group.path}-renamed")
+
+        clone_get(old_path)
+
+        expect(response).to have_gitlab_http_status(:ok)
+        expect(Gitlab::ApplicationContext.current).to include('meta.organization_id' => renamed_organization.id)
+      end
+    end
+
+    context 'when cloning a personal snippet' do
+      let_it_be(:snippet_organization) { create(:organization) }
+      let_it_be(:snippet) { create(:personal_snippet, :public, :empty_repo, organization: snippet_organization) }
+
+      it 'resolves the organization owning the snippet', :aggregate_failures do
+        clone_get("snippets/#{snippet.id}.git")
+
+        expect(response).to have_gitlab_http_status(:ok)
+        expect(Gitlab::ApplicationContext.current).to include('meta.organization_id' => snippet_organization.id)
+      end
+    end
+
+    it 'resolves the organization before authentication' do
+      expect(Gitlab::Auth).to receive(:find_for_git_client).and_wrap_original do |original, *args, **kwargs|
+        expect(::Current.organization).to eq(organization)
+
+        original.call(*args, **kwargs)
+      end
+
+      clone_get("#{project.full_path}.git", user: user.username, password: user.password)
+
+      expect(response).to have_gitlab_http_status(:ok)
+    end
+
+    context 'when authentication fails' do
+      it 'still resolves the organization for the rejected request' do
+        clone_get("#{project.full_path}.git", user: 'foo', password: 'bar')
+
+        expect(response).to have_gitlab_http_status(:unauthorized)
+        expect(Gitlab::ApplicationContext.current).to include('meta.organization_id' => organization.id)
+      end
+    end
+
+    context 'when the project does not exist yet (push-to-create)' do
+      before do
+        allow(Gitlab::QueryLimiting::Transaction).to receive(:threshold).and_return(120)
+      end
+
+      it 'resolves the organization from the namespace in the URL path' do
+        push_get("#{subgroup.full_path}/new-project.git", user: user.username, password: user.password)
+
+        expect(Gitlab::ApplicationContext.current).to include('meta.organization_id' => organization.id)
+      end
+    end
+  end
 end

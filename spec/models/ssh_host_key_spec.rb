@@ -246,6 +246,16 @@ RSpec.describe SshHostKey do
   describe 'URL validation' do
     let(:url) { 'ssh://127.0.0.1' }
 
+    context 'when the URL is blank' do
+      where(:url) { [nil, ''] }
+
+      with_them do
+        it 'raises an invalid URL error' do
+          expect { ssh_host_key }.to raise_error(ArgumentError, "Invalid URL")
+        end
+      end
+    end
+
     context 'when local requests are not allowed' do
       before do
         stub_application_setting(allow_local_requests_from_web_hooks_and_services: false)

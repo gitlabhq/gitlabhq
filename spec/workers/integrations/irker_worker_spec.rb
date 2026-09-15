@@ -36,8 +36,7 @@ RSpec.describe Integrations::IrkerWorker, '#perform', feature_category: :team_pl
 
   before do
     allow(TCPSocket).to receive(:new).and_return(tcp_socket)
-    allow(tcp_socket).to receive(:puts).and_return(true)
-    allow(tcp_socket).to receive(:close).and_return(true)
+    allow(tcp_socket).to receive_messages(puts: true, close: true)
   end
 
   context 'when local requests are not allowed' do

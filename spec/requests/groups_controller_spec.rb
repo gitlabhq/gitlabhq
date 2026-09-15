@@ -1234,6 +1234,45 @@ RSpec.describe GroupsController, feature_category: :groups_and_projects do
         end
       end
     end
+
+    context 'when updating :ai_custom_instructions' do
+      let_it_be(:group, freeze: false) { create(:group, :public) }
+
+      let(:settings) { group.namespace_settings }
+
+      subject(:update_group) do
+        patch group_path(group), params: { group: { ai_custom_instructions: 'Use the community fork workflow.' } }
+      end
+
+      context 'when the user is a group owner' do
+        let_it_be(:user) { create(:user, owner_of: group) }
+
+        before do
+          sign_in(user)
+        end
+
+        it 'persists the instructions on the namespace settings', :aggregate_failures do
+          update_group
+
+          expect(response).to have_gitlab_http_status(:found)
+          expect(settings.reload.ai_custom_instructions).to eq('Use the community fork workflow.')
+        end
+      end
+
+      context 'when the user is not a group owner' do
+        let_it_be(:user) { create(:user, maintainer_of: group) }
+
+        before do
+          sign_in(user)
+        end
+
+        it 'does not update the attribute', :aggregate_failures do
+          expect { update_group }.not_to change { settings.reload.ai_custom_instructions }
+
+          expect(response).to have_gitlab_http_status(:not_found)
+        end
+      end
+    end
   end
 
   describe 'DELETE #destroy' do
@@ -1481,7 +1520,6 @@ RSpec.describe GroupsController, feature_category: :groups_and_projects do
       end
 
       before do
-        stub_feature_flags(groups_and_projects_async_transfer: false)
         sign_in(user)
         parent_group.add_owner(user)
       end
@@ -1489,7 +1527,7 @@ RSpec.describe GroupsController, feature_category: :groups_and_projects do
       it_behaves_like 'enforces step-up authentication (request spec)'
     end
 
-    context 'when groups_and_projects_async_transfer feature flag is enabled' do
+    context 'when transferring a group' do
       let_it_be(:user) { create(:user) }
       let_it_be_with_reload(:group) { create(:group, :public) }
       let_it_be(:new_parent_group) { create(:group, :public) }
@@ -1567,103 +1605,6 @@ RSpec.describe GroupsController, feature_category: :groups_and_projects do
 
           expect(response).to redirect_to(edit_group_path(group))
           expect(flash[:alert]).to eq('Unable to initiate transfer. The group may already have a transfer in progress.')
-        end
-      end
-    end
-
-    context 'when groups_and_projects_async_transfer feature flag is disabled' do
-      let_it_be(:user) { create(:user) }
-      let_it_be_with_reload(:group) { create(:group, :public) }
-      let_it_be(:new_parent_group) { create(:group, :public) }
-
-      before_all do
-        group.add_owner(user)
-        new_parent_group.add_owner(user)
-      end
-
-      before do
-        stub_feature_flags(groups_and_projects_async_transfer: false)
-        sign_in(user)
-      end
-
-      it 'transfers the group synchronously', :aggregate_failures do
-        expect(Namespaces::Groups::TransferWorker).not_to receive(:perform_async)
-
-        put transfer_group_path(group), params: { new_parent_group_id: new_parent_group.id }
-
-        expect(response).to have_gitlab_http_status(:found)
-        expect(response).to redirect_to("/#{new_parent_group.path}/#{group.path}")
-        expect(flash[:notice]).to eq("Group '#{group.name}' was successfully transferred.")
-        expect(group.reload.parent).to eq(new_parent_group)
-      end
-
-      it 'converts a subgroup to a root group', :aggregate_failures do
-        nested_group = create(:group, :public, :nested, owners: user)
-
-        put transfer_group_path(nested_group), params: { new_parent_group_id: '' }
-
-        expect(response).to redirect_to("/#{nested_group.path}")
-        expect(flash[:notice]).to eq("Group '#{nested_group.name}' was successfully transferred.")
-      end
-
-      it 'redirects with an alert when the transfer fails', :aggregate_failures do
-        # `proceed_to_transfer` is overridden in the prepended EE module
-        # (EE::Groups::TransferService), so `expect_next_instance_of` walks
-        # the prepended chain correctly.
-        expect_next_instance_of(::Groups::TransferService) do |service|
-          allow(service).to receive(:proceed_to_transfer)
-            .and_raise(Gitlab::UpdatePathError, 'namespace directory cannot be moved')
-        end
-
-        put transfer_group_path(group), params: { new_parent_group_id: new_parent_group.id }
-
-        expect(response).to redirect_to(edit_group_path(group))
-        expect(flash[:alert]).to eq('Transfer failed: namespace directory cannot be moved')
-      end
-
-      context 'when the group is archived' do
-        before do
-          group.update!(archived: true)
-        end
-
-        it 'returns not found and does not transfer the group', :aggregate_failures do
-          put transfer_group_path(group), params: { new_parent_group_id: new_parent_group.id }
-
-          expect(response).to have_gitlab_http_status(:not_found)
-          expect(group.reload.parent).to be_nil
-        end
-      end
-
-      context 'when the user is not allowed to transfer the group' do
-        let_it_be(:unauthorized_user) { create(:user, guest_of: group) }
-
-        before do
-          new_parent_group.add_guest(unauthorized_user)
-          sign_in(unauthorized_user)
-        end
-
-        it 'returns not found' do
-          put transfer_group_path(group), params: { new_parent_group_id: new_parent_group.id }
-
-          expect(response).to have_gitlab_http_status(:not_found)
-        end
-      end
-
-      context 'when a project in the group has container images' do
-        let_it_be(:nested_group) { create(:group, :public, :nested, owners: user) }
-        let_it_be(:project) { create(:project, namespace: nested_group) }
-
-        before do
-          stub_container_registry_config(enabled: true)
-          stub_container_registry_tags(repository: /image/, tags: %w[rc1])
-          create(:container_repository, project: project, name: :image)
-        end
-
-        it 'does not allow the group to be transferred', :aggregate_failures do
-          put transfer_group_path(nested_group), params: { new_parent_group_id: '' }
-
-          expect(flash[:alert]).to match(/Docker images in their container registry/)
-          expect(response).to redirect_to(edit_group_path(nested_group))
         end
       end
     end

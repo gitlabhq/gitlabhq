@@ -94,7 +94,7 @@ scheme.
 
 To resolve this issue:
 
-1. Add the `wss://` prefix to your `TF_VAR_kas_address` variable. For example: `wss://kas.gitlab.com`.
+1. Add the `grpcs://` or `wss://` prefix to your `TF_VAR_kas_address` variable. For example: `grpcs://kas.gitlab.com`.
 1. Update your configuration and redeploy the agent.
 
 ## Error: `ImagePullBackOff` when starting workspace in offline environment

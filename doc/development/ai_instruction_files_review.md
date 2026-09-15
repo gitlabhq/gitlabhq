@@ -204,6 +204,16 @@ machine-generated from documentation prose rather than hand-written code, its
 findings are unusually high-signal. Treat them as a review queue to work
 through, not as noise to dismiss.
 
+If a weekly sync merge request has automated review findings, use the
+[`ai-principles-review-feedback` skill](https://gitlab.com/gitlab-org/gitlab/-/blob/master/.claude/skills/ai-principles-review-feedback/SKILL.md)
+to work through every finding before the merge request is merged.
+
+For example:
+
+```plaintext
+Use the `ai-principles-review-feedback` skill to address every automated review finding on this weekly sync merge request.
+```
+
 Classify each finding into exactly one of four outcomes before acting on it:
 
 | Outcome          | Meaning                                                           | Action                                                  |

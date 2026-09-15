@@ -1,7 +1,13 @@
 <script>
-import { GlIcon } from '@gitlab/ui';
+import { GlIcon, GlLoadingIcon } from '@gitlab/ui';
 
-import { STATUS_DONE, STATUS_TODO, STATUS_BLOCKED, STATUS_ERROR } from '../constants';
+import {
+  STATUS_DONE,
+  STATUS_TODO,
+  STATUS_BLOCKED,
+  STATUS_ERROR,
+  STATUS_LOADING,
+} from '../constants';
 
 const STATUS_ICONS = {
   [STATUS_DONE]: { name: 'check-circle-filled', variant: 'success' },
@@ -17,7 +23,7 @@ const STATUS_ICONS = {
  */
 export default {
   name: 'DuoReadinessRow',
-  components: { GlIcon },
+  components: { GlIcon, GlLoadingIcon },
   props: {
     title: {
       type: String,
@@ -31,7 +37,7 @@ export default {
     status: {
       type: String,
       required: true,
-      validator: (value) => Object.keys(STATUS_ICONS).includes(value),
+      validator: (value) => [...Object.keys(STATUS_ICONS), STATUS_LOADING].includes(value),
     },
     // Indents the row and tints it, for a setting that only qualifies the row above it.
     nested: {
@@ -47,6 +53,9 @@ export default {
     isBlocked() {
       return this.status === STATUS_BLOCKED;
     },
+    isLoading() {
+      return this.status === STATUS_LOADING;
+    },
   },
 };
 </script>
@@ -58,7 +67,9 @@ export default {
     :class="nested ? 'gl-bg-subtle gl-pl-9' : 'gl-pl-4'"
     data-testid="readiness-row"
   >
+    <gl-loading-icon v-if="isLoading" size="sm" class="gl-shrink-0" />
     <gl-icon
+      v-else
       :name="icon.name"
       :variant="icon.variant"
       :size="16"

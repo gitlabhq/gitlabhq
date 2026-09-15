@@ -45,6 +45,22 @@ RSpec.describe Admin::SessionsController, :do_not_mock_admin_mode, feature_categ
           expect(response).to redirect_to(admin_root_path)
           expect(controller.current_user_mode.admin_mode?).to be(true)
         end
+
+        it 'redirects to a stored admin route' do
+          controller.store_location_for(:redirect, admin_users_path)
+
+          get :new
+
+          expect(response).to redirect_to(admin_users_path)
+        end
+
+        it 'redirects to the admin dashboard when the stored path is a non-admin route' do
+          controller.store_location_for(:redirect, help_path)
+
+          get :new
+
+          expect(response).to redirect_to(admin_root_path)
+        end
       end
     end
   end
@@ -199,11 +215,65 @@ RSpec.describe Admin::SessionsController, :do_not_mock_admin_mode, feature_categ
         end
       end
 
+      context 'for the redirect target after entering admin mode' do
+        def enable_admin_mode_with_password
+          controller.current_user_mode.request_admin_mode!
+
+          post :create, params: { user: { password: user.password } }
+        end
+
+        it 'redirects to a stored admin route' do
+          controller.store_location_for(:redirect, admin_users_path)
+
+          enable_admin_mode_with_password
+
+          expect(response).to redirect_to(admin_users_path)
+          expect(controller.current_user_mode.admin_mode?).to be(true)
+        end
+
+        it 'redirects to the admin dashboard when the stored path is a non-admin route' do
+          controller.store_location_for(:redirect, help_path)
+
+          enable_admin_mode_with_password
+
+          expect(response).to redirect_to(admin_root_path)
+          expect(controller.current_user_mode.admin_mode?).to be(true)
+        end
+
+        it 'redirects to the admin dashboard when the referer is a non-admin page' do
+          request.env['HTTP_REFERER'] = "http://test.host#{help_path}"
+
+          enable_admin_mode_with_password
+
+          expect(response).to redirect_to(admin_root_path)
+          expect(controller.current_user_mode.admin_mode?).to be(true)
+        end
+
+        it 'redirects to the admin dashboard when the stored path is unrecognized' do
+          controller.store_location_for(:redirect, '/nonexistent/path/xyz')
+
+          enable_admin_mode_with_password
+
+          expect(response).to redirect_to(admin_root_path)
+          expect(controller.current_user_mode.admin_mode?).to be(true)
+        end
+      end
+
       context 'when using two-factor authentication via OTP' do
         let(:user) { create(:admin, :two_factor) }
 
         def authenticate_2fa(user_params)
           post(:create, params: { user: user_params }, session: { otp_user_id: user.id })
+        end
+
+        it 'redirects to the admin dashboard when the stored path is a non-admin route' do
+          controller.store_location_for(:redirect, help_path)
+          controller.current_user_mode.request_admin_mode!
+
+          authenticate_2fa(otp_attempt: user.current_otp)
+
+          expect(response).to redirect_to(admin_root_path)
+          expect(controller.current_user_mode.admin_mode?).to be(true)
         end
 
         it 'requests two factor after a valid password is provided' do
@@ -360,6 +430,46 @@ RSpec.describe Admin::SessionsController, :do_not_mock_admin_mode, feature_categ
         end
 
         it_behaves_like '2FA sign-in with passkeys'
+      end
+    end
+  end
+
+  describe '#admin_route?' do
+    let(:user) { create(:admin) }
+
+    subject { controller.send(:admin_route?, path) }
+
+    context 'with an admin route' do
+      let(:path) { admin_users_path }
+
+      it { is_expected.to be(true) }
+    end
+
+    context 'with a non-admin route' do
+      let(:path) { help_path }
+
+      it { is_expected.to be(false) }
+    end
+
+    context 'with an unrecognized route' do
+      let(:path) { '/nonexistent/path/xyz' }
+
+      it { is_expected.to be(false) }
+    end
+
+    context 'with a mounted Rack app under /admin' do
+      let(:path) { '/admin/sidekiq' }
+
+      it 'rescues the constraint-evaluation error and returns false' do
+        is_expected.to be(false)
+      end
+    end
+
+    context 'with a malformed path' do
+      let(:path) { '/foo%%bar' }
+
+      it 'rescues the routing error and returns false' do
+        is_expected.to be(false)
       end
     end
   end

@@ -157,6 +157,58 @@ RSpec.describe Gitlab::Database::Aggregation::ParameterizedDefinition, feature_c
       end
     end
 
+    context 'with Regexp entries in the in: allowlist' do
+      let(:definition_with_regexp_in) do
+        definition_class.new(:foo, :string, nil,
+          parameters: { granularity: { type: :string, in: ['monthly', /\A\d+d\z/] } })
+      end
+
+      it 'adds no errors when the value equals a String entry' do
+        part = build_part({ parameters: { granularity: 'monthly' } })
+        definition_with_regexp_in.validate_part(part)
+        expect(part.errors).to be_empty
+      end
+
+      it 'adds no errors when the value matches a Regexp entry' do
+        part = build_part({ parameters: { granularity: '30d' } })
+        definition_with_regexp_in.validate_part(part)
+        expect(part.errors).to be_empty
+      end
+
+      it 'adds an error when the value neither equals a String entry nor matches a Regexp entry' do
+        part = build_part({ parameters: { granularity: '30days' } })
+        definition_with_regexp_in.validate_part(part)
+        expect(part.errors[:granularity]).to include(a_string_matching(/Invalid value.*30days/))
+      end
+
+      it 'accepts Gitlab::UntrustedRegexp entries' do
+        definition = definition_class.new(:foo, :string, nil,
+          parameters: { granularity: { type: :string, in: [Gitlab::UntrustedRegexp.new('\A\d+d\z')] } })
+
+        part = build_part({ parameters: { granularity: '30d' } })
+        definition.validate_part(part)
+        expect(part.errors).to be_empty
+      end
+    end
+
+    context 'with a Range in: constraint' do
+      let(:definition_with_range_in) do
+        definition_class.new(:foo, :float, nil, parameters: { quantile: { type: :float, in: 0.0..1.0 } })
+      end
+
+      it 'adds no errors when the value is covered by the range' do
+        part = build_part({ parameters: { quantile: 0.5 } })
+        definition_with_range_in.validate_part(part)
+        expect(part.errors).to be_empty
+      end
+
+      it 'adds an error when the value is outside the range' do
+        part = build_part({ parameters: { quantile: 1.5 } })
+        definition_with_range_in.validate_part(part)
+        expect(part.errors[:quantile]).to include(a_string_matching(/Invalid value.*1\.5/))
+      end
+    end
+
     context 'without an in: constraint' do
       it 'adds no errors regardless of the value' do
         part = build_part({ parameters: { bar: 'anything' } })

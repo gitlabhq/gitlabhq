@@ -280,11 +280,11 @@ describe('FormStepper', () => {
       findContinueButton().trigger('click');
       await nextTick();
 
-      expect(findContinueButton().attributes('disabled')).toBeDefined();
+      expect(findContinueButton().attributes('aria-disabled')).toBe('true');
 
       resolveValidation(true);
       await waitForPromises();
-      expect(findContinueButton().attributes('disabled')).toBeUndefined();
+      expect(findContinueButton().attributes('aria-disabled')).toBeUndefined();
     });
 
     it('disables the completion button while validation is in progress on the last step', async () => {

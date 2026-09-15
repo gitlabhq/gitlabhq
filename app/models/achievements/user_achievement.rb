@@ -18,6 +18,8 @@ module Achievements
       inverse_of: :revoked_user_achievements,
       optional: true
 
+    has_one :namespace, through: :achievement
+
     scope :not_revoked, -> { where(revoked_by_user_id: nil) }
     scope :shown_on_profile, -> { where(show_on_profile: true) }
     scope :hidden_on_profile, -> { where(show_on_profile: false) }

@@ -20,6 +20,7 @@ RSpec.describe Authz::Role, feature_category: :permissions do
       case scope
       when :project then ProjectPolicy.own_ability_map.map.keys
       when :group then GroupPolicy.own_ability_map.map.keys
+      when :organization then Organizations::OrganizationPolicy.own_ability_map.map.keys
       end
     end
 
@@ -96,6 +97,10 @@ RSpec.describe Authz::Role, feature_category: :permissions do
       read_vulnerability_statistics
       update_vulnerability_flag
       download_wiki_code
+      create_govern_policy
+      read_govern_policy
+      update_govern_policy
+      delete_govern_policy
     ]
   end
 
@@ -293,6 +298,60 @@ RSpec.describe Authz::Role, feature_category: :permissions do
       :create_vulnerability_state_transition,
       :destroy_vulnerability_feedback,
       :update_vulnerability_feedback
+    ]
+  end
+
+  let(:organization_member_permissions) do
+    [
+      :read_organization_analytics,
+      :read_system_dashboard,
+      :read_organization_cluster_agent_mapping,
+      :read_dependency,
+      :read_licenses,
+      :read_custom_dashboard
+    ]
+  end
+
+  let(:organization_owner_permissions) do
+    [
+      :create_govern_policy,
+      :read_govern_policy,
+      :update_govern_policy,
+      :delete_govern_policy,
+      :read_work_item_setting,
+      :update_work_item_setting,
+      :create_work_item_type,
+      :update_work_item_type,
+      :read_security_resource,
+      :create_custom_dashboard,
+      :update_custom_dashboard,
+      :delete_custom_dashboard,
+      :admin_organization_cluster_agent_mapping,
+      :create_duo_flow_callback_hook,
+      :read_duo_flow_callback_hook,
+      :delete_duo_flow_callback_hook,
+      :read_cd_application,
+      :create_cd_application,
+      :update_cd_application,
+      :read_cd_environment,
+      :create_cd_environment,
+      :update_cd_environment,
+      :create_cd_service,
+      :update_cd_service,
+      :create_cd_artifact_source,
+      :create_cd_version_set,
+      :create_cd_application_flow_definition,
+      :create_cd_rollout,
+      :resolve_cd_rollout_gate,
+      :create_cd_application_link,
+      :update_cd_application_link,
+      :delete_cd_application_link,
+      :read_cd_service,
+      :read_cd_artifact_source,
+      :read_cd_version_set,
+      :read_cd_application_flow_definition,
+      :read_cd_rollout,
+      :read_cd_application_link
     ]
   end
 
@@ -636,6 +695,40 @@ RSpec.describe Authz::Role, feature_category: :permissions do
             :view_edit_page
           ]
         end
+      end
+    end
+  end
+
+  # Private so grants are attributable to the role rather than to public_organization,
+  # and refound per example because Organization#owner_user_ids is strong-memoized.
+  describe 'organization_user' do
+    let_it_be(:actor) { create(:user) }
+    let_it_be_with_refind(:member_organization) { create(:organization, :private) }
+
+    let(:role) { :organization_user }
+    let(:scope) { :organization }
+    let(:resource) { member_organization }
+
+    before_all do
+      create(:organization_user, organization: member_organization, user: actor)
+    end
+
+    it_behaves_like 'a role that does not enable unexpected permissions' do
+      let(:permissions_granted_outside_role_definition) { organization_member_permissions }
+    end
+  end
+
+  describe 'organization_owner' do
+    let_it_be(:actor) { create(:user) }
+    let_it_be_with_refind(:owned_organization) { create(:organization, :private, owners: actor) }
+
+    let(:role) { :organization_owner }
+    let(:scope) { :organization }
+    let(:resource) { owned_organization }
+
+    it_behaves_like 'a role that does not enable unexpected permissions' do
+      let(:permissions_granted_outside_role_definition) do
+        organization_member_permissions + organization_owner_permissions
       end
     end
   end

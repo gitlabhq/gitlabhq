@@ -594,6 +594,94 @@ Example response:
 }
 ```
 
+## Retrieve diff statistics
+
+{{< details >}}
+
+- Status: Beta
+
+{{< /details >}}
+
+{{< history >}}
+
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/234456) in GitLab 19.4 [with a feature flag](../administration/feature_flags/_index.md) named `repository_diff_stats_api`. Disabled by default. This feature is in [beta](../policy/development_stages_support.md).
+
+{{< /history >}}
+
+> [!flag]
+> The availability of this feature is controlled by a feature flag.
+> For more information, see the history.
+
+Retrieves the number of added and deleted lines for each file that differs between two refs.
+
+This endpoint requires authentication.
+Unauthenticated requests are rejected with [`401 Unauthorized`](rest/troubleshooting.md#status-codes).
+
+Use the `page` and `per_page` [pagination](rest/_index.md#offset-based-pagination) parameters to
+control the pagination of results.
+
+```plaintext
+GET /projects/:id/repository/diff_stats
+```
+
+Supported attributes:
+
+| Attribute | Type              | Required | Description |
+|-----------|-------------------|----------|-------------|
+| `id`      | integer or string | Yes      | ID or [URL-encoded path](rest/_index.md#namespaced-paths) of the project. |
+| `from`    | string            | Yes      | Ref to compare from. Accepts a commit SHA, branch name, or tag name. Maximum length is 255 characters. |
+| `to`      | string            | Yes      | Ref to compare to. Accepts a commit SHA, branch name, or tag name. Maximum length is 255 characters. |
+
+If successful, returns [`200 OK`](rest/troubleshooting.md#status-codes) and an array of diff
+statistics with the following response attributes:
+
+| Attribute   | Type    | Description |
+|-------------|---------|-------------|
+| `additions` | integer | Number of added lines. |
+| `deletions` | integer | Number of deleted lines. |
+| `old_path`  | string  | Previous path of the file. Differs from `path` when the file was renamed. |
+| `path`      | string  | Path of the file. |
+
+Can return the following status codes:
+
+- `400 Bad Request`: `from` or `to` is missing or exceeds the maximum length.
+- `401 Unauthorized`: The request is not authenticated.
+- `403 Forbidden`: You do not have permission to compare repository contents in this project, or the repository is disabled.
+- `404 Not Found`: The project does not exist or is not visible to you, a specified ref does not exist, or the `repository_diff_stats_api` feature flag is disabled.
+- `429 Too Many Requests`: The rate limit for this endpoint is exceeded.
+
+Example request:
+
+```shell
+curl --header "PRIVATE-TOKEN: <your_access_token>" \
+  --url "https://gitlab.example.com/api/v4/projects/5/repository/diff_stats?from=main&to=feature"
+```
+
+Example response:
+
+```json
+[
+  {
+    "old_path": "app/models/user.rb",
+    "path": "app/models/user.rb",
+    "additions": 15,
+    "deletions": 4
+  },
+  {
+    "old_path": "app/assets/javascripts/pages/users/index.js",
+    "path": "app/assets/javascripts/pages/users/show.js",
+    "additions": 8,
+    "deletions": 0
+  },
+  {
+    "old_path": "spec/models/user_spec.rb",
+    "path": "spec/models/user_spec.rb",
+    "additions": 22,
+    "deletions": 3
+  }
+]
+```
+
 ## Retrieve diverging commit counts
 
 {{< details >}}
@@ -657,6 +745,82 @@ Example response:
   "behind": 3,
   "ahead": 5
 }
+```
+
+## Retrieve changed paths
+
+{{< details >}}
+
+- Status: Beta
+
+{{< /details >}}
+
+{{< history >}}
+
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/234458) in GitLab 19.4 [with a feature flag](../administration/feature_flags/_index.md) named `repository_changed_paths_api`. Disabled by default. This feature is in [beta](../policy/development_stages_support.md).
+
+{{< /history >}}
+
+> [!flag]
+> The availability of this feature is controlled by a feature flag.
+> For more information, see the history.
+
+Retrieves the list of files that changed between two commits, branches, or tags.
+
+This endpoint requires authentication.
+Unauthenticated requests are rejected with [`401 Unauthorized`](rest/troubleshooting.md#status-codes).
+
+```plaintext
+GET /projects/:id/repository/changed_paths
+```
+
+Supported attributes:
+
+| Attribute      | Type              | Required | Description |
+|----------------|-------------------|----------|-------------|
+| `id`           | integer or string | Yes      | ID or [URL-encoded path](rest/_index.md#namespaced-paths) of the project. |
+| `from`         | string            | Yes      | Commit SHA, branch, or tag to compare from. |
+| `to`           | string            | Yes      | Commit SHA, branch, or tag to compare to. |
+| `find_renames` | boolean           | No       | If `true`, detect file renames. Defaults to `false`. |
+
+If successful, returns [`200 OK`](rest/troubleshooting.md#status-codes) and a list of
+changed paths with the following response attributes:
+
+| Attribute  | Type   | Description |
+|------------|--------|-------------|
+| `new_mode` | string | New file mode. |
+| `old_mode` | string | Previous file mode. |
+| `old_path` | string | Previous path of the file. An empty string for added files. |
+| `path`     | string | Path of the file. |
+| `status`   | string | Change type. One of `ADDED`, `MODIFIED`, `DELETED`, `RENAMED`, `TYPE_CHANGED`, or `COPIED`. |
+
+Can return the following status codes:
+
+- `400 Bad Request`: `from` or `to` is missing or exceeds the maximum length.
+- `401 Unauthorized`: The request is not authenticated.
+- `403 Forbidden`: You do not have permission to compare repository contents in this project, or the repository is disabled.
+- `404 Not Found`: The project does not exist or is not visible to you, a specified ref does not exist, or the `repository_changed_paths_api` feature flag is disabled.
+- `429 Too Many Requests`: The rate limit for this endpoint is exceeded.
+
+Example request:
+
+```shell
+curl --header "PRIVATE-TOKEN: <your_access_token>" \
+  --url "https://gitlab.example.com/api/v4/projects/5/repository/changed_paths?from=main&to=feature"
+```
+
+Example response:
+
+```json
+[
+  {
+    "status": "MODIFIED",
+    "path": "app/models/user.rb",
+    "old_path": "app/models/user.rb",
+    "old_mode": "100644",
+    "new_mode": "100644"
+  }
+]
 ```
 
 ## Generate changelog data

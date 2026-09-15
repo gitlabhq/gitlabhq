@@ -145,10 +145,51 @@ RSpec.describe Gitlab::Highlight do
     end
 
     it 'links dependencies via DependencyLinker' do
+      allow(Gitlab::DependencyLinker).to receive(:linker).and_return(Gitlab::DependencyLinker::GemfileLinker)
+
       expect(Gitlab::DependencyLinker).to receive(:link)
-        .with('file.name', 'Contents', anything, used_on: :blob).and_call_original
+        .with(
+          'file.name', 'Contents', anything,
+          used_on: :blob, linker: Gitlab::DependencyLinker::GemfileLinker
+        ).and_call_original
 
       described_class.highlight('file.name', 'Contents')
+    end
+
+    context 'when reusing a highlighter' do
+      let(:highlighter) { described_class.new(file_name, content) }
+
+      context 'with an unsupported path' do
+        let(:file_name) { 'file.name' }
+
+        it 'selects a linker once and preserves each highlighted result', :aggregate_failures do
+          expect(Gitlab::DependencyLinker).to receive(:linker).with(file_name).once.and_call_original
+
+          first_result = highlighter.highlight('First')
+          second_result = highlighter.highlight('Second')
+
+          expect(first_result).to eq('<span id="LC1" class="line" data-lang="plaintext">First</span>')
+          expect(second_result).to eq('<span id="LC1" class="line" data-lang="plaintext">Second</span>')
+        end
+      end
+
+      context 'with a supported path' do
+        let(:file_name) { 'Gemfile' }
+        let(:dependency_linker) { class_double(Gitlab::DependencyLinker::GemfileLinker) }
+
+        it 'links on every call for a supported path', :aggregate_failures do
+          expect(Gitlab::DependencyLinker).to receive(:linker).with(file_name).once.and_return(dependency_linker)
+          expect(dependency_linker).to receive(:link)
+            .with('First', a_string_including('First'))
+            .and_return('linked first')
+          expect(dependency_linker).to receive(:link)
+            .with('Second', a_string_including('Second'))
+            .and_return('linked second')
+
+          expect(highlighter.highlight('First')).to eq('linked first')
+          expect(highlighter.highlight('Second')).to eq('linked second')
+        end
+      end
     end
 
     context 'timeout' do
@@ -186,6 +227,21 @@ RSpec.describe Gitlab::Highlight do
 
         highlight
       end
+
+      it 'logs the fallback duration' do
+        expect(Gitlab::AppJsonLogger).to receive(:info).with(
+          a_hash_including(
+            'message' => 'Fallback to plain highlighting',
+            'plain_fallback_duration_s' => an_instance_of(Float),
+            'fallback_reason' => 'timeout',
+            'text_length' => 7,
+            'lexer_tag' => 'ruby',
+            'sidekiq' => false
+          )
+        )
+
+        highlight
+      end
     end
 
     context 'when highlighting raises an error' do
@@ -202,6 +258,17 @@ RSpec.describe Gitlab::Highlight do
           .with('Content', suppress_line_ids: true).and_call_original
 
         highlighter.highlight('Content', used_on: :diff)
+      end
+
+      it 'logs the fallback duration' do
+        expect(Gitlab::AppJsonLogger).to receive(:info).with(
+          a_hash_including(
+            'message' => 'Fallback to plain highlighting',
+            'fallback_reason' => 'error'
+          )
+        )
+
+        described_class.new('file.rb', 'begin', language: 'ruby').highlight('Content')
       end
     end
 
@@ -225,8 +292,13 @@ RSpec.describe Gitlab::Highlight do
       end
 
       it 'links dependencies via DependencyLinker' do
+        allow(Gitlab::DependencyLinker).to receive(:linker).and_return(Gitlab::DependencyLinker::GemfileLinker)
+
         expect(Gitlab::DependencyLinker).to receive(:link)
-          .with(file_name, content, anything, used_on: :diff).and_call_original
+          .with(
+            file_name, content, anything,
+            used_on: :diff, linker: Gitlab::DependencyLinker::GemfileLinker
+          ).and_call_original
 
         described_class.highlight(file_name, content, used_on: :diff)
       end

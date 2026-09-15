@@ -9,6 +9,8 @@ const execImmediately = (callback) => {
 };
 
 const TEST_PATH = `${TEST_HOST}/img/testimg.png`;
+const TEST_AVATAR_PATH = `${TEST_HOST}/uploads/-/system/project/avatar/1/avatar.png`;
+const TEST_AVATAR_PATH_WITH_QUERY = `${TEST_AVATAR_PATH}?v=123`;
 
 describe('LazyLoader', () => {
   let lazyLoader = null;
@@ -129,6 +131,38 @@ describe('LazyLoader', () => {
         lazyLoader.register();
 
         expect(newImg).not.toHaveClass('js-lazy-loaded');
+      });
+
+      const createAvatarImageAndLoad = (imageSource) => {
+        const img = document.createElement('img');
+        img.className = 'lazy';
+        img.dataset.src = imageSource;
+        img.width = 64;
+        document.body.appendChild(img);
+        triggerChildMutation();
+
+        lazyLoader.register();
+        trigger(img);
+
+        return img;
+      };
+
+      it('should append width to avatar URLs without query params', () => {
+        const img = createAvatarImageAndLoad(TEST_AVATAR_PATH);
+
+        expect(img.getAttribute('src')).toBe(`${TEST_AVATAR_PATH}?width=64`);
+      });
+
+      it('should append width to avatar URLs that already have query params', () => {
+        const img = createAvatarImageAndLoad(TEST_AVATAR_PATH_WITH_QUERY);
+
+        expect(img.getAttribute('src')).toBe(`${TEST_AVATAR_PATH_WITH_QUERY}&width=64`);
+      });
+
+      it('should not append width to avatar URLs that already have a width parameter', () => {
+        const img = createAvatarImageAndLoad(`${TEST_AVATAR_PATH}?width=32&v=123`);
+
+        expect(img.getAttribute('src')).toBe(`${TEST_AVATAR_PATH}?width=32&v=123`);
       });
 
       it('should not load dynamically added pictures if content observer is turned off', async () => {

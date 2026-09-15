@@ -4,8 +4,6 @@ require 'rubocop_spec_helper'
 require_relative '../../../../rubocop/cop/migration/active_context_migration_reference_exists'
 
 RSpec.describe RuboCop::Cop::Migration::ActiveContextMigrationReferenceExists, feature_category: :global_search do
-  let(:migrations_path) { 'ee/active_context/migrate' }
-
   before do
     # Mock Rails.root to return current directory
     allow(Rails).to receive(:root).and_return(Pathname.new(Dir.pwd)) if defined?(Rails)

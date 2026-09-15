@@ -42,7 +42,8 @@ control the pagination of results.
 | `scope`             | string           | no         | The condition of feature flags, one of: `enabled`, `disabled`.                                                              |
 
 ```shell
-curl --header "PRIVATE-TOKEN: <your_access_token>" \
+curl --request GET \
+  --header "PRIVATE-TOKEN: <your_access_token>" \
   --url "https://gitlab.example.com/api/v4/projects/1/feature_flags"
 ```
 
@@ -146,7 +147,8 @@ control the pagination of results.
 | `feature_flag_name` | string           | yes        | The name of the feature flag.                                                          |
 
 ```shell
-curl --header "PRIVATE-TOKEN: <your_access_token>" \
+curl --request GET \
+  --header "PRIVATE-TOKEN: <your_access_token>" \
   --url "https://gitlab.example.com/api/v4/projects/1/feature_flags/awesome_feature"
 ```
 
@@ -201,10 +203,11 @@ POST /projects/:id/feature_flags
 | `strategies:user_list_id` | integer or string | no     | The ID of the feature flag user list. If strategy is `gitlabUserList`.                                                                                                                                                                                                                   |
 
 ```shell
-curl "https://gitlab.example.com/api/v4/projects/1/feature_flags" \
-     --header "PRIVATE-TOKEN: <your_access_token>" \
-     --header "Content-type: application/json" \
-     --data @- << EOF
+curl --request POST \
+  --header "PRIVATE-TOKEN: <your_access_token>" \
+  --header "Content-type: application/json" \
+  --data @- \
+  --url "https://gitlab.example.com/api/v4/projects/1/feature_flags" << EOF
 {
   "name": "awesome_feature",
   "version": "new_version_flag",
@@ -267,10 +270,11 @@ PUT /projects/:id/feature_flags/:feature_flag_name
 | `strategies:user_list_id` | integer or string | no     | The ID of the feature flag user list. If strategy is `gitlabUserList`.                 |
 
 ```shell
-curl "https://gitlab.example.com/api/v4/projects/1/feature_flags/awesome_feature" \
-     --header "PRIVATE-TOKEN: <your_access_token>" \
-     --header "Content-type: application/json" \
-     --data @- << EOF
+curl --request PUT \
+  --header "PRIVATE-TOKEN: <your_access_token>" \
+  --header "Content-type: application/json" \
+  --data @- \
+  --url "https://gitlab.example.com/api/v4/projects/1/feature_flags/awesome_feature" << EOF
 {
   "strategies": [{ "name": "gradualRolloutUserId", "parameters": { "groupId": "default", "percentage": "25" }, "scopes": [{ "environment_scope": "staging" }] }]
 }
@@ -336,3 +340,85 @@ curl --request DELETE \
   --header "PRIVATE-TOKEN: <your_access_token>" \
   --url "https://gitlab.example.com/api/v4/projects/1/feature_flags/awesome_feature"
 ```
+
+## Retrieve feature flag settings
+
+{{< history >}}
+
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/8239) in GitLab 19.4 [with a feature flag](../administration/feature_flags/_index.md) named `feature_flag_management_permissions`. Disabled by default.
+
+{{< /history >}}
+
+> [!flag]
+> The feature flag controls enforcement of `minimum_role`, but not access to this endpoint.
+> For more information, see the history.
+
+Retrieves the feature flag settings of a specified project.
+
+```plaintext
+GET /projects/:id/feature_flags_settings
+```
+
+| Attribute | Type              | Required | Description                                                                   |
+| --------- | ----------------- | -------- | ----------------------------------------------------------------------------- |
+| `id`      | integer or string | yes      | The ID or [URL-encoded path of the project](rest/_index.md#namespaced-paths). |
+
+```shell
+curl --request GET \
+  --header "PRIVATE-TOKEN: <your_access_token>" \
+  --url "https://gitlab.example.com/api/v4/projects/1/feature_flags_settings"
+```
+
+Example response:
+
+```json
+{
+   "minimum_role": "developer"
+}
+```
+
+## Update feature flag settings
+
+{{< history >}}
+
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/8239) in GitLab 19.4 [with a feature flag](../administration/feature_flags/_index.md) named `feature_flag_management_permissions`. Disabled by default.
+
+{{< /history >}}
+
+> [!flag]
+> The feature flag controls enforcement of `minimum_role`, but not access to this endpoint.
+> For more information, see the history.
+
+Updates the feature flag settings of a specified project.
+
+Prerequisites:
+
+- You must have at least the Maintainer role for the project.
+- To change `minimum_role` away from `owner` or `no_one_allowed`, you must have the
+  Owner role for the project.
+
+```plaintext
+PUT /projects/:id/feature_flags_settings
+```
+
+| Attribute      | Type              | Required | Description                                                                                                                          |
+| -------------- | ----------------- | -------- | -------------------------------------------------------------------------------------------------------------------------------------|
+| `id`           | integer or string | yes      | The ID or [URL-encoded path of the project](rest/_index.md#namespaced-paths).                                                        |
+| `minimum_role` | string            | yes      | Minimum role required to manage feature flags. One of `no_one_allowed`, `developer`, `maintainer`, or `owner`. |
+
+```shell
+curl --request PUT \
+  --header "PRIVATE-TOKEN: <your_access_token>" \
+  --url "https://gitlab.example.com/api/v4/projects/1/feature_flags_settings?minimum_role=maintainer"
+```
+
+Example response:
+
+```json
+{
+   "minimum_role": "maintainer"
+}
+```
+
+For what each value means, see
+[restrict who can manage feature flags](../operations/feature_flags.md#restrict-who-can-manage-feature-flags).

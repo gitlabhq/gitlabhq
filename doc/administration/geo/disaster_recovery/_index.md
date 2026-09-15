@@ -1,5 +1,5 @@
 ---
-stage: Tenant Scale
+stage: GitLab Dedicated
 group: Geo
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see <https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments>
 title: Disaster Recovery (Geo)
@@ -25,7 +25,7 @@ Some [known issues](../_index.md#known-issues) exist.
 
 ## Secondary sites with selective synchronization enabled
 
-Promoting a secondary site with selective synchronization enabled results in **permanent data loss**
+Promoting a secondary site with selective synchronization enabled results in permanent data loss
 for all data that was not replicated to that secondary site. For more information, see
 [Promoting a secondary site with selective synchronization enabled](../replication/selective_synchronization.md#promoting-a-secondary-site-with-selective-synchronization-enabled).
 
@@ -125,7 +125,7 @@ order to avoid unnecessary data loss.
 
 > [!warning]
 > If the primary site goes offline, there may be data saved on the primary site
-> that have not been replicated to the secondary site. This data should be treated
+> that has not been replicated to the secondary site. This data should be treated
 > as lost if you proceed.
 
 If an outage on the primary site happens, you should do everything possible to
@@ -198,7 +198,7 @@ Note the following when promoting a secondary:
      sudo gitlab-ctl geo promote
      ```
 
-   - To promote the secondary site to primary **without any further confirmation**:
+   - To promote the secondary site to primary without any further confirmation:
 
      ```shell
      sudo gitlab-ctl geo promote --force
@@ -230,7 +230,7 @@ At this point, your promoted site is the new primary GitLab site. Optionally, if
      sudo gitlab-ctl geo promote
      ```
 
-   - To promote the secondary site to primary **without any further confirmation**:
+   - To promote the secondary site to primary without any further confirmation:
 
      ```shell
      sudo gitlab-ctl geo promote --force
@@ -244,7 +244,7 @@ At this point, your promoted site is the new primary GitLab site. Optionally, if
      sudo gitlab-ctl geo promote
      ```
 
-   - To promote the secondary site to primary **without any further confirmation**:
+   - To promote the secondary site to primary without any further confirmation:
 
      ```shell
      sudo gitlab-ctl geo promote --force
@@ -268,7 +268,7 @@ when you reconfigure.
      sudo gitlab-ctl geo promote
      ```
 
-   - To promote the secondary site to primary **without any further confirmation**:
+   - To promote the secondary site to primary without any further confirmation:
 
      ```shell
      sudo gitlab-ctl geo promote --force
@@ -282,7 +282,7 @@ when you reconfigure.
      sudo gitlab-ctl geo promote
      ```
 
-   - To promote the secondary site to primary **without any further confirmation**:
+   - To promote the secondary site to primary without any further confirmation:
 
      ```shell
      sudo gitlab-ctl geo promote --force
@@ -333,7 +333,7 @@ with the secondary site:
      sudo gitlab-ctl geo promote
      ```
 
-   - To promote the secondary site to primary **without any further confirmation**:
+   - To promote the secondary site to primary without any further confirmation:
 
      ```shell
      sudo gitlab-ctl geo promote --force
@@ -347,7 +347,7 @@ with the secondary site:
      sudo gitlab-ctl geo promote
      ```
 
-   - To promote the secondary site to primary **without any further confirmation**:
+   - To promote the secondary site to primary without any further confirmation:
 
      ```shell
      sudo gitlab-ctl geo promote --force
@@ -473,7 +473,7 @@ and after that you also need two extra steps.
 1. Re-enable migrations now that PostgreSQL is restarted and listening on the
    private address.
 
-   Edit `/etc/gitlab/gitlab.rb` and **change** the configuration to `true`:
+   Edit `/etc/gitlab/gitlab.rb` and change the configuration to `true`:
 
    ```ruby
    gitlab_rails['auto_migrate'] = true
@@ -500,7 +500,7 @@ Found data inside the gitlabhq_production database! If you are sure you are in t
 After you have confirmed that you are on the appropriate secondary site, initiate the replication with `--force`.
 
 > [!warning]
-> Using `--force` causes **all existing data in the database on that secondary server to be deleted**.
+> Using `--force` causes all existing data in the database on that secondary server to be deleted.
 
 ## Promoting a secondary Geo cluster in the GitLab Helm chart
 
@@ -555,7 +555,7 @@ must disable the primary site:
      sudo gitlab-ctl geo promote
      ```
 
-   - To promote the secondary site node external to the Kubernetes cluster to primary **without any further confirmation**:
+   - To promote the secondary site node external to the Kubernetes cluster to primary without any further confirmation:
 
      ```shell
      sudo gitlab-ctl geo promote --force

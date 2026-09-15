@@ -133,7 +133,6 @@ export default class MergeRequestStore {
     this.ffOnlyEnabled = data.ff_only_enabled;
     this.ffMergePossible = data.ff_merge_possible;
     this.showAutomaticRebaseInfo = data.show_automatic_rebase_info;
-    this.isRemovingSourceBranch = this.isRemovingSourceBranch || false;
     this.mergeRequestState = data.state;
     this.isOpen = this.mergeRequestState === STATUS_OPEN;
     this.latestSHA = data.diff_head_sha;

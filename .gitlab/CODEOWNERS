@@ -81,6 +81,10 @@ config.ru @gitlab-org/maintainers/rails-backend
 /spec/views/ @gitlab-org/maintainers/rails-backend @gitlab-org/maintainers/frontend
 /ee/spec/views/ @gitlab-org/maintainers/rails-backend @gitlab-org/maintainers/frontend
 
+# Analytics dashboard definitions are data, not Ruby: they override the
+# `/ee/` backend default so either maintainer group can approve them.
+/ee/lib/gitlab/analytics/**/*.yaml @gitlab-org/maintainers/rails-backend @gitlab-org/maintainers/frontend
+
 # Frontend
 *.scss @gitlab-org/maintainers/frontend
 *.js @gitlab-org/maintainers/frontend
@@ -200,6 +204,8 @@ yarn.lock @gitlab-org/maintainers/frontend
 /.ai/principles/distilled/clickhouse.md @gitlab-org/maintainers/clickhouse
 /.ai/principles/distilled/cells-fundamentals.md @gitlab-com/gl-infra/tenant-scale/cells-infrastructure/backend-engineers
 /.ai/principles/distilled/cells-claims.md @gitlab-com/gl-infra/tenant-scale/cells-infrastructure/backend-engineers
+/.ai/principles/distilled/organizations-fundamentals.md @gitlab-com/gl-infra/tenant-scale/organizations/backend-engineers
+/.ai/principles/distilled/organizations-release-process.md @gitlab-com/gl-infra/tenant-scale/organizations/backend-engineers
 /.ai/principles/distilled/security.md @gitlab-com/gl-security/appsec
 /.ai/principles/distilled/authentication.md @gitlab-org/software-supply-chain-security/authentication/approvers @gitlab-com/gl-security/appsec
 /.ai/principles/distilled/permissions-fundamentals.md @gitlab-org/software-supply-chain-security/authorization/approvers
@@ -215,6 +221,7 @@ yarn.lock @gitlab-org/maintainers/frontend
 /.ai/principles/distilled/workers.md @gitlab-org/maintainers/rails-backend
 /.ai/principles/distilled/cicd-internals.md @gitlab-org/maintainers/cicd-verify
 /.ai/principles/distilled/frontend-vue.md @gitlab-org/maintainers/frontend
+/.ai/principles/distilled/internationalization.md @gitlab-com/localization/maintainers/i18n
 /.ai/principles/distilled/frontend-style.md @gitlab-org/maintainers/frontend
 /.ai/principles/distilled/frontend-haml.md @gitlab-org/maintainers/frontend
 /.ai/principles/distilled/frontend-a11y.md @gitlab-org/maintainers/frontend
@@ -236,6 +243,7 @@ yarn.lock @gitlab-org/maintainers/frontend
 /.ai/principles/distilled/import-direct-and-offline.md @gitlab-com/create-team/import
 # END GENERATED: gitlab-ai-principles-distiller
 /.claude/ @gitlab-org/maintainers/ai-harness
+/.claude/skills/gitlab-mcp-tool-builder/ @gitlab-org/maintainers/ai-harness @gitlab-org/ai-powered/mcp-tool-review-board
 /AGENTS.md @gitlab-org/maintainers/ai-harness
 /CLAUDE.md @gitlab-org/maintainers/ai-harness
 /opencode.example.json @gitlab-org/maintainers/ai-harness
@@ -299,6 +307,7 @@ config/bounded_contexts.yml @fabiopitino @grzesiek @stanhu @tkuah
 # Database infrastructure specs enforce DB rules and require mandatory database review
 /spec/db/*
 /ee/spec/db/*
+/spec/support/database/destroy_service_foreign_keys_todo.yml
 /spec/lib/gitlab/database/
 /ee/spec/lib/gitlab/database/
 /ee/spec/lib/ee/gitlab/database/
@@ -307,7 +316,7 @@ config/bounded_contexts.yml @fabiopitino @grzesiek @stanhu @tkuah
 /spec/lib/gitlab/sql/
 /spec/tasks/gitlab/db_rake_spec.rb
 
-^[Database] @gitlab-org/maintainers/database
+^[Database optional] @gitlab-org/maintainers/database
 /spec/lib/gitlab/background_migration/
 /ee/spec/lib/ee/gitlab/background_migration/
 /spec/migrations/
@@ -320,6 +329,7 @@ config/bounded_contexts.yml @fabiopitino @grzesiek @stanhu @tkuah
 /.gitlab/ci/
 /.gitlab/ci/docs.gitlab-ci.yml @gl-dx/pipeline-maintainers @gitlab-org/technical-writing/tw-docops @gitlab-org/tw-leadership
 /.gitlab/ci/frontend.gitlab-ci.yml @gl-dx/pipeline-maintainers @gitlab-org/maintainers/frontend
+/.gitlab/ci/frontend/ @gl-dx/pipeline-maintainers @gitlab-org/maintainers/frontend
 /.gitlab/ci/test-on-omnibus/ @gl-dx/pipeline-maintainers @gl-dx/maintainers
 /.gitlab/ci/qa.gitlab-ci.yml @gl-dx/pipeline-maintainers @gl-dx/maintainers
 /.gitlab/ci/qa-common/ @gl-dx/pipeline-maintainers @gl-dx/maintainers
@@ -363,13 +373,8 @@ Dangerfile
 
 ^[Unused code linting scripts] @kerrizor @dstull
 /.keela/
-/scripts/lint/unused_methods.rb
-/scripts/lint/unused_code.rb
-/scripts/lint/excluded_methods.yml
-/scripts/lint/excluded_scopes.yml
-/scripts/lint/potential_methods_to_remove.yml
-/scripts/lint/potential_scopes_to_remove.yml
 /scripts/lint/keela_baseline.yml
+/scripts/lint/keela_excluded.yml
 
 ^[LDAP] @dblessing @mkozono
 /ee/lib/ee/gitlab/auth/ldap/
@@ -715,6 +720,9 @@ Dangerfile
 /app/assets/javascripts/vue_shared/components/customizable_dashboard/
 /ee/app/assets/javascripts/analytics/analytics_dashboards/
 
+[Analytics Dashboards definitions] @gitlab-org/plan-stage/optimize-group/engineers/backend @gitlab-org/plan-stage/optimize-group/engineers/frontend @gitlab-org/analytics-section/platform-insights/engineers/backend @gitlab-org/analytics-section/platform-insights/engineers/frontend
+/ee/lib/gitlab/analytics/**/*.yaml
+
 ^[Product Analytics backend] @gitlab-org/analytics-section/platform-insights/engineers/backend
 /ee/lib/analytics/product_analytics/
 /ee/lib/product_analytics/
@@ -766,16 +774,20 @@ Dangerfile
 /app/assets/javascripts/tracking/
 /scripts/internal_events/
 
-^[Growth Experiments] @gitlab-org/growth/experiment-devs
+[Growth Experiments] @gitlab-org/growth/experiment-devs
 /app/experiments/
+/ee/app/experiments/
 /spec/experiments/
+/ee/spec/experiments/
+/ee/app/services/experiments/
+/ee/spec/services/experiments/
 /config/initializers/gitlab_experiment.rb
-/config/feature_flags/experiment/
-/ee/config/feature_flags/experiment/
 /ee/lib/api/experiments.rb
 /ee/spec/requests/api/experiments_spec.rb
-/ee/lib/ee/api/entities/experiment.rb
-/ee/spec/lib/ee/api/entities/experiment_spec.rb
+/ee/lib/api/entities/experiment.rb
+/ee/spec/lib/api/entities/experiment_spec.rb
+/ee/lib/api/entities/experiments/
+/ee/spec/lib/api/entities/experiments/
 
 ^[Growth] @gitlab-org/growth/engineers
 /app/models/onboarding/
@@ -882,7 +894,8 @@ lib/gitlab/checks/
 /doc/administration/consul.md @axil @eread
 /doc/administration/credentials_inventory.md @idurham
 /doc/administration/dedicated/ @lyspin
-/doc/administration/diff_limits.md @brendan777
+/doc/administration/dedicated/configure_instance/dedicated_self_hosted_models.md @ashrafkhamis
+/doc/administration/diff_limits.md @uchandran
 /doc/administration/docs_self_host.md @axil @eread
 /doc/administration/dormant_project_deletion.md @z_painter
 /doc/administration/duo_add_on_seat_management_with_ldap.md @lciutacu
@@ -932,7 +945,7 @@ lib/gitlab/checks/
 /doc/administration/polling.md @axil @eread
 /doc/administration/project_templates.md @brendan777
 /doc/administration/raketasks/ @axil @eread
-/doc/administration/raketasks/ai_catalog.md @fneill
+/doc/administration/raketasks/import_export_rake_tasks_troubleshooting.md @eread
 /doc/administration/raketasks/keep_around.md @eread
 /doc/administration/raketasks/ldap.md @idurham
 /doc/administration/raketasks/praefect.md @eread
@@ -949,30 +962,20 @@ lib/gitlab/checks/
 /doc/administration/restart_gitlab.md @axil @eread
 /doc/administration/review_abuse_reports.md @idurham
 /doc/administration/review_spam_logs.md @idurham
-/doc/administration/secrets_manager/ @marcel.amirault
 /doc/administration/semantic_code_search.md @ashrafkhamis
 /doc/administration/server_hooks.md @eread
 /doc/administration/settings/account_and_limit_settings.md @brendan777
 /doc/administration/settings/continuous_integration.md @lyspin
-/doc/administration/settings/deprecated_api_rate_limits.md @brendan777
 /doc/administration/settings/editor_extensions.md @jglassman1
 /doc/administration/settings/external_authorization.md @idurham
-/doc/administration/settings/files_api_rate_limits.md @brendan777
-/doc/administration/settings/git_http_rate_limits.md @brendan777
-/doc/administration/settings/git_lfs_rate_limits.md @brendan777
 /doc/administration/settings/gitaly_timeouts.md @eread
 /doc/administration/settings/import_and_export_settings.md @eread
 /doc/administration/settings/import_export_rate_limits.md @eread
 /doc/administration/settings/instance_template_repository.md @brendan777
-/doc/administration/settings/package_registry_rate_limits.md @z_painter
 /doc/administration/settings/push_event_activities_limit.md @brendan777
-/doc/administration/settings/rate_limit_on_groups_api.md @z_painter
-/doc/administration/settings/rate_limit_on_organizations_api.md @z_painter
-/doc/administration/settings/rate_limit_on_projects_api.md @z_painter
-/doc/administration/settings/rate_limit_on_users_api.md @idurham
-/doc/administration/settings/rate_limits_on_git_ssh_operations.md @brendan777
+/doc/administration/settings/rate-limit-on-webhook-operations.md @eread
 /doc/administration/settings/scim_setup.md @lciutacu
-/doc/administration/settings/sidekiq_job_limits.md @axil
+/doc/administration/settings/sidekiq.md @axil
 /doc/administration/settings/sign_in_restrictions.md @idurham
 /doc/administration/settings/sign_up_restrictions.md @idurham
 /doc/administration/settings/terraform_state_settings.md @rsarangadharan
@@ -1010,6 +1013,7 @@ lib/gitlab/checks/
 /doc/api/container_registry_protection_tag_rules.md @z_painter
 /doc/api/container_repository_protection_rules.md @z_painter
 /doc/api/container_virtual_registries.md @z_painter
+/doc/api/custom_attributes.md @idurham
 /doc/api/dependency_proxy.md @z_painter
 /doc/api/deploy_keys.md @rsarangadharan
 /doc/api/deploy_tokens.md @rsarangadharan
@@ -1116,6 +1120,7 @@ lib/gitlab/checks/
 /doc/api/scim.md @lciutacu
 /doc/api/search.md @ashrafkhamis
 /doc/api/search_admin.md @ashrafkhamis
+/doc/api/secrets_manager.md @marcel.amirault
 /doc/api/secure_files.md @marcel.amirault
 /doc/api/service_accounts.md @idurham
 /doc/api/settings.md @idurham
@@ -1191,7 +1196,6 @@ lib/gitlab/checks/
 /doc/development/advanced_search/ @gitlab-org/search-team/maintainers/advanced-framework
 /doc/development/agent_principles/ @gitlab-org/ai-powered
 /doc/development/ai_features/ @gitlab-org/ai-powered
-/doc/development/application_limits.md @gitlab-org/distribution
 /doc/development/application_slis/ @gitlab-org/search-team/maintainers/advanced-framework
 /doc/development/audit_event_guide/ @gitlab-org/govern/security-policies-frontend @gitlab-org/govern/threat-insights-frontend-team @gitlab-org/govern/threat-insights-backend-team
 /doc/development/authentication.md @gitlab-org/software-supply-chain-security/authentication/approvers
@@ -1219,6 +1223,7 @@ lib/gitlab/checks/
 /doc/development/integrations/jenkins.md @gitlab-org/maintainers/cicd-verify
 /doc/development/internal_analytics/ @gitlab-org/analytics-section/product-analytics/engineers/frontend @gitlab-org/analytics-section/analytics-instrumentation/engineers
 /doc/development/logging.md @gitlab-org/analytics-section/product-analytics/engineers/frontend
+/doc/development/namespaces_state_propagation.md @abdwdd @alexpooley
 /doc/development/navigation_sidebar.md @gitlab-org/growth
 /doc/development/observability/ @gitlab-org/analytics-section/product-analytics/engineers/frontend
 /doc/development/omnibus.md @gitlab-org/distribution
@@ -1251,6 +1256,11 @@ lib/gitlab/checks/
 /doc/integration/zoekt/ @ashrafkhamis
 /doc/operations/ @rsarangadharan
 /doc/policy/ @axil @eread
+/doc/rate_limits/ @brendan777
+/doc/rate_limits/api/ @z_painter
+/doc/rate_limits/api/deprecated.md @brendan777
+/doc/rate_limits/api/repository-files.md @brendan777
+/doc/rate_limits/api/users.md @idurham
 /doc/security/ @idurham
 /doc/security/dedicated_for_government_secure_config_guide.md @lyspin
 /doc/security/dedicated_for_government_shared_responsibility_model.md @lyspin
@@ -1297,17 +1307,12 @@ lib/gitlab/checks/
 /doc/user/custom_roles/ @idurham
 /doc/user/discussions/ @uchandran
 /doc/user/duo_agent_platform/ @fneill
-/doc/user/duo_agent_platform/agents/foundational_agents/support_assistant.md @jglassman1
 /doc/user/duo_agent_platform/code_suggestions/ @uchandran
-/doc/user/duo_agent_platform/context.md @ashrafkhamis
-/doc/user/duo_agent_platform/customize/ @jglassman1
 /doc/user/duo_agent_platform/customize/review_instructions.md @uchandran
 /doc/user/duo_agent_platform/flows/claude-edit-v1-flow-registry.md @jglassman1
-/doc/user/duo_agent_platform/flows/custom_flows_schema.md @jglassman1
-/doc/user/duo_agent_platform/flows/foundational_flows/code_review.md @uchandran
+/doc/user/duo_agent_platform/flows/foundational_flows/code_review/ @uchandran
 /doc/user/duo_agent_platform/flows/foundational_flows/fix_pipeline.md @lyspin
 /doc/user/duo_agent_platform/model_selection.md @ashrafkhamis
-/doc/user/duo_agent_platform/onboarding.md @uchandran
 /doc/user/duo_agent_platform/turn_on_off.md @ashrafkhamis
 /doc/user/duo_amazon_q/ @ashrafkhamis
 /doc/user/enterprise_user/ @idurham
@@ -1317,10 +1322,10 @@ lib/gitlab/checks/
 /doc/user/get_started/get_started_managing_infrastructure.md @rsarangadharan
 /doc/user/get_started/get_started_projects.md @z_painter
 /doc/user/get_started/get_started_runner.md @rsarangadharan
-/doc/user/get_started/getting_started_gitlab_duo.md @ashrafkhamis
 /doc/user/gitlab_duo/ @ashrafkhamis
 /doc/user/gitlab_duo/code_review.md @uchandran
 /doc/user/gitlab_duo/customize_duo/ @uchandran
+/doc/user/gitlab_duo/feature_summary.md @uchandran
 /doc/user/gitlab_duo/model_context_protocol/ @fneill
 /doc/user/gitlab_duo/tutorials/ @gl-docsteam
 /doc/user/gitlab_duo_chat/ @jglassman1
@@ -1348,8 +1353,10 @@ lib/gitlab/checks/
 /doc/user/infrastructure/ @rsarangadharan
 /doc/user/infrastructure/clusters/manage/management_project_applications/ @rsarangadharan
 /doc/user/markdown.md @brendan777
+/doc/user/model_context_protocol/ @fneill
 /doc/user/namespace/ @z_painter
 /doc/user/operations_dashboard/ @rsarangadharan
+/doc/user/org_mode.md @brendan777
 /doc/user/organization/ @z_painter
 /doc/user/packages/ @z_painter
 /doc/user/permissions.md @idurham
@@ -1718,7 +1725,6 @@ lib/gitlab/checks/
 /lib/api/entities/impersonation_token.rb
 /lib/api/entities/impersonation_token_with_token.rb
 /lib/api/entities/personal_access_token.rb
-/lib/api/entities/personal_access_token_with_last_used_ips.rb
 /lib/api/entities/personal_access_token_with_token.rb
 /lib/api/entities/resource_access_token.rb
 /lib/api/entities/resource_access_token_with_token.rb
@@ -1973,13 +1979,10 @@ ee/lib/ee/api/entities/project.rb
 /app/services/audit_events/build_service.rb
 /ee/app/services/ee/audit_events/build_service.rb
 /app/models/audit_event.rb
-/app/services/audit_event_service.rb
-/app/services/concerns/audit_event_save_type.rb
 /ee/app/models/audit_events/
 /ee/app/models/concerns/audit_events/
 /ee/app/models/concerns/auditable.rb
 /ee/app/models/ee/audit_event.rb
-/ee/app/services/ee/audit_event_service.rb
 /ee/app/workers/audit_events/
 /ee/lib/ee/gitlab/audit/
 /lib/gitlab/audit/auditor.rb
@@ -2007,6 +2010,13 @@ ee/lib/code_suggestions/
 ee/lib/ai/context/dependencies/
 ee/app/services/ai/repository_xray/
 ee/app/workers/ai/repository_xray/
+
+^[Category:Semantic Search] @gitlab-org/ai-powered/ai-platform/ai-core-infra/semantic-code-search
+gems/gitlab-active-context/
+ee/lib/gitlab/llm/embeddings/
+**/*active_context*
+**/*semantic_search*
+**/*vector_storage*
 
 # Fulfillment::Utilization
 ^[Usage Quotas] @gitlab-org/fulfillment/utilization/fe
@@ -2094,7 +2104,7 @@ ee/app/workers/ai/repository_xray/
 /ee/elastic/migrate/
 /ee/elastic/docs/
 
-^[Advanced Search Migration] @gitlab-org/search-team/maintainers/advanced-migrations
+^[Advanced Search Migration optional] @gitlab-org/search-team/maintainers/advanced-migrations
 /ee/spec/elastic/migrate/
 /ee/spec/lib/search/elastic
 
@@ -2173,8 +2183,16 @@ ee/app/workers/ai/repository_xray/
 
 [Geo]
 /ee/**/geo/ @gitlab-org/geo-team/geo-backend
-/ee/lib/gitlab/geo.rb @gitlab-org/geo-team/geo-backend
-/ee/spec/lib/gitlab/geo_spec.rb @gitlab-org/geo-team/geo-backend
+/ee/app/**/geo*.rb @gitlab-org/geo-team/geo-backend
+/ee/bin/geo_log_cursor @gitlab-org/geo-team/geo-backend
+/ee/config/initializers/geo.rb @gitlab-org/geo-team/geo-backend
+/ee/db/database_connections/geo.yaml @gitlab-org/geo-team/geo-backend
+/ee/db/gitlab_schemas/gitlab_geo.yaml @gitlab-org/geo-team/geo-backend
+/ee/lib/**/geo*.rake @gitlab-org/geo-team/geo-backend
+/ee/lib/**/geo*.rb @gitlab-org/geo-team/geo-backend
+/ee/spec/**/geo*.rb @gitlab-org/geo-team/geo-backend
+/ee/spec/fixtures/api/schemas/public_api/v4/geo*.json @gitlab-org/geo-team/geo-backend
+/ee/spec/requests/git_http_geo_spec.rb @gitlab-org/geo-team/geo-backend
 /qa/**/geo/ @gitlab-org/geo-team/geo-backend
 /node_modules/**/geo/ @gitlab-org/geo-team/geo-backend
 
@@ -2456,3 +2474,83 @@ frontend/**/geo_* @zcuddy
 # Ensure database sharding requirements are followed - See https://docs.gitlab.com/development/organization/sharding/
 [Database Sharding] @gitlab-com/gl-infra/tenant-scale/transport/backend-engineers @tkuah @tskorupa-gl @chen-gitlab @dblessing @alexpooley @rutgerwessels
 /spec/lib/gitlab/organizations/sharding_key_spec.rb
+
+[Webhooks] @gitlab-com/create-team/import
+
+# Models & concerns
+/app/models/concerns/triggerable_hooks.rb
+/app/models/concerns/web_hooks/
+/app/models/hooks/
+/app/policies/web_hook_log_policy.rb
+/ee/app/models/concerns/ee/web_hooks/
+/ee/app/models/hooks/
+
+# Services & test hooks
+/app/services/merge_requests/refresh/web_hooks_service.rb
+/app/services/test_hooks/
+/app/services/web_hook_service.rb
+/app/services/web_hooks/
+/ee/app/services/ee/web_hooks/
+/ee/app/services/test_hooks/
+
+# Payload builders
+/ee/lib/ee/gitlab/hook_data/
+/lib/gitlab/hook_data/
+
+# HTTP delivery & rate limiting
+/config/initializers/webhook_recursion_detection.rb
+/ee/lib/ee/gitlab/web_hooks/
+/lib/gitlab/middleware/webhook_recursion_detection.rb
+/lib/gitlab/web_hooks.rb
+/lib/gitlab/web_hooks/
+
+# Workers
+/app/workers/merge_requests/refresh/web_hooks_worker.rb
+/app/workers/web_hook_worker.rb
+/app/workers/web_hooks/
+
+# Controllers
+/app/controllers/admin/hook_logs_controller.rb
+/app/controllers/admin/hooks_controller.rb
+/app/controllers/concerns/web_hooks/
+/app/controllers/projects/hook_logs_controller.rb
+/app/controllers/projects/hooks_controller.rb
+/ee/app/controllers/groups/hook_logs_controller.rb
+/ee/app/controllers/groups/hooks_controller.rb
+
+# GraphQL
+/app/graphql/resolvers/web_hooks/
+/app/graphql/types/web_hooks/
+/ee/app/graphql/ee/types/web_hooks/
+/ee/app/graphql/resolvers/web_hooks/
+/ee/app/graphql/types/web_hooks/
+
+# Finders, helpers, validators, presenters
+/app/finders/web_hooks/
+/app/helpers/web_hooks/
+/app/presenters/web_hook_log_presenter.rb
+/app/validators/web_hooks/
+/ee/app/helpers/ee/web_hooks/
+/ee/app/presenters/web_hooks/
+
+# Views
+/app/views/admin/application_settings/_web_hook_limits.html.haml
+/app/views/admin/hooks/
+/app/views/projects/hooks/
+/app/views/shared/web_hooks/
+/ee/app/views/groups/hooks/
+/ee/app/views/shared/web_hooks/
+
+# API
+/ee/lib/ee/api/hooks/
+/lib/api/entities/hook.rb
+/lib/api/entities/project_hook.rb
+/lib/api/entities/retry_webhook_event.rb
+/lib/api/entities/web_hook_log.rb
+/lib/api/helpers/web_hooks_helpers.rb
+/lib/api/hooks/
+/lib/api/project_hooks.rb
+/lib/api/system_hooks.rb
+
+# Rake tasks
+/lib/tasks/gitlab/web_hook.rake

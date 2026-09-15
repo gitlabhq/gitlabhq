@@ -14,6 +14,14 @@ module BoardHelpers
     wait_for_requests
   end
 
+  def board_list(index)
+    find("[data-testid='board-list']:nth-child(#{index + 1}) .board-list")
+  end
+
+  def board_card(list_index, card_index)
+    board_list(list_index).all('.board-card', minimum: card_index + 1)[card_index]
+  end
+
   def click_card_and_edit_label
     click_card(card)
 

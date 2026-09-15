@@ -20,6 +20,15 @@ module QA
       let(:session) { SecureRandom.hex(5) }
       let(:tag_name) { SecureRandom.hex(5) }
 
+      # Live Time values are normalized to ISO 8601 with millisecond precision on
+      # delivery; values the payload builder pre-stringifies are delivered verbatim.
+      let(:normalized_timestamp) { /\A\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}\.\d{3}Z\z/ }
+      let(:commit_timestamp) { /\A\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}[+-]\d{2}:\d{2}\z/ }
+      # Deployment lifecycle timestamps round-trip through Sidekiq as zoned strings
+      # (Deployment#serialize_params_for_sidekiq! + String#to_time), so they render
+      # with a numeric offset instead of Z.
+      let(:offset_normalized_timestamp) { /\A\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}\.\d{3}[+-]\d{2}:\d{2}\z/ }
+
       it 'sends a push event' do
         Resource::ProjectWebHook.setup(session: session, push: true) do |webhook, smocker|
           Resource::Repository::ProjectPush.fabricate! do |project_push|
@@ -27,6 +36,12 @@ module QA
           end
 
           expect_web_hook_single_event_success(webhook, smocker, type: 'push')
+
+          commits = smocker.events(session).first[:commits]
+          aggregate_failures do
+            expect(commits).not_to be_empty
+            expect(commits).to all(match(a_hash_including(timestamp: match(commit_timestamp))))
+          end
         end
       end
 
@@ -40,7 +55,14 @@ module QA
             -> { "Should have at least 1 event, got: #{smocker.stringified_history(session)}" }
 
           expect(smocker.events(session)).to include(
-            a_hash_including(object_kind: 'merge_request', project: a_hash_including(name: webhook.project.name))
+            a_hash_including(
+              object_kind: 'merge_request',
+              project: a_hash_including(name: webhook.project.name),
+              object_attributes: a_hash_including(
+                created_at: match(normalized_timestamp),
+                updated_at: match(normalized_timestamp)
+              )
+            )
           )
         end
       end
@@ -67,8 +89,18 @@ module QA
 
           aggregate_failures do
             expect(events).to include(
-              a_hash_including(object_kind: 'note'),
-              a_hash_including(object_kind: 'issue')
+              a_hash_including(
+                object_kind: 'note',
+                object_attributes: a_hash_including(created_at: match(normalized_timestamp)),
+                issue: a_hash_including(created_at: match(normalized_timestamp))
+              ),
+              a_hash_including(
+                object_kind: 'issue',
+                object_attributes: a_hash_including(
+                  created_at: match(normalized_timestamp),
+                  updated_at: match(normalized_timestamp)
+                )
+              )
             )
           end
         end
@@ -83,6 +115,76 @@ module QA
           create(:tag, project: project_push.project, ref: project_push.branch_name, name: tag_name)
 
           expect_web_hook_single_event_success(webhook, smocker, type: 'tag_push')
+        end
+      end
+
+      it 'sends a release event' do
+        Resource::ProjectWebHook.setup(session: session, releases: true) do |webhook, smocker|
+          project_push = Resource::Repository::ProjectPush.fabricate! do |project_push|
+            project_push.project = webhook.project
+          end
+
+          create(:release, project: webhook.project, tag_name: tag_name, ref: project_push.branch_name)
+
+          expect_web_hook_single_event_success(webhook, smocker, type: 'release')
+
+          expect(smocker.events(session).first).to match(a_hash_including(
+            created_at: match(normalized_timestamp),
+            released_at: match(normalized_timestamp),
+            commit: a_hash_including(timestamp: match(commit_timestamp))
+          ))
+        end
+      end
+
+      it 'sends deployment events' do
+        Resource::ProjectWebHook.setup(session: session, deployment: true) do |webhook, smocker|
+          project_push = Resource::Repository::ProjectPush.fabricate! do |project_push|
+            project_push.project = webhook.project
+          end
+
+          deployment = create(:deployment,
+            project: webhook.project,
+            environment: 'production',
+            ref: project_push.branch_name,
+            sha: webhook.project.commits.first[:id])
+          deployment.succeed!
+
+          # One event for the running state, one for the success transition
+          expect { smocker.events(session).size }.to eventually_eq(2)
+                                                 .within(max_duration: 30, sleep_interval: 2),
+            -> { "Should have 2 events, got: #{smocker.stringified_history(session)}" }
+
+          expect(smocker.events(session)).to include(
+            a_hash_including(
+              object_kind: 'deployment',
+              status: 'success',
+              status_changed_at: match(offset_normalized_timestamp)
+            )
+          )
+        end
+      end
+
+      context 'with a custom webhook template' do
+        let(:template) do
+          '{"kind":"{{object_kind}}","created_at":"{{object_attributes.created_at}}"}'
+        end
+
+        # Rendering to invalid JSON aborts delivery before the request is sent, so a
+        # regression shows up as zero events rather than a malformed body.
+        it 'delivers the rendered template with an ISO 8601 timestamp' do
+          Resource::ProjectWebHook.setup(session: session, issues: true,
+            custom_webhook_template: template) do |webhook, smocker|
+            create(:issue, project: webhook.project)
+
+            expect { smocker.events(session).size }.to eventually_eq(1)
+                                                   .within(max_duration: 30, sleep_interval: 2),
+              -> { "Should have 1 event, got: #{smocker.stringified_history(session)}" }
+
+            expect(smocker.events(session).first).to match(a_hash_including(
+              kind: 'issue',
+              created_at: match(normalized_timestamp)
+            ))
+          end
         end
       end
 

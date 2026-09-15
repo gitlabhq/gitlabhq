@@ -587,6 +587,17 @@ RSpec.describe Gitlab::GitalyClient::RefService, feature_category: :gitaly do
         client.list_refs(ignore_case: true)
       end
     end
+
+    context 'with exclude_patterns option' do
+      it 'sends a list_refs message with exclude_patterns' do
+        expect_any_instance_of(Gitaly::RefService::Stub)
+          .to receive(:list_refs)
+          .with(gitaly_request_with_params(exclude_patterns: ['refs/heads/master']), kind_of(Hash))
+          .and_call_original
+
+        client.list_refs(exclude_patterns: ['refs/heads/master'])
+      end
+    end
   end
 
   describe '#find_refs_by_oid' do

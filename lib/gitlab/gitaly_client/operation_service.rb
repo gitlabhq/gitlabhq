@@ -10,6 +10,8 @@ module Gitlab
 
       CUSTOM_HOOK_FALLBACK_MESSAGE = 'Prevented by server hooks'
 
+      MAX_CONFLICTING_FILES = 10
+
       def initialize(repository)
         @gitaly_repo = repository.gitaly_repository
         @repository = repository
@@ -163,6 +165,15 @@ module Gitlab
           :user_merge_to_ref, request, timeout: GitalyClient.long_timeout)
 
         response.commit_id
+      rescue GRPC::BadStatus => e
+        detailed_error = GitalyClient.decode_detailed_error(e)
+
+        case detailed_error.try(:error)
+        when :merge_conflict
+          raise merge_conflict_error(e, detailed_error.merge_conflict.conflicting_files)
+        else
+          raise
+        end
       end
 
       def user_merge_branch(user, source_sha:, target_branch:, message:, target_sha: nil, sign: true)
@@ -213,6 +224,8 @@ module Gitlab
         when :custom_hook
           raise Gitlab::Git::PreReceiveError.new(custom_hook_error_message(detailed_error.custom_hook),
             fallback_message: CUSTOM_HOOK_FALLBACK_MESSAGE)
+        when :merge_conflict
+          raise Gitlab::Git::MergeConflictError, e
         when :reference_update
           # We simply ignore any reference update errors which are typically an
           # indicator of multiple RPC calls trying to update the same reference
@@ -481,25 +494,16 @@ module Gitlab
         detailed_error = GitalyClient.decode_detailed_error(e)
 
         case detailed_error.try(:error)
-        when :resolve_revision, :rebase_conflict
-          # Theoretically, we could now raise specific errors based on the type
-          # of the detailed error. Most importantly, we get error details when
-          # Gitaly was not able to resolve the `start_sha` or `end_sha` via a
-          # ResolveRevisionError, and we get information about which files are
-          # conflicting via a MergeConflictError.
-          #
-          # We don't do this now though such that we can maintain backwards
-          # compatibility with the minimum required set of changes during the
-          # transitory period where we're migrating UserSquash to use
-          # structured errors. We thus continue to just return a GitError, like
-          # we previously did.
+        when :rebase_conflict
+          raise Gitlab::Git::MergeConflictError, e
+        when :resolve_revision
           raise Gitlab::Git::Repository::GitError, e.details
         else
           raise
         end
       end
 
-      def user_update_submodule(user:, submodule:, commit_sha:, branch:, message:)
+      def user_update_submodule(user:, submodule:, commit_sha:, branch:, message:, expected_old_oid: '')
         request = Gitaly::UserUpdateSubmoduleRequest.new(
           repository: @gitaly_repo,
           user: gitaly_user(user),
@@ -507,7 +511,8 @@ module Gitlab
           branch: encode_binary(branch),
           submodule: encode_binary(submodule),
           commit_message: encode_binary(message),
-          timestamp: Google::Protobuf::Timestamp.new(seconds: Time.now.utc.to_i)
+          timestamp: Google::Protobuf::Timestamp.new(seconds: Time.now.utc.to_i),
+          expected_old_oid: expected_old_oid
         )
 
         response = gitaly_client_call(
@@ -525,7 +530,6 @@ module Gitlab
         else
           Gitlab::Git::OperationService::BranchUpdate.from_gitaly(response.branch_update)
         end
-
       rescue GRPC::BadStatus => e
         detailed_error = GitalyClient.decode_detailed_error(e)
 
@@ -738,6 +742,23 @@ module Gitlab
         else
           "Unknown error performing git operation"
         end
+      end
+
+      # #exception clones the error rather than building a new one from a string: that keeps the
+      # Gitaly metadata Gitlab::ExceptionLogFormatter reads, and skips the Gitlab::Git::BaseError
+      # truncation that would drop everything appended after a debug_error_string.
+      def merge_conflict_error(exception, conflicting_files)
+        error = Gitlab::Git::CommandError.new(exception)
+
+        # Gitaly reports the conflict even when it could not work out which files conflict.
+        return error if conflicting_files.empty?
+
+        # The message reaches a system note, whose body is rendered as markdown.
+        files = conflicting_files.first(MAX_CONFLICTING_FILES).map { |file| "`#{encode_utf8_safe_path(file)}`" }
+        remaining = conflicting_files.size - files.size
+        files << "and #{remaining} more" if remaining > 0
+
+        error.exception("#{error.message.chomp('.')}. Conflicts in: #{files.join(', ')}.")
       end
 
       def handle_undetailed_bad_status_errors(error)

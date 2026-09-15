@@ -16,7 +16,7 @@ Git storage is provided through the Gitaly service in GitLab, and is essential t
 GitLab. When the number of users, repositories, and activity grows, it is important to scale Gitaly
 appropriately by:
 
-- Increasing the available CPU and memory resources available to Git before
+- Increasing the CPU and memory resources available to Git before
   resource exhaustion degrades Git, Gitaly, and GitLab application performance.
 - Increasing available storage before storage limits are reached causing write
   operations to fail.
@@ -75,7 +75,7 @@ Improvements to RPO and RTO are proposed in epic [8903](https://gitlab.com/group
 
 ## Before deploying Gitaly Cluster (Praefect)
 
-Gitaly Cluster (Praefect) provides the benefits of fault tolerance, but comes with additional set up and management complexity.
+Gitaly Cluster (Praefect) provides the benefits of fault tolerance, but comes with additional setup and management complexity.
 Before deploying Gitaly Cluster (Praefect), see:
 
 - Existing [known issues](#known-issues).
@@ -361,10 +361,10 @@ When creating repositories, Praefect:
 Even if two concurrent operations create the same repository, they'd be stored in different directories on the storages and not
 conflict. The first to complete creates the metadata record and the other operation fails with an "already exists" error.
 The failing creation leaves leftover repositories on the storages. There is on-going work on a
-[background crawler](https://gitlab.com/gitlab-org/gitaly/-/issues/3719) that clean up the leftover repositories from the storages.
+[background crawler](https://gitlab.com/gitlab-org/gitaly/-/issues/3719) that cleans up the leftover repositories from the storages.
 
 The repository IDs are generated from the `repositories_repository_id_seq` in PostgreSQL. In the previous example, the failing operation took
-one repository ID without successfully creating a repository with it. Failed repository creations are expected lead to gaps in the repository IDs.
+one repository ID without successfully creating a repository with it. Failed repository creations are expected to lead to gaps in the repository IDs.
 
 #### Repository deletions
 

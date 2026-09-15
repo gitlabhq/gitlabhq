@@ -102,6 +102,26 @@ RSpec.describe 'gitlab:api:check_high_impact_entity_baseline rake task', :silenc
       expect { run_rake_task('gitlab:api:check_high_impact_entity_baseline') }
         .to raise_error(SystemExit)
     end
+
+    context 'when DRIFT_ENV_FILE is set' do
+      let(:drift_env_file) { Rails.root.join('tmp/tests/drift_check.env') }
+
+      before do
+        FileUtils.rm_f(drift_env_file)
+        stub_env('DRIFT_ENV_FILE', drift_env_file.to_s)
+      end
+
+      after do
+        FileUtils.rm_f(drift_env_file)
+      end
+
+      it 'records the drift marker' do
+        expect { run_rake_task('gitlab:api:check_high_impact_entity_baseline') }
+          .to raise_error(SystemExit)
+
+        expect(File.read(drift_env_file)).to eq("BASELINE_DRIFT=true\n")
+      end
+    end
   end
 
   context 'when entity_file_path returns nil for a high-impact entity' do

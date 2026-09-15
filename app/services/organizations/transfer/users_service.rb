@@ -51,13 +51,18 @@ module Organizations
             "GitlabSubscriptions::AddOnPurchase",
             "GitlabSubscriptions::SeatAssignment",
             "GitlabSubscriptions::UserAddOnAssignment",
+            # Govern::PolicyEvaluation is an audit-style record sharded by its policy's
+            # organization; user_id is only the evaluation principal, so a user transfer
+            # must not move it.
+            "Govern::PolicyEvaluation",
             "Group", # migrated by a dedicated service
             "ImportFailure",
             "MemberRole",
             "Project", # migrated by a dedicated service
             "ProjectSnippet",
             "Snippet",
-            "User" # migrated by a dedicated service
+            "User", # migrated by a dedicated service
+            "Vulnerabilities::Export" # scoped to group/project; transferred by SecurityExportsService
           ]
         end
       end
@@ -69,6 +74,7 @@ module Organizations
 
       def execute
         return ServiceResponse.error(message: transfer_error) unless can_transfer_users?
+        return ServiceResponse.error(message: already_transferred_error) if already_transferred?
 
         # Only create a transaction if we're not already in one
         # This allows the related organization group transfer
@@ -138,9 +144,11 @@ module Organizations
           update_granular_scopes(user_ids)
           update_associated_organization_ids(user_ids)
           update_personal_snippet_notes(user_ids)
+          update_user_agent_details(user_ids)
           update_clusters(user_ids)
           update_oauth_applications(user_ids)
           update_abuse_reports(user_ids)
+          fire_upload_triggers(user_ids)
         end
       end
 
@@ -218,6 +226,10 @@ module Organizations
       end
       strong_memoize_attr :old_organization
 
+      def already_transferred?
+        old_organization.id == new_organization.id
+      end
+
       # These are organization-specific bots that may be the author of Todos.
       def old_organization_bots
         bot_types =
@@ -285,6 +297,15 @@ module Organizations
         end
       end
 
+      def update_user_agent_details(user_ids)
+        update_organization_id_for(UserAgentDetail) do |relation|
+          relation.where(
+            subject_type: 'Snippet',
+            subject_id: PersonalSnippet.where(author_id: user_ids).select(:id)
+          )
+        end
+      end
+
       def note_transfer_attributes(transferring_user_ids)
         table = Note.arel_table
         ghost_id = new_organization_bots[:ghost].id
@@ -325,9 +346,7 @@ module Organizations
 
       # rubocop:disable CodeReuse/ActiveRecord -- Query specific to this service
       # Abuse reports follow their reporter, matching AntiAbuse::AbuseReport::CreateService which
-      # sets organization_id from params[:reporter].organization_id. Child rows derive their
-      # organization_id from the parent report -- see trigger_ca93521f3a6d (abuse_events) in
-      # db/structure.sql.
+      # sets organization_id from params[:reporter].organization_id.
       #
       # report_ids is scoped to the old organization, so the AbuseReport update must stay last
       # here. Same ordering contract as #update_granular_scopes.
@@ -337,12 +356,20 @@ module Organizations
           .where(organization_id: old_organization.id)
           .select(:id)
 
+        update_abuse_report_uploads(report_ids)
+
         update_organization_id_for(AntiAbuse::Event) do |relation|
           relation.where(abuse_report_id: report_ids)
         end
 
         update_organization_id_for(AbuseReport) do |relation|
           relation.by_reporter_id(user_ids)
+        end
+      end
+
+      def update_abuse_report_uploads(report_ids)
+        update_organization_id_for(AntiAbuse::AbuseReportUpload) do |relation|
+          relation.where(model_id: report_ids)
         end
       end
       # rubocop:enable CodeReuse/ActiveRecord
@@ -352,16 +379,10 @@ module Organizations
         update_organization_id_for(Authn::OauthApplication) do |relation|
           relation.where(owner_type: 'User', owner_id: user_ids)
         end
-
-        # update_all above bypasses callbacks, so capture the moved records explicitly.
-        # TODO: evaluate moving this into OrganizationUpdater#update_organization_id_for.
-        Authn::OauthApplication.record_iam_outbox_upserts(
-          Authn::OauthApplication.where(
-            owner_type: 'User', owner_id: user_ids, organization_id: new_organization.id
-          )
-        )
       end
       # rubocop:enable CodeReuse/ActiveRecord
+
+      def fire_upload_triggers(user_ids); end
 
       def organization_not_found_error
         s_("TransferOrganization|Cannot transfer users because the existing organization could not be found.")
@@ -370,6 +391,10 @@ module Organizations
       def users_different_organizations_error
         s_("TransferOrganization|Cannot transfer users to a different organization " \
           "if all users do not belong to the same organization as the top-level group.")
+      end
+
+      def already_transferred_error
+        s_("TransferOrganization|Users are already in the target organization.")
       end
     end
   end

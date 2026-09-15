@@ -85,20 +85,20 @@ RSpec.describe Gitlab::UsageDataQueries do
   describe 'min/max methods' do
     it 'returns nil' do
       # user min/max
-      expect(described_class.minimum_id(User)).to eq(nil)
-      expect(described_class.maximum_id(User)).to eq(nil)
+      expect(described_class.minimum_id(User)).to be_nil
+      expect(described_class.maximum_id(User)).to be_nil
 
       # issue min/max
-      expect(described_class.minimum_id(Issue)).to eq(nil)
-      expect(described_class.maximum_id(Issue)).to eq(nil)
+      expect(described_class.minimum_id(Issue)).to be_nil
+      expect(described_class.maximum_id(Issue)).to be_nil
 
       # deployment min/max
-      expect(described_class.minimum_id(Deployment)).to eq(nil)
-      expect(described_class.maximum_id(Deployment)).to eq(nil)
+      expect(described_class.minimum_id(Deployment)).to be_nil
+      expect(described_class.maximum_id(Deployment)).to be_nil
 
       # project min/max
-      expect(described_class.minimum_id(Project)).to eq(nil)
-      expect(described_class.maximum_id(Project)).to eq(nil)
+      expect(described_class.minimum_id(Project)).to be_nil
+      expect(described_class.maximum_id(Project)).to be_nil
     end
   end
 end

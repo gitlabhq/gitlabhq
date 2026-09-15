@@ -33,6 +33,11 @@ description: Automatically open merge requests to fix vulnerable dependencies.
   in GitLab 19.3.
 - Feature flag `dependency_management_auto_remediation`
   [removed](https://gitlab.com/gitlab-org/gitlab/-/work_items/595588) in GitLab 19.3.
+- NuGet (.NET) support [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/604603)
+  in GitLab 19.4.
+- Support in the triage and remediation profile [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/253780) in GitLab 19.4 [with a feature flag](../../../administration/feature_flags/_index.md) named `triage_and_remediation_profile`. Enabled by default.
+- Feature flag `enable_dependency_bump_breaking_changes`
+  [removed](https://gitlab.com/gitlab-org/gitlab/-/work_items/604558) in GitLab 19.4.
 
 {{< /history >}}
 
@@ -50,6 +55,10 @@ In beta, dependency scanning auto-remediation supports two independently configu
 
 For the generally available roadmap, see [epic 19244](https://gitlab.com/groups/gitlab-org/-/work_items/19244).
 
+Security configuration profiles also support this flow. To turn on and configure the flow
+across multiple projects and groups at once, use the
+[automated triage and remediation profile](../configuration/security_configuration_profiles.md#automated-triage-and-remediation-profile).
+
 ## Turn on dependency scanning auto-remediation
 
 Prerequisites:
@@ -60,6 +69,15 @@ Prerequisites:
   [supported package manager](#supported-package-managers).
 - A dependency scanning auto-remediation profile must be attached to the project. For
   instructions, see [dependency scanning auto-remediation profile](../configuration/security_configuration_profiles.md#dependency-scanning-auto-remediation-profile).
+- The runner must accept untagged jobs.
+  GitLab generates the auto-remediation job without [tags](../../../ci/yaml/_index.md#tags),
+  and does not use the project's `.gitlab-ci.yml` configuration for it, so `default:tags`
+  does not apply.
+- The runner must allow privileged mode.
+  The auto-remediation job uses a `docker:28-dind` service.
+  For more information, see [use Docker to build Docker images](../../../ci/docker/using_docker_build.md).
+- The runner must be able to pull the auto-remediation orchestrator image from
+  `registry.gitlab.com` and the `docker:28-dind` image.
 
 To trigger vulnerability detection and auto-remediation, run a pipeline.
 Dependency scanning auto-remediation triggers automatically when GitLab detects vulnerabilities
@@ -99,9 +117,6 @@ version bump capability and has its own toggle.
 Prerequisites:
 
 - You must have [GitLab Duo](../../gitlab_duo/_index.md) available for the project.
-- The `enable_dependency_bump_breaking_changes`
-  [feature flag](../../../administration/feature_flags/_index.md) must be enabled for the
-  project's root namespace.
 
 To enable agentic breaking-change resolution, use the
 [Projects API](../../../api/projects.md#update-a-project) to set
@@ -128,9 +143,54 @@ Dependency scanning auto-remediation supports the following package managers:
 | JavaScript / TypeScript | npm, yarn, pnpm, bun                | `package.json`, `package-lock.json`, `yarn.lock`, `pnpm-lock.yaml`, `bun.lock` |
 | Go                      | Go modules                          | `go.mod`, `go.sum`                                                             |
 | Rust                    | Cargo                               | `Cargo.toml`, `Cargo.lock`                                                     |
+| .NET                    | NuGet                               | `*.csproj`, `packages.lock.json`                                               |
 
 Support for additional ecosystems is proposed in
 [epic 19244](https://gitlab.com/groups/gitlab-org/-/work_items/19244).
+
+For .NET, dependency scanning only detects NuGet dependencies from a committed
+`packages.lock.json`. Projects without one produce no NuGet findings, so
+auto-remediation has nothing to act on. To generate the lock file, set
+[`RestorePackagesWithLockFile`](https://learn.microsoft.com/en-us/nuget/consume-packages/package-references-in-project-files#enabling-lock-file)
+in your project file and commit the result.
+
+## Service account permissions
+
+The first time dependency scanning auto-remediation runs on a project, GitLab creates a
+service account for the project named `GitLab Dependency Management`. GitLab reuses this
+account for every subsequent auto-remediation merge request on the project, so each project has
+exactly one.
+
+GitLab adds the service account to the project as a Guest member. This membership makes the
+account a member of the project, but grants no other permission. A dedicated internal role then
+grants the account the following abilities:
+
+- Clone the repository.
+- Push a branch.
+- Create and update merge requests.
+- Create pipelines.
+
+This internal role, not the Guest membership, bounds what the account can do. The
+account holds no broader role because the design grants these abilities directly and narrowly,
+instead of giving an automated account the Developer role on every project that turns the
+feature on. For the full rationale behind this design, see
+[ADR 003: Single service account model](https://handbook.gitlab.com/handbook/engineering/architecture/design-documents/automated_dependency_updates/decisions/003_single_service_account/).
+
+Pipelines on auto-remediation merge requests run as this service account. If a job needs
+permissions beyond what that role grants, the job fails, even though the same pipeline succeeds
+when a person with the Developer role runs it. For example:
+
+- Pushing a container image to the project container registry requires the Developer role.
+  Pulling an existing image from the project container registry works with the service
+  account's permissions.
+- Reading the project package registry requires the Reporter role.
+
+A project that uses Auto DevOps hits the container registry case, because the Auto DevOps
+build job pushes an image.
+
+To let these jobs run, a user with at least the Maintainer role can grant the service account
+the Developer role on the project. For instructions, see
+[auto-remediation pipeline jobs fail with permission errors](#auto-remediation-pipeline-jobs-fail-with-permission-errors).
 
 ## Known issues
 
@@ -147,3 +207,36 @@ During the beta phase:
   is proposed in [epic 19244](https://gitlab.com/groups/gitlab-org/-/work_items/19244).
 - No fix available: If no non-breaking fix version exists for a vulnerability,
   no merge request is created for that finding.
+- Merge request creation depends on a successful pipeline. GitLab creates the
+  `dependency-management/<dependency>-<major-version>.x` branch before it runs the
+  auto-remediation pipeline on that branch, and creates the merge request only after that
+  pipeline succeeds.
+  A `dependency-management/` branch that has no merge request and no commit that changes a
+  manifest file indicates that the pipeline did not succeed.
+  Check the status of the pipeline on that branch.
+
+## Troubleshooting
+
+### Auto-remediation pipeline jobs fail with permission errors
+
+Pipeline jobs on auto-remediation merge requests run as the `GitLab Dependency Management`
+service account, which gets its abilities from an internal role rather than from the Guest
+role it also holds. This internal role does not cover everything a project pipeline might need.
+For more information, see [service account permissions](#service-account-permissions). A job
+that needs permissions beyond what that role grants fails, even though the same job succeeds
+when a person with the Developer role runs it. The error differs by job. For example, a
+job that pushes an image to the project container registry receives a denial, and a job
+that reads the project package registry receives a `403` error.
+
+To work around this issue, a user with at least the Maintainer role can grant the service
+account the Developer role for the project:
+
+1. In the left sidebar, select **Search or go to** and find your project.
+1. Select **Manage** > **Members**.
+1. Find the `GitLab Dependency Management` member.
+1. Change its role to **Developer**.
+
+This action grants the service account the full Developer role on the project. Make this change
+only if your pipeline needs it. The change applies only to this project. It persists, so subsequent
+auto-remediation merge requests on the project get pipelines that work. Re-run the failed
+pipeline to pick up the change.

@@ -34,6 +34,76 @@ RSpec.describe Docs::Api::TagContent, feature_category: :api do
       )
     end
 
+    it 'converts documentation paths in the body to absolute URLs' do
+      write_tag('wikis', <<~MARKDOWN)
+        ---
+        name: Wikis
+        ---
+        See [wikis](../../../../doc/api/wikis.md) and [notes](../../../../doc/api/notes.md#group-wikis).
+        The [index page](../../../../doc/api/group_wikis/_index.md) covers group wikis.
+      MARKDOWN
+
+      expect(tag_content['wikis']['description']).to eq(
+        'See [wikis](https://docs.gitlab.com/api/wikis/) and ' \
+          '[notes](https://docs.gitlab.com/api/notes/#group-wikis).' \
+          "\nThe [index page](https://docs.gitlab.com/api/group_wikis/) covers group wikis."
+      )
+    end
+
+    it 'converts an _index page with an anchor to the directory URL' do
+      write_tag('group_wikis', <<~MARKDOWN)
+        ---
+        name: Group wikis
+        ---
+        See [group wikis](../../../../doc/api/group_wikis/_index.md#create-a-new-wiki-page).
+      MARKDOWN
+
+      expect(tag_content['group_wikis']['description']).to eq(
+        'See [group wikis](https://docs.gitlab.com/api/group_wikis/#create-a-new-wiki-page).'
+      )
+    end
+
+    it 'converts the documentation home page to the docs root URL' do
+      write_tag('metadata', <<~MARKDOWN)
+        ---
+        name: Metadata
+        ---
+        Start at the [documentation home](../../../../doc/_index.md) or the
+        [changelog](../../../../doc/_index.md#changelog).
+      MARKDOWN
+
+      expect(tag_content['metadata']['description']).to eq(
+        'Start at the [documentation home](https://docs.gitlab.com/) or the' \
+          "\n[changelog](https://docs.gitlab.com/#changelog)."
+      )
+    end
+
+    it 'keeps _index when it is part of a file name rather than a section index' do
+      write_tag('users', <<~MARKDOWN)
+        ---
+        name: Users
+        ---
+        See [the user index](../../../../doc/api/user_index.md).
+      MARKDOWN
+
+      expect(tag_content['users']['description']).to eq(
+        'See [the user index](https://docs.gitlab.com/api/user_index/).'
+      )
+    end
+
+    it 'leaves links that are already absolute alone' do
+      write_tag('packages', <<~MARKDOWN)
+        ---
+        name: Packages
+        ---
+        See [the runner docs](https://docs.gitlab.com/runner/install/) and [Helm](https://helm.sh/).
+      MARKDOWN
+
+      expect(tag_content['packages']['description']).to eq(
+        'See [the runner docs](https://docs.gitlab.com/runner/install/) and [Helm](https://helm.sh/).'
+      )
+    end
+
     it 'passes through x- prefixed front matter keys' do
       write_tag('branches', <<~MARKDOWN)
         ---

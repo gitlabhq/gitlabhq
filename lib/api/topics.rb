@@ -6,10 +6,6 @@ module API
 
     feature_category :groups_and_projects
 
-    before do
-      set_current_organization
-    end
-
     helpers do
       def find_topic!(id)
         topic = ::Projects::Topic.find(id)

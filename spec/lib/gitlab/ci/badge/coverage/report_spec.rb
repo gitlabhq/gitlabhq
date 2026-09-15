@@ -51,7 +51,7 @@ RSpec.describe Gitlab::Ci::Badge::Coverage::Report, feature_category: :continuou
         end
 
         it 'returns nil' do
-          expect(badge.status).to eq(nil)
+          expect(badge.status).to be_nil
         end
       end
     end

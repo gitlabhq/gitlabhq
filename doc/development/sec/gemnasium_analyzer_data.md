@@ -9,24 +9,24 @@ The following table lists the data available for the Gemnasium analyzer.
 
 | Property \ Tool                               | Gemnasium |
 |:----------------------------------------------|:---------:|
-| Severity                                      | {{< icon name="check-circle" >}} Yes |
-| Title                                         | {{< icon name="check-circle" >}} Yes |
-| File                                          | {{< icon name="check-circle" >}} Yes |
-| Start line                                    | {{< icon name="dotted-circle" >}} No |
-| End line                                      | {{< icon name="dotted-circle" >}} No |
-| External ID (for example, CVE)                | {{< icon name="check-circle" >}} Yes |
-| URLs                                          | {{< icon name="check-circle" >}} Yes |
-| Internal doc/explanation                      | {{< icon name="check-circle" >}} Yes |
-| Solution                                      | {{< icon name="check-circle" >}} Yes |
-| Confidence                                    | {{< icon name="dotted-circle" >}} No |
-| Affected item (for example, class or package) | {{< icon name="check-circle" >}} Yes |
-| Source code extract                           | {{< icon name="dotted-circle" >}} No |
-| Internal ID                                   | {{< icon name="check-circle" >}} Yes |
-| Date                                          | {{< icon name="check-circle" >}} Yes |
-| Credits                                       | {{< icon name="check-circle" >}} Yes |
+| Severity                                      | {{< yes >}} |
+| Title                                         | {{< yes >}} |
+| File                                          | {{< yes >}} |
+| Start line                                    | {{< no >}} No |
+| End line                                      | {{< no >}} No |
+| External ID (for example, CVE)                | {{< yes >}} |
+| URLs                                          | {{< yes >}} |
+| Internal doc/explanation                      | {{< yes >}} |
+| Solution                                      | {{< yes >}} |
+| Confidence                                    | {{< no >}} No |
+| Affected item (for example, class or package) | {{< yes >}} |
+| Source code extract                           | {{< no >}} No |
+| Internal ID                                   | {{< yes >}} |
+| Date                                          | {{< yes >}} |
+| Credits                                       | {{< yes >}} |
 
-- {{< icon name="check-circle" >}} Yes => we have that data
-- {{< icon name="dotted-circle" >}} No => we don't have that data, or we would need to develop specific or inefficient/unreliable logic to obtain it.
+- {{< yes >}} => we have that data
+- {{< no >}} No => we don't have that data, or we would need to develop specific or inefficient/unreliable logic to obtain it.
 
 The values provided by these tools are heterogeneous, so they are sometimes normalized into common
 values (for example, `severity`, `confidence`, etc).

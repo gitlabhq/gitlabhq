@@ -17,6 +17,8 @@ title: Title (starts with an active verb, like "Create a widget" or "Delete a wi
 
 Do this task when you want to...
 
+Task result (optional)
+
 Prerequisites (optional):
 
 - Thing 1
@@ -29,7 +31,7 @@ To do this task:
 1. Another step.
 1. Another step.
 
-Task result (optional). Next steps (optional).
+Next steps (optional).
 ```
 
 Here is an example.
@@ -53,7 +55,7 @@ To create an issue:
 1. Enter a title and description. If you have reference content that lists each field, link to it here.
 1. Select **Create issue**.
 
-The issue is created. To view it, filter the **Work items** list by **Type** = **Issue** and select your issue.
+To view the issue, filter the **Work items** list by **Type** = **Issue** and select your issue.
 ```
 
 ## Task topic titles

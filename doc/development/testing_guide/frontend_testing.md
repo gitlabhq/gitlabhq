@@ -312,6 +312,41 @@ describe('methodName', () => {
 });
 ```
 
+### Extract conditions into `describe` blocks
+
+When "when X" appears inside an `it` block description, extract the condition into
+its own `describe` block with a `beforeEach` that performs the setup.
+Context-driven specs group related tests together, and help both humans and AI agents
+see which scenarios are already covered and update specs in the right place.
+
+**Bad**:
+
+```javascript
+it('displays an alert when the request fails', () => {
+  createComponent({ props: { hasError: true } });
+
+  expect(findAlert().exists()).toBe(true);
+});
+```
+
+**Good**:
+
+```javascript
+describe('when the request fails', () => {
+  beforeEach(() => {
+    createComponent({ props: { hasError: true } });
+  });
+
+  it('displays an alert', () => {
+    expect(findAlert().exists()).toBe(true);
+  });
+});
+```
+
+For the same reason, avoid `it` blocks that re-create the component when an outer
+`beforeEach` already did.
+Move them into their own `describe` block with dedicated setup instead.
+
 ### Testing promises
 
 When testing Promises you should always make sure that the test is asynchronous and rejections are handled. It's now possible to use the `async/await` syntax in the test suite:
@@ -1059,6 +1094,19 @@ scripts/frontend/download_fixtures.sh --max-commits=10
 scripts/frontend/download_fixtures.sh --branch master
 ```
 
+To download fixtures published by an unmerged branch, first run the manual
+`upload-frontend-fixtures-on-demand` job on that branch's pipeline. Then fetch the branch and
+pass it to `--branch`, or resolve the fixtures through the GitLab API with the pipeline ID:
+
+```shell
+# Fetch the branch, then walk its commits
+git fetch origin my-feature-branch
+scripts/frontend/download_fixtures.sh --branch origin/my-feature-branch
+
+# Or download fixtures published by a specific pipeline ID
+scripts/frontend/download_fixtures.sh --pipeline 123456789
+```
+
 #### Creating new fixtures
 
 For each fixture, you can find the content of the `response` variable in the output file.
@@ -1273,26 +1321,31 @@ MSW integration tests are EE-only. All specs and the shared harness live under
 
 ```plaintext
 ee/spec/frontend/msw_integration/
-├── constants.js          # Shared constants for the harness
-├── fixture_utils.js      # Provides loadFixturesMap, the single fixtures loader
 ├── handlers.js           # Aggregates the per-feature GraphQL handlers
-├── operation_helpers.js  # Helpers for GraphQL operations
-├── polyfills.js          # Environment polyfills
+├── polyfills.js          # Environment polyfills (loaded by jest.config.msw_integration.js)
 ├── server.js             # MSW server setup
-├── setup_utils.js        # Setup utilities for the harness
-├── test_helpers.js       # Helper utilities exported for global use
-├── test_setup.js         # Wires helpers into the global scope
-└── work_items/
-    ├── agent_plan_spec.js # Per-feature integration spec
-    └── handlers.js        # Per-feature GraphQL handlers
+├── test_setup.js         # Global Jest setup and teardown; wires helpers into scope
+├── core/                 # Shared harness: fixture loading, variants, request assertions
+│   ├── constants.js
+│   ├── fixture_utils.js
+│   ├── fixture_variant_schema.js
+│   └── operation_helpers.js
+├── helpers/              # Test lifecycle and mount helpers
+│   ├── setup_utils.js
+│   └── test_helpers.js
+└── <feature>/            # One directory per feature area
+    ├── handlers.js        # Per-feature GraphQL handler
+    ├── test_setup.js      # Feature-specific mount helpers and provide config
+    ├── fixture_variants/  # Named fixture variants for the feature
+    └── *_spec.js          # Per-feature integration specs
 ```
 
 The shared files are configured automatically through
 `jest.config.msw_integration.js`.
 
-All helper utilities exported from `test_helpers.js` are auto-imported globally
+All helper utilities exported from `helpers/test_helpers.js` are auto-imported globally
 through `Object.assign(global, testHelpers)` in `test_setup.js`. To add a new
-helper, export it from `test_helpers.js` and it becomes available globally in
+helper, export it from `helpers/test_helpers.js` and it becomes available globally in
 all MSW integration tests.
 
 ### Why MSW integration tests are EE-only
@@ -1325,7 +1378,7 @@ feature-specific resolver functions in order:
 
 ```javascript
 import { rest } from 'msw';
-import { handleWorkItemOperation } from './handlers/work_items';
+import { handleWorkItemOperation } from './work_items/handlers';
 
 // Thin router: Import feature handlers here
 const graphqlFeatureHandlers = [handleWorkItemOperation];
@@ -1372,7 +1425,7 @@ operation to the relevant feature handler file.
 To add MSW handlers for a new feature area (for example, merge
 requests):
 
-1. Create a resolver file in `handlers/` that uses `loadFixturesMap`
+1. Create a `<feature>/handlers.js` file that uses `loadFixturesMap`
    to auto-load fixtures and build the handler. For details on
    auto-loading and building handlers, see
    [Write feature handlers](#write-feature-handlers).
@@ -1380,12 +1433,15 @@ requests):
 1. Register the resolver in `handlers.js`:
 
    ```javascript
-   import { handleMergeRequestOperation } from './handlers/merge_requests';
+   import { handleMergeRequestOperation, mergeRequestRestEndpoints } from './merge_requests/handlers';
 
-   // Thin router: Import feature handlers here
-   const graphqlFeatureHandlers = [
+   export const featureHandlers = [
      handleWorkItemOperation,
      handleMergeRequestOperation,
+   ];
+   export const restEndpoints = [
+     ...workItemRestEndpoints,
+     ...mergeRequestRestEndpoints,
    ];
    ```
 
@@ -1426,7 +1482,7 @@ follow the naming convention described in
 
 ### Write feature handlers
 
-Each feature handler file in `handlers/` owns the operation-to-fixture
+Each `<feature>/handlers.js` file owns the operation-to-fixture
 map and mutation logic for its feature area.
 
 #### Auto-load fixtures with `loadFixturesMap`
@@ -1460,7 +1516,7 @@ const OPERATION_NAME_OVERRIDES = {
 
 ```javascript
 import { join } from 'node:path';
-import { loadFixturesMap } from '../fixture_utils';
+import { loadFixturesMap } from 'ee_jest/msw_integration/core/fixture_utils';
 
 const FIXTURES_PATH = join('tmp/tests/frontend/fixtures-ee/graphql/my_feature/integration/');
 const fixtures = loadFixturesMap(FIXTURES_PATH);
@@ -1516,6 +1572,88 @@ export function handleMyFeatureOperation({ operationName, variables, res, ctx })
 }
 ```
 
+### Fixture variants
+
+Recorded fixtures provide the base response for a GraphQL query.
+To test a different response shape such as an error, an empty list, or a flipped flag, you declare named variants instead of editing handlers.
+
+Place a variant file at `ee/spec/frontend/msw_integration/<feature>/fixture_variants/<query>.js`.
+It calls `defineFixtureVariants({ query, variants })` as its default export.
+`query` is the camelCase GraphQL operation name.
+`variants` maps UPPER_SNAKE_CASE keys to fixtures.
+`BASE` is required and is served by default.
+
+Build variants with three transform helpers from `fixture_utils.js`.
+Each helper deep-clones its input and returns a new fixture, so you never clone or mutate the import.
+`setFixtureData(fixture, lookupKey, value)` sets the first matching key found in a depth-first walk of `data`.
+`setFixtureErrors(fixture, ['message'])` sets `errors` and clears `data`.
+`setFixtureItemsCount({ fixture, lookupKey, itemCount })` resizes a connection's `nodes` array under `lookupKey`, which is the connection key rather than `nodes`.
+
+```javascript
+import base from 'test_fixtures/graphql/work_items/integration/get_work_items_full.query.graphql.json';
+import { defineFixtureVariants } from 'ee_jest/msw_integration/core/fixture_variant_schema';
+import { setFixtureItemsCount } from 'ee_jest/msw_integration/core/fixture_utils';
+
+export default defineFixtureVariants({
+  query: 'getWorkItemsFullEE',
+  variants: {
+    BASE: base,
+    EMPTY: setFixtureItemsCount({ fixture: base, lookupKey: 'workItems', itemCount: 0 }),
+  },
+});
+```
+
+In a test, activate a variant with `setQueryVariant` imported from `ee_jest/msw_integration/helpers/setup_utils`.
+Pass the query constant, which is the variant file's default export, and call the method named after the variant key.
+`EMPTY` becomes `empty()`, `WITH_ERROR` becomes `withError()`, so an unknown key cannot be spelled and editor autocomplete lists the variants for that query.
+The active variant resets to `BASE` automatically in `afterEach`.
+
+```javascript
+import { setQueryVariant } from 'ee_jest/msw_integration/helpers/setup_utils';
+import getWorkItemsFull from 'ee_jest/msw_integration/work_items/fixture_variants/get_work_items_full';
+
+it('renders the empty state', async () => {
+  setQueryVariant(getWorkItemsFull).empty();
+  // mount and assert
+});
+```
+
+When the variant key is a runtime value, such as a shared helper that receives the key, use the low-level `activateVariant('operationName', variantKey)` instead.
+
+The feature handler serves the active variant by calling `getActiveVariant('operationName')` and falls back to its default fixture when none is active.
+
+#### How the variant registry works
+
+`defineFixtureVariants` self-registers at **module load time** by adding the query to a module-level registry inside `fixture_variant_schema.js`. There are three consequences you must understand before using it:
+
+**The variant file must be imported in the feature handler.**
+`setQueryVariant` throws `"expected a query constant"` if you pass something other than a variant file's default export.
+The low-level `activateVariant(query, key)` throws `"no variants registered for query"` if the query name it is given was never registered.
+Either way, the variant file has not been imported. Import it (as a side-effect import) in the feature handler, not in the spec:
+
+```javascript
+// <feature>/handlers.js
+import './fixture_variants/my_query'; // registers myQuery on load
+```
+
+**`getActiveVariant` returns `null` for `BASE`, not the `BASE` fixture.**
+The handler must use the null-coalescing fallback pattern so the handler's own default fixture is served when no variant is active (or when the active variant is `BASE`):
+
+```javascript
+myQuery: () => getActiveVariant('myQuery') ?? myQueryFixture,
+```
+
+Prefer `??` over `||` here. `getActiveVariant` only ever returns a validated fixture object or `null`, so the two operators behave identically in practice, but `??` states the intent — fall back only when no variant is active — and keeps every handler consistent.
+
+**Each query can only be registered once.**
+`defineFixtureVariants` throws `"variants for query X are already registered"` if it runs twice for the same query name. Importing one variant file from several places is safe — the module body executes only once, so the registration runs once. The error means two different variant files declare the same `query` name, usually a copy-paste. Keep one variant file per query and import it in the feature handler.
+
+Generate a manifest of every registered query and its variant keys with `yarn msw:variants`.
+It writes a keys-only JSON file to `tmp/tests/frontend/msw_variants.manifest.json`.
+The manifest is not committed.
+It is regenerated on demand and has no maintenance cost.
+Read it to discover which variants exist for which queries.
+
 ### Assert Apollo cache integrity
 
 Use the request-tracking utilities in `operation_helpers.js` to verify that a
@@ -1532,13 +1670,14 @@ own test suite if stray operations are fired after the initial reset has been ca
 | `snapshotRequests()` | Returns a map of `operationName -> count` at the current point in time. |
 | `getSnapshotRequestsDiff(baseline, current)` | Returns the operations that fired between two snapshots. |
 | `expectGraphQLCalls(baseline, { expect, forbid })` | Asserts that `expect` operations fired and `forbid` operations did not. |
+| `lastRequestVariables(operationName)` | Returns the variables of the last captured call to `operationName`. Throws if the operation was never called. Useful for asserting that the correct filter variables were sent. |
 
 Take a snapshot before the action, perform the action, then assert inside
 `waitFor`. Entries in `forbid` can be strings or regular expressions to match
 operation families:
 
 ```javascript
-import { snapshotRequests, expectGraphQLCalls } from 'ee_jest/msw_integration/operation_helpers';
+import { snapshotRequests, expectGraphQLCalls } from 'ee_jest/msw_integration/core/operation_helpers';
 
 it('updates the comment count without refetching the list', async () => {
   const baseline = snapshotRequests();
@@ -1604,6 +1743,20 @@ Use native DOM equivalents instead:
 | `.attributes('name')` | `.getAttribute('name')` or `.dataset` |
 | `.exists()` | `!== null` |
 | `.setValue(val)` | `el.value = val; el.dispatchEvent(new Event('input', { bubbles: true }))` |
+
+The following helpers from `ee_jest/msw_integration/helpers/test_helpers` cover common async interaction patterns:
+
+| Helper | Description |
+|---|---|
+| `waitForElement(finder)` | Polls until `finder()` returns a non-null element, then returns it. |
+| `waitForElementToBeNull(finder)` | Polls until `finder()` returns `null`. Use to assert an element disappears. |
+| `waitAndClick(finder)` | Waits for an element to appear, then clicks it. |
+| `waitAndSetValue(finder, value[, eventType])` | Waits for an input to appear, then sets its value and dispatches an event. |
+| `findButtonByText(text[, container])` | Returns the first button matching `text` by visible label or aria-label. |
+| `setInputValue(input, value[, eventType])` | Sets a value on an input and dispatches the event synchronously. |
+| `waitForAssertion(fn)` | Wraps a plain assertion function in `waitFor`. Use when you only need to wait, not find an element. |
+| `getText(el)` | Returns normalized whitespace text content of `el`. Equivalent to VTU `.text()`. |
+| `findByGraphQLId(graphqlId, getIdFromGraphQLId[, prefix])` | Finds a DOM element whose `id` is derived from a GraphQL ID. |
 
 Here is a minimal example:
 
@@ -1675,14 +1828,27 @@ Key differences from unit tests:
   compatibility.
 - Do not mock child components. The goal is to test how they work
   together.
-- Reset the Apollo cache in `beforeEach` to prevent state from
-  leaking between tests.
+- Reset the Apollo cache in `beforeEach` to prevent state leaking
+  between tests. The test harness also cancels in-flight Apollo
+  operations, as MSW 2 streams response bodies across event-loop
+  ticks and tests can finish mid-read.
 - Do not add `afterEach` cleanup for wrapper destruction or Apollo
   client teardown. The global `test_setup.js` handles router resets,
   wrapper destroy and metadata cleanup.
 - Server lifecycle (`server.listen`, `server.resetHandlers`,
   `server.close`) is handled globally by `test_setup.js`. Do not add
   these calls in individual test files.
+
+### Test isolation for Apollo requests
+
+MSW 2 streams response bodies across multiple event-loop ticks. When a test
+finishes while Apollo is still reading a response, that read can complete
+after the next test has already started, because `cache.reset()` does not
+cancel in-flight requests. Apollo's query deduplication then reuses that
+stale response for the next test's identical query. To prevent this,
+`test_setup.js` calls `clearMountedApolloStores()` in `beforeEach`, which
+cancels in-flight fetches before each test runs. Spec files do not need to
+do anything extra beyond the usual `cache.reset()`.
 
 ### Run MSW integration tests
 
@@ -1818,7 +1984,7 @@ You can download any older version of Firefox from the releases FTP server, <htt
 
 ## Snapshots
 
-[Jest snapshot tests](https://jestjs.io/docs/snapshot-testing) are a useful way to prevent unexpected changes to the HTML output of a given component. They should **only** be used when other testing methods (such as asserting elements with `vue-tests-utils`) do not cover the required use case. To use them within GitLab, there are a few guidelines that should be highlighted:
+[Jest snapshot tests](https://jestjs.io/docs/snapshot-testing) are a useful way to prevent unexpected changes to the HTML output of a given component. They should only be used when other testing methods (such as asserting elements with `vue-tests-utils`) do not cover the required use case. To use them within GitLab, there are a few guidelines that should be highlighted:
 
 - Treat snapshots as code
 - Don't think of a snapshot file as a black box
@@ -2383,7 +2549,7 @@ end
 > using the Chrome driver.
 
 Sometimes, there are known console errors that we want to ignore. To ignore a set of messages, such that the test
-**will not** fail if the message is observed, you can pass an `allow:` parameter to
+will not fail if the message is observed, you can pass an `allow:` parameter to
 `expect_page_to_have_no_console_errors`:
 
 ```ruby

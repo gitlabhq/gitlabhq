@@ -181,8 +181,12 @@ RSpec.describe Gitlab::Git::Tree, feature_category: :source_code_management do
             .and_raise(GRPC::InvalidArgument.new('could not find starting OID: invalid'))
         end
 
-        it 'raises an InvalidPageToken error' do
-          expect { entries }.to raise_error(Gitlab::Git::InvalidPageToken, 'Invalid page token: invalid')
+        it 'raises an InvalidPageToken error that carries the gRPC details' do
+          expect { entries }.to raise_error(Gitlab::Git::InvalidPageToken, 'Invalid page token: invalid') do |error|
+            expect(error.code).to eq('invalid_argument')
+            expect(error.status).to eq(3)
+            expect(error.service).to eq('git')
+          end
         end
       end
 

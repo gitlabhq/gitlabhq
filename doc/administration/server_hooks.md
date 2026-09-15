@@ -59,7 +59,7 @@ To set server hooks for a repository:
         `pre-receive` server hook, the directory name should be `pre-receive.d`. Put the files for the hook in that
         directory.
 
-   1. Ensure the server hook files are executable and do not match the backup file pattern (`*~`). The server hooks be
+   1. Ensure the server hook files are executable and do not match the backup file pattern (`*~`). The server hooks must be
       in a `custom_hooks` directory that is at the root of the tarball.
    1. Create the custom hooks archive with the tar command. For example, `tar -cf custom_hooks.tar custom_hooks`.
 1. Run the `hooks set` subcommand with required options to set the Git hooks for the repository. For example:

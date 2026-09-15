@@ -1,6 +1,6 @@
 ---
 stage: Plan
-group: Knowledge
+group: Planner Intelligence
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see <https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments>
 title: Rich text editor
 ---
@@ -113,6 +113,40 @@ To merge selected cells into one:
 1. In the upper-right corner of a cell, select the chevron {{< icon name="chevron-down" >}} > **Merge N cells**.
 
 To split merged cells: In the upper-right corner of a cell, select the chevron {{< icon name="chevron-down" >}} > **Split cell**.
+
+### Paste into a table cell
+
+{{< history >}}
+
+- Table menu paste actions [introduced](https://gitlab.com/gitlab-org/gitlab/-/work_items/627112) in GitLab 19.4.
+- Keyboard shortcut for pasting into a table cell [introduced](https://gitlab.com/gitlab-org/gitlab/-/work_items/627699) in GitLab 19.4.
+
+{{< /history >}}
+
+When you press <kbd>Control</kbd>+<kbd>V</kbd> (or <kbd>Command</kbd>+<kbd>V</kbd> on macOS),
+GitLab merges the copied cells into the table by default.
+
+To choose how the content is pasted:
+
+1. In the upper-right corner of the target cell, select the chevron
+   {{< icon name="chevron-down" >}}.
+1. Select one of these options:
+   - **Paste into cell**: Inserts the copied content at the cursor. A copied table becomes a
+     table nested inside the cell.
+   - **Paste and merge into table**: Distributes the copied cells across the table (default behavior).
+
+Each option also shows its keyboard shortcut next to its label.
+To paste a copied table as a nested table without opening the menu, place your cursor in a table cell.
+Then press <kbd>Control</kbd>+<kbd>Alt</kbd>+<kbd>V</kbd>
+(or <kbd>Command</kbd>+<kbd>Option</kbd>+<kbd>V</kbd> on macOS).
+
+The first time you use either option, your browser might ask for permission to read your
+clipboard.
+
+> [!note]
+> On GitLab Self-Managed, the paste options and the keyboard shortcut are not available if your
+> instance is served over plain HTTP. These features require browser access to the clipboard, and
+> browsers allow that access only on pages served over HTTPS or from `localhost`.
 
 ## Insert diagrams
 

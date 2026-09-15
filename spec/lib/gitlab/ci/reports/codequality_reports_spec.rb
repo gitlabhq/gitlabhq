@@ -136,7 +136,7 @@ RSpec.describe Gitlab::Ci::Reports::CodequalityReports do
   describe '#code_quality_report_summary' do
     context "when there is no degradation" do
       it 'return nil' do
-        expect(codequality_report.code_quality_report_summary).to eq(nil)
+        expect(codequality_report.code_quality_report_summary).to be_nil
       end
     end
 

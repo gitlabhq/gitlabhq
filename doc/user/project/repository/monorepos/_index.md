@@ -16,7 +16,7 @@ application. Monorepos are common, but they can present performance risks. Some 
 - Network bandwidth limits.
 - Disk bandwidth limits.
 
-GitLab is itself based in Git. Its Git storage service, [Gitaly](https://gitlab.com/gitlab-org/gitaly),
+GitLab is itself based on Git. Its Git storage service, [Gitaly](https://gitlab.com/gitlab-org/gitaly),
 experiences the performance constraints associated with monorepos. What we've learned can help
 you manage your own monorepo better.
 
@@ -388,7 +388,7 @@ cause problems for both server and client:
   Git can't compress binary data further, which leads to large packfiles. Large packfiles
   require more CPU, memory, and bandwidth to create and send.
 - For the client: Git stores blob content in both packfiles (usually in `.git/objects/pack/`) and
-  regular files (in [worktrees](https://git-scm.com/docs/git-worktree)), binary files require far more
+  regular files (in [worktrees](https://git-scm.com/docs/git-worktree)). Binary files require far more
   space than text-based source code.
 
 Git LFS stores objects externally, such as in object storage. Your Git repository contains a pointer

@@ -45,7 +45,7 @@ masks the problem by:
 1. Upgrading the Gitaly binary in-place.
 1. Performing a graceful reload.
 
-The same approach doesn't fit a container-based lifecycle where a container or pod needs to fully shutdown and start as a new container or pod.
+The same approach doesn't fit a container-based lifecycle where a container or pod needs to fully shut down and start as a new container or pod.
 
 To support a Cloud Native deployment, Gitaly (non-Cluster) is the only generally available option. [Gitaly Cluster (Praefect) on Kubernetes](praefect/_index.md#gitaly-cluster-on-kubernetes) is in beta.
 By leveraging the right Kubernetes and Gitaly features and configuration, you can minimize service disruption and provide a good user experience.

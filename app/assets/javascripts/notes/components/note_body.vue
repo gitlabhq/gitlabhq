@@ -22,8 +22,8 @@ export default {
     NoteAttachment,
     NoteForm,
     Suggestions,
-    DuoCodeReviewFeedback: defineAsyncComponent(
-      () => import('ee_component/notes/components/duo_code_review_feedback.vue'),
+    UserFeedback: defineAsyncComponent(
+      () => import('ee_component/ai/components/user_feedback.vue'),
     ),
   },
   directives: {
@@ -74,7 +74,7 @@ export default {
       default: false,
     },
   },
-  emits: ['cancel-form', 'handleFormUpdate'],
+  emits: ['cancel-form', 'handle-form-update'],
   computed: {
     ...mapState(useLegacyDiffs, ['suggestionCommitMessage']),
     ...mapState(useMrNotes, ['failedToLoadMetadata']),
@@ -174,7 +174,7 @@ export default {
     },
     // eslint-disable-next-line max-params
     handleFormUpdate(noteText, parentElement, callback, resolveDiscussion) {
-      this.$emit('handleFormUpdate', { noteText, parentElement, callback, resolveDiscussion });
+      this.$emit('handle-form-update', { noteText, parentElement, callback, resolveDiscussion });
     },
     formCancelHandler(shouldConfirm, isDirty) {
       this.$emit('cancel-form', { shouldConfirm, isDirty });
@@ -232,10 +232,11 @@ export default {
       @remove-from-batch="removeSuggestionFromBatch"
     />
     <div v-else v-safe-html:[$options.safeHtmlConfig]="note.note_html" class="note-text md"></div>
-    <duo-code-review-feedback
+    <user-feedback
       v-if="isDuoFirstReviewComment && !isDiffNote"
-      :duo-session-url="note.duo_session_url"
-      class="gl-mt-3"
+      event-name="duo_code_review"
+      :feedback-link-text="__('Rate the review')"
+      class="gl-mt-3 gl-inline-block !gl-pt-0"
       data-testid="code-review-feedback"
     />
     <note-form
@@ -253,7 +254,7 @@ export default {
       :resolve-discussion="note.resolve_discussion"
       :autosave-key="autosaveKey"
       :restore-from-autosave="restoreFromAutosave"
-      @handleFormUpdate="handleFormUpdate"
+      @handle-form-update="handleFormUpdate"
       @cancel-form="formCancelHandler"
     />
     <!-- eslint-disable vue/no-mutating-props -->

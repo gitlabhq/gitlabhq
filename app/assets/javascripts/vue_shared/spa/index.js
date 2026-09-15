@@ -11,6 +11,8 @@ export const initSinglePageApplication = ({
   el,
   router,
   apolloCacheConfig = {},
+  apolloProvider: providedApolloProvider,
+  breadcrumbComponent = breadcrumbs,
   provide,
   propsData,
   // Any additional property to pass can go in options
@@ -24,10 +26,10 @@ export const initSinglePageApplication = ({
     throw new Error('You must provide a `router` prop to initSinglePageApplication');
   }
 
-  let apolloProvider;
+  let apolloProvider = providedApolloProvider;
 
   // To not have an apollo cache, explicitly pass null
-  if (apolloCacheConfig) {
+  if (!apolloProvider && apolloCacheConfig) {
     Vue.use(VueApollo);
 
     apolloProvider = new VueApollo({
@@ -36,7 +38,7 @@ export const initSinglePageApplication = ({
   }
   router.beforeEach(activeNavigationWatcher);
 
-  injectVueAppBreadcrumbs(router, breadcrumbs, apolloProvider);
+  injectVueAppBreadcrumbs(router, breadcrumbComponent, apolloProvider);
 
   return new Vue({
     el,

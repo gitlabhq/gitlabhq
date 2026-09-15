@@ -18,9 +18,11 @@ import getWorkItemsRestQuery from 'ee_else_ce/work_items/list/graphql/get_work_i
 import workItemsReorderMutation from '~/work_items/graphql/work_items_reorder.mutation.graphql';
 import { scrollUp } from '~/lib/utils/scroll_utils';
 import { getParameterByName } from '~/lib/utils/url_utility';
+import { getIdFromGraphQLId } from '~/graphql_shared/utils';
 import IssuableBulkEditSidebar from '~/vue_shared/issuable/list/components/issuable_bulk_edit_sidebar.vue';
 import PageSizeSelector from '~/vue_shared/components/page_size_selector.vue';
 import IssuableItem from '~/vue_shared/issuable/list/components/issuable_item.vue';
+import ResourceListsLoadingStateList from '~/vue_shared/components/resource_lists/loading_state_list.vue';
 import CreateWorkItemModal from '~/work_items/components/create_work_item_modal.vue';
 import ListView from '~/work_items/list/list_view.vue';
 import { WORK_ITEM_TYPE_NAME_TICKET } from '~/work_items/constants';
@@ -107,6 +109,7 @@ const findChildItem1 = () => findIssuableItems().at(0);
 const findChildItem2 = () => findIssuableItems().at(1);
 const findSubChildIndicator = (item) => item.find('[data-testid="sub-child-work-item-indicator"]');
 const findGlAlert = () => wrapper.findComponent(GlAlert);
+const findLoadingStateList = () => wrapper.findComponent(ResourceListsLoadingStateList);
 
 const defaultQueryVariables = {
   fullPath: 'full/path',
@@ -175,7 +178,6 @@ const mountComponent = ({
       hasEpicsFeature: false,
       hasGroupBulkEditFeature: true,
       hasIssuableHealthStatusFeature: false,
-      hasIssueDateFilterFeature: false,
       hasIssueWeightsFeature: false,
       hasOkrsFeature: false,
       hasQualityManagementFeature: false,
@@ -338,31 +340,58 @@ describe.each`
     ${'when neither hasNextPage nor hasPreviousPage are true'} | ${{ hasNextPage: false, hasPreviousPage: false }} | ${false}
   `('$description', ({ pageInfo, exists }) => {
     it(`${exists ? 'renders' : 'does not render'} pagination controls`, async () => {
-      const mockResponse = {
+      const workItemsData = {
+        ...workItemsQueryResponseCombined.data.namespace.workItems,
+        pageInfo: {
+          ...pageInfo,
+          startCursor: 'start',
+          endCursor: 'end',
+          __typename: 'PageInfo',
+        },
+      };
+
+      const mockResponseGraphQL = {
         data: {
           namespace: {
             ...workItemsQueryResponseCombined.data.namespace,
-            workItems: {
-              ...workItemsQueryResponseCombined.data.namespace.workItems,
-              pageInfo: {
-                ...pageInfo,
-                startCursor: 'start',
-                endCursor: 'end',
-                __typename: 'PageInfo',
-              },
-            },
+            workItems: workItemsData,
           },
         },
       };
 
-      workItemsSlimQueryHandler.mockResolvedValue(mockResponse);
-      workItemsFullQueryHandler.mockResolvedValue(mockResponse);
-      workItemsRestQueryHandler.mockResolvedValue(mockResponse);
+      const mockResponseREST = {
+        data: {
+          namespace: {
+            id: workItemsQueryResponseCombined.data.namespace.id,
+            // eslint-disable-next-line no-underscore-dangle
+            __typename: workItemsQueryResponseCombined.data.namespace.__typename,
+            fullPath: workItemsQueryResponseCombined.data.namespace.fullPath,
+            name: workItemsQueryResponseCombined.data.namespace.name,
+          },
+          restWorkItems: workItemsData,
+        },
+      };
+
+      workItemsSlimQueryHandler.mockResolvedValue(mockResponseGraphQL);
+      workItemsFullQueryHandler.mockResolvedValue(mockResponseGraphQL);
+      workItemsRestQueryHandler.mockResolvedValue(
+        useRestApi ? mockResponseREST : mockResponseGraphQL,
+      );
 
       mountComponent({ useRestApi });
       await waitForPromises();
 
       expect(findPaginationControls().exists()).toBe(exists);
+    });
+  });
+
+  it('emits page-info with the query pageInfo, so the parent can tell whether page 1 is genuinely on screen', async () => {
+    mountComponent({ useRestApi });
+    await waitForPromises();
+
+    expect(wrapper.emitted('page-info')[0][0]).toMatchObject({
+      hasNextPage: true,
+      hasPreviousPage: false,
     });
   });
 });
@@ -589,5 +618,71 @@ describe('REST API specific behavior', () => {
         expect.objectContaining({ sort: UPDATED_DESC }),
       );
     });
+  });
+});
+
+// The full list query only selects the fields the slim query does not, so its nodes carry no
+// `title`, `iid`, `webPath` or `workItemType`. Nothing may render off the full query alone.
+describe('when the full query resolves before the slim query', () => {
+  const slimOnlyFields = [
+    'iid',
+    'author',
+    'closedAt',
+    'createdAt',
+    'namespace',
+    'reference',
+    'state',
+    'title',
+    'titleHtml',
+    'updatedAt',
+    'webUrl',
+    'webPath',
+    'workItemType',
+  ];
+
+  const fullOnlyResponse = () => {
+    const { namespace } = workItemsQueryResponseCombined.data;
+    return {
+      data: {
+        namespace: {
+          ...namespace,
+          workItems: {
+            ...namespace.workItems,
+            nodes: namespace.workItems.nodes.map((node) =>
+              Object.fromEntries(
+                Object.entries(node).filter(([key]) => !slimOnlyFields.includes(key)),
+              ),
+            ),
+          },
+        },
+      },
+    };
+  };
+
+  const mountWithPendingSlimQuery = async () => {
+    workItemsFullQueryHandler.mockResolvedValue(fullOnlyResponse());
+    workItemsSlimQueryHandler.mockReturnValue(new Promise(() => {}));
+    mountComponent({ workItemFeaturesField: true });
+    await waitForPromises();
+  };
+
+  it('keeps the loading skeleton visible and renders no work items', async () => {
+    await mountWithPendingSlimQuery();
+
+    expect(findLoadingStateList().exists()).toBe(true);
+    expect(findIssuableItems()).toHaveLength(0);
+  });
+
+  it('does not open the detail panel for a deep-linked work item', async () => {
+    const workItemId = getIdFromGraphQLId(
+      workItemsQueryResponseCombined.data.namespace.workItems.nodes[0].id,
+    );
+    getParameterByName.mockImplementation((name) =>
+      name === 'show' ? btoa(JSON.stringify({ id: workItemId, full_path: 'full/path' })) : null,
+    );
+
+    await mountWithPendingSlimQuery();
+
+    expect(wrapper.emitted('set-active-item')).toBeUndefined();
   });
 });

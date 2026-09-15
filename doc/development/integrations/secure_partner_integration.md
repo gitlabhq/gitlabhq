@@ -90,7 +90,7 @@ and complete an integration with the Secure stage.
      - Documentation for [dependency scanning reports](../../user/application_security/dependency_scanning/dependency_scanning_sbom/_index.md#understanding-the-results).
      - Documentation for [container scanning reports](../../user/application_security/container_scanning/_index.md#reports-json-format).
      - See this [example secure job definition that also defines the artifact created](https://gitlab.com/gitlab-org/gitlab/-/blob/master/lib/gitlab/ci/templates/Jobs/Container-Scanning.gitlab-ci.yml).
-     - If you need a new kind of scan or report, [create an issue](https://gitlab.com/gitlab-org/gitlab/-/issues/new#)
+     - If you need a new kind of scan or report, [create an issue](https://gitlab.com/gitlab-org/gitlab/-/work_items/new#)
        and add the label `devops::secure`.
    - After the job is completed, the data can be seen:
      - In the [Merge Request Security Report](../../ci/testing/_index.md#security-reports) ([MR Security Report data flow](https://gitlab.com/snippets/1910005#merge-request-view)).

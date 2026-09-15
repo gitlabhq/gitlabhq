@@ -49,7 +49,7 @@ to configure the tools to function properly by using resources available on your
 
 ### Container registries and package repositories
 
-At a high-level, the security analyzers are delivered as Docker images and
+At a high level, the security analyzers are delivered as Docker images and
 may leverage various package repositories. When you run a job on
 an internet-connected GitLab installation, GitLab checks the GitLab.com-hosted
 container registry to check that you have the latest versions of these Docker images
@@ -103,6 +103,17 @@ You can find more information at each of the pages below:
 - [Dependency scanning offline directions](../dependency_scanning/dependency_scanning_sbom/_index.md#offline-environment)
 - [IaC scanning offline directions](../iac_scanning/_index.md#offline-configuration)
 
+### Package Metadata Database
+
+[Dependency scanning](../dependency_scanning/_index.md) and
+[continuous vulnerability scanning](../continuous_vulnerability_scanning/_index.md) read the Package
+Metadata Database for license, advisory, and vulnerability risk assessment data.
+This database is a data artifact, not an analyzer image, so loading the analyzer images does not provide it.
+An offline instance has none of it until you copy the exports across.
+
+For the procedure, see
+[enabling the Package Metadata Database](../../../topics/offline/quick_start_guide.md#enabling-the-package-metadata-database).
+
 ## Loading Docker images onto your offline host
 
 To use many GitLab features, including security scans
@@ -113,7 +124,7 @@ The process for making these images available without direct access to the publi
 involves downloading the images then packaging and transferring them to the offline host. Here's an
 example of such a transfer:
 
-1. Download Docker images from public internet.
+1. Download Docker images from the public internet.
 1. Package Docker images as tar archives.
 1. Transfer images to offline environment.
 1. Load transferred images into offline Docker registry.
@@ -241,7 +252,7 @@ these steps:
    the `.gitlab-ci.yml` file directly.
 
 Once these steps are complete, GitLab has local copies of the Secure analyzers and is set up to use
-them instead of an Internet-hosted container image. This allows you to run Secure in AutoDevOps in
+them instead of an internet-hosted container image. This allows you to run Secure in AutoDevOps in
 an offline environment.
 
 These steps are specific to GitLab Secure with AutoDevOps. Using other stages with

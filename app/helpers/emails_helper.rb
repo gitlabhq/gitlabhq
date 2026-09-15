@@ -190,6 +190,14 @@ module EmailsHelper
     "#{project.id}.#{project_path_as_domain}.#{Gitlab.config.gitlab.host}"
   end
 
+  def blob_embed_stylesheet_link_tag
+    return if @blob_embed_stylesheet_linked
+
+    @blob_embed_stylesheet_linked = true
+
+    universal_stylesheet_link_tag('mailers/blob_embed')
+  end
+
   def html_header_message
     return unless show_header?
 
@@ -452,6 +460,14 @@ module EmailsHelper
       [added_reviewers_text, removed_reviewers_text].compact.join(line_delimiter).html_safe
     end
   end
+
+  # Overridden in EE, where a Duo question payload is rewritten into prose. FOSS
+  # never carries one, so the body goes out as written.
+  # rubocop:disable Lint/UnusedMethodArgument -- format is used by the EE override
+  def note_email_body(note, format: :html)
+    note.note
+  end
+  # rubocop:enable Lint/UnusedMethodArgument
 
   private
 

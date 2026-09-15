@@ -3,8 +3,8 @@
 require 'spec_helper'
 
 RSpec.describe Gitlab::IssuableMetadata do
-  let(:user)     { create(:user) }
-  let!(:project) { create(:project, :public, :repository, creator: user, namespace: user.namespace) }
+  let_it_be_with_reload(:user) { create(:user) }
+  let_it_be_with_reload(:project) { create(:project, :public, creator: user, namespace: user.namespace) }
 
   it 'returns an empty Hash if an empty collection is provided' do
     expect(described_class.new(user, Issue.none).data).to eq({})

@@ -75,13 +75,13 @@ s = SearchService.new(u, {:search => 'search_term', :scope => 'blobs'})
 pp s.search_objects.to_a
 ```
 
-Beyond that, check via the [Elasticsearch Search API](https://www.elastic.co/guide/en/elasticsearch/reference/current/search-search.html) to see if the data shows up on the Elasticsearch side:
+Beyond that, check via the [Elasticsearch Search API](https://www.elastic.co/docs/api/doc/elasticsearch/operation/operation-search) to see if the data shows up on the Elasticsearch side:
 
 ```shell
 curl --request GET <elasticsearch_server_ip>:9200/gitlab-production/_search?q=<search_term>
 ```
 
-More [complex Elasticsearch API calls](https://www.elastic.co/guide/en/elasticsearch/reference/current/query-filter-context.html) are also possible.
+More [complex Elasticsearch API calls](https://www.elastic.co/docs/explore-analyze/query-filter/languages/querydsl) are also possible.
 
 If the results:
 
@@ -344,16 +344,16 @@ If you need help with dead queue items, share the following information with Git
 
 To improve performance, ensure:
 
-- The Elasticsearch server **is not** running on the same node as GitLab.
+- The Elasticsearch server is not running on the same node as GitLab.
 - The Elasticsearch server has enough RAM and CPU cores.
-- That sharding **is** being used.
+- That sharding is being used.
 
-Going into some more detail here, if Elasticsearch is running on the same server as GitLab, resource contention is **very** likely to occur. Ideally, Elasticsearch, which requires ample resources, should be running on its own server (maybe coupled with Logstash and Kibana).
+Going into some more detail here, if Elasticsearch is running on the same server as GitLab, resource contention is very likely to occur. Ideally, Elasticsearch, which requires ample resources, should be running on its own server (maybe coupled with Logstash and Kibana).
 
 When it comes to Elasticsearch, RAM is the key resource. Elasticsearch themselves recommend:
 
-- **At least** 8 GB of RAM for a non-production instance.
-- **At least** 16 GB of RAM for a production instance.
+- At least 8 GB of RAM for a non-production instance.
+- At least 16 GB of RAM for a production instance.
 - Ideally, 64 GB of RAM.
 
 For CPU, Elasticsearch recommends at least 2 CPU cores, but Elasticsearch states common
@@ -364,19 +364,19 @@ Beyond the obvious, sharding comes into play. Sharding is a core part of Elastic
 It allows for horizontal scaling of indices, which is helpful when you are dealing with
 a large amount of data.
 
-With the way GitLab does indexing, there is a **huge** amount of documents being
+With the way GitLab does indexing, there is a huge number of documents being
 indexed. By using sharding, you can speed up the ability of Elasticsearch to locate
 data because each shard is a Lucene index.
 
 If you are not using sharding, you are likely to hit issues when you start using
 Elasticsearch in a production environment.
 
-An index with only one shard has **no scale factor** and is likely
+An index with only one shard has no scale factor and is likely
 to encounter issues when called upon with some frequency. See the
 [Elasticsearch documentation on capacity planning](https://www.elastic.co/guide/en/elasticsearch/guide/2.x/capacity-planning.html).
 
 The easiest way to determine if sharding is in use is to check the output of the
-[Elasticsearch Health API](https://www.elastic.co/guide/en/elasticsearch/reference/current/cluster-health.html):
+[Elasticsearch Health API](https://www.elastic.co/docs/api/doc/elasticsearch/operation/operation-cluster-health):
 
 - Red means the cluster is down.
 - Yellow means it is up with no sharding/replication.

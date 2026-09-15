@@ -61,6 +61,8 @@
     - c.with_body do
       = render 'ci/variables/index', save_endpoint: project_variables_path(@project)
 
+= render 'projects/settings/ci_cd/feature_flags', expanded: expanded
+
 - if can?(current_user, :admin_pipeline, @project)
   = render ::Layouts::SettingsBlockComponent.new(_('Pipeline trigger tokens'),
     id: 'js-pipeline-triggers',

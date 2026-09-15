@@ -1,6 +1,6 @@
 ---
-source_checksum: c73cbb508b1f684b
-distilled_at_sha: 3941b843c30927ec6cea3e9caa43c88e5f930cb6
+source_checksum: 543225a9ec264b32
+distilled_at_sha: 586530a94f045df52e8ae3e37a72e449e7dd1e43
 ---
 <!-- Auto-generated from docs.gitlab.com by gitlab-ai-principles-distiller — do not edit manually -->
 
@@ -55,6 +55,7 @@ distilled_at_sha: 3941b843c30927ec6cea3e9caa43c88e5f930cb6
 - Compare the distilled diff against the referenced SSOT documentation changes.
 - Confirm no still-valid, SSOT-supported rule was dropped and no unsupported rule was added.
 - Confirm the front matter checksums were updated by the tool, not by hand.
+- Use the `ai-principles-review-feedback` skill to work through every automated review finding before merging a weekly sync merge request.
 - Classify each Duo finding into exactly one of four outcomes before acting: Content defect (distilled text misstates the source — fix on the sync branch), Content gap (distillation dropped a supported rule — restore on the sync branch), Distiller defect (root cause is the tooling — fix the output and open an issue against the distiller), or Judgment call (output is correct but could be closer — record it, no required action).
 - When fixing a finding, restore a baseline-derived rule verbatim (the sync tooling mechanically rejects any alteration); make a source-derived fix faithful and traceable but DO NOT copy source prose verbatim (distilled files hold concrete checkable rules, and a verbatim copy is rephrased on the next run).
 - Batch all fixes on a sync branch into a single push; pushing a file revokes that file's code owner approval (selective code owner removals are enabled), so an unbatched sequence of pushes can repeatedly invalidate an in-progress review.

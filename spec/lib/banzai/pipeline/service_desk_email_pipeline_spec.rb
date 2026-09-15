@@ -15,4 +15,13 @@ RSpec.describe Banzai::Pipeline::ServiceDeskEmailPipeline, feature_category: :se
       expect(described_class.filters).to include(Banzai::Filter::ServiceDeskUploadLinkFilter)
     end
   end
+
+  describe '.transform_context' do
+    subject(:context) { described_class.transform_context({}) }
+
+    it 'marks the render as being for a Service Desk email', :aggregate_failures do
+      expect(context).to include(for_email: true)
+      expect(context).to include(for_service_desk_email: true)
+    end
+  end
 end

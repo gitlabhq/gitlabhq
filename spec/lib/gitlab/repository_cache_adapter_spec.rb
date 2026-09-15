@@ -57,7 +57,7 @@ RSpec.describe Gitlab::RepositoryCacheAdapter do
           expect(fake_repository.letters).to eq(%w[b a c])
         end
 
-        expect(redis_set_cache.exist?(:letters)).to eq(false)
+        expect(redis_set_cache.exist?(:letters)).to be(false)
         expect(fake_repository.instance_variable_get(:@letters)).to be_nil
       end
 
@@ -65,10 +65,10 @@ RSpec.describe Gitlab::RepositoryCacheAdapter do
         expect(fake_repository).to receive(:_uncached_letters).twice.and_call_original
         expect(redis_set_cache).not_to receive(:try_include?)
 
-        expect(fake_repository.letters_include?('a')).to eq(true)
-        expect(fake_repository.letters_include?('d')).to eq(false)
+        expect(fake_repository.letters_include?('a')).to be(true)
+        expect(fake_repository.letters_include?('d')).to be(false)
 
-        expect(redis_set_cache.exist?(:letters)).to eq(false)
+        expect(redis_set_cache.exist?(:letters)).to be(false)
       end
     end
 
@@ -85,7 +85,7 @@ RSpec.describe Gitlab::RepositoryCacheAdapter do
           expect(fake_repository.letters).to eq(%w[a b c])
         end
 
-        expect(redis_set_cache.exist?(:letters)).to eq(true)
+        expect(redis_set_cache.exist?(:letters)).to be(true)
         expect(fake_repository.instance_variable_get(:@letters)).to eq(%w[a b c])
       end
 
@@ -95,8 +95,8 @@ RSpec.describe Gitlab::RepositoryCacheAdapter do
         expect(redis_set_cache).to receive(:try_include?).with(:letters, 'a').and_call_original
         expect(redis_set_cache).to receive(:try_include?).with(:letters, 'd').and_call_original
 
-        expect(fake_repository.letters_include?('a')).to eq(true)
-        expect(fake_repository.letters_include?('d')).to eq(false)
+        expect(fake_repository.letters_include?('a')).to be(true)
+        expect(fake_repository.letters_include?('d')).to be(false)
       end
     end
 
@@ -108,20 +108,20 @@ RSpec.describe Gitlab::RepositoryCacheAdapter do
           expect(fake_repository.letters).to eq(%w[a b c])
         end
 
-        expect(redis_set_cache.exist?(:letters)).to eq(true)
+        expect(redis_set_cache.exist?(:letters)).to be(true)
         expect(fake_repository.instance_variable_get(:@letters)).to eq(%w[a b c])
       end
 
       context 'membership checks' do
         context 'when the cache key does not exist' do
           it 'calls the original method and populates the cache' do
-            expect(redis_set_cache.exist?(:letters)).to eq(false)
+            expect(redis_set_cache.exist?(:letters)).to be(false)
             expect(fake_repository).to receive(:_uncached_letters).once.and_call_original
 
             # This populates the cache and memoizes the full result
-            expect(fake_repository.letters_include?('a')).to eq(true)
-            expect(fake_repository.letters_include?('d')).to eq(false)
-            expect(redis_set_cache.exist?(:letters)).to eq(true)
+            expect(fake_repository.letters_include?('a')).to be(true)
+            expect(fake_repository.letters_include?('d')).to be(false)
+            expect(redis_set_cache.exist?(:letters)).to be(true)
           end
         end
 
@@ -134,20 +134,20 @@ RSpec.describe Gitlab::RepositoryCacheAdapter do
             expect(redis_set_cache).to receive(:try_include?).with(:letters, 'a').and_call_original
             expect(redis_set_cache).to receive(:try_include?).with(:letters, 'd').and_call_original
 
-            expect(fake_repository.letters_include?('a')).to eq(true)
-            expect(fake_repository.letters_include?('d')).to eq(false)
+            expect(fake_repository.letters_include?('a')).to be(true)
+            expect(fake_repository.letters_include?('d')).to be(false)
           end
 
           it 'memoizes the result' do
             expect(redis_set_cache).to receive(:try_include?).once.and_call_original
 
-            expect(fake_repository.letters_include?('a')).to eq(true)
-            expect(fake_repository.letters_include?('a')).to eq(true)
+            expect(fake_repository.letters_include?('a')).to be(true)
+            expect(fake_repository.letters_include?('a')).to be(true)
 
             expect(redis_set_cache).to receive(:try_include?).once.and_call_original
 
-            expect(fake_repository.letters_include?('d')).to eq(false)
-            expect(fake_repository.letters_include?('d')).to eq(false)
+            expect(fake_repository.letters_include?('d')).to be(false)
+            expect(fake_repository.letters_include?('d')).to be(false)
           end
         end
       end
@@ -191,8 +191,8 @@ RSpec.describe Gitlab::RepositoryCacheAdapter do
       it 'does not cache the data' do
         subject
 
-        expect(repository.instance_variable_defined?(:@cats)).to eq(false)
-        expect(cache.exist?(:cats)).to eq(false)
+        expect(repository.instance_variable_defined?(:@cats)).to be(false)
+        expect(cache.exist?(:cats)).to be(false)
       end
     end
 
@@ -208,7 +208,7 @@ RSpec.describe Gitlab::RepositoryCacheAdapter do
           expect(val).to eq(10)
         end
 
-        expect(repository.send(:cache).exist?(:cats)).to eq(true)
+        expect(repository.send(:cache).exist?(:cats)).to be(true)
         expect(repository.instance_variable_get(:@cats)).to eq(10)
       end
     end
@@ -242,14 +242,14 @@ RSpec.describe Gitlab::RepositoryCacheAdapter do
       end
 
       it 'returns nil' do
-        expect(subject).to eq(nil)
+        expect(subject).to be_nil
       end
 
       it 'does not cache the data' do
         subject
 
-        expect(repository.instance_variable_defined?(:@cats)).to eq(false)
-        expect(cache.exist?(:cats)).to eq(false)
+        expect(repository.instance_variable_defined?(:@cats)).to be(false)
+        expect(cache.exist?(:cats)).to be(false)
       end
     end
 
@@ -319,7 +319,7 @@ RSpec.describe Gitlab::RepositoryCacheAdapter do
       it 'does not set the instance variable' do
         subject
 
-        expect(repository.instance_variable_defined?(:@cats)).to eq(false)
+        expect(repository.instance_variable_defined?(:@cats)).to be(false)
       end
     end
 
@@ -337,7 +337,7 @@ RSpec.describe Gitlab::RepositoryCacheAdapter do
       it 'does not set the instance variable' do
         subject
 
-        expect(repository.instance_variable_defined?(:@cats)).to eq(false)
+        expect(repository.instance_variable_defined?(:@cats)).to be(false)
       end
     end
 

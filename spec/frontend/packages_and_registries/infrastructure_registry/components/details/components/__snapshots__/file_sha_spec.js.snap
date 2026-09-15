@@ -10,6 +10,7 @@ exports[`FileSha renders 1`] = `
     >
       bar: foo
       <gl-button-stub
+        accessibledisabled="true"
         aria-label="Copy SHA"
         aria-live="polite"
         buttontextclasses=""

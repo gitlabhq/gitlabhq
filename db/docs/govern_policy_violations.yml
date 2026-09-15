@@ -1,0 +1,15 @@
+---
+table_name: govern_policy_violations
+classes:
+- Govern::PolicyViolation
+feature_categories:
+- security_policy_management
+description: Policy Store (Policies v2) experimental table storing rule violations produced
+  by policy evaluations; one evaluation can produce several violations. govern_policy_id is
+  denormalized from the evaluation so per-policy violation statistics need no join.
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/250860
+milestone: '19.4'
+gitlab_schema: gitlab_sec
+sharding_key:
+  organization_id: organizations
+table_size: small

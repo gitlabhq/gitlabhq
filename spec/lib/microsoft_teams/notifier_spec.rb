@@ -6,7 +6,6 @@ RSpec.describe MicrosoftTeams::Notifier do
   subject { described_class.new(webhook_url) }
 
   let(:webhook_url) { 'https://example.gitlab.com/' }
-  let(:header) { { 'Content-Type' => 'application/json' } }
   let(:options) do
     {
       title: 'JohnDoe4/project2',

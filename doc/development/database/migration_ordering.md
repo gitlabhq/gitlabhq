@@ -6,8 +6,10 @@ title: Migration ordering
 ---
 
 Starting with GitLab 17.1, migrations are executed using
-a custom ordering scheme that conforms to the GitLab release cadence. This change
-simplifies the upgrade process, and eases both maintenance and support.
+a custom ordering scheme that conforms to the GitLab release cadence. This change:
+
+- Simplifies the upgrade process.
+- Eases both maintenance and support.
 
 ## Pre 17.1 logic
 

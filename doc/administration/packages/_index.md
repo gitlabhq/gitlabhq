@@ -65,7 +65,7 @@ Consider contributing to GitLab to add support for these formats.
 
 When downloading packages as dependencies in downstream projects, many requests are made through the
 Packages API. You may therefore reach enforced user and IP rate limits. To address this issue, you
-can define specific rate limits for the Packages API. For more details, see [package registry rate limits](../settings/package_registry_rate_limits.md).
+can define specific rate limits for the Packages API. For more details, see [package registry rate limits](../../rate_limits/api/package-registry.md).
 
 ## Enable or disable the package registry
 
@@ -234,7 +234,7 @@ Docker and Kubernetes do not use local storage.
 
 ### Use object storage
 
-Instead of relying on the local storage, you can use an object storage to store
+Instead of relying on the local storage, you can use object storage to store
 packages.
 
 For more information, see how to use the

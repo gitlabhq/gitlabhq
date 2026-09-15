@@ -21,10 +21,6 @@ module QA
 
             def expand_right_sidebar
               wait_for_requests
-              # Wait for initRightSidebar's 300ms setTimeout to fully collapse the sidebar
-              wait_until(reload: false, max_duration: 2, sleep_interval: 0.1) do
-                has_selector?('.right-sidebar.right-sidebar-collapsed', wait: 0)
-              end
               retry_until(sleep_interval: 1, message: "Retry until right sidebar is expanded") do
                 find('.js-sidebar-toggle').click unless has_selector?('.right-sidebar.right-sidebar-expanded', wait: 0)
 

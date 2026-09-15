@@ -8,4 +8,8 @@ RSpec.describe GitlabSchema.types['CiConfigIncludeType'] do
   it 'exposes all the existing include types' do
     expect(described_class.values.keys).to match_array(%w[remote local file template component])
   end
+
+  it 'aliases the external `file` value to the internal `:project` symbol' do
+    expect(described_class.values['file'].value).to eq(:project)
+  end
 end

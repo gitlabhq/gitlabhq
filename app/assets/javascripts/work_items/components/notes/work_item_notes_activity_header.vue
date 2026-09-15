@@ -78,7 +78,7 @@ export default {
 <template>
   <div class="gl-flex gl-flex-wrap gl-items-center gl-gap-3 gl-pb-3">
     <div class="gl-flex gl-grow gl-items-center gl-justify-between gl-gap-3">
-      <component :is="useH2 ? 'h2' : 'h3'" class="gl-m-0 gl-text-size-h1">
+      <component :is="useH2 ? 'h2' : 'h3'" class="gl-m-0 gl-text-size-h1 gl-leading-24">
         {{ s__('WorkItem|Activity') }}
       </component>
       <duo-chat-quick-action

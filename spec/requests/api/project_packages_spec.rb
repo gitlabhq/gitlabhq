@@ -101,7 +101,7 @@ RSpec.describe API::ProjectPackages, feature_category: :package_registry do
         end
 
         context 'with JOB-TOKEN auth' do
-          let(:job) { create(:ci_build, :running, user: user, project: project) }
+          let_it_be(:job) { create(:ci_build, :running, user: user, project: project) }
 
           subject { get api(url, job_token: job.token) }
 
@@ -130,9 +130,7 @@ RSpec.describe API::ProjectPackages, feature_category: :package_registry do
           it_behaves_like 'returns packages', :project, :guest
 
           context 'user is a maintainer' do
-            before do
-              project.add_maintainer(user)
-            end
+            before_all { project.add_maintainer(user) }
 
             it 'returns the destroy url' do
               subject
@@ -143,7 +141,7 @@ RSpec.describe API::ProjectPackages, feature_category: :package_registry do
         end
 
         context 'with JOB-TOKEN auth' do
-          let(:job) { create(:ci_build, :running, user: user, project: project) }
+          let_it_be(:job) { create(:ci_build, :running, user: user, project: project) }
 
           subject { get api(url, job_token: job.token) }
 
@@ -236,9 +234,7 @@ RSpec.describe API::ProjectPackages, feature_category: :package_registry do
         let_it_be(:package1) { create(:npm_package, :with_build, project: project) }
         let_it_be(:job) { create(:ci_build, :running, user: user, project: project) }
 
-        before do
-          project.add_reporter(user)
-        end
+        before_all { project.add_reporter(user) }
 
         context 'when repository access is enabled' do
           context 'with user auth' do
@@ -261,7 +257,7 @@ RSpec.describe API::ProjectPackages, feature_category: :package_registry do
         end
 
         context 'when repository access is disabled' do
-          before do
+          before_all do
             project.project_feature.update!(
               repository_access_level: ProjectFeature::DISABLED,
               merge_requests_access_level: ProjectFeature::DISABLED,
@@ -362,9 +358,7 @@ RSpec.describe API::ProjectPackages, feature_category: :package_registry do
         let_it_be(:package1) { create(:npm_package, :with_build, project: project) }
         let_it_be(:job) { create(:ci_build, :running, user: user, project: project) }
 
-        before do
-          project.add_reporter(user)
-        end
+        before_all { project.add_reporter(user) }
 
         it 'returns an empty array for the pipelines attribute' do
           subject
@@ -393,7 +387,7 @@ RSpec.describe API::ProjectPackages, feature_category: :package_registry do
         end
 
         context 'when repository access is disabled' do
-          before do
+          before_all do
             project.project_feature.update!(
               repository_access_level: ProjectFeature::DISABLED,
               merge_requests_access_level: ProjectFeature::DISABLED,
@@ -444,7 +438,7 @@ RSpec.describe API::ProjectPackages, feature_category: :package_registry do
         it_behaves_like 'no destroy url'
 
         context 'with JOB-TOKEN auth' do
-          let(:job) { create(:ci_build, :running, user: user, project: project) }
+          let_it_be(:job) { create(:ci_build, :running, user: user, project: project) }
 
           subject { get api(package_url, job_token: job.token) }
 
@@ -483,9 +477,7 @@ RSpec.describe API::ProjectPackages, feature_category: :package_registry do
         end
 
         context 'user is a developer' do
-          before do
-            project.add_developer(user)
-          end
+          before_all { project.add_developer(user) }
 
           it 'returns 200 and the package information' do
             subject
@@ -498,15 +490,13 @@ RSpec.describe API::ProjectPackages, feature_category: :package_registry do
         end
 
         context 'user is a maintainer' do
-          before do
-            project.add_maintainer(user)
-          end
+          before_all { project.add_maintainer(user) }
 
           it_behaves_like 'destroy url'
         end
 
         context 'with JOB-TOKEN auth' do
-          let(:job) { create(:ci_build, :running, user: user, project: project) }
+          let_it_be(:job) { create(:ci_build, :running, user: user, project: project) }
 
           subject { get api(package_url, job_token: job.token) }
 
@@ -519,7 +509,7 @@ RSpec.describe API::ProjectPackages, feature_category: :package_registry do
         end
 
         context 'with pipeline' do
-          let!(:package1) { create(:npm_package, :with_build, project: project) }
+          let_it_be(:package1) { create(:npm_package, :with_build, project: project) }
 
           it 'returns the pipeline info' do
             project.add_developer(user)
@@ -531,7 +521,7 @@ RSpec.describe API::ProjectPackages, feature_category: :package_registry do
           end
 
           context 'when repository access is disabled' do
-            before do
+            before_all do
               project.project_feature.update!(
                 repository_access_level: ProjectFeature::DISABLED,
                 merge_requests_access_level: ProjectFeature::DISABLED,
@@ -622,7 +612,8 @@ RSpec.describe API::ProjectPackages, feature_category: :package_registry do
       end
 
       context 'with valid package and pipelines' do
-        let!(:pipelines) do
+        let_it_be(:package1) { create(:npm_package, :last_downloaded_at, project: project, version: '3.1.0', name: "@#{project.root_namespace.path}/foo1") }
+        let_it_be(:pipelines) do
           create_list(:ci_pipeline, 3, user: user, project: project).each do |pipeline|
             create(:package_build_info, package: package1, pipeline: pipeline)
           end
@@ -807,7 +798,8 @@ RSpec.describe API::ProjectPackages, feature_category: :package_registry do
     end
 
     context 'with repository access' do
-      let!(:pipelines) do
+      let_it_be(:package1) { create(:npm_package, :last_downloaded_at, project: project, version: '3.1.0', name: "@#{project.root_namespace.path}/foo1") }
+      let_it_be(:pipelines) do
         create_list(:ci_pipeline, 3, user: user, project: project).each do |pipeline|
           create(:package_build_info, package: package1, pipeline: pipeline)
         end
@@ -815,12 +807,10 @@ RSpec.describe API::ProjectPackages, feature_category: :package_registry do
 
       let_it_be(:job) { create(:ci_build, :running, user: user, project: project) }
 
-      before do
-        project.add_reporter(user)
-      end
+      before_all { project.add_reporter(user) }
 
       context 'when access is disabled' do
-        before do
+        before_all do
           project.project_feature.update!(
             repository_access_level: ProjectFeature::DISABLED,
             merge_requests_access_level: ProjectFeature::DISABLED,
@@ -960,7 +950,7 @@ RSpec.describe API::ProjectPackages, feature_category: :package_registry do
         end
 
         context 'with JOB-TOKEN auth' do
-          let(:job) { create(:ci_build, :running, user: user, project: project) }
+          let_it_be(:job) { create(:ci_build, :running, user: user, project: project) }
 
           it 'returns 403 for a user without enough permissions' do
             project.add_developer(user)
@@ -1078,17 +1068,13 @@ RSpec.describe API::ProjectPackages, feature_category: :package_registry do
         end
 
         it_behaves_like 'does not enqueue a worker to sync a npm metadata cache' do
-          before do
-            project.add_maintainer(user)
-          end
+          before_all { project.add_maintainer(user) }
 
           subject { delete api(package_url, user) }
         end
 
         it_behaves_like 'does not enqueue a worker to sync a helm metadata cache' do
-          before do
-            project.add_maintainer(user)
-          end
+          before_all { project.add_maintainer(user) }
 
           subject(:execute) { delete api(package_url, user) }
         end

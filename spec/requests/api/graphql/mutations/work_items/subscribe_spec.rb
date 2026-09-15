@@ -50,6 +50,12 @@ RSpec.describe 'Subscribe to a work item', feature_category: :team_planning do
       })
     end
 
+    it_behaves_like 'authorizing granular token permissions for GraphQL', :subscribe_work_item do
+      let(:user) { current_user }
+      let(:boundary_object) { project }
+      let(:request) { post_graphql_mutation(mutation, token: { personal_access_token: pat }) }
+    end
+
     context 'when unsunscribing' do
       let(:subscribed_state) { false }
 

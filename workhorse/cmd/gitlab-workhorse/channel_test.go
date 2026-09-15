@@ -127,14 +127,86 @@ func TestChannelProxyForwardsXForwardedForFromClient(t *testing.T) {
 	require.Equal(t, "127.0.0.2, "+clientIP, sc.req.Header.Get("X-Forwarded-For"), "X-Forwarded-For from client not sent to remote")
 }
 
+func TestChannelCheckOriginByForwardedHost(t *testing.T) {
+	tests := []struct {
+		name           string
+		trustedHosts   []string
+		origin         string
+		xForwardedHost string
+		wantErr        bool
+	}{
+		{
+			name:           "allows Origin matching trusted X-Forwarded-Host",
+			trustedHosts:   []string{"public.example.com"},
+			origin:         "https://public.example.com",
+			xForwardedHost: "public.example.com",
+		},
+		{
+			name:           "rejects Origin not matching trusted X-Forwarded-Host",
+			trustedHosts:   []string{"public.example.com"},
+			origin:         "https://evil.example.com",
+			xForwardedHost: "public.example.com",
+			wantErr:        true,
+		},
+		{
+			name:           "rejects untrusted X-Forwarded-Host",
+			trustedHosts:   []string{"public.example.com"},
+			origin:         "https://other.example.com",
+			xForwardedHost: "other.example.com",
+			wantErr:        true,
+		},
+		{
+			// Without trusted hosts the default gorilla check applies, which
+			// compares Origin against Host: the workhorse test server address.
+			name:           "ignores X-Forwarded-Host when no trusted hosts are configured",
+			origin:         "https://public.example.com",
+			xForwardedHost: "public.example.com",
+			wantErr:        true,
+		},
+	}
+
+	for _, test := range tests {
+		t.Run(test.name, func(t *testing.T) {
+			serverConns, clientURL := wireupChannelWithTrustedForwardedHosts(t, envTerminalPath, test.trustedHosts, nil, "channel.k8s.io")
+
+			hdr := make(http.Header)
+			hdr.Set("Origin", test.origin)
+			hdr.Set("X-Forwarded-Host", test.xForwardedHost)
+
+			client, resp, err := dialWebsocket(clientURL, hdr, "terminal.gitlab.com")
+			if resp != nil {
+				defer resp.Body.Close()
+			}
+
+			if test.wantErr {
+				require.Equal(t, websocket.ErrBadHandshake, err, "unexpected error %v", err)
+				require.Equal(t, http.StatusForbidden, resp.StatusCode)
+				return
+			}
+
+			require.NoError(t, err)
+			defer client.Close()
+
+			sc := <-serverConns
+			defer sc.conn.Close()
+		})
+	}
+}
+
 func wireupChannel(t *testing.T, channelPath string, modifier func(*api.Response), subprotocols ...string) (chan connWithReq, string) {
+	return wireupChannelWithTrustedForwardedHosts(t, channelPath, nil, modifier, subprotocols...)
+}
+
+func wireupChannelWithTrustedForwardedHosts(t *testing.T, channelPath string, trustedForwardedHosts []string, modifier func(*api.Response), subprotocols ...string) (chan connWithReq, string) {
 	serverConns, remote := startWebsocketServer(t, subprotocols...)
 	authResponse := channelOkBody(remote, nil, subprotocols...)
 	if modifier != nil {
 		modifier(authResponse)
 	}
 	upstream := testAuthServer(t, nil, nil, 200, authResponse)
-	workhorse := startWorkhorseServer(t, upstream.URL)
+	cfg := newUpstreamConfig(upstream.URL)
+	cfg.TrustedForwardedHosts = trustedForwardedHosts
+	workhorse := startWorkhorseServerWithConfig(t, cfg)
 
 	return serverConns, websocketURL(workhorse.URL, channelPath)
 }

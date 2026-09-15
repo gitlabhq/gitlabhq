@@ -1,5 +1,7 @@
 # frozen_string_literal: true
 
+require "active_record"
+require "byebug"
 require "gitlab/database/lock_retries"
 
 RSpec.configure do |config|
@@ -12,4 +14,6 @@ RSpec.configure do |config|
   config.expect_with :rspec do |c|
     c.syntax = :expect
   end
+
+  Dir[File.expand_path("support/**/*.rb", __dir__)].each { |f| require f }
 end

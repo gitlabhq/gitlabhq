@@ -83,7 +83,7 @@ export default {
   >
     <template #body>
       <gl-alert
-        variant="info"
+        variant="warning"
         :title="s__('NamespaceTransfer|Transferring this group will:')"
         :dismissible="false"
         class="gl-mb-5"
@@ -93,6 +93,13 @@ export default {
           <li>
             {{
               s__('NamespaceTransfer|Change its visibility settings to match the new parent group.')
+            }}
+          </li>
+          <li>
+            {{
+              s__(
+                'NamespaceTransfer|Permanently delete all secrets stored in GitLab Secrets Manager for this group, its subgroups, and its projects.',
+              )
             }}
           </li>
         </ul>

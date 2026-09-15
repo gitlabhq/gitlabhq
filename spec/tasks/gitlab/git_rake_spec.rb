@@ -3,8 +3,7 @@
 require 'spec_helper'
 
 RSpec.describe 'gitlab:git rake tasks', :silence_stdout do
-  let(:base_path) { 'tmp/tests/default_storage' }
-  let!(:project) { create(:project, :repository) }
+  let!(:project) { create(:project, :small_repo) }
 
   before do
     Rake.application.rake_require 'tasks/gitlab/git'
@@ -20,8 +19,8 @@ RSpec.describe 'gitlab:git rake tasks', :silence_stdout do
     end
 
     it 'outputs the integrity check for specific project IDs' do
-      project2 = create(:project, :repository)
-      project3 = create(:project, :repository)
+      project2 = create(:project, :small_repo)
+      project3 = create(:project, :small_repo)
 
       stub_env('PROJECT_IDS', "#{project.id},#{project3.id}")
 

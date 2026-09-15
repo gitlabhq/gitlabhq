@@ -286,7 +286,7 @@ describe('GlqlFacade', () => {
       const oldResolver = findResolver();
 
       const alert = wrapper.findComponent(GlAlert);
-      alert.vm.$emit('primaryAction');
+      alert.vm.$emit('primary-action');
       await nextTick();
 
       expect(oldResolver.exists()).toBe(false);
@@ -356,7 +356,7 @@ describe('GlqlFacade', () => {
       const oldResolver = findResolver();
 
       const alert = wrapper.findComponent(GlAlert);
-      alert.vm.$emit('primaryAction');
+      alert.vm.$emit('primary-action');
       await nextTick();
 
       expect(oldResolver.exists()).toBe(false);

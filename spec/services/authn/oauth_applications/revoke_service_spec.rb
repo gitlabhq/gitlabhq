@@ -5,8 +5,12 @@ require 'spec_helper'
 RSpec.describe ::Authn::OauthApplications::RevokeService, feature_category: :system_access do
   let_it_be(:user) { create(:user) }
   let_it_be(:application) { create(:oauth_application) }
-  let!(:grant) { create(:oauth_access_grant, resource_owner_id: user.id, application: application) }
-  let!(:access_token) { create(:oauth_access_token, resource_owner: user, application: application) }
+  let_it_be_with_reload(:grant) do
+    create(:oauth_access_grant, resource_owner_id: user.id, application: application,
+      organization: application.organization)
+  end
+
+  let_it_be_with_reload(:access_token) { create(:oauth_access_token, resource_owner: user, application: application) }
 
   subject(:service) { described_class.new(current_user: user, application_id: application.id.to_s) }
 
@@ -39,8 +43,8 @@ RSpec.describe ::Authn::OauthApplications::RevokeService, feature_category: :sys
     end
 
     context 'when iam_svc_oauth is enabled' do
-      let!(:consent) { create(:oauth_consent, user: user, application: application) }
-      let!(:other_user_consent) { create(:oauth_consent, application: application) }
+      let_it_be_with_reload(:consent) { create(:oauth_consent, user: user, application: application) }
+      let_it_be_with_reload(:other_user_consent) { create(:oauth_consent, application: application) }
 
       before do
         stub_feature_flags(iam_svc_oauth: user)

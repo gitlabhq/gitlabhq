@@ -19,6 +19,7 @@ import { BV_SHOW_MODAL, BV_HIDE_MODAL } from '~/lib/utils/constants';
 import { n__, sprintf } from '~/locale';
 import {
   memberName,
+  groupErrorsByMessage,
   triggerExternalAlert,
   baseBindingAttributes,
 } from 'ee_else_ce/invite_members/utils/member_utils';
@@ -218,7 +219,7 @@ export default {
       return n__(
         "InviteMembersModal|The following member couldn't be invited",
         "InviteMembersModal|The following %d members couldn't be invited",
-        this.errorList.length,
+        Object.keys(this.invalidMembers).length,
       );
     },
     showUserLimitNotification() {
@@ -231,9 +232,7 @@ export default {
       return this.usersLimitDataset.alertVariant;
     },
     errorList() {
-      return Object.entries(this.invalidMembers).map(([member, error]) => {
-        return { member, displayedMemberName: this.tokenName(member), message: error };
-      });
+      return groupErrorsByMessage(this.invalidMembers, (member) => this.tokenName(member));
     },
     errorsLimited() {
       return this.errorList.slice(0, this.errorsLimit);
@@ -481,12 +480,8 @@ export default {
         >
           {{ $options.labels.memberErrorListText }}
           <ul class="gl-mb-0 gl-pl-5">
-            <li
-              v-for="error in errorsLimited"
-              :key="error.member"
-              data-testid="errors-limited-item"
-            >
-              <strong>{{ error.displayedMemberName }}:</strong>
+            <li v-for="error in errorsLimited" :key="error.id" data-testid="errors-limited-item">
+              <strong>{{ error.displayedMemberNames }}:</strong>
               <span v-safe-html="error.message"></span>
             </li>
           </ul>
@@ -495,10 +490,10 @@ export default {
               <ul class="gl-mb-0 gl-pl-5">
                 <li
                   v-for="error in errorsExpanded"
-                  :key="error.member"
+                  :key="error.id"
                   data-testid="errors-expanded-item"
                 >
-                  <strong>{{ error.displayedMemberName }}:</strong>
+                  <strong>{{ error.displayedMemberNames }}:</strong>
                   <span v-safe-html="error.message"></span>
                 </li>
               </ul>

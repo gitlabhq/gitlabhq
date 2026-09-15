@@ -6,6 +6,10 @@ module Mutations
       class Discussion < Base
         graphql_name 'CreateDiscussion'
 
+        def self.authorization_scopes
+          super + [:ai_workflows]
+        end
+
         private
 
         def create_note_params(noteable, args)

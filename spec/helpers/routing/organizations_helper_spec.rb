@@ -12,6 +12,30 @@ RSpec.describe ::Routing::OrganizationsHelper, feature_category: :organization d
     end
   end
 
+  describe '.build_route_pairs' do
+    fake_route = Struct.new(:name)
+
+    let(:global_routes) { [fake_route.new('admin_users')] }
+
+    subject(:route_pairs) { described_class::MappedHelpers.build_route_pairs(organization_routes, global_routes) }
+
+    context 'when the organization-scoped route shares a name with a global route' do
+      let(:organization_routes) { [fake_route.new('organization_admin_users')] }
+
+      it 'pairs the routes' do
+        expect(route_pairs).to eq('admin_users' => 'organization_admin_users')
+      end
+    end
+
+    context 'when no global route shares that name' do
+      let(:organization_routes) { [fake_route.new('organization_nonexistent')] }
+
+      it 'does not pair the routes' do
+        expect(route_pairs).to eq({})
+      end
+    end
+  end
+
   shared_examples 'organization aware route helper' do
     include Rails.application.routes.url_helpers
 
@@ -26,12 +50,20 @@ RSpec.describe ::Routing::OrganizationsHelper, feature_category: :organization d
 
     let(:expected_global_url) { "http://test.host#{expected_global_path}" }
 
-    context 'when organization context is not present' do
+    context 'when called outside of a request (e.g. a mailer or worker)' do
+      it 'automatically routes to global path' do
+        expect(helper_path).to eq(expected_global_path)
+      end
+
+      it 'automatically routes to global url' do
+        expect(helper_url).to eq(expected_global_url)
+      end
+    end
+
+    context 'when the request has no organization_path param' do
       before do
-        allow(Current).to receive_messages(
-          organization_assigned: false,
-          organization: nil
-        )
+        allow(Current).to receive(:organization_resolver)
+          .and_return(instance_double(Gitlab::Current::Organization, from_organization_params: nil))
       end
 
       it 'automatically routes to global path' do
@@ -43,67 +75,99 @@ RSpec.describe ::Routing::OrganizationsHelper, feature_category: :organization d
       end
     end
 
-    context 'when organization has path scopes' do
-      let(:organization) { build_stubbed(:organization) }
+    context 'when the request has an organization_path param' do
+      # 'default' is deliberate - the previous scoped_paths?/default? check
+      # broke exactly this case, treating the default Organization as never
+      # scoped regardless of the request's own URL.
+      let(:organization_path) { 'default' }
 
       let(:organization_helper_url) do
-        public_send :"#{organization_helper}_url", organization_path: organization.path
+        public_send :"#{organization_helper}_url", organization_path: organization_path
       end
 
       let(:organization_helper_path) do
-        public_send :"#{organization_helper}_path", organization_path: organization.path
+        public_send :"#{organization_helper}_path", organization_path: organization_path
       end
 
       before do
-        allow(Current).to receive_messages(
-          organization_assigned: true,
-          organization: organization
-        )
+        organization = build_stubbed(:organization, path: organization_path)
+        allow(Current).to receive(:organization_resolver)
+          .and_return(instance_double(Gitlab::Current::Organization, from_organization_params: organization))
       end
 
-      context 'and they are enabled' do
-        before do
-          allow(organization).to receive(:scoped_paths?).and_return(true)
-        end
+      it 'automatically routes to organization scoped path' do
+        expect(helper_path).to eq(organization_helper_path)
+      end
 
-        it 'automatically routes to organization scoped path' do
-          expect(helper_path).to eq(organization_helper_path)
-        end
+      it 'automatically routes to organization scoped URL' do
+        expect(helper_url).to eq(organization_helper_url)
+      end
 
-        it 'automatically routes to organization scoped URL' do
-          expect(helper_url).to eq(organization_helper_url)
+      context 'and called with organization_path: nil' do
+        it 'routes to the global path despite the request URL' do
+          expect(public_send(:"#{helper}_path", organization_path: nil)).to eq(expected_global_path)
         end
       end
 
-      context 'and they are disabled' do
+      context 'and Current.data_context resolves to a different Organization' do
+        let(:data_context_organization_path) { 'acme' }
+
+        let(:data_context_organization_helper_path) do
+          public_send :"#{organization_helper}_path", organization_path: data_context_organization_path
+        end
+
         before do
-          allow(organization).to receive(:scoped_paths?).and_return(false)
+          organization = build_stubbed(:organization, :isolated, path: data_context_organization_path)
+          allow(Current).to receive(:data_context)
+            .and_return(Gitlab::Current::DataContext.new(organization: organization))
         end
 
-        it 'automatically routes to global path' do
-          expect(helper_path).to eq(expected_global_path)
+        it 'nests under Current.data_context rather than the request URL' do
+          expect(helper_path).to eq(data_context_organization_helper_path)
         end
 
-        it 'automatically routes to global url' do
-          expect(helper_url).to eq(expected_global_url)
+        it 'cannot be escaped by an explicit organization_path: nil override' do
+          expect(public_send(:"#{helper}_path", organization_path: nil)).to eq(data_context_organization_helper_path)
         end
       end
     end
 
-    context 'when organization context is nil' do
+    context 'when there is no organization_path param but Current.data_context resolves to Organization context' do
+      let(:organization_path) { 'acme' }
+
+      let(:organization_helper_path) do
+        public_send :"#{organization_helper}_path", organization_path: organization_path
+      end
+
       before do
+        organization = build_stubbed(:organization, :isolated, path: organization_path)
         allow(Current).to receive_messages(
-          organization_assigned: true,
-          organization: nil
+          data_context: Gitlab::Current::DataContext.new(organization: organization),
+          organization_resolver: instance_double(Gitlab::Current::Organization, from_organization_params: nil)
         )
       end
 
-      it 'automatically routes to global path' do
-        expect(helper_path).to eq(expected_global_path)
+      it 'routes to the organization scoped path' do
+        expect(helper_path).to eq(organization_helper_path)
       end
 
-      it 'automatically routes to global URL' do
-        expect(helper_url).to eq(expected_global_url)
+      context 'and called with organization_path: nil' do
+        it 'still nests under Current.data_context - it cannot be escaped' do
+          expect(public_send(:"#{helper}_path", organization_path: nil)).to eq(organization_helper_path)
+        end
+      end
+    end
+
+    context 'when neither the request URL nor Current.data_context resolve to Organization context' do
+      before do
+        allow(Current).to receive_messages(
+          data_context: Gitlab::Current::DataContext.new,
+          organization_resolver: instance_double(Gitlab::Current::Organization, from_organization_params: nil)
+        )
+      end
+
+      it 'routes to the global path' do
+        expect(helper_path).to eq(expected_global_path)
       end
     end
   end

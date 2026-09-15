@@ -12,6 +12,7 @@ module API
         detail 'Downloads a project avatar. You can access this endpoint without authentication if the project is ' \
           'publicly accessible. This feature was introduced in GitLab 16.9.'
         tags %w[avatars]
+        produces %w[application/octet-stream]
         success code: 200
       end
 

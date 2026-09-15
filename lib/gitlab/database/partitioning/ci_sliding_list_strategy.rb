@@ -31,7 +31,13 @@ module Gitlab
         def after_adding_partitions; end
 
         def extra_partitions
-          []
+          possibly_extra = current_partitions[0...-1] # Never consider the most recent partition
+
+          possibly_extra.take_while { |partition| detach_partition_if.call(partition) }
+        end
+
+        def detachable_since(partition)
+          ::Ci::Partition.archived_since(partition.values)
         end
 
         def active_partition

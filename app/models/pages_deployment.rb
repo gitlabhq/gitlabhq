@@ -29,6 +29,7 @@ class PagesDeployment < ApplicationRecord
   scope :upload_ready, -> { where(upload_ready: true) }
 
   scope :active, -> { upload_ready.where(deleted_at: nil) }
+  scope :inactive, -> { where(upload_ready: false).or(where.not(deleted_at: nil)) }
   scope :expired, -> { where('expires_at < ?', Time.now.utc).order(:expires_at, :id) }
   scope :deactivated, -> { where('deleted_at < ?', Time.now.utc) }
   scope :versioned, -> { where.not(path_prefix: [nil, '']) }
@@ -90,7 +91,7 @@ class PagesDeployment < ApplicationRecord
   end
 
   def active?
-    deleted_at.nil?
+    upload_ready? && deleted_at.nil?
   end
 
   def url

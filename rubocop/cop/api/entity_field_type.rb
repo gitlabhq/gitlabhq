@@ -55,8 +55,8 @@ module RuboCop
         SPECIAL = %w[JSON File].freeze
         VALID_TYPES = (PRIMITIVES + STRUCTURES + SPECIAL).freeze
 
-        MSG = 'Invalid type for entity field. https://docs.gitlab.com/development/api_styleguide#defining-entity-fields.'
-        MISSING_TYPE = 'Entity field is missing type declaration. https://docs.gitlab.com/development/api_styleguide#defining-entity-fields.'
+        MSG = 'Invalid type for entity field. https://docs.gitlab.com/development/api_styleguide/#defining-entity-fields.'
+        MISSING_TYPE = 'Entity field is missing type declaration. https://docs.gitlab.com/development/api_styleguide/#defining-entity-fields.'
         CLASS_NAME_REGEX = /\A(::)?API::Entities::/
 
         RESTRICT_ON_SEND = %i[expose].freeze

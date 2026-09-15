@@ -13,7 +13,7 @@ title: Enable and disable GitLab features deployed behind feature flags
 
 {{< /details >}}
 
-GitLab adopted feature flags strategies
+GitLab adopted feature flag strategies
 to deploy features in an early stage of development so that they can be
 incrementally rolled out.
 
@@ -22,7 +22,7 @@ flags for a number of reasons, such as:
 
 - To test the feature.
 - To get feedback from users and customers while in an early stage of the development of the feature.
-- To evaluate users adoption.
+- To evaluate user adoption.
 - To evaluate how it impacts the performance of GitLab.
 - To build it in smaller pieces throughout releases.
 
@@ -41,7 +41,7 @@ When you disable a feature flag, the feature is hidden from users and all of the
 For example, data is not recorded and services do not run.
 
 If you used a certain feature and identified a bug, a misbehavior, or an
-error, it's very important that you [**provide feedback**](https://gitlab.com/gitlab-org/gitlab/-/issues/new?issue[title]=Docs%20-%20feature%20flag%20feedback%3A%20Feature%20Name&issue[description]=Describe%20the%20problem%20you%27ve%20encountered.%0A%0A%3C!--%20Don%27t%20edit%20below%20this%20line%20--%3E%0A%0A%2Flabel%20~%22docs%5C-comments%22%20) to GitLab as soon
+error, it's very important that you [provide feedback](https://gitlab.com/gitlab-org/gitlab/-/work_items/new?issue[title]=Docs%20-%20feature%20flag%20feedback%3A%20Feature%20Name&issue[description]=Describe%20the%20problem%20you%27ve%20encountered.%0A%0A%3C!--%20Don%27t%20edit%20below%20this%20line%20--%3E%0A%0A%2Flabel%20~%22docs%5C-comments%22%20) to GitLab as soon
 as possible so we can improve or fix it while behind a flag. When you upgrade
 GitLab, the feature flag status may change.
 
@@ -55,7 +55,7 @@ Before enabling a disabled feature flag in a production GitLab environment, it i
 Features that are disabled by default may change or be removed without notice in a future version of GitLab.
 
 Features behind default-disabled feature flags are not recommended for use in a production environment
-and problems caused by using a default disabled features aren't covered by GitLab Support.
+and problems caused by using features that are disabled by default aren't covered by GitLab Support.
 
 Security issues found in features that are disabled by default are patched in regular releases
 and do not follow our regular [maintenance policy](../../policy/maintenance.md#patch-releases)

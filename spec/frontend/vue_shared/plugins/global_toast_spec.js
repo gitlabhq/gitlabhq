@@ -2,9 +2,10 @@ import toast from '~/vue_shared/plugins/global_toast';
 
 const mockSpy = jest.fn();
 jest.mock('@gitlab/ui', () => ({
-  GlToast: (Vue) => {
-    // eslint-disable-next-line no-param-reassign
-    Vue.prototype.$toast = { show: (...args) => mockSpy(...args) };
+  GlToastMixin: {
+    beforeCreate() {
+      Object.assign(this, { $toast: { show: (...args) => mockSpy(...args) } });
+    },
   },
 }));
 

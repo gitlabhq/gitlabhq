@@ -200,7 +200,7 @@ To learn more, see [the announcement blog](https://about.gitlab.com/blog/gitlab-
 
 - Tier: Free, Premium, Ultimate
 - Offering: GitLab.com, GitLab Self-Managed
-- Links: [Documentation](https://new.docs.gitlab.com/ci/variables/#define-a-cicd-variable-in-the-ui) | [Related issue](https://gitlab.com/gitlab-org/gitlab/-/issues/29674)
+- Links: [Documentation](https://docs.gitlab.com/ci/variables/#define-a-cicd-variable-in-the-ui) | [Related issue](https://gitlab.com/gitlab-org/gitlab/-/issues/29674)
 
 {{< /details >}}
 

@@ -42,15 +42,15 @@ RSpec.describe Gitlab::GitalyClient::DiffBlobsStitcher, feature_category: :gital
       expect(diff_blobs.first.right_blob_id).to eq('8e5177d718c561d36efde08bad36b43687ee6bf0')
       expect(diff_blobs.first.patch).to eq('a' * 200)
       expect(diff_blobs.first.status).to eq(:STATUS_END_OF_PATCH)
-      expect(diff_blobs.first.binary).to eq(false)
-      expect(diff_blobs.first.over_patch_bytes_limit).to eq(false)
+      expect(diff_blobs.first.binary).to be(false)
+      expect(diff_blobs.first.over_patch_bytes_limit).to be(false)
 
       expect(diff_blobs.last.left_blob_id).to eq('8f2e9b1c4d7a3f5e6b0d2c8a9f1e3d5b7c4a6e8d')
       expect(diff_blobs.last.right_blob_id).to eq('3a1d9c7b5f2e8d4a6c0b3e9f1d7a5c2b8e4f6a0')
       expect(diff_blobs.last.patch).to eq('b' * 100)
       expect(diff_blobs.last.status).to eq(:STATUS_END_OF_PATCH)
-      expect(diff_blobs.last.binary).to eq(false)
-      expect(diff_blobs.last.over_patch_bytes_limit).to eq(false)
+      expect(diff_blobs.last.binary).to be(false)
+      expect(diff_blobs.last.over_patch_bytes_limit).to be(false)
     end
   end
 end

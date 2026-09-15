@@ -8,7 +8,7 @@ module RuboCop
       class AvoidFeatureCategoryNotOwned < RuboCop::Cop::Base
         include ::RuboCop::CodeReuseHelpers
 
-        MSG = 'Avoid adding new endpoints with `feature_category :not_owned`. See https://docs.gitlab.com/ee/development/feature_categorization'
+        MSG = 'Avoid adding new endpoints with `feature_category :not_owned`. See https://docs.gitlab.com/development/feature_categorization/'
         RESTRICT_ON_SEND = %i[feature_category get post put patch delete].freeze
 
         # @!method feature_category_not_owned?(node)

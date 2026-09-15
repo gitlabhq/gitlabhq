@@ -16,9 +16,6 @@ description: Configure deletion of dormant projects.
 
 {{< history >}}
 
-- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/85689) in GitLab 15.0 [with a feature flag](feature_flags/_index.md) named `inactive_projects_deletion`. Disabled by default.
-- [Feature flag `inactive_projects_deletion`](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/96803) removed in GitLab 15.4.
-- Configuration through GitLab UI [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/85575) in GitLab 15.1.
 - [Renamed](https://gitlab.com/gitlab-org/gitlab/-/work_items/533275) from inactive project deletion in GitLab 18.1.
 
 {{< /history >}}
@@ -99,6 +96,8 @@ You can view a project's activities and determine when the project was last acti
 
 - Go to the [activity page](../user/project/working_with_projects.md#view-project-activity) for the project and view
   the date of the latest event.
-- View the `last_activity_at` attribute for the project using the [Projects API](../api/projects.md).
+- View the following attributes for the project using the [Projects API](../api/projects.md):
+  - `last_activity_at` updates once an hour and mainly tracks events. It also tracks project and path renames and description edits.
+  - `updated_at` updates anytime a project is saved.
 - List the visible events for the project using the [Events API](../api/events.md#list-all-visible-events-for-a-project).
   View the `created_at` attribute of the latest event.

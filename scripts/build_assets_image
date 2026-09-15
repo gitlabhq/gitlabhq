@@ -55,14 +55,23 @@ COMMIT_SHA_DESTINATION=${ASSETS_IMAGE_PATH}:${CI_COMMIT_SHA}
 # Used for CNG tag pipelines
 COMMIT_REF_NAME_DESTINATION="${ASSETS_IMAGE_PATH}:${CI_COMMIT_REF_NAME}"
 
-DESTINATIONS="--tag=${COMMIT_REF_SLUG_DESTINATION} --tag=${COMMIT_SHA_DESTINATION}"
-if [ -n "${CI_COMMIT_TAG}" ]; then
-  DESTINATIONS="$DESTINATIONS --tag=${COMMIT_REF_NAME_DESTINATION}"
+# Instrumented assets must never occupy the tags plain pipelines consume
+if [[ "${BABEL_ENV}" == "istanbul" ]]; then
+  DESTINATIONS=""
+else
+  DESTINATIONS="--tag=${COMMIT_REF_SLUG_DESTINATION} --tag=${COMMIT_SHA_DESTINATION}"
+  if [ -n "${CI_COMMIT_TAG}" ]; then
+    DESTINATIONS="$DESTINATIONS --tag=${COMMIT_REF_NAME_DESTINATION}"
+  fi
 fi
 
 if docker buildx imagetools inspect "${COMMIT_ASSETS_HASH_DESTINATION}" >/dev/null 2>&1; then
-  echosuccess "Image ${COMMIT_ASSETS_HASH_DESTINATION} already exists, only re-tagging with other destination tags" "yes"
-  docker buildx imagetools create ${DESTINATIONS} "$COMMIT_ASSETS_HASH_DESTINATION"
+  if [ -n "${DESTINATIONS}" ]; then
+    echosuccess "Image ${COMMIT_ASSETS_HASH_DESTINATION} already exists, only re-tagging with other destination tags" "yes"
+    docker buildx imagetools create ${DESTINATIONS} "$COMMIT_ASSETS_HASH_DESTINATION"
+  else
+    echosuccess "Image ${COMMIT_ASSETS_HASH_DESTINATION} already exists, nothing to re-tag" "yes"
+  fi
 else
   echoinfo "Image ${COMMIT_ASSETS_HASH_DESTINATION} doesn't exist, rebuilding" "yes"
 

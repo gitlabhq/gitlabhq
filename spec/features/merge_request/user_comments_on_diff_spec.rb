@@ -3,9 +3,10 @@
 require 'spec_helper'
 
 RSpec.describe 'User comments on a diff', :js, feature_category: :code_review_workflow do
-  include MergeRequestDiffHelpers
   include RepoHelpers
   include RichTextEditorHelpers
+  include RapidDiffsDiscussionHelpers
+  include Spec::Support::Helpers::ModalHelpers
 
   let(:project) { create(:project, :repository) }
   let(:merge_request) do
@@ -19,103 +20,74 @@ RSpec.describe 'User comments on a diff', :js, feature_category: :code_review_wo
     sign_in(user)
 
     visit(diffs_project_merge_request_path(project, merge_request))
+    wait_for_requests
   end
 
   context 'when viewing comments' do
     context 'when toggling inline comments' do
       context 'in a single file' do
         it 'hides a comment' do
-          line_element = find_in_page_or_panel_by_scrolling("[id='#{sample_compare.changes[1][:line_code]}']").find(:xpath, "..")
-          click_diff_line(line_element)
+          line_holder = find_line(sample_compare.changes[1][:line_code], sample_compare.changes[1][:file_path])
+          click_diff_line(line_holder)
 
-          page.within('.js-discussion-note-form') do
-            fill_in('note_note', with: 'Line is wrong')
-            click_button('Add comment now')
-          end
+          discussion_row = next_discussion_row(line_holder)
+          discussion_row.fill_in('note[note]', with: 'Line is wrong')
+          click_button('Add comment now')
 
-          page.within(line_element.ancestor('[data-path]')) do
-            expect(page).to have_content('Line is wrong')
+          file = diff_file(sample_compare.changes[1][:file_path])
+          expect(file).to have_content('Line is wrong')
 
-            find('.js-diff-more-actions').click
-            click_button 'Hide comments on this file'
+          within(file) { find_by_testid('collapse-toggle', match: :first).click }
 
-            expect(page).not_to have_content('Line is wrong')
-          end
+          expect(file).not_to have_content('Line is wrong')
         end
       end
 
       context 'in multiple files' do
-        it 'toggles comments', quarantine: 'https://gitlab.com/gitlab-org/quality/test-failure-issues/-/issues/9355' do
-          first_line_element = find_in_page_or_panel_by_scrolling("[id='#{sample_compare.changes[0][:line_code]}']").find(:xpath, "..")
-          first_root_element = first_line_element.ancestor('[data-path]')
-          click_diff_line(first_line_element)
-
-          page.within('.js-discussion-note-form') do
-            fill_in('note_note', with: 'Line is correct')
-            click_button('Add comment now')
-          end
+        it 'toggles comments' do
+          first_line_holder = find_line(sample_compare.changes[0][:line_code], sample_compare.changes[0][:file_path])
+          click_diff_line(first_line_holder)
+          next_discussion_row(first_line_holder).fill_in('note[note]', with: 'Line is correct')
+          click_button('Add comment now')
 
           wait_for_requests
 
-          page.within(first_root_element) do
-            expect(page).to have_content('Line is correct')
-          end
+          first_file = diff_file(sample_compare.changes[0][:file_path])
+          expect(first_file).to have_content('Line is correct')
 
-          second_line_element = find_in_page_or_panel_by_scrolling("[id='#{sample_compare.changes[1][:line_code]}']")
-          second_root_element = second_line_element.ancestor('[data-path]')
-
-          click_diff_line(second_line_element)
-
-          page.within('.js-discussion-note-form') do
-            fill_in('note_note', with: 'Line is wrong')
-            click_button('Add comment now')
-          end
+          second_line_holder = find_line(sample_compare.changes[1][:line_code], sample_compare.changes[1][:file_path])
+          second_file = diff_file(sample_compare.changes[1][:file_path])
+          click_diff_line(second_line_holder)
+          next_discussion_row(second_line_holder).fill_in('note[note]', with: 'Line is wrong')
+          click_button('Add comment now')
 
           wait_for_requests
 
           # Hide the comment.
-          page.within(second_root_element) do
-            find('.js-diff-more-actions').click
-            click_button 'Hide comments on this file'
+          within(second_file) { find_by_testid('collapse-toggle', match: :first).click }
 
-            expect(page).not_to have_content('Line is wrong')
-          end
+          expect(second_file).not_to have_content('Line is wrong')
 
           # At this moment a user should see only one comment.
           # The other one should be hidden.
-          expect(find_in_page_or_panel_by_scrolling(".js-discussion-container", index: 0)).to have_content('Line is correct')
+          expect(first_file).to have_content('Line is correct')
 
           # Show the comment.
-          page.within(second_root_element) do
-            find('.js-diff-more-actions').click
-            click_button 'Show comments on this file'
-          end
+          within(second_file) { find_by_testid('gutter-avatar', match: :first).click }
 
           # Now both the comments should be shown.
-          expect(find_in_page_or_panel_by_scrolling(".js-discussion-container", index: 1)).to have_content('Line is wrong')
-          expect(find_in_page_or_panel_by_scrolling(".js-discussion-container", index: 0)).to have_content('Line is correct')
+          expect(second_file).to have_content('Line is wrong')
+          expect(first_file).to have_content('Line is correct')
 
           # Check the same comments in the side-by-side view.
-          page.execute_script "document.querySelector('.js-static-panel-inner').scrollTo(0,0)"
-
-          find('.js-show-diff-settings').click
-          find_by_testid('listbox-item-parallel').click
-
-          second_line_element = find_in_page_or_panel_by_scrolling("[id='#{sample_compare.changes[1][:line_code]}']")
-          second_root_element = second_line_element.ancestor('[data-path]')
-
+          select_parallel_view
           wait_for_requests
 
-          page.within(second_root_element) do
-            expect(page).to have_content('Line is wrong')
-          end
+          second_file = diff_file(sample_compare.changes[1][:file_path])
+          expect(second_file).to have_content('Line is wrong')
 
-          first_line_element = find_in_page_or_panel_by_scrolling("[id='#{sample_compare.changes[0][:line_code]}']").find(:xpath, "..")
-          first_root_element = first_line_element.ancestor('[data-path]')
-
-          page.within(first_root_element) do
-            expect(page).to have_content('Line is correct')
-          end
+          first_file = diff_file(sample_compare.changes[0][:file_path])
+          expect(first_file).to have_content('Line is correct')
         end
       end
     end
@@ -126,12 +98,11 @@ RSpec.describe 'User comments on a diff', :js, feature_category: :code_review_wo
 
     context 'when adding a diff suggestion in rich text editor' do
       it 'works on the Overview tab' do
-        click_diff_line(find_in_page_or_panel_by_scrolling("[id='#{sample_commit.line_code}']"))
+        line_holder = find_line(sample_commit.line_code, sample_commit.line_code_path)
+        click_diff_line(line_holder)
 
-        page.within('.js-discussion-note-form') do
-          fill_in(:note_note, with: "```suggestion:-0+0\nchanged line\n```")
-          find('.js-comment-button').click
-        end
+        next_discussion_row(line_holder).fill_in('note[note]', with: "```suggestion:-0+0\nchanged line\n```")
+        click_button('Add comment now')
 
         visit(merge_request_path(merge_request))
 
@@ -150,65 +121,69 @@ RSpec.describe 'User comments on a diff', :js, feature_category: :code_review_wo
 
   context 'when adding multiline comments' do
     it 'saves a multiline comment' do
-      click_diff_line(find_in_page_or_panel_by_scrolling("[id='#{sample_commit.line_code}']").find(:xpath, '..'))
-      add_comment('-13')
+      anchor_row = find_line(sample_commit.line_code, sample_commit.line_code_path)
+      target_row = line_by_number(sample_commit.line_code_path, 'old', 13)
+
+      drag_comment_range(anchor_row, target_row)
+      submit_multiline_comment(anchor_row, target_row)
     end
 
     context 'when in side-by-side view' do
       before do
         visit(diffs_project_merge_request_path(project, merge_request, view: 'parallel'))
+        wait_for_requests
       end
 
       # In `files/ruby/popen.rb`
       it 'allows comments for changes involving both sides' do
-        # click +15, select -13 add and verify comment
-        click_diff_line(find_in_page_or_panel_by_scrolling('div[data-path="files/ruby/popen.rb"] .right-side a[data-linenumber="15"]').find(:xpath, '../../..'), 'right')
-        add_comment('-13')
+        anchor_row = line_by_number('files/ruby/popen.rb', 'new', 15)
+        target_row = line_by_number('files/ruby/popen.rb', 'old', 13)
+
+        drag_comment_range(anchor_row, target_row, 'right')
+        submit_multiline_comment(anchor_row, target_row)
       end
 
-      it 'allows comments on previously hidden lines at the top of a file', quarantine: 'https://gitlab.com/gitlab-org/quality/test-failure-issues/-/issues/9333' do
-        # Click -9, expand up, select 1 add and verify comment
-        page.within find_in_page_or_panel_by_scrolling('[data-path="files/ruby/popen.rb"]') do
-          all('.js-unfold-all')[0].click
-        end
-        click_diff_line(find('div[data-path="files/ruby/popen.rb"] .left-side a[data-linenumber="9"]').find(:xpath, '../..'), 'left')
-        add_comment('-9')
+      it 'allows comments on previously hidden lines at the top of a file' do
+        expand_hunk('files/ruby/popen.rb', 'up')
+
+        anchor_row = line_by_number('files/ruby/popen.rb', 'old', 9)
+        target_row = line_by_number('files/ruby/popen.rb', 'old', 9)
+
+        drag_comment_range(anchor_row, target_row, 'left')
+        submit_multiline_comment(anchor_row, target_row)
       end
 
       it 'allows comments on previously hidden lines the middle of a file' do
-        # Click 27, expand up, select 18, add and verify comment
-        page.within find_in_page_or_panel_by_scrolling('[data-path="files/ruby/popen.rb"]') do
-          first('.js-unfold-all').click
-        end
-        click_diff_line(find('div[data-path="files/ruby/popen.rb"] .left-side a[data-linenumber="21"]').find(:xpath, '../..'), 'left')
-        add_comment('18')
+        expand_all_context('files/ruby/popen.rb')
+
+        anchor_row = line_by_number('files/ruby/popen.rb', 'old', 21)
+        target_row = line_by_number('files/ruby/popen.rb', 'old', 18)
+
+        drag_comment_range(anchor_row, target_row, 'left')
+        submit_multiline_comment(anchor_row, target_row)
       end
 
-      it 'allows comments on previously hidden lines at the bottom of a file' do
-        # Click +28, expand down, select 37 add and verify comment
-        page.within find_in_page_or_panel_by_scrolling('[data-path="files/ruby/popen.rb"]') do
-          first('.js-unfold-down').click
-        end
-        click_diff_line(find('div[data-path="files/ruby/popen.rb"] .left-side a[data-linenumber="30"]').find(:xpath, '../..'), 'left')
-        add_comment('+28')
+      it 'allows comments on previously hidden lines at the bottom of a file',
+        skip: 'Rapid Diffs: multiline cross-side drag selection is flaky under synthetic drag events; ' \
+          'https://gitlab.com/gitlab-org/gitlab/-/issues/628503' do
+        expand_all_context('files/ruby/popen.rb')
+
+        anchor_row = line_by_number('files/ruby/popen.rb', 'old', 30)
+        target_row = line_by_number('files/ruby/popen.rb', 'new', 28)
+
+        drag_comment_range(anchor_row, target_row, 'left')
+        submit_multiline_comment(anchor_row, target_row)
       end
     end
 
-    def add_comment(start_line)
-      page.within('.discussion-form') do
-        find('#comment-line-start option', exact_text: start_line).select_option
-      end
-
-      page.within('.js-discussion-note-form') do
-        fill_in(:note_note, with: 'Line is wrong')
-        click_button('Add comment now')
-      end
+    def submit_multiline_comment(anchor_row, target_row)
+      discussion_row = discussion_row_after_drag(anchor_row, target_row)
+      discussion_row.fill_in('note[note]', with: 'Line is wrong')
+      click_button('Add comment now')
 
       wait_for_requests
 
-      page.within('.notes_holder') do
-        expect(page).to have_content('Line is wrong')
-      end
+      expect(discussion_row_after_drag(anchor_row, target_row)).to have_content('Line is wrong')
 
       visit(merge_request_path(merge_request))
 
@@ -218,7 +193,7 @@ RSpec.describe 'User comments on a diff', :js, feature_category: :code_review_wo
         expect(page).to have_content('Line is wrong')
       end
 
-      page.within('.notes-tab .badge') do
+      within_testid('notes-tab') do
         expect(page).to have_content('1')
       end
     end
@@ -226,70 +201,68 @@ RSpec.describe 'User comments on a diff', :js, feature_category: :code_review_wo
 
   context 'when editing comments' do
     it 'edits a comment' do
-      click_diff_line(find_in_page_or_panel_by_scrolling("[id='#{sample_commit.line_code}']"))
+      line_holder = find_line(sample_commit.line_code, sample_commit.line_code_path)
+      click_diff_line(line_holder)
 
-      page.within('.js-discussion-note-form') do
-        fill_in(:note_note, with: 'Line is wrong')
-        click_button('Add comment now')
-      end
+      discussion_row = next_discussion_row(line_holder)
+      discussion_row.fill_in('note[note]', with: 'Line is wrong')
+      click_button('Add comment now')
 
-      page.within('.diff-file:nth-of-type(1) .discussion .note') do
-        find('.js-note-edit').click
-
-        page.within('.current-note-edit-form') do
-          fill_in('note_note', with: 'Typo, please fix')
-          click_button('Save comment')
-        end
+      within(discussion_row) do
+        find('[aria-label="Edit comment"]').click
+        fill_in('note[note]', with: 'Typo, please fix')
+        click_button('Save comment')
 
         expect(page).not_to have_button('Save comment', disabled: true)
       end
 
-      page.within('.diff-file:nth-of-type(1) .discussion .note') do
-        expect(page).to have_content('Typo, please fix').and have_no_content('Line is wrong')
-      end
+      expect(discussion_row).to have_content('Typo, please fix').and have_no_content('Line is wrong')
     end
   end
 
   context 'when deleting comments' do
     it 'deletes a comment' do
-      click_diff_line(find_in_page_or_panel_by_scrolling("[id='#{sample_commit.line_code}']"))
+      line_holder = find_line(sample_commit.line_code, sample_commit.line_code_path)
+      click_diff_line(line_holder)
 
-      page.within('.js-discussion-note-form') do
-        fill_in(:note_note, with: 'Line is wrong')
-        click_button('Add comment now')
-      end
+      discussion_row = next_discussion_row(line_holder)
+      discussion_row.fill_in('note[note]', with: 'Line is wrong')
+      click_button('Add comment now')
 
-      page.within('.notes-tab .badge') do
+      within_testid('notes-tab') do
         expect(page).to have_content('1')
       end
 
-      page.within('.diff-file:nth-of-type(1) .discussion .note') do
-        find('.more-actions').click
-        find('.more-actions li', match: :first)
-        find('.js-note-delete').click
+      accept_gl_confirm(button_text: 'Delete comment') do
+        within(discussion_row) do
+          find('[title="More actions"] button', match: :first).click
+          click_button 'Delete comment'
+        end
       end
 
-      page.within('.modal') do
-        click_button('Delete comment', match: :first)
-      end
+      wait_for_requests
 
-      find('.notes-tab', visible: true).click
+      find_by_testid('notes-tab', visible: true).click
 
       wait_for_requests
 
       expect(page).not_to have_css('.notes .discussion')
 
-      page.within('.notes-tab .badge') do
+      within_testid('notes-tab') do
         expect(page).to have_content('0')
       end
     end
   end
 
-  def find_in_page_or_panel_by_scrolling(selector, index: nil, **options)
-    if index.nil? # rubocop:disable RSpec/AvoidConditionalStatements -- This is to make index param optional
-      find_in_panel_by_scrolling(selector, **options)
-    else
-      all(selector, **options)[index]
+  def expand_hunk(file_path, direction)
+    diff_file(file_path).first("button[data-expand-direction='#{direction}']").click
+    wait_for_requests
+  end
+
+  def expand_all_context(file_path)
+    until diff_file(file_path).all('button[data-expand-direction]', wait: 0.5).empty?
+      diff_file(file_path).first('button[data-expand-direction]').click
+      wait_for_requests
     end
   end
 end

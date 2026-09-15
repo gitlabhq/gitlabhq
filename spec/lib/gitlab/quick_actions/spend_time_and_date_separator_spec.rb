@@ -8,7 +8,7 @@ RSpec.describe Gitlab::QuickActions::SpendTimeAndDateSeparator, feature_category
 
   shared_examples 'arg line with invalid parameters' do
     it 'return nil' do
-      expect(subject.new(invalid_arg, nil).execute).to eq(nil)
+      expect(subject.new(invalid_arg, nil).execute).to be_nil
     end
   end
 
@@ -76,7 +76,7 @@ RSpec.describe Gitlab::QuickActions::SpendTimeAndDateSeparator, feature_category
           time_date_response = subject.new(invalid_arg, nil).execute
 
           expect(time_date_response).to be_an_instance_of(Array)
-          expect(time_date_response.first).to eq(nil)
+          expect(time_date_response.first).to be_nil
         end
       end
     end

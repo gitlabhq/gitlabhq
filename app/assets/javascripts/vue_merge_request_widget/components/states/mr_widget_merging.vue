@@ -53,20 +53,14 @@ export default {
         .then((data) => {
           if (data.state === STATUS_MERGED) {
             // If state is merged we should update the widget and stop the polling
-            eventHub.$emit('MRWidgetUpdateRequested');
-            eventHub.$emit('FetchActionsContent');
+            eventHub.$emit('mr-widget-update-requested');
+            eventHub.$emit('fetch-actions-content');
             MergeRequest.decreaseCounter();
             stopPolling();
 
             fetchUserCounts();
-
-            // If user checked remove source branch and we didn't remove the branch yet
-            // we should start another polling for source branch remove process
-            if (this.removeSourceBranch && data.source_branch_exists) {
-              this.initiateRemoveSourceBranchPolling();
-            }
           } else if (data.merge_error) {
-            eventHub.$emit('FailedToMerge', data.merge_error);
+            eventHub.$emit('failed-to-merge', data.merge_error);
             this.mr.transitionStateMachine({ transition: MERGE_FAILURE });
             stopPolling();
           } else {

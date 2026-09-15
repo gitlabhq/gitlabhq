@@ -267,6 +267,56 @@ RSpec.describe Lint::CommitLinter, feature_category: :tooling do
     end
   end
 
+  describe '.commits_from_message' do
+    subject(:result) { described_class.commits_from_message(message) }
+
+    let(:message) { "Add a valid commit message here" }
+
+    it 'returns an array with one CommitData with a nil sha' do
+      expect(result).to eq([described_class::CommitData.new(message, nil)])
+    end
+  end
+
+  describe '.extract_message_option' do
+    subject(:result) { described_class.extract_message_option(argv) }
+
+    context 'with -m flag' do
+      let(:argv) { ['-m', 'Add a valid commit message here'] }
+
+      it 'returns the message and removes both entries from argv' do
+        expect(result).to eq('Add a valid commit message here')
+        expect(argv).to eq([])
+      end
+    end
+
+    context 'with --message flag' do
+      let(:argv) { ['--message', 'Add a valid commit message here'] }
+
+      it 'returns the message and removes both entries from argv' do
+        expect(result).to eq('Add a valid commit message here')
+        expect(argv).to eq([])
+      end
+    end
+
+    context 'without a message flag' do
+      let(:argv) { ['some/file/path'] }
+
+      it 'returns nil and leaves argv untouched' do
+        expect(result).to be_nil
+        expect(argv).to eq(['some/file/path'])
+      end
+    end
+
+    context 'with -m flag but no value' do
+      let(:argv) { ['-m'] }
+
+      it 'exits with status 1 and prints an error to stderr' do
+        expect { result }.to raise_error(SystemExit) { |e| expect(e.status).to eq(1) }
+          .and output(%r{ERROR: -m/--message requires a value}).to_stderr
+      end
+    end
+  end
+
   describe '.commit_from_head' do
     subject(:result) { described_class.commit_from_head }
 
@@ -510,6 +560,39 @@ RSpec.describe Lint::CommitLinter, feature_category: :tooling do
 
         it 'returns 0 since empty messages are skipped' do
           is_expected.to eq(0)
+        end
+      end
+    end
+
+    context 'with -h flag' do
+      let(:argv) { ['-h'] }
+
+      it 'prints help text and returns 0' do
+        expect { expect(run).to eq(0) }.to output(/Usage: commit_linter\.rb/).to_stdout
+      end
+    end
+
+    context 'with --help flag' do
+      let(:argv) { ['--help'] }
+
+      it 'prints help text and returns 0' do
+        expect { expect(run).to eq(0) }.to output(/-m, --message MESSAGE/).to_stdout
+      end
+    end
+
+    context 'in message mode' do
+      context 'with a valid commit message via -m' do
+        let(:argv) { ['-m', 'Add a valid commit message here'] }
+
+        it { is_expected.to eq(0) }
+      end
+
+      context 'with an invalid commit message via --message' do
+        let(:argv) { ['--message', 'bad'] }
+
+        it 'returns 1 and prints errors to stderr' do
+          expect { expect(run).to eq(1) }
+            .to output(/Commit message linting failed.*commit subject must contain at least 3 words/mi).to_stderr
         end
       end
     end

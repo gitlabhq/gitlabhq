@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 RSpec.shared_examples 'authorizing granular token permissions' do |permissions, expected_success_status: :success,
-    context_type: :rest, legacy_token_scopes: nil|
+    context_type: :rest, legacy_token_scopes: nil, additional_scope_permissions: nil|
   granular_permissions = Array(permissions)
   individual_permission_labels = granular_permissions.map do |permission|
     assignable = Authz::PermissionGroups::Assignable.for_permission(permission).first
@@ -14,6 +14,22 @@ RSpec.shared_examples 'authorizing granular token permissions' do |permissions, 
 
   let(:error_boundary_object) { boundary_object }
   let(:acceptable_messages) { [message] }
+
+  # Endpoints declaring `additional_scopes:` override this with
+  # `[{ boundary_object: target, permissions: [...] }]` so the token is scoped to every
+  # boundary the endpoint requires.
+  let(:additional_scope_requirements) { [] }
+
+  let(:additional_scopes) do
+    additional_scope_requirements.map do |requirement|
+      {
+        boundary: ::Authz::Boundary.for(requirement[:boundary_object]),
+        permissions: Array(requirement[:permissions]).map do |permission|
+          ::Authz::PermissionGroups::Assignable.for_permission(permission).first.name
+        end.uniq
+      }
+    end
+  end
 
   shared_examples 'granting access' do
     it 'grants access', :aggregate_failures do
@@ -91,9 +107,29 @@ RSpec.shared_examples 'authorizing granular token permissions' do |permissions, 
       end.uniq
     end
 
-    let(:pat) { create(:granular_pat, user: user, boundary: boundary, permissions: assignables) }
+    let(:pat) do
+      create(:granular_pat, user: user, boundary: boundary, permissions: assignables,
+        additional_scopes: additional_scopes)
+    end
 
     it_behaves_like 'granting access'
+
+    if additional_scope_permissions
+      additional_permission_labels = Array(additional_scope_permissions).map do |permission|
+        assignable = Authz::PermissionGroups::Assignable.for_permission(permission).first
+        "#{assignable.resource_name}: #{assignable.action.titleize}"
+      end.uniq.sort
+
+      # The point of an additional scope: a token holding only the primary boundary's scope
+      # must not reach the second container. Asserts on the permission list rather than the
+      # whole message so the boundary label stays free to change.
+      context 'when the token is scoped only to the primary boundary' do
+        let(:pat) { create(:granular_pat, user: user, boundary: boundary, permissions: assignables) }
+        let(:message) { "permissions: [#{additional_permission_labels.join(', ')}]." }
+
+        it_behaves_like 'denying access'
+      end
+    end
 
     context 'when the `granular_personal_access_tokens` feature flag is disabled' do
       before do
@@ -192,11 +228,13 @@ RSpec.shared_examples 'authorizing granular token permissions' do |permissions, 
   end
 end
 
-RSpec.shared_examples 'authorizing granular token permissions for GraphQL' do |permissions|
+RSpec.shared_examples 'authorizing granular token permissions for GraphQL' do |permissions,
+    additional_scope_permissions: nil|
   # `include_examples` (not `it_behaves_like`) so the inner example group's
   # default `let` definitions (e.g. `error_boundary_object`) land on this
   # group and remain overridable from the caller's customization block.
-  include_examples 'authorizing granular token permissions', permissions, context_type: :graphql
+  include_examples 'authorizing granular token permissions', permissions, context_type: :graphql,
+    additional_scope_permissions: additional_scope_permissions
 end
 
 RSpec.shared_examples 'authorizing granular token permissions for GraphQL with a skipped child type' do |permissions|

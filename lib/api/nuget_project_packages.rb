@@ -20,6 +20,9 @@ module API
     PACKAGE_FILENAME = 'package.nupkg'
     SYMBOL_PACKAGE_FILENAME = 'package.snupkg'
     API_KEY_HEADER = 'X-Nuget-Apikey'
+    # See ::API::JSON_FORMAT_SUFFIX_REQUIREMENT; the route reads the matched suffix back out
+    # of params[:format] to tell a package from a symbol package.
+    PACKAGE_FORMAT_SUFFIX_REQUIREMENT = { format: /nupkg|snupkg/ }.freeze
 
     default_format :json
 
@@ -247,7 +250,8 @@ module API
               tags %w[packages_nuget]
             end
             route_setting :authorization, permissions: :read_nuget_package, boundary_type: :project
-            get 'index', format: :json, urgency: :low do
+            get 'index', format: :json, urgency: :low,
+              requirements: ::API::JSON_FORMAT_SUFFIX_REQUIREMENT do
               present ::Packages::Nuget::PackagesVersionsPresenter.new(find_packages),
                 with: ::API::Entities::Nuget::PackagesVersions
             end
@@ -269,7 +273,8 @@ module API
                 regexp: ::API::NO_SLASH_URL_PART_REGEX, documentation: { example: 'mynugetpkg.1.3.0.17.nupkg' }
             end
             route_setting :authorization, permissions: :download_nuget_package, boundary_type: :project
-            get '*package_version/*package_filename', format: [:nupkg, :snupkg], urgency: :low do
+            get '*package_version/*package_filename', format: [:nupkg, :snupkg], urgency: :low,
+              requirements: PACKAGE_FORMAT_SUFFIX_REQUIREMENT do
               package = find_package
               filename = format_filename(package)
               package_file = ::Packages::PackageFileFinder.new(package, filename, with_file_name_like: true)

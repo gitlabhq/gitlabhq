@@ -2,18 +2,12 @@
 
 module Gitlab
   class Unicode
-    # Regular expression for identifying bidirectional control
-    # characters in UTF-8 strings
-    #
-    # Documentation on how this works:
-    # https://idiosyncratic-ruby.com/41-proper-unicoding.html
-    BIDI_REGEXP = /\p{Bidi Control}/
-
-    # Regular expression for identifying space characters
-    #
-    # In web browsers space characters can be confused with simple
-    # spaces which may be misleading
-    SPACE_REGEXP = /\p{Space_Separator}/
+    # These explicit sets are performance snapshots of Ruby's Unicode properties.
+    # spec/lib/gitlab/unicode_spec.rb detects drift when Ruby's Unicode data changes.
+    NON_ASCII_SPACE_CHARACTERS = "\u00A0\u1680\u2000\u2001\u2002\u2003\u2004\u2005" \
+      "\u2006\u2007\u2008\u2009\u200A\u202F\u205F\u3000"
+    NON_ASCII_SPACE_REGEXP = /[\u00A0\u1680\u2000-\u200A\u202F\u205F\u3000]/
+    BIDI_CONTROL_REGEXP = /[\u061C\u200E\u200F\u202A-\u202E\u2066-\u2069]/
 
     DANGEROUS_CHARS = Regexp.union(
       /[\p{Cc}&&[^\t\n\r]]/, # All control chars except tab, LF, CR

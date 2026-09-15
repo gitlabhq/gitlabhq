@@ -1,6 +1,6 @@
 ---
-stage: AI-powered
-group: Custom Models
+stage: AI Platform
+group: AI Model Services
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see <https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments>
 description: サポートされているモデルとハードウェア要件。
 title: モデルとハードウェア要件
@@ -9,18 +9,19 @@ title: モデルとハードウェア要件
 {{< details >}}
 
 - プラン: Premium、Ultimate
-- 提供形態: GitLab Self-Managed
+- 提供形態: GitLab Self-Managed、GitLab Dedicated for Government
 
 {{< /details >}}
 
 {{< history >}}
 
-- GitLab 17.1で`ai_custom_model`[フラグ](../feature_flags/_index.md)とともに[導入](https://gitlab.com/groups/gitlab-org/-/epics/12972)されました。デフォルトでは無効になっています。
-- GitLab 17.6の[GitLab Self-Managedで有効](https://gitlab.com/groups/gitlab-org/-/epics/15176)になりました。
+- GitLab 17.1で`ai_custom_model`[機能フラグ](../feature_flags/_index.md)とともに[導入](https://gitlab.com/groups/gitlab-org/-/work_items/12972)されました。デフォルトでは無効になっています。
+- GitLab 17.6の[GitLab Self-Managedで有効](https://gitlab.com/groups/gitlab-org/-/work_items/15176)になりました。
 - GitLab 17.6以降、GitLab Duoアドオンが必須になりました。
 - 機能フラグ`ai_custom_model`は、GitLab 17.8で削除されました。
 - GitLab 17.9で一般提供になりました。
 - GitLab 18.0でPremiumを含むように変更されました。
+- GitLab 18.5で、[GitLab Dedicated for Governmentで有効化](https://gitlab.com/gitlab-org/gitlab/-/issues/569874)されました。
 
 {{< /history >}}
 
@@ -30,24 +31,24 @@ Mistral、Meta、Anthropic、OpenAIなどの業界をリードするモデルと
 
 - 特定のパフォーマンスニーズとユースケースに適合するサポート対象のモデル。
 - GitLab 18.3以降では、独自の互換性のあるモデル。公式にサポートされているオプション以外のモデルを試すことができます。
-- 独自のインフラストラクチャをホストすることなくAIモデルに接続できる、GitLabマネージドモデル。これらのモデルは、GitLabによって完全に管理されます。
+- インフラストラクチャをセルフホストすることなくAIモデルに接続できる、GitLab管理モデル。これらのモデルは、GitLabによって完全に管理されます。
 
 ## サポートされているモデル {#supported-models}
 
 GitLabでサポートされているモデルは、特定のモデルと機能の組み合わせに応じて、GitLab Duo機能に対してさまざまなレベルの機能性を提供します。
 
-- {{< icon name="check-circle-filled" >}}完全な機能性: モデルは、品質を損なうことなく機能を処理できる可能性が高い。
-- {{< icon name="check-circle-dashed" >}}部分的な機能性: モデルは機能をサポートするが、妥協や制限がある可能性がある。
-- {{< icon name="dash-circle" >}}限定的な機能性: モデルは機能に適しておらず、品質の大幅な低下やパフォーマンスの問題が発生する可能性が高い。限定的な機能性を持つモデルは、その特定の機能についてGitLabのサポート対象外となる。
+- {{< icon name="check-circle-filled" >}}完全な機能性: モデルは、品質を損なうことなくその機能を処理できる可能性が高い。
+- {{< icon name="check-circle-dashed" >}}部分的な機能性: モデルはその機能をサポートしているが、妥協点や制限がある可能性がある。
+- {{< icon name="dash-circle" >}}限定的な機能性: モデルはその機能に適しておらず、品質の大幅な低下やパフォーマンスの問題が発生する可能性が高い。ある機能について限定的な機能性しか持たないモデルは、その特定の機能についてGitLabのサポート対象外となります。
 
 <!-- vale gitlab_base.Spelling = NO -->
 
 | モデルファミリー | モデル | コード補完 | コード生成 | GitLab Duo Non-Agentic Chat | GitLab Duo Agent Platform |
 |--------------|-------|-----------------|-----------------|---------------------------|---------------------------|
 | Claude 4 | [Claude 4 Sonnet](https://www.anthropic.com/news/claude-4) | {{< icon name="check-circle-filled" >}}完全な機能性 | {{< icon name="check-circle-filled" >}}完全な機能性 | {{< icon name="check-circle-filled" >}}完全な機能性 | {{< icon name="check-circle-filled" >}}完全な機能性 |
-| Claude 4 | [Claude 4.5 Sonnet](https://www.anthropic.com/news/claude-sonnet-4-5) | {{< icon name="check-circle-filled" >}}完全な機能性 | {{< icon name="check-circle-filled" >}}完全な機能性 | {{< icon name="check-circle-filled" >}}完全な機能性 | {{< icon name="check-circle-filled" >}}完全な機能性 |
-| Claude 4 | [Claude 4.5 Haiku](https://www.anthropic.com/news/claude-haiku-4-5) | {{< icon name="check-circle-filled" >}}完全な機能性 | {{< icon name="check-circle-filled" >}}完全な機能性 | {{< icon name="check-circle-filled" >}}完全な機能性 | {{< icon name="check-circle-filled" >}}完全な機能性 |
-| Claude 4 | [Claude 4.5 Opus](https://www.anthropic.com/news/claude-opus-4-5) | {{< icon name="check-circle-filled" >}}完全な機能性 | {{< icon name="check-circle-filled" >}}完全な機能性 | {{< icon name="check-circle-filled" >}}完全な機能性 | {{< icon name="check-circle-filled" >}}完全な機能性 |
+| Claude 4 | [Claude Haiku 4.5](https://www.anthropic.com/news/claude-haiku-4-5) | {{< icon name="check-circle-filled" >}}完全な機能性 | {{< icon name="check-circle-filled" >}}完全な機能性 | {{< icon name="check-circle-filled" >}}完全な機能性 | {{< icon name="check-circle-filled" >}}完全な機能性 |
+| Claude 4 | [Claude Sonnet 4.6](https://www.anthropic.com/news/claude-sonnet-4-6) | {{< icon name="check-circle-filled" >}}完全な機能性 | {{< icon name="check-circle-filled" >}}完全な機能性 | {{< icon name="check-circle-filled" >}}完全な機能性 | {{< icon name="check-circle-filled" >}}完全な機能性 |
+| Claude 4 | [Claude Opus 4.8](https://www.anthropic.com/news/claude-opus-4-8) | {{< icon name="check-circle-filled" >}}完全な機能性 | {{< icon name="check-circle-filled" >}}完全な機能性 | {{< icon name="check-circle-filled" >}}完全な機能性 | {{< icon name="check-circle-filled" >}}完全な機能性 |
 | GPT | [GPT-4 Turbo](https://learn.microsoft.com/en-us/azure/ai-services/openai/concepts/models?tabs=python-secure#gpt-4) | {{< icon name="check-circle-filled" >}}完全な機能性 | {{< icon name="check-circle-filled" >}}完全な機能性 | {{< icon name="check-circle-dashed" >}}部分的な機能性 | {{< icon name="dash-circle" >}}限定的な機能性 |
 | GPT | [GPT-4o](https://learn.microsoft.com/en-us/azure/ai-services/openai/concepts/models?tabs=python-secure#gpt-4o-and-gpt-4-turbo) | {{< icon name="check-circle-filled" >}}完全な機能性 | {{< icon name="check-circle-filled" >}}完全な機能性 | {{< icon name="check-circle-filled" >}}完全な機能性 | {{< icon name="dash-circle" >}}限定的な機能性 |
 | GPT | [GPT-4o-mini](https://learn.microsoft.com/en-us/azure/ai-services/openai/concepts/models?tabs=python-secure#gpt-4o-and-gpt-4-turbo) | {{< icon name="check-circle-filled" >}}完全な機能性 | {{< icon name="check-circle-filled" >}}完全な機能性 | {{< icon name="check-circle-dashed" >}}部分的な機能性 | {{< icon name="dash-circle" >}}限定的な機能性 |
@@ -57,13 +58,13 @@ GitLabでサポートされているモデルは、特定のモデルと機能�
 | GPT | [GPT-5.1](https://learn.microsoft.com/en-us/azure/ai-foundry/foundry-models/concepts/models-sold-directly-by-azure?view=foundry-classic&pivots=azure-openai&tabs=global-standard-aoai%2Cglobal-standard#gpt-51) | {{< icon name="check-circle-filled" >}}完全な機能性 | {{< icon name="check-circle-filled" >}}完全な機能性 | {{< icon name="check-circle-filled" >}}完全な機能性 | {{< icon name="check-circle-filled" >}}完全な機能性 |
 | GPT | [GPT-5.2](https://learn.microsoft.com/en-us/azure/ai-foundry/foundry-models/concepts/models-sold-directly-by-azure?view=foundry-classic&pivots=azure-openai&tabs=global-standard-aoai%2Cglobal-standard#gpt-52) | {{< icon name="check-circle-filled" >}}完全な機能性 | {{< icon name="check-circle-filled" >}}完全な機能性 | {{< icon name="check-circle-filled" >}}完全な機能性 | {{< icon name="check-circle-filled" >}}完全な機能性 |
 | GPT | [GPT-oss-120B](https://huggingface.co/openai/gpt-oss-120b) | {{< icon name="check-circle-filled" >}}完全な機能性 | {{< icon name="check-circle-filled" >}}完全な機能性 | {{< icon name="check-circle-filled" >}}完全な機能性 | {{< icon name="dash-circle" >}}限定的な機能性 |
-| Mistral Devstral | [Devstral 2 123B](https://huggingface.co/mistralai/Devstral-2-123B-Instruct-2512) | {{< icon name="dash-circle" >}}限定的な機能性 | {{< icon name="dash-circle" >}}限定的な機能性 | {{< icon name="check-circle-filled" >}}完全な機能性 | {{< icon name="check-circle-filled" >}}完全な機能性 |
+| Mistral Medium 3.5 | [Mistral Medium 3.5 128B](https://huggingface.co/mistralai/Mistral-Medium-3.5-128B) | {{< icon name="check-circle-filled" >}}完全な機能性 | {{< icon name="check-circle-filled" >}}完全な機能性 | {{< icon name="check-circle-filled" >}}完全な機能性 | {{< icon name="check-circle-filled" >}}完全な機能性 |
 | Mistral Codestral | [Codestral 22B v0.1](https://huggingface.co/mistralai/Codestral-22B-v0.1) | {{< icon name="check-circle-filled" >}}完全な機能性 | {{< icon name="check-circle-filled" >}}完全な機能性 | {{< icon name="check-circle-dashed" >}}部分的な機能性 | {{< icon name="dash-circle" >}}限定的な機能性 |
 | Mistral | [Mistral Small 24B Instruct 2506](https://huggingface.co/mistralai/Mistral-Small-3.2-24B-Instruct-2506) | {{< icon name="check-circle-filled" >}}完全な機能性 | {{< icon name="check-circle-filled" >}}完全な機能性 | {{< icon name="check-circle-filled" >}}完全な機能性 | {{< icon name="dash-circle" >}}限定的な機能性 |
 | GLM | [GLM-5.1-FP8](https://huggingface.co/zai-org/GLM-5.1-FP8) | {{< icon name="dash-circle" >}}限定的な機能性 | {{< icon name="dash-circle" >}}限定的な機能性 | {{< icon name="check-circle-filled" >}}完全な機能性 | {{< icon name="check-circle-filled" >}}完全な機能性 |
 | Kimi | [Kimi-K2.5](https://huggingface.co/moonshotai/Kimi-K2.5) | {{< icon name="dash-circle" >}}限定的な機能性 | {{< icon name="dash-circle" >}}限定的な機能性 | {{< icon name="check-circle-dashed" >}}部分的な機能性 | {{< icon name="check-circle-dashed" >}}部分的な機能性 |
-| Kimi | [Kimi-K2.6](https://huggingface.co/moonshotai/Kimi-K2.6) | {{< icon name="dash-circle" >}}限定的な機能性 | {{< icon name="dash-circle" >}}限定的な機能性 | {{< icon name="check-circle-dashed" >}}部分的な機能性 | {{< icon name="check-circle-dashed" >}}部分的な機能性 |
-| MiniMax | [MiniMax-M2.7](https://huggingface.co/MiniMaxAI/MiniMax-M2.7) | {{< icon name="dash-circle" >}}限定的な機能性 | {{< icon name="dash-circle" >}}限定的な機能性 | {{< icon name="check-circle-dashed" >}}部分的な機能性 | {{< icon name="check-circle-dashed" >}}部分的な機能性 |
+| Kimi | [Kimi-K2.6](https://huggingface.co/moonshotai/Kimi-K2.6) | {{< icon name="dash-circle" >}}限定的な機能性 | {{< icon name="dash-circle" >}}限定的な機能性 | {{< icon name="check-circle-dashed" >}}部分的な機能性 | {{< icon name="check-circle-filled" >}}完全な機能性 |
+| MiniMax | [MiniMax-M2.7](https://huggingface.co/MiniMaxAI/MiniMax-M2.7) | {{< icon name="dash-circle" >}}限定的な機能性 | {{< icon name="dash-circle" >}}限定的な機能性 | {{< icon name="check-circle-dashed" >}}部分的な機能性 | {{< icon name="check-circle-filled" >}}完全な機能性 |
 | Llama | [Llama 3 8B](https://huggingface.co/meta-llama/Meta-Llama-3-8B-Instruct) | {{< icon name="check-circle-dashed" >}}部分的な機能性 | {{< icon name="check-circle-filled" >}}完全な機能性 | {{< icon name="dash-circle" >}}限定的な機能性 | {{< icon name="dash-circle" >}}限定的な機能性 |
 | Llama | [Llama 3.1 8B](https://huggingface.co/meta-llama/Llama-3.1-8B-Instruct) | {{< icon name="check-circle-dashed" >}}部分的な機能性 | {{< icon name="check-circle-filled" >}}完全な機能性 | {{< icon name="check-circle-dashed" >}}部分的な機能性 | {{< icon name="dash-circle" >}}限定的な機能性 |
 | Llama | [Llama 3 70B](https://huggingface.co/meta-llama/Meta-Llama-3-70B-Instruct) | {{< icon name="check-circle-dashed" >}}部分的な機能性 | {{< icon name="check-circle-filled" >}}完全な機能性 | {{< icon name="dash-circle" >}}限定的な機能性 | {{< icon name="dash-circle" >}}限定的な機能性 |
@@ -80,18 +81,18 @@ GitLabでサポートされているモデルは、特定のモデルと機能�
 
 {{< history >}}
 
-- GitLab 18.3で[ベータ版](../../policy/development_stages_support.md#beta)として[導入](https://gitlab.com/groups/gitlab-org/-/epics/18556)されました。
+- GitLab 18.3で[ベータ版](../../policy/development_stages_support.md#beta)として[導入](https://gitlab.com/groups/gitlab-org/-/work_items/18556)されました。
 
 {{< /history >}}
 
-互換性のある独自のモデルとプラットフォームをGitLab Duo Agent PlatformおよびGitLab Duo機能とともに使用できます。サポートされているモデルファミリーに含まれていない互換性のあるモデルについては、一般的なモデルファミリーを使用してください。これには、自身でホストするモデル（たとえば、vLLMまたはLiteLLMを介して提供されるもの）が含まれますが、OpenAI API互換の`/v1`エンドポイントを介して公開されている必要があります。
+独自の互換性のあるモデルとプラットフォームを、GitLab Duo Agent PlatformおよびGitLab Duo機能で使用できます。サポートされているモデルファミリーに含まれていない互換性のあるモデルについては、一般的なモデルファミリーを使用してください。これには、自身でホストするモデル（たとえば、vLLMまたはLiteLLMを通じて提供されるモデル）が含まれますが、OpenAI API互換の`/v1`エンドポイントを通じて公開されている必要があります。
 
 互換性のあるモデルは、[AI機能利用規約](https://handbook.gitlab.com/handbook/legal/ai-functionality-terms/)の顧客インテグレーションモデルの定義から除外されています。互換性のあるモデルとプラットフォームは、OpenAI API仕様に準拠する必要があります。以前に実験的またはベータ版としてマークされていたモデルとプラットフォームは、現在互換性のあるモデルと見なされています。
 
 この機能はベータ版であるため、フィードバックを収集してインテグレーションを改善する過程で変更される可能性があります:
 
 - GitLabは、選択したモデルまたはプラットフォームに固有の問題に対するテクニカルサポートを提供しません。
-- すべてのAgent PlatformまたはGitLab Duo機能が、すべての互換モデルで最適に動作することが保証されているわけではありません。
+- すべてのAgent PlatformまたはGitLab Duo機能が、すべての互換性のあるモデルで最適に動作することが保証されているわけではありません。
 - 応答の品質、速度、および全体的なパフォーマンスは、モデルの選択によって大きく異なる場合があります。
 
 #### GitLab Duo {#gitlab-duo}
@@ -124,19 +125,19 @@ GitLabでサポートされているモデルは、特定のモデルと機能�
 
 {{< history >}}
 
-- GitLab 18.3で、`ai_self_hosted_vendored_features`[機能フラグ](../feature_flags/_index.md)とともに[ベータ版](../../policy/development_stages_support.md#beta)機能として[導入](https://gitlab.com/groups/gitlab-org/-/epics/17192)されました。デフォルトでは無効になっています。
+- GitLab 18.3で、`ai_self_hosted_vendored_features`[機能フラグ](../feature_flags/_index.md)とともに[ベータ版](../../policy/development_stages_support.md#beta)機能として[導入](https://gitlab.com/groups/gitlab-org/-/work_items/17192)されました。デフォルトでは無効になっています。
 - GitLab 18.7で[デフォルトで有効](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/214030)になりました。
-- 機能フラグ`ai_self_hosted_vendored_features`は、GitLab 18.9で[削除](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/218595)されました。
+- 機能フラグ`ai_self_hosted_vendored_features`はGitLab 18.9で[削除](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/218595)されました。
 
 {{< /history >}}
 
-GitLabマネージドモデルは、GitLabホスト型AIゲートウェイインフラストラクチャと統合され、GitLabによってキュレーションされ利用可能になったAIモデルへのアクセスを提供します。独自のセルフホストモデルを使用する代わりに、特定のGitLab Duo機能に対してGitLabマネージドモデルを使用することを選択できます。
+GitLab管理モデルは、GitLabがホストするAIゲートウェイインフラストラクチャと統合し、GitLabがキュレーションして利用できるようにしたAIモデルへのアクセスを提供します。独自のセルフホストモデルを使用する代わりに、特定のGitLab Duo機能にGitLab管理モデルを使用することを選択できます。
 
-どの機能でGitLabマネージドモデルを使用するかを選択するには、[機能のGitLabマネージドモデルを選択](configure_duo_features.md#select-a-gitlab-managed-model-for-a-feature)を参照してください。
+どの機能でGitLab管理モデルを使用するかを選択するには、[機能に対してGitLab管理モデルを選択する](configure_duo_features.md#select-a-gitlab-managed-model-for-a-feature)を参照してください。
 
 特定の機能で有効になっている場合:
 
-- GitLabマネージドモデルで設定されたそれらの機能へのすべての呼び出しは、セルフホストAIゲートウェイではなく、GitLabホスト型AIゲートウェイを使用します。
+- GitLab管理モデルで設定されたこれらの機能へのすべての呼び出しは、セルフホストAIゲートウェイではなく、GitLabでホストされているAIゲートウェイを使用します。
 - [AIログが有効になっている](logging.md#turn-on-data-collection-for-gitlab-duo)場合でも、GitLabホストのAIゲートウェイに詳細なログは生成されません。これにより、機密情報の意図しない漏洩を防ぎます。
 
 ## ハードウェア要件 {#hardware-requirements}
@@ -158,10 +159,10 @@ GitLabマネージドモデルは、GitLabホスト型AIゲートウェイイン
 
 | モデルサイズ                                 | 最小GPU設定 | 必要な最小VRAM |
 |--------------------------------------------|---------------------------|-----------------------|
-| 7Bモデル<br>（例: Mistral 7B）     | 1x NVIDIA A100 (40 GB)    | 35 GB                 |
-| 22Bモデル<br>（例: Codestral 22B） | 2x NVIDIA A100 (80 GB)    | 110 GB                |
-| Mixtral 8x7B                               | 2x NVIDIA A100 (80 GB)    | 220 GB                |
-| Mixtral 8x22B                              | 8x NVIDIA A100 (80 GB)    | 526 GB                |
+| 7Bモデル<br>（例: Mistral 7B）     | 1x NVIDIA A100（40 GB）    | 35 GB                 |
+| 22Bモデル<br>（例: Codestral 22B） | 2x NVIDIA A100（80 GB）    | 110 GB                |
+| Mixtral 8x7B                               | 2x NVIDIA A100（80 GB）    | 220 GB                |
+| Mixtral 8x22B                              | 8x NVIDIA A100（80 GB）    | 526 GB                |
 
 [Hugging Faceのメモリユーティリティ](https://huggingface.co/spaces/hf-accelerate/model-memory-usage)を使用して、メモリ要件を確認します。
 

@@ -30,24 +30,16 @@ export const mockCommit = {
     gpgKeyPrimaryKeyid: '2CEAFD2671262EC2',
     verificationStatus: 'UNKNOWN_KEY',
   },
-  pipelines: {
-    __typename: 'PipelineConnection',
-    edges: [
-      {
-        __typename: 'PipelineEdge',
-        node: {
-          __typename: 'Pipeline',
-          id: 'gid://gitlab/Ci::Pipeline/621',
-          detailedStatus: {
-            __typename: 'DetailedStatus',
-            id: 'failed-621-621',
-            detailsPath: '/gitlab-org/gitlab-shell/-/pipelines/621',
-            icon: 'status_failed',
-            text: 'Failed',
-          },
-        },
-      },
-    ],
+  latestPipeline: {
+    __typename: 'Pipeline',
+    id: 'gid://gitlab/Ci::Pipeline/621',
+    detailedStatus: {
+      __typename: 'DetailedStatus',
+      id: 'failed-621-621',
+      detailsPath: '/gitlab-org/gitlab-shell/-/pipelines/621',
+      icon: 'status_failed',
+      text: 'Failed',
+    },
   },
   tags: ['V1.2.3'],
 };
@@ -78,24 +70,16 @@ const mockCommitSecond = {
     gpgKeyPrimaryKeyid: '2CEAFD2671262EC2',
     verificationStatus: 'VERIFIED',
   },
-  pipelines: {
-    __typename: 'PipelineConnection',
-    edges: [
-      {
-        __typename: 'PipelineEdge',
-        node: {
-          __typename: 'Pipeline',
-          id: 'gid://gitlab/Ci::Pipeline/621',
-          detailedStatus: {
-            __typename: 'DetailedStatus',
-            id: 'success-621-621',
-            detailsPath: '/gitlab-org/gitlab-shell/-/pipelines/621',
-            icon: 'status_success',
-            text: 'Passed',
-          },
-        },
-      },
-    ],
+  latestPipeline: {
+    __typename: 'Pipeline',
+    id: 'gid://gitlab/Ci::Pipeline/621',
+    detailedStatus: {
+      __typename: 'DetailedStatus',
+      id: 'success-621-621',
+      detailsPath: '/gitlab-org/gitlab-shell/-/pipelines/621',
+      icon: 'status_success',
+      text: 'Passed',
+    },
   },
   tags: ['very long tag to test out layout is doing okay'],
 };
@@ -128,10 +112,7 @@ const mockCommitThird = {
     webPath: '/andera_welch',
   },
   signature: null,
-  pipelines: {
-    __typename: 'PipelineConnection',
-    edges: [],
-  },
+  latestPipeline: null,
   tags: [],
 };
 

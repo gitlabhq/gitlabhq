@@ -250,7 +250,7 @@ RSpec.describe Backup::Targets::Repositories, feature_category: :backup_restore 
         pool_result.new(disk_path: 'ee/ff/repo3.git', status: :failed, error_message: 'Error message')
       end
 
-      it 'schedules restoring of the pool', :sidekiq_might_not_need_inline do
+      it 'schedules restoring of the pool', :sidekiq_might_not_need_inline, :skip_gitaly_mvcc do
         pool_repository = create(:pool_repository, :failed)
         pool_repository.delete_object_pool
 
@@ -377,7 +377,7 @@ RSpec.describe Backup::Targets::Repositories, feature_category: :backup_restore 
 
           repositories.restore(destination, backup_id)
 
-          expect(strategy).to have_received(:start).with(:restore, destination, remove_all_repositories: %w[default],
+          expect(strategy).to have_received(:start).with(:restore, destination, remove_all_repositories: nil,
             backup_id: backup_id)
           expect(strategy).not_to have_received(:enqueue).with(excluded_project, Gitlab::GlRepository::PROJECT)
           expect(strategy).not_to have_received(:enqueue).with(excluded_project_snippet, Gitlab::GlRepository::SNIPPET)
@@ -399,7 +399,7 @@ RSpec.describe Backup::Targets::Repositories, feature_category: :backup_restore 
 
           repositories.restore(destination, backup_id)
 
-          expect(strategy).to have_received(:start).with(:restore, destination, remove_all_repositories: %w[default],
+          expect(strategy).to have_received(:start).with(:restore, destination, remove_all_repositories: nil,
             backup_id: backup_id)
           expect(strategy).not_to have_received(:enqueue).with(excluded_project, Gitlab::GlRepository::PROJECT)
           expect(strategy).not_to have_received(:enqueue).with(excluded_project_snippet, Gitlab::GlRepository::SNIPPET)
@@ -409,6 +409,18 @@ RSpec.describe Backup::Targets::Repositories, feature_category: :backup_restore 
           expect(strategy).to have_received(:enqueue).with(project.design_management_repository,
             Gitlab::GlRepository::DESIGN)
           expect(strategy).to have_received(:finish!)
+        end
+      end
+
+      context 'with specific storages' do
+        let(:storages) { %w[default] }
+        let(:skip_paths) { [excluded_project.full_path] }
+
+        it 'does not clear the specified storages, because the restore is still partial' do
+          repositories.restore(destination, backup_id)
+
+          expect(strategy).to have_received(:start).with(:restore, destination,
+            remove_all_repositories: nil, backup_id: backup_id)
         end
       end
     end

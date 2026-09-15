@@ -53,7 +53,7 @@ func Artifacts(myAPI *api.API, h http.Handler, p Preparer, cfg *config.Config) h
 		mg := &artifactsUploadProcessor{
 			format:           format,
 			processLSIF:      a.ProcessLsif,
-			tempDir:          a.TempPath,
+			tempDir:          a.LocalTempDir(),
 			SavedFileTracker: SavedFileTracker{Request: r},
 		}
 		interceptMultipartFiles(w, r, h, mg, &eagerAuthorizer{a}, p, cfg)
@@ -63,9 +63,6 @@ func Artifacts(myAPI *api.API, h http.Handler, p Preparer, cfg *config.Config) h
 func (a *artifactsUploadProcessor) generateMetadataFromZip(ctx context.Context, file *destination.FileHandler, readerLimit int64) (*destination.FileHandler, error) { //nolint: funlen
 	metaOpts := &destination.UploadOpts{
 		LocalTempPath: a.tempDir,
-	}
-	if metaOpts.LocalTempPath == "" {
-		metaOpts.LocalTempPath = os.TempDir()
 	}
 
 	fileName := file.LocalPath

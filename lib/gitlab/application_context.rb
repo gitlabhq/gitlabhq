@@ -18,6 +18,7 @@ module Gitlab
       :scoped_user_id,
       :project,
       :root_namespace,
+      Labkit::Fields::GL_ROOT_NAMESPACE_ID,
       :client_id,
       :caller_id,
       :remote_ip,
@@ -42,7 +43,8 @@ module Gitlab
       :auth_fail_token_type,
       :auth_fail_auth_header_type,
       :mvcc_manifest,
-      :duo_workflow_id
+      :duo_workflow_id,
+      :organization_source
     ].freeze
     private_constant :KNOWN_KEYS
 
@@ -54,7 +56,8 @@ module Gitlab
       :http_router_rule_type,
       :auth_fail_token_type,
       :auth_fail_auth_header_type,
-      :duo_workflow_id
+      :duo_workflow_id,
+      :organization_source
     ].freeze
     private_constant :WEB_ONLY_KEYS
 
@@ -83,7 +86,8 @@ module Gitlab
       Attribute.new(:http_router_rule_type, String),
       Attribute.new(:kubernetes_agent, ::Clusters::Agent),
       Attribute.new(:mvcc_manifest, String),
-      Attribute.new(:duo_workflow_id, String)
+      Attribute.new(:duo_workflow_id, String),
+      Attribute.new(:organization_source, String)
     ].freeze
     private_constant :APPLICATION_ATTRIBUTES
 
@@ -161,6 +165,7 @@ module Gitlab
         assign_hash_if_value(hash, :bulk_import_entity_id)
         assign_hash_if_value(hash, :mvcc_manifest)
         assign_hash_if_value(hash, :duo_workflow_id)
+        assign_hash_if_value(hash, :organization_source)
 
         hash[:user] = -> { username } if include_user?
         hash[Labkit::Fields::GL_USER_ID] = -> { user_id } if include_user?
@@ -169,6 +174,7 @@ module Gitlab
         hash[:project] = -> { project_path } if include_project?
         hash[:organization_id] = -> { organization&.id } if set_values.include?(:organization)
         hash[:root_namespace] = -> { root_namespace_path } if include_namespace?
+        hash[Labkit::Fields::GL_ROOT_NAMESPACE_ID] = -> { root_namespace_id } if include_namespace?
         hash[:client_id] = -> { client } if include_client?
         hash[:pipeline_id] = -> { job&.pipeline_id } if set_values.include?(:job)
         hash[:job_id] = -> { job&.id } if set_values.include?(:job)
@@ -190,7 +196,12 @@ module Gitlab
 
     def set_attr_readers
       self.class.application_attributes.each do |attr|
-        self.class.lazy_attr_reader attr.name, type: attr.type
+        # The user can be pushed as a lazy lambda (e.g. `-> { @current_user }`)
+        # that resolves to nil until authentication completes. Caching that nil
+        # would drop user attribution for the rest of the request (username,
+        # user_id, client_id, and the Gitaly RPC metadata), so re-resolve it.
+        cache_nil = attr.name != :user
+        self.class.lazy_attr_reader attr.name, type: attr.type, cache_nil: cache_nil
       end
     end
 
@@ -245,9 +256,27 @@ module Gitlab
       associated_user&.id
     end
 
+    def root_namespace_routable
+      namespace || project || runner_project || runner_group || job_project
+    end
+
     def root_namespace_path
-      associated_routable = namespace || project || runner_project || runner_group || job_project
-      associated_routable&.full_path_components&.first
+      root_namespace_routable&.full_path_components&.first
+    end
+
+    # Read back only by the ClickHouse log_comment, so it is best effort, only
+    # read when the association is loaded.
+    def root_namespace_id
+      routable = root_namespace_routable
+      associated_namespace = routable.is_a?(Project) ? loaded_project_namespace(routable) : routable
+
+      associated_namespace&.traversal_ids&.first
+    end
+
+    def loaded_project_namespace(associated_project)
+      return unless associated_project.association(:namespace).loaded?
+
+      associated_project.namespace
     end
 
     def include_namespace?

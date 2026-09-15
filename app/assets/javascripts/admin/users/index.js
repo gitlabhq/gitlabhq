@@ -7,6 +7,7 @@ import csrf from '~/lib/utils/csrf';
 import AdminUsersApp from './components/app.vue';
 import AdminUsersFilterApp from './components/admin_users_filter_app.vue';
 import DeleteUserModal from './components/modals/delete_user_modal.vue';
+import RemoveOrganizationUserModal from './components/modals/remove_organization_user_modal.vue';
 import UserActions from './components/user_actions.vue';
 
 Vue.use(Translate);
@@ -77,5 +78,13 @@ export const initDeleteUserModals = () => {
           csrfToken: csrf.token,
         },
       }),
+  }).$mount();
+};
+
+export const initRemoveFromOrganizationModal = () => {
+  return new Vue({
+    name: 'RemoveOrganizationUserModalRoot',
+    apolloProvider,
+    render: (createElement) => createElement(RemoveOrganizationUserModal),
   }).$mount();
 };

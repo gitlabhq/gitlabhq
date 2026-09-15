@@ -69,7 +69,7 @@ same schemes are configured on both sides.
 }
 ```
 
-This error occurs when the version of the agent is newer that the version of the agent server (KAS).
+This error occurs when the version of the agent is newer than the version of the agent server (KAS).
 To fix it, make sure that both `agentk` and the agent server are the same version.
 
 ## Certificate signed by unknown authority

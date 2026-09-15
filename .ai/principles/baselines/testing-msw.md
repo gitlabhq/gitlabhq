@@ -34,6 +34,20 @@ For the decision of *which* test type to write, see
   globally in all MSW integration tests (auto-imported via
   `Object.assign(global, testHelpers)` in `test_setup.js`).
 
+### Mounting
+
+- If a feature suite provides its own mount helper in `test_support/`, use
+  that instead of calling `fullMount` directly. The helper wires in the
+  feature's required configuration and provide values, which `fullMount`
+  alone does not know about.
+- Feature mount helpers must wrap `fullMount`, not replace it. DO NOT
+  reimplement mounting logic in a feature helper, and DO NOT mount with
+  `shallowMountExtended` or `mountExtended`.
+- Example: the AI Duo Panel suite's `mountAISidebar` and
+  `mountDuoAgenticChatStateManager` (in
+  `ee/spec/frontend/msw_integration/ai_duo_panel/test_support/`) both call
+  `fullMount` internally. See that suite's README for when to use each one.
+
 ### Finding Elements & Interactions
 
 - Use `@testing-library/vue` queries to locate elements

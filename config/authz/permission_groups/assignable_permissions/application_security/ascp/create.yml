@@ -1,0 +1,11 @@
+---
+name: create_ascp
+description: Grants the ability to create ASCP components, scans, and security contexts
+boundaries:
+  - project
+available_for:
+  - granular_access_token
+permissions:
+  - create_ascp_component
+  - create_ascp_scan
+  - create_ascp_security_context

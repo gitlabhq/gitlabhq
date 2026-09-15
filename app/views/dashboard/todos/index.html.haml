@@ -4,6 +4,8 @@
 = render_dashboard_ultimate_trial(current_user)
 
 - if current_user.todos.any?
+  = render_if_exists 'shared/dashboard/saml_reauth_notice',
+    groups_requiring_saml_reauth: user_groups_requiring_reauth
   #js-todos-app-root{ data: { issues_dashboard_path: issues_dashboard_path(assignee_username: current_user.username),
     merge_requests_dashboard_path: merge_requests_dashboard_path(assignee_username: current_user.username) } }
 - else

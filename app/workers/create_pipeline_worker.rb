@@ -79,12 +79,11 @@ class CreatePipelineWorker # rubocop:disable Scalability/IdempotentWorker
   end
 
   def raise_transient_gitaly_read_error!(response, project, **creation_params)
-    raise_on_reference_not_found!(response, project, **creation_params)
+    raise_on_reference_not_found!(response, **creation_params)
     raise_on_commit_not_found!(response, project)
   end
 
-  def raise_on_reference_not_found!(response, project, **creation_params)
-    return unless Feature.enabled?(:ci_create_pipeline_worker_retry_on_reference_not_found, project)
+  def raise_on_reference_not_found!(response, **creation_params)
     return unless response.message == Gitlab::Ci::Pipeline::Chain::Validate::Repository::REFERENCE_NOT_FOUND_MESSAGE
     return unless Gitlab::Git.blank_ref?(creation_params[:before].to_s)
 

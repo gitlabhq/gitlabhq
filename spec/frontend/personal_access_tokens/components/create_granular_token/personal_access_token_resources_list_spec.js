@@ -3,6 +3,7 @@ import {
   GlCollapse,
   GlFormCheckboxGroup,
   GlFormCheckbox,
+  GlIcon,
   GlPopover,
   GlAnimatedChevronRightDownIcon,
 } from '@gitlab/ui';
@@ -42,6 +43,7 @@ describe('PersonalAccessTokenResourcesList', () => {
       .findAllComponents(GlFormCheckbox)
       .filter((c) => c.attributes('data-testid') !== 'category-select-all');
   const findPopovers = () => wrapper.findAllComponents(GlPopover);
+  const findInfoIcons = () => wrapper.findAllComponents(GlIcon);
 
   const clickCategoryButton = (index) => {
     findCategoryButtons().at(index).vm.$emit('click');
@@ -158,6 +160,16 @@ describe('PersonalAccessTokenResourcesList', () => {
 
       expect(findPopovers().at(2).text()).toBe('Repository resource description');
       expect(findPopovers().at(2).attributes('target')).toBe('namespace-repository');
+    });
+
+    it('renders a focusable info icon with an accessible name for each resource', () => {
+      expect(findInfoIcons()).toHaveLength(3);
+
+      findInfoIcons().wrappers.forEach((icon) => {
+        expect(icon.attributes('tabindex')).toBe('0');
+      });
+
+      expect(findInfoIcons().at(0).props('ariaLabel')).toBe('Project information');
     });
   });
 

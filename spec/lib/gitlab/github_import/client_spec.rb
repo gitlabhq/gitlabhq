@@ -41,7 +41,7 @@ RSpec.describe Gitlab::GithubImport::Client, feature_category: :importers do
 
       it 'returns nil' do
         expect(client).to receive(:with_rate_limit).and_yield
-        expect(user).to eq(nil)
+        expect(user).to be_nil
       end
     end
   end
@@ -242,7 +242,7 @@ RSpec.describe Gitlab::GithubImport::Client, feature_category: :importers do
         expect(page3).to be_an_instance_of(described_class::Page)
 
         expect(page1.objects.map(&:to_h)).to eq([{ title: 'Issue 1' }])
-        expect(page1.url).to eq(nil)
+        expect(page1.url).to be_nil
 
         expect(page2.objects.map(&:to_h)).to eq([{ title: 'Issue 2' }])
         expect(page2.url).to eq('https://api.github.com/repositories/1/issues?page=2&per_page=100')
@@ -265,7 +265,7 @@ RSpec.describe Gitlab::GithubImport::Client, feature_category: :importers do
         expect(pages[2]).to be_an_instance_of(described_class::Page)
 
         expect(pages[0].objects.map(&:to_h)).to eq([{ title: 'Issue 1' }])
-        expect(pages[0].url).to eq(nil)
+        expect(pages[0].url).to be_nil
 
         expect(pages[1].objects.map(&:to_h)).to eq([{ title: 'Issue 2' }])
         expect(pages[1].url).to eq('https://api.github.com/repositories/1/issues?page=2&per_page=100')
@@ -465,13 +465,13 @@ RSpec.describe Gitlab::GithubImport::Client, feature_category: :importers do
       it 'returns true if enough requests remain' do
         expect(client).to receive(:remaining_requests).and_return(9000)
 
-        expect(client.requests_remaining?).to eq(true)
+        expect(client.requests_remaining?).to be(true)
       end
 
       it 'returns false if not enough requests remain' do
         expect(client).to receive(:remaining_requests).and_return(1)
 
-        expect(client.requests_remaining?).to eq(false)
+        expect(client.requests_remaining?).to be(false)
       end
     end
 
@@ -483,13 +483,13 @@ RSpec.describe Gitlab::GithubImport::Client, feature_category: :importers do
       it 'returns true if enough requests remain' do
         expect(client).to receive(:remaining_requests).and_return(described_class::SEARCH_RATE_LIMIT_THRESHOLD + 1)
 
-        expect(client.requests_remaining?).to eq(true)
+        expect(client.requests_remaining?).to be(true)
       end
 
       it 'returns false if not enough requests remain' do
         expect(client).to receive(:remaining_requests).and_return(described_class::SEARCH_RATE_LIMIT_THRESHOLD - 1)
 
-        expect(client.requests_remaining?).to eq(false)
+        expect(client.requests_remaining?).to be(false)
       end
     end
   end
@@ -703,13 +703,13 @@ RSpec.describe Gitlab::GithubImport::Client, feature_category: :importers do
           .to receive(:github_omniauth_provider)
           .and_return({})
 
-        expect(client.verify_ssl).to eq(true)
+        expect(client.verify_ssl).to be(true)
       end
     end
 
     context 'with a custom configuration' do
       it 'returns the configured value' do
-        expect(client.verify_ssl).to eq(false)
+        expect(client.verify_ssl).to be(false)
       end
     end
   end
@@ -737,7 +737,7 @@ RSpec.describe Gitlab::GithubImport::Client, feature_category: :importers do
 
   describe '#rate_limiting_enabled?' do
     it 'returns true when using GitHub.com' do
-      expect(client.rate_limiting_enabled?).to eq(true)
+      expect(client.rate_limiting_enabled?).to be(true)
     end
 
     it 'returns false for GitHub enterprise installations' do
@@ -745,7 +745,7 @@ RSpec.describe Gitlab::GithubImport::Client, feature_category: :importers do
         .to receive(:api_endpoint)
         .and_return('https://github.kittens.com/')
 
-      expect(client.rate_limiting_enabled?).to eq(false)
+      expect(client.rate_limiting_enabled?).to be(false)
     end
   end
 

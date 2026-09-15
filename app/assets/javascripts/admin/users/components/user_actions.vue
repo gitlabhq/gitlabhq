@@ -56,13 +56,18 @@ export default {
       return this.dropdownActions.filter((a) => a.includes('delete'));
     },
     dropdownSafeActions() {
-      return this.dropdownActions.filter((a) => !this.dropdownDeleteActions.includes(a));
+      return this.dropdownActions.filter(
+        (a) => !this.dropdownDeleteActions.includes(a) && a !== 'removeFromOrganization',
+      );
+    },
+    hasRemoveOrganizationAction() {
+      return this.dropdownActions.includes('removeFromOrganization');
     },
     hasDropdownActions() {
       return this.dropdownActions.length > 0;
     },
-    hasDeleteActions() {
-      return this.dropdownDeleteActions.length > 0;
+    hasBorderedActions() {
+      return this.dropdownDeleteActions.length > 0 || this.hasRemoveOrganizationAction;
     },
     hasEditAction() {
       return this.userActions.includes('edit');
@@ -141,7 +146,16 @@ export default {
           </gl-disclosure-dropdown-item>
         </template>
 
-        <gl-disclosure-dropdown-group v-if="hasDeleteActions" bordered>
+        <gl-disclosure-dropdown-group v-if="hasBorderedActions" bordered>
+          <component
+            :is="getActionComponent('removeFromOrganization')"
+            v-if="hasRemoveOrganizationAction"
+            :username="user.name"
+            :organization-user-gid="user.organizationUserGid"
+          >
+            {{ $options.i18n.removeFromOrganization }}
+          </component>
+
           <template v-for="action in dropdownDeleteActions">
             <component
               :is="getActionComponent(action)"

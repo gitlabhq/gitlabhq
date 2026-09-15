@@ -31,7 +31,15 @@ RSpec.describe Gitlab::Workhorse, feature_category: :gitaly do
     let(:path) { 'some/path' }
     let(:include_lfs_blobs) { true }
     let(:exclude_paths) { [] }
-    let(:metadata) { repository.archive_metadata(ref, storage_path, format, append_sha: nil, path: path) }
+    let(:metadata) do
+      repository.archive_metadata(ref, storage_path, format, append_sha: nil, path: path,
+        include_lfs_blobs: include_lfs_blobs, exclude_paths: exclude_paths)
+    end
+
+    let(:default_archive_path) do
+      repository.archive_metadata(ref, storage_path, format, append_sha: nil, path: path)['ArchivePath']
+    end
+
     let(:cache_disabled) { false }
 
     subject do
@@ -74,6 +82,13 @@ RSpec.describe Gitlab::Workhorse, feature_category: :gitaly do
       }.deep_stringify_keys)
     end
 
+    it 'leaves the default archive path unchanged' do
+      _, _, params = decode_workhorse_header(subject)
+
+      expect(params['ArchivePath']).to eq(default_archive_path)
+      expect(File.dirname(params['ArchivePath'])).to end_with('/@v2')
+    end
+
     context 'when Workhorse archive cleaner is disabled' do
       before do
         stub_env('WORKHORSE_ARCHIVE_CACHE_CLEANER_DISABLED', '1')
@@ -93,6 +108,12 @@ RSpec.describe Gitlab::Workhorse, feature_category: :gitaly do
         _, _, params = decode_workhorse_header(subject)
 
         expect(params).to include({ 'GetArchiveRequest' => expected_archive_request(repository, metadata, path, include_lfs_blobs, exclude_paths) })
+      end
+
+      it 'caches under a different path than the default archive of the same commit' do
+        _, _, params = decode_workhorse_header(subject)
+
+        expect(params['ArchivePath']).not_to eq(default_archive_path)
       end
     end
 
@@ -126,6 +147,12 @@ RSpec.describe Gitlab::Workhorse, feature_category: :gitaly do
         _, _, params = decode_workhorse_header(subject)
 
         expect(params).to include({ 'GetArchiveRequest' => expected_archive_request(repository, metadata, path, include_lfs_blobs, exclude_paths) })
+      end
+
+      it 'caches under a different path than the default archive of the same commit' do
+        _, _, params = decode_workhorse_header(subject)
+
+        expect(params['ArchivePath']).not_to eq(default_archive_path)
       end
     end
 

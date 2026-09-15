@@ -60,11 +60,12 @@
       "maxItems": 100
     },
     "viewMode": {
-      "description": "Which view mode (list or board) the saved view should open in",
+      "description": "Which view mode (list, board or table) the saved view should open in",
       "type": "string",
       "enum": [
         "list",
-        "board"
+        "board",
+        "table"
       ]
     }
   },

@@ -32,7 +32,7 @@ describe('issue_note_body component', () => {
         ...props,
       },
       stubs: {
-        DuoCodeReviewFeedback: true,
+        UserFeedback: true,
       },
     });
   };
@@ -169,31 +169,6 @@ describe('issue_note_body component', () => {
       createComponent({ note: duoNote });
 
       expect(wrapper.findByTestId('code-review-feedback').exists()).toBe(false);
-    });
-
-    it('passes duo_session_url to the feedback component', () => {
-      const duoSessionUrl = 'https://gitlab.example.com/project/agent-sessions/1';
-      const duoNote = createDuoNote('DiscussionNote', 'duo_code_review_bot', duoSessionUrl);
-
-      useDiscussions().discussions = [{ id: 'discussion1', notes: [duoNote] }];
-
-      createComponent({ note: duoNote });
-
-      expect(wrapper.findByTestId('code-review-feedback').attributes('duo-session-url')).toBe(
-        duoSessionUrl,
-      );
-    });
-
-    it('does not pass duo_session_url when not present on note', () => {
-      const duoNote = createDuoNote('DiscussionNote', 'duo_code_review_bot');
-
-      useDiscussions().discussions = [{ id: 'discussion1', notes: [duoNote] }];
-
-      createComponent({ note: duoNote });
-
-      expect(
-        wrapper.findByTestId('code-review-feedback').attributes('duo-session-url'),
-      ).toBeUndefined();
     });
   });
 

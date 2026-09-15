@@ -36,19 +36,8 @@ $work-item-overview-gap-width: 2rem;
   transition: none;
 }
 
-.work-item-detail-panel-header {
-  @apply gl-flex;
-  @apply gl-items-center;
-  @apply gl-gap-x-2;
-  @apply gl-bg-default;
-  @apply gl-shadow-none;
-  @apply gl-relative;
-  @apply gl-pl-[--container-padding-x];
-  @apply gl-pr-3;
-  @apply gl-py-2;
-  @apply gl-border-b;
-  z-index: $panel-header-inner-z-index;
-  min-height: $panel-header-inner-height;
+.work-plan-editor {
+  margin-inline: calc(var(--container-padding-x) * -1);
 }
 
 .work-item-detail-panel-content {
@@ -63,8 +52,10 @@ $work-item-overview-gap-width: 2rem;
 
 // In the work item detail panel the dynamic panel's .panel-content-inner is the
 // scroll container, so the work item detail must not become one itself: its
-// overflow would trap the sticky sidebar and stop it from sticking.
-.work-item-detail-panel .work-item-detail-panel-content {
+// overflow would trap the sticky sidebar and stop it from sticking. Scope this
+// to the .panel-content-inner structure so panels that reuse these classes
+// without a dynamic panel (e.g. the work plan panel) keep their own scrolling.
+.work-item-detail-panel .panel-content-inner .work-item-detail-panel-content {
   overflow: visible;
 }
 
@@ -337,6 +328,30 @@ $disclosure-hierarchy-chevron-dimension: 1.2rem;
   pointer-events: none;
 }
 
+// Styles BOARD_CARD_DROP_INDICATOR_CLASS. The `.board-card-list >` prefix is needed to
+// outrank the card's own utility classes, which load after this page bundle.
+.board-card-list > .board-card-drop-indicator {
+  position: relative;
+  height: 0;
+  min-height: 0;
+  border: 0;
+  pointer-events: none;
+
+  > * {
+    display: none;
+  }
+
+  &::after {
+    content: '';
+    position: absolute;
+    inset-inline: 0;
+    top: -1px;
+    height: 2px;
+    border-radius: 1px;
+    background-color: var(--gl-highlight-target-border-color);
+  }
+}
+
 .design-scaler-wrapper {
   bottom: 0;
   left: 50%;
@@ -560,8 +575,72 @@ ul.content-list {
 // The workplan flow appends a machine-readable copy of its clarifying question
 // to the comment body, fenced as `json:duo-question`. Banzai renders it as a
 // normal code block, so we hide it and instead render a transformed question UI.
+// The copy button goes too: Banzai renders it as the block's sibling, so hiding only
+// the `pre` leaves a control offering to copy something nobody can see.
 // See https://gitlab.com/groups/gitlab-org/-/work_items/22772
 pre[data-lang-params='duo-question'] {
-  display: none;
+  &,
+  + copy-code {
+    display: none;
+  }
 }
 
+// `MultipleChoiceSelector` groups its items into one bordered box, while a Duo question
+// shows them as separate cards. Only what has to outrank the component lives here.
+// See https://gitlab.com/gitlab-org/gitlab/-/work_items/608852
+.multiple-choice-selector.duo-question-options {
+  @apply gl-border-none;
+
+  // The items sit inside the checkbox group, so that is what stacks them.
+  > div {
+    @apply gl-flex;
+    @apply gl-flex-col;
+    @apply gl-gap-3;
+  }
+
+  // Matches the single-select list's description.
+  .help-text {
+    @apply gl-text-sm;
+    @apply gl-mt-1;
+    line-height: 1.5;
+  }
+
+  .custom-control {
+    @apply gl-grow;
+  }
+
+  .custom-control-label {
+    line-height: 1.5;
+  }
+
+  // The box is drawn as `label::before`, pinned to the top of the line, not centred.
+  .custom-control.custom-checkbox .custom-control-label {
+    &::before,
+    &::after {
+      top: $gl-spacing-scale-1;
+    }
+  }
+
+  .multiple-choice-selector-item {
+    @apply gl-rounded-lg;
+    @apply gl-border-1;
+    @apply gl-border-solid;
+    @apply gl-border-default;
+    @apply gl-px-4;
+    @apply gl-py-3;
+  }
+
+  // Checking an item squares off the corners it shares with a checked neighbour and
+  // pulls it over their borders. All three classes are named to outrank those rules.
+  .multiple-choice-selector-item.duo-question-option.is-checked {
+    @apply gl-rounded-lg;
+    @apply gl-m-0;
+    @apply gl-shadow-none;
+  }
+}
+
+// A linked decision is highlighted the way a linked comment is, so the two deep links feel the
+// same. Tailwind has no utility for the shared timeline token, so the rule lives here.
+.decision-log-item.is-target {
+  background-color: var(--timeline-entry-target-background-color);
+}

@@ -85,29 +85,6 @@ module API
           (field_preloads + feature_preloads).uniq
         end
 
-        def preload_hierarchy_authorization(work_items, feature_keys)
-          return unless current_user
-          return unless feature_keys.include?(:hierarchy)
-          return if work_items.blank?
-
-          parents = work_items.filter_map do |work_item|
-            next unless work_item.has_widget?(:hierarchy)
-
-            work_item.get_widget(:hierarchy).parent
-          end
-
-          return if parents.empty?
-
-          projects = parents.filter_map(&:project)
-          ::Preloaders::UserMaxAccessLevelInProjectsPreloader.new(projects, current_user).execute if projects.any?
-
-          group_namespaces = (parents.map(&:namespace) + projects.map(&:namespace))
-            .select { |namespace| namespace.type == ::Group.sti_name }
-          return if group_namespaces.empty?
-
-          ::Preloaders::GroupPolicyPreloader.new(group_namespaces, current_user).execute
-        end
-
         def build_work_items_relation(resource_parent, preloads: [])
           work_items_relation = ::WorkItems::WorkItemsFinder.new(
             current_user,
@@ -126,14 +103,17 @@ module API
           ).execute.first
         end
 
-        # Resolves the work item for a `namespaces/:id/-/work_items/:iid` route: user namespaces are
-        # rejected, project namespaces resolve to their project, group namespaces are used directly.
-        def work_item_for_namespace!(namespace_id, work_item_iid)
-          namespace = find_namespace_by_path!(namespace_id.to_s, allow_project_namespaces: true)
+        # Resolves a `namespaces/:id` route param: user namespaces are rejected, project namespaces
+        # resolve to their project, group namespaces are used directly.
+        def resolve_namespace_resource_parent!(resource_parent_id)
+          namespace = find_namespace_by_path!(resource_parent_id.to_s, allow_project_namespaces: true)
           not_found!('Namespace') if namespace.is_a?(::Namespaces::UserNamespace)
+          namespace.is_a?(::Namespaces::ProjectNamespace) ? namespace.project : namespace
+        end
 
-          resource_parent = namespace.is_a?(::Namespaces::ProjectNamespace) ? namespace.project : namespace
-          work_item_for!(resource_parent, work_item_iid)
+        # Resolves the work item for a `namespaces/:id/-/work_items/:iid` route.
+        def work_item_for_namespace!(namespace_id, work_item_iid)
+          work_item_for!(resolve_namespace_resource_parent!(namespace_id), work_item_iid)
         end
 
         # Resolves the work item for a project- or group-scoped route. 404s if not found or not readable.
@@ -141,6 +121,31 @@ module API
           find_work_item_by_iid(resource_parent, work_item_iid).tap do |work_item|
             not_found!('Work Item') unless work_item
           end
+        end
+
+        # Preloads the project / group membership associated with the work items so the :read_project and :read_group
+        # policy checks don't N+1 on membership lookups
+        def preload_work_item_policies(work_items)
+          return unless current_user
+          return if work_items.blank?
+
+          preload_policies_for(work_items)
+        end
+
+        def preload_hierarchy_authorization(work_items, feature_keys)
+          return unless current_user
+          return unless feature_keys.include?(:hierarchy)
+          return if work_items.blank?
+
+          parents = work_items.filter_map do |work_item|
+            next unless work_item.has_widget?(:hierarchy)
+
+            work_item.get_widget(:hierarchy).parent
+          end
+
+          return if parents.empty?
+
+          preload_policies_for(parents)
         end
 
         def count_preloads_for(work_items, field_keys, feature_keys)
@@ -201,22 +206,6 @@ module API
             .index_by(&:subscribable_id)
         end
 
-        # Preloads the project / group membership associated with the work items so the :read_project and :read_group
-        # policy checks don't N+1 on membership lookups
-        def preload_work_item_policies(work_items)
-          return unless current_user
-          return if work_items.blank?
-
-          projects = work_items.filter_map(&:project)
-          ::Preloaders::UserMaxAccessLevelInProjectsPreloader.new(projects, current_user).execute if projects.any?
-
-          group_namespaces = (work_items.map(&:namespace) + projects.map(&:namespace))
-            .select { |namespace| namespace.type == ::Group.sti_name }
-          return if group_namespaces.empty?
-
-          ::Preloaders::GroupPolicyPreloader.new(group_namespaces, current_user).execute
-        end
-
         private
 
         def preload_user_discussions_counts(work_items)
@@ -274,6 +263,17 @@ module API
           work_items_parent_params(resource_parent)
             .merge(filter_params)
             .merge(sort: "#{params[:order_by]}_#{params[:sort]}")
+        end
+
+        def preload_policies_for(records)
+          projects = records.filter_map(&:project)
+          ::Preloaders::UserMaxAccessLevelInProjectsPreloader.new(projects, current_user).execute if projects.any?
+
+          group_namespaces = (records.map(&:namespace) + projects.map(&:namespace))
+            .select { |namespace| namespace.type == ::Group.sti_name }
+          return if group_namespaces.empty?
+
+          ::Preloaders::GroupPolicyPreloader.new(group_namespaces, current_user).execute
         end
       end
     end

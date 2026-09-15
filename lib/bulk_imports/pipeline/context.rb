@@ -63,7 +63,7 @@ module BulkImports
       end
 
       def source_ghost_user_id
-        @source_ghost_user_id ||= BulkImports::SourceInternalUserFinder.new(configuration).cached_ghost_user_id
+        @source_ghost_user_id ||= BulkImports::SourceInternalUserFinder.cached_ghost_user_id(bulk_import_id)
       end
 
       def source_user_mapper

@@ -603,7 +603,7 @@ RSpec.describe Gitlab::ImportExport::Json::StreamingSerializer, :clean_gitlab_re
 
         subject.serialize_relation({ merge_requests: { include: [] } })
 
-        expect(Dir.exist?(cache_dir)).to eq(false)
+        expect(Dir.exist?(cache_dir)).to be(false)
       end
     end
 

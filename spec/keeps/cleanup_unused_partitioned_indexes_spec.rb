@@ -323,7 +323,7 @@ RSpec.describe Keeps::CleanupUnusedPartitionedIndexes, feature_category: :databa
         migrate: nil,
         reset_db: nil,
         labels: %w[group::ci maintenance::removal],
-        pick_reviewer: 'engineer-handle'
+        pick_assignee: 'engineer-handle'
       )
     end
 
@@ -338,8 +338,8 @@ RSpec.describe Keeps::CleanupUnusedPartitionedIndexes, feature_category: :databa
         'db/structure.sql'
       )
       expect(result.labels).to eq(%w[group::ci maintenance::removal])
-      expect(result.reviewers).to eq(['engineer-handle'])
-      expect(result.assignees).to be_blank
+      expect(result.assignees).to eq(['engineer-handle'])
+      expect(result.reviewers).to be_blank
     end
 
     it 'renders the partitioned-specific description', :aggregate_failures do

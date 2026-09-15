@@ -148,10 +148,6 @@ RSpec.describe EmailsOnPushWorker, :mailer, feature_category: :source_code_manag
             @cert = generate_cert(signer_ca: @root_ca)
           end
 
-          let(:root_certificate) do
-            Gitlab::X509::Certificate.new(@root_ca[:key], @root_ca[:cert])
-          end
-
           let(:certificate) do
             Gitlab::X509::Certificate.new(@cert[:key], @cert[:cert])
           end

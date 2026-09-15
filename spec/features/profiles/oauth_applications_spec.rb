@@ -107,6 +107,7 @@ RSpec.describe 'Profile > Applications', feature_category: :user_profile do
           # when the application has more than one token
           page.within("tr#application_#{application.id}") do
             expect(page).to have_content(created_at)
+            expect(page).to have_content("#{user.name} added this OAuth application")
           end
 
           expect(page).to have_content('Anonymous')
@@ -132,6 +133,16 @@ RSpec.describe 'Profile > Applications', feature_category: :user_profile do
         within_testid('crud-count') do
           expect(page).to have_content('0')
         end
+      end
+    end
+
+    it 'does not show owner details for an anonymous authorized application' do
+      anonymous_token.update_column(:application_id, nil)
+      visit oauth_applications_path
+
+      within_testid('oauth-authorized-applications') do
+        expect(page).to have_content('Anonymous')
+        expect(page).not_to have_content('added this OAuth application')
       end
     end
 
@@ -175,6 +186,7 @@ RSpec.describe 'Profile > Applications', feature_category: :user_profile do
 
         expect(page).to have_content(other_app.name)
         expect(page).to have_content('openid profile')
+        expect(page).to have_content("#{other_app.owner.name} added this OAuth application")
       end
     end
 

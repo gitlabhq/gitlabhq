@@ -8,7 +8,7 @@ RSpec.describe Gitlab::Import::PageKeyset, :clean_gitlab_redis_shared_state, fea
 
   describe '#initialize' do
     it 'sets the initial next url to be nil when no value is cached' do
-      expect(keyset.current).to eq(nil)
+      expect(keyset.current).to be_nil
     end
 
     it 'sets the initial next url to the cached value when one is present' do
@@ -32,7 +32,7 @@ RSpec.describe Gitlab::Import::PageKeyset, :clean_gitlab_redis_shared_state, fea
       keyset.expire!
 
       expect(Gitlab::Cache::Import::Caching.read(keyset.cache_key)).to be_nil
-      expect(keyset.current).to eq(nil)
+      expect(keyset.current).to be_nil
     end
   end
 end

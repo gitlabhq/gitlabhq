@@ -6,10 +6,6 @@ module Admin
       ui_for_organizations_enabled? && ::Organizations::Organization.exists?
     end
 
-    def show_admin_edit_user_organization_field?(user)
-      ui_for_organizations_enabled? && user.organizations.exists?
-    end
-
     def admin_new_user_organization_field_app_data
       initial_organization = ::Organizations::Organization.first
 
@@ -18,13 +14,14 @@ module Admin
       }.merge(admin_user_organization_field_shared(initial_organization)).to_json
     end
 
-    def admin_edit_user_organization_field_app_data(user)
-      initial_organization = user.organization
-      organization_user = initial_organization.organization_users.by_user(user).first
+    def organization_admin_edit_user_organization_field_app_data(user)
+      organization_field_app_data(user, ::Current.organization)
+    end
 
-      {
-        organization_user: organization_user.slice(:id, :access_level)
-      }.merge(admin_user_organization_field_shared(initial_organization)).to_json
+    def can_edit_organization_user?(user)
+      organization_user = ::Current.organization.membership_for(user)
+
+      organization_user.present? && can?(current_user, :update_organization_user, organization_user)
     end
 
     def email_otp_status_text(user)
@@ -33,7 +30,23 @@ module Admin
       'No'
     end
 
+    def invite_organization_user_app_data(organization)
+      {
+        organization_gid: organization.to_global_id,
+        organization_name: organization.name,
+        search_url: autocomplete_users_path(format: :json)
+      }.to_json
+    end
+
     private
+
+    def organization_field_app_data(user, initial_organization)
+      organization_user = initial_organization.organization_users.by_user(user).first
+
+      {
+        organization_user: organization_user.slice(:id, :access_level)
+      }.merge(admin_user_organization_field_shared(initial_organization)).to_json
+    end
 
     def admin_user_organization_field_shared(initial_organization)
       {

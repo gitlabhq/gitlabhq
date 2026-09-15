@@ -39,8 +39,8 @@ class User < ApplicationRecord
   include Users::EmailOtpEnrollment
   include Cells::Claimable
 
-  cells_claims_attribute :id, type: CLAIMS_CLAIM_TYPE::CLAIM_TYPE_USER_ID, feature_flag: :cells_claims_users
-  cells_claims_attribute :username, type: CLAIMS_CLAIM_TYPE::CLAIM_TYPE_USERNAME, feature_flag: :cells_claims_users
+  cells_claims_attribute :id, type: CLAIMS_CLAIM_TYPE::CLAIM_TYPE_USER_ID
+  cells_claims_attribute :username, type: CLAIMS_CLAIM_TYPE::CLAIM_TYPE_USERNAME
 
   cells_claims_metadata subject_type: CLAIMS_SUBJECT_TYPE::ORGANIZATION, subject_key: :organization_id
 
@@ -156,9 +156,12 @@ class User < ApplicationRecord
 
     update_tracked_fields(request)
 
-    Gitlab::ExclusiveLease.throttle(id) do
-      ::Ability.forgetting(/admin/) do
-        Users::UpdateService.new(self, user: self).execute(validate: false)
+    Gitlab::Database::QueryAnalyzers::PreventWritesOnGet.allow_write_on_get(
+      url: 'https://gitlab.com/gitlab-org/gitlab/-/issues/608670') do
+      Gitlab::ExclusiveLease.throttle(id) do
+        ::Ability.forgetting(/admin/) do
+          Users::UpdateService.new(self, user: self).execute(validate: false)
+        end
       end
     end
   end
@@ -254,6 +257,8 @@ class User < ApplicationRecord
   has_many :starred_projects, through: :users_star_projects, source: :project
   has_many :project_authorizations, dependent: :delete_all
   has_many :authorized_projects, through: :project_authorizations, source: :project
+  has_many :project_authorization_reverifications, class_name: 'Authz::ProjectAuthorizationReverification',
+    dependent: :delete_all
 
   has_many :snippets,                 dependent: :destroy, foreign_key: :author_id
   has_many :notes,                    dependent: :destroy, foreign_key: :author_id
@@ -285,7 +290,6 @@ class User < ApplicationRecord
   has_many :notification_settings
   has_many :award_emoji, dependent: :destroy
   has_many :triggers, -> { not_expired }, class_name: 'Ci::Trigger', foreign_key: :owner_id
-  has_many :audit_events, foreign_key: :author_id, inverse_of: :user
   has_many :uploaded_uploads, class_name: 'Upload', foreign_key: :uploaded_by_user_id
 
   has_many :alert_assignees, class_name: '::AlertManagement::AlertAssignee', inverse_of: :assignee
@@ -355,6 +359,7 @@ class User < ApplicationRecord
   has_many :deploy_tokens, class_name: 'DeployToken', foreign_key: :creator_id, inverse_of: :user, dependent: :nullify
   has_many :terraform_states, class_name: 'Terraform::State', foreign_key: :locked_by_user_id, inverse_of: :locked_by_user, dependent: :nullify
   has_many :terraform_state_versions, class_name: 'Terraform::StateVersion', foreign_key: :created_by_user_id, inverse_of: :created_by_user, dependent: :nullify
+  has_many :observability_project_o11y_settings, class_name: 'Observability::ProjectO11ySetting', foreign_key: :created_by_id, inverse_of: :created_by, dependent: :nullify
 
   has_many :broadcast_message_dismissals, class_name: 'Users::BroadcastMessageDismissal'
 
@@ -532,6 +537,7 @@ class User < ApplicationRecord
     :organization_groups_projects_display, :organization_groups_projects_display=,
     :project_shortcut_buttons, :project_shortcut_buttons=,
     :keyboard_shortcuts_enabled, :keyboard_shortcuts_enabled=,
+    :emoji_autocomplete_enabled, :emoji_autocomplete_enabled=,
     :render_whitespace_in_code, :render_whitespace_in_code=,
     :markdown_surround_selection, :markdown_surround_selection=,
     :markdown_automatic_lists, :markdown_automatic_lists=,
@@ -1302,6 +1308,10 @@ class User < ApplicationRecord
       exists?(username: username)
     end
 
+    def pluck_usernames
+      pluck(:username)
+    end
+
     def id_exists?(id)
       exists?(id: id)
     end
@@ -1688,6 +1698,22 @@ class User < ApplicationRecord
 
   def direct_groups_with_route
     groups.with_route.order_id_asc
+  end
+
+  # Deliberately unbounded: shared by the OIDC groups_direct claim
+  # (config/initializers/doorkeeper_openid_connect.rb) and
+  # Authn::IamService::UserinfoClaimsBuilder, which must return the same
+  # complete group list for claim parity between the two (see
+  # spec/services/authn/iam_service/userinfo_claims_builder_parity_spec.rb).
+  # Callers needing frequency protection should rate-limit, not truncate.
+  #
+  # Intentionally kept identical to the pre-existing Doorkeeper query
+  # (map(&:full_path) with with_route, not pluck('routes.path')) to avoid
+  # any behavioral change to this claim.
+  def direct_groups_full_paths
+    groups.joins(:route).with_route
+      .allow_cross_joins_across_databases(url: "https://gitlab.com/gitlab-org/gitlab/-/issues/420046")
+      .map(&:full_path)
   end
 
   def first_group_paths
@@ -2422,7 +2448,13 @@ class User < ApplicationRecord
     end
 
     @global_notification_setting = notification_settings.find_or_initialize_by(source: nil)
-    @global_notification_setting.update(level: NotificationSetting.levels[DEFAULT_NOTIFICATION_LEVEL]) unless @global_notification_setting.persisted?
+
+    unless @global_notification_setting.persisted?
+      Gitlab::Database::QueryAnalyzers::PreventWritesOnGet.allow_write_on_get(
+        url: 'https://gitlab.com/gitlab-org/gitlab/-/issues/608670') do
+        @global_notification_setting.update(level: NotificationSetting.levels[DEFAULT_NOTIFICATION_LEVEL])
+      end
+    end
 
     @global_notification_setting
   end
@@ -3007,8 +3039,8 @@ class User < ApplicationRecord
   def authorization_user
     return self unless service_account? && composite_identity_enforced?
 
-    identity = ::Gitlab::Auth::Identity.currently_linked
-    return self unless identity&.linked?
+    identity = ::Gitlab::Auth::Identity.new(self)
+    return self unless identity.linked?
 
     identity.scoped_user
   end
@@ -3018,6 +3050,9 @@ class User < ApplicationRecord
       errors.add(:base, _('You cannot update the username of a service account associated with a composite identity.'))
     end
   end
+
+  # method overridden in EE
+  def skip_enterprise_user_email_change_restrictions!; end
 
   protected
 

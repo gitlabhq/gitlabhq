@@ -29,7 +29,7 @@ GitLab.comは、GitLab Self-Managedのデフォルトとは異なる値を持つ
 この制限を設定するには:
 
 1. 右上隅で、**管理者**を選択します。
-1. 左サイドバーで、**設定** > **CI/CD**を選択します。
+1. 左側のサイドバーで、**設定** > **CI/CD**を選択します。
 1. **継続的インテグレーションとデプロイ**を展開します。
 1. **CI/CD制限**の下で、**定義できるインスタンスレベルのCI/CD変数の最大数**の値を設定します。デフォルトは`25`です。
 1. **変更を保存**を選択します。
@@ -47,9 +47,9 @@ dotenvアーティファクトの最大サイズに制限を設定できます�
 この制限を設定するには:
 
 1. 右上隅で、**管理者**を選択します。
-1. 左サイドバーで、**設定** > **CI/CD**を選択します。
+1. 左側のサイドバーで、**設定** > **CI/CD**を選択します。
 1. **継続的インテグレーションとデプロイ**を展開します。
-1. **CI/CD制限**の下で、**dotenvアーティファクトの最大サイズ(バイト)** の値を設定します。
+1. **CI/CD制限**の下で、**dotenvアーティファクトの最大サイズ（バイト）** の値を設定します。
 1. **変更を保存**を選択します。
 
 制限を`0`に設定すると、無効になります。デフォルトは5 KBです。
@@ -67,14 +67,34 @@ dotenvアーティファクト内の変数の最大数に制限を設定でき�
 この制限を設定するには:
 
 1. 右上隅で、**管理者**を選択します。
-1. 左サイドバーで、**設定** > **CI/CD**を選択します。
+1. 左側のサイドバーで、**設定** > **CI/CD**を選択します。
 1. **継続的インテグレーションとデプロイ**を展開します。
 1. **CI/CD制限**の下で、**dotenvアーティファクトの変数の最大数**の値を設定します。
 1. **変更を保存**を選択します。
 
-制限を`0`に設定すると、無効になります。`20`がデフォルトです。
+制限を`0`に設定すると、無効になります。デフォルトは`20`です。
 
 [プラン制限API](../../api/plan_limits.md)を使用してもこの制限を設定できます。
+
+## CycloneDXアーティファクトのサイズを制限する {#limit-cyclonedx-artifact-size}
+
+{{< history >}}
+
+- GitLab 19.3で[導入](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/248527)されました。
+
+{{< /history >}}
+
+単一の[CycloneDX SBOM](../../ci/yaml/artifacts_reports.md#artifactsreportscyclonedx)アーティファクトの最大サイズに制限を設定できます。この制限は、CycloneDXレポートがアーティファクトとしてアップロードされるたびにチェックされます。
+
+この制限を設定するには:
+
+1. 右上隅で、**管理者**を選択します。
+1. 左側のサイドバーで、**設定** > **CI/CD**を選択します。
+1. **継続的インテグレーションとデプロイ**を展開します。
+1. **CI/CD制限**の下で、**CycloneDXアーティファクトの最大サイズ（MB）** の値を設定します。
+1. **変更を保存**を選択します。
+
+代わりに[最大アーティファクトサイズ](#maximum-artifacts-size)を使用するには、制限を`0`に設定します。デフォルトは`1` MBです。
 
 ## パイプライン内のジョブの最大数 {#maximum-number-of-jobs-in-a-pipeline}
 
@@ -89,7 +109,7 @@ dotenvアーティファクト内の変数の最大数に制限を設定でき�
 この制限を設定するには:
 
 1. 右上隅で、**管理者**を選択します。
-1. 左サイドバーで、**設定** > **CI/CD**を選択します。
+1. 左側のサイドバーで、**設定** > **CI/CD**を選択します。
 1. **継続的インテグレーションとデプロイ**を展開します。
 1. **CI/CD制限**の下で、**パイプラインごとの最大ジョブ数**の値を設定します。
 1. **変更を保存**を選択します。
@@ -109,7 +129,7 @@ dotenvアーティファクト内の変数の最大数に制限を設定でき�
 この制限を設定するには:
 
 1. 右上隅で、**管理者**を選択します。
-1. 左サイドバーで、**設定** > **CI/CD**を選択します。
+1. 左側のサイドバーで、**設定** > **CI/CD**を選択します。
 1. **継続的インテグレーションとデプロイ**を展開します。
 1. **CI/CD制限**の下で、**現在アクティブなパイプラインの合計ジョブ数**の値を設定します。
 1. **変更を保存**を選択します。
@@ -125,7 +145,7 @@ dotenvアーティファクト内の変数の最大数に制限を設定でき�
 この制限を設定するには:
 
 1. 右上隅で、**管理者**を選択します。
-1. 左サイドバーで、**設定** > **CI/CD**を選択します。
+1. 左側のサイドバーで、**設定** > **CI/CD**を選択します。
 1. **継続的インテグレーションとデプロイ**を展開します。
 1. **CI/CD制限**の下で、**プロジェクトとの間のパイプラインサブスクリプションの最大数**の値を設定します。
 1. **変更を保存**を選択します。
@@ -139,7 +159,7 @@ dotenvアーティファクト内の変数の最大数に制限を設定でき�
 この制限を設定するには:
 
 1. 右上隅で、**管理者**を選択します。
-1. 左サイドバーで、**設定** > **CI/CD**を選択します。
+1. 左側のサイドバーで、**設定** > **CI/CD**を選択します。
 1. **継続的インテグレーションとデプロイ**を展開します。
 1. **CI/CD制限**の下で、**パイプラインスケジュールの最大数**の値を設定します。
 1. **変更を保存**を選択します。
@@ -155,12 +175,12 @@ dotenvアーティファクト内の変数の最大数に制限を設定でき�
 この制限を設定するには:
 
 1. 右上隅で、**管理者**を選択します。
-1. 左サイドバーで、**設定** > **CI/CD**を選択します。
+1. 左側のサイドバーで、**設定** > **CI/CD**を選択します。
 1. **継続的インテグレーションとデプロイ**を展開します。
 1. **CI/CD制限**の下で、**ジョブが持てる必要な依存関係の最大数**の値を設定します。
 1. **変更を保存**を選択します。
 
-この制限は無効にできません。`50`がデフォルトです。
+この制限は無効にできません。デフォルトは`50`です。
 
 すべての必要とされる依存関係をブロックするには`0`に設定します。`needs`を使用するように設定されたジョブを含むパイプラインは、`job can only need 0 others`というエラーを返します。
 
@@ -177,7 +197,7 @@ dotenvアーティファクト内の変数の最大数に制限を設定でき�
 この制限を設定するには:
 
 1. 右上隅で、**管理者**を選択します。
-1. 左サイドバーで、**設定** > **CI/CD**を選択します。
+1. 左側のサイドバーで、**設定** > **CI/CD**を選択します。
 1. **継続的インテグレーションとデプロイ**を展開します。
 1. **CI/CD制限**の下で、次のいずれかの値を設定します:
    - **過去7日間にグループ内で作成または有効にできるRunnerの最大数**
@@ -198,7 +218,7 @@ dotenvアーティファクト内の変数の最大数に制限を設定でき�
 この制限を設定するには:
 
 1. 右上隅で、**管理者**を選択します。
-1. 左サイドバーで、**設定** > **CI/CD**を選択します。
+1. 左側のサイドバーで、**設定** > **CI/CD**を選択します。
 1. **継続的インテグレーションとデプロイ**を展開します。
 1. **CI/CD制限**の下で、**パイプラインの階層ツリー内のダウンストリームパイプラインの最大数**の値を設定します。
 1. **変更を保存**を選択します。
@@ -218,7 +238,7 @@ dotenvアーティファクト内の変数の最大数に制限を設定でき�
 この制限を設定するには:
 
 1. 右上隅で、**管理者**を選択します。
-1. 左サイドバーで、**設定** > **CI/CD**を選択します。
+1. 左側のサイドバーで、**設定** > **CI/CD**を選択します。
 1. **継続的インテグレーションとデプロイ**を展開します。
 1. **CI/CD制限**の下で、**マージトレインごとの最大並列パイプライン数**の値を設定します。最小値は`1`です。`1`の値は、並行処理なしでマージリクエストを順次処理します。
 1. **変更を保存**を選択します。
@@ -258,7 +278,7 @@ GitLab Self-ManagedとGitLab.comのデフォルト値は`4`です。
 GitLab Self-Managedインスタンスでこの制限を変更するには:
 
 1. 右上隅で、**管理者**を選択します。
-1. 左サイドバーで、**設定** > **CI/CD**を選択します。
+1. 左側のサイドバーで、**設定** > **CI/CD**を選択します。
 1. **継続的インテグレーションとデプロイ**を展開します。
 1. **各Git pushのパイプラインの制限**の値を変更します。
 1. **変更を保存**を選択します。
@@ -267,7 +287,7 @@ GitLab Self-Managedインスタンスでこの制限を変更するには:
 
 {{< history >}}
 
-- GitLab 15.0で`ci_enforce_throttle_pipelines_creation`[フラグ](../feature_flags/_index.md)とともに[導入](https://gitlab.com/gitlab-org/gitlab/-/issues/362475)されました。デフォルトでは無効になっています。GitLab.comで有効化されています。
+- GitLab 15.0で、`ci_enforce_throttle_pipelines_creation`という名前の[機能フラグ](../feature_flags/_index.md)と共に[導入](https://gitlab.com/gitlab-org/gitlab/-/issues/362475)されました。デフォルトでは無効になっています。GitLab.comで有効化されています。
 - 18.3で[デフォルトで有効化](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/196545)されました。
 
 {{< /history >}}
@@ -276,8 +296,8 @@ GitLab Self-Managedインスタンスでこの制限を変更するには:
 
 GitLabは、パイプライン作成に対して2種類のレート制限を適用します:
 
-- **Per project, commit, and user**: プロジェクト、コミットSHA、およびユーザーの同じ組み合わせで作成されたパイプラインを制限します。デフォルトでは無効になっています。
-- **Per user**: すべてのプロジェクトでユーザーによって作成された合計パイプラインを制限します。デフォルトでは無効になっています。
+- **プロジェクト、コミット、ユーザーごと**: プロジェクト、コミットSHA、およびユーザーの同じ組み合わせで作成されたパイプラインを制限します。デフォルトでは`0`（制限なし）に設定されています。
+- **ユーザーごと**: すべてのプロジェクトでユーザーによって作成された合計パイプラインを制限します。デフォルトでは`0`（制限なし）に設定されています。
 
 例えば、ユーザーごとの制限を`100`に設定し、ユーザーが異なるプロジェクト間で1分以内に[トリガーAPI](../../ci/triggers/_index.md)にパイプライン作成リクエストを`101`送信した場合、101番目のリクエストはブロックされます。エンドポイントへのアクセスは1分後に再度許可されます。
 
@@ -294,15 +314,15 @@ GitLabは、パイプライン作成に対して2種類のレート制限を適�
 パイプラインリクエストの数を制限するには:
 
 1. 右上隅で、**管理者**を選択します。
-1. 左サイドバーで、**設定** > **ネットワーク**を選択します。
-1. **Pipelines Rate Limits**を展開します。
-   - **Max requests per minute per project, user, and commit**の下で、同じプロジェクト、コミット、ユーザーの組み合わせに対するパイプラインを制限するために、`0`より大きい値を入力します。
-   - **Max requests per minute per user**の下で、各ユーザーが作成できる合計パイプラインを制限するために、`0`より大きい値を入力します。毎分の無制限のリクエストに対して`0`に設定します。
+1. 左側のサイドバーで、**設定** > **ネットワーク**を選択します。
+1. **パイプラインのレート制限**を展開します。
+   - **プロジェクト、ユーザー、コミットごとの1分あたりの最大リクエスト数**で、`0`より大きい値を入力すると、同じプロジェクト、コミット、ユーザーの組み合わせに対するパイプラインを制限できます。1分あたりのリクエスト数を無制限にするには、`0`に設定します。
+   - **ユーザーごとの1分あたりの最大リクエスト数**で、`0`より大きい値を入力すると、各ユーザーが作成するパイプラインの合計数を制限できます。1分あたりのリクエスト数を無制限にするには、`0`に設定します。
 1. **変更を保存**を選択します。
 
 両方のレート制限は独立して評価されます:
 
-- プロジェクトで同じコミットSHAに対して複数のパイプラインを作成するユーザーは、**per project, user, and commit**制限の対象となります。
+- プロジェクトで同じコミットSHAに対して複数のパイプラインを作成するユーザーは、**プロジェクト、ユーザー、コミットごと**の制限の対象となります。
 - 異なるプロジェクトまたはコミット間でパイプラインを作成するユーザーは、**ユーザーごと**の制限の対象となります。
 - いずれかの制限を超過した場合、パイプライン作成リクエストはブロックされます。
 
@@ -315,7 +335,7 @@ GitLabは、パイプライン作成に対して2種類のレート制限を適�
 この制限を設定するには:
 
 1. 右上隅で、**管理者**を選択します。
-1. 左サイドバーで、**設定** > **CI/CD**を選択します。
+1. 左側のサイドバーで、**設定** > **CI/CD**を選択します。
 1. **継続的インテグレーションとデプロイ**を展開します。
 1. **最大ダウンストリームパイプライントリガーレート**の値を設定します。
 1. **変更を保存**を選択します。
@@ -340,9 +360,9 @@ GitLab.comの制限については、[アーティファクトの最大サイズ
 インスタンスのアーティファクトの最大サイズを変更するには、次の手順に従います。
 
 1. 右上隅で、**管理者**を選択します。
-1. 左サイドバーで、**設定** > **CI/CD**を選択します。
+1. 左側のサイドバーで、**設定** > **CI/CD**を選択します。
 1. **継続的インテグレーションとデプロイ**を展開します。
-1. **アーティファクトサイズの上限 (MB)** テキストボックスに値を入力します。
+1. **アーティファクトサイズの上限（MB）** テキストボックスに値を入力します。
 1. **変更を保存**を選択します。
 
 ## 最大インクルード数 {#maximum-number-of-includes}
@@ -354,9 +374,52 @@ GitLab.comの制限については、[アーティファクトの最大サイズ
 パイプラインあたりのインクルードできるファイルの最大数を設定するには、次の手順に従います。
 
 1. 右上隅で、**管理者**を選択します。
-1. 左サイドバーで、**設定** > **CI/CD**を選択します。
+1. 左側のサイドバーで、**設定** > **CI/CD**を選択します。
 1. **継続的インテグレーションとデプロイ**を展開します。
 1. **最大インクルード**テキストボックスに値を入力します。
+1. **変更を保存**を選択します。
+
+## CIアーティファクトアーカイブの最大サイズ {#maximum-size-of-the-ci-artifacts-archive}
+
+この設定は、[動的な子パイプライン](../../ci/pipelines/downstream_pipelines.md#dynamic-child-pipelines)のYAMLサイズを制限します。
+
+CIアーティファクトアーカイブのデフォルトの最大サイズは5メガバイトです。
+
+管理者エリアでこの制限を変更するには:
+
+1. 右上隅で、**管理者**を選択します。
+1. 左側のサイドバーで、**設定** > **CI/CD**を選択します。
+1. **継続的インテグレーションとデプロイ**を展開します。
+1. **動的な子パイプラインのアーティファクトの最大サイズ（バイト）**テキストボックスに値を入力します。
+1. **変更を保存**を選択します。
+
+[GitLab Railsコンソール](../operations/rails_console.md#starting-a-rails-console-session)を使用してこの制限を変更するには、`max_artifacts_content_include_size`を新しい値で更新します。たとえば、20 MBに設定するには、次のコマンドを実行します。
+
+```ruby
+ApplicationSetting.update(max_artifacts_content_include_size: 20.megabytes)
+```
+
+## ジョブごとの最大キャッシュ数 {#maximum-number-of-caches-per-job}
+
+{{< history >}}
+
+- GitLab 18.10.8、18.11.5、19.0.2、および19.1で[ベータ](../../policy/development_stages_support.md#beta)版として[導入](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/237685)されました。
+- GitLab 19.2で[一般提供](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/242691)になりました。
+
+{{< /history >}}
+
+単一のCI/CDジョブが定義できる[`cache`](../../ci/yaml/_index.md#cache)キャッシュエントリの数を制限します。この制限は、キャッシュが`cache:key:files`を使用する場合に、パイプライン作成中にジョブがトリガーすることができるGitaly呼び出しの数に上限を設定します。
+
+デフォルトでは、ジョブは最大4つのキャッシュを定義できます。ジョブがこの制限を超えると、設定はエラーで解析に失敗します。
+
+値は1以上である必要があります。制限をデフォルトより高くすると、パイプライン作成パフォーマンスに影響を与える可能性があります。
+
+ジョブごとの最大キャッシュ数を変更するには:
+
+1. 右上隅で、**管理者**を選択します。
+1. 左側のサイドバーで、**設定** > **CI/CD**を選択します。
+1. **継続的インテグレーションとデプロイ**を展開します。
+1. **ジョブごとの最大キャッシュ**テキストボックスに値を入力します。
 1. **変更を保存**を選択します。
 
 ## CI/CD制限のインスタンス設定 {#cicd-limits-instance-configuration}
@@ -394,7 +457,7 @@ Plan.default.actual_limits.update!(ci_pipeline_deployments: 500)
 
 新しいトリガーによってパイプライントリガーの総数が制限を超える場合、そのトリガーは無効と見なされます。
 
-制限を`0`に設定すると、無効になります。`25000`がデフォルトです。
+制限を`0`に設定すると、無効になります。デフォルトは`25000`です。
 
 この制限を`100`に設定するには、[GitLab Railsコンソール](../operations/rails_console.md#starting-a-rails-console-session)で以下を実行します:
 
@@ -469,7 +532,6 @@ Plan.default.actual_limits.update!(security_policy_scan_execution_schedules: 100
 
 {{< history >}}
 
-- GitLab 16.3で`ci_max_artifact_size_annotations`制限が[導入](https://gitlab.com/gitlab-org/gitlab/-/issues/38337)されました。
 - `ci_max_artifact_size_jacoco`の制限は、GitLab 17.3で[導入](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/159696)されました。
 - GitLab 17.8で`ci_max_artifact_size_lsif`制限が[導入](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/175684)されました。
 
@@ -501,7 +563,7 @@ Plan.default.actual_limits.update!(security_policy_scan_execution_schedules: 100
 | `ci_max_artifact_size_license_management`   | 0             |
 | `ci_max_artifact_size_license_scanning`     | 0             |
 | `ci_max_artifact_size_load_performance`     | 0             |
-| `ci_max_artifact_size_lsif`                 | 200 MB        |
+| `ci_max_artifact_size_lsif`                 | 200 MB        |
 | `ci_max_artifact_size_metadata`             | 0             |
 | `ci_max_artifact_size_metrics_referee`      | 0             |
 | `ci_max_artifact_size_metrics`              | 0             |
@@ -509,17 +571,20 @@ Plan.default.actual_limits.update!(security_policy_scan_execution_schedules: 100
 | `ci_max_artifact_size_performance`          | 0             |
 | `ci_max_artifact_size_requirements`         | 0             |
 | `ci_max_artifact_size_requirements_v2`      | 0             |
+| `ci_max_artifact_size_sarif`                | 10 MB         |
 | `ci_max_artifact_size_sast`                 | 0             |
 | `ci_max_artifact_size_secret_detection`     | 0             |
-| `ci_max_artifact_size_terraform`            | 5 MB          |
+| `ci_max_artifact_size_terraform`            | 5 MB          |
 | `ci_max_artifact_size_trace`                | 0             |
-| `ci_max_artifact_size_cyclonedx`            | 5 MB          |
+| `ci_max_artifact_size_cyclonedx`            | 1 MB          |
 
 たとえば、`ci_max_artifact_size_junit`制限をGitLab Self-Managedで10 MBに設定するには、[GitLab Railsコンソール](../operations/rails_console.md#starting-a-rails-console-session)で次のコマンドを実行します。
 
 ```ruby
 Plan.default.actual_limits.update!(ci_max_artifact_size_junit: 10)
 ```
+
+**管理者**エリアで`ci_max_artifact_size_cyclonedx`を設定することもできます。詳細については、[CycloneDXアーティファクトサイズの制限](#limit-cyclonedx-artifact-size)を参照してください。
 
 ### ジョブログの最大ファイルサイズ {#maximum-file-size-for-job-logs}
 
@@ -541,18 +606,6 @@ GitLab Runnerには、Runner内の最大ログサイズを指定する[`output_l
 
 ```ruby
 Plan.default.actual_limits.update!(dast_profile_schedules: 50)
-```
-
-### CIアーティファクトアーカイブの最大サイズ {#maximum-size-of-the-ci-artifacts-archive}
-
-この設定は、[動的な子パイプライン](../../ci/pipelines/downstream_pipelines.md#dynamic-child-pipelines)におけるYAMLのサイズを制限するために使用されます。
-
-CIアーティファクトアーカイブのデフォルトの最大サイズは5メガバイトです。
-
-この制限を変更するには、[GitLab Railsコンソール](../operations/rails_console.md#starting-a-rails-console-session)を使用します。CIアーティファクトアーカイブの最大サイズを更新するには、`max_artifacts_content_include_size`に新しい値を設定します。たとえば、20 MBに設定するには、次のコマンドを実行します。
-
-```ruby
-ApplicationSetting.update(max_artifacts_content_include_size: 20.megabytes)
 ```
 
 ### CI/CD設定YAMLファイルの最大サイズと最大深度 {#maximum-size-and-depth-of-cicd-configuration-yaml-files}
@@ -603,17 +656,13 @@ ApplicationSetting.update(max_artifacts_content_include_size: 20.megabytes)
 ApplicationSetting.update(ci_max_total_yaml_size_bytes: 20.megabytes)
 ```
 
+この制限は、パイプラインが作成されたときに、単一のCI/CDジョブ用に保存されるコンパイル済み設定も制限します。単一のジョブの設定は、常にパイプライン全体の設定のサブセットであるため、この制限を超えることはできません。
+
 ### CI/CDジョブのアノテーション数を制限する {#limit-cicd-job-annotations}
-
-{{< history >}}
-
-- GitLab 16.3で[導入](https://gitlab.com/gitlab-org/gitlab/-/issues/38337)されました。
-
-{{< /history >}}
 
 CI/CDジョブごとの[アノテーション](../../ci/yaml/artifacts_reports.md#artifactsreportsannotations)の最大数に制限を設定できます。
 
-制限を`0`に設定すると、無効になります。`20`がデフォルトです。
+制限を`0`に設定すると、無効になります。デフォルトは`20`です。
 
 インスタンスでこの制限を`100`に設定するには、[GitLab Railsコンソール](../operations/rails_console.md#starting-a-rails-console-session)で次のコマンドを実行します。
 
@@ -622,12 +671,6 @@ Plan.default.actual_limits.update!(ci_job_annotations_num: 100)
 ```
 
 ### CI/CDジョブのアノテーションファイルサイズを制限する {#limit-cicd-job-annotations-file-size}
-
-{{< history >}}
-
-- GitLab 16.3で[導入](https://gitlab.com/gitlab-org/gitlab/-/issues/38337)されました。
-
-{{< /history >}}
 
 CI/CDジョブの[アノテーション](../../ci/yaml/artifacts_reports.md#artifactsreportsannotations)の最大サイズに制限を設定できます。
 

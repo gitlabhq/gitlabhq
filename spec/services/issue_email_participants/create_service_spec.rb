@@ -152,6 +152,61 @@ RSpec.describe IssueEmailParticipants::CreateService, feature_category: :service
 
         it_behaves_like 'a successful service execution'
       end
+
+      context 'when the namespace is over the Service Desk email rate limit' do
+        let(:emails) { ['user@example.com', 'other-user@example.com'] }
+
+        before do
+          allow_next_instance_of(::ServiceDesk::EmailRateLimiter) do |limiter|
+            allow(limiter).to receive(:rate_limit_batch!).and_return(true)
+            allow(limiter).to receive(:post_suppression_notice)
+          end
+        end
+
+        it 'still creates the participant records but skips the emails' do
+          expect(Notify).not_to receive(:service_desk_new_participant_email)
+
+          response = service.execute
+
+          expect(response).to be_success
+          expect(issue.reset.email_participants_emails_downcase).to match_array(emails)
+        end
+
+        it 'posts one suppression notice' do
+          posted_target = nil
+
+          allow_next_instance_of(::ServiceDesk::EmailRateLimiter) do |limiter|
+            allow(limiter).to receive(:rate_limit_batch!).and_return(true)
+            allow(limiter).to receive(:post_suppression_notice) { |target| posted_target = target }
+          end
+
+          service.execute
+
+          expect(posted_target).to eq(issue)
+        end
+      end
+
+      context 'when the namespace is not over the Service Desk email rate limit' do
+        let(:emails) { ['user@example.com'] }
+
+        it_behaves_like 'a successful service execution'
+      end
+
+      context 'when emails_to_add exceeds the remaining participant slots' do
+        let(:emails) { (1..7).map { |i| "user#{i}@example.com" } }
+
+        before do
+          stub_const("#{described_class}::MAX_NUMBER_OF_RECORDS", 3)
+        end
+
+        it 'charges the limiter with the clamped count, not the requested count' do
+          expect_next_instance_of(::ServiceDesk::EmailRateLimiter) do |limiter|
+            expect(limiter).to receive(:rate_limit_batch!).with(3).and_return(false)
+          end
+
+          service.execute
+        end
+      end
     end
   end
 end

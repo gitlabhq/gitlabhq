@@ -9,6 +9,10 @@ module Mutations
 
       authorize :create_custom_emoji
 
+      authorize_granular_token permissions: :create_custom_emoji,
+        boundary_argument: :group_path,
+        boundary_type: :group
+
       field :custom_emoji,
         Types::CustomEmojiType,
         null: true,

@@ -3,17 +3,24 @@
 RSpec.shared_examples 'dirty submit form' do |selector_args|
   selectors = selector_args.is_a?(Array) ? selector_args : [selector_args]
 
+  # A Pajamas button signals unavailability with `aria-disabled` and no native attribute, so match
+  # either form. Capybara's own aria-aware `disabled:` filter only covers its `:button` selectors,
+  # not the raw CSS this shared example is parameterised with.
   def expect_disabled_state(form, submit_selector, is_disabled = true)
-    disabled_selector = is_disabled == true ? '[disabled]' : ':not([disabled])'
+    selector =
+      if is_disabled
+        "#{submit_selector}[disabled], #{submit_selector}[aria-disabled='true']"
+      else
+        "#{submit_selector}:not([disabled]):not([aria-disabled='true'])"
+      end
 
-    form.find("#{submit_selector}#{disabled_selector}")
+    form.find(selector)
   end
 
   selectors.each do |selector|
     it "disables #{selector[:form]} submit until there are changes on #{selector[:input]}", :js do
       form = find(selector[:form])
       submit_selector = selector[:submit] || 'input[type="submit"]'
-      submit = form.first(submit_selector)
       input = form.first(selector[:input])
       is_radio = input[:type] == 'radio'
       is_checkbox = input[:type] == 'checkbox'
@@ -22,7 +29,7 @@ RSpec.shared_examples 'dirty submit form' do |selector_args|
       original_checkable = form.find("input[name='#{input[:name]}'][checked]") if is_radio
       original_checkable = input if is_checkbox
 
-      expect(submit.disabled?).to be true
+      expect_disabled_state(form, submit_selector)
 
       is_checkable ? input.click : input.set("#{original_value} changes")
 

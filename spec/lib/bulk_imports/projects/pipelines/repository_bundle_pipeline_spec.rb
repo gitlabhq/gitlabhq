@@ -38,8 +38,8 @@ RSpec.describe BulkImports::Projects::Pipelines::RepositoryBundlePipeline, featu
 
       pipeline.run
 
-      expect(portable.repository.exists?).to eq(true)
-      expect(Dir.exist?(tmpdir)).to eq(false)
+      expect(portable.repository.exists?).to be(true)
+      expect(Dir.exist?(tmpdir)).to be(false)
     end
 
     it 'skips import if already cached' do
@@ -58,7 +58,7 @@ RSpec.describe BulkImports::Projects::Pipelines::RepositoryBundlePipeline, featu
 
         pipeline.run
 
-        expect(entity.failed?).to eq(true)
+        expect(entity.failed?).to be(true)
       end
     end
   end
@@ -108,7 +108,7 @@ RSpec.describe BulkImports::Projects::Pipelines::RepositoryBundlePipeline, featu
 
       pipeline.load(context, bundle_path)
 
-      expect(portable.repository.exists?).to eq(true)
+      expect(portable.repository.exists?).to be(true)
     end
 
     context 'when file does not exist' do
@@ -117,7 +117,7 @@ RSpec.describe BulkImports::Projects::Pipelines::RepositoryBundlePipeline, featu
 
         pipeline.load(context, File.join(tmpdir, 'bogus'))
 
-        expect(portable.repository.exists?).to eq(false)
+        expect(portable.repository.exists?).to be(false)
       end
     end
 
@@ -127,7 +127,7 @@ RSpec.describe BulkImports::Projects::Pipelines::RepositoryBundlePipeline, featu
 
         pipeline.load(context, tmpdir)
 
-        expect(portable.repository.exists?).to eq(false)
+        expect(portable.repository.exists?).to be(false)
       end
     end
 
@@ -141,7 +141,7 @@ RSpec.describe BulkImports::Projects::Pipelines::RepositoryBundlePipeline, featu
 
         pipeline.load(context, symlink)
 
-        expect(portable.repository.exists?).to eq(false)
+        expect(portable.repository.exists?).to be(false)
       end
     end
 
@@ -154,7 +154,7 @@ RSpec.describe BulkImports::Projects::Pipelines::RepositoryBundlePipeline, featu
 
         pipeline.load(context, bundle_path)
 
-        expect(portable.repository.exists?).to eq(false)
+        expect(portable.repository.exists?).to be(false)
       end
     end
 
@@ -180,7 +180,7 @@ RSpec.describe BulkImports::Projects::Pipelines::RepositoryBundlePipeline, featu
 
       pipeline.after_run(nil)
 
-      expect(Dir.exist?(tmpdir)).to eq(false)
+      expect(Dir.exist?(tmpdir)).to be(false)
     end
   end
 end

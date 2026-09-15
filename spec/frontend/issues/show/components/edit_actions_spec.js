@@ -74,10 +74,10 @@ describe('Edit Actions component', () => {
       jest.spyOn(eventHub, '$emit').mockImplementation(() => {});
     });
 
-    it('sends update.issauble event when clicking save button', () => {
+    it('emits `update-issuable` when clicking save button', () => {
       findSaveButton().vm.$emit('click', { preventDefault: jest.fn() });
 
-      expect(eventHub.$emit).toHaveBeenCalledWith('update.issuable');
+      expect(eventHub.$emit).toHaveBeenCalledWith('update-issuable');
     });
   });
 
@@ -86,10 +86,10 @@ describe('Edit Actions component', () => {
       jest.spyOn(eventHub, '$emit').mockImplementation(() => {});
     });
 
-    it('emits close.form when clicking cancel', () => {
+    it('emits `close-form` when clicking cancel', () => {
       findCancelButton().vm.$emit('click');
 
-      expect(eventHub.$emit).toHaveBeenCalledWith('close.form');
+      expect(eventHub.$emit).toHaveBeenCalledWith('close-form');
     });
   });
 });

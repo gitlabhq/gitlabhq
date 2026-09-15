@@ -112,7 +112,7 @@ module ProjectsHelper
       push_to_schema_breadcrumb(name, url)
     end
 
-    push_to_schema_breadcrumb(simple_sanitize(project.name), project_path(project), project.try(:avatar_url))
+    push_to_schema_breadcrumb(project.name, project_path(project), project.try(:avatar_url))
   end
 
   def remove_project_message
@@ -474,8 +474,7 @@ module ProjectsHelper
       environmentsHelpPath: help_page_path('ci/environments/_index.md'),
       featureFlagsHelpPath: help_page_path('operations/feature_flags.md'),
       releasesHelpPath: help_page_path('user/project/releases/_index.md'),
-      infrastructureHelpPath: help_page_path('user/infrastructure/_index.md'),
-      groupPathRegex: JsRegex.new(Gitlab::PathRegex::FULL_NAMESPACE_FORMAT_REGEX).source
+      infrastructureHelpPath: help_page_path('user/infrastructure/_index.md')
     }
   end
 
@@ -558,18 +557,12 @@ module ProjectsHelper
     notification_attributes = notification_data_attributes(project) || {}
     star_count_attributes = star_count_data_attributes(project)
     admin_path = admin_project_path(project) if current_user&.can_admin_all_resources?
-    cicd_catalog_path = explore_catalog_path(project.catalog_resource) if project.catalog_resource
 
     {
       admin_path: admin_path,
       can_read_project: can?(current_user, :read_project, project).to_s,
-      cicd_catalog_path: cicd_catalog_path,
       is_project_empty: project.empty_repo?.to_s,
-      is_project_marked_for_deletion: project.self_deletion_scheduled?.to_s,
-      project_avatar: project.avatar_url,
-      project_name: project.name,
       project_id: project.id,
-      project_visibility_level: Gitlab::VisibilityLevel.string_level(project.visibility_level),
       project_full_path: project.full_path
     }.merge(
       dropdown_attributes,

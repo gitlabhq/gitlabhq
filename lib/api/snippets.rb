@@ -8,10 +8,6 @@ module API
     feature_category :source_code_management
     urgency :low
 
-    before do
-      set_current_organization
-    end
-
     helpers do
       def find_snippets(user: current_user, params: {})
         SnippetsFinder.new(user, organization_id: Current.organization.id, **params).execute
@@ -154,6 +150,8 @@ module API
         authenticate!
 
         authorize! :create_snippet
+
+        check_rate_limit!(:snippets_create, scope: current_user)
 
         attrs = process_create_params(declared_params(include_missing: false))
         service_response = ::Snippets::CreateService.new(

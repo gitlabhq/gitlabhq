@@ -42,11 +42,6 @@ To instrument an audit event, the following attributes should be provided:
 1. Create a [YAML type definition](#add-a-new-audit-event-type) for the new audit event.
 1. Call `Gitlab::Audit::Auditor.audit`, passing an action block.
 
-The following ways of instrumenting audit events are deprecated:
-
-- Create a new class in `ee/lib/ee/audit/` and extend `AuditEventService`
-- Call `AuditEventService` after a successful action
-
 With `Gitlab::Audit::Auditor` service, we can instrument audit events in two ways:
 
 - Using block for multiple events.

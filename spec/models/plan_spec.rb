@@ -41,6 +41,17 @@ RSpec.describe Plan, feature_category: :subscription_management do
         expect(described_class.by_name(nil)).to be_empty
       end
     end
+
+    describe '.by_plan_name_uid' do
+      let(:default_uid) { described_class::PLAN_NAME_UID_LIST[:default] }
+
+      it 'returns plans by their plan_name_uid' do
+        expect(described_class.by_plan_name_uid(default_uid)).to match_array([default_plan])
+        expect(described_class.by_plan_name_uid([default_uid, 999])).to match_array([default_plan])
+        expect(described_class.by_plan_name_uid([])).to be_empty
+        expect(described_class.by_plan_name_uid(nil)).to be_empty
+      end
+    end
   end
 
   describe '#default?' do

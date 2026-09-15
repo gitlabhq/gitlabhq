@@ -39,11 +39,26 @@ Each list item points to a specific section that holds more information.
 Items marked with an installation method, like `(Geo)` or `(Linux package)`,
 apply only to that method. All other items apply to all installation methods.
 
+### Upgrade to 19.4
+
+Before upgrading to GitLab 19.4, review the following:
+
+- [19.4.0] - [Geo SSH proxying enabled by default](#geo-ssh-proxying-enabled-by-default)
+- [19.4.0] - [Restores that use `SKIP_REPOSITORIES_PATHS` keep existing repositories](#restores-that-use-skip_repositories_paths-keep-existing-repositories)
+- [19.4.0] - [Untrusted group SAML identities are restored to trusted](#untrusted-group-saml-identities-are-restored-to-trusted)
+
+### Upgrade to 19.3
+
+Before upgrading to GitLab 19.3, review the following:
+
+- [19.3.0 - 19.3.1] - [New groups require SHA parameter for merge requests API calls](#new-groups-require-sha-parameter-for-merge-requests-api-calls)
+
 ### Upgrade to 19.2
 
 Before upgrading to GitLab 19.2, review the following:
 
 - [19.2.0] - [GitLab Duo Self-Hosted AI Gateway URLs cleared after upgrade](#gitlab-duo-self-hosted-ai-gateway-urls-cleared-after-upgrade) (Linux package)
+- [19.2.0 - 19.2.5] - [New groups require SHA parameter for merge requests API calls](#new-groups-require-sha-parameter-for-merge-requests-api-calls)
 
 ### Upgrade to 19.0
 
@@ -66,6 +81,73 @@ Before upgrading to GitLab 19.0, review the following:
 ## Upgrade notes
 
 Specific upgrade notes for GitLab 19.
+
+### Geo SSH proxying enabled by default
+
+{{< details >}}
+
+- Tier: Premium, Ultimate
+
+{{< /details >}}
+
+- Affects: Helm charts
+- Affected versions: 19.4.0
+
+In GitLab 19.4 and later, the following feature flags are enabled by default:
+
+- `geo_proxy_fetch_ssh_to_primary`
+- `geo_proxy_push_ssh_to_primary`
+
+Because of this change, Cloud Native GitLab deployments using the bundled NGINX Ingress must either:
+
+- upgrade to use the [Gateway API with Envoy Gateway](#nginx-ingress-replaced-by-gateway-api-with-envoy-gateway) before this rollout, or
+- disable both feature flags after the rollout.
+
+Otherwise, SSH fetches and pushes through Geo secondaries may hang or time out.
+
+See the [Geo troubleshooting documentation](../../administration/geo/replication/troubleshooting/ssh_proxying.md) for SSH proxying for more information.
+
+### Restores that use `SKIP_REPOSITORIES_PATHS` keep existing repositories
+
+- Affects: All installation methods
+- Affected versions: 19.4.0
+
+In GitLab 19.4 and later, a restore keeps the repositories that are already on the instance when
+`SKIP_REPOSITORIES_PATHS` excludes repositories from that restore. This applies both when you
+specify the option for the restore and when the backup was created with it, including backups
+created on earlier versions, because the restore also reads the excluded paths from the backup
+manifest (`backup_information.yml`).
+
+Previously, in both cases, and unless `REPOSITORIES_PATHS` was also specified, the restore first
+removed all repositories in the storages it restored to. The excluded repositories were removed with
+them, and because they were also left out of the restore itself, that backup could not bring them
+back.
+
+A full restore, where neither `REPOSITORIES_PATHS` nor `SKIP_REPOSITORIES_PATHS` applies, still
+removes repositories that are not part of the backup.
+
+If your restore process relies on the previous behavior to clear repositories, run a full restore
+instead, or remove those repositories before the restore.
+
+For more information, see
+[restore specific repositories](../../administration/backup_restore/restore_gitlab.md#restore-specific-repositories)
+and [issue 610910](https://gitlab.com/gitlab-org/gitlab/-/issues/610910).
+
+### Untrusted group SAML identities are restored to trusted
+
+- Affects: All installation methods
+- Affected versions: 19.4.0
+
+In GitLab 18.10, 18.11, 19.0, 19.1, 19.2, and 19.3, updating the `extern_uid` of a group SAML identity with the
+[SAML identities API](../../api/saml.md) marked that identity as untrusted, and the affected user
+could not sign in with SAML single sign-on until they linked their identity again.
+
+GitLab 19.4 reverts this behavior. A group Owner controls the group identity provider, so a group
+Owner can already assert any `NameID` through the identity provider. A post-deployment migration
+sets `trusted_extern_uid` back to `true` for every group SAML identity, so affected users can sign
+in with SAML single sign-on again.
+
+For more information, see [issue 608236](https://gitlab.com/gitlab-org/gitlab/-/issues/608236).
 
 ### GitLab Duo Self-Hosted AI Gateway URLs cleared after upgrade
 
@@ -90,6 +172,34 @@ If you have already upgraded to 19.2.0 and are affected, restore the correct
 AI Gateway endpoint URLs in **Admin area** > **GitLab Duo** > **Configuration** > **Service endpoints**
 and save the changes.
 For more information, see [issue 606458](https://gitlab.com/gitlab-org/gitlab/-/work_items/606458).
+
+### New groups require SHA parameter for merge requests API calls
+
+- Affects: All installation methods
+- Affected versions:
+
+  | Release | Affected patch releases | Fixed patch level |
+  | ------- | ----------------------- | ----------------- |
+  | 19.2    | 19.2.0 - 19.2.5         | 19.2.6            |
+  | 19.3    | 19.3.0 - 19.3.1         | 19.3.2            |
+
+GitLab 19.2 introduces the `require_sha_for_merge` setting at the group and instance level.
+When enabled, the [merge a merge request](../../api/merge_requests.md#merge-a-merge-request)
+API endpoint rejects calls that do not include a valid commit `sha` parameter.
+
+Groups created after upgrading to GitLab 19.2 and 19.3 have `require_sha_for_merge` enabled by
+default, unless the setting is locked by the instance or an ancestor group using `lock_require_sha_for_merge`. If the setting is locked, the new group inherits the
+locked value instead. Existing groups are not affected.
+
+After you update to 19.2 or 19.3, if your automation or API clients call the merge endpoint without a `sha` parameter, those
+clients will fail for all new groups unless you disable the requirement and lock the setting.
+
+To disable this
+requirement for all new groups, set `require_sha_for_merge` to `false` and enable
+`lock_require_sha_for_merge`
+through the [application settings API](../../api/settings.md#available-settings).
+
+This setting was changed to disabled by default in GitLab 19.2.6 and GitLab 19.3.2.
 
 ### Container registry metadata database enabled by default in prefer mode
 

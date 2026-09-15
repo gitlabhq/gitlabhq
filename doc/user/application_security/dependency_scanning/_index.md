@@ -22,8 +22,19 @@ workflow. Use the summary below to choose the method that fits your project.
 
 ### Dependency Scanning using SBOM
 
+{{< history >}}
+
+- Matching against malware advisories [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/249853) in GitLab 19.4 [with a flag](../../../administration/feature_flags/_index.md) named `sbom_scan_malware_findings`. Enabled by default.
+
+{{< /history >}}
+
+> [!flag]
+> The availability of malware advisory matching is controlled by a feature flag.
+> For more information, see the history.
+
 Scans the CycloneDX SBOM artifacts produced in your pipeline by the Dependency
-Scanning analyzer against the GitLab Advisory Database.
+Scanning analyzer against the [GitLab advisory database](../gitlab_advisory_database/_index.md) and
+[GitLab malware advisories](../gitlab_advisory_database/_index.md#gitlab-malware-advisories).
 This is the recommended method for new projects and the long-term direction for
 dependency scanning in GitLab.
 
@@ -31,9 +42,20 @@ For details, see [Dependency Scanning using SBOM](dependency_scanning_sbom/_inde
 
 ### Continuous Dependency Scanning
 
+{{< history >}}
+
+- Matching against malware advisories [introduced](https://gitlab.com/groups/gitlab-org/-/epics/21156) in GitLab 19.4 [with a flag](../../../administration/feature_flags/_index.md) named `cvs_malware_advisories`. Enabled by default.
+
+{{< /history >}}
+
+> [!flag]
+> The availability of malware advisory matching is controlled by a feature flag.
+> For more information, see the history.
+
 Continuously rescans the SBOM components from your default branch's latest
-successful pipeline whenever the GitLab Advisory Database is updated, so newly
-disclosed vulnerabilities surface without re-running a pipeline.
+successful pipeline whenever the [GitLab advisory database](../gitlab_advisory_database/_index.md) or
+[GitLab malware advisories](../gitlab_advisory_database/_index.md#gitlab-malware-advisories) are updated, so newly disclosed
+vulnerabilities surface without re-running a pipeline.
 
 For details, see [Continuous Dependency Scanning](continuous_dependency_scanning/_index.md).
 

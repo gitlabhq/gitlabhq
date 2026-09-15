@@ -1,0 +1,10 @@
+---
+name: archive_custom_field
+description: Grants the ability to archive custom fields
+boundaries:
+  - group
+available_for:
+  - granular_access_token
+permissions:
+  - archive_custom_field
+  - unarchive_custom_field

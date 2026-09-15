@@ -166,3 +166,72 @@ An example query using the helper looks like:
     }
   )
 ```
+
+## Vulnerability advanced search finders
+
+The vulnerability advanced search finders in
+`ee/lib/search/advanced_finders/security/vulnerability/` follow a different
+pattern from the generic global search framework.
+
+### Search level
+
+The generic `Search::Level` class (in `lib/search/level.rb`) recognizes three
+levels: `project`, `group`, and `global`.
+`Search::AdvancedFinders::Security::Vulnerability::BaseFinder` introduces a
+fourth level, `organization`, which is set when the `vulnerable` object is an
+`Organizations::Organization` instance.
+The `organization` level is not recognized by `Search::Level` and is not used
+anywhere in the generic global search framework.
+
+### Authorization and scoping
+
+The generic framework uses `Filters.by_search_level_and_membership`,
+`by_user_accessible_namespaces`, and `search_level_filter` to enforce
+visibility and membership rules.
+`VulnerabilityQueryBuilder` does not call any of these methods.
+The only method it uses from `Search::Elastic::Filters` is `by_traversal_ids`,
+which applies a prefix filter on the `traversal_ids` field and does not read
+`search_level`.
+
+Avoiding those methods is intentional: `Search::Elastic::Filters::ALLOWED_SEARCH_LEVELS`
+is `%i[global group project]`, and `fetch_search_level!` raises
+`ArgumentError, 'search_level invalid'` for any value outside that list.
+Wiring any `Filters` method that calls `fetch_search_level!` into
+`VulnerabilityQueryBuilder` would break at runtime for organization-level queries.
+
+Scoping is handled by the finder and `VulnerabilityFilters`:
+
+- For `project` and `group` levels, `traversal_ids` is set to the namespace
+  ancestry prefix of the vulnerable object.
+- For the `organization` level, `traversal_ids` is `nil` (no prefix filter).
+  Scoping is provided by `by_organization_id` in `VulnerabilityFilters`, which
+  is gated on the `backfill_organization_id_in_vulnerabilities` migration.
+  Until that migration finishes, the finder sets `project_id` to a sentinel
+  value (`[0]`) so the query returns no results rather than running unscoped.
+
+Note that `VulnerabilityFilters.by_archived_projects` does read `search_level`
+to skip the archived filter at the `:project` level, so scoping is not handled
+entirely by the finder alone.
+
+### Shard routing
+
+`es_search_options` passes `root_ancestor_ids` for Elasticsearch shard routing:
+
+- For `project` and `group` levels, this is the single root namespace ID of
+  the vulnerable object.
+- For the `organization` level, this is the list of top-level namespace IDs
+  belonging to the organization (capped at `ES_ROUTING_MAX_COUNT + 1`. Beyond
+  that limit, routing is dropped and all shards are queried).
+
+### Sibling finders
+
+The sibling finders (`CountBySeverityFinder`, `CountByAgeFinder`,
+`CountOverTimeFinder`, `IdentifierNamesFinder`, `RiskScoresFinder`, and
+`TopCwesFinder`) all inherit from `BaseFinder` and reuse `search_params` and
+`es_search_options` unchanged.
+`VulnerabilitySorts` and `VulnerabilityAggregations` do not reference
+`search_level` either, so the `organization` level has no effect on sorting or
+aggregation logic.
+
+`SearchFinder` also inherits from `BaseFinder` but is the primary finder rather
+than a sibling, so it is not listed above.

@@ -21,7 +21,8 @@ module Achievements
         achievement: achievement,
         user: recipient,
         awarded_by_user: current_user,
-        award_message: award_message)
+        award_message: award_message,
+        show_on_profile: Gitlab::CurrentSettings.auto_accept_awarded_achievements?)
       return error_awarding(user_achievement) unless user_achievement.persisted?
 
       if recipient.achievements_enabled

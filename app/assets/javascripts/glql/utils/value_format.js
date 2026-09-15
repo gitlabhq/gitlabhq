@@ -9,8 +9,13 @@ export const formatCount = (value) => formatNumber(value);
 
 // Compact notation for chart axes where horizontal space is tight: 2,500,000 → 2.5M.
 // Cells and tooltips keep the full-digit `formatCount` for precision.
-export const formatCountCompact = (value) =>
-  formatNumber(value, { notation: 'compact', maximumFractionDigits: 1 });
+export const formatCountCompact = (value, { lowercaseThousands = false } = {}) => {
+  const formatted = formatNumber(value, { notation: 'compact', maximumFractionDigits: 1 });
+
+  return lowercaseThousands && typeof formatted === 'string'
+    ? formatted.replace('K', 'k')
+    : formatted;
+};
 
 export const formatRate = (value) => {
   const percentage = value * 100;
@@ -48,11 +53,13 @@ const unitByFieldKey = {
   failureRate: 'rate',
   canceledRate: 'rate',
   skippedRate: 'rate',
+  completionRate: 'rate',
   acceptedCount: 'count',
   rejectedCount: 'count',
   shownCount: 'count',
   totalCount: 'count',
   usersCount: 'count',
+  finishedCount: 'count',
   suggestionSizeSum: 'count',
   throughputCount: 'count',
   featuresCount: 'count',
@@ -61,6 +68,10 @@ const unitByFieldKey = {
   duration: 'duration',
   queuedDuration: 'duration',
   durationQuantile: 'duration',
+  durationMean: 'duration',
+  durationMin: 'duration',
+  durationMax: 'duration',
+  durationSum: 'duration',
   timeToMergeQuantile: 'durationMs',
 };
 
@@ -69,6 +80,8 @@ export const unitFor = (fieldKey) => unitByFieldKey[fieldKey] ?? null;
 export const formatterFor = (fieldKey) => UNITS[unitFor(fieldKey)]?.cell ?? rawString;
 
 export const axisFormatterFor = (fieldKey) => UNITS[unitFor(fieldKey)]?.axis ?? rawString;
+
+export const valueFormatterFor = (metric) => formatterFor(baseFieldKeyOf(metric));
 
 const UNIT_LABELS = {
   count: () => __('Count'),

@@ -101,7 +101,7 @@ RSpec.describe 'ActionCable', feature_category: :redis do
       context 'when in production' do
         let(:rails_env) { 'production' }
 
-        it { is_expected.to eq(nil) }
+        it { is_expected.to be_nil }
       end
     end
 
@@ -111,20 +111,20 @@ RSpec.describe 'ActionCable', feature_category: :redis do
       context 'when in test' do
         let(:rails_env) { 'test' }
 
-        it { is_expected.to eq(false) }
+        it { is_expected.to be(false) }
       end
 
       context 'when in development' do
         let(:rails_env) { 'development' }
         let(:disable_request_forgery_protection) { true }
 
-        it { is_expected.to eq(true) }
+        it { is_expected.to be(true) }
       end
 
       context 'when in production' do
         let(:rails_env) { 'production' }
 
-        it { is_expected.to eq(nil) }
+        it { is_expected.to be_nil }
       end
     end
   end

@@ -8,7 +8,7 @@ module API
       feature_category :system_access
 
       helpers ::API::Helpers::PersonalAccessTokensHelpers
-      helpers ::API::ResourceAccessTokens.helpers
+      helpers ::API::Helpers::ResourceAccessTokensHelpers
 
       allow_access_with_scope :api
       allow_access_with_scope :self_rotate

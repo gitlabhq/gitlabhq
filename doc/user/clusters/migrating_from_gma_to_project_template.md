@@ -14,9 +14,9 @@ title: Migrate from GitLab Managed Apps to Cluster Management Projects (deprecat
 
 The GitLab Managed Apps were deprecated
 in favor of user-controlled Cluster Management projects.
-Managing your cluster applications through a project enables you a
+Managing your cluster applications through a project gives you a
 lot more flexibility to manage your cluster than through the late GitLab Managed Apps.
-To migrate to the cluster management project you need
+To migrate to the cluster management project, you must have
 [GitLab Runners](../../ci/runners/_index.md)
 available and be familiar with [Helm](https://helm.sh/).
 
@@ -43,7 +43,7 @@ See also [video walk-throughs](#video-walk-throughs) with examples.
      set up.
 
    Either way, [run a pipeline manually](../../ci/pipelines/_index.md#run-a-pipeline-manually) and read the logs of the
-   `detect-helm2-releases` job to know if you have any Helm v2 releases and which are they.
+   `detect-helm2-releases` job to know which Helm v2 releases you have, if any.
 
 1. If you have no Helm v2 releases, skip this step. Otherwise, follow the official Helm documentation on
    [how to migrate from Helm v2 to Helm v3](https://helm.sh/blog/migrate-from-helm-v2-to-helm-v3/),
@@ -52,7 +52,7 @@ See also [video walk-throughs](#video-walk-throughs) with examples.
 1. In this step you should already have only Helm v3 releases.
    Uncomment from the main [`./helmfile.yaml`](management_project_template.md#the-main-helmfileyml-file) the paths for the
    applications that you would like to manage with this project. Although you could uncomment all the ones you want to
-   managed at once, you should repeat the following steps separately for each app, so you do not get lost during
+   manage at once, you should repeat the following steps separately for each app, so you do not get lost during
    the process.
 1. Edit the associated `applications/{app}/helmfiles.yaml` to match the chart version deployed
    for your app. Take a GitLab Runner Helm v3 release as an example:
@@ -92,7 +92,7 @@ See also [video walk-throughs](#video-walk-throughs) with examples.
      `spec.clusterIP: Invalid value` when trying to run the [`./gl-helmfile`](management_project_template.md#the-gitlab-ciyml-file)
      command. To work around this, after overwriting the release values in `applications/ingress/values.yaml`,
      you might need to overwrite all the occurrences of `omitClusterIP: false`, setting it to `omitClusterIP: true`.
-     Another approach,could be to collect these IPs by running `kubectl get services -n gitlab-managed-apps`
+     Another approach could be to collect these IPs by running `kubectl get services -n gitlab-managed-apps`
      and then overwriting each `ClusterIP` that it complains about with the value you got from that command.
 
    - Vault: This application introduces a breaking change from the chart used in Helm v2 to the chart
@@ -131,8 +131,8 @@ you want to manage with the Cluster Management Project.
 
 1. Follow the [official docs](https://cert-manager.io/docs/devops-tips/backup/) on how to
    backup your cert-manager v0.10 data.
-1. Uninstall cert-manager by editing the setting all the occurrences of `installed: true` to `installed: false` in the
-   `applications/cert-manager/helmfile.yaml` file.
+1. Uninstall cert-manager by editing the `applications/cert-manager/helmfile.yaml` file and setting all the
+   occurrences of `installed: true` to `installed: false`.
 1. Search for any left-over resources by executing the following command `kubectl get Issuers,ClusterIssuers,Certificates,CertificateRequests,Orders,Challenges,Secrets,ConfigMaps -n gitlab-managed-apps | grep certmanager`.
 1. For each of the resources found in the previous step, delete them with `kubectl delete -n gitlab-managed-apps {ResourceType} {ResourceName}`.
    For example, if you found a resource of type `ConfigMap` named `cert-manager-controller`, delete it by executing:

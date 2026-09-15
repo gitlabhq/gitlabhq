@@ -5,6 +5,7 @@ module Mcp
     module WorkItems
       class GetWorkItemTypesService < Base::GraphqlService
         register_version '0.1.0', {
+          toolset: :work_items,
           description:
             'List the work item types available in a namespace (group or project), ' \
             'including system-defined types (Issue, Epic, Task, etc.) and custom types. ' \

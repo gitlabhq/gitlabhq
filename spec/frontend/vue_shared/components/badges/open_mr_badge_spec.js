@@ -77,6 +77,13 @@ describe('OpenMrBadge', () => {
 
       expect(findOpenMrBadge().exists()).toBe(false);
     });
+
+    it('does not render badge when the response has no project', async () => {
+      createComponent({}, jest.fn().mockResolvedValue({ data: { project: null } }));
+      await waitForPromises();
+
+      expect(findOpenMrBadge().exists()).toBe(false);
+    });
   });
 
   describe('computed properties', () => {

@@ -1,5 +1,5 @@
 ---
-stage: Tenant Scale
+stage: GitLab Dedicated
 group: Geo
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see <https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments>
 title: Troubleshooting Geo synchronization and verification errors
@@ -437,7 +437,7 @@ The following script:
   or running it using [Rails runner](../../../operations/rails_console.md#using-the-rails-runner)
   and `nohup`.
 
-Run this script **on the secondary Geo site**.
+Run this script on the secondary Geo site.
 
 ```ruby
 Geo::ProjectRepositoryRegistry.failed.find_each do |registry|
@@ -525,11 +525,16 @@ The same errors are also reflected in the UI under **Admin** > **Geo** > **Sites
 
 > [!warning]
 > Ensure you have a recent and working backup at hand before issuing any deletion commands.
+> Confirm the files are actually missing before you destroy any records.
+> Records that are [excluded from verification](#message-error-during-verificationerrorfile-is-not-checksummable)
+> fail with the same `File is not checksummable` error even though their files exist.
+> Spot-check a sample of the affected records, for example with `record.retrieve_uploader.exists?`
+> for uploads, or `record.file.exists?` for other blob types.
 
-To remove those errors, first identify which particular resources are affected. Then, run the appropriate `destroy` commands to ensure the deletion is propagated across all Geo sites and their databases. Based on the previous scenario, an **upload** is causing those errors which is used as an example below.
+To remove those errors, first identify which particular resources are affected. Then, run the appropriate `destroy` commands to ensure the deletion is propagated across all Geo sites and their databases. Based on the previous scenario, an upload is causing those errors which is used as an example below.
 
 1. Map the identified inconsistencies to their respective [Geo Model class](#geo-data-type-model-classes) name. The class name is needed in the following steps. In this scenario, for uploads it corresponds to `Upload`.
-1. Start a [Rails console](../../../operations/rails_console.md#starting-a-rails-console-session) on the **Geo primary site**.
+1. Start a [Rails console](../../../operations/rails_console.md#starting-a-rails-console-session) on the Geo primary site.
 1. Query all resources where verification failed due to missing files based on the *Geo Model class* of the previous step. Adjust or remove the `limit(20)` to display more results. Observe how the listed resources should match the failed ones shown in the UI:
 
    ```ruby
@@ -625,6 +630,21 @@ The error `"Error during verification","error":"File is not checksummable"` is c
   This behavior is expected when the primary site removes a record from the replication scope without deleting it.
   For example, GitLab moves old `MergeRequestDiff` records to the `without_files` state during storage optimization.
   The registry consistency worker removes these registry entries automatically over time.
+  Records stored in object storage are also excluded from verification when the
+  `geo_object_storage_verification` feature flag is disabled, even though their files exist.
+
+In GitLab 18.8 and earlier, the error message does not include the cause, so records that are
+excluded from verification are indistinguishable from records with missing files.
+Before you
+assume files are missing, [start a Rails console session](../../../operations/rails_console.md#starting-a-rails-console-session)
+on the primary site and check whether object storage verification is enabled:
+
+```ruby
+Feature.enabled?(:geo_object_storage_verification)
+```
+
+If this command returns `false`, records in object storage are excluded from verification and
+their files are likely intact. Do not delete these records.
 
 To remove the affected `MergeRequestDiff` registry entries immediately, run the following command
 on the secondary site from the [Rails console](../../../operations/rails_console.md):
@@ -882,7 +902,7 @@ Some project repositories consistently fail to sync with the error
 for some repositories, the specific error message in the Gitaly logs is different: `gitmodulesUrl: disallowed submodule url`.
 This failure happens when repositories contain invalid submodule URLs in their `.gitmodules` files.
 
-**Root Cause:** This issue is caused by **historical commits** in the Git repository that contain `.gitmodules` files with malformed URLs. The problem occurs during Git's consistency checks (`git fsck`) that run when Geo attempts to clone the repository from primary to secondary.
+**Root Cause:** This issue is caused by historical commits in the Git repository that contain `.gitmodules` files with malformed URLs. The problem occurs during Git's consistency checks (`git fsck`) that run when Geo attempts to clone the repository from primary to secondary.
 
 The problem is in the repository's commit history. Submodule URLs in `.gitmodules` files contain
 invalid formats, using `:` instead of `/` in the path:
@@ -894,7 +914,7 @@ invalid formats, using `:` instead of `/` in the path:
 
 1. **Git's strict validation**: Starting with GitLab 17.0 and newer Git versions, Git performs stricter `fsck` checks during clone operations
 1. **Historical data persistence**: Even if the current `.gitmodules` file is correct, Git stores all historical versions as "blobs" in the repository
-1. **Clone-time failure**: When Geo tries to clone the repository, Git's `fsck` examines **all objects** (including historical ones) and fails when it finds malformed URLs
+1. **Clone-time failure**: When Geo tries to clone the repository, Git's `fsck` examines all objects (including historical ones) and fails when it finds malformed URLs
 1. **Complete sync failure**: The entire clone operation fails, preventing the repository from reaching the secondary site
 
 **Important:** Editing the current `.gitmodules` file does not resolve this issue because the problematic data exists in the repository's Git history, not just in the current version of the file.
@@ -908,7 +928,7 @@ specific to GitLab Geo or Gitaly. For more information, see
 
 1. **Backup projects**
 
-   Before proceeding, ensure they back up the projects beforehand, using the [project export option](../../../../user/project/settings/import_export.md).
+   Before proceeding, ensure you back up the projects beforehand by using the [project export option](../../../../user/project/settings/import_export.md).
 
 1. **Identify problematic blob IDs**
 
@@ -1157,6 +1177,13 @@ is [enabled on the secondary site](../../../packages/container_registry.md#enabl
 ### Object type-specific troubleshooting for `Error during verification: File is not checksummable`
 
 Different Geo data types have unique characteristics and common failure patterns. This section provides targeted troubleshooting for specific object types.
+
+> [!warning]
+> Confirm the files are actually missing before you run any of the following `destroy` scripts.
+> Records that are [excluded from verification](#message-error-during-verificationerrorfile-is-not-checksummable)
+> fail with the same error even though their files exist, and the following scripts would destroy
+> those records too.
+> Spot-check a sample of the affected records, for example with `record.file.exists?` (or `record.retrieve_uploader.exists?` for uploads).
 
 #### Uploads
 
@@ -1809,7 +1836,7 @@ These errors can be observed by [immediately syncing all failed repositories](#s
 
 Removing the malformed objects causing consistency errors involves rewriting the repository history, which is usually not an option.
 
-To ignore these consistency checks, reconfigure Gitaly **on the secondary Geo sites** to ignore these `git fsck` issues.
+To ignore these consistency checks, reconfigure Gitaly on the secondary Geo sites to ignore these `git fsck` issues.
 The following configuration example:
 
 - [Uses the updated configuration structure](../../../../update/versions/gitlab_16_changes.md#gitaly-configuration-structure-change).
@@ -2115,7 +2142,7 @@ to start again from scratch, there are a few steps that can help you:
    It's possible to make Sidekiq stop gracefully, but making it stop getting new jobs and
    wait until the current jobs to finish processing.
 
-   You need to send a **SIGTSTP** kill signal for the first phase and them a **SIGTERM**
+   You need to send a **SIGTSTP** kill signal for the first phase and then a **SIGTERM**
    when all jobs have finished. Otherwise just use the `gitlab-ctl stop` commands.
 
    ```shell

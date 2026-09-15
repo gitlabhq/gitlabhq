@@ -35,7 +35,9 @@ class MergeRequestNoteableEntity < IssuableEntity
     presenter(merge_request).create_issue_to_resolve_discussions_path
   end
 
-  expose :new_blob_path do |merge_request|
+  # The only consumer is the legacy diffs empty state (diffs/components/no_changes.vue),
+  # and building this costs a Gitaly ref lookup on every page load.
+  expose :new_blob_path, if: ->(_merge_request, options) { !options[:skip_legacy_diffs_data] } do |merge_request|
     if presenter(merge_request).can_push_to_source_branch?
       project_new_blob_path(merge_request.source_project, merge_request.source_branch)
     end

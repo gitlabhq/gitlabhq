@@ -34,9 +34,9 @@ RSpec.describe Mcp::Tools::MergeRequests::GetMergeRequestService, feature_catego
   describe 'input schema' do
     it 'locks the full input schema for version 0.1.0' do
       expect(described_class.version_metadata('0.1.0')[:description]).to eq(
-        'Get a merge request and optionally its diffs, commits, notes, pipelines, or discussions. ' \
-          'By default only the base merge request metadata is returned; request associated data through the ' \
-          '`include` parameter so nothing extra is fetched unless asked for.'
+        'Get a merge request and optionally its diffs, commits, notes, pipelines, discussions, ' \
+          'approvals, or conflicts. By default only the base merge request metadata is returned; request ' \
+          'associated data through the `include` parameter so nothing extra is fetched unless asked for.'
       )
 
       expect(described_class.version_metadata('0.1.0')[:input_schema]).to eq({
@@ -58,24 +58,48 @@ RSpec.describe Mcp::Tools::MergeRequests::GetMergeRequestService, feature_catego
           },
           include: {
             type: 'array',
-            description: 'Associated facets to fetch inline, one per call. diffs returns change ' \
-              'stats only (totals and per-file additions and deletions), not patch text: use the ' \
-              'get_merge_request_diffs tool for patch text and get_merge_request_conflicts for conflicts. ' \
-              'notes supports pagination (notes_after/notes_first).',
+            description: 'Associated facets to fetch inline, one per call. diffs returns aggregate change ' \
+              'stats and a per-file breakdown by default; set detail=full_patch for raw per-file patch ' \
+              'text or detail=none for summary counts only. conflicts returns raw conflict file content ' \
+              '(Git conflict markers), only when the merge request cannot be merged and the caller can ' \
+              'push to the source branch. notes supports pagination (notes_after/notes_first). ' \
+              'approvals returns approved and approvedBy on every tier. approvalsRequired, approvalsLeft, and ' \
+              'the rule breakdown in approvalState need GitLab Premium or Ultimate; otherwise ' \
+              'these keys are present but zeroed or empty, not omitted.',
             items: {
               type: 'string',
-              enum: %w[diffs commits notes pipelines discussions]
+              enum: %w[diffs commits notes pipelines discussions approvals conflicts]
             },
             maxItems: 1
+          },
+          detail: {
+            type: 'string',
+            description: 'Level of diff detail, applies only when diffs is in include. ' \
+              'none: summary counts only; stats: per-file additions and deletions (default); ' \
+              'full_patch: per-file patch text (raw diff), plus the per-file stats.',
+            enum: %w[none stats full_patch]
+          },
+          diffs_after: {
+            type: 'string',
+            description: 'Cursor for forward pagination of files. ' \
+              'Use pageInfo.endCursor from a previous response. ' \
+              'Applies only when diffs is in include and detail is full_patch.'
+          },
+          diffs_first: {
+            type: 'integer',
+            description: 'Number of files to return after the cursor (forward pagination). Max 100. ' \
+              'Applies only when diffs is in include and detail is full_patch.',
+            minimum: 1,
+            maximum: 100
           },
           notes_after: {
             type: 'string',
             description: 'Cursor for forward pagination of notes. ' \
-              'Use endCursor from a previous response. Applies only when notes is in include.'
+              'Use pageInfo.endCursor from a previous response. Applies only when notes is in include.'
           },
           notes_first: {
             type: 'integer',
-            description: 'Number of notes to return after the cursor (max 100). ' \
+            description: 'Number of notes to return after the cursor (forward pagination). Max 100. ' \
               'Applies only when notes is in include.',
             minimum: 1,
             maximum: 100

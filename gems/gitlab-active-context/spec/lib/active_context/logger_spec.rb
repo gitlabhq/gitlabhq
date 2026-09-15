@@ -65,11 +65,12 @@ RSpec.describe ActiveContext::Logger do
       allow(exception).to receive(:backtrace).and_return(backtrace)
     end
 
-    it 'logs exception with structured payload' do
+    it 'defaults to :unexpected handling and logs as an error with the raw message' do
       expect(mock_logger).to receive(:error).with({
         'exception_class' => 'StandardError',
         'exception_message' => 'Something went wrong',
-        'exception_backtrace' => backtrace
+        'exception_backtrace' => backtrace,
+        'handling' => 'unexpected'
       })
 
       described_class.exception(exception)
@@ -80,6 +81,7 @@ RSpec.describe ActiveContext::Logger do
         'exception_class' => 'StandardError',
         'exception_message' => 'Something went wrong',
         'exception_backtrace' => backtrace,
+        'handling' => 'unexpected',
         'user_id' => 456,
         'context' => 'api_request'
       })
@@ -92,7 +94,8 @@ RSpec.describe ActiveContext::Logger do
         'class_name' => 'PaymentService',
         'exception_class' => 'StandardError',
         'exception_message' => 'Something went wrong',
-        'exception_backtrace' => backtrace
+        'exception_backtrace' => backtrace,
+        'handling' => 'unexpected'
       })
 
       described_class.exception(exception, class_name: 'PaymentService')
@@ -105,52 +108,56 @@ RSpec.describe ActiveContext::Logger do
       expect(mock_logger).to receive(:error).with({
         'exception_class' => custom_exception.class.name,
         'exception_message' => 'Custom error',
-        'exception_backtrace' => ['custom_line']
+        'exception_backtrace' => ['custom_line'],
+        'handling' => 'unexpected'
       })
 
       described_class.exception(custom_exception)
     end
-  end
 
-  describe '.retryable_exception' do
-    let(:exception) { StandardError.new('Temporary failure') }
-    let(:backtrace) { %w[retry_line1 retry_line2] }
+    context 'when handling: :retryable is given' do
+      it 'logs as a warning with the raw message, no prefix' do
+        expect(mock_logger).to receive(:warn).with({
+          'exception_class' => 'StandardError',
+          'exception_message' => 'Something went wrong',
+          'exception_backtrace' => backtrace,
+          'handling' => 'retryable'
+        })
 
-    before do
-      allow(exception).to receive(:backtrace).and_return(backtrace)
+        described_class.exception(exception, handling: :retryable)
+      end
     end
 
-    it 'logs retryable exception as warning with prefixed message' do
-      expect(mock_logger).to receive(:warn).with({
-        'exception_class' => 'StandardError',
-        'exception_message' => 'Retryable Error occurred: Temporary failure',
-        'exception_backtrace' => backtrace
-      })
+    context 'when handling: :infinite_retry is given' do
+      it 'logs as a warning' do
+        expect(mock_logger).to receive(:warn).with({
+          'exception_class' => 'StandardError',
+          'exception_message' => 'Something went wrong',
+          'exception_backtrace' => backtrace,
+          'handling' => 'infinite_retry'
+        })
 
-      described_class.retryable_exception(exception)
+        described_class.exception(exception, handling: :infinite_retry)
+      end
     end
 
-    it 'merges additional kwargs with retryable exception data' do
-      expect(mock_logger).to receive(:warn).with({
-        'exception_class' => 'StandardError',
-        'exception_message' => 'Retryable Error occurred: Temporary failure',
-        'exception_backtrace' => backtrace,
-        'retry_count' => 3,
-        'max_retries' => 5
-      })
+    context 'when handling: :skipped is given' do
+      it 'logs as a warning' do
+        expect(mock_logger).to receive(:warn).with({
+          'exception_class' => 'StandardError',
+          'exception_message' => 'Something went wrong',
+          'exception_backtrace' => backtrace,
+          'handling' => 'skipped'
+        })
 
-      described_class.retryable_exception(exception, retry_count: 3, max_retries: 5)
+        described_class.exception(exception, handling: :skipped)
+      end
     end
 
-    it 'logs retryable exception with class when explicitly provided' do
-      expect(mock_logger).to receive(:warn).with({
-        'class_name' => 'ApiService',
-        'exception_class' => 'StandardError',
-        'exception_message' => 'Retryable Error occurred: Temporary failure',
-        'exception_backtrace' => backtrace
-      })
-
-      described_class.retryable_exception(exception, class_name: 'ApiService')
+    context 'when handling is not one of the known categories' do
+      it 'raises instead of silently logging under the wrong severity' do
+        expect { described_class.exception(exception, handling: :bogus) }.to raise_error(KeyError)
+      end
     end
   end
 end

@@ -7,6 +7,8 @@ module Types
       graphql_name 'MlExperiment'
       description 'Machine learning experiment in model experiments'
 
+      authorize_granular_token permissions: :read_ml_experiment, boundary: :project, boundary_type: :project
+
       connection_type_class Types::LimitedCountableConnectionType
 
       present_using ::Ml::ExperimentPresenter

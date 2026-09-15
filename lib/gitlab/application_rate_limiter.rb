@@ -11,6 +11,14 @@ module Gitlab
 
     class << self
       include ::Gitlab::Utils::StrongMemoize
+
+      # The error message shown to users when a request is throttled. Defined as a
+      # method (rather than a constant) so the translation is evaluated at request
+      # time, when the user's locale is known, instead of once at class-load time.
+      def throttled_error_message
+        _('This endpoint has been requested too many times. Try again later.')
+      end
+
       # Increments the given key and returns true if the action should
       # be throttled.
       #
@@ -26,13 +34,13 @@ module Gitlab
       # @param interval [Integer] Optional interval value to override default
       #     one registered in the labkit rate-limit registry
       # @param users_allowlist [Array<String>] Optional list of usernames to
-      #     exclude from the limit. This param will only be functional if Scope
-      #     includes a current user.
+      #     exclude from the limit, merged with the users named by
+      #     GITLAB_THROTTLE_USER_ALLOWLIST. This param will only be functional
+      #     if Scope includes a current user.
       # @param peek [Boolean] Optional. When true the key will not be
       #     incremented but the current throttled state will be returned.
       # @param bypass_header [String, nil] Optional. Raw bypass header value,
       #     matched by a synthetic :skip rule (equal to '1') for visibility.
-      #     Not flag-gated here; only #throttled_request? checks the rollout flag.
       #
       # @return [Boolean] Whether or not a request should be throttled
       def throttled?(
@@ -40,7 +48,7 @@ module Gitlab
         bypass_header: nil)
         raise InvalidKeyError, key unless LabkitAdapter.handled?(key)
 
-        validate_scope!(key, scope)
+        scope = validate_scope!(key, scope)
 
         rule_context = {
           resource_id: resource&.id,
@@ -77,7 +85,7 @@ module Gitlab
       # are cost-mode/Sidekiq resource-usage checks, not HTTP requests, so there
       # is no bypass header to observe here.
       def resource_usage_throttled?(key, scope:, resource_key:, threshold:, interval:, peek: false)
-        validate_scope!(key, scope)
+        scope = validate_scope!(key, scope)
 
         _throttled?(
           key,
@@ -104,22 +112,17 @@ module Gitlab
       # @param interval [Integer] Optional interval value to override default
       #     one registered in the labkit rate-limit registry
       # @param users_allowlist [Array<String>] Optional list of usernames to
-      #     exclude from the limit. This param will only be functional if Scope
-      #     includes a current user.
+      #     exclude from the limit, merged with the users named by
+      #     GITLAB_THROTTLE_USER_ALLOWLIST. This param will only be functional
+      #     if Scope includes a current user.
       # @param peek [Boolean] Optional. When true the key will not be
       #     incremented but the current throttled state will be returned.
       #
       # @return [Boolean] Whether or not a request should be throttled
       #
-      # :rate_limiting_rule_bypass_header off keeps the legacy behavior
-      # (immediate false); on, bypass traffic reaches labkit's synthetic
-      # :skip rule instead, making bypass volume observable via calls_total.
       def throttled_request?(request, current_user, key, scope:, **options)
         header_name = ::Gitlab::Throttle.bypass_header
         bypass_header = request.get_header(header_name) if header_name.present?
-
-        return false if bypass_header == ::Gitlab::Throttle::BYPASS_HEADER_VALUE &&
-          !Feature.enabled?(:rate_limiting_rule_bypass_header, Feature.current_request, type: :ops)
 
         # Only add :bypass_header when there's an actual value to report, so
         # calls without one keep the exact pre-existing argument shape (callers
@@ -137,7 +140,7 @@ module Gitlab
       # @param scope [Array<ActiveRecord>] Array of ActiveRecord models to scope throttling to a specific request (e.g. per user per project)
       # @param threshold [Integer] Optional threshold value to override default one registered in the labkit rate-limit registry
       # @param interval [Integer] Optional interval value to override default one registered in the labkit rate-limit registry
-      # @param users_allowlist [Array<String>] Optional list of usernames to exclude from the limit. This param will only be functional if Scope includes a current user.
+      # @param users_allowlist [Array<String>] Optional list of usernames to exclude from the limit, merged with the users named by GITLAB_THROTTLE_USER_ALLOWLIST. This param will only be functional if Scope includes a current user.
       #
       # @return [Boolean] Whether or not a request is currently throttled
       #
@@ -228,14 +231,25 @@ module Gitlab
       end
 
       def scoped_user_in_allowlist?(scope, users_allowlist)
-        return unless users_allowlist.present?
+        allowlist = Array(users_allowlist) + gitlab_throttle_user_allowlist
+        return if allowlist.empty?
 
-        scoped_user = [scope].flatten.find { |s| s.is_a?(User) }
-        return unless scoped_user
+        # The positional branch is deleted once all call sites pass
+        # characteristic-keyed hashes.
+        scoped_user = scope.is_a?(Hash) ? scope[:user] : [scope].flatten.find { |s| s.is_a?(User) }
+        return unless scoped_user.is_a?(User)
 
         username = scoped_user.username.downcase
-        users_allowlist.any? { |u| u.downcase == username }
+        allowlist.any? { |u| u.downcase == username }
       end
+
+      def gitlab_throttle_user_allowlist
+        ids = ::Gitlab::RackAttack.user_allowlist.to_a
+        return [] if ids.empty?
+
+        ::User.id_in(ids).pluck_usernames
+      end
+      strong_memoize_attr :gitlab_throttle_user_allowlist
 
       def request_path(request)
         # req is an ActionDispatch::Request
@@ -263,14 +277,40 @@ module Gitlab
       strong_memoize_attr :initialize_filtered_params
 
       def validate_scope!(key, scope, logger = Gitlab::AuthLogger)
-        return if scope
+        unless scope
+          logger.warn(
+            message: 'Application_Rate_Limiter_Request_Without_Scope',
+            env: :"#{key}_request_limit"
+          )
 
-        logger.warn(
-          message: 'Application_Rate_Limiter_Request_Without_Scope',
-          env: :"#{key}_request_limit"
+          raise InvalidScopeError,
+            'scope cannot be nil. Pass a characteristic-keyed hash, e.g. { user: current_user } ' \
+              '(or { scope: :global } for global rate limits).'
+        end
+
+        return scope unless scope.is_a?(Hash)
+
+        scope = ::Labkit::RateLimit::Identifier.new(scope).attributes
+        validate_scope_keys!(key, scope)
+
+        scope
+      end
+
+      # A scope key that isn't a characteristic of the rule would silently
+      # fall to labkit's '_unknown_' sentinel, collapsing what the caller
+      # meant as a per-user (or per-project, ...) limit into one shared
+      # bucket. Raise in dev/test so typos are caught immediately; track and
+      # continue in production, where labkit ignoring the extra key is safe.
+      def validate_scope_keys!(key, scope)
+        return unless LabkitAdapter.handled?(key)
+
+        unknown_keys = scope.keys - LabkitAdapter::SupportedRateLimits.rule_for(key).characteristics
+        return if unknown_keys.empty?
+
+        ::Gitlab::ErrorTracking.track_and_raise_for_dev_exception(
+          InvalidScopeError.new("scope keys #{unknown_keys.inspect} are not characteristics of the #{key} rule"),
+          rate_limit_key: key
         )
-
-        raise InvalidScopeError, 'scope cannot be nil. Use :global for global rate limits.'
       end
     end
   end

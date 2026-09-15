@@ -1,0 +1,12 @@
+---
+name: update_on_demand_dast_scan
+description: Grants the ability to update DAST on-demand scans and their site and
+  scanner profiles
+boundaries:
+  - project
+available_for:
+  - granular_access_token
+permissions:
+  - update_on_demand_dast_scan
+  - update_dast_scanner_profile
+  - update_dast_site_profile

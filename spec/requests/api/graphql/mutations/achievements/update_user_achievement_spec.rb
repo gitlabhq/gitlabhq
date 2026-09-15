@@ -19,6 +19,12 @@ RSpec.describe Mutations::Achievements::UpdateUserAchievement, feature_category:
 
   subject(:mutate!) { post_graphql_mutation(mutation, current_user: current_user) }
 
+  it_behaves_like 'authorizing granular token permissions for GraphQL', :update_user_achievement do
+    let(:user) { owner }
+    let(:boundary_object) { :user }
+    let(:request) { post_graphql_mutation(mutation, token: { personal_access_token: pat }) }
+  end
+
   context 'when the user does not have permission' do
     let(:current_user) { create(:user) }
 

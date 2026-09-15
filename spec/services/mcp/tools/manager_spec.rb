@@ -3,8 +3,6 @@
 require 'spec_helper'
 
 RSpec.describe Mcp::Tools::Manager, feature_category: :ai_agents do
-  let(:api_double) { class_double(API::API) }
-
   before do
     custom_tools = {
       'get_mcp_server_version' => Mcp::Tools::GetServerVersionService
@@ -14,7 +12,8 @@ RSpec.describe Mcp::Tools::Manager, feature_category: :ai_agents do
 
     # Stub the GRAPHQL_TOOLS with GraphQL tools
     graphql_tools = {
-      'create_workitem_note' => Mcp::Tools::WorkItems::CreateWorkItemNoteService
+      'save_note' => Mcp::Tools::Notes::SaveNoteService,
+      'add_commit' => Mcp::Tools::Repositories::AddCommitService
     }
     stub_const("#{described_class}::GRAPHQL_TOOLS", graphql_tools)
     stub_const("::EE::#{described_class}::EE_GRAPHQL_TOOLS", {})
@@ -22,11 +21,11 @@ RSpec.describe Mcp::Tools::Manager, feature_category: :ai_agents do
 
   describe '#initialize' do
     let(:routes) { [] }
+    let(:fake_api_class) { Class.new(API::Base) }
 
     before do
-      stub_const('API::API', api_double)
-      allow(api_double).to receive(:reset_routes!)
-      allow(api_double).to receive(:routes).and_return(routes)
+      allow(API::Base).to receive(:descendants).and_return([fake_api_class])
+      allow(fake_api_class).to receive(:routes).and_return(routes)
     end
 
     context 'with no API routes' do
@@ -35,7 +34,8 @@ RSpec.describe Mcp::Tools::Manager, feature_category: :ai_agents do
 
         expect(manager.tools.keys).to contain_exactly(
           'get_mcp_server_version',
-          'create_workitem_note'
+          'save_note',
+          'add_commit'
         )
       end
     end
@@ -65,9 +65,10 @@ RSpec.describe Mcp::Tools::Manager, feature_category: :ai_agents do
           'create_user' => api_tool1,
           'delete_user' => api_tool2,
           'get_mcp_server_version' => be_a(Mcp::Tools::GetServerVersionService),
-          'create_workitem_note' => be_a(Mcp::Tools::WorkItems::CreateWorkItemNoteService)
+          'save_note' => be_a(Mcp::Tools::Notes::SaveNoteService),
+          'add_commit' => be_a(Mcp::Tools::Repositories::AddCommitService)
         )
-        expect(manager.tools.size).to eq(4)
+        expect(manager.tools.size).to eq(5)
       end
 
       it 'converts tool_name symbols to strings' do
@@ -202,9 +203,10 @@ RSpec.describe Mcp::Tools::Manager, feature_category: :ai_agents do
         expect(manager.tools).to include(
           'valid_tool' => api_tool1,
           'get_mcp_server_version' => be_a(Mcp::Tools::GetServerVersionService),
-          'create_workitem_note' => be_a(Mcp::Tools::WorkItems::CreateWorkItemNoteService)
+          'save_note' => be_a(Mcp::Tools::Notes::SaveNoteService),
+          'add_commit' => be_a(Mcp::Tools::Repositories::AddCommitService)
         )
-        expect(manager.tools.size).to eq(3)
+        expect(manager.tools.size).to eq(4)
         expect(Mcp::Tools::Base::ApiTool).to have_received(:new).once.with(name: 'valid_tool', route: route1)
         expect(Mcp::Tools::Base::ApiTool).not_to have_received(:new).with('route2', route2)
         expect(Mcp::Tools::Base::ApiTool).not_to have_received(:new).with('route3', route3)
@@ -344,27 +346,27 @@ RSpec.describe Mcp::Tools::Manager, feature_category: :ai_agents do
     context 'with graphql tool' do
       context 'when requesting specific version' do
         it 'returns the correct version' do
-          tool = manager.get_tool(name: 'create_workitem_note', version: '0.1.0')
+          tool = manager.get_tool(name: 'save_note', version: '0.1.0')
 
-          expect(tool).to be_a(Mcp::Tools::WorkItems::CreateWorkItemNoteService)
+          expect(tool).to be_a(Mcp::Tools::Notes::SaveNoteService)
           expect(tool.version).to eq('0.1.0')
         end
       end
 
       context 'when requesting latest version' do
         it 'returns the latest version' do
-          tool = manager.get_tool(name: 'create_workitem_note')
+          tool = manager.get_tool(name: 'save_note')
 
-          expect(tool).to be_a(Mcp::Tools::WorkItems::CreateWorkItemNoteService)
+          expect(tool).to be_a(Mcp::Tools::Notes::SaveNoteService)
           expect(tool.version).to eq('0.1.0')
         end
       end
 
       context 'when requesting non-existent version' do
         it 'raises VersionNotFoundError' do
-          expect { manager.get_tool(name: 'create_workitem_note', version: '99.99.99') }
+          expect { manager.get_tool(name: 'save_note', version: '99.99.99') }
             .to raise_error(described_class::VersionNotFoundError) do |error|
-            expect(error.tool_name).to eq('create_workitem_note')
+            expect(error.tool_name).to eq('save_note')
             expect(error.requested_version).to eq('99.99.99')
             expect(error.available_versions).to eq(['0.1.0'])
           end
@@ -372,25 +374,27 @@ RSpec.describe Mcp::Tools::Manager, feature_category: :ai_agents do
       end
     end
 
-    describe 'semantic search tool' do
-      let(:semantic_search_app) { instance_double(Grape::Endpoint) }
-      let(:semantic_search_route) { instance_double(Grape::Router::Route, app: semantic_search_app) }
-      let(:semantic_search_api_tool) { instance_double(Mcp::Tools::Base::ApiTool) }
+    context 'when name matches both a canonical tool and an alias' do
+      let(:search_app) { instance_double(Grape::Endpoint) }
+      let(:search_route) { instance_double(Grape::Router::Route, app: search_app) }
+      let(:search_api_tool) { instance_double(Mcp::Tools::Base::ApiTool) }
+      let(:fake_api_class) { Class.new(API::Base) }
 
       before do
-        allow(semantic_search_app).to receive(:route_setting).with(:mcp)
-          .and_return({ tool_name: :semantic_code_search })
-        allow(API::API).to receive(:routes).and_return([semantic_search_route])
+        allow(search_app).to receive(:route_setting).with(:mcp)
+          .and_return({ tool_name: :gitlab_search_in_project, aggregators: [Mcp::Tools::Search::SearchService] })
+        allow(API::Base).to receive(:descendants).and_return([fake_api_class])
+        allow(fake_api_class).to receive(:routes).and_return([search_route])
         allow(Mcp::Tools::Base::ApiTool).to receive(:new)
-          .with(name: 'semantic_code_search', route: semantic_search_route)
-          .and_return(semantic_search_api_tool)
-        allow(semantic_search_api_tool).to receive(:version).and_return('1.0.0')
+          .with(name: 'gitlab_search_in_project', route: search_route)
+          .and_return(search_api_tool)
+        allow(manager).to receive(:alias_map).and_return('search' => 'get_mcp_server_version')
       end
 
-      it 'resolves semantic_code_search to the discovered ApiTool' do
-        tool = manager.get_tool(name: 'semantic_code_search')
+      it 'returns the canonical tool without consulting the alias map' do
+        tool = manager.get_tool(name: 'search')
 
-        expect(tool).to eq(semantic_search_api_tool)
+        expect(tool).to be_a(Mcp::Tools::Search::SearchService)
       end
     end
 
@@ -398,11 +402,13 @@ RSpec.describe Mcp::Tools::Manager, feature_category: :ai_agents do
       let(:aliased_app) { instance_double(Grape::Endpoint) }
       let(:aliased_route) { instance_double(Grape::Router::Route, app: aliased_app) }
       let(:aliased_api_tool) { instance_double(Mcp::Tools::Base::ApiTool) }
+      let(:fake_api_class) { Class.new(API::Base) }
 
       before do
         allow(aliased_app).to receive(:route_setting).with(:mcp)
           .and_return({ tool_name: :new_api_tool, tool_aliases: [:old_api_tool] })
-        allow(API::API).to receive(:routes).and_return([aliased_route])
+        allow(API::Base).to receive(:descendants).and_return([fake_api_class])
+        allow(fake_api_class).to receive(:routes).and_return([aliased_route])
         allow(Mcp::Tools::Base::ApiTool).to receive(:new)
           .with(name: 'new_api_tool', route: aliased_route)
           .and_return(aliased_api_tool)
@@ -417,9 +423,37 @@ RSpec.describe Mcp::Tools::Manager, feature_category: :ai_agents do
     end
   end
 
+  describe '#tools_in_toolsets' do
+    let(:manager) { described_class.new }
+
+    it 'returns tool names for the requested toolsets' do
+      result = manager.tools_in_toolsets([:core])
+
+      expect(result).to include('save_note', 'search')
+    end
+
+    it 'always includes ALWAYS_ON tools' do
+      result = manager.tools_in_toolsets([:core])
+
+      expect(result).to include('get_mcp_server_version')
+    end
+
+    it 'excludes tools from toolsets not requested' do
+      result = manager.tools_in_toolsets([:core])
+
+      expect(result).not_to include('add_commit')
+    end
+
+    it 'returns an empty set (plus always-on) for unknown toolsets' do
+      result = manager.tools_in_toolsets([:nonexistent])
+
+      expect(result).to contain_exactly('get_mcp_server_version')
+    end
+  end
+
   describe 'MCP route settings' do
     it 'does not declare tool_aliases on a route that also sets aggregators' do
-      offenders = ::API::API.routes.filter_map do |route|
+      offenders = ::API::Base.descendants.flat_map(&:routes).filter_map do |route|
         settings = route.app.route_setting(:mcp)
         next if settings.blank?
         next unless settings[:aggregators].present? && settings[:tool_aliases].present?
@@ -430,6 +464,51 @@ RSpec.describe Mcp::Tools::Manager, feature_category: :ai_agents do
       expect(offenders).to be_empty,
         "tool_aliases on an aggregated route is silently ignored; declare the alias on the " \
           "aggregator class's self.tool_aliases instead. Offending routes: #{offenders}"
+    end
+
+    it 'does not declare toolset on aggregated routes' do
+      offenders = ::API::Base.descendants.flat_map(&:routes).filter_map do |route|
+        settings = route.app.route_setting(:mcp)
+        next if settings.blank?
+        next unless settings[:aggregators].present? && settings[:toolset].present?
+
+        settings[:tool_name]
+      end
+
+      expect(offenders).to be_empty,
+        "toolset on an aggregated route is dead metadata (the route is skipped by discover_api_tools); " \
+          "declare the toolset on the aggregator service class instead. Offending routes: #{offenders}"
+    end
+  end
+
+  describe 'alias uniqueness invariants' do
+    let(:manager) { described_class.new }
+
+    it 'has no alias that collides with a canonical tool name' do
+      collisions = manager.alias_map.keys & manager.tools.keys
+
+      expect(collisions).to be_empty,
+        "Alias(es) #{collisions.inspect} collide with canonical tool names"
+    end
+
+    it 'has no duplicate aliases pointing to different tools' do
+      seen = {}
+      duplicates = []
+
+      manager.tools.each do |tool_name, tool|
+        next unless tool.respond_to?(:tool_aliases)
+
+        tool.tool_aliases.each do |alias_name|
+          if seen.key?(alias_name)
+            duplicates << alias_name
+          else
+            seen[alias_name] = tool_name
+          end
+        end
+      end
+
+      expect(duplicates).to be_empty,
+        "Alias(es) #{duplicates.inspect} are defined by multiple tools"
     end
   end
 end

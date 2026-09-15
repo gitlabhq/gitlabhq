@@ -46,14 +46,14 @@ RSpec.describe Gitlab::MimirClient, feature_category: :observability do
     it 'returns true when status code is 200 and healthy response body' do
       stub_prometheus_request(health_url, body: "", headers: headers)
 
-      expect(client.healthy?).to eq(true)
+      expect(client.healthy?).to be(true)
     end
 
     it 'returns false when status code is not 200' do
       [401, 403, 503, 500].each do |code|
         stub_prometheus_request(health_url, status: code, body: "", headers: headers)
 
-        expect(client.healthy?).to eq(false)
+        expect(client.healthy?).to be(false)
       end
     end
 
@@ -70,14 +70,14 @@ RSpec.describe Gitlab::MimirClient, feature_category: :observability do
     it 'returns true when status code is 200' do
       stub_prometheus_request(ready_url, body: "", headers: headers)
 
-      expect(client.ready?).to eq(true)
+      expect(client.ready?).to be(true)
     end
 
     it 'returns false when status code is not 200' do
       [401, 403, 503, 500].each do |code|
         stub_prometheus_request(ready_url, status: code, body: "", headers: headers)
 
-        expect(client.ready?).to eq(false)
+        expect(client.ready?).to be(false)
       end
     end
 

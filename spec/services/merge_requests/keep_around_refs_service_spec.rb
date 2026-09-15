@@ -34,8 +34,7 @@ RSpec.describe MergeRequests::KeepAroundRefsService, feature_category: :code_rev
         expect(repo).to have_received(:keep_around).with(
           start_commit_sha,
           head_commit_sha,
-          source: 'MergeRequestDiff',
-          retry_failed_writes: true
+          source: 'MergeRequestDiff'
         ).once
       end
     end
@@ -63,10 +62,10 @@ RSpec.describe MergeRequests::KeepAroundRefsService, feature_category: :code_rev
         service.execute
 
         expect(repo1).to have_received(:keep_around).with(
-          start_commit_sha, head_commit_sha, source: 'MergeRequestDiff', retry_failed_writes: true
+          start_commit_sha, head_commit_sha, source: 'MergeRequestDiff'
         )
         expect(repo2).to have_received(:keep_around).with(
-          start_commit_sha, head_commit_sha, source: 'MergeRequestDiff', retry_failed_writes: true
+          start_commit_sha, head_commit_sha, source: 'MergeRequestDiff'
         )
       end
     end
@@ -114,42 +113,7 @@ RSpec.describe MergeRequests::KeepAroundRefsService, feature_category: :code_rev
       end
     end
 
-    context 'when the retry_failed_keep_around_ref_writes flag is disabled' do
-      subject(:service) do
-        described_class.new(
-          project_ids: [project.id],
-          shas: [start_commit_sha, head_commit_sha],
-          source: source
-        )
-      end
-
-      before do
-        stub_feature_flags(retry_failed_keep_around_ref_writes: false)
-      end
-
-      # The old path keeps its original return value, which the worker ignores.
-      it 'returns no ServiceResponse, so the worker does not retry' do
-        repo = instance_double(Repository)
-        allow(Project).to receive(:id_in).with([project.id]).and_return([project])
-        allow(project).to receive(:repository).and_return(repo)
-        allow(repo).to receive(:keep_around).and_return([head_commit_sha])
-
-        expect(service.execute).not_to be_a(ServiceResponse)
-      end
-
-      it 'does not log' do
-        repo = instance_double(Repository)
-        allow(Project).to receive(:id_in).with([project.id]).and_return([project])
-        allow(project).to receive(:repository).and_return(repo)
-        allow(repo).to receive(:keep_around).and_return([head_commit_sha])
-
-        expect(Gitlab::AppLogger).not_to receive(:warn)
-
-        service.execute
-      end
-    end
-
-    context 'when the flag is enabled for only one project of a fork merge request' do
+    context 'when a fork merge request covers two projects' do
       let_it_be(:source_project) { fork_project(project, nil, repository: true) }
 
       let(:repo1) { instance_double(Repository) }
@@ -164,33 +128,23 @@ RSpec.describe MergeRequests::KeepAroundRefsService, feature_category: :code_rev
       end
 
       before do
-        stub_feature_flags(retry_failed_keep_around_ref_writes: project)
-
         allow(Project).to receive(:id_in).with([project.id, source_project.id]).and_return([project, source_project])
         allow(project).to receive(:repository).and_return(repo1)
         allow(source_project).to receive(:repository).and_return(repo2)
         allow(repo1).to receive(:keep_around).and_return([start_commit_sha])
-        allow(repo2).to receive(:keep_around).and_return([head_commit_sha])
+        allow(repo2).to receive(:keep_around).and_return([])
       end
 
-      it 'reports the failure only for the enabled project' do
+      it 'reports only the SHAs the failing project could not write' do
         expect(service.execute.payload[:unwritten_shas]).to eq([start_commit_sha])
       end
 
-      it 'logs only the enabled project' do
+      it 'logs only the failing project' do
         expect(Gitlab::AppLogger).to receive(:warn).with(
           a_hash_including(project_id: project.id, shas: [start_commit_sha])
         ).once
 
         service.execute
-      end
-
-      # The reason the split is per project: skipping the disabled project's write here
-      # would silently leave a fork merge request's source commits unprotected.
-      it 'still writes the refs for the disabled project' do
-        service.execute
-
-        expect(repo2).to have_received(:keep_around).with(start_commit_sha, head_commit_sha, source: source)
       end
     end
 
@@ -271,19 +225,6 @@ RSpec.describe MergeRequests::KeepAroundRefsService, feature_category: :code_rev
         expect { service.execute }.to raise_error(Gitlab::Git::CommandError)
         expect(obtain_lease).to be_present
       end
-
-      context 'when the retry_failed_keep_around_ref_writes flag is disabled' do
-        before do
-          stub_feature_flags(retry_failed_keep_around_ref_writes: false)
-        end
-
-        it 'takes no lease and writes regardless of one being held' do
-          expect(obtain_lease).to be_present
-
-          expect(service.execute).not_to be_a(ServiceResponse)
-          expect(repo).to have_received(:keep_around)
-        end
-      end
     end
 
     context 'when keep-around refs are disabled' do
@@ -331,10 +272,10 @@ RSpec.describe MergeRequests::KeepAroundRefsService, feature_category: :code_rev
         )
       end
 
-      it 'does not query for projects' do
+      it 'succeeds without querying for projects' do
         expect(Project).not_to receive(:id_in)
 
-        service.execute
+        expect(service.execute).to be_success
       end
     end
 
@@ -357,8 +298,7 @@ RSpec.describe MergeRequests::KeepAroundRefsService, feature_category: :code_rev
 
         expect(repo).to have_received(:keep_around).with(
           start_commit_sha,
-          source: 'MergeRequest',
-          retry_failed_writes: true
+          source: 'MergeRequest'
         )
       end
     end

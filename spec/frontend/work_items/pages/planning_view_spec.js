@@ -3,6 +3,7 @@ import VueApollo from 'vue-apollo';
 import VueRouter from 'vue-router';
 import MockAdapter from 'axios-mock-adapter';
 import { GlAlert, GlIntersectionObserver } from '@gitlab/ui';
+import { createMockSubscription } from 'mock-apollo-client';
 import * as Sentry from '~/sentry/sentry_browser_wrapper';
 import axios from '~/lib/utils/axios_utils';
 
@@ -11,7 +12,6 @@ import { stubComponent } from 'helpers/stub_component';
 import createMockApollo from 'helpers/mock_apollo_helper';
 import waitForPromises from 'helpers/wait_for_promises';
 import { resolvers } from '~/graphql_shared/issuable_client';
-import workItemsGroupByVisibleGroupsQuery from '~/work_items/board/grouping/graphql/client/visible_groups.query.graphql';
 import { createAlert, VARIANT_INFO } from '~/alert';
 import { HTTP_STATUS_OK } from '~/lib/utils/http_status';
 import { confirmAction } from '~/lib/utils/confirm_via_gl_modal/confirm_via_gl_modal';
@@ -72,6 +72,7 @@ import {
   STATE_CLOSED,
   VIEW_MODE_LIST,
   VIEW_MODE_BOARD,
+  VIEW_MODE_TABLE,
 } from '~/work_items/constants';
 
 import namespaceWorkItemTypesQuery from '~/work_items/graphql/namespace_work_item_types.query.graphql';
@@ -85,11 +86,16 @@ import namespaceSavedViewQuery from '~/work_items/list/graphql/namespace_saved_v
 import subscribeToSavedViewMutation from '~/work_items/graphql/subscribe_to_saved_view.mutation.graphql';
 import getSubscribedSavedViewsQuery from '~/work_items/list/graphql/work_item_saved_views_namespace.query.graphql';
 import updateWorkItemListUserPreference from '~/work_items/graphql/update_work_item_list_user_preferences.mutation.graphql';
+import namespaceWorkItemChangesSubscription from '~/work_items/list/graphql/namespace_work_item_changes.subscription.graphql';
+import workItemIdFragment from '~/work_items/graphql/work_item_id.fragment.graphql';
+import getWorkItemsSlimQuery from 'ee_else_ce/work_items/list/graphql/get_work_items_slim.query.graphql';
+import getBoardWorkItemsQuery from 'ee_else_ce/work_items/board/graphql/get_board_work_items.query.graphql';
 
 import { saveSavedView, getFilterTokens } from 'ee_else_ce/work_items/list/utils';
 
 import PlanningView from '~/work_items/pages/planning_view.vue';
 import ListView from 'ee_else_ce/work_items/list/list_view.vue';
+import TableView from '~/work_items/table/table_view.vue';
 import FilteredSearchBar from '~/vue_shared/components/filtered_search_bar/filtered_search_bar_root.vue';
 import WorkItemsSavedViewsSelectors from '~/work_items/list/components/work_items_saved_views_selectors.vue';
 import WorkItemsNewSavedViewModal from '~/work_items/list/components/work_items_new_saved_view_modal.vue';
@@ -114,6 +120,7 @@ import {
   singleSavedView,
   workItemsQueryResponseCombined,
 } from '../mock_data';
+import { buildWorkItemNode, buildBoardWorkItemsResponse } from '../board/mock_data';
 
 import {
   mockSavedViewsData,
@@ -237,6 +244,25 @@ const subscribedSavedViewsHandler = jest.fn().mockResolvedValue({
 
 const findListView = () => wrapper.findComponent(ListView);
 const findBoardView = () => wrapper.findComponent({ name: 'BoardView' });
+const findTableView = () => wrapper.findComponent({ name: 'TableView' });
+const findStateCountRow = () => wrapper.findByTestId('state-count-row');
+const boardViewStub = {
+  name: 'BoardView',
+  props: [
+    'rootPageFullPath',
+    'queryVariables',
+    'collapsedGroups',
+    'groupOrder',
+    'visibleGroups',
+    'visibleGroupsLoaded',
+    'canManageColumns',
+    'activeItem',
+    'detailPanelEnabled',
+    'preselectedWorkItemType',
+    'canCreateWorkItem',
+  ],
+  template: '<div />',
+};
 const findDetailPanel = () => wrapper.findComponent(WorkItemDetailPanel);
 const findFilteredSearchBar = () => wrapper.findComponent(FilteredSearchBar);
 const findGlIntersectionObserver = () => wrapper.findComponent(GlIntersectionObserver);
@@ -262,6 +288,8 @@ const findCreateWorkItemModal = () => wrapper.findComponent(CreateWorkItemModal)
 const findEmptyStateWithoutAnyIssues = () => wrapper.findComponent(EmptyStateWithoutAnyIssues);
 const findEmptyStateWithAnyIssues = () => wrapper.findComponent(EmptyStateWithAnyIssues);
 const findNewResourceDropdown = () => wrapper.findComponent(NewResourceDropdown);
+
+const getCache = () => apolloProvider.defaultClient.cache;
 
 const RELEASES_ENDPOINT = '/test/project/-/releases.json';
 
@@ -339,7 +367,6 @@ const mountComponent = async ({
       releasesPath: RELEASES_ENDPOINT,
       hasBlockedIssuesFeature: false,
       hasIssuableHealthStatusFeature: false,
-      hasIssueDateFilterFeature: false,
       hasIssueWeightsFeature: false,
       hasCustomFieldsFeature: false,
       canCreateWorkItem: false,
@@ -593,6 +620,10 @@ describe('planning-view', () => {
         TOKEN_TYPE_SUBSCRIBED,
         TOKEN_TYPE_SEARCH_WITHIN,
         TOKEN_TYPE_GROUP,
+        TOKEN_TYPE_CLOSED,
+        TOKEN_TYPE_CREATED,
+        TOKEN_TYPE_DUE_DATE,
+        TOKEN_TYPE_UPDATED,
         TOKEN_TYPE_ORGANIZATION,
         TOKEN_TYPE_CONTACT,
       ]);
@@ -606,48 +637,6 @@ describe('planning-view', () => {
           .map((token) => token.type);
 
         expect(tokens).not.toContain(TOKEN_TYPE_TYPE);
-      });
-    });
-
-    describe('when hasIssueDateFilterFeature is available', () => {
-      it('renders date-related tokens too', async () => {
-        await mountComponent({ provide: { hasIssueDateFilterFeature: true } });
-        const tokens = findFilteredSearchBar()
-          .props('tokens')
-          .map((token) => token.type);
-
-        expect(tokens).toEqual([
-          TOKEN_TYPE_STATE,
-          TOKEN_TYPE_TYPE,
-          TOKEN_TYPE_LABEL,
-          TOKEN_TYPE_ASSIGNEE,
-          TOKEN_TYPE_AUTHOR,
-          TOKEN_TYPE_MILESTONE,
-          TOKEN_TYPE_PARENT,
-          TOKEN_TYPE_CONFIDENTIAL,
-          TOKEN_TYPE_MY_REACTION,
-          TOKEN_TYPE_SUBSCRIBED,
-          TOKEN_TYPE_SEARCH_WITHIN,
-          TOKEN_TYPE_GROUP,
-          TOKEN_TYPE_CLOSED,
-          TOKEN_TYPE_CREATED,
-          TOKEN_TYPE_DUE_DATE,
-          TOKEN_TYPE_UPDATED,
-          TOKEN_TYPE_ORGANIZATION,
-          TOKEN_TYPE_CONTACT,
-        ]);
-      });
-    });
-
-    describe('when issue_date_filter is enabled', () => {
-      it('includes created and closed date in tokens', async () => {
-        await mountComponent({ provide: { hasIssueDateFilterFeature: true } });
-
-        const tokenTypes = findFilteredSearchBar()
-          .props('tokens')
-          .map((token) => token.type);
-
-        expect(tokenTypes).toEqual(expect.arrayContaining([TOKEN_TYPE_CLOSED, TOKEN_TYPE_CREATED]));
       });
     });
 
@@ -689,6 +678,10 @@ describe('planning-view', () => {
           TOKEN_TYPE_SUBSCRIBED,
           TOKEN_TYPE_SEARCH_WITHIN,
           TOKEN_TYPE_GROUP,
+          TOKEN_TYPE_CLOSED,
+          TOKEN_TYPE_CREATED,
+          TOKEN_TYPE_DUE_DATE,
+          TOKEN_TYPE_UPDATED,
           TOKEN_TYPE_ORGANIZATION,
           TOKEN_TYPE_CONTACT,
           customToken.type,
@@ -1204,7 +1197,7 @@ describe('planning-view', () => {
           provide: { isIssueRepositioningDisabled: true },
         });
 
-        findFilteredSearchBar().vm.$emit('onSort', RELATIVE_POSITION_ASC);
+        findFilteredSearchBar().vm.$emit('on-sort', RELATIVE_POSITION_ASC);
         await nextTick();
 
         expect(createAlert).toHaveBeenCalledWith({
@@ -1274,7 +1267,7 @@ describe('planning-view', () => {
     it('updates queryVariables on list-view with filter params', async () => {
       await mountComponent();
 
-      findFilteredSearchBar().vm.$emit('onFilter', [
+      findFilteredSearchBar().vm.$emit('on-filter', [
         { type: FILTERED_SEARCH_TERM, value: { data: 'find issues', operator: 'undefined' } },
         { type: TOKEN_TYPE_AUTHOR, value: { data: 'homer', operator: OPERATOR_IS } },
         { type: TOKEN_TYPE_SEARCH_WITHIN, value: { data: 'TITLE', operator: OPERATOR_IS } },
@@ -1292,20 +1285,19 @@ describe('planning-view', () => {
       const filterTokens = [
         { type: TOKEN_TYPE_AUTHOR, value: { data: 'homer', operator: OPERATOR_IS } },
       ];
-      const getCache = () => wrapper.vm.$apollo.provider.defaultClient.cache;
 
       it('reloads the list by evicting the cached work items, even though the filter is unchanged', async () => {
         await mountComponent();
 
         // First submit changes the variables, so Apollo reloads the list reactively.
-        findFilteredSearchBar().vm.$emit('onFilter', filterTokens);
+        findFilteredSearchBar().vm.$emit('on-filter', filterTokens);
         await waitForPromises();
 
         const evictSpy = jest.spyOn(getCache(), 'evict');
 
         // Re-submitting identical tokens does not change the variables, so the list
         // must be reloaded explicitly.
-        findFilteredSearchBar().vm.$emit('onFilter', [...filterTokens]);
+        findFilteredSearchBar().vm.$emit('on-filter', [...filterTokens]);
         await waitForPromises();
 
         expect(evictSpy).toHaveBeenCalledWith(expect.objectContaining({ fieldName: 'workItems' }));
@@ -1314,11 +1306,11 @@ describe('planning-view', () => {
       it('refetches the work item counts', async () => {
         await mountComponent();
 
-        findFilteredSearchBar().vm.$emit('onFilter', filterTokens);
+        findFilteredSearchBar().vm.$emit('on-filter', filterTokens);
         await waitForPromises();
         const initialCallCount = defaultCountsOnlyHandler.mock.calls.length;
 
-        findFilteredSearchBar().vm.$emit('onFilter', [...filterTokens]);
+        findFilteredSearchBar().vm.$emit('on-filter', [...filterTokens]);
         await waitForPromises();
 
         expect(defaultCountsOnlyHandler.mock.calls.length).toBeGreaterThan(initialCallCount);
@@ -1329,7 +1321,7 @@ describe('planning-view', () => {
 
         const evictSpy = jest.spyOn(getCache(), 'evict');
 
-        findFilteredSearchBar().vm.$emit('onFilter', filterTokens);
+        findFilteredSearchBar().vm.$emit('on-filter', filterTokens);
         await waitForPromises();
 
         // A changed filter changes the variables, so Apollo reloads reactively and no
@@ -1343,7 +1335,7 @@ describe('planning-view', () => {
     it('sets iid in queryVariables when user enters a number with #', async () => {
       await mountComponent();
 
-      findFilteredSearchBar().vm.$emit('onFilter', [
+      findFilteredSearchBar().vm.$emit('on-filter', [
         { type: FILTERED_SEARCH_TERM, value: { data: '#23', operator: 'undefined' } },
       ]);
       await nextTick();
@@ -1356,7 +1348,7 @@ describe('planning-view', () => {
     it('sets search in queryVariables when user enters a number without #', async () => {
       await mountComponent();
 
-      findFilteredSearchBar().vm.$emit('onFilter', [
+      findFilteredSearchBar().vm.$emit('on-filter', [
         { type: FILTERED_SEARCH_TERM, value: { data: '23', operator: 'undefined' } },
       ]);
       await nextTick();
@@ -1406,7 +1398,7 @@ describe('planning-view', () => {
       it('passes excludeProjects: true and includeDescendants: false to list-view queryVariables', async () => {
         await mountComponent();
 
-        findFilteredSearchBar().vm.$emit('onFilter', [
+        findFilteredSearchBar().vm.$emit('on-filter', [
           {
             type: TOKEN_TYPE_GROUP,
             value: { data: 'path/to/another/group', operator: OPERATOR_IS },
@@ -1425,7 +1417,7 @@ describe('planning-view', () => {
       it('passes excludeProjects: false and includeDescendants: true to list-view queryVariables', async () => {
         await mountComponent();
 
-        findFilteredSearchBar().vm.$emit('onFilter', [
+        findFilteredSearchBar().vm.$emit('on-filter', [
           { type: TOKEN_TYPE_AUTHOR, value: { data: 'homer', operator: OPERATOR_IS } },
         ]);
         await nextTick();
@@ -1508,7 +1500,7 @@ describe('planning-view', () => {
           await mountComponent();
         }
 
-        findFilteredSearchBar().vm.$emit('onSort', sortKey);
+        findFilteredSearchBar().vm.$emit('on-sort', sortKey);
         await waitForPromises();
         await nextTick();
 
@@ -1522,7 +1514,7 @@ describe('planning-view', () => {
       it('calls mutation to save sort preference', async () => {
         await mountComponent();
 
-        findFilteredSearchBar().vm.$emit('onSort', UPDATED_DESC);
+        findFilteredSearchBar().vm.$emit('on-sort', UPDATED_DESC);
 
         expect(userPreferenceMutationHandler).toHaveBeenCalledWith({
           sort: UPDATED_DESC,
@@ -1537,7 +1529,7 @@ describe('planning-view', () => {
           .mockResolvedValue(workItemUserPreferenceUpdateMutationResponseWithErrors);
         await mountComponent({ userPreferenceMutationResponse: mutationMock });
 
-        findFilteredSearchBar().vm.$emit('onSort', UPDATED_DESC);
+        findFilteredSearchBar().vm.$emit('on-sort', UPDATED_DESC);
         await waitForPromises();
 
         expect(Sentry.captureException).toHaveBeenCalledWith(new Error('oh no!'));
@@ -1548,7 +1540,7 @@ describe('planning-view', () => {
       it('does not call mutation to save sort preference', async () => {
         await mountComponent({ isLoggedInValue: false });
 
-        findFilteredSearchBar().vm.$emit('onSort', CREATED_DESC);
+        findFilteredSearchBar().vm.$emit('on-sort', CREATED_DESC);
 
         expect(userPreferenceMutationHandler).not.toHaveBeenCalled();
       });
@@ -1598,6 +1590,73 @@ describe('planning-view', () => {
     await mountComponent({ provide: { metadataLoading: true } });
 
     expect(findListView().props('skipQuery')).toBe(true);
+  });
+
+  describe('when the Issue work item type has been renamed', () => {
+    // A renamed type keeps the id of the system type it was converted from, so the
+    // name lookup misses while the id still resolves.
+    const renamedIssueType = {
+      id: 'gid://gitlab/WorkItems::Type/1',
+      name: 'Bug',
+      isGroupWorkItemType: false,
+    };
+    const renamedProvide = {
+      getWorkItemTypeConfiguration: jest.fn().mockReturnValue(undefined),
+      workItemTypesConfiguration: [renamedIssueType],
+    };
+
+    beforeEach(async () => {
+      mockPreferencesQueryHandler.mockClear();
+      await mountComponent({ provide: renamedProvide });
+    });
+
+    it('fetches the user preferences with the renamed type id', () => {
+      expect(mockPreferencesQueryHandler).toHaveBeenCalledWith(
+        expect.objectContaining({ workItemTypeId: 'gid://gitlab/WorkItems::Type/1' }),
+      );
+    });
+
+    it('does not leave the list waiting on the sort key', () => {
+      expect(findListView().props('isSortKeyInitialized')).toBe(true);
+    });
+  });
+
+  describe('when the work item types resolve without an Issue type', () => {
+    const noIssueTypeProvide = {
+      getWorkItemTypeConfiguration: jest.fn().mockReturnValue(undefined),
+      workItemTypesConfiguration: [
+        { id: 'gid://gitlab/WorkItems::Type/5', name: 'Task', isGroupWorkItemType: false },
+      ],
+    };
+
+    beforeEach(async () => {
+      mockPreferencesQueryHandler.mockClear();
+      await mountComponent({ provide: noIssueTypeProvide });
+    });
+
+    it('skips the user preferences query', () => {
+      expect(mockPreferencesQueryHandler).not.toHaveBeenCalled();
+    });
+
+    it('still releases the list loading state', () => {
+      expect(findListView().props('isSortKeyInitialized')).toBe(true);
+    });
+
+    describe('and the board view is showing', () => {
+      beforeEach(async () => {
+        await mountComponent({
+          provide: { ...noIssueTypeProvide, glFeatures: { planningViewBoards: true } },
+          stubs: { BoardView: boardViewStub },
+        });
+
+        findDisplaySettingsDrawer().vm.$emit('toggle-view-mode', VIEW_MODE_BOARD);
+        await waitForPromises();
+      });
+
+      it('still releases the board loading state', () => {
+        expect(findBoardView().props('visibleGroupsLoaded')).toBe(true);
+      });
+    });
   });
 
   describe('label token fetchLabels', () => {
@@ -1781,7 +1840,7 @@ describe('planning-view', () => {
         it('renders "Save view" button when filters change', async () => {
           await mountDefault();
 
-          findFilteredSearchBar().vm.$emit('onFilter', [
+          findFilteredSearchBar().vm.$emit('on-filter', [
             { type: TOKEN_TYPE_AUTHOR, value: { data: 'homer', operator: OPERATOR_IS } },
             { type: TOKEN_TYPE_SEARCH_WITHIN, value: { data: 'TITLE', operator: OPERATOR_IS } },
           ]);
@@ -1793,7 +1852,7 @@ describe('planning-view', () => {
         it('opens the new saved view modal when clicking "Save view"', async () => {
           await mountDefault();
 
-          findFilteredSearchBar().vm.$emit('onFilter', [
+          findFilteredSearchBar().vm.$emit('on-filter', [
             { type: TOKEN_TYPE_AUTHOR, value: { data: 'homer', operator: OPERATOR_IS } },
             { type: TOKEN_TYPE_SEARCH_WITHIN, value: { data: 'TITLE', operator: OPERATOR_IS } },
           ]);
@@ -1810,7 +1869,7 @@ describe('planning-view', () => {
             provide: { canCreateSavedView: false },
           });
 
-          findFilteredSearchBar().vm.$emit('onFilter', [
+          findFilteredSearchBar().vm.$emit('on-filter', [
             { type: TOKEN_TYPE_AUTHOR, value: { data: 'homer', operator: OPERATOR_IS } },
             { type: TOKEN_TYPE_SEARCH_WITHIN, value: { data: 'TITLE', operator: OPERATOR_IS } },
           ]);
@@ -1826,7 +1885,7 @@ describe('planning-view', () => {
           });
 
           it('restores All Items filters when navigating All Items → Saved View → All Items', async () => {
-            findFilteredSearchBar().vm.$emit('onFilter', [
+            findFilteredSearchBar().vm.$emit('on-filter', [
               { type: TOKEN_TYPE_AUTHOR, value: { data: 'homer', operator: OPERATOR_IS } },
             ]);
             await nextTick();
@@ -1866,7 +1925,7 @@ describe('planning-view', () => {
         });
 
         it('does not render the "Save view" button when filters change', async () => {
-          findFilteredSearchBar().vm.$emit('onFilter', [
+          findFilteredSearchBar().vm.$emit('on-filter', [
             { type: TOKEN_TYPE_AUTHOR, value: { data: 'homer', operator: OPERATOR_IS } },
             { type: TOKEN_TYPE_SEARCH_WITHIN, value: { data: 'TITLE', operator: OPERATOR_IS } },
           ]);
@@ -1876,7 +1935,7 @@ describe('planning-view', () => {
         });
 
         it('does not render the "Save view" button when sort changes', async () => {
-          findFilteredSearchBar().vm.$emit('onSort', UPDATED_DESC);
+          findFilteredSearchBar().vm.$emit('on-sort', UPDATED_DESC);
           await nextTick();
           await waitForPromises();
 
@@ -1945,7 +2004,7 @@ describe('planning-view', () => {
         });
 
         it('renders "Save changes" and "Reset to defaults" buttons when filters change', async () => {
-          findFilteredSearchBar().vm.$emit('onFilter', [
+          findFilteredSearchBar().vm.$emit('on-filter', [
             { type: TOKEN_TYPE_AUTHOR, value: { data: 'homer', operator: OPERATOR_IS } },
             { type: TOKEN_TYPE_SEARCH_WITHIN, value: { data: 'TITLE', operator: OPERATOR_IS } },
           ]);
@@ -1956,7 +2015,7 @@ describe('planning-view', () => {
         });
 
         it('renders "Save changes" and "Reset to defaults" button when sort changes', async () => {
-          findFilteredSearchBar().vm.$emit('onSort', CREATED_DESC);
+          findFilteredSearchBar().vm.$emit('on-sort', CREATED_DESC);
           await nextTick();
 
           expect(findResetViewButton().exists()).toBe(true);
@@ -1975,7 +2034,7 @@ describe('planning-view', () => {
         });
 
         it('persists unsaved data when navigating back to the saved view', async () => {
-          findFilteredSearchBar().vm.$emit('onSort', CREATED_DESC);
+          findFilteredSearchBar().vm.$emit('on-sort', CREATED_DESC);
           await nextTick();
 
           await router.push({ name: 'savedView', params: { type: 'work_items', view_id: '4' } });
@@ -1987,7 +2046,7 @@ describe('planning-view', () => {
         });
 
         it('restores filters in-session when switching between saved views', async () => {
-          findFilteredSearchBar().vm.$emit('onFilter', [
+          findFilteredSearchBar().vm.$emit('on-filter', [
             { type: TOKEN_TYPE_AUTHOR, value: { data: 'homer', operator: OPERATOR_IS } },
           ]);
           await nextTick();
@@ -2018,7 +2077,7 @@ describe('planning-view', () => {
         });
 
         it('resets filters, hides action buttons and resets local storage draft', async () => {
-          findFilteredSearchBar().vm.$emit('onFilter', [
+          findFilteredSearchBar().vm.$emit('on-filter', [
             { type: TOKEN_TYPE_AUTHOR, value: { data: 'homer', operator: OPERATOR_IS } },
           ]);
           await waitForPromises();
@@ -2198,7 +2257,7 @@ describe('planning-view', () => {
               route: { name: 'savedView', params: { type: 'work_items', view_id: '3' } },
             });
 
-            findFilteredSearchBar().vm.$emit('onFilter', [
+            findFilteredSearchBar().vm.$emit('on-filter', [
               { type: TOKEN_TYPE_AUTHOR, value: { data: 'homer', operator: OPERATOR_IS } },
             ]);
             await nextTick();
@@ -2232,7 +2291,7 @@ describe('planning-view', () => {
               route: { name: 'savedView', params: { type: 'work_items', view_id: '3' } },
             });
 
-            findFilteredSearchBar().vm.$emit('onFilter', [
+            findFilteredSearchBar().vm.$emit('on-filter', [
               { type: TOKEN_TYPE_AUTHOR, value: { data: 'homer', operator: OPERATOR_IS } },
             ]);
 
@@ -2325,7 +2384,7 @@ describe('planning-view', () => {
           },
         });
 
-        findFilteredSearchBar().vm.$emit('onFilter', [
+        findFilteredSearchBar().vm.$emit('on-filter', [
           { type: TOKEN_TYPE_AUTHOR, value: { data: 'homer', operator: OPERATOR_IS } },
         ]);
         await nextTick();
@@ -2343,7 +2402,7 @@ describe('planning-view', () => {
           },
         });
 
-        findFilteredSearchBar().vm.$emit('onFilter', [
+        findFilteredSearchBar().vm.$emit('on-filter', [
           { type: TOKEN_TYPE_AUTHOR, value: { data: 'homer', operator: OPERATOR_IS } },
         ]);
 
@@ -2849,7 +2908,7 @@ describe('planning-view', () => {
 
       it('passes CREATED_ASC sort to list-view queryVariables', async () => {
         await mountComponent();
-        findFilteredSearchBar().vm.$emit('onSort', CREATED_ASC);
+        findFilteredSearchBar().vm.$emit('on-sort', CREATED_ASC);
         await waitForPromises();
 
         expect(findListView().props('queryVariables')).toMatchObject({ sort: CREATED_ASC });
@@ -2857,7 +2916,7 @@ describe('planning-view', () => {
 
       it('passes TITLE_ASC sort to list-view queryVariables', async () => {
         await mountComponent();
-        findFilteredSearchBar().vm.$emit('onSort', TITLE_ASC);
+        findFilteredSearchBar().vm.$emit('on-sort', TITLE_ASC);
         await waitForPromises();
 
         expect(findListView().props('queryVariables')).toMatchObject({ sort: TITLE_ASC });
@@ -2865,7 +2924,7 @@ describe('planning-view', () => {
 
       it('passes TITLE_DESC sort to list-view queryVariables', async () => {
         await mountComponent();
-        findFilteredSearchBar().vm.$emit('onSort', TITLE_DESC);
+        findFilteredSearchBar().vm.$emit('on-sort', TITLE_DESC);
         await waitForPromises();
 
         expect(findListView().props('queryVariables')).toMatchObject({ sort: TITLE_DESC });
@@ -2873,7 +2932,7 @@ describe('planning-view', () => {
 
       it('passes UPDATED_DESC sort to list-view queryVariables', async () => {
         await mountComponent();
-        findFilteredSearchBar().vm.$emit('onSort', UPDATED_DESC);
+        findFilteredSearchBar().vm.$emit('on-sort', UPDATED_DESC);
         await waitForPromises();
 
         expect(findListView().props('queryVariables')).toMatchObject({ sort: UPDATED_DESC });
@@ -2881,7 +2940,7 @@ describe('planning-view', () => {
 
       it('passes UPDATED_ASC sort to list-view queryVariables', async () => {
         await mountComponent();
-        findFilteredSearchBar().vm.$emit('onSort', UPDATED_ASC);
+        findFilteredSearchBar().vm.$emit('on-sort', UPDATED_ASC);
         await waitForPromises();
 
         expect(findListView().props('queryVariables')).toMatchObject({ sort: UPDATED_ASC });
@@ -2889,7 +2948,7 @@ describe('planning-view', () => {
 
       it('passes the correct sort key to queryVariables when sorting by updated date ascending', async () => {
         await mountComponent();
-        findFilteredSearchBar().vm.$emit('onSort', UPDATED_ASC);
+        findFilteredSearchBar().vm.$emit('on-sort', UPDATED_ASC);
         await waitForPromises();
 
         expect(findListView().props('queryVariables')).toMatchObject({ sort: UPDATED_ASC });
@@ -2943,10 +3002,10 @@ describe('planning-view', () => {
       expect(findFilteredSearchBar().props('sortOptions')).toEqual([]);
     });
 
-    it('still propagates sort changes when FilteredSearchBar emits onSort', async () => {
+    it('still propagates sort changes when FilteredSearchBar emits on-sort', async () => {
       expect(findFilteredSearchBar().props('initialSortBy')).toBe(CREATED_DESC);
 
-      findFilteredSearchBar().vm.$emit('onSort', UPDATED_DESC);
+      findFilteredSearchBar().vm.$emit('on-sort', UPDATED_DESC);
       await waitForPromises();
 
       expect(findFilteredSearchBar().props('initialSortBy')).toBe(UPDATED_DESC);
@@ -2987,21 +3046,6 @@ describe('planning-view', () => {
       name: 'WorkItemsSavedViewsSelectors',
       props: ['displaySettings'],
       template: '<div><slot name="header-area"></slot></div>',
-    };
-    const boardViewStub = {
-      name: 'BoardView',
-      props: [
-        'rootPageFullPath',
-        'queryVariables',
-        'collapsedGroups',
-        'groupOrder',
-        'canReorder',
-        'activeItem',
-        'detailPanelEnabled',
-        'preselectedWorkItemType',
-        'canCreateWorkItem',
-      ],
-      template: '<div />',
     };
 
     // get_user_preferences response carrying namespace-level display settings.
@@ -3103,6 +3147,38 @@ describe('planning-view', () => {
         expect(findBoardView().props('preselectedWorkItemType')).toBe('Issue');
       });
 
+      describe('when the board asks for the group by settings', () => {
+        beforeEach(async () => {
+          findDisplaySettingsDrawer().vm.$emit('toggle-view-mode', VIEW_MODE_BOARD);
+          await waitForPromises();
+
+          findBoardView().vm.$emit('open-group-by-settings');
+          await nextTick();
+        });
+
+        it('opens the drawer on the group by page', () => {
+          expect(findDisplaySettingsDrawer().props('open')).toBe(true);
+          expect(findDisplaySettingsDrawer().props('page')).toBe('groupBy');
+        });
+
+        it('goes back to the root page the next time the Display button is used', async () => {
+          findDisplaySettingsButton().vm.$emit('click');
+          await nextTick();
+
+          expect(findDisplaySettingsDrawer().props('page')).toBe('root');
+        });
+
+        it('re-opens the group by page after the drawer navigates itself back to root', async () => {
+          findDisplaySettingsDrawer().vm.$emit('page-change', 'root');
+          await nextTick();
+
+          findBoardView().vm.$emit('open-group-by-settings');
+          await nextTick();
+
+          expect(findDisplaySettingsDrawer().props('page')).toBe('groupBy');
+        });
+      });
+
       describe('when board card is selected', () => {
         it('opens the detail panel and marks the card active', async () => {
           const payload = { id: 'gid://gitlab/WorkItem/1', iid: '1' };
@@ -3192,7 +3268,9 @@ describe('planning-view', () => {
         findDisplaySettingsDrawer().vm.$emit('sort', RELATIVE_POSITION_ASC);
         await waitForPromises();
 
-        expect(userPreferenceMutationHandler).not.toHaveBeenCalled();
+        expect(userPreferenceMutationHandler).not.toHaveBeenCalledWith(
+          expect.objectContaining({ sort: RELATIVE_POSITION_ASC }),
+        );
 
         // The list sort is preserved so it is restored on exit.
         findDisplaySettingsDrawer().vm.$emit('toggle-view-mode', VIEW_MODE_LIST);
@@ -3210,6 +3288,38 @@ describe('planning-view', () => {
         expect(findListView().exists()).toBe(true);
         expect(findBoardView().exists()).toBe(false);
         expect(findDisplaySettingsDrawer().props('viewMode')).toBe('list');
+      });
+
+      describe('tracking', () => {
+        const { bindInternalEventDocument } = useMockInternalEventsTracking();
+
+        it('tracks switching to board view', async () => {
+          const { trackEventSpy } = bindInternalEventDocument(wrapper.element);
+
+          findDisplaySettingsDrawer().vm.$emit('toggle-view-mode', VIEW_MODE_BOARD);
+          await waitForPromises();
+
+          expect(trackEventSpy).toHaveBeenCalledWith(
+            'switch_view_mode_on_work_item_planning_view',
+            { label: 'board' },
+            undefined,
+          );
+        });
+
+        it('tracks switching back to list view', async () => {
+          findDisplaySettingsDrawer().vm.$emit('toggle-view-mode', VIEW_MODE_BOARD);
+          await waitForPromises();
+          const { trackEventSpy } = bindInternalEventDocument(wrapper.element);
+
+          findDisplaySettingsDrawer().vm.$emit('toggle-view-mode', VIEW_MODE_LIST);
+          await waitForPromises();
+
+          expect(trackEventSpy).toHaveBeenCalledWith(
+            'switch_view_mode_on_work_item_planning_view',
+            { label: 'list' },
+            undefined,
+          );
+        });
       });
 
       it('persists view mode for All Items', async () => {
@@ -3233,6 +3343,50 @@ describe('planning-view', () => {
         expect(findListView().exists()).toBe(false);
       });
 
+      it('persists the view mode to the namespace preferences', async () => {
+        const mutationHandler = userPrefUpdateHandlerWith({ viewMode: VIEW_MODE_BOARD });
+        await mountComponent({
+          provide: { glFeatures: { planningViewBoards: true } },
+          stubs: {
+            WorkItemsSavedViewsSelectors: savedViewsSelectorsStub,
+            BoardView: boardViewStub,
+          },
+          userPreferenceMutationResponse: mutationHandler,
+        });
+
+        findDisplaySettingsDrawer().vm.$emit('toggle-view-mode', VIEW_MODE_BOARD);
+        await waitForPromises();
+
+        expect(mutationHandler).toHaveBeenCalledWith({
+          namespace: 'full/path',
+          displaySettings: { viewMode: VIEW_MODE_BOARD },
+        });
+      });
+
+      it('restores the persisted board view mode with no session state, as after a reload', async () => {
+        resetPlanningViewState();
+        await mountComponent({
+          provide: { glFeatures: { planningViewBoards: true } },
+          stubs: {
+            WorkItemsSavedViewsSelectors: savedViewsSelectorsStub,
+            BoardView: boardViewStub,
+          },
+          mockPreferencesHandler: preferencesHandlerWith({ viewMode: VIEW_MODE_BOARD }),
+        });
+
+        expect(findBoardView().exists()).toBe(true);
+        expect(findDisplaySettingsDrawer().props('viewMode')).toBe(VIEW_MODE_BOARD);
+      });
+
+      it('falls back to list when the persisted view mode is board but the flag is off', async () => {
+        resetPlanningViewState();
+        await mountComponent({
+          mockPreferencesHandler: preferencesHandlerWith({ viewMode: VIEW_MODE_BOARD }),
+        });
+
+        expect(findListView().exists()).toBe(true);
+      });
+
       describe('when creating a new saved view in board mode', () => {
         beforeEach(async () => {
           findDisplaySettingsDrawer().vm.$emit('toggle-view-mode', VIEW_MODE_BOARD);
@@ -3240,7 +3394,7 @@ describe('planning-view', () => {
         });
 
         it('saves the current view mode', async () => {
-          findFilteredSearchBar().vm.$emit('onFilter', [
+          findFilteredSearchBar().vm.$emit('on-filter', [
             { type: TOKEN_TYPE_AUTHOR, value: { data: 'homer', operator: OPERATOR_IS } },
           ]);
           await nextTick();
@@ -3266,6 +3420,89 @@ describe('planning-view', () => {
         it('renders the error in a GlAlert', () => {
           expect(wrapper.findComponent(GlAlert).text()).toBe(message);
         });
+      });
+    });
+
+    describe('when planningViewTable feature flag is enabled', () => {
+      const tableProvideAndStubs = {
+        provide: { glFeatures: { planningViewTable: true } },
+        stubs: {
+          WorkItemsSavedViewsSelectors: savedViewsSelectorsStub,
+          TableView: stubComponent(TableView),
+        },
+      };
+
+      describe('when the table view mode is selected', () => {
+        let mutationHandler;
+
+        beforeEach(async () => {
+          mutationHandler = userPrefUpdateHandlerWith({ viewMode: VIEW_MODE_TABLE });
+          await mountComponent({
+            ...tableProvideAndStubs,
+            userPreferenceMutationResponse: mutationHandler,
+          });
+
+          findDisplaySettingsDrawer().vm.$emit('toggle-view-mode', VIEW_MODE_TABLE);
+          await waitForPromises();
+        });
+
+        it('swaps the list view for the table view', () => {
+          expect(findListView().exists()).toBe(false);
+          expect(findTableView().exists()).toBe(true);
+          expect(findDisplaySettingsDrawer().props('viewMode')).toBe(VIEW_MODE_TABLE);
+        });
+
+        it('passes the same data to the table view as to the list view', () => {
+          expect(findTableView().props()).toMatchObject({
+            rootPageFullPath: 'full/path',
+            queryVariables: expect.objectContaining({ fullPath: 'full/path' }),
+            hasWorkItems: true,
+          });
+        });
+
+        it('persists the table view mode to the namespace preferences', () => {
+          expect(mutationHandler).toHaveBeenCalledWith({
+            namespace: 'full/path',
+            displaySettings: { viewMode: VIEW_MODE_TABLE },
+          });
+        });
+
+        it('does not render the item count row border, which the table would double up on', () => {
+          expect(findStateCountRow().classes()).not.toContain('gl-border-b');
+        });
+      });
+
+      describe('when the table view mode is persisted and there is no session state, as after a reload', () => {
+        beforeEach(async () => {
+          resetPlanningViewState();
+          await mountComponent({
+            ...tableProvideAndStubs,
+            mockPreferencesHandler: preferencesHandlerWith({ viewMode: VIEW_MODE_TABLE }),
+          });
+        });
+
+        it('restores the table view mode', () => {
+          expect(findTableView().exists()).toBe(true);
+          expect(findDisplaySettingsDrawer().props('viewMode')).toBe(VIEW_MODE_TABLE);
+        });
+      });
+    });
+
+    describe('when the persisted view mode is table but planningViewTable feature flag is disabled', () => {
+      beforeEach(async () => {
+        resetPlanningViewState();
+        await mountComponent({
+          mockPreferencesHandler: preferencesHandlerWith({ viewMode: VIEW_MODE_TABLE }),
+        });
+      });
+
+      it('falls back to the list view', () => {
+        expect(findListView().exists()).toBe(true);
+        expect(findTableView().exists()).toBe(false);
+      });
+
+      it('keeps the item count row border', () => {
+        expect(findStateCountRow().classes()).toContain('gl-border-b');
       });
     });
 
@@ -3404,11 +3641,6 @@ describe('planning-view', () => {
     describe('column collapse', () => {
       const collapsedId = 'status:gid://gitlab/WorkItems::Statuses::Custom::Status/2';
 
-      const readVisibleGroups = () =>
-        apolloProvider.clients.defaultClient.readQuery({
-          query: workItemsGroupByVisibleGroupsQuery,
-        });
-
       const mountAllItemsBoard = async (options = {}) => {
         await mountComponent({
           provide: {
@@ -3436,18 +3668,15 @@ describe('planning-view', () => {
           expect(findBoardView().props('collapsedGroups')).toEqual([collapsedId]);
         });
 
-        describe('when visible groups are persisted', () => {
+        describe('when a visible groups preference exists', () => {
           beforeEach(async () => {
             await mountAllItemsBoard({
               mockPreferencesHandler: preferencesHandlerWith({ visibleGroups: [collapsedId] }),
             });
           });
 
-          it('hydrates the local visible-groups cache with them', () => {
-            expect(readVisibleGroups()).toEqual({
-              workItemsGroupByVisibleGroups: [collapsedId],
-              workItemsGroupByVisibleGroupsHydrated: true,
-            });
+          it('passes the persisted selection to the board view', () => {
+            expect(findBoardView().props('visibleGroups')).toEqual([collapsedId]);
           });
         });
 
@@ -3458,16 +3687,13 @@ describe('planning-view', () => {
             });
           });
 
-          it('hydrates the local visible-groups cache with null', () => {
-            expect(readVisibleGroups()).toEqual({
-              workItemsGroupByVisibleGroups: null,
-              workItemsGroupByVisibleGroupsHydrated: true,
-            });
+          it('passes null to the board view', () => {
+            expect(findBoardView().props('visibleGroups')).toBeNull();
           });
         });
 
-        describe('hydration timing', () => {
-          it('does not hydrate the local visible-groups cache until displaySettings resolves', async () => {
+        describe('before the preferences resolve', () => {
+          it('does not tell the board the selection is known until displaySettings resolves', async () => {
             let resolvePreferences;
             const deferredHandler = jest.fn(
               () =>
@@ -3476,30 +3702,45 @@ describe('planning-view', () => {
                 }),
             );
 
-            await mountComponent({ mockPreferencesHandler: deferredHandler, skipLastWait: true });
+            await mountComponent({
+              provide: {
+                glFeatures: { planningViewBoards: true, workItemListDisplaySettingsDrawer: true },
+              },
+              stubs: {
+                WorkItemsSavedViewsSelectors: savedViewsSelectorsStub,
+                BoardView: boardViewStub,
+              },
+              mockPreferencesHandler: deferredHandler,
+              skipLastWait: true,
+            });
+            findDisplaySettingsDrawer().vm.$emit('toggle-view-mode', VIEW_MODE_BOARD);
+            await waitForPromises();
 
             // The preferences query is still in flight, so the selection isn't known yet.
-            // Nothing has written to the local cache — an immediate write here (the bug
-            // this guards against) would make this a real, hydrated value instead of null.
-            expect(readVisibleGroups()).toBeNull();
+            // board_view skips its first fetch on this flag — flipping it early (the bug
+            // this guards against) would fetch everything unscoped.
+            expect(findBoardView().props()).toMatchObject({
+              visibleGroups: null,
+              visibleGroupsLoaded: false,
+            });
 
             resolvePreferences(await preferencesHandlerWith({ visibleGroups: [collapsedId] })());
             await waitForPromises();
 
-            expect(readVisibleGroups()).toEqual({
-              workItemsGroupByVisibleGroups: [collapsedId],
-              workItemsGroupByVisibleGroupsHydrated: true,
+            expect(findBoardView().props()).toMatchObject({
+              visibleGroups: [collapsedId],
+              visibleGroupsLoaded: true,
             });
           });
 
-          it('hydrates even when displaySettings fails, so the board is not skipped forever', async () => {
-            await mountComponent({
+          it('tells the board the selection is known even when displaySettings fails, so the board is not skipped forever', async () => {
+            await mountAllItemsBoard({
               mockPreferencesHandler: jest.fn().mockRejectedValue(new Error('boom')),
             });
 
-            expect(readVisibleGroups()).toEqual({
-              workItemsGroupByVisibleGroups: null,
-              workItemsGroupByVisibleGroupsHydrated: true,
+            expect(findBoardView().props()).toMatchObject({
+              visibleGroups: null,
+              visibleGroupsLoaded: true,
             });
           });
         });
@@ -3507,7 +3748,7 @@ describe('planning-view', () => {
         it('persists a newly collapsed column, merged with existing display settings', async () => {
           const mutationHandler = userPrefUpdateHandlerWith({
             hiddenMetadataKeys: ['labels'],
-            collapsedGroups: [collapsedId],
+            viewMode: VIEW_MODE_BOARD,
           });
           await mountAllItemsBoard({
             mockPreferencesHandler: preferencesHandlerWith({ hiddenMetadataKeys: ['labels'] }),
@@ -3521,13 +3762,17 @@ describe('planning-view', () => {
             namespace: 'full/path',
             displaySettings: {
               hiddenMetadataKeys: ['labels'],
+              viewMode: VIEW_MODE_BOARD,
               collapsedGroups: [collapsedId],
             },
           });
         });
 
         it('removes a column from collapsed columns when toggled again', async () => {
-          const mutationHandler = userPrefUpdateHandlerWith({ collapsedGroups: [] });
+          const mutationHandler = userPrefUpdateHandlerWith({
+            collapsedGroups: [collapsedId],
+            viewMode: VIEW_MODE_BOARD,
+          });
           await mountAllItemsBoard({
             mockPreferencesHandler: preferencesHandlerWith({ collapsedGroups: [collapsedId] }),
             userPreferenceMutationResponse: mutationHandler,
@@ -3538,7 +3783,7 @@ describe('planning-view', () => {
 
           expect(mutationHandler).toHaveBeenCalledWith({
             namespace: 'full/path',
-            displaySettings: { collapsedGroups: [] },
+            displaySettings: { collapsedGroups: [], viewMode: VIEW_MODE_BOARD },
           });
         });
 
@@ -3680,13 +3925,13 @@ describe('planning-view', () => {
         it('lets signed-in users reorder', async () => {
           await mountAllItemsBoard();
 
-          expect(findBoardView().props('canReorder')).toBe(true);
+          expect(findBoardView().props('canManageColumns')).toBe(true);
         });
 
         it('does not offer reordering to signed-out users', async () => {
           await mountAllItemsBoard({ isLoggedInValue: false });
 
-          expect(findBoardView().props('canReorder')).toBe(false);
+          expect(findBoardView().props('canManageColumns')).toBe(false);
         });
 
         it('persists a reorder, merged with existing display settings', async () => {
@@ -3764,6 +4009,43 @@ describe('planning-view', () => {
               displaySettings: expect.objectContaining({ groupOrder }),
             }),
           );
+        });
+      });
+
+      describe('hiding a column', () => {
+        const visibleGroups = ['status:gid://gitlab/WorkItems::Statuses::Custom::Status/2'];
+
+        it('persists the remaining visible groups, merged with existing display settings', async () => {
+          const mutationHandler = userPrefUpdateHandlerWith({
+            hiddenMetadataKeys: ['labels'],
+            visibleGroups,
+          });
+          await mountAllItemsBoard({
+            mockPreferencesHandler: preferencesHandlerWith({ hiddenMetadataKeys: ['labels'] }),
+            userPreferenceMutationResponse: mutationHandler,
+          });
+
+          findBoardView().vm.$emit('hide-group', visibleGroups);
+          await waitForPromises();
+
+          expect(mutationHandler).toHaveBeenCalledWith({
+            namespace: 'full/path',
+            displaySettings: { hiddenMetadataKeys: ['labels'], visibleGroups },
+          });
+        });
+
+        it('writes to the localStorage draft without calling the mutation on a saved view', async () => {
+          await mountSavedViewBoard();
+
+          findBoardView().vm.$emit('hide-group', visibleGroups);
+          await nextTick();
+
+          expect(localStorage.setItem).toHaveBeenCalledWith(
+            'full/path-saved-view-3',
+            expect.stringContaining(visibleGroups[0]),
+          );
+          expect(userPreferenceMutationHandler).not.toHaveBeenCalled();
+          expect(findUpdateViewButton().exists()).toBe(true);
         });
       });
     });
@@ -3873,6 +4155,397 @@ describe('planning-view', () => {
           url: '/work_items',
           replace: true,
         });
+      });
+    });
+  });
+
+  describe('realtime work item changes', () => {
+    const cachedWorkItemId = 'gid://gitlab/WorkItem/1';
+    const uncachedWorkItemId = 'gid://gitlab/WorkItem/2';
+    const cursor = btoa(JSON.stringify({ created_at: '2025-12-14 17:09:52.000000000 +0000' }));
+    const BoardViewStub = { name: 'BoardView', template: '<div />' };
+
+    let subscription;
+    let subscriptionHandler;
+    let slimMatchHandler;
+    let boardMatchHandler;
+
+    // `debounce` is mocked to run synchronously by default, which would hide the coalescing this
+    // block is about.
+    beforeEach(() => {
+      global.JEST_DEBOUNCE_THROTTLE_TIMEOUT = 500;
+    });
+
+    afterEach(() => {
+      global.JEST_DEBOUNCE_THROTTLE_TIMEOUT = undefined;
+    });
+
+    const mountWithSubscription = async ({ provide = {}, ...options } = {}) => {
+      subscription = createMockSubscription();
+      subscriptionHandler = jest.fn(() => subscription);
+      // Matches nothing by default; individual tests override this to say a checked id is visible.
+      slimMatchHandler = jest.fn().mockResolvedValue(buildBoardWorkItemsResponse([]));
+      boardMatchHandler = jest.fn().mockResolvedValue(buildBoardWorkItemsResponse([]));
+
+      await mountComponent({
+        ...options,
+        provide: {
+          ...provide,
+          glFeatures: {
+            workItemsRealtime: true,
+            ...provide.glFeatures,
+          },
+        },
+        additionalHandlers: [
+          [namespaceWorkItemChangesSubscription, subscriptionHandler],
+          [getWorkItemsSlimQuery, slimMatchHandler],
+          [getBoardWorkItemsQuery, boardMatchHandler],
+        ],
+      });
+    };
+
+    // Normalising the work item is what marks it as possibly on screen.
+    const cacheWorkItem = (id) => {
+      getCache().writeFragment({
+        id: `WorkItem:${id}`,
+        fragment: workItemIdFragment,
+        data: { __typename: 'WorkItem', id },
+      });
+    };
+
+    const emitChange = (workItemId, action) => {
+      subscription.next({ data: { namespaceWorkItemChanges: { workItemId, action } } });
+    };
+
+    const flushChanges = async () => {
+      jest.advanceTimersByTime(500);
+      await waitForPromises();
+    };
+
+    const evictedFields = (evictSpy) =>
+      evictSpy.mock.calls.map(([{ fieldName }]) => fieldName).filter(Boolean);
+
+    // Every match check also runs `dropMatchCacheEntries`, which calls `cache.modify` on the same
+    // `workItems` field shape, so this replays each captured field function to find the one that
+    // actually filters the given id out of a list, rather than just asserting `modify` was called.
+    const wasRemovedFromLists = (modifySpy, workItemId) =>
+      modifySpy.mock.calls
+        .map(([{ fields }]) => fields.workItems)
+        .filter(Boolean)
+        .some((fieldFn) => {
+          const result = fieldFn(
+            { nodes: [{ id: workItemId }] },
+            {
+              storeFieldName: 'workItems({"sort":"CREATED_DESC"})',
+              DELETE: Symbol('DELETE'),
+              readField: (fieldName, node) => node[fieldName],
+            },
+          );
+          return result?.nodes?.every((node) => node.id !== workItemId);
+        });
+
+    describe('when a work item that is not in the cache changes', () => {
+      it('does not reload the list', async () => {
+        await mountWithSubscription();
+        const evictSpy = jest.spyOn(getCache(), 'evict');
+
+        emitChange(uncachedWorkItemId, 'UPDATED');
+        await flushChanges();
+
+        expect(evictSpy).not.toHaveBeenCalled();
+      });
+
+      it('still refreshes the counts, because the change can move them', async () => {
+        await mountWithSubscription();
+        const initialCallCount = defaultCountsOnlyHandler.mock.calls.length;
+
+        emitChange(uncachedWorkItemId, 'UPDATED');
+        await flushChanges();
+
+        expect(defaultCountsOnlyHandler.mock.calls.length).toBeGreaterThan(initialCallCount);
+      });
+    });
+
+    describe('when a work item in the cache is updated', () => {
+      it('patches it in place, without reloading the list, when it still matches the current filters', async () => {
+        await mountWithSubscription();
+        cacheWorkItem(cachedWorkItemId);
+        slimMatchHandler.mockResolvedValue(buildBoardWorkItemsResponse([buildWorkItemNode(1)]));
+        const evictSpy = jest.spyOn(getCache(), 'evict');
+        const modifySpy = jest.spyOn(getCache(), 'modify');
+
+        emitChange(cachedWorkItemId, 'UPDATED');
+        await flushChanges();
+
+        expect(slimMatchHandler).toHaveBeenCalled();
+        expect(evictedFields(evictSpy)).toEqual([]);
+        expect(wasRemovedFromLists(modifySpy, cachedWorkItemId)).toBe(false);
+      });
+
+      it('removes it from every cached list, without reloading the list, when it no longer matches the current filters', async () => {
+        await mountWithSubscription();
+        cacheWorkItem(cachedWorkItemId);
+        const evictSpy = jest.spyOn(getCache(), 'evict');
+        const modifySpy = jest.spyOn(getCache(), 'modify');
+
+        emitChange(cachedWorkItemId, 'UPDATED');
+        await flushChanges();
+
+        expect(evictedFields(evictSpy)).toEqual([]);
+        expect(wasRemovedFromLists(modifySpy, cachedWorkItemId)).toBe(true);
+      });
+    });
+
+    describe('when a work item in the cache is deleted', () => {
+      it('removes just that work item, without reloading the list', async () => {
+        await mountWithSubscription();
+        cacheWorkItem(cachedWorkItemId);
+        const evictSpy = jest.spyOn(getCache(), 'evict');
+
+        emitChange(cachedWorkItemId, 'DELETED');
+        await flushChanges();
+
+        expect(evictSpy).toHaveBeenCalledWith({ id: `WorkItem:${cachedWorkItemId}` });
+        expect(evictedFields(evictSpy)).toEqual([]);
+      });
+
+      it('closes the drawer when the deleted work item was open in it', async () => {
+        await mountWithSubscription();
+        cacheWorkItem(cachedWorkItemId);
+
+        findListView().vm.$emit('set-active-item', { id: cachedWorkItemId, iid: '1' });
+        await nextTick();
+        expect(findDetailPanel().props('open')).toBe(true);
+
+        emitChange(cachedWorkItemId, 'DELETED');
+        await flushChanges();
+
+        expect(findDetailPanel().props('activeItem')).toBeNull();
+      });
+
+      it('removes just that work item in board view too, refreshing counts instead of the list', async () => {
+        await mountWithSubscription({
+          provide: { glFeatures: { planningViewBoards: true } },
+          stubs: { BoardView: BoardViewStub },
+        });
+        findDisplaySettingsDrawer().vm.$emit('toggle-view-mode', VIEW_MODE_BOARD);
+        await waitForPromises();
+
+        cacheWorkItem(cachedWorkItemId);
+        const evictSpy = jest.spyOn(getCache(), 'evict');
+        const initialCallCount = defaultCountsOnlyHandler.mock.calls.length;
+
+        emitChange(cachedWorkItemId, 'DELETED');
+        await flushChanges();
+
+        expect(evictSpy).toHaveBeenCalledWith({ id: `WorkItem:${cachedWorkItemId}` });
+        expect(evictedFields(evictSpy)).toEqual([]);
+        expect(defaultCountsOnlyHandler.mock.calls.length).toBeGreaterThan(initialCallCount);
+      });
+    });
+
+    describe('when a work item is created', () => {
+      it('reloads the list on the first page when the new item matches the current filters', async () => {
+        await mountWithSubscription();
+        slimMatchHandler.mockResolvedValue(buildBoardWorkItemsResponse([buildWorkItemNode(2)]));
+        const evictSpy = jest.spyOn(getCache(), 'evict');
+
+        emitChange(uncachedWorkItemId, 'CREATED');
+        await flushChanges();
+
+        expect(slimMatchHandler).toHaveBeenCalled();
+        expect(evictedFields(evictSpy)).toEqual(['workItems']);
+      });
+
+      it('does not reload the list when the new item does not match the current filters', async () => {
+        await mountWithSubscription();
+        const evictSpy = jest.spyOn(getCache(), 'evict');
+
+        emitChange(uncachedWorkItemId, 'CREATED');
+        await flushChanges();
+
+        expect(slimMatchHandler).toHaveBeenCalled();
+        expect(evictSpy).not.toHaveBeenCalled();
+      });
+
+      it('does not reload the list when the user has paginated past the first page', async () => {
+        setWindowLocation(`?page_after=${cursor}`);
+        await mountWithSubscription();
+        const evictSpy = jest.spyOn(getCache(), 'evict');
+
+        emitChange(uncachedWorkItemId, 'CREATED');
+        await flushChanges();
+
+        expect(slimMatchHandler).not.toHaveBeenCalled();
+        expect(evictSpy).not.toHaveBeenCalled();
+      });
+
+      it('reloads the list when the creation is followed by an update in the same window', async () => {
+        await mountWithSubscription();
+        slimMatchHandler.mockResolvedValue(buildBoardWorkItemsResponse([buildWorkItemNode(2)]));
+        const evictSpy = jest.spyOn(getCache(), 'evict');
+
+        emitChange(uncachedWorkItemId, 'CREATED');
+        emitChange(uncachedWorkItemId, 'UPDATED');
+        await flushChanges();
+
+        expect(evictedFields(evictSpy)).toEqual(['workItems']);
+      });
+
+      it('reloads the list when the user paged back to page 1, even though beforeCursor is still set', async () => {
+        await mountWithSubscription();
+        slimMatchHandler.mockResolvedValue(buildBoardWorkItemsResponse([buildWorkItemNode(2)]));
+        // Mirrors list_view's handlePreviousPage + the pageInfo it reports once back on page 1.
+        findListView().vm.$emit('set-page-params', {
+          beforeCursor: 'startCursor',
+          lastPageSize: 20,
+        });
+        findListView().vm.$emit('page-info', { hasPreviousPage: false, hasNextPage: true });
+        await nextTick();
+        const evictSpy = jest.spyOn(getCache(), 'evict');
+
+        emitChange(uncachedWorkItemId, 'CREATED');
+        await flushChanges();
+
+        expect(evictedFields(evictSpy)).toEqual(['workItems']);
+      });
+
+      it('reloads the board when the new item matches, probing with the board query', async () => {
+        await mountWithSubscription({
+          provide: { glFeatures: { planningViewBoards: true } },
+          stubs: { BoardView: BoardViewStub },
+        });
+        findDisplaySettingsDrawer().vm.$emit('toggle-view-mode', VIEW_MODE_BOARD);
+        await waitForPromises();
+        boardMatchHandler.mockResolvedValue(buildBoardWorkItemsResponse([buildWorkItemNode(2)]));
+        const evictSpy = jest.spyOn(getCache(), 'evict');
+
+        emitChange(uncachedWorkItemId, 'CREATED');
+        await flushChanges();
+
+        expect(boardMatchHandler).toHaveBeenCalled();
+        expect(slimMatchHandler).not.toHaveBeenCalled();
+        expect(evictedFields(evictSpy)).toEqual(['workItems']);
+      });
+
+      it('does not reload the list when the match query fails', async () => {
+        await mountWithSubscription();
+        const error = new Error('oh no!');
+        slimMatchHandler.mockRejectedValue(error);
+        const evictSpy = jest.spyOn(getCache(), 'evict');
+
+        emitChange(uncachedWorkItemId, 'CREATED');
+        await flushChanges();
+
+        expect(Sentry.captureException).toHaveBeenCalledWith(error);
+        expect(evictSpy).not.toHaveBeenCalled();
+      });
+
+      it('still evicts a visible deletion and refreshes counts when the match query fails', async () => {
+        await mountWithSubscription();
+        cacheWorkItem(cachedWorkItemId);
+        slimMatchHandler.mockRejectedValue(new Error('oh no!'));
+        const evictSpy = jest.spyOn(getCache(), 'evict');
+        const initialCallCount = defaultCountsOnlyHandler.mock.calls.length;
+
+        emitChange(cachedWorkItemId, 'DELETED');
+        emitChange(uncachedWorkItemId, 'CREATED');
+        await flushChanges();
+
+        expect(evictSpy).toHaveBeenCalledWith({ id: `WorkItem:${cachedWorkItemId}` });
+        expect(defaultCountsOnlyHandler.mock.calls.length).toBeGreaterThan(initialCallCount);
+      });
+    });
+
+    describe('when several changes arrive in quick succession', () => {
+      it('checks them together in a single match query, then reloads the list once', async () => {
+        await mountWithSubscription();
+        cacheWorkItem(cachedWorkItemId);
+        slimMatchHandler.mockResolvedValue(buildBoardWorkItemsResponse([buildWorkItemNode(2)]));
+        const evictSpy = jest.spyOn(getCache(), 'evict');
+
+        emitChange(cachedWorkItemId, 'UPDATED');
+        emitChange(uncachedWorkItemId, 'CREATED');
+        emitChange(cachedWorkItemId, 'UPDATED');
+        await flushChanges();
+
+        expect(slimMatchHandler).toHaveBeenCalledTimes(1);
+        expect(evictedFields(evictSpy)).toEqual(['workItems']);
+      });
+    });
+
+    it('does not act on changes that arrive just before the component is destroyed', async () => {
+      await mountWithSubscription();
+      cacheWorkItem(cachedWorkItemId);
+      const evictSpy = jest.spyOn(getCache(), 'evict');
+
+      emitChange(cachedWorkItemId, 'UPDATED');
+      wrapper.destroy();
+      jest.advanceTimersByTime(500);
+      await waitForPromises();
+
+      expect(evictSpy).not.toHaveBeenCalled();
+    });
+
+    it('reports a subscription error to Sentry', async () => {
+      await mountWithSubscription();
+      const error = new Error('subscription failed');
+
+      subscription.error(error);
+      await waitForPromises();
+
+      expect(Sentry.captureException).toHaveBeenCalledWith(error);
+    });
+
+    describe('when the workItemsRealtime feature flag is off', () => {
+      it('never subscribes to namespace work item changes', async () => {
+        await mountWithSubscription({ provide: { glFeatures: { workItemsRealtime: false } } });
+        await flushChanges();
+
+        expect(subscriptionHandler).not.toHaveBeenCalled();
+      });
+    });
+
+    describe('when the user is not logged in', () => {
+      it('never subscribes to namespace work item changes', async () => {
+        await mountWithSubscription({ isLoggedInValue: false });
+        await flushChanges();
+
+        expect(subscriptionHandler).not.toHaveBeenCalled();
+      });
+    });
+
+    describe('reconnecting after a dropped websocket connection', () => {
+      it('reloads the list', async () => {
+        await mountWithSubscription();
+        const evictSpy = jest.spyOn(getCache(), 'evict');
+
+        document.dispatchEvent(new CustomEvent('actioncable:reconnected'));
+        await flushChanges();
+
+        expect(evictedFields(evictSpy)).toEqual(['workItems']);
+      });
+
+      it('does nothing when the workItemsRealtime feature flag is off', async () => {
+        await mountWithSubscription({ provide: { glFeatures: { workItemsRealtime: false } } });
+        const evictSpy = jest.spyOn(getCache(), 'evict');
+
+        document.dispatchEvent(new CustomEvent('actioncable:reconnected'));
+        await flushChanges();
+
+        expect(evictSpy).not.toHaveBeenCalled();
+      });
+
+      it('does not act on a reconnect that arrives just before the component is destroyed', async () => {
+        await mountWithSubscription();
+        const evictSpy = jest.spyOn(getCache(), 'evict');
+
+        document.dispatchEvent(new CustomEvent('actioncable:reconnected'));
+        wrapper.destroy();
+        jest.advanceTimersByTime(500);
+        await waitForPromises();
+
+        expect(evictSpy).not.toHaveBeenCalled();
       });
     });
   });

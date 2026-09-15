@@ -113,8 +113,12 @@ class Projects::ForksController < Projects::ApplicationController
 
   def fork_namespace
     strong_memoize(:fork_namespace) do
-      Namespace.find(params[:namespace_key]) if params[:namespace_key].present?
+      Namespace.find(namespace_key_param) if namespace_key_param.present?
     end
+  end
+
+  def namespace_key_param
+    params.permit(:namespace_key)[:namespace_key]
   end
 
   def forks_params

@@ -62,7 +62,6 @@ module TwCodeowners
     CodeOwnerRule.new('Gitaly', '@eread'),
     CodeOwnerRule.new('Global Search', '@ashrafkhamis'),
     CodeOwnerRule.new('Import', '@eread'),
-    CodeOwnerRule.new('Knowledge', '@brendan777'),
     # CodeOwnerRule.new('Knowledge Graph', ''),
     # CodeOwnerRule.new('MLOps', ''),
     # CodeOwnerRule.new('Mobile Devops', ''),
@@ -75,9 +74,10 @@ module TwCodeowners
     CodeOwnerRule.new('Pipeline Authoring', '@marcel.amirault'),
     CodeOwnerRule.new('Pipeline Execution', '@lyspin'),
     CodeOwnerRule.new('Pipeline Security', '@marcel.amirault'),
+    CodeOwnerRule.new('Planner Intelligence', '@brendan777'),
+    # CodeOwnerRule.new('Planning Views', ''),
     # CodeOwnerRule.new('Platform Insights', ''),
-    # CodeOwnerRule.new('Product Planning', ''),
-    # CodeOwnerRule.new('Project Management', ''),
+    # CodeOwnerRule.new('Portfolio Planning', ''),
     CodeOwnerRule.new('Provision', '@lciutacu'),
     CodeOwnerRule.new('Redirect', 'Redirect'),
     # CodeOwnerRule.new('Remote Development', ''),
@@ -92,6 +92,7 @@ module TwCodeowners
     # CodeOwnerRule.new('Security Policies', ''),
     CodeOwnerRule.new('Solutions Architecture', '@jfullam @Darwinjs @sbrightwell'),
     CodeOwnerRule.new('Source Code', '@brendan777'),
+    # CodeOwnerRule.new('Spec-Driven Development', ''),
     # CodeOwnerRule.new('Static Analysis', ''),
     CodeOwnerRule.new('Subscription Management', '@lciutacu'),
     CodeOwnerRule.new('Switchboard', '@lyspin'),
@@ -101,6 +102,7 @@ module TwCodeowners
     CodeOwnerRule.new('US Public Sector Services', '@lyspin'),
     CodeOwnerRule.new('Utilization', '@lciutacu'),
     # CodeOwnerRule.new('Vulnerability Research', ''),
+    # CodeOwnerRule.new('Work Items', ''),
     CodeOwnerRule.new('Workflow Catalog', '@jglassman1')
   ].freeze
 

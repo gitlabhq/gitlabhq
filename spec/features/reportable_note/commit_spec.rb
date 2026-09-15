@@ -5,32 +5,45 @@ require 'spec_helper'
 RSpec.describe 'Reportable note on commit', :js, feature_category: :source_code_management do
   include RepoHelpers
 
-  let(:user) { create(:user) }
-  let(:project) { create(:project, :repository) }
+  let_it_be(:user) { create(:user) }
+  let_it_be(:project) { create(:project, :repository) }
+
+  before_all do
+    project.add_maintainer(user)
+  end
 
   before do
-    project.add_maintainer(user)
     sign_in(user)
   end
 
-  # Edit is a standalone button; Delete and Report abuse live in the "More actions" menu.
   shared_examples 'a reportable note in Rapid Diffs' do
-    let(:comment) { find("#note_#{note.id}") }
+    let(:comment) { find("#note_#{note.id}", text: note.note) }
+
+    def open_more_actions_dropdown
+      click_button 'More actions'
+      return if has_testid?('disclosure-content', wait: 2) # rubocop:disable RSpec/AvoidConditionalStatements -- retry click if dropdown didn't open
+
+      click_button 'More actions'
+    end
 
     it 'can be edited and deleted', :aggregate_failures do
       within(comment) do
         expect(page).to have_button('Edit comment')
+        open_more_actions_dropdown
 
-        click_button 'More actions'
-
-        expect(page).to have_button('Delete comment')
+        within_testid('disclosure-content') do
+          expect(page).to have_button('Delete comment')
+        end
       end
     end
 
     it 'report button links to a report page', :aggregate_failures do
       within(comment) do
-        click_button 'More actions'
-        find_by_testid('report-abuse-button').click
+        open_more_actions_dropdown
+
+        within_testid('disclosure-content') do
+          find_by_testid('report-abuse-button').click
+        end
       end
 
       choose "They're posting spam or unsolicited content."
@@ -46,6 +59,7 @@ RSpec.describe 'Reportable note on commit', :js, feature_category: :source_code_
 
     before do
       visit project_commit_path(project, sample_commit.id)
+      find("#note_#{note.id}", text: note.note)
     end
 
     it_behaves_like 'a reportable note in Rapid Diffs'
@@ -56,6 +70,7 @@ RSpec.describe 'Reportable note on commit', :js, feature_category: :source_code_
 
     before do
       visit project_commit_path(project, sample_commit.id)
+      find("#note_#{note.id}", text: note.note)
     end
 
     it_behaves_like 'a reportable note in Rapid Diffs'

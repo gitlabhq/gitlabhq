@@ -3,10 +3,7 @@
 module Integrations
   module ChatMessage
     class NoteMessage < BaseMessage
-      attr_reader :note
-      attr_reader :note_url
-      attr_reader :title
-      attr_reader :target
+      attr_reader :note, :note_url, :title, :target
 
       def initialize(params)
         super

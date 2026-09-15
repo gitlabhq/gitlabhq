@@ -62,19 +62,22 @@ module Gitlab
         gon.instance_token_prefix = Authn::TokenField::PrefixHelper.instance_prefix
       end
 
-      gon.fluid_layout               = false
-      gon.keyboard_shortcuts_enabled = current_user ? current_user.keyboard_shortcuts_enabled : true
+      gon.fluid_layout = false
+      if current_user
+        gon.keyboard_shortcuts_enabled = current_user.keyboard_shortcuts_enabled
+        gon.emoji_autocomplete_enabled = current_user.emoji_autocomplete_enabled
+      else
+        gon.keyboard_shortcuts_enabled = true
+        gon.emoji_autocomplete_enabled = true
+      end
+
       gon.broadcast_message_dismissal_path =
         current_user ? Gitlab::Routing.url_helpers.broadcast_message_dismissals_path : nil
 
       gon.diagramsnet_url = Gitlab::CurrentSettings.diagramsnet_url if Gitlab::CurrentSettings.diagramsnet_enabled
 
-      if current_organization && ui_for_organizations_enabled?
-        gon.current_organization = current_organization.slice(:id, :name, :path, :full_path, :web_url, :avatar_url)
-          .merge({ has_scoped_paths: current_organization.scoped_paths? })
-      end
-
       add_gon_user_specific
+      add_gon_organization_specific
       add_gon_feature_flags
     end
 
@@ -96,6 +99,17 @@ module Gitlab
       gon.text_editor = current_user.user_preference.text_editor
     end
 
+    def add_gon_organization_specific
+      return unless ui_for_organizations_enabled?
+
+      gon.organization_path = ::Current.organization_resolver&.from_organization_params&.path
+      gon.data_context_organization_path = data_context_organization_path
+
+      return unless current_organization
+
+      gon.current_organization = current_organization.slice(:id, :name, :path, :full_path, :web_url, :avatar_url)
+    end
+
     # Initialize gon.features with any flags that should be
     # made globally available to the frontend
     def add_gon_feature_flags
@@ -109,9 +123,7 @@ module Gitlab
       push_frontend_feature_flag(:remove_monitor_metrics)
       push_frontend_feature_flag(:work_items_client_side_boards, current_user)
       push_frontend_feature_flag(:editor_sticky_table_headers, current_user)
-      push_frontend_feature_flag(:explore_analytics_dashboards, current_user)
       push_frontend_feature_flag(:hide_unpinned_sidebar_items, current_user)
-      push_frontend_feature_flag(:accessible_disabled_button, current_user, type: :gitlab_com_derisk)
       push_frontend_feature_flag(:markdown_sortable_table_columns, current_user)
       # Needed for globally-rendered components such as work item reference popovers.
       push_frontend_feature_flag(:work_item_features_field, current_user)
@@ -209,6 +221,13 @@ module Gitlab
       Organizations::FallbackOrganizationTracker.without_tracking { ::Current.organization }
     end
     # rubocop:enable Gitlab/AvoidCurrentOrganization
+
+    def data_context_organization_path
+      data_context = ::Current.data_context
+      return unless data_context&.type == :organization
+
+      data_context.context.path
+    end
   end
 end
 

@@ -596,12 +596,20 @@ RSpec.describe Projects::BlobController, feature_category: :source_code_manageme
         end
       end
 
-      it 'responds with 422 Unprocessable Entity and sets flash alert' do
+      it 'responds with 422 Unprocessable Entity', :aggregate_failures do
         put :update, params: default_params, format: :json
 
         expect(response).to have_gitlab_http_status(:unprocessable_entity)
         expect(json_response['error']).to eq('Invalid commit message')
+        expect(flash[:alert]).to be_nil
         expect(json_response['filePath']).to eq(project_blob_path(project, 'master/CHANGELOG'))
+      end
+
+      it 'sets flash alert for HTML requests', :aggregate_failures do
+        put :update, params: default_params
+
+        expect(response).to render_template(:edit)
+        expect(flash[:alert]).to eq('Invalid commit message')
       end
     end
   end

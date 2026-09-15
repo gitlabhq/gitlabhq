@@ -1,0 +1,9 @@
+---
+name: update_crm_organization
+description: Grants the ability to update customer relations organizations
+boundaries:
+  - group
+available_for:
+  - granular_access_token
+permissions:
+  - update_crm_organization

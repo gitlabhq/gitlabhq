@@ -1,6 +1,6 @@
 ---
 stage: Plan
-group: Project Management
+group: Work Items
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see <https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments>
 description: Visualize milestone progress with burndown and burnup charts to track remaining and completed issues over time.
 title: Burndown and burnup charts
@@ -51,12 +51,12 @@ These charts help teams:
 
 - Visualize progress in real time throughout a milestone period.
 - Identify potential delays early by comparing actual progress to ideal progress.
-- Communicate status to stakeholders with easy-to-understand visual data.
+- Communicate status to stakeholders with clear visual data.
 - Make data-driven decisions about resource allocation and prioritization.
 
 Use burndown charts to focus on remaining work.
 Use burnup charts to track both completed work and scope changes over time.
-Burnup charts are particularly useful for monitoring scope creep (uncontrolled additions to a
+Burnup charts help you monitor scope creep (uncontrolled additions to a
 project's scope) by showing spikes in the chart's total issues.
 
 ## Burndown charts
@@ -65,7 +65,7 @@ Burndown charts show the number of issues over the course of a milestone.
 
 ![Burndown chart, showing declining trend of remaining issues over milestone duration.](img/burndown_chart_v15_3.png)
 
-At a glance, you see the current state for the completion a given milestone.
+At a glance, you see the current state for the completion of a given milestone.
 Without them, you would have to organize the data from the milestone and plot it
 yourself to have the same sense of progress.
 
@@ -91,7 +91,7 @@ To view a group's burndown chart:
 A burndown chart is available for every project or group milestone that has been attributed a **start date** and a **due date**.
 
 > [!note]
-> You're able to [promote project](_index.md#promote-a-project-milestone-to-a-group-milestone) to group milestones and still see the **burndown chart** for them, respecting license limitations.
+> You can [promote project milestones](_index.md#promote-a-project-milestone-to-a-group-milestone) to group milestones and still see the **burndown chart** for them, respecting license limitations.
 
 The chart indicates the project's progress throughout that milestone (for issues assigned to it).
 
@@ -119,7 +119,7 @@ full history. For each day, a legacy burndown chart takes the number of open iss
 created that day, and subtracts the number of issues closed that day.
 Issues that were created and assigned a milestone before its start date (and remain open as of the
 start date) are considered as having been opened on the start date.
-Therefore, when the milestone start date is changed, the number of opened issues on each day may
+Therefore, when the milestone start date is changed, the number of opened issues on each day might
 change.
 Reopened issues are considered as having been opened on the day after they were last closed.
 
@@ -173,7 +173,7 @@ When an issue is closed, the **Total** line remains the same and the **Completed
 > This feature is available for testing, but not ready for production use.
 
 With [tasks](../../tasks.md), a more granular planning is possible.
-If this feature is enabled, the weight of issues that have tasks is derived from the tasks in the
+If this feature is turned on, the weight of issues that have tasks is derived from the tasks in the
 same milestone.
 Issues with tasks are not counted separately in burndown or burnup charts.
 
@@ -226,7 +226,7 @@ The charts for Milestone 2 would show Issue as having weight 4.
 
 A limitation of these charts is that [the days are in the UTC time zone](https://gitlab.com/gitlab-org/gitlab/-/issues/267967).
 
-This can cause the graphs to be inaccurate in other timezones. For example:
+This can cause the graphs to be inaccurate in other time zones. For example:
 
 - All the issues in a milestone are recorded as being closed on or before the last day.
 - One issue was closed on the last day at 6 PM PST (Pacific time), which is UTC-7.

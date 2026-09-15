@@ -5,11 +5,11 @@
 %html.html-devise-layout{ class: user_application_color_mode, lang: I18n.locale }
   = render "layouts/head"
   - local_brand_title = yield(:overridden_brand_title).presence || brand_title
-  %body.gl-h-full.login-page{ class: "#{system_message_class} #{client_class_list}", data: { page: body_data_page, testid: 'login-page' } }
+  %body.gl-min-h-full.gl-flex.gl-flex-col.login-page{ class: "#{system_message_class} #{client_class_list}", data: { page: body_data_page, testid: 'login-page' } }
     = header_message
     = render "layouts/init_client_detection_flags"
     = yield :sessions_broadcast
-    .gl-h-full.gl-flex.gl-flex-wrap
+    .gl-grow.gl-flex.gl-flex-wrap
       .container.gl-self-center
         %main.content
           = render "layouts/flash"

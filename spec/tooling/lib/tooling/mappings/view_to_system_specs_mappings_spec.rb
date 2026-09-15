@@ -11,8 +11,6 @@ RSpec.describe Tooling::Mappings::ViewToSystemSpecsMappings, feature_category: :
     described_class.new(changed_files, view_base_folder: view_base_folder)
   end
 
-  let(:changed_files_content) { %w[changed_file1 changed_file2] }
-
   around do |example|
     Dir.mktmpdir do |tmp_views_base_folder|
       self.view_base_folder = tmp_views_base_folder

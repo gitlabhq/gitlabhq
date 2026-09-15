@@ -24,7 +24,58 @@
 import { readFileSync, existsSync } from 'node:fs';
 import { parseArgs } from 'node:util';
 
-const MARKER = '<!-- msw-test-result-summary -->';
+// Both test-summary scripts write into a single note, each owning one marked
+// section and byte-preserving the other. scripts/post_rspec_test_summary.rb
+// implements the same contract; changing these markers means changing both.
+const COMBINED_MARKER = '<!-- test-result-summary -->';
+
+const SECTIONS = {
+  msw: { label: 'MSW Test Result Summary', job: 'jest-msw-integration' },
+  rspec: { label: 'RSpec Test Result Summary', job: 'rspec:test-summary' },
+};
+
+const sectionOpen = (name) => `<!-- section:${name} -->`;
+const sectionClose = (name) => `<!-- /section:${name} -->`;
+
+// Replace one section of an existing combined note, leaving the rest byte-identical.
+// Appends the section when its markers are absent (older note, or first writer).
+function spliceSection(body, name, content) {
+  const openMarker = sectionOpen(name);
+  const closeMarker = sectionClose(name);
+  const startIdx = body.indexOf(openMarker);
+  const closeIdx = body.indexOf(closeMarker);
+
+  if (startIdx === -1 || closeIdx === -1 || closeIdx < startIdx) {
+    return `${body.trimEnd()}\n\n${openMarker}\n${content}\n${closeMarker}\n`;
+  }
+
+  return `${body.slice(0, startIdx)}${openMarker}\n${content}\n${body.slice(closeIdx)}`;
+}
+
+// Stand-in for the counterpart suite, which has not written its section yet.
+function placeholderSection(name, { jobPresent }) {
+  const state = jobPresent
+    ? '_Pending — results appear when the job finishes._'
+    : '_Did not run for this merge request._';
+
+  return `### ${SECTIONS[name].label}\n\n${state}`;
+}
+
+// Build a fresh combined note containing our section and a placeholder for the other.
+function buildCombinedComment(name, content, { counterpartPresent }) {
+  const other = Object.keys(SECTIONS).find((key) => key !== name);
+  const bodies = {
+    [name]: content,
+    [other]: placeholderSection(other, { jobPresent: counterpartPresent }),
+  };
+
+  const lines = [COMBINED_MARKER, '', '## Test Result Summary', ''];
+  Object.keys(SECTIONS).forEach((key) => {
+    lines.push(sectionOpen(key), bodies[key], sectionClose(key), '');
+  });
+
+  return lines.join('\n');
+}
 
 // ---------------------------------------------------------------------------
 // Per-new-test time budget (seconds). MSW integration tests are heavier than
@@ -35,6 +86,9 @@ const BUDGET_ACTION_S = 60; // > 60 s/test  → action required (also exits 1)
 
 // Frontend spec files follow the `_spec.js` naming convention.
 const SPEC_FILE_RE = /_spec\.js$/;
+
+// Deleted spec files may be RSpec (`.rb`) or JS (`.js`).
+const DELETED_SPEC_FILE_RE = /_spec\.(js|rb)$/;
 
 // How far we page through the MR diffs API. 100 diffs/page × 5 pages = 500
 // files — a generous safety cap. Past this the per-file breakdown is truncated,
@@ -75,6 +129,11 @@ function parseOptions() {
 function formatDuration(seconds) {
   if (seconds == null || seconds < 0) return '—';
   const rounded = Math.round(seconds);
+  // Whole-suite runtimes reach tens of hours, so minutes alone read poorly.
+  if (rounded >= 3600) {
+    return `${Math.floor(rounded / 3600)}h ${Math.floor((rounded % 3600) / 60)}m ${rounded % 60}s`;
+  }
+
   const m = Math.floor(rounded / 60);
   const s = rounded % 60;
   return m > 0 ? `${m}m ${s}s` : `${s}s`;
@@ -168,14 +227,17 @@ function thresholdInfo(perTestS) {
  * Diff each changed spec file that ran in this job against the master baseline
  * and reduce it to a single actionable number: seconds per new test.
  *
+ * @param {Array<{ path: string }>} [deletedFiles]  Spec files deleted by this MR.
+ *
  * @returns {{
  *   files: Array<Object>,
+ *   deletedFiles: Array<{ path: string, masterRuntimeS: number, masterTests: number }>,
  *   addedRuntimeS: number,
  *   addedTests: number,
  *   perTestS: number|null,
  * }}
  */
-function computeActionable({ changedFiles, report, baseline }) {
+function computeActionable({ changedFiles, deletedFiles = [], report, baseline }) {
   const reportPerFile = report?.perFile ?? {};
   const masterPerFile = baseline?.perFile ?? {};
 
@@ -190,18 +252,24 @@ function computeActionable({ changedFiles, report, baseline }) {
 
     // Renamed files exist on master under their old path.
     const master = masterPerFile[cf.oldPath] ?? null;
+    // A file the MR only modified, with no baseline row, has an unknown delta.
+    // Diffing it against zero would report tests it already had on master — or
+    // ones the MR deleted — as newly added.
+    const unknownBaseline = master == null && !cf.isNew;
     const masterRuntimeS = master?.runtimeS ?? 0;
     const masterTests = master?.testCount ?? 0;
 
-    const deltaRuntimeS = current.runtimeS - masterRuntimeS;
-    const deltaTests = current.testCount - masterTests;
+    const deltaRuntimeS = unknownBaseline ? null : current.runtimeS - masterRuntimeS;
+    const deltaTests = unknownBaseline ? null : current.testCount - masterTests;
 
-    addedRuntimeS += deltaRuntimeS;
-    addedTests += deltaTests;
+    if (!unknownBaseline) {
+      addedRuntimeS += deltaRuntimeS;
+      addedTests += deltaTests;
+    }
 
     files.push({
       path: cf.path,
-      isNew: cf.isNew || master == null,
+      isNew: cf.isNew,
       currentRuntimeS: current.runtimeS,
       masterRuntimeS: master == null ? null : masterRuntimeS,
       deltaRuntimeS,
@@ -211,28 +279,60 @@ function computeActionable({ changedFiles, report, baseline }) {
     });
   }
 
+  // Account for deleted spec files that have a master baseline entry.
+  // Their runtime and tests are subtracted from the net totals (time saved).
+  const resolvedDeletedFiles = [];
+  for (const df of deletedFiles) {
+    const master = masterPerFile[df.path] ?? null;
+    if (!master) continue;
+    resolvedDeletedFiles.push({
+      path: df.path,
+      masterRuntimeS: master.runtimeS,
+      masterTests: master.testCount,
+    });
+    addedRuntimeS -= master.runtimeS;
+    addedTests -= master.testCount;
+  }
+
+  // perTestS is based on net-new tests only. If deletions outweigh additions,
+  // there are no net-new tests to penalise, so perTestS is null.
   const perTestS = addedTests > 0 ? addedRuntimeS / addedTests : null;
-  return { files, addedRuntimeS, addedTests, perTestS };
+  return { files, deletedFiles: resolvedDeletedFiles, addedRuntimeS, addedTests, perTestS };
 }
 
 function buildFileRow(f) {
   const tag = f.isNew ? ' (new)' : '';
   const masterTestsStr = f.masterTests == null ? '—' : String(f.masterTests);
   const masterRtStr = f.masterRuntimeS == null ? '—' : formatDuration(f.masterRuntimeS);
-  const deltaTestsStr = `${f.deltaTests >= 0 ? '+' : ''}${f.deltaTests}`;
+  // An empty parenthetical reads as a value of its own, so drop it when there is no delta.
+  const deltaTestsStr =
+    f.deltaTests == null ? '' : ` (${f.deltaTests >= 0 ? '+' : ''}${f.deltaTests})`;
   const perTest = f.deltaTests > 0 ? f.deltaRuntimeS / f.deltaTests : null;
   const perTestCell =
     perTest == null ? '—' : `${Math.round(perTest)}s ${thresholdInfo(perTest).emoji}`.trim();
 
-  return `| \`${f.path}\`${tag} | ${masterTestsStr} → ${f.currentTests} (${deltaTestsStr}) | ${masterRtStr} → ${formatDuration(f.currentRuntimeS)} | ${formatSignedDuration(f.deltaRuntimeS)} | ${perTestCell} |`;
+  return `| \`${f.path}\`${tag} | ${masterTestsStr} → ${f.currentTests}${deltaTestsStr} | ${masterRtStr} → ${formatDuration(f.currentRuntimeS)} | ${formatSignedDuration(f.deltaRuntimeS)} | ${perTestCell} |`;
 }
 
-function buildComment({ jobName, jobUrl, ciDuration, stats, baseline, actionable, truncated = false }) {
+function buildDeletedFileRow(df) {
+  const savedRuntimeS = df.masterRuntimeS;
+  return `| \`${df.path}\` (deleted) | ${df.masterTests} → 0 (−${df.masterTests}) | ${formatDuration(savedRuntimeS)} → 0s (−${formatDuration(savedRuntimeS)}) | ${formatSignedDuration(-savedRuntimeS)} | — |`;
+}
+
+function buildComment({
+  jobName,
+  jobUrl,
+  ciDuration,
+  stats,
+  baseline,
+  actionable,
+  truncated = false,
+}) {
   const threshold = thresholdInfo(actionable?.perTestS);
   // The budget gate exits 1 (failing the job) in the action-required range, so
   // the status reflects job outcome — ❌ even when every test itself passed.
   const emoji = statusEmoji(stats, { jobFailed: threshold.level === 'action' });
-  const lines = [MARKER, '', '## MSW Test Result Summary', ''];
+  const lines = [`### ${SECTIONS.msw.label}`, ''];
 
   if (!stats) {
     lines.push(`**${jobName}**: ${emoji} [job log](${jobUrl}) — no JSON report found`);
@@ -257,29 +357,43 @@ function buildComment({ jobName, jobUrl, ciDuration, stats, baseline, actionable
   }
 
   // Single actionable headline.
+  const deletedCount = actionable.deletedFiles?.length ?? 0;
+  const savedRuntimeS =
+    actionable.deletedFiles?.reduce((sum, df) => sum + df.masterRuntimeS, 0) ?? 0;
+  const deletedSuffix =
+    deletedCount > 0
+      ? ` · **−${formatDuration(savedRuntimeS)} saved** by deleting ${deletedCount} spec file${deletedCount === 1 ? '' : 's'}`
+      : '';
+
   if (!hasBaseline) {
     lines.push('> ℹ️ No master baseline available yet — runtime delta omitted.');
   } else if (actionable.addedTests > 0) {
     const fileCount = actionable.files.length;
     lines.push(
-      `**+${actionable.addedTests} new test${actionable.addedTests === 1 ? '' : 's'}** across ${fileCount} file${fileCount === 1 ? '' : 's'} · **${formatSignedDuration(actionable.addedRuntimeS)} vs master** · **${Math.round(actionable.perTestS)}s/test** (budget ${BUDGET_OK_S}s/test)`,
+      `**+${actionable.addedTests} new test${actionable.addedTests === 1 ? '' : 's'}** across ${fileCount} file${fileCount === 1 ? '' : 's'} · **${formatSignedDuration(actionable.addedRuntimeS)} vs master** · **${Math.round(actionable.perTestS)}s/test** (budget ${BUDGET_OK_S}s/test)${deletedSuffix}`,
     );
-  } else if (actionable.files.length > 0) {
-    lines.push(
-      `Changed ${actionable.files.length} spec file${actionable.files.length === 1 ? '' : 's'} with no net-new tests · **${formatSignedDuration(actionable.addedRuntimeS)} vs master**`,
-    );
+  } else if (actionable.files.length > 0 || deletedCount > 0) {
+    const changedPart =
+      actionable.files.length > 0
+        ? `Changed ${actionable.files.length} spec file${actionable.files.length === 1 ? '' : 's'} with no net-new tests · **${formatSignedDuration(actionable.addedRuntimeS)} vs master**`
+        : `No changed MSW spec files`;
+    lines.push(`${changedPart}${deletedSuffix}`);
   } else {
     lines.push('No changed MSW spec files detected in this MR.');
   }
   lines.push('');
 
   // Per-file breakdown, collapsed to keep the comment quiet.
-  if (actionable.files.length > 0) {
+  const hasBreakdown = actionable.files.length > 0 || (actionable.deletedFiles?.length ?? 0) > 0;
+  if (hasBreakdown) {
     lines.push('<details><summary>Per-file breakdown</summary>');
     lines.push('');
-    lines.push('| File | Tests (master → now) | Runtime (master → now) | Δ Runtime | Per new test |');
+    lines.push(
+      '| File | Tests (master → now) | Runtime (master → now) | Δ Runtime | Per new test |',
+    );
     lines.push('| --- | --- | --- | --- | --- |');
     for (const f of actionable.files) lines.push(buildFileRow(f));
+    for (const df of actionable.deletedFiles ?? []) lines.push(buildDeletedFileRow(df));
     lines.push('');
     lines.push('</details>');
     lines.push('');
@@ -301,7 +415,16 @@ function buildComment({ jobName, jobUrl, ciDuration, stats, baseline, actionable
   // Full suite stats as secondary context (collapsed, no longer drives the badge).
   lines.push('<details><summary>Full suite stats</summary>');
   lines.push('');
-  const headers = ['', 'Tests', 'Passed', 'Failed', 'Skipped', 'Suites', 'Test duration', 'CI job duration'];
+  const headers = [
+    '',
+    'Tests',
+    'Passed',
+    'Failed',
+    'Skipped',
+    'Suites',
+    'Test duration',
+    'CI job duration',
+  ];
   lines.push(`| ${headers.join(' | ')} |`);
   lines.push(`| ${headers.map(() => '---').join(' | ')} |`);
   lines.push(
@@ -377,17 +500,24 @@ async function apiRequest(method, path, body) {
 
 /**
  * Fetch the list of added/modified spec files in this MR from the diffs API.
- * Deleted files are ignored. Renamed files are treated as modified, keeping
- * the old path so their master baseline can be looked up.
+ * Deleted spec files (both `_spec.js` and `_spec.rb`) are collected separately
+ * so their master baseline runtime can be surfaced as time saved.
+ * Renamed files are treated as modified, keeping the old path so their master
+ * baseline can be looked up.
  *
  * When the MR has more diffs than the page cap can cover, `truncated` is true:
  * some changed spec files may be missing from the breakdown, so the aggregate
  * numbers are understated and the comment surfaces a warning.
  *
- * @returns {Promise<{ files: Array<{ path: string, isNew: boolean, oldPath: string }>, truncated: boolean }>}
+ * @returns {Promise<{
+ *   files: Array<{ path: string, isNew: boolean, oldPath: string }>,
+ *   deletedFiles: Array<{ path: string }>,
+ *   truncated: boolean,
+ * }>}
  */
 async function fetchChangedSpecFiles(projectId, mrIid) {
   const files = [];
+  const deletedFiles = [];
   let truncated = false;
   try {
     for (let page = 1; page <= MAX_DIFF_PAGES; page += 1) {
@@ -399,7 +529,14 @@ async function fetchChangedSpecFiles(projectId, mrIid) {
       );
       if (!Array.isArray(diffs) || diffs.length === 0) break;
       for (const d of diffs) {
-        if (d.deleted_file) continue;
+        if (d.deleted_file) {
+          // Capture deleted spec files (JS or RSpec) so we can show time saved.
+          const oldPath = d.old_path;
+          if (oldPath && DELETED_SPEC_FILE_RE.test(oldPath)) {
+            deletedFiles.push({ path: oldPath });
+          }
+          continue;
+        }
         const newPath = d.new_path;
         if (!newPath || !SPEC_FILE_RE.test(newPath)) continue;
         files.push({
@@ -416,7 +553,7 @@ async function fetchChangedSpecFiles(projectId, mrIid) {
   } catch (err) {
     console.warn(`[MSW] Could not fetch MR changed files: ${err.message}`);
   }
-  return { files, truncated };
+  return { files, deletedFiles, truncated };
 }
 
 /**
@@ -456,7 +593,9 @@ async function findExistingNote(projectId, mrIid) {
     const me = await apiRequest('GET', '/user');
     authorUsername = me?.username ?? null;
   } catch (err) {
-    console.warn(`[MSW] Could not resolve current user (${err.message}) — matching on marker only.`);
+    console.warn(
+      `[MSW] Could not resolve current user (${err.message}) — matching on marker only.`,
+    );
   }
 
   // Fetch up to 3 pages of notes (100 per page) to find an existing summary.
@@ -470,13 +609,36 @@ async function findExistingNote(projectId, mrIid) {
     );
     const hit = notes.find(
       (n) =>
-        n.body?.includes(MARKER) &&
+        n.body?.includes(COMBINED_MARKER) &&
         (authorUsername == null || n.author?.username === authorUsername),
     );
     if (hit) return hit;
     if (notes.length < 100) break;
   }
   return null;
+}
+
+// Whether the counterpart suite's job exists in this pipeline. Distinguishes
+// "has not written its section yet" from "does not run for this MR".
+async function counterpartJobPresent(projectId, jobName) {
+  const pipelineId = process.env.CI_PIPELINE_ID;
+  if (!pipelineId) return false;
+
+  try {
+    for (let page = 1; page <= 5; page += 1) {
+      // eslint-disable-next-line no-await-in-loop
+      const jobs = await apiRequest(
+        'GET',
+        `/projects/${projectId}/pipelines/${pipelineId}/jobs?per_page=100&page=${page}&include_retried=false`,
+      );
+      if (jobs.some((job) => job.name === jobName)) return true;
+      if (jobs.length < 100) break;
+    }
+  } catch (err) {
+    console.warn(`[MSW] Could not look up ${jobName} in the pipeline: ${err.message}`);
+  }
+
+  return false;
 }
 
 async function run() {
@@ -498,12 +660,12 @@ async function run() {
 
   // Fetch the master baseline and the MR's changed files in parallel
   // (both best-effort — neither blocks the comment from posting).
-  const [baseline, { files: changedFiles, truncated }] = await Promise.all([
+  const [baseline, { files: changedFiles, deletedFiles, truncated }] = await Promise.all([
     fetchMasterBaseline(projectId, opts.jobName, opts.artifactPath),
     fetchChangedSpecFiles(projectId, mrIid),
   ]);
 
-  const actionable = computeActionable({ changedFiles, report: stats, baseline });
+  const actionable = computeActionable({ changedFiles, deletedFiles, report: stats, baseline });
 
   const comment = buildComment({
     jobName: opts.jobName,
@@ -531,14 +693,22 @@ async function run() {
   }
 
   const existing = await findExistingNote(projectId, mrIid);
-  if (existing) {
+
+  if (!existing) {
+    const counterpartPresent = await counterpartJobPresent(projectId, SECTIONS.rspec.job);
+    await apiRequest('POST', `/projects/${projectId}/merge_requests/${mrIid}/notes`, {
+      body: buildCombinedComment('msw', comment, { counterpartPresent }),
+    });
+    console.log('Posted new test summary comment.');
+  } else {
+    const body = spliceSection(existing.body ?? '', 'msw', comment);
     try {
       await apiRequest(
         'PUT',
         `/projects/${projectId}/merge_requests/${mrIid}/notes/${existing.id}`,
-        { body: comment },
+        { body },
       );
-      console.log(`Updated existing MSW summary comment (note ${existing.id}).`);
+      console.log(`Updated the MSW section of the test summary comment (note ${existing.id}).`);
     } catch (err) {
       // The CI token can only edit notes it authored, so updating a note that
       // was created by a different user/token fails (typically 403). Fall back
@@ -546,16 +716,9 @@ async function run() {
       console.warn(
         `Could not update note ${existing.id} (${err.message}) — posting a new comment instead.`,
       );
-      await apiRequest('POST', `/projects/${projectId}/merge_requests/${mrIid}/notes`, {
-        body: comment,
-      });
-      console.log('Posted new MSW summary comment.');
+      await apiRequest('POST', `/projects/${projectId}/merge_requests/${mrIid}/notes`, { body });
+      console.log('Posted new test summary comment.');
     }
-  } else {
-    await apiRequest('POST', `/projects/${projectId}/merge_requests/${mrIid}/notes`, {
-      body: comment,
-    });
-    console.log('Posted new MSW summary comment.');
   }
 
   // Fail the pipeline when the per-new-test cost is in the "action-required"
@@ -581,6 +744,10 @@ if (process.argv[1]?.endsWith('post_msw_test_summary.mjs')) {
 export {
   BUDGET_OK_S,
   BUDGET_ACTION_S,
+  COMBINED_MARKER,
+  spliceSection,
+  placeholderSection,
+  buildCombinedComment,
   formatDuration,
   formatSignedDuration,
   normalizeReportPath,
@@ -589,5 +756,6 @@ export {
   computeActionable,
   thresholdInfo,
   buildComment,
+  buildDeletedFileRow,
   apiRequest,
 };

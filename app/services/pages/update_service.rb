@@ -16,6 +16,10 @@ module Pages
       end
 
       ServiceResponse.success(payload: { project: project })
+    rescue ActiveRecord::RecordInvalid => e
+      ServiceResponse.error(message: e.record.errors.full_messages.to_sentence, reason: :unprocessable_entity)
+    rescue Gitlab::Pages::UniqueDomainGenerationFailure => e
+      ServiceResponse.error(message: e.message, reason: :unprocessable_entity)
     end
 
     private
@@ -24,6 +28,7 @@ module Pages
       pages_project_settings = params.slice(:pages_unique_domain_enabled, :pages_primary_domain)
       return if pages_project_settings.empty?
 
+      Gitlab::Pages.add_unique_domain_to(project) if pages_project_settings[:pages_unique_domain_enabled]
       project.project_setting.update!(pages_project_settings)
     end
 

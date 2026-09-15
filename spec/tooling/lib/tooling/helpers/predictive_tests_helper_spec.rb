@@ -17,8 +17,7 @@ RSpec.describe Tooling::Helpers::PredictiveTestsHelper, feature_category: :tooli
 
     context 'when FOSS' do
       before do
-        allow(GitlabEdition).to receive(:ee?).and_return(false)
-        allow(GitlabEdition).to receive(:jh?).and_return(false)
+        allow(GitlabEdition).to receive_messages(ee?: false, jh?: false)
       end
 
       it 'returns the correct paths' do
@@ -28,8 +27,7 @@ RSpec.describe Tooling::Helpers::PredictiveTestsHelper, feature_category: :tooli
 
     context 'when EE' do
       before do
-        allow(GitlabEdition).to receive(:ee?).and_return(true)
-        allow(GitlabEdition).to receive(:jh?).and_return(false)
+        allow(GitlabEdition).to receive_messages(ee?: true, jh?: false)
       end
 
       it 'returns the correct paths' do
@@ -39,8 +37,7 @@ RSpec.describe Tooling::Helpers::PredictiveTestsHelper, feature_category: :tooli
 
     context 'when JiHu' do
       before do
-        allow(GitlabEdition).to receive(:ee?).and_return(true)
-        allow(GitlabEdition).to receive(:jh?).and_return(true)
+        allow(GitlabEdition).to receive_messages(ee?: true, jh?: true)
       end
 
       it 'returns the correct paths' do

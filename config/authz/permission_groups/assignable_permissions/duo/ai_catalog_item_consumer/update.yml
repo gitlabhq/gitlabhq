@@ -1,0 +1,10 @@
+---
+name: update_ai_catalog_item_consumer
+description: Grants the ability to update AI catalog item consumers
+available_for:
+  - granular_access_token
+permissions:
+  - update_ai_catalog_item_consumer
+boundaries:
+  - project
+  - group

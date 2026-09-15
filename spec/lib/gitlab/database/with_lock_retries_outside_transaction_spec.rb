@@ -104,7 +104,7 @@ RSpec.describe Gitlab::Database::WithLockRetriesOutsideTransaction, feature_cate
           end
 
           expect(lock_attempts).to eq(retry_count)
-          expect(lock_acquired).to eq(true)
+          expect(lock_acquired).to be(true)
         end
       end
 
@@ -193,7 +193,7 @@ RSpec.describe Gitlab::Database::WithLockRetriesOutsideTransaction, feature_cate
           end.to raise_error(described_class::AttemptsExhaustedError)
 
           expect(lock_attempts).to eq(retry_count - 1)
-          expect(lock_acquired).to eq(false)
+          expect(lock_acquired).to be(false)
         end
       end
 
@@ -209,7 +209,7 @@ RSpec.describe Gitlab::Database::WithLockRetriesOutsideTransaction, feature_cate
             end
           end.to raise_error(ActiveRecord::StatementInvalid)
 
-          expect(lock_acquired).to eq(false)
+          expect(lock_acquired).to be(false)
         ensure
           connection.execute("RESET statement_timeout")
         end

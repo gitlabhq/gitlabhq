@@ -1,6 +1,6 @@
 ---
 stage: Plan
-group: Project Management
+group: Work Items
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see <https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments>
 description: Assign a numerical weight to GitLab work items to represent their estimated effort, value, or complexity and help with planning and prioritization.
 title: Work item weight

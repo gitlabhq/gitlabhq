@@ -19,7 +19,7 @@ To connect your Kubernetes cluster with GitLab, you can use:
 - [A certificate-based integration](_index.md).
 
 The certificate-based integration is
-[**deprecated**](https://about.gitlab.com/blog/deprecating-the-cert-based-kubernetes-integration/)
+[deprecated](https://about.gitlab.com/blog/deprecating-the-cert-based-kubernetes-integration/)
 in GitLab 14.5. The sunsetting plans are described:
 
 - for [GitLab.com customers](../../../update/deprecations.md#gitlabcom-certificate-based-integration-with-kubernetes).
@@ -166,7 +166,7 @@ To migrate from GitLab-managed clusters to GitLab-managed Kubernetes resources:
 
 In your Auto DevOps project, you can use the GitLab agent for Kubernetes to connect with your Kubernetes cluster.
 
-Prerequisites
+Prerequisites:
 
 - Install the [GitLab agent for Kubernetes](../../clusters/agent/install/_index.md).
 - [Authorize the agent](../../clusters/agent/ci_cd_workflow.md#authorize-agent-access) to access relevant projects or groups.

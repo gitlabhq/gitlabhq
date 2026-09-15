@@ -46,6 +46,22 @@ RSpec.describe Projects::SnippetsController, feature_category: :source_code_mana
       let(:params) { base_params }
     end
 
+    context 'when a scope is given' do
+      let_it_be(:private_snippet) { create(:project_snippet, :private, project: project, author: user) }
+      let_it_be(:public_snippet) { create(:project_snippet, :public, project: project, author: user) }
+
+      before do
+        sign_in(user)
+      end
+
+      it 'filters the snippets by that scope' do
+        get :index, params: base_params.merge(scope: 'are_private')
+
+        expect(assigns(:snippets)).to include(private_snippet)
+        expect(assigns(:snippets)).not_to include(public_snippet)
+      end
+    end
+
     it_behaves_like 'snippets views' do
       let(:params) { base_params }
     end

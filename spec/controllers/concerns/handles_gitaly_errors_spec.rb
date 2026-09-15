@@ -3,17 +3,6 @@
 require 'spec_helper'
 
 RSpec.describe HandlesGitalyErrors, feature_category: :source_code_management do
-  let(:gitaly_errors) do
-    {
-      index: Gitlab::Git::CommandError,
-      show: Gitlab::Git::CommandTimedOut,
-      grpc_unavailable: GRPC::Unavailable,
-      grpc_deadline: GRPC::DeadlineExceeded,
-      grpc_resource_exhausted: GRPC::ResourceExhausted,
-      resource_exhausted_error: Gitlab::Git::ResourceExhaustedError
-    }
-  end
-
   controller(ApplicationController) do
     include HandlesGitalyErrors
 
@@ -159,10 +148,31 @@ RSpec.describe HandlesGitalyErrors, feature_category: :source_code_management do
         get :index, format: :html
       end
 
-      it 'renders the action template with 503 status' do
-        expect(controller).to receive(:render).with(action: 'index', status: :service_unavailable)
+      context 'when the action has a template' do
+        before do
+          allow(controller.lookup_context).to receive(:exists?).and_return(true)
+        end
 
-        get :index, format: :html
+        it 'renders the action template with 503 status' do
+          expect(controller).to receive(:render).with(action: 'index', status: :service_unavailable)
+
+          get :index, format: :html
+        end
+      end
+
+      context 'when the action has no template' do
+        before do
+          allow(Gitlab).to receive(:com?).and_return(false)
+        end
+
+        it 'renders a plain 503 instead of raising ActionView::MissingTemplate' do
+          get :index, format: :html
+
+          expect(response).to have_gitlab_http_status(:service_unavailable)
+          expect(response.body).to eq(
+            'The git server, Gitaly, is not available at this time. Please contact your administrator.'
+          )
+        end
       end
     end
 

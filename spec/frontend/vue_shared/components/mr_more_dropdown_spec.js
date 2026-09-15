@@ -1,6 +1,13 @@
 import { mountExtended } from 'helpers/vue_test_utils_helper';
 import { createMockDirective, getBinding } from 'helpers/vue_mock_directive';
+import { useMockLocationHelper } from 'helpers/mock_window_location_helper';
+import { setCookie } from '~/lib/utils/common_utils';
 import MRMoreActionsDropdown from '~/vue_shared/components/mr_more_dropdown.vue';
+
+jest.mock('~/lib/utils/common_utils', () => ({
+  ...jest.requireActual('~/lib/utils/common_utils'),
+  setCookie: jest.fn(),
+}));
 
 describe('MR More actions sidebar', () => {
   let wrapper;
@@ -14,11 +21,14 @@ describe('MR More actions sidebar', () => {
   const findReopenMergeRequestOption = () => wrapper.find('[data-testid="reopen-merge-request"]');
   const findReportAbuseOption = () => wrapper.find('[data-testid="report-abuse-option"]');
   const findLockMergeRequestOption = () => wrapper.find('[data-testid="lock-merge-request"]');
+  const findAiOverviewToggle = () => wrapper.findByTestId('toggle-ai-overview');
 
   const createComponent = ({
     isCurrentUser = true,
     open = false,
     canUpdateMergeRequest = false,
+    aiOverviewAvailable = false,
+    aiOverviewEnabled = false,
   } = {}) => {
     wrapper = mountExtended(MRMoreActionsDropdown, {
       directives: {
@@ -31,6 +41,8 @@ describe('MR More actions sidebar', () => {
         isCurrentUser,
         open,
         canUpdateMergeRequest,
+        aiOverviewAvailable,
+        aiOverviewEnabled,
       },
     });
   };
@@ -123,6 +135,44 @@ describe('MR More actions sidebar', () => {
 
       expect(findReportAbuseOption().exists()).toBe(true);
     });
+  });
+
+  describe('AI overview toggle', () => {
+    useMockLocationHelper();
+
+    it('is hidden when the AI overview is not available', () => {
+      createComponent();
+
+      expect(findAiOverviewToggle().exists()).toBe(false);
+    });
+
+    it('offers to opt in when the AI overview is available but not enabled', () => {
+      createComponent({ aiOverviewAvailable: true });
+
+      expect(findAiOverviewToggle().text()).toBe('Try the new overview');
+    });
+
+    it('offers to opt out when the AI overview is enabled', () => {
+      createComponent({ aiOverviewAvailable: true, aiOverviewEnabled: true });
+
+      expect(findAiOverviewToggle().text()).toBe('Switch to the classic overview');
+    });
+
+    it.each`
+      aiOverviewEnabled | cookieValue
+      ${false}          | ${'true'}
+      ${true}           | ${'false'}
+    `(
+      'writes $cookieValue and reloads when enabled is $aiOverviewEnabled',
+      ({ aiOverviewEnabled, cookieValue }) => {
+        createComponent({ aiOverviewAvailable: true, aiOverviewEnabled });
+
+        findAiOverviewToggle().find('button').trigger('click');
+
+        expect(setCookie).toHaveBeenCalledWith('mr_ai_overview_enabled', cookieValue);
+        expect(window.location.reload).toHaveBeenCalled();
+      },
+    );
   });
 
   describe('More actions menu', () => {

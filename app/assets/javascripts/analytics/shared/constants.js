@@ -355,7 +355,8 @@ export const VALUE_STREAM_METRIC_METADATA = {
   [CONTRIBUTOR_METRICS.COUNT]: {
     description: s__('ValueStreamAnalytics|Number of monthly unique users with contributions.'),
     groupLink: '-/contribution_analytics',
-    projectLink: '-/graphs/master?ref_type=heads',
+    // HEAD resolves to the project's default branch, which is not always named master
+    projectLink: '-/graphs/HEAD',
     docsLink: helpPagePath('user/profile/contributions_calendar.html', {
       anchor: 'user-contribution-events',
     }),

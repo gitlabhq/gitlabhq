@@ -3,7 +3,7 @@
 class CreateCiFinishedPipelinesDaily < ClickHouse::Migration
   def up
     execute <<~SQL
-      CREATE TABLE ci_finished_pipelines_daily
+      CREATE TABLE IF NOT EXISTS ci_finished_pipelines_daily
       (
         `path` String DEFAULT '0/',
         `status` LowCardinality(String) DEFAULT '',

@@ -17,6 +17,7 @@ module API
 
     allow_mcp_access_read
     allow_mcp_access_create
+    allow_mcp_access_update
     allow_access_with_scope :ai_workflows, if: ->(request) do
       request.get? || request.head? || mr_update?(request) || mr_create?(request)
     end
@@ -104,8 +105,8 @@ module API
         parent_type = args[:project_id] ? :project : :group
         args[:"attempt_#{parent_type}_search_optimizations"] = true
 
-        finder = MergeRequestsFinder.new(current_user, args)
-        merge_requests = paginate(finder.execute, skip_default_order: finder.group_mr_in_optimization_applied?)
+        merge_requests = MergeRequestsFinder.new(current_user, args).execute
+        merge_requests = paginate(merge_requests)
                            .preload(:source_project, :target_project)
 
         return merge_requests if args[:view] == 'simple'
@@ -116,7 +117,7 @@ module API
       # rubocop: enable CodeReuse/ActiveRecord
 
       def render_merge_requests(merge_requests, options, skip_cache: false, ttl: 8.hours)
-        return present merge_requests, options if skip_cache
+        return present merge_requests, **options if skip_cache
 
         cache_context = ->(mr) do
           [
@@ -256,7 +257,7 @@ module API
           resource_type: 'api/merge_requests'
         )
 
-        present merge_requests, serializer_options_for(merge_requests)
+        present merge_requests, **serializer_options_for(merge_requests)
       end
     end
 
@@ -295,7 +296,7 @@ module API
         end
 
         unless Feature.enabled?(:cache_list_mr_on_group_api_responses, user_group)
-          present merge_requests, options
+          present merge_requests, **options
           next
         end
 
@@ -338,8 +339,7 @@ module API
             documentation: { is_array: true }
           optional :milestone_id, type: Integer, desc: 'The global ID of a milestone to assign the merge request to.'
           optional :milestone, type: String, limit: 255,
-            desc: 'The title of a project or ancestor-group milestone to assign the merge request to. ' \
-              'Mutually exclusive with `milestone_id`.'
+            desc: 'The title of a project or ancestor-group milestone to assign the merge request to.'
           mutually_exclusive :milestone_id, :milestone
           optional :remove_source_branch, type: Boolean, desc: 'Flag indicating if a merge request should remove the source branch when merging.'
           optional :allow_collaboration, type: Boolean, desc: 'Allow commits from members who can merge to the target branch.'
@@ -417,8 +417,10 @@ module API
           desc: 'The target project of the merge request defaults to the :id of the project.'
         use :optional_params
       end
-      route_setting :mcp, tool_name: :create_merge_request, params: Helpers::MergeRequestsHelpers.create_merge_request_mcp_params,
-        annotations: { readOnlyHint: false, destructiveHint: false }, resource_name: "project"
+      route_setting :mcp, tool_name: :create_merge_request,
+        params: Helpers::MergeRequestsHelpers.create_merge_request_mcp_params,
+        annotations: { readOnlyHint: false, destructiveHint: false }, resource_name: "project",
+        aggregators: [::Mcp::Tools::MergeRequests::SaveMergeRequestService]
       route_setting :authorization, permissions: :create_merge_request, boundary_type: :project
       post ":id/merge_requests", feature_category: :code_review_workflow, urgency: :low do
         Gitlab::QueryLimiting.disable!('https://gitlab.com/gitlab-org/gitlab/-/issues/20770')
@@ -552,7 +554,8 @@ module API
         requires :merge_request_iid, type: Integer, desc: 'The internal ID of the merge request.'
         use :pagination
       end
-      route_setting :mcp, tool_name: :get_merge_request_commits, params: [:id, :merge_request_iid, :per_page, :page], resource_name: "merge request"
+      route_setting :mcp, tool_name: :get_merge_request_commits, toolset: :merge_requests,
+        params: [:id, :merge_request_iid, :per_page, :page], resource_name: "merge request"
       route_setting :authorization, permissions: :read_merge_request_commit, boundary_type: :project
       get ':id/merge_requests/:merge_request_iid/commits', feature_category: :code_review_workflow, urgency: :low do
         merge_request = find_merge_request_with_access(params[:merge_request_iid])
@@ -700,7 +703,9 @@ module API
         use :pagination
         use :with_unidiff
       end
-      route_setting :mcp, tool_name: :get_merge_request_diffs, params: [:id, :merge_request_iid, :per_page, :page], resource_name: "merge request"
+      route_setting :mcp, tool_name: :get_merge_request_diffs, toolset: :merge_requests,
+        tool_aliases: [:list_merge_request_diffs],
+        params: [:id, :merge_request_iid, :per_page, :page], resource_name: "merge request"
       route_setting :authorization, permissions: :read_merge_request_diff, boundary_type: :project
       get ':id/merge_requests/:merge_request_iid/diffs', feature_category: :code_review_workflow, urgency: :low do
         merge_request = find_merge_request_with_access(params[:merge_request_iid])
@@ -744,7 +749,8 @@ module API
       params do
         requires :merge_request_iid, type: Integer, desc: 'The internal ID of the merge request.'
       end
-      route_setting :mcp, tool_name: :get_merge_request_pipelines, params: [:id, :merge_request_iid, :per_page, :page], resource_name: "merge request"
+      route_setting :mcp, tool_name: :get_merge_request_pipelines, toolset: :merge_requests,
+        params: [:id, :merge_request_iid, :per_page, :page], resource_name: "merge request"
       route_setting :authorization, permissions: :read_merge_request_pipeline, boundary_type: :project
       get ':id/merge_requests/:merge_request_iid/pipelines', urgency: :low, feature_category: :pipeline_composition do
         pipelines = merge_request_pipelines_with_access
@@ -778,7 +784,7 @@ module API
         )
 
         if params[:async]
-          service.execute_async(merge_request)
+          service.execute_async(merge_request, user_initiated: true)
 
           status :accepted
         else
@@ -817,6 +823,10 @@ module API
         use :optional_params
         at_least_one_of(*::API::MergeRequests.update_params_at_least_one_of)
       end
+      route_setting :mcp, tool_name: :update_merge_request,
+        params: Helpers::MergeRequestsHelpers.update_merge_request_mcp_params,
+        annotations: { readOnlyHint: false, destructiveHint: false }, resource_name: "merge request",
+        aggregators: [::Mcp::Tools::MergeRequests::SaveMergeRequestService]
       route_setting :authorization, permissions: :update_merge_request, boundary_type: :project
       put ':id/merge_requests/:merge_request_iid', feature_category: :code_review_workflow, urgency: :low do
         Gitlab::QueryLimiting.disable!('https://gitlab.com/gitlab-org/gitlab/-/issues/20772')
@@ -960,7 +970,7 @@ module API
         merge_request.rebase_async(current_user.id, skip_ci: params[:skip_ci])
 
         status :accepted
-        present rebase_in_progress: merge_request.rebase_in_progress?
+        present({ rebase_in_progress: merge_request.rebase_in_progress? })
       rescue ::MergeRequest::RebaseLockTimeout => e
         render_api_error!(e.message, 409)
       end

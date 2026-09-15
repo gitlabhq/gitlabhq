@@ -55,7 +55,7 @@ export default {
       default: false,
     },
   },
-  emits: ['beforeUpdate:compiled', 'highlight', 'update:compiled', 'update:valid'],
+  emits: ['before-update-compiled', 'highlight', 'update:compiled', 'update:valid'],
   computed: {
     path() {
       if (!this.target) return null;
@@ -84,7 +84,7 @@ export default {
       this.compiled.setIn(this.path, v);
     },
     onModelChange(v) {
-      this.$emit('beforeUpdate:compiled');
+      this.$emit('before-update-compiled');
       this.compile(v);
       this.$emit('update:compiled', this.compiled);
       this.$emit('highlight', this.path);

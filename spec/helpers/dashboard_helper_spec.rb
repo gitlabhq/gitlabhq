@@ -79,7 +79,7 @@ RSpec.describe DashboardHelper, :enable_admin_mode, feature_category: :shared do
       allow(user).to receive(:has_current_license?).and_return(true)
     end
 
-    it { is_expected.to eq(false) }
+    it { is_expected.to be(false) }
   end
 
   describe '.user_groups_requiring_reauth', feature_category: :system_access do

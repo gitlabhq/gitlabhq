@@ -2,6 +2,10 @@
 
 import { scrollToElement } from '~/lib/utils/scroll_utils';
 import { updateHash } from '~/blob/state';
+import {
+  HIGHLIGHT_TOP_CLASS_NAME,
+  HIGHLIGHT_BOTTOM_CLASS_NAME,
+} from '~/vue_shared/components/blob_viewers/constants';
 
 // LineHighlighter
 //
@@ -111,10 +115,16 @@ LineHighlighter.prototype.clickHandler = function (event) {
 };
 
 LineHighlighter.prototype.clearHighlight = function () {
-  const highlightedLines = document.getElementsByClassName(this.highlightLineClass);
-  Array.from(highlightedLines).forEach(function (line) {
-    line.classList.remove(this.highlightLineClass);
-  }, this);
+  const highlightedLines = document.querySelectorAll(
+    `.${this.highlightLineClass}, .${HIGHLIGHT_TOP_CLASS_NAME}, .${HIGHLIGHT_BOTTOM_CLASS_NAME}`,
+  );
+  highlightedLines.forEach((line) => {
+    line.classList.remove(
+      this.highlightLineClass,
+      HIGHLIGHT_TOP_CLASS_NAME,
+      HIGHLIGHT_BOTTOM_CLASS_NAME,
+    );
+  });
 };
 
 // Convert a URL hash String into line numbers
@@ -139,17 +149,31 @@ LineHighlighter.prototype.hashToRange = function (hash) {
   return [null, null];
 };
 
+// Returns the code content and line-number gutter cell for a line, so the
+// highlight spans both columns.
+LineHighlighter.prototype.lineElements = function (lineNumber) {
+  const code = document.getElementById(`LC${lineNumber}`);
+  const lineNumberLink = document.getElementById(`L${lineNumber}`);
+  const gutter = lineNumberLink?.closest('.diff-line-num') || lineNumberLink;
+  return [code, gutter].filter(Boolean);
+};
+
 // Highlight a single line
 //
 // lineNumber - Line number to highlight
 LineHighlighter.prototype.highlightLine = function (lineNumber) {
-  const lineElement = document.getElementById(`LC${lineNumber}`);
-  if (lineElement) {
-    lineElement.classList.add(this.highlightLineClass);
-  }
+  this.lineElements(lineNumber).forEach((element) => {
+    element.classList.add(
+      this.highlightLineClass,
+      HIGHLIGHT_TOP_CLASS_NAME,
+      HIGHLIGHT_BOTTOM_CLASS_NAME,
+    );
+  });
 };
 
 // Highlight all lines within a range
+//
+// Only the first and last line get a border, so the range reads as one block.
 //
 // range - Array containing the starting and ending line numbers
 LineHighlighter.prototype.highlightRange = function (range) {
@@ -157,8 +181,13 @@ LineHighlighter.prototype.highlightRange = function (range) {
     const results = [];
     const ref = range[0] <= range[1] ? range : range.reverse();
 
-    for (let lineNumber = range[0]; lineNumber <= ref[1]; lineNumber += 1) {
-      results.push(this.highlightLine(lineNumber));
+    for (let lineNumber = ref[0]; lineNumber <= ref[1]; lineNumber += 1) {
+      this.lineElements(lineNumber).forEach((element) => {
+        element.classList.add(this.highlightLineClass);
+        if (lineNumber === ref[0]) element.classList.add(HIGHLIGHT_TOP_CLASS_NAME);
+        if (lineNumber === ref[1]) element.classList.add(HIGHLIGHT_BOTTOM_CLASS_NAME);
+        results.push(element);
+      });
     }
 
     return results;

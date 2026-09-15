@@ -5,7 +5,6 @@ Performance/CollectionLiteralInLoop:
     - 'config/initializers/1_settings.rb'
     - 'ee/spec/support/shared_examples/features/protected_branches_access_control_shared_examples.rb'
     - 'ee/spec/workers/app_sec/dast/profile_schedule_worker_spec.rb'
-    - 'ee/spec/workers/security/orchestration_policy_rule_schedule_worker_spec.rb'
     - 'lib/gitlab/fake_application_settings.rb'
     - 'lib/gitlab/otp_key_rotator.rb'
     - 'lib/gitlab/reference_extractor.rb'

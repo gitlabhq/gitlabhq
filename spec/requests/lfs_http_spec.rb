@@ -779,6 +779,116 @@ RSpec.describe 'Git LFS API and storage', feature_category: :source_code_managem
         end
       end
 
+      describe 'when the project organization is in maintenance mode' do
+        let_it_be_with_reload(:organization) { create(:organization) }
+        let_it_be_with_reload(:project) { create(:project, :empty_repo, organization: organization) }
+
+        before do
+          project.add_maintainer(user)
+        end
+
+        context 'with a time-bounded maintenance reason' do
+          before do
+            organization.start_maintenance(maintenance_reason: 'migration')
+            organization.confirm_maintenance
+          end
+
+          shared_examples 'blocked with a 503' do
+            it_behaves_like 'LFS http expected response code and message' do
+              let(:response_code) { 503 }
+              let(:response_headers) { { 'Retry-After' => '60' } }
+              let(:message) { 'This organization is temporarily unavailable due to maintenance.' }
+            end
+          end
+
+          context 'when downloading via batch' do
+            before do
+              post_lfs_json(batch_url(project), download_body(sample_object), headers)
+            end
+
+            it_behaves_like 'blocked with a 503'
+          end
+
+          context 'when uploading via batch' do
+            before do
+              post_lfs_json(batch_url(project), upload_body(sample_object), headers)
+            end
+
+            it_behaves_like 'blocked with a 503'
+          end
+
+          context 'when downloading an object' do
+            before do
+              get(objects_url(project, sample_oid), params: {}, headers: headers)
+            end
+
+            it_behaves_like 'blocked with a 503'
+          end
+        end
+
+        context 'with an indefinite maintenance reason' do
+          before do
+            organization.start_maintenance(maintenance_reason: 'legal')
+            organization.confirm_maintenance
+
+            post_lfs_json(batch_url(project), download_body(sample_object), headers)
+          end
+
+          it_behaves_like 'LFS http expected response code and message' do
+            let(:response_code) { 403 }
+            let(:message) { 'This organization is unavailable.' }
+          end
+        end
+
+        context 'when the feature flag is disabled' do
+          before do
+            organization.start_maintenance(maintenance_reason: 'migration')
+            organization.confirm_maintenance
+            stub_feature_flags(organization_maintenance_enforcement: false)
+
+            post_lfs_json(batch_url(project), download_body(sample_object), headers)
+          end
+
+          it_behaves_like 'LFS http 200 response'
+        end
+
+        context 'when the requester has no access to the project' do
+          let_it_be(:other_user) { create(:user) }
+
+          let(:authorization) do
+            ActionController::HttpAuthentication::Basic.encode_credentials(other_user.username, other_user.password)
+          end
+
+          before do
+            project.update!(visibility_level: Gitlab::VisibilityLevel::PRIVATE)
+            organization.start_maintenance(maintenance_reason: 'migration')
+            organization.confirm_maintenance
+
+            post_lfs_json(batch_url(project), download_body(sample_object), headers)
+          end
+
+          it 'does not disclose the maintenance status' do
+            expect(response).to have_gitlab_http_status(:not_found)
+            expect(json_response['message']).not_to include('maintenance')
+          end
+        end
+
+        context 'when using the deprecated API' do
+          before do
+            organization.start_maintenance(maintenance_reason: 'migration')
+            organization.confirm_maintenance
+
+            get(File.join("#{project.http_url_to_repo}/info/lfs/objects/", sample_oid), params: {}, headers: headers)
+          end
+
+          it 'is not affected by maintenance mode enforcement' do
+            expect(response).to have_gitlab_http_status(:not_implemented)
+            expect(json_response['message'])
+              .to eq('Server supports batch API only, please update your Git LFS client to version 1.0.1 and up.')
+          end
+        end
+      end
+
       describe 'when pushing a LFS object' do
         let(:include_workhorse_jwt_header) { true }
 
@@ -882,6 +992,7 @@ RSpec.describe 'Git LFS API and storage', feature_category: :source_code_managem
                     it_behaves_like 'a valid response' do
                       it 'responds with status 200, location of LFS remote store and object details' do
                         expect(json_response).not_to have_key('TempPath')
+                        expect(json_response['LocalTempPath']).to eq(Dir.tmpdir)
                         expect(json_response['RemoteObject']).to have_key('ID')
                         expect(json_response['RemoteObject']).to have_key('GetURL')
                         expect(json_response['RemoteObject']).to have_key('StoreURL')
@@ -1567,6 +1678,52 @@ RSpec.describe 'Git LFS API and storage', feature_category: :source_code_managem
         upload_batch
 
         expect(response).to have_gitlab_http_status(:not_found)
+      end
+    end
+  end
+
+  describe 'Current.organization resolution' do
+    let_it_be(:organization) { create(:organization) }
+    let_it_be(:group) { create(:group, :public, organization: organization) }
+    let_it_be(:public_project) { create(:project, :public, :empty_repo, group: group, organization: organization) }
+
+    before do
+      stub_lfs_setting(enabled: true)
+
+      # Keep the application context readable after the request finishes
+      allow(Labkit::Context).to receive(:pop)
+    end
+
+    it 'resolves the organization owning the repository from the URL path' do
+      body = { 'operation' => 'download', 'objects' => [{ 'oid' => 'a' * 64, 'size' => 1 }] }
+      post_lfs_json(batch_url(public_project), body)
+
+      expect(Gitlab::ApplicationContext.current).to include('meta.organization_id' => organization.id)
+    end
+
+    context 'when downloading from storage' do
+      let_it_be(:lfs_object) { create(:lfs_object, :with_file) }
+      let_it_be(:lfs_objects_project) do
+        create(:lfs_objects_project, project: public_project, lfs_object: lfs_object)
+      end
+
+      it 'resolves the organization owning the repository from the URL path', :aggregate_failures do
+        get objects_url(public_project, lfs_object.oid)
+
+        expect(response).to have_gitlab_http_status(:ok)
+        expect(Gitlab::ApplicationContext.current).to include('meta.organization_id' => organization.id)
+      end
+    end
+
+    context 'when requesting an LFS object of a personal snippet' do
+      let_it_be(:snippet_organization) { create(:organization) }
+      let_it_be(:snippet) { create(:personal_snippet, :public, :empty_repo, organization: snippet_organization) }
+
+      it 'resolves the organization owning the snippet, also for the rejected request', :aggregate_failures do
+        get objects_url(snippet, 'a' * 64)
+
+        expect(response).to have_gitlab_http_status(:not_found)
+        expect(Gitlab::ApplicationContext.current).to include('meta.organization_id' => snippet_organization.id)
       end
     end
   end

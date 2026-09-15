@@ -297,8 +297,7 @@ RSpec.describe API::Admin::BroadcastMessages, :aggregate_failures, feature_categ
 
         before do
           allow(System::BroadcastMessage).to receive(:find).and_return(message)
-          allow(message).to receive(:update).and_return(false)
-          allow(message).to receive(:errors).and_return(stubbed_errors)
+          allow(message).to receive_messages(update: false, errors: stubbed_errors)
         end
 
         it 'calls render_validation_error!' do

@@ -50,10 +50,19 @@ export default {
       return hasRESTActions || hasGraphQLActions;
     },
     isRetryable() {
-      return this.pipeline?.flags?.retryable || this.pipeline?.retryable;
+      // REST flags already include the permission check server-side
+      const isRESTRetryable = this.pipeline?.flags?.retryable;
+      const isGraphQLRetryable =
+        this.pipeline?.retryable && this.pipeline?.userPermissions?.updatePipeline;
+
+      return isRESTRetryable || isGraphQLRetryable;
     },
     isCancelable() {
-      return this.pipeline?.flags?.cancelable || this.pipeline?.cancelable;
+      const isRESTCancelable = this.pipeline?.flags?.cancelable;
+      const isGraphQLCancelable =
+        this.pipeline?.cancelable && this.pipeline?.userPermissions?.cancelPipeline;
+
+      return isRESTCancelable || isGraphQLCancelable;
     },
     pipelineId() {
       if (isGid(this.pipeline.id)) {

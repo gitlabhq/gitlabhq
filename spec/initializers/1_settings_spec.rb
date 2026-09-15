@@ -305,6 +305,27 @@ RSpec.describe '1_settings', feature_category: :settings do
     end
   end
 
+  describe 'ci_catalog_bundles' do
+    after do
+      Settings.ci_catalog_bundles['enabled'] = nil
+      load_settings
+    end
+
+    it 'is enabled by default' do
+      Settings.ci_catalog_bundles['enabled'] = nil
+      load_settings
+
+      expect(Settings.ci_catalog_bundles.enabled).to be(true)
+    end
+
+    it 'uses the configured value' do
+      Settings.ci_catalog_bundles['enabled'] = false
+      load_settings
+
+      expect(Settings.ci_catalog_bundles.enabled).to be(false)
+    end
+  end
+
   describe 'ci_id_tokens_issuer_url' do
     after do
       Settings.ci_id_tokens['issuer_url'] = nil
@@ -420,6 +441,31 @@ RSpec.describe '1_settings', feature_category: :settings do
     end
   end
 
+  describe 'Artifact Registry configuration' do
+    context 'with default configuration' do
+      before do
+        stub_config(artifact_registry: {})
+        load_settings
+      end
+
+      it { expect(Settings.artifact_registry.service_token.secret_file).to be_nil }
+    end
+
+    context 'with custom configuration' do
+      before do
+        stub_config(artifact_registry: {
+          service_token: { secret_file: '/etc/gitlab/artifact-registry/.gitlab_artifact_registry_secret' }
+        })
+        load_settings
+      end
+
+      it 'reads secret_file from config' do
+        expect(Settings.artifact_registry.service_token.secret_file)
+          .to eq('/etc/gitlab/artifact-registry/.gitlab_artifact_registry_secret')
+      end
+    end
+  end
+
   describe 'cron jobs', unless: Gitlab.ee? do
     around do |example|
       Gitlab::SidekiqConfig::CronJobs.reset!
@@ -437,6 +483,7 @@ RSpec.describe '1_settings', feature_category: :settings do
         authn_data_retention_oauth_access_grant_archive_worker
         authn_data_retention_oauth_access_token_archive_worker
         authorized_project_update_periodic_recalculate_worker
+        authz_reverify_project_authorizations_cron_worker
         background_operations_worker_main_database
         background_operations_worker_ci_database
         background_operations_worker_sec_database
@@ -448,6 +495,9 @@ RSpec.describe '1_settings', feature_category: :settings do
         batched_background_migration_worker_sec_database
         batched_git_ref_updates_cleanup_scheduler_worker
         background_operation_environments_auto_delete
+        background_operation_merge_requests_clear_old_merged_cached_html
+        background_operation_merge_requests_clear_stale_cached_html
+        background_operation_notes_clear_stale_cached_html
         bbo_users_delete_unconfirmed_secondary
         bulk_imports_stale_import_worker
         cells_schedule_claims_verification_worker

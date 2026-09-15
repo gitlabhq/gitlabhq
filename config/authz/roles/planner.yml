@@ -29,6 +29,7 @@ project:
   - create_ticket
   - create_timelog
   - create_wiki
+  - create_work_item_saved_view
   - destroy_design
   - destroy_issue
   - download_code
@@ -71,6 +72,7 @@ group:
   - create_saved_view
   - create_timelog
   - create_wiki
+  - create_work_item_saved_view
   - destroy_epic
   - destroy_issue
   - download_wiki_code

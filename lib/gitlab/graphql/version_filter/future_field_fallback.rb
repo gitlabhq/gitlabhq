@@ -21,9 +21,14 @@ module Gitlab
           private
 
           def future_field?(name:, field:, context:)
-            context.fetch(:contain_future_fields, false) &&
-              field.blank? &&
-              !name.start_with?('__')
+            return false if field.present?
+            # Introspection fields like __typename resolve through the
+            # schema's dynamic fields; a fallback here would shadow them.
+            return false if name.start_with?('__')
+
+            # Only names tagged with @gl_introduced get the fallback, so a
+            # typo in an untagged field still raises undefinedField.
+            context.fetch(:future_field_names, nil)&.include?(name)
           end
 
           def fallback_field(name:)

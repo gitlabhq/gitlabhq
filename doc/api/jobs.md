@@ -24,6 +24,7 @@ By default, this request returns 20 results at a time because the API results [a
 > [!note]
 > This endpoint supports both offset-based and [keyset-based](rest/_index.md#keyset-based-pagination) pagination, but keyset-based
 > pagination is strongly recommended when requesting consecutive pages of results.
+> Jobs are returned by ID in descending order.
 
 ```plaintext
 GET /projects/:id/jobs
@@ -33,8 +34,6 @@ GET /projects/:id/jobs
 | ---------- | ------------------------------ | -------- | ----------- |
 | `id`       | integer or string                 | Yes      | ID or [URL-encoded path](rest/_index.md#namespaced-paths) of the project. |
 | `scope`    | string, or array of strings | No       | Scope of jobs to show. Either one of or an array of [job status values](#job-status-values). All jobs are returned if `scope` is not provided. |
-| `order_by` | string                         | No       | Return jobs ordered by `id`. |
-| `sort`     | string                         | No       | Return jobs sorted in `asc` or `desc` order. Default is `desc`. |
 
 ```shell
 curl --globoff \
@@ -243,7 +242,7 @@ GET /projects/:id/pipelines/:pipeline_id/jobs
 | `id`              | integer or string                 | Yes      | ID or [URL-encoded path of the project](rest/_index.md#namespaced-paths). |
 | `pipeline_id`     | integer                        | Yes      | ID of a pipeline. Can also be obtained in CI jobs using the [predefined CI variable](../ci/variables/predefined_variables.md) `CI_PIPELINE_ID`. |
 | `include_retried` | boolean                        | No       | Include retried jobs in the response. Defaults to `false`. |
-| `scope`           | string **or** array of strings | No       | Scope of jobs to show. Either one of or an array of [job status values](#job-status-values). All jobs are returned if `scope` is not provided. |
+| `scope`           | string or array of strings | No       | Scope of jobs to show. Either one of or an array of [job status values](#job-status-values). All jobs are returned if `scope` is not provided. |
 
 ```shell
 curl --globoff \
@@ -431,7 +430,7 @@ GET /projects/:id/pipelines/:pipeline_id/trigger_jobs
 | ------------- | ------------------------------ | -------- | ----------- |
 | `id`          | integer or string                 | Yes      | ID or [URL-encoded path of the project](rest/_index.md#namespaced-paths). |
 | `pipeline_id` | integer                        | Yes      | ID of a pipeline. |
-| `scope`       | string **or** array of strings | No       | Scope of jobs to show. Either one of or an array of [job status values](#job-status-values). All jobs are returned if `scope` is not provided. |
+| `scope`       | string or array of strings | No       | Scope of jobs to show. Either one of or an array of [job status values](#job-status-values). All jobs are returned if `scope` is not provided. |
 
 ```shell
 curl --globoff \

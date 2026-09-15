@@ -61,17 +61,20 @@ describe('DropdownContentsCreateView', () => {
     workspaceType = 'project',
     labelsResponse = workspaceLabelsQueryResponse,
     searchTerm = '',
+    seedLabelsCache = true,
   } = {}) => {
     const createLabelMutation = workspaceCreateLabelMutation[workspaceType];
     const mockApollo = createMockApollo([[createLabelMutation, mutationHandler]]);
-    mockApollo.clients.defaultClient.cache.writeQuery({
-      query: workspaceLabelsQueries[workspaceType].query,
-      data: labelsResponse.data,
-      variables: {
-        fullPath: '',
-        searchTerm,
-      },
-    });
+    if (seedLabelsCache) {
+      mockApollo.clients.defaultClient.cache.writeQuery({
+        query: workspaceLabelsQueries[workspaceType].query,
+        data: labelsResponse.data,
+        variables: {
+          fullPath: '',
+          searchTerm,
+        },
+      });
+    }
 
     wrapper = shallowMount(DropdownContentsCreateView, {
       apolloProvider: mockApollo,
@@ -110,12 +113,12 @@ describe('DropdownContentsCreateView', () => {
     expect(findLoadingIcon().exists()).toBe(false);
   });
 
-  it('emits a `hideCreateView` event on Cancel button click', () => {
+  it('emits a `hide-create-view` event on Cancel button click', () => {
     createComponent();
     const event = { stopPropagation: jest.fn() };
     findCancelButton().vm.$emit('click', event);
 
-    expect(wrapper.emitted('hideCreateView')).toHaveLength(1);
+    expect(wrapper.emitted('hide-create-view')).toHaveLength(1);
     expect(event.stopPropagation).toHaveBeenCalled();
   });
 
@@ -208,6 +211,20 @@ describe('DropdownContentsCreateView', () => {
     expect(wrapper.findComponent(GlAlert).text()).toEqual(
       titleTakenError.data.labelCreate.errors[0],
     );
+  });
+
+  describe('when the labels query has not populated the cache yet', () => {
+    it('still emits `label-created` after the label is created', async () => {
+      createComponent({ seedLabelsCache: false });
+      fillLabelAttributes();
+      await nextTick();
+
+      findCreateButton().vm.$emit('click');
+      await waitForPromises();
+
+      expect(wrapper.emitted('label-created')).toHaveLength(1);
+      expect(createAlert).not.toHaveBeenCalled();
+    });
   });
 
   describe('when empty labels response', () => {

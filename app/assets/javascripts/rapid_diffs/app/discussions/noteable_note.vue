@@ -1,5 +1,6 @@
 <script>
 import { GlAvatarLink, GlAvatar, GlSprintf, GlLink } from '@gitlab/ui';
+import { defineAsyncComponent } from 'vue';
 import { getIdFromGraphQLId } from '~/graphql_shared/utils';
 import { confirmAction } from '~/lib/utils/confirm_via_gl_modal/confirm_via_gl_modal';
 import { createAlert } from '~/alert';
@@ -7,9 +8,8 @@ import { ignoreWhilePending } from '~/lib/utils/ignore_while_pending';
 import { __, sprintf } from '~/locale';
 import { detectAndConfirmSensitiveTokens } from '~/lib/utils/secret_detection';
 import { isCurrentUser } from '~/lib/utils/common_utils';
-import { UPDATE_COMMENT_FORM } from '~/notes/i18n';
-import { updateNoteErrorMessage } from '~/notes/utils';
 import TimeAgoTooltip from '~/vue_shared/components/time_ago_tooltip.vue';
+import glFeatureFlagsMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
 import { glSlotsMixin } from '~/lib/utils/vue3compat/gl_slots_mixin';
 import NoteActions from './note_actions.vue';
 import NoteBody from './note_body.vue';
@@ -18,11 +18,13 @@ import TimelineEntryItem from './timeline_entry_item.vue';
 
 export default {
   name: 'NoteableNote',
-  UPDATE_COMMENT_FORM,
   components: {
     NoteHeader,
     NoteActions,
     NoteBody,
+    NoteSessionBar: defineAsyncComponent(
+      () => import('ee_component/ai/shared/widgets/note_session_bar.vue'),
+    ),
     GlAvatarLink,
     GlAvatar,
     GlSprintf,
@@ -30,7 +32,7 @@ export default {
     TimelineEntryItem,
     TimeAgoTooltip,
   },
-  mixins: [glSlotsMixin],
+  mixins: [glSlotsMixin, glFeatureFlagsMixin()],
   inject: {
     store: {
       type: Object,
@@ -137,6 +139,12 @@ export default {
     isAmazonQCodeReview() {
       return this.author.username === 'amazon-q';
     },
+    hasSession() {
+      return (
+        this.glFeatures.noteAgentSessionBar &&
+        Boolean(this.note.duo_session_id_triggered && this.note.duo_session_agent_name)
+      );
+    },
   },
   watch: {
     isEditing: {
@@ -180,11 +188,6 @@ export default {
       try {
         await this.store.saveNote(this.note, noteText);
         this.$emit('cancel-editing');
-      } catch (error) {
-        createAlert({
-          message: updateNoteErrorMessage(error),
-          parent: this.$el,
-        });
       } finally {
         this.isSaving = false;
       }
@@ -330,7 +333,6 @@ export default {
             :autosave-key="autosaveKey"
             :restore-from-autosave="restoreFromAutosave"
             :save-note="saveNote"
-            :save-note-error-messages="$options.UPDATE_COMMENT_FORM"
             :is-first-note="isFirstNote"
             @cancel-editing="onCancelEditing"
             @input="$emit('note-edited', $event)"
@@ -339,6 +341,13 @@ export default {
         </div>
         <slot name="footer"></slot>
       </div>
+      <note-session-bar
+        v-if="hasSession"
+        :agent-name="note.duo_session_agent_name"
+        :session-id="note.duo_session_id_triggered"
+        :status="note.duo_session_status"
+        :is-reply="!isFirstNote"
+      />
     </template>
   </timeline-entry-item>
 </template>

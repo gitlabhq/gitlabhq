@@ -5,6 +5,8 @@ module MergeRequests
     def execute(merge_request)
       merge_request.ensure_merge_request_diff
 
+      MergeRequests::AfterCreateEventPublisher.new(merge_request).defer_to_mergeability_check
+
       prepare_for_mergeability(merge_request)
       prepare_merge_request(merge_request)
       mark_merge_request_as_prepared(merge_request)

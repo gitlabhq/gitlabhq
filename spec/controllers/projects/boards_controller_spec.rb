@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Projects::BoardsController do
+RSpec.describe Projects::BoardsController, feature_category: :planning_views do
   let_it_be(:project) { create(:project) }
   let_it_be(:user)    { create(:user, maintainer_of: project) }
 

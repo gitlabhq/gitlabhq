@@ -3,7 +3,7 @@
 // To regenerate, run: bin/rake gitlab:js:routes
 
 import { __jsr } from '~/lib/utils/path_helpers/core';
-import { hasOrganizationScopedPaths } from '~/lib/utils/path_helpers/utils';
+import { resolveOrganizationScope } from '~/lib/utils/path_helpers/utils';
 
 
 /**
@@ -15,17 +15,20 @@ import { hasOrganizationScopedPaths } from '~/lib/utils/path_helpers/utils';
  * - controller#action: `autocomplete#users`
  *
  * @param {object | undefined} options
+ * @param {string | null | undefined} options.organizationPath Path of organization to nest under. Pass `null` to remove path from URL params when outside of an organization data context.
  * @returns {string} route path
  */
 export const autocompleteUsersPath = /*#__PURE__*/ (...args) => {
   const _organizationAutocompleteUsersPath = /*#__PURE__*/ __jsr.r({"organization_path":{"r":true},"format":{}}, [2,[7,"/"],[2,[6,"o"],[2,[7,"/"],[2,[3,"organization_path"],[2,[7,"/"],[2,[6,"-"],[2,[7,"/"],[2,[6,"autocomplete"],[2,[7,"/"],[2,[6,"users"],[1,[2,[8,"."],[3,"format"]]]]]]]]]]]]]);
   const _autocompleteUsersPath = /*#__PURE__*/ __jsr.r({"format":{}}, [2,[7,"/"],[2,[6,"-"],[2,[7,"/"],[2,[6,"autocomplete"],[2,[7,"/"],[2,[6,"users"],[1,[2,[8,"."],[3,"format"]]]]]]]]]);
 
-  if (hasOrganizationScopedPaths()) {
-    return _organizationAutocompleteUsersPath(gon.current_organization.path, ...args);
+  const { organizationPath, routeArgs } = resolveOrganizationScope(args);
+
+  if (organizationPath) {
+    return _organizationAutocompleteUsersPath(organizationPath, ...routeArgs);
   }
 
-  return _autocompleteUsersPath(...args);
+  return _autocompleteUsersPath(...routeArgs);
 };
 
 /**
@@ -38,17 +41,20 @@ export const autocompleteUsersPath = /*#__PURE__*/ (...args) => {
  *
  * @param {any} id
  * @param {object | undefined} options
+ * @param {string | null | undefined} options.organizationPath Path of organization to nest under. Pass `null` to remove path from URL params when outside of an organization data context.
  * @returns {string} route path
  */
 export const autocompleteUserPath = /*#__PURE__*/ (...args) => {
   const _organizationAutocompleteUserPath = /*#__PURE__*/ __jsr.r({"organization_path":{"r":true},"id":{"r":true},"format":{}}, [2,[7,"/"],[2,[6,"o"],[2,[7,"/"],[2,[3,"organization_path"],[2,[7,"/"],[2,[6,"-"],[2,[7,"/"],[2,[6,"autocomplete"],[2,[7,"/"],[2,[6,"users"],[2,[7,"/"],[2,[3,"id"],[1,[2,[8,"."],[3,"format"]]]]]]]]]]]]]]]);
   const _autocompleteUserPath = /*#__PURE__*/ __jsr.r({"id":{"r":true},"format":{}}, [2,[7,"/"],[2,[6,"-"],[2,[7,"/"],[2,[6,"autocomplete"],[2,[7,"/"],[2,[6,"users"],[2,[7,"/"],[2,[3,"id"],[1,[2,[8,"."],[3,"format"]]]]]]]]]]]);
 
-  if (hasOrganizationScopedPaths()) {
-    return _organizationAutocompleteUserPath(gon.current_organization.path, ...args);
+  const { organizationPath, routeArgs } = resolveOrganizationScope(args);
+
+  if (organizationPath) {
+    return _organizationAutocompleteUserPath(organizationPath, ...routeArgs);
   }
 
-  return _autocompleteUserPath(...args);
+  return _autocompleteUserPath(...routeArgs);
 };
 
 /**
@@ -60,17 +66,20 @@ export const autocompleteUserPath = /*#__PURE__*/ (...args) => {
  * - controller#action: `autocomplete#projects`
  *
  * @param {object | undefined} options
+ * @param {string | null | undefined} options.organizationPath Path of organization to nest under. Pass `null` to remove path from URL params when outside of an organization data context.
  * @returns {string} route path
  */
 export const autocompleteProjectsPath = /*#__PURE__*/ (...args) => {
   const _organizationAutocompleteProjectsPath = /*#__PURE__*/ __jsr.r({"organization_path":{"r":true},"format":{}}, [2,[7,"/"],[2,[6,"o"],[2,[7,"/"],[2,[3,"organization_path"],[2,[7,"/"],[2,[6,"-"],[2,[7,"/"],[2,[6,"autocomplete"],[2,[7,"/"],[2,[6,"projects"],[1,[2,[8,"."],[3,"format"]]]]]]]]]]]]]);
   const _autocompleteProjectsPath = /*#__PURE__*/ __jsr.r({"format":{}}, [2,[7,"/"],[2,[6,"-"],[2,[7,"/"],[2,[6,"autocomplete"],[2,[7,"/"],[2,[6,"projects"],[1,[2,[8,"."],[3,"format"]]]]]]]]]);
 
-  if (hasOrganizationScopedPaths()) {
-    return _organizationAutocompleteProjectsPath(gon.current_organization.path, ...args);
+  const { organizationPath, routeArgs } = resolveOrganizationScope(args);
+
+  if (organizationPath) {
+    return _organizationAutocompleteProjectsPath(organizationPath, ...routeArgs);
   }
 
-  return _autocompleteProjectsPath(...args);
+  return _autocompleteProjectsPath(...routeArgs);
 };
 
 /**
@@ -82,17 +91,20 @@ export const autocompleteProjectsPath = /*#__PURE__*/ (...args) => {
  * - controller#action: `autocomplete#award_emojis`
  *
  * @param {object | undefined} options
+ * @param {string | null | undefined} options.organizationPath Path of organization to nest under. Pass `null` to remove path from URL params when outside of an organization data context.
  * @returns {string} route path
  */
 export const autocompleteAwardEmojisPath = /*#__PURE__*/ (...args) => {
   const _organizationAutocompleteAwardEmojisPath = /*#__PURE__*/ __jsr.r({"organization_path":{"r":true},"format":{}}, [2,[7,"/"],[2,[6,"o"],[2,[7,"/"],[2,[3,"organization_path"],[2,[7,"/"],[2,[6,"-"],[2,[7,"/"],[2,[6,"autocomplete"],[2,[7,"/"],[2,[6,"award_emojis"],[1,[2,[8,"."],[3,"format"]]]]]]]]]]]]]);
   const _autocompleteAwardEmojisPath = /*#__PURE__*/ __jsr.r({"format":{}}, [2,[7,"/"],[2,[6,"-"],[2,[7,"/"],[2,[6,"autocomplete"],[2,[7,"/"],[2,[6,"award_emojis"],[1,[2,[8,"."],[3,"format"]]]]]]]]]);
 
-  if (hasOrganizationScopedPaths()) {
-    return _organizationAutocompleteAwardEmojisPath(gon.current_organization.path, ...args);
+  const { organizationPath, routeArgs } = resolveOrganizationScope(args);
+
+  if (organizationPath) {
+    return _organizationAutocompleteAwardEmojisPath(organizationPath, ...routeArgs);
   }
 
-  return _autocompleteAwardEmojisPath(...args);
+  return _autocompleteAwardEmojisPath(...routeArgs);
 };
 
 /**
@@ -104,17 +116,20 @@ export const autocompleteAwardEmojisPath = /*#__PURE__*/ (...args) => {
  * - controller#action: `autocomplete#merge_request_target_branches`
  *
  * @param {object | undefined} options
+ * @param {string | null | undefined} options.organizationPath Path of organization to nest under. Pass `null` to remove path from URL params when outside of an organization data context.
  * @returns {string} route path
  */
 export const autocompleteMergeRequestTargetBranchesPath = /*#__PURE__*/ (...args) => {
   const _organizationAutocompleteMergeRequestTargetBranchesPath = /*#__PURE__*/ __jsr.r({"organization_path":{"r":true},"format":{}}, [2,[7,"/"],[2,[6,"o"],[2,[7,"/"],[2,[3,"organization_path"],[2,[7,"/"],[2,[6,"-"],[2,[7,"/"],[2,[6,"autocomplete"],[2,[7,"/"],[2,[6,"merge_request_target_branches"],[1,[2,[8,"."],[3,"format"]]]]]]]]]]]]]);
   const _autocompleteMergeRequestTargetBranchesPath = /*#__PURE__*/ __jsr.r({"format":{}}, [2,[7,"/"],[2,[6,"-"],[2,[7,"/"],[2,[6,"autocomplete"],[2,[7,"/"],[2,[6,"merge_request_target_branches"],[1,[2,[8,"."],[3,"format"]]]]]]]]]);
 
-  if (hasOrganizationScopedPaths()) {
-    return _organizationAutocompleteMergeRequestTargetBranchesPath(gon.current_organization.path, ...args);
+  const { organizationPath, routeArgs } = resolveOrganizationScope(args);
+
+  if (organizationPath) {
+    return _organizationAutocompleteMergeRequestTargetBranchesPath(organizationPath, ...routeArgs);
   }
 
-  return _autocompleteMergeRequestTargetBranchesPath(...args);
+  return _autocompleteMergeRequestTargetBranchesPath(...routeArgs);
 };
 
 /**
@@ -126,17 +141,20 @@ export const autocompleteMergeRequestTargetBranchesPath = /*#__PURE__*/ (...args
  * - controller#action: `autocomplete#merge_request_source_branches`
  *
  * @param {object | undefined} options
+ * @param {string | null | undefined} options.organizationPath Path of organization to nest under. Pass `null` to remove path from URL params when outside of an organization data context.
  * @returns {string} route path
  */
 export const autocompleteMergeRequestSourceBranchesPath = /*#__PURE__*/ (...args) => {
   const _organizationAutocompleteMergeRequestSourceBranchesPath = /*#__PURE__*/ __jsr.r({"organization_path":{"r":true},"format":{}}, [2,[7,"/"],[2,[6,"o"],[2,[7,"/"],[2,[3,"organization_path"],[2,[7,"/"],[2,[6,"-"],[2,[7,"/"],[2,[6,"autocomplete"],[2,[7,"/"],[2,[6,"merge_request_source_branches"],[1,[2,[8,"."],[3,"format"]]]]]]]]]]]]]);
   const _autocompleteMergeRequestSourceBranchesPath = /*#__PURE__*/ __jsr.r({"format":{}}, [2,[7,"/"],[2,[6,"-"],[2,[7,"/"],[2,[6,"autocomplete"],[2,[7,"/"],[2,[6,"merge_request_source_branches"],[1,[2,[8,"."],[3,"format"]]]]]]]]]);
 
-  if (hasOrganizationScopedPaths()) {
-    return _organizationAutocompleteMergeRequestSourceBranchesPath(gon.current_organization.path, ...args);
+  const { organizationPath, routeArgs } = resolveOrganizationScope(args);
+
+  if (organizationPath) {
+    return _organizationAutocompleteMergeRequestSourceBranchesPath(organizationPath, ...routeArgs);
   }
 
-  return _autocompleteMergeRequestSourceBranchesPath(...args);
+  return _autocompleteMergeRequestSourceBranchesPath(...routeArgs);
 };
 
 /**
@@ -148,16 +166,19 @@ export const autocompleteMergeRequestSourceBranchesPath = /*#__PURE__*/ (...args
  * - controller#action: `autocomplete#deploy_keys_with_owners`
  *
  * @param {object | undefined} options
+ * @param {string | null | undefined} options.organizationPath Path of organization to nest under. Pass `null` to remove path from URL params when outside of an organization data context.
  * @returns {string} route path
  */
 export const autocompleteDeployKeysWithOwnersPath = /*#__PURE__*/ (...args) => {
   const _organizationAutocompleteDeployKeysWithOwnersPath = /*#__PURE__*/ __jsr.r({"organization_path":{"r":true},"format":{}}, [2,[7,"/"],[2,[6,"o"],[2,[7,"/"],[2,[3,"organization_path"],[2,[7,"/"],[2,[6,"-"],[2,[7,"/"],[2,[6,"autocomplete"],[2,[7,"/"],[2,[6,"deploy_keys_with_owners"],[1,[2,[8,"."],[3,"format"]]]]]]]]]]]]]);
   const _autocompleteDeployKeysWithOwnersPath = /*#__PURE__*/ __jsr.r({"format":{}}, [2,[7,"/"],[2,[6,"-"],[2,[7,"/"],[2,[6,"autocomplete"],[2,[7,"/"],[2,[6,"deploy_keys_with_owners"],[1,[2,[8,"."],[3,"format"]]]]]]]]]);
 
-  if (hasOrganizationScopedPaths()) {
-    return _organizationAutocompleteDeployKeysWithOwnersPath(gon.current_organization.path, ...args);
+  const { organizationPath, routeArgs } = resolveOrganizationScope(args);
+
+  if (organizationPath) {
+    return _organizationAutocompleteDeployKeysWithOwnersPath(organizationPath, ...routeArgs);
   }
 
-  return _autocompleteDeployKeysWithOwnersPath(...args);
+  return _autocompleteDeployKeysWithOwnersPath(...routeArgs);
 };
 

@@ -1,5 +1,5 @@
 ---
-stage: Tenant Scale
+stage: GitLab Dedicated
 group: Geo
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see <https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments>
 title: Geo with external PostgreSQL instances
@@ -14,7 +14,7 @@ title: Geo with external PostgreSQL instances
 
 This document is relevant if you are using a PostgreSQL instance that is not
 managed by the Linux package. This includes
-[cloud-managed instances](../../reference_architectures/_index.md#best-practices-for-the-database-services),
+[cloud-managed instances](../../../install/cloud-services.md#use-managed-cloud-postgresql),
 or manually installed and configured PostgreSQL instances.
 
 Ensure that you are using one of the PostgreSQL versions that
@@ -52,13 +52,13 @@ in case a Geo site has to be rebuilt.
    gitlab_rails['geo_node_name'] = '<site_name_here>'
    ```
 
-1. Reconfigure the **Rails node** for the change to take effect:
+1. Reconfigure the Rails node for the change to take effect:
 
    ```shell
    gitlab-ctl reconfigure
    ```
 
-1. Execute the command below on the **Rails node** to define the site as primary site:
+1. Execute the command below on the Rails node to define the site as primary site:
 
    ```shell
    gitlab-ctl set-geo-primary-node
@@ -165,7 +165,7 @@ has three main functions:
 
 To configure the connection to the external read-replica database and enable Log Cursor:
 
-1. SSH into each **Rails, Sidekiq, and Geo Log Cursor** node on your secondary site and login as root:
+1. SSH into each Rails, Sidekiq, and Geo Log Cursor node on your secondary site and login as root:
 
    ```shell
    sudo -i

@@ -70,9 +70,11 @@ RSpec.describe Tooling::Danger::CustomerSuccess do
 
     with_them do
       before do
-        allow(fake_helper).to receive(:modified_files).and_return(modified_files)
-        allow(fake_helper).to receive(:changed_lines).and_return(changed_lines)
-        allow(fake_helper).to receive(:has_scoped_label_with_scope?).and_return(customer_labeled)
+        allow(fake_helper).to receive_messages(
+          modified_files: modified_files,
+          changed_lines: changed_lines,
+          has_scoped_label_with_scope?: customer_labeled
+        )
         allow(fake_helper).to receive(:markdown_list).with(impacted_files)
                                 .and_return(impacted_files.map { |item| "* `#{item}`" }.join("\n"))
       end

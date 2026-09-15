@@ -17,15 +17,15 @@ module GoogleApi
       ##
       # when  the user declines authorizations
       # `error` param is returned
-      if params[:error]
+      if oauth_params[:error]
         flash[:alert] = _('Google Cloud authorizations required')
         redirect_uri = session[:error_uri]
       ##
       # on success, the `code` param is returned
-      elsif params[:code]
+      elsif oauth_params[:code]
         token, expires_at = GoogleApi::CloudPlatform::Client
           .new(nil, callback_google_api_auth_url)
-          .get_token(params[:code])
+          .get_token(oauth_params[:code])
 
         session[GoogleApi::CloudPlatform::Client.session_key_for_token] = token
         session[GoogleApi::CloudPlatform::Client.session_key_for_expires_at] = expires_at.to_s
@@ -43,13 +43,18 @@ module GoogleApi
 
     private
 
+    def oauth_params
+      params.permit(:error, :code, :state)
+    end
+
     def validate_session_key!
       access_denied! unless redirect_uri_from_session.present?
     end
 
     def redirect_uri_from_session
-      if params[:state].present?
-        session[session_key_for_redirect_uri(params[:state])]
+      state = oauth_params[:state]
+      if state.present?
+        session[session_key_for_redirect_uri(state)]
       else
         nil
       end

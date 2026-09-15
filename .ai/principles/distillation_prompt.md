@@ -67,41 +67,29 @@ adds those wrappers automatically.
    structure where possible. Add new subsections only for genuinely new
    topics.
 4. **Conciseness.** Keep items concise. One line per rule where possible.
-5. **No commentary.** No explanations or meta-text outside the checklist.
-6. **Complete output.** Return the COMPLETE updated checklist (not just
-   the diff).
-7. **No preamble.** Start your response directly with the first line of
-   the file. No "Here is …", no thinking blocks, no trailing notes.
-8. **Preserve meaning, rephrase to imperative.** Preserve the meaning of
-   every existing item that survives rule 2, UNLESS the SSOT has changed
-   that item's guidance (then rule 16 applies — revise it). Do not reorder
-   or interleave genuinely new items (append instead); "append instead"
-   governs ordering of new items only and NEVER licenses keeping an
-   outdated rule. You MUST rewrite every item to comply with rule 10,
-   regardless of whether the SSOT changed — this is not optional and does
-   not count as diff noise. Specifically:
-   - Every item starting with "No " MUST become "DO NOT `<verb>` …"
-     (e.g., "No business logic in controllers" → "DO NOT put business
-     logic in controllers").
-   - Every item starting with "Avoid " MUST become "DO NOT `<verb>` …"
-     (e.g., "Avoid deep nesting" → "DO NOT nest beyond two levels").
-   - Every passive or descriptive item MUST become an imperative directive.
-   - The rewritten item MUST be grammatically correct — "DO NOT" must be
-     followed by a verb in its base form (not a noun or gerund).
-
-   The only items exempt from rephrasing are baseline rules (rule 15),
-   which must be preserved verbatim.
+5. **Output shape.** Return the complete updated checklist, and only the
+   checklist, as specified in "Your task on every invocation" and "Output
+   structure" above.
+6. **Reserved.** See rule 5.
+7. **Reserved.** See rule 5.
+8. **Preserve meaning and ordering.** Preserve the meaning of every existing
+   item that survives rule 2 unless the SSOT has changed that item's guidance
+   (then rule 16 applies — revise it). Do not reorder or interleave genuinely
+   new items; append them instead. Appending new items never licenses keeping
+   an outdated rule. The imperative rewrite in rule 10 is required work, not
+   diff noise under rule 18.
 9. **Drop universal best practices.** Omit rules that any experienced
    developer or LLM already knows (SOLID, "be kind in reviews", "use
    descriptive variable names"). Focus on GitLab-specific conventions,
    patterns, tooling, and gotchas that a reviewer would not know without
    reading the documentation.
-10. **Imperative mood.** Phrase every rule as a directive. Every item must
-    start with either "DO NOT `<verb>`" or an imperative action verb
-    (Use, Prefer, Ensure, Include, Add, Set, Follow, Freeze, Pass, Wrap,
-    etc.). DO NOT write descriptive or passive statements.
+10. **Imperative mood.** Phrase every SSOT-derived rule as a directive. Every
+    item must start with either "DO NOT `<verb>`" or an imperative action
+    verb (Use, Prefer, Ensure, Include, Add, Set, Follow, Freeze, Pass, Wrap,
+    etc.). Follow "DO NOT" with a verb in its base form, not a noun or gerund.
+    Do not write descriptive or passive statements.
 
-    Category examples (rule 8 mandates the "No " and "Avoid " rewrites):
+    Category examples:
     a) Passive/descriptive — convert to imperative:
        - BAD: "Method naming follows Ruby conventions"
        - GOOD: "Follow Ruby naming conventions for methods"
@@ -113,6 +101,11 @@ adds those wrappers automatically.
        - BAD: "Feature flags are enabled by default in tests"
        - GOOD: "DO NOT stub feature flags to `true` — they are enabled by
          default in the test environment"
+    c) Negative openers — convert to an imperative prohibition:
+       - BAD: "No business logic in controllers"
+       - GOOD: "DO NOT put business logic in controllers"
+       - BAD: "Avoid deep nesting"
+       - GOOD: "DO NOT nest beyond two levels"
 
     This ensures every rule reads as an instruction that agents follow,
     rather than background information they may ignore.
@@ -177,12 +170,18 @@ adds those wrappers automatically.
         CTEs with `update_all`, first pluck IDs from the CTE result and
         scope the update to those IDs (the CTE is dropped otherwise)."
 15. **Baseline rules.** When a baseline file is provided, include its rules
-    verbatim — they are exempt from the rephrasing rule (rule 8 / 10).
-    Do not rephrase or omit them. Integrate them in place:
-    - If the checklist already has a subsection covering the same topic,
-      put the baseline rules inside THAT subsection. DO NOT emit a second
-      subsection for the same topic (e.g. an "i18n — Baseline" section
-      after an existing "Internationalization (i18n)" section).
+    verbatim — they are exempt from the rephrasing rule (rule 10).
+    Do not rephrase or omit them. The baseline is authoritative for both
+    content and placement:
+    - Put each baseline rule under the heading the BASELINE gives it. If
+      the checklist already has a subsection with that heading, put the
+      rule there. DO NOT emit a second subsection for the same topic
+      (e.g. an "i18n — Baseline" section after an existing
+      "Internationalization (i18n)" section).
+    - If the baseline moves a rule to a different heading, MOVE it in the
+      distilled file too: emit it once at its new baseline heading and
+      DELETE the copy under the old heading. Leaving both is a duplicate
+      and is mechanically rejected.
     - If a baseline rule and an SSOT-derived item overlap or conflict,
       keep the baseline rule verbatim and drop or narrow the SSOT-derived
       item so the checklist does not state the same topic two different
@@ -196,10 +195,9 @@ adds those wrappers automatically.
       rule must appear exactly once. The sync tooling mechanically rejects
       (and retries) any output that alters, duplicates, or omits a
       baseline rule, so a paraphrased baseline can never be published.
-    - Once baseline rules are integrated, DO NOT relocate them on a later
-      run: keep them in the same subsection and position they occupy in
-      the prior distilled file. Moving a baseline section elsewhere in the
-      checklist is reordering churn under rule 18.
+    - Keep baseline rules where they are on a later run UNLESS the
+      baseline itself changed their heading. Relocating a rule the
+      baseline did not move is reordering churn under rule 18.
 16. **Reconcile against the SSOT — capture new, revise changed.** The
     current distilled file is the PRIOR version; the SSOT is the current
     truth. Do not simply re-emit the prior checklist. On every invocation,
@@ -235,7 +233,7 @@ adds those wrappers automatically.
 
         **This-run capture pass (mirror of the rule 18 gate).** Diff each
         SSOT source between the prior file's `distilled_at_sha` and HEAD
-        (`git diff <distilled_at_sha>..HEAD -- <source_path>`). Every line the
+        (provided in the invocation's additional context). Every line the
         SSOT **added or modified** this run MUST be either captured by an
         emitted/revised item, or explicitly excludable under a named rule
         (rule 9 universal best practice, rule 11 duplicate, rule 16d
@@ -248,8 +246,8 @@ adds those wrappers automatically.
         constraint — fold it in; do NOT drop it.
 
         When the user prompt identifies an SSOT source as newly declared,
-        its `git diff <distilled_at_sha>..HEAD` is empty by construction:
-        the manifest changed, not the document. Read that source in full and
+        it has no historical diff because the prior distillation did not
+        consider it. Read that source in full and
         treat its normative content as this-run additions exempt from this
         diff gate. Rules 9, 11, and 16d still apply, so a source that is
         purely conceptual, duplicates another rule, or delegates elsewhere
@@ -267,6 +265,16 @@ adds those wrappers automatically.
        rule 18). "The full SSOT contains more detail than the item states"
        is NOT, by itself, a changed rule: a concise item that correctly
        captures the rule is complete even when the source elaborates.
+       When this run combines guidance currently represented by separate
+       checklist items — for example, by stating that an existing default or
+       setup satisfies part of another requirement — merge those items so the
+       new relationship is explicit. Do this even when each prior item remains
+       independently true and the underlying facts remain elsewhere in the
+       SSOT; the newly stated relationship is changed guidance, not enrichment.
+       Example: if separate prior items say "test both states" and "the enabled
+       state is the default," and the changed SSOT now says the default setup
+       fulfills the enabled-state test requirement, merge that relationship
+       into the testing item rather than preserving both prior items verbatim.
        Examples:
        - SSOT now mandates a generator over manual steps:
          - STALE: "Create the YAML definition manually in `config/foo/`"
@@ -362,7 +370,7 @@ adds those wrappers automatically.
       action)
     - GOOD: "For complete pages: apply feature tests + browser extension"
 18. **Diff discipline.** Beyond the required reconciliation work (rule 16)
-    and the mandatory imperative rewrite (rules 8/10), keep the diff
+    and the mandatory imperative rewrite (rule 10), keep the diff
     against the prior checklist minimal:
     - DO NOT reword, reorder, split, or merge items that already
       accurately reflect the SSOT.
@@ -389,10 +397,9 @@ adds those wrappers automatically.
 
     **Mechanical per-item gate (apply to EVERY item you change or add).**
     Determine what changed THIS run: the prior distilled file's frontmatter
-    records the `distilled_at_sha` it was generated from. Use your tools to
-    diff each SSOT source between that sha and the current checkout (for
-    example `git diff <distilled_at_sha>..HEAD -- <source_path>`, or a
-    targeted `grep` of the changed regions) to see exactly which source lines
+    records the `distilled_at_sha` it was generated from. Read the supplied
+    per-source diff in the invocation's additional context, which covers
+    that sha through the current checkout, to see exactly which source lines
     were added or removed since the last distillation. Before you emit any
     line that differs from the prior checklist, you MUST be able to point to
     SPECIFIC source lines that changed this run AND that GOVERN THIS ITEM. If
@@ -401,14 +408,17 @@ adds those wrappers automatically.
     this-run change to the lines governing that item — then the change is
     FORBIDDEN: revert the item to its prior text verbatim. "Grounded in the
     full source" is necessary but NOT sufficient; the governing lines must
-    have changed this run. If you cannot run the diff, or cannot tie a
-    proposed edit to a this-run source change, keep the prior line exactly.
-
+    have changed this run. If no diff was supplied for a source, or you
+    cannot tie a proposed edit to a this-run source change, keep the prior
+    line exactly.
     This gate is **bidirectional**: "keep the prior line exactly" applies ONLY
     to items whose governing source lines did NOT change this run — it NEVER
     licenses ignoring a line the SSOT added or changed this run, which must
     still produce an add or revise (rule 16a). Silently dropping it is a
-    capture defect, not diff discipline.
+    capture defect, not diff discipline. When a changed governing sentence
+    combines guidance currently split across checklist items, that relationship
+    is a governing-source change under rule 16b; merge the items rather than
+    preserving each independently true prior item.
 
     When in doubt whether a change is required by the SSOT or merely
     stylistic, leave the prior item untouched. A reviewer should be able to

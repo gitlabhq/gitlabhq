@@ -13,7 +13,7 @@ to a new version run `yarn upgrade @gitlab/svgs`.
 
 ## Icons
 
-We are using SVG Icons in GitLab with a SVG Sprite.
+We are using SVG Icons in GitLab with an SVG Sprite.
 This means the icons are only loaded once, and are referenced through an ID.
 The sprite SVG is located under `/assets/icons.svg`.
 
@@ -28,7 +28,7 @@ sprite_icon(icon_name, size: nil, css_class: '')
 - **`icon_name`**: Use the `icon_name` for the SVG sprite in the list of
   ([GitLab SVGs](https://design.gitlab.com/svgs/)).
 - **`size` (optional)**: Use one of the following sizes: 16, 24, 32, 48, 72 (this
-  is translated into a `s16` class)
+  is translated into an `s16` class)
 - **`css_class` (optional)**: If you want to add additional CSS classes.
 
 **Example**
@@ -96,7 +96,7 @@ To insert a loading spinner in HAML or Rails use the `gl_loading_icon` helper:
 You can include one or more of the following properties with the `gl_loading_icon` helper, as demonstrated
 by the examples that follow:
 
-- `inline` (optional): uses in an inline element if `true`, otherwise, a block element (default), with the spinner centered.
+- `inline` (optional): used in an inline element if `true`, otherwise, a block element (default), with the spinner centered.
 - `color` (optional): either `dark` (default) or `light`.
 - `size` (optional): either `sm` (default), `md`, `lg`, or `xl`.
 - `css_class` (optional): defaults to nothing, but can be used for utility classes to fine-tune alignment or spacing.
@@ -166,7 +166,7 @@ It is discouraged to pass down SVG paths from Rails. Instead of `Rails => Haml =
 
 To use an SVG illustration in a template import the SVG from `@gitlab/svgs`. You can find the available SVG paths via the [GitLab SVG Previewer](https://design.gitlab.com/svgs/illustrations).
 
-Below is an example of how to import an SVG illustration and use with the `GlEmptyState` component.
+Below is an example of how to import an SVG illustration and use it with the `GlEmptyState` component.
 
 Component:
 

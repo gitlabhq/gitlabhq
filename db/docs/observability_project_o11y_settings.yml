@@ -1,0 +1,14 @@
+table_name: observability_project_o11y_settings
+classes:
+  - Observability::ProjectO11ySetting
+feature_categories:
+  - observability
+description: >-
+  Associates a project directly with a namespace whose observability
+  setting should be used, bypassing namespace ancestry lookup.
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/246500
+milestone: '19.4'
+gitlab_schema: gitlab_main_org
+sharding_key:
+  project_id: projects
+table_size: small

@@ -1,0 +1,13 @@
+---
+title: セルフホストGeminiモデルのサポート
+stage: modelops
+level: secondary
+tier: [ Premium, Ultimate ]
+offering: [ self_managed ]
+documentation_link: "../../../administration/gitlab_duo_self_hosted/supported_models_and_hardware_requirements/#compatible-models"
+work_item: "https://gitlab.com/groups/gitlab-org/-/work_items/21186"
+categories: [ Self-Hosted Models ]
+weight: 50
+---
+
+GitLab Duo Agent Platform Self-Hosted がGeminiモデルに対応しました。Geminiモデルは、コードレビューフロー、SAST脆弱性の修正フロー、CI/CDパイプライン修正フローなど、複数のフローをサポートしています。

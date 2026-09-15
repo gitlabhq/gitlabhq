@@ -58,11 +58,11 @@ const getUnreadableFile = () => JSON.parse(JSON.stringify(diffFileMockDataUnread
 
 // eslint-disable-next-line max-params
 const triggerSaveNote = (wrapper, note, parent, error) =>
-  findNoteForm(wrapper).vm.$emit('handleFormUpdate', note, parent, error);
+  findNoteForm(wrapper).vm.$emit('handle-form-update', note, parent, error);
 
 // eslint-disable-next-line max-params
 const triggerSaveDraftNote = (wrapper, note, parent, error) =>
-  findNoteForm(wrapper).vm.$emit('handleFormUpdateAddToReview', note, false, parent, error);
+  findNoteForm(wrapper).vm.$emit('handle-form-update-add-to-review', note, false, parent, error);
 
 describe('DiffFile', () => {
   let wrapper;
@@ -798,7 +798,7 @@ describe('DiffFile', () => {
       expect(useLegacyDiffs().toggleFileDiscussion).toHaveBeenCalledTimes(1);
     });
 
-    describe('when note-form emits `handleFormUpdate`', () => {
+    describe('when note-form emits `handle-form-update`', () => {
       const file = {
         ...getReadableFile(),
         hasCommentForm: true,
@@ -857,7 +857,7 @@ describe('DiffFile', () => {
       });
     });
 
-    describe('when note-form emits `handleFormUpdateAddToReview`', () => {
+    describe('when note-form emits `handle-form-update-add-to-review`', () => {
       const file = {
         ...getReadableFile(),
         hasCommentForm: true,

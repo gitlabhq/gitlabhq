@@ -26,6 +26,32 @@ RSpec.describe Email do
     end
   end
 
+  describe 'sharding key' do
+    let_it_be(:organization) { create(:organization) }
+    let_it_be(:user) { create(:user, organization: organization) }
+
+    context 'when organization_id is nil' do
+      it 'populates organization_id from user.organization_id after valid?' do
+        email = build(:email, user: user, organization_id: nil)
+
+        email.valid?
+
+        expect(email.organization_id).to eq(user.organization_id)
+      end
+    end
+
+    context 'when organization_id is already set' do
+      it 'does not overwrite the existing organization_id' do
+        other_organization = create(:organization)
+        email = build(:email, user: user, organization_id: other_organization.id)
+
+        email.valid?
+
+        expect(email.organization_id).to eq(other_organization.id)
+      end
+    end
+  end
+
   describe 'validations' do
     it_behaves_like 'an object with email-formatted attributes', :email do
       subject { build(:email) }

@@ -13,8 +13,8 @@ patch releases. New releases are announced on the [GitLab blog](https://about.gi
 
 Our current policy is:
 
-- Backporting bug fixes for **only the current stable release** at any given time - see [patch releases](#patch-releases) below.
-- Backporting security fixes **to the previous two monthly releases in addition to the current stable release**. In some circumstances (outlined in [patch releases](#patch-releases) below) we may address a security vulnerability to the current stable release only or in the regular monthly release process, with no backports.
+- Backporting bug fixes for only the current stable release at any given time - see [patch releases](#patch-releases) below.
+- Backporting security fixes to the previous two monthly releases in addition to the current stable release. In some circumstances (outlined in [patch releases](#patch-releases) below) we may address a security vulnerability to the current stable release only or in the regular monthly release process, with no backports.
 
 In rare cases, an exception may be granted to backport to more than the last two monthly releases. For the required process, see
 [policy exceptions](#policy-exceptions).
@@ -36,7 +36,7 @@ The following table describes the version types and their release cadence:
 
 | Version type | Description | Cadence |
 |:-------------|:------------|:--------|
-| Major        | For significant changes, or when any backward-incompatible changes are introduced to the public API. | Yearly. The next major release is GitLab 19.0, scheduled for May 21, 2026. GitLab [schedules major releases](https://about.gitlab.com/releases/) for May each year, by default. |
+| Major        | For significant changes, or when any backward-incompatible changes are introduced to the public API. | Yearly. The next major release is GitLab 20.0, scheduled for May 20, 2027. GitLab [schedules major releases](https://handbook.gitlab.com/handbook/engineering/releases/monthly-releases/) for May each year, by default. |
 | Minor        | For when new backward-compatible functionality is introduced to the public API, a minor feature is introduced, or when a set of smaller features is rolled out. | Monthly, scheduled for the third Thursday of each month. |
 | Patch        | For backward-compatible bug fixes that fix incorrect behavior. See [Patch releases](#patch-releases). | Twice monthly, scheduled for the Wednesday the week before and the Wednesday the week after the monthly minor release. |
 
@@ -90,8 +90,8 @@ Backward-incompatible changes and migrations are reserved for major versions. Fo
 
 ## Patch releases
 
-Patch releases include **bug fixes** for the current stable released version of
-GitLab and **security fixes** to the previous two monthly releases in addition to the current stable release.
+Patch releases include bug fixes for the current stable released version of
+GitLab and security fixes to the previous two monthly releases in addition to the current stable release.
 
 These policies are in place because:
 

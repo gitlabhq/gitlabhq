@@ -23,7 +23,10 @@ import {
   TOKEN_TYPE_ASSIGNEE,
   TOKEN_TYPE_REVIEWER,
   TOKEN_TYPE_AUTHOR,
+  TOKEN_TYPE_CLOSED,
+  TOKEN_TYPE_CREATED,
   TOKEN_TYPE_DRAFT,
+  TOKEN_TYPE_DUE_DATE,
   TOKEN_TYPE_CONFIDENTIAL,
   TOKEN_TYPE_SUBSCRIBED,
   TOKEN_TYPE_ITERATION,
@@ -37,6 +40,7 @@ import {
   TOKEN_TYPE_STATE,
   TOKEN_TYPE_PARENT,
   TOKEN_TYPE_STATUS,
+  TOKEN_TYPE_UPDATED,
 } from '~/vue_shared/components/filtered_search_bar/constants';
 import { DEFAULT_PAGE_SIZE } from '~/vue_shared/issuable/list/constants';
 import {
@@ -332,6 +336,12 @@ const getTokenTypeFromUrlParamKey = (urlParamKey) =>
   tokenTypes.find((tokenType) => getUrlParams(tokenType).includes(urlParamKey));
 
 const getTokenTypeFromApiParamKey = (apiParamKey) => {
+  // Delete `isLegacyTypesKey` once https://gitlab.com/gitlab-org/gitlab/-/work_items/596878 is complete
+  const isLegacyTypesKey = apiParamKey === 'types';
+  if (isLegacyTypesKey) {
+    return TOKEN_TYPE_TYPE;
+  }
+
   return tokenTypes.find((tokenType) => {
     return getApiParams(tokenType).includes(apiParamKey);
   });
@@ -497,7 +507,6 @@ const convertToTokenValue = (token, baseValue) => {
     case TOKEN_TYPE_CONFIDENTIAL:
       return trueYesFalseNo(baseValue);
     case TOKEN_TYPE_SUBSCRIBED:
-    case TOKEN_TYPE_TYPE:
       return baseValue.toUpperCase();
     case TOKEN_TYPE_HEALTH:
       if (isWildcardValue(token, capitalize(baseValue))) {
@@ -506,6 +515,13 @@ const convertToTokenValue = (token, baseValue) => {
       return camelCase(baseValue);
     case TOKEN_TYPE_STATUS:
       return baseValue.name;
+    case TOKEN_TYPE_CLOSED:
+    case TOKEN_TYPE_CREATED:
+    case TOKEN_TYPE_DUE_DATE:
+    case TOKEN_TYPE_UPDATED:
+      // Saved views round-trip dates through a GraphQL Time arg, so they come back as
+      // full ISO strings. Slice rather than parse: parsing would shift the calendar day.
+      return baseValue.slice(0, 10);
     default:
       if (isWildcardValue(token, capitalize(baseValue))) {
         return capitalize(baseValue);
@@ -526,12 +542,16 @@ export const getSavedViewFilterTokens = (filterObject, options = {}) => {
   const iterationCadenceIds = [filterObject[iterationCadenceKey] ?? []].flat().filter(Boolean);
 
   const tokens = Object.entries(filterObject)
-    .filter(
-      ([key]) =>
-        (apiParamKeys.concat('workItemTypeIds').includes(key) ||
+    .filter(([key]) => {
+      // Delete `isLegacyTypesKey` once https://gitlab.com/gitlab-org/gitlab/-/work_items/596878 is complete
+      const isLegacyTypesKey = key === 'types';
+      return (
+        (isLegacyTypesKey ||
+          apiParamKeys.includes(key) ||
           ['not', 'or', 'in', HIERARCHY_FILTERS].includes(key)) &&
-        (options.includeStateToken || key !== TOKEN_TYPE_STATE),
-    )
+        (options.includeStateToken || key !== TOKEN_TYPE_STATE)
+      );
+    })
     .reduce((acc, [key, value]) => {
       // Here the delimited search values are again formatted into array for filter tokens
       if (key === 'search' && value?.includes(SAVED_VIEW_SEARCH_DELIMITER)) {
@@ -811,7 +831,7 @@ const formatData = (token) => {
     return data === 'yes';
   }
   if (token.type === TOKEN_TYPE_TYPE) {
-    return data.toUpperCase();
+    return convertToGraphQLId(TYPENAME_WORK_ITEMS_TYPE, data);
   }
   if (token.type === TOKEN_TYPE_HEALTH) {
     return camelCase(data);
@@ -1242,6 +1262,9 @@ export const saveSavedView = async ({
     filters: updatedSavedViewFilters,
     displaySettings,
     sort,
+    updatedAt: '',
+    author: {},
+    lastUpdatedBy: {},
     __typename: 'WorkItemSavedViewType',
   };
 
@@ -1255,9 +1278,6 @@ export const saveSavedView = async ({
             ...commonSavedViewResponse,
             userPermissions,
             subscribed,
-            updatedAt: '',
-            author: {},
-            lastUpdatedBy: {},
           }
         : {
             id: NEW_SAVED_VIEWS_GID,

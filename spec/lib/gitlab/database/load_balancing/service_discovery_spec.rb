@@ -154,13 +154,10 @@ RSpec.describe Gitlab::Database::LoadBalancing::ServiceDiscovery, feature_catego
 
     context 'when a refresh is necessary' do
       before do
-        allow(service)
-          .to receive(:addresses_from_load_balancer)
-                .and_return(%w[localhost])
-
-        allow(service)
-          .to receive(:addresses_from_dns)
-                .and_return([10, [address_foo, address_bar]])
+        allow(service).to receive_messages(
+          addresses_from_load_balancer: %w[localhost],
+          addresses_from_dns: [10, [address_foo, address_bar]]
+        )
       end
 
       it 'refreshes the load balancer hosts' do
@@ -174,13 +171,10 @@ RSpec.describe Gitlab::Database::LoadBalancing::ServiceDiscovery, feature_catego
 
     context 'when a refresh is not necessary' do
       before do
-        allow(service)
-          .to receive(:addresses_from_load_balancer)
-                .and_return(%w[localhost])
-
-        allow(service)
-          .to receive(:addresses_from_dns)
-                .and_return([10, %w[localhost]])
+        allow(service).to receive_messages(
+          addresses_from_load_balancer: %w[localhost],
+          addresses_from_dns: [10, %w[localhost]]
+        )
       end
 
       it 'does not refresh the load balancer hosts' do

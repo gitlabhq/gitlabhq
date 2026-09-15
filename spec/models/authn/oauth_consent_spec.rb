@@ -8,6 +8,15 @@ RSpec.describe Authn::OauthConsent, feature_category: :system_access do
     it { is_expected.to belong_to(:application).class_name('Authn::OauthApplication') }
   end
 
+  describe 'cross-cell client_id' do
+    it 'persists a consent whose client_id has no local oauth_applications row', :aggregate_failures do
+      consent = build(:oauth_consent, application: nil, client_id: 'iam-only-client-uid')
+
+      expect(consent.save).to be(true)
+      expect(consent.reload.application).to be_nil
+    end
+  end
+
   describe 'validations' do
     subject(:consent) { build(:oauth_consent) }
 
@@ -72,6 +81,23 @@ RSpec.describe Authn::OauthConsent, feature_category: :system_access do
       result = described_class.where(user: user).latest_per_application
 
       expect(result).to contain_exactly(newer_a, only_b)
+    end
+  end
+
+  describe '.preload_application' do
+    let_it_be(:user) { create(:user) }
+
+    before_all do
+      create(:oauth_consent, user: user)
+      create(:oauth_consent, user: user)
+      create(:oauth_consent, user: user)
+    end
+
+    it 'eager-loads the application owner to avoid N+1 queries' do
+      records = described_class.preload_application.to_a
+
+      expect { records.each { |record| record.application.owner } }
+        .not_to exceed_query_limit(0)
     end
   end
 

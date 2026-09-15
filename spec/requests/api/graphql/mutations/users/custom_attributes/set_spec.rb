@@ -47,6 +47,17 @@ RSpec.describe 'UserCustomAttributeSet', feature_category: :user_profile do
 
     let(:current_user) { admin }
 
+    it_behaves_like 'authorizing granular token permissions for GraphQL', :update_custom_attribute do
+      let(:user) { admin }
+      let(:boundary_object) { :instance }
+      let(:mutation) do
+        graphql_mutation(:user_custom_attribute_set,
+          { user_id: target_user.to_global_id.to_s, key: key, value: value }, 'errors')
+      end
+
+      let(:request) { post_graphql_mutation(mutation, token: { personal_access_token: pat }) }
+    end
+
     context 'when creating a new custom attribute' do
       it 'creates the custom attribute' do
         expect { post_mutation }.to change { target_user.custom_attributes.count }.by(1)

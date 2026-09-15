@@ -623,6 +623,7 @@ RSpec.describe ObjectStorage, :clean_gitlab_redis_shared_state, feature_category
 
           expect(subject[:TempPath]).to start_with(uploader_class.root)
           expect(subject[:TempPath]).to include(described_class::TMP_UPLOAD_PATH)
+          expect(subject).not_to have_key(:LocalTempPath)
         end
       end
     end
@@ -642,6 +643,7 @@ RSpec.describe ObjectStorage, :clean_gitlab_redis_shared_state, feature_category
           expect(subject[:RemoteObject][:DeleteURL]).to include(upload_path)
           expect(subject[:RemoteObject][:StoreURL]).to include(upload_path)
           expect(subject[:RemoteObject][:SkipDelete]).to be(false)
+          expect(subject[:LocalTempPath]).to eq(Dir.tmpdir)
 
           ::Gitlab::Redis::SharedState.with do |redis|
             expect(redis.hlen(ObjectStorage::PendingDirectUpload::KEY)).to be_zero
@@ -1424,6 +1426,70 @@ RSpec.describe ObjectStorage, :clean_gitlab_redis_shared_state, feature_category
 
     it 'does not delegate path method' do
       expect { subject.path }.to raise_error(NoMethodError)
+    end
+  end
+
+  describe '#default_download_mode' do
+    before do
+      allow(uploader_class).to receive(:object_store_options) do
+        double(proxy_download: proxy_download)
+      end
+    end
+
+    context 'when proxy_download is true' do
+      let(:proxy_download) { true }
+
+      it 'returns :proxy' do
+        expect(uploader.default_download_mode).to eq(:proxy)
+        expect(uploader_class.default_download_mode).to eq(:proxy)
+      end
+    end
+
+    context 'when proxy_download is false' do
+      let(:proxy_download) { false }
+
+      it 'returns :direct' do
+        expect(uploader.default_download_mode).to eq(:direct)
+        expect(uploader_class.default_download_mode).to eq(:direct)
+      end
+    end
+  end
+
+  describe '#allowed_download_modes' do
+    before do
+      allow(uploader_class).to receive(:object_store_options) do
+        double(proxy_download: proxy_download, allowed_download_modes: allowed_download_modes)
+      end
+    end
+
+    context 'when allowed_download_modes is configured' do
+      let(:proxy_download) { true }
+      let(:allowed_download_modes) { %w[proxy direct] }
+
+      it 'returns the configured modes as symbols' do
+        expect(uploader.allowed_download_modes).to eq(%i[proxy direct])
+        expect(uploader_class.allowed_download_modes).to eq(%i[proxy direct])
+      end
+    end
+
+    context 'when allowed_download_modes is not configured' do
+      let(:proxy_download) { true }
+      let(:allowed_download_modes) { nil }
+
+      it 'defaults to only the default download mode' do
+        expect(uploader.allowed_download_modes).to eq([:proxy])
+        expect(uploader_class.allowed_download_modes).to eq([:proxy])
+      end
+    end
+
+    context 'when object_store_options is nil' do
+      before do
+        allow(uploader_class).to receive(:object_store_options).and_return(nil)
+      end
+
+      it 'raises because default_download_mode cannot be determined' do
+        expect { uploader.allowed_download_modes }.to raise_error(NoMethodError)
+      end
     end
   end
 end

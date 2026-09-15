@@ -1,5 +1,5 @@
 ---
-stage: Tenant Scale
+stage: GitLab Dedicated
 group: Geo
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see <https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments>
 ignore_in_report: true
@@ -79,7 +79,7 @@ On the secondary site:
 
 If any objects are failing to replicate, this should be investigated before
 scheduling the maintenance window. After a planned failover, anything that
-failed to replicate is **lost**.
+failed to replicate is lost.
 
 A common cause of replication failures is data that is missing on the
 primary site - you can resolve these failures by restoring the data from backup,

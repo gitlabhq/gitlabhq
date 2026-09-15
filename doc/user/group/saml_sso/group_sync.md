@@ -18,8 +18,8 @@ based on the users' group assignment in the SAML identity provider (IdP).
 With SAML group sync you can create a many-to-many mapping between SAML IdP groups and GitLab groups.
 
 For example, if the user `@amelia` is assigned to the `security` group in the SAML IdP,
-you can use SAML group sync to assign `@amelia` to the `security-gitlab` group with Maintainer role,
-and to the `vulnerability` group with Reporter role.
+you can use SAML group sync to assign `@amelia` to the `security-gitlab` group with the Maintainer role,
+and to the `vulnerability` group with the Reporter role.
 
 SAML group sync does not create groups.
 You have to first [create a group](../_index.md#create-a-group), then create the mapping.
@@ -224,6 +224,14 @@ To configure SAML Group Sync:
    ]
    ```
 
+   In this example, `groups_attribute` is a key of the provider hash, at the same level as
+   `name` and `label`, not inside `args`.
+   If it's inside `args`, group sync does not run.
+   Users still sign in and the SAML response still carries the groups, but GitLab changes no
+   memberships and logs no error.
+   For more information, see
+   [SAML group links exist but no memberships change](troubleshooting.md#saml-group-links-exist-but-no-memberships-change).
+
 {{< /tab >}}
 
 {{< /tabs >}}
@@ -345,7 +353,7 @@ To configure Self-Managed:
 ## Microsoft Azure Active Directory integration
 
 > [!note]
-> Microsoft has [announced](https://azure.microsoft.com/en-us/updates/azure-ad-is-becoming-microsoft-entra-id/) that Azure Active Directory (AD) is being renamed to Entra ID.
+> Microsoft has [announced](https://azure.microsoft.com/en-us/updates?id=azure-ad-is-becoming-microsoft-entra-id) that Azure Active Directory (AD) is being renamed to Entra ID.
 
 <i class="fa-youtube-play" aria-hidden="true"></i>
 For a demo of group sync using Microsoft Azure, see [Demo: SAML Group Sync](https://youtu.be/Iqvo2tJfXjg).

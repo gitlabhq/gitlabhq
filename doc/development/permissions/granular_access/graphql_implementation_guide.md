@@ -60,7 +60,7 @@ For the naming conventions, see [Naming Permissions](../conventions.md#naming-pe
 
 #### Determining the Permission Name for Types and Mutations
 
-When implementing granular PAT authorization, name permissions based on what the type **represents** or what the mutation **does**, not the GraphQL schema structure.
+When implementing granular PAT authorization, name permissions based on what the type represents or what the mutation does, not the GraphQL schema structure.
 
 **Examples:**
 
@@ -113,7 +113,7 @@ Use the `authorize_granular_token` method to declare permissions on types and mu
 **Method Signature:**
 
 ```ruby
-authorize_granular_token(permissions:, boundary_type: nil, boundary: nil, boundary_argument: nil, boundaries: nil, skip_reason: nil)
+authorize_granular_token(permissions:, boundary_type: nil, boundary: nil, boundary_argument: nil, boundaries: nil, additional_scopes: nil, skip_reason: nil)
 ```
 
 **Parameters:**
@@ -125,8 +125,9 @@ authorize_granular_token(permissions:, boundary_type: nil, boundary: nil, bounda
 | `boundary` | Symbol representing the method to call on the resolved object to extract the boundary (for example, `:project`). Use `:itself` when the resolved object is the Project or Group itself (for example, on `ProjectType` and `GroupType`). Use `:user` or `:instance` for standalone resources. |
 | `boundary_argument` | Symbol representing the argument name containing the boundary path (for example, `:project_path`). |
 | `boundaries` | Array of boundary hashes for resources that support multiple boundary types. Each hash requires a `boundary_type` key and can include `boundary` or `boundary_argument`. For more details, see [Multiple boundaries](#multiple-boundaries). |
-| `traversal` | Set to `true` on a per-field directive (passed through `granular_scope_directive`) for entry-point fields. Passing it to a type-level `authorize_granular_token` raises an `ArgumentError`. For more details, see [Entry-point fields](#entry-point-fields). Not currently enforced. |
+| `additional_scopes` | Array of boundary hashes for a second container that the type or mutation acts on, each of which must be authorized in addition to the primary boundary. Each hash requires its own `permissions` and `boundary_type` keys, and can include `boundary` or `boundary_argument`. For more details, see [Additional required scopes](#additional-required-scopes). |
 | `skip_reason` | Symbol declaring that a type intentionally opts out of granular-token authorization. Use instead of `permissions:` and a boundary, not alongside them. For more details, see [Skip authorization with `skip_reason`](#skip-authorization-with-skip_reason). |
+| `assignable_when` | Optional. Array of condition symbols the current user must meet for the permission to be offered in the token creation UI. Applies to every boundary declared by the call, including every entry in `boundaries:` and `additional_scopes:`. Any hash inside `boundaries:` or `additional_scopes:` can also set its own `assignable_when`, which adds conditions for that boundary only. Not a security control. For more details, see [Tag conditionally available types and mutations](#tag-conditionally-available-types-and-mutations). |
 
 **For object types:**
 
@@ -244,43 +245,59 @@ For an instance runner, `runner.owner` returns a `User`, so neither the project 
 directive matches, and the standalone `instance` boundary applies.
 For more details, see [Multiple boundaries](graphql_architecture.md#multiple-boundaries).
 
-#### Entry-point fields
+#### Additional required scopes
 
-> [!note]
-> `traversal` is declared on the directive but is not currently enforced by `GranularScopeAuthorization`.
-> A field marked `traversal: true` enforces the listed permissions like any other field.
-> Enforcement is pending reimplementation. `Query.group` and `Query.project` do not currently
-> declare the directive, and fields without granular-token directives do not perform granular
-> checks themselves.
+Some mutations act on a second container named in an argument, separate from the primary boundary.
+For example, moving an issue reads the source project from one argument but also writes to a target
+project named in another.
+Use `additional_scopes` to require authorization on that second container as well.
 
-Top-level fields that resolve a boundary from a path argument, such as
-`Query.group(fullPath:)` and `Query.project(fullPath:)`, do not expose data
-themselves. Downstream fields enforce the actual permissions. Use
-`traversal: true` on the directive so the entry point requires only that the
-token is scoped to the boundary, not the listed permission.
+`boundaries` and `additional_scopes` serve different purposes.
+`boundaries` lists alternatives, where the token needs to satisfy only one of them.
+`additional_scopes` lists cumulative requirements, where the token needs to satisfy every one of them,
+on top of the primary boundary.
 
 ```ruby
-field :group, Types::GroupType,
-  null: true,
-  resolver: Resolvers::GroupResolver,
-  description: "Find a group.",
-  directives: granular_scope_directive(
-    permissions: :read_group, boundary_argument: :full_path, boundary_type: :group,
-    traversal: true
-  )
+class Move < BaseMutation
+  authorize_granular_token permissions: :move_issue,
+    boundary_argument: :project_path, boundary_type: :project,
+    additional_scopes: [
+      { permissions: :create_work_item, boundary_argument: :target_project_path, boundary_type: :project }
+    ]
+end
 ```
 
-Without `traversal: true` on such a directive, a token scoped to a child
-resource (for example, `read_member`) cannot reach the parent in GraphQL, even
-though the equivalent REST endpoint allows it. With `traversal: true`, the
-token reaches the parent and only the downstream fields the user queries
-enforce specific permissions.
+Each entry in `additional_scopes` declares its own `permissions`, because the permission required on
+the target of a move can differ from the permission required on the source.
+When an additional scope's boundary cannot be resolved from the arguments, the request is denied with
+`404 Not Found` instead of skipping the requirement.
 
-The `permissions:` argument is still required because it documents the boundary
-the entry point operates on, even though the field itself does not enforce it.
+Each `additional_scopes` entry must declare a `boundary_type` and locate its boundary
+using either `boundary_argument` or `boundary`. Two entries in the same `additional_scopes`
+list may share a `boundary_argument` value. They then form a single requirement group and
+act as alternatives within it, the same way `boundaries` alternatives work for the primary
+scope. Entries that share a requirement group must declare identical `permissions` values,
+because a requirement group enforces a single permission list. Run
+`bundle exec rake gitlab:permissions:validate` to catch declarations that violate these
+rules at validation time, rather than have them silently deny every request with
+`404 Not Found` at request time.
 
-`traversal: true` only applies to `project` and `group` boundary types. For all
-other boundary types, the listed permissions are enforced as normal.
+In this example, both the source and target containers can be either a project or a group.
+Each requirement group declares both alternatives by using the same `boundary_argument`:
+
+```ruby
+authorize_granular_token permissions: :update_work_item,
+  boundaries: [
+    { boundary_argument: :source_full_path, boundary_type: :project },
+    { boundary_argument: :source_full_path, boundary_type: :group }
+  ],
+  additional_scopes: [
+    { permissions: :create_work_item, boundary_argument: :target_full_path, boundary_type: :project },
+    { permissions: :create_work_item, boundary_argument: :target_full_path, boundary_type: :group }
+  ]
+```
+
+For more details, see [Additional required scopes](graphql_architecture.md#additional-required-scopes).
 
 #### Traversal between authorized types
 
@@ -304,9 +321,9 @@ query {
 }
 ```
 
-An automatic skip of the owner type's directive on traversal fields, so that a
-token with only `read_member` could reach members through the group, was
-previously implemented and is pending reimplementation. Do not rely on it.
+An automatic skip of the owner type's directive, so that a token with only
+`read_member` could reach members through the group, was previously
+implemented and is pending reimplementation. Do not rely on it.
 
 #### Skip authorization with `skip_reason`
 
@@ -328,6 +345,48 @@ to declare either a directive or a skip. Types that predate this requirement are
 listed in `config/authz/graphql/authorization_todo.txt`. Do not add new entries to
 that file. You cannot combine `skip_reason:` with `permissions:` or a boundary
 argument.
+
+#### Tag conditionally available types and mutations
+
+When a type, mutation, or resolver restricts access beyond membership, for
+example to administrators, tag it with `assignable_when` so the restriction
+is visible to the permissions tooling:
+
+```ruby
+class InstanceAuditEventType < BaseObject
+  authorize_granular_token permissions: :read_audit_event, boundary: :instance, boundary_type: :instance,
+    assignable_when: [:admin]
+end
+```
+
+The conditions apply to every directive the call emits: the primary
+boundary, every entry in `boundaries:`, and every entry in
+`additional_scopes:`.
+
+Each hash inside `boundaries:` or `additional_scopes:` can also set its own
+`assignable_when`. Use this when the call declares several boundaries but
+only one of them is restricted. The conditions on the hash add to the
+call-level conditions for that boundary only:
+
+```ruby
+authorize_granular_token permissions: :create_runner,
+  boundaries: [
+    { boundary_argument: :project_id, boundary_type: :project },
+    { boundary_argument: :group_id, boundary_type: :group },
+    { boundary: :instance, boundary_type: :instance, assignable_when: [:admin] }
+  ]
+```
+
+The tag describes the restriction. It does not enforce it. The type or
+mutation must still enforce the restriction itself, for example with
+`authorize :admin_all_resources` or an admin check in the resolver.
+
+The validation task rejects unknown condition names, as it does for REST
+endpoints.
+
+The validation task checks these tags against the conditions declared in
+the assignable permission YAML file. For more information, see
+[Conditionally Assignable Permissions](assignable_permissions.md#conditionally-assignable-permissions).
 
 ### Step 6: Add Authorization Tests
 
@@ -362,6 +421,21 @@ it_behaves_like 'authorizing granular token permissions for GraphQL', :<permissi
   let(:user) { current_user }
   let(:boundary_object) { <boundary_object> }
   let(:request) { post_graphql_mutation(mutation, token: { personal_access_token: pat }) }
+end
+```
+
+To test a mutation that declares `additional_scopes`, pass `additional_scope_permissions:` to the
+shared example and define `additional_scope_requirements`.
+The shared example then scopes the token to every boundary, and adds an example asserting that a token
+holding only the primary boundary's scope is denied.
+
+```ruby
+it_behaves_like 'authorizing granular token permissions for GraphQL', :move_issue,
+  additional_scope_permissions: :create_work_item do
+  let(:boundary_object) { source_project }
+  let(:additional_scope_requirements) do
+    [{ boundary_object: target_project, permissions: :create_work_item }]
+  end
 end
 ```
 
@@ -474,6 +548,7 @@ IO.popen('pbcopy', 'w') { |f| f.puts "curl \"http://#{Gitlab.host_with_port}/api
    - A permission in a directive has no authorization test. Each type, mutation, or field declaring
      the permission needs its own test per boundary type. This is strictly enforced with no
      grandfathered exceptions, so add the test in the same merge request as the declaration.
+   - The `assignable_when` conditions do not match the tags on the code using the permission.
    - The generated reference documentation is out of date.
 
 ## See Also

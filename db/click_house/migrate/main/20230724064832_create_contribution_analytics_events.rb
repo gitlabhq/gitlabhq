@@ -21,7 +21,7 @@ class CreateContributionAnalyticsEvents < ClickHouse::Migration
 
   def down
     execute <<~SQL
-      DROP TABLE contribution_analytics_events
+      DROP TABLE IF EXISTS contribution_analytics_events
     SQL
   end
 end

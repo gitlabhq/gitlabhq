@@ -2,7 +2,10 @@
 
 module Markup
   class RenderingService
+    attr_reader :postprocess_result
+
     def initialize(text, file_name: nil, context: {}, postprocess_context: {})
+      @postprocess_result = {}
       @text = text
       @file_name = file_name
       @context = context
@@ -57,7 +60,8 @@ module Markup
     end
 
     def postprocess(html)
-      Banzai.post_process(html, context.reverse_merge(postprocess_context))
+      @postprocess_result = Banzai.post_process_result(html, context.reverse_merge(postprocess_context))
+      @postprocess_result[:output]
     end
 
     attr_reader :text, :file_name, :context, :postprocess_context

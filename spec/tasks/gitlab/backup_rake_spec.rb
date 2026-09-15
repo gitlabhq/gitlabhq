@@ -8,7 +8,7 @@ RSpec.describe 'gitlab:backup namespace rake tasks', :reestablished_active_recor
   let(:backup_rake_task_names) do
     %w[
       db repo uploads builds artifacts pages lfs terraform_state registry packages ci_secure_files agent_plan_content
-      external_diffs
+      ci_catalog_bundles external_diffs
     ]
   end
 
@@ -17,7 +17,7 @@ RSpec.describe 'gitlab:backup namespace rake tasks', :reestablished_active_recor
   let(:backup_task_ids) do
     %w[
       db repositories uploads builds artifacts pages lfs terraform_state registry packages ci_secure_files
-      agent_plan_content external_diffs
+      agent_plan_content ci_catalog_bundles external_diffs
     ]
   end
 
@@ -183,8 +183,7 @@ RSpec.describe 'gitlab:backup namespace rake tasks', :reestablished_active_recor
         allow(File).to receive(:exist?).and_return(true)
         allow(File).to receive(:exist?).with(backup_restore_pid_path).and_return(false)
         allow(Kernel).to receive(:system).and_return(true)
-        allow(FileUtils).to receive(:cp_r).and_return(true)
-        allow(FileUtils).to receive(:mv).and_return(true)
+        allow(FileUtils).to receive_messages(cp_r: true, mv: true)
         allow(Rake::Task["gitlab:shell:setup"])
           .to receive(:invoke).and_return(true)
       end
@@ -232,6 +231,30 @@ RSpec.describe 'gitlab:backup namespace rake tasks', :reestablished_active_recor
       end
     end
 
+    context 'when the backup was created with SKIP_REPOSITORIES_PATHS' do
+      let!(:excluded_project) { create(:project, :small_repo) }
+
+      before do
+        # We only need a backup of the repositories and the DB for this test
+        stub_env('SKIP', 'uploads,builds,artifacts,lfs,terraform_state,registry')
+        stub_env('GITLAB_ASSUME_YES', '1')
+      end
+
+      it 'leaves the excluded repository in place' do
+        stub_env('SKIP_REPOSITORIES_PATHS', excluded_project.full_path)
+
+        expect { run_rake_task('gitlab:backup:create') }.to output.to_stdout_from_any_process
+
+        stub_env('SKIP_REPOSITORIES_PATHS', nil)
+
+        raw_repo = excluded_project.repository.raw
+
+        expect { run_rake_task('gitlab:backup:restore') }.to output.to_stdout_from_any_process
+
+        expect(raw_repo).to exist
+      end
+    end
+
     context 'when the backup is restored' do
       let!(:included_project) { create(:project_with_design, :repository) }
       let!(:original_checksum) { included_project.repository.checksum }
@@ -244,8 +267,7 @@ RSpec.describe 'gitlab:backup namespace rake tasks', :reestablished_active_recor
         allow(File).to receive(:exist?).and_return(true)
         allow(File).to receive(:exist?).with(backup_restore_pid_path).and_return(false)
         allow(Kernel).to receive(:system).and_return(true)
-        allow(FileUtils).to receive(:cp_r).and_return(true)
-        allow(FileUtils).to receive(:mv).and_return(true)
+        allow(FileUtils).to receive_messages(cp_r: true, mv: true)
         allow(YAML).to receive(:safe_load_file)
           .and_return({ gitlab_version: Gitlab::VERSION })
 
@@ -320,6 +342,8 @@ RSpec.describe 'gitlab:backup namespace rake tasks', :reestablished_active_recor
           "Dumping ci secure files ... done",
           "Dumping agent plan content ... ",
           "Dumping agent plan content ... done",
+          "Dumping CI catalog bundles ... ",
+          "Dumping CI catalog bundles ... done",
           "Dumping external diffs ... ",
           "Dumping external diffs ... done"
         ])
@@ -409,6 +433,7 @@ RSpec.describe 'gitlab:backup namespace rake tasks', :reestablished_active_recor
             packages.tar.gz
             ci_secure_files.tar.gz
             agent_plan_content.tar.gz
+            ci_catalog_bundles.tar.gz
             external_diffs.tar.gz
           ]
         )
@@ -426,6 +451,7 @@ RSpec.describe 'gitlab:backup namespace rake tasks', :reestablished_active_recor
         expect(tar_contents).to match('packages.tar.gz')
         expect(tar_contents).to match('ci_secure_files.tar.gz')
         expect(tar_contents).to match('agent_plan_content.tar.gz')
+        expect(tar_contents).to match('ci_catalog_bundles.tar.gz')
         expect(tar_contents).to match('external_diffs.tar.gz')
         expect(tar_contents).not_to match(%r{^.{4,9}[rwx].* (database.sql.gz|uploads.tar.gz|repositories|builds.tar.gz|
                                                              pages.tar.gz|artifacts.tar.gz|registry.tar.gz)/$})
@@ -629,6 +655,7 @@ RSpec.describe 'gitlab:backup namespace rake tasks', :reestablished_active_recor
           packages.tar.gz
           ci_secure_files.tar.gz
           agent_plan_content.tar.gz
+          ci_catalog_bundles.tar.gz
         ]
       )
 
@@ -643,6 +670,7 @@ RSpec.describe 'gitlab:backup namespace rake tasks', :reestablished_active_recor
       expect(tar_contents).to match('packages.tar.gz')
       expect(tar_contents).to match('ci_secure_files.tar.gz')
       expect(tar_contents).to match('agent_plan_content.tar.gz')
+      expect(tar_contents).to match('ci_catalog_bundles.tar.gz')
       expect(tar_contents).not_to match('repositories/')
       expect(tar_contents).to match('repositories: Not found in archive')
     end
@@ -691,6 +719,7 @@ RSpec.describe 'gitlab:backup namespace rake tasks', :reestablished_active_recor
         'repositories',
         'ci_secure_files.tar.gz',
         'agent_plan_content.tar.gz',
+        'ci_catalog_bundles.tar.gz',
         'external_diffs.tar.gz'
       )
     end

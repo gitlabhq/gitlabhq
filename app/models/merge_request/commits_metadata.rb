@@ -143,7 +143,7 @@ class MergeRequest::CommitsMetadata < ApplicationRecord # rubocop:disable Style/
 
     metadata_results = oldest_merge_requests_commits_from_metadata(project_id, shas).to_a
 
-    return metadata_results if Feature.enabled?(:mr_diff_commits_read_new_table, Project.actor_from_id(project_id))
+    return metadata_results if MergeRequestDiffCommit.read_new_commits_table?(project_id)
 
     found_shas = metadata_results.map(&:sha)
     missing_shas = shas - found_shas
@@ -173,7 +173,7 @@ class MergeRequest::CommitsMetadata < ApplicationRecord # rubocop:disable Style/
       })
       .group(:sha)
 
-    if MergeRequestDiffCommit.project_id_pruning_enabled?(project_id)
+    if MergeRequestDiffCommit.read_new_commits_table?(project_id)
       relation = relation.where(merge_request_diff_commits: { project_id: project_id })
     end
 

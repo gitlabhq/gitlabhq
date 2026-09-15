@@ -1,0 +1,15 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "description": "Secret value for the secrets_fp_detection flow's false-positive analysis. Sensitive — excluded from job trace logs by convention.",
+  "type": "object",
+  "properties": {
+    "secret_value": {
+      "type": "string",
+      "description": "Raw secret token value extracted from the detected finding"
+    }
+  },
+  "required": [
+    "secret_value"
+  ],
+  "additionalProperties": false
+}

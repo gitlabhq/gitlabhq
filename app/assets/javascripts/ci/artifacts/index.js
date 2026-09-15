@@ -1,4 +1,3 @@
-import { GlToast } from '@gitlab/ui';
 import Vue from 'vue';
 import VueApollo from 'vue-apollo';
 import { initVueApp } from '~/lib/utils/vue3compat/init_vue_app';
@@ -7,7 +6,6 @@ import { parseBoolean } from '~/lib/utils/common_utils';
 import App from './components/app.vue';
 
 Vue.use(VueApollo);
-Vue.use(GlToast);
 
 const apolloProvider = new VueApollo({
   defaultClient: createDefaultClient(),

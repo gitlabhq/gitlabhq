@@ -678,12 +678,12 @@ describe('PipelineInputsForm', () => {
       await selectInputs();
 
       // Emits an event on inputs select
-      expect(wrapper.emitted()['update-inputs']).toHaveLength(1);
+      expect(wrapper.emitted('update-inputs')).toHaveLength(1);
 
       const updatedInput = { ...expectedInputs[0], value: 'updated-value', isSelected: true };
       findInputsTable().vm.$emit('update', updatedInput);
 
-      expect(wrapper.emitted()['update-inputs']).toHaveLength(2);
+      expect(wrapper.emitted('update-inputs')).toHaveLength(2);
 
       const expectedEmittedValue = [
         { name: 'deploy_environment', value: 'updated-value' },
@@ -805,8 +805,8 @@ describe('PipelineInputsForm', () => {
     });
 
     it('emits total available and modified counts when receives the inputs', () => {
-      expect(wrapper.emitted()['update-inputs-metadata']).toHaveLength(2);
-      expect(wrapper.emitted()['update-inputs-metadata'][0][0]).toEqual({
+      expect(wrapper.emitted('update-inputs-metadata')).toHaveLength(2);
+      expect(wrapper.emitted('update-inputs-metadata')[0][0]).toEqual({
         totalAvailable: 3,
         totalModified: 0,
       });
@@ -817,8 +817,8 @@ describe('PipelineInputsForm', () => {
       const updatedInput = { ...inputs[0], savedValue: 'saved-value', value: 'new-updated-value' };
       findInputsTable().vm.$emit('update', updatedInput);
 
-      expect(wrapper.emitted()['update-inputs-metadata']).toHaveLength(3);
-      expect(wrapper.emitted()['update-inputs-metadata'][2][0]).toEqual({
+      expect(wrapper.emitted('update-inputs-metadata')).toHaveLength(3);
+      expect(wrapper.emitted('update-inputs-metadata')[2][0]).toEqual({
         totalModified: 1,
         newlyModified: 1,
       });

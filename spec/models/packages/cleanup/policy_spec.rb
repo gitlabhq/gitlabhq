@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Packages::Cleanup::Policy, type: :model do
+RSpec.describe Packages::Cleanup::Policy, type: :model, feature_category: :package_registry do
   describe 'relationships' do
     it { is_expected.to belong_to(:project) }
   end

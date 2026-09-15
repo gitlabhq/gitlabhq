@@ -419,7 +419,7 @@ Example:
             --exclude dummy.h
 ```
 
-The `cde-rebase` tool is also available to environments with Go installed, so rebasing the CDB when it is generated is possible, e.g.
+The `cdb-rebase` tool is also available to environments with Go installed, so rebasing the CDB when it is generated is possible, e.g.
 
 ```shell
 go install gitlab.com/gitlab-org/security-products/analyzers/clangsa/cmd/cdb-rebase@latest

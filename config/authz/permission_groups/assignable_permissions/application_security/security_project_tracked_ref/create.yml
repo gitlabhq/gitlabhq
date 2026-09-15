@@ -1,0 +1,9 @@
+---
+name: create_security_project_tracked_ref
+description: Grants the ability to create tracked refs for vulnerability tracking
+boundaries:
+  - project
+available_for:
+  - granular_access_token
+permissions:
+  - create_security_project_tracked_ref

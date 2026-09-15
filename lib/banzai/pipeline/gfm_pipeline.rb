@@ -58,6 +58,7 @@ module Banzai
           Filter::References::IssueReferenceFilter,
           Filter::References::WorkItemReferenceFilter,
           Filter::References::ExternalIssueReferenceFilter,
+          # keep filters that resolve issues above this line, IssueReferenceExtractionPipeline drops the rest
           Filter::References::MergeRequestReferenceFilter,
           Filter::References::SnippetReferenceFilter,
           Filter::References::PersonalSnippetReferenceFilter,

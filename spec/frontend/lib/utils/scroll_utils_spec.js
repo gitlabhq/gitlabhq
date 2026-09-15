@@ -225,6 +225,7 @@ describe('scroll utils', () => {
 
   describe('preventScrollToFragment', () => {
     const setupContainer = (innerHTML) => {
+      window.location.hash = '';
       setHTMLFixture(`
         <div id="target"></div>
         <div id="container">${innerHTML}</div>
@@ -274,8 +275,17 @@ describe('scroll utils', () => {
       expect(scrollSpy).not.toHaveBeenCalled();
     });
 
-    it('does nothing when the link points to the same path with different query', () => {
+    it('prevents scroll when the link points to the same path with different query', () => {
       setupContainer(`<a href="${window.location.pathname}?foo=bar#target">Click me</a>`);
+      const scrollSpy = jest.spyOn(getScrollingElement(), 'scrollTo');
+      const { preventDefault } = triggerOn('a');
+      expect(preventDefault).toHaveBeenCalled();
+      expect(window.location.hash).toBe('#target');
+      expect(scrollSpy).toHaveBeenCalledWith({ top: 40, left: 50 });
+    });
+
+    it('does nothing when the fragment does not exist on the page', () => {
+      setupContainer('<a href="#missing">Click me</a>');
       const scrollSpy = jest.spyOn(getScrollingElement(), 'scrollTo');
       const { preventDefault } = triggerOn('a');
       expect(preventDefault).not.toHaveBeenCalled();

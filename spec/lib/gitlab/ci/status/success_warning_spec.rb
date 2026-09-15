@@ -47,7 +47,7 @@ RSpec.describe Gitlab::Ci::Status::SuccessWarning, feature_category: :continuous
         end
 
         it 'is a correct match' do
-          expect(described_class.matches?(matchable, double)).to eq true
+          expect(described_class.matches?(matchable, double)).to be true
         end
       end
 
@@ -57,7 +57,7 @@ RSpec.describe Gitlab::Ci::Status::SuccessWarning, feature_category: :continuous
         end
 
         it 'does not match' do
-          expect(described_class.matches?(matchable, double)).to eq false
+          expect(described_class.matches?(matchable, double)).to be false
         end
       end
     end
@@ -73,13 +73,13 @@ RSpec.describe Gitlab::Ci::Status::SuccessWarning, feature_category: :continuous
         end
 
         it 'does not match' do
-          expect(described_class.matches?(matchable, double)).to eq false
+          expect(described_class.matches?(matchable, double)).to be false
         end
       end
 
       context 'when matchable subject does not have warnings' do
         it 'does not match' do
-          expect(described_class.matches?(matchable, double)).to eq false
+          expect(described_class.matches?(matchable, double)).to be false
         end
       end
     end

@@ -20,6 +20,8 @@ const TEST_BLOBS = [
 
 const TEST_BLOBS_UNLOADED = TEST_BLOBS.map((blob) => ({ ...blob, content: '', isLoaded: false }));
 
+const TEST_MARKDOWN_PREVIEW_PATH = '/snippets/preview_markdown';
+
 describe('snippets/components/snippet_blob_actions_edit', () => {
   let wrapper;
 
@@ -27,6 +29,7 @@ describe('snippets/components/snippet_blob_actions_edit', () => {
     wrapper = shallowMount(SnippetBlobActionsEdit, {
       propsData: {
         initBlobs: TEST_BLOBS,
+        markdownPreviewPath: TEST_MARKDOWN_PREVIEW_PATH,
         ...props,
       },
     });
@@ -76,6 +79,12 @@ describe('snippets/components/snippet_blob_actions_edit', () => {
 
     it(`renders add button (show=true)`, () => {
       expect(findAddButton().exists()).toBe(true);
+    });
+
+    it('passes markdownPreviewPath to all files', () => {
+      findBlobEdits().wrappers.forEach((blobEdit) => {
+        expect(blobEdit.props('markdownPreviewPath')).toBe(TEST_MARKDOWN_PREVIEW_PATH);
+      });
     });
   });
 

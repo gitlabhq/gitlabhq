@@ -63,6 +63,16 @@ RSpec.describe Members::BaseEvent, feature_category: :user_management do
           .to raise_error(Gitlab::EventStore::InvalidEvent, /does not match/)
       end
 
+      it 'accepts Group as a source_type' do
+        expect { subclass.new(data: cloud_event_data.merge(data: valid_data.merge(source_type: 'Group'))) }
+          .not_to raise_error
+      end
+
+      it 'accepts Project as a source_type' do
+        expect { subclass.new(data: cloud_event_data.merge(data: valid_data.merge(source_type: 'Project'))) }
+          .not_to raise_error
+      end
+
       it 'rejects invalid types' do
         expect do
           subclass.new(data: cloud_event_data.merge(data: valid_data.merge(source_id: 'not_an_integer')))

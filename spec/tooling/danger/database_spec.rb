@@ -126,10 +126,12 @@ RSpec.describe Tooling::Danger::Database, feature_category: :tooling do
 
     with_them do
       before do
-        allow(fake_helper).to receive(:modified_files).and_return(modified_files)
-        allow(fake_helper).to receive(:all_changed_files).and_return(modified_files)
-        allow(fake_helper).to receive(:changed_lines).and_return(changed_lines)
-        allow(fake_helper).to receive(:changes_by_category).and_return(changes_by_category)
+        allow(fake_helper).to receive_messages(
+          modified_files: modified_files,
+          all_changed_files: modified_files,
+          changed_lines: changed_lines,
+          changes_by_category: changes_by_category
+        )
       end
 
       it 'returns database changes' do

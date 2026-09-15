@@ -21,6 +21,8 @@ module QA
 
         Flow::Login.sign_in
         Flow::Project.enable_catalog_resource_feature(project)
+
+        runner.wait_until_online
       end
 
       after do
@@ -32,6 +34,9 @@ module QA
         project.create_repository_tag('1.0.0')
 
         Flow::Pipeline.wait_for_pipeline_creation_via_api(project: project)
+        Flow::Pipeline.wait_for_pipeline_to_have_status_by_source_branch(
+          project: project, source_branch: '1.0.0', status: 'success'
+        )
         project.visit_job('create-release-with-existing-tag')
 
         Page::Project::Job::Show.perform do |show|
@@ -86,6 +91,9 @@ module QA
 
         project.visit!
         Flow::Pipeline.wait_for_pipeline_creation_via_api(project: project)
+        Flow::Pipeline.wait_for_pipeline_to_have_status_by_source_branch(
+          project: project, source_branch: '1.0.0', status: 'success'
+        )
         project.visit_job('create-release-with-new-tag-filled-with-information')
 
         Page::Project::Job::Show.perform do |show|

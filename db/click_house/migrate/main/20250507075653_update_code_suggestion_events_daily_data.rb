@@ -23,7 +23,7 @@ class UpdateCodeSuggestionEventsDailyData < ClickHouse::Migration
     SQL
            )
     safe_table_swap('code_suggestion_events_daily', 'code_suggestion_events_daily_temp', '_old')
-    execute("DROP TABLE code_suggestion_events_daily_temp")
+    execute("DROP TABLE IF EXISTS code_suggestion_events_daily_temp")
   end
 
   def down

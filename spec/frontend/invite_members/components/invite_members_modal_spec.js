@@ -138,6 +138,8 @@ describe('InviteMembersModal', () => {
     const [username, message] = Object.entries(errorType.parsedMessage)[index];
     return `${username}: ${message}`;
   };
+  const expectedGroupedErrorMessage = (memberSeries, errorType, key) =>
+    `${memberSeries}: ${errorType.parsedMessage[key]}`;
   const findActionButton = () => wrapper.findComponentByTestId('invite-modal-submit');
   const findCancelButton = () => wrapper.findComponentByTestId('invite-modal-cancel');
   const emitClickFromModal = (findButton) => () =>
@@ -541,7 +543,7 @@ describe('InviteMembersModal', () => {
           expect(findMembersSelect().props('exceptionState')).not.toBe(false);
         });
 
-        it('displays all errors when there are multiple existing users that are restricted by email', async () => {
+        it('groups users that share an error message into one entry', async () => {
           mockInvitationsApi(HTTP_STATUS_CREATED, invitationsApiResponse.MULTIPLE_RESTRICTED);
 
           await triggerMembersTokenSelect([user3, user4, user5]);
@@ -551,15 +553,21 @@ describe('InviteMembersModal', () => {
           await waitForPromises();
 
           expect(findMemberErrorAlert().exists()).toBe(true);
+          expect(findMemberErrorAlert().props('title')).toContain(
+            "The following 3 members couldn't be invited",
+          );
           expect(findMemberErrorAlert().text()).toContain(
-            expectedErrorMessage(0, invitationsApiResponse.MULTIPLE_RESTRICTED),
+            expectedGroupedErrorMessage(
+              'email@example.com and root',
+              invitationsApiResponse.MULTIPLE_RESTRICTED,
+              'email@example.com',
+            ),
           );
           expect(findMemberErrorAlert().text()).toContain(
             expectedErrorMessage(1, invitationsApiResponse.MULTIPLE_RESTRICTED),
           );
-          expect(findMemberErrorAlert().text()).toContain(
-            expectedErrorMessage(2, invitationsApiResponse.MULTIPLE_RESTRICTED),
-          );
+          expect(wrapper.findAllByTestId('errors-limited-item')).toHaveLength(2);
+          expect(findMoreInviteErrorsButton().exists()).toBe(false);
           expect(membersFormGroupInvalidFeedback()).toBe('');
           expect(findMembersSelect().props('exceptionState')).not.toBe(false);
         });
@@ -684,7 +692,7 @@ describe('InviteMembersModal', () => {
             expect(findActionButton().props('loading')).toBe(false);
           });
 
-          it('displays all errors when there are multiple emails that return a restricted error message', async () => {
+          it('groups emails that return the same restricted error message into one entry', async () => {
             mockInvitationsApi(HTTP_STATUS_CREATED, invitationsApiResponse.MULTIPLE_RESTRICTED);
 
             await triggerMembersTokenSelect([user3, user4, user5]);
@@ -695,14 +703,16 @@ describe('InviteMembersModal', () => {
 
             expect(findMemberErrorAlert().exists()).toBe(true);
             expect(findMemberErrorAlert().text()).toContain(
-              expectedErrorMessage(0, invitationsApiResponse.MULTIPLE_RESTRICTED),
+              expectedGroupedErrorMessage(
+                'email@example.com and root',
+                invitationsApiResponse.MULTIPLE_RESTRICTED,
+                'email@example.com',
+              ),
             );
             expect(findMemberErrorAlert().text()).toContain(
               expectedErrorMessage(1, invitationsApiResponse.MULTIPLE_RESTRICTED),
             );
-            expect(findMemberErrorAlert().text()).toContain(
-              expectedErrorMessage(2, invitationsApiResponse.MULTIPLE_RESTRICTED),
-            );
+            expect(wrapper.findAllByTestId('errors-limited-item')).toHaveLength(2);
             expect(membersFormGroupInvalidFeedback()).toBe('');
             expect(findMembersSelect().props('exceptionState')).not.toBe(false);
           });
@@ -758,19 +768,17 @@ describe('InviteMembersModal', () => {
             "The following 4 members couldn't be invited",
           );
           expect(findMemberErrorAlert().text()).toContain(
-            expectedErrorMessage(0, invitationsApiResponse.EXPANDED_RESTRICTED),
+            expectedGroupedErrorMessage(
+              'email@example.com and root',
+              invitationsApiResponse.EXPANDED_RESTRICTED,
+              'email@example.com',
+            ),
           );
           expect(findMemberErrorAlert().text()).toContain(
             expectedErrorMessage(1, invitationsApiResponse.EXPANDED_RESTRICTED),
           );
-          expect(findMemberErrorAlert().text()).toContain(
-            expectedErrorMessage(2, invitationsApiResponse.EXPANDED_RESTRICTED),
-          );
-          expect(findMemberErrorAlert().text()).toContain(
-            expectedErrorMessage(3, invitationsApiResponse.EXPANDED_RESTRICTED),
-          );
           expect(findAccordion().exists()).toBe(true);
-          expect(findMoreInviteErrorsButton().text()).toContain('Show more (2)');
+          expect(findMoreInviteErrorsButton().text()).toContain('Show more (1)');
           expect(findErrorsIcon().attributes('class')).not.toContain('gl-rotate-180');
           expect(findAccordion().attributes('visible')).toBeUndefined();
 
@@ -779,10 +787,13 @@ describe('InviteMembersModal', () => {
           expect(findMoreInviteErrorsButton().text()).toContain(EXPANDED_ERRORS);
           expect(findErrorsIcon().attributes('class')).toContain('gl-rotate-180');
           expect(findAccordion().attributes('visible')).toBeDefined();
+          expect(findMemberErrorAlert().text()).toContain(
+            expectedErrorMessage(2, invitationsApiResponse.EXPANDED_RESTRICTED),
+          );
 
           await findMoreInviteErrorsButton().vm.$emit('click');
 
-          expect(findMoreInviteErrorsButton().text()).toContain('Show more (2)');
+          expect(findMoreInviteErrorsButton().text()).toContain('Show more (1)');
           expect(findAccordion().attributes('visible')).toBeUndefined();
 
           await removeMembersToken(user3);
@@ -792,7 +803,14 @@ describe('InviteMembersModal', () => {
             "The following 3 members couldn't be invited",
           );
           expect(findMemberErrorAlert().text()).not.toContain(
-            expectedErrorMessage(0, invitationsApiResponse.EXPANDED_RESTRICTED),
+            expectedGroupedErrorMessage(
+              'email@example.com and root',
+              invitationsApiResponse.EXPANDED_RESTRICTED,
+              'email@example.com',
+            ),
+          );
+          expect(findMemberErrorAlert().text()).toContain(
+            expectedErrorMessage(3, invitationsApiResponse.EXPANDED_RESTRICTED),
           );
 
           await removeMembersToken(user6);

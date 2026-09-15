@@ -2,7 +2,6 @@
 
 scope(controller: :wikis) do
   scope(path: 'wikis', as: :wikis) do
-    get :git_access
     get :pages
     get :templates
     get :new

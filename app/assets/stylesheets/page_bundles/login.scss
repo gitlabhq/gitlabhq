@@ -4,18 +4,6 @@
   margin: 0;
   padding: 0;
   height: 100%;
-
-  body {
-    &.with-system-header {
-      padding-top: $system-header-height;
-    }
-
-    &.with-system-footer {
-      .footer-container {
-        padding-bottom: $system-footer-height;
-      }
-    }
-  }
 }
 
 /* Login Page */

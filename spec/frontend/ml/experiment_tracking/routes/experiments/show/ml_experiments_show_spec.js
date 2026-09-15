@@ -61,7 +61,6 @@ describe('MlExperimentsShow', () => {
     experiment = MOCK_EXPERIMENT,
     emptyStateSvgPath = 'path',
     mountFn = shallowMountExtended,
-    mlflowTrackingUrl = 'mlflow/tracking/url',
     canWriteModelExperiments = true,
   } = {}) => {
     wrapper = mountFn(MlExperimentsShow, {
@@ -72,7 +71,6 @@ describe('MlExperimentsShow', () => {
         paramNames,
         pageInfo,
         emptyStateSvgPath,
-        mlflowTrackingUrl,
         canWriteModelExperiments,
       },
       stubs: { GlTabs, GlBadge, CandidateList, GlSprintf, TimeAgoTooltip },

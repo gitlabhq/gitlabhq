@@ -6,13 +6,16 @@
 # Intended to run as a Caproni edit_mode_start lifecycle hook so that the
 # license is activated automatically each time `caproni run` starts.
 #
-# If 1Password CLI is unavailable or not authenticated the script exits
-# successfully with a warning so it does not block `caproni run`.
+# Activation is opt-in: without CAPRONI_ACTIVATE_LICENSE=1 the script does
+# nothing at all. Once opted in, a missing `op` CLI is skipped with a warning,
+# but every other failure -- a failed 1Password sign-in, an unavailable toolbox
+# pod, a Rails error -- is fatal and blocks `caproni run`. Set
+# CAPRONI_ACTIVATE_LICENSE=0 to skip activation instead.
 #
 # Prerequisites:
 # - Cluster is up and toolbox pod is healthy
 # - `.gitlab/caproni/setup.sh` was performed (config files in place)
-# - 1Password CLI (`op`) installed and app integration enabled
+# - 1Password CLI (`op`) installed, able to sign in to `gitlab.1password.com`
 
 set -euo pipefail
 
@@ -25,6 +28,7 @@ TARGET="$TARGET_DEPLOYMENT/container/toolbox"
 NAMESPACE="${GITLAB_NAMESPACE:-gitlab}"
 RAILS_ENV="${RAILS_ENV:-development}"
 
+ONEPASSWORD_ACCOUNT="gitlab.1password.com"
 ONEPASSWORD_ITEM="GitLab_self_managed_ultimate_Duo_enterprise"
 ONEPASSWORD_VAULT="Engineering"
 ONEPASSWORD_FIELD="activation_code"
@@ -42,19 +46,30 @@ if [[ "${CAPRONI_ACTIVATE_LICENSE:-0}" != "1" ]]; then
 fi
 
 # ------------------------------------------------------------------
-# 1. Check op CLI availability and authentication
+# 1. Check op CLI availability and sign in to 1Password
 # ------------------------------------------------------------------
+# No `op` at all means no 1Password to fetch a code from, and nobody in that
+# position wants a license -- warn and continue. Every later failure is fatal,
+# because from here on 1Password is present and the problem is fixable.
 if ! command -v op &>/dev/null; then
   warn "'op' CLI not found — skipping license activation."
-  warn "Install via 'mise install' and enable 1Password app integration to activate automatically."
+  warn "Install it via 'mise install' and enable 1Password app integration to activate automatically."
   exit 0
 fi
 
-if ! op whoami </dev/null &>/dev/null; then
-  warn "1Password CLI is not authenticated — skipping license activation."
-  warn "Run 'op signin' and re-run 'caproni run' to activate automatically, or activate manually at:"
-  warn "  http://gitlab.caproni.test/admin/subscription"
-  exit 0
+if ! op whoami --account "${ONEPASSWORD_ACCOUNT}" </dev/null &>/dev/null; then
+  info "Signing in to 1Password (${ONEPASSWORD_ACCOUNT})..."
+  session=""
+  # Without 1Password app integration, signin prints an OP_SESSION_* export
+  # to stdout that later `op` calls need; with it enabled, eval is a no-op.
+  if ! session=$(op signin --account "${ONEPASSWORD_ACCOUNT}"); then
+    err "1Password sign-in failed — cannot fetch the license activation code."
+    err "Run 'op signin --account ${ONEPASSWORD_ACCOUNT}' to see why, then re-run 'caproni run'."
+    err "To start unlicensed instead, set CAPRONI_ACTIVATE_LICENSE=0, or activate manually at:"
+    err "  http://gitlab.caproni.test/admin/subscription"
+    exit 1
+  fi
+  eval "${session}"
 fi
 
 # ------------------------------------------------------------------
@@ -64,23 +79,30 @@ info "Fetching license activation code from 1Password..."
 activation_code=""
 
 if ! activation_code=$(op item get "${ONEPASSWORD_ITEM}" \
+    --account "${ONEPASSWORD_ACCOUNT}" \
     --vault "${ONEPASSWORD_VAULT}" \
     --fields "${ONEPASSWORD_FIELD}" 2>&1); then
-  warn "Failed to fetch activation code from 1Password: ${activation_code}"
-  warn "Activate manually at: http://gitlab.caproni.test/admin/subscription"
-  exit 0
+  err "Failed to fetch activation code from 1Password: ${activation_code}"
+  err "Check your access to the '${ONEPASSWORD_ITEM}' item in the '${ONEPASSWORD_VAULT}' vault,"
+  err "or set CAPRONI_ACTIVATE_LICENSE=0 to skip license activation."
+  exit 1
 fi
 
 if [[ -z "${activation_code}" ]]; then
-  warn "Retrieved empty activation code from 1Password — skipping."
-  exit 0
+  err "1Password returned an empty '${ONEPASSWORD_FIELD}' field for '${ONEPASSWORD_ITEM}'."
+  err "Fix the item, or set CAPRONI_ACTIVATE_LICENSE=0 to skip license activation."
+  exit 1
 fi
 
 # ------------------------------------------------------------------
 # 3. Wait for toolbox pod and activate license via Rails runner
 # ------------------------------------------------------------------
 info "Waiting for toolbox pod..."
-kubectl wait -n "${NAMESPACE}" --for=condition=Available "${TARGET_DEPLOYMENT}" --timeout=60s
+if ! kubectl wait -n "${NAMESPACE}" --for=condition=Available "${TARGET_DEPLOYMENT}" --timeout=60s; then
+  err "${TARGET_DEPLOYMENT} in namespace ${NAMESPACE} did not become available within 60s."
+  err "Bring the cluster up with 'caproni up' before starting edit mode."
+  exit 1
+fi
 
 info "Activating license via Rails runner..."
 set +e
@@ -152,9 +174,14 @@ exit_code=$?
 set -e
 echo "${output}"
 
+# Anything other than an explicit ALREADY_ACTIVE/SUCCESS marker is a failure,
+# including a zero exit with no marker: the Rails runner's rescue block prints
+# ERROR and exits 0 whenever a cloud license exists at the time it is reached.
 if echo "${output}" | grep -qE "ALREADY_ACTIVE|SUCCESS"; then
   info "License activation complete."
-elif [[ ${exit_code} -ne 0 ]]; then
-  warn "License activation failed — activate manually at: http://gitlab.caproni.test/admin/subscription"
-  exit 0  # don't block caproni run
+else
+  err "License activation failed (rails runner exit ${exit_code}, no success marker); see the output above."
+  err "Activate manually at: http://gitlab.caproni.test/admin/subscription"
+  err "To let 'caproni run' proceed unlicensed, set CAPRONI_ACTIVATE_LICENSE=0."
+  exit 1
 fi

@@ -208,7 +208,7 @@ RSpec.describe Gitlab::Ci::Variables::Collection::Item, feature_category: :pipel
     it 'returns false when :raw is not specified' do
       item = described_class.new(**variable)
 
-      expect(item.raw?).to eq false
+      expect(item.raw?).to be false
     end
 
     context 'when :raw is specified as true' do
@@ -219,7 +219,7 @@ RSpec.describe Gitlab::Ci::Variables::Collection::Item, feature_category: :pipel
       it 'returns true' do
         item = described_class.new(**variable)
 
-        expect(item.raw?).to eq true
+        expect(item.raw?).to be true
       end
     end
   end
@@ -230,7 +230,7 @@ RSpec.describe Gitlab::Ci::Variables::Collection::Item, feature_category: :pipel
 
     context 'when :masked is not specified' do
       it 'returns false' do
-        expect(item.masked?).to eq(false)
+        expect(item.masked?).to be(false)
       end
     end
 
@@ -238,7 +238,7 @@ RSpec.describe Gitlab::Ci::Variables::Collection::Item, feature_category: :pipel
       let(:variable_hash) { { key: variable_key, value: variable_value, masked: true } }
 
       it 'returns true' do
-        expect(item.masked?).to eq(true)
+        expect(item.masked?).to be(true)
       end
     end
   end

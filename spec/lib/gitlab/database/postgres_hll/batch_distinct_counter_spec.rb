@@ -53,8 +53,6 @@ RSpec.describe Gitlab::Database::PostgresHll::BatchDistinctCounter do
       end
 
       context 'disallowed configurations' do
-        let(:default_batch_size) { Gitlab::Database::PostgresHll::BatchDistinctCounter::DEFAULT_BATCH_SIZE }
-
         it 'raises WRONG_CONFIGURATION_ERROR if start is bigger than finish' do
           expect { described_class.new(model, column).execute(start: 1, finish: 0) }.to raise_error(described_class::WRONG_CONFIGURATION_ERROR)
         end

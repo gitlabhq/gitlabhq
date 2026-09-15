@@ -522,6 +522,13 @@ Gitlab/Ai/OrderConstants:
   Include:
    - 'ee/lib/ai/context/dependencies/config_files/constants.rb'
 
+# See https://gitlab.com/gitlab-org/gitlab/-/work_items/612557
+Gitlab/Ai/AvoidDirectCheckpointTableRead:
+  Enabled: true
+
+Gitlab/Ai/AvoidFoundationalFlowStringLookup:
+  Enabled: true
+
 Gitlab/DocumentationLinks/HardcodedUrl:
   Enabled: true
   Exclude:
@@ -550,22 +557,6 @@ GitlabSecurity/PublicSend:
     - 'ee/db/**/*'
     - 'ee/lib/**/*.rake'
     - 'ee/spec/**/*'
-
-Gitlab/DeprecatedAuditEventService:
-  Enabled: true
-  Exclude:
-    - 'ee/app/services/ee/audit_event_service.rb'
-    - 'ee/app/services/ee/applications/create_service.rb'
-    - 'ee/app/services/audit_events/release_audit_event_service.rb'
-    - 'ee/app/services/ee/keys/create_service.rb'
-    - 'ee/app/services/ee/users/migrate_records_to_ghost_user_service.rb'
-    - 'ee/spec/features/admin/admin_audit_logs_spec.rb'
-    - 'ee/spec/controllers/groups/omniauth_callbacks_controller_spec.rb'
-    - 'ee/spec/services/audit_event_service_spec.rb'
-    - 'ee/lib/gitlab/auth/group_saml/membership_updater.rb'
-    - 'app/controllers/sessions_controller.rb'
-    - 'app/services/audit_event_service.rb'
-    - 'spec/services/audit_event_service_spec.rb'
 
 Database/AvoidUnpartitionedCiRelations:
   Enabled: true
@@ -1340,6 +1331,13 @@ Migration/PreventForeignKeyCreation:
   Enabled: true
   EnforcedSince: 20250116000000
 
+Migration/ForeignKeysToDestroyServiceTables:
+  Enabled: true
+  EnforcedSince: 20260820000000
+  Include:
+    - 'db/migrate/*.rb'
+    - 'db/post_migrate/*.rb'
+
 Migration/PreventLargeBlobInDatabase:
   Enabled: true
   Include:
@@ -1363,6 +1361,12 @@ Migration/AsyncPostMigrateOnly:
   Include:
     - db/**/*.rb
   EnforcedSince: 20240115115029
+
+Migration/ClickHouseIdempotentDdl:
+  Enabled: true
+  Include:
+    - 'db/click_house/migrate/**/*.rb'
+    - 'db/click_house/post_migrate/**/*.rb'
 
 Gitlab/RailsLogger:
   Exclude:
@@ -1405,6 +1409,10 @@ Lint/HashCompareByIdentity:
 
 Lint/RedundantSafeNavigation:
   Enabled: true
+
+Lint/UnusedBlockArgument:
+  Exclude:
+    - ee/app/models/ai/catalog/foundational_flow/definitions/*.rb
 
 Style/ClassEqualityComparison:
   Enabled: true

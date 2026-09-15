@@ -7,6 +7,10 @@ module Commits
         return error('Missing parameter tag_name')
       end
 
+      if rate_limited?(commit.project)
+        return error(_('This project has reached its tag creation limit. Try again later.'))
+      end
+
       tag_name = params[:tag_name]
       message = params[:tag_message]
 
@@ -20,6 +24,12 @@ module Commits
       end
 
       result
+    end
+
+    private
+
+    def rate_limited?(project)
+      ::Gitlab::ApplicationRateLimiter.throttled?(:tags_create, scope: { project: project })
     end
   end
 end

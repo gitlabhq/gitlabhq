@@ -1,0 +1,8 @@
+# @feature_category: portfolio_management
+
+subscription namespaceWorkItemChanges($namespaceId: NamespaceID!) {
+  namespaceWorkItemChanges(namespaceId: $namespaceId) {
+    workItemId
+    action
+  }
+}

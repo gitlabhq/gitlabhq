@@ -39,8 +39,8 @@ RSpec.describe Gitlab::Graphql::VersionFilter::FutureFieldFallback, feature_cate
       end
     end
 
-    context 'when context has contain_future_fields set to false' do
-      let(:context) { { contain_future_fields: false } }
+    context 'when context has no future field names' do
+      let(:context) { { future_field_names: Set.new } }
 
       it 'does not return fallback field' do
         field = test_class.get_field('future_field', context)
@@ -49,8 +49,8 @@ RSpec.describe Gitlab::Graphql::VersionFilter::FutureFieldFallback, feature_cate
       end
     end
 
-    context 'when field does not exist and context contains future fields' do
-      let(:context) { { contain_future_fields: true } }
+    context 'when the missing field name is a future field' do
+      let(:context) { { future_field_names: Set.new(%w[future_field]) } }
 
       it 'returns a fallback field for missing field' do
         field = test_class.get_field('future_field', context)
@@ -61,10 +61,23 @@ RSpec.describe Gitlab::Graphql::VersionFilter::FutureFieldFallback, feature_cate
         expect(field.owner).to eq(test_class)
       end
 
-      it 'does not return fallback for fields starting with double underscore' do
-        field = test_class.get_field('__typename', context)
+      it 'does not return fallback for other missing fields' do
+        field = test_class.get_field('other_field', context)
 
         expect(field).to be_nil
+      end
+
+      it 'does not return fallback for introspection fields even when listed' do
+        introspection_context = { future_field_names: Set.new(%w[__introspection_field]) }
+        field = test_class.get_field('__introspection_field', introspection_context)
+
+        expect(field).to be_nil
+      end
+
+      it 'returns the existing field even when its name is listed' do
+        field = test_class.get_field('existing_field', { future_field_names: Set.new(%w[existing_field]) })
+
+        expect(field.name).to eq('existing_field')
       end
     end
   end

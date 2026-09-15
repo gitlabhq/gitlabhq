@@ -48,7 +48,7 @@ Follow the steps to complete this issue -->
 #### Experimentation
 
 - [ ] Collaborate with a [Growth product manager](https://about.gitlab.com/handbook/engineering/development/growth/#stable-counterparts) to help you determine if you can validate your solution through an experiment on SaaS. 
-- [ ] If an experiment is possible, create an issue using the [experiment idea template](https://gitlab.com/gitlab-org/gitlab/-/issues/new?description_template=Experiment%20Idea) and follow the template instructions. Otherwise, follow the instructions from the [`After merge` section](#after-merge) below to add Snowplow tracking.
+- [ ] If an experiment is possible, create an issue using the [experiment idea template](https://gitlab.com/gitlab-org/gitlab/-/work_items/new?description_template=Experiment%20Idea) and follow the template instructions. Otherwise, follow the instructions from the [`After merge` section](#after-merge) below to add Snowplow tracking.
 - [ ] Ask a [Growth product manager or Designer](https://about.gitlab.com/handbook/engineering/development/growth/#stable-counterparts) to review your experiment set-up. 
 - [ ] Implement and monitor the experiment following the [implementation guide](https://gitlab.com/gitlab-org/gitlab/-/blob/master/doc/development/experiment_guide/gitlab_experiment.md#implement-an-experiment).
 - [ ] Review and discuss the findings.
@@ -66,7 +66,7 @@ Follow the steps to complete this issue -->
 #### Experimentation
 
 - [ ] Collaborate with a [Growth product manager](https://about.gitlab.com/handbook/engineering/development/growth/#stable-counterparts) to help you determine if you can validate your solution through an experiment on SaaS. 
-- [ ] If an experiment is possible, create an issue using the [experiment idea template](https://gitlab.com/gitlab-org/gitlab/-/issues/new?description_template=Experiment%20Idea) and follow the template instructions. Otherwise, follow the instructions from the [`After merge` section](#after-merge) below to add Snowplow tracking.
+- [ ] If an experiment is possible, create an issue using the [experiment idea template](https://gitlab.com/gitlab-org/gitlab/-/work_items/new?description_template=Experiment%20Idea) and follow the template instructions. Otherwise, follow the instructions from the [`After merge` section](#after-merge) below to add Snowplow tracking.
 - [ ] Add a ~"Category:Conversion Experiment" label to the experiment idea issue.
 - [ ] Ask a Product Manager or Designer from the [Conversion group](https://about.gitlab.com/handbook/engineering/development/growth/conversion/#group-members) to review your experiment set-up. 
 - [ ] Implement and monitor the experiment following the [implementation guide](https://gitlab.com/gitlab-org/gitlab/-/blob/master/doc/development/experiment_guide/gitlab_experiment.md#implement-an-experiment) .
@@ -75,5 +75,5 @@ Follow the steps to complete this issue -->
 
 ## After merge
 
-- [ ] Use the `Snowplow event tracking` [issue template](https://gitlab.com/gitlab-org/gitlab/-/issues/new?description_template=Snowplow%20event%20tracking) and open an issue to add Snowplow event tracking to your new empty state solution. 
+- [ ] Use the `Snowplow event tracking` [issue template](https://gitlab.com/gitlab-org/gitlab/-/work_items/new?description_template=Snowplow%20event%20tracking) and open an issue to add Snowplow event tracking to your new empty state solution. 
   - [ ] Add your ~devops:: and ~group:: labels to the new issue. 

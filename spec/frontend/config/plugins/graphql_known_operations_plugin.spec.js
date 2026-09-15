@@ -1,12 +1,14 @@
 import GraphqlKnownOperationsPlugin from '../../../../config/plugins/graphql_known_operations_plugin';
 
+const getTappedCallback = (mockFn) => mockFn.mock.calls[0][1];
+
 describe('GraphqlKnownOperationsPlugin - Directive Extraction', () => {
-  let plugin;
-  let mockCompiler;
   let mockCompilation;
+  let succeedModuleCallback;
+  let emitCallback;
 
   beforeEach(() => {
-    plugin = new GraphqlKnownOperationsPlugin({ filename: 'test-operations.yml' });
+    const plugin = new GraphqlKnownOperationsPlugin({ filename: 'test-operations.yml' });
 
     mockCompilation = {
       hooks: {
@@ -14,12 +16,13 @@ describe('GraphqlKnownOperationsPlugin - Directive Extraction', () => {
           tap: jest.fn(),
         },
       },
+      errors: [],
       getAsset: jest.fn(() => null),
       updateAsset: jest.fn(),
       emitAsset: jest.fn(),
     };
 
-    mockCompiler = {
+    const mockCompiler = {
       hooks: {
         emit: {
           tap: jest.fn(),
@@ -29,30 +32,38 @@ describe('GraphqlKnownOperationsPlugin - Directive Extraction', () => {
         },
       },
     };
+
+    plugin.apply(mockCompiler);
+
+    getTappedCallback(mockCompiler.hooks.compilation.tap)(mockCompilation);
+    succeedModuleCallback = getTappedCallback(mockCompilation.hooks.succeedModule.tap);
+    emitCallback = getTappedCallback(mockCompiler.hooks.emit.tap);
   });
 
-  const setupPlugin = () => {
-    plugin.apply(mockCompiler);
-    const compilationCallback = mockCompiler.hooks.compilation.tap.mock.calls[0][1];
-    compilationCallback(mockCompilation);
-    const emitCallback = mockCompiler.hooks.emit.tap.mock.calls[0][1];
-    return {
-      succeedModuleCallback: mockCompilation.hooks.succeedModule.tap.mock.calls[0][1],
-      emitCallback,
-    };
-  };
+  const createModule = ({
+    comments = '',
+    operationName,
+    operationType = 'query',
+    resource = '/path/to/query.graphql',
+    definitions,
+    originalSource,
+  } = {}) => {
+    if (originalSource !== undefined) {
+      return { resource, originalSource: () => originalSource };
+    }
 
-  const createModule = (comments, operationName, operationType = 'query') => {
     const doc = {
       kind: 'Document',
-      definitions: [
+      definitions: definitions ?? [
         {
           kind: 'OperationDefinition',
           operation: operationType,
-          name: {
-            kind: 'Name',
-            value: operationName,
-          },
+          name: operationName
+            ? {
+                kind: 'Name',
+                value: operationName,
+              }
+            : undefined,
           variableDefinitions: [],
           directives: [],
           selectionSet: {
@@ -75,7 +86,7 @@ module.exports = doc;
 `;
 
     return {
-      resource: '/path/to/query.graphql',
+      resource,
       originalSource: () => ({
         source: () => Buffer.from(graphqlSource),
       }),
@@ -89,11 +100,12 @@ module.exports = doc;
     return source.source().toString();
   };
 
+  const getPluginErrors = () => mockCompilation.errors;
+
   describe('extracting @feature_category directive', () => {
     it('extracts feature_category from GraphQL comment', () => {
       const comments = '# @feature_category: code_review';
-      const { succeedModuleCallback, emitCallback } = setupPlugin();
-      const module = createModule(comments, 'GetMergeRequest');
+      const module = createModule({ comments, operationName: 'GetMergeRequest' });
 
       succeedModuleCallback(module);
       emitCallback(mockCompilation);
@@ -105,8 +117,7 @@ module.exports = doc;
 
     it('extracts feature_category with underscores', () => {
       const comments = '# @feature_category: source_code_management';
-      const { succeedModuleCallback, emitCallback } = setupPlugin();
-      const module = createModule(comments, 'GetRepository');
+      const module = createModule({ comments, operationName: 'GetRepository' });
 
       succeedModuleCallback(module);
       emitCallback(mockCompilation);
@@ -117,9 +128,7 @@ module.exports = doc;
     });
 
     it('handles missing feature_category directive', () => {
-      const comments = '';
-      const { succeedModuleCallback, emitCallback } = setupPlugin();
-      const module = createModule(comments, 'GetProject');
+      const module = createModule({ operationName: 'GetProject' });
 
       succeedModuleCallback(module);
       emitCallback(mockCompilation);
@@ -133,8 +142,11 @@ module.exports = doc;
   describe('extracting @urgency directive', () => {
     it('extracts urgency: high', () => {
       const comments = '# @urgency: high';
-      const { succeedModuleCallback, emitCallback } = setupPlugin();
-      const module = createModule(comments, 'UpdateIssue', 'mutation');
+      const module = createModule({
+        comments,
+        operationName: 'UpdateIssue',
+        operationType: 'mutation',
+      });
 
       succeedModuleCallback(module);
       emitCallback(mockCompilation);
@@ -146,8 +158,7 @@ module.exports = doc;
 
     it('extracts urgency: low', () => {
       const comments = '# @urgency: low';
-      const { succeedModuleCallback, emitCallback } = setupPlugin();
-      const module = createModule(comments, 'GetStats');
+      const module = createModule({ comments, operationName: 'GetStats' });
 
       succeedModuleCallback(module);
       emitCallback(mockCompilation);
@@ -158,9 +169,7 @@ module.exports = doc;
     });
 
     it('handles missing urgency directive (defaults to "default")', () => {
-      const comments = '';
-      const { succeedModuleCallback, emitCallback } = setupPlugin();
-      const module = createModule(comments, 'GetIssue');
+      const module = createModule({ operationName: 'GetIssue' });
 
       succeedModuleCallback(module);
       emitCallback(mockCompilation);
@@ -175,8 +184,7 @@ module.exports = doc;
     it('extracts both directives when present', () => {
       const comments = `# @feature_category: code_review
 # @urgency: high`;
-      const { succeedModuleCallback, emitCallback } = setupPlugin();
-      const module = createModule(comments, 'GetMergeRequest');
+      const module = createModule({ comments, operationName: 'GetMergeRequest' });
 
       succeedModuleCallback(module);
       emitCallback(mockCompilation);
@@ -190,8 +198,7 @@ module.exports = doc;
     it('extracts both directives with extra whitespace', () => {
       const comments = `#   @feature_category:   continuous_integration
 #   @urgency:   high`;
-      const { succeedModuleCallback, emitCallback } = setupPlugin();
-      const module = createModule(comments, 'GetPipeline');
+      const module = createModule({ comments, operationName: 'GetPipeline' });
 
       succeedModuleCallback(module);
       emitCallback(mockCompilation);
@@ -208,8 +215,7 @@ module.exports = doc;
 # TODO: Add pagination support
 # @urgency: high
 # Note: This is used in the MR widget`;
-      const { succeedModuleCallback, emitCallback } = setupPlugin();
-      const module = createModule(comments, 'GetMergeRequestDetails');
+      const module = createModule({ comments, operationName: 'GetMergeRequestDetails' });
 
       succeedModuleCallback(module);
       emitCallback(mockCompilation);
@@ -224,8 +230,7 @@ module.exports = doc;
   describe('regex extraction validation', () => {
     it('correctly extracts values with special characters', () => {
       const comments = '# @feature_category: continuous_integration';
-      const { succeedModuleCallback, emitCallback } = setupPlugin();
-      const module = createModule(comments, 'GetPipeline');
+      const module = createModule({ comments, operationName: 'GetPipeline' });
 
       succeedModuleCallback(module);
       emitCallback(mockCompilation);
@@ -237,8 +242,7 @@ module.exports = doc;
     it('stops extraction at newline', () => {
       const comments = `# @feature_category: code_review
 # next line should not be included`;
-      const { succeedModuleCallback, emitCallback } = setupPlugin();
-      const module = createModule(comments, 'GetMergeRequest');
+      const module = createModule({ comments, operationName: 'GetMergeRequest' });
 
       succeedModuleCallback(module);
       emitCallback(mockCompilation);
@@ -251,8 +255,7 @@ module.exports = doc;
     it('trims whitespace from extracted values', () => {
       const comments = `# @feature_category:    code_review
 # @urgency:    low   `;
-      const { succeedModuleCallback, emitCallback } = setupPlugin();
-      const module = createModule(comments, 'GetProject');
+      const module = createModule({ comments, operationName: 'GetProject' });
 
       succeedModuleCallback(module);
       emitCallback(mockCompilation);
@@ -266,8 +269,7 @@ module.exports = doc;
     it('only extracts the first match per directive', () => {
       const comments = `# @feature_category: code_review
 # @feature_category: issues`;
-      const { succeedModuleCallback, emitCallback } = setupPlugin();
-      const module = createModule(comments, 'GetMergeRequest');
+      const module = createModule({ comments, operationName: 'GetMergeRequest' });
 
       succeedModuleCallback(module);
       emitCallback(mockCompilation);
@@ -279,14 +281,92 @@ module.exports = doc;
 
     it('handles colons in directive values', () => {
       const comments = '# @feature_category: code_review:mr_widget';
-      const { succeedModuleCallback, emitCallback } = setupPlugin();
-      const module = createModule(comments, 'GetMergeRequest');
+      const module = createModule({ comments, operationName: 'GetMergeRequest' });
 
       succeedModuleCallback(module);
       emitCallback(mockCompilation);
 
       const yaml = getEmittedYaml();
       expect(yaml).toContain("feature_category: 'code_review:mr_widget'");
+    });
+  });
+
+  describe('content-based operation detection', () => {
+    it('picks up an operation in a plainly-named .graphql file', () => {
+      const comments = '# @feature_category: code_review';
+      const module = createModule({
+        comments,
+        operationName: 'GetMergeRequest',
+        resource: '/path/to/some_plain_name.graphql',
+      });
+
+      succeedModuleCallback(module);
+      emitCallback(mockCompilation);
+
+      const yaml = getEmittedYaml();
+      expect(yaml).toContain('GetMergeRequest:');
+      expect(yaml).toContain('feature_category: code_review');
+      expect(getPluginErrors()).toHaveLength(0);
+    });
+
+    it('does not error on a fragment-only file with a non-conforming name', () => {
+      const module = createModule({
+        resource: '/path/to/some_plain_name.graphql',
+        definitions: [{ kind: 'FragmentDefinition' }],
+      });
+
+      succeedModuleCallback(module);
+      emitCallback(mockCompilation);
+
+      expect(getPluginErrors()).toHaveLength(0);
+      expect(getEmittedYaml()).toBe('{}\n');
+    });
+
+    it('does not error on a typedefs-only file with a non-conforming name', () => {
+      const module = createModule({
+        resource: '/path/to/some_plain_name.graphql',
+        definitions: [{ kind: 'ObjectTypeDefinition' }],
+      });
+
+      succeedModuleCallback(module);
+      emitCallback(mockCompilation);
+
+      expect(getPluginErrors()).toHaveLength(0);
+      expect(getEmittedYaml()).toBe('{}\n');
+    });
+
+    it('does not error on an anonymous operation', () => {
+      const module = createModule({ resource: '/path/to/some_plain_name.graphql' });
+
+      succeedModuleCallback(module);
+      emitCallback(mockCompilation);
+
+      expect(getPluginErrors()).toHaveLength(0);
+      expect(getEmittedYaml()).toBe('{}\n');
+    });
+
+    it('does not error when a module has no originalSource', () => {
+      const module = createModule({
+        resource: '/path/to/some_plain_name.graphql',
+        originalSource: null,
+      });
+
+      succeedModuleCallback(module);
+      emitCallback(mockCompilation);
+
+      expect(getPluginErrors()).toHaveLength(0);
+      expect(getEmittedYaml()).toBe('{}\n');
+    });
+
+    it('errors when a .graphql file contains no GraphQL definitions at all', () => {
+      const module = createModule({ resource: '/path/to/unexpected.graphql', definitions: [] });
+
+      expect(() => succeedModuleCallback(module)).not.toThrow();
+      emitCallback(mockCompilation);
+
+      expect(getPluginErrors()).toHaveLength(1);
+      expect(getPluginErrors()[0].message).toContain('/path/to/unexpected.graphql');
+      expect(getEmittedYaml()).toBe('{}\n');
     });
   });
 });

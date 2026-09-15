@@ -63,6 +63,11 @@ module Ci
       end
 
       def drop_build(type, build, reason)
+        # Guards callers that pass builds without a status filter. This reads the
+        # status the query returned, so a build that finishes after the query is
+        # caught by the optimistic lock retry below instead.
+        return if build.complete?
+
         log_dropping_message(type, build, reason)
         Gitlab::OptimisticLocking.retry_lock(build, 3, name: 'stuck_ci_jobs_worker_drop_build') do |b|
           # retry_lock resets the build on retry. Builds only lock on status, so

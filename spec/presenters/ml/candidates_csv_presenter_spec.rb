@@ -4,7 +4,7 @@ require 'spec_helper'
 
 RSpec.describe ::Ml::CandidatesCsvPresenter, feature_category: :mlops do
   # rubocop:disable RSpec/FactoryBot/AvoidCreate
-  let_it_be(:project) { create(:project, :repository) }
+  let_it_be(:project) { create(:project) }
   let_it_be(:experiment) { create(:ml_experiments, user_id: project.creator, project: project) }
 
   let_it_be(:candidate0) do

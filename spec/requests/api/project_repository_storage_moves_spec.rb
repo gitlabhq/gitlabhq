@@ -4,7 +4,7 @@ require 'spec_helper'
 
 RSpec.describe API::ProjectRepositoryStorageMoves, feature_category: :gitaly do
   let_it_be(:user) { create(:admin) }
-  let_it_be(:container) { create(:project, :repository) }
+  let_it_be(:container) { create(:project) }
   let_it_be(:storage_move) { create(:project_repository_storage_move, :scheduled, container: container) }
 
   it_behaves_like 'repository_storage_moves API', 'projects' do

@@ -73,6 +73,36 @@ RSpec.describe Ci::StuckBuilds::DropRunningService, feature_category: :continuou
 
   include_examples 'running builds'
 
+  context 'when a completed job still has a running build entry' do
+    let(:created_at) { described_class::BUILD_RUNNING_OUTDATED_TIMEOUT.ago - 15.minutes }
+    let(:updated_at) { created_at }
+    let(:status) { 'running' }
+
+    before do
+      # `doom!` and other `update_columns` transitions leave the ci_running_builds row behind
+      job.update_columns(status: 'success')
+    end
+
+    it_behaves_like 'job is unchanged'
+
+    it 'does not log a dropping message' do
+      allow(Gitlab::AppLogger).to receive(:info)
+
+      service.execute
+
+      expect(Gitlab::AppLogger).not_to have_received(:info).with(hash_including(build_id: job.id))
+    end
+
+    describe '#drop_build' do
+      it 'skips the build before logging', :aggregate_failures do
+        allow(Gitlab::AppLogger).to receive(:info)
+
+        expect { service.drop_build(:outdated, job, :no_updates_running) }.not_to change { job.reload.status }
+        expect(Gitlab::AppLogger).not_to have_received(:info)
+      end
+    end
+  end
+
   context 'when job is not running' do
     let!(:job) do
       create(:ci_build, runner: runner, created_at: created_at, updated_at: updated_at, status: status)

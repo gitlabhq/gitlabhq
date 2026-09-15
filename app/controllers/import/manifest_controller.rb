@@ -20,14 +20,14 @@ class Import::ManifestController < Import::BaseController
   # rubocop:enable Lint/UselessMethodDefinition
 
   def upload
-    group = Group.find(params[:group_id])
+    group = Group.find(group_id_param)
 
     unless can?(current_user, :import_projects, group)
       @errors = [s_("ManifestImport|You don't have enough permissions to import projects in the selected group")]
     end
 
     unless @errors
-      manifest = Gitlab::ManifestImport::Manifest.new(params[:manifest].tempfile)
+      manifest = Gitlab::ManifestImport::Manifest.new(manifest_param.tempfile)
 
       if manifest.valid?
         manifest_import_metadata.save(manifest.projects, group.id)
@@ -59,7 +59,7 @@ class Import::ManifestController < Import::BaseController
 
   def create
     repository = importable_repos.find do |project|
-      project[:id] == params[:repo_id].to_i
+      project[:id] == repo_id_param.to_i
     end
 
     project = Gitlab::ManifestImport::ProjectCreator.new(repository, group, current_user).execute
@@ -100,6 +100,18 @@ class Import::ManifestController < Import::BaseController
 
   private
 
+  def group_id_param
+    params.permit(:group_id)[:group_id]
+  end
+
+  def repo_id_param
+    params.permit(:repo_id)[:repo_id]
+  end
+
+  def manifest_param
+    params.permit(:manifest)[:manifest]
+  end
+
   def ensure_import_vars
     redirect_to(new_import_manifest_path) unless group && importable_repos.present?
   end
@@ -127,7 +139,7 @@ class Import::ManifestController < Import::BaseController
   end
 
   def check_file_size
-    return if params[:manifest].tempfile.size <= MAX_MANIFEST_SIZE_IN_MB.megabytes
+    return if manifest_param.tempfile.size <= MAX_MANIFEST_SIZE_IN_MB.megabytes
 
     @errors = [
       format(s_("ManifestImport|Import manifest files cannot exceed %{size} MB"), size: MAX_MANIFEST_SIZE_IN_MB)

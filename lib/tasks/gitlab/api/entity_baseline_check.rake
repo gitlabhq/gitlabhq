@@ -79,6 +79,10 @@ namespace :gitlab do
         'https://docs.gitlab.com/development/api_styleguide/' \
         '#high-impact-entities-and-feature-bounded-entities'
 
+      # Lets CI tell drift apart from the job dying before the check ever ran.
+      drift_env_file = ENV.fetch('DRIFT_ENV_FILE', nil)
+      File.write(drift_env_file, "BASELINE_DRIFT=true\n", mode: 'a') if drift_env_file.present?
+
       abort('Baseline drift detected — see listing above.')
     end
   end

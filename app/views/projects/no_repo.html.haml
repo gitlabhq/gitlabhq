@@ -1,17 +1,21 @@
 - page_title _('No repository')
 - @skip_current_level_breadcrumb = true
+- can_admin = can?(current_user, :admin_project, @project) # rubocop:disable Gitlab/Authz/PermissionCheck -- Mirrors authorize_admin_project! in the repository-create and import controllers
 
 = render Pajamas::EmptyStateComponent.new(svg_path: 'illustrations/empty-state/empty-commit-md.svg',
   title: _('No repository'),
-  primary_button_text: _('Create empty repository'),
+  primary_button_text: (_('Create empty repository') if can_admin),
   primary_button_link: project_repository_path(@project),
   primary_button_options: { data: { method: :post } },
-  secondary_button_text: _('Import repository'),
+  secondary_button_text: (_('Import repository') if can_admin),
   secondary_button_link: new_project_import_path(@project)) do |c|
   - c.with_description do
     = _('The repository for this project does not exist.')
     %br
-    = _('This means you can not push code until you create an empty repository or import existing one.')
+    - if can_admin
+      = _('This means you can not push code until you create an empty repository or import existing one.')
+    - else
+      = _('You do not have permission to create or import a repository.')
 
 - if can? current_user, :remove_project, @project
   .gl-mt-6.gl-text-center

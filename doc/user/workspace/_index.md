@@ -131,7 +131,7 @@ components:
 The workspace default image includes development tools such as Ruby, Node.js, Rust, Go, Python,
 Java, PHP, GCC, and their corresponding package managers. These tools are updated regularly.
 
-A GitLab default devfile might not be suitable for all development environments configurations.
+A GitLab default devfile might not be suitable for all development environment configurations.
 In these cases, you can create a [custom devfile](#custom-devfile).
 
 ### Custom devfile

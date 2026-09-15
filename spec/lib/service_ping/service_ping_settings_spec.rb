@@ -31,7 +31,7 @@ RSpec.describe ServicePing::ServicePingSettings do
 
   describe '#license_operational_metric_enabled?' do
     it 'returns false' do
-      expect(described_class.license_operational_metric_enabled?).to eq(false)
+      expect(described_class.license_operational_metric_enabled?).to be(false)
     end
   end
 
@@ -40,13 +40,13 @@ RSpec.describe ServicePing::ServicePingSettings do
       it 'when false' do
         stub_config_setting(usage_ping_enabled: false)
 
-        expect(described_class.enabled?).to eq(false)
+        expect(described_class.enabled?).to be(false)
       end
 
       it 'when true' do
         stub_config_setting(usage_ping_enabled: true)
 
-        expect(described_class.enabled?).to eq(true)
+        expect(described_class.enabled?).to be(true)
       end
     end
   end

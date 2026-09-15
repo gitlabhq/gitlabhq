@@ -3,7 +3,7 @@
 // To regenerate, run: bin/rake gitlab:js:routes
 
 import { __jsr } from '~/lib/utils/path_helpers/core';
-import { hasOrganizationScopedPaths, splitProjectFullPath } from '~/lib/utils/path_helpers/utils';
+import { resolveOrganizationScope, splitProjectFullPath } from '~/lib/utils/path_helpers/utils';
 
 
 /**
@@ -17,6 +17,7 @@ import { hasOrganizationScopedPaths, splitProjectFullPath } from '~/lib/utils/pa
  * @param {string} projectFullPath
  * @param {any} id
  * @param {object | undefined} options
+ * @param {string | null | undefined} options.organizationPath Path of organization to nest under. Pass `null` to remove path from URL params when outside of an organization data context.
  * @returns {string} route path
  */
 export const projectMergeRequestPath = /*#__PURE__*/ (projectFullPath, ...args) => {
@@ -24,12 +25,13 @@ export const projectMergeRequestPath = /*#__PURE__*/ (projectFullPath, ...args) 
   const _namespaceProjectMergeRequestPath = /*#__PURE__*/ __jsr.r({"namespace_id":{"r":true},"project_id":{"r":true},"id":{"r":true},"format":{}}, [2,[7,"/"],[2,[5,[3,"namespace_id"]],[2,[7,"/"],[2,[3,"project_id"],[2,[7,"/"],[2,[6,"-"],[2,[7,"/"],[2,[6,"merge_requests"],[2,[7,"/"],[2,[3,"id"],[1,[2,[8,"."],[3,"format"]]]]]]]]]]]]]);
 
   const { namespacePath, projectPath } = splitProjectFullPath(projectFullPath);
+  const { organizationPath, routeArgs } = resolveOrganizationScope(args);
 
-  if (hasOrganizationScopedPaths()) {
-    return _organizationNamespaceProjectMergeRequestPath(gon.current_organization.path, namespacePath, projectPath, ...args);
+  if (organizationPath) {
+    return _organizationNamespaceProjectMergeRequestPath(organizationPath, namespacePath, projectPath, ...routeArgs);
   }
 
-  return _namespaceProjectMergeRequestPath(namespacePath, projectPath, ...args);
+  return _namespaceProjectMergeRequestPath(namespacePath, projectPath, ...routeArgs);
 };
 
 /**
@@ -43,6 +45,7 @@ export const projectMergeRequestPath = /*#__PURE__*/ (projectFullPath, ...args) 
  * @param {string} projectFullPath
  * @param {any} id
  * @param {object | undefined} options
+ * @param {string | null | undefined} options.organizationPath Path of organization to nest under. Pass `null` to remove path from URL params when outside of an organization data context.
  * @returns {string} route path
  */
 export const commitChangeContentProjectMergeRequestPath = /*#__PURE__*/ (projectFullPath, ...args) => {
@@ -50,12 +53,13 @@ export const commitChangeContentProjectMergeRequestPath = /*#__PURE__*/ (project
   const _commitChangeContentNamespaceProjectMergeRequestPath = /*#__PURE__*/ __jsr.r({"namespace_id":{"r":true},"project_id":{"r":true},"id":{"r":true},"format":{}}, [2,[7,"/"],[2,[5,[3,"namespace_id"]],[2,[7,"/"],[2,[3,"project_id"],[2,[7,"/"],[2,[6,"-"],[2,[7,"/"],[2,[6,"merge_requests"],[2,[7,"/"],[2,[3,"id"],[2,[7,"/"],[2,[6,"commit_change_content"],[1,[2,[8,"."],[3,"format"]]]]]]]]]]]]]]]);
 
   const { namespacePath, projectPath } = splitProjectFullPath(projectFullPath);
+  const { organizationPath, routeArgs } = resolveOrganizationScope(args);
 
-  if (hasOrganizationScopedPaths()) {
-    return _commitChangeContentOrganizationNamespaceProjectMergeRequestPath(gon.current_organization.path, namespacePath, projectPath, ...args);
+  if (organizationPath) {
+    return _commitChangeContentOrganizationNamespaceProjectMergeRequestPath(organizationPath, namespacePath, projectPath, ...routeArgs);
   }
 
-  return _commitChangeContentNamespaceProjectMergeRequestPath(namespacePath, projectPath, ...args);
+  return _commitChangeContentNamespaceProjectMergeRequestPath(namespacePath, projectPath, ...routeArgs);
 };
 
 /**
@@ -69,6 +73,7 @@ export const commitChangeContentProjectMergeRequestPath = /*#__PURE__*/ (project
  * @param {string} projectFullPath
  * @param {any} id
  * @param {object | undefined} options
+ * @param {string | null | undefined} options.organizationPath Path of organization to nest under. Pass `null` to remove path from URL params when outside of an organization data context.
  * @returns {string} route path
  */
 export const mergeProjectMergeRequestPath = /*#__PURE__*/ (projectFullPath, ...args) => {
@@ -76,12 +81,13 @@ export const mergeProjectMergeRequestPath = /*#__PURE__*/ (projectFullPath, ...a
   const _mergeNamespaceProjectMergeRequestPath = /*#__PURE__*/ __jsr.r({"namespace_id":{"r":true},"project_id":{"r":true},"id":{"r":true},"format":{}}, [2,[7,"/"],[2,[5,[3,"namespace_id"]],[2,[7,"/"],[2,[3,"project_id"],[2,[7,"/"],[2,[6,"-"],[2,[7,"/"],[2,[6,"merge_requests"],[2,[7,"/"],[2,[3,"id"],[2,[7,"/"],[2,[6,"merge"],[1,[2,[8,"."],[3,"format"]]]]]]]]]]]]]]]);
 
   const { namespacePath, projectPath } = splitProjectFullPath(projectFullPath);
+  const { organizationPath, routeArgs } = resolveOrganizationScope(args);
 
-  if (hasOrganizationScopedPaths()) {
-    return _mergeOrganizationNamespaceProjectMergeRequestPath(gon.current_organization.path, namespacePath, projectPath, ...args);
+  if (organizationPath) {
+    return _mergeOrganizationNamespaceProjectMergeRequestPath(organizationPath, namespacePath, projectPath, ...routeArgs);
   }
 
-  return _mergeNamespaceProjectMergeRequestPath(namespacePath, projectPath, ...args);
+  return _mergeNamespaceProjectMergeRequestPath(namespacePath, projectPath, ...routeArgs);
 };
 
 /**
@@ -95,6 +101,7 @@ export const mergeProjectMergeRequestPath = /*#__PURE__*/ (projectFullPath, ...a
  * @param {string} projectFullPath
  * @param {any} id
  * @param {object | undefined} options
+ * @param {string | null | undefined} options.organizationPath Path of organization to nest under. Pass `null` to remove path from URL params when outside of an organization data context.
  * @returns {string} route path
  */
 export const cancelAutoMergeProjectMergeRequestPath = /*#__PURE__*/ (projectFullPath, ...args) => {
@@ -102,12 +109,13 @@ export const cancelAutoMergeProjectMergeRequestPath = /*#__PURE__*/ (projectFull
   const _cancelAutoMergeNamespaceProjectMergeRequestPath = /*#__PURE__*/ __jsr.r({"namespace_id":{"r":true},"project_id":{"r":true},"id":{"r":true},"format":{}}, [2,[7,"/"],[2,[5,[3,"namespace_id"]],[2,[7,"/"],[2,[3,"project_id"],[2,[7,"/"],[2,[6,"-"],[2,[7,"/"],[2,[6,"merge_requests"],[2,[7,"/"],[2,[3,"id"],[2,[7,"/"],[2,[6,"cancel_auto_merge"],[1,[2,[8,"."],[3,"format"]]]]]]]]]]]]]]]);
 
   const { namespacePath, projectPath } = splitProjectFullPath(projectFullPath);
+  const { organizationPath, routeArgs } = resolveOrganizationScope(args);
 
-  if (hasOrganizationScopedPaths()) {
-    return _cancelAutoMergeOrganizationNamespaceProjectMergeRequestPath(gon.current_organization.path, namespacePath, projectPath, ...args);
+  if (organizationPath) {
+    return _cancelAutoMergeOrganizationNamespaceProjectMergeRequestPath(organizationPath, namespacePath, projectPath, ...routeArgs);
   }
 
-  return _cancelAutoMergeNamespaceProjectMergeRequestPath(namespacePath, projectPath, ...args);
+  return _cancelAutoMergeNamespaceProjectMergeRequestPath(namespacePath, projectPath, ...routeArgs);
 };
 
 /**
@@ -121,6 +129,7 @@ export const cancelAutoMergeProjectMergeRequestPath = /*#__PURE__*/ (projectFull
  * @param {string} projectFullPath
  * @param {any} id
  * @param {object | undefined} options
+ * @param {string | null | undefined} options.organizationPath Path of organization to nest under. Pass `null` to remove path from URL params when outside of an organization data context.
  * @returns {string} route path
  */
 export const pipelineStatusProjectMergeRequestPath = /*#__PURE__*/ (projectFullPath, ...args) => {
@@ -128,12 +137,13 @@ export const pipelineStatusProjectMergeRequestPath = /*#__PURE__*/ (projectFullP
   const _pipelineStatusNamespaceProjectMergeRequestPath = /*#__PURE__*/ __jsr.r({"namespace_id":{"r":true},"project_id":{"r":true},"id":{"r":true},"format":{}}, [2,[7,"/"],[2,[5,[3,"namespace_id"]],[2,[7,"/"],[2,[3,"project_id"],[2,[7,"/"],[2,[6,"-"],[2,[7,"/"],[2,[6,"merge_requests"],[2,[7,"/"],[2,[3,"id"],[2,[7,"/"],[2,[6,"pipeline_status"],[1,[2,[8,"."],[3,"format"]]]]]]]]]]]]]]]);
 
   const { namespacePath, projectPath } = splitProjectFullPath(projectFullPath);
+  const { organizationPath, routeArgs } = resolveOrganizationScope(args);
 
-  if (hasOrganizationScopedPaths()) {
-    return _pipelineStatusOrganizationNamespaceProjectMergeRequestPath(gon.current_organization.path, namespacePath, projectPath, ...args);
+  if (organizationPath) {
+    return _pipelineStatusOrganizationNamespaceProjectMergeRequestPath(organizationPath, namespacePath, projectPath, ...routeArgs);
   }
 
-  return _pipelineStatusNamespaceProjectMergeRequestPath(namespacePath, projectPath, ...args);
+  return _pipelineStatusNamespaceProjectMergeRequestPath(namespacePath, projectPath, ...routeArgs);
 };
 
 /**
@@ -147,6 +157,7 @@ export const pipelineStatusProjectMergeRequestPath = /*#__PURE__*/ (projectFullP
  * @param {string} projectFullPath
  * @param {any} id
  * @param {object | undefined} options
+ * @param {string | null | undefined} options.organizationPath Path of organization to nest under. Pass `null` to remove path from URL params when outside of an organization data context.
  * @returns {string} route path
  */
 export const ciEnvironmentsStatusProjectMergeRequestPath = /*#__PURE__*/ (projectFullPath, ...args) => {
@@ -154,12 +165,13 @@ export const ciEnvironmentsStatusProjectMergeRequestPath = /*#__PURE__*/ (projec
   const _ciEnvironmentsStatusNamespaceProjectMergeRequestPath = /*#__PURE__*/ __jsr.r({"namespace_id":{"r":true},"project_id":{"r":true},"id":{"r":true},"format":{}}, [2,[7,"/"],[2,[5,[3,"namespace_id"]],[2,[7,"/"],[2,[3,"project_id"],[2,[7,"/"],[2,[6,"-"],[2,[7,"/"],[2,[6,"merge_requests"],[2,[7,"/"],[2,[3,"id"],[2,[7,"/"],[2,[6,"ci_environments_status"],[1,[2,[8,"."],[3,"format"]]]]]]]]]]]]]]]);
 
   const { namespacePath, projectPath } = splitProjectFullPath(projectFullPath);
+  const { organizationPath, routeArgs } = resolveOrganizationScope(args);
 
-  if (hasOrganizationScopedPaths()) {
-    return _ciEnvironmentsStatusOrganizationNamespaceProjectMergeRequestPath(gon.current_organization.path, namespacePath, projectPath, ...args);
+  if (organizationPath) {
+    return _ciEnvironmentsStatusOrganizationNamespaceProjectMergeRequestPath(organizationPath, namespacePath, projectPath, ...routeArgs);
   }
 
-  return _ciEnvironmentsStatusNamespaceProjectMergeRequestPath(namespacePath, projectPath, ...args);
+  return _ciEnvironmentsStatusNamespaceProjectMergeRequestPath(namespacePath, projectPath, ...routeArgs);
 };
 
 /**
@@ -173,6 +185,7 @@ export const ciEnvironmentsStatusProjectMergeRequestPath = /*#__PURE__*/ (projec
  * @param {string} projectFullPath
  * @param {any} id
  * @param {object | undefined} options
+ * @param {string | null | undefined} options.organizationPath Path of organization to nest under. Pass `null` to remove path from URL params when outside of an organization data context.
  * @returns {string} route path
  */
 export const toggleSubscriptionProjectMergeRequestPath = /*#__PURE__*/ (projectFullPath, ...args) => {
@@ -180,12 +193,13 @@ export const toggleSubscriptionProjectMergeRequestPath = /*#__PURE__*/ (projectF
   const _toggleSubscriptionNamespaceProjectMergeRequestPath = /*#__PURE__*/ __jsr.r({"namespace_id":{"r":true},"project_id":{"r":true},"id":{"r":true},"format":{}}, [2,[7,"/"],[2,[5,[3,"namespace_id"]],[2,[7,"/"],[2,[3,"project_id"],[2,[7,"/"],[2,[6,"-"],[2,[7,"/"],[2,[6,"merge_requests"],[2,[7,"/"],[2,[3,"id"],[2,[7,"/"],[2,[6,"toggle_subscription"],[1,[2,[8,"."],[3,"format"]]]]]]]]]]]]]]]);
 
   const { namespacePath, projectPath } = splitProjectFullPath(projectFullPath);
+  const { organizationPath, routeArgs } = resolveOrganizationScope(args);
 
-  if (hasOrganizationScopedPaths()) {
-    return _toggleSubscriptionOrganizationNamespaceProjectMergeRequestPath(gon.current_organization.path, namespacePath, projectPath, ...args);
+  if (organizationPath) {
+    return _toggleSubscriptionOrganizationNamespaceProjectMergeRequestPath(organizationPath, namespacePath, projectPath, ...routeArgs);
   }
 
-  return _toggleSubscriptionNamespaceProjectMergeRequestPath(namespacePath, projectPath, ...args);
+  return _toggleSubscriptionNamespaceProjectMergeRequestPath(namespacePath, projectPath, ...routeArgs);
 };
 
 /**
@@ -199,6 +213,7 @@ export const toggleSubscriptionProjectMergeRequestPath = /*#__PURE__*/ (projectF
  * @param {string} projectFullPath
  * @param {any} id
  * @param {object | undefined} options
+ * @param {string | null | undefined} options.organizationPath Path of organization to nest under. Pass `null` to remove path from URL params when outside of an organization data context.
  * @returns {string} route path
  */
 export const removeWipProjectMergeRequestPath = /*#__PURE__*/ (projectFullPath, ...args) => {
@@ -206,12 +221,13 @@ export const removeWipProjectMergeRequestPath = /*#__PURE__*/ (projectFullPath, 
   const _removeWipNamespaceProjectMergeRequestPath = /*#__PURE__*/ __jsr.r({"namespace_id":{"r":true},"project_id":{"r":true},"id":{"r":true},"format":{}}, [2,[7,"/"],[2,[5,[3,"namespace_id"]],[2,[7,"/"],[2,[3,"project_id"],[2,[7,"/"],[2,[6,"-"],[2,[7,"/"],[2,[6,"merge_requests"],[2,[7,"/"],[2,[3,"id"],[2,[7,"/"],[2,[6,"remove_wip"],[1,[2,[8,"."],[3,"format"]]]]]]]]]]]]]]]);
 
   const { namespacePath, projectPath } = splitProjectFullPath(projectFullPath);
+  const { organizationPath, routeArgs } = resolveOrganizationScope(args);
 
-  if (hasOrganizationScopedPaths()) {
-    return _removeWipOrganizationNamespaceProjectMergeRequestPath(gon.current_organization.path, namespacePath, projectPath, ...args);
+  if (organizationPath) {
+    return _removeWipOrganizationNamespaceProjectMergeRequestPath(organizationPath, namespacePath, projectPath, ...routeArgs);
   }
 
-  return _removeWipNamespaceProjectMergeRequestPath(namespacePath, projectPath, ...args);
+  return _removeWipNamespaceProjectMergeRequestPath(namespacePath, projectPath, ...routeArgs);
 };
 
 /**
@@ -225,6 +241,7 @@ export const removeWipProjectMergeRequestPath = /*#__PURE__*/ (projectFullPath, 
  * @param {string} projectFullPath
  * @param {any} id
  * @param {object | undefined} options
+ * @param {string | null | undefined} options.organizationPath Path of organization to nest under. Pass `null` to remove path from URL params when outside of an organization data context.
  * @returns {string} route path
  */
 export const assignRelatedIssuesProjectMergeRequestPath = /*#__PURE__*/ (projectFullPath, ...args) => {
@@ -232,12 +249,13 @@ export const assignRelatedIssuesProjectMergeRequestPath = /*#__PURE__*/ (project
   const _assignRelatedIssuesNamespaceProjectMergeRequestPath = /*#__PURE__*/ __jsr.r({"namespace_id":{"r":true},"project_id":{"r":true},"id":{"r":true},"format":{}}, [2,[7,"/"],[2,[5,[3,"namespace_id"]],[2,[7,"/"],[2,[3,"project_id"],[2,[7,"/"],[2,[6,"-"],[2,[7,"/"],[2,[6,"merge_requests"],[2,[7,"/"],[2,[3,"id"],[2,[7,"/"],[2,[6,"assign_related_issues"],[1,[2,[8,"."],[3,"format"]]]]]]]]]]]]]]]);
 
   const { namespacePath, projectPath } = splitProjectFullPath(projectFullPath);
+  const { organizationPath, routeArgs } = resolveOrganizationScope(args);
 
-  if (hasOrganizationScopedPaths()) {
-    return _assignRelatedIssuesOrganizationNamespaceProjectMergeRequestPath(gon.current_organization.path, namespacePath, projectPath, ...args);
+  if (organizationPath) {
+    return _assignRelatedIssuesOrganizationNamespaceProjectMergeRequestPath(organizationPath, namespacePath, projectPath, ...routeArgs);
   }
 
-  return _assignRelatedIssuesNamespaceProjectMergeRequestPath(namespacePath, projectPath, ...args);
+  return _assignRelatedIssuesNamespaceProjectMergeRequestPath(namespacePath, projectPath, ...routeArgs);
 };
 
 /**
@@ -251,6 +269,7 @@ export const assignRelatedIssuesProjectMergeRequestPath = /*#__PURE__*/ (project
  * @param {string} projectFullPath
  * @param {any} id
  * @param {object | undefined} options
+ * @param {string | null | undefined} options.organizationPath Path of organization to nest under. Pass `null` to remove path from URL params when outside of an organization data context.
  * @returns {string} route path
  */
 export const discussionsProjectMergeRequestPath = /*#__PURE__*/ (projectFullPath, ...args) => {
@@ -258,12 +277,13 @@ export const discussionsProjectMergeRequestPath = /*#__PURE__*/ (projectFullPath
   const _discussionsNamespaceProjectMergeRequestPath = /*#__PURE__*/ __jsr.r({"namespace_id":{"r":true},"project_id":{"r":true},"id":{"r":true},"format":{}}, [2,[7,"/"],[2,[5,[3,"namespace_id"]],[2,[7,"/"],[2,[3,"project_id"],[2,[7,"/"],[2,[6,"-"],[2,[7,"/"],[2,[6,"merge_requests"],[2,[7,"/"],[2,[3,"id"],[2,[7,"/"],[2,[6,"discussions"],[1,[2,[8,"."],[3,"format"]]]]]]]]]]]]]]]);
 
   const { namespacePath, projectPath } = splitProjectFullPath(projectFullPath);
+  const { organizationPath, routeArgs } = resolveOrganizationScope(args);
 
-  if (hasOrganizationScopedPaths()) {
-    return _discussionsOrganizationNamespaceProjectMergeRequestPath(gon.current_organization.path, namespacePath, projectPath, ...args);
+  if (organizationPath) {
+    return _discussionsOrganizationNamespaceProjectMergeRequestPath(organizationPath, namespacePath, projectPath, ...routeArgs);
   }
 
-  return _discussionsNamespaceProjectMergeRequestPath(namespacePath, projectPath, ...args);
+  return _discussionsNamespaceProjectMergeRequestPath(namespacePath, projectPath, ...routeArgs);
 };
 
 /**
@@ -277,6 +297,7 @@ export const discussionsProjectMergeRequestPath = /*#__PURE__*/ (projectFullPath
  * @param {string} projectFullPath
  * @param {any} id
  * @param {object | undefined} options
+ * @param {string | null | undefined} options.organizationPath Path of organization to nest under. Pass `null` to remove path from URL params when outside of an organization data context.
  * @returns {string} route path
  */
 export const rebaseProjectMergeRequestPath = /*#__PURE__*/ (projectFullPath, ...args) => {
@@ -284,12 +305,13 @@ export const rebaseProjectMergeRequestPath = /*#__PURE__*/ (projectFullPath, ...
   const _rebaseNamespaceProjectMergeRequestPath = /*#__PURE__*/ __jsr.r({"namespace_id":{"r":true},"project_id":{"r":true},"id":{"r":true},"format":{}}, [2,[7,"/"],[2,[5,[3,"namespace_id"]],[2,[7,"/"],[2,[3,"project_id"],[2,[7,"/"],[2,[6,"-"],[2,[7,"/"],[2,[6,"merge_requests"],[2,[7,"/"],[2,[3,"id"],[2,[7,"/"],[2,[6,"rebase"],[1,[2,[8,"."],[3,"format"]]]]]]]]]]]]]]]);
 
   const { namespacePath, projectPath } = splitProjectFullPath(projectFullPath);
+  const { organizationPath, routeArgs } = resolveOrganizationScope(args);
 
-  if (hasOrganizationScopedPaths()) {
-    return _rebaseOrganizationNamespaceProjectMergeRequestPath(gon.current_organization.path, namespacePath, projectPath, ...args);
+  if (organizationPath) {
+    return _rebaseOrganizationNamespaceProjectMergeRequestPath(organizationPath, namespacePath, projectPath, ...routeArgs);
   }
 
-  return _rebaseNamespaceProjectMergeRequestPath(namespacePath, projectPath, ...args);
+  return _rebaseNamespaceProjectMergeRequestPath(namespacePath, projectPath, ...routeArgs);
 };
 
 /**
@@ -303,6 +325,7 @@ export const rebaseProjectMergeRequestPath = /*#__PURE__*/ (projectFullPath, ...
  * @param {string} projectFullPath
  * @param {any} id
  * @param {object | undefined} options
+ * @param {string | null | undefined} options.organizationPath Path of organization to nest under. Pass `null` to remove path from URL params when outside of an organization data context.
  * @returns {string} route path
  */
 export const testReportsProjectMergeRequestPath = /*#__PURE__*/ (projectFullPath, ...args) => {
@@ -310,12 +333,13 @@ export const testReportsProjectMergeRequestPath = /*#__PURE__*/ (projectFullPath
   const _testReportsNamespaceProjectMergeRequestPath = /*#__PURE__*/ __jsr.r({"namespace_id":{"r":true},"project_id":{"r":true},"id":{"r":true},"format":{}}, [2,[7,"/"],[2,[5,[3,"namespace_id"]],[2,[7,"/"],[2,[3,"project_id"],[2,[7,"/"],[2,[6,"-"],[2,[7,"/"],[2,[6,"merge_requests"],[2,[7,"/"],[2,[3,"id"],[2,[7,"/"],[2,[6,"test_reports"],[1,[2,[8,"."],[3,"format"]]]]]]]]]]]]]]]);
 
   const { namespacePath, projectPath } = splitProjectFullPath(projectFullPath);
+  const { organizationPath, routeArgs } = resolveOrganizationScope(args);
 
-  if (hasOrganizationScopedPaths()) {
-    return _testReportsOrganizationNamespaceProjectMergeRequestPath(gon.current_organization.path, namespacePath, projectPath, ...args);
+  if (organizationPath) {
+    return _testReportsOrganizationNamespaceProjectMergeRequestPath(organizationPath, namespacePath, projectPath, ...routeArgs);
   }
 
-  return _testReportsNamespaceProjectMergeRequestPath(namespacePath, projectPath, ...args);
+  return _testReportsNamespaceProjectMergeRequestPath(namespacePath, projectPath, ...routeArgs);
 };
 
 /**
@@ -329,6 +353,7 @@ export const testReportsProjectMergeRequestPath = /*#__PURE__*/ (projectFullPath
  * @param {string} projectFullPath
  * @param {any} id
  * @param {object | undefined} options
+ * @param {string | null | undefined} options.organizationPath Path of organization to nest under. Pass `null` to remove path from URL params when outside of an organization data context.
  * @returns {string} route path
  */
 export const exposedArtifactsProjectMergeRequestPath = /*#__PURE__*/ (projectFullPath, ...args) => {
@@ -336,12 +361,13 @@ export const exposedArtifactsProjectMergeRequestPath = /*#__PURE__*/ (projectFul
   const _exposedArtifactsNamespaceProjectMergeRequestPath = /*#__PURE__*/ __jsr.r({"namespace_id":{"r":true},"project_id":{"r":true},"id":{"r":true},"format":{}}, [2,[7,"/"],[2,[5,[3,"namespace_id"]],[2,[7,"/"],[2,[3,"project_id"],[2,[7,"/"],[2,[6,"-"],[2,[7,"/"],[2,[6,"merge_requests"],[2,[7,"/"],[2,[3,"id"],[2,[7,"/"],[2,[6,"exposed_artifacts"],[1,[2,[8,"."],[3,"format"]]]]]]]]]]]]]]]);
 
   const { namespacePath, projectPath } = splitProjectFullPath(projectFullPath);
+  const { organizationPath, routeArgs } = resolveOrganizationScope(args);
 
-  if (hasOrganizationScopedPaths()) {
-    return _exposedArtifactsOrganizationNamespaceProjectMergeRequestPath(gon.current_organization.path, namespacePath, projectPath, ...args);
+  if (organizationPath) {
+    return _exposedArtifactsOrganizationNamespaceProjectMergeRequestPath(organizationPath, namespacePath, projectPath, ...routeArgs);
   }
 
-  return _exposedArtifactsNamespaceProjectMergeRequestPath(namespacePath, projectPath, ...args);
+  return _exposedArtifactsNamespaceProjectMergeRequestPath(namespacePath, projectPath, ...routeArgs);
 };
 
 /**
@@ -355,6 +381,7 @@ export const exposedArtifactsProjectMergeRequestPath = /*#__PURE__*/ (projectFul
  * @param {string} projectFullPath
  * @param {any} id
  * @param {object | undefined} options
+ * @param {string | null | undefined} options.organizationPath Path of organization to nest under. Pass `null` to remove path from URL params when outside of an organization data context.
  * @returns {string} route path
  */
 export const accessibilityReportsProjectMergeRequestPath = /*#__PURE__*/ (projectFullPath, ...args) => {
@@ -362,12 +389,13 @@ export const accessibilityReportsProjectMergeRequestPath = /*#__PURE__*/ (projec
   const _accessibilityReportsNamespaceProjectMergeRequestPath = /*#__PURE__*/ __jsr.r({"namespace_id":{"r":true},"project_id":{"r":true},"id":{"r":true},"format":{}}, [2,[7,"/"],[2,[5,[3,"namespace_id"]],[2,[7,"/"],[2,[3,"project_id"],[2,[7,"/"],[2,[6,"-"],[2,[7,"/"],[2,[6,"merge_requests"],[2,[7,"/"],[2,[3,"id"],[2,[7,"/"],[2,[6,"accessibility_reports"],[1,[2,[8,"."],[3,"format"]]]]]]]]]]]]]]]);
 
   const { namespacePath, projectPath } = splitProjectFullPath(projectFullPath);
+  const { organizationPath, routeArgs } = resolveOrganizationScope(args);
 
-  if (hasOrganizationScopedPaths()) {
-    return _accessibilityReportsOrganizationNamespaceProjectMergeRequestPath(gon.current_organization.path, namespacePath, projectPath, ...args);
+  if (organizationPath) {
+    return _accessibilityReportsOrganizationNamespaceProjectMergeRequestPath(organizationPath, namespacePath, projectPath, ...routeArgs);
   }
 
-  return _accessibilityReportsNamespaceProjectMergeRequestPath(namespacePath, projectPath, ...args);
+  return _accessibilityReportsNamespaceProjectMergeRequestPath(namespacePath, projectPath, ...routeArgs);
 };
 
 /**
@@ -381,6 +409,7 @@ export const accessibilityReportsProjectMergeRequestPath = /*#__PURE__*/ (projec
  * @param {string} projectFullPath
  * @param {any} id
  * @param {object | undefined} options
+ * @param {string | null | undefined} options.organizationPath Path of organization to nest under. Pass `null` to remove path from URL params when outside of an organization data context.
  * @returns {string} route path
  */
 export const coverageReportsProjectMergeRequestPath = /*#__PURE__*/ (projectFullPath, ...args) => {
@@ -388,12 +417,13 @@ export const coverageReportsProjectMergeRequestPath = /*#__PURE__*/ (projectFull
   const _coverageReportsNamespaceProjectMergeRequestPath = /*#__PURE__*/ __jsr.r({"namespace_id":{"r":true},"project_id":{"r":true},"id":{"r":true},"format":{}}, [2,[7,"/"],[2,[5,[3,"namespace_id"]],[2,[7,"/"],[2,[3,"project_id"],[2,[7,"/"],[2,[6,"-"],[2,[7,"/"],[2,[6,"merge_requests"],[2,[7,"/"],[2,[3,"id"],[2,[7,"/"],[2,[6,"coverage_reports"],[1,[2,[8,"."],[3,"format"]]]]]]]]]]]]]]]);
 
   const { namespacePath, projectPath } = splitProjectFullPath(projectFullPath);
+  const { organizationPath, routeArgs } = resolveOrganizationScope(args);
 
-  if (hasOrganizationScopedPaths()) {
-    return _coverageReportsOrganizationNamespaceProjectMergeRequestPath(gon.current_organization.path, namespacePath, projectPath, ...args);
+  if (organizationPath) {
+    return _coverageReportsOrganizationNamespaceProjectMergeRequestPath(organizationPath, namespacePath, projectPath, ...routeArgs);
   }
 
-  return _coverageReportsNamespaceProjectMergeRequestPath(namespacePath, projectPath, ...args);
+  return _coverageReportsNamespaceProjectMergeRequestPath(namespacePath, projectPath, ...routeArgs);
 };
 
 /**
@@ -407,6 +437,7 @@ export const coverageReportsProjectMergeRequestPath = /*#__PURE__*/ (projectFull
  * @param {string} projectFullPath
  * @param {any} id
  * @param {object | undefined} options
+ * @param {string | null | undefined} options.organizationPath Path of organization to nest under. Pass `null` to remove path from URL params when outside of an organization data context.
  * @returns {string} route path
  */
 export const terraformReportsProjectMergeRequestPath = /*#__PURE__*/ (projectFullPath, ...args) => {
@@ -414,12 +445,13 @@ export const terraformReportsProjectMergeRequestPath = /*#__PURE__*/ (projectFul
   const _terraformReportsNamespaceProjectMergeRequestPath = /*#__PURE__*/ __jsr.r({"namespace_id":{"r":true},"project_id":{"r":true},"id":{"r":true},"format":{}}, [2,[7,"/"],[2,[5,[3,"namespace_id"]],[2,[7,"/"],[2,[3,"project_id"],[2,[7,"/"],[2,[6,"-"],[2,[7,"/"],[2,[6,"merge_requests"],[2,[7,"/"],[2,[3,"id"],[2,[7,"/"],[2,[6,"terraform_reports"],[1,[2,[8,"."],[3,"format"]]]]]]]]]]]]]]]);
 
   const { namespacePath, projectPath } = splitProjectFullPath(projectFullPath);
+  const { organizationPath, routeArgs } = resolveOrganizationScope(args);
 
-  if (hasOrganizationScopedPaths()) {
-    return _terraformReportsOrganizationNamespaceProjectMergeRequestPath(gon.current_organization.path, namespacePath, projectPath, ...args);
+  if (organizationPath) {
+    return _terraformReportsOrganizationNamespaceProjectMergeRequestPath(organizationPath, namespacePath, projectPath, ...routeArgs);
   }
 
-  return _terraformReportsNamespaceProjectMergeRequestPath(namespacePath, projectPath, ...args);
+  return _terraformReportsNamespaceProjectMergeRequestPath(namespacePath, projectPath, ...routeArgs);
 };
 
 /**
@@ -433,6 +465,7 @@ export const terraformReportsProjectMergeRequestPath = /*#__PURE__*/ (projectFul
  * @param {string} projectFullPath
  * @param {any} id
  * @param {object | undefined} options
+ * @param {string | null | undefined} options.organizationPath Path of organization to nest under. Pass `null` to remove path from URL params when outside of an organization data context.
  * @returns {string} route path
  */
 export const codequalityReportsProjectMergeRequestPath = /*#__PURE__*/ (projectFullPath, ...args) => {
@@ -440,12 +473,13 @@ export const codequalityReportsProjectMergeRequestPath = /*#__PURE__*/ (projectF
   const _codequalityReportsNamespaceProjectMergeRequestPath = /*#__PURE__*/ __jsr.r({"namespace_id":{"r":true},"project_id":{"r":true},"id":{"r":true},"format":{}}, [2,[7,"/"],[2,[5,[3,"namespace_id"]],[2,[7,"/"],[2,[3,"project_id"],[2,[7,"/"],[2,[6,"-"],[2,[7,"/"],[2,[6,"merge_requests"],[2,[7,"/"],[2,[3,"id"],[2,[7,"/"],[2,[6,"codequality_reports"],[1,[2,[8,"."],[3,"format"]]]]]]]]]]]]]]]);
 
   const { namespacePath, projectPath } = splitProjectFullPath(projectFullPath);
+  const { organizationPath, routeArgs } = resolveOrganizationScope(args);
 
-  if (hasOrganizationScopedPaths()) {
-    return _codequalityReportsOrganizationNamespaceProjectMergeRequestPath(gon.current_organization.path, namespacePath, projectPath, ...args);
+  if (organizationPath) {
+    return _codequalityReportsOrganizationNamespaceProjectMergeRequestPath(organizationPath, namespacePath, projectPath, ...routeArgs);
   }
 
-  return _codequalityReportsNamespaceProjectMergeRequestPath(namespacePath, projectPath, ...args);
+  return _codequalityReportsNamespaceProjectMergeRequestPath(namespacePath, projectPath, ...routeArgs);
 };
 
 /**
@@ -459,6 +493,7 @@ export const codequalityReportsProjectMergeRequestPath = /*#__PURE__*/ (projectF
  * @param {string} projectFullPath
  * @param {any} id
  * @param {object | undefined} options
+ * @param {string | null | undefined} options.organizationPath Path of organization to nest under. Pass `null` to remove path from URL params when outside of an organization data context.
  * @returns {string} route path
  */
 export const codequalityMrDiffReportsProjectMergeRequestPath = /*#__PURE__*/ (projectFullPath, ...args) => {
@@ -466,12 +501,13 @@ export const codequalityMrDiffReportsProjectMergeRequestPath = /*#__PURE__*/ (pr
   const _codequalityMrDiffReportsNamespaceProjectMergeRequestPath = /*#__PURE__*/ __jsr.r({"namespace_id":{"r":true},"project_id":{"r":true},"id":{"r":true},"format":{}}, [2,[7,"/"],[2,[5,[3,"namespace_id"]],[2,[7,"/"],[2,[3,"project_id"],[2,[7,"/"],[2,[6,"-"],[2,[7,"/"],[2,[6,"merge_requests"],[2,[7,"/"],[2,[3,"id"],[2,[7,"/"],[2,[6,"codequality_mr_diff_reports"],[1,[2,[8,"."],[3,"format"]]]]]]]]]]]]]]]);
 
   const { namespacePath, projectPath } = splitProjectFullPath(projectFullPath);
+  const { organizationPath, routeArgs } = resolveOrganizationScope(args);
 
-  if (hasOrganizationScopedPaths()) {
-    return _codequalityMrDiffReportsOrganizationNamespaceProjectMergeRequestPath(gon.current_organization.path, namespacePath, projectPath, ...args);
+  if (organizationPath) {
+    return _codequalityMrDiffReportsOrganizationNamespaceProjectMergeRequestPath(organizationPath, namespacePath, projectPath, ...routeArgs);
   }
 
-  return _codequalityMrDiffReportsNamespaceProjectMergeRequestPath(namespacePath, projectPath, ...args);
+  return _codequalityMrDiffReportsNamespaceProjectMergeRequestPath(namespacePath, projectPath, ...routeArgs);
 };
 
 /**
@@ -485,6 +521,7 @@ export const codequalityMrDiffReportsProjectMergeRequestPath = /*#__PURE__*/ (pr
  * @param {string} projectFullPath
  * @param {any} id
  * @param {object | undefined} options
+ * @param {string | null | undefined} options.organizationPath Path of organization to nest under. Pass `null` to remove path from URL params when outside of an organization data context.
  * @returns {string} route path
  */
 export const commitsProjectJsonMergeRequestPath = /*#__PURE__*/ (projectFullPath, ...args) => {
@@ -492,12 +529,13 @@ export const commitsProjectJsonMergeRequestPath = /*#__PURE__*/ (projectFullPath
   const _commitsNamespaceProjectJsonMergeRequestPath = /*#__PURE__*/ __jsr.r({"namespace_id":{"r":true},"project_id":{"r":true},"id":{"r":true},"format":{}}, [2,[7,"/"],[2,[5,[3,"namespace_id"]],[2,[7,"/"],[2,[3,"project_id"],[2,[7,"/"],[2,[6,"-"],[2,[7,"/"],[2,[6,"merge_requests"],[2,[7,"/"],[2,[3,"id"],[2,[7,"/"],[2,[6,"commits"],[1,[2,[8,"."],[3,"format"]]]]]]]]]]]]]]]);
 
   const { namespacePath, projectPath } = splitProjectFullPath(projectFullPath);
+  const { organizationPath, routeArgs } = resolveOrganizationScope(args);
 
-  if (hasOrganizationScopedPaths()) {
-    return _commitsOrganizationNamespaceProjectJsonMergeRequestPath(gon.current_organization.path, namespacePath, projectPath, ...args);
+  if (organizationPath) {
+    return _commitsOrganizationNamespaceProjectJsonMergeRequestPath(organizationPath, namespacePath, projectPath, ...routeArgs);
   }
 
-  return _commitsNamespaceProjectJsonMergeRequestPath(namespacePath, projectPath, ...args);
+  return _commitsNamespaceProjectJsonMergeRequestPath(namespacePath, projectPath, ...routeArgs);
 };
 
 /**
@@ -511,6 +549,7 @@ export const commitsProjectJsonMergeRequestPath = /*#__PURE__*/ (projectFullPath
  * @param {string} projectFullPath
  * @param {any} id
  * @param {object | undefined} options
+ * @param {string | null | undefined} options.organizationPath Path of organization to nest under. Pass `null` to remove path from URL params when outside of an organization data context.
  * @returns {string} route path
  */
 export const pipelinesProjectJsonMergeRequestPath = /*#__PURE__*/ (projectFullPath, ...args) => {
@@ -518,12 +557,13 @@ export const pipelinesProjectJsonMergeRequestPath = /*#__PURE__*/ (projectFullPa
   const _pipelinesNamespaceProjectJsonMergeRequestPath = /*#__PURE__*/ __jsr.r({"namespace_id":{"r":true},"project_id":{"r":true},"id":{"r":true},"format":{}}, [2,[7,"/"],[2,[5,[3,"namespace_id"]],[2,[7,"/"],[2,[3,"project_id"],[2,[7,"/"],[2,[6,"-"],[2,[7,"/"],[2,[6,"merge_requests"],[2,[7,"/"],[2,[3,"id"],[2,[7,"/"],[2,[6,"pipelines"],[1,[2,[8,"."],[3,"format"]]]]]]]]]]]]]]]);
 
   const { namespacePath, projectPath } = splitProjectFullPath(projectFullPath);
+  const { organizationPath, routeArgs } = resolveOrganizationScope(args);
 
-  if (hasOrganizationScopedPaths()) {
-    return _pipelinesOrganizationNamespaceProjectJsonMergeRequestPath(gon.current_organization.path, namespacePath, projectPath, ...args);
+  if (organizationPath) {
+    return _pipelinesOrganizationNamespaceProjectJsonMergeRequestPath(organizationPath, namespacePath, projectPath, ...routeArgs);
   }
 
-  return _pipelinesNamespaceProjectJsonMergeRequestPath(namespacePath, projectPath, ...args);
+  return _pipelinesNamespaceProjectJsonMergeRequestPath(namespacePath, projectPath, ...routeArgs);
 };
 
 /**
@@ -537,6 +577,7 @@ export const pipelinesProjectJsonMergeRequestPath = /*#__PURE__*/ (projectFullPa
  * @param {string} projectFullPath
  * @param {any} id
  * @param {object | undefined} options
+ * @param {string | null | undefined} options.organizationPath Path of organization to nest under. Pass `null` to remove path from URL params when outside of an organization data context.
  * @returns {string} route path
  */
 export const contextCommitsProjectJsonMergeRequestPath = /*#__PURE__*/ (projectFullPath, ...args) => {
@@ -544,12 +585,13 @@ export const contextCommitsProjectJsonMergeRequestPath = /*#__PURE__*/ (projectF
   const _contextCommitsNamespaceProjectJsonMergeRequestPath = /*#__PURE__*/ __jsr.r({"namespace_id":{"r":true},"project_id":{"r":true},"id":{"r":true},"format":{}}, [2,[7,"/"],[2,[5,[3,"namespace_id"]],[2,[7,"/"],[2,[3,"project_id"],[2,[7,"/"],[2,[6,"-"],[2,[7,"/"],[2,[6,"merge_requests"],[2,[7,"/"],[2,[3,"id"],[2,[7,"/"],[2,[6,"context_commits"],[1,[2,[8,"."],[3,"format"]]]]]]]]]]]]]]]);
 
   const { namespacePath, projectPath } = splitProjectFullPath(projectFullPath);
+  const { organizationPath, routeArgs } = resolveOrganizationScope(args);
 
-  if (hasOrganizationScopedPaths()) {
-    return _contextCommitsOrganizationNamespaceProjectJsonMergeRequestPath(gon.current_organization.path, namespacePath, projectPath, ...args);
+  if (organizationPath) {
+    return _contextCommitsOrganizationNamespaceProjectJsonMergeRequestPath(organizationPath, namespacePath, projectPath, ...routeArgs);
   }
 
-  return _contextCommitsNamespaceProjectJsonMergeRequestPath(namespacePath, projectPath, ...args);
+  return _contextCommitsNamespaceProjectJsonMergeRequestPath(namespacePath, projectPath, ...routeArgs);
 };
 
 /**
@@ -563,6 +605,7 @@ export const contextCommitsProjectJsonMergeRequestPath = /*#__PURE__*/ (projectF
  * @param {string} projectFullPath
  * @param {any} id
  * @param {object | undefined} options
+ * @param {string | null | undefined} options.organizationPath Path of organization to nest under. Pass `null` to remove path from URL params when outside of an organization data context.
  * @returns {string} route path
  */
 export const diffsProjectJsonMergeRequestPath = /*#__PURE__*/ (projectFullPath, ...args) => {
@@ -570,12 +613,13 @@ export const diffsProjectJsonMergeRequestPath = /*#__PURE__*/ (projectFullPath, 
   const _diffsNamespaceProjectJsonMergeRequestPath = /*#__PURE__*/ __jsr.r({"namespace_id":{"r":true},"project_id":{"r":true},"id":{"r":true},"format":{}}, [2,[7,"/"],[2,[5,[3,"namespace_id"]],[2,[7,"/"],[2,[3,"project_id"],[2,[7,"/"],[2,[6,"-"],[2,[7,"/"],[2,[6,"merge_requests"],[2,[7,"/"],[2,[3,"id"],[2,[7,"/"],[2,[6,"diffs"],[1,[2,[8,"."],[3,"format"]]]]]]]]]]]]]]]);
 
   const { namespacePath, projectPath } = splitProjectFullPath(projectFullPath);
+  const { organizationPath, routeArgs } = resolveOrganizationScope(args);
 
-  if (hasOrganizationScopedPaths()) {
-    return _diffsOrganizationNamespaceProjectJsonMergeRequestPath(gon.current_organization.path, namespacePath, projectPath, ...args);
+  if (organizationPath) {
+    return _diffsOrganizationNamespaceProjectJsonMergeRequestPath(organizationPath, namespacePath, projectPath, ...routeArgs);
   }
 
-  return _diffsNamespaceProjectJsonMergeRequestPath(namespacePath, projectPath, ...args);
+  return _diffsNamespaceProjectJsonMergeRequestPath(namespacePath, projectPath, ...routeArgs);
 };
 
 /**
@@ -589,6 +633,7 @@ export const diffsProjectJsonMergeRequestPath = /*#__PURE__*/ (projectFullPath, 
  * @param {string} projectFullPath
  * @param {any} id
  * @param {object | undefined} options
+ * @param {string | null | undefined} options.organizationPath Path of organization to nest under. Pass `null` to remove path from URL params when outside of an organization data context.
  * @returns {string} route path
  */
 export const diffsBatchProjectJsonMergeRequestPath = /*#__PURE__*/ (projectFullPath, ...args) => {
@@ -596,12 +641,13 @@ export const diffsBatchProjectJsonMergeRequestPath = /*#__PURE__*/ (projectFullP
   const _diffsBatchNamespaceProjectJsonMergeRequestPath = /*#__PURE__*/ __jsr.r({"namespace_id":{"r":true},"project_id":{"r":true},"id":{"r":true},"format":{}}, [2,[7,"/"],[2,[5,[3,"namespace_id"]],[2,[7,"/"],[2,[3,"project_id"],[2,[7,"/"],[2,[6,"-"],[2,[7,"/"],[2,[6,"merge_requests"],[2,[7,"/"],[2,[3,"id"],[2,[7,"/"],[2,[6,"diffs_batch"],[1,[2,[8,"."],[3,"format"]]]]]]]]]]]]]]]);
 
   const { namespacePath, projectPath } = splitProjectFullPath(projectFullPath);
+  const { organizationPath, routeArgs } = resolveOrganizationScope(args);
 
-  if (hasOrganizationScopedPaths()) {
-    return _diffsBatchOrganizationNamespaceProjectJsonMergeRequestPath(gon.current_organization.path, namespacePath, projectPath, ...args);
+  if (organizationPath) {
+    return _diffsBatchOrganizationNamespaceProjectJsonMergeRequestPath(organizationPath, namespacePath, projectPath, ...routeArgs);
   }
 
-  return _diffsBatchNamespaceProjectJsonMergeRequestPath(namespacePath, projectPath, ...args);
+  return _diffsBatchNamespaceProjectJsonMergeRequestPath(namespacePath, projectPath, ...routeArgs);
 };
 
 /**
@@ -615,6 +661,7 @@ export const diffsBatchProjectJsonMergeRequestPath = /*#__PURE__*/ (projectFullP
  * @param {string} projectFullPath
  * @param {any} id
  * @param {object | undefined} options
+ * @param {string | null | undefined} options.organizationPath Path of organization to nest under. Pass `null` to remove path from URL params when outside of an organization data context.
  * @returns {string} route path
  */
 export const diffsMetadataProjectJsonMergeRequestPath = /*#__PURE__*/ (projectFullPath, ...args) => {
@@ -622,12 +669,13 @@ export const diffsMetadataProjectJsonMergeRequestPath = /*#__PURE__*/ (projectFu
   const _diffsMetadataNamespaceProjectJsonMergeRequestPath = /*#__PURE__*/ __jsr.r({"namespace_id":{"r":true},"project_id":{"r":true},"id":{"r":true},"format":{}}, [2,[7,"/"],[2,[5,[3,"namespace_id"]],[2,[7,"/"],[2,[3,"project_id"],[2,[7,"/"],[2,[6,"-"],[2,[7,"/"],[2,[6,"merge_requests"],[2,[7,"/"],[2,[3,"id"],[2,[7,"/"],[2,[6,"diffs_metadata"],[1,[2,[8,"."],[3,"format"]]]]]]]]]]]]]]]);
 
   const { namespacePath, projectPath } = splitProjectFullPath(projectFullPath);
+  const { organizationPath, routeArgs } = resolveOrganizationScope(args);
 
-  if (hasOrganizationScopedPaths()) {
-    return _diffsMetadataOrganizationNamespaceProjectJsonMergeRequestPath(gon.current_organization.path, namespacePath, projectPath, ...args);
+  if (organizationPath) {
+    return _diffsMetadataOrganizationNamespaceProjectJsonMergeRequestPath(organizationPath, namespacePath, projectPath, ...routeArgs);
   }
 
-  return _diffsMetadataNamespaceProjectJsonMergeRequestPath(namespacePath, projectPath, ...args);
+  return _diffsMetadataNamespaceProjectJsonMergeRequestPath(namespacePath, projectPath, ...routeArgs);
 };
 
 /**
@@ -641,6 +689,7 @@ export const diffsMetadataProjectJsonMergeRequestPath = /*#__PURE__*/ (projectFu
  * @param {string} projectFullPath
  * @param {any} id
  * @param {object | undefined} options
+ * @param {string | null | undefined} options.organizationPath Path of organization to nest under. Pass `null` to remove path from URL params when outside of an organization data context.
  * @returns {string} route path
  */
 export const widgetProjectJsonMergeRequestPath = /*#__PURE__*/ (projectFullPath, ...args) => {
@@ -648,12 +697,13 @@ export const widgetProjectJsonMergeRequestPath = /*#__PURE__*/ (projectFullPath,
   const _widgetNamespaceProjectJsonMergeRequestPath = /*#__PURE__*/ __jsr.r({"namespace_id":{"r":true},"project_id":{"r":true},"id":{"r":true},"format":{}}, [2,[7,"/"],[2,[5,[3,"namespace_id"]],[2,[7,"/"],[2,[3,"project_id"],[2,[7,"/"],[2,[6,"-"],[2,[7,"/"],[2,[6,"merge_requests"],[2,[7,"/"],[2,[3,"id"],[2,[7,"/"],[2,[6,"widget"],[1,[2,[8,"."],[3,"format"]]]]]]]]]]]]]]]);
 
   const { namespacePath, projectPath } = splitProjectFullPath(projectFullPath);
+  const { organizationPath, routeArgs } = resolveOrganizationScope(args);
 
-  if (hasOrganizationScopedPaths()) {
-    return _widgetOrganizationNamespaceProjectJsonMergeRequestPath(gon.current_organization.path, namespacePath, projectPath, ...args);
+  if (organizationPath) {
+    return _widgetOrganizationNamespaceProjectJsonMergeRequestPath(organizationPath, namespacePath, projectPath, ...routeArgs);
   }
 
-  return _widgetNamespaceProjectJsonMergeRequestPath(namespacePath, projectPath, ...args);
+  return _widgetNamespaceProjectJsonMergeRequestPath(namespacePath, projectPath, ...routeArgs);
 };
 
 /**
@@ -667,6 +717,7 @@ export const widgetProjectJsonMergeRequestPath = /*#__PURE__*/ (projectFullPath,
  * @param {string} projectFullPath
  * @param {any} id
  * @param {object | undefined} options
+ * @param {string | null | undefined} options.organizationPath Path of organization to nest under. Pass `null` to remove path from URL params when outside of an organization data context.
  * @returns {string} route path
  */
 export const cachedWidgetProjectJsonMergeRequestPath = /*#__PURE__*/ (projectFullPath, ...args) => {
@@ -674,12 +725,13 @@ export const cachedWidgetProjectJsonMergeRequestPath = /*#__PURE__*/ (projectFul
   const _cachedWidgetNamespaceProjectJsonMergeRequestPath = /*#__PURE__*/ __jsr.r({"namespace_id":{"r":true},"project_id":{"r":true},"id":{"r":true},"format":{}}, [2,[7,"/"],[2,[5,[3,"namespace_id"]],[2,[7,"/"],[2,[3,"project_id"],[2,[7,"/"],[2,[6,"-"],[2,[7,"/"],[2,[6,"merge_requests"],[2,[7,"/"],[2,[3,"id"],[2,[7,"/"],[2,[6,"cached_widget"],[1,[2,[8,"."],[3,"format"]]]]]]]]]]]]]]]);
 
   const { namespacePath, projectPath } = splitProjectFullPath(projectFullPath);
+  const { organizationPath, routeArgs } = resolveOrganizationScope(args);
 
-  if (hasOrganizationScopedPaths()) {
-    return _cachedWidgetOrganizationNamespaceProjectJsonMergeRequestPath(gon.current_organization.path, namespacePath, projectPath, ...args);
+  if (organizationPath) {
+    return _cachedWidgetOrganizationNamespaceProjectJsonMergeRequestPath(organizationPath, namespacePath, projectPath, ...routeArgs);
   }
 
-  return _cachedWidgetNamespaceProjectJsonMergeRequestPath(namespacePath, projectPath, ...args);
+  return _cachedWidgetNamespaceProjectJsonMergeRequestPath(namespacePath, projectPath, ...routeArgs);
 };
 
 /**
@@ -693,6 +745,7 @@ export const cachedWidgetProjectJsonMergeRequestPath = /*#__PURE__*/ (projectFul
  * @param {string} projectFullPath
  * @param {any} id
  * @param {object | undefined} options
+ * @param {string | null | undefined} options.organizationPath Path of organization to nest under. Pass `null` to remove path from URL params when outside of an organization data context.
  * @returns {string} route path
  */
 export const diffsProjectMergeRequestPath = /*#__PURE__*/ (projectFullPath, ...args) => {
@@ -700,12 +753,13 @@ export const diffsProjectMergeRequestPath = /*#__PURE__*/ (projectFullPath, ...a
   const _diffsNamespaceProjectMergeRequestPath = /*#__PURE__*/ __jsr.r({"namespace_id":{"r":true},"project_id":{"r":true},"id":{"r":true},"format":{}}, [2,[7,"/"],[2,[5,[3,"namespace_id"]],[2,[7,"/"],[2,[3,"project_id"],[2,[7,"/"],[2,[6,"-"],[2,[7,"/"],[2,[6,"merge_requests"],[2,[7,"/"],[2,[3,"id"],[2,[7,"/"],[2,[6,"diffs"],[1,[2,[8,"."],[3,"format"]]]]]]]]]]]]]]]);
 
   const { namespacePath, projectPath } = splitProjectFullPath(projectFullPath);
+  const { organizationPath, routeArgs } = resolveOrganizationScope(args);
 
-  if (hasOrganizationScopedPaths()) {
-    return _diffsOrganizationNamespaceProjectMergeRequestPath(gon.current_organization.path, namespacePath, projectPath, ...args);
+  if (organizationPath) {
+    return _diffsOrganizationNamespaceProjectMergeRequestPath(organizationPath, namespacePath, projectPath, ...routeArgs);
   }
 
-  return _diffsNamespaceProjectMergeRequestPath(namespacePath, projectPath, ...args);
+  return _diffsNamespaceProjectMergeRequestPath(namespacePath, projectPath, ...routeArgs);
 };
 
 /**
@@ -719,6 +773,7 @@ export const diffsProjectMergeRequestPath = /*#__PURE__*/ (projectFullPath, ...a
  * @param {string} projectFullPath
  * @param {any} id
  * @param {object | undefined} options
+ * @param {string | null | undefined} options.organizationPath Path of organization to nest under. Pass `null` to remove path from URL params when outside of an organization data context.
  * @returns {string} route path
  */
 export const commitsProjectMergeRequestPath = /*#__PURE__*/ (projectFullPath, ...args) => {
@@ -726,12 +781,13 @@ export const commitsProjectMergeRequestPath = /*#__PURE__*/ (projectFullPath, ..
   const _commitsNamespaceProjectMergeRequestPath = /*#__PURE__*/ __jsr.r({"namespace_id":{"r":true},"project_id":{"r":true},"id":{"r":true},"format":{}}, [2,[7,"/"],[2,[5,[3,"namespace_id"]],[2,[7,"/"],[2,[3,"project_id"],[2,[7,"/"],[2,[6,"-"],[2,[7,"/"],[2,[6,"merge_requests"],[2,[7,"/"],[2,[3,"id"],[2,[7,"/"],[2,[6,"commits"],[1,[2,[8,"."],[3,"format"]]]]]]]]]]]]]]]);
 
   const { namespacePath, projectPath } = splitProjectFullPath(projectFullPath);
+  const { organizationPath, routeArgs } = resolveOrganizationScope(args);
 
-  if (hasOrganizationScopedPaths()) {
-    return _commitsOrganizationNamespaceProjectMergeRequestPath(gon.current_organization.path, namespacePath, projectPath, ...args);
+  if (organizationPath) {
+    return _commitsOrganizationNamespaceProjectMergeRequestPath(organizationPath, namespacePath, projectPath, ...routeArgs);
   }
 
-  return _commitsNamespaceProjectMergeRequestPath(namespacePath, projectPath, ...args);
+  return _commitsNamespaceProjectMergeRequestPath(namespacePath, projectPath, ...routeArgs);
 };
 
 /**
@@ -745,6 +801,7 @@ export const commitsProjectMergeRequestPath = /*#__PURE__*/ (projectFullPath, ..
  * @param {string} projectFullPath
  * @param {any} id
  * @param {object | undefined} options
+ * @param {string | null | undefined} options.organizationPath Path of organization to nest under. Pass `null` to remove path from URL params when outside of an organization data context.
  * @returns {string} route path
  */
 export const pipelinesProjectMergeRequestPath = /*#__PURE__*/ (projectFullPath, ...args) => {
@@ -752,12 +809,13 @@ export const pipelinesProjectMergeRequestPath = /*#__PURE__*/ (projectFullPath, 
   const _pipelinesNamespaceProjectMergeRequestPath = /*#__PURE__*/ __jsr.r({"namespace_id":{"r":true},"project_id":{"r":true},"id":{"r":true},"format":{}}, [2,[7,"/"],[2,[5,[3,"namespace_id"]],[2,[7,"/"],[2,[3,"project_id"],[2,[7,"/"],[2,[6,"-"],[2,[7,"/"],[2,[6,"merge_requests"],[2,[7,"/"],[2,[3,"id"],[2,[7,"/"],[2,[6,"pipelines"],[1,[2,[8,"."],[3,"format"]]]]]]]]]]]]]]]);
 
   const { namespacePath, projectPath } = splitProjectFullPath(projectFullPath);
+  const { organizationPath, routeArgs } = resolveOrganizationScope(args);
 
-  if (hasOrganizationScopedPaths()) {
-    return _pipelinesOrganizationNamespaceProjectMergeRequestPath(gon.current_organization.path, namespacePath, projectPath, ...args);
+  if (organizationPath) {
+    return _pipelinesOrganizationNamespaceProjectMergeRequestPath(organizationPath, namespacePath, projectPath, ...routeArgs);
   }
 
-  return _pipelinesNamespaceProjectMergeRequestPath(namespacePath, projectPath, ...args);
+  return _pipelinesNamespaceProjectMergeRequestPath(namespacePath, projectPath, ...routeArgs);
 };
 
 /**
@@ -771,6 +829,7 @@ export const pipelinesProjectMergeRequestPath = /*#__PURE__*/ (projectFullPath, 
  * @param {string} projectFullPath
  * @param {any} id
  * @param {object | undefined} options
+ * @param {string | null | undefined} options.organizationPath Path of organization to nest under. Pass `null` to remove path from URL params when outside of an organization data context.
  * @returns {string} route path
  */
 export const diffForPathProjectMergeRequestPath = /*#__PURE__*/ (projectFullPath, ...args) => {
@@ -778,12 +837,13 @@ export const diffForPathProjectMergeRequestPath = /*#__PURE__*/ (projectFullPath
   const _diffForPathNamespaceProjectMergeRequestPath = /*#__PURE__*/ __jsr.r({"namespace_id":{"r":true},"project_id":{"r":true},"id":{"r":true},"format":{}}, [2,[7,"/"],[2,[5,[3,"namespace_id"]],[2,[7,"/"],[2,[3,"project_id"],[2,[7,"/"],[2,[6,"-"],[2,[7,"/"],[2,[6,"merge_requests"],[2,[7,"/"],[2,[3,"id"],[2,[7,"/"],[2,[6,"diff_for_path"],[1,[2,[8,"."],[3,"format"]]]]]]]]]]]]]]]);
 
   const { namespacePath, projectPath } = splitProjectFullPath(projectFullPath);
+  const { organizationPath, routeArgs } = resolveOrganizationScope(args);
 
-  if (hasOrganizationScopedPaths()) {
-    return _diffForPathOrganizationNamespaceProjectMergeRequestPath(gon.current_organization.path, namespacePath, projectPath, ...args);
+  if (organizationPath) {
+    return _diffForPathOrganizationNamespaceProjectMergeRequestPath(organizationPath, namespacePath, projectPath, ...routeArgs);
   }
 
-  return _diffForPathNamespaceProjectMergeRequestPath(namespacePath, projectPath, ...args);
+  return _diffForPathNamespaceProjectMergeRequestPath(namespacePath, projectPath, ...routeArgs);
 };
 
 /**
@@ -798,6 +858,7 @@ export const diffForPathProjectMergeRequestPath = /*#__PURE__*/ (projectFullPath
  * @param {any} id
  * @param {any} fileHash
  * @param {object | undefined} options
+ * @param {string | null | undefined} options.organizationPath Path of organization to nest under. Pass `null` to remove path from URL params when outside of an organization data context.
  * @returns {string} route path
  */
 export const diffByFileHashProjectMergeRequestPath = /*#__PURE__*/ (projectFullPath, ...args) => {
@@ -805,12 +866,13 @@ export const diffByFileHashProjectMergeRequestPath = /*#__PURE__*/ (projectFullP
   const _diffByFileHashNamespaceProjectMergeRequestPath = /*#__PURE__*/ __jsr.r({"namespace_id":{"r":true},"project_id":{"r":true},"id":{"r":true},"file_hash":{"r":true},"format":{}}, [2,[7,"/"],[2,[5,[3,"namespace_id"]],[2,[7,"/"],[2,[3,"project_id"],[2,[7,"/"],[2,[6,"-"],[2,[7,"/"],[2,[6,"merge_requests"],[2,[7,"/"],[2,[3,"id"],[2,[7,"/"],[2,[6,"diff_by_file_hash"],[2,[7,"/"],[2,[3,"file_hash"],[1,[2,[8,"."],[3,"format"]]]]]]]]]]]]]]]]]);
 
   const { namespacePath, projectPath } = splitProjectFullPath(projectFullPath);
+  const { organizationPath, routeArgs } = resolveOrganizationScope(args);
 
-  if (hasOrganizationScopedPaths()) {
-    return _diffByFileHashOrganizationNamespaceProjectMergeRequestPath(gon.current_organization.path, namespacePath, projectPath, ...args);
+  if (organizationPath) {
+    return _diffByFileHashOrganizationNamespaceProjectMergeRequestPath(organizationPath, namespacePath, projectPath, ...routeArgs);
   }
 
-  return _diffByFileHashNamespaceProjectMergeRequestPath(namespacePath, projectPath, ...args);
+  return _diffByFileHashNamespaceProjectMergeRequestPath(namespacePath, projectPath, ...routeArgs);
 };
 
 /**
@@ -824,6 +886,7 @@ export const diffByFileHashProjectMergeRequestPath = /*#__PURE__*/ (projectFullP
  * @param {string} projectFullPath
  * @param {any} id
  * @param {object | undefined} options
+ * @param {string | null | undefined} options.organizationPath Path of organization to nest under. Pass `null` to remove path from URL params when outside of an organization data context.
  * @returns {string} route path
  */
 export const diffsStreamProjectMergeRequestPath = /*#__PURE__*/ (projectFullPath, ...args) => {
@@ -831,12 +894,13 @@ export const diffsStreamProjectMergeRequestPath = /*#__PURE__*/ (projectFullPath
   const _diffsStreamNamespaceProjectMergeRequestPath = /*#__PURE__*/ __jsr.r({"namespace_id":{"r":true},"project_id":{"r":true},"id":{"r":true},"format":{}}, [2,[7,"/"],[2,[5,[3,"namespace_id"]],[2,[7,"/"],[2,[3,"project_id"],[2,[7,"/"],[2,[6,"-"],[2,[7,"/"],[2,[6,"merge_requests"],[2,[7,"/"],[2,[3,"id"],[2,[7,"/"],[2,[6,"diffs_stream"],[1,[2,[8,"."],[3,"format"]]]]]]]]]]]]]]]);
 
   const { namespacePath, projectPath } = splitProjectFullPath(projectFullPath);
+  const { organizationPath, routeArgs } = resolveOrganizationScope(args);
 
-  if (hasOrganizationScopedPaths()) {
-    return _diffsStreamOrganizationNamespaceProjectMergeRequestPath(gon.current_organization.path, namespacePath, projectPath, ...args);
+  if (organizationPath) {
+    return _diffsStreamOrganizationNamespaceProjectMergeRequestPath(organizationPath, namespacePath, projectPath, ...routeArgs);
   }
 
-  return _diffsStreamNamespaceProjectMergeRequestPath(namespacePath, projectPath, ...args);
+  return _diffsStreamNamespaceProjectMergeRequestPath(namespacePath, projectPath, ...routeArgs);
 };
 
 /**
@@ -850,6 +914,7 @@ export const diffsStreamProjectMergeRequestPath = /*#__PURE__*/ (projectFullPath
  * @param {string} projectFullPath
  * @param {any} id
  * @param {object | undefined} options
+ * @param {string | null | undefined} options.organizationPath Path of organization to nest under. Pass `null` to remove path from URL params when outside of an organization data context.
  * @returns {string} route path
  */
 export const diffFilesMetadataProjectMergeRequestPath = /*#__PURE__*/ (projectFullPath, ...args) => {
@@ -857,12 +922,13 @@ export const diffFilesMetadataProjectMergeRequestPath = /*#__PURE__*/ (projectFu
   const _diffFilesMetadataNamespaceProjectMergeRequestPath = /*#__PURE__*/ __jsr.r({"namespace_id":{"r":true},"project_id":{"r":true},"id":{"r":true},"format":{}}, [2,[7,"/"],[2,[5,[3,"namespace_id"]],[2,[7,"/"],[2,[3,"project_id"],[2,[7,"/"],[2,[6,"-"],[2,[7,"/"],[2,[6,"merge_requests"],[2,[7,"/"],[2,[3,"id"],[2,[7,"/"],[2,[6,"diff_files_metadata"],[1,[2,[8,"."],[3,"format"]]]]]]]]]]]]]]]);
 
   const { namespacePath, projectPath } = splitProjectFullPath(projectFullPath);
+  const { organizationPath, routeArgs } = resolveOrganizationScope(args);
 
-  if (hasOrganizationScopedPaths()) {
-    return _diffFilesMetadataOrganizationNamespaceProjectMergeRequestPath(gon.current_organization.path, namespacePath, projectPath, ...args);
+  if (organizationPath) {
+    return _diffFilesMetadataOrganizationNamespaceProjectMergeRequestPath(organizationPath, namespacePath, projectPath, ...routeArgs);
   }
 
-  return _diffFilesMetadataNamespaceProjectMergeRequestPath(namespacePath, projectPath, ...args);
+  return _diffFilesMetadataNamespaceProjectMergeRequestPath(namespacePath, projectPath, ...routeArgs);
 };
 
 /**
@@ -876,6 +942,7 @@ export const diffFilesMetadataProjectMergeRequestPath = /*#__PURE__*/ (projectFu
  * @param {string} projectFullPath
  * @param {any} id
  * @param {object | undefined} options
+ * @param {string | null | undefined} options.organizationPath Path of organization to nest under. Pass `null` to remove path from URL params when outside of an organization data context.
  * @returns {string} route path
  */
 export const diffsStatsProjectMergeRequestPath = /*#__PURE__*/ (projectFullPath, ...args) => {
@@ -883,12 +950,13 @@ export const diffsStatsProjectMergeRequestPath = /*#__PURE__*/ (projectFullPath,
   const _diffsStatsNamespaceProjectMergeRequestPath = /*#__PURE__*/ __jsr.r({"namespace_id":{"r":true},"project_id":{"r":true},"id":{"r":true},"format":{}}, [2,[7,"/"],[2,[5,[3,"namespace_id"]],[2,[7,"/"],[2,[3,"project_id"],[2,[7,"/"],[2,[6,"-"],[2,[7,"/"],[2,[6,"merge_requests"],[2,[7,"/"],[2,[3,"id"],[2,[7,"/"],[2,[6,"diffs_stats"],[1,[2,[8,"."],[3,"format"]]]]]]]]]]]]]]]);
 
   const { namespacePath, projectPath } = splitProjectFullPath(projectFullPath);
+  const { organizationPath, routeArgs } = resolveOrganizationScope(args);
 
-  if (hasOrganizationScopedPaths()) {
-    return _diffsStatsOrganizationNamespaceProjectMergeRequestPath(gon.current_organization.path, namespacePath, projectPath, ...args);
+  if (organizationPath) {
+    return _diffsStatsOrganizationNamespaceProjectMergeRequestPath(organizationPath, namespacePath, projectPath, ...routeArgs);
   }
 
-  return _diffsStatsNamespaceProjectMergeRequestPath(namespacePath, projectPath, ...args);
+  return _diffsStatsNamespaceProjectMergeRequestPath(namespacePath, projectPath, ...routeArgs);
 };
 
 /**
@@ -902,6 +970,7 @@ export const diffsStatsProjectMergeRequestPath = /*#__PURE__*/ (projectFullPath,
  * @param {string} projectFullPath
  * @param {any} id
  * @param {object | undefined} options
+ * @param {string | null | undefined} options.organizationPath Path of organization to nest under. Pass `null` to remove path from URL params when outside of an organization data context.
  * @returns {string} route path
  */
 export const diffFileProjectMergeRequestPath = /*#__PURE__*/ (projectFullPath, ...args) => {
@@ -909,12 +978,13 @@ export const diffFileProjectMergeRequestPath = /*#__PURE__*/ (projectFullPath, .
   const _diffFileNamespaceProjectMergeRequestPath = /*#__PURE__*/ __jsr.r({"namespace_id":{"r":true},"project_id":{"r":true},"id":{"r":true},"format":{}}, [2,[7,"/"],[2,[5,[3,"namespace_id"]],[2,[7,"/"],[2,[3,"project_id"],[2,[7,"/"],[2,[6,"-"],[2,[7,"/"],[2,[6,"merge_requests"],[2,[7,"/"],[2,[3,"id"],[2,[7,"/"],[2,[6,"diff_file"],[1,[2,[8,"."],[3,"format"]]]]]]]]]]]]]]]);
 
   const { namespacePath, projectPath } = splitProjectFullPath(projectFullPath);
+  const { organizationPath, routeArgs } = resolveOrganizationScope(args);
 
-  if (hasOrganizationScopedPaths()) {
-    return _diffFileOrganizationNamespaceProjectMergeRequestPath(gon.current_organization.path, namespacePath, projectPath, ...args);
+  if (organizationPath) {
+    return _diffFileOrganizationNamespaceProjectMergeRequestPath(organizationPath, namespacePath, projectPath, ...routeArgs);
   }
 
-  return _diffFileNamespaceProjectMergeRequestPath(namespacePath, projectPath, ...args);
+  return _diffFileNamespaceProjectMergeRequestPath(namespacePath, projectPath, ...routeArgs);
 };
 
 /**
@@ -928,6 +998,7 @@ export const diffFileProjectMergeRequestPath = /*#__PURE__*/ (projectFullPath, .
  * @param {string} projectFullPath
  * @param {any} id
  * @param {object | undefined} options
+ * @param {string | null | undefined} options.organizationPath Path of organization to nest under. Pass `null` to remove path from URL params when outside of an organization data context.
  * @returns {string} route path
  */
 export const versionsProjectMergeRequestPath = /*#__PURE__*/ (projectFullPath, ...args) => {
@@ -935,12 +1006,13 @@ export const versionsProjectMergeRequestPath = /*#__PURE__*/ (projectFullPath, .
   const _versionsNamespaceProjectMergeRequestPath = /*#__PURE__*/ __jsr.r({"namespace_id":{"r":true},"project_id":{"r":true},"id":{"r":true},"format":{}}, [2,[7,"/"],[2,[5,[3,"namespace_id"]],[2,[7,"/"],[2,[3,"project_id"],[2,[7,"/"],[2,[6,"-"],[2,[7,"/"],[2,[6,"merge_requests"],[2,[7,"/"],[2,[3,"id"],[2,[7,"/"],[2,[6,"versions"],[1,[2,[8,"."],[3,"format"]]]]]]]]]]]]]]]);
 
   const { namespacePath, projectPath } = splitProjectFullPath(projectFullPath);
+  const { organizationPath, routeArgs } = resolveOrganizationScope(args);
 
-  if (hasOrganizationScopedPaths()) {
-    return _versionsOrganizationNamespaceProjectMergeRequestPath(gon.current_organization.path, namespacePath, projectPath, ...args);
+  if (organizationPath) {
+    return _versionsOrganizationNamespaceProjectMergeRequestPath(organizationPath, namespacePath, projectPath, ...routeArgs);
   }
 
-  return _versionsNamespaceProjectMergeRequestPath(namespacePath, projectPath, ...args);
+  return _versionsNamespaceProjectMergeRequestPath(namespacePath, projectPath, ...routeArgs);
 };
 
 /**
@@ -954,6 +1026,7 @@ export const versionsProjectMergeRequestPath = /*#__PURE__*/ (projectFullPath, .
  * @param {string} projectFullPath
  * @param {any} id
  * @param {object | undefined} options
+ * @param {string | null | undefined} options.organizationPath Path of organization to nest under. Pass `null` to remove path from URL params when outside of an organization data context.
  * @returns {string} route path
  */
 export const conflictsProjectMergeRequestPath = /*#__PURE__*/ (projectFullPath, ...args) => {
@@ -961,12 +1034,13 @@ export const conflictsProjectMergeRequestPath = /*#__PURE__*/ (projectFullPath, 
   const _conflictsNamespaceProjectMergeRequestPath = /*#__PURE__*/ __jsr.r({"namespace_id":{"r":true},"project_id":{"r":true},"id":{"r":true},"format":{}}, [2,[7,"/"],[2,[5,[3,"namespace_id"]],[2,[7,"/"],[2,[3,"project_id"],[2,[7,"/"],[2,[6,"-"],[2,[7,"/"],[2,[6,"merge_requests"],[2,[7,"/"],[2,[3,"id"],[2,[7,"/"],[2,[6,"conflicts"],[1,[2,[8,"."],[3,"format"]]]]]]]]]]]]]]]);
 
   const { namespacePath, projectPath } = splitProjectFullPath(projectFullPath);
+  const { organizationPath, routeArgs } = resolveOrganizationScope(args);
 
-  if (hasOrganizationScopedPaths()) {
-    return _conflictsOrganizationNamespaceProjectMergeRequestPath(gon.current_organization.path, namespacePath, projectPath, ...args);
+  if (organizationPath) {
+    return _conflictsOrganizationNamespaceProjectMergeRequestPath(organizationPath, namespacePath, projectPath, ...routeArgs);
   }
 
-  return _conflictsNamespaceProjectMergeRequestPath(namespacePath, projectPath, ...args);
+  return _conflictsNamespaceProjectMergeRequestPath(namespacePath, projectPath, ...routeArgs);
 };
 
 /**
@@ -980,6 +1054,7 @@ export const conflictsProjectMergeRequestPath = /*#__PURE__*/ (projectFullPath, 
  * @param {string} projectFullPath
  * @param {any} id
  * @param {object | undefined} options
+ * @param {string | null | undefined} options.organizationPath Path of organization to nest under. Pass `null` to remove path from URL params when outside of an organization data context.
  * @returns {string} route path
  */
 export const conflictForPathProjectMergeRequestPath = /*#__PURE__*/ (projectFullPath, ...args) => {
@@ -987,12 +1062,13 @@ export const conflictForPathProjectMergeRequestPath = /*#__PURE__*/ (projectFull
   const _conflictForPathNamespaceProjectMergeRequestPath = /*#__PURE__*/ __jsr.r({"namespace_id":{"r":true},"project_id":{"r":true},"id":{"r":true},"format":{}}, [2,[7,"/"],[2,[5,[3,"namespace_id"]],[2,[7,"/"],[2,[3,"project_id"],[2,[7,"/"],[2,[6,"-"],[2,[7,"/"],[2,[6,"merge_requests"],[2,[7,"/"],[2,[3,"id"],[2,[7,"/"],[2,[6,"conflict_for_path"],[1,[2,[8,"."],[3,"format"]]]]]]]]]]]]]]]);
 
   const { namespacePath, projectPath } = splitProjectFullPath(projectFullPath);
+  const { organizationPath, routeArgs } = resolveOrganizationScope(args);
 
-  if (hasOrganizationScopedPaths()) {
-    return _conflictForPathOrganizationNamespaceProjectMergeRequestPath(gon.current_organization.path, namespacePath, projectPath, ...args);
+  if (organizationPath) {
+    return _conflictForPathOrganizationNamespaceProjectMergeRequestPath(organizationPath, namespacePath, projectPath, ...routeArgs);
   }
 
-  return _conflictForPathNamespaceProjectMergeRequestPath(namespacePath, projectPath, ...args);
+  return _conflictForPathNamespaceProjectMergeRequestPath(namespacePath, projectPath, ...routeArgs);
 };
 
 /**
@@ -1006,6 +1082,7 @@ export const conflictForPathProjectMergeRequestPath = /*#__PURE__*/ (projectFull
  * @param {string} projectFullPath
  * @param {any} id
  * @param {object | undefined} options
+ * @param {string | null | undefined} options.organizationPath Path of organization to nest under. Pass `null` to remove path from URL params when outside of an organization data context.
  * @returns {string} route path
  */
 export const resolveConflictsProjectMergeRequestPath = /*#__PURE__*/ (projectFullPath, ...args) => {
@@ -1013,12 +1090,13 @@ export const resolveConflictsProjectMergeRequestPath = /*#__PURE__*/ (projectFul
   const _resolveConflictsNamespaceProjectMergeRequestPath = /*#__PURE__*/ __jsr.r({"namespace_id":{"r":true},"project_id":{"r":true},"id":{"r":true},"format":{}}, [2,[7,"/"],[2,[5,[3,"namespace_id"]],[2,[7,"/"],[2,[3,"project_id"],[2,[7,"/"],[2,[6,"-"],[2,[7,"/"],[2,[6,"merge_requests"],[2,[7,"/"],[2,[3,"id"],[2,[7,"/"],[2,[6,"resolve_conflicts"],[1,[2,[8,"."],[3,"format"]]]]]]]]]]]]]]]);
 
   const { namespacePath, projectPath } = splitProjectFullPath(projectFullPath);
+  const { organizationPath, routeArgs } = resolveOrganizationScope(args);
 
-  if (hasOrganizationScopedPaths()) {
-    return _resolveConflictsOrganizationNamespaceProjectMergeRequestPath(gon.current_organization.path, namespacePath, projectPath, ...args);
+  if (organizationPath) {
+    return _resolveConflictsOrganizationNamespaceProjectMergeRequestPath(organizationPath, namespacePath, projectPath, ...routeArgs);
   }
 
-  return _resolveConflictsNamespaceProjectMergeRequestPath(namespacePath, projectPath, ...args);
+  return _resolveConflictsNamespaceProjectMergeRequestPath(namespacePath, projectPath, ...routeArgs);
 };
 
 /**
@@ -1031,6 +1109,7 @@ export const resolveConflictsProjectMergeRequestPath = /*#__PURE__*/ (projectFul
  *
  * @param {string} projectFullPath
  * @param {object | undefined} options
+ * @param {string | null | undefined} options.organizationPath Path of organization to nest under. Pass `null` to remove path from URL params when outside of an organization data context.
  * @returns {string} route path
  */
 export const diffForPathProjectMergeRequestsPath = /*#__PURE__*/ (projectFullPath, ...args) => {
@@ -1038,12 +1117,13 @@ export const diffForPathProjectMergeRequestsPath = /*#__PURE__*/ (projectFullPat
   const _diffForPathNamespaceProjectMergeRequestsPath = /*#__PURE__*/ __jsr.r({"namespace_id":{"r":true},"project_id":{"r":true},"format":{}}, [2,[7,"/"],[2,[5,[3,"namespace_id"]],[2,[7,"/"],[2,[3,"project_id"],[2,[7,"/"],[2,[6,"-"],[2,[7,"/"],[2,[6,"merge_requests"],[2,[7,"/"],[2,[6,"diff_for_path"],[1,[2,[8,"."],[3,"format"]]]]]]]]]]]]]);
 
   const { namespacePath, projectPath } = splitProjectFullPath(projectFullPath);
+  const { organizationPath, routeArgs } = resolveOrganizationScope(args);
 
-  if (hasOrganizationScopedPaths()) {
-    return _diffForPathOrganizationNamespaceProjectMergeRequestsPath(gon.current_organization.path, namespacePath, projectPath, ...args);
+  if (organizationPath) {
+    return _diffForPathOrganizationNamespaceProjectMergeRequestsPath(organizationPath, namespacePath, projectPath, ...routeArgs);
   }
 
-  return _diffForPathNamespaceProjectMergeRequestsPath(namespacePath, projectPath, ...args);
+  return _diffForPathNamespaceProjectMergeRequestsPath(namespacePath, projectPath, ...routeArgs);
 };
 
 /**
@@ -1056,6 +1136,7 @@ export const diffForPathProjectMergeRequestsPath = /*#__PURE__*/ (projectFullPat
  *
  * @param {string} projectFullPath
  * @param {object | undefined} options
+ * @param {string | null | undefined} options.organizationPath Path of organization to nest under. Pass `null` to remove path from URL params when outside of an organization data context.
  * @returns {string} route path
  */
 export const bulkUpdateProjectMergeRequestsPath = /*#__PURE__*/ (projectFullPath, ...args) => {
@@ -1063,12 +1144,13 @@ export const bulkUpdateProjectMergeRequestsPath = /*#__PURE__*/ (projectFullPath
   const _bulkUpdateNamespaceProjectMergeRequestsPath = /*#__PURE__*/ __jsr.r({"namespace_id":{"r":true},"project_id":{"r":true},"format":{}}, [2,[7,"/"],[2,[5,[3,"namespace_id"]],[2,[7,"/"],[2,[3,"project_id"],[2,[7,"/"],[2,[6,"-"],[2,[7,"/"],[2,[6,"merge_requests"],[2,[7,"/"],[2,[6,"bulk_update"],[1,[2,[8,"."],[3,"format"]]]]]]]]]]]]]);
 
   const { namespacePath, projectPath } = splitProjectFullPath(projectFullPath);
+  const { organizationPath, routeArgs } = resolveOrganizationScope(args);
 
-  if (hasOrganizationScopedPaths()) {
-    return _bulkUpdateOrganizationNamespaceProjectMergeRequestsPath(gon.current_organization.path, namespacePath, projectPath, ...args);
+  if (organizationPath) {
+    return _bulkUpdateOrganizationNamespaceProjectMergeRequestsPath(organizationPath, namespacePath, projectPath, ...routeArgs);
   }
 
-  return _bulkUpdateNamespaceProjectMergeRequestsPath(namespacePath, projectPath, ...args);
+  return _bulkUpdateNamespaceProjectMergeRequestsPath(namespacePath, projectPath, ...routeArgs);
 };
 
 /**
@@ -1081,6 +1163,7 @@ export const bulkUpdateProjectMergeRequestsPath = /*#__PURE__*/ (projectFullPath
  *
  * @param {string} projectFullPath
  * @param {object | undefined} options
+ * @param {string | null | undefined} options.organizationPath Path of organization to nest under. Pass `null` to remove path from URL params when outside of an organization data context.
  * @returns {string} route path
  */
 export const exportCsvProjectMergeRequestsPath = /*#__PURE__*/ (projectFullPath, ...args) => {
@@ -1088,12 +1171,13 @@ export const exportCsvProjectMergeRequestsPath = /*#__PURE__*/ (projectFullPath,
   const _exportCsvNamespaceProjectMergeRequestsPath = /*#__PURE__*/ __jsr.r({"namespace_id":{"r":true},"project_id":{"r":true},"format":{}}, [2,[7,"/"],[2,[5,[3,"namespace_id"]],[2,[7,"/"],[2,[3,"project_id"],[2,[7,"/"],[2,[6,"-"],[2,[7,"/"],[2,[6,"merge_requests"],[2,[7,"/"],[2,[6,"export_csv"],[1,[2,[8,"."],[3,"format"]]]]]]]]]]]]]);
 
   const { namespacePath, projectPath } = splitProjectFullPath(projectFullPath);
+  const { organizationPath, routeArgs } = resolveOrganizationScope(args);
 
-  if (hasOrganizationScopedPaths()) {
-    return _exportCsvOrganizationNamespaceProjectMergeRequestsPath(gon.current_organization.path, namespacePath, projectPath, ...args);
+  if (organizationPath) {
+    return _exportCsvOrganizationNamespaceProjectMergeRequestsPath(organizationPath, namespacePath, projectPath, ...routeArgs);
   }
 
-  return _exportCsvNamespaceProjectMergeRequestsPath(namespacePath, projectPath, ...args);
+  return _exportCsvNamespaceProjectMergeRequestsPath(namespacePath, projectPath, ...routeArgs);
 };
 
 /**
@@ -1107,6 +1191,7 @@ export const exportCsvProjectMergeRequestsPath = /*#__PURE__*/ (projectFullPath,
  * @param {string} projectFullPath
  * @param {any} mergeRequestId
  * @param {object | undefined} options
+ * @param {string | null | undefined} options.organizationPath Path of organization to nest under. Pass `null` to remove path from URL params when outside of an organization data context.
  * @returns {string} route path
  */
 export const publishProjectMergeRequestDraftsPath = /*#__PURE__*/ (projectFullPath, ...args) => {
@@ -1114,12 +1199,13 @@ export const publishProjectMergeRequestDraftsPath = /*#__PURE__*/ (projectFullPa
   const _publishNamespaceProjectMergeRequestDraftsPath = /*#__PURE__*/ __jsr.r({"namespace_id":{"r":true},"project_id":{"r":true},"merge_request_id":{"r":true},"format":{}}, [2,[7,"/"],[2,[5,[3,"namespace_id"]],[2,[7,"/"],[2,[3,"project_id"],[2,[7,"/"],[2,[6,"-"],[2,[7,"/"],[2,[6,"merge_requests"],[2,[7,"/"],[2,[3,"merge_request_id"],[2,[7,"/"],[2,[6,"drafts"],[2,[7,"/"],[2,[6,"publish"],[1,[2,[8,"."],[3,"format"]]]]]]]]]]]]]]]]]);
 
   const { namespacePath, projectPath } = splitProjectFullPath(projectFullPath);
+  const { organizationPath, routeArgs } = resolveOrganizationScope(args);
 
-  if (hasOrganizationScopedPaths()) {
-    return _publishOrganizationNamespaceProjectMergeRequestDraftsPath(gon.current_organization.path, namespacePath, projectPath, ...args);
+  if (organizationPath) {
+    return _publishOrganizationNamespaceProjectMergeRequestDraftsPath(organizationPath, namespacePath, projectPath, ...routeArgs);
   }
 
-  return _publishNamespaceProjectMergeRequestDraftsPath(namespacePath, projectPath, ...args);
+  return _publishNamespaceProjectMergeRequestDraftsPath(namespacePath, projectPath, ...routeArgs);
 };
 
 /**
@@ -1133,6 +1219,7 @@ export const publishProjectMergeRequestDraftsPath = /*#__PURE__*/ (projectFullPa
  * @param {string} projectFullPath
  * @param {any} mergeRequestId
  * @param {object | undefined} options
+ * @param {string | null | undefined} options.organizationPath Path of organization to nest under. Pass `null` to remove path from URL params when outside of an organization data context.
  * @returns {string} route path
  */
 export const discardProjectMergeRequestDraftsPath = /*#__PURE__*/ (projectFullPath, ...args) => {
@@ -1140,12 +1227,13 @@ export const discardProjectMergeRequestDraftsPath = /*#__PURE__*/ (projectFullPa
   const _discardNamespaceProjectMergeRequestDraftsPath = /*#__PURE__*/ __jsr.r({"namespace_id":{"r":true},"project_id":{"r":true},"merge_request_id":{"r":true},"format":{}}, [2,[7,"/"],[2,[5,[3,"namespace_id"]],[2,[7,"/"],[2,[3,"project_id"],[2,[7,"/"],[2,[6,"-"],[2,[7,"/"],[2,[6,"merge_requests"],[2,[7,"/"],[2,[3,"merge_request_id"],[2,[7,"/"],[2,[6,"drafts"],[2,[7,"/"],[2,[6,"discard"],[1,[2,[8,"."],[3,"format"]]]]]]]]]]]]]]]]]);
 
   const { namespacePath, projectPath } = splitProjectFullPath(projectFullPath);
+  const { organizationPath, routeArgs } = resolveOrganizationScope(args);
 
-  if (hasOrganizationScopedPaths()) {
-    return _discardOrganizationNamespaceProjectMergeRequestDraftsPath(gon.current_organization.path, namespacePath, projectPath, ...args);
+  if (organizationPath) {
+    return _discardOrganizationNamespaceProjectMergeRequestDraftsPath(organizationPath, namespacePath, projectPath, ...routeArgs);
   }
 
-  return _discardNamespaceProjectMergeRequestDraftsPath(namespacePath, projectPath, ...args);
+  return _discardNamespaceProjectMergeRequestDraftsPath(namespacePath, projectPath, ...routeArgs);
 };
 
 /**
@@ -1159,6 +1247,7 @@ export const discardProjectMergeRequestDraftsPath = /*#__PURE__*/ (projectFullPa
  * @param {string} projectFullPath
  * @param {any} mergeRequestId
  * @param {object | undefined} options
+ * @param {string | null | undefined} options.organizationPath Path of organization to nest under. Pass `null` to remove path from URL params when outside of an organization data context.
  * @returns {string} route path
  */
 export const projectMergeRequestDraftsPath = /*#__PURE__*/ (projectFullPath, ...args) => {
@@ -1166,12 +1255,13 @@ export const projectMergeRequestDraftsPath = /*#__PURE__*/ (projectFullPath, ...
   const _namespaceProjectMergeRequestDraftsPath = /*#__PURE__*/ __jsr.r({"namespace_id":{"r":true},"project_id":{"r":true},"merge_request_id":{"r":true},"format":{}}, [2,[7,"/"],[2,[5,[3,"namespace_id"]],[2,[7,"/"],[2,[3,"project_id"],[2,[7,"/"],[2,[6,"-"],[2,[7,"/"],[2,[6,"merge_requests"],[2,[7,"/"],[2,[3,"merge_request_id"],[2,[7,"/"],[2,[6,"drafts"],[1,[2,[8,"."],[3,"format"]]]]]]]]]]]]]]]);
 
   const { namespacePath, projectPath } = splitProjectFullPath(projectFullPath);
+  const { organizationPath, routeArgs } = resolveOrganizationScope(args);
 
-  if (hasOrganizationScopedPaths()) {
-    return _organizationNamespaceProjectMergeRequestDraftsPath(gon.current_organization.path, namespacePath, projectPath, ...args);
+  if (organizationPath) {
+    return _organizationNamespaceProjectMergeRequestDraftsPath(organizationPath, namespacePath, projectPath, ...routeArgs);
   }
 
-  return _namespaceProjectMergeRequestDraftsPath(namespacePath, projectPath, ...args);
+  return _namespaceProjectMergeRequestDraftsPath(namespacePath, projectPath, ...routeArgs);
 };
 
 /**
@@ -1186,6 +1276,7 @@ export const projectMergeRequestDraftsPath = /*#__PURE__*/ (projectFullPath, ...
  * @param {any} mergeRequestId
  * @param {any} id
  * @param {object | undefined} options
+ * @param {string | null | undefined} options.organizationPath Path of organization to nest under. Pass `null` to remove path from URL params when outside of an organization data context.
  * @returns {string} route path
  */
 export const projectMergeRequestDraftPath = /*#__PURE__*/ (projectFullPath, ...args) => {
@@ -1193,12 +1284,13 @@ export const projectMergeRequestDraftPath = /*#__PURE__*/ (projectFullPath, ...a
   const _namespaceProjectMergeRequestDraftPath = /*#__PURE__*/ __jsr.r({"namespace_id":{"r":true},"project_id":{"r":true},"merge_request_id":{"r":true},"id":{"r":true},"format":{}}, [2,[7,"/"],[2,[5,[3,"namespace_id"]],[2,[7,"/"],[2,[3,"project_id"],[2,[7,"/"],[2,[6,"-"],[2,[7,"/"],[2,[6,"merge_requests"],[2,[7,"/"],[2,[3,"merge_request_id"],[2,[7,"/"],[2,[6,"drafts"],[2,[7,"/"],[2,[3,"id"],[1,[2,[8,"."],[3,"format"]]]]]]]]]]]]]]]]]);
 
   const { namespacePath, projectPath } = splitProjectFullPath(projectFullPath);
+  const { organizationPath, routeArgs } = resolveOrganizationScope(args);
 
-  if (hasOrganizationScopedPaths()) {
-    return _organizationNamespaceProjectMergeRequestDraftPath(gon.current_organization.path, namespacePath, projectPath, ...args);
+  if (organizationPath) {
+    return _organizationNamespaceProjectMergeRequestDraftPath(organizationPath, namespacePath, projectPath, ...routeArgs);
   }
 
-  return _namespaceProjectMergeRequestDraftPath(namespacePath, projectPath, ...args);
+  return _namespaceProjectMergeRequestDraftPath(namespacePath, projectPath, ...routeArgs);
 };
 
 /**
@@ -1211,6 +1303,7 @@ export const projectMergeRequestDraftPath = /*#__PURE__*/ (projectFullPath, ...a
  *
  * @param {string} projectFullPath
  * @param {object | undefined} options
+ * @param {string | null | undefined} options.organizationPath Path of organization to nest under. Pass `null` to remove path from URL params when outside of an organization data context.
  * @returns {string} route path
  */
 export const projectMergeRequestsPath = /*#__PURE__*/ (projectFullPath, ...args) => {
@@ -1218,12 +1311,13 @@ export const projectMergeRequestsPath = /*#__PURE__*/ (projectFullPath, ...args)
   const _namespaceProjectMergeRequestsPath = /*#__PURE__*/ __jsr.r({"namespace_id":{"r":true},"project_id":{"r":true},"format":{}}, [2,[7,"/"],[2,[5,[3,"namespace_id"]],[2,[7,"/"],[2,[3,"project_id"],[2,[7,"/"],[2,[6,"-"],[2,[7,"/"],[2,[6,"merge_requests"],[1,[2,[8,"."],[3,"format"]]]]]]]]]]]);
 
   const { namespacePath, projectPath } = splitProjectFullPath(projectFullPath);
+  const { organizationPath, routeArgs } = resolveOrganizationScope(args);
 
-  if (hasOrganizationScopedPaths()) {
-    return _organizationNamespaceProjectMergeRequestsPath(gon.current_organization.path, namespacePath, projectPath, ...args);
+  if (organizationPath) {
+    return _organizationNamespaceProjectMergeRequestsPath(organizationPath, namespacePath, projectPath, ...routeArgs);
   }
 
-  return _namespaceProjectMergeRequestsPath(namespacePath, projectPath, ...args);
+  return _namespaceProjectMergeRequestsPath(namespacePath, projectPath, ...routeArgs);
 };
 
 /**
@@ -1237,6 +1331,7 @@ export const projectMergeRequestsPath = /*#__PURE__*/ (projectFullPath, ...args)
  * @param {string} projectFullPath
  * @param {any} id
  * @param {object | undefined} options
+ * @param {string | null | undefined} options.organizationPath Path of organization to nest under. Pass `null` to remove path from URL params when outside of an organization data context.
  * @returns {string} route path
  */
 export const editProjectMergeRequestPath = /*#__PURE__*/ (projectFullPath, ...args) => {
@@ -1244,12 +1339,13 @@ export const editProjectMergeRequestPath = /*#__PURE__*/ (projectFullPath, ...ar
   const _editNamespaceProjectMergeRequestPath = /*#__PURE__*/ __jsr.r({"namespace_id":{"r":true},"project_id":{"r":true},"id":{"r":true},"format":{}}, [2,[7,"/"],[2,[5,[3,"namespace_id"]],[2,[7,"/"],[2,[3,"project_id"],[2,[7,"/"],[2,[6,"-"],[2,[7,"/"],[2,[6,"merge_requests"],[2,[7,"/"],[2,[3,"id"],[2,[7,"/"],[2,[6,"edit"],[1,[2,[8,"."],[3,"format"]]]]]]]]]]]]]]]);
 
   const { namespacePath, projectPath } = splitProjectFullPath(projectFullPath);
+  const { organizationPath, routeArgs } = resolveOrganizationScope(args);
 
-  if (hasOrganizationScopedPaths()) {
-    return _editOrganizationNamespaceProjectMergeRequestPath(gon.current_organization.path, namespacePath, projectPath, ...args);
+  if (organizationPath) {
+    return _editOrganizationNamespaceProjectMergeRequestPath(organizationPath, namespacePath, projectPath, ...routeArgs);
   }
 
-  return _editNamespaceProjectMergeRequestPath(namespacePath, projectPath, ...args);
+  return _editNamespaceProjectMergeRequestPath(namespacePath, projectPath, ...routeArgs);
 };
 
 /**
@@ -1262,6 +1358,7 @@ export const editProjectMergeRequestPath = /*#__PURE__*/ (projectFullPath, ...ar
  *
  * @param {string} projectFullPath
  * @param {object | undefined} options
+ * @param {string | null | undefined} options.organizationPath Path of organization to nest under. Pass `null` to remove path from URL params when outside of an organization data context.
  * @returns {string} route path
  */
 export const projectNewMergeRequestPath = /*#__PURE__*/ (projectFullPath, ...args) => {
@@ -1269,12 +1366,13 @@ export const projectNewMergeRequestPath = /*#__PURE__*/ (projectFullPath, ...arg
   const _namespaceProjectNewMergeRequestPath = /*#__PURE__*/ __jsr.r({"namespace_id":{"r":true},"project_id":{"r":true},"format":{}}, [2,[7,"/"],[2,[5,[3,"namespace_id"]],[2,[7,"/"],[2,[3,"project_id"],[2,[7,"/"],[2,[6,"-"],[2,[7,"/"],[2,[6,"merge_requests"],[2,[7,"/"],[2,[6,"new"],[1,[2,[8,"."],[3,"format"]]]]]]]]]]]]]);
 
   const { namespacePath, projectPath } = splitProjectFullPath(projectFullPath);
+  const { organizationPath, routeArgs } = resolveOrganizationScope(args);
 
-  if (hasOrganizationScopedPaths()) {
-    return _organizationNamespaceProjectNewMergeRequestPath(gon.current_organization.path, namespacePath, projectPath, ...args);
+  if (organizationPath) {
+    return _organizationNamespaceProjectNewMergeRequestPath(organizationPath, namespacePath, projectPath, ...routeArgs);
   }
 
-  return _namespaceProjectNewMergeRequestPath(namespacePath, projectPath, ...args);
+  return _namespaceProjectNewMergeRequestPath(namespacePath, projectPath, ...routeArgs);
 };
 
 /**
@@ -1287,6 +1385,7 @@ export const projectNewMergeRequestPath = /*#__PURE__*/ (projectFullPath, ...arg
  *
  * @param {string} projectFullPath
  * @param {object | undefined} options
+ * @param {string | null | undefined} options.organizationPath Path of organization to nest under. Pass `null` to remove path from URL params when outside of an organization data context.
  * @returns {string} route path
  */
 export const projectNewMergeRequestJsonDiffsPath = /*#__PURE__*/ (projectFullPath, ...args) => {
@@ -1294,12 +1393,13 @@ export const projectNewMergeRequestJsonDiffsPath = /*#__PURE__*/ (projectFullPat
   const _namespaceProjectNewMergeRequestJsonDiffsPath = /*#__PURE__*/ __jsr.r({"namespace_id":{"r":true},"project_id":{"r":true},"format":{}}, [2,[7,"/"],[2,[5,[3,"namespace_id"]],[2,[7,"/"],[2,[3,"project_id"],[2,[7,"/"],[2,[6,"-"],[2,[7,"/"],[2,[6,"merge_requests"],[2,[7,"/"],[2,[6,"new"],[2,[7,"/"],[2,[6,"diffs"],[1,[2,[8,"."],[3,"format"]]]]]]]]]]]]]]]);
 
   const { namespacePath, projectPath } = splitProjectFullPath(projectFullPath);
+  const { organizationPath, routeArgs } = resolveOrganizationScope(args);
 
-  if (hasOrganizationScopedPaths()) {
-    return _organizationNamespaceProjectNewMergeRequestJsonDiffsPath(gon.current_organization.path, namespacePath, projectPath, ...args);
+  if (organizationPath) {
+    return _organizationNamespaceProjectNewMergeRequestJsonDiffsPath(organizationPath, namespacePath, projectPath, ...routeArgs);
   }
 
-  return _namespaceProjectNewMergeRequestJsonDiffsPath(namespacePath, projectPath, ...args);
+  return _namespaceProjectNewMergeRequestJsonDiffsPath(namespacePath, projectPath, ...routeArgs);
 };
 
 /**
@@ -1312,6 +1412,7 @@ export const projectNewMergeRequestJsonDiffsPath = /*#__PURE__*/ (projectFullPat
  *
  * @param {string} projectFullPath
  * @param {object | undefined} options
+ * @param {string | null | undefined} options.organizationPath Path of organization to nest under. Pass `null` to remove path from URL params when outside of an organization data context.
  * @returns {string} route path
  */
 export const projectNewMergeRequestJsonPipelinesPath = /*#__PURE__*/ (projectFullPath, ...args) => {
@@ -1319,12 +1420,13 @@ export const projectNewMergeRequestJsonPipelinesPath = /*#__PURE__*/ (projectFul
   const _namespaceProjectNewMergeRequestJsonPipelinesPath = /*#__PURE__*/ __jsr.r({"namespace_id":{"r":true},"project_id":{"r":true},"format":{}}, [2,[7,"/"],[2,[5,[3,"namespace_id"]],[2,[7,"/"],[2,[3,"project_id"],[2,[7,"/"],[2,[6,"-"],[2,[7,"/"],[2,[6,"merge_requests"],[2,[7,"/"],[2,[6,"new"],[2,[7,"/"],[2,[6,"pipelines"],[1,[2,[8,"."],[3,"format"]]]]]]]]]]]]]]]);
 
   const { namespacePath, projectPath } = splitProjectFullPath(projectFullPath);
+  const { organizationPath, routeArgs } = resolveOrganizationScope(args);
 
-  if (hasOrganizationScopedPaths()) {
-    return _organizationNamespaceProjectNewMergeRequestJsonPipelinesPath(gon.current_organization.path, namespacePath, projectPath, ...args);
+  if (organizationPath) {
+    return _organizationNamespaceProjectNewMergeRequestJsonPipelinesPath(organizationPath, namespacePath, projectPath, ...routeArgs);
   }
 
-  return _namespaceProjectNewMergeRequestJsonPipelinesPath(namespacePath, projectPath, ...args);
+  return _namespaceProjectNewMergeRequestJsonPipelinesPath(namespacePath, projectPath, ...routeArgs);
 };
 
 /**
@@ -1337,6 +1439,7 @@ export const projectNewMergeRequestJsonPipelinesPath = /*#__PURE__*/ (projectFul
  *
  * @param {string} projectFullPath
  * @param {object | undefined} options
+ * @param {string | null | undefined} options.organizationPath Path of organization to nest under. Pass `null` to remove path from URL params when outside of an organization data context.
  * @returns {string} route path
  */
 export const projectNewMergeRequestDiffsPath = /*#__PURE__*/ (projectFullPath, ...args) => {
@@ -1344,12 +1447,13 @@ export const projectNewMergeRequestDiffsPath = /*#__PURE__*/ (projectFullPath, .
   const _namespaceProjectNewMergeRequestDiffsPath = /*#__PURE__*/ __jsr.r({"namespace_id":{"r":true},"project_id":{"r":true},"format":{}}, [2,[7,"/"],[2,[5,[3,"namespace_id"]],[2,[7,"/"],[2,[3,"project_id"],[2,[7,"/"],[2,[6,"-"],[2,[7,"/"],[2,[6,"merge_requests"],[2,[7,"/"],[2,[6,"new"],[2,[7,"/"],[2,[6,"diffs"],[1,[2,[8,"."],[3,"format"]]]]]]]]]]]]]]]);
 
   const { namespacePath, projectPath } = splitProjectFullPath(projectFullPath);
+  const { organizationPath, routeArgs } = resolveOrganizationScope(args);
 
-  if (hasOrganizationScopedPaths()) {
-    return _organizationNamespaceProjectNewMergeRequestDiffsPath(gon.current_organization.path, namespacePath, projectPath, ...args);
+  if (organizationPath) {
+    return _organizationNamespaceProjectNewMergeRequestDiffsPath(organizationPath, namespacePath, projectPath, ...routeArgs);
   }
 
-  return _namespaceProjectNewMergeRequestDiffsPath(namespacePath, projectPath, ...args);
+  return _namespaceProjectNewMergeRequestDiffsPath(namespacePath, projectPath, ...routeArgs);
 };
 
 /**
@@ -1362,6 +1466,7 @@ export const projectNewMergeRequestDiffsPath = /*#__PURE__*/ (projectFullPath, .
  *
  * @param {string} projectFullPath
  * @param {object | undefined} options
+ * @param {string | null | undefined} options.organizationPath Path of organization to nest under. Pass `null` to remove path from URL params when outside of an organization data context.
  * @returns {string} route path
  */
 export const projectNewMergeRequestPipelinesPath = /*#__PURE__*/ (projectFullPath, ...args) => {
@@ -1369,12 +1474,13 @@ export const projectNewMergeRequestPipelinesPath = /*#__PURE__*/ (projectFullPat
   const _namespaceProjectNewMergeRequestPipelinesPath = /*#__PURE__*/ __jsr.r({"namespace_id":{"r":true},"project_id":{"r":true},"format":{}}, [2,[7,"/"],[2,[5,[3,"namespace_id"]],[2,[7,"/"],[2,[3,"project_id"],[2,[7,"/"],[2,[6,"-"],[2,[7,"/"],[2,[6,"merge_requests"],[2,[7,"/"],[2,[6,"new"],[2,[7,"/"],[2,[6,"pipelines"],[1,[2,[8,"."],[3,"format"]]]]]]]]]]]]]]]);
 
   const { namespacePath, projectPath } = splitProjectFullPath(projectFullPath);
+  const { organizationPath, routeArgs } = resolveOrganizationScope(args);
 
-  if (hasOrganizationScopedPaths()) {
-    return _organizationNamespaceProjectNewMergeRequestPipelinesPath(gon.current_organization.path, namespacePath, projectPath, ...args);
+  if (organizationPath) {
+    return _organizationNamespaceProjectNewMergeRequestPipelinesPath(organizationPath, namespacePath, projectPath, ...routeArgs);
   }
 
-  return _namespaceProjectNewMergeRequestPipelinesPath(namespacePath, projectPath, ...args);
+  return _namespaceProjectNewMergeRequestPipelinesPath(namespacePath, projectPath, ...routeArgs);
 };
 
 /**
@@ -1387,6 +1493,7 @@ export const projectNewMergeRequestPipelinesPath = /*#__PURE__*/ (projectFullPat
  *
  * @param {string} projectFullPath
  * @param {object | undefined} options
+ * @param {string | null | undefined} options.organizationPath Path of organization to nest under. Pass `null` to remove path from URL params when outside of an organization data context.
  * @returns {string} route path
  */
 export const projectNewMergeRequestDiffForPathPath = /*#__PURE__*/ (projectFullPath, ...args) => {
@@ -1394,12 +1501,13 @@ export const projectNewMergeRequestDiffForPathPath = /*#__PURE__*/ (projectFullP
   const _namespaceProjectNewMergeRequestDiffForPathPath = /*#__PURE__*/ __jsr.r({"namespace_id":{"r":true},"project_id":{"r":true},"format":{}}, [2,[7,"/"],[2,[5,[3,"namespace_id"]],[2,[7,"/"],[2,[3,"project_id"],[2,[7,"/"],[2,[6,"-"],[2,[7,"/"],[2,[6,"merge_requests"],[2,[7,"/"],[2,[6,"new"],[2,[7,"/"],[2,[6,"diff_for_path"],[1,[2,[8,"."],[3,"format"]]]]]]]]]]]]]]]);
 
   const { namespacePath, projectPath } = splitProjectFullPath(projectFullPath);
+  const { organizationPath, routeArgs } = resolveOrganizationScope(args);
 
-  if (hasOrganizationScopedPaths()) {
-    return _organizationNamespaceProjectNewMergeRequestDiffForPathPath(gon.current_organization.path, namespacePath, projectPath, ...args);
+  if (organizationPath) {
+    return _organizationNamespaceProjectNewMergeRequestDiffForPathPath(organizationPath, namespacePath, projectPath, ...routeArgs);
   }
 
-  return _namespaceProjectNewMergeRequestDiffForPathPath(namespacePath, projectPath, ...args);
+  return _namespaceProjectNewMergeRequestDiffForPathPath(namespacePath, projectPath, ...routeArgs);
 };
 
 /**
@@ -1412,6 +1520,7 @@ export const projectNewMergeRequestDiffForPathPath = /*#__PURE__*/ (projectFullP
  *
  * @param {string} projectFullPath
  * @param {object | undefined} options
+ * @param {string | null | undefined} options.organizationPath Path of organization to nest under. Pass `null` to remove path from URL params when outside of an organization data context.
  * @returns {string} route path
  */
 export const projectNewMergeRequestBranchFromPath = /*#__PURE__*/ (projectFullPath, ...args) => {
@@ -1419,12 +1528,13 @@ export const projectNewMergeRequestBranchFromPath = /*#__PURE__*/ (projectFullPa
   const _namespaceProjectNewMergeRequestBranchFromPath = /*#__PURE__*/ __jsr.r({"namespace_id":{"r":true},"project_id":{"r":true},"format":{}}, [2,[7,"/"],[2,[5,[3,"namespace_id"]],[2,[7,"/"],[2,[3,"project_id"],[2,[7,"/"],[2,[6,"-"],[2,[7,"/"],[2,[6,"merge_requests"],[2,[7,"/"],[2,[6,"new"],[2,[7,"/"],[2,[6,"branch_from"],[1,[2,[8,"."],[3,"format"]]]]]]]]]]]]]]]);
 
   const { namespacePath, projectPath } = splitProjectFullPath(projectFullPath);
+  const { organizationPath, routeArgs } = resolveOrganizationScope(args);
 
-  if (hasOrganizationScopedPaths()) {
-    return _organizationNamespaceProjectNewMergeRequestBranchFromPath(gon.current_organization.path, namespacePath, projectPath, ...args);
+  if (organizationPath) {
+    return _organizationNamespaceProjectNewMergeRequestBranchFromPath(organizationPath, namespacePath, projectPath, ...routeArgs);
   }
 
-  return _namespaceProjectNewMergeRequestBranchFromPath(namespacePath, projectPath, ...args);
+  return _namespaceProjectNewMergeRequestBranchFromPath(namespacePath, projectPath, ...routeArgs);
 };
 
 /**
@@ -1437,6 +1547,7 @@ export const projectNewMergeRequestBranchFromPath = /*#__PURE__*/ (projectFullPa
  *
  * @param {string} projectFullPath
  * @param {object | undefined} options
+ * @param {string | null | undefined} options.organizationPath Path of organization to nest under. Pass `null` to remove path from URL params when outside of an organization data context.
  * @returns {string} route path
  */
 export const projectNewMergeRequestBranchToPath = /*#__PURE__*/ (projectFullPath, ...args) => {
@@ -1444,12 +1555,13 @@ export const projectNewMergeRequestBranchToPath = /*#__PURE__*/ (projectFullPath
   const _namespaceProjectNewMergeRequestBranchToPath = /*#__PURE__*/ __jsr.r({"namespace_id":{"r":true},"project_id":{"r":true},"format":{}}, [2,[7,"/"],[2,[5,[3,"namespace_id"]],[2,[7,"/"],[2,[3,"project_id"],[2,[7,"/"],[2,[6,"-"],[2,[7,"/"],[2,[6,"merge_requests"],[2,[7,"/"],[2,[6,"new"],[2,[7,"/"],[2,[6,"branch_to"],[1,[2,[8,"."],[3,"format"]]]]]]]]]]]]]]]);
 
   const { namespacePath, projectPath } = splitProjectFullPath(projectFullPath);
+  const { organizationPath, routeArgs } = resolveOrganizationScope(args);
 
-  if (hasOrganizationScopedPaths()) {
-    return _organizationNamespaceProjectNewMergeRequestBranchToPath(gon.current_organization.path, namespacePath, projectPath, ...args);
+  if (organizationPath) {
+    return _organizationNamespaceProjectNewMergeRequestBranchToPath(organizationPath, namespacePath, projectPath, ...routeArgs);
   }
 
-  return _namespaceProjectNewMergeRequestBranchToPath(namespacePath, projectPath, ...args);
+  return _namespaceProjectNewMergeRequestBranchToPath(namespacePath, projectPath, ...routeArgs);
 };
 
 /**
@@ -1462,6 +1574,7 @@ export const projectNewMergeRequestBranchToPath = /*#__PURE__*/ (projectFullPath
  *
  * @param {string} projectFullPath
  * @param {object | undefined} options
+ * @param {string | null | undefined} options.organizationPath Path of organization to nest under. Pass `null` to remove path from URL params when outside of an organization data context.
  * @returns {string} route path
  */
 export const projectNewMergeRequestDiffsStreamPath = /*#__PURE__*/ (projectFullPath, ...args) => {
@@ -1469,12 +1582,13 @@ export const projectNewMergeRequestDiffsStreamPath = /*#__PURE__*/ (projectFullP
   const _namespaceProjectNewMergeRequestDiffsStreamPath = /*#__PURE__*/ __jsr.r({"namespace_id":{"r":true},"project_id":{"r":true},"format":{}}, [2,[7,"/"],[2,[5,[3,"namespace_id"]],[2,[7,"/"],[2,[3,"project_id"],[2,[7,"/"],[2,[6,"-"],[2,[7,"/"],[2,[6,"merge_requests"],[2,[7,"/"],[2,[6,"new"],[2,[7,"/"],[2,[6,"diffs_stream"],[1,[2,[8,"."],[3,"format"]]]]]]]]]]]]]]]);
 
   const { namespacePath, projectPath } = splitProjectFullPath(projectFullPath);
+  const { organizationPath, routeArgs } = resolveOrganizationScope(args);
 
-  if (hasOrganizationScopedPaths()) {
-    return _organizationNamespaceProjectNewMergeRequestDiffsStreamPath(gon.current_organization.path, namespacePath, projectPath, ...args);
+  if (organizationPath) {
+    return _organizationNamespaceProjectNewMergeRequestDiffsStreamPath(organizationPath, namespacePath, projectPath, ...routeArgs);
   }
 
-  return _namespaceProjectNewMergeRequestDiffsStreamPath(namespacePath, projectPath, ...args);
+  return _namespaceProjectNewMergeRequestDiffsStreamPath(namespacePath, projectPath, ...routeArgs);
 };
 
 /**
@@ -1487,6 +1601,7 @@ export const projectNewMergeRequestDiffsStreamPath = /*#__PURE__*/ (projectFullP
  *
  * @param {string} projectFullPath
  * @param {object | undefined} options
+ * @param {string | null | undefined} options.organizationPath Path of organization to nest under. Pass `null` to remove path from URL params when outside of an organization data context.
  * @returns {string} route path
  */
 export const projectNewMergeRequestDiffFilesMetadataPath = /*#__PURE__*/ (projectFullPath, ...args) => {
@@ -1494,12 +1609,13 @@ export const projectNewMergeRequestDiffFilesMetadataPath = /*#__PURE__*/ (projec
   const _namespaceProjectNewMergeRequestDiffFilesMetadataPath = /*#__PURE__*/ __jsr.r({"namespace_id":{"r":true},"project_id":{"r":true},"format":{}}, [2,[7,"/"],[2,[5,[3,"namespace_id"]],[2,[7,"/"],[2,[3,"project_id"],[2,[7,"/"],[2,[6,"-"],[2,[7,"/"],[2,[6,"merge_requests"],[2,[7,"/"],[2,[6,"new"],[2,[7,"/"],[2,[6,"diff_files_metadata"],[1,[2,[8,"."],[3,"format"]]]]]]]]]]]]]]]);
 
   const { namespacePath, projectPath } = splitProjectFullPath(projectFullPath);
+  const { organizationPath, routeArgs } = resolveOrganizationScope(args);
 
-  if (hasOrganizationScopedPaths()) {
-    return _organizationNamespaceProjectNewMergeRequestDiffFilesMetadataPath(gon.current_organization.path, namespacePath, projectPath, ...args);
+  if (organizationPath) {
+    return _organizationNamespaceProjectNewMergeRequestDiffFilesMetadataPath(organizationPath, namespacePath, projectPath, ...routeArgs);
   }
 
-  return _namespaceProjectNewMergeRequestDiffFilesMetadataPath(namespacePath, projectPath, ...args);
+  return _namespaceProjectNewMergeRequestDiffFilesMetadataPath(namespacePath, projectPath, ...routeArgs);
 };
 
 /**
@@ -1512,6 +1628,7 @@ export const projectNewMergeRequestDiffFilesMetadataPath = /*#__PURE__*/ (projec
  *
  * @param {string} projectFullPath
  * @param {object | undefined} options
+ * @param {string | null | undefined} options.organizationPath Path of organization to nest under. Pass `null` to remove path from URL params when outside of an organization data context.
  * @returns {string} route path
  */
 export const projectNewMergeRequestDiffsStatsPath = /*#__PURE__*/ (projectFullPath, ...args) => {
@@ -1519,12 +1636,13 @@ export const projectNewMergeRequestDiffsStatsPath = /*#__PURE__*/ (projectFullPa
   const _namespaceProjectNewMergeRequestDiffsStatsPath = /*#__PURE__*/ __jsr.r({"namespace_id":{"r":true},"project_id":{"r":true},"format":{}}, [2,[7,"/"],[2,[5,[3,"namespace_id"]],[2,[7,"/"],[2,[3,"project_id"],[2,[7,"/"],[2,[6,"-"],[2,[7,"/"],[2,[6,"merge_requests"],[2,[7,"/"],[2,[6,"new"],[2,[7,"/"],[2,[6,"diffs_stats"],[1,[2,[8,"."],[3,"format"]]]]]]]]]]]]]]]);
 
   const { namespacePath, projectPath } = splitProjectFullPath(projectFullPath);
+  const { organizationPath, routeArgs } = resolveOrganizationScope(args);
 
-  if (hasOrganizationScopedPaths()) {
-    return _organizationNamespaceProjectNewMergeRequestDiffsStatsPath(gon.current_organization.path, namespacePath, projectPath, ...args);
+  if (organizationPath) {
+    return _organizationNamespaceProjectNewMergeRequestDiffsStatsPath(organizationPath, namespacePath, projectPath, ...routeArgs);
   }
 
-  return _namespaceProjectNewMergeRequestDiffsStatsPath(namespacePath, projectPath, ...args);
+  return _namespaceProjectNewMergeRequestDiffsStatsPath(namespacePath, projectPath, ...routeArgs);
 };
 
 /**
@@ -1537,6 +1655,7 @@ export const projectNewMergeRequestDiffsStatsPath = /*#__PURE__*/ (projectFullPa
  *
  * @param {string} projectFullPath
  * @param {object | undefined} options
+ * @param {string | null | undefined} options.organizationPath Path of organization to nest under. Pass `null` to remove path from URL params when outside of an organization data context.
  * @returns {string} route path
  */
 export const projectNewMergeRequestDiffFilePath = /*#__PURE__*/ (projectFullPath, ...args) => {
@@ -1544,11 +1663,12 @@ export const projectNewMergeRequestDiffFilePath = /*#__PURE__*/ (projectFullPath
   const _namespaceProjectNewMergeRequestDiffFilePath = /*#__PURE__*/ __jsr.r({"namespace_id":{"r":true},"project_id":{"r":true},"format":{}}, [2,[7,"/"],[2,[5,[3,"namespace_id"]],[2,[7,"/"],[2,[3,"project_id"],[2,[7,"/"],[2,[6,"-"],[2,[7,"/"],[2,[6,"merge_requests"],[2,[7,"/"],[2,[6,"new"],[2,[7,"/"],[2,[6,"diff_file"],[1,[2,[8,"."],[3,"format"]]]]]]]]]]]]]]]);
 
   const { namespacePath, projectPath } = splitProjectFullPath(projectFullPath);
+  const { organizationPath, routeArgs } = resolveOrganizationScope(args);
 
-  if (hasOrganizationScopedPaths()) {
-    return _organizationNamespaceProjectNewMergeRequestDiffFilePath(gon.current_organization.path, namespacePath, projectPath, ...args);
+  if (organizationPath) {
+    return _organizationNamespaceProjectNewMergeRequestDiffFilePath(organizationPath, namespacePath, projectPath, ...routeArgs);
   }
 
-  return _namespaceProjectNewMergeRequestDiffFilePath(namespacePath, projectPath, ...args);
+  return _namespaceProjectNewMergeRequestDiffFilePath(namespacePath, projectPath, ...routeArgs);
 };
 

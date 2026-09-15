@@ -3,7 +3,6 @@
 module API
   module CustomAttributesEndpoints
     extend ActiveSupport::Concern
-    ALLOWED_FINDERS = %w[find_user find_project find_group].freeze
 
     included do
       attributable_class = name.demodulize.singularize
@@ -16,20 +15,11 @@ module API
                         attributable_key.to_sym
                       end
 
+      helpers ::API::Helpers::CustomAttributesHelpers
+
       helpers do
         params :custom_attributes_key do
           requires :key, type: String, desc: 'The key of the custom attribute'
-        end
-
-        def find_resource(attributable_finder, id)
-          unless ALLOWED_FINDERS.include?(attributable_finder) && respond_to?(attributable_finder)
-            render_api_error!("Invalid finder method: #{attributable_finder}", :bad_request)
-          end
-
-          resource = public_send(attributable_finder, id) # rubocop:disable GitlabSecurity/PublicSend -- allowed finders are validated
-
-          not_found! unless resource
-          resource
         end
       end
 

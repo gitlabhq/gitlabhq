@@ -7,7 +7,7 @@ RSpec.describe CommitPresenter, feature_category: :source_code_management do
   let(:presenter) { described_class.new(commit, current_user: user) }
 
   let_it_be(:user) { build_stubbed(:user) }
-  let_it_be(:project) { create(:project, :repository) }
+  let_it_be(:project) { create(:project, :small_repo) }
 
   describe '#web_path' do
     it { expect(presenter.web_path).to eq("/#{project.full_path}/-/commit/#{commit.sha}") }

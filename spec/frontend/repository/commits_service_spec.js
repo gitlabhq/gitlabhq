@@ -1,6 +1,11 @@
 import MockAdapter from 'axios-mock-adapter';
 import axios from '~/lib/utils/axios_utils';
-import { loadCommits, isRequested, resetRequestedCommits } from '~/repository/commits_service';
+import {
+  loadCommits,
+  reloadCommits,
+  isRequested,
+  resetRequestedCommits,
+} from '~/repository/commits_service';
 import { HTTP_STATUS_INTERNAL_SERVER_ERROR, HTTP_STATUS_OK } from '~/lib/utils/http_status';
 import { createAlert } from '~/alert';
 import { I18N_COMMIT_DATA_FETCH_ERROR } from '~/repository/constants';
@@ -82,6 +87,27 @@ describe('commits service', () => {
 
     resetRequestedCommits();
     expect(isRequested(300)).toBe(false);
+  });
+
+  describe('reloadCommits', () => {
+    it('refetches every batch that was already loaded', async () => {
+      await Promise.all([requestCommits(0), requestCommits(25)]);
+      expect(axios.get.mock.calls).toHaveLength(2);
+
+      await reloadCommits('my-project', '', 'main', 'heads');
+
+      expect(axios.get.mock.calls).toHaveLength(4);
+      expect(axios.get).toHaveBeenLastCalledWith(url, {
+        params: { format: 'json', offset: 25, ref_type: 'heads' },
+      });
+      expect(isRequested(25)).toBe(true);
+    });
+
+    it('does not fetch when no batches were loaded', async () => {
+      await reloadCommits('my-project', '', 'main', 'heads');
+
+      expect(axios.get).not.toHaveBeenCalled();
+    });
   });
 
   it('calls `createAlert` when the request fails', async () => {

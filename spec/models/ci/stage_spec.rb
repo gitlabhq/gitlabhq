@@ -101,10 +101,10 @@ RSpec.describe Ci::Stage, :models, feature_category: :continuous_integration do
 
         if from_status != to_status && transitionable?(from_status, to_status)
           expect(stage.set_status(to_status.to_s))
-            .to eq(true)
+            .to be(true)
         else
           expect(stage.set_status(to_status.to_s))
-            .to eq(false), "loopback transitions are not allowed"
+            .to be(false), "loopback transitions are not allowed"
         end
       end
     end

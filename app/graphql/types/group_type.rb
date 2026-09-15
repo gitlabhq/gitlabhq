@@ -19,6 +19,7 @@ module Types
     field :web_url,
       type: GraphQL::Types::String,
       null: false,
+      scopes: [:api, :read_api, :ai_workflows],
       description: 'Web URL of the group.'
 
     field :web_path,
@@ -253,6 +254,7 @@ module Types
       Types::LabelType.connection_type,
       null: true,
       description: 'Labels available on this group.',
+      scopes: [:api, :read_api, :ai_workflows],
       resolver: Resolvers::GroupLabelsResolver
 
     field :timelogs, ::Types::TimelogType.connection_type, null: false,

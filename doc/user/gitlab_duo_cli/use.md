@@ -13,16 +13,17 @@ title: Use the GitLab Duo CLI
 
 {{< /details >}}
 
-Prerequisites:
-
-- A [default GitLab Duo namespace](../profile/preferences.md#namespace-resolution-in-your-local-environment)
-  set, or an open project that has GitLab Duo access.
-
 You can use the GitLab Duo CLI in two modes:
 
 - Interactive mode: Provides a chat experience similar to GitLab Duo Chat in the GitLab UI or in
   editor extensions. Supports build and plan modes.
 - Headless mode: Enables non-interactive use in runners, scripts, and other automated workflows.
+
+## Prerequisites
+
+- The GitLab Duo CLI installed and [set up](set_up.md).
+- A [default GitLab Duo namespace](../profile/preferences.md#namespace-resolution-in-your-local-environment)
+  set, or an open project that has access to GitLab Duo.
 
 ## Interactive mode
 
@@ -93,6 +94,7 @@ The GitLab Duo CLI displays the current mode under the `>` prompt. To switch bet
 - `/doctor` slash command [introduced](https://gitlab.com/gitlab-org/editor-extensions/gitlab-lsp/-/releases/v8.94.0) in GitLab Duo CLI 8.94.0, during the GitLab 19.0 release.
 - `/skills` slash command [introduced](https://gitlab.com/gitlab-org/editor-extensions/gitlab-lsp/-/releases/v8.81.0) in GitLab Duo CLI 8.81.0, during the GitLab 19.0 release.
 - `/mcp` slash command [introduced](https://gitlab.com/gitlab-org/editor-extensions/gitlab-lsp/-/releases/v8.95.0) in GitLab Duo CLI 8.95.0, during the GitLab 19.0 release.
+- `/goal` slash command [introduced](https://gitlab.com/gitlab-org/editor-extensions/gitlab-lsp/-/releases/v9.17.0) in GitLab Duo CLI 9.17.0, during the GitLab 19.4 release.
 
 {{< /history >}}
 
@@ -107,6 +109,7 @@ The following slash commands are available:
 | `/doctor`   | Show diagnostics for the GitLab Duo CLI environment. |
 | `/exit`     | Exit the GitLab Duo CLI.                             |
 | `/feedback` | Submit a bug report or feature request.              |
+| `/goal`     | Start a session that works toward a goal.            |
 | `/help`     | Display a list of available slash commands.          |
 | `/mcp`      | View configured MCP servers and their status.        |
 | `/model`    | Switch the AI model for the current session.         |
@@ -123,6 +126,9 @@ For more information, see [custom slash commands](customize.md#custom-slash-comm
 {{< history >}}
 
 - Settings panel [introduced](https://gitlab.com/gitlab-org/editor-extensions/gitlab-lsp/-/releases/v8.90.0) in GitLab Duo CLI 8.90.0, during the GitLab 19.0 release.
+- Setting to display work items in new sessions [introduced](https://gitlab.com/gitlab-org/editor-extensions/gitlab-lsp/-/releases/v9.11.0) in GitLab Duo CLI 19.11.0, during
+the GitLab 19.4 release.
+- Setting to adjust theme [introduced](https://gitlab.com/gitlab-org/editor-extensions/gitlab-lsp/-/releases/v9.11.0) in GitLab Duo CLI 19.11.0, during the GitLab 19.4 release.
 
 {{< /history >}}
 
@@ -142,6 +148,8 @@ The following settings are available:
 | **Telemetry**            | Send anonymous usage data to improve GitLab Duo.                                                  |
 | **Enable global skills** | (Experimental) Discover [user-level Agent Skills](../duo_agent_platform/customize/agent_skills.md#create-user-level-skills) from `~/.agents/skills/` and `~/.gitlab/duo/skills/`. A restart is required for changes to take effect. |
 | **Notifications**        | Control [system notifications](#system-notifications) (`auto` or `disabled`).                     |
+| **Show work items in new sessions** | Display your open work items when you start a new session.|
+| **Theme**        | Change the theme setting. Options include `auto`, `dark`, `light`, `dark high contrast`, and `light high contrast`. |
 
 ### System notifications
 

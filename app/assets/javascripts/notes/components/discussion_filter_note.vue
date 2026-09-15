@@ -18,7 +18,7 @@ export default {
   },
   methods: {
     selectFilter(value) {
-      notesEventHub.$emit('dropdownSelect', value);
+      notesEventHub.$emit('dropdown-select', value);
     },
   },
 };

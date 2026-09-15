@@ -62,7 +62,7 @@ class Oauth::ApplicationsController < Doorkeeper::ApplicationsController
   end
 
   def set_index_vars
-    @applications = current_user.oauth_applications.keyset_paginate(cursor: params[:cursor])
+    @applications = current_user.oauth_applications.keyset_paginate(cursor: params.permit(:cursor)[:cursor])
     @applications_total_count = current_user.oauth_applications.count
     @authorized_records = authorized_records
 
@@ -93,7 +93,7 @@ class Oauth::ApplicationsController < Doorkeeper::ApplicationsController
 
   # Override Doorkeeper to scope to the current user
   def set_application
-    @application = current_user.oauth_applications.find(params[:id])
+    @application = current_user.oauth_applications.find(params.permit(:id)[:id])
   end
 
   rescue_from ActiveRecord::RecordNotFound do |_exception|

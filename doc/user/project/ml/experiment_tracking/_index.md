@@ -36,7 +36,7 @@ by the same metrics.
 
 ## Model run
 
-A model run is a variation of the training of a machine learning model, that can be eventually promoted to a version
+A model run is a variation of the training of a machine learning model that can be eventually promoted to a version
 of the model.
 
 ![Experiment run list table with run ID, creation timestamps, creator name, and status.](img/runs_v17_9.png)
@@ -54,8 +54,8 @@ Some example parameters:
 
 ## Track new experiments and runs
 
-Experiment and trials can only be tracked through the
-[MLflow](https://www.mlflow.org/docs/latest/tracking.html) client compatibility.
+Experiments and trials can only be tracked through the
+[MLflow](https://www.mlflow.org/docs/latest/tracking/) client compatibility.
 See [MLflow client compatibility](mlflow_client.md) for more information
 on how to use GitLab as a backend for the MLflow Client.
 

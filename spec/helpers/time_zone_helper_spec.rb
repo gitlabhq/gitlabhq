@@ -125,13 +125,13 @@ RSpec.describe TimeZoneHelper, :aggregate_failures do
 
     context 'when timezone is `nil`' do
       it 'returns `nil`' do
-        expect(helper.local_time(nil)).to eq(nil)
+        expect(helper.local_time(nil)).to be_nil
       end
     end
 
     context 'when timezone is blank' do
       it 'returns `nil`' do
-        expect(helper.local_time('')).to eq(nil)
+        expect(helper.local_time('')).to be_nil
       end
     end
 

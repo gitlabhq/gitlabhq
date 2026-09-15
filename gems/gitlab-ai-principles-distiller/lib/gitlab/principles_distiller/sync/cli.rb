@@ -171,7 +171,7 @@ module Gitlab
 
         def workspace_option(opts)
           opts.on('--workspace PATH', 'Path to the repository workspace') do |path|
-            Workspace.path = File.expand_path(path)
+            Workspace.path = path
           end
         end
 

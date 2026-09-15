@@ -1,5 +1,5 @@
 ---
-stage: Tenant Scale
+stage: GitLab Dedicated
 group: Geo
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see <https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments>
 title: Selective synchronization
@@ -20,7 +20,7 @@ belonging to only a subset of users. The latter is more suited to progressively
 rolling out Geo to a large GitLab instance.
 
 > [!note]
-> Geo's synchronization logic is outlined in the [documentation](../_index.md). Both the solution and the documentation is subject to change from time to time. You must independently determine your legal obligations in regard to privacy and cybersecurity laws, and applicable trade control law on an ongoing basis.
+> Geo's synchronization logic is outlined in the [documentation](../_index.md). Both the solution and the documentation are subject to change from time to time. You must independently determine your legal obligations in regard to privacy and cybersecurity laws, and applicable trade control law on an ongoing basis.
 
 Selective synchronization:
 
@@ -51,7 +51,7 @@ By default, selective synchronization is disabled. To enable it:
 
 > [!warning]
 > Promoting a secondary site with selective synchronization enabled to become the primary site
-> results in **permanent data loss** for all data that was not replicated to that secondary site.
+> results in permanent data loss for all data that was not replicated to that secondary site.
 
 When selective synchronization is configured on a secondary site, only a subset of data is replicated:
 

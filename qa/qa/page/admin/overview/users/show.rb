@@ -11,7 +11,7 @@ module QA
               element 'impersonation-tokens-tab'
             end
 
-            view 'app/views/admin/users/show.html.haml' do
+            view 'app/views/admin/users/_basic_details.html.haml' do
               element 'user-id-content'
             end
 

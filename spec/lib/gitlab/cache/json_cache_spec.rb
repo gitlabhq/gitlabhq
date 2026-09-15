@@ -8,7 +8,6 @@ RSpec.describe Gitlab::Cache::JsonCache, feature_category: :shared do
   let(:backend) { instance_double(ActiveSupport::Cache::RedisCacheStore).as_null_object }
   let(:namespace) { 'geo' }
   let(:key) { 'foo' }
-  let(:expanded_key) { "#{namespace}:#{key}:#{Gitlab.revision}" }
 
   subject(:cache) { described_class.new(namespace: namespace, backend: backend) }
 
@@ -19,7 +18,7 @@ RSpec.describe Gitlab::Cache::JsonCache, feature_category: :shared do
 
         cache = described_class.new(namespace: namespace, backend: backend)
 
-        expect(cache.active?).to eq(false)
+        expect(cache.active?).to be(false)
       end
     end
 
@@ -29,7 +28,7 @@ RSpec.describe Gitlab::Cache::JsonCache, feature_category: :shared do
 
         cache = described_class.new(namespace: namespace, backend: backend)
 
-        expect(cache.active?).to eq(true)
+        expect(cache.active?).to be(true)
       end
     end
   end

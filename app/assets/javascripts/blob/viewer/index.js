@@ -203,7 +203,7 @@ export class BlobViewer {
           // eslint-disable-next-line no-param-reassign
           viewer.dataset.loaded = 'true';
           this.toggleCopyButtonState();
-          eventHub.$emit('showBlobInteractionZones', viewer.dataset.path);
+          eventHub.$emit('show-blob-interaction-zones', viewer.dataset.path);
         });
 
         performanceMarkAndMeasure({

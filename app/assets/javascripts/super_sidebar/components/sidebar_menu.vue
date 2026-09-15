@@ -50,6 +50,7 @@ export default {
     browseMoreFeatures: __('More features'),
     pinAdded: s__('Navigation|%{title} added to pinned items'),
     pinRemoved: s__('Navigation|%{title} removed from pinned items'),
+    emptyPinsHint: s__('Navigation|Pin frequently used features for quick access.'),
   },
   inject: {
     currentPath: {},
@@ -223,6 +224,9 @@ export default {
     showFeatureLibrary() {
       return this.isPinnablePanel && this.panelType !== 'organization';
     },
+    showEmptyPinsHint() {
+      return !this.showUnpinnedItems && this.pinnedItems.length === 0 && !this.isIconOnly;
+    },
     sectionsToRender() {
       if (!this.showUnpinnedItems) {
         return this.nonStaticItems.filter((item) => item.id === SETTINGS_MENU_ITEM_ID);
@@ -324,8 +328,20 @@ export default {
 
       if (source?.fromPinnedSection) {
         this.$nextTick(() => {
-          this.$refs.pinnedSectionButton?.$el.querySelector('button')?.focus();
+          this.focusAfterPinnedUnpin(itemId);
         });
+      }
+    },
+    focusAfterPinnedUnpin(itemId) {
+      if (!this.showFeatureLibrary) {
+        this.$refs.pinnedSectionButton?.$el.querySelector('button')?.focus();
+        return;
+      }
+
+      if (this.activeUnpinnedItem?.id === itemId) {
+        this.$refs.currentPageItem?.focus();
+      } else {
+        this.$refs.featureLibraryTrigger?.$el?.focus();
       }
     },
     movePin(fromId, toId, isDownwards) {
@@ -422,14 +438,36 @@ export default {
       @pin-remove="destroyPin"
       @pin-reorder="movePin"
     />
+    <div
+      v-if="showEmptyPinsHint"
+      class="gl-rounded-lg gl-border-1 gl-border-dashed gl-border-strong gl-p-2"
+      data-testid="empty-pins-hint"
+    >
+      <p class="gl-mb-2 gl-px-3 gl-pt-1 gl-text-sm gl-text-subtle">
+        {{ $options.i18n.emptyPinsHint }}
+      </p>
+      <gl-nav-item
+        v-if="showFeatureLibrary"
+        ref="featureLibraryTrigger"
+        v-gl-modal="$options.modalId"
+        :aria-label="$options.i18n.browseMoreFeatures"
+        :class="{ 'feature-library-shimmer': shimmerActive }"
+        data-testid="feature-library-trigger"
+        icon="feature-addition"
+        @click="dismissShimmerCallout"
+      >
+        {{ $options.i18n.browseMoreFeatures }}
+      </gl-nav-item>
+    </div>
     <gl-nav-item
-      v-if="showFeatureLibrary"
+      v-else-if="showFeatureLibrary"
+      ref="featureLibraryTrigger"
       v-gl-modal="$options.modalId"
       v-gl-tooltip.right.viewport="isIconOnly ? $options.i18n.browseMoreFeatures : ''"
       :aria-label="$options.i18n.browseMoreFeatures"
       :class="{ 'feature-library-shimmer': shimmerActive }"
       data-testid="feature-library-trigger"
-      icon="applications"
+      icon="feature-addition"
       :is-icon-only="isIconOnly"
       @click="dismissShimmerCallout"
     >
@@ -442,7 +480,12 @@ export default {
         class="gl-m-0 gl-list-none gl-p-0"
         data-testid="current-page-section"
       >
-        <nav-item :item="activeUnpinnedItem" :async-count="asyncCount" @pin-add="createPin" />
+        <nav-item
+          ref="currentPageItem"
+          :item="activeUnpinnedItem"
+          :async-count="asyncCount"
+          @pin-add="createPin"
+        />
       </ul>
     </template>
     <feature-library-modal

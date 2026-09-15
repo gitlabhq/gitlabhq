@@ -37,7 +37,7 @@ To check a specific file in the repository with ESLINT, run the following script
 yarn run lint:eslint $PATH_TO_FILE
 ```
 
-To check **all** files in the repository with ESLint, run the following script:
+To check all files in the repository with ESLint, run the following script:
 
 ```shell
 yarn run lint:eslint:all
@@ -45,7 +45,7 @@ yarn run lint:eslint:all
 
 A list of problems found are logged to the console.
 
-To apply automatic ESLint fixes to **all** files in the repository, run the following script:
+To apply automatic ESLint fixes to all files in the repository, run the following script:
 
 ```shell
 yarn run lint:eslint:all:fix
@@ -132,7 +132,7 @@ statement in `.eslint_todo/index.mjs`.
 
 ### The `no-undef` rule and declaring globals
 
-**Never** disable the `no-undef` rule. Declare globals with `/* global Foo */` instead.
+Never disable the `no-undef` rule. Declare globals with `/* global Foo */` instead.
 
 When declaring multiple globals, always use one `/* global [name] */` line per variable.
 
@@ -171,8 +171,8 @@ export function queryToObject(query, options = {}) {
 
 It is strongly encouraged that you:
 
-- Put in an **alternative path for developers** looking to use this function.
-- **Provide a link to the issue** that tracks the migration process.
+- Put in an alternative path for developers looking to use this function.
+- Provide a link to the issue that tracks the migration process.
 
 > [!note]
 > Uses are detected if you import the deprecated function into another file. They are not detected when the function is used in the same file.
@@ -346,7 +346,7 @@ Each provided key gets one of the following verdicts:
 | `REMOVABLE` | Remove it | No component injects the key anywhere, so the provide is dead. |
 | `LIKELY-REMOVABLE` | Remove it, then confirm | Injectors exist, but none are reachable from this provider in the module import graph. Reachability is a heuristic that misses some dynamic imports, so confirm with the component specs or by loading the page. |
 | `IN USE` | Keep it | An injector is reachable from this provider. This result is a possibility of use, not proof, because shared modules can link unrelated components. |
-| `INCONCLUSIVE` | Investigate manually | A dynamic boundary, such as a `Vue.component()` global registration or an unresolved dynamic import, prevents a reliable verdict. |
+| `INCONCLUSIVE` | Investigate manually | Something prevents a reliable verdict: a dynamic boundary (a `Vue.component()` global registration or an unresolved dynamic import), an injector that only exists in a vendored npm package (reachability can't be assessed across `node_modules`), a provider whose `render()` only forwards its default slot (real descendants come from the call site, not this file's imports), or an unreachable injector that shares a directory with the provider (a strong sign the reachability heuristic missed a real relationship). |
 
 To remove a key the script reports as `REMOVABLE` or `LIKELY-REMOVABLE`, work through the layers
 that feed it, and stop at any layer that another consumer still uses:

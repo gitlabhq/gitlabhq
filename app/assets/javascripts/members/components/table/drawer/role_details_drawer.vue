@@ -188,7 +188,7 @@ export default {
         </dl>
       </div>
 
-      <template #footer>
+      <template v-if="permissions.canUpdate" #footer>
         <role-updater
           v-if="alert || isRoleChanged"
           #default="{ saveRole }"

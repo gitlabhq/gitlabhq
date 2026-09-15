@@ -31,6 +31,7 @@ export default {
     {
       key: 'name',
       label: __('Title'),
+      tdClass: '!gl-align-middle',
     },
     {
       key: 'createdBy',

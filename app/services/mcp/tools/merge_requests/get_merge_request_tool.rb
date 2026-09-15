@@ -18,17 +18,25 @@ module Mcp
         def build_variables
           full_path, iid = resolve_target
           facets = Array(params[:include]).map(&:to_s)
+          detail = params[:detail].to_s
+          diffs_requested = facets.include?('diffs')
 
           {
             fullPath: full_path,
             iid: iid.to_s,
-            includeDiffs: facets.include?('diffs'),
+            includeDiffs: diffs_requested,
+            includeDiffFiles: diffs_requested && detail != 'none',
+            includeDiffPatches: diffs_requested && detail == 'full_patch',
             includeCommits: facets.include?('commits'),
             includeNotes: facets.include?('notes'),
             includePipelines: facets.include?('pipelines'),
             includeDiscussions: facets.include?('discussions'),
+            includeApprovals: facets.include?('approvals'),
+            includeConflicts: facets.include?('conflicts'),
             notesAfter: params[:notes_after],
-            notesFirst: params[:notes_first]
+            notesFirst: params[:notes_first],
+            diffsAfter: params[:diffs_after],
+            diffsFirst: params[:diffs_first]
           }.compact
         end
 
@@ -41,19 +49,20 @@ module Mcp
         private
 
         def resolve_target
-          if params[:url].present?
-            match = ::MergeRequest.link_reference_pattern.match(params[:url])
-            raise ArgumentError, "Invalid merge request URL: #{params[:url]}" unless match
+          @resolve_target ||=
+            if params[:url].present?
+              match = ::MergeRequest.link_reference_pattern.match(params[:url])
+              raise ArgumentError, "Invalid merge request URL: #{params[:url]}" unless match
 
-            ["#{match[:namespace]}/#{match[:project]}", match[:merge_request]]
-          else
-            iid = params[:merge_request_iid]
-            project_id = params[:project_id]
+              ["#{match[:namespace]}/#{match[:project]}", match[:merge_request]]
+            else
+              iid = params[:merge_request_iid]
+              project_id = params[:project_id]
 
-            raise ArgumentError, 'Provide either url, or project_id and merge_request_iid' unless iid && project_id
+              raise ArgumentError, 'Provide either url, or project_id and merge_request_iid' unless iid && project_id
 
-            [find_project!(project_id).full_path, iid]
-          end
+              [find_project!(project_id).full_path, iid]
+            end
         end
 
         def process_result(result)
@@ -79,10 +88,12 @@ module Mcp
 
         def resource_not_found_error(resource)
           ::Mcp::Tools::Base::Response.error(
-            "#{resource} not found: it does not exist or you do not have access to it."
+            "#{resource} not found or inaccessible"
           )
         end
       end
     end
   end
 end
+
+Mcp::Tools::MergeRequests::GetMergeRequestTool.prepend_mod

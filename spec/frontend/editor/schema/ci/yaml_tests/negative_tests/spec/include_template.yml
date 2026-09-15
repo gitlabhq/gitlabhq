@@ -1,0 +1,4 @@
+# `spec:include` supports local, remote, and project includes only
+spec:
+  include:
+    - template: "Auto-DevOps.gitlab-ci.yml"

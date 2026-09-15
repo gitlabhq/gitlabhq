@@ -41,47 +41,8 @@ RSpec.describe Cells::ClaimsVerificationWorker, :clean_gitlab_redis_shared_state
       end
     end
 
-    context 'when feature flag is disabled for the model' do
-      before do
-        stub_feature_flags(cells_claims_verification_worker_user: false)
-      end
-
-      it 'does not execute the verification service' do
-        expect(Cells::Claims::VerificationService).not_to receive(:new)
-
-        worker.perform(model_name)
-      end
-    end
-
-    context 'when model_name is namespaced' do
-      let(:model_name) { 'Foo::Bar' }
-      let(:model) do
-        Class.new(ApplicationRecord) do
-          self.table_name = 'foobar'
-          def self.name = 'Foo::Bar'
-        end
-      end
-
-      before do
-        stub_feature_flag_definition("cells_claims_verification_worker_foo_bar")
-        stub_const('Foo::Bar', model)
-      end
-
-      it 'uses underscored and de-namespaced flag name' do
-        expect(Feature).to receive(:enabled?)
-          .with("cells_claims_verification_worker_foo_bar", :instance)
-          .and_return(false)
-
-        worker.perform(model_name)
-      end
-    end
-
     context 'when model_name cannot be constantized' do
       let(:model_name) { 'NonExistentModel' }
-
-      before do
-        stub_feature_flag_definition("cells_claims_verification_worker_non_existent_model")
-      end
 
       it 'does not execute the verification service' do
         expect(Cells::Claims::VerificationService).not_to receive(:new)
@@ -93,8 +54,26 @@ RSpec.describe Cells::ClaimsVerificationWorker, :clean_gitlab_redis_shared_state
     context 'when model_name constantizes to a non-ActiveRecord class' do
       let(:model_name) { 'String' }
 
+      it 'does not execute the verification service' do
+        expect(Cells::Claims::VerificationService).not_to receive(:new)
+
+        worker.perform(model_name)
+      end
+    end
+
+    context 'when model does not declare any claims' do
+      let(:model_name) { 'ApplicationRecord' }
+
+      it 'does not execute the verification service' do
+        expect(Cells::Claims::VerificationService).not_to receive(:new)
+
+        worker.perform(model_name)
+      end
+    end
+
+    context 'when no model attribute is claimable' do
       before do
-        stub_feature_flag_definition("cells_claims_verification_worker_string")
+        allow(User).to receive(:cells_claims_enabled_for_attribute?).and_return(false)
       end
 
       it 'does not execute the verification service' do

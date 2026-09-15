@@ -22,7 +22,11 @@ import {
   i18n,
   STATE_CLOSED,
 } from '../constants';
-import { findBlockerLinkedItems, findOpenChildItemsCountsByType } from '../utils';
+import {
+  findBlockerLinkedItems,
+  findOpenChildItemsCountsByType,
+  lowercaseWorkItemType,
+} from '../utils';
 import { updateCountsForParent } from '../graphql/cache_utils';
 import updateWorkItemMutation from '../graphql/update_work_item.mutation.graphql';
 import workItemByIidQuery from '../graphql/work_item_by_iid.query.graphql';
@@ -179,7 +183,7 @@ export default {
       return this.workItemState === STATE_OPEN;
     },
     lowercaseWorkItemType() {
-      return this.workItemType.toLowerCase();
+      return lowercaseWorkItemType(this.workItemType);
     },
     toggleWorkItemStateText() {
       let baseText = this.isWorkItemOpen

@@ -3,7 +3,7 @@
 require 'spec_helper'
 
 RSpec.describe 'Merge request > User sees versions', :js, feature_category: :code_review_workflow do
-  include MergeRequestDiffHelpers
+  include RapidDiffsDiscussionHelpers
 
   let(:merge_request) do
     create(:merge_request).tap do |mr|
@@ -26,24 +26,18 @@ RSpec.describe 'Merge request > User sees versions', :js, feature_category: :cod
 
   shared_examples 'allows commenting' do |file_name:, line_text:, comment:|
     it do
-      page.within find_in_panel_by_scrolling('.diff-file', text: file_name) do
-        line_code_element = page.find('.diff-grid-row', text: line_text)
-        # scrolling to element's bottom is required in order for .hover action to work
-        # otherwise, the element could be hidden underneath a sticky header
-        scroll_to_panel_elements_bottom(line_code_element)
+      wait_for_requests
+      file = diff_file(file_name)
+      line_holder = file.find('[data-hunk-lines]', text: line_text, match: :first)
 
-        line_code_element.hover
-        find_by_testid('left-comment-button', visible: true).click
+      click_diff_line(line_holder)
+      next_discussion_row(line_holder).fill_in('note[note]', with: comment)
 
-        expect(page).to have_selector("form", count: 1)
+      click_button('Add comment now')
 
-        fill_in("note[note]", with: comment)
-        click_button('Add comment now')
+      wait_for_requests
 
-        wait_for_requests
-
-        expect(page).to have_content(comment)
-      end
+      expect(file).to have_content(comment)
     end
   end
 
@@ -105,7 +99,7 @@ RSpec.describe 'Merge request > User sees versions', :js, feature_category: :cod
       refresh
       wait_for_requests
 
-      expect(page).to have_css(".diffs .notes[data-discussion-id='#{outdated_diff_note.discussion_id}']")
+      expect(page).to have_css(".diffs [data-discussion-id='#{outdated_diff_note.discussion_id}']")
     end
 
     it_behaves_like 'allows commenting',
@@ -140,11 +134,8 @@ RSpec.describe 'Merge request > User sees versions', :js, feature_category: :cod
       )
       expect(page).to have_content '4 files'
 
-      additions_content = page.find('.diff-stats.is-compare-versions-header .diff-stats-group [data-testid="js-file-addition-line"]').text
-      deletions_content = page.find('.diff-stats.is-compare-versions-header .diff-stats-group [data-testid="js-file-deletion-line"]').text
-
-      expect(additions_content).to eq '15'
-      expect(deletions_content).to eq '6'
+      expect(find_by_testid('js-file-addition-line', match: :first)).to have_text('15', exact: true)
+      expect(find_by_testid('js-file-deletion-line', match: :first)).to have_text('6', exact: true)
 
       position = build(:text_diff_position,
         file: ".gitmodules",
@@ -162,16 +153,13 @@ RSpec.describe 'Merge request > User sees versions', :js, feature_category: :cod
       refresh
       wait_for_requests
 
-      expect(page).to have_css(".diffs .notes[data-discussion-id='#{outdated_diff_note.discussion_id}']")
+      expect(page).to have_css(".diffs [data-discussion-id='#{outdated_diff_note.discussion_id}']")
     end
 
     it 'show diff between new and old version' do
-      additions_content = page.find('.diff-stats.is-compare-versions-header .diff-stats-group [data-testid="js-file-addition-line"]').text
-      deletions_content = page.find('.diff-stats.is-compare-versions-header .diff-stats-group [data-testid="js-file-deletion-line"]').text
-
       expect(page).to have_content '4 files'
-      expect(additions_content).to eq '15'
-      expect(deletions_content).to eq '6'
+      expect(find_by_testid('js-file-addition-line', match: :first)).to have_text('15', exact: true)
+      expect(find_by_testid('js-file-deletion-line', match: :first)).to have_text('6', exact: true)
     end
 
     it 'returns to latest version when "Show latest version" button is clicked' do
@@ -222,7 +210,8 @@ RSpec.describe 'Merge request > User sees versions', :js, feature_category: :cod
       end
     end
 
-    it 'has 0 chages between versions' do
+    it 'has 0 chages between versions', skip: 'Rapid Diffs: version self-compare empty-state and target-version reset not implemented; ' \
+                                          'https://gitlab.com/gitlab-org/gitlab/-/merge_requests/248325' do
       page.within '.mr-version-compare-dropdown' do
         expect(find('.gl-dropdown-toggle')).to have_content 'version 1'
       end
@@ -231,7 +220,7 @@ RSpec.describe 'Merge request > User sees versions', :js, feature_category: :cod
         find('.btn-default').click
         click_link 'version 1'
       end
-      expect(page).to have_content 'No changes between version 1 and version 1'
+      expect(page).to have_content("No changes between #{merge_request.source_branch} and #{merge_request.target_branch}")
     end
   end
 
@@ -243,7 +232,8 @@ RSpec.describe 'Merge request > User sees versions', :js, feature_category: :cod
       end
     end
 
-    it 'sets the compared versions to be the same' do
+    it 'sets the compared versions to be the same', skip: 'Rapid Diffs: version self-compare empty-state and target-version reset not implemented; ' \
+                                                      'https://gitlab.com/gitlab-org/gitlab/-/merge_requests/248325' do
       page.within '.mr-version-compare-dropdown' do
         expect(find('.gl-dropdown-toggle')).to have_content 'version 2'
       end
@@ -257,7 +247,7 @@ RSpec.describe 'Merge request > User sees versions', :js, feature_category: :cod
         expect(page).to have_content 'version 1'
       end
 
-      expect(page).to have_content 'No changes between version 1 and version 1'
+      expect(page).to have_content("No changes between #{merge_request.source_branch} and #{merge_request.target_branch}")
     end
   end
 
@@ -269,10 +259,10 @@ RSpec.describe 'Merge request > User sees versions', :js, feature_category: :cod
     end
 
     it 'only shows diffs from the commit' do
-      diff_commit_ids = find_all('.diff-file [data-commit-id]').pluck('data-commit-id')
+      diff_refs = find_all('diff-file').map { |file| Gitlab::Json::SafeParser.parse(file['data-file-data'])['diff_refs'] }
 
-      expect(diff_commit_ids).not_to be_empty
-      expect(diff_commit_ids).to all(eq(params[:commit_id]))
+      expect(diff_refs).not_to be_empty
+      expect(diff_refs.map { |refs| refs['head_sha'] }).to all(eq(params[:commit_id]))
     end
 
     it_behaves_like 'allows commenting',

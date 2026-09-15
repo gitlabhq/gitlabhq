@@ -35,6 +35,8 @@ usage across your project or group.
 
 ## Query fields
 
+Use these fields in the `query` parameter to filter your results.
+
 | Field                                      | Name (and alias) | Operators                 |
 | ------------------------------------------ | ---------------- | ------------------------- |
 | [IDE name](#cs-ide-name)                   | `ideName`        | `=`, `in`                 |

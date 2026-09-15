@@ -24,7 +24,7 @@ you set the multiplier to:
   polling completely. For example, if you set the value to `2`, all polling intervals
   are multiplied by 2, which means that polling happens half as frequently.
 - A value between `0` and `1`, the UI polls more frequently so updates occur more frequently.
-  **Not recommended**.
+  Not recommended.
 - `0`, all polling is disabled. On the next poll, clients stop polling for updates.
 
 The default value (`1`) is recommended for the majority of GitLab installations.

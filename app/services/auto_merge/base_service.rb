@@ -70,8 +70,11 @@ module AutoMerge
         )
 
         unless mergeability_checks.success?
-          next AutoMerge::AvailabilityCheck.error(unavailable_reason: :mergeability_checks_failed,
-            unsuccessful_check: mergeability_checks.payload[:unsuccessful_check])
+          next AutoMerge::AvailabilityCheck.error(
+            unavailable_reason: :mergeability_checks_failed,
+            unsuccessful_check: mergeability_checks.payload[:unsuccessful_check],
+            unsuccessful_check_explanation: mergeability_checks.payload[:unsuccessful_check_explanation]
+          )
         end
 
         block_given? ? yield : AvailabilityCheck.success

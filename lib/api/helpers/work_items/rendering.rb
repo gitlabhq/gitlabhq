@@ -3,6 +3,8 @@
 module API
   module Helpers
     module WorkItems
+      # Apart from render_work_item_response, the methods here reach into Preloads and Authorization,
+      # so endpoints mounting this module must mount those too.
       module Rendering
         def render_work_items_collection_for(resource_parent)
           check_pagination_param!(params)
@@ -62,7 +64,7 @@ module API
               notifications_allow_participant_fallback: true,
               status: status
           else
-            render_api_error!(Array(result[:message]).join(', '), result[:http_status] || :unprocessable_entity)
+            render_api_error_from_response(result)
           end
         end
 
@@ -72,15 +74,15 @@ module API
           end
         end
 
-        def render_child_response(result, work_item)
+        def render_child_response(result, work_item, status_code:)
           if result[:status] == :success
-            status :created
+            status status_code
             present work_item,
               with: Entities::WorkItemBasic,
               current_user: current_user,
               notifications_allow_participant_fallback: true
           else
-            render_api_error!(Array(result[:message]).join(', '), result[:http_status] || :unprocessable_entity)
+            render_api_error_from_response(result)
           end
         end
 
@@ -198,22 +200,6 @@ module API
           )
         end
 
-        def check_work_item_rest_api_feature_flag!
-          return if Feature.enabled?(:work_item_rest_api, current_user)
-
-          forbidden!('work_item_rest_api feature flag is disabled for this user')
-        end
-
-        # Invariant prologue for every work-item-scoped read path: gate on the REST API feature flag,
-        # then authorize reading the parent work item. Used by render_paginated_work_items_for
-        # (children, linked items) and by the development widget sub-endpoints (closing_merge_requests,
-        # related_merge_requests, related_branches, feature_flags), so the gate and the authorization
-        # check can't drift apart between them.
-        def authorize_work_item_feature!(parent_work_item)
-          check_work_item_rest_api_feature_flag!
-          authorize! :read_work_item, parent_work_item
-        end
-
         def filter_requested_keys(requested_param, available_keys)
           return [] if requested_param.nil?
 
@@ -223,6 +209,10 @@ module API
             .reject(&:blank?)
             .filter_map { |value| available_keys[value] }
             .uniq
+        end
+
+        def render_api_error_from_response(response)
+          render_api_error!(Array(response[:message]).join(', '), response[:http_status] || :unprocessable_entity)
         end
       end
     end

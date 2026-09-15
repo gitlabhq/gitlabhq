@@ -16,7 +16,7 @@ RSpec.describe Gitlab::Redis::MultiStoreConnectionPool, feature_category: :scala
     end
 
     it 'extends ConnectionPool' do
-      expect(multistore_pool.is_a?(::ConnectionPool)).to eq(true)
+      expect(multistore_pool.is_a?(::ConnectionPool)).to be(true)
     end
 
     shared_examples 'handles connection borrowing' do

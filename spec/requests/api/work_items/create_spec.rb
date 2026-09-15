@@ -5,7 +5,7 @@ require 'spec_helper'
 RSpec.describe API::WorkItems::Create, feature_category: :portfolio_management do
   let_it_be(:user) { create(:user) }
   let_it_be(:group) { create(:group, :private, reporters: user) }
-  let_it_be(:project) { create(:project, :private, :repository, group: group, reporters: user) }
+  let_it_be(:project) { create(:project, :private, group: group, reporters: user) }
 
   let_it_be(:task_type) { ::WorkItems::TypesFramework::Provider.new.find_by_base_type(:task) }
   let_it_be(:issue_type) { ::WorkItems::TypesFramework::Provider.new.find_by_base_type(:issue) }
@@ -185,7 +185,7 @@ RSpec.describe API::WorkItems::Create, feature_category: :portfolio_management d
       it 'returns 403' do
         post api(api_request_path, user), params: { title: 'New task', work_item_type_name: 'task' }
 
-        expect(response).to have_gitlab_http_status(:forbidden)
+        expect(response).to have_gitlab_http_status(:not_found)
       end
     end
 

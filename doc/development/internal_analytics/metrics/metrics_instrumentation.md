@@ -175,7 +175,7 @@ Errors return a value of `-1`.
 > [!warning]
 > This functionality estimates a distinct count of a specific ActiveRecord_Relation in a given column,
 > which uses the [HyperLogLog](https://static.googleusercontent.com/media/research.google.com/en//pubs/archive/40671.pdf) algorithm.
-> As the HyperLogLog algorithm is probabilistic, the **results always include error**.
+> As the HyperLogLog algorithm is probabilistic, the results always include error.
 > The highest encountered error rate is 4.9%.
 
 When correctly used, the `estimate_batch_distinct_count` method enables efficient counting over
@@ -203,7 +203,7 @@ The method includes the following prerequisites:
 - The supplied `relation` must include the primary key defined as the numeric column.
   For example: `id bigint NOT NULL`.
 - The `estimate_batch_distinct_count` can handle a joined relation. To use its ability to
-  count non-unique columns, the joined relation **must not** have a one-to-many relationship,
+  count non-unique columns, the joined relation must not have a one-to-many relationship,
   such as `has_many :boards`.
 - Both `start` and `finish` arguments should always represent primary key relationship values,
   even if the estimated count refers to another column, for example:

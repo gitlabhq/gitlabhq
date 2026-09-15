@@ -28,15 +28,6 @@ module QA
       end
 
       let(:personal_access_token) { Runtime::User::Store.default_api_client.personal_access_token }
-      let(:gitlab_host_without_port) { Support::GitlabAddress.host_with_port(with_default_port: false) }
-      let(:omnibus_registry_port) { 5050 }
-      let(:cng_registry_port) { 5000 }
-      let(:registry_port) do
-        is_nip_io = gitlab_host_without_port.match?(/gitlab\.\d+\.\d+\.\d+\.\d+\.nip\.io/)
-        is_nip_io ? cng_registry_port : omnibus_registry_port
-      end
-
-      let(:repository_path) { "#{gitlab_host_without_port}:#{registry_port}/#{project.full_path}" }
 
       before do
         Flow::Login.sign_in
@@ -95,7 +86,11 @@ module QA
                     stage: build
                     services:
                     - name: "docker:24.0.1-dind"
-                      command: ["--insecure-registry=#{gitlab_host_without_port}:#{registry_port}"]
+                      # Through a shell so $CI_REGISTRY expands: the instance knows its registry address, the spec does not
+                      command:
+                        - /bin/sh
+                        - -c
+                        - dockerd-entrypoint.sh --insecure-registry="$CI_REGISTRY"
                     variables:
                       DOCKER_TLS_CERTDIR: ""
                     before_script:
@@ -106,9 +101,9 @@ module QA
                           sleep 1s
                         done
                     script:
-                      - docker login -u #{auth_user} -p #{auth_token} #{gitlab_host_without_port}:#{registry_port}
-                      - docker build -t #{repository_path} .
-                      - docker push #{repository_path}
+                      - docker login -u #{auth_user} -p #{auth_token} $CI_REGISTRY
+                      - docker build -t $CI_REGISTRY_IMAGE .
+                      - docker push $CI_REGISTRY_IMAGE
                     tags:
                       - "runner-for-#{project.name}"
                 YAML
@@ -149,13 +144,16 @@ module QA
                           - -c
                           - |
                             apk add --no-cache openssl
-                            true | openssl s_client -showcerts -connect gitlab.test:5050 > /usr/local/share/ca-certificates/gitlab.test.crt
+                            # openssl needs an explicit port; CI_REGISTRY omits it when the registry is on 443
+                            registry_addr="$CI_REGISTRY"
+                            case "$registry_addr" in *:*) ;; *) registry_addr="$registry_addr:443" ;; esac
+                            true | openssl s_client -showcerts -connect "$registry_addr" > /usr/local/share/ca-certificates/registry.crt
                             update-ca-certificates
                             dockerd-entrypoint.sh || exit
                     variables:
                       IMAGE_TAG: "$CI_REGISTRY_IMAGE:$CI_COMMIT_REF_SLUG"
                     script:
-                      - docker login -u $CI_REGISTRY_USER -p $CI_REGISTRY_PASSWORD gitlab.test:5050
+                      - docker login -u $CI_REGISTRY_USER -p $CI_REGISTRY_PASSWORD $CI_REGISTRY
                       - docker build -t $IMAGE_TAG .
                       - docker push $IMAGE_TAG
                     tags:

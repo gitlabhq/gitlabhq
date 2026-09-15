@@ -41,7 +41,7 @@ of the secure configuration guide in detail.
 
 [GitLab Dedicated for Government](../subscriptions/gitlab_dedicated_for_government/_index.md)
 is a single-tenant SaaS solution purpose-built for government agencies. It holds a
-[FedRAMP Moderate Authority to Operate (ATO)](https://marketplace.fedramp.gov/products/FR2411959145),
+[FedRAMP Moderate Authority to Operate (ATO)](https://marketplace.fedramp.gov/products/FR2411959145/),
 runs on AWS GovCloud, and provides full infrastructure-level isolation. Each customer
 environment lives in a dedicated AWS account, separated from other tenants.
 

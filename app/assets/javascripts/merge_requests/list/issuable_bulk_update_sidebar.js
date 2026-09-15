@@ -45,8 +45,8 @@ export default class IssuableBulkUpdateSidebar {
     this.$bulkEditSubmitBtn.on('click', () => this.prepForSubmit());
     this.$checkAllContainer.on('click', () => this.updateFormState());
 
-    issuableEventHub.$on('issuables:enableBulkEdit', () => this.toggleBulkEdit(null, true));
-    issuableEventHub.$on('issuables:updateBulkEdit', () => this.updateFormState());
+    issuableEventHub.$on('enable-bulk-edit', () => this.toggleBulkEdit(null, true));
+    issuableEventHub.$on('update-bulk-edit', () => this.updateFormState());
   }
 
   initDropdowns() {
@@ -80,7 +80,7 @@ export default class IssuableBulkUpdateSidebar {
   toggleBulkEdit(e, enable) {
     e?.preventDefault();
 
-    issuableEventHub.$emit('issuables:toggleBulkEdit', enable);
+    issuableEventHub.$emit('toggle-bulk-edit', enable);
 
     this.toggleSidebarDisplay(enable);
     this.toggleBulkEditButtonDisabled(enable);

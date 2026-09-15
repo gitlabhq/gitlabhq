@@ -21,8 +21,14 @@ module Groups
         )
       end
 
+      def installation_params
+        params.permit(:code)
+      end
+
       def installation_service
-        Integrations::SlackInstallation::GroupService.new(group, current_user: current_user, params: params)
+        Integrations::SlackInstallation::GroupService.new(
+          group, current_user: current_user, params: installation_params
+        )
       end
     end
   end

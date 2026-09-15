@@ -70,6 +70,11 @@ RSpec.describe UserPreference, feature_category: :user_profile do
       it { is_expected.not_to allow_value(nil).for(:early_access_studio_participant) }
     end
 
+    describe 'emoji_autocomplete_enabled' do
+      it { is_expected.to validate_inclusion_of(:emoji_autocomplete_enabled).in_array([true, false]) }
+      it { is_expected.not_to allow_value(nil).for(:emoji_autocomplete_enabled) }
+    end
+
     describe 'visibility_pipeline_id_type' do
       it 'is set to 0 by default' do
         pref = described_class.new
@@ -243,6 +248,20 @@ RSpec.describe UserPreference, feature_category: :user_profile do
       pref = described_class.new(keyboard_shortcuts_enabled: false)
 
       expect(pref.keyboard_shortcuts_enabled).to be(false)
+    end
+  end
+
+  describe '#emoji_autocomplete_enabled' do
+    it 'is set to true by default' do
+      pref = described_class.new
+
+      expect(pref.emoji_autocomplete_enabled).to be(true)
+    end
+
+    it 'returns assigned value' do
+      pref = described_class.new(emoji_autocomplete_enabled: false)
+
+      expect(pref.emoji_autocomplete_enabled).to be(false)
     end
   end
 

@@ -46,7 +46,12 @@ module Resolvers
       argument :sort, GraphQL::Types::String,
         required: false,
         description: "Sort order of results. Format: `<field_name>_<sort_direction>`, " \
-          "for example: `id_desc` or `name_asc`",
+          "for example: `id_desc` or `name_asc`. Use `similarity` to rank results by closeness " \
+          "to `search`. `similarity` applies only when `search` is given and results are already " \
+          "scoped to the current user's memberships, such as with `ownedOnly: true` or " \
+          "`allAvailable: false`. Filtering by `visibilityLevel` to public or internal groups " \
+          "only disables `similarity`, because the results are then no longer scoped by " \
+          "membership. Results fall back to `id_desc` when `similarity` does not apply.",
         default_value: 'name_asc'
 
       argument :parent_path, GraphQL::Types::ID,
@@ -96,7 +101,7 @@ module Resolvers
         sanitized_args[:parent] = find_authorized_parent!(parent_path) if parent_path
 
         GroupsFinder
-          .new(context[:current_user], sanitized_args)
+          .new(context[:current_user], sanitized_args.merge(allow_similarity_sort: true))
           .execute
       end
 

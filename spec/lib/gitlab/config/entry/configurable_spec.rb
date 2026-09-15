@@ -60,8 +60,8 @@ RSpec.describe Gitlab::Config::Entry::Configurable do
           documentation: 'docs.gitlab.com'
         )
         expect(factory.description).to eq('test object')
-        expect(factory.inheritable?).to eq(true)
-        expect(factory.reserved?).to eq(true)
+        expect(factory.inheritable?).to be(true)
+        expect(factory.reserved?).to be(true)
       end
 
       it 'returns a duplicated factory object' do

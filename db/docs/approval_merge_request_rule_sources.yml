@@ -8,6 +8,6 @@ description: Keeps connection between merge request and project approval rule
 introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/8497
 milestone: '11.7'
 gitlab_schema: gitlab_main_org
-table_size: small
+table_size: medium
 sharding_key:
   project_id: projects

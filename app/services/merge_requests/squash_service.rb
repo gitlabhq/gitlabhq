@@ -15,13 +15,13 @@ module MergeRequests
     def execute
       # If performing a squash would result in no change, then
       # immediately return a success message without performing a squash
-      if merge_request.commits_count == 1 && message&.strip == merge_request.first_commit.safe_message&.strip
+      if merge_request.commits_count == 1 && message&.strip == merge_request.first_commit&.safe_message&.strip
         return success(squash_sha: merge_request.diff_head_sha)
       end
 
       return error(s_("MergeRequests|Squashing not allowed: This project doesn't allow you to squash commits when merging.")) if squash_forbidden?
 
-      squash! || error(s_('MergeRequests|Squashing failed: Squash the commits locally, resolve any conflicts, then push the branch.'))
+      squash!
     end
 
     private
@@ -32,10 +32,15 @@ module MergeRequests
       squash_sha = repository.squash(current_user, merge_request, message)
 
       success(squash_sha: squash_sha)
+    rescue Gitlab::Git::MergeConflictError => e
+      log_error(exception: e, message: 'Failed to squash merge request', track_exception: false)
+
+      error(s_('MergeRequests|Squashing failed: The commits have conflicting changes. ' \
+        'Squash the commits locally, resolve the conflicts, then push the branch.'))
     rescue StandardError => e
       log_error(exception: e, message: 'Failed to squash merge request')
 
-      false
+      error(s_('MergeRequests|Squashing failed: Squash the commits locally, resolve any conflicts, then push the branch.'))
     end
 
     def squash_forbidden?

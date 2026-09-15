@@ -24,7 +24,6 @@ import AutoMergeFailed from './components/states/mr_widget_auto_merge_failed.vue
 import CheckingState from './components/states/mr_widget_checking.vue';
 import PreparingState from './components/states/mr_widget_preparing.vue';
 import ClosedState from './components/states/mr_widget_closed.vue';
-import FailedToMerge from './components/states/mr_widget_failed_to_merge.vue';
 import MergedState from './components/states/mr_widget_merged.vue';
 import MergingState from './components/states/mr_widget_merging.vue';
 import MissingBranchState from './components/states/mr_widget_missing_branch.vue';
@@ -60,7 +59,6 @@ export default {
     MrWidgetMerged: MergedState,
     MrWidgetClosed: ClosedState,
     MrWidgetMerging: MergingState,
-    MrWidgetFailedToMerge: FailedToMerge,
     MrWidgetArchived: ArchivedState,
     MrWidgetNothingToMerge: NothingToMergeState,
     MrWidgetMissingBranch: MissingBranchState,
@@ -496,11 +494,7 @@ export default {
     checkRebasedStatus(cb) {
       this.checkStatus(cb, true);
     },
-    setIsRemovingSourceBranch([value]) {
-      this.mr.isRemovingSourceBranch = value;
-    },
     setMergeError(mergeError) {
-      this.mr.state = 'failedToMerge';
       this.mr.mergeError = mergeError;
     },
     setMrData(data) {
@@ -513,26 +507,20 @@ export default {
       }
     },
     bindEventHubListeners() {
-      eventHub.$on('MRWidgetUpdateRequested', this.refetchState);
-      eventHub.$on('MRWidgetRebaseSuccess', this.checkRebasedStatus);
-      eventHub.$on('SetBranchRemoveFlag', this.setIsRemovingSourceBranch);
-      eventHub.$on('FailedToMerge', this.setMergeError);
+      eventHub.$on('mr-widget-update-requested', this.refetchState);
+      eventHub.$on('mr-widget-rebase-success', this.checkRebasedStatus);
+      eventHub.$on('failed-to-merge', this.setMergeError);
       eventHub.$on('UpdateWidgetData', this.setMrData);
-      eventHub.$on('FetchActionsContent', this.fetchActionsContent);
-      eventHub.$on('EnablePolling', this.resumePolling);
-      eventHub.$on('DisablePolling', this.stopPolling);
-      eventHub.$on('FetchDeployments', this.onFetchDeployments);
+      eventHub.$on('fetch-actions-content', this.fetchActionsContent);
+      eventHub.$on('fetch-deployments', this.onFetchDeployments);
     },
     unbindEventListeners() {
-      eventHub.$off('MRWidgetUpdateRequested', this.refetchState);
-      eventHub.$off('MRWidgetRebaseSuccess', this.checkRebasedStatus);
-      eventHub.$off('SetBranchRemoveFlag', this.setIsRemovingSourceBranch);
-      eventHub.$off('FailedToMerge', this.setMergeError);
+      eventHub.$off('mr-widget-update-requested', this.refetchState);
+      eventHub.$off('mr-widget-rebase-success', this.checkRebasedStatus);
+      eventHub.$off('failed-to-merge', this.setMergeError);
       eventHub.$off('UpdateWidgetData', this.setMrData);
-      eventHub.$off('FetchActionsContent', this.fetchActionsContent);
-      eventHub.$off('EnablePolling', this.resumePolling);
-      eventHub.$off('DisablePolling', this.stopPolling);
-      eventHub.$off('FetchDeployments', this.onFetchDeployments);
+      eventHub.$off('fetch-actions-content', this.fetchActionsContent);
+      eventHub.$off('fetch-deployments', this.onFetchDeployments);
       eventHub.$off('mr.discussion.updated', this.refetchState);
     },
     apolloStateQueryMaxPollingInterval() {
@@ -561,11 +549,9 @@ export default {
 </script>
 <template>
   <div v-if="!loading" id="widget-state" class="mr-state-widget gl-mt-5">
-    <header v-if="shouldRenderCollaborationStatus" class="mr-section-container gl-overflow-hidden">
-      <mr-widget-alert-message type="info">
-        {{ s__('mrWidget|Members who can merge are allowed to add commits.') }}
-      </mr-widget-alert-message>
-    </header>
+    <mr-widget-alert-message v-if="shouldRenderCollaborationStatus" type="info">
+      {{ s__('mrWidget|Members who can merge are allowed to add commits.') }}
+    </mr-widget-alert-message>
     <mr-widget-pipeline-container
       v-if="shouldRenderPipelines"
       :mr="mr"
@@ -580,7 +566,7 @@ export default {
           type="danger"
           dismissible
           data-testid="merge-error"
-          class="mr-widget-section gl-rounded-b-none gl-border-b-section"
+          class="mr-widget-section gl-rounded-b-none"
         >
           <span>{{ mergeError }}</span>
         </mr-widget-alert-message>
@@ -588,7 +574,7 @@ export default {
           v-if="showMergePipelineForkWarning"
           type="warning"
           :help-path="mr.mergeRequestPipelinesHelpPath"
-          class="mr-widget-section gl-rounded-b-none gl-border-b-section"
+          class="mr-widget-section gl-rounded-b-none"
           data-testid="merge-pipeline-fork-warning"
         >
           {{

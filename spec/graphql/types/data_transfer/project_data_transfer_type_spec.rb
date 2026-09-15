@@ -12,7 +12,6 @@ RSpec.describe GitlabSchema.types['ProjectDataTransfer'], feature_category: :sou
 
   describe '#total_egress' do
     let_it_be(:project) { create(:project) }
-    let(:from) { Date.new(2022, 1, 1) }
     let(:to) { Date.new(2023, 1, 1) }
     let(:relation) { instance_double(ActiveRecord::Relation) }
 

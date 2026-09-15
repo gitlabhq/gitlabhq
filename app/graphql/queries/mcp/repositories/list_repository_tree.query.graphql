@@ -1,0 +1,47 @@
+# @feature_category: mcp_server
+query listRepositoryTree(
+  $fullPath: ID!
+  $path: String
+  $ref: String
+  $recursive: Boolean
+  $after: String
+) {
+  project(fullPath: $fullPath) {
+    id
+    repository {
+      paginatedTree(path: $path, ref: $ref, recursive: $recursive, after: $after) {
+        pageInfo {
+          hasNextPage
+          endCursor
+        }
+        nodes {
+          trees {
+            nodes {
+              id
+              name
+              type
+              path
+            }
+          }
+          blobs {
+            nodes {
+              id
+              name
+              type
+              path
+              mode
+            }
+          }
+          submodules {
+            nodes {
+              id
+              name
+              type
+              path
+            }
+          }
+        }
+      }
+    }
+  }
+}

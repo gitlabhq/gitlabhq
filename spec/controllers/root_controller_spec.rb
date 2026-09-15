@@ -282,6 +282,50 @@ RSpec.describe RootController, feature_category: :shared do
           end
         end
       end
+
+      context 'for sign_in_dashboard UX SLI', :freeze_time do
+        context 'when session[:start_time_of_sign_in_dashboard_ux_sli] is present' do
+          let(:start_time_of_sign_in_dashboard_ux_sli) { 1.5.seconds.ago }
+
+          before do
+            session[:start_time_of_sign_in_dashboard_ux_sli] = start_time_of_sign_in_dashboard_ux_sli
+          end
+
+          it 'calls Labkit::UserExperienceSli.observed with :sign_in_dashboard and the start_time' do
+            expect(Labkit::UserExperienceSli).to receive(:observed)
+              .with(:sign_in_dashboard, start_time: start_time_of_sign_in_dashboard_ux_sli)
+              .and_call_original
+
+            get :index
+          end
+
+          it 'deletes session[:start_time_of_sign_in_dashboard_ux_sli] to prevent double-counting' do
+            expect { get :index }.to change { session[:start_time_of_sign_in_dashboard_ux_sli] }.to(nil)
+          end
+
+          context 'when session[:start_time_of_sign_in_dashboard_ux_sli] is stale (more than 60 seconds ago)' do
+            let(:start_time_of_sign_in_dashboard_ux_sli) { 61.seconds.ago }
+
+            it 'does not call Labkit::UserExperienceSli.observed' do
+              expect(Labkit::UserExperienceSli).not_to receive(:observed)
+
+              get :index
+            end
+
+            it 'deletes session[:start_time_of_sign_in_dashboard_ux_sli]' do
+              expect { get :index }.to change { session[:start_time_of_sign_in_dashboard_ux_sli] }.to(nil)
+            end
+          end
+        end
+
+        context 'when session[:start_time_of_sign_in_dashboard_ux_sli] is not present' do
+          it 'does not call Labkit::UserExperienceSli.observed' do
+            expect(Labkit::UserExperienceSli).not_to receive(:observed)
+
+            get :index
+          end
+        end
+      end
     end
   end
 end

@@ -31,7 +31,7 @@ You can create HAR files manually or by using a specialized tool for recording w
 recommend using a specialized tool. However, it is important to make sure files created by these
 tools do not expose sensitive information, and can be safely used.
 
-The following tools can be used generate a HAR file based on your network activity. They
+The following tools can be used to generate a HAR file based on your network activity. They
 automatically record your network activity and generate the HAR file:
 
 - GitLab HAR recorder
@@ -173,7 +173,7 @@ and export it as a HAR file.
 
 ## HAR verification
 
-Before using HAR files it's important to make sure they don't expose any sensitive information.
+Before using HAR files, it's important to make sure they don't expose any sensitive information.
 
 For each HAR file you should:
 
@@ -185,7 +185,7 @@ For each HAR file you should:
 
 We recommend viewing a HAR file's content in a tool that can present its content in a structured
 way. Several HAR file viewers are available online. If you would prefer not to upload the HAR file,
-you can use a tool installed on your computer. HAR files used JSON format, so can also be viewed in
+you can use a tool installed on your computer. HAR files use JSON format, so can also be viewed in
 a text editor.
 
 Tools recommended for viewing HAR files include:
@@ -200,10 +200,10 @@ Tools recommended for viewing HAR files include:
 Review the HAR file for any of the following:
 
 - Information that could help to grant access to your application, for example: authentication
-  tokens, authentication tokens, cookies, API keys.
+  tokens, cookies, and API keys.
 - [Personally Identifiable Information (PII)](https://en.wikipedia.org/wiki/Personal_data).
 
-We strongly recommended that you [edit or remove it](#edit-or-remove-sensitive-information) any
+We strongly recommend that you [edit or remove](#edit-or-remove-sensitive-information) any
 sensitive information.
 
 Use the following as a checklist to start with. It's not an exhaustive list.
@@ -215,7 +215,7 @@ Use the following as a checklist to start with. It's not an exhaustive list.
   - A request related to authentication. The body of these requests might contain information such
     as user credentials or tokens.
   - Session tokens. Session tokens could grant access to your application. The location of these
-    token could vary. They could be in headers, query parameters or body.
+    tokens could vary. They could be in headers, query parameters or body.
 - Look for Personally Identifiable Information
   - For example, if your application retrieves a list of users and their personal data: phones,
     names, emails.

@@ -115,27 +115,28 @@ RSpec.describe 'Project Badges', feature_category: :groups_and_projects do
     end
 
     it 'shows a modal when deleting a badge' do
-      wait_for_requests
-      rows = all('tbody tr')
-      expect(rows.length).to eq 2
+      within_testid('badge-settings') do
+        expect(page).to have_css('tbody tr', count: 2)
 
-      click_delete_button(rows[1])
+        click_delete_button(all('tbody tr')[1])
+      end
 
       expect(find('.modal .modal-title')).to have_content 'Delete badge?'
     end
 
     it 'deletes a badge when confirming the modal' do
-      wait_for_requests
-      rows = all('tbody tr')
-      expect(rows.length).to eq 2
-      click_delete_button(rows[1])
+      within_testid('badge-settings') do
+        expect(page).to have_css('tbody tr', count: 2)
+
+        click_delete_button(all('tbody tr')[1])
+      end
 
       find('.modal .btn-danger').click
-      wait_for_requests
 
-      rows = all('tbody tr')
-      expect(rows.length).to eq 1
-      expect(rows[0]).to have_content group_badge.link_url
+      within_testid('badge-settings') do
+        expect(page).to have_css('tbody tr', count: 1)
+        expect(all('tbody tr').first).to have_content group_badge.link_url
+      end
     end
   end
 end

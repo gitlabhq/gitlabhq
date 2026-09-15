@@ -45,7 +45,7 @@ RSpec.describe ObjectStorage::Config, feature_category: :shared do
   end
 
   describe '#enabled?' do
-    it { expect(subject.enabled?).to eq(true) }
+    it { expect(subject.enabled?).to be(true) }
   end
 
   describe '#bucket' do

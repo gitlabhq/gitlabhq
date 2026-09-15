@@ -249,9 +249,13 @@ class Profiles::TwoFactorAuthsController < Profiles::ApplicationController
     )
   end
 
-  def groups_notification(groups)
-    memberships = GroupMember.with_user(current_user).with_source_id(groups.map(&:id)).index_by(&:source_id)
-    render_to_string partial: 'groups_notification', locals: { groups: groups, memberships: memberships }
+  def group_memberships(groups)
+    GroupMember.with_user(current_user).with_source_id(groups.map(&:id)).index_by(&:source_id)
+  end
+
+  def groups_notification(groups, memberships:, leavable:)
+    render_to_string partial: 'groups_notification',
+      locals: { groups: groups, memberships: memberships, leavable: leavable }
   end
 
   def ensure_verified_primary_email
@@ -264,7 +268,6 @@ class Profiles::TwoFactorAuthsController < Profiles::ApplicationController
   def setup_show_page
     if two_factor_authentication_required? && !current_user.two_factor_enabled?
       group_list = nil
-      group_title = nil
       two_factor_auth_actions = {
         global: ->(_) do
           _('The global settings require you to enable two-factor authentication (2FA) for your account.')
@@ -273,10 +276,21 @@ class Profiles::TwoFactorAuthsController < Profiles::ApplicationController
           _('Administrator users are required to enable two-factor authentication (2FA) for their account.')
         end,
         group: ->(groups) do
-          group_list = groups_notification(groups)
-          group_title = _('Secure your account with two-factor authentication (2FA)')
-          _('One or more groups require you to add 2FA to your account. Choose your preferred method below ' \
-            'or review and leave groups to continue using your account.')
+          memberships = group_memberships(groups)
+          # Being in an enforcing group does not mean the user can leave it: sole owners and
+          # LDAP-synced members cannot, so only invite them to leave when at least one group
+          # can actually be left. The list itself still explains where the requirement comes
+          # from. It is absent only when the requirement outlives the groups behind it, since
+          # the reason is read from a denormalized column and the groups from a live query.
+          leavable = groups.any? { |group| can?(current_user, :destroy_group_member, memberships[group.id]) }
+          group_list = groups_notification(groups, memberships: memberships, leavable: leavable) if groups.any?
+
+          if leavable
+            _('One or more groups require you to add 2FA to your account. Choose your preferred method below ' \
+              'or review and leave groups to continue using your account.')
+          else
+            _('One or more groups require you to add 2FA to your account. Choose your preferred method below.')
+          end
         end
       }
       message = execute_action_for_2fa_reason(two_factor_auth_actions)
@@ -287,7 +301,10 @@ class Profiles::TwoFactorAuthsController < Profiles::ApplicationController
           append_configure_2fa_later(message, group_list: group_list)
         end
 
-      flash.now[:alert] = group_title ? { title: group_title, message: message } : message
+      flash.now[:alert] = {
+        title: _('Secure your account with two-factor authentication (2FA)'),
+        message: message
+      }
     end
 
     @qr_code = build_qr_code

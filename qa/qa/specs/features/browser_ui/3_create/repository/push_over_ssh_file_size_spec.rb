@@ -3,7 +3,10 @@
 module QA
   # This test modifies an instance-level setting,
   # so skipping on live environments to avoid transient issues.
-  RSpec.describe 'Create', :requires_admin, :skip_live_env, feature_category: :source_code_management do
+  # It also cannot pass where the application settings cache is warm, as it is
+  # on a Dedicated tenant: the first push still sees the old limit.
+  RSpec.describe 'Create', :requires_admin, :skip_live_env, :skip_dedicated,
+    feature_category: :source_code_management do
     describe 'push after setting the file size limit via admin/application_settings using SSH' do
       include Support::API
 

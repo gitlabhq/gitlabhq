@@ -17,6 +17,11 @@ module Mutations
 
         authorize :admin_import_source_user
 
+        authorize_granular_token permissions: :update_placeholder_reassignment,
+          boundary_argument: :id,
+          boundary: :namespace,
+          boundary_type: :group
+
         def resolve(args)
           import_source_user = authorized_find!(id: args[:id])
           result = ::Import::SourceUsers::CancelReassignmentService.new(import_source_user,

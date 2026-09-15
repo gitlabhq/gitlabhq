@@ -1,4 +1,3 @@
-import { GlToast } from '@gitlab/ui';
 import Vue from 'vue';
 import VueApollo from 'vue-apollo';
 import { initVueApp } from '~/lib/utils/vue3compat/init_vue_app';
@@ -7,7 +6,6 @@ import createDefaultClient from '~/lib/graphql';
 import ClustersMainView from './components/clusters_main_view.vue';
 import { createStore } from './store';
 
-Vue.use(GlToast);
 Vue.use(VueApollo);
 
 export default () => {

@@ -286,7 +286,6 @@ RSpec.describe User, :with_current_organization, feature_category: :user_profile
     it { is_expected.to have_many(:revoked_user_achievements).class_name('Achievements::UserAchievement').with_foreign_key('revoked_by_user_id').inverse_of(:revoked_by_user) }
     it { is_expected.to have_many(:achievements).through(:user_achievements).class_name('Achievements::Achievement').inverse_of(:users) }
     it { is_expected.to have_many(:namespace_commit_emails).class_name('Users::NamespaceCommitEmail') }
-    it { is_expected.to have_many(:audit_events).with_foreign_key(:author_id).inverse_of(:user) }
     it { is_expected.to have_many(:issue_assignment_events).class_name('ResourceEvents::IssueAssignmentEvent') }
     it { is_expected.to have_many(:merge_request_assignment_events).class_name('ResourceEvents::MergeRequestAssignmentEvent') }
     it { is_expected.to have_many(:protected_tag_create_access_levels).class_name('ProtectedTag::CreateAccessLevel').dependent(:delete_all) }
@@ -1981,41 +1980,38 @@ RSpec.describe User, :with_current_organization, feature_category: :user_profile
       end
     end
 
-    context 'when user is a service account with composite identity enforced' do
-      let(:user) { build(:user, :service_account, composite_identity_enforced: true) }
+    context 'when user is a service account with composite identity enforced', :request_store do
+      let_it_be(:user) { create(:user, :service_account, composite_identity_enforced: true) }
+      let_it_be(:scoped_user) { create(:user) }
 
-      context 'when no identity is currently linked' do
-        before do
-          allow(::Gitlab::Auth::Identity).to receive(:currently_linked).and_return(nil)
-        end
-
+      context 'when the account is not linked' do
         it 'returns self' do
           expect(user.authorization_user).to eq(user)
         end
       end
 
-      context 'when an identity is linked but not active' do
-        let(:identity) { instance_double(::Gitlab::Auth::Identity, linked?: false) }
-
+      context 'when the account is linked' do
         before do
-          allow(::Gitlab::Auth::Identity).to receive(:currently_linked).and_return(identity)
-        end
-
-        it 'returns self' do
-          expect(user.authorization_user).to eq(user)
-        end
-      end
-
-      context 'when an active identity is linked' do
-        let(:scoped_user) { build(:user) }
-        let(:identity) { instance_double(::Gitlab::Auth::Identity, linked?: true, scoped_user: scoped_user) }
-
-        before do
-          allow(::Gitlab::Auth::Identity).to receive(:currently_linked).and_return(identity)
+          ::Gitlab::Auth::Identity.new(user).link!(scoped_user)
         end
 
         it 'returns the scoped user' do
           expect(user.authorization_user).to eq(scoped_user)
+        end
+      end
+
+      context 'when another service account is linked in the same request' do
+        let_it_be(:other_account) { create(:user, :service_account, composite_identity_enforced: true) }
+        let_it_be(:other_scoped_user) { create(:user) }
+
+        before do
+          ::Gitlab::Auth::Identity.new(user).link!(scoped_user, context: :permission_check)
+          ::Gitlab::Auth::Identity.new(other_account).link!(other_scoped_user, context: :permission_check)
+        end
+
+        it 'returns the scoped user linked to the account it is called on' do
+          expect(user.authorization_user).to eq(scoped_user)
+          expect(other_account.authorization_user).to eq(other_scoped_user)
         end
       end
     end
@@ -6658,6 +6654,21 @@ RSpec.describe User, :with_current_organization, feature_category: :user_profile
     end
   end
 
+  describe '#direct_groups_full_paths' do
+    let_it_be(:user) { create(:user) }
+    let_it_be(:groups) { create_list(:group, 3, guests: user) }
+
+    subject { user.direct_groups_full_paths }
+
+    it 'returns the full paths of all direct groups, unordered' do
+      is_expected.to match_array(groups.map(&:full_path))
+    end
+
+    it 'returns an empty array when the user has no direct groups' do
+      expect(create(:user).direct_groups_full_paths).to eq([])
+    end
+  end
+
   describe '#authorizations_for_projects' do
     let_it_be(:other) { create(:project) }
     let_it_be(:user) { create(:user) }
@@ -10483,6 +10494,17 @@ RSpec.describe User, :with_current_organization, feature_category: :user_profile
       it 'returns false' do
         expect(described_class.username_exists?('second_user')).to be(false)
       end
+    end
+  end
+
+  describe '.pluck_usernames' do
+    subject(:pluck_usernames) { described_class.id_in([user.id, another_user.id]).pluck_usernames }
+
+    let_it_be(:user) { create(:user, username: 'user_1') }
+    let_it_be(:another_user) { create(:user, username: 'user_2') }
+
+    it 'returns the usernames of the relation' do
+      expect(pluck_usernames).to contain_exactly('user_1', 'user_2')
     end
   end
 

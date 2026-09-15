@@ -592,6 +592,42 @@ RSpec.describe Gitlab::Ci::Trace::Stream, :clean_gitlab_redis_cache, feature_cat
         it { is_expected.to eq('65') }
       end
 
+      context 'using a regex with alternate captures' do
+        let(:regex) { 'Coverage: (\d+\.\d+)\%|Total coverage: (\d+)\%' }
+
+        context 'when the first alternative matches' do
+          let(:data) { 'Coverage: 98.29%' }
+
+          it { is_expected.to eq('98.29') }
+        end
+
+        context 'when the last alternative matches' do
+          let(:data) { 'Total coverage: 65%' }
+
+          it { is_expected.to eq('65') }
+        end
+      end
+
+      context 'using a regex that can match without capturing' do
+        let(:regex) { 'Coverage: (\d+\.\d+)\%|coverage reported' }
+
+        context 'when nothing is captured' do
+          let(:data) { 'coverage reported' }
+
+          it 'returns nil without tracking an error' do
+            expect(Gitlab::ErrorTracking).not_to receive(:track_exception)
+
+            is_expected.to be_nil
+          end
+        end
+
+        context 'when an earlier line captures a value' do
+          let(:data) { "Coverage: 98.29%\ncoverage reported\n" }
+
+          it { is_expected.to eq('98.29') }
+        end
+      end
+
       context 'malicious regexp' do
         let(:data) { malicious_text }
         let(:regex) { malicious_regexp_re2 }

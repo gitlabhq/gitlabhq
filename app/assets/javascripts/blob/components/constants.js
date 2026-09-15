@@ -7,8 +7,6 @@ export const BTN_DOWNLOAD_TITLE = __('Download');
 export const BTN_DOWNLOAD_AS_MARKDOWN_TITLE = s__('BlobViewer|Download as Markdown');
 export const BTN_DOWNLOAD_AS_PDF_TITLE = __('Print as PDF');
 
-export const MARKDOWN_EXTENSIONS = ['md', 'markdown', 'mkd', 'mkdn', 'mdown', 'rmd'];
-
 export const SIMPLE_BLOB_VIEWER = 'simple';
 export const SIMPLE_BLOB_VIEWER_TITLE = __('Display source');
 export const SIMPLE_BLOB_VIEWER_LABEL = __('Code');

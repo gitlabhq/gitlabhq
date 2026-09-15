@@ -21,11 +21,12 @@ describe('AdminUserActions component', () => {
     findUserActions(id).findComponent('[data-testid="user-actions-dropdown-toggle"]');
   const findDisclosureGroup = () => wrapper.findComponent(GlDisclosureDropdownGroup);
 
-  const initComponent = ({ actions = [], showButtonLabels } = {}) => {
+  const initComponent = ({ actions = [], showButtonLabels, userOverrides = {} } = {}) => {
     wrapper = shallowMountExtended(AdminUserActions, {
       propsData: {
         user: {
           ...user,
+          ...userOverrides,
           actions,
         },
         paths,
@@ -126,6 +127,30 @@ describe('AdminUserActions component', () => {
             paths: userPaths,
           });
           expect(component.text()).toBe(I18N_USER_ACTIONS[action]);
+        });
+      });
+
+      describe('when there is a remove_from_organization action', () => {
+        const organizationUserGid = 'gid://gitlab/Organizations::OrganizationUser/1';
+
+        beforeEach(() => {
+          initComponent({
+            actions: ['remove_from_organization'],
+            userOverrides: { organizationUserGid },
+          });
+        });
+
+        it('passes the organization user GID to the action component', () => {
+          const component = wrapper.findComponent(Actions.RemoveFromOrganization);
+
+          expect(component.props('organizationUserGid')).toBe(organizationUserGid);
+          expect(component.props('username')).toBe(user.name);
+        });
+
+        it('renders the action inside the bordered destructive group', () => {
+          const component = findDisclosureGroup().findComponent(Actions.RemoveFromOrganization);
+
+          expect(component.exists()).toBe(true);
         });
       });
 

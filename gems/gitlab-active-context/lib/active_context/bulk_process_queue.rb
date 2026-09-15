@@ -22,19 +22,21 @@ module ActiveContext
       specs_buffer = []
       scores = {}
       failures = []
-      retryable = []
+      infinite_retry = []
 
       collect_specs_from_queue(redis, specs_buffer, scores)
 
       return [0, 0] if specs_buffer.blank?
 
       refs = deserialize_all(specs_buffer)
-      failures, retryable = process_refs(refs, failures, retryable)
+      failures, infinite_retry = process_refs(refs, failures, infinite_retry)
 
-      track_failures!(failures, retryable)
-      cleanup_processed_refs(redis, scores, start_time, failures.count, retryable.count)
+      track_failures!(failures, infinite_retry)
+      cleanup_processed_refs(redis, scores, start_time, failures.count, infinite_retry.count)
 
-      [specs_buffer.count, failures.count]
+      # Infinite-retry refs count as failures. Without them, `should_re_enqueue?`
+      # re-enqueues the worker every second for refs that are not due yet.
+      [specs_buffer.count, failures.count + infinite_retry.count]
     end
 
     private
@@ -54,13 +56,13 @@ module ActiveContext
       end
     end
 
-    def process_refs(refs, failures, retryable)
+    def process_refs(refs, failures, infinite_retry)
       preprocess_result = Reference.preprocess_references(refs, **queue.preprocess_options)
 
       preprocess_result[:successful].each { |ref| bulk_processor.process(ref) }
 
       failures += preprocess_result[:failed]
-      retryable += preprocess_result[:retryable]
+      infinite_retry += preprocess_result[:infinite_retry]
 
       flushing_duration_s = Benchmark.realtime do
         failures += bulk_processor.flush
@@ -68,13 +70,13 @@ module ActiveContext
 
       log_indexer_flushed(flushing_duration_s)
 
-      [failures, retryable]
+      [failures, infinite_retry]
     end
 
-    def cleanup_processed_refs(redis, scores, start_time, failures_count, retryable_count)
+    def cleanup_processed_refs(redis, scores, start_time, failures_count, infinite_retry_count)
       scores.each do |set_key, (first_score, last_score, count)|
         redis.zremrangebyscore(set_key, first_score, last_score)
-        log_indexing_end(set_key, count, first_score, last_score, failures_count, retryable_count, start_time)
+        log_indexing_end(set_key, count, first_score, last_score, failures_count, infinite_retry_count, start_time)
       end
     end
 
@@ -98,7 +100,7 @@ module ActiveContext
       )
     end
 
-    def log_indexing_end(set_key, count, first_score, last_score, failures_count, retryable_count, start_time)
+    def log_indexing_end(set_key, count, first_score, last_score, failures_count, infinite_retry_count, start_time)
       duration_s = current_time - start_time
 
       duration_ms = duration_s.to_f * 1_000.to_f
@@ -112,7 +114,7 @@ module ActiveContext
         'meta.indexing.first_score' => first_score,
         'meta.indexing.last_score' => last_score,
         'meta.indexing.failures_count' => failures_count,
-        'meta.indexing.retryable_count' => retryable_count,
+        'meta.indexing.infinite_retry_count' => infinite_retry_count,
         'meta.indexing.bulk_execution_duration_s' => duration_s,
         'meta.indexing.bulk_execution_duration_per_ref_ms' => duration_per_ref_ms
       )
@@ -123,7 +125,7 @@ module ActiveContext
     end
 
     def bulk_processor
-      @bulk_processor ||= ActiveContext::BulkProcessor.new
+      @bulk_processor ||= ActiveContext::BulkProcessor.new(queue_name: queue.queue_name)
     end
 
     def logger
@@ -134,15 +136,9 @@ module ActiveContext
       Process.clock_gettime(Process::CLOCK_MONOTONIC)
     end
 
-    def track_failures!(failures, retryable)
-      unless failures.empty?
-        target_queue = queue == RetryQueue ? DeadQueue : RetryQueue
-        ActiveContext.track!(failures, queue: target_queue)
-      end
-
-      return if retryable.empty?
-
-      ActiveContext.track!(retryable, queue: queue)
+    def track_failures!(failures, infinite_retry)
+      ActiveContext.track!(failures, queue: queue.failure_queue) unless failures.empty?
+      ActiveContext.track!(infinite_retry, queue: queue.infinite_retry_queue) unless infinite_retry.empty?
     end
   end
 end

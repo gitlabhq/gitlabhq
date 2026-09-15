@@ -29,6 +29,18 @@ default:
   interruptible: true
   # Default job timeout doesn't work: https://gitlab.com/gitlab-org/gitlab/-/issues/387528
   timeout: 90m
+  hooks:
+    # Runs before the runner clones or fetches the repository. Allows the server
+    # to serve part of the transfer as packfile URIs, which the client downloads
+    # directly from object storage. Git ignores the offer unless the protocol is
+    # allowlisted, so an empty fetch.uriProtocols (git's default) disables it.
+    #
+    # Opt-in: set the CI/CD variable ENABLE_PACKFILE_URI_CI to "true" to turn it on.
+    #
+    # NOTE: job-level `hooks` replaces this wholesale rather than merging with
+    # it, so a job that defines its own `hooks` also needs this line.
+    pre_get_sources_script:
+      - if [ "$ENABLE_PACKFILE_URI_CI" = "true" ]; then git config --global fetch.uriProtocols https; fi
 
 .default-ruby-variables: &default-ruby-variables
   RUBY_VERSION: "${RUBY_VERSION_DEFAULT}"
@@ -36,7 +48,7 @@ default:
 
 .next-ruby-variables: &next-ruby-variables
   RUBY_VERSION: "${RUBY_VERSION_NEXT}"
-  OMNIBUS_GITLAB_CACHE_EDITION: "GITLAB_RUBY3_3"
+  OMNIBUS_GITLAB_CACHE_EDITION: "GITLAB_RUBY3_4"
 
 .default-merge-request-variables: &default-merge-request-variables
   NO_SOURCEMAPS: "true"
@@ -92,7 +104,7 @@ workflow:
         PIPELINE_NAME: 'Ruby $RUBY_VERSION MR'
     - if: '$CI_MERGE_REQUEST_LABELS =~ /Community contribution/'
       variables:
-        <<: [*next-ruby-variables, *default-merge-request-variables]
+        <<: [*default-ruby-variables, *default-merge-request-variables]
         GITLAB_DEPENDENCY_PROXY_ADDRESS: ""
         PIPELINE_NAME: 'Ruby $RUBY_VERSION MR (community contribution)'
     # This work around https://gitlab.com/gitlab-org/gitlab/-/issues/332411 which prevents usage of dependency proxy
@@ -106,7 +118,7 @@ workflow:
     # and we would always reconfigure the docker deamon for any CI/CD pipeline.
     - if: '$CI_MERGE_REQUEST_IID && $GITLAB_USER_LOGIN =~ /project_\d+_bot/'
       variables:
-        <<: [*next-ruby-variables, *default-merge-request-variables]
+        <<: [*default-ruby-variables, *default-merge-request-variables]
         GITLAB_DEPENDENCY_PROXY_ADDRESS: ""
         DOCKER_AUTH_CONFIG: "${DOCKER_AUTH_CONFIG_OVERRIDE}"
         PIPELINE_NAME: 'Ruby $RUBY_VERSION MR (triggered by a project token)'
@@ -120,19 +132,26 @@ workflow:
     # https://gitlab.com/gitlab-org/gitlab/-/issues/332411.
     - if: '$CI_MERGE_REQUEST_IID && $GITLAB_USER_LOGIN == "service-modelops-agent-principles-distiller"'
       variables:
-        <<: [*next-ruby-variables, *default-merge-request-variables]
+        <<: [*default-ruby-variables, *default-merge-request-variables]
         GITLAB_DEPENDENCY_PROXY_ADDRESS: ""
         DOCKER_AUTH_CONFIG: "${DOCKER_AUTH_CONFIG_OVERRIDE}"
         PIPELINE_NAME: 'Ruby $RUBY_VERSION MR (triggered by the principles distiller)'
     - <<: *if-merge-request-security-canonical-sync
       variables:
-        <<: [*next-ruby-variables, *default-merge-request-variables]
+        <<: [*default-ruby-variables, *default-merge-request-variables]
         PIPELINE_NAME: '$CI_DEFAULT_BRANCH security->canonical sync'
         SKIP_MESSAGE: 'MR only contains changes from the security mirror, which have already been reviewed, tested and deployed.'
     - <<: *if-merge-request-labels-run-with-rails-next
       variables:
-        <<: [*next-ruby-variables, *default-merge-request-variables]
+        <<: [*default-ruby-variables, *default-merge-request-variables]
         BUNDLE_GEMFILE: Gemfile.next
+    # Opt-in to the next Ruby version, like pipeline:run-with-rails-next does
+    # for Rails. Excludes merge trains: a train validates what the default
+    # branch will run, and that is the default Ruby.
+    - if: '($CI_PIPELINE_SOURCE == "merge_request_event" && $CI_MERGE_REQUEST_EVENT_TYPE != "merge_train") && $CI_MERGE_REQUEST_LABELS =~ /pipeline:run-with-ruby-next/'
+      variables:
+        <<: [*next-ruby-variables, *default-merge-request-variables]
+        PIPELINE_NAME: 'Ruby $RUBY_VERSION MR (run-with-ruby-next)'
     # This variable can be specified in manual or scheduled pipelines to run CI with the next Rails version.
     # Specifying BUNDLE_GEMFILE: Gemfile.next wouldn't work because QA jobs require
     # BUNDLE_GEMFILE to be Gemfile even with the next Rails version pipelines.
@@ -145,13 +164,21 @@ workflow:
     # SQL queries carry source-file info (useful when reviewing DB changes).
     - if: '$CI_PIPELINE_SOURCE == "merge_request_event" && $CI_MERGE_REQUEST_EVENT_TYPE != "merge_train" && $CI_MERGE_REQUEST_LABELS =~ /database/'
       variables:
-        <<: [*next-ruby-variables, *default-merge-request-variables]
+        <<: [*default-ruby-variables, *default-merge-request-variables]
         PIPELINE_NAME: 'Ruby $RUBY_VERSION MR'
         QUERY_LOG_LINE: "true"
+    # MRs with the 'pipeline:use-test-balancing' label opt in to dynamic RSpec
+    # test balancing. Placed after the database/ruby-next toggles so those win
+    # when stacked; balancing degrades gracefully to the static Knapsack split.
+    - if: '$CI_PIPELINE_SOURCE == "merge_request_event" && $CI_MERGE_REQUEST_EVENT_TYPE != "merge_train" && $CI_MERGE_REQUEST_LABELS =~ /pipeline:use-test-balancing/'
+      variables:
+        <<: [*default-ruby-variables, *default-merge-request-variables]
+        PIPELINE_NAME: 'Ruby $RUBY_VERSION MR'
+        GLCI_USE_TEST_BALANCING: "true"
     # For (detached) merge request pipelines.
     - if: '$CI_MERGE_REQUEST_IID'
       variables:
-        <<: [*next-ruby-variables, *default-merge-request-variables]
+        <<: [*default-ruby-variables, *default-merge-request-variables]
         PIPELINE_NAME: 'Ruby $RUBY_VERSION MR'
     # For the scheduled pipelines, we set specific variables.
     - if: '$CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH && $CI_PIPELINE_SOURCE == "schedule" && $BUILD_WITH_NEXT_RUBY_VERSION == "true"'
@@ -280,6 +307,7 @@ variables:
   GLCI_PREDICTIVE_RSPEC_PIPELINE_TEMPLATE_YML: .gitlab/ci/rails/rspec-predictive.gitlab-ci.yml.erb
   GLCI_PREDICTIVE_DUO_SYSTEM_TESTS_PATH: rspec/duo_system_test_files.txt
   GLCI_PREDICTIVE_RSPEC_SYSTEM_FULL_PIPELINE_YML: .gitlab/ci/rails/rspec-predictive-system-full-generated.yml
+  GLCI_FLAKY_TEST_LIST_URL: "https://gitlab-org.gitlab.io/quality/analytics/ci-alerts/flaky-tests.json"
 
   # Test execution result export to ClickHouse
   GLCI_EXPORT_TEST_METRICS: "true"
@@ -294,7 +322,6 @@ variables:
   RSPEC_LAST_RUN_RESULTS_FILE: rspec/rspec_last_run_results.txt
   RSPEC_PROFILING_FOLDER_PATH: rspec/profiling
   RSPEC_AUTO_EXPLAIN_LOG_PATH: auto_explain/auto_explain.ndjson.gz
-  RUBYOPT: "--yjit"
   TMP_TEST_FOLDER: ${CI_PROJECT_DIR}/tmp/tests
   GLCI_CACHED_SERVICES_FOLDER: ${CI_PROJECT_DIR}/tmp/services
   GLCI_GITLAB_ASSETS_HASH_FILE: cached-assets-hash.txt
@@ -377,3 +404,6 @@ include:
     rules:
       - *if-merge-request-labels-run-with-rails-next
       - *if-rails-next-schedule
+  - local: .gitlab/ci/overrides/assets-tmp-cache.yml
+    rules:
+      - if: '$CI_COMMIT_REF_NAME == $CI_DEFAULT_BRANCH && $CI_PIPELINE_SOURCE == "push"'

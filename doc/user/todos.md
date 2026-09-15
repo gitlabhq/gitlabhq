@@ -1,6 +1,6 @@
 ---
 stage: Plan
-group: Project Management
+group: Work Items
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see <https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments>
 title: To-Do List
 description: Task management, actions, and access changes.
@@ -53,8 +53,6 @@ To sort the To-Do List:
 
 {{< history >}}
 
-- Multiple to-do items [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/28355) in GitLab 13.8 [with a feature flag](../administration/feature_flags/_index.md) named `multiple_todos`. Disabled by default.
-- Multiple to-do items [enabled on GitLab.com](https://gitlab.com/gitlab-org/gitlab/-/issues/28355) in GitLab 16.2.
 - Multiple to-do items [enabled on GitLab Self-Managed](https://gitlab.com/gitlab-org/gitlab/-/issues/28355) in GitLab 17.8. Feature flag `multiple_todos` enabled by default.
 
 {{< /history >}}
@@ -154,7 +152,7 @@ If someone else closes or takes action on an issue or epic, your to-do item
 remains pending.
 
 When a merge request is merged or closed, to-do items for all users that were
-assigned, added as reviewers or approvers, or required to approve are marked as done. This includes to do items related to failed pipelines.
+assigned, added as reviewers or approvers, or required to approve are marked as done. This includes to-do items related to failed pipelines.
 
 ## Mark a to-do item as done
 
@@ -184,7 +182,7 @@ The to-do item is now visible in the **To Do** tab of the To-Do List.
 
 {{< /history >}}
 
-You can snooze to-do items to temporarily hide them from your main To-Do List. This allows you to focus on more urgent tasks and return to snoozed items later.
+You can snooze to-do items to temporarily hide them from your main To-Do List. You can then focus on more urgent tasks and return to snoozed items later.
 
 To snooze a to-do item:
 

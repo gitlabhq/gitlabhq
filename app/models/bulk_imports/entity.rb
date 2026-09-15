@@ -20,6 +20,7 @@
 class BulkImports::Entity < ApplicationRecord
   include AfterCommitQueue
   include Gitlab::Utils::StrongMemoize
+  include Gitlab::InternalEventsTracking
 
   GROUP_ENTITY_SOURCE_TYPE = 'group_entity'
   PROJECT_ENTITY_SOURCE_TYPE = 'project_entity'
@@ -105,16 +106,24 @@ class BulkImports::Entity < ApplicationRecord
       transition any => :canceled
     end
 
-    # rubocop:disable Style/SymbolProc
-    after_transition any => [:finished, :failed, :timeout] do |entity|
+    after_transition any => [:finished, :failed, :timeout] do |entity, _|
       entity.update_has_failures
     end
-    # rubocop:enable Style/SymbolProc
 
-    after_transition any => [:canceled] do |entity|
+    after_transition any => [:canceled] do |entity, _|
       entity.run_after_commit do
         entity.propagate_cancel
       end
+
+      entity.track_project_import_event('cancel_project_import')
+    end
+
+    after_transition on: :fail_op do |entity, _|
+      entity.track_project_import_event('fail_project_import')
+    end
+
+    after_transition on: :cleanup_stale do |entity, _|
+      entity.track_project_import_event('timeout_project_import')
     end
   end
 
@@ -250,6 +259,48 @@ class BulkImports::Entity < ApplicationRecord
 
   def propagate_cancel
     trackers.each(&:cancel)
+  end
+
+  # Direct Transfer and Offline Transfer keep the source host in different
+  # places (BulkImports::Configuration#url vs Import::Offline::Configuration#source_hostname),
+  # so pick the one that matches this bulk_import's source_type.
+  def hashed_import_source
+    source_url =
+      if bulk_import.offline?
+        bulk_import.offline_configuration&.source_hostname
+      else
+        bulk_import.configuration&.safe_url
+      end
+
+    return if source_url.blank?
+
+    location = "#{source_url.delete_suffix('/')}/#{source_full_path}"
+
+    Gitlab::Import::SourceIdentifier.hash(location)
+  end
+
+  def track_project_import_event(action)
+    return unless project?
+
+    run_after_commit do
+      track_internal_event(action, project_import_event_attributes)
+    end
+  end
+
+  # label distinguishes Direct Transfer (gitlab_project_migration) from Offline
+  # Transfer (offline_transfer), which share this entity model and EntityFinisher.
+  # Read from bulk_import rather than project&.import_type, since project may not
+  # exist yet if the entity fails/cancels before its pipeline creates it.
+  def project_import_event_attributes
+    {
+      project: project,
+      user: bulk_import.user,
+      namespace: project&.namespace,
+      additional_properties: {
+        label: bulk_import.offline? ? 'offline_transfer' : 'gitlab_project_migration',
+        property: hashed_import_source
+      }.compact
+    }
   end
 
   private

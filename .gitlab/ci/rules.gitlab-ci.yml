@@ -20,7 +20,7 @@
 .if-force-ci: &if-force-ci
   if: '$FORCE_GITLAB_CI'
 
-# weekly pipeline is opt-in and should not automatically run every job
+# weekly, ai-principles-* and whats-new pipelines are opt-in and should not automatically run every job
 .if-default-refs: &if-default-refs
   if: '
       (
@@ -28,6 +28,7 @@
         && $SCHEDULE_TYPE != "weekly"
         && $SCHEDULE_TYPE != "ai-principles-distillation"
         && $SCHEDULE_TYPE != "ai-principles-fence-reconcile"
+        && $SCHEDULE_TYPE != "whats-new"
         && $TRIGGERED_BY_AI_GATEWAY_PROJECT != "true"
         &&
         (
@@ -48,9 +49,9 @@
       || $FORCE_GITLAB_CI
       '
 
-# weekly and ai-principles-* pipelines are opt-in and should not automatically run every job
+# weekly, ai-principles-* and whats-new pipelines are opt-in and should not automatically run every job
 .if-default-branch-refs: &if-default-branch-refs
-  if: '$CI_COMMIT_REF_NAME == $CI_DEFAULT_BRANCH && $CI_MERGE_REQUEST_IID == null && $SCHEDULE_TYPE != "weekly" && $SCHEDULE_TYPE != "ai-principles-distillation" && $SCHEDULE_TYPE != "ai-principles-fence-reconcile"'
+  if: '$CI_COMMIT_REF_NAME == $CI_DEFAULT_BRANCH && $CI_MERGE_REQUEST_IID == null && $SCHEDULE_TYPE != "weekly" && $SCHEDULE_TYPE != "ai-principles-distillation" && $SCHEDULE_TYPE != "ai-principles-fence-reconcile" && $SCHEDULE_TYPE != "whats-new"'
 
 .if-default-branch-push: &if-default-branch-push
   if: '$CI_COMMIT_REF_NAME == $CI_DEFAULT_BRANCH && $CI_PIPELINE_SOURCE == "push"'
@@ -130,15 +131,6 @@
 .if-merge-request-labels-run-search-tests: &if-merge-request-labels-run-search-tests
   if: '($CI_PIPELINE_SOURCE == "merge_request_event" && $CI_MERGE_REQUEST_EVENT_TYPE != "merge_train") && $CI_MERGE_REQUEST_LABELS =~ /pipeline:run-search-tests/'
 
-.if-merge-request-labels-run-observability-e2e-tests-main-branch: &if-merge-request-labels-run-observability-e2e-tests-main-branch
-  if: '($CI_PIPELINE_SOURCE == "merge_request_event" && $CI_MERGE_REQUEST_EVENT_TYPE != "merge_train") && $CI_MERGE_REQUEST_LABELS =~ /pipeline:run-observability-e2e-tests-main-branch/'
-
-.if-merge-request-labels-run-observability-e2e-tests-current-branch: &if-merge-request-labels-run-observability-e2e-tests-current-branch
-  if: '($CI_PIPELINE_SOURCE == "merge_request_event" && $CI_MERGE_REQUEST_EVENT_TYPE != "merge_train") && $CI_MERGE_REQUEST_LABELS =~ /pipeline:run-observability-e2e-tests-current-branch/'
-
-.if-merge-request-labels-skip-observability-e2e-tests: &if-merge-request-labels-skip-observability-e2e-tests
-  if: '($CI_PIPELINE_SOURCE == "merge_request_event" && $CI_MERGE_REQUEST_EVENT_TYPE != "merge_train") && $CI_MERGE_REQUEST_LABELS =~ /pipeline:skip-observability-e2e-tests/'
-
 .if-merge-request-labels-run-single-db: &if-merge-request-labels-run-single-db
   if: '($CI_PIPELINE_SOURCE == "merge_request_event" && $CI_MERGE_REQUEST_EVENT_TYPE != "merge_train") && $CI_MERGE_REQUEST_LABELS =~ /pipeline:run-single-db/'
 
@@ -156,6 +148,9 @@
 
 .if-merge-request-labels-skip-check-ci-partition-pruning: &if-merge-request-labels-skip-check-ci-partition-pruning
   if: '($CI_PIPELINE_SOURCE == "merge_request_event" && $CI_MERGE_REQUEST_EVENT_TYPE != "merge_train") && $CI_MERGE_REQUEST_LABELS =~ /pipeline:skip-check-ci-partition-pruning/'
+
+.if-merge-request-labels-skip-router-sync: &if-merge-request-labels-skip-router-sync
+  if: '($CI_PIPELINE_SOURCE == "merge_request_event" && $CI_MERGE_REQUEST_EVENT_TYPE != "merge_train") && $CI_MERGE_REQUEST_LABELS =~ /pipeline:skip-router-sync/'
 
 .if-merge-request-labels-jh-contribution: &if-merge-request-labels-jh-contribution
   if: '($CI_PIPELINE_SOURCE == "merge_request_event" && $CI_MERGE_REQUEST_EVENT_TYPE != "merge_train") && $CI_MERGE_REQUEST_LABELS =~ /JiHu contribution/'
@@ -252,6 +247,9 @@
 .if-default-branch-schedule-ai-principles-fence-reconcile: &if-default-branch-schedule-ai-principles-fence-reconcile
   if: '$CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH && $CI_PIPELINE_SOURCE == "schedule" && $SCHEDULE_TYPE == "ai-principles-fence-reconcile"'
 
+.if-default-branch-schedule-whats-new: &if-default-branch-schedule-whats-new
+  if: '$CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH && $CI_PIPELINE_SOURCE == "schedule" && $SCHEDULE_TYPE == "whats-new"'
+
 .if-ruby-branch-schedule: &if-ruby-branch-schedule
   if: '$CI_COMMIT_BRANCH == "ruby-next" && $CI_PIPELINE_SOURCE == "schedule" && $SCHEDULE_TYPE == "maintenance"'
 
@@ -274,7 +272,7 @@
   if: '($CI_SERVER_HOST != "gitlab.com" || $CI_PROJECT_NAMESPACE != "gitlab-org") && ($CI_SERVER_HOST != "jihulab.com" || $CI_PROJECT_NAMESPACE != "gitlab-cn")'
 
 .if-dot-com-gitlab-org-schedule: &if-dot-com-gitlab-org-schedule
-  if: '$CI_SERVER_HOST == "gitlab.com" && $CI_PROJECT_NAMESPACE == "gitlab-org" && $CI_PIPELINE_SOURCE == "schedule" && $SCHEDULE_TYPE != "ai-principles-distillation" && $SCHEDULE_TYPE != "ai-principles-fence-reconcile"'
+  if: '$CI_SERVER_HOST == "gitlab.com" && $CI_PROJECT_NAMESPACE == "gitlab-org" && $CI_PIPELINE_SOURCE == "schedule" && $SCHEDULE_TYPE != "ai-principles-distillation" && $SCHEDULE_TYPE != "ai-principles-fence-reconcile" && $SCHEDULE_TYPE != "whats-new"'
 
 .if-dot-com-ee-schedule-default-branch-maintenance: &if-dot-com-ee-schedule-default-branch-maintenance
   if: '$CI_SERVER_HOST == "gitlab.com" && $CI_PROJECT_PATH == "gitlab-org/gitlab" && $CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH && $CI_PIPELINE_SOURCE == "schedule" && $SCHEDULE_TYPE == "maintenance"'
@@ -292,13 +290,10 @@
   if: '$CI_PIPELINE_SOURCE == "merge_request_event" && $CI_MERGE_REQUEST_EVENT_TYPE == "merge_train" && $CI_SERVER_HOST == "gitlab.com" && $CI_PROJECT_NAMESPACE =~ /^gitlab-org/'
 
 .if-ruby-branch: &if-ruby-branch
-  if: '$CI_COMMIT_BRANCH == "ruby-next" || (($CI_PIPELINE_SOURCE == "merge_request_event" && $CI_MERGE_REQUEST_EVENT_TYPE != "merge_train") && $CI_MERGE_REQUEST_LABELS =~ /pipeline:run-in-ruby\d+(_\d)*/)'
+  if: '$CI_COMMIT_BRANCH == "ruby-next" || (($CI_PIPELINE_SOURCE == "merge_request_event" && $CI_MERGE_REQUEST_EVENT_TYPE != "merge_train") && $CI_MERGE_REQUEST_LABELS =~ /pipeline:run-in-ruby\d+(_\d)*|pipeline:run-with-ruby-next/)'
 
 .if-rails-next-branch: &if-rails-next-branch
   if: '$CI_COMMIT_BRANCH == "rails-next"'
-
-.if-observability-skip-e2e-jobs: &if-observability-skip-e2e-jobs
-  if: '$SKIP_GITLAB_OBSERVABILITY_BACKEND_TRIGGER || $GITLAB_OBSERVABILITY_BACKEND_PIPELINE_TRIGGER_TOKEN == null || $GITLAB_OBSERVABILITY_BACKEND_TOKEN_FOR_CI_SCRIPTS == null'
 
 .if-group-code-review-label-or-maintenance-label-on-mr: &if-group-code-review-label-or-maintenance-label-on-mr
   if: '$CI_PIPELINE_SOURCE == "merge_request_event" && $CI_MERGE_REQUEST_EVENT_TYPE != "merge_train" && ($CI_MERGE_REQUEST_LABELS =~ /group::code review/ || $CI_MERGE_REQUEST_LABELS =~ /maintenance::dependency/)'
@@ -328,6 +323,10 @@
 .ci-templates-patterns: &ci-templates-patterns
   - ".gitlab/ci/static-analysis.gitlab-ci.yml"
   - "lib/gitlab/ci/templates/**/*.gitlab-ci.yml"
+
+.ci-qa-image-patterns: &ci-qa-image-patterns
+  - "qa/Dockerfile"
+  - "scripts/build_qa_image"
 
 .ci-qa-patterns: &ci-qa-patterns
   - ".gitlab-ci.yml"
@@ -1197,7 +1196,9 @@
   - "tooling/authz/permissions/docs/templates/*"
 
 .ci-job-token-policies-patterns: &ci-job-token-policies-patterns
-  - "{,ee/}lib/api/*.rb"
+  # ci:job_tokens:check_policies walks the whole API tree, so this has to match
+  # nested files too, the way .permissions-patterns above already does.
+  - "{,ee/}lib/{,**/}api/{,**/}*.rb"
   - "app/validators/json_schemas/ci_job_token_policies.json"
   - "doc/ci/jobs/fine_grained_permissions.md"
   - "tooling/ci/job_tokens/docs/templates/fine_grained_permissions.md.erb"
@@ -1208,11 +1209,6 @@
 .gitlab-orchestrator-patterns: &gitlab-orchestrator-patterns
   - "qa/gems/gitlab-orchestrator/**/*.rb"
   - "qa/gems/gitlab-orchestrator/{Gemfile,Gemfile.lock}"
-
-.observability-code-patterns: &observability-code-patterns
-  - "lib/gitlab/observability.rb"
-  - "ee/lib/ee/gitlab/observability.rb"
-  - "ee/lib/api/internal/observability.rb"
 
 .gem-change-patterns: &gem-change-patterns
   - Gemfile
@@ -1281,6 +1277,8 @@
     - <<: *if-default-branch-schedule-ai-principles
       when: never
     - <<: *if-default-branch-schedule-ai-principles-fence-reconcile
+      when: never
+    - <<: *if-default-branch-schedule-whats-new
       when: never
 
 .rails:rules:run-search-tests:
@@ -1487,6 +1485,10 @@
     - <<: *if-merge-request-targeting-stable-branch
       changes: *setup-test-env-patterns
     - <<: *if-merge-request
+      changes: *ci-qa-image-patterns
+      variables:
+        ARCH: amd64,arm64
+    - <<: *if-merge-request
       changes: *ci-qa-patterns
     - <<: *if-merge-request
       changes: *gdk-component-patterns
@@ -1537,6 +1539,25 @@
 #################
 # Caching rules #
 #################
+# rules for updating unprotected caches via maintenance schedule pipelines
+.caching:rules:update-master-based-caches:
+  rules:
+    - <<: *if-schedule-maintenance
+    - <<: *if-security-schedule
+    - <<: *if-foss-schedule
+    - <<: *if-merge-request-labels-update-caches
+
+.caching:rules:rubocop-cache-update:
+  rules:
+    - !reference [.caching:rules:update-master-based-caches, rules]
+    - *if-rails-next-branch
+    - <<: *if-default-branch-push
+      changes:
+        - '**/*.rb'
+        - '**/*.rake'
+        - '.rubocop_todo/**/*.yml'
+        - '.rubocop.yml'
+
 # This rule is used by pull-push cache jobs to ensure pipeline always has cache populated
 # All caches are generally related to app code, so limit cache jobs to code-backstage-patterns
 .caching:rules:update-cache-on-code-changes:
@@ -1555,8 +1576,6 @@
 # this rule is combination of rules for jobs that use cached frontend assets:
 #  * .frontend:rules:compile-test-assets
 #  * .frontend:rules:compile-production-assets
-#  * .qa:rules:e2e:test-on-gdk - now scheduled-pipeline only, keeping the assets
-#    hash available for the scheduled GDK image build; it no longer triggers on MRs
 .caching:rules:frontend-asset-hash:
   rules:
     - <<: *if-tag
@@ -1568,7 +1587,6 @@
     - !reference [.frontend:rules:compile-test-assets, rules]
     - !reference [.frontend:rules:assets-shared, rules]
     - !reference [.releases:rules:canonical-dot-com-security-gitlab-stable-branch-only, rules]
-    - !reference [.qa:rules:e2e:test-on-gdk, rules]
 
 ######################
 # CI Templates Rules #
@@ -1711,6 +1729,36 @@
     - <<: *if-default-refs
       changes: *code-backstage-qa-patterns
 
+################
+# Cells rules #
+################
+.cells:rules:routes-up-to-date:
+  rules:
+    - <<: *if-not-ee
+      when: never
+    # JiHu draws additional routes from jh/, so the committed snapshot can never
+    # match there.
+    - <<: *if-jh
+      when: never
+    - <<: *if-default-refs
+      changes: *code-backstage-qa-patterns
+
+# Deliberately narrower than routes-up-to-date. The paired HTTP Router merge request merges
+# first, so the router is ahead of master until the GitLab side lands. Outside that scope the
+# job would fail on merge requests that never touched a route.
+.cells:rules:routes-router-in-sync:
+  rules:
+    - <<: *if-not-ee
+      when: never
+    - <<: *if-jh
+      when: never
+    - <<: *if-merge-request-targeting-stable-branch
+      when: never
+    - <<: *if-merge-request-labels-skip-router-sync
+      when: never
+    - <<: *if-merge-request
+      changes: ["config/routing/gitlab_routes.json"]
+
 #########################
 # DAST Variables rules  #
 #########################
@@ -1832,6 +1880,10 @@
     # Do not refer directly to .release-environments:rules:start-release-environments-security-pipeline
     # to avoid the side effect of "never" rules
     - !reference [".releases:rules:canonical-dot-com-security-gitlab-stable-branch-only", rules]
+
+.frontend:rules:compile-production-assets-istanbul:
+  rules:
+    - <<: *if-dot-com-ee-schedule-default-branch-maintenance
 
 .frontend:rules:compile-test-assets:
   rules:
@@ -1956,12 +2008,6 @@
       when: never
     - <<: *if-merge-request-labels-frontend-and-feature-flag
       changes: *setup-test-env-patterns
-    # For tier-1 pipelines, only run when relevant storybook files change
-    - <<: *if-merge-request-tier-1-or-no-tier
-      changes:
-        - '{,ee/}app/**/*.vue'
-        - '{,ee/}app/**/*.stories.js'
-        - 'storybook/**/*'
     - <<: *if-default-refs
       changes:
         - '{,ee/}app/**/*.vue'
@@ -2170,6 +2216,12 @@
     - if: $CI_SERVER_HOST == "gitlab.com" && $CI_PROJECT_PATH == "gitlab-org/gitlab" && $CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH && $CI_PIPELINE_SOURCE == "push"
       changes: *code-backstage-spec-patterns
 
+.frontend:rules:update-frontend-fixtures-on-demand:
+  rules:
+    - <<: *if-dot-com-gitlab-org-merge-request
+      when: manual
+      allow_failure: true
+
 .frontend:rules:update-fe-islands:
   rules:
     - <<: *if-not-ee
@@ -2349,6 +2401,13 @@
   CREATE_TEST_FAILURE_ISSUES: "true"
   PROCESS_TEST_RESULTS: "true"
 
+.qa:e2e-cng-schedule-variables: &qa-e2e-cng-schedule-variables
+  <<: *qa-e2e-test-schedule-variables
+  # Only the scheduled run needs the code paths mapping
+  COVERBAND_ENABLED: "true"
+  # Parallel processes share one coverage counter and corrupt it
+  QA_RUN_IN_PARALLEL: "false"
+
 .qa:rules:e2e-schedule-nightly:
   rules:
     - <<: *if-default-branch-schedule-nightly
@@ -2435,23 +2494,13 @@
 
 .qa:rules:e2e:test-on-gdk:
   rules:
-    # test-on-gdk no longer runs on merge request pipelines - E2E coverage for MRs
-    # is provided by test-on-cng. It still runs on the scheduled pipeline so the
-    # E2E code-paths mapping / coverage collection is preserved.
-    # See https://gitlab.com/groups/gitlab-org/quality/test-governance/-/work_items/5
+    # Retired: test-on-cng covers merge requests and exports the code-paths mapping.
+    # See https://gitlab.com/gitlab-org/gitlab/-/work_items/609350
     - !reference [".qa:rules:e2e-test-never-run", rules]
     - <<: *if-merge-request-targeting-stable-branch
       when: never
     - <<: *if-security-merge-request
       when: never
-    - <<: *if-dot-com-gitlab-org-schedule
-      variables:
-        <<: *qa-e2e-test-schedule-variables
-        COVERBAND_ENABLED: "true"
-        QA_RUN_IN_PARALLEL: "false"
-        # https://gitlab.com/gitlab-org/gitlab/-/blob/master/babel.config.js
-        # This sets the environmental variable enabling `istanbul` plugin in Babel
-        BABEL_ENV: "istanbul"
 
 .qa:rules:e2e:test-on-cng:
   rules:
@@ -2469,13 +2518,13 @@
     - !reference [".qa:rules:e2e-blocking-base-before", rules]
     - !reference [".prevent-tier-1", rules]
     - !reference [".qa:rules:e2e-blocking-base-after", rules]
-    - <<: *if-dot-com-gitlab-org-schedule
+    # Only the 2-hourly master run collects the frontend code paths mapping
+    - <<: *if-dot-com-ee-schedule-default-branch-maintenance
       variables:
-        <<: *qa-e2e-test-schedule-variables
-        # Only the scheduled run needs the code paths mapping
-        COVERBAND_ENABLED: "true"
-        # Parallel processes share one coverage counter and corrupt it
-        QA_RUN_IN_PARALLEL: "false"
+        <<: *qa-e2e-cng-schedule-variables
+        BABEL_ENV: "istanbul"
+    - <<: *if-dot-com-gitlab-org-schedule
+      variables: *qa-e2e-cng-schedule-variables
 
 .qa:rules:e2e:perf-on-cng:
   rules:
@@ -2496,6 +2545,7 @@
     # Do not run for scheduled pipeline for rails-next branch
     - <<: *if-rails-branch-schedule
       when: never
+    - !reference [".prevent-tier-2-and-below", rules]
     # Automatically run for MRs with group::code review label or maintenance::dependency label and backend changes
     - <<: *if-group-code-review-label-or-maintenance-label-on-mr
       changes: *backend-only-patterns
@@ -2922,12 +2972,13 @@
     - <<: *if-merge-request-labels-run-rspec-vue3
 
 # Gitaly MVCC backend jobs only run when the pipeline:run-gitaly-mvcc label is
-# set, since the backend is still under development. The -ee variants add the
-# if-not-ee guard so the rspec-ee jobs stay excluded in FOSS contexts.
+# set, or when ENABLE_RSPEC_GITALY_MVCC=true (used by the gitaly project's
+# rails-specs cross-project trigger). The -ee variants add the if-not-ee guard.
 .rails:rules:gitaly-mvcc:
   rules:
     - <<: *if-fork-merge-request
       when: never
+    - if: '$ENABLE_RSPEC_GITALY_MVCC == "true"'
     - <<: *if-merge-request-labels-run-gitaly-mvcc
 
 .rails:rules:gitaly-mvcc-ee:
@@ -2941,6 +2992,7 @@
     - !reference [".rails:rules:only-run-system-if-medium-runners-available", rules]
     - <<: *if-fork-merge-request
       when: never
+    - if: '$ENABLE_RSPEC_GITALY_MVCC == "true"'
     - <<: *if-merge-request-labels-run-gitaly-mvcc
 
 .rails:rules:gitaly-mvcc-ee-system:
@@ -3146,6 +3198,17 @@
     - <<: *if-dot-com-gitlab-org-merge-request
       changes: *code-backstage-spec-patterns
       when: on_failure
+
+# Unlike rspec-coverage this must also run on the default branch, because that
+# is what publishes the baseline every MR pipeline diffs against.
+.rails:rules:rspec-test-summary:
+  rules:
+    - <<: *if-fork-merge-request
+      when: never
+    - <<: *if-merge-request-labels-pipeline-expedite
+      when: never
+    - <<: *if-default-refs
+      changes: *code-backstage-spec-patterns
 
 .rails:rules:rspec-coverage:
   rules:
@@ -3993,6 +4056,17 @@
     - <<: *if-default-branch-schedule-ai-principles-fence-reconcile
 
 ###################
+# What's New rules #
+###################
+.whats-new:rules:scheduled:
+  rules:
+    - if: '$CI_PROJECT_PATH != "gitlab-org/gitlab"'
+      when: never
+    - if: '$PROJECT_TOKEN_FOR_CI_SCRIPTS_API_USAGE == null'
+      when: never
+    - <<: *if-default-branch-schedule-whats-new
+
+###################
 # Benchmark rules #
 ###################
 .benchmark:rules:benchmark-markdown:
@@ -4002,31 +4076,6 @@
       when: manual
     - <<: *if-merge-request-labels-run-all-rspec
       when: manual
-
-###############################
-# Observability Backend rules #
-###############################
-.observability-backend-main-branch:rules:
-  rules:
-    - <<: *if-observability-skip-e2e-jobs
-      when: never
-    - <<: *if-merge-request-labels-skip-observability-e2e-tests
-      when: never
-    - <<: *if-merge-request-labels-run-observability-e2e-tests-current-branch
-      when: never
-    - <<: *if-merge-request-labels-run-observability-e2e-tests-main-branch
-    - <<: *if-merge-request
-      changes: *observability-code-patterns
-
-.observability-backend-current-branch:rules:
-  rules:
-    - <<: *if-observability-skip-e2e-jobs
-      when: never
-    - <<: *if-merge-request-labels-skip-observability-e2e-tests
-      when: never
-    - <<: *if-merge-request-labels-run-observability-e2e-tests-main-branch
-      when: never
-    - <<: *if-merge-request-labels-run-observability-e2e-tests-current-branch
 
 ##########################
 # Pre-merge checks rules #

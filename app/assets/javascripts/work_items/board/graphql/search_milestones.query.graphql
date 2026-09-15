@@ -1,6 +1,6 @@
 #import "~/work_items/graphql/milestone.fragment.graphql"
 
-# @feature_category: portfolio_management
+# @feature_category: team_planning
 query boardInheritedMilestones($fullPath: ID!, $search: String, $isProject: Boolean = false) {
   group(fullPath: $fullPath) @skip(if: $isProject) {
     id

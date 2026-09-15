@@ -27,12 +27,14 @@ class Member < ApplicationRecord
 
   attr_accessor :raw_invite_token
 
-  # Transient flag set by callers that create a member for which an
-  # authorized projects refresh is provably unnecessary (e.g. the owner
-  # of a brand-new group, which has no projects yet). Currently only
-  # read in `GroupMember#refresh_member_authorized_projects` and set by
-  # Groups::CreateService when adding an owner to the newly created
-  # group.
+  # Transient flag set by callers that already handle the refresh
+  # themselves, so the refresh callback can skip its own.
+  # On create: set by Groups::CreateService for a new group's owner and
+  # read only by GroupMember#refresh_member_authorized_projects, which
+  # still checks that the group grants no project access.
+  # On destroy: set by Members::DestroyService when its caller passes
+  # skip_authorized_projects_refresh: true and refreshes once afterwards;
+  # read by the destroy callback below.
   attr_accessor :skip_authorized_projects_refresh
   alias_method :skip_authorized_projects_refresh?, :skip_authorized_projects_refresh
 
@@ -137,6 +139,9 @@ class Member < ApplicationRecord
   end
 
   scope :for_users, ->(user_ids) { where(user_id: user_ids) }
+  scope :in_organization, ->(organization) do
+    joins(:member_namespace).merge(Namespace.in_organization(organization))
+  end
 
   scope :count_by_access_level, ->(column_name = nil) do
     group(:access_level).count(column_name)
@@ -397,7 +402,11 @@ class Member < ApplicationRecord
 
   after_commit :send_request, if: :request?, unless: :importing?, on: [:create]
   after_commit :log_previous_state_on_update, unless: :importing?, on: [:update]
-  after_commit on: [:create, :update, :destroy], unless: :importing? do
+  after_commit on: [:create, :update], unless: :importing? do
+    refresh_member_authorized_projects
+  end
+  # Members::DestroyService sets the flag when its caller refreshes once afterwards
+  after_commit on: [:destroy], unless: [:importing?, :skip_authorized_projects_refresh?] do
     refresh_member_authorized_projects
   end
 
@@ -494,7 +503,7 @@ class Member < ApplicationRecord
     end
 
     def shared_members(group)
-      columns = member_columns_for_shared_members(group)
+      columns = member_columns_for_shared_members
 
       joins("JOIN group_group_links ON members.source_id = group_group_links.shared_with_group_id")
         .select(columns)
@@ -507,7 +516,7 @@ class Member < ApplicationRecord
 
     private
 
-    def member_columns_for_shared_members(group)
+    def member_columns_for_shared_members
       group_group_link_table = GroupGroupLink.arel_table
 
       column_names.map do |column_name|
@@ -516,7 +525,7 @@ class Member < ApplicationRecord
           args = [group_group_link_table[:group_access], arel_table[:access_level]]
           smallest_value_arel(args, 'access_level')
         when 'member_role_id'
-          member_role_id(group)
+          null_member_role_id_sql
         else
           arel_table[column_name]
         end
@@ -533,11 +542,6 @@ class Member < ApplicationRecord
 
     def no_access_arel
       Arel::Nodes::As.new(Arel::Nodes::SqlLiteral.new('0'), Arel::Nodes::SqlLiteral.new('access_level'))
-    end
-
-    # overridden in EE
-    def member_role_id(_group)
-      null_member_role_id_sql
     end
   end
 

@@ -69,7 +69,7 @@ RSpec.describe 'getting merge request information nested in a project', feature_
     let(:excluded) do
       %w[jobs pipeline runners codequalityReportsComparer
         mlModels inboundAllowlistCount groupsAllowlistCount mergeTrains ciJobTokenAuthLogs mlExperiments
-        groupAllowlistAutopopulatedIds inboundAllowlistAutopopulatedIds]
+        groupAllowlistAutopopulatedIds inboundAllowlistAutopopulatedIds unprotectedBranches]
     end
 
     let(:mr_fields) { all_graphql_fields_for('MergeRequest', excluded: excluded) }

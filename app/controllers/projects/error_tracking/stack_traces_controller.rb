@@ -25,7 +25,7 @@ module Projects
 
       def fetch_latest_event_issue
         ::ErrorTracking::IssueLatestEventService
-          .new(project, current_user, issue_id: params[:issue_id])
+          .new(project, current_user, issue_id: params.permit(:issue_id)[:issue_id])
           .execute
       end
 

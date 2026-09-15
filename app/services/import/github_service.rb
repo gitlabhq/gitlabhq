@@ -9,9 +9,7 @@ module Import
     attr_reader :params, :current_user
 
     def execute(access_params, provider)
-      if rate_limited?
-        return error(_('This endpoint has been requested too many times. Try again later.'), :too_many_requests)
-      end
+      return error(Gitlab::ApplicationRateLimiter.throttled_error_message, :too_many_requests) if rate_limited?
 
       context_error = validate_context
       return context_error if context_error

@@ -83,11 +83,10 @@ module Resolvers
       # The project could have been loaded in batch by `BatchLoader`.
       # At this point we need the `id` of the project to query for work items, so
       # make sure it's loaded and not `nil` before continuing.
-      strong_memoize(:resource_parent) do
-        obj = object.is_a?(::Namespaces::ProjectNamespace) ? object.project : object
-        obj.respond_to?(:sync) ? obj.sync : obj
-      end
+      obj = object.is_a?(::Namespaces::ProjectNamespace) ? object.project : object
+      obj.respond_to?(:sync) ? obj.sync : obj
     end
+    strong_memoize_attr :resource_parent
 
     def skip_field_authorization?
       Feature.enabled?(:authorize_issue_types_in_finder, resource_parent.root_ancestor, type: :gitlab_com_derisk)

@@ -196,7 +196,7 @@ RSpec.describe API::MergeRequests, :aggregate_failures, feature_category: :sourc
       context 'when merge request is unchecked' do
         let(:check_service_class) { MergeRequests::MergeabilityCheckService }
         let(:mr_entity) { json_response.find { |mr| mr['id'] == merge_request.id } }
-        let(:merge_request) { create(:merge_request, :simple, author: user, source_project: project, title: "Test") }
+        let_it_be_with_reload(:merge_request) { create(:merge_request, :simple, author: user, source_project: project, title: "Test") }
 
         before do
           merge_request.mark_as_unchecked!
@@ -633,7 +633,8 @@ RSpec.describe API::MergeRequests, :aggregate_failures, feature_category: :sourc
       end
 
       context 'NOT params' do
-        let!(:merge_request2) do
+        let_it_be_with_reload(:milestone) { create(:milestone, title: '1.0.0', project: project) }
+        let_it_be(:merge_request2) do
           create(
             :merge_request,
             :simple,
@@ -649,7 +650,7 @@ RSpec.describe API::MergeRequests, :aggregate_failures, feature_category: :sourc
           )
         end
 
-        let!(:merge_request_context_commit) { create(:merge_request_context_commit, merge_request: merge_request2, message: 'test') }
+        let_it_be(:merge_request_context_commit) { create(:merge_request_context_commit, merge_request: merge_request2, message: 'test') }
 
         before do
           create(:label_link, label: label, target: merge_request)
@@ -941,9 +942,9 @@ RSpec.describe API::MergeRequests, :aggregate_failures, feature_category: :sourc
       end
 
       context 'filter by author' do
-        let(:user3) { create(:user) }
-        let(:project) { create(:project, :public, :repository, creator: user3, namespace: user3.namespace, only_allow_merge_if_pipeline_succeeds: false) }
-        let!(:merge_request3) do
+        let_it_be_with_reload(:user3) { create(:user) }
+        let_it_be_with_reload(:project) { create(:project, :public, :repository, creator: user3, namespace: user3.namespace, only_allow_merge_if_pipeline_succeeds: false) }
+        let_it_be_with_reload(:merge_request3) do
           create(:merge_request, :simple, author: user3, assignees: [user3], source_project: project, target_project: project, source_branch: 'other-branch')
         end
 
@@ -1408,7 +1409,7 @@ RSpec.describe API::MergeRequests, :aggregate_failures, feature_category: :sourc
     end
 
     context 'with draft parameter' do
-      let!(:draft_mr) { create(:merge_request, :draft_merge_request, author: user, source_project: project, target_project: project) }
+      let_it_be(:draft_mr) { create(:merge_request, :draft_merge_request, author: user, source_project: project, target_project: project) }
 
       it 'returns only draft merge requests when draft=true' do
         get api("/projects/#{project.id}/merge_requests", user), params: { draft: true }
@@ -1608,8 +1609,8 @@ RSpec.describe API::MergeRequests, :aggregate_failures, feature_category: :sourc
     end
 
     context 'with archived projects' do
-      let(:project2) { create(:project, :public, :archived, namespace: group) }
-      let!(:merge_request_archived) { create(:merge_request, title: 'archived mr', author: user, source_project: project2, target_project: project2) }
+      let_it_be(:project2) { create(:project, :public, :archived, namespace: group) }
+      let_it_be(:merge_request_archived) { create(:merge_request, title: 'archived mr', author: user, source_project: project2, target_project: project2) }
 
       it 'returns an array excluding merge_requests from archived projects' do
         get api(endpoint_path, user)
@@ -1638,7 +1639,7 @@ RSpec.describe API::MergeRequests, :aggregate_failures, feature_category: :sourc
       let_it_be(:bot_user) { create(:user, :project_bot) }
       let(:bot_token) { create(:personal_access_token, user: bot_user) }
 
-      before do
+      before_all do
         group.add_reporter(bot_user)
       end
 
@@ -1741,134 +1742,6 @@ RSpec.describe API::MergeRequests, :aggregate_failures, feature_category: :sourc
       let(:boundary_object) { Group.find(group.id) }
       let(:request) do
         get api(endpoint_path, personal_access_token: pat)
-      end
-    end
-
-    context 'with group_mr_in_operator_optimization' do
-      let_it_be(:group) { create(:group) }
-      let_it_be(:project) { create(:project, :public, :repository, namespace: group) }
-      let!(:mr_opened) { create(:merge_request, :unique_branches, state: 'opened', source_project: project, target_project: project) }
-
-      before do
-        group.add_reporter(user)
-      end
-
-      context 'when the feature flag is enabled' do
-        before do
-          stub_feature_flags(group_mr_in_operator_optimization: true)
-        end
-
-        context 'when params satisfy the optimization index (state + created_at sort)' do
-          let(:params) { { state: 'opened', with_merge_status_recheck: 'true', page: 1, per_page: 1 } }
-
-          it 'passes skip_default_order: true to paginate' do
-            expect_next_instance_of(Gitlab::Pagination::OffsetPagination) do |pagination|
-              expect(pagination).to receive(:paginate).with(anything, hash_including(skip_default_order: true)).and_call_original
-            end
-
-            get api("/groups/#{group.id}/merge_requests", user), params: params
-
-            expect(response).to have_gitlab_http_status(:ok)
-          end
-
-          it 'returns the correct merge requests' do
-            get api("/groups/#{group.id}/merge_requests", user), params: params
-
-            expect(response).to have_gitlab_http_status(:ok)
-            expect(json_response.map { |mr| mr['id'] }).to include(mr_opened.id)
-          end
-        end
-
-        context 'when a filter is present that blocks the optimization' do
-          let(:params) { { state: 'opened', with_merge_status_recheck: 'true', page: 1, per_page: 1, author_id: user.id } }
-
-          it 'passes skip_default_order: false to paginate' do
-            expect_next_instance_of(Gitlab::Pagination::OffsetPagination) do |pagination|
-              expect(pagination).to receive(:paginate).with(anything, hash_including(skip_default_order: false)).and_call_original
-            end
-
-            get api("/groups/#{group.id}/merge_requests", user), params: params
-
-            expect(response).to have_gitlab_http_status(:ok)
-          end
-        end
-
-        context 'pagination with created_at desc across multiple projects' do
-          # Use a dedicated group so no other test data bleeds into these results.
-          let_it_be(:pg_group) { create(:group) }
-          let(:base_params) do
-            { state: 'opened', order_by: 'created_at', sort: 'desc', include_subgroups: 'true', per_page: 2 }
-          end
-
-          # project_a lives in the top-level group, project_b in the subgroup, so the
-          # optimization must merge cursor arrays from both projects correctly.
-          let_it_be(:project_a) { create(:project, :public, namespace: pg_group) }
-          let_it_be(:project_b) { create(:project, :public, namespace: create(:group, parent: pg_group)) }
-          let_it_be(:archived_project) { create(:project, :public, :archived, namespace: pg_group) }
-
-          # Five opened MRs interleaved across the two projects by created_at.
-          # Intentional interleaving:  A, B, A, B, A - so every page boundary falls
-          # between records from different projects, exercising the cross-project merge.
-          let_it_be(:base_time) { Time.current }
-          let_it_be(:mr1) { create(:merge_request, :unique_branches, state: 'opened', source_project: project_a, target_project: project_a, created_at: base_time) }
-          let_it_be(:mr2) { create(:merge_request, :unique_branches, state: 'opened', source_project: project_b, target_project: project_b, created_at: base_time - 1.second) }
-          let_it_be(:mr3) { create(:merge_request, :unique_branches, state: 'opened', source_project: project_a, target_project: project_a, created_at: base_time - 2.seconds) }
-          let_it_be(:archived_mr) { create(:merge_request, :unique_branches, state: 'opened', source_project: archived_project, target_project: archived_project, created_at: base_time - 2.seconds) }
-          let_it_be(:mr4) { create(:merge_request, :unique_branches, state: 'opened', source_project: project_b, target_project: project_b, created_at: base_time - 3.seconds) }
-          let_it_be(:mr5) { create(:merge_request, :unique_branches, state: 'opened', source_project: project_a, target_project: project_a, created_at: base_time - 4.seconds) }
-
-          before_all { pg_group.add_reporter(user) }
-
-          def ids_for_page(page_num)
-            get api("/groups/#{pg_group.id}/merge_requests", user), params: base_params.merge(page: page_num)
-            json_response.map { |mr| mr['id'] }
-          end
-
-          def ids_and_created_at_pairs_for_page(page_num)
-            get api("/groups/#{pg_group.id}/merge_requests", user), params: base_params.merge(page: page_num)
-            json_response.map { |mr| [mr['id'], Time.zone.parse(mr['created_at']).to_i] }
-          end
-
-          it 'returns page 1 with the two most-recent MRs in descending order' do
-            expect(ids_for_page(1)).to eq([mr1.id, mr2.id])
-          end
-
-          it 'returns page 2 with the next two MRs, no overlap with page 1' do
-            page1_ids = ids_for_page(1)
-            page2_ids = ids_for_page(2)
-
-            expect(page2_ids).to eq([mr3.id, mr4.id])
-            expect(page2_ids & page1_ids).to be_empty
-          end
-
-          it 'returns page 3 with the oldest MR' do
-            expect(ids_for_page(3)).to eq([mr5.id])
-          end
-
-          it 'covers every MR exactly once in descending created_at order across all pages' do
-            all_ids_and_created_at = [1, 2, 3].flat_map { |p| ids_and_created_at_pairs_for_page(p) }
-
-            expect(all_ids_and_created_at).to eq([[mr1.id, mr1.created_at.to_i], [mr2.id, mr2.created_at.to_i], [mr3.id, mr3.created_at.to_i], [mr4.id, mr4.created_at.to_i], [mr5.id, mr5.created_at.to_i]])
-          end
-        end
-      end
-
-      context 'when the feature flag is disabled' do
-        before do
-          stub_feature_flags(group_mr_in_operator_optimization: false)
-        end
-
-        it 'passes skip_default_order: false to paginate' do
-          params = { state: 'opened', order_by: 'created_at', sort: 'desc', include_subgroups: 'true' }
-
-          expect_next_instance_of(Gitlab::Pagination::OffsetPagination) do |pagination|
-            expect(pagination).to receive(:paginate).with(anything, hash_including(skip_default_order: false)).and_call_original
-          end
-
-          get api("/groups/#{group.id}/merge_requests", user), params: params
-
-          expect(response).to have_gitlab_http_status(:ok)
-        end
       end
     end
   end
@@ -1984,6 +1857,8 @@ RSpec.describe API::MergeRequests, :aggregate_failures, feature_category: :sourc
     end
 
     context 'merge_request_metrics' do
+      let_it_be_with_reload(:milestone) { create(:milestone, title: '1.0.0', project: project) }
+      let_it_be_with_reload(:merge_request) { create(:merge_request, :simple, author: user, assignees: [user], milestone: milestone, source_project: project, source_branch: 'markdown', title: "Test") }
       let(:pipeline) { create(:ci_empty_pipeline) }
 
       before do
@@ -2030,7 +1905,7 @@ RSpec.describe API::MergeRequests, :aggregate_failures, feature_category: :sourc
 
     context 'merge_user' do
       context 'when MR is set to auto merge' do
-        let(:merge_request) { create(:merge_request, :merge_when_checks_pass, source_project: project, target_project: project) }
+        let_it_be_with_reload(:merge_request) { create(:merge_request, :merge_when_checks_pass, source_project: project, target_project: project) }
 
         it 'returns user who set to auto merge' do
           get api("/projects/#{project.id}/merge_requests/#{merge_request.iid}", user)
@@ -2055,8 +1930,8 @@ RSpec.describe API::MergeRequests, :aggregate_failures, feature_category: :sourc
     end
 
     context 'head_pipeline' do
-      let(:project) { create(:project, :repository) }
-      let(:merge_request) { create(:merge_request, :simple, author: user, source_project: project, source_branch: 'markdown', title: "Test") }
+      let_it_be_with_reload(:project) { create(:project, :repository) }
+      let_it_be_with_reload(:merge_request) { create(:merge_request, :simple, author: user, source_project: project, source_branch: 'markdown', title: "Test") }
 
       before do
         merge_request.update!(head_pipeline: create(:ci_pipeline))
@@ -2670,8 +2545,8 @@ RSpec.describe API::MergeRequests, :aggregate_failures, feature_category: :sourc
     let_it_be(:merge_request, freeze: false) { create(:merge_request, :simple, author: user, assignees: [user], source_project: project, target_project: project, source_branch: 'markdown', title: "Test", created_at: base_time) }
 
     context 'when authorized' do
-      let!(:pipeline) { create(:ci_empty_pipeline, project: project, user: user, ref: merge_request.source_branch, sha: merge_request.diff_head_sha) }
-      let!(:pipeline2) { create(:ci_empty_pipeline, project: project) }
+      let_it_be(:pipeline) { create(:ci_empty_pipeline, project: project, user: user, ref: merge_request.source_branch, sha: merge_request.diff_head_sha) }
+      let_it_be(:pipeline2) { create(:ci_empty_pipeline, project: project) }
 
       describe 'mcp route setting' do
         subject { get api("/projects/#{project.id}/merge_requests/#{merge_request.iid}/pipelines", user) }
@@ -2798,6 +2673,13 @@ RSpec.describe API::MergeRequests, :aggregate_failures, feature_category: :sourc
           expect { request }.to change { Ci::Pipeline.count }.by(1)
 
           expect(response).to have_gitlab_http_status(:accepted)
+        end
+
+        it 'stores the pipeline creation request as user initiated', :clean_gitlab_redis_shared_state do
+          request
+
+          requests = Ci::PipelineCreation::Requests.for_merge_request(merge_request)
+          expect(requests).to contain_exactly(a_hash_including('user_initiated' => true))
         end
       end
 
@@ -3280,7 +3162,7 @@ RSpec.describe API::MergeRequests, :aggregate_failures, feature_category: :sourc
 
       let(:project) { create(:project, :public, :repository) }
       let!(:forked_project) { fork_project(project, user2, repository: true) }
-      let!(:unrelated_project) { create(:project, namespace: create(:user).namespace, creator_id: user2.id) }
+      let(:unrelated_project) { create(:project, namespace: create(:user).namespace, creator_id: user2.id) }
 
       before do
         forked_project.add_reporter(user2)
@@ -3597,6 +3479,16 @@ RSpec.describe API::MergeRequests, :aggregate_failures, feature_category: :sourc
   describe 'PUT /projects/:id/merge_requests/:merge_request_iid' do
     it_behaves_like 'issuable update endpoint' do
       let(:entity) { merge_request }
+    end
+
+    describe 'mcp route setting' do
+      subject do
+        put api("/projects/#{project.id}/merge_requests/#{merge_request.iid}", user),
+          params: { title: 'Updated title' }
+      end
+
+      it_behaves_like 'an endpoint with mcp route setting', :update_merge_request,
+        expected_params: API::Helpers::MergeRequestsHelpers.update_merge_request_mcp_params, status: :ok
     end
 
     context 'when only assignee_ids are provided' do
@@ -4530,7 +4422,7 @@ RSpec.describe API::MergeRequests, :aggregate_failures, feature_category: :sourc
     end
 
     context 'when merge-ref is not synced with merge status' do
-      let(:merge_request) { create(:merge_request, :simple, author: user, source_project: project, source_branch: 'markdown', merge_status: 'cannot_be_merged') }
+      let_it_be_with_reload(:merge_request) { create(:merge_request, :simple, author: user, source_project: project, source_branch: 'markdown', merge_status: 'cannot_be_merged') }
 
       it 'returns 200 if MR can be merged' do
         get api(url, user)
@@ -4704,20 +4596,6 @@ RSpec.describe API::MergeRequests, :aggregate_failures, feature_category: :sourc
           expect(response).to have_gitlab_http_status(:unprocessable_entity)
           expect(merge_request.reload).to be_closed
           expect(merge_request.title).not_to eq("A brand new title")
-        end
-
-        context "when the prevent_reopen_merge_request_without_branch feature flag is disabled" do
-          before do
-            stub_feature_flags(prevent_reopen_merge_request_without_branch: false)
-          end
-
-          it "reopens the merge request" do
-            put api("/projects/#{project.id}/merge_requests/#{merge_request.iid}", user),
-              params: { state_event: "reopen" }
-
-            expect(response).to have_gitlab_http_status(:ok)
-            expect(json_response['state']).to eq('opened')
-          end
         end
       end
     end

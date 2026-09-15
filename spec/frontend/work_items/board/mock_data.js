@@ -168,6 +168,9 @@ export const buildWorkItemNode = (id, overrides = {}) => ({
   state: 'OPEN',
   webPath: `/group/project/-/issues/${id}`,
   webUrl: `http://gdk.test/group/project/-/issues/${id}`,
+  confidential: false,
+  hidden: false,
+  userDiscussionsCount: 0,
   closedAt: null,
   createdAt: '2026-01-01T00:00:00Z',
   updatedAt: '2026-01-01T00:00:00Z',
@@ -186,6 +189,7 @@ export const buildWorkItemNode = (id, overrides = {}) => ({
     fullPath: 'group',
   },
   widgets: [],
+  features: null,
   workItemType: {
     __typename: 'WorkItemType',
     id: 'gid://gitlab/WorkItems::Type/1',
@@ -217,6 +221,31 @@ export const buildBoardWorkItemsResponse = (nodes = [], pageInfo = {}) => ({
   },
 });
 
+// REST resolver response: work items live at Query.restWorkItems (top-level)
+// instead of Namespace.workItems.
+export const buildBoardRestWorkItemsResponse = (nodes = [], pageInfo = {}) => ({
+  data: {
+    namespace: {
+      __typename: 'Group',
+      id: mockGroupId,
+      fullPath: 'full/path',
+      name: 'Test',
+    },
+    restWorkItems: {
+      __typename: 'WorkItemConnection',
+      pageInfo: {
+        __typename: 'PageInfo',
+        hasNextPage: false,
+        hasPreviousPage: false,
+        startCursor: null,
+        endCursor: null,
+        ...pageInfo,
+      },
+      nodes,
+    },
+  },
+});
+
 export const buildBoardWorkItemsCountResponse = (count = 0) => ({
   data: {
     namespace: {
@@ -227,6 +256,21 @@ export const buildBoardWorkItemsCountResponse = (count = 0) => ({
         __typename: 'WorkItemConnection',
         count,
       },
+    },
+  },
+});
+
+// REST count response: exposes `count` under `restWorkItems` at the query root.
+export const buildBoardRestWorkItemsCountResponse = (count = 0) => ({
+  data: {
+    namespace: {
+      __typename: 'Group',
+      id: mockGroupId,
+      name: 'Test',
+    },
+    restWorkItems: {
+      __typename: 'WorkItemConnection',
+      count,
     },
   },
 });

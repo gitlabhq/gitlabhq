@@ -46,6 +46,39 @@ RSpec.describe 'Projects > Show > Repository actions', feature_category: :groups
     end
   end
 
+  describe 'when project has no repository' do
+    let_it_be(:developer) { create(:user) }
+    let_it_be(:maintainer) { create(:user) }
+    let_it_be(:project) { create(:project, :private, developers: developer, maintainers: maintainer) }
+
+    context 'when signed in as a developer' do
+      before do
+        sign_in(developer)
+        visit project_path(project)
+      end
+
+      it 'shows the empty state without repository actions', :aggregate_failures do
+        expect(page).to have_content(_('No repository'))
+        expect(page).to have_content(_('You do not have permission to create or import a repository.'))
+        expect(page).to have_no_link(_('Create empty repository'))
+        expect(page).to have_no_link(_('Import repository'))
+      end
+    end
+
+    context 'when signed in as a maintainer' do
+      before do
+        sign_in(maintainer)
+        visit project_path(project)
+      end
+
+      it 'shows repository actions', :aggregate_failures do
+        expect(page).to have_link(_('Create empty repository'), href: project_repository_path(project))
+        expect(page).to have_link(_('Import repository'), href: new_project_import_path(project))
+        expect(page).to have_no_content(_('You do not have permission to create or import a repository.'))
+      end
+    end
+  end
+
   describe 'Git instructions' do
     let_it_be(:user) { create(:user) }
 

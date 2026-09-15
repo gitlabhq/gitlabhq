@@ -1,6 +1,6 @@
 <script>
 import { isEmpty } from 'lodash-es';
-import { GlAvatarLink, GlAvatar } from '@gitlab/ui';
+import { GlAlert, GlAvatarLink, GlAvatar } from '@gitlab/ui';
 import DuoQuestionNote from 'ee_else_ce/work_items/components/notes/duo_question_note.vue';
 import * as Sentry from '~/sentry/sentry_browser_wrapper';
 import toast from '~/vue_shared/plugins/global_toast';
@@ -34,6 +34,7 @@ export default {
     NoteBody,
     NoteHeader,
     NoteActions,
+    GlAlert,
     GlAvatar,
     GlAvatarLink,
     WorkItemCommentForm,
@@ -163,6 +164,7 @@ export default {
     return {
       isEditing: false,
       isUpdating: false,
+      updateError: null,
       workItem: {},
     };
   },
@@ -254,6 +256,9 @@ export default {
     isWorkItemConfidential() {
       return this.workItem.confidential;
     },
+    duoCreatedSessionId() {
+      return getIdFromGraphQLId(this.note.duoCreatedSession?.id);
+    },
   },
   mounted() {
     gfmEventHub.$on('edit-note', this.handleEditNote);
@@ -307,8 +312,9 @@ export default {
       try {
         this.isEditing = false;
         this.isUpdating = true;
+        this.updateError = null;
 
-        await this.$apollo.mutate({
+        const { data } = await this.$apollo.mutate({
           mutation: updateWorkItemNoteMutation,
           variables: {
             input: {
@@ -329,12 +335,21 @@ export default {
               }
             : undefined,
         });
+
+        const { errors } = data.updateNote;
+        if (errors?.length) {
+          updateDraft(this.autosaveKey, commentText);
+          this.isEditing = true;
+          [this.updateError] = errors;
+          return;
+        }
+
         clearDraft(this.autosaveKey);
         clearDraft(this.autosaveKeyInternalNote);
       } catch (error) {
         updateDraft(this.autosaveKey, commentText);
         this.isEditing = true;
-        this.$emit('error', __('Something went wrong when updating a comment. Please try again'));
+        this.updateError = __('Something went wrong when updating a comment. Please try again');
         Sentry.captureException(error);
       } finally {
         this.isUpdating = false;
@@ -478,6 +493,7 @@ export default {
               :is-resolved="isDiscussionResolved"
               :is-resolving="isResolving"
               :resolved-by="resolvedBy"
+              :duo-session-id="duoCreatedSessionId"
               @start-replying="showReplyForm"
               @start-editing="startEditing"
               @resolve="$emit('resolve')"
@@ -490,6 +506,15 @@ export default {
           </div>
         </div>
         <div class="note-body">
+          <gl-alert
+            v-if="isEditing && updateError"
+            class="gl-mb-3"
+            variant="danger"
+            data-testid="update-error"
+            @dismiss="updateError = null"
+          >
+            {{ updateError }}
+          </gl-alert>
           <work-item-comment-form
             v-if="isEditing"
             :work-item-type="workItemType"
@@ -530,6 +555,8 @@ export default {
               :discussion-id="discussionId"
               :replies="replies"
               :is-discussion-resolved="isDiscussionResolved"
+              :is-discussion-resolvable="isDiscussionResolvable"
+              :can-reply="canReply"
               @error="$emit('error', $event)"
             />
           </div>

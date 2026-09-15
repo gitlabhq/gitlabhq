@@ -609,7 +609,7 @@ dependency_scanning:
 
 Because all variables have not been tested, you may find that some work and others do not.
 If you need one that does not work,
-[submitting a feature request](https://gitlab.com/gitlab-org/gitlab/-/issues/new?description_template=Feature%20proposal%20-%20detailed&issue[title]=Docs%20feedback%20-%20feature%20proposal:%20Write%20your%20title)
+[submitting a feature request](https://gitlab.com/gitlab-org/gitlab/-/work_items/new?description_template=Feature%20proposal%20-%20detailed&issue[title]=Docs%20feedback%20-%20feature%20proposal:%20Write%20your%20title)
 or contribute to the code to enable it to be used.
 
 ### Custom TLS certificate authority
@@ -739,7 +739,7 @@ To use dependency scanning with all [supported languages and frameworks](#suppor
    ```
 
    The process for importing Docker images into a local offline Docker registry depends on
-   **your network security policy**. Consult your IT staff to find an accepted and approved
+   your network security policy. Consult your IT staff to find an accepted and approved
    process by which external resources can be imported or temporarily accessed.
    These scanners are [periodically updated](../../detect/vulnerability_scanner_maintenance.md)
    with new definitions, and you may want to download them regularly.
@@ -1214,7 +1214,7 @@ The following analyzers are executed, each of which have different behavior when
   Does not support multiple lockfiles. When multiple lockfiles exist, `Retire.js`
   analyzes the first lockfile discovered while traversing the directory tree in alphabetical order.
 
-The `gemnasium` analyzer scans supports JavaScript projects for vendored libraries
+The `gemnasium` analyzer scans JavaScript projects for vendored libraries
 (that is, those checked into the project but not managed by the package manager).
 
 ### Go

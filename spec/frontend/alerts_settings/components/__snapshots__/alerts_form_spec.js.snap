@@ -96,6 +96,7 @@ exports[`Alert integration settings form default state should match the default 
       </gl-form-checkbox-stub>
     </gl-form-group-stub>
     <gl-button-stub
+      accessibledisabled="true"
       buttontextclasses=""
       category="primary"
       class="js-no-auto-disable"

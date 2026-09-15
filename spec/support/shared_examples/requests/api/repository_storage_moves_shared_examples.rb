@@ -279,7 +279,7 @@ RSpec.shared_examples 'repository_storage_moves API' do |container_type|
     end
 
     context 'source_storage_name is invalid' do
-      let(:destination_storage_name) { 'not-a-real-storage' }
+      let(:source_storage_name) { 'not-a-real-storage' }
 
       it 'gives an error' do
         create_container_repository_storage_moves

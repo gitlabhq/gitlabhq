@@ -337,10 +337,10 @@ describe('HeaderActions component', () => {
         expect(findEditButton().exists()).toBe(true);
       });
 
-      it('should trigger "open.form" event when clicked', async () => {
+      it('should trigger `open-form` event when clicked', async () => {
         expect(issuesEventHub.$emit).not.toHaveBeenCalled();
         await findEditButton().vm.$emit('click');
-        expect(issuesEventHub.$emit).toHaveBeenCalledWith('open.form');
+        expect(issuesEventHub.$emit).toHaveBeenCalledWith('open-form');
       });
     });
   });
@@ -470,11 +470,11 @@ describe('HeaderActions component', () => {
     });
   });
 
-  describe('when `toggle.issuable.state` event is emitted', () => {
+  describe('when `toggle-issuable-state` event is emitted', () => {
     it('invokes a method to toggle the issue state', () => {
       wrapper = mountComponent();
 
-      eventHub.$emit('toggle.issuable.state');
+      eventHub.$emit('toggle-issuable-state');
 
       expect(updateIssueMutationResponseHandler).toHaveBeenCalledWith({
         input: {

@@ -17,6 +17,21 @@ frontmatter:
 The frontmatter must include at least `name` and `description`; both fields
 are surfaced to Claude Code when it decides whether to load the skill.
 
+## Before adding a new skill
+
+Skills here are task recipes (how to use a CLI, how to scaffold a component,
+how to analyze a diff) or thin routers into other content — not a place to
+hand-write distilled development-guideline content. If what you're encoding
+is durable domain knowledge sourced from published `doc/development/*.md`
+guides (for example, "how sharding keys work" or "when a feature needs
+organization-level scope"), it belongs in
+[`.ai/principles/`](../../.ai/principles/README.md) instead. That README
+covers the manifest schema, how to regenerate the generated artifacts
+(`gitlab-coding-principles/SKILL.md`, `AGENTS.md`, `.gitlab/CODEOWNERS` are
+all manifest-generated — don't hand-edit them), and gotchas like `team_slug`
+collisions. A hand-written skill duplicating SSOT content will drift the
+moment the source docs change, since nothing keeps it in sync.
+
 ## Tracking and gitignore
 
 `.claude/` is gitignored at the project root, so shared skills are committed

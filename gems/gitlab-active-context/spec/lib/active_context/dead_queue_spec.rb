@@ -11,4 +11,10 @@ RSpec.describe ActiveContext::DeadQueue do
       expect(ActiveContext::Queues.queues).not_to include('activecontext:{dead_queue}')
     end
   end
+
+  describe '.failure_queue' do
+    it 'returns nil because the dead queue is never processed' do
+      expect(described_class.failure_queue).to be_nil
+    end
+  end
 end

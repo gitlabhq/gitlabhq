@@ -1,5 +1,5 @@
 ---
-stage: Create
+stage: GitLab Dedicated
 group: Import
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see <https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments>
 title: Migrate groups and projects by using offline transfer
@@ -43,7 +43,7 @@ default, and for a given operation both layers must be on:
 - Imports: the `offline_transfer_imports_enabled` application setting.
 
 To perform exports and imports, use the [offline transfer REST API](https://api.gitlab.com/rest/#tag/offline-transfers).
-Support offline transfers in the GitLab UI is proposed in [work item 19870](https://gitlab.com/groups/gitlab-org/-/work_items/19870).
+Support for offline transfers in the GitLab UI is proposed in [work item 19870](https://gitlab.com/groups/gitlab-org/-/work_items/19870).
 
 ## Version requirements
 
@@ -145,13 +145,58 @@ Prerequisites:
 
 To migrate a group or project:
 
-1. On the source instance, the REST API to [create an offline transfer export](https://api.gitlab.com/rest/#tag/offline-transfers/POST/api/v4/offline_exports) to an object storage bucket.
+1. On the source instance, use the REST API to [create an offline transfer export](https://api.gitlab.com/rest/#tag/offline-transfers/POST/api/v4/offline_exports) to an object storage bucket.
 1. When the export finishes, GitLab sends you an email with the export prefix. You need this prefix
    to start the import. If you do not receive the email, the export prefix can be viewed in the object storage service.
 1. If the destination instance cannot access the export bucket, move the export files to a bucket
    the destination can access.
 1. On the destination instance, [create an offline transfer import](https://api.gitlab.com/rest/#tag/offline-transfers/POST/api/v4/offline_imports) from the bucket and export prefix.
 1. Monitor the import with the [group and project migration by direct transfer API](../../../api/bulk_imports.md#retrieve-a-group-or-project-migration).
+
+## Import an entire export
+
+By default, an offline transfer import requires an `entities` array that lists every group or project to
+import and where to put it. Instead, you can pass an `import_all` object to import every top-level group
+in the export, together with its subgroups and projects, recreating the source instance's structure
+under a destination namespace. Exactly one of `entities` or `import_all` is required.
+
+To import an entire export, pass `import_all` with a `destination_namespace` attribute to the
+[create an offline transfer import](https://api.gitlab.com/rest/#tag/offline-transfers/POST/api/v4/offline_imports) API:
+
+```shell
+curl --request POST \
+  --header "PRIVATE-TOKEN: <your_access_token>" \
+  --header "Content-Type: application/json" \
+  --url "https://gitlab.example.com/api/v4/offline_imports" \
+  --data '{
+    "bucket": "example-bucket",
+    "export_prefix": "example-export-prefix",
+    "aws_s3_configuration": {
+      "aws_access_key_id": "<aws_access_key_id>",
+      "aws_secret_access_key": "<aws_secret_access_key>",
+      "region": "us-east-1"
+    },
+    "import_all": {
+      "destination_namespace": "dest-group"
+    }
+  }'
+```
+
+Set `destination_namespace` to the full path of an existing group, for example `dest-group/subgroup`, to
+recreate the structure under that group. Set it to an empty string (`""`) to recreate the structure as
+new top-level groups.
+
+Only top-level groups are imported:
+
+- If the export contains a path whose top-level group was not itself exported (for example, the export
+  contains `group-a/subgroup-b` but not `group-a`), GitLab skips that path instead of creating the
+  missing parent group.
+- If a top-level group's path conflicts with an existing group in the destination namespace, GitLab
+  skips that group and everything under it. The rest of the export still imports.
+- If every top-level group collides with an existing destination path, the import fails.
+- If the export contains no top-level groups, the import fails.
+
+Monitor the import with the [group and project migration by direct transfer API](../../../api/bulk_imports.md#retrieve-a-group-or-project-migration).
 
 ## Rate limits
 
@@ -161,3 +206,32 @@ For more information, see [non-configurable rate limits](../../../rate_limits/no
 ## Related topics
 
 - [Migrate groups and projects by using direct transfer](../../group/import/direct_transfer_migrations.md)
+
+## Troubleshooting
+
+If you have any problems with a migration performed by using offline transfer, see the following sections
+for possible solutions.
+
+### Clear export data from object storage
+
+Each export generates a fresh prefix in object storage, so one export does not overwrite another.
+Deleting stored data from failed exports is not necessary for retrying the export, but might reduce your object storage costs.
+
+To remove export data from object storage, use the bucket you provided and the `export_prefix` returned by the export API to identify and delete the data.
+Depending on your object storage configuration, this might be irreversible.
+
+### Identify import errors
+
+- Review `exceptions_json.log` and `importer.log` for relevant errors.
+- See [Troubleshooting direct transfer migrations](../../group/import/troubleshooting.md) for advice on extracting errors from the Rails console.
+
+### Retry an import
+
+To retry an import:
+
+1. Delete the groups or projects you want to retry. You can retry the entire import or target a subset of groups or projects:
+
+   - [Delete a group immediately](../../group/_index.md#delete-a-group-immediately)
+   - [Delete a project immediately](../../project/working_with_projects.md#delete-a-project-immediately)
+
+1. Use the REST API to retry the entire import or specify only previously failed entities in the `entities` parameter.

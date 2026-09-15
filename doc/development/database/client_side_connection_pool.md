@@ -6,7 +6,7 @@ title: Client-side connection-pool
 ---
 
 Ruby processes accessing the database through
-ActiveRecord, automatically calculate the connection-pool size for the
+ActiveRecord automatically calculate the connection-pool size for the
 process based on the concurrency.
 
 Because of the way [Ruby on Rails manages database connections](#connection-lifecycle),

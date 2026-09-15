@@ -6,7 +6,11 @@ RSpec.describe "User views issue", :js, feature_category: :team_planning do
   context 'with a public project' do
     let_it_be(:project) { create(:project_empty_repo, :public) }
     let_it_be(:user) { create(:user, developer_of: project) }
-    let_it_be(:issue) { create(:issue, project: project, description: "# Description header\n\n**Lorem** _ipsum_ dolor sit [amet](https://example.com)", author: user) }
+    let_it_be(:issue) do
+      create(:issue, project: project,
+        description: "# Description header\n\n**Lorem** _ipsum_ dolor sit [amet](https://example.com)", author: user)
+    end
+
     let_it_be(:note) { create(:note, noteable: issue, project: project, author: user) }
 
     before do

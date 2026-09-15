@@ -336,18 +336,16 @@ export default {
 <template>
   <gl-tabs data-testid="alert-integration-settings">
     <gl-tab :title="$options.i18n.settingsTabs.currentIntegrations">
-      <!-- eslint-disable vue/v-on-event-hyphenation -->
       <gl-alert
         v-if="showSuccessfulCreateAlert"
         class="gl-mb-3"
         :primary-button-text="$options.i18n.integrationCreated.btnCaption"
         :title="$options.i18n.integrationCreated.title"
-        @primaryAction="viewCreatedIntegration"
+        @primary-action="viewCreatedIntegration"
         @dismiss="showSuccessfulCreateAlert = false"
       >
         {{ $options.i18n.integrationCreated.successMsg }}
       </gl-alert>
-      <!-- eslint-enable vue/v-on-event-hyphenation -->
       <crud-component
         ref="alertsCrud"
         :title="$options.i18n.card.title"

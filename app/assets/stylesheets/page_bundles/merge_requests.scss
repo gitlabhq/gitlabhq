@@ -649,10 +649,6 @@ $diff-file-header-top: 11px;
       }
     }
 
-    .has-custom-error {
-      display: inline-block;
-    }
-
     @include gl-container-width-down(sm, panel) {
       .btn-grouped {
         float: none;

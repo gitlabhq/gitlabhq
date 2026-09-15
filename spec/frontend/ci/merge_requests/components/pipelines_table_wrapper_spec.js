@@ -3,6 +3,7 @@ import VueApollo from 'vue-apollo';
 import { GlAlert, GlLoadingIcon, GlModal, GlKeysetPagination } from '@gitlab/ui';
 import { createMockSubscription } from 'mock-apollo-client';
 import createMockApollo from 'helpers/mock_apollo_helper';
+import { useLocalStorageSpy } from 'helpers/local_storage_helper';
 import { stubComponent } from 'helpers/stub_component';
 import waitForPromises from 'helpers/wait_for_promises';
 import { mountExtended, shallowMountExtended } from 'helpers/vue_test_utils_helper';
@@ -15,6 +16,7 @@ import PipelinesEmptyState from '~/ci/common/empty_state/pipelines_empty_state.v
 import PipelinesErrorState from '~/ci/common/empty_state/pipelines_error_state.vue';
 import PipelinesTableWrapper from '~/ci/merge_requests/components/pipelines_table_wrapper.vue';
 import RunPipelineButton from '~/ci/common/run_pipeline_button.vue';
+import LocalStorageSync from '~/vue_shared/components/local_storage_sync.vue';
 import {
   MR_PIPELINE_TYPE_DETACHED,
   MR_PIPELINE_TYPE_MERGED_RESULT,
@@ -110,7 +112,7 @@ const createResponseWithPageInfo = ({ hasNextPage, hasPreviousPage }) => {
   return response;
 };
 
-const createComponent = ({ mountFn = shallowMountExtended, props = {} } = {}) => {
+const createComponent = ({ mountFn = shallowMountExtended, props = {}, stubs = {} } = {}) => {
   mockDownstreamSubscription = createMockSubscription();
   let isFirstDownstreamCall = true;
   downstreamSubscriptionHandler = jest.fn().mockImplementation(() => {
@@ -158,6 +160,7 @@ const createComponent = ({ mountFn = shallowMountExtended, props = {} } = {}) =>
         template: '<div />',
         methods: { show: showMock },
       }),
+      ...stubs,
     },
   });
 
@@ -1092,16 +1095,28 @@ describe('PipelinesTableWrapper component', () => {
   });
 
   describe('pipeline creation requests', () => {
+    useLocalStorageSpy();
+
+    const dismissedAlertsStorageKey = 'mr_pipelines_dismissed_creation_alerts_/group/project_1';
     const inProgressRequest = generatePipelineCreationRequest({
       status: 'IN_PROGRESS',
       pipelineId: null,
       pipeline: null,
     });
     const failedRequest = generatePipelineCreationRequest({
+      id: 'failed-request-uuid',
       status: 'FAILED',
       pipelineId: null,
       pipeline: null,
       error: 'Creation failed',
+    });
+    const automaticFailedRequest = generatePipelineCreationRequest({
+      id: 'automatic-request-uuid',
+      status: 'FAILED',
+      pipelineId: null,
+      pipeline: null,
+      error: 'Creation failed',
+      userInitiated: false,
     });
     const succeededRequest = generatePipelineCreationRequest({
       status: 'SUCCEEDED',
@@ -1217,6 +1232,56 @@ describe('PipelinesTableWrapper component', () => {
 
           expect(findCreationFailedAlert().exists()).toBe(false);
         });
+
+        it('does not show alert for an automatic failed request', async () => {
+          setupPipelineCreationRequestsResponse([automaticFailedRequest]);
+
+          await createComponent();
+
+          expect(findCreationFailedAlert().exists()).toBe(false);
+        });
+
+        it('persists dismissed request ids to localStorage', async () => {
+          setupPipelineCreationRequestsResponse([failedRequest]);
+
+          await createComponent({ stubs: { LocalStorageSync } });
+          await findCreationFailedAlert().vm.$emit('dismiss');
+
+          expect(localStorage.setItem).toHaveBeenCalledWith(
+            dismissedAlertsStorageKey,
+            JSON.stringify(['failed-request-uuid']),
+          );
+        });
+
+        it('does not show alert when the failed request was already dismissed', async () => {
+          localStorage.setItem(dismissedAlertsStorageKey, JSON.stringify(['failed-request-uuid']));
+          setupPipelineCreationRequestsResponse([failedRequest]);
+
+          await createComponent({ stubs: { LocalStorageSync } });
+
+          expect(findCreationFailedAlert().exists()).toBe(false);
+        });
+
+        it('shows alert for a failed request without an id but does not persist its dismissal', async () => {
+          const nullIdFailedRequest = generatePipelineCreationRequest({
+            id: null,
+            status: 'FAILED',
+            pipelineId: null,
+            pipeline: null,
+            error: 'Creation failed',
+          });
+          setupPipelineCreationRequestsResponse([nullIdFailedRequest]);
+
+          await createComponent({ stubs: { LocalStorageSync } });
+
+          expect(findCreationFailedAlert().exists()).toBe(true);
+
+          localStorage.setItem.mockClear();
+          await findCreationFailedAlert().vm.$emit('dismiss');
+
+          expect(findCreationFailedAlert().exists()).toBe(false);
+          expect(localStorage.setItem).not.toHaveBeenCalled();
+        });
       });
 
       describe('run pipeline button', () => {
@@ -1330,6 +1395,48 @@ describe('PipelinesTableWrapper component', () => {
         expect(findCreationFailedAlert().text()).toBe(
           'Pipeline creation failed. Please try again.',
         );
+      });
+
+      it('does not show alert on automatic FAILED', async () => {
+        await createComponent();
+
+        emitSubscriptionUpdate([automaticFailedRequest]);
+        await waitForPromises();
+
+        expect(findCreationFailedAlert().exists()).toBe(false);
+      });
+
+      it('shows alert again when a new request fails after dismissal', async () => {
+        setupPipelineCreationRequestsResponse([failedRequest]);
+
+        await createComponent();
+        await findCreationFailedAlert().vm.$emit('dismiss');
+
+        expect(findCreationFailedAlert().exists()).toBe(false);
+
+        const newFailedRequest = generatePipelineCreationRequest({
+          id: 'new-failed-request-uuid',
+          status: 'FAILED',
+          pipelineId: null,
+          pipeline: null,
+          error: 'Creation failed',
+        });
+        emitSubscriptionUpdate([failedRequest, newFailedRequest]);
+        await waitForPromises();
+
+        expect(findCreationFailedAlert().exists()).toBe(true);
+      });
+
+      it('does not re-show alert for an already dismissed request', async () => {
+        setupPipelineCreationRequestsResponse([failedRequest]);
+
+        await createComponent();
+        await findCreationFailedAlert().vm.$emit('dismiss');
+
+        emitSubscriptionUpdate([failedRequest]);
+        await waitForPromises();
+
+        expect(findCreationFailedAlert().exists()).toBe(false);
       });
 
       it('shows loading state on run pipeline button on IN_PROGRESS', async () => {

@@ -122,8 +122,7 @@ Capybara.enable_aria_label = true
 
 # Pajamas buttons stay focusable while unavailable: GlButton renders
 # `aria-disabled="true"` and ignores its click listener rather than using the
-# native `disabled` attribute. That is true of `loading` today, and of
-# `disabled` once `accessible_disabled_button` is on.
+# native `disabled` attribute. That is true of both `loading` and `disabled`.
 #
 # Capybara's `disabled` filter reads the native property, so it matches an
 # unavailable button, clicks it, and the click is discarded. The spec then

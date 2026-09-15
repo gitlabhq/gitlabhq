@@ -121,7 +121,7 @@ describe('~/environments/environment_details/index.vue', () => {
 
         describe('sorting direction changes', () => {
           it('updates props when direction changes', async () => {
-            findSorting().vm.$emit('sortDirectionChange');
+            findSorting().vm.$emit('sort-direction-change');
             await nextTick();
 
             expect(findSorting().props()).toMatchObject({
@@ -135,7 +135,7 @@ describe('~/environments/environment_details/index.vue', () => {
               expect.objectContaining(defaultQueryVariables),
             );
 
-            findSorting().vm.$emit('sortDirectionChange');
+            findSorting().vm.$emit('sort-direction-change');
             await nextTick();
 
             expect(environmentDetailsMock).toHaveBeenCalledWith(
@@ -153,7 +153,7 @@ describe('~/environments/environment_details/index.vue', () => {
           const newSortField = 'finishedAt';
 
           it('updates props when sortBy field changes', async () => {
-            findSorting().vm.$emit('sortByChange', newSortField);
+            findSorting().vm.$emit('sort-by-change', newSortField);
             await nextTick();
 
             expect(findSorting().props()).toMatchObject({
@@ -167,7 +167,7 @@ describe('~/environments/environment_details/index.vue', () => {
               expect.objectContaining(defaultQueryVariables),
             );
 
-            findSorting().vm.$emit('sortByChange', newSortField);
+            findSorting().vm.$emit('sort-by-change', newSortField);
             await nextTick();
 
             expect(environmentDetailsMock).toHaveBeenCalledWith(

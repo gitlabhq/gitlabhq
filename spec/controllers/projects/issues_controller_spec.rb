@@ -166,6 +166,16 @@ RSpec.describe Projects::IssuesController, :request_store, feature_category: :te
       expect(response).to redirect_to project_work_item_path(project, issue.iid)
     end
 
+    context 'when an incident_tab is requested for an issue that is not an incident' do
+      it 'redirects to the issue path' do
+        get :show, params: {
+          namespace_id: project.namespace, project_id: project, id: issue.iid, incident_tab: 'timeline'
+        }
+
+        expect(response).to redirect_to project_issue_path(project, issue)
+      end
+    end
+
     context 'when issue is of type task' do
       let(:query) { {} }
 
@@ -1028,6 +1038,17 @@ RSpec.describe Projects::IssuesController, :request_store, feature_category: :te
       project.issues.first
     end
 
+    context 'when add_related_issue is given' do
+      it 'links the new issue to it' do
+        related_issue = create(:issue, project: project)
+
+        post_new_issue({}, { add_related_issue: related_issue.iid })
+
+        new_issue = project.issues.find_by!(title: 'Title')
+        expect(related_issue.related_issues(user)).to contain_exactly(new_issue)
+      end
+    end
+
     context 'when creating an incident' do
       it 'sets the correct issue_type' do
         issue = post_new_issue(issue_type: 'incident')
@@ -1883,6 +1904,16 @@ RSpec.describe Projects::IssuesController, :request_store, feature_category: :te
       get :designs, params: { namespace_id: project.namespace, project_id: project, id: issue.iid }
 
       expect(response).to redirect_to(project_work_item_path(project, issue.iid, params: {}))
+    end
+
+    it 'keeps the vueroute when one is given' do
+      get :designs, params: {
+        namespace_id: project.namespace, project_id: project, id: issue.iid, vueroute: 'design.png'
+      }
+
+      expect(response).to redirect_to(
+        designs_project_work_item_path(project, issue.iid, vueroute: 'design.png', params: {})
+      )
     end
 
     context 'when project has moved' do

@@ -4,7 +4,7 @@ module RuboCop
   module Cop
     module Graphql
       # This cop enforces the enum value conventions from the enum style guide:
-      # https://docs.gitlab.com/ee/development/api_graphql_styleguide.html#enums
+      # https://docs.gitlab.com/development/api_graphql_styleguide/#enums
       #
       # @example
       #
@@ -39,7 +39,7 @@ module RuboCop
       #   end
       class EnumValues < RuboCop::Cop::Base
         MSG = "Enum values must either be an uppercase string literal or uppercased with the `upcase` method. " \
-              "See https://docs.gitlab.com/ee/development/api_graphql_styleguide.html#enums"
+              "See https://docs.gitlab.com/development/api_graphql_styleguide/#enums"
 
         # @!method enum_value(node)
         def_node_matcher :enum_value, <<~PATTERN

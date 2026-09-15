@@ -3,16 +3,12 @@
 require 'spec_helper'
 
 RSpec.describe API::Notes, feature_category: :team_planning do
-  let!(:user) { create(:user) }
-  let!(:project) { create(:project, :public) }
-  let(:private_user) { create(:user) }
-
-  before do
-    project.add_reporter(user)
-  end
+  let_it_be(:user) { create(:user) }
+  let_it_be_with_reload(:project) { create(:project, :public, reporters: user) }
+  let_it_be(:private_user) { create(:user) }
 
   describe 'organization_id propagation to NotesFinder' do
-    let!(:issue) { create(:issue, project: project, author: user) }
+    let_it_be(:issue) { create(:issue, project: project, author: user) }
 
     it 'passes organization_id to NotesFinder' do
       expect(NotesFinder).to receive(:new).with(
@@ -34,8 +30,8 @@ RSpec.describe API::Notes, feature_category: :team_planning do
   end
 
   context "when noteable is an Issue" do
-    let!(:issue) { create(:issue, project: project, author: user) }
-    let!(:issue_note) { create(:note, noteable: issue, project: project, author: user) }
+    let_it_be_with_reload(:issue) { create(:issue, project: project, author: user) }
+    let_it_be_with_reload(:issue_note) { create(:note, noteable: issue, project: project, author: user) }
 
     it_behaves_like "noteable API with confidential notes", 'projects', 'issues', 'iid' do
       let(:parent) { project }
@@ -44,35 +40,30 @@ RSpec.describe API::Notes, feature_category: :team_planning do
     end
 
     context 'when user does not have access to create noteable' do
-      let(:private_issue) { create(:issue, project: create(:project, :private)) }
+      let_it_be(:private_issue) { create(:issue, project: create(:project, :private, namespace: project.namespace)) }
 
       ##
       # We are posting to project user has access to, but we use issue id
       # from a different project, see #15577
       #
-      before do
+      it 'responds with resource not found error and does not create new note', :aggregate_failures do
         post api("/projects/#{private_issue.project.id}/issues/#{private_issue.iid}/notes", user),
           params: { body: 'Hi!' }
-      end
 
-      it 'responds with resource not found error' do
         expect(response).to have_gitlab_http_status(:not_found)
-      end
-
-      it 'does not create new note' do
         expect(private_issue.notes.reload).to be_empty
       end
     end
 
     context 'when system note with issue_email_participants action' do
-      let!(:email) { 'user@example.com' }
-      let!(:note_text) { "added #{email}" }
-      let!(:note) do
+      let_it_be(:email) { 'user@example.com' }
+      let_it_be(:note_text) { "added #{email}" }
+      let_it_be(:note) do
         create(:note, :system, project: project, noteable: issue, author: create(:support_bot), note: note_text)
       end
 
-      let!(:system_note_metadata) { create(:system_note_metadata, note: note, action: :issue_email_participants) }
-      let!(:another_user) { create(:user) }
+      let_it_be(:system_note_metadata) { create(:system_note_metadata, note: note, action: :issue_email_participants) }
+      let_it_be(:another_user) { create(:user) }
 
       let(:obfuscated_email) { 'us*****@e*****.c**' }
 
@@ -97,17 +88,14 @@ RSpec.describe API::Notes, feature_category: :team_planning do
 
     context "when referencing other project" do
       # For testing the cross-reference of a private issue in a public project
-      let(:private_project) do
-        create(:project, namespace: private_user.namespace)
-        .tap { |p| p.add_maintainer(private_user) }
-      end
+      let_it_be(:private_project) { create(:project, namespace: private_user.namespace, maintainers: private_user) }
 
-      let(:private_issue) { create(:issue, project: private_project) }
+      let_it_be(:private_issue) { create(:issue, project: private_project) }
 
-      let(:ext_proj)  { create(:project, :public) }
-      let(:ext_issue) { create(:issue, project: ext_proj) }
+      let_it_be(:ext_proj) { create(:project, :public, namespace: project.namespace) }
+      let_it_be_with_reload(:ext_issue) { create(:issue, project: ext_proj) }
 
-      let!(:cross_reference_note) do
+      let_it_be(:cross_reference_note) do
         create(
           :note,
           noteable: ext_issue, project: ext_proj,
@@ -152,7 +140,7 @@ RSpec.describe API::Notes, feature_category: :team_planning do
         end
 
         context "activity filters" do
-          let!(:user_reference_note) do
+          let_it_be(:user_reference_note) do
             create(
               :note,
               noteable: ext_issue, project: ext_proj,
@@ -163,24 +151,15 @@ RSpec.describe API::Notes, feature_category: :team_planning do
 
           let(:test_url) { "/projects/#{ext_proj.id}/issues/#{ext_issue.iid}/notes" }
 
-          shared_examples 'a notes request' do
-            it 'is a note array response', :aggregate_failures do
-              expect(response).to have_gitlab_http_status(:ok)
-              expect(response).to include_pagination_headers
-              expect(json_response).to be_an Array
-            end
-          end
-
           context "when not provided" do
             let(:count) { 2 }
 
-            before do
+            it 'returns all the notes', :aggregate_failures do
               get api(test_url, private_user)
-            end
 
-            it_behaves_like 'a notes request'
-
-            it 'returns all the notes' do
+              expect(response).to have_gitlab_http_status(:ok)
+              expect(response).to include_pagination_headers
+              expect(json_response).to be_an Array
               expect(json_response.count).to eq(count)
             end
           end
@@ -188,13 +167,12 @@ RSpec.describe API::Notes, feature_category: :team_planning do
           context "when all_notes provided" do
             let(:count) { 2 }
 
-            before do
+            it 'returns all the notes', :aggregate_failures do
               get api(test_url + "?activity_filter=all_notes", private_user)
-            end
 
-            it_behaves_like 'a notes request'
-
-            it 'returns all the notes' do
+              expect(response).to have_gitlab_http_status(:ok)
+              expect(response).to include_pagination_headers
+              expect(json_response).to be_an Array
               expect(json_response.count).to eq(count)
             end
           end
@@ -208,13 +186,12 @@ RSpec.describe API::Notes, feature_category: :team_planning do
             end
 
             with_them do
-              before do
-                get api(test_url + "?activity_filter=#{filter}", private_user)
-              end
-
-              it_behaves_like 'a notes request'
-
               it "properly filters the returned notables", :aggregate_failures do
+                get api(test_url + "?activity_filter=#{filter}", private_user)
+
+                expect(response).to have_gitlab_http_status(:ok)
+                expect(response).to include_pagination_headers
+                expect(json_response).to be_an Array
                 expect(json_response.count).to eq(count)
                 expect(json_response.first["system"]).to be system_notable
               end
@@ -341,8 +318,8 @@ RSpec.describe API::Notes, feature_category: :team_planning do
   end
 
   context "when noteable is a Snippet" do
-    let!(:snippet) { create(:project_snippet, project: project, author: user) }
-    let!(:snippet_note) { create(:note, noteable: snippet, project: project, author: user) }
+    let_it_be_with_reload(:snippet) { create(:project_snippet, project: project, author: user) }
+    let_it_be_with_reload(:snippet_note) { create(:note, noteable: snippet, project: project, author: user) }
 
     it_behaves_like "noteable API", 'projects', 'snippets', 'id' do
       let(:parent) { project }
@@ -392,10 +369,12 @@ RSpec.describe API::Notes, feature_category: :team_planning do
   end
 
   context "when noteable is a WikiPage::Meta" do
-    let!(:wiki_page_meta) { create(:wiki_page_meta, :for_wiki_page, container: project) }
-    let!(:wiki_page_meta_note) { create(:note, noteable: wiki_page_meta, project: project, author: user) }
+    let_it_be_with_reload(:wiki_page_meta) { create(:wiki_page_meta, :for_wiki_page, container: project) }
+    let_it_be_with_reload(:wiki_page_meta_note) do
+      create(:note, noteable: wiki_page_meta, project: project, author: user)
+    end
 
-    before do
+    before_all do
       project.add_developer(user)
     end
 
@@ -447,8 +426,14 @@ RSpec.describe API::Notes, feature_category: :team_planning do
   end
 
   context "when noteable is a Merge Request" do
-    let!(:merge_request) { create(:merge_request, source_project: project, target_project: project, author: user) }
-    let!(:merge_request_note) { create(:note, noteable: merge_request, project: project, author: user) }
+    let_it_be_with_reload(:merge_request) do
+      create(:merge_request, source_project: project, target_project: project, author: user)
+    end
+
+    let_it_be_with_reload(:merge_request_note) do
+      create(:note, noteable: merge_request, project: project, author: user)
+    end
+
     let(:request_body) { 'Hi!' }
     let(:params) { { body: request_body } }
     let(:request_path) { "/projects/#{project.id}/merge_requests/#{merge_request.iid}/notes" }
@@ -478,33 +463,24 @@ RSpec.describe API::Notes, feature_category: :team_planning do
     context 'a note with both text and invalid command' do
       let(:request_body) { "hello world\n/spend hello" }
 
-      before do
+      before_all do
         project.add_developer(user)
       end
 
-      it 'returns 200 status' do
-        subject
+      it 'creates a new note without a system note or applying commands', :aggregate_failures, :sidekiq_inline do
+        expect { subject }
+          .to change { Note.where(system: false).count }.by(1)
+          .and(not_change { Note.system.count })
+          .and(not_change { merge_request.reset.total_time_spent })
 
         expect(response).to have_gitlab_http_status(:created)
-      end
-
-      it 'creates a new note' do
-        expect { subject }.to change { Note.where(system: false).count }.by(1)
-      end
-
-      it 'does not create a system note about the change', :sidekiq_inline do
-        expect { subject }.not_to change { Note.system.count }
-      end
-
-      it 'does not apply the commands' do
-        expect { subject }.not_to change { merge_request.reset.total_time_spent }
       end
     end
 
     context 'a blank note' do
       let(:request_body) { "" }
 
-      before do
+      before_all do
         project.add_developer(user)
       end
 
@@ -518,23 +494,16 @@ RSpec.describe API::Notes, feature_category: :team_planning do
     context 'an invalid command-only note' do
       let(:request_body) { "/spend asdf" }
 
-      before do
+      before_all do
         project.add_developer(user)
       end
 
-      it 'returns a 400 and does not create a note' do
-        expect { subject }.not_to change { Note.where(system: false).count }
+      it 'returns a 400, does not create a note or apply the command, and reports the errors', :aggregate_failures do
+        expect { subject }
+          .to not_change { Note.where(system: false).count }
+          .and(not_change { merge_request.reset.total_time_spent })
 
         expect(response).to have_gitlab_http_status(:bad_request)
-      end
-
-      it 'does not apply the command' do
-        expect { subject }.not_to change { merge_request.reset.total_time_spent }
-      end
-
-      it 'reports the errors' do
-        subject
-
         expect(json_response).to eq({ "message" => "400 Bad request - Failed to apply commands." })
       end
     end
@@ -543,31 +512,17 @@ RSpec.describe API::Notes, feature_category: :team_planning do
       context '/spend' do
         let(:request_body) { "/spend 1h" }
 
-        before do
+        before_all do
           project.add_developer(user)
         end
 
-        it 'returns 202 Accepted status' do
-          subject
+        it 'creates a system note, applies the command, and reports the changes', :aggregate_failures, :sidekiq_inline do
+          expect { subject }
+            .to not_change { Note.where(system: false).count }
+            .and(change { Note.system.count }.by(1))
+            .and(change { merge_request.reset.total_time_spent })
 
           expect(response).to have_gitlab_http_status(:accepted)
-        end
-
-        it 'does not actually create a new note' do
-          expect { subject }.not_to change { Note.where(system: false).count }
-        end
-
-        it 'does however create a system note about the change', :sidekiq_inline do
-          expect { subject }.to change { Note.system.count }.by(1)
-        end
-
-        it 'applies the commands' do
-          expect { subject }.to change { merge_request.reset.total_time_spent }
-        end
-
-        it 'reports the changes' do
-          subject
-
           expect(json_response).to include(
             'commands_changes' => include(
               'spend_time' => include('duration' => 3600)
@@ -579,7 +534,7 @@ RSpec.describe API::Notes, feature_category: :team_planning do
 
       context '/merge' do
         let(:request_body) { "/merge" }
-        let(:project) { create(:project, :public, :repository) }
+        let(:project) { create(:project, :public, :repository, namespace: private_user.namespace) }
         let(:merge_request) { create(:merge_request_with_diffs, source_project: project, target_project: project, author: user) }
         let(:params) { { body: request_body, merge_request_diff_head_sha: merge_request.diff_head_sha } }
 
@@ -587,23 +542,12 @@ RSpec.describe API::Notes, feature_category: :team_planning do
           project.add_developer(user)
         end
 
-        it 'returns 202 Accepted status' do
-          subject
+        it 'applies the merge command and reports the changes', :aggregate_failures do
+          expect { subject }
+            .to not_change { Note.where(system: false).count }
+            .and(change { merge_request.reload.merge_jid.present? }.from(false).to(true))
 
           expect(response).to have_gitlab_http_status(:accepted)
-        end
-
-        it 'does not actually create a new note' do
-          expect { subject }.not_to change { Note.where(system: false).count }
-        end
-
-        it 'applies the commands' do
-          expect { subject }.to change { merge_request.reload.merge_jid.present? }.from(false).to(true)
-        end
-
-        it 'reports the changes' do
-          subject
-
           expect(json_response).to include(
             'commands_changes' => include(
               'merge' => merge_request.diff_head_sha
@@ -615,39 +559,31 @@ RSpec.describe API::Notes, feature_category: :team_planning do
     end
 
     context 'when the merge request discussion is locked' do
-      before do
+      before_all do
         merge_request.update_attribute(:discussion_locked, true)
       end
 
       context 'when a user is a team member' do
-        it 'returns 200 status' do
-          subject
+        it 'creates a new note', :aggregate_failures do
+          expect { subject }.to change { Note.count }.by(1)
 
           expect(response).to have_gitlab_http_status(:created)
-        end
-
-        it 'creates a new note' do
-          expect { subject }.to change { Note.count }.by(1)
         end
       end
 
       context 'when a user is not a team member' do
         subject { post api("/projects/#{project.id}/merge_requests/#{merge_request.iid}/notes", private_user), params: { body: 'Hi!' } }
 
-        it 'returns 403 status' do
-          subject
+        it 'does not create a new note', :aggregate_failures do
+          expect { subject }.not_to change { Note.count }
 
           expect(response).to have_gitlab_http_status(:forbidden)
-        end
-
-        it 'does not create a new note' do
-          expect { subject }.not_to change { Note.count }
         end
       end
     end
 
     context 'when authenticated with a token that has the ai_workflows scope' do
-      let(:oauth_token) { create(:oauth_access_token, user: user, scopes: [:ai_workflows]) }
+      let_it_be(:oauth_token) { create(:oauth_access_token, user: user, scopes: [:ai_workflows]) }
 
       context 'a post request creates a merge request note' do
         subject { post api(request_path, oauth_access_token: oauth_token), params: params }

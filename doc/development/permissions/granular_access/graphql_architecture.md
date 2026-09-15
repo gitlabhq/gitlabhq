@@ -36,10 +36,14 @@ When the flag is disabled, granular PATs do not work for GraphQL requests.
   - `boundary_argument`: Argument name containing the boundary.
   - `boundary_type`: The type of authorization boundary (`project`, `group`, `user`,
     `instance`). Used for validation and documentation of the permission boundary.
-  - `traversal`: When `true`, the directive verifies only that the token is scoped to the
-    boundary (`read_boundary`). The listed permissions are not enforced on the field
-    itself. Use for entry-point fields like `Query.group(fullPath:)` where downstream
-    fields enforce the real permissions.
+  - `requirement_group`: Label grouping directives that are alternative boundaries for the
+    same requirement. The token must be authorized on any one boundary in a group, and on
+    every distinct group present on the type or mutation. A directive with no
+    `requirement_group` belongs to the primary group. An additional scope gets a group
+    name derived from its `boundary_argument`, or `additional_<index>` when it has none.
+  - `assignable_when`: Conditions the current user must meet for the permission to be
+    offered in the token creation UI. Read only by the validation task, never enforced at
+    request time.
 
 ### 3. Boundary extractor
 
@@ -187,6 +191,45 @@ The boundary that applies depends on the runner:
 
 The standalone boundary is preferred over the concrete boundaries only in the last case, where the runner has no owning project or group.
 
+## Additional required scopes
+
+[Multiple boundaries](#multiple-boundaries) covers alternatives within a single group, where the token
+needs to satisfy only one of the directives that share a group.
+Additional required scopes work the other way: each group is a separate, cumulative requirement, and
+the token needs to satisfy all of them.
+
+`BoundaryExtractor` groups the directives declared on a type or mutation by `requirement_group`, then
+resolves each group's boundary independently.
+`GranularScopeAuthorization` authorizes each group with its own call to `AuthorizeGranularScopesService`,
+and caches the result under a key built from that group's permissions and resolved boundaries.
+A token can be authorized for the primary scope and denied for an additional scope, or the reverse,
+without either result affecting the other's cache entry.
+
+Declaring `additional_scopes` on `authorize_granular_token` adds a directive per entry, each with a
+`requirement_group` derived from its `boundary_argument`, or `additional_<index>` when it has none.
+The primary boundary, and any `boundaries` alternatives for it, keep the default group.
+Entries that share a `boundary_argument` belong to the same requirement group and act as
+alternatives within it. Because `permissions_for` reads a single permission list per group,
+taken from the first entry, entries in a shared requirement group must declare identical
+`permissions` values.
+
+```ruby
+authorize_granular_token permissions: :move_issue,
+  boundary_argument: :project_path, boundary_type: :project,
+  additional_scopes: [
+    { permissions: :create_work_item, boundary_argument: :target_project_path, boundary_type: :project }
+  ]
+```
+
+For this mutation, the primary directive (`move_issue` on the project resolved from `project_path`)
+belongs to the default group, and the additional directive (`create_work_item` on the project resolved
+from `target_project_path`) belongs to its own `target_project_path` group.
+Both groups must be authorized for the mutation to run.
+
+When a group's boundary cannot be resolved, `AuthorizeGranularScopesService` returns `404 Not Found`
+for that group, the same as for an unresolved primary boundary.
+See [Boundary resolution errors](#2-boundary-resolution-errors).
+
 ## Example scenarios
 
 ### Scenario 1: Mutation with `boundary_argument`
@@ -331,7 +374,6 @@ These errors indicate that a directive is misconfigured, and are surfaced during
 
 - An invalid permission name raises `InvalidInputError` in `AuthorizeGranularScopesService`, and is also caught by the `gitlab:permissions:validate` Rake task against `Authz::PermissionGroups::Assignable.all_permissions`.
 - A `boundaries:` entry that is not a Hash with a `boundary_type` key raises `ArgumentError`.
-- Passing `traversal: true` to a type-level `authorize_granular_token` raises `ArgumentError`. Use `granular_scope_directive(traversal: true)` on the field definition instead.
 
 ## See also
 

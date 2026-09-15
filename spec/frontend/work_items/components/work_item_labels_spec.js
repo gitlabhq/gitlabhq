@@ -118,7 +118,7 @@ describe('WorkItemLabels component', () => {
   };
 
   const updateLabels = (labels) => {
-    findWorkItemSidebarDropdownWidget().vm.$emit('updateSelected', labels);
+    findWorkItemSidebarDropdownWidget().vm.$emit('update-selected', labels);
     findWorkItemSidebarDropdownWidget().vm.$emit('update-value', labels);
   };
 
@@ -447,8 +447,8 @@ describe('WorkItemLabels component', () => {
     await waitForPromises();
 
     showDropdown();
-    findWorkItemSidebarDropdownWidget().vm.$emit('updateSelected', [label2Id, label3Id]);
-    findWorkItemSidebarDropdownWidget().vm.$emit('updateSelected', [label1Id, label2Id, label3Id]);
+    findWorkItemSidebarDropdownWidget().vm.$emit('update-selected', [label2Id, label3Id]);
+    findWorkItemSidebarDropdownWidget().vm.$emit('update-selected', [label1Id, label2Id, label3Id]);
     findWorkItemSidebarDropdownWidget().vm.$emit('update-value', [label1Id, label2Id, label3Id]);
 
     expect(successRemoveAllLabelWorkItemMutationHandler).not.toHaveBeenCalled();
@@ -579,12 +579,12 @@ describe('WorkItemLabels component', () => {
         });
       });
 
-      describe('when "hideCreateView" event is emitted', () => {
+      describe('when `hide-create-view` event is emitted', () => {
         it('hides dropdown', async () => {
           expect(findDisclosureDropdown().exists()).toBe(true);
           expect(findDropdownContentsCreateView().exists()).toBe(true);
 
-          findDropdownContentsCreateView().vm.$emit('hideCreateView');
+          findDropdownContentsCreateView().vm.$emit('hide-create-view');
           await nextTick();
 
           expect(findDisclosureDropdown().exists()).toBe(false);
@@ -592,13 +592,13 @@ describe('WorkItemLabels component', () => {
         });
       });
 
-      describe('when "labelCreated" event is emitted', () => {
+      describe('when `label-created` event is emitted', () => {
         it('updates "createdLabelId" value and hides dropdown', async () => {
           expect(findWorkItemSidebarDropdownWidget().props('createdLabelId')).toBe(undefined);
           expect(findDisclosureDropdown().exists()).toBe(true);
           expect(findDropdownContentsCreateView().exists()).toBe(true);
 
-          findDropdownContentsCreateView().vm.$emit('labelCreated', {
+          findDropdownContentsCreateView().vm.$emit('label-created', {
             id: 'gid://gitlab/Label/55',
             name: 'New label',
           });
@@ -609,6 +609,20 @@ describe('WorkItemLabels component', () => {
           );
           expect(findDisclosureDropdown().exists()).toBe(false);
           expect(findDropdownContentsCreateView().exists()).toBe(false);
+        });
+
+        it('refetches the labels so the new label is listed', async () => {
+          showDropdown();
+          await waitForPromises();
+          const callsBefore = projectLabelsQueryHandler.mock.calls.length;
+
+          findDropdownContentsCreateView().vm.$emit('label-created', {
+            id: 'gid://gitlab/Label/55',
+            name: 'New label',
+          });
+          await waitForPromises();
+
+          expect(projectLabelsQueryHandler.mock.calls).toHaveLength(callsBefore + 1);
         });
       });
     });

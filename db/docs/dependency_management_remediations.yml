@@ -1,0 +1,14 @@
+---
+table_name: dependency_management_remediations
+classes:
+- DependencyManagement::Remediation
+feature_categories:
+- dependency_management
+description: Last known state of dependency scanning auto-remediation for a dependency
+  in a project manifest, so a maintainer's dismissal survives merge request deletion.
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/248937
+milestone: '19.4'
+gitlab_schema: gitlab_sec
+sharding_key:
+  project_id: projects
+table_size: small

@@ -1039,6 +1039,23 @@ RSpec.describe Projects::CompareController, feature_category: :source_code_manag
 
     include_examples 'diff file endpoint'
 
+    context 'when Gitaly is unavailable' do
+      let(:old_path) { 'files/ruby/popen.rb' }
+      let(:new_path) { 'files/ruby/popen.rb' }
+
+      before do
+        allow_next_instance_of(CompareService) do |service|
+          allow(service).to receive(:execute).and_raise(GRPC::Unavailable)
+        end
+      end
+
+      it 'returns 503 instead of raising ActionView::MissingTemplate' do
+        send_request
+
+        expect(response).to have_gitlab_http_status(:service_unavailable)
+      end
+    end
+
     context 'with whitespace-only diffs' do
       let(:ignore_whitespace_changes) { true }
       let(:diffs_collection) { instance_double(Gitlab::Diff::FileCollection::Base, diff_files: [diff_file]) }

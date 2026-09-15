@@ -66,7 +66,7 @@ To explain the vulnerability:
 
 The response is shown on the right side of the page.
 
-On GitLab.com this feature is available. By default, it is powered by the Anthropic [`claude-3-haiku`](https://docs.anthropic.com/en/docs/about-claude/models#claude-3-a-new-generation-of-ai)
+On GitLab.com, this feature is available. By default, it is powered by the Anthropic [`claude-3-haiku`](https://docs.anthropic.com/en/docs/about-claude/models#claude-3-a-new-generation-of-ai)
 model. GitLab cannot guarantee that the large language model produces results that are correct. Use the
 explanation with caution.
 

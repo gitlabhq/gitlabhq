@@ -46,6 +46,7 @@ in a discussion, or when you assign them as a reviewer.
 - **Work item status changed** trigger event type [introduced](https://gitlab.com/gitlab-org/gitlab/-/work_items/599983) in GitLab 19.2.
 - **Merge request ready** and **Merge request code conflict** event types [consolidated](https://gitlab.com/gitlab-org/gitlab/-/work_items/602777) into the **Merge request** event type as the **Marked ready** and **Merge conflict** actions in GitLab 19.2.
 - Trigger creation form [changed](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/248807) to add conditions one at a time in GitLab 19.3.
+- **Merge request** trigger event type with the **Created** action [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/242698) in GitLab 19.4.
 
 {{< /history >}}
 
@@ -89,7 +90,7 @@ The trigger now appears in **AI** > **Triggers**.
 | Assign          | When the service account user is assigned to an issue or merge request.               | None |
 | Assign reviewer | When the service account user is assigned as a reviewer to a merge request.           | None |
 | Pipeline events | When a pipeline changes state.                                                        | From the **Run when** dropdown list, select one or more of the following:<br>- **Running**<br>- **Passed**<br>- **Failed**<br>- **Canceled** |
-| Merge request   | When a selected merge request action occurs.                                          | From the **Run when** dropdown list, select one of the following:<br>- **Approved**: When a merge request has all required approvals<br>- **Marked ready**: When a draft merge request is marked as ready for review<br>- **Merge conflict**: When a merge request can no longer be merged due to a code conflict |
+| Merge request   | When a selected merge request action occurs.                                          | From the **Run when** dropdown list, select one of the following:<br>- **Approved**: When a merge request has all required approvals.<br>- **Created**: When someone creates a merge request, draft or ready, and GitLab generates its diff. GitLab syncs code owner approval rules against that diff before the flow runs, unless the merge request joins a merge train or GitLab cannot reload the diff.<br>- **Marked ready**: When a draft merge request is marked as ready for review.<br>- **Merge conflict**: When a merge request can no longer be merged due to a code conflict. |
 | Work item       | When a selected work item action occurs.                                              | From the **Run when** dropdown list, select one of the following:<br>- **Created**: When a work item is created<br>- **Status changed**: When a work item's status changes |
 
 ## Edit a trigger
@@ -99,9 +100,32 @@ The trigger now appears in **AI** > **Triggers**.
 1. For the trigger you want to change, select **Edit flow trigger** ({{< icon name="pencil" >}}).
 1. Make the changes and select **Save changes**.
 
+## Turn a trigger on or off
+
+{{< history >}}
+
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/work_items/598439) in GitLab 19.4.
+
+{{< /history >}}
+
+Turn off a trigger to disable it and retain its configuration. After you turn a trigger off,
+it stops running automatically after its configured actions, and remains in the list of triggers.
+
+1. In the top bar, select **Search or go to** and find your project.
+1. In the left sidebar, select **AI** > **Triggers**.
+1. For the trigger you want to turn on or off, in the **Status** column, select the toggle.
+
 ## Delete a trigger
 
 1. In the top bar, select **Search or go to** and find your project.
 1. In the left sidebar, select **AI** > **Triggers**.
 1. For the trigger you want to change, select **Delete flow trigger** ({{< icon name="remove" >}}).
 1. On the confirmation dialog, select **OK**.
+
+## Actions that don't initiate a trigger
+
+All trigger event types require a human user to perform the triggering action.
+A non-human user such as a bot user, service account user, or another flow, cannot activate a trigger.
+
+This restriction applies to all [trigger event types](#trigger-event-types).
+For example, a flow cannot trigger another flow by mentioning the service account in a comment.

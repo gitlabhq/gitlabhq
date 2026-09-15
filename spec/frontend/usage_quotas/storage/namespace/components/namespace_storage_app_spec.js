@@ -148,7 +148,7 @@ describe('NamespaceStorageApp', () => {
           1,
           expect.objectContaining({ searchTerm: '' }),
         );
-        findSearchAndSortBar().vm.$emit('onFilter', sampleSearchTerm);
+        findSearchAndSortBar().vm.$emit('on-filter', sampleSearchTerm);
         await waitForPromises();
 
         expect(getProjectListStorageHandler).toHaveBeenNthCalledWith(
@@ -158,14 +158,14 @@ describe('NamespaceStorageApp', () => {
       });
 
       it('triggers search if user clears the entered search input', async () => {
-        findSearchAndSortBar().vm.$emit('onFilter', sampleSearchTerm);
+        findSearchAndSortBar().vm.$emit('on-filter', sampleSearchTerm);
         await waitForPromises();
 
         expect(getProjectListStorageHandler).toHaveBeenCalledWith(
           expect.objectContaining({ searchTerm: sampleSearchTerm }),
         );
 
-        findSearchAndSortBar().vm.$emit('onFilter', '');
+        findSearchAndSortBar().vm.$emit('on-filter', '');
         await waitForPromises();
 
         expect(getProjectListStorageHandler).toHaveBeenCalledWith(
@@ -174,14 +174,14 @@ describe('NamespaceStorageApp', () => {
       });
 
       it('triggers search with empty string if user enters short search input', async () => {
-        findSearchAndSortBar().vm.$emit('onFilter', sampleSearchTerm);
+        findSearchAndSortBar().vm.$emit('on-filter', sampleSearchTerm);
         await waitForPromises();
         expect(getProjectListStorageHandler).toHaveBeenCalledWith(
           expect.objectContaining({ searchTerm: sampleSearchTerm }),
         );
 
         const sampleShortSearchTerm = 'Gi';
-        findSearchAndSortBar().vm.$emit('onFilter', sampleShortSearchTerm);
+        findSearchAndSortBar().vm.$emit('on-filter', sampleShortSearchTerm);
         await waitForPromises();
 
         expect(getProjectListStorageHandler).toHaveBeenCalledWith(
@@ -243,14 +243,14 @@ describe('NamespaceStorageApp', () => {
         createComponent();
         await waitForPromises();
 
-        expect(findPrevButton().attributes().disabled).toBe('disabled');
+        expect(findPrevButton().attributes()['aria-disabled']).toBe('true');
       });
 
       it('has "Next" button enabled', async () => {
         createComponent();
         await waitForPromises();
 
-        expect(findNextButton().attributes().disabled).toBeUndefined();
+        expect(findNextButton().attributes()['aria-disabled']).toBeUndefined();
       });
 
       describe('apollo calls', () => {
@@ -290,7 +290,7 @@ describe('NamespaceStorageApp', () => {
         it('shows gl-alert with error message', () => {
           expect(findAlert().exists()).toBe(true);
           expect(findAlert().text()).toBe(
-            'An error occured while loading the storage usage details. Please refresh the page to try again.',
+            'An error occurred while loading the storage usage details. Please refresh the page to try again.',
           );
         });
 

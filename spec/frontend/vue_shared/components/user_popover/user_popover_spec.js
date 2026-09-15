@@ -1,4 +1,4 @@
-import { GlSkeletonLoader, GlIcon } from '@gitlab/ui';
+import { GlAvatarLabeled, GlBadge, GlSkeletonLoader, GlIcon } from '@gitlab/ui';
 import mrDiffCommentFixture from 'test_fixtures/merge_requests/diff_comment.html';
 import { setHTMLFixture, resetHTMLFixture } from 'helpers/fixtures';
 import { sprintf } from '~/locale';
@@ -300,7 +300,24 @@ describe('User Popover Component', () => {
 
       createWrapper({ user });
 
-      expect(wrapper.findByText('Busy').exists()).toBe(true);
+      const busyBadge = wrapper.findComponent(GlBadge);
+
+      expect(busyBadge.text()).toBe('Busy');
+      expect(busyBadge.props('variant')).toBe('warning');
+    });
+
+    it('shows the busy badge over the avatar instead of inline with the name', () => {
+      const user = {
+        ...DEFAULT_PROPS.user,
+        status: { availability: AVAILABILITY_STATUS.BUSY },
+      };
+
+      createWrapper({ user });
+
+      expect(wrapper.findByTestId('user-popover-busy-badge').exists()).toBe(true);
+      // The badge overlays the avatar as a sibling of the avatar block; it no
+      // longer renders inside the name row (matches the profile page header).
+      expect(wrapper.findComponent(GlAvatarLabeled).findComponent(GlBadge).exists()).toBe(false);
     });
 
     it('should hide the busy status for any other status', () => {

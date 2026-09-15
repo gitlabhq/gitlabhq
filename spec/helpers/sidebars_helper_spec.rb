@@ -778,4 +778,63 @@ RSpec.describe SidebarsHelper, feature_category: :navigation do
       expect(helper.send(:super_sidebar_default_pins, 'explore')).to eq([])
     end
   end
+
+  describe '#manage_organization_link' do
+    let_it_be(:user) { build_stubbed(:user) }
+
+    before do
+      Current.organization_resolver =
+        instance_double(Gitlab::Current::Organization, from_request: current_organization)
+      stub_organization_release(org_admin_area: true)
+    end
+
+    context 'when there is a user' do
+      subject(:path) { helper.send(:manage_organization_link, user) }
+
+      context 'when the user can access the organization admin area' do
+        before do
+          allow(user).to receive(:can?)
+            .with(:access_organization_admin_area, current_organization)
+            .and_return(true)
+        end
+
+        it 'returns the organization admin root path' do
+          expect(path).to eq(organization_admin_root_path(current_organization))
+        end
+
+        context 'when the request is not organization-scoped' do
+          before do
+            Current.organization_resolver =
+              instance_double(Gitlab::Current::Organization, from_request: nil)
+          end
+
+          it { is_expected.to be_nil }
+        end
+
+        context 'when the org admin area is not enabled' do
+          before do
+            stub_organization_release(org_admin_area: false)
+          end
+
+          it { is_expected.to be_nil }
+        end
+      end
+
+      context 'when the user cannot access the organization admin area' do
+        before do
+          allow(user).to receive(:can?)
+            .with(:access_organization_admin_area, current_organization)
+            .and_return(false)
+        end
+
+        it { is_expected.to be_nil }
+      end
+    end
+
+    context 'when there is no user' do
+      subject(:path) { helper.send(:manage_organization_link, nil) }
+
+      it { is_expected.to be_nil }
+    end
+  end
 end

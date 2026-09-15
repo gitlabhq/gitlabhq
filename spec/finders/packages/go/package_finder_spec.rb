@@ -22,21 +22,21 @@ RSpec.describe Packages::Go::PackageFinder do
         expect { subject }.to exceed_query_limit(0).for_query(/^SELECT 1/)
       end
 
-      it { is_expected.to eq(true) }
+      it { is_expected.to be(true) }
     end
 
     context 'with an invalid name' do
       let(:mod_name) { 'foo/bar' }
       let(:version_name) { 'baz' }
 
-      it { is_expected.to eq(false) }
+      it { is_expected.to be(false) }
     end
 
     context 'with an invalid version' do
       let(:mod_name) { mod.name }
       let(:version_name) { 'baz' }
 
-      it { is_expected.to eq(false) }
+      it { is_expected.to be(false) }
     end
   end
 
@@ -62,21 +62,21 @@ RSpec.describe Packages::Go::PackageFinder do
         package.update_column(:status, :error)
       end
 
-      it { is_expected.to eq(nil) }
+      it { is_expected.to be_nil }
     end
 
     context 'with an invalid name' do
       let(:mod_name) { 'foo/bar' }
       let(:version_name) { 'baz' }
 
-      it { is_expected.to eq(nil) }
+      it { is_expected.to be_nil }
     end
 
     context 'with an invalid version' do
       let(:mod_name) { mod.name }
       let(:version_name) { 'baz' }
 
-      it { is_expected.to eq(nil) }
+      it { is_expected.to be_nil }
     end
   end
 end

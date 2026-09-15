@@ -1,0 +1,14 @@
+---
+table: duo_workflows_workflow_merge_requests
+database: main
+replication_targets:
+- name: clickhouse_main
+  target: siphon_duo_workflows_workflow_merge_requests
+  dedup_by:
+  - id
+  dedup_by_columns_lookup_table: siphon_duo_workflows_workflow_merge_requests_pg_pkey_ordered
+  reconcile:
+    column: traversal_path
+    expression_key_columns:
+    - namespace_id
+    - project_id

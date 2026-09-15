@@ -44,7 +44,7 @@ are collected for every Rack request and Sidekiq job processed.
 
 Sampled metrics are metrics that cannot be associated with a single transaction.
 Examples include garbage collection statistics and retained Ruby objects. These
-metrics are collected at a regular interval. This interval is made up out of two
+metrics are collected at a regular interval. This interval is made up of two
 parts:
 
 1. A user defined interval.

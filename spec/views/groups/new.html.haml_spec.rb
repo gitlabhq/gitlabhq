@@ -10,8 +10,7 @@ RSpec.describe 'groups/new.html.haml' do
     assign(:group, group)
     assign(:current_user, user)
 
-    allow(view).to receive(:current_user).and_return(user)
-    allow(view).to receive(:import_sources_enabled?).and_return(false)
+    allow(view).to receive_messages(current_user: user, import_sources_enabled?: false)
 
     render
   end

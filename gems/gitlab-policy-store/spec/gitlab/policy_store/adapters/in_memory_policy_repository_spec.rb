@@ -9,7 +9,7 @@ RSpec.describe Gitlab::PolicyStore::Adapters::InMemoryPolicyRepository do
 
   describe 'validation messages' do
     let(:valid_attributes) do
-      { organization_id: organization_id, name: 'Limits policy', trigger_type: 'merge_request' }
+      { organization_id: organization_id, name: 'Limits policy', trigger_type: 'deployment_requested' }
     end
 
     it 'names the attribute and the limit on create' do

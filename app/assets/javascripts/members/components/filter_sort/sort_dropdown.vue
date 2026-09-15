@@ -83,7 +83,7 @@ export default {
     :sort-direction-tool-tip="sortDirectionData.tooltip"
     :sort-options="filteredOptions"
     :sort-by="activeOptionKey"
-    @sortByChange="handleSortingItemClick"
-    @sortDirectionChange="handleSortDirectionChange"
+    @sort-by-change="handleSortingItemClick"
+    @sort-direction-change="handleSortDirectionChange"
   />
 </template>

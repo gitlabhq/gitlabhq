@@ -3,7 +3,8 @@
 require 'spec_helper'
 
 RSpec.describe Gitlab::SidekiqMiddleware::ConcurrencyLimit::ConcurrencyLimitService,
-  :clean_gitlab_redis_shared_state, :clean_gitlab_redis_queues_metadata, feature_category: :global_search do
+  :clean_gitlab_redis_shared_state, :clean_gitlab_redis_concurrency_limit,
+  :clean_gitlab_redis_queues_metadata, feature_category: :global_search do
   let(:worker_class) do
     Class.new do
       def self.name
@@ -19,13 +20,6 @@ RSpec.describe Gitlab::SidekiqMiddleware::ConcurrencyLimit::ConcurrencyLimitServ
   let(:worker_context) do
     { 'correlation_id' => 'context_correlation_id',
       'meta.project' => 'gitlab-org/gitlab' }
-  end
-
-  let(:stored_context) do
-    {
-      "#{Gitlab::ApplicationContext::LOG_KEY}.project" => 'gitlab-org/gitlab',
-      "correlation_id" => 'context_correlation_id'
-    }
   end
 
   let(:job) { { 'class' => worker_class_name, 'args' => [1, 2] } }

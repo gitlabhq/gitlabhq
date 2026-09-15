@@ -19,7 +19,7 @@ The feature is still in development, but you can:
 - [Report a bug](https://gitlab.com/gitlab-org/incubation-engineering/mobile-devops/feedback/-/issues/new?description_template=report_bug).
 - [Share feedback](https://gitlab.com/gitlab-org/incubation-engineering/mobile-devops/feedback/-/issues/new?description_template=general_feedback).
 
-With the Google Play integration, you can configure your CI/CD pipelines to connect to the [Google Play Console](https://play.google.com/console/developers) to build and release apps for Android devices.
+With the Google Play integration, you can configure your CI/CD pipelines to connect to the [Google Play Console](https://play.google.com/console/about/) to build and release apps for Android devices.
 
 The Google Play integration works out of the box with [fastlane](https://fastlane.tools/). You can also use this integration with other build tools.
 
@@ -27,7 +27,7 @@ The Google Play integration works out of the box with [fastlane](https://fastlan
 
 Prerequisites:
 
-- You must have a [Google Play Console](https://play.google.com/console/developers) developer account.
+- You must have a [Google Play Console](https://play.google.com/console/about/) developer account.
 - You must [generate a new service account key for your project](https://developers.google.com/android-publisher/getting_started) from the Google Cloud console.
 
 To enable the Google Play integration in GitLab:

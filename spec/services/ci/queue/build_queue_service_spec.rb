@@ -10,14 +10,15 @@ RSpec.describe Ci::Queue::BuildQueueService, feature_category: :continuous_integ
   let_it_be(:pipeline) { create(:ci_pipeline, project: project) }
   let_it_be(:build_1) { create(:ci_build, :created, pipeline: pipeline) }
   let_it_be(:pending_build_1) { create(:ci_pending_build, build: build_1, project: project) }
+  let_it_be(:runner) { create(:ci_runner, :group, groups: [group]) }
 
   describe 'build_candidates' do
     subject(:build_candidates) { described_class.new(runner).build_candidates }
 
-    let!(:tagged_build) { create(:ci_build, :created, pipeline: pipeline, tag_list: runner_matching_tags) }
-    let!(:protected_build) { create(:ci_build, :created, :protected, pipeline: pipeline) }
-    let!(:pending_tagged_build) { create(:ci_pending_build, build: tagged_build, project: project) }
-    let!(:pending_protected_build) { create(:ci_pending_build, build: protected_build, project: project) }
+    let_it_be(:tagged_build) { create(:ci_build, :created, pipeline: pipeline, tag_list: %w[tag1 tag2]) }
+    let_it_be(:protected_build) { create(:ci_build, :created, :protected, pipeline: pipeline) }
+    let_it_be(:pending_tagged_build) { create(:ci_pending_build, build: tagged_build, project: project) }
+    let_it_be(:pending_protected_build) { create(:ci_pending_build, build: protected_build, project: project) }
 
     where(:runner_traits, :runner_args) do
       [:instance] | {}
@@ -26,7 +27,6 @@ RSpec.describe Ci::Queue::BuildQueueService, feature_category: :continuous_integ
     end
 
     with_them do
-      let(:runner_matching_tags) { %w[tag1 tag2] }
       let(:runner_without_tags) { create(:ci_runner, *runner_traits, **runner_args) }
       let(:runner_with_tags) { create(:ci_runner, :tagged_only, *runner_traits, **runner_args) }
       let(:protected_runner) { create(:ci_runner, :ref_protected, *runner_traits, **runner_args) }
@@ -58,8 +58,6 @@ RSpec.describe Ci::Queue::BuildQueueService, feature_category: :continuous_integ
   end
 
   describe 'execute' do
-    let_it_be(:runner) { create(:ci_runner, :group, groups: [group]) }
-
     subject(:execute) { described_class.new(runner).execute(::Ci::PendingBuild.all) }
 
     it 'plucks build_id, partition_id and project_id' do
@@ -82,7 +80,6 @@ RSpec.describe Ci::Queue::BuildQueueService, feature_category: :continuous_integ
   end
 
   describe 'runner_manager threading' do
-    let_it_be(:runner) { create(:ci_runner, :group, groups: [group]) }
     let_it_be(:runner_manager) { create(:ci_runner_machine, runner: runner) }
     let_it_be(:other_runner_manager) { create(:ci_runner_machine, runner: runner) }
 

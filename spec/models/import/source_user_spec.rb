@@ -147,6 +147,38 @@ RSpec.describe Import::SourceUser, type: :model, feature_category: :importers do
     end
   end
 
+  describe '#reassignment_expires_at' do
+    it 'defaults to one year from now for a new record' do
+      freeze_time do
+        source_user = build(:import_source_user, reassignment_expires_at: nil)
+        source_user.valid?
+
+        expect(source_user.reassignment_expires_at).to be_within(1.second).of(1.year.from_now)
+      end
+    end
+
+    it 'defaults to one year from now, not one year from created_at, for a pre-existing record with no value set' do
+      created_at = 3.years.ago
+      source_user = travel_to(created_at) { create(:import_source_user) }
+      source_user.update_column(:reassignment_expires_at, nil)
+
+      freeze_time do
+        source_user.valid?
+
+        expect(source_user.reassignment_expires_at).to be_within(1.second).of(1.year.from_now)
+      end
+    end
+
+    it 'does not override an explicitly set value' do
+      reassignment_expires_at = 5.days.from_now
+      source_user = build(:import_source_user, reassignment_expires_at: reassignment_expires_at)
+
+      source_user.valid?
+
+      expect(source_user.reassignment_expires_at).to be_within(1.second).of(reassignment_expires_at)
+    end
+  end
+
   describe 'scopes' do
     let_it_be(:namespace) { create(:namespace) }
     let_it_be(:source_user_1) { create(:import_source_user, namespace: namespace) }

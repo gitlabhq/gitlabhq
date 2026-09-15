@@ -61,7 +61,6 @@ Gitlab/AvoidGitlabInstanceChecks:
     - 'lib/gitlab/database/migration_helpers/wraparound_autovacuum.rb'
     - 'lib/gitlab/database/migration_helpers/wraparound_vacuum_helpers.rb'
     - 'lib/gitlab/gon_helper.rb'
-    - 'lib/gitlab/monitor/demo_projects.rb'
     - 'lib/gitlab/qa.rb'
     - 'lib/gitlab/tracking/standard_context.rb'
     - 'lib/gitlab/usage/metrics/instrumentations/count_ci_internal_pipelines_metric.rb'

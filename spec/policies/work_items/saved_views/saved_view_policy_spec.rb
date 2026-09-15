@@ -173,8 +173,11 @@ RSpec.describe WorkItems::SavedViews::SavedViewPolicy, feature_category: :planni
         end
 
         it { expect_allowed(:subscribe_saved_view) }
+        it { expect_allowed(:subscribe_work_item_saved_view) }
         it { expect_allowed(:unsubscribe_saved_view) }
+        it { expect_allowed(:unsubscribe_work_item_saved_view) }
         it { expect_allowed(:reorder_saved_view) }
+        it { expect_allowed(:reorder_work_item_saved_view) }
       end
 
       context 'when user cannot read the namespace' do
@@ -182,8 +185,11 @@ RSpec.describe WorkItems::SavedViews::SavedViewPolicy, feature_category: :planni
         let_it_be(:saved_view) { create(:saved_view, namespace: private_group, private: false) }
 
         it { expect_disallowed(:subscribe_saved_view) }
+        it { expect_disallowed(:subscribe_work_item_saved_view) }
         it { expect_disallowed(:unsubscribe_saved_view) }
+        it { expect_disallowed(:unsubscribe_work_item_saved_view) }
         it { expect_disallowed(:reorder_saved_view) }
+        it { expect_disallowed(:reorder_work_item_saved_view) }
       end
     end
 
@@ -195,8 +201,11 @@ RSpec.describe WorkItems::SavedViews::SavedViewPolicy, feature_category: :planni
       end
 
       it { expect_disallowed(:subscribe_saved_view) }
+      it { expect_disallowed(:subscribe_work_item_saved_view) }
       it { expect_disallowed(:unsubscribe_saved_view) }
+      it { expect_disallowed(:unsubscribe_work_item_saved_view) }
       it { expect_disallowed(:reorder_saved_view) }
+      it { expect_disallowed(:reorder_work_item_saved_view) }
     end
 
     context 'when user is nil' do
@@ -205,8 +214,11 @@ RSpec.describe WorkItems::SavedViews::SavedViewPolicy, feature_category: :planni
       let_it_be(:saved_view) { create(:saved_view, private: false) }
 
       it { expect_disallowed(:subscribe_saved_view) }
+      it { expect_disallowed(:subscribe_work_item_saved_view) }
       it { expect_disallowed(:unsubscribe_saved_view) }
+      it { expect_disallowed(:unsubscribe_work_item_saved_view) }
       it { expect_disallowed(:reorder_saved_view) }
+      it { expect_disallowed(:reorder_work_item_saved_view) }
     end
   end
 
@@ -220,6 +232,7 @@ RSpec.describe WorkItems::SavedViews::SavedViewPolicy, feature_category: :planni
         end
 
         it { expect_allowed(:update_saved_view) }
+        it { expect_allowed(:update_work_item_saved_view) }
       end
 
       context 'when user lacks shared saved view permissions' do
@@ -228,6 +241,7 @@ RSpec.describe WorkItems::SavedViews::SavedViewPolicy, feature_category: :planni
         end
 
         it { expect_disallowed(:update_saved_view) }
+        it { expect_disallowed(:update_work_item_saved_view) }
       end
     end
 
@@ -242,6 +256,7 @@ RSpec.describe WorkItems::SavedViews::SavedViewPolicy, feature_category: :planni
         end
 
         it { expect_allowed(:update_saved_view) }
+        it { expect_allowed(:update_work_item_saved_view) }
       end
 
       context 'when user is not the author but has shared saved view permissions' do
@@ -250,6 +265,7 @@ RSpec.describe WorkItems::SavedViews::SavedViewPolicy, feature_category: :planni
         end
 
         it { expect_disallowed(:update_saved_view) }
+        it { expect_disallowed(:update_work_item_saved_view) }
       end
     end
   end
@@ -264,6 +280,7 @@ RSpec.describe WorkItems::SavedViews::SavedViewPolicy, feature_category: :planni
         end
 
         it { expect_allowed(:delete_saved_view) }
+        it { expect_allowed(:delete_work_item_saved_view) }
       end
 
       context 'when user lacks shared saved view permissions' do
@@ -272,6 +289,7 @@ RSpec.describe WorkItems::SavedViews::SavedViewPolicy, feature_category: :planni
         end
 
         it { expect_disallowed(:delete_saved_view) }
+        it { expect_disallowed(:delete_work_item_saved_view) }
       end
     end
 
@@ -286,6 +304,7 @@ RSpec.describe WorkItems::SavedViews::SavedViewPolicy, feature_category: :planni
         end
 
         it { expect_allowed(:delete_saved_view) }
+        it { expect_allowed(:delete_work_item_saved_view) }
       end
 
       context 'when user is not the author but has shared saved view permissions' do
@@ -294,6 +313,7 @@ RSpec.describe WorkItems::SavedViews::SavedViewPolicy, feature_category: :planni
         end
 
         it { expect_disallowed(:delete_saved_view) }
+        it { expect_disallowed(:delete_work_item_saved_view) }
       end
     end
   end

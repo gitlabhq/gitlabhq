@@ -1,0 +1,6 @@
+# @feature_category: organization
+mutation removeOrganizationUser($id: OrganizationsOrganizationUserID!) {
+  organizationUserDelete(input: { id: $id }) {
+    errors
+  }
+}

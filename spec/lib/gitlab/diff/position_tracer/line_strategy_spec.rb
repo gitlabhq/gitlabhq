@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Gitlab::Diff::PositionTracer::LineStrategy, :clean_gitlab_redis_cache do
+RSpec.describe Gitlab::Diff::PositionTracer::LineStrategy, :clean_gitlab_redis_cache, feature_category: :code_review_workflow do
   # Douwe's diary                                    New York City, 2016-06-28
   # --------------------------------------------------------------------------
   #
@@ -248,18 +248,6 @@ RSpec.describe Gitlab::Diff::PositionTracer::LineStrategy, :clean_gitlab_redis_c
           <<-CONTENT.strip_heredoc
             AA
             BB
-          CONTENT
-        )
-      end
-
-      let(:delete_line_again_commit) do
-        move_line_again_commit
-
-        update_file(
-          branch_name,
-          new_file_name,
-          <<-CONTENT.strip_heredoc
-            AA
           CONTENT
         )
       end

@@ -70,11 +70,11 @@ describe('FilteredSearchAndSort', () => {
     expect(wrapper.findByTestId('default-slot').exists()).toBe(true);
   });
 
-  describe('when `FilteredSearchBarRoot` emits `onFilter` event', () => {
+  describe('when `FilteredSearchBarRoot` emits `on-filter` event', () => {
     beforeEach(() => {
       createComponent();
 
-      findFilteredSearchAndSortRoot().vm.$emit('onFilter', [
+      findFilteredSearchAndSortRoot().vm.$emit('on-filter', [
         { type: FILTERED_SEARCH_TERM, value: { data: 'foo bar' } },
       ]);
     });
@@ -84,11 +84,11 @@ describe('FilteredSearchAndSort', () => {
     });
   });
 
-  describe('when `GlSorting` emits `sortDirectionChange` event', () => {
+  describe('when `GlSorting` emits `sort-direction-change` event', () => {
     beforeEach(() => {
       createComponent();
 
-      findGlSorting().vm.$emit('sortDirectionChange', true);
+      findGlSorting().vm.$emit('sort-direction-change', true);
     });
 
     it('emits `sort-direction-change` event', () => {
@@ -96,11 +96,11 @@ describe('FilteredSearchAndSort', () => {
     });
   });
 
-  describe('when `GlSorting` emits `sortByChange` event', () => {
+  describe('when `GlSorting` emits `sort-by-change` event', () => {
     beforeEach(() => {
       createComponent();
 
-      findGlSorting().vm.$emit('sortByChange', defaultPropsData.sortOptions[1].value);
+      findGlSorting().vm.$emit('sort-by-change', defaultPropsData.sortOptions[1].value);
     });
 
     it('emits `sort-by-change` event', () => {

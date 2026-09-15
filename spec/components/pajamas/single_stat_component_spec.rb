@@ -9,7 +9,6 @@ RSpec.describe Pajamas::SingleStatComponent, type: :component, feature_category:
   let(:title_icon) { nil }
   let(:unit) { nil }
   let(:meta_text) { nil }
-  let(:variant) { :success }
 
   let(:params) do
     {

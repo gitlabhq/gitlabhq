@@ -67,7 +67,7 @@ RSpec.describe ServiceDeskSetting, feature_category: :service_desk do
           let_it_be(:project) { create(:project) }
           let_it_be(:credential) { build(:service_desk_custom_email_credential, project: project).save!(validate: false) }
 
-          let!(:verification) { create(:service_desk_custom_email_verification, project: project) }
+          let_it_be_with_reload(:verification) { create(:service_desk_custom_email_verification, project: project) }
 
           subject(:setting) { build_stubbed(:service_desk_setting, project: project) }
 
@@ -156,7 +156,7 @@ RSpec.describe ServiceDeskSetting, feature_category: :service_desk do
     let_it_be(:project1) { create(:project, path: 'test-one', group: group) }
     let_it_be(:project2) { create(:project, path: 'one', group: subgroup) }
     let_it_be(:project_key) { 'key' }
-    let!(:setting) do
+    let_it_be(:setting) do
       create(:service_desk_setting, project: project1, project_key: project_key)
     end
 
@@ -190,7 +190,7 @@ RSpec.describe ServiceDeskSetting, feature_category: :service_desk do
     let_it_be(:project1) { create(:project, path: 'test-one', group: group) }
     let_it_be(:project2) { create(:project, path: 'one', group: subgroup) }
 
-    before do
+    before_all do
       create(:service_desk_setting, project: project1, project_key: 'key')
     end
 

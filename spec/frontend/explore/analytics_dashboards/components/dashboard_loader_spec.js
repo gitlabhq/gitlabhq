@@ -5,6 +5,7 @@ import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
 import createMockApollo from 'helpers/mock_apollo_helper';
 import waitForPromises from 'helpers/wait_for_promises';
 import DashboardLoader from '~/explore/analytics_dashboards/components/dashboard_loader.vue';
+import { GRID_HEIGHT_COMPACT } from '~/explore/analytics_dashboards/constants';
 import getDashboardQuery from '~/explore/analytics_dashboards/graphql/get_dashboard.query.graphql';
 import getSystemDashboardQuery from '~/explore/analytics_dashboards/graphql/get_system_dashboard.query.graphql';
 import * as sentryBrowserWrapper from '~/sentry/sentry_browser_wrapper';
@@ -168,20 +169,78 @@ describe('DashboardLoader', () => {
     });
   });
 
-  describe('with a compact grid height', () => {
-    beforeEach(async () => {
-      createComponent({ requestHandlers: mockResolvedQuery(mockDashboardCompactGridResponse) });
+  describe('with a section entry', () => {
+    const sectionPanel = {
+      section: { title: 'Adoption tiers' },
+      gridAttributes: { xPos: 0, yPos: 0, height: 1 },
+    };
+    const normalPanel = mockCustomDashboard.config.panels[0];
+
+    const createWithConfig = async (config) => {
+      createComponent({
+        requestHandlers: mockResolvedQuery({
+          customDashboard: {
+            ...mockCustomDashboard,
+            config: { ...mockCustomDashboard.config, ...config },
+          },
+        }),
+      });
       await waitForPromises();
+    };
+
+    it('fills in the full dashboard width', async () => {
+      await createWithConfig({ panels: [sectionPanel] });
+
+      expect(getSlotProp('config').panels[0].gridAttributes).toEqual({
+        xPos: 0,
+        yPos: 0,
+        height: 1,
+        width: 12,
+      });
     });
 
-    it('passes cellHeight as 10 to the slot', () => {
-      expect(getSlotProp('cellHeight')).toBe('10');
+    it('keeps an explicitly configured width', async () => {
+      await createWithConfig({
+        panels: [{ ...sectionPanel, gridAttributes: { ...sectionPanel.gridAttributes, width: 6 } }],
+      });
+
+      expect(getSlotProp('config').panels[0].gridAttributes.width).toBe(6);
     });
 
-    it('passes minCellHeight as 10 to the slot', () => {
-      expect(getSlotProp('minCellHeight')).toBe('10');
+    it('leaves the grid attributes of a normal panel untouched', async () => {
+      await createWithConfig({ panels: [normalPanel] });
+
+      expect(getSlotProp('config').panels[0].gridAttributes).toEqual(normalPanel.gridAttributes);
+    });
+
+    it('fills in the width for a section inside a view', async () => {
+      await createWithConfig({ views: [{ title: 'Overview', panels: [sectionPanel] }] });
+
+      expect(getSlotProp('config').views[0].panels[0].gridAttributes.width).toBe(12);
     });
   });
+
+  // The schema spells the value in lower case, which is what this route receives; the
+  // enum name is matched too, so it is accepted whichever way it reaches us.
+  describe.each([GRID_HEIGHT_COMPACT.toLowerCase(), GRID_HEIGHT_COMPACT])(
+    'with a compact grid height of %s',
+    (gridHeight) => {
+      beforeEach(async () => {
+        createComponent({
+          requestHandlers: mockResolvedQuery(mockDashboardCompactGridResponse(gridHeight)),
+        });
+        await waitForPromises();
+      });
+
+      it('passes cellHeight as 10 to the slot', () => {
+        expect(getSlotProp('cellHeight')).toBe('10');
+      });
+
+      it('passes minCellHeight as 10 to the slot', () => {
+        expect(getSlotProp('minCellHeight')).toBe('10');
+      });
+    },
+  );
 
   describe('with a query error', () => {
     beforeEach(async () => {

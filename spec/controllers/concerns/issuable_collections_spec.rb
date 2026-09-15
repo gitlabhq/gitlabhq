@@ -141,6 +141,22 @@ RSpec.describe IssuableCollections do
           'search' => nil
         })
       end
+
+      it 'clears the search param in place so the search box does not redisplay the iid' do
+        controller.send(:finder_options)
+
+        expect(controller.params[:search]).to be_nil
+      end
+    end
+
+    context 'when the state param is blank' do
+      let(:params) { { scope: 'all' } }
+
+      it 'defaults the state param in place so shared/issuable/_nav marks the tab active' do
+        controller.send(:finder_options)
+
+        expect(controller.params[:state]).to eq('opened')
+      end
     end
   end
 end

@@ -11,3 +11,5 @@ module Types
     end
   end
 end
+
+Types::Ci::GroupVariableType.prepend_mod

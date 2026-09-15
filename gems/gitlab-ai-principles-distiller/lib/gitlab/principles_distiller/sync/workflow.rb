@@ -1,5 +1,7 @@
 # frozen_string_literal: true
 
+require 'open3'
+
 module Gitlab
   module PrinciplesDistiller
     class Sync
@@ -8,6 +10,17 @@ module Gitlab
       # under sharing because each computes a deterministic value from ENV.
       # Any new shared mutable state needs its own Mutex.
       class Workflow
+        class NonRetryableCreationError < StandardError
+          attr_reader :status
+
+          def initialize(response)
+            @status = response.code.to_i
+            super("Workflow creation failed: HTTP #{status}: #{response.body.to_s.slice(0, 500)}")
+          end
+        end
+
+        NON_RETRYABLE_CREATION_STATUSES = [401, 403, 404, 405, 410, 413, 414, 415, 431].freeze
+
         DEFAULT_GITLAB_HOST = 'https://gitlab.com'
 
         # Polling cadence is coarse (every 10s) to limit GraphQL request
@@ -27,9 +40,14 @@ module Gitlab
         # declaring the workflow genuinely missing or genuinely incomplete.
         NODE_LOOKUP_GRACE_POLLS = 6 # ~60s grace for indexing lag
         FINISHED_CONTENT_GRACE_POLLS = 6 # ~60s grace for message propagation
+        # Git object IDs are 40 hexadecimal characters under SHA-1 and 64 under SHA-256.
+        SHA_FORMAT = /\A(?:[0-9a-f]{40}|[0-9a-f]{64})\z/
+        ADDITIONAL_CONTEXT_WARNING_BYTES = 96 * 1024
 
         def initialize(manifest:)
           @manifest = manifest
+          @fetch_mutex = Mutex.new
+          @available_shas = {}
         end
 
         attr_reader :manifest
@@ -73,14 +91,27 @@ module Gitlab
         # distilled file + SSOT sources directly from source_branch via
         # gitaly. We do NOT inline file contents in the request body to
         # avoid argv/header limits.
-        def distill(name, config, new_sources: [])
+        def distill(name, config, prior_sha:, target_sha:, new_sources: [])
           goal = build_goal(name, config, new_sources: new_sources)
-          additional_context = build_additional_context(name, config, new_sources: new_sources)
+          additional_context = build_additional_context(name, config, prior_sha: prior_sha, target_sha: target_sha,
+            new_sources: new_sources)
 
           workflow_id = start(goal: goal, additional_context: additional_context, principle: name)
           return unless workflow_id
 
           poll(workflow_id, principle: name)
+        rescue NonRetryableCreationError
+          raise
+        rescue StandardError => e
+          warn Rainbow("Workflow preparation error for #{name}: #{e.message}").red
+          nil
+        end
+
+        def validate_commit_shas!(shas)
+          invalid = shas.compact.find { |sha| !sha.to_s.match?(SHA_FORMAT) }
+          return unless invalid
+
+          raise "invalid distillation commit sha: #{invalid.inspect} (expected a 40- or 64-character hex object id)"
         end
 
         def build_goal(name, config, new_sources: [])
@@ -117,10 +148,9 @@ module Gitlab
             does NOT license enriching an already-accurate item with detail
             that was already in the sources before this run. You may only
             REVISE an item when the specific source lines GOVERNING THAT ITEM
-            changed THIS run. To find what changed this run, diff each SSOT
-            source between the prior `distilled_at_sha` (recorded in the
-            frontmatter of the current distilled file you read) and HEAD — for
-            example `git diff <distilled_at_sha>..HEAD -- <source_path>`. If an
+            changed THIS run. The additional context supplies the complete
+            zero-context diff for each existing SSOT source between the prior
+            `distilled_at_sha` and the target SHA. If an
             item is already a correct, checkable rule, leave it byte-for-byte
             unchanged — even if the full source could support a more precise
             phrasing, an extra threshold, more enumerated values, or expanding
@@ -130,7 +160,7 @@ module Gitlab
             line verbatim.
 
             CAPTURE obligation (system prompt rule 16a), the mirror of the
-            above: the same `git diff <distilled_at_sha>..HEAD` also shows what
+            above: the supplied source diffs also show what
             the SSOT ADDED or CHANGED this run. Every added/changed normative
             line MUST map to an emitted/revised item, or be excludable under a
             named rule (rule 9, 11, 16d, or purely conceptual prose). An added
@@ -146,11 +176,14 @@ module Gitlab
             SSOT source files (the documentation to distill from):
             #{sources}
 
-            Baseline (include EVERY rule line byte-for-byte, in the same
-            place it occupies in the prior distilled file — relocating it is
-            churn under rule 18. The sync mechanically rejects and retries
-            any output that alters, re-wraps, duplicates, or omits a
-            baseline line — system prompt rule 15):
+            Baseline (include EVERY rule line byte-for-byte, under the
+            heading the BASELINE gives it — the baseline wins over the prior
+            distilled file's placement. If the baseline moved a rule, emit it
+            at its new heading and DELETE the old copy; do not relocate a
+            rule the baseline did not move (churn under rule 18). The sync
+            mechanically rejects and retries any output that alters,
+            re-wraps, duplicates, or omits a baseline line — system prompt
+            rule 15):
             #{baseline_line}
 
             Output ONLY the checklist content. No preamble, no thinking, no
@@ -158,16 +191,37 @@ module Gitlab
           GOAL
         end
 
-        def build_additional_context(name, config, new_sources: [])
+        def build_additional_context(name, config, prior_sha:, target_sha:, new_sources: [])
+          new_source_paths = new_sources.to_h { |source| [source['path'], true] }
+          ensure_commit_available!(prior_sha) if prior_sha
+          ensure_commit_available!(target_sha)
+
           payload = {
             principle: name,
             distilled_path: manifest.principles_path(name),
-            sources: config.fetch('sources', []).map { |s| s.slice('path', 'url') },
-            baseline_path: config['baseline'],
-            new_sources: new_sources
+            prior_sha: prior_sha,
+            target_sha: target_sha,
+            sources: config.fetch('sources', []).map do |source|
+              path = source['path']
+              resolved_path = manifest.resolve_source_path(path)
+              is_new = prior_sha.nil? || resolved_path.nil? || new_source_paths.key?(path)
+
+              source.slice('path', 'url').merge(
+                'resolved_path' => resolved_path,
+                'new_source' => is_new,
+                'diff' => is_new ? nil : source_diff(prior_sha, target_sha, path, resolved_path)
+              )
+            end,
+            baseline_path: config['baseline']
           }
 
-          [{ Category: 'agent_principles_distillation', Content: payload.to_json }]
+          context = [{ Category: 'agent_principles_distillation', Content: payload.to_json }]
+          serialized_bytes = context.to_json.bytesize
+          if serialized_bytes > ADDITIONAL_CONTEXT_WARNING_BYTES
+            warn Rainbow("WARNING: #{name} additional context is #{serialized_bytes} bytes").yellow
+          end
+
+          context
         end
 
         def new_sources_guidance(new_sources)
@@ -178,13 +232,50 @@ module Gitlab
             Newly declared SSOT sources this run:
             #{paths}
 
-            These sources were newly added to the manifest, so their `git diff
-            <distilled_at_sha>..HEAD` is empty by construction. Read each one
-            in full and treat its normative content as this-run additions,
+            These sources were not considered by the prior distillation. Read
+            each one in full and treat its normative content as this-run additions,
             exempt from the system prompt rule 18 diff gate. Rules 9, 11, and
             16d still apply, so a source that is purely conceptual, duplicates
             another rule, or delegates elsewhere may correctly yield no item.
           GUIDANCE
+        end
+
+        # Serialize across parallel_distill threads to avoid repository lock contention.
+        # Memoization also collapses redundant checks for the shared target_sha.
+        def ensure_commit_available!(sha)
+          validate_commit_shas!([sha])
+
+          @fetch_mutex.synchronize do
+            next if @available_shas[sha]
+
+            unless commit_present?(sha)
+              system('git', 'fetch', '--depth=1', 'origin', sha, chdir: Workspace.path, out: File::NULL) ||
+                raise("could not fetch distillation commit #{sha}")
+
+              raise "distillation commit #{sha} is unavailable after fetch" unless commit_present?(sha)
+            end
+
+            @available_shas[sha] = true
+          end
+        end
+
+        def commit_present?(sha)
+          system('git', 'cat-file', '-e', "#{sha}^{commit}",
+            chdir: Workspace.path, out: File::NULL, err: File::NULL)
+        end
+
+        def source_diff(prior_sha, target_sha, declared_path, resolved_path)
+          return if resolved_path.nil?
+
+          paths = [declared_path, resolved_path].uniq
+
+          stdout, stderr, status = Open3.capture3(
+            'git', 'diff', '--no-color', '--no-ext-diff', '--find-renames', '--unified=0',
+            "#{prior_sha}..#{target_sha}", '--', *paths, chdir: Workspace.path
+          )
+          raise "could not diff #{resolved_path}: #{stderr.strip}" unless status.success?
+
+          stdout
         end
 
         # Dumps workflow URL, human-readable status, message-type counts,
@@ -235,18 +326,54 @@ module Gitlab
           candidates.last&.dig('content')
         end
 
-        def validate_config!
-          missing = []
-          missing << Env::GITLAB_TOKEN if ENV[Env::GITLAB_TOKEN].to_s.empty?
-          missing << Env::CATALOG_ITEM_CONSUMER_ID if catalog_item_consumer_id.to_s.empty?
+        def validate_config!(push: false)
+          required = [Env::GITLAB_TOKEN, Env::CATALOG_ITEM_CONSUMER_ID, Env::CATALOG_PROJECT,
+            Env::CI_DEFAULT_BRANCH]
+          validate_required_env!(required, consumer_id_hint: true)
+          validate_publish_config! if push
+        end
 
+        def validate_publish_config!
+          validate_required_env!([Env::GITLAB_TOKEN, Env::CATALOG_PROJECT, Env::CI_DEFAULT_BRANCH,
+            Env::GITLAB_API_TOKEN, Env::CI_PROJECT_ID])
+        end
+
+        def validate_required_env!(required, consumer_id_hint: false)
+          missing = required.select { |name| ENV[name].to_s.empty? }
           return if missing.empty?
+
+          consumer_id_guidance = if consumer_id_hint
+                                   "\nUse gitlab-ai-principles-distiller-provision-flow --print-consumer-id " \
+                                     'to obtain the consumer ID.'
+                                 end
 
           abort Rainbow(
             "ERROR: Workflow API is not configured. Missing env: #{missing.join(', ')}.\n" \
-              'Run gitlab-ai-principles-distiller-provision-flow first to provision the catalog flow ' \
-              'and obtain the consumer ID.'
+              "\n#{missing.map { |name| "export #{name}=<value>" }.join("\n")}\n\n" \
+              "GITLAB_TOKEN requires a classic personal access token with api scope.#{consumer_id_guidance}"
           ).red
+        end
+
+        def warn_if_sources_differ_from_pushed_branch(config, log_warn: method(:warn))
+          paths = manifest.config_source_paths(config)
+          return if paths.empty?
+          return unless system('git', '-C', Workspace.path, 'rev-parse', '--git-dir', out: File::NULL, err: File::NULL)
+
+          ref = "refs/remotes/origin/#{source_branch}"
+          unless system('git', '-C', Workspace.path, 'show-ref', '--verify', '--quiet', ref, out: File::NULL,
+            err: File::NULL)
+            log_warn.call Rainbow("WARNING: pushed source branch not found: origin/#{source_branch}. " \
+              'The workflow cannot see local-only commits or changes.').yellow
+            return
+          end
+
+          changed = IO.popen(['git', '-C', Workspace.path, 'diff', '--name-only', ref, '--', *paths],
+            err: File::NULL, &:read).lines.map(&:strip).reject(&:empty?)
+          return if changed.empty?
+
+          log_warn.call Rainbow("WARNING: local SSOT differs from pushed branch origin/#{source_branch}:\n" \
+            "#{changed.map { |path| "  - #{path}" }.join("\n")}\n" \
+            'Push these changes before distilling, or the workflow will read the pushed versions.').yellow
         end
 
         # Pre-empts late agent failures by verifying every SSOT source
@@ -322,6 +449,8 @@ module Gitlab
             body: body)
 
           unless response.is_a?(Net::HTTPSuccess)
+            raise NonRetryableCreationError, response if NON_RETRYABLE_CREATION_STATUSES.include?(response.code.to_i)
+
             warn Rainbow("Workflow create failed#{principle ? " for #{principle}" : ''}: " \
               "HTTP #{response.code}: #{response.body.to_s.slice(0, 500)}").red
             return
@@ -340,6 +469,8 @@ module Gitlab
           puts Rainbow("    workflow id=#{workflow_id}#{principle ? " (#{principle})" : ''} " \
             "branch=#{source_branch}\n      session: #{session_url(workflow_id)}").faint
           workflow_id
+        rescue NonRetryableCreationError
+          raise
         rescue StandardError => e
           warn Rainbow("Workflow create error#{principle ? " for #{principle}" : ''}: #{e.message}").red
           nil

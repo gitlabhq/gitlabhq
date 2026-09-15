@@ -114,7 +114,7 @@ export default {
     adminLinkItem() {
       return {
         text: this.$options.i18n.adminArea,
-        href: adminRootPath(),
+        href: adminRootPath({ organizationPath: null }),
       };
     },
     statusLabel() {
@@ -134,7 +134,7 @@ export default {
     editProfileItem() {
       return {
         text: this.$options.i18n.editProfile,
-        href: userSettingsProfilePath(),
+        href: userSettingsProfilePath({ organizationPath: null }),
         extraAttrs: {
           'data-testid': 'edit-profile-link',
           ...USER_MENU_TRACKING_DEFAULTS,
@@ -145,7 +145,7 @@ export default {
     preferencesItem() {
       return {
         text: this.$options.i18n.preferences,
-        href: profilePreferencesPath(),
+        href: profilePreferencesPath({ organizationPath: null }),
         extraAttrs: {
           ...USER_MENU_TRACKING_DEFAULTS,
           'data-track-label': 'user_preferences',
@@ -203,7 +203,7 @@ export default {
     signOutItem() {
       return {
         text: this.$options.i18n.signOut,
-        href: destroyUserSessionPath(),
+        href: destroyUserSessionPath({ organizationPath: null }),
         extraAttrs: {
           'data-method': 'post',
           'data-testid': 'sign-out-link',
@@ -265,7 +265,9 @@ export default {
   },
   methods: {
     adminImpersonationPath,
-    userPath,
+    userPath(username) {
+      return userPath(username, { organizationPath: null });
+    },
     updateAvatar(event) {
       this.updatedAvatarUrl = event.detail?.url;
     },

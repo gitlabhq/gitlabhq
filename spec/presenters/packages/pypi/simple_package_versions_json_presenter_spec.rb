@@ -100,6 +100,51 @@ RSpec.describe ::Packages::Pypi::SimplePackageVersionsJsonPresenter, :aggregate_
       it_behaves_like 'pypi package presenter'
     end
 
+    # The HTML presenter resolves the same precedence and has its own coverage;
+    # PEP 691 moves the value from a `data-requires-python` attribute into a JSON
+    # field, so it must carry the raw value rather than the escaped one.
+    describe "requires-python" do
+      let(:project_or_group) { project }
+      let(:file) { package1.package_files.first }
+
+      def entry_for(package_file)
+        parsed_json['files'].find { |f| f['filename'] == package_file.file_name }
+      end
+
+      it 'prefers required_python from pypi_file_metadatum over the package metadatum' do
+        package1.pypi_metadatum.update_column(:required_python, '>=2.7')
+        # rubocop:disable RSpec/FactoryBot/AvoidCreate -- association must be persisted for the presenter to preload it
+        create(:pypi_file_metadatum, package_file: file, required_python: '>=3.8')
+        # rubocop:enable RSpec/FactoryBot/AvoidCreate
+
+        expect(entry_for(file)['requires-python']).to eq('>=3.8')
+      end
+
+      it 'falls back to required_python from the package metadatum' do
+        package1.pypi_metadatum.update_column(:required_python, '>=2.7')
+
+        expect(entry_for(file)['requires-python']).to eq('>=2.7')
+      end
+
+      # A NOT NULL check constraint keeps this column non-nil, so blank means the
+      # empty string. PEP 691 treats an absent key and a present-but-empty one
+      # differently, and pip rejects "" as a specifier.
+      it 'omits the key entirely when required_python is blank' do
+        package1.pypi_metadatum.update_column(:required_python, '')
+
+        expect(entry_for(file)).not_to have_key('requires-python')
+      end
+
+      # JSON carries the value as data, so escaping it the way the HTML attribute
+      # does would corrupt a legitimate specifier: `>=2.7` must not reach pip as
+      # `&gt;=2.7`.
+      it 'does not HTML-escape the value' do
+        package1.pypi_metadatum.update_column(:required_python, '>=2.7, !=3.0')
+
+        expect(entry_for(file)['requires-python']).to eq('>=2.7, !=3.0')
+      end
+    end
+
     context 'with package files pending destruction' do
       # rubocop:disable RSpec/FactoryBot/AvoidCreate -- Needs persisted file record with pending_destruction state.
       let_it_be(:package_file_pending_destruction) do

@@ -6,8 +6,10 @@ query getPipelineCreationRequests($fullPath: ID!, $mergeRequestIid: String!) {
     mergeRequest(iid: $mergeRequestIid) {
       id
       pipelineCreationRequests {
+        id
         status
         error
+        userInitiated
         pipeline {
           ...MergeRequestPipelineListItem
         }

@@ -3,6 +3,8 @@
 require 'spec_helper'
 
 RSpec.describe Gitlab::Kas::Autoflow::ValueConverter, feature_category: :deployment_management do
+  using RSpec::Parameterized::TableSyntax
+
   describe '.to_value' do
     it 'converts a string' do
       expect(described_class.to_value('hello').string_value).to eq('hello')
@@ -87,6 +89,39 @@ RSpec.describe Gitlab::Kas::Autoflow::ValueConverter, feature_category: :deploym
   describe '.values' do
     it 'builds an array of Values' do
       expect(described_class.values(['a', 1]).map(&:kind)).to eq(%i[string_value integer_value])
+    end
+  end
+
+  describe '.from_value' do
+    where(:object) do
+      [
+        'hello',
+        42,
+        1.5,
+        true,
+        false,
+        nil,
+        %w[a b],
+        { 'name' => 'runner', 'replicas' => 2 },
+        { 'services' => [{ 'name' => 'runner' }] }
+      ]
+    end
+
+    with_them do
+      it 'round-trips through to_value' do
+        expect(described_class.from_value(described_class.to_value(object))).to eq(object)
+      end
+    end
+
+    it 'round-trips a wrapped sensitive string' do
+      wrapped = described_class.sensitive_string('s3cr3t')
+
+      expect(described_class.from_value(described_class.to_value(wrapped))).to eq(wrapped)
+    end
+
+    it 'raises a clear error when the oneof is unset' do
+      expect { described_class.from_value(Gitlab::Agent::Autoflow::Value.new) }
+        .to raise_error(ArgumentError, 'AutoFlow value oneof is not set')
     end
   end
 end

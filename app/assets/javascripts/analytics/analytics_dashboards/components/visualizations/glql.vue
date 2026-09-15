@@ -17,6 +17,21 @@ export default {
       required: false,
       default: '',
     },
+    namespace: {
+      type: String,
+      required: false,
+      default: '',
+    },
+    isProject: {
+      type: Boolean,
+      required: false,
+      default: false,
+    },
+    options: {
+      type: Object,
+      required: false,
+      default: () => ({}),
+    },
   },
   emits: ['set-alerts', 'set-actions', 'reload'],
   data() {
@@ -29,9 +44,32 @@ export default {
     showEmptyState() {
       return this.resolverData?.nodes?.length === 0;
     },
+    // GlDashboardPanel hides its actions dropdown when a panel has no actions, so opting out
+    // means emitting an empty list. Panels opt out entirely, error state included.
+    showActions() {
+      return this.options.showActions ?? true;
+    },
+    // Bundled here rather than passed down as separate options: the resolver is shared with
+    // GLQL blocks in comments and descriptions, which have no dashboard to configure a trend.
+    comparison() {
+      if (!this.options.comparisonQuery) return null;
+
+      return { query: this.options.comparisonQuery, metric: this.options.trendMetric };
+    },
+    // Null, not an empty object, so the resolver falls back to deriving the namespace from the URL.
+    scope() {
+      if (!this.namespace) return null;
+
+      return this.isProject ? { project: this.namespace } : { group: this.namespace };
+    },
   },
   watch: {
     data() {
+      this.resolverData = undefined;
+    },
+    // Also clears the empty state. Leaving it up keeps the resolver unmounted, and an unmounted
+    // resolver can never run its own scope watcher to re-query the new namespace.
+    scope() {
       this.resolverData = undefined;
     },
   },
@@ -45,7 +83,8 @@ export default {
           errors: [error],
           title: s__('AnalyticsDashboards|An error occurred when trying to display this panel'),
           description: error.message,
-          canRetry: false,
+          // With the kebab's Reload gone, the alert popover's Retry is the only way back.
+          canRetry: !this.showActions,
         });
       } else {
         actions.push(
@@ -60,7 +99,7 @@ export default {
       }
 
       actions.push({ text: __('Reload'), action: () => this.$emit('reload') });
-      this.$emit('set-actions', actions);
+      this.$emit('set-actions', this.showActions ? actions : []);
     },
     viewSource() {
       this.modalVisible = true;
@@ -85,6 +124,8 @@ export default {
       v-else
       ref="resolver"
       :glql-query="data"
+      :comparison="comparison"
+      :scope="scope"
       tracking-event-name="render_analytics_dashboard_glql_panel"
       @change="handleResolverChange"
     />

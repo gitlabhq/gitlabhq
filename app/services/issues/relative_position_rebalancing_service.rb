@@ -78,10 +78,13 @@ module Issues
       namespace_ids.each do |namespace_id|
         caching.cache_current_namespace_id(namespace_id)
 
+        # Already scoped to a single namespace, so no positioning-root filter is needed here
+        # (it would also be fragile against a stale relative_positioning_namespace_id right
+        # after a transfer). Flag-aware ordering only, to read from the current position column.
         scope = Issue
           .where(namespace_id: namespace_id)
-          .order_by_relative_position(root_namespace)
-          .with_non_null_relative_position(root_namespace)
+          .order_by_relative_position
+          .with_non_null_relative_position
           .select(:id, :relative_position)
 
         with_retry(PREFETCH_ISSUES_BATCH_SIZE, 100) do |batch_size|
@@ -89,7 +92,7 @@ module Issues
           # ORDER BY), so disable it only when the flag routes ordering through the join.
           Gitlab::Pagination::Keyset::Iterator
             .new(scope: scope,
-              use_union_optimization: !Issue.read_relative_positions_from_work_item_positions?(root_namespace))
+              use_union_optimization: !Issue.read_relative_positions_from_work_item_positions?)
             .each_batch(of: batch_size) do |batch|
               caching.cache_issue_ids(batch)
             end
@@ -152,11 +155,26 @@ module Issues
          SELECT *
          FROM (VALUES #{values}) as t (id, pos)
         )
-        UPDATE #{Issue.table_name}
-        SET relative_position = cte.new_pos
-        FROM cte
-        WHERE cte_id = id
+        #{rebalance_update_target}
       SQL
+    end
+
+    def rebalance_update_target
+      if Issue.write_relative_positions_to_work_item_positions?(root_namespace)
+        <<~SQL
+          UPDATE work_item_positions
+          SET relative_position = cte.new_pos, updated_at = NOW()
+          FROM cte
+          WHERE work_item_id = cte_id
+        SQL
+      else
+        <<~SQL
+          UPDATE #{Issue.table_name}
+          SET relative_position = cte.new_pos
+          FROM cte
+          WHERE cte_id = id
+        SQL
+      end
     end
 
     def gaps

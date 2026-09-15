@@ -186,21 +186,6 @@ RSpec.describe Slack::API, feature_category: :integrations do
         expect(WebMock).to have_requested(:post, api_url)
           .with { |req| req.body.exclude?('thread_ts') }
       end
-
-      it 'includes blocks in the payload when provided' do
-        blocks = [{ type: 'section', text: { type: 'mrkdwn', text: 'hi' } }]
-        api.post_ephemeral(channel: 'C123', user: 'U456', text: 'hello', blocks: blocks)
-
-        expect(WebMock).to have_requested(:post, api_url)
-          .with { |req| req.body.include?('"blocks":[{"type":"section"') }
-      end
-
-      it 'omits blocks from the payload when not provided' do
-        api.post_ephemeral(channel: 'C123', user: 'U456', text: 'hello')
-
-        expect(WebMock).to have_requested(:post, api_url)
-          .with { |req| req.body.exclude?('blocks') }
-      end
     end
   end
 
@@ -233,30 +218,108 @@ RSpec.describe Slack::API, feature_category: :integrations do
     end
   end
 
-  describe '#conversation_info' do
+  describe '#get_permalink' do
     let(:slack_installation) { build(:slack_integration) }
     let(:api) { described_class.new(slack_installation) }
-    let(:api_url) { "#{described_class::BASE_URL}/conversations.info" }
+    let(:api_url) { "#{described_class::BASE_URL}/chat.getPermalink" }
+    let(:permalink) { 'https://myworkspace.slack.com/archives/C123/p1234567890123456' }
 
-    subject(:conversation_info) { api.conversation_info(channel: 'C123') }
+    subject(:get_permalink) { api.get_permalink(channel: 'C123', message_ts: '1234567890.123456') }
 
     context 'when the request succeeds' do
       before do
-        stub_request(:get, api_url).with(query: { channel: 'C123' }).to_return(
+        stub_request(:get, api_url).with(query: { channel: 'C123', message_ts: '1234567890.123456' }).to_return(
           status: 200,
-          body: { ok: true, channel: { id: 'C123', is_private: true } }.to_json,
+          body: { ok: true, permalink: permalink }.to_json,
           headers: { 'Content-Type' => 'application/json' }
         )
       end
 
       it 'returns the parsed response' do
-        expect(conversation_info).to include('ok' => true, 'channel' => hash_including('is_private' => true))
+        expect(get_permalink).to include('ok' => true, 'permalink' => permalink)
+      end
+
+      context 'when the Slack API returns an error' do
+        before do
+          stub_request(:get, api_url).with(query: hash_including({})).to_return(
+            status: 200,
+            body: { ok: false, error: 'message_not_found' }.to_json,
+            headers: { 'Content-Type' => 'application/json' }
+          )
+        end
+
+        it 'logs and returns the error response' do
+          expect(Gitlab::IntegrationsLogger).to receive(:error)
+            .with(hash_including(message: 'Slack API error when fetching permalink'))
+
+          expect(get_permalink).to include('ok' => false, 'error' => 'message_not_found')
+        end
+      end
+
+      context 'when an HTTP error is raised' do
+        before do
+          stub_request(:get, api_url).with(query: hash_including({})).to_raise(Errno::ECONNREFUSED.new('error'))
+        end
+
+        it 'returns an error response without raising' do
+          expect(Gitlab::IntegrationsLogger).to receive(:error)
+            .with(hash_including(message: 'Slack API error when fetching permalink'))
+
+          expect(get_permalink['ok']).to be(false)
+        end
+      end
+    end
+  end
+
+  describe '#conversation_history' do
+    let(:slack_installation) { build(:slack_integration) }
+    let(:api) { described_class.new(slack_installation) }
+    let(:api_url) { "#{described_class::BASE_URL}/conversations.history" }
+
+    subject(:conversation_history) { api.conversation_history(channel: 'C123', limit: 15) }
+
+    context 'when the request succeeds' do
+      before do
+        stub_request(:get, api_url).with(query: { channel: 'C123', limit: '15' }).to_return(
+          status: 200,
+          body: { ok: true, messages: [{ user: 'U123', text: 'hello', ts: '123.456' }] }.to_json,
+          headers: { 'Content-Type' => 'application/json' }
+        )
+      end
+
+      it 'returns the parsed response' do
+        expect(conversation_history).to include('ok' => true, 'messages' => [hash_including('text' => 'hello')])
+      end
+
+      it 'omits latest when it is not given' do
+        conversation_history
+
+        expect(WebMock).to have_requested(:get, api_url).with(query: { channel: 'C123', limit: '15' })
+      end
+    end
+
+    context 'when latest is given' do
+      before do
+        stub_request(:get, api_url)
+          .with(query: { channel: 'C123', limit: '15', latest: '123.456' })
+          .to_return(
+            status: 200,
+            body: { ok: true, messages: [] }.to_json,
+            headers: { 'Content-Type' => 'application/json' }
+          )
+      end
+
+      it 'sends it to the API' do
+        api.conversation_history(channel: 'C123', limit: 15, latest: '123.456')
+
+        expect(WebMock).to have_requested(:get, api_url)
+          .with(query: { channel: 'C123', limit: '15', latest: '123.456' })
       end
     end
 
     context 'when the Slack API returns an error' do
       before do
-        stub_request(:get, api_url).with(query: { channel: 'C123' }).to_return(
+        stub_request(:get, api_url).with(query: { channel: 'C123', limit: '15' }).to_return(
           status: 200,
           body: { ok: false, error: 'missing_scope' }.to_json,
           headers: { 'Content-Type' => 'application/json' }
@@ -265,22 +328,24 @@ RSpec.describe Slack::API, feature_category: :integrations do
 
       it 'logs and returns the error response' do
         expect(Gitlab::IntegrationsLogger).to receive(:error)
-          .with(hash_including(message: 'Slack API error when fetching conversation info'))
+          .with(hash_including(message: 'Slack API error when fetching conversation history'))
 
-        expect(conversation_info).to include('ok' => false, 'error' => 'missing_scope')
+        expect(conversation_history).to include('ok' => false, 'error' => 'missing_scope')
       end
     end
 
     context 'when an HTTP error is raised' do
       before do
-        stub_request(:get, api_url).with(query: { channel: 'C123' }).to_raise(Errno::ECONNREFUSED.new('error'))
+        stub_request(:get, api_url)
+          .with(query: { channel: 'C123', limit: '15' })
+          .to_raise(Errno::ECONNREFUSED.new('error'))
       end
 
       it 'returns an error response without raising' do
         expect(Gitlab::IntegrationsLogger).to receive(:error)
-          .with(hash_including(message: 'Slack API error when fetching conversation info'))
+          .with(hash_including(message: 'Slack API error when fetching conversation history'))
 
-        expect(conversation_info['ok']).to be(false)
+        expect(conversation_history['ok']).to be(false)
       end
     end
   end

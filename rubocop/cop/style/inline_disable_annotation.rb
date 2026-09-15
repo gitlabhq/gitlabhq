@@ -6,7 +6,7 @@ module RuboCop
     module Style
       # Checks that RuboCop inline disabling is formatted according
       # to guidelines.
-      # See: https://docs.gitlab.com/ee/development/rubocop_development_guide.html#disabling-rules-inline,
+      # See: https://docs.gitlab.com/development/rubocop_development_guide/#disabling-rules-inline,
       # https://gitlab.com/gitlab-org/gitlab/-/issues/428762
       #
       # @example
@@ -24,7 +24,7 @@ module RuboCop
         COP_DISABLE_LINE = /\A(?<line>#{COP_DISABLE}.*)\Z/
         MSG = <<~MESSAGE
           Inline disabling a cop needs to follow the format of `%{disable} -- Some reason`.
-          See https://docs.gitlab.com/ee/development/rubocop_development_guide.html#disabling-rules-inline.
+          See https://docs.gitlab.com/development/rubocop_development_guide/#disabling-rules-inline.
         MESSAGE
 
         def on_new_investigation

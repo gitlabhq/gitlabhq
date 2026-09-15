@@ -6,10 +6,10 @@ RSpec.describe 'find work items by reference', feature_category: :portfolio_mana
   include GraphqlHelpers
 
   let_it_be(:current_user) { create(:user) }
-  let_it_be(:project) { create(:project, :repository, :public) }
+  let_it_be(:project) { create(:project, :public) }
   let_it_be(:group2) { create(:group, :public) }
-  let_it_be(:project2) { create(:project, :repository, :public, group: group2) }
-  let_it_be(:private_project2) { create(:project, :repository, :private, group: group2) }
+  let_it_be(:project2) { create(:project, :public, group: group2) }
+  let_it_be(:private_project2) { create(:project, :private, group: group2) }
   let_it_be(:work_item) { create(:work_item, :task, project: project2) }
   let_it_be(:private_work_item) { create(:work_item, :task, project: private_project2) }
 

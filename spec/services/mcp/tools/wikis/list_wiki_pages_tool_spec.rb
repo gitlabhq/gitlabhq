@@ -167,7 +167,7 @@ RSpec.describe Mcp::Tools::Wikis::ListWikiPagesTool, feature_category: :mcp_serv
 
         expect(processed[:isError]).to be(true)
         expect(processed[:content].first[:text]).to eq(
-          "Project not found, or you do not have access to it."
+          "Project not found or inaccessible"
         )
       end
     end

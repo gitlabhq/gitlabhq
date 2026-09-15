@@ -59,10 +59,10 @@ describe('WorkItemDisplaySettingsSort', () => {
     expect(findSorting().props('isAscending')).toBe(true);
   });
 
-  it('emits sort with the descending key of the new option when sortByChange fires', () => {
+  it('emits sort with the descending key of the new option when sort-by-change fires', () => {
     createComponent({ props: { sortKey: 'CREATED_DESC' } });
 
-    findSorting().vm.$emit('sortByChange', 2);
+    findSorting().vm.$emit('sort-by-change', 2);
 
     expect(wrapper.emitted('sort')).toEqual([['UPDATED_DESC']]);
   });
@@ -70,23 +70,23 @@ describe('WorkItemDisplaySettingsSort', () => {
   it('preserves the current direction when changing sort field', () => {
     createComponent({ props: { sortKey: 'CREATED_ASC' } });
 
-    findSorting().vm.$emit('sortByChange', 2);
+    findSorting().vm.$emit('sort-by-change', 2);
 
     expect(wrapper.emitted('sort')).toEqual([['UPDATED_ASC']]);
   });
 
-  it('emits the ascending key when sortDirectionChange fires with true', () => {
+  it('emits the ascending key when sort-direction-change fires with true', () => {
     createComponent({ props: { sortKey: 'CREATED_DESC' } });
 
-    findSorting().vm.$emit('sortDirectionChange', true);
+    findSorting().vm.$emit('sort-direction-change', true);
 
     expect(wrapper.emitted('sort')).toEqual([['CREATED_ASC']]);
   });
 
-  it('emits the descending key when sortDirectionChange fires with false', () => {
+  it('emits the descending key when sort-direction-change fires with false', () => {
     createComponent({ props: { sortKey: 'CREATED_ASC' } });
 
-    findSorting().vm.$emit('sortDirectionChange', false);
+    findSorting().vm.$emit('sort-direction-change', false);
 
     expect(wrapper.emitted('sort')).toEqual([['CREATED_DESC']]);
   });

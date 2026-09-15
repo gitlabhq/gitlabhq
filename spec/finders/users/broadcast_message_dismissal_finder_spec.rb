@@ -13,8 +13,6 @@ RSpec.describe Users::BroadcastMessageDismissalFinder, '#execute', feature_categ
     create(:broadcast_message_dismissal, broadcast_message: message_notification, user: user)
   end
 
-  let(:message_ids) { [message_banner.id, message_notification.id, other_message.id] }
-
   before_all do
     create(:broadcast_message_dismissal, broadcast_message: other_message, user: build(:user))
   end

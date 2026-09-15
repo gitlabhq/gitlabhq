@@ -1,5 +1,7 @@
 # frozen_string_literal: true
 
+require 'pathname'
+
 require_relative 'duo_instructions'
 
 module Gitlab
@@ -230,6 +232,13 @@ module Gitlab
           reject_known_sources(config.fetch('sources', []), prior_sources)
         end
 
+        def prior_distillation_sha(name)
+          path = Workspace.safe_join(principles_path(name))
+          return unless File.exist?(path)
+
+          extract_frontmatter(File.read(path))&.fetch('distilled_at_sha', nil)
+        end
+
         def extract_frontmatter(content)
           return unless content.start_with?("---\n")
 
@@ -304,15 +313,20 @@ module Gitlab
               # traversal segments that would escape the workspace. Same
               # guarantee applies to the other `Workspace.safe_join` callsites
               # in this gem.
-              full_path = Workspace.safe_join(path)
-              if File.exist?(full_path)
-                File.read(full_path)
-              else
-                idx_path = index_fallback_path(full_path)
-                File.read(idx_path) if File.exist?(idx_path)
-              end
+              resolved_path = resolve_source_path(path)
+              File.read(Workspace.safe_join(resolved_path)) if resolved_path
             end
           end
+        end
+
+        def resolve_source_path(path)
+          full_path = Workspace.safe_join(path)
+          return path if File.exist?(full_path)
+
+          fallback = index_fallback_path(full_path)
+          return unless File.exist?(fallback)
+
+          Pathname.new(fallback).relative_path_from(Pathname.new(Workspace.path)).to_s
         end
 
         # Whether a manifest-referenced SSOT path resolves to a file on disk,
@@ -320,9 +334,7 @@ module Gitlab
         # `_index.md` (e.g. `doc/foo.md` -> `doc/foo/_index.md`). Shared by
         # the Validator and Workflow so the existence rule lives in one place.
         def source_file_exists?(path)
-          full_path = Workspace.safe_join(path)
-
-          File.exist?(full_path) || File.exist?(index_fallback_path(full_path))
+          !resolve_source_path(path).nil?
         end
 
         # Every manifest-referenced SSOT path (each principle's `sources[].path`

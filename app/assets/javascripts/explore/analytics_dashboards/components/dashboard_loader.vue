@@ -4,6 +4,7 @@ import { isNumeric } from '~/lib/utils/number_utils';
 import { s__ } from '~/locale';
 import { captureException } from '~/sentry/sentry_browser_wrapper';
 import {
+  FULL_DASHBOARD_WIDTH,
   GRID_HEIGHT_COMPACT,
   GRID_HEIGHT_COMPACT_CELL_HEIGHT,
   GRID_HEIGHT_COMPACT_MIN_CELL_HEIGHT,
@@ -49,15 +50,15 @@ export default {
           : {}),
       };
     },
+    // The raw schema value is `compact` (lowercased)
+    isCompactGrid() {
+      return this.config.gridHeight?.toUpperCase() === GRID_HEIGHT_COMPACT;
+    },
     cellHeight() {
-      return this.config.gridHeight === GRID_HEIGHT_COMPACT
-        ? GRID_HEIGHT_COMPACT_CELL_HEIGHT
-        : undefined;
+      return this.isCompactGrid ? GRID_HEIGHT_COMPACT_CELL_HEIGHT : undefined;
     },
     minCellHeight() {
-      return this.config.gridHeight === GRID_HEIGHT_COMPACT
-        ? GRID_HEIGHT_COMPACT_MIN_CELL_HEIGHT
-        : undefined;
+      return this.isCompactGrid ? GRID_HEIGHT_COMPACT_MIN_CELL_HEIGHT : undefined;
     },
   },
   watch: {
@@ -72,6 +73,16 @@ export default {
     assignPanelIds(panels = []) {
       return panels.map(({ id, ...panel }) => ({
         ...panel,
+        // A section spans the dashboard, so its config omits a width. The grid
+        // layout requires one, so fill it in here.
+        ...(panel.section
+          ? {
+              gridAttributes: {
+                width: FULL_DASHBOARD_WIDTH,
+                ...panel.gridAttributes,
+              },
+            }
+          : {}),
         id: getUniquePanelId(),
       }));
     },

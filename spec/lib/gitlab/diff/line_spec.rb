@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Gitlab::Diff::Line do
+RSpec.describe Gitlab::Diff::Line, feature_category: :source_code_management do
   shared_examples 'line object initialized by hash' do
     it 'round-trips correctly with to_hash' do
       expect(described_class.safe_init_from_hash(line.to_hash).to_hash)

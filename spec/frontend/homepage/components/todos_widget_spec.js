@@ -8,11 +8,12 @@ import waitForPromises from 'helpers/wait_for_promises';
 import TodosWidget from '~/homepage/components/todos_widget.vue';
 import TodoItem from '~/todos/components/todo_item.vue';
 import getTodosQuery from '~/todos/components/queries/get_todos.query.graphql';
-import { TABS_INDICES } from '~/todos/constants';
 import * as Sentry from '~/sentry/sentry_browser_wrapper';
 import BaseWidget from '~/homepage/components/base_widget.vue';
 import { useMockInternalEventsTracking } from 'helpers/tracking_internal_events_helper';
 import {
+  EVENT_FILTER_TODOS_ON_HOMEPAGE,
+  EVENT_OPEN_TODOS_FILTER_DROPDOWN_ON_HOMEPAGE,
   EVENT_USER_FOLLOWS_LINK_ON_HOMEPAGE,
   TRACKING_LABEL_TODO_ITEMS,
   TRACKING_PROPERTY_ALL_TODOS,
@@ -296,7 +297,6 @@ describe('TodosWidget', () => {
 
       const provided = wrapper.vm.$options.provide.call(wrapper.vm);
 
-      expect(provided.currentTab).toBe(TABS_INDICES.pending);
       expect(provided.currentTime).toBeInstanceOf(Date);
       expect(provided.currentUserId).toBeDefined();
     });
@@ -448,6 +448,38 @@ describe('TodosWidget', () => {
           label: TRACKING_LABEL_TODO_ITEMS,
           property: TRACKING_PROPERTY_ALL_TODOS,
         },
+        undefined,
+      );
+    });
+
+    it('tracks opening the filter dropdown', () => {
+      const { trackEventSpy } = bindInternalEventDocument(wrapper.element);
+
+      findFilterDropdown().vm.$emit('shown');
+
+      expect(trackEventSpy).toHaveBeenCalledWith(
+        EVENT_OPEN_TODOS_FILTER_DROPDOWN_ON_HOMEPAGE,
+        {},
+        undefined,
+      );
+    });
+
+    it.each`
+      filterValue                       | expectedValue
+      ${null}                           | ${'everything'}
+      ${'assigned'}                     | ${'assigned'}
+      ${'mentioned;directly_addressed'} | ${'mentioned'}
+      ${'build_failed'}                 | ${'build_failed'}
+      ${'unmergeable'}                  | ${'unmergeable'}
+      ${'review_requested'}             | ${'review_requested'}
+    `('tracks selecting the $expectedValue filter', ({ filterValue, expectedValue }) => {
+      const { trackEventSpy } = bindInternalEventDocument(wrapper.element);
+
+      findFilterDropdown().vm.$emit('select', filterValue);
+
+      expect(trackEventSpy).toHaveBeenCalledWith(
+        EVENT_FILTER_TODOS_ON_HOMEPAGE,
+        { property: expectedValue },
         undefined,
       );
     });

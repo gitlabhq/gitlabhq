@@ -86,7 +86,7 @@ relatively quickly to work, and they take you to another page in the project.
 | <kbd>g</kbd>+<kbd>n</kbd>   | Go to the [**Repository graph**](#repository-graph) page (**Code** > **Repository graph**). |
 | <kbd>g</kbd>+<kbd>d</kbd>   | Go to the charts in the **Repository analytics** page (**Analyze** > **Repository analytics**). |
 | <kbd>g</kbd>+<kbd>i</kbd>   | Go to the project **Work items** page (**Plan** > **Work items**). |
-| <kbd>i</kbd>                | Go to the **New Issue** page (**Plan** > **Work items**, select **New item** ). |
+| <kbd>i</kbd>                | Go to the **New issue** page (**Plan** > **Work items**, select **New item** ). |
 | <kbd>g</kbd>+<kbd>b</kbd>   | Go to the project **Issue boards** page (**Plan** > **Issue boards**). |
 | <kbd>g</kbd>+<kbd>m</kbd>   | Go to the project **Merge requests** page (**Code** > **Merge requests**). |
 | <kbd>g</kbd>+<kbd>p</kbd>   | Go to the CI/CD **Pipelines** page (**Build** > **Pipelines**). |
@@ -194,6 +194,7 @@ These shortcuts are available when editing a file with the
 | <kbd>Command</kbd>+<kbd>x</kbd> | <kbd>Control</kbd>+<kbd>x</kbd> | Cut |
 | <kbd>Command</kbd>+<kbd>v</kbd> | <kbd>Control</kbd>+<kbd>v</kbd> | Paste |
 | <kbd>Command</kbd>+<kbd>Shift</kbd>+<kbd>v</kbd> | <kbd>Control</kbd>+<kbd>Shift</kbd>+<kbd>v</kbd> | Paste without formatting |
+| <kbd>Command</kbd>+<kbd>Option</kbd>+<kbd>v</kbd> | <kbd>Control</kbd>+<kbd>Alt</kbd>+<kbd>v</kbd> | In a table cell, paste a copied table as a nested table inside the cell |
 | <kbd>Command</kbd>+<kbd>z</kbd> | <kbd>Control</kbd>+<kbd>z</kbd> | Undo |
 | <kbd>Command</kbd>+<kbd>Shift</kbd>+<kbd>v</kbd> | <kbd>Control</kbd>+<kbd>Shift</kbd>+<kbd>v</kbd> | Redo |
 | <kbd>Shift</kbd>+<kbd>Enter</kbd> | <kbd>Shift</kbd>+<kbd>Enter</kbd> | Add a line break |

@@ -3,6 +3,7 @@
 require 'spec_helper'
 
 RSpec.describe Gitlab::Database::Partitioning::DetachedPartitionDropper, feature_category: :database do
+  include Database::PartitioningHelpers
   include Database::TableSchemaHelpers
 
   subject(:dropper) { described_class.new }
@@ -93,6 +94,15 @@ RSpec.describe Gitlab::Database::Partitioning::DetachedPartitionDropper, feature
         dropper.perform
 
         expect(table_oid(:_test_partition)).to be_nil
+      end
+
+      it 'names itself on the info lines it logs' do
+        allow(Gitlab::AppLogger).to receive(:info)
+
+        dropper.perform
+
+        expect(Gitlab::AppLogger).to have_received(:info)
+          .with(hash_including('class_name' => described_class.name)).at_least(:twice)
       end
 
       context 'removing foreign keys' do
@@ -197,6 +207,35 @@ RSpec.describe Gitlab::Database::Partitioning::DetachedPartitionDropper, feature
       end
     end
 
+    context 'when the detach of the partition has not finalized' do
+      let(:partition_identifier) { "#{Gitlab::Database::DYNAMIC_PARTITIONS_SCHEMA}._test_partition" }
+
+      before do
+        create_partition(
+          name: :_test_partition,
+          from: 2.months.ago,
+          to: 1.month.ago.beginning_of_month,
+          attached: true,
+          drop_after: 1.second.ago
+        )
+
+        mark_pending_detach(:_test_partition)
+      end
+
+      it 'finalizes the detach and then drops the partition' do
+        expect(dropper).to receive(:drop_partition).and_wrap_original do |drop_method, partition|
+          # A fully detached partition is absent in this pg view, which confirms it was finalized before dropping.
+          expect(Gitlab::Database::PostgresPartition.for_identifier(partition_identifier)).to be_empty
+
+          drop_method.call(partition)
+        end
+
+        dropper.perform
+
+        expect_partition_removed(:_test_partition)
+      end
+    end
+
     context 'with multiple partitions to drop' do
       before do
         create_partition(
@@ -280,6 +319,35 @@ RSpec.describe Gitlab::Database::Partitioning::DetachedPartitionDropper, feature
         attached: false,
         drop_after: 1.day.from_now
       )
+
+      dropper.drop_all_detached_partitions!
+
+      expect_partition_removed(:_test_partition)
+    end
+
+    it 'leaves a partition that is still attached in place' do
+      create_partition(
+        name: :_test_partition,
+        from: 2.months.ago,
+        to: 1.month.ago,
+        attached: true,
+        drop_after: 1.day.from_now
+      )
+
+      dropper.drop_all_detached_partitions!
+
+      expect_partition_present(:_test_partition)
+    end
+
+    it 'finalizes and drops a partition whose detach has not finalized' do
+      create_partition(
+        name: :_test_partition,
+        from: 2.months.ago,
+        to: 1.month.ago,
+        attached: true,
+        drop_after: 1.day.from_now
+      )
+      mark_pending_detach(:_test_partition)
 
       dropper.drop_all_detached_partitions!
 

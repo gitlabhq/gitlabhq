@@ -3,7 +3,6 @@
 require 'spec_helper'
 
 RSpec.describe Gitlab::BackgroundMigration::BackfillDetectedAtToFindings, feature_category: :vulnerability_management do
-  let(:tracked_contexts) { table(:security_project_tracked_contexts, database: :sec) }
   let(:namespaces) { table(:namespaces) }
   let(:projects) { table(:projects) }
   let(:identifiers) { table(:vulnerability_identifiers, database: :sec) }

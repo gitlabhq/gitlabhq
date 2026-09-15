@@ -12,6 +12,12 @@ title: Groups members API
 
 {{< /details >}}
 
+{{< history >}}
+
+- `two_factor_enabled` attribute [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/385177) in GitLab 19.4.
+
+{{< /history >}}
+
 Use this endpoint to interact with group members.
 
 For information about project members, see the [Project members API](project_members.md).
@@ -21,6 +27,7 @@ For information about project members, see the [Project members API](project_mem
 - The `group_saml_identity` and `group_scim_identity` attributes are only visible to group owners for [SSO-enabled groups](../user/group/saml_sso/_index.md).
 - The `email` attribute is only visible to group owners for [enterprise users](../user/enterprise_user/_index.md)
   of the group when an API request is sent to the group itself, or that group's subgroups or projects.
+- The `two_factor_enabled` attribute is only visible to group owners and administrators.
 
 ## List all group members
 
@@ -66,6 +73,7 @@ Example response:
       "web_url": "http://192.168.1.8:3000/root"
     },
     "expires_at": "2012-10-22",
+    "two_factor_enabled": true,
     "access_level": 30,
     "group_saml_identity": null,
     "is_using_seat": true
@@ -87,6 +95,7 @@ Example response:
       "web_url": "http://192.168.1.8:3000/root"
     },
     "expires_at": "2012-10-22",
+    "two_factor_enabled": false,
     "access_level": 30,
     "email": "john@example.com",
     "group_saml_identity": {
@@ -165,6 +174,7 @@ Example response:
       "web_url": "http://192.168.1.8:3000/root"
     },
     "expires_at": "2012-10-22",
+    "two_factor_enabled": true,
     "access_level": 30,
     "group_saml_identity": null
   },
@@ -185,6 +195,7 @@ Example response:
       "web_url": "http://192.168.1.8:3000/root"
     },
     "expires_at": "2012-10-22",
+    "two_factor_enabled": false,
     "access_level": 30,
     "email": "john@example.com",
     "group_saml_identity": {
@@ -210,6 +221,7 @@ Example response:
       "web_url": "http://192.168.1.8:3000/root"
     },
     "expires_at": "2012-11-22",
+    "two_factor_enabled": false,
     "access_level": 30,
     "group_saml_identity": null
   }
@@ -265,6 +277,7 @@ Example response:
     "web_url": "http://192.168.1.8:3000/root"
   },
   "expires_at": null,
+  "two_factor_enabled": true,
   "group_saml_identity": null
 }
 ```
@@ -322,6 +335,7 @@ Example response:
   },
   "email": "john@example.com",
   "expires_at": null,
+  "two_factor_enabled": true,
   "group_saml_identity": null
 }
 ```

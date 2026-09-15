@@ -1,0 +1,20 @@
+fragment WorkItemCrmContacts on WorkItemWidgetCrmContacts {
+  type
+  contactsAvailable
+  contacts {
+    nodes {
+      id
+      email
+      firstName
+      lastName
+      phone
+      description
+      organization {
+        id
+        name
+        description
+        defaultRate
+      }
+    }
+  }
+}

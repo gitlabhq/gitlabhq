@@ -65,3 +65,19 @@ index b66c842..3d96494 100644
      compilerOptions,
      // allow customizing behavior of vue-template-es2015-compiler
      transpileOptions: options.transpileOptions,
+diff --git a/node_modules/vue-loader/lib/resolveScript.js b/node_modules/vue-loader/lib/resolveScript.js
+index 3c825b0..bd1a9b1 100644
+--- a/node_modules/vue-loader/lib/resolveScript.js
++++ b/node_modules/vue-loader/lib/resolveScript.js
+@@ -46,6 +46,11 @@ exports.resolveScript = function resolveScript(
+     loaderContext.emitError(e)
+   }
+ 
++  if (resolved) {
++    delete resolved.scriptAst
++    delete resolved.scriptSetupAst
++  }
++
+   cacheToUse.set(descriptor, resolved)
+   return resolved
+ }

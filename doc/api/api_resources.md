@@ -53,6 +53,7 @@ The following API resources are available in the project context:
 | [Debian distributions](packages/debian_project_distributions.md)               | `/projects/:id/debian_distributions` (also available for groups) |
 | [Debian packages](packages/debian.md)                                          | `/projects/:id/packages/debian` (also available for groups) |
 | [Dependencies](dependencies.md)                                                | `/projects/:id/dependencies` |
+| [Dependency Firewall](dependency_firewall.md)                                  | `/projects/:id/dependency_firewall` |
 | [Deploy keys](deploy_keys.md)                                                  | `/projects/:id/deploy_keys` (also available standalone) |
 | [Deploy tokens](deploy_tokens.md)                                              | `/projects/:id/deploy_tokens` (also available for groups and standalone) |
 | [Deployments](deployments.md)                                                  | `/projects/:id/deployments` |
@@ -208,6 +209,7 @@ The following API resources are available outside of project and group contexts 
 | [Pages domains](pages_domains.md)                                                            | `/pages/domains` (also available for projects) |
 | [Personal access tokens](personal_access_tokens.md)                                          | `/personal_access_tokens` |
 | [Plan limits](plan_limits.md)                                                                | `/application/plan_limits` |
+| [Policy store](policy_store.md)                                                              | `/security/policy_store`, `/organizations/:id/security/policy_store` |
 | [Project repository storage moves](project_repository_storage_moves.md)                      | `/project_repository_storage_moves` |
 | [Projects](projects.md)                                                                      | `/users/:id/projects` (also available for projects) |
 | [Runners](runners.md)                                                                        | `/runners` (also available for projects) |

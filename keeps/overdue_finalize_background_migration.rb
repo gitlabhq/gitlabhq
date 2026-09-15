@@ -5,7 +5,7 @@ require_relative '../lib/generators/post_deployment_migration/post_deployment_mi
 require_relative './helpers/postgres_ai'
 require_relative 'helpers/groups'
 require_relative 'overdue_finalize_background_migrations/outdated_migration_checker'
-require 'rubocop'
+require_relative 'overdue_finalize_background_migrations/migration_rewriter'
 
 module Keeps
   # This is an implementation of a ::Gitlab::Housekeeper::Keep. This keep will locate any old batched background
@@ -64,7 +64,7 @@ module Keeps
 
       initialize_change_details(change, migration, migration_record, job_name, last_migration_file)
 
-      queue_method_node = find_queue_method_node(last_migration_file)
+      queue_method_node = migration_rewriter.find_queue_method_node(last_migration_file)
 
       migration_name = unique_migration_name("FinalizeHK#{job_name}")
       PostDeploymentMigration::PostDeploymentMigrationGenerator
@@ -73,7 +73,7 @@ module Keeps
       migration_file = generator.invoke_all.first
       change.changed_files = [migration_file]
 
-      add_ensure_call_to_migration(migration_file, queue_method_node, job_name, migration_record)
+      migration_rewriter.add_ensure_call_to_migration(migration_file, queue_method_node, job_name, migration_record)
       ::Gitlab::Housekeeper::Shell.rubocop_autocorrect(migration_file)
 
       digest = Digest::SHA256.hexdigest(generator.migration_number)
@@ -179,53 +179,6 @@ module Keeps
       nil
     end
 
-    def add_ensure_call_to_migration(file, queue_method_node, job_name, migration_record)
-      source = RuboCop::ProcessedSource.new(File.read(file), 3.1)
-      ast = source.ast
-      source_buffer = source.buffer
-      rewriter = Parser::Source::TreeRewriter.new(source_buffer)
-
-      up_method = ast.children[2].each_child_node(:def).find do |child|
-        child.method_name == :up
-      end
-
-      table_name = queue_method_node.children[3]
-      column_name = queue_method_node.children[4]
-      job_arguments = queue_method_node.children[5..].select { |s| s.type != :hash } # All remaining non-keyword args
-
-      gitlab_schema = migration_record.gitlab_schema
-
-      added_content = <<~RUBY.strip
-      disable_ddl_transaction!
-
-      restrict_gitlab_migration gitlab_schema: :#{gitlab_schema}
-
-        def up
-          ensure_batched_background_migration_is_finished(
-            job_class_name: '#{job_name}',
-            table_name: #{table_name.source},
-            column_name: #{column_name.source},
-            job_arguments: [#{job_arguments.map(&:source).join(', ')}],
-            finalize: true
-          )
-        end
-      RUBY
-
-      rewriter.replace(up_method.loc.expression, added_content)
-
-      content = strip_comments(rewriter.process)
-
-      File.write(file, content)
-    end
-
-    def strip_comments(code)
-      result = []
-      code.each_line.with_index do |line, index|
-        result << line unless index > 0 && line.lstrip.start_with?('#')
-      end
-      result.join
-    end
-
     def fetch_migration_status(job_name)
       result = postgres_ai.fetch_background_migration_status(job_name)
 
@@ -247,19 +200,6 @@ module Keeps
       result.each_line.select do |file|
         File.read(file.chomp).include?('ensure_batched_background_migration_is_finished')
       end.any?
-    end
-
-    def find_queue_method_node(file)
-      source = RuboCop::ProcessedSource.new(File.read(file), 3.1)
-      ast = source.ast
-
-      up_method = ast.children[2].children.find do |child|
-        child.def_type? && child.method_name == :up
-      end
-
-      up_method.each_descendant.find do |child|
-        child && child.send_type? && child.method_name == :queue_batched_background_migration
-      end
     end
 
     def before_cuttoff_milestone?(milestone)
@@ -355,6 +295,10 @@ module Keeps
 
     def outdated_migration_checker
       @outdated_migration_checker ||= OverdueFinalizeBackgroundMigrations::OutdatedMigrationChecker.new(logger: @logger)
+    end
+
+    def migration_rewriter
+      @migration_rewriter ||= OverdueFinalizeBackgroundMigrations::MigrationRewriter.new
     end
   end
 end

@@ -15,6 +15,6 @@ GitLab team members can find the CloudFlare Terraform configuration in the GitLa
 
 ## Additional resources
 
-<!-- markdownlint-disable MD044 -->
-The [Authentication group](https://handbook.gitlab.com/handbook/engineering/development/sec/software-supply-chain-security/authentication/) owns the compromised password detection feature. GitLab team members can join their channel on Slack: [#g_sscs_authentication](https://gitlab.slack.com/archives/CLM1D8QR0).
-<!-- markdownlint-enable MD044 -->
+The [Authentication group](https://handbook.gitlab.com/handbook/engineering/development/sec/software-supply-chain-security/authentication/)
+owns the compromised password detection feature. GitLab team members can join their channel on Slack:
+[`#g_sscs_authentication`](https://gitlab.slack.com/archives/CLM1D8QR0).

@@ -5,8 +5,6 @@ require 'spec_helper'
 RSpec.describe Security::CiConfiguration::ContainerScanningBuildAction, feature_category: :software_composition_analysis do
   subject(:result) { described_class.new(auto_devops_enabled, gitlab_ci_content).generate }
 
-  let(:params) { {} }
-
   context 'with existing .gitlab-ci.yml' do
     let(:auto_devops_enabled) { false }
 

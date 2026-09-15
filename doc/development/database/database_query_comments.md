@@ -16,7 +16,7 @@ and its application source from the comments.
 
 ## Metadata information in comments
 
-Queries generated from **Rails** include the following metadata in comments:
+Queries generated from Rails include the following metadata in comments:
 
 - `application`
 - `correlation_id`
@@ -24,7 +24,7 @@ Queries generated from **Rails** include the following metadata in comments:
 - `db_config_database`
 - `line`
 
-Queries generated from **Sidekiq** workers include the following metadata
+Queries generated from Sidekiq workers include the following metadata
 in comments:
 
 - `application`

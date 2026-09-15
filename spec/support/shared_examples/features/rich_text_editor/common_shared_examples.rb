@@ -5,6 +5,40 @@ require 'spec_helper'
 RSpec.shared_examples 'rich text editor - common' do
   include RichTextEditorHelpers
 
+  let(:is_mac) { page.evaluate_script('navigator.platform').include?('Mac') }
+  let(:modifier_key) { is_mac ? :command : :control }
+
+  it 'keeps the document when undo is pressed after switching back to rich text', feature_category: :markdown do
+    switch_to_content_editor
+
+    type_in_content_editor 'Undo keeps this text'
+    wait_until_hidden_field_is_updated(/Undo keeps this text/)
+
+    # Switching away and back remounts the editor, so the reload is its only history step.
+    switch_to_markdown_editor
+    switch_to_content_editor
+
+    within(content_editor_testid) do
+      expect(page).to have_text('Undo keeps this text')
+    end
+
+    type_in_content_editor [modifier_key, 'z']
+
+    within(content_editor_testid) do
+      expect(page).to have_text('Undo keeps this text')
+    end
+
+    type_in_content_editor ' plus more'
+    wait_until_hidden_field_is_updated(/Undo keeps this text plus more/)
+
+    type_in_content_editor [modifier_key, 'z']
+
+    within(content_editor_testid) do
+      expect(page).to have_text('Undo keeps this text')
+      expect(page).not_to have_text('plus more')
+    end
+  end
+
   it 'saves page content in local storage if the user navigates away', feature_category: :markdown do
     switch_to_content_editor
 

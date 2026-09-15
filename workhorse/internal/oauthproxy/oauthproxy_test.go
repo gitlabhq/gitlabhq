@@ -354,11 +354,10 @@ func TestBuildTokenRoute_Routing(t *testing.T) {
 		body    string
 		wantIAM bool
 	}{
-		{"code giat_ prefix", "/oauth/token", "grant_type=authorization_code&code=giat_abc123", true},
-		{"refresh_token giat_ prefix", "/oauth/token", "grant_type=refresh_token&refresh_token=giat_xyz789", true},
-		{"token giat_ prefix (revoke)", "/oauth/revoke", "token=giat_revokeme", true},
-		{"code ory_ prefix", "/oauth/token", "grant_type=authorization_code&code=ory_abc123", true},
-		{"token ory_ prefix (introspect)", "/oauth/introspect", "token=ory_introspectme", true},
+		{"code gliamac- prefix", "/oauth/token", "grant_type=authorization_code&code=gliamac-abc123", true},
+		{"refresh_token gliamrt- prefix", "/oauth/token", "grant_type=refresh_token&refresh_token=gliamrt-refreshme", true},
+		{"token gliamat- prefix (revoke)", "/oauth/revoke", "token=gliamat-revokeme", true},
+		{"token gliamat- prefix (introspect)", "/oauth/introspect", "token=gliamat-introspectme", true},
 		{"doorkeeper code", "/oauth/token", "grant_type=authorization_code&code=plain_doorkeeper_code", false},
 		{"doorkeeper token", "/oauth/introspect", "token=plain_doorkeeper_token", false},
 		{"empty body", "/oauth/token", "", false},

@@ -1,0 +1,8 @@
+fragment WorkItemLinkedResources on WorkItemWidgetLinkedResources {
+  type
+  linkedResources {
+    nodes {
+      url
+    }
+  }
+}

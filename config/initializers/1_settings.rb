@@ -316,6 +316,7 @@ Settings.ai_catalog['object_store'] = ObjectStoreSettings.legacy_parse(Settings.
 # CI catalog bundles
 #
 Settings['ci_catalog_bundles'] ||= {}
+Settings.ci_catalog_bundles['enabled'] = true if Settings.ci_catalog_bundles['enabled'].nil?
 Settings.ci_catalog_bundles['storage_path'] = Settings.absolute(Settings.ci_catalog_bundles['storage_path'] || File.join(Settings.shared['path'], "ci_catalog_bundles"))
 Settings.ci_catalog_bundles['object_store'] = ObjectStoreSettings.legacy_parse(Settings.ci_catalog_bundles['object_store'], 'ci_catalog_bundles')
 
@@ -366,6 +367,8 @@ Settings.registry['notifications'] ||= []
 #
 Settings['artifact_registry'] ||= {}
 Settings.artifact_registry['api_url'] ||= 'http://localhost:8080' if Rails.env.development? || Rails.env.test?
+Settings.artifact_registry['service_token'] ||= {}
+Settings.artifact_registry.service_token['secret_file'] ||= nil
 
 #
 # Error Reporting and Logging with Sentry
@@ -671,6 +674,8 @@ Settings.iam_auth_service.http['port'] ||= 8084
 Settings.iam_auth_service['grpc'] ||= {}
 Settings.iam_auth_service.grpc['host'] ||= 'localhost'
 Settings.iam_auth_service.grpc['port'] ||= 8085
+# Defaults to encrypted so nobody accidentally ships an open connection.
+Settings.iam_auth_service.grpc['secure'] = !Gitlab.dev_or_test_env? if Settings.iam_auth_service.grpc['secure'].nil?
 Settings.iam_auth_service['jwt_audience'] ||= 'gitlab-rails'
 Settings.iam_auth_service['jwt_issuer'] ||= 'http://localhost'
 
@@ -682,6 +687,10 @@ Settings.iam_data_access_service['secret_file'] ||= nil
 Settings.iam_data_access_service['grpc'] ||= {}
 Settings.iam_data_access_service.grpc['host'] ||= 'localhost'
 Settings.iam_data_access_service.grpc['port'] ||= 5005
+# Defaults to encrypted so nobody accidentally ships an open connection.
+if Settings.iam_data_access_service.grpc['secure'].nil?
+  Settings.iam_data_access_service.grpc['secure'] = !Gitlab.dev_or_test_env?
+end
 
 #
 # Gitlab Secrets Manager Openbao Integration
@@ -882,6 +891,7 @@ Settings.webpack['config_file'] ||= 'config/webpack.config.js'
 Settings.webpack['output_dir']  ||= 'public/assets/webpack'
 Settings.webpack['public_path'] ||= 'assets/webpack'
 Settings.webpack['manifest_filename'] ||= 'manifest.json'
+Settings.webpack['bundler'] ||= 'webpack'
 Settings.webpack['dev_server'] ||= {}
 Settings.webpack.dev_server['enabled'] ||= false
 Settings.webpack.dev_server['host']    ||= 'localhost'

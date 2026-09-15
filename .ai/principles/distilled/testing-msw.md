@@ -1,6 +1,6 @@
 ---
-source_checksum: f8153b4aad87d4cb
-distilled_at_sha: 403f0ba78983ea28f47a927139b91425bb93dcef
+source_checksum: 7bd637aa5683624c
+distilled_at_sha: da75f7373628b035becb13fb3f0d21b4b3d3690f
 ---
 <!-- Auto-generated from docs.gitlab.com by gitlab-ai-principles-distiller — do not edit manually -->
 
@@ -10,8 +10,17 @@ distilled_at_sha: 403f0ba78983ea28f47a927139b91425bb93dcef
 
 ### When to Use MSW Integration Tests
 
-- Use an MSW integration test (`spec/frontend/msw_integration/`) when the test covers multi-component interaction on a single page, backend responses can be represented with auto-generated fixtures, and you do not need to verify database state, authorization, server-side validations, or real-time updates.
+- Use an MSW integration test (`ee/spec/frontend/msw_integration/`, EE-only) when the test covers multi-component interaction on a single page, backend responses can be represented with auto-generated fixtures, and you do not need to verify database state, authorization, server-side validations, or real-time updates.
 - Use a Capybara feature test (`spec/features/`) instead when the test requires a real backend (database writes, authorization checks, server-side validations), navigation across multiple server-rendered pages, backend state not representable with fixtures, or behavior that depends on multiple Vue applications on the same page.
+
+### Location (EE-only)
+
+- Place all MSW integration specs and harness files under
+  `ee/spec/frontend/msw_integration/`. The CE path
+  `spec/frontend/msw_integration/` is intentionally empty and blocked by ESLint.
+- DO NOT add MSW integration tests for FOSS-versus-licensed behavior; MSW mocks
+  the network layer (including auth and licensing) and cannot assert those
+  differences. Use a Capybara feature spec instead.
 
 ### Running MSW Integration Tests
 
@@ -19,13 +28,16 @@ distilled_at_sha: 403f0ba78983ea28f47a927139b91425bb93dcef
 
 ### Directory Structure
 
-- Place MSW integration test files under `spec/frontend/msw_integration/` in a subdirectory mirroring the feature area (e.g. `work_items/work_item_spec.js`).
 - Use the shared files (`handlers.js`, `server.js`, `test_setup.js`, `polyfills.js`, `test_helpers.js`) configured automatically through `jest.config.msw_integration.js`; DO NOT duplicate their setup in individual test files.
 
 ### Handler Registration
 
-- Place a feature's handlers in a per-feature subdirectory module (e.g. `work_items/handlers.js`) and register them in the top-level `handlers.js` via `featureHandlers`/`restEndpoints`.
-- Export new test helpers from `test_helpers.js` so they are available globally in all MSW integration tests (auto-imported via `Object.assign(global, testHelpers)` in `test_setup.js`).
+- Place a feature's handlers in a per-feature subdirectory module
+  (e.g. `work_items/handlers.js`) and register them in the top-level
+  `handlers.js` via `featureHandlers`/`restEndpoints`.
+- Export new test helpers from `test_helpers.js` so they are available
+  globally in all MSW integration tests (auto-imported via
+  `Object.assign(global, testHelpers)` in `test_setup.js`).
 - Register one `rest.post` handler for `http://test.host/api/graphql` in `handlers.js` as a thin GraphQL router that delegates to feature-specific resolver functions in order; DO NOT split a single GraphQL endpoint across multiple MSW handlers.
 - Ensure every GraphQL operation that fires during a test has a corresponding handler; unhandled operations fall through to a catch-all that returns a 400 status — if a test fails with `ServerParseError: Unexpected end of JSON input`, add the missing operation to the relevant feature handler file.
 - Have each feature resolver receive `{ operationName, variables, res, ctx }` and return an MSW response if it handles the operation, or `null` to pass to the next resolver.
@@ -49,11 +61,33 @@ distilled_at_sha: 403f0ba78983ea28f47a927139b91425bb93dcef
 - Spread auto-loaded `fixtures` and `OPERATION_NAME_OVERRIDES` into `FIXTURE_RESPONSES`; use `MUTATION_OPERATION_HANDLERS` for mutations that need dynamic responses based on input variables.
 - Combine static and mutation handlers into a single `OPERATION_HANDLERS` map and look up the operation in the resolver function.
 
+### Fixture Variants
+
+- Declare named fixture variants instead of editing handlers when testing a different response shape (error, empty list, flipped flag); place the variant file at `ee/spec/frontend/msw_integration/<feature>/fixture_variants/<query>.js` and call `defineFixtureVariants({ query, variants })` as its default export.
+- Use `BASE` as the required default variant key; `BASE` is served unless a test activates another variant.
+- Build variants with the three transform helpers from `fixture_utils.js` — `setFixtureData(fixture, lookupKey, value)`, `setFixtureErrors(fixture, ['message'])`, and `setFixtureItemsCount({ fixture, lookupKey, itemCount })` — each deep-clones its input; DO NOT clone or mutate the imported fixture directly.
+- Activate a variant in a test with `setQueryVariant('operationName', 'VARIANT_KEY')` imported from `ee_jest/msw_integration/setup_utils`; the active variant resets to `BASE` automatically in `afterEach`.
+- Generate a manifest of all registered queries and variant keys with `yarn msw:variants` (writes to `tmp/tests/frontend/msw_variants.manifest.json`); DO NOT commit the manifest.
+
 ### Assert Apollo Cache Integrity
 
-- Use `snapshotRequests()` before an action and `expectGraphQLCalls(baseline, { expect, forbid })` inside `waitFor` after the action to verify that mutations update the Apollo cache without triggering unwanted network calls.
+- Use `snapshotRequests()` before an action and `expectGraphQLCalls(baseline, { expect, forbid })` inside `waitFor` after the action to verify that mutations update the Apollo cache without triggering unwanted network calls; import both from `ee_jest/msw_integration/operation_helpers`.
 - DO NOT match two `snapshotRequests` calls without using `expectGraphQLCalls` — `expectGraphQLCalls` throws a Jest diff on unexpected calls, making debugging easier.
 - Reset `capturedRequests` manually in your own test suite if stray operations fire after the global `afterEach` reset has already been called.
+
+### Mounting
+
+- If a feature suite provides its own mount helper in `test_support/`, use
+  that instead of calling `fullMount` directly. The helper wires in the
+  feature's required configuration and provide values, which `fullMount`
+  alone does not know about.
+- Feature mount helpers must wrap `fullMount`, not replace it. DO NOT
+  reimplement mounting logic in a feature helper, and DO NOT mount with
+  `shallowMountExtended` or `mountExtended`.
+- Example: the AI Duo Panel suite's `mountAISidebar` and
+  `mountDuoAgenticChatStateManager` (in
+  `ee/spec/frontend/msw_integration/ai_duo_panel/test_support/`) both call
+  `fullMount` internally. See that suite's README for when to use each one.
 
 ### Write a Test File
 
@@ -82,3 +116,4 @@ distilled_at_sha: 403f0ba78983ea28f47a927139b91425bb93dcef
 For the full picture, see:
 
 - doc/development/testing_guide/frontend_testing.md
+

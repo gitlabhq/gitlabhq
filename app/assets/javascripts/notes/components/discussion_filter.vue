@@ -80,14 +80,14 @@ export default {
       this.toggleFilters(currentTab);
     }
 
-    notesEventHub.$on('dropdownSelect', this.selectFilter);
+    notesEventHub.$on('dropdown-select', this.selectFilter);
     window.addEventListener('hashchange', this.handleLocationHash);
   },
   mounted() {
     this.toggleCommentsForm();
   },
   destroyed() {
-    notesEventHub.$off('dropdownSelect', this.selectFilter);
+    notesEventHub.$off('dropdown-select', this.selectFilter);
     window.removeEventListener('hashchange', this.handleLocationHash);
   },
   methods: {

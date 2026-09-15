@@ -79,6 +79,54 @@ RSpec.describe Gitlab::Vue3Migration, feature_category: :tooling do
     end
   end
 
+  describe '.rollout?' do
+    include_context 'with stubbed Vue 3 migration definitions'
+
+    let(:definitions) { { 'pages.foo' => fake_flag } }
+
+    it 'is true for an entry with a rollout record' do
+      expect(described_class.rollout?('pages.foo')).to be(true)
+    end
+
+    it 'is false for an entry without one' do
+      expect(described_class.rollout?('pages.unknown')).to be(false)
+    end
+  end
+
+  describe '.entry_name_for' do
+    let(:js_root) { Rails.root.join('app/assets/javascripts') }
+
+    it 'names a page entry after its route' do
+      file = js_root.join('pages/projects/jobs/show/vue3_migration.yml')
+
+      expect(described_class.entry_name_for(file)).to eq('pages.projects.jobs.show')
+    end
+
+    it 'names a hand-declared bundle after its key in entry_points.js' do
+      file = js_root.join('sentry/vue3_migration.yml')
+
+      expect(described_class.entry_name_for(file)).to eq('sentry')
+    end
+
+    it 'names a bundle declared conditionally with an assignment' do
+      file = js_root.join('entrypoints/duo_panel.vue3_migration.yml')
+
+      expect(described_class.entry_name_for(file)).to eq('duo_panel')
+    end
+
+    it 'rejects main, which has no bundle of its own' do
+      file = js_root.join('main.vue3_migration.yml')
+
+      expect { described_class.entry_name_for(file) }.to raise_error(/Option 2/)
+    end
+
+    it 'rejects a module that is not a bundler entry' do
+      file = js_root.join('lib/utils/vue3_migration.yml')
+
+      expect { described_class.entry_name_for(file) }.to raise_error(/not a bundler entry/)
+    end
+  end
+
   describe '.definitions' do
     before do
       described_class.clear_memoization!
@@ -94,18 +142,26 @@ RSpec.describe Gitlab::Vue3Migration, feature_category: :tooling do
 
         expect(result).to be_a(Hash)
         expect(result).not_to be_empty
-        expect(result.keys).to all(start_with('pages.'))
+        expect(result.keys).to all(be_present)
         expect(result.values).to all(be_a(String))
       end
 
+      # Global bundles are keyed on the bare entry name, so the prefix is not
+      # universal. Page entries must still carry it.
+      it 'names page entries after their route' do
+        expect(described_class.definitions.keys).to include(a_string_starting_with('pages.'))
+      end
+
       it 'excludes migrated entries' do
-        migrated_docs = Dir.glob(Rails.root.join(described_class::VUE3_MIGRATION_GLOB)).filter_map do |file|
+        files = Dir.glob(Rails.root.join(described_class::VUE3_MIGRATION_GLOB))
+
+        migrated_docs = files.filter_map do |file|
           doc = YAML.safe_load_file(file)
           file if doc['status'] == described_class::VUE3_MIGRATION_STATUS_MIGRATED
         end
 
         migrated_docs.each do |file|
-          entry_name = described_class.send(:entry_name_from_file, file)
+          entry_name = described_class.entry_name_for(file)
           expect(described_class.definitions).not_to have_key(entry_name)
         end
       end

@@ -31,7 +31,7 @@ const defaultProps = {
 describe('GitlabDuoSettings', () => {
   let wrapper;
 
-  const createWrapper = (props = {}, provide = {}) => {
+  const createWrapper = (props = {}) => {
     const propsData = {
       ...defaultProps,
       ...props,
@@ -39,13 +39,6 @@ describe('GitlabDuoSettings', () => {
 
     return mountExtended(GitlabDuoSettings, {
       propsData,
-      provide: {
-        glFeatures: {
-          duoSecretDetectionFalsePositive: true,
-          enableDependencyBumpBreakingChanges: true,
-          ...provide,
-        },
-      },
     });
   };
 
@@ -104,6 +97,10 @@ describe('GitlabDuoSettings', () => {
     wrapper.findByTestId('ai-audit-events-storage-cascading-lock-icon');
   const findGovernanceCard = () => wrapper.findByTestId('duo-governance-info-card-header');
   const findGovernanceLink = () => wrapper.findByTestId('duo-governance-link');
+  const findRemoteFlowsDapDisabledIcon = () =>
+    wrapper.findByTestId('duo-remote-flows-dap-disabled-icon');
+  const findFoundationalFlowsDapDisabledIcon = () =>
+    wrapper.findByTestId('duo-foundational-flows-dap-disabled-icon');
 
   beforeEach(() => {
     wrapper = createWrapper();
@@ -139,6 +136,60 @@ describe('GitlabDuoSettings', () => {
     it('hides the local setup section', () => {
       expect(findLocalSetupSection().exists()).toBe(false);
     });
+
+    describe('when DAP is disabled at the instance level', () => {
+      beforeEach(() => {
+        wrapper = createWrapper({
+          duoReadinessAvailable: false,
+          duoFeaturesEnabled: true,
+          duoAgentPlatformEnabled: false,
+          initialDuoRemoteFlowsAvailability: true,
+        });
+      });
+
+      it('disables the Allow flow execution toggle', () => {
+        expect(findDuoRemoteFlowsToggle().props('disabled')).toBe(true);
+      });
+
+      it('disables the Allow foundational flows toggle', () => {
+        expect(findDuoFoundationalFlowsToggle().props('disabled')).toBe(true);
+      });
+
+      it('shows the DAP disabled tooltip icon on the Allow flow execution row', () => {
+        expect(findRemoteFlowsDapDisabledIcon().exists()).toBe(true);
+      });
+
+      it('shows the DAP disabled tooltip icon on the Allow foundational flows row', () => {
+        expect(findFoundationalFlowsDapDisabledIcon().exists()).toBe(true);
+      });
+    });
+
+    describe('when DAP is enabled at the instance level', () => {
+      beforeEach(() => {
+        wrapper = createWrapper({
+          duoReadinessAvailable: false,
+          duoFeaturesEnabled: true,
+          duoAgentPlatformEnabled: true,
+          initialDuoRemoteFlowsAvailability: true,
+        });
+      });
+
+      it('does not disable the Allow flow execution toggle', () => {
+        expect(findDuoRemoteFlowsToggle().props('disabled')).toBe(false);
+      });
+
+      it('does not disable the Allow foundational flows toggle', () => {
+        expect(findDuoFoundationalFlowsToggle().props('disabled')).toBe(false);
+      });
+
+      it('does not show the DAP disabled tooltip icon on the Allow flow execution row', () => {
+        expect(findRemoteFlowsDapDisabledIcon().exists()).toBe(false);
+      });
+
+      it('does not show the DAP disabled tooltip icon on the Allow foundational flows row', () => {
+        expect(findFoundationalFlowsDapDisabledIcon().exists()).toBe(false);
+      });
+    });
   });
 
   describe('when the readiness card is on', () => {
@@ -148,8 +199,6 @@ describe('GitlabDuoSettings', () => {
     });
   });
 
-  // The design's blocked state: the platform switch lives above the project, so the card
-  // stays, the platform row carries the warning, and every row below is blocked and disabled.
   describe('when the Agent Platform is off above the project', () => {
     beforeEach(() => {
       wrapper = createWrapper({ duoReadiness: { platformEnabled: false } });
@@ -159,16 +208,16 @@ describe('GitlabDuoSettings', () => {
       expect(findReadinessBlock().exists()).toBe(true);
     });
 
-    it('blocks every row below the platform row', () => {
-      expect(findDuoRow().props('status')).toBe('blocked');
+    it('blocks the agent-only flow rows', () => {
       expect(findFlowExecutionRow().props('status')).toBe('blocked');
       expect(findFoundationalFlowsRow().props('status')).toBe('blocked');
-    });
-
-    it('disables every toggle below the platform row', () => {
-      expect(findDuoFeaturesEnabledToggle().props('disabled')).toBe(true);
       expect(findDuoRemoteFlowsToggle().props('disabled')).toBe(true);
       expect(findDuoFoundationalFlowsToggle().props('disabled')).toBe(true);
+    });
+
+    it('keeps the GitLab Duo row live, because it also governs Chat and Code Suggestions', () => {
+      expect(findDuoRow().props('status')).toBe('done');
+      expect(findDuoFeaturesEnabledToggle().props('disabled')).toBe(false);
     });
   });
 
@@ -197,9 +246,10 @@ describe('GitlabDuoSettings', () => {
       expect(findReadinessBlock().exists()).toBe(true);
       expect(findDuoRow().props()).toMatchObject({
         title: 'GitLab Duo',
-        description: 'Use AI-native features in this project.',
         status: 'done',
       });
+      expect(findDuoRow().text()).toContain('Turn on AI-native features for this project.');
+      expect(findDuoRow().text()).toContain('Learn more');
       expect(findDuoEnabledToggle().exists()).toBe(true);
     });
 
@@ -665,75 +715,87 @@ describe('GitlabDuoSettings', () => {
       });
 
       describe('AI audit event storage settings', () => {
-        it('does not render the toggle when the feature flag is disabled', () => {
-          wrapper = createWrapper(
-            { duoFeaturesEnabled: true, amazonQAvailable: false },
-            { agentArtifactsPage: false },
-          );
-
-          expect(findAuditEventsStorageToggle().exists()).toBe(false);
-        });
-
-        it('renders the toggle off by default when the feature flag is enabled', () => {
-          wrapper = createWrapper(
-            { duoFeaturesEnabled: true, amazonQAvailable: false },
-            { agentArtifactsPage: true },
-          );
-
-          expect(findAuditEventsStorageToggle().exists()).toBe(true);
-          expect(parseBoolean(findAuditEventsStorageHiddenInput().attributes('value'))).toBe(false);
-        });
-
-        it('renders the toggle on when aiAuditEventsStorageEnabled is true', () => {
-          wrapper = createWrapper(
-            {
+        describe('when the setting is not available', () => {
+          beforeEach(() => {
+            wrapper = createWrapper({
               duoFeaturesEnabled: true,
               amazonQAvailable: false,
+              aiAuditEventsStorageAvailable: false,
+            });
+          });
+
+          it('does not render the toggle', () => {
+            expect(findAuditEventsStorageToggle().exists()).toBe(false);
+          });
+        });
+
+        describe('when the setting is available', () => {
+          beforeEach(() => {
+            wrapper = createWrapper({
+              duoFeaturesEnabled: true,
+              amazonQAvailable: false,
+              aiAuditEventsStorageAvailable: true,
+            });
+          });
+
+          it('renders the toggle off by default', () => {
+            expect(findAuditEventsStorageToggle().exists()).toBe(true);
+            expect(parseBoolean(findAuditEventsStorageHiddenInput().attributes('value'))).toBe(
+              false,
+            );
+          });
+
+          it('does not show cascading lock icon', () => {
+            expect(findAuditEventsStorageCascadingLockIcon().exists()).toBe(false);
+          });
+
+          it('updates the hidden input value when toggled', async () => {
+            expect(parseBoolean(findAuditEventsStorageHiddenInput().attributes('value'))).toBe(
+              false,
+            );
+
+            await findAuditEventsStorageToggle().vm.$emit('change', true);
+
+            expect(parseBoolean(findAuditEventsStorageHiddenInput().attributes('value'))).toBe(
+              true,
+            );
+          });
+        });
+
+        describe('when aiAuditEventsStorageEnabled is true', () => {
+          beforeEach(() => {
+            wrapper = createWrapper({
+              duoFeaturesEnabled: true,
+              amazonQAvailable: false,
+              aiAuditEventsStorageAvailable: true,
               aiAuditEventsStorageEnabled: true,
-            },
-            { agentArtifactsPage: true },
-          );
+            });
+          });
 
-          expect(parseBoolean(findAuditEventsStorageHiddenInput().attributes('value'))).toBe(true);
+          it('renders the toggle on', () => {
+            expect(parseBoolean(findAuditEventsStorageHiddenInput().attributes('value'))).toBe(
+              true,
+            );
+          });
         });
 
-        it('does not show cascading lock icon when not locked', () => {
-          wrapper = createWrapper(
-            { duoFeaturesEnabled: true, amazonQAvailable: false },
-            { agentArtifactsPage: true },
-          );
-
-          expect(findAuditEventsStorageCascadingLockIcon().exists()).toBe(false);
-        });
-
-        it('shows cascading lock icon and disables the toggle when locked', () => {
-          wrapper = createWrapper(
-            {
+        describe('when the setting is locked', () => {
+          beforeEach(() => {
+            wrapper = createWrapper({
               duoFeaturesEnabled: true,
               amazonQAvailable: false,
+              aiAuditEventsStorageAvailable: true,
               aiAuditEventsStorageCascadingSettings: {
                 lockedByAncestor: true,
                 lockedByApplicationSetting: false,
               },
-            },
-            { agentArtifactsPage: true },
-          );
+            });
+          });
 
-          expect(findAuditEventsStorageCascadingLockIcon().exists()).toBe(true);
-          expect(findAuditEventsStorageToggle().props('disabled')).toBe(true);
-        });
-
-        it('updates the hidden input value when toggled', async () => {
-          wrapper = createWrapper(
-            { duoFeaturesEnabled: true, amazonQAvailable: false },
-            { agentArtifactsPage: true },
-          );
-
-          expect(parseBoolean(findAuditEventsStorageHiddenInput().attributes('value'))).toBe(false);
-
-          await findAuditEventsStorageToggle().vm.$emit('change', true);
-
-          expect(parseBoolean(findAuditEventsStorageHiddenInput().attributes('value'))).toBe(true);
+          it('shows cascading lock icon and disables the toggle', () => {
+            expect(findAuditEventsStorageCascadingLockIcon().exists()).toBe(true);
+            expect(findAuditEventsStorageToggle().props('disabled')).toBe(true);
+          });
         });
       });
 

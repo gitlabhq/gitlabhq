@@ -74,7 +74,7 @@ module API
         end
         route_setting :authorization, permissions: subscribable[:permission],
           boundary_type: subscribable[:boundary_type]
-        post ":id/#{subscribable[:type]}/:subscribable_id/subscribe", subscribable.slice(:feature_category) do
+        post ":id/#{subscribable[:type]}/:subscribable_id/subscribe", **subscribable.slice(:feature_category) do
           parent = parent_resource(source_type)
           resource = instance_exec(params[:subscribable_id], &subscribable[:finder])
 
@@ -94,7 +94,7 @@ module API
         end
         route_setting :authorization, permissions: subscribable[:permission],
           boundary_type: subscribable[:boundary_type]
-        post ":id/#{subscribable[:type]}/:subscribable_id/unsubscribe", subscribable.slice(:feature_category) do
+        post ":id/#{subscribable[:type]}/:subscribable_id/unsubscribe", **subscribable.slice(:feature_category) do
           parent = parent_resource(source_type)
           resource = instance_exec(params[:subscribable_id], &subscribable[:finder])
 

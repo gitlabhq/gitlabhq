@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe WorkItems::Widgets::Base do
+RSpec.describe WorkItems::Widgets::Base, feature_category: :team_planning do
   let_it_be(:work_item) { create(:work_item, description: '# Title') }
 
   describe '.type' do

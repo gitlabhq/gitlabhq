@@ -27,6 +27,9 @@ module Organizations
             payload: { failed: validation_errors })
         end
 
+        # The event payload needs each group's pre-transfer organization, so snapshot it here.
+        original_organizations_by_group_id = groups.to_h { |group| [group.id, group.organization_id] }
+
         transferred_ids = []
 
         Group.transaction do
@@ -42,12 +45,38 @@ module Organizations
 
         groups.each { |group| log_transfer_success(group) }
 
+        publish_transferred_events(original_organizations_by_group_id)
+
         ServiceResponse.success(payload: { succeeded: transferred_ids, failed: {} })
       end
 
       private
 
       attr_reader :groups, :new_organization, :current_user, :skip_authorization
+
+      # Only the root group row moves here. Descendants follow later via
+      # Organizations::Transfer::GroupsService, which publishes its own event.
+      def publish_transferred_events(organizations_by_group_id)
+        events = organizations_by_group_id.filter_map do |group_id, old_organization_id|
+          next if old_organization_id == new_organization.id
+
+          Organizations::GroupTransferredEvent.new(data: {
+            group_id: group_id,
+            old_organization_id: old_organization_id,
+            new_organization_id: new_organization.id
+          })
+        end
+
+        return if events.empty?
+
+        # `update_all` leaves these groups out of the transaction's record set, so
+        # `run_after_commit_or_now` would publish before commit. Callers such as
+        # Organizations::ConfirmService wrap this service in a transaction they may roll
+        # back, so defer to the outermost commit instead.
+        ActiveRecord.after_all_transactions_commit do
+          Gitlab::EventStore.publish_group(events)
+        end
+      end
 
       def preload_associations
         ActiveRecord::Associations::Preloader.new(

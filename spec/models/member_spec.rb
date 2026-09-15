@@ -273,6 +273,23 @@ RSpec.describe Member, feature_category: :groups_and_projects do
       end
     end
 
+    describe '.in_organization' do
+      let_it_be(:organization) { create(:organization) }
+      let_it_be(:other_organization) { create(:organization) }
+      let_it_be(:group) { create(:group, organization: organization) }
+      let_it_be(:other_group) { create(:group, organization: other_organization) }
+      let_it_be(:member) { create(:group_member, group: group) }
+      let_it_be(:other_member) { create(:group_member, group: other_group) }
+
+      it 'returns members belonging to the given organization' do
+        expect(described_class.in_organization(organization)).to contain_exactly(member)
+      end
+
+      it 'does not return members outside the given organization' do
+        expect(described_class.in_organization(organization)).not_to include(other_member)
+      end
+    end
+
     describe 'hierarchy related scopes' do
       let_it_be(:root_ancestor) { create(:group) }
       let_it_be(:project) { create(:project, group: root_ancestor) }
@@ -1686,6 +1703,36 @@ RSpec.describe Member, feature_category: :groups_and_projects do
       member.destroy!
 
       expect(user.authorized_projects).not_to include(project)
+    end
+
+    context 'when skip_authorized_projects_refresh is set' do
+      it 'leaves the refresh to the caller for a project member' do
+        project = create(:project, :private)
+        user    = create(:user)
+        member  = project.add_reporter(user)
+        member.skip_authorized_projects_refresh = true
+
+        expect(AuthorizedProjectUpdate::ProjectRecalculatePerUserWorker).not_to receive(:new)
+        expect(UserProjectAccessChangedService).not_to receive(:new)
+
+        member.destroy!
+
+        expect(user.authorized_projects).to include(project)
+      end
+
+      it 'leaves the refresh to the caller for a group member' do
+        group   = create(:group, :private)
+        project = create(:project, :private, group: group)
+        user    = create(:user)
+        member  = group.add_reporter(user)
+        member.skip_authorized_projects_refresh = true
+
+        expect(AuthorizedProjectsWorker).not_to receive(:new)
+
+        member.destroy!
+
+        expect(user.authorized_projects).to include(project)
+      end
     end
   end
 

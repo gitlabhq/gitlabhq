@@ -13,7 +13,7 @@ title: 'Reference architecture: Up to 100 RPS or 5,000 users'
 
 {{< /details >}}
 
-This page describes the GitLab reference architecture designed to target a peak load of 100 requests per second (RPS) - The typical peak load of up to 5,000 users, both manual and automated, based on real data.
+This page describes the GitLab reference architecture designed to target a peak load of 100 requests per second (RPS), the typical peak load of up to 5,000 users, both manual and automated, based on real data.
 
 For a full list of reference architectures, see
 [Available reference architectures](_index.md#available-reference-architectures).
@@ -47,19 +47,19 @@ For a full list of reference architectures, see
 
 <!-- Disable ordered list rule <https://github.com/DavidAnson/markdownlint/blob/main/doc/Rules.md#md029---ordered-list-item-prefix> -->
 <!-- markdownlint-disable MD029 -->
-1. Machine type examples are given for illustration purposes. These types are used in [validation and testing](_index.md#validation-and-test-results) but are not intended as prescriptive defaults. Switching to other machine types that meet the requirements as listed is supported, including ARM variants if available. See [Supported machine types](_index.md#supported-machine-types) for more information.
+1. Machine type examples are given for illustration purposes. These types are used in [validation and testing](_index.md#how-specifications-are-derived) but are not intended as prescriptive defaults. Switching to other machine types that meet the requirements as listed is supported, including ARM variants if available. See [Supported machine types](_index.md#how-specifications-are-derived) for more information.
 2. Can be optionally run on reputable third-party external PaaS PostgreSQL solutions. See [Provide your own PostgreSQL instance](#provide-your-own-postgresql-instance) for more information.
 3. Can be optionally run on reputable third-party external PaaS Redis solutions. See [Provide your own Redis instance](#provide-your-own-redis-instance) for more information.
 4. Recommended to be run with a reputable third-party load balancer or service (LB PaaS) which can provide HA capabilities.
-   Also, the sizing depends on selected Load Balancer and additional factors such as Network Bandwidth. Refer to [Load Balancers](_index.md#load-balancers) for more information.
+   Also, the sizing depends on selected Load Balancer and additional factors such as Network Bandwidth.
 5. Should be run on reputable Cloud Provider or Self Managed solutions. See [Configure the object storage](#configure-the-object-storage) for more information.
 6. Gitaly Cluster (Praefect) provides the benefits of fault tolerance, but comes with additional complexity of setup and management.
    Review the existing [technical limitations and considerations before deploying Gitaly Cluster (Praefect)](../gitaly/praefect/_index.md#before-deploying-gitaly-cluster-praefect). If you want sharded Gitaly, use the same specs listed in the previous table for `Gitaly`.
 7. Gitaly specifications are based on high percentiles of both usage patterns and repository sizes in good health.
-   However, if you have [large monorepos](_index.md#large-monorepos) (larger than several gigabytes) or [additional workloads](_index.md#additional-workloads) these can significantly impact Git and Gitaly performance and further adjustments will likely be required.
-8. Can be placed in Auto Scaling Groups (ASGs) as the component doesn't store any [stateful data](_index.md#autoscaling-of-stateful-nodes).
+   However, if you have [large monorepos](../../install/sizing.md#large-monorepos) (larger than several gigabytes) or [additional workloads](_index.md#additional-workloads) these can significantly impact Git and Gitaly performance and further adjustments will likely be required.
+8. Can be placed in Auto Scaling Groups (ASGs) as the component doesn't store any [stateful data](../../install/sizing.md#autoscaling).
    However, [Cloud Native Hybrid setups](#cloud-native-hybrid-reference-architecture-with-helm-charts-alternative) are generally preferred as certain components
-   such as like [migrations](#gitlab-rails-post-configuration) and [Mailroom](../incoming_email.md) can only be run on one node, which is handled better in Kubernetes.
+   such as [migrations](#gitlab-rails-post-configuration) and [Mailroom](../incoming_email.md) can only be run on one node, which is handled better in Kubernetes.
 <!-- markdownlint-enable MD029 -->
 
 > [!note]
@@ -165,14 +165,14 @@ The 100 RPS / 5k user reference architecture is designed to accommodate most com
 
 These targets are based on actual customer data reflecting total environmental loads for the specified user count, including CI pipelines and other workloads. This represents a typical workload composition. For guidance on atypical workload patterns, see [Understanding RPS composition](../../install/sizing.md#understanding-rps-composition-and-workload-patterns).
 
-For more information about our testing methodology, see the [validation and test results](_index.md#validation-and-test-results) section.
+For more information about our testing methodology, see the [validation and test results](_index.md#how-specifications-are-derived) section.
 
 ### Performance considerations
 
 You may need additional adjustments if your environment has:
 
 - Consistently higher throughput than the listed targets
-- [Large monorepos](_index.md#large-monorepos)
+- [Large monorepos](../../install/sizing.md#large-monorepos)
 - Significant [additional workloads](_index.md#additional-workloads)
 
 In these cases, refer to [scaling an environment](_index.md#scaling-an-environment) for more information. If you believe these considerations may apply to you, contact us for additional guidance as required.
@@ -198,7 +198,7 @@ To set up GitLab and its components to accommodate up to 100 RPS or 5,000 users:
 1. [Configure Redis](#configure-redis), which stores session data, temporary
    cache information, and background job queues.
 1. [Configure Gitaly Cluster (Praefect)](#configure-gitaly-cluster-praefect),
-   provides access to the Git repositories.
+   which provides access to the Git repositories.
 1. [Configure Sidekiq](#configure-sidekiq) for background job processing.
 1. [Configure the main GitLab Rails application](#configure-gitlab-rails)
    to run Puma, Workhorse, GitLab Shell, and to serve all frontend
@@ -529,7 +529,7 @@ Use a reputable provider that runs a [supported PostgreSQL version](../../instal
 For more information, including guidance on high availability and database load balancing, see:
 
 - [Infrastructure and services](_index.md#infrastructure-and-services).
-- [Best practices for the database services](_index.md#best-practices-for-the-database-services).
+- [Best practices for the database services](../../install/cloud-services.md#use-managed-cloud-postgresql).
 
 If you use a third party external service:
 
@@ -557,7 +557,7 @@ The following IPs are used as an example:
 - `10.6.0.23`: PostgreSQL secondary 2
 
 First, make sure to [install](../../install/package/_index.md#supported-platforms)
-the Linux package **on each node**. Be sure to only add the GitLab
+the Linux package on each node. Be sure to only add the GitLab
 package repository and install GitLab for your chosen operating system,
 but do not provide the `EXTERNAL_URL` value.
 
@@ -665,7 +665,7 @@ but do not provide the `EXTERNAL_URL` value.
    # END user configuration
    ```
 
-PostgreSQL, with Patroni managing its failover, defaults to use `pg_rewind` by default to handle conflicts.
+PostgreSQL, with Patroni managing its failover, defaults to using `pg_rewind` to handle conflicts.
 Like most failover handling methods, this has a small chance of leading to data loss.
 For more information, see the various [Patroni replication methods](../postgresql/replication_and_failover.md#selecting-the-appropriate-patroni-replication-method).
 
@@ -684,7 +684,7 @@ are supported and can be added if needed.
 
 #### PostgreSQL post-configuration
 
-SSH in to any of the Patroni nodes on the **primary site**:
+SSH in to any of the Patroni nodes on the primary site:
 
 1. Check the status of the leader and cluster:
 
@@ -826,7 +826,7 @@ The following IPs are used as an example:
 
 ## Configure Redis
 
-Using [Redis](https://redis.io/) in scalable environment is possible using a **Primary** x **Replica**
+Using [Redis](https://redis.io/) in a scalable environment is possible using a **Primary** x **Replica**
 topology with a [Redis Sentinel](https://redis.io/docs/latest/operate/oss_and_stack/management/sentinel/) service to watch and automatically
 start the failover procedure.
 
@@ -901,8 +901,8 @@ a node and change its status from primary to replica (and vice versa).
    sentinel['bind'] = '0.0.0.0'
    sentinel['quorum'] = 2
 
-   # IP address pointing to a local IP that the other machines can reach to.
-   # You can also set bind to '0.0.0.0' which listen in all interfaces.
+   # IP address pointing to a local IP that the other machines can reach.
+   # You can also set bind to '0.0.0.0' which listens on all interfaces.
    # If you must bind to an external accessible IP, make
    # sure you add extra firewall rules to prevent unauthorized access.
    redis['bind'] = '10.6.0.61'
@@ -963,8 +963,8 @@ a node and change its status from primary to replica (and vice versa).
    sentinel['bind'] = '0.0.0.0'
    sentinel['quorum'] = 2
 
-   # IP address pointing to a local IP that the other machines can reach to.
-   # You can also set bind to '0.0.0.0' which listen in all interfaces.
+   # IP address pointing to a local IP that the other machines can reach.
+   # You can also set bind to '0.0.0.0' which listens on all interfaces.
    # If you must bind to an external accessible IP, make
    # sure you add extra firewall rules to prevent unauthorized access.
    redis['bind'] = '10.6.0.62'
@@ -1027,7 +1027,7 @@ designated the primary, and failover occurs automatically if the primary node go
 
 > [!warning]
 > Gitaly specifications are based on high percentiles of both usage patterns and repository sizes in good health.
-> However, if you have [large monorepos](_index.md#large-monorepos) (larger than several gigabytes) or [additional workloads](_index.md#additional-workloads) these can significantly impact the performance of the environment and further adjustments may be required.
+> However, if you have [large monorepos](../../install/sizing.md#large-monorepos) (larger than several gigabytes) or [additional workloads](_index.md#additional-workloads) these can significantly impact the performance of the environment and further adjustments may be required.
 > If you believe this applies to you, contact us for additional guidance as required.
 
 Gitaly Cluster (Praefect) provides the benefits of fault tolerance, but comes with additional complexity of setup and management.
@@ -1181,7 +1181,7 @@ There are many third-party solutions for PostgreSQL HA. The solution selected mu
 > minimal.
 
 A reputable provider or solution should be used for this. [Google Cloud SQL](https://cloud.google.com/sql/docs/postgres/high-availability#normal)
-and [Amazon RDS](https://aws.amazon.com/rds/) are known to work. However, Amazon Aurora is **incompatible** with load balancing enabled by default from
+and [Amazon RDS](https://aws.amazon.com/rds/) are known to work. However, Amazon Aurora is incompatible with load balancing enabled by default from
 [14.4.0](https://archives.docs.gitlab.com/17.3/ee/update/versions/gitlab_14_changes/#1440).
 
 See [Infrastructure and services](_index.md#infrastructure-and-services) for more information.
@@ -1236,7 +1236,7 @@ Praefect is the router and transaction manager for Gitaly Cluster (Praefect) and
 it. This section details how to configure it.
 
 > [!note]
-> Praefect must be deployed in an odd number of 3 nodes or later. This is to ensure the nodes can take votes as part of a quorum.
+> Praefect must be deployed in an odd number of 3 nodes or more. This is to ensure the nodes can take votes as part of a quorum.
 
 Praefect requires several secret tokens to secure communications across the cluster:
 
@@ -1248,7 +1248,7 @@ Praefect requires several secret tokens to secure communications across the clus
 Gitaly Cluster (Praefect) nodes are configured in Praefect with a `virtual storage`. Each storage contains
 the details of each Gitaly node that makes up the cluster. Each storage is also given a name
 and this name is used in several areas of the configuration. In this guide, the name of the storage is
-`default`. Also, this guide is geared towards new installs, if upgrading an existing environment
+`default`. Also, this guide is geared towards new installs. If upgrading an existing environment
 to use Gitaly Cluster (Praefect), you might have to use a different name.
 Refer to the [Praefect documentation](../gitaly/praefect/configure.md#praefect) for more information.
 
@@ -1369,8 +1369,8 @@ To configure the Praefect nodes, on each one:
 
 1. Copy the `/etc/gitlab/gitlab-secrets.json` file from the first Linux package node you configured and add or replace
    the file of the same name on this server. If this is the first Linux package node you are configuring then you can skip this step.
-1. Praefect requires to run some database migrations, much like the main GitLab application. For this
-   you should select **one Praefect node only to run the migrations**, AKA the _Deploy Node_. This node
+1. Praefect needs to run some database migrations, much like the main GitLab application. For this
+   you should select one Praefect node only to run the migrations, AKA the _Deploy Node_. This node
    must be configured first before the others as follows:
 
    1. In the `/etc/gitlab/gitlab.rb` file, change the `praefect['auto_migrate']` setting value from `false` to `true`
@@ -1393,7 +1393,7 @@ requirements that are dependent on data and load.
 
 > [!warning]
 > Gitaly specifications are based on high percentiles of both usage patterns and repository sizes in good health.
-> However, if you have [large monorepos](_index.md#large-monorepos) (larger than several gigabytes) or [additional workloads](_index.md#additional-workloads) these can significantly impact the performance of the environment and further adjustments may be required.
+> However, if you have [large monorepos](../../install/sizing.md#large-monorepos) (larger than several gigabytes) or [additional workloads](_index.md#additional-workloads) these can significantly impact the performance of the environment and further adjustments may be required.
 > If you believe this applies to you, contact us for additional guidance as required.
 
 Gitaly has certain [disk requirements](../gitaly/_index.md#disk-requirements) for Gitaly storages.
@@ -2169,8 +2169,8 @@ documentation for setup instructions including guidance on what GitLab secrets t
 between Kubernetes and the backend components.
 
 > [!note]
-> This is an **advanced** setup. Running services in Kubernetes is well known
-> to be complex. **This setup is only recommended** if you have strong working
+> This is an advanced setup. Running services in Kubernetes is well known
+> to be complex. This setup is only recommended if you have strong working
 > knowledge and experience in Kubernetes. The rest of this
 > section assumes this.
 
@@ -2190,12 +2190,12 @@ the overall makeup as desired as long as the minimum CPU and Memory requirements
 | Sidekiq              | 7.2 vCPU<br/>16 GB memory (request)<br/>32 GB memory (limit) | 3 x `n1-standard-4` | 3 x `m5.xlarge`  |
 | Supporting services  | 4 vCPU<br/>15 GB memory | 2 x `n1-standard-2` | 2 x `m5.large`   |
 
-- For this setup, we regularly [test](_index.md#validation-and-test-results) and recommended [Google Kubernetes Engine (GKE)](https://cloud.google.com/kubernetes-engine) and [Amazon Elastic Kubernetes Service (EKS)](https://aws.amazon.com/eks/). Other Kubernetes services may also work, but your mileage may vary.
-- Machine type examples are given for illustration purposes. These types are used in [validation and testing](_index.md#validation-and-test-results) but are not intended as prescriptive defaults. Switching to other machine types that meet the requirements as listed is supported. See [Supported Machine Types](_index.md#supported-machine-types) for more information.
+- For this setup, we regularly [test](_index.md#how-specifications-are-derived) and recommended [Google Kubernetes Engine (GKE)](https://cloud.google.com/kubernetes-engine) and [Amazon Elastic Kubernetes Service (EKS)](https://aws.amazon.com/eks/). Other Kubernetes services may also work, but your mileage may vary.
+- Machine type examples are given for illustration purposes. These types are used in [validation and testing](_index.md#how-specifications-are-derived) but are not intended as prescriptive defaults. Switching to other machine types that meet the requirements as listed is supported. See [Supported Machine Types](_index.md#how-specifications-are-derived) for more information.
 - The [Webservice](#webservice) and [Sidekiq](#sidekiq) target node pool totals are given for GitLab components only. Additional resources are required for the chosen Kubernetes provider's system processes. The given examples take this into account.
 - The [Supporting](#supporting) target node pool total is given generally to accommodate several resources for supporting the GitLab deployment as well as any additional deployments you may wish to make depending on your requirements. Similar to the other node pools, the chosen Kubernetes provider's system processes also require resources. The given examples take this into account.
 - In production deployments, it's not required to assign pods to specific nodes. However, it is recommended to have several nodes in each pool spread across different availability zones to align with resilient cloud architecture practices.
-- Enabling autoscaling, such as Cluster Autoscaler, for efficiency reasons is encouraged, but it's generally recommended targeting a floor of 75% for Webservice and Sidekiq pods to ensure ongoing performance.
+- Enabling autoscaling, such as Cluster Autoscaler, for efficiency reasons is encouraged, but it's generally recommended to target a floor of 75% for Webservice and Sidekiq pods to ensure ongoing performance.
 
 Next are the backend components that run on static compute VMs using the Linux package (or External PaaS
 services where applicable):
@@ -2216,16 +2216,16 @@ services where applicable):
 
 <!-- Disable ordered list rule <https://github.com/DavidAnson/markdownlint/blob/main/doc/Rules.md#md029---ordered-list-item-prefix> -->
 <!-- markdownlint-disable MD029 -->
-1. Machine type examples are given for illustration purposes. These types are used in [validation and testing](_index.md#validation-and-test-results) but are not intended as prescriptive defaults. Switching to other machine types that meet the requirements as listed is supported, including ARM variants if available. See [Supported Machine Types](_index.md#supported-machine-types) for more information.
+1. Machine type examples are given for illustration purposes. These types are used in [validation and testing](_index.md#how-specifications-are-derived) but are not intended as prescriptive defaults. Switching to other machine types that meet the requirements as listed is supported, including ARM variants if available. See [Supported Machine Types](_index.md#how-specifications-are-derived) for more information.
 2. Can be optionally run on reputable third-party external PaaS PostgreSQL solutions. See [Provide your own PostgreSQL instance](#provide-your-own-postgresql-instance) for more information.
 3. Can be optionally run on reputable third-party external PaaS Redis solutions. See [Provide your own Redis instance](#provide-your-own-redis-instance) for more information.
 4. Recommended to be run with a reputable third-party load balancer or service (LB PaaS).
-   Also, the sizing depends on selected Load Balancer and additional factors such as Network Bandwidth. Refer to [Load Balancers](_index.md#load-balancers) for more information.
+   Also, the sizing depends on selected Load Balancer and additional factors such as Network Bandwidth.
 5. Should be run on reputable Cloud Provider or Self Managed solutions. See [Configure the object storage](#configure-the-object-storage) for more information.
 6. Gitaly Cluster (Praefect) provides the benefits of fault tolerance, but comes with additional complexity of setup and management.
    Review the existing [technical limitations and considerations before deploying Gitaly Cluster (Praefect)](../gitaly/praefect/_index.md#before-deploying-gitaly-cluster-praefect). If you want sharded Gitaly, use the same specs listed in the previous table for `Gitaly`.
 7. Gitaly specifications are based on high percentiles of both usage patterns and repository sizes in good health.
-   However, if you have [large monorepos](_index.md#large-monorepos) (larger than several gigabytes) or [additional workloads](_index.md#additional-workloads) these can significantly impact Git and Gitaly performance and further adjustments will likely be required.
+   However, if you have [large monorepos](../../install/sizing.md#large-monorepos) (larger than several gigabytes) or [additional workloads](_index.md#additional-workloads) these can significantly impact Git and Gitaly performance and further adjustments will likely be required.
 <!-- markdownlint-enable MD029 -->
 
 > [!note]
@@ -2318,7 +2318,7 @@ For further information on Webservice resource usage, see the Charts documentati
 
 ##### Gateway API / Ingress
 
-It's also recommended deploying the Gateway API or Ingress controller pods across the Webservice nodes as a DaemonSet. It allows the controllers to scale dynamically with the Webservice pods they serve and take advantage of the higher network bandwidth larger machine types typically have.
+It's also recommended to deploy the Gateway API or Ingress controller pods across the Webservice nodes as a DaemonSet. It allows the controllers to scale dynamically with the Webservice pods they serve and take advantage of the higher network bandwidth larger machine types typically have.
 
 This isn't a strict requirement. The Gateway API or Ingress controller pods can be deployed as desired as long as they have enough resources to handle the web traffic.
 

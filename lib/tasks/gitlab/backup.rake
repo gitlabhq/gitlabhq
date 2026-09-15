@@ -152,6 +152,16 @@ namespace :gitlab do
         Tasks::Gitlab::Backup.restore_task('agent_plan_content')
       end
     end
+
+    namespace :ci_catalog_bundles do
+      task create: :gitlab_environment do
+        Tasks::Gitlab::Backup.create_task('ci_catalog_bundles')
+      end
+
+      task restore: :gitlab_environment do
+        Tasks::Gitlab::Backup.restore_task('ci_catalog_bundles')
+      end
+    end
   end
   # namespace end: backup
 end

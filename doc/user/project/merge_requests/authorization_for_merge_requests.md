@@ -35,10 +35,10 @@ By default, only users with the Maintainer role can merge changes into a
 protected branch.
 
 - Advantages:
-  - Fewer projects means less clutter.
+  - Fewer projects mean less clutter.
   - Developers need to consider only one remote repository.
 - Disadvantages:
-  - Manual setup of protected branch required for each new project
+  - Manual setup of protected branch required for each new project.
 
 To set up a protected branch flow:
 
@@ -82,5 +82,5 @@ forks.
     the required access restrictions for regular developers: fewer manual steps
     to configure authorization for new projects.
 - Disadvantages:
-  - The project need to keep their forks up to date, which requires more advanced
+  - The project needs to keep its forks up to date, which requires more advanced
     Git skills (managing multiple remotes).

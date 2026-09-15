@@ -1,0 +1,3 @@
+---
+name: delete_on_demand_dast_scan
+description: Grants the ability to delete DAST on-demand scans

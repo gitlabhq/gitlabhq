@@ -1,0 +1,10 @@
+---
+name: delete_achievement
+description: Grants the ability to delete achievements and awarded achievements
+boundaries:
+  - group
+available_for:
+  - granular_access_token
+permissions:
+  - delete_achievement
+  - delete_user_achievement

@@ -20,10 +20,13 @@ RSpec.shared_examples Avatarable do
 
   describe '#avatar_url' do
     context 'when avatar file is uploaded' do
-      it 'shows correct avatar url' do
-        url = [Gitlab.config.gitlab.url, model.avatar.url].join
-        expect(model.avatar_url).to eq(model.avatar.url)
-        expect(model.avatar_url(only_path: false)).to eq(url)
+      it 'shows correct avatar url', :aggregate_failures do
+        version_suffix = model.respond_to?(:updated_at) && model.updated_at ? "?v=#{model.updated_at.to_i}" : ""
+        expected_path = model.avatar.url + version_suffix
+        expected_url = [Gitlab.config.gitlab.url, expected_path].join
+
+        expect(model.avatar_url).to eq(expected_path)
+        expect(model.avatar_url(only_path: false)).to eq(expected_url)
       end
     end
   end

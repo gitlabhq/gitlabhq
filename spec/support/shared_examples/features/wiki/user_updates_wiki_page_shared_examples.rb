@@ -178,6 +178,38 @@ RSpec.shared_examples 'User updates wiki page' do
     it_behaves_like 'rich text editor - diagrams'
   end
 
+  context 'when the sidebar is expanded on the edit page', :js do
+    let!(:wiki_page) { create(:wiki_page, wiki: wiki, title: 'home', content: 'Home page') }
+
+    it 'clips the header sidebar toggle away' do
+      # Bootstrap the origin with a cheap routed page: a static page (like /404)
+      # would let Chrome's favicon request consume the one-shot Warden login.
+      visit '/not-a-real-page'
+      execute_script("window.localStorage.setItem('wiki-sidebar-open', 'true');")
+      visit wiki_page_path(wiki, wiki_page, action: :edit)
+
+      within_testid('wiki-form-actions') do
+        # Rendered but clipped: the header keeps a zero-width placeholder;
+        # the toggle must not stay painted under the title.
+        expect(page).to have_css('[data-testid="wiki-sidebar-toggle"]', visible: :all)
+        expect(page).to have_no_css('[data-testid="wiki-sidebar-toggle"]')
+      end
+
+      # The hidden toggle must also leave the tab order: a visibility-hidden
+      # element cannot receive focus, so programmatic focus must not stick.
+      focus_stuck = page.evaluate_script(<<~JS)
+        (() => {
+          const toggle = document.querySelector(
+            '[data-testid="wiki-form-actions"] [data-testid="wiki-sidebar-toggle"]'
+          );
+          toggle.focus();
+          return document.activeElement === toggle;
+        })()
+      JS
+      expect(focus_stuck).to be(false)
+    end
+  end
+
   context 'when the page is in a subdir', :js,
     quarantine: 'https://gitlab.com/gitlab-org/quality/test-failure-issues/-/issues/24077' do
     let(:page_name) { 'page_name' }

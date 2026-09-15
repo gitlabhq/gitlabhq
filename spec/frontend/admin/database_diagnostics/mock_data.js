@@ -184,6 +184,87 @@ export const vacuumActivity = [
   },
 ];
 
+export const autovacuumConfig = {
+  settings: {
+    autovacuum: { value: 'on', unit: null },
+    autovacuum_max_workers: { value: '3', unit: null },
+    autovacuum_naptime: { value: '60', unit: 's' },
+    autovacuum_vacuum_scale_factor: { value: '0.2', unit: null },
+    autovacuum_vacuum_threshold: { value: '50', unit: null },
+    autovacuum_analyze_scale_factor: { value: '0.1', unit: null },
+    autovacuum_analyze_threshold: { value: '50', unit: null },
+    autovacuum_vacuum_insert_scale_factor: { value: '0.2', unit: null },
+    autovacuum_vacuum_insert_threshold: { value: '1000', unit: null },
+    autovacuum_vacuum_cost_delay: { value: '2', unit: 'ms' },
+    autovacuum_vacuum_cost_limit: { value: '-1', unit: null, effective_value: '200' },
+    vacuum_cost_limit: { value: '200', unit: null },
+    autovacuum_work_mem: { value: '-1', unit: 'kB' },
+    maintenance_work_mem: { value: '65536', unit: 'kB' },
+    autovacuum_freeze_max_age: { value: '200000000', unit: null },
+    autovacuum_multixact_freeze_max_age: { value: '400000000', unit: null },
+  },
+  findings: [
+    {
+      severity: 'error',
+      code: 'tables_autovacuum_disabled',
+      message: 'Autovacuum is disabled for 1 table.',
+    },
+    {
+      severity: 'warning',
+      code: 'autovacuum_cost_limit_low',
+      setting_name: 'autovacuum_vacuum_cost_limit',
+      message: 'The cost limit is at or near the conservative default.',
+    },
+    {
+      severity: 'warning',
+      code: 'autovacuum_work_mem_inherited',
+      setting_name: 'autovacuum_work_mem',
+      message: 'The autovacuum_work_mem setting is unset and inherits maintenance_work_mem.',
+    },
+    {
+      severity: 'warning',
+      code: 'scale_factor_risk',
+      message: 'The global vacuum scale factor is high for 1 large table.',
+    },
+  ],
+  severity: 'error',
+  counts: { error: 1, warning: 3 },
+  table_overrides: [
+    {
+      schema_name: 'public',
+      table_name: 'ci_builds',
+      total_bytes: 5368709120,
+      estimated_rows: 1000000,
+      overrides: { autovacuum_vacuum_scale_factor: '0.01' },
+      autovacuum_disabled: false,
+    },
+    {
+      schema_name: 'public',
+      table_name: 'audit_events',
+      total_bytes: 1073741824,
+      estimated_rows: 500000,
+      overrides: { autovacuum_enabled: 'false' },
+      autovacuum_disabled: true,
+    },
+    {
+      schema_name: 'public',
+      table_name: 'ci_job_artifacts',
+      total_bytes: 2199023255552,
+      estimated_rows: 50000000,
+      overrides: { autovacuum_vacuum_scale_factor: '0.001' },
+      autovacuum_disabled: false,
+    },
+  ],
+  scale_factor_risks: [
+    {
+      schema_name: 'public',
+      table_name: 'merge_request_diffs',
+      total_bytes: 21474836480,
+      estimated_rows: 9000000,
+    },
+  ],
+};
+
 export const databaseInformationResults = {
   databases: {
     main: {
@@ -195,7 +276,11 @@ export const databaseInformationResults = {
         { name: 'gitlab_partitions_static', current: false, owner: 'postgres' },
       ],
       findings: [],
+      severity: null,
+      counts: {},
       vacuums: vacuumActivity,
+      vacuum_activity_available: true,
+      autovacuum_config: autovacuumConfig,
     },
   },
 };
@@ -218,6 +303,8 @@ export const databaseInformationWithFindings = {
           message: 'The search path differs from the expected default of "$user", public.',
         },
       ],
+      severity: 'error',
+      counts: { error: 1, warning: 1 },
     },
   },
 };
@@ -257,5 +344,39 @@ export const multiDatabaseResults = {
       missing_foreign_keys: [],
       missing_sequences: [],
     },
+  },
+};
+
+export const lfkBacklogResults = {
+  metadata: {
+    last_run_at: '2025-07-23T10:00:00Z',
+  },
+  connections: {
+    main: [
+      {
+        parent_table: 'public.projects',
+        pending_records: 100000,
+        capped: true,
+        oldest_pending_age_seconds: 50000000,
+        deferred_records: 0,
+      },
+      {
+        parent_table: 'public.users',
+        pending_records: 28282,
+        capped: false,
+        oldest_pending_age_seconds: 3600000,
+        deferred_records: 1,
+      },
+    ],
+    ci: [],
+  },
+};
+
+export const lfkNoBacklogResults = {
+  metadata: {
+    last_run_at: '2025-07-23T10:00:00Z',
+  },
+  connections: {
+    main: [],
   },
 };

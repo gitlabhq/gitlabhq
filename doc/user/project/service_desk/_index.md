@@ -1,8 +1,9 @@
 ---
 stage: Plan
-group: Project Management
+group: Work Items
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see <https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments>
 title: Service Desk
+description: Use Service Desk to receive customer bug reports, feature requests, and feedback by email as GitLab tickets, without requiring customer GitLab accounts.
 ---
 
 {{< details >}}
@@ -20,7 +21,7 @@ title: Service Desk
 > to learn more about work that hasn't been done yet.
 > The decision to deprioritize Service Desk has been made to
 > focus on building and extending the work item framework which
-> the Service Desk category will also benefit from long-term.
+> the Service Desk category also benefits from long-term.
 >
 > For the information on moving Service Desk into the work item framework,
 > see [epic 10772](https://gitlab.com/groups/gitlab-org/-/epics/10772).
@@ -34,7 +35,7 @@ Your team can respond directly from the project, while customers interact with t
 through email.
 
 <i class="fa-youtube-play" aria-hidden="true"></i>
-For a video overview, see [Introducing GitLab Service Desk (GitLab 16.7)](https://www.youtube.com/watch?v=LDVQXv3I5rI).
+For a video overview, see [Introducing GitLab Service Desk](https://www.youtube.com/watch?v=LDVQXv3I5rI).
 <!-- Video published on 2023-12-19 -->
 
 ## Service Desk workflow
@@ -99,7 +100,7 @@ Meanwhile:
   dkim=fail (signature did not verify) ... arc=fail
   ```
 
-  The exact wording of the failure message may vary depending on the specific email system or tools in use.
+  The exact wording of the failure message might vary depending on the specific email system or tools in use.
   Also see [this article on DKIM failures](https://automatedemailwarmup.com/blog/dkim-fail/) for more
   information and potential solutions.
 

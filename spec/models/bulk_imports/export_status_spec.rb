@@ -77,7 +77,7 @@ RSpec.describe BulkImports::ExportStatus, :clean_gitlab_redis_shared_state, feat
       let(:status) { BulkImports::Export::FAILED }
 
       it 'returns true' do
-        expect(export_status.failed?).to eq(true)
+        expect(export_status.failed?).to be(true)
       end
     end
 
@@ -85,7 +85,7 @@ RSpec.describe BulkImports::ExportStatus, :clean_gitlab_redis_shared_state, feat
       let(:status) { BulkImports::Export::STARTED }
 
       it 'returns false' do
-        expect(export_status.failed?).to eq(false)
+        expect(export_status.failed?).to be(false)
       end
     end
 
@@ -95,7 +95,7 @@ RSpec.describe BulkImports::ExportStatus, :clean_gitlab_redis_shared_state, feat
       end
 
       it 'returns false' do
-        expect(export_status.failed?).to eq(false)
+        expect(export_status.failed?).to be(false)
       end
     end
 
@@ -109,7 +109,7 @@ RSpec.describe BulkImports::ExportStatus, :clean_gitlab_redis_shared_state, feat
       end
 
       it 'returns true' do
-        expect(export_status.failed?).to eq(true)
+        expect(export_status.failed?).to be(true)
       end
     end
   end
@@ -118,7 +118,7 @@ RSpec.describe BulkImports::ExportStatus, :clean_gitlab_redis_shared_state, feat
     context 'when export status is present' do
       let(:status) { 'any status' }
 
-      it { expect(export_status.waiting_on_export?).to eq(false) }
+      it { expect(export_status.waiting_on_export?).to be(false) }
     end
 
     context 'when export status is not present' do
@@ -127,7 +127,7 @@ RSpec.describe BulkImports::ExportStatus, :clean_gitlab_redis_shared_state, feat
       end
 
       it 'returns true' do
-        expect(export_status.waiting_on_export?).to eq(true)
+        expect(export_status.waiting_on_export?).to be(true)
       end
     end
 
@@ -137,7 +137,7 @@ RSpec.describe BulkImports::ExportStatus, :clean_gitlab_redis_shared_state, feat
       end
 
       it 'returns true' do
-        expect(export_status.waiting_on_export?).to eq(true)
+        expect(export_status.waiting_on_export?).to be(true)
       end
     end
 
@@ -151,7 +151,7 @@ RSpec.describe BulkImports::ExportStatus, :clean_gitlab_redis_shared_state, feat
       end
 
       it 'returns false' do
-        expect(export_status.waiting_on_export?).to eq(false)
+        expect(export_status.waiting_on_export?).to be(false)
       end
     end
   end
@@ -181,7 +181,7 @@ RSpec.describe BulkImports::ExportStatus, :clean_gitlab_redis_shared_state, feat
       context 'when error is not retriable' do
         it 'returns exception class as error' do
           expect(export_status.error).to eq('Error!')
-          expect(export_status.failed?).to eq(true)
+          expect(export_status.failed?).to be(true)
         end
       end
 
@@ -192,7 +192,7 @@ RSpec.describe BulkImports::ExportStatus, :clean_gitlab_redis_shared_state, feat
           end
 
           expect(export_status.error).to eq('Standard Error!')
-          expect(export_status.failed?).to eq(true)
+          expect(export_status.failed?).to be(true)
         end
       end
     end
@@ -206,13 +206,13 @@ RSpec.describe BulkImports::ExportStatus, :clean_gitlab_redis_shared_state, feat
         let(:batched) { true }
 
         it 'returns true' do
-          expect(export_status.batched?).to eq(true)
+          expect(export_status.batched?).to be(true)
         end
       end
 
       context 'when export is not batched' do
         it 'returns false' do
-          expect(export_status.batched?).to eq(false)
+          expect(export_status.batched?).to be(false)
         end
       end
 
@@ -222,7 +222,7 @@ RSpec.describe BulkImports::ExportStatus, :clean_gitlab_redis_shared_state, feat
         end
 
         it 'returns false' do
-          expect(export_status.batched?).to eq(false)
+          expect(export_status.batched?).to be(false)
         end
       end
     end

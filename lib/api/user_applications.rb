@@ -4,7 +4,6 @@ module API
   # User applications API
   class UserApplications < ::API::Base
     before do
-      set_current_organization
       authenticate!
     end
 

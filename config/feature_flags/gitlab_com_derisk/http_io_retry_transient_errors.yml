@@ -1,0 +1,10 @@
+---
+name: http_io_retry_transient_errors
+description: Retry object storage chunk requests in Gitlab::HttpIO on transport failures and transient 5xx responses, within a per-read budget
+feature_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/604514
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/252069
+rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/623429
+milestone: "19.4"
+group: group::pipeline execution
+type: gitlab_com_derisk
+default_enabled: false

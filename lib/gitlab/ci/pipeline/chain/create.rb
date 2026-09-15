@@ -200,11 +200,11 @@ module Gitlab
 
             suspend_on_success = !!suspend_options[:suspend_on_success]
             suspend_on_failure = !!suspend_options[:suspend_on_failure]
-            environment_key = suspend_options[:environment_key]
+            runtime_environment_key = suspend_options[:runtime_environment_key]
 
-            return unless suspend_on_success || suspend_on_failure || environment_key.present?
+            return unless suspend_on_success || suspend_on_failure || runtime_environment_key.present?
 
-            runtime_environment_id = find_runtime_environment_id(environment_key)
+            runtime_environment_id = find_runtime_environment_id(runtime_environment_key)
 
             job_runtime_environments = builds.filter_map do |build|
               next unless build.is_a?(::Ci::Build)
@@ -225,11 +225,11 @@ module Gitlab
             end
           end
 
-          def find_runtime_environment_id(environment_key)
-            return if environment_key.blank?
+          def find_runtime_environment_id(runtime_environment_key)
+            return if runtime_environment_key.blank?
 
             ::Ci::RuntimeEnvironment
-              .find_by_key_and_project(environment_key, project.id)
+              .find_by_key_and_project(runtime_environment_key, project.id)
               &.id
           end
 

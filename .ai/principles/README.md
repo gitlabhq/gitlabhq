@@ -93,7 +93,7 @@ a personal Duo Agent Platform seat.
 | Variable                                    | Purpose                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                   |
 | ------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | `AGENT_PRINCIPLES_SERVICE_ACCOUNT_TOKEN`    | Classic PAT with `api` scope (and `ai_features` per the [External Agents recipe](https://docs.gitlab.com/user/duo_agent_platform/agents/external/#create-a-service-account)) used as both `GITLAB_TOKEN` (Workflow API + GraphQL) and `GITLAB_API_TOKEN` (auto-MR REST). Currently a maintainer's personal token; see [Service account auth](#service-account-auth-why-a-pat-today). Fine-grained PATs cannot drive this job: they do not cover GraphQL, AI Catalog mutations, or the Duo Workflow create/start endpoint. |
-| `AGENT_PRINCIPLES_CATALOG_ITEM_CONSUMER_ID` | Numeric ID returned by `aiCatalogItemConsumerCreate` when binding the catalog flow to `gitlab-org/gitlab`. Printed by `gitlab-ai-principles-distiller-provision-flow`.                                                                                                                                                                                                                                                                                                                                                    |
+| `AGENT_PRINCIPLES_CATALOG_ITEM_CONSUMER_ID` | Numeric catalog binding ID for `gitlab-org/gitlab`. Get the current value from `gitlab-ai-principles-distiller-provision-flow --print-consumer-id`.                                                                                                                                                                                                                                                                                                                                                                           |
 
 ### Service account auth: why a PAT today
 
@@ -222,6 +222,10 @@ requests](https://docs.gitlab.com/development/ai_instruction_files_review/#revie
 which is the SSOT for reviewing them. This file stays the SSOT for how the
 sync itself works.
 
+If a weekly sync MR has automated review findings, use the
+[`ai-principles-review-feedback` skill](../../.claude/skills/ai-principles-review-feedback/SKILL.md)
+to work through every finding before the MR is merged.
+
 ## Running the sync locally
 
 Both binaries operate on the consuming repository's working tree, which they
@@ -240,13 +244,21 @@ bundle install
 #     binary to resolve the workflow source branch.
 #   - CI_PROJECT_ID: numeric project ID; required by the sync binary only
 #     when --push is given (used to create the MR). 278964 = gitlab-org/gitlab.
+#   - AGENT_PRINCIPLES_CATALOG_ITEM_CONSUMER_ID: catalog binding for
+#     gitlab-org/gitlab; query it once for the examples below.
 
-# Step 1 (one-time, or whenever distillation_prompt.md changes):
+export AGENT_PRINCIPLES_CATALOG_ITEM_CONSUMER_ID="$(
+  GITLAB_TOKEN=<token> \
+  AGENT_PRINCIPLES_CATALOG_PROJECT=gitlab-org/gitlab \
+    bundle exec bin/gitlab-ai-principles-distiller-provision-flow \
+      --print-consumer-id
+)"
+
+# Step 1 (only when distillation_prompt.md changes):
 GITLAB_TOKEN=<personal-access-token> \
 AGENT_PRINCIPLES_CATALOG_PROJECT=gitlab-org/gitlab \
   bundle exec bin/gitlab-ai-principles-distiller-provision-flow \
     --workspace "$(git rev-parse --show-toplevel)"
-# Note the printed AGENT_PRINCIPLES_CATALOG_ITEM_CONSUMER_ID value.
 
 # Step 2: dry run (show what would change without writing or pushing)
 AGENT_PRINCIPLES_CATALOG_PROJECT=gitlab-org/gitlab \
@@ -257,7 +269,6 @@ AGENT_PRINCIPLES_CATALOG_PROJECT=gitlab-org/gitlab \
 GITLAB_TOKEN=<token> \
 CI_DEFAULT_BRANCH=master \
 AGENT_PRINCIPLES_CATALOG_PROJECT=gitlab-org/gitlab \
-AGENT_PRINCIPLES_CATALOG_ITEM_CONSUMER_ID=<id> \
   bundle exec bin/gitlab-ai-principles-distiller-sync \
     --workspace "$(git rev-parse --show-toplevel)" distill \
     --only feature-flags,workers
@@ -266,7 +277,6 @@ AGENT_PRINCIPLES_CATALOG_ITEM_CONSUMER_ID=<id> \
 GITLAB_TOKEN=<token> \
 CI_DEFAULT_BRANCH=master \
 AGENT_PRINCIPLES_CATALOG_PROJECT=gitlab-org/gitlab \
-AGENT_PRINCIPLES_CATALOG_ITEM_CONSUMER_ID=<id> \
   bundle exec bin/gitlab-ai-principles-distiller-sync \
     --workspace "$(git rev-parse --show-toplevel)" distill --force
 
@@ -276,15 +286,15 @@ GITLAB_API_TOKEN=<token> \
 CI_DEFAULT_BRANCH=master \
 CI_PROJECT_ID=278964 \
 AGENT_PRINCIPLES_CATALOG_PROJECT=gitlab-org/gitlab \
-AGENT_PRINCIPLES_CATALOG_ITEM_CONSUMER_ID=<id> \
   bundle exec bin/gitlab-ai-principles-distiller-sync \
     --workspace "$(git rev-parse --show-toplevel)" distill --push
 ```
 
-The Workflow API runs the agent server-side from the **pushed** state of
-the configured `source_branch`. If you have local edits that haven't been
-pushed, the catalog agent will not see them. Push your branch (or commit
-to it) before triggering a distillation.
+Before each workflow, the sync compares the selected principle's local source
+and baseline files with their versions on `origin/<source_branch>`. If any files
+differ, it warns with the changed paths and continues. The Workflow API runs the
+agent from the pushed `source_branch`, so push local changes before distillation
+if the agent must use them.
 
 ## Manifest schema
 

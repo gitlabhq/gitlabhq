@@ -20,7 +20,7 @@ RSpec.describe Gitlab::Graphql::Loaders::BatchLfsOidLoader do
       end
 
       expect(result.first).to eq(blob.lfs_oid)
-      expect(result.last).to eq(nil)
+      expect(result.last).to be_nil
     end
   end
 end

@@ -50,19 +50,37 @@ module Keeps
             END AS classification
           FROM postgres_table_sizes
           WHERE table_name = $1::text
+            AND schema_name = 'public'
         SQL
 
         pg_client.exec_params(query, [table_name])
       end
 
-      def table_has_data?(table_name)
-        table_name_quoted = pg_client.quote_ident(table_name)
-        query = "SELECT EXISTS (SELECT 1 FROM #{table_name_quoted} LIMIT 1)"
-        result = pg_client.exec_params(query)
+      # The function name must match Gitlab::Database::LockWritesManager::TRIGGER_FUNCTION_NAME.
+      # Such a trigger means the connected database is not the authoritative one for this table
+      # (writes are locked post-decomposition), so its size there says nothing about the real
+      # table. Matching by trigger function, not trigger name: names derived from long table
+      # names get truncated to 63 bytes by PostgreSQL. Both this query and
+      # fetch_postgres_table_size are scoped to the public schema, where every dictionary table
+      # lives: a same-named relation in another schema (partition, clone leftover) must not
+      # decide a skip or a classification.
+      def table_write_locked?(table_name)
+        query = <<~SQL
+          SELECT EXISTS (
+            SELECT 1
+            FROM pg_trigger
+            INNER JOIN pg_class ON pg_class.oid = pg_trigger.tgrelid
+            INNER JOIN pg_namespace ON pg_namespace.oid = pg_class.relnamespace
+            INNER JOIN pg_proc ON pg_proc.oid = pg_trigger.tgfoid
+            WHERE pg_class.relname = $1::text
+              AND pg_namespace.nspname = 'public'
+              AND pg_proc.proname = 'gitlab_schema_prevent_write'
+          )
+        SQL
+
+        result = pg_client.exec_params(query, [table_name])
 
         Gitlab::Utils.to_boolean(result.first.fetch('exists'))
-      rescue PG::UndefinedTable
-        false
       end
 
       def pg_client

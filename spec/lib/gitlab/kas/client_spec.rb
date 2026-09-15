@@ -50,6 +50,35 @@ RSpec.describe Gitlab::Kas::Client, feature_category: :deployment_management do
       allow(::Feature::Kas).to receive(:server_feature_flags_for_grpc_request).and_return(feature_flags)
     end
 
+    shared_examples 'a retried unary AutoFlow RPC' do |rpc|
+      context 'when the call fails transiently' do
+        it 'retries and returns the response once the call recovers' do
+          expect(stub).to receive(rpc).twice.and_invoke(
+            ->(*) { raise GRPC::Unavailable, 'kas down' },
+            ->(*) { response }
+          )
+
+          expect(result).to eq(response)
+        end
+
+        it 'raises after exhausting retries' do
+          expect(stub).to receive(rpc)
+            .exactly(described_class::UNARY_GRPC_RETRIES).times
+            .and_raise(GRPC::Unavailable.new('kas down'))
+
+          expect { result }.to raise_error(GRPC::Unavailable)
+        end
+      end
+
+      context 'when the call times out' do
+        it 'raises immediately, leaving the retry to the caller' do
+          expect(stub).to receive(rpc).once.and_raise(GRPC::DeadlineExceeded.new('kas slow'))
+
+          expect { result }.to raise_error(GRPC::DeadlineExceeded)
+        end
+      end
+    end
+
     describe '#get_server_info' do
       let(:stub) { instance_double(Gitlab::Agent::ServerInfo::Rpc::ServerInfo::Stub) }
       let(:request) { instance_double(Gitlab::Agent::ServerInfo::Rpc::GetServerInfoRequest) }
@@ -78,11 +107,14 @@ RSpec.describe Gitlab::Kas::Client, feature_category: :deployment_management do
       let(:stub) { instance_double(Gitlab::Agent::AutoFlow::Rpc::AutoFlow::Stub) }
       let(:response) { instance_double(Gitlab::Agent::AutoFlow::Rpc::StartWorkflowResponse) }
 
+      let(:token_binding) { described_class.generate_workflow_token_binding }
+
       subject(:result) do
         client.start_workflow(
           idempotency_key: 'rollout-1',
           workflow_definition: "def main(w):\n    pass\n",
           namespace_id: 600956,
+          token_binding: token_binding,
           kwargs: { 'environment' => { 'id' => '42' } }
         )
       end
@@ -98,6 +130,7 @@ RSpec.describe Gitlab::Kas::Client, feature_category: :deployment_management do
           expect(metadata).to eq('authorization' => 'bearer test-token', **feature_flags)
           expect(request.idempotency_key).to eq('rollout-1')
           expect(request.namespace_id).to eq(600956)
+          expect(request.token_binding).to eq(token_binding)
           expect(request.kwargs.map(&:name)).to eq(['environment'])
 
           key_value = request.kwargs.first.value.dict_value.key_values.first
@@ -109,6 +142,85 @@ RSpec.describe Gitlab::Kas::Client, feature_category: :deployment_management do
 
         expect(result).to eq(response)
       end
+
+      it_behaves_like 'a retried unary AutoFlow RPC', :start_workflow
+
+      context 'when the call fails with a permanent error' do
+        it 'raises immediately without retrying' do
+          expect(stub).to receive(:start_workflow).once.and_raise(GRPC::InvalidArgument.new('bad definition'))
+
+          expect { result }.to raise_error(GRPC::InvalidArgument)
+        end
+      end
+    end
+
+    describe '.generate_workflow_token_binding' do
+      subject(:binding_value) { described_class.generate_workflow_token_binding }
+
+      # Relay refuses any other length outright, so a caller cannot discover this by
+      # trial and error at runtime.
+      it 'is the length Relay requires' do
+        expect(binding_value.bytesize).to eq(described_class::WORKFLOW_TOKEN_BINDING_BYTES)
+      end
+
+      # Callers persist it in an encrypted attribute, which serializes through JSON, so
+      # a value that is not plain ASCII would not survive the round trip.
+      it 'is ASCII, so it survives being stored encrypted' do
+        expect(binding_value).to match(/\A[0-9a-f]+\z/)
+        expect(binding_value.encoding).to eq(Encoding::US_ASCII).or eq(Encoding::UTF_8)
+      end
+
+      it 'is unguessable, so two rollouts never share one' do
+        expect(binding_value).not_to eq(described_class.generate_workflow_token_binding)
+      end
+    end
+
+    describe '#send_to_workflow_channel' do
+      let(:stub) { instance_double(Gitlab::Agent::AutoFlow::Rpc::AutoFlow::Stub) }
+      let(:response) { instance_double(Gitlab::Agent::AutoFlow::Rpc::SendToWorkflowChannelResponse) }
+
+      subject(:result) do
+        client.send_to_workflow_channel(
+          idempotency_key: 'decision-1',
+          channel_token: 'channel-token-abc',
+          workflow_token: 'workflow-token-xyz',
+          value: { 'approved' => true }
+        )
+      end
+
+      before do
+        expect(Gitlab::Agent::AutoFlow::Rpc::AutoFlow::Stub).to receive(:new)
+          .with('example.kas.internal', :this_channel_is_insecure, timeout: client.send(:timeout))
+          .and_return(stub)
+      end
+
+      it 'builds the request from plain arguments and returns the response' do
+        expect(stub).to receive(:send_to_workflow_channel) do |request, metadata:|
+          expect(metadata).to eq('authorization' => 'bearer test-token', **feature_flags)
+          expect(request.idempotency_key).to eq('decision-1')
+          expect(request.channel_token).to eq('channel-token-abc')
+          expect(request.workflow_token).to eq('workflow-token-xyz')
+
+          key_value = request.value.dict_value.key_values.first
+          expect(key_value.key.string_value).to eq('approved')
+          expect(key_value.val.bool_value).to be(true)
+
+          response
+        end
+
+        expect(result).to eq(response)
+      end
+
+      it 'propagates a permanent gRPC error from the stub without retrying' do
+        error = GRPC::InvalidArgument.new('bad channel token')
+
+        expect(stub).to receive(:send_to_workflow_channel).once.and_raise(error)
+
+        expect { result }.to raise_error(GRPC::InvalidArgument)
+        expect(client.send(:classify_grpc_error, error)).to eq(:raise)
+      end
+
+      it_behaves_like 'a retried unary AutoFlow RPC', :send_to_workflow_channel
     end
 
     describe '#get_connected_agentks_by_agent_ids' do

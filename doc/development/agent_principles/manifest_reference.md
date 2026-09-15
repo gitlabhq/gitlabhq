@@ -66,6 +66,8 @@ since the principle was last distilled. The sync queries the GitLab GraphQL API 
 the commit authors in the range between the previous distillation and the target
 branch, and mentions the linked GitLab users in the merge request summary. This
 matches on any confirmed email associated with the account, not only a public one.
+The distiller keeps each contributor's newest commit across all declared SSOT paths and ranks
+contributors by that date before selecting up to four reviewers.
 The sync skips authors that are bot accounts, on a small deny-list of known
 service accounts, or whose commit email is not linked to any GitLab account.
 

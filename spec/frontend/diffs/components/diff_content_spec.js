@@ -182,7 +182,7 @@ describe('DiffContent', () => {
       expect(wrapper.findComponent(DiffFileDrafts).props('autosaveKey')).toBe(autosaveKey);
     });
 
-    it('emits saveDiffDiscussion when note-form emits `handleFormUpdate`', () => {
+    it('emits saveDiffDiscussion when note-form emits `handle-form-update`', () => {
       const noteStub = {};
       const currentDiffFile = {
         ...imageDiffFile,
@@ -197,7 +197,7 @@ describe('DiffContent', () => {
         },
       });
 
-      wrapper.findComponent(NoteForm).vm.$emit('handleFormUpdate', noteStub);
+      wrapper.findComponent(NoteForm).vm.$emit('handle-form-update', noteStub);
       expect(useLegacyDiffs().saveDiffDiscussion).toHaveBeenCalledWith({
         note: noteStub,
         formData: {
@@ -213,7 +213,7 @@ describe('DiffContent', () => {
       });
     });
 
-    describe('when note-form emits `handleFormUpdate`', () => {
+    describe('when note-form emits `handle-form-update`', () => {
       const noteStub = {};
       const parentElement = null;
       const errorCallback = jest.fn();
@@ -235,7 +235,7 @@ describe('DiffContent', () => {
 
           wrapper
             .findComponent(NoteForm)
-            .vm.$emit('handleFormUpdate', noteStub, parentElement, errorCallback);
+            .vm.$emit('handle-form-update', noteStub, parentElement, errorCallback);
 
           await waitForPromises();
         });

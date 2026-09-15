@@ -10,7 +10,6 @@ RSpec.describe Namespaces::Projects::InvitedGroupsFinder, feature_category: :gro
   let_it_be(:other_group) { create(:group, owners: user, name: "other group") }
   let_it_be(:private_group) { create(:group, :private) }
   let_it_be(:project) { create(:project, owners: user) }
-  let(:group_access) { Gitlab::Access::DEVELOPER }
   let(:params) { {} }
 
   subject(:results) { described_class.new(project, current_user, params).execute }

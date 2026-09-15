@@ -2092,6 +2092,7 @@ export const mockWorkItemFeaturesData = ({ discussionLocked = false } = {}) => (
     __typename: 'WorkItemWidgetCrmContacts',
   },
   currentUserTodos: {
+    type: 'CURRENT_USER_TODOS',
     currentUserTodos: {
       nodes: [],
       __typename: 'TodoConnection',
@@ -2099,6 +2100,7 @@ export const mockWorkItemFeaturesData = ({ discussionLocked = false } = {}) => (
     __typename: 'WorkItemWidgetCurrentUserTodos',
   },
   linkedResources: {
+    type: 'LINKED_RESOURCES',
     linkedResources: {
       nodes: [],
       __typename: 'WorkItemLinkedResourceConnection',
@@ -2582,6 +2584,111 @@ export const workItemByIidResponseFactory = (options) => {
         __typename: 'Project',
         id: 'gid://gitlab/Project/1',
         workItem: response.data.workItem,
+      },
+    },
+  };
+};
+
+export const workItemCurrentUserTodosResponseFactory = ({
+  todos = [{ id: 'gid://gitlab/Todo/1', state: 'pending', __typename: 'Todo' }],
+  useWorkItemFeatures = false,
+} = {}) => {
+  const widget = {
+    __typename: 'WorkItemWidgetCurrentUserTodos',
+    type: 'CURRENT_USER_TODOS',
+    currentUserTodos: { nodes: todos, __typename: 'TodoConnection' },
+  };
+
+  return {
+    data: {
+      namespace: {
+        __typename: 'Project',
+        id: 'gid://gitlab/Project/1',
+        workItem: {
+          __typename: 'WorkItem',
+          id: 'gid://gitlab/WorkItem/1',
+          ...(useWorkItemFeatures
+            ? { features: { __typename: 'WorkItemFeatures', currentUserTodos: widget } }
+            : { widgets: [widget] }),
+        },
+      },
+    },
+  };
+};
+
+export const workItemLinkedResourcesResponseFactory = ({
+  resources = [
+    { url: 'http://zoom.example.com/j/1234567890', __typename: 'WorkItemLinkedResource' },
+  ],
+  useWorkItemFeatures = false,
+} = {}) => {
+  const widget = {
+    __typename: 'WorkItemWidgetLinkedResources',
+    type: 'LINKED_RESOURCES',
+    linkedResources: { nodes: resources, __typename: 'WorkItemLinkedResourceConnection' },
+  };
+
+  return {
+    data: {
+      namespace: {
+        __typename: 'Project',
+        id: 'gid://gitlab/Project/1',
+        workItem: {
+          __typename: 'WorkItem',
+          id: 'gid://gitlab/WorkItem/1',
+          ...(useWorkItemFeatures
+            ? { features: { __typename: 'WorkItemFeatures', linkedResources: widget } }
+            : { widgets: [widget] }),
+        },
+      },
+    },
+  };
+};
+
+export const workItemCrmContactsResponseFactory = ({
+  canUpdate = true,
+  crmContacts = mockCrmContacts,
+  useWorkItemFeatures = false,
+} = {}) => {
+  const widget = {
+    __typename: 'WorkItemWidgetCrmContacts',
+    type: 'CRM_CONTACTS',
+    contactsAvailable: crmContacts.length > 0,
+    contacts: {
+      nodes: crmContacts,
+      __typename: 'CustomerRelationsContactConnection',
+    },
+  };
+
+  return {
+    data: {
+      namespace: {
+        __typename: 'Project',
+        id: 'gid://gitlab/Project/1',
+        workItem: {
+          __typename: 'WorkItem',
+          id: 'gid://gitlab/WorkItem/1',
+          userPermissions: {
+            __typename: 'WorkItemPermissions',
+            setWorkItemMetadata: canUpdate,
+          },
+          ...(useWorkItemFeatures
+            ? { features: { __typename: 'WorkItemFeatures', crmContacts: widget } }
+            : { widgets: [widget] }),
+        },
+      },
+    },
+  };
+};
+
+export const updateWorkItemCrmContactsResponseFactory = (options) => {
+  const response = workItemCrmContactsResponseFactory(options);
+
+  return {
+    data: {
+      workItemUpdate: {
+        errors: [],
+        workItem: response.data.namespace.workItem,
       },
     },
   };
@@ -6635,6 +6742,18 @@ const buildWorkItemsWithSubChildQueryResponse = ({ includeRestFeatures = false }
       }))
     : subChildBaseNodes;
 
+  const workItemsData = {
+    __typename: 'WorkItemConnection',
+    pageInfo: {
+      hasNextPage: true,
+      hasPreviousPage: false,
+      startCursor: 'startCursor',
+      endCursor: 'endCursor',
+      __typename: 'PageInfo',
+    },
+    nodes,
+  };
+
   return {
     data: {
       namespace: {
@@ -6642,18 +6761,9 @@ const buildWorkItemsWithSubChildQueryResponse = ({ includeRestFeatures = false }
         __typename: 'Group',
         fullPath: 'full/path',
         name: 'Test',
-        workItems: {
-          __typename: 'WorkItemConnection',
-          pageInfo: {
-            hasNextPage: true,
-            hasPreviousPage: false,
-            startCursor: 'startCursor',
-            endCursor: 'endCursor',
-            __typename: 'PageInfo',
-          },
-          nodes,
-        },
+        ...(includeRestFeatures ? {} : { workItems: workItemsData }),
       },
+      ...(includeRestFeatures ? { restWorkItems: workItemsData } : {}),
     },
   };
 };
@@ -7050,17 +7160,17 @@ const buildWorkItemsRestQueryResponse = (features) => ({
       __typename: 'Group',
       fullPath: 'full/path',
       name: 'Test',
-      workItems: {
-        __typename: 'WorkItemConnection',
-        pageInfo: {
-          hasNextPage: true,
-          hasPreviousPage: false,
-          startCursor: 'startCursor',
-          endCursor: 'endCursor',
-          __typename: 'PageInfo',
-        },
-        nodes: combinedQueryResultExample.map((item) => ({ ...item, features })),
+    },
+    restWorkItems: {
+      __typename: 'WorkItemConnection',
+      pageInfo: {
+        hasNextPage: true,
+        hasPreviousPage: false,
+        startCursor: 'startCursor',
+        endCursor: 'endCursor',
+        __typename: 'PageInfo',
       },
+      nodes: combinedQueryResultExample.map((item) => ({ ...item, features })),
     },
   },
 });
@@ -10298,7 +10408,6 @@ export const workItemMetadataProviderResponse = {
         hasScopedLabelsFeature: true,
         hasQualityManagementFeature: true,
         hasLinkedItemsEpicsFeature: true,
-        hasIssueDateFilterFeature: false,
         hasWorkItemStatusFeature: true,
         __typename: 'NamespaceAvailableFeatures',
       },
@@ -10306,7 +10415,6 @@ export const workItemMetadataProviderResponse = {
         issuesList: '/flightjs/Flight/-/issues',
         contributionGuidePath: '/flightjs/Flight/-/blob/master/CONTRIBUTING.md',
         epicsList: '/groups/flightjs/-/epics',
-        groupIssues: '/groups/flightjs/-/issues',
         labelsFetch:
           '/flightjs/Flight/-/labels.json?include_ancestor_groups=true\u0026only_group_labels=true',
         labelsManage: '/flightjs/Flight/-/labels',
@@ -10464,7 +10572,6 @@ export const mockMetadataQueryResponse = {
         hasScopedLabelsFeature: true,
         hasQualityManagementFeature: true,
         hasLinkedItemsEpicsFeature: true,
-        hasIssueDateFilterFeature: true,
         hasWorkItemStatusFeature: true,
         hasBlockedIssuesFeature: true,
         hasGroupBulkEditFeature: true,
@@ -10476,7 +10583,6 @@ export const mockMetadataQueryResponse = {
         __typename: 'LinkPaths',
         issuesList: '/issues',
         epicsList: '/epics',
-        groupIssues: '/group/issues',
         labelsFetch: '/labels/fetch',
         labelsManage: '/labels/manage',
         newProject: '/projects/new',
@@ -10486,7 +10592,6 @@ export const mockMetadataQueryResponse = {
         calendarPath: '/calendar',
         rssPath: '/rss',
         autocompleteAwardEmojisPath: '/emojis',
-        newTrialPath: '/trial',
         newIssuePath: '/issues/new',
         groupPath: '/group',
         releasesPath: '/releases',

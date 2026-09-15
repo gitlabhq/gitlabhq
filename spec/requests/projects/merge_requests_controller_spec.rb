@@ -54,6 +54,24 @@ RSpec.describe Projects::MergeRequestsController, feature_category: :source_code
 
     let(:merge_request) { create :merge_request, source_project: project, author: user }
 
+    describe 'password manager opt-out' do
+      {
+        'Overview' => -> { project_merge_request_path(project, merge_request) },
+        'Commits' => -> { commits_project_merge_request_path(project, merge_request) },
+        'Pipelines' => -> { pipelines_project_merge_request_path(project, merge_request) },
+        'legacy Changes' => -> {
+          diffs_project_merge_request_path(project, merge_request, rapid_diffs_disabled: 'true')
+        },
+        'Rapid Diffs Changes' => -> { diffs_project_merge_request_path(project, merge_request, rapid_diffs: 'true') }
+      }.each do |tab, path|
+        it "asks password managers to ignore the #{tab} tab" do
+          get instance_exec(&path)
+
+          expect(response.body).to match(/<body [^>]*data-1p-ignore=""/)
+        end
+      end
+    end
+
     context 'when the author of the merge request is banned', feature_category: :insider_threat do
       let_it_be_with_reload(:user) { create(:user, :banned) }
 
@@ -290,6 +308,8 @@ RSpec.describe Projects::MergeRequestsController, feature_category: :source_code
       end
 
       it 'renders legacy diffs when rapid_diffs query parameter doesnt exist' do
+        stub_feature_flags(rapid_diffs_default_on_mr_show: false)
+
         get diffs_project_merge_request_path(project, merge_request)
 
         expect(response).to have_gitlab_http_status(:ok)
@@ -321,6 +341,26 @@ RSpec.describe Projects::MergeRequestsController, feature_category: :source_code
         get diffs_project_merge_request_path(project, merge_request, rapid_diffs: 'true')
 
         expect(response.body.scan('<diff-file ').size).to eq(5)
+      end
+
+      describe 'noteable data' do
+        def noteable_data
+          element = Nokogiri::HTML(response.body).at_css('#js-vue-mr-discussions')
+
+          Gitlab::Json.parse(element['data-noteable-data'])
+        end
+
+        it 'omits new_blob_path, which Rapid Diffs renders on its own' do
+          get diffs_project_merge_request_path(project, merge_request, rapid_diffs: 'true')
+
+          expect(noteable_data).not_to have_key('new_blob_path')
+        end
+
+        it 'includes new_blob_path for legacy diffs' do
+          get diffs_project_merge_request_path(project, merge_request, rapid_diffs_disabled: 'true')
+
+          expect(noteable_data).to have_key('new_blob_path')
+        end
       end
 
       context 'when rapid_diffs_default_on_mr_show is enabled' do
@@ -549,6 +589,12 @@ RSpec.describe Projects::MergeRequestsController, feature_category: :source_code
 
     include_examples 'diff files metadata'
 
+    it 'sets a low request urgency' do
+      send_request
+
+      expect(response).to have_request_urgency(:low)
+    end
+
     context 'when merge_request_diff does not exist' do
       let_it_be(:merge_request) { create(:merge_request, :skip_diff_creation, author: user) }
       let_it_be(:project) { merge_request.project }
@@ -609,6 +655,12 @@ RSpec.describe Projects::MergeRequestsController, feature_category: :source_code
           diffs_count: 21
         }
       end
+    end
+
+    it 'sets a low request urgency' do
+      send_request
+
+      expect(response).to have_request_urgency(:low)
     end
 
     context 'when diffs overflow' do
@@ -1023,7 +1075,7 @@ RSpec.describe Projects::MergeRequestsController, feature_category: :source_code
   end
 
   describe 'GET #diffs' do
-    subject(:action) { get diffs_project_merge_request_path(project, merge_request) }
+    subject(:action) { get diffs_project_merge_request_path(project, merge_request, rapid_diffs_disabled: 'true') }
 
     before do
       sign_in(user)

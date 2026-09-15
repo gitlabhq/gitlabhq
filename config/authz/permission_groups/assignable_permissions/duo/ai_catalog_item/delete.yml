@@ -1,0 +1,10 @@
+---
+name: delete_ai_catalog_item
+description: Grants the ability to delete AI catalog items
+available_for:
+  - granular_access_token
+permissions:
+  - delete_ai_catalog_agent
+  - delete_ai_catalog_flow
+boundaries:
+  - project

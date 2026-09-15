@@ -25,6 +25,13 @@ RSpec.describe 'Create a user group callout', feature_category: :shared do
       group.add_guest(current_user)
     end
 
+    it_behaves_like 'authorizing granular token permissions for GraphQL', :dismiss_ui_notification do
+      let(:user) { current_user }
+      let(:boundary_object) { group }
+      let(:mutation) { graphql_mutation(:userGroupCalloutCreate, input, 'errors') }
+      let(:request) { post_graphql_mutation(mutation, token: { personal_access_token: pat }) }
+    end
+
     it 'creates user group callout' do
       freeze_time do
         post_graphql_mutation(mutation, current_user: current_user)

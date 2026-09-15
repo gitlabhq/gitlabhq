@@ -194,12 +194,12 @@ In the previous screenshot:
   - User 0 is a direct member of group **One**.
   - Group **One** is above group **Four** in the hierarchy.
 - User 1 has the Developer role on group **Four** and inherited their permissions from group **Two**:
-  - User 0 is a direct member of group **Two**, which is a subgroup of group **One**.
+  - User 1 is a direct member of group **Two**, which is a subgroup of group **One**.
   - Groups **One** / **Two** are above group **Four** in the hierarchy.
 - User 2 has the Developer role on group **Four** and has inherited their permissions from group **Three**:
-  - User 0 is a direct member of group **Three**, which is a subgroup of group **Two**. Group **Two** is a subgroup of group
+  - User 2 is a direct member of group **Three**, which is a subgroup of group **Two**. Group **Two** is a subgroup of group
     **One**.
-  - Groups **One** / **Two** / **Three** are above group **Four** the hierarchy.
+  - Groups **One** / **Two** / **Three** are above group **Four** in the hierarchy.
 - User 3 is a direct member of group **Four**. This means they get their Maintainer role directly from group **Four**.
 - Administrator has the Owner role on group **Four** and is a member of all subgroups. For that reason, as with User 3,
   the **Source** column indicates they are a direct member.

@@ -1,7 +1,0 @@
----
-RSpec/OverwritingSetup:
-  Exclude:
-    - 'spec/finders/packages/helm/packages_finder_spec.rb'
-    - 'spec/finders/packages/npm/package_finder_spec.rb'
-    - 'spec/lib/gitlab/database/background_migration/batched_migration_spec.rb'
-    - 'spec/models/todo_spec.rb'

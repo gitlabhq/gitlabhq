@@ -75,7 +75,7 @@ RSpec.describe Gitlab::ImportExport::LfsSaver do
         it 'saves a json file correctly' do
           saver.save # rubocop:disable Rails/SaveBang
 
-          expect(File.exist?(lfs_json_file)).to eq(true)
+          expect(File.exist?(lfs_json_file)).to be(true)
           expect(lfs_json).to eq(
             {
               lfs_object.oid => [

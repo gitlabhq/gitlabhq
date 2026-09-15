@@ -1,0 +1,10 @@
+---
+name: write_relative_positions_to_work_item_positions
+description: Write work item relative positions to the work_item_positions table as the source of truth instead of issues.relative_position.
+feature_issue_url: https://gitlab.com/gitlab-org/gitlab/-/work_items/594236
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/250395
+rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/work_items/627322
+milestone: '19.4'
+group: group::planning views
+type: gitlab_com_derisk
+default_enabled: false

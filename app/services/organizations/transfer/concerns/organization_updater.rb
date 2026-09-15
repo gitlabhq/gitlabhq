@@ -30,12 +30,22 @@ module Organizations
           relation = model_class.where(organization_key => old_organization.id)
           relation = yield(relation) if block
 
+          capture_upserts = iam_replicable?(model_class)
+
           # Process in batches
           relation.each_batch(of: ORGANIZATION_ID_UPDATE_BATCH_SIZE) do |batch|
+            moved_ids = batch.pluck(:id) if capture_upserts # rubocop:disable Database/AvoidUsingPluckWithoutLimit -- bounded by each_batch
+
             batch.update_all(organization_key => new_organization.id)
+
+            model_class.record_iam_outbox_upserts(model_class.where(id: moved_ids)) if moved_ids.present?
           end
         end
         # rubocop:enable CodeReuse/ActiveRecord
+
+        def iam_replicable?(model_class)
+          model_class.respond_to?(:iam_outbox_entity_type) && model_class.iam_outbox_entity_type.present?
+        end
       end
     end
   end

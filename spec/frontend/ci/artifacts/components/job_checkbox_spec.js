@@ -15,6 +15,7 @@ describe('JobCheckbox component', () => {
 
   const createComponent = ({
     hasArtifacts = true,
+    jobName = 'test-job',
     selectedArtifacts = mockSelectedArtifacts,
     unselectedArtifacts = mockUnselectedArtifacts,
     isSelectedArtifactsLimitReached = false,
@@ -22,6 +23,7 @@ describe('JobCheckbox component', () => {
     wrapper = shallowMountExtended(JobCheckbox, {
       propsData: {
         hasArtifacts,
+        jobName,
         selectedArtifacts,
         unselectedArtifacts,
         isSelectedArtifactsLimitReached,
@@ -34,6 +36,18 @@ describe('JobCheckbox component', () => {
     createComponent({ hasArtifacts: false });
 
     expect(findCheckbox().attributes('disabled')).toBeDefined();
+  });
+
+  it('has an accessible name that includes the job name', () => {
+    createComponent({ jobName: 'test-job' });
+
+    expect(findCheckbox().props('ariaLabel')).toBe('Select artifacts for test-job');
+  });
+
+  it('does not escape special characters in the job name', () => {
+    createComponent({ jobName: 'build & test <all>' });
+
+    expect(findCheckbox().props('ariaLabel')).toBe('Select artifacts for build & test <all>');
   });
 
   describe('when some artifacts from this job are selected', () => {

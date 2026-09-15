@@ -16,7 +16,7 @@ RSpec.describe API::Organizations, feature_category: :organization do
 
         organization_id = json_response['id']
         avatar_url = "http://localhost/uploads/-/system/organizations/organization_detail/avatar/#{organization_id}/banana_sample.gif"
-        expect(json_response['avatar_url']).to eq(avatar_url)
+        expect(json_response['avatar_url']).to start_with(avatar_url)
       end
     end
 
@@ -73,9 +73,9 @@ RSpec.describe API::Organizations, feature_category: :organization do
       end
     end
 
-    context 'when feature flag is disabled' do
+    context 'when release flag is disabled' do
       before do
-        stub_feature_flags(organization_switching: false)
+        stub_organization_release(org_creation: false)
       end
 
       it 'returns forbidden' do

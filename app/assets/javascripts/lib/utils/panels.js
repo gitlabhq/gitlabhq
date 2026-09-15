@@ -20,6 +20,16 @@ const getPanelScrollingElement = (contextElement) => {
   );
 };
 
+/**
+ * Returns the panel that should scroll by default when there is no context
+ * element: the dynamic panel when one is open, otherwise the static panel.
+ *
+ * @returns {HTMLElement|null}
+ */
+export const getDefaultScrollingPanel = () =>
+  document.querySelector(DYNAMIC_PANEL_SCROLL_CONTAINER_SELECTOR) ||
+  document.querySelector(DEFAULT_PANEL_SCROLL_CONTAINER_SELECTOR);
+
 const getApplicationScrollingElement = (contextElement) => {
   // We return `document.scrollingElement` for pages that don't have panels, like login or error pages
   return getPanelScrollingElement(contextElement) || document.scrollingElement;

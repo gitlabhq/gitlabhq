@@ -75,20 +75,38 @@ module API
 
           check_sha_param!(params, merge_request)
 
-          if params[:publish_review]
-            result = ::DraftNotes::PublishService.new(merge_request, current_user).execute
+          # Measures the approve journey. The web UI's Approve button posts here
+          # (MergeRequestPresenter#api_approve_path), so this covers UI and API approvals alike.
+          # Started after the lookup and SHA check so 404s and 409s stay out of the SLI.
+          Labkit::UserExperienceSli.start(:approve_merge_request) do |experience|
+            if params[:publish_review]
+              result = ::DraftNotes::PublishService.new(merge_request, current_user).execute
 
-            render_api_error('Failed to publish review', 500) unless result[:status] == :success
+              unless result[:status] == :success
+                # Grape signals errors with `throw`, which Labkit cannot see.
+                experience.error!('Failed to publish review')
+                render_api_error!('Failed to publish review', 500)
+              end
+
+              # Separates draft publishing from the approval itself, so a slow review
+              # submission is distinguishable from a slow approval in the same journey.
+              experience.checkpoint(checkpoint_action: 'notes_published')
+            end
+
+            success =
+              ::MergeRequests::ApprovalService
+                .new(project: user_project, current_user: current_user, params: params)
+                .execute(merge_request)
+
+            unless success
+              # Grape signals errors with `throw`, which Labkit cannot see, so an ineligible
+              # approver would otherwise be recorded as a successful experience.
+              experience.error!('Merge request was not approved')
+              unauthorized!
+            end
+
+            present_approval(merge_request)
           end
-
-          success =
-            ::MergeRequests::ApprovalService
-              .new(project: user_project, current_user: current_user, params: params)
-              .execute(merge_request)
-
-          unauthorized! unless success
-
-          present_approval(merge_request)
         end
 
         desc 'Unapprove a merge request' do

@@ -5,8 +5,6 @@ import { createTestingPinia } from '@pinia/testing';
 import { stubComponent } from 'helpers/stub_component';
 import { confirmAction } from '~/lib/utils/confirm_via_gl_modal/confirm_action';
 import { clearDraft } from '~/lib/utils/autosave';
-import { createAlert } from '~/alert';
-import { SOMETHING_WENT_WRONG } from '~/diffs/i18n';
 import { useDiffDiscussions } from '~/rapid_diffs/stores/diff_discussions';
 import NoteForm from '~/rapid_diffs/app/discussions/note_form.vue';
 import LineRangeHeadline from '~/rapid_diffs/app/discussions/line_range_headline.vue';
@@ -253,17 +251,11 @@ describe('NewLineDiscussionForm', () => {
       });
     });
 
-    it('shows alert on submission failure', async () => {
+    it('propagates submission failure to the form', async () => {
       store.createLineDiscussion.mockRejectedValue(new Error('fail'));
       createComponent();
 
-      await findNoteForm().props('saveNote')(noteBody);
-
-      expect(createAlert).toHaveBeenCalledWith(
-        expect.objectContaining({
-          message: SOMETHING_WENT_WRONG,
-        }),
-      );
+      await expect(findNoteForm().props('saveNote')(noteBody)).rejects.toThrow('fail');
     });
   });
 
@@ -296,13 +288,11 @@ describe('NewLineDiscussionForm', () => {
         });
       });
 
-      it('shows alert on draft save failure', async () => {
+      it('propagates draft save failure to the form', async () => {
         store.createDraftLineDiscussion.mockRejectedValue(new Error('fail'));
         createComponent();
-        await findNoteForm().props('saveDraft')('draft text');
-        expect(createAlert).toHaveBeenCalledWith(
-          expect.objectContaining({ message: SOMETHING_WENT_WRONG }),
-        );
+
+        await expect(findNoteForm().props('saveDraft')('draft text')).rejects.toThrow('fail');
       });
     });
 

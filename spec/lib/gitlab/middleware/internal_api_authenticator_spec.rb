@@ -147,6 +147,18 @@ RSpec.describe Gitlab::Middleware::InternalApiAuthenticator, feature_category: :
       end
     end
 
+    describe 'Org Mover' do
+      before do
+        allow(request).to receive_messages(path: '/api/v4/internal/org_mover/start_maintenance', env: {})
+      end
+
+      it 'calls verify_shell' do
+        expect(::Gitlab::Shell).to receive(:verify_api_request).and_return(true)
+
+        expect(authenticator.verify!).to be_truthy
+      end
+    end
+
     describe 'Observability' do
       before do
         allow(request).to receive_messages(path: '/api/v4/internal/observability/metrics', env: {})

@@ -27,6 +27,11 @@ module QA
           advanced.transfer_project!(project.full_path, target_group.full_path)
         end
 
+        # Transfer runs in a background job, wait for it to finish before verifying
+        Support::Waiter.wait_until(max_duration: 120, sleep_interval: 1, retry_on_exception: true) do
+          project.reload!.api_response[:namespace][:full_path] == target_group.full_path
+        end
+
         Page::Project::Menu.perform(&:click_project)
 
         Page::Project::Show.perform do |project|

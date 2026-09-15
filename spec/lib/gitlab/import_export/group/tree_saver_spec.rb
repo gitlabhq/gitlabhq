@@ -107,7 +107,7 @@ RSpec.describe Gitlab::ImportExport::Group::TreeSaver do
             milestones
           ].each do |association|
             path = exported_path_for(g.id.to_s, "#{association}.ndjson")
-            expect(File.exist?(path)).to eq(true), "#{path} does not exist"
+            expect(File.exist?(path)).to be(true), "#{path} does not exist"
           end
         end
       end

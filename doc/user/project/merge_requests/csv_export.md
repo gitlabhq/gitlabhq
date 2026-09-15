@@ -21,10 +21,10 @@ To export merge requests to a CSV file:
 1. Add any searches or filters. This can help you keep the size of the CSV file under the 15 MB limit. The limit ensures
    the file can be emailed to a variety of email providers.
 1. Select **Actions** ({{< icon name="ellipsis_v" >}}) > **Export as CSV**.
-1. Confirm the correct number of merge requests are to be exported.
+1. Confirm the number of merge requests to export is correct.
 1. Select **Export merge requests**.
 
-## CSV Output
+## CSV output
 
 The following table shows the attributes in the CSV file.
 

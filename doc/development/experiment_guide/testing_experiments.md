@@ -103,6 +103,24 @@ expect(experiment(:example)).to track(:my_event, value: 1, property: '_property_
 experiment(:example, :variant_name, foo: :bar).track(:my_event, value: 1, property: '_property_')
 ```
 
+### Assert the events an experiment emits
+
+The `track` matcher asserts that the experiment was asked to track something.
+It does not see the payload that reaches Snowplow, and it cannot see events the browser sends at
+all.
+
+To assert both, tag a feature spec with `:capture_snowplow_events` and declare the events each
+variant must emit in a tracking journey contract.
+The contract names the experiment once, so every event in the arm under test is also required to
+carry that experiment's context:
+
+```ruby
+expect_snowplow_tracking_journey('whats_new_placement', variant: variant)
+```
+
+For the contract format and the rest of the mechanism, see
+[Capturing Snowplow events in feature specs](../internal_analytics/capturing_snowplow_events_in_specs.md).
+
 ## Test with Jest
 
 ### Stub Helpers

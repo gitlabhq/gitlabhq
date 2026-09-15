@@ -120,6 +120,23 @@ RSpec.describe DeleteUserWorker, feature_category: :user_management do
     end
   end
 
+  context 'when user is banned but did not delete their own account (admin-initiated deletion)' do
+    subject(:perform) { described_class.new.perform(current_user.id, user.id) }
+
+    before do
+      stub_application_setting(delay_user_account_self_deletion: true)
+      user.ban
+    end
+
+    it 'proceeds with deletion' do
+      expect_next_instance_of(Users::DestroyService) do |service|
+        expect(service).to receive(:execute).with(user, {})
+      end
+
+      perform
+    end
+  end
+
   context 'when user to delete does not exist' do
     subject(:perform) { described_class.new.perform(current_user.id, non_existing_record_id) }
 

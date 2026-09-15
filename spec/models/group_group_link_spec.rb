@@ -26,7 +26,7 @@ RSpec.describe GroupGroupLink, feature_category: :groups_and_projects do
 
     it do
       is_expected.to(
-        validate_inclusion_of(:group_access).in_array(Gitlab::Access.values))
+        validate_inclusion_of(:group_access).in_array(Gitlab::Access.values_with_minimal_access))
     end
   end
 

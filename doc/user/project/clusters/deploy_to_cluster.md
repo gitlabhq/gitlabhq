@@ -57,7 +57,7 @@ GitLab CI/CD build environment to deployment jobs. Deployment jobs have
 | `KUBE_TOKEN`               | The Kubernetes token of the [environment service account](cluster_access.md). |
 | `KUBE_NAMESPACE`           | The namespace associated with the project's deployment service account. In the format `<project_name>-<project_id>-<environment>`. For GitLab-managed clusters, a matching namespace is automatically created by GitLab in the cluster. If your cluster was created before GitLab 12.2, the default `KUBE_NAMESPACE` is set to `<project_name>-<project_id>`. |
 | `KUBE_CA_PEM_FILE`         | Path to a file containing PEM data. Only present if a custom CA bundle was specified. |
-| `KUBE_CA_PEM`              | (**deprecated**) Raw PEM data. Only if a custom CA bundle was specified. |
+| `KUBE_CA_PEM`              | (deprecated) Raw PEM data. Only if a custom CA bundle was specified. |
 | `KUBECONFIG`               | Path to a file containing `kubeconfig` for this deployment. CA bundle would be embedded if specified. This configuration also embeds the same token defined in `KUBE_TOKEN` so you likely need only this variable. This variable name is also automatically picked up by `kubectl` so you don't need to reference it explicitly if using `kubectl`. |
 | `KUBE_INGRESS_BASE_DOMAIN` | This variable can be used to set a domain per cluster. See [cluster domains](gitlab_managed_clusters.md#base-domain) for more information. |
 
@@ -118,7 +118,7 @@ Support is limited to the first container in the first pod of your environment.
 
 ## Troubleshooting
 
-Before the deployment jobs starts, GitLab creates the following specifically for
+Before the deployment job starts, GitLab creates the following specifically for
 the deployment job:
 
 - A namespace.
@@ -141,7 +141,7 @@ Reasons for failure include:
   `environment:name` set, the Kubernetes credentials are not passed to it.
 
 > [!note]
-> Project-level clusters upgraded from GitLab 12.0 or older may be configured
+> Project-level clusters upgraded from GitLab 12.0 or older might be configured
 > in a way that causes this error. Ensure you clear the
 > [GitLab-managed cluster](gitlab_managed_clusters.md) option if you want to manage
 > namespaces and service accounts yourself.

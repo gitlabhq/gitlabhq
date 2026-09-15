@@ -280,7 +280,7 @@ module Features
         expect(mail.to).to match_array([user.email])
         expect(mail.subject).to eq(s_('IdentityVerification|Verify your identity'))
 
-        code = mail.body.parts.first.to_s[/\d{#{Users::EmailVerification::GenerateTokenService::TOKEN_LENGTH}}/o]
+        code = email_verification_code_from(mail)
         fill_in s_('IdentityVerification|Verification code'), with: code
 
         expect do

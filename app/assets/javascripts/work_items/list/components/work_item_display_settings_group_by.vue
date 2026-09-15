@@ -6,8 +6,9 @@ import {
   GlSearchBoxByType,
   GlToggle,
 } from '@gitlab/ui';
-import { __, s__ } from '~/locale';
+import { __, s__, sprintf } from '~/locale';
 import { createAlert } from '~/alert';
+import { InternalEvents } from '~/tracking';
 import {
   DEFAULT_GROUP_BY,
   groupingStrategyFor,
@@ -15,12 +16,13 @@ import {
   decorationIconStyle,
 } from '~/work_items/board/grouping';
 import {
+  MAX_VISIBLE_GROUPS,
   SHOW_ALL_GROUPS,
+  effectiveVisibleGroups,
+  exceedsGroupLimit,
   isGroupVisible as computeGroupVisible,
   toggleGroupVisibility as computeToggleGroupVisibility,
 } from '~/work_items/board/grouping/visibility';
-import workItemsGroupByVisibleGroupsQuery from '~/work_items/board/grouping/graphql/client/visible_groups.query.graphql';
-import updateVisibleGroupsMutation from '~/work_items/board/grouping/graphql/client/update_visible_groups.mutation.graphql';
 import { persistMetadataPreference, alertPreferenceError } from '../display_settings_preferences';
 
 export default {
@@ -32,6 +34,7 @@ export default {
     GlSearchBoxByType,
     GlToggle,
   },
+  mixins: [InternalEvents.mixin()],
   i18n: {
     groupBy: s__('WorkItems|Group by'),
     sort: s__('WorkItems|Sort'),
@@ -39,6 +42,7 @@ export default {
     groups: s__('WorkItems|Groups'),
     searchPlaceholder: s__('WorkItems|Search groups'),
     shown: s__('WorkItems|Shown'),
+    hidden: s__('WorkItems|Hidden'),
     hideAll: s__('WorkItems|Hide all'),
     noGroupsFound: s__('WorkItems|No groups match your search.'),
   },
@@ -74,7 +78,6 @@ export default {
     return {
       searchQuery: '',
       groupByValues: [],
-      workItemsGroupByVisibleGroups: SHOW_ALL_GROUPS,
     };
   },
   computed: {
@@ -86,6 +89,28 @@ export default {
     },
     isLoading() {
       return this.$apollo.queries.groupByValues.loading;
+    },
+    visibleGroups() {
+      return effectiveVisibleGroups(
+        this.namespacePreferences.visibleGroups ?? SHOW_ALL_GROUPS,
+        this.groupByValues.length,
+      );
+    },
+    shownCount() {
+      return this.visibleGroups === SHOW_ALL_GROUPS
+        ? this.groupByValues.length
+        : this.visibleGroups.length;
+    },
+    isAtGroupLimit() {
+      return this.shownCount >= MAX_VISIBLE_GROUPS;
+    },
+    showGroupLimitHint() {
+      return exceedsGroupLimit(this.groupByValues.length);
+    },
+    groupLimitHint() {
+      return sprintf(s__('WorkItems|Select up to %{maxGroups} groups.'), {
+        maxGroups: MAX_VISIBLE_GROUPS,
+      });
     },
     groupByOptions() {
       return [{ text: this.strategy.label, value: this.strategy.property }];
@@ -112,6 +137,12 @@ export default {
         };
       });
     },
+    shownGroups() {
+      return this.decoratedGroupByValues.filter((row) => this.isGroupVisible(row.value));
+    },
+    hiddenGroups() {
+      return this.decoratedGroupByValues.filter((row) => !this.isGroupVisible(row.value));
+    },
     noGroupsAvailable() {
       return this.isSearching && this.filteredGroupByValues.length === 0;
     },
@@ -136,34 +167,26 @@ export default {
         },
       };
     },
-    workItemsGroupByVisibleGroups: {
-      query: workItemsGroupByVisibleGroupsQuery,
-    },
   },
   methods: {
     isGroupVisible(value) {
-      return computeGroupVisible(this.workItemsGroupByVisibleGroups, this.groupBy, value);
+      return computeGroupVisible(this.visibleGroups, this.groupBy, value);
     },
-    async toggleGroupVisibility(value) {
+    toggleGroupVisibility(value) {
+      const wasVisible = this.isGroupVisible(value);
       const next = computeToggleGroupVisibility({
-        visibleGroups: this.workItemsGroupByVisibleGroups,
+        visibleGroups: this.visibleGroups,
         groupBy: this.groupBy,
         value,
-        allValues: this.groupByValues,
+        allGroups: this.groupByValues,
       });
-      await this.$apollo.mutate({
-        mutation: updateVisibleGroupsMutation,
-        variables: { visibleGroups: next },
+      this.trackEvent('configure_columns_on_work_item_board', {
+        label: wasVisible ? 'hide_group' : 'show_group',
       });
       this.persist(next);
     },
-    async hideAll() {
-      // Everything is already hidden, so skip the redundant preference write.
-      if (this.workItemsGroupByVisibleGroups?.length === 0) return;
-      await this.$apollo.mutate({
-        mutation: updateVisibleGroupsMutation,
-        variables: { visibleGroups: [] },
-      });
+    hideAll() {
+      this.trackEvent('configure_columns_on_work_item_board', { label: 'hide_all_groups' });
       this.persist([]);
     },
     async persist(visibleGroups) {
@@ -238,33 +261,62 @@ export default {
         {{ $options.i18n.noGroupsFound }}
       </p>
       <template v-else>
-        <div class="gl-mt-4 gl-flex gl-items-center gl-justify-between">
-          <span class="gl-text-sm gl-font-bold">{{ $options.i18n.shown }}</span>
-          <button
-            type="button"
-            class="gl-border-none gl-bg-transparent gl-p-0 gl-text-sm gl-text-subtle"
-            data-testid="hide-all"
-            @click="hideAll"
-          >
-            {{ $options.i18n.hideAll }}
-          </button>
+        <p
+          v-if="showGroupLimitHint"
+          class="gl-mb-0 gl-mt-4 gl-text-sm gl-text-subtle"
+          data-testid="group-limit-hint"
+        >
+          {{ groupLimitHint }}
+        </p>
+        <div v-if="shownGroups.length" class="gl-mt-4" data-testid="shown-groups">
+          <div class="gl-flex gl-items-center gl-justify-between">
+            <span class="gl-text-sm gl-font-bold">{{ $options.i18n.shown }}</span>
+            <button
+              type="button"
+              class="gl-border-none gl-bg-transparent gl-p-0 gl-text-sm gl-text-subtle"
+              data-testid="hide-all"
+              @click="hideAll"
+            >
+              {{ $options.i18n.hideAll }}
+            </button>
+          </div>
+          <ul class="gl-m-0 gl-mt-2 gl-list-none gl-p-0">
+            <li
+              v-for="row in shownGroups"
+              :key="row.value.id"
+              class="gl-flex gl-items-center gl-gap-3 gl-py-2"
+            >
+              <gl-icon v-if="row.showIcon" :name="row.iconName" :style="row.iconStyle" />
+              <gl-toggle
+                :value="true"
+                :label="row.value.name"
+                class="gl-w-full gl-justify-between"
+                label-position="left"
+                @change="toggleGroupVisibility(row.value)"
+              />
+            </li>
+          </ul>
         </div>
-        <ul class="gl-m-0 gl-mt-2 gl-list-none gl-p-0" data-testid="group-by-values">
-          <li
-            v-for="row in decoratedGroupByValues"
-            :key="row.value.id"
-            class="gl-flex gl-items-center gl-gap-3 gl-py-2"
-          >
-            <gl-icon v-if="row.showIcon" :name="row.iconName" :style="row.iconStyle" />
-            <gl-toggle
-              :value="isGroupVisible(row.value)"
-              :label="row.value.name"
-              class="gl-w-full gl-justify-between"
-              label-position="left"
-              @change="toggleGroupVisibility(row.value)"
-            />
-          </li>
-        </ul>
+        <div v-if="hiddenGroups.length" class="gl-mt-4" data-testid="hidden-groups">
+          <span class="gl-text-sm gl-font-bold">{{ $options.i18n.hidden }}</span>
+          <ul class="gl-m-0 gl-mt-2 gl-list-none gl-p-0">
+            <li
+              v-for="row in hiddenGroups"
+              :key="row.value.id"
+              class="gl-flex gl-items-center gl-gap-3 gl-py-2"
+            >
+              <gl-icon v-if="row.showIcon" :name="row.iconName" :style="row.iconStyle" />
+              <gl-toggle
+                :value="false"
+                :disabled="isAtGroupLimit"
+                :label="row.value.name"
+                class="gl-w-full gl-justify-between"
+                label-position="left"
+                @change="toggleGroupVisibility(row.value)"
+              />
+            </li>
+          </ul>
+        </div>
       </template>
     </div>
   </div>

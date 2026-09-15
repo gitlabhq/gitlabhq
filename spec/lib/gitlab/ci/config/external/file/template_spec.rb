@@ -3,6 +3,12 @@
 require 'spec_helper'
 
 RSpec.describe Gitlab::Ci::Config::External::File::Template, feature_category: :pipeline_composition do
+  around do |example|
+    Gitlab::Ci::Config::FeatureFlags.with_actor(nil) do
+      example.run
+    end
+  end
+
   let_it_be(:project) { create(:project) }
   let_it_be(:user) { create(:user) }
 
@@ -110,8 +116,8 @@ RSpec.describe Gitlab::Ci::Config::External::File::Template, feature_category: :
 
     subject { template_file.send(:expand_context_attrs) }
 
-    it 'includes parent_file' do
-      is_expected.to eq({ parent_file: template_file })
+    it 'includes parent_file and pipeline_policy_context' do
+      is_expected.to eq({ parent_file: template_file, pipeline_policy_context: nil })
     end
   end
 

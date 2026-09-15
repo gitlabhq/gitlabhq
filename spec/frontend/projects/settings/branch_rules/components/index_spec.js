@@ -1,6 +1,6 @@
 import Vue, { nextTick } from 'vue';
 import VueApollo from 'vue-apollo';
-import { GlCollapsibleListbox, GlModal, GlPopover, GlSprintf, GlToast } from '@gitlab/ui';
+import { GlCollapsibleListbox, GlModal, GlPopover, GlSprintf } from '@gitlab/ui';
 import { sprintf } from '~/locale';
 import * as util from '~/lib/utils/url_utility';
 import { useMockInternalEventsTracking } from 'helpers/tracking_internal_events_helper';
@@ -66,7 +66,6 @@ jest.mock('~/lib/utils/url_utility', () => ({
 jest.mock('~/alert');
 
 Vue.use(VueApollo);
-Vue.use(GlToast);
 useMockLocationHelper();
 
 describe('View branch rules', () => {

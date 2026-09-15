@@ -32,7 +32,7 @@ RSpec.describe Gitlab::ImportExport::SnippetsRepoSaver do
     end
 
     context 'when project has snippets' do
-      let!(:snippet1) { create(:project_snippet, :repository, project: project, author: user) }
+      let!(:snippet1) { create(:project_snippet, :empty_repo, project: project, author: user) }
       let!(:snippet2) { create(:project_snippet, project: project, author: user) }
       let(:service) { instance_double(Gitlab::ImportExport::SnippetRepoSaver) }
 

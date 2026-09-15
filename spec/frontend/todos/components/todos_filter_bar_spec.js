@@ -186,9 +186,27 @@ describe('TodosFilterBar', () => {
     await nextTick();
     expect(trackingSpy).toHaveBeenCalledWith(undefined, 'filter_todo_list', {
       label: 'filter_action',
+      property: mockActionParam.api,
     });
 
     expect(trackingSpy).toHaveBeenCalledTimes(5);
+  });
+
+  it('reports the first action type when tracking a combined reason filter', async () => {
+    createComponent();
+
+    findGlFilteredSearch().vm.$emit(
+      'input',
+      generateFilterTokens({
+        action: 'mentioned;directly_addressed',
+      }),
+    );
+    await nextTick();
+
+    expect(trackingSpy).toHaveBeenCalledWith(undefined, 'filter_todo_list', {
+      label: 'filter_action',
+      property: 'mentioned',
+    });
   });
 
   it('does not emit telemetry events on changing a filter', async () => {
@@ -317,7 +335,7 @@ describe('TodosFilterBar', () => {
 
   it('emits the `filter-changed` event and updates the URL when the sort order is changed', () => {
     createComponent();
-    findGlSorting().vm.$emit('sortByChange', 'UPDATED');
+    findGlSorting().vm.$emit('sort-by-change', 'UPDATED');
 
     expect(trackingSpy).toHaveBeenCalledWith(undefined, 'sort_todo_list', {
       label: 'UPDATED_DESC',
@@ -329,7 +347,7 @@ describe('TodosFilterBar', () => {
 
   it('emits the `filter-changed` event and updates the URL when the sort direction is changed', () => {
     createComponent();
-    findGlSorting().vm.$emit('sortDirectionChange', true);
+    findGlSorting().vm.$emit('sort-direction-change', true);
 
     expect(trackingSpy).toHaveBeenCalledWith(undefined, 'sort_todo_list', {
       label: 'CREATED_ASC',
@@ -337,7 +355,7 @@ describe('TodosFilterBar', () => {
     expect(wrapper.emitted('filters-changed')[0][0].sort).toBe('CREATED_ASC');
     expect(window.location.search).toBe('?sort=CREATED_ASC');
 
-    findGlSorting().vm.$emit('sortDirectionChange', false);
+    findGlSorting().vm.$emit('sort-direction-change', false);
 
     expect(trackingSpy).toHaveBeenCalledWith(undefined, 'sort_todo_list', {
       label: 'CREATED_DESC',
@@ -357,8 +375,8 @@ describe('TodosFilterBar', () => {
       }),
     );
     findGlFilteredSearch().vm.$emit('submit');
-    findGlSorting().vm.$emit('sortByChange', 'LABEL_PRIORITY');
-    findGlSorting().vm.$emit('sortDirectionChange', true);
+    findGlSorting().vm.$emit('sort-by-change', 'LABEL_PRIORITY');
+    findGlSorting().vm.$emit('sort-direction-change', true);
 
     expect(window.location.search).toBe(
       '?group_id=33&project_id=12&author_id=1&sort=LABEL_PRIORITY_ASC',

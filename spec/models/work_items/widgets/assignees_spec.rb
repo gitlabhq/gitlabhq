@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe WorkItems::Widgets::Assignees do
+RSpec.describe WorkItems::Widgets::Assignees, feature_category: :team_planning do
   let_it_be(:work_item) { create(:work_item, assignees: [create(:user)]) }
 
   describe '.type' do

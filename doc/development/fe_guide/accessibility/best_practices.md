@@ -71,7 +71,7 @@ To provide markup with accessible names, ensure every:
 - `figure` has `figcaption` as its first child.
 - `table` has `caption` as its first child.
 
-Remember that an [`alt` attribute](#images-with-accessible-names) should not be longer than approximately 150 characters. While there's no official guidelines on the length, some screen readers will not read longer strings inside the `alt` attribute.
+Remember that an [`alt` attribute](#images-with-accessible-names) should not be longer than approximately 150 characters. While there are no official guidelines on the length, some screen readers will not read longer strings inside the `alt` attribute.
 
 An accessible name can be provided in multiple ways and is decided with [accessible name calculation](https://www.w3.org/WAI/ARIA/apg/practices/names-and-descriptions/#name_calculation). Here is the simplified order of different techniques taking precedence:
 
@@ -173,14 +173,14 @@ Use semantic HTML, such as `a` (`GlLink`) and `button` (`GlButton`), which provi
 Keep in mind that:
 
 - <kbd>Tab</kbd> and <kbd>Shift-Tab</kbd> should only move between interactive elements, not static content.
-- When you add `:hover` styles, in most cases you should add `:focus` styles too so that the styling is applied for both mouse **and** keyboard users.
+- When you add `:hover` styles, in most cases you should add `:focus` styles too so that the styling is applied for both mouse and keyboard users.
 - If you remove an interactive element's `outline`, make sure you maintain visual focus state in another way such as with `box-shadow`.
 
 See the [Pajamas Keyboard-only page](https://design.gitlab.com/accessibility/keyboard-only) for more detail.
 
 ## `tabindex`
 
-Prefer **no** `tabindex` to using `tabindex`, since:
+Prefer no `tabindex` to using `tabindex`, since:
 
 - Using semantic HTML such as `button` (`GlButton`) implicitly provides `tabindex="0"`.
 - Tabbing order should match the visual reading order and positive `tabindex`s interfere with this.

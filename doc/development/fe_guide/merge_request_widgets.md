@@ -6,7 +6,7 @@ description: Developer documentation for extending the merge request report widg
 title: Merge request widgets
 ---
 
-Merge request widgets enable you to add new features that match the design framework.
+You can use merge request widgets to add new features that match the design framework.
 With these widgets we get a lot of benefits out of the box without much effort required, like:
 
 - A consistent look and feel.
@@ -162,8 +162,7 @@ properties:
 
 ### Errors
 
-If `:fetch-collapsed-data` or `:fetch-expanded-data` methods throw an error.
-To customize the error text, you can use the `:error-text` property:
+If `:fetch-collapsed-data` or `:fetch-expanded-data` methods throw an error, you can use the `:error-text` property to customize the error text:
 
 ```vue
 <template>

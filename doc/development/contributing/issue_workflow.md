@@ -7,7 +7,7 @@ title: Issues workflow
 
 ## Creating an issue
 
-**Before you submit an issue, [search the issue tracker](https://gitlab.com/gitlab-org/gitlab/-/issues)**
+Before you submit an issue, [search the issue tracker](https://gitlab.com/gitlab-org/gitlab/-/issues)
 for similar entries. Someone else might have already had the same bug or feature proposal.
 If you find an existing issue, show your support with an emoji reaction and add your notes to the discussion.
 
@@ -26,7 +26,7 @@ To submit a bug:
 ### Feature proposals
 
 To create a feature proposal, open an issue in the issue tracker using the
-[**Feature Proposal - detailed** issue template](https://gitlab.com/gitlab-org/gitlab/-/issues/new?description_template=Feature%20proposal%20-%20detailed).
+[**Feature Proposal - detailed** issue template](https://gitlab.com/gitlab-org/gitlab/-/work_items/new?description_template=Feature%20proposal%20-%20detailed).
 
 In order to help track feature proposals, we use the
 [`~"type::feature"`](https://gitlab.com/gitlab-org/gitlab/-/issues?label_name=type::feature) label.
@@ -97,8 +97,8 @@ below will make it easy to manage this, without unnecessary overhead.
 1. If you don't agree with a set weight, discuss with other developers until
    consensus is reached about the weight
 1. Issue weights are an abstract measurement of complexity of the issue. Do not
-   relate issue weight directly to time. This is called [anchoring](https://en.wikipedia.org/wiki/Anchoring_(cognitive_bias))
-   and something you want to avoid.
+   relate issue weight directly to time. This is called [anchoring](https://en.wikipedia.org/wiki/Anchoring_(cognitive_bias)),
+   and it's something you want to avoid.
 1. Something that has a weight of 1 (or no weight) is really small and simple.
    Something that is 9 is rewriting a large fundamental part of GitLab,
    which might lead to many hard problems to solve. Changing some text in GitLab
@@ -162,5 +162,5 @@ The maintainer must always agree before an outstanding discussion is resolved in
 this manner, and will be the one to create the issue. The title and description
 should be of the same quality as those created
 [in the usual manner](../labels/_index.md#technical-debt-and-deferred-ux) - in particular, the issue title
-**must not** begin with `Follow-up`! The creating maintainer should also expect
+must not begin with `Follow-up`! The creating maintainer should also expect
 to be involved in some capacity when work begins on the follow-up issue.

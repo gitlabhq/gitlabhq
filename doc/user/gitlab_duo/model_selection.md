@@ -14,9 +14,18 @@ title: GitLab Duo AI models
 
 {{< /details >}}
 
-Every GitLab Duo feature uses a default model. GitLab might update default models to optimize performance. You can select a different model for a feature, which persists until you change it.
+Every GitLab Duo feature uses a default model. GitLab might update default models to optimize performance.
+Model changes come from the GitLab AI Gateway and take effect regardless of your GitLab version.
+
+You can select a different model for a feature, which persists until you change it.
 
 ## Default models
+
+{{< history >}}
+
+- [Changed](https://gitlab.com/gitlab-org/gitlab/-/work_items/614057) model setting for GitLab Duo Code Review to **Non-Agentic Code Review** in GitLab 19.4.
+
+{{< /history >}}
 
 The following table lists the default model for each GitLab Duo feature.
 
@@ -36,7 +45,7 @@ The following table lists the default model for each GitLab Duo feature.
 | Merge Commit Message Generation | Claude Sonnet 4.6 Vertex|
 | Merge Request Summary | Claude Sonnet 4.6 Vertex |
 | Code Review Summary | Claude Sonnet 4.6 Vertex |
-| Code Review | Claude Sonnet 4.5 Vertex |
+| Non-Agentic Code Review | Claude Sonnet 4.5 Vertex |
 | **Other GitLab Duo features** | |
 | Vulnerability Explanation | Claude Sonnet 4.6 Vertex |
 | Vulnerability Resolution | Claude Sonnet 4.6 Vertex |
@@ -44,6 +53,12 @@ The following table lists the default model for each GitLab Duo feature.
 | GitLab Duo for CLI | Claude Sonnet 4.6 Vertex |
 
 ## Supported models
+
+{{< history >}}
+
+- [Changed](https://gitlab.com/gitlab-org/gitlab/-/work_items/614057) model setting for GitLab Duo Code Review to **Non-Agentic Code Review** in GitLab 19.4.
+
+{{< /history >}}
 
 The following tables list the models you can select for each feature.
 
@@ -70,7 +85,7 @@ The following tables list the models you can select for each feature.
 
 ### GitLab Duo for merge requests
 
-| Model | Merge Commit Message Generation | Merge Request Summary | Code Review Summary | Code Review |
+| Model | Merge Commit Message Generation | Merge Request Summary | Code Review Summary | Non-Agentic Code Review |
 |------------|--------------------------------|------------------------|---------------------|-------------|
 | Claude Sonnet 4.5 | {{< yes >}} | {{< yes >}} | {{< yes >}} | {{< yes >}} |
 | Claude Sonnet 4.5 Vertex | {{< no >}} | {{< no >}} | {{< no >}} | {{< yes >}} |
@@ -109,6 +124,9 @@ The following tables list the models you can select for each feature.
 You can select a model for a feature in a top-level group. The model that you select
 applies to that feature for all child groups and projects.
 
+To set a model for an instance on GitLab Self-Managed or GitLab Dedicated, see
+[model selection](../../administration/gitlab_duo/model_selection.md).
+
 Prerequisites:
 
 - You have the Owner role for the group.
@@ -119,9 +137,9 @@ To select a model for a feature:
 
 1. In the top bar, select **Search or go to** and find your group.
 1. In the left sidebar, select **Settings** > **GitLab Duo**.
-1. Select **Configure features**.
-1. For the feature you want to configure, select a model from the dropdown list.
-1. Optional. To apply the model to all features in the section, select **Apply to all**.
+1. Under **Model selection**, select **Manage models**.
+1. Find the feature you want to configure and select a model from the dropdown list.
+1. Optional. To apply the model to all features in a section, select **Apply to all**.
 
 ### Selecting the right model
 
@@ -146,7 +164,7 @@ When selecting models other than the default, you might encounter the following 
 
 ### Model is not available
 
-If you are using the default GitLab model for a GitLab Duo AI-native feature, GitLab might change the default model without notifying the user to maintain optimal performance and reliability.
+If you are using the default GitLab model for a GitLab Duo AI-native feature, GitLab might change the default model to maintain optimal performance and reliability, without notifying you.
 
 If you have selected a specific model for a GitLab Duo AI-native feature, and that model is not available, there is no automatic fallback. The feature that uses this model is unavailable.
 

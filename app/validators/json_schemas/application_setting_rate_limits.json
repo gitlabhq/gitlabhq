@@ -4,6 +4,11 @@
   "type": "object",
   "additionalProperties": false,
   "properties": {
+    "audit_events_api_limit": {
+      "type": "integer",
+      "minimum": 0,
+      "description": "Number of requests allowed to the instance audit events API endpoints per user per minute."
+    },
     "autocomplete_users_limit": {
       "type": "integer",
       "minimum": 0,
@@ -23,6 +28,11 @@
       "type": "integer",
       "minimum": 1,
       "description": "Maximum number of simultaneous import jobs for Bitbucket Server importer."
+    },
+    "concurrent_pull_request_import_jobs_limit": {
+      "type": "integer",
+      "minimum": 1,
+      "description": "Maximum number of simultaneous pull request import jobs for the GitHub, Bitbucket Cloud, and Bitbucket Server importers."
     },
     "concurrent_github_import_jobs_limit": {
       "type": "integer",
@@ -129,6 +139,11 @@
       "minimum": 0,
       "description": "Number of requests allowed to the /api/v4/jobs/* endpoints."
     },
+    "tags_create_limit": {
+      "type": "integer",
+      "minimum": 0,
+      "description": "Number of tag creation requests allowed per 30 minutes per project. Set to 0 for unlimited requests per 30 minutes."
+    },
     "throttle_authenticated_git_http_enabled": {
       "type": "boolean",
       "description": "Enable authenticated Git HTTP request rate limit"
@@ -142,6 +157,20 @@
       "type": "integer",
       "minimum": 1,
       "description": "Authenticated Git HTTP rate limit period in seconds"
+    },
+    "throttle_authenticated_dependency_proxy_enabled": {
+      "type": "boolean",
+      "description": "Enable authenticated dependency proxy request rate limit"
+    },
+    "throttle_authenticated_dependency_proxy_requests_per_period": {
+      "type": "integer",
+      "minimum": 1,
+      "description": "Authenticated dependency proxy request rate limit"
+    },
+    "throttle_authenticated_dependency_proxy_period_in_seconds": {
+      "type": "integer",
+      "minimum": 1,
+      "description": "Authenticated dependency proxy rate limit period in seconds"
     },
     "user_contributed_projects_api_limit": {
       "type": "integer",

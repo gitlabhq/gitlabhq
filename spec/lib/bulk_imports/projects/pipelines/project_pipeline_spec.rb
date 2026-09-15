@@ -6,7 +6,7 @@ RSpec.describe BulkImports::Projects::Pipelines::ProjectPipeline, feature_catego
   describe '#run', :clean_gitlab_redis_shared_state do
     let_it_be(:user, freeze: false) { create(:user) }
     let_it_be(:group, freeze: false) { create(:group) }
-    let_it_be(:bulk_import, freeze: false) { create(:bulk_import, user: user) }
+    let_it_be(:bulk_import, freeze: false) { create(:bulk_import, :with_configuration, user: user) }
 
     let(:entity) do
       create(
@@ -62,6 +62,23 @@ RSpec.describe BulkImports::Projects::Pipelines::ProjectPipeline, feature_catego
     it 'skips duplicate projects on pipeline re-run' do
       expect { project_pipeline.run }.to change { Project.count }.by(1)
       expect { project_pipeline.run }.not_to change { Project.count }
+    end
+
+    it 'tracks the start_project_import internal event' do
+      imported_project = create(:project, namespace: group, import_type: 'gitlab_project_migration')
+
+      allow_next_instance_of(::Projects::CreateService) do |service|
+        allow(service).to receive(:execute).and_return(imported_project)
+      end
+
+      expect { project_pipeline.run }
+        .to trigger_internal_events('start_project_import')
+        .with(
+          project: imported_project,
+          user: user,
+          namespace: group,
+          additional_properties: { label: 'gitlab_project_migration', property: entity.hashed_import_source }
+        )
     end
   end
 

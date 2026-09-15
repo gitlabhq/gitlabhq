@@ -134,18 +134,6 @@ RSpec.describe MergeRequests::ReopenService, feature_category: :code_review_work
         expect(merge_request.errors[:base]).to include(branch_error)
       end
 
-      context 'when the prevent_reopen_merge_request_without_branch feature flag is disabled' do
-        before do
-          stub_feature_flags(prevent_reopen_merge_request_without_branch: false)
-        end
-
-        it 'reopens the merge request' do
-          service.execute(merge_request)
-
-          expect(merge_request).to be_opened
-        end
-      end
-
       context 'when reopen is blocked for another reason' do
         let(:service) { described_class.new(project: project, current_user: guest) }
 

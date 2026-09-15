@@ -360,7 +360,7 @@ RSpec.shared_examples 'wiki_page' do |container_type|
         it { is_expected.not_to allow_value('').for(:title) }
 
         # Reserved slugs that conflict with wiki routes (see config/routes/wiki.rb)
-        # E.g. 'pages', 'templates', 'new', 'git_access', '-'
+        # E.g. 'pages', 'templates', 'new', '-'
         WikiPage::RESERVED_SLUGS.each do |reserved_slug|
           it { is_expected.not_to allow_value(reserved_slug).for(:title) }
           it { is_expected.not_to allow_value(reserved_slug.upcase).for(:title) }

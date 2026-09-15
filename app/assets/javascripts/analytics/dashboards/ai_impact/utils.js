@@ -111,6 +111,8 @@ export const generateTableColumns = (now) => [
     key: 'metric',
     label: __('Metric'),
     thClass: 'gl-w-1/5',
+    isRowHeader: true,
+    tdClass: '!gl-border-b-0',
   },
   ...generateDateRanges(now),
   {

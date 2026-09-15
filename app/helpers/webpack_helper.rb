@@ -15,11 +15,20 @@ module WebpackHelper
     link_tag
   end
 
-  def webpack_bundle_tag(bundle)
+  def webpack_bundle_tag(bundle, **options)
+    # `current_user` raises outside a Warden request, and helper and fixture specs
+    # render bundle tags without one. Only a rollout entry needs the actor.
+    entrypoint = if ::Gitlab::Vue3Migration.rollout?(bundle)
+                   ::Gitlab::Vue3Migration.entrypoint_for(bundle, current_user: current_user)
+                 else
+                   bundle
+                 end
+
     if vite_enabled?
-      vite_javascript_tag bundle
+      # ViteRuby appends `.js` only to a name with no extension, and `.vue3` reads as one.
+      vite_javascript_tag(entrypoint == bundle ? bundle : "#{entrypoint}.js", **options)
     else
-      javascript_include_tag(*webpack_entrypoint_paths(bundle))
+      javascript_include_tag(*webpack_entrypoint_paths(entrypoint), **options)
     end
   end
 
@@ -56,15 +65,24 @@ module WebpackHelper
       entrypoint = ::Gitlab::Vue3Migration.entrypoint_for(base_entrypoint, current_user: current_user)
       begin
         chunks = webpack_entrypoint_paths(entrypoint, extension: 'js')
-      rescue Gitlab::Webpack::Manifest::AssetMissingError
-        # The Vue 3 variant may be missing from the manifest (e.g. an
-        # incremental build skipped it). Fall back to the regular entry
-        # before giving up on this route segment.
+      rescue Gitlab::Webpack::Manifest::AssetMissingError => e
+        # The bundler never built the Vue 3 variant for this page. Fall back to
+        # the regular entry, and report it only once that fallback resolves:
+        # Vue 2 and Vue 3 render the same UI, so nothing else reveals a no-op.
         if entrypoint != base_entrypoint
           begin
             chunks = webpack_entrypoint_paths(base_entrypoint, extension: 'js')
+
+            # Static for the deploy: the manifest loads once per process, so
+            # report per worker rather than per request.
+            ::Gitlab::ProcessMemoryCache.cache_backend.fetch(
+              "vue3_missing_bundle:#{entrypoint}", expires_in: 1.hour
+            ) do
+              ::Gitlab::ErrorTracking.track_exception(e, vue3_entrypoint: entrypoint)
+            end
           rescue Gitlab::Webpack::Manifest::AssetMissingError
-            # no bundle exists for this path
+            # Neither entry is in this build, so no rollout is being skipped:
+            # the page belongs to an edition this build did not compile.
           end
         end
       end
@@ -101,7 +119,7 @@ module WebpackHelper
   end
 
   def rspack_enabled?
-    Gitlab::Utils.to_boolean(ENV['ENABLE_RSPACK'], default: false)
+    Gitlab::Utils.to_boolean(ENV['ENABLE_RSPACK'], default: Gitlab.config.webpack.bundler == 'rspack')
   end
 
   def bundler_manifest_filename

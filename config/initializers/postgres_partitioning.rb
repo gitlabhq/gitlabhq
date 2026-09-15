@@ -12,7 +12,6 @@ Gitlab::Application.config.to_prepare do
 
   Gitlab::Database::Partitioning.register_models(
     [
-      AuditEvent,
       AuditEvents::UserAuditEvent,
       AuditEvents::GroupAuditEvent,
       AuditEvents::ProjectAuditEvent,
@@ -50,6 +49,7 @@ Gitlab::Application.config.to_prepare do
       ProjectDailyStatistic,
       Users::GroupVisit,
       Users::ProjectVisit,
+      MergeRequestDiffFile,
       MergeRequest::CommitsMetadata,
       WebHookLog,
       MergeRequests::GeneratedRefCommit,
@@ -68,6 +68,7 @@ Gitlab::Application.config.to_prepare do
         Security::Finding,
         Analytics::ValueStreamDashboard::Count,
         Ci::FinishedBuildChSyncEvent,
+        Ci::TestBalancing::Assignment,
         Search::Zoekt::Task,
         Ai::EventsCount,
         Ai::UsageEvent,
@@ -131,16 +132,21 @@ Gitlab::Application.config.to_prepare do
       ])
   end
 
-  # Enable partition management for the backfill table during merge_request_diff_files
-  # partitioning. This way new partitions will be created as the trigger syncs new
-  # rows across to this table.
   # rubocop:disable Database/AvoidIntRangePartitioning -- legacy usage
   Gitlab::Database::Partitioning.register_tables(
     [
+      # Both names are registered because only one of them is the partitioned table at any time.
+      # On GitLab.com, the SwapMergeRequestDiffCommitsTable post-deployment migration renames
+      # merge_request_diff_commits_b5377a7a34 to merge_request_diff_commits. Registering both covers
+      # the window between this code deploying and that migration running: PartitionManager#sync_partitions
+      # skips the name that is not partitioned.
       {
         limit_connection_names: %i[main],
-        table_name: 'merge_request_diff_files_99208b8fac',
-        partitioned_column: :merge_request_diff_id, strategy: :int_range, partition_size: 200_000_000
+        table_name: 'merge_request_diff_commits',
+        partitioned_column: :project_id,
+        strategy: :int_range,
+        partition_size: 2_000_000,
+        sequence_name: 'projects_id_seq'
       },
       {
         limit_connection_names: %i[main],

@@ -33,7 +33,7 @@ RSpec.describe Gitlab::ImportExport::Project::ExportedRelationsMerger do
 
         result = service.save
 
-        expect(result).to eq(true)
+        expect(result).to be(true)
         expect(Dir.glob("#{dirpath}/**/*")).to match_array(
           [
             "#{dirpath}/project",
@@ -61,7 +61,7 @@ RSpec.describe Gitlab::ImportExport::Project::ExportedRelationsMerger do
 
           result = service.save
 
-          expect(result).to eq(false)
+          expect(result).to be(false)
           expect(shared.errors).to match_array(
             [
               /^undefined method ['`]export_file' for nil/,

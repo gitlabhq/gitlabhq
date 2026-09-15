@@ -42,6 +42,7 @@ module Gitlab
             bridge_pipeline_is_child_pipeline: 'creation of child pipeline not allowed from another child pipeline',
             downstream_pipeline_creation_failed: 'downstream pipeline can not be created',
             secrets_provider_not_found: 'secrets provider can not be found',
+            secrets_manager_access_denied: 'namespace does not have access to GitLab Secrets Manager',
             reached_max_descendant_pipelines_depth: 'reached maximum depth of child pipelines',
             reached_max_pipeline_hierarchy_size: 'downstream pipeline tree is too large',
             project_deleted: 'pipeline project was deleted',
@@ -54,11 +55,12 @@ module Gitlab
             deployment_rejected: 'deployment rejected',
             ip_restriction_failure: 'IP address restriction failure',
             duo_workflow_not_allowed: 'Duo Workflow cannot run on this runner',
+            duo_workflow_connection_failure: 'Duo Workflow connection failure',
             failed_outdated_deployment_job: 'failed outdated deployment job',
             reached_downstream_pipeline_trigger_rate_limit: 'Too many downstream pipelines triggered in the last minute. Try again later.',
             job_router_failure: 'The Job Router failed to run this job.',
             job_token_expired: 'job token has expired',
-            id_token_burned_project_path: 'CI ID token issuance disabled for this project path'
+            id_token_burned_project_path: 'ID token issuance disabled for this project path'
           }.freeze
           # rubocop: enable Layout/LineLength
 

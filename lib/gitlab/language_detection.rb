@@ -48,7 +48,7 @@ module Gitlab
       to_update = @repository_languages.select do |lang|
         next unless detection.key?(lang.name)
 
-        expected_language_id = lang.programming_language.language_id
+        expected_language_id = lang.resolved_programming_language.language_id
 
         detection[lang.name][:value] != lang.share || expected_language_id != lang.language_id
       end
@@ -57,7 +57,7 @@ module Gitlab
         {
           programming_language_id: lang.programming_language_id,
           share: detection[lang.name][:value],
-          language_id: lang.programming_language.language_id
+          language_id: lang.resolved_programming_language.language_id
         }
       end
     end

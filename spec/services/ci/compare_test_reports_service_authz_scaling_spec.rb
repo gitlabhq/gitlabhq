@@ -16,7 +16,7 @@ require 'spec_helper'
 #   security fix  -> FAIL  (authorizes read_job_artifacts once per artifact: O(N))
 #   perf fix      -> PASS  (memoized by [project_id, accessibility]: O(1))
 RSpec.describe Ci::CompareTestReportsService, feature_category: :continuous_integration do
-  let_it_be(:project) { create(:project, :repository) }
+  let_it_be(:project) { create(:project) }
   let_it_be(:user) { create(:user, maintainer_of: project) }
   let_it_be(:base_pipeline) { create(:ci_pipeline, project: project) }
 

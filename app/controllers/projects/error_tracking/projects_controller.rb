@@ -30,8 +30,12 @@ module Projects
 
       private
 
+      def sentry_params
+        params.permit(:api_host, :token)
+      end
+
       def list_projects_params
-        { api_host: params[:api_host], token: params[:token] }
+        { api_host: sentry_params[:api_host], token: sentry_params[:token] }
       end
 
       def serialize_projects(projects)

@@ -513,8 +513,10 @@ RSpec.describe API::API, feature_category: :system_access do
     subject { get api("/users/#{user.id}", user) }
 
     before do
-      allow(Rails.application.config).to receive(:content_security_policy).and_return(csp)
-      allow(Rails.application.config).to receive(:content_security_policy_report_only).and_return(report_only)
+      allow(Rails.application.config).to receive_messages(
+        content_security_policy: csp,
+        content_security_policy_report_only: report_only
+      )
     end
 
     context 'when CSP is not configured globally' do

@@ -1,6 +1,8 @@
 import { normalizeHeaders } from '~/lib/utils/common_utils';
 import axios from '~/lib/utils/axios_utils';
 
+let inFlightInitialData = null;
+
 export default class MRWidgetService {
   constructor(endpoints) {
     this.endpoints = endpoints;
@@ -77,14 +79,22 @@ export default class MRWidgetService {
   }
 
   static fetchInitialData() {
-    return Promise.all([
-      axios.get(window.gl.mrWidgetData.merge_request_cached_widget_path),
-      axios.get(window.gl.mrWidgetData.merge_request_widget_path),
-    ]).then(
-      axios.spread((res, cachedRes) => ({
-        data: Object.assign(res.data, cachedRes.data),
-        headers: normalizeHeaders(res.headers),
-      })),
-    );
+    if (!inFlightInitialData) {
+      inFlightInitialData = Promise.all([
+        axios.get(window.gl.mrWidgetData.merge_request_cached_widget_path),
+        axios.get(window.gl.mrWidgetData.merge_request_widget_path),
+      ])
+        .then(
+          axios.spread((res, cachedRes) => ({
+            data: Object.assign(res.data, cachedRes.data),
+            headers: normalizeHeaders(res.headers),
+          })),
+        )
+        .finally(() => {
+          inFlightInitialData = null;
+        });
+    }
+
+    return inFlightInitialData;
   }
 }

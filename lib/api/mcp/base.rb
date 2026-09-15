@@ -8,6 +8,7 @@ module API
       include ::Mcp::Tools::Base::VersionHelper
 
       helpers ::API::Helpers::Mcp::AuthChallenge
+      helpers ::API::Helpers::Mcp::JsonRpc
 
       # JSON-RPC Specification
       # See: https://www.jsonrpc.org/specification
@@ -175,7 +176,7 @@ module API
           render_structured_api_error!({
             jsonrpc: JSONRPC_VERSION,
             error: JSONRPC_ERRORS[:invalid_request].merge({ data: { validations: e.full_messages } }),
-            id: nil
+            id: jsonrpc_request_id
           }, 400)
         end
 
@@ -183,7 +184,7 @@ module API
           render_structured_api_error!({
             jsonrpc: JSONRPC_VERSION,
             error: JSONRPC_ERRORS[:invalid_params].merge({ data: { params: e.message } }),
-            id: nil
+            id: jsonrpc_request_id
           }, 400)
         end
 

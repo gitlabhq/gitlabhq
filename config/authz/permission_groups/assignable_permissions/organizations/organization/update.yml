@@ -7,4 +7,3 @@ available_for:
   - granular_access_token
 permissions:
   - update_organization
-  - update_organization_user

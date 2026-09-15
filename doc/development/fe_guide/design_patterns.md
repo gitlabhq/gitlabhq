@@ -8,8 +8,8 @@ title: Design Patterns
 This page covers suggested design patterns and also anti-patterns.
 
 > [!note]
-> When adding a design pattern to this document, be sure to clearly state the **problem it solves**.
-> When adding a design anti-pattern, clearly state **the problem it prevents**.
+> When adding a design pattern to this document, be sure to clearly state the problem it solves.
+> When adding a design anti-pattern, clearly state the problem it prevents.
 
 ## Patterns
 
@@ -25,7 +25,7 @@ Throughout the GitLab codebase, there may be historic uses of these anti-pattern
 when figuring out whether or not to refactor, when touching code that uses one of these legacy patterns.
 
 > [!note]
-> For new features, anti-patterns are not necessarily prohibited, but it is **strongly suggested** to find another approach.
+> For new features, anti-patterns are not necessarily prohibited, but it is strongly suggested to find another approach.
 
 ### Shared Global Object
 
@@ -68,7 +68,7 @@ Here are some historic examples where this pattern was identified to be problema
 
 #### When could the Shared Global Object pattern be actually appropriate?
 
-Shared Global Object's solve the problem of making something globally accessible. This pattern
+Shared Global Objects solve the problem of making something globally accessible. This pattern
 could be appropriate:
 
 - When a responsibility is truly global and should be referenced across the application
@@ -147,7 +147,7 @@ many problems with a module that exports utility functions.
 Singletons solve the problem of enforcing there to be only 1 instance of a thing. It's possible
 that a Singleton could be appropriate in the following rare cases:
 
-- We need to manage some resource that **MUST** have just 1 instance (that is, some hardware restriction).
+- We need to manage some resource that must have just 1 instance (that is, some hardware restriction).
 - There is a real [cross-cutting concern](https://en.wikipedia.org/wiki/Cross-cutting_concern) (for example, logging) and a Singleton provides the simplest API.
 
 Even in these scenarios, consider avoiding the Singleton pattern.
@@ -227,4 +227,4 @@ export class Foo {
 ```
 
 In this example, the lifecycle and implementation details of `mediator` are all managed
-**outside** the component (most likely the page entrypoint).
+outside the component (most likely the page entrypoint).

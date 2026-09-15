@@ -13,6 +13,7 @@ const {
   runInfectionScanner,
   createIsInfectable,
   logInfectionStats,
+  applyAliasList,
 } = vue3InfectionShared;
 
 const VUE3_SUFFIX = '.vue3-infected';
@@ -39,6 +40,8 @@ const appendVue3Suffix = (resolvedId) => {
 
 export function Vue3InfectionPlugin() {
   const contextAliasKeys = Object.keys(CONTEXT_ALIASES);
+  // Alias-expanded form of a CONTEXT_ALIASES key -> the key itself.
+  const expandedAliasKeys = new Map();
   let isBuild = false;
   let isInfectable = null;
 
@@ -48,6 +51,25 @@ export function Vue3InfectionPlugin() {
 
     configResolved(config) {
       isBuild = config.command === 'build';
+
+      // Vite applies `resolve.alias` before plugins that declare `enforce: 'pre'`.
+      // A CONTEXT_ALIASES key that a global alias also matches, such as anything
+      // under `vendor/`, therefore reaches `resolveId` already expanded to an
+      // absolute path and no longer equals its key. Record the expanded forms so
+      // the lookup below still finds them. Webpack is unaffected: its
+      // `beforeResolve` hook runs before resolution and sees the raw specifier.
+      const aliasEntries = Array.isArray(config.resolve?.alias)
+        ? config.resolve.alias
+        : Object.entries(config.resolve?.alias ?? {}).map(([find, replacement]) => ({
+            find,
+            replacement,
+          }));
+
+      expandedAliasKeys.clear();
+      for (const key of contextAliasKeys) {
+        const expanded = applyAliasList(key, aliasEntries);
+        if (expanded !== key) expandedAliasKeys.set(expanded, key);
+      }
 
       runInfectionScanner();
       const scannerGraph = loadScannerData();
@@ -105,11 +127,11 @@ export function Vue3InfectionPlugin() {
       const sourceToResolve = rawSource === VUE2_RUNTIME_ALIAS ? 'vue' : rawSource;
       const appendVue3 = isBuild ? appendVue3Suffix : appendVue3Query;
 
-      const aliasKey = contextAliasKeys.find((k) => sourceToResolve === k);
+      const aliasKey =
+        contextAliasKeys.find((k) => sourceToResolve === k) ??
+        expandedAliasKeys.get(sourceToResolve);
       if (aliasKey) {
-        const importerPath = isBuild
-          ? cleanInfectedId(stripQuery(importer))
-          : stripQuery(importer);
+        const importerPath = isBuild ? cleanInfectedId(stripQuery(importer)) : stripQuery(importer);
         const resolved = await resolve(CONTEXT_ALIASES[aliasKey]);
         if (!resolved || stripQuery(resolved.id) === importerPath) return null;
         return appendVue3(resolved.id);

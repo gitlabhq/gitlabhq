@@ -1,6 +1,6 @@
 ---
 stage: Plan
-group: Project Management
+group: Work Items
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see <https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments>
 title: Customer relations management (CRM)
 description: Customer management, organizations, contacts, and permissions.
@@ -44,15 +44,15 @@ For more information about what is planned for the future, see [issue 2256](http
 
 ## Enable customer relations management (CRM)
 
-Customer relations management features are enabled at the group level. If your
-group also contains subgroups, and you want to use CRM features in the subgroup,
-CRM features must also be enabled for the subgroup.
+Customer relations management features are turned on for a group.
+To use CRM features in a subgroup, you must also turn them on for
+the subgroup.
 
-To enable customer relations management in a group or subgroup:
+To turn on customer relations management in a group or subgroup:
 
 1. In the top bar, select **Search or go to** and find your group or subgroup.
 1. Select **Settings** > **General**.
-1. Expand the **Permissions and group features** section.
+1. Expand **Permissions and group features**.
 1. Select **Customer relations is enabled**.
 1. Select **Save changes**.
 
@@ -66,14 +66,14 @@ To enable customer relations management in a group or subgroup:
 
 By default, contacts are sourced from a work item's top-level group.
 
-The contact source for a group will apply to all subgroups,
+The contact source for a group applies to all subgroups,
 unless they have a contact source configured.
 
 To configure the contact source for a group or subgroup:
 
 1. In the top bar, select **Search or go to** and find your group or subgroup.
 1. Select **Settings** > **General**.
-1. Expand the **Permissions and group features** section.
+1. Expand **Permissions and group features**.
 1. Select **Contact source** > **Search for a group**.
 1. Select the group from which you wish to source contacts.
 1. Select **Save changes**.
@@ -274,17 +274,15 @@ When you use the `/remove_contacts` quick action, follow it with `[contact:` and
 
 ## Moving objects with CRM entries
 
-When you move a work item or project and the **parent group contact source matches**,
-work items retain their contacts.
+When you move a work item or project, the outcome depends on the parent group contact source:
 
-When you move a work item or project and the **parent group contact source changes**,
-work items lose their contacts.
+- If the source matches, work items retain their contacts.
+- If the source changes, work items lose their contacts.
 
 When you move a group with a [contact source configured](#configure-the-contact-source)
-or its **contact source remains unchanged**,
-work items retain their contacts.
+or its contact source remains unchanged, work items retain their contacts.
 
-When you move a group and its **contact source changes**:
+When you move a group and its contact source changes:
 
 - All unique contacts and organizations are migrated to the new top-level group.
 - Contacts that already exist (by email address) are deemed duplicates and deleted.

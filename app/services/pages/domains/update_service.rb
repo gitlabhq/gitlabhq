@@ -9,6 +9,7 @@ module Pages
         return false unless domain.update(params)
 
         publish_event(domain)
+        log_audit_event(domain, 'updated')
 
         true
       end

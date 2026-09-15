@@ -5,12 +5,13 @@ module Ci
     def schema
       {
         'type' => 'object',
-        'required' => %w[pipeline_id status],
+        'required' => %w[pipeline_id status source partition_id],
         'properties' => {
           'pipeline_id' => { 'type' => 'integer' },
           'status' => { 'type' => 'string' },
           'source' => { 'type' => 'string' },
-          'partition_id' => { 'type' => 'integer' }
+          'partition_id' => { 'type' => 'integer' },
+          'source_ref' => { 'type' => %w[string null] }
         }
       }
     end

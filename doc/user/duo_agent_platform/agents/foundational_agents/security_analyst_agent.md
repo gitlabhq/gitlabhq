@@ -135,12 +135,12 @@ Then, to use the Security Analyst Agent:
   - "Which vulnerabilities pose the highest risk to production?"
 - Triage and management:
   - "Dismiss all dependency scanning vulnerabilities marked as false positives with unreachable code."
-  - "Confirm all container scanning vulnerabilities with known exploit."
+  - "Confirm all container scanning vulnerabilities with known exploits."
   - "Update severity to HIGH for all vulnerabilities that cross trust boundaries."
   - "Show me vulnerabilities dismissed in the past week, with their reasoning."
   - "Revert vulnerability status back to detected for re-assessment."
 - Issue management:
-  - "Create issues for all confirmed high-severity SAST vulnerabilities and assign them to recent committers"
+  - "Create issues for all confirmed high-severity SAST vulnerabilities and assign them to recent committers."
   - "Link vulnerability (vulnerability ID) to issue (issue ID) for tracking remediation."
   - "Generate remediation tasks for critical infrastructure vulnerabilities."
   - "Create a security epic to track all authentication-related vulnerabilities."

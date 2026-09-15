@@ -2,8 +2,8 @@
 
 require 'spec_helper'
 
-RSpec.describe Environments::CreateService, feature_category: :environment_management do
-  let_it_be(:project) { create(:project) }
+RSpec.describe Environments::CreateService, :with_current_organization, feature_category: :environment_management do
+  let_it_be(:project) { create(:project, organization: current_organization) }
   let_it_be(:developer) { create(:user, developer_of: project) }
   let_it_be(:reporter) { create(:user, reporter_of: project) }
 
@@ -148,7 +148,7 @@ RSpec.describe Environments::CreateService, feature_category: :environment_manag
     end
 
     context 'with a cluster agent' do
-      let_it_be(:agent_management_project) { create(:project) }
+      let_it_be(:agent_management_project) { create(:project, organization: current_organization) }
       let_it_be(:cluster_agent) { create(:cluster_agent, project: agent_management_project) }
 
       let(:params) do

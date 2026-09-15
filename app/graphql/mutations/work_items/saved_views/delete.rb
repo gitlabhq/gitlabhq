@@ -6,7 +6,12 @@ module Mutations
       class Delete < BaseMutation
         graphql_name 'WorkItemSavedViewDelete'
 
-        authorize :delete_saved_view
+        authorize :delete_work_item_saved_view
+        authorize_granular_token permissions: :delete_work_item_saved_view,
+          boundaries: [
+            { boundary_argument: :id, boundary: :resource_parent, boundary_type: :project },
+            { boundary_argument: :id, boundary: :resource_parent, boundary_type: :group }
+          ]
 
         description "Deletes a saved view."
 
@@ -31,6 +36,12 @@ module Mutations
           saved_view = authorized_find!(id: id)
 
           saved_view.destroy!
+
+          ::Gitlab::WorkItems::Instrumentation::TrackingService.track_saved_view(
+            event: ::Gitlab::WorkItems::Instrumentation::EventActions::SAVED_VIEW_DELETE,
+            saved_view: saved_view,
+            user: current_user
+          )
 
           { saved_view: saved_view, errors: [] }
         end

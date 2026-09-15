@@ -17,8 +17,8 @@ module Projects
 
       def show
         find_params = params
+                        .permit(:name, :order_by, :orderBy, :sort, :order_by_type, :orderByType)
                         .transform_keys(&:underscore)
-                        .permit(:name, :order_by, :sort, :order_by_type)
 
         finder = CandidateFinder.new(@experiment, find_params)
 
@@ -30,7 +30,8 @@ module Projects
           end
 
           format.html do
-            paginator = finder.execute.keyset_paginate(cursor: params[:cursor], per_page: MAX_CANDIDATES_PER_PAGE)
+            paginator = finder.execute.keyset_paginate(cursor: params.permit(:cursor)[:cursor],
+              per_page: MAX_CANDIDATES_PER_PAGE)
 
             @candidates = paginator.records
             @page_info = page_info(paginator)
@@ -57,7 +58,7 @@ module Projects
       end
 
       def set_experiment
-        @experiment = ::Ml::Experiment.by_project_id_and_iid(@project.id, params[:iid])
+        @experiment = ::Ml::Experiment.by_project_id_and_iid(@project.id, params.permit(:iid)[:iid])
 
         render_404 unless @experiment
       end

@@ -339,7 +339,6 @@ When publishing packages:
   consecutive upload is saved as a separate file. When installing a package,
   GitLab serves the most recent file.
 - Most uploaded packages should be immediately visible in the **Package registry** page. A few packages might take up to 10 minutes before they are visible if they need to be processed in the background.
-  a package.
 
 ### With NuGet CLI
 

@@ -440,6 +440,25 @@ RSpec.describe Oauth::AuthorizationsController, :with_current_organization, feat
         end
       end
 
+      context 'when dynamic application has only mcp_orbit scope and both MCP scopes are requested' do
+        let(:application) do
+          create(:oauth_application, :dynamic, scopes: 'mcp_orbit', redirect_uri: 'http://example.com')
+        end
+
+        it 'forces scope to mcp_orbit', :aggregate_failures do
+          get oauth_authorization_path, params: params.merge(
+            scope: 'mcp mcp_orbit',
+            resource: 'https://gitlab.example.com/api/v4/orbit/mcp',
+            code_challenge: 'valid_code_challenge',
+            code_challenge_method: 'S256'
+          )
+
+          expect(response).to have_gitlab_http_status(:ok)
+          expect(response).to render_template('doorkeeper/authorizations/new')
+          expect(response.body).to include('value="mcp_orbit"')
+        end
+      end
+
       context 'when non-dynamic application has multiple scopes and no scope provided' do
         let(:application) { create(:oauth_application, scopes: 'api read_user', redirect_uri: 'http://example.com') }
 
@@ -450,6 +469,64 @@ RSpec.describe Oauth::AuthorizationsController, :with_current_organization, feat
           expect(response).to render_template('doorkeeper/authorizations/new')
           expect(response.body).to include('value="api read_user"')
         end
+      end
+    end
+  end
+
+  describe 'missing client when dynamic client registration is disabled' do
+    let(:docs_anchor) { 'reuse-a-single-oauth-application' }
+    let(:params) do
+      {
+        client_id: client_id,
+        response_type: 'code',
+        scope: 'api',
+        redirect_uri: 'http://example.com',
+        state: SecureRandom.hex,
+        code_challenge: 'a-valid-code-challenge-that-is-long-enough-1234',
+        code_challenge_method: 'S256'
+      }
+    end
+
+    context 'when dynamic client registration is disabled' do
+      before do
+        stub_application_setting(dynamic_client_registration_enabled: false)
+      end
+
+      context 'and the client_id does not reference any application' do
+        let(:client_id) { 'this-client-id-does-not-exist' }
+
+        it 'renders an actionable error linking to the docs', :aggregate_failures do
+          get oauth_authorization_path
+
+          expect(response).to have_gitlab_http_status(:ok)
+          expect(response).to render_template('doorkeeper/authorizations/error')
+          expect(response.body).to include('dynamic client registration is disabled')
+          expect(response.body).to include(docs_anchor)
+        end
+      end
+
+      context 'and the client_id references an existing application' do
+        let(:client_id) { application.uid }
+
+        it 'does not render the custom error' do
+          get oauth_authorization_path
+
+          expect(response.body).not_to include(docs_anchor)
+        end
+      end
+    end
+
+    context 'when dynamic client registration is enabled' do
+      let(:client_id) { 'this-client-id-does-not-exist' }
+
+      before do
+        stub_application_setting(dynamic_client_registration_enabled: true)
+      end
+
+      it 'does not render the custom error' do
+        get oauth_authorization_path
+
+        expect(response.body).not_to include(docs_anchor)
       end
     end
   end

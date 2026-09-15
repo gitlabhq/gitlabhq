@@ -182,7 +182,7 @@ conditions become true:
 
 - A newer version of the merge request diff exists
 - The merge request was merged more than seven days ago
-- The merge request was closed more than seven day ago
+- The merge request was closed more than seven days ago
 
 These rules strike a balance between space and performance by only storing
 frequently-accessed diffs in the database. Diffs that are less likely to be

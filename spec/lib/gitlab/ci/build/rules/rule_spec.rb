@@ -26,7 +26,7 @@ RSpec.describe Gitlab::Ci::Build::Rules::Rule do
         { if: '$VAR == null', when: 'always' }
       end
 
-      it { is_expected.to eq(true) }
+      it { is_expected.to be(true) }
     end
 
     context 'with one matching clause changes' do
@@ -34,7 +34,7 @@ RSpec.describe Gitlab::Ci::Build::Rules::Rule do
         { changes: { paths: ['**/*'] }, when: 'always' }
       end
 
-      it { is_expected.to eq(true) }
+      it { is_expected.to be(true) }
     end
 
     context 'with two matching clauses' do
@@ -42,7 +42,7 @@ RSpec.describe Gitlab::Ci::Build::Rules::Rule do
         { if: '$VAR == null', changes: { paths: ['**/*'] }, when: 'always' }
       end
 
-      it { is_expected.to eq(true) }
+      it { is_expected.to be(true) }
     end
 
     context 'with a matching and non-matching clause' do
@@ -50,7 +50,7 @@ RSpec.describe Gitlab::Ci::Build::Rules::Rule do
         { if: '$VAR != null', changes: { paths: ['invalid.xyz'] }, when: 'always' }
       end
 
-      it { is_expected.to eq(false) }
+      it { is_expected.to be(false) }
     end
 
     context 'with two non-matching clauses' do
@@ -58,7 +58,7 @@ RSpec.describe Gitlab::Ci::Build::Rules::Rule do
         { if: '$VAR != null', changes: { paths: ['README'] }, when: 'always' }
       end
 
-      it { is_expected.to eq(false) }
+      it { is_expected.to be(false) }
     end
   end
 end

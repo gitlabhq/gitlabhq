@@ -686,7 +686,7 @@ Now, you'll use Code Suggestions to improve error handling in the routes:
    # and return a 404 status code if the book does not exist
    ```
 
-1. Check the generated code as adjust as necessary. It should look similar to
+1. Check the generated code and adjust as necessary. It should look similar to
    the following:
 
    ```python
@@ -810,7 +810,7 @@ application configuration.
 
      ```plaintext
      Can you explain the security implications of these configuration choices?
-     What other Flask configurationsettings should I be aware of for a secure deployment?
+     What other Flask configuration settings should I be aware of for a secure deployment?
      ```
 
 1. Based on the response, improve the `create_app` function. Depending on the follow-up

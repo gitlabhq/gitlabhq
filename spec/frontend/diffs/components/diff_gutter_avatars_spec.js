@@ -38,7 +38,7 @@ describe('DiffGutterAvatars', () => {
       findCollapseButton().trigger('click');
 
       await nextTick();
-      expect(wrapper.emitted()['toggle-line-discussions']).toBeDefined();
+      expect(wrapper.emitted('toggle-line-discussions')).toBeDefined();
     });
 
     it('renders the proper title and aria-label', () => {
@@ -77,14 +77,14 @@ describe('DiffGutterAvatars', () => {
       findUserAvatars().at(0).element.parentElement.click();
 
       await nextTick();
-      expect(wrapper.emitted()['toggle-line-discussions']).toBeDefined();
+      expect(wrapper.emitted('toggle-line-discussions')).toBeDefined();
     });
 
     it('should emit toggle-line-discussions event on more count text click', async () => {
       findMoreCount().trigger('click');
 
       await nextTick();
-      expect(wrapper.emitted()['toggle-line-discussions']).toBeDefined();
+      expect(wrapper.emitted('toggle-line-discussions')).toBeDefined();
     });
   });
 

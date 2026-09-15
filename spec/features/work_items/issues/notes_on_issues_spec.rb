@@ -132,7 +132,8 @@ RSpec.describe 'Create notes on issues', :js, feature_category: :team_planning d
       let(:reference_content) { reference.to_reference }
 
       before do
-        create(:resource_state_event, issue: issue, state: :closed, created_at: '2020-02-05', source_merge_request: reference)
+        create(:resource_state_event, issue: issue, state: :closed, created_at: '2020-02-05',
+          source_merge_request: reference)
       end
     end
   end
@@ -143,7 +144,8 @@ RSpec.describe 'Create notes on issues', :js, feature_category: :team_planning d
       let(:reference_content) { reference.short_sha }
 
       before do
-        create(:resource_state_event, issue: issue, state: :closed, created_at: '2020-02-05', source_commit: reference.id)
+        create(:resource_state_event, issue: issue, state: :closed, created_at: '2020-02-05',
+          source_commit: reference.id)
       end
     end
   end

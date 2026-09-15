@@ -44,7 +44,7 @@ module API
 
           members = paginate(retrieve_members(source, params: params))
 
-          present_members members
+          present_members members, source: source
         end
 
         desc "List all members of a #{source_type}" do
@@ -97,7 +97,7 @@ module API
           members = source_members(source)
           member = members.find_by!(user_id: params[:user_id])
 
-          present_members member
+          present_members member, source: source
         end
         # rubocop: enable CodeReuse/ActiveRecord
 

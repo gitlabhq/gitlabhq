@@ -25,7 +25,13 @@ module Ci
     validates :build, presence: true
     validates :project_id, presence: true
 
-    def self.runner_machine_id_for(runtime_environment_id)
+    def self.runner_machine_id_for(build)
+      return unless ::Feature.enabled?(:ci_suspendable_environment_runner_routing, build.project,
+        type: :gitlab_com_derisk)
+
+      runtime_environment_id = build.job_runtime_environment&.runtime_environment_id
+      return unless runtime_environment_id
+
       in_partition(Ci::Partition.recent_ids)
         .where(runtime_environment_id: runtime_environment_id)
         .where.not(runner_machine_id: nil)

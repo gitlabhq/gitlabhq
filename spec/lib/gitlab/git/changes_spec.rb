@@ -2,7 +2,7 @@
 
 require 'fast_spec_helper'
 
-RSpec.describe Gitlab::Git::Changes do
+RSpec.describe Gitlab::Git::Changes, feature_category: :source_code_management do
   let(:changes) { described_class.new }
 
   describe '#includes_branches?' do

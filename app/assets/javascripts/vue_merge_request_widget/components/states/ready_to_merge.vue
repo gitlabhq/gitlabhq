@@ -20,7 +20,6 @@ import { fetchPolicies } from '~/lib/graphql';
 import { TYPENAME_MERGE_REQUEST } from '~/graphql_shared/constants';
 import { STATUS_CLOSED, STATUS_MERGED } from '~/issues/constants';
 import { secondsToMilliseconds } from '~/lib/utils/datetime_utility';
-import simplePoll from '~/lib/utils/simple_poll';
 import { __, s__, n__, sprintf } from '~/locale';
 import SmartInterval from '~/smart_interval';
 import { helpPagePath } from '~/helpers/help_page_helper';
@@ -29,6 +28,7 @@ import readyToMergeSubscription from '~/vue_merge_request_widget/queries/states/
 import HelpPopover from '~/vue_shared/components/help_popover.vue';
 import glFeatureFlagsMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
 import { rebaseProjectMergeRequestPath } from '~/lib/utils/path_helpers/merge_requests';
+import { rebaseFailureMessage } from '~/vue_merge_request_widget/utils';
 import {
   AUTO_MERGE_STRATEGIES,
   MT_MERGE_STRATEGY,
@@ -214,6 +214,14 @@ export default {
     isAutoMergeAvailable() {
       return !isEmpty(this.mr.availableAutoMergeStrategies);
     },
+    autoMergeStrategiesPending() {
+      // Strategies load from a separate poll than this component's own query, so
+      // until that poll resolves they are not yet an array (the field is [String]).
+      // Treat any non-array value as pending so the button can't trigger an
+      // immediate merge (bypassing a merge train) before auto-merge availability
+      // is known (#593704).
+      return !Array.isArray(this.mr.availableAutoMergeStrategies);
+    },
     pipeline() {
       return this.state.headPipeline;
     },
@@ -271,6 +279,9 @@ export default {
       return PIPELINE_SUCCESS_STATE;
     },
     mergeButtonText() {
+      if (this.autoMergeStrategiesPending) {
+        return s__('mrWidget|Checking if auto-merge is available…');
+      }
       if (this.isMergingImmediately) {
         return __('Merge in progress');
       }
@@ -373,12 +384,12 @@ export default {
   },
   mounted() {
     eventHub.$on('ApprovalUpdated', this.updateGraphqlState);
-    eventHub.$on('MRWidgetUpdateRequested', this.updateGraphqlState);
+    eventHub.$on('mr-widget-update-requested', this.updateGraphqlState);
     eventHub.$on('mr.discussion.updated', this.updateGraphqlState);
   },
   beforeDestroy() {
     eventHub.$off('ApprovalUpdated', this.updateGraphqlState);
-    eventHub.$off('MRWidgetUpdateRequested', this.updateGraphqlState);
+    eventHub.$off('mr-widget-update-requested', this.updateGraphqlState);
     eventHub.$off('mr.discussion.updated', this.updateGraphqlState);
     eventHub.$off('ApprovalUpdated', this.updateGraphqlState);
 
@@ -456,12 +467,12 @@ export default {
             data.status === MERGE_HOOK_VALIDATION_ERROR_STATUS;
 
           if (AUTO_MERGE_STRATEGIES.includes(data.status)) {
-            eventHub.$emit('MRWidgetUpdateRequested');
+            eventHub.$emit('mr-widget-update-requested');
             this.mr.transitionStateMachine({ transition: AUTO_MERGE });
           } else if (data.status === MERGE_SUCCESS_STATUS) {
             this.mr.transitionStateMachine({ transition: MERGING });
           } else if (hasError) {
-            eventHub.$emit('FailedToMerge', data.merge_error);
+            eventHub.$emit('failed-to-merge', data.merge_error);
             this.mr.transitionStateMachine({ transition: MERGE_FAILURE });
           }
 
@@ -498,37 +509,6 @@ export default {
     },
     onMergeWithFailedPipelineConfirmation() {
       this.handleMergeButtonClick(false, true, true);
-    },
-    initiateRemoveSourceBranchPolling() {
-      // We need to show source branch is being removed spinner in another component
-      eventHub.$emit('SetBranchRemoveFlag', [true]);
-
-      simplePoll((continuePolling, stopPolling) => {
-        this.handleRemoveBranchPolling(continuePolling, stopPolling);
-      });
-    },
-    handleRemoveBranchPolling(continuePolling, stopPolling) {
-      this.service
-        .poll()
-        .then((res) => res.data)
-        .then((data) => {
-          // If source branch exists then we should continue polling
-          // because removing a source branch is a background task and takes time
-          if (data.source_branch_exists) {
-            continuePolling();
-          } else {
-            // Branch is removed. Update widget, stop polling and hide the spinner
-            eventHub.$emit('MRWidgetUpdateRequested', () => {
-              eventHub.$emit('SetBranchRemoveFlag', [false]);
-            });
-            stopPolling();
-          }
-        })
-        .catch(() => {
-          createAlert({
-            message: __('Something went wrong while deleting the source branch. Please try again.'),
-          });
-        });
     },
     setCommitMessage(val) {
       this.commitMessage = val;
@@ -572,7 +552,7 @@ export default {
         this.updateGraphqlState();
       } catch (error) {
         createAlert({
-          message: error.response?.data?.message || __('Failed to rebase. Please try again.'),
+          message: rebaseFailureMessage(error),
           variant: 'danger',
         });
       } finally {
@@ -770,7 +750,7 @@ export default {
                   data-testid="merge-button"
                   variant="confirm"
                   :disabled="isMergeButtonDisabled"
-                  :loading="isMakingRequest"
+                  :loading="isMakingRequest || autoMergeStrategiesPending"
                   @click="handleMergeButtonClick(isAutoMergeAvailable)"
                   >{{ mergeButtonText }}</gl-button
                 >

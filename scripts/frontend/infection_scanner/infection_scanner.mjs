@@ -5,6 +5,8 @@ import fs from 'node:fs';
 import { createServer } from 'node:http';
 import { execSync } from 'node:child_process';
 import { analyze, createResolver } from './analyze.mjs';
+import { findDuplicatedModules } from './duplicated_modules.mjs';
+import { formatDuplicatedModulesReport } from './duplicated_modules_report.mjs';
 
 const cjsRequire = createRequire(import.meta.url);
 const ROOT_PATH = path.resolve(import.meta.dirname, '..', '..', '..');
@@ -18,17 +20,22 @@ function buildAliasMap() {
   const { CONTEXT_ALIASES } = cjsRequire(
     path.join(ROOT_PATH, 'config/helpers/context_aliases_shared'),
   );
-  const aliases = { ...webpackConfig.resolve.alias };
+  // The plain map has no CONTEXT_ALIASES overrides -- it's what an un-infected
+  // importer actually resolves against in the real build. Kept alongside the
+  // merged map so the resolver can compute both resolutions for specifiers that
+  // CONTEXT_ALIASES redirects (see `createResolver`'s `plainAliasMap` doc).
+  const plainAliasMap = { ...webpackConfig.resolve.alias };
+  const aliasMap = { ...plainAliasMap };
   // Context aliases represent "vue3 mode" resolution — the infection plugin
   // applies these at runtime.  Merge them as exact-match aliases ($ suffix)
   // so the scanner follows the same resolution paths.
   for (const [key, target] of Object.entries(CONTEXT_ALIASES)) {
-    aliases[`${key}$`] = target;
+    aliasMap[`${key}$`] = target;
   }
-  return aliases;
+  return { aliasMap, plainAliasMap };
 }
 
-const aliasMap = buildAliasMap();
+const { aliasMap, plainAliasMap } = buildAliasMap();
 
 // Single shared resolver instance, used both for entrypoint discovery and
 // (transparently, inside `analyze()`) for the graph walk.
@@ -48,24 +55,10 @@ const resolver = createResolver({
 
 function discoverEntries() {
   const { generateEntries } = cjsRequire(path.join(ROOT_PATH, 'config/webpack.helpers'));
-  const defaultEntries = ['./main'];
-  const { entries: generated } = generateEntries(defaultEntries);
+  const { baseEntryPoints } = cjsRequire(path.join(ROOT_PATH, 'config/helpers/entry_points'));
+  const { entries: generated } = generateEntries(baseEntryPoints.default);
 
-  const manual = {
-    sentry: ['./sentry/index.js'],
-    coverage_persistence: ['./entrypoints/coverage_persistence.js'],
-    performance_bar: ['./entrypoints/performance_bar.js'],
-    jira_connect_app: ['./jira_connect/subscriptions/index.js'],
-    sandboxed_mermaid_v11: ['./lib/mermaid_v11.js'],
-    redirect_listbox: ['./entrypoints/behaviors/redirect_listbox.js'],
-    sandboxed_swagger: ['./lib/swagger.js'],
-    super_sidebar: ['./entrypoints/super_sidebar.js'],
-    tracker: ['./entrypoints/tracker.js'],
-    analytics: ['./entrypoints/analytics.js'],
-    graphql_explorer: ['./entrypoints/graphql_explorer.js'],
-  };
-
-  const all = { default: defaultEntries, ...manual, ...generated };
+  const all = { ...baseEntryPoints, ...generated };
 
   const dummyFromFile = path.join(JS_ROOT, '__entry__.js');
   const entrypoints = {};
@@ -111,6 +104,9 @@ function promoteYamlDeclaredPages(graph) {
     const entry = graph[indexPath];
     if (!entry || entry.infected) continue;
     entry.infected = true;
+    // Keep `infected` a subset of `exposedToVue`. A promoted page is exposed to Vue anyway,
+    // because nothing barriers the downward walk, so this is defensive.
+    entry.exposedToVue = true;
     entry.infectionPromotedByYaml = true;
     promoted.add(indexPath);
   }
@@ -120,6 +116,98 @@ function promoteYamlDeclaredPages(graph) {
     );
   }
   return promoted;
+}
+
+// --- Duplicated modules check ---
+
+// Each is bound to the Vue version that built it, so two copies are correct.
+const DUPLICATION_EXPECTED = [
+  'ee/app/assets/javascripts/invite_members/provider.js',
+  'ee/app/assets/javascripts/subscriptions/graphql/graphql.js',
+  'app/assets/javascripts/pinia/instance.js',
+];
+
+const stripQuery = (id) => (id.includes('?') ? id.slice(0, id.indexOf('?')) : id);
+
+function discoverVue3PageSeeds() {
+  const { generateEntries } = cjsRequire(path.join(ROOT_PATH, 'config/webpack.helpers'));
+  const { loadVue3Migrations } = cjsRequire(
+    path.join(ROOT_PATH, 'config/helpers/vue3_migration_loader'),
+  );
+  const { baseEntryPoints, ALWAYS_LOADED_ENTRY_POINTS } = cjsRequire(
+    path.join(ROOT_PATH, 'config/helpers/entry_points'),
+  );
+  const { entries } = generateEntries(baseEntryPoints.default);
+  const dummyFromFile = path.join(JS_ROOT, '__entry__.js');
+  const resolveSpecifier = (spec) => resolver.resolveModule(stripQuery(spec), dummyFromFile);
+
+  // Always Vue 2: these bundles have no `.vue3` variant.
+  const globalSeeds = ALWAYS_LOADED_ENTRY_POINTS.map((name) => {
+    const file = resolveSpecifier(baseEntryPoints[name]);
+    if (!file) throw new Error(`[vue3-infection-scanner] cannot resolve entry '${name}'`);
+    return { file, infected: false };
+  });
+
+  // Unmigrated entries are skipped: checking them costs about 2.7s.
+  const migrated = new Set(
+    Object.entries(loadVue3Migrations()).flatMap(([name, { status }]) =>
+      status === 'rollout' ? [name, `${name}.vue3`] : [name],
+    ),
+  );
+
+  const pages = [];
+  for (const [key, specifiers] of Object.entries(entries)) {
+    if (!migrated.has(key)) continue;
+
+    const seeds = specifiers
+      .map((spec) => ({ file: resolveSpecifier(spec), infected: spec.includes('?vue3') }))
+      .filter((seed) => seed.file);
+    if (!seeds.length) continue;
+
+    const isRolloutFlagOn = key.endsWith('.vue3');
+    const isRolloutFlagOff = Boolean(entries[`${key}.vue3`]);
+    let flagState;
+    if (isRolloutFlagOn) flagState = 'flag on';
+    else if (isRolloutFlagOff) flagState = 'flag off';
+
+    pages.push({
+      entry: key.replace(/\.vue3$/, ''),
+      flagState,
+      seeds: [...seeds, ...globalSeeds],
+    });
+  }
+  return pages;
+}
+
+function checkDuplicatedModules(result) {
+  const { createIsInfectable } = cjsRequire(
+    path.join(ROOT_PATH, 'config/helpers/vue3_infection_shared'),
+  );
+
+  const graphMap = new Map(Object.entries(result.graph));
+  // `createIsInfectable` throws for a path that is not in the graph.
+  const realIsInfectable = createIsInfectable(graphMap);
+  const isInfectable = (file) => graphMap.has(file) && realIsInfectable(file);
+
+  const pages = discoverVue3PageSeeds();
+  const options = {
+    graph: result.graph,
+    pages,
+    isInfectable,
+    rootPath: ROOT_PATH,
+    duplicationExpected: DUPLICATION_EXPECTED,
+  };
+
+  const findings = findDuplicatedModules(options);
+  if (!findings.length) {
+    console.log(
+      `[vue3-infection-scanner] Duplicated modules check: ${pages.length} page state(s), none found.`,
+    );
+    return [];
+  }
+
+  console.error(formatDuplicatedModulesReport(findings));
+  return findings;
 }
 
 // --- JSON output ---
@@ -405,6 +493,7 @@ async function runAnalysis() {
     entrypoints,
     infectionSpecifiers: INFECTION_SPECIFIERS,
     aliasMap,
+    plainAliasMap,
     fallbackResolve: (specifier, fromDir) => {
       try {
         return cjsRequire.resolve(specifier, { paths: [fromDir] });
@@ -428,19 +517,36 @@ async function runAnalysis() {
   // analyze() produces the annotated graph; surface aggregate counts.
   let appRoots = 0;
   let infected = 0;
+  let exposedToVue = 0;
+  let invariantBreaches = 0;
   for (const entry of Object.values(result.graph)) {
     if (entry.appRoot) appRoots += 1;
     if (entry.infected) infected += 1;
+    if (entry.exposedToVue) exposedToVue += 1;
+    if (entry.infected && !entry.exposedToVue) invariantBreaches += 1;
+  }
+  if (invariantBreaches > 0) {
+    throw new Error(
+      `[vue3-infection-scanner] ${invariantBreaches} file(s) are infected but do not reach ` +
+        `Vue. Removing the app-root barrier can only add files, so this cannot happen.`,
+    );
   }
   console.log(`[vue3-infection-scanner] App roots: ${appRoots} files`);
   console.log(
     `[vue3-infection-scanner] Infected: ${infected} / ${Object.keys(result.graph).length} files`,
   );
+  console.log(
+    `[vue3-infection-scanner] Exposed to Vue: ${exposedToVue} / ` +
+      `${Object.keys(result.graph).length} files`,
+  );
 
+  // Write first so a failed check still leaves a fresh graph on disk.
   writeOutput(result);
+  const duplicatedModules = checkDuplicatedModules(result);
+
   analysisResult = result;
   analysisRunning = false;
-  return result;
+  return { result, duplicatedModules };
 }
 
 const mode = process.argv[2];
@@ -449,8 +555,13 @@ if (mode === 'web') {
   runAnalysis();
   startServer();
 } else {
-  runAnalysis().catch((err) => {
-    console.error(err);
-    process.exitCode = 1;
-  });
+  runAnalysis()
+    .then(({ duplicatedModules }) => {
+      if (duplicatedModules.length) process.exitCode = 1;
+      return duplicatedModules.length;
+    })
+    .catch((err) => {
+      console.error(err);
+      process.exitCode = 1;
+    });
 }

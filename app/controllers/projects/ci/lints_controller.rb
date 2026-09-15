@@ -21,7 +21,7 @@ class Projects::Ci::LintsController < Projects::ApplicationController
     render json: ::Ci::Lint::ResultSerializer.new.represent(result)
   rescue Gitlab::Ci::Lint::RateLimitError
     response.set_header('Retry-After', Gitlab::ApplicationRateLimiter.period_for(:ci_lint).to_s)
-    render json: { error: _('This endpoint has been requested too many times. Try again later.') },
+    render json: { error: Gitlab::ApplicationRateLimiter.throttled_error_message },
       status: :too_many_requests
   end
 

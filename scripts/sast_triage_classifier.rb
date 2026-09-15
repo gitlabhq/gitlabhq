@@ -51,6 +51,8 @@ class SastTriageClassifier
 
   VALID_VERDICTS = %w[tp fp uncertain].freeze
 
+  ALLOWED_API_URLS = %w[https://gitlab.com/api/v4].freeze
+
   # GraphQL errors come back inside a normal HTTP 200, in either the top-level
   # `errors` array (auth/rate-limit/syntax) or `data.aiAction.errors`
   # (Duo-feature-specific). Map common patterns to short tags so the verdict
@@ -101,10 +103,15 @@ class SastTriageClassifier
   def initialize(
     api_url: ENV['CI_API_V4_URL'], token: ENV['CUSTOM_SAST_RULES_BOT_PAT'],
     bot_user_id: ENV['BOT_USER_ID'], project_dir: ENV['CI_PROJECT_DIR'])
-    @api_url = api_url || raise('CI_API_V4_URL is not defined')
+    # Normalized once here so the allowlist check below is an exact match.
+    @api_url = (api_url || raise('CI_API_V4_URL is not defined')).to_s.chomp('/')
     @token = token || raise('CUSTOM_SAST_RULES_BOT_PAT is not defined')
     @bot_user_id = bot_user_id || raise('BOT_USER_ID is not defined')
     @project_dir = project_dir || raise('CI_PROJECT_DIR is not defined')
+
+    return if ALLOWED_API_URLS.include?(@api_url)
+
+    raise ArgumentError, "api_url '#{@api_url}' is not allowlisted"
   end
 
   # @param findings [Hash{String => Hash}] fingerprint => { path:, line:, message:, check_id: }
@@ -397,8 +404,8 @@ class SastTriageClassifier
   end
 
   def graphql_base_url
-    # CI_API_V4_URL looks like https://gitlab.com/api/v4 - strip /api/v4 to get the instance root.
-    @graphql_base_url ||= api_url.to_s.sub(%r{/api/v4/?\z}, '')
+    # api_url is normalized at construction to https://gitlab.com/api/v4 - strip /api/v4 to get the instance root.
+    @graphql_base_url ||= api_url.delete_suffix('/api/v4')
   end
 
   def parse_verdict(content, started_at)

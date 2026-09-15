@@ -10,7 +10,7 @@ across the GitLab frontend team.
 
 ## Introduction
 
-GitLab is built on top of [Ruby on Rails](https://rubyonrails.org). It uses [Haml](https://haml.info/) and a JavaScript-based frontend with [Vue.js](https://vuejs.org). If you are not sure when to use Vue on top of Haml-page, read [this explanation](vue.md#when-to-add-a-vue-application).
+GitLab is built on top of [Ruby on Rails](https://rubyonrails.org). It uses [Haml](https://haml.info/) and a JavaScript-based frontend with [Vue.js](https://vuejs.org). If you are not sure when to use Vue on top of a Haml page, read [this explanation](vue.md#when-to-add-a-vue-application).
 
 <!-- vale gitlab_base.Spelling = NO -->
 
@@ -49,7 +49,7 @@ GitLab core frontend code is located under [`app/assets/javascripts`](https://gi
 
 Since GitLab uses the [Ruby on Rails](https://rubyonrails.org) framework, we inject our Vue applications into the views using [Haml](https://haml.info/). For example, to build a Vue app in a Rails view, we set up a view like [`app/views/projects/pipeline_schedules/index.html.haml`](https://gitlab.com/gitlab-org/gitlab/-/blob/4ce851345054dbf09956dabcc9b958ae8aab77bb/app/views/projects/pipeline_schedules/index.html.haml). Inside this view, we add an element with an `id` like `#pipeline-schedules-app`. This element serves as the mounting point for our frontend code.
 
-The application structure typically follows the pattern: `app/assets/javascripts/<feature-name>`. For example, the directory for a specific feature might look like [`app/assets/javascripts/ci/pipeline_schedules`](https://gitlab.com/gitlab-org/gitlab/-/tree/4ce851345054dbf09956dabcc9b958ae8aab77bb/app/assets/javascripts/ci/pipeline_schedules). Within these type of directories, we organize our code into subfolders like `components` or `graphql`, which house the code that makes up a feature. A typical structure might look like
+The application structure typically follows the pattern: `app/assets/javascripts/<feature-name>`. For example, the directory for a specific feature might look like [`app/assets/javascripts/ci/pipeline_schedules`](https://gitlab.com/gitlab-org/gitlab/-/tree/4ce851345054dbf09956dabcc9b958ae8aab77bb/app/assets/javascripts/ci/pipeline_schedules). Within these types of directories, we organize our code into subfolders like `components` or `graphql`, which house the code that makes up a feature. A typical structure might look like
 
 - `feature_name/`
   - `components/` (vue components that make up a feature)
@@ -70,7 +70,7 @@ layering and how to work with it, see [Frontend package boundaries](package_boun
 
 ## Vision
 
-As Frontend engineers, we strive to give users **delightful experiences**. We should always think of how this applies at GitLab specifically: a great GitLab experience means helping our user base ship **their own projects faster and with more confidence** when shipping their own software. This means that whenever confronted with a choice for the future of our department, we should remember to try to put this first.
+As Frontend engineers, we strive to give users delightful experiences. We should always think of how this applies at GitLab specifically: a great GitLab experience means helping our user base ship their own projects faster and with more confidence when shipping their own software. This means that whenever confronted with a choice for the future of our department, we should remember to try to put this first.
 
 ### Values
 
@@ -78,9 +78,9 @@ We define three core values, Stability, Speed, and Maintainability (SSM)
 
 #### Stability
 
-Although velocity is extremely important, we believe that GitLab is now an enterprise-grade platform that requires even the smallest MVC to be **stable, tested, and with a good architecture**. We should not merge code, even as an MVC, that could introduce degradation, poor performance, confusion, or generally lower our users expectations.
+Although velocity is extremely important, we believe that GitLab is now an enterprise-grade platform that requires even the smallest MVC to be stable, tested, and with a good architecture. We should not merge code, even as an MVC, that could introduce degradation, poor performance, confusion, or generally lower our users' expectations.
 
-This is an extension of the core value that want our users to have confidence in their own software and to do so, they need to have **confidence in GitLab first**. This means that our own confidence in our software should be at the absolute maximum.
+This is an extension of the core value that want our users to have confidence in their own software and to do so, they need to have confidence in GitLab first. This means that our own confidence in our software should be at the absolute maximum.
 
 #### Speed
 
@@ -90,14 +90,14 @@ Additionally, we want our speed to be felt and appreciated by our developers. Th
 
 #### Maintainability
 
-GitLab is now a large, enterprise-grade software and it often requires complex code to give the best possible experience. Although complexity is a necessity, we must remain vigilant to not let it grow more than it should. To minimize this, we want to focus on making our codebase maintainable by **encapsulating complexity**. This is done by:
+GitLab is now a large, enterprise-grade software and it often requires complex code to give the best possible experience. Although complexity is a necessity, we must remain vigilant to not let it grow more than it should. To minimize this, we want to focus on making our codebase maintainable by encapsulating complexity. This is done by:
 
 - Building tools that solve commonly-faced problems and making them easily discoverable.
 - Writing better documentation on how we solve our problems.
 - Writing loosely coupled components that can be easily added or removed from our codebase.
 - Remove older technologies or pattern that we deem are no longer acceptable.
 
-By focusing on these aspects, we aim to allow engineers to contain complexity in well defined boundaries and quickly share them with their peers.
+By focusing on these aspects, we aim to allow engineers to contain complexity in well-defined boundaries and quickly share them with their peers.
 
 ### Goals
 
@@ -105,9 +105,9 @@ Now that our values have been defined, we can base our goals on these values and
 
 - Lowest possible FID, LCP, and cross-page navigation times
 - Minimal page reloads when interacting with the UI
-- [Have as little Vue applications per page as possible](vue.md#avoid-multiple-vue-applications-on-the-page)
+- [Have as few Vue applications per page as possible](vue.md#avoid-multiple-vue-applications-on-the-page)
 - Leverage [Ruby ViewComponents](view_component.md) for simple pages and avoid Vue overhead when possible
-- [Migrate away from VueX](migrating_from_vuex.md), but more urgently **stop using Apollo and VueX together**
+- [Migrate away from Vuex](migrating_from_vuex.md), but more urgently stop using Apollo and Vuex together
 - Remove jQuery from our codebase
 - Add a visual testing framework
 - Reduce CSS bundle size to a minimum
@@ -115,7 +115,7 @@ Now that our values have been defined, we can base our goals on these values and
 - Improve our pipelines speed
 - Build a better set of shared components with documentation
 
-We have detailed description on how we see GitLab frontend in the future in [Frontend Goals](frontend_goals.md) section
+We have a detailed description on how we see GitLab frontend in the future in the [Frontend Goals](frontend_goals.md) section
 
 ### First time contributors
 
@@ -148,7 +148,7 @@ Read the [frontend FAQ](frontend_faq.md) for common small pieces of helpful info
 
 #### Internationalization (i18n) and Translations
 
-Frontend internationalization support is described in [**Translate GitLab to your language**](../i18n/_index.md).
+Frontend internationalization support is described in [Translate GitLab to your language](../i18n/_index.md).
 The [externalization part of the guide](../i18n/externalization.md) explains the helpers/methods available.
 
 #### Troubleshooting

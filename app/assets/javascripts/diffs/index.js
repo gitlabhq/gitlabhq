@@ -1,7 +1,6 @@
 import Vue, { defineAsyncComponent } from 'vue';
 import VueApollo from 'vue-apollo';
 import { mapActions, mapState } from 'pinia';
-import { GlToast } from '@gitlab/ui';
 import { apolloProvider } from '~/graphql_shared/issuable_client';
 import { getCookie, parseBoolean, removeCookie } from '~/lib/utils/common_utils';
 import { pinia } from '~/pinia/instance';
@@ -17,7 +16,6 @@ export default function initDiffsApp() {
   const { dataset } = el;
 
   Vue.use(VueApollo);
-  Vue.use(GlToast);
   const { newCommentTemplatePaths } = dataset;
 
   const vm = new Vue({

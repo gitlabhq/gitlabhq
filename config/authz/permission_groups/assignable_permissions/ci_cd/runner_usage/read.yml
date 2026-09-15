@@ -1,0 +1,11 @@
+---
+name: read_runner_usage
+description: Grants the ability to read runner usage data
+boundaries:
+  - group
+  - instance
+  - project
+available_for:
+  - granular_access_token
+permissions:
+  - read_runner_usage

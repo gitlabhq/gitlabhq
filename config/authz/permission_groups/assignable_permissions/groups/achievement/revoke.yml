@@ -1,0 +1,9 @@
+---
+name: revoke_achievement
+description: Grants the ability to revoke awarded achievements
+boundaries:
+  - group
+available_for:
+  - granular_access_token
+permissions:
+  - revoke_achievement

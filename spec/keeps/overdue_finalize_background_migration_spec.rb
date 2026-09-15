@@ -124,6 +124,13 @@ RSpec.describe Keeps::OverdueFinalizeBackgroundMigration, feature_category: :too
     let(:queue_method_node) { instance_double(RuboCop::AST::SendNode) }
     let(:generator) { instance_double(PostDeploymentMigration::PostDeploymentMigrationGenerator) }
     let(:generated_migration_file) { tmp_dir.join('db/post_migrate/20230601000000_finalize_hk_test.rb').to_s }
+    let(:migration_rewriter) do
+      instance_double(
+        Keeps::OverdueFinalizeBackgroundMigrations::MigrationRewriter,
+        find_queue_method_node: queue_method_node,
+        add_ensure_call_to_migration: nil
+      )
+    end
 
     after do
       FileUtils.rm_rf(tmp_dir)
@@ -133,14 +140,15 @@ RSpec.describe Keeps::OverdueFinalizeBackgroundMigration, feature_category: :too
       File.write(migration_yaml_file, YAML.dump(migration))
 
       allow(keep).to receive(:initialize_change_details)
-      allow(keep).to receive_messages(find_queue_method_node: queue_method_node,
-        unique_migration_name: 'FinalizeHKTestBackgroundMigration')
+      allow(keep).to receive_messages(
+        migration_rewriter: migration_rewriter,
+        unique_migration_name: 'FinalizeHKTestBackgroundMigration'
+      )
       allow(PostDeploymentMigration::PostDeploymentMigrationGenerator)
         .to receive(:source_root)
       allow(PostDeploymentMigration::PostDeploymentMigrationGenerator)
         .to receive(:new).and_return(generator)
       allow(generator).to receive_messages(invoke_all: [generated_migration_file], migration_number: '20230601000000')
-      allow(keep).to receive(:add_ensure_call_to_migration)
       allow(::Gitlab::Housekeeper::Shell).to receive(:rubocop_autocorrect)
       allow(File).to receive(:open).and_call_original
       allow(File).to receive(:open).with(anything, 'w').and_yield(StringIO.new)
@@ -164,7 +172,7 @@ RSpec.describe Keeps::OverdueFinalizeBackgroundMigration, feature_category: :too
     it 'generates migration and runs rubocop autocorrect' do
       keep.make_change!(change)
 
-      expect(keep).to have_received(:add_ensure_call_to_migration)
+      expect(migration_rewriter).to have_received(:add_ensure_call_to_migration)
         .with(generated_migration_file, queue_method_node, job_name, migration_record)
       expect(::Gitlab::Housekeeper::Shell).to have_received(:rubocop_autocorrect)
         .with(generated_migration_file)
@@ -269,29 +277,6 @@ RSpec.describe Keeps::OverdueFinalizeBackgroundMigration, feature_category: :too
       it 'returns the migration file' do
         expect(result).to eq('db/post_migrate/20230101_queue_test.rb')
       end
-    end
-  end
-
-  describe '#strip_comments' do
-    it 'removes comment lines except the first line' do
-      code = "# frozen_string_literal: true\n# this is a comment\nclass Foo\nend\n"
-      result = keep.send(:strip_comments, code)
-
-      expect(result).to eq("# frozen_string_literal: true\nclass Foo\nend\n")
-    end
-
-    it 'preserves non-comment lines' do
-      code = "line1\nline2\nline3\n"
-      result = keep.send(:strip_comments, code)
-
-      expect(result).to eq("line1\nline2\nline3\n")
-    end
-
-    it 'preserves the first line even if it is a comment' do
-      code = "# first line comment\n# second line comment\ncode\n"
-      result = keep.send(:strip_comments, code)
-
-      expect(result).to eq("# first line comment\ncode\n")
     end
   end
 
@@ -498,130 +483,6 @@ RSpec.describe Keeps::OverdueFinalizeBackgroundMigration, feature_category: :too
       it 'returns false' do
         expect(keep.send(:migration_code_present?, 'TestMigration')).to be false
       end
-    end
-  end
-
-  describe '#find_queue_method_node' do
-    let(:tmp_dir) { Pathname(Dir.mktmpdir) }
-    let(:migration_file) { tmp_dir.join('queue_migration.rb').to_s }
-
-    after do
-      FileUtils.rm_rf(tmp_dir)
-    end
-
-    it 'returns the queue_batched_background_migration send node' do
-      File.write(migration_file, <<~RUBY)
-        class QueueTestMigration < Gitlab::Database::Migration[2.2]
-          MIGRATION = 'TestMigration'
-
-          def up
-            queue_batched_background_migration(
-              MIGRATION,
-              :users,
-              :id,
-              job_interval: 2.minutes
-            )
-          end
-
-          def down; end
-        end
-      RUBY
-
-      node = keep.send(:find_queue_method_node, migration_file)
-
-      expect(node).to be_a(RuboCop::AST::SendNode)
-      expect(node.method_name).to eq(:queue_batched_background_migration)
-    end
-  end
-
-  describe '#add_ensure_call_to_migration' do
-    let(:tmp_dir) { Pathname(Dir.mktmpdir) }
-    let(:migration_file) { tmp_dir.join('finalize_migration.rb').to_s }
-    let(:queue_migration_file) { tmp_dir.join('queue_migration.rb').to_s }
-    let(:migration_record) do
-      MigrationRecord.new(id: 1, finished_at: '2023-01-01', updated_at: '2023-01-01', gitlab_schema: 'gitlab_main')
-    end
-
-    after do
-      FileUtils.rm_rf(tmp_dir)
-    end
-
-    it 'replaces the up method with ensure_batched_background_migration_is_finished call' do
-      File.write(migration_file, <<~RUBY)
-        # frozen_string_literal: true
-        class FinalizeHKTestMigration < Gitlab::Database::Migration[2.2]
-          def up
-            # placeholder
-          end
-
-          def down; end
-        end
-      RUBY
-
-      File.write(queue_migration_file, <<~RUBY)
-        class QueueTestMigration < Gitlab::Database::Migration[2.2]
-          MIGRATION = 'TestMigration'
-
-          def up
-            queue_batched_background_migration(
-              MIGRATION,
-              :users,
-              :id,
-              job_interval: 2.minutes
-            )
-          end
-
-          def down; end
-        end
-      RUBY
-
-      queue_node = keep.send(:find_queue_method_node, queue_migration_file)
-      keep.send(:add_ensure_call_to_migration, migration_file, queue_node, 'TestMigration', migration_record)
-
-      content = File.read(migration_file)
-      expect(content).to include('ensure_batched_background_migration_is_finished')
-      expect(content).to include("job_class_name: 'TestMigration'")
-      expect(content).to include('table_name: :users')
-      expect(content).to include('column_name: :id')
-      expect(content).to include('disable_ddl_transaction!')
-      expect(content).to include('restrict_gitlab_migration gitlab_schema: :gitlab_main')
-    end
-
-    it 'includes job_arguments when present in the queue call' do
-      File.write(migration_file, <<~RUBY)
-        # frozen_string_literal: true
-        class FinalizeHKTestMigration < Gitlab::Database::Migration[2.2]
-          def up
-            # placeholder
-          end
-
-          def down; end
-        end
-      RUBY
-
-      File.write(queue_migration_file, <<~RUBY)
-        class QueueTestMigration < Gitlab::Database::Migration[2.2]
-          MIGRATION = 'TestMigration'
-
-          def up
-            queue_batched_background_migration(
-              MIGRATION,
-              :users,
-              :id,
-              :email,
-              job_interval: 2.minutes
-            )
-          end
-
-          def down; end
-        end
-      RUBY
-
-      queue_node = keep.send(:find_queue_method_node, queue_migration_file)
-      keep.send(:add_ensure_call_to_migration, migration_file, queue_node, 'TestMigration', migration_record)
-
-      content = File.read(migration_file)
-      expect(content).to include('job_arguments: [:email]')
     end
   end
 
@@ -868,6 +729,18 @@ RSpec.describe Keeps::OverdueFinalizeBackgroundMigration, feature_category: :too
     it 'memoizes the checker' do
       checker = keep.outdated_migration_checker
       expect(keep.outdated_migration_checker).to be(checker)
+    end
+  end
+
+  describe '#migration_rewriter' do
+    it 'returns a MigrationRewriter instance' do
+      expect(keep.migration_rewriter)
+        .to be_a(Keeps::OverdueFinalizeBackgroundMigrations::MigrationRewriter)
+    end
+
+    it 'memoizes the rewriter' do
+      rewriter = keep.migration_rewriter
+      expect(keep.migration_rewriter).to be(rewriter)
     end
   end
 

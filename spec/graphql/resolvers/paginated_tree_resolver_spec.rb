@@ -88,15 +88,12 @@ RSpec.describe Resolvers::PaginatedTreeResolver, feature_category: :source_code_
 
       context 'when the page token is stale' do
         before do
-          allow(repository).to receive(:tree)
-            .and_raise(Gitlab::Git::InvalidPageToken, 'Invalid page token: invalid')
+          grpc_err = GRPC::InvalidArgument.new('could not find starting OID: invalid')
+          allow(repository).to receive(:tree).and_raise(Gitlab::Git::InvalidPageToken, grpc_err)
         end
 
-        it 'generates an error with the same extensions' do
-          expect_graphql_error_to_be_created(
-            Gitlab::Graphql::Errors::BaseError, 'Invalid page token: invalid'
-          ) { subject }
-
+        it 'generates an error carrying the gRPC details' do
+          expect_graphql_error_to_be_created(Gitlab::Graphql::Errors::BaseError) { subject }
           expect(subject.extensions).to eq(code: 'invalid_argument', gitaly_code: 3, service: 'git')
         end
       end
@@ -129,8 +126,6 @@ RSpec.describe Resolvers::PaginatedTreeResolver, feature_category: :source_code_
       end
 
       context 'when gitaly is not available' do
-        let(:request) { get :index, format: :html, params: { namespace_id: project.namespace, project_id: project } }
-
         it 'generates an unavailable error' do
           expect_graphql_error_to_be_created(Gitlab::Graphql::Errors::BaseError) { subject }
           expect(subject.extensions).to eq(code: 'unavailable', gitaly_code: 14, service: 'git')

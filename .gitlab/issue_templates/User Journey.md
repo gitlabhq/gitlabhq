@@ -82,7 +82,7 @@
 
 After finishing your journey map, complete the following:
 
-* [ ] Create an [actionable insight issue](https://gitlab.com/gitlab-org/gitlab/-/issues/new?description_template=Actionable%20Insight%20-%20Product%20change) for each opportunity identified. Mark them related to this issue.
+* [ ] Create an [actionable insight issue](https://gitlab.com/gitlab-org/gitlab/-/work_items/new?description_template=Actionable%20Insight%20-%20Product%20change) for each opportunity identified. Mark them related to this issue.
 * [ ] Share a link to this issue and your journey map in our [#GitLab-user-journeys (internal)](https://gitlab.enterprise.slack.com/archives/C0927BQATJA) slack channel.
 
 /label ~"user journey"

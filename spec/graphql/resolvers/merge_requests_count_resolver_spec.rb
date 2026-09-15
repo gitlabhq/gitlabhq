@@ -7,8 +7,8 @@ RSpec.describe Resolvers::MergeRequestsCountResolver do
 
   describe '#resolve' do
     let_it_be(:user) { create(:user) }
-    let_it_be(:project1) { create(:project, :repository, :public) }
-    let_it_be(:project2) { create(:project, :repository, repository_access_level: ProjectFeature::PRIVATE) }
+    let_it_be(:project1) { create(:project, :public) }
+    let_it_be(:project2) { create(:project, repository_access_level: ProjectFeature::PRIVATE) }
     let_it_be(:issue) { create(:issue, project: project1) }
     let_it_be(:merge_request_closing_issue1) { create(:merge_requests_closing_issues, issue: issue) }
     let_it_be(:merge_request_closing_issue2) do
@@ -35,6 +35,26 @@ RSpec.describe Resolvers::MergeRequestsCountResolver do
 
       it 'returns the count of the merge requests closing the issue' do
         expect(subject).to eq(2)
+      end
+    end
+
+    context 'when the object is a development widget' do
+      let(:widget) { WorkItem.find(issue.id).get_widget(:development) }
+
+      subject { batch_sync { resolve_merge_requests_count(widget) } }
+
+      it 'counts through the work item behind the widget' do
+        expect(subject).to eq(1)
+      end
+
+      context 'when the user can see the private closing merge request' do
+        before_all do
+          project2.add_reporter(user)
+        end
+
+        it 'includes it in the count' do
+          expect(subject).to eq(2)
+        end
       end
     end
   end

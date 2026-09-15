@@ -18,7 +18,7 @@ RSpec.describe API::Avatar, feature_category: :user_profile do
           get api('/avatar'), params: { email: 'public@example.com' }
 
           expect(response).to have_gitlab_http_status(:ok)
-          expect(json_response['avatar_url']).to eql("#{::Settings.gitlab.base_url}#{user.avatar.local_url}")
+          expect(json_response['avatar_url']).to eql("#{::Settings.gitlab.base_url}#{user.avatar_path}")
           is_expected.to have_request_urgency(:medium)
         end
 
@@ -99,7 +99,7 @@ RSpec.describe API::Avatar, feature_category: :user_profile do
             get api('/avatar', user), params: { email: 'public@example.com' }
 
             expect(response).to have_gitlab_http_status(:ok)
-            expect(json_response['avatar_url']).to eql("#{::Settings.gitlab.base_url}#{user.avatar.local_url}")
+            expect(json_response['avatar_url']).to eql("#{::Settings.gitlab.base_url}#{user.avatar_path}")
           end
         end
 

@@ -1,6 +1,6 @@
 ---
-source_checksum: 262735e36a66c191
-distilled_at_sha: 3941b843c30927ec6cea3e9caa43c88e5f930cb6
+source_checksum: 18d4e56345888662
+distilled_at_sha: 3477a0d37b5792d9979852b021dc2f157963dc7d
 ---
 <!-- Auto-generated from docs.gitlab.com by gitlab-ai-principles-distiller — do not edit manually -->
 
@@ -26,7 +26,9 @@ distilled_at_sha: 3941b843c30927ec6cea3e9caa43c88e5f930cb6
 - Prefer table-based tests over multiple `context` blocks that differ only in their `let` values.
 - Follow the Four-Phase Test pattern, using newlines to separate phases.
 - Use `Gitlab.config.gitlab.host` rather than hard-coding `'localhost'`; use `example.com` / `gitlab.example.com` for literal URLs in tests.
-- DO NOT assert against the absolute value of a sequence-generated attribute (IDs, IIDs, access levels); use `non_existing_record_id` / `non_existing_record_iid` / `non_existing_record_access_level` when you need a non-existent ID.
+- DO NOT assert against the absolute value of a sequence-generated attribute.
+- Use `non_existing_record_id`, `non_existing_record_iid`, or `non_existing_record_access_level` when a value must not exist, and use `non_existing_project_hashed_path` for an unused valid hashed storage path; DO NOT use arbitrary values such as `123`, `1234`, or `999`, which can exist in CI.
+- DO NOT query `Model.maximum(:id) + 1` or `Model.last.id + 1` to calculate an unused ID; these queries can race with concurrent writes and add an unnecessary query. Use a non-existing record helper instead.
 - DO NOT use `expect_any_instance_of` or `allow_any_instance_of` in RSpec.
 - DO NOT supply the `:each` argument to hooks — it's the default.
 - Prefer `before`/`after` hooks scoped to `:context` over `:all`.
@@ -179,10 +181,13 @@ distilled_at_sha: 3941b843c30927ec6cea3e9caa43c88e5f930cb6
 ### Shared Examples and Helpers
 
 - Declare shared contexts or shared examples used by only one spec file inline in that file.
-- Place shared examples used within a single bounded context in that context's directory structure; place shared examples used across multiple bounded contexts under `spec/support/shared_*`.
+- Place shared examples used within a single bounded context in that context's directory structure; place shared examples used across multiple bounded contexts under `spec/support/shared_*`. Exception: place shared examples covering core behavior for a CE spec and its EE mirror in `spec/support/shared_examples/` so both test suites load them.
 - DO NOT change RSpec configuration inside helpers modules — add `config.include` calls in `spec/spec_helper.rb` or scope them with type modifiers.
 - Place helper modules under `spec/support/helpers/`, following Rails naming conventions (`spec/support/helpers/` is the root).
 - Place RSpec configuration files under `spec/support/`, one file per domain.
+- DO NOT define a shared example in one spec file and use it from another — RSpec loads only the spec files in the current run, so the shared example is unresolved whenever the defining file is not part of the run.
+- Use `it_behaves_like` in both a CE spec and its EE mirror; wrap only license-gated EE cases in `stub_licensed_features`.
+- Before moving a shared example into `spec/support/shared_examples/`, check for another top-level `RSpec.shared_examples` with the same name; rename one before moving it because RSpec silently overwrites the earlier definition.
 
 ### Test Order and Flakiness
 
@@ -239,4 +244,3 @@ For the full picture, see:
 - doc/development/testing_guide/testing_levels.md
 - doc/development/testing_guide/testing_rake_tasks.md
 - doc/development/testing_guide/unhealthy_tests.md
-

@@ -22,6 +22,10 @@ module Gitlab
           # Given a classify type and value, resolves the target cell and returns
           # the action and proxy address for the caller.
           rpc :Classify, ::Gitlab::Cells::TopologyService::ClassifyRequest, ::Gitlab::Cells::TopologyService::ClassifyResponse
+          # Given an ordered fallback chain of Pages-related claims, resolves the
+          # target cell and returns its pages_address. Intended for the
+          # GitLab Pages router.
+          rpc :ClassifyPages, ::Gitlab::Cells::TopologyService::ClassifyPagesRequest, ::Gitlab::Cells::TopologyService::ClassifyPagesResponse
         end
 
         Stub = Service.rpc_stub_class

@@ -18,7 +18,7 @@ RSpec.describe BulkImports::Pipeline::ExtractedData, feature_category: :importer
   describe '#has_next_page?' do
     context 'when next page is present' do
       it 'returns true' do
-        expect(subject.has_next_page?).to eq(true)
+        expect(subject.has_next_page?).to be(true)
       end
     end
 
@@ -26,7 +26,7 @@ RSpec.describe BulkImports::Pipeline::ExtractedData, feature_category: :importer
       let(:has_next_page) { false }
 
       it 'returns false' do
-        expect(subject.has_next_page?).to eq(false)
+        expect(subject.has_next_page?).to be(false)
       end
     end
   end

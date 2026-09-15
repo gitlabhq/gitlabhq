@@ -20,13 +20,13 @@ class Projects::LabelsController < Projects::ApplicationController
   def index
     respond_to do |format|
       format.html do
-        @prioritized_labels = if params[:archived] == 'true'
+        @prioritized_labels = if label_filter_params[:archived] == 'true'
                                 Label.none
                               else
                                 @available_labels.prioritized(@project)
                               end
 
-        @labels = @available_labels.unprioritized(@project).page(params[:page])
+        @labels = @available_labels.unprioritized(@project).page(permitted_params[:page])
         # preload group, project, and subscription data
         Preloaders::LabelsPreloader.new(@prioritized_labels, current_user, @project).preload_all
         Preloaders::LabelsPreloader.new(@labels, current_user, @project).preload_all
@@ -72,7 +72,7 @@ class Projects::LabelsController < Projects::ApplicationController
   def generate
     Gitlab::IssuesLabels.generate(@project)
 
-    case params[:redirect]
+    case permitted_params[:redirect]
     when 'issues'
       redirect_to project_issues_path(@project)
     when 'merge_requests'
@@ -96,7 +96,7 @@ class Projects::LabelsController < Projects::ApplicationController
 
   def remove_priority
     respond_to do |format|
-      label = @available_labels.find(params[:id])
+      label = @available_labels.find(permitted_params[:id])
 
       if label.unprioritize!(project)
         format.json { render json: label }
@@ -109,8 +109,8 @@ class Projects::LabelsController < Projects::ApplicationController
   # rubocop: disable CodeReuse/ActiveRecord
   def set_priorities
     Label.transaction do
-      available_labels_ids = @available_labels.where(id: params[:label_ids]).pluck(:id)
-      label_ids = params[:label_ids].select { |id| available_labels_ids.include?(id.to_i) }
+      available_labels_ids = @available_labels.where(id: permitted_params[:label_ids]).pluck(:id)
+      label_ids = permitted_params[:label_ids].select { |id| available_labels_ids.include?(id.to_i) }
 
       label_ids.each_with_index do |label_id, index|
         label = @available_labels.find(label_id)
@@ -131,13 +131,12 @@ class Projects::LabelsController < Projects::ApplicationController
       return render_404 unless promote_service.execute(@label)
 
       flash[:notice] = flash_notice_for(@label, @project.group)
-      page = params[:page]
       respond_to do |format|
         format.html do
-          redirect_to(project_labels_path(@project, page: page), status: :see_other)
+          redirect_to(project_labels_path(@project, page: permitted_params[:page]), status: :see_other)
         end
         format.json do
-          render json: { url: project_labels_path(@project, page: page) }
+          render json: { url: project_labels_path(@project, page: permitted_params[:page]) }
         end
       end
     rescue ActiveRecord::RecordInvalid => e
@@ -162,6 +161,10 @@ class Projects::LabelsController < Projects::ApplicationController
 
   protected
 
+  def permitted_params
+    params.permit(:page, :redirect, :sort, :id, label_ids: [])
+  end
+
   def label_params
     allowed = [:title, :description, :color, :archived]
     allowed << :lock_on_merge if @project.supports_lock_on_merge?
@@ -170,29 +173,33 @@ class Projects::LabelsController < Projects::ApplicationController
   end
 
   def label
-    @label ||= @project.labels.find(params[:id])
+    @label ||= @project.labels.find(permitted_params[:id])
   end
 
   def subscribable_resource
-    @available_labels.find(params[:id])
+    @available_labels.find(permitted_params[:id])
+  end
+
+  def label_filter_params
+    params.permit(:archived, :search, :subscribed)
   end
 
   def find_labels
-    archived_param = params[:archived].nil? ? false : params[:archived]
+    archived_param = label_filter_params[:archived].nil? ? false : label_filter_params[:archived]
 
     @available_labels ||= LabelsFinder.new(
       current_user,
       project_id: @project.id,
       include_ancestor_groups: true,
-      search: params[:search],
-      subscribed: params[:subscribed],
+      search: label_filter_params[:search],
+      subscribed: label_filter_params[:subscribed],
       archived: archived_param,
       sort: sort
     ).execute
   end
 
   def sort
-    @sort ||= params[:sort] || 'name_asc'
+    @sort ||= permitted_params[:sort] || 'name_asc'
   end
 
   def authorize_admin_labels!

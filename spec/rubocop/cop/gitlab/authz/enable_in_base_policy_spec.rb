@@ -9,8 +9,6 @@ RSpec.describe RuboCop::Cop::Gitlab::Authz::EnableInBasePolicy, feature_category
   let(:cop) { described_class.new }
 
   let(:base_policy_filename) { 'app/policies/base_policy.rb' }
-  let(:ee_base_policy_filename) { 'ee/app/policies/ee/base_policy.rb' }
-  let(:regular_policy_filename) { 'app/policies/project_policy.rb' }
 
   let(:message) do
     'Gitlab/Authz/EnableInBasePolicy: Do not call `enable` in BasePolicy. ' \

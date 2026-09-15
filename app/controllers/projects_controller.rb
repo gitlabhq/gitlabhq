@@ -17,7 +17,6 @@ class ProjectsController < Projects::ApplicationController
   around_action :allow_gitaly_ref_name_caching, only: [:index, :show]
 
   before_action :disable_query_limiting, only: [:show, :create]
-  before_action :disable_transfer_query_limiting, only: :transfer
   before_action :authenticate_user!, except: [:index, :show, :activity, :refs, :unfoldered_environment_names]
   before_action :redirect_git_extension, only: [:show]
   before_action :project, except: [:index, :new, :create]
@@ -56,12 +55,8 @@ class ProjectsController < Projects::ApplicationController
     # TODO: We need to remove the FF eventually when we rollout page_specific_styles
     push_frontend_feature_flag(:page_specific_styles, current_user)
     push_licensed_feature(:file_locks) if @project.present? && @project.licensed_feature_available?(:file_locks)
-    # This page cannot be migrated as a whole, it is migrated partially with
-    # `?vue3` imports, so it cannot use `vue3_migration.yml`. See:
-    # https://docs.gitlab.com/development/fe_guide/vue3_migration/#option-2-migrate-your-page-partially-using-vue3
-    push_frontend_feature_flag(:vue3_migrate_repository, current_user)
 
-    if @project.present? && @project.licensed_feature_available?(:security_orchestration_policies)
+    if @project.present? && ::Security::PolicyAvailability.any_available?(@project)
       push_licensed_feature(:security_orchestration_policies)
     end
   end
@@ -93,7 +88,8 @@ class ProjectsController < Projects::ApplicationController
 
   # rubocop: disable CodeReuse/ActiveRecord
   def new
-    @namespace = Namespace.find_by(id: params[:namespace_id]) if params[:namespace_id]
+    namespace_id = namespace_params[:namespace_id]
+    @namespace = Namespace.find_by(id: namespace_id) if namespace_id
     return access_denied! if @namespace && !can?(current_user, :create_projects, @namespace)
 
     @parent_group = @namespace if @namespace&.group_namespace?
@@ -142,18 +138,14 @@ class ProjectsController < Projects::ApplicationController
   def transfer
     return access_denied! unless can?(current_user, :change_namespace, @project)
 
-    namespace = Namespace.find_by(id: params[:new_namespace_id])
+    namespace = Namespace.find_by(id: namespace_params[:new_namespace_id])
 
     unless namespace
       flash[:alert] = s_('TransferProject|Please select a new namespace for your project.')
       return redirect_to edit_project_path(@project)
     end
 
-    if Feature.enabled?(:groups_and_projects_async_transfer, @project.root_ancestor)
-      enqueue_async_transfer(namespace)
-    else
-      execute_sync_transfer(namespace)
-    end
+    enqueue_async_transfer(namespace)
 
     redirect_to edit_project_path(@project)
   end
@@ -251,7 +243,8 @@ class ProjectsController < Projects::ApplicationController
     return render_404 unless Gitlab::Email::IncomingEmail.supports_issue_creation?
 
     current_user.reset_incoming_email_token!
-    render json: { new_address: @project.new_issuable_address(current_user, params[:issuable_type]) }
+    issuable_type = params.permit(:issuable_type)[:issuable_type]
+    render json: { new_address: @project.new_issuable_address(current_user, issuable_type) }
   end
 
   def archive
@@ -271,7 +264,7 @@ class ProjectsController < Projects::ApplicationController
   end
 
   def housekeeping
-    task = if params[:prune].present?
+    task = if params.permit(:prune)[:prune].present?
              :prune
            else
              :eager
@@ -422,10 +415,12 @@ class ProjectsController < Projects::ApplicationController
 
   private
 
-  def disable_transfer_query_limiting
-    return if Feature.enabled?(:groups_and_projects_async_transfer, project.root_ancestor)
+  def namespace_params
+    params.permit(:namespace_id, :new_namespace_id)
+  end
 
-    Gitlab::QueryLimiting.disable!('https://gitlab.com/gitlab-org/gitlab/-/work_items/606043', new_threshold: 110)
+  def nested_project_param(key)
+    params.permit(project: key).dig(:project, key)
   end
 
   def enqueue_async_transfer(namespace)
@@ -435,12 +430,6 @@ class ProjectsController < Projects::ApplicationController
     return if result.success?
 
     flash[:alert] = result.message
-  end
-
-  def execute_sync_transfer(namespace)
-    ::Projects::TransferService.new(project, current_user).execute(namespace)
-
-    flash[:alert] = @project.errors[:new_namespace].first if @project.errors[:new_namespace].present?
   end
 
   def destroy_immediately
@@ -469,9 +458,9 @@ class ProjectsController < Projects::ApplicationController
     else
       if can?(current_user, :read_wiki, @project)
         @wiki = @project.wiki
-        @wiki_home = @wiki.find_page('home', params[:version_id])
+        @wiki_home = @wiki.find_page('home', params.permit(:version_id)[:version_id])
       elsif @project.feature_available?(:issues, current_user)
-        @issues = issuables_collection.page(params[:page])
+        @issues = issuables_collection.page(params.permit(:page)[:page])
         @issuable_meta_data = Gitlab::IssuableMetadata.new(current_user, @issues).data
       end
 
@@ -500,7 +489,12 @@ class ProjectsController < Projects::ApplicationController
     transfer_options[:ancestor_group_ids] = @project.group.self_and_ancestors.select(:id) if @project.group
 
     @events = EventCollection
-      .new(projects, offset: params[:offset].to_i, filter: event_filter, transfer_options: transfer_options)
+      .new(
+        projects,
+        offset: params.permit(:offset)[:offset].to_i,
+        filter: event_filter,
+        transfer_options: transfer_options
+      )
       .to_a
       .map(&:present)
   end
@@ -608,7 +602,8 @@ class ProjectsController < Projects::ApplicationController
   end
 
   def object_format_params
-    return {} unless Gitlab::Utils.to_boolean(params.dig(:project, :use_sha256_repository))
+    use_sha256 = nested_project_param(:use_sha256_repository)
+    return {} unless Gitlab::Utils.to_boolean(use_sha256)
 
     { repository_object_format: Repository::FORMAT_SHA256 }
   end
@@ -634,10 +629,7 @@ class ProjectsController < Projects::ApplicationController
   end
 
   def build_canonical_path(project)
-    params[:namespace_id] = project.namespace.to_param
-    params[:id] = project.to_param
-
-    url_for(safe_params)
+    url_for(safe_params.merge(namespace_id: project.namespace.to_param, id: project.to_param))
   end
 
   def verify_git_import_enabled
@@ -650,7 +642,7 @@ class ProjectsController < Projects::ApplicationController
 
   # Redirect from localhost/group/project.git to localhost/group/project
   def redirect_git_extension
-    return unless params[:format] == 'git'
+    return unless params.permit(:format)[:format] == 'git'
 
     git_extension_regex = %r{\.git/?\Z}
     return unless request.path.match?(git_extension_regex)
@@ -675,9 +667,9 @@ class ProjectsController < Projects::ApplicationController
   end
 
   def check_export_rate_limit!
-    prefixed_action = :"project_#{params[:action]}"
+    prefixed_action = :"project_#{action_name}"
 
-    project_scope = params[:action] == 'download_export' ? @project : nil
+    project_scope = action_name == 'download_export' ? @project : nil
 
     check_rate_limit!(prefixed_action, scope: [current_user, project_scope].compact)
   end
@@ -693,7 +685,7 @@ class ProjectsController < Projects::ApplicationController
   end
 
   def enforce_step_up_auth_for_namespace_on_create
-    namespace_id = params.dig(:project, :namespace_id)
+    namespace_id = nested_project_param(:namespace_id)
     enforce_step_up_auth_for_namespace_id(namespace_id)
   end
 end

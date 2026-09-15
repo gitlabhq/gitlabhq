@@ -5,6 +5,10 @@ require 'spec_helper'
 RSpec.describe Gitlab::RackAttack::LabkitRateLimit::Limiters, feature_category: :rate_limiting do
   let(:registry) { Gitlab::RackAttack::LabkitRateLimit::ThrottleRegistry }
 
+  before do
+    described_class.reset!
+  end
+
   after do
     described_class.reset!
   end
@@ -120,6 +124,104 @@ RSpec.describe Gitlab::RackAttack::LabkitRateLimit::Limiters, feature_category: 
       end
     end
 
+    # PlanRules returns [] until the EE rules land, so ordering is pinned here
+    # with a stand-in probe rather than in the EE spec.
+    describe 'plan rules' do
+      let(:probe_name) { 'plan_rule_probe' }
+
+      let(:probe) do
+        Labkit::RateLimit::Rule.new(
+          name: probe_name,
+          match: { requester_id: /./ },
+          characteristics: [:ip],
+          limit: 1,
+          period: 60,
+          action: :log
+        )
+      end
+
+      before do
+        allow(Gitlab::RateLimit::PlanRules).to receive(:for_limiter).and_return([probe])
+      end
+
+      it 'asks for the rules of every limiter it builds' do
+        described_class.all
+
+        registry.by_limiter.each_key do |limiter_name|
+          expect(Gitlab::RateLimit::PlanRules).to have_received(:for_limiter).with(limiter_name)
+        end
+      end
+
+      it 'splices them below the synthetic skips and above every registry rule', :aggregate_failures do
+        registry.by_limiter.each do |limiter_name, entries|
+          names = built_rule_names.fetch(limiter_name)
+          index = names.index(probe_name)
+
+          expect(index).not_to be_nil, "#{limiter_name} built no plan rule"
+          expect(index).to be_positive, "#{limiter_name} runs #{probe_name} ahead of its synthetic skips"
+          expect(names[index + 1]).to eq(entries.first.rule_name),
+            "#{limiter_name} runs #{names[index + 1].inspect} after #{probe_name}, " \
+              "expected its first registry rule"
+        end
+      end
+
+      def built_rule_names
+        @built_rule_names ||= begin
+          captured = {}
+          allow(Labkit::RateLimit::Limiter).to receive(:new).and_wrap_original do |original, **kwargs|
+            captured[kwargs[:name]] = kwargs[:rules].map(&:name)
+            original.call(**kwargs)
+          end
+
+          described_class.all
+
+          captured
+        end
+      end
+    end
+
+    context 'when a user allowlist is configured' do
+      before do
+        allow(::Gitlab::RackAttack).to receive(:user_allowlist)
+          .and_return(Gitlab::RackAttack::UserAllowlist.new('7,42'))
+      end
+
+      it 'builds the allowlist skip rule matching the stringified ids' do
+        described_class.all
+
+        expect(Labkit::RateLimit::Rule).to have_received(:new)
+          .with(hash_including(name: 'user_allowlist', action: :skip,
+            match: { requester_type: 'user', requester_id: { oneOf: %w[7 42] } })).at_least(:once)
+      end
+
+      it 'places the skip rule with the synthetic skips, ahead of every throttle rule, on every limiter' do
+        limiter_rules = {}
+        allow(Labkit::RateLimit::Limiter).to receive(:new).and_wrap_original do |original, **kwargs|
+          limiter_rules[kwargs[:name]] = kwargs[:rules].map(&:name)
+          original.call(**kwargs)
+        end
+
+        described_class.all
+
+        expect(limiter_rules).not_to be_empty
+        limiter_rules.each do |limiter_name, names|
+          expect(names.first(2)).to eq(%w[bypass_header user_allowlist]),
+            "#{limiter_name} starts with #{names.first(3)}"
+        end
+      end
+    end
+
+    context 'when the user allowlist is empty' do
+      it 'builds no allowlist rule' do
+        allow(::Gitlab::RackAttack).to receive(:user_allowlist)
+          .and_return(Gitlab::RackAttack::UserAllowlist.new(nil))
+        described_class.all
+
+        expect(Labkit::RateLimit::Rule).not_to have_received(:new)
+          .with(hash_including(name: 'user_allowlist'))
+      end
+    end
+
     context 'when a throttle is in dry-run mode' do
       before do
         stub_env('GITLAB_THROTTLE_DRY_RUN', 'throttle_unauthenticated_web')
@@ -153,6 +255,16 @@ RSpec.describe Gitlab::RackAttack::LabkitRateLimit::Limiters, feature_category: 
         expect(Labkit::RateLimit::Rule).not_to have_received(:new)
           .with(hash_including(name: 'unauthenticated_web_dry_run_bypass'))
       end
+    end
+  end
+
+  describe '.reset!' do
+    it 'drops the memo, so the next call rebuilds' do
+      built = described_class.all
+
+      described_class.reset!
+
+      expect(described_class.all).not_to equal(built)
     end
   end
 
@@ -387,22 +499,50 @@ RSpec.describe Gitlab::RackAttack::LabkitRateLimit::Limiters, feature_category: 
     it 'suppresses an authenticated rule when its discriminator is absent' do
       # The presence gate (requester_id: /./ in the match) is what stops an
       # authenticated rule firing for a request that resolved no requester - the
-      # equivalent of the Rack::Attack lambda returning nil, and the path an
-      # allowlisted user takes (the classifier nulls out the id). Only the
+      # equivalent of the Rack::Attack lambda returning nil. Only the
       # authenticated throttle is enabled here, so with the id absent nothing matches.
       expect(selected_in(general,
         path: paths[:api], setting_authenticated_api: true,
         requester_id: nil, requester_type: nil)).to be_nil
     end
 
-    it 'exempts an allowlisted user (blank requester id) from both the authenticated and unauthenticated rules' do
-      # A blank id fails the authenticated /./ gate and the unauthenticated nil gate,
-      # so an allowlisted user is counted by neither - mirroring Rack::Attack, where an
-      # allowlisted user has a nil throttled_identifer and unauthenticated? false. An
-      # anonymous request (requester_id nil) on the same path still hits unauthenticated_api.
-      expect(selected_in(general,
-        path: paths[:api], requester_id: '',
-        setting_authenticated_api: true, setting_unauthenticated_api: true)).to be_nil
+    context 'with a user allowlist configured' do
+      before do
+        allow(::Gitlab::RackAttack).to receive(:user_allowlist)
+          .and_return(Gitlab::RackAttack::UserAllowlist.new('7'))
+      end
+
+      it 'claims an allowlisted user on the skip rule before the identity throttles' do
+        expect(selected_in(general,
+          path: paths[:api], requester_type: 'user', requester_id: '7',
+          setting_authenticated_api: true, setting_unauthenticated_api: true)).to eq('user_allowlist')
+      end
+
+      it 'claims an allowlisted user in the protected-paths limiter too' do
+        expect(selected_in(protected_limiter,
+          method: 'POST', protected_path: true, setting_protected_paths: true,
+          requester_type: 'user', requester_id: '7')).to eq('user_allowlist')
+      end
+
+      it 'claims an allowlisted user before the aid-keyed collector throttle (full bypass)' do
+        # Wider than Rack::Attack's safelist on purpose: the collector path has
+        # been dead since 13.3 (gitlab-com/gl-infra/production-engineering#29563).
+        expect(selected_in(general,
+          path: paths[:collector], aid: 'app-1',
+          requester_type: 'user', requester_id: '7')).to eq('user_allowlist')
+      end
+
+      it 'counts a non-allowlisted user as usual' do
+        expect(selected_in(general,
+          path: paths[:api], requester_type: 'user', requester_id: '8',
+          setting_authenticated_api: true)).to eq('authenticated_api')
+      end
+
+      it 'counts a deploy token sharing the allowlisted numeric id (the type gate)' do
+        expect(selected_in(general,
+          path: paths[:api], requester_type: 'deploy_token', requester_id: '7',
+          setting_authenticated_api: true)).to eq('authenticated_api')
+      end
     end
 
     describe 'counting by the requester pair' do

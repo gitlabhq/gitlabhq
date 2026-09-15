@@ -5,7 +5,6 @@ require 'spec_helper'
 RSpec.describe 'Dashboard Group', :with_current_organization, :js, feature_category: :groups_and_projects do
   let(:user) { create(:user) }
   let(:group) { create(:group) }
-  let(:page_path) { dashboard_groups_path }
 
   context 'when user has no groups' do
     before do

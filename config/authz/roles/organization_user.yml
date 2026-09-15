@@ -1,0 +1,12 @@
+---
+name: organization_user
+description: User who is a member of an organization.
+inherits_from: []
+organization:
+  permissions: []
+  raw_permissions:
+  - _delete_own_organization_user
+  - create_group
+  - read_artifact_registry
+  - read_organization
+  - read_work_item_type

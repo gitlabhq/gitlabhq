@@ -5,14 +5,6 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 title: GitLabをOAuth 2.0認証用のIdentity Providerとして設定する
 ---
 
-{{< history >}}
-
-- OAuthアプリケーション向けのグループSAML SSOのサポートは、GitLab 18.2で`ff_oauth_redirect_to_sso_login`[フラグ](../administration/feature_flags/_index.md)とともに[導入](https://gitlab.com/gitlab-org/gitlab/-/issues/461212)されました。デフォルトでは無効になっています。
-- OAuthアプリケーションのSAML SSOのサポートは、GitLab 18.3で[GitLab.com、GitLab Self-Managed、GitLab Dedicatedで有効](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/200682)になりました。
-- GitLab 18.5で[一般提供](https://gitlab.com/gitlab-org/gitlab/-/issues/561778)になりました。機能フラグ`ff_oauth_redirect_to_sso_login`は削除されました。
-
-{{< /history >}}
-
 [OAuth 2.0](https://oauth.net/2/)は、リソースオーナーに代わって、クライアントアプリケーションに対し、サーバーリソースへのアクセス権を安全に委任できる仕組みを提供します。OAuth 2を使用すると、認可サーバーがリソースオーナーまたはエンドユーザーの承認を得て、サードパーティクライアントにアクセストークンを発行できます。
 
 インスタンスに次の種類のOAuth 2アプリケーションを追加することで、GitLabをOAuth 2認証用のIdentity Providerとして使用できます。
@@ -81,25 +73,18 @@ GitLabインスタンスのアプリケーションを作成するには、次�
 1. 左サイドバーで、**アプリケーション**を選択します。
 1. **New application**を選択します。
 
-**管理者**エリアでアプリケーションを作成する際に、**trusted**としてマークします。このアプリケーションでは、ユーザー認可ステップは自動的にスキップされます。
+**管理者**エリアでアプリケーションを作成する際は、そのアプリケーションを**trusted**としてマークします。このアプリケーションでは、ユーザー認可ステップは自動的にスキップされます。
 
 ## 許可したアプリケーションをすべて確認する {#view-all-authorized-applications}
 
-{{< history >}}
-
-- `k8s_proxy`は、GitLab 16.4で`k8s_proxy_pat`[フラグ](../administration/feature_flags/_index.md)とともに[導入](https://gitlab.com/gitlab-org/gitlab/-/issues/422408)されました。デフォルトでは有効になっています。
-- 機能フラグ`k8s_proxy_pat`は、GitLab 16.5で[削除](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/131518)されました。
-
-{{< /history >}}
-
-GitLab認証情報を使用して許可したすべてのアプリケーションを表示するには、次の手順に従います。
+GitLabの認証情報で承認したすべてのアプリケーションを表示するには:
 
 1. 右上隅で、アバターを選択します。
 1. **プロファイルを編集**を選択します。
 1. 左サイドバーで、**アクセス** > **アプリケーション**を選択します。
 1. **許可したアプリケーション**セクションを確認します。
 
-GitLab OAuth 2アプリケーションはスコープをサポートしており、アプリケーションが実行するさまざまなアクションを制御できます。使用可能なすべてのスコープについては、次の表を参照してください。
+GitLab OAuth 2アプリケーションは、アプリケーションが異なるアクションを実行できるようにするスコープをサポートしています。使用可能なすべてのスコープについては、次の表を参照してください。
 
 | スコープ                    | 説明 |
 |--------------------------|-------------|
@@ -129,9 +114,15 @@ GitLab OAuth 2アプリケーションはスコープをサポートしており
 
 ## アクセストークンの有効期限 {#access-token-expiration}
 
-アクセストークンは2時間後に有効期限切れになります。アクセストークンを使用するインテグレーションは、`refresh_token`属性を使用して新しいトークンを生成する必要があります。リフレッシュトークンは、`access_token`自体が有効期限切れになった後でも使用可能です。有効期限切れのアクセストークンを更新する方法については、[OAuth 2.0トークンに関するドキュメント](../api/oauth2.md)を参照してください。
+{{< history >}}
 
-この有効期限の設定は、GitLabをOAuthプロバイダーとして機能させるライブラリである[Doorkeeper](https://github.com/doorkeeper-gem/doorkeeper)の`access_token_expires_in`設定を使用して、GitLabのコードベース内で設定されています。この有効期限設定は変更できません。
+- インスタンスの管理者によって設定可能なOAuthアクセストークンの有効期限は、GitLab 19.1で[導入](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/237354)されました。
+
+{{< /history >}}
+
+デフォルトでは、アクセストークンは2時間（7200秒）後に期限切れになります。アクセストークンを使用するインテグレーションは、`refresh_token`属性を持つ新しいトークンを生成する必要があります。更新トークンは、アクセストークン自体が期限切れになった後でも使用できます。期限切れのアクセストークンを更新する方法については、[OAuth 2.0トークンドキュメント](../api/oauth2.md)を参照してください。
+
+GitLab Self-ManagedおよびGitLab Dedicatedでは、管理者がトークンのライフタイムを設定できます。詳細については、[OAuthアクセストークンの最大ライフタイムの変更](../administration/settings/account_and_limit_settings.md#limit-the-lifetime-of-oauth-access-tokens)を参照してください。
 
 アプリケーションを削除すると、そのアプリケーションに関連付けられたすべての認可とトークンも削除されます。
 

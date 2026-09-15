@@ -201,6 +201,18 @@ module API
         present discussion, with: Entities::Discussion
       end
 
+      # rubocop: disable CodeReuse/ActiveRecord -- generic to any noteable, not model-specific
+      def readable_discussion_notes(noteable, discussion_ids)
+        notes = noteable.notes
+          .with_discussion_ids(discussion_ids)
+          .inc_relations_for_view(noteable)
+          .includes(:noteable)
+          .order_created_at_id_asc
+
+        prepare_and_filter_notes(notes)
+      end
+      # rubocop: enable CodeReuse/ActiveRecord
+
       def disable_query_limiting
         Gitlab::QueryLimiting.disable!('https://gitlab.com/gitlab-org/gitlab/-/issues/211538')
       end

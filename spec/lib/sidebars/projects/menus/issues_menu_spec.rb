@@ -29,7 +29,7 @@ RSpec.describe Sidebars::Projects::Menus::IssuesMenu, feature_category: :navigat
   describe '#render?' do
     context 'when user can read issues' do
       it 'returns true' do
-        expect(subject.render?).to eq true
+        expect(subject.render?).to be true
       end
     end
 
@@ -37,7 +37,7 @@ RSpec.describe Sidebars::Projects::Menus::IssuesMenu, feature_category: :navigat
       let(:user) { nil }
 
       it 'returns false' do
-        expect(subject.render?).to eq false
+        expect(subject.render?).to be false
       end
     end
   end
@@ -45,7 +45,7 @@ RSpec.describe Sidebars::Projects::Menus::IssuesMenu, feature_category: :navigat
   describe '#has_pill?' do
     context 'when issues feature is enabled' do
       it 'returns true' do
-        expect(subject.has_pill?).to eq true
+        expect(subject.has_pill?).to be true
       end
     end
 
@@ -53,7 +53,7 @@ RSpec.describe Sidebars::Projects::Menus::IssuesMenu, feature_category: :navigat
       it 'returns false' do
         allow(project).to receive(:issues_enabled?).and_return(false)
 
-        expect(subject.has_pill?).to eq false
+        expect(subject.has_pill?).to be false
       end
     end
   end

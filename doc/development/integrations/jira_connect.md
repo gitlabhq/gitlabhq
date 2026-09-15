@@ -1,6 +1,6 @@
 ---
 stage: Plan
-group: Project Management
+group: Work Items
 info: Any user with at least the Maintainer role can merge updates to this content. For details, see <https://docs.gitlab.com/development/development_processes/#development-guidelines-review>.
 title: GitLab for Jira Cloud app development
 ---
@@ -28,7 +28,7 @@ The following are required to install the app:
 
   <!-- vale gitlab_base.Spelling = NO -->
 
-  GitLab team members **must not** use tunneling tools such as Serveo or `ngrok`. These are
+  GitLab team members must not use tunneling tools such as Serveo or `ngrok`. These are
   security risks, and must not be run on GitLab developer laptops.
 
   <!-- vale gitlab_base.Spelling = YES -->
@@ -103,7 +103,7 @@ The following steps describe setting up an environment to test the GitLab OAuth 
 
 ### Set up the app in Jira
 
-Ensure you have [set up OAuth first](#set-up-the-gitlab-oauth-authentication-flow) first before doing these steps,
+Ensure you have [set up OAuth](#set-up-the-gitlab-oauth-authentication-flow) first before doing these steps,
 otherwise these steps fail.
 
 1. In Jira, go to **Jira settings** > **Apps** > **Manage apps**.
@@ -145,7 +145,7 @@ To set up a development Jira Connect Proxy:
 
     <!-- vale gitlab_base.Spelling = NO -->
 
-    GitLab team members **must not** use tunneling tools such as Serveo or `ngrok`. These are
+    GitLab team members must not use tunneling tools such as Serveo or `ngrok`. These are
     security risks, and must not be run on GitLab developer laptops.
 
     <!-- vale gitlab_base.Spelling = YES -->

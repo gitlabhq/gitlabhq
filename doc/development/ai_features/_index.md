@@ -20,7 +20,7 @@ GitLab Duo for local development purposes. These instructions describe how to fu
 
 ### Update an existing GDK
 
-If you already have a GDK installed, you **still** must refer to the [GitLab Development Kit instructions](https://gitlab-org.gitlab.io/gitlab-development-kit/howto/ai/) to set up DAP with the right environment variables, NGINX, your Anthropic key and more.
+If you already have a GDK installed, you still must refer to the [GitLab Development Kit instructions](https://gitlab-org.gitlab.io/gitlab-development-kit/howto/ai/) to set up DAP with the right environment variables, NGINX, your Anthropic key and more.
 
 ### Run `gitlab:duo:setup` task
 

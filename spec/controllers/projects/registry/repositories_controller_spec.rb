@@ -3,8 +3,10 @@
 require 'spec_helper'
 
 RSpec.describe Projects::Registry::RepositoriesController, feature_category: :container_registry do
-  let_it_be(:user) { create(:user) }
   let_it_be(:project) { create(:project, :private) }
+  let_it_be(:user) { create(:user, developer_of: project) }
+
+  let(:format) { :html }
 
   before do
     sign_in(user)
@@ -12,134 +14,142 @@ RSpec.describe Projects::Registry::RepositoriesController, feature_category: :co
     stub_container_registry_info
   end
 
-  context 'when user has access to registry' do
-    before_all do
-      project.add_developer(user)
+  shared_examples 'renders 200 for html and 404 for json' do
+    it 'successfully renders container repositories', :snowplow do
+      expect(go_to_index_response).to have_gitlab_http_status(:ok)
+      # event tracked in GraphQL API: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/44926
+      expect_no_snowplow_event
     end
 
-    shared_examples 'renders 200 for html and 404 for json' do
-      it 'successfully renders container repositories', :snowplow do
-        go_to_index
-
-        expect(response).to have_gitlab_http_status(:ok)
-        # event tracked in GraphQL API: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/44926
-        expect_no_snowplow_event
-      end
+    context 'with format "json"' do
+      let(:format) { :json }
 
       it 'returns 404 for request in json format' do
-        go_to_index(format: :json)
-
-        expect(response).to have_gitlab_http_status(:not_found)
-      end
-
-      [ContainerRegistry::Path::InvalidRegistryPathError, Faraday::Error].each do |error_class|
-        context "when there is a #{error_class}" do
-          it 'displays a connection error message' do
-            expect(::ContainerRegistry::Client).to receive(:registry_info).and_raise(error_class, nil, nil)
-
-            go_to_index
-
-            expect(response).to have_gitlab_http_status(:ok)
-          end
-        end
+        expect(go_to_index_response).to have_gitlab_http_status(:not_found)
       end
     end
 
-    shared_examples 'renders a list of repositories' do
-      context 'when root container repository exists' do
+    [ContainerRegistry::Path::InvalidRegistryPathError, Faraday::Error].each do |error_class|
+      context "when there is a #{error_class}" do
+        it 'displays a connection error message' do
+          expect(::ContainerRegistry::Client).to receive(:registry_info).and_raise(error_class, nil, nil)
+
+          expect(go_to_index_response).to have_gitlab_http_status(:ok)
+        end
+      end
+    end
+  end
+
+  shared_examples 'renders a list of repositories' do
+    context 'when root container repository exists' do
+      before do
+        create(:container_repository, :root, project: project)
+      end
+
+      it 'does not create root container repository' do
+        expect { go_to_index_response }.not_to change { ContainerRepository.all.count }
+      end
+    end
+
+    context 'when root container repository is not created' do
+      context 'when there are tags for this repository' do
         before do
-          create(:container_repository, :root, project: project)
+          stub_container_registry_tags(repository: :any, tags: %w[rc1 latest])
         end
 
-        it 'does not create root container repository' do
-          expect { go_to_index }.not_to change { ContainerRepository.all.count }
+        it 'creates a root container repository' do
+          expect { go_to_index_response }.to change { ContainerRepository.all.count }.by(1)
+          expect(ContainerRepository.first).to have_attributes(project: project, name: '')
         end
+
+        it_behaves_like 'renders 200 for html and 404 for json'
       end
 
-      context 'when root container repository is not created' do
-        context 'when there are tags for this repository' do
-          before do
-            stub_container_registry_tags(repository: :any, tags: %w[rc1 latest])
-          end
-
-          it 'creates a root container repository' do
-            expect { go_to_index }.to change { ContainerRepository.all.count }.by(1)
-            expect(ContainerRepository.first).to have_attributes(project: project, name: '')
-          end
-
-          it_behaves_like 'renders 200 for html and 404 for json'
-        end
-
-        context 'when there are no tags for this repository' do
-          before do
-            stub_container_registry_tags(repository: :any, tags: [])
-          end
-
-          it 'does not ensure root container repository' do
-            expect { go_to_index }.not_to change { ContainerRepository.all.count }
-          end
-
-          it_behaves_like 'renders 200 for html and 404 for json'
-        end
-      end
-    end
-
-    describe 'GET #index' do
-      it_behaves_like 'renders a list of repositories'
-    end
-
-    describe 'GET #show' do
-      it_behaves_like 'renders a list of repositories'
-    end
-
-    describe 'DELETE #destroy' do
-      context 'when root container repository exists' do
-        let!(:repository) do
-          create(:container_repository, :root, project: project)
-        end
-
+      context 'when there are no tags for this repository' do
         before do
           stub_container_registry_tags(repository: :any, tags: [])
         end
 
-        it 'marks the repository as delete_scheduled' do
-          expect { delete_repository(repository) }
-            .to change { repository.reload.status }.from(nil).to('delete_scheduled')
-
-          expect(repository.reload).to be_delete_scheduled
-          expect(response).to have_gitlab_http_status(:no_content)
-        end
-
-        it 'tracks the event', :snowplow do
-          delete_repository(repository)
-
-          expect_snowplow_event(category: anything, action: 'delete_repository')
+        it 'does not ensure root container repository' do
+          expect { go_to_index_response }.not_to change { ContainerRepository.all.count }
         end
       end
     end
   end
 
-  context 'when user does not have access to registry' do
-    describe 'GET #index' do
-      it 'responds with 404' do
-        go_to_index
+  describe 'GET #index' do
+    let(:params) { { namespace_id: project.namespace, project_id: project } }
 
-        expect(response).to have_gitlab_http_status(:not_found)
+    subject(:go_to_index_response) do
+      get :index, params: params, format: format
+
+      response
+    end
+
+    context 'when user has access to registry' do
+      it_behaves_like 'renders a list of repositories'
+    end
+
+    context 'when user does not have access to registry' do
+      let_it_be(:user) { create(:user) }
+
+      it 'responds with 404' do
+        expect(go_to_index_response).to have_gitlab_http_status(:not_found)
       end
 
       it 'does not ensure root container repository' do
-        expect { go_to_index }.not_to change { ContainerRepository.all.count }
+        expect { go_to_index_response }.not_to change { ContainerRepository.all.count }
       end
     end
   end
 
-  def go_to_index(format: :html, params: {})
-    get :index, params: params.merge({ namespace_id: project.namespace, project_id: project }), format: format
+  describe 'GET #show' do
+    let_it_be(:container_repository) { create(:container_repository, project: project) }
+
+    let(:params) { { namespace_id: project.namespace, project_id: project, id: container_repository } }
+
+    subject(:go_to_show_response) do
+      get :show, params: params, format: format
+
+      response
+    end
+
+    context 'when user has access to registry' do
+      it 'successfully renders the container repository index page', :snowplow do
+        expect(go_to_show_response).to have_gitlab_http_status(:ok)
+        # event tracked in GraphQL API: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/44926
+        expect_no_snowplow_event
+      end
+    end
   end
 
-  def delete_repository(repository)
-    delete :destroy, params: {
-      namespace_id: project.namespace, project_id: project, id: repository
-    }, format: :json
+  describe 'DELETE #destroy' do
+    let_it_be_with_reload(:repository) { create(:container_repository, :root, project: project) }
+
+    let(:format) { :json }
+    let(:params) { { namespace_id: project.namespace, project_id: project, id: repository } }
+
+    subject(:delete_repository_response) do
+      delete :destroy, params: params, format: format
+
+      response
+    end
+
+    before do
+      stub_container_registry_tags(repository: :any, tags: [])
+    end
+
+    it 'marks the repository as delete_scheduled' do
+      expect { delete_repository_response }
+        .to change { repository.reload.status }.from(nil).to('delete_scheduled')
+
+      expect(response).to have_gitlab_http_status(:no_content)
+    end
+
+    it 'tracks the event', :snowplow do
+      delete_repository_response
+
+      expect_snowplow_event(category: anything, action: 'delete_repository')
+    end
   end
 end

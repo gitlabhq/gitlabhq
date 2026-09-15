@@ -6,20 +6,15 @@ import (
 )
 
 var (
-	// connectionsTotal counts all inbound requests that reach the handler,
-	// including those that fail to upgrade to WebSocket.
-	connectionsTotal = promauto.NewCounter(prometheus.CounterOpts{
-		Name: "gitlab_workhorse_duo_workflow_connections_total",
-		Help: "Total number of Duo Workflow connection attempts (including upgrade failures).",
-	})
-
-	// connectionErrorsTotal counts WebSocket connections that failed at any stage:
-	// WebSocket upgrade, runner initialisation, or runner execution,
-	// labeled by error type (quota_exceeded, locked, other).
-	connectionErrorsTotal = promauto.NewCounterVec(prometheus.CounterOpts{
-		Name: "gitlab_workhorse_duo_workflow_connection_errors_total",
-		Help: "Total number of Duo Workflow WebSocket connections that failed (upgrade, initialisation, or execution), by error type.",
-	}, []string{"error_type"})
+	// connectionsOpen tracks how many Duo Workflow runners are currently active,
+	// labeled by the transport the client used (websocket, http).
+	// gitlab_workhorse_http_in_flight_requests is no substitute: it is unlabeled
+	// and also counts the HTTP actions that re-enter the upstream router. Memory
+	// per connection is only interpretable against this gauge.
+	connectionsOpen = promauto.NewGaugeVec(prometheus.GaugeOpts{
+		Name: "gitlab_workhorse_duo_workflow_connections_open",
+		Help: "Number of Duo Workflow connections currently open, by transport.",
+	}, []string{"transport"})
 
 	// sessionsTotal counts all gRPC ExecuteWorkflow streams opened to the Duo
 	// Workflow Service.

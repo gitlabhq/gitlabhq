@@ -1572,7 +1572,7 @@ To emphasize an area in a screenshot, use an arrow.
   - Height should be 500 pixels or less.
   - Make sure the screenshot is still clear after being resized and compressed.
 - Use PNG images instead of JPEG.
-- All images **must** be [compressed](#compress-images) to 100 KB or less.
+- All images must be [compressed](#compress-images) to 100 KB or less.
   In many cases, 25-50 KB or less is often possible without reducing image quality.
 - Save the image with a lowercase filename that's descriptive of the feature
   or concept in the image:
@@ -1834,7 +1834,7 @@ To create accessible and maintainable diagrams, follow these guidelines:
 - Shapes that represent the same element should have the same shape and size.
 - Add clear labels and brief descriptions to diagram elements.
 - For elements that have text, ensure adequate white space exists between the text and the
-  shape's outline. If required, increase the size of the shape and **all** similar shapes in the diagram.
+  shape's outline. If required, increase the size of the shape and all similar shapes in the diagram.
 - Include a title and brief description for the diagram.
 - Use GitLab Sans font for text, or Google Inter font as a fallback option.
 - For complex processes, consider creating multiple simple diagrams instead of one large diagram.
@@ -1955,7 +1955,7 @@ Do not use words to describe the icon:
 
 When the button doesn't have any hover text, describe the icon.
 Follow up by creating a
-[UX bug issue](https://gitlab.com/gitlab-org/gitlab/-/issues/new?description_template=Bug)
+[UX bug issue](https://gitlab.com/gitlab-org/gitlab/-/work_items/new?description_template=Bug)
 to add hover text to the button to improve accessibility.
 
 - Avoid: `Select {{</* icon name="ellipsis_v" */>}}.`
@@ -2114,7 +2114,7 @@ It renders on the GitLab documentation site as:
 
 ### Disclaimer
 
-If you **must** write about features we have not yet delivered, add a disclaimer about forward-looking statements near the content it applies to.
+If you must write about features we have not yet delivered, add a disclaimer about forward-looking statements near the content it applies to.
 
 Disclaimer alerts are populated by using a [template](https://gitlab.com/gitlab-org/technical-writing/docs-gitlab-com/-/blob/main/themes/gitlab-docs/layouts/shortcodes/alert.html) and should not include
 any other text.
@@ -2375,8 +2375,9 @@ relevant information in your own words or link to the source.
 
 ## AI-generated content
 
-When you use AI tools to generate or assist with documentation, review the output carefully
-before you submit it. AI-generated content often has these problems:
+When you use AI tools to generate or assist with documentation, check the output carefully
+before you submit it for review. AI is designed to write convincingly but
+AI-generated content often has these problems:
 
 Repetition
 : Content that restates what has already been said on the page
@@ -2397,8 +2398,6 @@ Incorrect scope
 : A new page has been created for a concept or procedure when a suitable
   page already exists.
   Do not create a new page for a single concept, term, or procedure step.
-
-For more information, see [Review AI-generated content](../ai-instruction-files-documentation.md#review-ai-generated-content).
 
 ## Promising features in future versions
 

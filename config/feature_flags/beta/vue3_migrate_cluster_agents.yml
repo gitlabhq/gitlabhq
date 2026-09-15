@@ -1,0 +1,10 @@
+---
+name: vue3_migrate_cluster_agents
+description: Enables Vue 3 in compatibility mode for the cluster agent pages
+feature_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/616240
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/250433
+rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/616245
+milestone: '19.4'
+group: group::environments
+type: beta
+default_enabled: false

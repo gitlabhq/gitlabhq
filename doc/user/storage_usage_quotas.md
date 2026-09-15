@@ -196,7 +196,7 @@ Prerequisites:
 - The billing account must be linked to the subscription for the personal or group's namespace.
 
 > [!note]
-> Storage subscriptions **renew automatically each year**.
+> Storage subscriptions renew automatically each year.
 > You can [disable automatic subscription renewal](../subscriptions/manage_subscription.md#turn-on-or-turn-off-automatic-subscription-renewal).
 
 ### For your personal namespace

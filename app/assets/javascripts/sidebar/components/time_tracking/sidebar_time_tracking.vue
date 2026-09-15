@@ -64,7 +64,7 @@ export default {
         changedCommands = [];
       }
       if (changedCommands && intersection(subscribedCommands, changedCommands).length) {
-        eventHub.$emit('timeTracker:refresh');
+        eventHub.$emit('time-tracker-refresh');
       }
     },
   },

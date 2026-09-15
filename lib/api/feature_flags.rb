@@ -95,6 +95,55 @@ module API
         end
       end
 
+      resource :feature_flags_settings do
+        desc 'Retrieve feature flag settings' do
+          detail 'Retrieves the feature flag settings of a specified project.'
+          success ::API::Entities::FeatureFlag::Settings
+          failure [
+            { code: 401, message: 'Unauthorized' },
+            { code: 404, message: 'Not found' }
+          ]
+          tags feature_flags_tags
+        end
+        route_setting :authorization, permissions: :read_feature_flag, boundary_type: :project
+        get do
+          present_settings_entity(user_project)
+        end
+
+        desc 'Update feature flag settings' do
+          detail 'Updates the feature flag settings of a specified project.'
+          success ::API::Entities::FeatureFlag::Settings
+          failure [
+            { code: 400, message: 'Bad request' },
+            { code: 401, message: 'Unauthorized' },
+            { code: 403, message: 'Forbidden' },
+            { code: 404, message: 'Not found' }
+          ]
+          tags feature_flags_tags
+        end
+        params do
+          requires :minimum_role,
+            type: String,
+            values: ::ProjectSetting::FEATURE_FLAGS_MANAGEMENT_ROLES.keys.map(&:to_s),
+            desc: 'Minimum role required to create, update, toggle, and delete feature flags'
+        end
+        route_setting :authorization,
+          permissions: :update_feature_flags_minimum_role_setting, boundary_type: :project
+        put do
+          authorize! :update_feature_flags_minimum_role_setting, user_project
+
+          result = ::Projects::UpdateService
+            .new(user_project, current_user, feature_flags_minimum_role: params[:minimum_role])
+            .execute
+
+          if result[:status] == :success
+            present_settings_entity(user_project)
+          else
+            render_api_error!(result[:message], 400)
+          end
+        end
+      end
+
       params do
         requires :feature_flag_name, type: String, desc: 'The name of the feature flag'
       end
@@ -219,6 +268,11 @@ module API
       def present_entity(result)
         present result,
           with: ::API::Entities::FeatureFlag
+      end
+
+      def present_settings_entity(project)
+        present project.project_setting,
+          with: ::API::Entities::FeatureFlag::Settings
       end
 
       def feature_flag

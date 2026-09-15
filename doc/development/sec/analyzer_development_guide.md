@@ -305,7 +305,7 @@ After the above steps have been completed, the automatic release process execute
 
 ### Token rotation for service account
 
-The `GITLAB_TOKEN` for the [@gl-service-dev-secure-analyzers-automation](https://gitlab.com/gl-service-dev-secure-analyzers-automation) service account **must** be rotated before the `Expiry Date` listed [above](#service-account-used-in-the-automatic-release-process) by doing the following:
+The `GITLAB_TOKEN` for the [@gl-service-dev-secure-analyzers-automation](https://gitlab.com/gl-service-dev-secure-analyzers-automation) service account must be rotated before the `Expiry Date` listed [above](#service-account-used-in-the-automatic-release-process) by doing the following:
 
 1. Log in as the `gl-service-dev-secure-analyzers-automation` user.
 
@@ -357,7 +357,7 @@ The `GITLAB_TOKEN` for the [@gl-service-dev-secure-analyzers-automation](https:/
        </tr>
        <tr>
          <td>
-           <a href="https://gitlab.com/groups/security-products/dependency-management/-/settings/ci_cd#ci-variables"><code>groups/security-products/dependency-management</code></a>
+           <a href="https://gitlab.com/groups/gitlab-org/security-products/dependency-management/-/settings/ci_cd#ci-variables"><code>gitlab-org/security-products/dependency-management</code></a>
          </td>
        </tr>
        <tr>

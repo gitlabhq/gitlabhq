@@ -12,7 +12,7 @@ import workItemNotesByIidQuery from '~/work_items/graphql/notes/work_item_notes_
 import {
   mockAwardEmojiThumbsUp,
   mockWorkItemNotesResponseWithComments,
-} from 'jest/work_items/mock_data';
+} from 'ee_else_ce_jest/work_items/mock_data';
 import { EMOJI_THUMBS_UP, EMOJI_THUMBS_DOWN } from '~/emoji/constants';
 
 jest.mock('~/work_items/notes/award_utils', () => ({

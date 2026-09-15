@@ -24,17 +24,17 @@ describe('DiscussionFilterNote component', () => {
     );
   });
 
-  it('emits `dropdownSelect` event with 0 parameter on clicking Show all activity button', () => {
+  it('emits `dropdown-select` event with 0 parameter on clicking Show all activity button', () => {
     jest.spyOn(eventHub, '$emit').mockImplementation(() => {});
     wrapper.findAllComponents(GlButton).at(0).vm.$emit('click');
 
-    expect(eventHub.$emit).toHaveBeenCalledWith('dropdownSelect', 0);
+    expect(eventHub.$emit).toHaveBeenCalledWith('dropdown-select', 0);
   });
 
-  it('emits `dropdownSelect` event with 1 parameter on clicking Show comments only button', () => {
+  it('emits `dropdown-select` event with 1 parameter on clicking Show comments only button', () => {
     jest.spyOn(eventHub, '$emit').mockImplementation(() => {});
     wrapper.findAllComponents(GlButton).at(1).vm.$emit('click');
 
-    expect(eventHub.$emit).toHaveBeenCalledWith('dropdownSelect', 1);
+    expect(eventHub.$emit).toHaveBeenCalledWith('dropdown-select', 1);
   });
 });

@@ -1,0 +1,21 @@
+---
+description: Fires when a card move on the work item planning board fails, either because the update mutation was rejected due to a network or server error, or because it returned a non-empty errors array. The error message itself is not sent, to avoid PII and unbounded values.
+internal_events: true
+status: active
+action: fail_card_move_on_work_item_board
+identifiers:
+  - project
+  - namespace
+  - user
+additional_properties:
+  label:
+    description: 'Indicates the kind of move that failed: column when the card moved to a different column and its grouping value changed, or position when the card was reordered within the same column. Unlike other work_item_* events, where label carries the work item type, here it carries the kind of move instead.'
+product_group: planning_views
+product_categories:
+  - planning_views
+milestone: '19.4'
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/251511
+tiers:
+  - free
+  - premium
+  - ultimate

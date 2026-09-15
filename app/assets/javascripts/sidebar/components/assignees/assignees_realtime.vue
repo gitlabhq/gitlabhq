@@ -21,6 +21,7 @@ export default normalizeRender({
       required: true,
     },
   },
+  emits: ['assignees-updated'],
   computed: {
     issuableId() {
       return this.issuable?.id;
@@ -65,7 +66,7 @@ export default normalizeRender({
             if (this.mediator) {
               this.handleFetchResult(nodes);
             }
-            this.$emit('assigneesUpdated', { id, assignees: nodes });
+            this.$emit('assignees-updated', { id, assignees: nodes });
           }
         },
       },

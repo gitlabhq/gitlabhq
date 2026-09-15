@@ -35,4 +35,4 @@ GitLab supports MCP in two ways:
 
 ## Related topics
 
-- [Get started with the MCP](https://modelcontextprotocol.io/introduction)
+- [Get started with the MCP](https://modelcontextprotocol.io/docs/getting-started/intro)

@@ -1,0 +1,10 @@
+---
+name: wiki_collaborative_editing
+description: Enable real-time collaborative editing of wiki pages in the rich text editor
+feature_issue_url: https://gitlab.com/gitlab-org/gitlab/-/work_items/14367
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/253403
+rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/work_items/616943
+milestone: '19.4'
+group: group::planner intelligence
+type: wip
+default_enabled: false

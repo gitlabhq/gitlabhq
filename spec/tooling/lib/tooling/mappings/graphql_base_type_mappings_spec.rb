@@ -90,8 +90,6 @@ RSpec.describe Tooling::Mappings::GraphqlBaseTypeMappings, feature_category: :to
     end
 
     context 'when no files were changed' do
-      let(:changed_files_content) { '' }
-
       it 'returns an empty array' do
         expect(subject).to be_empty
       end

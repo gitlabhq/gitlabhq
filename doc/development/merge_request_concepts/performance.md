@@ -5,10 +5,10 @@ info: Any user with at least the Maintainer role can merge updates to this conte
 title: Merge Request Performance Guidelines
 ---
 
-Each new introduced merge request **should be performant by default**.
+Each new introduced merge request should be performant by default.
 
 To ensure a merge request does not negatively impact performance of GitLab
-_every_ merge request **should** adhere to the guidelines outlined in this
+_every_ merge request should adhere to the guidelines outlined in this
 document. There are no exceptions to this rule unless specifically discussed
 with and agreed upon by backend maintainers and performance specialists.
 
@@ -122,7 +122,7 @@ read this section on [how to prepare the merge request for a database review](..
 
 ## Query Counts
 
-**Summary**: a merge request **should not** increase the total number of executed SQL
+**Summary**: a merge request should not increase the total number of executed SQL
 queries unless absolutely necessary.
 
 The total number of queries executed by the code modified or added by a merge request
@@ -213,7 +213,7 @@ By default, this `Gitlab::SQL::CTE` class forces materialization through adding 
 
 ## Cached Queries
 
-**Summary**: a merge request **should not** execute duplicated cached queries.
+**Summary**: a merge request should not execute duplicated cached queries.
 
 Rails provides an [SQL Query Cache](../cached_queries.md),
 used to cache the results of database queries for the duration of the request.
@@ -270,7 +270,7 @@ This avoids the cached SQL query and also avoids re-instantiation of the project
 
 ## Executing Queries in Loops
 
-**Summary**: SQL queries **must not** be executed in a loop unless absolutely
+**Summary**: SQL queries must not be executed in a loop unless absolutely
 necessary.
 
 Executing SQL queries in a loop can result in many queries being executed
@@ -284,7 +284,7 @@ be clearly mentioned in the merge request description.
 ## Batch process
 
 **Summary**: Iterating a single process to external services (for example, PostgreSQL, Redis, Object Storage)
-should be executed in a **batch-style** to reduce connection overheads.
+should be executed in a batch style to reduce connection overheads.
 
 For fetching rows from various tables in a batch-style, see [Eager Loading](#eager-loading) section.
 
@@ -334,9 +334,9 @@ that one request to a Gitaly instance during a transaction triggered a ~"priorit
 **Summary**: always eager load associations when retrieving more than one row.
 
 When retrieving multiple database records for which you need to use any
-associations you **must** eager load these associations. For example, if you're
+associations you must eager load these associations. For example, if you're
 retrieving a list of blog posts and you want to display their authors you
-**must** eager load the author associations.
+must eager load the author associations.
 
 In other words, instead of this:
 
@@ -358,7 +358,7 @@ Also consider using [QueryRecoder tests](../database/query_recorder.md) to preve
 
 ## Memory Usage
 
-**Summary**: merge requests **must not** increase memory usage unless absolutely
+**Summary**: merge requests must not increase memory usage unless absolutely
 necessary.
 
 A merge request must not increase the memory usage of GitLab by more than the
@@ -466,13 +466,13 @@ Read more about when and how feature flags should be used in
 
 We can consider the following types of storage:
 
-- **Local temporary storage** (very short-term storage) This type of storage is system-provided storage, like a `/tmp` folder.
+- Local temporary storage (very short-term storage): This type of storage is system-provided storage, like a `/tmp` folder.
   This is the type of storage that you should ideally use for all your temporary tasks.
   The fact that each node has its own temporary storage makes scaling significantly easier.
   This storage is also very often SSD-based, thus is significantly faster.
   The local storage can be configured for the application with
   the usage of the `TMPDIR` variable.
-- **Shared temporary storage** (short-term storage) This type of storage is network-based temporary storage,
+- Shared temporary storage (short-term storage): This type of storage is network-based temporary storage,
   usually run with a common NFS server. As of Feb 2020, we still use this type of storage
   for most of our implementations. Even though this allows the above limit to be significantly larger,
   it does not really mean that you can use more. The shared temporary storage is shared by
@@ -480,12 +480,12 @@ We can consider the following types of storage:
   of operations creates a contention on execution of all other jobs and requests
   across the whole application. This can impact the stability of the whole GitLab.
   Be respectful of that.
-- **Shared persistent storage** (long-term storage) This type of storage uses
+- Shared persistent storage (long-term storage): This type of storage uses
   shared network-based storage (for example, NFS). This solution is mostly used by customers running small
   installations consisting of a few nodes. The files on shared storage are easily accessible,
   but any job that is uploading or downloading data can create a serious contention for all other jobs.
   This is also an approach by default used by Omnibus.
-- **Object-based persistent storage** (long term storage) This type of storage uses external
+- Object-based persistent storage (long term storage): This type of storage uses external
   services like [AWS S3](https://en.wikipedia.org/wiki/Amazon_S3). The Object Storage
   can be treated as infinitely scalable and redundant. Accessing this storage usually requires
   downloading the file to manipulate it. The Object Storage can be considered as an ultimate

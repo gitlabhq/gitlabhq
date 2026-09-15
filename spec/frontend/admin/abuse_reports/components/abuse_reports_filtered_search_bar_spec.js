@@ -134,7 +134,7 @@ describe('AbuseReportsFilteredSearchBar', () => {
     });
   });
 
-  describe('onFilter', () => {
+  describe('on-filter', () => {
     const USER_FILTER_TOKEN = {
       type: FILTERED_SEARCH_TOKEN_USER.type,
       value: { data: 'mr_abuser', operator: '=' },
@@ -159,7 +159,7 @@ describe('AbuseReportsFilteredSearchBar', () => {
 
       createComponent();
 
-      findFilteredSearchBar().vm.$emit('onFilter', filterTokens);
+      findFilteredSearchBar().vm.$emit('on-filter', filterTokens);
     };
 
     it.each([USER_FILTER_TOKEN, REPORTER_FILTER_TOKEN, STATUS_FILTER_TOKEN, CATEGORY_FILTER_TOKEN])(
@@ -200,14 +200,14 @@ describe('AbuseReportsFilteredSearchBar', () => {
     });
   });
 
-  describe('onSort', () => {
+  describe('on-sort', () => {
     const SORT_VALUE = 'updated_at_asc';
     const EXISTING_QUERY = 'status=closed&user=mr_abuser';
 
     const createComponentAndSort = (initialLocation) => {
       setWindowLocation(initialLocation);
       createComponent();
-      findFilteredSearchBar().vm.$emit('onSort', SORT_VALUE);
+      findFilteredSearchBar().vm.$emit('on-sort', SORT_VALUE);
     };
 
     it('redirects to URL with existing query params and the sort query param', () => {

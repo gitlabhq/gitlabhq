@@ -7,15 +7,14 @@ module Gitlab
     class DatabaseInformation
       DEFAULT_DATABASE_NAMES = %w[main].freeze
 
-      USER_TOKEN = '$user'
-
-      # pg_stat_progress_vacuum gained delay_time in PostgreSQL 18, and
-      # max_dead_tuple_bytes/dead_tuple_bytes/indexes_total/indexes_processed
-      # in PostgreSQL 17 (replacing the older max_dead_tuples/num_dead_tuples).
-      # 17 is our documented minimum, but CI still runs a nightly job against
-      # PG16 to cover self-managed instances mid-upgrade, so both need gating.
+      # pg_stat_progress_vacuum gained delay_time in PostgreSQL 18. All other
+      # columns we read are present from PostgreSQL 17 (our minimum version).
       DELAY_TIME_MINIMUM_VERSION = 18_00_00
-      DEAD_TUPLE_AND_INDEX_PROGRESS_MINIMUM_VERSION = 17_00_00
+
+      # VACUUM_PROGRESS_SQL selects columns that only exist from PostgreSQL 17.
+      # An instance mid-upgrade can still run an older version; skip vacuum
+      # collection there instead of failing the whole diagnostics payload.
+      VACUUM_PROGRESS_MINIMUM_VERSION = 17_00_00
 
       # An autovacuum triggered to prevent transaction ID (or multixact)
       # wraparound is reported by PostgreSQL with this marker appended to the
@@ -23,38 +22,21 @@ module Gitlab
       # must not be killed casually, so we flag it explicitly.
       ANTI_WRAPAROUND_MARKER = 'to prevent wraparound'
 
-      SCHEMAS_SQL = <<~SQL
-        SELECT n.nspname AS name,
-          (n.nspname = current_schema()) AS is_current,
-          pg_catalog.pg_get_userbyid(n.nspowner) AS owner,
-          EXISTS (
-            SELECT 1 FROM pg_catalog.pg_class c
-            WHERE c.relnamespace = n.oid AND c.relkind IN ('r', 'p', 'S')
-          ) AS has_tables
-        FROM pg_catalog.pg_namespace n
-        WHERE n.nspname NOT IN ('pg_catalog', 'pg_toast', 'information_schema')
-        ORDER BY is_current DESC, name ASC
-      SQL
-
-      SCHEMA_TABLES_SQL = <<~SQL
-        SELECT n.nspname AS schema_name, c.relname AS table_name
-        FROM pg_catalog.pg_namespace n
-        JOIN pg_catalog.pg_class c ON c.relnamespace = n.oid
-        WHERE n.nspname NOT IN ('pg_catalog', 'pg_toast', 'information_schema')
-          AND c.relkind IN ('r', 'p', 'v', 'm')
-      SQL
-
       # Live snapshot of in-progress (auto)vacuums for the current database.
       # relid is resolved to schema.table via pg_class/pg_namespace, and the
       # result is scoped to the current database (the view reports for the
-      # whole cluster) via the view's own datname. Joining pg_stat_activity
-      # classifies each vacuum:
-      # backend_type separates autovacuum workers from manual VACUUM, the
-      # query text reveals anti-wraparound runs, and query_start gives the
-      # elapsed running time (computed server-side so the value does not depend
-      # on the browser clock). %{delay_time_column} is filled in only on
-      # PostgreSQL 18+ and %{dead_tuple_and_index_progress_columns} only on
-      # PostgreSQL 17+ (see the MINIMUM_VERSION constants above).
+      # whole cluster) via the view's own datname.
+      #
+      # The %{activity_columns}/%{activity_join} placeholders join
+      # pg_stat_activity to classify each vacuum: backend_type separates
+      # autovacuum workers from manual VACUUM, the query text reveals
+      # anti-wraparound runs, and query_start gives the elapsed running time
+      # (computed server-side so the value does not depend on the browser
+      # clock). A restricted role (e.g. one without pg_monitor) may be denied
+      # pg_stat_activity, so those placeholders are dropped in that case and the
+      # core progress columns are still returned. The %{delay_time_column}
+      # placeholder is filled in only on PostgreSQL 18+ (see
+      # DELAY_TIME_MINIMUM_VERSION).
       VACUUM_PROGRESS_SQL = <<~SQL
         SELECT v.pid,
           n.nspname AS schema_name,
@@ -64,18 +46,27 @@ module Gitlab
           v.heap_blks_scanned,
           v.heap_blks_vacuumed,
           v.index_vacuum_count,
-          a.backend_type,
-          a.query AS activity_query,
-          EXTRACT(EPOCH FROM (clock_timestamp() - a.query_start))::bigint AS running_time_seconds
-          %{dead_tuple_and_index_progress_columns}
+          v.max_dead_tuple_bytes,
+          v.dead_tuple_bytes,
+          v.indexes_total,
+          v.indexes_processed
+          %{activity_columns}
           %{delay_time_column}
         FROM pg_stat_progress_vacuum v
         JOIN pg_class c ON c.oid = v.relid
         JOIN pg_namespace n ON n.oid = c.relnamespace
-        LEFT JOIN pg_stat_activity a ON a.pid = v.pid
+        %{activity_join}
         WHERE v.datname = current_database()
         ORDER BY v.pid
       SQL
+
+      ACTIVITY_COLUMNS = <<~SQL.chomp
+        , a.backend_type,
+          a.query AS activity_query,
+          EXTRACT(EPOCH FROM (clock_timestamp() - a.query_start))::bigint AS running_time_seconds
+      SQL
+
+      ACTIVITY_JOIN = 'LEFT JOIN pg_stat_activity a ON a.pid = v.pid'
 
       def self.execute(database_names: DEFAULT_DATABASE_NAMES)
         new(database_names: database_names).execute
@@ -99,142 +90,59 @@ module Gitlab
 
         connection = model.connection
 
-        search_path = connection.select_value('SHOW search_path').to_s
-        schemas = connection.select_all(SCHEMAS_SQL).map do |row|
-          {
-            name: row['name'],
-            current: ActiveModel::Type::Boolean.new.cast(row['is_current']),
-            owner: row['owner'],
-            has_tables: ActiveModel::Type::Boolean.new.cast(row['has_tables'])
-          }
-        end
-
-        schema_tables = connection.select_all(SCHEMA_TABLES_SQL).map { |row| [row['schema_name'], row['table_name']] }
-
-        current_user = connection.select_value('SELECT current_user').to_s
-
-        {
-          current_user: current_user,
-          search_path: search_path,
-          schemas: schemas,
-          findings: search_path_findings(search_path, schemas, schema_tables, current_user),
-          vacuums: collect_vacuums(connection)
-        }
+        Diagnostics::Checks::SchemaResolution.new(connection).execute
+          .merge(collect_vacuum_section(connection))
+          .merge(autovacuum_config: collect_autovacuum_config(connection))
       rescue StandardError => e
         Gitlab::ErrorTracking.track_exception(e, database_name: database_name)
         { error: "Failed to gather information for database: #{database_name}" }
       end
 
-      # Inspects the live search_path against GitLab's PostgreSQL conventions
-      # and returns an ordered list of findings. Each finding is a plain hash:
-      # { severity: 'error'|'warning', code: String, message: String }.
-      def search_path_findings(search_path, schemas, schema_tables, current_user)
-        entries = parse_search_path(search_path)
-        partition_schema_names = Gitlab::Database::EXTRA_SCHEMAS.map(&:to_s)
+      # Vacuum section of the payload: the in-progress vacuum list plus a flag
+      # telling the frontend whether pg_stat_activity was readable. The full
+      # query joins pg_stat_activity for the classification/runtime columns; a
+      # restricted role (e.g. one without pg_monitor) is denied that view, so we
+      # retry without the join and report activity as unavailable rather than
+      # failing the whole diagnostics payload.
+      def collect_vacuum_section(connection)
+        return { vacuums: [], vacuum_activity_available: true } if
+          connection.database_version < VACUUM_PROGRESS_MINIMUM_VERSION
 
-        findings = []
+        vacuums(connection, activity_available: activity_readable?(connection))
+      rescue ActiveRecord::StatementInvalid => e
+        # Belt and braces: if SELECT on the view is revoked outright (as on
+        # GitLab.com) the join is denied even when activity_readable? is true,
+        # so degrade instead of failing the whole payload.
+        raise unless e.cause.is_a?(PG::InsufficientPrivilege)
 
-        if (entries & partition_schema_names).any?
-          findings << {
-            severity: 'warning',
-            code: 'search_path_contains_partition_schema',
-            message: s_('DatabaseDiagnostics|The search path contains a GitLab partition schema. ' \
-              'Partition schemas are expected to be referenced fully qualified, not via the search path.')
-          }
-        end
-
-        # Resolve the "$user" token to the connected role so a user-named schema
-        # is considered, and drop partition schemas (covered above). What remains
-        # are the candidate schemas the search path resolves objects against.
-        candidate_names = entries.map { |entry| entry == USER_TOKEN ? current_user : entry } -
-          partition_schema_names
-        candidates = schemas.select { |schema| candidate_names.include?(schema[:name]) }
-
-        # More than one schema on the search path holds objects of any kind. On
-        # its own this can be legitimate (an extension's schema, a DBA's own
-        # tooling), so it is only a warning: unqualified references still resolve
-        # against the first match, which is worth flagging but not a defect.
-        populated = candidates.select { |schema| schema[:has_tables] }
-        if populated.size > 1
-          findings << {
-            severity: 'warning',
-            code: 'search_path_objects_split_across_schemas',
-            message: format(
-              s_('DatabaseDiagnostics|More than one schema in the search path contains objects: %{schemas}. ' \
-                'This can be intentional, but unqualified references resolve against the first match, so ' \
-                'objects spread across schemas can resolve unexpectedly.'),
-              schemas: populated.pluck(:name).join(', ')
-            )
-          }
-        end
-
-        # More than one schema on the search path holds GitLab's own objects.
-        # GitLab expects all of its objects in a single schema, so this is a real
-        # misconfiguration rather than a possibility, and is reported as an error.
-        gitlab_populated = candidates.select { |schema| schema_has_gitlab_objects?(schema[:name], schema_tables) }
-        if gitlab_populated.size > 1
-          findings << {
-            severity: 'error',
-            code: 'search_path_gitlab_objects_split_across_schemas',
-            message: format(
-              s_('DatabaseDiagnostics|More than one schema in the search path contains GitLab objects: ' \
-                '%{schemas}. GitLab\'s objects should all live in a single schema. When they are split ' \
-                'across multiple schemas, unqualified references can resolve unexpectedly.'),
-              schemas: gitlab_populated.pluck(:name).join(', ')
-            )
-          }
-        end
-
-        # GitLab objects in a schema the search path never consults cannot be
-        # resolved by unqualified references, so GitLab never uses them. They
-        # are typically leftovers from a restore or a migration into the wrong
-        # schema. Partition schemas are exempt: GitLab keeps partitions there
-        # by design, outside the search path.
-        outside_names = schemas.pluck(:name) - candidate_names - partition_schema_names
-        gitlab_outside = outside_names.select { |name| schema_has_gitlab_objects?(name, schema_tables) }
-        if gitlab_outside.any?
-          findings << {
-            severity: 'warning',
-            code: 'gitlab_objects_outside_search_path',
-            message: format(
-              s_('DatabaseDiagnostics|Schemas outside the search path contain GitLab objects: %{schemas}. ' \
-                'GitLab does not resolve unqualified references against these schemas, so these objects are ' \
-                'never used. They may be leftovers from a restore or an earlier misconfiguration.'),
-              schemas: gitlab_outside.join(', ')
-            )
-          }
-        end
-
-        findings
+        vacuums(connection, activity_available: false)
       end
 
-      def schema_has_gitlab_objects?(schema_name, schema_tables)
-        schema_tables.any? { |(namespace, table_name)| namespace == schema_name && gitlab_object?(table_name) }
+      # pg_stat_activity only shows another backend's backend_type, query, and
+      # query_start to a role that can read all stats; for everyone else those
+      # columns are null on other backends. An autovacuum worker runs under a
+      # different backend, so without this privilege we would misclassify it as
+      # a manual VACUUM and miss anti-wraparound and running time. Skip the join
+      # in that case and report activity as unavailable. Superusers and members
+      # of pg_read_all_stats (which pg_monitor includes) see everything.
+      def activity_readable?(connection)
+        ActiveModel::Type::Boolean.new.cast(
+          connection.select_value(
+            "SELECT current_setting('is_superuser')::boolean " \
+              "OR pg_has_role(current_user, 'pg_read_all_stats', 'MEMBER')"
+          )
+        )
       end
 
-      def gitlab_object?(table_name)
-        schema = Gitlab::Database::GitlabSchema.table_schema(table_name)
-        schema.present? && schema != :gitlab_internal
-      end
-
-      # Normalizes a raw search_path string into an ordered list of tokens,
-      # stripping whitespace and surrounding double quotes while preserving
-      # the "$user" token.
-      def parse_search_path(search_path)
-        search_path.split(',').map do |entry|
-          entry.strip.delete_prefix('"').delete_suffix('"')
-        end
-      end
-
-      # Returns an ordered list of in-progress vacuums as plain hashes. Reads
-      # are routed to the primary because autovacuum only runs there; a replica
-      # would report an empty progress view. Byte/count columns are returned as
-      # integers; delay_time (PostgreSQL 18+) and the dead-tuple/index-progress
-      # columns (PostgreSQL 17+) are nil on older versions.
-      def collect_vacuums(connection)
+      # Reads are routed to the primary because autovacuum only runs there; a
+      # replica would report an empty progress view. Byte/count columns are
+      # returned as integers and delay_time (PostgreSQL 18+) as a float or nil.
+      # The activity-derived fields are nil when pg_stat_activity is unavailable.
+      def vacuums(connection, activity_available:)
         sql = format(
           VACUUM_PROGRESS_SQL,
-          dead_tuple_and_index_progress_columns: dead_tuple_and_index_progress_columns(connection),
+          activity_columns: activity_available ? ACTIVITY_COLUMNS : '',
+          activity_join: activity_available ? ACTIVITY_JOIN : '',
           delay_time_column: delay_time_column(connection)
         )
 
@@ -242,7 +150,7 @@ module Gitlab
           .current(connection.load_balancer)
           .use_primary { connection.select_all(sql) }
 
-        rows.map do |row|
+        list = rows.map do |row|
           {
             pid: row['pid'].to_i,
             schema_name: row['schema_name'],
@@ -252,16 +160,18 @@ module Gitlab
             heap_blks_scanned: row['heap_blks_scanned'].to_i,
             heap_blks_vacuumed: row['heap_blks_vacuumed'].to_i,
             index_vacuum_count: row['index_vacuum_count'].to_i,
-            max_dead_tuple_bytes: row['max_dead_tuple_bytes']&.to_i,
-            dead_tuple_bytes: row['dead_tuple_bytes']&.to_i,
-            indexes_total: row['indexes_total']&.to_i,
-            indexes_processed: row['indexes_processed']&.to_i,
-            vacuum_type: vacuum_type(row),
-            anti_wraparound: anti_wraparound?(row),
-            running_time_seconds: row['running_time_seconds']&.to_i,
+            max_dead_tuple_bytes: row['max_dead_tuple_bytes'].to_i,
+            dead_tuple_bytes: row['dead_tuple_bytes'].to_i,
+            indexes_total: row['indexes_total'].to_i,
+            indexes_processed: row['indexes_processed'].to_i,
+            vacuum_type: activity_available ? vacuum_type(row) : nil,
+            anti_wraparound: activity_available ? anti_wraparound?(row) : nil,
+            running_time_seconds: activity_available ? row['running_time_seconds']&.to_i : nil,
             delay_time: row['delay_time']&.to_f
           }
         end
+
+        { vacuums: list, vacuum_activity_available: activity_available }
       end
 
       # 'autovacuum worker' is the backend_type PostgreSQL reports for vacuums
@@ -281,10 +191,14 @@ module Gitlab
         ', v.delay_time'
       end
 
-      def dead_tuple_and_index_progress_columns(connection)
-        return '' if connection.database_version < DEAD_TUPLE_AND_INDEX_PROGRESS_MINIMUM_VERSION
-
-        ', v.max_dead_tuple_bytes, v.dead_tuple_bytes, v.indexes_total, v.indexes_processed'
+      # Settings are read on the primary so the report matches the database
+      # autovacuum actually runs on; a replica can carry different GUC values.
+      def collect_autovacuum_config(connection)
+        Gitlab::Database::LoadBalancing::SessionMap
+          .current(connection.load_balancer)
+          .use_primary do
+            Diagnostics::Checks::AutovacuumSettings.new(connection).execute
+          end
       end
     end
   end

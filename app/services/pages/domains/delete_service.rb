@@ -6,9 +6,12 @@ module Pages
       def execute(domain)
         return unless authorized?
 
-        domain.destroy
+        if domain.destroy
+          publish_event(domain)
+          log_audit_event(domain, 'deleted')
+        end
 
-        publish_event(domain)
+        domain
       end
 
       private

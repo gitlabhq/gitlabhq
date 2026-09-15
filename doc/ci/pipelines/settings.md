@@ -95,6 +95,7 @@ running job can be canceled before it completes. After a job with
 {{< history >}}
 
 - [Introduced](https://gitlab.com/groups/gitlab-org/-/work_items/6044) as a [beta](../../policy/development_stages_support.md#beta) in GitLab 19.2.
+- [Added](https://gitlab.com/gitlab-org/gitlab/-/issues/607869) to the projects REST API in GitLab 19.4.
 
 {{< /history >}}
 

@@ -28,7 +28,7 @@ You may continue to use the registry as normal while step one is being completed
 
 {{< tab title="GitLab 18.7 and later" >}}
 
-1. Ensure the database is disabled in the `database` section to your `/etc/gitlab/gitlab.rb` file:
+1. Ensure the database is disabled in the `database` section of your `/etc/gitlab/gitlab.rb` file:
 
    ```ruby
    registry['database'] = {
@@ -48,7 +48,7 @@ You may continue to use the registry as normal while step one is being completed
 
 {{< tab title="GitLab 18.3 to 18.6" >}}
 
-1. Ensure the database is disabled in the `database` section to your `/etc/gitlab/gitlab.rb` file:
+1. Ensure the database is disabled in the `database` section of your `/etc/gitlab/gitlab.rb` file:
 
    ```ruby
    registry['database'] = {
@@ -104,7 +104,7 @@ Prerequisites:
 > [!note]
 > You should try to schedule the following step as soon as possible
 > to reduce the amount of downtime required. Ideally, less than one week
-> after step one completes. Any new data written to the registry between steps one and two,
+> after step one completes. Any new data written to the registry between steps one and two
 > causes step two to take more time.
 
 ## Import all repository data (step two)
@@ -120,7 +120,7 @@ Allow enough time for downtime while step two is being executed.
 1. Ensure the registry is set to `read-only` mode.
 
    Edit your `/etc/gitlab/gitlab.rb` and add the `maintenance` section to the `registry['storage']`
-   configuration. For example, for a `gcs` backend registry using a `gs://my-company-container-registry`
+   configuration. For example, for a `gcs`-backed registry using a `gs://my-company-container-registry`
    bucket, the configuration could be:
 
    ```ruby
@@ -177,7 +177,7 @@ Allow enough time for downtime while step two is being executed.
 1. Ensure the registry is set to `read-only` mode.
 
    Edit your `/etc/gitlab/gitlab.rb` and add the `maintenance` section to the `registry['storage']`
-   configuration. For example, for a `gcs` backend registry using a `gs://my-company-container-registry`
+   configuration. For example, for a `gcs`-backed registry using a `gs://my-company-container-registry`
    bucket, the configuration could be:
 
    ```ruby
@@ -234,7 +234,7 @@ Allow enough time for downtime while step two is being executed.
 1. Ensure the registry is set to `read-only` mode.
 
    Edit your `/etc/gitlab/gitlab.rb` and add the `maintenance` section to the `registry['storage']`
-   configuration. For example, for a `gcs` backed registry using a `gs://my-company-container-registry`
+   configuration. For example, for a `gcs`-backed registry using a `gs://my-company-container-registry`
    bucket, the configuration could be:
 
    ```ruby

@@ -24,7 +24,8 @@ module Ci
     NORMALIZED_DATA_COLUMNS = %i[interruptible].freeze
 
     query_constraints :id, :partition_id
-    partitionable scope: ->(_) { Ci::Pipeline.current_partition_value }, partitioned: true
+    partitionable scope: ->(_) { Ci::Pipeline.current_partition_value },
+      partitioned: { detach_archived: true }
 
     belongs_to :project
 

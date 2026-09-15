@@ -1,0 +1,9 @@
+---
+name: repository_diff_stats_api
+description: Enables the GET /projects/:id/repository/diff_stats REST API endpoint
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/234456
+rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/work_items/617089
+milestone: '19.4'
+group: group::gitaly
+type: beta
+default_enabled: false

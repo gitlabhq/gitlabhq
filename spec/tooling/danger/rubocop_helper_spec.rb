@@ -23,8 +23,7 @@ RSpec.describe Tooling::Danger::RubocopHelper, feature_category: :tooling do
     let(:draft_mr?) { false }
 
     before do
-      allow(fake_helper).to receive(:all_changed_files).and_return(all_changed_files)
-      allow(fake_helper).to receive(:draft_mr?).and_return(draft_mr?)
+      allow(fake_helper).to receive_messages(all_changed_files: all_changed_files, draft_mr?: draft_mr?)
     end
 
     it 'processes the right amount of files' do
@@ -91,8 +90,7 @@ RSpec.describe Tooling::Danger::RubocopHelper, feature_category: :tooling do
 
     with_them do
       before do
-        allow(fake_helper).to receive(:all_changed_files).and_return(all_changed_files)
-        allow(fake_helper).to receive(:modified_files).and_return(modified_files)
+        allow(fake_helper).to receive_messages(all_changed_files: all_changed_files, modified_files: modified_files)
         allow(rubocop).to receive(:project_helper).and_return(fake_project_helper)
         allow(fake_project_helper).to receive(:file_lines).and_return([])
       end

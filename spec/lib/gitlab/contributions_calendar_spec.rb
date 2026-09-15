@@ -29,7 +29,6 @@ RSpec.describe Gitlab::ContributionsCalendar, feature_category: :user_profile do
   let(:yesterday) { today - 1.day }
   let(:tomorrow)  { today + 1.day }
   let(:last_week) { today - 7.days }
-  let(:last_year) { today - 1.year }
   let(:targets) { {} }
 
   before do
@@ -102,7 +101,7 @@ RSpec.describe Gitlab::ContributionsCalendar, feature_category: :user_profile do
       end
 
       it "does not fail if there are no contributed projects" do
-        expect(calendar.activity_dates[today]).to eq(nil)
+        expect(calendar.activity_dates[today]).to be_nil
       end
     end
 

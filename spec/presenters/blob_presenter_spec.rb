@@ -210,8 +210,10 @@ RSpec.describe BlobPresenter, feature_category: :source_code_management do
 
     before do
       allow(user).to receive(:gitpod_enabled).and_return(gitpod_user_enabled)
-      allow(Gitlab::CurrentSettings).to receive(:gitpod_enabled).and_return(gitpod_application_enabled)
-      allow(Gitlab::CurrentSettings).to receive(:gitpod_url).and_return(gitpod_url)
+      allow(Gitlab::CurrentSettings).to receive_messages(
+        gitpod_enabled: gitpod_application_enabled,
+        gitpod_url: gitpod_url
+      )
     end
 
     context 'Ona enabled for application and user' do

@@ -6,7 +6,6 @@ module API
 
     before do
       authenticated_as_admin!
-      set_current_organization
     end
 
     resource :service_accounts do

@@ -1,4 +1,5 @@
 import { parse as parseGraphQL, print } from 'graphql';
+import setWindowLocation from 'helpers/set_window_location_helper';
 import {
   parseQueryTextWithFrontmatter,
   parse,
@@ -468,5 +469,39 @@ describe('parseQuery', () => {
     await expect(parseQuery(query, config)).rejects.toThrow(
       'Error: Unexpected `query syntax`, expected operator (one of IN, =, !=, >, or <)',
     );
+  });
+
+  describe('scope', () => {
+    // Kept inside this block: the sibling examples above rely on the default host resolving to
+    // no namespace at all, so hoisting it would let the URL win over their explicit config.
+    beforeEach(() => {
+      setWindowLocation('/gitlab-org/gitlab/-/analytics/dashboards/dap_impact');
+    });
+
+    const query = 'assignee = currentUser()';
+    const config = { fields: MOCK_FIELDS };
+
+    it('derives the namespace from the URL when no scope is given', async () => {
+      const { query: result } = await parseQuery(query, config);
+
+      expect(result).toContain('project(fullPath: "gitlab-org/gitlab")');
+    });
+
+    // The URL derives a project and the scope is a group on purpose: the compiler prefers
+    // `project` over `group`, so a merge would let the URL-derived project win. Scopes that
+    // agree with the URL cannot tell a merge apart from a replacement.
+    it('replaces the URL-derived namespace with an explicit scope', async () => {
+      const { query: result } = await parseQuery(query, config, { group: 'gitlab-org' });
+
+      expect(result).toContain('group(fullPath: "gitlab-org")');
+    });
+
+    it('supports a project scope', async () => {
+      const { query: result } = await parseQuery(query, config, {
+        project: 'gitlab-com/www-gitlab-com',
+      });
+
+      expect(result).toContain('project(fullPath: "gitlab-com/www-gitlab-com")');
+    });
   });
 });

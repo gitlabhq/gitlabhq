@@ -41,6 +41,21 @@ module Ci
         def include_path
           "$CI_SERVER_FQDN/#{project.full_path}/#{name}@#{version.name}"
         end
+
+        # `spec['inputs']` is stored in a jsonb column, which reorders object keys by length, so the
+        # author's order is read from `inputs_order`. That key is absent for versions published before
+        # it was introduced, which keep the length order until re-published or backfilled; see
+        # https://gitlab.com/gitlab-org/gitlab/-/work_items/619182. It can also drift from `inputs`, so
+        # it is a hint: names that no longer exist are dropped, and unlisted inputs are appended.
+        def ordered_inputs
+          inputs = spec['inputs']
+          return {} unless inputs.is_a?(Hash)
+
+          order = spec['inputs_order']
+          return inputs unless order.is_a?(Array)
+
+          inputs.slice(*order, *inputs.keys)
+        end
       end
     end
   end

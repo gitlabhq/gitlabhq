@@ -3,13 +3,13 @@
 require 'spec_helper'
 
 RSpec.describe GitlabRoutingHelper do
-  let(:project) { build_stubbed(:project) }
+  let(:project) { build_stubbed(:project, organization: build_stubbed(:organization)) }
   let(:group) { build_stubbed(:group) }
+  let(:project_member) { build_stubbed(:project_member, source: project) }
+  let(:group_member) { build_stubbed(:group_member, source: group) }
 
   describe 'Project URL helpers' do
     describe '#project_member_path' do
-      let(:project_member) { create(:project_member) }
-
       it { expect(project_member_path(project_member)).to eq project_project_member_path(project_member.source, project_member) }
     end
 
@@ -22,14 +22,10 @@ RSpec.describe GitlabRoutingHelper do
     end
 
     describe '#approve_access_request_project_member_path' do
-      let(:project_member) { create(:project_member) }
-
       it { expect(approve_access_request_project_member_path(project_member)).to eq approve_access_request_project_project_member_path(project_member.source, project_member) }
     end
 
     describe '#resend_invite_project_member_path' do
-      let(:project_member) { create(:project_member) }
-
       it { expect(resend_invite_project_member_path(project_member)).to eq resend_invite_project_project_member_path(project_member.source, project_member) }
     end
   end
@@ -40,8 +36,6 @@ RSpec.describe GitlabRoutingHelper do
     end
 
     describe '#group_member_path' do
-      let(:group_member) { create(:group_member) }
-
       it { expect(group_member_path(group_member)).to eq group_group_member_path(group_member.source, group_member) }
     end
 
@@ -55,17 +49,11 @@ RSpec.describe GitlabRoutingHelper do
   end
 
   describe '#preview_markdown_path' do
-    let(:project) { create(:project) }
-
     it 'returns group preview markdown path for a group parent' do
-      group = create(:group)
-
       expect(preview_markdown_path(group)).to eq("/groups/#{group.path}/-/preview_markdown")
     end
 
     it 'returns group preview markdown path for a group parent with args' do
-      group = create(:group)
-
       expect(preview_markdown_path(group, { type_id: 5 })).to eq("/groups/#{group.path}/-/preview_markdown?type_id=5")
     end
 
@@ -74,13 +62,13 @@ RSpec.describe GitlabRoutingHelper do
     end
 
     it 'returns snippet preview markdown path for a personal snippet' do
-      @snippet = create(:personal_snippet)
+      @snippet = PersonalSnippet.new
 
       expect(preview_markdown_path(nil)).to eq("/-/snippets/preview_markdown")
     end
 
     it 'returns project preview markdown path for a project snippet' do
-      @snippet = create(:project_snippet, project: project)
+      @snippet = build_stubbed(:project_snippet, project: project)
 
       expect(preview_markdown_path(project)).to eq("/#{project.full_path}/-/preview_markdown")
     end
@@ -88,14 +76,13 @@ RSpec.describe GitlabRoutingHelper do
 
   describe '#edit_milestone_path' do
     it 'returns group milestone edit path when given entity parent is a Group' do
-      group = create(:group)
-      milestone = create(:milestone, group: group)
+      milestone = build_stubbed(:milestone, group: group)
 
       expect(edit_milestone_path(milestone)).to eq("/groups/#{group.path}/-/milestones/#{milestone.iid}/edit")
     end
 
     it 'returns project milestone edit path when given entity parent is not a Group' do
-      milestone = create(:milestone, group: nil)
+      milestone = build_stubbed(:milestone, project: project)
 
       expect(edit_milestone_path(milestone)).to eq("/#{milestone.project.full_path}/-/milestones/#{milestone.iid}/edit")
     end
@@ -104,24 +91,24 @@ RSpec.describe GitlabRoutingHelper do
   describe 'members helpers' do
     describe '#source_members_url' do
       it 'returns a url to the memberships page for a group membership' do
-        membership = build_stubbed(:group_member)
-        group_members_url = "http://test.host/groups/#{membership.source.full_path}/-/group_members"
+        group_members_url = "http://test.host/groups/#{group_member.source.full_path}/-/group_members"
 
-        expect(source_members_url(membership)).to eq(group_members_url)
+        expect(source_members_url(group_member)).to eq(group_members_url)
       end
 
       it 'returns a url to the memberships page for a project membership' do
-        membership = build_stubbed(:project_member)
-        project_members_url = "http://test.host/#{membership.source.full_path}/-/project_members"
+        project_members_url = "http://test.host/#{project_member.source.full_path}/-/project_members"
 
-        expect(source_members_url(membership)).to eq(project_members_url)
+        expect(source_members_url(project_member)).to eq(project_members_url)
       end
     end
   end
 
   context 'artifacts' do
-    let_it_be(:project) { create(:project) }
-    let_it_be(:job) { create(:ci_build, project: project, name: 'test:job', artifacts_expire_at: 1.hour.from_now) }
+    let(:pipeline) { build_stubbed(:ci_pipeline, project: project) }
+    let(:job) do
+      build_stubbed(:ci_build, pipeline: pipeline, name: 'test:job', artifacts_expire_at: 1.hour.from_now)
+    end
 
     describe '#fast_download_project_job_artifacts_path' do
       it 'matches the Rails download path' do
@@ -153,9 +140,14 @@ RSpec.describe GitlabRoutingHelper do
   end
 
   context 'snippets' do
-    let_it_be_with_reload(:personal_snippet) { create(:personal_snippet, :repository) }
-    let_it_be(:project_snippet) { create(:project_snippet, :repository) }
-    let_it_be_with_reload(:note) { create(:note_on_personal_snippet, noteable: personal_snippet) }
+    let_it_be(:personal_snippet) { create(:personal_snippet, :repository) }
+    let_it_be(:project_snippet) do
+      create(:project_snippet, :repository, project: create(:project, namespace: personal_snippet.author.namespace))
+    end
+
+    let(:note) do
+      build_stubbed(:note_on_personal_snippet, noteable: personal_snippet, author: personal_snippet.author)
+    end
 
     describe '#gitlab_snippet_path' do
       it 'returns the personal snippet path' do
@@ -214,7 +206,7 @@ RSpec.describe GitlabRoutingHelper do
         end
 
         context 'when snippet does not have a repository' do
-          let(:snippet) { create(:personal_snippet) }
+          let(:snippet) { build_stubbed(:personal_snippet, author: personal_snippet.author) }
           let(:path) { 'example' }
           let(:expected_ref) { Gitlab::DefaultBranch.value }
 
@@ -222,16 +214,6 @@ RSpec.describe GitlabRoutingHelper do
             expect(subject).to eq("http://test.host/-/snippets/#{snippet.id}/raw/#{expected_ref}/#{path}")
           end
         end
-      end
-    end
-
-    describe '#gitlab_raw_snippet_url' do
-      it 'returns the raw personal snippet url' do
-        expect(gitlab_raw_snippet_url(personal_snippet)).to eq("http://test.host/-/snippets/#{personal_snippet.id}/raw")
-      end
-
-      it 'returns the raw project snippet url' do
-        expect(gitlab_raw_snippet_url(project_snippet)).to eq("http://test.host/#{project_snippet.project.full_path}/-/snippets/#{project_snippet.id}/raw")
       end
     end
 
@@ -255,7 +237,7 @@ RSpec.describe GitlabRoutingHelper do
   end
 
   context 'wikis' do
-    let(:wiki) { create(:project_wiki) }
+    let(:wiki) { build(:project_wiki, project: project) }
 
     describe '#wiki_page_path' do
       it 'returns the url for the wiki page' do
@@ -265,7 +247,7 @@ RSpec.describe GitlabRoutingHelper do
   end
 
   context 'releases' do
-    let(:release) { create(:release) }
+    let(:release) { build_stubbed(:release, project: project) }
 
     describe '#release_url' do
       it 'returns the url for the release page' do

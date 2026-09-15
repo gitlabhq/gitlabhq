@@ -57,6 +57,11 @@ module EmailHelpers
     ActionMailer::Base.deliveries.find { |d| d.to.include?(to) }
   end
 
+  # Pull the numeric verification/OTP code out of a delivered email's body.
+  def email_verification_code_from(mail)
+    mail.body.parts.first.to_s[/\d{#{Users::EmailVerification::GenerateTokenService::TOKEN_LENGTH}}/o]
+  end
+
   def have_referable_subject(referable, include_project: true, reply: false)
     prefix = if include_project && referable.project
                "#{referable.project.name} | "

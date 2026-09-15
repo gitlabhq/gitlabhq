@@ -40,7 +40,7 @@ module Members
     def base_properties
       {
         'source_id' => { 'type' => 'integer' },
-        'source_type' => { 'type' => 'string' }
+        'source_type' => { 'type' => 'string', 'enum' => %w[Project Group] }
       }
     end
 

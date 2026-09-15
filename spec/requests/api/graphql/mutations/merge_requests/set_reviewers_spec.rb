@@ -110,6 +110,23 @@ RSpec.describe 'Setting reviewers of a merge request', :assume_throttled, featur
     end
   end
 
+  context 'when a username does not match a visible user' do
+    let(:input) { { reviewer_usernames: [reviewer.username, 'does-not-exist'] } }
+
+    before do
+      merge_request.reviewers = [reviewer2]
+      merge_request.save!
+    end
+
+    it 'reports the unresolved username and assigns the ones that did resolve' do
+      run_mutation!
+
+      expect(response).to have_gitlab_http_status(:success)
+      expect(mutation_response['errors']).to contain_exactly('Reviewers not able to be set: does-not-exist')
+      expect(mutation_reviewer_nodes).to match_array([{ 'username' => reviewer.username }])
+    end
+  end
+
   context 'when passing an empty list of reviewers' do
     let(:input) { { reviewer_usernames: [] } }
 

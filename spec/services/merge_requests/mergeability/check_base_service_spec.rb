@@ -63,13 +63,13 @@ RSpec.describe MergeRequests::Mergeability::CheckBaseService, feature_category: 
 
   describe '#cacheable?' do
     it 'raises NotImplementedError' do
-      expect { check_base_service.skip? }.to raise_error(NotImplementedError)
+      expect { check_base_service.cacheable? }.to raise_error(NotImplementedError)
     end
   end
 
-  describe '#cache_key?' do
+  describe '#cache_key' do
     it 'raises NotImplementedError' do
-      expect { check_base_service.skip? }.to raise_error(NotImplementedError)
+      expect { check_base_service.cache_key }.to raise_error(NotImplementedError)
     end
   end
 end

@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Gitlab::Diff::Formatters::TextFormatter do
+RSpec.describe Gitlab::Diff::Formatters::TextFormatter, feature_category: :code_review_workflow do
   let!(:base) do
     {
       base_sha: 123,

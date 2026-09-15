@@ -539,7 +539,7 @@ include:
 A FIPS-compliant image is only available for the GitLab Advanced SAST and Semgrep-based analyzer.
 
 > [!warning]
-> To use SAST in a FIPS-compliant manner, you must [exclude other analyzers from running](analyzers.md#customize-analyzers). If you use a FIPS-enabled image to run Advanced SAST or Semgrep in [a runner with non-root user](https://docs.gitlab.com/runner/install/kubernetes_helm_chart_configuration/#run-with-non-root-user), you must update the `run_as_user` attribute under `runners.kubernetes.pod_security_context` to use the ID of `gitlab` user [created by the image](https://gitlab.com/gitlab-org/security-products/analyzers/semgrep/-/blob/a5d822401014f400b24450c92df93467d5bbc6fd/Dockerfile.fips#L58), which is `1000`.
+> To use SAST in a FIPS-compliant manner, you must [exclude other analyzers from running](analyzers.md#customize-analyzers). If you use a FIPS-enabled image to run Advanced SAST or Semgrep in [a runner with a non-root user](https://docs.gitlab.com/runner/install/kubernetes_helm_chart_configuration/#run-with-non-root-user), you must update the `run_as_user` attribute under `runners.kubernetes.pod_security_context` to use the ID of the `gitlab` user [created by the image](https://gitlab.com/gitlab-org/security-products/analyzers/semgrep/-/blob/a5d822401014f400b24450c92df93467d5bbc6fd/Dockerfile.fips#L58), which is `1000`.
 
 ## Download a SAST report
 
@@ -1033,7 +1033,7 @@ variables control which files are scanned and how thoroughly the analyzer search
 **Footnotes**:
 
 1. <a id="sast-excluded-paths-description"></a>You might need to exclude temporary directories used by your build tool as
-   these can generate false positives. To exclude paths, copy and paste the default excluded paths, then **add** your
+   these can generate false positives. To exclude paths, copy and paste the default excluded paths, then add your
    own paths to be excluded. If you don't specify the default excluded paths, the defaults are overridden and only the
    paths you specify are excluded from SAST scans.
 1. <a id="sast-excluded-paths-semgrep"></a>For these analyzers, `SAST_EXCLUDED_PATHS` is implemented as a **pre-filter**,
@@ -1092,6 +1092,8 @@ Some analyzers can be customized by using CI/CD variables.
 | CI/CD variable                      | Analyzer             | Default                                  | Description |
 |-------------------------------------|----------------------|------------------------------------------|-------------|
 | `GITLAB_ADVANCED_SAST_ENABLED`      | GitLab Advanced SAST | `false`                                  | Set to `true` to enable GitLab Advanced SAST scanning (available in GitLab Ultimate only). |
+| `GITLAB_ADV_SAST_INCR_SCAN` | GitLab Advanced SAST | `false` | Enable incremental scanning to cache taint signatures between pipeline runs. |
+| `GITLAB_ADVANCED_SAST_EXT_INCREMENTAL_ENABLED` | GitLab Advanced SAST | `true` | Set to `false` to turn off incremental scanning for the Swift and Objective-C (`gitlab-advanced-sast-ext`) analyzers. This variable is enabled by default and has no effect on repositories without Swift or Objective-C files. |
 | `SCAN_KUBERNETES_MANIFESTS`         | Kubesec              | `"false"`                                | Set to `"true"` to scan Kubernetes manifests. |
 | `KUBESEC_HELM_CHARTS_PATH`          | Kubesec              |                                          | Optional path to Helm charts that `helm` uses to generate a Kubernetes manifest that `kubesec` scans. If dependencies are defined, `helm dependency build` should be ran in a `before_script` to fetch the necessary dependencies. |
 | `KUBESEC_HELM_OPTIONS`              | Kubesec              |                                          | Additional arguments for the `helm` executable. |
@@ -1288,7 +1290,7 @@ registry.gitlab.com/security-products/spotbugs:5
 ```
 
 The process for importing Docker images into a local offline Docker registry depends on
-**your network security policy**. Consult your IT staff to find an accepted and approved
+your network security policy. Consult your IT staff to find an accepted and approved
 process by which external resources can be imported or temporarily accessed. These scanners are [periodically updated](../detect/vulnerability_scanner_maintenance.md)
 with new definitions, and you may be able to make occasional updates on your own.
 

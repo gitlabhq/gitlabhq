@@ -15,8 +15,7 @@ class Projects::HooksController < Projects::ApplicationController
   urgency :low, [:test]
 
   def test
-    trigger = params.fetch(:trigger, 'push_events')
-    result = TestHooks::ProjectService.new(hook, current_user, trigger).execute
+    result = TestHooks::ProjectService.new(hook, current_user, trigger_param).execute
 
     set_hook_execution_notice(result)
 
@@ -29,8 +28,20 @@ class Projects::HooksController < Projects::ApplicationController
     @project.hooks
   end
 
+  def hook_container
+    @project
+  end
+
   def hook
-    @hook ||= @project.hooks.find(params[:id])
+    @hook ||= @project.hooks.find(id_param)
+  end
+
+  def id_param
+    params.permit(:id)[:id]
+  end
+
+  def trigger_param
+    params.permit(:trigger).fetch(:trigger, 'push_events')
   end
 
   def trigger_values

@@ -53,9 +53,9 @@ module Gitlab
         end
       end
 
-      # Deferred (concurrency-limited) jobs are stored per-worker in a separate Redis
-      # (SharedState). Scope the purge to workers routed to this queue so it matches the
-      # queue-scoped contract of the endpoint.
+      # Deferred (concurrency-limited) jobs are stored per-worker on the dedicated
+      # Gitlab::Redis::ConcurrencyLimit instance. Scope the purge to workers routed to this
+      # queue so it matches the queue-scoped contract of the endpoint.
       context_metadata = job_search_metadata.select { |k, _| k.start_with?('meta.') || k == 'class' }
       worker_names = worker_names_for_queue
       worker_names &= [job_search_metadata['class']] if job_search_metadata.key?('class')

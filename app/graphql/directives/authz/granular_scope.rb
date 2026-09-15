@@ -28,13 +28,17 @@ module Directives
         description: 'Argument name containing the authorization boundary (path or GlobalID). ' \
           'Use for mutations and query fields where the boundary is passed as an argument.'
 
-      argument :traversal, GraphQL::Types::Boolean,
+      argument :requirement_group, GraphQL::Types::String,
         required: false,
-        description: 'When true, this directive only verifies the token is scoped to the boundary ' \
-          '(read_boundary), without enforcing the listed permissions. Use for entry-point fields ' \
-          'like Query.group(fullPath:) where downstream fields enforce the real permissions. ' \
-          'Only applies to project and group boundary types. All other boundary types ' \
-          'fall back to the regular permission check.'
+        description: 'Label grouping directives that are alternative boundaries for the same ' \
+          'requirement. The token must be authorized on any one boundary in a group, and on every ' \
+          'group. Absent means the primary group. Set for a second container, such as a move target.'
+
+      argument :assignable_when, [GraphQL::Types::String],
+        required: false,
+        description: 'Conditions the current user must meet for the permissions to be offered in the token ' \
+          'creation UI. Not a security control: the type, mutation, or field must still enforce the conditions. ' \
+          "Valid values: #{::Authz::PermissionGroups::AssignableCondition::EVALUATORS.keys.join(', ')}."
 
       locations FIELD_DEFINITION, OBJECT
     end

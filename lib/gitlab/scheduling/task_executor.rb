@@ -46,7 +46,18 @@ module Gitlab
         data_proc = dispatch_config[:data]
         data = data_proc ? data_proc.call : {}
 
-        Gitlab::EventStore.publish(event.new(data: data))
+        Gitlab::EventStore.publish(build_event_instance(event, data))
+      end
+
+      private
+
+      def build_event_instance(event, data)
+        # CloudEvent classes expose a .build factory with keyword args (matched to :data proc keys).
+        # symbolize_keys tolerates string-keyed :data procs; an unknown key still raises ArgumentError
+        # immediately rather than silently misbuilding the event.
+        return event.build(**data.symbolize_keys) if event < Gitlab::EventStore::CloudEvent
+
+        event.new(data: data)
       end
     end
   end

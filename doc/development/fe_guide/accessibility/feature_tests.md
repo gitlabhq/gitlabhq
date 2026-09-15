@@ -27,7 +27,7 @@ You can find some examples on how to approach accessibility checks below.
 ### Empty state
 
 Some views have an empty state that result in a page structure that's different from the default view.
-They may also offer some actions, for example to create a first issue or to enable a feature.
+They might also offer some actions, for example to create a first issue or to enable a feature.
 In this case, add assertions for both an empty state and a default view.
 
 ### Ensure compliance before user interactions
@@ -38,7 +38,7 @@ This way we ensure there are no barriers to what we expect of users.
 
 ### Ensure compliance after changed page structure
 
-User interactions may result in significant changes in page structure. For example,
+User interactions might result in significant changes in page structure. For example,
 a dialog is shown, or a new section is rendered.
 In that case, add an assertion after any such change.
 We want to make sure that users are able to interact with all available components.
@@ -70,7 +70,7 @@ Once you know the user journey you want to cover:
 
 - Navigate to `spec/features/accessibility`.
 - Create a new Ruby spec under the folder for your stage and the feature you are covering, for example `create/repository/`.
-- Name your file after E2E test case you are following, for example: `add_new_branch_rule_spec.rb`.
+- Name your file after the E2E test case you are following, for example: `add_new_branch_rule_spec.rb`.
 
 In this example, the result will be a dedicated feature spec under `spec/features/accessibility/create/repository/add_new_branch_rule_spec.rb`.
 

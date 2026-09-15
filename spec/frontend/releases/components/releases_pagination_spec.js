@@ -86,11 +86,15 @@ describe('releases_pagination.vue', () => {
       });
 
       it(`renders the "Prev" button as ${prevEnabled ? 'enabled' : 'disabled'}`, () => {
-        expect(findPrevButton().attributes().disabled).toBe(prevEnabled ? undefined : 'disabled');
+        expect(findPrevButton().attributes()['aria-disabled']).toBe(
+          prevEnabled ? undefined : 'true',
+        );
       });
 
       it(`renders the "Next" button as ${nextEnabled ? 'enabled' : 'disabled'}`, () => {
-        expect(findNextButton().attributes().disabled).toBe(nextEnabled ? undefined : 'disabled');
+        expect(findNextButton().attributes()['aria-disabled']).toBe(
+          nextEnabled ? undefined : 'true',
+        );
       });
     });
   });

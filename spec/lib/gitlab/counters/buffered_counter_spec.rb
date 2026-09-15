@@ -357,7 +357,7 @@ RSpec.describe Gitlab::Counters::BufferedCounter, :clean_gitlab_redis_shared_sta
       counter.initiate_refresh!
 
       Gitlab::Redis::SharedState.with do |redis|
-        expect(redis.exists?(counter.key)).to eq(false)
+        expect(redis.exists?(counter.key)).to be(false)
       end
     end
 
@@ -376,7 +376,7 @@ RSpec.describe Gitlab::Counters::BufferedCounter, :clean_gitlab_redis_shared_sta
     it 'sets a refresh indicator with a long expiry' do
       counter.initiate_refresh!
 
-      expect(redis_exists_key(counter.refresh_indicator_key)).to eq(true)
+      expect(redis_exists_key(counter.refresh_indicator_key)).to be(true)
       expect(redis_key_ttl(counter.refresh_indicator_key)).to eq(described_class::REFRESH_KEYS_TTL)
     end
   end
@@ -591,7 +591,7 @@ RSpec.describe Gitlab::Counters::BufferedCounter, :clean_gitlab_redis_shared_sta
       it 'drops the increment key and creates the flushed key if it does not exist' do
         counter.amount_to_be_flushed
 
-        expect(redis_exists_key(increment_key)).to eq(false)
+        expect(redis_exists_key(increment_key)).to be(false)
         expect(redis_exists_key(flushed_key)).to eq(flushed_key_present)
       end
     end

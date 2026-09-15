@@ -26,7 +26,7 @@ To create a blank project:
    1. **Project name**: Enter the name of your project.
       For more information, see [naming rules](../reserved_names.md#rules-for-usernames-project-and-group-names-and-slugs).
    1. **Project slug**: Enter the path to your project. GitLab uses the slug as the URL path.
-   1. **Project deployment target (optional)**: If you want to deploy your project to specific environment,
+   1. **Project deployment target (optional)**: If you want to deploy your project to a specific environment,
       select the relevant deployment target.
    1. **Visibility Level**: Select the appropriate visibility level.
       See the [viewing and access rights](../public_access.md) for users.

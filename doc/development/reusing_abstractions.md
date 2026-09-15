@@ -212,6 +212,21 @@ When implementing a service class, consider using the following patterns:
 
 1. If a return value is needed, the `#execute` method should returns its result via [`ServiceResponse`](#serviceresponse) object.
 
+1. Optionally, add a class-level `execute` method with [`Gitlab::Utils::Executable`](utilities.md#executable):
+   - Use it when the caller only needs the result of `execute` and not the service instance.
+   - The mixin is opt-in. Add it to a service class where it fits, not as a sweep across all services.
+   - `new` stays available for callers that need the instance itself.
+
+   ```ruby
+   class MyService
+     include Gitlab::Utils::Executable
+
+     def execute
+       # ...
+     end
+   end
+   ```
+
 Several base classes implement the service classes convention. You may consider inheriting from:
 
 - `BaseContainerService` for services scoped by container (project or group).

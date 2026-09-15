@@ -13,10 +13,16 @@
       }
     },
     "jira_connect_additional_audience_url": {
-      "type": "string"
+      "type": [
+        "string",
+        "null"
+      ]
     },
     "jira_forge_app_id": {
-      "type": "string"
+      "type": [
+        "string",
+        "null"
+      ]
     }
   },
   "additionalProperties": false

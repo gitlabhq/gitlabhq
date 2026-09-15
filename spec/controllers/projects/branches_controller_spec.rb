@@ -926,5 +926,45 @@ RSpec.describe Projects::BranchesController, feature_category: :source_code_mana
         }
       end
     end
+
+    context 'when the repository has no head commit' do
+      before do
+        allow_next_instance_of(Repository) do |repository|
+          allow(repository).to receive(:head_commit).and_return(nil)
+        end
+      end
+
+      it 'returns an empty response without building the service' do
+        expect(::Branches::DivergingCommitCountsService).not_to receive(:new)
+
+        get :diverging_commit_counts, format: :json, params: {
+          namespace_id: project.namespace,
+          project_id: project,
+          names: %w[fix]
+        }
+
+        expect(response).to have_gitlab_http_status(:ok)
+        expect(json_response).to eq({})
+      end
+    end
+
+    context 'when the root ref does not resolve to a commit' do
+      before do
+        allow_next_instance_of(::Branches::DivergingCommitCountsService) do |service|
+          allow(service).to receive(:call).and_return(nil)
+        end
+      end
+
+      it 'omits branches without counts and responds 200' do
+        get :diverging_commit_counts, format: :json, params: {
+          namespace_id: project.namespace,
+          project_id: project,
+          names: %w[fix]
+        }
+
+        expect(response).to have_gitlab_http_status(:ok)
+        expect(json_response).to eq({})
+      end
+    end
   end
 end

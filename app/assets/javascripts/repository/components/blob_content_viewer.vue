@@ -1,20 +1,23 @@
 <script>
-import { GlLoadingIcon, GlButton, GlTooltipDirective } from '@gitlab/ui';
+import { GlLoadingIcon, GlButton, GlEmptyState, GlTooltipDirective } from '@gitlab/ui';
+import emptySearchSvg from '@gitlab/svgs/dist/illustrations/empty-state/empty-search-md.svg';
 import { uniqueId } from 'lodash-es';
 import { mapActions } from 'pinia';
 import { computed, defineAsyncComponent } from 'vue';
 import { logError } from '~/lib/logger';
-import { captureException } from '~/sentry/sentry_browser_wrapper';
+import { captureException, captureMessage } from '~/sentry/sentry_browser_wrapper';
 import BlobContent from '~/blob/components/blob_content.vue';
 import BlobHeader from 'ee_else_ce/blob/components/blob_header.vue';
 import { SIMPLE_BLOB_VIEWER, RICH_BLOB_VIEWER, BLAME_VIEWER } from '~/blob/components/constants';
 import { createAlert } from '~/alert';
 import axios from '~/lib/utils/axios_utils';
 import { isLoggedIn, handleLocationHash } from '~/lib/utils/common_utils';
-import { __ } from '~/locale';
+import { ERROR_POLICY_NONE } from '~/lib/graphql';
+import { __, s__ } from '~/locale';
 import glFeatureFlagMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
-import glLicensedFeaturesMixin from '~/vue_shared/mixins/gl_licensed_features_mixin';
-import { visitUrl, getLocationHash } from '~/lib/utils/url_utility';
+import glAbilitiesMixin from '~/vue_shared/mixins/gl_abilities_mixin';
+import { visitUrl, getLocationHash, refreshCurrentPage } from '~/lib/utils/url_utility';
+import { projectPath } from '~/lib/utils/path_helpers/project';
 import { useFileTreeBrowserVisibility } from '~/repository/stores/file_tree_browser_visibility';
 import CodeIntelligence from '~/code_navigation/components/app.vue';
 import LineHighlighter from '~/blob/line_highlighter';
@@ -44,6 +47,7 @@ export default {
     BlobContent,
     GlLoadingIcon,
     GlButton,
+    GlEmptyState,
     CodeIntelligence,
     AiGenie: defineAsyncComponent(() => import('ee_component/ai/components/ai_genie.vue')),
     OrbitCodePanel: defineAsyncComponent(
@@ -53,13 +57,7 @@ export default {
   directives: {
     GlTooltip: GlTooltipDirective,
   },
-  mixins: [
-    getRefMixin,
-    highlightMixin,
-    glFeatureFlagMixin(),
-    glLicensedFeaturesMixin(),
-    trackingMixin,
-  ],
+  mixins: [getRefMixin, highlightMixin, glAbilitiesMixin(), glFeatureFlagMixin(), trackingMixin],
   inject: {
     originalBranch: {
       default: '',
@@ -70,6 +68,7 @@ export default {
     // eslint-disable-next-line @gitlab/vue-no-undef-apollo-properties
     projectInfo: {
       query: projectInfoQuery,
+      errorPolicy: ERROR_POLICY_NONE,
       variables() {
         return {
           projectPath: this.projectPath,
@@ -91,6 +90,7 @@ export default {
     },
     project: {
       query: blobInfoQuery,
+      errorPolicy: ERROR_POLICY_NONE,
       variables() {
         const queryVariables = {
           projectPath: this.projectPath,
@@ -104,9 +104,28 @@ export default {
       },
       result({ data }) {
         const repository = data.project?.repository || {};
-        this.blobInfo = repository.blobs?.nodes[0] || {};
+        const blobInfo = repository.blobs?.nodes[0];
+        this.blobInfo = blobInfo || {};
+        this.blobNotFound = !blobInfo;
         this.isEmptyRepository = repository.empty;
         this.projectId = data.project?.id;
+
+        if (!blobInfo) return;
+
+        if (!blobInfo.simpleViewer && !blobInfo.richViewer) {
+          captureMessage('Blob exists but has no simpleViewer or richViewer', {
+            level: 'info',
+            tags: { vue_component: 'BlobContentViewer' },
+            extra: {
+              projectPath: this.projectPath,
+              filePath: this.path,
+              ref: this.currentRef,
+            },
+          });
+          // Nothing can render without a viewer, so don't start the highlight
+          // worker or the legacy-viewer fetch (whose failure pops an alert)
+          return;
+        }
 
         const usePlain = this.$route?.query?.plain === '1'; // When the 'plain' URL param is present, its value determines which viewer to render
         const urlHash = getLocationHash(); // If there is a code line hash in the URL we render with the simple viewer
@@ -139,7 +158,7 @@ export default {
     return {
       blobHash: uniqueId(),
       currentRef: computed(() => this.currentRef),
-      fileType: computed(() => this.viewer.fileType),
+      fileType: computed(() => this.viewer?.fileType),
       blameActions: {
         activateInlineBlame: this.activateInlineBlame,
       },
@@ -175,6 +194,7 @@ export default {
       userPermissions: DEFAULT_BLOB_INFO.userPermissions,
       defaultBranch: '',
       blobInfo: {},
+      blobNotFound: false,
       isEmptyRepository: false,
       projectId: null,
       shouldPreloadBlame: false,
@@ -206,7 +226,7 @@ export default {
       return Boolean(this.blobInfo.richViewer);
     },
     hasRenderError() {
-      return Boolean(this.viewer.renderError);
+      return Boolean(this.viewer?.renderError);
     },
     isTooLarge() {
       const isSimpleViewer = this.activeViewerType === SIMPLE_BLOB_VIEWER;
@@ -221,7 +241,7 @@ export default {
       return isTooLarge; // If the backend indicates the rich viewer is too large, return true
     },
     blobViewer() {
-      const { fileType } = this.viewer;
+      const { fileType } = this.viewer || {};
       const { isTooLarge } = this;
       return this.shouldLoadLegacyViewer ? null : loadViewer(fileType, this.isUsingLfs, isTooLarge);
     },
@@ -230,7 +250,8 @@ export default {
     },
     legacyViewerLoaded() {
       return (
-        (this.activeViewerType === SIMPLE_BLOB_VIEWER && this.legacySimpleViewer) ||
+        ([SIMPLE_BLOB_VIEWER, BLAME_VIEWER].includes(this.activeViewerType) &&
+          this.legacySimpleViewer) ||
         (this.activeViewerType === RICH_BLOB_VIEWER && this.legacyRichViewer)
       );
     },
@@ -265,11 +286,7 @@ export default {
       return this.glFeatures.inlineBlame && !this.isBinaryFileType && this.showBlame;
     },
     isOrbitCodeIntelligenceAvailable() {
-      return (
-        this.glFeatures.orbitCodeIntelligence &&
-        this.glLicensedFeatures.orbit &&
-        this.isOnDefaultBranch
-      );
+      return this.glAbilities.readCodeNavigation && this.isOnDefaultBranch;
     },
     // KG only indexes the default branch today, so the panel would render
     // stale or misleading data on any other ref. Hide the toggle until the
@@ -277,6 +294,24 @@ export default {
     // is via the projectInfo query).
     isOnDefaultBranch() {
       return Boolean(this.defaultBranch && this.currentRef === this.defaultBranch);
+    },
+    emptyStateProps() {
+      if (this.blobNotFound) {
+        return {
+          title: s__('BlobViewer|File not found'),
+          description: s__(
+            'BlobViewer|The file may have been moved, renamed, or deleted, or the link may be out of date.',
+          ),
+          primaryButtonText: __('Browse files'),
+          primaryButtonLink: projectPath(this.projectPath),
+        };
+      }
+      return {
+        title: s__('BlobViewer|Unable to display file'),
+        description: s__(
+          'BlobViewer|An error occurred while displaying the file. Try reloading the page.',
+        ),
+      };
     },
   },
   watch: {
@@ -339,8 +374,7 @@ export default {
           await this.$nextTick();
           handleLocationHash(); // Ensures that we scroll to the hash when async content is loaded
           if (type === SIMPLE_BLOB_VIEWER) {
-            // eslint-disable-next-line vue/custom-event-name-casing -- Global event bus event shared with code_navigation/diffs and bound to a Vuex action; renaming is out of scope
-            eventHub.$emit('showBlobInteractionZones', this.blobInfo.path);
+            eventHub.$emit('show-blob-interaction-zones', this.blobInfo.path);
           }
         })
         .catch(() => this.displayError())
@@ -351,6 +385,9 @@ export default {
     displayError() {
       createAlert({ message: __('An error occurred while loading the file. Please try again.') });
     },
+    reloadPage() {
+      refreshCurrentPage();
+    },
     switchViewer(newViewer) {
       this.activeViewerType = newViewer || SIMPLE_BLOB_VIEWER;
 
@@ -359,11 +396,17 @@ export default {
       }
     },
     handleViewerChanged(newViewer) {
-      this.setShowBlame(false);
+      this.showBlame = false;
       this.switchViewer(newViewer);
       const plain = newViewer === SIMPLE_BLOB_VIEWER ? '1' : '0';
-      if (this.$route?.query?.plain === plain) return;
-      this.$router.push({ path: this.$route.path, query: { ...this.$route.query, plain } });
+      const { blame, ...queryWithoutBlame } = this.$route?.query || {};
+      if (!blame && queryWithoutBlame.plain === plain) return;
+      this.$router.push({
+        path: this.$route.path,
+        query: { ...queryWithoutBlame, plain },
+        // A line hash forces the simple viewer on load, so drop it when switching to rich
+        hash: newViewer === SIMPLE_BLOB_VIEWER ? window.location.hash : '',
+      });
     },
     isIdeTarget(target) {
       return target === 'ide';
@@ -387,15 +430,15 @@ export default {
     handleToggleBlame() {
       this.switchViewer(SIMPLE_BLOB_VIEWER);
 
-      if (this.$route?.query?.plain === '0') {
-        // If the user is not viewing plain code and clicks the blame button, we always want to show blame info
-        // For instance, when viewing the rendered version of a Markdown file
+      if (!this.showBlame) {
         this.setShowBlame(true);
       } else {
-        this.setShowBlame(!this.showBlame);
+        // Flipping showBlame makes blob_header emit viewer-changed;
+        // handleViewerChanged then owns the single navigation that strips the blame param
+        this.showBlame = false;
       }
     },
-    setShowBlame(showBlame) {
+    setShowBlame(showBlame, hash = window.location.hash) {
       if (showBlame) this.collapseForBlame();
       this.showBlame = showBlame;
       const { blame, ...queryWithoutBlame } = this.$route?.query || {};
@@ -408,29 +451,37 @@ export default {
       this.$router.push({
         path: this.$route.path,
         query,
-        hash: window.location.hash,
+        hash,
       });
     },
     activateInlineBlame(lineNumber) {
-      if (!this.showBlame) {
-        this.handleToggleBlame();
-      }
-      this.$router.replace({
-        ...this.$route,
-        hash: `#L${lineNumber}`,
-      });
+      this.switchViewer(SIMPLE_BLOB_VIEWER);
+      this.setShowBlame(true, `#L${lineNumber}`);
       this.$nextTick(() => {
         this.$refs.blobViewerComponent?.selectLine?.();
       });
     },
   },
+  emptySearchSvg,
 };
 </script>
 
 <template>
   <div class="gl-relative">
     <gl-loading-icon v-if="isLoading" size="sm" />
-    <div v-if="blobInfo && !isLoading" :class="{ 'gl-flex gl-gap-3': orbitPanelOpen }">
+    <gl-empty-state
+      v-else-if="!viewer"
+      :svg-path="$options.emptySearchSvg"
+      v-bind="emptyStateProps"
+    >
+      <!-- The viewer-less blob anomaly may be transient, so offer a reload instead of a link -->
+      <template v-if="!blobNotFound" #actions>
+        <gl-button variant="confirm" data-testid="reload-page-button" @click="reloadPage">
+          {{ __('Reload page') }}
+        </gl-button>
+      </template>
+    </gl-empty-state>
+    <div v-else :class="{ 'gl-flex gl-gap-3': orbitPanelOpen }">
       <div id="fileHolder" class="file-holder" :class="{ 'gl-min-w-0 gl-flex-1': orbitPanelOpen }">
         <blob-header
           is-blob-page
@@ -460,11 +511,12 @@ export default {
             <gl-button
               v-if="isOrbitCodeIntelligenceAvailable && (blobViewer || legacyViewerLoaded)"
               v-gl-tooltip
+              data-testid="code-navigation-button"
               category="primary"
               variant="default"
               icon="code"
-              :aria-label="__('Code Navigation')"
-              :title="__('Code Navigation')"
+              :aria-label="__('Code navigation')"
+              :title="__('Code navigation')"
               @click="orbitPanelOpen = !orbitPanelOpen"
             />
           </template>

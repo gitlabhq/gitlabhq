@@ -65,8 +65,7 @@ RSpec.describe ProjectCacheWorker, feature_category: :source_code_management do
 
       context 'with plain readme' do
         it 'refreshes the method caches' do
-          allow(Gitlab::MarkupHelper).to receive(:gitlab_markdown?).and_return(false)
-          allow(Gitlab::MarkupHelper).to receive(:plain?).and_return(true)
+          allow(Gitlab::MarkupHelper).to receive_messages(gitlab_markdown?: false, plain?: true)
 
           expect_any_instance_of(Repository).to receive(:refresh_method_caches)
                                                   .with(%i[readme])

@@ -153,7 +153,8 @@ module BulkImports
 
       # Fetch and cache the source ghost user id to avoid repeated API calls.
       # This also avoids inconsistent ghost user mapping if concurrent API responses occasionally fail.
-      BulkImports::SourceInternalUserFinder.new(bulk_import.configuration).set_ghost_user_id
+      BulkImports::SourceInternalUserFinder.new(bulk_import.configuration)
+        .fetch_and_cache_ghost_id_from_source_instance
     end
 
     def import_entity(entity_id)

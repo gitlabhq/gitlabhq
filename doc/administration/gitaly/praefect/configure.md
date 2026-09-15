@@ -151,12 +151,12 @@ with secure tokens as you complete the setup process.
    Praefect cluster directly; that could lead to data loss.
 1. `PRAEFECT_SQL_PASSWORD`: this password is used by Praefect to connect to
    PostgreSQL.
-1. `PRAEFECT_SQL_PASSWORD_HASH`: the hash of password of the Praefect user.
+1. `PRAEFECT_SQL_PASSWORD_HASH`: the hash of the password of the Praefect user.
    Use `gitlab-ctl pg-password-md5 praefect` to generate the hash. The command
    asks for the password for `praefect` user. Enter `PRAEFECT_SQL_PASSWORD`
    plaintext password. By default, Praefect uses `praefect` user, but you can
    change it.
-1. `PGBOUNCER_SQL_PASSWORD_HASH`: the hash of password of the PgBouncer user.
+1. `PGBOUNCER_SQL_PASSWORD_HASH`: the hash of the password of the PgBouncer user.
    PgBouncer uses this password to connect to PostgreSQL. For more details
    see [bundled PgBouncer](../../postgresql/pgbouncer.md) documentation.
 
@@ -241,7 +241,7 @@ When using the Linux package-provided PgBouncer, you need to take the following 
 recommend using the PostgreSQL that is shipped with the Linux package as the backend. The following
 instructions only work on the Linux package-provided PostgreSQL:
 
-1. For the Linux package-provided PgBouncer, you need to use the hash of `praefect` password instead the of the
+1. For the Linux package-provided PgBouncer, you need to use the hash of `praefect` password instead of the
    actual password:
 
    ```sql
@@ -447,7 +447,7 @@ It is not supported in `transaction` pool mode (`pool_mode = transaction`).
 
 To configure the additional connection, you must either:
 
-- Configure a new PgBouncer database that uses to the same PostgreSQL database endpoint,
+- Configure a new PgBouncer database that connects to the same PostgreSQL database endpoint,
   but with different pool mode (`pool_mode = session`).
 - Connect Praefect directly to PostgreSQL and bypass PgBouncer.
 
@@ -720,7 +720,7 @@ Updates to example must be made at:
    Praefect when communicating with Gitaly nodes in the cluster. This token is
    distinct from the `PRAEFECT_EXTERNAL_TOKEN`.
 
-   Replace `GITALY_HOST_*` with the IP or host address of the each Gitaly node.
+   Replace `GITALY_HOST_*` with the IP or host address of each Gitaly node.
 
    More Gitaly nodes can be added to the cluster to increase the number of
    replicas. More clusters can also be added for very large GitLab instances.
@@ -1237,7 +1237,7 @@ For more information on Gitaly server configuration, see our
 
 1. Configure a strong `auth_token` for Gitaly by editing
    `/etc/gitlab/gitlab.rb`, which is needed by clients to communicate with
-   this Gitaly nodes. Typically, this token is the same for all Gitaly
+   these Gitaly nodes. Typically, this token is the same for all Gitaly
    nodes.
 
    ```ruby
@@ -1254,7 +1254,7 @@ For more information on Gitaly server configuration, see our
 
    - Method 1:
 
-     1. Copy `/etc/gitlab/gitlab-secrets.json` from the Gitaly client to same path on the Gitaly
+     1. Copy `/etc/gitlab/gitlab-secrets.json` from the Gitaly client to the same path on the Gitaly
         servers and any other Gitaly clients.
      1. [Reconfigure GitLab](../../restart_gitlab.md#reconfigure-a-linux-package-installation) on Gitaly servers.
 
@@ -1292,7 +1292,7 @@ For more information on Gitaly server configuration, see our
    gitaly['configuration'] = {
       # ...
       storage: [
-        # Replace with appropriate name for each Gitaly nodes.
+        # Replace with appropriate name for each Gitaly node.
         {
           name: 'gitaly-1',
           path: '/var/opt/gitlab/git-data/repositories',
@@ -1485,7 +1485,7 @@ Particular attention should be shown to:
 
    - Method 1:
 
-     1. Copy `/etc/gitlab/gitlab-secrets.json` from the Gitaly client to same path on the Gitaly
+     1. Copy `/etc/gitlab/gitlab-secrets.json` from the Gitaly client to the same path on the Gitaly
         servers and any other Gitaly clients.
      1. [Reconfigure GitLab](../../restart_gitlab.md#reconfigure-a-linux-package-installation) on Gitaly servers.
 

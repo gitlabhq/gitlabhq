@@ -17,8 +17,7 @@ RSpec.describe Tooling::Danger::Multiversion, feature_category: :shared do
 
   before do
     allow(fake_helper).to receive(:ci?).and_return(ci_env)
-    allow(fake_git).to receive(:modified_files).and_return(modified_files)
-    allow(fake_git).to receive(:added_files).and_return(added_files)
+    allow(fake_git).to receive_messages(modified_files: modified_files, added_files: added_files)
   end
 
   describe '#check!' do

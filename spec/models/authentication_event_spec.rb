@@ -52,7 +52,7 @@ RSpec.describe AuthenticationEvent do
     subject { described_class.initial_login_or_known_ip_address?(user, ip_address) }
 
     context 'on first login, when no record exists yet' do
-      it { is_expected.to eq(true) }
+      it { is_expected.to be(true) }
     end
 
     context 'on second login from the same ip address' do
@@ -60,7 +60,7 @@ RSpec.describe AuthenticationEvent do
         create(:authentication_event, :successful, user: user, ip_address: ip_address)
       end
 
-      it { is_expected.to eq(true) }
+      it { is_expected.to be(true) }
     end
 
     context 'on second login from another ip address' do
@@ -68,7 +68,7 @@ RSpec.describe AuthenticationEvent do
         create(:authentication_event, :successful, user: user, ip_address: '1.2.3.4')
       end
 
-      it { is_expected.to eq(false) }
+      it { is_expected.to be(false) }
     end
   end
 

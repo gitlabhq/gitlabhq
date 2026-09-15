@@ -40,8 +40,12 @@ class UploadsController < ApplicationController
     PersonalFileUploader
   end
 
+  def permitted_params
+    params.permit(:id, :secret, :model)
+  end
+
   def find_model
-    upload_model_class.find(params[:id])
+    upload_model_class.find(permitted_params[:id])
   end
 
   def authorized?
@@ -107,11 +111,11 @@ class UploadsController < ApplicationController
   end
 
   def secret?
-    params[:secret].present?
+    permitted_params[:secret].present?
   end
 
   def upload_model_class
-    self.class.model_classes[params[:model]] || raise(UnknownUploadModelError)
+    self.class.model_classes[permitted_params[:model]] || raise(UnknownUploadModelError)
   end
 
   def upload_model_class_has_mounts?

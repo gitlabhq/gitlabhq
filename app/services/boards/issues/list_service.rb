@@ -22,7 +22,15 @@ module Boards
       def order(items)
         return items.order_closed_at_desc if list&.closed?
 
-        items.order_by_relative_position(board&.resource_parent&.root_ancestor)
+        items.order_by_relative_position(positioning_root)
+      end
+
+      # Items on a board share one positioning root: the group's root for group boards, the
+      # project namespace's root for project boards which is the project namespace itself
+      # for personal projects, not root_ancestor.
+      def positioning_root
+        namespace = board.group_board? ? board.group : board.project.project_namespace
+        namespace.work_item_positioning_root
       end
 
       def finder

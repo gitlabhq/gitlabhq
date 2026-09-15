@@ -4,7 +4,6 @@ require 'spec_helper'
 
 RSpec.describe API::DraftNotes, feature_category: :code_review_workflow do
   let_it_be(:user) { create(:user) }
-  let_it_be(:user_2) { create(:user) }
   let_it_be(:project) { create(:project, :public, developers: user) }
   let_it_be(:merge_request) { create(:merge_request, source_project: project, target_project: project, author: user) }
 
@@ -14,8 +13,8 @@ RSpec.describe API::DraftNotes, feature_category: :code_review_workflow do
   end
 
   let_it_be(:merge_request_note) { create(:note, noteable: merge_request, project: project, author: user) }
-  let!(:draft_note_by_current_user) { create(:draft_note, merge_request: merge_request, author: user) }
-  let!(:draft_note_by_random_user) { create(:draft_note, merge_request: merge_request) }
+  let_it_be(:draft_note_by_current_user) { create(:draft_note, merge_request: merge_request, author: user) }
+  let_it_be(:draft_note_by_random_user) { create(:draft_note, merge_request: merge_request) }
 
   let_it_be(:base_url) { "/projects/#{project.id}/merge_requests/#{merge_request.iid}/draft_notes" }
 
@@ -201,7 +200,7 @@ RSpec.describe API::DraftNotes, feature_category: :code_review_workflow do
       end
 
       context "when using a diff with position" do
-        let!(:draft_note) { create(:draft_note_on_text_diff, merge_request: merge_request, author: user) }
+        let_it_be(:draft_note) { create(:draft_note_on_text_diff, merge_request: merge_request, author: user) }
 
         it_behaves_like 'diff draft notes API', 'iid'
 
@@ -232,7 +231,7 @@ RSpec.describe API::DraftNotes, feature_category: :code_review_workflow do
       end
 
       context "when using line_range position parameters" do
-        let!(:draft_note) { create(:draft_note_on_text_diff, merge_request: merge_request, author: user) }
+        let_it_be(:draft_note) { create(:draft_note_on_text_diff, merge_request: merge_request, author: user) }
 
         context "when old_line/new_line is an integer" do
           it "has a successful response" do
@@ -470,7 +469,7 @@ RSpec.describe API::DraftNotes, feature_category: :code_review_workflow do
       )
     end
 
-    let!(:draft_note_by_current_user_2) { create(:draft_note, merge_request: merge_request, author: user) }
+    let_it_be(:draft_note_by_current_user_2) { create(:draft_note, merge_request: merge_request, author: user) }
 
     context "when publishing an existing draft note by the user" do
       it "returns 204 No Content status" do
@@ -512,7 +511,7 @@ RSpec.describe API::DraftNotes, feature_category: :code_review_workflow do
     end
 
     context "when reviewer_state is provided" do
-      before do
+      before_all do
         merge_request.reviewers << user
       end
 

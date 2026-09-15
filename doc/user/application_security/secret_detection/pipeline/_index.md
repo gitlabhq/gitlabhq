@@ -25,7 +25,7 @@ With GitLab Ultimate, pipeline secret detection results are also processed so yo
 - [Automatically respond](../automatic_response.md) to leaks in public repositories.
 - Enforce consistent secret detection rules across projects by using [security policies](../../policies/_index.md).
 
-<i class="fa-youtube-play" aria-hidden="true"></i> For an interactive reading and how-to demo of this pipeline secret detection documentation see:
+<i class="fa-youtube-play" aria-hidden="true"></i> For an interactive reading and how-to demo of this pipeline secret detection documentation, see:
 
 - [How to enable secret detection in GitLab Application Security Part 1/2](https://youtu.be/dbMxeO6nJCE?feature=shared)
 - [How to enable secret detection in GitLab Application Security Part 2/2](https://youtu.be/VL-_hdiTazo?feature=shared)
@@ -56,7 +56,7 @@ Prerequisites:
 - You have a Linux-based runner with the [`docker`](https://docs.gitlab.com/runner/executors/docker/) or
   [`kubernetes`](https://docs.gitlab.com/runner/install/kubernetes/) executor.
   If you use hosted runners for GitLab.com, this is enabled by default.
-  - Windows Runners are not supported.
+  - Windows runners are not supported.
   - CPU architectures other than amd64 are not supported.
 - You have a `.gitlab-ci.yml` file that includes the `test` stage.
 
@@ -126,7 +126,7 @@ By default, when you run a pipeline:
     - If no valid prior commit is available (for example, the first commit pushed to a new repository), the contents of Git working tree is scanned.
   - On a **feature branch**:
     - In analyzer version `v7.35.0` and later, the content of all commits from the merge
-      base to the latest commit (all commits unique to the branch after it diverged) are scanned.
+      base to the latest commit (all commits unique to the branch after it diverged) is scanned.
       This behavior applies to all feature branch pipelines when the merge base is available.
     - GitLab 19.1 and later exposes the merge base SHA through the [predefined CI variable](../../../../ci/variables/predefined_variables.md) `CI_COMMIT_DEFAULT_BRANCH_BASE_SHA`.
     - On GitLab versions earlier than 19.1, or when the merge base is unavailable, the analyzer
@@ -246,7 +246,7 @@ which secrets are detected by pipeline secret detection, see
 secret detection only looks for passwords or other unstructured secrets in specific contexts like
 URLs.
 
-When a secret is detected a vulnerability is created for it. The vulnerability remains as "Still
+When a secret is detected, a vulnerability is created for it. The vulnerability remains as "Still
 detected" even if the secret is removed from the scanned file and pipeline secret detection has been
 run again. This is because the leaked secret continues to be a security risk until it has been revoked.
 Removed secrets also persist in the Git history. To remove a secret from the Git repository's history, see
@@ -454,7 +454,7 @@ To resolve this issue:
 
 #### Error: `ERR fatal: ambiguous argument`
 
-Pipeline secret detection can fail with the message `ERR fatal: ambiguous argument` error if your
+Pipeline secret detection can fail with the message `ERR fatal: ambiguous argument` if your
 repository's default branch is unrelated to the branch the job was triggered for. See issue
 [!352014](https://gitlab.com/gitlab-org/gitlab/-/issues/352014) for more details.
 

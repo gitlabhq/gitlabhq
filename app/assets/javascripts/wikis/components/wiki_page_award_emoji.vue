@@ -55,7 +55,7 @@ export default {
       );
     },
     addAwardEmoji(name) {
-      if (!this.currentUserId || this.isEmojiPresentForCurrentUser(name)) return this.awards;
+      if (this.isEmojiPresentForCurrentUser(name)) return this.awards;
 
       return [
         ...this.awards,
@@ -71,14 +71,14 @@ export default {
       ];
     },
     removeAwardEmoji(name) {
-      if (!this.currentUserId) return this.awards;
-
       return this.awards.filter(
         (emoji) =>
           !(emoji.name === name && getIdFromGraphQLId(emoji.user.id) === this.currentUserId),
       );
     },
     handleAward(name) {
+      if (!this.currentUserId) return;
+
       this.$apollo
         .mutate({
           mutation: wikiPageToggleAwardEmojiMutation,

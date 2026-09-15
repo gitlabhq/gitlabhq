@@ -20,7 +20,7 @@ RSpec.describe WebIdeButtonHelper, feature_category: :source_code_management do
         let(:path) { project.ci_config_path_or_default }
 
         it 'returns true' do
-          expect(result).to eq(true)
+          expect(result).to be(true)
         end
       end
 
@@ -28,7 +28,7 @@ RSpec.describe WebIdeButtonHelper, feature_category: :source_code_management do
         let(:path) { '/' }
 
         it 'returns false' do
-          expect(result).to eq(false)
+          expect(result).to be(false)
         end
       end
     end
@@ -41,7 +41,7 @@ RSpec.describe WebIdeButtonHelper, feature_category: :source_code_management do
       let(:path) { project.ci_config_path_or_default }
 
       it 'returns false' do
-        expect(result).to eq(false)
+        expect(result).to be(false)
       end
     end
   end

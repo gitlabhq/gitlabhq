@@ -7,7 +7,7 @@ title: Application information disclosure
 
 ## Description
 
-Application information disclosure check. This includes information such as version numbers, database error messages, stack traces.
+Application information disclosure check. This includes information such as version numbers, database error messages, and stack traces.
 
 ## Remediation
 

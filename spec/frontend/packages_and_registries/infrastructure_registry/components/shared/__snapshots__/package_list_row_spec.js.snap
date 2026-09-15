@@ -77,6 +77,7 @@ exports[`packages_list_row renders 1`] = `
       class="@sm/panel:gl-flex gl-items-center gl-pl-3"
     >
       <gl-button-stub
+        accessibledisabled="true"
         aria-label="Remove package"
         buttontextclasses=""
         category="secondary"

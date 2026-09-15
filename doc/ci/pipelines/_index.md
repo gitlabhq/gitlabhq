@@ -290,7 +290,13 @@ When you skip a pipeline:
 
 ### Delete a pipeline
 
-Users with the Owner role for a project can delete a pipeline:
+Prerequisites:
+
+- You must have the Owner role for the project, or administrator access to the instance.
+- If [Admin Mode](../../administration/settings/sign_in_restrictions.md#admin-mode) is enabled for
+  the instance, administrators must turn on Admin Mode for their session.
+
+To delete a pipeline:
 
 1. In the top bar, select **Search or go to** and find your project.
 1. In the left sidebar, select **Build** > **Pipelines**.
@@ -304,7 +310,7 @@ See [issue 39503](https://gitlab.com/gitlab-org/gitlab/-/issues/39503) for more 
 > [!warning]
 > Deleting a pipeline expires all pipeline caches, and deletes all immediately
 > related objects, such as jobs, logs, artifacts, and triggers.
-> **This action cannot be undone**.
+> This action cannot be undone.
 
 ### Pipeline security on protected branches
 

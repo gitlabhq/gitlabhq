@@ -80,6 +80,7 @@ import {
   getMetadataWidgetsFromWorkItem,
   formatLabelForListbox,
   formatUserForListbox,
+  lowercaseWorkItemType,
   newWorkItemPath,
   getDisplayReference,
   isReference,
@@ -105,7 +106,9 @@ import {
   combineWorkItemLists,
   isCurrentViewWorkItem,
   getSortValue,
+  getRequestedPanel,
 } from '~/work_items/utils';
+import setWindowLocation from 'helpers/set_window_location_helper';
 import { useLocalStorageSpy } from 'helpers/local_storage_helper';
 import { TYPE_EPIC } from '~/issues/constants';
 import {
@@ -269,6 +272,18 @@ describe('convertTypeEnumToName', () => {
     ${WORK_ITEM_TYPE_NAME_TICKET}       | ${WORK_ITEM_TYPE_ENUM_TICKET}
   `('returns %name when given the enum %enumValue', ({ name, enumValue }) => {
     expect(convertTypeEnumToName(enumValue)).toBe(name);
+  });
+});
+
+describe('lowercaseWorkItemType', () => {
+  it.each`
+    workItemType    | result
+    ${'Key Result'} | ${'key result'}
+    ${'Epic'}       | ${'epic'}
+    ${undefined}    | ${''}
+    ${null}         | ${''}
+  `('returns "$result" when given $workItemType', ({ workItemType, result }) => {
+    expect(lowercaseWorkItemType(workItemType)).toBe(result);
   });
 });
 
@@ -457,6 +472,15 @@ describe('`findDetailPanelWorkItem`', () => {
     expect(findDetailPanelWorkItem(param, items, null)).toEqual({
       item: null,
       notFound: false,
+    });
+  });
+
+  describe('when the param is not a base64-encoded work item', () => {
+    it('returns no item and does not flag notFound', () => {
+      expect(findDetailPanelWorkItem('workplan', items, null)).toEqual({
+        item: null,
+        notFound: false,
+      });
     });
   });
 });
@@ -919,6 +943,17 @@ describe('combineWorkItemLists', () => {
             expect(result).toEqual(fullList);
           });
         });
+      });
+    });
+
+    describe('when the full list omits scalars the slim list provides', () => {
+      it('keeps the slim list scalars on the merged item', () => {
+        const slimList = [{ id: 1, title: 'Slim title', webUrl: '/slim', features: {} }];
+        const fullList = [{ id: 1, userDiscussionsCount: 3, features: {} }];
+
+        expect(combineWorkItemLists(slimList, fullList, true)).toEqual([
+          { id: 1, title: 'Slim title', webUrl: '/slim', userDiscussionsCount: 3, features: {} },
+        ]);
       });
     });
   });
@@ -2035,5 +2070,23 @@ describe('findOpenChildItemsCountsByType', () => {
 
   it('returns undefined when neither exists', () => {
     expect(findOpenChildItemsCountsByType({ widgets: [] })).toBeUndefined();
+  });
+});
+
+describe('getRequestedPanel', () => {
+  describe('when the show param names a panel', () => {
+    it('returns the panel key', () => {
+      setWindowLocation('?show=decision-log');
+
+      expect(getRequestedPanel()).toBe('decision-log');
+    });
+  });
+
+  describe('when the show param is absent', () => {
+    it('returns undefined', () => {
+      setWindowLocation('/');
+
+      expect(getRequestedPanel()).toBeUndefined();
+    });
   });
 });

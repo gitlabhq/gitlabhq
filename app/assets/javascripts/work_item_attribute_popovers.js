@@ -1,6 +1,6 @@
 import Vue from 'vue';
 import VueApollo from 'vue-apollo';
-import { defaultClient } from '~/graphql_shared/issuable_client';
+import createDefaultClient from '~/lib/graphql';
 import { handleIssuablePopoverMount } from '~/issuable/popover';
 
 /**
@@ -28,8 +28,12 @@ import { handleIssuablePopoverMount } from '~/issuable/popover';
 export default function initWorkItemAttributePopovers() {
   Vue.use(VueApollo);
 
+  // A plain client, not `~/graphql_shared/issuable_client`: the popover query needs
+  // none of its resolvers, and importing it here puts a second copy of that client
+  // on every Vue 3 page, because `main` is always Vue 2.
+  // https://gitlab.com/gitlab-org/gitlab/-/work_items/625296
   const apolloProvider = new VueApollo({
-    defaultClient,
+    defaultClient: createDefaultClient(),
   });
 
   document.addEventListener('mouseover', ({ target }) => {

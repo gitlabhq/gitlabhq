@@ -27,7 +27,7 @@ title: Fix CI/CD Pipeline Flow
 
 {{< /history >}}
 
-The Fix CI/CD Pipeline Flow diagnoses and proposes fixes issues in your GitLab CI/CD pipeline.
+The Fix CI/CD Pipeline Flow diagnoses and proposes fixes for issues in your GitLab CI/CD pipeline.
 To diagnose failures, the flow examines:
 
 - Pipeline logs, including error messages, failed job outputs, and exit codes.
@@ -182,6 +182,18 @@ To work around this issue, try the following:
 - Add a summary step at the end of your script that echoes key error messages.
 - Use `after_script` to output diagnostic information after the main script completes.
 - Split verbose jobs into smaller, focused jobs with more concise logs.
+
+### Session failed to start
+
+The session for the Fix CI/CD Pipeline Flow fails, and on the session page (**AI** > **Sessions**),
+the `Session failed to start` alert appears.
+
+Two pipelines are involved: the pipeline that failed, and the
+[workload pipeline](../../../../ci/pipelines/pipeline_types.md#workload-pipeline) the flow creates
+to fix it. Check the status of the job in the workload pipeline.
+
+For causes and how to resolve them, see
+[a flow's job or session fails to start](../../troubleshooting.md#a-flows-job-or-session-fails-to-start).
 
 ### Fix pipeline with Duo button does not appear
 

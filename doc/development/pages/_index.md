@@ -1,6 +1,6 @@
 ---
 stage: Plan
-group: Knowledge
+group: Planner Intelligence
 info: Any user with at least the Maintainer role can merge updates to this content. For details, see <https://docs.gitlab.com/development/development_processes/#development-guidelines-review>.
 description: Configuration and contribution guidelines.
 title: Contribute to GitLab Pages development
@@ -251,7 +251,7 @@ incidents and downtime. To add a new feature flag to GitLab Pages:
 
 1. Create the feature flag in
    [`internal/feature/feature.go`](https://gitlab.com/gitlab-org/gitlab-pages/-/blob/master/internal/feature/feature.go),
-   which must be **off** by default.
+   which must be off by default.
 1. Create an issue to track the feature flag using the `Feature flag` template.
 1. Add the `~"feature flag"` label to any merge requests that handle feature flags.
 

@@ -5,6 +5,7 @@ require 'spec_helper'
 RSpec.describe Gitlab::Database::Partitioning::PartitionImporter, feature_category: :database do
   include Database::PartitioningHelpers
   include Database::MultipleDatabasesHelpers
+  include Database::TriggerHelpers
   include Gitlab::Database::MigrationHelpers::LooseForeignKeyHelpers
 
   let(:connection) { ApplicationRecord.connection }
@@ -121,6 +122,60 @@ RSpec.describe Gitlab::Database::Partitioning::PartitionImporter, feature_catego
       end
     end
 
+    context 'when the partitioned table routes deleted records by sharding keys' do
+      # Three targets, one with source different from the target column, mirroring the richest
+      # real case (clusters: group_id routes to namespace_id).
+      let(:sharding_key_targets) do
+        [
+          { table: 'loose_foreign_keys_project_deleted_records', column: 'project_id', source: 'project_id' },
+          { table: 'loose_foreign_keys_namespace_deleted_records', column: 'namespace_id', source: 'group_id' },
+          { table: 'loose_foreign_keys_organization_deleted_records', column: 'organization_id',
+            source: 'organization_id' }
+        ]
+      end
+
+      let(:targets_json) { sharding_key_targets.to_json }
+
+      let(:table_definitions) do
+        [
+          {
+            table_name: '_test_import_partitioned',
+            partition_type: 'integer',
+            partitions: [
+              { partition_name: '_test_import_partitioned_100', from: 100, to: 200 }
+            ]
+          }
+        ]
+      end
+
+      before do
+        connection.execute(<<~SQL)
+          ALTER TABLE _test_import_partitioned
+            ADD COLUMN group_id bigint,
+            ADD COLUMN organization_id bigint;
+
+          CREATE TRIGGER #{record_deletion_trigger_name('_test_import_partitioned')}
+          AFTER DELETE ON _test_import_partitioned REFERENCING OLD TABLE AS old_table
+          FOR EACH STATEMENT
+          EXECUTE FUNCTION insert_into_loose_foreign_keys_deleted_records_override_table('_test_import_partitioned', '#{targets_json}');
+        SQL
+
+        allow(importer).to receive(:sharding_keys_for).and_return(sharding_key_targets)
+      end
+
+      it 'attaches a routed LFK trigger on the imported partition' do
+        importer.import(table_definitions)
+
+        partition_name = '_test_import_partitioned_100'
+        action_statement = find_trigger_def(partition_name,
+          record_deletion_trigger_name(partition_name))['action_statement']
+
+        expect(action_statement).to include('insert_into_loose_foreign_keys_deleted_records_override_table')
+        expect(action_statement).to include("'_test_import_partitioned'")
+        expect(action_statement).to include(targets_json)
+      end
+    end
+
     context 'when the partitioned table has no loose foreign key trigger' do
       let(:table_definitions) do
         [
@@ -183,7 +238,9 @@ RSpec.describe Gitlab::Database::Partitioning::PartitionImporter, feature_catego
 
       it 'logs what would be created' do
         expect(Gitlab::AppLogger).to receive(:info).with(
-          hash_including(message: 'Dry run: would create partition', partition_name: '_test_import_partitioned_100')
+          hash_including('class_name' => described_class.name,
+            'message' => 'Dry run: would create partition',
+            'partition_name' => '_test_import_partitioned_100')
         )
 
         importer.import(table_definitions, dry_run: true)
@@ -217,9 +274,10 @@ RSpec.describe Gitlab::Database::Partitioning::PartitionImporter, feature_catego
         it 'skips invalid partitions, logs warnings, and raises with error summary' do
           expect(Gitlab::AppLogger).to receive(:warn).with(
             hash_including(
-              message: 'Skipping invalid partition bounds',
-              table_name: '_test_import_partitioned',
-              partition_name: '_test_import_partitioned_invalid'
+              'class_name' => described_class.name,
+              'message' => 'Skipping invalid partition bounds',
+              'table_name' => '_test_import_partitioned',
+              'partition_name' => '_test_import_partitioned_invalid'
             )
           )
 
@@ -415,9 +473,10 @@ RSpec.describe Gitlab::Database::Partitioning::PartitionImporter, feature_catego
         it 'skips the invalid partition and raises with error summary' do
           expect(Gitlab::AppLogger).to receive(:warn).with(
             hash_including(
-              message: 'Skipping invalid partition definition',
-              table_name: '_test_date_import_partitioned',
-              partition_name: '_test_date_import_partitioned_bad'
+              'class_name' => described_class.name,
+              'message' => 'Skipping invalid partition definition',
+              'table_name' => '_test_date_import_partitioned',
+              'partition_name' => '_test_date_import_partitioned_bad'
             )
           )
 

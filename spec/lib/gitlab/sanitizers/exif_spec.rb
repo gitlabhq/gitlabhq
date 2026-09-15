@@ -3,6 +3,8 @@
 require 'spec_helper'
 
 RSpec.describe Gitlab::Sanitizers::Exif do
+  let_it_be(:project) { create(:project) }
+
   let(:sanitizer) { described_class.new }
   let(:mime_type) { 'image/jpeg' }
 
@@ -12,9 +14,9 @@ RSpec.describe Gitlab::Sanitizers::Exif do
 
   describe '#batch_clean' do
     context 'with image uploads' do
-      let_it_be(:upload1) { create(:upload, :with_file, :issuable_upload) }
+      let_it_be(:upload1) { create(:upload, :with_file, :issuable_upload, model: project) }
       let_it_be(:upload2) { create(:upload, :with_file, :personal_snippet_upload) }
-      let_it_be(:upload3) { create(:upload, :with_file, created_at: 3.days.ago) }
+      let_it_be(:upload3) { create(:upload, :with_file, model: project, created_at: 3.days.ago) }
 
       it 'processes all uploads if range ID is not set' do
         expect(sanitizer).to receive(:clean).exactly(3).times
@@ -49,13 +51,13 @@ RSpec.describe Gitlab::Sanitizers::Exif do
     end
 
     it 'filters only jpg/tiff images by filename' do
-      create(:upload, path: 'filename.jpg')
-      create(:upload, path: 'filename.jpeg')
-      create(:upload, path: 'filename.JPG')
-      create(:upload, path: 'filename.tiff')
-      create(:upload, path: 'filename.TIFF')
-      create(:upload, path: 'filename.png')
-      create(:upload, path: 'filename.txt')
+      create(:upload, model: project, path: 'filename.jpg')
+      create(:upload, model: project, path: 'filename.jpeg')
+      create(:upload, model: project, path: 'filename.JPG')
+      create(:upload, model: project, path: 'filename.tiff')
+      create(:upload, model: project, path: 'filename.TIFF')
+      create(:upload, model: project, path: 'filename.png')
+      create(:upload, model: project, path: 'filename.txt')
 
       expect(sanitizer).to receive(:clean).exactly(5).times
 
@@ -64,7 +66,7 @@ RSpec.describe Gitlab::Sanitizers::Exif do
   end
 
   describe '#clean' do
-    let(:uploader) { create(:upload, :with_file, :issuable_upload).retrieve_uploader }
+    let(:uploader) { create(:upload, :with_file, :issuable_upload, model: project).retrieve_uploader }
     let(:dry_run) { false }
 
     subject { sanitizer.clean(uploader, dry_run: dry_run) }
@@ -213,29 +215,9 @@ RSpec.describe Gitlab::Sanitizers::Exif do
             end.to raise_error(RuntimeError, %r{File type text/plain not supported})
           end
         end
-
-        context 'for files that do not have the correct MIME type from input content' do
-          let(:mime_type) { 'text/plain' }
-
-          it 'raises an error if not jpg/tiff images with the correct mime types' do
-            expect do
-              sanitizer.clean_existing_path(tmp_file.path, content: file_content)
-            end.to raise_error(RuntimeError, %r{File type text/plain not supported})
-          end
-        end
       end
 
       context 'skip_unallowed_types is true' do
-        context 'for files that do not have the correct MIME type from input content' do
-          let(:mime_type) { 'text/plain' }
-
-          it 'cleans only jpg/tiff images with the correct mime types' do
-            expect do
-              sanitizer.clean_existing_path(tmp_file.path, content: file_content, skip_unallowed_types: true)
-            end.not_to raise_error
-          end
-        end
-
         context 'for files that do not have the correct MIME type from input content' do
           let(:mime_type) { 'text/plain' }
 

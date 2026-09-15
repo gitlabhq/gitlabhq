@@ -4,6 +4,7 @@ import { __, s__ } from '~/locale';
 import { createAlert } from '~/alert';
 import { DEFAULT_PER_PAGE } from '~/api';
 import OrganizationsView from '~/organizations/shared/components/organizations_view.vue';
+import { ORGANIZATION_STATE_ACTIVE } from '~/organizations/shared/constants';
 import currentUserOrganizationsQuery from '../../shared/graphql/queries/current_user_organizations.query.graphql';
 
 export default {
@@ -36,7 +37,14 @@ export default {
     organizations: {
       query: currentUserOrganizationsQuery,
       variables() {
-        return this.pagination;
+        return {
+          ...this.pagination,
+          // On gitlab.com the "Default" organization is a legacy container for resources that do not yet have their own organization.
+          // We want to exclude it from the list to avoid confusion.
+          // On self-managed and dedicated the `Default` organization is the only organization on the instance and can be used.
+          excludeDefault: Boolean(window.gon.dot_com),
+          state: ORGANIZATION_STATE_ACTIVE,
+        };
       },
       update(data) {
         return data.currentUser.organizations;

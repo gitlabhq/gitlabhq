@@ -30,7 +30,6 @@ RSpec.shared_context 'server metrics with mocked prometheus' do
   let(:elasticsearch_seconds_sum_metric) { double('elasticsearch seconds sum metric') }
   let(:zoekt_seconds_sum_metric) { double('zoekt seconds sum metric') }
   let(:gvl_thread_metric) { double('gvl thread duration metric') }
-  let(:gvl_process_metric) { double('gvl process duration metric') }
   let(:gvl_enabled_metric) { double('gvl enabled') }
 
   before do
@@ -64,7 +63,6 @@ RSpec.shared_context 'server metrics with mocked prometheus' do
     allow(Gitlab::Metrics).to receive(:gauge).with(:sidekiq_running_jobs, anything, {}, :all).and_return(running_jobs_metric)
     allow(Gitlab::Metrics).to receive(:gauge).with(:sidekiq_concurrency, anything, {}, :all).and_return(concurrency_metric)
     allow(Gitlab::Metrics).to receive(:gauge).with(:sidekiq_mem_total_bytes, anything, {}, :all).and_return(sidekiq_mem_total_bytes)
-    allow(Gitlab::Metrics).to receive(:gauge).with(:sidekiq_gvl_process_wait_seconds, anything, anything, anything).and_return(gvl_process_metric)
     allow(Gitlab::Metrics).to receive(:gauge).with(:sidekiq_gvl_measurement_enabled, anything, anything, anything).and_return(gvl_enabled_metric)
 
     allow(concurrency_metric).to receive(:set)
@@ -98,7 +96,6 @@ RSpec.shared_context 'server metrics call' do
 
   let(:mem_total_bytes) { 1000000000 }
   let(:gvl_thread_wait) { 1.0 }
-  let(:gvl_process_wait) { 2.0 }
 
   let(:instrumentation) do
     {
@@ -110,8 +107,7 @@ RSpec.shared_context 'server metrics call' do
       zoekt_calls: zoekt_calls,
       zoekt_duration_s: zoekt_duration,
       mem_total_bytes: mem_total_bytes,
-      gvl_thread_wait_s: gvl_thread_wait,
-      gvl_process_wait_s: gvl_process_wait
+      gvl_thread_wait_s: gvl_thread_wait
     }
   end
 
@@ -153,7 +149,6 @@ RSpec.shared_context 'server metrics call' do
     allow(zoekt_seconds_metric).to receive(:observe)
     allow(sidekiq_mem_total_bytes).to receive(:set)
     allow(gvl_thread_metric).to receive(:observe)
-    allow(gvl_process_metric).to receive(:increment)
     allow(gvl_enabled_metric).to receive(:set)
   end
 end

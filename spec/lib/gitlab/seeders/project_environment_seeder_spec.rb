@@ -28,7 +28,7 @@ RSpec.describe ::Gitlab::Seeders::ProjectEnvironmentSeeder, feature_category: :p
 
       env = project.environments.last
 
-      expect(env.name.include?('staging_')).to eq true
+      expect(env.name.include?('staging_')).to be true
     end
 
     it 'skips seeding when project path is invalid' do

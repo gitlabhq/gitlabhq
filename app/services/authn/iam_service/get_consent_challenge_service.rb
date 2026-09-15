@@ -4,7 +4,7 @@ module Authn
   module IamService
     class GetConsentChallengeService
       MANDATORY_FIELDS = %i[
-        subject requested_scopes client_id client_name client_owner client_created_at client_scopes
+        subject requested_scopes client_id client_name client_created_at client_scopes
       ].freeze
 
       def initialize(challenge:, client: GrpcClient.new)
@@ -25,7 +25,8 @@ module Authn
           client_name: oauth_client&.client_name,
           client_owner: oauth_client&.client_owner,
           client_created_at: oauth_client&.created_at && Time.zone.at(oauth_client.created_at.seconds),
-          client_scopes: Array(oauth_client&.scopes&.to_a)
+          client_scopes: Array(oauth_client&.scopes&.to_a),
+          client_dynamic: oauth_client&.dynamic
         }
 
         missing = MANDATORY_FIELDS.select { |f| payload[f].blank? }

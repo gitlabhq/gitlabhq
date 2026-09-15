@@ -40,7 +40,7 @@ export default {
       default: undefined,
     },
   },
-  emits: ['start-editing', 'stopEditing'],
+  emits: ['start-editing', 'stop-editing'],
   data() {
     return {
       editing: false,
@@ -69,7 +69,7 @@ export default {
         return;
       }
       this.editing = false;
-      this.$emit('stopEditing');
+      this.$emit('stop-editing');
     },
   },
 };

@@ -23,4 +23,11 @@ module API
   # requirement re-suppresses the implicit `(.:format)` suffix so a trailing extension or
   # dot stays inside the wildcard/param instead of being parsed off as a response format.
   NO_FORMAT_SUFFIX_REQUIREMENT = { format: /(?!)/ }.freeze
+
+  # Grape 3.x builds the route pattern from the endpoint's options, not the route's, so a
+  # route-level `format:` stops constraining the implicit `(.:format)` suffix and any
+  # extension matches. Pair it with one of these to restore the constraint on both versions.
+  JSON_FORMAT_SUFFIX_REQUIREMENT = { format: /json/ }.freeze
+  XML_FORMAT_SUFFIX_REQUIREMENT = { format: /xml/ }.freeze
+  TXT_FORMAT_SUFFIX_REQUIREMENT = { format: /txt/ }.freeze
 end

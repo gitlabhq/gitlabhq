@@ -27,21 +27,21 @@ module AuthorizedProjectUpdate
       remove = projects_with_duplicates
       current.except!(*projects_with_duplicates)
 
-      remove |= current.each_with_object([]) do |(project_id, row), array|
-        next if fresh[project_id] && fresh[project_id] == row.access_level
+      remove |= current.each_with_object([]) do |(project_id, access_level), array|
+        next if fresh[project_id] && fresh[project_id] == access_level
 
         # rows not in the new list or with a different access level should be
         # removed.
 
         if incorrect_auth_found_callback
-          incorrect_auth_found_callback.call(project_id, row.access_level)
+          incorrect_auth_found_callback.call(project_id, access_level)
         end
 
-        array << row.project_id
+        array << project_id
       end
 
       add = fresh.each_with_object([]) do |(project_id, level), array|
-        next if current[project_id] && current[project_id].access_level == level
+        next if current[project_id] && current[project_id] == level
 
         # rows not in the old list or with a different access level should be
         # added.
@@ -66,18 +66,21 @@ module AuthorizedProjectUpdate
       remove.present? || add.present?
     end
 
+    # Both sides of the diff are read as raw [project_id, access_level] pairs
+    # rather than ActiveRecord objects. See ProjectAuthorization for why.
     def fresh_access_levels_per_project
-      fresh_authorizations.each_with_object({}) do |row, hash|
-        hash[row.project_id] = row.access_level
-      end
+      ProjectAuthorization.access_levels_by_project(fresh_authorizations)
     end
 
     def current_authorizations_per_project
-      current_authorizations.index_by(&:project_id)
+      current_authorizations.to_h
     end
 
     def current_authorizations
-      @current_authorizations ||= user.project_authorizations.select(:project_id, :access_level)
+      # Read off the model rather than through `user.project_authorizations`:
+      # `pluck` short-circuits to an association's in-memory target when it is
+      # already loaded, which would silently return stale rows here.
+      @current_authorizations ||= ProjectAuthorization.project_ids_and_access_levels_for(user.id)
     end
 
     def fresh_authorizations
@@ -90,8 +93,8 @@ module AuthorizedProjectUpdate
 
     def projects_with_duplicates
       @projects_with_duplicates ||= current_authorizations
-                                      .group_by(&:project_id)
-                                      .select { |project_id, authorizations| authorizations.count > 1 }
+                                      .group_by(&:first)
+                                      .select { |_project_id, authorizations| authorizations.count > 1 }
                                       .keys
     end
   end

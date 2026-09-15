@@ -1,0 +1,9 @@
+---
+name: update_ai_catalog_mcp_server
+description: Grants the ability to update AI catalog MCP servers
+available_for:
+  - granular_access_token
+permissions:
+  - update_ai_catalog_mcp_server
+boundaries:
+  - instance

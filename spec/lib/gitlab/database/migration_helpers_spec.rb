@@ -474,8 +474,7 @@ RSpec.describe Gitlab::Database::MigrationHelpers, feature_category: :database d
       let(:trigger_name) { model.rename_trigger_name(:users, :old, :new) }
 
       before do
-        allow(model).to receive(:transaction_open?).and_return(false)
-        allow(model).to receive(:column_for).and_return(new_column)
+        allow(model).to receive_messages(transaction_open?: false, column_for: new_column)
       end
 
       it 'reverses the operations of cleanup_concurrent_column_rename' do

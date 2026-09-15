@@ -454,5 +454,5 @@ be ineffective or false positives, and the findings are marked as `No longer det
 ### Message `exec /bin/sh: exec format error` in job log
 
 You might get an error in the job log that states `exec /bin/sh: exec format error`. This issue
-occurs when attempting to run the IaC scanning analyzer on an architecture other than AMD64
-architecture. For details of IaC scanning prerequisites, see the [prerequisites](#getting-started).
+occurs when attempting to run the IaC scanning analyzer on an architecture other than AMD64. For
+details of IaC scanning prerequisites, see the [prerequisites](#getting-started).

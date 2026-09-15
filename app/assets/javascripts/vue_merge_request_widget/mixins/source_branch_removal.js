@@ -16,12 +16,7 @@ export default {
   },
   computed: {
     shouldShowRemoveSourceBranch() {
-      return (
-        !this.mr.sourceBranchRemoved &&
-        this.mr.canRemoveSourceBranch &&
-        !this.isMakingRequest &&
-        !this.mr.isRemovingSourceBranch
-      );
+      return !this.mr.sourceBranchRemoved && this.mr.canRemoveSourceBranch && !this.isMakingRequest;
     },
   },
   methods: {

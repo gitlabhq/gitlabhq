@@ -40,6 +40,11 @@ To resolve this error:
     requests: `read_registry` or `write_registry`
   - For [dependency proxy](../../packages/dependency_proxy/_index.md#authenticate-with-the-dependency-proxy-for-container-images)
     requests: `read_registry` and `write_registry`
+
+  These scopes apply to legacy personal access tokens. Fine-grained personal access tokens use
+  resources and permissions instead. For the fine-grained equivalents, see
+  [fine-grained permissions for Git and other operations](../../../auth/tokens/fine_grained_access_tokens_other.md).
+  You cannot use fine-grained personal access tokens to push container images.
 - If you configured LDAP, use an [LDAP password](../../../administration/auth/ldap/_index.md).
 - Use an [OAuth credential helper](two_factor_authentication.md#oauth-credential-helpers).
 
@@ -246,7 +251,7 @@ GitLab Support cannot assist with recovery issues related to third-party authent
 For more information, see the documentation for your specific authenticator app.
 Documentation for common authenticators is available through the following locations:
 
-- [Microsoft Authenticator](https://support.microsoft.com/en-us/account-billing/restore-account-credentials-from-microsoft-authenticator-ce53096e-1e1c-4840-9e32-1618bc33cd43)
+- [Microsoft Authenticator](https://support.microsoft.com/en-US/authenticator/restore-account-credentials-from-microsoft-authenticator)
 - [Google Authenticator](https://support.google.com/accounts/answer/1066447)
 - [Authy](https://www.twilio.com/en-us/blog/how-the-authy-two-factor-backups-work)
 - [1Password](https://support.1password.com/recovery-codes/?mac#recover-your-account)

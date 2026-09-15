@@ -2,7 +2,7 @@
 
 RSpec.shared_examples 'moving list' do
   context 'when user can admin list' do
-    before do
+    before_all do
       board.resource_parent.add_developer(user)
     end
 

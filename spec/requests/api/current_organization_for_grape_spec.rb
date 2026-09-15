@@ -205,6 +205,89 @@ RSpec.describe 'Current.organization resolution in Grape API', feature_category:
     end
   end
 
+  describe 'Runner registration token' do
+    let_it_be(:registration_organization) { create(:organization) }
+    # with_refind: the memoized instance caches a nil runners_token from
+    # before the trait enables registration on the namespace settings.
+    let_it_be_with_refind(:registration_group) do
+      create(:group, :allow_runner_registration_token, organization: registration_organization)
+    end
+
+    it 'resolves to the organization of the group the registration token belongs to' do
+      expect_logged_organization_id(registration_organization.id)
+
+      post api('/runners'), params: { token: registration_group.runners_token }
+
+      expect(response).to have_gitlab_http_status(:created)
+    end
+
+    it 'leaves Current.organization unassigned for the instance-wide registration token' do
+      stub_application_setting(runners_registration_token: 'abcdefg123456') # gitleaks:allow
+
+      expect_no_logged_organization_id
+
+      post api('/runners'), params: { token: 'abcdefg123456' } # gitleaks:allow
+
+      expect(response).to have_gitlab_http_status(:created)
+    end
+  end
+
+  describe 'CI job token on runner API endpoints' do
+    let_it_be(:job_organization) { create(:organization) }
+    let_it_be(:job_project) { create(:project, organization: job_organization, developers: user) }
+
+    let_it_be(:job_pipeline) { create(:ci_pipeline, project: job_project) }
+
+    let_it_be(:job) { create(:ci_build, :running, pipeline: job_pipeline, user: user) }
+
+    context 'when updating a job' do
+      subject(:update_job) do
+        put api("/jobs/#{job.id}"), params: { token: job.token, state: 'success' }
+      end
+
+      it 'resolves to the job project organization when updating a job' do
+        expect_logged_organization_id(job_organization.id)
+
+        update_job
+
+        expect(response).to have_gitlab_http_status(:ok)
+      end
+
+      context 'when an organization is already assigned' do
+        let(:other_organization) { create(:organization) }
+
+        before do
+          allow(::Current).to receive_messages(organization_assigned: true, organization: other_organization)
+        end
+
+        it 'does not overwrite the assigned organization' do
+          expect(::Current).not_to receive(:organization=)
+
+          update_job
+
+          expect(response).to have_gitlab_http_status(:ok)
+        end
+      end
+    end
+
+    context 'when downloading artifacts via a dependent job' do
+      let_it_be(:artifacts_job) { create(:ci_build, :success, :artifacts, pipeline: job_pipeline, user: user) }
+      let_it_be(:dependent_job) { create(:ci_build, :running, pipeline: job_pipeline, user: user) }
+
+      subject(:download_artifacts) do
+        get api("/jobs/#{artifacts_job.id}/artifacts"), params: { token: dependent_job.token }
+      end
+
+      it 'resolves to the job project organization' do
+        expect_logged_organization_id(job_organization.id)
+
+        download_artifacts
+
+        expect(response).to have_gitlab_http_status(:ok)
+      end
+    end
+  end
+
   describe 'Internal API (gitlab-shell shared secret)' do
     include GitlabShellHelpers
 

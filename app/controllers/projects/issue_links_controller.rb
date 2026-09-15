@@ -13,6 +13,10 @@ module Projects
 
     private
 
+    def permitted_params
+      params.permit(:id, :issue_id)
+    end
+
     def disable_query_limit!
       Gitlab::QueryLimiting.disable!('https://gitlab.com/gitlab-org/gitlab/-/issues/467087')
     end
@@ -29,7 +33,7 @@ module Projects
     def issue
       @issue ||=
         IssuesFinder.new(current_user, project_id: @project.id)
-                    .find_by!(iid: params[:issue_id])
+                    .find_by!(iid: permitted_params[:issue_id])
     end
     # rubocop: enable CodeReuse/ActiveRecord
 
@@ -46,7 +50,7 @@ module Projects
     end
 
     def link
-      @link ||= IssueLink.find(params[:id])
+      @link ||= IssueLink.find(permitted_params[:id])
     end
 
     def create_params

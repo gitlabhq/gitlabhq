@@ -15,7 +15,7 @@ RSpec.describe Atlassian::JiraConnect::Jwt::Symmetric, feature_category: :integr
     context 'invalid JWT' do
       let(:jwt) { '123' }
 
-      it { is_expected.to eq(nil) }
+      it { is_expected.to be_nil }
     end
   end
 
@@ -29,7 +29,7 @@ RSpec.describe Atlassian::JiraConnect::Jwt::Symmetric, feature_category: :integr
     context 'invalid JWT' do
       let(:jwt) { '123' }
 
-      it { is_expected.to eq(nil) }
+      it { is_expected.to be_nil }
     end
   end
 
@@ -39,13 +39,13 @@ RSpec.describe Atlassian::JiraConnect::Jwt::Symmetric, feature_category: :integr
     context 'invalid JWT' do
       let(:jwt) { '123' }
 
-      it { is_expected.to eq(false) }
+      it { is_expected.to be(false) }
     end
 
     context 'valid JWT' do
       let(:jwt) { Atlassian::Jwt.encode({}, shared_secret) }
 
-      it { is_expected.to eq(true) }
+      it { is_expected.to be(true) }
     end
   end
 
@@ -59,14 +59,14 @@ RSpec.describe Atlassian::JiraConnect::Jwt::Symmetric, feature_category: :integr
       described_class.new(jwt).verify_qsh_claim('https://gitlab.test/subscriptions', 'GET', 'https://gitlab.test')
     end
 
-    it { is_expected.to eq(true) }
+    it { is_expected.to be(true) }
 
     context 'qsh does not match' do
       let(:qsh_claim) do
         Atlassian::Jwt.create_query_string_hash('https://example.com/foo', 'POST', 'https://example.com')
       end
 
-      it { is_expected.to eq(false) }
+      it { is_expected.to be(false) }
     end
 
     context 'creating query string hash raises an error' do
@@ -75,7 +75,7 @@ RSpec.describe Atlassian::JiraConnect::Jwt::Symmetric, feature_category: :integr
       specify do
         expect(Atlassian::Jwt).to receive(:create_query_string_hash).and_raise(StandardError)
 
-        expect(verify_qsh_claim).to eq(false)
+        expect(verify_qsh_claim).to be(false)
       end
     end
   end
@@ -86,12 +86,12 @@ RSpec.describe Atlassian::JiraConnect::Jwt::Symmetric, feature_category: :integr
 
     subject(:verify_context_qsh_claim) { described_class.new(jwt).verify_context_qsh_claim }
 
-    it { is_expected.to eq(true) }
+    it { is_expected.to be(true) }
 
     context 'jwt does not contain a context qsh' do
       let(:qsh_claim) { '123' }
 
-      it { is_expected.to eq(false) }
+      it { is_expected.to be(false) }
     end
   end
 end

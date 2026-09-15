@@ -157,6 +157,8 @@ describe('Create Timeline events', () => {
       };
       responseSpy.mockResolvedValueOnce(timelineEventsCreateEventError);
       mountComponent();
+      fillForm();
+      await waitForPromises();
 
       findSubmitButton().trigger('click');
       await waitForPromises();
@@ -172,6 +174,8 @@ describe('Create Timeline events', () => {
       };
       responseSpy.mockRejectedValueOnce();
       mountComponent();
+      fillForm();
+      await waitForPromises();
 
       findSubmitButton().trigger('click');
       await waitForPromises();

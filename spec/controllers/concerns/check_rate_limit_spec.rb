@@ -62,20 +62,10 @@ RSpec.describe CheckRateLimit do
         allow(Gitlab::Throttle).to receive(:bypass_header).and_return('SOME_HEADER')
       end
 
-      it 'skips rate limit if set to "1"' do
-        stub_feature_flags(rate_limiting_rule_bypass_header: false)
+      it 'forwards the header value to ApplicationRateLimiter#throttled?' do
         allow(request).to receive(:get_header).with(Gitlab::Throttle.bypass_header).and_return('1')
 
-        expect(::Gitlab::ApplicationRateLimiter).not_to receive(:throttled?)
-        expect(subject).not_to receive(:render)
-
-        subject.check_rate_limit!(key, scope: scope)
-      end
-
-      it 'does not skip rate limit if set to something else than "1"' do
-        allow(request).to receive(:get_header).with(Gitlab::Throttle.bypass_header).and_return('0')
-
-        expect(::Gitlab::ApplicationRateLimiter).to receive(:throttled?)
+        expect(::Gitlab::ApplicationRateLimiter).to receive(:throttled?).with(key, scope: scope, bypass_header: '1')
 
         subject.check_rate_limit!(key, scope: scope)
       end

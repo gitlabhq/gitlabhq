@@ -8,6 +8,7 @@ import getBuildArtifactsSizeQuery from '~/ci/artifacts/graphql/queries/get_build
 import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
 import createMockApollo from 'helpers/mock_apollo_helper';
 import waitForPromises from 'helpers/wait_for_promises';
+import IndexLayout from '~/vue_shared/components/index_layout.vue';
 import PageHeading from '~/vue_shared/components/page_heading.vue';
 import {
   PAGE_TITLE,
@@ -55,6 +56,7 @@ describe('ArtifactsApp component', () => {
       provide: { projectPath: 'project/path' },
       apolloProvider,
       stubs: {
+        IndexLayout,
         PageHeading,
       },
     });

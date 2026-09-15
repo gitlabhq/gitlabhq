@@ -34,7 +34,6 @@ import ArchiveDesignButton from './archive_design_button.vue';
 
 export default {
   name: 'DesignManagementWidget',
-  isLoggedIn: isLoggedIn(),
   components: {
     GlAlert,
     GlButton,
@@ -161,6 +160,9 @@ export default {
     };
   },
   computed: {
+    isLoggedIn() {
+      return isLoggedIn();
+    },
     isMobile() {
       return hasTouchCapability();
     },
@@ -204,7 +206,7 @@ export default {
     },
     isDraggingDisabled() {
       return (
-        !this.$options.isLoggedIn ||
+        !this.isLoggedIn ||
         !this.isLatestVersion ||
         !this.canReorderDesign ||
         this.isReorderingInProgress ||
@@ -528,6 +530,8 @@ export default {
       :title="s__('DesignManagement|Designs')"
       data-testid="designs-root"
       class="gl-relative !gl-mt-0"
+      title-container-class="!gl-py-0"
+      actions-container-class="!gl-my-2"
       :body-class="crudBodyClass"
       is-collapsible
       persist-collapsed-state

@@ -7,6 +7,8 @@ module Types
       graphql_name 'MlCandidateParam'
       description 'Parameter for a candidate in the model registry'
 
+      authorize_granular_token skip_reason: :parent_authorizes
+
       connection_type_class Types::LimitedCountableConnectionType
 
       field :id, ::Types::GlobalIDType[::Ml::CandidateParam], null: false, description: 'ID of the parameter.'

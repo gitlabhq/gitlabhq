@@ -332,6 +332,58 @@ RSpec.describe Oauth::TokensController, feature_category: :system_access do
     end
   end
 
+  describe 'POST /oauth/token when the client_id is missing', feature_category: :system_access do
+    let(:docs_anchor) { 'reuse-a-single-oauth-application' }
+
+    subject(:request_token) do
+      post '/oauth/token', params: { grant_type: 'authorization_code', client_id: client_id, code: 'irrelevant' }
+    end
+
+    context 'when dynamic client registration is disabled' do
+      before do
+        stub_application_setting(dynamic_client_registration_enabled: false)
+      end
+
+      context 'and the client_id does not reference any application' do
+        let(:client_id) { 'this-client-id-does-not-exist' }
+
+        it 'returns an actionable invalid_client error linking to the docs', :aggregate_failures do
+          request_token
+
+          expect(response).to have_gitlab_http_status(:unauthorized)
+          expect(response.parsed_body['error']).to eq('invalid_client')
+          expect(response.parsed_body['error_description']).to include('dynamic client registration is disabled')
+          expect(response.parsed_body['error_description']).to include(docs_anchor)
+        end
+      end
+
+      context 'and the client_id references an existing application' do
+        let_it_be(:existing_application) { create(:oauth_application, owner: nil) }
+        let(:client_id) { existing_application.uid }
+
+        it 'does not return the custom error and falls through to Doorkeeper' do
+          request_token
+
+          expect(response.parsed_body['error_description']).not_to include(docs_anchor)
+        end
+      end
+    end
+
+    context 'when dynamic client registration is enabled' do
+      let(:client_id) { 'this-client-id-does-not-exist' }
+
+      before do
+        stub_application_setting(dynamic_client_registration_enabled: true)
+      end
+
+      it 'does not return the custom error' do
+        request_token
+
+        expect(response.parsed_body['error_description']).not_to include(docs_anchor)
+      end
+    end
+  end
+
   context 'for CORS requests' do
     let(:cors_request_headers) { { 'Origin' => 'http://notgitlab.com' } }
     let(:other_headers) { {} }

@@ -20,30 +20,36 @@ module ArtifactRegistry
           headers: { 'Accept' => 'application/json' }
         }.freeze
 
+        # The list 200 is an envelope. Verdicts (the optional top-level and
+        # per-row `permissions` objects) are only sent for
+        # include_permissions=true, which this interaction does not request, so
+        # they are absent here and would need their own interaction.
         RESPONSE = {
           status: 200,
-          body: Pact.each_like(
-            id: Pact::SomethingLike.new('dddddddd-dddd-dddd-dddd-dddddddddddd'),
-            name: Pact::SomethingLike.new('my-maven-repo'),
-            format: Pact::Term.new(generate: 'maven', matcher: /^(docker|oci|maven|npm)$/),
-            kind: Pact::Term.new(generate: 'hosted', matcher: /^(hosted|virtual|remote)$/),
-            visibility: Pact::Term.new(generate: 'private', matcher: /^(public|private|internal)$/),
-            description: Pact::SomethingLike.new('A hosted Maven repository'),
-            artifacts_count: Pact::SomethingLike.new(0),
-            downloads_count: Pact::SomethingLike.new(0),
-            size_bytes: Pact::SomethingLike.new(0),
-            created_at: Pact::Term.new(
-              generate: '2024-01-01T00:00:00Z',
-              matcher: /^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}Z$/
-            ),
-            # null for freshly created repositories that have never been updated
-            # or created/updated by a specific user (per S17 management API spec).
-            # Non-null cases should be covered in separate interactions.
-            # https://gitlab.com/gitlab-org/ops/artifact-registry/-/blob/main/docs/specs/S17-rest-management-api.md
-            last_updated_at: nil,
-            created_by: nil,
-            updated_by: nil
-          )
+          body: {
+            repositories: Pact.each_like(
+              id: Pact::SomethingLike.new('dddddddd-dddd-dddd-dddd-dddddddddddd'),
+              name: Pact::SomethingLike.new('my-maven-repo'),
+              format: Pact::Term.new(generate: 'maven', matcher: /^(docker|oci|maven|npm)$/),
+              kind: Pact::Term.new(generate: 'hosted', matcher: /^(hosted|virtual|remote)$/),
+              visibility: Pact::Term.new(generate: 'private', matcher: /^(public|private|internal)$/),
+              description: Pact::SomethingLike.new('A hosted Maven repository'),
+              artifacts_count: Pact::SomethingLike.new(0),
+              downloads_count: Pact::SomethingLike.new(0),
+              size_bytes: Pact::SomethingLike.new(0),
+              created_at: Pact::Term.new(
+                generate: '2024-01-01T00:00:00Z',
+                matcher: /^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}Z$/
+              ),
+              # null for freshly created repositories that have never been updated
+              # or created/updated by a specific user (per S17 management API spec).
+              # Non-null cases should be covered in separate interactions.
+              # https://gitlab.com/gitlab-org/ops/artifact-registry/-/blob/main/docs/specs/S17-rest-management-api.md
+              last_updated_at: nil,
+              created_by: nil,
+              updated_by: nil
+            )
+          }
         }.freeze
       end
     end

@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Gitlab::Git::ObjectPool, feature_category: :source_code_management do
+RSpec.describe Gitlab::Git::ObjectPool, :skip_gitaly_mvcc, feature_category: :source_code_management do
   let(:pool_repository) { create(:pool_repository) }
   let(:source_repository) { pool_repository.source_project.repository }
 

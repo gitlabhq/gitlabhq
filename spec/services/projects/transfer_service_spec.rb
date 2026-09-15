@@ -944,25 +944,12 @@ RSpec.describe Projects::TransferService, feature_category: :groups_and_projects
       execute_transfer
     end
 
-    it 'enqueues a EnqueueUsersRefreshAuthorizedProjectsWorker job' do
-      expect(AuthorizedProjectUpdate::EnqueueUsersRefreshAuthorizedProjectsWorker)
-        .to receive(:perform_async).with(user_ids)
+    it 'calls UserProjectAccessChangedService with user_ids to update project authorizations' do
+      expect_next_instance_of(UserProjectAccessChangedService, user_ids) do |instance|
+        expect(instance).to receive(:execute).with(priority: UserProjectAccessChangedService::LOW_PRIORITY)
+      end
 
       execute_transfer
-    end
-
-    context 'when project_authorizations_update_in_background_in_transfer_service feature flag is disabled' do
-      before do
-        stub_feature_flags(project_authorizations_update_in_background_in_transfer_service: false)
-      end
-
-      it 'calls UserProjectAccessChangedService with user_ids to update project authorizations' do
-        expect_next_instance_of(UserProjectAccessChangedService, user_ids) do |instance|
-          expect(instance).to receive(:execute).with(priority: UserProjectAccessChangedService::LOW_PRIORITY)
-        end
-
-        execute_transfer
-      end
     end
 
     it 'refreshes the permissions of the members of the old and new namespace', :sidekiq_inline do

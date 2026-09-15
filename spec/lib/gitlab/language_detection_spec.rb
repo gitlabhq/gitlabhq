@@ -178,6 +178,23 @@ RSpec.describe Gitlab::LanguageDetection, feature_category: :source_code_managem
       end
     end
 
+    context 'when the legacy ID points to a different programming language' do
+      let(:repository_languages) do
+        [RepositoryLanguage.new(
+          share: 10,
+          programming_language: haskell,
+          language_id: ruby.language_id
+        )]
+      end
+
+      it 'uses the stable programming language while retaining the legacy row target', :aggregate_failures do
+        first_update = subject.updates.first
+
+        expect(first_update[:programming_language_id]).to eq(haskell.id)
+        expect(first_update[:language_id]).to eq(ruby.language_id)
+      end
+    end
+
     context 'when programming language has no language_id' do
       let(:ruby_no_lid) { create(:programming_language, name: 'Scala', language_id: nil) }
 

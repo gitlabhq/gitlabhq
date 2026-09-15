@@ -18,12 +18,14 @@ RSpec.describe Projects::GitGarbageCollectWorker, feature_category: :source_code
     subject { described_class.new }
 
     before do
-      allow(subject).to receive(:get_lease_uuid).and_return(false)
-      allow(subject).to receive(:find_resource).and_return(project)
-      allow(subject).to receive(:try_obtain_lease).and_return(SecureRandom.uuid)
+      allow(subject).to receive_messages(
+        get_lease_uuid: false,
+        find_resource: project,
+        try_obtain_lease: SecureRandom.uuid
+      )
     end
 
-    context 'when the repository has joined a pool' do
+    context 'when the repository has joined a pool', :skip_gitaly_mvcc do
       let_it_be_with_reload(:pool) { create(:pool_repository, :ready, source_project: project) }
 
       it 'ensures the repositories are linked' do

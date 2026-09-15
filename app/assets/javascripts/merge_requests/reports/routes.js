@@ -1,11 +1,24 @@
-import { SECURITY_SCAN_ROUTE, LICENSE_COMPLIANCE_ROUTE, CODE_QUALITY_ROUTE } from './constants';
+import { GlLoadingIcon } from '@gitlab/ui';
+import {
+  SECURITY_SCAN_ROUTE,
+  LICENSE_COMPLIANCE_ROUTE,
+  CODE_QUALITY_ROUTE,
+  LOAD_PERFORMANCE_ROUTE,
+  ROOT_ROUTE,
+  METRICS_ROUTE,
+} from './constants';
 
 const CATCH_ALL_ROUTE = '/:pathMatch(.*)*';
 
 export default [
   {
+    name: ROOT_ROUTE,
     path: '/',
-    redirect: { name: SECURITY_SCAN_ROUTE },
+    component: {
+      render(h) {
+        return h(GlLoadingIcon, { props: { size: 'lg' } });
+      },
+    },
   },
   {
     name: SECURITY_SCAN_ROUTE,
@@ -23,6 +36,17 @@ export default [
     name: CODE_QUALITY_ROUTE,
     path: `/${CODE_QUALITY_ROUTE}`,
     component: () => import('~/merge_requests/reports/code_quality/code_quality_page.vue'),
+  },
+  {
+    name: LOAD_PERFORMANCE_ROUTE,
+    path: `/${LOAD_PERFORMANCE_ROUTE}`,
+    component: () =>
+      import('ee_component/merge_requests/reports/load_performance/load_performance_page.vue'),
+  },
+  {
+    name: METRICS_ROUTE,
+    path: `/${METRICS_ROUTE}`,
+    component: () => import('ee_component/merge_requests/reports/metrics/metrics_page.vue'),
   },
   {
     path: CATCH_ALL_ROUTE,

@@ -312,7 +312,8 @@ The Maven virtual registry can enhance your
 artifact management setup by aggregating
 packages from multiple sources. You can:
 
-- Add internal packages by using your top-level group endpoint for Maven as an upstream (For example, `https://gitlab.example.com/api/v4/groups/artifact-management/-/packages/maven`).
+- Add internal packages by using your top-level group endpoint for Maven as an upstream.
+  For example, `https://gitlab.example.com/api/v4/groups/artifact-management/-/packages/maven`.
 - Add external upstream registries, like Maven Central or private registries.
 - Add other GitLab projects or groups.
 

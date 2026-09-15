@@ -11,7 +11,7 @@ module UserSettings
     end
 
     def show
-      @key = current_user.keys.find(params[:id])
+      @key = current_user.keys.find(permitted_params[:id])
       @ssh_public_key_warning = @key.public_key.weak_key_warning
     end
 
@@ -29,7 +29,7 @@ module UserSettings
     end
 
     def destroy
-      @key = current_user.keys.find(params[:id])
+      @key = current_user.keys.find(permitted_params[:id])
       Keys::DestroyService.new(current_user).execute(@key)
 
       respond_to do |format|
@@ -39,7 +39,7 @@ module UserSettings
     end
 
     def revoke
-      @key = current_user.keys.find(params[:id])
+      @key = current_user.keys.find(permitted_params[:id])
       Keys::RevokeService.new(current_user).execute(@key)
 
       respond_to do |format|
@@ -49,6 +49,10 @@ module UserSettings
     end
 
     private
+
+    def permitted_params
+      params.permit(:id)
+    end
 
     def key_params
       params.require(:key).permit(:title, :key, :usage_type, :expires_at)

@@ -3,7 +3,7 @@
 require 'spec_helper'
 
 RSpec.describe API::Releases, :aggregate_failures, feature_category: :release_orchestration do
-  let_it_be(:project, reload: true) { create(:project, :repository, :private) }
+  let_it_be_with_reload(:project) { create(:project, :repository, :private) }
   let_it_be(:maintainer) { create(:user) }
   let_it_be(:reporter) { create(:user) }
   let_it_be(:developer) { create(:user) }
@@ -36,11 +36,11 @@ RSpec.describe API::Releases, :aggregate_failures, feature_category: :release_or
     end
 
     context 'when there are two releases' do
-      let!(:release_1) do
+      let_it_be(:release_1) do
         create(:release, project: project, tag: 'v0.1', author: maintainer, released_at: 2.days.ago)
       end
 
-      let!(:release_2) do
+      let_it_be_with_reload(:release_2) do
         create(:release, project: project, tag: 'v0.2', author: maintainer, released_at: 1.day.ago)
       end
 
@@ -270,7 +270,7 @@ RSpec.describe API::Releases, :aggregate_failures, feature_category: :release_or
       end
 
       context 'when project is public' do
-        let(:project) { create(:project, :repository, :public) }
+        let_it_be_with_reload(:project) { create(:project, :repository, :public) }
 
         it 'responds 200 OK' do
           get api("/projects/#{project.id}/releases", guest)
@@ -470,7 +470,7 @@ RSpec.describe API::Releases, :aggregate_failures, feature_category: :release_or
         end
 
         context 'when project is public' do
-          let(:project) { create(:project, :repository, :public) }
+          let_it_be_with_reload(:project) { create(:project, :repository, :public) }
 
           it 'responds 200 OK' do
             get api("/projects/#{project.id}/releases/v0.1", guest)
@@ -520,7 +520,7 @@ RSpec.describe API::Releases, :aggregate_failures, feature_category: :release_or
       end
 
       context 'when project is public' do
-        let(:project) { create(:project, :repository, :public) }
+        let_it_be_with_reload(:project) { create(:project, :repository, :public) }
 
         it 'allows the request' do
           get api("/projects/#{project.id}/releases/v0.1", non_project_member)
@@ -1168,7 +1168,7 @@ RSpec.describe API::Releases, :aggregate_failures, feature_category: :release_or
     end
 
     context 'when using JOB-TOKEN auth' do
-      let(:job) { create(:ci_build, user: maintainer) }
+      let_it_be_with_reload(:job) { create(:ci_build, user: maintainer) }
       let(:params) do
         {
           name: 'Another release',
@@ -1911,7 +1911,7 @@ RSpec.describe API::Releases, :aggregate_failures, feature_category: :release_or
     end
 
     context 'when authenticated as guest' do
-      before do
+      before_all do
         group1.add_guest(guest)
       end
 
@@ -1965,8 +1965,8 @@ RSpec.describe API::Releases, :aggregate_failures, feature_category: :release_or
   end
 
   context 'when authenticated with a token that has the ai_workflows scope' do
-    let(:oauth_token) { create(:oauth_access_token, user: maintainer, scopes: [:ai_workflows]) }
-    let!(:release) { create(:release, project: project, tag: 'v0.1', author: maintainer) }
+    let_it_be(:oauth_token) { create(:oauth_access_token, user: maintainer, scopes: [:ai_workflows]) }
+    let_it_be(:release) { create(:release, project: project, tag: 'v0.1', author: maintainer) }
 
     it 'returns the project releases' do
       get api("/projects/#{project.id}/releases", oauth_access_token: oauth_token)
@@ -1993,7 +1993,7 @@ RSpec.describe API::Releases, :aggregate_failures, feature_category: :release_or
       let_it_be(:group_project, freeze: false) { create(:project, :repository, namespace: group) }
       let!(:group_release) { create(:release, project: group_project, tag: 'v0.2', author: maintainer) }
 
-      before do
+      before_all do
         group.add_maintainer(maintainer)
       end
 

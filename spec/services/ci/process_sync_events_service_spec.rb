@@ -6,7 +6,7 @@ RSpec.describe Ci::ProcessSyncEventsService, feature_category: :continuous_integ
   let!(:group) { create(:group) }
   let!(:project1) { create(:project, group: group) }
   let!(:project2) { create(:project, group: group) }
-  let!(:parent_group_1) { create(:group) }
+  let_it_be(:parent_group_1) { create(:group) }
   let!(:parent_group_2) { create(:group) }
 
   subject(:service) { described_class.new(sync_event_class, hierarchy_class) }

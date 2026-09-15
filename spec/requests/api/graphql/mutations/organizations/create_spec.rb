@@ -61,6 +61,26 @@ RSpec.describe Mutations::Organizations::Create, feature_category: :organization
     end
   end
 
+  context 'when `org_creation` feature is disabled', :saas do
+    let(:current_user) { user }
+
+    before do
+      stub_organization_release(org_creation: false)
+    end
+
+    it 'returns an error' do
+      create_organization
+
+      expect(mutation_response).to include(
+        'errors' => ['Organization creation is not enabled for this user.']
+      )
+    end
+
+    it 'does not create an organization' do
+      expect { create_organization }.not_to change { Organizations::Organization.count }
+    end
+  end
+
   context 'when the user has permission', :saas do
     let(:current_user) { user }
 

@@ -2,12 +2,44 @@
 // DO NOT modify it manually.
 // To regenerate, run: bin/rake gitlab:js:routes
 
-// Check if the current organization has a scoped path.
-// Calls https://gitlab.com/gitlab-org/gitlab/-/blob/4202e37329fb343ae674db79593ce04427ebab6b/app/models/organizations/organization.rb#L127
-// Used to support automatic swapping of organization scoped routes similar to what we do in
-// https://gitlab.com/gitlab-org/gitlab/-/blob/4202e37329fb343ae674db79593ce04427ebab6b/app/helpers/routing/organizations_helper.rb#L92
-export const hasOrganizationScopedPaths = () =>
-  gon?.current_organization?.has_scoped_paths ?? false;
+// js-routes reads the trailing argument as a route parameter rather than an options
+// hash when it carries `id`, `to_param` or `toParam`. Mirrors `looks_like_serialized_model`
+// in `core.js`, which is where `extract_options` makes the same call.
+const isOptionsObject = (value) =>
+  Object.prototype.toString.call(value) === '[object Object]' &&
+  ('_options' in value || !('id' in value || 'to_param' in value || 'toParam' in value));
+
+// Mirror `::Current.data_context` and `::Current.organization_resolver&.from_organization_params&.path` in
+// `Routing::OrganizationsHelper::MappedHelpers#scoped_path_for`.
+const dataContextOrganizationPath = () => gon?.data_context_organization_path;
+const requestOrganizationPath = () => gon?.organization_path;
+
+// Strip `organizationPath` so js-routes does not turn it into a query parameter.
+const withoutOrganizationPathOption = (args) => {
+  const { organizationPath, ...routeOptions } = args.at(-1);
+
+  return [...args.slice(0, -1), routeOptions];
+};
+
+// Mirrors `Routing::OrganizationsHelper::MappedHelpers#scoped_path_for`.
+export const resolveOrganizationScope = (args) => {
+  const options = args.at(-1);
+  const hasOrganizationPathOption = isOptionsObject(options) && 'organizationPath' in options;
+  const routeArgs = hasOrganizationPathOption ? withoutOrganizationPathOption(args) : args;
+  const dataContextPath = dataContextOrganizationPath();
+
+  if (dataContextPath) {
+    return { organizationPath: dataContextPath, routeArgs };
+  }
+
+  // `null` opts out of organization scoping, `undefined` reads as "not specified"
+  // so that an unresolved value does not silently drop the request's own scope.
+  if (hasOrganizationPathOption && options.organizationPath !== undefined) {
+    return { organizationPath: options.organizationPath, routeArgs };
+  }
+
+  return { organizationPath: requestOrganizationPath(), routeArgs };
+};
 
 // The private `namespaceProject` helpers expect separate `namespacePath`
 // and `projectPath` arguments. Typically we only have `project.fullPath`

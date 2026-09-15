@@ -1,0 +1,16 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "description": "Trigger metadata for Duo Agent Platform flow sessions. Envelope is omitted entirely when neither field applies.",
+  "type": "object",
+  "properties": {
+    "event_type": {
+      "type": "string",
+      "description": "Raw trigger event type (e.g. \"assign\", \"mention\")"
+    },
+    "triggering_conversation": {
+      "type": "string",
+      "description": "Note/comment that triggered the session"
+    }
+  },
+  "additionalProperties": false
+}

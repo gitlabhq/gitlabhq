@@ -132,14 +132,6 @@ ee/lib/api/entities/work_items/features/custom_fields.rb:
   - updated_by
   - value
   - work_item_types
-ee/lib/api/entities/work_items/features/feature_flag.rb:
-  usage_radius: 18
-  fields:
-  - active
-  - id
-  - name
-  - path
-  - reference
 ee/lib/api/entities/work_items/features/health_status.rb:
   usage_radius: 18
   fields:
@@ -626,6 +618,7 @@ lib/api/entities/member.rb:
   - created_at
   - created_by
   - expires_at
+  - two_factor_enabled
   - user
 lib/api/entities/merge_request_basic.rb:
   usage_radius: 21
@@ -755,8 +748,10 @@ lib/api/entities/personal_access_token.rb:
   - description
   - expires_at
   - granular
+  - granular_scopes
   - id
   - last_used_at
+  - last_used_ips
   - name
   - revoked
   - scopes
@@ -768,11 +763,6 @@ lib/api/entities/personal_access_token_granular_scope.rb:
   - group_id
   - permissions
   - project_id
-lib/api/entities/personal_access_token_with_last_used_ips.rb:
-  usage_radius: 16
-  fields:
-  - granular_scopes
-  - last_used_ips
 lib/api/entities/platform/kubernetes.rb:
   usage_radius: 15
   fields:
@@ -790,6 +780,7 @@ lib/api/entities/project.rb:
   - auto_devops_deploy_strategy
   - auto_devops_enabled?
   - autoclose_referenced_issues
+  - automatic_rebase_enabled
   - build_git_strategy
   - build_timeout
   - builds_access_level
@@ -806,6 +797,7 @@ lib/api/entities/project.rb:
   - ci_pipeline_variables_minimum_override_role
   - ci_push_repository_for_job_token_allowed
   - ci_separated_caches
+  - ci_skip_branch_pipelines_for_mrs
   - cicd_catalog_enabled
   - cluster_agents
   - container_expiration_policy
@@ -1012,12 +1004,6 @@ lib/api/entities/work_items/features/award_emoji.rb:
   - downvotes
   - new_custom_emoji_path
   - upvotes
-lib/api/entities/work_items/features/closing_merge_request.rb:
-  usage_radius: 18
-  fields:
-  - from_mr_description
-  - id
-  - merge_request
 lib/api/entities/work_items/features/description.rb:
   usage_radius: 18
   fields:
@@ -1046,6 +1032,10 @@ lib/api/entities/work_items/features/hierarchy.rb:
   fields:
   - has_parent
   - parent
+lib/api/entities/work_items/features/hierarchy_parent.rb:
+  usage_radius: 21
+  fields:
+  - namespace
 lib/api/entities/work_items/features/labels.rb:
   usage_radius: 18
   fields:

@@ -9,6 +9,7 @@ class CreateCiBuildRuntimeEnvironments < Gitlab::Database::Migration[2.3]
       primary_key: [:build_id, :partition_id]
     }.freeze
 
+    # rubocop:disable Migration/EnsureFactoryForTable -- factory removed with the model; table dropped in https://gitlab.com/gitlab-org/gitlab/-/merge_requests/252197
     create_table(:ci_build_runtime_environments, **options) do |t|
       t.bigint :build_id, null: false
       t.bigint :partition_id, null: false
@@ -22,6 +23,7 @@ class CreateCiBuildRuntimeEnvironments < Gitlab::Database::Migration[2.3]
       t.index :runner_machine_id, name: 'index_ci_build_runtime_envs_on_runner_machine_id'
       t.index :project_id, name: 'index_ci_build_runtime_envs_on_project_id'
     end
+    # rubocop:enable Migration/EnsureFactoryForTable
   end
 
   def down

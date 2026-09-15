@@ -92,16 +92,16 @@ To turn on or off continuous vulnerability scanning:
 New vulnerabilities detected by continuous vulnerability scanning are visible on the [vulnerability report](../../vulnerability_report/_index.md).
 However, they are not listed in the pipeline where the affected SBOM component was detected.
 
-Vulnerabilities are created after a [security advisory](#security-advisories) is added or updated, it may take a few hours for
+Vulnerabilities are created after a [security advisory](#security-advisories) is added or updated. It may take a few hours for
 the corresponding vulnerabilities to be added to your projects, provided the codebase remains unchanged. Only advisories published within the last 14 days
 are considered for continuous vulnerability scanning.
 
 ## When vulnerabilities are no longer detected
 
-Continuous vulnerability scanning automatically creates vulnerabilities when a new advisory is published
+Continuous vulnerability scanning automatically creates vulnerabilities when a new advisory is published,
 but it is not able to tell when a vulnerability is no longer present in the project. To do so, GitLab
-still requires to have a [container scanning](../_index.md) scan executed in a pipeline for the default branch,
-and a corresponding security report artifact generated with the up to date information. When these reports
+still requires a [container scanning](../_index.md) scan executed in a pipeline for the default branch,
+and a corresponding security report artifact generated with the up-to-date information. When these reports
 are processed, and when they no longer contain some vulnerabilities, these are flagged as such even if
 they were created by continuous vulnerability scanning.
 

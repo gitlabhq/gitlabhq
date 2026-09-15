@@ -21,6 +21,12 @@ import { CREATING_PIPELINE_TOAST_MESSAGE } from '~/ci/pipeline_details/constants
 import retryPipelineMutation from '~/ci/pipelines_page/graphql/mutations/retry_pipeline.mutation.graphql';
 import cancelPipelineMutation from '~/ci/pipelines_page/graphql/mutations/cancel_pipeline.mutation.graphql';
 import { MR_PIPELINE_TYPE_DETACHED } from '~/ci/merge_requests/constants';
+import {
+  dismissedCreationAlertsStorageKey,
+  hasAlertableFailureCountIncreased,
+  nextDismissedCreationRequestIds,
+} from '~/ci/merge_requests/utils';
+import LocalStorageSync from '~/vue_shared/components/local_storage_sync.vue';
 import * as Sentry from '~/sentry/sentry_browser_wrapper';
 import PipelineStore from './legacy_pipelines_store';
 import PipelinesService from './legacy_pipelines_service';
@@ -34,6 +40,7 @@ export default {
     GlLoadingIcon,
     GlModal,
     GlSprintf,
+    LocalStorageSync,
     PipelinesEmptyState,
     PipelinesErrorState,
     PipelinesTable,
@@ -140,6 +147,7 @@ export default {
       modalId: 'create-pipeline-for-fork-merge-request-modal',
       pipelineCreationRequests: [],
       showCreationFailedAlert: false,
+      dismissedCreationRequestIds: [],
       isCreatingPipeline: false,
       loaderTimeout: null,
       mergeRequest: {},
@@ -209,6 +217,9 @@ export default {
     hasInProgressCreationRequests() {
       return this.requestLengthByStatus(this.pipelineCreationRequests, 'IN_PROGRESS') > 0;
     },
+    dismissedCreationAlertsStorageKey() {
+      return dismissedCreationAlertsStorageKey(this.targetProjectFullPath, this.mergeRequestId);
+    },
     showRunPipelineButtonLoader() {
       return this.isMergeRequestTable
         ? this.hasInProgressCreationRequests
@@ -231,7 +242,11 @@ export default {
         }
 
         const hasSucceededRequests = this.hasSuccessCountIncreased(oldRequests, newRequests);
-        const hasFailedRequests = this.hasFailureCountIncreased(oldRequests, newRequests);
+        const hasFailedRequests = hasAlertableFailureCountIncreased(
+          oldRequests,
+          newRequests,
+          this.dismissedCreationRequestIds,
+        );
 
         if (hasSucceededRequests) {
           const createdPipelines = newRequests
@@ -357,11 +372,12 @@ export default {
 
       return newRequestsCount > oldRequestsCount;
     },
-    hasFailureCountIncreased(previousRequests = [], currentRequests = []) {
-      const oldRequestsCount = this.requestLengthByStatus(previousRequests, 'FAILED');
-      const newRequestsCount = this.requestLengthByStatus(currentRequests, 'FAILED');
-
-      return newRequestsCount > oldRequestsCount;
+    dismissCreationFailedAlert() {
+      this.dismissedCreationRequestIds = nextDismissedCreationRequestIds(
+        this.pipelineCreationRequests,
+        this.dismissedCreationRequestIds,
+      );
+      this.showCreationFailedAlert = false;
     },
     requestLengthByStatus(requests, status) {
       return requests.filter((request) => request.status === status).length;
@@ -463,10 +479,15 @@ export default {
 </script>
 <template>
   <div class="content-list pipelines">
+    <local-storage-sync
+      v-if="isMergeRequestTable"
+      v-model="dismissedCreationRequestIds"
+      :storage-key="dismissedCreationAlertsStorageKey"
+    />
     <gl-alert
       v-if="showCreationFailedAlert"
       variant="danger"
-      @dismiss="showCreationFailedAlert = false"
+      @dismiss="dismissCreationFailedAlert"
       >{{ $options.i18n.pipelineCreationFailed }}</gl-alert
     >
     <gl-loading-icon

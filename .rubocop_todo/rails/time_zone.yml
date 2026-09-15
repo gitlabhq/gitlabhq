@@ -55,7 +55,6 @@ Rails/TimeZone:
     - 'spec/lib/gitlab/github_import/representation/note_spec.rb'
     - 'spec/lib/gitlab/github_import/representation/pull_request_spec.rb'
     - 'spec/lib/gitlab/grape_logging/formatters/lograge_with_timestamp_spec.rb'
-    - 'spec/lib/gitlab/grape_logging/loggers/cloudflare_logger_spec.rb'
     - 'spec/lib/gitlab/grape_logging/loggers/queue_duration_logger_spec.rb'
     - 'spec/lib/gitlab/graphql_logger_spec.rb'
     - 'spec/lib/gitlab/graphs/commits_spec.rb'

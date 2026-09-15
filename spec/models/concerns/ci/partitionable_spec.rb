@@ -58,6 +58,8 @@ RSpec.describe Ci::Partitionable, feature_category: :continuous_integration do
   end
 
   context 'with partitioned options' do
+    let(:detach_archived) { false }
+
     before do
       stub_const("#{described_class}::Testing::PARTITIONABLE_MODELS", [ci_model.name])
 
@@ -65,13 +67,58 @@ RSpec.describe Ci::Partitionable, feature_category: :continuous_integration do
       ci_model.partitionable scope: ->(r) { 1 }, partitioned: partitioned
     end
 
-    context 'when partitioned is true' do
-      let(:partitioned) { true }
+    context 'when partitioned carries options' do
+      let(:partitioned) { { detach_archived: detach_archived } }
       let(:partitioning_strategy) { ci_model.partitioning_strategy }
 
       it { expect(ci_model.ancestors).to include(PartitionedTable) }
       it { expect(partitioning_strategy).to be_a(Gitlab::Database::Partitioning::CiSlidingListStrategy) }
       it { expect(partitioning_strategy.partitioning_key).to eq(:partition_id) }
+      it { expect(partitioning_strategy.detach_concurrently?).to be(true) }
+
+      describe 'detach_partition_if callback' do
+        let_it_be(:archived_partition) { create(:ci_partition, :archived, id: 125) }
+
+        let(:newer_partition_id) { 126 }
+        let(:newer_partition_status) { :archived }
+
+        let(:database_partition) do
+          Gitlab::Database::Partitioning::MultipleNumericListPartition
+            .new(:_test_table_name, [archived_partition.id, newer_partition_id])
+        end
+
+        before do
+          create(:ci_partition, newer_partition_status, id: newer_partition_id)
+        end
+
+        subject(:detach_partition_if) { partitioning_strategy.detach_partition_if.call(database_partition) }
+
+        context 'when detach_archived is false' do
+          let(:detach_archived) { false }
+
+          it { is_expected.to be(false) }
+        end
+
+        context 'when detach_archived is true' do
+          let(:detach_archived) { true }
+
+          it { is_expected.to be(true) }
+
+          context 'when one value is not archived' do
+            let(:newer_partition_status) { :active }
+
+            it { is_expected.to be(false) }
+          end
+
+          context 'when the feature flag is disabled' do
+            before do
+              stub_feature_flags(ci_detach_archived_partitions: false)
+            end
+
+            it { is_expected.to be(false) }
+          end
+        end
+      end
 
       describe 'next_partition_if callback' do
         let(:active_partition) { partitioning_strategy.active_partition }
@@ -133,11 +180,37 @@ RSpec.describe Ci::Partitionable, feature_category: :continuous_integration do
       end
     end
 
+    context 'when partitioned is true' do
+      let(:partitioned) { true }
+
+      it { expect(ci_model.ancestors).to include(PartitionedTable) }
+
+      it 'does not detach anything' do
+        database_partition = Gitlab::Database::Partitioning::MultipleNumericListPartition
+          .new(:_test_table_name, [125])
+
+        expect(ci_model.partitioning_strategy.detach_partition_if.call(database_partition)).to be(false)
+      end
+    end
+
     context 'when partitioned is false' do
       let(:partitioned) { false }
 
       it { expect(ci_model.ancestors).not_to include(PartitionedTable) }
       it { expect(ci_model).not_to respond_to(:partitioning_strategy) }
+    end
+  end
+
+  context 'with an unknown partitioned option' do
+    before do
+      stub_const("#{described_class}::Testing::PARTITIONABLE_MODELS", [ci_model.name])
+
+      ci_model.include(described_class)
+    end
+
+    it 'raises an exception' do
+      expect { ci_model.partitionable scope: ->(r) { 1 }, partitioned: { detach_arcived: true } }
+        .to raise_error(ArgumentError, /Unknown key: :detach_arcived/)
     end
   end
 

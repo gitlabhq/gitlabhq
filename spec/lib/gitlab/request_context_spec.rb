@@ -30,6 +30,34 @@ RSpec.describe Gitlab::RequestContext, :request_store, feature_category: :applic
     it 'sets the request start time' do
       expect { start_request_context }.to change { subject.request_start_time }.from(nil).to(123)
     end
+
+    it 'leaves the request timeout unset when Rack::Timeout enforces no timeout' do
+      expect { start_request_context }.not_to change { subject.request_timeout_at }.from(nil)
+    end
+
+    context 'when Rack::Timeout is enforcing a timeout' do
+      let(:rack_timeout_info) { ::Rack::Timeout::RequestDetails.new(nil, nil, nil, 60) }
+      let(:request) do
+        ActionDispatch::Request.new(
+          { 'REMOTE_ADDR' => '1.2.3.4', ::Rack::Timeout::ENV_INFO_KEY => rack_timeout_info })
+      end
+
+      before do
+        allow(Gitlab::Metrics::System).to receive(:monotonic_time).and_return(1000.0)
+      end
+
+      it 'sets the request timeout to the time it computed' do
+        expect { start_request_context }.to change { subject.request_timeout_at }.from(nil).to(1060.0)
+      end
+
+      context 'when the request already spent time being serviced' do
+        let(:rack_timeout_info) { ::Rack::Timeout::RequestDetails.new(nil, nil, 5, 60) }
+
+        it 'discounts the time already spent' do
+          expect { start_request_context }.to change { subject.request_timeout_at }.from(nil).to(1055.0)
+        end
+      end
+    end
   end
 
   describe '.start_thread_context' do

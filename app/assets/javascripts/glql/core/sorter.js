@@ -32,6 +32,9 @@ const sortFieldsByType = {
   CiStage: 'name',
 };
 
+// Shared collator; 'base' sensitivity treats accented and cased variants as equal.
+const collator = new Intl.Collator(undefined, { sensitivity: 'base' });
+
 function valueByType(field, type) {
   return field[sortFieldsByType[type]];
 }
@@ -42,8 +45,13 @@ function valueByFieldName(fieldValue, fieldName) {
       return healthStatuses[fieldValue];
     case 'state':
       return states[fieldValue];
-    case 'status':
-      return statusCategories[fieldValue.category];
+    case 'status': {
+      // Pipeline/CiJob statuses are plain strings; fall through to the string fallback
+      if (typeof fieldValue !== 'object') return null;
+      const categoryWeight = statusCategories[fieldValue.category] ?? 99;
+      // Zero-pad so string comparison matches numeric order, then tie-break by name
+      return `${String(categoryWeight).padStart(2, '0')}_${fieldValue.name ?? ''}`;
+    }
     case 'milestone':
     case 'iteration':
       return new Date(fieldValue.dueDate);
@@ -85,6 +93,11 @@ export function sorterFor(fieldName, ascending = true) {
     // sort null values to the end regardless of order
     if (aValue === null) return 1;
     if (bValue === null) return -1;
+
+    // value() also yields numbers, Dates and booleans, which compare by value
+    if (typeof aValue === 'string' && typeof bValue === 'string') {
+      return collator.compare(aValue, bValue) * order;
+    }
     if (aValue < bValue) return -order;
     if (aValue > bValue) return order;
 

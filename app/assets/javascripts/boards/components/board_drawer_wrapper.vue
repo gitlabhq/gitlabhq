@@ -139,7 +139,9 @@ export default normalizeRender({
   },
   render() {
     return getSlotFunction(this)({
-      activeIssuable: this.activeBoardItem,
+      // activeBoardItem is written as `null` (not `undefined`) to clear it, so it needs an
+      // explicit fallback here rather than relying on a prop/param default further downstream.
+      activeIssuable: this.activeBoardItem ?? {},
       onDrawerClosed: this.onDrawerClosed,
       onAttributeUpdated: this.onAttributeUpdated,
       onIssuableDeleted: this.refetchActiveIssuableLists,

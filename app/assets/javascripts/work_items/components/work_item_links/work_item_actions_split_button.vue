@@ -4,6 +4,7 @@ import { helpPagePath } from '~/helpers/help_page_helper';
 import { s__, sprintf } from '~/locale';
 import HelpIcon from '~/vue_shared/components/help_icon/help_icon.vue';
 import { WORK_ITEM_TYPE_NAME_EPIC, WORK_ITEM_TYPE_NAME_OBJECTIVE } from '../../constants';
+import { lowercaseWorkItemType } from '../../utils';
 
 export default {
   name: 'WorkItemActionsSplitButton',
@@ -38,7 +39,7 @@ export default {
         s__(
           'WorkItem|You cannot add another child %{workItemType}. You’ve reached the maximum number of nested levels.',
         ),
-        { workItemType },
+        { workItemType: lowercaseWorkItemType(workItemType) },
       );
     },
     getPopoverLink(workItemType) {
@@ -56,7 +57,7 @@ export default {
     onBeforeClose({ originalEvent: { target }, preventDefault }) {
       // Prevents the disclosure dropdown from being closed
       // if clicking on a link within the popover,
-      // because the dropdown treats it as a click outside and emits beforeClose event
+      // because the dropdown treats it as a click outside and emits before-close event
       // which prevents the user from visiting the link
       if (target?.id === 'info-link') preventDefault();
     },
@@ -85,7 +86,7 @@ export default {
     data-testid="add-tree-child-button"
     @shown="showDropdown"
     @hidden="hideDropdown"
-    @beforeClose="onBeforeClose"
+    @before-close="onBeforeClose"
   >
     <template #group-label="{ group }">
       <span class="gl-flex gl-items-center gl-justify-between gl-pr-4">

@@ -63,8 +63,10 @@ RSpec.describe Tooling::Danger::StableBranch, feature_category: :delivery do
 
       with_them do
         before do
-          allow(fake_helper).to receive(:mr_target_branch).and_return(stable_branch? ? current_stable_branch : 'main')
-          allow(fake_helper).to receive(:security_mr?).and_return(security_mr?)
+          allow(fake_helper).to receive_messages(
+            mr_target_branch: stable_branch? ? current_stable_branch : 'main',
+            security_mr?: security_mr?
+          )
         end
 
         it_behaves_like 'without a failure'
@@ -140,10 +142,6 @@ RSpec.describe Tooling::Danger::StableBranch, feature_category: :delivery do
       end
 
       before do
-        allow(fake_helper).to receive(:mr_target_branch).and_return(target_branch)
-        allow(fake_helper).to receive(:mr_source_branch).and_return(source_branch)
-        allow(fake_helper).to receive(:security_mr?).and_return(false)
-        allow(fake_helper).to receive(:mr_target_project_id).and_return(1)
         allow(fake_helper).to receive(:mr_has_labels?).with('type::feature').and_return(feature_label_present)
         allow(fake_helper).to receive(:mr_has_labels?).with('type::bug').and_return(bug_label_present)
         allow(fake_helper).to receive(:mr_has_labels?).with('type::maintenance').and_return(maintenance_label_present)
@@ -154,16 +152,21 @@ RSpec.describe Tooling::Danger::StableBranch, feature_category: :delivery do
         allow(fake_helper).to receive(:mr_has_labels?).with('failure::flaky-test')
           .and_return(flaky_test_label_present)
         allow(fake_helper).to receive(:mr_has_labels?).with('pipeline::tier-3').and_return(tier_3_label_present)
-        allow(fake_helper).to receive(:changes_by_category).and_return(changes_by_category_response)
         allow(HTTParty).to receive(:get).with(/page=1/).and_return(version_response)
-        allow(fake_helper).to receive(:api).and_return(fake_api)
         allow(stable_branch).to receive(:gitlab).and_return(gitlab_gem_client)
-        allow(gitlab_gem_client).to receive(:mr_json).and_return({ 'head_pipeline' => { 'id' => '1' } })
-        allow(gitlab_gem_client).to receive(:api).and_return(fake_api)
+        allow(gitlab_gem_client).to receive_messages(mr_json: { 'head_pipeline' => { 'id' => '1' } }, api: fake_api)
         allow(fake_api).to receive(:pipeline_bridges).with(1, '1')
           .and_return(pipeline_bridges_response)
-        allow(fake_helper).to receive(:mr_description).and_return(mr_description_response)
-        allow(fake_helper).to receive(:mr_title).and_return(mr_title)
+        allow(fake_helper).to receive_messages(
+          mr_target_branch: target_branch,
+          mr_source_branch: source_branch,
+          security_mr?: false,
+          mr_target_project_id: 1,
+          changes_by_category: changes_by_category_response,
+          api: fake_api,
+          mr_description: mr_description_response,
+          mr_title: mr_title
+        )
         allow(stable_branch).to receive(:markdown)
       end
 
@@ -393,18 +396,6 @@ RSpec.describe Tooling::Danger::StableBranch, feature_category: :delivery do
 
     with_them do
       before do
-        allow(fake_helper)
-          .to receive(:mr_target_branch)
-          .and_return(stable_branch? ? '15-1-stable-ee' : 'main')
-
-        allow(fake_helper)
-          .to receive(:security_mr?)
-          .and_return(security_mr?)
-
-        allow(fake_helper)
-          .to receive(:allowed_backport_changes?)
-          .and_return(allowed_changes?)
-
         changes_by_category =
           if allowed_changes?
             { docs: ['foo.md'] }
@@ -412,13 +403,13 @@ RSpec.describe Tooling::Danger::StableBranch, feature_category: :delivery do
             { graphql: ['bar.rb'] }
           end
 
-        allow(fake_helper)
-          .to receive(:changes_by_category)
-          .and_return(changes_by_category)
-
-        allow(fake_helper)
-          .to receive(:mr_has_labels?)
-          .and_return(flaky?)
+        allow(fake_helper).to receive_messages(
+          mr_target_branch: stable_branch? ? '15-1-stable-ee' : 'main',
+          security_mr?: security_mr?,
+          allowed_backport_changes?: allowed_changes?,
+          changes_by_category: changes_by_category,
+          mr_has_labels?: flaky?
+        )
       end
 
       it { is_expected.to eq(result) }
@@ -433,15 +424,13 @@ RSpec.describe Tooling::Danger::StableBranch, feature_category: :delivery do
     end
 
     it "returns true when on a stable branch" do
-      allow(fake_helper).to receive(:mr_target_branch).and_return('15-1-stable-ee')
-      allow(fake_helper).to receive(:security_mr?).and_return(false)
+      allow(fake_helper).to receive_messages(mr_target_branch: '15-1-stable-ee', security_mr?: false)
 
       expect(stable_branch.valid_stable_branch?).to be(true)
     end
 
     it "returns false when on a stable branch on a security MR" do
-      allow(fake_helper).to receive(:mr_target_branch).and_return('15-1-stable-ee')
-      allow(fake_helper).to receive(:security_mr?).and_return(true)
+      allow(fake_helper).to receive_messages(mr_target_branch: '15-1-stable-ee', security_mr?: true)
 
       expect(stable_branch.valid_stable_branch?).to be(false)
     end

@@ -17,6 +17,7 @@ class Oauth::AuthorizationsController < Doorkeeper::AuthorizationsController
   before_action :verify_confirmed_email!, :verify_admin_allowed!
   # rubocop: disable Rails/LexicallyScopedActionFilter -- :create is defined in Doorkeeper::AuthorizationsController
   before_action :validate_pkce_for_dynamic_applications, only: [:new, :create]
+  before_action :explain_missing_dynamic_client, only: [:new, :create]
   after_action :audit_oauth_authorization, only: [:create]
   after_action :stamp_authorizing_user_on_dynamic_application, only: [:create]
   # rubocop: enable Rails/LexicallyScopedActionFilter
@@ -28,12 +29,12 @@ class Oauth::AuthorizationsController < Doorkeeper::AuthorizationsController
   def new
     if pre_auth.authorizable?
       if skip_authorization? || (matching_token? && pre_auth.client.application.confidential?)
-        auth = authorization.authorize
+        auth = authorize_with_sanctioned_write
         parsed_redirect_uri = URI.parse(auth.redirect_uri)
         session.delete(:user_return_to)
         render "doorkeeper/authorizations/redirect", locals: { redirect_uri: parsed_redirect_uri }, layout: false
       else
-        redirect_uri = URI(authorization.authorize.redirect_uri)
+        redirect_uri = URI(authorize_with_sanctioned_write.redirect_uri)
         allow_redirect_uri_form_action(redirect_uri.scheme)
 
         render "doorkeeper/authorizations/new"
@@ -44,6 +45,17 @@ class Oauth::AuthorizationsController < Doorkeeper::AuthorizationsController
   end
 
   private
+
+  def authorize_with_sanctioned_write
+    Gitlab::Database::QueryAnalyzers::PreventWritesOnGet.allow_write_on_get(
+      url: 'https://gitlab.com/gitlab-org/gitlab/-/issues/608670'
+    ) { authorization.authorize }
+  end
+
+  def permitted_params
+    params.permit(:resource, :client_id, :code_challenge, :code_challenge_method)
+  end
+  strong_memoize_attr :permitted_params
 
   # In Rails 8 alias_method at class-body level fails when the aliased method
   # is not yet in the ancestor chain at load time. Define explicitly instead.
@@ -81,6 +93,7 @@ class Oauth::AuthorizationsController < Doorkeeper::AuthorizationsController
   # yields an ErrorResponse, so those are left untouched and we never
   # misattribute an authorization the user did not grant.
   def stamp_authorizing_user_on_dynamic_application
+    return if skip_dynamic_application_name_stamp?
     return unless performed? && authorize_response.is_a?(Doorkeeper::OAuth::CodeResponse)
     return unless current_user
 
@@ -89,6 +102,13 @@ class Oauth::AuthorizationsController < Doorkeeper::AuthorizationsController
     return if application.name.include?(DYNAMIC_APP_AUTHORIZED_BY)
 
     application.update(name: "#{application.name}#{DYNAMIC_APP_AUTHORIZED_BY}#{sanitized_authorizing_username}")
+  end
+
+  # Overridden in EE to skip stamping on GitLab.com, where MCP clients reuse a
+  # single dynamic OAuth application across users, making a per-user stamp
+  # misleading. Self-managed instances still stamp.
+  def skip_dynamic_application_name_stamp?
+    false
   end
 
   # GitLab usernames are already restricted to a safe character set, but we
@@ -119,6 +139,7 @@ class Oauth::AuthorizationsController < Doorkeeper::AuthorizationsController
     # Force the appropriate MCP scope for MCP server requests and dynamic MCP applications.
     # This ensures that even if a client requests other scopes, dynamic MCP applications
     # are restricted to the correct scope only, regardless of what was requested.
+    # rubocop:disable Rails/StrongParams -- In-place writes to params consumed by Doorkeeper's pre_auth via super
     if resource_is_mcp_orbit_server? || should_force_scope_for_dynamic_app?(Gitlab::Auth::MCP_ORBIT_SCOPE)
       params[:scope] = Gitlab::Auth::MCP_ORBIT_SCOPE.to_s
     elsif resource_is_mcp_server? || should_force_scope_for_dynamic_app?(Gitlab::Auth::MCP_SCOPE)
@@ -126,16 +147,19 @@ class Oauth::AuthorizationsController < Doorkeeper::AuthorizationsController
     end
 
     params[:organization_id] = ::Current.organization.id
+    # rubocop:enable Rails/StrongParams
 
     super
   end
 
   def resource_is_mcp_server?
-    params[:resource].present? && params[:resource].end_with?('/api/v4/mcp')
+    resource = permitted_params[:resource]
+    resource.present? && resource.end_with?('/api/v4/mcp')
   end
 
   def resource_is_mcp_orbit_server?
-    params[:resource].present? && params[:resource].end_with?('/api/v4/orbit/mcp')
+    resource = permitted_params[:resource]
+    resource.present? && resource.end_with?('/api/v4/orbit/mcp')
   end
 
   def should_force_scope_for_dynamic_app?(scope)
@@ -145,12 +169,14 @@ class Oauth::AuthorizationsController < Doorkeeper::AuthorizationsController
 
   # limit scopes when signing in with GitLab
   def downgrade_scopes!
+    # rubocop:disable Rails/StrongParams -- In-place writes to params consumed by Doorkeeper's pre_auth via super
     auth_type = params.delete('gl_auth_type')
     return unless auth_type == 'login'
 
     ensure_read_user_scope!
 
     params['scope'] = Gitlab::Auth::READ_USER_SCOPE.to_s if application_has_read_user_scope?
+    # rubocop:enable Rails/StrongParams
   end
 
   # Configure the application to support read_user scope, if it already
@@ -172,7 +198,7 @@ class Oauth::AuthorizationsController < Doorkeeper::AuthorizationsController
   end
 
   def doorkeeper_application
-    ::Doorkeeper::OAuth::Client.find(params['client_id'].to_s)&.application
+    ::Doorkeeper::OAuth::Client.find(permitted_params[:client_id].to_s)&.application
   end
   strong_memoize_attr :doorkeeper_application
 
@@ -208,16 +234,35 @@ class Oauth::AuthorizationsController < Doorkeeper::AuthorizationsController
     ) && !doorkeeper_application&.trusted?
   end
 
+  def explain_missing_dynamic_client
+    return if ::Gitlab::CurrentSettings.dynamic_client_registration_enabled?
+    return if params.permit(:client_id)[:client_id].blank?
+    return if doorkeeper_application.present?
+
+    render "doorkeeper/authorizations/error", locals: {
+      error_description_override:
+        _("The OAuth client is not recognized. When dynamic client registration is " \
+          "disabled, clients registered that way are removed and new ones cannot " \
+          "register. Create an OAuth application and configure your MCP client with its " \
+          "client ID:"),
+      error_description_docs_url: help_page_url(
+        'user/model_context_protocol/mcp_server.md',
+        anchor: 'reuse-a-single-oauth-application'
+      )
+    }
+  end
+
   def validate_pkce_for_dynamic_applications
     return unless doorkeeper_application&.dynamic?
 
-    if params[:code_challenge].blank?
+    if permitted_params[:code_challenge].blank?
       pre_auth.error = :pkce_required_for_dynamic_applications
       render "doorkeeper/authorizations/error"
       return
     end
 
-    return unless params[:code_challenge_method].present? && params[:code_challenge_method] != 'S256'
+    code_challenge_method = permitted_params[:code_challenge_method]
+    return unless code_challenge_method.present? && code_challenge_method != 'S256'
 
     pre_auth.error = :invalid_code_challenge_method
     render "doorkeeper/authorizations/error"

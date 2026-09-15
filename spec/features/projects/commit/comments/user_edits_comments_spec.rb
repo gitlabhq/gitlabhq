@@ -27,7 +27,6 @@ RSpec.describe "User edits a comment on a commit", :js, feature_category: :sourc
         find_button("Edit comment").click
         fill_in("note[note]", with: new_comment_text)
         click_button("Save comment")
-        wait_for_requests
         expect(scope).to have_content(new_comment_text)
       end
     end
@@ -49,11 +48,25 @@ RSpec.describe "User edits a comment on a commit", :js, feature_category: :sourc
     end
 
     it 'allows the tasks to be checked', :aggregate_failures do
+      # The commit box and diff list above the notes fill in asynchronously; if they grow
+      # between locating the checkbox and clicking it, the click lands on the note header's
+      # author link and navigates away, so no update request is ever sent.
+      within('.info-well') do
+        expect(page).not_to have_selector('.gl-spinner')
+      end
+      expect(page).not_to have_selector('[data-list-loading]')
+
       expect(page).to have_selector('li.task-list-item', count: 2)
       expect(page).to have_selector('li.task-list-item input[checked]', count: 0)
 
-      all('.task-list-item-checkbox').each(&:click)
-      wait_for_requests
+      Note.where(project: project, commit_id: sample_commit.id).order(:id).each do |note|
+        find("#note_#{note.id} li.task-list-item.enabled .task-list-item-checkbox").click
+        expect(page).to have_selector("#note_#{note.id} .task-list-item-checkbox:checked")
+
+        wait_for("task list toggle to persist for note #{note.id}", polling_interval: 0.1) do
+          note.reload.note.include?('[x]')
+        end
+      end
 
       visit(project_commit_path(project, sample_commit.id))
 

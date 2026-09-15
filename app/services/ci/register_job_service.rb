@@ -11,6 +11,24 @@ module Ci
 
     TEMPORARY_LOCK_TIMEOUT = 3.seconds
 
+    # Held back from the request timeout so that a phase timing out still
+    # leaves time to drop the build, which auto-retries it synchronously in an
+    # after-commit hook, and to answer the runner.
+    UNWIND_RESERVE = 10.seconds
+
+    # Raised when a read-only phase of job assignment takes too long. A
+    # StandardError so the rescue in `process_build` can fail the build,
+    # unlike Rack::Timeout's Exception-based error. One subclass per phase, so
+    # metrics and error tracking distinguish where the budget ran out.
+    PhaseTimeoutError = Class.new(StandardError)
+    PreAssignRunnerChecksTimeoutError = Class.new(PhaseTimeoutError)
+    PresentBuildTimeoutError = Class.new(PhaseTimeoutError)
+
+    PHASE_TIMEOUT_ERRORS = {
+      pre_assign_runner_checks: PreAssignRunnerChecksTimeoutError,
+      present_build: PresentBuildTimeoutError
+    }.freeze
+
     Result = Struct.new(:build, :build_json, :build_presented, :valid?)
 
     class ResultFactory
@@ -44,7 +62,10 @@ module Ci
     # affect 5% of the worst case scenarios.
     MAX_QUEUE_DEPTH = 45
 
-    def initialize(runner, runner_manager)
+    # request_timeout_at is the monotonic time by which this request has to be
+    # finished. Without one, the read-only phases run untimed.
+    def initialize(runner, runner_manager, request_timeout_at: nil)
+      @phase_timeout_at = request_timeout_at - UNWIND_RESERVE if request_timeout_at
       @runner = runner
       @runner_manager = runner_manager
       @metrics = ::Gitlab::Ci::Queue::Metrics.new(runner)
@@ -103,6 +124,17 @@ module Ci
           break
         end
 
+        # An earlier build may have consumed the request time budget. Stop
+        # scanning instead of raising at phase entry, which would drop this
+        # build through no fault of its own.
+        if @phase_timeout_at && remaining_time_budget <= 0
+          @metrics.increment_queue_operation(:queue_time_budget_exhausted)
+
+          valid = false
+
+          break
+        end
+
         # We read builds from replicas
         # It is likely that some other concurrent connection is processing
         # a given build at a given moment. To avoid an expensive compute
@@ -141,11 +173,11 @@ module Ci
 
     # rubocop: disable CodeReuse/ActiveRecord
     def each_build(params, &blk)
-      queue = Ci::Queue::BuildQueueService.new(runner)
+      queue = Ci::Queue::BuildQueueService.new(runner, runner_manager)
       builds = queue.build_candidates.limit(MAX_QUEUE_DEPTH + 1)
 
-      build_and_partition_ids = retrieve_queue(-> { queue.execute(builds) })
-      size = build_and_partition_ids.size
+      build_partition_and_project_ids = retrieve_queue(-> { queue.execute(builds) })
+      size = build_partition_and_project_ids.size
       queue_size = if size > MAX_QUEUE_DEPTH
                      queue.build_candidates.count
                    else
@@ -154,8 +186,16 @@ module Ci
 
       @metrics.observe_queue_size(-> { queue_size }, @runner.runner_type)
 
-      build_and_partition_ids.each do |build_id, partition_id|
-        yield Ci::Build.find_by!(partition_id: partition_id, id: build_id), queue_size
+      build_partition_and_project_ids.each do |build_id, partition_id, project_id|
+        build = if ::Feature.enabled?(:ci_suspendable_environment_runner_routing, ::Project.actor_from_id(project_id),
+          type: :gitlab_com_derisk)
+                  Ci::Build.preload(job_runtime_environment: :runtime_environment)
+                    .find_by!(partition_id: partition_id, id: build_id)
+                else
+                  Ci::Build.find_by!(partition_id: partition_id, id: build_id)
+                end
+
+        yield build, queue_size
       end
     end
     # rubocop: enable CodeReuse/ActiveRecord
@@ -304,18 +344,42 @@ module Ci
 
     def runner_matched?(build)
       @logger.instrument(:process_build_runner_matched) do
-        if ::Feature.enabled?(:ci_resume_environment_runner_routing, type: :gitlab_com_derisk)
-          next false unless resume_environment_available_to_runner?(build) # rubocop:disable Style/SoleNestedConditional -- clearer as two separate conditions
-        end
-
         runner.matches_build?(build)
       end
     end
 
     def present_build_with_instrumentation!(build, queue_size:, queue_depth:)
       @logger.instrument(:process_build_present_build) do
-        present_build!(build, queue_size: queue_size, queue_depth: queue_depth)
+        with_phase_timeout(:present_build) do
+          present_build!(build, queue_size: queue_size, queue_depth: queue_depth)
+        end
       end
+    end
+
+    # A build whose variables are slow to evaluate can hold the request until
+    # Rack::Timeout kills it with an error that bypasses `rescue
+    # StandardError`, blocking the queue and, after the transition to
+    # `running`, leaving the build with no runner attached. Timing out early
+    # instead lets the rescue in `process_build` drop the build with
+    # `scheduler_failure`. Only read-only work may run inside the timed
+    # block, so that the interrupt cannot abort a state transition.
+    def with_phase_timeout(phase, &blk)
+      return yield unless @phase_timeout_at
+
+      error_class = PHASE_TIMEOUT_ERRORS.fetch(phase)
+      remaining = remaining_time_budget
+
+      raise error_class, "#{phase} started with no request time budget remaining" if remaining <= 0
+
+      Timeout.timeout(remaining, error_class, "#{phase} exceeded the remaining request time budget", &blk)
+    rescue PhaseTimeoutError
+      @metrics.increment_queue_operation(:"queue_phase_timeout_#{phase}")
+
+      raise
+    end
+
+    def remaining_time_budget
+      @phase_timeout_at - ::Gitlab::Metrics::System.monotonic_time
     end
 
     # Force variables evaluation to occur now
@@ -348,7 +412,7 @@ module Ci
 
       presented_build.all_dependencies.then do |dependencies|
         size = dependencies.sum do |build|
-          build.available_artifacts? ? build.artifacts_file.size : 0
+          build.available_artifacts? ? build.artifacts_size.to_i : 0
         end
 
         log_build_dependencies(size: size, count: dependencies.size) if size > 0
@@ -366,7 +430,9 @@ module Ci
       build.runner_session_attributes = params[:session] if params[:session].present?
 
       failure_reason, _ = @logger.instrument(:assign_runner_failure_reason) do
-        pre_assign_runner_checks.find { |_, check| check.call(build, params) }
+        with_phase_timeout(:pre_assign_runner_checks) do
+          pre_assign_runner_checks.find { |_, check| check.call(build, params) }
+        end
       end
 
       # Persisting the runner assignment changes `runner_id`, which would
@@ -451,13 +517,6 @@ module Ci
       }
     end
 
-    def resume_environment_available_to_runner?(build)
-      env_key = build.options.dig(:suspend_options, :environment_key)
-      return true if env_key.blank?
-
-      ::Gitlab::Ci::Matching::EnvironmentKey.new(env_key).matches_runner?(runner, runner_manager: runner_manager)
-    end
-
     def pre_assign_runner_checks
       {
         missing_dependency_failure: ->(build, _) { !build.has_valid_build_dependencies? },
@@ -471,6 +530,7 @@ module Ci
     end
 
     def id_token_burned_project_path?(build)
+      return false unless Gitlab::CurrentSettings.block_jwt_for_reclaimed_paths
       return false unless build.id_tokens?
       return false unless build.project.ci_id_token_sub_claim_components.include?('project_path')
 

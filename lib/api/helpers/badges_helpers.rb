@@ -19,7 +19,7 @@ module API
         entity_type = options[:with] || Entities::Badge
         badge_params = badge_source_params(source).merge(with: entity_type)
 
-        present records, badge_params
+        present records, **badge_params
       end
 
       def badge_source_params(source)

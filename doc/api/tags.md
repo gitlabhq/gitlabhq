@@ -185,7 +185,22 @@ Example response:
 
 ## Create a new tag
 
+{{< history >}}
+
+- Rate limit [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/252393) in GitLab 19.4.
+
+{{< /history >}}
+
 Creates a new tag in the repository that points to the supplied reference.
+
+This endpoint is rate limited for each project. The default is 100 requests
+every 30 minutes, configurable with the `tags_create_limit`
+[application setting](settings.md). Set the limit to `0` to disable it.
+The limit is shared between this endpoint, the GraphQL `tagCreate` mutation, tag creation in
+the UI, and the [`/tag` quick action](../user/project/quick_actions.md#tag). The limit applies
+to the project, not to you. You can receive
+[`429 Too Many Requests`](rest/troubleshooting.md#status-codes) after other users of the project
+reach the limit.```
 
 ```plaintext
 POST /projects/:id/repository/tags

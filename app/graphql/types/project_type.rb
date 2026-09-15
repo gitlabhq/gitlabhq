@@ -784,6 +784,7 @@ module Types
     field :labels, Types::LabelType.connection_type,
       null: true,
       description: 'Labels available on this project.',
+      scopes: [:api, :read_api, :ai_workflows],
       resolver: Resolvers::LabelsResolver
 
     field :work_item_types, Types::WorkItems::TypeType.connection_type,
@@ -905,6 +906,20 @@ module Types
       resolver: Resolvers::Projects::IsForkedResolver,
       description: 'Project is forked.',
       null: false
+
+    field :unprotected_branches,
+      GraphQL::Types::String.connection_type,
+      null: true,
+      resolver: Resolvers::Projects::UnprotectedBranchesResolver,
+      description: 'Paginated list of unprotected branches, ignoring any wildcard branch rules. ' \
+        'Supports forward-only pagination with `first` and `after`. ' \
+        'This field can only be resolved for one project in any single request.',
+      experiment: { milestone: '19.4' },
+      connection_extension: Gitlab::Graphql::Extensions::ForwardOnlyExternallyPaginatedArrayExtension,
+      max_page_size: 100,
+      authorize: :read_code do
+      extension ::Gitlab::Graphql::Limit::FieldCallCount, limit: 1
+    end
 
     field :protectable_branches,
       [GraphQL::Types::String],

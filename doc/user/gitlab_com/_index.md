@@ -229,7 +229,7 @@ High Performance TCP/HTTP Load Balancer:
 
 ### Prometheus
 
-Prometheus complete our monitoring stack:
+Prometheus completes our monitoring stack:
 
 - [`gitlab-cookbooks` / `gitlab-prometheus` · GitLab](https://gitlab.com/gitlab-cookbooks/gitlab-prometheus)
 
@@ -442,6 +442,7 @@ The following table describes the rate limits for GitLab.com:
 | Authenticated non-API HTTP traffic for a user                    | 1,000 requests each minute      |
 | Authenticated Git HTTPS traffic for a user                       | 10,000 requests each minute     |
 | Unauthenticated Git HTTPS traffic from an IP address             | 15,000 requests each minute     |
+| Git SSH operations for a user, project, and Git command          | 600 operations each minute      |
 | All traffic from an IP address                                   | 2,000 requests each minute      |
 | Issue creation                                                   | 200 requests each minute        |
 | Note creation on issues and merge requests                       | 60 requests each minute         |
@@ -452,7 +453,7 @@ The following table describes the rate limits for GitLab.com:
 | GitLab Pages TLS connections for a GitLab Pages domain           | 400 requests every 10 seconds   |
 | Pipeline creation requests for a project, user, or commit        | 25 requests each minute         |
 | Alert integration endpoint requests for a project                | 3,600 requests every hour       |
-| GitLab Duo `aiAction`  requests                                  | 160 requests every 8 hours      |
+| GitLab Duo `aiAction` requests                                   | 160 requests every 8 hours      |
 | [Pull mirroring](../project/repository/mirror/pull.md) intervals | 5 minutes                       |
 | API requests from a user to `/api/v4/users/:id`                  | 300 requests every 10 minutes   |
 | GitLab package hosting system requests for an IP address | 3,000 requests each minute      |
@@ -484,6 +485,21 @@ More details are available on the rate limits for
 GitLab can rate-limit requests at several layers. The rate limits listed here
 are configured in the application. These limits are the most
 restrictive for each IP address.
+
+### Service Desk email rate limit
+
+GitLab.com limits the number of outbound Service Desk notification
+emails a top-level namespace can send, per hour and per day, by plan:
+
+| Plan | Hourly limit | Daily limit |
+|------|--------------|-------------|
+| Free, Premium trial, Ultimate trial | 100 | 700 |
+| Open Source | 1,500 | 10,000 |
+| Premium | 5,000 | 50,000 |
+| Ultimate, Ultimate trial paid customer | Unlimited | Unlimited |
+
+For details, see
+[Service Desk email rate limit](../../administration/instance_limits.md#service-desk-email-rate-limit).
 
 ### Group and project import by uploading export files
 
@@ -687,7 +703,7 @@ The maximum number of policies that you can add to a security policy project. Th
 
 | Setting                                                             | Default for GitLab.com |
 |:--------------------------------------------------------------------|:-----------------------|
-| Number of webhooks                                                  | 100 for each project, 50 for each group (subgroup webhooks are not counted towards parent group limits ) |
+| Number of webhooks                                                  | 100 for each project, 50 for each group (subgroup webhooks are not counted towards parent group limits) |
 | Maximum payload size                                                | 25 MB                  |
 | Timeout                                                             | 10 seconds             |
 | [Parallel Pages deployments](../project/pages/parallel_deployments.md#limits) | 100 extra deployments (Premium tier), 500 extra deployments (Ultimate tier) |

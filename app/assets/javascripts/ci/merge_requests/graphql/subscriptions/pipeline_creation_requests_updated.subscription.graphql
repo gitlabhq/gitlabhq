@@ -4,8 +4,10 @@ subscription ciPipelineCreationRequestsUpdated($mergeRequestId: MergeRequestID!)
   ciPipelineCreationRequestsUpdated(mergeRequestId: $mergeRequestId) {
     id
     pipelineCreationRequests {
+      id
       status
       error
+      userInitiated
       pipeline {
         ...MergeRequestPipelineListItem
       }

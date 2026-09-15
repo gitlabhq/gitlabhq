@@ -15,7 +15,7 @@ RSpec.describe RecaptchaHelper, type: :helper do
         allow(Gitlab::Qa).to receive(:request?).and_return(true)
       end
 
-      it { is_expected.to eq false }
+      it { is_expected.to be false }
     end
   end
 
@@ -28,12 +28,12 @@ RSpec.describe RecaptchaHelper, type: :helper do
 
     subject { helper.show_recaptcha_sign_up? }
 
-    it { is_expected.to eq true }
+    it { is_expected.to be true }
 
     context 'when setting is disabled' do
       let(:setting_state) { false }
 
-      it { is_expected.to eq false }
+      it { is_expected.to be false }
     end
 
     include_examples 'Gitlab QA bypass'
@@ -48,12 +48,12 @@ RSpec.describe RecaptchaHelper, type: :helper do
 
     subject { helper.recaptcha_enabled_on_login? }
 
-    it { is_expected.to eq true }
+    it { is_expected.to be true }
 
     context 'when setting is disabled' do
       let(:setting_state) { false }
 
-      it { is_expected.to eq false }
+      it { is_expected.to be false }
     end
 
     include_examples 'Gitlab QA bypass'

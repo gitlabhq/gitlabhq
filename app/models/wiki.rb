@@ -100,6 +100,7 @@ class Wiki
   # we delegate to the container.
   delegate :run_after_commit, to: :container
   delegate :run_after_commit_or_now, to: :container
+  delegate :organization, to: :container
 
   class << self
     attr_accessor :container_class

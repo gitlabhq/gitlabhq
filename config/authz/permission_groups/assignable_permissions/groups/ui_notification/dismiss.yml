@@ -1,0 +1,10 @@
+---
+name: dismiss_ui_notification
+description: Grants the ability to dismiss UI notifications
+boundaries:
+  - user
+  - group
+available_for:
+  - granular_access_token
+permissions:
+  - dismiss_ui_notification

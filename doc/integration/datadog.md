@@ -17,7 +17,7 @@ With this integration, you can synchronize repository metadata to enrich your Da
 
 ## Connect your Datadog account
 
-Users with the **Administrator** role can configure the integration for the entire instance
+Users with administrator access can configure the integration for the entire instance
 or for a specific project or group:
 
 1. If you do not have a Datadog API key:

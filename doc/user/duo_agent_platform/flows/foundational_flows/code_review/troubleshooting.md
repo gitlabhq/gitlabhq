@@ -123,15 +123,16 @@ Request a new review. If the error persists, contact your administrator.
 Code Review Flow might miss context when a merge request contains many large changed files.
 
 This can occur when the pre-scan results exceed the
-[file and context limits](_index.md#file-and-context-limits) and the data is truncated before the review
+[file and context limits](_index.md#file-and-context-limits) and the data is truncated before the review.
 
 To improve the review:
 
 - Split the merge request into smaller merge requests.
 - [Exclude context](../../../context.md#exclude-context-from-gitlab-duo) for files that are not
   relevant to the review.
-- Ask a Maintainer or Owner to
-  [select a different model](../../../model_selection.md) using the **Agentic Code Review** setting.
+- Ask a group Owner or instance administrator to select a different model for
+  [GitLab.com](../../../model_selection.md#select-a-model-for-a-feature)
+  or [GitLab Self-Managed and GitLab Dedicated](../../../../../administration/gitlab_duo/model_selection.md#select-a-model-for-code-review-flow).
 
 ## Configuration diagnostic script
 

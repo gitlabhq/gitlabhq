@@ -22,5 +22,11 @@ RSpec.describe 'ConfigureSastIac', feature_category: :static_application_securit
       expect(mutation_response['branch']).not_to be_empty
       expect(mutation_response['successPath']).not_to be_empty
     end
+
+    it_behaves_like 'authorizing granular token permissions for GraphQL', [:push_code, :create_branch] do
+      let(:user) { project.first_owner }
+      let(:boundary_object) { project }
+      let(:request) { post_graphql_mutation(mutation, token: { personal_access_token: pat }) }
+    end
   end
 end

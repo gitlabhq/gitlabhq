@@ -4,7 +4,7 @@ require 'spec_helper'
 
 RSpec.describe 'projects/mirrors/_mirror_repos_list', feature_category: :source_code_management do
   # rubocop:disable RSpec/FactoryBot/AvoidCreate -- rendering the partial requires persisted records and pagination
-  let_it_be(:project) { create(:project, :repository) }
+  let_it_be(:project) { create(:project) }
   let_it_be(:user) { create(:user) }
   # rubocop:enable RSpec/FactoryBot/AvoidCreate
 

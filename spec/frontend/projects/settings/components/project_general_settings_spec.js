@@ -2,7 +2,7 @@ import { GlFormInput, GlFormTextarea, GlButton } from '@gitlab/ui';
 import { nextTick } from 'vue';
 import { shallowMountExtended, mountExtended } from 'helpers/vue_test_utils_helper';
 import ProjectGeneralSettings from '~/projects/settings/components/project_general_settings.vue';
-import AvatarUploadDropzone from '~/organizations/shared/components/avatar_upload_dropzone.vue';
+import AvatarUploadDropzone from '~/vue_shared/components/avatar_upload_dropzone.vue';
 import TopicsTokenSelector from '~/projects/settings/topics/components/topics_token_selector.vue';
 
 jest.mock('~/lib/utils/csrf', () => ({

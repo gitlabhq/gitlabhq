@@ -37,7 +37,7 @@ import getPipelineHeaderData from '~/ci/pipeline_details/header/graphql/queries/
 import * as sentryUtils from '~/ci/utils';
 import { setupQueryPollingByVisibility } from '~/graphql_shared/utils';
 import LocalStorageSync from '~/vue_shared/components/local_storage_sync.vue';
-import { mockRunningPipelineHeaderData } from '../mock_data';
+import { pipelineHeaderRunning } from '../mock_data';
 import {
   mapCallouts,
   mockCalloutsResponse,
@@ -108,7 +108,7 @@ describe('Pipeline graph wrapper', () => {
 
     requestHandlers = {
       getUserCalloutsHandler: jest.fn().mockResolvedValue(mockCalloutsResponse(callouts)),
-      getPipelineHeaderDataHandler: jest.fn().mockResolvedValue(mockRunningPipelineHeaderData),
+      getPipelineHeaderDataHandler: jest.fn().mockResolvedValue(pipelineHeaderRunning),
       getPipelineDetailsHandler: pipelineDetailsHandler,
       getPipelineNeedsHandler: pipelineNeedsHandler,
       getPipelinePermissionsHandler: jest.fn().mockResolvedValue(mockPipelinePermissions),
@@ -290,6 +290,7 @@ describe('Pipeline graph wrapper', () => {
       createComponentWithApollo();
       await waitForPromises();
       findGraph().vm.$emit('refresh-pipeline-graph');
+      await waitForPromises();
     });
 
     it('calls refetch', () => {

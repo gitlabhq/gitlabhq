@@ -38,6 +38,8 @@ module Import
             instance_enterprise: Gitlab.ee?,
             export_prefix: configuration.export_prefix,
             source_hostname: configuration.source_hostname,
+            # The organization ghost user cannot be removed, so its ID remains stable over time.
+            source_ghost_user_id: Users::Internal.in_organization(offline_export.organization).ghost.id,
             entities_mapping: entities_mapping_hash
           }.deep_stringify_keys
         end

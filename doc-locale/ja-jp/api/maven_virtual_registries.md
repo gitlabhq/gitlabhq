@@ -15,7 +15,7 @@ title: Maven仮想レジストリAPI
 
 {{< history >}}
 
-- GitLab 17.4で`virtual_registry_maven`[フラグ](../administration/feature_flags/_index.md)とともに[導入](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/161615)されました。デフォルトでは無効になっています。
+- GitLab 17.4で、`virtual_registry_maven`という名前の[機能フラグと共に](../administration/feature_flags/_index.md) [導入](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/161615)されました。デフォルトでは無効になっています。
 - 機能フラグがGitLab 18.1で`maven_virtual_registry`に[変更](https://gitlab.com/gitlab-org/gitlab/-/issues/540276)されました。デフォルトでは無効になっています。機能フラグ`virtual_registry_maven`は削除されました。
 - GitLab 18.1で実験からベータに[変更](https://gitlab.com/gitlab-org/gitlab/-/issues/540276)されました。
 - GitLab 18.2の[GitLab.com、GitLab Self-Managed、GitLab Dedicated](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/197432)で有効になりました。
@@ -50,9 +50,9 @@ Maven仮想レジストリを作成および管理するには、次のエンド
 GET /groups/:id/-/virtual_registries/packages/maven/registries
 ```
 
-サポートされている属性は以下のとおりです: 
+サポートされている属性:
 
-| 属性 | 型 | 必須 | 説明 |
+| 属性 | タイプ | 必須 | 説明 |
 |:----------|:-----|:---------|:------------|
 | `id` | 文字列/整数 | はい | グループIDまたはグループのフルパス。トップレベルグループである必要があります。 |
 
@@ -64,7 +64,7 @@ curl --header "PRIVATE-TOKEN: <your_access_token>" \
      --url "https://gitlab.example.com/api/v4/groups/5/-/virtual_registries/packages/maven/registries"
 ```
 
-レスポンス例: 
+レスポンス例:
 
 ```json
 [
@@ -87,7 +87,7 @@ curl --header "PRIVATE-TOKEN: <your_access_token>" \
 POST /groups/:id/-/virtual_registries/packages/maven/registries
 ```
 
-| 属性 | 型 | 必須 | 説明 |
+| 属性 | タイプ | 必須 | 説明 |
 | --------- | ---- | -------- | ----------- |
 | `id` | 文字列/整数 | はい | グループIDまたはグループのフルパス。トップレベルグループである必要があります。 |
 | `name` | 文字列 | はい | 仮想レジストリの名前。 |
@@ -104,7 +104,7 @@ curl --request POST \
      --url "https://gitlab.example.com/api/v4/groups/5/-/virtual_registries/packages/maven/registries"
 ```
 
-レスポンス例: 
+レスポンス例:
 
 ```json
 {
@@ -127,7 +127,7 @@ GET /virtual_registries/packages/maven/registries/:id
 
 パラメータは以下のとおりです:
 
-| 属性 | 型 | 必須 | 説明 |
+| 属性 | タイプ | 必須 | 説明 |
 | --------- | ---- | -------- | ----------- |
 | `id` | 整数 | はい | Maven仮想レジストリのID。 |
 
@@ -139,7 +139,7 @@ curl --header "PRIVATE-TOKEN: <your_access_token>" \
      --url "https://gitlab.example.com/api/v4/virtual_registries/packages/maven/registries/1"
 ```
 
-レスポンス例: 
+レスポンス例:
 
 ```json
 {
@@ -160,7 +160,7 @@ curl --header "PRIVATE-TOKEN: <your_access_token>" \
 PATCH /virtual_registries/packages/maven/registries/:id
 ```
 
-| 属性 | 型 | 必須 | 説明 |
+| 属性 | タイプ | 必須 | 説明 |
 | --------- | ---- | -------- | ----------- |
 | `id` | 整数 | はい | Maven仮想レジストリのID。 |
 | `name` | 文字列 | はい | 仮想レジストリの名前。 |
@@ -189,7 +189,7 @@ curl --request PATCH \
 DELETE /virtual_registries/packages/maven/registries/:id
 ```
 
-| 属性 | 型 | 必須 | 説明 |
+| 属性 | タイプ | 必須 | 説明 |
 | --------- | ---- | -------- | ----------- |
 | `id` | 整数 | はい | Maven仮想レジストリのID。 |
 
@@ -207,7 +207,7 @@ curl --request DELETE --header "PRIVATE-TOKEN: <your_access_token>" \
 
 {{< history >}}
 
-- GitLab 18.2で`maven_virtual_registry`[フラグ](../administration/feature_flags/_index.md)とともに[導入](https://gitlab.com/gitlab-org/gitlab/-/issues/538327)されました。デフォルトでは有効になっています。
+- GitLab 18.2で`maven_virtual_registry`[機能フラグ](../administration/feature_flags/_index.md)とともに[導入](https://gitlab.com/gitlab-org/gitlab/-/issues/538327)されました。デフォルトでは有効になっています。
 
 {{< /history >}}
 
@@ -217,7 +217,7 @@ Maven仮想レジストリのすべての排他的アップストリームレジ
 DELETE /virtual_registries/packages/maven/registries/:id/cache
 ```
 
-| 属性 | 型 | 必須 | 説明 |
+| 属性 | タイプ | 必須 | 説明 |
 | --------- | ---- | -------- | ----------- |
 | `id` | 整数 | はい | Maven仮想レジストリのID。 |
 
@@ -239,7 +239,7 @@ curl --request DELETE --header "PRIVATE-TOKEN: <your_access_token>" \
 
 {{< history >}}
 
-- GitLab 18.3で`maven_virtual_registry`[フラグ](../administration/feature_flags/_index.md)とともに[導入](https://gitlab.com/gitlab-org/gitlab/-/issues/550728)されました。デフォルトでは有効になっています。
+- GitLab 18.3で[導入](https://gitlab.com/gitlab-org/gitlab/-/issues/550728)され、`maven_virtual_registry`という名前の[機能フラグ](../administration/feature_flags/_index.md)が付属しています。デフォルトでは有効になっています。
 - `upstream_name`はGitLab 18.4で[導入されました](https://gitlab.com/gitlab-org/gitlab/-/issues/561675)。
 
 {{< /history >}}
@@ -250,9 +250,9 @@ curl --request DELETE --header "PRIVATE-TOKEN: <your_access_token>" \
 GET /groups/:id/-/virtual_registries/packages/maven/upstreams
 ```
 
-サポートされている属性は以下のとおりです: 
+サポートされている属性:
 
-| 属性 | 型 | 必須 | 説明 |
+| 属性 | タイプ | 必須 | 説明 |
 |:----------|:-----|:---------|:------------|
 | `id` | 文字列/整数 | はい | グループIDまたはグループのフルパス。トップレベルグループである必要があります。 |
 | `page` | 整数 | いいえ | ページ番号。デフォルトは1です。 |
@@ -267,13 +267,14 @@ curl --header "PRIVATE-TOKEN: <your_access_token>" \
      --url "https://gitlab.example.com/api/v4/groups/5/-/virtual_registries/packages/maven/upstreams"
 ```
 
-レスポンス例: 
+レスポンス例:
 
 ```json
 [
   {
     "id": 1,
     "group_id": 5,
+    "upstream_type": "remote",
     "url": "https://repo.maven.apache.org/maven2",
     "name": "Maven Central",
     "description": "Maven Central repository",
@@ -282,6 +283,19 @@ curl --header "PRIVATE-TOKEN: <your_access_token>" \
     "username": "user",
     "created_at": "2024-05-30T12:28:27.855Z",
     "updated_at": "2024-05-30T12:28:27.855Z"
+  },
+  {
+    "id": 3,
+    "group_id": 5,
+    "upstream_type": "local",
+    "name": "my-internal-group",
+    "description": null,
+    "local_group_id": 42,
+    "local_project_id": null,
+    "cache_validity_hours": 24,
+    "metadata_cache_validity_hours": 24,
+    "created_at": "2025-02-01T09:00:00.000Z",
+    "updated_at": "2025-02-01T09:00:00.000Z"
   }
 ]
 ```
@@ -290,7 +304,7 @@ curl --header "PRIVATE-TOKEN: <your_access_token>" \
 
 {{< history >}}
 
-- GitLab 18.3で`maven_virtual_registry`[フラグ](../administration/feature_flags/_index.md)とともに[導入](https://gitlab.com/gitlab-org/gitlab/-/issues/535637)されました。デフォルトでは有効になっています。
+- GitLab 18.3で[導入](https://gitlab.com/gitlab-org/gitlab/-/issues/535637)され、`maven_virtual_registry`という名前の[機能フラグ](../administration/feature_flags/_index.md)が付属しています。デフォルトでは有効になっています。
 
 {{< /history >}}
 
@@ -300,9 +314,9 @@ curl --header "PRIVATE-TOKEN: <your_access_token>" \
 POST /groups/:id/-/virtual_registries/packages/maven/upstreams/test
 ```
 
-サポートされている属性は以下のとおりです: 
+サポートされている属性:
 
-| 属性 | 型 | 必須 | 説明 |
+| 属性 | タイプ | 必須 | 説明 |
 |:----------|:-----|:---------|:------------|
 | `id` | 文字列/整数 | はい | グループIDまたはグループのフルパス。トップレベルグループである必要があります。 |
 | `url` | 文字列 | はい | アップストリームレジストリのURL。 |
@@ -334,7 +348,7 @@ curl --header "PRIVATE-TOKEN: <your_access_token>" \
      --data '{"url": "https://repo.maven.apache.org/maven2"}'
 ```
 
-レスポンス例: 
+レスポンス例:
 
 ```json
 {
@@ -350,9 +364,9 @@ curl --header "PRIVATE-TOKEN: <your_access_token>" \
 GET /virtual_registries/packages/maven/registries/:id/upstreams
 ```
 
-サポートされている属性は以下のとおりです: 
+サポートされている属性:
 
-| 属性 | 型 | 必須 | 説明 |
+| 属性 | タイプ | 必須 | 説明 |
 |:----------|:-----|:---------|:------------|
 | `id` | 整数 | はい | Maven仮想レジストリのID。 |
 
@@ -364,13 +378,14 @@ curl --header "PRIVATE-TOKEN: <your_access_token>" \
      --url "https://gitlab.example.com/api/v4/virtual_registries/packages/maven/registries/1/upstreams"
 ```
 
-レスポンス例: 
+レスポンス例:
 
 ```json
 [
   {
     "id": 1,
     "group_id": 5,
+    "upstream_type": "remote",
     "url": "https://repo.maven.apache.org/maven2",
     "name": "Maven Central",
     "description": "Maven Central repository",
@@ -382,7 +397,27 @@ curl --header "PRIVATE-TOKEN: <your_access_token>" \
     "registry_upstream": {
       "id": 1,
       "registry_id": 1,
-      "position": 1
+      "position": 1,
+      "local_upstream_id": null
+    }
+  },
+  {
+    "id": 3,
+    "group_id": 5,
+    "upstream_type": "local",
+    "name": "my-internal-group",
+    "description": null,
+    "local_group_id": 42,
+    "local_project_id": null,
+    "cache_validity_hours": 24,
+    "metadata_cache_validity_hours": 24,
+    "created_at": "2025-02-01T09:00:00.000Z",
+    "updated_at": "2025-02-01T09:00:00.000Z",
+    "registry_upstream": {
+      "id": 2,
+      "registry_id": 1,
+      "position": 2,
+      "local_upstream_id": 3
     }
   }
 ]
@@ -402,7 +437,7 @@ curl --header "PRIVATE-TOKEN: <your_access_token>" \
 POST /virtual_registries/packages/maven/registries/:id/upstreams
 ```
 
-| 属性 | 型 | 必須 | 説明 |
+| 属性 | タイプ | 必須 | 説明 |
 | --------- | ---- | -------- | ----------- |
 | `id` | 整数 | はい | Maven仮想レジストリのID。 |
 | `url` | 文字列 | はい | アップストリームレジストリのURL。 |
@@ -430,12 +465,13 @@ curl --request POST --header "PRIVATE-TOKEN: <your_access_token>" \
      --url "https://gitlab.example.com/api/v4/virtual_registries/packages/maven/registries/1/upstreams"
 ```
 
-レスポンス例: 
+レスポンス例:
 
 ```json
 {
   "id": 1,
   "group_id": 5,
+  "upstream_type": "remote",
   "url": "https://repo.maven.apache.org/maven2",
   "name": "Maven Central",
   "description": "Maven Central repository",
@@ -447,10 +483,154 @@ curl --request POST --header "PRIVATE-TOKEN: <your_access_token>" \
   "registry_upstream": {
     "id": 1,
     "registry_id": 1,
-    "position": 1
+    "position": 1,
+    "local_upstream_id": null
   }
 }
 ```
+
+### ローカルアップストリームレジストリを作成する {#create-a-local-upstream-registry}
+
+指定されたMaven仮想レジストリのローカルアップストリームレジストリを作成します。ローカルアップストリームは、同じGitLabインスタンス上のグループまたはプロジェクトをターゲットとします。ファイルは、HTTP経由でフェッチおよびキャッシュされるのではなく、パッケージレジストリから直接提供されます。
+
+```plaintext
+POST /virtual_registries/packages/maven/registries/:id/local/upstreams
+```
+
+| 属性 | タイプ | 必須 | 説明 |
+| --------- | ---- | -------- | ----------- |
+| `id` | 整数 | はい | Maven仮想レジストリのID。 |
+| `name` | 文字列 | はい | ローカルアップストリームレジストリの名前。 |
+| `local_group_id` | 整数 | 条件付き | ターゲットグループのID。`local_project_id`が設定されていない場合は必須です。 |
+| `local_project_id` | 整数 | 条件付き | ターゲットプロジェクトのID。`local_group_id`が設定されていない場合は必須です。 |
+| `cache_validity_hours` | 整数 | いいえ | キャッシュの有効期間。デフォルトは24時間です。 |
+| `description` | 文字列 | いいえ | ローカルアップストリームレジストリの説明。 |
+| `metadata_cache_validity_hours` | 整数 | いいえ | メタデータキャッシュの有効期間。デフォルトは24時間です。 |
+
+`local_group_id`または`local_project_id`のいずれか1つのみを設定する必要があります。ターゲットグループまたはプロジェクトのパッケージを読み取る権限が必要です。
+
+リクエスト例: 
+
+```shell
+curl --request POST --header "PRIVATE-TOKEN: <your_access_token>" \
+     --header "Content-Type: application/json" \
+     --data '{"name": "Internal group", "local_group_id": 42, "cache_validity_hours": 24}' \
+     --url "https://gitlab.example.com/api/v4/virtual_registries/packages/maven/registries/1/local/upstreams"
+```
+
+レスポンス例:
+
+```json
+{
+  "id": 3,
+  "group_id": 5,
+  "upstream_type": "local",
+  "name": "Internal group",
+  "description": null,
+  "local_group_id": 42,
+  "local_project_id": null,
+  "cache_validity_hours": 24,
+  "metadata_cache_validity_hours": 24,
+  "created_at": "2025-02-01T09:00:00.000Z",
+  "updated_at": "2025-02-01T09:00:00.000Z",
+  "registry_upstream": {
+    "id": 2,
+    "registry_id": 1,
+    "position": 1,
+    "local_upstream_id": 3
+  }
+}
+```
+
+### ローカルアップストリームレジストリを取得する {#retrieve-a-local-upstream-registry}
+
+ローカルアップストリームレジストリを取得します。ローカルアップストリームは、リモートアップストリームとは異なるID空間を使用します。
+
+```plaintext
+GET /virtual_registries/packages/maven/local/upstreams/:id
+```
+
+| 属性 | タイプ | 必須 | 説明 |
+| --------- | ---- | -------- | ----------- |
+| `id` | 整数 | はい | MavenローカルアップストリームレジストリのID。 |
+
+リクエスト例: 
+
+```shell
+curl --request GET --header "PRIVATE-TOKEN: <your_access_token>" \
+     --url "https://gitlab.example.com/api/v4/virtual_registries/packages/maven/local/upstreams/3"
+```
+
+成功した場合、[`200 OK`](rest/troubleshooting.md#status-codes)と次のレスポンス属性を返します: 
+
+| 属性 | タイプ | 説明 |
+| --------- | ---- | ----------- |
+| `cache_validity_hours` | 整数 | キャッシュされたパッケージが有効とみなされる時間数。 |
+| `created_at` | 日付/時刻 | アップストリームが作成された日付と時刻。 |
+| `description` | 文字列 | アップストリームの説明。 |
+| `group_id` | 整数 | アップストリームが属するグループのID。 |
+| `id` | 整数 | アップストリームのID。 |
+| `local_group_id` | 整数 | アップストリームソースとして使用されるローカルグループのID。 |
+| `local_project_id` | 整数 | アップストリームソースとして使用されるローカルプロジェクトのID。 |
+| `metadata_cache_validity_hours` | 整数 | キャッシュされたメタデータが有効とみなされる時間数。 |
+| `name` | 文字列 | アップストリームの名前。 |
+| `registry_upstreams` | オブジェクトの配列 | このアップストリームに関連付けられた仮想レジストリアップストリームのリスト。 |
+| `registry_upstreams[].id` | 整数 | アップストリームレジストリのID。 |
+| `registry_upstreams[].local_upstream_id` | 整数 | ローカルアップストリームのID。 |
+| `registry_upstreams[].position` | 整数 | レジストリ解決順序におけるアップストリームの位置。 |
+| `registry_upstreams[].registry_id` | 整数 | 仮想レジストリのID。 |
+| `updated_at` | 日付/時刻 | アップストリームが最後に更新された日付と時刻。 |
+| `upstream_type` | 文字列 | アップストリームのタイプ。 |
+
+### ローカルアップストリームレジストリを更新する {#update-a-local-upstream-registry}
+
+ローカルアップストリームレジストリを更新します。
+
+```plaintext
+PATCH /virtual_registries/packages/maven/local/upstreams/:id
+```
+
+| 属性 | タイプ | 必須 | 説明 |
+| --------- | ---- | -------- | ----------- |
+| `id` | 整数 | はい | MavenローカルアップストリームレジストリのID。 |
+| `cache_validity_hours` | 整数 | いいえ | キャッシュの有効期間。 |
+| `description` | 文字列 | いいえ | ローカルアップストリームレジストリの説明。 |
+| `metadata_cache_validity_hours` | 整数 | いいえ | メタデータキャッシュの有効期間。 |
+| `name` | 文字列 | いいえ | ローカルアップストリームレジストリの名前。 |
+
+少なくとも1つのオプション属性を設定する必要があります。
+
+リクエスト例: 
+
+```shell
+curl --request PATCH --header "PRIVATE-TOKEN: <your_access_token>" \
+     --header "Content-Type: application/json" \
+     --data '{"name": "Renamed group", "cache_validity_hours": 48}' \
+     --url "https://gitlab.example.com/api/v4/virtual_registries/packages/maven/local/upstreams/3"
+```
+
+成功した場合、[`200 OK`](rest/troubleshooting.md#status-codes)ステータスコードを返します。
+
+### ローカルアップストリームレジストリを削除する {#delete-a-local-upstream-registry}
+
+ローカルアップストリームレジストリを削除し、仮想レジストリとの関連付けを解除します。
+
+```plaintext
+DELETE /virtual_registries/packages/maven/local/upstreams/:id
+```
+
+| 属性 | タイプ | 必須 | 説明 |
+| --------- | ---- | -------- | ----------- |
+| `id` | 整数 | はい | MavenローカルアップストリームレジストリのID。 |
+
+リクエスト例: 
+
+```shell
+curl --request DELETE --header "PRIVATE-TOKEN: <your_access_token>" \
+     --url "https://gitlab.example.com/api/v4/virtual_registries/packages/maven/local/upstreams/3"
+```
+
+成功した場合、[`204 No Content`](rest/troubleshooting.md#status-codes)ステータスコードを返します。
 
 ### アップストリームレジストリを取得する {#retrieve-an-upstream-registry}
 
@@ -462,7 +642,7 @@ GET /virtual_registries/packages/maven/upstreams/:id
 
 パラメータは以下のとおりです:
 
-| 属性 | 型 | 必須 | 説明 |
+| 属性 | タイプ | 必須 | 説明 |
 | --------- | ---- | -------- | ----------- |
 | `id` | 整数 | はい | アップストリームレジストリのID。 |
 
@@ -474,12 +654,13 @@ curl --header "PRIVATE-TOKEN: <your_access_token>" \
      --url "https://gitlab.example.com/api/v4/virtual_registries/packages/maven/upstreams/1"
 ```
 
-レスポンス例: 
+レスポンス例:
 
 ```json
 {
   "id": 1,
   "group_id": 5,
+  "upstream_type": "remote",
   "url": "https://repo.maven.apache.org/maven2",
   "name": "Maven Central",
   "description": "Maven Central repository",
@@ -492,7 +673,8 @@ curl --header "PRIVATE-TOKEN: <your_access_token>" \
     {
       "id": 1,
       "registry_id": 1,
-      "position": 1
+      "position": 1,
+      "local_upstream_id": null
     }
   ]
 }
@@ -512,7 +694,7 @@ curl --header "PRIVATE-TOKEN: <your_access_token>" \
 PATCH /virtual_registries/packages/maven/upstreams/:id
 ```
 
-| 属性 | 型 | 必須 | 説明 |
+| 属性 | タイプ | 必須 | 説明 |
 | --------- | ---- | -------- | ----------- |
 | `id` | 整数 | はい | アップストリームレジストリのID。 |
 | `cache_validity_hours` | 整数 | いいえ | キャッシュの有効期間。デフォルトは24時間です。 |
@@ -547,7 +729,7 @@ Maven仮想レジストリの順序付けられたリストで、アップスト
 PATCH /virtual_registries/packages/maven/registry_upstreams/:id
 ```
 
-| 属性 | 型 | 必須 | 説明 |
+| 属性 | タイプ | 必須 | 説明 |
 | --------- | ---- | -------- | ----------- |
 | `id` | 整数 | はい | アップストリームレジストリのID。 |
 | `position` | 整数 | はい | アップストリームレジストリの位置。1～20の間。 |
@@ -571,7 +753,7 @@ curl --request PATCH --header "PRIVATE-TOKEN: <your_access_token>" \
 DELETE /virtual_registries/packages/maven/upstreams/:id
 ```
 
-| 属性 | 型 | 必須 | 説明 |
+| 属性 | タイプ | 必須 | 説明 |
 | --------- | ---- | -------- | ----------- |
 | `id` | 整数 | はい | アップストリームレジストリのID。 |
 
@@ -589,7 +771,7 @@ curl --request DELETE --header "PRIVATE-TOKEN: <your_access_token>" \
 
 {{< history >}}
 
-- GitLab 18.1で`maven_virtual_registry`[フラグ](../administration/feature_flags/_index.md)とともに[導入](https://gitlab.com/gitlab-org/gitlab/-/issues/540276)されました。デフォルトでは無効になっています。
+- GitLab 18.1で`maven_virtual_registry`[機能フラグ](../administration/feature_flags/_index.md)とともに[導入](https://gitlab.com/gitlab-org/gitlab/-/issues/540276)されました。デフォルトでは無効になっています。
 - GitLab 18.2の[GitLab.com、GitLab Self-Managed、GitLab Dedicated](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/197432)で有効になりました。
 
 {{< /history >}}
@@ -600,10 +782,13 @@ curl --request DELETE --header "PRIVATE-TOKEN: <your_access_token>" \
 POST /virtual_registries/packages/maven/registry_upstreams
 ```
 
-| 属性 | 型 | 必須 | 説明 |
+| 属性 | タイプ | 必須 | 説明 |
 | --------- | ---- | -------- | ----------- |
 | `registry_id` | 整数 | はい | Maven仮想レジストリのID。 |
-| `upstream_id` | 整数 | はい | MavenアップストリームレジストリのID。 |
+| `upstream_id` | 整数 | はい | MavenアップストリームレジストリのID。`local_upstream_id`が設定されていない場合は必須です。 |
+| `local_upstream_id` | 整数 | はい | MavenローカルアップストリームレジストリのID。`upstream_id`が設定されていない場合は必須です。 |
+
+`upstream_id`または`local_upstream_id`のいずれか1つのみを設定する必要があります。
 
 リクエスト例: 
 
@@ -616,7 +801,7 @@ curl --request POST \
      --url "https://gitlab.example.com/api/v4/virtual_registries/packages/maven/registry_upstreams"
 ```
 
-レスポンス例: 
+レスポンス例:
 
 ```json
 {
@@ -631,7 +816,7 @@ curl --request POST \
 
 {{< history >}}
 
-- GitLab 18.1で`maven_virtual_registry`[フラグ](../administration/feature_flags/_index.md)とともに[導入](https://gitlab.com/gitlab-org/gitlab/-/issues/540276)されました。デフォルトでは無効になっています。
+- GitLab 18.1で`maven_virtual_registry`[機能フラグ](../administration/feature_flags/_index.md)とともに[導入](https://gitlab.com/gitlab-org/gitlab/-/issues/540276)されました。デフォルトでは無効になっています。
 - GitLab 18.2の[GitLab.com、GitLab Self-Managed、GitLab Dedicated](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/197432)で有効になりました。
 
 {{< /history >}}
@@ -642,7 +827,7 @@ curl --request POST \
 DELETE /virtual_registries/packages/maven/registry_upstreams/:id
 ```
 
-| 属性 | 型 | 必須 | 説明 |
+| 属性 | タイプ | 必須 | 説明 |
 | --------- | ---- | -------- | ----------- |
 | `id` | 整数 | はい | レジストリアップストリームの関連付けのID。 |
 
@@ -662,7 +847,7 @@ curl --request DELETE \
 
 {{< history >}}
 
-- GitLab 18.2で`maven_virtual_registry`[フラグ](../administration/feature_flags/_index.md)とともに[導入](https://gitlab.com/gitlab-org/gitlab/-/issues/538327)されました。デフォルトでは有効になっています。
+- GitLab 18.2で`maven_virtual_registry`[機能フラグ](../administration/feature_flags/_index.md)とともに[導入](https://gitlab.com/gitlab-org/gitlab/-/issues/538327)されました。デフォルトでは有効になっています。
 
 {{< /history >}}
 
@@ -672,7 +857,7 @@ curl --request DELETE \
 DELETE /virtual_registries/packages/maven/upstreams/:id/cache
 ```
 
-| 属性 | 型 | 必須 | 説明 |
+| 属性 | タイプ | 必須 | 説明 |
 | --------- | ---- | -------- | ----------- |
 | `id` | 整数 | はい | アップストリームレジストリのID。 |
 
@@ -690,7 +875,7 @@ curl --request DELETE --header "PRIVATE-TOKEN: <your_access_token>" \
 
 {{< history >}}
 
-- GitLab 18.3で`maven_virtual_registry`[フラグ](../administration/feature_flags/_index.md)とともに[導入](https://gitlab.com/gitlab-org/gitlab/-/issues/535637)されました。デフォルトでは有効になっています。
+- GitLab 18.3で[導入](https://gitlab.com/gitlab-org/gitlab/-/issues/535637)され、`maven_virtual_registry`という名前の[機能フラグ](../administration/feature_flags/_index.md)が付属しています。デフォルトでは有効になっています。
 
 {{< /history >}}
 
@@ -724,7 +909,7 @@ curl --header "PRIVATE-TOKEN: <your_access_token>" \
      --url "https://gitlab.example.com/api/v4/virtual_registries/packages/maven/upstreams/1/test"
 ```
 
-レスポンス例: 
+レスポンス例:
 
 ```json
 {
@@ -736,7 +921,7 @@ curl --header "PRIVATE-TOKEN: <your_access_token>" \
 
 {{< history >}}
 
-- GitLab 18.7で`maven_virtual_registry`[フラグ](../administration/feature_flags/_index.md)とともに[導入](https://gitlab.com/gitlab-org/gitlab/-/issues/565897)されました。デフォルトでは有効になっています。
+- GitLab 18.7で`maven_virtual_registry`[機能フラグ](../administration/feature_flags/_index.md)とともに[導入](https://gitlab.com/gitlab-org/gitlab/-/issues/565897)されました。デフォルトでは有効になっています。
 
 {{< /history >}}
 
@@ -748,9 +933,9 @@ curl --header "PRIVATE-TOKEN: <your_access_token>" \
 POST /virtual_registries/packages/maven/upstreams/:id/test
 ```
 
-サポートされている属性は以下のとおりです: 
+サポートされている属性:
 
-| 属性 | 型 | 必須 | 説明 |
+| 属性 | タイプ | 必須 | 説明 |
 | --------- | ---- | -------- | ----------- |
 | `id` | 整数 | はい | アップストリームレジストリのID。 |
 | `password` | 文字列 | いいえ | テスト用のオーバーライドパスワード。 |
@@ -820,7 +1005,7 @@ curl --request POST \
      --url "https://gitlab.example.com/api/v4/virtual_registries/packages/maven/upstreams/1/test"
 ```
 
-レスポンス例: 
+レスポンス例:
 
 ```json
 {
@@ -840,14 +1025,14 @@ Maven仮想レジストリのキャッシュエントリを管理するには、
 GET /virtual_registries/packages/maven/upstreams/:id/cache_entries
 ```
 
-サポートされている属性は以下のとおりです: 
+サポートされている属性:
 
-| 属性 | 型 | 必須 | 説明 |
+| 属性 | タイプ | 必須 | 説明 |
 |:----------|:-----|:---------|:------------|
 | `id` | 整数 | はい | アップストリームレジストリのID。 |
 | `page` | 整数 | いいえ | ページ番号。デフォルトは1です。 |
 | `per_page` | 整数 | いいえ | ページあたりのアイテム数。デフォルトは20です。 |
-| `search` | 文字列 | いいえ | パッケージの相対パスの検索クエリ（例：`foo/bar/mypkg`）。 |
+| `search` | 文字列 | いいえ | パッケージの相対パスの検索クエリ（例: `foo/bar/mypkg`）。 |
 
 リクエスト例: 
 
@@ -857,7 +1042,7 @@ curl --header "PRIVATE-TOKEN: <your_access_token>" \
      --url "https://gitlab.example.com/api/v4/virtual_registries/packages/maven/upstreams/1/cache_entries?search=foo/bar"
 ```
 
-レスポンス例: 
+レスポンス例:
 
 ```json
 [
@@ -888,9 +1073,9 @@ curl --header "PRIVATE-TOKEN: <your_access_token>" \
 DELETE /virtual_registries/packages/maven/cache_entries/*id
 ```
 
-| 属性 | 型 | 必須 | 説明 |
+| 属性 | タイプ | 必須 | 説明 |
 | --------- | ---- | -------- | ----------- |
-| `id` | 文字列 | はい | キャッシュエントリのbase64エンコードされたアップストリームIDと相対パス（例：'Zm9vL2Jhci9teXBrZy5wb20='）。 |
+| `id` | 文字列 | はい | キャッシュエントリのbase64エンコードされたアップストリームIDと相対パス（例: 'Zm9vL2Jhci9teXBrZy5wb20='）。 |
 
 リクエスト例: 
 
@@ -919,12 +1104,12 @@ Maven仮想レジストリのパッケージ操作を管理するには、次の
 GET /virtual_registries/packages/maven/:id/*path
 ```
 
-サポートされている属性は以下のとおりです: 
+サポートされている属性:
 
-| 属性 | 型 | 必須 | 説明 |
+| 属性 | タイプ | 必須 | 説明 |
 |:----------|:-----|:---------|:------------|
 | `id` | 整数 | はい | Maven仮想レジストリのID。 |
-| `path` | 文字列 | はい | パッケージのフルパス（例：`foo/bar/mypkg/1.0-SNAPSHOT/mypkg-1.0-SNAPSHOT.jar`）。 |
+| `path` | 文字列 | はい | パッケージのフルパス（例: `foo/bar/mypkg/1.0-SNAPSHOT/mypkg-1.0-SNAPSHOT.jar`）。 |
 
 リクエスト例: 
 
@@ -949,11 +1134,11 @@ curl --header "PRIVATE-TOKEN: <your_access_token>" \
 POST /virtual_registries/packages/maven/:id/*path/upload
 ```
 
-| 属性 | 型 | 必須 | 説明 |
+| 属性 | タイプ | 必須 | 説明 |
 | --------- | ---- | -------- | ----------- |
 | `id` | 整数 | はい | Maven仮想レジストリのID。 |
 | `file` | ファイル | はい | アップロードされるファイル。 |
-| `path` | 文字列 | はい | パッケージのフルパス（例：`foo/bar/mypkg/1.0-SNAPSHOT/mypkg-1.0-SNAPSHOT.jar`）。 |
+| `path` | 文字列 | はい | パッケージのフルパス（例: `foo/bar/mypkg/1.0-SNAPSHOT/mypkg-1.0-SNAPSHOT.jar`）。 |
 
 リクエストヘッダー:
 

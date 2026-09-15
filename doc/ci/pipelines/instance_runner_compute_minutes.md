@@ -58,6 +58,9 @@ In pipelines that have already started:
 
 Project and group runners are not affected by the compute quota and continue processing jobs.
 
+Because instance runners stop processing jobs, this can look like a runner availability problem
+rather than a compute quota problem.
+
 ## View usage
 
 You can view the compute usage (including [additional minutes](../../subscriptions/gitlab_com/compute_minutes.md)) for a group or personal namespace to understand

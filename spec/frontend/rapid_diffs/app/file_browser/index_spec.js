@@ -12,6 +12,10 @@ import { useApp } from '~/rapid_diffs/stores/app';
 import { useDiffsList } from '~/rapid_diffs/stores/diffs_list';
 import { useDiffsView } from '~/rapid_diffs/stores/diffs_view';
 import setWindowLocation from 'helpers/set_window_location_helper';
+import { Mousetrap } from '~/lib/mousetrap';
+import { keysFor, MR_FOCUS_FILE_BROWSER } from '~/behaviors/shortcuts/keybindings';
+import { keyboardShortcutsDisabled } from '~/behaviors/shortcuts/shortcuts_disabled';
+import { useFileBrowser } from '~/diffs/stores/file_browser';
 
 jest.mock('~/rapid_diffs/app/file_browser/file_browser.vue', () => ({
   props: jest.requireActual('~/rapid_diffs/app/file_browser/file_browser.vue').default.props,
@@ -68,6 +72,10 @@ jest.mock('~/rapid_diffs/app/file_browser/file_browser_drawer_toggle.vue', () =>
     });
   },
 }));
+
+jest.mock('~/behaviors/shortcuts/shortcuts_disabled');
+
+const focusHotkeys = keysFor(MR_FOCUS_FILE_BROWSER);
 
 describe('Init file browser', () => {
   let mockAxios;
@@ -129,6 +137,7 @@ describe('Init file browser', () => {
   beforeEach(() => {
     // createTestingPinia wouldn't work here because Pinia instance is explicitly imported
     setActivePinia(pinia);
+    keyboardShortcutsDisabled.mockReturnValue(false);
     initAppData();
     // eslint-disable-next-line no-underscore-dangle
     useMainContainer()._setCurrentBreakpoint('md');
@@ -160,6 +169,7 @@ describe('Init file browser', () => {
   });
 
   afterEach(() => {
+    Mousetrap.reset();
     resetHTMLFixture();
   });
 
@@ -237,7 +247,6 @@ describe('Init file browser', () => {
   it('adds href to diff files', async () => {
     setWindowLocation('http://example.com/merge_requests/1/diffs');
 
-    const { useFileBrowser } = await import('~/diffs/stores/file_browser');
     const setTreeData = jest.spyOn(useFileBrowser(), 'setTreeData');
 
     await init();
@@ -286,6 +295,102 @@ describe('Init file browser', () => {
       await init();
       const fileBrowser = getFileBrowser();
       expect(fileBrowser.dataset.linkedFilePath).toBeUndefined();
+    });
+  });
+
+  describe('focus shortcut', () => {
+    beforeEach(() => {
+      setHTMLFixture(`
+        <div>
+          <div id="js-page-breadcrumbs-extra"></div>
+          <div data-file-browser-toggle></div>
+          <div data-file-browser data-metadata-endpoint="/metadata"></div>
+          <input id="diff-tree-search" />
+        </div>
+      `);
+    });
+
+    it('binds a single handler regardless of layout', async () => {
+      const bindSpy = jest.spyOn(Mousetrap, 'bind');
+      await init();
+      const focusBinds = bindSpy.mock.calls.filter(([keys]) => keys === focusHotkeys);
+      expect(focusBinds).toHaveLength(1);
+    });
+
+    describe('when keyboard shortcuts are disabled', () => {
+      beforeEach(() => {
+        keyboardShortcutsDisabled.mockReturnValue(true);
+      });
+
+      it('does not bind the handler', async () => {
+        const bindSpy = jest.spyOn(Mousetrap, 'bind');
+        await init();
+        const focusBinds = bindSpy.mock.calls.filter(([keys]) => keys === focusHotkeys);
+        expect(focusBinds).toHaveLength(0);
+      });
+    });
+
+    describe('when on the wide layout', () => {
+      beforeEach(() => {
+        // eslint-disable-next-line no-underscore-dangle
+        useMainContainer()._setCurrentBreakpoint('lg');
+      });
+
+      it('opens the desktop browser and requests search focus', async () => {
+        const setVisibility = jest.spyOn(useFileBrowser(), 'setFileBrowserVisibility');
+        const requestSearchFocus = jest.spyOn(useFileBrowser(), 'requestSearchFocus');
+        await init();
+
+        Mousetrap.trigger(focusHotkeys[0]);
+        await nextTick();
+
+        expect(setVisibility).toHaveBeenCalledWith(true);
+        expect(requestSearchFocus).toHaveBeenCalled();
+      });
+    });
+
+    describe('when on the compact layout', () => {
+      beforeEach(() => {
+        // eslint-disable-next-line no-underscore-dangle
+        useMainContainer()._setCurrentBreakpoint('sm');
+      });
+
+      it('opens the drawer and requests search focus', async () => {
+        const setDrawerVisibility = jest.spyOn(useFileBrowser(), 'setFileBrowserDrawerVisibility');
+        const requestSearchFocus = jest.spyOn(useFileBrowser(), 'requestSearchFocus');
+        await init();
+
+        Mousetrap.trigger(focusHotkeys[0]);
+        await nextTick();
+
+        expect(setDrawerVisibility).toHaveBeenCalledWith(true);
+        expect(requestSearchFocus).toHaveBeenCalled();
+      });
+    });
+
+    describe('when the viewport transitions between layouts', () => {
+      beforeEach(() => {
+        // eslint-disable-next-line no-underscore-dangle
+        useMainContainer()._setCurrentBreakpoint('lg');
+      });
+
+      it('stays bound and targets the active layout', async () => {
+        const setVisibility = jest.spyOn(useFileBrowser(), 'setFileBrowserVisibility');
+        const setDrawerVisibility = jest.spyOn(useFileBrowser(), 'setFileBrowserDrawerVisibility');
+        await init();
+
+        Mousetrap.trigger(focusHotkeys[0]);
+        await nextTick();
+        expect(setVisibility).toHaveBeenCalledWith(true);
+
+        // eslint-disable-next-line no-underscore-dangle
+        useMainContainer()._setCurrentBreakpoint('sm');
+        await nextTick();
+
+        Mousetrap.trigger(focusHotkeys[0]);
+        await nextTick();
+        expect(setDrawerVisibility).toHaveBeenCalledWith(true);
+      });
     });
   });
 });

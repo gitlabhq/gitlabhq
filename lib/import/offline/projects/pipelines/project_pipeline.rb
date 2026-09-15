@@ -7,6 +7,7 @@ module Import
         class ProjectPipeline
           include ::BulkImports::Pipeline
           include ::BulkImports::Pipeline::HexdigestCacheStrategy
+          include ::Gitlab::InternalEventsTracking
 
           file_extraction_pipeline!
           abort_on_failure!
@@ -25,6 +26,8 @@ module Import
 
             context.entity.update!(project: project, organization: nil)
 
+            track_start_project_import(context.entity)
+
             project.importing = true
             project.default_branch = data['default_branch'] if data['default_branch']
             project.reconcile_shared_runners_setting!
@@ -39,6 +42,10 @@ module Import
           end
 
           private
+
+          def track_start_project_import(entity)
+            track_internal_event('start_project_import', entity.project_import_event_attributes)
+          end
 
           def project_import_error_message(project)
             "Unable to import project #{project.full_path}. #{project.errors.full_messages}."

@@ -37,6 +37,15 @@ RSpec.describe RuboCop::Cop::Gitlab::DocumentationLinks::HardcodedUrl, feature_c
     end
   end
 
+  context 'when string literal is added without the /ee/ prefix' do
+    it 'registers an offense' do
+      expect_offense(<<~RUBY)
+        'See [the docs](https://docs.gitlab.com/user/permissions/#roles).'
+                        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ Use `#help_page_url` instead of directly including link. See [...]
+      RUBY
+    end
+  end
+
   context 'when string literal is added without docs url prefix' do
     context 'when inlined' do
       it 'does not register an offense' do
@@ -64,6 +73,26 @@ RSpec.describe RuboCop::Cop::Gitlab::DocumentationLinks::HardcodedUrl, feature_c
           HEREDOC
         RUBY
       end
+    end
+  end
+
+  context 'when linking to docs that live in a separate repository' do
+    it 'does not register an offense for GitLab Runner docs' do
+      expect_no_offenses(<<~RUBY)
+        'See [the docs](https://docs.gitlab.com/runner/install/).'
+      RUBY
+    end
+
+    it 'does not register an offense for Linux package (Omnibus) docs' do
+      expect_no_offenses(<<~RUBY)
+        'See [the docs](https://docs.gitlab.com/omnibus/settings/configuration.html).'
+      RUBY
+    end
+
+    it 'does not register an offense for GitLab Charts docs' do
+      expect_no_offenses(<<~RUBY)
+        'See [the docs](https://docs.gitlab.com/charts/charts/globals).'
+      RUBY
     end
   end
 end

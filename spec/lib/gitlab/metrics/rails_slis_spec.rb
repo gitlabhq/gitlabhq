@@ -30,10 +30,6 @@ RSpec.describe Gitlab::Metrics::RailsSlis, feature_category: :error_budgets do
       ]
     end
 
-    let(:web_possible_labels) do
-      web_expected_labels + web_uninitialized_labels
-    end
-
     # using the actual `#known_git_endpoints` here makes sure that we keep the
     # list up to date as endpoints get removed
     let(:git_possible_labels) do
@@ -58,10 +54,6 @@ RSpec.describe Gitlab::Metrics::RailsSlis, feature_category: :error_budgets do
         feature_category: :not_owned,
         request_urgency: :default
       }]
-    end
-
-    let(:api_possible_labels) do
-      api_expected_labels + api_uninitialized_labels
     end
 
     let(:expected_request_labels) do

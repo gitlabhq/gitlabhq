@@ -78,16 +78,20 @@ module Repositories
       %w[upload_authorize upload_finalize].include? action_name
     end
 
+    def permitted_params
+      params.permit(:oid, :size, :file)
+    end
+
     def oid
-      params[:oid].to_s
+      permitted_params[:oid].to_s
     end
 
     def size
-      params[:size].to_i
+      permitted_params[:size].to_i
     end
 
     def uploaded_file
-      params[:file]
+      permitted_params[:file]
     end
   end
 end

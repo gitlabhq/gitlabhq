@@ -55,10 +55,14 @@ class Projects::GroupLinksController < Projects::ApplicationController
     end
   end
 
-  protected
+  private
+
+  def id_param
+    params.permit(:id)[:id]
+  end
 
   def group_link
-    @project.project_group_links.find(params[:id])
+    @project.project_group_links.find(id_param)
   end
   strong_memoize_attr :group_link
 

@@ -30,7 +30,7 @@ export default {
     menuItem() {
       return {
         text: this.user.name,
-        href: userPath(this.user.username),
+        href: userPath(this.user.username, { organizationPath: null }),
         extraAttrs: {
           ...USER_MENU_TRACKING_DEFAULTS,
           'data-track-label': 'user_profile',

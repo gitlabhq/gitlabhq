@@ -31,6 +31,10 @@ RSpec.describe Mcp::Tools::WorkItems::GetWorkItemNotesService, feature_category:
     it 'has correct description' do
       expect(service.description).to eq('Get all comments (notes) for a specific work item')
     end
+
+    it 'is unlisted while it awaits removal' do
+      expect(service.unlisted?).to be(true)
+    end
   end
 
   describe 'input schema' do
@@ -57,21 +61,23 @@ RSpec.describe Mcp::Tools::WorkItems::GetWorkItemNotesService, feature_category:
             },
             after: {
               type: 'string',
-              description: 'Cursor for forward pagination. Use endCursor from previous response.'
+              description: 'Cursor for forward pagination of notes. ' \
+                'Use pageInfo.endCursor from a previous response.'
             },
             before: {
               type: 'string',
-              description: 'Cursor for backward pagination. Use startCursor from previous response.'
+              description: 'Cursor for backward pagination of notes. ' \
+                'Use pageInfo.startCursor from a previous response.'
             },
             first: {
               type: 'integer',
-              description: 'Number of notes to return after the cursor (forward pagination, max 100)',
+              description: 'Number of notes to return after the cursor (forward pagination). Max 100.',
               minimum: 1,
               maximum: 100
             },
             last: {
               type: 'integer',
-              description: 'Number of notes to return before the cursor (backward pagination, max 100)',
+              description: 'Number of notes to return before the cursor (backward pagination). Max 100.',
               minimum: 1,
               maximum: 100
             }

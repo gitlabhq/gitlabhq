@@ -27,7 +27,7 @@ RSpec.describe Gitlab::FogbugzImport::ProjectCreator, feature_category: :importe
   end
 
   it 'creates project with private visibility level' do
-    expect(subject.persisted?).to eq(true)
+    expect(subject.persisted?).to be(true)
     expect(subject.visibility_level).to eq(Gitlab::VisibilityLevel::PRIVATE)
   end
 

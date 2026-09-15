@@ -3,7 +3,10 @@ import { __, sprintf } from '~/locale';
 import { DISPLAY_TYPES } from '../../constants';
 import AreaChartPresenter from './area_chart.vue';
 import BarChartPresenter from './bar_chart.vue';
+import BarListPresenter from './bar_list.vue';
 import ColumnChartPresenter from './column_chart.vue';
+import DivergingBarChartPresenter from './diverging_bar_chart.vue';
+import HeatMapPresenter from './heat_map.vue';
 import LineChartPresenter from './line_chart.vue';
 import ListPresenter from './list.vue';
 import StatPresenter from './stat.vue';
@@ -20,7 +23,10 @@ export default {
     ColumnChartPresenter,
     LineChartPresenter,
     BarChartPresenter,
+    BarListPresenter,
     AreaChartPresenter,
+    HeatMapPresenter,
+    DivergingBarChartPresenter,
   },
   props: {
     displayType: {
@@ -31,6 +37,14 @@ export default {
       required: false,
       type: Object,
       default: () => ({ nodes: [] }),
+    },
+    /**
+     * Result of a second query to compare `data` against.
+     */
+    comparisonData: {
+      required: false,
+      type: Object,
+      default: null,
     },
     fields: {
       required: false,
@@ -46,6 +60,11 @@ export default {
       required: false,
       type: Object,
       default: () => ({}),
+    },
+    source: {
+      required: false,
+      type: String,
+      default: '',
     },
   },
   emits: { error: null },
@@ -87,8 +106,11 @@ export default {
   <table-presenter
     v-if="displayType === $options.DISPLAY_TYPES.TABLE"
     :data="data"
+    :comparison-data="comparisonData"
     :fields="fields"
     :loading="loading"
+    :source="source"
+    @error="$emit('error', $event)"
   />
   <list-presenter
     v-else-if="isList"
@@ -100,8 +122,11 @@ export default {
   <stat-presenter
     v-else-if="displayType === $options.DISPLAY_TYPES.STAT"
     :data="data"
+    :comparison-data="comparisonData"
     :fields="fields"
     :loading="loading"
+    :display-config="displayConfig"
+    :source="source"
     @error="$emit('error', $event)"
   />
   <column-chart-presenter
@@ -127,12 +152,35 @@ export default {
     :display-config="displayConfig"
     @error="$emit('error', $event)"
   />
+  <bar-list-presenter
+    v-else-if="displayType === $options.DISPLAY_TYPES.BAR_LIST"
+    :data="data"
+    :fields="fields"
+    :loading="loading"
+    :display-config="displayConfig"
+    @error="$emit('error', $event)"
+  />
   <area-chart-presenter
     v-else-if="displayType === $options.DISPLAY_TYPES.AREA_CHART"
     :data="data"
     :fields="fields"
     :loading="loading"
     :display-config="displayConfig"
+    @error="$emit('error', $event)"
+  />
+  <heat-map-presenter
+    v-else-if="displayType === $options.DISPLAY_TYPES.HEAT_MAP"
+    :data="data"
+    :fields="fields"
+    :loading="loading"
+    :display-config="displayConfig"
+    @error="$emit('error', $event)"
+  />
+  <diverging-bar-chart-presenter
+    v-else-if="displayType === $options.DISPLAY_TYPES.DIVERGING_BAR_CHART"
+    :data="data"
+    :fields="fields"
+    :loading="loading"
     @error="$emit('error', $event)"
   />
 </template>

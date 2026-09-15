@@ -1,0 +1,10 @@
+.user_new
+  = gitlab_ui_form_for [:admin, @user], html: { class: 'fieldset-form' } do |f|
+    = form_errors(@user)
+
+    = yield :organization_section
+
+    .settings-sticky-footer
+      = f.submit _('Save changes'), pajamas_button: true, class: 'gl-mr-3'
+      = render Pajamas::ButtonComponent.new(href: admin_user_path(@user)) do
+        = _('Cancel')

@@ -22,7 +22,9 @@
 
           .gl-mb-3
             = f.label :email, s_('Onboarding|Email'), class: 'gl-mb-2 gl-block'
-            = f.email_field :email, class: 'gl-form-input form-control', required: true, data: { testid: 'email' }
+            = f.email_field :email, value: nil, class: 'gl-form-input form-control', required: true, autocomplete: 'email', data: { testid: 'email' }
+            .form-text.gl-text-subtle
+              = _('Please use an email address or domain you control.')
 
           = f.fields_for :user_detail, @user.user_detail do |udf|
             .gl-mb-3

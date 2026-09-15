@@ -31,9 +31,16 @@ describe('DropdownHeader', () => {
   const findSearchInput = () => wrapper.findComponent(GlSearchBoxByType);
   const findGoBackButton = () => wrapper.findByTestId('go-back-button');
   const findDropdownTitle = () => wrapper.findByTestId('dropdown-header-title');
+  const findCloseButton = () => wrapper.findComponentByTestId('close-labels-dropdown-button');
 
   beforeEach(() => {
     createComponent();
+  });
+
+  it('emits `close-dropdown` on close button click', () => {
+    findCloseButton().vm.$emit('click');
+
+    expect(wrapper.emitted('close-dropdown')).toEqual([[]]);
   });
 
   describe('Create view', () => {

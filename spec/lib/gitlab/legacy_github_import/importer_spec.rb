@@ -510,7 +510,7 @@ RSpec.describe Gitlab::LegacyGithubImport::Importer, :clean_gitlab_redis_shared_
       end
 
       it 'returns true' do
-        expect(subject.execute).to eq true
+        expect(subject.execute).to be true
       end
 
       it 'does not raise an error' do

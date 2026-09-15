@@ -2,11 +2,13 @@
 
 class ProjectImportState < ApplicationRecord
   include AfterCommitQueue
+  include Gitlab::InternalEventsTracking
   include ImportState::SidekiqJobTracker
 
   self.table_name = "project_mirror_data"
 
-  attr_accessor :user_mapping_enabled, :safe_import_url
+  attr_accessor :user_mapping_enabled, :safe_import_url, :timed_out
+  alias_method :timed_out?, :timed_out
 
   after_commit :expire_etag_cache
 
@@ -82,6 +84,18 @@ class ProjectImportState < ApplicationRecord
       end
     end
 
+    after_transition any => :started do |state, _|
+      state.track_project_import_event('start_project_import')
+    end
+
+    after_transition any => :failed do |state, _|
+      state.track_project_import_event(state.timed_out? ? 'timeout_project_import' : 'fail_project_import')
+    end
+
+    after_transition any => :canceled do |state, _|
+      state.track_project_import_event('cancel_project_import')
+    end
+
     after_transition started: :finished do |state, _|
       project = state.project
 
@@ -93,6 +107,8 @@ class ProjectImportState < ApplicationRecord
           Projects::AfterImportWorker.perform_async(project.id)
         end
       end
+
+      state.track_project_import_event('finish_project_import')
 
       state.send_completion_notification
     end
@@ -124,6 +140,12 @@ class ProjectImportState < ApplicationRecord
     project.import_failures.hard_failures_by_correlation_id(correlation_id).limit(limit)
   end
 
+  # `timed_out` is set by the caller (see StuckProjectImportJobsWorker) before this
+  # runs, so the after_transition :failed handler can tell a timeout from a plain
+  # failure. Pull mirrors reuse this same class and state machine, and their recovery
+  # logic (CE's `schedule` event, EE's retry/capacity bookkeeping) only knows about
+  # the `failed` state, so a timed-out import still transitions to `failed` like any
+  # other failure.
   def mark_as_failed(error_message)
     original_errors = errors.dup
     sanitized_message = sanitized_failure_message(error_message)
@@ -177,7 +199,28 @@ class ProjectImportState < ApplicationRecord
     self.safe_import_url ||= project.safe_import_url(masked: false)
   end
 
+  def track_project_import_event(action)
+    return if project.mirror?
+    return unless Gitlab::ImportSources.importable_project_types.include?(project.import_type)
+
+    run_after_commit do
+      track_internal_event(
+        action,
+        project: project,
+        user: project.creator,
+        namespace: project.namespace,
+        additional_properties: { label: project.import_type, property: hashed_import_source }.compact
+      )
+    end
+  end
+
   private
+
+  def hashed_import_source
+    # masked: false strips credentials rather than replacing them with a placeholder,
+    # so imports of the same source hash the same whether credentials were saved or not.
+    Gitlab::Import::SourceIdentifier.hash(project.safe_import_url(masked: false))
+  end
 
   # Return whether or not user mapping was enabled during the project's import to determine who to
   # send completion emails to. user_mapping_enabled should be set if import_data is removed.

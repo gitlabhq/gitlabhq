@@ -1,5 +1,5 @@
 ---
-stage: Tenant Scale
+stage: GitLab Dedicated
 group: Geo
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see <https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments>
 title: Troubleshooting common Geo errors
@@ -118,7 +118,7 @@ health check manually to get this information and a few more details.
 
 #### Health check Rake task
 
-This Rake task can be run on a **Rails** node in the primary or secondary
+This Rake task can be run on a Rails node in the primary or secondary
 Geo sites:
 
 ```shell
@@ -378,7 +378,7 @@ sudo gitlab-rake gitlab:geo:check
   Checking Geo ... Finished
   ```
 
-  When performing a PostgreSQL major version (9 > 10), update this is expected. Follow
+  When performing a PostgreSQL major version upgrade (9 > 10), this is expected. Follow
   the [initiate-the-replication-process](../../setup/database.md#step-3-initiate-the-replication-process).
 
 - Rails does not appear to have the configuration necessary to connect to the Geo tracking database.
@@ -435,7 +435,7 @@ Machine clock is synchronized ... Exception: getaddrinfo: Servname not supported
 
 ##### Message: `cannot execute INSERT in a read-only transaction`
 
-When this error is encountered on a secondary site, it likely affects all usages of GitLab Rails such as `gitlab-rails` or `gitlab-rake` commands, as well the Puma, Sidekiq, and Geo Log Cursor services.
+When this error is encountered on a secondary site, it likely affects all usages of GitLab Rails such as `gitlab-rails` or `gitlab-rake` commands, as well as the Puma, Sidekiq, and Geo Log Cursor services.
 
 ```plaintext
 ActiveRecord::StatementInvalid: PG::ReadOnlySqlTransaction: ERROR:  cannot execute INSERT in a read-only transaction
@@ -540,7 +540,7 @@ For more information about recommended site names in the description of the Name
 
 If at all possible, all Geo nodes across all sites should be deployed with the same method and operating system, as defined in the [requirements for running Geo](../../_index.md#requirements-for-running-geo).
 
-If different operating systems or different operating system versions are deployed across Geo sites, you **must** perform a locale data compatibility check before setting up Geo. You must also check `glibc` when using a mixture of GitLab deployment methods. The locale might be different between a Linux package install, a GitLab Docker container, a Helm chart deployment, or external database services. See the [documentation on upgrading operating systems for PostgreSQL](../../../postgresql/upgrading_os.md), including how to check `glibc` version compatibility.
+If different operating systems or different operating system versions are deployed across Geo sites, you must perform a locale data compatibility check before setting up Geo. You must also check `glibc` when using a mixture of GitLab deployment methods. The locale might be different between a Linux package install, a GitLab Docker container, a Helm chart deployment, or external database services. See the [documentation on upgrading operating systems for PostgreSQL](../../../postgresql/upgrading_os.md), including how to check `glibc` version compatibility.
 
 Geo uses PostgreSQL and Streaming Replication to replicate data across Geo sites. PostgreSQL uses locale data provided by the operating system's C library for sorting text. If the locale data in the C library is incompatible across Geo sites, it causes erroneous query results that lead to [incorrect behavior on secondary sites](https://gitlab.com/gitlab-org/gitlab/-/issues/360723).
 
@@ -684,7 +684,7 @@ DETAIL:  User query might have needed to see row versions that must be removed.
 pg_dump: error: The command was: COPY public.notes (id, note, [...], last_edited_at) TO stdout;
 ```
 
-To prevent a database backup being made automatically during GitLab upgrades on your Geo **secondaries**,
+To prevent a database backup being made automatically during GitLab upgrades on your Geo secondaries,
 create the following empty file:
 
 ```shell

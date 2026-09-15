@@ -71,7 +71,7 @@ this provider also allows Crowd authentication for Git-over-https requests.
      ```
 
 1. Change `CROWD_SERVER_URL` to the [base URL of your Crowd server](https://confluence.atlassian.com/crowdkb/how-to-change-the-crowd-base-url-245827278.html).
-1. Change `YOUR_APP_NAME` to the application name from Crowd applications page.
+1. Change `YOUR_APP_NAME` to the application name from the Crowd applications page.
 1. Change `YOUR_APP_PASSWORD` to the application password you've set.
 1. Save the configuration file.
 1. [Reconfigure](../restart_gitlab.md#reconfigure-a-linux-package-installation) (Linux package installations) or

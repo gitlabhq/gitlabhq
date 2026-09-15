@@ -50,7 +50,7 @@ You can also run security scanning by:
 Scan your project's repository and test your application's behavior for vulnerabilities:
 
 - Repository scanning can detect vulnerabilities in your project's repository. Coverage includes
-  your application's source code, also the libraries and container images it's dependent on.
+  your application's source code, as well as the libraries and container images it's dependent on.
 - Behavioral testing of your application and its API can detect vulnerabilities that occur only at
   runtime.
 

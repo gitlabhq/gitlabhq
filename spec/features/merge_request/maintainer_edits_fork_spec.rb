@@ -31,21 +31,24 @@ RSpec.describe 'a maintainer edits files on a source-branch of an MR from a fork
     click_link 'Changes'
     wait_for_requests
 
-    page.within(first('.js-file-title')) do
-      find('.js-diff-more-actions').click
-      find('.js-edit-blob').click
-    end
+    page.assert_selector('diff-file diff-file-mounted', visible: :all, wait: 10)
+    find('diff-file', match: :first).find('button[aria-label="Show options"]').click
+    click_link 'Edit single file'
 
     wait_for_requests
   end
 
-  it 'mentions commits will go to the source branch' do
+  it 'mentions commits will go to the source branch',
+    skip: 'Rapid Diffs: cross-project (fork) diff stream never completes; ' \
+      'https://gitlab.com/gitlab-org/gitlab/-/issues/628499' do
     click_button 'Commit changes'
 
     expect(page).to have_content('Your changes can be committed to fix because a merge request is open.')
   end
 
-  it 'allows committing to the source branch' do
+  it 'allows committing to the source branch',
+    skip: 'Rapid Diffs: cross-project (fork) diff stream never completes; ' \
+      'https://gitlab.com/gitlab-org/gitlab/-/issues/628499' do
     content = 'Updated the readme'
     editor_set_value(content)
 

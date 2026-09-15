@@ -354,15 +354,108 @@ RSpec.describe MergeRequests::CreateRefService, feature_category: :merge_trains 
           project.save!
         end
 
-        it 'returns an error', :aggregate_failures do
+        it 'returns an error without a reason', :aggregate_failures do
           expect(result[:status]).to eq :error
           expect(result[:message])
             .to eq('The merge request has no changes to merge after rebasing onto the target branch')
+          expect(result.reason).to be_nil
         end
       end
 
-      context 'when we are not on ee' do
-        include_examples 'does not generate ref merge request commits'
+      # These contexts intentionally run the real Gitaly RPCs: the conflict
+      # classification matches Gitaly's message text, so they fail if that
+      # wording ever changes.
+      context 'when the source conflicts with the first parent ref' do
+        let(:source_branch) { 'conflict-source' }
+        let(:first_parent_ref) { 'conflict-target' }
+
+        before_all do
+          project.repository.add_branch(user, 'conflict-source', project.default_branch_or_main)
+          project.repository.add_branch(user, 'conflict-target', project.default_branch_or_main)
+
+          project.repository.update_file(
+            user,
+            'README.md',
+            'source side',
+            message: 'Source side change',
+            branch_name: 'conflict-source'
+          )
+
+          project.repository.update_file(
+            user,
+            'README.md',
+            'target side',
+            message: 'Target side change',
+            branch_name: 'conflict-target'
+          )
+        end
+
+        context 'with a fast-forward project (conflict raised by the rebase RPC)' do
+          before do
+            project.merge_method = :ff
+            project.save!
+          end
+
+          it 'returns an error with the rebase conflict reason', :aggregate_failures do
+            expect(result[:status]).to eq :error
+            expect(result.reason).to eq(described_class::REBASE_CONFLICT)
+          end
+        end
+
+        context 'with a merged commit project (no rebase step, merge-to-ref failure)' do
+          before do
+            project.merge_method = :merge
+            project.save!
+          end
+
+          # UserMergeToRef reports one generic message for all failures, so a
+          # conflict there is deliberately not classified.
+          it 'returns an error without a reason', :aggregate_failures do
+            expect(result[:status]).to eq :error
+            expect(result.reason).to be_nil
+          end
+        end
+      end
+
+      describe 'recording generated ref commits' do
+        context 'when the project merges with a merge commit' do
+          before do
+            project.merge_method = :merge
+            project.save!
+          end
+
+          include_examples 'does not generate ref merge request commits'
+        end
+
+        context 'when the project rebases before merging' do
+          # The generated ref holds the two rebased commits, plus a merge commit
+          # for every merge method except fast-forward.
+          where(:merge_method, :expected_count) do
+            :rebase_merge | 3
+            :ff           | 2
+          end
+
+          with_them do
+            before do
+              project.merge_method = merge_method
+              project.save!
+            end
+
+            it 'records every commit the generated ref adds to the target' do
+              expect { result }
+                .to change { merge_request.generated_ref_commits.count }
+                .from(0).to(expected_count)
+            end
+
+            context 'when generated_ref_commits_for_automatic_rebase is disabled' do
+              before do
+                stub_feature_flags(generated_ref_commits_for_automatic_rebase: false)
+              end
+
+              include_examples 'does not generate ref merge request commits'
+            end
+          end
+        end
       end
     end
   end

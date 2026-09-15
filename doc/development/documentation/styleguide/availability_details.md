@@ -164,6 +164,7 @@ In addition:
 - Do not link to [confidential issues](_index.md#confidential-or-restricted-access-links).
 - Do not link to the pricing page.
 - Do not include the subscription tier, unless it's changing from one tier to another.
+- Do not duplicate entries on multiple pages. Add the entry to the page that documents the feature that changed.
 
 #### Updated features
 
@@ -192,6 +193,18 @@ For features that move to another subscription tier, use `moved`:
 - [Moved](https://issue-link) from GitLab Ultimate to GitLab Premium in 11.8.
 - [Moved](https://issue-link) from GitLab Premium to GitLab Free in 12.0.
 ```
+
+#### Changed billing method
+
+For features that change from seat-based billing to usage-based billing with
+[GitLab Credits](../../../subscriptions/gitlab_credits.md), use `changed to usage-based billing`:
+
+```markdown
+- [Changed](https://issue-link) to usage-based billing in GitLab 19.0.
+```
+
+Add this entry only to the history for the feature.
+Do not add an entry to the GitLab Credits history, because the functionality of credits does not change when a feature starts to use them.
 
 #### Changed feature status
 
@@ -251,6 +264,19 @@ instance requirement:
 
 ```markdown
 - [Introduced](https://release-page-link) in GitLab for VS Code 6.14.0 during the GitLab 18.1 release.
+```
+
+#### Changed or updated models
+
+The models available for GitLab Duo features, including default models, are defined in the
+[AI Gateway](https://gitlab.com/gitlab-org/modelops/applied-ml/code-suggestions/ai-assist). In most
+cases, model changes reach all GitLab versions immediately and are not gated by GitLab releases.
+
+In the history item, use a date instead of a milestone. Link the AI Gateway merge
+request that made the change, not the documentation merge request.
+
+```markdown
+- Claude Sonnet 5 [added](https://ai-gateway-mr-link) as a supported model for Code Review Flow on August 3, 2026.
 ```
 
 #### Removing versions

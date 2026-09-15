@@ -440,7 +440,7 @@ RSpec.describe Gitlab::ErrorTracking::ErrorRepository::OpenApiStrategy do
     context 'when update succeeds' do
       include_examples 'no logging'
 
-      it { is_expected.to eq(true) }
+      it { is_expected.to be(true) }
     end
 
     context 'when update fails' do
@@ -452,7 +452,7 @@ RSpec.describe Gitlab::ErrorTracking::ErrorRepository::OpenApiStrategy do
 
       include_examples 'exception logging'
 
-      it { is_expected.to eq(false) }
+      it { is_expected.to be(false) }
     end
   end
 

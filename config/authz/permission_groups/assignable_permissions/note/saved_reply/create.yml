@@ -1,0 +1,11 @@
+---
+name: create_saved_reply
+description: Grants the ability to create saved replies (comment templates)
+boundaries:
+  - user
+  - group
+  - project
+available_for:
+  - granular_access_token
+permissions:
+  - create_saved_reply

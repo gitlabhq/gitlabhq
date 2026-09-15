@@ -51,12 +51,16 @@ RSpec.describe Mcp::Tools::Pipelines::SavePipelineService, feature_category: :mc
             },
             action: {
               type: 'string',
-              enum: %w[retry cancel],
+              enum: %w[retry cancel update],
               description: 'Lifecycle action to perform on pipeline_id. Required when pipeline_id is set.'
             },
             ref: {
               type: 'string',
               description: 'Branch or tag name. Required to create a pipeline (when pipeline_id is absent).'
+            },
+            name: {
+              type: 'string',
+              description: 'New pipeline name. Required for action: "update".'
             },
             variables: {
               type: 'array',
@@ -149,6 +153,67 @@ RSpec.describe Mcp::Tools::Pipelines::SavePipelineService, feature_category: :mc
 
         expect(result[:isError]).to be(false)
         expect(result[:structuredContent]).to include(action: 'retry', id: failed_pipeline.id)
+      end
+    end
+
+    context 'when renaming a pipeline' do
+      let_it_be_with_reload(:named_pipeline) { create(:ci_pipeline, project: project, ref: 'master') }
+
+      let(:params) { { arguments: { pipeline_id: named_pipeline.id, action: 'update', name: 'Nightly build' } } }
+
+      it 'renames the pipeline', :aggregate_failures do
+        result = service.execute(request: request, params: params)
+
+        expect(result[:isError]).to be(false)
+        expect(result[:structuredContent]).to include(action: 'update', id: named_pipeline.id, name: 'Nightly build')
+        expect(named_pipeline.reload.name).to eq('Nightly build')
+      end
+
+      it 'requires name' do
+        result = service.execute(
+          request: request, params: { arguments: { pipeline_id: named_pipeline.id, action: 'update' } }
+        )
+
+        expect(result[:isError]).to be(true)
+        expect(result[:content].first[:text]).to include('Provide name to rename the pipeline')
+      end
+
+      it 'surfaces the metadata validation errors when the service rejects the name', :aggregate_failures do
+        result = service.execute(
+          request: request,
+          params: { arguments: { pipeline_id: named_pipeline.id, action: 'update', name: 'a' * 256 } }
+        )
+
+        expect(result[:isError]).to be(true)
+        expect(result[:content].first[:text]).to include('too long')
+        expect(named_pipeline.reload.name).to be_nil
+      end
+
+      it 'requires pipeline_id' do
+        result = service.execute(request: request, params: { arguments: { action: 'update', name: 'x' } })
+
+        expect(result[:isError]).to be(true)
+        expect(result[:content].first[:text]).to include('Provide pipeline_id to rename a pipeline')
+      end
+
+      it 'returns the uniform not-found error for an unknown pipeline' do
+        result = service.execute(
+          request: request,
+          params: { arguments: { pipeline_id: non_existing_record_id, action: 'update', name: 'x' } }
+        )
+
+        expect(result[:isError]).to be(true)
+        expect(result[:content].first[:text]).to include('Pipeline not found or inaccessible.')
+      end
+
+      it 'returns the uniform not-found error for a user who cannot rename', :aggregate_failures do
+        service.set_cred(current_user: create(:user))
+
+        result = service.execute(request: request, params: params)
+
+        expect(result[:isError]).to be(true)
+        expect(result[:content].first[:text]).to include('Pipeline not found or inaccessible.')
+        expect(named_pipeline.reload.name).to be_nil
       end
     end
 

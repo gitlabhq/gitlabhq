@@ -73,7 +73,7 @@ RSpec.describe Search::SearchRateLimitable, feature_category: :global_search do
         it 'raises a resource not available error' do
           expect { resolver.resolve(search: 'test') }.to raise_error(
             Gitlab::Graphql::Errors::ResourceNotAvailable,
-            "_('This endpoint has been requested too many times. Try again later.')"
+            Gitlab::ApplicationRateLimiter.throttled_error_message
           )
         end
       end
@@ -167,7 +167,7 @@ RSpec.describe Search::SearchRateLimitable, feature_category: :global_search do
         it 'raises a resource not available error' do
           expect { nil_user_resolver.resolve(search: 'test') }.to raise_error(
             Gitlab::Graphql::Errors::ResourceNotAvailable,
-            "_('This endpoint has been requested too many times. Try again later.')"
+            Gitlab::ApplicationRateLimiter.throttled_error_message
           )
         end
       end

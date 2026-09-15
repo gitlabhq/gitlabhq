@@ -330,7 +330,7 @@ To get job information from the GraphQL API:
 
 ### Report an issue
 
-[Open a new issue](https://gitlab.com/gitlab-org/gitlab/-/issues/new) with the following information:
+[Open a new issue](https://gitlab.com/gitlab-org/gitlab/-/work_items/new) with the following information:
 
 - The ID of the affected job.
 - The job status.

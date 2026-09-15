@@ -286,7 +286,6 @@ describe('WorkItemParent component', () => {
         headerText: 'Select parent',
         loading: false,
         searchable: true,
-        infiniteScroll: false,
         resetButtonLabel: 'Clear',
       });
     });

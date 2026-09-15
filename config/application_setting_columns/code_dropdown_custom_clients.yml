@@ -1,0 +1,12 @@
+---
+api_type:
+attr: code_dropdown_custom_clients
+clusterwide: false
+column: code_dropdown_custom_clients
+db_type: jsonb
+default: "'[]'::jsonb"
+description: Admin-configurable Open with clients shown in the project Code dropdown.
+encrypted: false
+gitlab_com_different_than_default: false
+jihu: false
+not_null: true

@@ -4,6 +4,15 @@
 
 %div{ data: { event_tracking_load: 'true', event_tracking: 'view_admin_application_settings_repository_pageload' } }
 
+- if Feature.enabled?(:custom_code_dropdown_clients, current_user)
+  = render ::Layouts::SettingsBlockComponent.new(_('General'),
+    id: 'js-general-settings',
+    expanded: expanded_by_default?) do |c|
+    - c.with_description do
+      = _('Configure general repository settings.')
+    - c.with_body do
+      = render 'code_dropdown_clients'
+
 = render ::Layouts::SettingsBlockComponent.new(_('Default branch'),
   id: 'js-default-branch-name',
   expanded: expanded_by_default?) do |c|

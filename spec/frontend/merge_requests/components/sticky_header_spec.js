@@ -15,6 +15,7 @@ import { useMrNotes } from '~/mr_notes/store/legacy_mr_notes';
 import { useLegacyDiffs } from '~/diffs/stores/legacy_diffs';
 import { useNotes } from '~/notes/store/legacy_notes';
 import { isLoggedIn } from '~/lib/utils/common_utils';
+import { EVENT_MR_TITLE_UPDATED } from '~/merge_requests/constants';
 
 jest.mock('~/lib/utils/common_utils');
 isLoggedIn.mockReturnValue(true);
@@ -43,6 +44,7 @@ describe('Merge requests sticky header component', () => {
   };
 
   const findImportedBadge = () => wrapper.findComponent(ImportedBadge);
+  const findStickyHeaderTitle = () => wrapper.findByTestId('sticky-header-title');
   const findTodoWidget = () => wrapper.findComponent(TodoWidget);
   const findSubscriptionsWidget = () => wrapper.findComponent(SubscriptionsWidget);
 
@@ -117,6 +119,21 @@ describe('Merge requests sticky header component', () => {
       createComponent();
 
       expect(findSubscriptionsWidget().exists()).toBe(true);
+    });
+  });
+
+  describe('title updated event', () => {
+    it('updates the sticky header title when EVENT_MR_TITLE_UPDATED is dispatched', async () => {
+      createComponent({ provide: { title: 'Draft: Initial title' } });
+
+      expect(findStickyHeaderTitle().text()).toBe('Draft: Initial title');
+
+      document.dispatchEvent(
+        new CustomEvent(EVENT_MR_TITLE_UPDATED, { detail: { title: 'Initial title' } }),
+      );
+      await Vue.nextTick();
+
+      expect(findStickyHeaderTitle().text()).toBe('Initial title');
     });
   });
 

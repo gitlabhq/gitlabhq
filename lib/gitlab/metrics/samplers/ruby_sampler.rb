@@ -42,7 +42,8 @@ module Gitlab
             process_start_time_seconds: ::Gitlab::Metrics.gauge(metric_name(:process, :start_time_seconds), 'Process start time seconds'),
             sampler_duration: ::Gitlab::Metrics.counter(metric_name(:sampler, :duration_seconds_total), 'Sampler time', labels),
             gc_duration_seconds: ::Gitlab::Metrics.histogram(metric_name(:gc, :duration_seconds), 'GC time', labels, GC_REPORT_BUCKETS),
-            heap_fragmentation: ::Gitlab::Metrics.gauge(metric_name(:gc_stat_ext, :heap_fragmentation), 'Ruby heap fragmentation', labels)
+            heap_fragmentation: ::Gitlab::Metrics.gauge(metric_name(:gc_stat_ext, :heap_fragmentation), 'Ruby heap fragmentation', labels),
+            gvl_wait_seconds: ::Gitlab::Metrics.gauge(metric_name(:gvl, :wait_seconds_total), 'Seconds all threads in this process spent waiting for the GVL')
           }
 
           GC.stat.keys.each do |key|
@@ -63,6 +64,7 @@ module Gitlab
           set_memory_usage_metrics
           sample_gc
           sample_yjit_metrics
+          sample_gvl
 
           metrics[:sampler_duration].increment(labels, System.monotonic_time - start_time)
         end
@@ -110,6 +112,14 @@ module Gitlab
             metrics[:process_unique_memory_bytes].set(labels, memory_uss_pss[:uss])
             metrics[:process_proportional_memory_bytes].set(labels, memory_uss_pss[:pss])
           end
+        end
+
+        # GlobalTimer is one counter per process, summing every thread's wait.
+        # The metrics server boots without Bundler.require, so GVLTools is absent there.
+        def sample_gvl
+          return unless defined?(GVLTools) && GVLTools::GlobalTimer.enabled?
+
+          metrics[:gvl_wait_seconds].set(labels, GVLTools::GlobalTimer.monotonic_time / 1_000_000_000.0)
         end
 
         def yjit_enabled?

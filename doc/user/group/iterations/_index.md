@@ -1,6 +1,6 @@
 ---
 stage: Plan
-group: Project Management
+group: Work Items
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see <https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments>
 title: Iterations
 description: Time-boxed workflow, program increments, cadence, and sprints.
@@ -30,7 +30,7 @@ In GitLab, iterations are similar to milestones, with a few differences:
 - Iterations are only available to groups.
 - Iterations are grouped into iteration cadences.
 - Iterations require both a start and an end date.
-- Iteration date ranges cannot overlap within an iteration cadence.
+- Iteration date ranges cannot overlap in an iteration cadence.
 
 ## Planning workflows with iterations
 
@@ -160,7 +160,7 @@ To edit an iteration cadence:
 1. To the right of the cadence you want to edit, select the vertical ellipsis ({{< icon name="ellipsis_v" >}}) and
    then select **Edit cadence**.
 1. Edit the fields.
-   - When you use automatic scheduling and edit the **Automation start date** field,
+   - When you use automatic scheduling and edit **Automation start date**,
      you must set a new start date that doesn't overlap with the existing
      current or past iterations.
    - Editing **Upcoming iterations** is a non-destructive action.
@@ -231,7 +231,7 @@ To delete an iteration cadence:
 
 ### GitLab Automation Bot user
 
-When iteration roll-over is enabled, at the end of the current iteration, all open issues are moved
+When iteration roll-over is turned on, at the end of the current iteration, all open issues are moved
 to the next iteration.
 
 Iterations are changed by the special GitLab Automation Bot user, which you can see in the issue
@@ -249,20 +249,20 @@ On GitLab.com, this is the `automation-bot1` user.
 
 {{< /history >}}
 
-When an iteration cadence has automatic scheduling enabled, iterations are created on schedule.
-If you disable that option, you can create iterations manually.
+When an iteration cadence has automatic scheduling turned on, iterations are created on schedule.
+If you turn off that option, you can create iterations manually.
 
 Prerequisites:
 
 - You must have the Planner, Reporter, Developer, Maintainer, or Owner role for a group.
 - There must be at least one iteration cadence in the group and
-  [automatic scheduling must be disabled](#turn-on-and-off-automatic-scheduling-for-an-iteration-cadence) for the iteration cadence.
+  [automatic scheduling must be turned off](#turn-on-and-off-automatic-scheduling-for-an-iteration-cadence) for the iteration cadence.
 
 To create an iteration:
 
 1. In the top bar, select **Search or go to** and find your group.
 1. In the left sidebar, select **Plan** > **Iterations**.
-1. To the right of the cadence in which you want create an iteration, select the vertical ellipsis
+1. To the right of the cadence in which you want to create an iteration, select the vertical ellipsis
    ({{< icon name="ellipsis_v" >}}) and then select **Add iteration**.
 1. Complete the fields.
 1. Select **Create iteration**. The iteration details page opens.
@@ -283,10 +283,10 @@ To edit an iteration:
 
 1. In the top bar, select **Search or go to** and find your group.
 1. In the left sidebar, select **Plan** > **Iterations** and select an iteration cadence.
-1. Select the iteration you want edit. The iteration details page opens.
+1. Select the iteration you want to edit. The iteration details page opens.
 1. In the upper-right corner, select the vertical ellipsis ({{< icon name="ellipsis_v" >}}) and then select **Edit**.
 1. Edit the fields:
-   - You can edit **Title**, **Start date**, and **Due date** only if [automatic scheduling is disabled](#turn-on-and-off-automatic-scheduling-for-an-iteration-cadence) for the iteration cadence.
+   - You can edit **Title**, **Start date**, and **Due date** only if [automatic scheduling is turned off](#turn-on-and-off-automatic-scheduling-for-an-iteration-cadence) for the iteration cadence.
 1. Select **Save changes**.
 
 ## Delete an iteration
@@ -300,13 +300,13 @@ To edit an iteration:
 Prerequisites:
 
 - You must have the Planner, Reporter, Developer, Maintainer, or Owner role for a group.
-- [Automatic scheduling must be disabled](#turn-on-and-off-automatic-scheduling-for-an-iteration-cadence) for the iteration cadence.
+- [Automatic scheduling must be turned off](#turn-on-and-off-automatic-scheduling-for-an-iteration-cadence) for the iteration cadence.
 
 To delete an iteration:
 
 1. In the top bar, select **Search or go to** and find your group.
 1. In the left sidebar, select **Plan** > **Iterations** and select an iteration cadence.
-1. Select the iteration you want edit. The iteration details page opens.
+1. Select the iteration you want to edit. The iteration details page opens.
 1. In the upper-right corner, select the vertical ellipsis ({{< icon name="ellipsis_v" >}}) and then select **Delete**.
 1. Select **Delete**.
 

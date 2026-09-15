@@ -3,8 +3,6 @@
 require 'spec_helper'
 
 RSpec.describe 'Merge request > User sees merge request file tree sidebar', :js, feature_category: :code_review_workflow do
-  include MergeRequestDiffHelpers
-
   let_it_be(:project) { create(:project, :public, :repository) }
   let_it_be(:merge_request) { create(:merge_request, source_project: project) }
   let(:user) { project.creator }
@@ -37,24 +35,30 @@ RSpec.describe 'Merge request > User sees merge request file tree sidebar', :js,
       title = button.find('[data-testid=file-row-name-container]')[:title]
       button.click
 
-      expect(page).to have_selector(".file-title-name[title*=\"#{title}\"]")
+      expect(page).to have_css('[data-testid="rd-diff-file-header"]', text: title)
     end
   end
 
-  context 'with quarantine', quarantine: 'https://gitlab.com/gitlab-org/quality/test-failure-issues/-/issues/9506' do
+  context 'with quarantine',
+    skip: 'Rapid Diffs: file browser cannot reach the last entry; ' \
+      'https://gitlab.com/gitlab-org/gitlab/-/issues/628500' do
     it_behaves_like 'last entry clickable'
   end
 
   context 'when viewing using file-by-file mode' do
     let(:user) { create(:user, view_diffs_file_by_file: true) }
 
-    context 'with quarantine', quarantine: 'https://gitlab.com/gitlab-org/quality/test-failure-issues/-/issues/9452' do
+    context 'with quarantine',
+      skip: 'Rapid Diffs: file browser cannot reach the last entry; ' \
+        'https://gitlab.com/gitlab-org/gitlab/-/issues/628500' do
       it_behaves_like 'last entry clickable'
     end
 
-    context 'when navigating to the next file' do
+    context 'when navigating to the next file',
+      skip: 'Rapid Diffs: file browser cannot reach the last entry; ' \
+        'https://gitlab.com/gitlab-org/gitlab/-/issues/628500' do
       before do
-        find_by_testid('nextButton').click
+        find_by_testid('file-by-file-navigation').click_button('Next')
         wait_for_requests
       end
 

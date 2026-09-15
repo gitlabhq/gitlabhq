@@ -16,7 +16,7 @@ title: Web Editor
 The Web Editor is a browser-based tool for making changes to your GitLab repositories without
 local setup. You can:
 
-- Edit single files and view live Markdown previews.
+- Edit single files and preview your changes before you commit them.
 - Create new files and directories.
 - Upload and replace files.
 - Create branches and tags for version control.
@@ -121,19 +121,6 @@ To edit a text file in the Web Editor:
 > `Someone edited the file the same time you did. Please check out the file and
 > make sure your change will not unintentionally remove theirs.`
 
-#### Markdown preview
-
-To preview a Markdown file in the Web Editor:
-
-1. In the top bar, select **Search or go to** and find your project.
-1. Go to the file you want to preview.
-1. Select **Edit** > **Edit single file**.
-1. Select the **Preview** tab.
-
-You can see a live Markdown preview alongside your content.
-
-To close the preview panel, select the **Write** tab.
-
 #### Link to specific lines
 
 To link to single or multiple lines in the Web Editor, add hash
@@ -161,6 +148,27 @@ you can edit a file and commit changes. To do this:
 1. In **Commit message**, enter a reason for the commit.
    The following information is provided: `Your changes can be committed to <branch-name> because a merge request is open.`
 1. Select **Commit changes**.
+
+### Preview a file
+
+{{< history >}}
+
+- Preview for new files [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/253963) in GitLab 19.4.
+
+{{< /history >}}
+
+When you create or edit a file in the Web Editor, you can preview your content before you commit it.
+
+To preview your content, select the **Preview** tab.
+What you see depends on the file extension:
+
+- Markdown files show a live preview beside your content that updates as you type.
+- Other markup files, such as AsciiDoc, Org, and reStructuredText, show rendered markup.
+- All other files show a diff of your changes.
+
+To go back to your content, select the **Write** tab.
+
+When you edit a file that is not a markup file, the tab is labeled **Preview changes**.
 
 ### Upload a file
 

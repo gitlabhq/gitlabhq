@@ -41,7 +41,7 @@ you must also be in the **Allowed to deploy** list.
 
 Prerequisites:
 
-- When granting the **Allowed to deploy** permission to an approver group, the user configuring the protected environment must be a **direct member** of the approver group to be added. Otherwise, the group or subgroup does not show up in the dropdown list. For more information see [issue #345140](https://gitlab.com/gitlab-org/gitlab/-/issues/345140).
+- When granting the **Allowed to deploy** permission to an approver group, the user configuring the protected environment must be a direct member of the approver group to be added. Otherwise, the group or subgroup does not show up in the dropdown list. For more information see [issue #345140](https://gitlab.com/gitlab-org/gitlab/-/issues/345140).
 - When granting **Approvers** permissions to an approver group or project, by default only direct members of the approver group or project receive these permissions. To also grant these permissions to inherited members of the approver group or project:
   - Select the **Enable group inheritance** checkbox.
   - [Use the API](../../api/protected_environments.md#group-inheritance-types).

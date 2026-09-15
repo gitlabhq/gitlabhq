@@ -54,6 +54,27 @@ describe('ArtifactRow component', () => {
     });
   });
 
+  describe('accessible names', () => {
+    it('includes artifact name into the download button label', () => {
+      createComponent();
+
+      expect(findDownloadButton().attributes('aria-label')).toBe(`Download ${artifact.name}`);
+    });
+
+    it('includes artifact name into the delete button label', () => {
+      createComponent();
+
+      expect(findDeleteButton().attributes('aria-label')).toBe(`Delete ${artifact.name}`);
+    });
+
+    it('keeps the tooltips short', () => {
+      createComponent();
+
+      expect(findDownloadButton().attributes('title')).toBe('Download');
+      expect(findDeleteButton().attributes('title')).toBe('Delete');
+    });
+  });
+
   describe('delete button', () => {
     it('does not show when user does not have permission', () => {
       createComponent({ canDestroyArtifacts: false });

@@ -19,7 +19,7 @@ module Ci
         :services,
         :suspend_on_success,
         :suspend_on_failure,
-        :environment_key
+        :runtime_environment_key
 
       def initialize
         self.timeout = DEFAULT_TIMEOUT

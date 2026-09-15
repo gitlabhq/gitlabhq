@@ -10,8 +10,9 @@ When working with GitLab tokens, you might encounter the following issues.
 ## Token appears active but requests fail
 
 A token that is listed as active can still return `401 Unauthorized`, `403 Forbidden`, or
-`404 Not Found` responses. The active status indicates only that the token exists and has not expired or been
-revoked. This status does not mean the token can make a given request.
+`404 Not Found` responses. The active status indicates only that the token exists and has not expired
+or been revoked. This status does not mean the token can make a given request. If the token has expired
+or been revoked, see [Requests fail after a token expires](#requests-fail-after-a-token-expires) instead.
 
 A token's permissions depend on its scopes and its role. A request can also fail for reasons outside
 the token: where the request comes from, the resource the request targets, and whether an administrator has
@@ -25,7 +26,7 @@ An active token can fail for any of the following reasons:
 |-------|------------|
 | The token is missing a scope that the request requires. | Create a token with the necessary [access token scopes](access_token_scopes.md). Rotation keeps the original scopes and cannot add missing scopes.  |
 | A group or project access token doesn't have the required role. | Create a token with a higher role. A token's permissions are limited by both its role and its scopes. |
-| The token expired. | Access tokens [expire at midnight UTC](#expired-access-tokens) on their expiration date. Create a token, then update every place that used the old token. |
+| The token expired. | Access tokens [expire at midnight UTC](#requests-fail-after-a-token-expires) on their expiration date. Create a token, then update every place that used the old token. |
 | The token was revoked, or was rotated and the original value is still in use. | Rotation makes the original token inactive immediately. Use the token that the rotation created, or create a token. On GitLab Self-Managed and GitLab Dedicated, an administrator can [restore a personal access token](#restore-a-personal-access-token) that was revoked by accident. |
 | The token type cannot access the resource. | Use a token type that can access the resource. A personal access token accesses the groups and projects available to its user. A group access token accesses the subgroups and projects in its group. A project access token accesses only its own project. |
 | [IP address restrictions](../../user/group/access_and_permissions.md#restrict-group-access-by-ip-address) block the request. | These restrictions apply to group and project access tokens, and blocked requests return `404 Not Found`. Send the request from an allowed address, or ask a user with the Owner role for the top-level group to add the address to the allowed ranges. |
@@ -58,7 +59,7 @@ Valid tokens can fail in a tool for the following reasons:
 | The tool is not using the correct token. | Check which token the tool authenticates with, then update or remove the incorrect token. The GitLab for VS Code extension uses a token in the `GITLAB_WORKFLOW_TOKEN` [environment variable](../../editor_extensions/visual_studio_code/setup.md#store-tokens-in-environment-variables) only when no token is configured for that instance. This variable persists after you delete your VS Code storage. To override it, configure a token for the instance in the extension. |
 | The tool cannot connect to GitLab. | If the token has the required scopes and the tool is using it, verify the tool can reach GitLab over your network. For the GitLab for VS Code extension, see [authentication troubleshooting](../../editor_extensions/visual_studio_code/troubleshooting.md#authentication). |
 
-## Expired access tokens
+## Requests fail after a token expires
 
 If an existing access token is in use and reaches the `expires_at` value, the token
 expires and:
@@ -124,7 +125,8 @@ entry:
 >   after the token probe.
 
 `meta.auth_fail_token_id` indicates that an access token of ID 12 was used.
-From GitLab 18.9, `meta.user` will also be populated with any username associated with the token used for the failed request.
+In GitLab 18.9 and later, `meta.user` is also populated with any username associated with the token used
+for the failed request.
 
 To find more information about this token, use the [personal access token API](../../api/personal_access_tokens.md#retrieve-a-personal-access-token).
 You can also use the API to [rotate the token](../../api/personal_access_tokens.md#rotate-a-personal-access-token).
@@ -153,8 +155,7 @@ To replace the token:
      or [group access tokens API](../../api/group_access_tokens.md#create-a-group-access-token).
 1. Replace the old access token with the new access token. This process varies
    depending on how you use the token, for example if configured as a secret or
-   embedded in an application. Requests made from this token should no longer
-   return `401` responses.
+   embedded in an application. Requests that use the new token no longer return `401` responses.
 
 ## Restore a personal access token
 
@@ -169,9 +170,9 @@ On GitLab Self-Managed or GitLab Dedicated instances, administrators can restore
 that were revoked accidentally. Restoration is not available on GitLab.com.
 
 > [!warning]
-> Running the following commands changes data directly. This could be damaging if not done
-> correctly, or under the right conditions. You should first run these commands in a test environment
-> with a backup of the instance ready to be restored, just in case.
+> Running the following commands changes data directly, which can cause damage if the commands are run
+> incorrectly or in the wrong conditions. Run these commands first in a test environment, with a backup
+> of the instance ready to restore.
 
 1. Open a [Rails console](../../administration/operations/rails_console.md#starting-a-rails-console-session).
 1. Restore the token:
@@ -208,3 +209,5 @@ To analyze, extend, or remove token expiration dates, use the
 
 - [Container registry authentication](../../user/packages/container_registry/authenticate_with_container_registry.md#troubleshooting)
 - [CI/CD job token authentication](../../ci/jobs/ci_job_token.md#troubleshooting)
+- [Troubleshooting two-factor authentication](../../user/profile/account/two_factor_authentication_troubleshooting.md)
+- [Troubleshooting Git](../../topics/git/troubleshooting_git.md)

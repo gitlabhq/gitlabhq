@@ -3,7 +3,7 @@
 class CreateAgentPlatformSessionsMv < ClickHouse::Migration
   def up
     execute <<~SQL
-      CREATE TABLE agent_platform_sessions
+      CREATE TABLE IF NOT EXISTS agent_platform_sessions
       (
           `user_id` UInt64,
           `namespace_path` String,
@@ -32,7 +32,7 @@ class CreateAgentPlatformSessionsMv < ClickHouse::Migration
     SQL
 
     execute <<~SQL
-      CREATE MATERIALIZED VIEW agent_platform_sessions_mv TO agent_platform_sessions
+      CREATE MATERIALIZED VIEW IF NOT EXISTS agent_platform_sessions_mv TO agent_platform_sessions
       (
           `user_id` UInt64,
           `namespace_path` String,

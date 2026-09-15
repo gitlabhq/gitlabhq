@@ -51,6 +51,7 @@ export default {
   data() {
     return {
       checked: true,
+      copyDescription: false,
       actionPrimary: {
         text: this.i18n.actionPrimaryText,
         attributes: {
@@ -88,6 +89,7 @@ export default {
     resetModalHandler() {
       this.modalStore.clearModal();
       this.checked = true;
+      this.copyDescription = false;
     },
   },
   csrf,
@@ -151,6 +153,16 @@ export default {
         </gl-sprintf>
       </gl-form-checkbox>
       <input v-else type="hidden" name="create_merge_request" value="1" />
+
+      <gl-form-checkbox
+        v-if="isCherryPick && checked"
+        v-model="copyDescription"
+        name="copy_merge_request_description"
+        class="gl-ml-6 gl-mt-3"
+        data-testid="copy-description-checkbox"
+      >
+        {{ i18n.copyDescription }}
+      </gl-form-checkbox>
     </gl-form>
 
     <p v-if="!modalStore.pushCode" class="gl-mb-0 gl-mt-5" data-testid="appended-text">

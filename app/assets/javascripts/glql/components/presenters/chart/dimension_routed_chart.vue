@@ -29,6 +29,11 @@ export default {
       type: Boolean,
       default: false,
     },
+    minDimensions: {
+      required: false,
+      type: Number,
+      default: 1,
+    },
     maxDimensions: {
       required: false,
       type: Number,
@@ -49,6 +54,7 @@ export default {
         displayType: this.displayType,
         dimensions: this.dimensions,
         metrics: this.metrics,
+        minDimensions: this.minDimensions,
         maxDimensions: this.maxDimensions,
       });
     },

@@ -15,8 +15,14 @@ RSpec.describe Cells::Claimable, feature_category: :cell do
   let(:instance) { test_klass.create!(path: 'gitlab') }
 
   before do
+    stub_feature_flag_definition(:cells_claims_test_flag)
+    # spec_helper no longer forces claims off suite-wide, so records built as
+    # example setup would claim for real. Each example stubs the transaction
+    # record for the connection it actually asserts on.
+    allow(Cells::TransactionRecord).to receive(:current_transaction).and_return(nil)
+
     test_klass.cells_claims_attribute :path, type: Cells::Claimable::CLAIMS_CLAIM_TYPE::CLAIM_TYPE_ORGANIZATION_PATH,
-      feature_flag: :cells_claims_organizations
+      feature_flag: :cells_claims_test_flag
     test_klass.cells_claims_metadata subject_type: Cells::Claimable::CLAIMS_SUBJECT_TYPE::ORGANIZATION,
       subject_key: subject_key
   end
@@ -33,7 +39,7 @@ RSpec.describe Cells::Claimable, feature_category: :cell do
       expect(test_klass.cells_claims_source_type).to eq(Cells::Claimable::CLAIMS_SOURCE_TYPE::RAILS_TABLE_ORGANIZATIONS)
       expect(test_klass.cells_claims_attributes).to eq(
         path: { type: Cells::Claimable::CLAIMS_CLAIM_TYPE::CLAIM_TYPE_ORGANIZATION_PATH,
-                feature_flag: :cells_claims_organizations, if: nil }
+                feature_flag: :cells_claims_test_flag, if: nil }
       )
     end
 
@@ -188,7 +194,7 @@ RSpec.describe Cells::Claimable, feature_category: :cell do
 
       context 'when feature flag is disabled' do
         before do
-          stub_feature_flags(cells_claims_organizations: false)
+          stub_feature_flags(cells_claims_test_flag: false)
         end
 
         it 'does not create or destroy claims' do
@@ -244,7 +250,7 @@ RSpec.describe Cells::Claimable, feature_category: :cell do
 
       context 'when feature flag is disabled' do
         before do
-          stub_feature_flags(cells_claims_organizations: false)
+          stub_feature_flags(cells_claims_test_flag: false)
         end
 
         it 'does not destroy claims' do
@@ -283,7 +289,7 @@ RSpec.describe Cells::Claimable, feature_category: :cell do
       stub_config_cell(enabled: true)
       conditional_klass.cells_claims_attribute :path,
         type: Cells::Claimable::CLAIMS_CLAIM_TYPE::CLAIM_TYPE_ORGANIZATION_PATH,
-        feature_flag: :cells_claims_organizations,
+        feature_flag: :cells_claims_test_flag,
         if: ->(record) { record.path.exclude?('/') }
       conditional_klass.cells_claims_metadata subject_type: Cells::Claimable::CLAIMS_SUBJECT_TYPE::ORGANIZATION,
         subject_key: :id
@@ -446,7 +452,7 @@ RSpec.describe Cells::Claimable, feature_category: :cell do
       before do
         scoped_klass.cells_claims_attribute :path,
           type: Cells::Claimable::CLAIMS_CLAIM_TYPE::CLAIM_TYPE_ORGANIZATION_PATH,
-          feature_flag: :cells_claims_organizations,
+          feature_flag: :cells_claims_test_flag,
           if: ->(record) { record.path.exclude?('/') }
         scoped_klass.cells_claims_metadata subject_type: Cells::Claimable::CLAIMS_SUBJECT_TYPE::ORGANIZATION,
           subject_key: :id
@@ -494,6 +500,10 @@ RSpec.describe Cells::Claimable, feature_category: :cell do
   end
 
   describe '#cells_claims_metadata' do
+    before do
+      stub_config_cell(enabled: true)
+    end
+
     it 'returns an array of metadata for each registered attribute' do
       metadata = instance.cells_claims_metadata
 
@@ -529,6 +539,26 @@ RSpec.describe Cells::Claimable, feature_category: :cell do
       it 'excludes empty string values' do
         instance.path = ''
 
+        expect(instance.cells_claims_metadata).to be_empty
+      end
+    end
+
+    context 'when the attribute feature flag is disabled' do
+      before do
+        stub_feature_flags(cells_claims_test_flag: false)
+      end
+
+      it 'excludes the attribute' do
+        expect(instance.cells_claims_metadata).to be_empty
+      end
+    end
+
+    context 'when the cell is disabled' do
+      before do
+        stub_config_cell(enabled: false)
+      end
+
+      it 'excludes the attribute' do
         expect(instance.cells_claims_metadata).to be_empty
       end
     end
@@ -703,7 +733,7 @@ RSpec.describe Cells::Claimable, feature_category: :cell do
 
       context 'when feature flag is disabled' do
         before do
-          stub_feature_flags(cells_claims_organizations: false)
+          stub_feature_flags(cells_claims_test_flag: false)
         end
 
         it 'returns false' do
@@ -748,7 +778,7 @@ RSpec.describe Cells::Claimable, feature_category: :cell do
       before do
         conditional_klass.cells_claims_attribute :path,
           type: Cells::Claimable::CLAIMS_CLAIM_TYPE::CLAIM_TYPE_ORGANIZATION_PATH,
-          feature_flag: :cells_claims_organizations,
+          feature_flag: :cells_claims_test_flag,
           if: ->(record) { record.path.exclude?('/') }
         conditional_klass.cells_claims_metadata subject_type: Cells::Claimable::CLAIMS_SUBJECT_TYPE::ORGANIZATION,
           subject_key: :id
@@ -798,7 +828,7 @@ RSpec.describe Cells::Claimable, feature_category: :cell do
       before do
         conditional_klass.cells_claims_attribute :path,
           type: Cells::Claimable::CLAIMS_CLAIM_TYPE::CLAIM_TYPE_ORGANIZATION_PATH,
-          feature_flag: :cells_claims_organizations,
+          feature_flag: :cells_claims_test_flag,
           if: ->(record) { record.path.exclude?('/') }
         conditional_klass.cells_claims_metadata subject_type: Cells::Claimable::CLAIMS_SUBJECT_TYPE::ORGANIZATION,
           subject_key: :id
@@ -866,7 +896,7 @@ RSpec.describe Cells::Claimable, feature_category: :cell do
           before do
             test_klass.cells_claims_attribute :name,
               type: Cells::Claimable::CLAIMS_CLAIM_TYPE::CLAIM_TYPE_ORGANIZATION_PATH,
-              feature_flag: :cells_claims_organizations
+              feature_flag: :cells_claims_test_flag
           end
 
           it "joins the claimed attributes in the message" do

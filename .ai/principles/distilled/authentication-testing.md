@@ -1,6 +1,6 @@
 ---
-source_checksum: 8160d7d4525f6096
-distilled_at_sha: 0bc240cb0e70d2bba500cca6317a5c7e9e06605e
+source_checksum: a867f168ccc28721
+distilled_at_sha: 3477a0d37b5792d9979852b021dc2f157963dc7d
 ---
 <!-- Auto-generated from docs.gitlab.com by gitlab-ai-principles-distiller — do not edit manually -->
 
@@ -38,6 +38,10 @@ distilled_at_sha: 0bc240cb0e70d2bba500cca6317a5c7e9e06605e
 ### Narrow Token Scopes in Specs
 
 - When a spec creates a PAT, OAuth token, or job token, use the narrowest scope sufficient. A spec that uses `:api` scope to test a `:read_user`-protected endpoint can mask a scope-enforcement bug. Prefer `create(:personal_access_token, scopes: [:read_user])` when the endpoint requires only read access.
+
+### Workhorse JWT Verification
+
+- DO NOT apply the `:verify_workhorse_jwt` tag to ordinary tests — a `before` hook in `spec/support/workhorse_jwt_injection.rb` auto-injects a valid JWT into every test request, so happy-path specs require no manual JWT setup. Use `:verify_workhorse_jwt` only when the test explicitly asserts the enforcement boundary (for example, a `403 Forbidden` response when the JWT header is absent); the tag opts out of both injection and detection.
 
 ## Authoritative sources
 

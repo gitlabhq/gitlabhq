@@ -249,6 +249,7 @@ For example, `/daily prioritize my milestone deliverables`.
 {{< history >}}
 
 - [Introduced](https://gitlab.com/gitlab-org/editor-extensions/gitlab-lsp/-/releases/v9.10.0) as an [experiment](../../policy/development_stages_support.md#experiment) in GitLab Duo CLI 9.10.0, during the GitLab 19.3 release.
+- [Support for the Agent Plugins specification introduced](https://gitlab.com/gitlab-org/editor-extensions/gitlab-lsp/-/work_items/2830) in GitLab Duo CLI 9.15.0, during the GitLab 19.4 release.
 
 {{< /history >}}
 
@@ -269,6 +270,10 @@ marketplace. Plugins are identified as `<plugin>@<marketplace>`.
 For compatibility with the existing community plugin ecosystem, the GitLab Duo CLI also reads
 `.claude-plugin/marketplace.json` files. Existing plugin marketplaces work with the GitLab Duo CLI
 without modification.
+
+The GitLab Duo CLI also supports plugins that follow the
+[Agent Plugins specification](https://agent-plugins.org), an open, vendor-neutral standard for
+packaging AI agent components.
 
 Prerequisites:
 
@@ -745,10 +750,17 @@ To bundle extensions with your plugin:
 - Custom slash commands: Add a Markdown file to a `commands/` directory in the plugin. The filename
   is the command name, and the file format is the same as a
   [custom slash command](#create-a-custom-slash-command).
-- MCP servers: Add a `.mcp.json` file to the root of the plugin. The file format is the same as the
-  [MCP configuration format](../gitlab_duo/model_context_protocol/mcp_clients.md#configuration-format).
-  To reference files inside the plugin, use the `${DUO_PLUGIN_ROOT}` variable, which resolves to
-  the directory the plugin is installed in.
+- MCP servers:
+  - Recommended: Add an `mcp.json` file to the root of the plugin, in the format defined by the
+    [Agent Plugins specification](https://agent-plugins.org/specification#72-mcp-servers). Use the
+    `${PLUGIN_ROOT}` variable to reference files inside the plugin, and the `${PLUGIN_DATA}`
+    variable for a persistent, writable directory that survives plugin updates.
+  - For compatibility with existing community plugins, you can instead add a `.mcp.json` file, in
+    the same format as the
+    [MCP configuration format](../gitlab_duo/model_context_protocol/mcp_clients.md#configuration-format).
+    Use the `${DUO_PLUGIN_ROOT}` variable to reference files inside the plugin.
+
+  If a plugin has both `mcp.json` and `.mcp.json`, the GitLab Duo CLI uses only `mcp.json`.
 
 For example, a marketplace repository with one plugin that bundles a skill, a custom slash command,
 and an MCP server:
@@ -759,7 +771,7 @@ my-marketplace/
 └── plugins/
     └── my-plugin/
         ├── plugin.json
-        ├── .mcp.json
+        ├── mcp.json
         ├── commands/
         │   └── my-command.md
         └── skills/

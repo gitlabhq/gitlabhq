@@ -20,13 +20,16 @@ const AMBIGUOUS_SETTINGS = {
 export default {
   i18n: {
     pinned: s__('Navigation|Pinned'),
-    emptyHint: s__('Navigation|Your pinned items appear here.'),
+    emptyHint: s__('Navigation|Pin frequently used features for quick access.'),
   },
   name: 'PinnedSection',
   components: {
     Draggable,
     MenuSection,
     NavItem,
+  },
+  inject: {
+    isIconOnly: { default: false },
   },
   props: {
     supportsPins: {
@@ -144,6 +147,7 @@ export default {
     :expanded="expanded"
     :has-flyout="hasFlyout"
     :headerless="headerless"
+    :async-count="asyncCount"
     @collapse-toggle="expanded = !expanded"
     @pin-remove="onPinRemove"
     @nav-link-click="writePinnedClick"
@@ -169,9 +173,8 @@ export default {
       />
     </component>
     <div
-      v-else
-      class="gl-py-3 gl-text-sm gl-text-subtle"
-      :class="{ 'gl-ml-[2.25rem]': !headerless }"
+      v-else-if="!headerless && !isIconOnly"
+      class="gl-ml-[2.25rem] gl-py-3 gl-text-sm gl-text-subtle"
     >
       {{ $options.i18n.emptyHint }}
     </div>

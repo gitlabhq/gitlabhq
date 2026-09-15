@@ -40,7 +40,10 @@ RSpec.describe 'Visual tokens', :js, feature_category: :planning_views do
     end
 
     it 'ends editing mode when document is clicked' do
-      find('body').click
+      # A plain `body` click can land on the open suggestions dropdown, which floats
+      # just below the search bar, and re-focus it instead of closing it. This wrapper
+      # always extends past the dropdown, so clicking it reliably counts as "outside".
+      find('.panel-content-inner').click
 
       expect_empty_search_term
       expect_hidden_suggestions_list

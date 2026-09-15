@@ -260,6 +260,93 @@ RSpec.describe Authz::PermissionGroups::Assignable, feature_category: :permissio
       end
     end
 
+    describe '#assignable_when' do
+      subject { assignable.assignable_when }
+
+      context 'when assignable_when is not set' do
+        it { is_expected.to eq([]) }
+      end
+
+      context 'when assignable_when is set' do
+        let(:definition) { super().merge(assignable_when: [{ condition: 'admin', boundaries: %w[instance] }]) }
+
+        it { is_expected.to match_array([{ condition: 'admin', boundaries: %w[instance] }]) }
+      end
+    end
+
+    describe '#conditions_for' do
+      let(:boundaries) { %w[group project instance] }
+      let(:definition) do
+        super().merge(assignable_when: [
+          { condition: 'admin', boundaries: %w[instance] },
+          { condition: 'gitlab_team_member' }
+        ])
+      end
+
+      it 'returns conditions scoped to the boundary plus unscoped conditions' do
+        expect(assignable.conditions_for(:instance)).to match_array([:admin, :gitlab_team_member])
+      end
+
+      it 'excludes conditions scoped to other boundaries' do
+        expect(assignable.conditions_for('group')).to match_array([:gitlab_team_member])
+      end
+
+      context 'when assignable_when is not set' do
+        let(:definition) { super().except(:assignable_when) }
+
+        it 'returns an empty array' do
+          expect(assignable.conditions_for(:project)).to eq([])
+        end
+      end
+    end
+
+    describe '#assignable_boundaries_for' do
+      let(:boundaries) { %w[group project instance] }
+      let(:user) { build(:user) }
+
+      subject { assignable.assignable_boundaries_for(user) }
+
+      context 'when assignable_when is not set' do
+        it { is_expected.to eq(boundaries) }
+
+        context 'with a nil user' do
+          let(:user) { nil }
+
+          it { is_expected.to eq(boundaries) }
+        end
+      end
+
+      context 'when a condition is scoped to one boundary' do
+        let(:definition) { super().merge(assignable_when: [{ condition: 'admin', boundaries: %w[instance] }]) }
+
+        it { is_expected.to eq(%w[group project]) }
+
+        context 'when the user meets the condition' do
+          let(:user) { build(:admin) }
+
+          it { is_expected.to eq(boundaries) }
+        end
+      end
+
+      context 'when a condition applies to all boundaries' do
+        let(:definition) { super().merge(assignable_when: [{ condition: 'admin' }]) }
+
+        it { is_expected.to eq([]) }
+
+        context 'with a nil user' do
+          let(:user) { nil }
+
+          it { is_expected.to eq([]) }
+        end
+
+        context 'when the user meets the condition' do
+          let(:user) { build(:admin) }
+
+          it { is_expected.to eq(boundaries) }
+        end
+      end
+    end
+
     describe '#category' do
       subject { assignable.category }
 

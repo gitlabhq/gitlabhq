@@ -2,17 +2,8 @@
 # Cop supports --autocorrect.
 Style/AccessorGrouping:
   Exclude:
-    - 'app/finders/template_finder.rb'
-    - 'app/models/concerns/importable.rb'
-    - 'app/models/design_management/design_at_version.rb'
-    - 'app/models/integrations/chat_message/alert_message.rb'
-    - 'app/models/integrations/chat_message/base_message.rb'
     - 'app/models/integrations/chat_message/deployment_message.rb'
-    - 'app/models/integrations/chat_message/issue_message.rb'
-    - 'app/models/integrations/chat_message/merge_message.rb'
-    - 'app/models/integrations/chat_message/note_message.rb'
     - 'app/models/integrations/chat_message/pipeline_message.rb'
-    - 'app/models/integrations/chat_message/push_message.rb'
     - 'app/models/integrations/chat_message/wiki_page_message.rb'
     - 'app/models/project.rb'
     - 'app/services/deployments/update_environment_service.rb'
@@ -20,8 +11,6 @@ Style/AccessorGrouping:
     - 'app/services/notification_recipients/builder/default.rb'
     - 'ee/app/models/integrations/chat_message/vulnerability_message.rb'
     - 'ee/app/services/ci/pipeline_creation/drop_not_runnable_builds_service.rb'
-    - 'ee/lib/gitlab/ci/reports/coverage_fuzzing/crash.rb'
-    - 'ee/lib/gitlab/ci/reports/coverage_fuzzing/report.rb'
     - 'lib/feature/definition.rb'
     - 'lib/gitlab/audit/type/definition.rb'
     - 'lib/gitlab/ci/reports/test_suite.rb'

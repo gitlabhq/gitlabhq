@@ -1,6 +1,8 @@
 # frozen_string_literal: true
 
 RSpec.describe QA::Specs::Runner do
+  include QA::Support::Helpers::StubEnv
+
   shared_examples 'excludes default skipped, and geo' do
     it 'excludes the default skipped and geo tags, and includes default args' do
       expect_rspec_runner_arguments(DEFAULT_SKIPPED_TAGS + [
@@ -196,6 +198,22 @@ RSpec.describe QA::Specs::Runner do
           '--out', "tmp/rspec-#{ENV['CI_JOB_ID'] || 'local'}-retried-false.json",
           '--format', 'RspecJunitFormatter', '--out', "tmp/rspec-#{ENV['CI_JOB_ID'] || 'local'}-retried-false.xml",
           '--', *described_class::DEFAULT_TEST_PATH_ARGS])
+        subject.perform
+      end
+    end
+
+    context 'when running against a Dedicated tenant' do
+      before do
+        stub_env('QA_RUNNING_ON_DEDICATED', 'true')
+      end
+
+      it 'includes default args and excludes the skip_dedicated tag' do
+        expect_rspec_runner_arguments(DEFAULT_SKIPPED_TAGS + ['--tag', '~geo', '--tag', '~skip_dedicated',
+          '--format', 'documentation', '--format', 'QA::Support::JsonFormatter',
+          '--out', "tmp/rspec-#{ENV['CI_JOB_ID'] || 'local'}-retried-false.json",
+          '--format', 'RspecJunitFormatter', '--out', "tmp/rspec-#{ENV['CI_JOB_ID'] || 'local'}-retried-false.xml",
+          '--', *described_class::DEFAULT_TEST_PATH_ARGS])
+
         subject.perform
       end
     end

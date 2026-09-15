@@ -86,7 +86,7 @@ files, need to be able to exchange information through the appropriate APIs. Whe
 this should not be done with files.
 
 Since components written with the API-first philosophy in mind are compatible with both methods, all
-new features and services must be written to consider Kubernetes compatibility **first**.
+new features and services must be written to consider Kubernetes compatibility first.
 
 The simplest way to ensure this, is to add support for your feature or service to
 [the official GitLab Helm chart](https://docs.gitlab.com/charts/) or reach out to

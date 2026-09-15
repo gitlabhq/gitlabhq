@@ -11,9 +11,9 @@ Check for Heartbleed OpenSSL vulnerability.
 
 ## Remediation
 
-The Heartbleed vulnerability is a serious bug in the popular OpenSSL cryptographic library. OpenSSL is used to encrypt and decrypt communications and secure the Internet traffic. This vulnerability allows the attacker to steal protected information, which should not be accessible under other circumstance such as secret keys that are used to encrypt sensitive information.
+The Heartbleed vulnerability is a serious bug in the popular OpenSSL cryptographic library. OpenSSL is used to encrypt and decrypt communications and secure the Internet traffic. This vulnerability allows the attacker to steal protected information, which should not be accessible under other circumstances such as secret keys that are used to encrypt sensitive information.
 
-Anyone on with access to the target API can use the Heartbleed vulnerability to read the memory from protected systems taking advantage of vulnerable versions of OpenSSL library.
+Anyone with access to the target API can use the Heartbleed vulnerability to read the memory from protected systems, taking advantage of vulnerable versions of the OpenSSL library.
 
 ## Links
 

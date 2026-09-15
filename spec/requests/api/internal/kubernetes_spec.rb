@@ -539,6 +539,22 @@ RSpec.describe API::Internal::Kubernetes, feature_category: :deployment_manageme
         )
       end
     end
+
+    context 'when the agent organization is in maintenance mode' do
+      let_it_be_with_reload(:organization) { create(:organization) }
+      let_it_be(:project) { create(:project, organization: organization) }
+      let_it_be(:agent_token) do
+        create(:cluster_agent_token, agent: create(:cluster_agent, project: project))
+      end
+
+      let(:success_status) { :success }
+
+      def request
+        send_request(headers: agent_token_headers)
+      end
+
+      it_behaves_like 'an API request enforcing organization maintenance mode'
+    end
   end
 
   describe 'GET /internal/kubernetes/verify_project_access' do
@@ -611,6 +627,31 @@ RSpec.describe API::Internal::Kubernetes, feature_category: :deployment_manageme
         let(:project_id) { non_existing_record_id }
 
         it_behaves_like 'access is denied'
+      end
+    end
+
+    context 'when the agent organization is in maintenance mode' do
+      let_it_be_with_reload(:organization) { create(:organization) }
+      let_it_be(:project) { create(:project, :public, organization: organization) }
+      let_it_be(:agent_token) do
+        create(:cluster_agent_token, agent: create(:cluster_agent, project: project))
+      end
+
+      let(:project_id) { project.id }
+      let(:success_status) { :no_content }
+
+      def request
+        send_request(params: { id: project_id }, headers: agent_token_headers)
+      end
+
+      it_behaves_like 'an API request enforcing organization maintenance mode'
+
+      context 'when the organization is active' do
+        it 'allows the request' do
+          request
+
+          expect(response).to have_gitlab_http_status(:no_content)
+        end
       end
     end
   end

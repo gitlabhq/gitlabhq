@@ -218,6 +218,40 @@ RSpec.describe Gitlab::Graphql::Authz::GranularScopeAuthorization, feature_categ
         it { is_expected.to be(true) }
       end
 
+      # Private group: a public one lets the anonymous-access bypass grant the permission.
+      context 'with an additional requirement group' do
+        let_it_be(:private_group) { create(:group, :private) }
+        let_it_be(:private_project) { create(:project, group: private_group) }
+        let_it_be(:group_member) { create(:user, developer_of: private_group) }
+
+        let(:object) { private_project }
+        let(:additional_scopes) { [] }
+        let(:directives) do
+          [
+            create_directive(boundary: 'itself', permissions: ['read_wiki'], boundary_type: 'project'),
+            create_directive(boundary: 'group', permissions: ['read_milestone'], boundary_type: 'group',
+              requirement_group: 'target')
+          ]
+        end
+
+        let(:access_token) do
+          create(:granular_pat, user: group_member, boundary: Authz::Boundary.for(private_project),
+            permissions: [:read_wiki], additional_scopes: additional_scopes)
+        end
+
+        context 'when only the primary group is satisfied' do
+          it { is_expected.to be(false) }
+        end
+
+        context 'when every group is satisfied' do
+          let(:additional_scopes) do
+            [{ boundary: Authz::Boundary.for(private_group), permissions: [:read_work_item] }]
+          end
+
+          it { is_expected.to be(true) }
+        end
+      end
+
       context 'with caching' do
         it 'caches the authorized result and reuses it without re-running the service' do
           expect { ok }.to change { context[:granular_tokens_authz_cache] }

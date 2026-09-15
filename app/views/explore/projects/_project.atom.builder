@@ -6,5 +6,5 @@ xml.entry do
   xml.id      project_url(project)
   xml.updated project.created_at
 
-  xml.summary markdown_field(project, :description), type: 'html' if project.description.present?
+  xml.summary atom_markdown_field(project, :description), type: 'html' if project.description.present?
 end

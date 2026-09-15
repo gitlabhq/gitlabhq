@@ -203,7 +203,7 @@ And a container repository with these tags:
 - `production-v43`, published 6 days ago.
 - `production-v42`, published 11 days ago.
 - `dev-v44`, published 2 days ago.
-- `dev-v43`, published 5 day ago.
+- `dev-v43`, published 5 days ago.
 - `dev-v42`, published 10 days ago.
 - `v44`, published yesterday.
 - `v43`, published 12 days ago.
@@ -218,8 +218,8 @@ You can interpret the rules as applying with this precedence:
      because they match the **Keep tags matching** rule.
    - The `v44` tag must be kept because it's the most recent, matching the **Keep the most recent** rule.
 1. The remove rules have lower precedence, and tags are only deleted if all rules match.
-   For the tags not matching any keep rules (`dev-44`, `dev-v43`, `dev-v42`, `v43`, and `v42`):
-   - `dev-44` and `dev-43` do not match the **Remove tags older than**, and are kept.
+   For the tags not matching any keep rules (`dev-v44`, `dev-v43`, `dev-v42`, `v43`, and `v42`):
+   - `dev-v44` and `dev-v43` do not match the **Remove tags older than**, and are kept.
    - `dev-v42`, `v43`, and `v42` match both **Remove tags older than** and **Remove tags matching**
      rules, so these three tags can be deleted.
 
@@ -303,7 +303,7 @@ Here are some examples of regex patterns you can use:
 {{< /details >}}
 
 Cleanup policies are executed as a background process. Depending on the number of tags to delete,
-the process can take awhile to complete.
+the process can take a while to complete.
 
 You can use the following application settings to prevent server resource starvation:
 

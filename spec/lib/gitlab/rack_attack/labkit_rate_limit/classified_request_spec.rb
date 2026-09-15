@@ -216,14 +216,12 @@ RSpec.describe Gitlab::RackAttack::LabkitRateLimit::ClassifiedRequest, feature_c
         expect(request.labkit_facts).to include(requester_id: '1', requester_type: 'deploy_token')
       end
 
-      it 'blanks an allowlisted user so it is exempt from both the presence gate and the nil gate' do
-        # A blank id (not nil) is the allowlisted marker: it fails the authenticated
-        # rules' /./ gate and the unauthenticated rules' nil gate, so no identity
-        # throttle counts it, while a nil id would make it look anonymous.
+      it 'keeps the real id for an allowlisted user' do
+        # The exemption is Limiters' user_allowlist :skip rule, not a classifier concern.
         allow(::Gitlab::RackAttack).to receive(:user_allowlist).and_return(Set.new([7]))
         stub_requester(type: :user, id: 7)
 
-        expect(request.labkit_facts).to include(requester_id: '', requester_type: '')
+        expect(request.labkit_facts).to include(requester_id: '7', requester_type: 'user')
       end
 
       it 'does not set the throttle safelist instrumentation for an allowlisted user', :request_store do

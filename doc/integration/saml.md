@@ -46,7 +46,7 @@ For more information on:
    gitlab_rails['omniauth_block_auto_created_users'] = false
    ```
 
-1. Optional. You should automatically link a first-time SAML sign-in with existing GitLab users if their
+1. Optional. You can automatically link SAML sign-in with existing GitLab users if their
    email addresses match. To do this, add the following setting in `/etc/gitlab/gitlab.rb`:
 
    ```ruby
@@ -360,7 +360,7 @@ For more information on:
    https://gitlab.example.com/users/auth/saml/metadata
    ```
 
-   At a minimum the IdP **must** provide a claim containing the user's email address
+   At a minimum the IdP must provide a claim containing the user's email address
    using `email` or `mail`. For more information on other available claims, see
    [configuring assertions](#configure-assertions).
 1. On the sign in page there should now be a SAML icon below the regular sign in form.
@@ -874,6 +874,13 @@ Prerequisites:
   The name of the attribute must contain the groups that a user belongs to.
   To tell GitLab where to find these groups, add a `groups_attribute:`
   element to your SAML settings. This attribute is case-sensitive.
+
+  Add `groups_attribute` at the provider level of your SAML settings, as a sibling of `name`
+  and `label`, not inside the provider's `args`.
+  If it's inside `args`, GitLab ignores it without an error and none of the group-based
+  configuration on this page takes effect.
+  The same applies to `required_groups`, `external_groups`, `admin_groups`, and
+  `auditor_groups`.
 
 ### Required groups
 
@@ -2516,6 +2523,7 @@ This also sets the `username` attribute in your SAML Response to the username in
 {{< history >}}
 
 - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/505575) `job_title` and `organization` attributes in GitLab 17.8.
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/496518) `location` attribute in GitLab 19.4.
 
 {{< /history >}}
 
@@ -2523,10 +2531,16 @@ To sync profile information from your SAML provider, you must configure `attribu
 
 The supported profile attributes are:
 
+- `address`
 - `job_title`
+- `location`
 - `organization`
 
 These attributes have no default mappings and do not sync unless explicitly configured.
+
+> [!note]
+> Both `address` and `location` map to the user's profile location.
+> If both are defined, GitLab uses the `address` value.
 
 {{< tabs >}}
 
@@ -2547,7 +2561,8 @@ These attributes have no default mappings and do not sync unless explicitly conf
                name_identifier_format: 'urn:oasis:names:tc:SAML:2.0:nameid-format:persistent',
                attribute_statements: {
                  organization: ['organization'],
-                 job_title: ['job_title']
+                 job_title: ['job_title'],
+                 location: ['location']
                }
        }
      }
@@ -2580,6 +2595,7 @@ These attributes have no default mappings and do not sync unless explicitly conf
      attribute_statements:
        organization: ['organization']
        job_title: ['job_title']
+       location: ['location']
    ```
 
 1. Create the Kubernetes Secret:
@@ -2634,7 +2650,8 @@ These attributes have no default mappings and do not sync unless explicitly conf
                         name_identifier_format: 'urn:oasis:names:tc:SAML:2.0:nameid-format:persistent',
                         attribute_statements: {
                           organization: ['organization'],
-                          job_title: ['job_title']
+                          job_title: ['job_title'],
+                          location: ['location']
                         }
                 }
               }
@@ -2668,7 +2685,8 @@ These attributes have no default mappings and do not sync unless explicitly conf
                      name_identifier_format: 'urn:oasis:names:tc:SAML:2.0:nameid-format:persistent',
                      attribute_statements: {
                        organization: ['organization'],
-                       job_title: ['job_title']
+                       job_title: ['job_title'],
+                       location: ['location']
                      }
              }
            }

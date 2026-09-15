@@ -11,16 +11,13 @@ RSpec.describe 'projects/tags/index.html.haml', feature_category: :source_code_m
     create(:release, project: project, sha: git_tag.target_commit.sha, tag: 'v1.1.0')
   end
 
-  let(:pipeline) { create(:ci_pipeline, :success, project: project, ref: git_tag.name, sha: release.sha) }
-
   before do
     assign(:project, project)
     assign(:repository, project.repository)
     assign(:releases, project.releases)
     assign(:tags, Kaminari.paginate_array(tags).page(0))
 
-    allow(view).to receive(:current_ref).and_return('master')
-    allow(view).to receive(:current_user).and_return(project.namespace.owner)
+    allow(view).to receive_messages(current_ref: 'master', current_user: project.namespace.owner)
   end
 
   context 'when project has no tags' do

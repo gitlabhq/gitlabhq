@@ -62,6 +62,10 @@ RSpec.describe Tooling::Danger::ProjectHelper, feature_category: :tooling do
 
       'app/assets/foo'                   | [:frontend]
       'app/views/foo'                    | [:frontend, :backend]
+      'app/assets/javascripts/lib/utils/path_helpers/core.js'       | [:none]
+      'app/assets/javascripts/lib/utils/path_helpers/explore.js'    | [:none]
+      'ee/app/assets/javascripts/lib/utils/path_helpers/explore.js' | [:none]
+      'lib/gitlab/js_routes.rb'                                     | [:frontend, :backend]
       'public/-/graphql/introspection_result.json'               | [:backend]
       'public/-/graphql/introspection_result_no_deprecated.json' | [:backend]
       'public/foo'                       | [:frontend]

@@ -95,7 +95,7 @@ CI/CD variables are available only to immediate child projects of the group.
 > The availability of this feature is controlled by a feature flag.
 > For more information, see the history.
 
-Deploy tokens expire on the date you define at 00:00 AM UTC.
+Deploy tokens expire on the date you define at 00:00 UTC.
 
 GitLab checks every day at 01:00 AM UTC for deploy tokens that are about to expire.
 Project owners and maintainers are notified by email 60, 30, and 7 days before these tokens expire.
@@ -138,8 +138,8 @@ Prerequisites:
 1. Complete the fields, and select the desired [scopes](#scope).
 1. Select **Create deploy token**.
 
-Record the deploy token's values. After you leave or refresh the page, **you cannot access it
-again**.
+Record the deploy token's values. After you leave or refresh the page, you cannot access it
+again.
 
 ## Revoke a deploy token
 
@@ -192,7 +192,7 @@ You can use a deploy token to push images to a container registry.
 
 Prerequisites:
 
-- A deploy token with the `read_registry` and `write_registry` scope.
+- A deploy token with the `read_registry` and `write_registry` scopes.
 
 Example of using a deploy token to push an image to a container registry:
 

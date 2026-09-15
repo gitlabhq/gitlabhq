@@ -1,3 +1,5 @@
+const IS_EE = require('./is_ee_env');
+
 const baseEntryPoints = {
   default: ['./main'],
   sentry: './sentry/index.js',
@@ -12,4 +14,18 @@ const baseEntryPoints = {
   graphql_explorer: './entrypoints/graphql_explorer.js',
 };
 
-module.exports = { baseEntryPoints };
+const ALWAYS_LOADED_ENTRY_POINTS = ['super_sidebar', 'tracker', 'sentry', 'performance_bar'];
+
+// Only the EE layout loads the Duo Chat panel bundle.
+if (IS_EE) {
+  baseEntryPoints.duo_panel = './entrypoints/duo_panel.js';
+  ALWAYS_LOADED_ENTRY_POINTS.push('duo_panel');
+}
+
+/**
+ * Entry name of a page entry, from its `index.js` path relative to a JS root:
+ * `pages/projects/jobs/show/index.js` -> `pages.projects.jobs.show`.
+ */
+const pageEntryName = (indexPath) => indexPath.replace(/\/index\.js$/, '').replace(/\//g, '.');
+
+module.exports = { baseEntryPoints, ALWAYS_LOADED_ENTRY_POINTS, pageEntryName };

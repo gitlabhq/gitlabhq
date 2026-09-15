@@ -40,7 +40,11 @@ RSpec.describe 'Recent searches', :js, feature_category: :planning_views do
   end
 
   it 'saved recent searches are restored last on the list' do
-    set_recent_searches(project_1_local_storage_key, '[[{"type":"filtered-search-term","value":{"data":"saved1"}}],[{"type":"filtered-search-term","value":{"data":"saved2"}}]]')
+    set_recent_searches(
+      project_1_local_storage_key,
+      '[[{"type":"filtered-search-term","value":{"data":"saved1"}}],' \
+        '[{"type":"filtered-search-term","value":{"data":"saved2"}}]]'
+    )
 
     visit project_work_items_path(project_1, search: 'foo')
     click_button 'Toggle search history'
@@ -67,7 +71,11 @@ RSpec.describe 'Recent searches', :js, feature_category: :planning_views do
   end
 
   it 'clicking item fills search input' do
-    set_recent_searches(project_1_local_storage_key, '[[{"type":"filtered-search-term","value":{"data":"foo"}}],[{"type":"filtered-search-term","value":{"data":"bar"}}]]')
+    set_recent_searches(
+      project_1_local_storage_key,
+      '[[{"type":"filtered-search-term","value":{"data":"foo"}}],' \
+        '[{"type":"filtered-search-term","value":{"data":"bar"}}]]'
+    )
     visit project_work_items_path(project_1)
 
     click_button 'Toggle search history'

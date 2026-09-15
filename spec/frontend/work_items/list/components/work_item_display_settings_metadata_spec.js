@@ -52,7 +52,6 @@ describe('WorkItemDisplaySettingsMetadata', () => {
       propsData: {
         namespacePreferences: { hiddenMetadataKeys: [] },
         fullPath: 'gitlab-org/gitlab',
-        isGroup: false,
         isServiceDeskList: false,
         workItemTypeId: 'gid://gitlab/WorkItems::Type/8',
         sortKey: 'UPDATED_DESC',
@@ -77,15 +76,6 @@ describe('WorkItemDisplaySettingsMetadata', () => {
     createComponent();
 
     expect(findToggles()).toHaveLength(WORK_ITEM_LIST_PREFERENCES_METADATA_FIELDS.length);
-  });
-
-  it('renders only group-applicable metadata fields in group context', () => {
-    createComponent({ props: { isGroup: true } });
-
-    const groupApplicableFields = WORK_ITEM_LIST_PREFERENCES_METADATA_FIELDS.filter(
-      (field) => field.isPresentInGroup,
-    );
-    expect(findToggles()).toHaveLength(groupApplicableFields.length);
   });
 
   it('renders all fields in the list view', () => {

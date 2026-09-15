@@ -962,12 +962,13 @@ RSpec.describe ProjectPresenter do
     let(:project) { build_stubbed(:project) }
 
     it 'orders the items correctly' do
-      allow(project.repository).to receive(:readme_path).and_return('readme')
-      allow(project.repository).to receive(:license_blob).and_return(nil)
-      allow(project.repository).to receive(:changelog).and_return(nil)
-      allow(project.repository).to receive(:contribution_guide).and_return(double(name: 'foo'))
-      allow(presenter).to receive(:filename_path).and_return('fake/path')
-      allow(presenter).to receive(:contribution_guide_path).and_return('fake_path')
+      allow(project.repository).to receive_messages(
+        readme_path: 'readme',
+        license_blob: nil,
+        changelog: nil,
+        contribution_guide: double(name: 'foo')
+      )
+      allow(presenter).to receive_messages(filename_path: 'fake/path', contribution_guide_path: 'fake_path')
 
       buttons = presenter.statistics_buttons
       expect(buttons.map(&:label)).to start_with(

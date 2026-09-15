@@ -1,5 +1,5 @@
 ---
-stage: Create
+stage: GitLab Dedicated
 group: Import
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see <https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments>
 title: Importing issues from CSV
@@ -45,14 +45,14 @@ You must have the Planner, Reporter, Security Manager, Developer, Maintainer, or
 
 - Consider importing a test file containing only a few issues. There is no way to undo a large import without using the GitLab API.
 - Ensure your CSV file meets the [file format](#csv-file-format) requirements.
-- If your CSV includes the milestone header, ensure all unique milestones titles in the file already exist in the project or its parent groups.
+- If your CSV includes the milestone header, ensure all unique milestone titles in the file already exist in the project or its parent groups.
 
 ## Import the file
 
 To import issues:
 
 1. Go to your project's **Issues** page.
-1. Open the import feature, depending if the project has issues:
+1. Open the import feature, depending on whether the project has issues:
    - The project has existing issues: in the upper-right corner, next to **Bulk edit**, select **Actions** ({{< icon name="ellipsis_v" >}}) > **Import CSV**.
    - The project has no issues: in the middle of the page, select **Import CSV**.
 1. Select the file you want to import, and then select **Import issues**.

@@ -57,6 +57,11 @@ module Analytics
             { 'dimensions' => 1, 'metrics' => { 'min' => 1 } },
             { 'dimensions' => 2, 'metrics' => { 'min' => 1, 'max' => 1 } }
           ] },
+        { 'name' => 'barList',
+          'description' => 'Horizontal bars showing each dimension value as a share of the total.',
+          'selections' => [
+            { 'dimensions' => 1, 'metrics' => { 'min' => 1, 'max' => 1 } }
+          ] },
         { 'name' => 'lineChart',
           'description' => 'A line over an ordered dimension, typically a date.',
           'selections' => [
@@ -67,6 +72,18 @@ module Analytics
           'selections' => [
             { 'dimensions' => 1, 'metrics' => { 'min' => 1 } },
             { 'dimensions' => 2, 'metrics' => { 'min' => 1, 'max' => 1 } }
+          ] },
+        { 'name' => 'heatMap',
+          'description' => 'A grid of shaded cells, one per pair of dimension values. ' \
+            'The first dimension runs along the columns, the second down the rows.',
+          'selections' => [
+            { 'dimensions' => 2, 'metrics' => { 'min' => 1, 'max' => 1 } }
+          ] },
+        { 'name' => 'divergingBarChart',
+          'description' => 'Two metrics mirrored around a shared category column, each scaled ' \
+            'to its own largest bar.',
+          'selections' => [
+            { 'dimensions' => 1, 'metrics' => { 'min' => 2, 'max' => 2 } }
           ] }
       ].map(&DEEP_FREEZE).freeze
 

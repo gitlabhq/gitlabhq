@@ -1,5 +1,5 @@
 ---
-stage: Tenant Scale
+stage: GitLab Dedicated
 group: Geo
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see <https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments>
 title: Back up GitLab
@@ -176,7 +176,7 @@ GitLab container registry storage can be configured in either:
   - Self-hosted S3-compatible object storage.
   - A Storage Appliance that exposes an Object Storage-compatible API.
 
-The backup command does not back up registry data when they are stored in Object Storage.
+The backup command does not back up registry data when it is stored in Object Storage.
 
 #### Metadata database
 
@@ -535,13 +535,14 @@ Depending on your installation type, slightly different components can be skippe
 - `packages` (Packages)
 - `ci_secure_files` (Project-level secure files)
 - `agent_plan_content` (Agent plan content for work items)
+- `ci_catalog_bundles` (CI catalog component bundles)
 - `external_diffs` (External merge request diffs)
 
 {{< /tab >}}
 
 {{< tab title="Helm chart (Kubernetes)" >}}
 
-<!-- source: <https://gitlab.com/gitlab-org/build/CNG/-/blob/068e146db915efcd875414e04403410b71a2e70c/gitlab-toolbox/scripts/bin/backup-utility#L19> -->
+<!-- source: <https://gitlab.com/gitlab-org/build/CNG/-/blob/f65c53cbadfd5d123a4ddeaed297eb2a2034a5cd/gitlab-toolbox/scripts/bin/backup-utility#L19> -->
 
 - `db` (database)
 - `repositories` (Git repositories data, including wikis)
@@ -554,6 +555,7 @@ Depending on your installation type, slightly different components can be skippe
 - `packages` (Package registry)
 - `ci_secure_files` (Project-level Secure Files)
 - `agent_plan_content` (Agent plan content for work items)
+- `ci_catalog_bundles` (CI catalog component bundles)
 - `external_diffs` (Merge request diffs)
 
 {{< /tab >}}
@@ -822,7 +824,7 @@ sudo -u git -H bundle exec rake gitlab:backup:create REPOSITORIES_PATHS=group-a,
 {{< tab title="Helm chart (Kubernetes)" >}}
 
 ```shell
-REPOSITORIES_PATHS=group-a SKIP_REPOSITORIES_PATHS=group-a/project_a2 backup-utility --skip db,registry,uploads,artifacts,lfs,packages,external_diffs,terraform_state,ci_secure_files,agent_plan_content,pages
+REPOSITORIES_PATHS=group-a SKIP_REPOSITORIES_PATHS=group-a/project_a2 backup-utility --skip db,registry,uploads,artifacts,lfs,packages,external_diffs,terraform_state,ci_secure_files,agent_plan_content,ci_catalog_bundles,pages
 ```
 
 {{< /tab >}}
@@ -1017,7 +1019,7 @@ For self-compiled installations:
          # Turns on AWS Server-Side Encryption with Amazon S3-Managed keys (optional)
          # https://docs.aws.amazon.com/AmazonS3/latest/userguide/serv-side-encryption.html
          # For SSE-S3, set 'server_side_encryption' to 'AES256'.
-         # For SS3-KMS, set 'server_side_encryption' to 'aws:kms'. Set
+         # For SSE-KMS, set 'server_side_encryption' to 'aws:kms'. Set
          # 'server_side_encryption_kms_key_id' to the ARN of customer master key.
          # storage_options:
          #   server_side_encryption: 'aws:kms'

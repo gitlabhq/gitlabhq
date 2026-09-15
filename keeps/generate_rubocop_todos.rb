@@ -1,10 +1,15 @@
 # frozen_string_literal: true
 
 require_relative 'helpers/reviewer_roulette'
+require_relative 'helpers/rubocop_todo_generator'
+require_relative 'helpers/rubocop_grace_period_remover'
 
 module Keeps
   # This is an implementation of ::Gitlab::Housekeeper::Keep.
   # This regenerates the `.rubocop_todo` files to avoid reintroduced the RuboCop offenses.
+  #
+  # It also removes RuboCop grace periods (`Details: grace period`) that have been in place long enough.
+  # See https://docs.gitlab.com/development/rubocop_development_guide/#cop-grace-period.
   #
   # You can run it individually with:
   #
@@ -16,29 +21,34 @@ module Keeps
     TITLE = "Regenerate RuboCop TODO files"
     DESCRIPTION =
       <<~MARKDOWN
-        Due to code changes, some RuboCop offenses get automatically fixed over time. To avoid reintroducing these
-        offenses, we periodically regenerate the `.rubocop_todo` files.
+        Some RuboCop offenses get auto-fixed over time. To avoid
+        reintroducing them, we periodically regenerate the `.rubocop_todo`
+        files.
 
-        While reviewing this merge request make sure:
+        This may also remove [`#{Helpers::RubocopGracePeriodRemover::KEY_VALUE}`](https://docs.gitlab.com/development/rubocop_development_guide/#cop-grace-period)
+        grace periods at least #{Helpers::RubocopGracePeriodRemover::MIN_AGE_DAYS}
+        days old.
 
-          1. The files are only added, renamed or removed from the todo lists or the comments are updated and there
-             should be no other changes.
-          2. **rubocop**, **haml-lint**, and **haml-lint** jobs pass.
+        When reviewing, confirm:
+
+          1. Todo files are only added, renamed, or removed, or comments
+             updated — no other changes.
+          2. The **rubocop** and **haml-lint** jobs pass.
 
         Read more about this [automation here](https://docs.gitlab.com/ee/development/rubocop_development_guide.html#periodically-generating-rubocop-todo-files).
-
-        If you have any questions, feel free to reach out in the `#f_rubocop` channel on Slack.
+        Questions? Reach out in the `#f_rubocop` Slack channel.
 
         ### Responsibility of Assignee
 
-        We pick a random ~backend reviewer as the assignee. You should make sure to fix any merge conflicts if they
-        arise and get this merge request merged like any other merge request authored by you.
+        A random ~backend reviewer - fix any merge conflicts and get this
+        merged like your own MR.
 
         ### Responsibility of Reviewer
 
-        Since these changes are simple we skip the initial ~backend review for efficiency and request a review from a
-        random ~backend maintainer to review and merge these changes.
+        These changes are simple, so we skip the initial ~backend review and
+        ask a random ~backend maintainer to review and merge.
       MARKDOWN
+        .freeze
 
     def each_identified_change
       change = ::Gitlab::Housekeeper::Change.new
@@ -47,7 +57,8 @@ module Keeps
     end
 
     def make_change!(change)
-      generate_rubocop_todos
+      todo_generator.generate
+      grace_period_remover.remove_overdue
 
       if rubocop_todo_files_unchanged?
         @logger.puts("No changes in the '#{RUBOCOP_TODO_DIR}' directory 🎉.".blue)
@@ -59,9 +70,12 @@ module Keeps
 
     private
 
-    def generate_rubocop_todos
-      Gitlab::Application.load_tasks
-      Rake::Task["rubocop:todo:generate"].invoke
+    def todo_generator
+      @todo_generator ||= Helpers::RubocopTodoGenerator.new
+    end
+
+    def grace_period_remover
+      @grace_period_remover ||= Helpers::RubocopGracePeriodRemover.new
     end
 
     def prepare_change(change)

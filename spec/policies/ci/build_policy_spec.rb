@@ -725,5 +725,47 @@ RSpec.describe Ci::BuildPolicy, feature_category: :continuous_integration do
 
       it { expect_disallowed(:create_build_terminal) }
     end
+
+    context 'when user is an admin who is not the job owner' do
+      let_it_be(:user) { create(:admin) }
+      let_it_be_with_reload(:project) { create(:project, :private) }
+
+      before do
+        allow(build).to receive(:has_terminal?).and_return(true)
+      end
+
+      context 'when the admin mode setting is enabled' do
+        context 'when admin mode is enabled', :enable_admin_mode do
+          it { expect_allowed(:create_build_terminal) }
+
+          context 'when job does not have terminal' do
+            before do
+              allow(build).to receive(:has_terminal?).and_return(false)
+            end
+
+            it { expect_disallowed(:create_build_terminal) }
+          end
+
+          context 'when the job ran on a protected ref' do
+            let_it_be_with_reload(:project) { create(:project, :private, :repository) }
+
+            before do
+              create(:protected_branch, project: project, name: build.ref)
+            end
+
+            it { expect_disallowed(:create_build_terminal) }
+          end
+        end
+
+        context 'when admin mode is disabled' do
+          it { expect_disallowed(:create_build_terminal) }
+        end
+      end
+
+      # Without the setting, `admin` is a plain `User#admin?` check, so no admin mode step applies.
+      context 'when the admin mode setting is disabled', :do_not_mock_admin_mode_setting do
+        it { expect_allowed(:create_build_terminal) }
+      end
+    end
   end
 end

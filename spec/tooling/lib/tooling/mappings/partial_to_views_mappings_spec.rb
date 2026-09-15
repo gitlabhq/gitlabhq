@@ -11,9 +11,7 @@ RSpec.describe Tooling::Mappings::PartialToViewsMappings, feature_category: :too
     described_class.new(changed_files, view_base_folder: view_base_folder)
   end
 
-  let(:views_with_partials_pathname) { views_with_partials_file.path }
   let(:changed_files) { %w[changed_file1 changed_file2] }
-  let(:views_with_partials) { ["previously_added_view.html.haml"] }
 
   around do |example|
     # See https://ruby-doc.org/stdlib-1.9.3/libdoc/tempfile/rdoc/

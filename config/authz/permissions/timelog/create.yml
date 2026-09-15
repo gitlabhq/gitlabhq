@@ -1,0 +1,4 @@
+---
+name: create_timelog
+description: Grants the ability to create a timelog. Timelogs track time spent on
+  issuables such as issues and merge requests.

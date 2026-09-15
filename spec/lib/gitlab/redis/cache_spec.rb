@@ -19,7 +19,7 @@ RSpec.describe Gitlab::Redis::Cache, feature_category: :redis do
     end
 
     it 'has a pool set to false' do
-      expect(described_class.active_support_config[:pool]).to eq(false)
+      expect(described_class.active_support_config[:pool]).to be(false)
     end
   end
 end

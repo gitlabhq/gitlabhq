@@ -149,17 +149,6 @@ ci_build_report_results:
   - table: projects
     column: project_id
     on_delete: async_delete
-ci_build_runtime_environments:
-  - table: p_ci_builds
-    column: build_id
-    on_delete: async_delete
-    worker_class: LooseForeignKeys::CiPipelinesBuildsCleanupCronWorker
-  - table: ci_runner_machines
-    column: runner_machine_id
-    on_delete: async_nullify
-  - table: projects
-    column: project_id
-    on_delete: async_delete
 ci_daily_build_group_report_results:
   - table: namespaces
     column: group_id
@@ -224,6 +213,9 @@ ci_namespace_mirrors:
   - table: namespaces
     column: namespace_id
     on_delete: async_delete
+  - table: organizations
+    column: organization_id
+    on_delete: async_delete
 ci_pending_builds:
   - table: namespaces
     column: namespace_id
@@ -267,6 +259,9 @@ ci_project_mirrors:
     on_delete: async_delete
   - table: namespaces
     column: namespace_id
+    on_delete: async_delete
+  - table: organizations
+    column: organization_id
     on_delete: async_delete
 ci_project_monthly_usages:
   - table: projects
@@ -341,6 +336,14 @@ ci_subscriptions_projects:
     on_delete: async_delete
   - table: users
     column: author_id
+    on_delete: async_delete
+ci_test_balancing_job_groups:
+  - table: projects
+    column: project_id
+    on_delete: async_delete
+ci_test_balancing_test_splits:
+  - table: projects
+    column: project_id
     on_delete: async_delete
 ci_triggers:
   - table: users
@@ -459,6 +462,13 @@ dependency_list_exports:
   - table: organizations
     column: organization_id
     on_delete: async_delete
+dependency_management_remediations:
+  - table: projects
+    column: project_id
+    on_delete: async_delete
+  - table: merge_requests
+    column: merge_request_id
+    on_delete: async_nullify
 dependency_proxy_blob_states:
   - table: dependency_proxy_blobs
     column: dependency_proxy_blob_id
@@ -475,6 +485,10 @@ deployment_clusters:
   - table: clusters
     column: cluster_id
     on_delete: async_delete
+duo_agent_platform_functional_verification_runs:
+  - table: duo_workflows_workflows
+    column: workflow_id
+    on_delete: async_nullify
 duo_workflows_workflow_pipelines:
   - table: p_ci_pipelines
     column: pipeline_id
@@ -512,6 +526,14 @@ govern_policies:
     column: namespace_id
     on_delete: async_delete
 govern_policy_enforcements:
+  - table: organizations
+    column: organization_id
+    on_delete: async_delete
+govern_policy_evaluations:
+  - table: organizations
+    column: organization_id
+    on_delete: async_delete
+govern_policy_violations:
   - table: organizations
     column: organization_id
     on_delete: async_delete
@@ -864,10 +886,6 @@ projects_visits:
 projects_with_pipeline_variables:
   - table: projects
     column: project_id
-    on_delete: async_delete
-push_rules:
-  - table: organizations
-    column: organization_id
     on_delete: async_delete
 requirements_management_test_reports:
   - table: p_ci_builds

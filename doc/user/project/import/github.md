@@ -1,5 +1,5 @@
 ---
-stage: Create
+stage: GitLab Dedicated
 group: Import
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see <https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments>
 title: Migrate from GitHub
@@ -16,6 +16,7 @@ description: "Migrate from GitHub to GitLab."
 {{< history >}}
 
 - **Imported** badge [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/461208) in GitLab 17.2.
+- **Use alternative comments import method** checkbox [removed](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/250959) in GitLab 19.4. This comments import method is now always used for new imports and cannot be turned off.
 
 {{< /history >}}
 
@@ -80,13 +81,13 @@ on the GitLab instance you import to.
 - For [GitLab-specific references](../../markdown.md#gitlab-specific-references), GitLab uses the `#` character for issues and a `!` character for merge requests.
   However, GitHub uses only the `#` character for both issues and pull requests. When importing:
 
-  - Comment notes, GitLab only creates links to issues because GitLab can't determine whether a references points to an
+  - Comment notes, GitLab only creates links to issues because GitLab can't determine whether a reference points to an
     issue or a merge request.
   - Issues or merge request descriptions, GitLab doesn't create links for any references because their imported
     counterparts might not have been created on the destination yet.
 
 - When importing from GitHub accounts with SAML single sign-on (SSO) enabled, Markdown attachments might fail to import. This issue is caused by a GitHub
-  API limitation where assets cannot be downloaded using a personal access token when SSO is enforced. To workaround the issue, add the GitLab user performing
+  API limitation where assets cannot be downloaded using a personal access token when SSO is enforced. To work around the issue, add the GitLab user performing
   the import as an
   [outside collaborator](https://docs.github.com/en/organizations/managing-user-access-to-your-organizations-repositories/managing-outside-collaborators/adding-outside-collaborators-to-repositories-in-your-organization)
   to the GitHub repository. This permits access to private attachments during import.
@@ -174,14 +175,11 @@ When the **Organization** tab is selected, you can further narrow down your sear
 
 To make imports as fast as possible, the following items aren't imported from GitHub by default:
 
-- More than approximately 30,000 comments because of a [limitation of the GitHub API](troubleshooting_github_import.md#missing-comments).
 - Markdown attachments from repository comments, release posts, issue descriptions, and pull request descriptions. These can include
   images, text, or binary attachments. If not imported, links in Markdown to attachments break after you remove the attachments from GitHub.
 
 You can choose to import these items, but this could significantly increase import time. To import these items, select the appropriate fields in the UI:
 
-- **Use alternative comments import method**. If importing GitHub projects with more than approximately 30,000 comments across all issues and pull requests, you should enable this method because of a
-  [limitation of the GitHub API](troubleshooting_github_import.md#missing-comments).
 - **Import Markdown attachments**.
 - **Import collaborators** (selected by default). Leaving it selected might result in new users using a seat in the group or namespace,
   and being granted permissions [as high as project owner](#collaborators-members). Only direct collaborators are imported.
@@ -208,7 +206,7 @@ If the import has already started, the imported files are kept.
 
 To open a repository in GitLab URL after it has been imported, select its GitLab path.
 
-Completed imports can be re-imported by selecting **Re-import** and specifying new name. This creates a new copy of the source project.
+Completed imports can be re-imported by selecting **Re-import** and specifying a new name. This creates a new copy of the source project.
 
 ![The GitHub importer page, which lists repositories to be imported into GitLab.](img/import_projects_from_github_importer_v16_0.png)
 
@@ -307,23 +305,23 @@ Administrator access on the GitLab server is required for these steps.
 
 ### Increase the number of Sidekiq workers
 
-For large projects it may take a while to import all data. To reduce the time necessary, you can increase the number of
+For large projects, it might take a while to import all data. To reduce the time necessary, you can increase the number of
 Sidekiq workers that process the following queues:
 
 - `github_importer`
 - `github_importer_advance_stage`
 
-For an optimal experience, it's recommended having at least 4 Sidekiq processes (each running a number of threads equal
+For an optimal experience, it's recommended to have at least 4 Sidekiq processes (each running a number of threads equal
 to the number of CPU cores) that only process these queues. It's also recommended that these processes run on separate
-servers. For 4 servers with 8 cores this means you can import up to 32 objects (for example, issues) in parallel.
+servers. For 4 servers with 8 cores, this means you can import up to 32 objects (for example, issues) in parallel.
 
 Reducing the time spent in cloning a repository can be done by increasing network throughput, CPU capacity, and disk
-performance (by using high performance SSDs, for example) of the disks that store the Git repositories (for your GitLab instance).
+performance (by using high-performance SSDs, for example) of the disks that store the Git repositories (for your GitLab instance).
 Increasing the number of Sidekiq workers does not reduce the time spent cloning repositories.
 
 ### Enable GitHub OAuth using a GitHub Enterprise Cloud OAuth App
 
-If you belong to a [GitHub Enterprise Cloud organization](https://docs.github.com/en/enterprise-cloud@latest/get-started/onboarding) you can configure GitLab Self-Managed to obtain a higher [GitHub API rate limit](https://docs.github.com/en/rest/using-the-rest-api/rate-limits-for-the-rest-api?apiVersion=2022-11-28#primary-rate-limit-for-authenticated-users).
+If you belong to a [GitHub Enterprise Cloud organization](https://docs.github.com/en/enterprise-cloud@latest/get-started/onboarding), you can configure GitLab Self-Managed to obtain a higher [GitHub API rate limit](https://docs.github.com/en/rest/using-the-rest-api/rate-limits-for-the-rest-api?apiVersion=2022-11-28#primary-rate-limit-for-authenticated-users).
 
 GitHub API requests are usually subject to a rate limit of 5,000 requests per hour. Using the steps below, you obtain a higher 15,000 requests per hour rate limit, resulting in a faster overall import time.
 
@@ -418,11 +416,11 @@ GitHub Enterprise Cloud has
 [custom repository roles](https://docs.github.com/en/enterprise-cloud@latest/organizations/managing-user-access-to-your-organizations-repositories/managing-repository-roles/about-custom-repository-roles).
 These roles aren't supported and cause partially completed imports.
 
-To import GitHub collaborators, you must have the Write or Maintain role on the GitHub project. Otherwise collaborators import is skipped.
+To import GitHub collaborators, you must have the Write or Maintain role on the GitHub project. Otherwise, the collaborators import is skipped.
 
 ## Import from GitHub Enterprise on an internal network
 
-If your GitHub Enterprise instance is on a internal network that is inaccessible to the internet, you can use a reverse proxy
+If your GitHub Enterprise instance is on an internal network that is inaccessible to the internet, you can use a reverse proxy
 to allow GitLab.com to access the instance.
 
 The proxy needs to:
@@ -484,7 +482,7 @@ git clone -c http.extraHeader="Authorization: basic <base64 encode YOUR-TOKEN>" 
 
 ### Sample reverse proxy configuration
 
-The following configuration is an example on how to configure Apache HTTP Server as a reverse proxy
+The following configuration is an example of how to configure Apache HTTP Server as a reverse proxy.
 
 > [!warning]
 > For simplicity, the snippet does not have configuration to encrypt the connection between the client and the proxy. However, for security reasons you should include that

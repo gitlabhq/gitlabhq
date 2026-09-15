@@ -110,29 +110,15 @@ module API
     end
 
     before_validation do
-      next if ::Current.organization_assigned
-
       endpoint_class = request.env[Grape::Env::API_ENDPOINT]&.options&.dig(:for)
       next if endpoint_class.respond_to?(:skip_global_organization_setup?) &&
         endpoint_class.skip_global_organization_setup?
 
-      begin
-        ::Current.organization = Gitlab::Current::Organization.new(
-          params: {},
-          user: -> { safe_find_organization_actor_from_sources },
-          rack_env: request.env
-        ).organization
-      rescue ::Current::OrganizationAlreadyAssignedError
-        # The earlier check is the canonical guard, but some tests stub
-        # Current.organization_assigned to return false while the underlying
-        # attribute is in fact set. Treat the resulting double-assignment as
-        # a no-op rather than letting it abort the request.
-      end
-
-      # Mirror what set_current_organization in lib/api/helpers.rb does after
-      # assigning, so write requests to a read-only organization are rejected
-      # even when this hook short-circuits the per-endpoint helper.
-      check_organization_read_only!
+      # safe_find_organization_actor_from_sources is passed instead of the helper's
+      # current_user default because current_user raises on invalid tokens and
+      # has side effects (load-balancer sticking, auditing) that must not run
+      # for every request this early.
+      set_current_organization(user: -> { safe_find_organization_actor_from_sources })
     end
 
     before do
@@ -199,8 +185,11 @@ module API
       error!(e.message, e.status, e.headers || {})
     end
 
+    # Grape's error middleware accepts only a Rack::Response or an error hash here, and it reformats
+    # the hash: `error!` would wrap the body in JSON and add a JSON content type, while `redirect`
+    # returns a String it rejects. This keeps the bare-string body the original `rack_response` built.
     rescue_from MovedPermanentlyError do |e|
-      rack_response(e.message, 301, { 'Location' => e.location_url })
+      Rack::Response.new([e.message], 301, { 'Location' => e.location_url })
     end
 
     rescue_from Gitlab::Auth::TooManyIps do
@@ -263,6 +252,7 @@ module API
         mount ::API::AlertManagementAlerts
         mount ::API::Appearance
         mount ::API::Applications
+        mount ::API::Authn::Userinfo
         mount ::API::Avatar
         mount ::API::AwardEmoji
         mount ::API::Badges
@@ -278,6 +268,7 @@ module API
         mount ::API::Ci::SecureFiles
         mount ::API::Ci::Pipelines
         mount ::API::Ci::PipelineSchedules
+        mount ::API::Ci::UserPipelines
         mount ::API::Ci::Triggers
         mount ::API::Ci::Variables
         mount ::API::ClusterDiscovery
@@ -424,6 +415,7 @@ module API
         mount ::API::WorkItems::LinkedResources
         mount ::API::WorkItems::AwardEmoji
         mount ::API::WorkItems::ClosingMergeRequests
+        mount ::API::WorkItems::RelatedBranches
         mount ::API::WorkItems::RelatedMergeRequests
         mount ::API::WorkItems::CurrentUserTodos
         mount ::API::WorkItems::Notes
@@ -440,6 +432,7 @@ module API
       mount ::API::Ci::Pipelines
       mount ::API::Ci::PipelineSchedules
       mount ::API::Ci::SecureFiles
+      mount ::API::Ci::UserPipelines
       mount ::API::Discussions
       mount ::API::GroupBoards
       mount ::API::GroupLabels
@@ -487,6 +480,7 @@ module API
     mount ::API::Internal::Workhorse
     mount ::API::Internal::Shellhorse
     mount ::API::Internal::Gitaly
+    mount ::API::Internal::OrgMover
 
     route_setting :authorization, skip_granular_token_authorization: :catch_all
     route :any, '*path', feature_category: :not_owned do
@@ -495,5 +489,5 @@ module API
   end
 end
 
-API::API.use API::TrackAPIRequestFromPersonalAccessToken
+API::API.use ::API::TrackAPIRequestFromPersonalAccessToken
 API::API.prepend_mod

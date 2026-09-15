@@ -1,8 +1,9 @@
 ---
 stage: Plan
-group: Project Management
+group: Work Items
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see <https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments>
 title: Due dates
+description: Set due dates on issues, epics, and other work items to track deadlines, view upcoming work, and export due dates to a calendar.
 ---
 
 {{< details >}}

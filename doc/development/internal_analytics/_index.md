@@ -53,16 +53,16 @@ such as the value of a setting or the count of rows in a database table.
 
 ## Instrumentation
 
-- To create an instrumentation plan, use this [template](https://gitlab.com/gitlab-org/gitlab/-/issues/new?description_template=Usage+Data+Instrumentation).
+- To create an instrumentation plan, use this [template](https://gitlab.com/gitlab-org/gitlab/-/work_items/new?description_template=Usage+Data+Instrumentation).
 - To instrument an event-based metric, see the [internal event tracking quick start guide](internal_event_instrumentation/quick_start.md).
 - To instrument a metric that observes the GitLab instances state, see [the metrics instrumentation](metrics/metrics_instrumentation.md).
 
 ## Data discovery
 
-Event and metrics data is ultimately stored in our [Snowflake data warehouse](https://handbook.gitlab.com/handbook/business-technology/data-team/platform/snowflake/).
-It can either be accessed directly via SQL in Snowflake for [ad-hoc analyses](https://handbook.gitlab.com/handbook/business-technology/data-team/platform/#snowflake-analyst) or visualized in our data visualization tool
-[Tableau](https://handbook.gitlab.com/handbook/business-technology/data-team/platform/tableau/), which has access to Snowflake.
-Both platforms need an access request ([Snowflake](https://handbook.gitlab.com/handbook/business-technology/data-team/platform/#warehouse-access), [Tableau](https://handbook.gitlab.com/handbook/business-technology/data-team/platform/tableau/#tableau-online-access)).
+Event and metrics data is ultimately stored in our [Snowflake data warehouse](https://handbook.gitlab.com/handbook/enterprise-data/platform/snowflake/).
+It can either be accessed directly via SQL in Snowflake for [ad-hoc analyses](https://handbook.gitlab.com/handbook/enterprise-data/platform/snowflake/#logging-in) or visualized in our data visualization tool
+[Tableau](https://handbook.gitlab.com/handbook/enterprise-data/platform/tableau/), which has access to Snowflake.
+Both platforms need an access request ([Snowflake](https://handbook.gitlab.com/handbook/enterprise-data/platform/#warehouse-access), [Tableau](https://handbook.gitlab.com/handbook/enterprise-data/platform/tableau/#access)).
 
 > [!note]
 > To track user interactions in the browser, Do-Not-Track (DNT) needs to be disabled. DNT is disabled by default for most browsers.

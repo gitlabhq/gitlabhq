@@ -1,6 +1,6 @@
 import MockAdapter from 'axios-mock-adapter';
-import Vue, { nextTick } from 'vue';
-import { GlModal, GlToast } from '@gitlab/ui';
+import { nextTick } from 'vue';
+import { GlModal } from '@gitlab/ui';
 import JobItem from '~/ci/pipeline_details/graph/components/job_item.vue';
 import JobSourceBadge from '~/ci/job_details/components/job_source_badge.vue';
 import axios from '~/lib/utils/axios_utils';
@@ -24,13 +24,23 @@ import {
 
 describe('pipeline graph job item', () => {
   useLocalStorageSpy();
-  Vue.use(GlToast);
 
   let wrapper;
   let mockAxios;
 
   const findActionVueComponent = () => wrapper.findComponent(ActionComponent);
   const findActionComponent = () => wrapper.findComponentByTestId('ci-action-button');
+  // job_item.vue passes a bare `disabled` attribute to ActionComponent, which declares no
+  // such prop. Vue 2 applies it straight to the DOM node, so it never reaches GlButton's
+  // `disabled` prop and stays a native attribute. Vue 3 resolves it into the prop, so
+  // GlButton renders `aria-disabled` instead. Accept either signal.
+  const isActionComponentDisabled = () => {
+    const action = findActionComponent();
+
+    return (
+      action.attributes('disabled') !== undefined || action.attributes('aria-disabled') === 'true'
+    );
+  };
   const findJobItemContent = () => wrapper.findByTestId('ci-job-item-content');
   const findJobNameRow = () => wrapper.findByTestId('job-name-row');
   const findStageName = () => wrapper.findByTestId('stage-name-in-job');
@@ -159,7 +169,7 @@ describe('pipeline graph job item', () => {
 
       expect(actionComponent.exists()).toBe(true);
       expect(actionComponent.props('actionIcon')).toBe('retry');
-      expect(actionComponent.attributes('disabled')).toBeUndefined();
+      expect(isActionComponentDisabled()).toBe(false);
     });
 
     it('should render disabled action icon when user cannot run the action', () => {
@@ -173,7 +183,7 @@ describe('pipeline graph job item', () => {
 
       expect(actionComponent.exists()).toBe(true);
       expect(actionComponent.props('actionIcon')).toBe('stop');
-      expect(actionComponent.attributes('disabled')).toBeDefined();
+      expect(isActionComponentDisabled()).toBe(true);
     });
 
     it('action icon tooltip text when job has passed but can be ran again', () => {
@@ -596,7 +606,7 @@ describe('pipeline graph job item', () => {
           await findActionComponent().trigger('click');
           await actionBtn();
 
-          expect(wrapper.emitted()['set-skip-retry-modal']).toBeUndefined();
+          expect(wrapper.emitted('set-skip-retry-modal')).toBeUndefined();
           expect(localStorage.setItem).not.toHaveBeenCalled();
         },
       );
@@ -629,7 +639,7 @@ describe('pipeline graph job item', () => {
           await findActionComponent().trigger('click');
           await actionBtn();
 
-          expect(wrapper.emitted()['set-skip-retry-modal']).toHaveLength(1);
+          expect(wrapper.emitted('set-skip-retry-modal')).toHaveLength(1);
           expect(localStorage.setItem).toHaveBeenCalledWith('skip_retry_modal', 'true');
         },
       );

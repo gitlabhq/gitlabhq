@@ -3,8 +3,9 @@
 require 'spec_helper'
 
 RSpec.describe 'Merge request > Batch comments', :js, feature_category: :code_review_workflow do
-  include MergeRequestDiffHelpers
   include RepoHelpers
+  include RapidDiffsDiscussionHelpers
+  include Spec::Support::Helpers::ModalHelpers
 
   let(:user) { create(:user) }
   let(:project) { create(:project, :repository) }
@@ -26,58 +27,50 @@ RSpec.describe 'Merge request > Batch comments', :js, feature_category: :code_re
     it 'adds draft note' do
       write_diff_comment
 
-      expect(find('.draft-note')).to have_content('Line is wrong')
+      expect(find_by_testid('draft-note')).to have_content('Line is wrong')
 
-      expect(first('[data-testid="review-drawer-toggle"] .gl-button-count')).to have_content('1')
+      expect(find_by_testid('review-drawer-toggle', match: :first)).to have_content('1')
     end
 
     it 'publishes review' do
       write_diff_comment
 
-      page.within '.merge-request-tabs-container' do
-        click_button 'Your review'
-      end
-
+      click_button 'Your review'
       click_button 'Submit review'
 
       wait_for_requests
 
-      find_in_panel_by_scrolling("[id='#{sample_compare.changes[0][:line_code]}']")
+      expect(page).to have_no_testid('draft-note', text: 'Line is wrong')
 
-      expect(page).not_to have_selector('.draft-note', text: 'Line is wrong')
-
-      expect(page).to have_selector('.note:not(.draft-note)', text: 'Line is wrong')
+      expect(page).to have_css('[data-testid="noteable-note-container"]', text: 'Line is wrong')
     end
 
-    it 'deletes draft note', quarantine: 'https://gitlab.com/gitlab-org/quality/test-failure-issues/-/issues/9328' do
+    it 'deletes draft note' do
       write_diff_comment
 
-      find('.js-note-delete').click
-
-      wait_for_requests
-
-      page.within('.modal') do
-        click_button('Delete comment', match: :first)
+      accept_gl_confirm(button_text: 'Delete comment') do
+        find_by_testid('draft-note').find('[aria-label="Delete comment"]').click
       end
 
       wait_for_requests
 
-      expect(page).not_to have_selector('.draft-note', text: 'Line is wrong')
+      expect(page).to have_no_testid('draft-note', text: 'Line is wrong')
     end
 
     it 'edits draft note' do
       write_diff_comment
 
-      find('.js-note-edit').click
+      draft = find_by_testid('draft-note')
+      draft.find('[aria-label="Edit comment"]').click
 
       wait_for_requests
 
-      # make sure comment form is in view
-      execute_script("document.querySelector('.js-static-panel-inner').scrollBy(0, 200)")
+      within(draft) do
+        fill_in('note[note]', with: 'Testing update')
+        click_button('Save comment')
+      end
 
-      write_comment(text: 'Testing update', button_text: 'Save comment')
-
-      expect(page).to have_selector('.draft-note', text: 'Testing update')
+      expect(find_by_testid('draft-note')).to have_content('Testing update')
     end
 
     context 'draft merge request' do
@@ -101,14 +94,10 @@ RSpec.describe 'Merge request > Batch comments', :js, feature_category: :code_re
       it 'shows both drafts at once' do
         write_diff_comment
 
-        # All of the Diff helpers like click_diff_line (or write_diff_comment)
-        #     fail very badly when run a second time.
-        # This recreates the relevant logic.
-        line = find_in_panel_by_scrolling("[id='#{sample_compare.changes[0][:line_code]}']")
-        line.hover
-        line.find('.js-add-diff-note-button').click
-
-        write_comment(text: 'A second draft!', button_text: 'Add to review')
+        line_holder = find_line(sample_compare.changes[0][:line_code], sample_compare.changes[0][:file_path])
+        click_diff_line(line_holder)
+        next_discussion_row(line_holder).fill_in('note[note]', with: 'A second draft!')
+        click_button('Add to review')
 
         expect(page).to have_text('Line is wrong')
         expect(page).to have_text('A second draft!')
@@ -117,18 +106,19 @@ RSpec.describe 'Merge request > Batch comments', :js, feature_category: :code_re
 
     context 'in parallel diff' do
       before do
-        find('.js-show-diff-settings').click
-        find_by_testid('listbox-item-parallel').click
+        select_parallel_view
+
+        wait_for_requests
       end
 
-      it 'adds draft comments to both sides', quarantine: 'https://gitlab.com/gitlab-org/quality/test-failure-issues/-/issues/9327' do
-        write_parallel_comment('2f6fcd96b88b36ce98c38da085c795a27d92a3dd_10_9')
-        write_parallel_comment('2f6fcd96b88b36ce98c38da085c795a27d92a3dd_9_9', button_text: 'Add to review', text: 'Another wrong line')
+      it 'adds draft comments to both sides' do
+        write_parallel_comment('files/ruby/popen.rb', 'new', 9)
+        write_parallel_comment('files/ruby/popen.rb', 'old', 9, button_text: 'Add to review', text: 'Another wrong line')
 
-        expect(find('.new .draft-note')).to have_content('Line is wrong')
-        expect(find('.old .draft-note')).to have_content('Another wrong line')
+        expect(page).to have_css("[data-discussion-row] td:nth-child(1) [data-testid='draft-note']", text: 'Another wrong line')
+        expect(page).to have_css("[data-discussion-row] td:nth-child(2) [data-testid='draft-note']", text: 'Line is wrong')
 
-        expect(first('[data-testid="review-drawer-toggle"] .gl-button-count')).to have_content('2')
+        expect(find_by_testid('review-drawer-toggle', match: :first)).to have_content('2')
       end
     end
   end
@@ -169,7 +159,9 @@ RSpec.describe 'Merge request > Batch comments', :js, feature_category: :code_re
         visit_overview
       end
 
-      it 'can add comment to review' do
+      it 'can add comment to review',
+        skip: 'Rapid Diffs: thread resolution counter/timeline not reactive under useMergeRequestDiscussions store (gitlab#602723); ' \
+          'https://gitlab.com/gitlab-org/gitlab/-/issues/628497' do
         write_comment(selector: '.js-main-target-form', field: 'note-body', text: 'Its a draft comment', button_text: 'Add to review')
 
         expect(page).to have_selector('.draft-note', text: 'Its a draft comment')
@@ -217,10 +209,7 @@ RSpec.describe 'Merge request > Batch comments', :js, feature_category: :code_re
 
       write_reply_to_discussion(resolve: true)
 
-      page.within '.merge-request-tabs-container' do
-        click_button 'Your review'
-      end
-
+      click_button 'Your review'
       click_button 'Submit review'
 
       wait_for_requests
@@ -239,7 +228,7 @@ RSpec.describe 'Merge request > Batch comments', :js, feature_category: :code_re
 
       visit_diffs
 
-      page.find('.js-diff-comment-avatar').click
+      find('[data-gutter-toggle] button').click
     end
 
     it 'publishes comment right away and unresolves the thread',
@@ -261,10 +250,7 @@ RSpec.describe 'Merge request > Batch comments', :js, feature_category: :code_re
 
       write_reply_to_discussion(button_text: 'Start a review', unresolve: true)
 
-      page.within '.merge-request-tabs-container' do
-        click_button 'Your review'
-      end
-
+      click_button 'Your review'
       click_button 'Submit review'
 
       wait_for_requests
@@ -284,22 +270,33 @@ RSpec.describe 'Merge request > Batch comments', :js, feature_category: :code_re
   def visit_overview
     visit project_merge_request_path(merge_request.project, merge_request)
 
+    find('.issuable-discussion', wait: 15)
+  end
+
+  def write_diff_comment(text: 'Line is wrong', button_text: 'Start a review')
+    line_holder = find_line(sample_compare.changes[0][:line_code], sample_compare.changes[0][:file_path])
+    click_diff_line(line_holder)
+
+    next_discussion_row(line_holder).fill_in('note[note]', with: text)
+    click_button(button_text)
+
     wait_for_requests
   end
 
-  def write_diff_comment(...)
-    click_diff_line(find_in_panel_by_scrolling("[id='#{sample_compare.changes[0][:line_code]}']"))
+  def write_parallel_comment(file_path, side, number, button_text: 'Start a review', text: 'Line is wrong')
+    retries = 0
+    begin
+      line_holder = line_by_number(file_path, side, number)
+      click_diff_line(line_holder, side == 'old' ? 'left' : 'right')
+      next_discussion_row(line_holder).fill_in('note[note]', with: text)
+    rescue Selenium::WebDriver::Error::StaleElementReferenceError
+      raise if (retries += 1) > 3
 
-    write_comment(...)
-  end
+      retry
+    end
+    click_button(button_text)
 
-  def write_parallel_comment(line, **params)
-    line_element = find_in_panel_by_scrolling("[id='#{line}']")
-    scroll_to_panel_elements_bottom(line_element)
-    line_element.hover
-    find(".js-add-diff-note-button").click
-
-    write_comment(selector: "form[data-line-code='#{line}']", **params)
+    wait_for_requests
   end
 
   def write_comment(selector: '.js-discussion-note-form', field: 'note_note', button_text: 'Start a review', text: 'Line is wrong')
@@ -312,21 +309,19 @@ RSpec.describe 'Merge request > Batch comments', :js, feature_category: :code_re
   end
 
   def write_reply_to_discussion(button_text: 'Start a review', text: 'Line is wrong', resolve: false, unresolve: false)
-    page.within(first('.diff-files-holder .discussion-reply-holder')) do
-      find_field('Reply…', match: :first).click
+    find_field('Reply…', match: :first).click
 
-      fill_in('note_note', with: text)
+    fill_in('note[note]', with: text)
 
-      if resolve
-        page.check('Resolve thread')
-      end
-
-      if unresolve
-        page.check('Reopen thread')
-      end
-
-      click_button(button_text)
+    if resolve
+      page.check('Resolve thread')
     end
+
+    if unresolve
+      page.check('Reopen thread')
+    end
+
+    click_button(button_text)
 
     wait_for_requests
   end

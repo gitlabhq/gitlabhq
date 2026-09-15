@@ -17,10 +17,12 @@ RSpec.describe 'projects/merge_requests/creations/_new_submit.html.haml', featur
     assign(:target_project, merge_request.target_project)
     assign(:mr_presenter, merge_request.present(current_user: merge_request.author))
 
-    allow(view).to receive(:can?).and_return(true)
-    allow(view).to receive(:url_for).and_return('#')
-    allow(view).to receive(:current_user).and_return(merge_request.author)
-    allow(view).to receive(:current_application_settings).and_return(Gitlab::CurrentSettings.current_application_settings)
+    allow(view).to receive_messages(
+      can?: true,
+      url_for: '#',
+      current_user: merge_request.author,
+      current_application_settings: Gitlab::CurrentSettings.current_application_settings
+    )
   end
 
   context 'when there are pipelines for merge request but no pipeline for last commit' do

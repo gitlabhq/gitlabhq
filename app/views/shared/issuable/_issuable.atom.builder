@@ -10,7 +10,7 @@ builder.author do
 end
 
 builder.summary issuable.title
-builder.content markdown_field(issuable, :description), type: 'html' if issuable.description
+builder.content atom_markdown_field(issuable, :description), type: 'html' if issuable.description
 builder.milestone issuable.milestone.title if issuable.milestone
 
 unless issuable.labels.empty?

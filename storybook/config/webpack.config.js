@@ -147,7 +147,6 @@ module.exports = function storybookWebpackConfig({ config }) {
   );
   config.resolve.alias = {
     ...config.resolve.alias,
-    '@cubejs-client/core': require.resolve('@cubejs-client/core/dist/cubejs-client-core.js'),
     uuid: require.resolve('uuid'),
     '/assets': path.resolve(__dirname, '../../app/assets'),
   };

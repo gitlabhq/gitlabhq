@@ -95,7 +95,7 @@ RSpec.describe Security::CiConfiguration::SastBuildAction do
         end
 
         it 'reports defaults have been overwritten' do
-          expect(result[:default_values_overwritten]).to eq(true)
+          expect(result[:default_values_overwritten]).to be(true)
         end
       end
     end
@@ -122,7 +122,7 @@ RSpec.describe Security::CiConfiguration::SastBuildAction do
       end
 
       it 'reports defaults have not been overwritten' do
-        expect(result[:default_values_overwritten]).to eq(false)
+        expect(result[:default_values_overwritten]).to be(false)
       end
 
       context 'analyzer section' do

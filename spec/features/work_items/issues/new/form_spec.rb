@@ -14,7 +14,9 @@ RSpec.describe 'New/edit issue', :js, feature_category: :team_planning do
   let_it_be(:label)     { create(:label, project: project) }
   let_it_be(:label2)    { create(:label, project: project) }
   let_it_be(:issue, freeze: false) { create(:issue, project: project, assignees: [user], milestone: milestone) }
-  let_it_be(:confidential_issue) { create(:issue, project: project, assignees: [user], milestone: milestone, confidential: true) }
+  let_it_be(:confidential_issue) do
+    create(:issue, project: project, assignees: [user], milestone: milestone, confidential: true)
+  end
 
   let(:current_user) { user }
 
@@ -107,7 +109,7 @@ RSpec.describe 'New/edit issue', :js, feature_category: :team_planning do
           expect(page).to have_css('.gl-label', text: label2.title)
         end
 
-        click_button 'Create Issue'
+        click_button 'Create issue'
         expect(page).to have_css('h1', text: 'title')
 
         within_testid('work-item-overview-right-sidebar') do
@@ -166,7 +168,7 @@ RSpec.describe 'New/edit issue', :js, feature_category: :team_planning do
     it 'displays an error message when submitting an invalid form' do
       visit new_project_issue_path(project)
 
-      click_button 'Create Issue'
+      click_button 'Create issue'
 
       expect(page).to have_text('A title is required')
     end
@@ -295,11 +297,14 @@ RSpec.describe 'New/edit issue', :js, feature_category: :team_planning do
       expect(page).to have_field('Description', with: 'description from template')
     end
 
-    it 'fills the description from the issue[description] query parameter and shows an alert to replace the description with the template from issuable_template' do
-      visit new_project_issue_path(project, issuable_template: 'test_template', issue: { description: 'description from query parameter' })
+    it 'fills the description from the issue[description] query parameter and shows an alert to replace the ' \
+      'description with the template from issuable_template' do
+      visit new_project_issue_path(project, issuable_template: 'test_template',
+        issue: { description: 'description from query parameter' })
 
       expect(page).to have_field('Description', with: 'description from query parameter')
-      expect(page).to have_text('Applying a template will replace the existing description. Any changes you have made will be lost.')
+      expect(page).to have_text('Applying a template will replace the existing description. ' \
+        'Any changes you have made will be lost.')
       expect(page).to have_button('Apply template')
     end
   end
@@ -324,11 +329,11 @@ RSpec.describe 'New/edit issue', :js, feature_category: :team_planning do
     it 'links the new issue and the issue of origin' do
       visit new_project_issue_path(project, { add_related_issue: issue.iid })
 
-      expect(page).to have_checked_field("Mark this item as related to: Issue \##{issue.iid}")
+      expect(page).to have_checked_field("Mark this item as related to: issue \##{issue.iid}")
       expect(page).to have_link("\##{issue.iid}")
 
       fill_in 'Title', with: 'title'
-      click_button 'Create Issue'
+      click_button 'Create issue'
 
       within_testid('work-item-relationships') do
         expect(page).to have_link(issue.title)
@@ -339,10 +344,10 @@ RSpec.describe 'New/edit issue', :js, feature_category: :team_planning do
       incident = create(:incident, project: project)
       visit new_project_issue_path(project, { add_related_issue: incident.iid })
 
-      expect(page).to have_checked_field("Mark this item as related to: Incident \##{incident.iid}")
+      expect(page).to have_checked_field("Mark this item as related to: incident \##{incident.iid}")
 
       fill_in 'Title', with: 'title'
-      click_button 'Create Issue'
+      click_button 'Create issue'
 
       within_testid('work-item-relationships') do
         expect(page).to have_link(incident.title)
@@ -352,11 +357,11 @@ RSpec.describe 'New/edit issue', :js, feature_category: :team_planning do
     it 'does not link the new issue to any other issues if the checkbox is not checked' do
       visit new_project_issue_path(project, { add_related_issue: issue.iid })
 
-      expect(page).to have_checked_field("Mark this item as related to: Issue \##{issue.iid}")
+      expect(page).to have_checked_field("Mark this item as related to: issue \##{issue.iid}")
 
-      uncheck "Mark this item as related to: Issue \##{issue.iid}"
+      uncheck "Mark this item as related to: issue \##{issue.iid}"
       fill_in 'Title', with: 'title'
-      click_button 'Create Issue'
+      click_button 'Create issue'
 
       within_testid('work-item-relationships') do
         expect(page).not_to have_link(issue.title)

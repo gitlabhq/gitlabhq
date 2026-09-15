@@ -13,6 +13,7 @@ import UserAccessRoleBadge from '~/vue_shared/components/user_access_role_badge.
 import ReplyButton from '~/notes/components/note_actions/reply_button.vue';
 
 import { getMutation, optimisticAwardUpdate, getNewCustomEmojiPath } from '../../notes/award_utils';
+import { lowercaseWorkItemType } from '../../utils';
 
 export default {
   name: 'WorkItemNoteActions',
@@ -34,6 +35,9 @@ export default {
     GlDisclosureDropdownGroup,
     ReplyButton,
     UserAccessRoleBadge,
+    ViewSessionButton: defineAsyncComponent(
+      () => import('ee_component/ai/shared/widgets/view_session_button.vue'),
+    ),
   },
   directives: {
     GlTooltip: GlTooltipDirective,
@@ -128,6 +132,11 @@ export default {
       required: false,
       default: () => ({}),
     },
+    duoSessionId: {
+      type: Number,
+      required: false,
+      default: null,
+    },
   },
   emits: [
     'error',
@@ -147,7 +156,7 @@ export default {
     },
     displayAuthorBadgeText() {
       return sprintf(__('This user is the author of this %{workItemType}.'), {
-        workItemType: this.workItemType,
+        workItemType: lowercaseWorkItemType(this.workItemType),
       });
     },
     displayMemberBadgeText() {
@@ -245,6 +254,11 @@ export default {
     >
       {{ __('Contributor') }}
     </user-access-role-badge>
+    <view-session-button
+      v-if="duoSessionId"
+      :session-id="duoSessionId"
+      class="note-action-button"
+    />
     <gl-button
       v-if="canResolve"
       ref="resolveButton"

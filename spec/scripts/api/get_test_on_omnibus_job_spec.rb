@@ -17,7 +17,6 @@ RSpec.describe GetTestOnOmnibusJob, feature_category: :tooling do
     end
 
     let(:client) { double('Gitlab::Client') }
-    let(:client_response) { double('Gitlab::ClientResponse') }
     let(:bridge_status) { 'success' }
 
     let(:bridges_response) do

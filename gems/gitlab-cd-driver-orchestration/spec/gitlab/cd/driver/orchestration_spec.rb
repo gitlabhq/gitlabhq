@@ -32,9 +32,9 @@ RSpec.describe Gitlab::Cd::Driver::Orchestration do
     let(:driver_script) do
       <<~STAR
         def deploy():
-            def rolling_deploy(step, environment, services, version_set):
+            def canary_deploy(step, environment, services, version_set):
                 pass
-            register("com.gitlab.cd.argo.rolling.deploy", run = rolling_deploy)
+            register("com.gitlab.cd.argo.canary.deploy", run = canary_deploy)
       STAR
     end
 
@@ -124,5 +124,18 @@ RSpec.describe Gitlab::Cd::Driver::Orchestration do
       expect(described_class::ENGINE_GLOBALS.sort)
         .to eq(described_class.fragment_globals(described_class.main_program).sort)
     end
+
+    it "matches the names the README tells a driver author are taken" do
+      expect(readme_bound_globals).to eq(described_class::ENGINE_GLOBALS.sort)
+    end
+  end
+
+  # The sentence a driver author reads to find out which names are free. Parenthetical
+  # asides are dropped: they say how a name is bound, not that it is.
+  def readme_bound_globals
+    readme = File.read(File.expand_path("../../../../README.md", __dir__))
+    sentence = readme[/The engine binds (.*?)\.\n/m, 1]
+
+    sentence.gsub(/\([^)]*\)/, "").scan(/`(\w+)`/).flatten.sort
   end
 end

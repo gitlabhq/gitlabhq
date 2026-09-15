@@ -1183,6 +1183,45 @@ describe('common_utils', () => {
     });
   });
 
+  describe('getCurrentUser', () => {
+    describe('when nobody is signed in', () => {
+      beforeEach(() => {
+        window.gon.current_user_id = null;
+      });
+
+      it('returns `null`', () => {
+        expect(commonUtils.getCurrentUser()).toBe(null);
+      });
+    });
+
+    describe('when a user is signed in', () => {
+      beforeEach(() => {
+        window.gon.current_user_id = 7;
+        window.gon.current_username = 'sasha';
+        window.gon.current_user_fullname = 'Sasha Kim';
+        window.gon.current_user_avatar_url = '/uploads/avatar.png';
+      });
+
+      it('returns the user with a numeric id', () => {
+        expect(commonUtils.getCurrentUser()).toEqual({
+          id: 7,
+          username: 'sasha',
+          name: 'Sasha Kim',
+          avatarUrl: '/uploads/avatar.png',
+        });
+      });
+
+      it('returns the user with a global id when asked for one', () => {
+        expect(commonUtils.getCurrentUser({ useGlobalId: true })).toEqual({
+          id: 'gid://gitlab/User/7',
+          username: 'sasha',
+          name: 'Sasha Kim',
+          avatarUrl: '/uploads/avatar.png',
+        });
+      });
+    });
+  });
+
   describe('cloneWithoutReferences', () => {
     it('clones the provided object', () => {
       const obj = {

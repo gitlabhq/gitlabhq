@@ -75,7 +75,7 @@ export default {
   >
     <template #body>
       <gl-alert
-        variant="info"
+        variant="warning"
         :title="s__('NamespaceTransfer|Transferring this project will:')"
         :dismissible="false"
         class="gl-mb-5"
@@ -85,6 +85,13 @@ export default {
           <li>
             {{
               s__('NamespaceTransfer|Change its visibility settings to match the new namespace.')
+            }}
+          </li>
+          <li>
+            {{
+              s__(
+                'NamespaceTransfer|Permanently delete all secrets stored in GitLab Secrets Manager.',
+              )
             }}
           </li>
         </ul>

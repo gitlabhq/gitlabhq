@@ -54,6 +54,20 @@ RSpec.describe 'Compare diffs stream', feature_category: :source_code_management
 
     include_examples 'with diffs_blobs param'
 
+    context 'when Gitaly is unavailable' do
+      before do
+        allow_next_instance_of(CompareService) do |service|
+          allow(service).to receive(:execute).and_raise(GRPC::Unavailable)
+        end
+      end
+
+      it 'returns 503 instead of raising ActionView::MissingTemplate' do
+        go
+
+        expect(response).to have_gitlab_http_status(:service_unavailable)
+      end
+    end
+
     context 'when there are no diffs and no offset' do
       let(:target_ref) { start_ref }
 

@@ -69,7 +69,6 @@ describe('IssuesDashboardApp component', () => {
     emptyStateWithFilterSvgPath: 'empty/state/with/filter/svg/path.svg',
     emptyStateWithoutFilterSvgPath: 'empty/state/with/filter/svg/path.svg',
     hasBlockedIssuesFeature: true,
-    hasIssueDateFilterFeature: true,
     hasIssuableHealthStatusFeature: true,
     hasIssueWeightsFeature: true,
     hasOkrsFeature: true,
@@ -318,12 +317,12 @@ describe('IssuesDashboardApp component', () => {
 
       it('still passes a user-selected type filter through', async () => {
         const issuesQueryHandler = jest.fn().mockResolvedValue(defaultQueryResponse);
-        setWindowLocation('?search=find+issues&type[]=incident');
+        setWindowLocation('?search=find+issues&type[]=1');
         mountComponent({ issuesQueryHandler });
         await waitForPromises();
 
         expect(issuesQueryHandler).toHaveBeenCalledWith(
-          expect.objectContaining({ workItemTypeIds: 'gid://gitlab/WorkItems::Type/INCIDENT' }),
+          expect.objectContaining({ workItemTypeIds: 'gid://gitlab/WorkItems::Type/1' }),
         );
       });
     });

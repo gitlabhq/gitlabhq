@@ -1,5 +1,6 @@
 import { GlButton, GlLink } from '@gitlab/ui';
 import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
+import { useConfigurePathHelpers } from 'helpers/configure_path_helpers';
 import BlameCommitInfo from '~/vue_shared/components/source_viewer/components/blame_commit_info.vue';
 import CommitPopover from '~/vue_shared/components/source_viewer/components/commit_popover.vue';
 import TimeagoTooltip from '~/vue_shared/components/time_ago_tooltip.vue';
@@ -165,6 +166,21 @@ describe('BlameCommitInfo component', () => {
       createComponent(props);
 
       expect(findPreviousBlameButton().classes()).toContain('gl-invisible');
+    });
+
+    describe('with a relative URL root', () => {
+      useConfigurePathHelpers('/gitlab');
+
+      it('includes the relative URL root in the href', () => {
+        createComponent({
+          previousPath: 'old/file.js',
+          projectPath: 'gitlab-org/gitlab',
+        });
+
+        expect(findPreviousBlameButton().attributes('href')).toBe(
+          '/gitlab/gitlab-org/gitlab/-/blob/parent123/old/file.js?blame=1',
+        );
+      });
     });
   });
 });

@@ -94,11 +94,13 @@ module Types
     field :group, Types::GroupType,
       null: true,
       resolver: Resolvers::GroupResolver,
-      description: "Find a group."
+      description: "Find a group.",
+      scopes: [:api, :read_api, :ai_workflows]
     field :groups, Types::GroupType.connection_type,
       null: true,
       resolver: Resolvers::GroupsResolver,
-      description: "Find groups."
+      description: "Find groups.",
+      scopes: [:api, :read_api, :ai_workflows]
     field :issue, Types::IssueType,
       null: true,
       description: 'Find an issue.' do

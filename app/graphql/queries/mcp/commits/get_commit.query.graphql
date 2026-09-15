@@ -1,0 +1,85 @@
+# @feature_category: mcp_server
+query getCommit(
+  $fullPath: ID!
+  $ref: String!
+  $withStats: Boolean = false
+  $withPatch: Boolean = false
+  $withNotes: Boolean = false
+  $notesAfter: String
+  $notesFirst: Int
+) {
+  project(fullPath: $fullPath) {
+    id
+    repository {
+      commit(ref: $ref) {
+        id
+        sha
+        shortId
+        title
+        fullTitle
+        message
+        description
+        webUrl
+        authorName
+        authorEmail
+        authoredDate
+        committerName
+        committerEmail
+        committedDate
+        author {
+          id
+          username
+          name
+        }
+        diffStatsSummary @include(if: $withStats) {
+          additions
+          deletions
+          changes
+          fileCount
+        }
+        diffStats @include(if: $withStats) {
+          path
+          additions
+          deletions
+        }
+        diffs @include(if: $withPatch) {
+          oldPath
+          newPath
+          diff
+          newFile
+          deletedFile
+          renamedFile
+          collapsed
+          tooLarge
+        }
+        notes(after: $notesAfter, first: $notesFirst) @include(if: $withNotes) {
+          pageInfo {
+            hasNextPage
+            endCursor
+          }
+          count
+          nodes {
+            id
+            webUrl: url
+            body
+            system
+            internal
+            createdAt
+            updatedAt
+            author {
+              id
+              username
+              name
+            }
+            position {
+              newPath
+              oldPath
+              newLine
+              oldLine
+            }
+          }
+        }
+      }
+    }
+  }
+}

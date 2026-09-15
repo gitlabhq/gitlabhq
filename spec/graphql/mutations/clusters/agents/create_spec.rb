@@ -7,8 +7,8 @@ RSpec.describe Mutations::Clusters::Agents::Create do
 
   subject(:mutation) { described_class.new(object: nil, context: query_context, field: nil) }
 
-  let(:project) { create(:project, :public, :repository) }
-  let(:current_user) { create(:user) }
+  let_it_be(:project) { create(:project, :public) }
+  let_it_be(:current_user) { create(:user) }
 
   specify { expect(described_class).to require_graphql_authorizations(:create_cluster) }
 
@@ -22,7 +22,7 @@ RSpec.describe Mutations::Clusters::Agents::Create do
     end
 
     context 'with user permissions' do
-      before do
+      before_all do
         project.add_maintainer(current_user)
       end
 

@@ -1,0 +1,5 @@
+---
+status: rollout
+feature_flag: vue3_migrate_performance_bar
+group: group::foundations
+migration_issue: https://gitlab.com/gitlab-org/gitlab/-/issues/623999

@@ -54,7 +54,8 @@ RSpec.describe Import::Offline::Imports::CreateService, :aggregate_failures, fea
     it 'triggers the ScheduleImportWorker' do
       expect(Import::Offline::Imports::ScheduleImportWorker).to receive(:perform_async).with(
         an_instance_of(Integer),
-        params[:entities].map(&:deep_stringify_keys)
+        params[:entities].map(&:deep_stringify_keys),
+        nil
       )
 
       service.execute
@@ -70,6 +71,16 @@ RSpec.describe Import::Offline::Imports::CreateService, :aggregate_failures, fea
         source_enterprise: false,
         organization: organization
       )
+    end
+
+    it 'tracks the start offline transfer import event', :clean_gitlab_redis_shared_state do
+      expect { service.execute }
+        .to trigger_internal_events('start_offline_transfer_import')
+        .with(user: user, additional_properties: { label: 'aws' })
+        .and increment_usage_metrics(
+          'counts.count_total_start_offline_transfer_import',
+          'counts.count_total_start_offline_transfer_import_monthly'
+        )
     end
 
     it 'creates the offline transfer configuration' do
@@ -178,6 +189,65 @@ RSpec.describe Import::Offline::Imports::CreateService, :aggregate_failures, fea
       end
     end
 
+    context 'when import_all is given instead of entities' do
+      let(:params) { { import_all: { destination_namespace: destination_namespace } } }
+
+      it 'returns a success result' do
+        response = service.execute
+
+        expect(response).to be_success
+        expect(response.payload).to be_a(BulkImport)
+      end
+
+      it 'triggers the ScheduleImportWorker with the import_all params' do
+        expect(Import::Offline::Imports::ScheduleImportWorker).to receive(:perform_async).with(
+          an_instance_of(Integer),
+          [],
+          { 'destination_namespace' => destination_namespace }
+        )
+
+        service.execute
+      end
+
+      # The entity slugs are not known until ScheduleImportService reads metadata.json,
+      # so only the destination namespace can be validated here.
+      it 'validates the destination namespace only' do
+        expect_next_instance_of(::Import::Framework::DestinationValidator) do |validator|
+          expect(validator).to receive(:validate_destination_namespace!)
+            .with(destination_namespace, ::BulkImports::Entity::GROUP_ENTITY_SOURCE_TYPE)
+          expect(validator).not_to receive(:validate!)
+        end
+
+        service.execute
+      end
+
+      it 'assigns the organization of the destination namespace' do
+        expect(service.execute.payload.organization).to eq(destination_group.organization)
+      end
+
+      context 'when the destination namespace is invalid' do
+        let(:destination_namespace) { 'does-not-exist' }
+
+        it 'returns an error result' do
+          response = service.execute
+
+          expect(response).to be_error
+          expect(response.message).to eq('One or more destination paths is invalid.')
+        end
+      end
+
+      context 'when the destination namespace is empty' do
+        let(:destination_namespace) { '' }
+
+        it 'returns a success result and falls back to the request organization' do
+          response = service.execute
+
+          expect(response).to be_success
+          expect(response.payload.organization).to eq(organization)
+        end
+      end
+    end
+
     describe 'cross-organization destination validation' do
       let_it_be_with_reload(:request_organization) { create(:organization, path: 'request-org') }
       let_it_be_with_reload(:other_organization) { create(:organization, path: 'other-org') }
@@ -257,6 +327,16 @@ RSpec.describe Import::Offline::Imports::CreateService, :aggregate_failures, fea
           expect(result).to be_error
           expect(result.message).to match(/belongs to a different organization than the current one/)
         end
+      end
+
+      context 'when import_all targets a cross-organization destination' do
+        let(:params) { { import_all: { destination_namespace: other_org_group.full_path } } }
+
+        before do
+          request_organization.mark_as_isolated!
+        end
+
+        it_behaves_like 'rejects the cross-organization import'
       end
 
       context 'when one of multiple entities targets a cross-organization destination' do

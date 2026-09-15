@@ -12,7 +12,7 @@ title: MLOps
 
 {{< /details >}}
 
-GitLab Machine Learning Operations (MLOps) is set of tools designed to help with
+GitLab Machine Learning Operations (MLOps) is a set of tools designed to help with
 your machine learning workflows.
 
 GitLab MLOps features include:

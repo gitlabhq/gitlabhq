@@ -2,7 +2,7 @@
 stage: AI-powered
 group: AI Framework
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see <https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments>
-description: インスタンス、グループ、およびプロジェクトに対してGitLab Duo機能をオフにします。
+description: インスタンス、グループ、プロジェクトに対してGitLab Duo機能をオフにします。
 title: GitLab Duoの可用性を制御する
 ---
 
@@ -14,20 +14,13 @@ title: GitLab Duoの可用性を制御する
 
 {{< /details >}}
 
-{{< history >}}
-
-- GitLab 16.10で、[AI機能をオン/オフにする設定が導入](https://gitlab.com/groups/gitlab-org/-/epics/12404)されました。
-- GitLab 16.11で、[AI機能をオン/オフにする設定がUIに追加](https://gitlab.com/gitlab-org/gitlab/-/issues/441489)されました。
-
-{{< /history >}}
-
-GitLab Duoはデフォルトでオンになっています。GitLab Duoには、[一連の機能](feature_summary.md)が含まれています。
+GitLab Duoはデフォルトでオンになっています。GitLab Duoには[一連の機能](feature_summary.md)が含まれています。
 
 GitLab Duoのオン/オフを切り替えることができます: 
 
-- GitLab.com: トップレベルグループ、その他のグループまたはサブグループ、およびプロジェクト。
+- GitLab.comの場合: トップレベルグループ、その他のグループまたはサブグループ、およびプロジェクト。
 - GitLab Self-Managed: インスタンス、グループまたはサブグループ、およびプロジェクト。
-- GitLab Dedicatedの場合: 管理者は、特定のサブグループを**常にオフ**にロックして、オーナーロールを持つユーザーがそれらのサブグループでGitLab Duoを有効にできないようにすることもできます。
+- GitLab Dedicated: 管理者は、特定のサブグループを**常にオフ**に固定することもできます。これにより、オーナーロールを持つユーザーがそれらのサブグループでGitLab Duoを有効にできなくなります。
 
 ## GitLab Duoをオンに固定する {#lock-gitlab-duo-on}
 
@@ -37,13 +30,13 @@ GitLab Duoのオン/オフを切り替えることができます:
 
 {{< /history >}}
 
-グループまたはプロジェクトの設定に関係なく、すべてのユーザーに対してGitLab Duoをオンにします。
+グループまたはプロジェクトの設定にかかわらず、すべてのユーザーに対してGitLab Duoをオンにします。
 
 GitLab Duoの可用性を**常にオン**に設定しても、実験的機能とベータ版機能は自動的にはオンになりません。実験的機能とベータ版機能を使用するには、[個別にオンにする](#turn-on-beta-and-experimental-features)必要があります。
 
 {{< tabs >}}
 
-{{< tab title="GitLab.comの場合" >}}
+{{< tab title="GitLab.com" >}}
 
 前提条件: 
 
@@ -61,11 +54,14 @@ GitLab Duoは、すべてのサブグループとプロジェクトに対して�
 
 {{< /tab >}}
 
-{{< tab title="GitLab Self-Managedの場合" >}}
+{{< tab title="GitLab Self-Managed" >}}
 
 前提条件: 
 
 - 管理者アクセス権。
+- 以下のいずれかを備えたインスタンス:
+  - 有効なGitLab Duo Pro、Enterprise、またはセルフホスト型アドオンと有料ライセンス。
+  - 有効なGitLabクレジット。
 
 インスタンスに対してGitLab Duoをオンに固定するには:
 
@@ -81,55 +77,55 @@ GitLab Duoは、すべてのグループ、サブグループ、プロジェク�
 
 {{< /tabs >}}
 
-## 選択したサブグループのGitLab Duoをオフにロックする {#lock-gitlab-duo-off-for-selected-subgroups}
+## 選択したサブグループでGitLab Duoをオフに固定する {#lock-gitlab-duo-off-for-selected-subgroups}
 
 {{< details >}}
 
 - プラン: Ultimate
-- 提供形態: GitLab Dedicated、Government向けGitLab Dedicated
+- 提供形態: GitLab Dedicated、GitLab Dedicated for Government
 
 {{< /details >}}
 
 {{< history >}}
 
-- GitLab 19.2で[導入されました](https://gitlab.com/groups/gitlab-org/-/work_items/22389)。
+- GitLab 19.2で[導入](https://gitlab.com/groups/gitlab-org/-/work_items/22389)されました。
 
 {{< /history >}}
 
-GitLab Dedicatedの管理者は、特定のサブグループを**常にオフ**にロックして、GitLab DuoおよびGitLab Duo Agent Platformを無効にできます。それらのサブグループでオーナーロールを持つユーザーはGitLab Duoを有効にできませんが、他のサブグループはオーナーの管理下に置かれます。
+GitLab Dedicatedの管理者は、特定のサブグループでGitLab DuoおよびGitLab Duo Agent Platformを**常にオフ**に固定できます。それらのサブグループでオーナーロールを持つユーザーはGitLab Duoを有効にできませんが、その他のサブグループでは引き続きオーナーが制御できます。
 
-このロックは、サブグループとそのすべての子孫グループおよびプロジェクトに適用されます。サブグループまたはその子孫のオーナーロールを持つユーザーは、この設定を変更できません。影響を受けるオーナーには、GitLab Duoが親グループによってロックされているというメッセージが表示されます。
+この設定は、サブグループと、そのすべての子孫グループおよびプロジェクトに適用されます。そのサブグループまたは子孫のグループでオーナーロールを持つユーザーは、この設定を変更できません。影響を受けるオーナーには、親グループによってGitLab Duoの可用性が固定されていることを示すメッセージが表示されます。
 
-祖先と子孫のグループのどのチェーンでも、1つのロックのみが存在できます。サブグループをロックする場合:
+祖先グループから子孫グループへ連なるいずれのチェーンでも、設定できる固定は1つだけです。サブグループを固定する場合:
 
-- 祖先グループがすでにロックを持っている場合、ロックは適用されません。最初に祖先グループから[ロックを解除](#clear-the-lock-for-a-subgroup)する必要があります。
-- 1つまたは複数の子孫サブグループがすでに管理者ロックを持っている場合、確認を求められます。確認すると、それらの子孫サブグループのロックは解除され、選択したサブグループにロックが適用されます。
+- 祖先グループにすでに固定が設定されている場合、新しい固定は適用されません。まず、祖先グループの[固定を解除](#clear-the-lock-for-a-subgroup)する必要があります。
+- 1つ以上の子孫サブグループに、管理者による固定がすでに設定されている場合、確認を求められます。確認すると、それらの子孫サブグループの固定が解除され、選択したサブグループに固定が適用されます。
 
-### サブグループをロックする {#lock-a-subgroup}
-
-前提条件: 
-
-- GitLab Dedicatedインスタンスでの管理者アクセス。
-
-サブグループのGitLab Duoをオフにロックするには:
-
-1. 右上隅で、**管理者**を選択します。
-1. 左側のサイドバーで、**GitLab Duo**を選択します。
-1. **Namespace availability overrides**セクションで、サブグループを見つけます。
-1. サブグループの行で、**GitLab Duoの可用性**の下にある**常にオフ**を選択します。
-
-### サブグループのロックを解除する {#clear-the-lock-for-a-subgroup}
+### サブグループを固定する {#lock-a-subgroup}
 
 前提条件: 
 
-- GitLab Dedicatedインスタンスでの管理者アクセス。
+- GitLab Dedicatedインスタンスの管理者アクセス。
 
-サブグループの管理者ロックを解除するには:
+サブグループでGitLab Duoをオフに固定するには:
 
 1. 右上隅で、**管理者**を選択します。
 1. 左側のサイドバーで、**GitLab Duo**を選択します。
-1. **Namespace availability overrides**セクションで、サブグループを見つけます。
-1. サブグループの行で、**リセット**を選択します。
+1. **ネームスペースの可用性をオーバーライド**セクションで、サブグループを見つけます。
+1. そのサブグループの行にある**GitLab Duoの可用性**で、**常にオフ**を選択します。
+
+### サブグループの固定を解除する {#clear-the-lock-for-a-subgroup}
+
+前提条件: 
+
+- GitLab Dedicatedインスタンスの管理者アクセス。
+
+サブグループに対する管理者による固定を解除するには:
+
+1. 右上隅で、**管理者**を選択します。
+1. 左側のサイドバーで、**GitLab Duo**を選択します。
+1. **ネームスペースの可用性をオーバーライド**セクションで、サブグループを見つけます。
+1. そのサブグループの行で、**リセット**を選択します。
 
 サブグループはインスタンスのデフォルトに戻ります。サブグループのオーナーロールを持つユーザーは、GitLab Duoの可用性を制御できるようになります。
 
@@ -173,7 +169,7 @@ GitLab Dedicatedの管理者は、特定のサブグループを**常にオフ**
 
 前提条件: 
 
-- プロジェクトのメンテナーまたはオーナーロールが必要です。
+- プロジェクトのメンテナーまたはオーナーのロール。
 
 プロジェクトに対してGitLab Duoの可用性を変更するには: 
 
@@ -190,6 +186,9 @@ GitLab Dedicatedの管理者は、特定のサブグループを**常にオフ**
 前提条件: 
 
 - 管理者アクセス権。
+- 以下のいずれかを備えたインスタンス:
+  - 有効なGitLab Duo Pro、Enterprise、またはセルフホスト型アドオンと有料ライセンス。
+  - 有効なGitLabクレジット。
 
 インスタンスに対してGitLab Duoの可用性を変更するには:
 
@@ -219,7 +218,7 @@ GitLab Dedicatedの管理者は、特定のサブグループを**常にオフ**
 
 前提条件: 
 
-- プロジェクトのメンテナーまたはオーナーロールが必要です。
+- プロジェクトのメンテナーまたはオーナーのロール。
 
 プロジェクトに対してGitLab Duoの可用性を変更するには: 
 
@@ -272,6 +271,9 @@ GitLab Duo Coreは、PremiumおよびUltimateのサブスクリプションに�
 前提条件: 
 
 - 管理者アクセス権。
+- 以下のいずれかを備えたインスタンス:
+  - 有効なGitLab Duo Pro、Enterprise、またはセルフホスト型アドオンと有料ライセンス。
+  - 有効なGitLabクレジット。
 
 インスタンスに対してGitLab Duo Coreの可用性を変更するには:
 
@@ -313,6 +315,9 @@ GitLab 17.4以降では、次の手順に従って、GitLab Self-Managedイン�
 前提条件: 
 
 - 管理者アクセス権。
+- 以下のいずれかを備えたインスタンス:
+  - 有効なGitLab Duo Pro、Enterprise、またはセルフホスト型アドオンと有料ライセンス。
+  - 有効なGitLabクレジット。
 
 インスタンスに対してGitLab Duoの実験的機能およびベータ版機能をオンにするには:
 
@@ -329,8 +334,11 @@ GitLab 17.4以降では、次の手順に従って、GitLab Self-Managedイン�
 前提条件: 
 
 - 管理者アクセス権。
-- [ネットワーク接続](../../administration/gitlab_duo/configure/_index.md)が有効になっている必要があります。
-- [サイレントモード](../../administration/silent_mode/_index.md)がオフになっている必要があります。
+- 以下のいずれかを備えたインスタンス:
+  - 有効なGitLab Duo Pro、Enterprise、またはセルフホスト型アドオンと有料ライセンス。
+  - 有効なGitLabクレジット。
+- [ネットワーク接続](../../administration/gitlab_duo/configure/_index.md)が有効になっている。
+- [サイレントモード](../../administration/silent_mode/_index.md)がオフになっている。
 
 インスタンスに対してGitLab Duoの実験的機能およびベータ版機能をオンにするには:
 

@@ -218,10 +218,6 @@ module Clusters
       !!provider&.knative_pre_installed?
     end
 
-    def platform_kubernetes_active?
-      !!platform_kubernetes&.active?
-    end
-
     def platform_kubernetes_rbac?
       !!platform_kubernetes&.rbac?
     end

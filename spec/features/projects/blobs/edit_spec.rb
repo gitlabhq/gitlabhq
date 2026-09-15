@@ -24,7 +24,9 @@ RSpec.describe 'Editing file blob', :js, feature_category: :source_code_manageme
 
     def edit_and_commit(commit_changes: true, is_diff: false)
       if is_diff
-        first('.js-diff-more-actions').click
+        wait_for_requests
+        page.assert_selector('diff-file diff-file-mounted', visible: :all, wait: 10)
+        find('diff-file', match: :first).find('button[aria-label="Show options"]').click
         click_link('Edit single file')
       else
         edit_in_single_file_editor
@@ -161,6 +163,58 @@ RSpec.describe 'Editing file blob', :js, feature_category: :source_code_manageme
         # the above generates two separate lists (not embedded) in CommonMark
         expect(page).to have_content('sublist')
         expect(page).not_to have_xpath('//ol//li//ul')
+      end
+
+      it 'switches to the live markdown preview after renaming to markdown' do
+        visit project_edit_blob_path(project, tree_join(branch, 'CHANGELOG'))
+        fill_editor(content: '# Title\\n')
+        fill_in 'file_path', with: 'CHANGELOG.md'
+
+        # The markdown extensions load asynchronously with no visible signal,
+        # so retry the tab click until the live preview appears
+        wait_for('live markdown preview') do
+          click_on 'Preview changes'
+          page.has_css?('.source-editor-preview .md h1', text: 'Title', wait: 1)
+        end
+
+        expect(page).not_to have_css('.diff-file')
+      end
+
+      it 'switches to the diff after renaming from markdown to a non-markup file' do
+        visit project_edit_blob_path(project, tree_join(branch, readme_file_path))
+        fill_editor(content: 'some content\\n')
+        fill_in 'file_path', with: 'README.py'
+        click_on 'Preview'
+
+        # The original .md name would render markup; the rename must switch to the diff view.
+        expect(page).to have_css('.line_holder.new')
+        expect(page).to have_content('some content')
+        expect(page).not_to have_css('.file-content.md')
+      end
+
+      it 'switches to the renamed markup preview after renaming from markdown' do
+        visit project_edit_blob_path(project, tree_join(branch, readme_file_path))
+        fill_editor(content: '* Title\\n')
+        fill_in 'file_path', with: 'README.org'
+        click_on 'Preview'
+
+        # The original .md name would open the live preview; the rename must
+        # switch to the preview pane using the new file type.
+        expect(page).to have_css('.file-content.md')
+        expect(page).to have_css('h1', text: 'Title')
+        expect(page).not_to have_css('.source-editor-preview')
+      end
+
+      it 'renders the preview using the renamed file type' do
+        visit project_edit_blob_path(project, tree_join(branch, 'CHANGELOG'))
+        fill_editor(content: "* Title\n")
+        fill_in 'file_path', with: 'CHANGELOG.org'
+        click_on 'Preview changes'
+
+        # The original name would render a diff; the rename must switch to markup.
+        expect(page).to have_css('.file-content.md')
+        expect(page).to have_css('h1', text: 'Title')
+        expect(page).not_to have_css('.diff-file')
       end
     end
   end

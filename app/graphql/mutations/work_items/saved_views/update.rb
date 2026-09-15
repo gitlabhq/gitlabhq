@@ -8,7 +8,12 @@ module Mutations
 
         include Mutations::SpamProtection
 
-        authorize :update_saved_view
+        authorize :update_work_item_saved_view
+        authorize_granular_token permissions: :update_work_item_saved_view,
+          boundaries: [
+            { boundary_argument: :id, boundary: :resource_parent, boundary_type: :project },
+            { boundary_argument: :id, boundary: :resource_parent, boundary_type: :group }
+          ]
 
         description "Updates a saved view."
 

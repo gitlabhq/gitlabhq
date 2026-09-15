@@ -1,0 +1,11 @@
+---
+name: update_saved_reply
+description: Grants the ability to update saved replies (comment templates)
+boundaries:
+  - user
+  - group
+  - project
+available_for:
+  - granular_access_token
+permissions:
+  - update_saved_reply

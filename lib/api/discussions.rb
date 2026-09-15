@@ -14,7 +14,6 @@ module API
 
     before do
       authenticate!
-      set_current_organization
     end
 
     urgency :low, [
@@ -315,20 +314,6 @@ module API
           end
         end
       end
-    end
-
-    helpers do
-      # rubocop: disable CodeReuse/ActiveRecord
-      def readable_discussion_notes(noteable, discussion_ids)
-        notes = noteable.notes
-          .with_discussion_ids(discussion_ids)
-          .inc_relations_for_view(noteable)
-          .includes(:noteable)
-          .order_created_at_id_asc
-
-        prepare_and_filter_notes(notes)
-      end
-      # rubocop: enable CodeReuse/ActiveRecord
     end
   end
 end

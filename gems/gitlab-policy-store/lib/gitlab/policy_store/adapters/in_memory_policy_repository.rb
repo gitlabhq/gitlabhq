@@ -17,9 +17,14 @@ module Gitlab
           normalized = creatable_attributes(attributes)
           validate_required_attributes!(normalized)
           validate_authored_text_limits!(normalized)
-          normalized = with_compiled_scope(normalized)
-          validate_compiled_text_limits!(normalized)
+          validate_enumerated_attributes!(normalized, ENUMERATED_ATTRIBUTES)
+          validate_entry_limits!(normalized)
+          validate_action_shapes!(normalized)
+          validate_action_roles!(normalized)
           validate_name_available!(normalized)
+          normalized = with_compiled_scope(normalized)
+          normalized = with_compiled_rules(normalized)
+          validate_compiled_text_limits!(normalized)
 
           @sequence += 1
           @policies[@sequence] = build_policy(@sequence, normalized)
@@ -29,16 +34,22 @@ module Gitlab
 
         def update(id, attributes)
           existing = find(id)
-          changes = updatable_changes(attributes, existing.to_h)
+          changes = changes_excluding_restated(existing.to_h, updatable_changes(attributes, existing.to_h))
           authored = existing.to_h.merge(changes)
           validate_required_attributes!(authored)
           validate_authored_text_limits!(authored)
-          merged = with_updated_scope(existing.to_h, changes)
+          validate_enumerated_attributes!(authored, ENUMERATED_ATTRIBUTES)
+          validate_entry_limits!(changes)
+          validate_action_shapes!(changes)
+          validate_action_roles!(authored)
+          validate_name_available!(authored, excluding_id: id)
+
+          scoped = with_updated_scope(existing.to_h, changes)
+          merged = with_updated_rules(scoped, changes)
 
           return existing if merged == existing.to_h
 
           validate_compiled_text_limits!(merged)
-          validate_name_available!(merged, excluding_id: id)
 
           @policies[id] = build_policy(id, merged.merge(version: existing.version + 1))
 
@@ -55,13 +66,25 @@ module Gitlab
           nil
         end
 
-        def list(organization_id:, trigger_type: nil)
-          @policies.values.filter_map do |policy|
-            next unless policy.organization_id == organization_id
-            next unless trigger_type.nil? || policy.trigger_type == trigger_type
+        def list(
+          organization_id:, trigger_type: nil, namespace_id: nil, lifecycle_state: nil, ids: nil, offset: 0,
+          per_page: DEFAULT_PER_PAGE)
+          validate_ids_size!(ids) if ids
 
-            copy_of(policy)
+          matching = @policies.values.select do |policy|
+            policy.organization_id == organization_id &&
+              (trigger_type.nil? || policy.trigger_type == trigger_type) &&
+              (namespace_id.nil? || policy.namespace_id == namespace_id) &&
+              (lifecycle_state.nil? || policy.lifecycle_state == lifecycle_state) &&
+              (ids.nil? || ids.include?(policy.id))
           end
+
+          return paginated_result(matching, per_page: matching.size) { |policy| copy_of(policy) } if ids
+
+          offset, per_page = clamped_pagination(offset: offset, per_page: per_page)
+          fetched = matching[offset, per_page + 1].to_a
+
+          paginated_result(fetched, per_page: per_page) { |policy| copy_of(policy) }
         end
 
         private
@@ -91,6 +114,7 @@ module Gitlab
             actions: attributes.fetch(:actions, []),
             policy_scope: attributes[:policy_scope],
             scope_rego: attributes[:scope_rego],
+            scope_dimensions: attributes[:scope_dimensions],
             mode: attributes.fetch(:mode, DEFAULT_MODE),
             lifecycle_state: attributes.fetch(:lifecycle_state, DEFAULT_LIFECYCLE_STATE),
             created_at: attributes[:created_at],

@@ -9,6 +9,8 @@ import { createAlert } from '~/alert';
 import axios from '~/lib/utils/axios_utils';
 import { addEditorMarkdownListeners } from '~/lib/utils/text_markdown';
 import FilepathFormMediator from '~/blob/filepath_form_mediator';
+import mountFilepathForm from '~/blob/filepath_form';
+import { isMarkdownFilePath } from '~/blob/utils';
 import { HTTP_STATUS_PAYLOAD_TOO_LARGE } from '~/lib/utils/http_status';
 import { visitUrl } from '~/lib/utils/url_utility';
 import Api from '~/api';
@@ -16,20 +18,34 @@ import { createDynamicHeightManager } from '~/vue_shared/utils/dynamic_height';
 
 import { BLOB_EDITOR_ERROR, BLOB_PREVIEW_ERROR, BLOB_EDIT_ERROR } from './constants';
 
+const findFileNameEl = () =>
+  document.getElementById('file_path') || document.getElementById('file_name');
+
 export default class EditBlob {
   // The options object has:
-  // assetsPath, filePath, currentAction, projectId, isMarkdown, previewMarkdownPath
+  // assetsPath, filePath, currentAction, projectId, previewMarkdownPath
   constructor(options) {
     this.options = options;
     this.configureMonacoEditor();
-    this.isMarkdown = this.options.isMarkdown;
-    this.markdownLivePreviewOpened = false;
 
     this.initModePanesAndLinks();
     this.initSoftWrap();
   }
 
-  async fetchMarkdownExtension() {
+  installMarkdownExtensions() {
+    this.markdownExtensionsPromise ??= this.loadMarkdownExtensions();
+    return this.markdownExtensionsPromise;
+  }
+
+  uninstallMarkdownExtensions() {
+    if (this.markdownExtensions) {
+      this.editor.unuse(this.markdownExtensions);
+      this.markdownExtensions = null;
+    }
+    this.markdownExtensionsPromise = null;
+  }
+
+  async loadMarkdownExtensions() {
     try {
       const [
         { EditorMarkdownExtension: MarkdownExtension },
@@ -38,6 +54,14 @@ export default class EditBlob {
         import('~/editor/extensions/source_editor_markdown_ext'),
         import('~/editor/extensions/source_editor_markdown_livepreview_ext'),
       ]);
+
+      // The file may have been renamed away from markdown
+      // while the extensions were loading (cache cleared),
+      // or renamed back so that another load has already installed them.
+      if (!this.markdownExtensionsPromise || this.markdownExtensions) {
+        return;
+      }
+
       this.markdownExtensions = this.editor.use([
         { definition: MarkdownExtension },
         {
@@ -45,12 +69,17 @@ export default class EditBlob {
           setupOptions: { previewMarkdownPath: this.options.previewMarkdownPath },
         },
       ]);
+      addEditorMarkdownListeners(this.editor);
     } catch (e) {
-      createAlert({
-        message: `${BLOB_EDITOR_ERROR}: ${e}`,
-      });
+      // No load identity check: the promise seen here is not from a load that
+      // could still succeed. Loads of the same chunks share one in-flight request
+      // and fail together, and this rejection handler (microtask) runs before
+      // any rename event (macrotask) can start a newer load.
+      if (this.markdownExtensionsPromise) {
+        createAlert({ message: BLOB_EDITOR_ERROR, error: e, captureError: true });
+        this.markdownExtensionsPromise = null;
+      }
     }
-    addEditorMarkdownListeners(this.editor);
   }
 
   async fetchSecurityPolicyExtension(projectPath) {
@@ -99,10 +128,6 @@ export default class EditBlob {
       { definition: FileTemplateExtension },
     ]);
 
-    if (this.isMarkdown) {
-      this.fetchMarkdownExtension();
-    }
-
     if (this.options.filePath === '.gitlab/security-policies/policy.yml') {
       await this.fetchSecurityPolicyExtension(this.options.projectPath);
     }
@@ -126,16 +151,6 @@ export default class EditBlob {
         createAlert({ message: BLOB_EDIT_ERROR, captureError: true });
       }
     });
-
-    // onDidChangeModelLanguage is part of the native Monaco API
-    // https://microsoft.github.io/monaco-editor/api/interfaces/monaco.editor.IStandaloneCodeEditor.html#onDidChangeModelLanguage
-    this.editor.onDidChangeModelLanguage(({ newLanguage = '', oldLanguage = '' }) => {
-      if (newLanguage === 'markdown') {
-        this.fetchMarkdownExtension();
-      } else if (oldLanguage === 'markdown') {
-        this.editor.unuse(this.markdownExtensions);
-      }
-    });
   }
 
   initDynamicHeight() {
@@ -156,16 +171,30 @@ export default class EditBlob {
       currentAction,
       editor: this.editor,
       projectId,
+      // Injected rather than imported by the mediator. The Vue 3 build picks which files to
+      // convert by following imports out from the page entry and does not trace through the
+      // mediator, so importing the form there would leave it on Vue 2. Keep the import here.
+      mountFilepathForm,
     });
     this.initFilepathListeners();
   }
 
   initFilepathListeners() {
-    const fileNameEl = document.getElementById('file_path') || document.getElementById('file_name');
-    this.editor.updateModelLanguage(fileNameEl.value);
-    fileNameEl.addEventListener('input', () => {
+    const fileNameEl = findFileNameEl();
+    const syncFileName = () => {
       this.editor.updateModelLanguage(fileNameEl.value);
-    });
+      this.syncMarkdownExtensions(fileNameEl.value);
+    };
+    syncFileName();
+    fileNameEl.addEventListener('input', syncFileName);
+  }
+
+  syncMarkdownExtensions(path) {
+    if (isMarkdownFilePath(path)) {
+      this.installMarkdownExtensions();
+    } else {
+      this.uninstallMarkdownExtensions();
+    }
   }
 
   initModePanesAndLinks() {
@@ -175,9 +204,9 @@ export default class EditBlob {
   }
 
   toggleMarkdownPreview(toOpen) {
-    if (toOpen !== this.markdownLivePreviewOpened) {
-      this.editor.markdownPreview?.eventEmitter.fire();
-      this.markdownLivePreviewOpened = !this.markdownLivePreviewOpened;
+    const preview = this.editor.markdownPreview;
+    if (preview && toOpen !== preview.shown) {
+      preview.eventEmitter.fire();
     }
   }
 
@@ -204,11 +233,14 @@ export default class EditBlob {
 
     currentLink.parent().addClass('active hover');
 
-    if (this.isMarkdown) {
+    this.$editModePanes.hide();
+
+    if (this.markdownExtensions) {
+      // The live preview renders next to the editor, so the editor pane
+      // is always the one to show, even if the preview pane was open.
+      this.$editModePanes.filter('#editor').show();
       this.toggleMarkdownPreview(paneId === '#preview');
     } else {
-      this.$editModePanes.hide();
-
       currentPane.show();
 
       if (paneId === '#preview') {
@@ -216,6 +248,7 @@ export default class EditBlob {
         axios
           .post(currentLink.data('previewUrl'), {
             content: this.editor.getValue(),
+            file_path: findFileNameEl()?.value,
           })
           .then(({ data }) => {
             currentPane.empty().append(data);

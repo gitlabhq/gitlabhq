@@ -16,15 +16,12 @@ class AuthorizedProjectsWorker
   deduplicate :until_executed, if_deduplicated: :reschedule_once, including_scheduled: true
 
   idempotent!
-  loggable_arguments 1 # For the job waiter key
 
   def perform(user_id)
     user = User.find_by_id(user_id)
 
     return unless user
 
-    refresh_service = Users::RefreshAuthorizedProjectsService.new(user, source: self.class.name)
-
-    refresh_service.execute_without_lease
+    Users::RefreshAuthorizedProjectsService.new(user, source: self.class.name).execute
   end
 end

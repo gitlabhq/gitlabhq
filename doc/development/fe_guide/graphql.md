@@ -41,8 +41,8 @@ can help you learn how to integrate Vue Apollo.
 
 For other use cases, check out the [Usage outside of Vue](#usage-outside-of-vue) section.
 
-We use [Immer](https://immerjs.github.io/immer/) for immutable cache updates;
-see [Immutability and cache updates](#immutability-and-cache-updates) for more information.
+We use [Immer](https://immerjs.github.io/immer/) for immutable cache updates.
+See [Immutability and cache updates](#immutability-and-cache-updates) for more information.
 
 ### Tooling
 
@@ -103,11 +103,72 @@ Default client accepts two parameters: `resolvers` and `config`.
 
 ### Multiple client queries for the same object
 
-If you are making multiple queries to the same Apollo client object you might encounter the following error: `Cache data may be lost when replacing the someProperty field of a Query object. To address this problem, either ensure all objects of SomeEntityhave an id or a custom merge function`. We are already checking `id` presence for every GraphQL type that has an `id`, so this shouldn't be the case (unless you see this warning when running unit tests; in this case ensure your mocked responses contain an `id` whenever it's requested).
+If you are making multiple queries to the same Apollo client object you might encounter the following error: `Cache data may be lost when replacing the someProperty field of a Query object. To address this problem, either ensure all objects of SomeEntity have an id or a custom merge function`. We are already checking `id` presence for every GraphQL type that has an `id`, so this shouldn't be the case (unless you see this warning when running unit tests. In this case, ensure your mocked responses contain an `id` whenever it's requested).
 
 When `SomeEntity` type doesn't have an `id` property in the GraphQL schema, to fix this warning we need to define a custom merge function.
 
 We have some client-wide types with `merge: true` defined in the default client as [`typePolicies`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/app/assets/javascripts/lib/graphql.js) (this means that Apollo will merge existing and incoming responses in the case of subsequent queries). Consider adding `SomeEntity` there or defining a custom merge function for it.
+
+### Query deduplication (and when to disable it)
+
+By default, Apollo Client enables deduplication of queries.
+
+When deduplication is on, an operation reuses an identical request already in flight (same query
+document and same variables) instead of sending a new one.
+A refetch that happens while an earlier identical request is still in flight does not reach the
+network.
+It receives the response of the request that is already in flight.
+
+This behavior usually helps.
+For example, several components can mount at the same time and request the same data with one
+network call.
+
+However, deduplication can cause a problem when a query refetches while an earlier, identical
+refetch is still in flight, and a mutation lands in between.
+The later refetch does not reach the network.
+It reuses the earlier request's response, which reflects a snapshot from before the mutation.
+The UI shows the wrong state until you reload the page.
+Refetches happen explicitly through `refetch()`.
+They also happen implicitly when a `cache-and-network` query re-runs after a cache write.
+
+This race is more likely to surface as a flaky test than as a bug report from real usage.
+A person takes noticeably longer between two actions than an automated test does, so a test that
+fires the same two actions back to back is more likely to catch the second dispatch while the
+first refetch is still in flight.
+
+Opt out of deduplication for a query that can be re-dispatched (same document and variables) while
+an earlier dispatch is still in flight, when the later dispatch needs a genuinely fresh round trip
+for one of these reasons:
+
+- Freshness across a mutation race: a mutation can change state between the two dispatches, but
+  the deduped call inherits the earlier, stale response instead of fetching again.
+- Per-call cancellation or identity: the call carries its own `AbortController` signal, or other
+  per-call context, that must attach to its own request instead of silently riding an earlier
+  call's shared one.
+- On-demand confirmation semantics: the call is an imperative "fetch now" (`refetch()`,
+  `refresh()`, `client.query()`) that must produce a real round trip every time, not whatever an
+  in-flight identical call happens to return.
+
+To opt out of deduplication for one query, add `context: { queryDeduplication: false }` to the
+query options.
+Vue smart queries pass `context` through to `watchQuery`, so the same option works there:
+
+```javascript
+apollo: {
+  items: {
+    query: itemsQuery,
+    fetchPolicy: fetchPolicies.CACHE_AND_NETWORK,
+    context: { queryDeduplication: false },
+  },
+},
+```
+
+With deduplication off, every fetch becomes a separate network request.
+Apollo keeps only the result of the newest request for each watched query.
+Apollo discards a stale response from a superseded request instead of writing it to the cache.
+
+Do not opt out for queries that many components fetch at the same time.
+The point of deduplication is to share those requests.
 
 ## GraphQL Queries
 
@@ -125,7 +186,7 @@ If you are using queries for the [CustomersDot GraphQL endpoint](https://gitlab.
 
 ### Feature category requirement
 
-All GraphQL query, mutation, and subscription files **must** include a comment that specifies their feature category. This requirement is enforced by the `local-rules/graphql-require-feature-category` ESLint rule.
+All GraphQL query, mutation, and subscription files must include a comment that specifies their feature category. This requirement is enforced by the `local-rules/graphql-require-feature-category` ESLint rule.
 
 Add a comment at the top of your `.graphql` file in the following format:
 
@@ -146,7 +207,7 @@ If present, the urgency comment must use one of these valid values:
 - `default` - For standard operations
 - `low` - For non-critical background operations
 
-The urgency tag is **optional**. If you omit it, there will be no linter error. However, if you include it, the value must be one of the valid options listed above.
+The urgency tag is optional. If you omit it, there will be no linter error. However, if you include it, the value must be one of the valid options listed above.
 
 #### Format
 
@@ -200,7 +261,7 @@ import { getIdFromGraphQLId } from '~/graphql_shared/utils';
 const primaryKeyId = getIdFromGraphQLId(data.id);
 ```
 
-**It is required** to query global `id` for every GraphQL type that has an `id` in the schema:
+It is required to query global `id` for every GraphQL type that has an `id` in the schema:
 
 ```javascript
 query allReleases(...) {
@@ -236,7 +297,7 @@ query allReleases(...) {
 
 ## Skip query with async variables
 
-Whenever a query has one or more variable that requires another query to have executed before it can run, it is **vital** to add a `skip()` property to the query with all relations.
+Whenever a query has one or more variables that require another query to have executed before it can run, it is vital to add a `skip()` property to the query with all relations.
 
 Failing to do so will result in the query executing twice: once with the default value (whatever was defined on the `data` property or `undefined`) and once more once the initial query is resolved, triggering a new variable value to be injected in the smart query and then refetched by Apollo.
 
@@ -287,7 +348,9 @@ Splitting queries in Apollo is often done to optimize data fetching by breaking 
 
 1. Define multiple queries and use them independently in various parts of your component hierarchy. This way, each component fetches only the data it needs.
 
-If you look at [work item query architecture](../work_items_widgets.md#frontend-architecture) , we have [split the queries](../work_items_widgets.md#widget-responsibility-and-structure) for most of the widgets for the same reason of query complexity and splitting of concerned data.
+If you look at [work item query architecture](../work_items_widgets.md#frontend-architecture),
+we have [split the queries](../work_items_widgets.md#widget-responsibility-and-structure) for
+most of the widgets for the same reason of query complexity and splitting of concerned data.
 
 ```javascript
 #import "ee_else_ce/work_items/graphql/work_item_development.fragment.graphql"
@@ -390,7 +453,7 @@ query workspaceAutocompleteUsersSearch(
 ## Immutability and cache updates
 
 From Apollo version 3.0.0 all the cache updates need to be immutable. It needs to be replaced entirely
-with a **new and updated** object.
+with a new and updated object.
 
 To facilitate the process of updating the cache and returning the new object we
 use the library [Immer](https://immerjs.github.io/immer/).
@@ -451,7 +514,7 @@ It is possible to manage an application state with Apollo when creating your def
 #### Using client-side resolvers
 
 The default state can be set by writing to the cache after setting up the default client. In the
-example below, we are using query with `@client` Apollo directive to write the initial data to
+example below, we are using a query with the `@client` Apollo directive to write the initial data to
 Apollo cache and then get this state in the Vue component:
 
 ```javascript
@@ -622,7 +685,7 @@ of the backend.
 
 #### Implementing frontend queries and mutations ahead of the backend
 
-In such case, the frontend defines GraphQL schemas or fields that do not correspond to any
+In such a case, the frontend defines GraphQL schemas or fields that do not correspond to any
 backend resolver yet. This is fine as long as the implementation is properly feature-flagged so it
 does not translate to public-facing errors in the product. However, we do validate client-side
 queries/mutations against the backend GraphQL schema with the `graphql-verify` CI job.
@@ -660,7 +723,7 @@ the appropriate issue.
 #### Feature-flagged queries
 
 In cases where the backend is complete and the frontend is being implemented behind a feature flag,
-a couple options are available to leverage the feature flag in the GraphQL queries.
+a couple of options are available to leverage the feature flag in the GraphQL queries.
 
 ##### The `@include` directive
 
@@ -767,7 +830,7 @@ for connection types. This means a "cursor" is used to keep track of where in th
 set the next items should be fetched from. [GraphQL Ruby Connection Concepts](https://graphql-ruby.org/pagination/connection_concepts.html)
 is a good overview and introduction to connections.
 
-Every connection type (for example, `DesignConnection` and `DiscussionConnection`) has a field `pageInfo` that contains an information required for pagination:
+Every connection type (for example, `DesignConnection` and `DiscussionConnection`) has a field `pageInfo` that contains information required for pagination:
 
 ```javascript
 pageInfo {
@@ -1300,7 +1363,7 @@ If you are using Chrome and keep seeing `200` HTTP status codes, it might be thi
 
 ## Subscriptions
 
-We use [subscriptions](https://www.apollographql.com/docs/react/data/subscriptions/) to receive real-time updates from GraphQL API via websockets. Currently, the number of existing subscriptions is limited, you can check a list of available ones in [GraphqiQL explorer](https://gitlab.com/-/graphql-explorer)
+We use [subscriptions](https://www.apollographql.com/docs/react/data/subscriptions/) to receive real-time updates from the GraphQL API via websockets. Currently, the number of existing subscriptions is limited. You can check a list of available ones in the [GraphiQL explorer](https://gitlab.com/-/graphql-explorer)
 
 Refer to the [Real-time widgets developer guide](../real_time.md) for a comprehensive introduction to subscriptions.
 
@@ -2103,7 +2166,7 @@ Tests using the default import get legacy mode (auto-resolution). To migrate to 
 
 The GitLab GraphQL mutations have two distinct error modes: [Top-level](#top-level-errors) and [errors-as-data](#errors-as-data).
 
-When utilising a GraphQL mutation, consider handling **both of these error modes** to ensure that the user receives the appropriate feedback when an error occurs.
+When utilising a GraphQL mutation, consider handling both of these error modes to ensure that the user receives the appropriate feedback when an error occurs.
 
 ### Top-level errors
 
@@ -2166,7 +2229,6 @@ When [using Vuex](#using-with-vuex), disable the cache when:
 
 - The data is being cached elsewhere
 - The use case does not need caching
-  if the data is being cached elsewhere, or if there is no need for it for the given use case.
 
 ```javascript
 import createDefaultClient, { fetchPolicies } from '~/lib/graphql';
@@ -2264,7 +2326,7 @@ To improve performance, sometimes we want to make initial GraphQL queries early.
   for your application. To add GraphQL startup calls, we use
   `add_page_startup_graphql_call` helper where the first parameter is a path to the
   query, the second one is an object containing query variables. Path to the query is
-  relative to `app/graphql/queries` folder: for example, if we need a
+  relative to `app/graphql/queries` folder: for example, if we need an
   `app/graphql/queries/repository/files.query.graphql` query, the path is
   `repository/files`.
 
@@ -2276,11 +2338,11 @@ If your unit test is failing because the response contains empty objects instead
 `__typename` field to the mocked responses.
 
 Alternatively, [GraphQL query fixtures](../testing_guide/frontend_testing.md#graphql-query-fixtures)
-automatically adds the `__typename` for you upon generation.
+automatically add the `__typename` for you upon generation.
 
 ### Warning about losing cache data
 
-Sometimes you can see a warning in the console: `Cache data may be lost when replacing the someProperty field of a Query object. To address this problem, either ensure all objects of SomeEntityhave an id or a custom merge function`. Check section about [multiple queries](#multiple-client-queries-for-the-same-object) to resolve an issue.
+Sometimes you can see a warning in the console: `Cache data may be lost when replacing the someProperty field of a Query object. To address this problem, either ensure all objects of SomeEntity have an id or a custom merge function`. Check section about [multiple queries](#multiple-client-queries-for-the-same-object) to resolve an issue.
 
   ```yaml
   - current_route_path = request.fullpath.match(/-\/tree\/[^\/]+\/(.+$)/).to_a[1]

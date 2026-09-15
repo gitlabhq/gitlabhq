@@ -4,12 +4,11 @@ require 'spec_helper'
 
 RSpec.describe API::Discussions, feature_category: :team_planning do
   let_it_be(:user) { create(:user) }
-  let_it_be(:project, reload: true) { create(:project, :public, :repository, namespace: user.namespace) }
-  let_it_be(:private_user) { create(:user) }
-
-  before_all do
-    project.add_developer(user)
+  let_it_be(:project, reload: true) do
+    create(:project, :public, :repository, namespace: user.namespace, developers: user)
   end
+
+  let_it_be(:private_user) { create(:user) }
 
   context 'when discussions have cross-reference system notes' do
     let(:url) { "/projects/#{project.id}/merge_requests/#{merge_request.iid}/discussions" }
@@ -19,8 +18,10 @@ RSpec.describe API::Discussions, feature_category: :team_planning do
   end
 
   context 'when noteable is an Issue' do
-    let!(:issue) { create(:issue, project: project, author: user) }
-    let!(:issue_note) { create(:discussion_note_on_issue, noteable: issue, project: project, author: user) }
+    let_it_be(:issue) { create(:issue, project: project, author: user) }
+    let_it_be_with_reload(:issue_note) do
+      create(:discussion_note_on_issue, noteable: issue, project: project, author: user)
+    end
 
     it_behaves_like 'discussions API', 'projects', 'issues', 'iid', can_reply_to_individual_notes: true do
       let(:parent) { project }
@@ -30,8 +31,10 @@ RSpec.describe API::Discussions, feature_category: :team_planning do
   end
 
   context 'when noteable is a WorkItem' do
-    let!(:work_item) { create(:work_item, project: project, author: user) }
-    let!(:work_item_note) { create(:discussion_note_on_issue, noteable: work_item, project: project, author: user) }
+    let_it_be(:work_item) { create(:work_item, project: project, author: user) }
+    let_it_be_with_reload(:work_item_note) do
+      create(:discussion_note_on_issue, noteable: work_item, project: project, author: user)
+    end
 
     let(:parent) { project }
     let(:noteable) { work_item }
@@ -96,8 +99,10 @@ RSpec.describe API::Discussions, feature_category: :team_planning do
   end
 
   context 'when noteable is a Snippet' do
-    let!(:snippet) { create(:project_snippet, project: project, author: user) }
-    let!(:snippet_note) { create(:discussion_note_on_project_snippet, noteable: snippet, project: project, author: user) }
+    let_it_be_with_reload(:snippet) { create(:project_snippet, project: project, author: user) }
+    let_it_be_with_reload(:snippet_note) do
+      create(:discussion_note_on_project_snippet, noteable: snippet, project: project, author: user)
+    end
 
     it_behaves_like 'discussions API', 'projects', 'snippets', 'id' do
       let(:parent) { project }
@@ -107,9 +112,15 @@ RSpec.describe API::Discussions, feature_category: :team_planning do
   end
 
   context 'when noteable is a Merge Request' do
-    let!(:noteable) { create(:merge_request_with_diffs, source_project: project, target_project: project, author: user) }
-    let!(:note) { create(:discussion_note_on_merge_request, noteable: noteable, project: project, author: user) }
-    let!(:diff_note) { create(:diff_note_on_merge_request, noteable: noteable, project: project, author: user) }
+    let_it_be(:noteable) do
+      create(:merge_request_with_diffs, source_project: project, target_project: project, author: user)
+    end
+
+    let_it_be_with_reload(:note) do
+      create(:discussion_note_on_merge_request, noteable: noteable, project: project, author: user)
+    end
+
+    let_it_be(:diff_note) { create(:diff_note_on_merge_request, noteable: noteable, project: project, author: user) }
     let(:parent) { project }
 
     it_behaves_like 'discussions API', 'projects', 'merge_requests', 'iid', can_reply_to_individual_notes: true
@@ -147,7 +158,7 @@ RSpec.describe API::Discussions, feature_category: :team_planning do
       # A file larger than 1 MB is `large?` in Gitlab::BlobHelper, so `blob.lines`
       # is empty even though `blob.data` is present. Creating a diff note must
       # still resolve the line code by counting from the fetched blob data.
-      let_it_be(:large_file_project) { create(:project, :repository) }
+      let_it_be(:large_file_project) { create(:project, :repository, developers: user) }
       let(:position) do
         build(
           :text_diff_position,
@@ -174,10 +185,6 @@ RSpec.describe API::Discussions, feature_category: :team_planning do
 
         create(:merge_request, source_project: large_file_project, target_project: large_file_project,
           source_branch: 'branch-01', target_branch: large_file_project.default_branch)
-      end
-
-      before_all do
-        large_file_project.add_developer(user)
       end
 
       it "creates a diff note on line 1", :aggregate_failures do

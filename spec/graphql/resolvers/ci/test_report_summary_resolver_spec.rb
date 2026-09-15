@@ -6,8 +6,7 @@ RSpec.describe Resolvers::Ci::TestReportSummaryResolver do
   include GraphqlHelpers
 
   describe '#resolve' do
-    let(:user) { create(:user) }
-    let(:project) { create(:project, :public, :repository) }
+    let_it_be(:project) { create(:project, :public) }
 
     subject(:resolve_subject) { resolve(described_class, obj: pipeline) }
 
@@ -23,7 +22,7 @@ RSpec.describe Resolvers::Ci::TestReportSummaryResolver do
         expect(resolve_subject[:total][:failed]).to eq(0)
         expect(resolve_subject[:total][:skipped]).to eq(0)
         expect(resolve_subject[:total][:error]).to eq(2)
-        expect(resolve_subject[:total][:suite_error]).to eq(nil)
+        expect(resolve_subject[:total][:suite_error]).to be_nil
       end
     end
 
@@ -39,7 +38,7 @@ RSpec.describe Resolvers::Ci::TestReportSummaryResolver do
         expect(resolve_subject[:total][:failed]).to eq(0)
         expect(resolve_subject[:total][:skipped]).to eq(0)
         expect(resolve_subject[:total][:error]).to eq(0)
-        expect(resolve_subject[:total][:suite_error]).to eq(nil)
+        expect(resolve_subject[:total][:suite_error]).to be_nil
       end
     end
   end

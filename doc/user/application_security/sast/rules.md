@@ -30,7 +30,7 @@ SAST is designed to be used in its default configuration, but you can [configure
 
 ## Source of rules
 
-The vulnerability detection rules used by SAST depends on the analyzer used, either GitLab Advanced
+The vulnerability detection rules used by SAST depend on the analyzer used, either GitLab Advanced
 SAST or the Semgrep-based analyzer.
 
 ### GitLab Advanced SAST
@@ -55,8 +55,8 @@ GitLab creates, maintains, and supports the rules that are used in the Semgrep-b
 This analyzer scans [many languages](_index.md#supported-languages-and-frameworks) in a single CI/CD pipeline job.
 It combines:
 
-- the Semgrep open-source engine.
-- a GitLab-managed detection ruleset, which is managed in [the GitLab-managed open source `sast-rules` project](https://gitlab.com/gitlab-org/security-products/sast-rules).
+- The Semgrep open-source engine.
+- A GitLab-managed detection ruleset, which is managed in [the GitLab-managed open source `sast-rules` project](https://gitlab.com/gitlab-org/security-products/sast-rules).
 - GitLab proprietary technology for [vulnerability tracking](_index.md#advanced-vulnerability-tracking).
 
 ### Other analyzers

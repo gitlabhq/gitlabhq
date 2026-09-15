@@ -74,7 +74,7 @@ Assumptions:
 1. `Security::StoreScanService` calls `Security::StoreFindingsService`.
 1. `ScanSecurityReportSecretsWorker` calls `Security::TokenRevocationService` to automatically revoke any leaked keys that were detected.
 
-At this point we **only** have `Security::Finding` records, rather than `Vulnerability` records, as these findings are not present in the default branch of the project.
+At this point we only have `Security::Finding` records, rather than `Vulnerability` records, as these findings are not present in the default branch of the project.
 Some of the scenarios where these `Security::Finding` records may be promoted to `Vulnerability` records are described below.
 
 ### Scan runs in a pipeline for the default branch

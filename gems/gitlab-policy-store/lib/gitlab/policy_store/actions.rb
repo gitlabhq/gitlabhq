@@ -3,9 +3,12 @@
 module Gitlab
   module PolicyStore
     module Actions
+      BLOCK = 'block'
+      REQUIRE_APPROVAL = 'require_approval'
+
       ALL = [
-        { id: 'block', name: 'Block' }.freeze,
-        { id: 'require_approval', name: 'Require approval' }.freeze
+        { id: BLOCK, name: 'Block' }.freeze,
+        { id: REQUIRE_APPROVAL, name: 'Require approval' }.freeze
       ].freeze
     end
   end

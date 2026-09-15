@@ -3,7 +3,7 @@
 class CreateNamespaceTraversalPathsMv < ClickHouse::Migration
   def up
     execute <<-SQL
-      CREATE MATERIALIZED VIEW namespace_traversal_paths_mv
+      CREATE MATERIALIZED VIEW IF NOT EXISTS namespace_traversal_paths_mv
       TO namespace_traversal_paths
       AS
       SELECT

@@ -22,7 +22,7 @@ RSpec.describe 'Ensure Boards do not show stale data on browser back', :js, feat
       visit new_project_work_item_path(project)
 
       fill_in 'Title', with: 'issue should be shown'
-      click_button 'Create Issue'
+      click_button 'Create issue'
 
       expect(page).to have_content('issue should be shown')
       expect(page).to have_current_path(project_work_item_path(project, Issue.last.iid))

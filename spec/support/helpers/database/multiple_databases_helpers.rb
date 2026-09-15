@@ -109,7 +109,8 @@ module Database
               pg_namespace.nspname AS schema,
               pg_class.relname AS name,
               (((parent_namespace.nspname)::text || '.'::text) || (parent_class.relname)::text) AS parent_identifier,
-              pg_get_expr(pg_class.relpartbound, pg_inherits.inhrelid) AS condition
+              pg_get_expr(pg_class.relpartbound, pg_inherits.inhrelid) AS condition,
+              pg_inherits.inhdetachpending AS pending_detach
              FROM ((((pg_class
                JOIN pg_namespace ON ((pg_namespace.oid = pg_class.relnamespace)))
                JOIN pg_inherits ON ((pg_class.oid = pg_inherits.inhrelid)))

@@ -1,0 +1,9 @@
+---
+name: onboarding_guide_agent
+description: Gate the Onboarding agent foundational chat agent, default off until rollout is ready
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/245452
+rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/612244
+milestone: '19.4'
+type: experiment
+group: group::workflow catalog
+default_enabled: false

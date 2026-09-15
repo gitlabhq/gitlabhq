@@ -83,6 +83,57 @@ RSpec.describe Mutations::MergeRequests::SetReviewers, feature_category: :api do
         end
       end
 
+      context 'when a username does not match a visible user' do
+        let(:reviewer_usernames) { [reviewer.username, 'does-not-exist'] }
+
+        before do
+          merge_request.reviewers = [reviewer2]
+          merge_request.save!
+        end
+
+        it 'returns an error naming the unresolved username' do
+          expect(subject[:errors]).to contain_exactly('Reviewers not able to be set: does-not-exist')
+        end
+
+        it 'still assigns the usernames that did resolve' do
+          expect(mutated_merge_request.reviewers).to contain_exactly(reviewer)
+        end
+      end
+
+      context 'when an existing reviewer is in a state UsersFinder excludes' do
+        let_it_be(:blocked_reviewer) { create(:user, :ldap_blocked) }
+
+        let(:reviewer_usernames) { [blocked_reviewer.username, reviewer.username] }
+
+        before do
+          merge_request.project.add_developer(blocked_reviewer)
+          merge_request.reviewers = [blocked_reviewer]
+          merge_request.save!
+        end
+
+        it 'assigns the reviewer that resolved and reports the excluded one' do
+          expect(mutated_merge_request.reviewers).to contain_exactly(reviewer)
+          expect(subject[:errors]).to contain_exactly("Reviewers not able to be set: #{blocked_reviewer.username}")
+        end
+      end
+
+      context 'when a username differs from the user only by case' do
+        let(:reviewer_usernames) { [reviewer.username.upcase] }
+
+        it 'assigns the reviewer' do
+          expect(mutated_merge_request.reviewers).to contain_exactly(reviewer)
+          expect(subject[:errors]).to be_empty
+        end
+      end
+
+      context 'when unresolvable usernames differ from each other only by case' do
+        let(:reviewer_usernames) { %w[Does-Not-Exist does-not-exist] }
+
+        it 'reports the username once' do
+          expect(subject[:errors]).to contain_exactly('Reviewers not able to be set: Does-Not-Exist')
+        end
+      end
+
       context 'when passing "append" as true' do
         subject do
           mutation.resolve(
@@ -106,6 +157,14 @@ RSpec.describe Mutations::MergeRequests::SetReviewers, feature_category: :api do
           expect(mutated_merge_request).to eq(merge_request)
           expect(mutated_merge_request.reviewers).to contain_exactly(reviewer2)
           expect(subject[:errors]).to be_empty
+        end
+
+        context 'when a username does not match a visible user' do
+          let(:reviewer_usernames) { ['does-not-exist'] }
+
+          it 'reports the unresolved username rather than reporting success' do
+            expect(subject[:errors]).to contain_exactly('Reviewers not able to be set: does-not-exist')
+          end
         end
       end
 

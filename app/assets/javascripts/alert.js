@@ -171,12 +171,12 @@ export const createAlert = ({
       };
 
       if (primaryButton?.clickHandler) {
-        on.primaryAction = (e) => {
+        on['primary-action'] = (e) => {
           primaryButton.clickHandler(e);
         };
       }
       if (secondaryButton?.clickHandler) {
-        on.secondaryAction = (e) => {
+        on['secondary-action'] = (e) => {
           secondaryButton.clickHandler(e);
         };
       }

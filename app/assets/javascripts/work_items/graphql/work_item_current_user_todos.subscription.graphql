@@ -1,0 +1,19 @@
+#import "./work_item_current_user_todos.fragment.graphql"
+
+# @feature_category: team_planning
+subscription workItemCurrentUserTodosUpdated(
+  $id: WorkItemID!
+  $useWorkItemFeatures: Boolean = false
+) {
+  workItemUpdated(workItemId: $id) {
+    id
+    widgets @skip(if: $useWorkItemFeatures) {
+      ...WorkItemCurrentUserTodos
+    }
+    features @include(if: $useWorkItemFeatures) {
+      currentUserTodos {
+        ...WorkItemCurrentUserTodos
+      }
+    }
+  }
+}

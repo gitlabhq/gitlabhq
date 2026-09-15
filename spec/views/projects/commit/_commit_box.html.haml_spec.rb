@@ -9,8 +9,7 @@ RSpec.describe 'projects/commit/_commit_box.html.haml' do
   before do
     assign(:project, project)
     assign(:commit, project.commit)
-    allow(view).to receive(:current_user).and_return(user)
-    allow(view).to receive(:can_collaborate_with_project?).and_return(false)
+    allow(view).to receive_messages(current_user: user, can_collaborate_with_project?: false)
     project.add_developer(user)
   end
 

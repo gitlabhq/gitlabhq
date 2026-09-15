@@ -43,7 +43,7 @@ To enable License scanning of CycloneDX files:
 - Using the dependency scanning template
   - Turn on [dependency scanning](../../application_security/dependency_scanning/dependency_scanning_sbom/_index.md#turn-on-dependency-scanning)
     and ensure that its prerequisites are met.
-  - On GitLab Self-Managed, you can [choose package registry metadata to synchronize](../../../administration/settings/security_and_compliance.md#choose-package-registry-metadata-to-sync) in the **Admin** area for the GitLab instance. For this data synchronization to work, you must allow outbound network traffic from your GitLab instance to the domain `storage.googleapis.com`. If you have limited or no network connectivity then refer to the documentation section [running in an offline environment](#running-in-an-offline-environment) for further guidance.
+  - On GitLab Self-Managed, you can [choose package registry metadata to synchronize](../../../administration/settings/security_and_compliance.md#choose-package-registry-metadata-to-sync) in the **Admin** area for the GitLab instance. For this data synchronization to work, you must allow outbound network traffic from your GitLab instance to the domains `storage.googleapis.com` and `pmdb-dist-svc.runway.gitlab.net`. If you have limited or no network connectivity then refer to the documentation section [running in an offline environment](#running-in-an-offline-environment) for further guidance.
 - Or use the [CI/CD component](../../../ci/components/_index.md) for applicable package registries.
 
 ## Supported languages and package managers
@@ -57,7 +57,6 @@ To enable License scanning of CycloneDX files:
 
 License scanning is supported for the following languages and package managers:
 
-<!-- markdownlint-disable MD044 -->
 <table class="supported-languages">
   <thead>
     <tr>
@@ -187,7 +186,6 @@ License scanning is supported for the following languages and package managers:
     </tr>
   </tbody>
 </table>
-<!-- markdownlint-enable MD044 -->
 
 **Footnotes**:
 
@@ -217,8 +215,20 @@ license names.
 
 ## License expressions
 
-The License Scanning of CycloneDX files does not support [composite licenses](https://spdx.github.io/spdx-spec/v2-draft/SPDX-license-expressions/).
-Adding this capability is tracked in issue [336878](https://gitlab.com/gitlab-org/gitlab/-/issues/336878).
+{{< history >}}
+
+- Support for SPDX license expressions in CycloneDX SBOMs [introduced](https://gitlab.com/gitlab-org/gitlab/-/work_items/606225) in GitLab 19.3.
+- Support for SPDX license expressions in PMDB [introduced](https://gitlab.com/groups/gitlab-org/-/work_items/22880) in GitLab 19.4.
+
+{{< /history >}}
+
+GitLab reads SPDX [license expressions](https://spdx.github.io/spdx-spec/v2-draft/SPDX-license-expressions/)
+from the `expression` field in CycloneDX SBOMs, including `LicenseRef-[NAME]` syntax for custom non-SPDX licenses.
+When a component's SBOM entry includes an `expression`, GitLab stores and evaluates the full expression.
+When a CycloneDX SBOM doesn't contain license information, GitLab matches components against PMDB license data, which supports license expressions.
+
+License expressions are supported in [license approval policies](../license_approval_policies.md).
+When a policy targets a license that appears as a term in a component's expression, the policy evaluates correctly against the full expression.
 
 ## Blocking merge requests based on detected licenses
 
@@ -243,16 +253,15 @@ CycloneDX reports for licenses. For more information, see the offline [quick sta
 - Introduced in GitLab 17.5 [with a feature flag](../../../administration/feature_flags/_index.md) named `license_scanning_with_sbom_licenses`. Disabled by default.
 - Enabled on GitLab.com, GitLab Self-Managed, and GitLab Dedicated in GitLab 17.6.
 - Generally available in GitLab 17.8. Feature flag `license_scanning_with_sbom_licenses` removed.
+- Support for SPDX license expressions [introduced](https://gitlab.com/gitlab-org/gitlab/-/work_items/606225) in GitLab 19.3.
 
 {{< /history >}}
 
-The License Scanning uses the [licenses](https://cyclonedx.org/use-cases/#license-compliance) field of the CycloneDX JSON SBOM when available. If the license information is unavailable, the license information imported from the external license database will be used(current behavior).
-License information can be provided using a valid SPDX identifier or a license name. However, providing a license using an SPDX License Expression is not supported.
+The License Scanning uses the [licenses](https://cyclonedx.org/use-cases/#license-compliance) field of the CycloneDX JSON SBOM when available. If the license information is unavailable, the license information imported from the external license database is used.
+License information can be provided using a valid SPDX identifier, a license name, or an SPDX license expression.
 More information about the license field format can be found on the [CycloneDX](https://cyclonedx.org/use-cases/#license-compliance) specification.
 
 Compatible CycloneDX SBOM generators that provide the licenses field can be found in the [CycloneDX Tool Center](https://cyclonedx.org/tool-center/).
-
-Only licenses providing an SPDX identifier are currently supported. Extending this feature beyond SDPX licenses is tracked in [issue 505677](https://gitlab.com/gitlab-org/gitlab/-/issues/505677).
 
 ### Configure license information source
 
@@ -301,7 +310,7 @@ To enable or disable license scanning for CycloneDX files:
 
 ### A CycloneDX file is not being scanned and appears to provide no results
 
-Ensure that the CycloneDX file adheres to the [CycloneDX JSON specification](https://cyclonedx.org/docs/latest/json). This specification does [not permit duplicate entries](https://cyclonedx.org/docs/latest/json/#components). Projects that contain multiple SBOM files should either report each SBOM file up as individual CI report artifacts or they should ensure that duplicates are removed if the SBOMs are merged as part of the CI pipeline.
+Ensure that the CycloneDX file adheres to the [CycloneDX JSON specification](https://cyclonedx.org/docs/1.7/json/). This specification does [not permit duplicate entries](https://cyclonedx.org/docs/1.7/json/#components). Projects that contain multiple SBOM files should either report each SBOM file up as individual CI report artifacts or they should ensure that duplicates are removed if the SBOMs are merged as part of the CI pipeline.
 
 You can validate CycloneDX SBOM files against the `CycloneDX JSON specification` as follows:
 

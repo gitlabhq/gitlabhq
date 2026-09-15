@@ -1,7 +1,7 @@
 import Vue from 'vue';
 import VueApollo from 'vue-apollo';
 
-import { GlAlert, GlLoadingIcon, GlToast } from '@gitlab/ui';
+import { GlAlert, GlLoadingIcon } from '@gitlab/ui';
 import createMockApollo from 'helpers/mock_apollo_helper';
 import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
 import waitForPromises from 'helpers/wait_for_promises';
@@ -14,7 +14,6 @@ import getPipelineFailedJobs from '~/ci/pipelines_page/graphql/queries/get_pipel
 import { failedJobsMock, failedJobsMock2 } from './mock';
 
 Vue.use(VueApollo);
-Vue.use(GlToast);
 
 jest.mock('~/alert');
 jest.mock('~/graphql_shared/utils');

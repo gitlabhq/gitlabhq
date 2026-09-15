@@ -288,6 +288,113 @@ RSpec.describe Ci::PipelineCreation::FindPipelineInputsService, feature_category
           inline_input = spec_inputs.all_inputs.find { |i| i.name == :inline_input }
           expect(inline_input.default).to eq('inline_value')
         end
+
+        context 'when the config is expected on another project' do
+          let!(:another_project) { create(:project, :small_repo) }
+
+          let(:external_input_default) do
+            result = service.execute
+
+            result.payload&.fetch(:inputs)&.all_inputs&.find { |input| input.name == :external_input }&.default
+          end
+
+          before do
+            another_project.add_developer(user)
+
+            another_project.repository.create_file(
+              another_project.creator,
+              'config.yml',
+              config_yaml,
+              message: 'Add CI with header includes',
+              branch_name: 'master')
+
+            another_project.repository.create_file(
+              another_project.creator,
+              'inputs.yml',
+              external_inputs_yaml.sub('external_value', 'another_project_value'),
+              message: 'Add external inputs',
+              branch_name: 'master')
+
+            project.update!(ci_config_path: "config.yml@#{another_project.full_path}")
+          end
+
+          it 'resolves the header include in the project the config comes from' do
+            expect(external_input_default).to eq('another_project_value')
+          end
+
+          context 'when the ci_spec_include_own_context feature flag is disabled' do
+            before do
+              stub_feature_flags(ci_spec_include_own_context: false)
+            end
+
+            it 'resolves the header include in the project running the pipeline' do
+              expect(external_input_default).to eq('external_value')
+            end
+          end
+        end
+      end
+
+      context 'when an included file has a YAML tag as an input default' do
+        let(:config_yaml) do
+          <<~YAML
+          spec:
+            include:
+              - local: /inputs.yml
+          ---
+          job:
+            script: echo $[[ inputs.tagged_input ]]
+          YAML
+        end
+
+        let(:external_inputs_yaml) do
+          <<~YAML
+          spec:
+            inputs:
+              tagged_input:
+                default: !reference [.setup, script]
+          ---
+          inputs:
+            external_input:
+              default: external_value
+          YAML
+        end
+
+        before do
+          project.repository.create_file(
+            project.creator,
+            '.gitlab-ci.yml',
+            config_yaml,
+            message: 'Add CI with header includes',
+            branch_name: 'master')
+
+          project.repository.create_file(
+            project.creator,
+            'inputs.yml',
+            external_inputs_yaml,
+            message: 'Add external inputs',
+            branch_name: 'master')
+        end
+
+        context 'when the flag is enabled' do
+          it 'rejects the tagged default' do
+            result = service.execute
+
+            expect(result).to be_error
+            expect(result.message).to include('default value cannot contain a !reference tag')
+          end
+        end
+
+        context 'when the flag is disabled' do
+          before do
+            stub_feature_flags(ci_reject_yaml_tags_in_inputs: false)
+          end
+
+          it 'does not reject the tagged default' do
+            result = service.execute
+
+            expect(result).to be_success
+          end
+        end
       end
 
       context 'when header include processing fails' do

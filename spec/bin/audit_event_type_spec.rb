@@ -172,7 +172,7 @@ RSpec.describe 'bin/audit-event-type' do
       it 'reads saved_to_database from stdin' do
         expect(Readline).to receive(:readline).and_return(saved_to_database)
         expect do
-          expect(described_class.read_saved_to_database).to eq(true)
+          expect(described_class.read_saved_to_database).to be(true)
         end.to output(/Specify whether to persist events to database and JSON logs \[yes, no\]:/).to_stdout
       end
 
@@ -197,7 +197,7 @@ RSpec.describe 'bin/audit-event-type' do
       it 'reads streamed from stdin' do
         expect(Readline).to receive(:readline).and_return(streamed)
         expect do
-          expect(described_class.read_streamed).to eq(true)
+          expect(described_class.read_streamed).to be(true)
         end.to output(/Specify if events should be streamed to external services \(if configured\) \[yes, no\]:/)
                  .to_stdout
       end

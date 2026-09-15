@@ -9,6 +9,7 @@ import { initNewDiscussionToggle } from '~/rapid_diffs/app/init_new_discussions_
 import { useDiffsView } from '~/rapid_diffs/stores/diffs_view';
 import { INLINE_DIFF_VIEW_TYPE } from '~/diffs/constants';
 import { initTimeline } from '~/rapid_diffs/app/init_timeline';
+import { initHotkeys } from '~/rapid_diffs/app/init_hotkeys';
 import TaskList from '~/task_list';
 import { UPDATE_COMMENT_FORM } from '~/notes/i18n';
 
@@ -19,6 +20,7 @@ class CommitRapidDiffsApp extends RapidDiffsFacade {
     super.init();
     this.#initViewModeResize();
     await this.#initDiscussions();
+    initHotkeys({ mergeRequestShortcuts: false });
   }
 
   /**

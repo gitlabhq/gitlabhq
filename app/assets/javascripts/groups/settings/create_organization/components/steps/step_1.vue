@@ -21,6 +21,11 @@ export default {
       required: true,
     },
   },
+  computed: {
+    group() {
+      return this.organization.groups.nodes[0];
+    },
+  },
 };
 </script>
 
@@ -47,11 +52,7 @@ export default {
     <div class="gl-flex gl-w-full gl-justify-center">
       <div class="gl-w-1/2 @lg:gl-w-1/3">
         <organization-card :organization="organization">
-          <div
-            v-for="group in organization.groups.nodes"
-            :key="group.id"
-            class="gl-rounded-xl gl-bg-default gl-p-4"
-          >
+          <div v-if="group" class="gl-rounded-xl gl-bg-default gl-p-4">
             <organization-group-stats :group="group" />
           </div>
         </organization-card>

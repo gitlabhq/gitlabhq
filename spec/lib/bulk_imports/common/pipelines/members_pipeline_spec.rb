@@ -222,7 +222,7 @@ RSpec.describe BulkImports::Common::Pipelines::MembersPipeline, feature_category
         expect(member.access_level).to eq(30)
         expect(member.created_at).to eq('2020-01-01T00:00:00Z')
         expect(member.updated_at).to eq('2020-01-01T00:00:00Z')
-        expect(member.expires_at).to eq(nil)
+        expect(member.expires_at).to be_nil
       end
 
       it 'does not send new member notification' do

@@ -1,5 +1,5 @@
 <script>
-import { GlBadge, GlIcon, GlTableLite, GlTooltipDirective } from '@gitlab/ui';
+import { GlAlert, GlBadge, GlIcon, GlTableLite, GlTooltipDirective } from '@gitlab/ui';
 import { s__, sprintf } from '~/locale';
 import { numberToHumanSize } from '~/lib/utils/number_utils';
 import { approximateDuration } from '~/lib/utils/datetime/date_calculation_utility';
@@ -8,12 +8,17 @@ const LONG_RUNNING_THRESHOLD_SECONDS = 6 * 60 * 60;
 
 export default {
   name: 'DbVacuumSection',
-  components: { GlBadge, GlIcon, GlTableLite },
+  components: { GlAlert, GlBadge, GlIcon, GlTableLite },
   directives: { GlTooltip: GlTooltipDirective },
   props: {
     vacuums: {
       type: Array,
       required: true,
+    },
+    activityAvailable: {
+      type: Boolean,
+      required: false,
+      default: true,
     },
   },
   computed: {
@@ -51,6 +56,8 @@ export default {
       return item.index_vacuum_count > 1;
     },
     vacuumTypeLabel(item) {
+      if (item.vacuum_type == null) return this.$options.i18n.notAvailable;
+
       return item.vacuum_type === 'autovacuum'
         ? s__('DatabaseDiagnostics|Autovacuum')
         : s__('DatabaseDiagnostics|Manual VACUUM');
@@ -81,6 +88,9 @@ export default {
   i18n: {
     title: s__('DatabaseDiagnostics|Vacuum activity'),
     empty: s__('DatabaseDiagnostics|No vacuum operations are currently running.'),
+    activityUnavailable: s__(
+      'DatabaseDiagnostics|The database role cannot read the activity of other backends in pg_stat_activity, so vacuum type, running time, and anti-wraparound status are unavailable. Progress metrics are still shown. Grant the role membership in pg_monitor to see the full details.',
+    ),
     memoryPressure: s__('DatabaseDiagnostics|Memory pressure'),
     memoryPressureHint: s__(
       'DatabaseDiagnostics|More than one index pass means the dead-tuple store filled up. Consider increasing maintenance_work_mem or autovacuum_work_mem.',
@@ -105,6 +115,16 @@ export default {
       {{ $options.i18n.title }}
     </h4>
 
+    <gl-alert
+      v-if="!activityAvailable"
+      variant="warning"
+      :dismissible="false"
+      class="gl-mb-4"
+      data-testid="activity-unavailable"
+    >
+      {{ $options.i18n.activityUnavailable }}
+    </gl-alert>
+
     <p v-if="!hasActivity" class="gl-text-sm gl-text-subtle" data-testid="vacuum-empty">
       {{ $options.i18n.empty }}
     </p>
@@ -116,9 +136,10 @@ export default {
 
       <template #cell(type)="{ item }">
         <div class="gl-flex gl-flex-wrap gl-items-center gl-gap-2">
-          <gl-badge variant="neutral">
+          <gl-badge v-if="item.vacuum_type != null" variant="neutral">
             {{ vacuumTypeLabel(item) }}
           </gl-badge>
+          <span v-else class="gl-text-subtle">{{ vacuumTypeLabel(item) }}</span>
           <gl-badge
             v-if="item.anti_wraparound"
             v-gl-tooltip
@@ -155,20 +176,11 @@ export default {
       </template>
 
       <template #cell(indexProgress)="{ item }">
-        <span v-if="!item.indexes_total && item.indexes_total !== 0" class="gl-text-subtle">
-          {{ $options.i18n.notAvailable }}
-        </span>
-        <span v-else>{{ item.indexes_processed }} / {{ item.indexes_total }}</span>
+        {{ item.indexes_processed }} / {{ item.indexes_total }}
       </template>
 
       <template #cell(deadTuples)="{ item }">
-        <span v-if="!item.dead_tuple_bytes && item.dead_tuple_bytes !== 0" class="gl-text-subtle">
-          {{ $options.i18n.notAvailable }}
-        </span>
-        <span v-else
-          >{{ formatBytes(item.dead_tuple_bytes) }} /
-          {{ formatBytes(item.max_dead_tuple_bytes) }}</span
-        >
+        {{ formatBytes(item.dead_tuple_bytes) }} / {{ formatBytes(item.max_dead_tuple_bytes) }}
       </template>
 
       <template #cell(indexVacuumCount)="{ item }">
@@ -187,7 +199,7 @@ export default {
       </template>
 
       <template #cell(delayTime)="{ item }">
-        <span v-if="!item.delay_time && item.delay_time !== 0" class="gl-text-subtle">
+        <span v-if="item.delay_time == null" class="gl-text-subtle">
           {{ $options.i18n.notAvailable }}
         </span>
         <span v-else>{{ formatDelay(item.delay_time) }}</span>

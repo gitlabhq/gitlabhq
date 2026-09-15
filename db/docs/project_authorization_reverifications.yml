@@ -1,0 +1,13 @@
+---
+table_name: project_authorization_reverifications
+classes:
+- Authz::ProjectAuthorizationReverification
+feature_categories:
+- permissions
+description: Queue of users whose project authorizations need to be re-verified
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/249045
+milestone: '19.4'
+gitlab_schema: gitlab_main_user
+sharding_key:
+  user_id: users
+table_size: small

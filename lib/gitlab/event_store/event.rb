@@ -28,6 +28,9 @@ module Gitlab
   module EventStore
     class Event
       attr_reader :data
+      # Uniform payload accessor across Event and CloudEvent, so subscribers that
+      # handle both generations of an event don't need to branch on the class.
+      alias_method :event_data, :data
 
       class << self
         attr_accessor :json_schema_valid

@@ -156,8 +156,8 @@ For a Linux package installation:
 grep "SecretsManagement::" /var/log/gitlab/sidekiq/current
 ```
 
-For provisioning problems, filter for `ProvisionProjectSecretsManagerWorker` or
-`ProvisionGroupSecretsManagerWorker`.
+For provisioning problems, filter for `ProvisionProjectSecretsManagerTaskWorker` or
+`ProvisionGroupSecretsManagerTaskWorker`.
 
 ### GitLab Runner logs
 
@@ -216,7 +216,7 @@ To diagnose:
 
    ```shell
    kubectl logs -n gitlab -l app=sidekiq -c sidekiq \
-     | grep -E "ProvisionProjectSecretsManagerWorker|ProvisionGroupSecretsManagerWorker"
+     | grep -E "ProvisionProjectSecretsManagerTaskWorker|ProvisionGroupSecretsManagerTaskWorker"
    ```
 
 1. Test whether Sidekiq can reach OpenBao, from a Sidekiq pod or node:

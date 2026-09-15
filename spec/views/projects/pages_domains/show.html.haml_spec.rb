@@ -3,7 +3,7 @@
 require 'spec_helper'
 
 RSpec.describe 'projects/pages_domains/show' do
-  let(:project) { create(:project, :repository) }
+  let_it_be(:project) { create(:project) }
 
   shared_examples 'pages domain tests' do
     context 'when auto_ssl is enabled' do

@@ -8,6 +8,13 @@ module Docs
       TAGS_DIR = File.expand_path('tags', __dir__)
       FRONT_MATTER_PATTERN = /\A---[ \t]*\R(?<front_matter>.*?)\R---[ \t]*(?:\R|\z)/m
       EXTENSION_PREFIX = 'x-'
+      DOCS_URL = 'https://docs.gitlab.com'
+      # Matches a markdown link that points to a relative path to a page under the
+      # repository's doc/ directory. Captures the path below doc/ and any anchor.
+      DOC_LINK_PATTERN = %r{\]\((?:\.\./)+doc/(?<path>[^)#]+)\.md(?<anchor>#[^)]*)?\)}
+      # A page named _index is its directory's index page, and the docs site serves it at
+      # the directory's URL, so we drop the _index suffix when building the absolute link.
+      INDEX_PAGE_PATTERN = %r{(?:\A|/)_index\z}
 
       attr_reader :tags_dir
 
@@ -45,10 +52,27 @@ module Docs
         front_matter, body = parse(raw)
 
         {
-          'description' => presence(body),
+          'description' => presence(absolute_links(body)),
           'x-displayName' => presence(front_matter['name']),
           'externalDocs' => external_docs(front_matter)
         }.merge(extensions(front_matter)).compact
+      end
+
+      # Docs links are written as relative paths so lychee can validate them offline,
+      # which is much faster and more reliable than checking them over the network. We
+      # convert them to absolute URLs here since the generated spec is served outside the docs site.
+      def absolute_links(body)
+        body.gsub(DOC_LINK_PATTERN) do
+          match = Regexp.last_match
+
+          "](#{docs_url_for(match[:path])}#{match[:anchor]})"
+        end
+      end
+
+      def docs_url_for(path)
+        page = path.sub(INDEX_PAGE_PATTERN, '')
+
+        page.empty? ? "#{DOCS_URL}/" : "#{DOCS_URL}/#{page}/"
       end
 
       def parse(raw)

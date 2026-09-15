@@ -54,39 +54,26 @@ describe('display_settings_preferences', () => {
   });
 
   describe('applicableMetadataFields', () => {
-    it('returns all fields for a non-group, non-service-desk list', () => {
-      expect(applicableMetadataFields({ isGroup: false, isServiceDeskList: false })).toEqual(
+    it('returns all fields for a non-service-desk list', () => {
+      expect(applicableMetadataFields({ isServiceDeskList: false })).toEqual(
         WORK_ITEM_LIST_PREFERENCES_METADATA_FIELDS_SORTED,
       );
     });
 
     it('excludes the status field for a service desk list', () => {
-      const keys = applicableMetadataFields({ isGroup: false, isServiceDeskList: true }).map(
-        (f) => f.key,
-      );
+      const keys = applicableMetadataFields({ isServiceDeskList: true }).map((f) => f.key);
 
       expect(keys).not.toContain(METADATA_KEYS.STATUS);
     });
 
-    it('excludes fields not present in groups', () => {
-      const fields = applicableMetadataFields({ isGroup: true, isServiceDeskList: false });
-
-      expect(fields.every((f) => f.isPresentInGroup)).toBe(true);
-    });
-
-    it('returns all fields for the list view', () => {
+    it('returns all fields for the list view, including weight and iteration', () => {
       expect(
-        applicableMetadataFields({
-          isGroup: false,
-          isServiceDeskList: false,
-          viewMode: VIEW_MODE_LIST,
-        }),
+        applicableMetadataFields({ isServiceDeskList: false, viewMode: VIEW_MODE_LIST }),
       ).toEqual(WORK_ITEM_LIST_PREFERENCES_METADATA_FIELDS_SORTED);
     });
 
     it('excludes fields that are not available on boards for the board view', () => {
       const fields = applicableMetadataFields({
-        isGroup: false,
         isServiceDeskList: false,
         viewMode: VIEW_MODE_BOARD,
       });

@@ -26,7 +26,7 @@ RSpec.describe Resolvers::Ci::TemplateResolver do
       let(:template_name) { 'invalidname' }
 
       it 'returns nil' do
-        expect(resolve_subject).to eq(nil)
+        expect(resolve_subject).to be_nil
       end
     end
   end

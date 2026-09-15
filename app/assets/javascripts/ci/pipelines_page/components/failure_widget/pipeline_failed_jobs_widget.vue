@@ -13,7 +13,7 @@ import { POLL_INTERVAL } from './constants';
 
 export default {
   name: 'PipelineFailedJobsWidget',
-  fetchError: __('An error occured fetching failed jobs count'),
+  fetchError: __('An error occurred fetching failed jobs count'),
   components: {
     GlBadge,
     GlButton,
@@ -67,7 +67,7 @@ export default {
     return {
       failedJobsCount: 0,
       isExpanded: false,
-      // explicity set to null so watcher can detect
+      // explicitly set to null so watcher can detect
       // reactivity changes for polling
       isPipelineActive: null,
     };

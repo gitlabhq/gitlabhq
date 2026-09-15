@@ -3,6 +3,8 @@
 module Gitlab
   module Gpg
     class Commit < Gitlab::Repositories::BaseSignedCommit
+      extend ::Gitlab::Utils::Override
+
       def update_signature!(cached_signature)
         update_cached_signature!(cached_signature, gpg_signature.gpg_key)
       end
@@ -13,6 +15,18 @@ module Gitlab
       end
 
       private
+
+      override :lazy_signature
+      def lazy_signature
+        BatchLoader.for([@commit.project.id, @commit.sha]).batch do |project_sha_pairs, loader|
+          project_ids = project_sha_pairs.map(&:first).uniq
+          shas = project_sha_pairs.map(&:last).uniq
+
+          signature_class.by_commit_shas_and_project_ids(shas, project_ids).each do |signature|
+            loader.call([signature.project_id, signature.commit_sha], signature)
+          end
+        end
+      end
 
       def project
         @commit.project

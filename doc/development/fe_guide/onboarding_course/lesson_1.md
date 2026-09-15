@@ -44,7 +44,7 @@ Tips for using the GDK:
   You can access it by running `gdk rails c` and use it to enable or disable feature flags, perform backend operations, and more.
 - Stay updated: Regularly update your GDK by running `gdk update`.
   This command fetches the latest branch of the GitLab project, as well as the latest branch of the GDK and its dependencies.
-  Keeping your GDK up to date helps ensure you will be working with the latest version of GitLab and make sure you have the latest bug fixes.
+  Keeping your GDK up to date helps ensure you will be working with the latest version of GitLab and makes sure you have the latest bug fixes.
 
 Remember, if you need further assistance or have specific questions, you can reach out to the GitLab community through our [Discord](https://discord.com/invite/gitlab) or [other available support channels](https://about.gitlab.com/community/contribute/).
 
@@ -113,13 +113,13 @@ If you already know the file you are going to work on and now you want to find w
 1. Follow the component hierarchy, do a global search for the filename to identify the parent component that renders the component.
    Continue to follow the hierarchy of components to trace back to a feature you recognize or can search for in the GitLab user docs.
 1. You can use `git blame` with an extension like GitLens to find a recent MR where this file was changed.
-   Most MR's have a "How to validate" section that you can follow, if the MR doesn't have one, look for the previous change and until you find one that have validation steps.
+   Most MRs have a "How to validate" section that you can follow. If the MR doesn't have one, look for the previous change until you find one that has validation steps.
 
 If you know which page you need to fix and you want to find the file path, here are some things you can try:
 
 - Look for content that is unique and doesn't contain variables so that you can search for the translation variable.
 - Try using Vue Dev Tools to find the component name.
-- Look for unique identifiers like a `data-testid`,`id` or a unique looking CSS class in the HTML of the component and then search globally the codebase for those identifying strings.
+- Look for unique identifiers like a `data-testid`,`id` or a unique looking CSS class in the HTML of the component and then search the codebase globally for those identifying strings.
 
 ## Writing a good merge request
 

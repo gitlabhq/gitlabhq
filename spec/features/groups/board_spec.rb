@@ -120,8 +120,6 @@ RSpec.describe 'Group Boards', feature_category: :planning_views do
   end
 
   def drag(list_from_index: 0, list_to_index: 0, from_index: 0)
-    lists = all('.board-list')
-    item = lists.at(list_from_index).all('.board-card').at(from_index)
-    item.drag_to(lists.at(list_to_index))
+    board_card(list_from_index, from_index).drag_to(board_list(list_to_index))
   end
 end

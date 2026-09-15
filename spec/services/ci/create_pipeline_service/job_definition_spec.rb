@@ -38,10 +38,8 @@ RSpec.describe Ci::CreatePipelineService, feature_category: :pipeline_compositio
     end
 
     let(:rspec11)        { find_job('rspec1 1/2') }
-    let(:rspec12)        { find_job('rspec1 2/2') }
     let(:rspec2)         { find_job('rspec2') }
     let(:lint11)         { find_job('lint1 1/2') }
-    let(:lint12)         { find_job('lint1 2/2') }
     let(:lint2)          { find_job('lint2') }
     let(:with_id_tokens) { find_job('with_id_tokens') }
 

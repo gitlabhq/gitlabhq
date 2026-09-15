@@ -228,6 +228,8 @@ describe('OrganizationsIndexApp', () => {
         after: endCursor,
         last: null,
         before: null,
+        excludeDefault: false,
+        state: 'ACTIVE',
       });
     });
   });
@@ -249,6 +251,8 @@ describe('OrganizationsIndexApp', () => {
         after: null,
         last: DEFAULT_PER_PAGE,
         before: startCursor,
+        excludeDefault: false,
+        state: 'ACTIVE',
       });
     });
   });

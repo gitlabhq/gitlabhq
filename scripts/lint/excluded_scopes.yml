@@ -1,8 +1,0 @@
-# The scopes listed here have been identified as "unused" by the linter
-#   scripts/lint/unused_code.rb --type scopes, however subsequent research shows
-#   them to be false positives, and should be ignored when running that script.
-#
-# Format:
-#   path/to/model.rb:
-#     - scope_name: Reason why this is a false positive
-#

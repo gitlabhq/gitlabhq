@@ -5,6 +5,7 @@ import NoteAttachment from '~/notes/components/note_attachment.vue';
 import NoteEditedText from '~/notes/components/note_edited_text.vue';
 import AwardsList from '~/vue_shared/components/awards_list.vue';
 import NoteForm from '~/rapid_diffs/app/discussions/note_form.vue';
+import { UPDATE_COMMENT_FORM } from '~/notes/i18n';
 
 describe('NoteBody', () => {
   let wrapper;
@@ -75,6 +76,7 @@ describe('NoteBody', () => {
         autosaveKey: '',
         restoreFromAutosave: false,
         saveNote: defaultProps.saveNote,
+        saveNoteErrorMessages: UPDATE_COMMENT_FORM,
       });
     });
 

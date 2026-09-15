@@ -24,7 +24,7 @@ RSpec.describe Gitlab::Ci::Matching::BuildMatcher do
     context 'with attributes' do
       let(:attributes) { dummy_attributes }
 
-      it { expect(matcher.protected).to eq(true) }
+      it { expect(matcher.protected).to be(true) }
 
       it { expect(matcher.tag_list).to eq(%w[tag1 tag2]) }
 

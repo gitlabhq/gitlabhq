@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 module QA
-  RSpec.describe 'Package', :object_storage, :external_api_calls, feature_category: :subscription_management,
+  RSpec.describe 'Package', :object_storage, :external_api_calls, feature_category: :package_registry,
     feature_flag: { name: 'rubygem_packages', scope: :project } do
     describe 'RubyGems Repository' do
       include Runtime::Fixtures

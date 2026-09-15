@@ -311,8 +311,8 @@ the model to use for conversations.
 If you open a previous chat from the chat history and continue that conversation,
 Chat uses the model that you previously selected.
 
-If you select a new model when in an existing conversation, Chat creates a new
-conversation.
+If you select a new model when in an existing conversation, Chat continues the
+current conversation with the newly selected model.
 
 Prerequisites:
 
@@ -535,7 +535,7 @@ All approvals reset when you start a new conversation.
 | Get answers about an open file in the editor |     Yes  |                                                          Yes. Provide the path of the file in your question.                                                                   |
 | Provide context about specified files |                   Yes. Use `/include` to add a file to the conversation. <sup>1</sup> |        Yes. Provide the path of the file in your question.                                                                   |
 | Autonomously search project contents |                    No |                                                            Yes                                                                                                                   |
-| Autonomously create files and change files |              No |                                                            Yes. Ask it to change files. Note, it may overwrite changes that you have made manually and have not committed, yet.  |
+| Autonomously create files and change files |              No |                                                            Yes. Ask it to change files. It might overwrite changes that you have made manually and have not committed yet.  |
 | Retrieve issues and MRs without specifying IDs |          No |                                                            Yes. Search by other criteria. For example, an MR or issue's title or assignee.                                       |
 | Combine information from multiple sources |               No |                                                            Yes                                                                                                                   |
 | Analyze pipeline logs |                                   Yes. Requires GitLab Duo Enterprise add-on. |                          Yes                                                                                                                   |

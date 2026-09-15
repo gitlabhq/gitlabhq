@@ -17,7 +17,7 @@ class Projects::BoardsController < Projects::ApplicationController
 
   def board_finder
     strong_memoize :board_finder do
-      Boards::BoardsFinder.new(parent, current_user, board_id: params[:id])
+      Boards::BoardsFinder.new(parent, current_user, board_id: params.permit(:id)[:id])
     end
   end
 

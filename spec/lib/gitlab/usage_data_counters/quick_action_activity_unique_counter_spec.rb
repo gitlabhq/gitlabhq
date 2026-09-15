@@ -243,4 +243,12 @@ RSpec.describe Gitlab::UsageDataCounters::QuickActionActivityUniqueCounter, :cle
       let(:action) { 'i_quickactions_convert_to_ticket' }
     end
   end
+
+  context 'when tracking internal_note', feature_category: :team_planning do
+    let(:quickaction_name) { 'internal_note' }
+
+    it_behaves_like 'a tracked quick action internal event' do
+      let(:action) { 'i_quickactions_internal_note' }
+    end
+  end
 end

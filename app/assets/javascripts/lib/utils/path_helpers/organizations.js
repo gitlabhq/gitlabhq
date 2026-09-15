@@ -90,20 +90,6 @@ export const usersOrganizationPath = /*#__PURE__*/ __jsr.r({"organization_path":
 /**
  * Generates the Rails route:
  *
- * - href: `/o/:organization_path/-/settings/general(.:format)`
- * - Path helper: `general_settings_organization_path`
- * - URL helper: `general_settings_organization_url`
- * - controller#action: `organizations/settings#general`
- *
- * @param {any} organizationPath
- * @param {object | undefined} options
- * @returns {string} route path
- */
-export const generalSettingsOrganizationPath = /*#__PURE__*/ __jsr.r({"organization_path":{"r":true},"format":{}}, [2,[7,"/"],[2,[6,"o"],[2,[7,"/"],[2,[3,"organization_path"],[2,[7,"/"],[2,[6,"-"],[2,[7,"/"],[2,[6,"settings"],[2,[7,"/"],[2,[6,"general"],[1,[2,[8,"."],[3,"format"]]]]]]]]]]]]]);
-
-/**
- * Generates the Rails route:
- *
  * - href: `/o/:organization_path/-/groups/new(.:format)`
  * - Path helper: `new_groups_organization_path`
  * - URL helper: `new_groups_organization_url`

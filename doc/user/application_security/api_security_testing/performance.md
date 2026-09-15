@@ -13,14 +13,14 @@ Security tools that perform dynamic analysis testing, such as API security testi
   - How many operations your API is comprised of
   - How many fields are in each operation (think JSON bodies, headers, query string, cookies, etc.)
 
-If the API security testing job still takes longer than expected reach after following the advice in this performance guide, reach out to support for further assistance.
+If the API security testing job still takes longer than expected after following the advice in this performance guide, reach out to support for further assistance.
 
 ## Diagnosing performance issues
 
 The first step to resolving performance issues is to understand what is contributing to the slower-than-expected testing time. Some commonly reported issues are:
 
 - API security testing is running on a low-vCPU runner
-- The application deployed to a slow/single-CPU instance and is not able to keep up with the testing load
+- The application is deployed to a slow/single-CPU instance and is not able to keep up with the testing load
 - The application contains a slow operation that impacts the overall test speed (> 1/2 second)
 - The application contains an operation that returns a large amount of data (> 500K+)
 - The application contains a large number of operations (> 40)
@@ -52,7 +52,7 @@ An average response time of 2 seconds is a good initial indicator that this spec
 
 For this issue, the team might decide to:
 
-- Use a runner with more vCPUs, as this allows API security testing to parallelize the work being performed. This helps lower the test time, but getting the test down under 10 minutes might still be problematic without moving to a high CPU machine due to how long the operation takes to test. While larger runners are more costly, you also pay for less minutes if the job executions are quicker.
+- Use a runner with more vCPUs, as this allows API security testing to parallelize the work being performed. This helps lower the test time, but getting the test down under 10 minutes might still be problematic without moving to a high CPU machine due to how long the operation takes to test. While larger runners are more costly, you also pay for fewer minutes if the job executions are quicker.
 - [Exclude this operation](#excluding-slow-operations) from API security testing. While this is the simplest, it has the downside of a gap in security test coverage.
 - [Exclude the operation from feature branch API security testing, but include it in the default branch test](#excluding-operations-in-feature-branches-but-not-default-branch).
 - [Split up API security testing into multiple jobs](#splitting-a-test-into-multiple-jobs).
@@ -87,7 +87,7 @@ api_security:
   - saas-linux-medium-amd64
 ```
 
-In the `gl-api-security-scanner.log` file you can search for the string `Starting work item processor` to inspect the reported max DOP (degree of parallelism). The max DOP should be greater than or equal to the number of vCPUs assigned to the runner. If unable to identify the problem, open a ticket with support to assist.
+In the `gl-api-security-scanner.log` file, you can search for the string `Starting work item processor` to inspect the reported max DOP (degree of parallelism). The max DOP should be greater than or equal to the number of vCPUs assigned to the runner. If unable to identify the problem, open a ticket with support to assist.
 
 Example log entry:
 
@@ -95,7 +95,7 @@ Example log entry:
 
 ### Excluding slow operations
 
-In the case of one or two slow operations, the team might decide to skip testing the operations. Excluding the operation is done using the `APISEC_EXCLUDE_PATHS` configuration [variable as explained in this section.](configuration/customizing_analyzer_settings.md#exclude-paths)
+In the case of one or two slow operations, the team might decide to skip testing the operations. Excluding the operation is done using the `APISEC_EXCLUDE_PATHS` configuration [variable as explained in this section](configuration/customizing_analyzer_settings.md#exclude-paths).
 
 This example shows an operation that returns a large amount of data. The operation is `GET http://target:7777/api/large_response_json`. To exclude it, provide the `APISEC_EXCLUDE_PATHS` configuration variable with the path portion of the operation URL `/api/large_response_json`.
 
@@ -163,9 +163,9 @@ APISEC_v2:
 
 ### Excluding operations in feature branches, but not default branch
 
-In the case of one or two slow operations, the team might decide to skip testing the operations, or exclude them from feature branch tests, but include them for default branch tests. Excluding the operation is done using the `APISEC_EXCLUDE_PATHS` configuration [variable as explained in this section.](configuration/customizing_analyzer_settings.md#exclude-paths)
+In the case of one or two slow operations, the team might decide to skip testing the operations, or exclude them from feature branch tests, but include them for default branch tests. Excluding the operation is done using the `APISEC_EXCLUDE_PATHS` configuration [variable as explained in this section](configuration/customizing_analyzer_settings.md#exclude-paths).
 
-This example shows an operation that returns a large amount of data. The operation is `GET http://target:7777/api/large_response_json`. To exclude it, provide the `APISEC_EXCLUDE_PATHS` configuration variable with the path portion of the operation URL `/api/large_response_json`. The configuration disables the main `dast_api` job and creates two new jobs `APISEC_main` and `APISEC_branch`. The `APISEC_branch` is set up to exclude the long operation and only run on non-default branches (for example, feature branches). The `APISEC_main` branch is set up to only execute on the default branch (`main` in this example). The `APISEC_branch` jobs run faster, allowing for quick development cycles, while the `APISEC_main` job which only runs on default branch builds, takes longer to run.
+This example shows an operation that returns a large amount of data. The operation is `GET http://target:7777/api/large_response_json`. To exclude it, provide the `APISEC_EXCLUDE_PATHS` configuration variable with the path portion of the operation URL `/api/large_response_json`. The configuration disables the main `dast_api` job and creates two new jobs `APISEC_main` and `APISEC_branch`. The `APISEC_branch` is set up to exclude the long operation and only run on non-default branches (for example, feature branches). The `APISEC_main` branch is set up to only execute on the default branch (`main` in this example). The `APISEC_branch` jobs run faster, allowing for quick development cycles, while the `APISEC_main` job, which only runs on default branch builds, takes longer to run.
 
 To verify the operation is excluded, run the API security testing job and review the job console output. It includes a list of included and excluded operations at the end of the test.
 

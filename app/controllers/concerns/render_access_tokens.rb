@@ -5,7 +5,7 @@ module RenderAccessTokens
   extend ActiveSupport::Concern
 
   def active_access_tokens
-    tokens = finder(state: 'active', sort: 'expires_asc').execute.preload_users
+    tokens = finder(state: 'active', sort: 'expires_asc').execute.preload_users.preload_last_used_ips
     size = tokens.size
 
     tokens = tokens.page(page)
@@ -15,7 +15,7 @@ module RenderAccessTokens
   end
 
   def inactive_access_tokens
-    finder(state: 'inactive', sort: 'updated_at_desc').execute.preload_users
+    finder(state: 'inactive', sort: 'updated_at_desc').execute.preload_users.preload_last_used_ips
   end
 
   def add_pagination_headers(relation)

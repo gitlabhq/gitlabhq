@@ -1,6 +1,6 @@
 ---
-source_checksum: 74348cb7ea067bf8
-distilled_at_sha: 3941b843c30927ec6cea3e9caa43c88e5f930cb6
+source_checksum: 89f2341efcf303e1
+distilled_at_sha: 586530a94f045df52e8ae3e37a72e449e7dd1e43
 ---
 <!-- Auto-generated from docs.gitlab.com by gitlab-ai-principles-distiller — do not edit manually -->
 
@@ -53,6 +53,7 @@ distilled_at_sha: 3941b843c30927ec6cea3e9caa43c88e5f930cb6
 - DO NOT skip a new pipeline if the latest one was created before approval and the MR has backend changes.
 - DO NOT start a new pipeline if the latest merged results pipeline was created less than 16 hours ago (72 hours for stable branches).
 - Use Squash and merge only if the author has already set this option or the commit history is clearly messy; otherwise respect the author's setting.
+- Push feedback-based changes as isolated commits rather than squashing them, so reviewers can quickly identify changes since their last review.
 - Confirm all required approvers have approved before merging.
 - DO NOT approve your own MR or approve an MR you have added commits to.
 
@@ -94,7 +95,7 @@ distilled_at_sha: 3941b843c30927ec6cea3e9caa43c88e5f930cb6
 - Review all changes thoroughly for malicious code before starting a merged results pipeline on fork MRs.
 - Pay particular attention to new or updated dependencies (`Gemfile.lock`, `yarn.lock`, Node packages) in community MRs.
 - Review links and images in documentation MRs
-- Consult `@gitlab-com/gl-security/appsec` before manually starting any pipeline for suspicious community MRs.
+- Consult `@gitlab-com/gl-security/appsec` before starting any pipeline when in doubt about a community MR.
 - Only set the milestone when the MR is likely to be included in the current milestone
 - When taking over an unresponsive community MR: comment that you are taking over, add the `~"coach will finish"` label, create a feature branch from main, merge their branch into it, open a new MR linking the original, add the `~"Community contribution"` label, and notify the contributor.
 
@@ -118,6 +119,14 @@ distilled_at_sha: 3941b843c30927ec6cea3e9caa43c88e5f930cb6
 - Ensure reviewers have access to any projects, snippets, or assets needed to validate the solution.
 - When assigning multiple reviewers, comment to specify which domain each reviewer should focus on.
 
+### Code Comments
+
+- Focus comments on the "why" (rationale, constraints, edge cases, business logic) rather than the "what" or "how"; the code itself should express what it does.
+- Keep comments as close as possible to the code they reference; maintain and update them as the code evolves.
+- When adding a comment for a follow-up action, create a technical debt issue and include a link to it in the comment.
+- Document every new or updated method with a YARD comment: include `@param` for each argument and `@return` for methods with an explicit return value; separate the description from YARD tags with a blank line; use linkable references (e.g. `{ClassName#method}`) when referring to other methods or classes, and consider adding `@see`.
+- Annotate void methods with `@return [void]` and explicitly return `nil` to prevent accidental use of the return value in chains or assignments.
+
 ### Troubleshooting Failing Pipelines
 
 - For an unrelated test failure that also fails on the default branch, wait for the broken-master fix before re-running the pipeline.
@@ -128,4 +137,5 @@ distilled_at_sha: 3941b843c30927ec6cea3e9caa43c88e5f930cb6
 For the full picture, see:
 
 - doc/development/code_review.md
+- doc/development/code_comments.md
 

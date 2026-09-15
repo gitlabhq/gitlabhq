@@ -720,6 +720,7 @@ export const mockPipelineInProgressSubscription = {
       id: 'gid://gitlab/MergeRequest/133',
       pipelineCreationRequests: [
         {
+          id: 'request-uuid-in-progress',
           status: 'IN_PROGRESS',
           pipelineId: null,
           __typename: 'CiPipelineCreationRequest',
@@ -736,6 +737,7 @@ export const mockPipelineSucceededSubscription = {
       id: 'gid://gitlab/MergeRequest/133',
       pipelineCreationRequests: [
         {
+          id: 'request-uuid-succeeded',
           status: 'SUCCEEDED',
           pipelineId: 'gid://gitlab/Ci::Pipeline/1055',
           __typename: 'CiPipelineCreationRequest',
@@ -752,6 +754,7 @@ export const mockPipelineFailedSubscription = {
       id: 'gid://gitlab/MergeRequest/133',
       pipelineCreationRequests: [
         {
+          id: 'request-uuid-failed',
           status: 'FAILED',
           pipelineId: 'gid://gitlab/Ci::Pipeline/1055',
           __typename: 'CiPipelineCreationRequest',

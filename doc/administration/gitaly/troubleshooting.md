@@ -238,7 +238,7 @@ Confirm the following are all true:
   ```
 
 To fix this problem, confirm that your [`gitlab-secrets.json` file](configure_gitaly.md#configure-gitaly-servers)
-on the Gitaly server matches the one on Gitaly client. If it doesn't match,
+on the Gitaly server matches the one on the Gitaly client. If it doesn't match,
 update the secrets file on the Gitaly server to match the Gitaly client, then
 [reconfigure](../restart_gitlab.md#reconfigure-a-linux-package-installation).
 
@@ -318,7 +318,7 @@ echo $http_proxy
 echo $https_proxy
 ```
 
-If either of these variables have a value, your Gitaly CLI connections may be getting routed through
+If either of these variables has a value, your Gitaly CLI connections may be getting routed through
 a proxy which cannot connect to Gitaly.
 
 To remove the proxy setting, run the following commands (depending on which variables had values):
@@ -607,7 +607,7 @@ In GitLab 17.0, support for configuring storages with duplicate paths [was remov
 must remove duplicate storage configuration from `gitaly` configuration.
 
 > [!warning]
-> Only use this Rake task when the old and new storages share the same disk path on the same Gitaly server. Using the this Rake task in any other situation
+> Only use this Rake task when the old and new storages share the same disk path on the same Gitaly server. Using this Rake task in any other situation
 > causes the repository to become unavailable. Use the [project repository storage moves API](../../api/project_repository_storage_moves.md) to transfer
 > projects between storages in all other situations.
 

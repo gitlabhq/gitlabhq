@@ -803,6 +803,7 @@
 - spec/policies/packages/policies/project_policy_spec.rb
 - spec/policies/project_policy_spec.rb
 - spec/presenters/merge_request_presenter_spec.rb
+- spec/requests/admin/organizations/users_controller_spec.rb
 - spec/requests/admin/users_controller_spec.rb
 - spec/requests/api/access_requests_spec.rb
 - spec/requests/api/alert_management_alerts_spec.rb

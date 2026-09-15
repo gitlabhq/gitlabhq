@@ -111,6 +111,9 @@ module Types
     mount_mutation Mutations::MergeRequests::SetReviewers, scopes: [:api, :ai_workflows]
     mount_mutation Mutations::MergeRequests::ReviewerRereview
     mount_mutation Mutations::MergeRequests::RequestChanges
+    mount_mutation Mutations::MergeRequests::SavedViews::Create, experiment: { milestone: '19.4' }
+    mount_mutation Mutations::MergeRequests::SavedViews::Update, experiment: { milestone: '19.4' }
+    mount_mutation Mutations::MergeRequests::SavedViews::Delete, experiment: { milestone: '19.4' }
     mount_mutation Mutations::MergeRequests::WorkItemRelations::Create
     mount_mutation Mutations::MergeRequests::WorkItemRelations::Destroy
     mount_mutation Mutations::Metrics::Dashboard::Annotations::Create, deprecated: {
@@ -125,7 +128,7 @@ module Types
     mount_mutation Mutations::Notes::Create::DiffNote, calls_gitaly: true
     mount_mutation Mutations::Notes::Create::LatestDiffNote, calls_gitaly: true, experiment: { milestone: '18.10' }
     mount_mutation Mutations::Notes::Create::ImageDiffNote, calls_gitaly: true
-    mount_mutation Mutations::Notes::Create::Discussion, calls_gitaly: true
+    mount_mutation Mutations::Notes::Create::Discussion, calls_gitaly: true, scopes: [:api, :ai_workflows]
     mount_mutation Mutations::Notes::Update::Note, scopes: [:api, :ai_workflows]
     mount_mutation Mutations::Notes::Update::ImageDiffNote
     mount_mutation Mutations::Notes::ConvertToThread
@@ -135,6 +138,7 @@ module Types
     mount_mutation Mutations::Organizations::Create, experiment: { milestone: '16.6' }
     mount_mutation Mutations::Organizations::Delete, experiment: { milestone: '19.1' }
     mount_mutation Mutations::Organizations::Update, experiment: { milestone: '16.7' }
+    mount_mutation Mutations::Organizations::OrganizationUsers::Create, experiment: { milestone: '19.3' }
     mount_mutation Mutations::Organizations::OrganizationUsers::Delete, experiment: { milestone: '19.3' }
     mount_mutation Mutations::Organizations::OrganizationUsers::Update, experiment: { milestone: '17.5' }
     mount_mutation Mutations::Organizations::Restore, experiment: { milestone: '19.3' }

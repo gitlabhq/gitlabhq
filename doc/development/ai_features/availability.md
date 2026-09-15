@@ -91,10 +91,17 @@ Users with a paid GitLab Duo license (GitLab Duo Pro or GitLab Duo Enterprise) c
 
 ### Additional IDE Access Scenarios
 
-In the IDE environment specifically, users with a GitLab Duo license can always use Chat and Code Suggestions for:
+In the IDE environment specifically, users with a GitLab Duo license can use Chat and Code Suggestions for:
 
 1. Repositories without Git configuration
 1. Repositories with Git configuration pointing to unknown origins (such as GitHub or other GitLab instances where the user is not authenticated)
+
+In these scenarios there is no GitLab project to check, so Code Suggestions
+falls back to the user's [governing namespace](#namespace-billing-and-governance). If GitLab
+Duo is turned off for that namespace, Code Suggestions is unavailable. Users who
+belong to more than one namespace with GitLab Duo and have not selected a
+default namespace for GitLab Duo are not restricted, because the request cannot
+be attributed to a single namespace.
 
 ## Platform-Specific Behavior
 
@@ -117,9 +124,12 @@ Disabling GitLab Duo features (`duo_features_enabled: false`) in a group:
 If a user has a GitLab Duo license but belongs to a group where GitLab Duo features are set to "Always off", they can still:
 
 - Use GitLab Duo Chat for questions about issues in free projects
-- Use Code Suggestions on their personal projects
 - Ask GitLab Duo Chat general coding questions or questions about GitLab
 - Use GitLab Duo features with resources from other groups where GitLab Duo features are enabled
+
+They cannot use Code Suggestions for projects in that group. If the group is also
+their [governing namespace](#namespace-billing-and-governance), Code Suggestions is
+unavailable even when the IDE cannot resolve the repository to a GitLab project.
 
 This flow diagram shows how GitLab Duo feature availability works on GitLab.com:
 

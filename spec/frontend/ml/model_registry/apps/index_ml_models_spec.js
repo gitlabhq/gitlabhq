@@ -19,8 +19,6 @@ Vue.use(VueApollo);
 const defaultProps = {
   projectPath: 'path/to/project',
   canWriteModelRegistry: true,
-  maxAllowedFileSize: 99999,
-  markdownPreviewPath: '/markdown-preview',
   createModelPath: 'path/to/project/-/ml/models/new,',
 };
 

@@ -27,6 +27,10 @@ module Layouts
 
     private
 
+    def panel_classes
+      class_names('static-panel--headerless': @page_breadcrumbs_in_top_bar_feature_flag)
+    end
+
     def panel_header_bar_classes
       class_names('without-breadcrumbs': @page_breadcrumbs_in_top_bar_feature_flag)
     end

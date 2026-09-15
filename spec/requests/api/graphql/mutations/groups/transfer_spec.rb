@@ -32,31 +32,16 @@ RSpec.describe 'GroupTransfer', feature_category: :groups_and_projects do
   end
 
   describe 'observable state' do
-    context 'when groups_and_projects_async_transfer feature flag is enabled' do
-      it 'transitions the group to transfer_scheduled state', :aggregate_failures do
-        post_graphql_mutation(mutation, current_user: current_user)
+    it 'transitions the group to transfer_scheduled state', :aggregate_failures do
+      post_graphql_mutation(mutation, current_user: current_user)
 
-        expect(graphql_mutation_response(:group_transfer)['errors']).to be_empty
-        expect(group.reload.state).to eq('transfer_scheduled')
-      end
-
-      it 'enqueues a Namespaces::Groups::TransferWorker job' do
-        expect { post_graphql_mutation(mutation, current_user: current_user) }
-          .to change { Namespaces::Groups::TransferWorker.jobs.size }.by(1)
-      end
+      expect(graphql_mutation_response(:group_transfer)['errors']).to be_empty
+      expect(group.reload.state).to eq('transfer_scheduled')
     end
 
-    context 'when groups_and_projects_async_transfer feature flag is disabled' do
-      before do
-        stub_feature_flags(groups_and_projects_async_transfer: false)
-      end
-
-      it 'transfers the group synchronously and changes its namespace', :aggregate_failures do
-        post_graphql_mutation(mutation, current_user: current_user)
-
-        expect(graphql_mutation_response(:group_transfer)['errors']).to be_empty
-        expect(group.reload.parent).to eq(target_group)
-      end
+    it 'enqueues a Namespaces::Groups::TransferWorker job' do
+      expect { post_graphql_mutation(mutation, current_user: current_user) }
+        .to change { Namespaces::Groups::TransferWorker.jobs.size }.by(1)
     end
 
     context 'when target_id resolves to a non-existent group' do

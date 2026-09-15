@@ -29,7 +29,7 @@ module Types
       description: 'Project the deployment belongs to.'
     field :root_directory, GraphQL::Types::String, null: true,
       description: 'Path within the build assets that functions as the root directory for Pages sites.'
-    field :size, GraphQL::Types::Int, null: true,
+    field :size, GraphQL::Types::BigInt, null: true,
       description: 'Size of the storage used.'
     field :updated_at, GraphQL::Types::ISO8601DateTime, null: false,
       description: 'Time the deployment was last updated.'

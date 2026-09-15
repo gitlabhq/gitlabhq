@@ -31,7 +31,7 @@ To make repository A borrow from repository B:
 
 After the repack, repository A is no longer self-contained, but still contains its
 own refs and configuration. Objects in A that are not in B remain in A. For this
-configuration to work, **objects must not be deleted from repository B** because
+configuration to work, objects must not be deleted from repository B because
 repository A might need them.
 
 > [!warning]
@@ -45,7 +45,7 @@ reliably decide if an object is no longer needed.
 
 ### Git alternates in GitLab: pool repositories
 
-GitLab organizes this object borrowing by [creating special **pool repositories**](../administration/repository_storage_paths.md)
+GitLab organizes this object borrowing by [creating special pool repositories](../administration/repository_storage_paths.md)
 which are hidden from the user. We then use Git
 alternates to let a collection of project repositories borrow from a
 single pool repository. We call such a collection of project

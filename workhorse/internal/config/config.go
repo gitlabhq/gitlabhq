@@ -127,17 +127,46 @@ type GoogleCredentials struct {
 
 // RedisConfig holds configuration for Redis
 type RedisConfig struct {
-	URL              TomlURL
-	Sentinel         []TomlURL
-	SentinelMaster   string
-	SentinelUsername string
-	SentinelPassword string
-	Username         string
-	Password         string
-	DB               *int
-	MaxIdle          *int
-	MaxActive        *int
-	TLS              *TLSConfig `toml:"tls" json:"tls"`
+	URL                 TomlURL
+	Sentinel            []TomlURL
+	SentinelMaster      string
+	SentinelUsername    string
+	SentinelPassword    string
+	Username            string
+	Password            string
+	DB                  *int
+	MaxIdle             *int
+	MaxActive           *int
+	TLS                 *TLSConfig                `toml:"tls" json:"tls"`
+	CredentialsProvider *RedisCredentialsProvider `toml:"credentials_provider" json:"credentials_provider"`
+}
+
+// RedisCredentialsProvider enables passwordless authentication to a managed
+// Redis service using a rotating token that is refreshed automatically. When
+// set, it takes precedence over the static Username/Password and requires TLS.
+// It follows the same shape as ObjectStorageCredentials: Provider selects the
+// cloud, and only that provider's nested block is used.
+type RedisCredentialsProvider struct {
+	// Provider selects the cloud credential provider. Currently only "azure"
+	// is implemented; "aws" and "google" can be added later.
+	Provider string            `toml:"provider" json:"provider"`
+	Azure    *RedisAzureConfig `toml:"azure" json:"azure"`
+}
+
+// RedisAzureConfig holds Microsoft Entra options for the "azure" credentials
+// provider.
+type RedisAzureConfig struct {
+	// AuthType selects how the Entra token is acquired. "" or "default" (the
+	// default) uses the Azure default credential chain, which covers workload
+	// identity, managed identity, and environment credentials. "managed_identity"
+	// pins to the instance's managed identity (optionally a user-assigned one
+	// via ObjectID).
+	AuthType string `toml:"auth_type" json:"auth_type"`
+	// ObjectID is the object (principal) ID of a user-assigned managed identity.
+	// Leave empty to use a system-assigned managed identity.
+	ObjectID string `toml:"object_id" json:"object_id"`
+	// Scope is the OAuth scope, defaulting to https://redis.azure.com/.default.
+	Scope string `toml:"scope" json:"scope"`
 }
 
 // SentinelConfig contains configuration options specifically for Sentinel
@@ -255,6 +284,7 @@ type Config struct {
 	ShutdownTimeout              TomlDuration             `toml:"shutdown_timeout" json:"shutdown_timeout"`
 	TrustedCIDRsForXForwardedFor []string                 `toml:"trusted_cidrs_for_x_forwarded_for" json:"trusted_cidrs_for_x_forwarded_for"`
 	TrustedCIDRsForPropagation   []string                 `toml:"trusted_cidrs_for_propagation" json:"trusted_cidrs_for_propagation"`
+	TrustedForwardedHosts        []string                 `toml:"trusted_forwarded_hosts" json:"trusted_forwarded_hosts"`
 	Listeners                    []ListenerConfig         `toml:"listeners" json:"listeners"`
 	MetricsListener              *ListenerConfig          `toml:"metrics_listener" json:"metrics_listener"`
 	HealthCheckListener          *HealthCheckConfig       `toml:"health_check_listener" json:"health_check_listener"`
@@ -377,6 +407,7 @@ func (c *Config) MergeFromFile(file *Config, prometheusListenAddr string) error 
 	c.ShutdownTimeout = file.ShutdownTimeout
 	c.TrustedCIDRsForXForwardedFor = file.TrustedCIDRsForXForwardedFor
 	c.TrustedCIDRsForPropagation = file.TrustedCIDRsForPropagation
+	c.TrustedForwardedHosts = file.TrustedForwardedHosts
 	c.Listeners = file.Listeners
 	c.HealthCheckListener = file.HealthCheckListener
 	c.LoadSheddingConfig = file.LoadSheddingConfig

@@ -27,7 +27,6 @@ query getWorkItemsSlim(
   $milestoneWildcardId: MilestoneWildcardId
   $myReactionEmoji: String
   $subscribed: SubscriptionStatus
-  $types: [IssueType!]
   $updatedAfter: Time
   $updatedBefore: Time
   $workItemTypeIds: [WorkItemsTypeID!]
@@ -39,6 +38,7 @@ query getWorkItemsSlim(
   $in: [IssuableSearchableField!]
   $not: NegatedWorkItemFilterInput
   $or: UnionedWorkItemFilterInput
+  $ids: [WorkItemID!]
   $afterCursor: String
   $beforeCursor: String
   $firstPageSize: Int
@@ -49,6 +49,7 @@ query getWorkItemsSlim(
     id
     name
     workItems(
+      ids: $ids
       iid: $iid
       excludeProjects: $excludeProjects
       excludeGroupWorkItems: $excludeGroupWorkItems
@@ -71,7 +72,6 @@ query getWorkItemsSlim(
       milestoneWildcardId: $milestoneWildcardId
       myReactionEmoji: $myReactionEmoji
       subscribed: $subscribed
-      types: $types
       updatedAfter: $updatedAfter
       updatedBefore: $updatedBefore
       workItemTypeIds: $workItemTypeIds

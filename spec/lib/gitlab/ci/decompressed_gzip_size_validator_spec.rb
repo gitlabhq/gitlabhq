@@ -20,7 +20,7 @@ RSpec.describe Gitlab::Ci::DecompressedGzipSizeValidator, feature_category: :imp
 
     context 'when file does not exceed allowed decompressed size' do
       it 'returns true' do
-        expect(subject.valid?).to eq(true)
+        expect(subject.valid?).to be(true)
       end
 
       it 'caps the decompressed output at max_bytes + 1' do
@@ -29,14 +29,14 @@ RSpec.describe Gitlab::Ci::DecompressedGzipSizeValidator, feature_category: :imp
           original.call(*cmds, **opts)
         end
 
-        expect(subject.valid?).to eq(true)
+        expect(subject.valid?).to be(true)
       end
 
       context 'when the waiter thread no longer exists due to being terminated or crashing' do
         it 'gracefully handles the absence of the waiter without raising exception' do
           allow(Process).to receive(:getpgid).and_raise(Errno::ESRCH)
 
-          expect(subject.valid?).to eq(true)
+          expect(subject.valid?).to be(true)
         end
       end
     end
@@ -45,7 +45,7 @@ RSpec.describe Gitlab::Ci::DecompressedGzipSizeValidator, feature_category: :imp
       let(:max_bytes) { 1 }
 
       it 'returns false' do
-        expect(subject.valid?).to eq(false)
+        expect(subject.valid?).to be(false)
       end
     end
 
@@ -64,7 +64,7 @@ RSpec.describe Gitlab::Ci::DecompressedGzipSizeValidator, feature_category: :imp
 
         it 'terminates validator process group' do
           expect(Process).to receive(:kill).with(-1, 2).twice
-          expect(subject.valid?).to eq(false)
+          expect(subject.valid?).to be(false)
         end
       end
 
@@ -89,7 +89,7 @@ RSpec.describe Gitlab::Ci::DecompressedGzipSizeValidator, feature_category: :imp
         let(:filepath) { '/foo/../bar' }
 
         it 'does not pass validation' do
-          expect(subject.valid?).to eq(false)
+          expect(subject.valid?).to be(false)
         end
       end
     end
@@ -98,7 +98,7 @@ RSpec.describe Gitlab::Ci::DecompressedGzipSizeValidator, feature_category: :imp
       let(:filepath) { 123 }
 
       it 'returns false' do
-        expect(subject.valid?).to eq(false)
+        expect(subject.valid?).to be(false)
       end
     end
 
@@ -110,7 +110,7 @@ RSpec.describe Gitlab::Ci::DecompressedGzipSizeValidator, feature_category: :imp
       end
 
       it 'returns false' do
-        expect(subject.valid?).to eq(false)
+        expect(subject.valid?).to be(false)
       end
     end
 
@@ -133,7 +133,7 @@ RSpec.describe Gitlab::Ci::DecompressedGzipSizeValidator, feature_category: :imp
       end
 
       it 'returns false' do
-        expect(subject.valid?).to eq(false)
+        expect(subject.valid?).to be(false)
       end
     end
   end

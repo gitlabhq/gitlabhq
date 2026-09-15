@@ -171,6 +171,72 @@ RSpec.describe Ci::Partition, feature_category: :ci_scaling do
         end
       end
     end
+
+    describe '.all_archived?' do
+      subject(:all_archived) { described_class.all_archived?(ids) }
+
+      let_it_be(:archived) { create(:ci_partition, :archived) }
+      let_it_be(:also_archived) { create(:ci_partition, :archived) }
+      let_it_be(:active) { create(:ci_partition, :active) }
+
+      context 'when every id is archived' do
+        let(:ids) { [archived.id, also_archived.id] }
+
+        it { is_expected.to be(true) }
+      end
+
+      context 'when one id is not archived' do
+        let(:ids) { [archived.id, active.id] }
+
+        it { is_expected.to be(false) }
+      end
+
+      context 'when an id has no ci_partitions row' do
+        let(:ids) { [archived.id, non_existing_record_id] }
+
+        it { is_expected.to be(false) }
+      end
+
+      context 'when an id is repeated' do
+        let(:ids) { [archived.id, archived.id] }
+
+        it { is_expected.to be(true) }
+      end
+
+      context 'when no ids are given' do
+        let(:ids) { [] }
+
+        it { is_expected.to be(false) }
+      end
+    end
+
+    describe '.archived_since' do
+      subject(:archived_since) { described_class.archived_since(ids) }
+
+      let_it_be(:archived) { create(:ci_partition, :archived, updated_at: 3.weeks.ago) }
+      let_it_be(:archived_later) { create(:ci_partition, :archived, updated_at: 1.week.ago) }
+      let_it_be(:active) { create(:ci_partition, :active) }
+
+      context 'when every id is archived' do
+        let(:ids) { [archived.id, archived_later.id] }
+
+        it 'returns when the last of them was archived' do
+          expect(archived_since).to be_within(1.second).of(archived_later.updated_at)
+        end
+      end
+
+      context 'when one id is not archived' do
+        let(:ids) { [archived.id, active.id] }
+
+        it { is_expected.to be_nil }
+      end
+
+      context 'when no ids are given' do
+        let(:ids) { [] }
+
+        it { is_expected.to be_nil }
+      end
+    end
   end
 
   describe 'state machine' do
@@ -286,13 +352,13 @@ RSpec.describe Ci::Partition, feature_category: :ci_scaling do
     subject(:all_partitions_exist) { ci_partition.all_partitions_exist? }
 
     context 'when all partitions exist' do
-      it { is_expected.to eq(true) }
+      it { is_expected.to be(true) }
     end
 
     context 'when database partitions does not exist for ci_partition record' do
       let(:ci_partition) { create(:ci_partition, id: non_existing_record_id) }
 
-      it { is_expected.to eq(false) }
+      it { is_expected.to be(false) }
     end
   end
 
@@ -307,7 +373,7 @@ RSpec.describe Ci::Partition, feature_category: :ci_scaling do
     context 'when current_from is nil' do
       it 'returns false' do
         ci_partition.assign_attributes(current_from: nil)
-        expect(exceeded).to eq(false)
+        expect(exceeded).to be(false)
       end
     end
 
@@ -316,20 +382,20 @@ RSpec.describe Ci::Partition, feature_category: :ci_scaling do
         stub_application_setting(ci_partitions_in_seconds_limit: nil)
       end
 
-      it { is_expected.to eq(false) }
+      it { is_expected.to be(false) }
     end
 
     context 'when elapsed' do
       it 'returns true for "31 days"' do
         ci_partition.assign_attributes(current_from: 31.days.ago)
-        expect(exceeded).to eq(true)
+        expect(exceeded).to be(true)
       end
     end
 
     context 'when not elapsed' do
       it 'returns false for "29 days"' do
         ci_partition.assign_attributes(current_from: 29.days.ago)
-        expect(exceeded).to eq(false)
+        expect(exceeded).to be(false)
       end
     end
   end

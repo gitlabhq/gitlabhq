@@ -146,10 +146,10 @@ export default {
           this.showToastMessage();
         } else if (redirect) {
           // Retry and Play actions redirect to job detail view
-          // we don't need to refetch with jobActionPerformed event
+          // we don't need to refetch with the job-action-performed event
           visitUrl(job.detailedStatus.detailsPath);
         } else {
-          eventHub.$emit('jobActionPerformed');
+          eventHub.$emit('job-action-performed');
         }
       } catch (failure) {
         reportToSentry(this.$options.name, failure);

@@ -69,7 +69,7 @@ Use the following list to find the migration path that applies to you:
   template by following the [generic migration steps](#migrate-to-dependency-scanning-using-sbom),
   then apply any [language-specific instructions](#language-specific-instructions).
 - CI/CD component: The [main component](https://gitlab.com/components/dependency-scanning/-/tree/main/templates/main)
-  already uses the new analyzer but older versions (v0 and v1) lag behind on the analyzer version and on supported inputs.
+  already uses the new analyzer, but older versions (v0 and v1) lag behind on the analyzer version and on supported inputs.
   Bump the include to the `v2` version and apply any [language-specific instructions](#language-specific-instructions).
   If you use a specialized Android, Rust, Swift, or CocoaPods component, migrate to the main component.
 - Scan Execution Policies (SEP) or Pipeline Execution Policies (PEP): Edit the policy to reference the `v2` template,
@@ -147,7 +147,7 @@ Key changes:
 
 When using the legacy dependency scanning feature, all scanning work happens in your CI/CD pipeline. When running a scan, the Gemnasium analyzer handles two critical tasks simultaneously: it identifies your project's dependencies and immediately performs a security analysis of those dependencies using a local copy of the GitLab advisory database and its specific security scanning engine. Then, it outputs results into various reports (CycloneDX SBOM and dependency scanning security report).
 
-On the other hand, the dependency scanning using SBOM feature relies on a decomposed dependency analysis approach that separates dependency detection from other analyses, like static reachability or vulnerability scanning. While these tasks are still executed in the same CI/CD job, they function as decoupled, reusable components. For instance, the vulnerability scanning analysis reuses the unified engine, the GitLab SBOM vulnerability scanner, that also supports GitLab continuous vulnerability scanning features. This also opens up opportunity for future integration points, enabling more flexible vulnerability scanning workflows.
+On the other hand, the dependency scanning using SBOM feature relies on a decomposed dependency analysis approach that separates dependency detection from other analyses, like static reachability or vulnerability scanning. While these tasks are still executed in the same CI/CD job, they function as decoupled, reusable components. For instance, the vulnerability scanning analysis reuses the unified engine, the GitLab SBOM vulnerability scanner, that also supports GitLab continuous vulnerability scanning features. This also opens up an opportunity for future integration points, enabling more flexible vulnerability scanning workflows.
 
 Read more about how dependency scanning using SBOM [scans an application](dependency_scanning_sbom/_index.md#how-it-scans-an-application).
 
@@ -322,7 +322,7 @@ Prerequisites:
 
 - The Developer, Maintainer, or Owner role for the project.
 
-To migrate using the CI/Cd component:
+To migrate using the CI/CD component:
 
 1. Update the component `include` statement to reference version `2` of
    the main component.
@@ -453,7 +453,7 @@ To migrate using pipeline execution policies:
    - If the policy includes the CI/CD component, follow
      [migrate using the CI/CD component](#migrate-using-the-cicd-component).
 
-1. Apply those steps to the policy's CI/CD configuration/
+1. Apply those steps to the policy's CI/CD configuration.
 1. Apply any [language-specific instructions](#language-specific-instructions) for the ecosystems in projects covered by the policy.
 
 CI/CD variables set for projects, groups, or instances (and variables
@@ -503,7 +503,7 @@ private-registry-cache-build:
 ```
 
 The resolution jobs then run in the `prepare` stage after the custom
-`.pre` job completes. Dor the full list of inputs that control resolution job behavior,
+`.pre` job completes. For the full list of inputs that control resolution job behavior,
 see [available CI/CD inputs](dependency_scanning_sbom/_index.md#available-spec-inputs).
 
 ## Language-specific instructions

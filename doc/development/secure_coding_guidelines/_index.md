@@ -200,7 +200,7 @@ When working with regular expressions in Python, use `re2` when possible or alwa
 
 ## JSON Parsing
 
-**Use `Gitlab::Json::SafeParser` instead of `Gitlab::Json.parse` when handling untrusted input.** When in doubt, prefer `Gitlab::Json::SafeParser`.
+Use `Gitlab::Json::SafeParser` instead of `Gitlab::Json.parse` when handling untrusted input. When in doubt, prefer `Gitlab::Json::SafeParser`.
 
 ### Description
 
@@ -730,7 +730,7 @@ response = HTTParty.get('https://gitlab.com', ssl_version: :TLSv1_3, ciphers: ['
 
 When using [`Gitlab::HTTP`](#gitlab-http-library), the code looks like:
 
-This is the **recommended** implementation to avoid security issues such as SSRF:
+This is the recommended implementation to avoid security issues such as SSRF:
 
 ```ruby
 response = Gitlab::HTTP.get('https://gitlab.com', ssl_version: :TLSv1_3, ciphers: ['TLS_AES_128_GCM_SHA256', 'TLS_AES_256_GCM_SHA384'])

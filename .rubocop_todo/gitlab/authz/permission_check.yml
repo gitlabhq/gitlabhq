@@ -1,6 +1,5 @@
 ---
 Gitlab/Authz/PermissionCheck:
-  Details: grace period
   Exclude:
     - 'app/controllers/clusters/base_controller.rb'
     - 'app/controllers/concerns/notes_actions.rb'
@@ -162,7 +161,6 @@ Gitlab/Authz/PermissionCheck:
     - 'app/helpers/projects/terraform_helper.rb'
     - 'app/helpers/projects_helper.rb'
     - 'app/helpers/protected_branches_helper.rb'
-    - 'app/helpers/sidebars_helper.rb'
     - 'app/helpers/timeboxes_helper.rb'
     - 'app/helpers/web_hooks/web_hooks_helper.rb'
     - 'app/helpers/wiki_helper.rb'
@@ -225,7 +223,6 @@ Gitlab/Authz/PermissionCheck:
     - 'app/services/error_tracking/list_projects_service.rb'
     - 'app/services/group_access_tokens/rotate_service.rb'
     - 'app/services/groups/auto_devops_service.rb'
-    - 'app/services/groups/group_links/destroy_service.rb'
     - 'app/services/groups/import_export/export_service.rb'
     - 'app/services/groups/import_export/import_service.rb'
     - 'app/services/groups/transfer_service.rb'
@@ -347,7 +344,6 @@ Gitlab/Authz/PermissionCheck:
     - 'app/views/shared/milestones/_sidebar.html.haml'
     - 'app/views/shared/notes/_note.html.haml'
     - 'app/workers/purge_dependency_proxy_cache_worker.rb'
-    - 'ee/app/components/duo_chat_panel/chat_component.rb'
     - 'ee/app/components/namespaces/combined_storage_users/non_owner_alert_component.rb'
     - 'ee/app/components/namespaces/combined_storage_users/owner_alert_component.rb'
     - 'ee/app/components/namespaces/storage/base_alert_component.rb'
@@ -519,7 +515,6 @@ Gitlab/Authz/PermissionCheck:
     - 'ee/app/graphql/mutations/work_items/lifecycles/create.rb'
     - 'ee/app/graphql/mutations/work_items/lifecycles/delete.rb'
     - 'ee/app/graphql/mutations/work_items/lifecycles/update.rb'
-    - 'ee/app/graphql/resolvers/ai/catalog/available_flows_for_project_resolver.rb'
     - 'ee/app/graphql/resolvers/ai/flow_triggers_resolver.rb'
     - 'ee/app/graphql/resolvers/ai/model_selection/namespaces/feature_settings_resolver.rb'
     - 'ee/app/graphql/resolvers/gitlab_subscriptions/member_management/member_approval_resolver.rb'
@@ -644,6 +639,8 @@ Gitlab/Authz/PermissionCheck:
     - 'ee/app/services/member_roles/delete_service.rb'
     - 'ee/app/services/member_roles/update_service.rb'
     - 'ee/app/services/members/await_service.rb'
+    - 'ee/app/services/members/create_ldap_group_link_service.rb'
+    - 'ee/app/services/members/destroy_ldap_group_link_service.rb'
     - 'ee/app/services/merge_request_approval_settings/update_service.rb'
     - 'ee/app/services/onboarding/trial_namespace_create_service.rb'
     - 'ee/app/services/repositories/pull_mirrors/update_service.rb'
@@ -698,7 +695,6 @@ Gitlab/Authz/PermissionCheck:
     - 'ee/app/views/projects/settings/repository/_protected_branches.html.haml'
     - 'ee/app/views/shared/_mirror_update_button.html.haml'
     - 'ee/app/views/shared/promotions/_promotion_link_project.html.haml'
-    - 'ee/app/workers/security/attributes/bulk_update_worker.rb'
     - 'ee/lib/api/clusters/agent_url_configurations.rb'
     - 'ee/lib/api/epic_issues.rb'
     - 'ee/lib/api/helpers/epics_helpers.rb'

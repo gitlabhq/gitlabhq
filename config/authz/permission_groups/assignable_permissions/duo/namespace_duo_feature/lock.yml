@@ -1,0 +1,9 @@
+---
+name: lock_namespace_duo_feature
+description: Grants the ability to lock GitLab Duo availability for a namespace
+available_for:
+  - granular_access_token
+permissions:
+  - lock_namespace_duo_feature
+boundaries:
+  - group

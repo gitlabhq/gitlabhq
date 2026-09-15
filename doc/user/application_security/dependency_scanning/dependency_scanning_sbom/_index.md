@@ -33,7 +33,7 @@ aspects of inspecting the items your code uses. These items typically include ap
 dependencies that are almost always imported from external sources, rather than sourced from items
 you wrote yourself.
 
-Dependency scanning can run in the development phase of your application's lifecycle. Using the new
+Dependency scanning can run in the development phase of your application's lifecycle. When you use the new
 dependency scanning analyzer in CI/CD pipelines, project dependencies are detected and reported in CycloneDX
 SBOM reports. Security findings are identified and compared between the source
 and target branches. Findings and their severity are listed in the merge request, enabling you to
@@ -106,7 +106,7 @@ without changing your CI/CD configuration.
 
 ### Maintenance policy
 
-GitLab follows the [release and maintenance policy](../../../../policy/maintenance.md),
+GitLab follows the [release and maintenance policy](../../../../policy/maintenance.md)
 to provide bug fixes for the current stable release and security fixes for the
 previous two monthly releases.
 
@@ -200,12 +200,6 @@ The following CycloneDX SBOMs are created as job artifacts:
 
 ### Dependency scanning report
 
-{{< details >}}
-
-- Offering: GitLab.com, GitLab Self-Managed, GitLab Dedicated
-
-{{< /details >}}
-
 The dependency scanning analyzer generates a dependency scanning report that documents all
 vulnerabilities identified in dependencies identified in the CycloneDX SBOM files.
 
@@ -215,6 +209,73 @@ The dependency scanning report is:
 - Available as a job artifact of the dependency scanning job.
 - Uploaded as a `dependency_scanning` report.
 - Saved in the root directory of the project.
+
+### Malicious packages
+
+{{< details >}}
+
+- Status: Beta
+
+{{< /details >}}
+
+Dependency scanning identifies malicious packages when it ingests a CycloneDX SBOM. GitLab
+compares the components in the SBOM against
+[GitLab malware advisories](../../gitlab_advisory_database/_index.md#gitlab-malware-advisories),
+in addition to the usual security advisories. A match creates a vulnerability.
+
+A malicious package finding means the package itself is harmful, rather than containing a defect
+an attacker could exploit. This happens when a package typosquats the name of a popular package,
+when a compromised maintainer account publishes a harmful release, or when a package contains
+code written to behave like malware. Because the finding describes the package rather than a
+specific defect, detection does not depend on a vulnerability having been publicly disclosed
+first, unlike a finding based on a CVE record.
+
+The vulnerability details page for a malicious package finding has no solution, and includes no
+CVSS, Exploit Prediction Scoring System (EPSS), or Known Exploited Vulnerabilities (KEV)
+information. Malware advisories carry none of that data. Those fields describe how exploitable a
+defect is and how to fix it, and neither applies to a package that is malicious in itself. To
+resolve a malicious package finding, remove the package from the project rather than upgrade it.
+
+These vulnerabilities always have `Critical` severity. Malware advisories state severity directly
+rather than deriving it from a Common Vulnerability Scoring System (CVSS) score.
+
+Each vulnerability has an identifier in the form `GLAM-<year>-<month>-<sequence>`, for example
+`GLAM-2026-09-00138`. It does not carry a Common Vulnerabilities and Exposures (CVE) identifier.
+
+Malware advisories cover fewer package types than dependency scanning supports generally. For the
+full list, see
+[Supported package types](../../gitlab_advisory_database/_index.md#supported-package-types).
+
+This feature is available with GitLab Ultimate and has no separate setting to turn on. It follows
+your project's existing dependency scanning configuration. On GitLab Self-Managed, the package
+registries covered also follow the package metadata synchronization described in the
+[prerequisites](#prerequisites).
+
+If GitLab withdraws a malware advisory, it stops matching against that advisory and creates no new
+vulnerabilities from it.
+
+[Continuous vulnerability scanning](../../continuous_vulnerability_scanning/_index.md#malicious-packages)
+performs this same matching without requiring a pipeline to run.
+
+Malware findings appear in the [vulnerability report](../../vulnerability_report/_index.md) and the
+[dependency list](../../dependency_list/_index.md). Both show a red malware badge on an affected
+vulnerability or dependency, and both can filter by malware status.
+
+#### Known limitations
+
+Malware matching in dependency scanning has the following limitations:
+
+- GitLab evaluates components only on the default branch, and does not produce findings for
+  components on other branches.
+- GitLab does not proactively notify you when a new malware advisory is published for a package
+  you already use. You see the finding the next time you review the vulnerability report.
+- A finding lists the same advisory ID twice, once as `GLAM-<year>-<month>-<sequence>` and once as
+  a `Gemnasium-GLAM-<year>-<month>-<sequence>` identifier. The repeated entry affects only how the
+  identifiers are displayed, not detection or deduplication. For more information, see
+  [issue 627314](https://gitlab.com/gitlab-org/gitlab/-/issues/627314).
+- GitLab does not resolve vulnerabilities created from an advisory that is later withdrawn. Those
+  vulnerabilities stay in the vulnerability report until you resolve them. For more information,
+  see [issue 612099](https://gitlab.com/gitlab-org/gitlab/-/issues/612099).
 
 ## Improve scanning performance
 
@@ -238,6 +299,13 @@ List excluded paths in the `.gitlab-ci.yml` file:
 - For the dependency scanning template, use the `DS_EXCLUDED_PATHS` CI/CD variable.
 - For the dependency scanning CI/CD component, use the `excluded_paths` spec input.
 
+To specify multiple patterns, separate them with commas and no spaces. For example:
+
+```yaml
+variables:
+  DS_EXCLUDED_PATHS: "**/*.Test/**,**/*.Test.*/**,src/Test/**"
+```
+
 Exclusion patterns follow these rules:
 
 - Patterns without slashes match file or directory names at any depth in the project. For example,
@@ -248,6 +316,8 @@ Exclusion patterns follow these rules:
   `a/x/y/b`.
 - Leading and trailing slashes are ignored. For example, `/build` and `build/` match the same
   results as `build`.
+- Spaces after commas become part of the pattern and cause matching to fail. Use
+  `"path/a/**,path/b/**"`, not `"path/a/**, path/b/**"`.
 
 ### Limit scan directory depth
 
@@ -309,6 +379,12 @@ following [PURL types](https://github.com/package-url/purl-spec/blob/34658984613
 - `swift`
 
 ## Supported languages and files
+
+{{< history >}}
+
+- Bun support [introduced](https://gitlab.com/gitlab-org/gitlab/-/work_items/592701) in GitLab 19.2.
+
+{{< /history >}}
 
 | Language                  | Package manager | File(s)                                         | Description                                                                                                                                                                           | Dependency graph export support | Static reachability support |
 | ------------------------- | --------------- | ----------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ------------------------------- | --------------------------- |
@@ -412,6 +488,8 @@ The following spec inputs can be used in combination with the `Dependency-Scanni
 | `resolution_jobs_stage`                     | string  | `.pre`                                                                                                    | The stage for the dependency resolution jobs.                                                                                                                                                                                                                         |
 | `resolution_jobs_allow_failure`             | boolean | `true`                                                                                                    | When `true`, a failed resolution job does not fail the pipeline. When `false`, a resolution failure blocks the pipeline.                                                                                                                                              |
 | `disabled_resolution_jobs`                  | string  | `""`                                                                                                      | Comma-separated list of resolution jobs to disable (for example, `"maven, python"`). By default, all available resolution jobs are enabled. Possible values are: `maven`,`gradle`,`python`. See [dependency resolution](#dependency-resolution)                       |
+| `resolution_jobs_checkout_timeout`          | number  | `60`                                                                                                      | Timeout in seconds that the resolution service waits for the repository checkout. Must be a positive integer.                                                                                                                                                         |
+| `resolution_jobs_script_timeout`            | number  | `60`                                                                                                      | Timeout in seconds to wait for the dependency resolution service to generate the resolution script. Must be a positive integer. If the service is still waiting for the repository checkout, increase `resolution_jobs_checkout_timeout` instead.                     |
 | `maven_resolution_job_name`                 | string  | `"dependency-scanning:maven-resolution"`                                                                  | The name of the job for Maven dependency resolution.                                                                                                                                                                                                                  |
 | `maven_resolution_image`                    | string  | `"registry.gitlab.com/security-products/dependency-resolution/ubi9/openjdk-21:1"`                         | The image used by the Maven dependency resolution job.                                                                                                                                                                                                                |
 | `maven_dependency_plugin_version`           | string  | `"3.7.0"`                                                                                                 | The version of `maven-dependency-plugin` used during Maven dependency resolution. Must be `3.7.0` or later.                                                                                                                                                           |
@@ -426,12 +504,12 @@ These variables can replace spec inputs and are also compatible with the beta `l
 
 | CI/CD variables                                | Description                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                      |
 | ---------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
-| `AST_ENABLE_MR_PIPELINES`                      | Control whether dependency scanning job runs in MR or branch pipeline. Default: `"true"`. If your project does not use MR pipelines, disable this to avoid duplicate pipelines.                                                                                                                                                                                                                                                                                                                                                                                                                  |
+| `AST_ENABLE_MR_PIPELINES`                      | Control whether dependency scanning job runs in MR or branch pipeline. Default: `"true"`. If your project does not use MR pipelines, disable this to avoid duplicate pipelines. For jobs injected by a pipeline execution policy, see [disable merge request pipelines for dependency scanning](#disable-merge-request-pipelines-for-dependency-scanning).                                                                                                                                                                                       |
 | `ADDITIONAL_CA_CERT_BUNDLE`                    | CA certificate bundle to trust. The CA bundle provided here is added to the system's certificates and also used by other tools during the scanning process. For more details, see [Custom TLS certificate authority](#custom-tls-certificate-authority).                                                                                                                                                                                                                                                                                                                                         |
 | `ANALYZER_ARTIFACT_DIR`                        | Directory where CycloneDX reports (SBOMs) are saved. Default `${CI_PROJECT_DIR}/sca-artifacts`.                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                  |
 | `DEPENDENCY_SCANNING_DISABLED`                 | When set to `"true"` or `"1"`, disables all dependency scanning jobs. Default: not set.                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                          |
 | `DS_EXCLUDED_ANALYZERS`                        | Specify the analyzers (by name) to exclude from dependency scanning.                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                             |
-| `DS_EXCLUDED_PATHS`                            | Exclude files and directories from the scan based on the paths. A comma-separated list of patterns. Patterns can be globs (see [`doublestar.Match`](https://pkg.go.dev/github.com/bmatcuk/doublestar/v4@v4.0.2#Match) for supported patterns), or file or folder paths (for example, `doc,spec`). See [exclude paths from scanning](#exclude-paths-from-scanning) for matching rules. This is a pre-filter which is applied before the scan is executed. Applies both for dependency detection and static reachability. Default: `"**/spec,**/test,**/tests,**/tmp,**/node_modules,**/.bundle,**/vendor,**/.git"`. |
+| `DS_EXCLUDED_PATHS`                            | Exclude files and directories from the scan based on the paths. A comma-separated list of patterns. Patterns can be globs (see [`doublestar.Match`](https://pkg.go.dev/github.com/bmatcuk/doublestar/v4@v4.0.2#Match) for supported patterns), or file or folder paths (for example, `doc,spec`). See [exclude paths from scanning](#exclude-paths-from-scanning) for matching rules. This is a pre-filter, which is applied before the scan is executed. Applies both for dependency detection and static reachability. Default: `"**/spec,**/test,**/tests,**/tmp,**/node_modules,**/.bundle,**/vendor,**/.git"`. |
 | `DS_MAX_DEPTH`                                 | Defines how many directory levels deep that the analyzer should search for supported files to scan. A value of `-1` scans all directories regardless of depth. Default: `2`.                                                                                                                                                                                                                                                                                                                                                                                                                     |
 | `DS_INCLUDE_DEV_DEPENDENCIES`                  | When set to `"false"`, development dependencies are not reported. Only projects using Composer, Conda, Gradle, Maven, npm, pnpm, Pipenv, Poetry, or uv are supported. Default: `"true"`                                                                                                                                                                                                                                                                                                                                                                                                          |
 | `DS_PIP_MANIFEST_FILE_NAME_PATTERN`            | Defines which pip manifest files to process for dependency resolution and manifest scanning, using glob pattern matching (for example, `custom-requirements.txt` or `*-requirements.txt`). The pattern should match filenames only, not directory paths. See [glob pattern documentation](https://github.com/bmatcuk/doublestar/tree/v1?tab=readme-ov-file#patterns) for syntax details.                                                                                                                                                                                                         |
@@ -445,7 +523,7 @@ These variables can replace spec inputs and are also compatible with the beta `l
 | `DS_ENABLE_VULNERABILITY_SCAN`                 | Enable vulnerability scanning of generated SBOM files. Generates a [dependency scanning report](#dependency-scanning-report). Default: `"true"`.                                                                                                                                                                                                                                                                                                                                                                                                                                                 |
 | `DS_API_TIMEOUT`                               | Dependency scanning SBOM API request timeout in seconds (minimum: `5`, maximum: `300`) Default: `10`                                                                                                                                                                                                                                                                                                                                                                                                                                                                                             |
 | `DS_API_SCAN_DOWNLOAD_DELAY`                   | Initial delay in seconds before downloading scan results (minimum: 1, maximum: 120) Default: `3`                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                 |
-| `DS_ENABLE_MANIFEST_FALLBACK`                  | Enable manifest fallback when no lockfile or dependency graph export is available. See [Manifest fallback](#manifest-fallback). Default: `"true"`.                                                                                                                                                                                                                                                                                                                                                                                                                                               |
+| `DS_ENABLE_MANIFEST_FALLBACK`                  | Enable manifest fallback when no lockfile or dependency graph export is available. See [Manifest fallback](#manifest-fallback). When set to `"false"`, directories with a manifest file but no lockfile or dependency graph export cause the analyzer to exit with a non-zero status and name each affected manifest. Default: `"true"`.                                                                                                                                                                                                                                                           |
 | `DS_SKIP_IF_NO_SUPPORTED_FILES`                | When set to `"true"`, skips the dependency scanning job if no [supported file](#supported-languages-and-files) is detected in the project. For details, see [skip the job when no supported file is present](#skip-the-job-when-no-supported-file-is-present). Default: `"false"`.                                                                                                                                                                                                                                                                                                                            |
 | `SECURE_LOG_LEVEL`                             | Log level. Default: `"info"`.                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                    |
 | `DS_DISABLED_RESOLUTION_JOBS`                  | Comma-separated list of resolution jobs to disable (for example, `"maven, python"`). By default, all available resolution jobs are enabled. Possible values are: `maven`,`gradle`,`python`.                                                                                                                                                                                                                                                                                                                                                                                                      |
@@ -465,6 +543,27 @@ merge request pipelines. If your project does not use merge request pipelines fo
 can cause two pipelines to run for each merge request, with other jobs running in a separate branch
 pipeline. To disable this behavior, set the spec input `enable_mr_pipelines: false` or CI/CD
 variable `AST_ENABLE_MR_PIPELINES: "false"`.
+
+If the template is injected by a [pipeline execution policy](../../policies/pipeline_execution_policies.md),
+set `AST_ENABLE_MR_PIPELINES` in the policy CI/CD configuration instead of the project or group
+settings. Pipeline execution policies run in isolation by default and don't apply variables from
+project or group settings unless `variables_override` allows it. An unset variable in the policy
+defaults to `"true"`, so the job runs in merge request pipelines unless you set it explicitly. A
+project `workflow:rules` configuration does not stop this behavior either.
+
+To run the job in branch pipelines in every project the policy covers, set the variable in the
+policy CI/CD configuration:
+
+```yaml
+variables:
+  AST_ENABLE_MR_PIPELINES: "false"
+
+include:
+  - template: Jobs/Dependency-Scanning.v2.gitlab-ci.yml
+```
+
+To use the project or group value instead, see
+[variables in pipeline execution policies](../../policies/pipeline_execution_policies.md#cicd-variables).
 
 ### Skip the job when no supported file is present
 
@@ -594,8 +693,8 @@ arbitrary code at startup, including:
 
 Anyone who can set these CI/CD variables or modify the project's build
 files can cause arbitrary code to execute in the resolution job. The resolution
-job runs with `CI_JOB_TOKEN`, access masked CI/CD variables in scope, and
-read or write to the project repository for the duration of the job.
+job runs with `CI_JOB_TOKEN`, accesses masked CI/CD variables in scope, and
+reads or writes to the project repository for the duration of the job.
 
 This property is inherent to ecosystem-native build tooling, and not
 specific to dependency scanning. Treat the resolution job as a sensitive
@@ -639,7 +738,6 @@ Therefore, the generated dependency graph may not reflect the exact set of depen
 project's actual build environment. Differences can arise from the fixed runtime version, unresolved environment markers,
 platform-specific dependencies, or conditional dependency groups that depend on build-time context unavailable in the resolution job.
 
-For the most accurate results, provide a lockfile or dependency graph export generated in your own build environment,
 For projects with highly customized builds that are not adequately covered by dependency resolution workflows,
 you should provide a lockfile or dependency graph export generated in your own build environment
 as described in [Create lockfile or dependency graph export manually](#create-lockfile-or-dependency-graph-export-manually).
@@ -977,6 +1075,14 @@ stages:
 
 image: maven:3.9.9-eclipse-temurin-21
 
+variables:
+  # Disable the automatic Maven resolution job. The dependency graph is
+  # generated manually in the build job below. The built-in resolution
+  # job which runs whenever a `pom.xml` is present is redundant.
+  # Alternatively, set the `disabled_resolution_jobs: "maven"` input on the
+  # template include.
+  DS_DISABLED_RESOLUTION_JOBS: "maven"
+
 include:
   - template: Jobs/Dependency-Scanning.v2.gitlab-ci.yml
 
@@ -1201,7 +1307,11 @@ build:
 - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/work_items/585886) in GitLab 18.9. Only Maven manifest files supported, disabled by default.
 - [Updated](https://gitlab.com/gitlab-org/gitlab/-/work_items/586921) in GitLab 18.9. Support for Python requirements file added, disabled by default.
 - [Updated](https://gitlab.com/gitlab-org/gitlab/-/work_items/588788) in GitLab 18.10. Support for Gradle manifest files added, disabled by default.
-- Enabled by default in GitLab 19.0
+- Enabled by default in GitLab 19.0.
+- Behavior when disabled [changed](https://gitlab.com/gitlab-org/security-products/analyzers/dependency-scanning/-/merge_requests/612):
+  the analyzer now exits with a non-zero status and names each affected manifest when
+  `DS_ENABLE_MANIFEST_FALLBACK` is `"false"` and a directory has no lockfile or dependency graph
+  export. Previously the analyzer skipped those directories and exited 0.
 
 {{< /history >}}
 
@@ -1234,11 +1344,27 @@ include:
   - template: Jobs/Dependency-Scanning.v2.gitlab-ci.yml
 ```
 
+When `DS_ENABLE_MANIFEST_FALLBACK` is `"false"` and a directory contains a manifest file but no
+lockfile or dependency graph export, the analyzer:
+
+1. Writes SBOMs and findings for all directories that did resolve successfully.
+1. Withholds manifest-derived results from the SBOM and marks them as uncovered.
+1. Exits with a non-zero status and names each affected manifest file.
+
+This means a scan that previously appeared clean (exit 0, no findings) now fails visibly when
+projects exist that cannot be resolved without manifest fallback.
+
+> [!note]
+> Only Maven (`pom.xml`), Gradle (`build.gradle`, `build.gradle.kts`), and pip
+> (`requirements.txt`) have a manifest parser. A directory that contains only a `package.json`
+> or a `Gemfile` is not covered by this check. Additionally, a Gradle subproject is exempt only
+> when the nearest build root above it has a `gradle-html-dependency-report.js` file.
+
 ## How it scans an application
 
 The dependency scanning using SBOM feature relies on a decomposed dependency analysis approach that separates dependency detection from other analyses, like static reachability or vulnerability scanning.
 
-This separation of concerns and the modularity of this architecture allows to better support customers through expansion
+This separation of concerns and the modularity of this architecture allows us to better support customers through expansion
 of language support, a tighter integration and experience within the GitLab platform, and a shift towards industry standard
 report types.
 
@@ -1246,7 +1372,7 @@ When [dependency resolution](#dependency-resolution) is enabled, resolution jobs
 the `.pre` stage before the `dependency-scanning` job. These jobs generate lockfiles
 or dependency graph exports as artifacts, which the `dependency-scanning` job then consumes.
 
-The overall flow of dependency scanning is illustrated below
+The overall flow of dependency scanning is illustrated below.
 
 ```mermaid
 flowchart TD
@@ -1279,29 +1405,29 @@ flowchart TD
     REPORT --> END
 ```
 
-In the dependency detection phase the analyzer parses available lockfiles to build a comprehensive inventory of your project's dependencies and their relationship (dependency graph). This inventory is captured in a CycloneDX SBOM (Software Bill of Materials) document.
+In the dependency detection phase, the analyzer parses available lockfiles to build a comprehensive inventory of your project's dependencies and their relationship (dependency graph). This inventory is captured in a CycloneDX SBOM (Software Bill of Materials) document.
 
-In the static reachability phase the analyzer parses source files to identify which SBOM components are actively used and marks them accordingly in the SBOM file.
+In the static reachability phase, the analyzer parses source files to identify which SBOM components are actively used and marks them accordingly in the SBOM file.
 This allows users to prioritize vulnerabilities based on whether the vulnerable component is reachable.
 For more information, see the [static reachability page](../static_reachability.md).
 
 The SBOM documents are temporarily uploaded to the GitLab instance via the dependency scanning SBOM API.
-The GitLab SBOM vulnerability scanner engine matches the SBOM components against advisories to generate a list of findings which is returned to the analyzer for inclusion in the dependency scanning report.
+The GitLab SBOM vulnerability scanner engine matches the SBOM components against advisories to generate a list of findings, which is returned to the analyzer for inclusion in the dependency scanning report.
 
-The API makes use of the default `CI_JOB_TOKEN` for authentication. Overriding the `CI_JOB_TOKEN` value with a different token might lead to 403 - forbidden responses from the API.
+The API makes use of the default `CI_JOB_TOKEN` for authentication. Overriding the `CI_JOB_TOKEN` value with a different token might lead to 403 Forbidden responses from the API.
 
 Users can configure the analyzer client that communicates with the dependency scanning SBOM API by using:
 
 - `vulnerability_scan_api_timeout` or `DS_API_TIMEOUT`
 - `vulnerability_scan_api_download_delay` or `DS_API_SCAN_DOWNLOAD_DELAY`
 
-For more information see [available spec inputs](#available-spec-inputs) and [available CI/CD variables](#available-cicd-variables).
+For more information, see [available spec inputs](#available-spec-inputs) and [available CI/CD variables](#available-cicd-variables).
 
 The generated reports are uploaded to the GitLab instance when the CI job completes and usually processed after pipeline completion.
 
-The SBOM reports are used to support other SBOM based features like the [dependency list](../../dependency_list/_index.md), [license scanning](../../../compliance/license_scanning_of_cyclonedx_files/_index.md) or [continuous vulnerability scanning](../../continuous_vulnerability_scanning/_index.md).
+The SBOM reports are used to support other SBOM based features like the [dependency list](../../dependency_list/_index.md), [license scanning](../../../compliance/license_scanning_of_cyclonedx_files/_index.md), or [continuous vulnerability scanning](../../continuous_vulnerability_scanning/_index.md).
 
-The dependency scanning report follows the generic process for [security scanning results](../../detect/security_scanning_results.md)
+The dependency scanning report follows the generic process for [security scanning results](../../detect/security_scanning_results.md):
 
 - If the dependency scanning report is declared by a CI/CD job on the default branch: vulnerabilities are created,
   and can be seen in the [vulnerability report](../../vulnerability_report/_index.md).
@@ -1312,7 +1438,6 @@ The dependency scanning report follows the generic process for [security scannin
 
 {{< details >}}
 
-- Tier: Ultimate
 - Offering: GitLab Self-Managed
 
 {{< /details >}}
@@ -1336,7 +1461,7 @@ To use the dependency scanning analyzer:
 1. Import the [current images](#current-images) from `registry.gitlab.com` into
    your [local Docker container registry](../../../packages/container_registry/_index.md).
    The process for importing Docker images into a local offline Docker registry depends on
-   **your network security policy**. Consult your IT staff to find an accepted and approved
+   your network security policy. Consult your IT staff to find an accepted and approved
    process by which external resources can be imported or temporarily accessed.
    These images are regularly updated with new features, bug fixes and patches,
    and you might want to download them regularly. In case your offline instance
@@ -1455,7 +1580,7 @@ This approach ensures that:
 ## Other ways of enabling the new dependency scanning feature
 
 We strongly suggest you enable the dependency scanning feature using the `v2` template.
-In case this is not possible you can choose one of the following ways:
+In case this is not possible, you can choose one of the following ways.
 
 ### Using the `latest` template
 
@@ -1466,7 +1591,7 @@ Use the `latest` dependency scanning CI/CD template `Dependency-Scanning.latest.
 
 - The (deprecated) Gemnasium analyzer is used by default.
 - To enable the new dependency scanning analyzer, set the CI/CD variable `DS_ENFORCE_NEW_ANALYZER` to `true`.
-- A [supported lockfile, dependency graph export manually](#create-lockfile-or-dependency-graph-export-manually), or [trigger file](#trigger-files-for-the-latest-template) must exist in the repository to create the `dependency-scanning` job in pipelines.
+- A [supported lockfile or dependency graph export](#create-lockfile-or-dependency-graph-export-manually), or [trigger file](#trigger-files-for-the-latest-template) must exist in the repository to create the `dependency-scanning` job in pipelines.
 
   ```yaml
   include:
@@ -1476,9 +1601,9 @@ Use the `latest` dependency scanning CI/CD template `Dependency-Scanning.latest.
     DS_ENFORCE_NEW_ANALYZER: 'true'
   ```
 
-Alternatively you can enable the feature using the [Scan Execution Policies](../../policies/scan_execution_policies.md) with the `latest` template and enforce the new dependency scanning analyzer by setting the CI/CD variable `DS_ENFORCE_NEW_ANALYZER` to `true`.
+Alternatively, you can enable the feature using the [Scan Execution Policies](../../policies/scan_execution_policies.md) with the `latest` template and enforce the new dependency scanning analyzer by setting the CI/CD variable `DS_ENFORCE_NEW_ANALYZER` to `true`.
 
-If you wish to customize the analyzer behavior use the [available CI/CD variables](#available-cicd-variables)
+If you wish to customize the analyzer behavior, use the [available CI/CD variables](#available-cicd-variables).
 
 #### Trigger files for the `latest` template
 
@@ -1522,7 +1647,7 @@ When using the dependency scanning CI/CD component, the analyzer can be customiz
 > [!warning]
 > Third-party SBOM support is technically possible but highly subject to change as we complete official support with this [epic](https://www.gitlab.com/groups/gitlab-org/-/epics/14760).
 
-Use your own CycloneDX SBOM document generated with a 3rd party CycloneDX SBOM generator or a custom tool as [a CI/CD artifact report](../../../../ci/yaml/artifacts_reports.md#artifactsreportscyclonedx) in a custom CI job.
+Use your own CycloneDX SBOM document generated with a third-party CycloneDX SBOM generator or a custom tool as [a CI/CD artifact report](../../../../ci/yaml/artifacts_reports.md#artifactsreportscyclonedx) in a custom CI job.
 
 To activate dependency scanning using SBOM, the provided CycloneDX SBOM document must:
 

@@ -297,7 +297,7 @@ describe('content/components/wrappers/code_block', () => {
       });
 
       it('is disabled if the start line is already 1', async () => {
-        expect(button.attributes('disabled')).toBeUndefined();
+        expect(button.attributes('aria-disabled')).toBeUndefined();
 
         await clickButton({ button, expectedLangParams: '-1+0' });
         await clickButton({ button, expectedLangParams: '-2+0' });
@@ -322,7 +322,7 @@ describe('content/components/wrappers/code_block', () => {
 </code>
 `);
 
-        expect(button.attributes('disabled')).toBe('disabled');
+        expect(button.attributes('aria-disabled')).toBe('true');
       });
     });
 
@@ -336,14 +336,14 @@ describe('content/components/wrappers/code_block', () => {
       });
 
       it('is disabled if the start line is already the current line', async () => {
-        expect(button.attributes('disabled')).toBe('disabled');
+        expect(button.attributes('aria-disabled')).toBe('true');
 
         // decrement once, increment once
         await clickButton({ button: decrementButton, expectedLangParams: '-1+0' });
-        expect(button.attributes('disabled')).toBeUndefined();
+        expect(button.attributes('aria-disabled')).toBeUndefined();
         await clickButton({ button, expectedLangParams: '-0+0' });
 
-        expect(button.attributes('disabled')).toBe('disabled');
+        expect(button.attributes('aria-disabled')).toBe('true');
       });
 
       it('increments the start line number', async () => {
@@ -382,14 +382,14 @@ describe('content/components/wrappers/code_block', () => {
       });
 
       it('is disabled if the line end is already the current line', async () => {
-        expect(button.attributes('disabled')).toBe('disabled');
+        expect(button.attributes('aria-disabled')).toBe('true');
 
         // increment once, decrement once
         await clickButton({ button: incrementButton, expectedLangParams: '-0+1' });
-        expect(button.attributes('disabled')).toBeUndefined();
+        expect(button.attributes('aria-disabled')).toBeUndefined();
         await clickButton({ button, expectedLangParams: '-0+0' });
 
-        expect(button.attributes('disabled')).toBe('disabled');
+        expect(button.attributes('aria-disabled')).toBe('true');
       });
 
       it('increments the end line number', async () => {
@@ -479,7 +479,7 @@ describe('content/components/wrappers/code_block', () => {
       });
 
       it('is disabled if the end line is EOF', async () => {
-        expect(button.attributes('disabled')).toBeUndefined();
+        expect(button.attributes('aria-disabled')).toBeUndefined();
 
         await clickButton({ button, expectedLangParams: '-0+1' });
         await clickButton({ button, expectedLangParams: '-0+2' });
@@ -504,7 +504,7 @@ describe('content/components/wrappers/code_block', () => {
 </code>
 `);
 
-        expect(button.attributes('disabled')).toBe('disabled');
+        expect(button.attributes('aria-disabled')).toBe('true');
       });
     });
   });

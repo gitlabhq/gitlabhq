@@ -50,6 +50,12 @@ RSpec.describe 'Retry failed reassignment of an import source user', feature_cat
       expect(import_source_user['status']).to eq('REASSIGNMENT_IN_PROGRESS')
     end
 
+    it_behaves_like 'authorizing granular token permissions for GraphQL', :update_placeholder_reassignment do
+      let(:user) { owner }
+      let(:boundary_object) { group }
+      let(:request) { post_graphql_mutation(mutation, token: { personal_access_token: pat }) }
+    end
+
     context 'when retry attempts have been exceeded', :clean_gitlab_redis_shared_state do
       let(:retry_attempts_key) do
         format(

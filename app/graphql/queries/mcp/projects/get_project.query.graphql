@@ -1,0 +1,12 @@
+# @feature_category: mcp_server
+query mcpGetProject($fullPath: ID!) {
+  project(fullPath: $fullPath) {
+    id
+    fullPath
+    visibility
+    webUrl
+    repository {
+      rootRef
+    }
+  }
+}

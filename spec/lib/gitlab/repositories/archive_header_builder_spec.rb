@@ -29,7 +29,9 @@ RSpec.describe Gitlab::Repositories::ArchiveHeaderBuilder, feature_category: :so
         format,
         append_sha: append_sha,
         path: path,
-        ref_type: nil
+        ref_type: nil,
+        include_lfs_blobs: true,
+        exclude_paths: []
       ).and_return(metadata)
 
       builder.metadata
@@ -54,7 +56,9 @@ RSpec.describe Gitlab::Repositories::ArchiveHeaderBuilder, feature_category: :so
           format,
           append_sha: append_sha,
           path: path,
-          ref_type: nil
+          ref_type: nil,
+          include_lfs_blobs: true,
+          exclude_paths: []
         ).and_return(metadata)
 
         builder.metadata

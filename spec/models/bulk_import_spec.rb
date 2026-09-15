@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe BulkImport, type: :model, feature_category: :importers do
+RSpec.describe BulkImport, feature_category: :importers do
   using RSpec::Parameterized::TableSyntax
 
   let_it_be(:created_bulk_import) { create(:bulk_import, :created, updated_at: 2.hours.ago) }
@@ -94,23 +94,23 @@ RSpec.describe BulkImport, type: :model, feature_category: :importers do
 
     context 'when entity has failures' do
       it 'sets has_failures flag to true' do
-        expect(import.has_failures).to eq(false)
+        expect(import.has_failures).to be(false)
 
         entity.update!(has_failures: true)
         import.fail_op!
 
-        expect(import.has_failures).to eq(true)
+        expect(import.has_failures).to be(true)
       end
     end
 
     context 'when entity does not have failures' do
       it 'sets has_failures flag to false' do
-        expect(import.has_failures).to eq(false)
+        expect(import.has_failures).to be(false)
 
         entity.update!(has_failures: false)
         import.fail_op!
 
-        expect(import.has_failures).to eq(false)
+        expect(import.has_failures).to be(false)
       end
     end
   end
@@ -120,7 +120,7 @@ RSpec.describe BulkImport, type: :model, feature_category: :importers do
       it 'returns true' do
         bulk_import = build(:bulk_import, source_version: '16.2.0')
 
-        expect(bulk_import.supports_batched_export?).to eq(true)
+        expect(bulk_import.supports_batched_export?).to be(true)
       end
     end
 
@@ -128,7 +128,7 @@ RSpec.describe BulkImport, type: :model, feature_category: :importers do
       it 'returns false' do
         bulk_import = build(:bulk_import, source_version: '15.5.0')
 
-        expect(bulk_import.supports_batched_export?).to eq(false)
+        expect(bulk_import.supports_batched_export?).to be(false)
       end
     end
   end
@@ -137,22 +137,22 @@ RSpec.describe BulkImport, type: :model, feature_category: :importers do
     let(:import) { create(:bulk_import, :started) }
 
     it 'marks import as canceled' do
-      expect(import.canceled?).to eq(false)
+      expect(import.canceled?).to be(false)
 
       import.cancel!
 
-      expect(import.canceled?).to eq(true)
+      expect(import.canceled?).to be(true)
     end
 
     context 'when import has entities' do
       it 'marks entities as canceled' do
         entity = create(:bulk_import_entity, bulk_import: import)
 
-        expect(entity.canceled?).to eq(false)
+        expect(entity.canceled?).to be(false)
 
         import.cancel!
 
-        expect(entity.reload.canceled?).to eq(true)
+        expect(entity.reload.canceled?).to be(true)
       end
     end
   end
@@ -215,6 +215,71 @@ RSpec.describe BulkImport, type: :model, feature_category: :importers do
         non_triggering_events.each do |event|
           expect { import.send(:"#{event}!") }.not_to send_completion_notification(:bulk_import_offline_complete)
         end
+      end
+    end
+  end
+
+  describe 'internal events tracking', :clean_gitlab_redis_shared_state do
+    context 'when the import is an offline transfer' do
+      let_it_be_with_reload(:import) { create(:bulk_import, :started, :with_offline_configuration) }
+
+      context 'when transitioning to finished' do
+        context 'without failures' do
+          it 'tracks a complete event with the without_failures label' do
+            expect { import.finish! }
+              .to trigger_internal_events('complete_offline_transfer_import')
+              .with(user: import.user, additional_properties: { label: 'without_failures' })
+              .and increment_usage_metrics(
+                'counts.count_total_complete_offline_transfer_import',
+                'counts.count_total_complete_offline_transfer_import_monthly'
+              ).and not_increment_usage_metrics(
+                'counts.count_total_complete_offline_transfer_import_with_failures',
+                'counts.count_total_complete_offline_transfer_import_with_failures_monthly'
+              )
+          end
+        end
+
+        context 'with failures' do
+          before do
+            import.update!(has_failures: true)
+          end
+
+          it 'tracks a complete event with the with_failures label' do
+            expect { import.finish! }
+              .to trigger_internal_events('complete_offline_transfer_import')
+              .with(user: import.user, additional_properties: { label: 'with_failures' })
+              .and increment_usage_metrics(
+                'counts.count_total_complete_offline_transfer_import',
+                'counts.count_total_complete_offline_transfer_import_monthly',
+                'counts.count_total_complete_offline_transfer_import_with_failures',
+                'counts.count_total_complete_offline_transfer_import_with_failures_monthly'
+              )
+          end
+        end
+      end
+
+      context 'when transitioning to failed' do
+        it 'tracks a fail event' do
+          expect { import.fail_op! }
+            .to trigger_internal_events('fail_offline_transfer_import')
+            .with(user: import.user)
+            .and increment_usage_metrics(
+              'counts.count_total_fail_offline_transfer_import',
+              'counts.count_total_fail_offline_transfer_import_monthly'
+            )
+        end
+      end
+    end
+
+    context 'when the import is a direct transfer' do
+      let_it_be_with_reload(:import) { create(:bulk_import, :started) }
+
+      it 'does not track a complete event' do
+        expect { import.finish! }.not_to trigger_internal_events('complete_offline_transfer_import')
+      end
+
+      it 'does not track a fail event' do
+        expect { import.fail_op! }.not_to trigger_internal_events('fail_offline_transfer_import')
       end
     end
   end

@@ -22,7 +22,7 @@ class IssueAggregationEngine < Gitlab::Database::Aggregation::ActiveRecord::Engi
 
   dimensions do
     column :author_id, :integer, description: 'Group by author'
-    date_bucket :created_at, :datetime,
+    date_bucket :created_at, :date,
       parameters: { granularity: { in: %i[daily weekly monthly yearly], type: :string } },
       description: 'Group by creation date'
   end
@@ -102,7 +102,7 @@ Groups results by time intervals using PostgreSQL's `date_trunc()` function. **S
 | Option | Type | Required | Description |
 |--------|------|----------|-------------|
 | `name` | Symbol | Yes | Date/datetime column name |
-| `type` | Symbol | Yes | Data type (`:date` or `:datetime`) |
+| `type` | Symbol | Yes | Data type. Use `:date`: buckets always start on a day boundary, so values serialize as dates for every granularity. |
 | `expression` | Proc | No | Custom Arel expression instead of column |
 | `scope_proc` | Proc | No | Modifies the ActiveRecord scope |
 | `parameters` | Hash | No | Parameter configuration (see below) |
@@ -143,7 +143,7 @@ class SessionAnalyticsEngine < Gitlab::Database::Aggregation::ClickHouse::Engine
 
   dimensions do
     column :flow_type, :string, description: 'Group by flow type'
-    date_bucket :created_at, :datetime,
+    date_bucket :created_at, :date,
       parameters: { granularity: { in: %i[daily weekly monthly], type: :string } },
       description: 'Group by date'
   end
@@ -235,6 +235,73 @@ Key characteristics:
 - Metric filters are applied as `HAVING` clauses on the **outer query**
 - Dimensions become `GROUP BY` columns on **outer query**
 - Metrics use aggregate functions on **outer query**
+
+### Measurements
+
+A measurement is a row-level value with a base type. Declare it once with the
+class-level `measurement` macro, and the framework expands it into a group of
+related metrics.
+
+Prefer a measurement when you expose a row-level value. Define individual
+metrics for the same value only when a measurement does not fit, for example
+when you need `if:` conditions, formatters, or an aggregate the macro does not
+generate.
+
+```ruby
+measurement(name, type, expression, description: nil)
+```
+
+The macro expands into a group of metrics with dotted identifiers:
+
+- `<name>.min` and `<name>.max`, which inherit the measurement's base type
+- `<name>.mean`, which is always `:float`
+- `<name>.quantile`, which is always `:float` and has an auto-declared `quantile`
+  parameter of type float, with an allowed range of `0.0` to `1.0` and a default of `0.5`
+- `<name>.sum`, which inherits the measurement's base type. The sum is only
+  generated for summable base types (`:integer` and `:float`).
+
+The `expression` argument can be a [transient column](#transient-columns)
+reference or a lambda. Zero-arity lambdas are wrapped automatically.
+
+The macro also registers the expression as a transient under the measurement
+name, so definitions that come later can reuse it with `transient(:name)`.
+If a transient with the same name already exists, the macro keeps the existing
+transient.
+
+```ruby
+transient(:duration) do
+  sql("dateDiff('seconds', anyIfMerge(created_event_at), anyIfMerge(finished_event_at))")
+end
+
+measurement :duration, :integer, transient(:duration), description: 'Session duration in seconds'
+```
+
+In GraphQL, the aggregates surface as one nested group field named after the
+measurement, with `min`, `max`, `mean`, `quantile`, and `sum` sub-fields.
+
+```graphql
+duration {
+  min
+  max
+  mean
+  quantile(quantile: 0.95)
+  sum
+}
+```
+
+`orderBy` accepts the full dotted identifier, for example
+`{ identifier: "duration.max", direction: DESC }`.
+
+#### Requirements and limitations
+
+- The engine adapter must support the `min`, `max`, `mean`, and `quantile` metrics,
+  and also the `sum` metric for summable measurement types.
+  Calling `measurement` on an adapter that does not support them (the ActiveRecord
+  engine today) raises `ArgumentError`. In practice, this makes the macro
+  ClickHouse-only.
+- The macro does not accept `if:` or `formatter:` options.
+- The raw measurement value does not get a dimension.
+- `metric_range` and `metric_exact_match` filters cannot target dotted metric identifiers.
 
 ### Available Components
 
@@ -379,6 +446,74 @@ where `timestamp` is a `date_bucket` with `granularity: 'daily'` and the metric 
 `OVER (PARTITION BY aeq_feature ORDER BY aeq_timestamp_daily ASC)`. Retention for
 `code_suggestions` does not mix with `chat`.
 
+#### `acquired_count` metric
+
+Counts distinct values present in the current period but absent from the previous one.
+Subtracts the `arrayIntersect` length from the current period's distinct count,
+using `groupArray` and `arrayDistinct`.
+`lagInFrame` supplies the previous period.
+Use `acquired_count` for new-user counts.
+The dimension referenced by `over:` must be requested in the query.
+
+| Option | Type | Required | Description |
+|--------|------|----------|-------------|
+| `name` | Symbol | Yes | Identifier name. Identifier becomes `:{name}_count` |
+| `type` | Symbol | No | Data type. Default: `:integer` |
+| `expression` | Proc | No | Expression for the value to deduplicate, for example `user_id` |
+| `over` | Symbol | Yes | Dimension that defines the period. Must be a dimension on the engine |
+| `lag_offset` | Integer | No | Number of periods to compare against. Default: `1` |
+| `description` | String | No | Human-readable description |
+
+Example:
+
+```ruby
+metrics do
+  acquired_count :new_users, :integer, -> { sql('user_id') }, over: :timestamp,
+    description: 'Users active in the current period but not in the previous one'
+end
+```
+
+#### `churned_count` metric
+
+Counts distinct values present in the previous period but absent from the current one.
+Subtracts the `arrayIntersect` length from the previous period's distinct count,
+using `groupArray` and `arrayDistinct`.
+`lagInFrame` supplies the previous period.
+The dimension referenced by `over:` must be requested in the query.
+
+| Option | Type | Required | Description |
+|--------|------|----------|-------------|
+| `name` | Symbol | Yes | Identifier name. Identifier becomes `:{name}_count` |
+| `type` | Symbol | No | Data type. Default: `:integer` |
+| `expression` | Proc | No | Expression for the value to deduplicate, for example `user_id` |
+| `over` | Symbol | Yes | Dimension that defines the period. Must be a dimension on the engine |
+| `lag_offset` | Integer | No | Number of periods to compare against. Default: `1` |
+| `description` | String | No | Human-readable description |
+
+Example:
+
+```ruby
+metrics do
+  churned_count :churned_users, :integer, -> { sql('user_id') }, over: :timestamp,
+    description: 'Users active in the previous period but not in the current one'
+end
+```
+
+`retained_count`, `acquired_count`, and `churned_count` measure change relative to the
+previous period only, not to a value's first or last appearance overall. A user returning
+after a gap counts as acquired again, and a user skipping one period counts as churned in
+that period.
+
+The first period in a requested range has no previous period, so all of its values count as
+acquired and its churned count is `0`, mirroring how `retained_count` returns `0` there.
+Periods with no rows are absent from the result set, so the lag compares against the last
+non-empty period. Churn is visible only in periods that have at least one row, because a
+period with zero rows produces no output row at all.
+
+In any period, `retained_count` plus `acquired_count` equals the distinct value count for
+the current period, and `retained_count` plus `churned_count` equals `lagged_count`. You can
+therefore derive a churn rate from a single response without extra queries.
+
 #### `column` dimension
 
 Groups results by a column value.
@@ -399,7 +534,7 @@ Groups results by time intervals using ClickHouse's `toStartOfInterval()` functi
 | Option | Type | Required | Description |
 |--------|------|----------|-------------|
 | `name` | Symbol | Yes | Date/datetime column name |
-| `type` | Symbol | Yes | Data type (`:date` or `:datetime`) |
+| `type` | Symbol | Yes | Data type. Use `:date`: buckets always start on a day boundary, so values serialize as dates for every granularity. |
 | `expression` | Proc | No | Custom expression instead of column |
 | `parameters` | Hash | No | Parameter configuration (see below) |
 | `description` | String | No | Human-readable description |
@@ -409,6 +544,36 @@ Groups results by time intervals using ClickHouse's `toStartOfInterval()` functi
 | Parameter | Type | Values | Default | Description |
 |-----------|------|--------|---------|-------------|
 | `granularity` | String | `daily`, `weekly`, `monthly`, `yearly` | `monthly` | Time interval for grouping |
+
+#### `tier` dimension
+
+Buckets a numeric expression into ordinal tiers (`tier_0` to `tier_N`) using ClickHouse's `multiIf()`
+function, based on client-provided ascending integer thresholds. **Supports parameters.**
+
+A value below the first threshold lands in `tier_0`. A value at or above the last threshold lands in
+the highest tier, so N thresholds produce N+1 tiers (`tier_0` through `tier_N`).
+
+| Option | Type | Required | Description |
+|--------|------|----------|-------------|
+| `name` | Symbol | Yes | Column name or identifier |
+| `type` | Symbol | Yes | Data type of the output labels (use `:string`) |
+| `expression` | Proc | No | Numeric expression to bucket, instead of a column |
+| `description` | String | No | Human-readable description |
+
+**Supported Parameters:**
+
+| Parameter | Type | Values | Default | Description |
+|-----------|------|--------|---------|-------------|
+| `thresholds` | Array of Integers | Strictly ascending positive integers, at most 9 | None (required) | Tier boundaries |
+
+The `thresholds` parameter is declared automatically and is required in every request that uses the
+dimension. Any normalization of thresholds (for example, per-week scaling) is a client concern.
+
+```ruby
+dimensions do
+  tier :user_tier, :string, -> { sql('user_activity.sessions') }, ctes: [:user_activity]
+end
+```
 
 #### `exact_match` filter
 
@@ -536,58 +701,91 @@ metrics do
 end
 ```
 
-## Measurements
+## Supporting CTEs (Beta, Limited functionality, ClickHouse only)
 
-A measurement is a row-level value with a base type. Declare it once with the
-class-level `measurement` macro, and the framework expands it into a group of
-related metrics.
+A supporting CTE is a per-key summary (for example, per user) of another table.
+The framework joins it into the main query.
+This lets `dimensions`, `filters`, and `metrics` reference CTE aggregates.
+Version 1 supports summaries over the engine's own table only, following a same-table contract.
+Supported table engines are only `MergeTree` and `ReplacingMergeTree`.
+This feature is only available for ClickHouse engines.
+
+### Define a supporting CTE
+
+Declare a supporting CTE at the class level, after `table_name` is set.
+Use `supporting_cte :name, join_key: :user_id, join_type: :inner do |qb| ... end`.
+The block receives a query builder over the prepared base scope.
+It must only add aggregate projections through `qb.select(...)`.
+The framework adds the join key column and a `GROUP BY join_key` automatically.
+
+The CTE is built at query time from a copy of the already-prepared base query.
+It inherits the engine's base scope, the deduplication subquery of `ReplacingMergeTree`
+tables, and all row filters of the request.
+Filters that are themselves CTE-backed do not propagate into the CTE body.
+They apply only to the main query.
+
+The `join_type:` parameter accepts `:inner` (the default) or `:outer`, which renders a
+`LEFT OUTER JOIN`.
+With the default inner join, base rows with a `NULL` join key are dropped because they
+never match a CTE row.
+Use `:outer` for engines with nullable join keys.
 
 ```ruby
-measurement(name, type, expression, description: nil)
-```
+class DuoWorkflowsEngine < Gitlab::Database::Aggregation::ClickHouse::Engine
+  self.table_name = 'duo_workflows_workflows_enriched'
 
-The macro expands into four metrics with dotted identifiers:
+  supporting_cte :user_activity_cte, join_key: :user_id do |qb|
+    qb.select(
+      qb.count.as('workflows'),
+      qb.named_func('uniqExact', [qb[:workflow_definition]]).as('flow_types')
+    )
+  end
 
-- `<name>.min` and `<name>.max`, which inherit the measurement's base type
-- `<name>.mean`, which is always `:float`
-- `<name>.quantile`, which is always `:float` and has an auto-declared `quantile`
-  parameter of type float, with an allowed range of `0.0` to `1.0` and a default of `0.5`
+  dimensions do
+    column :user_tier, :string, -> {
+      sql("multiIf(user_activity.workflows >= 5, 'heavy', user_activity_cte.workflows >= 2, 'medium', 'light')")
+    }, ctes: [:user_activity_cte]
+  end
 
-The `expression` argument can be a `transient(:name)` reference or a lambda.
-Zero-arity lambdas are wrapped automatically.
+  filters do
+    range :flow_types_used, :integer, -> { sql('user_activity_cte.flow_types') }, ctes: [:user_activity_cte]
+  end
 
-```ruby
-transient(:duration) do
-  sql("dateDiff('seconds', anyIfMerge(created_event_at), anyIfMerge(finished_event_at))")
+  metrics do
+    count
+    count :users, :integer, -> { sql('user_id') }, distinct: true
+  end
 end
-
-measurement :duration, :integer, transient(:duration), description: 'Session duration in seconds'
 ```
 
-In GraphQL, the four aggregates surface as one nested group field named after the
-measurement, with `min`, `max`, `mean`, and `quantile` sub-fields.
+### Reference a supporting CTE
 
-```graphql
-duration {
-  min
-  max
-  mean
-  quantile(quantile: 0.95)
-}
+Parts opt in to a CTE by adding `ctes: :name` or `ctes: [:a, :b]` to a dimension, filter,
+or metric.
+Referencing an undeclared CTE name raises `ArgumentError` at class-definition time.
+Each referenced CTE is built and joined exactly once per query, even when several parts
+reference it.
+
+Expressions must qualify CTE columns by CTE name, for example `user_activity.workflows`,
+even when only one CTE is in scope.
+A filter backed by a CTE becomes a plain `WHERE` clause on the joined summary column,
+not a `HAVING` clause.
+This makes "count of users matching a per-user condition" a single-number query.
+
+The following request returns a single number: the count of users who used at least two
+flow types.
+
+```ruby
+Gitlab::Database::Aggregation::Request.new(
+  filters: [{ identifier: :flow_types_used, values: 2..nil }],
+  metrics: [{ identifier: :users_count }]
+)
 ```
 
-`orderBy` accepts the full dotted identifier, for example
-`{ identifier: "duration.max", direction: DESC }`.
+### Query cost
 
-### Requirements and limitations
-
-- The engine adapter must support the `min`, `max`, `mean`, and `quantile` metrics.
-  Calling `measurement` on an adapter that does not support them (the ActiveRecord
-  engine today) raises `ArgumentError`. In practice, this makes the macro
-  ClickHouse-only.
-- The macro does not accept `if:` or `formatter:` options.
-- The raw measurement value does not get a dimension.
-- `metric_range` and `metric_exact_match` filters cannot target dotted metric identifiers.
+Each referenced CTE adds one extra scan of the base scope, plus an in-memory hash join.
+Prefer one CTE with several aggregate columns over several single-column CTEs.
 
 ## Using the Framework
 
@@ -740,6 +938,35 @@ end
 ```
 
 If `authorize` is not specified, you must take care of authorization manually.
+
+### Part-level authorization
+
+Individual metrics, dimensions, and filters can declare their own `authorize:` option to require
+an additional visibility check beyond the field-level `authorize` described above:
+
+```ruby
+metrics do
+  count :total_count, :integer
+  count :owner_count, :integer, authorize: :owner_access
+end
+
+dimensions do
+  column :status, :string
+  column :internal_flag, :string, authorize: ->(user, resources) { resources.all? { |r| r.member?(user) } }
+end
+```
+
+`authorize:` accepts either an ability symbol, checked with `Ability.allowed?(user, ability, resource)`
+for every resource in the engine context's `authorization_resources`, or a callable invoked once with
+`(user, resources)` that returns a boolean and is responsible for authorizing all resources itself. The `measurement` macro also accepts
+`authorize:` and propagates it to all its expanded dotted metrics (`.min`, `.max`, `.mean`,
+`.quantile`, `.sum`).
+
+When a user is not authorized for a part:
+
+- A protected metric is dropped from the request silently, and its field returns `null`. The
+  response shape does not change.
+- A protected dimension, filter, order fails request validation with a clear error.
 
 ### Example GraphQL query
 

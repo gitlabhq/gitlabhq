@@ -52,8 +52,8 @@ by selecting the vertical ellipsis ({{< icon name="ellipsis_v" >}}).
 
 ## Model experiments
 
-When running the training code, MLflow client can be used to create experiments, runs,
-models, model versions, log parameters, metrics, metadata, and artifacts on GitLab.
+When you run the training code, you can use the MLflow client to create experiments,
+runs, models, and model versions. You can also use it to log parameters, metrics, metadata, and artifacts to GitLab.
 
 After experiments are logged, they are listed under `/<your project>/-/ml/experiments`.
 
@@ -137,7 +137,7 @@ with mlflow.start_run():
     model = RandomForestClassifier(n_estimators=10, random_state=42)
     model.fit(X_train, y_train)
 
-    # Log the model using MLflow sklearn mode flavour
+    # Log the model using MLflow sklearn model flavor
     mlflow.sklearn.log_model(model, artifact_path="")
 ```
 
@@ -293,7 +293,7 @@ client.create_model_version(model_name, version, description=description, tags=t
 
 **Notes**
 
-- Argument `run_id` is ignored. Every model version behaves as a run. Creating a mode version from a run is not yet supported.
+- Argument `run_id` is ignored. Every model version behaves as a run. Creating a model version from a run is not yet supported.
 - Argument `source` is ignored. GitLab will create a package location for the model version files.
 - Argument `run_link` is ignored.
 - Argument `await_creation_for` is ignored.
@@ -399,7 +399,7 @@ client.log_dict(run_id, my_dict, artifact_file="my_dict.json")
 client.log_image(run_id, image, artifact_file="image.png")
 ```
 
-Artifacts will then be available under `https/<your project>/-/ml/models/<model_id>/versions/<version_id>`.
+Artifacts will then be available under `https://<your project>/-/ml/models/<model_id>/versions/<version_id>`.
 
 #### Linking a model version to a CI/CD job
 

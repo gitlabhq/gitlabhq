@@ -69,11 +69,9 @@ module LabelsHelper
     )
   end
 
-  # We need the `label` argument here for EE
-  def wrap_label_html(label_html, label:)
-    wrapper_classes = %w[gl-label]
-
-    %(<span class="#{wrapper_classes.join(' ')}">#{label_html}</span>).html_safe
+  # We need the `label` and `for_email` arguments here for EE
+  def wrap_label_html(label_html, label:, for_email: false)
+    content_tag(:span, label_html.html_safe, class: 'gl-label')
   end
 
   # Returns a String containing text.

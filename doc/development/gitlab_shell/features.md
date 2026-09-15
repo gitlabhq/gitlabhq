@@ -42,7 +42,7 @@ The `gitlab_shell_git_timeout` setting controls the timeout, in seconds, for Git
 
 #### Default value
 
-The default timeout is **10800 seconds (3 hours)**.
+The default timeout is 10800 seconds (3 hours).
 
 #### When to adjust this setting
 

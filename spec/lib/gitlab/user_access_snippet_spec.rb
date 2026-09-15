@@ -26,7 +26,7 @@ RSpec.describe Gitlab::UserAccessSnippet do
       it 'disallows access' do
         expect(Ability).to receive(:allowed?).with(user, :access_git, :global).and_return(false)
 
-        expect(access.can_do_action?(:ability)).to eq(false)
+        expect(access.can_do_action?(:ability)).to be(false)
       end
     end
 
@@ -34,7 +34,7 @@ RSpec.describe Gitlab::UserAccessSnippet do
       let(:user) { nil }
 
       it 'disallows access' do
-        expect(access.can_do_action?(:ability)).to eq(false)
+        expect(access.can_do_action?(:ability)).to be(false)
       end
     end
   end
@@ -60,7 +60,7 @@ RSpec.describe Gitlab::UserAccessSnippet do
           it 'disallows access' do
             expect(Ability).to receive(:allowed?).with(user, :access_git, :global).and_return(false) if user
 
-            expect(access.can_push_to_branch?('random_branch')).to eq(false)
+            expect(access.can_push_to_branch?('random_branch')).to be(false)
           end
         end
       end
@@ -71,7 +71,7 @@ RSpec.describe Gitlab::UserAccessSnippet do
       let(:snippet) { nil }
 
       it 'disallows access' do
-        expect(access.can_push_to_branch?('random_branch')).to eq(false)
+        expect(access.can_push_to_branch?('random_branch')).to be(false)
       end
     end
   end

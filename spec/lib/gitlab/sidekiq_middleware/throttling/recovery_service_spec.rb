@@ -4,7 +4,6 @@ require 'spec_helper'
 
 RSpec.describe Gitlab::SidekiqMiddleware::Throttling::RecoveryService, feature_category: :scalability do
   let(:worker_name) { 'TestWorker' }
-  let(:worker_klass) { TestWorker }
   let(:recovery_service) { described_class.new(worker_name) }
 
   before do

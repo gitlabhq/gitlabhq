@@ -1,3 +1,6 @@
+include:
+  - local: .gitlab/ci/frontend/test-base.gitlab-ci.yml
+
 .with-fixtures-needs:
   needs:
     - "rspec-all frontend_fixture"
@@ -74,6 +77,49 @@ compile-production-assets as-if-foss:
     - .as-if-foss
     - .qa:rules:test-on-omnibus-ce:follow-up
 
+compile-production-assets istanbul:
+  extends:
+    - compile-production-assets
+    - .frontend:rules:compile-production-assets-istanbul
+  variables:
+    BABEL_ENV: "istanbul"
+    GLCI_ASSETS_TAG_ENV_FILE_PATH: "assets-tag-env-istanbul.env"
+    # Instrumented code is much bigger, so a default build exhausts the pod
+    NO_SOURCEMAPS: "true"
+    NO_COMPRESSION: "true"
+    NO_MINIFY: "true"
+  # The assets caches are shared with plain jobs, so instrumented output stays out
+  cache:
+    - !reference [.ruby-gems-cache]
+    - !reference [.node-modules-cache]
+  after_script:
+    - source scripts/utils.sh
+    - echo "GLCI_ISTANBUL_ASSETS_IMAGE_TAG=$(assets_image_tag)" > $GLCI_ASSETS_TAG_ENV_FILE_PATH
+  # Only the image consumes these assets, and instrumented ones are huge
+  artifacts:
+    name: instrumented-assets
+    expire_in: 7d
+    when: always
+    paths:
+      - ${WEBPACK_COMPILE_LOG_PATH}
+    reports:
+      dotenv: $GLCI_ASSETS_TAG_ENV_FILE_PATH
+
+compile-production-assets vue3:
+  extends:
+    - .compile-assets-base
+    - .production
+    - .vue3
+    - .frontend:rules:compile-production-assets
+  tags:
+    - $GLCI_PRODUCTION_ASSETS_RUNNER_OPTIONAL
+  artifacts:
+    name: webpack-report-vue3
+    expire_in: 7d
+    when: always
+    paths:
+      - ${WEBPACK_COMPILE_LOG_PATH}
+
 compile-test-assets:
   extends:
     - .compile-assets-base
@@ -91,31 +137,6 @@ compile-test-assets:
 compile-test-assets vue3:
   extends:
     - compile-test-assets
-    - .vue3
-
-build-vite-prod:
-  extends:
-    - .production
-    - .default-retry
-    - .with-ci-node-image
-    - .yarn-cache
-    - .frontend:rules:compile-production-assets
-  stage: prepare
-  needs:
-    - job: cache:node-modules
-      optional: true
-  script:
-    - source scripts/utils.sh
-    - yarn_install_script
-    - yarn vite-prod
-  artifacts:
-    expire_in: 1d
-    paths:
-      - public/assets/vite/
-
-build-vite-prod-vue3:
-  extends:
-    - build-vite-prod
     - .vue3
 
 compile-fe-islands:
@@ -173,6 +194,8 @@ rspec-all frontend_fixture:
   script:
     - !reference [.frontend-fixtures-base, script]
     - rspec_parallelized_job "--tag ~click_house"
+  # Mirrored as FIXTURE_SHARD_COUNT in scripts/generate_jest_pipeline.rb,
+  # which renders one cross-pipeline need per shard; a spec enforces the match.
   parallel: 8
 
 rspec-all frontend_fixture clickhouse:
@@ -186,12 +209,10 @@ rspec-all frontend_fixture clickhouse:
     - !reference [.clickhouse-setup, script]
     - rspec_parallelized_job "--tag click_house"
 
-# Uploads fixtures to package registry if running in canonical project
-upload-frontend-fixtures:
+.upload-frontend-fixtures-base:
   extends:
     - .default-retry
     - .with-ruby-slim-image
-    - .frontend:rules:update-frontend-fixtures
   stage: fixtures
   needs:
     - !reference [.with-fixtures-needs, needs]
@@ -201,6 +222,27 @@ upload-frontend-fixtures:
       fixtures_archive_doesnt_exist || { echo "Exiting early as package exists!"; exit 0; }
       create_fixtures_package
       upload_fixtures_package
+
+# Uploads fixtures to package registry if running in canonical project
+upload-frontend-fixtures:
+  extends:
+    - .upload-frontend-fixtures-base
+    - .frontend:rules:update-frontend-fixtures
+
+# Same as upload-frontend-fixtures, but triggered manually so fixtures from an
+# unmerged branch/pipeline can be published on demand (e.g. to develop an MFE
+# against a monolith change before it merges).
+upload-frontend-fixtures-on-demand:
+  extends:
+    - .upload-frontend-fixtures-base
+    - .frontend:rules:update-frontend-fixtures-on-demand
+  # This job can run on pipelines where the fixture jobs are absent (e.g. MRs
+  # targeting a stable branch), so its needs must be optional.
+  needs:
+    - job: "rspec-all frontend_fixture"
+      optional: true
+    - job: "rspec-all frontend_fixture clickhouse"
+      optional: true
 
 # Cleans up older fixtures packages
 cleanup-frontend-fixtures:
@@ -250,27 +292,6 @@ upload-graphql-schema-dump:
     - source scripts/gitlab_component_helpers.sh
     - create_and_upload_graphql_schema_package
 
-.frontend-test-base:
-  extends:
-    - .default-retry
-    - .with-ci-node-image
-  variables:
-    # Disable warnings in browserslist which can break on backports
-    # https://github.com/browserslist/browserslist/blob/a287ec6/node.js#L367-L384
-    BROWSERSLIST_IGNORE_OLD_DATA: "true"
-    USE_BUNDLE_INSTALL: "false"
-    SETUP_DB: "false"
-    GLCI_TEST_METRICS_RUN_TYPE: frontend-jest-tests
-  before_script:
-    - !reference [.default-before_script, before_script]
-    - yarn_install_script
-  stage: test-frontend
-  cache:
-    - !reference [.yarn-cache, cache]
-  needs:
-    - job: compile-fe-islands
-      optional: true
-
 jest-build-cache:
   extends:
     - .frontend-test-base
@@ -297,8 +318,6 @@ jest-build-cache:
 .vue3:
   variables:
     VUE_VERSION: 3
-    NODE_OPTIONS: --max-old-space-size=7680
-  allow_failure: true
 
 test-fe-islands:
   stage: test-frontend
@@ -332,8 +351,6 @@ test-fe-islands:
 jest-build-cache-vue3-ensure-compilable-sfcs:
   extends:
     - .vue3
-    # Make sure allow_failure is set by jest-build-cache rather than .vue3.
-    # Failures should not be allowed in merge requests.
     - jest-build-cache
     - .frontend:rules:jest
 
@@ -395,7 +412,6 @@ jest vue3:
   parallel: !reference [jest, parallel]
   script:
     - scripts/frontend/jest_ci.js --vue3
-  allow_failure: false
 
 jest-with-fixtures vue3:
   extends:
@@ -473,7 +489,6 @@ jest-with-fixtures vue3 predictive:
         scripts/frontend/jest_ci.js --vue3 --predictive --fixtures;
       fi
   parallel: !reference [jest-with-fixtures predictive, parallel]
-  allow_failure: false
 
 jest vue3 check quarantined predictive:
   extends:
@@ -574,8 +589,6 @@ jest-msw-integration vue3:
   extends:
     - jest-msw-integration
     - .vue3
-  # We do not allow new specs that aren't Vue3 compatible to avoid increased debt.
-  allow_failure: false
 
 jest-integration:
   extends:

@@ -10,6 +10,8 @@ import {
 } from '@gitlab/ui';
 import { __, s__ } from '~/locale';
 import api from '~/api';
+import { setCookie } from '~/lib/utils/common_utils';
+import { AI_OVERVIEW_COOKIE_NAME } from '~/merge_requests/constants';
 import axios from '~/lib/utils/axios_utils';
 import { createAlert } from '~/alert';
 import MergeRequest from '~/merge_request';
@@ -31,6 +33,8 @@ export default {
     reopening: __('Reopening %{issuableType}…'),
     lock: __('Lock %{issuableType}'),
     mergeRequestActions: __('Merge request actions'),
+    tryAiOverview: s__('AiOverview|Try the new overview'),
+    switchToClassicOverview: s__('AiOverview|Switch to the classic overview'),
   },
   components: {
     GlLoadingIcon,
@@ -94,6 +98,16 @@ export default {
       default: 0,
       required: false,
     },
+    aiOverviewAvailable: {
+      type: Boolean,
+      default: false,
+      required: false,
+    },
+    aiOverviewEnabled: {
+      type: Boolean,
+      default: false,
+      required: false,
+    },
   },
   data() {
     return {
@@ -123,6 +137,11 @@ export default {
     },
     showDropdownTooltip() {
       return !this.isDropdownVisible ? this.$options.i18n.mergeRequestActions : '';
+    },
+    aiOverviewLabel() {
+      return this.aiOverviewEnabled
+        ? this.$options.i18n.switchToClassicOverview
+        : this.$options.i18n.tryAiOverview;
     },
   },
   methods: {
@@ -179,6 +198,10 @@ export default {
     },
     closeActionsDropdown() {
       this.$refs.mrMoreActionsDropdown.close();
+    },
+    toggleAiOverviewAction() {
+      setCookie(AI_OVERVIEW_COOKIE_NAME, String(!this.aiOverviewEnabled));
+      window.location.reload();
     },
     showReopenMergeRequestOption() {
       return !this.sourceProjectMissing && !this.isOpen;
@@ -300,6 +323,18 @@ export default {
           <template #list-item>
             <gl-icon name="copy-to-clipboard" class="gl-mr-2" variant="subtle" />
             {{ $options.i18n.copyReferenceText }}
+          </template>
+        </gl-disclosure-dropdown-item>
+      </gl-disclosure-dropdown-group>
+
+      <gl-disclosure-dropdown-group v-if="aiOverviewAvailable" bordered>
+        <gl-disclosure-dropdown-item
+          data-testid="toggle-ai-overview"
+          @action="toggleAiOverviewAction"
+        >
+          <template #list-item>
+            <gl-icon name="tanuki-ai" class="gl-mr-2" variant="subtle" />
+            {{ aiOverviewLabel }}
           </template>
         </gl-disclosure-dropdown-item>
       </gl-disclosure-dropdown-group>

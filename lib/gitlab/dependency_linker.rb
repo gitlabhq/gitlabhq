@@ -22,8 +22,8 @@ module Gitlab
       LINKERS.find { |linker| linker.support?(blob_name) }
     end
 
-    def self.link(blob_name, plain_text, highlighted_text, used_on: :blob)
-      linker = linker(blob_name)
+    def self.link(blob_name, plain_text, highlighted_text, used_on: :blob, linker: nil)
+      linker ||= self.linker(blob_name)
       return highlighted_text unless linker
 
       usage_counter.increment(used_on: used_on)

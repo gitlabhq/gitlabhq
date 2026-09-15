@@ -8,7 +8,7 @@ RSpec.describe ObjectPool::CreateWorker, feature_category: :source_code_manageme
   subject { described_class.new }
 
   describe '#perform' do
-    context 'when the pool creation is successful' do
+    context 'when the pool creation is successful', :skip_gitaly_mvcc do
       it 'marks the pool as ready' do
         subject.perform(pool.id)
 
@@ -16,7 +16,7 @@ RSpec.describe ObjectPool::CreateWorker, feature_category: :source_code_manageme
       end
     end
 
-    context 'when a the pool already exists' do
+    context 'when a the pool already exists', :skip_gitaly_mvcc do
       before do
         pool.create_object_pool
       end
@@ -42,7 +42,7 @@ RSpec.describe ObjectPool::CreateWorker, feature_category: :source_code_manageme
       end
     end
 
-    context 'when the pool creation failed before' do
+    context 'when the pool creation failed before', :skip_gitaly_mvcc do
       let(:pool) { create(:pool_repository, :failed) }
 
       it 'deletes the pool first' do

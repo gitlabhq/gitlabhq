@@ -1,0 +1,28 @@
+# @feature_category: custom_dashboards_foundation
+
+query getAnalyticsDashboardGroupChildren($fullPath: ID!) {
+  group(fullPath: $fullPath) {
+    id
+    name
+    fullName
+    fullPath
+    projects(first: 20, sort: ACTIVITY_DESC, includeArchived: false) {
+      nodes {
+        id
+        name
+        fullName: nameWithNamespace
+        fullPath
+      }
+    }
+    descendantGroups(first: 20, includeParentDescendants: false, archived: false) {
+      nodes {
+        id
+        name
+        fullName
+        fullPath
+        projectsCount
+        descendantGroupsCount
+      }
+    }
+  }
+}

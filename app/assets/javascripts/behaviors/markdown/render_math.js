@@ -208,7 +208,7 @@ class SafeMathRenderer {
           {
             class: 'gl-mb-5',
             props: { variant: 'warning', primaryButtonText: s__('math|Display anyway') },
-            on: { dismiss, primaryAction: displayAnyway },
+            on: { dismiss, 'primary-action': displayAnyway },
           },
           message,
         );

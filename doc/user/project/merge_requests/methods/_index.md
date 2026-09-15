@@ -119,7 +119,7 @@ The squash merge graph is also equivalent to these commands:
   ```
 
 If you continue working on a long-running source branch after a squash merge, subsequent
-merge requests may show previously merged commits and a warning that the source branch is behind the target branch.
+merge requests might show previously merged commits and a warning that the source branch is behind the target branch.
 For more information, see [long-running branch behavior](../squash_and_merge.md#long-running-branch-behavior).
 
 ## Merge commit with semi-linear history
@@ -266,7 +266,7 @@ conditions are true:
 - The target branch is ahead of the source branch.
 - A conflict-free rebase is not possible.
 
-Rebasing may be required before squashing, even though squashing can itself be
+Rebasing might be required before squashing, even though squashing can itself be
 considered equivalent to rebasing.
 
 ### Automatic rebase before merge

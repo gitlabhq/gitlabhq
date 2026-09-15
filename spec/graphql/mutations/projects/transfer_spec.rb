@@ -74,55 +74,6 @@ RSpec.describe Mutations::Projects::Transfer, feature_category: :groups_and_proj
           expect(result[:project]).to eq(project)
         end
       end
-
-      context 'when groups_and_projects_async_transfer feature flag is disabled' do
-        before do
-          stub_feature_flags(groups_and_projects_async_transfer: false)
-        end
-
-        context 'when transfer succeeds' do
-          it 'returns the project and no errors', :aggregate_failures do
-            service = instance_double(::Projects::TransferService)
-            allow(::Projects::TransferService).to receive(:new).with(project, current_user).and_return(service)
-            allow(service).to receive(:execute).with(target_namespace).and_return(true)
-
-            result = resolve
-
-            expect(result[:errors]).to be_empty
-            expect(result[:project]).to eq(project)
-          end
-        end
-
-        context 'when transfer fails with new_namespace errors' do
-          it 'returns errors and the project', :aggregate_failures do
-            allow(mutation).to receive(:authorized_find!).and_return(project)
-            service = instance_double(::Projects::TransferService)
-            allow(::Projects::TransferService).to receive(:new).with(project, current_user).and_return(service)
-            allow(service).to receive(:execute).with(target_namespace) do
-              project.errors.add(:new_namespace, 'Transfer not allowed.')
-              false
-            end
-
-            result = resolve
-
-            expect(result[:errors]).to contain_exactly('Transfer not allowed.')
-            expect(result[:project]).to eq(project)
-          end
-        end
-
-        context 'when transfer fails without specific errors' do
-          it 'returns a generic error message and the project', :aggregate_failures do
-            service = instance_double(::Projects::TransferService)
-            allow(::Projects::TransferService).to receive(:new).with(project, current_user).and_return(service)
-            allow(service).to receive(:execute).with(target_namespace).and_return(false)
-
-            result = resolve
-
-            expect(result[:errors]).to contain_exactly('Transfer failed')
-            expect(result[:project]).to eq(project)
-          end
-        end
-      end
     end
   end
 end

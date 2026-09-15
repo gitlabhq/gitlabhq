@@ -16,14 +16,14 @@ RSpec.describe RuboCop::Cop::RSpec::FactoryBot::StrategyInCallback, feature_cate
             trait :artifacts do
               before(:create) do
                 #{namespaced_forbidden_method}
-                #{'^' * namespaced_forbidden_method.size} Prefer inline `association` over `#{forbidden_method}`. See https://docs.gitlab.com/ee/development/testing_guide/best_practices.html#factories
+                #{'^' * namespaced_forbidden_method.size} Prefer inline `association` over `#{forbidden_method}`. See https://docs.gitlab.com/development/testing_guide/best_practices/#factories
               end
 
               after(:create) do |build|
                 #{namespaced_forbidden_method}
-                #{'^' * namespaced_forbidden_method.size} Prefer inline `association` over `#{forbidden_method}`. See https://docs.gitlab.com/ee/development/testing_guide/best_practices.html#factories
+                #{'^' * namespaced_forbidden_method.size} Prefer inline `association` over `#{forbidden_method}`. See https://docs.gitlab.com/development/testing_guide/best_practices/#factories
                 #{namespaced_forbidden_method}
-                #{'^' * namespaced_forbidden_method.size} Prefer inline `association` over `#{forbidden_method}`. See https://docs.gitlab.com/ee/development/testing_guide/best_practices.html#factories
+                #{'^' * namespaced_forbidden_method.size} Prefer inline `association` over `#{forbidden_method}`. See https://docs.gitlab.com/development/testing_guide/best_practices/#factories
               end
             end
           end
@@ -38,7 +38,7 @@ RSpec.describe RuboCop::Cop::RSpec::FactoryBot::StrategyInCallback, feature_cate
             trait :artifacts do
               after(:create) do |build|
                 #{namespaced_forbidden_method}
-                #{'^' * namespaced_forbidden_method.size} Prefer inline `association` over `#{forbidden_method}`. See https://docs.gitlab.com/ee/development/testing_guide/best_practices.html#factories
+                #{'^' * namespaced_forbidden_method.size} Prefer inline `association` over `#{forbidden_method}`. See https://docs.gitlab.com/development/testing_guide/best_practices/#factories
               end
             end
           end
@@ -53,7 +53,7 @@ RSpec.describe RuboCop::Cop::RSpec::FactoryBot::StrategyInCallback, feature_cate
             trait :artifacts do
               after(:create) do |build|
                 ci_build = #{namespaced_forbidden_method}
-                           #{'^' * namespaced_forbidden_method.size} Prefer inline `association` over `#{forbidden_method}`. See https://docs.gitlab.com/ee/development/testing_guide/best_practices.html#factories
+                           #{'^' * namespaced_forbidden_method.size} Prefer inline `association` over `#{forbidden_method}`. See https://docs.gitlab.com/development/testing_guide/best_practices/#factories
 
                 ci_build
               end

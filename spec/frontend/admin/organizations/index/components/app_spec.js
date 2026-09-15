@@ -45,10 +45,6 @@ describe('AdminOrganizationsIndexApp', () => {
     });
   };
 
-  beforeEach(() => {
-    gon.features = { organizationSwitching: true };
-  });
-
   afterEach(() => {
     mockApollo = null;
   });

@@ -1,0 +1,16 @@
+---
+description: Opened the to-do items filter dropdown in the "Items that need your attention" widget on the personal homepage (not the separate To-Do List page).
+internal_events: true
+status: active
+action: open_todos_filter_dropdown_on_homepage
+identifiers:
+- user
+product_group: engagement
+product_categories:
+- notifications
+milestone: '19.4'
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/253660
+tiers:
+- free
+- premium
+- ultimate

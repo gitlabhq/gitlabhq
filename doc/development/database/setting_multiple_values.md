@@ -94,7 +94,7 @@ end
 
 ## Caveats
 
-This tool is **very low level**, and operates directly on the raw column
+This tool is very low level, and operates directly on the raw column
 values. You should consider these issues if you implement it:
 
 - Enumerations and state fields must be translated into their underlying

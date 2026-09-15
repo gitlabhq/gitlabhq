@@ -36,11 +36,47 @@ GitLab maintains a private database of advisories for known malicious packages f
 GitLab malware advisories (GLAM) are separate from the GLAD advisories described elsewhere on this page.
 GitLab automatically synchronizes these advisories to your GitLab instance in the background.
 
-> [!note]
-> This synchronization is not available in [offline environments](../offline_deployments/_index.md).
-> Support is proposed in [issue 594758](https://gitlab.com/gitlab-org/gitlab/-/work_items/594758).
+GitLab obtains these advisories from three sources:
 
-These advisories are used by the dependency firewall rules to block malicious packages during CI/CD runs.
+- The [OpenSSF malicious-packages project](https://github.com/ossf/malicious-packages), an open
+  source repository of reports of malicious packages.
+- Scans of public package registries run by GitLab.
+- Upstream feeds of advisory data from package registries.
+
+Each malware advisory has an ID that starts with `GLAM-`, in the form
+`GLAM-<year>-<month>-<sequence>`, for example `GLAM-2026-09-00138`. Vulnerabilities created from
+these advisories carry that ID as an identifier, and have no CVE identifier.
+
+> [!note]
+> In [offline environments](../offline_deployments/_index.md), GitLab cannot synchronize these advisories automatically.
+> Instead, you [download them on a machine with internet access](../../../topics/offline/quick_start_guide.md#download-gitlab-malware-advisories) and copy them to the instance.
+
+These advisories serve three purposes:
+
+- [Dependency scanning](../dependency_scanning/_index.md#dependency-scanning-using-sbom) uses them to create a vulnerability when a pipeline detects a malicious package.
+- [Continuous vulnerability scanning](../continuous_vulnerability_scanning/_index.md#malicious-packages)
+  uses them to create a vulnerability without requiring a pipeline to run.
+- [Merge request approval policies](../policies/merge_request_approval_policies.md#block-malicious-packages-with-the-malware-rule)
+  use them to block a merge request that introduces a malicious package.
+
+### Supported package types
+
+Malware advisories are available for components with the following
+[PURL types](https://github.com/package-url/purl-spec/blob/346589846130317464b677bc4eab30bf5040183a/PURL-TYPES.rst):
+
+- `cargo`
+- `go`
+- `maven`
+- `npm`
+- `nuget`
+- `pypi`
+- `rubygem`
+
+This is a subset of the PURL types supported for
+[regular advisories](../dependency_scanning/continuous_dependency_scanning/_index.md#supported-package-types).
+There are no malware advisories for `conan`, `packagist`, `pub`, or `swift`, so components with
+those PURL types are never flagged as malicious. There are also no malware advisories for container
+scanning PURL types, such as `apk` and `deb`.
 
 ## Standardization
 
@@ -55,7 +91,7 @@ impact.
 
 To view the database content, go to the [GitLab advisory database](https://advisories.gitlab.com) home page. On the home page you can:
 
-- Search the database, by identifier, package name, and description.
+- Search the database by identifier, package name, and description.
 - View advisories that were added recently.
 - View statistical information, including coverage and update frequency.
 
@@ -303,7 +339,7 @@ Will return something like:
 
 GitLab provides a free and open-source version of the database, the [GitLab advisory database (open source edition)](https://gitlab.com/gitlab-org/advisories-community).
 
-The open-source version is a time-delayed clone of the GitLab advisory database, MIT-licensed and contains all advisories from the GitLab advisory database that are older than 30 days or with the `community-sync` flag.
+The open-source version is a time-delayed clone of the GitLab advisory database, MIT-licensed, and contains all advisories from the GitLab advisory database that are older than 30 days or that have the `community-sync` flag.
 
 ## Integrations
 
@@ -349,7 +385,7 @@ Community contributions are accessible in [advisories-community](https://gitlab.
 
 ## Contributing to the vulnerability database
 
-If you know about a vulnerability that is not listed, you can contribute to the GitLab advisory database by either opening an issue or submit the vulnerability.
+If you know about a vulnerability that is not listed, you can contribute to the GitLab advisory database by either opening an issue or submitting the vulnerability.
 
 For more information, see [Contribution guidelines](https://gitlab.com/gitlab-org/security-products/gemnasium-db/-/blob/master/CONTRIBUTING.md).
 

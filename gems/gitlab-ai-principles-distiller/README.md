@@ -14,12 +14,13 @@ repository for the full operator-facing flow.
    and (with `distill --push`) opens an MR via the REST API. Each per-team MR pings the
   people who changed the SSOT docs since the last distillation (resolved via a
   GraphQL `commits` query, so private and secondary emails match too), assigns
-  up to three of them as reviewers, and falls back to one available `owner_team`
+  up to four of the most recent contributors as reviewers, and falls back to one available `owner_team`
   member when no author resolves. Approval still routes to `owner_team` via
   CODEOWNERS.
 - `gitlab-ai-principles-distiller-provision-flow` — idempotent provisioner for
   the AI Catalog Flow that the orchestrator drives. Runs before `sync` so prompt
-  edits in git automatically propagate to the catalog.
+  edits in git automatically propagate to the catalog. The read-only
+  `--print-consumer-id` flag prints only the numeric ItemConsumer ID.
 
 ## Subcommands
 
@@ -88,9 +89,15 @@ discovered, in order:
 
 | Variable | Purpose |
 |----------|---------|
-| `GITLAB_TOKEN` | Duo Workflow API + GraphQL polling. |
-| `GITLAB_API_TOKEN` | Auto-MR creation via REST API. |
+| `GITLAB_TOKEN` | Duo Workflow API and GraphQL polling. |
+| `GITLAB_API_TOKEN` | Auto-MR creation through the REST API. Required for `distill --push`. |
+| `AGENT_PRINCIPLES_CATALOG_PROJECT` | Project that owns the AI Catalog flow. |
 | `AGENT_PRINCIPLES_CATALOG_ITEM_CONSUMER_ID` | Numeric ID of the catalog `ItemConsumer` that binds the distillation flow to the project. |
+| `CI_DEFAULT_BRANCH` | Default branch used to resolve the workflow source branch. |
+| `CI_PROJECT_ID` | Numeric ID of the consumer project. Required for `distill --push`. |
+
+Before distillation, the sync preflights all required variables together. If
+configuration is missing, the error provides copy-pasteable `export` lines.
 
 The CI job in `.gitlab/ci/sync-principles.gitlab-ci.yml` documents how these are
 sourced from project CI/CD variables.

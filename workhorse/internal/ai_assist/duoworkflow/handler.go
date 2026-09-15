@@ -14,6 +14,7 @@ import (
 	"gitlab.com/gitlab-org/gitlab/workhorse/internal/helper/fail"
 	"gitlab.com/gitlab-org/gitlab/workhorse/internal/helper/shutdown"
 	"gitlab.com/gitlab-org/gitlab/workhorse/internal/log"
+	"gitlab.com/gitlab-org/gitlab/workhorse/internal/origincheck"
 
 	"github.com/gorilla/websocket"
 )
@@ -22,13 +23,14 @@ import (
 // for active workflow runners. It tracks all active runners to ensure they can be
 // properly terminated during server shutdown.
 type Handler struct {
-	rails               *api.API
-	rdb                 *redis.Client
-	backend             http.Handler
-	relativeURLRoot     string
-	upgrader            websocket.Upgrader
-	runners             sync.Map // map[*runner]bool
-	stopWorkflowTimeout time.Duration
+	rails                 *api.API
+	rdb                   *redis.Client
+	backend               http.Handler
+	relativeURLRoot       string
+	upgrader              websocket.Upgrader
+	runners               sync.Map // map[*runner]bool
+	stopWorkflowTimeout   time.Duration
+	trustedForwardedHosts []string
 }
 
 // NewHandler creates a new Handler for managing Duo Workflow WebSocket connections.
@@ -38,13 +40,14 @@ type Handler struct {
 // relativeURLRoot is GitLab's URL prefix (e.g. "/gitlab/"), empty at the domain
 // root. It is forwarded to the action handler so DWS action paths resolve
 // against the correct prefix when re-entering the upstream router.
-func NewHandler(rails *api.API, rdb *redis.Client, backend http.Handler, relativeURLRoot string) *Handler {
+func NewHandler(rails *api.API, rdb *redis.Client, backend http.Handler, relativeURLRoot string, trustedForwardedHosts ...string) *Handler {
 	return &Handler{
-		rails:           rails,
-		backend:         backend,
-		relativeURLRoot: relativeURLRoot,
-		rdb:             rdb,
-		upgrader:        websocket.Upgrader{},
+		rails:                 rails,
+		backend:               backend,
+		relativeURLRoot:       relativeURLRoot,
+		rdb:                   rdb,
+		upgrader:              websocket.Upgrader{},
+		trustedForwardedHosts: trustedForwardedHosts,
 	}
 }
 
@@ -69,16 +72,46 @@ const (
 	errorTypeOther         = "other"
 )
 
+// The transport the client used to reach the handler. Both are reported under
+// the same metrics, because the flow they run is the same and the difference
+// that matters is who executes the actions.
+const (
+	transportWebSocket = "websocket"
+	transportHTTP      = "http"
+)
+
+// Stages at which a connection can fail with errorTypeOther. Logged so the
+// otherwise opaque "other" error type can be traced back to a specific stage.
+const (
+	errorStageUpgrade        = "websocket_upgrade"
+	errorStageRequestBody    = "request_body"
+	errorStageInitialization = "runner_initialization"
+	errorStageExecution      = "runner_execution"
+)
+
+// logConnectionError logs a connection failure that has no more specific error
+// type than "other", along with the stage it failed at.
+func logConnectionError(r *http.Request, transport string, stage string, err error) {
+	log.WithRequest(r).WithError(err).WithFields(log.Fields{
+		"transport":   transport,
+		"error_stage": stage,
+		"error_type":  errorTypeOther,
+	}).Error("duo workflow connection failed")
+}
+
 // Build returns an HTTP handler that processes Duo Workflow WebSocket connections.
 // The handler performs pre-authorization checks, upgrades the connection to WebSocket,
 // and manages the lifecycle of the workflow runner including registration and cleanup.
 func (h *Handler) Build() http.Handler {
 	return h.rails.PreAuthorizeHandler(func(w http.ResponseWriter, r *http.Request, a *api.Response) {
-		connectionsTotal.Inc()
+		upgrader := h.upgrader
+		if len(h.trustedForwardedHosts) > 0 {
+			upgrader.CheckOrigin = origincheck.ByForwardedHost(h.trustedForwardedHosts)
+		}
 
-		conn, err := h.upgrader.Upgrade(w, r, nil)
+		conn, err := upgrader.Upgrade(w, r, nil)
 		if err != nil {
-			connectionErrorsTotal.WithLabelValues(errorTypeOther).Inc()
+			logConnectionError(r, transportWebSocket, errorStageUpgrade, err)
 			fail.Request(w, r, fmt.Errorf("failed to upgrade: %v", err))
 			return
 		}
@@ -88,18 +121,20 @@ func (h *Handler) Build() http.Handler {
 }
 
 func (h *Handler) handleWebSocketConnection(w http.ResponseWriter, r *http.Request, conn *websocket.Conn, duoWorkflowConfig *api.DuoWorkflow) {
-	runner, err := h.createRunner(conn, duoWorkflowConfig, r)
+	runner, err := h.createRunner(newWsManager(conn), duoWorkflowConfig, r)
 	if err != nil {
-		connectionErrorsTotal.WithLabelValues(errorTypeOther).Inc()
+		logConnectionError(r, transportWebSocket, errorStageInitialization, err)
 		h.handleInitializationError(w, r, conn, err)
 		return
 	}
 
-	h.registerAndExecuteRunner(r, conn, runner)
+	h.registerAndExecuteRunner(r, transportWebSocket, runner, func(err error) {
+		h.handleWebSocketExecutionError(r, conn, err)
+	})
 }
 
-func (h *Handler) createRunner(conn *websocket.Conn, duoWorkflowConfig *api.DuoWorkflow, r *http.Request) (*runner, error) {
-	runner, err := newRunner(conn, h.rails, h.backend, h.relativeURLRoot, r, duoWorkflowConfig, h.rdb)
+func (h *Handler) createRunner(client clientTransport, duoWorkflowConfig *api.DuoWorkflow, r *http.Request) (*runner, error) {
+	runner, err := newRunner(client, h.rails, h.backend, h.relativeURLRoot, r, duoWorkflowConfig, h.rdb)
 	if err != nil {
 		return nil, err
 	}
@@ -114,43 +149,47 @@ func (h *Handler) handleInitializationError(w http.ResponseWriter, r *http.Reque
 	}
 }
 
-func (h *Handler) registerAndExecuteRunner(r *http.Request, conn *websocket.Conn, runner *runner) {
+// registerAndExecuteRunner tracks the runner for the duration of the workflow
+// so that a server shutdown can stop it gracefully.
+//
+// reportError is called with a non-nil execution error while the connection is
+// still open, before the runner is closed, so that a transport can still tell
+// its client what went wrong.
+func (h *Handler) registerAndExecuteRunner(r *http.Request, transport string, runner *runner, reportError func(error)) {
+	openConnections := connectionsOpen.WithLabelValues(transport)
+
 	h.runners.Store(runner, true)
+	openConnections.Inc()
 	defer func() {
+		defer openConnections.Dec()
 		h.runners.Delete(runner)
 		_ = runner.Close()
 	}()
 
-	h.executeRunner(r, conn, runner)
-}
-
-func (h *Handler) executeRunner(r *http.Request, conn *websocket.Conn, runner *runner) {
 	start := time.Now()
 	if err := runner.Execute(r.Context()); err != nil {
 		log.WithRequest(r).WithError(err).WithFields(log.Fields{
 			"duration_ms": time.Since(start).Milliseconds(),
 		}).Error("error executing workflow")
 
-		h.handleExecutionError(r, conn, err)
+		reportError(err)
 	}
 }
 
-func (h *Handler) handleExecutionError(r *http.Request, conn *websocket.Conn, err error) {
+func (h *Handler) handleWebSocketExecutionError(r *http.Request, conn *websocket.Conn, err error) {
 	switch {
 	case errors.Is(err, errFailedToAcquireLockError):
 		// We provide the client with specific error details
 		// for this case so it can tell the user about the
 		// conflicting flow
-		connectionErrorsTotal.WithLabelValues(errorTypeLocked).Inc()
 		h.sendCloseMessage(r, conn, websocket.CloseTryAgainLater, "Failed to acquire lock on workflow")
 	case errors.Is(err, errUsageQuotaExceededError):
 		// We close the connection with the specific error
 		// so client can process and inform user about the lack
 		// of credits
-		connectionErrorsTotal.WithLabelValues(errorTypeQuotaExceeded).Inc()
 		h.sendCloseMessage(r, conn, websocket.ClosePolicyViolation, "Insufficient credits: quota exceeded")
 	default:
-		connectionErrorsTotal.WithLabelValues(errorTypeOther).Inc()
+		logConnectionError(r, transportWebSocket, errorStageExecution, err)
 	}
 }
 

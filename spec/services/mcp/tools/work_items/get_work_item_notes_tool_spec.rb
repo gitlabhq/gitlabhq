@@ -45,50 +45,38 @@ RSpec.describe Mcp::Tools::WorkItems::GetWorkItemNotesTool, feature_category: :m
       expect(tool).to have_received(:resolve_work_item_id)
     end
 
-    it 'omits pagination parameters when not provided' do
+    it 'defaults to forward pagination when no pagination params are provided', :aggregate_failures do
       variables = tool.build_variables
 
+      expect(variables[:first]).to eq(described_class::DEFAULT_NOTES_PAGE_SIZE)
       expect(variables).not_to have_key(:after)
       expect(variables).not_to have_key(:before)
-      expect(variables).not_to have_key(:first)
       expect(variables).not_to have_key(:last)
     end
 
-    it 'includes after parameter when provided' do
-      params[:after] = 'cursor123'
+    it 'uses forward pagination with after cursor', :aggregate_failures do
+      params[:first] = 25
+      params[:after] = 'cursor1'
       variables = tool.build_variables
 
-      expect(variables[:after]).to eq('cursor123')
+      expect(variables[:first]).to eq(25)
+      expect(variables[:after]).to eq('cursor1')
     end
 
-    it 'includes before parameter when provided' do
-      params[:before] = 'cursor456'
-      variables = tool.build_variables
-
-      expect(variables[:before]).to eq('cursor456')
-    end
-
-    it 'includes first parameter when provided' do
-      params[:first] = 20
-      variables = tool.build_variables
-
-      expect(variables[:first]).to eq(20)
-    end
-
-    it 'includes last parameter when provided' do
+    it 'uses backward pagination when only last is provided' do
       params[:last] = 10
       variables = tool.build_variables
 
       expect(variables[:last]).to eq(10)
     end
 
-    it 'includes all pagination parameters when provided' do
-      params[:after] = 'cursor1'
-      params[:first] = 25
+    it 'uses backward pagination with before cursor', :aggregate_failures do
+      params[:last] = 10
+      params[:before] = 'cursor456'
       variables = tool.build_variables
 
-      expect(variables[:after]).to eq('cursor1')
-      expect(variables[:first]).to eq(25)
+      expect(variables[:last]).to eq(10)
+      expect(variables[:before]).to eq('cursor456')
     end
   end
 
@@ -313,11 +301,23 @@ RSpec.describe Mcp::Tools::WorkItems::GetWorkItemNotesTool, feature_category: :m
       end
     end
 
+    context 'when both first and last are provided' do
+      let(:params) { super().merge(first: 10, last: 5) }
+
+      it 'succeeds using forward pagination', :aggregate_failures do
+        result = tool.execute
+
+        expect(result[:isError]).to be(false)
+        expect(result[:structuredContent]['nodes']).to be_an(Array)
+      end
+    end
+
     context 'when work item does not exist' do
       let(:params) { { project_id: project.id.to_s, work_item_iid: non_existing_record_iid } }
 
       it 'raises error before executing GraphQL' do
-        expect { tool.execute }.to raise_error(ArgumentError, "Work item ##{non_existing_record_iid} not found")
+        expect { tool.execute }
+          .to raise_error(ArgumentError, "Work item ##{non_existing_record_iid} not found or inaccessible")
       end
     end
 
@@ -326,8 +326,8 @@ RSpec.describe Mcp::Tools::WorkItems::GetWorkItemNotesTool, feature_category: :m
       let_it_be(:private_work_item) { create(:work_item, :issue, project: private_project, iid: 1) }
       let(:params) { { project_id: private_project.id.to_s, work_item_iid: private_work_item.iid } }
 
-      it 'raises error before executing GraphQL' do
-        expect { tool.execute }.to raise_error(ArgumentError, /Access denied to project/)
+      it 'raises a uniform not-found error before executing GraphQL' do
+        expect { tool.execute }.to raise_error(StandardError, /not found or inaccessible/)
       end
     end
   end

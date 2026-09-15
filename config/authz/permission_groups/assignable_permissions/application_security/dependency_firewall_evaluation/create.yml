@@ -1,0 +1,9 @@
+---
+name: create_dependency_firewall_evaluation
+description: Grants the ability to create dependency firewall evaluations
+boundaries:
+  - project
+available_for:
+  - granular_access_token
+permissions:
+  - create_dependency_firewall_evaluation

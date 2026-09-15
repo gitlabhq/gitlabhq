@@ -8,7 +8,8 @@ Gem::Specification.new do |spec|
   spec.authors       = ["GitLab Engineers"]
   spec.email         = ["engineering@gitlab.com"]
   spec.summary       = "Safe zip archive extraction"
-  spec.description   = "Provides a safe interface to extract specific directories or files within a zip archive, preventing path traversal attacks."
+  spec.description   = "Provides a safe interface to extract specific directories or files within a zip " \
+    "archive, preventing path traversal attacks."
   spec.homepage      = "https://gitlab.com/gitlab-org/gitlab/-/tree/master/gems/safe_zip"
   spec.license       = "MIT"
   spec.required_ruby_version = ">= 3.0"

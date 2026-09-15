@@ -44,13 +44,13 @@ RSpec.describe ClickHouse::Connection, click_house: :without_migrations, feature
 
   describe '#table_exists?' do
     it "return false when table doesn't exist" do
-      expect(connection.table_exists?('test_table')).to eq(false)
+      expect(connection.table_exists?('test_table')).to be(false)
     end
 
     it 'returns true when table exists' do
       create_test_table
 
-      expect(connection.table_exists?('test_table')).to eq(true)
+      expect(connection.table_exists?('test_table')).to be(true)
     end
   end
 

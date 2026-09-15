@@ -21,11 +21,11 @@ title: Dashboard layout framework
 The dashboard layout framework is part of a broader effort to standardize dashboards across the platform
 as described in [Epic #13801](https://gitlab.com/groups/gitlab-org/-/work_items/13801).
 
-For more in depth details on the dashboard layout framework, see the [architecture design document](https://handbook.gitlab.com/handbook/engineering/architecture/design-documents/dashboard_layout_framework/).
+For more in-depth details on the dashboard layout framework, see the [architecture design document](https://handbook.gitlab.com/handbook/engineering/architecture/design-documents/dashboard_layout_framework/).
 
 ## Rendering dashboards
 
-To render dashboard layouts it's recommended to use the [GlDashboardLayout](https://design.gitlab.com/storybook/?path=/docs/dashboards-dashboards-layout--docs)
+To render dashboard layouts, it's recommended to use the [GlDashboardLayout](https://design.gitlab.com/storybook/?path=/docs/dashboards-dashboards-layout--docs)
 component. It provides an easy way to render dashboards using
 a configuration which aligns with our [Pajamas guidelines](https://design.gitlab.com/patterns/dashboards/).
 
@@ -42,7 +42,7 @@ following components:
 ## Migration guide
 
 Migrating an existing dashboard to the GlDashboardLayout should be relatively
-straightforward. In most cases because you only need to replace the dashboard shell
+straightforward in most cases, because you only need to replace the dashboard shell
 and can keep existing visualizations. A typical migration path could look like this:
 
 1. Create a feature flag to conditionally render your new dashboard.
@@ -58,7 +58,7 @@ for an example on how to render existing visualization components using the dash
 
 ### Example implementations
 
-Real world implementations and migrations using the GlDashboardLayout component:
+Real-world implementations and migrations using the GlDashboardLayout component:
 
 - New group security dashboard added in MR [!191974](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/191974)
 - New project security dashboard added in MR [!197626](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/197626)

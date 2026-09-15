@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe GroupImportState do
+RSpec.describe GroupImportState, feature_category: :importers do
   describe 'validations' do
     let_it_be(:group) { create(:group) }
 
@@ -87,6 +87,50 @@ RSpec.describe GroupImportState do
         group_import_state.fail_op
 
         expect(group_import_state.last_error).to be_nil
+      end
+    end
+  end
+
+  describe 'import state transitions' do
+    context 'when transitioning from created to started' do
+      it 'tracks the start_group_import internal event' do
+        group_import_state = create(:group_import_state, :created, jid: 'group_import_state_start')
+
+        expect { group_import_state.start }
+          .to trigger_internal_events('start_group_import')
+          .with(
+            namespace: group_import_state.group,
+            user: group_import_state.user,
+            additional_properties: { label: 'gitlab_group_export' }
+          )
+      end
+    end
+
+    context 'when transitioning from started to finished' do
+      it 'tracks the finish_group_import internal event' do
+        group_import_state = create(:group_import_state, :started)
+
+        expect { group_import_state.finish }
+          .to trigger_internal_events('finish_group_import')
+          .with(
+            namespace: group_import_state.group,
+            user: group_import_state.user,
+            additional_properties: { label: 'gitlab_group_export' }
+          )
+      end
+    end
+
+    context 'when transitioning to failed' do
+      it 'tracks the fail_group_import internal event' do
+        group_import_state = create(:group_import_state, :started)
+
+        expect { group_import_state.fail_op }
+          .to trigger_internal_events('fail_group_import')
+          .with(
+            namespace: group_import_state.group,
+            user: group_import_state.user,
+            additional_properties: { label: 'gitlab_group_export' }
+          )
       end
     end
   end

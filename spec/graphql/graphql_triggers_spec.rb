@@ -383,6 +383,63 @@ RSpec.describe GraphqlTriggers, feature_category: :api do
     end
   end
 
+  describe '.work_item_saved_view_updated' do
+    let_it_be(:subgroup) { create(:group, :nested) }
+    let_it_be(:saved_view) { create(:saved_view, namespace: subgroup) }
+
+    it 'triggers the work_item_saved_view_updated subscription' do
+      expect(GitlabSchema.subscriptions).to receive(:trigger).with(
+        :work_item_saved_view_updated,
+        { saved_view_id: saved_view.to_gid },
+        saved_view
+      )
+
+      described_class.work_item_saved_view_updated(saved_view)
+    end
+
+    it 'checks the broadcast flag against the root ancestor' do
+      expect(Feature).to receive(:enabled?)
+        .with(:work_items_realtime_broadcast, subgroup.root_ancestor)
+        .and_return(true)
+
+      described_class.work_item_saved_view_updated(saved_view)
+    end
+
+    it 'checks the rate limit for the saved view' do
+      expect(Gitlab::ApplicationRateLimiter).to receive(:throttled?)
+        .with(:work_item_saved_view_broadcast, scope: { saved_view: saved_view.id })
+        .and_return(false)
+
+      described_class.work_item_saved_view_updated(saved_view)
+    end
+
+    context 'when the broadcast rate limit for the saved view is exhausted' do
+      before do
+        allow(Gitlab::ApplicationRateLimiter).to receive(:throttled?)
+          .with(:work_item_saved_view_broadcast, scope: { saved_view: saved_view.id })
+          .and_return(true)
+      end
+
+      it 'does not trigger the work_item_saved_view_updated subscription' do
+        expect(GitlabSchema.subscriptions).not_to receive(:trigger)
+
+        described_class.work_item_saved_view_updated(saved_view)
+      end
+    end
+
+    context 'when work_items_realtime_broadcast is disabled' do
+      before do
+        stub_feature_flags(work_items_realtime_broadcast: false)
+      end
+
+      it 'does not trigger the work_item_saved_view_updated subscription' do
+        expect(GitlabSchema.subscriptions).not_to receive(:trigger)
+
+        described_class.work_item_saved_view_updated(saved_view)
+      end
+    end
+  end
+
   describe '.ci_job_processed' do
     let_it_be(:job) { create(:ci_build) }
 

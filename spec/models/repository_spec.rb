@@ -626,24 +626,6 @@ RSpec.describe Repository, feature_category: :source_code_management do
         end
       end
 
-      context 'when include_referenced_by is passed' do
-        let(:ref) { '5937ac0a7beb003549fc5fd26fc247adbce4a52e' }
-        let(:include_referenced_by) { ['refs/tags'] }
-        let(:kwargs) { { limit: 1, include_referenced_by: include_referenced_by } }
-
-        it 'returns commits with referenced_by that match the patterns' do
-          expect(commits.first.referenced_by).to match_array(['refs/tags/v1.1.0'])
-        end
-
-        context 'and matching multiple references' do
-          let(:include_referenced_by) { ['refs/tags', 'refs/heads'] }
-
-          it 'returns commits with referenced_by that match all patterns' do
-            expect(commits.first.referenced_by).to match_array(['refs/tags/v1.1.0', 'refs/heads/improve/awesome', 'refs/heads/merge-test'])
-          end
-        end
-      end
-
       context "when 'order' flag is set" do
         let(:kwargs) { { limit: 1, order: 'topo' } }
 
@@ -2755,6 +2737,25 @@ RSpec.describe Repository, feature_category: :source_code_management do
           message: 'New merge commit')
 
       expect(merge_commit_id).to be_nil
+    end
+
+    context 'when the branches have conflicting changes' do
+      let_it_be(:project) { create(:project, :repository) }
+
+      it 'raises a MergeConflictError' do
+        repository.create_file(user, 'conflict.txt', 'from target',
+          message: 'Add conflict.txt on target', branch_name: project.default_branch)
+        repository.create_file(user, 'conflict.txt', 'from source',
+          message: 'Add conflict.txt on source', branch_name: 'feature')
+
+        expect do
+          repository.merge_to_branch(user,
+            source_sha: repository.commit('feature').sha,
+            target_branch: project.default_branch,
+            target_sha: repository.commit(project.default_branch).sha,
+            message: 'New merge commit')
+        end.to raise_error(Gitlab::Git::MergeConflictError) { |error| expect(error).to be_a(Gitlab::Git::CommandError) }
+      end
     end
   end
 
@@ -4870,7 +4871,7 @@ RSpec.describe Repository, feature_category: :source_code_management do
       it { is_expected.to be_nil }
     end
 
-    context 'when pool repository exists' do
+    context 'when pool repository exists', :skip_gitaly_mvcc do
       let!(:pool) { create(:pool_repository, :ready, source_project: primary_project) }
 
       context 'when the current repository is a primary repository' do
@@ -5222,6 +5223,14 @@ RSpec.describe Repository, feature_category: :source_code_management do
       end
 
       it { is_expected.to be_a_kind_of(Blob) }
+    end
+
+    context 'when the default branch name starts with a dash' do
+      before do
+        allow(project).to receive(:default_branch).and_return('-foo')
+      end
+
+      it { is_expected.to be_nil }
     end
 
     it { is_expected.to be_nil }

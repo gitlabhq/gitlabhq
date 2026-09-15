@@ -21,6 +21,12 @@
         "integer",
         "null"
       ]
+    },
+    "policy_store_experiment_enabled": {
+      "type": [
+        "boolean",
+        "null"
+      ]
     }
   }
 }

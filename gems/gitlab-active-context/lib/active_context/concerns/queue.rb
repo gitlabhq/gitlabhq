@@ -34,6 +34,20 @@ module ActiveContext
           nil
         end
 
+        # Queue that receives this queue's failed items. The retry chain
+        # encodes the attempt count in the queue topology: each stage is
+        # one attempt.
+        def failure_queue
+          RetryQueue
+        end
+
+        # Infinite-retry errors, like rate limits, are temporary. These refs
+        # never advance toward the DeadQueue. They retry at the first stage
+        # every 5 minutes until they succeed.
+        def infinite_retry_queue
+          RetryQueue
+        end
+
         def number_of_shards
           raise NotImplementedError
         end

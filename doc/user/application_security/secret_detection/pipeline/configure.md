@@ -42,7 +42,7 @@ To search for other types of secrets in your repositories, you can [customize an
 
 You can propose new detection rules for all pipeline secret detection users in two ways:
 
-- Request a new rule: Create an issue using the [Secret Detection Pattern Change issue template](https://gitlab.com/gitlab-org/gitlab/-/issues/new?description_template=Secret_Detection_Pattern_Change). The GitLab team will review the request, and get in touch with you to decide how and when the new rule will be implemented.
+- Request a new rule: Create an issue using the [Secret Detection Pattern Change issue template](https://gitlab.com/gitlab-org/gitlab/-/work_items/new?description_template=Secret_Detection_Pattern_Change). The GitLab team will review the request, and get in touch with you to decide how and when the new rule will be implemented.
 - Contribute a new rule: If you want to contribute the rule yourself, follow the [contribution guidelines](https://gitlab.com/gitlab-org/security-products/secret-detection/secret-detection-rules/-/blob/main/README.md#adding-new-rules) in the Secret Detection Rules repository.
 
 If you operate a cloud or SaaS product and you're interested in partnering with GitLab to better protect your users, see GitLab [partner program for leaked credential notifications](../automatic_response.md#partner-program-for-leaked-credential-notifications).
@@ -93,7 +93,7 @@ In the following example extract of a `.gitlab-ci.yml` file:
 - The `Jobs/Secret-Detection` CI/CD template is [included](../../../../ci/yaml/_index.md#include).
 - In the `secret_detection` job, the CI/CD variable `SECRET_DETECTION_HISTORIC_SCAN` is set to
   `true`. Because the template is evaluated before the pipeline configuration, the last mention of
-  the variable takes precedence, so an historic scan is performed.
+  the variable takes precedence, so a historic scan is performed.
 
 ```yaml
 include:
@@ -316,7 +316,7 @@ For more information on the passthrough syntax to use, see [Schema](custom_rules
 You can replace the default ruleset with configuration defined in a remote Git repository or a file stored somewhere online using the `git` and `url` passthroughs.
 
 A remote ruleset can be used across multiple projects. For example, you might want to apply the same
-ruleset to multiple projects in one of your namespaces, in such case, you can use either type of
+ruleset to multiple projects in one of your namespaces, in such a case, you can use either type of
 passthrough to load up that remote ruleset and have it used by multiple projects. It also enables
 centralized management of a ruleset, with only authorized people able to edit.
 
@@ -629,7 +629,7 @@ For example, this rule modifies the [`generic-api-key` rule](https://github.com/
 
 This regular expression matches:
 
-1. A case-insensitive identifier that starts with `pwd`, or `passwd` or `password`. You can adjust this with other variations like `secret` or `key`.
+1. A case-insensitive identifier that starts with `pwd`, `passwd`, or `password`. You can adjust this with other variations like `secret` or `key`.
 1. A suffix that follows the identifier. The suffix is a combination of digits, letters, and symbols, and is between zero and 23 characters long.
 1. Commonly used assignment operators, like `=`, `:=`, `:`, or `=>`.
 1. A secret prefix, often used as a boundary to help with detecting the secret.

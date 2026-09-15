@@ -14,6 +14,10 @@ module API
           allow_access_with_scope :mcp, if: ->(request) { request.post? }
         end
 
+        def allow_mcp_access_update
+          allow_access_with_scope :mcp, if: ->(request) { request.put? || request.patch? }
+        end
+
         def allow_mcp_access_delete
           allow_access_with_scope :mcp, if: ->(request) { request.delete? }
         end

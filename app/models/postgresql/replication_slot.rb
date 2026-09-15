@@ -64,18 +64,6 @@ module Postgresql
         .to_i
     end
 
-    # array of slots and the retained_bytes
-    # https://www.skillslogic.com/blog/databases/checking-postgres-replication-lag
-    # http://bdr-project.org/docs/stable/monitoring-peers.html
-    def self.slots_retained_bytes
-      connection.execute(<<-SQL.squish).to_a
-        SELECT slot_name, database,
-              active, pg_wal_lsn_diff(pg_current_wal_insert_lsn(), restart_lsn)
-          AS retained_bytes
-          FROM pg_replication_slots;
-      SQL
-    end
-
     # returns the max number WAL space (in bytes) being used across the replication slots
     def self.max_retained_wal
       connection.execute(<<-SQL.squish).first.fetch('coalesce').to_i

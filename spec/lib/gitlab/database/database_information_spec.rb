@@ -15,303 +15,25 @@ RSpec.describe Gitlab::Database::DatabaseInformation, feature_category: :databas
       expect(payload[:schemas]).to be_an(Array).and(be_present)
     end
 
-    it 'excludes system schemas and includes public' do
-      schema_names = result[:databases]['main'][:schemas].map { |s| s[:name] }
+    it 'embeds the verdict the search path check reached', :aggregate_failures do
+      payload = result[:databases]['main']
 
-      expect(schema_names).to include('public')
-      expect(schema_names).not_to include('pg_catalog', 'pg_toast', 'information_schema')
+      expect(payload).to include(:severity, :counts)
+      expect(payload[:findings]).to be_an(Array)
     end
 
-    it 'normalizes the current flag to a boolean and flags exactly one schema as current', :aggregate_failures do
-      schemas = result[:databases]['main'][:schemas]
-      current_schema_name = ApplicationRecord.connection.select_value('SELECT current_schema()')
+    it 'merges the check result with the vacuum and autovacuum snapshots', :aggregate_failures do
+      check_result = { search_path: 'public', findings: [], severity: nil, counts: {} }
 
-      schemas.each { |s| expect(s[:current]).to be_in([true, false]) }
-
-      current = schemas.select { |s| s[:current] }
-      expect(current.size).to eq(1)
-      expect(current.first[:name]).to eq(current_schema_name)
-    end
-
-    it 'includes the schema owner for each schema' do
-      result[:databases]['main'][:schemas].each do |schema|
-        expect(schema[:owner]).to be_a(String).and(be_present)
-      end
-    end
-
-    it 'includes a findings array' do
-      expect(result[:databases]['main'][:findings]).to be_an(Array)
-    end
-
-    context 'with search_path findings' do
-      let(:model) { class_double(ApplicationRecord) }
-      let(:connection) { instance_double(ActiveRecord::ConnectionAdapters::PostgreSQLAdapter) }
-      let(:search_path) { '"$user", public' }
-      let(:schema_rows) do
-        [{ 'name' => 'public', 'is_current' => true, 'owner' => 'gitlab', 'has_tables' => true }]
+      expect_next_instance_of(Gitlab::Database::Diagnostics::Checks::SchemaResolution) do |check|
+        expect(check).to receive(:execute).and_return(check_result)
       end
 
-      let(:schema_table_rows) do
-        [{ 'schema_name' => 'public', 'table_name' => 'projects' }]
-      end
+      payload = result[:databases]['main']
 
-      subject(:findings) { described_class.execute[:databases]['main'][:findings] }
-
-      before do
-        allow(Gitlab::Database).to receive(:database_base_models).and_return({ 'main' => model })
-        allow(model).to receive(:connection).and_return(connection)
-        allow(connection).to receive(:select_value).with('SELECT current_user').and_return('gitlab')
-        allow(connection).to receive(:select_value).with('SHOW search_path').and_return(search_path)
-        allow(connection).to receive(:select_all).with(described_class::SCHEMAS_SQL).and_return(schema_rows)
-        allow(connection).to receive(:select_all)
-          .with(described_class::SCHEMA_TABLES_SQL).and_return(schema_table_rows)
-
-        # These tests focus on search_path findings; vacuum collection shares
-        # collect_for_database but is exercised separately, so stub it out.
-        allow_next_instance_of(described_class) do |info|
-          allow(info).to receive(:collect_vacuums).and_return([])
-        end
-      end
-
-      context 'when the search path is the default of "$user", public' do
-        it 'returns no findings' do
-          expect(findings).to be_empty
-        end
-      end
-
-      context 'when a partition schema is present in the search path' do
-        let(:search_path) { '"$user", public, gitlab_partitions_dynamic' }
-
-        it 'returns only a partition-schema warning', :aggregate_failures do
-          codes = findings.map { |f| f[:code] }
-
-          expect(codes).to contain_exactly('search_path_contains_partition_schema')
-          expect(findings.first[:severity]).to eq('warning')
-        end
-      end
-
-      context 'when a populated partition schema is in the search path' do
-        let(:search_path) { '"$user", public, gitlab_partitions_dynamic' }
-        let(:schema_rows) do
-          [
-            { 'name' => 'public', 'is_current' => true, 'owner' => 'gitlab', 'has_tables' => true },
-            { 'name' => 'gitlab_partitions_dynamic', 'is_current' => false, 'owner' => 'gitlab',
-              'has_tables' => true }
-          ]
-        end
-
-        it 'is flagged only as a partition schema, not as split objects', :aggregate_failures do
-          codes = findings.map { |f| f[:code] }
-
-          expect(codes).to include('search_path_contains_partition_schema')
-          expect(codes).not_to include('search_path_objects_split_across_schemas')
-        end
-      end
-
-      context 'when all objects live in a single non-public schema and public is empty' do
-        let(:search_path) { 'gitlab, public' }
-        let(:schema_rows) do
-          [
-            { 'name' => 'public', 'is_current' => false, 'owner' => 'gitlab', 'has_tables' => false },
-            { 'name' => 'gitlab', 'is_current' => true, 'owner' => 'gitlab', 'has_tables' => true }
-          ]
-        end
-
-        let(:schema_table_rows) do
-          [{ 'schema_name' => 'gitlab', 'table_name' => 'projects' }]
-        end
-
-        it 'returns no findings' do
-          expect(findings).to be_empty
-        end
-      end
-
-      context 'when GitLab objects are split across more than one populated schema' do
-        let(:search_path) { 'gitlab, public' }
-        let(:schema_rows) do
-          [
-            { 'name' => 'public', 'is_current' => false, 'owner' => 'gitlab', 'has_tables' => true },
-            { 'name' => 'gitlab', 'is_current' => true, 'owner' => 'gitlab', 'has_tables' => true }
-          ]
-        end
-
-        let(:schema_table_rows) do
-          [
-            { 'schema_name' => 'public', 'table_name' => 'projects' },
-            { 'schema_name' => 'gitlab', 'table_name' => 'namespaces' }
-          ]
-        end
-
-        it 'reports a split-objects warning and a split-GitLab-objects error', :aggregate_failures do
-          generic = findings.find { |f| f[:code] == 'search_path_objects_split_across_schemas' }
-          gitlab = findings.find { |f| f[:code] == 'search_path_gitlab_objects_split_across_schemas' }
-
-          expect(generic).to be_present
-          expect(generic[:severity]).to eq('warning')
-          expect(generic[:message]).to include('public').and(include('gitlab'))
-
-          expect(gitlab).to be_present
-          expect(gitlab[:severity]).to eq('error')
-          expect(gitlab[:message]).to include('public').and(include('gitlab'))
-        end
-      end
-
-      context 'when a second populated schema contains only non-GitLab objects' do
-        let(:search_path) { 'gitlab, public' }
-        let(:schema_rows) do
-          [
-            { 'name' => 'public', 'is_current' => false, 'owner' => 'gitlab', 'has_tables' => true },
-            { 'name' => 'gitlab', 'is_current' => true, 'owner' => 'gitlab', 'has_tables' => true }
-          ]
-        end
-
-        let(:schema_table_rows) do
-          [
-            { 'schema_name' => 'public', 'table_name' => 'projects' },
-            { 'schema_name' => 'gitlab', 'table_name' => 'some_extension_table' }
-          ]
-        end
-
-        it 'warns about split objects but does not raise a GitLab-objects error', :aggregate_failures do
-          codes = findings.map { |f| f[:code] }
-
-          expect(codes).to include('search_path_objects_split_across_schemas')
-          expect(codes).not_to include('search_path_gitlab_objects_split_across_schemas')
-        end
-      end
-
-      context 'when a second populated schema contains only internal bookkeeping tables' do
-        let(:search_path) { 'gitlab, public' }
-        let(:schema_rows) do
-          [
-            { 'name' => 'public', 'is_current' => false, 'owner' => 'gitlab', 'has_tables' => true },
-            { 'name' => 'gitlab', 'is_current' => true, 'owner' => 'gitlab', 'has_tables' => true }
-          ]
-        end
-
-        # 'schema_migrations' resolves to :gitlab_internal - Rails bookkeeping,
-        # not one of GitLab's own objects - so it must not raise the error.
-        let(:schema_table_rows) do
-          [
-            { 'schema_name' => 'public', 'table_name' => 'projects' },
-            { 'schema_name' => 'gitlab', 'table_name' => 'schema_migrations' }
-          ]
-        end
-
-        it 'warns about split objects but does not raise a GitLab-objects error', :aggregate_failures do
-          codes = findings.map { |f| f[:code] }
-
-          expect(codes).to include('search_path_objects_split_across_schemas')
-          expect(codes).not_to include('search_path_gitlab_objects_split_across_schemas')
-        end
-      end
-
-      context 'when a second populated schema holds a GitLab view rather than a table' do
-        let(:search_path) { 'gitlab, public' }
-        let(:schema_rows) do
-          [
-            { 'name' => 'public', 'is_current' => false, 'owner' => 'gitlab', 'has_tables' => true },
-            { 'name' => 'gitlab', 'is_current' => true, 'owner' => 'gitlab', 'has_tables' => true }
-          ]
-        end
-
-        let(:schema_table_rows) do
-          [
-            { 'schema_name' => 'public', 'table_name' => 'projects' },
-            { 'schema_name' => 'gitlab', 'table_name' => 'personal_snippets_view' }
-          ]
-        end
-
-        it 'raises the GitLab-objects error' do
-          expect(findings.map { |f| f[:code] }).to include('search_path_gitlab_objects_split_across_schemas')
-        end
-      end
-
-      context 'when the "$user" token resolves to a populated user schema alongside public' do
-        let(:search_path) { '"$user", public' }
-        let(:schema_rows) do
-          [
-            { 'name' => 'public', 'is_current' => false, 'owner' => 'gitlab', 'has_tables' => true },
-            { 'name' => 'gitlab', 'is_current' => true, 'owner' => 'gitlab', 'has_tables' => true }
-          ]
-        end
-
-        let(:schema_table_rows) do
-          [
-            { 'schema_name' => 'public', 'table_name' => 'projects' },
-            { 'schema_name' => 'gitlab', 'table_name' => 'namespaces' }
-          ]
-        end
-
-        it 'resolves "$user" and raises the GitLab-objects error' do
-          expect(findings.map { |f| f[:code] }).to include('search_path_gitlab_objects_split_across_schemas')
-        end
-      end
-
-      context 'when a schema outside the search path contains GitLab objects' do
-        let(:schema_rows) do
-          [
-            { 'name' => 'public', 'is_current' => true, 'owner' => 'gitlab', 'has_tables' => true },
-            { 'name' => 'foobar', 'is_current' => false, 'owner' => 'gitlab', 'has_tables' => true }
-          ]
-        end
-
-        let(:schema_table_rows) do
-          [
-            { 'schema_name' => 'public', 'table_name' => 'projects' },
-            { 'schema_name' => 'foobar', 'table_name' => 'users' }
-          ]
-        end
-
-        it 'reports only an outside-search-path warning', :aggregate_failures do
-          expect(findings.map { |f| f[:code] }).to contain_exactly('gitlab_objects_outside_search_path')
-
-          finding = findings.first
-          expect(finding[:severity]).to eq('warning')
-          expect(finding[:message]).to include('foobar')
-        end
-      end
-
-      context 'when a schema outside the search path contains only non-GitLab objects' do
-        let(:schema_rows) do
-          [
-            { 'name' => 'public', 'is_current' => true, 'owner' => 'gitlab', 'has_tables' => true },
-            { 'name' => 'foobar', 'is_current' => false, 'owner' => 'gitlab', 'has_tables' => true }
-          ]
-        end
-
-        let(:schema_table_rows) do
-          [
-            { 'schema_name' => 'public', 'table_name' => 'projects' },
-            { 'schema_name' => 'foobar', 'table_name' => 'not_a_gitlab_table' }
-          ]
-        end
-
-        it 'returns no findings' do
-          expect(findings).to be_empty
-        end
-      end
-
-      context 'when partition schemas outside the search path hold GitLab partitions' do
-        let(:schema_rows) do
-          [
-            { 'name' => 'public', 'is_current' => true, 'owner' => 'gitlab', 'has_tables' => true },
-            { 'name' => 'gitlab_partitions_dynamic', 'is_current' => false, 'owner' => 'gitlab',
-              'has_tables' => true }
-          ]
-        end
-
-        let(:schema_table_rows) do
-          [
-            { 'schema_name' => 'public', 'table_name' => 'projects' },
-            { 'schema_name' => 'gitlab_partitions_dynamic', 'table_name' => 'ci_builds' }
-          ]
-        end
-
-        it 'returns no findings' do
-          expect(findings).to be_empty
-        end
-      end
+      expect(payload).to include(check_result)
+      expect(payload[:vacuums]).to eq([])
+      expect(payload[:autovacuum_config]).to include(:settings)
     end
 
     context 'with vacuum progress' do
@@ -347,6 +69,19 @@ RSpec.describe Gitlab::Database::DatabaseInformation, feature_category: :databas
         allow(connection).to receive(:select_all).and_call_original
         allow(connection).to receive(:select_all)
           .with(a_string_matching(/pg_stat_progress_vacuum/)).and_return(vacuum_rows)
+
+        # Pin activity_readable? via its underlying query so the result does not
+        # depend on the test DB role's privileges. Contexts below override the
+        # is_superuser check to exercise the restricted paths.
+        allow(connection).to receive(:select_value).and_call_original
+        allow(connection).to receive(:select_value)
+          .with(a_string_matching(/is_superuser/)).and_return(true)
+
+        # Keep this context focused on vacuum progress: stub the sibling
+        # autovacuum-config collection so its queries don't hit the real DB.
+        allow_next_instance_of(described_class) do |info|
+          allow(info).to receive(:collect_autovacuum_config).and_return({})
+        end
       end
 
       it 'maps each in-progress vacuum into a typed hash', :aggregate_failures do
@@ -425,21 +160,91 @@ RSpec.describe Gitlab::Database::DatabaseInformation, feature_category: :databas
 
       context 'on PostgreSQL 16' do
         let(:database_version) { 16_00_10 }
-        let(:vacuum_rows) do
-          [{ 'pid' => '4242', 'phase' => 'scanning heap', 'index_vacuum_count' => '0' }]
+
+        it 'skips vacuum collection without running the query', :aggregate_failures do
+          expect(vacuums).to eq([])
+          expect(connection).not_to have_received(:select_all)
+            .with(a_string_matching(/pg_stat_progress_vacuum/))
+        end
+      end
+
+      it 'reports vacuum activity as available on the normal path' do
+        expect(described_class.execute[:databases]['main'][:vacuum_activity_available]).to be(true)
+      end
+
+      context 'when the role cannot read all stats' do
+        subject(:payload) { described_class.execute[:databases]['main'] }
+
+        before do
+          allow(connection).to receive(:select_value)
+            .with(a_string_matching(/is_superuser/)).and_return(false)
         end
 
-        it 'omits the dead-tuple and index-progress columns and reports nil', :aggregate_failures do
-          expect(vacuums.first).to include(
-            max_dead_tuple_bytes: nil,
-            dead_tuple_bytes: nil,
-            indexes_total: nil,
-            indexes_processed: nil,
-            delay_time: nil
+        it 'skips the activity join and reports activity unavailable', :aggregate_failures do
+          expect(payload[:error]).to be_nil
+          expect(payload[:vacuum_activity_available]).to be(false)
+          expect(payload[:vacuums].first).to include(
+            table_name: 'ci_builds',
+            heap_blks_total: 1000,
+            vacuum_type: nil,
+            anti_wraparound: nil,
+            running_time_seconds: nil
           )
-          expect(connection).not_to have_received(:select_all).with(a_string_matching(/v\.max_dead_tuple_bytes/))
-          expect(connection).not_to have_received(:select_all).with(a_string_matching(/v\.delay_time/))
+          expect(connection).not_to have_received(:select_all).with(a_string_matching(/pg_stat_activity/))
         end
+      end
+
+      context 'when SELECT on pg_stat_activity is revoked' do
+        subject(:payload) { described_class.execute[:databases]['main'] }
+
+        before do
+          error = ActiveRecord::StatementInvalid.new('permission denied for view pg_stat_activity')
+          allow(error).to receive(:cause).and_return(PG::InsufficientPrivilege.new)
+          allow(connection).to receive(:select_all)
+            .with(a_string_matching(/pg_stat_activity/)).and_raise(error)
+        end
+
+        it 'retries without the activity join and keeps the progress data', :aggregate_failures do
+          expect(payload[:error]).to be_nil
+          expect(payload[:vacuum_activity_available]).to be(false)
+          expect(payload[:vacuums].first).to include(
+            table_name: 'ci_builds',
+            vacuum_type: nil,
+            anti_wraparound: nil,
+            running_time_seconds: nil
+          )
+        end
+
+        it 're-raises other StatementInvalid errors into the payload error' do
+          allow(connection).to receive(:select_all)
+            .with(a_string_matching(/pg_stat_activity/))
+            .and_raise(ActiveRecord::StatementInvalid.new('boom'))
+          allow(Gitlab::ErrorTracking).to receive(:track_exception)
+
+          expect(payload[:error]).to be_present
+        end
+      end
+    end
+
+    context 'with autovacuum configuration' do
+      let(:check_result) { { settings: {}, findings: [], severity: nil, counts: {} } }
+
+      subject(:config) { described_class.execute[:databases]['main'][:autovacuum_config] }
+
+      before do
+        # Keep this context focused on autovacuum config: stub the sibling
+        # vacuum-progress collection so its query doesn't hit the real DB.
+        allow_next_instance_of(described_class) do |info|
+          allow(info).to receive(:collect_vacuums).and_return([])
+        end
+      end
+
+      it 'embeds the autovacuum settings check result' do
+        expect_next_instance_of(Gitlab::Database::Diagnostics::Checks::AutovacuumSettings) do |check|
+          expect(check).to receive(:execute).and_return(check_result)
+        end
+
+        expect(config).to eq(check_result)
       end
     end
 

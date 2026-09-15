@@ -16,18 +16,27 @@ class Current < ActiveSupport::CurrentAttributes
 
   # watch background jobs need to reset on each job if using
   attribute :organization, :organization_assigned
+
+  # The Gitlab::Current::Organization resolver behind #organization - only
+  # ever set from a real HTTP request, unlike #organization itself.
+  attribute :organization_resolver
+
   attribute :data_context
   attribute :token_info
   attribute :granular_denied_permissions
 
   attribute :cells_claims_leases
 
-  # TODO: After updating to Rails 7.2, move this logic to the attribute default.
+  # Deliberately lazy rather than a CurrentAttributes default: a default is
+  # resolved on reset, which in specs happens before stub_config_cell applies,
+  # silently disabling claiming.
+  #
+  # skip_sequence_alteration gates the other Topology Service calls in the DB
+  # configure path (cell enabled but no reachable service); claiming follows suit.
   def cells_claims_leases?
     if cells_claims_leases.nil?
       self.cells_claims_leases =
-        Gitlab.config.cell.enabled &&
-        Feature.enabled?(:cells_unique_claims) # rubocop:disable Gitlab/FeatureFlagWithoutActor -- We can't easily tie this to an actor
+        Gitlab.config.cell.enabled && !Gitlab.config.cell.database.skip_sequence_alteration
     end
 
     cells_claims_leases

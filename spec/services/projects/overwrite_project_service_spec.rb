@@ -5,13 +5,9 @@ require 'spec_helper'
 RSpec.describe Projects::OverwriteProjectService, feature_category: :groups_and_projects do
   include ProjectForksHelper
 
-  let(:user) { create(:user) }
+  let_it_be(:user) { create(:user) }
   let(:project_from) { create(:project, namespace: user.namespace) }
   let(:project_to) { create(:project, namespace: user.namespace) }
-  let!(:lvl1_forked_project_1) { fork_project(project_from, user) }
-  let!(:lvl1_forked_project_2) { fork_project(project_from, user) }
-  let!(:lvl2_forked_project_1_1) { fork_project(lvl1_forked_project_1, user) }
-  let!(:lvl2_forked_project_1_2) { fork_project(lvl1_forked_project_1, user) }
 
   subject { described_class.new(project_to, user) }
 
@@ -142,12 +138,17 @@ RSpec.describe Projects::OverwriteProjectService, feature_category: :groups_and_
 
     context 'when project with elements' do
       it_behaves_like 'overwrite actions' do
-        let(:maintainer_user) { create(:user) }
-        let(:reporter_user) { create(:user) }
-        let(:developer_user) { create(:user) }
-        let(:maintainer_group) { create(:group) }
-        let(:reporter_group) { create(:group) }
-        let(:developer_group) { create(:group) }
+        let_it_be(:maintainer_user) { create(:user) }
+        let_it_be(:reporter_user) { create(:user) }
+        let_it_be(:developer_user) { create(:user) }
+        let_it_be(:maintainer_group) { create(:group) }
+        let_it_be(:reporter_group) { create(:group) }
+        let_it_be(:developer_group) { create(:group) }
+
+        let(:project_from) do
+          create(:project, namespace: user.namespace, maintainers: maintainer_user, developers: developer_user,
+            reporters: reporter_user)
+        end
 
         before do
           create_list(:deploy_keys_project, 2, project: project_from)
@@ -156,14 +157,16 @@ RSpec.describe Projects::OverwriteProjectService, feature_category: :groups_and_
           project_from.project_group_links.create!(group: maintainer_group, group_access: Gitlab::Access::MAINTAINER)
           project_from.project_group_links.create!(group: developer_group, group_access: Gitlab::Access::DEVELOPER)
           project_from.project_group_links.create!(group: reporter_group, group_access: Gitlab::Access::REPORTER)
-          project_from.add_maintainer(maintainer_user)
-          project_from.add_developer(developer_user)
-          project_from.add_reporter(reporter_user)
         end
       end
     end
 
     context 'forks', :sidekiq_inline do
+      let!(:lvl1_forked_project_1) { fork_project(project_from, user) }
+      let!(:lvl1_forked_project_2) { fork_project(project_from, user) }
+      let!(:lvl2_forked_project_1_1) { fork_project(lvl1_forked_project_1, user) }
+      let!(:lvl2_forked_project_1_2) { fork_project(lvl1_forked_project_1, user) }
+
       context 'when moving a root forked project' do
         it 'moves the descendant forks' do
           expect(project_from.forks.count).to eq 2
@@ -224,6 +227,7 @@ RSpec.describe Projects::OverwriteProjectService, feature_category: :groups_and_
 
     context 'if an exception is raised' do
       before do
+        fork_project(project_from, user)
         allow(subject).to receive(:rename_project).and_raise(StandardError)
       end
 
@@ -256,6 +260,10 @@ RSpec.describe Projects::OverwriteProjectService, feature_category: :groups_and_
       end
 
       context 'when fork network conditions are met' do
+        before do
+          fork_project(project_from, user)
+        end
+
         it 'adds the source project to the fork network' do
           expect { subject.execute(project_from) }.to change {
             ForkNetworkMember.count

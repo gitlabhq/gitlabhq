@@ -1,0 +1,4 @@
+---
+name: update_placeholder_reassignment
+description: Grants the ability to update placeholder user reassignments, including
+  reassigning, keeping as placeholder, and resending reassignment notifications

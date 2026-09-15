@@ -20,7 +20,7 @@ import getWorkItemsQuery from 'ee_else_ce/work_items/list/graphql/get_work_items
 import getWorkItemsSlimQuery from 'ee_else_ce/work_items/list/graphql/get_work_items_slim.query.graphql';
 import getWorkItemsRestQuery from 'ee_else_ce/work_items/list/graphql/get_work_items_rest.query.graphql';
 import { getIdFromGraphQLId } from '~/graphql_shared/utils';
-import { TYPENAME_NAMESPACE } from '~/graphql_shared/constants';
+import { evictNamespaceWorkItems } from '~/work_items/list/graphql/cache_updates';
 import { STATUS_OPEN } from '~/issues/constants';
 import LocalStorageSync from '~/vue_shared/components/local_storage_sync.vue';
 import PageSizeSelector from '~/vue_shared/components/page_size_selector.vue';
@@ -52,6 +52,7 @@ import {
   findDetailPanelWorkItem,
   findHierarchyWidget,
   getSortedWorkItems,
+  getWorkItemsConnection,
 } from '../utils';
 
 import HealthStatus from './components/health_status.vue';
@@ -185,6 +186,7 @@ export default {
     'set-checked-issuable-ids',
     'set-page-params',
     'set-page-size',
+    'page-info',
     'select-item',
     'set-active-item',
     'work-items-changed',
@@ -280,7 +282,10 @@ export default {
   watch: {
     workItems: {
       handler(value) {
-        if (!this.shouldLoad) {
+        // `isInitialLoadComplete` is set by whichever list query returns first, but the detail
+        // panel needs `iid`, `webPath` and `workItemType`, which only the slim query selects.
+        // Wait for it, otherwise a full-query-first response opens the panel on a bare item.
+        if (!this.shouldLoad && !this.isLoading) {
           this.checkDetailPanelParams();
         }
         this.$emit('work-items-changed', {
@@ -309,7 +314,7 @@ export default {
           return this.queryVariables;
         },
         update(data) {
-          return data?.namespace?.workItems.nodes ?? [];
+          return getWorkItemsConnection(data, this.useRestApi)?.nodes ?? [];
         },
         skip() {
           return isEmpty(this.queryVariables) || this.skipQuery;
@@ -327,21 +332,14 @@ export default {
       };
     },
     handleListDataResults(data) {
-      this.pageInfo = data?.namespace?.workItems.pageInfo ?? {};
+      this.pageInfo = getWorkItemsConnection(data, this.useRestApi)?.pageInfo ?? {};
+      this.$emit('page-info', this.pageInfo);
       this.namespaceId = data?.namespace?.id;
 
       if (data?.namespace) {
         this.$emit('namespace-data-loaded', { namespaceName: data.namespace.name, data });
       }
       this.isInitialLoadComplete = true;
-    },
-    handleEvictCache() {
-      const { cache } = this.$apollo.provider.defaultClient;
-      cache.evict({
-        id: cache.identify({ __typename: TYPENAME_NAMESPACE, id: this.namespaceId }),
-        fieldName: 'workItems',
-      });
-      cache.gc();
     },
     checkDetailPanelParams() {
       const queryParam = getParameterByName(DETAIL_VIEW_QUERY_PARAM_NAME);
@@ -416,11 +414,13 @@ export default {
           variables: this.queryVariables,
         },
         (existingData) => {
-          if (!existingData?.namespace?.workItems?.nodes) {
+          const workItemsPath = getWorkItemsConnection(existingData, this.useRestApi)?.nodes;
+
+          if (!workItemsPath) {
             return existingData;
           }
 
-          const workItems = [...existingData.namespace.workItems.nodes];
+          const workItems = [...workItemsPath];
 
           if (oldIndex >= 0 && oldIndex < workItems.length) {
             const [movedItem] = workItems.splice(oldIndex, 1);
@@ -430,7 +430,11 @@ export default {
           }
 
           return produce(existingData, (draftData) => {
-            draftData.namespace.workItems.nodes = workItems;
+            if (this.useRestApi) {
+              draftData.restWorkItems.nodes = workItems;
+            } else {
+              draftData.namespace.workItems.nodes = workItems;
+            }
           });
         },
       );
@@ -492,7 +496,9 @@ export default {
       if (refetchCounts) {
         this.$emit('refetch-data', 'counts');
       }
-      this.handleEvictCache();
+      evictNamespaceWorkItems(this.$apollo.provider.defaultClient.cache, this.namespaceId, {
+        useRestApi: this.useRestApi,
+      });
     },
     isDirectChildOfWorkItem(workItem) {
       if (!workItem) {

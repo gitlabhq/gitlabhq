@@ -113,13 +113,13 @@ If the test has a `before` or `after` block, you must add the `only` or `except`
 
 To run a test tagged with `only` on your local GitLab instance, you can do one of the following:
 
-- Make sure you **do not** have the `CI_PROJECT_NAME` or `CI_JOB_NAME` environment variables set.
+- Make sure you do not have the `CI_PROJECT_NAME` or `CI_JOB_NAME` environment variables set.
 - Set the appropriate variable to match the metadata. For example, if the metadata is `only: { pipeline: :nightly }` then set `CI_PROJECT_NAME=nightly`. If the metadata is `only: { job: 'ee:instance' }` then set `CI_JOB_NAME=ee:instance`.
 - Temporarily remove the metadata.
 
 To run a test tagged with `except` locally, you can either:
 
-- Make sure you **do not** have the `CI_PROJECT_NAME` or `CI_JOB_NAME` environment variables set.
+- Make sure you do not have the `CI_PROJECT_NAME` or `CI_JOB_NAME` environment variables set.
 - Temporarily remove the metadata.
 
 ## Quarantine a test for a specific environment

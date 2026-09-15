@@ -18,7 +18,7 @@ security.
 
 Be aware that S/MIME certificates and TLS/SSL certificates are not the
 same and are used for different purposes: TLS creates a secure channel, whereas
-S/MIME signs and/or encrypts the message itself
+S/MIME signs and/or encrypts the message itself.
 
 ## Enable S/MIME signing
 

@@ -44,6 +44,24 @@ describe('Pipeline operations', () => {
   const findCancelBtn = () => wrapper.findComponentByTestId('pipelines-cancel-button');
   const findPipelineStopModal = () => wrapper.findComponent(PipelineStopModal);
 
+  const graphqlProps = {
+    pipeline: {
+      id: 'gid://gitlab/Ci::Pipeline/329',
+      iid: '234',
+      project: {
+        fullPath: 'root/ci-project',
+      },
+      hasManualActions: true,
+      hasScheduledActions: false,
+      retryable: true,
+      cancelable: true,
+      userPermissions: {
+        cancelPipeline: true,
+        updatePipeline: true,
+      },
+    },
+  };
+
   it('should display pipeline manual actions', () => {
     createComponent();
 
@@ -60,6 +78,52 @@ describe('Pipeline operations', () => {
     createComponent();
 
     expect(findPipelineStopModal().props().showConfirmationModal).toBe(false);
+  });
+
+  describe('with a REST pipeline', () => {
+    it('shows the retry and cancel buttons based on flags alone', () => {
+      createComponent();
+
+      expect(findRetryBtn().exists()).toBe(true);
+      expect(findCancelBtn().exists()).toBe(true);
+    });
+  });
+
+  describe('with a GraphQL pipeline', () => {
+    it.each`
+      button      | findButton       | state                    | permissions                                        | exists
+      ${'retry'}  | ${findRetryBtn}  | ${{ retryable: true }}   | ${{ cancelPipeline: true, updatePipeline: true }}  | ${true}
+      ${'retry'}  | ${findRetryBtn}  | ${{ retryable: true }}   | ${{ cancelPipeline: true, updatePipeline: false }} | ${false}
+      ${'retry'}  | ${findRetryBtn}  | ${{ retryable: false }}  | ${{ cancelPipeline: true, updatePipeline: true }}  | ${false}
+      ${'cancel'} | ${findCancelBtn} | ${{ cancelable: true }}  | ${{ cancelPipeline: true, updatePipeline: true }}  | ${true}
+      ${'cancel'} | ${findCancelBtn} | ${{ cancelable: true }}  | ${{ cancelPipeline: false, updatePipeline: true }} | ${false}
+      ${'cancel'} | ${findCancelBtn} | ${{ cancelable: false }} | ${{ cancelPipeline: true, updatePipeline: true }}  | ${false}
+    `(
+      '$button button exists is $exists when state is $state and permissions are $permissions',
+      ({ findButton, state, permissions, exists }) => {
+        createComponent({
+          pipeline: {
+            ...graphqlProps.pipeline,
+            ...state,
+            userPermissions: permissions,
+          },
+        });
+
+        expect(findButton().exists()).toBe(exists);
+      },
+    );
+
+    it('does not show the retry and cancel buttons when userPermissions is missing', () => {
+      createComponent({
+        pipeline: {
+          ...graphqlProps.pipeline,
+          userPermissions: null,
+        },
+      });
+
+      expect(findRetryBtn().exists()).toBe(false);
+      expect(findCancelBtn().exists()).toBe(false);
+    });
   });
 
   describe('when cancelling a pipeline', () => {

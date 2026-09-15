@@ -100,6 +100,17 @@ test:
         aws_secret_access_key: AWS_SECRET_ACCESS_KEY
         region: us-east-1
 
+  ci_catalog_bundles:
+    storage_path: /tmp/gitlab/full/ci_catalog_bundles
+    object_store:
+      enabled: false
+      remote_directory: ci-catalog-bundles
+      connection:
+        provider: AWS # Only AWS supported at the moment
+        aws_access_key_id: AWS_ACCESS_KEY_ID
+        aws_secret_access_key: AWS_SECRET_ACCESS_KEY
+        region: us-east-1
+
   registry:
     enabled: true
     path: /tmp/gitlab/full/registry

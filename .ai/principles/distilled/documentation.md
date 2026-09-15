@@ -1,6 +1,6 @@
 ---
-source_checksum: aa7fcd5a891ab119
-distilled_at_sha: 3941b843c30927ec6cea3e9caa43c88e5f930cb6
+source_checksum: c49a0e93d1f3e494
+distilled_at_sha: da75f7373628b035becb13fb3f0d21b4b3d3690f
 ---
 <!-- Auto-generated from docs.gitlab.com by gitlab-ai-principles-distiller — do not edit manually -->
 
@@ -59,6 +59,7 @@ distilled_at_sha: 3941b843c30927ec6cea3e9caa43c88e5f930cb6
 - Use dashes (`-`) for unordered lists, not asterisks (`*`).
 - Start every ordered list item with `1.`.
 - Use two spaces per indentation level for unordered lists; three spaces for ordered lists.
+- Use description lists to define terms or differentiate between options; use a regular list for UI elements; DO NOT mix description lists with other styles.
 - DO NOT use HTML in Markdown unless no Markdown equivalent exists, the content is reviewed by a technical writer, and the need is urgent.
 - Any `<a>` tags created with HTML must use absolute URLs as `href` attributes.
 - Use inline links, not reference-style links.
@@ -180,6 +181,8 @@ distilled_at_sha: 3941b843c30927ec6cea3e9caa43c88e5f930cb6
 - DO NOT add availability details to tutorials, tier-comparison pages, `/development` pages, or `/solutions` pages.
 - DO NOT repeat tier, offering, or status in a subheading's badge when it matches the parent topic's badge.
 - Place history notes (`{{< history >}}` shortcode) after the details block and immediately after the heading; start each entry with `-` and link to the related issue, MR, or epic when possible.
+- Add a history entry only to the page for the feature that changed; DO NOT duplicate the entry on other pages.
+- When a feature changes from seat-based billing to usage-based billing with GitLab Credits, add a `Changed to usage-based billing` entry only to the feature's history; DO NOT add an entry to the GitLab Credits history.
 - Remove history items and inline version references that refer to unsupported GitLab versions (current major version and two previous major versions are supported); when a new major version is about to be released, create removal MRs in advance but merge them only during that milestone.
 - For tools released on their own schedule (e.g., editor extensions, CLI tools), include both the GitLab version and the tool version in history entries with a link to the tool's release page; nest tool version entries under the related instance history item when both change together, or use `during the GitLab X.Y release` phrasing when the change is tool-only.
 - For GitLab Duo features available with self-hosted models, use the `{{< collapsible title="Model information" >}}` shortcode; DO NOT state that a feature is unavailable on self-hosted models unless necessary, and if you must, use "Not available on GitLab Duo with self-hosted models" without a link.
@@ -189,6 +192,7 @@ distilled_at_sha: 3941b843c30927ec6cea3e9caa43c88e5f930cb6
 
 - When deprecating a feature, add `(deprecated)` after the title, add a `> [!warning]` alert stating when it was deprecated and when it will be removed, and wrap the content in `<!--- start_remove The following content will be removed on remove_date: 'YYYY-MM-DD' -->` and `<!--- end_remove -->` HTML comments (set `remove_date` to three months after the planned removal release).
 - When removing a feature, change `(deprecated)` to `(removed)` in the title, remove all content except the deprecation/removal statement, set `remove_date` in metadata to three months after the removal release, and set `redirect_to` to a relevant replacement page.
+- When removing a topic (subsection) rather than a full page, leave the title and deprecation/removal details, add `(removed)` after the title, and wrap the remaining content in HTML comments with `remove_date` set to three months after the removal release.
 - After removing a page, edit `navigation.yaml` in `docs-gitlab-com` to remove the page's entry from the global navigation, update any links in the [Deprecations and Removals](https://docs.gitlab.com/update/deprecations/) YAML files, and run `bin/rake gitlab:docs:compile_deprecations`.
 - DO NOT follow the standard deprecation process for features that are not generally available; delete the content outright instead.
 - For features no longer actively developed but not deprecated, add a note under the topic title stating the feature is not under active development but community contributions are welcome.
@@ -248,3 +252,4 @@ For the full picture, see:
 - doc/development/documentation/styleguide/availability_details.md
 - doc/development/documentation/styleguide/deprecations_and_removals.md
 - doc/development/documentation/metadata.md
+

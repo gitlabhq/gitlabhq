@@ -1,6 +1,6 @@
 ---
 stage: Plan
-group: Project Management
+group: Work Items
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see <https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments>
 title: Milestones
 description: Burndown charts, goals, progress tracking, and releases.
@@ -124,7 +124,7 @@ showing the progress of completing a milestone.
 
 The sidebar on the milestone view shows the following:
 
-- Percentage complete, which is calculated as number of closed work items divided by total number of work items.
+- Percentage complete, which is calculated as the number of closed work items divided by the total number of work items.
 - The start date and due date.
 - The total time spent on all work items and merge requests assigned to the milestone.
 - The total issue weight of all work items assigned to the milestone.
@@ -162,10 +162,10 @@ To create a milestone:
 
 ### Milestone title rules
 
-To avoid confusion within group hierarchies, duplicate milestone titles are not permitted.
+To avoid confusion in group hierarchies, duplicate milestone titles are not permitted.
 
 - For **project milestones**, titles must be unique in the project's ancestor hierarchy for both project and milestone titles.
-- For **group milestones**, titles must be unique within the group's hierarchy, for both ancestors and children, including group and project milestones.
+- For **group milestones**, titles must be unique in the group's hierarchy, for both ancestors and children, including group and project milestones.
 
 ## Edit a milestone
 
@@ -272,7 +272,7 @@ To promote a project milestone:
 
 {{< history >}}
 
-- Ability to assign milestones to epics [introduced](https://gitlab.com/groups/gitlab-org/-/work_items/329) in GitLab 18.2.
+- Assigning milestones to epics [introduced](https://gitlab.com/groups/gitlab-org/-/work_items/329) in GitLab 18.2.
 
 {{< /history >}}
 

@@ -177,7 +177,7 @@ To view only the projects you are the owner of:
 
 ## View project activity
 
-To view the activity of a project:
+You can view the most recent actions taken in a project:
 
 1. In the top bar, select **Search or go to** and find your project.
 1. In the left sidebar, select **Manage** > **Activity**.
@@ -190,6 +190,9 @@ To view the activity of a project:
    - **Comments**: Comments posted by project members.
    - **Designs**: Designs added, updated, and removed in the project.
    - **Team**: Members who joined and left the project.
+
+1. Optional. To subscribe to an RSS feed of this activity, select the feed symbol
+   ({{< icon name="rss" >}}).
 
 GitLab removes project activity events older than three years from the events table for performance reasons.
 
@@ -267,7 +270,7 @@ Prerequisites:
 - You must be an administrator or have the Maintainer or Owner role for the project.
 
 > [!note]
-> When you change the repository path, users may experience issues if they push to, or pull from, the old URL.
+> When you change the repository path, users might experience issues if they push to, or pull from, the old URL.
 > For more information on redirect duration and its side-effects, see
 > [redirects when renaming repositories](repository/_index.md#repository-path-changes).
 
@@ -486,6 +489,7 @@ This action is also available on other list pages.
 - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/499163) in GitLab 17.7 [with a feature flag](../../administration/feature_flags/_index.md) named `transfer_project_with_tags`. Disabled by default.
 - [Enabled on GitLab.com](https://gitlab.com/gitlab-org/gitlab/-/issues/499163) in GitLab 17.7. Feature flag removed.
 - Asynchronous transfers for projects [introduced](https://gitlab.com/gitlab-org/gitlab/-/work_items/594575) in GitLab 18.11 [with a feature flag](../../administration/feature_flags/_index.md) named `groups_and_projects_async_transfer`. Disabled by default.
+- [Generally available](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/250913) in GitLab 19.4. Feature flag `groups_and_projects_async_transfer` removed.
 
 {{< /history >}}
 
@@ -582,6 +586,12 @@ For projects that use the package registry:
 For projects with a security policy:
 
 - The project must not have a security policy. If a security policy is assigned to the project, it is automatically unassigned during the transfer.
+
+For projects that use GitLab Secrets Manager:
+
+> [!warning]
+> All secrets in GitLab Secrets Manager for the group, its subgroups, and its projects are
+> [permanently deleted during the transfer](../../ci/secrets/secrets_manager/_index.md#transfer-of-a-project-or-group).
 
 For projects with name or path conflicts:
 

@@ -51,6 +51,19 @@ The following video gives you an overview of GitLab merge request approval polic
 
 ## Pipeline requirements
 
+{{< history >}}
+
+- Blocking on failed scan jobs [introduced](https://gitlab.com/gitlab-org/gitlab/-/work_items/604648) in GitLab 19.3
+  [with a feature flag](../../../administration/feature_flags/_index.md) named
+  `approval_policies_block_on_failed_scan_job`. Disabled by default.
+- [Enabled by default](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/253104) in GitLab 19.4.
+
+{{< /history >}}
+
+> [!flag]
+> The availability of the failed-scan-job blocking behavior is controlled by a feature flag.
+> For more information, see the history.
+
 A merge request approval policy is enforced according to the outcome of the pipeline. Consider the
 following when implementing a merge request approval policy:
 
@@ -71,6 +84,23 @@ following when implementing a merge request approval policy:
 - Security scanners specified in a policy must be configured and enabled in the projects on which
   the policy is enforced. If not, the merge request approval policy cannot be evaluated and the
   corresponding approvals are required.
+- When a CI job for a scanner required by a policy rule terminates without succeeding and produces
+  no security report, approval is required — even if other scanners in the same pipeline succeeded.
+  Only the job statuses `failed`, `canceled`, and `canceling` trigger this check. Non-terminal
+  statuses (`created`, `pending`, `running`) and `manual` or `skipped` jobs do not. The check is
+  scoped to the scanners the rule actually lists. The check routes through the existing
+  [`fallback_behavior`](#fallback_behavior) path: `fail: closed` (the default) blocks the merge
+  request, while `fail: open` does not block it but still shows an advisory message: confirm that
+  all security scan jobs complete successfully, since canceled or failed scan jobs might produce
+  incomplete results.
+
+  > [!note]
+  > For Dependency Scanning v2, the resolution jobs (for example,
+  > `dependency-scanning:maven-resolution`) run in the `.pre` stage and declare only
+  > `artifacts:paths`, not `artifacts:reports:`. A failure in a resolution job is therefore
+  > invisible to this check while the downstream `dependency-scanning` job can still succeed and
+  > upload a report. This is expected behavior for the DS v2 topology and is tracked in
+  > [issue 607109](https://gitlab.com/gitlab-org/gitlab/-/work_items/607109).
 
 ## Best practices for using security scanners with merge request approval policies
 
@@ -188,7 +218,7 @@ the following sections and tables provide an alternative.
 | `fallback_behavior` | `object`           | false    |                 | Settings that affect invalid or unenforceable rules.     |
 | `policy_scope`      | `object` of [`policy_scope`](_index.md#configure-the-policy-scope) | false |  | Defines the scope of the policy based on the projects, groups, or compliance framework labels you specify. |
 | `policy_tuning`     | `object`           | false    |                 | (Experimental) Settings that affect policy comparison logic.     |
-| `bypass_settings`   | `object`           | false    |                 | Settings that affect when certain branches, tokens, or accounts can bypass a policy .     |
+| `bypass_settings`   | `object`           | false    |                 | Settings that affect when certain branches, tokens, or accounts can bypass a policy.     |
 | `enforcement_type`  | `string`           | false    | `enforce`, `warn` | Defines how the policy is enforced. The default value (if not specified) is `enforce`, which blocks merge requests when violations are detected. The value `warn` allows merge requests to proceed but shows warnings and bot comments. |
 
 ## `scan_finding` rule type
@@ -251,6 +281,7 @@ When a scanner is specified as an object instead of a string, each scanner type 
 | `severity_levels`          | `array` of `string` | false    | `info`, `unknown`, `low`, `medium`, `high`, `critical`                            | Overrides the rule-level `severity_levels` for this scanner. |
 | `vulnerabilities_allowed`  | `integer`           | false    | Greater than or equal to zero                                                     | Overrides the rule-level `vulnerabilities_allowed` for this scanner. |
 | `vulnerability_attributes` | `object`            | false    | [`vulnerability_attributes`](#vulnerability_attributes-object) object              | Overrides the rule-level `vulnerability_attributes` for this scanner. |
+| `is_malicious`             | `boolean`           | false    | `true`, `false`                                                                   | When `true`, findings from this scanner that are identified as malicious packages are treated as violations, regardless of the `severity_levels` and `vulnerability_states` filters, and even when a finding is dismissed. Valid only for `dependency_scanning`. For more information, see [block malicious packages with the malware rule](#block-malicious-packages-with-the-malware-rule). |
 
 Example using per-scanner criteria:
 
@@ -292,6 +323,66 @@ In this example:
 - **Container scanning** requires approval if any critical and known-exploited vulnerability is detected.
 - Each scanner is evaluated independently against its own thresholds. The rule-level `vulnerabilities_allowed: 5` and `severity_levels` serve as defaults for any scanner without explicit overrides.
 
+### Block malicious packages with the malware rule
+
+{{< details >}}
+
+- Tier: Ultimate
+- Offering: GitLab.com, GitLab Self-Managed, GitLab Dedicated
+
+{{< /details >}}
+
+{{< history >}}
+
+- [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/19465) in GitLab 19.2 [with a feature flag](../../../administration/feature_flags/_index.md) named `security_policies_malware_attribute`. Disabled by default.
+- [Enabled by default](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/253877) in GitLab 19.4.
+
+{{< /history >}}
+
+> [!flag]
+> The availability of this feature is controlled by a feature flag.
+> For more information, see the history.
+
+Use the `is_malicious` scanner attribute to block merge requests when a scan detects a package
+listed in the
+[GitLab malware advisories](../gitlab_advisory_database/_index.md#gitlab-malware-advisories).
+Malicious findings carry immediate risk, so they are always treated as violations, even when a
+finding does not match the other criteria in the rule. The rule blocks a malicious finding even when
+the finding is dismissed, or falls outside the `severity_levels` and `vulnerability_states` filters.
+
+The `is_malicious` attribute is valid only for the `dependency_scanning` and `container_scanning`
+scanners. Malicious findings are identified by a `GLAM-` identifier rather than the `CVE` or `CWE`
+identifiers used for other vulnerabilities. Malware advisories cover only the package types
+supported by dependency scanning, so `container_scanning` scanners do not produce malicious
+findings. For the full list of supported package types, see
+[supported package types](../gitlab_advisory_database/_index.md#supported-package-types).
+
+When you set `is_malicious: true` on a scanner, the rule evaluates that scanner as an `OR`
+condition. A merge request is in violation when malware is detected, when a finding matches the
+other rule criteria, or both. For example, the following rule requires approval when dependency
+scanning detects a malicious package, or when dependency scanning detects a finding with a critical
+severity:
+
+```yaml
+rules:
+  - type: scan_finding
+    branches: []
+    scanners:
+      - type: dependency_scanning
+        is_malicious: true
+      - type: dependency_scanning
+    vulnerabilities_allowed: 0
+    severity_levels:
+      - critical
+    vulnerability_states:
+      - new_needs_triage
+```
+
+Malicious findings appear in the merge request policy bot comment as violations, alongside any
+other scan finding violations.
+
+The interaction between the malware rule and [warn mode](#warn-mode) is proposed in [epic 19465](https://gitlab.com/groups/gitlab-org/-/epics/19465).
+
 ## `license_finding` rule type
 
 {{< history >}}
@@ -309,9 +400,9 @@ This rule enforces the defined actions based on license findings.
 | `branch_type`  | `string` | true if `branches` field does not exist       | `default` or `protected`     | The types of protected branches the given policy applies to. Cannot be used with the `branches` field. Default branches must also be `protected`.                                                                   |
 | `branch_exceptions` | `array` of `string` | false                                         | Names of branches            | Target branches to exclude from this rule.                                                                                                                                                                                 |
 | `match_on_inclusion_license` | `boolean` | true if `licenses` field does not exist       | `true`, `false`              | Whether the rule matches inclusion or exclusion of licenses listed in `license_types`.                                                                                                                              |
-| `license_types` | `array` of `string` | true if `licenses` field does not exist       | license types                | [SPDX license names](https://spdx.org/licenses) to match on, for example `Affero General Public License v1.0` or `MIT License`.                                                                                     |
+| `license_types` | `array` of `string` | true if `licenses` field does not exist       | license types                | [SPDX license names](https://spdx.org/licenses/) to match on, for example `Affero General Public License v1.0` or `MIT License`.                                                                                     |
 | `license_states` | `array` of `string` | true                                          | `newly_detected`, `detected` | Whether to match newly detected and/or previously detected licenses. The `newly_detected` state triggers approval when either a new package is introduced or when a new license for an existing package is detected. |
-| `licenses`     | `object` | true if `license_types` field does not exist  | `licenses` object            | [SPDX license names](https://spdx.org/licenses) to match on including package exceptions.                                                                                                                        |
+| `licenses`     | `object` | true if `license_types` field does not exist  | `licenses` object            | [SPDX license names](https://spdx.org/licenses/) to match on including package exceptions.                                                                                                                        |
 
 ### `licenses` object
 
@@ -327,11 +418,11 @@ package exclusions.
 
 | Field  | Type     | Required | Possible values   | Description                                        |
 |--------|----------|----------|-------------------|----------------------------------------------------|
-| `name` | `string` | true     | SPDX license name | [SPDX license name](https://spdx.org/licenses).    |
+| `name` | `string` | true     | SPDX license name | [SPDX license name](https://spdx.org/licenses/).    |
 | `packages` | `object` | false    | `packages` object | List of packages exceptions for the given license. |
 
 > [!note]
-> The `name` field must be a valid [SPDX license name](https://spdx.org/licenses).
+> The `name` field must be a valid [SPDX license name](https://spdx.org/licenses/).
 > The value `unknown` is not a recognized SPDX license name, and is not supported in
 > the `licenses` field. Package-level exclusions configured for `unknown` licenses are
 > ignored during merge request approval evaluation. To manage packages with `unknown`
@@ -462,17 +553,19 @@ actions:
   - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/469449) in GitLab 17.2 [with a feature flag](../../../administration/feature_flags/_index.md) named `approval_policy_disable_bot_comment_group`. Disabled by default.
   - [Enabled on GitLab Self-Managed, and GitLab Dedicated](https://gitlab.com/gitlab-org/gitlab/-/issues/469449) in GitLab 17.2.
   - [Generally available](https://gitlab.com/gitlab-org/gitlab/-/issues/469449) in GitLab 17.3. Feature flag `approval_policy_disable_bot_comment_group` removed.
+- The `visibility` field [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/254046) in GitLab 19.4.
 
 {{< /history >}}
 
 This action enables configuration of the bot message in merge requests when policy violations are detected.
 If the action is not specified, the bot message is enabled by default. If there are multiple policies defined,
-the bot message is sent as long as at least one of those policies has the `send_bot_message` action is enabled.
+the bot message is sent as long as at least one of those policies has the `send_bot_message` action enabled.
 
 | Field | Type | Required | Possible values | Description |
 |-------|------|----------|-----------------|-------------|
 | `type` | `string` | true | `send_bot_message` | The action's type. |
 | `enabled` | `boolean` | true | `true`, `false` | Whether a bot message should be created when policy violations are detected. Default: `true` |
+| `visibility` | `string` | false | `public`, `internal` | Whether the bot message is publicly visible or an [internal note](../../discussions/_index.md#add-an-internal-note), visible only to project members with at least the Reporter role. Default: `public`. If multiple violated policies apply different visibility settings to the same merge request, the comment is internal if any of them set `internal`. If a policy change makes an existing public comment internal, GitLab deletes the existing comment and posts a new internal one on the next policy evaluation, which loses any replies posted to it. GitLab does not make an existing internal comment public again. |
 
 ### Example bot messages
 
@@ -502,6 +595,7 @@ When warn mode is enabled (`enforcement_type: warn`) and a merge request trigger
 - Non-blocking validation: The policy generates informative bot comments listing the policy violations.
 - Optional approvals: Approvals are optional if the user bypasses the policy and provides the reasoning for the dismissal.
 - Enhanced auditing: After the merge request is merged with a bypassed security policy, audit events are created.
+  Audit events record that a bypass occurred, but do not include the bypass comment or dismissal reason.
 - Vulnerability report integration: If a vulnerability was introduced by a merge request with a bypassed policy, the bypass details are visible in the vulnerability report.
 - Dependency list integration: If a merge request that bypasses a policy introduces a license, the dependency list displays a policy violation badge beside the license. Policy violation badges are available only on the dependency list for projects.
 - Disabled approval settings: Approval setting overrides are not enforced.
@@ -607,7 +701,7 @@ policy violations:
 
 | Field  | Type     | Required | Possible values    | Description                                                                                                          |
 |--------|----------|----------|--------------------|----------------------------------------------------------------------------------------------------------------------|
-| `unblock_rules_using_execution_policies` | `boolean` | false    | `true`, `false` | When enabled, approval rules do not block merge requests when a scan is required by a scan execution policy or a pipeline execution policy but a required scan artifact is missing from the source branch. This option only works when the project or group has an existing scan execution policy or pipeline execution policy with matching scanners. |
+| `unblock_rules_using_execution_policies` | `boolean` | false    | `true`, `false` | When enabled, approval rules do not block merge requests when a scan is required by a scan execution policy or a pipeline execution policy, but a required scan artifact is missing from the source branch. This option only works when the project or group has an existing scan execution policy or pipeline execution policy with matching scanners. |
 
 You can only exclude [license finding rules](#license_finding-rule-type) if they target newly detected states only (`license_states` is set to `newly_detected`).
 
@@ -1189,7 +1283,7 @@ Support teams will investigate [logs](https://log.gprd.gitlab.net/) (`pubsub-sid
 
 #### GitLab Self-Managed
 
-Search for keywords such as the `project-path`, `api_fuzzing`, and `merge_request`. Example: `grep group-path/project-path`, and `grep merge_request`. If you know the correlation ID you can search by correlation ID. For example, if the value of `correlation_id` is 01HWN2NFABCEDFG, search for `01HWN2NFABCEDFG`.
+Search for keywords such as the `project-path`, `api_fuzzing`, and `merge_request`. Example: `grep group-path/project-path`, and `grep merge_request`. If you know the correlation ID, you can search by correlation ID. For example, if the value of `correlation_id` is 01HWN2NFABCEDFG, search for `01HWN2NFABCEDFG`.
 Search in the following files:
 
 - `/gitlab/gitlab-rails/production_json.log`
@@ -1198,6 +1292,20 @@ Search in the following files:
 Common failure reasons:
 
 - Scanner removed by MR: Merge request approval policy expects that the scanners defined in the policy are present and that they successfully produce an artifact for comparison.
+- Security scan did not complete successfully: A scanner required by the policy had a CI job that
+  was canceled or failed after producing artifacts. The bot message reads:
+  `Policy <name> could not be evaluated because the following security scans did not complete
+  successfully: <scanners>. Ensure security scan jobs are not canceled or failing.`
+  Introduced in GitLab 18.11 by [merge request 228446](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/228446).
+- Security scan job did not succeed and produced no report: A scanner required by the policy had a
+  CI job that failed or was canceled before producing any artifact, so no security report exists.
+  The bot message reads:
+  `Policy <name> could not be evaluated because the following security scans did not complete
+  successfully: <scanners>. Ensure security scan jobs are not canceled or failing.`
+  Introduced in GitLab 19.3 by [merge request 243540](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/243540)
+  behind the feature flag `approval_policies_block_on_failed_scan_job`, enabled by default since
+  GitLab 19.4.
+  For the Dependency Scanning v2 limitation, see [Pipeline requirements](#pipeline-requirements).
 
 ### Inconsistent approvals from merge request approval policies
 

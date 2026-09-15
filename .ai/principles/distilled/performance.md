@@ -1,6 +1,6 @@
 ---
-source_checksum: f7ec4e5077eb3636
-distilled_at_sha: 403f0ba78983ea28f47a927139b91425bb93dcef
+source_checksum: f4a84653ee629a19
+distilled_at_sha: da75f7373628b035becb13fb3f0d21b4b3d3690f
 ---
 <!-- Auto-generated from docs.gitlab.com by gitlab-ai-principles-distiller — do not edit manually -->
 
@@ -40,7 +40,7 @@ distilled_at_sha: 403f0ba78983ea28f47a927139b91425bb93dcef
 ### Eager Loading
 
 - Eager load associations whenever retrieving more than one row that uses associations (use `includes`)
-- `QueryRecorder` tests used to prevent regressions when eager loading
+- Use [QueryRecorder](https://docs.gitlab.com/development/database/query_recorder/) tests to prevent regressions when eager loading
 
 ### Memory Usage
 

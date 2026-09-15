@@ -51,6 +51,7 @@ export const ICON_MAP = {
   milestones: 'milestone',
   users: 'users',
   projects: 'project',
+  groups: 'group',
   wiki_blobs: WIKI_ICON,
   snippet_titles: 'snippet',
 };
@@ -66,6 +67,7 @@ export const SCOPE_NAVIGATION_MAP = {
   milestones: s__('GlobalSearch|Milestones'),
   users: s__('GlobalSearch|Users'),
   projects: s__('GlobalSearch|Projects'),
+  groups: s__('GlobalSearch|Groups'),
   wiki_blobs: s__('GlobalSearch|Wiki'),
   snippet_titles: s__('GlobalSearch|Snippets'),
 };

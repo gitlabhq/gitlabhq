@@ -264,7 +264,7 @@ module Gitlab
         end
 
         def with_redis(&)
-          Gitlab::Redis::SharedState.with(&) # rubocop:disable CodeReuse/ActiveRecord -- Not active record
+          Gitlab::Redis::ConcurrencyLimit.with(&) # rubocop:disable CodeReuse/ActiveRecord -- Not active record
         end
 
         def serialize(job, context)

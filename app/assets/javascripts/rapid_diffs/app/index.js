@@ -166,7 +166,18 @@ export class RapidDiffsFacade {
     disableBrokenContentVisibility(this.root);
     initHiddenFilesWarning(this.root.querySelector('[data-hidden-files-warning]'));
     initFileByFileNavigation(this.root.querySelector('[data-file-by-file-navigation]'));
-    this.root.addEventListener(DIFF_FILE_MOUNTED, useDiffsList(pinia).addLoadedFile);
+    // Files mount hundreds of times per second while streaming; one store update per frame keeps
+    // the file browser from re-rendering on every single file.
+    let mountedIds = [];
+    this.root.addEventListener(DIFF_FILE_MOUNTED, ({ target }) => {
+      if (mountedIds.length === 0) {
+        requestAnimationFrame(() => {
+          useDiffsList(pinia).addLoadedFiles(mountedIds);
+          mountedIds = [];
+        });
+      }
+      mountedIds.push(target.id);
+    });
   }
 
   #populateLegacyFileFragment() {

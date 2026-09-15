@@ -15,7 +15,6 @@ export function initForkApp() {
 
   const {
     forkIllustration,
-    endpoint,
     newGroupPath,
     projectFullPath,
     visibilityHelpPath,
@@ -39,7 +38,6 @@ export function initForkApp() {
       newGroupPath,
       visibilityHelpPath,
       cancelPath,
-      endpoint,
       projectFullPath,
       projectId,
       projectName,

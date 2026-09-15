@@ -10,6 +10,8 @@ module Gitlab
         # https://confluence.atlassian.com/bitbucketserver/configuration-properties-776640155.html#Configurationproperties-Paging
         PER_PAGE = 100
 
+        MAX_REFS_PER_FETCH = 50
+
         def execute
           page = page_counter.current
 
@@ -77,7 +79,15 @@ module Gitlab
 
           return if commits_to_fetch.blank?
 
-          project.repository.fetch_remote(project.unsafe_import_url, refmap: commits_to_fetch, prune: false)
+          # Fetch missing commits in batches to avoid overloading Gitaly. Each batch is rescued
+          # independently so a failure fetching one batch doesn't prevent the rest from being fetched.
+          commits_to_fetch.each_slice(MAX_REFS_PER_FETCH) do |refs|
+            fetch_commits(refs)
+          end
+        end
+
+        def fetch_commits(refs)
+          project.repository.fetch_remote(project.unsafe_import_url, refmap: refs, prune: false)
         rescue Gitlab::Git::CommandError => e
           # When we try to fetch commit from the submodule, then the process might fail
           # with "unadvertised object" error. We are going to ignore it, to unblock the import
@@ -114,11 +124,10 @@ module Gitlab
           [target_branch_sha, ':refs/keep-around/', target_branch_sha].join
         end
 
-        # To avoid overloading Gitaly, we use a smaller limit for pull requests than the one defined in the
-        # application settings.
+        # To avoid overloading Gitaly, pull request import concurrency is controlled by its own
+        # setting, separate from the general Bitbucket Server import jobs limit.
         def concurrent_import_jobs_limit
-          # Reduce fetch limit (from 100) to avoid Gitlab::Git::ResourceExhaustedError
-          50
+          Gitlab::CurrentSettings.concurrent_pull_request_import_jobs_limit
         end
       end
     end

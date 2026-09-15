@@ -182,7 +182,7 @@ RSpec.describe 'CI configuration validation - branch pipelines', feature_categor
     let(:source_branch) { 'vite-change' }
     let(:changed_files) { ['vite.config.js'] }
 
-    where(expected_job_name: %w[compile-production-assets build-vite-prod])
+    where(expected_job_name: ['compile-production-assets', 'compile-production-assets vue3'])
 
     with_them { it_behaves_like 'merge request pipeline' }
   end

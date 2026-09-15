@@ -18,6 +18,11 @@ module Mutations
 
       authorize :destroy_user_achievement
 
+      authorize_granular_token permissions: :delete_user_achievement,
+        boundary_argument: :user_achievement_id,
+        boundary: :namespace,
+        boundary_type: :group
+
       def resolve(args)
         user_achievement = authorized_find!(id: args[:user_achievement_id])
 

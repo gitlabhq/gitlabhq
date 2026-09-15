@@ -1,0 +1,8 @@
+---
+name: security_scans_purge_db_health_check
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/249169
+rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/606136
+milestone: '19.4'
+type: ops
+group: group::security foundations
+default_enabled: false

@@ -30,7 +30,7 @@ You don't need to adopt it explicitly when building a new page.
 
 ### Dynamic panel
 
-The `DynamicPanel` Vue component defines the structure of dynamic panel, including its header, actions, and content areas.
+The `DynamicPanel` Vue component defines the structure of the dynamic panel, including its header, actions, and content areas.
 Use it as the direct child of `MountingPortal`, with the `mount-to="#contextual-panel-portal"` and `append` props.
 
 **Props:**
@@ -192,7 +192,7 @@ Follow these rules when adding buttons to a panel actions area:
 - Buttons should have `category="tertiary"` and `size="small"`.
 - Icon only buttons must:
   - have a tooltip which appears below the button (`v-gl-tooltip.bottom="..."`)
-  - set `aria-label` set to the same string as the tooltip.
+  - set `aria-label` to the same string as the tooltip.
 - If you have four or more actions, group the less commonly used ones in a
   "More actions" icon-only dropdown using the `ellipsis_h` icon, with
   `no-caret`, `category="tertiary"`, and `size="small"` options as well.

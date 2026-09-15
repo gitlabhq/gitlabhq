@@ -338,7 +338,7 @@ module Gitlab
         request.first_parent = !!params[:first_parent]
 
         if params[:commit_message_patterns]
-          request.commit_message_patterns += Array.wrap(params[:commit_message_patterns])
+          request.commit_message_patterns += encode_repeated(Array.wrap(params[:commit_message_patterns]))
         end
 
         request.author = encode_binary(params[:author]) if params[:author]
@@ -515,9 +515,7 @@ module Gitlab
           first_parent: !!options[:first_parent],
           global_options: parse_global_options!(options),
           disable_walk: true, # This option is deprecated. The 'walk' implementation is being removed.
-          trailers: options[:trailers],
-          include_referenced_by: options[:include_referenced_by],
-          message_regex: options[:message_regex]
+          trailers: options[:trailers]
         )
         request.after    = GitalyClient.timestamp(options[:after]) if options[:after]
         request.before   = GitalyClient.timestamp(options[:before]) if options[:before]

@@ -319,7 +319,7 @@ RSpec.describe Gitlab::LegacyGithubImport::IssueFormatter, :clean_gitlab_redis_s
       let(:raw_data) { base_data.merge(comments: 1) }
 
       it 'returns true' do
-        expect(issue.has_comments?).to eq true
+        expect(issue.has_comments?).to be true
       end
     end
 
@@ -327,7 +327,7 @@ RSpec.describe Gitlab::LegacyGithubImport::IssueFormatter, :clean_gitlab_redis_s
       let(:raw_data) { base_data.merge(comments: 0) }
 
       it 'returns false' do
-        expect(issue.has_comments?).to eq false
+        expect(issue.has_comments?).to be false
       end
     end
   end
@@ -337,7 +337,7 @@ RSpec.describe Gitlab::LegacyGithubImport::IssueFormatter, :clean_gitlab_redis_s
       let(:raw_data) { base_data.merge(pull_request: double) }
 
       it 'returns true' do
-        expect(issue.pull_request?).to eq true
+        expect(issue.pull_request?).to be true
       end
     end
 
@@ -345,7 +345,7 @@ RSpec.describe Gitlab::LegacyGithubImport::IssueFormatter, :clean_gitlab_redis_s
       let(:raw_data) { base_data.merge(pull_request: nil) }
 
       it 'returns false' do
-        expect(issue.pull_request?).to eq false
+        expect(issue.pull_request?).to be false
       end
     end
   end

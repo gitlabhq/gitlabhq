@@ -22,6 +22,7 @@ export default class LabelManager {
         filter: '.empty-message',
         forceFallback: true,
         fallbackClass: DRAG_CLASS,
+        fallbackOnBody: true,
         dataIdAttr: 'data-id',
         onStart: sortableStart,
         onEnd: sortableEnd,

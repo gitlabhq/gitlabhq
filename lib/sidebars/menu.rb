@@ -171,3 +171,5 @@ module Sidebars
     end
   end
 end
+
+Sidebars::Menu.prepend_mod

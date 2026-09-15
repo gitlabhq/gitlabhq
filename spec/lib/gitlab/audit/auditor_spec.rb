@@ -20,7 +20,6 @@ RSpec.describe Gitlab::Audit::Auditor, feature_category: :audit_events do
   end
 
   let(:logger) { instance_spy(Gitlab::AuditJsonLogger) }
-  let(:app_logger) { instance_spy(Gitlab::AppLogger) }
 
   subject(:auditor) { described_class }
 
@@ -79,10 +78,6 @@ RSpec.describe Gitlab::Audit::Auditor, feature_category: :audit_events do
         expect(authentication_event.user_name).to eq(author.name)
         expect(authentication_event.ip_address).to eq(author.current_sign_in_ip)
         expect(authentication_event.provider).to eq(provider)
-      end
-
-      it 'does not write to the legacy AuditEvent table' do
-        expect { audit! }.not_to change { AuditEvent.count }
       end
 
       it 'logs audit events to file' do
@@ -217,18 +212,6 @@ RSpec.describe Gitlab::Audit::Auditor, feature_category: :audit_events do
 
       it 'does not create an authentication event' do
         expect { auditor.audit(context) }.not_to change { AuthenticationEvent.count }
-      end
-
-      context 'with permitted target' do
-        { feature_flag: :operations_feature_flag }.each do |target_type, factory_name|
-          context "with #{target_type}" do
-            let(:target) { build_stubbed factory_name }
-
-            it 'does not write to the legacy AuditEvent table', :freeze_time do
-              expect { audit! }.not_to change { AuditEvent.count }
-            end
-          end
-        end
       end
     end
 

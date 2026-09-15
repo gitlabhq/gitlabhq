@@ -9,7 +9,7 @@ module Import
 
     def accept
       result = ::Import::SourceUsers::AcceptReassignmentService.new(
-        source_user, current_user: current_user, reassignment_token: params[:reassignment_token]
+        source_user, current_user: current_user, reassignment_token: reassignment_token
       ).execute
 
       if result.success?
@@ -22,7 +22,7 @@ module Import
 
     def decline
       result = ::Import::SourceUsers::RejectReassignmentService.new(
-        source_user, current_user: current_user, reassignment_token: params[:reassignment_token]
+        source_user, current_user: current_user, reassignment_token: reassignment_token
       ).execute
 
       if result.success?
@@ -48,17 +48,26 @@ module Import
       current_user.id == source_user.reassign_to_user_id
     end
 
+    def source_user_params
+      params.permit(:namespace_id, :reassignment_token)
+    end
+
     def source_user
-      if params[:namespace_id].present?
+      namespace_id = source_user_params[:namespace_id]
+      if namespace_id.present?
         Import::SourceUser.find_by_namespace_and_token(
-          namespace_id: params[:namespace_id],
-          reassignment_token: params[:reassignment_token]
+          namespace_id: namespace_id,
+          reassignment_token: reassignment_token
         )
       else
-        Import::SourceUser.find_by_reassignment_token(params[:reassignment_token])
+        Import::SourceUser.find_by_reassignment_token(reassignment_token)
       end
     end
     strong_memoize_attr :source_user
+
+    def reassignment_token
+      source_user_params[:reassignment_token]
+    end
 
     def banner(partial)
       render_to_string(

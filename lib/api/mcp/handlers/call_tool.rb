@@ -4,6 +4,18 @@ module API
   module Mcp
     module Handlers
       class CallTool
+        TOOL_STATUS_DONE = 'done'
+        TOOL_STATUS_FAIL = 'fail'
+
+        class ToolResponseError < StandardError
+          attr_reader :result
+
+          def initialize(result)
+            @result = result
+            super(::Mcp::Tools::Base::Response.error_message(result) || 'Tool returned an error response')
+          end
+        end
+
         def initialize(manager)
           @manager = manager
         end
@@ -41,9 +53,15 @@ module API
         def execute_tool_with_tracking(tool, request, params, tool_name, session_id, current_user)
           start = current_monotonic_time
           result = tool.execute(request: request, params: params)
+          raise ToolResponseError, result if ::Mcp::Tools::Base::Response.error?(result)
+
           track_finish_event(tool_name, session_id, current_user, success: true, params: params)
           log_tool_call(tool_name, session_id, current_user, params, duration_s: duration_since(start))
           result
+        rescue ToolResponseError => e
+          track_finish_event(tool_name, session_id, current_user, success: false, error: e, params: params)
+          log_tool_call(tool_name, session_id, current_user, params, error: e, duration_s: duration_since(start))
+          e.result
         rescue StandardError => error
           track_finish_event(tool_name, session_id, current_user, success: false, error: error, params: params)
           log_tool_call(tool_name, session_id, current_user, params, error: error, duration_s: duration_since(start))
@@ -55,6 +73,7 @@ module API
 
           expanded = { arguments: filter_parameters(arguments) }
           error_fields = {}
+
           if error
             error_fields[::Labkit::Fields::ERROR_TYPE] = error.class.name
             expanded[::Labkit::Fields::ERROR_MESSAGE] = error.message
@@ -67,7 +86,7 @@ module API
             ai_component: 'mcp_server',
             tool_name: tool_name,
             session_id: session_id,
-            tool_status: error.nil? ? 'done' : 'fail',
+            tool_status: error ? TOOL_STATUS_FAIL : TOOL_STATUS_DONE,
             ::Labkit::Fields::DURATION_S => duration_s,
             argument_keys: arguments.keys,
             namespace: tool_call_namespace(params),

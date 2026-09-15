@@ -45,7 +45,7 @@ You must have GitLab 19.0 or later.
 
 ## Set up your environment
 
-Unlike GitLab Duo (non-agentic), the Agent Platform runs flows on runners and uses service accounts to create commits and pipelines. This requires configuration requirements that non-agentic features did not have.
+Unlike GitLab Duo (non-agentic), the Agent Platform runs flows on runners and uses service accounts to create commits and pipelines. This requires configuration that non-agentic features did not have.
 
 To set up your environment for the Agent Platform:
 
@@ -53,7 +53,7 @@ To set up your environment for the Agent Platform:
 1. [Configure your network](_index.md#allow-outbound-connections-from-the-gitlab-instance-to-gitlab-duo) to allow outbound connections from your GitLab instance.
 1. [Configure instance or group runners](../../../user/duo_agent_platform/flows/execution/_index.md#configure-runners-to-execute-flows) to use the flows. Flows that use CI/CD are executed on runners. Agentic Chat does not require runners.
 1. [Allow connections](_index.md#allow-connections-from-the-runner) from the runner to your GitLab instance.
-1. If you have an online license, [Synchronize your subscription data](../../../subscriptions/manage_subscription.md#manually-synchronize-subscription-data).
+1. If you have an online license, [synchronize your subscription data](../../../subscriptions/manage_subscription.md#manually-synchronize-subscription-data).
 
 ## Validate your configuration
 
@@ -81,13 +81,13 @@ Before you roll out the Agent Platform to the majority of your users, ask a smal
 - They can run the Code Review Flow on a test merge request.
 - They can run other foundational flows available on your subscription.
 
-After these users have run some flows, you should also check the [Credits Dashboard](../../../subscriptions/gitlab_credits.md#gitlab-credits-dashboard) to confirm credit usage.
+After these users have run some flows, you should also check the [Credits Dashboard](../../../subscriptions/gitlab_credits_dashboard.md) to confirm credit usage.
 
 ## Billing
 
 After you change your subscription from GitLab Duo Pro or Enterprise to usage billing, you are charged based on [credit usage](../../../subscriptions/gitlab_credits.md) instead of seats.
 
-To track your team's credit usage and to set usage caps, use the [Credits Dashboard](../../../subscriptions/gitlab_credits.md#view-the-gitlab-credits-dashboard).
+To track your team's credit usage and to set usage caps, use the [Credits Dashboard](../../../subscriptions/gitlab_credits_dashboard.md).
 
 ## Common issues during transition
 
@@ -111,7 +111,7 @@ When you first transition your instance to the Agent Platform, you might encount
 
 - [GitLab Duo Agent Platform](_index.md)
 - [Troubleshooting the GitLab Duo Agent Platform](../../../user/duo_agent_platform/troubleshooting.md)
-- [Usage caps](../../../subscriptions/gitlab_credits.md#usage-caps)
+- [Usage caps](../../../subscriptions/gitlab_credits_dashboard.md#usage-caps)
 - [Self-Hosted models](../../gitlab_duo_self_hosted/_index.md)
 - [GitLab University: GitLab Duo Agent Platform for administrators](https://university.gitlab.com/learning-paths/gitlab-duo-agent-platform-for-admins)
 - [GitLab University: GitLab Duo Agent Platform setup](https://university.gitlab.com/courses/gitlab-duo-agent-platform-setup)

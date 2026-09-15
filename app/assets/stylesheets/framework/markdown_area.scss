@@ -150,6 +150,8 @@
 .md-area-wrapper-fill {
   &,
   .md-content-editor-wrapper,
+  .md-content-editor-wrapper .content-editor-body,
+  .md-content-editor-wrapper .md,
   .md-area,
   .md-write-holder,
   .md-preview-holder,
@@ -167,6 +169,7 @@
   }
 
   .md .ProseMirror {
+    flex: 1 1 0;
     overflow-y: visible !important;
     resize: none !important;
     max-height: none !important;

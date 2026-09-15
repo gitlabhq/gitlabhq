@@ -14,7 +14,7 @@ title: PlantUML
 
 {{< /details >}}
 
-Use the [PlantUML](https://plantuml.com) integration, to create diagrams in snippets, wikis, and repositories.
+Use the [PlantUML](https://plantuml.com) integration to create diagrams in snippets, wikis, and repositories.
 GitLab.com integrates with PlantUML for all users, and requires no additional configuration.
 
 To set up the integration on your GitLab Self-Managed instance, you must [configure your PlantUML server](#configure-your-plantuml-server).
@@ -170,7 +170,7 @@ Prerequisites:
 
 #### Installation
 
-PlantUML recommends to install Tomcat 10.1 or later. The scope of this page only
+PlantUML recommends installing Tomcat 10.1 or later. The scope of this page only
 includes setting up a basic Tomcat server. For more production-ready configurations,
 see the [Tomcat documentation](https://tomcat.apache.org/tomcat-10.1-doc/index.html).
 

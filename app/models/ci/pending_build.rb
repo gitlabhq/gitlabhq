@@ -68,6 +68,9 @@ module Ci
 
         args.store(:namespace_traversal_ids, project.namespace.traversal_ids) if group_runners_enabled?(project)
 
+        runner_machine_id = ::Ci::JobRuntimeEnvironment.runner_machine_id_for(build)
+        args.store(:runner_machine_id, runner_machine_id) if runner_machine_id
+
         args
       end
 

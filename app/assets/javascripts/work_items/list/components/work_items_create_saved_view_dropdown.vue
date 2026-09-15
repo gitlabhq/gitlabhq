@@ -107,7 +107,7 @@ export default {
         v-if="showSubscriptionLimitWarning"
         class="gl-mx-2 gl-flex gl-gap-3 gl-rounded-base gl-bg-orange-50 gl-p-3"
       >
-        <gl-icon name="warning" :size="16" class="gl-mt-1 gl-shrink-0 gl-text-orange-500" />
+        <gl-icon name="warning" :size="16" class="gl-mt-1 gl-shrink-0" variant="warning" />
         <span class="gl-text-sm">
           {{ $options.i18n.subscriptionLimitWarningMessage }}
           <gl-link :href="$options.savedViewLimitsHelpPath" target="_blank">

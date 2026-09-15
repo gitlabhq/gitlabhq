@@ -173,11 +173,8 @@ export default {
     shouldShowSecurityAttributes() {
       return window.gon?.licensed_features?.securityAttributes && this.canReadAttributes;
     },
-    shouldShowScannerProfiles() {
-      return this.glFeatures?.securityScanProfilesFeature;
-    },
     shouldShowScanProfileUpgradeHint() {
-      return this.shouldShowScannerProfiles && !window.gon?.licensed_features?.securityScanProfiles;
+      return !window.gon?.licensed_features?.securityScanProfiles;
     },
     shouldShowMergeRequestsDisabledAlert() {
       return !this.mergeRequestsEnabled;
@@ -264,7 +261,7 @@ export default {
           @dismiss="dismissAutoDevopsEnabledAlert"
         />
 
-        <section-layout v-if="shouldShowScannerProfiles" stacked class="gl-border-b-0">
+        <section-layout stacked class="gl-border-b-0">
           <template #heading>
             <h2 class="gl-mt-0 gl-flex gl-gap-3 gl-text-size-h2">
               {{ $options.i18n.securityProfiles }}

@@ -137,6 +137,13 @@ WithViews.args = {
   ],
 };
 
+export const WithFooter = Template.bind({});
+WithFooter.args = {
+  title: 'Code Suggestions',
+  visualization: weeklyVisualization,
+  footer: { dashboardViewLink: { text: 'View adoption', view: 1 } },
+};
+
 // A visualization component that defines panel actions by emitting the
 // `set-actions` event, which the panel forwards to its `setActions` method.
 const VisualizationWithActions = {

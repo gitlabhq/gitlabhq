@@ -48,7 +48,11 @@ class Projects::Analytics::CycleAnalytics::StagesController < Projects::Applicat
   def requests_default_value_stream?
     default_name = Analytics::CycleAnalytics::Stages::BaseService::DEFAULT_VALUE_STREAM_NAME
 
-    params[:value_stream_id] == default_name
+    value_stream_params[:value_stream_id] == default_name
+  end
+
+  def value_stream_params
+    params.permit(:value_stream_id)
   end
 end
 

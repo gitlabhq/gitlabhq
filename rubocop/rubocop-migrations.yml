@@ -2,6 +2,7 @@
 Migration/UpdateLargeTable:
   Enabled: true
   OverLimitTables:
+  - :approval_merge_request_rules
   - :approval_merge_request_rules_users
   - :ci_build_needs
   - :ci_build_report_results

@@ -22,13 +22,13 @@ class Import::BulkImportsController < ApplicationController
     verify_blocked_uri && performed? && return
     validate_configure_params!
 
-    redirect_to status_import_bulk_imports_url(namespace_id: params[:namespace_id])
+    redirect_to status_import_bulk_imports_url(namespace_id: namespace_id_param)
   end
 
   def status
     respond_to do |format|
       format.json do
-        data = ::BulkImports::GetImportableDataService.new(params, query_params, credentials).execute
+        data = ::BulkImports::GetImportableDataService.new(importable_params, query_params, credentials).execute
 
         pagination_headers.each do |header|
           response.set_header(header, data[:response].headers[header])
@@ -40,8 +40,9 @@ class Import::BulkImportsController < ApplicationController
         render json: json_response
       end
       format.html do
-        if params[:namespace_id]
-          @namespace = Namespace.find_by_id(params[:namespace_id])
+        namespace_id = namespace_id_param
+        if namespace_id
+          @namespace = Namespace.find_by_id(namespace_id)
 
           render_404 unless current_user.can?(:create_subgroup, @namespace)
         end
@@ -85,15 +86,32 @@ class Import::BulkImportsController < ApplicationController
 
   private
 
-  def bulk_import
-    return unless params[:id]
+  def namespace_id_param
+    params.permit(:namespace_id)[:namespace_id]
+  end
 
-    @bulk_import ||= BulkImport.find(params[:id])
+  def importable_params
+    params.permit(:per_page, :page)
+  end
+
+  def bulk_import_id_param
+    params.permit(:id)[:id]
+  end
+
+  def entity_id_param
+    params.permit(:entity_id)[:entity_id]
+  end
+
+  def bulk_import
+    id = bulk_import_id_param
+    return unless id
+
+    @bulk_import ||= BulkImport.find(id)
     @bulk_import || render_404
   end
 
   def bulk_import_entity
-    @bulk_import_entity ||= @bulk_import.entities.find(params[:entity_id])
+    @bulk_import_entity ||= @bulk_import.entities.find(entity_id_param)
   end
 
   def pagination_headers
@@ -214,8 +232,12 @@ class Import::BulkImportsController < ApplicationController
     }
   end
 
+  def filter_param
+    params.permit(:filter)[:filter]
+  end
+
   def sanitized_filter_param
-    @filter ||= sanitize(params[:filter])&.downcase
+    @filter ||= sanitize(filter_param)&.downcase
   end
 
   def current_user_bulk_imports

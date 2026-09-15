@@ -3,6 +3,10 @@
 require 'spec_helper'
 
 RSpec.describe MergeRequest::CommitsMetadata, feature_category: :code_review_workflow do
+  before do
+    stub_read_new_commits_table
+  end
+
   describe 'associations' do
     it { is_expected.to belong_to(:project) }
     it { is_expected.to belong_to(:commit_author) }
@@ -356,9 +360,9 @@ RSpec.describe MergeRequest::CommitsMetadata, feature_category: :code_review_wor
           expect(recorder.log.first).not_to match(/"merge_request_diff_commits"."sha" =/)
         end
 
-        context 'when mr_diff_commits_read_new_table is disabled' do
+        context 'when reading from the legacy commits table' do
           before do
-            stub_feature_flags(mr_diff_commits_read_new_table: false)
+            stub_read_new_commits_table(false)
           end
 
           it 'returns the merge request ID for that commit' do
@@ -510,9 +514,9 @@ RSpec.describe MergeRequest::CommitsMetadata, feature_category: :code_review_wor
       end
     end
 
-    context 'when mr_diff_commits_project_id_pruning is disabled' do
+    context 'when reading from the legacy commits table' do
       before do
-        stub_feature_flags(mr_diff_commits_project_id_pruning: false)
+        stub_read_new_commits_table(false)
       end
 
       it 'returns correct results' do

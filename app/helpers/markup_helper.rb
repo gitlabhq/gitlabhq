@@ -94,15 +94,21 @@ module MarkupHelper
   end
 
   def markdown(text, context = {}, postprocess = {})
-    return '' unless text.present?
+    markdown_with_result(text, context, postprocess).first
+  end
+
+  def markdown_with_result(text, context = {}, postprocess = {})
+    return ['', {}] unless text.present?
 
     context[:project] ||= @project
     context[:group] ||= @group
 
-    html = Markup::RenderingService.new(text, context: context,
-      postprocess_context: postprocess_context.merge!(postprocess)).execute
+    service = Markup::RenderingService.new(text, context: context,
+      postprocess_context: postprocess_context.merge!(postprocess))
 
-    Hamlit::RailsHelpers.preserve(html)
+    html = service.execute
+
+    [Hamlit::RailsHelpers.preserve(html), service.postprocess_result]
   end
 
   def markdown_field(object, field, context = {})
@@ -113,6 +119,14 @@ module MarkupHelper
     return redacted_field_html if redacted_field_html
 
     render_markdown_field(object, field, context)
+  end
+
+  def atom_markdown(text, context = {})
+    markdown(text, context.merge(Banzai::ATOM_CONTEXT))
+  end
+
+  def atom_markdown_field(object, field, context = {})
+    markdown_field(object, field, context.merge(Banzai::ATOM_CONTEXT))
   end
 
   def markup(file_name, text, context = {})

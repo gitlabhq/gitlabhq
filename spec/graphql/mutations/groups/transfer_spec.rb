@@ -86,57 +86,6 @@ RSpec.describe Mutations::Groups::Transfer, feature_category: :groups_and_projec
           expect(result[:errors]).to be_empty
         end
       end
-
-      context 'when groups_and_projects_async_transfer feature flag is disabled' do
-        before do
-          stub_feature_flags(groups_and_projects_async_transfer: false)
-        end
-
-        context 'when transferring to a target group' do
-          let(:params) { { id: group.to_global_id, target_id: target_group.to_global_id } }
-
-          context 'when transfer succeeds' do
-            it 'returns the group and no errors', :aggregate_failures do
-              service = instance_double(::Groups::TransferService)
-              allow(::Groups::TransferService).to receive(:new).with(group, current_user).and_return(service)
-              allow(service).to receive(:execute).with(target_group).and_return(true)
-
-              result = resolve
-
-              expect(result[:errors]).to be_empty
-              expect(result[:group]).to eq(group)
-            end
-          end
-
-          context 'when transfer fails' do
-            it 'returns errors and the group', :aggregate_failures do
-              service = instance_double(::Groups::TransferService, error: 'Transfer not allowed.')
-              allow(::Groups::TransferService).to receive(:new).with(group, current_user).and_return(service)
-              allow(service).to receive(:execute).with(target_group).and_return(false)
-
-              result = resolve
-
-              expect(result[:errors]).to contain_exactly('Transfer not allowed.')
-              expect(result[:group]).to eq(group)
-            end
-          end
-        end
-
-        context 'when making group top-level (no target_id)' do
-          let(:params) { { id: group.to_global_id } }
-
-          it 'calls execute with nil target group', :aggregate_failures do
-            service = instance_double(::Groups::TransferService)
-            allow(::Groups::TransferService).to receive(:new).with(group, current_user).and_return(service)
-            allow(service).to receive(:execute).with(nil).and_return(true)
-
-            result = resolve
-
-            expect(result[:errors]).to be_empty
-            expect(result[:group]).to eq(group)
-          end
-        end
-      end
     end
   end
 end

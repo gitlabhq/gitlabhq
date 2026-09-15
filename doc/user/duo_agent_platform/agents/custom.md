@@ -51,12 +51,9 @@ with GitLab Duo Chat in the GitLab UI, VS Code, and JetBrains IDEs.
 
 - Roles that can view private agents [expanded](https://gitlab.com/gitlab-org/gitlab/-/work_items/582507) in GitLab 18.7.
 - Restricted visibility [introduced](https://gitlab.com/gitlab-org/gitlab/-/work_items/603253) in GitLab 19.3 [with a feature flag](../../../administration/feature_flags/_index.md) named `ai_catalog_internal_visibility`. Enabled by default.
+- Generally available in GitLab 19.4. Feature flag `ai_catalog_internal_visibility` removed.
 
 {{< /history >}}
-
-> [!flag]
-> The **Restricted** visibility option is controlled by a feature flag named `ai_catalog_internal_visibility`.
-> For more information, see the history.
 
 When you create a custom agent, you select a project to manage it and choose whether the agent is public, private, or restricted.
 
@@ -101,12 +98,9 @@ Select an agent to view its details.
 {{< history >}}
 
 - Restricted visibility [introduced](https://gitlab.com/gitlab-org/gitlab/-/work_items/603253) in GitLab 19.3 [with a feature flag](../../../administration/feature_flags/_index.md) named `ai_catalog_internal_visibility`. Enabled by default.
+- Generally available in GitLab 19.4. Feature flag `ai_catalog_internal_visibility` removed.
 
 {{< /history >}}
-
-> [!flag]
-> The **Restricted** visibility option is controlled by a feature flag named `ai_catalog_internal_visibility`.
-> For more information, see the history.
 
 You can create an agent from a project, or by using the AI Catalog.
 
@@ -173,12 +167,9 @@ The agent appears in the AI Catalog. To use the agent with Chat, you must enable
 {{< history >}}
 
 - Enabling a public agent for multiple projects [introduced](https://gitlab.com/gitlab-org/gitlab/-/work_items/600526) in GitLab 19.2 [with a feature flag](../../../administration/feature_flags/_index.md) named `ai_catalog_bulk_item_consumer_create`. Enabled by default.
+- Feature flag `ai_catalog_bulk_item_consumer_create` removed in GitLab 19.4.
 
 {{< /history >}}
-
-> [!flag]
-> The availability of this feature is controlled by a feature flag.
-> For more information, see the history.
 
 Enable an agent to use it with Chat.
 

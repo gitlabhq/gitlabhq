@@ -6,12 +6,12 @@ require_relative '../../../../rubocop/cop/api/description_summary'
 RSpec.describe RuboCop::Cop::API::DescriptionSummary, :config, feature_category: :api do
   let(:msg_missing) do
     'API desc blocks must define a summary string. ' \
-      'https://docs.gitlab.com/development/api_styleguide#defining-endpoint-desc'
+      'https://docs.gitlab.com/development/api_styleguide/#defining-endpoint-desc'
   end
 
   let(:msg_too_long) do
     'API desc summary must not exceed 120 characters. ' \
-      'https://docs.gitlab.com/development/api_styleguide#defining-endpoint-desc'
+      'https://docs.gitlab.com/development/api_styleguide/#defining-endpoint-desc'
   end
 
   context 'when desc block has no summary' do

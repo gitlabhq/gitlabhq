@@ -120,8 +120,8 @@ export default {
   },
   emits: [
     'cancel-form',
-    'handleFormUpdate',
-    'handleFormUpdateAddToReview',
+    'handle-form-update',
+    'handle-form-update-add-to-review',
     'handle-suggest-dismissed',
   ],
   data() {
@@ -297,7 +297,7 @@ export default {
         const lastNoteInDiscussion = this.getDiscussionCurrentUserLastNote(this.discussion);
 
         if (lastNoteInDiscussion) {
-          eventHub.$emit('enterEditMode', {
+          eventHub.$emit('enter-edit-mode', {
             noteId: lastNoteInDiscussion.id,
           });
         }
@@ -356,7 +356,7 @@ export default {
       );
 
       this.$emit(
-        'handleFormUpdate',
+        'handle-form-update',
         this.updatedNoteBody,
         this.$refs.editNoteForm,
         () => {
@@ -370,7 +370,7 @@ export default {
       );
     },
     handleAddToReview({ shouldMeasureTemperature = true } = {}) {
-      const clickType = this.hasDrafts ? 'noteFormAddToReview' : 'noteFormStartReview';
+      const clickType = this.hasDrafts ? 'note-form-add-to-review' : 'note-form-start-review';
       // check if draft should resolve thread
       const shouldResolve =
         (this.discussionResolved && !this.isUnresolving) ||
@@ -385,7 +385,7 @@ export default {
 
       eventHub.$emit(clickType, { name: clickType });
       this.$emit(
-        'handleFormUpdateAddToReview',
+        'handle-form-update-add-to-review',
         this.updatedNoteBody,
         shouldResolve,
         this.$refs.editNoteForm,

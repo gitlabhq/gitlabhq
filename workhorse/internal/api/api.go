@@ -11,6 +11,7 @@ import (
 	"net/http"
 	"net/textproto"
 	"net/url"
+	"os"
 	"strconv"
 	"strings"
 
@@ -167,6 +168,11 @@ type DuoWorkflow struct {
 	// ServerCapabilities is a list of capability strings provided by Rails.
 	ServerCapabilities  []string
 	TimeoutHTTPRequests bool
+	// WorkflowID is the workflow Rails authorized this request for. It is set
+	// only for server-side execution, where workhorse starts the workflow
+	// itself and so cannot take the ID from the caller's request body. On the
+	// WebSocket path the ID comes from the client's StartWorkflowRequest.
+	WorkflowID string
 }
 
 // Response represents a structure containing various GitLab-related environment variables.
@@ -206,6 +212,8 @@ type Response struct {
 	// TmpPath is the path where we should store temporary files
 	// This is set by authorization middleware
 	TempPath string
+	// LocalTempPath is the local temp dir for direct uploads; TempPath takes precedence when set.
+	LocalTempPath string
 	// RemoteObject is provided by the GitLab Rails application
 	// and defines a way to store object on remote storage
 	RemoteObject RemoteObject
@@ -239,6 +247,18 @@ type Response struct {
 	// Consumed by the oauthproxy package for the gradual rollout of OAuth
 	// handling to the IAM Auth service (gitlab-org/gitlab#594504).
 	Destination string `json:"destination"`
+}
+
+// LocalTempDir returns the directory to use for local temp files.
+// TempPath wins (local-storage installs), then LocalTempPath (direct-upload), then os.TempDir().
+func (r *Response) LocalTempDir() string {
+	if r.TempPath != "" {
+		return r.TempPath
+	}
+	if r.LocalTempPath != "" {
+		return r.LocalTempPath
+	}
+	return os.TempDir()
 }
 
 // GitalyServer represents configuration parameters for a Gitaly server,
@@ -337,6 +357,15 @@ func (api *API) newRequest(r *http.Request, suffix string) *http.Request {
 	// See https://httpwg.org/http-core/draft-ietf-httpbis-semantics-latest.html#field.connection
 	authReq.Header.Del("Trailer")
 	authReq.Header.Del("Upgrade")
+
+	// HTTP Router headers describe how the router classified the original client
+	// request. This subrequest never passed through the router, so forwarding
+	// them would pollute Rails logs and double-count router metrics.
+	for key := range authReq.Header {
+		if strings.HasPrefix(key, "X-Gitlab-Http-Router-") {
+			authReq.Header.Del(key)
+		}
+	}
 
 	// Also forward the Host header, which is excluded from the Header map by the http library.
 	// This allows the Host header received by the backend to be consistent with other

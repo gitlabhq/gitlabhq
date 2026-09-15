@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe AntiAbuse::Event, type: :model, feature_category: :insider_threat do
+RSpec.describe AntiAbuse::Event, feature_category: :insider_threat do
   let_it_be(:event, freeze: false) { create(:abuse_event) }
   let_it_be_with_reload(:user) { create(:admin) }
 

@@ -19,7 +19,7 @@ class CreateCiFinishedBuildsAggregatedQueueingDelayPercentiles < ClickHouse::Mig
 
   def down
     execute <<~SQL
-      DROP TABLE ci_finished_builds_aggregated_queueing_delay_percentiles
+      DROP TABLE IF EXISTS ci_finished_builds_aggregated_queueing_delay_percentiles
     SQL
   end
 end

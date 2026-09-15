@@ -26,6 +26,6 @@ class PublicUrlValidator < AddressableUrlValidator
   def initialize(options)
     options.reverse_merge!(DEFAULT_OPTIONS)
 
-    super(options)
+    super
   end
 end

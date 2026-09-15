@@ -13,7 +13,6 @@ RSpec.describe Mcp::Tools::WorkItems::LinkWorkItemsService, feature_category: :m
   let(:service) { described_class.new(name: 'link_work_items') }
   let(:request) { instance_double(ActionDispatch::Request) }
   let(:target_gid) { target_work_item.to_global_id.to_s }
-  let(:group_work_item_gid) { group_work_item.to_global_id.to_s }
 
   before_all do
     project.add_developer(user)
@@ -70,9 +69,10 @@ RSpec.describe Mcp::Tools::WorkItems::LinkWorkItemsService, feature_category: :m
             },
             work_items_ids: {
               type: 'array',
-              description: 'Global IDs of the work items to link to ' \
-                '(format: gid://gitlab/WorkItem/<id>). Maximum 10 items.',
-              items: { type: 'string' },
+              description: 'Work items to link to: plain iids (resolved in the same project or group as the ' \
+                'source) or global IDs (gid://gitlab/WorkItem/<id>) for work items in other ' \
+                'projects or groups. Maximum 10 items.',
+              items: { type: %w[integer string] },
               minItems: 1,
               maxItems: 10
             },
@@ -217,7 +217,7 @@ RSpec.describe Mcp::Tools::WorkItems::LinkWorkItemsService, feature_category: :m
         result = service.execute(request: request, params: params)
 
         expect(result[:isError]).to be(true)
-        expect(result[:content].first[:text]).to include('Invalid work item ID format')
+        expect(result[:content].first[:text]).to include('Invalid target work item ID format')
       end
     end
 

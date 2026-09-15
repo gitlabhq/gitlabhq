@@ -54,9 +54,14 @@ The instructions that apply to documentation check for:
 - API documentation: REST-specific requirements such as cURL examples and attribute tables.
 - General standards that apply to all files, such as inclusive language.
 
-Unlike the authoring and editing files, this file is manually maintained. It does not read the distilled
-principles file. It links to the [style guide](styleguide/_index.md) and the
-[word list](styleguide/word_list.md) for the authoritative standards.
+Instruction groups between `# >>> generated:` and `# <<< end generated:`
+comments are generated. The `gitlab-ai-principles-distiller` copies their
+content from the matching distilled principle, so the automated review applies
+the same standards as the authoring and editing files. A daily scheduled job
+regenerates these groups after a distilled principle changes on the default
+branch, so do not edit them by hand. Groups outside those comments are
+maintained by hand. For more information, see
+[AI instruction files review](../ai_instruction_files_review.md).
 
 ## Create documentation with an agent
 
@@ -68,20 +73,8 @@ do not need to reference them in your prompt. To get the best results:
 - Make changes locally only. Do not commit or push AI-generated content before
   you have reviewed and iterated on the output.
 
-## Review AI-generated content
-
-Before you request a review, check for the following known issues
-with AI-generated content:
-
-- Repetition: Content that restates what has already been said on the page
-  or in a linked topic.
-- Vague or unverifiable claims: Descriptions of how a feature works that
-  are not grounded in the codebase or existing documentation.
-  If you are unsure, Technical Writers can help identify a location
-  in the documentation.
-- Style guide adherence: Terms, grammar, and formatting that do not align with [the style guide](styleguide/_index.md).
-
-For more information, see [AI-generated content](styleguide/_index.md#ai-generated-content).
+Before you request a review, check the content to resolve [common quality issues](styleguide/_index.md#ai-generated-content)
+in AI-generated content.
 
 ## Update the review files
 
@@ -90,17 +83,16 @@ that agents follow, update the [documentation style guide](styleguide/_index.md)
 instead of the authoring and editing files. The `gitlab-ai-principles-distiller`
 automatically regenerates the following distilled documentation files from the style guide and the related documentation development pages they're distilled from:
 
-- `documentation.md`,
+- `documentation.md`
 - `documentation-topics.md`
 - `documentation-api.md`
 - `documentation-feature-lifecycle.md`
 
 These files are used in the `gitlab` project only. The `gitlab-ai-principles-distiller` is not configured for any other project that publishes documentation to `docs.gitlab.com`.
 
-The automated review file `.gitlab/duo/mr-review-instructions.yaml` is not
-regenerated from the style guide. If a standard in the style guide also belongs
-in automated review, update the `Documentation` or `API documentation` group in
-that file by hand.
+The generated groups in `.gitlab/duo/mr-review-instructions.yaml` are
+regenerated from the same distilled files, so a style guide change reaches the
+automated review without a separate edit. Do not update those groups by hand.
 
 If you notice a recurring pattern in AI-generated content that the style guide does not address,
 open a merge request to add guidance. When you add guidance, follow these principles:
@@ -111,5 +103,5 @@ open a merge request to add guidance. When you add guidance, follow these princi
   provide an example: `Avoid marketing language. For example, do not use "powerful" or "seamless"`.
 - Test your changes. Start a new conversation and ensure the instruction is
   applied.
-- If you update an entry point such as `AGENTS.md`, conversations must be restarted
+- If you update an AI instruction file like `AGENTS.md`, conversations must be restarted
   for changes to take effect. Existing conversations do not pick up changes automatically.

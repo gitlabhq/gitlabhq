@@ -73,7 +73,27 @@ class Plugins {
 
 const plugins = new Plugins();
 
-// print useful messages for nodemon events
+let pluginsStarted = false;
+
+function startPlugins() {
+  // nodemon re-fires start in this same process when the bundler respawns, on a config
+  // edit or a yarn install. The CSS and Tailwind plugins are independent and keep watching
+  // across that, so running this again would stack a second set over the same files.
+  if (pluginsStarted) return;
+
+  pluginsStarted = true;
+
+  /* eslint-disable promise/catch-or-return */
+  import('./lib/compile_css.mjs').then(({ simplePluginForNodemon }) => {
+    plugins.addAndStart(simplePluginForNodemon({ shouldWatch: !STATIC_MODE }));
+  });
+  import('./tailwindcss.cjs').then((mod) => {
+    const { webpackTailwindCompilerPlugin } = mod.default;
+    plugins.addAndStart(webpackTailwindCompilerPlugin({ shouldWatch: !STATIC_MODE }));
+  });
+  /* eslint-enable promise/catch-or-return */
+}
+
 nodemon
   .on('start', () => {
     console.log(`Starting webpack webserver on http://${DEV_SERVER_HOST}:${DEV_SERVER_PORT}`);
@@ -82,15 +102,19 @@ nodemon
       console.log('The JavaScript assets are recompiled only if they change');
       console.log('If you change them often, you might want to unset DEV_SERVER_STATIC');
     }
-    /* eslint-disable promise/catch-or-return */
-    import('./lib/compile_css.mjs').then(({ simplePluginForNodemon }) => {
-      plugins.addAndStart(simplePluginForNodemon({ shouldWatch: !STATIC_MODE }));
-    });
-    import('./tailwindcss.cjs').then((mod) => {
-      const { webpackTailwindCompilerPlugin } = mod.default;
-      plugins.addAndStart(webpackTailwindCompilerPlugin({ shouldWatch: !STATIC_MODE }));
-    });
-    /* eslint-enable promise/catch-or-return */
+    startPlugins();
+  })
+  .on('crash', () => {
+    // nodemon would sit here waiting for a file change that never comes, leaving
+    // the process alive with nothing serving the dev server port. Exit instead,
+    // so a supervisor restarts us and reports the service as down meanwhile.
+    console.error(
+      `The bundler crashed, so nothing is serving http://${DEV_SERVER_HOST}:${DEV_SERVER_PORT}. ` +
+        'Exiting to let the process be restarted.',
+    );
+
+    plugins.call('stop');
+    process.exit(1);
   })
   .on('quit', () => {
     console.log('Shutting down CSS compilation process');

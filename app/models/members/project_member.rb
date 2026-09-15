@@ -76,10 +76,9 @@ class ProjectMember < Member
 
     execute_project_authorizations_refresh
 
+    # Low-priority safety net for the specialized refresh above, to catch
+    # authorizations it may have missed.
     # rubocop:disable CodeReuse/ServiceClass
-    # Until we compare the inconsistency rates of the new, specialized service and
-    # the old approach, we still run AuthorizedProjectsWorker
-    # but with some delay and lower urgency as a safety net.
     UserProjectAccessChangedService.new(user_id)
                                    .execute(priority: UserProjectAccessChangedService::LOW_PRIORITY)
     # rubocop:enable CodeReuse/ServiceClass

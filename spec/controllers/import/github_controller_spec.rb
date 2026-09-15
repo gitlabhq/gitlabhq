@@ -329,6 +329,39 @@ RSpec.describe Import::GithubController, feature_category: :importers do
         expect(response).to have_gitlab_http_status(:too_many_requests)
       end
     end
+
+    context 'when the GraphQL search response contains a nil node' do
+      let(:graphql_response) do
+        Sawyer::Resource.new(
+          Sawyer::Agent.new(''),
+          data: {
+            search: {
+              nodes: [
+                { id: 1, name: 'vim', full_name: 'asd/vim', owner: { login: 'asd' } },
+                nil
+              ],
+              pageInfo: {},
+              repositoryCount: 1
+            }
+          }
+        ).to_h
+      end
+
+      before do
+        allow(client_stub).to receive(:search_repos_by_name_graphql).and_return(graphql_response)
+        allow_next_instance_of(Gitlab::GithubImport::Clients::Proxy) do |proxy|
+          allow(proxy).to receive(:repos).and_call_original
+          allow(proxy).to receive(:client).and_return(client_stub)
+        end
+      end
+
+      it 'responds with 200 instead of raising Sawyer::Error' do
+        get :status, format: :json
+
+        expect(response).to have_gitlab_http_status(:ok)
+        expect(json_response.dig('provider_repos', 0, 'id')).to eq(1)
+      end
+    end
   end
 
   describe "POST create", :clean_gitlab_redis_cache do

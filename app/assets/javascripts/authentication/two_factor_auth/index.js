@@ -1,6 +1,5 @@
 import Vue from 'vue';
 import { parseBoolean } from '~/lib/utils/common_utils';
-import { renderLocalDateTime } from '~/lib/utils/datetime/timeago_utility';
 import { updateHistory, removeParams } from '~/lib/utils/url_utility';
 import RecoveryCodes from './components/recovery_codes.vue';
 import TwoFactorActionConfirm from './components/two_factor_action_confirm.vue';
@@ -28,10 +27,6 @@ export const initRecoveryCodes = () => {
       });
     },
   });
-};
-
-export const initTwoFactorGraceDeadline = () => {
-  document.querySelectorAll('.js-local-datetime').forEach(renderLocalDateTime);
 };
 
 export const initClose2faSuccessMessage = () => {

@@ -58,6 +58,16 @@ RSpec.describe WorkItems::SavedViews::FilterSanitizerService, feature_category: 
           expect(result.payload[:warnings]).to be_empty
         end
       end
+
+      context 'with label_wildcard_id set to a scoped label wildcard' do
+        let(:filter_data) { { label_wildcard_id: 'workflow::*' } }
+
+        it 'renames label_wildcard_id to label_name unchanged' do
+          expect(result.payload[:filters][:label_name]).to eq('workflow::*')
+          expect(result.payload[:filters]).not_to have_key(:label_wildcard_id)
+          expect(result.payload[:warnings]).to be_empty
+        end
+      end
     end
 
     describe 'assignee validation' do
@@ -297,6 +307,35 @@ RSpec.describe WorkItems::SavedViews::FilterSanitizerService, feature_category: 
           expect(result.payload[:filters][:or][:label_names]).to eq([label1.title])
           expect(result.payload[:warnings]).to contain_exactly(
             { field: :or_label_names, message: '1 label(s) not found' }
+          )
+        end
+      end
+
+      context 'with a label wildcard alongside label IDs' do
+        let(:filter_data) { { label_wildcard_id: 'workflow::*', label_ids: [label1.id] } }
+
+        it 'keeps the wildcard and appends the resolved titles', :aggregate_failures do
+          expect(result.payload[:filters][:label_name]).to eq(['workflow::*', label1.title])
+          expect(result.payload[:filters]).not_to have_key(:label_wildcard_id)
+          expect(result.payload[:warnings]).to be_empty
+        end
+      end
+
+      context 'with an Any wildcard alongside label IDs' do
+        let(:filter_data) { { label_wildcard_id: 'Any', label_ids: [label1.id] } }
+
+        it 'keeps the wildcard and appends the resolved titles' do
+          expect(result.payload[:filters][:label_name]).to eq(['Any', label1.title])
+        end
+      end
+
+      context 'with a label wildcard alongside only deleted label IDs' do
+        let(:filter_data) { { label_wildcard_id: 'workflow::*', label_ids: [non_existing_record_id] } }
+
+        it 'keeps the wildcard and warns about the missing label', :aggregate_failures do
+          expect(result.payload[:filters][:label_name]).to eq('workflow::*')
+          expect(result.payload[:warnings]).to contain_exactly(
+            { field: :label_name, message: '1 label(s) not found' }
           )
         end
       end

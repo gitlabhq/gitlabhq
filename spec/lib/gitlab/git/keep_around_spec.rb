@@ -82,51 +82,6 @@ RSpec.describe Gitlab::Git::KeepAround, feature_category: :gitaly do
     expect(service.execute([sample_commit.id], source: 'keeparound_spec')).to be_empty
   end
 
-  context 'when the retry_failed_keep_around_ref_writes flag is disabled' do
-    before do
-      stub_feature_flags(retry_failed_keep_around_ref_writes: false)
-    end
-
-    # Nothing here asserts a return value: the disabled path returns what it does
-    # on master, which no caller reads.
-    it "looks the commit up first, so an unreachable repository is silently skipped" do
-      # This is the behaviour the flag exists to change: `commit_by` returns nil
-      # rather than raising when Gitaly is unreachable, so nothing is reported.
-      expect(repository).to receive(:commit_by).with(oid: sample_commit.id).and_return(nil)
-      expect(repository).not_to receive(:ref_exists?)
-
-      service.execute([sample_commit.id], source: 'keeparound_spec')
-    end
-
-    it "tracks a failed write and swallows it" do
-      expect(repository.raw).to receive(:write_ref).and_raise(Gitlab::Git::CommandError)
-      expect(Gitlab::ErrorTracking).to receive(:track_exception)
-        .with(an_instance_of(Gitlab::Git::CommandError), object_id: sample_commit.id)
-
-      expect { service.execute([sample_commit.id], source: 'keeparound_spec') }.not_to raise_error
-    end
-
-    # The counterpart of the enabled-flag case above: same unreachable Gitaly, and
-    # the ref is never checked, so there is nothing to report. This pair is what
-    # pins the ordering to the flag.
-    it "does not check the ref when the repository cannot be reached" do
-      allow(repository).to receive(:commit_by).and_return(nil)
-      expect(repository).not_to receive(:ref_exists?)
-      expect(Gitlab::ErrorTracking).not_to receive(:track_exception)
-
-      service.execute([sample_commit.id], source: 'keeparound_spec')
-    end
-
-    # The widened rescue is gated too: `NoRepository` keeps propagating exactly
-    # as it does on master, rather than being tracked and reported.
-    it "lets a missing repository raise" do
-      allow(repository).to receive(:ref_exists?).and_raise(Gitlab::Git::Repository::NoRepository)
-
-      expect { service.execute([sample_commit.id], source: 'keeparound_spec') }
-        .to raise_error(Gitlab::Git::Repository::NoRepository)
-    end
-  end
-
   # The return value alone does not pin the guard: `kept_around?` reports true when the
   # kill switch is on, so the write would be skipped and nothing reported either way.
   # What the guard prevents is the counter and the RPC.
@@ -137,31 +92,6 @@ RSpec.describe Gitlab::Git::KeepAround, feature_category: :gitaly do
 
     expect_metrics_change(0, 0) do
       expect(service.execute([sample_commit.id], source: 'keeparound_spec')).to be_empty
-    end
-  end
-
-  # `MergeRequests::KeepAroundRefsService` reads `retry_failed_keep_around_ref_writes`
-  # once per project and passes the answer down, so a `percentage_of_time` gate cannot
-  # re-roll into the other path here and hand back a return value the caller misreads.
-  context 'when the caller passes the flag decision' do
-    # The return value cannot tell the two paths apart on its own: `old_execute` ends in
-    # `shas.uniq.each`, so it hands back every SHA, which is what a desynced read would
-    # have the service log and retry as failures. The ref check is the marker.
-    it "reports failures even when a second flag read would disagree" do
-      stub_feature_flags(retry_failed_keep_around_ref_writes: false)
-      allow(repository).to receive(:ref_exists?).and_raise(Gitlab::Git::CommandError)
-
-      expect(repository).not_to receive(:commit_by)
-
-      expect(service.execute([sample_commit.id], source: 'keeparound_spec', retry_failed_writes: true))
-        .to eq([sample_commit.id])
-    end
-
-    it "takes the old path when told to, even with the flag enabled" do
-      expect(repository).to receive(:commit_by).with(oid: sample_commit.id).and_return(nil)
-      expect(repository).not_to receive(:ref_exists?)
-
-      service.execute([sample_commit.id], source: 'keeparound_spec', retry_failed_writes: false)
     end
   end
 

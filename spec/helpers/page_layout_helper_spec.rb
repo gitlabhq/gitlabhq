@@ -75,7 +75,7 @@ RSpec.describe PageLayoutHelper do
 
   describe 'page_description' do
     it 'defaults to nil' do
-      expect(helper.page_description).to eq nil
+      expect(helper.page_description).to be_nil
     end
 
     it 'returns the last-pushed description' do

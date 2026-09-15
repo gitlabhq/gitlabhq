@@ -68,8 +68,8 @@ RSpec.describe Mcp::Tools::WorkItems::GetWorkItemTypesTool, feature_category: :m
       let_it_be(:private_project) { create(:project, :private) }
       let(:params) { { project_id: private_project.id.to_s } }
 
-      it 'raises ArgumentError' do
-        expect { tool.build_variables }.to raise_error(ArgumentError, /Access denied to project/)
+      it 'raises a uniform not-found error indistinguishable from a missing project' do
+        expect { tool.build_variables }.to raise_error(StandardError, /not found or inaccessible/)
       end
     end
   end

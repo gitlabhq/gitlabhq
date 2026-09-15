@@ -20,7 +20,7 @@ export function initMrStateLazyLoad(createRapidDiffsApp) {
     // prevent loading MR state on commits and pipelines pages
     // this is due to them having a shared controller with the Overview page
     if (['diffs', 'show'].includes(useMrNotes(pinia).activeTab)) {
-      eventHub.$once('fetchNotesData', () =>
+      eventHub.$once('fetch-notes-data', () =>
         useNotes()
           .fetchNotes()
           .catch((error) =>

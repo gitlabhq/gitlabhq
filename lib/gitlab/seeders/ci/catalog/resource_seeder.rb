@@ -38,12 +38,10 @@ module Gitlab
               visibility_level: @group.visibility_level
             ).execute
 
-            if project.saved?
-              project
-            else
-              warn project.errors.full_messages.to_sentence
-              nil
-            end
+            return project if project&.saved?
+
+            warn project&.errors&.full_messages&.to_sentence || "Project '#{name}' could not be created."
+            nil
           end
 
           def create_template_yml(project)
@@ -94,6 +92,24 @@ module Gitlab
             end
           end
 
+          # Creates a release, which also creates a CI/CD catalog resource version
+          # via Releases::CreateService (see app/services/releases/create_service.rb).
+          def create_release(project, tag)
+            result = ::Releases::CreateService.new(
+              project,
+              @current_user,
+              tag: tag,
+              ref: project.default_branch_or_main,
+              name: "Release #{tag}",
+              description: "Release #{tag}",
+              legacy_catalog_publish: true
+            ).execute
+
+            return if result[:status] == :success
+
+            warn "Release '#{tag}' could not be created for Project '#{project.name}': #{result[:message]}"
+          end
+
           def seed_catalog_resource(index)
             name = "ci_seed_resource_#{index}"
             existing_project = Project.find_by_name(name)
@@ -113,9 +129,13 @@ module Gitlab
             new_catalog_resource = create_catalog_resource(project)
             return unless new_catalog_resource
 
-            warn "Project '#{@group.path}/#{name}' was saved successfully!"
+            if @publish
+              create_release(project, 'v1.0.0')
+              create_release(project, 'v1.1.0') if index == 0
+              new_catalog_resource.publish!
+            end
 
-            new_catalog_resource.publish! if @publish
+            warn "Project '#{@group.path}/#{name}' was saved successfully!"
           end
         end
       end

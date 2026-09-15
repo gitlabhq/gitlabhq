@@ -5,8 +5,6 @@ require 'spec_helper'
 RSpec.describe 'Rails YAML safe load' do
   let_it_be(:project_namespace) { create(:project_namespace) }
 
-  let(:unsafe_load) { false }
-
   let(:klass) do
     Class.new(ActiveRecord::Base) do
       self.table_name = 'issues'

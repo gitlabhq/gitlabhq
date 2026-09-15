@@ -39,7 +39,7 @@ For more information about managing the SSH keys associated with your GitLab acc
 ## Configure Git to sign commits and tags with your SSH key
 
 After you [create an SSH key](../../../ssh.md#generate-an-ssh-key-pair) and
-[add it to your GitLab account](../../../ssh.md#add-an-ssh-key-to-your-gitlab-account)
+[add it to your GitLab account](../../../ssh.md#add-an-ssh-key-to-your-gitlab-account),
 configure Git to begin using the key.
 
 Prerequisites:

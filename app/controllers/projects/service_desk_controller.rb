@@ -11,7 +11,7 @@ class Projects::ServiceDeskController < Projects::ApplicationController
   end
 
   def update
-    Projects::UpdateService.new(project, current_user, { service_desk_enabled: params[:service_desk_enabled] }).execute
+    Projects::UpdateService.new(project, current_user, { service_desk_enabled: service_desk_enabled_param }).execute
 
     cleanup_custom_email_if_disabled
 
@@ -27,12 +27,17 @@ class Projects::ServiceDeskController < Projects::ApplicationController
   private
 
   def cleanup_custom_email_if_disabled
-    return unless Gitlab::Utils.to_boolean(params[:service_desk_enabled]) == false
+    return unless Gitlab::Utils.to_boolean(service_desk_enabled_param) == false
     return if project.service_desk_enabled?
     return unless project.service_desk_setting&.custom_email.present?
 
     ServiceDesk::CustomEmails::DestroyService.new(project: project, current_user: current_user).execute
   end
+
+  def service_desk_enabled_param
+    params.permit(:service_desk_enabled)[:service_desk_enabled]
+  end
+  strong_memoize_attr :service_desk_enabled_param
 
   def setting_params
     params.permit(*allowed_update_attributes)

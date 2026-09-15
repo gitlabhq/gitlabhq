@@ -87,7 +87,7 @@ RSpec.describe Gitlab::ApplicationRateLimiter, :clean_gitlab_redis_rate_limiting
       end
 
       it 'returns false' do
-        expect(subject.throttled?(:test_action, scope: [user])).to eq(false)
+        expect(subject.throttled?(:test_action, scope: [user])).to be(false)
       end
     end
 
@@ -126,7 +126,8 @@ RSpec.describe Gitlab::ApplicationRateLimiter, :clean_gitlab_redis_rate_limiting
         expect { subject.throttled?(:test_action, scope: nil) }
           .to raise_error(
             Gitlab::ApplicationRateLimiter::InvalidScopeError,
-            "scope cannot be nil. Use :global for global rate limits."
+            'scope cannot be nil. Pass a characteristic-keyed hash, e.g. { user: current_user } ' \
+              '(or { scope: :global } for global rate limits).'
           )
       end
 
@@ -158,7 +159,7 @@ RSpec.describe Gitlab::ApplicationRateLimiter, :clean_gitlab_redis_rate_limiting
     it "does not let the always-present :bypass_header key affect the real rule's Redis key" do
       subject.throttled?(:test_action, scope: [user, project])
 
-      expected_key = "labkit:rl:applimiter_test_action:limit_test_action:user:#{user.id}:project:#{project.id}"
+      expected_key = "labkit:rl:{applimiter_test_action:limit_test_action:user:#{user.id}:project:#{project.id}}"
       count = Gitlab::Redis::RateLimiting.with { |r| r.get(expected_key) }
 
       expect(count.to_i).to eq(1)
@@ -176,7 +177,7 @@ RSpec.describe Gitlab::ApplicationRateLimiter, :clean_gitlab_redis_rate_limiting
             subject.throttled?(
               :test_action, scope: scope, threshold: threshold, interval: interval
             )
-          ).to eq(false)
+          ).to be(false)
         end
 
         travel_to(start_time + 1.minute) do
@@ -184,16 +185,16 @@ RSpec.describe Gitlab::ApplicationRateLimiter, :clean_gitlab_redis_rate_limiting
             subject.throttled?(
               :test_action, scope: scope, threshold: threshold, interval: interval
             )
-          ).to eq(true)
+          ).to be(true)
 
           # Assert that it does not affect other actions or scope
-          expect(subject.throttled?(:another_action, scope: scope)).to eq(false)
+          expect(subject.throttled?(:another_action, scope: scope)).to be(false)
 
           expect(
             subject.throttled?(
               :test_action, scope: [user], threshold: threshold, interval: interval
             )
-          ).to eq(false)
+          ).to be(false)
         end
       end
 
@@ -207,27 +208,27 @@ RSpec.describe Gitlab::ApplicationRateLimiter, :clean_gitlab_redis_rate_limiting
             subject.throttled?(
               :test_action, scope: scope, threshold: threshold, interval: interval
             )
-          ).to eq(false)
+          ).to be(false)
 
           2.times do
             expect(
               subject.throttled?(
                 :test_action, scope: scope, threshold: threshold, interval: interval, peek: true
               )
-            ).to eq(false)
+            ).to be(false)
           end
 
           expect(
             subject.throttled?(
               :test_action, scope: scope, threshold: threshold, interval: interval
             )
-          ).to eq(true)
+          ).to be(true)
 
           expect(
             subject.throttled?(
               :test_action, scope: scope, peek: true, threshold: threshold, interval: interval
             )
-          ).to eq(true)
+          ).to be(true)
         end
       end
     end
@@ -252,7 +253,7 @@ RSpec.describe Gitlab::ApplicationRateLimiter, :clean_gitlab_redis_rate_limiting
 
         it 'is not throttled' do
           travel_to(start_time + 1.minute) do
-            expect(subject.throttled?(:test_action, scope: scope, users_allowlist: allowlist)).to eq(false)
+            expect(subject.throttled?(:test_action, scope: scope, users_allowlist: allowlist)).to be(false)
           end
         end
       end
@@ -262,7 +263,44 @@ RSpec.describe Gitlab::ApplicationRateLimiter, :clean_gitlab_redis_rate_limiting
 
         it 'is throttled' do
           travel_to(start_time + 1.minute) do
-            expect(subject.throttled?(:test_action, scope: scope, users_allowlist: allowlist)).to eq(true)
+            expect(subject.throttled?(:test_action, scope: scope, users_allowlist: allowlist)).to be(true)
+          end
+        end
+      end
+    end
+
+    context 'when using GITLAB_THROTTLE_USER_ALLOWLIST' do
+      let_it_be(:allowlisted_user) { create(:user) }
+
+      let(:start_time) { Time.current.beginning_of_hour }
+
+      before do
+        allow(Gitlab::RackAttack).to receive(:user_allowlist).and_return(Set.new([allowlisted_user.id]))
+        described_class.clear_memoization(:gitlab_throttle_user_allowlist)
+
+        travel_to(start_time) { subject.throttled?(:test_action, scope: scope) }
+      end
+
+      after do
+        described_class.clear_memoization(:gitlab_throttle_user_allowlist)
+      end
+
+      context 'when the user is in the allow list' do
+        let(:scope) { allowlisted_user }
+
+        it 'is not throttled' do
+          travel_to(start_time + 1.minute) do
+            expect(subject.throttled?(:test_action, scope: scope)).to be(false)
+          end
+        end
+      end
+
+      context 'when the user is not in the allow list' do
+        let(:scope) { user }
+
+        it 'is throttled' do
+          travel_to(start_time + 1.minute) do
+            expect(subject.throttled?(:test_action, scope: scope)).to be(true)
           end
         end
       end
@@ -279,8 +317,8 @@ RSpec.describe Gitlab::ApplicationRateLimiter, :clean_gitlab_redis_rate_limiting
       it "is never throttled once bypass_header is '1', even though the key is already over its limit",
         :aggregate_failures do
         travel_to(start_time + 1.minute) do
-          expect(subject.throttled?(:test_action, scope: [user])).to eq(true)
-          expect(subject.throttled?(:test_action, scope: [user], bypass_header: '1')).to eq(false)
+          expect(subject.throttled?(:test_action, scope: [user])).to be(true)
+          expect(subject.throttled?(:test_action, scope: [user], bypass_header: '1')).to be(false)
         end
       end
     end
@@ -289,6 +327,85 @@ RSpec.describe Gitlab::ApplicationRateLimiter, :clean_gitlab_redis_rate_limiting
       let(:scope) { [project, 'app/controllers/groups_controller.rb'] }
 
       it_behaves_like 'throttles based on key and scope'
+    end
+
+    context 'when using a characteristic-keyed hash as scope' do
+      let(:scope) { { user: user, project: project } }
+
+      it_behaves_like 'throttles based on key and scope'
+
+      it 'shares its counter with the equivalent positional scope' do
+        start_time = Time.current.beginning_of_hour
+
+        travel_to(start_time) do
+          expect(subject.throttled?(:test_action, scope: [user, project])).to be(false)
+        end
+
+        travel_to(start_time + 1.minute) do
+          expect(subject.throttled?(:test_action, scope: scope)).to be(true)
+        end
+      end
+
+      it 'shares its counter with string characteristic keys' do
+        start_time = Time.current.beginning_of_hour
+
+        travel_to(start_time) do
+          expect(subject.throttled?(:test_action, scope: { 'user' => user, 'project' => project })).to be(false)
+        end
+
+        travel_to(start_time + 1.minute) do
+          expect(subject.throttled?(:test_action, scope: scope)).to be(true)
+        end
+      end
+
+      context 'when a scope key is not a characteristic of the rule' do
+        it 'raises an InvalidScopeError in dev/test' do
+          expect { subject.throttled?(:test_action, scope: { users: user }) }
+            .to raise_error(Gitlab::ApplicationRateLimiter::InvalidScopeError, /users.*not characteristics/)
+        end
+
+        it 'raises an InvalidScopeError for an unknown string key' do
+          expect { subject.throttled?(:test_action, scope: { 'users' => user }) }
+            .to raise_error(Gitlab::ApplicationRateLimiter::InvalidScopeError, /users.*not characteristics/)
+        end
+
+        it 'tracks via ErrorTracking and continues when tracking does not raise' do
+          expect(Gitlab::ErrorTracking).to receive(:track_and_raise_for_dev_exception).with(
+            an_instance_of(Gitlab::ApplicationRateLimiter::InvalidScopeError),
+            rate_limit_key: :test_action
+          )
+
+          expect(subject.throttled?(:test_action, scope: { users: user })).to be(false)
+        end
+
+        it 'rejects duplicate keys that normalize to the same symbol' do
+          expect { subject.throttled?(:test_action, scope: { user: user, 'user' => user }) }
+            .to raise_error(Labkit::RateLimit::Identifier::DuplicateNormalizedKeyError)
+        end
+      end
+
+      context 'when using a user allow list' do
+        let(:start_time) { Time.current.beginning_of_hour }
+        let(:allowlist) { [user.username.titlecase] }
+
+        it 'reads the user from the :user characteristic' do
+          travel_to(start_time) { subject.throttled?(:test_action, scope: scope) }
+
+          travel_to(start_time + 1.minute) do
+            expect(subject.throttled?(:test_action, scope: scope, users_allowlist: allowlist)).to be(false)
+          end
+        end
+
+        it 'reads the user from a string user characteristic' do
+          string_key_scope = { 'user' => user, 'project' => project }
+
+          travel_to(start_time) { subject.throttled?(:test_action, scope: string_key_scope) }
+
+          travel_to(start_time + 1.minute) do
+            expect(subject.throttled?(:test_action, scope: string_key_scope, users_allowlist: allowlist)).to be(false)
+          end
+        end
+      end
     end
 
     context 'when threshold and interval are overridden by arguments' do
@@ -404,7 +521,8 @@ RSpec.describe Gitlab::ApplicationRateLimiter, :clean_gitlab_redis_rate_limiting
         expect { subject.resource_usage_throttled?(:test_action, scope: nil, resource_key: resource_key, threshold: threshold, interval: interval) }
           .to raise_error(
             Gitlab::ApplicationRateLimiter::InvalidScopeError,
-            "scope cannot be nil. Use :global for global rate limits."
+            'scope cannot be nil. Pass a characteristic-keyed hash, e.g. { user: current_user } ' \
+              '(or { scope: :global } for global rate limits).'
           )
       end
 
@@ -445,7 +563,7 @@ RSpec.describe Gitlab::ApplicationRateLimiter, :clean_gitlab_redis_rate_limiting
             subject.resource_usage_throttled?(
               :test_action, scope: scope, resource_key: resource_key, threshold: threshold, interval: interval
             )
-          ).to eq(false)
+          ).to be(false)
         end
 
         travel_to(start_time + 1.minute) do
@@ -453,7 +571,7 @@ RSpec.describe Gitlab::ApplicationRateLimiter, :clean_gitlab_redis_rate_limiting
             subject.resource_usage_throttled?(
               :test_action, scope: scope, resource_key: resource_key, threshold: threshold, interval: interval
             )
-          ).to eq(true)
+          ).to be(true)
         end
       end
 
@@ -463,7 +581,7 @@ RSpec.describe Gitlab::ApplicationRateLimiter, :clean_gitlab_redis_rate_limiting
             subject.resource_usage_throttled?(
               :test_action, scope: scope, resource_key: resource_key, threshold: threshold, interval: interval
             )
-          ).to eq(false)
+          ).to be(false)
         end
 
         travel_to(start_time + 1.minute) do
@@ -471,7 +589,7 @@ RSpec.describe Gitlab::ApplicationRateLimiter, :clean_gitlab_redis_rate_limiting
             described_class.resource_usage_throttled?(
               :test_action, scope: [user, project2], resource_key: resource_key, threshold: threshold, interval: interval
             )
-          ).to eq(false)
+          ).to be(false)
         end
       end
 
@@ -487,16 +605,16 @@ RSpec.describe Gitlab::ApplicationRateLimiter, :clean_gitlab_redis_rate_limiting
       it 'allows peeking at the current resource usage without changing its value' do
         travel_to(start_time) do
           # increment usage up to threshold
-          expect(subject.resource_usage_throttled?(:test_action, **kwargs)).to eq(false)
+          expect(subject.resource_usage_throttled?(:test_action, **kwargs)).to be(false)
 
           # peeking at current usage returns false because the value is still the same as threshold
-          expect(subject.resource_usage_throttled?(:test_action, peek: true, **kwargs)).to eq(false)
+          expect(subject.resource_usage_throttled?(:test_action, peek: true, **kwargs)).to be(false)
 
           # increment again, current usage is now > threshold
-          expect(subject.resource_usage_throttled?(:test_action, **kwargs)).to eq(true)
+          expect(subject.resource_usage_throttled?(:test_action, **kwargs)).to be(true)
 
           # peeking again
-          expect(subject.resource_usage_throttled?(:test_action, peek: true, **kwargs)).to eq(true)
+          expect(subject.resource_usage_throttled?(:test_action, peek: true, **kwargs)).to be(true)
         end
       end
     end
@@ -510,7 +628,7 @@ RSpec.describe Gitlab::ApplicationRateLimiter, :clean_gitlab_redis_rate_limiting
             subject.resource_usage_throttled?(
               :test_action, scope: scope, resource_key: resource_key, threshold: threshold, interval: interval
             )
-          ).to eq(false)
+          ).to be(false)
         end
 
         travel_to(start_time + 59.seconds) do
@@ -518,16 +636,16 @@ RSpec.describe Gitlab::ApplicationRateLimiter, :clean_gitlab_redis_rate_limiting
             subject.resource_usage_throttled?(
               :test_action, scope: scope, resource_key: resource_key, threshold: threshold, interval: interval
             )
-          ).to eq(true)
+          ).to be(true)
 
           # Assert that it does not affect other actions or scope
-          expect(subject.resource_usage_throttled?(:another_action, scope: scope, resource_key: resource_key, threshold: threshold, interval: interval)).to eq(false)
+          expect(subject.resource_usage_throttled?(:another_action, scope: scope, resource_key: resource_key, threshold: threshold, interval: interval)).to be(false)
 
           expect(
             subject.resource_usage_throttled?(
               :test_action, scope: [user], resource_key: resource_key, threshold: threshold, interval: interval
             )
-          ).to eq(false)
+          ).to be(false)
         end
       end
 
@@ -577,7 +695,7 @@ RSpec.describe Gitlab::ApplicationRateLimiter, :clean_gitlab_redis_rate_limiting
       it 'returns false and does not log the request' do
         expect(subject).not_to receive(:log_request)
 
-        expect(subject.throttled_request?(request, user, :test_action, scope: [user])).to eq(false)
+        expect(subject.throttled_request?(request, user, :test_action, scope: [user])).to be(false)
       end
     end
 
@@ -589,16 +707,12 @@ RSpec.describe Gitlab::ApplicationRateLimiter, :clean_gitlab_redis_rate_limiting
       it 'returns true and logs the request' do
         expect(subject).to receive(:log_request).with(request, :test_action_request_limit, user)
 
-        expect(subject.throttled_request?(request, user, :test_action, scope: [user])).to eq(true)
+        expect(subject.throttled_request?(request, user, :test_action, scope: [user])).to be(true)
       end
 
       context 'when the bypass header is set' do
         before do
           allow(Gitlab::Throttle).to receive(:bypass_header).and_return('SOME_HEADER')
-          # Pin the enabled state explicitly rather than relying on ops flags
-          # defaulting to enabled in the test env, so a future default change
-          # can't silently stop exercising this path.
-          stub_feature_flags(rate_limiting_rule_bypass_header: true)
         end
 
         it 'skips rate limit if set to "1"' do
@@ -606,7 +720,7 @@ RSpec.describe Gitlab::ApplicationRateLimiter, :clean_gitlab_redis_rate_limiting
 
           expect(subject).not_to receive(:log_request)
 
-          expect(subject.throttled_request?(request, user, :test_action, scope: [user])).to eq(false)
+          expect(subject.throttled_request?(request, user, :test_action, scope: [user])).to be(false)
         end
 
         it 'does not skip rate limit if set to something else than "1"' do
@@ -614,7 +728,7 @@ RSpec.describe Gitlab::ApplicationRateLimiter, :clean_gitlab_redis_rate_limiting
 
           expect(subject).to receive(:log_request).with(request, :test_action_request_limit, user)
 
-          expect(subject.throttled_request?(request, user, :test_action, scope: [user])).to eq(true)
+          expect(subject.throttled_request?(request, user, :test_action, scope: [user])).to be(true)
         end
 
         it 'does not skip rate limit for a truthy-looking value other than "1"', :aggregate_failures do
@@ -622,13 +736,13 @@ RSpec.describe Gitlab::ApplicationRateLimiter, :clean_gitlab_redis_rate_limiting
 
           expect(subject).to receive(:log_request).with(request, :test_action_request_limit, user)
 
-          expect(subject.throttled_request?(request, user, :test_action, scope: [user])).to eq(true)
+          expect(subject.throttled_request?(request, user, :test_action, scope: [user])).to be(true)
         end
 
         it 'does not increment the real rate-limit counter when bypassed' do
           allow(request).to receive(:get_header).with(Gitlab::Throttle.bypass_header).and_return('1')
 
-          redis_key = "labkit:rl:applimiter_test_action:limit_test_action:user:#{user.id}:project:_unknown_"
+          redis_key = "labkit:rl:{applimiter_test_action:limit_test_action:user:#{user.id}:project:_unknown_}"
           count_before = Gitlab::Redis::RateLimiting.with { |r| r.get(redis_key) }
 
           subject.throttled_request?(request, user, :test_action, scope: [user])
@@ -637,21 +751,6 @@ RSpec.describe Gitlab::ApplicationRateLimiter, :clean_gitlab_redis_rate_limiting
 
           expect(count_after).to eq(count_before)
         end
-
-        context 'when :rate_limiting_rule_bypass_header is disabled' do
-          before do
-            stub_feature_flags(rate_limiting_rule_bypass_header: false)
-          end
-
-          it 'keeps the legacy short-circuit: returns false and never reaches labkit', :aggregate_failures do
-            allow(request).to receive(:get_header).with(Gitlab::Throttle.bypass_header).and_return('1')
-
-            expect(Gitlab::ApplicationRateLimiter::LabkitAdapter).not_to receive(:run!)
-            expect(subject).not_to receive(:log_request)
-
-            expect(subject.throttled_request?(request, user, :test_action, scope: [user])).to eq(false)
-          end
-        end
       end
     end
   end
@@ -659,13 +758,13 @@ RSpec.describe Gitlab::ApplicationRateLimiter, :clean_gitlab_redis_rate_limiting
   describe '.peek' do
     it 'peeks at the current state without changing its value' do
       freeze_time do
-        expect(subject.peek(:test_action, scope: [user])).to eq(false)
-        expect(subject.throttled?(:test_action, scope: [user])).to eq(false)
+        expect(subject.peek(:test_action, scope: [user])).to be(false)
+        expect(subject.throttled?(:test_action, scope: [user])).to be(false)
         2.times do
-          expect(subject.peek(:test_action, scope: [user])).to eq(false)
+          expect(subject.peek(:test_action, scope: [user])).to be(false)
         end
-        expect(subject.throttled?(:test_action, scope: [user])).to eq(true)
-        expect(subject.peek(:test_action, scope: [user])).to eq(true)
+        expect(subject.throttled?(:test_action, scope: [user])).to be(true)
+        expect(subject.peek(:test_action, scope: [user])).to be(true)
       end
     end
   end
@@ -675,6 +774,20 @@ RSpec.describe Gitlab::ApplicationRateLimiter, :clean_gitlab_redis_rate_limiting
       expect(described_class::LabkitAdapter).to receive(:period_for).with(:test_action).and_call_original
 
       expect(described_class.period_for(:test_action)).to eq(2.minutes)
+    end
+  end
+
+  describe '.throttled_error_message' do
+    it 'returns the shared rate limit error message' do
+      expect(described_class.throttled_error_message)
+        .to eq('This endpoint has been requested too many times. Try again later.')
+    end
+
+    it 'translates at call time, not at load time' do
+      Gitlab::I18n.with_locale('es') do
+        expect(described_class.throttled_error_message)
+          .to eq(_('This endpoint has been requested too many times. Try again later.'))
+      end
     end
   end
 
@@ -730,11 +843,11 @@ RSpec.describe Gitlab::ApplicationRateLimiter, :clean_gitlab_redis_rate_limiting
 
     it 'returns false' do
       travel_to(start_time) do
-        expect(described_class.throttled?(:test_action, scope: scope, interval: 0)).to eq(false)
+        expect(described_class.throttled?(:test_action, scope: scope, interval: 0)).to be(false)
       end
 
       travel_to(start_time + 1.minute) do
-        expect(described_class.throttled?(:test_action, scope: scope, interval: 0)).to eq(false)
+        expect(described_class.throttled?(:test_action, scope: scope, interval: 0)).to be(false)
       end
     end
   end
@@ -745,11 +858,11 @@ RSpec.describe Gitlab::ApplicationRateLimiter, :clean_gitlab_redis_rate_limiting
 
     it 'returns false' do
       travel_to(start_time) do
-        expect(described_class.throttled?(:test_action, scope: scope, threshold: 0)).to eq(false)
+        expect(described_class.throttled?(:test_action, scope: scope, threshold: 0)).to be(false)
       end
 
       travel_to(start_time + 1.minute) do
-        expect(described_class.throttled?(:test_action, scope: scope, threshold: 0)).to eq(false)
+        expect(described_class.throttled?(:test_action, scope: scope, threshold: 0)).to be(false)
       end
     end
   end

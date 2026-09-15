@@ -1,6 +1,6 @@
 ---
 stage: Plan
-group: Project Management
+group: Work Items
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see <https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments>
 title: GitLab for Slack app
 description: "Configure the GitLab for Slack app to use slash commands, receive notifications, and interact with GitLab Duo from your Slack workspace."
@@ -25,7 +25,7 @@ with your GitLab user so that any command you run in Slack is run by your linked
 Prerequisites:
 
 - You must have the [appropriate permissions to add apps to your Slack workspace](https://slack.com/help/articles/202035138-Add-apps-to-your-Slack-workspace).
-- On GitLab Self-Managed, an administrator must [enable the integration](../../../administration/settings/slack_app.md).
+- On GitLab Self-Managed, an administrator must [turn on the integration](../../../administration/settings/slack_app.md).
 
 The GitLab for Slack app uses
 [granular permissions](https://medium.com/slack-developer-blog/more-precision-less-restrictions-a3550006f9c3).
@@ -35,8 +35,6 @@ Although functionality has not changed, you should [reinstall the app](#reinstal
 
 {{< history >}}
 
-- Installation at the group level [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/391526) in GitLab 16.10 [with a feature flag](../../../administration/feature_flags/_index.md) named `gitlab_for_slack_app_instance_and_group_level`. Disabled by default.
-- [Enabled on GitLab.com, GitLab Self-Managed, and GitLab Dedicated](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/147820) in GitLab 16.11.
 - [Generally available](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/175803) in GitLab 17.8. Feature flag `gitlab_for_slack_app_instance_and_group_level` removed.
 
 {{< /history >}}
@@ -54,10 +52,11 @@ To install the GitLab for Slack app from the project or group settings:
       [enable support for multiple workspaces](../../../administration/settings/slack_app.md#enable-support-for-multiple-workspaces) for the dropdown list to appear.
    1. Select **Allow**.
 
-When you install the app at the group level, the integration is also enabled for all subgroups and
-projects in the group that don't already have the integration configured. Subgroups and projects
-that already have the integration configured are not affected, but can choose to use the inherited
-settings at any time. For more information, see [group-level integration management](_index.md#manage-group-default-settings-for-a-project-integration).
+When you install the app for a group, the integration is also turned on for all subgroups and
+projects in the group that don't already have the integration configured.
+Subgroups and projects that already have the integration configured are not affected,
+but can use the inherited settings at any time.
+For more information, see [manage group default settings for a project integration](_index.md#manage-group-default-settings-for-a-project-integration).
 Each project gets a project-specific alias based on its project path, which you can use in
 [slash commands](#slash-commands).
 
@@ -104,7 +103,7 @@ Alternatively, you can [configure the integration](https://about.gitlab.com/solu
 {{< details >}}
 
 - Tier: Ultimate
-- Offering: GitLab.com, GitLab Dedicated
+- Offering: GitLab.com, GitLab Self-Managed, GitLab Dedicated
 - Status: Experiment
 
 {{< /details >}}
@@ -112,6 +111,7 @@ Alternatively, you can [configure the integration](https://about.gitlab.com/solu
 {{< history >}}
 
 - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/work_items/590434) in GitLab 19.1 [with a feature flag](../../../administration/feature_flags/_index.md) named `slack_duo_agent`. Disabled by default. This feature is an [experiment](../../../policy/development_stages_support.md).
+- [Enabled on GitLab.com and GitLab Dedicated](https://gitlab.com/gitlab-org/gitlab/-/work_items/592185) in GitLab 19.4.
 
 {{< /history >}}
 
@@ -120,9 +120,16 @@ Alternatively, you can [configure the integration](https://about.gitlab.com/solu
 > For more information, see the history.
 > This feature is available for testing, but not ready for production use.
 
+<!-- Two distinct notes, so the blank line between them is intentional. -->
+
+> [!note]
+> If you use multiple Slack installations without Slack Enterprise Grid, Slack rate limits GitLab Duo to 15 conversation objects in each minute.
+> This prevents the integration from functioning because a single invocation requests 50 messages from the channel history to use as context.
+> To avoid rate limits for GitLab Duo in Slack, keep all of your Slack workspaces in a single Enterprise Grid organization.
+
 You can interact with [GitLab Duo](../../gitlab_duo/_index.md) directly from Slack by mentioning the
 GitLab bot in any channel or thread where the bot is present. GitLab Duo reads the full
-conversation thread as context, runs a flow on a CI/CD runner, and posts the
+conversation thread and recent channel history as context, runs a flow on a CI/CD runner, and posts the
 result back to the Slack thread.
 
 For example, you can ask GitLab Duo to do the following:
@@ -131,6 +138,14 @@ For example, you can ask GitLab Duo to do the following:
 - Search for existing issues or merge requests.
 - Summarize a discussion thread.
 - Answer questions about your projects.
+
+Each interaction runs a GitLab Duo Agent session and consumes GitLab Credits.
+Sessions execute on a CI/CD runner in the invoking user's default Duo namespace, and a `duo-workspace` project is created there automatically on first use.
+If you ask about a project in a different top-level group, GitLab Duo in Slack fails.
+
+When mentioned in a channel, the agent reads recent messages from that channel as context for its response.
+Messages posted after the one it is responding to are not included.
+After users interact with GitLab Duo, it creates an agent session that is visible only to the person who invoked it, not to everyone with access to the `duo-workspace` project.
 
 > [!note]
 > When you mention the GitLab bot in a thread, the full conversation content
@@ -141,6 +156,7 @@ For example, you can ask GitLab Duo to do the following:
 ### Prerequisites
 
 - [Turn on the GitLab Duo Agent Platform](../../duo_agent_platform/turn_on_off.md#turn-gitlab-duo-agent-platform-on-or-off).
+- [Turn on beta and experimental features](../../gitlab_duo/turn_on_off.md#turn-on-beta-and-experimental-features).
 - Link a Slack account to your GitLab account.
   If your accounts are not linked, GitLab sends you a message
   with a link to authorize the connection on first mention.
@@ -154,13 +170,27 @@ For example, you can ask GitLab Duo to do the following:
 
 To use GitLab Duo in Slack:
 
-1. In a Slack channel or thread, type `@GitLab` followed by your request
+1. Invite the app to a channel with `/invite @GitLab`.
+1. In the Slack channel or in a thread in the channel, type `@GitLab` followed by your request
    (for example, `@GitLab create an issue to track this bug`).
+1. The first time you type `@GitLab`, GitLab sends you a message with a link to connect your Slack and GitLab accounts.
 1. GitLab Duo acknowledges your request and starts working on the task.
 1. When the task is complete, GitLab Duo posts a threaded reply with the result.
 
-If an error occurs, GitLab Duo sends you a message with details about the issue.
+If an error occurs, GitLab Duo reacts to your message with a locked padlock emoji and sends you a message with details about the issue.
 This message is visible only to you.
+
+To leave feedback on this feature's performance, use the thumbs up or thumbs down on any response.
+
+GitLab Duo in Slack works in the following channels and threads:
+
+- Public and private channels where the agent is a member of the channel.
+- In a group direct messages between more than two people. GitLab Duo only sees the message it was mentioned in, not the earlier conversation.
+
+GitLab Duo does not work in the following threads:
+
+- One-to-one direct messages with the agent.
+- In the agent panel in the Slack top bar.
 
 ### Workspace project
 
@@ -178,8 +208,8 @@ GitLab Duo requires the following additional GitLab for Slack app permissions:
 | Scope               | Purpose |
 |---------------------|---------|
 | `app_mentions:read` | Receives events when users mention the bot in a channel. |
-| `channels:history`  | Reads conversation history in public channels to provide thread context to the agent. |
-| `groups:history`    | Reads conversation history in private channels to provide thread context to the agent. |
+| `channels:history`  | Reads conversation history in public channels to provide thread and channel context to the agent. |
+| `groups:history`    | Reads conversation history in private channels to provide thread and channel context to the agent. |
 | `reactions:write`   | Adds emoji reactions to messages to indicate agent lifecycle status. |
 
 New installations receive these permissions automatically.
@@ -318,8 +348,6 @@ The following GitLab events can trigger notifications in Slack:
 
 {{< history >}}
 
-- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/391526) in GitLab 16.10 [with a feature flag](../../../administration/feature_flags/_index.md) named `gitlab_for_slack_app_instance_and_group_level`. Disabled by default.
-- [Enabled on GitLab.com, GitLab Self-Managed, and GitLab Dedicated](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/147820) in GitLab 16.11.
 - [Generally available](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/175803) in GitLab 17.8. Feature flag `gitlab_for_slack_app_instance_and_group_level` removed.
 
 {{< /history >}}

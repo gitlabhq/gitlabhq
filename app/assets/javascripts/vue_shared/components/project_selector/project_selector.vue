@@ -111,7 +111,7 @@ export default {
         :max-list-height="maxListHeight"
         :fetched-items="projectSearchResults.length"
         :total-items="totalResults"
-        @bottomReached="bottomReached"
+        @bottom-reached="bottomReached"
       >
         <template v-if="!showLoadingIndicator" #items>
           <div class="gl-flex gl-flex-col gl-p-3">

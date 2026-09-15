@@ -239,18 +239,18 @@ RSpec.describe Ci::Workloads::WorkloadDefinition, feature_category: :continuous_
       expect(definition.suspend_on_failure).to be true
     end
 
-    it 'allows setting environment_key' do
-      definition.environment_key = 'runner-1/executor-specific-data'
-      expect(definition.environment_key).to eq('runner-1/executor-specific-data')
+    it 'allows setting runtime_environment_key' do
+      definition.runtime_environment_key = 'runner-1/executor-specific-data'
+      expect(definition.runtime_environment_key).to eq('runner-1/executor-specific-data')
     end
 
     it 'does not include suspend options in job hash' do
       definition.suspend_on_success = true
       definition.suspend_on_failure = true
-      definition.environment_key = 'runner-1/executor-specific-data'
+      definition.runtime_environment_key = 'runner-1/executor-specific-data'
       expect(definition.to_job_hash).not_to have_key(:suspend_on_success)
       expect(definition.to_job_hash).not_to have_key(:suspend_on_failure)
-      expect(definition.to_job_hash).not_to have_key(:environment_key)
+      expect(definition.to_job_hash).not_to have_key(:runtime_environment_key)
     end
   end
 end

@@ -75,7 +75,7 @@ RSpec.describe Gitlab::GithubImport::Importer::RepositoryImporter, feature_categ
         .with('foo/bar')
         .and_return(repo)
 
-      expect(importer.import_wiki?).to eq(false)
+      expect(importer.import_wiki?).to be(false)
     end
 
     it 'returns false if the wiki has already been imported' do
@@ -90,7 +90,7 @@ RSpec.describe Gitlab::GithubImport::Importer::RepositoryImporter, feature_categ
         .to receive(:wiki_repository_exists?)
         .and_return(true)
 
-      expect(importer.import_wiki?).to eq(false)
+      expect(importer.import_wiki?).to be(false)
     end
   end
 
@@ -115,7 +115,7 @@ RSpec.describe Gitlab::GithubImport::Importer::RepositoryImporter, feature_categ
       expect(importer)
         .to receive(:update_clone_time)
 
-      expect(importer.execute).to eq(true)
+      expect(importer.execute).to be(true)
     end
 
     it 'does not import the repository if it already exists' do
@@ -137,7 +137,7 @@ RSpec.describe Gitlab::GithubImport::Importer::RepositoryImporter, feature_categ
       expect(importer)
         .to receive(:update_clone_time)
 
-      expect(importer.execute).to eq(true)
+      expect(importer.execute).to be(true)
     end
 
     it 'does not import the wiki if it is disabled' do
@@ -159,7 +159,7 @@ RSpec.describe Gitlab::GithubImport::Importer::RepositoryImporter, feature_categ
       expect(importer)
         .not_to receive(:import_wiki_repository)
 
-      expect(importer.execute).to eq(true)
+      expect(importer.execute).to be(true)
     end
 
     it 'does not import the wiki if the repository could not be imported' do
@@ -181,7 +181,7 @@ RSpec.describe Gitlab::GithubImport::Importer::RepositoryImporter, feature_categ
       expect(importer)
         .not_to receive(:import_wiki_repository)
 
-      expect(importer.execute).to eq(false)
+      expect(importer.execute).to be(false)
     end
   end
 
@@ -212,7 +212,7 @@ RSpec.describe Gitlab::GithubImport::Importer::RepositoryImporter, feature_categ
         .to receive(:new).with(project, :gc).and_return(service)
       expect(service).to receive(:execute)
 
-      expect(importer.import_repository).to eq(true)
+      expect(importer.import_repository).to be(true)
     end
   end
 
@@ -223,7 +223,7 @@ RSpec.describe Gitlab::GithubImport::Importer::RepositoryImporter, feature_categ
         .with(importer.wiki_url)
         .and_return(true)
 
-      expect(importer.import_wiki_repository).to eq(true)
+      expect(importer.import_wiki_repository).to be(true)
     end
 
     context 'when it raises a Gitlab::Git::CommandError' do
@@ -257,7 +257,7 @@ RSpec.describe Gitlab::GithubImport::Importer::RepositoryImporter, feature_categ
             .not_to receive(:create_wiki)
 
           expect(importer.import_wiki_repository)
-            .to eq(true)
+            .to be(true)
         end
       end
     end

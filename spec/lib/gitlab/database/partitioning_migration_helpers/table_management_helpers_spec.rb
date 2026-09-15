@@ -38,10 +38,12 @@ RSpec.describe Gitlab::Database::PartitioningMigrationHelpers::TableManagementHe
 
     source_model.table_name = source_table
 
-    allow(migration).to receive(:transaction_open?).and_return(false)
-    allow(migration).to receive(:make_partitioned_table_name).and_return(partitioned_table)
-    allow(migration).to receive(:make_sync_function_name).and_return(function_name)
-    allow(migration).to receive(:make_sync_trigger_name).and_return(trigger_name)
+    allow(migration).to receive_messages(
+      transaction_open?: false,
+      make_partitioned_table_name: partitioned_table,
+      make_sync_function_name: function_name,
+      make_sync_trigger_name: trigger_name
+    )
     allow(migration).to receive(:assert_table_is_allowed)
   end
 
@@ -1074,7 +1076,7 @@ RSpec.describe Gitlab::Database::PartitioningMigrationHelpers::TableManagementHe
 
       subject
 
-      expect(table_type(archived_table)).to eq(nil)
+      expect(table_type(archived_table)).to be_nil
     end
 
     it 'drops the trigger on the source table' do

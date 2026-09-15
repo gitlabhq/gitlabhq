@@ -24,6 +24,17 @@ RSpec.describe 'Removing an AwardEmoji', feature_category: :shared do
     create(:award_emoji, name: emoji_name, awardable: awardable, user: user)
   end
 
+  it_behaves_like 'authorizing granular token permissions for GraphQL', :delete_award_emoji do
+    let(:user) { current_user }
+    let(:boundary_object) { project }
+    let(:mutation) { graphql_mutation(:award_emoji_remove, input, 'errors') }
+    let(:request) { post_graphql_mutation(mutation, token: { personal_access_token: pat }) }
+
+    before do
+      create_award_emoji(user)
+    end
+  end
+
   shared_examples 'a mutation that does not destroy an AwardEmoji' do
     specify do
       expect do

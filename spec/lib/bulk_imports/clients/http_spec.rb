@@ -333,7 +333,7 @@ RSpec.describe BulkImports::Clients::HTTP, feature_category: :importers do
     context 'when instance version is greater than or equal to the minimum major version' do
       let(:source_version) { Gitlab::VersionInfo.new(14) }
 
-      it { expect(subject.validate_instance_version!).to eq(true) }
+      it { expect(subject.validate_instance_version!).to be(true) }
     end
 
     context 'when instance version is less than the minimum major version' do
@@ -350,7 +350,7 @@ RSpec.describe BulkImports::Clients::HTTP, feature_category: :importers do
       it 'skips validation' do
         allow(subject).to receive(:instance_version).and_return(source_version)
 
-        expect(subject.validate_import_scopes!).to eq(true)
+        expect(subject.validate_import_scopes!).to be(true)
       end
     end
 
@@ -377,7 +377,7 @@ RSpec.describe BulkImports::Clients::HTTP, feature_category: :importers do
           stub_request(:get, 'http://gitlab.example/api/v4/personal_access_tokens/self?private_token=token')
             .to_return(status: 200, body: { 'scopes' => ['api'] }.to_json, headers: { 'Content-Type' => 'application/json' })
 
-          expect(subject.validate_import_scopes!).to eq(true)
+          expect(subject.validate_import_scopes!).to be(true)
         end
       end
 
@@ -402,14 +402,14 @@ RSpec.describe BulkImports::Clients::HTTP, feature_category: :importers do
     end
 
     it 'returns source instance enterprise information' do
-      expect(subject.instance_enterprise).to eq(false)
+      expect(subject.instance_enterprise).to be(false)
     end
 
     context 'when enterprise information is missing' do
       let(:response) { {} }
 
       it 'defaults to true' do
-        expect(subject.instance_enterprise).to eq(true)
+        expect(subject.instance_enterprise).to be(true)
       end
     end
   end

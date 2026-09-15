@@ -91,6 +91,38 @@ RSpec.describe WorkItems::SavedViews::UserSavedView, feature_category: :planning
     end
   end
 
+  describe '.unsubscribe' do
+    let_it_be(:user) { create(:user) }
+    let_it_be(:group) { create(:group) }
+    let_it_be(:saved_view) { create(:saved_view, namespace: group) }
+
+    context 'when the user is subscribed to the saved view' do
+      let_it_be(:user_saved_view) do
+        create(:user_saved_view, user: user, saved_view: saved_view, namespace: group)
+      end
+
+      it 'destroys the subscription' do
+        expect { described_class.unsubscribe(user: user, saved_view: saved_view) }
+          .to change { described_class.exists?(id: user_saved_view.id) }.from(true).to(false)
+      end
+
+      it 'returns a truthy value' do
+        expect(described_class.unsubscribe(user: user, saved_view: saved_view)).to be_truthy
+      end
+    end
+
+    context 'when the user is not subscribed to the saved view' do
+      it 'does not destroy any subscription' do
+        expect { described_class.unsubscribe(user: user, saved_view: saved_view) }
+          .not_to change { described_class.count }
+      end
+
+      it 'returns a falsey value' do
+        expect(described_class.unsubscribe(user: user, saved_view: saved_view)).to be_falsey
+      end
+    end
+  end
+
   describe '.unsubscribe_last_saved_view' do
     let_it_be(:user) { create(:user) }
     let_it_be(:group) { create(:group) }

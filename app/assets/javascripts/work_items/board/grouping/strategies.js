@@ -1,5 +1,4 @@
 import { placeholderStrategy } from './placeholder_strategy';
 
-// Grouping strategies available in CE. Status grouping is EE-only, so this is
-// just the temporary placeholder until CE-available groupings exist.
+// CE has no real groupings yet, so this is just the placeholder (see placeholder_strategy.js).
 export const strategies = [placeholderStrategy];

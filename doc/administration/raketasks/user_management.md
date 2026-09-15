@@ -119,8 +119,8 @@ the leaked key without forcing all users to change their 2FA details.
 
 To rotate the two-factor authentication encryption key:
 
-1. Look up the old key in the `config/secrets.yml` file, but **make sure you're working
-   with the production section**. The line you're interested in looks like this:
+1. Look up the old key in the `config/secrets.yml` file, but make sure you're working
+   with the `production` section. The line you're interested in looks like this:
 
    ```yaml
    production:
@@ -152,12 +152,12 @@ To rotate the two-factor authentication encryption key:
    ```
 
    The `<old key>` value can be read from `config/secrets.yml` (`<new key>` was
-   generated earlier). The **encrypted** values for the user 2FA secrets are
+   generated earlier). The encrypted values for the user 2FA secrets are
    written to the specified `filename`. You can use this to roll back in case of
    error.
 
 1. Change `config/secrets.yml` to set `otp_key_base` to `<new key>` and restart. Again, make sure
-   you're operating in the **production** section.
+   you're operating in the `production` section.
 
    ```shell
    # omnibus-gitlab

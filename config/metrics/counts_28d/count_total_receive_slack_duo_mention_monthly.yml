@@ -1,0 +1,21 @@
+---
+key_path: counts.count_total_receive_slack_duo_mention_monthly
+description: Monthly count of Slack mentions of the GitLab bot received from workspaces
+  with an installed GitLab for Slack app
+product_group: ai_catalog
+product_categories:
+- duo_agent_platform
+performance_indicator_type: []
+value_type: number
+status: active
+milestone: '19.4'
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/253496
+time_frame: 28d
+data_source: internal_events
+data_category: optional
+tiers:
+- free
+- premium
+- ultimate
+events:
+- name: receive_slack_duo_mention

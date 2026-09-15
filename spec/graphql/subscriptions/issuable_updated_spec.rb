@@ -21,7 +21,7 @@ RSpec.describe Subscriptions::IssuableUpdated do
       let(:resolver) { resolver_instance(described_class, ctx: query_context, subscription_update: false) }
 
       it 'returns nil' do
-        expect(subject).to eq(nil)
+        expect(subject).to be_nil
       end
 
       context 'when user is unauthorized' do

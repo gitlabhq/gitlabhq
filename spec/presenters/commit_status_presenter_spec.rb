@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe CommitStatusPresenter do
+RSpec.describe CommitStatusPresenter, feature_category: :continuous_integration do
   let(:project) { create(:project) }
   let(:pipeline) { create(:ci_pipeline, project: project) }
   let(:build) { create(:ci_build, pipeline: pipeline) }
@@ -26,8 +26,27 @@ RSpec.describe CommitStatusPresenter do
       end
 
       it 'appends the troubleshooting link' do
-        is_expected.to eq("#{described_class.callout_failure_messages[failure_reason]} " \
-                              "<a href=\"#{help_page_path('ci/environments/_index.md', anchor: 'error-job-would-create-an-environment-with-an-invalid-parameter')}\">How do I fix it?</a>")
+        is_expected.to eq(
+          "#{s_('Job|This job could not be executed because it would create an environment with an invalid parameter.')} " \
+            "<a href=\"#{help_page_path('ci/environments/_index.md', anchor: 'error-job-would-create-an-environment-with-an-invalid-parameter')}\">" \
+            "#{s_('Job|How do I fix it?')}</a>"
+        )
+      end
+    end
+
+    context 'when the job could not access GitLab Secrets Manager' do
+      let(:failure_reason) { :secrets_manager_access_denied }
+
+      before do
+        build.failure_reason = failure_reason
+      end
+
+      it 'appends the troubleshooting link' do
+        is_expected.to eq(
+          "#{s_('Job|This job failed to retrieve secrets because it does not have access to GitLab Secrets Manager.')} " \
+            "<a href=\"#{help_page_path('ci/secrets/secrets_manager/_index.md', anchor: 'error-namespace-does-not-have-access-to-gitlab-secrets-manager')}\">" \
+            "#{s_('Job|How do I fix it?')}</a>"
+        )
       end
     end
 
@@ -45,12 +64,14 @@ RSpec.describe CommitStatusPresenter do
       end
 
       it 'includes the custom message' do
-        expect(callout_failure_message).to include('The Job Router failed to run this job.')
+        expect(callout_failure_message).to include(s_('Job|The Job Router failed to run this job.'))
         expect(callout_failure_message).to include('No available executors matching requirements: gpu=true')
       end
 
       it 'formats the message correctly' do
-        expect(callout_failure_message).to eq('The Job Router failed to run this job. No available executors matching requirements: gpu=true')
+        expect(callout_failure_message).to eq(
+          "#{s_('Job|The Job Router failed to run this job.')} No available executors matching requirements: gpu=true"
+        )
       end
     end
 
@@ -62,7 +83,9 @@ RSpec.describe CommitStatusPresenter do
       end
 
       it 'shows fallback message' do
-        expect(callout_failure_message).to eq('The Job Router failed to run this job. Please contact your administrator.')
+        expect(callout_failure_message).to eq(
+          "#{s_('Job|The Job Router failed to run this job.')} #{s_('Job|Please contact your administrator.')}"
+        )
       end
     end
   end

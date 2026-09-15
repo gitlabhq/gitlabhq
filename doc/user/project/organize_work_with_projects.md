@@ -33,6 +33,7 @@ GitLab does not limit the number of private projects you can create.
 - [Badges](badges.md)
 - [Project topics](project_topics.md)
 - [Code intelligence](code_intelligence.md)
+- [Code navigation](code_navigation.md)
 - [System notes](system_notes.md)
 - [Use a project as a Go package](use_project_as_go_package.md)
 - [Tutorial: Build a protected workflow for your project](../../tutorials/protected_workflow/_index.md)

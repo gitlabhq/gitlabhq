@@ -16,38 +16,12 @@ module MergeRequests
       @source = source
     end
 
-    def execute
-      return if @shas.empty?
-
-      # Split per project rather than per job: a fork merge request covers both projects,
-      # so gating on the job would let one project's flag change the other's. This is the
-      # only read of the flag; the decision is passed down so a second read cannot differ.
-      new_projects, old_projects = projects.partition do |project|
-        Feature.enabled?(:retry_failed_keep_around_ref_writes, project)
-      end
-
-      old_result = old_execute(old_projects)
-
-      # A job with no enabled project keeps the return value it has today.
-      return old_result if new_projects.empty?
-
-      new_execute(new_projects)
-    end
-
-    private
-
-    # `Gitlab::Git::KeepAround` swallows a failed write on this path, so there is
-    # nothing to report and nothing to retry.
-    def old_execute(projects)
-      projects.map(&:repository).each do |repo|
-        repo.keep_around(*@shas, source: @source)
-      end
-    end
-
     # A success carries no SHAs: the refs actually written are not knowable here, since
     # `Gitlab::Git::KeepAround` legitimately skips a SHA that is already kept around or
     # whose commit is gone, and reports neither.
-    def new_execute(projects)
+    def execute
+      return ServiceResponse.success if @shas.empty?
+
       unwritten = projects.flat_map { |project| write_refs(project) }.uniq
 
       return ServiceResponse.success if unwritten.empty?
@@ -58,16 +32,18 @@ module MergeRequests
       )
     end
 
+    private
+
     def projects
       Project.id_in(@project_ids.uniq)
     end
 
     # A Sidekiq retry never runs the client middleware that takes the worker's
     # `deduplicate` key, and its cleanup frees the key an identical queued job holds.
-    # Now that the worker raises, hold a lease so two writes cannot overlap.
+    # The worker raises to retry, so a lease is what stops two writes overlapping.
     def write_refs(project)
       in_lock(lease_key(project), ttl: LEASE_TTL, retries: 0) do
-        failed = project.repository.keep_around(*@shas, source: @source, retry_failed_writes: true)
+        failed = project.repository.keep_around(*@shas, source: @source)
         log_unwritten(project, failed, message: 'Keep-around reference write failed') if failed.present?
 
         failed

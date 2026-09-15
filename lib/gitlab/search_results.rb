@@ -2,6 +2,8 @@
 
 module Gitlab
   class SearchResults
+    include ::Search::ScopeHandlers::Delegation
+
     COUNT_LIMIT = 100
     COUNT_LIMIT_MESSAGE = "#{COUNT_LIMIT - 1}+".freeze
     DEFAULT_PAGE = 1
@@ -38,6 +40,10 @@ module Gitlab
     end
 
     def objects(scope, page: nil, per_page: DEFAULT_PER_PAGE, preload_method: nil)
+      if handler_for_scope(scope)
+        return delegate_to_handler(scope, :objects, page: page, per_page: per_page, preload_method: preload_method)
+      end
+
       should_preload = preload_method.present?
       collection = collection_for(scope)
       collection = collection.public_send(preload_method) if should_preload # rubocop:disable GitlabSecurity/PublicSend
@@ -46,6 +52,8 @@ module Gitlab
     end
 
     def formatted_count(scope)
+      return delegate_to_handler(scope, :formatted_count) if handler_for_scope(scope)
+
       case scope
       when 'projects'
         formatted_limited_count(limited_projects_count)

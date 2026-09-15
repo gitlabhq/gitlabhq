@@ -4,13 +4,14 @@ module Gitlab
   module RackAttack
     module LabkitRateLimit
       # A request that classifies itself for Labkit::RateLimit independently of
-      # Rack::Attack. It is the same shape as Rack::Attack::Request (a Rack::Request
-      # with Gitlab::RackAttack::Request mixed in), so the low-level request
-      # primitives (logical_path, frontend_request?, unauthenticated?,
-      # authenticated_identifier, ...) and the auth path behave identically to the
-      # legacy stack, but it carries no dependency on the Rack::Attack gem. It does
-      # not call throttled_identifer: the requester discriminator is computed here
-      # from the auth primitive and exposed as explicit (id, type) facts.
+      # Rack::Attack. It is a Rack::Request with the shared
+      # Gitlab::RateLimit::RequestClassification primitives (logical_path,
+      # frontend_request?, authenticated_identifier, ...) mixed in - the same
+      # primitives the legacy Gitlab::RackAttack::Request predicates build on, so
+      # the auth path behaves identically to the legacy stack, with no dependency
+      # on Rack::Attack. It does not call the legacy throttled_identifer: the
+      # requester discriminator is computed here from the auth primitive and
+      # exposed as explicit (id, type) facts.
       #
       # #labkit_facts exposes the request as a flat context the Labkit rules match
       # on (see Limiters / ThrottleRegistry). It deliberately does not call the
@@ -38,7 +39,7 @@ module Gitlab
       # and the auth-method-dependent runner-jobs condition.
       class ClassifiedRequest < ::Rack::Request
         include ::Gitlab::Utils::StrongMemoize
-        include ::Gitlab::RackAttack::Request
+        include ::Gitlab::RateLimit::RequestClassification
 
         def labkit_facts
           identity_facts.merge(classification_facts.transform_values { |value| !!value })
@@ -49,7 +50,7 @@ module Gitlab
         # Identity / discriminator and matcher-input values. Never coerced: a rule
         # counts by the identity values and the path/method matchers compare them as
         # String. `path` is the logical path (relative-URL-root prefix stripped, as
-        # Gitlab::RackAttack::Request#matches? does), so the registry path regexes
+        # RequestClassification#matches? does), so the registry path regexes
         # match correctly on a self-managed install mounted under a relative URL.
         #
         # The requester is resolved once with the widest format list ([:api, :rss,
@@ -75,26 +76,13 @@ module Gitlab
         end
 
         # The requester discriminator as an explicit { id:, type: } pair, computed
-        # without Gitlab::RackAttack::Request#throttled_identifer so this classifier
-        # carries no dependency on the throttle-identifier-string method. It reuses
+        # without the legacy Gitlab::RackAttack::Request#throttled_identifer so this
+        # classifier carries no dependency on the throttle-identifier-string method. It reuses
         # the lower-level auth primitive #authenticated_identifier (a pure auth
-        # lookup with no throttle semantics and no side effects), then applies the
-        # one throttle concern that lives in throttled_identifer and must be
-        # preserved: an allowlisted user is exempt from the identity throttles.
+        # lookup with no throttle semantics and no side effects).
         #
-        # requester_id is tri-state, so allowlisted is distinct from anonymous:
-        #   - a real id  -> counted by the authenticated rules (requester_id: /./);
-        #   - nil        -> anonymous, matched by the unauthenticated rules
-        #                   (requester_id: nil), which throttle by IP;
-        #   - '' (blank) -> allowlisted: matches neither the presence gate (/./ needs a
-        #                   character) nor the nil gate (nil == '' is false), so no
-        #                   identity throttle counts it. A still-nil id here would make
-        #                   the allowlisted user look anonymous and be IP-throttled,
-        #                   because unauthenticated? is false for them (they ARE
-        #                   authenticated). Collector-style throttles that key off aid,
-        #                   not the requester, still apply, mirroring Rack::Attack
-        #                   (whose allowlist only nils throttled_identifer, leaving the
-        #                   aid-keyed collector to fire).
+        # An allowlisted user keeps their real id here: the exemption is the
+        # user_allowlist :skip rule in Limiters, not a classifier concern.
         #
         # The id is stringified: requester.id is an Integer, but the presence gate
         # (requester_id: /./) and Labkit's redis-key encoding compare it as a
@@ -106,24 +94,11 @@ module Gitlab
         # Labkit joins into one redis key - equivalent to the old "type:id" string,
         # and keeping a DeployToken and a User with the same numeric id on distinct
         # counters via the type segment.
-        #
-        # Unlike throttled_identifer, this deliberately does NOT set
-        # Gitlab::Instrumentation::Throttle.safelist for an allowlisted user: that is
-        # throttle-instrumentation coupling (the thing being decoupled), and the real
-        # Rack::Attack stack sets the safelist itself on the same request, so the
-        # observable behavior is unchanged.
         def requester(request_formats)
           identifier = authenticated_identifier(request_formats)
           return {} unless identifier
 
-          identifier_type = identifier[:identifier_type]
-          identifier_id = identifier[:identifier_id]
-
-          if identifier_type == :user && ::Gitlab::RackAttack.user_allowlist.include?(identifier_id)
-            return { id: '', type: '' }
-          end
-
-          { id: identifier_id.to_s, type: identifier_type.to_s }
+          { id: identifier[:identifier_id].to_s, type: identifier[:identifier_type].to_s }
         end
 
         # Boolean facts a rule matches on, coerced to strict true/false in
@@ -145,6 +120,9 @@ module Gitlab
         #   - deprecated: a path match plus the with_projects param default;
         #   - runner_jobs: a path match plus the auth method (runner or job token),
         #     which no path matcher or presence fact can see (see #runner_jobs?);
+        #   - dependency_proxy: a path match plus, on EE, the virtual-registry
+        #     exclusion (see EE's #dependency_proxy_path? override), which a static
+        #     path matcher cannot see;
         #   - bypass: the safelist header, matched by the bypass rule.
         def classification_facts
           settings = ::Gitlab::Throttle.settings
@@ -155,6 +133,7 @@ module Gitlab
             protected_path: protected_path?,
             deprecated: deprecated_api_request?, # TODO use path matchers for deprecated API requests: https://gitlab.com/gitlab-org/ruby/gems/labkit-ruby/-/work_items/71
             runner_jobs: runner_jobs?,
+            dependency_proxy: dependency_proxy_path?,
             bypass: labkit_bypassed?,
 
             # per-throttle enable settings each rule matches on (option 2: matched
@@ -173,6 +152,7 @@ module Gitlab
             setting_unauthenticated_git_http: settings.throttle_unauthenticated_git_http_enabled,
             setting_authenticated_git_http: settings.throttle_authenticated_git_http_enabled,
             setting_authenticated_git_lfs: settings.throttle_authenticated_git_lfs_enabled,
+            setting_authenticated_dependency_proxy: settings.throttle_authenticated_dependency_proxy_enabled,
             setting_protected_paths: ::Gitlab::Throttle.protected_paths_enabled?
           }
         end
@@ -213,7 +193,7 @@ module Gitlab
         # post? and get_request_protected_path? with get?; here each registry rule's own
         # `method:` gate provides that pairing, so the fact is only read against the
         # list its rule's method selected. protected_paths / protected_paths_for_get_request
-        # and matches_protected_path? come from the Gitlab::RackAttack::Request mixin.
+        # and matches_protected_path? come from the RequestClassification mixin.
         def protected_path?
           matches_protected_path?(get? ? protected_paths_for_get_request : protected_paths)
         end

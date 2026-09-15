@@ -9,9 +9,6 @@ RSpec.describe SplitMetadataMigration102, migration: :gitlab_ci, feature_categor
   let(:view_max_value) { described_class::VIEW_MAX_VALUE }
   let(:migration_name) { described_class::MIGRATION }
 
-  let(:pipelines_table) { ci_partitioned_table(:p_ci_pipelines) }
-  let(:builds_table) { ci_partitioned_table(:p_ci_builds) }
-
   let!(:original_migration) do
     Gitlab::Database::BackgroundMigration::BatchedMigration.create!(
       job_class_name: migration_name,

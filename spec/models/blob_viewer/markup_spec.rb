@@ -20,6 +20,9 @@ RSpec.describe BlobViewer::Markup, :aggregate_failures, feature_category: :markd
         expect(subject.banzai_render_context[:requested_path]).to eq('CHANGELOG.md')
         expect(subject.banzai_render_context[:issuable_reference_expansion_enabled]).to be(true)
         expect(subject.banzai_render_context[:commit_id]).to eq(blob.commit_id)
+        expect(subject.banzai_render_context[:cache_key]).to eq(
+          ['blob', blob.id, 'commit', blob.commit_id, 'path', 'CHANGELOG.md']
+        )
       end
     end
 

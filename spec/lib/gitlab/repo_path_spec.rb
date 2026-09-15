@@ -5,7 +5,7 @@ require 'spec_helper'
 RSpec.describe ::Gitlab::RepoPath do
   include Gitlab::Routing
 
-  let_it_be(:project) { create(:project_with_design, :repository) }
+  let_it_be(:project) { create(:project_with_design) }
   let_it_be(:personal_snippet) { create(:personal_snippet) }
   let_it_be(:project_snippet) { create(:project_snippet, project: project) }
   let_it_be(:redirect_route) { 'foo/bar/baz' }
@@ -86,6 +86,38 @@ RSpec.describe ::Gitlab::RepoPath do
       project_without_design = create(:project)
 
       expect(described_class.parse(project_without_design.full_path + '.design.git')).to eq([nil, nil, Gitlab::GlRepository.default_type, nil])
+    end
+  end
+
+  describe '.personal_snippet_id' do
+    it 'extracts the id from a personal snippet repository path' do
+      expect(described_class.personal_snippet_id('snippets/42.git')).to eq('42')
+    end
+
+    it 'returns nil for other repository paths', :aggregate_failures do
+      expect(described_class.personal_snippet_id('group/project/snippets/42.git')).to be_nil
+      expect(described_class.personal_snippet_id('group/project.git')).to be_nil
+      expect(described_class.personal_snippet_id('snippets/abc.git')).to be_nil
+      expect(described_class.personal_snippet_id(nil)).to be_nil
+    end
+  end
+
+  describe '.top_level_namespace_path' do
+    it 'returns the first segment of a multi-segment repository path', :aggregate_failures do
+      expect(described_class.top_level_namespace_path('group/sub/project.git')).to eq('group')
+      expect(described_class.top_level_namespace_path('/group/project.git')).to eq('group')
+      expect(described_class.top_level_namespace_path('group/sub.wiki.git')).to eq('group')
+    end
+
+    it 'strips the repository type suffix from a single-segment path', :aggregate_failures do
+      expect(described_class.top_level_namespace_path('group.wiki.git')).to eq('group')
+      expect(described_class.top_level_namespace_path('group.design.git')).to eq('group')
+    end
+
+    it 'returns nil for bare single segments and blank paths', :aggregate_failures do
+      expect(described_class.top_level_namespace_path('project.git')).to be_nil
+      expect(described_class.top_level_namespace_path('')).to be_nil
+      expect(described_class.top_level_namespace_path(nil)).to be_nil
     end
   end
 

@@ -9,8 +9,8 @@ import (
 
 	"gitlab.com/gitlab-org/gitlab/workhorse/internal/api"
 	"gitlab.com/gitlab-org/gitlab/workhorse/internal/gitaly"
+	"gitlab.com/gitlab-org/gitlab/workhorse/internal/helper"
 	"gitlab.com/gitlab-org/gitlab/workhorse/internal/helper/fail"
-	"gitlab.com/gitlab-org/gitlab/workhorse/internal/log"
 	"gitlab.com/gitlab-org/gitlab/workhorse/internal/senddata"
 )
 
@@ -42,8 +42,8 @@ func (lb *listBlobs) Inject(w http.ResponseWriter, r *http.Request, sendData str
 		return
 	}
 
-	if err := blobClient.SendListBlobs(ctx, w, request); err != nil {
-		log.WithRequest(r).WithError(&copyError{fmt.Errorf("SendListBlobs: %v", err)}).Error()
-		return
+	response := helper.NewCountingResponseWriter(w)
+	if err := blobClient.SendListBlobs(ctx, response, request); err != nil {
+		failRepositoryStream(response, r, fmt.Errorf("SendListBlobs: %w", err))
 	}
 }

@@ -112,17 +112,15 @@ export default {
       <rect y="24" width="830" height="16" rx="4" />
       <rect y="73" width="540" height="16" rx="4" />
     </gl-skeleton-loader>
-    <!-- eslint-disable vue/v-on-event-hyphenation -- GlAlert emits the camelCase `primaryAction` event -->
     <gl-alert
       v-else-if="loadingContentFailed"
       :dismissible="false"
       variant="danger"
       :primary-button-text="$options.i18n.retryLoadingContent"
-      @primaryAction="loadWikiContent"
+      @primary-action="loadWikiContent"
     >
       {{ $options.i18n.loadingContentFailed }}
     </gl-alert>
-    <!-- eslint-enable vue/v-on-event-hyphenation -->
     <div
       v-else-if="!loadingContentFailed && !isLoadingContent"
       ref="content"

@@ -48,7 +48,7 @@ There are two ways of creating a foundational flow: using the AI Catalog or GitL
      foundational_flow_reference: "<flow-reference>/v1",
      feature_maturity: "experimental",
      ai_feature: "duo_agent_platform",
-     pre_approved_agent_privileges: [
+     agent_privileges: [
        ::Ai::DuoWorkflows::Workflow::AgentPrivileges::READ_WRITE_FILES,
        ::Ai::DuoWorkflows::Workflow::AgentPrivileges::READ_ONLY_GITLAB
      ],
@@ -116,7 +116,7 @@ There are two ways of creating a foundational flow: using the AI Catalog or GitL
      foundational_flow_reference: "test_flow/v1",
      feature_maturity: "beta",
      ai_feature: "duo_agent_platform",
-     pre_approved_agent_privileges: [
+     agent_privileges: [
        ::Ai::DuoWorkflows::Workflow::AgentPrivileges::READ_WRITE_FILES,
        ::Ai::DuoWorkflows::Workflow::AgentPrivileges::READ_ONLY_GITLAB
      ],
@@ -138,7 +138,7 @@ When adding a flow to the `FoundationalFlow` model, you must provide the followi
 | `foundational_flow_reference` | String | Yes | Unique identifier with version (example: "fix_pipeline/v1")            |
 | `feature_maturity` | String | Yes | Maturity level: "experimental", "beta", or "ga"                        |
 | `ai_feature` | String | Yes | Associated AI feature name (typically "duo_agent_platform")            |
-| `pre_approved_agent_privileges` | Array | Yes | Required permissions (see [Agent Privileges](#agent-privileges))       |
+| `agent_privileges` | Array | Yes | Required permissions (see [Agent Privileges](#agent-privileges))        |
 | `avatar` | String | No | Icon filename (must exist in GitLab SVGs)                              |
 | `environment` | String | No | Execution environment: "web", "ambient", or "cli" (default: "ambient") |
 | `triggers` | Array | No | Event types that can trigger the flow (default: empty array)           |
@@ -159,7 +159,7 @@ Agent privileges define what actions a flow can perform. The complete list of av
 Example privilege configuration:
 
 ```ruby
-pre_approved_agent_privileges = [
+agent_privileges = [
   ::Ai::DuoWorkflows::Workflow::AgentPrivileges::READ_WRITE_FILES,
   ::Ai::DuoWorkflows::Workflow::AgentPrivileges::READ_ONLY_GITLAB,
   ::Ai::DuoWorkflows::Workflow::AgentPrivileges::READ_WRITE_GITLAB,

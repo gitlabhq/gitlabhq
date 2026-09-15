@@ -99,22 +99,16 @@ RSpec.describe SupplyChain::Slsa::ProvenanceStatement, feature_category: :artifa
 
         it 'has the correct external parameters' do
           statement_variables = build_definition['externalParameters']['variables']
+          allowed_keys = described_class::ExternalParameters.allowed_keys
+
           expect(statement_variables).to be_an_instance_of(Hash)
-          expect(statement_variables.length).to eq(build.variables.to_a.length)
 
-          non_masked = build.variables.filter { |variable| !variable.masked? }.map(&:key)
-          masked = build.variables.filter(&:masked?).map(&:key)
-
-          expect(non_masked.length).to be > 1
-          expect(masked.length).to be > 1
-
-          non_masked.each do |variable|
+          allowed_keys.each do |variable|
             expect(statement_variables[variable]).to eq(build.variables[variable].value)
           end
 
-          masked.each do |variable|
-            expect(statement_variables[variable]).to eq("[MASKED]")
-          end
+          expect(statement_variables).not_to include("CI_JOB_TOKEN")
+          expect(statement_variables).to eq(build.variables.to_hash.slice(*allowed_keys))
         end
 
         it 'has the right entry point' do

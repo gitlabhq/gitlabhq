@@ -1,6 +1,7 @@
 import VueApollo from 'vue-apollo';
 import Vue from 'vue';
 import GetDefaultGroupsQuery from '~/explore/analytics_dashboards/components/get_default_groups.query.graphql';
+import GetDefaultGroupQuery from '~/explore/analytics_dashboards/components/get_default_group.query.graphql';
 import GroupsFilter from '~/explore/analytics_dashboards/components/groups_filter.vue';
 import GroupsDropdownFilter from '~/analytics/shared/components/groups_dropdown_filter.vue';
 import createMockApollo from 'helpers/mock_apollo_helper';
@@ -13,6 +14,7 @@ Vue.use(VueApollo);
 describe('GroupsFilter', () => {
   let wrapper;
   let mockHandler;
+  let mockPageGroupHandler;
 
   const mockGroupA = {
     id: 'abc',
@@ -28,7 +30,7 @@ describe('GroupsFilter', () => {
     avatarUrl: 'avatarUrl',
   };
 
-  const createComponent = async (props = {}) => {
+  const createComponent = async (props = {}, provide = {}) => {
     mockHandler = jest.fn().mockResolvedValue({
       data: {
         groups: {
@@ -37,12 +39,21 @@ describe('GroupsFilter', () => {
       },
     });
 
-    const apolloProvider = createMockApollo([[GetDefaultGroupsQuery, mockHandler]]);
+    mockPageGroupHandler = jest.fn().mockResolvedValue({ data: { group: mockGroupB } });
+
+    const apolloProvider = createMockApollo([
+      [GetDefaultGroupsQuery, mockHandler],
+      [GetDefaultGroupQuery, mockPageGroupHandler],
+    ]);
 
     wrapper = shallowMountExtended(GroupsFilter, {
       apolloProvider,
       propsData: {
         ...props,
+      },
+      provide: {
+        defaultGroupFullPath: null,
+        ...provide,
       },
     });
 
@@ -50,6 +61,11 @@ describe('GroupsFilter', () => {
   };
 
   const findGroupsDropdownFilter = () => wrapper.findComponent(GroupsDropdownFilter);
+
+  // The location persists between tests, so start each one from a clean URL.
+  beforeEach(() => {
+    setWindowLocation('/');
+  });
 
   describe('default', () => {
     beforeEach(() => {
@@ -78,6 +94,11 @@ describe('GroupsFilter', () => {
     it('does not load the defaultGroups', () => {
       expect(findGroupsDropdownFilter().props('loadingDefaultGroups')).toBe(false);
       expect(mockHandler).not.toHaveBeenCalled();
+      expect(mockPageGroupHandler).not.toHaveBeenCalled();
+    });
+
+    it('does not emit group-selected', () => {
+      expect(wrapper.emitted('group-selected')).toBeUndefined();
     });
   });
 
@@ -139,6 +160,44 @@ describe('GroupsFilter', () => {
 
     it('loads the default group', () => {
       expect(mockHandler).toHaveBeenCalledWith({ ids: ['gid://gitlab/Group/abc'] });
+    });
+  });
+
+  describe('when the page provides a group', () => {
+    describe('without a groups query param', () => {
+      beforeEach(() => {
+        return createComponent({}, { defaultGroupFullPath: mockGroupB.fullPath });
+      });
+
+      it('loads the group from the page', () => {
+        expect(mockPageGroupHandler).toHaveBeenCalledWith({ fullPath: mockGroupB.fullPath });
+        expect(mockHandler).not.toHaveBeenCalled();
+      });
+
+      it('sets the defaultGroups', () => {
+        expect(findGroupsDropdownFilter().props('defaultGroups')).toEqual([mockGroupB]);
+      });
+
+      it('emits group-selected so the dashboard picks up the seeded namespace', () => {
+        expect(wrapper.emitted('group-selected')).toEqual([[[mockGroupB]]]);
+      });
+    });
+
+    describe('with a groups query param', () => {
+      beforeEach(() => {
+        setWindowLocation(`?groups[]=${mockGroupA.id}`);
+
+        return createComponent({}, { defaultGroupFullPath: mockGroupB.fullPath });
+      });
+
+      it('prefers the query param over the page group', () => {
+        expect(mockHandler).toHaveBeenCalledWith({ ids: ['gid://gitlab/Group/abc'] });
+        expect(mockPageGroupHandler).not.toHaveBeenCalled();
+      });
+
+      it('sets the defaultGroups', () => {
+        expect(findGroupsDropdownFilter().props('defaultGroups')).toEqual([mockGroupA]);
+      });
     });
   });
 

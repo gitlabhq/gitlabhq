@@ -4,11 +4,11 @@ RSpec.describe QA::Support::Loglinking do
   describe '.failure_metadata' do
     context 'when correlation_id does not exist' do
       it 'returns nil when correlation_id is empty' do
-        expect(described_class.failure_metadata('')).to eq(nil)
+        expect(described_class.failure_metadata('')).to be_nil
       end
 
       it 'returns nil when correlation_id is nil' do
-        expect(described_class.failure_metadata(nil)).to eq(nil)
+        expect(described_class.failure_metadata(nil)).to be_nil
       end
     end
 

@@ -104,6 +104,13 @@ RSpec.describe ExpandVariables, feature_category: :pipeline_composition do
           value: 'key$variable',
           result: 'keyvalue',
           variables: Gitlab::Ci::Variables::Collection.new([{ key: 'variable', value: 'value' }])
+        },
+        "nil value": {
+          value: nil,
+          result: nil,
+          variables: [
+            { key: 'variable', value: 'value' }
+          ]
         }
       }
     end
@@ -354,6 +361,16 @@ RSpec.describe ExpandVariables, feature_category: :pipeline_composition do
           is_expected.to eq('key')
         end
       end
+
+      context 'when the value is nil' do
+        let(:value) { nil }
+
+        it 'does not call block' do
+          expect(variables).not_to receive(:call)
+
+          is_expected.to be_nil
+        end
+      end
     end
   end
 
@@ -426,6 +443,16 @@ RSpec.describe ExpandVariables, feature_category: :pipeline_composition do
           expect(variables).not_to receive(:call)
 
           is_expected.to eq('key')
+        end
+      end
+
+      context 'when the value is nil' do
+        let(:value) { nil }
+
+        it 'does not call block' do
+          expect(variables).not_to receive(:call)
+
+          is_expected.to be_nil
         end
       end
     end

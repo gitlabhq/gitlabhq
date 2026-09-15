@@ -24,7 +24,6 @@ module QA
         project.github_personal_access_token = Runtime::Env.github_access_token
         project.github_repository_path = github_repo
         project.api_client = user_api_client
-        project.full_notes_import = true
       end
     end
 

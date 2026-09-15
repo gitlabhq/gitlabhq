@@ -178,8 +178,8 @@ export default {
       :sort-options="$options.sortOptions"
       :sort-by="currentSortOption"
       data-testid="catalog-sorting-option-button"
-      @sortByChange="setSelectedSortOption"
-      @sortDirectionChange="onSortDirectionChange"
+      @sort-by-change="setSelectedSortOption"
+      @sort-direction-change="onSortDirectionChange"
     />
   </div>
 </template>

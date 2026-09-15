@@ -373,7 +373,7 @@ the specification.
 
 - Tier: Premium, Ultimate
 - Offering: GitLab.com, GitLab Self-Managed, GitLab Dedicated, GitLab Dedicated for Government
-- Links: [Documentation](../../subscriptions/gitlab_credits.md#export-usage-data) | [Related issue](https://gitlab.com/gitlab-org/customers-gitlab-com/-/work_items/14504)
+- Links: [Documentation](../../subscriptions/gitlab_credits_dashboard.md#export-usage-data) | [Related issue](https://gitlab.com/gitlab-org/customers-gitlab-com/-/work_items/14504)
 
 {{< /details >}}
 
@@ -391,7 +391,7 @@ Finance and operations teams can use this data to perform cost allocation, charg
 
 - Tier: Premium, Ultimate
 - Offering: GitLab.com, GitLab Self-Managed, GitLab Dedicated, GitLab Dedicated for Government
-- Links: [Documentation](../../subscriptions/gitlab_credits.md#gitlab-credits-dashboard) | [Related issue](https://gitlab.com/gitlab-org/gitlab/-/work_items/579139)
+- Links: [Documentation](../../subscriptions/gitlab_credits_dashboard.md) | [Related issue](https://gitlab.com/gitlab-org/gitlab/-/work_items/579139)
 
 {{< /details >}}
 
@@ -409,7 +409,7 @@ This link provides a direct audit trail from billing to AI session behavior, so 
 
 - Tier: Premium, Ultimate
 - Offering: GitLab.com, GitLab Self-Managed, GitLab Dedicated, GitLab Dedicated for Government
-- Links: [Documentation](../../subscriptions/gitlab_credits.md#view-the-gitlab-credits-dashboard) | [Related issue](https://gitlab.com/gitlab-org/customers-gitlab-com/-/work_items/15608)
+- Links: [Documentation](../../subscriptions/gitlab_credits_dashboard.md#view-the-gitlab-credits-dashboard) | [Related issue](https://gitlab.com/gitlab-org/customers-gitlab-com/-/work_items/15608)
 
 {{< /details >}}
 

@@ -313,7 +313,7 @@ describe('Release edit/new component', () => {
       });
 
       it('renders the submit button as enabled', () => {
-        expect(findSubmitButton().attributes('disabled')).toBeUndefined();
+        expect(findSubmitButton().attributes('aria-disabled')).toBeUndefined();
       });
     });
 
@@ -334,7 +334,7 @@ describe('Release edit/new component', () => {
       });
 
       it('renders the submit button as disabled', () => {
-        expect(findSubmitButton().attributes('disabled')).toBeDefined();
+        expect(findSubmitButton().attributes('aria-disabled')).toBe('true');
       });
 
       it('does not allow the form to be submitted', () => {
@@ -360,7 +360,7 @@ describe('Release edit/new component', () => {
         });
       });
       it('renders the submit button as disabled', () => {
-        expect(findSubmitButton().attributes('disabled')).toBeDefined();
+        expect(findSubmitButton().attributes('aria-disabled')).toBe('true');
       });
     });
   });

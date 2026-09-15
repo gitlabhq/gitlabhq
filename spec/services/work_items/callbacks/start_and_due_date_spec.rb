@@ -24,7 +24,7 @@ RSpec.describe WorkItems::Callbacks::StartAndDueDate, feature_category: :team_pl
   end
 
   shared_examples "updating work item's dates_source" do
-    let(:start_date) { Date.today }
+    let(:start_date) { Time.zone.today }
     let(:due_date) { 1.week.from_now.to_date }
 
     context "when start and due date params are present" do

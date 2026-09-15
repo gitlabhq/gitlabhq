@@ -52,18 +52,6 @@ RSpec.describe Cells::BulkClaimsWorker, feature_category: :cell do
       end
     end
 
-    context 'when feature flag for attribute is disabled' do
-      before do
-        stub_feature_flags(cells_claims_routes: false)
-      end
-
-      it 'returns early' do
-        expect(Cells::Claims::BulkClaimService).not_to receive(:new)
-
-        worker.perform('RedirectRoute', 'path', {})
-      end
-    end
-
     context 'with create_record_ids' do
       let_it_be(:group) { create(:group) }
       let_it_be(:redirect_route) { create(:redirect_route, source: group, path: 'test-path') }

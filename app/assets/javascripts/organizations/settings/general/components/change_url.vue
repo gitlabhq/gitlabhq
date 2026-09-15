@@ -8,7 +8,7 @@ import { FORM_FIELD_PATH, FORM_FIELD_PATH_VALIDATORS } from '~/organizations/sha
 import FormErrorsAlert from '~/organizations/shared/components/errors_alert.vue';
 import { convertToGraphQLId } from '~/graphql_shared/utils';
 import { TYPE_ORGANIZATION } from '~/graphql_shared/constants';
-import { generalSettingsOrganizationPath } from '~/lib/utils/path_helpers/organizations';
+import { generalOrganizationAdminSettingsPath } from '~/lib/utils/path_helpers/organization_admin';
 import organizationUpdateMutation from '../graphql/mutations/organization_update.mutation.graphql';
 
 export default {
@@ -68,7 +68,7 @@ export default {
           return;
         }
 
-        visitUrlWithAlerts(generalSettingsOrganizationPath(organization.path), [
+        visitUrlWithAlerts(generalOrganizationAdminSettingsPath(organization.path), [
           {
             id: 'organization-url-successfully-changed',
             message: this.$options.i18n.successAlertMessage,

@@ -175,7 +175,7 @@ domains list.
 
 ### Denylist email domains
 
-You can block users from signing up when using an email addresses of specific domains. This can
+You can block users from signing up when using email addresses of specific domains. This can
 reduce the risk of malicious users creating spam accounts with disposable email addresses.
 
 ### Create email domain allowlist or denylist

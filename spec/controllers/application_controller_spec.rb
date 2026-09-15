@@ -93,7 +93,9 @@ RSpec.describe ApplicationController, feature_category: :shared do
       it 'resolves the request organization anchor only once' do
         request.headers['X-GitLab-Organization-ID'] = header_organization.id.to_s
 
-        expect(::Organizations::Organization).to receive(:find_by_id_with_isolation_record).once.and_call_original
+        allow(::Organizations::Organization).to receive(:find_by_id_with_isolation_record).and_call_original
+        expect(::Organizations::Organization).to receive(:find_by_id_with_isolation_record)
+          .with(header_organization.id.to_s).once.and_call_original
 
         get :index, format: :html
       end

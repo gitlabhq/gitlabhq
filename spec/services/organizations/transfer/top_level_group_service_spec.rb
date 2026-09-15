@@ -38,6 +38,14 @@ RSpec.describe Organizations::Transfer::TopLevelGroupService, :aggregate_failure
         expect(result.payload[:failed]).to be_empty
       end
 
+      it 'publishes a GroupTransferredEvent' do
+        expect { service.execute }.to publish_event(Organizations::GroupTransferredEvent).with(
+          group_id: group.id,
+          old_organization_id: old_organization.id,
+          new_organization_id: new_organization.id
+        )
+      end
+
       it 'updates organization_id for the top-level group only' do
         service.execute
 
@@ -174,6 +182,32 @@ RSpec.describe Organizations::Transfer::TopLevelGroupService, :aggregate_failure
           expect(group3.reload.organization_id).to eq(new_organization.id)
         end
 
+        it 'publishes one event per group in a single publish_group call' do
+          published = []
+          expect(Gitlab::EventStore).to receive(:publish_group).once { |events| published = events }
+
+          service.execute
+
+          expect(published.map(&:data)).to contain_exactly(
+            { group_id: group.id, old_organization_id: old_organization.id,
+              new_organization_id: new_organization.id },
+            { group_id: group2.id, old_organization_id: old_organization.id,
+              new_organization_id: new_organization.id },
+            { group_id: group3.id, old_organization_id: old_organization.id,
+              new_organization_id: new_organization.id }
+          )
+        end
+
+        context 'when the groups span several batches' do
+          include_context 'with transfer batch size of 1'
+
+          it 'still publishes a single time rather than once per batch' do
+            expect(Gitlab::EventStore).to receive(:publish_group).once
+
+            service.execute
+          end
+        end
+
         it 'logs each transfer' do
           allow(Gitlab::AppLogger).to receive(:info).and_call_original
           expect(Gitlab::AppLogger).to receive(:info).with(
@@ -208,6 +242,10 @@ RSpec.describe Organizations::Transfer::TopLevelGroupService, :aggregate_failure
 
         it 'does not update the group organization_id' do
           expect { service.execute }.not_to change { subgroup.reload.organization_id }
+        end
+
+        it 'does not publish a GroupTransferredEvent' do
+          expect { service.execute }.to not_publish_event(Organizations::GroupTransferredEvent)
         end
       end
 
@@ -458,6 +496,10 @@ RSpec.describe Organizations::Transfer::TopLevelGroupService, :aggregate_failure
           expect(group2.reload.organization_id).to eq(old_organization.id)
           expect(subgroup.reload.organization_id).to eq(old_organization.id)
         end
+
+        it 'does not publish a GroupTransferredEvent' do
+          expect { service.execute }.to not_publish_event(Organizations::GroupTransferredEvent)
+        end
       end
     end
 
@@ -540,6 +582,12 @@ RSpec.describe Organizations::Transfer::TopLevelGroupService, :aggregate_failure
         expect(result).to be_success
         expect(result.payload[:succeeded]).to contain_exactly(unauthorized_group.id)
         expect(result.payload[:failed]).to be_empty
+      end
+
+      it 'does not publish a GroupTransferredEvent when already in the target organization' do
+        unauthorized_group.update!(organization: new_organization)
+
+        expect { service.execute }.to not_publish_event(Organizations::GroupTransferredEvent)
       end
     end
   end

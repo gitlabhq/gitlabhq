@@ -34,9 +34,6 @@
   margin-bottom: 0;
 
   > li:not(.empty-message):not(.no-border) .label-content {
-    display: flex;
-    justify-content: space-between;
-
     .prioritized-labels:not(.is-not-draggable) & {
       cursor: grab;
 
@@ -49,6 +46,27 @@
         cursor: grabbing;
       }
     }
+  }
+}
+
+// Body-appended clone (fallbackOnBody): panel-scoped selectors can't reach it,
+// and cloned border utilities (last-of-type:gl-border-b-0) zero the li's own
+// borders, hence the ::before overlay.
+li.is-dragging {
+  border: 0;
+
+  &::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    z-index: -1;
+    background-color: var(--gl-highlight-target-background-color);
+    border: 1px solid var(--gl-highlight-target-border-color);
+    @apply gl-rounded-base;
+  }
+
+  .add-priority {
+    display: none;
   }
 }
 

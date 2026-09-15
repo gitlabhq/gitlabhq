@@ -36,8 +36,7 @@ RSpec.describe 'devise/sessions/new', feature_category: :system_access do
   end
 
   def disable_other_signin_methods
-    allow(view).to receive(:password_authentication_enabled_for_web?).and_return(false)
-    allow(view).to receive(:omniauth_enabled?).and_return(false)
+    allow(view).to receive_messages(password_authentication_enabled_for_web?: false, omniauth_enabled?: false)
   end
 
   def disable_sign_up
@@ -45,25 +44,20 @@ RSpec.describe 'devise/sessions/new', feature_category: :system_access do
   end
 
   def stub_devise
-    allow(view).to receive(:devise_mapping).and_return(Devise.mappings[:user])
-    allow(view).to receive(:resource).and_return(spy)
-    allow(view).to receive(:resource_name).and_return(:user)
+    allow(view).to receive_messages(devise_mapping: Devise.mappings[:user], resource: spy, resource_name: :user)
   end
 
   def enable_ldap
     stub_ldap_setting(enabled: true)
-    allow(view).to receive(:ldap_servers).and_return([server])
-    allow(view).to receive(:form_based_providers).and_return([:ldapmain])
+    allow(view).to receive_messages(ldap_servers: [server], form_based_providers: [:ldapmain])
     allow(view).to receive(:omniauth_callback_path).with(:user, 'ldapmain').and_return('/ldapmain')
   end
 
   def disable_ldap_sign_in
-    allow(view).to receive(:ldap_sign_in_enabled?).and_return(false)
-    allow(view).to receive(:ldap_servers).and_return([])
+    allow(view).to receive_messages(ldap_sign_in_enabled?: false, ldap_servers: [])
   end
 
   def disable_captcha
-    allow(view).to receive(:captcha_enabled?).and_return(false)
-    allow(view).to receive(:captcha_on_login_required?).and_return(false)
+    allow(view).to receive_messages(captcha_enabled?: false, captcha_on_login_required?: false)
   end
 end

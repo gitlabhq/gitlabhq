@@ -4,6 +4,11 @@ class MergeRequestDiffFile < ApplicationRecord
   include BulkInsertSafe
   include Gitlab::EncodingHelper
   include DiffFile
+  include PartitionedTable
+
+  PARTITION_SIZE = 200_000_000
+
+  partitioned_by :merge_request_diff_id, strategy: :int_range, partition_size: PARTITION_SIZE # rubocop:disable Database/AvoidIntRangePartitioning -- legacy partitioning
 
   belongs_to :merge_request_diff, inverse_of: :merge_request_diff_files
 

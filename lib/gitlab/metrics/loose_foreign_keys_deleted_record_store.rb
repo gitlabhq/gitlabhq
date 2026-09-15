@@ -5,7 +5,7 @@ module Gitlab
     # Short-lived facade observability for `Gitlab::LooseForeignKeys::DeletedRecordStore`.
     # It will be removed in Phase 5 (#597949).
     #
-    # While `use_loose_foreign_keys_deleted_record_store` is being rolled out, these per-model counters
+    # While the sharding-key routing triggers are being rolled out table by table, these per-model counters
     # let us verify the facade is working correctly and watch traffic shift from the cell-local table to the
     # sharding-key tables. The long-term metrics live in `LooseForeignKeys::BatchCleanerService` and are not
     # affected by this module.

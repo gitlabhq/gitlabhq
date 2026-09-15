@@ -10,10 +10,6 @@
   @apply gl-overflow-clip;
   @apply gl-bg-default;
   @apply gl-p-0;
-
-  @media (forced-colors: active) {
-    border: 1px solid;
-  }
 }
 
 .paneled-view,
@@ -22,20 +18,66 @@
   @apply gl-flex-1;
   @apply gl-flex-col;
   @apply gl-h-full;
-  @apply gl-rounded-xl;
 }
 
 // Dynamic panel portal
 .paneled-view-portal {
-  @apply empty:gl-hidden;
   @apply gl-z-[252];
   @apply gl-w-full;
   @apply sm:gl-w-8/10;
-  @apply gl-overflow-y-auto;
+
+  // The panel width resizer keeps a node mounted inside the portal, so the
+  // portal is never `:empty`; hide it based on mounted panel content instead.
+  // stylelint-disable-next-line gitlab/no-has -- scoped to the portal's own content
+  &:empty,
+  &:not(:has(> .vue-portal-target)) {
+    @apply gl-hidden;
+  }
 
   > .vue-portal-target {
     flex: 1;
     min-height: 0;
+  }
+}
+
+// Single-surface treatment: the content panels render as one card, with
+// inner borders instead of per-panel cards. Placed after the base panel
+// blocks so the equal-specificity overrides win by source order.
+.panels-container {
+  @apply gl-bg-default;
+  @apply gl-rounded-xl;
+  @apply gl-overflow-clip;
+  @apply gl-border-1;
+  @apply gl-border-solid;
+  @apply gl-border-transparent;
+  @apply dark:gl-border-subtle;
+  @apply gl-shadow-sm;
+}
+
+// stylelint-disable-next-line gitlab/no-has -- targeting directly the AI panel
+.panels-container:has(+ .ai-panels > div > .ai-panel) {
+  @apply lg:gl-rounded-r-none;
+  @apply lg:gl-border-r-0;
+}
+
+.paneled-view-portal {
+  @apply sm:gl-border-l;
+}
+
+.ai-panel {
+  @apply gl-rounded-xl;
+  @apply gl-shadow-sm;
+  @apply gl-border-1;
+  @apply gl-border-solid;
+  @apply gl-border-transparent;
+  @apply dark:gl-border-default;
+  @apply dark:lg:gl-border-subtle;
+  @apply lg:gl-border-l-default;
+  @apply lg:gl-rounded-l-none;
+
+  @include media-breakpoint-up(lg) {
+    // Hides shadow from left side where panels meet
+    clip-path: inset(-0.5rem -0.5rem -0.5rem 0);
   }
 }
 
@@ -54,8 +96,12 @@
   z-index: $panel-header-inner-z-index;
   min-height: $panel-header-inner-height;
 
-  @media (forced-colors: active) {
-    border-bottom: 1px solid;
+  // Override the size change of the button
+  // stylelint-disable-next-line gitlab/no-gl-class
+  .gl-button.button-ellipsis-horizontal.btn-sm {
+    @apply gl-px-0;
+    min-height: $gl-button-small-size;
+    min-width: $gl-button-small-size;
   }
 }
 
@@ -108,12 +154,29 @@
   @apply gl-pb-3;
 }
 
+// Compensate for the hidden, breadcrumb-free panel header
+// See `page_breadcrumbs_in_top_bar` feature flag
+.static-panel--headerless .panel-content {
+  @apply gl-mt-3;
+
+  // Hide sticky header helper
+  .panel-content-inner::before {
+    @apply gl-hidden;
+  }
+}
+
 .panel-content-inner {
   @apply gl-flex-1;
   @apply gl-overflow-x-hidden;
   @apply gl-overflow-y-auto;
   scrollbar-gutter: stable;
   container-type: scroll-state;
+
+  // The panel is focused programmatically to redirect keyboard scrolling to it,
+  // so it should not render a focus ring.
+  &:focus {
+    @apply gl-outline-none;
+  }
 }
 
 // Top shadow on scroll
@@ -183,6 +246,10 @@
   height: calc(100% - #{$calc-application-bars-height} - var(--ai-navigation-rail-size) + calc(var(--gl-spacing-scale-2) * 2));
   z-index: 999;
 
+  .panel-header-inner {
+    z-index: $ai-panel-header-inner-z-index;
+  }
+
   @include media-breakpoint-up(sm) {
     @apply gl-left-5;
     width: calc(100% - (var(--gl-spacing-scale-5) * 2));
@@ -196,6 +263,10 @@
     height: auto;
     z-index: auto;
   }
+}
+
+.ai-panel-content-inner {
+  scrollbar-gutter: auto;
 }
 
 /* stylelint-disable-next-line gitlab/no-gl-class -- scoped to a specific panel-content use */

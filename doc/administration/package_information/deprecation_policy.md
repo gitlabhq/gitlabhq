@@ -22,7 +22,7 @@ setup, various configuration requires removal.
 
 ### Policy
 
-The Linux package retains configuration for at least **one major**
+The Linux package retains configuration for at least one major
 version. We can't guarantee that deprecated configuration
 is available in the next major release. See [example](#example) for more details.
 
@@ -62,7 +62,7 @@ Common steps:
 
 Removal target:
 
-For regular configuration, the removal target should always be the date of the **next major** release. If the date is not known, you can reference the next major version.
+For regular configuration, the removal target should always be the date of the next major release. If the date is not known, you can reference the next major version.
 
 For sensitive configuration things are a bit more complicated.
 We should aim to not remove sensitive configuration in the next major release if the next major release is 2 minor releases away (This number is chosen to match our security backport release policy).

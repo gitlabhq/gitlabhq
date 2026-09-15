@@ -1,6 +1,6 @@
 ---
 stage: Plan
-group: Knowledge
+group: Planner Intelligence
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see <https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments>
 description: Learn how to configure the build output folder for the most common static site generators
 title: GitLab Pages public folder
@@ -94,7 +94,7 @@ export default {
 
 > [!note]
 > GitLab Pages supports only static sites. For Next.js, you can use
-> Next's [Static HTML export functionality](https://nextjs.org/docs/pages/building-your-application/deploying/static-exports).
+> Next [Static HTML export functionality](https://nextjs.org/docs/pages/guides/static-exports).
 
 With the release of [Next.js 13](https://nextjs.org/blog/next-13) a lot has changed on how Next.js works.
 You should use the following `next.config.js` so all static assets can be exported properly:

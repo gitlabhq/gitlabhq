@@ -39,7 +39,7 @@ describe('MergeChecksUnresolvedDiscussions component', () => {
 
   it('triggers go to first discussion action', () => {
     const callback = jest.fn();
-    notesEventHub.$on('jumpToFirstUnresolvedDiscussion', callback);
+    notesEventHub.$on('jump-to-first-unresolved-discussion', callback);
     createComponent();
 
     wrapper.findByRole('button', { name: 'Go to first open thread' }).trigger('click');

@@ -298,12 +298,11 @@ func TestShutdown(t *testing.T) {
 
 func TestWatchKeyContextCancel(t *testing.T) {
 	rdb := initRdb(t)
+	require.NoError(t, rdb.Set(ctx, runnerKey, "something", 0).Err())
 
 	kw := NewKeyWatcher(rdb)
 	kw.conn = kw.redisConn.Subscribe(ctx, []string{}...)
 	defer kw.Shutdown()
-
-	rdb.Set(ctx, runnerKey, "something", 0)
 
 	watchCtx, cancel := context.WithCancel(ctx)
 
@@ -317,6 +316,10 @@ func TestWatchKeyContextCancel(t *testing.T) {
 
 	// Wait until the watch is active, then simulate the client disconnecting.
 	require.Eventually(t, func() bool { return countSubscribers(kw) == 1 }, 10*time.Second, time.Millisecond)
+	require.Eventually(t, func() bool {
+		channels, chErr := rdb.PubSubChannels(ctx, channelPrefix+runnerKey).Result()
+		return chErr == nil && len(channels) == 1
+	}, 10*time.Second, time.Millisecond)
 	cancel()
 
 	select {
@@ -330,9 +333,8 @@ func TestWatchKeyContextCancel(t *testing.T) {
 	// The subscription is released, both in-process and server-side.
 	require.Eventually(t, func() bool { return countSubscribers(kw) == 0 }, 10*time.Second, time.Millisecond)
 	require.Eventually(t, func() bool {
-		channels, err := rdb.PubSubChannels(ctx, channelPrefix+runnerKey).Result()
-		require.NoError(t, err)
-		return len(channels) == 0
+		channels, chErr := rdb.PubSubChannels(ctx, channelPrefix+runnerKey).Result()
+		return chErr == nil && len(channels) == 0
 	}, 10*time.Second, time.Millisecond)
 }
 

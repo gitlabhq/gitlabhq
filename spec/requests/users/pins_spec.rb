@@ -127,5 +127,21 @@ RSpec.describe 'Pinning navigation menu items', feature_category: :navigation do
         expect(response).to have_gitlab_http_status(:payload_too_large)
       end
     end
+
+    context 'when request size exceeds 100 kilobyte in an unpermitted param' do
+      let(:params) { { menu_item_ids: menu_item_ids, panel: panel, filler: 'a' * 200.kilobytes } }
+
+      it 'responds with :payload_too_large' do
+        update_pins
+
+        expect(response).to have_gitlab_http_status(:payload_too_large)
+      end
+
+      it 'does not modify existing panel data' do
+        update_pins
+
+        expect(user.reload.pinned_nav_items).to eq({ **other_panel_data, panel => old_menu_item_ids })
+      end
+    end
   end
 end

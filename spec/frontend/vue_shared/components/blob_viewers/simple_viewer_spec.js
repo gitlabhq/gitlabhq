@@ -4,6 +4,8 @@ import { shallowMount } from '@vue/test-utils';
 import createMockApollo from 'helpers/mock_apollo_helper';
 import {
   HIGHLIGHT_CLASS_NAME,
+  HIGHLIGHT_TOP_CLASS_NAME,
+  HIGHLIGHT_BOTTOM_CLASS_NAME,
   MAX_BLAME_LINES,
 } from '~/vue_shared/components/blob_viewers/constants';
 import SimpleViewer from '~/vue_shared/components/blob_viewers/simple_viewer.vue';
@@ -214,8 +216,19 @@ describe('Blob Simple Viewer component', () => {
     it('scrolls to requested line when rendered', () => {
       const linetoBeHighlighted = wrapper.find('#LC2');
       expect(scrollIntoViewMock).toHaveBeenCalled();
-      expect(wrapper.vm.highlightedLine).toBe(linetoBeHighlighted.element);
-      expect(linetoBeHighlighted.classes()).toContain(HIGHLIGHT_CLASS_NAME);
+      expect(wrapper.vm.highlightedLines).toContain(linetoBeHighlighted.element);
+      expect(linetoBeHighlighted.classes()).toEqual(
+        expect.arrayContaining([
+          HIGHLIGHT_CLASS_NAME,
+          HIGHLIGHT_TOP_CLASS_NAME,
+          HIGHLIGHT_BOTTOM_CLASS_NAME,
+        ]),
+      );
+    });
+
+    it('highlights the line number gutter alongside the code line', () => {
+      const gutter = wrapper.find('#L2').element.closest('.diff-line-num');
+      expect(gutter.classList).toContain(HIGHLIGHT_CLASS_NAME);
     });
 
     it('switches highlighting when another line is selected', async () => {
@@ -223,12 +236,12 @@ describe('Blob Simple Viewer component', () => {
       const hash = '#LC3';
       const linetoBeHighlighted = wrapper.find(hash);
 
-      expect(wrapper.vm.highlightedLine).toBe(currentlyHighlighted.element);
+      expect(wrapper.vm.highlightedLines).toContain(currentlyHighlighted.element);
 
       wrapper.vm.scrollToLine(hash);
 
       await nextTick();
-      expect(wrapper.vm.highlightedLine).toBe(linetoBeHighlighted.element);
+      expect(wrapper.vm.highlightedLines).toContain(linetoBeHighlighted.element);
       expect(currentlyHighlighted.classes()).not.toContain(HIGHLIGHT_CLASS_NAME);
       expect(linetoBeHighlighted.classes()).toContain(HIGHLIGHT_CLASS_NAME);
     });

@@ -1,0 +1,18 @@
+# @feature_category: mcp_server
+mutation createWorkItemMcp($input: WorkItemCreateInput!) {
+  workItemCreate(input: $input) {
+    workItem {
+      id
+      iid
+      title
+      state
+      confidential
+      webUrl
+      workItemType {
+        id
+        name
+      }
+    }
+    errors
+  }
+}

@@ -902,6 +902,75 @@ RSpec.describe Notify, feature_category: :code_review_workflow do
       end
     end
 
+    context 'items that are noteable, the email for a note holding a blob permalink' do
+      let_it_be(:embed_project) { create(:project, :repository, :public) }
+
+      let(:embed_issue) { create(:issue, project: embed_project) }
+      let(:permalink) do
+        "#{Gitlab.config.gitlab.url}/#{embed_project.full_path}" \
+          "/-/blob/#{embed_project.commit.sha}/files/ruby/popen.rb#L3-6"
+      end
+
+      let(:note) { create(:note_on_issue, noteable: embed_issue, project: embed_project, note: permalink) }
+
+      subject { described_class.note_issue_email(recipient.id, note.id) }
+
+      def email_body
+        Nokogiri::HTML5.fragment(subject.html_part.body.to_s)
+      end
+
+      def stylesheet_links
+        email_body.css("link[rel='stylesheet']").filter_map { |link| link[:href] }
+      end
+
+      it 'embeds the referenced lines as a table', :aggregate_failures do
+        fragment = email_body
+
+        expect(fragment.at_css('table.blob-embed')).to be_present
+        expect(fragment.css('td.blob-embed-line').size).to eq(4)
+      end
+
+      it 'links the stylesheet premailer needs to style the embed' do
+        expect(stylesheet_links).to include(a_string_matching(%r{/mailers/blob_embed[.-]}))
+      end
+
+      context 'when the project does not show diffs in emails' do
+        let_it_be(:embed_project) do
+          create(:project, :repository, :public,
+            project_setting: create(:project_setting, show_diff_preview_in_email: false))
+        end
+
+        it 'leaves the permalink as a plain link', :aggregate_failures do
+          fragment = email_body
+
+          expect(fragment.at_css('.blob-embed')).to be_nil
+          expect(fragment.at_css("a[href='#{permalink}']")).to be_present
+        end
+
+        it 'does not link the stylesheet' do
+          expect(stylesheet_links).not_to include(a_string_matching(%r{/mailers/blob_embed[.-]}))
+        end
+      end
+    end
+
+    context 'items that are noteable, the email for a note holding a custom emoji' do
+      let_it_be(:emoji_group) { create(:group) }
+      let_it_be(:emoji_project) { create(:project, group: emoji_group) }
+      let_it_be(:custom_emoji) { create(:custom_emoji, name: 'tanuki', group: emoji_group) }
+
+      let(:emoji_issue) { create(:issue, project: emoji_project) }
+      let(:note) { create(:note_on_issue, noteable: emoji_issue, project: emoji_project, note: 'Hello :tanuki:') }
+
+      subject { described_class.note_issue_email(recipient.id, note.id) }
+
+      it 'renders the emoji as an image with its name as the text fallback', :aggregate_failures do
+        img = Nokogiri::HTML5.fragment(subject.html_part.body.to_s).at_css('gl-emoji > img')
+
+        expect(img['src']).to eq(custom_emoji.file)
+        expect(img['alt']).to eq(':tanuki:')
+      end
+    end
+
     context 'items that are noteable, the email for a diff discussion note' do
       let_it_be(:note_author) { create(:user, name: 'author_name') }
 
@@ -2340,6 +2409,36 @@ RSpec.describe Notify, feature_category: :code_review_workflow do
     it 'contains the message from the notes of the review' do
       review.notes.each do |note|
         is_expected.to have_body_text note.note
+      end
+    end
+
+    context 'when every note holds a blob permalink' do
+      let(:permalink) do
+        "#{Gitlab.config.gitlab.url}/#{project.full_path}" \
+          "/-/blob/#{project.commit.sha}/files/ruby/popen.rb#L3-6"
+      end
+
+      let!(:notes) do
+        create_list(:note, 3, review: review, project: project, author: review.author,
+          noteable: merge_request, note: permalink)
+      end
+
+      before do
+        project.add_developer(recipient)
+      end
+
+      it 'embeds every one of them' do
+        fragment = Nokogiri::HTML5.fragment(subject.html_part.body.to_s)
+
+        expect(fragment.css('table.blob-embed').size).to eq(3)
+      end
+
+      it 'includes only one link to the blob_embed stylesheet' do
+        links = Nokogiri::HTML5.fragment(subject.html_part.body.to_s)
+          .css("link[rel='stylesheet']")
+          .filter_map { |link| link[:href] }
+
+        expect(links.grep(%r{/mailers/blob_embed[.-]}).size).to eq(1)
       end
     end
 

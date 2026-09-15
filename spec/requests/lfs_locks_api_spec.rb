@@ -182,6 +182,28 @@ RSpec.describe 'Git LFS File Locking API', feature_category: :source_code_manage
     end
   end
 
+  describe 'Current.organization resolution' do
+    let_it_be(:organization) { create(:organization) }
+    let_it_be(:org_group) { create(:group, organization: organization) }
+    let_it_be(:org_project) { create(:project, group: org_group, organization: organization) }
+
+    let(:url) { "#{org_project.http_url_to_repo}/info/lfs/locks" }
+
+    before_all do
+      org_project.add_developer(developer)
+    end
+
+    it 'resolves the organization owning the repository from the URL path', :aggregate_failures do
+      # Keep the application context readable after the request finishes
+      allow(Labkit::Context).to receive(:pop)
+
+      do_get url, nil, headers
+
+      expect(response).to have_gitlab_http_status(:ok)
+      expect(Gitlab::ApplicationContext.current).to include('meta.organization_id' => organization.id)
+    end
+  end
+
   def lock_file(path, author)
     result = Lfs::LockFileService.new(project, author, { path: path }).execute
 

@@ -18,7 +18,7 @@ In this configuration, Redis is not scaled, and represents a single
 point of failure. However, in a scaled environment the objective is to allow
 the environment to handle more users or to increase throughput. Redis itself
 is generally stable and can handle many requests, so it is an acceptable
-trade off to have only a single instance. See the [reference architectures](../reference_architectures/_index.md)
+trade-off to have only a single instance. See the [reference architectures](../reference_architectures/_index.md)
 page for an overview of GitLab scaling options.
 
 ## Set up the standalone Redis instance
@@ -28,7 +28,7 @@ the Linux package:
 
 1. SSH into the Redis server.
 1. [Download and install](https://about.gitlab.com/install/) the Linux
-   package you want by using **steps 1 and 2** from the GitLab downloads page.
+   package you want by using steps 1 and 2 from the GitLab downloads page.
    Do not complete any other steps on the download page.
 1. Edit `/etc/gitlab/gitlab.rb` and add the contents:
 

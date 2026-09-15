@@ -135,7 +135,8 @@ To configure an embedding model:
 1. For **Code embeddings**, select **Set model**.
    If you already configured an embedding model, **Change model** appears instead.
 1. On the **Semantic search code embeddings** page,
-   select the embedding model, embedding dimensions, and the chunking strategy.
+   select the embedding model, embedding dimensions,
+   batch size for embedding requests, and chunking strategy.
 1. Select **Set embeddings**. If you already configured an embedding model,
    **Update embeddings and start backfill process** appears instead.
 
@@ -167,6 +168,9 @@ For more information about GitLab-managed models with a
 see [hybrid AI Gateway and model configuration](gitlab_duo_self_hosted/_index.md#hybrid-ai-gateway-and-model-configuration).
 
 > [!warning]
+> GitLab limits embedding requests for indexing when you use GitLab-managed models.
+> To avoid these rate limits, configure a [self-hosted model](#self-hosted-models).
+>
 > If GitLab deprecates a model you selected, you must switch to a different model yourself.
 
 #### Self-hosted models
@@ -189,6 +193,36 @@ To select a self-hosted model:
 
 1. Set up [GitLab Duo Self-Hosted](gitlab_duo_self_hosted/_index.md).
 1. [Add a self-hosted model](gitlab_duo_self_hosted/configure_duo_features.md#add-a-self-hosted-model) with an `EMBEDDING` model family.
+
+### Batch size for embedding requests
+
+{{< history >}}
+
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/246635) in GitLab 19.4.
+
+{{< /history >}}
+
+The batch size for embedding requests indicates the number of inputs for each bulk embedding request.
+Keep this value within the bulk API limits of your selected embedding model.
+If you leave it blank, the default batch size of the embedding model is used.
+If the embedding model has no default batch size, a fallback value of 30 is used instead.
+
+#### Update batch size
+
+To update the batch size without changing the embedding model:
+
+1. In the upper-right corner, select **Admin**.
+1. In the left sidebar, select **Settings** > **Search**.
+1. Expand **Semantic search**.
+1. For **Code embeddings**, select **Change model**.
+1. On the **Semantic search code embeddings** page,
+   go to the **Update batch size for embedding requests** section.
+1. Enter a new value:
+   - For an active embedding model without a running backfill,
+     update the batch size for the current model.
+   - For a new embedding model with a running backfill,
+     update the batch size for the next model.
+1. Select **Update batch size**.
 
 ### Chunking strategy
 
@@ -251,7 +285,12 @@ Prerequisites:
 
 - A personal access token with the `admin_mode`, `ai_features`, and `api` scopes.
 
-When embedding generation fails repeatedly, items are moved to the dead queue for manual intervention.
+When embedding generation fails, items move through a chain of retry queues with
+increasing delays (5 minutes, 30 minutes, 2 hours, and 8 hours). Items that fail
+every retry are moved to the dead queue for manual intervention.
+Items that fail with a rate limit error do not follow the chain. They return to
+the first retry queue and retry every 5 minutes until the rate limit clears.
+They never reach the dead queue.
 You can check the dead queue size in the `Embedding Queues` section of the
 [status Rake task](#check-semantic-code-search-status) output.
 
@@ -269,10 +308,10 @@ curl --request DELETE \
 
 To move dead queue items back into a processing queue for another attempt,
 use the `queue` parameter to specify the target.
-Valid values are `retry_queue`, `code`, and `code_backfill`.
+Valid values are `retry_queue`, `second_retry_queue`, `third_retry_queue`,
+`fourth_retry_queue`, `code`, and `code_backfill`.
 
-To attempt processing once more before potentially failing back to the dead queue,
-use `retry_queue`:
+To run items through the full retry chain again, use `retry_queue`:
 
 ```shell
 curl --request POST \

@@ -1,9 +1,9 @@
 ---
 key_path: redis_hll_counters.count_distinct_user_id_from_saved_view_create
 description: Count of unique users that create a saved view
-product_group: portfolio_planning
+product_group: planning_views
 product_categories:
-- portfolio_management
+- planning_views
 performance_indicator_type: []
 value_type: number
 status: active

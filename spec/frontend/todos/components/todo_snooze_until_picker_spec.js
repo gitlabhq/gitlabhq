@@ -82,7 +82,7 @@ describe('SnoozeTimePicker', () => {
       const trackingSpy = mockTracking(undefined, wrapper.element, jest.spyOn);
       getPredefinedSnoozingOption(index).action();
 
-      expect(wrapper.emitted()['snooze-until'][0]).toEqual([new Date(expectedDate)]);
+      expect(wrapper.emitted('snooze-until')[0]).toEqual([new Date(expectedDate)]);
       expect(trackingSpy).toHaveBeenCalledWith(undefined, 'click_todo_item_action', {
         label: expectedTrackingLabel,
       });

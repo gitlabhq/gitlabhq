@@ -8,6 +8,7 @@ import {
   useCachedUserCounts,
 } from '~/super_sidebar/user_counts_manager';
 import IndexLayout from '~/vue_shared/components/index_layout.vue';
+import glFeatureFlagsMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
 import { fetchUserCounts } from '~/super_sidebar/user_counts_fetch';
 import {
   EVENT_USER_FOLLOWS_LINK_ON_HOMEPAGE,
@@ -23,6 +24,7 @@ import GreetingHeader from './greeting_header.vue';
 import UserItemsCountWidget from './user_items_count_widget.vue';
 import ActivityWidget from './activity_widget.vue';
 import QuickAccessWidget from './quick_access_widget.vue';
+import PipelinesWidget from './pipelines_widget.vue';
 import TodosWidget from './todos_widget.vue';
 import PickUpWidget from './pick_up_widget.vue';
 import BaseWidget from './base_widget.vue';
@@ -35,11 +37,12 @@ export default {
     ActivityWidget,
     TodosWidget,
     QuickAccessWidget,
+    PipelinesWidget,
     PickUpWidget,
     UserItemsCountWidget,
     BaseWidget,
   },
-  mixins: [InternalEvents.mixin()],
+  mixins: [InternalEvents.mixin(), glFeatureFlagsMixin()],
   inject: ['duoCodeReviewBotUsername'],
   props: {
     reviewRequestedPath: {
@@ -249,6 +252,7 @@ export default {
       </section>
       <aside class="gl-flex gl-flex-col gl-gap-6">
         <quick-access-widget />
+        <pipelines-widget v-if="glFeatures.homepagePipelinesWidget" />
       </aside>
     </div>
   </index-layout>

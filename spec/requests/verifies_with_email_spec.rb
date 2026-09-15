@@ -421,6 +421,28 @@ RSpec.describe VerifiesWithEmail, :clean_gitlab_redis_sessions, :clean_gitlab_re
                                           'Enter it again, or send a new code.'))
           end
         end
+
+        context 'for sign_in_dashboard UX SLI start marker', :freeze_time do
+          it 'sets session[:start_time_of_sign_in_dashboard_ux_sli]' do
+            submit_token
+
+            expect(session[:start_time_of_sign_in_dashboard_ux_sli]).to eq(Time.current)
+          end
+
+          context 'when redirects to any another page than root/dashboard after authentication' do
+            before do
+              allow_next_instance_of(SessionsController) do |controller|
+                allow(controller).to receive(:after_sign_in_path_for).and_return(user_settings_profile_path)
+              end
+            end
+
+            it 'does not set session[:start_time_of_sign_in_dashboard_ux_sli]' do
+              submit_token
+
+              expect(session[:start_time_of_sign_in_dashboard_ux_sli]).to be_nil
+            end
+          end
+        end
       end
 
       context 'when rate limited by code entry and a verification_token param exists' do
@@ -463,6 +485,12 @@ RSpec.describe VerifiesWithEmail, :clean_gitlab_redis_sessions, :clean_gitlab_re
 
         it 'does not expose the internal reason key' do
           expect(json_response).not_to have_key('reason')
+        end
+
+        context 'for sign_in_dashboard UX SLI start marker', :freeze_time do
+          it 'does not set session[:start_time_of_sign_in_dashboard_ux_sli]' do
+            expect(session[:start_time_of_sign_in_dashboard_ux_sli]).to be_nil
+          end
         end
       end
 

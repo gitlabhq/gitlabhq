@@ -40,7 +40,7 @@ describe('BlobChunks', () => {
     });
 
     it(`renders all chunks`, async () => {
-      eventHub.$emit('showMore', { id: 'Testjs/Test:file/test.js', state: true });
+      eventHub.$emit('show-more', { id: 'Testjs/Test:file/test.js', state: true });
       await nextTick();
       expect(findBlobChunks()).toHaveLength(4);
     });

@@ -24,11 +24,16 @@ func TestSetBlobHeaders(t *testing.T) {
 
 type mockBlobServer struct {
 	gitalypb.UnimplementedBlobServiceServer
-	getBlobFunc func(*gitalypb.GetBlobRequest, gitalypb.BlobService_GetBlobServer) error
+	getBlobFunc   func(*gitalypb.GetBlobRequest, gitalypb.BlobService_GetBlobServer) error
+	listBlobsFunc func(*gitalypb.ListBlobsRequest, gitalypb.BlobService_ListBlobsServer) error
 }
 
-func (s *mockBlobServer) GetBlob(req *gitalypb.GetBlobRequest, stream gitalypb.BlobService_GetBlobServer) error {
-	return s.getBlobFunc(req, stream)
+func (server *mockBlobServer) GetBlob(request *gitalypb.GetBlobRequest, stream gitalypb.BlobService_GetBlobServer) error {
+	return server.getBlobFunc(request, stream)
+}
+
+func (server *mockBlobServer) ListBlobs(request *gitalypb.ListBlobsRequest, stream gitalypb.BlobService_ListBlobsServer) error {
+	return server.listBlobsFunc(request, stream)
 }
 
 func TestBlobInject(t *testing.T) {

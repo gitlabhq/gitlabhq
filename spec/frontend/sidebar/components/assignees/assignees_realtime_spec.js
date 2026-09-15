@@ -71,13 +71,13 @@ describe('Assignees Realtime', () => {
     });
   });
 
-  it('emits an `assigneesUpdated` event on subscription response', async () => {
+  it('emits an `assignees-updated` event on subscription response', async () => {
     createComponent({
       subscriptionHandler: jest.fn().mockResolvedValue(subscriptionResponse),
     });
     await waitForPromises();
 
-    expect(wrapper.emitted('assigneesUpdated')).toEqual([
+    expect(wrapper.emitted('assignees-updated')).toEqual([
       [{ id: '1', assignees: subscriptionResponse.data.issuableAssigneesUpdated.assignees.nodes }],
     ]);
   });

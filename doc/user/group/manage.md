@@ -176,6 +176,7 @@ This action is also available on other list pages.
 {{< history >}}
 
 - Asynchronous transfers for groups [introduced](https://gitlab.com/gitlab-org/gitlab/-/work_items/594575) in GitLab 18.11 [with a feature flag](../../administration/feature_flags/_index.md) named `groups_and_projects_async_transfer`. Disabled by default.
+- [Generally available](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/250913) in GitLab 19.4. Feature flag `groups_and_projects_async_transfer` removed.
 
 {{< /history >}}
 
@@ -252,6 +253,12 @@ Package and container registry restrictions:
 Subscription restrictions:
 
 - Top-level groups that have a subscription on GitLab.com cannot be transferred. To make the transfer possible, the top-level group's subscription must be removed first. Then, the top-level group can be transferred as a subgroup to another top-level group.
+
+Secrets Manager restrictions:
+
+> [!warning]
+> All secrets in GitLab Secrets Manager for the group, its subgroups, and its projects are
+> [permanently deleted during the transfer](../../ci/secrets/secrets_manager/_index.md#transfer-of-a-project-or-group).
 
 ## Disable email notifications
 
@@ -584,7 +591,7 @@ The selected project should follow the same naming conventions as
 are documented on that page.
 
 You can only choose projects in the group as the template source.
-This includes projects shared with the group, but it **excludes** projects in
+This includes projects shared with the group, but it excludes projects in
 subgroups or parent groups of the group being configured.
 
 You can configure this feature for both subgroups and immediate parent groups. A project
@@ -733,8 +740,7 @@ To require a commit SHA on the merge requests API:
    the **Enforce for all subgroups** checkbox.
 1. Select **Save changes**.
 
-Administrators can set an instance-wide default for all groups. New groups inherit this value
-unless a parent group overrides it.
+Administrators can set an instance-wide default value for this setting, and optionally enforce it so that new groups cannot override it.
 
 Prerequisites:
 
@@ -746,8 +752,8 @@ To set the default for all groups:
 1. Select **Settings** > **General**.
 1. Expand **Merge requests**.
 1. Select the **Require commit SHA on merge requests API** checkbox.
-1. Optional. To enforce this setting for all groups on the instance and prevent groups from
-   changing it, select the **Enforce this setting for all groups on this instance** checkbox.
+1. Optional. To enforce this setting for all new and existing groups on the instance and
+   prevent groups from changing it, select **Enforce this setting for all groups on this instance**.
 1. Select **Save changes**.
 
 ## Group merge request approval settings
@@ -825,7 +831,7 @@ Prerequisites:
 - You must be a group Owner.
 - The group you are viewing data for must be a top-level group.
 
-To display user data on the [GitLab Credits dashboard](../../subscriptions/gitlab_credits.md#gitlab-credits-dashboard):
+To display user data on the [GitLab Credits dashboard](../../subscriptions/gitlab_credits_dashboard.md):
 
 1. In the top bar, select **Search or go to** and find your group.
 1. In the left sidebar, select **Settings** > **General**.
