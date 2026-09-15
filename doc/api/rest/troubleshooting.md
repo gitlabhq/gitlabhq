@@ -49,7 +49,7 @@ The following table shows the possible return codes for API requests.
 | `409 Conflict`            | A conflicting resource already exists. |
 | `412 Precondition Failed` | The request was denied. This can happen if the `If-Unmodified-Since` header is provided when trying to delete a resource, which was modified in between. |
 | `422 Unprocessable`       | The entity couldn't be processed. |
-| `429 Too Many Requests`   | The user exceeded the [application rate limits](../../administration/instance_limits.md#rate-limits). |
+| `429 Too Many Requests`   | The user exceeded the [application rate limits](../../administration/instance_limits.md#rate-limits). Wait for the duration given in the `Retry-After` header before you retry. For GitLab.com, see [GitLab.com rate limits](../../user/gitlab_com/rate_limits.md). |
 | `500 Server Error`        | While handling the request, something went wrong on the server. |
 | `503 Service Unavailable` | The server cannot handle the request because the server is temporarily overloaded. |
 

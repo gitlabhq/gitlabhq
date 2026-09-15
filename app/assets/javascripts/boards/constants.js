@@ -106,8 +106,6 @@ export const listIssuablesQueries = {
       dueDate: null,
       emailsEnabled: true,
       hidden: false,
-      humanTimeEstimate: null,
-      humanTotalTimeSpent: null,
       id: 'gid://gitlab/Issue/-1',
       iid: '-1',
       labels: { nodes: [], __typename: 'LabelConnection' },

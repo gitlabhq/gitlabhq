@@ -7,8 +7,6 @@ module Gitlab
 
       private
 
-      # Validates that roles in require_approval actions are valid for the trigger type.
-      # CD roles can only be used with deployment triggers.
       def validate_action_roles!(attributes)
         return unless attributes.key?(:actions)
 
@@ -36,7 +34,6 @@ module Gitlab
 
         is_deployment_trigger = Roles::DEPLOYMENT_TRIGGERS.include?(trigger_type)
 
-        # CD roles can only be used with deployment triggers
         cd_roles_used = roles & Roles.cd_role_ids
         if cd_roles_used.any? && !is_deployment_trigger
           raise ValidationError,
@@ -44,7 +41,6 @@ module Gitlab
               "can only be used with deployment triggers"
         end
 
-        # GitLab roles can only be used with non-deployment triggers
         gitlab_roles_used = roles & Roles.gitlab_role_ids
         return unless gitlab_roles_used.any? && is_deployment_trigger
 

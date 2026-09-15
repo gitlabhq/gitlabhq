@@ -26,7 +26,6 @@ names the upstream issue that would retire it. They are not the intended pattern
 | `values/gitlab.yaml` | Chart values, ported from the orchestrator's Ruby |
 | `values/gitlab-dev-stack.yaml` | PostgreSQL (CNPG), Valkey and Garage; ClickHouse and NATS disabled |
 | `manifests/pre-receive-hook/` | Gitaly pre-receive server hook the E2E suite expects, applied by a kustomize deployer |
-| `scripts/package-chart.sh` | Packages the chart at the pinned `GITLAB_HELM_CHART_REF` |
 | `scripts/install-caproni.sh` | Fetches and checksum-verifies the Caproni binary at `CAPRONI_VERSION` |
 | `scripts/cng-image-tags.sh` | Resolves `*_TAG` / `*_VERSION` into image tags |
 | `scripts/seed_admin_token.rb` | Seeds the admin PAT the E2E suite authenticates with |
@@ -101,11 +100,21 @@ name, so the name `pre-receive-hook` has to stay stable.
 
 ## The chart
 
-`scripts/package-chart.sh` packages the exact commit named by `GITLAB_HELM_CHART_REF`,
-reading it from `.gitlab/ci/qa-common/variables.gitlab-ci.yml`. Caproni's `release.chart`
-accepts a local path to a packaged `.tgz`, which is how the pinned SHA is honoured. It reads and
-populates `CNG_HELM_REPOSITORY_CACHE` under the same `gitlab-<sha>.tgz` key the
-orchestrator uses, and the job extends `.cng-qa-cache` to mount it.
+`release.chart` is the chart project's source archive at the commit
+`GITLAB_HELM_CHART_REF` names in `.gitlab/ci/qa-common/variables.gitlab-ci.yml`, which is
+how the pinned SHA is honoured. Caproni fetches the archive and resolves the dependencies
+it declares but does not carry.
+
+`GITLAB_CHART_PACKAGE` takes precedence when it points at a packaged chart, and the job
+sets it when `cng-helm-cache` has already cached `gitlab-<sha>.tgz` for this ref. A miss
+re-fetches the archive - that is tracked here ([caproni#283](https://gitlab.com/gitlab-org/caproni/-/issues/283)).
+
+A local run needs one of the two set. Both are named in one variable, so an unset ref
+only fails the load when the archive is actually needed:
+
+```yaml
+CHART: ${GITLAB_CHART_PACKAGE:-...archive/${GITLAB_HELM_CHART_REF:?...}/...}
+```
 
 ## Known gaps
 
@@ -131,9 +140,11 @@ cd qa/caproni
 export CI_PROJECT_DIR="$(git rev-parse --show-toplevel)"
 export CI_COMMIT_SHA="$(git rev-parse HEAD)"
 export CI_COMMIT_SHORT_SHA="$(git rev-parse --short HEAD)"
+export GITLAB_HELM_CHART_REF="$(awk -F'"' \
+  '$0 ~ /^[[:space:]]*GITLAB_HELM_CHART_REF:[[:space:]]*"/ {print $2; exit}' \
+  "${CI_PROJECT_DIR}/.gitlab/ci/qa-common/variables.gitlab-ci.yml")"
 
 source scripts/cng-image-tags.sh
-source scripts/package-chart.sh   # exports GITLAB_CHART_PACKAGE
 caproni up
 caproni update-etc-hosts
 ```

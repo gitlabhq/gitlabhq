@@ -33,6 +33,9 @@ usage across your project or group.
 | `project` | Query code suggestions in a specific project.                               |
 | `group`   | Query code suggestions across all projects in a group, including subgroups. |
 
+To aggregate code suggestions across multiple groups or projects, use a list with the `in` operator.
+For more information, see [multiple groups and projects](_index.md#multiple-groups-and-projects).
+
 ## Query fields
 
 Use these fields in the `query` parameter to filter your results.

@@ -220,16 +220,15 @@ export default {
       return this.configFolders?.find((folder) => folder.name === agentName);
     },
     updateTreeList(data) {
-      this.configFolders = data?.project?.repository?.tree?.trees?.nodes;
+      // A project without a repository has no tree; keep an array so later updates can filter it.
+      this.configFolders = data?.project?.repository?.tree?.trees?.nodes || [];
 
-      if (this.configFolders) {
-        this.agentList = this.agentList.map((agent) => {
-          const configFolder = this.findConfigFolder(agent.name);
-          return { ...agent, configFolder };
-        });
+      this.agentList = this.agentList.map((agent) => {
+        const configFolder = this.findConfigFolder(agent.name);
+        return { ...agent, configFolder };
+      });
 
-        this.updateConfigFolders();
-      }
+      this.updateConfigFolders();
     },
     updateAgentsList({ project, group }) {
       const agentsData = project?.clusterAgents || group?.clusterAgents;

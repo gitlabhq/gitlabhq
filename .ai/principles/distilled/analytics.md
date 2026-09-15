@@ -1,6 +1,6 @@
 ---
-source_checksum: a00fcbd490e70062
-distilled_at_sha: 829339e2e65aa85defcd3357097b75335668e334
+source_checksum: 7d0991194883b152
+distilled_at_sha: be630d9c07020b3b491948dc9b5fbba8ed634d7f
 ---
 <!-- Auto-generated from docs.gitlab.com by gitlab-ai-principles-distiller — do not edit manually -->
 
@@ -16,6 +16,7 @@ distilled_at_sha: 829339e2e65aa85defcd3357097b75335668e334
 - DO NOT include sensitive information (per the [data classification standard](https://handbook.gitlab.com/handbook/security/data-classification-standard/)) in tracking parameters.
 - DO NOT use deprecated analytics methods (`Gitlab::Tracking.event`, Redis, or RedisHLL tracking); use `track_internal_event` (backend) or `trackEvent` (frontend) instead.
 - Ensure the `action` name follows the [naming convention](https://docs.gitlab.com/development/internal_analytics/internal_event_instrumentation/quick_start/#defining-event-and-metrics).
+- Ensure the YAML filename matches the `action` name to maintain clarity and consistency.
 - Ensure the event `description` is clear to readers outside the team.
 - Place the event definition file under `ee/config/events` if the event fires only from EE code.
 - When the `action` field of an existing event changes, confirm the author considered the [renaming implications](https://docs.gitlab.com/development/internal_analytics/internal_event_instrumentation/event_definition_guide/#changing-the-action-property-in-event-definitions).
@@ -27,12 +28,18 @@ distilled_at_sha: 829339e2e65aa85defcd3357097b75335668e334
 - Verify the metric's `description` field is accurate and meaningful.
 - Verify the metric's `key_path` is correct.
 - Check the `product_group` field corresponds to the [stages file](https://gitlab.com/gitlab-com/www-gitlab-com/blob/master/data/stages.yml)
+- For metrics with `status: active`, verify `product_categories` is a non-empty array of valid feature categories (except existing legacy exceptions in the [validation schema](https://gitlab.com/gitlab-org/gitlab/-/blob/master/config/metrics/schema/product_categories.json)); the field is optional for `status: broken` or `status: removed`. If `product_categories` is present on any metric, every entry must name a valid feature category. DO NOT add new schema exceptions — populate `product_categories` for legacy metrics instead.
 - Verify the file location reflects the correct time frame and whether it belongs under `ee/`.
 - Verify the metric's tiers are correctly set.
+- Verify the metric's `status` is correct (`active`, `broken`, or `removed`); ensure `broken` metrics also have a `repair_issue_url`.
+- When using `value_type: object`, ensure a `value_json_schema` is provided; prefer `boolean`, `number`, or `string` value types instead.
 - Prefer `data_source: internal_events` for new metrics; hand off to the Analytics Instrumentation team if `data_source: database` is used.
 - DO NOT use deprecated `redis` or `redis_hll` data sources for new metrics; see the [migration guide](https://docs.gitlab.com/development/internal_analytics/internal_event_instrumentation/migration/).
 - Ensure changed or removed metrics have notified `@csops-team`, `@gitlab-data/analytics-engineers`, and `@gitlab-data/product-analysts` via a comment on the issue, and all groups have acknowledged the change.
 - When updating an existing metric, verify the [metric change procedure](https://docs.gitlab.com/development/internal_analytics/metrics/metrics_lifecycle/#change-an-existing-metric) was followed.
+- When a metric uses event selection rules with a `unique` property, verify the value is one of `user.id`, `project.id`, `namespace.id`, or a valid additional property name (e.g. `label`, `property`, `value`, or a custom property).
+- When a metric uses event selection rules with a `filter`, verify that only additional properties are used for filtering and that filters match exact values (no wildcards or regex).
+- DO NOT mix unique-count and total-count event selection rules within a single aggregated metric definition.
 
 ### Metric Instrumentation Classes
 
@@ -90,5 +97,8 @@ For the full picture, see:
 
 - doc/development/internal_analytics/review_guidelines.md
 - doc/development/internal_analytics/internal_event_instrumentation/quick_start.md
+- doc/development/internal_analytics/internal_event_instrumentation/event_definition_guide.md
+- doc/development/internal_analytics/internal_event_instrumentation/metric_definition_guide.md
+- doc/development/internal_analytics/metrics/metrics_dictionary.md
 - doc/development/internal_analytics/metrics/metrics_instrumentation.md
 

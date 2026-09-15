@@ -97,12 +97,7 @@ module Integrations
       def bulk_insert_slack_integration_scopes(inserted_slack_ids)
         return unless inserted_slack_ids.present?
 
-        # TODO: Remove finding by name once the backfill has been finalized
-        # https://gitlab.com/gitlab-org/gitlab/-/issues/560356
-        scope_names = integration.slack_integration.slack_api_scopes.map(&:name)
-        scopes = SlackWorkspace::ApiScope.find_or_initialize_by_names(
-          scope_names, organization_id: integration.organization_id_from_parent
-        )
+        scopes = integration.slack_integration.slack_api_scopes
 
         items_to_insert = SlackIntegration.id_in(inserted_slack_ids)
                                           .preloaded_integration

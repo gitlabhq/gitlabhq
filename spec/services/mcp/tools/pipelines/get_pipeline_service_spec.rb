@@ -47,10 +47,10 @@ RSpec.describe Mcp::Tools::Pipelines::GetPipelineService, feature_category: :mcp
           include: {
             type: 'array',
             description: 'Facet to include alongside the pipeline, one per call: jobs, downstream_pipelines, ' \
-              'or bridge_jobs.',
+              'bridge_jobs, or artifacts.',
             items: {
               type: 'string',
-              enum: %w[jobs downstream_pipelines bridge_jobs]
+              enum: %w[jobs downstream_pipelines bridge_jobs artifacts]
             },
             maxItems: 1
           },

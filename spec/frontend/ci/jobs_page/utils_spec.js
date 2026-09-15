@@ -23,7 +23,7 @@ describe('Jobs utility functions', () => {
 
     it('returns processedJobDone as false when the processed job is new', () => {
       const updatedJob = cloneDeep(mockJobsResponsePaginated.data.project.jobs.nodes[0]);
-      updatedJob.id = 'gid://gitlab/Ci::Build/100';
+      updatedJob.id = 'gid://gitlab/Ci::Build/new-build';
 
       const { processedJobDone } = updateJobsNodes(
         mockJobsResponsePaginated.data.project.jobs.nodes,

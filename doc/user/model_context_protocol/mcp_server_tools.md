@@ -974,16 +974,18 @@ List the most recent tags for the gitlab-org/gitlab project
 {{< history >}}
 
 - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/work_items/605853) in GitLab 19.3.
+- `artifacts` facet [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/585022) in GitLab 19.5.
 
 {{< /history >}}
 
-Retrieves a pipeline, and optionally its jobs, downstream pipelines, or bridge (trigger) jobs.
+Retrieves a pipeline, and optionally its jobs, downstream pipelines, bridge (trigger) jobs, or the
+artifacts its jobs produced.
 
 | Parameter     | Type    | Required | Description |
 |---------------|---------|----------|-------------|
 | `id`          | string  | Yes      | ID or full path of the project. |
 | `pipeline_id` | integer | Yes      | ID of the pipeline. |
-| `include`     | array   | No       | Facet to include alongside the pipeline, one per call: `jobs`, `downstream_pipelines`, or `bridge_jobs`. |
+| `include`     | array   | No       | Facet to include alongside the pipeline, one per call: `jobs`, `downstream_pipelines`, `bridge_jobs`, or `artifacts`. |
 | `job_status`  | string  | No       | Filters the `jobs` facet by status (for example, `failed`). Only applies when `include` is `jobs`. |
 | `first`       | integer | No       | Number of items to return for the selected `include` facet. Default is `20`, maximum is `100`. |
 | `after`       | string  | No       | Cursor for forward pagination of the selected `include` facet. Use `page_info.end_cursor` from a previous response. |
@@ -993,6 +995,10 @@ triggered a downstream pipeline yet, and when you don't have access to that pipe
 
 Each downstream pipeline includes a `project_full_path`, because a downstream pipeline can belong to
 a different project. Use that value as the `id` of a follow-up call.
+
+The `artifacts` facet returns a flat list of artifacts. Each artifact carries its `name`, `size`,
+`file_type`, expiry information, and the `job_id` and `job_name` of the job that produced it.
+Pagination pages over the pipeline's jobs, not over the artifacts.
 
 Examples:
 
@@ -1012,6 +1018,12 @@ Examples:
 
   ```plaintext
   Show me the downstream pipelines triggered by pipeline 12345 in project gitlab-org/gitlab
+  ```
+
+- Get the artifacts a pipeline produced:
+
+  ```plaintext
+  List the artifacts of pipeline 12345 in project gitlab-org/gitlab
   ```
 
 ## `get_pipeline_jobs`
@@ -1044,21 +1056,25 @@ Show me all jobs in pipeline 12345 for project gitlab-org/gitlab
 
 - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/work_items/605856) in GitLab 19.3.
 - [Renamed](https://gitlab.com/gitlab-org/gitlab/-/work_items/605856) from `get_job_log` in GitLab 19.3. `get_job_log` continues to work as an alias and always returns the `log` facet, capped at `byte_limit`.
+- `artifacts` facet [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/585022) in GitLab 19.5.
 
 {{< /history >}}
 
-Gets a CI/CD job's metadata, and optionally its trace/log.
+Gets a CI/CD job's metadata, and optionally its trace/log or the artifacts it produced.
 
 | Parameter     | Type    | Required | Description |
 |---------------|---------|----------|-------------|
 | `id`          | string  | Yes      | ID or full path of the project. |
 | `job_id`      | integer | Yes      | ID of the job. |
-| `include`     | array   | No       | Facet to include alongside the job, one per call: `log`. |
+| `include`     | array   | No       | Facet to include alongside the job, one per call: `log` or `artifacts`. |
 | `byte_offset` | integer | No       | Byte offset to start reading the job's log from. Only applies when `include` is `log`. Default is `0`. |
 | `byte_limit`  | integer | No       | Maximum number of bytes of the job's log to return. Only applies when `include` is `log`. Default and maximum is `512000`. |
 
 When the log is longer than `byte_limit`, the response reports the total size and tells you the
 `byte_offset` to use for the next window.
+
+The `artifacts` facet lists every artifact the job produced, with its `name`, `size`, `file_type`,
+and expiry information.
 
 Examples:
 
@@ -1072,6 +1088,12 @@ Examples:
 
   ```plaintext
   Show me the log output for job 88 in project gitlab-org/gitlab
+  ```
+
+- Get a job's artifacts:
+
+  ```plaintext
+  What artifacts did job 88 in project gitlab-org/gitlab produce?
   ```
 
 ## `list_pipelines`

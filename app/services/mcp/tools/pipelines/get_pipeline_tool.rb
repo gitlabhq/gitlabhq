@@ -11,7 +11,8 @@ module Mcp
         FACETS = {
           includeJobs: 'jobs',
           includeDownstreamPipelines: 'downstream_pipelines',
-          includeBridgeJobs: 'bridge_jobs'
+          includeBridgeJobs: 'bridge_jobs',
+          includeArtifacts: 'artifacts'
         }.freeze
 
         register_version VERSIONS[:v0_1_0], {
@@ -104,6 +105,11 @@ module Mcp
             data[:page_info] = page_info(pipeline['bridgeJobs'])
           end
 
+          if pipeline['artifactsJobs']
+            data[:artifacts] = pipeline['artifactsJobs']['nodes'].flat_map { |job| job_artifacts_data(job) }
+            data[:page_info] = page_info(pipeline['artifactsJobs'])
+          end
+
           data
         end
 
@@ -123,6 +129,22 @@ module Mcp
             allow_failure: job['allowFailure'],
             web_url: web_url(job['webPath'])
           }
+        end
+
+        # Flattened so the agent scans one list; job_id/job_name carry each artifact's provenance.
+        def job_artifacts_data(job)
+          job.dig('artifacts', 'nodes').to_a.map do |artifact|
+            {
+              id: unwrap_id(artifact['id']),
+              name: artifact['name'],
+              size: artifact['size'].to_i,
+              file_type: artifact['fileType']&.downcase,
+              expire_at: artifact['expireAt'],
+              expired: artifact['expired'],
+              job_id: unwrap_id(job['id']),
+              job_name: job['name']
+            }
+          end
         end
 
         def bridge_data(bridge)

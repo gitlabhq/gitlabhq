@@ -152,10 +152,15 @@ haml-lint:
     paths:
       - tmp/feature_flags/
 
+.rubocop-large-runner:
+  tags:
+    - $GITLAB_LARGE_RUNNER_OPTIONAL
+
 update-static-analysis-cache:
   extends:
     - .static-analysis-base
     - .rubocop-job-cache-push
+    - .rubocop-large-runner
     - .caching:rules:rubocop-cache-update
   stage: prepare
   needs:
@@ -172,6 +177,7 @@ rubocop:
   extends:
     - .static-analysis-base
     - .rubocop-job-cache
+    - .rubocop-large-runner
     - .static-analysis:rules:rubocop
   needs:
     - !reference [.lint-base, needs]
@@ -203,6 +209,7 @@ rubocop-docs:
   extends:
     - .static-analysis-base
     - .rubocop-job-cache
+    - .rubocop-large-runner
     - .docs:rules:docs-lint
   script:
     - bundle exec rubocop --only Gitlab/DocumentationLinks/Link

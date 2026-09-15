@@ -6,6 +6,8 @@ version: 2
 variables:
   # Spelled out at each use: caproni variables cannot reference each other
   BASE_DOMAIN: cng.test
+  # A cached package when the job found one, else the chart project's archive
+  CHART: ${GITLAB_CHART_PACKAGE:-https://gitlab.com/gitlab-org/charts/gitlab/-/archive/${GITLAB_HELM_CHART_REF:?set GITLAB_HELM_CHART_REF or GITLAB_CHART_PACKAGE}/gitlab-${GITLAB_HELM_CHART_REF}.tar.gz}
   # Pinned: an unpinned dependency in the deploy path can break master
   GL_CNPG_VERSION: "0.29.0"
   GL_DEV_STACK_VERSION: "1.6.0"
@@ -66,7 +68,7 @@ deployers:
       release:
         name: gitlab
         # Never swap this for a published chart version -- see README
-        chart: ${GITLAB_CHART_PACKAGE}
+        chart: ${CHART}
       dynamic_overrides:
         - type: inline
           value_map:

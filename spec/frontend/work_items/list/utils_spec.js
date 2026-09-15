@@ -62,6 +62,7 @@ import {
   convertNumberToGid,
   convertLegacyTypeFormat,
   updateNamespaceDisplaySettings,
+  mapWorkItemWidgetsToIssuableFields,
 } from 'ee_else_ce/work_items/list/utils';
 import {
   OPERATOR_IS,
@@ -1278,6 +1279,95 @@ describe('updateNamespaceDisplaySettings', () => {
         errors: [],
         userPreferences: { displaySettings, sort: 'CREATED_DESC' },
       },
+    });
+  });
+});
+
+describe('mapWorkItemWidgetsToIssuableFields', () => {
+  const issue = {
+    id: 'gid://gitlab/Issue/1',
+    iid: '1',
+    title: 'Old title',
+    titleHtml: 'Old title',
+    confidential: false,
+    weight: 3,
+    humanTimeEstimate: '1h',
+    assignees: { nodes: [{ id: 'gid://gitlab/User/1' }] },
+    labels: { nodes: [] },
+    milestone: null,
+    workItemType: { name: 'Issue' },
+  };
+  const workItem = {
+    id: 'gid://gitlab/WorkItem/1',
+    iid: '1',
+    title: 'New title',
+    titleHtml: 'New title',
+    confidential: true,
+    workItemType: { name: 'Issue' },
+    widgets: [
+      { type: 'WEIGHT', weight: 5 },
+      { type: 'LABELS', labels: { nodes: [{ id: 'gid://gitlab/Label/1' }] } },
+      { type: 'MILESTONE', milestone: { id: 'gid://gitlab/Milestone/1' } },
+      // Widgets selected with their type only. They must not clear cached values.
+      { type: 'ASSIGNEES' },
+      { type: 'TIME_TRACKING' },
+    ],
+  };
+  const list = { project: { issues: { nodes: [issue] } } };
+  const boardList = {
+    project: { board: { lists: { nodes: [{ issues: { nodes: [issue] } }] } } },
+  };
+
+  it('copies the widget values that the work item provides', () => {
+    const { nodes } = mapWorkItemWidgetsToIssuableFields({ list, workItem, type: 'issue' }).project
+      .issues;
+
+    expect(nodes[0]).toMatchObject({
+      title: 'New title',
+      titleHtml: 'New title',
+      confidential: true,
+      type: 'ISSUE',
+      weight: 5,
+      labels: { nodes: [{ __persist: true, id: 'gid://gitlab/Label/1' }] },
+      milestone: { __persist: true, id: 'gid://gitlab/Milestone/1' },
+    });
+  });
+
+  it('keeps cached values for widgets that carry no data', () => {
+    const { nodes } = mapWorkItemWidgetsToIssuableFields({ list, workItem, type: 'issue' }).project
+      .issues;
+
+    expect(nodes[0].assignees).toEqual(issue.assignees);
+    expect(nodes[0].humanTimeEstimate).toBe('1h');
+  });
+
+  it('maps the human readable time estimate when the widget provides it', () => {
+    const withEstimate = {
+      ...workItem,
+      widgets: [{ type: 'TIME_TRACKING', humanReadableAttributes: { timeEstimate: '2h' } }],
+    };
+
+    const { nodes } = mapWorkItemWidgetsToIssuableFields({
+      list,
+      workItem: withEstimate,
+      type: 'issue',
+    }).project.issues;
+
+    expect(nodes[0].humanTimeEstimate).toBe('2h');
+  });
+
+  it('updates the item inside a board list', () => {
+    const result = mapWorkItemWidgetsToIssuableFields({
+      list: boardList,
+      workItem,
+      isBoard: true,
+      type: 'issue',
+    });
+
+    expect(result.project.board.lists.nodes[0].issues.nodes[0]).toMatchObject({
+      title: 'New title',
+      weight: 5,
+      humanTimeEstimate: '1h',
     });
   });
 });

@@ -32,7 +32,8 @@ session usage across your project or group.
 | `project` | Query GitLab Duo Agent Platform sessions in a specific project. |
 | `group`   | Query GitLab Duo Agent Platform sessions across all projects in a group, including subgroups. |
 
-For more information, see [scopes](_index.md#scopes).
+To aggregate GitLab Duo Agent Platform sessions across multiple groups or projects, use a list with the `in` operator.
+For more information, see [multiple groups and projects](_index.md#multiple-groups-and-projects).
 
 ## Query fields
 

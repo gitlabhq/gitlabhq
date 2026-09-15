@@ -32,7 +32,8 @@ GitLab Duo feature usage across your project or group.
 | `project` | Query AI usage events in a specific project.                                |
 | `group`   | Query AI usage events across all projects in a group, including subgroups.  |
 
-For more information, see [scopes](_index.md#scopes).
+To aggregate AI usage events across multiple groups or projects, use a list with the `in` operator.
+For more information, see [multiple groups and projects](_index.md#multiple-groups-and-projects).
 
 ## Query fields
 

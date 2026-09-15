@@ -26,8 +26,8 @@ can be used in similar ways, but have different benefits:
   To define specific values when the pipeline runs, use inputs instead of CI/CD variables.
 - CI/CD variables offer flexible values that can be defined at multiple levels, but can be modified
   throughout pipeline execution. Use variables for values that need to be accessible in the job's runtime environment.
-  You can also use [predefined variables](../variables/predefined_variables.md) with `rules`
-  for dynamic pipeline configuration.
+  You can also use [predefined variables](../variables/predefined_variables.md) with [`include:rules`](../yaml/_index.md#includerules)
+  for dynamic pipeline composition through conditional includes.
 
 ## CI/CD Inputs and variables comparison
 

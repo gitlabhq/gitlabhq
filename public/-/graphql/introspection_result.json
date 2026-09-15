@@ -9842,7 +9842,7 @@
               "args": [],
               "type": {
                 "kind": "SCALAR",
-                "name": "Int",
+                "name": "Float",
                 "ofType": null
               },
               "isDeprecated": false,
@@ -137648,7 +137648,7 @@
               "args": [],
               "type": {
                 "kind": "SCALAR",
-                "name": "Int",
+                "name": "Float",
                 "ofType": null
               },
               "isDeprecated": false,
@@ -151213,6 +151213,18 @@
           "description": "Response for `DuoWorkflows` aggregation engine",
           "fields": [
             {
+              "name": "churnedUsersCount",
+              "description": "Number of unique users who ran a flow in the previous period but not in this one",
+              "args": [],
+              "type": {
+                "kind": "SCALAR",
+                "name": "Int",
+                "ofType": null
+              },
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
               "name": "closedMrCount",
               "description": "Aggregated `closed_mr_count` metrics.",
               "args": [],
@@ -151273,6 +151285,18 @@
               "deprecationReason": null
             },
             {
+              "name": "joinedUsersCount",
+              "description": "Number of unique users who ran a flow in this period but not in the previous one",
+              "args": [],
+              "type": {
+                "kind": "SCALAR",
+                "name": "Int",
+                "ofType": null
+              },
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
               "name": "mergedMrCount",
               "description": "Aggregated `merged_mr_count` metrics.",
               "args": [],
@@ -151285,8 +151309,32 @@
               "deprecationReason": null
             },
             {
+              "name": "previousPeriodUsersCount",
+              "description": "Number of unique users in the previous period",
+              "args": [],
+              "type": {
+                "kind": "SCALAR",
+                "name": "Int",
+                "ofType": null
+              },
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
               "name": "projectsCount",
               "description": "Number of unique projects",
+              "args": [],
+              "type": {
+                "kind": "SCALAR",
+                "name": "Int",
+                "ofType": null
+              },
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "returningUsersCount",
+              "description": "Number of unique users who also ran a flow in the previous period",
               "args": [],
               "type": {
                 "kind": "SCALAR",
@@ -258068,7 +258116,7 @@
               "args": [],
               "type": {
                 "kind": "SCALAR",
-                "name": "Int",
+                "name": "Float",
                 "ofType": null
               },
               "isDeprecated": false,
@@ -318645,7 +318693,7 @@
               "args": [],
               "type": {
                 "kind": "SCALAR",
-                "name": "Int",
+                "name": "Float",
                 "ofType": null
               },
               "isDeprecated": false,

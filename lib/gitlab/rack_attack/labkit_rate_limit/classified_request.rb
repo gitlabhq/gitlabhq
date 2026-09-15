@@ -123,6 +123,9 @@ module Gitlab
         #   - dependency_proxy: a path match plus, on EE, the virtual-registry
         #     exclusion (see EE's #dependency_proxy_path? override), which a static
         #     path matcher cannot see;
+        #   - git_http: a plain path match, but carried as a fact because the
+        #     unauthenticated rules need its negation (`git_http: false`) and a
+        #     Labkit match is an AND of positive conditions;
         #   - bypass: the safelist header, matched by the bypass rule.
         def classification_facts
           settings = ::Gitlab::Throttle.settings
@@ -134,6 +137,7 @@ module Gitlab
             deprecated: deprecated_api_request?, # TODO use path matchers for deprecated API requests: https://gitlab.com/gitlab-org/ruby/gems/labkit-ruby/-/work_items/71
             runner_jobs: runner_jobs?,
             dependency_proxy: dependency_proxy_path?,
+            git_http: git_path?,
             bypass: labkit_bypassed?,
 
             # per-throttle enable settings each rule matches on (option 2: matched

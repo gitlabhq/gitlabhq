@@ -40,7 +40,7 @@ the security and durability of your web application.
 ### Git HTTP on GitLab.com
 
 On GitLab.com, Git HTTP requests are subject to
-[Git HTTPS request rate limits](../user/gitlab_com/_index.md#rate-limits-on-gitlabcom).
+[Git HTTPS request rate limits](../user/gitlab_com/rate_limits.md#current-rate-limits).
 
 ### Configure unauthenticated Git HTTP rate limits
 
@@ -104,7 +104,7 @@ override can improve the security and durability of your web application.
 ### Git LFS on GitLab.com
 
 On GitLab.com, Git LFS requests are subject to
-[authenticated web request rate limits](../user/gitlab_com/_index.md#rate-limits-on-gitlabcom).
+[authenticated web request rate limits](../user/gitlab_com/rate_limits.md#current-rate-limits).
 These limits are set to 1000 requests per minute per user.
 
 Each Git LFS object uploaded or downloaded generates an HTTP request that counts toward

@@ -30,7 +30,8 @@ To query individual merge request records, use [Merge requests](merge_requests.m
 | `project` | Query merge requests in a specific project.                               |
 | `group`   | Query merge requests across all projects in a group, including subgroups. |
 
-For more information, see [scopes](_index.md#scopes).
+To aggregate merge requests across multiple groups or projects, use a list with the `in` operator.
+For more information, see [multiple groups and projects](_index.md#multiple-groups-and-projects).
 
 ## Query fields
 

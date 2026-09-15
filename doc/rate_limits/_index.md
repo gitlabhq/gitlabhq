@@ -15,7 +15,7 @@ title: Rate limits
 
 > [!note]
 > For GitLab.com, see
-> [GitLab.com-specific rate limits](../user/gitlab_com/_index.md#rate-limits-on-gitlabcom).
+> [GitLab.com-specific rate limits](../user/gitlab_com/rate_limits.md#current-rate-limits).
 >
 > For GitLab Dedicated, see
 > [Authenticated user rate limits](../administration/dedicated/user_rate_limits.md).

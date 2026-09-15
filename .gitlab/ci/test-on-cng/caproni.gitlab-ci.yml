@@ -4,10 +4,10 @@
   # Paths are absolute: .qa-install does `cd qa` partway through before_script.
   script:
     - source $CI_PROJECT_DIR/qa/caproni/scripts/cng-image-tags.sh
+    # Best effort: caproni fetches the chart itself when nothing is cached
     - |
-      section_start "package_chart" "Packaging GitLab chart at GITLAB_HELM_CHART_REF"
-      source $CI_PROJECT_DIR/qa/caproni/scripts/package-chart.sh
-      section_end "package_chart"
+      cached_chart="${CNG_HELM_REPOSITORY_CACHE}/gitlab-${GITLAB_HELM_CHART_REF}.tgz"
+      if [ -f "${cached_chart}" ]; then export GITLAB_CHART_PACKAGE="${cached_chart}"; fi
     # nip.io, not /etc/hosts: sibling dind containers have their own hosts file
     - GITLAB_DOMAIN="$(getent hosts docker | awk '{ print $1 }' | head -n1).nip.io"
     # In a file, not an env var: base config wins over environment
@@ -38,7 +38,7 @@
   extends:
     - .e2e-test-base
     - .with-ignored-runtime-data
-    # For CNG_HELM_REPOSITORY_CACHE: package-chart.sh reuses the orchestrator's chart cache
+    # For CNG_HELM_REPOSITORY_CACHE: the chart the orchestrator packaged, if any
     - .cng-qa-cache
   needs:
     - job: build-cng-env

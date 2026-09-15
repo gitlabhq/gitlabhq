@@ -167,7 +167,7 @@ RSpec.describe Gitlab::Database::Aggregation::Engine, feature_category: :value_s
       )
     end
 
-    it 'assigns the base type to min/max/sum and float to mean/quantile' do
+    it 'assigns the base type to min/max and float to mean/quantile/sum' do
       engine = build_measurement_engine do
         measurement :duration, :integer, ->(_params) { Arel.sql('duration') }
       end
@@ -177,8 +177,18 @@ RSpec.describe Gitlab::Database::Aggregation::Engine, feature_category: :value_s
         "duration.max": :integer,
         "duration.mean": :float,
         "duration.quantile": :float,
-        "duration.sum": :integer
+        "duration.sum": :float
       )
+    end
+
+    it 'keeps the float type for a float sum' do
+      engine = build_measurement_engine do
+        measurement :credits, :float, ->(_params) { Arel.sql('credits') }
+      end
+
+      sum = engine.metrics.find { |m| m.identifier == :"credits.sum" }
+
+      expect(sum.type).to eq(:float)
     end
 
     it 'propagates authorize to all expanded metrics' do

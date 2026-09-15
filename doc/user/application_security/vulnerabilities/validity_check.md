@@ -79,6 +79,7 @@ mutation {
 - [Expanded](https://gitlab.com/gitlab-org/gitlab/-/work_items/612115) validity checks for external service tokens in GitLab 19.3.
 - Feature flag `secret_detection_partner_token_verification` [removed](https://gitlab.com/gitlab-org/gitlab/-/work_items/619506) in GitLab 19.4.
 - [Expanded](https://gitlab.com/gitlab-org/gitlab/-/work_items/624216) validity checks to more GitHub token types in GitLab 19.4.
+- [Expanded](https://gitlab.com/gitlab-org/gitlab/-/work_items/628281) validity checks to more OpenAI token types in GitLab 19.5.
 
 {{< /history >}}
 
@@ -109,7 +110,10 @@ Validity checks support the following secret types:
 - GitHub personal access tokens (classic)
 - Google Cloud API keys
 - Heroku API keys
+- OpenAI admin API keys
 - OpenAI project API keys
+- OpenAI service account keys
+- OpenAI user API keys
 - Postman API tokens
 - SendGrid API tokens
 - Stripe live secret keys
@@ -137,6 +141,7 @@ The supported URLs are:
 - `https://api.github.com/user`
 - `https://api.heroku.com/account`
 - `https://api.openai.com/v1/models`
+- `https://api.openai.com/v1/organization/admin_api_keys`
 - `https://api.sendgrid.com/v3/scopes`
 - `https://api.stripe.com/v1/balance`
 - `https://sts.amazonaws.com/`

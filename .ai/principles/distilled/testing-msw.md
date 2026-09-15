@@ -1,6 +1,6 @@
 ---
-source_checksum: 7bd637aa5683624c
-distilled_at_sha: da75f7373628b035becb13fb3f0d21b4b3d3690f
+source_checksum: 2be5d34eb0e69017
+distilled_at_sha: 3378d9de7ce956458ecfbc5e1845591fa87448fc
 ---
 <!-- Auto-generated from docs.gitlab.com by gitlab-ai-principles-distiller — do not edit manually -->
 
@@ -66,13 +66,17 @@ distilled_at_sha: da75f7373628b035becb13fb3f0d21b4b3d3690f
 - Declare named fixture variants instead of editing handlers when testing a different response shape (error, empty list, flipped flag); place the variant file at `ee/spec/frontend/msw_integration/<feature>/fixture_variants/<query>.js` and call `defineFixtureVariants({ query, variants })` as its default export.
 - Use `BASE` as the required default variant key; `BASE` is served unless a test activates another variant.
 - Build variants with the three transform helpers from `fixture_utils.js` — `setFixtureData(fixture, lookupKey, value)`, `setFixtureErrors(fixture, ['message'])`, and `setFixtureItemsCount({ fixture, lookupKey, itemCount })` — each deep-clones its input; DO NOT clone or mutate the imported fixture directly.
-- Activate a variant in a test with `setQueryVariant('operationName', 'VARIANT_KEY')` imported from `ee_jest/msw_integration/setup_utils`; the active variant resets to `BASE` automatically in `afterEach`.
+- Import the variant file as a side-effect import in the feature handler (e.g. `import './fixture_variants/my_query';`), not in the spec — `setQueryVariant` throws `"expected a query constant"` and `activateVariant` throws `"no variants registered for query"` if the variant file has not been imported.
+- Activate a variant in a test with `setQueryVariant(queryConstant).variantMethod()` (e.g. `setQueryVariant(getWorkItemsFull).empty()`) imported from `ee_jest/msw_integration/helpers/setup_utils`; the active variant resets to `BASE` automatically in `afterEach`. When the variant key is a runtime value, use the low-level `activateVariant('operationName', variantKey)` instead.
+- In the feature handler, use `getActiveVariant('operationName') ?? defaultFixture` to serve the active variant; `getActiveVariant` returns `null` for `BASE` (not the `BASE` fixture), so the `??` fallback serves the handler's own default. Prefer `??` over `||`.
+- DO NOT declare the same `query` name in two different variant files — `defineFixtureVariants` throws `"variants for query X are already registered"` if the same query is registered twice; keep one variant file per query.
 - Generate a manifest of all registered queries and variant keys with `yarn msw:variants` (writes to `tmp/tests/frontend/msw_variants.manifest.json`); DO NOT commit the manifest.
 
 ### Assert Apollo Cache Integrity
 
-- Use `snapshotRequests()` before an action and `expectGraphQLCalls(baseline, { expect, forbid })` inside `waitFor` after the action to verify that mutations update the Apollo cache without triggering unwanted network calls; import both from `ee_jest/msw_integration/operation_helpers`.
+- Use `snapshotRequests()` before an action and `expectGraphQLCalls(baseline, { expect, forbid })` inside `waitFor` after the action to verify that mutations update the Apollo cache without triggering unwanted network calls; import both from `ee_jest/msw_integration/core/operation_helpers`.
 - DO NOT match two `snapshotRequests` calls without using `expectGraphQLCalls` — `expectGraphQLCalls` throws a Jest diff on unexpected calls, making debugging easier.
+- Use `lastRequestVariables(operationName)` (from `ee_jest/msw_integration/core/operation_helpers`) to assert that the correct filter variables were sent; it throws if the operation was never called.
 - Reset `capturedRequests` manually in your own test suite if stray operations fire after the global `afterEach` reset has already been called.
 
 ### Mounting
@@ -94,7 +98,7 @@ distilled_at_sha: da75f7373628b035becb13fb3f0d21b4b3d3690f
 - Create a router with `assignRouter` from `test_helpers.js` instead of calling the router factory directly, so `test_setup.js` can reset it between tests; DO NOT push routes manually.
 - Mount the root component with `fullMount` from `test_helpers.js` and the real `apolloProvider`; DO NOT use `shallowMountExtended` or `mountExtended` in MSW integration tests.
 - Use `waitFor` from `@testing-library/dom` after actions that trigger API calls.
-- Reset the Apollo cache in `beforeEach` with `apolloProvider.defaultClient.cache.reset()` to prevent state leaking between tests.
+- Reset the Apollo cache in `beforeEach` with `apolloProvider.defaultClient.cache.reset()` to prevent state leaking between tests; `test_setup.js` calls `clearMountedApolloStores()` in `beforeEach` to cancel in-flight fetches before each test, so spec files do not need to do anything extra beyond the usual `cache.reset()`.
 - DO NOT add `afterEach` cleanup for wrapper destruction or Apollo client teardown — the global `test_setup.js` handles router resets, wrapper destroy, and metadata cleanup.
 - DO NOT add `server.listen`, `server.resetHandlers`, or `server.close` calls in individual test files — server lifecycle is handled globally by `test_setup.js`.
 - DO NOT mock child components in MSW integration tests; the goal is to test how components work together.
@@ -102,7 +106,9 @@ distilled_at_sha: da75f7373628b035becb13fb3f0d21b4b3d3690f
 ### Finding Elements & Interactions
 
 - Use `@testing-library/vue` queries to locate elements
-- Drive navigation and state changes through user-facing UI actions (click the link or button); DO NOT push routes or call component methods to get the app into a state.
+- Drive navigation and state changes through user-facing UI actions (click
+  the link or button); DO NOT push routes or call component methods to get
+  the app into a state.
 - DO NOT spy on or assert against component internals (methods, computed props); assert against rendered output instead.
 
 ### DOM Assertions (Vue-Agnostic)

@@ -33,10 +33,10 @@ RSpec.describe Mcp::Tools::Jobs::GetJobService, feature_category: :mcp_server do
           },
           include: {
             type: 'array',
-            description: 'Facet to include alongside the job, one per call: log.',
+            description: 'Facet to include alongside the job, one per call: log or artifacts.',
             items: {
               type: 'string',
-              enum: %w[log]
+              enum: %w[log artifacts]
             },
             maxItems: 1
           },
@@ -128,9 +128,9 @@ RSpec.describe Mcp::Tools::Jobs::GetJobService, feature_category: :mcp_server do
 
       let(:current_user) { create(:user) }
 
-      # The log path must not confirm the job either, or it becomes a way to probe for jobs.
-      it 'hides whether the job exists on both paths', :aggregate_failures do
-        [{}, { include: %w[log] }].each do |extra|
+      # The facet paths must not confirm the job either, or they become a way to probe for jobs.
+      it 'hides whether the job exists on every path', :aggregate_failures do
+        [{}, { include: %w[log] }, { include: %w[artifacts] }].each do |extra|
           result = execute({ id: hidden_project.full_path, job_id: hidden_job.id }.merge(extra))
 
           expect(result[:isError]).to be(true)
@@ -231,6 +231,40 @@ RSpec.describe Mcp::Tools::Jobs::GetJobService, feature_category: :mcp_server do
           expect(result[:content].first[:text]).to include(
             "Job log not accessible: you do not have permission to read this job's log."
           )
+        end
+      end
+    end
+
+    context 'with the artifacts facet' do
+      let_it_be(:job_with_artifacts) do
+        create(:ci_build, :success, :artifacts, pipeline: pipeline, name: 'rspec-artifacts')
+      end
+
+      it 'lists the artifacts the job produced', :aggregate_failures do
+        result = execute({ id: project.full_path, job_id: job_with_artifacts.id, include: %w[artifacts] })
+
+        expect(result[:isError]).to be(false)
+
+        artifacts = result[:structuredContent][:artifacts]
+        expect(artifacts.map { |a| a[:file_type] }).to contain_exactly('archive', 'metadata')
+
+        archive = job_with_artifacts.job_artifacts_archive
+        expect(artifacts).to include(
+          id: archive.id,
+          name: archive.filename,
+          size: archive.size,
+          file_type: 'archive',
+          expire_at: archive.expire_at,
+          expired: false
+        )
+      end
+
+      context 'when the job has no artifacts' do
+        it 'returns an empty list' do
+          result = execute({ id: project.full_path, job_id: job.id, include: %w[artifacts] })
+
+          expect(result[:isError]).to be(false)
+          expect(result[:structuredContent][:artifacts]).to eq([])
         end
       end
     end

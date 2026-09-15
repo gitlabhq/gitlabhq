@@ -11,19 +11,15 @@ module Gitlab
     module PostgresqlAdapterReturningValues
       RETURNING_PATTERN = /\bRETURNING\b/i
 
-      # Guard order is load-bearing, not an optimization. Capture.enabled?
+      # This guard is load-bearing, not an optimization. Capture.enabled?
       # calls Feature.enabled?, which on a cold cache issues its own SQL
-      # through this same patched method. The RETURNING check must run first:
-      # feature-gate queries never contain RETURNING, so it is what breaks
-      # the log -> enabled? -> Flipper SQL -> log recursion (SystemStackError
-      # on the first query of every puma boot otherwise).
-      # Runtime.application? stays ahead of both: constant-time, and false
-      # outside puma/sidekiq so migrations and specs never reach Feature.
+      # through this same patched method. So no flag is checked here: the
+      # Capture analyzer's thread-local context, set once per request/job,
+      # gates enrichment instead and is nil in migrations and specs.
       def log(sql, *args, **kwargs)
         return super unless block_given? &&
-          Gitlab::Runtime.application? &&
-          sql&.match?(RETURNING_PATTERN) &&
-          Gitlab::Database::Capture.enabled?
+          Gitlab::Database::QueryAnalyzers::Capture.context &&
+          sql&.match?(RETURNING_PATTERN)
 
         super do |notification_payload|
           yield(notification_payload).tap do |result|

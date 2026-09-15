@@ -11,9 +11,10 @@ module Mcp
         register_version '0.1.0', {
           toolset: :ci,
           description: <<~DESC.strip,
-            Get a CI/CD pipeline in a GitLab project, and optionally its jobs, downstream pipelines, or
-            bridge (trigger) jobs. A bridge job's downstream pipeline is omitted if you do not have
-            access to it. To list pipelines, use the list_pipelines tool instead.
+            Get a CI/CD pipeline in a GitLab project, and optionally its jobs, downstream pipelines,
+            bridge (trigger) jobs, or the artifacts its jobs produced. A bridge job's downstream
+            pipeline is omitted if you do not have access to it. The artifacts facet pages over the
+            pipeline's jobs. To list pipelines, use the list_pipelines tool instead.
           DESC
           annotations: {
             readOnlyHint: true
@@ -32,7 +33,7 @@ module Mcp
               include: {
                 type: 'array',
                 description: 'Facet to include alongside the pipeline, one per call: jobs, downstream_pipelines, ' \
-                  'or bridge_jobs.',
+                  'bridge_jobs, or artifacts.',
                 items: {
                   type: 'string',
                   enum: GetPipelineTool::FACETS.values

@@ -971,6 +971,16 @@ export function mapWorkItemWidgetsToIssuableFields({
       }
       const property = WORK_ITEM_TO_ISSUABLE_MAP[widgetType];
 
+      // The detail query may select a widget's type without its fields.
+      // Writing `undefined` would clear the cached value instead of keeping it.
+      const value =
+        property === WORK_ITEM_TO_ISSUABLE_MAP[WIDGET_TYPE_TIME_TRACKING]
+          ? currentWidget.humanReadableAttributes?.timeEstimate
+          : currentWidget[property];
+      if (value === undefined) {
+        return;
+      }
+
       // handling the case for assignees and labels
       if (
         property === WORK_ITEM_TO_ISSUABLE_MAP[WIDGET_TYPE_ASSIGNEES] ||
@@ -995,12 +1005,7 @@ export function mapWorkItemWidgetsToIssuableFields({
         return;
       }
 
-      // handling the case for time tracking
-      if (property === WORK_ITEM_TO_ISSUABLE_MAP[WIDGET_TYPE_TIME_TRACKING]) {
-        activeItem[property] = currentWidget.humanReadableAttributes?.timeEstimate;
-        return;
-      }
-      activeItem[property] = currentWidget[property];
+      activeItem[property] = value;
     });
 
     activeItem.title = workItem.title;

@@ -180,7 +180,7 @@ Set a limit to `0` to disable it.
 
 - **Default rate limit**: Disabled (unlimited) on GitLab Self-Managed.
   For GitLab.com plan-specific limits, see
-  [Rate limits on GitLab.com](../user/gitlab_com/_index.md#service-desk-email-rate-limit).
+  [Rate limits on GitLab.com](../user/gitlab_com/rate_limits.md#service-desk-email-rate-limit).
 
 ### Search rate limit
 

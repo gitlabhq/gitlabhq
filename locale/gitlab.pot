@@ -8775,6 +8775,12 @@ msgstr ""
 msgid "AiOverview|AI Overview"
 msgstr ""
 
+msgid "AiOverview|Could not load this merge request"
+msgstr ""
+
+msgid "AiOverview|Retry"
+msgstr ""
+
 msgid "AiOverview|Switch to the classic overview"
 msgstr ""
 
@@ -19141,9 +19147,6 @@ msgstr ""
 msgid "CloudSeed|Configuration"
 msgstr ""
 
-msgid "CloudSeed|Configure via Merge Request"
-msgstr ""
-
 msgid "CloudSeed|Create MySQL Instance"
 msgstr ""
 
@@ -19175,12 +19178,6 @@ msgid "CloudSeed|Databases"
 msgstr ""
 
 msgid "CloudSeed|Deployments"
-msgstr ""
-
-msgid "CloudSeed|Derive insights from unstructured text using Google machine learning"
-msgstr ""
-
-msgid "CloudSeed|Derive insights from your images in the cloud or at the edge"
 msgstr ""
 
 msgid "CloudSeed|Description"
@@ -19222,25 +19219,16 @@ msgstr ""
 msgid "CloudSeed|Google Cloud project"
 msgstr ""
 
-msgid "CloudSeed|Google Cloud's AI tools are armed with the best of Google's research and technology to help developers focus exclusively on solving problems that matter"
-msgstr ""
-
 msgid "CloudSeed|I accept Google Cloud pricing and responsibilities involved with managing database instances"
 msgstr ""
 
 msgid "CloudSeed|Instances"
 msgstr ""
 
-msgid "CloudSeed|Language AI"
-msgstr ""
-
 msgid "CloudSeed|Learn more about pricing for %{cloudsqlPricingStart}Cloud SQL%{cloudsqlPricingEnd}, %{alloydbPricingStart}Alloy DB%{alloydbPricingEnd}, %{memorystorePricingStart}Memorystore%{memorystorePricingEnd} and %{firestorePricingStart}Firestore%{firestorePricingEnd}."
 msgstr ""
 
 msgid "CloudSeed|Machine type"
-msgstr ""
-
-msgid "CloudSeed|Make your content and apps multilingual with fast, dynamic machine translation"
 msgstr ""
 
 msgid "CloudSeed|Memorystore for Redis"
@@ -19270,13 +19258,7 @@ msgstr ""
 msgid "CloudSeed|There are no instances to display."
 msgstr ""
 
-msgid "CloudSeed|Translation AI"
-msgstr ""
-
 msgid "CloudSeed|Version"
-msgstr ""
-
-msgid "CloudSeed|Vision AI"
 msgstr ""
 
 msgid "Cluster"
@@ -31174,6 +31156,9 @@ msgid "DuoAgentPlatform|Takes a few minutes..."
 msgstr ""
 
 msgid "DuoAgentPlatform|Takes a few seconds..."
+msgstr ""
+
+msgid "DuoAgentPlatform|The repository is empty. Push a first commit, then generate the file."
 msgstr ""
 
 msgid "DuoAgentPlatform|These features are not available because the GitLab Duo Agent Platform is not turned on."
@@ -76363,6 +76348,9 @@ msgid "SecurityReports|No longer detected"
 msgstr ""
 
 msgid "SecurityReports|No patched version is available for this vulnerability yet."
+msgstr ""
+
+msgid "SecurityReports|No vulnerabilities remediated this week"
 msgstr ""
 
 msgid "SecurityReports|No vulnerabilities to report"

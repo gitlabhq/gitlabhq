@@ -46,6 +46,16 @@ RSpec.describe Gitlab::RackAttack::LabkitRateLimit::ClassifiedRequest, feature_c
         expect(facts_for('/-/collector/i')).to include(web_or_frontend: false)
       end
 
+      # An LFS path matches the git regex too, since repository_git_lfs_route_regex
+      # nests inside it, so one fact excludes both from the unauthenticated rules.
+      it 'is git_http for a git path and for an LFS path, and not for anything else', :aggregate_failures do
+        expect(facts_for('/group/project.git/info/refs')).to include(git_http: true)
+        expect(facts_for('/group/project.git/info/lfs/objects/batch')).to include(git_http: true)
+        expect(facts_for('/group/project.git/gitlab-lfs/objects/abc')).to include(git_http: true)
+        expect(facts_for('/group/project')).to include(git_http: false)
+        expect(facts_for('/api/v4/projects')).to include(git_http: false)
+      end
+
       it 'reflects the bypass header only when set to 1', :aggregate_failures do
         allow(Gitlab::Throttle).to receive(:bypass_header).and_return('HTTP_X_BYPASS')
 

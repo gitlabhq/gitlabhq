@@ -7,7 +7,7 @@ module Mcp
         extend ::Gitlab::Utils::Override
         include ::Gitlab::Utils::StrongMemoize
 
-        INCLUDES = %w[log].freeze
+        INCLUDES = %w[log artifacts].freeze
         MAX_BYTE_LIMIT = ::Gitlab::Ci::Trace::Stream::LIMIT_SIZE
         MIN_BYTE_OFFSET = 0
         LOG_ALIAS = 'get_job_log'
@@ -21,7 +21,9 @@ module Mcp
         register_version '0.1.0', {
           toolset: :ci,
           description: 'Get a CI/CD job in a GitLab project. Add include: log to also get the ' \
-            "job's trace/log, which you can page through with byte_offset and byte_limit.",
+            "job's trace/log, which you can page through with byte_offset and byte_limit. " \
+            'Add include: artifacts to also list the artifacts the job produced (name, size, ' \
+            'file type).',
           annotations: {
             readOnlyHint: true
           },
@@ -38,7 +40,7 @@ module Mcp
               },
               include: {
                 type: 'array',
-                description: 'Facet to include alongside the job, one per call: log.',
+                description: 'Facet to include alongside the job, one per call: log or artifacts.',
                 items: {
                   type: 'string',
                   enum: INCLUDES
@@ -97,6 +99,7 @@ module Mcp
 
           data = job_data
           data[:log] = log_facet if include_log?
+          data[:artifacts] = artifacts_facet if include_artifacts?
 
           formatted_content = [{ type: 'text', text: Gitlab::Json.generate(data) }]
           ::Mcp::Tools::Base::Response.success(formatted_content, data)
@@ -127,6 +130,10 @@ module Mcp
           @invoked_as == LOG_ALIAS || Array(arguments[:include]).include?('log')
         end
 
+        def include_artifacts?
+          Array(arguments[:include]).include?('artifacts')
+        end
+
         def job_data
           {
             id: job.id,
@@ -136,6 +143,20 @@ module Mcp
             allow_failure: job.allow_failure,
             web_url: ::Gitlab::Routing.url_helpers.project_job_url(job.project, job)
           }
+        end
+
+        # Bounded without pagination: a job stores at most one artifact per file type.
+        def artifacts_facet
+          job.job_artifacts.map do |artifact|
+            {
+              id: artifact.id,
+              name: artifact.filename,
+              size: artifact.size,
+              file_type: artifact.file_type,
+              expire_at: artifact.expire_at,
+              expired: artifact.expired?
+            }
+          end
         end
 
         def log_facet

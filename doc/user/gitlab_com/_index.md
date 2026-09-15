@@ -194,7 +194,7 @@ Some settings for [GitLab Pages](../project/pages/_index.md) differ from the
 The maximum size of your Pages site depends on the maximum artifact size,
 which is part of the [GitLab CI/CD settings](#cicd).
 
-[Rate limits](#rate-limits-on-gitlabcom) also exist for GitLab Pages.
+[Rate limits](rate_limits.md#current-rate-limits) also exist for GitLab Pages.
 
 ## GitLab.com at scale
 
@@ -420,178 +420,12 @@ GitLab.com uses the default of 60 seconds for [Puma request timeouts](../../admi
 
 ## Rate limits on GitLab.com
 
-> [!note]
-> See [Rate limits](../../rate_limits/_index.md) for administrator
-> documentation.
+Rate limits on GitLab.com vary by subscription plan and apply both per user and per top-level
+group. Each plan has an hourly limit that governs your usage and a per-minute burst limit, and the
+hourly limit takes precedence. Authenticated requests receive your plan's full allowance.
 
-When a request is rate limited, GitLab responds with a `429` status
-code. The client should wait before attempting the request again. There
-may also be informational headers with this response detailed in
-[rate limiting responses](#rate-limiting-responses). Rate limiting responses
-for the Projects, Groups, and Users APIs do not include informational headers.
-
-The following table describes the rate limits for GitLab.com:
-
-| Rate limit                                                       | Setting                         |
-|:-----------------------------------------------------------------|:--------------------------------|
-| Protected paths for an IP address                                | 10 requests each minute         |
-| Raw endpoint traffic for a project, commit, or file path         | 300 requests each minute        |
-| Unauthenticated raw endpoint traffic for a project               | 800 requests each minute        |
-| Unauthenticated traffic from an IP address                       | 500 requests each minute        |
-| Authenticated API traffic for a user                             | 2,000 requests each minute      |
-| Authenticated non-API HTTP traffic for a user                    | 1,000 requests each minute      |
-| Authenticated Git HTTPS traffic for a user                       | 10,000 requests each minute     |
-| Unauthenticated Git HTTPS traffic from an IP address             | 15,000 requests each minute     |
-| Git SSH operations for a user, project, and Git command          | 600 operations each minute      |
-| All traffic from an IP address                                   | 2,000 requests each minute      |
-| Issue creation                                                   | 200 requests each minute        |
-| Note creation on issues and merge requests                       | 60 requests each minute         |
-| Advanced, project, or group search API for an IP address         | 10 requests each minute         |
-| GitLab Pages requests for an IP address                          | 1,000 requests every 50 seconds |
-| GitLab Pages requests for a GitLab Pages domain                  | 5,000 requests every 10 seconds |
-| GitLab Pages TLS connections for an IP address                   | 1,000 requests every 50 seconds |
-| GitLab Pages TLS connections for a GitLab Pages domain           | 400 requests every 10 seconds   |
-| Pipeline creation requests for a project, user, or commit        | 25 requests each minute         |
-| Alert integration endpoint requests for a project                | 3,600 requests every hour       |
-| GitLab Duo `aiAction` requests                                   | 160 requests every 8 hours      |
-| [Pull mirroring](../project/repository/mirror/pull.md) intervals | 5 minutes                       |
-| API requests from a user to `/api/v4/users/:id`                  | 300 requests every 10 minutes   |
-| GitLab package hosting system requests for an IP address | 3,000 requests each minute      |
-| GitLab repository files | 500 requests each minute        |
-| User followers requests (`/api/v4/users/:id/followers`)            | 100 requests each minute        |
-| User following requests (`/api/v4/users/:id/following`)            | 100 requests each minute        |
-| User status requests (`/api/v4/users/:user_id/status`)             | 240 requests each minute        |
-| User SSH keys requests (`/api/v4/users/:user_id/keys`)             | 120 requests each minute        |
-| Single SSH key requests (`/api/v4/users/:id/keys/:key_id`)         | 120 requests each minute        |
-| User GPG keys requests (`/api/v4/users/:id/gpg_keys`)              | 120 requests each minute        |
-| Single GPG key requests (`/api/v4/users/:id/gpg_keys/:key_id`)     | 120 requests each minute        |
-| User projects requests (`/api/v4/users/:user_id/projects`)         | 300 requests each minute        |
-| User contributed projects requests (`/api/v4/users/:user_id/contributed_projects`) | 100 requests each minute        |
-| User starred projects requests (`/api/v4/users/:user_id/starred_projects`) | 100 requests each minute        |
-| Projects list requests (`/api/v4/projects`)                        | 2,000 requests every 10 minutes |
-| Group projects requests (`/api/v4/groups/:id/projects`)            | 600 requests each minute        |
-| Single project requests (`/api/v4/projects/:id`)                   | 400 requests each minute        |
-| Groups list requests (`/api/v4/groups`)                            | 200 requests each minute        |
-| Single group requests (`/api/v4/groups/:id`)                       | 400 requests each minute        |
-| Runner jobs requests using a runner token (`/api/v4/jobs/request`) | 2,000 requests each minute      |
-| Runner job trace patch requests using a job token (`/api/v4/jobs/trace`) | 200 requests each minute      |
-| Runner jobs requests using a job token (`/api/v4/jobs/*`)          | 200 requests each minute        |
-| List all project members in a project                              | 200 requests each minute        |
-
-More details are available on the rate limits for
-[protected paths](#protected-paths-throttle) and
-[raw endpoints](../../administration/settings/rate_limits_on_raw_endpoints.md).
-
-GitLab can rate-limit requests at several layers. The rate limits listed here
-are configured in the application. These limits are the most
-restrictive for each IP address.
-
-### Service Desk email rate limit
-
-GitLab.com limits the number of outbound Service Desk notification
-emails a top-level namespace can send, per hour and per day, by plan:
-
-| Plan | Hourly limit | Daily limit |
-|------|--------------|-------------|
-| Free, Premium trial, Ultimate trial | 100 | 700 |
-| Open Source | 1,500 | 10,000 |
-| Premium | 5,000 | 50,000 |
-| Ultimate, Ultimate trial paid customer | Unlimited | Unlimited |
-
-For details, see
-[Service Desk email rate limit](../../administration/instance_limits.md#service-desk-email-rate-limit).
-
-### Group and project import by uploading export files
-
-To help avoid abuse, GitLab.com uses rate limits:
-
-- Project and group imports.
-- Group and project exports that use files.
-- Export downloads.
-
-For more information, see:
-
-- [Project import/export rate limits](../project/settings/import_export.md#rate-limits).
-- [Group import/export rate limits](../project/settings/import_export.md#rate-limits-1).
-
-### IP blocks
-
-IP blocks can occur when GitLab.com receives unusual traffic from a single
-IP address that the system views as potentially malicious. This can be based on
-rate limit settings. After the unusual traffic ceases, the IP address is
-automatically released depending on the type of block, as described in a
-following section.
-
-If you receive a `403 Forbidden` error for all requests to GitLab.com,
-check for any automated processes that may be triggering a block. For
-assistance, contact [GitLab Support](https://support.gitlab.com)
-with details, such as the affected IP address.
-
-#### Git and container registry failed authentication ban
-
-GitLab.com responds with HTTP status code `403` for 15 minutes when a single IP address
-sends 300 failed authentication requests in a 1-minute period.
-
-This applies only to Git requests and container registry (`/jwt/auth`) requests
-(combined).
-
-This limit:
-
-- Is reset by requests that authenticate successfully. For example, 299
-  failed authentication requests followed by 1 successful request, followed by
-  299 more failed authentication requests, does not trigger a ban.
-- Does not apply to JWT requests authenticated by `gitlab-ci-token`.
-
-No response headers are provided.
-
-`git` requests over `https` always send an unauthenticated request first, which for private repositories results in a `401` error.
-`git` then attempts an authenticated request with a username, password, or access token (if available).
-These requests might lead to a temporary IP block if too many requests are sent simultaneously.
-To resolve this issue, use [SSH keys to communicate with GitLab](../ssh.md).
-
-### Non-configurable limits
-
-For more information about non-configurable rate limits used on GitLab.com, see
-[non-configurable limits](../../rate_limits/non_configurable.md)
-
-### Pagination response headers
-
-For performance reasons, if a query returns more than 10,000 records,
-[GitLab excludes some headers](../../api/rest/_index.md#pagination-response-headers).
-
-### Protected paths throttle
-
-If the same IP address sends more than 10 POST requests in a minute to protected paths, GitLab.com
-returns a `429` HTTP status code.
-
-See the source below for which paths are protected. They include user creation,
-user confirmation, user sign in, and password reset.
-
-[User and IP rate limits](../../administration/settings/user_and_ip_rate_limits.md#response-headers)
-includes a list of the headers responded to blocked requests.
-
-See [Protected Paths](../../administration/settings/protected_paths.md) for more details.
-
-### Rate limiting responses
-
-For information on rate limiting responses, see:
-
-- [List of headers on responses to blocked requests](../../administration/settings/user_and_ip_rate_limits.md#response-headers).
-- [Customizable response text](../../administration/settings/user_and_ip_rate_limits.md#use-a-custom-rate-limit-response).
-
-### SSH maximum number of connections
-
-GitLab.com defines the maximum number of concurrent, unauthenticated SSH
-connections by using the [`MaxStartups` setting](https://man.openbsd.org/sshd_config.5#MaxStartups).
-If more than the maximum number of allowed connections occur concurrently, they
-are dropped and users get
-[an `ssh_exchange_identification` error](../../topics/git/troubleshooting_git.md#ssh_exchange_identification-error).
-
-### Visibility settings
-
-Projects, groups, and snippets have the
-[Internal visibility](../public_access.md#internal-projects-and-groups)
-setting [disabled on GitLab.com](https://gitlab.com/gitlab-org/gitlab/-/issues/12388).
+For each plan's limits, when they take effect, and how to handle a `429 Too Many Requests`
+response, see [GitLab.com rate limits](rate_limits.md).
 
 ## Sidekiq
 
@@ -604,7 +438,7 @@ The current settings are in the
 ## SSH keys and authentication
 
 Settings related to authentication with SSH. For information about maximum connections,
-see [SSH maximum number of connections](#ssh-maximum-number-of-connections).
+see [SSH maximum number of connections](rate_limits.md#ssh-maximum-number-of-connections).
 
 ### Alternative SSH port
 
@@ -660,6 +494,12 @@ gitlab.com ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIAfuCHKVTjquxvt6CM6tdG4SLp1Btn/nO
 gitlab.com ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABAQCsj2bNKTBSpIYDEGk9KxsGh3mySTRgMtXL583qmBpzeQ+jqCMRgBqB98u3z++J1sKlXHWfM9dyhSevkMwSbhoR8XIq/U0tCNyokEi/ueaBMCvbcTHhO7FcwzY92WK4Yt0aGROY5qX2UKSeOvuP4D6TPqKF1onrSzH9bx9XUf2lEdWT/ia1NEKjunUqu1xOB/StKDHMoX4/OKyIzuS0q/T1zOATthvasJFoPrAjkohTyaDUz2LN5JoH839hViyEG82yB+MjcFV5MU3N1l1QL3cVUCh93xSaua1N85qivl+siMkPGbO5xR/En4iEY6K2XPASUEMaieWVNTRCtJ4S8H+9
 gitlab.com ecdsa-sha2-nistp256 AAAAE2VjZHNhLXNoYTItbmlzdHAyNTYAAAAIbmlzdHAyNTYAAABBBFSMqzJeV9rUzU4kWitGjeR4PWSa29SPqJ1fVkhtj3Hw9xjLVXVYrU9QlYWrOLXBpQ6KWjbjTDTdDkoohFzgbEY=
 ```
+
+## Visibility settings
+
+Projects, groups, and snippets have the
+[Internal visibility](../public_access.md#internal-projects-and-groups)
+setting [disabled on GitLab.com](https://gitlab.com/gitlab-org/gitlab/-/issues/12388).
 
 ## Webhooks
 

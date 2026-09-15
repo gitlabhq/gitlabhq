@@ -39,7 +39,7 @@ Each metric is defined in a YAML file consisting of a number of fields:
 | `key_path`                   | yes      | JSON key path for the metric, location in Service Ping payload. |
 | `description`                | yes      |                        |
 | `product_group`              | yes      | The [group](https://gitlab.com/gitlab-com/www-gitlab-com/blob/master/data/stages.yml) that owns the metric. |
-| `product_categories`         | yes   | `array`; The [feature categories](https://gitlab.com/gitlab-org/gitlab/-/blob/master/config/feature_categories.yml) that the metric represents usage of. |
+| `product_categories`         | yes      | `array`. The [feature categories](https://gitlab.com/gitlab-org/gitlab/-/blob/master/config/feature_categories.yml) that the metric represents usage of. Required for active metrics, except existing legacy exceptions. See [Product categories](#product-categories) for requirements. |
 | `value_type`                 | yes      | `string`; one of [`string`, `number`, `boolean`, `object`](https://json-schema.org/understanding-json-schema/reference/type). |
 | `status`                     | yes      | `string`; [status](#metric-statuses) of the metric, may be set to `active`, `removed`, `broken`. |
 | `time_frame`                 | yes      | `string` or `array`; may be set to `7d`, `28d`, `all`, `none` or an array including any of these values except for `none`. |
@@ -54,6 +54,19 @@ Each metric is defined in a YAML file consisting of a number of fields:
 | `removed_by_url`             | no       | The URL to the merge request that removed the metric. Required for removed metrics. |
 | `repair_issue_url`           | no       | The URL of the issue that was created to repair a metric with a `broken` status. |
 | `options`                    | no       | `object`: options information needed to calculate the metric value. |
+
+### Product categories
+
+For metrics with `status: active`, `product_categories` must be a non-empty array,
+except for the existing legacy metrics listed in the
+[validation schema](https://gitlab.com/gitlab-org/gitlab/-/blob/master/config/metrics/schema/product_categories.json).
+The field is optional for metrics with `status: broken` or `status: removed`.
+
+If `product_categories` is present on any active, broken, or removed metric,
+including metrics covered by legacy exceptions, every entry must be a string
+that names a valid feature category.
+Do not add new schema exceptions.
+Populate `product_categories` for legacy metrics instead.
 
 ### Metric `key_path`
 

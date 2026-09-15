@@ -6,12 +6,10 @@ module Gitlab
       class Capture < Base
         class << self
           def enabled?
-            Gitlab::Runtime.application?
+            Gitlab::Runtime.application? && Gitlab::Database::Capture.enabled?
           end
 
           def analyze(parsed)
-            return unless capturing?
-
             db_name = parsed.connection.pool.db_config.name.delete_suffix('_replica')
             capture_task = Gitlab::Database::Capture::Tasks[db_name]
 
@@ -47,10 +45,6 @@ module Gitlab
           # issue no queries.
           def connection_id(connection)
             connection.instance_variable_get(:@raw_connection)&.backend_pid
-          end
-
-          def capturing?
-            Gitlab::Database::Capture.enabled?
           end
 
           def serializable_binds(binds)

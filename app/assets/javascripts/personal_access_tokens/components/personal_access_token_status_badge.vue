@@ -1,5 +1,5 @@
 <script>
-import { GlBadge } from '@gitlab/ui';
+import { GlBadge, GlTooltipDirective } from '@gitlab/ui';
 import { s__ } from '~/locale';
 import { isWithin2Weeks } from '~/vue_shared/access_tokens/utils';
 
@@ -7,6 +7,9 @@ export default {
   name: 'PersonalAccessTokenStatusBadge',
   components: {
     GlBadge,
+  },
+  directives: {
+    GlTooltip: GlTooltipDirective,
   },
   props: {
     token: {

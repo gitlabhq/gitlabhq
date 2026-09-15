@@ -44,6 +44,18 @@ status code of `401`:
 > Deploy tokens can't be used with the GitLab public API. For details, see
 > [Deploy Tokens](../../user/project/deploy_tokens/_index.md).
 
+## Rate limits
+
+GitLab rate limits requests to the REST API. Authenticated requests receive a higher allowance than
+anonymous requests.
+
+On GitLab.com, allowances depend on your subscription plan. For more information, see
+[GitLab.com rate limits](../../user/gitlab_com/rate_limits.md).
+
+When you exceed a rate limit, GitLab returns a `429 Too Many Requests` response with a
+`Retry-After` header that tells you how long to wait. For the full list of rate limit headers, see
+[response headers](../../administration/settings/user_and_ip_rate_limits.md#response-headers).
+
 ## OAuth 2.0 tokens
 
 You can use an [OAuth 2.0 token](../oauth2.md) to authenticate with the API by passing it in either

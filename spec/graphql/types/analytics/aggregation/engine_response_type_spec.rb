@@ -13,7 +13,10 @@ RSpec.describe Types::Analytics::Aggregation::EngineResponseType, feature_catego
       end
 
       def self.dimensions_mapping
-        { column: Gitlab::Database::Aggregation::ClickHouse::DimensionDefinition }
+        {
+          column: Gitlab::Database::Aggregation::ClickHouse::DimensionDefinition,
+          traversal_path: Gitlab::Database::Aggregation::ClickHouse::TraversalPathDimension
+        }
       end
 
       def self.filters_mapping
@@ -22,6 +25,8 @@ RSpec.describe Types::Analytics::Aggregation::EngineResponseType, feature_catego
 
       dimensions do
         column :user_id, :integer
+        traversal_path :group_id, :integer, -> { Arel.sql('traversal_path') },
+          association: { preloader: Preloaders::GroupPolicyPreloader }
       end
 
       metrics do
@@ -39,6 +44,47 @@ RSpec.describe Types::Analytics::Aggregation::EngineResponseType, feature_catego
 
   it 'declares flat metrics and dimensions as top-level fields' do
     expect(response_type.fields.keys).to contain_exactly('dimensions', 'total', 'duration')
+  end
+
+  describe 'dimensions field' do
+    include GraphqlHelpers
+
+    let_it_be(:group) { create(:group) }
+    let_it_be(:current_user) { create(:user) }
+
+    let(:dimensions_type) { response_type.fields['dimensions'].type }
+    let(:row) { { 'group_id_2' => group.id } }
+    let(:dimensions_instance) do
+      dimensions_type.allocate.tap do |instance|
+        allow(instance).to receive_messages(object: row, context: { current_user: current_user })
+      end
+    end
+
+    it 'exposes association dimensions as objects with their parameters as arguments' do
+      expect(dimensions_type.fields.keys).to contain_exactly('userId', 'group')
+      expect(dimensions_type.fields['group'].arguments.keys).to contain_exactly('depth')
+    end
+
+    it 'resolves the association from the parameterized instance key' do
+      expect(batch_sync { dimensions_instance.group(depth: 2) }).to eq(group)
+    end
+
+    it 'runs the configured preloader over the loaded records for the current user' do
+      expect_next_instance_of(Preloaders::GroupPolicyPreloader, [group], current_user) do |preloader|
+        expect(preloader).to receive(:execute)
+      end
+
+      batch_sync { dimensions_instance.group(depth: 2) }
+    end
+
+    context 'when the dimension value is NULL' do
+      let(:row) { { 'group_id_2' => nil } }
+
+      it 'returns nil without loading the model' do
+        expect(Group).not_to receive(:id_in)
+        expect(batch_sync { dimensions_instance.group(depth: 2) }).to be_nil
+      end
+    end
   end
 
   describe 'metric group field' do

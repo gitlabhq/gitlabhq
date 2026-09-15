@@ -215,7 +215,8 @@ Prerequisites:
 
 In the **Workplan** widget on the work item, the confidence level appears as
 **Low**, **Medium**, or **High**.
-The score appears whether or not the work item has a workplan.
+The confidence level appears only after GitLab Duo generates a workplan and
+calculates a score.
 
 To raise the score, add more detail to the work item description and to the workplan
 steps, such as requirements, acceptance criteria, and constraints.

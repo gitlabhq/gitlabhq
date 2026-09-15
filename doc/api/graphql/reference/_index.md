@@ -34576,7 +34576,7 @@ Fields:
 | <a id="agentplatformsessionsaggregationresponsedurationmetrics-max"></a>`max` | [`Int`](#int) | Maximum session duration in seconds. |
 | <a id="agentplatformsessionsaggregationresponsedurationmetrics-mean"></a>`mean` | [`Float`](#float) | Mean session duration in seconds. |
 | <a id="agentplatformsessionsaggregationresponsedurationmetrics-min"></a>`min` | [`Int`](#int) | Minimum session duration in seconds. |
-| <a id="agentplatformsessionsaggregationresponsedurationmetrics-sum"></a>`sum` | [`Int`](#int) | Sum of session duration in seconds. |
+| <a id="agentplatformsessionsaggregationresponsedurationmetrics-sum"></a>`sum` | [`Float`](#float) | Sum of session duration in seconds. |
 
 #### Fields with arguments
 
@@ -43039,7 +43039,7 @@ Fields:
 | <a id="deploymentsaggregationresponsedurationmetrics-max"></a>`max` | [`Int`](#int) | Maximum deployment duration in seconds. |
 | <a id="deploymentsaggregationresponsedurationmetrics-mean"></a>`mean` | [`Float`](#float) | Mean deployment duration in seconds. |
 | <a id="deploymentsaggregationresponsedurationmetrics-min"></a>`min` | [`Int`](#int) | Minimum deployment duration in seconds. |
-| <a id="deploymentsaggregationresponsedurationmetrics-sum"></a>`sum` | [`Int`](#int) | Sum of deployment duration in seconds. |
+| <a id="deploymentsaggregationresponsedurationmetrics-sum"></a>`sum` | [`Float`](#float) | Sum of deployment duration in seconds. |
 
 #### Fields with arguments
 
@@ -44228,13 +44228,17 @@ Fields:
 
 | Name | Type | Description |
 | ---- | ---- | ----------- |
+| <a id="duoworkflowsaggregationresponse-churneduserscount"></a>`churnedUsersCount` | [`Int`](#int) | Number of unique users who ran a flow in the previous period but not in this one. |
 | <a id="duoworkflowsaggregationresponse-closedmrcount"></a>`closedMrCount` | [`DuoWorkflowsAggregationResponseClosedMrCountMetrics`](#duoworkflowsaggregationresponseclosedmrcountmetrics) | Aggregated `closed_mr_count` metrics. |
 | <a id="duoworkflowsaggregationresponse-createdmrcount"></a>`createdMrCount` | [`DuoWorkflowsAggregationResponseCreatedMrCountMetrics`](#duoworkflowsaggregationresponsecreatedmrcountmetrics) | Aggregated `created_mr_count` metrics. |
 | <a id="duoworkflowsaggregationresponse-creditsused"></a>`creditsUsed` | [`DuoWorkflowsAggregationResponseCreditsUsedMetrics`](#duoworkflowsaggregationresponsecreditsusedmetrics) | Aggregated `credits_used` metrics. |
 | <a id="duoworkflowsaggregationresponse-dimensions"></a>`dimensions` | [`DuoWorkflowsAggregationResponseDimensions`](#duoworkflowsaggregationresponsedimensions) | Aggregation dimensions. Every selected dimension will be used for aggregation. |
 | <a id="duoworkflowsaggregationresponse-flowtypescount"></a>`flowTypesCount` | [`Int`](#int) | Number of unique flow types. |
+| <a id="duoworkflowsaggregationresponse-joineduserscount"></a>`joinedUsersCount` | [`Int`](#int) | Number of unique users who ran a flow in this period but not in the previous one. |
 | <a id="duoworkflowsaggregationresponse-mergedmrcount"></a>`mergedMrCount` | [`DuoWorkflowsAggregationResponseMergedMrCountMetrics`](#duoworkflowsaggregationresponsemergedmrcountmetrics) | Aggregated `merged_mr_count` metrics. |
+| <a id="duoworkflowsaggregationresponse-previousperioduserscount"></a>`previousPeriodUsersCount` | [`Int`](#int) | Number of unique users in the previous period. |
 | <a id="duoworkflowsaggregationresponse-projectscount"></a>`projectsCount` | [`Int`](#int) | Number of unique projects. |
+| <a id="duoworkflowsaggregationresponse-returninguserscount"></a>`returningUsersCount` | [`Int`](#int) | Number of unique users who also ran a flow in the previous period. |
 | <a id="duoworkflowsaggregationresponse-userscount"></a>`usersCount` | [`Int`](#int) | Number of unique users. |
 
 #### Fields with arguments
@@ -53754,7 +53758,7 @@ Fields:
 | <a id="mergerequestsaggregationresponsetimetomergemetrics-max"></a>`max` | [`Int`](#int) | Maximum time to merge in seconds. |
 | <a id="mergerequestsaggregationresponsetimetomergemetrics-mean"></a>`mean` | [`Float`](#float) | Mean time to merge in seconds. |
 | <a id="mergerequestsaggregationresponsetimetomergemetrics-min"></a>`min` | [`Int`](#int) | Minimum time to merge in seconds. |
-| <a id="mergerequestsaggregationresponsetimetomergemetrics-sum"></a>`sum` | [`Int`](#int) | Sum of time to merge in seconds. |
+| <a id="mergerequestsaggregationresponsetimetomergemetrics-sum"></a>`sum` | [`Float`](#float) | Sum of time to merge in seconds. |
 
 #### Fields with arguments
 
@@ -56956,7 +56960,7 @@ Fields:
 | <a id="pipelinesaggregationresponsedurationmetrics-max"></a>`max` | [`Int`](#int) | Maximum pipeline duration in seconds. |
 | <a id="pipelinesaggregationresponsedurationmetrics-mean"></a>`mean` | [`Float`](#float) | Mean pipeline duration in seconds. |
 | <a id="pipelinesaggregationresponsedurationmetrics-min"></a>`min` | [`Int`](#int) | Minimum pipeline duration in seconds. |
-| <a id="pipelinesaggregationresponsedurationmetrics-sum"></a>`sum` | [`Int`](#int) | Sum of pipeline duration in seconds. |
+| <a id="pipelinesaggregationresponsedurationmetrics-sum"></a>`sum` | [`Float`](#float) | Sum of pipeline duration in seconds. |
 
 #### Fields with arguments
 

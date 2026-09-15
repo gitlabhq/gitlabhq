@@ -1,6 +1,6 @@
 ---
-source_checksum: af5a81372e0e22b0
-distilled_at_sha: da75f7373628b035becb13fb3f0d21b4b3d3690f
+source_checksum: b873b4676c5b5292
+distilled_at_sha: 3378d9de7ce956458ecfbc5e1845591fa87448fc
 ---
 <!-- Auto-generated from docs.gitlab.com by gitlab-ai-principles-distiller — do not edit manually -->
 
@@ -55,11 +55,13 @@ distilled_at_sha: da75f7373628b035becb13fb3f0d21b4b3d3690f
 - Use `boundary: :itself` when the type itself is the boundary object (e.g., `ProjectType` or `GroupType`).
 - Use `boundary: :user` or `boundary: :instance` for standalone resources that do not belong to a specific project or group.
 - When a mutation's `boundary_argument` resolves to a record that is not itself a Project or Group, combine `boundary_argument` with `boundary` so the extractor locates the record and then calls `boundary` on it to reach the Project or Group.
+- Use `boundaries:` (array of hashes, each with `boundary_type` and optionally `boundary` or `boundary_argument`) when a resource can belong to different boundary types; a concrete boundary (project or group) takes precedence over a standalone boundary (`user` or `instance`), and a directive whose resolved object does not match its declared `boundary_type` is skipped.
 - Ensure `permissions` references only valid permission symbols from `Authz::PermissionGroups::Assignable.all_permissions`; the `gitlab:permissions:validate` Rake task enforces this.
 - Ensure `boundary_type` matches at least one boundary declared in the corresponding assignable permission's `boundaries` field; the Lefthook pre-push validation catches mismatches.
 - Use `skip_reason: :parent_authorizes` (alone, without `permissions:` or a boundary) on types whose data is only reachable through a parent type that already declares its own directive; valid reasons are defined in `lib/tasks/gitlab/permissions/graphql/skip_reasons.rb`.
 - DO NOT declare `permissions:` alongside `skip_reason:`; use `skip_reason:` alone on types that intentionally opt out of granular-token authorization.
-- Ensure each `additional_scopes` entry declares its own `boundary_type` and locates its boundary using either `boundary_argument` or `boundary`; DO NOT share a `boundary_argument` value between two entries in the same `additional_scopes` list (run `bundle exec rake gitlab:permissions:validate` to catch violations before they silently deny requests with `404 Not Found`).
+- Use `additional_scopes` to require authorization on a second container a mutation acts on; each entry must declare its own `permissions` and `boundary_type`, and locate its boundary using either `boundary_argument` or `boundary`. Two entries in `additional_scopes` that share a `boundary_argument` form a single requirement group and act as alternatives within it (the same way `boundaries` alternatives work for the primary scope); entries sharing a requirement group must declare identical `permissions` values. Run `bundle exec rake gitlab:permissions:validate` to catch violations before they silently deny requests with `404 Not Found`.
+- Tag a type, mutation, or resolver with `assignable_when:` on the `authorize_granular_token` call when it restricts access beyond membership (e.g., to administrators); the tag applies to every directive the call emits (primary boundary, every `boundaries:` entry, every `additional_scopes:` entry). Individual hashes inside `boundaries:` or `additional_scopes:` can also set their own `assignable_when` to add conditions for that boundary only. The tag is NOT a security control — the type or mutation must still enforce the restriction itself. The validation task rejects unknown condition names and checks tags against the assignable permission YAML's `assignable_when` conditions.
 
 ### Traversal Between Authorized Types
 

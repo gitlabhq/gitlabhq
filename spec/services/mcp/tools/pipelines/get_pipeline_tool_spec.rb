@@ -34,6 +34,7 @@ RSpec.describe Mcp::Tools::Pipelines::GetPipelineTool, :request_store, feature_c
       expect(variables[:includeJobs]).to be(false)
       expect(variables[:includeDownstreamPipelines]).to be(false)
       expect(variables[:includeBridgeJobs]).to be(false)
+      expect(variables[:includeArtifacts]).to be(false)
     end
 
     it 'defaults first to 20 and omits after' do
@@ -50,6 +51,7 @@ RSpec.describe Mcp::Tools::Pipelines::GetPipelineTool, :request_store, feature_c
         'jobs'                  | :includeJobs
         'downstream_pipelines'  | :includeDownstreamPipelines
         'bridge_jobs'           | :includeBridgeJobs
+        'artifacts'             | :includeArtifacts
       end
 
       with_them do
@@ -57,7 +59,7 @@ RSpec.describe Mcp::Tools::Pipelines::GetPipelineTool, :request_store, feature_c
 
         it 'enables only the requested facet', :aggregate_failures do
           variables = tool.build_variables
-          all_keys = %i[includeJobs includeDownstreamPipelines includeBridgeJobs]
+          all_keys = %i[includeJobs includeDownstreamPipelines includeBridgeJobs includeArtifacts]
 
           expect(variables[enabled_key]).to be(true)
           (all_keys - [enabled_key]).each { |key| expect(variables[key]).to be(false) }
@@ -230,6 +232,61 @@ RSpec.describe Mcp::Tools::Pipelines::GetPipelineTool, :request_store, feature_c
           bridge_jobs = result[:structuredContent][:bridge_jobs]
           private_bridge_job = bridge_jobs.find { |job| job[:id] == private_bridge.id }
           expect(private_bridge_job[:downstream_pipeline]).to be_nil
+        end
+      end
+    end
+
+    context 'with include: artifacts' do
+      let_it_be(:job_with_artifacts) do
+        create(:ci_build, :success, :artifacts, pipeline: pipeline, name: 'rspec 1/2')
+      end
+
+      let_it_be(:other_job_with_artifacts) do
+        create(:ci_build, :success, :artifacts, pipeline: pipeline, name: 'rspec 2/2')
+      end
+
+      let_it_be(:job_without_artifacts) { create(:ci_build, :success, pipeline: pipeline, name: 'lint') }
+
+      let(:params) { super().merge(include: ['artifacts']) }
+
+      it 'returns a flat artifact list carrying the job each artifact came from', :aggregate_failures do
+        result = tool.execute
+
+        expect(result[:isError]).to be(false)
+
+        artifacts = result[:structuredContent][:artifacts]
+        expect(artifacts.pluck(:job_id).uniq).to contain_exactly(
+          job_with_artifacts.id, other_job_with_artifacts.id
+        )
+
+        archive = job_with_artifacts.job_artifacts_archive
+        expect(artifacts).to include(
+          id: archive.id,
+          name: archive.filename,
+          size: archive.size,
+          file_type: 'archive',
+          expire_at: archive.expire_at&.iso8601,
+          expired: false,
+          job_id: job_with_artifacts.id,
+          job_name: 'rspec 1/2'
+        )
+      end
+
+      context 'with pagination' do
+        # A dedicated pipeline where every job has artifacts, so the assertion does not
+        # depend on which job the first page happens to return.
+        let_it_be(:paged_pipeline) { create(:ci_pipeline, project: project) }
+        let_it_be(:paged_jobs) { create_list(:ci_build, 2, :success, :artifacts, pipeline: paged_pipeline) }
+
+        let(:params) { { id: project.full_path, pipeline_id: paged_pipeline.id, include: ['artifacts'], first: 1 } }
+
+        it 'pages over the jobs, not the artifacts', :aggregate_failures do
+          result = tool.execute
+
+          artifacts = result[:structuredContent][:artifacts]
+          expect(artifacts.pluck(:job_id).uniq.size).to eq(1)
+          expect(result[:structuredContent][:page_info][:has_next_page]).to be(true)
+          expect(result[:structuredContent][:page_info][:end_cursor]).to be_present
         end
       end
     end

@@ -561,7 +561,6 @@ module Ci
       with_api_entity_associations
         .preload(merge_request: [:author, { target_project: PROJECT_ROUTE_AND_NAMESPACE_ROUTE[:project] }])
     }
-    scope :not_ref_protected, -> { where("#{quoted_table_name}.protected IS NOT true") }
     scope :unlocked, -> { where(locked: :unlocked) }
 
     scope :outside_pipeline_family, ->(pipeline) do

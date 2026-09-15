@@ -257,7 +257,8 @@ The macro expands into a group of metrics with dotted identifiers:
 - `<name>.mean`, which is always `:float`
 - `<name>.quantile`, which is always `:float` and has an auto-declared `quantile`
   parameter of type float, with an allowed range of `0.0` to `1.0` and a default of `0.5`
-- `<name>.sum`, which inherits the measurement's base type. The sum is only
+- `<name>.sum`, which is always `:float`, even for an `:integer` measurement,
+  because summed values overflow GraphQL `Int` quickly. The sum is only
   generated for summable base types (`:integer` and `:float`).
 
 The `expression` argument can be a [transient column](#transient-columns)
@@ -525,7 +526,7 @@ Groups results by a column value.
 | `expression` | Proc | No | Custom expression instead of column |
 | `formatter` | Proc | No | Formatting function applied to results |
 | `description` | String | No | Human-readable description |
-| `association` | Boolean | No | When `true`, the dimension is also accessible without the `_id` suffix as an object. Defaults to `false`. |
+| `association` | Boolean or Hash | No | When `true`, the dimension is also accessible without the `_id` suffix as an object. Accepts a Hash to configure `model`, `graphql_type`, `finder`, or `preloader`. Defaults to `false`. |
 
 #### `date_bucket` dimension
 
@@ -572,6 +573,40 @@ dimension. Any normalization of thresholds (for example, per-week scaling) is a 
 ```ruby
 dimensions do
   tier :user_tier, :string, -> { sql('user_activity.sessions') }, ctes: [:user_activity]
+end
+```
+
+#### `traversal_path` dimension
+
+Groups results by the namespace ID found at a given depth of an organization-scoped traversal path
+column, for example `7/12/34/` where `7` is the organization ID. Use it to bucket results by one level
+of the group hierarchy. The leading organization segment is skipped, so depth `1` is the top-level
+group. **Supports parameters.**
+
+| Option | Type | Required | Description |
+|--------|------|----------|-------------|
+| `name` | Symbol | Yes | Dimension identifier, for example `:group_id` |
+| `type` | Symbol | Yes | Data type of the extracted ID (`:integer`) |
+| `expression` | Proc | Yes | Expression returning the traversal path column, for example `-> { sql('traversal_path') }` |
+| `parameters` | Hash | No | Extra options for the `depth` parameter, such as an `in:` range |
+| `association` | Boolean or Hash | No | When `true`, the dimension is also accessible without the `_id` suffix as an object. Accepts a Hash to configure `model`, `graphql_type`, `finder`, or `preloader`. Defaults to `false`. |
+| `description` | String | No | Human-readable description |
+
+**Supported Parameters:**
+
+| Parameter | Type | Values | Default | Description |
+|-----------|------|--------|---------|-------------|
+| `depth` | Integer | `1` to `99` by default. Narrow with `parameters: { depth: { in: 1..2 } }` | `1` | Depth in the hierarchy, counted from the top-level group |
+
+Paths shorter than the requested depth and the `0/` placeholder path produce a `NULL` bucket.
+The path identifies namespaces only, so for rows tracked in a project the segment at that depth is
+the project namespace ID rather than a group. That ID is still a distinct bucket; with
+`association: true` only the object lookup resolves to `null`, so one response can hold several
+rows whose dimension renders as `null`.
+
+```ruby
+dimensions do
+  traversal_path :group_id, :integer, -> { sql('traversal_path') }, association: true
 end
 ```
 
@@ -1099,6 +1134,15 @@ end
 
 When a dimension is marked as an association, an object is exposed instead of the raw `*_id` field. The dimension above transforms to `field :user, Types::UserType, ...` in GraphQL with batch loading by ID.
 You can order the dimensions by the association ID using the association name without `_id` suffix (for example, `orderBy: [{ identifier: "user", direction: DESC }]`).
+Parameterized association dimensions expose their parameters as field arguments (for example, `group(depth: 2) { id }`).
+
+When you order by a parameterized dimension, pass the same `parameters` in `orderBy` that you used
+in the field selection, because the row key includes the parameter values. `group(depth: 2) { id }`
+produces the row key `group_id_2`, so pair it with
+`orderBy: [{ identifier: "group", direction: DESC, parameters: { depth: 2 } }]`. `group { id }` with
+no arguments produces the row key `group_id`, so pair it with
+`orderBy: [{ identifier: "group", direction: DESC }]`. If the parameters differ, no dimension matches
+and the query fails with `the specified identifier is not available: 'group'`.
 
 > [!note]
 > You must ensure all proper authorization checks on association GraphQL type (e.g. `authorize :read_user`).
@@ -1119,6 +1163,25 @@ dimensions do
     association: { model: User }
     # or model and GraphQL type
     # association: { model: User, graphql_type: Types::CurrentUserType }
+end
+```
+
+The `association` option also accepts a `finder` and a `preloader` key to customize how a batch of
+IDs becomes records:
+
+- `finder`: a lambda that receives the array of IDs for one batch and returns a hash of ID to
+  record. Use it when the default lookup, `model.id_in(ids).index_by(&:id)`, is not suitable, for
+  example `finder: ->(ids) { Project.where(id: ids).index_by(&:id) }`.
+- `preloader`: a class such as `Preloaders::GroupPolicyPreloader` or
+  `Preloaders::ProjectPolicyPreloader`. The framework instantiates it with `(records, current_user)`
+  and calls `execute` once per batch, after the records load and before the GraphQL type's
+  `authorize` check runs on each record. Use it when the type's policy would otherwise run one or
+  more database queries per record. It works with both the default lookup and a custom `finder`.
+
+```ruby
+dimensions do
+  traversal_path :group_id, :integer, -> { sql('traversal_path') },
+    association: { preloader: Preloaders::GroupPolicyPreloader }
 end
 ```
 

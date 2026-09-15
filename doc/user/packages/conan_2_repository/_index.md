@@ -20,9 +20,6 @@ title: Conan 2 packages in the package registry
 
 {{< /history >}}
 
-> [!flag]
-> The availability of this feature is controlled by a feature flag. For more information, see the history.
-
 Publish Conan 2 packages in your project's package registry. Then install the
 packages whenever you need to use them as a dependency.
 

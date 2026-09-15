@@ -15,8 +15,6 @@ fragment IssueNode on Issue {
   dueDate
   timeEstimate
   totalTimeSpent
-  humanTimeEstimate
-  humanTotalTimeSpent
   emailsDisabled
   confidential
   hidden

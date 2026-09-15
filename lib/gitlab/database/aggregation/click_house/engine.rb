@@ -18,7 +18,8 @@ module Gitlab
               {
                 column: DimensionDefinition,
                 date_bucket: DateBucketDimension,
-                tier: TierDimension
+                tier: TierDimension,
+                traversal_path: TraversalPathDimension
               }
             end
 

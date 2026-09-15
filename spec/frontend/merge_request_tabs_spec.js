@@ -26,7 +26,10 @@ jest.mock('~/lib/utils/webpack', () => ({
   resetServiceWorkersPublicPath: jest.fn(),
 }));
 
-jest.mock('ee_else_ce/merge_requests/ai_overview');
+jest.mock('ee_else_ce/merge_requests/ai_overview', () => ({
+  __esModule: true,
+  default: jest.fn(),
+}));
 
 jest.mock('~/lib/utils/url_utility', () => ({
   ...jest.requireActual('~/lib/utils/url_utility'),

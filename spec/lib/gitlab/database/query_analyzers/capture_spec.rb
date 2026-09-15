@@ -50,6 +50,28 @@ RSpec.describe Gitlab::Database::QueryAnalyzers::Capture, query_analyzers: false
       it 'returns true' do
         expect(analyzer.enabled?).to be true
       end
+
+      context 'when the database_capture feature flag is disabled' do
+        before do
+          stub_feature_flags(database_capture: false)
+        end
+
+        it 'returns false' do
+          expect(analyzer.enabled?).to be false
+        end
+      end
+
+      context 'when the feature flag table is not available' do
+        before do
+          allow(::Feature::FlipperFeature).to receive(:table_exists?).and_return(false)
+        end
+
+        it 'returns false without evaluating the feature flag' do
+          expect(::Feature).not_to receive(:enabled?)
+
+          expect(analyzer.enabled?).to be false
+        end
+      end
     end
 
     context 'when not running in application mode' do
@@ -57,7 +79,9 @@ RSpec.describe Gitlab::Database::QueryAnalyzers::Capture, query_analyzers: false
         allow(Gitlab::Runtime).to receive(:application?).and_return(false)
       end
 
-      it 'returns false' do
+      it 'returns false without evaluating the feature flag' do
+        expect(Gitlab::Database::Capture).not_to receive(:enabled?)
+
         expect(analyzer.enabled?).to be false
       end
     end
@@ -130,28 +154,13 @@ RSpec.describe Gitlab::Database::QueryAnalyzers::Capture, query_analyzers: false
       end
     end
 
-    context 'when feature flag is disabled' do
-      before do
-        stub_feature_flags(database_capture: false)
-      end
+    # The flag is only consulted by `.enabled?` when the analyzer is enabled,
+    # never from the per-query path.
+    it 'does not evaluate the feature flag' do
+      expect(Gitlab::Database::Capture).not_to receive(:enabled?)
+      expect(::Feature).not_to receive(:enabled?)
 
-      it 'does not add to the queue' do
-        expect(task).not_to receive(:push)
-
-        analyzer.analyze(parsed)
-      end
-    end
-
-    context 'when feature flag table is not available' do
-      before do
-        allow(::Feature).to receive(:enabled?).and_raise(PG::UndefinedTable)
-      end
-
-      it 'does not add to the queue' do
-        expect(task).not_to receive(:push)
-
-        analyzer.analyze(parsed)
-      end
+      analyzer.analyze(parsed)
     end
   end
 
@@ -164,6 +173,51 @@ RSpec.describe Gitlab::Database::QueryAnalyzers::Capture, query_analyzers: false
       expect(analyzer).to receive(:analyze)
 
       process_sql(raw, 'load')
+    end
+  end
+
+  # Regression test for https://gitlab.com/gitlab-org/gitlab/-/issues/628047:
+  # per-query flag evaluation recursed through Flipper's own gate SQL.
+  context 'with a real feature flag store', stub_feature_flags: false do
+    let(:real_connection) { ApplicationRecord.connection }
+
+    before do
+      allow(Gitlab::Database::Capture::Tasks).to receive(:[]).with('main').and_return(task)
+      allow(task).to receive(:push)
+
+      real_connection.execute(<<~SQL)
+        CREATE TABLE _test_capture_recursion (
+          id bigserial PRIMARY KEY,
+          name text
+        )
+      SQL
+    end
+
+    after do
+      real_connection.execute('DROP TABLE IF EXISTS _test_capture_recursion')
+    end
+
+    it 'captures INSERT ... RETURNING without tracking feature flag recursion errors' do
+      Feature.enable(:database_capture)
+      Gitlab::Database::QueryAnalyzer.instance.begin!([analyzer])
+
+      # Cool the caches warmed by Feature.enable so any flag evaluation during
+      # the INSERT must issue gate SQL, as in a fresh process.
+      Gitlab::ProcessMemoryCache.cache_backend.clear
+      allow(Feature).to receive(:l2_cache_backend).and_return(ActiveSupport::Cache::NullStore.new)
+      Feature.reset_flipper
+
+      tracked = []
+      allow(Gitlab::ErrorTracking).to receive(:track_exception) { |error, *| tracked << error }
+
+      expect(task).to receive(:push).with(hash_including(
+        'raw' => a_string_including("INSERT INTO _test_capture_recursion (name) VALUES ('a') RETURNING id"),
+        'returned_values' => { 'fields' => ['id'], 'values' => [[1]] }
+      ))
+
+      real_connection.execute("INSERT INTO _test_capture_recursion (name) VALUES ('a') RETURNING id")
+
+      expect(tracked).to be_empty
     end
   end
 

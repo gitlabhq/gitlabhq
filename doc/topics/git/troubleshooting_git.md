@@ -467,7 +467,7 @@ fatal: unable to access 'https://gitlab.com/group/project.git/': The requested U
 
 The failed authentication ban limits differ depending on whether you are using a
 [GitLab Self-Managed](../../rate_limits/abuse_bans.md#failed-authentication-ban-for-git-and-container-registry)
-or [GitLab.com](../../user/gitlab_com/_index.md#ip-blocks).
+or [GitLab.com](../../user/gitlab_com/rate_limits.md#ip-blocks).
 
 ### Check logs for failed authentications
 

@@ -58,7 +58,7 @@ Parameters:
 | Parameter     | Type            | Required | Description |
 | ------------- | --------------- | -------- | ----------- |
 | `action`      | string          | no       | If defined, returns events with the specified [action type](../user/profile/contributions_calendar.md#user-contribution-events). |
-| `target_type` | string          | no       | If defined, returns the specified events. Possible values: `epic`, `issue`, `merge_request`, `milestone`, `note`, `project`, `snippet`, and `user`. |
+| `target_type` | string          | no       | If defined, returns the specified events. Possible values: `design`, `issue`, `merge_request`, `milestone`, `note`, `project`, `snippet`, `user`, and `wiki`. |
 | `before`      | date (ISO 8601) | no       | If defined, returns events created before the specified date. |
 | `after`       | date (ISO 8601) | no       | If defined, returns events created after the specified date. |
 | `scope`       | string          | no       | Include all events across a user's projects. |
@@ -125,6 +125,53 @@ Example response:
 ]
 ```
 
+An event about a wiki page carries a `wiki_page` object. Events with any other target do not.
+To return only those events, filter on `target_type=wiki`.
+
+Example request:
+
+```shell
+curl --request GET \
+  --header "PRIVATE-TOKEN: <your_access_token>" \
+  --url "https://gitlab.example.com/api/v4/events?target_type=wiki&action=created"
+```
+
+Example response:
+
+```json
+[
+  {
+    "id": 3,
+    "title": null,
+    "project_id": 1,
+    "action_name": "created",
+    "target_id": 123,
+    "target_iid": null,
+    "target_type": "WikiPage::Meta",
+    "author_id": 25,
+    "target_title": "Deploy",
+    "created_at": "2017-02-09T10:44:02.113Z",
+    "author": {
+      "name": "User 3",
+      "username": "user3",
+      "id": 25,
+      "state": "active",
+      "avatar_url": "http://www.gravatar.com/avatar/97d6d9441ff85fdc730e02a6068d267b?s=80&d=identicon",
+      "web_url": "https://gitlab.example.com/user3"
+    },
+    "wiki_page": {
+      "format": "markdown",
+      "slug": "deploy",
+      "title": "Deploy",
+      "wiki_page_meta_id": 123
+    },
+    "author_username": "user3",
+    "imported": false,
+    "imported_from": "none"
+  }
+]
+```
+
 ## Retrieve contribution events for a user
 
 Retrieves the contribution events for a specified user.
@@ -145,7 +192,7 @@ Parameters:
 | ------------- | --------------- | -------- | ----------- |
 | `id`          | integer         | yes      | ID or Username of a user. |
 | `action`      | string          | no       | If defined, returns events with the specified [action type](../user/profile/contributions_calendar.md#user-contribution-events). |
-| `target_type` | string          | no       | If defined, returns the specified events. Possible values: `epic`, `issue`, `merge_request`, `milestone`, `note`, `project`, `snippet`, and `user`. |
+| `target_type` | string          | no       | If defined, returns the specified events. Possible values: `design`, `issue`, `merge_request`, `milestone`, `note`, `project`, `snippet`, `user`, and `wiki`. |
 | `before`      | date (ISO 8601) | no       | If defined, returns events created before the specified date. |
 | `after`       | date (ISO 8601) | no       | If defined, returns events created after the specified date. |
 | `sort`        | string          | no       | Direction to sort the results by creation date. Possible values: `asc`, `desc`. Default: `desc`. |
@@ -298,7 +345,7 @@ Parameters:
 | ------------- | --------------- | -------- | ----------- |
 | `project_id`  | integer or string  | yes      | ID or [URL-encoded path](rest/_index.md#namespaced-paths) of a project. |
 | `action`      | string          | no       | If defined, returns events with the specified [action type](../user/profile/contributions_calendar.md#user-contribution-events). |
-| `target_type` | string          | no       | If defined, returns the specified events. Possible values: `epic`, `issue`, `merge_request`, `milestone`, `note`, `project`, `snippet`, and `user`. |
+| `target_type` | string          | no       | If defined, returns the specified events. Possible values: `design`, `issue`, `merge_request`, `milestone`, `note`, `project`, `snippet`, `user`, and `wiki`. |
 | `before`      | date (ISO 8601) | no       | If defined, returns events created before the specified date. |
 | `after`       | date (ISO 8601) | no       | If defined, returns events created after the specified date. |
 | `sort`        | string          | no       | Direction to sort the results by creation date. Possible values: `asc`, `desc`. Default: `desc`. |

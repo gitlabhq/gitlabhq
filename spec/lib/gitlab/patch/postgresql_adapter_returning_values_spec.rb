@@ -12,7 +12,7 @@ RSpec.describe Gitlab::Patch::PostgresqlAdapterReturningValues, feature_category
   end
 
   before do
-    allow(Gitlab::Runtime).to receive(:application?).and_return(true)
+    Gitlab::Database::QueryAnalyzers::Capture.begin!
 
     connection.execute(<<~SQL)
       CREATE TABLE _test_returning_values (
@@ -23,6 +23,8 @@ RSpec.describe Gitlab::Patch::PostgresqlAdapterReturningValues, feature_category
   end
 
   after do
+    Gitlab::Database::QueryAnalyzers::Capture.end!
+
     connection.execute('DROP TABLE IF EXISTS _test_returning_values')
   end
 
@@ -57,9 +59,9 @@ RSpec.describe Gitlab::Patch::PostgresqlAdapterReturningValues, feature_category
     expect(payload[:returned_values]).to eq(fields: %w[id], values: [[1]])
   end
 
-  context 'when not running in an application context' do
+  context 'when the capture analyzer is not active on this thread' do
     before do
-      allow(Gitlab::Runtime).to receive(:application?).and_return(false)
+      Gitlab::Database::QueryAnalyzers::Capture.end!
     end
 
     it 'does not add returned_values and does not consult the feature flag' do
@@ -74,10 +76,19 @@ RSpec.describe Gitlab::Patch::PostgresqlAdapterReturningValues, feature_category
 
   context 'when the database_capture feature flag is disabled' do
     before do
+      Gitlab::Database::QueryAnalyzers::Capture.end!
+
+      allow(Gitlab::Runtime).to receive(:application?).and_return(true)
       stub_feature_flags(database_capture: false)
+
+      Gitlab::Database::QueryAnalyzer.instance.begin!([Gitlab::Database::QueryAnalyzers::Capture])
     end
 
-    it 'does not add returned_values' do
+    after do
+      Thread.current[:query_analyzer_enabled_analyzers] = []
+    end
+
+    it 'does not add returned_values because the analyzer never becomes active' do
       sql = "INSERT INTO _test_returning_values (name) VALUES ('a') RETURNING id"
 
       payload = payload_for('RETURNING id') { connection.execute(sql) }
