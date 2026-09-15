@@ -19,6 +19,7 @@ Vue.use(VueApollo);
 describe('WorkItemsSavedViewsSelectors', () => {
   let wrapper;
   let routerPushMock;
+  let routerResolveMock;
   let toastShowMock;
   let unsubscribeMutationHandler;
   let deleteMutationHandler;
@@ -126,6 +127,8 @@ describe('WorkItemsSavedViewsSelectors', () => {
     mountFn = shallowMountExtended,
   } = {}) => {
     routerPushMock = jest.fn();
+    // Hash hrefs keep jsdom from attempting a real navigation on unprevented clicks
+    routerResolveMock = jest.fn(({ params }) => ({ href: `#/views/${params.view_id}` }));
     toastShowMock = jest.fn();
     unsubscribeMutationHandler = jest.fn().mockResolvedValue(mockUnsubscribeResponse);
     deleteMutationHandler = jest.fn().mockResolvedValue(mockDeleteResponse);
@@ -163,6 +166,7 @@ describe('WorkItemsSavedViewsSelectors', () => {
         $route: routeMock,
         $router: {
           push: routerPushMock,
+          resolve: routerResolveMock,
         },
         $toast: {
           show: toastShowMock,
@@ -188,6 +192,8 @@ describe('WorkItemsSavedViewsSelectors', () => {
   const findDefaultViewSelector = () => wrapper.findByTestId('saved-views-default-view-selector');
   const findVisibleViewSelectors = () => wrapper.findAllByTestId('visible-view-selector');
   const findOverflowDropdown = () => wrapper.findByTestId('saved-views-more-toggle');
+  const findOverflowDropdownComponent = () =>
+    wrapper.findComponentByTestId('saved-views-more-toggle');
   const findUnsubscribeBtnAt = (index) =>
     findVisibleViewSelectors().at(index).find('[data-testid="unsubscribe-btn"]');
   const findDeleteBtnAt = (index) =>
@@ -237,44 +243,112 @@ describe('WorkItemsSavedViewsSelectors', () => {
       expect(findOverflowDropdown().exists()).toBe(false);
     });
 
-    describe('overflow view click', () => {
-      const clickFirstOverflowItem = async () => {
-        const firstOption = findOverflowDropdown().findComponent(GlDisclosureDropdownItem);
-        await firstOption.find('button').trigger('click');
+    describe('overflow items', () => {
+      const findFirstOverflowItem = () =>
+        findOverflowDropdownComponent().findComponent(GlDisclosureDropdownItem);
+      const findFirstOverflowLink = () => findFirstOverflowItem().find('a');
+      const clickFirstOverflowLink = (eventInit = {}) => {
+        const event = new MouseEvent('click', { bubbles: true, cancelable: true, ...eventInit });
+        // Vue 3 ignores a bubbled event stamped in the same millisecond its listener was attached,
+        // and mount and click happen in the same millisecond here
+        const dateNowSpy = jest.spyOn(Date, 'now').mockReturnValue(Date.now() + 1);
+        findFirstOverflowLink().element.dispatchEvent(event);
+        dateNowSpy.mockRestore();
+
+        return event;
       };
-
-      it('navigates to clicked overflow view', async () => {
-        createComponent({ mountFn: mountExtended });
-        await clickFirstOverflowItem();
-        await nextTick();
-
+      const expectNavigationToView3 = () => {
         expect(routerPushMock).toHaveBeenCalledWith({
           name: ROUTES.savedView,
           params: { view_id: '3' },
           query: undefined,
         });
-      });
+      };
 
-      it('calls reorder mutation after overflow view click', async () => {
+      it('renders each overflowed view as a link to the view', () => {
         createComponent({ mountFn: mountExtended });
-        await clickFirstOverflowItem();
-        await waitForPromises();
 
-        expect(reorderMutationHandler).toHaveBeenCalled();
+        expect(routerResolveMock).toHaveBeenCalledWith({
+          name: ROUTES.savedView,
+          params: { view_id: '3' },
+          query: undefined,
+        });
+        expect(findFirstOverflowLink().attributes('href')).toBe('#/views/3');
       });
 
-      it('emits error when reorder fails', async () => {
+      describe('when an overflow item is clicked', () => {
+        let clickEvent;
+
+        beforeEach(() => {
+          createComponent({ mountFn: mountExtended });
+          clickEvent = clickFirstOverflowLink();
+        });
+
+        it('prevents the browser from following the link', () => {
+          expect(clickEvent.defaultPrevented).toBe(true);
+        });
+
+        it('navigates to the clicked view', async () => {
+          await nextTick();
+
+          expectNavigationToView3();
+        });
+
+        it('calls reorder mutation', async () => {
+          await waitForPromises();
+
+          expect(reorderMutationHandler).toHaveBeenCalled();
+        });
+      });
+
+      describe('when an overflow item is activated with the keyboard', () => {
+        beforeEach(async () => {
+          createComponent({ mountFn: mountExtended });
+          await findFirstOverflowItem().trigger('keydown', { code: 'Enter' });
+        });
+
+        it('navigates to the activated view', () => {
+          expectNavigationToView3();
+        });
+      });
+
+      describe('when reorder fails after an overflow item is clicked', () => {
         const reorderError = new Error('Reorder failed');
-        createComponent({ mountFn: mountExtended });
-        reorderMutationHandler.mockRejectedValueOnce(reorderError);
-        await clickFirstOverflowItem();
-        await waitForPromises();
 
-        expect(wrapper.emitted('error')).toHaveLength(1);
-        expect(wrapper.emitted('error')[0]).toEqual([
-          reorderError,
-          'An error occurred while reordering work items.',
-        ]);
+        beforeEach(async () => {
+          createComponent({ mountFn: mountExtended });
+          reorderMutationHandler.mockRejectedValueOnce(reorderError);
+          clickFirstOverflowLink();
+          await waitForPromises();
+        });
+
+        it('emits error', () => {
+          expect(wrapper.emitted('error')).toHaveLength(1);
+          expect(wrapper.emitted('error')[0]).toEqual([
+            reorderError,
+            'An error occurred while reordering work items.',
+          ]);
+        });
+      });
+
+      describe.each`
+        description     | eventInit
+        ${'Cmd+click'}  | ${{ metaKey: true }}
+        ${'Ctrl+click'} | ${{ ctrlKey: true }}
+      `('when an overflow item is opened with $description', ({ eventInit }) => {
+        let clickEvent;
+
+        beforeEach(async () => {
+          createComponent({ mountFn: mountExtended });
+          clickEvent = clickFirstOverflowLink(eventInit);
+          await waitForPromises();
+        });
+
+        it('lets the browser open the link in a new tab', () => {
+          expect(clickEvent.defaultPrevented).toBe(false);
+          expect(routerPushMock).not.toHaveBeenCalled();
+          expect(reorderMutationHandler).not.toHaveBeenCalled();
+        });
       });
     });
   });

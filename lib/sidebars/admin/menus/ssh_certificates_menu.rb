@@ -11,7 +11,7 @@ module Sidebars # rubocop:disable Gitlab/BoundedContexts -- Sidebar menus follow
 
         override :title
         def title
-          _('SSH certificate authorities')
+          s_('SshCertificates|Certificate authorities')
         end
 
         override :sprite_icon

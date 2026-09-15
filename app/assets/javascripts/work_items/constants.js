@@ -55,7 +55,6 @@ export const WIDGET_TYPE_EMAIL_PARTICIPANTS = 'EMAIL_PARTICIPANTS';
 export const WIDGET_TYPE_CUSTOM_FIELDS = 'CUSTOM_FIELDS';
 export const WIDGET_TYPE_VULNERABILITIES = 'VULNERABILITIES';
 export const WIDGET_TYPE_AGENT_PLAN = 'AGENT_PLAN';
-export const WIDGET_TYPE_DECISION_LOG = 'DECISION_LOG';
 
 // Maps a `workItem.features` key to its widget `type`
 // for widgets shown as child/linked item metadata.

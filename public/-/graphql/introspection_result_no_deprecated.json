@@ -219802,12 +219802,6 @@
               "description": "Callout feature name for feature_library_shimmer_seen.",
               "isDeprecated": false,
               "deprecationReason": null
-            },
-            {
-              "name": "WORK_ITEM_DECISION_LOG_POPOVER",
-              "description": "Callout feature name for work_item_decision_log_popover.",
-              "isDeprecated": false,
-              "deprecationReason": null
             }
           ],
           "possibleTypes": null

@@ -1,0 +1,55 @@
+# Providers of external content that can be embedded in GitLab Flavored Markdown.
+# See lib/gitlab/markdown/iframe_providers.rb.
+#
+# Each provider is keyed by its ID, which administrators use to enable it.
+#
+#   name:               Provider name shown to users and administrators (required).
+#   matches:            URL patterns accepted as input; a URL is accepted if any pattern
+#                       matches (required, at least one).
+#     host:             Exact hostname (required).
+#     path:             Path prefix; a `{name}` segment matches any single non-empty segment
+#                       and captures it.  Trailing segments beyond the prefix are ignored
+#                       (required).
+#     params:           Query parameter names that must be present; their values are
+#                       captured (optional).
+#   requires:           Permitted values per capture name, applied to every match
+#                       (optional).
+#   src:                HTTPS URL the content is embedded from; `{name}` placeholders are
+#                       replaced with the percent-encoded capture.  Every placeholder must be
+#                       captured by every match (required).
+#   sandbox:            iframe sandbox flags; only flags listed in
+#                       Gitlab::Markdown::IframeProviders::PERMITTED_SANDBOX_FLAGS are
+#                       accepted (required, may be empty).
+#   require_activation: Whether users must click to load the content (optional, default
+#                       true).
+#
+# Providers are evaluated in order; the first match wins.
+#
+# Changes to this file require AppSec review.  Do not add providers for which GitLab ships a
+# dedicated integration (for example, draw.io).
+
+youtube:
+  name: YouTube
+  matches:
+    - host: www.youtube.com
+      path: /embed/{v}
+    - host: www.youtube.com
+      path: /watch
+      params: [v]
+    - host: youtu.be
+      path: /{v}
+  src: https://www.youtube.com/embed/{v}
+  sandbox: [allow-scripts, allow-same-origin, allow-popups, allow-popups-to-escape-sandbox]
+  require_activation: false
+
+figma:
+  name: Figma
+  matches:
+    - host: embed.figma.com
+      path: /{type}/{id}
+    - host: www.figma.com
+      path: /{type}/{id}
+  requires:
+    type: [proto, design, board, file, slides]
+  src: https://embed.figma.com/{type}/{id}?embed-host=gitlab
+  sandbox: [allow-scripts, allow-same-origin, allow-popups]

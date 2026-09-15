@@ -5,17 +5,19 @@ require 'spec_helper'
 RSpec.describe Note, ResolvableNote, feature_category: :code_review_workflow do
   let_it_be(:project) { create(:project, :repository) }
   let_it_be(:merge_request) { create(:merge_request, source_project: project) }
+  let_it_be(:current_user) { create(:user) }
 
   subject { create(:discussion_note_on_merge_request, noteable: merge_request, project: project) }
 
   context 'resolvability scopes' do
-    let_it_be(:note1) { create(:note, project: project) }
+    let_it_be(:issue) { create(:issue, project: project) }
+    let_it_be(:note1) { create(:note, project: project, noteable: issue) }
     let_it_be(:note2) { create(:diff_note_on_commit, project: project) }
     let_it_be(:note3) { create(:diff_note_on_merge_request, :resolved, noteable: merge_request, project: project) }
     let_it_be(:note4) { create(:discussion_note_on_merge_request, noteable: merge_request, project: project) }
-    let_it_be(:note5) { create(:discussion_note_on_issue, project: project) }
+    let_it_be(:note5) { create(:discussion_note_on_issue, noteable: issue, project: project) }
     let_it_be(:note6) { create(:discussion_note_on_merge_request, :system, noteable: merge_request, project: project) }
-    let_it_be(:note7) { create(:discussion_note_on_issue, :resolved, project: project) }
+    let_it_be(:note7) { create(:discussion_note_on_issue, :resolved, noteable: issue, project: project) }
 
     describe '.potentially_resolvable' do
       it 'includes diff and discussion notes on issues and merge requests' do
@@ -52,7 +54,6 @@ RSpec.describe Note, ResolvableNote, feature_category: :code_review_workflow do
   end
 
   describe ".resolve!" do
-    let(:current_user) { create(:user) }
     let!(:commit_note) { create(:diff_note_on_commit, project: project) }
     let!(:resolved_note) { create(:discussion_note_on_merge_request, :resolved, noteable: merge_request, project: project) }
     let!(:unresolved_note) { create(:discussion_note_on_merge_request, noteable: merge_request, project: project) }
@@ -164,8 +165,6 @@ RSpec.describe Note, ResolvableNote, feature_category: :code_review_workflow do
   end
 
   describe "#resolved?" do
-    let(:current_user) { create(:user) }
-
     context 'when not resolvable' do
       before do
         subject.resolve!(current_user)
@@ -198,8 +197,6 @@ RSpec.describe Note, ResolvableNote, feature_category: :code_review_workflow do
   end
 
   describe "#resolve!" do
-    let(:current_user) { create(:user) }
-
     context "when not resolvable" do
       before do
         allow(subject).to receive(:resolvable?).and_return(false)
@@ -234,7 +231,7 @@ RSpec.describe Note, ResolvableNote, feature_category: :code_review_workflow do
       end
 
       context "when already resolved" do
-        let(:user) { create(:user) }
+        let_it_be(:user) { create(:user) }
 
         before do
           subject.resolve!(user)
@@ -312,7 +309,7 @@ RSpec.describe Note, ResolvableNote, feature_category: :code_review_workflow do
       end
 
       context "when resolved" do
-        let(:user) { create(:user) }
+        let_it_be(:user) { create(:user) }
 
         before do
           subject.resolve!(user)

@@ -190,5 +190,50 @@ RSpec.describe BulkImports::Groups::Loaders::GroupLoader, feature_category: :imp
         include_examples 'does not create new group'
       end
     end
+
+    describe 'internal event tracking on successful group creation' do
+      let(:bulk_import) { create(:bulk_import, :with_configuration, user: user, organization: organization) }
+      let(:entity) do
+        create(:bulk_import_entity, :group_entity, bulk_import: bulk_import, destination_namespace: destination_group.full_path)
+      end
+
+      let(:tracker) { create(:bulk_import_tracker, entity: entity) }
+      let(:context) { BulkImports::Pipeline::Context.new(tracker) }
+      let(:created_group) { create(:group, organization: organization) }
+
+      before do
+        allow(Ability).to receive(:allowed?).with(user, :create_group).and_return(true)
+        allow(::Groups::CreateService).to receive(:new).and_return(service_double)
+        allow(service_double).to receive(:execute).and_return(
+          ServiceResponse.success(payload: { group: created_group })
+        )
+      end
+
+      it 'tracks start_group_import for Direct Transfer, labeled as gitlab_migration' do
+        expect { subject.load(context, data) }
+          .to trigger_internal_events('start_group_import')
+          .with(
+            user: user,
+            namespace: created_group,
+            additional_properties: { label: 'gitlab_migration', property: entity.hashed_import_source }
+          )
+      end
+
+      context 'when the bulk_import is offline' do
+        let(:bulk_import) do
+          create(:bulk_import, :with_offline_configuration, user: user, organization: organization)
+        end
+
+        it 'tracks start_group_import labeled as offline_transfer' do
+          expect { subject.load(context, data) }
+            .to trigger_internal_events('start_group_import')
+            .with(
+              user: user,
+              namespace: created_group,
+              additional_properties: { label: 'offline_transfer', property: entity.hashed_import_source }
+            )
+        end
+      end
+    end
   end
 end

@@ -8556,6 +8556,33 @@ Fields:
 | <a id="mutation-createepic-epic"></a>`epic` | [`Epic`](#epic) | Created epic. |
 | <a id="mutation-createepic-errors"></a>`errors` | [`[String!]!`](#string) | Errors encountered during the mutation. |
 
+### `Mutation.createFunctionalVerificationWorkflow`
+
+{{< details >}}
+
+- Introduced in GitLab 19.5.
+- Status: Experiment.
+
+{{< /details >}}
+
+Input type: `CreateFunctionalVerificationWorkflowInput`
+
+Arguments:
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="mutation-createfunctionalverificationworkflow-checktype"></a>`checkType` | [`FunctionalVerificationCheckType!`](#functionalverificationchecktype) | Type of functional verification check to run. |
+| <a id="mutation-createfunctionalverificationworkflow-clientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
+| <a id="mutation-createfunctionalverificationworkflow-fullpath"></a>`fullPath` | [`ID!`](#id) | Full path of the namespace to run the verification check against. |
+
+Fields:
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="mutation-createfunctionalverificationworkflow-clientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
+| <a id="mutation-createfunctionalverificationworkflow-errors"></a>`errors` | [`[String!]!`](#string) | Errors encountered during the mutation. |
+| <a id="mutation-createfunctionalverificationworkflow-workflowid"></a>`workflowId` | [`AiDuoWorkflowsWorkflowID`](#aiduoworkflowsworkflowid) | Global ID of the workflow created for the run. |
+
 ### `Mutation.createImageDiffNote`
 
 Input type: `CreateImageDiffNoteInput`
@@ -44201,9 +44228,12 @@ Fields:
 
 | Name | Type | Description |
 | ---- | ---- | ----------- |
+| <a id="duoworkflowsaggregationresponse-closedmrcount"></a>`closedMrCount` | [`DuoWorkflowsAggregationResponseClosedMrCountMetrics`](#duoworkflowsaggregationresponseclosedmrcountmetrics) | Aggregated `closed_mr_count` metrics. |
+| <a id="duoworkflowsaggregationresponse-createdmrcount"></a>`createdMrCount` | [`DuoWorkflowsAggregationResponseCreatedMrCountMetrics`](#duoworkflowsaggregationresponsecreatedmrcountmetrics) | Aggregated `created_mr_count` metrics. |
 | <a id="duoworkflowsaggregationresponse-creditsused"></a>`creditsUsed` | [`DuoWorkflowsAggregationResponseCreditsUsedMetrics`](#duoworkflowsaggregationresponsecreditsusedmetrics) | Aggregated `credits_used` metrics. |
 | <a id="duoworkflowsaggregationresponse-dimensions"></a>`dimensions` | [`DuoWorkflowsAggregationResponseDimensions`](#duoworkflowsaggregationresponsedimensions) | Aggregation dimensions. Every selected dimension will be used for aggregation. |
 | <a id="duoworkflowsaggregationresponse-flowtypescount"></a>`flowTypesCount` | [`Int`](#int) | Number of unique flow types. |
+| <a id="duoworkflowsaggregationresponse-mergedmrcount"></a>`mergedMrCount` | [`DuoWorkflowsAggregationResponseMergedMrCountMetrics`](#duoworkflowsaggregationresponsemergedmrcountmetrics) | Aggregated `merged_mr_count` metrics. |
 | <a id="duoworkflowsaggregationresponse-projectscount"></a>`projectsCount` | [`Int`](#int) | Number of unique projects. |
 | <a id="duoworkflowsaggregationresponse-userscount"></a>`usersCount` | [`Int`](#int) | Number of unique users. |
 
@@ -44220,6 +44250,60 @@ Arguments:
 | Name | Type | Description |
 | ---- | ---- | ----------- |
 | <a id="duoworkflowsaggregationresponse-totalcount-status"></a>`status` | [`[String!]`](#string) | Only count flows with the given statuses (created, running, finished, failed, ...). |
+
+### `DuoWorkflowsAggregationResponseClosedMrCountMetrics`
+
+Aggregated `closed_mr_count` metrics for `DuoWorkflows` aggregation engine.
+
+Fields:
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="duoworkflowsaggregationresponseclosedmrcountmetrics-max"></a>`max` | [`Int`](#int) | Maximum number of merge requests created by the flow that were later closed without merging. |
+| <a id="duoworkflowsaggregationresponseclosedmrcountmetrics-mean"></a>`mean` | [`Float`](#float) | Mean number of merge requests created by the flow that were later closed without merging. |
+| <a id="duoworkflowsaggregationresponseclosedmrcountmetrics-min"></a>`min` | [`Int`](#int) | Minimum number of merge requests created by the flow that were later closed without merging. |
+| <a id="duoworkflowsaggregationresponseclosedmrcountmetrics-sum"></a>`sum` | [`Int`](#int) | Sum of number of merge requests created by the flow that were later closed without merging. |
+
+#### Fields with arguments
+
+##### `DuoWorkflowsAggregationResponseClosedMrCountMetrics.quantile`
+
+Quantile of number of merge requests created by the flow that were later closed without merging.
+
+Returns [`Float`](#float).
+
+Arguments:
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="duoworkflowsaggregationresponseclosedmrcountmetrics-quantile-quantile"></a>`quantile` | [`Float`](#float) |  |
+
+### `DuoWorkflowsAggregationResponseCreatedMrCountMetrics`
+
+Aggregated `created_mr_count` metrics for `DuoWorkflows` aggregation engine.
+
+Fields:
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="duoworkflowsaggregationresponsecreatedmrcountmetrics-max"></a>`max` | [`Int`](#int) | Maximum number of merge requests created by the flow. |
+| <a id="duoworkflowsaggregationresponsecreatedmrcountmetrics-mean"></a>`mean` | [`Float`](#float) | Mean number of merge requests created by the flow. |
+| <a id="duoworkflowsaggregationresponsecreatedmrcountmetrics-min"></a>`min` | [`Int`](#int) | Minimum number of merge requests created by the flow. |
+| <a id="duoworkflowsaggregationresponsecreatedmrcountmetrics-sum"></a>`sum` | [`Int`](#int) | Sum of number of merge requests created by the flow. |
+
+#### Fields with arguments
+
+##### `DuoWorkflowsAggregationResponseCreatedMrCountMetrics.quantile`
+
+Quantile of number of merge requests created by the flow.
+
+Returns [`Float`](#float).
+
+Arguments:
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="duoworkflowsaggregationresponsecreatedmrcountmetrics-quantile-quantile"></a>`quantile` | [`Float`](#float) |  |
 
 ### `DuoWorkflowsAggregationResponseCreditsUsedMetrics`
 
@@ -44288,6 +44372,33 @@ Arguments:
 | Name | Type | Description |
 | ---- | ---- | ----------- |
 | <a id="duoworkflowsaggregationresponsedimensions-usertier-thresholds"></a>`thresholds` | [`[Int!]`](#int) | Ascending tier boundaries. Values below the first threshold map to `tier_0`, values at or above the last threshold map to the highest tier. |
+
+### `DuoWorkflowsAggregationResponseMergedMrCountMetrics`
+
+Aggregated `merged_mr_count` metrics for `DuoWorkflows` aggregation engine.
+
+Fields:
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="duoworkflowsaggregationresponsemergedmrcountmetrics-max"></a>`max` | [`Int`](#int) | Maximum number of merge requests created by the flow that were later merged. |
+| <a id="duoworkflowsaggregationresponsemergedmrcountmetrics-mean"></a>`mean` | [`Float`](#float) | Mean number of merge requests created by the flow that were later merged. |
+| <a id="duoworkflowsaggregationresponsemergedmrcountmetrics-min"></a>`min` | [`Int`](#int) | Minimum number of merge requests created by the flow that were later merged. |
+| <a id="duoworkflowsaggregationresponsemergedmrcountmetrics-sum"></a>`sum` | [`Int`](#int) | Sum of number of merge requests created by the flow that were later merged. |
+
+#### Fields with arguments
+
+##### `DuoWorkflowsAggregationResponseMergedMrCountMetrics.quantile`
+
+Quantile of number of merge requests created by the flow that were later merged.
+
+Returns [`Float`](#float).
+
+Arguments:
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="duoworkflowsaggregationresponsemergedmrcountmetrics-quantile-quantile"></a>`quantile` | [`Float`](#float) |  |
 
 ### `DuoWorkflowsAggregationScope`
 
@@ -70416,6 +70527,14 @@ Values for Duo Agent Platform flow type sorting.
 | <a id="flowtypesort-users_count_asc"></a>`USERS_COUNT_ASC` | Sort by unique users count in ascending order. |
 | <a id="flowtypesort-users_count_desc"></a>`USERS_COUNT_DESC` | Sort by unique users count in descending order. |
 
+### `FunctionalVerificationCheckType`
+
+Type of functional verification check.
+
+| Value | Description |
+| ----- | ----------- |
+| <a id="functionalverificationchecktype-agentic_chat"></a>`AGENTIC_CHAT` | Agentic Chat check. |
+
 ### `GeoRegistriesBulkAction`
 
 Action to trigger on multiple Geo registries.
@@ -73288,7 +73407,6 @@ Name of the feature that the callout is for.
 | <a id="usercalloutfeaturenameenum-vulnerability_report_limited_experience"></a>`VULNERABILITY_REPORT_LIMITED_EXPERIENCE` | Callout feature name for vulnerability_report_limited_experience. |
 | <a id="usercalloutfeaturenameenum-web_ide_alert_dismissed"></a>`WEB_IDE_ALERT_DISMISSED` | Callout feature name for web_ide_alert_dismissed. |
 | <a id="usercalloutfeaturenameenum-web_ide_ci_environments_guidance"></a>`WEB_IDE_CI_ENVIRONMENTS_GUIDANCE` | Callout feature name for web_ide_ci_environments_guidance. |
-| <a id="usercalloutfeaturenameenum-work_item_decision_log_popover"></a>`WORK_ITEM_DECISION_LOG_POPOVER` | Callout feature name for work_item_decision_log_popover. |
 | <a id="usercalloutfeaturenameenum-work_item_epic_feedback"></a>`WORK_ITEM_EPIC_FEEDBACK` | Callout feature name for work_item_epic_feedback. |
 
 ### `UserEventFilter`

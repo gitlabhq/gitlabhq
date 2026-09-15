@@ -5407,7 +5407,6 @@
 - './spec/models/ci/trigger_spec.rb'
 - './spec/models/ci/unit_test_failure_spec.rb'
 - './spec/models/ci/unit_test_spec.rb'
-- './spec/models/ci/variable_spec.rb'
 - './spec/models/commit_collection_spec.rb'
 - './spec/models/commit_range_spec.rb'
 - './spec/models/commit_signatures/gpg_signature_spec.rb'

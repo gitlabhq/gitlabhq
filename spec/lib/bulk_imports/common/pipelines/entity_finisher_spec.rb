@@ -64,6 +64,16 @@ RSpec.describe BulkImports::Common::Pipelines::EntityFinisher, feature_category:
       expect { described_class.new(context).run }
         .not_to trigger_internal_events('finish_project_import')
     end
+
+    it 'does not track the finish_group_import internal event' do
+      entity = create(:bulk_import_entity, :group_entity, :started)
+      create(:bulk_import_tracker, :failed, entity: entity)
+      pipeline_tracker = create(:bulk_import_tracker, entity: entity, relation: described_class)
+      context = BulkImports::Pipeline::Context.new(pipeline_tracker)
+
+      expect { described_class.new(context).run }
+        .not_to trigger_internal_events('finish_group_import')
+    end
   end
 
   context 'when entity finishes successfully' do
@@ -80,7 +90,7 @@ RSpec.describe BulkImports::Common::Pipelines::EntityFinisher, feature_category:
           project: entity.project,
           user: entity.bulk_import.user,
           namespace: entity.project.namespace,
-          additional_properties: { label: 'gitlab_project_migration', property: entity.hashed_import_source }
+          additional_properties: { label: 'gitlab_migration', property: entity.hashed_import_source }
         )
     end
 
@@ -108,6 +118,53 @@ RSpec.describe BulkImports::Common::Pipelines::EntityFinisher, feature_category:
           project: entity.project,
           user: entity.bulk_import.user,
           namespace: entity.project.namespace,
+          additional_properties: { label: 'offline_transfer', property: entity.hashed_import_source }
+        )
+    end
+
+    it 'tracks the finish_group_import internal event for group entities' do
+      group = create(:group)
+      entity = create(
+        :bulk_import_entity, :group_entity, :started, group: group,
+        bulk_import: create(:bulk_import, :with_configuration)
+      )
+      pipeline_tracker = create(:bulk_import_tracker, entity: entity)
+      context = BulkImports::Pipeline::Context.new(pipeline_tracker)
+
+      expect { described_class.new(context).run }
+        .to trigger_internal_events('finish_group_import')
+        .with(
+          user: entity.bulk_import.user,
+          namespace: group,
+          additional_properties: { label: 'gitlab_migration', property: entity.hashed_import_source }
+        )
+    end
+
+    it 'does not track the finish_group_import event for project entities' do
+      entity = create(:bulk_import_entity, :project_entity, :started,
+        project: create(:project, import_type: 'gitlab_project_migration'),
+        bulk_import: create(:bulk_import, :with_configuration))
+      pipeline_tracker = create(:bulk_import_tracker, entity: entity)
+      context = BulkImports::Pipeline::Context.new(pipeline_tracker)
+
+      expect { described_class.new(context).run }
+        .not_to trigger_internal_events('finish_group_import')
+    end
+
+    it 'tracks the finish_group_import internal event for offline group entities, labeled as offline_transfer' do
+      group = create(:group)
+      entity = create(
+        :bulk_import_entity, :group_entity, :started, group: group,
+        bulk_import: create(:bulk_import, :with_offline_configuration)
+      )
+      pipeline_tracker = create(:bulk_import_tracker, entity: entity)
+      context = BulkImports::Pipeline::Context.new(pipeline_tracker)
+
+      expect { described_class.new(context).run }
+        .to trigger_internal_events('finish_group_import')
+        .with(
+          user: entity.bulk_import.user,
+          namespace: group,
           additional_properties: { label: 'offline_transfer', property: entity.hashed_import_source }
         )
     end

@@ -195,6 +195,7 @@ Audit event types belong to the following product categories.
 
 | Type name | Event triggered when | Saved to database | Introduced in | Scope |
 |:----------|:---------------------|:------------------|:--------------|:------|
+| [`auto_duo_code_review_on_push_enabled_updated`](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/254521) | GitLab Duo automatic code review on push setting on group changed | {{< yes >}} | GitLab [19.5](https://gitlab.com/groups/gitlab-org/-/work_items/21620) | Group |
 | [`merge_request_approval_operation`](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/92983) | A merge request is approved | {{< no >}} | GitLab [15.3](https://gitlab.com/gitlab-org/gitlab/-/issues/10869) | Project |
 | [`merge_request_closed_by_project_bot`](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/120927) | A merge request is closed using a project access token | {{< yes >}} | GitLab [16.1](https://gitlab.com/gitlab-org/gitlab/-/issues/323299) | Project |
 | [`merge_request_created_by_project_bot`](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/120927) | A merge request is created using a project access token | {{< yes >}} | GitLab [16.1](https://gitlab.com/gitlab-org/gitlab/-/issues/323299) | Project |

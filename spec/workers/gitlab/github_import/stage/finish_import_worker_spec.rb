@@ -40,6 +40,18 @@ RSpec.describe Gitlab::GithubImport::Stage::FinishImportWorker, feature_category
       worker.import(double(:client), project)
     end
 
+    context 'when the github_continuous_import feature flag is disabled' do
+      before do
+        stub_feature_flags(github_continuous_import: false)
+      end
+
+      it 'still marks the import as finished' do
+        expect(project).to receive(:after_import)
+
+        worker.import(double(:client), project)
+      end
+    end
+
     context 'when the reference store is empty' do
       it 'checks the reference store and does not push placeholder references' do
         allow(described_class).to receive(:perform_in)

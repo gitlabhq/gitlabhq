@@ -8702,6 +8702,30 @@ RSpec.describe Project, factory_default: :keep, feature_category: :groups_and_pr
       expect { subject.find_or_initialize_integrations }.not_to exceed_query_limit(control)
     end
 
+    it 'does not issue extra queries when the deprecated Slack integration is hidden' do
+      stub_application_setting(slack_app_enabled: false)
+      visible = described_class.find(subject.id)
+      control = ActiveRecord::QueryRecorder.new { visible.find_or_initialize_integrations }
+
+      stub_application_setting(slack_app_enabled: true)
+      hidden = described_class.find(subject.id)
+
+      expect { hidden.find_or_initialize_integrations }.not_to exceed_query_limit(control)
+    end
+
+    context 'when the deprecated Slack notifications integration is hidden' do
+      before do
+        stub_application_setting(slack_app_enabled: true)
+      end
+
+      it 'omits it from the list but keeps the replacement' do
+        titles = subject.find_or_initialize_integrations.map(&:to_param)
+
+        expect(titles).not_to include('slack')
+        expect(titles).to include('gitlab_slack_application')
+      end
+    end
+
     context 'with disabled integrations' do
       before do
         allow(Integration).to receive(:available_integration_names).and_return(%w[zentao pushover teamcity])
@@ -8729,6 +8753,71 @@ RSpec.describe Project, factory_default: :keep, feature_category: :groups_and_pr
     subject { build(:project).disabled_integrations }
 
     it { is_expected.to include('zentao') }
+
+    it 'does not hide the deprecated Slack integration, which would break its API endpoints' do
+      stub_application_setting(slack_app_enabled: true)
+
+      is_expected.not_to include('slack')
+    end
+  end
+
+  describe '#hidden_integrations' do
+    let_it_be(:project) { create(:project) }
+
+    # Refetched per example: Project memoizes @integration_instances, so a reused
+    # let_it_be object would report a stale instance-level lookup.
+    subject(:hidden_integrations) { described_class.find(project.id).hidden_integrations }
+
+    context 'when the GitLab for Slack app is available as a replacement' do
+      before do
+        stub_application_setting(slack_app_enabled: true)
+      end
+
+      it { is_expected.to include('slack') }
+      it { is_expected.not_to include('gitlab_slack_application') }
+
+      context 'when the project already has a Slack notifications integration' do
+        before do
+          create(:integrations_slack, project: project, active: false)
+        end
+
+        it { is_expected.not_to include('slack') }
+      end
+
+      context 'when an instance-level Slack notifications integration exists' do
+        before do
+          create(:integrations_slack, :instance)
+        end
+
+        it { is_expected.not_to include('slack') }
+      end
+
+      # Group-level integrations reach projects as real rows, created by
+      # Projects::CreateService or PropagateIntegrationProjectWorker. Until that
+      # propagation lands the project has no row of its own and is hidden. Pinned here
+      # rather than endorsed. Built inline: a nested let_it_be override of :project
+      # breaks test-prof transaction reuse and re-creates fixtures for the whole file.
+      it 'hides it for a group-level integration until propagation creates the project row',
+        :aggregate_failures do
+        group = create(:group)
+        group_project = create(:project, group: group)
+        create(:integrations_slack, :group, group: group)
+
+        expect(group_project.hidden_integrations).to include('slack')
+
+        create(:integrations_slack, project: group_project)
+
+        expect(described_class.find(group_project.id).hidden_integrations).not_to include('slack')
+      end
+    end
+
+    context 'when the GitLab for Slack app is not available as a replacement' do
+      before do
+        stub_application_setting(slack_app_enabled: false)
+      end
+
+      it { is_expected.to be_empty }
+    end
   end
 
   describe '#find_or_initialize_integration' do
@@ -8750,6 +8839,14 @@ RSpec.describe Project, factory_default: :keep, feature_category: :groups_and_pr
 
     it 'returns nil if integration does not exist' do
       expect(subject.find_or_initialize_integration('non-existing')).to be_nil
+    end
+
+    it 'still resolves the deprecated Slack integration while it is hidden from the list' do
+      stub_application_setting(slack_app_enabled: true)
+      project = build(:project)
+
+      expect(project.hidden_integrations).to include('slack')
+      expect(project.find_or_initialize_integration('slack')).to be_a(Integrations::Slack)
     end
 
     context 'with an existing integration' do

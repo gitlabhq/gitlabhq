@@ -25,6 +25,9 @@ export default {
     UserFeedback: defineAsyncComponent(
       () => import('ee_component/ai/components/user_feedback.vue'),
     ),
+    DuoCodeReviewFeedbackLink: defineAsyncComponent(
+      () => import('ee_component/notes/components/duo_code_review_feedback_link.vue'),
+    ),
   },
   directives: {
     SafeHtml,
@@ -238,6 +241,10 @@ export default {
       :feedback-link-text="__('Rate the review')"
       class="gl-mt-3 gl-inline-block !gl-pt-0"
       data-testid="code-review-feedback"
+    />
+    <duo-code-review-feedback-link
+      v-if="isDuoFirstReviewComment && !isDiffNote"
+      data-testid="code-review-feedback-link"
     />
     <note-form
       v-if="isEditing"

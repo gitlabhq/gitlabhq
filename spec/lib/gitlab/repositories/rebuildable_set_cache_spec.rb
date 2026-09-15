@@ -1384,12 +1384,33 @@ RSpec.describe Gitlab::Repositories::RebuildableSetCache, :clean_gitlab_redis_re
 
         expect { cache.fetch(:branch_names) { block_value } }
           .to change { operation_metric_value('fetch', 'hit') }.by(1)
-          .and not_change { operation_metric_value('fetch', 'miss') }
+          .and not_change { operation_metric_value('fetch', 'miss_untrusted') }
+          .and not_change { operation_metric_value('fetch', 'miss_absent') }
       end
 
-      it 'records a miss and the nested rebuild after fallback succeeds' do
+      it 'records an untrusted miss and the nested rebuild after fallback succeeds' do
+        cache.write(:branch_names, %w[stale_branch])
+        Gitlab::Redis::RepositoryCache.with do |redis|
+          redis.del(cache.trust_key(:branch_names))
+        end
+
         expect { cache.fetch(:branch_names) { block_value } }
-          .to change { operation_metric_value('fetch', 'miss') }.by(1)
+          .to change { operation_metric_value('fetch', 'miss_untrusted') }.by(1)
+          .and not_change { operation_metric_value('fetch', 'miss_absent') }
+          .and change { operation_metric_value('rebuild', 'success') }.by(1)
+      end
+
+      it 'records an absent miss and the nested rebuild after fallback succeeds' do
+        expect { cache.fetch(:branch_names) { block_value } }
+          .to change { operation_metric_value('fetch', 'miss_absent') }.by(1)
+          .and not_change { operation_metric_value('fetch', 'miss_untrusted') }
+          .and change { operation_metric_value('rebuild', 'success') }.by(1)
+      end
+
+      it 'records an untrusted miss when an absent set rebuilds to an empty result' do
+        expect { cache.fetch(:branch_names) { [] } }
+          .to change { operation_metric_value('fetch', 'miss_untrusted') }.by(1)
+          .and not_change { operation_metric_value('fetch', 'miss_absent') }
           .and change { operation_metric_value('rebuild', 'success') }.by(1)
       end
 
@@ -1398,7 +1419,8 @@ RSpec.describe Gitlab::Repositories::RebuildableSetCache, :clean_gitlab_redis_re
           expect { cache.fetch(:branch_names) { raise StandardError, 'failure' } }
             .to raise_error(StandardError, 'failure')
         end.to change { operation_metric_value('fetch', 'error') }.by(1)
-          .and not_change { operation_metric_value('fetch', 'miss') }
+          .and not_change { operation_metric_value('fetch', 'miss_untrusted') }
+          .and not_change { operation_metric_value('fetch', 'miss_absent') }
       end
     end
   end
@@ -1561,13 +1583,36 @@ RSpec.describe Gitlab::Repositories::RebuildableSetCache, :clean_gitlab_redis_re
         result = nil
         expect { result = cache.search(:branch_names, '*') { [] } }
           .to change { operation_metric_value('search', 'hit') }.by(1)
+          .and not_change { operation_metric_value('search', 'miss_untrusted') }
+          .and not_change { operation_metric_value('search', 'miss_absent') }
 
         expect(result).to be_an(Enumerator)
       end
 
-      it 'records miss only after rebuild and enumerator construction succeed' do
+      it 'records an untrusted miss after rebuilding and constructing the enumerator' do
+        cache.write(:branch_names, %w[stale_branch])
+        Gitlab::Redis::RepositoryCache.with do |redis|
+          redis.del(cache.trust_key(:branch_names))
+        end
+
         expect { cache.search(:branch_names, '*') { %w[main] } }
-          .to change { operation_metric_value('search', 'miss') }.by(1)
+          .to change { operation_metric_value('search', 'miss_untrusted') }.by(1)
+          .and not_change { operation_metric_value('search', 'miss_absent') }
+          .and change { operation_metric_value('rebuild', 'success') }.by(1)
+      end
+
+      it 'records an absent miss after rebuilding and constructing the enumerator' do
+        expect { cache.search(:branch_names, '*') { %w[main] } }
+          .to change { operation_metric_value('search', 'miss_absent') }.by(1)
+          .and not_change { operation_metric_value('search', 'miss_untrusted') }
+          .and change { operation_metric_value('rebuild', 'success') }.by(1)
+      end
+
+      it 'records an untrusted miss when an absent set rebuilds to an empty result' do
+        expect { cache.search(:branch_names, '*') { [] } }
+          .to change { operation_metric_value('search', 'miss_untrusted') }.by(1)
+          .and not_change { operation_metric_value('search', 'miss_absent') }
+          .and change { operation_metric_value('rebuild', 'success') }.by(1)
       end
 
       it 'records only error when fallback raises' do
@@ -1575,7 +1620,8 @@ RSpec.describe Gitlab::Repositories::RebuildableSetCache, :clean_gitlab_redis_re
           expect { cache.search(:branch_names, '*') { raise StandardError, 'failure' } }
             .to raise_error(StandardError, 'failure')
         end.to change { operation_metric_value('search', 'error') }.by(1)
-          .and not_change { operation_metric_value('search', 'miss') }
+          .and not_change { operation_metric_value('search', 'miss_untrusted') }
+          .and not_change { operation_metric_value('search', 'miss_absent') }
       end
     end
   end
@@ -1644,17 +1690,32 @@ RSpec.describe Gitlab::Repositories::RebuildableSetCache, :clean_gitlab_redis_re
         expect do
           expect(cache.try_include?(:branch_names, 'main')).to eq([true, true])
         end.to change { operation_metric_value('include', 'hit') }.by(1)
-          .and not_change { operation_metric_value('include', 'miss') }
+          .and not_change { operation_metric_value('include', 'miss_untrusted') }
+          .and not_change { operation_metric_value('include', 'miss_absent') }
         expect do
           expect(cache.try_include?(:branch_names, 'missing')).to eq([false, true])
         end.to change { operation_metric_value('include', 'hit') }.by(1)
-          .and not_change { operation_metric_value('include', 'miss') }
+          .and not_change { operation_metric_value('include', 'miss_untrusted') }
+          .and not_change { operation_metric_value('include', 'miss_absent') }
       end
 
-      it 'records miss and preserves the untrusted return contract' do
+      it 'records an untrusted miss by set existence and preserves the untrusted return contract' do
+        cache.write(:branch_names, %w[main])
+        Gitlab::Redis::RepositoryCache.with do |redis|
+          redis.del(cache.trust_key(:branch_names))
+        end
+
         expect do
           expect(cache.try_include?(:branch_names, 'main')).to eq([false, false])
-        end.to change { operation_metric_value('include', 'miss') }.by(1)
+        end.to change { operation_metric_value('include', 'miss_untrusted') }.by(1)
+          .and not_change { operation_metric_value('include', 'miss_absent') }
+      end
+
+      it 'records an absent miss by set existence and preserves the untrusted return contract' do
+        expect do
+          expect(cache.try_include?(:branch_names, 'main')).to eq([false, false])
+        end.to change { operation_metric_value('include', 'miss_absent') }.by(1)
+          .and not_change { operation_metric_value('include', 'miss_untrusted') }
       end
 
       it 'records error when the Redis transaction raises' do
@@ -1663,6 +1724,8 @@ RSpec.describe Gitlab::Repositories::RebuildableSetCache, :clean_gitlab_redis_re
         expect do
           expect { cache.try_include?(:branch_names, 'main') }.to raise_error(StandardError, 'failure')
         end.to change { operation_metric_value('include', 'error') }.by(1)
+          .and not_change { operation_metric_value('include', 'miss_untrusted') }
+          .and not_change { operation_metric_value('include', 'miss_absent') }
       end
     end
   end

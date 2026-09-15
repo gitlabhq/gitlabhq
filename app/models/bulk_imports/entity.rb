@@ -116,14 +116,17 @@ class BulkImports::Entity < ApplicationRecord
       end
 
       entity.track_project_import_event('cancel_project_import')
+      entity.track_group_import_event('cancel_group_import')
     end
 
     after_transition on: :fail_op do |entity, _|
       entity.track_project_import_event('fail_project_import')
+      entity.track_group_import_event('fail_group_import')
     end
 
     after_transition on: :cleanup_stale do |entity, _|
       entity.track_project_import_event('timeout_project_import')
+      entity.track_group_import_event('timeout_group_import')
     end
   end
 
@@ -287,17 +290,32 @@ class BulkImports::Entity < ApplicationRecord
     end
   end
 
-  # label distinguishes Direct Transfer (gitlab_project_migration) from Offline
-  # Transfer (offline_transfer), which share this entity model and EntityFinisher.
-  # Read from bulk_import rather than project&.import_type, since project may not
-  # exist yet if the entity fails/cancels before its pipeline creates it.
   def project_import_event_attributes
+    import_event_attributes.merge(project: project, namespace: project&.namespace)
+  end
+
+  def track_group_import_event(action)
+    return unless group?
+
+    run_after_commit do
+      track_internal_event(action, group_import_event_attributes)
+    end
+  end
+
+  def group_import_event_attributes
+    import_event_attributes.merge(namespace: group)
+  end
+
+  # label (gitlab_migration vs offline_transfer) distinguishes Direct Transfer
+  # from Offline Transfer, which share this entity model and EntityFinisher.
+  # project_import_event_attributes/group_import_event_attributes read it from
+  # bulk_import rather than the project/group record, since that record may not
+  # exist yet if the entity fails/cancels before its pipeline creates it.
+  def import_event_attributes
     {
-      project: project,
       user: bulk_import.user,
-      namespace: project&.namespace,
       additional_properties: {
-        label: bulk_import.offline? ? 'offline_transfer' : 'gitlab_project_migration',
+        label: bulk_import.import_source.to_s,
         property: hashed_import_source
       }.compact
     }

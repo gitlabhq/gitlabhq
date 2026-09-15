@@ -139,6 +139,16 @@ export const validEmoji = {
     description: 'lime',
     unicodeVersion: '15.1',
   },
+  thank_you: {
+    moji: '🙏',
+    description: 'thank you gesture',
+    unicodeVersion: '6.0',
+  },
+  smile: {
+    moji: '😄',
+    description: 'grinning face with smiling eyes',
+    unicodeVersion: '6.0',
+  },
 };
 
 export const invalidEmoji = {

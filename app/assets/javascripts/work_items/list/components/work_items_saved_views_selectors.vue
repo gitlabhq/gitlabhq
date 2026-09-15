@@ -1,9 +1,15 @@
 <script>
-import { GlDisclosureDropdown, GlResizeObserverDirective, GlToastMixin } from '@gitlab/ui';
+import {
+  GlDisclosureDropdown,
+  GlDisclosureDropdownItem,
+  GlResizeObserverDirective,
+  GlToastMixin,
+} from '@gitlab/ui';
 import { debounce } from 'lodash-es';
 import VueDraggable from '~/lib/utils/vue3compat/draggable_compat.vue';
 import { s__, n__ } from '~/locale';
 import { getIdFromGraphQLId } from '~/graphql_shared/utils';
+import { isMetaClick } from '~/lib/utils/common_utils';
 import { ROUTES } from '~/work_items/constants';
 import { updateCacheAfterViewRemoval, reorderSavedView } from 'ee_else_ce/work_items/list/utils';
 import workItemSavedViewDelete from '~/work_items/graphql/delete_saved_view.mutation.graphql';
@@ -20,6 +26,7 @@ export default {
     WorkItemsCreateSavedViewDropdown,
     WorkItemsSavedViewSelector,
     GlDisclosureDropdown,
+    GlDisclosureDropdownItem,
     VueDraggable,
   },
   directives: {
@@ -64,12 +71,6 @@ export default {
     };
   },
   computed: {
-    overflowItems() {
-      return this.overflowedViews.map((view) => ({
-        text: view.name,
-        action: () => this.onOverflowViewClick(view),
-      }));
-    },
     moreItemsText() {
       return n__('WorkItem|%d more...', 'WorkItem|%d more...', this.overflowedViews.length);
     },
@@ -216,6 +217,20 @@ export default {
     onDragEnd() {
       this.isDragging = false;
       this.draggedIndex = null;
+    },
+    savedViewHref(view) {
+      return this.$router.resolve({
+        name: ROUTES.savedView,
+        params: { view_id: getIdFromGraphQLId(view.id).toString() },
+        query: undefined,
+      }).href;
+    },
+    onOverflowLinkClick(event) {
+      if (isMetaClick(event)) {
+        event.stopPropagation();
+      } else {
+        event.preventDefault();
+      }
     },
     async onOverflowViewClick(view) {
       const overflowIndex = this.overflowedViews.findIndex((item) => item.name === view.name);
@@ -460,10 +475,25 @@ export default {
         :toggle-text="moreItemsText"
         no-caret
         left
-        :items="overflowItems"
         class="gl-ml-4 gl-h-[32px] gl-self-center"
         data-testid="saved-views-more-toggle"
-      />
+      >
+        <!-- Own link instead of item.href: the item's action does not pass the click event, so modified clicks could not be told apart -->
+        <gl-disclosure-dropdown-item
+          v-for="view in overflowedViews"
+          :key="view.id"
+          @action="onOverflowViewClick(view)"
+        >
+          <a
+            class="gl-new-dropdown-item-content"
+            :href="savedViewHref(view)"
+            tabindex="-1"
+            @click="onOverflowLinkClick"
+          >
+            <span class="gl-new-dropdown-item-text-wrapper">{{ view.name }}</span>
+          </a>
+        </gl-disclosure-dropdown-item>
+      </gl-disclosure-dropdown>
 
       <work-items-create-saved-view-dropdown
         ref="addViewDropdown"

@@ -305,6 +305,34 @@ Example:
 Check the status of Duo session 42
 ```
 
+## `send_duo_session_input`
+
+{{< history >}}
+
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/work_items/617171) in GitLab 19.5.
+
+{{< /history >}}
+
+Answers a GitLab Duo Agent Platform session that is waiting for input: approves or rejects a
+pending plan or tool call, or replies to a question the agent asked. Only sessions with status
+`input_required` whose last CI job has finished accept input. Sessions with status
+`plan_approval_required` or `tool_call_approval_required` cannot be answered over MCP yet.
+
+The session continues in a CI job. The response includes a suggested polling delay; use
+`get_duo_session` with the same `workflow_id` to follow progress.
+
+| Parameter        | Type    | Required | Description |
+|------------------|---------|----------|-------------|
+| `workflow_id`    | integer | Yes      | ID of the Duo session, as returned by `list_duo_sessions` or `get_duo_session`. |
+| `human_approval` | boolean | Yes      | `true` approves the pending plan or tool call, `false` rejects it. When the session asked a question, pass `true` with `human_message`. |
+| `human_message`  | string  | No       | Your reply or instructions for the agent, up to 2000 characters. Required when the session asked a question. |
+
+Example:
+
+```plaintext
+Approve the plan for Duo session 42 and tell it to also add tests
+```
+
 ## `list_merge_requests`
 
 {{< history >}}

@@ -30,6 +30,7 @@ Gitlab/DocumentationLinks/HardcodedUrl:
     - 'ee/app/graphql/mutations/requirements_management/export_requirements.rb'
     - 'ee/app/graphql/types/vulnerability_state_enum.rb'
     - 'ee/app/mailers/emails/user_cap.rb'
+    - 'ee/app/models/ai/catalog/foundational_flow/code_review/definition.rb'
     - 'ee/app/models/ai/catalog/foundational_flow/definitions/code_review.rb'
     - 'ee/app/models/ai/catalog/goal_templates/developer/init_execution_env.rb'
     - 'ee/app/models/ai/catalog/goal_templates/developer/init_mr_review_instructions.rb'

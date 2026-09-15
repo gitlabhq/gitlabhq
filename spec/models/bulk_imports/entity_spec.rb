@@ -364,7 +364,7 @@ RSpec.describe BulkImports::Entity, feature_category: :importers do
             project: project,
             user: entity.bulk_import.user,
             namespace: project.namespace,
-            additional_properties: { label: 'gitlab_project_migration', property: entity.hashed_import_source }
+            additional_properties: { label: 'gitlab_migration', property: entity.hashed_import_source }
           )
       end
 
@@ -375,7 +375,7 @@ RSpec.describe BulkImports::Entity, feature_category: :importers do
             project: project,
             user: entity.bulk_import.user,
             namespace: project.namespace,
-            additional_properties: { label: 'gitlab_project_migration', property: entity.hashed_import_source }
+            additional_properties: { label: 'gitlab_migration', property: entity.hashed_import_source }
           )
       end
 
@@ -386,18 +386,86 @@ RSpec.describe BulkImports::Entity, feature_category: :importers do
             project: project,
             user: entity.bulk_import.user,
             namespace: project.namespace,
-            additional_properties: { label: 'gitlab_project_migration', property: entity.hashed_import_source }
+            additional_properties: { label: 'gitlab_migration', property: entity.hashed_import_source }
           )
       end
     end
 
     context 'for a group entity' do
-      let(:entity) { create(:bulk_import_entity, :group_entity, :started) }
+      let_it_be(:group) { create(:group) }
+      let(:bulk_import) { create(:bulk_import, :with_configuration) }
+      let(:entity) { create(:bulk_import_entity, :group_entity, :started, group: group, bulk_import: bulk_import) }
+
+      it 'tracks fail_group_import on fail_op' do
+        expect { entity.fail_op! }
+          .to trigger_internal_events('fail_group_import')
+          .with(
+            user: entity.bulk_import.user,
+            namespace: group,
+            additional_properties: { label: 'gitlab_migration', property: entity.hashed_import_source }
+          )
+      end
+
+      it 'tracks cancel_group_import on cancel' do
+        expect { entity.cancel! }
+          .to trigger_internal_events('cancel_group_import')
+          .with(
+            user: entity.bulk_import.user,
+            namespace: group,
+            additional_properties: { label: 'gitlab_migration', property: entity.hashed_import_source }
+          )
+      end
+
+      it 'tracks timeout_group_import on cleanup_stale' do
+        expect { entity.cleanup_stale! }
+          .to trigger_internal_events('timeout_group_import')
+          .with(
+            user: entity.bulk_import.user,
+            namespace: group,
+            additional_properties: { label: 'gitlab_migration', property: entity.hashed_import_source }
+          )
+      end
 
       it 'does not track project import events' do
         expect { entity.fail_op! }
           .to not_trigger_internal_events('fail_project_import')
           .and not_trigger_internal_events('cancel_project_import')
+      end
+    end
+
+    context 'for an offline group entity' do
+      let_it_be(:group) { create(:group) }
+      let(:entity) do
+        create(
+          :bulk_import_entity, :group_entity, :started, group: group,
+          bulk_import: create(:bulk_import, :with_offline_configuration)
+        )
+      end
+
+      it 'tracks fail_group_import on fail_op, labeled as offline_transfer' do
+        expect { entity.fail_op! }
+          .to trigger_internal_events('fail_group_import')
+          .with(
+            user: entity.bulk_import.user,
+            namespace: group,
+            additional_properties: { label: 'offline_transfer', property: entity.hashed_import_source }
+          )
+      end
+    end
+
+    context 'for a group entity with no group record yet' do
+      let(:entity) do
+        create(:bulk_import_entity, :group_entity, :started, bulk_import: create(:bulk_import, :with_configuration))
+      end
+
+      it 'still labels the event, using bulk_import rather than the (absent) group' do
+        expect { entity.fail_op! }
+          .to trigger_internal_events('fail_group_import')
+          .with(
+            user: entity.bulk_import.user,
+            namespace: nil,
+            additional_properties: { label: 'gitlab_migration', property: entity.hashed_import_source }
+          )
       end
     end
 
@@ -434,7 +502,7 @@ RSpec.describe BulkImports::Entity, feature_category: :importers do
             project: nil,
             user: entity.bulk_import.user,
             namespace: nil,
-            additional_properties: { label: 'gitlab_project_migration', property: entity.hashed_import_source }
+            additional_properties: { label: 'gitlab_migration', property: entity.hashed_import_source }
           )
       end
     end

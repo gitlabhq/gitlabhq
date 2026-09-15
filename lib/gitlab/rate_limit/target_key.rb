@@ -56,8 +56,8 @@ module Gitlab
         end
 
         def identifier_key(collection, raw_id)
-          kind = collection == 'projects' ? 'project' : 'group'
-          return "#{kind}:#{raw_id}" if NUMERIC_ID_REGEX.match?(raw_id)
+          kind = collection == 'projects' ? :project : :group
+          return Target.new(type: kind, identifier: raw_id) if NUMERIC_ID_REGEX.match?(raw_id)
 
           # A path id arrives percent-encoded and stays that way: Grape decodes it
           # downstream of this middleware, and nothing upstream does.
@@ -71,7 +71,7 @@ module Gitlab
         def route_target(segments)
           return if segments.empty? || segments.length > max_route_segments
 
-          "route:#{segments.join('/').downcase}"
+          Target.new(type: :route, identifier: segments.join('/').downcase)
         end
 
         def route_key(path)

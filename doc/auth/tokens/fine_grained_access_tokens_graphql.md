@@ -915,6 +915,14 @@ Grants the ability to read flows metadata.
 | Read | Group | Type | `AiFlowsMetadata` |
 | Read | Instance | Type | `AiFlowsMetadata` |
 
+#### Functional Verification Workflow
+
+Grants the ability to create functional verification workflows.
+
+| Action | Access | Kind | Name |
+| ------ | ------ | ---- | ---- |
+| Create | Instance | Mutation | `CreateFunctionalVerificationWorkflow` |
+
 #### Model Selection Allowlist
 
 Grants the ability to read and update model selection allowlists.

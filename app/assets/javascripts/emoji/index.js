@@ -1,4 +1,4 @@
-import { escape, minBy } from 'lodash-es';
+import { escape, escapeRegExp, minBy } from 'lodash-es';
 import emojiRegexFactory from 'emoji-regex';
 import emojiAliases from 'emojis/aliases.json';
 import createApolloClient from '~/lib/graphql';
@@ -160,19 +160,36 @@ export function findCustomEmoji(name) {
   return state.emojiMap[name];
 }
 
-function getAliasesMatchingQuery(query) {
-  const queryHasNoUnderscores = query.length > 0 && !query.includes('_');
+function createSeparatorPattern(query) {
+  if (query.length === 0 || !/[\s_-]/.test(query)) return null;
+
+  return new RegExp(
+    query
+      .split(/[\s_-]+/)
+      .map(escapeRegExp)
+      .join('[\\s_-]+'),
+  );
+}
+
+function getAliasesMatchingQuery(query, separatorPattern) {
   return Object.keys(emojiAliases)
     .filter((alias) => {
       if (alias.includes(query)) return true;
-      if (queryHasNoUnderscores) return alias.replace(/_/g, '').includes(query);
+      if (separatorPattern) return separatorPattern.test(alias);
+      // Legacy: strip underscores when query has no underscores (preserves existing behaviour)
+      if (query.length > 0 && !query.includes('_')) return alias.replace(/_/g, '').includes(query);
       return false;
     })
     .reduce((map, alias) => {
       const emojiName = emojiAliases[alias];
-      const score = alias.includes(query)
-        ? alias.indexOf(query)
-        : alias.replace(/_/g, '').indexOf(query) + 0.5;
+      let score;
+      if (alias.includes(query)) {
+        score = alias.indexOf(query);
+      } else if (separatorPattern?.test(alias)) {
+        score = alias.search(separatorPattern) + 0.5;
+      } else {
+        score = alias.replace(/_/g, '').indexOf(query) + 0.5;
+      }
 
       const prev = map.get(emojiName);
       // overwrite if we beat the previous score or we're more alphabetical
@@ -197,9 +214,21 @@ function getUnicodeMatch(emoji, query) {
   return null;
 }
 
-function getDescriptionMatch(emoji, query) {
+function getDescriptionMatch(emoji, query, separatorPattern) {
   if (emoji.d.includes(query)) {
     return { score: emoji.d.indexOf(query), field: 'd', fieldValue: emoji.d, emoji };
+  }
+
+  if (separatorPattern) {
+    const separatorMatchIndex = emoji.d.search(separatorPattern);
+    if (separatorMatchIndex !== -1) {
+      return {
+        score: separatorMatchIndex + 0.5,
+        field: 'd',
+        fieldValue: emoji.d,
+        emoji,
+      };
+    }
   }
 
   return null;
@@ -215,7 +244,7 @@ function getAliasMatch(emoji, matchingAliases) {
   return null;
 }
 
-function getNameMatch(emoji, query) {
+function getNameMatch(emoji, query, separatorPattern) {
   if (emoji.name.includes(query)) {
     return {
       score: emoji.name.indexOf(query),
@@ -225,7 +254,18 @@ function getNameMatch(emoji, query) {
     };
   }
 
-  if (query.length > 0 && !query.includes('_')) {
+  if (separatorPattern) {
+    const separatorMatchIndex = emoji.name.search(separatorPattern);
+    if (separatorMatchIndex !== -1) {
+      return {
+        score: separatorMatchIndex + 0.5,
+        field: 'name',
+        fieldValue: emoji.name,
+        emoji,
+      };
+    }
+  } else if (query.length > 0 && !query.includes('_')) {
+    // Legacy: strip underscores when query has no underscores (preserves existing behaviour)
     const nameNoUnderscores = emoji.name.replace(/_/g, '');
     if (nameNoUnderscores.includes(query)) {
       return {
@@ -247,16 +287,17 @@ export function sortEmoji(a, b) {
 
 export function searchEmoji(query) {
   const lowercaseQuery = query ? `${query}`.toLowerCase() : '';
+  const separatorPattern = createSeparatorPattern(lowercaseQuery);
 
-  const matchingAliases = getAliasesMatchingQuery(lowercaseQuery);
+  const matchingAliases = getAliasesMatchingQuery(lowercaseQuery, separatorPattern);
 
   return Object.values(state.emojiMap)
     .map((emoji) => {
       const matches = [
         getUnicodeMatch(emoji, query),
-        getDescriptionMatch(emoji, lowercaseQuery),
+        getDescriptionMatch(emoji, lowercaseQuery, separatorPattern),
         getAliasMatch(emoji, matchingAliases),
-        getNameMatch(emoji, lowercaseQuery),
+        getNameMatch(emoji, lowercaseQuery, separatorPattern),
       ]
         .filter(Boolean)
         .map((x) => ({ ...x, score: getEmojiScoreWithIntent(x.emoji.name, x.score) }));

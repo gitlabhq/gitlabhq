@@ -1090,6 +1090,78 @@ describe('emoji', () => {
 
       expect(exact.score).toBeLessThan(fuzzy.score);
     });
+
+    describe('separator-normalised search (spaces, hyphens, underscores are interchangeable)', () => {
+      describe.each(['thank you', 'thank-you', 'thank_you'])('when searching "%s"', (query) => {
+        it('matches :thank_you:', () => {
+          const results = searchEmoji(query);
+          const match = results.find((r) => r.emoji.name === 'thank_you');
+          expect(match).toBeDefined();
+        });
+      });
+
+      describe('when searching for :thank_you: with underscore and hyphen separators', () => {
+        it('ranks the underscore query above the hyphen query', () => {
+          const underscore = searchEmoji('thank_you').find((r) => r.emoji.name === 'thank_you');
+          const hyphen = searchEmoji('thank-you').find((r) => r.emoji.name === 'thank_you');
+
+          expect(underscore.score).toBeLessThanOrEqual(hyphen.score);
+        });
+      });
+
+      describe.each(['grey question', 'grey-question'])('when searching "%s"', (query) => {
+        it('matches :grey_question:', () => {
+          const results = searchEmoji(query);
+          const match = results.find((r) => r.emoji.name === 'grey_question');
+          expect(match).toBeDefined();
+        });
+      });
+
+      describe('when searching for :black_heart: with "black heart"', () => {
+        it('returns a match', () => {
+          const results = searchEmoji('black heart');
+          const match = results.find((r) => r.emoji.name === 'black_heart');
+          expect(match).toBeDefined();
+        });
+      });
+
+      describe('when searching for :atom: by description with "atom symbol"', () => {
+        it('returns a match', () => {
+          const results = searchEmoji('atom symbol');
+          const match = results.find((r) => r.emoji.name === 'atom');
+          expect(match).toBeDefined();
+          expect(match.field).toBe('d');
+        });
+      });
+
+      describe('when searching for :thank_you: by description with "thank you gesture"', () => {
+        it('returns a match', () => {
+          const results = searchEmoji('thank you gesture');
+          const match = results.find((r) => r.emoji.name === 'thank_you');
+          expect(match).toBeDefined();
+        });
+      });
+
+      describe('when searching with a single-word query', () => {
+        it('matches with the expected ranking', () => {
+          const results = searchEmoji('heart');
+          const heartMatch = results.find((r) => r.emoji.name === 'heart');
+          const blackHeartMatch = results.find((r) => r.emoji.name === 'black_heart');
+
+          expect(heartMatch).toBeDefined();
+          expect(blackHeartMatch).toBeDefined();
+          expect(heartMatch.score).toBeLessThan(blackHeartMatch.score);
+        });
+      });
+
+      describe('when the query splits a word', () => {
+        it('does not match the emoji name', () => {
+          const match = searchEmoji('s mile').find((r) => r.emoji.name === 'smile');
+
+          expect(match).toBeUndefined();
+        });
+      });
+    });
   });
 
   describe('sortEmoji', () => {

@@ -56,6 +56,24 @@ RSpec.describe Projects::Settings::IntegrationsController, feature_category: :in
 
         expect(active_services).to include('Integrations::GitlabSlackApplication')
       end
+
+      it 'does not show the deprecated Slack notifications integration' do
+        get :index, params: { namespace_id: project.namespace, project_id: project }
+
+        expect(active_services).not_to include('Integrations::Slack')
+      end
+
+      context 'when the project already has a Slack notifications integration' do
+        before do
+          create(:integrations_slack, project: project)
+        end
+
+        it 'shows the deprecated Slack notifications integration' do
+          get :index, params: { namespace_id: project.namespace, project_id: project }
+
+          expect(active_services).to include('Integrations::Slack')
+        end
+      end
     end
   end
 
@@ -470,6 +488,18 @@ RSpec.describe Projects::Settings::IntegrationsController, feature_category: :in
         it 'renders edit page' do
           expect(response).to be_successful
         end
+      end
+    end
+
+    context 'when the deprecated Slack notifications integration is hidden from the list' do
+      before do
+        stub_application_setting(slack_app_enabled: true)
+
+        get :edit, params: project_params(id: 'slack')
+      end
+
+      it 'still renders the edit page, so existing links and the API keep working' do
+        expect(response).to be_successful
       end
     end
   end

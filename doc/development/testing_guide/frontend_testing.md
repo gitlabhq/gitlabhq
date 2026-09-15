@@ -1343,6 +1343,13 @@ ee/spec/frontend/msw_integration/
 The shared files are configured automatically through
 `jest.config.msw_integration.js`.
 
+`polyfills.js` exists because `msw/node` reads globals such as
+`fetch`, `Request`, `Response`, `Headers`, the stream classes,
+`BroadcastChannel`, and `TextEncoder`/`TextDecoder` while its
+module body evaluates, which is before Jest's
+`setupFilesAfterEnv` runs. These globals are assigned in a Jest
+`setupFiles` entry instead.
+
 All helper utilities exported from `helpers/test_helpers.js` are auto-imported globally
 through `Object.assign(global, testHelpers)` in `test_setup.js`. To add a new
 helper, export it from `helpers/test_helpers.js` and it becomes available globally in
@@ -1370,55 +1377,83 @@ spec.
 
 ### Handler architecture
 
-Because MSW v1 matches the first `rest.post` handler that applies,
-a single GraphQL endpoint cannot be split across multiple MSW handlers.
-Instead, `handlers.js` acts as a thin GraphQL router. It registers one
-`rest.post` handler for `http://test.host/api/graphql` and delegates to
-feature-specific resolver functions in order:
+`handlers.js` acts as a thin GraphQL router. `buildHandlers`
+registers a single `graphql.operation` handler that delegates
+to the feature resolvers in `featureHandlers`, in order. The
+first resolver that returns a result wins, so routing through
+one operation handler keeps request capture and
+missing-operation reporting in one place:
 
 ```javascript
-import { rest } from 'msw';
-import { handleWorkItemOperation } from './work_items/handlers';
+import { graphql, http, HttpResponse } from 'msw';
+import { handleWorkItemOperation, workItemRestEndpoints } from './work_items/handlers';
+import { captureMissingOperation, captureRequest } from './core/operation_helpers';
 
-// Thin router: Import feature handlers here
-const graphqlFeatureHandlers = [handleWorkItemOperation];
+export const featureHandlers = [handleWorkItemOperation];
+export const restEndpoints = [...workItemRestEndpoints];
 
-// Collect all REST endpoints from feature handlers
-const restEndpoints = [...workItemRestEndpoints];
+export function buildHandlers(allFeatureHandlers, allRestEndpoints) {
+  const restEndpointsHandlers = allRestEndpoints.map((endpoint) =>
+    http[endpoint.method](endpoint.path, ({ request }) => {
+      const operationName = endpoint.name || `REST:${endpoint.method}:${endpoint.path}`;
+      captureRequest(operationName, request);
 
-const restEndpointsHandlers = restEndpoints.map((endpoint) =>
-  rest[endpoint.method](endpoint.path, (req, res, ctx) => {
-    return res(ctx.json(endpoint.response));
-  }),
-);
+      return HttpResponse.json(endpoint.response, { headers: endpoint.headers });
+    }),
+  );
 
-export const handlers = [
-  // Single GraphQL endpoint that routes to feature handlers
-  rest.post('http://test.host/api/graphql', (req, res, ctx) => {
-    const body = typeof req.body === 'string' ? JSON.parse(req.body) : req.body;
-    const { operationName, variables } = body;
+  return [
+    graphql.operation(({ operationName, variables, request }) => {
+      for (const handler of allFeatureHandlers) {
+        const result = handler({ operationName, variables });
+        if (result) {
+          captureRequest(operationName, request, variables);
+          return result;
+        }
+      }
 
-    // Try each feature handler until one returns a result
-    for (const handler of graphqlFeatureHandlers) {
-      const result = handler({ operationName, variables, res, ctx });
-      if (result) return result;
-    }
+      captureMissingOperation(operationName);
+      return new HttpResponse(null, { status: 400 });
+    }),
 
-    console.log(`No handler for operationName: ${operationName}`);
-    return res(ctx.status(400));
-  }),
-  ...restEndpointsHandlers,
-];
+    ...restEndpointsHandlers,
+
+    http.get('*', ({ request }) => {
+      // eslint-disable-next-line no-console
+      console.log(`Unhandled url for REST endpoint: ${request.url}`);
+      return new HttpResponse(null, { status: 400 });
+    }),
+  ];
+}
 ```
 
-Each resolver receives `{ operationName, variables, res, ctx }` and
-returns an MSW response if it handles the operation, or `null` to pass
-to the next resolver. Unhandled operations fall through to a catch-all
-that returns a 400 status. This intentional failure surfaces missing
-handlers early. Every GraphQL operation that fires during a test must
-have a corresponding handler. If a test fails with
-`ServerParseError: Unexpected end of JSON input`, add the missing
-operation to the relevant feature handler file.
+Each feature resolver receives `{ operationName, variables }`
+and returns an `HttpResponse` if it handles the operation, or
+`null` to pass to the next resolver. Unhandled operations are
+recorded by `captureMissingOperation` and answered with a 400
+status. Every GraphQL operation that fires during a test must
+have a corresponding handler. At the end of the suite, a
+`console.warn` lists every operation that is missing a handler.
+Use that list to add the missing operation to the relevant
+feature handler file.
+
+REST endpoints are declared as plain descriptor objects
+(`{ method, path, response }`) and turned into `http[method]`
+handlers. `path` can be a string or a regular expression. Set
+`name` to control the key requests are captured under (it
+defaults to `REST:<method>:<path>`), and `headers` to add extra
+response headers. A trailing `http.get('*')` handler catches
+any unmocked GET request, logs the unhandled URL, and returns
+a 400, so an unmocked request is visible in the test output.
+
+`server.js` builds the MSW node server from these handlers:
+
+```javascript
+import { setupServer } from 'msw/node';
+import { buildHandlers, featureHandlers, restEndpoints } from './handlers';
+
+export const server = setupServer(...buildHandlers(featureHandlers, restEndpoints));
+```
 
 ### Add a new feature domain
 
@@ -1553,6 +1588,8 @@ Combine both into a single `OPERATION_HANDLERS` map and look up the
 operation in the resolver:
 
 ```javascript
+import { HttpResponse } from 'msw';
+
 const STATIC_OPERATION_HANDLERS = Object.fromEntries(
   Object.entries(FIXTURE_RESPONSES).map(([op, fixture]) => [
     op,
@@ -1565,10 +1602,10 @@ const OPERATION_HANDLERS = {
   ...MUTATION_OPERATION_HANDLERS,
 };
 
-export function handleMyFeatureOperation({ operationName, variables, res, ctx }) {
+export function handleMyFeatureOperation({ operationName, variables }) {
   const handler = OPERATION_HANDLERS[operationName];
   if (!handler) return null;
-  return res(ctx.json(handler({ operationName, variables })));
+  return HttpResponse.json(handler({ operationName, variables }));
 }
 ```
 
@@ -1767,7 +1804,7 @@ import { waitFor } from '@testing-library/dom';
 import { apolloProvider } from '~/graphql_shared/issuable_client';
 import { createRouter } from '~/my_feature/router';
 import MyApp from '~/my_feature/components/app.vue';
-import { assignRouter, fullMount, waitForElement, getText } from '../test_helpers';
+import { assignRouter, fullMount, waitForElement, getText } from 'ee_jest/msw_integration/helpers/test_helpers';
 
 Vue.use(VueApollo);
 

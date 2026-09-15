@@ -3,8 +3,8 @@
 module MergeRequests
   module WorkItemRelations
     # Persists user-created MR <-> Work Item relations on
-    # merge_requests_closing_issues. Authorizes the MR-level ability once, then
-    # filters to the work items the user can actually read.
+    # merge_requests_closing_issues. Authorizes the MR-level ability, then filters
+    # targets to those the user can link (read for `related`, update for `closes`).
     #
     # Idempotent: an existing (merge_request, issue, link_type) row is reused,
     # not duplicated -- including when the row was inserted concurrently
@@ -38,6 +38,11 @@ module MergeRequests
         errors = []
 
         readable_work_items.each do |work_item|
+          unless authorized_for_link_type?(work_item)
+            errors << closes_forbidden_message(work_item)
+            next
+          end
+
           relation, error = upsert_relation(work_item)
 
           relations << relation if relation
@@ -69,6 +74,21 @@ module MergeRequests
         ServiceResponse.error(
           message: _('Mentioned relations are managed automatically and cannot be created.'),
           reason: :bad_request
+        )
+      end
+
+      # `closes` auto-closes the work item on merge, so it needs update access;
+      # `related` is informational and stays on read.
+      def authorized_for_link_type?(work_item)
+        return true unless link_type.to_s == 'closes'
+
+        can?(current_user, :update_work_item, work_item)
+      end
+
+      def closes_forbidden_message(work_item)
+        format(
+          _('You are not allowed to close %{work_item_reference} by merging this merge request.'),
+          work_item_reference: work_item.to_reference(merge_request.project)
         )
       end
 

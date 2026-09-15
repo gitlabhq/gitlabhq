@@ -8,7 +8,7 @@ identifiers:
 - namespace
 additional_properties:
   label:
-    description: import_type of the source (e.g., github, bitbucket, gitlab_project_migration)
+    description: import_type of the source (e.g., github, bitbucket, gitlab_migration, offline_transfer)
   property:
     description: hashed identifier of the source host and path, used to detect repeated imports of the same source
 product_group: import

@@ -2109,7 +2109,6 @@ export const mockWorkItemFeaturesData = ({ discussionLocked = false } = {}) => (
   },
   status: null,
   agentPlan: null,
-  decisionLog: null,
   customFields: null,
   participants: null,
 });

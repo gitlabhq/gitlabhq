@@ -48,7 +48,7 @@ RSpec.describe GroupsController, factory_default: :keep, feature_category: :code
       end
 
       it 'triggers the export job' do
-        expect(GroupExportWorker).to receive(:perform_async).with(user.id, group.id, { exported_by_admin: false })
+        expect(GroupExportWorker).to receive(:perform_async).with(user.id, group.id, { 'exported_by_admin' => false })
 
         post :export, params: { id: group.to_param }
       end
@@ -66,7 +66,7 @@ RSpec.describe GroupsController, factory_default: :keep, feature_category: :code
       end
 
       it 'triggers the export job, and passes `exported_by_admin` correctly in the `params` hash' do
-        expect(GroupExportWorker).to receive(:perform_async).with(admin_with_admin_mode.id, group.id, { exported_by_admin: true })
+        expect(GroupExportWorker).to receive(:perform_async).with(admin_with_admin_mode.id, group.id, { 'exported_by_admin' => true })
 
         post :export, params: { id: group.to_param }
       end

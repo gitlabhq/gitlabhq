@@ -1673,7 +1673,11 @@ GfmAutoComplete.Emoji = {
       return GfmAutoComplete.Loading.template;
     }
 
-    const escapedFieldValue = escape(item.fieldValue);
+    // Show the description for alias matches so the dropdown displays
+    // human-readable text (e.g. "hollow red circle") rather than the
+    // raw alias key (e.g. "hollow_red_circle").
+    const displayValue = item.field === 'alias' ? item.emoji.d : item.fieldValue;
+    const escapedFieldValue = escape(displayValue);
     if (!GfmAutoComplete.glEmojiTag) {
       return `<li>${escapedFieldValue}</li>`;
     }

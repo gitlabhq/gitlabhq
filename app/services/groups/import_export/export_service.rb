@@ -16,7 +16,7 @@ module Groups
         GroupExportWorker.perform_async(
           current_user.id,
           group.id,
-          params.merge(exported_by_admin: @exported_by_admin)
+          params.merge(exported_by_admin: @exported_by_admin).stringify_keys
         )
       end
 

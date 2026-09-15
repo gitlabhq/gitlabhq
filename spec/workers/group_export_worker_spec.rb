@@ -17,7 +17,7 @@ RSpec.describe GroupExportWorker, feature_category: :importers do
           expect(service).to receive(:execute)
         end
 
-        subject.perform(user.id, group.id, { exported_by_admin: false })
+        subject.perform(user.id, group.id, { 'exported_by_admin' => false })
       end
     end
 

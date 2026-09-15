@@ -27,14 +27,33 @@ The following metrics are emitted for Zoekt task processing:
 
 ### Apdex (Application Performance Index)
 
-The Apdex SLI measures task completion performance with a 30-minute (1800 second) threshold.
-This threshold aligns with the indexing timeout to ensure consistency with task execution limits.
+The Apdex SLI measures task completion performance with a 2-hour (7200 second)
+threshold, defined as `APDEX_THRESHOLD_S` in
+`ee/lib/gitlab/metrics/zoekt_tasks_slis.rb`.
 
 The following metrics track Apdex:
 
 - `gitlab_sli_search_zoekt_tasks_apdex_total`: Counter for total number of completed tasks.
 - `gitlab_sli_search_zoekt_tasks_apdex_success_total`: Counter for tasks that completed
-  within the 30-minute threshold.
+  within the threshold.
+
+### Task duration
+
+The Apdex records only whether a task beat its threshold.
+`gitlab_search_zoekt_task_duration_seconds` is a histogram of the same
+duration, observed in the same call, so duration quantiles are computable.
+
+Buckets are `1, 5, 10, 30, 60, 120, 300, 600, 1800, 3600, 7200, 21600` seconds.
+The exact `60` edge answers a 60-second objective with a bucket read instead of
+a quantile interpolated across a bucket.
+
+The duration is `Time.current - task.perform_at`, so it covers queue wait and
+execution together: `zoekt_tasks` records no task start time, so the two cannot
+be separated.
+
+Each sample also logs a `Zoekt task Apdex SLI` line to `Gitlab::AppJsonLogger`
+with `duration_s`, `target_s`, `success`, `zoekt_node`, and `task_type`, so
+percentiles are available from logs as well as from the histogram.
 
 ## Labels
 
@@ -66,6 +85,24 @@ sum by (zoekt_node) (
 sum by (zoekt_node) (
   rate(gitlab_sli_search_zoekt_tasks_total[5m])
 )
+```
+
+### Task duration percentiles
+
+```promql
+histogram_quantile(0.99,
+  sum by (le, zoekt_node, task_type) (
+    rate(gitlab_search_zoekt_task_duration_seconds_bucket[5m])
+  )
+)
+```
+
+### Fraction of tasks completing within 60 seconds
+
+```promql
+sum(rate(gitlab_search_zoekt_task_duration_seconds_bucket{le="60"}[5m]))
+/
+sum(rate(gitlab_search_zoekt_task_duration_seconds_count[5m]))
 ```
 
 ### Task throughput by type

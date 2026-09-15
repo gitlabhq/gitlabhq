@@ -32,8 +32,22 @@ Slack notifications requires configuration changes for both Slack and GitLab.
 {{< history >}}
 
 - [Changed](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/106760) in GitLab 15.9 to limit Slack channels to 10 per event.
+- [Changed](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/254341) in GitLab 19.5 to hide the integration for projects that have never used it.
 
 {{< /history >}}
+
+The **Slack notifications** integration is hidden from a project's **Settings** > **Integrations**
+list when all of these are true:
+
+- The GitLab for Slack app is enabled for the instance, so a replacement integration is available.
+- The project has no Slack notifications integration of its own.
+- The project does not inherit an instance-level Slack notifications integration.
+
+A project that already has Slack notifications configured continues to see it in the list. So does
+a project that inherits an instance-level integration. In both cases, GitLab keeps sending
+notifications as before.
+
+To configure Slack notifications:
 
 1. In the top bar, select **Search or go to** and find your project.
 1. In the left sidebar, select **Settings** > **Integrations**.

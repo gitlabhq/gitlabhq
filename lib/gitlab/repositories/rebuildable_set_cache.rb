@@ -234,7 +234,7 @@ module Gitlab
         log_event(:cache_miss, key, exists: exists, trusted: is_trusted)
 
         result = write(key, yield)
-        metrics.increment_operation(key: key, operation: 'fetch', status: 'miss')
+        metrics.increment_operation(key: key, operation: 'fetch', status: miss_status(exists, result))
         result
       rescue StandardError
         metrics.increment_operation(key: key, operation: 'fetch', status: 'error')
@@ -249,12 +249,19 @@ module Gitlab
         full_key = cache_key(key)
 
         enumerator, status = with do |redis|
-          is_trusted = redis.exists?(trust_key(key)) # rubocop:disable CodeReuse/ActiveRecord -- Not ActiveRecord
+          exists, is_trusted = redis.multi do |multi|
+            multi.exists?(full_key) # rubocop:disable CodeReuse/ActiveRecord -- Not ActiveRecord
+            multi.exists?(trust_key(key)) # rubocop:disable CodeReuse/ActiveRecord -- Not ActiveRecord
+          end
 
-          write(key, yield) unless is_trusted
+          status = if is_trusted
+                     'hit'
+                   else
+                     result = write(key, yield)
+                     miss_status(exists, result)
+                   end
 
-          # search:error excludes failures raised while consuming the lazy enumerator.
-          [redis.sscan_each(full_key, match: pattern), is_trusted ? 'hit' : 'miss']
+          [redis.sscan_each(full_key, match: pattern), status]
         end
 
         metrics.increment_operation(key: key, operation: 'search', status: status)
@@ -280,7 +287,9 @@ module Gitlab
         end
 
         unless is_trusted
-          metrics.increment_operation(key: key, operation: 'include', status: 'miss')
+          # No rebuild result is available here; the subsequent adapter fetch classifies it accurately.
+          status = miss_status(exists)
+          metrics.increment_operation(key: key, operation: 'include', status: status)
           return [false, false]
         end
 
@@ -292,6 +301,12 @@ module Gitlab
       end
 
       private
+
+      def miss_status(exists, rebuilt_result = nil)
+        # Redis cannot persist empty sets, so an empty rebuilt cache looks absent.
+        # Treat recurring trust expiry for those caches as recoverable.
+        exists || rebuilt_result&.empty? ? 'miss_untrusted' : 'miss_absent'
+      end
 
       # Rebuild the cache while the caller holds the rebuild lock.
       # @param key [String] Cache key

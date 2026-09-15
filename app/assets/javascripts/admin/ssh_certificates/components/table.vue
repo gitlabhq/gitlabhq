@@ -20,7 +20,9 @@ export default {
       'SshCertificates|Trusted certificate authorities that allow anyone with a signed certificate to authenticate over SSH. Short-lived certificates are recommended.',
     ),
     helpLinkText: s__('SshCertificates|What are SSH certificates?'),
-    emptyMessage: s__('SshCertificates|There are no trusted SSH certificates on this instance.'),
+    emptyMessage: s__(
+      "SshCertificates|This instance doesn't have any SSH certificate authorities.",
+    ),
     copyFingerprint: s__('SshCertificates|Copy fingerprint'),
     apiErrorMessage: s__(
       'SshCertificates|An error occurred while fetching the SSH certificate authorities. Please try again.',

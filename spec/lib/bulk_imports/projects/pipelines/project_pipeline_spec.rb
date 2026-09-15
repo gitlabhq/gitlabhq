@@ -77,7 +77,7 @@ RSpec.describe BulkImports::Projects::Pipelines::ProjectPipeline, feature_catego
           project: imported_project,
           user: user,
           namespace: group,
-          additional_properties: { label: 'gitlab_project_migration', property: entity.hashed_import_source }
+          additional_properties: { label: 'gitlab_migration', property: entity.hashed_import_source }
         )
     end
   end

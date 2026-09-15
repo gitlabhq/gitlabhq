@@ -4,6 +4,8 @@ module BulkImports
   module Groups
     module Loaders
       class GroupLoader
+        include Gitlab::InternalEventsTracking
+
         TWO_FACTOR_KEY = 'require_two_factor_authentication'
 
         GroupCreationError = Class.new(StandardError)
@@ -32,10 +34,16 @@ module BulkImports
 
           context.entity.update!(group: group, organization: nil)
 
+          track_start_group_import(context.entity)
+
           group
         end
 
         private
+
+        def track_start_group_import(entity)
+          track_internal_event('start_group_import', entity.group_import_event_attributes)
+        end
 
         def organization_id(organization, destination_namespace, user)
           dest = destination(organization, destination_namespace)

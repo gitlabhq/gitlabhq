@@ -2224,6 +2224,7 @@ class Project < ApplicationRecord
     Integration
       .available_integration_names(include_instance_specific: false)
       .difference(disabled_integrations)
+      .difference(hidden_integrations)
       .map { find_or_initialize_integration(_1) }
       .sort_by { |int| int.title.downcase }
   end
@@ -2232,6 +2233,15 @@ class Project < ApplicationRecord
   # Globally disabled integrations should go in Integration.disabled_integration_names.
   def disabled_integrations
     %w[zentao]
+  end
+
+  # Names omitted from the settings list but still resolvable by name, so the edit page
+  # and the REST API keep working. Disabling a name instead would make
+  # find_or_initialize_integration return nil, which is a breaking API change.
+  def hidden_integrations
+    return [] unless hide_deprecated_slack_notifications?
+
+    [Integrations::Slack.to_param]
   end
 
   def find_or_initialize_integration(name)
@@ -3934,6 +3944,18 @@ class Project < ApplicationRecord
     end
 
     @topic_list = nil
+  end
+
+  # Asking whether the replacement is available covers both the slack_app_enabled setting
+  # and the EE allowed_integrations allowlist, so the deprecated integration is never
+  # hidden unless the project can actually reach the GitLab for Slack app.
+  def hide_deprecated_slack_notifications?
+    return false unless Integration.available_integration_names.include?(
+      Integrations::GitlabSlackApplication.to_param
+    )
+
+    find_integration(integrations, Integrations::Slack.to_param).nil? &&
+      find_integration(integration_instances, Integrations::Slack.to_param).nil?
   end
 
   def find_integration(integrations, name)

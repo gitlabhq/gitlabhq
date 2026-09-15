@@ -34,12 +34,13 @@ module BulkImports
             message: "Entity #{entity.status_name}"
           )
 
-          schedule_group_work_item_placement if entity.group?
-
-          return unless entity.project?
-
-          ::BulkImports::FinishProjectImportWorker.perform_async(entity.project_id)
-          track_finish_project_import if entity.finished?
+          if entity.group?
+            schedule_group_work_item_placement
+            track_finish_group_import if entity.finished?
+          elsif entity.project?
+            ::BulkImports::FinishProjectImportWorker.perform_async(entity.project_id)
+            track_finish_project_import if entity.finished?
+          end
         end
 
         private
@@ -50,6 +51,12 @@ module BulkImports
           return unless entity.project
 
           track_internal_event('finish_project_import', entity.project_import_event_attributes)
+        end
+
+        def track_finish_group_import
+          return unless entity.group
+
+          track_internal_event('finish_group_import', entity.group_import_event_attributes)
         end
 
         def logger

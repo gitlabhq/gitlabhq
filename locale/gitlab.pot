@@ -8791,9 +8791,6 @@ msgid_plural "AiPowered|%d checks passed"
 msgstr[0] ""
 msgstr[1] ""
 
-msgid "AiPowered|%{name} (GitLab-managed)"
-msgstr ""
-
 msgid "AiPowered|%{name} (self-hosted)"
 msgstr ""
 
@@ -9206,6 +9203,9 @@ msgid "AiPowered|GitLab Duo is unavailable by default. Subgroups and projects ca
 msgstr ""
 
 msgid "AiPowered|GitLab Duo with Amazon Q"
+msgstr ""
+
+msgid "AiPowered|GitLab-managed model"
 msgstr ""
 
 msgid "AiPowered|Governance"
@@ -30952,6 +30952,9 @@ msgid "DuoAgentPlatform|Delegated to subagent"
 msgstr ""
 
 msgid "DuoAgentPlatform|Duo Agent Platform Settings have been saved"
+msgstr ""
+
+msgid "DuoAgentPlatform|Duo not enabled for namespace"
 msgstr ""
 
 msgid "DuoAgentPlatform|Enable"
@@ -79808,7 +79811,7 @@ msgstr ""
 msgid "SshCertificates|Copy fingerprint"
 msgstr ""
 
-msgid "SshCertificates|There are no trusted SSH certificates on this instance."
+msgid "SshCertificates|This instance doesn't have any SSH certificate authorities."
 msgstr ""
 
 msgid "SshCertificates|Trusted certificate authorities that allow anyone with a signed certificate to authenticate over SSH. Short-lived certificates are recommended."
@@ -92593,15 +92596,6 @@ msgstr ""
 msgid "WorkItemDecisionLog|Hide context"
 msgstr ""
 
-msgid "WorkItemDecisionLog|Keep a record of decisions and the reasoning behind them. You can add a decision at any time, and GitLab Duo can also capture decisions during planning."
-msgstr ""
-
-msgid "WorkItemDecisionLog|Learn more about the decision log"
-msgstr ""
-
-msgid "WorkItemDecisionLog|New"
-msgstr ""
-
 msgid "WorkItemDecisionLog|New decision"
 msgstr ""
 
@@ -94924,6 +94918,9 @@ msgid "You are not allowed to approve a user"
 msgstr ""
 
 msgid "You are not allowed to change the Work Item type to %{name}."
+msgstr ""
+
+msgid "You are not allowed to close %{work_item_reference} by merging this merge request."
 msgstr ""
 
 msgid "You are not allowed to create this tag as it is protected."
