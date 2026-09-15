@@ -1,7 +1,10 @@
 <script>
 import { getStartLineNumber, getEndLineNumber } from '~/notes/components/multiline_comment_utils';
 import ToggleRepliesWidget from '~/notes/components/toggle_replies_widget.vue';
+import { SYSTEM_NOTE } from '~/notes/constants';
 import { glSlotsMixin } from '~/lib/utils/vue3compat/gl_slots_mixin';
+import PlaceholderNote from './placeholder_note.vue';
+import PlaceholderSystemNote from './placeholder_system_note.vue';
 import DraftNote from './draft_note.vue';
 import SystemNote from './system_note.vue';
 import NoteableNote from './noteable_note.vue';
@@ -9,10 +12,13 @@ import LineRangeHeadline from './line_range_headline.vue';
 
 export default {
   name: 'DiscussionNotes',
+  SYSTEM_NOTE,
   components: {
     DraftNote,
     SystemNote,
     NoteableNote,
+    PlaceholderNote,
+    PlaceholderSystemNote,
     ToggleRepliesWidget,
     LineRangeHeadline,
   },
@@ -139,8 +145,18 @@ export default {
             </li>
             <template v-if="expanded">
               <template v-for="note in replies">
+                <placeholder-system-note
+                  v-if="note.isPlaceholderNote && note.placeholderType === $options.SYSTEM_NOTE"
+                  :key="note.id"
+                  :note="note.notes[0]"
+                />
+                <placeholder-note
+                  v-else-if="note.isPlaceholderNote"
+                  :key="note.id"
+                  :note="note.notes[0]"
+                />
                 <system-note
-                  v-if="note.system"
+                  v-else-if="note.system"
                   :key="`system-${note.id}`"
                   :note="note"
                   :is-last-discussion="isLastDiscussion"

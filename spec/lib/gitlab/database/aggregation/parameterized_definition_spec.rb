@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Gitlab::Database::Aggregation::ParameterizedDefinition, feature_category: :database do
+RSpec.describe Gitlab::Database::Aggregation::ParameterizedDefinition, feature_category: :value_stream_management do
   let(:definition_class) do
     Class.new(Gitlab::Database::Aggregation::PartDefinition) do
       include Gitlab::Database::Aggregation::ParameterizedDefinition

@@ -2,7 +2,8 @@
 
 require 'spec_helper'
 
-RSpec.describe Gitlab::Database::Aggregation::ActiveRecord::DateBucketDimension, feature_category: :database do
+RSpec.describe Gitlab::Database::Aggregation::ActiveRecord::DateBucketDimension,
+  feature_category: :value_stream_management do
   let_it_be(:user) { create(:user) }
   let_it_be(:project) { create(:project) }
   let_it_be(:merge_request1) do

@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Gitlab::Database::Aggregation::Engine, feature_category: :database do
+RSpec.describe Gitlab::Database::Aggregation::Engine, feature_category: :value_stream_management do
   let(:engine_klass) do
     described_class.build do
       def self.metrics_mapping

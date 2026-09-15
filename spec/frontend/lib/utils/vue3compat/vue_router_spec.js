@@ -312,6 +312,17 @@ describe('VueRouterCompat', () => {
   });
 
   describe('query and hash', () => {
+    it('pushes a query onto a route declared without a component', async () => {
+      const router = new VueRouter({
+        mode: 'abstract',
+        routes: [{ path: '/' }],
+      });
+
+      await router.push({ query: { sort: 'created_date' } });
+
+      expect(router.currentRoute.query.sort).toBe('created_date');
+    });
+
     it('preserves query parameters', async () => {
       const router = new VueRouter({
         mode: 'abstract',

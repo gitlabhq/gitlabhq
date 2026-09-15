@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Gitlab::Database::Aggregation::DefinitionsCollector, feature_category: :database do
+RSpec.describe Gitlab::Database::Aggregation::DefinitionsCollector, feature_category: :value_stream_management do
   let(:dummy_definition_class) do
     Class.new do
       attr_reader :args, :kwargs

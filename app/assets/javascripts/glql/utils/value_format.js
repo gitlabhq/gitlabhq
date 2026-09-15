@@ -17,6 +17,9 @@ export const formatCountCompact = (value, { lowercaseThousands = false } = {}) =
     : formatted;
 };
 
+// Credits are fractional amounts, so cap the digits at cents-style precision.
+export const formatCredits = (value) => formatNumber(value, { maximumFractionDigits: 2 });
+
 export const formatRate = (value) => {
   const percentage = value * 100;
   const rounded = percentage % 1 === 0 ? percentage.toFixed(0) : percentage.toFixed(1);
@@ -42,6 +45,7 @@ const rawString = (value) => (value == null ? '' : String(value));
 // contexts; counts and durations get a compact variant on the axis.
 const UNITS = {
   count: { cell: formatCount, axis: formatCountCompact },
+  credits: { cell: formatCredits, axis: formatCountCompact },
   rate: { cell: formatRate, axis: formatRate },
   duration: { cell: formatDuration, axis: formatDurationCompact },
   durationMs: { cell: formatDurationMs, axis: formatDurationMsCompact },
@@ -60,11 +64,17 @@ const unitByFieldKey = {
   totalCount: 'count',
   usersCount: 'count',
   finishedCount: 'count',
+  projectsCount: 'count',
   suggestionSizeSum: 'count',
   throughputCount: 'count',
   featuresCount: 'count',
   returningUsersCount: 'count',
   previousPeriodUsersCount: 'count',
+  creditsUsedMin: 'credits',
+  creditsUsedMax: 'credits',
+  creditsUsedMean: 'credits',
+  creditsUsedSum: 'credits',
+  creditsUsedQuantile: 'credits',
   duration: 'duration',
   queuedDuration: 'duration',
   durationQuantile: 'duration',
@@ -85,6 +95,7 @@ export const valueFormatterFor = (metric) => formatterFor(baseFieldKeyOf(metric)
 
 const UNIT_LABELS = {
   count: () => __('Count'),
+  credits: () => __('Credits'),
   rate: () => __('Percentage'),
   duration: () => __('Duration'),
   durationMs: () => __('Duration'),

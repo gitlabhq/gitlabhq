@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Gitlab::Database::Aggregation::Graphql::Adapter, feature_category: :database do
+RSpec.describe Gitlab::Database::Aggregation::Graphql::Adapter, feature_category: :value_stream_management do
   describe '.parent_context_name' do
     it 'converts name to camelCase' do
       expect(described_class.types_prefix('my_engine')).to eq('MyEngine')

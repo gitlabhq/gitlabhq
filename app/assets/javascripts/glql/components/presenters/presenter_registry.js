@@ -27,6 +27,7 @@ import TextPresenter from './text.vue';
 import UrlPresenter from './url.vue';
 import PercentagePresenter from './percentage.vue';
 import NumberPresenter from './number.vue';
+import CreditsPresenter from './credits.vue';
 
 // A registry value is either a Vue component (used for all variants/typenames)
 // or a plain object whose keys are variant names / parent typenames. Vue
@@ -102,6 +103,7 @@ export const presentersByFieldKey = {
     DuoCodeSuggestionsAggregationResponseDimensions: UserAvatarPresenter,
     DuoUsageEventsAggregationResponseDimensions: UserAvatarPresenter,
     AgentPlatformSessionsAggregationResponseDimensions: UserAvatarPresenter,
+    DuoWorkflowsAggregationResponseDimensions: UserAvatarPresenter,
     default: UserPresenter,
     compact: UserPresenter,
   },
@@ -117,11 +119,17 @@ export const presentersByFieldKey = {
   totalCount: NumberPresenter,
   usersCount: NumberPresenter,
   finishedCount: NumberPresenter,
+  projectsCount: NumberPresenter,
   suggestionSizeSum: NumberPresenter,
   throughputCount: NumberPresenter,
   featuresCount: NumberPresenter,
   returningUsersCount: NumberPresenter,
   previousPeriodUsersCount: NumberPresenter,
+  creditsUsedMin: CreditsPresenter,
+  creditsUsedMax: CreditsPresenter,
+  creditsUsedMean: CreditsPresenter,
+  creditsUsedSum: CreditsPresenter,
+  creditsUsedQuantile: CreditsPresenter,
   durationQuantile: DurationPresenter,
   durationMean: DurationPresenter,
   durationMin: DurationPresenter,

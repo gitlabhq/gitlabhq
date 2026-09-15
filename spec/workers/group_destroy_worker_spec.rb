@@ -27,4 +27,19 @@ RSpec.describe GroupDestroyWorker, feature_category: :groups_and_projects do
       expect(Dir.exist?(project.path)).to be_falsey
     end
   end
+
+  describe 'concurrency limit' do
+    it 'overrides the default with a positive application setting' do
+      stub_application_setting(group_deletion_jobs_concurrency_limit: 25)
+
+      expect(described_class.get_concurrency_limit).to eq(25)
+    end
+
+    it 'falls back to the default calculation when the setting is 0' do
+      stub_application_setting(group_deletion_jobs_concurrency_limit: 0)
+
+      expect(described_class).to receive(:calculate_default_limit_from_max_percentage).and_return(42)
+      expect(described_class.get_concurrency_limit).to eq(42)
+    end
+  end
 end

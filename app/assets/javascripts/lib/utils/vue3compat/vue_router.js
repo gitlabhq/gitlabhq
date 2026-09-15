@@ -6,7 +6,7 @@ import {
   createWebHashHistory,
   START_LOCATION,
 } from '@gitlab/vue-router-vue3';
-import { transformRoutes, normalizeLocation } from './vue_router_helper';
+import { transformRoutes, normalizeLocation, EMPTY_ROUTE_COMPONENT } from './vue_router_helper';
 
 const mode = (value, options) => {
   if (!value) return null;
@@ -63,11 +63,7 @@ const transformOptions = (rawOptions = {}) => {
     routes: [
       {
         path: '/',
-        component: {
-          render() {
-            return '';
-          },
-        },
+        component: EMPTY_ROUTE_COMPONENT,
       },
     ],
   };

@@ -51,7 +51,7 @@ RSpec.describe Gitlab::Git::Commit, feature_category: :source_code_management do
       )
     end
 
-    context 'non-ASCII content' do
+    context 'when non-ASCII content' do
       let(:body) do
         body = +<<~BODY
           Äpfel
@@ -75,7 +75,7 @@ RSpec.describe Gitlab::Git::Commit, feature_category: :source_code_management do
       end
     end
 
-    context 'non-UTC dates' do
+    context 'when non-UTC dates' do
       let(:seconds) { Time.now.to_i }
 
       it 'sets timezones correctly' do
@@ -101,14 +101,14 @@ RSpec.describe Gitlab::Git::Commit, feature_category: :source_code_management do
       end
     end
 
-    context 'body_size != body.size' do
+    context 'when body_size != body.size' do
       let(:body) { (+"").force_encoding('ASCII-8BIT') }
 
-      context 'zero body_size' do
+      context 'when zero body_size' do
         it { expect(commit.safe_message).to eq(commit_subject) }
       end
 
-      context 'body_size less than threshold' do
+      context 'when body_size less than threshold' do
         let(:body_size) { 123 }
 
         it 'fetches commit message separately' do
@@ -118,7 +118,7 @@ RSpec.describe Gitlab::Git::Commit, feature_category: :source_code_management do
         end
       end
 
-      context 'body_size greater than threshold' do
+      context 'when body_size greater than threshold' do
         let(:body_size) { described_class::MAX_COMMIT_MESSAGE_DISPLAY_SIZE + 1 }
 
         it 'returns the subject plus a notice about message size' do
@@ -126,7 +126,7 @@ RSpec.describe Gitlab::Git::Commit, feature_category: :source_code_management do
         end
       end
 
-      context "large commit message" do
+      context "when large commit message" do
         let(:user) { create(:user) }
         let(:sha) { create_commit_with_large_message }
         let(:commit) { repository.commit(sha) }
@@ -159,7 +159,7 @@ RSpec.describe Gitlab::Git::Commit, feature_category: :source_code_management do
     end
   end
 
-  context 'Class methods' do
+  context 'when Class methods' do
     shared_examples '.find' do
       it "returns first head commit if without params" do
         expect(described_class.last(repository).id).to eq(
@@ -219,7 +219,7 @@ RSpec.describe Gitlab::Git::Commit, feature_category: :source_code_management do
     end
 
     describe '.last_for_path' do
-      context 'no path' do
+      context 'when no path' do
         subject { described_class.last_for_path(repository, 'master') }
 
         describe '#id' do
@@ -229,7 +229,7 @@ RSpec.describe Gitlab::Git::Commit, feature_category: :source_code_management do
         end
       end
 
-      context 'path' do
+      context 'when path' do
         subject { described_class.last_for_path(repository, 'master', 'files/ruby') }
 
         describe '#id' do
@@ -239,7 +239,7 @@ RSpec.describe Gitlab::Git::Commit, feature_category: :source_code_management do
         end
       end
 
-      context 'pathspec' do
+      context 'when pathspec' do
         let(:pathspec) { 'files/ruby/*' }
 
         context 'with default literal_pathspec value' do
@@ -267,7 +267,7 @@ RSpec.describe Gitlab::Git::Commit, feature_category: :source_code_management do
         end
       end
 
-      context 'ref + path' do
+      context 'when ref + path' do
         subject { described_class.last_for_path(repository, SeedRepo::Commit::ID, 'encoding') }
 
         describe '#id' do
@@ -278,7 +278,7 @@ RSpec.describe Gitlab::Git::Commit, feature_category: :source_code_management do
       end
     end
 
-    context 'path is empty string' do
+    context 'when path is empty string' do
       subject do
         commits = described_class.where(
           repo: repository,
@@ -297,7 +297,7 @@ RSpec.describe Gitlab::Git::Commit, feature_category: :source_code_management do
       it { is_expected.to include(TestEnv::BRANCH_SHA['master']) }
     end
 
-    context 'path is nil' do
+    context 'when path is nil' do
       subject do
         commits = described_class.where(
           repo: repository,
@@ -316,7 +316,7 @@ RSpec.describe Gitlab::Git::Commit, feature_category: :source_code_management do
       it { is_expected.to include(TestEnv::BRANCH_SHA['master']) }
     end
 
-    context 'ref is commit id' do
+    context 'when ref is commit id' do
       subject do
         commits = described_class.where(
           repo: repository,
@@ -337,7 +337,7 @@ RSpec.describe Gitlab::Git::Commit, feature_category: :source_code_management do
       it { is_expected.not_to include(SeedRepo::Commit::ID) }
     end
 
-    context 'ref is tag' do
+    context 'when ref is tag' do
       subject do
         commits = described_class.where(
           repo: repository,
@@ -364,14 +364,14 @@ RSpec.describe Gitlab::Git::Commit, feature_category: :source_code_management do
 
       subject(:commits) { described_class.between(repository, from, to, limit: limit) }
 
-      context 'requesting a single commit' do
+      context 'when requesting a single commit' do
         let(:from) { SeedRepo::Commit::PARENT_ID }
         let(:to) { SeedRepo::Commit::ID }
 
         it { expect(commit_ids).to contain_exactly(to) }
       end
 
-      context 'requesting a commit range' do
+      context 'when requesting a commit range' do
         let(:from) { 'v1.0.0' }
         let(:to) { 'v1.1.0' }
 
@@ -382,11 +382,11 @@ RSpec.describe Gitlab::Git::Commit, feature_category: :source_code_management do
           ]
         end
 
-        context 'no limit' do
+        context 'when no limit' do
           it { expect(commit_ids).to eq(commits_in_range) }
         end
 
-        context 'limited' do
+        context 'when limited' do
           let(:limit) { 1 }
 
           it { expect(commit_ids).to eq(commits_in_range.last(1)) }
@@ -805,7 +805,7 @@ RSpec.describe Gitlab::Git::Commit, feature_category: :source_code_management do
         end
       end
 
-      context 'abbreviated SHA pattern' do
+      context 'when abbreviated SHA pattern' do
         let(:pattern) { described_class::SHA_PATTERN }
 
         context "with minimum length" do
@@ -825,7 +825,7 @@ RSpec.describe Gitlab::Git::Commit, feature_category: :source_code_management do
         it_behaves_like 'a SHA pattern'
       end
 
-      context 'full SHA pattern' do
+      context 'when full SHA pattern' do
         let(:pattern) { described_class::FULL_SHA_PATTERN }
 
         context 'with abbreviated length' do
@@ -838,13 +838,13 @@ RSpec.describe Gitlab::Git::Commit, feature_category: :source_code_management do
       end
     end
 
-    context 'SHA1' do
+    context 'when SHA1' do
       let(:sha) { "5716ca5987cbf97d6bb54920bea6adde242d87e6" }
 
       it_behaves_like 'a SHA-matching pattern'
     end
 
-    context 'SHA256' do
+    context 'when SHA256' do
       let(:sha) { "a52e146ac2ab2d0efbb768ab8ebd1e98a6055764c81fe424fbae4522f5b4cb92" }
 
       it_behaves_like 'a SHA-matching pattern'

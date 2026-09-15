@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Gitlab::Database::Aggregation::Authorization, feature_category: :database do
+RSpec.describe Gitlab::Database::Aggregation::Authorization, feature_category: :value_stream_management do
   let(:user) { build_stubbed(:user) }
   let(:resource) { build_stubbed(:project) }
   let(:context) { { scope: :test_scope, current_user: user, authorization_resources: [resource] } }

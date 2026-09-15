@@ -159879,6 +159879,30 @@
               "deprecationReason": null
             },
             {
+              "name": "TARGET_SCAN_MISSING",
+              "description": "Represents error which occurs when the scans enforced by a policy could not be found in the target branch pipelines.",
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "TARGET_PIPELINE_MISSING",
+              "description": "Represents error which occurs when the SBOM reports required by a policy could not be found on the target branch.",
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "EVALUATION_SKIPPED",
+              "description": "Represents error which occurs when a policy could not be evaluated within the specified timeframe, so approvals are required for the policy.",
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "PIPELINE_FAILED",
+              "description": "Represents error which occurs when a policy could not be evaluated because the latest pipeline failed.",
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
               "name": "UNKNOWN",
               "description": "Represents unknown error.",
               "isDeprecated": false,

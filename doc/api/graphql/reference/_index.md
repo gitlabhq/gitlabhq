@@ -22932,6 +22932,7 @@ Fields:
 | <a id="artifactregistryrepositoryconnection-edges"></a>`edges` | [`[ArtifactRegistryRepositoryEdge]`](#artifactregistryrepositoryedge) | A list of edges. |
 | <a id="artifactregistryrepositoryconnection-nodes"></a>`nodes` | [`[ArtifactRegistryRepository]`](#artifactregistryrepository) | A list of nodes. |
 | <a id="artifactregistryrepositoryconnection-pageinfo"></a>`pageInfo` | [`PageInfo!`](#pageinfo) | Information to aid in pagination. |
+| <a id="artifactregistryrepositoryconnection-userpermissions"></a>`userPermissions` {{< icon name="warning-solid" >}} | [`ArtifactRegistryNamespacePermissions!`](#artifactregistrynamespacepermissions) | Introduced in GitLab 19.5. Status: Experiment. Permissions Artifact Registry grants the current user on the namespace the repositories belong to. Advisory, because Artifact Registry authorizes every request on its own. Every permission is `false` when Artifact Registry returned no verdicts. The parent field returns `null` when the `artifact_registry_ui` feature flag is disabled, so this block is not reached. |
 
 #### `ArtifactRegistryRepositoryEdge`
 
@@ -36541,6 +36542,22 @@ Fields:
 | <a id="artifactregistrymavenversionfile-sha512"></a>`sha512` {{< icon name="warning-solid" >}} | [`String!`](#string) | Introduced in GitLab 19.4. Status: Experiment. SHA-512 checksum of the file. |
 | <a id="artifactregistrymavenversionfile-sizebytes"></a>`sizeBytes` {{< icon name="warning-solid" >}} | [`BigInt!`](#bigint) | Introduced in GitLab 19.4. Status: Experiment. Stored size of the file in bytes. |
 
+### `ArtifactRegistryNamespacePermissions`
+
+Per-action permissions Artifact Registry reports for the current user on a namespace.
+
+Fields:
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="artifactregistrynamespacepermissions-createrepository"></a>`createRepository` {{< icon name="warning-solid" >}} | [`Boolean!`](#boolean) | Introduced in GitLab 19.5. Status: Experiment. Indicates the user can create a repository in the namespace. |
+| <a id="artifactregistrynamespacepermissions-createrepositoryupstream"></a>`createRepositoryUpstream` {{< icon name="warning-solid" >}} | [`Boolean!`](#boolean) | Introduced in GitLab 19.5. Status: Experiment. Indicates the user can add an upstream to the namespace's repositories. |
+| <a id="artifactregistrynamespacepermissions-deleterepository"></a>`deleteRepository` {{< icon name="warning-solid" >}} | [`Boolean!`](#boolean) | Introduced in GitLab 19.5. Status: Experiment. Indicates the user can delete repositories of the namespace. |
+| <a id="artifactregistrynamespacepermissions-deleterepositoryupstream"></a>`deleteRepositoryUpstream` {{< icon name="warning-solid" >}} | [`Boolean!`](#boolean) | Introduced in GitLab 19.5. Status: Experiment. Indicates the user can remove an upstream from the namespace's repositories. |
+| <a id="artifactregistrynamespacepermissions-readrepository"></a>`readRepository` {{< icon name="warning-solid" >}} | [`Boolean!`](#boolean) | Introduced in GitLab 19.5. Status: Experiment. Indicates the user can read repositories of the namespace and their metadata. |
+| <a id="artifactregistrynamespacepermissions-updaterepository"></a>`updateRepository` {{< icon name="warning-solid" >}} | [`Boolean!`](#boolean) | Introduced in GitLab 19.5. Status: Experiment. Indicates the user can change the settings of the namespace's repositories. |
+| <a id="artifactregistrynamespacepermissions-updaterepositoryupstream"></a>`updateRepositoryUpstream` {{< icon name="warning-solid" >}} | [`Boolean!`](#boolean) | Introduced in GitLab 19.5. Status: Experiment. Indicates the user can change an upstream of the namespace's repositories. |
+
 ### `ArtifactRegistryNpmDistTag`
 
 npm dist-tag of a package in an Artifact Registry repository.
@@ -36709,6 +36726,7 @@ Fields:
 | <a id="artifactregistryrepositorydetails-settings"></a>`settings` {{< icon name="warning-solid" >}} | [`ArtifactRegistryRemoteSettings`](#artifactregistryremotesettings) | Introduced in GitLab 19.3. Status: Experiment. Upstream configuration Artifact Registry returned for the repository. Null when it returned none, so null on a hosted or virtual repository. |
 | <a id="artifactregistryrepositorydetails-sizebytes"></a>`sizeBytes` {{< icon name="warning-solid" >}} | [`BigInt!`](#bigint) | Introduced in GitLab 19.3. Status: Experiment. Storage the repository occupies, in bytes. Buffered, so it can lag. |
 | <a id="artifactregistryrepositorydetails-updatedby"></a>`updatedBy` {{< icon name="warning-solid" >}} | [`UserCore`](#usercore) | Introduced in GitLab 19.4. Status: Experiment. User who last changed the repository. Null when the editor is unknown or no longer exists. |
+| <a id="artifactregistryrepositorydetails-upstreamrepositories"></a>`upstreamRepositories` {{< icon name="warning-solid" >}} | [`[ArtifactRegistryUpstreamRepositoryAssociation!]`](#artifactregistryupstreamrepositoryassociation) | Introduced in GitLab 19.5. Status: Experiment. Upstream repositories a virtual repository resolves through, in resolution order. Can be selected once per operation. Returns `null` for a hosted or remote repository, for a repository that is gone, and when Artifact Registry rejects the read: silently for a 401, 403, or 404, and alongside a top-level error for a 429, a 5xx, or any other 4xx. |
 | <a id="artifactregistryrepositorydetails-userpermissions"></a>`userPermissions` {{< icon name="warning-solid" >}} | [`ArtifactRegistryRepositoryPermissions!`](#artifactregistryrepositorypermissions) | Introduced in GitLab 19.5. Status: Experiment. Permissions Artifact Registry grants the current user on the repository. Advisory, because Artifact Registry authorizes every request on its own. Every permission is `false` when Artifact Registry returned no verdicts. The parent field returns `null` when the `artifact_registry_ui` feature flag is disabled, so this block is not reached. |
 | <a id="artifactregistryrepositorydetails-visibility"></a>`visibility` {{< icon name="warning-solid" >}} | [`ArtifactRegistryRepositoryVisibility!`](#artifactregistryrepositoryvisibility) | Introduced in GitLab 19.3. Status: Experiment. Who can read the repository. |
 
@@ -36802,6 +36820,31 @@ Fields:
 | <a id="artifactregistryroleassignment-createdat"></a>`createdAt` | [`Time`](#time) | Time the assignment was created. |
 | <a id="artifactregistryroleassignment-resourceid"></a>`resourceId` | [`String!`](#string) | UUID of the Artifact Registry resource the role is assigned on. |
 | <a id="artifactregistryroleassignment-role"></a>`role` | [`ArtifactRegistryRole`](#artifactregistryrole) | Assigned Artifact Registry role. |
+
+### `ArtifactRegistryUpstreamRepositoryAssociation`
+
+One upstream of a virtual Artifact Registry repository: its position and a summary of the repository it points at.
+
+Fields:
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="artifactregistryupstreamrepositoryassociation-id"></a>`id` {{< icon name="warning-solid" >}} | [`ID!`](#id) | Introduced in GitLab 19.5. Status: Experiment. ID of the upstream association in Artifact Registry. |
+| <a id="artifactregistryupstreamrepositoryassociation-position"></a>`position` {{< icon name="warning-solid" >}} | [`Int!`](#int) | Introduced in GitLab 19.5. Status: Experiment. 1-based resolution position of the upstream, consulted in ascending order. |
+| <a id="artifactregistryupstreamrepositoryassociation-upstreamrepository"></a>`upstreamRepository` {{< icon name="warning-solid" >}} | [`ArtifactRegistryUpstreamRepositorySummary!`](#artifactregistryupstreamrepositorysummary) | Introduced in GitLab 19.5. Status: Experiment. Summary of the repository the association points at. |
+
+### `ArtifactRegistryUpstreamRepositorySummary`
+
+Summary of a repository that is an upstream of a virtual Artifact Registry repository.
+
+Fields:
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="artifactregistryupstreamrepositorysummary-format"></a>`format` {{< icon name="warning-solid" >}} | [`ArtifactRegistryRepositoryFormat!`](#artifactregistryrepositoryformat) | Introduced in GitLab 19.5. Status: Experiment. Package format the upstream repository holds. |
+| <a id="artifactregistryupstreamrepositorysummary-id"></a>`id` {{< icon name="warning-solid" >}} | [`ID!`](#id) | Introduced in GitLab 19.5. Status: Experiment. ID of the upstream repository in Artifact Registry. |
+| <a id="artifactregistryupstreamrepositorysummary-kind"></a>`kind` {{< icon name="warning-solid" >}} | [`ArtifactRegistryUpstreamRepositoryKind`](#artifactregistryupstreamrepositorykind) | Introduced in GitLab 19.5. Status: Experiment. How the upstream repository sources its artifacts. Artifact Registry returns `hosted` or `remote` by contract; a value outside those resolves `null` alongside a top-level error rather than a badge. |
+| <a id="artifactregistryupstreamrepositorysummary-name"></a>`name` {{< icon name="warning-solid" >}} | [`String!`](#string) | Introduced in GitLab 19.5. Status: Experiment. Name of the upstream repository. |
 
 ### `ArtifactRegistryVersion`
 
@@ -40195,6 +40238,7 @@ Fields:
 | <a id="commitdata-authoravatar"></a>`authorAvatar` | [`String!`](#string) | Link to author avatar. |
 | <a id="commitdata-commitauthorlink"></a>`commitAuthorLink` | [`String!`](#string) | Link to the commit author. |
 | <a id="commitdata-commitlink"></a>`commitLink` | [`String!`](#string) | Link to the commit. |
+| <a id="commitdata-previousblamepath"></a>`previousBlamePath` | [`String`](#string) | Path to blame prior to the change. |
 | <a id="commitdata-projectblamelink"></a>`projectBlameLink` | [`String`](#string) | Link to blame prior to the change. |
 | <a id="commitdata-timeagotooltip"></a>`timeAgoTooltip` | [`String!`](#string) | Time of commit. |
 
@@ -42124,7 +42168,6 @@ Fields:
 | <a id="customizabledashboard-status"></a>`status` {{< icon name="warning-solid" >}} | [`String`](#string) | Introduced in GitLab 17.0. Status: Experiment. Status of the dashboard. |
 | <a id="customizabledashboard-title"></a>`title` | [`String`](#string) | Title of the dashboard. |
 | <a id="customizabledashboard-userdefined"></a>`userDefined` | [`Boolean!`](#boolean) | Indicates whether the dashboard is user-defined or provided by GitLab. |
-| <a id="customizabledashboard-views"></a>`views` {{< icon name="warning-solid" >}} | [`[CustomizableDashboardView!]`](#customizabledashboardview) | Introduced in GitLab 19.4. Status: Experiment. Views the user can switch between on the dashboard, each with its own panels. |
 
 ### `CustomizableDashboardPanel`
 
@@ -42163,17 +42206,6 @@ Fields:
 | ---- | ---- | ----------- |
 | <a id="customizabledashboardpanelview-text"></a>`text` | [`String`](#string) | Label shown in the segmented control for the view. |
 | <a id="customizabledashboardpanelview-visualization"></a>`visualization` | [`CustomizableDashboardVisualization`](#customizabledashboardvisualization) | Visualization rendered when the view is selected. |
-
-### `CustomizableDashboardView`
-
-Represents a view that can be selected within a customizable dashboard.
-
-Fields:
-
-| Name | Type | Description |
-| ---- | ---- | ----------- |
-| <a id="customizabledashboardview-panels"></a>`panels` | [`CustomizableDashboardPanelConnection`](#customizabledashboardpanelconnection) | Panels shown when the view is selected. (see [Connections](#connections)) |
-| <a id="customizabledashboardview-title"></a>`title` | [`String`](#string) | Title of the view. |
 
 ### `CustomizableDashboardVisualization`
 
@@ -68611,6 +68643,15 @@ Artifact Registry role that can be assigned to a user.
 | <a id="artifactregistryrole-artifact_manager"></a>`ARTIFACT_MANAGER` | Manage artifacts and repository configuration. |
 | <a id="artifactregistryrole-artifact_viewer"></a>`ARTIFACT_VIEWER` | Consume artifacts and browse the registry. |
 
+### `ArtifactRegistryUpstreamRepositoryKind`
+
+How an upstream of a virtual Artifact Registry repository sources its artifacts. An upstream is never virtual.
+
+| Value | Description |
+| ----- | ----------- |
+| <a id="artifactregistryupstreamrepositorykind-hosted"></a>`HOSTED` | Stores artifacts published to GitLab. |
+| <a id="artifactregistryupstreamrepositorykind-remote"></a>`REMOTE` | Proxies and caches an upstream registry. |
+
 ### `ArtifactRegistryVersionSort`
 
 Values for sorting Artifact Registry package versions.
@@ -72229,8 +72270,12 @@ Lists the status of a virtual registry cleanup policy.
 | Value | Description |
 | ----- | ----------- |
 | <a id="policyviolationerrortype-artifacts_missing"></a>`ARTIFACTS_MISSING` | Represents error which occurs when pipeline is misconfigured and does not include necessary artifacts to evaluate a policy. |
+| <a id="policyviolationerrortype-evaluation_skipped"></a>`EVALUATION_SKIPPED` | Represents error which occurs when a policy could not be evaluated within the specified timeframe, so approvals are required for the policy. |
+| <a id="policyviolationerrortype-pipeline_failed"></a>`PIPELINE_FAILED` | Represents error which occurs when a policy could not be evaluated because the latest pipeline failed. |
 | <a id="policyviolationerrortype-scan_not_succeeded"></a>`SCAN_NOT_SUCCEEDED` | Represents error which occurs when a security scan job did not complete successfully (e.g., was canceled or failed), preventing policy evaluation. |
 | <a id="policyviolationerrortype-scan_removed"></a>`SCAN_REMOVED` | Represents mismatch between the scans of the source and target pipelines. |
+| <a id="policyviolationerrortype-target_pipeline_missing"></a>`TARGET_PIPELINE_MISSING` | Represents error which occurs when the SBOM reports required by a policy could not be found on the target branch. |
+| <a id="policyviolationerrortype-target_scan_missing"></a>`TARGET_SCAN_MISSING` | Represents error which occurs when the scans enforced by a policy could not be found in the target branch pipelines. |
 | <a id="policyviolationerrortype-unknown"></a>`UNKNOWN` | Represents unknown error. |
 
 ### `PolicyViolationStatus`

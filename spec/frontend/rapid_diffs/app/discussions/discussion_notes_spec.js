@@ -6,6 +6,9 @@ import NoteableNote from '~/rapid_diffs/app/discussions/noteable_note.vue';
 import SystemNote from '~/rapid_diffs/app/discussions/system_note.vue';
 import LineRangeHeadline from '~/rapid_diffs/app/discussions/line_range_headline.vue';
 import ToggleRepliesWidget from '~/notes/components/toggle_replies_widget.vue';
+import PlaceholderNote from '~/rapid_diffs/app/discussions/placeholder_note.vue';
+import PlaceholderSystemNote from '~/rapid_diffs/app/discussions/placeholder_system_note.vue';
+import { SYSTEM_NOTE } from '~/notes/constants';
 
 describe('DiscussionNotes', () => {
   let wrapper;
@@ -156,6 +159,46 @@ describe('DiscussionNotes', () => {
       const note = { id: 'foo', system: true };
       createComponent({ notes: [note], isLastDiscussion: true });
       expect(wrapper.findComponent(SystemNote).props('isLastDiscussion')).toBe(true);
+    });
+  });
+
+  describe('placeholder notes', () => {
+    const placeholderNote = {
+      id: 'placeholder',
+      isPlaceholderNote: true,
+      notes: [{ body: 'wip' }],
+    };
+
+    it('renders a placeholder reply via PlaceholderNote with the inner note', () => {
+      createComponent({ notes: [{ id: 'foo' }, placeholderNote] });
+      const placeholder = wrapper.findComponent(PlaceholderNote);
+      expect(placeholder.exists()).toBe(true);
+      expect(placeholder.props('note')).toBe(placeholderNote.notes[0]);
+      expect(wrapper.findAllComponents(NoteableNote)).toHaveLength(1);
+    });
+
+    it('renders a system placeholder reply via PlaceholderSystemNote', () => {
+      const systemPlaceholder = {
+        id: 'placeholder',
+        isPlaceholderNote: true,
+        placeholderType: SYSTEM_NOTE,
+        notes: [{ body: 'applying command' }],
+      };
+      createComponent({ notes: [{ id: 'foo' }, systemPlaceholder] });
+      const placeholder = wrapper.findComponent(PlaceholderSystemNote);
+      expect(placeholder.exists()).toBe(true);
+      expect(placeholder.props('note')).toBe(systemPlaceholder.notes[0]);
+      expect(wrapper.findComponent(SystemNote).exists()).toBe(false);
+    });
+
+    it('renders multiple same-type placeholders with distinct keys in one discussion', () => {
+      const first = { id: 'placeholder-1', isPlaceholderNote: true, notes: [{ body: 'wip' }] };
+      const second = { id: 'placeholder-2', isPlaceholderNote: true, notes: [{ body: 'command' }] };
+      createComponent({ notes: [{ id: 'foo' }, first, second] });
+      const placeholders = wrapper.findAllComponents(PlaceholderNote);
+      expect(placeholders).toHaveLength(2);
+      const keys = placeholders.wrappers.map((placeholder) => placeholder.vm.$vnode.key);
+      expect(keys).toStrictEqual(['placeholder-1', 'placeholder-2']);
     });
   });
 

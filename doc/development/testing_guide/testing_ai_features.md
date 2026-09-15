@@ -122,28 +122,49 @@ Use [end-to-end tests](end_to_end/_index.md) sparingly to verify AI features wor
 
 ### Duo Agent Platform foundational flows
 
-The Duo Agent Platform foundational-flow smoke test is an orchestrated end-to-end test that drives a flow through a real CI pipeline.
-The `gitlab-qa` orchestrator runs the test as the `duo-agent-platform` job in the `e2e:test-on-omnibus-ee` child pipeline.
-The test creates a workflow through `POST /ai/duo_workflows/workflows` with `start_workflow: true`, then asserts that the `duo_workflow` source pipeline succeeds and the workflow reaches `finished`.
+The Duo Agent Platform foundational-flow smoke tests are orchestrated end-to-end tests that drive a flow through a real CI pipeline.
+The `gitlab-qa` orchestrator runs both tests as the `duo-agent-platform` job in the `e2e:test-on-omnibus-ee` child pipeline.
 
-The test spans two repositories.
-The GitLab repository holds the spec and the flow provisioning helpers.
+The `developer/v1` test creates a workflow through `POST /ai/duo_workflows/workflows` with `start_workflow: true`, then asserts that the `duo_workflow` source pipeline succeeds and the workflow reaches `finished`.
+The `code_review/v1` test creates a merge request, then assigns the `GitLabDuo` review bot as its reviewer, the way a review is requested in the product.
+It then asserts that the `duo_workflow` source pipeline succeeds, the flow reaches `finished`, and the review bot posts its review summary on the merge request.
+
+The tests span two repositories.
+The GitLab repository holds the specs and the flow provisioning helpers.
 The [`gitlab-qa`](https://gitlab.com/gitlab-org/gitlab-qa) orchestrator holds the infrastructure that boots the Duo Workflow Service and routes the GitLab instance to it:
 
 - `Component::DuoWorkflowService` boots the Duo Workflow Service from the same `model-gateway` image as the AI Gateway, switched to gRPC and agentic-mock mode, and captures the container logs to the job artifacts on teardown.
 - `Test::Integration::AiGatewayBase` wires the Duo Workflow Service into the scenario and passes the `GITLAB_DUO_WORKFLOW_SERVICE_URL` and `GITLAB_DUO_WORKFLOW_SECURE` values into the omnibus Rails environment.
-- `Test::Integration::DuoAgentPlatform` is a dedicated scenario, a subclass of the AI Gateway scenario, so the flow runs as its own `duo-agent-platform` omnibus job and the Duo Workflow Service container stays out of the `ai-gateway` job.
+- `Test::Integration::DuoAgentPlatform` is a dedicated scenario, a subclass of the AI Gateway scenario, so the flows run in their own `duo-agent-platform` omnibus job and the Duo Workflow Service container stays out of the `ai-gateway` job.
 
-The agentic-mock mode returns deterministic responses driven by directives in the flow goal instead of calling a real model, the same approach the Duo Chat and Code Suggestions tests use for the AI Gateway.
+The agentic-mock mode returns deterministic responses driven by directives, instead of calling a real model, the same approach the Duo Chat and Code Suggestions tests use for the AI Gateway.
+Where those directives go depends on the flow.
+The `developer/v1` goal is free-form, so its test puts directives in the flow goal.
+A `code_review/v1` goal is validated to be a merge request IID or a merge request URL, so anything else returns `400`.
+The Code Review test instead puts its directives in custom instructions, committed to the project's default branch as `.gitlab/duo/mr-review-instructions.yaml`, because that is the only field the flow copies into the model prompt unescaped.
 
-The following files in the GitLab repository make up the test:
+Getting the escaping wrong makes the mock silently return placeholder text, so keep these rules in mind:
+
+1. The mock parses the entire prompt as XML, so any unescaped `<`, `>`, or `&` anywhere in the merge request diff or title makes every scripted response degrade to a placeholder.
+   Keep the seeded diff plain ASCII.
+1. The mock reads only the text of the `<tool_calls>` element, so the JSON payload inside it must have its `<`, `>`, and `&` XML-escaped.
+1. Each step of a flow builds its own model instance, so the script replays from the beginning in every step of the flow that calls a model.
+   A tool call that a given step's toolset does not include fails that step, which then advances anyway.
+
+`Gitlab::Duo::CodeReview::Modes::Dap` refuses Duo Agent Platform routing for a user holding a Duo Enterprise seat unless the root namespace has recorded consent for `:code_review_flow_dap_routing`.
+Without that consent the reviewer assignment still succeeds, but falls back to the non-agentic review service, so no flow starts at all.
+`enable_on_group!` therefore sends `create_code_review_flow_consent: true` whenever `code_review/v1` is the flow being enabled.
+The API ignores that parameter when the namespace has no Duo Enterprise add-on, where consent is not required.
+
+The following files in the GitLab repository make up the tests:
 
 | File | Description |
 | ---- | ----------- |
-| `qa/qa/specs/features/ee/api/16_ai_powered/duo_foundational_flow_in_ci_spec.rb` | The spec that provisions the flow, creates the workflow, and asserts the pipeline and workflow status. |
-| `qa/qa/ee/flow/foundational_flow.rb` | Provisioning helpers for the group, project, Duo seat, and flow consumer. |
-| `qa/qa/ee/resource/ai/duo_workflow.rb` | The `DuoWorkflow` API resource and the `FOUNDATIONAL_FLOWS` registry of supported flow references and their default goals. |
-| `qa/qa/ee/scenario/test/integration/duo_agent_platform.rb` | The scenario that selects the spec into the `duo-agent-platform` omnibus job. |
+| `qa/qa/specs/features/ee/api/16_ai_powered/duo_foundational_flow_in_ci_spec.rb` | The Duo Developer flow spec. Provisions the flow, creates the workflow, and asserts the pipeline and workflow status. |
+| `qa/qa/specs/features/ee/api/16_ai_powered/duo_code_review_flow_in_ci_spec.rb` | The Code Review flow spec. Seeds a merge request and the agentic-mock script, requests a review from the bot, then asserts the pipeline, the flow status, and the review posted on the merge request. |
+| `qa/qa/ee/flow/foundational_flow.rb` | Provisioning helpers for the group, project, Duo seat, and flow consumer, and for requesting a code review from the bot. |
+| `qa/qa/ee/resource/ai/duo_workflow.rb` | The `DuoWorkflow` API resource, the `FOUNDATIONAL_FLOWS` registry of flow references the resource can create, and the finder for a flow that GitLab created itself. |
+| `qa/qa/ee/scenario/test/integration/duo_agent_platform.rb` | The scenario that selects the specs into the `duo-agent-platform` omnibus job. |
 
 A foundational flow runs after four setup steps have completed in `foundational_flow.rb`:
 
@@ -153,11 +174,14 @@ A foundational flow runs after four setup steps have completed in `foundational_
 1. `wait_for_flow_consumer!` waits until the consumer, its active service account, and the service-account project membership all resolve.
    The cascade in step 2 can lag on a cold instance, so this helper re-enables the flow until provisioning settles.
 
-To add another foundational flow, such as a future `developer/v2`:
+To add another foundational flow:
 
-1. Register the flow reference and its default goal in the `FOUNDATIONAL_FLOWS` registry in `qa/qa/ee/resource/ai/duo_workflow.rb`.
-1. Pass the new flow reference to the helpers from the spec.
-   The helpers need no change, because `enable_on_group!` drives provisioning from the list of enabled foundational flows.
+1. Pass the flow reference to the provisioning helpers from the spec.
+1. Extend `enable_on_group!` if the flow gates on namespace consent or on a specific add-on.
+1. Work out where the flow's prompt accepts mock directives, because the goal is not always available for that.
+1. If the spec creates the flow through `POST /ai/duo_workflows/workflows`, register the flow reference in the `FOUNDATIONAL_FLOWS` registry in `qa/qa/ee/resource/ai/duo_workflow.rb`, with a `default_goal` only if the flow's goal is static.
+   A flow whose goal names a resource, as Code Review does, needs `goal`, and `source_branch` if the flow checks out a branch, supplied by the spec.
+   A flow that GitLab triggers itself is discovered with `DuoWorkflow.find_latest_in_project` instead, and needs no registry entry.
 
 Custom catalog flows do not use the foundational flows list, so you must create the catalog item and its consumer directly rather than call `enable_on_group!`.
 

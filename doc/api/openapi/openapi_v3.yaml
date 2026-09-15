@@ -2576,6 +2576,8 @@ paths:
           description: Unprocessable entity - project has no embeddings
         '429':
           description: Too many requests
+        '503':
+          description: Service unavailable - search backend timed out
         '400':
           description: Bad Request
       parameters:

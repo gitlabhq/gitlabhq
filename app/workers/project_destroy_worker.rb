@@ -13,6 +13,12 @@ class ProjectDestroyWorker
   idempotent!
   deduplicate :until_executed, ttl: 2.hours
 
+  # Backpressure: caps concurrent project deletions to protect the shared Sidekiq
+  # shard and database. 0 (the default) falls back to the calculated cap;
+  # a positive value overrides it.
+  # See https://gitlab.com/gitlab-com/gl-infra/production-engineering/-/issues/29508
+  concurrency_limit -> { Gitlab::CurrentSettings.project_deletion_jobs_concurrency_limit.nonzero? }
+
   def perform(project_id, user_id, params)
     params = params.symbolize_keys
     Gitlab::QueryLimiting.disable!('https://gitlab.com/gitlab-org/gitlab/-/issues/333366')

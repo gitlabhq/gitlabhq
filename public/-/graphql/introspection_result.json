@@ -39335,6 +39335,129 @@
         },
         {
           "kind": "OBJECT",
+          "name": "ArtifactRegistryNamespacePermissions",
+          "description": "Per-action permissions Artifact Registry reports for the current user on a namespace.",
+          "fields": [
+            {
+              "name": "createRepository",
+              "description": "Indicates the user can create a repository in the namespace. Introduced in GitLab 19.5: Status: Experiment.",
+              "args": [],
+              "type": {
+                "kind": "NON_NULL",
+                "name": null,
+                "ofType": {
+                  "kind": "SCALAR",
+                  "name": "Boolean",
+                  "ofType": null
+                }
+              },
+              "isDeprecated": true,
+              "deprecationReason": "Status: Experiment. Introduced in GitLab 19.5."
+            },
+            {
+              "name": "createRepositoryUpstream",
+              "description": "Indicates the user can add an upstream to the namespace's repositories. Introduced in GitLab 19.5: Status: Experiment.",
+              "args": [],
+              "type": {
+                "kind": "NON_NULL",
+                "name": null,
+                "ofType": {
+                  "kind": "SCALAR",
+                  "name": "Boolean",
+                  "ofType": null
+                }
+              },
+              "isDeprecated": true,
+              "deprecationReason": "Status: Experiment. Introduced in GitLab 19.5."
+            },
+            {
+              "name": "deleteRepository",
+              "description": "Indicates the user can delete repositories of the namespace. Introduced in GitLab 19.5: Status: Experiment.",
+              "args": [],
+              "type": {
+                "kind": "NON_NULL",
+                "name": null,
+                "ofType": {
+                  "kind": "SCALAR",
+                  "name": "Boolean",
+                  "ofType": null
+                }
+              },
+              "isDeprecated": true,
+              "deprecationReason": "Status: Experiment. Introduced in GitLab 19.5."
+            },
+            {
+              "name": "deleteRepositoryUpstream",
+              "description": "Indicates the user can remove an upstream from the namespace's repositories. Introduced in GitLab 19.5: Status: Experiment.",
+              "args": [],
+              "type": {
+                "kind": "NON_NULL",
+                "name": null,
+                "ofType": {
+                  "kind": "SCALAR",
+                  "name": "Boolean",
+                  "ofType": null
+                }
+              },
+              "isDeprecated": true,
+              "deprecationReason": "Status: Experiment. Introduced in GitLab 19.5."
+            },
+            {
+              "name": "readRepository",
+              "description": "Indicates the user can read repositories of the namespace and their metadata. Introduced in GitLab 19.5: Status: Experiment.",
+              "args": [],
+              "type": {
+                "kind": "NON_NULL",
+                "name": null,
+                "ofType": {
+                  "kind": "SCALAR",
+                  "name": "Boolean",
+                  "ofType": null
+                }
+              },
+              "isDeprecated": true,
+              "deprecationReason": "Status: Experiment. Introduced in GitLab 19.5."
+            },
+            {
+              "name": "updateRepository",
+              "description": "Indicates the user can change the settings of the namespace's repositories. Introduced in GitLab 19.5: Status: Experiment.",
+              "args": [],
+              "type": {
+                "kind": "NON_NULL",
+                "name": null,
+                "ofType": {
+                  "kind": "SCALAR",
+                  "name": "Boolean",
+                  "ofType": null
+                }
+              },
+              "isDeprecated": true,
+              "deprecationReason": "Status: Experiment. Introduced in GitLab 19.5."
+            },
+            {
+              "name": "updateRepositoryUpstream",
+              "description": "Indicates the user can change an upstream of the namespace's repositories. Introduced in GitLab 19.5: Status: Experiment.",
+              "args": [],
+              "type": {
+                "kind": "NON_NULL",
+                "name": null,
+                "ofType": {
+                  "kind": "SCALAR",
+                  "name": "Boolean",
+                  "ofType": null
+                }
+              },
+              "isDeprecated": true,
+              "deprecationReason": "Status: Experiment. Introduced in GitLab 19.5."
+            }
+          ],
+          "inputFields": null,
+          "interfaces": [],
+          "enumValues": null,
+          "possibleTypes": null
+        },
+        {
+          "kind": "OBJECT",
           "name": "ArtifactRegistryNpmDistTag",
           "description": "npm dist-tag of a package in an Artifact Registry repository.",
           "fields": [
@@ -40798,6 +40921,22 @@
               },
               "isDeprecated": false,
               "deprecationReason": null
+            },
+            {
+              "name": "userPermissions",
+              "description": "Permissions Artifact Registry grants the current user on the namespace the repositories belong to. Advisory, because Artifact Registry authorizes every request on its own. Every permission is `false` when Artifact Registry returned no verdicts. The parent field returns `null` when the `artifact_registry_ui` feature flag is disabled, so this block is not reached. Introduced in GitLab 19.5: Status: Experiment.",
+              "args": [],
+              "type": {
+                "kind": "NON_NULL",
+                "name": null,
+                "ofType": {
+                  "kind": "OBJECT",
+                  "name": "ArtifactRegistryNamespacePermissions",
+                  "ofType": null
+                }
+              },
+              "isDeprecated": true,
+              "deprecationReason": "Status: Experiment. Introduced in GitLab 19.5."
             }
           ],
           "inputFields": null,
@@ -41405,6 +41544,26 @@
               },
               "isDeprecated": true,
               "deprecationReason": "Status: Experiment. Introduced in GitLab 19.4."
+            },
+            {
+              "name": "upstreamRepositories",
+              "description": "Upstream repositories a virtual repository resolves through, in resolution order. Can be selected once per operation. Returns `null` for a hosted or remote repository, for a repository that is gone, and when Artifact Registry rejects the read: silently for a 401, 403, or 404, and alongside a top-level error for a 429, a 5xx, or any other 4xx. Introduced in GitLab 19.5: Status: Experiment.",
+              "args": [],
+              "type": {
+                "kind": "LIST",
+                "name": null,
+                "ofType": {
+                  "kind": "NON_NULL",
+                  "name": null,
+                  "ofType": {
+                    "kind": "OBJECT",
+                    "name": "ArtifactRegistryUpstreamRepositoryAssociation",
+                    "ofType": null
+                  }
+                }
+              },
+              "isDeprecated": true,
+              "deprecationReason": "Status: Experiment. Introduced in GitLab 19.5."
             },
             {
               "name": "userPermissions",
@@ -42826,6 +42985,159 @@
               },
               "isDeprecated": false,
               "deprecationReason": null
+            }
+          ],
+          "inputFields": null,
+          "interfaces": [],
+          "enumValues": null,
+          "possibleTypes": null
+        },
+        {
+          "kind": "OBJECT",
+          "name": "ArtifactRegistryUpstreamRepositoryAssociation",
+          "description": "One upstream of a virtual Artifact Registry repository: its position and a summary of the repository it points at.",
+          "fields": [
+            {
+              "name": "id",
+              "description": "ID of the upstream association in Artifact Registry. Introduced in GitLab 19.5: Status: Experiment.",
+              "args": [],
+              "type": {
+                "kind": "NON_NULL",
+                "name": null,
+                "ofType": {
+                  "kind": "SCALAR",
+                  "name": "ID",
+                  "ofType": null
+                }
+              },
+              "isDeprecated": true,
+              "deprecationReason": "Status: Experiment. Introduced in GitLab 19.5."
+            },
+            {
+              "name": "position",
+              "description": "1-based resolution position of the upstream, consulted in ascending order. Introduced in GitLab 19.5: Status: Experiment.",
+              "args": [],
+              "type": {
+                "kind": "NON_NULL",
+                "name": null,
+                "ofType": {
+                  "kind": "SCALAR",
+                  "name": "Int",
+                  "ofType": null
+                }
+              },
+              "isDeprecated": true,
+              "deprecationReason": "Status: Experiment. Introduced in GitLab 19.5."
+            },
+            {
+              "name": "upstreamRepository",
+              "description": "Summary of the repository the association points at. Introduced in GitLab 19.5: Status: Experiment.",
+              "args": [],
+              "type": {
+                "kind": "NON_NULL",
+                "name": null,
+                "ofType": {
+                  "kind": "OBJECT",
+                  "name": "ArtifactRegistryUpstreamRepositorySummary",
+                  "ofType": null
+                }
+              },
+              "isDeprecated": true,
+              "deprecationReason": "Status: Experiment. Introduced in GitLab 19.5."
+            }
+          ],
+          "inputFields": null,
+          "interfaces": [],
+          "enumValues": null,
+          "possibleTypes": null
+        },
+        {
+          "kind": "ENUM",
+          "name": "ArtifactRegistryUpstreamRepositoryKind",
+          "description": "How an upstream of a virtual Artifact Registry repository sources its artifacts. An upstream is never virtual.",
+          "fields": null,
+          "inputFields": null,
+          "interfaces": null,
+          "enumValues": [
+            {
+              "name": "HOSTED",
+              "description": "Stores artifacts published to GitLab.",
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "REMOTE",
+              "description": "Proxies and caches an upstream registry.",
+              "isDeprecated": false,
+              "deprecationReason": null
+            }
+          ],
+          "possibleTypes": null
+        },
+        {
+          "kind": "OBJECT",
+          "name": "ArtifactRegistryUpstreamRepositorySummary",
+          "description": "Summary of a repository that is an upstream of a virtual Artifact Registry repository.",
+          "fields": [
+            {
+              "name": "format",
+              "description": "Package format the upstream repository holds. Introduced in GitLab 19.5: Status: Experiment.",
+              "args": [],
+              "type": {
+                "kind": "NON_NULL",
+                "name": null,
+                "ofType": {
+                  "kind": "ENUM",
+                  "name": "ArtifactRegistryRepositoryFormat",
+                  "ofType": null
+                }
+              },
+              "isDeprecated": true,
+              "deprecationReason": "Status: Experiment. Introduced in GitLab 19.5."
+            },
+            {
+              "name": "id",
+              "description": "ID of the upstream repository in Artifact Registry. Introduced in GitLab 19.5: Status: Experiment.",
+              "args": [],
+              "type": {
+                "kind": "NON_NULL",
+                "name": null,
+                "ofType": {
+                  "kind": "SCALAR",
+                  "name": "ID",
+                  "ofType": null
+                }
+              },
+              "isDeprecated": true,
+              "deprecationReason": "Status: Experiment. Introduced in GitLab 19.5."
+            },
+            {
+              "name": "kind",
+              "description": "How the upstream repository sources its artifacts. Artifact Registry returns `hosted` or `remote` by contract; a value outside those resolves `null` alongside a top-level error rather than a badge. Introduced in GitLab 19.5: Status: Experiment.",
+              "args": [],
+              "type": {
+                "kind": "ENUM",
+                "name": "ArtifactRegistryUpstreamRepositoryKind",
+                "ofType": null
+              },
+              "isDeprecated": true,
+              "deprecationReason": "Status: Experiment. Introduced in GitLab 19.5."
+            },
+            {
+              "name": "name",
+              "description": "Name of the upstream repository. Introduced in GitLab 19.5: Status: Experiment.",
+              "args": [],
+              "type": {
+                "kind": "NON_NULL",
+                "name": null,
+                "ofType": {
+                  "kind": "SCALAR",
+                  "name": "String",
+                  "ofType": null
+                }
+              },
+              "isDeprecated": true,
+              "deprecationReason": "Status: Experiment. Introduced in GitLab 19.5."
             }
           ],
           "inputFields": null,
@@ -95655,6 +95967,18 @@
               "deprecationReason": null
             },
             {
+              "name": "previousBlamePath",
+              "description": "Path to blame prior to the change.",
+              "args": [],
+              "type": {
+                "kind": "SCALAR",
+                "name": "String",
+                "ofType": null
+              },
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
               "name": "projectBlameLink",
               "description": "Link to blame prior to the change.",
               "args": [],
@@ -124882,26 +125206,6 @@
               },
               "isDeprecated": false,
               "deprecationReason": null
-            },
-            {
-              "name": "views",
-              "description": "Views the user can switch between on the dashboard, each with its own panels. Introduced in GitLab 19.4: Status: Experiment.",
-              "args": [],
-              "type": {
-                "kind": "LIST",
-                "name": null,
-                "ofType": {
-                  "kind": "NON_NULL",
-                  "name": null,
-                  "ofType": {
-                    "kind": "OBJECT",
-                    "name": "CustomizableDashboardView",
-                    "ofType": null
-                  }
-                }
-              },
-              "isDeprecated": true,
-              "deprecationReason": "Status: Experiment. Introduced in GitLab 19.4."
             }
           ],
           "inputFields": null,
@@ -125315,90 +125619,6 @@
               "type": {
                 "kind": "OBJECT",
                 "name": "CustomizableDashboardVisualization",
-                "ofType": null
-              },
-              "isDeprecated": false,
-              "deprecationReason": null
-            }
-          ],
-          "inputFields": null,
-          "interfaces": [],
-          "enumValues": null,
-          "possibleTypes": null
-        },
-        {
-          "kind": "OBJECT",
-          "name": "CustomizableDashboardView",
-          "description": "Represents a view that can be selected within a customizable dashboard.",
-          "fields": [
-            {
-              "name": "panels",
-              "description": "Panels shown when the view is selected.",
-              "args": [
-                {
-                  "name": "after",
-                  "description": "Returns the elements in the list that come after the specified cursor.",
-                  "type": {
-                    "kind": "SCALAR",
-                    "name": "String",
-                    "ofType": null
-                  },
-                  "defaultValue": null,
-                  "isDeprecated": false,
-                  "deprecationReason": null
-                },
-                {
-                  "name": "before",
-                  "description": "Returns the elements in the list that come before the specified cursor.",
-                  "type": {
-                    "kind": "SCALAR",
-                    "name": "String",
-                    "ofType": null
-                  },
-                  "defaultValue": null,
-                  "isDeprecated": false,
-                  "deprecationReason": null
-                },
-                {
-                  "name": "first",
-                  "description": "Returns the first _n_ elements from the list.",
-                  "type": {
-                    "kind": "SCALAR",
-                    "name": "Int",
-                    "ofType": null
-                  },
-                  "defaultValue": null,
-                  "isDeprecated": false,
-                  "deprecationReason": null
-                },
-                {
-                  "name": "last",
-                  "description": "Returns the last _n_ elements from the list.",
-                  "type": {
-                    "kind": "SCALAR",
-                    "name": "Int",
-                    "ofType": null
-                  },
-                  "defaultValue": null,
-                  "isDeprecated": false,
-                  "deprecationReason": null
-                }
-              ],
-              "type": {
-                "kind": "OBJECT",
-                "name": "CustomizableDashboardPanelConnection",
-                "ofType": null
-              },
-              "isDeprecated": false,
-              "deprecationReason": null
-            },
-            {
-              "name": "title",
-              "description": "Title of the view.",
-              "args": [],
-              "type": {
-                "kind": "SCALAR",
-                "name": "String",
                 "ofType": null
               },
               "isDeprecated": false,
@@ -321053,6 +321273,30 @@
             {
               "name": "SCAN_NOT_SUCCEEDED",
               "description": "Represents error which occurs when a security scan job did not complete successfully (e.g., was canceled or failed), preventing policy evaluation.",
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "TARGET_SCAN_MISSING",
+              "description": "Represents error which occurs when the scans enforced by a policy could not be found in the target branch pipelines.",
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "TARGET_PIPELINE_MISSING",
+              "description": "Represents error which occurs when the SBOM reports required by a policy could not be found on the target branch.",
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "EVALUATION_SKIPPED",
+              "description": "Represents error which occurs when a policy could not be evaluated within the specified timeframe, so approvals are required for the policy.",
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "PIPELINE_FAILED",
+              "description": "Represents error which occurs when a policy could not be evaluated because the latest pipeline failed.",
               "isDeprecated": false,
               "deprecationReason": null
             },

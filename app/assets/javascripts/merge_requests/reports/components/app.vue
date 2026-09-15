@@ -6,6 +6,7 @@ import {
   SECURITY_SCAN_ROUTE,
   LICENSE_COMPLIANCE_ROUTE,
   CODE_QUALITY_ROUTE,
+  BROWSER_PERFORMANCE_ROUTE,
   LOAD_PERFORMANCE_ROUTE,
   METRICS_ROUTE,
   ROOT_ROUTE,
@@ -19,6 +20,7 @@ const REPORT_ROUTES = [
   SECURITY_SCAN_ROUTE,
   LICENSE_COMPLIANCE_ROUTE,
   CODE_QUALITY_ROUTE,
+  BROWSER_PERFORMANCE_ROUTE,
   LOAD_PERFORMANCE_ROUTE,
   METRICS_ROUTE,
 ];
@@ -50,6 +52,14 @@ export default {
     CodeQualityNavItem: defineAsyncComponent(
       () => import('~/merge_requests/reports/code_quality/code_quality_nav_item.vue'),
     ),
+    BrowserPerformanceProvider: defineAsyncComponent(
+      () =>
+        import('ee_component/merge_requests/reports/browser_performance/browser_performance_provider.vue'),
+    ),
+    BrowserPerformanceNavItem: defineAsyncComponent(
+      () =>
+        import('ee_component/merge_requests/reports/browser_performance/browser_performance_nav_item.vue'),
+    ),
     LoadPerformanceProvider: defineAsyncComponent(
       () =>
         import('ee_component/merge_requests/reports/load_performance/load_performance_provider.vue'),
@@ -80,6 +90,7 @@ export default {
         [SECURITY_SCAN_ROUTE]: this.hasSecurityScans,
         [LICENSE_COMPLIANCE_ROUTE]: this.hasLicenseComplianceReports,
         [CODE_QUALITY_ROUTE]: this.hasCodeQualityReports,
+        [BROWSER_PERFORMANCE_ROUTE]: this.hasBrowserPerformanceReports,
         [LOAD_PERFORMANCE_ROUTE]: this.hasLoadPerformanceReports,
         [METRICS_ROUTE]: this.hasMetricsReports,
       };
@@ -163,6 +174,9 @@ export default {
           <code-quality-provider v-if="hasCodeQualityReports" :mr="mr">
             <code-quality-nav-item />
           </code-quality-provider>
+          <browser-performance-provider v-if="hasBrowserPerformanceReports" :mr="mr">
+            <browser-performance-nav-item />
+          </browser-performance-provider>
           <load-performance-provider v-if="hasLoadPerformanceReports" :mr="mr">
             <load-performance-nav-item />
           </load-performance-provider>

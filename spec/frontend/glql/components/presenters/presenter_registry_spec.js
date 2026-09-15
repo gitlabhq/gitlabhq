@@ -17,6 +17,7 @@ import MilestonePresenter from '~/glql/components/presenters/milestone.vue';
 import NamedTextPresenter from '~/glql/components/presenters/named_text.vue';
 import NullPresenter from '~/glql/components/presenters/null.vue';
 import NumberPresenter from '~/glql/components/presenters/number.vue';
+import CreditsPresenter from '~/glql/components/presenters/credits.vue';
 import PercentagePresenter from '~/glql/components/presenters/percentage.vue';
 import ProjectPresenter from '~/glql/components/presenters/project.vue';
 import StatePresenter from '~/glql/components/presenters/state.vue';
@@ -133,6 +134,12 @@ describe('presenter_registry', () => {
         ${'durationMin'}              | ${30}            | ${DurationPresenter}
         ${'durationMax'}              | ${3600}          | ${DurationPresenter}
         ${'durationSum'}              | ${3661}          | ${DurationPresenter}
+        ${'projectsCount'}            | ${5}             | ${NumberPresenter}
+        ${'creditsUsedMin'}           | ${0.25}          | ${CreditsPresenter}
+        ${'creditsUsedMax'}           | ${41.36}         | ${CreditsPresenter}
+        ${'creditsUsedMean'}          | ${18.456}        | ${CreditsPresenter}
+        ${'creditsUsedSum'}           | ${2214.77}       | ${CreditsPresenter}
+        ${'creditsUsedQuantile'}      | ${19.12}         | ${CreditsPresenter}
       `(
         'resolves field key $fieldKey to the matching presenter',
         ({ fieldKey, field, presenter }) => {
@@ -183,6 +190,15 @@ describe('presenter_registry', () => {
         expect(
           presenterFor(
             { __typename: 'AgentPlatformSessionsAggregationResponseDimensions', user: MOCK_USER },
+            'user',
+          ),
+        ).toBe(UserAvatarPresenter);
+      });
+
+      it('resolves user on Duo workflows dimensions to UserAvatarPresenter', () => {
+        expect(
+          presenterFor(
+            { __typename: 'DuoWorkflowsAggregationResponseDimensions', user: MOCK_USER },
             'user',
           ),
         ).toBe(UserAvatarPresenter);

@@ -65,6 +65,16 @@ const METRIC_PRESENTATION = {
     totalCount: { description: __('Total number of contributions.') },
     usersCount: { description: __('Number of unique contributors.') },
   },
+  DuoWorkflows: {
+    creditsUsedMax: { description: __('Most credits used by a single flow.') },
+    creditsUsedMean: { description: __('Average credits used per flow.') },
+    creditsUsedMin: { description: __('Fewest credits used by a single flow.') },
+    creditsUsedQuantile: { description: __('Credits used per flow at a given quantile.') },
+    creditsUsedSum: { description: __('Total credits used by all flows.') },
+    projectsCount: { description: __('Number of unique projects.') },
+    totalCount: { description: __('Total number of flows.') },
+    usersCount: { description: __('Number of unique users.') },
+  },
 };
 
 const presentationFor = (source, metric) =>

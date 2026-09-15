@@ -8,6 +8,7 @@ import routes from './routes';
 import YourWorkProjectsApp from './components/app.vue';
 
 Vue.use(VueRouter);
+Vue.use(VueApollo);
 
 export const createRouter = (basePath) => {
   const router = new VueRouter({

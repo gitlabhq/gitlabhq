@@ -28,6 +28,8 @@ describe('statPresentationFor', () => {
       ${'Pipelines'}       | ${'durationQuantile'}    | ${'Pipeline duration quantile, in seconds.'}
       ${'MergeRequests'}   | ${'timeToMergeQuantile'} | ${'Time from creation to merge.'}
       ${'Contributions'}   | ${'usersCount'}          | ${'Number of unique contributors.'}
+      ${'DuoWorkflows'}    | ${'creditsUsedSum'}      | ${'Total credits used by all flows.'}
+      ${'DuoWorkflows'}    | ${'projectsCount'}       | ${'Number of unique projects.'}
     `('derives the description of $fieldKey in $source', ({ source, fieldKey, expected }) => {
       expect(statPresentationFor(source, metric(fieldKey)).description).toBe(expected);
     });
@@ -41,6 +43,7 @@ describe('statPresentationFor', () => {
       ${'Pipelines'}       | ${'Total number of pipelines, including in-progress ones.'}
       ${'MergeRequests'}   | ${'Total number of merge requests.'}
       ${'Contributions'}   | ${'Total number of contributions.'}
+      ${'DuoWorkflows'}    | ${'Total number of flows.'}
     `('describes totalCount as $expected in $source', ({ source, expected }) => {
       expect(statPresentationFor(source, metric('totalCount')).description).toBe(expected);
     });
@@ -216,6 +219,7 @@ describe('positiveDirectionFor', () => {
     ${'Pipelines'}       | ${'failureRate'}         | ${'down'}
     ${'Pipelines'}       | ${'durationQuantile'}    | ${'down'}
     ${'MergeRequests'}   | ${'timeToMergeQuantile'} | ${'down'}
+    ${'DuoWorkflows'}    | ${'creditsUsedSum'}      | ${null}
     ${'CodeSuggestions'} | ${'somethingCustom'}     | ${null}
   `('returns $expected for $fieldKey in $source', ({ source, fieldKey, expected }) => {
     expect(positiveDirectionFor(source, metric(fieldKey))).toBe(expected);

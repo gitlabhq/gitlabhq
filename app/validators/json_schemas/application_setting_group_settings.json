@@ -11,6 +11,14 @@
     "disable_invite_members": {
       "type": "boolean",
       "description": "When enabled, prevents group owners and members from inviting new users to the group"
+    },
+    "group_deletion_jobs_concurrency_limit": {
+      "type": "integer",
+      "description": "Maximum number of concurrent GroupDestroyWorker jobs. 0 disables the limit"
+    },
+    "project_deletion_jobs_concurrency_limit": {
+      "type": "integer",
+      "description": "Maximum number of concurrent ProjectDestroyWorker jobs. 0 disables the limit"
     }
   }
 }

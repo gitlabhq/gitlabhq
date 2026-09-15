@@ -67,6 +67,9 @@ export default {
     summaryTitle() {
       return this.summary.title ? generateText(this.summary.title) : '';
     },
+    summarySubtitle() {
+      return this.summary.subtitle ? generateText(this.summary.subtitle) : '';
+    },
     hasSections() {
       return this.sections.length > 0;
     },
@@ -92,6 +95,12 @@ export default {
         <div class="media-body gl-flex !gl-flex-row gl-self-center">
           <div class="gl-grow">
             <span v-if="summaryTitle" v-safe-html="summaryTitle" data-testid="summary"></span>
+            <div
+              v-if="summarySubtitle"
+              v-safe-html="summarySubtitle"
+              class="gl-text-sm gl-text-subtle"
+              data-testid="summary-subtitle"
+            ></div>
           </div>
           <div class="gl-flex">
             <help-popover

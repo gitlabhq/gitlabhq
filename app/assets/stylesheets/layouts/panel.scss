@@ -26,10 +26,17 @@
   @apply gl-w-full;
   @apply sm:gl-w-8/10;
 
+
+  // Fixes a Firefox 115.40.0esr issue. Keep this seperate from the below selector
+  // as otherwise it won't be interpret by Firefox as it will drop this
+  // style rule as the other selector is unknown
+  &:empty {
+    @apply gl-hidden;
+  }
+
   // The panel width resizer keeps a node mounted inside the portal, so the
   // portal is never `:empty`; hide it based on mounted panel content instead.
   // stylelint-disable-next-line gitlab/no-has -- scoped to the portal's own content
-  &:empty,
   &:not(:has(> .vue-portal-target)) {
     @apply gl-hidden;
   }

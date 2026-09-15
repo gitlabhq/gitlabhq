@@ -1,4 +1,8 @@
-import { transformRoutes, normalizeLocation } from '~/lib/utils/vue3compat/vue_router_helper';
+import {
+  transformRoutes,
+  normalizeLocation,
+  EMPTY_ROUTE_COMPONENT,
+} from '~/lib/utils/vue3compat/vue_router_helper';
 
 describe('Vue Router compat helper', () => {
   describe('normalizeLocation', () => {
@@ -73,6 +77,18 @@ describe('Vue Router compat helper', () => {
               { name: 'details', path: '/details' },
             ],
           },
+        ],
+      },
+      {
+        name: 'a route with no name, component or redirect gets a placeholder component',
+        routes: [{ path: '/' }],
+        transformed: [{ path: '/', component: EMPTY_ROUTE_COMPONENT }],
+      },
+      {
+        name: 'a route with only children keeps no component',
+        routes: [{ path: '/', children: [{ path: 'list' }] }],
+        transformed: [
+          { path: '/', children: [{ path: 'list', component: EMPTY_ROUTE_COMPONENT }] },
         ],
       },
       {

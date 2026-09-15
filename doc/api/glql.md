@@ -544,6 +544,7 @@ Response attributes for `sources[].modes[]`:
 | `filter_fields`          | object array | Fields usable in `query`, each with a `name`, optional `aliases`, and `value_types`. |
 | `metrics`                | string array | Analytics modes only. Aggregations to compute. |
 | `mode`                   | string       | `Standard` or `Analytics`. Note these are capitalized here, while the `mode` option in a GLQL block is lowercase. For example, `mode: analytics`. |
+| `multi_scope`            | boolean      | Whether the mode accepts more than one scope in `query`. |
 | `parameterized_fields`   | object array | Fields that accept arguments, each with a `name` and `parameters`. Present only where supported. See below. |
 | `sort_fields`            | string array | Fields usable in `sort`. |
 | `sort_restrictions`      | object array | Sort fields that accept only one direction, each with a `name` and the `directions` it accepts. Fields absent from this list accept both `asc` and `desc`. Present only where a restriction applies. |
@@ -637,7 +638,7 @@ Example response, truncated:
   "functions": [
     { "name": "today", "kind": "value", "description": "Today's date at 00:00 UTC.", "args": [], "returns": "Date" }
   ],
-  "version": "0.35.0"
+  "version": "0.36.0"
 }
 ```
 

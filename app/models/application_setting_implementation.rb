@@ -378,6 +378,8 @@ module ApplicationSettingImplementation
         reindexing_minimum_relative_bloat_size: 0.2,
         git_push_pipeline_limit: 4,
         disable_invite_members: false,
+        group_deletion_jobs_concurrency_limit: 0,
+        project_deletion_jobs_concurrency_limit: 0,
         enforce_pipl_compliance: false,
         model_prompt_cache_enabled: true,
         lock_model_prompt_cache_enabled: false,

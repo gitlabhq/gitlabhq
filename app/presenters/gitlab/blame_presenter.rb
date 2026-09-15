@@ -19,6 +19,7 @@ module Gitlab
       :commit_link,
       :commit_author_link,
       :project_blame_link,
+      :previous_blame_path,
       :time_ago_tooltip)
 
     def initialize(blame, **attributes)
@@ -62,6 +63,7 @@ module Gitlab
         data.commit_link = link_to commit.title, project_commit_path(project, commit.id), title: commit.title
         data.commit_author_link = commit_author_link(commit, avatar: false)
         data.project_blame_link = project_blame_link(commit, previous_path)
+        data.previous_blame_path = previous_blame_path(commit, previous_path)
         data.time_ago_tooltip = time_ago_with_tooltip(commit.committed_date)
       end
     end
@@ -77,6 +79,15 @@ module Gitlab
         data: { toggle: 'tooltip', placement: 'right', container: 'body' } do
           '&nbsp;'.html_safe
         end
+    end
+
+    # Plain path for inline blame, which renders its own link to the
+    # blob view with blame enabled rather than the standalone blame page.
+    def previous_blame_path(commit, previous_path = nil)
+      previous_commit_id = commit.parent_id
+      return unless previous_commit_id && !previous_path.nil?
+
+      project_blob_path(project, tree_join(previous_commit_id, previous_path), blame: 1, only_path: true)
     end
 
     def project_duration

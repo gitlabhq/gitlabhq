@@ -1,8 +1,11 @@
+import Vue from 'vue';
 import VueApollo from 'vue-apollo';
 import { initVueApp } from '~/lib/utils/vue3compat/init_vue_app';
 import ImportByUrlForm from '~/projects/new_v2/components/import_by_url_form.vue';
 import createDefaultClient from '~/lib/graphql';
 import { parseBoolean } from '~/lib/utils/common_utils';
+
+Vue.use(VueApollo);
 
 export function initImportByUrl() {
   const el = document.querySelector('.js-vue-import-by-url-app');

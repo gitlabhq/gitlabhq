@@ -18,6 +18,7 @@ GLQL can query the following data sources:
 | AI usage events | {{< no >}} | {{< yes >}} | `AiUsageEvent` | Aggregated GitLab Duo usage event analytics. |
 | Code suggestions | {{< no >}} | {{< yes >}} | `CodeSuggestion` | Aggregated GitLab Duo Code Suggestions analytics. |
 | Contributions | {{< no >}} | {{< yes >}} | `Contribution` | Aggregated contribution activity analytics. |
+| Duo workflows | {{< no >}} | {{< yes >}} | `DuoWorkflow` | Aggregated GitLab Duo Agent Platform flow analytics, including credits used. |
 
 Each data source has its own set of supported fields for filtering, display, and sorting.
 

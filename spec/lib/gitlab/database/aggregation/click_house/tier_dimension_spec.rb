@@ -2,7 +2,8 @@
 
 require 'spec_helper'
 
-RSpec.describe Gitlab::Database::Aggregation::ClickHouse::TierDimension, :click_house, feature_category: :database do
+RSpec.describe Gitlab::Database::Aggregation::ClickHouse::TierDimension, :click_house,
+  feature_category: :value_stream_management do
   include ClickHouseHelpers
 
   let(:engine_definition) do

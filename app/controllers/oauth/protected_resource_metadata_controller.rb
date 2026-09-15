@@ -7,13 +7,6 @@ module Oauth
     feature_category :system_access
     skip_before_action :authenticate_user!
 
-    MCP_RESOURCE_PATHS = {
-      '/api/v4/mcp' => Gitlab::Auth::MCP_SCOPE,
-      '/api/v4/orbit/mcp' => Gitlab::Auth::MCP_ORBIT_SCOPE
-    }.freeze
-
-    # Described when the request carries no MCP path suffix. A metadata document
-    # names one resource, so the fallback cannot cover every path at once.
     DEFAULT_MCP_RESOURCE_PATH = '/api/v4/mcp'
 
     def show
@@ -24,11 +17,14 @@ module Oauth
     private
 
     def resource_metadata
-      MCP_RESOURCE_PATHS.each do |path, scope|
+      Gitlab::Auth::MCP_RESOURCE_SCOPES.each do |path, scope|
         return resource_metadata_for(path, scope) if request.path.end_with?(path)
       end
 
-      resource_metadata_for(DEFAULT_MCP_RESOURCE_PATH, MCP_RESOURCE_PATHS.fetch(DEFAULT_MCP_RESOURCE_PATH))
+      resource_metadata_for(
+        DEFAULT_MCP_RESOURCE_PATH,
+        Gitlab::Auth::MCP_RESOURCE_SCOPES.fetch(DEFAULT_MCP_RESOURCE_PATH)
+      )
     end
 
     def resource_metadata_for(path, scope)

@@ -14,6 +14,7 @@ describe('ReportSection', () => {
   const findActionButtons = () => wrapper.findComponent(ActionButtons);
   const findHelpPopover = () => wrapper.findComponent(HelpPopover);
   const findSummary = () => wrapper.findByTestId('summary');
+  const findSummarySubtitle = () => wrapper.findByTestId('summary-subtitle');
   const findLoadingText = () => wrapper.findByTestId('loading-text');
   const findSections = () => wrapper.findByTestId('sections');
   const findAllSections = () => wrapper.findAllByTestId('section');
@@ -80,6 +81,15 @@ describe('ReportSection', () => {
       createComponent({ summary: {} });
 
       expect(findSummary().exists()).toBe(false);
+    });
+
+    it('renders the styling tags in the summary subtitle', () => {
+      createComponent({
+        summary: { title: 'A title', subtitle: '%{danger_start}2 degraded%{danger_end}, 1 same' },
+      });
+
+      expect(findSummarySubtitle().text()).toBe('2 degraded, 1 same');
+      expect(findSummarySubtitle().find('.gl-text-danger').text()).toBe('2 degraded');
     });
   });
 

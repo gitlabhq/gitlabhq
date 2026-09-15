@@ -1,7 +1,10 @@
+import Vue from 'vue';
 import VueApollo from 'vue-apollo';
 import { initVueApp } from '~/lib/utils/vue3compat/init_vue_app';
 import createDefaultClient from '~/lib/graphql';
 import importFromGitlabExportApp from './import_from_gitlab_export_app.vue';
+
+Vue.use(VueApollo);
 
 export function initGitLabImportProjectForm() {
   const el = document.getElementById('js-import-gitlab-project-root');

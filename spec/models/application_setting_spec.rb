@@ -704,6 +704,8 @@ RSpec.describe ApplicationSetting, feature_category: :settings do
           project_api_limit
           project_create_limit
           group_create_limit
+          group_deletion_jobs_concurrency_limit
+          project_deletion_jobs_concurrency_limit
           project_repositories_blobs_batch_limit
           projects_api_limit
           projects_api_rate_limit_unauthenticated

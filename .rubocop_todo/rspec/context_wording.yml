@@ -1471,7 +1471,6 @@ RSpec/ContextWording:
     - 'spec/lib/gitlab/git/attributes_parser_spec.rb'
     - 'spec/lib/gitlab/git/blame_spec.rb'
     - 'spec/lib/gitlab/git/changes_spec.rb'
-    - 'spec/lib/gitlab/git/commit_spec.rb'
     - 'spec/lib/gitlab/git/compare_spec.rb'
     - 'spec/lib/gitlab/git/conflict/parser_spec.rb'
     - 'spec/lib/gitlab/git/diff_collection_spec.rb'

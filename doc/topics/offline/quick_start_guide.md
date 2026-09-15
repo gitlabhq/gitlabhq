@@ -242,11 +242,29 @@ Note the following in relation to use of the Package Metadata Database:
 - The Package Metadata Database may contain links to third-party websites or resources. We provide these links only as a convenience and are not responsible for any third-party data, content, products, or services from those websites or resources or links displayed on such websites.
 - The Package Metadata Database is based in part on information made available by third parties, and GitLab is not responsible for the accuracy or completeness of content made available.
 
-Package metadata is stored in the following Google Cloud Provider (GCP) buckets which are maintained and owned by GitLab:
+Package metadata is published in two format versions, v2 and v3, and each dataset uses one of them:
+
+| Format version | Dataset            | Read by                 | Downloaded from                        |
+|----------------|--------------------|-------------------------|----------------------------------------|
+| v2             | Licenses           | GitLab 19.3 and earlier | Public GCP bucket                      |
+| v2             | Advisories         | All GitLab versions     | Public GCP bucket                      |
+| v2             | CVE enrichment     | All GitLab versions     | Public GCP bucket                      |
+| v3             | Licenses           | GitLab 19.4 and later   | Package Metadata Database distribution service |
+| v3             | Malware advisories | GitLab 19.3 and later   | Package Metadata Database distribution service |
+
+The two format versions hold different data and are downloaded in different ways, so each has its own
+procedure below.
+For the license layouts in detail, see [v3 license data format version](#v3-license-data-format-version).
+
+The v2 data is stored in the following Google Cloud Provider (GCP) buckets, which are maintained and owned by
+GitLab and readable without credentials:
 
 - License Scanning: `prod-export-license-bucket-1a6c642fc4de57d4`
 - Dependency scanning: `prod-export-advisory-bucket-1a6c642fc4de57d4`
 - CVE enrichment: `prod-export-cve-enrichment-bucket-1a6c642fc4de57d4`
+
+The v3 data has no public bucket. It is distributed by an authenticated GitLab service, so downloading it
+requires a license key. See [Download v3 Package Metadata Database data](#download-v3-package-metadata-database-data).
 
 CVE enrichment carries the [EPSS score and KEV status](../../user/application_security/vulnerabilities/risk_assessment_data.md)
 shown on a vulnerability.
@@ -254,9 +272,9 @@ An instance that synchronizes only the license and advisory buckets has dependen
 license data, and no risk assessment data.
 
 > [!note]
-> For licenses, advisories, and CVE enrichment, GitLab reads the directory under
-> `vendor/package_metadata` whenever it exists, in preference to the bucket.
-> A directory that is present always wins, and there is no fallback to the bucket.
+> For every dataset, GitLab reads the directory under `vendor/package_metadata` whenever it exists, in
+> preference to downloading the data itself.
+> A directory that is present always wins, and there is no fallback to the bucket or the distribution service.
 > A directory that holds stale data therefore serves stale data, and reports no error.
 > [Malware advisories](#confirm-gitlab-detects-the-offline-directory) follow the same rule.
 
@@ -275,7 +293,9 @@ Each run also stops after a fixed duration and resumes from its checkpoint on th
 A first load with every registry type enabled can take about a day.
 To shorten it, narrow the enabled types.
 
-### Using the gsutil tool to download the package metadata exports
+### v2: Using the gsutil tool to download the package metadata exports
+
+This section describes how to download v2 data.
 
 1. Install the [`gsutil`](https://docs.cloud.google.com/storage/docs/gsutil_install) tool.
 1. Find the root of the GitLab Rails directory.
@@ -331,7 +351,9 @@ To shorten it, narrow the enabled types.
    Repeat this step after every download of the CVE enrichment export.
    `cp -a` merges new files into sequence directories that already exist, where `mv` would stop.
 
-### Using the Google Cloud Storage REST API to download the package metadata exports
+### v2: Using the Google Cloud Storage REST API to download the package metadata exports
+
+This section describes an alternative way to download the v2 package metadata.
 
 The package metadata exports can also be downloaded using the Google Cloud Storage API. The contents are available at <https://storage.googleapis.com/storage/v1/b/prod-export-license-bucket-1a6c642fc4de57d4/o> and <https://storage.googleapis.com/storage/v1/b/prod-export-advisory-bucket-1a6c642fc4de57d4/o>. The following is an example of how this can be downloaded using [cURL](https://curl.se/) and [jq](https://stedolan.github.io/jq/).
 
@@ -408,31 +430,26 @@ done <"$PKG_METADATA_DOWNLOADS_OUTPUT_FILE"
 echo "All objects saved to $PKG_METADATA_DIR"
 ```
 
-### Download GitLab malware advisories
+### Download v3 Package Metadata Database data
 
 {{< details >}}
 
 - Tier: Ultimate
-- Status: Beta
 
 {{< /details >}}
 
-{{< history >}}
+Unlike the v2 license and advisory exports, which are mirrored from a public bucket with the preceding `gsutil`
+procedure, licenses and malware advisories on v3 are distributed by an authenticated GitLab service, the Package
+Metadata Database distribution service (PDS), so an offline instance cannot download either of them itself.
+Instead, you download the data on a machine with internet access and copy it to the offline instance.
+The script takes the dataset as its first argument and is otherwise the same for both, since the two datasets
+differ only in the distribution service path they are read from and the vendor directory they are copied to.
 
-- [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/20876) in GitLab 19.3 [with flags](../../administration/feature_flags/_index.md) named `sync_malware_advisories` and `ingest_malware_advisories`. Disabled by default.
-- [Enabled on GitLab.com, GitLab Self-Managed, and GitLab Dedicated](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/249740) in GitLab 19.3.
-
-{{< /history >}}
-
-> [!flag]
-> The availability of this feature is controlled by a feature flag. For more information, see the history.
-> Besides Ultimate, this feature is available to Premium customers with the dependency firewall add-on.
-
-[GitLab malware advisories](../../user/application_security/gitlab_advisory_database/_index.md#gitlab-malware-advisories) cover known malicious packages found in package registries.
-Unlike the license and advisory exports, they are distributed by an authenticated GitLab service, so an offline instance cannot download them itself.
-Instead, you download them on a machine with internet access and copy them to the offline instance.
-The download script exchanges your license key for a token that is valid for three days.
-That machine needs a copy of your license file, but does not need access to the offline instance.
+The script asks the distribution service which archives make up the current snapshot, the same request an online
+instance makes to synchronize, and writes each registry's checkpoint only after every archive is downloaded.
+It exchanges your license key for a token that is valid for three days.
+The machine with internet access needs a copy of your license file, but does not need access to the offline
+instance.
 
 Prerequisites:
 
@@ -445,14 +462,23 @@ To get an offline license, you must receive an [opt-out exemption of cloud licen
 For more details, contact your GitLab sales representative.
 If you already have an offline license, you can download the file again from the [Customers Portal](https://customers.gitlab.com).
 
+The script needs the license key, which is the long block of text the license file holds.
+To write it to a file, run the following on the offline instance:
+
+```shell
+sudo gitlab-rails runner 'puts License.current.data' > Gitlab.gitlab-license
+```
+
+An activation code is not a license key. An activation code is a short string, and the token request rejects it.
+
 These steps apply to Linux package installations.
-In Kubernetes installations the advisories must be on a volume that the Sidekiq pods read, which is tracked in [issue 561085](https://gitlab.com/gitlab-org/gitlab/-/issues/561085).
+In Kubernetes installations the data must be on a volume that the Sidekiq pods read, which is tracked in [issue 561085](https://gitlab.com/gitlab-org/gitlab/-/issues/561085).
 
 > [!warning]
 > In Docker installations the Rails directory is not on a mounted volume.
-> Bind mount `vendor/package_metadata` before you copy the advisories, or they are lost when you upgrade the container.
+> Bind mount `vendor/package_metadata` before you copy the data, or it is lost when you upgrade the container.
 
-The following is an example of how the advisories can be downloaded using cURL and jq.
+Save the following script as `download_pmdb_data.sh` and make it executable with `chmod +x download_pmdb_data.sh`.
 
 ```shell
 #!/bin/bash
@@ -462,17 +488,36 @@ set -euo pipefail
 CDOT_URL="${CDOT_URL:-https://customers.gitlab.com}"
 PDS_URL="${PDS_URL:-https://pmdb-dist-svc.runway.gitlab.net}"
 
-if [ $# -lt 4 ]; then
-  echo "Usage: download_malware_advisories.sh <license_file> <gitlab_version> <output_dir> <registry>..."
+if [ $# -lt 5 ]; then
+  echo "Usage: download_pmdb_data.sh <license_file> <gitlab_version> <dataset> <output_dir> <registry>..."
+  echo "dataset is licenses or malware_advisories."
   echo "Pass the package registries to download, or 'all' for every supported registry."
   exit 1
 fi
 
 LICENSE_FILE=$1
 GITLAB_VERSION=$2
-OUTPUT_DIR=$3
-shift 3
+DATASET=$3
+OUTPUT_DIR=$4
+shift 4
 REQUESTED_REGISTRIES="$*"
+
+# The two datasets differ only in their distribution service path and the name
+# used in the closing message. Everything after this point is common to both.
+case "$DATASET" in
+licenses)
+  DATASET_PATH="licenses"
+  DATASET_LABEL="License data"
+  ;;
+malware_advisories)
+  DATASET_PATH="malware/advisories"
+  DATASET_LABEL="Advisories"
+  ;;
+*)
+  echo "dataset must be licenses or malware_advisories"
+  exit 1
+  ;;
+esac
 
 if [ -z "$OUTPUT_DIR" ]; then
   echo "output_dir must not be empty"
@@ -484,11 +529,26 @@ if [ ! -r "$LICENSE_FILE" ]; then
   exit 1
 fi
 
+mkdir -p "$OUTPUT_DIR"
+
+# Serialize runs against this output directory. Two concurrent runs would race
+# on the same dataset directory: one can write checkpoint.json while the other
+# has deleted and re-created the directory, leaving a partial shard set that
+# GitLab imports as a complete snapshot. mkdir either creates the directory or
+# fails, in one step, so it needs nothing beyond the shell.
+LOCK_DIR="$OUTPUT_DIR/.download.lock"
+
+if ! mkdir "$LOCK_DIR" 2>/dev/null; then
+  echo "Another download is already running for $OUTPUT_DIR"
+  echo "If no other run is active, remove $LOCK_DIR and try again."
+  exit 1
+fi
+
 REQUEST_FILE="$(mktemp)"
 RESPONSE_FILE="$(mktemp)"
 SHARDS_FILE="$(mktemp)"
 HEADER_FILE="$(mktemp)"
-trap 'rm -f "$REQUEST_FILE" "$RESPONSE_FILE" "$SHARDS_FILE" "$HEADER_FILE"' EXIT
+trap 'rm -f "$REQUEST_FILE" "$RESPONSE_FILE" "$SHARDS_FILE" "$HEADER_FILE"; rmdir "$LOCK_DIR" 2>/dev/null || true' EXIT
 chmod 600 "$HEADER_FILE"
 
 # Exchange the license key for a Cloud Connector token.
@@ -515,8 +575,11 @@ fi
 TOKEN="$(jq --raw-output '.data.cloudConnectorAccess.serviceToken.token // empty' "$RESPONSE_FILE")"
 
 if [ -z "$TOKEN" ]; then
-  echo "No token in the response from $CDOT_URL"
-  jq --raw-output '.errors[]?.message // empty' "$RESPONSE_FILE"
+  echo "$CDOT_URL refused to issue a token for $LICENSE_FILE"
+  echo "It must hold the license key, the output of: gitlab-rails runner 'puts License.current.data'"
+  echo "An activation code is not a license key, and a legacy license is not accepted."
+  echo "The customer portal reported:"
+  jq --raw-output '.errors[]?.message // "no reason given"' "$RESPONSE_FILE"
   exit 1
 fi
 
@@ -543,12 +606,12 @@ fi
 } >"$HEADER_FILE"
 
 # Writes the response body to $2 and returns the HTTP status.
-advisories_request() {
+pds_request() {
   curl --silent --show-error --config "$HEADER_FILE" \
     --output "$2" --write-out '%{http_code}' "$1"
 }
 
-HTTP_STATUS="$(advisories_request "$PDS_URL/v1/malware/advisories/supported" "$RESPONSE_FILE")"
+HTTP_STATUS="$(pds_request "$PDS_URL/v1/$DATASET_PATH/supported" "$RESPONSE_FILE")"
 
 if [ "$HTTP_STATUS" != "200" ]; then
   echo "Request for the supported package registries failed with HTTP $HTTP_STATUS"
@@ -583,7 +646,7 @@ else
 fi
 
 for REGISTRY in $REGISTRIES; do
-  HTTP_STATUS="$(advisories_request "$PDS_URL/v1/malware/advisories/all?purl_type=$REGISTRY" "$RESPONSE_FILE")"
+  HTTP_STATUS="$(pds_request "$PDS_URL/v1/$DATASET_PATH/all?purl_type=$REGISTRY" "$RESPONSE_FILE")"
 
   # A pending snapshot is the only skippable outcome. Every other 503 is
   # transient, and treating it as "no data" would delete a registry that the
@@ -627,11 +690,12 @@ for REGISTRY in $REGISTRIES; do
 
   # Remove any previous snapshot. GitLab reads every archive in this directory,
   # so archives left over from an earlier snapshot would be imported alongside
-  # the new ones, restoring advisories that were withdrawn since.
+  # the new ones, restoring data that changed since.
   rm -rf "$DATASET_DIR"
   mkdir -p "$DATASET_DIR"
 
-  jq --raw-output '.shards[] | [.shard, .signed_url] | @tsv' "$RESPONSE_FILE" >"$SHARDS_FILE"
+  jq --raw-output '.shards[] | [.shard, (.signed_url // .url)] | @tsv' "$RESPONSE_FILE" >"$SHARDS_FILE"
+  SHARD_COUNT="$(wc -l <"$SHARDS_FILE" | tr -d ' ')"
 
   while IFS=$'\t' read -r SHARD URL; do
     echo "Downloading $REGISTRY archive $SHARD"
@@ -641,7 +705,8 @@ for REGISTRY in $REGISTRIES; do
 
   # Write the checkpoint last. GitLab ignores a directory that has no
   # checkpoint, so an interrupted download is never imported as a snapshot.
-  jq --null-input --argjson until "$UNTIL" '{until: $until}' >"$DATASET_DIR/checkpoint.json"
+  jq --null-input --argjson until "$UNTIL" --argjson shards "$SHARD_COUNT" \
+    '{until: $until, shards: $shards}' >"$DATASET_DIR/checkpoint.json"
 done
 
 set +f
@@ -651,46 +716,79 @@ if [ -n "$SKIPPED" ]; then
   echo "The downloaded registries are complete and safe to copy. Run the script again later to pick up the rest."
 fi
 
-echo "Advisories saved to $OUTPUT_DIR"
+echo "$DATASET_LABEL saved to $OUTPUT_DIR"
 ```
 
-To download the malware advisories:
+Call the script like the following:
 
-1. On the offline instance, find the GitLab version.
+```shell
+./download_pmdb_data.sh <license_file> <gitlab_version> <dataset> <output_dir> <registry>...
+```
 
-   ```shell
-   sudo gitlab-rails runner 'puts Gitlab::VERSION'
-   ```
+| Argument         | Description |
+|------------------|-------------|
+| `license_file`   | Path to a file holding the instance's license key, which is the output of `sudo gitlab-rails runner 'puts License.current.data'`. An activation code is not a license key. |
+| `gitlab_version` | Version of the GitLab instance that imports the data, which is the output of `sudo gitlab-rails runner 'puts Gitlab::VERSION'`. For example, `19.4.0-ee`. |
+| `dataset`        | `licenses` or `malware_advisories`. |
+| `output_dir`     | Directory to write to. Created if it does not exist. Use the same directory on every run, so an unchanged snapshot is skipped. |
+| `registry`...    | One or more package registries, for example `npm` or `pypi`, or `all` for every supported registry. Pass the registries whose types are enabled in [admin settings](../../administration/settings/security_and_compliance.md#choose-package-registry-metadata-to-sync). The script prints the supported list before it downloads anything. |
 
-1. On the machine with internet access, save the preceding script as `download_malware_advisories.sh` and make it executable.
+The script creates one directory per package registry, named for the registry identifier rather than the package
+type, for example:
 
-   ```shell
-   chmod +x download_malware_advisories.sh
-   ```
+```plaintext
+licenses/
+└── v3/
+    └── npm/
+        └── full_dataset/
+            ├── 00.tar.zst
+            ├── 01.tar.zst
+            ├── ...
+            ├── 7f.tar.zst
+            └── checkpoint.json
+```
 
-1. Run the script with your license file, the GitLab version from the first step, a directory to write to, and the package registries to download.
-   Pass the registries whose types are enabled in [admin settings](../../administration/settings/security_and_compliance.md#choose-package-registry-metadata-to-sync), or `all` for every supported registry.
+Each archive is named after its hexadecimal shard identifier.
+The number of archives per registry is set by the service, and an archive that contains no data is expected.
 
-   ```shell
-   ./download_malware_advisories.sh ./Gitlab.gitlab-license 19.3.0-ee ./malware_advisories npm pypi
-   ```
+The script creates a lock on the output directory, so if you run it again while the first pass is still writing the data, the script exits rather
+than corrupting the directory.
+When the snapshot on the service matches the one already in the output directory, the script skips the download
+for that registry, so it is safe to run on a schedule.
 
-   The script creates one directory per package registry.
+Copy each dataset into place with the steps in its own section:
+[license data](#download-v3-license-data) and [malware advisories](#download-gitlab-v3-malware-advisories).
 
-   ```plaintext
-   malware_advisories/
-   └── v3/
-       └── npm/
-           └── full_dataset/
-               ├── 00.tar.zst
-               ├── 01.tar.zst
-               ├── ...
-               ├── 3f.tar.zst
-               └── checkpoint.json
-   ```
+### Download GitLab v3 malware advisories
 
-   The service sets the number of archives per registry, and names each one for its hexadecimal shard identifier.
-   An archive that contains no advisories is expected.
+{{< details >}}
+
+- Tier: Ultimate
+- Status: Beta
+
+{{< /details >}}
+
+{{< history >}}
+
+- [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/20876) in GitLab 19.3 [with flags](../../administration/feature_flags/_index.md) named `sync_malware_advisories` and `ingest_malware_advisories`. Enabled by default.
+
+{{< /history >}}
+
+> [!flag]
+> The availability of this feature is controlled by a feature flag. For more information, see the history.
+> Besides Ultimate, this feature is available to Premium customers with the dependency firewall add-on.
+
+[GitLab malware advisories](../../user/application_security/gitlab_advisory_database/_index.md#gitlab-malware-advisories) cover known malicious packages found in package registries.
+They are distributed by the Package Metadata Database distribution service, so you download them on a machine with
+internet access and copy them to the offline instance.
+Download them with the shared script and its prerequisites, described in
+[Download v3 Package Metadata Database data](#download-v3-package-metadata-database-data):
+
+```shell
+./download_pmdb_data.sh ./Gitlab.gitlab-license 19.3.0-ee malware_advisories ./malware_advisories npm pypi
+```
+
+To copy the advisories to the offline instance:
 
 1. Transfer the output directory to the offline instance.
 
@@ -738,256 +836,21 @@ When the snapshot on the service matches the one already in the output directory
 
 The v3 license data layout carries Software Package Data Exchange (SPDX) license expressions instead of single license identifiers. For example, `MIT OR Apache-2.0`.
 
-Use the following procedure to download the v3 license data.
-The script asks the Package Metadata Database distribution service (PDS) which archives make up the current snapshot,
-and writes each registry's checkpoint only after it downloads every archive.
+The Package Metadata Database distribution service distributes the v3 license data, so you download it on a
+machine with internet access and copy it to the offline instance.
 It downloads only the current snapshot for the registries you have enabled, rather than every format and delta that the license bucket holds.
 It does not require `gsutil`.
+Download it with the shared script and its prerequisites, described in
+[Download v3 Package Metadata Database data](#download-v3-package-metadata-database-data):
+
+```shell
+./download_pmdb_data.sh ./Gitlab.gitlab-license 19.4.0-ee licenses ./licenses npm pypi
+```
 
 When a `v3` directory exists under `vendor/package_metadata/licenses`, the instance synchronizes licenses from it
 instead of the `v2` directory. Complete the copy step below before the sync job runs.
 
-This procedure has the same prerequisites and caveats as the [malware advisory procedure](#download-gitlab-malware-advisories).
-The script exchanges your license key for a token that is valid for three days.
-
-The following is an example of how the license data can be downloaded using cURL and jq.
-
-```shell
-#!/bin/bash
-
-set -euo pipefail
-
-CDOT_URL="${CDOT_URL:-https://customers.gitlab.com}"
-PDS_URL="${PDS_URL:-https://pmdb-dist-svc.runway.gitlab.net}"
-
-if [ $# -lt 4 ]; then
-  echo "Usage: download_licenses.sh <license_file> <gitlab_version> <output_dir> <registry>..."
-  echo "Pass the package registries to download, or 'all' for every supported registry."
-  exit 1
-fi
-
-LICENSE_FILE=$1
-GITLAB_VERSION=$2
-OUTPUT_DIR=$3
-shift 3
-REQUESTED_REGISTRIES="$*"
-
-if [ -z "$OUTPUT_DIR" ]; then
-  echo "output_dir must not be empty"
-  exit 1
-fi
-
-if [ ! -r "$LICENSE_FILE" ]; then
-  echo "Cannot read $LICENSE_FILE"
-  exit 1
-fi
-
-REQUEST_FILE="$(mktemp)"
-RESPONSE_FILE="$(mktemp)"
-SHARDS_FILE="$(mktemp)"
-HEADER_FILE="$(mktemp)"
-trap 'rm -f "$REQUEST_FILE" "$RESPONSE_FILE" "$SHARDS_FILE" "$HEADER_FILE"' EXIT
-chmod 600 "$HEADER_FILE"
-
-# Exchange the license key for a Cloud Connector token.
-GRAPHQL_QUERY='query($licenseKey: String!, $gitlabVersion: String!) {
-  cloudConnectorAccess(licenseKey: $licenseKey, gitlabVersion: $gitlabVersion) {
-    serviceToken { token }
-  }
-}'
-
-jq --null-input --arg query "$GRAPHQL_QUERY" --rawfile licenseKey "$LICENSE_FILE" \
-  --arg gitlabVersion "$GITLAB_VERSION" \
-  '{query: $query, variables: {licenseKey: $licenseKey, gitlabVersion: $gitlabVersion}}' >"$REQUEST_FILE"
-
-HTTP_STATUS="$(curl --silent --show-error --request POST "$CDOT_URL/graphql" \
-  --header 'Content-Type: application/json' --data @"$REQUEST_FILE" \
-  --output "$RESPONSE_FILE" --write-out '%{http_code}')"
-
-if [ "$HTTP_STATUS" != "200" ]; then
-  echo "Token request to $CDOT_URL failed with HTTP $HTTP_STATUS"
-  head -c 500 "$RESPONSE_FILE"
-  exit 1
-fi
-
-TOKEN="$(jq --raw-output '.data.cloudConnectorAccess.serviceToken.token // empty' "$RESPONSE_FILE")"
-
-if [ -z "$TOKEN" ]; then
-  echo "No token in the response from $CDOT_URL"
-  jq --raw-output '.errors[]?.message // empty' "$RESPONSE_FILE"
-  exit 1
-fi
-
-# The distribution service requires X-Gitlab-Instance-Id to equal the token's
-# subject claim and X-Gitlab-Realm to equal its realm claim. Both are in the
-# payload, which is the second dot-separated segment of the token.
-CLAIMS="$(printf '%s' "$TOKEN" |
-  jq --raw-input 'split(".")[1] | gsub("-"; "+") | gsub("_"; "/") | @base64d | fromjson')"
-
-INSTANCE_ID="$(jq --raw-output '.sub // empty' <<<"$CLAIMS")"
-REALM="$(jq --raw-output '.gitlab_realm // empty' <<<"$CLAIMS")"
-
-if [ -z "$INSTANCE_ID" ] || [ -z "$REALM" ]; then
-  echo "The token is missing its subject or realm claim"
-  exit 1
-fi
-
-# Pass the headers through a file so the token never appears in a process
-# list. It is readable there by any local user for the download's duration.
-{
-  printf 'header = "Authorization: Bearer %s"\n' "$TOKEN"
-  printf 'header = "X-Gitlab-Instance-Id: %s"\n' "$INSTANCE_ID"
-  printf 'header = "X-Gitlab-Realm: %s"\n' "$REALM"
-} >"$HEADER_FILE"
-
-# Writes the response body to $2 and returns the HTTP status.
-licenses_request() {
-  curl --silent --show-error --config "$HEADER_FILE" \
-    --output "$2" --write-out '%{http_code}' "$1"
-}
-
-HTTP_STATUS="$(licenses_request "$PDS_URL/v1/licenses/supported" "$RESPONSE_FILE")"
-
-if [ "$HTTP_STATUS" != "200" ]; then
-  echo "Request for the supported package registries failed with HTTP $HTTP_STATUS"
-  head -c 500 "$RESPONSE_FILE"
-  exit 1
-fi
-
-SUPPORTED="$(jq --raw-output '.registries[]' "$RESPONSE_FILE")"
-SKIPPED=""
-
-if [ -z "$SUPPORTED" ]; then
-  echo "No package registries are available"
-  exit 1
-fi
-
-echo "Available package registries: $(echo "$SUPPORTED" | tr '\n' ' ')"
-
-# Disable filename expansion so a registry name is never treated as a glob.
-set -f
-
-if [ "$REQUESTED_REGISTRIES" = "all" ]; then
-  REGISTRIES="$SUPPORTED"
-else
-  REGISTRIES="$REQUESTED_REGISTRIES"
-
-  for REGISTRY in $REGISTRIES; do
-    if ! grep --quiet --fixed-strings --line-regexp "$REGISTRY" <<<"$SUPPORTED"; then
-      echo "$REGISTRY is not a supported package registry"
-      exit 1
-    fi
-  done
-fi
-
-for REGISTRY in $REGISTRIES; do
-  HTTP_STATUS="$(licenses_request "$PDS_URL/v1/licenses/all?purl_type=$REGISTRY" "$RESPONSE_FILE")"
-
-  # A pending snapshot is the only skippable outcome. Every other 503 is
-  # transient, and treating it as "no data" would delete a registry that the
-  # instance already has.
-  if [ "$HTTP_STATUS" = "503" ]; then
-    # A 503 from in front of the service has no JSON body, so keep the reason
-    # empty rather than letting jq abort the script.
-    REASON="$(jq --raw-output '.reason // empty' "$RESPONSE_FILE" 2>/dev/null || true)"
-
-    if [ "$REASON" = "snapshot_not_yet_published" ]; then
-      echo "Skipping $REGISTRY, no snapshot is published yet"
-      SKIPPED="$SKIPPED $REGISTRY"
-      continue
-    fi
-
-    echo "Request for $REGISTRY failed with HTTP 503, try again later ($REASON)"
-    exit 1
-  fi
-
-  if [ "$HTTP_STATUS" != "200" ]; then
-    echo "Request for $REGISTRY failed with HTTP $HTTP_STATUS"
-    head -c 500 "$RESPONSE_FILE"
-    exit 1
-  fi
-
-  UNTIL="$(jq --raw-output '.until // empty' "$RESPONSE_FILE")"
-
-  if [ -z "$UNTIL" ]; then
-    echo "The response for $REGISTRY has no snapshot timestamp"
-    exit 1
-  fi
-  DATASET_DIR="$OUTPUT_DIR/v3/$REGISTRY/full_dataset"
-
-  # Skip the download when this snapshot is already on disk. Every archive in a
-  # snapshot shares one `until`, so an unchanged value means no archive changed.
-  if [ -r "$DATASET_DIR/checkpoint.json" ] &&
-    [ "$(jq --raw-output '.until // empty' "$DATASET_DIR/checkpoint.json" 2>/dev/null)" = "$UNTIL" ]; then
-    echo "Skipping $REGISTRY, snapshot $UNTIL is already downloaded"
-    continue
-  fi
-
-  # Remove any previous snapshot. GitLab reads every archive in this directory,
-  # so archives left over from an earlier snapshot would be imported alongside
-  # the new ones, restoring licenses that changed since.
-  rm -rf "$DATASET_DIR"
-  mkdir -p "$DATASET_DIR"
-
-  jq --raw-output '.shards[] | [.shard, (.signed_url // .url)] | @tsv' "$RESPONSE_FILE" >"$SHARDS_FILE"
-
-  while IFS=$'\t' read -r SHARD URL; do
-    echo "Downloading $REGISTRY archive $SHARD"
-    curl --fail --silent --show-error --location --output "$DATASET_DIR/$SHARD.tar.zst.part" "$URL"
-    mv "$DATASET_DIR/$SHARD.tar.zst.part" "$DATASET_DIR/$SHARD.tar.zst"
-  done <"$SHARDS_FILE"
-
-  # Write the checkpoint last. GitLab ignores a directory that has no
-  # checkpoint, so an interrupted download is never imported as a snapshot.
-  jq --null-input --argjson until "$UNTIL" '{until: $until}' >"$DATASET_DIR/checkpoint.json"
-done
-
-set +f
-
-if [ -n "$SKIPPED" ]; then
-  echo "Warning: no snapshot is published yet for:$SKIPPED"
-  echo "The downloaded registries are complete and safe to copy. Run the script again later to pick up the rest."
-fi
-
-echo "License data saved to $OUTPUT_DIR"
-```
-
-To download the license data:
-
-1. On the offline instance, find the GitLab version.
-
-   ```shell
-   sudo gitlab-rails runner 'puts Gitlab::VERSION'
-   ```
-
-1. On the machine with internet access, save the preceding script as `download_licenses.sh` and make it executable.
-
-   ```shell
-   chmod +x download_licenses.sh
-   ```
-
-1. Run the script with your license file, the GitLab version from the first step, a directory to write to, and the package registries to download.
-   Pass the registries whose types are enabled in the **Admin** area, or `all` for every supported registry.
-
-   ```shell
-   ./download_licenses.sh ./Gitlab.gitlab-license 19.4.0-ee ./licenses npm pypi
-   ```
-
-   The script creates one directory per package registry, named for the registry identifier rather than the package type.
-
-   ```plaintext
-   licenses/
-   └── v3/
-       └── npm/
-           └── full_dataset/
-               ├── 00.tar.zst
-               ├── 01.tar.zst
-               ├── ...
-               ├── 7f.tar.zst
-               └── checkpoint.json
-   ```
-
-   Each archive is named for its hexadecimal shard identifier.
+To copy the license data to the offline instance:
 
 1. Transfer the output directory to the offline instance.
 
@@ -1216,7 +1079,7 @@ levels below the version directory:
 
 A copy of the CVE enrichment bucket made as it is puts the files one level deeper than this and
 GitLab reads none of them.
-To correct it, see [the CVE enrichment step in the download procedure](#using-the-gsutil-tool-to-download-the-package-metadata-exports).
+To correct it, see [the CVE enrichment step in the download procedure](#v2-using-the-gsutil-tool-to-download-the-package-metadata-exports).
 
 You can check if GitLab recognizes the file path in the [Rails console](../../administration/operations/rails_console.md):
 

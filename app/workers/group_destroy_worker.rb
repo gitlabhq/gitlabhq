@@ -13,6 +13,12 @@ class GroupDestroyWorker
   idempotent!
   deduplicate :until_executed, ttl: 2.hours
 
+  # Backpressure: caps concurrent group deletions to protect the shared Sidekiq
+  # shard and database. 0 (the default) falls back to the calculated cap;
+  # a positive value overrides it.
+  # See https://gitlab.com/gitlab-com/gl-infra/production-engineering/-/issues/29508
+  concurrency_limit -> { Gitlab::CurrentSettings.group_deletion_jobs_concurrency_limit.nonzero? }
+
   def perform(group_id, user_id, params = {}) # rubocop:disable Lint/UnusedMethodArgument -- Keep params parameter for backwards compatibility. Remove `param` in 18.0 release.
     Gitlab::QueryLimiting.disable!('https://gitlab.com/gitlab-org/gitlab/-/issues/464673', new_threshold: 300)
 

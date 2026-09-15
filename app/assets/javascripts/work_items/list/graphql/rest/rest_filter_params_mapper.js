@@ -33,6 +33,8 @@ const GRAPHQL_SORT_TO_REST = {
   WEIGHT_DESC: { order_by: 'weight', sort: 'desc' },
   MILESTONE_DUE_ASC: { order_by: 'milestone_due', sort: 'asc' },
   MILESTONE_DUE_DESC: { order_by: 'milestone_due', sort: 'desc' },
+  STATUS_ASC: { order_by: 'status', sort: 'asc' },
+  STATUS_DESC: { order_by: 'status', sort: 'desc' },
 };
 
 const STATE_MAP = {

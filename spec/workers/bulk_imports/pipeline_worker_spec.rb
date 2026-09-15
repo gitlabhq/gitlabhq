@@ -626,11 +626,13 @@ RSpec.describe BulkImports::PipelineWorker, feature_category: :importers do
     end
 
     context 'when export status is failed' do
-      it 'marks as failed and logs the error' do
+      before do
         allow_next_instance_of(BulkImports::ExportStatus) do |status|
           allow(status).to receive_messages(failed?: true, error: 'Error!')
         end
+      end
 
+      it 'marks as failed and logs the error' do
         expect { worker.perform(pipeline_tracker.id, pipeline_tracker.stage, entity.id) }
           .to raise_exception(BulkImports::Pipeline::FailedError)
       end

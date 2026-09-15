@@ -757,6 +757,7 @@ class ApplicationSetting < ApplicationRecord
       :gitlab_shell_operation_limit,
       :group_api_limit,
       :group_create_limit,
+      :group_deletion_jobs_concurrency_limit,
       :group_archive_unarchive_api_limit,
       :group_invited_groups_api_limit,
       :group_projects_api_limit,
@@ -789,6 +790,7 @@ class ApplicationSetting < ApplicationRecord
       :pipeline_limit_per_user,
       :project_api_limit,
       :project_create_limit,
+      :project_deletion_jobs_concurrency_limit,
       :project_invited_groups_api_limit,
       :project_repositories_blobs_batch_limit,
       :projects_api_limit,
@@ -880,7 +882,9 @@ class ApplicationSetting < ApplicationRecord
 
   jsonb_accessor :group_settings,
     top_level_group_creation_enabled: [:boolean, { default: true }],
-    disable_invite_members: [:boolean, { default: false }]
+    disable_invite_members: [:boolean, { default: false }],
+    group_deletion_jobs_concurrency_limit: [:integer, { default: 0 }],
+    project_deletion_jobs_concurrency_limit: [:integer, { default: 0 }]
 
   validates :group_settings,
     json_schema: { filename: "application_setting_group_settings" }

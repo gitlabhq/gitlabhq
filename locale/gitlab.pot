@@ -8781,6 +8781,25 @@ msgstr ""
 msgid "AiOverview|Try the new overview"
 msgstr ""
 
+msgid "AiPowered|%d check failed"
+msgid_plural "AiPowered|%d checks failed"
+msgstr[0] ""
+msgstr[1] ""
+
+msgid "AiPowered|%d check passed"
+msgid_plural "AiPowered|%d checks passed"
+msgstr[0] ""
+msgstr[1] ""
+
+msgid "AiPowered|%{name} (GitLab-managed)"
+msgstr ""
+
+msgid "AiPowered|%{name} (self-hosted)"
+msgstr ""
+
+msgid "AiPowered|%{scope} · Last run %{timeAgo}"
+msgstr ""
+
 msgid "AiPowered|%{word} by %{source} — subgroups cannot opt in."
 msgstr ""
 
@@ -8839,6 +8858,9 @@ msgid "AiPowered|After the conversation was created"
 msgstr ""
 
 msgid "AiPowered|After the conversation was last updated"
+msgstr ""
+
+msgid "AiPowered|Agentic Chat"
 msgstr ""
 
 msgid "AiPowered|Agents"
@@ -8982,6 +9004,9 @@ msgstr ""
 msgid "AiPowered|Configuration"
 msgstr ""
 
+msgid "AiPowered|Configure"
+msgstr ""
+
 msgid "AiPowered|Configure AI-native GitLab Duo features. %{linkStart}Which features%{linkEnd}?"
 msgstr ""
 
@@ -9051,6 +9076,9 @@ msgstr ""
 msgid "AiPowered|Direct connections"
 msgstr ""
 
+msgid "AiPowered|Disabled"
+msgstr ""
+
 msgid "AiPowered|Do more with Premium"
 msgstr ""
 
@@ -9093,6 +9121,9 @@ msgstr ""
 msgid "AiPowered|Experiment and beta features"
 msgstr ""
 
+msgid "AiPowered|Failed"
+msgstr ""
+
 msgid "AiPowered|Failed to load allowlist domains."
 msgstr ""
 
@@ -9109,6 +9140,12 @@ msgid "AiPowered|Features without CI/CD pipelines"
 msgstr ""
 
 msgid "AiPowered|Flows"
+msgstr ""
+
+msgid "AiPowered|Functional verification checks"
+msgstr ""
+
+msgid "AiPowered|Functional verification checks support only self-hosted models. To turn on these checks, %{linkStart}configure a self-hosted model%{linkEnd}."
 msgstr ""
 
 msgid "AiPowered|GitLab Credits"
@@ -9207,6 +9244,9 @@ msgstr ""
 msgid "AiPowered|Interact directly with GitLab and perform common GitLab operations."
 msgstr ""
 
+msgid "AiPowered|Last run %{timeAgo}"
+msgstr ""
+
 msgid "AiPowered|Learn more"
 msgstr ""
 
@@ -9273,6 +9313,9 @@ msgstr ""
 msgid "AiPowered|Not enabled"
 msgstr ""
 
+msgid "AiPowered|Not run"
+msgstr ""
+
 msgid "AiPowered|Off by default"
 msgstr ""
 
@@ -9286,6 +9329,9 @@ msgid "AiPowered|Override the instance-wide GitLab Duo availability for individu
 msgstr ""
 
 msgid "AiPowered|Overrides \"%{value}\""
+msgstr ""
+
+msgid "AiPowered|Passed"
 msgstr ""
 
 msgid "AiPowered|Purchase credits"
@@ -9316,6 +9362,15 @@ msgid "AiPowered|Restrict access based on group membership"
 msgstr ""
 
 msgid "AiPowered|Restrict access to GitLab Duo. By default, all eligible users can access all configured AI features."
+msgstr ""
+
+msgid "AiPowered|Run"
+msgstr ""
+
+msgid "AiPowered|Run %{checkName} verification"
+msgstr ""
+
+msgid "AiPowered|Running"
 msgstr ""
 
 msgid "AiPowered|Save on GitLab Credits with monthly commitments"
@@ -9511,6 +9566,15 @@ msgid "AiPowered|Users with the Maintainer or Owner role for a project can inclu
 msgstr ""
 
 msgid "AiPowered|Users with the Maintainer or Owner role for a project can use external agents."
+msgstr ""
+
+msgid "AiPowered|Verification check supports only self-hosted models"
+msgstr ""
+
+msgid "AiPowered|Verifications do not consume GitLab Credits."
+msgstr ""
+
+msgid "AiPowered|Verifies the request flow of Agentic Chat end to end."
 msgstr ""
 
 msgid "AiPowered|View configuration"
@@ -14122,6 +14186,9 @@ msgid "Avatar for %{assigneeName}"
 msgstr ""
 
 msgid "Avatar will be removed. Are you sure?"
+msgstr ""
+
+msgid "Average credits used per flow."
 msgstr ""
 
 msgid "Average per day: %{average}"
@@ -26041,6 +26108,12 @@ msgstr ""
 msgid "Credit card validation record saved"
 msgstr ""
 
+msgid "Credits"
+msgstr ""
+
+msgid "Credits used per flow at a given quantile."
+msgstr ""
+
 msgid "Critical - S1"
 msgstr ""
 
@@ -33189,6 +33262,9 @@ msgstr ""
 msgid "DuoSlack|Helpful"
 msgstr ""
 
+msgid "DuoSlack|I'm still working on an earlier message in this thread. Wait for that to finish, then mention me again."
+msgstr ""
+
 msgid "DuoSlack|Incomplete"
 msgstr ""
 
@@ -33234,7 +33310,7 @@ msgstr ""
 msgid "DuoSlack|The Duo Developer flow is not enabled for your namespace. Ask a group owner to enable it in the Duo Agent Platform settings."
 msgstr ""
 
-msgid "DuoSlack|The task completed but the agent didn't produce a response. Check the CI job logs for details."
+msgid "DuoSlack|The task completed but the agent didn't produce a response. Check the session in GitLab for details."
 msgstr ""
 
 msgid "DuoSlack|This feedback helps us improve Duo. We'll share your feedback and the related session with GitLab."
@@ -33247,6 +33323,9 @@ msgid "DuoSlack|What did you expect to happen?"
 msgstr ""
 
 msgid "DuoSlack|What went wrong?"
+msgstr ""
+
+msgid "DuoSlack|You don't have access to Duo in this namespace, or it has run out of GitLab Duo credits. Ask a group owner to check the Duo Agent Platform settings."
 msgstr ""
 
 msgid "DuoSlack|Your message is too long for me to process (the limit is about %{limit} characters). Shorten it and mention me again."
@@ -36680,6 +36759,9 @@ msgid "Fetch cloud observability alerts"
 msgstr ""
 
 msgid "Fetching incoming email"
+msgstr ""
+
+msgid "Fewest credits used by a single flow."
 msgstr ""
 
 msgid "File"
@@ -52154,19 +52236,28 @@ msgstr ""
 msgid "ModelRegistry|versions"
 msgstr ""
 
+msgid "ModelSelection|Alternatively, you can select a specific model to use."
+msgstr ""
+
 msgid "ModelSelection|An error occurred while loading the AI feature settings. Please try again."
 msgstr ""
 
 msgid "ModelSelection|An error occurred while updating the feature setting. Please try again."
 msgstr ""
 
-msgid "ModelSelection|By selecting %{selectedGitlabManagedModel}, you consent to using a GitLab managed model and sending data to the GitLab AI gateway."
+msgid "ModelSelection|Auto"
+msgstr ""
+
+msgid "ModelSelection|By selecting %{selectedGitlabManagedModel}, you consent to using a GitLab-managed model and sending data to the GitLab AI Gateway."
+msgstr ""
+
+msgid "ModelSelection|GitLab automatic routing"
 msgstr ""
 
 msgid "ModelSelection|GitLab default model"
 msgstr ""
 
-msgid "ModelSelection|If you select a specific model, this feature will continue to use your selection regardless of any changes to GitLab default models."
+msgid "ModelSelection|GitLab dynamically routes each request to the most suitable model"
 msgstr ""
 
 msgid "ModelSelection|Manage GitLab Duo by configuring and assigning models to AI-native features."
@@ -52193,7 +52284,10 @@ msgstr ""
 msgid "ModelSelection|Update profile preferences"
 msgstr ""
 
-msgid "ModelSelection|When you select the %{boldStart}GitLab default model%{boldEnd}, this feature will use the current GitLab managed default model for this feature and automatically updates when GitLab changes this default."
+msgid "ModelSelection|When you select %{boldStart}Auto%{boldEnd}, GitLab routes each request to the most suitable model based on the task at hand."
+msgstr ""
+
+msgid "ModelSelection|When you select the GitLab default model, GitLab uses the current default model for this feature. This model is updated automatically."
 msgstr ""
 
 msgid "Modified"
@@ -52287,6 +52381,9 @@ msgid "More topics"
 msgstr ""
 
 msgid "Most common"
+msgstr ""
+
+msgid "Most credits used by a single flow."
 msgstr ""
 
 msgid "Most recent commit."
@@ -52392,6 +52489,9 @@ msgid "MrList|Review requested from %{name}"
 msgstr ""
 
 msgid "MrReports|Add a scanning job to your CI/CD pipeline to see reports here."
+msgstr ""
+
+msgid "MrReports|Browser performance"
 msgstr ""
 
 msgid "MrReports|Code quality"
@@ -54698,6 +54798,9 @@ msgid "Number of unique contributors."
 msgstr ""
 
 msgid "Number of unique features used."
+msgstr ""
+
+msgid "Number of unique projects."
 msgstr ""
 
 msgid "Number of unique users in the previous period."
@@ -85027,6 +85130,9 @@ msgstr ""
 msgid "Total cores (CPUs)"
 msgstr ""
 
+msgid "Total credits used by all flows."
+msgstr ""
+
 msgid "Total items: %{total}"
 msgstr ""
 
@@ -85037,6 +85143,9 @@ msgid "Total number of contributions."
 msgstr ""
 
 msgid "Total number of events."
+msgstr ""
+
+msgid "Total number of flows."
 msgstr ""
 
 msgid "Total number of merge requests."
@@ -96701,6 +96810,12 @@ msgid "ciReport|Analyze a deployed version of your web application for known vul
 msgstr ""
 
 msgid "ciReport|Automatically apply the patch in a new branch"
+msgstr ""
+
+msgid "ciReport|Browser performance failed loading results"
+msgstr ""
+
+msgid "ciReport|Browser performance results are not available"
 msgstr ""
 
 msgid "ciReport|Browser performance test metrics results are being parsed"

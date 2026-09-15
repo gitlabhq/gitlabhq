@@ -59,6 +59,7 @@ RSpec.describe Gitlab::BlamePresenter do
         data = subject.commit_data(commit)
 
         expect(data.project_blame_link.to_s).to eq('')
+        expect(data.previous_blame_path).to be_nil
       end
 
       it 'generates link link to previous blame' do
@@ -67,6 +68,35 @@ RSpec.describe Gitlab::BlamePresenter do
 
         expect(data.project_blame_link.to_s).to include('<a title="View blame prior to this change"')
         expect(data.project_blame_link.to_s).to include('/blame/405a45736a75e439bb059e638afaa9a3c2eeda79/files/plain_text/initial-commit')
+      end
+
+      it 'generates a Rails-built previous blame path' do
+        commit = blame.groups[1][:commit]
+        data = subject.commit_data(commit)
+
+        expect(data.previous_blame_path).to eq(
+          "/#{project.full_path}/-/blob/405a45736a75e439bb059e638afaa9a3c2eeda79/" \
+            'files/plain_text/initial-commit?blame=1'
+        )
+      end
+
+      context 'when a relative URL root is configured' do
+        let(:relative_url_root) { '/gitlab' }
+
+        before do
+          stub_config_setting(relative_url_root: relative_url_root)
+          stub_default_url_options(script_name: relative_url_root)
+        end
+
+        it 'prefixes the previous blame path with the relative URL root' do
+          commit = blame.groups[1][:commit]
+          data = subject.commit_data(commit)
+
+          expect(data.previous_blame_path).to eq(
+            "#{relative_url_root}/#{project.full_path}/-/blob/405a45736a75e439bb059e638afaa9a3c2eeda79/" \
+              'files/plain_text/initial-commit?blame=1'
+          )
+        end
       end
     end
   end

@@ -1,6 +1,7 @@
 import {
   formatCount,
   formatCountCompact,
+  formatCredits,
   formatRate,
   formatDuration,
   formatDurationCompact,
@@ -59,6 +60,19 @@ describe('formatCountCompact', () => {
     `('formats $value as $expected', ({ value, expected }) => {
       expect(formatCountCompact(value, { lowercaseThousands: true })).toBe(expected);
     });
+  });
+});
+
+describe('formatCredits', () => {
+  it.each`
+    value                 | expected
+    ${0}                  | ${'0'}
+    ${0.25}               | ${'0.25'}
+    ${18.456416666666666} | ${'18.46'}
+    ${41.5}               | ${'41.5'}
+    ${2214.77}            | ${'2,214.77'}
+  `('formats $value as $expected', ({ value, expected }) => {
+    expect(formatCredits(value)).toBe(expected);
   });
 });
 
@@ -161,6 +175,12 @@ describe('formatterFor', () => {
     ${'durationMin'}              | ${30}     | ${'30s'}
     ${'durationMax'}              | ${3600}   | ${'1h'}
     ${'durationSum'}              | ${3661}   | ${'1h 1m 1s'}
+    ${'projectsCount'}            | ${5}      | ${'5'}
+    ${'creditsUsedMin'}           | ${0.25}   | ${'0.25'}
+    ${'creditsUsedMax'}           | ${41.36}  | ${'41.36'}
+    ${'creditsUsedMean'}          | ${18.456} | ${'18.46'}
+    ${'creditsUsedSum'}           | ${1234.5} | ${'1,234.5'}
+    ${'creditsUsedQuantile'}      | ${19.12}  | ${'19.12'}
   `(
     'returns a formatter for $fieldKey that maps $input to $expected',
     ({ fieldKey, input, expected }) => {
@@ -249,6 +269,12 @@ describe('unitFor', () => {
     ${'durationMin'}              | ${'duration'}
     ${'durationMax'}              | ${'duration'}
     ${'durationSum'}              | ${'duration'}
+    ${'projectsCount'}            | ${'count'}
+    ${'creditsUsedMin'}           | ${'credits'}
+    ${'creditsUsedMax'}           | ${'credits'}
+    ${'creditsUsedMean'}          | ${'credits'}
+    ${'creditsUsedSum'}           | ${'credits'}
+    ${'creditsUsedQuantile'}      | ${'credits'}
   `('maps $fieldKey to unit $expected', ({ fieldKey, expected }) => {
     expect(unitFor(fieldKey)).toBe(expected);
   });
@@ -262,6 +288,7 @@ describe('labelForUnit', () => {
   it.each`
     unit            | expected
     ${'count'}      | ${'Count'}
+    ${'credits'}    | ${'Credits'}
     ${'rate'}       | ${'Percentage'}
     ${'duration'}   | ${'Duration'}
     ${'durationMs'} | ${'Duration'}

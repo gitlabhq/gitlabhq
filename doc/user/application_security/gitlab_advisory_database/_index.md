@@ -49,7 +49,7 @@ these advisories carry that ID as an identifier, and have no CVE identifier.
 
 > [!note]
 > In [offline environments](../offline_deployments/_index.md), GitLab cannot synchronize these advisories automatically.
-> Instead, you [download them on a machine with internet access](../../../topics/offline/quick_start_guide.md#download-gitlab-malware-advisories) and copy them to the instance.
+> Instead, you [download them on a machine with internet access](../../../topics/offline/quick_start_guide.md#download-gitlab-v3-malware-advisories) and copy them to the instance.
 
 These advisories serve three purposes:
 

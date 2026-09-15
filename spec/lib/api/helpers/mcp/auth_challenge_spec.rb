@@ -26,10 +26,38 @@ RSpec.describe API::Helpers::Mcp::AuthChallenge, feature_category: :mcp_server d
       stub_config_setting(url: 'https://gitlab.example.com', relative_url_root: '')
     end
 
-    it 'advertises the protected resource metadata URL' do
+    it 'advertises the protected resource metadata URL and the required mcp scope' do
       metadata_url = 'https://gitlab.example.com/.well-known/oauth-protected-resource/api/v4/mcp'
 
-      expect(challenge).to eq(%(Bearer realm="GitLab", resource_metadata="#{metadata_url}"))
+      expect(challenge).to eq(%(Bearer realm="GitLab", scope="mcp", resource_metadata="#{metadata_url}"))
+    end
+  end
+
+  context 'with the orbit MCP resource' do
+    let(:request_path) { '/api/v4/orbit/mcp' }
+
+    before do
+      stub_config_setting(url: 'https://gitlab.example.com', relative_url_root: '')
+    end
+
+    it 'advertises the mcp_orbit scope for the orbit resource' do
+      metadata_url = 'https://gitlab.example.com/.well-known/oauth-protected-resource/api/v4/orbit/mcp'
+
+      expect(challenge).to eq(%(Bearer realm="GitLab", scope="mcp_orbit", resource_metadata="#{metadata_url}"))
+    end
+  end
+
+  context 'with an MCP path that has no entry in the scope map' do
+    let(:request_path) { '/api/v4/future/mcp' }
+
+    before do
+      stub_config_setting(url: 'https://gitlab.example.com', relative_url_root: '')
+    end
+
+    it 'falls back to the mcp scope' do
+      metadata_url = 'https://gitlab.example.com/.well-known/oauth-protected-resource/api/v4/future/mcp'
+
+      expect(challenge).to eq(%(Bearer realm="GitLab", scope="mcp", resource_metadata="#{metadata_url}"))
     end
   end
 
@@ -43,7 +71,7 @@ RSpec.describe API::Helpers::Mcp::AuthChallenge, feature_category: :mcp_server d
     it 'strips the relative root so it is not duplicated in the metadata URL' do
       metadata_url = 'https://git.example.org/gitlab/.well-known/oauth-protected-resource/api/v4/mcp'
 
-      expect(challenge).to eq(%(Bearer realm="GitLab", resource_metadata="#{metadata_url}"))
+      expect(challenge).to eq(%(Bearer realm="GitLab", scope="mcp", resource_metadata="#{metadata_url}"))
     end
   end
 end

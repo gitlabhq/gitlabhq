@@ -24,7 +24,7 @@ RSpec.describe API::Mcp::Base, feature_category: :mcp_server do
         metadata_url = "#{Gitlab.config.gitlab.url}/.well-known/oauth-protected-resource/api/v4/mcp"
         expect(response).to have_gitlab_http_status(:unauthorized)
         expect(response.headers['WWW-Authenticate'])
-          .to eq(%(Bearer realm="GitLab", resource_metadata="#{metadata_url}"))
+          .to eq(%(Bearer realm="GitLab", scope="mcp", resource_metadata="#{metadata_url}"))
       end
     end
 
@@ -303,7 +303,7 @@ RSpec.describe API::Mcp::Base, feature_category: :mcp_server do
         metadata_url = "#{Gitlab.config.gitlab.url}/.well-known/oauth-protected-resource/api/v4/mcp"
         expect(response).to have_gitlab_http_status(:unauthorized)
         expect(response.headers['WWW-Authenticate'])
-          .to eq(%(Bearer realm="GitLab", resource_metadata="#{metadata_url}"))
+          .to eq(%(Bearer realm="GitLab", scope="mcp", resource_metadata="#{metadata_url}"))
       end
     end
 

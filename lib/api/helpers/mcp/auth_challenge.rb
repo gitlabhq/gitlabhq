@@ -26,7 +26,11 @@ module API
             Gitlab.config.gitlab.url,
             "/.well-known/oauth-protected-resource#{resource_path}"
           )
-          %(Bearer realm="GitLab", resource_metadata="#{metadata_url}")
+          %(Bearer realm="GitLab", scope="#{required_scope}", resource_metadata="#{metadata_url}")
+        end
+
+        def required_scope
+          ::Gitlab::Auth::MCP_RESOURCE_SCOPES.fetch(resource_path, ::Gitlab::Auth::MCP_SCOPE)
         end
 
         # `request.path` includes the relative URL root on a subpath install

@@ -30,6 +30,11 @@ module Gitlab
       GRANULAR_SCOPE
     ].freeze
 
+    MCP_RESOURCE_SCOPES = {
+      '/api/v4/mcp' => MCP_SCOPE,
+      '/api/v4/orbit/mcp' => MCP_ORBIT_SCOPE
+    }.freeze
+
     # Scopes for Duo
     AI_FEATURES = :ai_features
     AI_FEATURES_SCOPES = [AI_FEATURES].freeze
