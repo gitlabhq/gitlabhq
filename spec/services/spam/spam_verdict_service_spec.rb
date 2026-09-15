@@ -43,8 +43,7 @@ RSpec.describe Spam::SpamVerdictService, feature_category: :instance_resiliency 
     subject(:execute) { service.execute }
 
     before do
-      allow(service).to receive(:get_akismet_verdict).and_return(nil)
-      allow(service).to receive(:get_spamcheck_verdict).and_return(nil)
+      allow(service).to receive_messages(get_akismet_verdict: nil, get_spamcheck_verdict: nil)
     end
 
     context 'if all services return nil' do
@@ -78,8 +77,7 @@ RSpec.describe Spam::SpamVerdictService, feature_category: :instance_resiliency 
     context 'if more than one service returns a verdict' do
       context 'and they are supported' do
         before do
-          allow(service).to receive(:get_akismet_verdict).and_return(DISALLOW)
-          allow(service).to receive(:get_spamcheck_verdict).and_return(BLOCK_USER)
+          allow(service).to receive_messages(get_akismet_verdict: DISALLOW, get_spamcheck_verdict: BLOCK_USER)
         end
 
         it 'renders the more restrictive verdict' do
@@ -89,8 +87,7 @@ RSpec.describe Spam::SpamVerdictService, feature_category: :instance_resiliency 
 
       context 'and one is supported' do
         before do
-          allow(service).to receive(:get_akismet_verdict).and_return('nonsense')
-          allow(service).to receive(:get_spamcheck_verdict).and_return(BLOCK_USER)
+          allow(service).to receive_messages(get_akismet_verdict: 'nonsense', get_spamcheck_verdict: BLOCK_USER)
         end
 
         it 'renders the more restrictive verdict' do
@@ -100,8 +97,7 @@ RSpec.describe Spam::SpamVerdictService, feature_category: :instance_resiliency 
 
       context 'and none are supported' do
         before do
-          allow(service).to receive(:get_akismet_verdict).and_return('nonsense')
-          allow(service).to receive(:get_spamcheck_verdict).and_return('rubbish')
+          allow(service).to receive_messages(get_akismet_verdict: 'nonsense', get_spamcheck_verdict: 'rubbish')
         end
 
         it 'renders the more restrictive verdict' do

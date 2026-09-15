@@ -17,13 +17,20 @@ retrieve-tests-metadata:
   stage: prepare
   needs: []
   variables:
+    BALANCING_ENV: balancing.env
     FILES_TO_DOWNLOAD: >
       scripts/setup/tests-metadata.rb
+      scripts/setup/decide-test-balancing.rb
   before_script:
     - apk add --no-cache --update curl  # Not present in ruby-alpine, so we add it manually
     - !reference [".fast-no-clone-job", before_script]
   script:
     - ruby scripts/setup/tests-metadata.rb retrieve
+    - ruby scripts/setup/decide-test-balancing.rb > "${BALANCING_ENV}"
+    - cat "${BALANCING_ENV}"
+  artifacts:
+    reports:
+      dotenv: $BALANCING_ENV
 
 update-tests-metadata:
   extends:

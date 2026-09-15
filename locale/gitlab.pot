@@ -82154,6 +82154,9 @@ msgstr ""
 msgid "The issue was successfully promoted to an epic. Redirecting to epic…"
 msgstr ""
 
+msgid "The job that requested this token has exceeded its timeout."
+msgstr ""
+
 msgid "The last owner cannot be set to awaiting"
 msgstr ""
 

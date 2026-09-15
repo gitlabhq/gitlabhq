@@ -28,8 +28,7 @@ module StubObjectStorage
     })
 
     # Needed for ObjectStorage::Config compatibility
-    allow(config).to receive(:to_hash).and_return(new_config)
-    allow(config).to receive(:to_h).and_return(new_config)
+    allow(config).to receive_messages(to_hash: new_config, to_h: new_config)
     allow(config).to receive(:enabled) { enabled }
     allow(config).to receive(:proxy_download) { proxy_download }
     allow(config).to receive(:direct_upload) { direct_upload }

@@ -21,8 +21,6 @@ const plugins = [
   '@babel/plugin-transform-class-properties',
   '@babel/plugin-transform-json-strings',
   '@babel/plugin-transform-private-methods',
-  // See: https://gitlab.com/gitlab-org/gitlab/-/issues/229146
-  '@babel/plugin-transform-arrow-functions',
   // See: https://gitlab.com/gitlab-org/gitlab/-/issues/336216
   '@babel/plugin-transform-optional-chaining',
   // See: https://gitlab.com/gitlab-org/gitlab/-/issues/336216
@@ -63,6 +61,17 @@ if (isJest) {
 module.exports = {
   presets,
   plugins,
+  overrides: [
+    {
+      // See: https://gitlab.com/gitlab-org/gitlab/-/issues/229146
+      // Only our own code needs this. On third-party code it breaks `this?.x`
+      // default parameters: https://gitlab.com/gitlab-org/gitlab/-/work_items/628901
+      // Only webpack sends node_modules through Babel. Once rspack replaces
+      // webpack, this override can move back into `plugins`.
+      exclude: /node_modules/,
+      plugins: ['@babel/plugin-transform-arrow-functions'],
+    },
+  ],
   sourceType: 'unambiguous',
   env,
 };

@@ -11,8 +11,7 @@ RSpec.shared_examples 'User updates wiki page' do
 
   before do
     sign_in(user)
-    allow(Gitlab::CurrentSettings).to receive(:diagramsnet_enabled).and_return(true)
-    allow(Gitlab::CurrentSettings).to receive(:diagramsnet_url).and_return(diagramsnet_url)
+    allow(Gitlab::CurrentSettings).to receive_messages(diagramsnet_enabled: true, diagramsnet_url: diagramsnet_url)
   end
 
   context 'when wiki is empty', :js,

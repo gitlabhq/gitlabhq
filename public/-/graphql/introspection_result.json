@@ -43462,6 +43462,18 @@
               "deprecationReason": "Status: Experiment. Introduced in GitLab 19.4."
             },
             {
+              "name": "statistics",
+              "description": "Read-time statistics for the version. Hosted repositories only, so `null` without a read on a virtual or remote repository and on a container repository. Can be selected once per operation. `null` when Artifact Registry does not serve the statistics route, and when it rejects the read: silently for a 401, 403, or 404, and alongside a top-level error for a 429, any other 5xx, or any other 4xx. Introduced in GitLab 19.5: Status: Experiment.",
+              "args": [],
+              "type": {
+                "kind": "OBJECT",
+                "name": "ArtifactRegistryVersionStatistics",
+                "ofType": null
+              },
+              "isDeprecated": true,
+              "deprecationReason": "Status: Experiment. Introduced in GitLab 19.5."
+            },
+            {
               "name": "version",
               "description": "Version string of the package. Introduced in GitLab 19.4: Status: Experiment.",
               "args": [],
@@ -43674,6 +43686,29 @@
               "deprecationReason": null
             }
           ],
+          "possibleTypes": null
+        },
+        {
+          "kind": "OBJECT",
+          "name": "ArtifactRegistryVersionStatistics",
+          "description": "Read-time statistics for a version in an Artifact Registry repository.",
+          "fields": [
+            {
+              "name": "filesCount",
+              "description": "Number of files the version holds, computed at read time. Introduced in GitLab 19.5: Status: Experiment.",
+              "args": [],
+              "type": {
+                "kind": "SCALAR",
+                "name": "BigInt",
+                "ofType": null
+              },
+              "isDeprecated": true,
+              "deprecationReason": "Status: Experiment. Introduced in GitLab 19.5."
+            }
+          ],
+          "inputFields": null,
+          "interfaces": [],
+          "enumValues": null,
           "possibleTypes": null
         },
         {

@@ -4,7 +4,7 @@
 <% role_name = member.present.human_access %>
 <% role_type = member.present.role_type %>
 
-<% if Feature.enabled?(:ui_for_organizations, member.present.user) %>
+<% if Organizations::Release.enabled?(:org_reference_in_member_access_granted_emails, member.present.user) %>
 <%= _('You have been granted access to the %{source_name} %{source_type}, which is part of the %{organization_name} organization with the following role: %{role_name}.') % { source_name: source_name, source_type: source_type, organization_name: organization_name, role_name: role_name } %>
 
 <%= member_source.web_url %>

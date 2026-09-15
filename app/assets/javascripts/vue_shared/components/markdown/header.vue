@@ -299,6 +299,7 @@ export default {
     document.removeEventListener(MARKDOWN_EVENT_SHOW, this.showMarkdownPreview);
     document.removeEventListener(MARKDOWN_EVENT_HIDE, this.hideMarkdownPreview);
     $(document).off('markdown-editor:find-and-replace:show', this.findAndReplace_show);
+    this.cloneResizeObserver?.disconnect();
   },
   methods: {
     async updateSuggestPopoverVisibility() {
@@ -414,6 +415,8 @@ export default {
     findAndReplace_close() {
       this.findAndReplace.shouldShowBar = false;
       this.getCurrentTextArea()?.removeEventListener('scroll', this.findAndReplace_syncScroll);
+      this.cloneResizeObserver?.disconnect();
+      this.cloneResizeObserver = undefined;
       this.cloneDiv?.parentElement.removeChild(this.cloneDiv);
       this.cloneDiv = undefined;
       this.getCurrentTextArea()?.focus();
@@ -488,6 +491,28 @@ export default {
     findAndReplace_syncScroll() {
       const textArea = this.getCurrentTextArea();
       this.cloneDiv.scrollTop = textArea.scrollTop;
+    },
+    findAndReplace_syncGeometry() {
+      const container = this.cloneDiv.offsetParent;
+
+      if (!container) {
+        return;
+      }
+
+      const textArea = this.getCurrentTextArea();
+      const textAreaRect = textArea.getBoundingClientRect();
+      const containerRect = container.getBoundingClientRect();
+      const containerStyle = window.getComputedStyle(container);
+
+      const originTop = containerRect.top + parseFloat(containerStyle.borderTopWidth);
+      const originLeft = containerRect.left + parseFloat(containerStyle.borderLeftWidth);
+
+      this.cloneDiv.style.top = `${textAreaRect.top - originTop}px`;
+      this.cloneDiv.style.left = `${textAreaRect.left - originLeft}px`;
+      this.cloneDiv.style.width = `${textAreaRect.width}px`;
+      this.cloneDiv.style.height = `${textAreaRect.height}px`;
+
+      this.findAndReplace_syncScroll();
     },
     findAndReplace_safeReplace(textArea, textToFind) {
       this.findAndReplace.totalMatchCount = 0;
@@ -565,8 +590,6 @@ export default {
 
       const computedStyle = window.getComputedStyle(textArea);
       const propsToCopy = [
-        'width',
-        'height',
         'padding',
         'border',
         'font-family',
@@ -577,8 +600,6 @@ export default {
         'overflow',
         'white-space',
         'word-wrap',
-        'resize',
-        'margin',
       ];
 
       propsToCopy.forEach((prop) => {
@@ -589,6 +610,8 @@ export default {
       this.cloneDiv.style.whiteSpace = 'pre-wrap';
       this.cloneDiv.style.overflowY = 'auto';
       this.cloneDiv.style.position = 'absolute';
+      this.cloneDiv.style.boxSizing = 'border-box';
+      this.cloneDiv.style.margin = '0';
       this.cloneDiv.style.zIndex = 1;
       this.cloneDiv.style.color = 'transparent';
 
@@ -596,10 +619,12 @@ export default {
 
       textArea.parentElement.insertBefore(this.cloneDiv, textArea);
 
+      this.cloneResizeObserver = new ResizeObserver(this.findAndReplace_syncGeometry);
+      this.cloneResizeObserver.observe(textArea);
+
       await this.$nextTick();
 
-      // Required to align the clone div
-      this.cloneDiv.scrollTop = textArea.scrollTop;
+      this.findAndReplace_syncGeometry();
     },
     findAndReplace_handlePrev() {
       this.findAndReplace.highlightedMatchIndex -= 1;

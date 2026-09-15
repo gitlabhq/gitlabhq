@@ -114,12 +114,7 @@ RSpec.describe Projects::ProtectDefaultBranchService, feature_category: :source_
 
     context 'when protected branch does not exist' do
       before do
-        allow(service)
-          .to receive(:protected_branch_exists?)
-                .and_return(false)
-        allow(service)
-          .to receive(:protect_branch?)
-                .and_return(true)
+        allow(service).to receive_messages(protected_branch_exists?: false, protect_branch?: true)
       end
 
       it 'changes the HEAD of the project' do
@@ -182,25 +177,13 @@ RSpec.describe Projects::ProtectDefaultBranchService, feature_category: :source_
               .with(project, creator, params)
               .and_return(create_service)
 
-      allow(service)
-        .to receive(:push_access_level)
-              .and_return(access_level)
-
-      allow(service)
-        .to receive(:merge_access_level)
-              .and_return(access_level)
-
-      allow(service)
-        .to receive(:default_branch)
-              .and_return('master')
-
-      allow(service)
-        .to receive(:code_owner_approval_required?)
-              .and_return(false)
-
-      allow(service)
-        .to receive(:allow_force_push?)
-              .and_return(false)
+      allow(service).to receive_messages(
+        push_access_level: access_level,
+        merge_access_level: access_level,
+        default_branch: 'master',
+        code_owner_approval_required?: false,
+        allow_force_push?: false
+      )
 
       allow(create_service)
         .to receive(:execute)

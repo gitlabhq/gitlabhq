@@ -395,11 +395,21 @@ To view a user's individual usage events in a drill-down view:
 {{< history >}}
 
 - [Introduced](https://gitlab.com/gitlab-org/customers-gitlab-com/-/work_items/14504) in GitLab 18.10.
+- Background export with a per-event detail file [introduced](https://gitlab.com/gitlab-org/customers-gitlab-com/-/work_items/18963) in GitLab 19.4.
 
 {{< /history >}}
 
-You can export the credit usage data for a subscription as a CSV file in Customers Portal.
-The CSV file lists the usage events and credits used on each day of the current month.
+You can export the credit usage data for a subscription in Customers Portal.
+The export runs in the background, and GitLab emails you a link to download the result.
+The download link expires after seven days.
+
+The download is a ZIP file that contains two CSV files:
+
+- A daily summary file that lists the usage events and credits used on each day of the selected period.
+- A per-event file with one row for each billable event, including the product, flow type, session, user ID,
+  namespace, project, credits used, and token counts.
+
+Each export covers a period of up to 31 days.
 
 Prerequisites:
 
@@ -408,4 +418,6 @@ Prerequisites:
 1. Sign in to [Customers Portal](https://customers.gitlab.com/).
 1. On the subscription card, select **GitLab Credits dashboard**.
 1. From the **Usage period** dropdown list, select the period you want to export data for.
-1. Select **Export usage data**.
+1. Select **Export usage data**. GitLab generates the export in the background and emails you a link to download the ZIP file.
+
+For GitLab Flex subscriptions, you can start the same export from the [Flex Usage dashboard](gitlab_flex_dashboard.md).

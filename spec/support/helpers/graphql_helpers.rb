@@ -925,9 +925,11 @@ module GraphqlHelpers
   # A lookahead that selects everything
   def positive_lookahead
     double(selected?: true, selects?: true).tap do |selection|
-      allow(selection).to receive(:selection).and_return(selection)
-      allow(selection).to receive(:selections).and_return(double(find: selection))
-      allow(selection).to receive(:map).and_return(double(include?: true))
+      allow(selection).to receive_messages(
+        selection: selection,
+        selections: double(find: selection),
+        map: double(include?: true)
+      )
       allow(selection).to receive_message_chain(:field, :type, :list?).and_return(false)
     end
   end

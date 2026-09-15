@@ -90,3 +90,6 @@ export const useMockIntersectionObserver = () =>
 
 export const useMockMutationObserver = () =>
   useMockObserver('MutationObserver', (...args) => new MockObserver(...args));
+
+export const useMockResizeObserver = () =>
+  useMockObserver('ResizeObserver', (...args) => new MockObserver(...args));

@@ -17,8 +17,10 @@ RSpec.describe Projects::ImportExport::RelationExportService, feature_category: 
   before do
     stub_uploads_object_storage(ImportExportUploader, enabled: false)
 
-    allow(project_export_job.project.import_export_shared).to receive(:export_path).and_return(export_path)
-    allow(project_export_job.project.import_export_shared).to receive(:archive_path).and_return(archive_path)
+    allow(project_export_job.project.import_export_shared).to receive_messages(
+      export_path: export_path,
+      archive_path: archive_path
+    )
     allow(FileUtils).to receive(:rm_rf).with(any_args).and_call_original
   end
 

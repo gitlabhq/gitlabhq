@@ -9385,6 +9385,18 @@
     "dottedExample": "/api/v4/groups/john.doe/secrets_manager/access_token"
   },
   {
+    "template": "/api/:version/groups/:id/security/policy_store",
+    "example": "/api/v4/groups/foo/security/policy_store",
+    "acceptsFormat": true,
+    "dottedExample": "/api/v4/groups/john.doe/security/policy_store"
+  },
+  {
+    "template": "/api/:version/groups/:id/security/policy_store/:policy_id",
+    "example": "/api/v4/groups/foo/security/policy_store/foo",
+    "acceptsFormat": true,
+    "dottedExample": "/api/v4/groups/john.doe/security/policy_store/john.doe"
+  },
+  {
     "template": "/api/:version/groups/:id/security_settings",
     "example": "/api/v4/groups/foo/security_settings",
     "acceptsFormat": true,

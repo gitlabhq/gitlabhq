@@ -54,8 +54,7 @@ RSpec.shared_examples 'milestone empty states' do
 
   context 'with no closed milestones' do
     before do
-      allow(view).to receive(:milestone_path).and_return("/milestones/1")
-      allow(view).to receive(:params).and_return(state: 'closed')
+      allow(view).to receive_messages(milestone_path: "/milestones/1", params: { state: 'closed' })
       assign(:milestones, [])
       assign(:milestone_states, { opened: 1, closed: 0, all: 1 })
     end

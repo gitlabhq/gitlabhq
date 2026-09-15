@@ -36838,7 +36838,18 @@ Fields:
 | <a id="artifactregistryversiondetails-id"></a>`id` {{< icon name="warning-solid" >}} | [`ID!`](#id) | Introduced in GitLab 19.4. Status: Experiment. ID of the version in Artifact Registry. |
 | <a id="artifactregistryversiondetails-project"></a>`project` {{< icon name="warning-solid" >}} | [`Project`](#project) | Introduced in GitLab 19.4. Status: Experiment. Project the version was published from, resolved from the reference Artifact Registry stores. Null when it stored none, the project no longer exists, or the viewer cannot see the project. |
 | <a id="artifactregistryversiondetails-sizebytes"></a>`sizeBytes` {{< icon name="warning-solid" >}} | [`BigInt`](#bigint) | Introduced in GitLab 19.4. Status: Experiment. Stored size of the version in bytes. Null for a Maven version until Artifact Registry serializes the column, and on a remote repository. |
+| <a id="artifactregistryversiondetails-statistics"></a>`statistics` {{< icon name="warning-solid" >}} | [`ArtifactRegistryVersionStatistics`](#artifactregistryversionstatistics) | Introduced in GitLab 19.5. Status: Experiment. Read-time statistics for the version. Hosted repositories only, so `null` without a read on a virtual or remote repository and on a container repository. Can be selected once per operation. `null` when Artifact Registry does not serve the statistics route, and when it rejects the read: silently for a 401, 403, or 404, and alongside a top-level error for a 429, any other 5xx, or any other 4xx. |
 | <a id="artifactregistryversiondetails-version"></a>`version` {{< icon name="warning-solid" >}} | [`String!`](#string) | Introduced in GitLab 19.4. Status: Experiment. Version string of the package. |
+
+### `ArtifactRegistryVersionStatistics`
+
+Read-time statistics for a version in an Artifact Registry repository.
+
+Fields:
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="artifactregistryversionstatistics-filescount"></a>`filesCount` {{< icon name="warning-solid" >}} | [`BigInt`](#bigint) | Introduced in GitLab 19.5. Status: Experiment. Number of files the version holds, computed at read time. |
 
 ### `AscpComponent`
 

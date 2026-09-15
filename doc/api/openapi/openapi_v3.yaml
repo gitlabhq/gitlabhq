@@ -2430,12 +2430,14 @@ paths:
           description: Bad Request
         '401':
           description: Unauthorized
+        '403':
+          description: Forbidden
       requestBody:
         required: true
         content:
           application/json:
             schema:
-              "$ref": "#/components/schemas/RequestBody_cb5963407baa"
+              "$ref": "#/components/schemas/RequestBody_a85ec726f82e"
       x-gitlab-lifecycle: experiment
   "/api/v4/code_suggestions/completions":
     post:
@@ -101015,7 +101017,7 @@ components:
           nullable: true
       required:
       - content
-    RequestBody_cb5963407baa:
+    RequestBody_a85ec726f82e:
       type: object
       properties:
         audience:
@@ -101028,8 +101030,9 @@ components:
           type: integer
           minimum: 1
           maximum: 43200
-          description: Requested token lifetime in seconds. Defaults to 300; cap is
-            43200. Pending appsec review of client-controlled TTL.
+          description: Requested token lifetime in seconds, from 1 up to 43200. Defaults
+            to 300. The granted lifetime may be shorter than requested depending on
+            the authentication method used to call this endpoint.
           nullable: true
       required:
       - audience

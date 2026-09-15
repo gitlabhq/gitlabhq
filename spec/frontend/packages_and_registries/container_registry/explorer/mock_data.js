@@ -326,26 +326,6 @@ export const graphQLImageDetailsMock = (override) => ({
   },
 });
 
-export const graphQLImageDetailsEmptyTagsMock = {
-  data: {
-    containerRepository: {
-      ...containerRepositoryMock,
-      tags: {
-        nodes: [],
-        pageInfo: {
-          __typename: 'PageInfo',
-          hasNextPage: false,
-          hasPreviousPage: false,
-          startCursor: '',
-          endCursor: '',
-        },
-        __typename: 'ContainerRepositoryTagConnection',
-      },
-      __typename: 'ContainerRepositoryDetails',
-    },
-  },
-};
-
 export const graphQLDeleteImageRepositoryTagsMock = {
   data: {
     destroyContainerRepositoryTags: {

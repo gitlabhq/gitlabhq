@@ -16,8 +16,7 @@ RSpec.describe Projects::ImportService, feature_category: :importers do
     it 'returns true for an asynchronous importer' do
       importer_class = double(:importer, async?: true)
 
-      allow(subject).to receive(:has_importer?).and_return(true)
-      allow(subject).to receive(:importer_class).and_return(importer_class)
+      allow(subject).to receive_messages(has_importer?: true, importer_class: importer_class)
 
       expect(subject).to be_async
     end
@@ -25,8 +24,7 @@ RSpec.describe Projects::ImportService, feature_category: :importers do
     it 'returns false for a regular importer' do
       importer_class = double(:importer, async?: false)
 
-      allow(subject).to receive(:has_importer?).and_return(true)
-      allow(subject).to receive(:importer_class).and_return(importer_class)
+      allow(subject).to receive_messages(has_importer?: true, importer_class: importer_class)
 
       expect(subject).not_to be_async
     end
@@ -34,8 +32,7 @@ RSpec.describe Projects::ImportService, feature_category: :importers do
     it 'returns false when the importer does not define #async?' do
       importer_class = double(:importer)
 
-      allow(subject).to receive(:has_importer?).and_return(true)
-      allow(subject).to receive(:importer_class).and_return(importer_class)
+      allow(subject).to receive_messages(has_importer?: true, importer_class: importer_class)
 
       expect(subject).not_to be_async
     end
@@ -552,8 +549,7 @@ RSpec.describe Projects::ImportService, feature_category: :importers do
             end
 
             allow(project).to receive(:ensure_repository)
-            allow(project.repository).to receive(:fetch_as_mirror).and_return(true)
-            allow(project.repository).to receive(:import_repository).and_return(true)
+            allow(project.repository).to receive_messages(fetch_as_mirror: true, import_repository: true)
           end
 
           it 'does not preallocate IIDs' do

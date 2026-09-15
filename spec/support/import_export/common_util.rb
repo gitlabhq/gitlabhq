@@ -61,8 +61,7 @@ module ImportExport
       logger ||= double(info: true, warn: true, error: true)
 
       instance_double(Gitlab::ImportExport::Shared).tap do |shared|
-        allow(shared).to receive(:export_path).and_return(path)
-        allow(shared).to receive(:logger).and_return(logger)
+        allow(shared).to receive_messages(export_path: path, logger: logger)
       end
     end
 

@@ -17,8 +17,7 @@ RSpec.shared_examples 'diff file base entity' do
   # and content sha.
   context 'when diff file does not have a blob and content sha' do
     it 'exposes some attributes as nil' do
-      allow(diff_file).to receive(:content_sha).and_return(nil)
-      allow(diff_file).to receive(:blob).and_return(nil)
+      allow(diff_file).to receive_messages(content_sha: nil, blob: nil)
 
       expect(subject[:context_lines_path]).to be_nil
       expect(subject[:view_path]).to be_nil
@@ -42,17 +41,12 @@ RSpec.shared_examples 'diff file entity' do
     let(:highlighted_lines) { nil }
 
     before do
-      allow(diff_file).to receive(:diff_lines_for_serializer)
-        .and_return(highlighted_lines)
-
-      allow(diff_file).to receive(:added_lines)
-        .and_return(added_lines)
-
-      allow(diff_file).to receive(:removed_lines)
-        .and_return(removed_lines)
-
-      allow(diff_file).to receive(:collapsed?)
-        .and_return(collapsed)
+      allow(diff_file).to receive_messages(
+        diff_lines_for_serializer: highlighted_lines,
+        added_lines: added_lines,
+        removed_lines: removed_lines,
+        collapsed?: collapsed
+      )
     end
 
     it 'matches the schema' do

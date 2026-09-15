@@ -1,19 +1,4 @@
-export const harborImageDetailEmptyResponse = {
-  data: null,
-};
-
 export const MOCK_SHA_DIGEST = 'mock_sha_digest_value';
-
-export const harborImageDetailResponse = {
-  artifactCount: 10,
-  creationTime: '2022-03-02T06:35:53.205Z',
-  id: 25,
-  name: 'shao/flinkx',
-  projectId: 21,
-  pullCount: 0,
-  updateTime: '2022-03-02T06:35:53.205Z',
-  location: 'demo.harbor.com/gitlab-cn/build/cng-images/gitlab-kas',
-};
 
 export const harborArtifactsResponse = [
   {

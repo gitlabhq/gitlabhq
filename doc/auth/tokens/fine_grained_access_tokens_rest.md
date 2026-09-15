@@ -92,10 +92,15 @@ Grants the ability to create, delete, read, and update policies in the policy st
 
 | Action | Access | Method | Path |
 | ------ | ------ | ------ | ---- |
+| Create | Group | `POST` | `/groups/:id/security/policy_store` |
 | Create | Instance | `POST` | `/organizations/:id/security/policy_store` |
+| Delete | Group | `DELETE` | `/groups/:id/security/policy_store/:policy_id` |
 | Delete | Instance | `DELETE` | `/organizations/:id/security/policy_store/:policy_id` |
+| Read | Group | `GET` | `/groups/:id/security/policy_store` |
+| Read | Group | `GET` | `/groups/:id/security/policy_store/:policy_id` |
 | Read | Instance | `GET` | `/organizations/:id/security/policy_store` |
 | Read | Instance | `GET` | `/organizations/:id/security/policy_store/:policy_id` |
+| Update | Group | `PATCH` | `/groups/:id/security/policy_store/:policy_id` |
 | Update | Instance | `PATCH` | `/organizations/:id/security/policy_store/:policy_id` |
 
 #### SBOM Occurrence

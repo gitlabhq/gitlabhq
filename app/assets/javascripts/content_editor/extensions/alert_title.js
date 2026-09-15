@@ -3,6 +3,7 @@ import { VueNodeViewRenderer } from '@tiptap/vue-2';
 import { Fragment } from '@tiptap/pm/model';
 import AlertTitleWrapper from '../components/wrappers/alert_title.vue';
 import { DEFAULT_ALERT_TITLES } from '../constants/alert_types';
+import { PARSE_HTML_PRIORITY_HIGHEST } from '../constants';
 
 const defaultAlertTitles = Object.values(DEFAULT_ALERT_TITLES);
 
@@ -16,6 +17,7 @@ export default Paragraph.extend({
     return [
       {
         tag: '.markdown-alert-title',
+        priority: PARSE_HTML_PRIORITY_HIGHEST,
         getContent(element, schema) {
           return defaultAlertTitles.includes(element.textContent)
             ? Fragment.empty

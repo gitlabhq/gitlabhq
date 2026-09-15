@@ -39,8 +39,7 @@ RSpec.describe Projects::UpdatePagesService, factory_default: :keep, feature_cat
   RSpec.shared_examples 'pages size limit is' do |size_limit|
     context "when size is below the limit" do
       before do
-        allow(metadata).to receive(:total_size).and_return(size_limit - 1.megabyte)
-        allow(metadata).to receive(:entries).and_return([])
+        allow(metadata).to receive_messages(total_size: size_limit - 1.megabyte, entries: [])
       end
 
       it 'updates pages correctly' do
@@ -56,8 +55,7 @@ RSpec.describe Projects::UpdatePagesService, factory_default: :keep, feature_cat
 
     context "when size is above the limit" do
       before do
-        allow(metadata).to receive(:total_size).and_return(size_limit + 1.megabyte)
-        allow(metadata).to receive(:entries).and_return([])
+        allow(metadata).to receive_messages(total_size: size_limit + 1.megabyte, entries: [])
       end
 
       it 'limits the maximum size of gitlab pages' do

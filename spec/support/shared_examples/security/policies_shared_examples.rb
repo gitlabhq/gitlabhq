@@ -5,9 +5,11 @@
 RSpec.shared_examples 'policies list' do
   before do
     allow_next_found_instance_of(Security::OrchestrationPolicyConfiguration) do |policy|
-      allow(policy).to receive(:policy_configuration_valid?).and_return(true)
-      allow(policy).to receive(:policy_hash).and_return(policy_yaml)
-      allow(policy).to receive(:policy_last_updated_at).and_return(Time.current)
+      allow(policy).to receive_messages(
+        policy_configuration_valid?: true,
+        policy_hash: policy_yaml,
+        policy_last_updated_at: Time.current
+      )
     end
     sign_in(owner)
     stub_licensed_features(security_orchestration_policies: true)

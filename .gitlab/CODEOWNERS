@@ -720,7 +720,7 @@ Dangerfile
 /app/assets/javascripts/vue_shared/components/customizable_dashboard/
 /ee/app/assets/javascripts/analytics/analytics_dashboards/
 
-[Analytics Dashboards definitions] @gitlab-org/plan-stage/optimize-group/engineers/backend @gitlab-org/plan-stage/optimize-group/engineers/frontend @gitlab-org/analytics-section/platform-insights/engineers/backend @gitlab-org/analytics-section/platform-insights/engineers/frontend
+[Analytics Dashboards definitions] @gitlab-org/analytics-section/optimize-group/engineers @gitlab-org/analytics-section/platform-insights/engineers
 /ee/lib/gitlab/analytics/**/*.yaml
 
 ^[Product Analytics backend] @gitlab-org/analytics-section/platform-insights/engineers/backend
