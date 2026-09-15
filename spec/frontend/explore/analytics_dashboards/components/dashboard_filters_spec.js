@@ -6,7 +6,7 @@ describe('DashboardFilters', () => {
 
   const ScopePickerStub = {
     name: 'ScopePicker',
-    props: ['groupFullPath', 'initialPath'],
+    props: ['initialPath'],
     template: '<div />',
   };
   const DateRangeFilterStub = {
@@ -15,10 +15,9 @@ describe('DashboardFilters', () => {
     template: '<div />',
   };
 
-  const createComponent = ({ props = {}, defaultGroupFullPath = null } = {}) => {
+  const createComponent = ({ props = {} } = {}) => {
     wrapper = shallowMountExtended(DashboardFilters, {
       propsData: { ...props },
-      provide: { defaultGroupFullPath },
       stubs: {
         ScopePicker: ScopePickerStub,
         DateRangeFilter: DateRangeFilterStub,
@@ -40,9 +39,8 @@ describe('DashboardFilters', () => {
       expect(region.attributes('aria-label')).toBe('Dashboard filters');
     });
 
-    it('renders the scope picker with no root, the instance-level page having no group', () => {
+    it('renders the scope picker', () => {
       expect(findScopePicker().exists()).toBe(true);
-      expect(findScopePicker().props('groupFullPath')).toBe('');
     });
 
     it('starts the scope picker with no selection when the page passes no scope path', () => {
@@ -95,14 +93,6 @@ describe('DashboardFilters', () => {
 
     it('hands it to the picker to start selected', () => {
       expect(findScopePicker().props('initialPath')).toBe('gitlab-org/gitlab');
-    });
-  });
-
-  describe('when the page provides a group, as the group and project mounts do', () => {
-    beforeEach(() => createComponent({ defaultGroupFullPath: 'gitlab-org' }));
-
-    it('roots the scope picker at it, so it browses inside that group', () => {
-      expect(findScopePicker().props('groupFullPath')).toBe('gitlab-org');
     });
   });
 

@@ -788,6 +788,6 @@ If neither field is set, the plugin's version is `unknown`.
 
 ## Related topics
 
-- [GitLab Duo CLI complete reference](https://gitlab.com/gitlab-org/editor-extensions/gitlab-lsp/-/blob/main/packages/cli/docs/cli-reference.md)
+- [GitLab Duo CLI complete reference](https://gitlab.com/gitlab-org/editor-extensions/gitlab-lsp/-/blob/main/packages/cli/app/docs/cli-reference.md)
 - [Customize GitLab Duo Agent Platform](../duo_agent_platform/customize/_index.md)
 - [Agent Skills](../duo_agent_platform/customize/agent_skills.md)

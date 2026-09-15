@@ -1,11 +1,11 @@
 # @feature_category: custom_dashboards_foundation
 
-# Search with no group to scope to, as on the instance-level Explore page. Both connections are
-# limited to what the user belongs to, matching how the rootless browse view is built.
+# Both connections are limited to what the user belongs to.
 #
-# The rooted search excludes archived results on both connections. Only the projects half can be
-# matched here: `Query.groups` has no `archived` argument, so `active` is the nearest filter, and
-# it only drops groups pending deletion.
+# The projects connection excludes archived results via `archived: EXCLUDE`. `Query.groups` has
+# no `archived` argument, so `active: true` is the nearest available filter, and it only drops
+# groups pending deletion.
+#
 # Capped at 20 per kind, matching the browse connections. Results are relevance-ordered, so
 # what matters is the top of the list, and a dropdown cannot show hundreds of rows anyway.
 #

@@ -157,5 +157,13 @@ before becoming permanent parts of the product.
 Example: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/70451#note_727246104
 -->
 
+<!--
+Due date: the planned end of the experiment run. Take it from the implementation issue's
+"Rollout strategy" section (for example "run for ~3 weeks" after the production rollout)
+and replace the placeholder below with an ISO date (YYYY-MM-DD). If the end date is not
+known yet, delete the /due line and set the due date once the rollout is scheduled.
+Adjust the due date later if the rollout period changes.
+-->
+/due <YYYY-MM-DD>
 /label ~"feature flag" ~"devops::growth" ~"growth experiment" ~"experiment-rollout" ~Engineering ~"workflow::scheduling" ~"experiment::pending"
 /milestone %"Next 1-3 releases" 

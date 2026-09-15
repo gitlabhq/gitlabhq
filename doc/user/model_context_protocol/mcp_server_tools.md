@@ -1096,6 +1096,47 @@ Examples:
   What artifacts did job 88 in project gitlab-org/gitlab produce?
   ```
 
+## `get_artifact_file`
+
+{{< history >}}
+
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/585022) in GitLab 19.5.
+
+{{< /history >}}
+
+Reads a file from inside the artifacts archive of a CI/CD job as text. To discover what a job or
+pipeline produced, use the `get_job` or `get_pipeline` tool with `include: artifacts`.
+
+| Parameter       | Type    | Required | Description |
+|-----------------|---------|----------|-------------|
+| `url`           | string  | No       | URL of the job. Provide this, or `project_id` and `job_id`. |
+| `project_id`    | string  | No       | ID or full path of the project. Required if `url` is not provided. |
+| `job_id`        | integer | No       | ID of the job. Required if `url` is not provided. |
+| `artifact_path` | string  | Yes      | Path of the file inside the artifacts archive, for example `coverage/index.html`. |
+| `byte_offset`   | integer | No       | Byte offset to start reading the file from. Default is `0`. |
+| `byte_limit`    | integer | No       | Maximum number of bytes to return. Default and maximum is `1048576` (1 MB). |
+
+The tool reads from the archive artifact only. Report artifacts stored as separate files, such as
+`junit` or `dotenv` artifacts, are not part of the archive and cannot be read with this tool.
+
+When the file is longer than `byte_limit`, the response reports the total size and tells you the
+`byte_offset` to use for the next window. Binary files are not returned; the error names the file,
+its size and type, and where to view it in the browser.
+
+Examples:
+
+- Read a test report from a job's artifacts:
+
+  ```plaintext
+  Read coverage/index.html from the artifacts of job 88 in project gitlab-org/gitlab
+  ```
+
+- Investigate a failed end-to-end test:
+
+  ```plaintext
+  Find the JUnit report in the artifacts of job 88 in gitlab-org/gitlab and summarize the failures
+  ```
+
 ## `list_pipelines`
 
 {{< history >}}

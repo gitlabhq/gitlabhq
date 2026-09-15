@@ -92,7 +92,7 @@ module Mcp
                     encoding: {
                       type: 'string',
                       enum: %w[text base64],
-                      description: 'Encoding of the file content. Defaults to text.'
+                      description: 'Encoding of the file content.'
                     },
                     last_commit_id: {
                       type: 'string',

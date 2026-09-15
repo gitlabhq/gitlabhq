@@ -8237,6 +8237,9 @@ msgstr ""
 msgid "AgentPlan|Confidence: %{level}"
 msgstr ""
 
+msgid "AgentPlan|Continue"
+msgstr ""
+
 msgid "AgentPlan|Create a workplan"
 msgstr ""
 
@@ -8292,6 +8295,9 @@ msgid "AgentPlan|Score: %{score} / 100"
 msgstr ""
 
 msgid "AgentPlan|Shows how ready this work item is for an agent to run. To raise the score, add more detail to the work item description and to the workplan steps. %{linkStart}Learn more%{linkEnd}."
+msgstr ""
+
+msgid "AgentPlan|Something went wrong while resuming workplan generation."
 msgstr ""
 
 msgid "AgentPlan|Something went wrong while starting workplan generation."
@@ -11161,9 +11167,6 @@ msgstr ""
 msgid "AnalyticsDashboards|Panel query"
 msgstr ""
 
-msgid "AnalyticsDashboards|Projects in top-level group (%{name})"
-msgstr ""
-
 msgid "AnalyticsDashboards|Query required"
 msgstr ""
 
@@ -11192,9 +11195,6 @@ msgid "AnalyticsDashboards|Settings"
 msgstr ""
 
 msgid "AnalyticsDashboards|Start building your dashboard"
-msgstr ""
-
-msgid "AnalyticsDashboards|Subgroups incl. nested"
 msgstr ""
 
 msgid "AnalyticsDashboards|This table doesn't include GitLab Duo Agent Platform events."
@@ -26780,6 +26780,18 @@ msgstr ""
 msgid "Daily"
 msgstr ""
 
+msgid "DapImpact|Heavy (25–99)"
+msgstr ""
+
+msgid "DapImpact|Light (1–4)"
+msgstr ""
+
+msgid "DapImpact|Power (100+)"
+msgstr ""
+
+msgid "DapImpact|Regular (5–24)"
+msgstr ""
+
 msgid "Dashboard"
 msgstr ""
 
@@ -32127,7 +32139,13 @@ msgstr ""
 msgid "DuoAgentsPlatform|The trigger could not be updated. Try again."
 msgstr ""
 
+msgid "DuoAgentsPlatform|Trigger actions"
+msgstr ""
+
 msgid "DuoAgentsPlatform|Trigger active"
+msgstr ""
+
+msgid "DuoAgentsPlatform|Trigger conditions"
 msgstr ""
 
 msgid "DuoAgentsPlatform|Trigger created successfully."
@@ -32143,6 +32161,12 @@ msgid "DuoAgentsPlatform|Trigger enabled."
 msgstr ""
 
 msgid "DuoAgentsPlatform|Trigger not found."
+msgstr ""
+
+msgid "DuoAgentsPlatform|Trigger turned off"
+msgstr ""
+
+msgid "DuoAgentsPlatform|Trigger turned on"
 msgstr ""
 
 msgid "DuoAgentsPlatform|Trigger updated successfully."

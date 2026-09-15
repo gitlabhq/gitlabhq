@@ -9934,7 +9934,7 @@ paths:
         content:
           application/json:
             schema:
-              "$ref": "#/components/schemas/RequestBody_b85115ec6b7f"
+              "$ref": "#/components/schemas/RequestBody_d3eddc720765"
     get:
       operationId: getApiV4GeoSites
       summary: List all Geo sites
@@ -10070,7 +10070,7 @@ paths:
         content:
           application/json:
             schema:
-              "$ref": "#/components/schemas/RequestBody_f1ca644921ba"
+              "$ref": "#/components/schemas/RequestBody_f3ac6419fa5d"
     delete:
       operationId: deleteApiV4GeoSitesId
       summary: Delete a Geo site
@@ -10187,7 +10187,7 @@ paths:
         content:
           application/json:
             schema:
-              "$ref": "#/components/schemas/RequestBody_d46c6d1b5ffd"
+              "$ref": "#/components/schemas/RequestBody_306ba97dc15e"
     get:
       operationId: getApiV4GeoNodes
       summary: List all Geo nodes
@@ -10323,7 +10323,7 @@ paths:
         content:
           application/json:
             schema:
-              "$ref": "#/components/schemas/RequestBody_ca570d552a23"
+              "$ref": "#/components/schemas/RequestBody_e92f17ef2431"
     delete:
       operationId: deleteApiV4GeoNodesId
       summary: Delete a Geo node
@@ -104189,17 +104189,17 @@ components:
       required:
       - group_access
       - provider
-    RequestBody_b85115ec6b7f:
+    RequestBody_d3eddc720765:
       type: object
       properties:
         primary:
           type: boolean
-          description: Specifying whether this site will be primary. Defaults to false.
-          nullable: true
+          description: Specifying whether this site will be primary.
+          default: false
         enabled:
           type: boolean
-          description: Specifying whether this site will be enabled. Defaults to true.
-          nullable: true
+          description: Specifying whether this site will be enabled.
+          default: true
         name:
           type: string
           description: The unique identifier for the Geo site. Must match `geo_node_name`
@@ -104216,29 +104216,33 @@ components:
           nullable: true
         files_max_capacity:
           type: integer
+          minimum: 0
           description: Control the maximum concurrency of LFS/attachment backfill
-            for this secondary site. Defaults to 10.
-          nullable: true
+            for this secondary site.
+          default: 10
         repos_max_capacity:
           type: integer
+          minimum: 0
           description: Control the maximum concurrency of repository backfill for
-            this secondary site. Defaults to 25.
-          nullable: true
+            this secondary site.
+          default: 10
         verification_max_capacity:
           type: integer
+          minimum: 0
           description: Control the maximum concurrency of repository verification
-            for this site. Defaults to 100.
-          nullable: true
+            for this site.
+          default: 10
         container_repositories_max_capacity:
           type: integer
+          minimum: 0
           description: Control the maximum concurrency of container repository sync
-            for this site. Defaults to 10.
-          nullable: true
+            for this site.
+          default: 2
         sync_object_storage:
           type: boolean
           description: Flag indicating if the secondary Geo site will replicate blobs
-            in Object Storage. Defaults to false.
-          nullable: true
+            in Object Storage.
+          default: false
         selective_sync_type:
           type: string
           description: 'Limit syncing to only specific groups, or shards. Valid values:
@@ -104287,13 +104291,14 @@ components:
           nullable: true
         blob_download_timeout:
           type: integer
+          minimum: 1
+          maximum: 86400
           description: Maximum time (in seconds) for blob downloads during Geo sync.
-            Defaults to 28800 (8 hours). Maximum is 86400 (24 hours).
-          nullable: true
+          default: 28800
       required:
       - name
       - url
-    RequestBody_f1ca644921ba:
+    RequestBody_f3ac6419fa5d:
       type: object
       properties:
         enabled:
@@ -104316,21 +104321,25 @@ components:
           nullable: true
         files_max_capacity:
           type: integer
+          minimum: 0
           description: Control the maximum concurrency of LFS/attachment backfill
             for this secondary site
           nullable: true
         repos_max_capacity:
           type: integer
+          minimum: 0
           description: Control the maximum concurrency of repository backfill for
             this secondary site
           nullable: true
         verification_max_capacity:
           type: integer
+          minimum: 0
           description: Control the maximum concurrency of repository verification
             for this site
           nullable: true
         container_repositories_max_capacity:
           type: integer
+          minimum: 0
           description: Control the maximum concurrency of container repository sync
             for this site
           nullable: true
@@ -104387,20 +104396,21 @@ components:
           nullable: true
         blob_download_timeout:
           type: integer
+          minimum: 1
+          maximum: 86400
           description: Maximum time (in seconds) for blob downloads during Geo sync.
-            Defaults to 28800 (8 hours). Maximum is 86400 (24 hours).
           nullable: true
-    RequestBody_d46c6d1b5ffd:
+    RequestBody_306ba97dc15e:
       type: object
       properties:
         primary:
           type: boolean
-          description: Specifying whether this node will be primary. Defaults to false.
-          nullable: true
+          description: Specifying whether this node will be primary.
+          default: false
         enabled:
           type: boolean
-          description: Specifying whether this node will be enabled. Defaults to true.
-          nullable: true
+          description: Specifying whether this node will be enabled.
+          default: true
         name:
           type: string
           description: The unique identifier for the Geo node. Must match `geo_node_name`
@@ -104417,29 +104427,33 @@ components:
           nullable: true
         files_max_capacity:
           type: integer
+          minimum: 0
           description: Control the maximum concurrency of LFS/attachment backfill
-            for this secondary node. Defaults to 10.
-          nullable: true
+            for this secondary node.
+          default: 10
         repos_max_capacity:
           type: integer
+          minimum: 0
           description: Control the maximum concurrency of repository backfill for
-            this secondary node. Defaults to 25.
-          nullable: true
+            this secondary node.
+          default: 10
         verification_max_capacity:
           type: integer
+          minimum: 0
           description: Control the maximum concurrency of repository verification
-            for this node. Defaults to 100.
-          nullable: true
+            for this node.
+          default: 10
         container_repositories_max_capacity:
           type: integer
+          minimum: 0
           description: Control the maximum concurrency of container repository sync
-            for this node. Defaults to 10.
-          nullable: true
+            for this node.
+          default: 2
         sync_object_storage:
           type: boolean
           description: Flag indicating if the secondary Geo node will replicate blobs
-            in Object Storage. Defaults to false.
-          nullable: true
+            in Object Storage.
+          default: false
         selective_sync_type:
           type: string
           description: 'Limit syncing to only specific groups, or shards. Valid values:
@@ -104489,7 +104503,7 @@ components:
       required:
       - name
       - url
-    RequestBody_ca570d552a23:
+    RequestBody_e92f17ef2431:
       type: object
       properties:
         enabled:
@@ -104512,21 +104526,25 @@ components:
           nullable: true
         files_max_capacity:
           type: integer
+          minimum: 0
           description: Control the maximum concurrency of LFS/attachment backfill
             for this secondary node
           nullable: true
         repos_max_capacity:
           type: integer
+          minimum: 0
           description: Control the maximum concurrency of repository backfill for
             this secondary node
           nullable: true
         verification_max_capacity:
           type: integer
+          minimum: 0
           description: Control the maximum concurrency of repository verification
             for this node
           nullable: true
         container_repositories_max_capacity:
           type: integer
+          minimum: 0
           description: Control the maximum concurrency of container repository sync
             for this node
           nullable: true

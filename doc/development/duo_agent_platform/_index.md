@@ -26,8 +26,8 @@ Agent Platform consists of four separate services:
 
 1. [GitLab instance](https://gitlab.com/gitlab-org/gitlab/)
 1. GitLab Duo Agent Platform Service, which is part of [GitLab AI Gateway](https://gitlab.com/gitlab-org/modelops/applied-ml/code-suggestions/ai-assist/)
-1. [GitLab Duo CLI](https://gitlab.com/gitlab-org/editor-extensions/gitlab-lsp/-/tree/main/packages/cli) (TypeScript executor from `gitlab-lsp`, distributed as a precompiled binary)
-1. [GitLab Duo Agent Platform Webview](https://gitlab.com/gitlab-org/editor-extensions/gitlab-lsp/-/blob/main/packages/webview_duo_workflow/README.md)
+1. [GitLab Duo CLI](https://gitlab.com/gitlab-org/editor-extensions/gitlab-lsp/-/tree/main/packages/cli/app) (TypeScript executor from `gitlab-lsp`, distributed as a precompiled binary)
+1. [GitLab Duo Agent Platform Webview](https://gitlab.com/gitlab-org/editor-extensions/gitlab-lsp/-/blob/main/packages/ls/webview_agentic_chat/README.md)
 
 ### Development Setup for Backend Components
 
@@ -54,7 +54,7 @@ There is no need to set up the backend components of the Agent Platform to test 
 
 A local build of the UI is required if you are making GitLab Duo Agent Platform UI changes that you need to view locally. A local build is also required if you want to use a version of the UI that has not been released yet.
 
-Refer to the [GitLab Duo Agent Platform README](https://gitlab.com/gitlab-org/editor-extensions/gitlab-lsp/-/blob/main/packages/webview_duo_workflow/README.md) file in the Language Server project to get started with local development of GitLab Duo Agent Platform UI in the IDE.
+Refer to the [GitLab Duo Agent Platform README](https://gitlab.com/gitlab-org/editor-extensions/gitlab-lsp/-/blob/main/packages/ls/webview_agentic_chat/README.md) file in the Language Server project to get started with local development of GitLab Duo Agent Platform UI in the IDE.
 
 ## Development settings
 

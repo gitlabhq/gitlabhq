@@ -41,7 +41,7 @@ RSpec.describe Mcp::Tools::Projects::ListProjectMembersService, feature_category
           },
           include_inherited: {
             type: 'boolean',
-            description: 'Include members inherited from parent groups. Defaults to false.'
+            description: 'Include members inherited from parent groups.'
           },
           query: {
             type: 'string',

@@ -44266,7 +44266,7 @@ Fields:
 | <a id="duoworkflowsaggregationresponseclosedmrcountmetrics-max"></a>`max` | [`Int`](#int) | Maximum number of merge requests created by the flow that were later closed without merging. |
 | <a id="duoworkflowsaggregationresponseclosedmrcountmetrics-mean"></a>`mean` | [`Float`](#float) | Mean number of merge requests created by the flow that were later closed without merging. |
 | <a id="duoworkflowsaggregationresponseclosedmrcountmetrics-min"></a>`min` | [`Int`](#int) | Minimum number of merge requests created by the flow that were later closed without merging. |
-| <a id="duoworkflowsaggregationresponseclosedmrcountmetrics-sum"></a>`sum` | [`Int`](#int) | Sum of number of merge requests created by the flow that were later closed without merging. |
+| <a id="duoworkflowsaggregationresponseclosedmrcountmetrics-sum"></a>`sum` | [`Float`](#float) | Sum of number of merge requests created by the flow that were later closed without merging. |
 
 #### Fields with arguments
 
@@ -44293,7 +44293,7 @@ Fields:
 | <a id="duoworkflowsaggregationresponsecreatedmrcountmetrics-max"></a>`max` | [`Int`](#int) | Maximum number of merge requests created by the flow. |
 | <a id="duoworkflowsaggregationresponsecreatedmrcountmetrics-mean"></a>`mean` | [`Float`](#float) | Mean number of merge requests created by the flow. |
 | <a id="duoworkflowsaggregationresponsecreatedmrcountmetrics-min"></a>`min` | [`Int`](#int) | Minimum number of merge requests created by the flow. |
-| <a id="duoworkflowsaggregationresponsecreatedmrcountmetrics-sum"></a>`sum` | [`Int`](#int) | Sum of number of merge requests created by the flow. |
+| <a id="duoworkflowsaggregationresponsecreatedmrcountmetrics-sum"></a>`sum` | [`Float`](#float) | Sum of number of merge requests created by the flow. |
 
 #### Fields with arguments
 
@@ -44388,7 +44388,7 @@ Fields:
 | <a id="duoworkflowsaggregationresponsemergedmrcountmetrics-max"></a>`max` | [`Int`](#int) | Maximum number of merge requests created by the flow that were later merged. |
 | <a id="duoworkflowsaggregationresponsemergedmrcountmetrics-mean"></a>`mean` | [`Float`](#float) | Mean number of merge requests created by the flow that were later merged. |
 | <a id="duoworkflowsaggregationresponsemergedmrcountmetrics-min"></a>`min` | [`Int`](#int) | Minimum number of merge requests created by the flow that were later merged. |
-| <a id="duoworkflowsaggregationresponsemergedmrcountmetrics-sum"></a>`sum` | [`Int`](#int) | Sum of number of merge requests created by the flow that were later merged. |
+| <a id="duoworkflowsaggregationresponsemergedmrcountmetrics-sum"></a>`sum` | [`Float`](#float) | Sum of number of merge requests created by the flow that were later merged. |
 
 #### Fields with arguments
 

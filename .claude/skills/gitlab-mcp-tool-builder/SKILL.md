@@ -1,7 +1,7 @@
 ---
 name: gitlab-mcp-tool-builder
 description: "Build a new GraphQL-backed MCP server tool in gitlab-org/gitlab. Use when adding or scaffolding a GitLab Duo Agent Platform MCP tool that follows the app/services/mcp/tools/ *Tool + Graphql*Service pattern — covers GraphQL API discovery, the two-class-plus-registration build recipe, and gotchas. Keywords: MCP tool, MCP server, GraphQL tool, GitLab Duo Agent Platform."
-version: 1.10.0
+version: 1.11.0
 license: MIT
 compatibility: opencode
 metadata:
@@ -193,6 +193,12 @@ a convention (non-standard verb, second write tool on one resource).
      lists EE-only tools.
    Only one of the two annotations examples runs in a given pipeline, so green specs never
    prove you updated both files.
+   A read-only tool (`readOnlyHint: true`) must ALSO be added to the two Duo Workflow Service
+   preapproved-tool lists, which are deliberately literal so pre-approval gets a review:
+   `ee/spec/services/ai/duo_workflows/mcp_config_service_spec.rb` (`read_only_tool_names`) and
+   `ee/spec/requests/api/ai/duo_workflows/workflows_spec.rb` (`mcp_preapproved_tools`) — both
+   alphabetical, one name per line. These fail only in `rspec-ee` jobs, so a green local run of
+   the MCP specs never catches them.
 10. **Unit specs** for the Tool and the Service. Lock the service `input_schema` as a
    whole with a single `expect(...).to eq({ … })` (a full version-lock, like
    `list_merge_requests_service_spec`), not property-by-property — it catches accidental

@@ -5,7 +5,6 @@ module Mcp
     module Repositories
       class GetRepositoryFileService < Base::GraphqlService
         MAX_LIMIT = ::Mcp::Tools::Repositories::GetRepositoryFileTool::MAX_LIMIT
-        DEFAULT_LIMIT = ::Mcp::Tools::Repositories::GetRepositoryFileTool::DEFAULT_LIMIT
 
         register_version '0.1.0', {
           toolset: :repository,
@@ -39,13 +38,13 @@ module Mcp
               },
               offset: {
                 type: 'integer',
-                description: 'Zero-indexed line number to start reading from. Defaults to 0.',
+                description: 'Zero-indexed line number to start reading from. ' \
+                  'Omit to start at the beginning of the file.',
                 minimum: 0
               },
               limit: {
                 type: 'integer',
-                description: "Maximum number of lines to return. Defaults to #{DEFAULT_LIMIT}; " \
-                  "the maximum is #{MAX_LIMIT}.",
+                description: "Maximum number of lines to return. The maximum is #{MAX_LIMIT}.",
                 minimum: 1,
                 maximum: MAX_LIMIT
               }

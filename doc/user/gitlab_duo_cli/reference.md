@@ -16,7 +16,7 @@ title: GitLab Duo CLI reference
 Use these options, commands, and environment variables when you start or run the GitLab Duo CLI.
 
 This is not a complete list. For a full reference, see the
-[GitLab Duo CLI complete reference](https://gitlab.com/gitlab-org/editor-extensions/gitlab-lsp/-/blob/main/packages/cli/docs/cli-reference.md).
+[GitLab Duo CLI complete reference](https://gitlab.com/gitlab-org/editor-extensions/gitlab-lsp/-/blob/main/packages/cli/app/docs/cli-reference.md).
 
 ## Options
 

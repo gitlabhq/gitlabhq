@@ -23,7 +23,7 @@ module Mcp
           description: 'Get a CI/CD job in a GitLab project. Add include: log to also get the ' \
             "job's trace/log, which you can page through with byte_offset and byte_limit. " \
             'Add include: artifacts to also list the artifacts the job produced (name, size, ' \
-            'file type).',
+            'file type); read one with the get_artifact_file tool.',
           annotations: {
             readOnlyHint: true
           },

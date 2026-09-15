@@ -17,11 +17,6 @@ export default {
     scopeLabel: s__('AnalyticsDashboards|Scope'),
     dateRangeLabel: s__('AnalyticsDashboards|Date range'),
   },
-  // The page is mounted at instance, group and project level. Only the latter two put a group on
-  // the body dataset, and the picker browses the user's own top-level groups without one.
-  inject: {
-    defaultGroupFullPath: { default: null },
-  },
   props: {
     dashboardFilters: {
       type: Object,
@@ -63,7 +58,6 @@ export default {
   >
     <gl-form-group class="gl-full-w gl-mb-0" :label="$options.i18n.scopeLabel">
       <scope-picker
-        :group-full-path="defaultGroupFullPath || ''"
         :initial-path="scopePath"
         @change="$emit('set-scope', $event)"
         @error="$emit('error', $event)"

@@ -1,13 +1,11 @@
 <script>
 import { GlButton, GlCollapsibleListbox } from '@gitlab/ui';
 import { debounce, xor } from 'lodash-es';
-import { s__, sprintf } from '~/locale';
+import { s__ } from '~/locale';
 import { DEFAULT_DEBOUNCE_AND_THROTTLE_MS } from '~/lib/utils/constants';
 import { captureException } from '~/sentry/sentry_browser_wrapper';
-import getGroupChildrenQuery from '../graphql/get_group_children.query.graphql';
 import getSubgroupProjectsQuery from '../graphql/get_subgroup_projects.query.graphql';
 import getTopLevelGroupsQuery from '../graphql/get_top_level_groups.query.graphql';
-import searchNamespacesQuery from '../graphql/search_namespaces.query.graphql';
 import searchNamespacesGlobalQuery from '../graphql/search_namespaces_global.query.graphql';
 import getScopeNamespaceQuery from '../graphql/get_scope_namespace.query.graphql';
 import ScopePickerItem from './scope_picker_item.vue';
@@ -23,13 +21,6 @@ export default {
     ScopePickerItem,
   },
   props: {
-    // Omit to browse the user's own top-level groups instead of one group's contents, which is
-    // what the instance-level Explore page needs: it has no group to scope to.
-    groupFullPath: {
-      type: String,
-      required: false,
-      default: '',
-    },
     // A namespace path to start selected (ex. URL param on page load)
     initialPath: {
       type: String,
@@ -40,70 +31,32 @@ export default {
   emits: ['change', 'error'],
   data() {
     return {
-      namespace: null,
       topLevelGroups: [],
       // The pick is held as the namespace itself, not its path. A path would have to be resolved
       // against the loaded namespaces on every read, and a second search replaces the results the
       // pick may have come from, so by then there would be nothing left to resolve it to.
       selectedNamespace: null,
-      // The top-level group's projects arrive with the group itself, so it opens without a fetch.
-      expandedPaths: this.groupFullPath ? [this.groupFullPath] : [],
-      // Each expanded subgroup's projects, flattened across its own subgroups, keyed by path.
+      expandedPaths: [],
+      // Each expanded group's projects, flattened across the subgroups below it, keyed by path.
       subgroupProjects: {},
       searchTerm: '',
       initialScope: null,
-      // Whichever of the two search queries the current mode uses. Only one is ever live.
-      rootedResults: null,
-      globalResults: null,
+      searchResults: null,
     };
   },
   apollo: {
-    namespace: {
-      query: getGroupChildrenQuery,
-      variables() {
-        return { fullPath: this.groupFullPath };
-      },
-      update: ({ group }) => group,
-      skip() {
-        return !this.groupFullPath;
-      },
-      error(error) {
-        this.$emit('error', error);
-        captureException(error);
-      },
-    },
     topLevelGroups: {
       query: getTopLevelGroupsQuery,
       update: ({ groups }) => groups?.nodes ?? [],
-      skip() {
-        return Boolean(this.groupFullPath);
-      },
       error(error) {
         this.$emit('error', error);
         captureException(error);
       },
     },
-    rootedResults: {
-      query: searchNamespacesQuery,
-      variables() {
-        // Trimmed, because `hasSearch` decides whether to run on the trimmed value.
-        return { fullPath: this.groupFullPath, search: this.searchTerm.trim() };
-      },
-      update: ({ group }) => ({
-        groups: group?.descendantGroups?.nodes ?? [],
-        projects: group?.projects?.nodes ?? [],
-      }),
-      skip() {
-        return !this.groupFullPath || !this.hasSearch;
-      },
-      error(error) {
-        this.$emit('error', error);
-        captureException(error);
-      },
-    },
-    globalResults: {
+    searchResults: {
       query: searchNamespacesGlobalQuery,
       variables() {
+        // Trimmed, because `hasSearch` decides whether to run on the trimmed value.
         return { search: this.searchTerm.trim() };
       },
       update: ({ groups, projects }) => ({
@@ -111,7 +64,7 @@ export default {
         projects: projects?.nodes ?? [],
       }),
       skip() {
-        return Boolean(this.groupFullPath) || !this.hasSearch;
+        return !this.hasSearch;
       },
       error(error) {
         this.$emit('error', error);
@@ -138,29 +91,13 @@ export default {
   },
   computed: {
     isLoading() {
-      const query = this.groupFullPath ? 'namespace' : 'topLevelGroups';
-
-      return this.$apollo.queries[query].loading;
+      return this.$apollo.queries.topLevelGroups.loading;
     },
     hasSearch() {
       return this.searchTerm.trim().length > 0;
     },
     isSearching() {
-      const query = this.groupFullPath ? 'rootedResults' : 'globalResults';
-
-      return this.$apollo.queries[query].loading;
-    },
-    searchResults() {
-      return this.groupFullPath ? this.rootedResults : this.globalResults;
-    },
-    projects() {
-      return this.namespace?.projects.nodes ?? [];
-    },
-    subgroups() {
-      return this.namespace?.descendantGroups.nodes ?? [];
-    },
-    groupNamespace() {
-      return this.namespace ? this.asNamespace(this.namespace) : null;
+      return this.$apollo.queries.searchResults.loading;
     },
     // Every namespace behind a row that can currently be clicked, which is what a click's path is
     // turned back into an object against. It only has to cover what is on screen, because the pick
@@ -171,9 +108,6 @@ export default {
       );
 
       return [
-        this.namespace,
-        ...this.projects,
-        ...this.subgroups,
         ...this.topLevelGroups,
         ...subgroupProjects,
         ...(this.searchResults?.groups ?? []),
@@ -188,12 +122,8 @@ export default {
     toggleText() {
       return this.selectedNamespace?.name ?? s__('AnalyticsDashboards|Select a group or project');
     },
-    // Rooted mode groups its rows under two headers. Rootless has one kind of top-level row, so
-    // it passes a flat list; the listbox takes either shape, as long as they are not mixed.
     items() {
-      if (this.hasSearch) return this.searchItems;
-
-      return this.groupFullPath ? this.rootedSections : this.rootlessItems;
+      return this.hasSearch ? this.searchItems : this.groupItems;
     },
     // Search spans the whole hierarchy, so results are listed flat rather than placed back into
     // the tree they came from. Headers by kind would only assert an ordering the two queries
@@ -204,56 +134,20 @@ export default {
 
       return [...groups, ...projects].map(this.asResultItem);
     },
-    // Each top-level group is a row of its own, opening into its own projects the way the root
-    // row does in rooted mode. Subgroups are left to search.
-    rootlessItems() {
+    // Each top-level group is a row of its own, opening into every project beneath it. Both
+    // counts are direct-only, so this is as close as the API gets to "has content" without an
+    // unbatched per-row query. See the No projects row below.
+    groupItems() {
       return this.topLevelGroups.flatMap((group) => [
-        { ...this.asItem(this.asNamespace(group)), expandable: group.projectsCount > 0 },
+        {
+          ...this.asItem(this.asNamespace(group)),
+          expandable: group.projectsCount > 0 || group.descendantGroupsCount > 0,
+        },
         ...this.subgroupItems(group.fullPath),
       ]);
     },
-    rootedSections() {
-      if (!this.namespace) return [];
-
-      return [
-        {
-          // Not escaped by sprintf: this lands in a text interpolation, which Vue escapes, so
-          // escaping here too would render an ampersand in a group name as `&amp;`.
-          text: sprintf(
-            s__('AnalyticsDashboards|Projects in top-level group (%{name})'),
-            { name: this.namespace.name },
-            false,
-          ),
-          options: [
-            { ...this.asItem(this.groupNamespace), expandable: this.projects.length > 0 },
-            ...(this.isExpanded(this.groupFullPath)
-              ? this.projects.map((project) => ({
-                  ...this.asItem(this.asNamespace(project)),
-                  nested: true,
-                }))
-              : []),
-          ],
-        },
-        {
-          text: s__('AnalyticsDashboards|Subgroups incl. nested'),
-          options: this.subgroups.flatMap((subgroup) => [
-            {
-              ...this.asItem(this.asNamespace(subgroup)),
-              // Both counts are direct-only, so this is as close as the API gets to "has
-              // content" without an unbatched per-row query. See the No projects row below.
-              expandable: subgroup.projectsCount > 0 || subgroup.descendantGroupsCount > 0,
-            },
-            ...this.subgroupItems(subgroup.fullPath),
-          ]),
-        },
-      ].filter(({ options }) => options.length);
-    },
-    // A flat view of whichever shape `items` took, for resolving the selection against.
-    flatItems() {
-      return this.items.flatMap((item) => item.options ?? item);
-    },
     selectedPaths() {
-      return this.flatItems.filter(({ selected }) => selected).map(({ value }) => value);
+      return this.items.filter(({ selected }) => selected).map(({ value }) => value);
     },
   },
   watch: {
@@ -263,18 +157,6 @@ export default {
 
       this.selectedNamespace = this.asNamespace(namespace);
       this.$emit('change', this.selectedNamespace);
-    },
-    // Everything loaded so far belongs to the old root, and the selection may no longer be in
-    // scope, so start over rather than showing a mix of the two.
-    groupFullPath(fullPath) {
-      this.expandedPaths = fullPath ? [fullPath] : [];
-      this.subgroupProjects = {};
-      this.selectedNamespace = null;
-      // Cancelled as well as cleared: a debounce still pending would otherwise land afterwards
-      // and search the new root for a term typed against the old one.
-      this.onSearch.cancel();
-      this.searchTerm = '';
-      this.$emit('change', null);
     },
   },
   beforeDestroy() {
@@ -311,15 +193,16 @@ export default {
         parentName: namespace.namespace?.name ?? null,
       };
     },
-    // The rows an expanded subgroup reveals. Nothing until its fetch lands.
+    // The rows an expanded group reveals. Nothing until its fetch lands.
     subgroupItems(fullPath) {
       if (!this.isExpanded(fullPath)) return [];
 
       const { projects } = this.subgroupProjects[fullPath] ?? {};
       if (!projects) return [];
 
-      // A subgroup can look expandable on its direct counts and still hold nothing, so say so
-      // rather than leaving the expand looking broken.
+      // A group can look expandable on its direct counts and still hold nothing -- its projects
+      // may all be archived, or its subgroups may be empty. Say so rather than leaving the
+      // expand looking broken.
       if (!projects.length) {
         return [
           {
@@ -353,10 +236,9 @@ export default {
 
       this.expandedPaths = [...this.expandedPaths, fullPath];
 
-      // The top-level group's projects came with the group itself, and a subgroup is fetched
-      // once -- including while its first fetch is still in flight.
+      // A group is fetched once -- including while its first fetch is still in flight.
       const cached = this.subgroupProjects[fullPath];
-      if (fullPath === this.groupFullPath || cached?.projects || cached?.isLoading) return;
+      if (cached?.projects || cached?.isLoading) return;
 
       await this.loadSubgroupProjects(fullPath);
     },
@@ -369,9 +251,7 @@ export default {
       try {
         const { data } = await this.$apollo.query({
           query: getSubgroupProjectsQuery,
-          // Rooted mode only ever expands subgroups, and rootless only top-level groups, so the
-          // mode decides whether the whole tree or just the group's own projects is wanted.
-          variables: { fullPath, includeSubgroups: Boolean(this.groupFullPath) },
+          variables: { fullPath },
         });
 
         this.subgroupProjects = {
@@ -463,5 +343,18 @@ export default {
 /* Each item draws its own checkbox, so the listbox's built-in check indicator is redundant. */
 .analytics-scope-picker .gl-new-dropdown-item-check-icon {
   display: none;
+}
+
+/* 1.5x the listbox's 19.5rem default. Groups expand in place rather than into a second panel,
+   so the default cap leaves too little room to see a group and its projects at once. */
+.analytics-scope-picker .gl-new-dropdown-inner {
+  max-height: 29.25rem;
+}
+
+/* `fluid-width` sizes the panel to its rows, between 15.5rem and 28.5rem, so switching to the
+   shorter search rows visibly narrows it. Raising the floor to the ceiling holds the width
+   steady while the rows change underneath. */
+.analytics-scope-picker .gl-new-dropdown-panel-fluid-width {
+  min-width: 28.5rem;
 }
 </style>

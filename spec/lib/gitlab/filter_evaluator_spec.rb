@@ -6,6 +6,11 @@ RSpec.describe Gitlab::FilterEvaluator, feature_category: :duo_agent_platform do
   describe '.evaluate' do
     subject(:evaluate) { described_class.evaluate(filter, data) }
 
+    before do
+      # The real logger needs the Rails request store, which fast_spec_helper does not load.
+      allow(Gitlab::AppLogger).to receive(:debug)
+    end
+
     let(:data) do
       {
         object_attributes: {
@@ -53,6 +58,73 @@ RSpec.describe Gitlab::FilterEvaluator, feature_category: :duo_agent_platform do
         end
 
         it { is_expected.to be(false) }
+      end
+    end
+
+    context 'when an intermediate path segment is missing from the data' do
+      let(:filter) do
+        {
+          'rules' => [
+            { 'field' => 'status.name', 'operator' => 'eq', 'value' => 'In progress' }
+          ]
+        }
+      end
+
+      it 'does not match and does not log an evaluation error' do
+        expect(Gitlab::AppLogger).not_to receive(:error)
+
+        expect(evaluate).to be(false)
+      end
+
+      it 'logs the untraversable segment at debug level' do
+        expect(Gitlab::AppLogger).to receive(:debug).with(
+          hash_including(class: 'Gitlab::FilterEvaluator', field: 'status.name', stopped_at: 'name')
+        )
+
+        evaluate
+      end
+
+      context 'with match any and another matching rule' do
+        let(:filter) do
+          {
+            'match' => 'any',
+            'rules' => [
+              { 'field' => 'status.name', 'operator' => 'eq', 'value' => 'In progress' },
+              { 'field' => 'object_attributes.status', 'operator' => 'eq', 'value' => 'failed' }
+            ]
+          }
+        end
+
+        it 'still matches on the other rule' do
+          expect(Gitlab::AppLogger).not_to receive(:error)
+
+          expect(evaluate).to be(true)
+        end
+      end
+    end
+
+    context 'when the data is nil' do
+      let(:data) { nil }
+      let(:filter) do
+        { 'rules' => [{ 'field' => 'object_attributes.status', 'operator' => 'eq', 'value' => 'failed' }] }
+      end
+
+      it 'does not match and does not log an evaluation error' do
+        expect(Gitlab::AppLogger).not_to receive(:error)
+
+        expect(evaluate).to be(false)
+      end
+    end
+
+    context 'when the path traverses a non-hash value' do
+      let(:filter) do
+        { 'rules' => [{ 'field' => 'object_attributes.status.name', 'operator' => 'eq', 'value' => 'failed' }] }
+      end
+
+      it 'does not match and does not log an evaluation error' do
+        expect(Gitlab::AppLogger).not_to receive(:error)
+
+        expect(evaluate).to be(false)
       end
     end
 

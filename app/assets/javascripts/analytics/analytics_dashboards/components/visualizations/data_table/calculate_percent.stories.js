@@ -9,7 +9,7 @@ export default {
 const Template = (args, { argTypes }) => ({
   components: { CalculatePercent },
   props: Object.keys(argTypes),
-  template: `<calculate-percent :numerator="numerator" :denominator="denominator" />`,
+  template: `<calculate-percent :numerator="numerator" :denominator="denominator" :variant="variant" />`,
 });
 
 const TableTemplate = (args, { argTypes }) => ({
@@ -22,6 +22,15 @@ export const Default = Template.bind({});
 Default.args = {
   numerator: 30,
   denominator: 40,
+};
+
+// The numerator reads at full size with its share beside it, which is how a table shows a count
+// and how much of the total it accounts for in one column.
+export const NumeratorWithPercent = Template.bind({});
+NumeratorWithPercent.args = {
+  numerator: 30,
+  denominator: 40,
+  variant: 'NUMERATOR_WITH_PERCENT',
 };
 
 export const InTable = TableTemplate.bind({});

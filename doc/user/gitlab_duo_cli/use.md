@@ -365,7 +365,7 @@ as the GitLab IDE extensions. For instructions, see [configure MCP servers](../g
 
 ## Related topics
 
-- [GitLab Duo CLI complete reference](https://gitlab.com/gitlab-org/editor-extensions/gitlab-lsp/-/blob/main/packages/cli/docs/cli-reference.md)
+- [GitLab Duo CLI complete reference](https://gitlab.com/gitlab-org/editor-extensions/gitlab-lsp/-/blob/main/packages/cli/app/docs/cli-reference.md)
 - [Security considerations for editor extensions](../../editor_extensions/security_considerations.md)
 - [GitLab CLI](https://docs.gitlab.com/cli/)
 - [Customize GitLab Duo Agent Platform](../duo_agent_platform/customize/_index.md)

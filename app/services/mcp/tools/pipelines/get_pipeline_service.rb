@@ -14,7 +14,8 @@ module Mcp
             Get a CI/CD pipeline in a GitLab project, and optionally its jobs, downstream pipelines,
             bridge (trigger) jobs, or the artifacts its jobs produced. A bridge job's downstream
             pipeline is omitted if you do not have access to it. The artifacts facet pages over the
-            pipeline's jobs. To list pipelines, use the list_pipelines tool instead.
+            pipeline's jobs; read one artifact file with the get_artifact_file tool. To list
+            pipelines, use the list_pipelines tool instead.
           DESC
           annotations: {
             readOnlyHint: true

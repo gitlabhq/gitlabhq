@@ -71,6 +71,7 @@ RSpec.describe API::Mcp, 'List tools request', feature_category: :mcp_server do
         'manage_pipeline' => { 'readOnlyHint' => false, 'destructiveHint' => true },
         'save_pipeline' => { 'readOnlyHint' => false, 'destructiveHint' => true },
         # read-only
+        'get_artifact_file' => { 'readOnlyHint' => true },
         'get_commit' => { 'readOnlyHint' => true },
         'get_job' => { 'readOnlyHint' => true },
         'get_mcp_server_version' => { 'readOnlyHint' => true },

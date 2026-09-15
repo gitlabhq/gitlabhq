@@ -191,6 +191,38 @@ When implementing application-level cascading settings:
 
 These configurations ensure proper validation and cascading behavior throughout the system hierarchy.
 
+#### Handle new project creation
+
+The cascade workers (`Namespaces::CascadeDuoSettingsWorker` and `AppConfig::CascadeDuoSettingsWorker`) run when a parent setting is updated.
+They do not run at project creation time.
+
+When a cascading setting on `project_settings` uses `NOT NULL DEFAULT`, new projects receive the database default value instead of the parent group value.
+For example, if a group has `duo_features_enabled` set to `false` but the column default is `true`,
+a newly created project under that group starts with `duo_features_enabled: true`.
+
+To handle this, add a method in `EE::Projects::CreateService` that copies the inherited value from the parent group at project creation time.
+The existing methods `reset_duo_features_to_inherit_from_namespace` and `reset_ai_audit_events_storage_to_inherit_from_namespace` follow this pattern:
+
+```ruby
+# In EE::Projects::CreateService
+
+def reset_duo_features_to_inherit_from_namespace
+  inherited_value = project.group.duo_features_enabled
+  return if inherited_value
+
+  return if project.project_setting.duo_features_enabled_locked?
+
+  project.project_setting.update!(duo_features_enabled: inherited_value)
+end
+```
+
+Call this method from the `after_create_actions` method in `EE::Projects::CreateService`, guarded by `return unless project.group`.
+
+Without this fixup, the `auto_duo_code_review_enabled` setting
+([merge request 200397](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/200397)) required a
+43-million-row batched background migration (`ResetAutoDuoCodeReviewFalseValues`) to correct values
+after `NOT NULL DEFAULT false` broke the inheritance chain.
+
 Cascading settings that were added previously still have default `nil` values and read the ancestor hierarchy to find inherited settings values. But to minimize confusion we should update those to cascade on write. [Issue 483143](https://gitlab.com/gitlab-org/gitlab/-/issues/483143) describes this maintenance task.
 
 ## Display cascading settings on the frontend

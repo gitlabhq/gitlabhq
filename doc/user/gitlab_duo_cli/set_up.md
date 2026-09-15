@@ -64,13 +64,13 @@ To install the GitLab Duo CLI as a compiled binary, download and run the install
 On macOS and Linux:
 
 ```shell
-bash <(curl --fail --silent --show-error --location "https://gitlab.com/gitlab-org/editor-extensions/gitlab-lsp/-/raw/main/packages/cli/scripts/install_duo_cli.sh")
+bash <(curl --fail --silent --show-error --location "https://gitlab.com/gitlab-org/editor-extensions/gitlab-lsp/-/raw/main/packages/cli/app/scripts/install_duo_cli.sh")
 ```
 
 On Windows:
 
 ```shell
-irm "https://gitlab.com/gitlab-org/editor-extensions/gitlab-lsp/-/raw/main/packages/cli/scripts/install_duo_cli.ps1" | iex
+irm "https://gitlab.com/gitlab-org/editor-extensions/gitlab-lsp/-/raw/main/packages/cli/app/scripts/install_duo_cli.ps1" | iex
 ```
 
 ### Authenticate
@@ -131,6 +131,6 @@ where interactive authentication is not possible.
 
 ## Related topics
 
-- [GitLab Duo CLI complete reference](https://gitlab.com/gitlab-org/editor-extensions/gitlab-lsp/-/blob/main/packages/cli/docs/cli-reference.md)
+- [GitLab Duo CLI complete reference](https://gitlab.com/gitlab-org/editor-extensions/gitlab-lsp/-/blob/main/packages/cli/app/docs/cli-reference.md)
 - [Security considerations for editor extensions](../../editor_extensions/security_considerations.md)
 - [GitLab CLI](https://docs.gitlab.com/cli/)

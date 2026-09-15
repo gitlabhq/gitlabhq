@@ -49,15 +49,15 @@ RSpec.describe Mcp::Tools::Repositories::ListRepositoryTreeService, feature_cate
           path: {
             type: 'string',
             description: 'Path of the directory to list, relative to the repository root. ' \
-              'Defaults to the root.'
+              'Omit to list the root.'
           },
           ref: {
             type: 'string',
-            description: 'Branch name, tag name, or commit SHA. Defaults to HEAD, the default branch.'
+            description: 'Branch name, tag name, or commit SHA. Omit to use the default branch.'
           },
           recursive: {
             type: 'boolean',
-            description: 'When true, lists entries of all subdirectories recursively. Defaults to false.'
+            description: 'When true, lists entries of all subdirectories recursively.'
           },
           after: {
             type: 'string',

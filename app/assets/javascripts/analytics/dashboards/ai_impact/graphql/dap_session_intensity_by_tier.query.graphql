@@ -1,0 +1,22 @@
+# @feature_category: custom_dashboards_foundation
+#import "./dap_session_intensity_by_tier_item.fragment.graphql"
+
+query dapSessionIntensityByTierQuery(
+  $fullPath: ID!
+  $startDate: Time!
+  $endDate: Time!
+  $thresholds: [Int!]!
+) {
+  project(fullPath: $fullPath) {
+    id
+    analytics {
+      ...DapSessionIntensityByTierItem
+    }
+  }
+  group(fullPath: $fullPath) {
+    id
+    analytics {
+      ...DapSessionIntensityByTierItem
+    }
+  }
+}

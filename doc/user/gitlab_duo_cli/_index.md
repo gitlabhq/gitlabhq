@@ -115,13 +115,13 @@ To update the compiled binary, run the install script again.
 On macOS and Linux:
 
 ```shell
-bash <(curl --fail --silent --show-error --location "https://gitlab.com/gitlab-org/editor-extensions/gitlab-lsp/-/raw/main/packages/cli/scripts/install_duo_cli.sh")
+bash <(curl --fail --silent --show-error --location "https://gitlab.com/gitlab-org/editor-extensions/gitlab-lsp/-/raw/main/packages/cli/app/scripts/install_duo_cli.sh")
 ```
 
 On Windows:
 
 ```shell
-irm "https://gitlab.com/gitlab-org/editor-extensions/gitlab-lsp/-/raw/main/packages/cli/scripts/install_duo_cli.ps1" | iex
+irm "https://gitlab.com/gitlab-org/editor-extensions/gitlab-lsp/-/raw/main/packages/cli/app/scripts/install_duo_cli.ps1" | iex
 ```
 
 If you previously installed the GitLab Duo CLI through npm, it no longer receives updates.
@@ -136,11 +136,11 @@ then run the previous script to install the compiled binary instead.
 ## Contribute to the GitLab Duo CLI
 
 For information on contributing to the GitLab Duo CLI, see the
-[development guide](https://gitlab.com/gitlab-org/editor-extensions/gitlab-lsp/-/blob/main/packages/cli/docs/development.md).
+[development guide](https://gitlab.com/gitlab-org/editor-extensions/gitlab-lsp/-/blob/main/packages/cli/app/docs/development.md).
 
 ## Related topics
 
-- [GitLab Duo CLI complete reference](https://gitlab.com/gitlab-org/editor-extensions/gitlab-lsp/-/blob/main/packages/cli/docs/cli-reference.md)
+- [GitLab Duo CLI complete reference](https://gitlab.com/gitlab-org/editor-extensions/gitlab-lsp/-/blob/main/packages/cli/app/docs/cli-reference.md)
 - [Security considerations for editor extensions](../../editor_extensions/security_considerations.md)
 - [GitLab CLI](https://docs.gitlab.com/cli/)
 - [Customize GitLab Duo Agent Platform](../duo_agent_platform/customize/_index.md)
