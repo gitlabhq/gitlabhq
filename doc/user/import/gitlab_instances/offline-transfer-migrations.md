@@ -36,6 +36,22 @@ and import. The export bucket and import bucket do not have to be the same bucke
 same object storage provider. If the destination instance cannot access the export bucket, move
 the export files to a bucket the destination can access. GitLab does not move these files for you.
 
+Preserve the object key structure when you move the files. Offline transfer builds every object key
+from the export prefix:
+
+- `<export_prefix>/metadata.json.gz`
+- `<export_prefix>/<entity_prefix>/<relation>.<extension>`
+- `<export_prefix>/<entity_prefix>/<relation>/batch_<number>.<extension>`
+
+For example, `2026-04-16_19-39-00_export_dJtnb3CV/project_1/repository.tar.gz`.
+
+You can rename the top-level export prefix because you supply it when you start the import.
+Everything below the export prefix must keep the same structure and file names.
+
+Having no direct connection between instances does not mean either instance is offline.
+Both the source and destination instances still need network access to an object store to
+perform the export or import.
+
 Offline transfer is gated by both feature flags and application settings. All of them are off by
 default, and for a given operation both layers must be on:
 
@@ -132,6 +148,20 @@ imported groups and projects yourself.
 Offline transfer applies the same visibility rules as migration by direct transfer. For more
 information, see [visibility rules](../../group/import/_index.md#visibility-rules).
 
+## Group export and import scope
+
+GitLab exports whole group structures, every descendant subgroup and
+project, no matter how deeply nested. You cannot export a subset of a group's subgroups or
+projects.
+
+GitLab can import a subset of an exported group. If you want to migrate a group in waves:
+
+1. Export the whole group once.
+1. Choose which of its subgroups and projects to bring in for each wave as you import.
+
+Alternatively, you can export individual projects instead of their parent group, by giving the full
+path of each project as its own entity in the export request.
+
 ## Migrate a group or project
 
 Prerequisites:
@@ -202,6 +232,29 @@ Monitor the import with the [group and project migration by direct transfer API]
 
 Offline transfer exports and imports are rate limited.
 For more information, see [non-configurable rate limits](../../../rate_limits/non_configurable.md).
+
+## File size limits
+
+Offline transfer imports enforce the same maximum download file size as migration by direct
+transfer.
+This limit applies to each relation file individually, so a large repository bundle can hit it
+even when the rest of the migration fits under the limit.
+Because GitLab checks the limit during import, a file that exceeds it fails only after you
+already moved the export across to the destination environment.
+
+If your migration includes large repositories, ask an administrator on the destination instance to
+increase this limit before you start the import.
+For more information, see [Maximum download file size for imports by direct or offline transfer](../../../administration/settings/import_and_export_settings.md#maximum-download-file-size-for-imports-by-direct-or-offline-transfer).
+
+## Object storage bucket lifecycle
+
+GitLab does not delete export files from the bucket after an import finishes.
+Exports include repository bundles, LFS objects, uploaded files, and design bundles, as well as
+newline-delimited JSON (NDJSON) files containing issue and merge request descriptions and notes.
+Treat the bucket with the same data handling and residency controls you apply to the rest of your
+GitLab data.
+
+Retaining and deleting export files after a migration is your responsibility.
 
 ## Related topics
 

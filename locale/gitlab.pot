@@ -92457,6 +92457,9 @@ msgstr ""
 msgid "WorkItemDecisionLog|Decision actions"
 msgstr ""
 
+msgid "WorkItemDecisionLog|Decision created."
+msgstr ""
+
 msgid "WorkItemDecisionLog|Decision log"
 msgstr ""
 
@@ -92476,6 +92479,15 @@ msgid "WorkItemDecisionLog|Enter a summary of the decision"
 msgstr ""
 
 msgid "WorkItemDecisionLog|Hide context"
+msgstr ""
+
+msgid "WorkItemDecisionLog|Keep a record of decisions and the reasoning behind them. You can add a decision at any time, and GitLab Duo can also capture decisions during planning."
+msgstr ""
+
+msgid "WorkItemDecisionLog|Learn more about the decision log"
+msgstr ""
+
+msgid "WorkItemDecisionLog|New"
 msgstr ""
 
 msgid "WorkItemDecisionLog|New decision"
@@ -92523,7 +92535,7 @@ msgstr ""
 msgid "WorkItemDecisionLog|Suggested answer to an open question raised by %{author}"
 msgstr ""
 
-msgid "WorkItemDecisionLog|View comment"
+msgid "WorkItemDecisionLog|View source"
 msgstr ""
 
 msgid "WorkItemDecisionLog|Why"

@@ -363,9 +363,10 @@ To modify this setting:
 1. Expand **Import and export settings**.
 1. In **Maximum import remote file size (MiB)**, enter a value. Set to `0` for no file size limit.
 
-## Maximum download file size for imports by direct transfer
+## Maximum download file size for imports by direct or offline transfer
 
-By default, the maximum download file size for imports by direct transfer is 5 GiB.
+By default, the maximum download file size for imports by [direct transfer](../../user/group/import/_index.md) and by
+[offline transfer](../../user/import/gitlab_instances/offline-transfer-migrations.md) is 5 GiB.
 
 To modify this setting:
 

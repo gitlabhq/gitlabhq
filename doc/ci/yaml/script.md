@@ -233,7 +233,7 @@ $ tr a-z A-Z << END_TEXT # collapsed multiline command
 
 ## Add color codes to script output
 
-Script output can be colored using [ANSI escape codes](https://en.wikipedia.org/wiki/ANSI_escape_code#Colors),
+Script output can be colored using [8-bit ANSI escape codes](https://en.wikipedia.org/wiki/ANSI_escape_code#8-bit),
 or by running commands or programs that output ANSI escape codes.
 
 For example, using [Bash with color codes](https://misc.flogisoft.com/bash/tip_colors_and_formatting):
@@ -268,3 +268,5 @@ job:
     - Write-Host $TXT_RED"This text is red,"$TXT_CLEAR" but this text isn't"$TXT_RED" however this text is red again."
     - Write-Host "This text is not colored"
 ```
+
+24 bit color codes [are not supported](https://gitlab.com/gitlab-org/gitlab/-/work_items/471530).
