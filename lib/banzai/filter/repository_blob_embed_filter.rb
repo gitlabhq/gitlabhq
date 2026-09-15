@@ -34,7 +34,6 @@ module Banzai
       end
 
       def call
-        return doc unless Feature.enabled?(:blob_permalink_embed, project, type: :gitlab_com_derisk)
         return doc if for_service_desk_email?
         return doc if for_email? && !container_shows_diff_previews_in_email?
 

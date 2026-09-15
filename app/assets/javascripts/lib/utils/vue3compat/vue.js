@@ -6,7 +6,7 @@ import GlAbilitiesPlugin from '../../../vue_shared/gl_abilities_plugin';
 import Translate from '../../../vue_shared/translate';
 import { vueErrorHandler } from '../../../sentry/vue_error_handler';
 
-import { logDevNotice } from '../../logger';
+import { logDevNotice, logError } from '../../logger';
 import { compatConfig } from './compat_config';
 
 export * from '@vue/compat';
@@ -64,6 +64,14 @@ if (typeof jest === 'undefined') {
 
   if (process.env.NODE_ENV === 'production') {
     GitLabPatchedVue.config.errorHandler = vueErrorHandler;
+  } else {
+    // Without a handler, Vue 3 rethrows in development and leaves the component tree half
+    // patched. With one, it renders a comment node instead, as production does with Sentry
+    // and as Vue 2 does in every build. The message copies Vue 2's format.
+    GitLabPatchedVue.config.errorHandler = (err, vm, info) => {
+      const name = vm?.$options?.name ?? 'unknown';
+      logError(`[Vue warn]: Error in ${info}: "${err}"\n\nfound in\n\n---> <${name}>`, err);
+    };
   }
 }
 

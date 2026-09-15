@@ -1094,6 +1094,16 @@ Some analyzers can be customized by using CI/CD variables.
 | `GITLAB_ADVANCED_SAST_ENABLED`      | GitLab Advanced SAST | `false`                                  | Set to `true` to enable GitLab Advanced SAST scanning (available in GitLab Ultimate only). |
 | `GITLAB_ADV_SAST_INCR_SCAN` | GitLab Advanced SAST | `false` | Enable incremental scanning to cache taint signatures between pipeline runs. |
 | `GITLAB_ADVANCED_SAST_EXT_INCREMENTAL_ENABLED` | GitLab Advanced SAST | `true` | Set to `false` to turn off incremental scanning for the Swift and Objective-C (`gitlab-advanced-sast-ext`) analyzers. This variable is enabled by default and has no effect on repositories without Swift or Objective-C files. |
+| `GITLAB_ADVANCED_SAST_CPP_ENABLED`  | GitLab Advanced SAST | `false`                                  | To turn on GitLab Advanced SAST scanning for C and C++ projects, set to `true`. |
+| `ADVANCED_SAST_PARTIAL_SCAN`        | GitLab Advanced SAST | `false`                                  | To turn on diff-scanning mode, set to `differential`. |
+| `GITLAB_ADVANCED_SAST_RULE_TIMEOUT` | GitLab Advanced SAST | `30`                                     | Timeout in seconds per rule per file. When this timeout is exceeded, that analysis is skipped. |
+| `REPORT_UNVERIFIED_VULNS`           | GitLab Advanced SAST | `false`                                  | Include unverified findings in scan results. To turn on, set to `true`, `1`, or `True`. |
+| `GITLAB_ADV_SAST_INCR_SCAN_SEARCH_PERIOD` | GitLab Advanced SAST | `3 days`                           | How far back to search for a cached taint signature artifact. Must not exceed the artifact expiry period. |
+| `GITLAB_ADV_SAST_INCR_SCAN_CUSTOM_JOB_NAME` | GitLab Advanced SAST | `gitlab-advanced-sast`           | Custom job name for cache artifact lookup. Set this variable if you renamed the `gitlab-advanced-sast` job. |
+| `GITLAB_ADV_SAST_INCR_SCAN_STORAGE` | GitLab Advanced SAST | Not set                                  | Cache storage backend. To store the cache in AWS S3 instead of CI/CD artifacts, set to `s3`. |
+| `GITLAB_ADV_SAST_INCR_SCAN_S3_BUCKET` | GitLab Advanced SAST | Not set                                | S3 bucket name for cache storage. Required when `GITLAB_ADV_SAST_INCR_SCAN_STORAGE` is `s3`. |
+| `GITLAB_ADV_SAST_INCR_SCAN_S3_REGION` | GitLab Advanced SAST | Not set                                | AWS region of the S3 bucket. Required when `GITLAB_ADV_SAST_INCR_SCAN_STORAGE` is `s3`. |
+| `GITLAB_ADV_SAST_INCR_SCAN_S3_ROLE_ARN` | GitLab Advanced SAST | Not set                              | ARN of the IAM role to assume through OIDC. Required when `GITLAB_ADV_SAST_INCR_SCAN_STORAGE` is `s3`. |
 | `SCAN_KUBERNETES_MANIFESTS`         | Kubesec              | `"false"`                                | Set to `"true"` to scan Kubernetes manifests. |
 | `KUBESEC_HELM_CHARTS_PATH`          | Kubesec              |                                          | Optional path to Helm charts that `helm` uses to generate a Kubernetes manifest that `kubesec` scans. If dependencies are defined, `helm dependency build` should be ran in a `before_script` to fetch the necessary dependencies. |
 | `KUBESEC_HELM_OPTIONS`              | Kubesec              |                                          | Additional arguments for the `helm` executable. |

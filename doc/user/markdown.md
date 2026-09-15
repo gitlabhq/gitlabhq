@@ -1545,13 +1545,9 @@ When rendered, the example looks similar to:
 {{< history >}}
 
 - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/246838) in GitLab 19.4 [with a feature flag](../administration/feature_flags/_index.md) named `blob_permalink_embed`. Disabled by default.
+- Generally available in GitLab 19.5. Feature flag `blob_permalink_embed` removed.
 
 {{< /history >}}
-
-> [!flag]
-> The availability of this feature is controlled by a feature flag.
-> For more information, see the history.
-> This feature is available for testing, but not ready for production use.
 
 When you paste a [permalink](project/repository/files/_index.md#create-permalinks) to lines of a file
 in a repository, GitLab replaces the link with a syntax-highlighted snippet of those lines.

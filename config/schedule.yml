@@ -66,6 +66,19 @@ background_operation_merge_requests_clear_stale_cached_html:
     table_name: "merge_requests"
     column_name: "id"
 
+background_operation_notes_clear_old_cached_html:
+  class: Database::BackgroundOperation::CronEnqueueWorker
+  cron: "45 6 1 1,4,7,10 *"
+  args:
+    job_class_name: "NotesClearOldCachedHtml"
+    table_name: "notes"
+    column_name: "id"
+    options:
+      # Batching is unscoped, so most sub-batches in the recent-id stretch match nothing.
+      # `pause_ms` is a fixed cost per sub-batch and `batch_size` self-tunes, so the
+      # sub-batch size is the only lever on how much of the table a pass covers.
+      sub_batch_size: 500
+
 background_operation_notes_clear_stale_cached_html:
   class: Database::BackgroundOperation::CronEnqueueWorker
   cron: "30 5 1,15 * *"

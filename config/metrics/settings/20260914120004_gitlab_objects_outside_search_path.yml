@@ -1,0 +1,22 @@
+---
+key_path: settings.database.gitlab_objects_outside_search_path
+description: Whether a schema outside the search_path contains GitLab tables, which unqualified references never reach.
+product_group: database_health
+product_categories:
+- database
+value_type: boolean
+status: active
+milestone: "19.5"
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/255268
+time_frame: none
+data_source: system
+data_category: optional
+instrumentation_class: DatabaseDiagnosticsFindingMetric
+options:
+  check: search_path
+  finding_code: gitlab_objects_outside_search_path
+performance_indicator_type: []
+tiers:
+- free
+- premium
+- ultimate

@@ -196,22 +196,6 @@ e2e:test-on-omnibus-ce:
     QA_RUN_TYPE: e2e-test-on-omnibus-ce
     PIPELINE_NAME: E2E Omnibus GitLab CE
 
-e2e:test-on-gdk:
-  extends:
-    - .e2e-trigger-base
-    - .qa:rules:e2e:test-on-gdk
-  stage: qa
-  needs:
-    - build-gdk-image
-    - e2e-test-pipeline-generate
-    - job: coverage-frontend
-      optional: true
-  variables:
-    QA_RUN_TYPE: e2e-test-on-gdk
-    PIPELINE_NAME: E2E GDK
-    DYNAMIC_PIPELINE_YML: ${CI_PROJECT_DIR}/qa/tmp/test-on-gdk-pipeline.yml
-    GDK_IMAGE: "${CI_REGISTRY_IMAGE}/gitlab-qa-gdk:${CI_COMMIT_SHA}"
-
 e2e:test-on-cng:
   extends:
     - .e2e-trigger-base

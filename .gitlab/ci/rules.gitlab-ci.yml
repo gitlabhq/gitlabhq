@@ -2492,16 +2492,6 @@
         CREATE_TEST_FAILURE_ISSUES: "true"
         PROCESS_TEST_RESULTS: "true"
 
-.qa:rules:e2e:test-on-gdk:
-  rules:
-    # Retired: test-on-cng covers merge requests and exports the code-paths mapping.
-    # See https://gitlab.com/gitlab-org/gitlab/-/work_items/609350
-    - !reference [".qa:rules:e2e-test-never-run", rules]
-    - <<: *if-merge-request-targeting-stable-branch
-      when: never
-    - <<: *if-security-merge-request
-      when: never
-
 .qa:rules:e2e:test-on-cng:
   rules:
     # TODO: Check security fork is able to build cng images before enabling
