@@ -102,6 +102,12 @@ A `AiDuoWorkflowsWorkflowID` is a global ID. It is encoded as a string.
 
 An example `AiDuoWorkflowsWorkflowID` is: `"gid://gitlab/Ai::DuoWorkflows::Workflow/1"`.
 
+## `AiFlowScheduleID`
+
+A `AiFlowScheduleID` is a global ID. It is encoded as a string.
+
+An example `AiFlowScheduleID` is: `"gid://gitlab/Ai::FlowSchedule/1"`.
+
 ## `AiFlowTriggerID`
 
 A `AiFlowTriggerID` is a global ID. It is encoded as a string.
@@ -576,6 +582,10 @@ A `CustomerRelationsOrganizationID` is a global ID. It is encoded as a string.
 
 An example `CustomerRelationsOrganizationID` is: `"gid://gitlab/CustomerRelations::Organization/1"`.
 
+## `CweIdentifier`
+
+A CWE identifier.
+
 ## `DastProfileID`
 
 A `DastProfileID` is a global ID. It is encoded as a string.
@@ -1013,6 +1023,18 @@ Represents a Google Cloud Compute region.
 
 Represents a Google Cloud Compute zone.
 
+## `GovernPolicyEvaluationID`
+
+A `GovernPolicyEvaluationID` is a global ID. It is encoded as a string.
+
+An example `GovernPolicyEvaluationID` is: `"gid://gitlab/Govern::PolicyEvaluation/1"`.
+
+## `GovernPolicyViolationID`
+
+A `GovernPolicyViolationID` is a global ID. It is encoded as a string.
+
+An example `GovernPolicyViolationID` is: `"gid://gitlab/Govern::PolicyViolation/1"`.
+
 ## `GroupHookID`
 
 A `GroupHookID` is a global ID. It is encoded as a string.
@@ -1188,6 +1210,12 @@ An example `MergeRequestsClosingIssuesID` is: `"gid://gitlab/MergeRequestsClosin
 A `MergeRequestsExternalStatusCheckID` is a global ID. It is encoded as a string.
 
 An example `MergeRequestsExternalStatusCheckID` is: `"gid://gitlab/MergeRequests::ExternalStatusCheck/1"`.
+
+## `MergeRequestsSavedViewID`
+
+A `MergeRequestsSavedViewID` is a global ID. It is encoded as a string.
+
+An example `MergeRequestsSavedViewID` is: `"gid://gitlab/MergeRequests::SavedView/1"`.
 
 ## `MergeTrainsCarID`
 
@@ -1749,6 +1777,18 @@ An example `WorkItemID` is: `"gid://gitlab/WorkItem/1"`.
 
 While we transition from Issues into Work Items this type will temporarily support
 `IssueID` like: `"gid://gitlab/Issue/1"`. This behavior will be removed without notice in the future.
+
+## `WorkItemsDecisionID`
+
+A `WorkItemsDecisionID` is a global ID. It is encoded as a string.
+
+An example `WorkItemsDecisionID` is: `"gid://gitlab/WorkItems::Decision/1"`.
+
+## `WorkItemsDecisionOptionID`
+
+A `WorkItemsDecisionOptionID` is a global ID. It is encoded as a string.
+
+An example `WorkItemsDecisionOptionID` is: `"gid://gitlab/WorkItems::DecisionOption/1"`.
 
 ## `WorkItemsRelatedWorkItemLinkID`
 

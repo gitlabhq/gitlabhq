@@ -1713,4 +1713,50 @@ RSpec.describe SearchHelper, :with_current_organization, feature_category: :glob
       end
     end
   end
+
+  describe '#search_result_tracking_attrs' do
+    before do
+      helper.instance_variable_set(:@scope, 'issues')
+    end
+
+    context 'when the controller minted a search request ID' do
+      let(:search_request_id) { '11111111-2222-3333-4444-555555555555' }
+
+      before do
+        helper.instance_variable_set(:@search_request_id, search_request_id)
+      end
+
+      it 'includes the join key in event_property' do
+        attrs = helper.search_result_tracking_attrs(3)
+
+        expect(attrs).to eq(
+          event_tracking: 'click_search_result',
+          event_label: 'issues',
+          event_value: 3,
+          event_property: search_request_id
+        )
+      end
+
+      it 'uses the same join key for every result on the page' do
+        first = helper.search_result_tracking_attrs(1)
+        second = helper.search_result_tracking_attrs(2)
+
+        expect(first[:event_property]).to eq(search_request_id)
+        expect(second[:event_property]).to eq(search_request_id)
+      end
+    end
+
+    context 'when no search request ID was minted' do
+      it 'omits event_property so the payload matches the pre-flag shape' do
+        attrs = helper.search_result_tracking_attrs(3)
+
+        expect(attrs.keys).to eq(%i[event_tracking event_label event_value])
+        expect(attrs).to eq(
+          event_tracking: 'click_search_result',
+          event_label: 'issues',
+          event_value: 3
+        )
+      end
+    end
+  end
 end

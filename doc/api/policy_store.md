@@ -411,7 +411,7 @@ Supported attributes:
 | `actions`         | array   | No       | Actions the policy takes. Up to 5 entries. Each entry must serialize to at most 4096 bytes. |
 | `description`     | string  | No       | Description of the policy. Maximum 4096 characters. |
 | `lifecycle_state` | string  | No       | Either `active` or `disabled`. Defaults to `active`. |
-| `mode`            | string  | No       | One of `audit`, `warn`, or `enforce`. Defaults to `enforce`. |
+| `mode`            | string  | No       | One of `audit`, `warn`, or `enforce`. Defaults to `warn`. |
 | `policy_scope`    | object  | No       | Structured scope of the policy. Cannot be combined with a non-empty `scope_rego`. Rejected when it compiles to more than 4096 characters of Rego. |
 | `scope_rego`      | string  | No       | Scope of the policy, authored as Rego. Maximum 4096 characters. A non-empty value cannot be combined with `policy_scope`. |
 

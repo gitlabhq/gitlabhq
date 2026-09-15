@@ -100,6 +100,24 @@ This error occurs when Code Review Flow is unable to retrieve the source branch 
 
 Try to restart the review.
 
+## `Error DCR4011`
+
+You might get an error that states
+`Code Review Flow could not start because the project has no runner available. It needs an instance runner or a top-level group runner with the gitlab--duo tag and a Docker-compatible executor. Error code: DCR4011`.
+
+This error occurs when Code Review Flow runs on a CI/CD pipeline, but no eligible runner is available. Flows need an instance runner or a group runner assigned to the top-level group, with the `gitlab--duo` tag and a Docker-compatible executor.
+
+For the full runner requirements and how to configure one, see [A flow's job or session fails to start](../../../troubleshooting.md#a-flows-job-or-session-fails-to-start).
+
+## `Error DCR4012`
+
+You might get an error that states
+`Code Review Flow could not start because the namespace has run out of compute minutes. Ask someone with billing access to add compute minutes before trying again. Error code: DCR4012`.
+
+This error occurs when the namespace has used all of its compute minutes, which also removes access to hosted (instance) runners. Project and top-level group runners are not affected.
+
+Ask someone with billing access to add compute minutes, then request a new review. For more details, see [A flow's job or session fails to start](../../../troubleshooting.md#a-flows-job-or-session-fails-to-start).
+
 ## `Error DCR5000`
 
 You might get an error that states

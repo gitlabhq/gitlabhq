@@ -11,7 +11,7 @@ import {
 } from '../../../utils/chart_data';
 import { formatterFor, axisFormatterFor, dimensionAxisTitleFor } from '../../../utils/value_format';
 import FormattedTooltipContent from '../chart/formatted_tooltip_content.vue';
-import { barCategoryAxisOptions } from './bar_chart_options';
+import { barCategoryAxisOptions, barChartHeightFor } from './bar_chart_options';
 
 export default {
   name: 'TwoDimensionsBarChart',
@@ -32,6 +32,11 @@ export default {
     metric: {
       required: true,
       type: Object,
+    },
+    showAxisTitles: {
+      required: false,
+      type: Boolean,
+      default: true,
     },
   },
   computed: {
@@ -64,19 +69,28 @@ export default {
     metricAxisFormatter() {
       return axisFormatterFor(baseFieldKeyOf(this.metric));
     },
-    yAxisTitle() {
+    // The tooltip keeps naming the dimensions even when the axis titles are
+    // hidden, since it is the only place the grouping is spelled out then.
+    dimensionAxisTitle() {
       return dimensionAxisTitleFor(this.primaryDimension, this.secondaryDimension);
+    },
+    yAxisTitle() {
+      return this.showAxisTitles ? this.dimensionAxisTitle : '';
     },
     categoryFormatter() {
       return dimensionLabelFormatter(this.data.nodes, this.primaryDimension);
     },
     xAxisTitle() {
-      return labelWithParameter(this.metric);
+      return this.showAxisTitles ? labelWithParameter(this.metric) : '';
+    },
+    chartHeight() {
+      return barChartHeightFor(this.chart.groups.length, { axisTitle: this.showAxisTitles });
     },
     chartOptions() {
       return {
         ...barCategoryAxisOptions(this.chart.groups.map(this.categoryFormatter), {
           formatter: this.categoryFormatter,
+          axisTitle: this.showAxisTitles,
         }),
         xAxis: { axisLabel: { formatter: this.metricAxisFormatter } },
       };
@@ -92,7 +106,7 @@ export default {
     tooltipTitle(params) {
       return tooltipTitleFromParams(params, {
         formatLabel: this.categoryFormatter,
-        axisName: this.yAxisTitle,
+        axisName: this.dimensionAxisTitle,
         displayType: DISPLAY_TYPES.BAR_CHART,
       });
     },
@@ -105,6 +119,7 @@ export default {
     :data="chartData"
     :option="chartOptions"
     presentation="stacked"
+    :height="chartHeight"
     :x-axis-title="xAxisTitle"
     :y-axis-title="yAxisTitle"
   >

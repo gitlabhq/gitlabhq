@@ -116,6 +116,142 @@ RSpec.describe SearchController, feature_category: :global_search do
         subject(:tracked_event) { get :show, params: params }
       end
 
+      describe 'search relevancy join key' do
+        let(:params) { { search: 'foobar' } }
+        let(:uuid_regex) { /\A\h{8}-\h{4}-\h{4}-\h{4}-\h{12}\z/ }
+
+        context 'when search_relevancy_join_key is enabled' do
+          it 'attaches a search request ID to perform_search' do
+            expect { get :show, params: params }.to trigger_internal_events('perform_search').with(
+              user: user,
+              category: described_class.to_s,
+              additional_properties: {
+                property: a_string_matching(uuid_regex)
+              }
+            )
+          end
+
+          it 'logs the same ID it emitted on the event' do
+            events = capture_internal_events
+
+            logged_id = nil
+            expect(controller).to receive(:append_info_to_payload).and_wrap_original do |method, payload|
+              method.call(payload)
+              logged_id = payload[:metadata]['meta.search.request_id']
+            end
+
+            get :show, params: params
+
+            expect(logged_id).to match(uuid_regex)
+            expect(emitted_join_key(events)).to eq(logged_id)
+          end
+
+          # Guards the controller -> view hop: view_assigns copies @search_request_id into
+          # the view, so the event and the result links share one id. The id must NOT be
+          # stubbed here or two independently minted ids become indistinguishable.
+          context 'when the results page is rendered' do
+            render_views
+
+            let_it_be(:public_project, freeze: false) { create(:project, :public) }
+
+            before do
+              create(:issue, project: public_project, title: 'foobar')
+            end
+
+            it 'renders the same ID it emitted on perform_search on every result link' do
+              events = capture_internal_events
+
+              get :show, params: { scope: 'issues', search: 'foobar' }
+
+              emitted_id = emitted_join_key(events)
+              rendered_ids = tracked_link_properties(response.body)
+
+              expect(emitted_id).to match(uuid_regex)
+              expect(rendered_ids).not_to be_empty
+              expect(rendered_ids.uniq).to eq([emitted_id])
+            end
+          end
+
+          # The flag actor is Feature.current_request rather than current_user precisely so
+          # logged-out search is reachable; a nil actor never matches a percentage gate.
+          # This guards that the anonymous path runs and still emits both halves of the join
+          # key. It cannot prove the percentage-of-actors behaviour: the suite enables flags
+          # for every actor, so Flipper's gate is never consulted here.
+          context 'for an anonymous request' do
+            before do
+              sign_out(user)
+              stub_application_setting(anonymous_searches_allowed: true)
+              stub_application_setting(global_search_block_anonymous_searches_enabled: false)
+            end
+
+            it 'attaches and logs a search request ID with no signed-in user' do
+              events = capture_internal_events
+
+              logged_id = nil
+              expect(controller).to receive(:append_info_to_payload).and_wrap_original do |method, payload|
+                method.call(payload)
+                logged_id = payload[:metadata]['meta.search.request_id']
+              end
+
+              get :show, params: params
+
+              expect(controller.current_user).to be_nil
+              expect(response).to have_gitlab_http_status(:ok)
+              expect(logged_id).to match(uuid_regex)
+              expect(emitted_join_key(events)).to eq(logged_id)
+
+              _, kwargs = events.find { |name, _| name == 'perform_search' }
+              expect(kwargs[:user]).to be_nil
+            end
+          end
+        end
+
+        context 'when search_relevancy_join_key is disabled' do
+          before do
+            stub_feature_flags(search_relevancy_join_key: false)
+          end
+
+          it 'fires perform_search with no additional_properties key at all' do
+            allow(Gitlab::InternalEvents).to receive(:track_event).and_call_original
+
+            expect(Gitlab::InternalEvents).to receive(:track_event)
+              .with('perform_search', hash_excluding(:additional_properties))
+              .and_call_original
+
+            get :show, params: params
+          end
+
+          it 'does not log a search request ID' do
+            expect(controller).to receive(:append_info_to_payload).and_wrap_original do |method, payload|
+              method.call(payload)
+
+              expect(payload[:metadata]).not_to have_key('meta.search.request_id')
+            end
+
+            get :show, params: params
+          end
+
+          context 'when the results page is rendered' do
+            render_views
+
+            let_it_be(:public_project, freeze: false) { create(:project, :public) }
+
+            before do
+              create(:issue, project: public_project, title: 'foobar')
+            end
+
+            it 'renders result links with no join key at all' do
+              get :show, params: { scope: 'issues', search: 'foobar' }
+
+              properties = tracked_link_properties(response.body)
+
+              expect(properties).not_to be_empty
+              expect(properties).to all(be_nil)
+            end
+          end
+        end
+      end
+
       context 'for navbar search' do
         let(:params) { { search: 'foobar', nav_source: 'navbar' } }
         let(:category) { described_class.to_s }
@@ -557,6 +693,18 @@ RSpec.describe SearchController, feature_category: :global_search do
 
       it_behaves_like 'rate limit scope handling', :count, { search: 'hello' }
 
+      # `count` never reaches increment_search_counters, so it emits no perform_search.
+      # Logging a request_id here would mint an id that joins to nothing, at one per scope tab.
+      it 'does not log a search request ID even with the join key flag enabled' do
+        expect(controller).to receive(:append_info_to_payload).and_wrap_original do |method, payload|
+          method.call(payload)
+
+          expect(payload[:metadata]).not_to have_key('meta.search.request_id')
+        end
+
+        get :count, params: { search: 'hello', scope: 'projects' }
+      end
+
       it 'raises an error if search term is missing' do
         expect do
           get :count, params: { scope: 'projects' }
@@ -721,6 +869,19 @@ RSpec.describe SearchController, feature_category: :global_search do
       end
 
       it_behaves_like 'rate limit scope handling', :autocomplete, { term: 'hello' }
+
+      # `autocomplete` logs through autocomplete_payload_metadata, which has no request_id
+      # branch at all, and never reaches increment_search_counters. Guards that no id is
+      # minted for a request that emits no perform_search to join to.
+      it 'does not log a search request ID even with the join key flag enabled' do
+        expect(controller).to receive(:append_info_to_payload).and_wrap_original do |method, payload|
+          method.call(payload)
+
+          expect(payload[:metadata]).not_to have_key('meta.search.request_id')
+        end
+
+        get :autocomplete, params: { term: 'setting', scope: 'projects' }
+      end
 
       it_behaves_like 'rate limited endpoint', rate_limit_key: :search_rate_limit do
         let(:current_user) { user }

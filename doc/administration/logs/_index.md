@@ -250,6 +250,16 @@ which correspond to:
 - `elasticsearch_timed_out_count`: Total number of calls to Elasticsearch that
   timed out and therefore returned partial results
 
+Search requests also log `meta.search.request_id`, a UUID that identifies a single
+search request. The same value is sent as the `property` of the `perform_search` and
+`click_search_result` events, so a result click can be attributed to the search that
+returned it. Requests that log no `meta.search.request_id` emitted no `perform_search`
+event.
+
+> [!flag]
+> The availability of `meta.search.request_id` is controlled by the `search_relevancy_join_key`
+> feature flag. This flag is disabled by default.
+
 Requests that read or write secrets with the [GitLab Secrets Manager](../../ci/secrets/secrets_manager/_index.md)
 additionally log `openbao_calls` and `openbao_duration_s`, which correspond to:
 

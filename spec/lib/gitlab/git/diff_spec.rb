@@ -17,7 +17,10 @@ RSpec.describe Gitlab::Git::Diff, feature_category: :source_code_management do
       overflow_marker: false,
       collapsed: false,
       too_large: false,
-      patch: "@@ -4,3 +4,6 @@\n [submodule \"gitlab-shell\"]\n \tpath = gitlab-shell\n \turl = https://github.com/gitlabhq/gitlab-shell.git\n+[submodule \"gitlab-grack\"]\n+\tpath = gitlab-grack\n+\turl = https://gitlab.com/gitlab-org/gitlab-grack.git\n"
+      patch: "@@ -4,3 +4,6 @@\n [submodule \"gitlab-shell\"]\n \tpath = gitlab-shell\n " \
+        "\turl = https://github.com/gitlabhq/gitlab-shell.git\n" \
+        "+[submodule \"gitlab-grack\"]\n+\tpath = gitlab-grack\n" \
+        "+\turl = https://gitlab.com/gitlab-org/gitlab-grack.git\n"
     )
   end
 
@@ -504,7 +507,13 @@ DIFF
         project,
         user,
         commit_message: "Create binary file",
-        actions: [{ action: 'create', content: 'iVBORw0KGgoAAAANSUhEUgAAAAEAAAABAQMAAAAl21bKAAAAA1BMVEUAAACnej3aAAAAAXRSTlMAQObYZgAAAApJREFUCNdjYAAAAAIAAeIhvDMAAAAASUVORK5CYII=', file_path: 'test%2Ebin', encoding: 'base64' }]
+        actions: [{
+          action: 'create',
+          content: 'iVBORw0KGgoAAAANSUhEUgAAAAEAAAABAQMAAAAl21bKAAAAA1BMVEUAAACnej3a' \
+            'AAAAAXRSTlMAQObYZgAAAApJREFUCNdjYAAAAAIAAeIhvDMAAAAASUVORK5CYII=',
+          file_path: 'test%2Ebin',
+          encoding: 'base64'
+        }]
       )
     end
 

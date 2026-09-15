@@ -33,6 +33,7 @@ module Tooling
 
         def compile(type, data = nil, filename: "#{type}.md")
           locals = data.nil? ? {} : { type => data }
+          locals = locals.merge(page: filename)
 
           doc = Renderer.new(
             template: type,

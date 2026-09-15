@@ -61,19 +61,21 @@ export function updateIssueCountAndWeight({
   shouldClone,
   cache,
 }) {
+  // The list query is not cached until its list has rendered; updateQuery passes null then.
   if (!shouldClone) {
     cache.updateQuery(
       {
         query: listQuery,
         variables: { id: fromListId, filters: filterParams },
       },
-      ({ boardList }) => ({
-        boardList: {
-          ...boardList,
-          issuesCount: boardList.issuesCount - 1,
-          totalIssueWeight: boardList.totalIssueWeight - issue.weight,
+      (data) =>
+        data && {
+          boardList: {
+            ...data.boardList,
+            issuesCount: data.boardList.issuesCount - 1,
+            totalIssueWeight: data.boardList.totalIssueWeight - issue.weight,
+          },
         },
-      }),
     );
   }
 
@@ -82,15 +84,16 @@ export function updateIssueCountAndWeight({
       query: listQuery,
       variables: { id: toListId, filters: filterParams },
     },
-    ({ boardList }) => ({
-      boardList: {
-        ...boardList,
-        issuesCount: boardList.issuesCount + 1,
-        ...(issue.weight
-          ? { totalIssueWeight: toNumber(boardList.totalIssueWeight) + issue.weight }
-          : {}),
+    (data) =>
+      data && {
+        boardList: {
+          ...data.boardList,
+          issuesCount: data.boardList.issuesCount + 1,
+          ...(issue.weight
+            ? { totalIssueWeight: toNumber(data.boardList.totalIssueWeight) + issue.weight }
+            : {}),
+        },
       },
-    }),
   );
 }
 
@@ -110,16 +113,17 @@ export function updateEpicsCount({
         query: listsDeferredQuery[issuableType].query,
         variables: { id: fromListId, filters: filterParams },
       },
-      ({ epicBoardList }) => ({
-        epicBoardList: {
-          ...epicBoardList,
-          metadata: {
-            ...epicBoardList.metadata,
-            epicsCount: epicBoardList.metadata.epicsCount - 1,
-            totalWeight: epicBoardList.metadata.totalWeight - epicWeight,
+      (data) =>
+        data && {
+          epicBoardList: {
+            ...data.epicBoardList,
+            metadata: {
+              ...data.epicBoardList.metadata,
+              epicsCount: data.epicBoardList.metadata.epicsCount - 1,
+              totalWeight: data.epicBoardList.metadata.totalWeight - epicWeight,
+            },
           },
         },
-      }),
     );
   }
 
@@ -128,16 +132,17 @@ export function updateEpicsCount({
       query: listsDeferredQuery[issuableType].query,
       variables: { id: toListId, filters: filterParams },
     },
-    ({ epicBoardList }) => ({
-      epicBoardList: {
-        ...epicBoardList,
-        metadata: {
-          ...epicBoardList.metadata,
-          epicsCount: epicBoardList.metadata.epicsCount + 1,
-          totalWeight: epicBoardList.metadata.totalWeight + epicWeight,
+    (data) =>
+      data && {
+        epicBoardList: {
+          ...data.epicBoardList,
+          metadata: {
+            ...data.epicBoardList.metadata,
+            epicsCount: data.epicBoardList.metadata.epicsCount + 1,
+            totalWeight: data.epicBoardList.metadata.totalWeight + epicWeight,
+          },
         },
       },
-    }),
   );
 }
 

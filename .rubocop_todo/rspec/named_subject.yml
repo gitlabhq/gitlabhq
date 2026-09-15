@@ -561,7 +561,6 @@ RSpec/NamedSubject:
     - 'ee/spec/services/compliance_management/frameworks/update_service_spec.rb'
     - 'ee/spec/services/compliance_management/merge_requests/create_compliance_violations_service_spec.rb'
     - 'ee/spec/services/dashboard/operations/list_service_spec.rb'
-    - 'ee/spec/services/deployments/approval_service_spec.rb'
     - 'ee/spec/services/deployments/auto_rollback_service_spec.rb'
     - 'ee/spec/services/dora/aggregate_scores_service_spec.rb'
     - 'ee/spec/services/ee/admin/set_feature_flag_service_spec.rb'

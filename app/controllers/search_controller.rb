@@ -271,11 +271,28 @@ class SearchController < ApplicationController
   end
 
   def increment_search_counters
-    track_internal_event('perform_search', user: current_user)
+    if search_relevancy_join_key_enabled?
+      @search_request_id = SecureRandom.uuid
+
+      track_internal_event('perform_search', user: current_user,
+        additional_properties: { property: @search_request_id })
+    else
+      # No additional_properties: the flag-off payload must stay byte-identical to what
+      # this event emitted before the join key existed, so turning the flag off is a
+      # true rollback. `property` is optional in the event definition. Only the join key
+      # is flag-gated: any unflagged property added here later belongs in both branches.
+      track_internal_event('perform_search', user: current_user)
+    end
 
     return if search_params[:nav_source] != 'navbar'
 
     track_internal_event('perform_navbar_search', user: current_user)
+  end
+
+  # The actor is the request, not current_user: anonymous search is supported, and a nil
+  # actor never matches a percentage-of-actors gate.
+  def search_relevancy_join_key_enabled?
+    Feature.enabled?(:search_relevancy_join_key, Feature.current_request)
   end
 
   def append_info_to_payload(payload)
@@ -323,6 +340,7 @@ class SearchController < ApplicationController
     }.tap do |metadata|
       metadata['meta.search.type']        = @search_type         if @search_type.present?
       metadata['meta.search.level']       = @search_level        if @search_level.present?
+      metadata['meta.search.request_id']  = @search_request_id   if @search_request_id
       metadata[:global_search_duration_s] = @global_search_duration_s if @global_search_duration_s.present?
     end
   end

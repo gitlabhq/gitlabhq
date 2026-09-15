@@ -52,7 +52,7 @@ Marks an element of a GraphQL schema as no longer supported.
 
 ## `gl_introduced`
 
-Marks a field as introduced in a specific version. Fields with a version higher than the current one will return null.
+Marks a field as introduced in a specific version. Fields tagged with the current milestone or a later one return null when the field is absent from the schema.
 
 ### Locations {.no_toc}
 

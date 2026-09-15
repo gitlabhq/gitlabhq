@@ -142,7 +142,7 @@ export default {
       return this.namespaceFullPath;
     },
     subtitle() {
-      return this.visualizationOptionOverrides?.subtitle;
+      return this.visualizationOptions?.subtitle;
     },
     panelTitle() {
       return this.visualizationOptions?.title ?? this.title;

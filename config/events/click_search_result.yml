@@ -12,7 +12,12 @@ additional_properties:
   value:
     description: result position
   property:
-    description: search term
+    description: >-
+      search request ID, used to join this click to its originating search. Uses the
+      built-in property slot so the ID lands in a dedicated Snowflake column (se_pr)
+      and is queryable without Data team work. Clicks on Zoekt-served blob results
+      carry no ID, because those searches emit no perform_search: click-through rate
+      per scope under-reports code search.
 product_group: global_search
 product_categories:
 - global_search

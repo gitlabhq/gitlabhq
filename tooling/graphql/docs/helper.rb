@@ -42,15 +42,23 @@ module Tooling
 
         def docs_render(partial, **args)
           template = "shared/#{partial}"
-          Renderer.new(template: template, locals: args).execute
+          Renderer.new(template: template, locals: args.merge(page: current_page)).execute
         end
 
         private
 
-        def docs_link(item)
-          page = item.class.name.demodulize.underscore.pluralize
+        def current_page
+          @page
+        end
 
-          "#{page}.md##{item.name.downcase}"
+        def docs_link(item)
+          page = "#{item.class.name.demodulize.underscore.pluralize}.md"
+          anchor = "##{item.name.downcase}"
+
+          # Link within the same page can be a bare anchor.
+          return anchor if page == current_page
+
+          "#{page}#{anchor}"
         end
 
         def plain_description(item)

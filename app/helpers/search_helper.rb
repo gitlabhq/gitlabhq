@@ -337,6 +337,21 @@ module SearchHelper
   end
   strong_memoize_attr :work_item_types_for_filter
 
+  # @search_request_id is minted by SearchController#increment_search_counters, which is the
+  # only place a perform_search event is emitted, so a click can only carry a join key that
+  # some search actually emitted.
+  def search_result_tracking_attrs(position)
+    attrs = {
+      event_tracking: 'click_search_result',
+      event_label: @scope,
+      event_value: position
+    }
+
+    attrs[:event_property] = @search_request_id if @search_request_id
+
+    attrs
+  end
+
   private
 
   def filter_work_item_types(types, container)

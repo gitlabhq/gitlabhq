@@ -202,6 +202,7 @@ metrics: acceptedCount, rejectedCount
 {{< history >}}
 
 - [Introduced](https://gitlab.com/groups/gitlab-org/-/work_items/21212) in GitLab 19.2.
+- `categoryLabels`, `colorBy`, and `showAxisTitles` display options [introduced](https://gitlab.com/gitlab-org/gitlab/-/work_items/628025) in GitLab 19.4.
 
 {{< /history >}}
 
@@ -221,6 +222,24 @@ The number of dimensions and metrics determines how the chart renders:
   set `stacked: true` under `displayConfig`. With a single metric, `stacked` has no visible effect.
 - Two dimensions with one metric plots a stacked bar chart grouped by the second dimension.
   With two dimensions, you can use only one metric, and GitLab ignores `displayConfig.stacked`.
+
+A bar chart draws the first row at the bottom, so sort in ascending order to put the largest
+value at the top. The chart is as tall as its rows need, up to the default chart height.
+
+A bar chart also accepts these options under `displayConfig`:
+
+- `categoryLabels: valueAndShare` appends each category's value and its share of the total to
+  the category label, for example `Returning · 1,555 · 78%`. The default, `plain`, shows the
+  category name only. It applies only to count metrics, such as `usersCount`, `totalCount`, or
+  `acceptedCount`, with one dimension and one metric, and is ignored otherwise. The total is the
+  sum of the rows shown, so the shares always add up to 100% of what is displayed. The share is
+  only meaningful when each item falls in exactly one category. For example, with `usersCount`, a
+  user who is active in several categories is counted once in each row, so the share is not a
+  share of users. When the query uses a `limit`, the total covers only the rows that are shown.
+- `colorBy: category` gives each bar its own solid shade from a blue scale, instead of one color
+  for the series. The top bar gets the boldest shade, darkest in light mode and lightest in dark,
+  so bars stay readable either way. Requires one dimension and one metric, and is ignored otherwise.
+- `showAxisTitles: false` hides both axis titles.
 
 ### Example
 
@@ -247,6 +266,24 @@ mode: analytics
 query: type = CodeSuggestion and timestamp >= -30d
 dimensions: language
 metrics: acceptedCount, rejectedCount
+```
+````
+
+To show each language's share of accepted suggestions as a labeled, individually colored bar
+without axis titles:
+
+````yaml
+```glql
+display: barChart
+displayConfig:
+  categoryLabels: valueAndShare
+  colorBy: category
+  showAxisTitles: false
+mode: analytics
+query: type = CodeSuggestion and timestamp >= -30d
+dimensions: language
+metrics: acceptedCount
+sort: acceptedCount asc
 ```
 ````
 

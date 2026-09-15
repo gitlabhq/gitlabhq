@@ -688,6 +688,7 @@ module QA
         response = post(request_url(api_housekeeping_path), nil)
 
         return if response.code == HTTP_STATUS_CREATED
+        return if response.code == HTTP_STATUS_CONFLICT
 
         raise(
           ResourceQueryError,

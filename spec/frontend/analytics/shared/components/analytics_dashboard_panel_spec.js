@@ -173,6 +173,27 @@ describe('AnalyticsDashboardPanel', () => {
     });
   });
 
+  describe('panel subtitle', () => {
+    it('passes the subtitle from the visualization options to the panel', () => {
+      createWrapper({
+        props: {
+          visualization: {
+            ...mockPanel.visualization,
+            options: { ...mockPanel.visualization.options, subtitle: 'Distinct users this month' },
+          },
+        },
+      });
+
+      expect(findExtendedDashboardPanel().props('subtitle')).toBe('Distinct users this month');
+    });
+
+    it('passes no subtitle when the options do not set one', () => {
+      createWrapper();
+
+      expect(findExtendedDashboardPanel().props('subtitle')).toBe('');
+    });
+  });
+
   describe('when the visualization is licensed', () => {
     describe('with the correct license', () => {
       it('renders the visualization', () => {

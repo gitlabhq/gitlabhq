@@ -154,6 +154,15 @@ Permission mode for an AI tool on the background-flow surface. `ask` is not avai
 | `ALLOW` | Tool is always allowed to run without approval. |
 | `DENY` | Tool is always blocked from running. |
 
+## `AiCatalogConfiguredItemsSort`
+
+Values for sorting configured AI Catalog items.
+
+| Value | Description |
+| ----- | ----------- |
+| `USAGE_COUNT_ASC` | Last 30-day usage count by ascending order. |
+| `USAGE_COUNT_DESC` | Last 30-day usage count by descending order. |
+
 ## `AiCatalogFlowConfigType`
 
 Possible flow configuration types for AI Catalog agents.
@@ -346,6 +355,7 @@ AI features that can be configured through the Duo self-hosted feature settings.
 | `DUO_CHAT_SUMMARIZE_COMMENTS` | Duo chat summarize comment feature setting. |
 | `DUO_CHAT_TROUBLESHOOT_JOB` | Duo chat troubleshoot job feature setting. |
 | `DUO_CHAT_WRITE_TESTS` | Duo chat write test feature setting. |
+| `DUO_DEVELOPER` | Duo developer feature setting. |
 | `FEATURE_DISCOVERY_SEARCH` | Feature discovery search feature setting. |
 | `GENERATE_COMMIT_MESSAGE` | Generate commit message feature setting. |
 | `GLAB_ASK_GIT_COMMAND` | Glab ask git command feature setting. |
@@ -374,6 +384,7 @@ Possible event types for flow triggers.
 | `MERGE_REQUEST_CODE_CONFLICT` | Flow trigger merge_request_code_conflict event. |
 | `MERGE_REQUEST_READY` | Flow trigger merge_request_ready event. |
 | `PIPELINE_HOOKS` | Flow trigger pipeline_hooks event. |
+| `SCHEDULED` | Status: Experiment. Introduced in GitLab 19.4.<br/><br/>Flow trigger scheduled event. |
 | `WORK_ITEM` | Flow trigger work_item event. |
 
 ## `AiGovernanceAgentClass`
@@ -432,6 +443,7 @@ AI features that can be configured through the Model Selection feature settings.
 | `DUO_CHAT_SUMMARIZE_COMMENTS` | Duo chat summarize comment feature setting. |
 | `DUO_CHAT_TROUBLESHOOT_JOB` | Duo chat troubleshoot job feature setting. |
 | `DUO_CHAT_WRITE_TESTS` | Duo chat write test feature setting. |
+| `DUO_DEVELOPER` | Duo developer feature setting. |
 | `GENERATE_COMMIT_MESSAGE` | Generate commit message feature setting. |
 | `GLAB_ASK_GIT_COMMAND` | Glab ask git command feature setting. |
 | `RESOLVE_DEPENDENCY_BUMP` | Resolve dependency bump feature setting. |
@@ -537,6 +549,7 @@ Type of AI usage event.
 | `START_MCP_TOOL_CALL` | MCP tool call was started. |
 | `SUMMARIZE_NEW_MERGE_REQUEST` | Merge request summary was generated. |
 | `SUMMARIZE_REVIEW` | A merge request review summary was requested with GitLab Duo. |
+| `TRIGGER_SLACK_DUO` | Duo agent was triggered from a Slack mention. |
 | `TROUBLESHOOT_JOB` | Troubleshoot job feature was used. |
 | `VIEW_DUO_AGENTIC_SUBSCRIPTION_EXPIRED_EMPTY_STATE` | Duo Agent Platform subscription expired empty state was viewed. |
 
@@ -652,6 +665,8 @@ Values for sorting AI user metrics.
 | `SUMMARIZE_REVIEW_TOTAL_COUNT_DESC` | Summarize Review total event count in descending order. |
 | `TOTAL_EVENTS_COUNT_ASC` | Total count of all AI events in ascending order. |
 | `TOTAL_EVENTS_COUNT_DESC` | Total count of all AI events in descending order. |
+| `TRIGGER_SLACK_DUO_ASC` | Trigger Slack Duo event count in ascending order. |
+| `TRIGGER_SLACK_DUO_DESC` | Trigger Slack Duo event count in descending order. |
 | `TROUBLESHOOT_JOB_ASC` | Troubleshoot Job event count in ascending order. |
 | `TROUBLESHOOT_JOB_DESC` | Troubleshoot Job event count in descending order. |
 | `TROUBLESHOOT_JOB_TOTAL_COUNT_ASC` | Troubleshoot Job total event count in ascending order. |
@@ -868,6 +883,25 @@ The kind of an approval rule.
 | `REGULAR` | A `regular` approval rule. |
 | `REPORT_APPROVER` | A `report_approver` approval rule. |
 
+## `ArtifactRegistryHealthStatus`
+
+Stored health verdict for a remote Artifact Registry repository upstream.
+
+| Value | Description |
+| ----- | ----------- |
+| `HEALTHY` | Most recent probe reached the upstream. |
+| `UNHEALTHY` | Consecutive probe failures reached the threshold Artifact Registry sets. |
+| `UNKNOWN` | No health probe has recorded a result yet, or Artifact Registry reported a status this schema does not recognize. |
+
+## `ArtifactRegistryManifestSort`
+
+Values for sorting Artifact Registry container manifests.
+
+| Value | Description |
+| ----- | ----------- |
+| `CREATED_AT_ASC` | Publication date by ascending order. |
+| `CREATED_AT_DESC` | Publication date by descending order. |
+
 ## `ArtifactRegistryRepositoryFormat`
 
 Package format an Artifact Registry repository holds.
@@ -924,6 +958,17 @@ Artifact Registry role that can be assigned to a user.
 | `ARTIFACT_CONTRIBUTOR` | Publish artifacts in addition to consuming them. |
 | `ARTIFACT_MANAGER` | Manage artifacts and repository configuration. |
 | `ARTIFACT_VIEWER` | Consume artifacts and browse the registry. |
+
+## `ArtifactRegistryVersionSort`
+
+Values for sorting Artifact Registry package versions.
+
+| Value | Description |
+| ----- | ----------- |
+| `CREATED_AT_ASC` | Publication date by ascending order. |
+| `CREATED_AT_DESC` | Publication date by descending order. |
+| `VERSION_ASC` | Version string by ascending, alphabetical order. |
+| `VERSION_DESC` | Version string by descending, alphabetical order. |
 
 ## `AscpScanType`
 
@@ -1091,6 +1136,16 @@ State recorded in a continuous deployment deployment transition.
 | `INITIAL` | Deployment transition state initial. |
 | `PENDING` | Deployment transition state pending. |
 
+## `CdEnvironmentStatus`
+
+Status used to filter the continuous deployment environments list. An environment can match more than one status.
+
+| Value | Description |
+| ----- | ----------- |
+| `DEGRADED` | Worst service health across the environment is degraded or failed. |
+| `DEPLOYING` | Environment has a rollout in progress. |
+| `HEALTHY` | Worst service health across the environment is healthy. |
+
 ## `CdEnvironmentTier`
 
 Tier of a continuous deployment environment.
@@ -1114,6 +1169,16 @@ State of a continuous deployment rollout environment.
 | `IN_PROGRESS` | Rollout environment is in progress. |
 | `PAUSED` | Rollout environment is paused. |
 | `PENDING` | Rollout environment is pending. |
+
+## `CdRolloutGateState`
+
+State of a continuous deployment rollout approval gate.
+
+| Value | Description |
+| ----- | ----------- |
+| `APPROVED` | Rollout gate is approved. |
+| `PENDING` | Rollout gate is pending. |
+| `REJECTED` | Rollout gate is rejected. |
 
 ## `CdRolloutGateStatus`
 
@@ -1357,6 +1422,7 @@ Values for sorting CI/CD job analytics.
 | `DOWNSTREAM_BRIDGE_PROJECT_NOT_FOUND` | A job that failed due to downstream bridge project not found. |
 | `DOWNSTREAM_PIPELINE_CREATION_FAILED` | A job that failed due to downstream pipeline creation failed. |
 | `DOWNSTREAM_PROJECT_TRIGGER_RESOLVED_TO_EMPTY` | A job that failed due to downstream project trigger resolved to empty. |
+| `DUO_WORKFLOW_CONNECTION_FAILURE` | A job that failed due to duo workflow connection failure. |
 | `DUO_WORKFLOW_NOT_ALLOWED` | A job that failed due to duo workflow not allowed. |
 | `ENVIRONMENT_CREATION_FAILURE` | A job that failed due to environment creation failure. |
 | `FAILED_OUTDATED_DEPLOYMENT_JOB` | A job that failed due to failed outdated deployment job. |
@@ -1717,6 +1783,15 @@ Mode of a commit action.
 | ----- | ----------- |
 | `BASE64` | Base64 encoding. |
 | `TEXT` | Text encoding. |
+
+## `CommitOrder`
+
+Ordering strategy for a list of commits. Defaults to reverse chronological when omitted.
+
+| Value | Description |
+| ----- | ----------- |
+| `DATE` | Date order: commits are shown strictly by commit date. |
+| `TOPO` | Topological order: children are shown before their parents. |
 
 ## `ComparableSecurityReportType`
 
@@ -2261,6 +2336,7 @@ Type of a dependency firewall policy rule.
 | ----- | ----------- |
 | `LICENSE` | Rule matching on package licenses. |
 | `MALICIOUS` | Rule matching on packages flagged as malicious. |
+| `RISK_SEVERITY` | Rule matching on vulnerability counts per severity level. |
 | `VULNERABILITY` | Rule matching on package vulnerabilities. |
 
 ## `DependencyProxyManifestStatus`
@@ -2456,9 +2532,15 @@ Type of link between a GitLab Duo Agent Platform session and a note.
 | `CREATED` | Link of type `created` between a session and a note. |
 | `TRIGGERED` | Link of type `triggered` between a session and a note. |
 
-## `DuoWorkflowSourceType`
+## `DuoWorkflowPipelineLinkType`
 
-Status: Experiment. Introduced in GitLab 19.4.
+Type of link between a GitLab Duo Agent Platform session and a pipeline.
+
+| Value | Description |
+| ----- | ----------- |
+| `SOURCE` | Link of type `source` between a session and a pipeline. |
+
+## `DuoWorkflowSourceType`
 
 External system that initiated a Duo Workflow session.
 
@@ -2851,6 +2933,36 @@ Values for sorting artifacts.
 | `UPDATE_TIME_DESC` | Ordered by `update_time` in descending order. |
 | `UPLOAD_TIME_ASC` | Ordered by `upload_time` in ascending order. |
 | `UPLOAD_TIME_DESC` | Ordered by `upload_time` in descending order. |
+
+## `GovernPolicyEvaluationMode`
+
+Enforcement mode of the policy at the time of an evaluation.
+
+| Value | Description |
+| ----- | ----------- |
+| `AUDIT` | Policy was in `audit` mode when it was evaluated. |
+| `ENFORCE` | Policy was in `enforce` mode when it was evaluated. |
+| `WARN` | Policy was in `warn` mode when it was evaluated. |
+
+## `GovernPolicyEvaluationTriggerType`
+
+Trigger that started a policy evaluation.
+
+| Value | Description |
+| ----- | ----------- |
+| `DEPLOYMENT_PROMOTED` | Evaluation was triggered by the `deployment_promoted` operation. |
+| `DEPLOYMENT_REQUESTED` | Evaluation was triggered by the `deployment_requested` operation. |
+| `ENVIRONMENT_ADVANCED` | Evaluation was triggered by the `environment_advanced` operation. |
+
+## `GovernPolicyEvaluationVerdict`
+
+Verdict a policy evaluation produced.
+
+| Value | Description |
+| ----- | ----------- |
+| `ALLOW` | Evaluation produced a `allow` verdict. |
+| `DENY` | Evaluation produced a `deny` verdict. |
+| `REQUIRE_APPROVAL` | Evaluation produced a `require_approval` verdict. |
 
 ## `GroupMemberRelation`
 
@@ -3262,6 +3374,7 @@ Licensed features that can be checked for availability on a namespace or project
 | `CI_CD_PROJECTS` | Ci cd projects feature. |
 | `CI_COMPONENT_USAGES_IN_PROJECTS` | Ci component usages in projects feature. |
 | `CI_JOB_ANALYTICS_FOR_PROJECTS` | Ci job analytics for projects feature. |
+| `CI_PARALLEL_TEST_BALANCING` | Ci parallel test balancing feature. |
 | `CI_PIPELINE_CANCELLATION_RESTRICTIONS` | Ci pipeline cancellation restrictions feature. |
 | `CI_PROJECT_SUBSCRIPTIONS` | Ci project subscriptions feature. |
 | `CI_RUNNER_CONTROLLERS` | Ci runner controllers feature. |
@@ -3748,6 +3861,28 @@ State of a review of a GitLab merge request.
 | `REVIEW_STARTED` | Merge request reviewer has started a review. |
 | `UNAPPROVED` | Merge request reviewer removed their approval of the changes. |
 | `UNREVIEWED` | Awaiting review from merge request reviewer. |
+
+## `MergeRequestRiskAssessmentStatus`
+
+Status of a merge request risk classification.
+
+| Value | Description |
+| ----- | ----------- |
+| `COMPLETE` | Classification has completed. |
+| `FAILED` | Classification could not be completed. |
+| `PENDING` | Waiting to be classified. |
+| `QUEUED` | Queued for (re)classification. |
+
+## `MergeRequestRiskTier`
+
+Risk tier derived from a merge request risk score.
+
+| Value | Description |
+| ----- | ----------- |
+| `CRITICAL` | Critical risk. |
+| `HIGH` | High risk. |
+| `LOW` | Low risk. |
+| `MEDIUM` | Medium risk. |
 
 ## `MergeRequestSort`
 
@@ -4849,7 +4984,11 @@ Scan profile trigger type.
 | `DEFAULT_BRANCH_PIPELINE` | Default branch pipeline. |
 | `GIT_PUSH_EVENT` | Git push event. |
 | `MERGE_REQUEST_PIPELINE` | Merge request pipeline. |
+| `SAST_FALSE_POSITIVE` | Status: Experiment. Introduced in GitLab 19.4.<br/><br/>SAST false positive. |
+| `SAST_VULNERABILITY_RESOLUTION` | Status: Experiment. Introduced in GitLab 19.4.<br/><br/>SAST vulnerability resolution. |
 | `SBOM_INGESTED` | Status: Experiment. Introduced in GitLab 19.2.<br/><br/>SBOM ingested. |
+| `SECRET_DETECTION_FALSE_POSITIVE` | Status: Experiment. Introduced in GitLab 19.4.<br/><br/>Secret detection false positive. |
+| `VULNERABILITY_ENRICHMENT` | Status: Experiment. Introduced in GitLab 19.4.<br/><br/>Vulnerability enrichment. |
 
 ## `ScanStatus`
 
@@ -5025,6 +5164,24 @@ Template type for predefined security categories.
 | `SAST_IAC` | SAST IAC scan report. |
 | `SECRET_DETECTION` | SECRET DETECTION scan report. |
 
+## `SecurityScanProfileAdvancedSastPartialScan`
+
+Controls GitLab Advanced SAST diff-based scanning.
+
+| Value | Description |
+| ----- | ----------- |
+| `DIFFERENTIAL` | Status: Experiment. Introduced in GitLab 19.4.<br/><br/>Enable diff-based scanning. |
+| `DISABLED` | Status: Experiment. Introduced in GitLab 19.4.<br/><br/>Disable diff-based scanning. |
+
+## `SecurityScanProfileFalsePositiveConfidence`
+
+False positive assessment a finding must carry to be acted on.
+
+| Value | Description |
+| ----- | ----------- |
+| `LIKELY_FALSE_POSITIVE` | Status: Experiment. Introduced in GitLab 19.4.<br/><br/>Restrict to findings assessed as likely false positives. |
+| `LIKELY_NOT_FALSE_POSITIVE` | Status: Experiment. Introduced in GitLab 19.4.<br/><br/>Restrict to findings assessed as likely not false positives. |
+
 ## `SecurityScanProfileImageSuffix`
 
 Suffix appended to the analyzer image name.
@@ -5033,6 +5190,15 @@ Suffix appended to the analyzer image name.
 | ----- | ----------- |
 | `DEFAULT` | Status: Experiment. Introduced in GitLab 19.3.<br/><br/>No suffix; use the standard analyzer image. |
 | `FIPS` | Status: Experiment. Introduced in GitLab 19.3.<br/><br/>Use the FIPS-compliant analyzer image. |
+
+## `SecurityScanProfileRunMode`
+
+Whether a triage and remediation capability runs automatically or on demand.
+
+| Value | Description |
+| ----- | ----------- |
+| `AUTO` | Status: Experiment. Introduced in GitLab 19.4.<br/><br/>Run automatically as findings appear. |
+| `MANUAL` | Status: Experiment. Introduced in GitLab 19.4.<br/><br/>Run only when triggered by a user. |
 
 ## `SecurityScanProfileType`
 
@@ -5045,6 +5211,7 @@ Scan profile type.
 | `DEPENDENCY_SCANNING_POST_PROCESSING` | Status: Experiment. Introduced in GitLab 19.2.<br/><br/>Dependency scanning post processing. |
 | `SAST` | Sast. |
 | `SECRET_DETECTION` | Secret detection. |
+| `TRIAGE_AND_REMEDIATION` | Status: Experiment. Introduced in GitLab 19.4.<br/><br/>Triage and remediation. |
 
 ## `SecurityScanProfileUpgradePolicy`
 
@@ -5547,6 +5714,7 @@ Name of the feature that the callout is for.
 | ----- | ----------- |
 | `ALL_SEATS_USED_ALERT` | Callout feature name for all_seats_used_alert. |
 | `APPROACHING_SEAT_COUNT_THRESHOLD` | Callout feature name for approaching_seat_count_threshold. |
+| `BILLING_RETRIAL_CARD` | Callout feature name for billing_retrial_card. |
 | `CI_MINUTES_LIMIT_ALERT_DANGER_STAGE` | Callout feature name for ci_minutes_limit_alert_danger_stage. |
 | `CI_MINUTES_LIMIT_ALERT_EXCEEDED_STAGE` | Callout feature name for ci_minutes_limit_alert_exceeded_stage. |
 | `CI_MINUTES_LIMIT_ALERT_WARNING_STAGE` | Callout feature name for ci_minutes_limit_alert_warning_stage. |
@@ -6042,6 +6210,18 @@ Weight ID wildcard values.
 | `ANY` | Weight is assigned. |
 | `NONE` | No weight is assigned. |
 
+## `WorkItemAgentPlanGenerationStatus`
+
+Status of the asynchronous workplan generation flow for a work item.
+
+| Value | Description |
+| ----- | ----------- |
+| `COMPLETED` | Indicates the flow finished successfully. |
+| `FAILED` | Indicates the flow ended without completing. Includes flows canceled by a user. |
+| `GENERATING` | Indicates a workplan generation flow is in progress. |
+| `NEEDS_INPUT` | Indicates the flow is waiting for user input. |
+| `NOT_STARTED` | No workplan generation flow has run for the work item. |
+
 ## `WorkItemAvailabilityAction`
 
 Action to apply to work item type availability.
@@ -6214,6 +6394,7 @@ Type of a work item widget.
 | `CRM_CONTACTS` | Crm Contacts widget. |
 | `CURRENT_USER_TODOS` | Current User Todos widget. |
 | `CUSTOM_FIELDS` | Custom Fields widget. |
+| `DECISION_LOG` | Decision Log widget. |
 | `DESCRIPTION` | Description widget. |
 | `DESIGNS` | Designs widget. |
 | `DEVELOPMENT` | Development widget. |

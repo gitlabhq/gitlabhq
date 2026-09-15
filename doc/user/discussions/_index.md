@@ -115,6 +115,7 @@ To add a commit diff comment:
    - To comment on specific lines, find the line number you want to comment on. Hover over the line number,
      then select **Comment** ({{< icon name="comment" >}}). To select more lines,
      drag the **Comment** ({{< icon name="comment" >}}) icon.
+     - When the comment form appears, you can [change the range of selected lines](#edit-the-comment-line-range).
 1. Enter your comment.
 1. Submit your comment:
    - To add your comment immediately, select **Add comment now**, or use the keyboard shortcut:
@@ -133,6 +134,44 @@ The comment is not displayed on your project's **Code** > **Commits** page.
 > it's converted to a link in the context of the merge request.
 > For example, `28719b171a056960dfdc0012b625d0b47b123196` becomes `28719b17` that links to
 > `https://gitlab.example.com/example-group/example-project/-/merge_requests/12345/diffs?commit_id=28719b171a056960dfdc0012b625d0b47b123196`.
+
+### Edit the comment line range
+
+{{< history >}}
+
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/242736) in GitLab 19.3 [with a flag](../../administration/feature_flags/_index.md) named `rapid_diffs_on_mr_show`. Enabled by default.
+
+{{< /history >}}
+
+> [!flag]
+> The availability of this feature is controlled by a feature flag.
+> For more information, see the history.
+
+On merge requests with [rapid diffs](../project/merge_requests/changes.md#rapid-diffs) turned on,
+when you have the comment form open, you can change which lines the comment applies to.
+
+You can only change the line range when you first create a comment. The option is not available after you save.
+
+To adjust the comment line range after you open the comment form:
+
+1. Select **Edit line range** ({{< icon name="pencil" >}}) to start editing. A handle
+   and a cancel button appear on the first line of the range, and another handle, which
+   receives focus, appears on the last line.
+1. Use your mouse or keyboard to adjust the range.
+   - With your mouse, drag one of the handles to a new line.
+   - With your keyboard, use the following keys:
+
+     | Key | Action |
+     |-----|--------|
+     | <kbd>Left</kbd> | Move focus to the first-line handle. |
+     | <kbd>Right</kbd> | Move focus to the last-line handle. |
+     | <kbd>Up</kbd> | Move the focused handle up to the previous line that can hold a comment. |
+     | <kbd>Down</kbd> | Move the focused handle down to the next line that can hold a comment. |
+     | <kbd>Enter</kbd> | Confirm the new range. |
+     | <kbd>Escape</kbd> | Cancel editing and keep the previous range. |
+
+A handle cannot move past a section break in the diff, denoted with `@@` syntax. To comment
+across sections, add a separate comment in each one.
 
 ## Reply to a comment by sending email
 

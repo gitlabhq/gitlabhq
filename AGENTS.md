@@ -29,9 +29,10 @@ These apply to every task without needing a trigger:
 ## AI-authored GitLab comments
 
 Wrap the full body of any comment, note, or reply you post to GitLab (issues,
-merge requests, epics — via `glab`/`glab api`) in `<:robot:>` / `</:robot:>`
-tags (GitLab emoji shortcode, renders as 🤖), so readers can tell at a glance
-that it's AI-generated:
+merge requests, epics — whether via `glab`/`glab api`, the GitLab MCP server
+tools, or any other path) in `<:robot:>` / `</:robot:>` tags (GitLab emoji
+shortcode, renders as 🤖), so readers can tell at a glance that it's
+AI-generated:
 
 ```
 <:robot:>

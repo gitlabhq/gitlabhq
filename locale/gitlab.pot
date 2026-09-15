@@ -12328,6 +12328,9 @@ msgstr ""
 msgid "ArtifactRegistry|Artifact registry"
 msgstr ""
 
+msgid "ArtifactRegistry|Artifact registry is unavailable"
+msgstr ""
+
 msgid "ArtifactRegistry|Artifact registry set up successfully"
 msgstr ""
 
@@ -13179,6 +13182,9 @@ msgid "ArtifactRegistry|Virtual"
 msgstr ""
 
 msgid "ArtifactRegistry|Visibility level"
+msgstr ""
+
+msgid "ArtifactRegistry|We are having trouble connecting to the Artifact Registry service. Refresh the page to try again."
 msgstr ""
 
 msgid "ArtifactRegistry|Where the registry handle appears"
@@ -32619,6 +32625,12 @@ msgstr ""
 msgid "DuoCodeReview|:warning: Code Review Flow could not retrieve the source branch for this merge request. Please request a new review."
 msgstr ""
 
+msgid "DuoCodeReview|:warning: Code Review Flow could not start because the namespace has run out of compute minutes. Ask someone with billing access to add compute minutes before trying again."
+msgstr ""
+
+msgid "DuoCodeReview|:warning: Code Review Flow could not start because the project has no runner available. It needs an instance runner or a top-level group runner with the `%{tag}` tag and a Docker-compatible executor."
+msgstr ""
+
 msgid "DuoCodeReview|:warning: Code Review Flow is enabled but the service account needs to be verified. Contact your administrator."
 msgstr ""
 
@@ -32722,6 +32734,12 @@ msgid "DuoCodeReview|Something went wrong. Please try again."
 msgstr ""
 
 msgid "DuoCodeReview|The workflow completed but no response was produced. Please try again."
+msgstr ""
+
+msgid "DuoCodeReview|This flow could not start because the namespace has run out of compute minutes. Ask someone with billing access to add compute minutes before trying again."
+msgstr ""
+
+msgid "DuoCodeReview|This flow could not start because the project has no runner available. It needs an instance runner or a top-level group runner with the `%{tag}` tag and a Docker-compatible executor. See the %{link_start}troubleshooting guide%{link_end}."
 msgstr ""
 
 msgid "DuoCodeReview|When enabled, GitLab Duo will automatically review new merge requests across all groups and projects. Draft merge requests and merge requests without changes are skipped."
@@ -33010,6 +33028,12 @@ msgid "DuoFeatures|View examples of exclusions."
 msgstr ""
 
 msgid "DuoFoundationalFlows|:warning: %{user_reference}, you need to set a default GitLab Duo namespace to use this flow. Please set a default GitLab Duo namespace in your %{link_start}preferences%{link_end}."
+msgstr ""
+
+msgid "DuoFoundationalFlows|This flow could not start because the namespace has run out of compute minutes. Ask someone with billing access to add compute minutes before trying again."
+msgstr ""
+
+msgid "DuoFoundationalFlows|This flow could not start because the project has no runner available to run it. It needs an instance runner or a top-level group runner with the '%{tag}' tag and a Docker-compatible executor."
 msgstr ""
 
 msgid "DuoFoundationalFlows|Usage billing is not available for this account. To continue using this feature, contact your administrator."

@@ -12,7 +12,7 @@
       - if work_item_icon.present? && work_item_type_name.present?
         %span.has-tooltip{ title: work_item_type_name }
           = sprite_icon(work_item_icon, css_class: 'gl-align-text-bottom gl-ml-2')
-      = link_to work_item_path(work_item), data: { event_tracking: 'click_search_result', event_label: @scope, event_value: position }, class: 'gl-w-full' do
+      = link_to work_item_path(work_item), data: search_result_tracking_attrs(position), class: 'gl-w-full' do
         %span.term.str-truncated.gl-font-bold.gl-ml-2= simple_search_highlight_and_truncate(work_item.title, @search_term)
     .gl-text-subtle.gl-mb-3.gl-mt-2.gl-text-sm
       - if (reference = work_item_reference(work_item))
