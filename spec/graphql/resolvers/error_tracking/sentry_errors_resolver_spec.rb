@@ -99,10 +99,10 @@ RSpec.describe Resolvers::ErrorTracking::SentryErrorsResolver do
   private
 
   def resolve_errors(args = {}, context = { current_user: current_user })
-    field = ::Types::BaseField.from_options(
-      'dummy_field',
+    field = ::Types::BaseField.new(
+      name: 'dummy_field',
       owner: resolver_parent,
-      resolver: described_class,
+      resolver_class: described_class,
       connection_extension: Gitlab::Graphql::Extensions::ExternallyPaginatedArrayExtension
     )
     resolve_field(field, error_collection, args: args, ctx: context, object_type: resolver_parent)

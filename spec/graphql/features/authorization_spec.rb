@@ -443,7 +443,7 @@ RSpec.describe 'DeclarativePolicy authorization in GraphQL', feature_category: :
     end
   end
 
-  describe 'Authorization on GraphQL::Execution::SKIP' do
+  describe 'Authorization on GraphQL::Execution::Skip' do
     let(:type) do
       type_factory do |type|
         type.authorize permission_single
@@ -452,7 +452,7 @@ RSpec.describe 'DeclarativePolicy authorization in GraphQL', feature_category: :
 
     let(:query_type) do
       query_factory do |query|
-        query.field :item, [type], null: true, resolver: new_resolver(GraphQL::Execution::SKIP)
+        query.field :item, [type], null: true, resolver: new_resolver(GraphQL::Execution::Skip.new)
       end
     end
 

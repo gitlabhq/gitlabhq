@@ -989,7 +989,7 @@ GEM
       grape
       rack
     graphlyte (1.0.0)
-    graphql (2.5.11)
+    graphql (2.6.10)
       base64
       fiber-storage
       logger
@@ -2342,7 +2342,7 @@ DEPENDENCIES
   grape-swagger-entity (~> 0.7.0)
   grape_logging (~> 1.8, >= 1.8.4)
   graphlyte (~> 1.0.0)
-  graphql (= 2.5.11)
+  graphql (= 2.6.10)
   graphql-docs (~> 5.2.0)
   grpc (~> 1.80.0)
   gssapi (~> 1.3.1)
@@ -2843,7 +2843,7 @@ CHECKSUMS
   grape-swagger-entity (0.7.1) sha256=082144811cdd14c15b9d9f0a27a4e3ff9c27c7081130d334a3de59953769b37d
   grape_logging (1.8.4) sha256=efcc3e322dbd5d620a68f078733b7db043cf12680144cd03c982f14115c792d1
   graphlyte (1.0.0) sha256=b5af4ab67dde6e961f00ea1c18f159f73b52ed11395bb4ece297fe628fa1804d
-  graphql (2.5.11) sha256=1169ffc6e215fd4d60056455b672c40a0cafa0607262049c2cca343b0f6bdb5c
+  graphql (2.6.10) sha256=9b7c8633767f516ff9d48a8d6305b2a00a2101c82aa871b92e69086944f9f83e
   graphql-docs (5.2.0) sha256=44d41724529f531adf9265ded7478b74b0c4b927cddc8b9f114337a73f32de08
   grpc (1.80.0) sha256=2ded0c8bc3a1f3d34b8c790e00dd0120768ba0e9f9fd841e1dc67f7a2566d07d
   grpc-google-iam-v1 (1.11.0) sha256=8f0aa8a8503b3e001cb1561f31e43aa0445752fb675334afa1afac7f023f368c

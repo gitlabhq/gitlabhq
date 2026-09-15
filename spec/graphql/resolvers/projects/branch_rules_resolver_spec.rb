@@ -34,8 +34,7 @@ RSpec.describe Resolvers::Projects::BranchRulesResolver, feature_category: :sour
     end
 
     subject(:resolved) do
-      field = ::Types::BaseField.from_options(
-        'field_value',
+      field = ::Types::BaseField.new(
         name: 'branch_rules',
         owner: resolver_parent,
         resolver_class: described_class,
@@ -87,8 +86,7 @@ RSpec.describe Resolvers::Projects::BranchRulesResolver, feature_category: :sour
 
     context 'with after cursor' do
       let(:first_page) do
-        field = ::Types::BaseField.from_options(
-          'field_value',
+        field = ::Types::BaseField.new(
           name: 'branch_rules',
           owner: resolver_parent,
           resolver_class: described_class,
