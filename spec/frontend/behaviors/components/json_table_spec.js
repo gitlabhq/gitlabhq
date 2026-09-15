@@ -185,4 +185,65 @@ describe('behaviors/components/json_table', () => {
       expect(tdHtmlContent).toContain('&lt;script&gt;console.log("oops!")&lt;/script&gt;');
     });
   });
+
+  describe('with reserved bootstrap-vue item keys', () => {
+    const INJECTED_CELL_CLASSES = ['hidden', 'js-sidebar-options', 'js-sidebar-reviewers-root'];
+    const INJECTED_ROW_CLASS = 'js-injected-row';
+
+    beforeEach(() => {
+      buildWrapper({
+        fields: ['A'],
+        items: [
+          {
+            A: 'Foo bar',
+            _cellVariants: { A: ` ${INJECTED_CELL_CLASSES.join(' ')}` },
+            _rowVariant: ` ${INJECTED_ROW_CLASS}`,
+            _showDetails: true,
+          },
+        ],
+      });
+    });
+
+    it('does not pass reserved keys to the table', () => {
+      expect(findTable().props('items')).toEqual([{ A: 'Foo bar' }]);
+    });
+
+    it('does not apply injected classes to cells', () => {
+      expect(findTable().find('tbody > tr > td').classes()).toEqual([]);
+    });
+
+    it('does not apply injected classes to rows', () => {
+      expect(findTable().find('tbody > tr').classes()).toEqual([]);
+    });
+
+    it('still renders the cell value', () => {
+      expect(findTable().find('tbody > tr > td').text()).toBe('Foo bar');
+    });
+  });
+
+  describe('with non-object items', () => {
+    beforeEach(() => {
+      buildWrapper({
+        fields: [],
+        items: ['ab'],
+      });
+    });
+
+    it('derives a column per character index', () => {
+      expect(
+        findTable()
+          .findAll('thead th')
+          .wrappers.map((th) => th.text()),
+      ).toEqual(['0', '1']);
+    });
+
+    it('leaves the item untouched', () => {
+      expect(findTable().props('items')).toEqual(['ab']);
+      expect(
+        findTable()
+          .findAll('tbody > tr > td')
+          .wrappers.map((td) => td.text()),
+      ).toEqual(['', '']);
+    });
+  });
 });
