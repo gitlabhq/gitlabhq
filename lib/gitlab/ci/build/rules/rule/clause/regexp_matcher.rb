@@ -43,7 +43,7 @@ module Gitlab
                   return true
                 end
 
-                pattern = Regexp.new(@expanded_pattern, timeout: REGEXP_TIMEOUT_SECONDS)
+                pattern = Clause.compile_regexp(@expanded_pattern, timeout: REGEXP_TIMEOUT_SECONDS)
                 deadline = current_monotonic_time + REGEXP_TOTAL_TIMEOUT_SECONDS
 
                 paths.any? do |path|

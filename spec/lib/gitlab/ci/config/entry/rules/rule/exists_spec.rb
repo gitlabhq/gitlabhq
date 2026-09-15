@@ -240,6 +240,15 @@ RSpec.describe Gitlab::Ci::Config::Entry::Rules::Rule::Exists, feature_category:
         end
       end
 
+      context 'when regexp hits the Onigmo alternation bug' do
+        let(:config) { { regexp: '|{100001}' } }
+
+        it 'returns an error', :aggregate_failures do
+          is_expected.not_to be_valid
+          expect(entry.errors).to include(/regexp is invalid/)
+        end
+      end
+
       context 'when regexp exceeds the maximum length' do
         let(:config) { { regexp: 'a' * 256 } }
 
