@@ -28,8 +28,7 @@ RSpec.describe RuboCop::Cop::QA::SelectorUsage, feature_category: :test_platform
 
   context 'outside of QA' do
     before do
-      allow(cop).to receive(:in_qa_file?).and_return(false)
-      allow(cop).to receive(:in_spec?).and_return(true)
+      allow(cop).to receive_messages(in_qa_file?: false, in_spec?: true)
     end
 
     context 'data-qa-selector' do

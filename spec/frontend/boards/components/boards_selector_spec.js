@@ -354,5 +354,75 @@ describe('BoardsSelector', () => {
       findBoardForm().vm.$emit('show-board-modal', formType.delete);
       expect(wrapper.emitted('show-board-modal')).toEqual([[formType.delete]]);
     });
+
+    describe('when BoardForm emits add-board', () => {
+      const newBoard = {
+        id: 'gid://gitlab/Board/99',
+        name: 'new board',
+        weight: 0,
+        __typename: 'Board',
+      };
+      let boardsQueryCallsBeforeAdd;
+
+      const emitAddBoard = async () => {
+        boardsQueryCallsBeforeAdd = smallBoardsQueryHandlerSuccess.mock.calls.length;
+        findBoardForm().vm.$emit('add-board', newBoard);
+        await nextTick();
+      };
+
+      beforeEach(async () => {
+        await createComponent({
+          isProjectBoard: true,
+          projectBoardsQueryHandler: smallBoardsQueryHandlerSuccess,
+          projectRecentBoardsQueryHandler: emptyRecentBoardsQueryHandlerSuccess,
+          props: { boardModalForm: formType.new },
+        });
+
+        findDropdown().vm.$emit('shown');
+        await waitForPromises();
+      });
+
+      describe('after the boards list has loaded', () => {
+        beforeEach(async () => {
+          await mockApollo.resolveQuery(projectBoardsQuery);
+          await mockApollo.resolveQuery(projectRecentBoardsQuery);
+
+          await emitAddBoard();
+        });
+
+        it('adds the board to the list', () => {
+          expect(findDropdown().props('items')).toEqual(
+            expect.arrayContaining([{ text: newBoard.name, value: 99 }]),
+          );
+        });
+
+        it('switches to the new board', () => {
+          expect(wrapper.emitted('switch-board')).toEqual([[newBoard.id]]);
+        });
+
+        it('does not fetch the boards list again', () => {
+          expect(smallBoardsQueryHandlerSuccess).toHaveBeenCalledTimes(boardsQueryCallsBeforeAdd);
+        });
+      });
+
+      describe('while the boards list is still loading', () => {
+        beforeEach(async () => {
+          await emitAddBoard();
+        });
+
+        it('switches to the new board', () => {
+          expect(wrapper.emitted('switch-board')).toEqual([[newBoard.id]]);
+        });
+
+        it('fetches the boards list again', async () => {
+          await mockApollo.resolveQuery(projectBoardsQuery);
+          await waitForPromises();
+
+          expect(smallBoardsQueryHandlerSuccess).toHaveBeenCalledTimes(
+            boardsQueryCallsBeforeAdd + 1,
+          );
+        });
+      });
+    });
   });
 });

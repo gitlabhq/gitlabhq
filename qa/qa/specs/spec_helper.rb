@@ -86,22 +86,6 @@ RSpec.configure do |config|
 
     visit(QA::Runtime::Scenario.gitlab_address) if QA::Runtime::Env.mobile_layout?
 
-    # Reset coverage persistence at the start of each test
-    if Capybara::Session.instance_created? && QA::Runtime::Env.istanbul_coverage_enabled?
-      begin
-        # Visit GitLab page first to ensure coverage bundle is loaded
-        Capybara.current_session.visit(QA::Runtime::Scenario.gitlab_address)
-
-        has_persistence = Capybara.current_session.evaluate_script(
-          "typeof window.__coveragePathsPersistence !== 'undefined'"
-        )
-
-        Capybara.current_session.execute_script("window.__coveragePathsPersistence.reset()") if has_persistence
-      rescue StandardError => e
-        QA::Runtime::Logger.warn("Failed to reset coverage paths: #{e.message}")
-      end
-    end
-
     # Reset fabrication counters tracked in resource base
     Thread.current[:api_fabrication] = 0
     Thread.current[:browser_ui_fabrication] = 0

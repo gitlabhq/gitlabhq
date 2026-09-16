@@ -67,8 +67,7 @@ RSpec.describe GenerateMessageToRunE2ePipeline, feature_category: :tooling do
 
       context 'when there is no existing note' do
         before do
-          allow(subject).to receive(:existing_note).and_return(nil)
-          allow(subject).to receive(:content).and_return(note_content)
+          allow(subject).to receive_messages(existing_note: nil, content: note_content)
 
           allow(client).to receive(:create_merge_request_comment)
                              .with(options[:project], '123', note_content)

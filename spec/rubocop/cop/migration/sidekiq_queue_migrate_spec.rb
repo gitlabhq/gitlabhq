@@ -10,8 +10,7 @@ RSpec.describe RuboCop::Cop::Migration::SidekiqQueueMigrate, feature_category: :
 
   context 'when in a regular migration' do
     before do
-      allow(cop).to receive(:in_migration?).and_return(true)
-      allow(cop).to receive(:in_post_deployment_migration?).and_return(false)
+      allow(cop).to receive_messages(in_migration?: true, in_post_deployment_migration?: false)
     end
 
     %w[up down change any_other_method].each do |method_name|
@@ -28,8 +27,7 @@ RSpec.describe RuboCop::Cop::Migration::SidekiqQueueMigrate, feature_category: :
 
   context 'when in a post-deployment migration' do
     before do
-      allow(cop).to receive(:in_migration?).and_return(true)
-      allow(cop).to receive(:in_post_deployment_migration?).and_return(true)
+      allow(cop).to receive_messages(in_migration?: true, in_post_deployment_migration?: true)
     end
 
     it 'registers no offense' do

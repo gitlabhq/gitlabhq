@@ -9,10 +9,7 @@ RSpec.describe ActivityPub::ReleasesOutboxSerializer, feature_category: :groups_
   let(:releases) { build_stubbed_list(:release, 3, project: project) }
 
   before do
-    allow(releases).to receive(:page).and_return(releases)
-    allow(releases).to receive(:per).and_return(releases)
-    allow(releases).to receive(:current_page).and_return(1)
-    allow(releases).to receive(:total_pages).and_return(1)
+    allow(releases).to receive_messages(page: releases, per: releases, current_page: 1, total_pages: 1)
     allow(decorated.paginator).to receive(:paginate).and_return(releases)
   end
 

@@ -53,13 +53,10 @@ RSpec.describe GetTestOnOmnibusJob, feature_category: :tooling do
         .to receive(:client)
         .and_return(client)
 
-      allow(client)
-        .to receive(:pipeline_bridges)
-        .and_return(double(auto_paginate: bridges_response))
-
-      allow(client)
-        .to receive(:pipeline)
-        .and_return(test_on_omnibus_pipeline)
+      allow(client).to receive_messages(
+        pipeline_bridges: double(auto_paginate: bridges_response),
+        pipeline: test_on_omnibus_pipeline
+      )
     end
 
     subject(:test_on_omnibus_job) { described_class.new(options).execute }

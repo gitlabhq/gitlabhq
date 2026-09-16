@@ -142,8 +142,7 @@ RSpec.describe MergeRequestWidgetEntity, feature_category: :code_review_workflow
 
   describe 'when ona is enabled' do
     before do
-      allow(Gitlab::CurrentSettings).to receive(:gitpod_enabled).and_return(true)
-      allow(Gitlab::CurrentSettings).to receive(:gitpod_url).and_return("https://gitpod.example.com")
+      allow(Gitlab::CurrentSettings).to receive_messages(gitpod_enabled: true, gitpod_url: "https://gitpod.example.com")
     end
 
     it 'exposes ona attributes' do

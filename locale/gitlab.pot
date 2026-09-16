@@ -7088,7 +7088,7 @@ msgstr ""
 msgid "AdminSettings|Set the maximum size of GitLab Pages per project (0 for unlimited). %{link_start}Learn more%{link_end}."
 msgstr ""
 
-msgid "AdminSettings|Set the per-user rate limits for requests to the instance audit events API."
+msgid "AdminSettings|Set the per-user rate limits for requests to the audit events API."
 msgstr ""
 
 msgid "AdminSettings|Set to 0 to use the maximum artifacts size limit instead."
@@ -49682,6 +49682,12 @@ msgstr ""
 msgid "Maximum requests to the %{api_name} API per %{timeframe} per user or IP address"
 msgstr ""
 
+msgid "Maximum requests to the %{api_name} API per minute per user"
+msgstr ""
+
+msgid "Maximum requests to the %{api_name} API per minute per user per project"
+msgstr ""
+
 msgid "Maximum running slices"
 msgstr ""
 
@@ -66434,7 +66440,7 @@ msgstr ""
 msgid "Rate limits for specific Users API endpoints."
 msgstr ""
 
-msgid "Rate limits for the instance audit events API."
+msgid "Rate limits for the audit events API."
 msgstr ""
 
 msgid "Rate the review"

@@ -102,7 +102,7 @@ Alternatively, you can [configure the integration](https://about.gitlab.com/solu
 
 {{< details >}}
 
-- Tier: Ultimate
+- Tier: Premium, Ultimate
 - Offering: GitLab.com, GitLab Self-Managed, GitLab Dedicated
 - Status: Experiment
 

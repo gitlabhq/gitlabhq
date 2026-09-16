@@ -375,6 +375,7 @@ gitlab-advanced-sast-cpp:
   image:
     name: "$SAST_ANALYZER_IMAGE"
   variables:
+    SEARCH_MAX_DEPTH: 20
     SAST_ANALYZER_IMAGE_TAG: 1
     SAST_ANALYZER_IMAGE: "$SECURE_ANALYZERS_PREFIX/clangsa:$SAST_ANALYZER_IMAGE_TAG$SAST_IMAGE_SUFFIX"
   rules:

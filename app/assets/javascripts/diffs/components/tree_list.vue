@@ -85,20 +85,20 @@ export default {
     ...mapState(useCodeReview, ['reviewedIds']),
     flatUngroupedList() {
       return this.flatBlobsList.reduce((acc, blob, index) => {
-        const loading = this.isLoading(blob.fileHash);
-        const lastIndex = acc.length;
-        const previous = acc[lastIndex - 1];
-        const adjacentNonHeader = previous?.isHeader ? acc[lastIndex - 2] : previous;
+        const previous = acc[acc.length - 1];
+        const adjacentNonHeader = previous?.isHeader ? acc[acc.length - 2] : previous;
         const isSibling = adjacentNonHeader?.parentPath === blob.parentPath;
-        if (isSibling) return [...acc, { ...blob, loading, level: 1 }];
-        const header = {
-          key: `header-${index}`,
-          path: blob.parentPath,
-          isHeader: true,
-          tree: [],
-          level: 0,
-        };
-        return [...acc, header, { ...blob, loading, level: 1 }];
+        if (!isSibling) {
+          acc.push({
+            key: `header-${index}`,
+            path: blob.parentPath,
+            isHeader: true,
+            tree: [],
+            level: 0,
+          });
+        }
+        acc.push({ ...blob, level: 1 });
+        return acc;
       }, []);
     },
     filteredTreeList() {
@@ -139,15 +139,11 @@ export default {
       const result = [];
       const createFlatten = (level, hidden) => (item) => {
         const isTree = item.type === 'tree';
-        const loading = !isTree && !item.isHeader && this.isLoading(item.fileHash);
         result.push({
           ...item,
           hidden,
           level: item.isHeader ? 0 : level,
           key: item.key || item.path,
-          loading,
-          active: item.fileHash === this.currentDiffFileId,
-          viewed: this.reviewedIds[item.codeReviewId] ?? this.reviewedIds[item.id],
         });
         const isHidden = hidden || (isTree && !item.opened);
         item.tree.forEach(createFlatten(level + 1, isHidden));
@@ -242,8 +238,23 @@ export default {
           .forEach((path) => this.setTreeOpen(path, true));
       }
     },
-    isLoading(fileHash) {
-      return this.loadedFiles && !this.loadedFiles[fileHash];
+    isLoading(item) {
+      if (item.isHeader || item.type === 'tree') return false;
+      return Boolean(this.loadedFiles) && !this.loadedFiles[item.fileHash];
+    },
+    isViewed(item) {
+      return this.reviewedIds[item.codeReviewId] ?? this.reviewedIds[item.id];
+    },
+    // per-row state changes on every streamed file; resolving it here touches only the rows the
+    // scroller renders instead of rebuilding the whole list
+    rowFile(item) {
+      if (item.isHeader || item.type === 'tree') return item;
+      return {
+        ...item,
+        loading: this.isLoading(item),
+        active: item.fileHash === this.currentDiffFileId,
+        viewed: this.isViewed(item),
+      };
     },
   },
   searchPlaceholder: sprintf(s__('MergeRequest|Search (e.g. *.vue) (%{SHORTCUT})'), {
@@ -323,20 +334,20 @@ export default {
       >
         <template #default="{ item }">
           <file-row
-            :file="item"
+            :file="rowFile(item)"
             :level="item.level"
             :class="{
               'tree-list-parent': item.level > 0,
-              'is-active': item.active,
-              'is-loading': item.loading,
+              'is-active': item.fileHash === currentDiffFileId,
+              'is-loading': isLoading(item),
             }"
-            :tabindex="item.loading ? -1 : 0"
-            :bold-text="item.type === 'blob' && !item.viewed"
+            :tabindex="isLoading(item) ? -1 : 0"
+            :bold-text="item.type === 'blob' && !isViewed(item)"
             class="diff-file-row gl-relative"
             :data-file-row="item.fileHash"
             @click-tree="$emit('toggle-folder', item.path)"
-            @click-file="!item.loading && $emit('click-file', item)"
-            @click-submodule="!item.loading && $emit('click-file', item)"
+            @click-file="!isLoading(item) && $emit('click-file', item)"
+            @click-submodule="!isLoading(item) && $emit('click-file', item)"
           >
             <file-row-stats
               v-if="!hideFileStats && item.type === 'blob'"

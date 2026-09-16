@@ -56,7 +56,7 @@ export const mockUser2 = {
   web_url: 'http://0.0.0.0:3000/ericka_terry',
 };
 
-export const mockUser3 = {
+const mockUser3 = {
   id: 6,
   name: 'Shizue Hartmann',
   username: 'junita.weimann',
@@ -75,7 +75,7 @@ export const mockRegularMilestone = {
   title: '4.0',
 };
 
-export const mockEscapedMilestone = {
+const mockEscapedMilestone = {
   id: 3,
   name: '5.0 RC1',
   title: '5.0 RC1',
@@ -381,11 +381,11 @@ export const allowedParentTypesResponse = {
   },
 };
 
-export const mockEmoji1 = {
+const mockEmoji1 = {
   name: EMOJI_THUMBS_UP,
 };
 
-export const mockEmoji2 = {
+const mockEmoji2 = {
   name: 'star',
 };
 

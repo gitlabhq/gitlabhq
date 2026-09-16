@@ -460,11 +460,11 @@ RSpec.describe Mcp::Tools::MergeRequests::GetMergeRequestConflictsService, featu
         reporter_service.set_cred(current_user: reporter_user, access_token: oauth_token)
       end
 
-      it 'returns permission denied error' do
+      it 'returns a non-leaky error without revealing the denial reason' do
         result = reporter_service.execute(params: { arguments: arguments })
 
         expect(result[:isError]).to be true
-        expect(result[:content].first[:text]).to include('does not have permission to push to branch')
+        expect(result[:content].first[:text]).to include('not found or access denied')
       end
     end
 
@@ -521,11 +521,11 @@ RSpec.describe Mcp::Tools::MergeRequests::GetMergeRequestConflictsService, featu
         allow(Ability).to receive(:allowed?).with(restricted_user, :read_merge_request, merge_request).and_return(false)
       end
 
-      it 'returns permission denied error' do
+      it 'returns a non-leaky error without revealing the denial reason' do
         result = restricted_service.execute(params: { arguments: arguments })
 
         expect(result[:isError]).to be true
-        expect(result[:content].first[:text]).to include('does not have permission to read_merge_request')
+        expect(result[:content].first[:text]).to include('not found or access denied')
       end
     end
   end

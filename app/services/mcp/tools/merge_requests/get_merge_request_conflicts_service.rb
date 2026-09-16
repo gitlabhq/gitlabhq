@@ -52,8 +52,7 @@ module Mcp
           access = ::Gitlab::UserAccess.new(current_user, container: mr.source_project)
           return if access.can_push_to_branch?(mr.source_branch)
 
-          raise Gitlab::Access::AccessDeniedError, "User #{current_user.id} does not have permission to " \
-            "push to branch '#{mr.source_branch}' in project #{mr.source_project.id}"
+          raise ArgumentError, authorization_error_message
         end
 
         protected

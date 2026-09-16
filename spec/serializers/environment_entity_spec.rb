@@ -16,8 +16,7 @@ RSpec.describe EnvironmentEntity, feature_category: :continuous_delivery do
   let_it_be_with_refind(:environment) { create(:environment, project: project) }
 
   before do
-    allow(request).to receive(:current_user).and_return(user)
-    allow(request).to receive(:project).and_return(project)
+    allow(request).to receive_messages(current_user: user, project: project)
   end
 
   subject { entity.as_json }
@@ -121,8 +120,7 @@ RSpec.describe EnvironmentEntity, feature_category: :continuous_delivery do
 
   context 'with deployment service ready' do
     before do
-      allow(environment).to receive(:has_terminals?).and_return(true)
-      allow(environment).to receive(:rollout_status).and_return(kube_deployment_rollout_status)
+      allow(environment).to receive_messages(has_terminals?: true, rollout_status: kube_deployment_rollout_status)
     end
 
     it 'exposes rollout_status' do

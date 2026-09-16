@@ -130,7 +130,7 @@ export const imports = [
 ];
 
 // Jira project nodes which `extractJiraProjectsOptions` turns into `jiraProjects`
-export const jiraProjectNodes = [
+const jiraProjectNodes = [
   { key: 'MJP', name: 'My Jira Project', __typename: 'JiraProject' },
   { key: 'MSJP', name: 'My Second Jira Project', __typename: 'JiraProject' },
   { key: 'MTG', name: 'Migrate to GitLab', __typename: 'JiraProject' },

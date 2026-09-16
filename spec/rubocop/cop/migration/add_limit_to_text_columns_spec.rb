@@ -8,8 +8,7 @@ RSpec.describe RuboCop::Cop::Migration::AddLimitToTextColumns, feature_category:
     let(:msg) { 'Text columns should always have a limit set (255 is suggested)[...]' }
 
     before do
-      allow(cop).to receive(:in_migration?).and_return(true)
-      allow(cop).to receive(:version).and_return(described_class::TEXT_LIMIT_ATTRIBUTE_ALLOWED_SINCE)
+      allow(cop).to receive_messages(in_migration?: true, version: described_class::TEXT_LIMIT_ATTRIBUTE_ALLOWED_SINCE)
     end
 
     context 'when text columns are defined without a limit' do

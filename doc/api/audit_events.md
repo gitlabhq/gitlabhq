@@ -315,6 +315,9 @@ Use this API to retrieve [project audit events](../user/compliance/audit_events.
 A user with a Maintainer role (or above) can retrieve project audit events of all users.
 A user with a Developer role is limited to project audit events based on their individual actions.
 
+Requests to this API are subject to a
+[configurable per-user, per-project rate limit](../administration/settings/rate-limit-on-audit-events-api.md).
+
 ### List all project audit events
 
 Lists all audit events for a specified project.

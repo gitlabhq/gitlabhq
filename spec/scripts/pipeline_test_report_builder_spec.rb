@@ -72,8 +72,10 @@ RSpec.describe PipelineTestReportBuilder, feature_category: :tooling do
   subject { described_class.new(options) }
 
   before do
-    allow(subject).to receive(:pipelines_for_mr).and_return(mr_pipelines)
-    allow(subject).to receive(:failed_builds_for_pipeline).and_return(failed_builds_for_pipeline)
+    allow(subject).to receive_messages(
+      pipelines_for_mr: mr_pipelines,
+      failed_builds_for_pipeline: failed_builds_for_pipeline
+    )
   end
 
   describe '#previous_pipeline' do

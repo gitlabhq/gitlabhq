@@ -4,7 +4,6 @@ module Mcp
   module Tools
     module Releases
       class ListReleasesService < Base::CustomService
-        extend ::Gitlab::Utils::Override
         include ::Gitlab::Utils::StrongMemoize
         include ::Mcp::Tools::Concerns::UrlParser
 
@@ -58,13 +57,6 @@ module Mcp
             }
           }
         }
-
-        override :authorize!
-        def authorize!(params)
-          super
-        rescue ::Gitlab::Access::AccessDeniedError
-          raise ArgumentError, "Project '#{project_path}' not found or inaccessible"
-        end
 
         protected
 

@@ -199,6 +199,7 @@ these parameters:
 - `geo_status_timeout`
 - `group_owners_can_manage_default_branch_protection`
 - `lock_duo_features_enabled`
+- `project_audit_events_api_limit`
 - `scan_execution_policies_action_limit`
 - `scan_execution_policies_schedule_limit`
 - `secret_push_protection_available`
@@ -423,6 +424,7 @@ these parameters:
 - `allow_all_integrations`
 - `allowed_integrations`
 - `audit_events_api_limit`
+- `project_audit_events_api_limit`
 - `group_owners_can_manage_default_branch_protection`
 - `file_template_project_id`
 - `geo_node_allowed_ips`
@@ -478,8 +480,9 @@ This heading is referenced by a script: `scripts/cells/application-settings-anal
 - `sidekiq_timezone_override` [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/244922) in GitLab 19.2.
 - `concurrent_pull_request_import_jobs_limit` [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/251353) in GitLab 19.4, replacing hardcoded limits for the Bitbucket Server (50) and GitHub (200) importers with a unified default of 200.
 - `tags_create_limit` [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/252393) in GitLab 19.4.
-- `audit_events_api_limit` [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/605428) in GitLab 19.4.
+- `audit_events_api_limit` [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/248055) in GitLab 19.4.
 - `block_jwt_for_reclaimed_paths` [introduced](https://gitlab.com/gitlab-org/gitlab/-/work_items/623356) in GitLab 19.4.
+- `project_audit_events_api_limit` [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/253781) in GitLab 19.5.
 
 {{< /history >}}
 
@@ -514,7 +517,7 @@ to configure other related settings. These requirements are in the `Required` co
 | `asset_proxy_url`                        | string           | no                                   | URL of the asset proxy server. GitLab restart is required to apply changes. |
 | `asset_proxy_whitelist`                  | string or array of strings | no                         | (Deprecated: Use `asset_proxy_allowlist` instead) Assets that match these domains are not proxied. Wildcards allowed. Your GitLab installation URL is automatically allowlisted. GitLab restart is required to apply changes. |
 | `asset_proxy_allowlist`                  | string or array of strings | no                         | Assets that match these domains are not proxied. Wildcards allowed. Your GitLab installation URL is automatically allowlisted. GitLab restart is required to apply changes. |
-| `audit_events_api_limit`                 | integer          | no                                   | Maximum number of requests to the [instance audit events API](audit_events.md#instance-audit-events) per minute per user. Default: 200. Set to `0` to disable the rate limit. GitLab Self-Managed, Premium and Ultimate only. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/605428) in GitLab 19.4. |
+| `audit_events_api_limit`                 | integer          | no                                   | Maximum number of requests to the [instance audit events API](audit_events.md#instance-audit-events) per minute per user. Default: 200. Set to `0` to disable the rate limit. GitLab Self-Managed, Premium and Ultimate only. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/248055) in GitLab 19.4. |
 | `authn_data_retention_cleanup_enabled`   | boolean          | no                                   | If `true`, runs cleanup workers that permanently delete authentication login history older than one year, and previously revoked OAuth access tokens and grants older than one month. Default value: `false`. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/work_items/579002) in GitLab 18.7. |
 | `authorized_keys_enabled`                | boolean          | no                                   | By default, the `authorized_keys` file supports Git over SSH without additional configuration. GitLab can be optimized to authenticate SSH keys via the database file. Only disable this if you have configured your OpenSSH server to use the AuthorizedKeysCommand. |
 | `auto_accept_awarded_achievements`       | boolean          | no                                   | If `true`, newly awarded achievements are accepted automatically and appear on user profiles immediately. Does not affect achievements awarded before this setting is enabled. Recipients can still hide any achievement. Default value: `false`. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/work_items/607750) in GitLab 19.4. |
@@ -759,6 +762,7 @@ to configure other related settings. These requirements are in the `Required` co
 | `plantuml_url`                           | string           | required by: `plantuml_enabled`      | The PlantUML instance URL for integration. |
 | `plantuml_diagram_proxy_enabled`         | boolean          | no                                   | Enable [PlantUML diagram proxy](../administration/integration/diagram_proxy.md). Default is `false`. |
 | `polling_interval_multiplier`            | float            | no                                   | Interval multiplier used by endpoints that perform polling. Set to `0` to disable polling. |
+| `project_audit_events_api_limit`         | integer          | no                                   | Maximum number of requests to the [project audit events API](audit_events.md#project-audit-events) per minute per user per project. Default: 200. Set to `0` to disable the rate limit. GitLab Self-Managed, Premium and Ultimate only. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/253781) in GitLab 19.5. |
 | `project_export_enabled`                 | boolean          | no                                   | Enable project export. |
 | `project_jobs_api_rate_limit`            | integer          | no                                   | Maximum authenticated requests to `/project/:id/jobs` per minute. Default: 600. |
 | `projects_api_rate_limit_unauthenticated` | integer         | no                                   | Maximum number of requests per 10 minutes per IP address for unauthenticated requests to the [list all projects API](projects.md#list-all-projects). Default: 400. To disable throttling, set to 0. |

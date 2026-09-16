@@ -141,7 +141,7 @@ export const mockIssuableItems = (n) =>
     ...mockIssuable,
   }));
 
-export const mockIssuables = [
+const mockIssuables = [
   mockIssuable,
   {
     id: '2',
@@ -197,7 +197,7 @@ export const mockIssuables = [
   },
 ];
 
-export const mockTabs = [
+const mockTabs = [
   {
     id: 'state-opened',
     name: 'opened',
@@ -218,7 +218,7 @@ export const mockTabs = [
   },
 ];
 
-export const mockTabCounts = {
+const mockTabCounts = {
   opened: 5678,
   closed: 0,
   all: undefined,

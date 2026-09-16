@@ -38,6 +38,7 @@ describe('Role details drawer utils', () => {
       ${'user'}          | ${'access_level'}
       ${'group'}         | ${'group_access'}
       ${'accessRequest'} | ${'access_level'}
+      ${'directMembers'} | ${'access_level'}
     `(
       'calls update API with expected data for each member.namespace = $namespace',
       async ({ namespace, propertyName }) => {

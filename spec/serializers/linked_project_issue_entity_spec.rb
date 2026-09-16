@@ -13,8 +13,7 @@ RSpec.describe LinkedProjectIssueEntity do
   let(:entity) { described_class.new(related_issue, request: request, current_user: user) }
 
   before do
-    allow(request).to receive(:current_user).and_return(user)
-    allow(request).to receive(:issuable).and_return(issue_link.source)
+    allow(request).to receive_messages(current_user: user, issuable: issue_link.source)
     issue_link.target.project.add_developer(user)
   end
 

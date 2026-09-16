@@ -1,6 +1,6 @@
 ---
-source_checksum: 4f4508ed3a4c3e52
-distilled_at_sha: 18bec1426aecafc1e6f6e47896f845e2690b2bf8
+source_checksum: 5358c8252b33ecac
+distilled_at_sha: 3378d9de7ce956458ecfbc5e1845591fa87448fc
 ---
 <!-- Auto-generated from docs.gitlab.com by gitlab-ai-principles-distiller — do not edit manually -->
 
@@ -53,15 +53,12 @@ distilled_at_sha: 18bec1426aecafc1e6f6e47896f845e2690b2bf8
 
 ### SAML
 
-- When modifying `extern_uid` through the API, set `trusted_extern_uid` to `false`; the base OAuth login class (`lib/gitlab/auth/o_auth/user.rb`) checks `trusted_extern_uid?` before resolving the user — when overriding user lookup in a subclass, verify the override also checks this flag.
 - Validate SAML `RelayState` parameters before using them as redirect targets (past incident: open redirect via unvalidated RelayState in SAML Single Logout).
 - Validate the XML signature on every SAML response and verify the signed element is the assertion being trusted — defends against XML signature wrapping (past incident: [#486565](https://gitlab.com/gitlab-org/gitlab/-/issues/486565) — unauthenticated SAML sign-in bypass).
 
 ### Identity Linking and extern_uid
 
-- DO NOT update `extern_uid` without setting `trusted_extern_uid` to `false`; unverified `extern_uid` changes can enable account takeover.
-- When overriding user lookup in OAuth subclasses (for example, `GroupSaml::User`), verify the override checks `trusted_extern_uid?`; the base class checks this but overrides can bypass it.
-- DO NOT resolve users solely by `extern_uid` without verifying the identity is trusted (`trusted_extern_uid?`).
+- DO NOT resolve users solely by `extern_uid` without verifying the identity is trusted (the provider must establish that the UID belongs to the account).
 
 ### Two-Factor Authentication
 
@@ -93,8 +90,11 @@ distilled_at_sha: 18bec1426aecafc1e6f6e47896f845e2690b2bf8
 - DO NOT use the standard authorization code flow (browser consent) for composite identity service accounts; service accounts are bot users that cannot sign in interactively.
 - Ensure composite identity OAuth token scopes include the concrete dynamic scope `user:$ID` for the human user who originated the AI request, plus any required base scopes (for example, `api`).
 - Always use `Gitlab::Auth::Identity.resolve_composite_identity_actor(current_user)` to resolve the actor for any write operation; DO NOT determine the composite identity context manually.
-- Use the actor returned by `resolve_composite_identity_actor` wherever authorship is set (notes, issues/MRs, commits, pipeline user context).
+- Use the actor returned by `resolve_composite_identity_actor` wherever authorship is set (notes, system notes, pipeline user context). Exception: DO NOT use `resolve_composite_identity_actor` to set the author of a merge request — the MR author must always be the human user (`current_user` before composite identity resolution), even in the `:authentication` context, to preserve the self-approval guard (`merge_requests_author_approval` defaults to false).
+- For Git CLI commits in the `:authentication` context, set the human user as the commit `committer` and the service account as the commit `author`; DO NOT swap these roles — keeping the human as committer preserves segregation of duties when `merge_requests_disable_committers_approval` is enabled.
 - Understand attribution context: OAuth/CI flows tag `:authentication` context (service account is attributed); web/assignment flows tag `:permission_check` context (human is attributed) — DO NOT override this context manually. In the `:authentication` context, audit events store `author_name` as `<service account name> on behalf of @<human username>` truncated to 255 characters, and record `human_author_id`, `human_author_name`, and `human_author_username` in event `details`; in the `:permission_check` context the human remains the author and no `human_author_*` keys are added (GitLab 19.3 and later).
+- Link at most one service account with `:authentication` per request; linking a second raises `Gitlab::Auth::Identity::TooManyIdentitiesLinkedError`. Allow any number of `:permission_check` links.
+- Account for `Gitlab::Auth::Identity.currently_linked` selecting the authenticated identity, or the most recently linked identity when none is authenticated. When no authenticated identity exists, link the intended service account immediately before starting its work, because background jobs carry only one identity.
 
 ### Feature Flags
 

@@ -1,4 +1,5 @@
 - rate_limits = @instance_configuration.settings[:rate_limits]
+- audit_events_api_limits_present = rate_limits.present? && rate_limits.values_at(:audit_events_api, :project_audit_events_api).any?(&:present?)
 - content_for :table_content do
   - if rate_limits
     %li= link_to _('Rate Limits'), '#rate-limits'
@@ -8,7 +9,7 @@
     %li= link_to _('Projects API rate limits'), '#projects-api-rate-limits'
     - if Organizations::Release.enabled?(:org_creation, current_user)
       %li= link_to _('Organizations API rate limits'), '#organizations-api-rate-limits'
-    - if rate_limits[:audit_events_api].present?
+    - if audit_events_api_limits_present
       %li= link_to s_('AdminSettings|Audit events API rate limits'), '#audit-events-api-rate-limits'
 
 - content_for :settings_content do
@@ -136,10 +137,10 @@
           %tbody
             = render 'help/instance_configuration/rate_limit_row', title: 'POST /organizations', rate_limit: rate_limits[:organizations_api]
 
-    - if rate_limits[:audit_events_api].present?
+    - if audit_events_api_limits_present
       %h2#audit-events-api-rate-limits= s_('AdminSettings|Audit events API rate limits')
       %p
-        = _('Rate limits for the instance audit events API.')
+        = _('Rate limits for the audit events API.')
         = link_to _('Learn more.'), help_page_path('administration/settings/rate-limit-on-audit-events-api.md')
       .table-responsive
         %table
@@ -149,5 +150,8 @@
               %th= _('Requests per period')
               %th= _('Period in seconds')
           %tbody
-            = render 'help/instance_configuration/rate_limit_row', title: 'GET /audit_events[/:id]', rate_limit: rate_limits[:audit_events_api]
+            - if rate_limits[:audit_events_api].present?
+              = render 'help/instance_configuration/rate_limit_row', title: 'GET /audit_events[/:id]', rate_limit: rate_limits[:audit_events_api]
+            - if rate_limits[:project_audit_events_api].present?
+              = render 'help/instance_configuration/rate_limit_row', title: 'GET /projects/:id/audit_events[/:audit_event_id]', rate_limit: rate_limits[:project_audit_events_api]
     %br

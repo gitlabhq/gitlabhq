@@ -162,19 +162,12 @@ RSpec.describe Mcp::Tools::Base::CustomService, :aggregate_failures, feature_cat
           let(:current_user) { create(:user, guest_of: project) }
           let(:arguments) { { arguments: { project_id: project.id.to_s } } }
 
-          it 'raises Gitlab::Access::AccessDeniedError' do
+          it 'returns a non-leaky error without revealing user or target details' do
             result = service.execute(request: nil, params: arguments)
-            expect(result).to eq({
-              content: [
-                {
-                  text: "Tool execution failed: CustomService: User #{current_user.id} " \
-                    "does not have permission to read_code for target #{project.id}",
-                  type: "text"
-                }
-              ],
-              structuredContent: {},
-              isError: true
-            })
+
+            expect(result[:isError]).to be true
+            expect(result[:content].first[:text])
+              .to eq("Tool execution failed: #{service_name}: not found or access denied")
           end
         end
 

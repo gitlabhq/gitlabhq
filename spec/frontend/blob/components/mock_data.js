@@ -74,12 +74,3 @@ export const SimpleSnippetContentMock = {
 
 export const mockEnvironmentName = 'my.testing.environment';
 export const mockEnvironmentPath = 'https://my.testing.environment';
-
-export const userInfoMock = {
-  currentUser: {
-    id: '123',
-    gitpodEnabled: true,
-    preferencesGitpodPath: '/-/profile/preferences#user_gitpod_enabled',
-    profileEnableGitpodPath: '/-/profile?user%5Bgitpod_enabled%5D=true',
-  },
-};

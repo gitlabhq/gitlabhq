@@ -252,6 +252,33 @@ Example:
 Get merge request 15 in project gitlab-org/gitlab with its commits
 ```
 
+## `start_duo_session`
+
+{{< history >}}
+
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/work_items/607619) in GitLab 19.5.
+
+{{< /history >}}
+
+Starts a GitLab Duo Agent Platform session that runs a flow from the AI Catalog, and returns the
+session ID. Only catalog flows can be started this way, because only those sessions can later be
+answered with `send_duo_session_input`.
+
+The session runs in a CI job that can push commits and open merge requests. The response includes a
+suggested polling delay; use `get_duo_session` with the returned `workflow_id` to follow progress.
+
+| Parameter                     | Type    | Required | Description |
+|-------------------------------|---------|----------|-------------|
+| `project_id`                  | string  | Yes      | ID or URL-encoded path of the project the flow runs in. |
+| `ai_catalog_item_consumer_id` | integer | Yes      | ID of the AI Catalog item consumer that configures which flow to run. |
+| `goal`                        | string  | Yes      | What the agent should do. This is the prompt the flow starts from. |
+
+Example:
+
+```plaintext
+Run the Developer flow in project 42 to add tests for the parser
+```
+
 ## `list_duo_sessions`
 
 {{< history >}}

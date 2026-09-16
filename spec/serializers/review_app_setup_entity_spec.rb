@@ -11,8 +11,7 @@ RSpec.describe ReviewAppSetupEntity do
   let(:request) { double('request') }
 
   before do
-    allow(request).to receive(:current_user).and_return(user)
-    allow(request).to receive(:project).and_return(project)
+    allow(request).to receive_messages(current_user: user, project: project)
   end
 
   subject { entity.as_json }

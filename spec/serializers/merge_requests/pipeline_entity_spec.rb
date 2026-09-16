@@ -20,8 +20,7 @@ RSpec.describe MergeRequests::PipelineEntity, feature_category: :continuous_inte
   before do
     stub_not_protect_default_branch
 
-    allow(request).to receive(:current_user).and_return(user)
-    allow(request).to receive(:project).and_return(project)
+    allow(request).to receive_messages(current_user: user, project: project)
     allow(pipeline).to receive(:coverage).and_return(35.0)
   end
 

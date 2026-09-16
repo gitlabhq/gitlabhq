@@ -15,8 +15,7 @@ RSpec.describe ContainerRepositoryEntity do
   before do
     stub_container_registry_config(enabled: true)
     stub_container_registry_tags(repository: :any, tags: %w[stable latest])
-    allow(request).to receive(:project).and_return(project)
-    allow(request).to receive(:current_user).and_return(user)
+    allow(request).to receive_messages(project: project, current_user: user)
   end
 
   it 'exposes required informations' do
@@ -25,8 +24,7 @@ RSpec.describe ContainerRepositoryEntity do
 
   context 'when project is not preset in the request' do
     before do
-      allow(request).to receive(:respond_to?).and_return(false)
-      allow(request).to receive(:project).and_return(nil)
+      allow(request).to receive_messages(respond_to?: false, project: nil)
     end
 
     it 'uses project from the object' do

@@ -22,8 +22,7 @@ RSpec.describe DeploymentEntity do
   subject { entity.as_json }
 
   before do
-    allow(request).to receive(:current_user).and_return(user)
-    allow(request).to receive(:project).and_return(project)
+    allow(request).to receive_messages(current_user: user, project: project)
   end
 
   shared_examples_for 'exposes fields' do

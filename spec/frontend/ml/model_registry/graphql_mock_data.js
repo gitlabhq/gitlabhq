@@ -400,7 +400,7 @@ export const model = {
   latestVersion: modelVersionWithCandidateAndAuthor,
 };
 
-export const modelWithNoVersion = {
+const modelWithNoVersion = {
   id: 'gid://gitlab/Ml::Model/3',
   name: 'model_3',
   versionCount: 0,

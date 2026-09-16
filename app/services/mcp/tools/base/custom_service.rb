@@ -32,13 +32,13 @@ module Mcp
 
         def authorize!(params)
           target = auth_target(params)
-          raise ArgumentError, "#{name}: target object not found, the params received: #{params.inspect}" if target.nil?
+          return if target && ::Ability.allowed?(current_user, auth_ability, target)
 
-          allowed = ::Ability.allowed?(current_user, auth_ability, target)
-          return if allowed
+          raise ArgumentError, authorization_error_message
+        end
 
-          raise Gitlab::Access::AccessDeniedError, "CustomService: User #{current_user.id} does " \
-            "not have permission to #{auth_ability} for target #{target.id}"
+        def authorization_error_message
+          "#{name}: not found or access denied"
         end
 
         def auth_ability

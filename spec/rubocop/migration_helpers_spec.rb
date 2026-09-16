@@ -56,8 +56,10 @@ RSpec.describe RuboCop::MigrationHelpers, feature_category: :database do
 
   describe '#time_enforced?' do
     before do
-      allow(fake_cop).to receive(:name).and_return("TestCop")
-      allow(fake_cop).to receive(:config).and_return(double(for_cop: { 'EnforcedSince' => 20221018000000 }))
+      allow(fake_cop).to receive_messages(
+        name: "TestCop",
+        config: double(for_cop: { 'EnforcedSince' => 20221018000000 })
+      )
     end
 
     where(:name, :expected) do

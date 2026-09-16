@@ -19,8 +19,7 @@ RSpec.describe DiscussionEntity do
 
   before do
     allow(controller).to receive(:render_to_string)
-    allow(request).to receive(:current_user).and_return(user)
-    allow(request).to receive(:noteable).and_return(note.noteable)
+    allow(request).to receive_messages(current_user: user, noteable: note.noteable)
   end
 
   it 'exposes correct attributes' do
