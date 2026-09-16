@@ -74,11 +74,9 @@ module Mcp
 
         # A job we cannot find and a job we cannot read get the same response, so the caller
         # cannot probe for jobs they have no access to.
-        override :authorize!
-        def authorize!(params)
-          super
-        rescue ::Gitlab::Access::AccessDeniedError
-          raise ArgumentError, NOT_FOUND
+        override :authorization_error_message
+        def authorization_error_message
+          NOT_FOUND
         end
 
         protected

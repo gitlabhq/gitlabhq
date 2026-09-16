@@ -23,7 +23,7 @@ RSpec.describe Gitlab::Orchestrator::Deployment::ResourcePresets do
           minReplicas: 1,
           resources: {
             requests: { cpu: "1200m", memory: "2Gi" },
-            limits: { cpu: "1200m", memory: "2Gi" }
+            limits: { cpu: "1200m", memory: "2304Mi" }
           },
           hpa: {
             cpu: {
