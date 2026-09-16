@@ -41,10 +41,7 @@ class Member < ApplicationRecord
   # Transient UserProjectAccessChangedService priority, set by callers
   # that destroy a member as part of destroying its user. Currently only
   # set by Users::DestroyService, and only for project bots as part of
-  # the nightly bulk deletion of inactive resource access token (behind
-  # the
-  # deprioritize_destroyed_project_bot_user_project_authorizations_refresh
-  # feature flag).
+  # the nightly bulk deletion of inactive resource access tokens.
   attr_writer :authorized_projects_refresh_priority
 
   belongs_to :created_by, class_name: "User"

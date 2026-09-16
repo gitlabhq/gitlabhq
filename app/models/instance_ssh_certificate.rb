@@ -2,6 +2,7 @@
 
 class InstanceSshCertificate < ApplicationRecord # rubocop:disable Gitlab/NamespacedClass, Gitlab/BoundedContexts -- Instance-level record mirroring the top-level naming of other instance_* settings models
   include ShaAttribute
+  include Sortable
 
   sha256_attribute :fingerprint
 

@@ -124,6 +124,58 @@ RSpec.describe Organizations::Release, feature_category: :organization do
     end
   end
 
+  describe '.enrolled?' do
+    context 'when on GitLab.com', :saas do
+      it 'is true when the user has an active non-default organization' do
+        user = instance_double(User, has_active_non_default_organization?: true)
+
+        expect(described_class.enrolled?(user)).to be(true)
+      end
+
+      it 'is false when the user only belongs to the default organization' do
+        user = instance_double(User, has_active_non_default_organization?: false)
+
+        expect(described_class.enrolled?(user)).to be(false)
+      end
+
+      it 'is false when a flag is given and off for the user, regardless of organization state' do
+        stub_flag(name: :ui_for_organizations, stage: :beta)
+        stub_feature_flags(org_stage_experimental: false, org_stage_beta: false)
+        user = build_stubbed(:user)
+        allow(user).to receive(:has_active_non_default_organization?).and_return(true)
+
+        expect(described_class.enrolled?(user, flag: :ui_for_organizations)).to be(false)
+      end
+
+      it 'is true when a flag is given and on for the user, and the user has an active non-default organization' do
+        stub_flag(name: :ui_for_organizations, stage: :beta)
+        user = build_stubbed(:user)
+        allow(user).to receive(:has_active_non_default_organization?).and_return(true)
+
+        expect(described_class.enrolled?(user, flag: :ui_for_organizations)).to be(true)
+      end
+    end
+
+    context 'when on self-managed' do
+      it 'is false when no flag is given' do
+        expect(described_class.enrolled?(build_stubbed(:user))).to be(false)
+      end
+
+      it 'is true when a flag is given and on for the user' do
+        stub_flag(name: :ui_for_organizations, stage: :beta)
+
+        expect(described_class.enrolled?(build_stubbed(:user), flag: :ui_for_organizations)).to be(true)
+      end
+
+      it 'is false when a flag is given and off for the user' do
+        stub_flag(name: :ui_for_organizations, stage: :beta)
+        stub_feature_flags(org_stage_experimental: false, org_stage_beta: false)
+
+        expect(described_class.enrolled?(build_stubbed(:user), flag: :ui_for_organizations)).to be(false)
+      end
+    end
+  end
+
   describe '.stages' do
     it 'returns every stage in progression order' do
       expect(described_class.stages.map(&:key))

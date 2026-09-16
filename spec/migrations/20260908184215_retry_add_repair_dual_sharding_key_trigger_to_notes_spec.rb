@@ -3,7 +3,7 @@
 require 'spec_helper'
 require_migration!
 
-RSpec.describe AddRepairDualShardingKeyTriggerToNotes, feature_category: :team_planning do
+RSpec.describe RetryAddRepairDualShardingKeyTriggerToNotes, feature_category: :team_planning do
   include Gitlab::Database::SchemaHelpers
 
   let(:connection) { ApplicationRecord.connection }
@@ -132,17 +132,47 @@ RSpec.describe AddRepairDualShardingKeyTriggerToNotes, feature_category: :team_p
       expect(trigger_exists?('notes', trigger_name)).to be(true)
       expect(function_exists?(function_name)).to be(true)
     end
+
+    it 'is idempotent when the original migration already created the trigger and function' do
+      # State after migrate! matches environments where 20260902151429
+      # succeeded; re-running the same DDL must not raise or change behavior.
+      expect { described_class.new.up }.not_to raise_error
+
+      expect(trigger_exists?('notes', trigger_name)).to be(true)
+      expect(function_exists?(function_name)).to be(true)
+
+      note = notes.create!(
+        noteable_type: 'Issue',
+        note: 'dual-key note',
+        project_id: project.id,
+        namespace_id: group_namespace.id
+      )
+
+      note.update_columns(note: 'updated dual-key note')
+
+      expect(note.reload.namespace_id).to be_nil
+    end
+
+    it 'raises instead of retrying when a wraparound prevention vacuum holds notes' do
+      migration = described_class.new
+      allow(migration).to receive(:can_execute_on?).with(:notes).and_return(false)
+
+      expect { migration.up }.to raise_error(StandardError, /Wraparound prevention vacuum detected/)
+    end
   end
 
   describe '#down', :aggregate_failures do
-    it 'removes the trigger and function' do
+    it 'leaves the trigger and function in place' do
+      # The rollback is deliberately a no-op: both objects belong to the
+      # recorded schema via 20260902151429, so dropping them would diverge
+      # from db/structure.sql.
       schema_migrate_down!
 
-      expect(trigger_exists?('notes', trigger_name)).to be(false)
-      expect(function_exists?(function_name)).to be(false)
+      expect(trigger_exists?('notes', trigger_name)).to be(true)
+      expect(function_exists?(function_name)).to be(true)
     end
 
-    it 'no longer repairs dual-key rows on UPDATE' do
+    it 'still repairs dual-key rows on UPDATE' do
       schema_migrate_down!
 
       note = notes.create!(
@@ -155,7 +185,7 @@ RSpec.describe AddRepairDualShardingKeyTriggerToNotes, feature_category: :team_p
       note.update_columns(note: 'updated dual-key note')
       note.reload
 
-      expect(note.namespace_id).to eq(group_namespace.id)
+      expect(note.namespace_id).to be_nil
       expect(note.project_id).to eq(project.id)
     end
   end

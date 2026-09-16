@@ -3,7 +3,12 @@ name: create_ssh_certificate
 description: Grants the ability to create SSH certificates
 boundaries:
   - group
+  - instance
 available_for:
   - granular_access_token
 permissions:
   - create_ssh_certificate
+assignable_when:
+  - condition: admin
+    boundaries:
+      - instance

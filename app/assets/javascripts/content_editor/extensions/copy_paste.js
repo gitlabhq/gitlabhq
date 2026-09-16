@@ -1,7 +1,13 @@
 import OrderedMap from 'orderedmap';
 import { Extension } from '@tiptap/core';
 import { Plugin, PluginKey } from '@tiptap/pm/state';
-import { Schema, Slice, DOMParser as ProseMirrorDOMParser, DOMSerializer } from '@tiptap/pm/model';
+import {
+  Fragment,
+  Schema,
+  Slice,
+  DOMParser as ProseMirrorDOMParser,
+  DOMSerializer,
+} from '@tiptap/pm/model';
 import { handlePaste as handleTablePaste, isInTable, CellSelection } from '@tiptap/pm/tables';
 import { uniqueId } from 'lodash-es';
 import { s__, __ } from '~/locale';
@@ -33,6 +39,57 @@ function buildPasteSchema(schema) {
   pasteSchemaSpec.marks = OrderedMap.from(pasteSchemaSpec.marks).remove('span');
   pasteSchemaSpec.nodes = OrderedMap.from(pasteSchemaSpec.nodes).remove('div').remove('pre');
   return new Schema(pasteSchemaSpec);
+}
+
+// Blocks a paste merges into when the caret already sits in the same kind of
+// block; list flavours count as one kind, and so do their items.
+const MERGEABLE_WRAPPERS = {
+  bulletList: 'list',
+  orderedList: 'list',
+  taskList: 'list',
+  listItem: 'listItem',
+  taskItem: 'listItem',
+  blockquote: 'blockquote',
+};
+
+// Depth to open the pasted fragment so its content merges into the caret's
+// blocks instead of recreating them; 0 keeps the closed insertion.
+function mergeDepth($pos, fragment) {
+  if (!$pos.parent.isTextblock) return 0;
+
+  const wrappers = [];
+  let textblock = fragment.firstChild;
+  while (textblock?.isBlock && !textblock.isTextblock) {
+    wrappers.push(textblock);
+    textblock = textblock.firstChild;
+  }
+  if (!textblock?.isTextblock) return 0;
+
+  const isParagraph = textblock.type.name === 'paragraph';
+  if (!isParagraph && textblock.type !== $pos.parent.type) return 0;
+  if (isParagraph && !wrappers.length) return 0;
+
+  const wrappersMatch = wrappers.every((wrapper, i) => {
+    const depth = $pos.depth - (wrappers.length - i);
+    const kind = MERGEABLE_WRAPPERS[wrapper.type.name];
+    return depth > 0 && kind && kind === MERGEABLE_WRAPPERS[$pos.node(depth).type.name];
+  });
+
+  return wrappersMatch ? wrappers.length + 1 : 0;
+}
+
+// Like a native paste, the end stays open so the text after the caret
+// continues in the last pasted block; isolating nodes stay closed.
+function openEndDepth(fragment) {
+  let depth = 0;
+  for (
+    let node = fragment.lastChild;
+    node && !node.isLeaf && !node.type.spec.isolating;
+    node = node.lastChild
+  ) {
+    depth += 1;
+  }
+  return depth;
 }
 
 function parseHTML(schema, html) {
@@ -183,15 +240,28 @@ export default Extension.create({
               const chain = editor.chain().setMeta(loadingPlugin, { remove: { loaderId } });
 
               if (document && pos !== null) {
-                const { firstChild, childCount } = document.content;
-                const toPaste =
-                  childCount === 1 && firstChild.type.name === 'paragraph'
-                    ? firstChild.content
-                    : document.content;
+                // rehydrate in the editor schema: node types are schema-bound and
+                // the document was parsed with the restricted paste schema
+                const fragment = Fragment.fromJSON(editor.schema, document.content.toJSON());
+                const openStart = mergeDepth(editor.state.doc.resolve(pos), fragment);
 
-                chain.insertContentAt(pos, toPaste.toJSON(), {
-                  updateSelection: false,
-                });
+                if (openStart) {
+                  const slice = new Slice(fragment, openStart, openEndDepth(fragment));
+                  chain.command(({ tr }) => {
+                    tr.replaceRange(pos, pos, slice);
+                    return true;
+                  });
+                } else {
+                  const { firstChild, childCount } = fragment;
+                  const toPaste =
+                    childCount === 1 && firstChild.type.name === 'paragraph'
+                      ? firstChild.content
+                      : fragment;
+
+                  chain.insertContentAt(pos, toPaste.toJSON(), {
+                    updateSelection: false,
+                  });
+                }
               }
 
               chain.run();

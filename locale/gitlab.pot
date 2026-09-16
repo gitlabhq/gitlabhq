@@ -9406,6 +9406,9 @@ msgstr ""
 msgid "AiPowered|Security"
 msgstr ""
 
+msgid "AiPowered|Select a group"
+msgstr ""
+
 msgid "AiPowered|Select a group to continue"
 msgstr ""
 
@@ -9491,6 +9494,9 @@ msgid "AiPowered|This will clear admin locks on the following groups. Each clear
 msgstr ""
 
 msgid "AiPowered|To add members to the group that contains the project, see the %{linkStart}prerequisites%{linkEnd}."
+msgstr ""
+
+msgid "AiPowered|To get started, select a group"
 msgstr ""
 
 msgid "AiPowered|Tool approval for sessions"

@@ -68,6 +68,11 @@ describe('DashboardsList', () => {
     });
   };
 
+  const findFieldLabels = () =>
+    findTable()
+      .props('fields')
+      .map(({ label }) => label);
+
   describe('with valid dashboard data', () => {
     beforeEach(() => {
       createWrapper();
@@ -113,28 +118,12 @@ describe('DashboardsList', () => {
         });
       });
 
-      it('renders last edited dates as relative time', () => {
-        mockDashboards.forEach((dashboard, index) => {
-          const row = findTableRows().at(index);
-          const updatedAt = row.find('[data-testid="dashboard-updated-at"]');
-          expect(updatedAt.exists()).toBe(true);
-        });
-
-        expect(findTableRows().at(0).text()).toContain('5 days ago');
-        expect(findTableRows().at(1).text()).toContain('1 month ago');
-      });
-
       it('renders action dropdowns for each dashboard', () => {
         expect(findActionDropdowns()).toHaveLength(mockDashboards.length);
       });
 
       it('renders the valid fields', () => {
-        const expectedFields = ['Title', 'Created by', 'Last edited', 'Actions'];
-        const fields = findTable()
-          .props('fields')
-          .map(({ label }) => label);
-
-        expect(fields).toEqual(expectedFields);
+        expect(findFieldLabels()).toEqual(['Title', 'Created by', 'Actions']);
       });
     });
 
@@ -175,17 +164,7 @@ describe('DashboardsList', () => {
       });
 
       it('renders the valid fields', () => {
-        const expectedFields = ['Title', 'Created by', 'Last edited', 'Actions'];
-        const fields = findTable()
-          .props('fields')
-          .map(({ label }) => label);
-
-        expect(fields).toEqual(expectedFields);
-      });
-
-      it('does not render the last edited time for system dashboards', () => {
-        const updatedAt = findTableRows().at(0).find('[data-testid="dashboard-updated-at"]');
-        expect(updatedAt.exists()).toBe(false);
+        expect(findFieldLabels()).toEqual(['Title', 'Created by', 'Actions']);
       });
     });
   });

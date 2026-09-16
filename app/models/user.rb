@@ -2051,6 +2051,7 @@ class User < ApplicationRecord
   def has_active_non_default_organization?
     organizations.without_default.with_states(:active).exists?
   end
+  strong_memoize_attr :has_active_non_default_organization?
 
   def can_leave_project?(member_or_project)
     return can?(:destroy_project_member, member_or_project) if member_or_project.is_a?(ProjectMember)

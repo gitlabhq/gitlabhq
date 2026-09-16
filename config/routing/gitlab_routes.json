@@ -7202,6 +7202,17 @@
     "dottedExample": "/api/v4/admin/sidekiq/queues/john.doe"
   },
   {
+    "template": "/api/:version/admin/ssh_certificates",
+    "example": "/api/v4/admin/ssh_certificates",
+    "acceptsFormat": true
+  },
+  {
+    "template": "/api/:version/admin/ssh_certificates/:id",
+    "example": "/api/v4/admin/ssh_certificates/foo",
+    "acceptsFormat": true,
+    "dottedExample": "/api/v4/admin/ssh_certificates/john.doe"
+  },
+  {
     "template": "/api/:version/admin/token",
     "example": "/api/v4/admin/token",
     "acceptsFormat": true

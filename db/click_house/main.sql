@@ -2333,6 +2333,29 @@ PRIMARY KEY (id, partition_id, traversal_path)
 ORDER BY (id, partition_id, traversal_path)
 SETTINGS index_granularity = 1024;
 
+CREATE TABLE siphon_p_vulnerability_identifiers
+(
+    `id` Int64 CODEC(DoubleDelta, ZSTD(1)),
+    `created_at` DateTime64(6, 'UTC') CODEC(Delta(8), ZSTD(1)),
+    `updated_at` DateTime64(6, 'UTC') CODEC(Delta(8), ZSTD(1)),
+    `project_id` Int64,
+    `fingerprint` String,
+    `external_type` LowCardinality(String),
+    `external_id` String,
+    `name` String CODEC(ZSTD(1)),
+    `url` Nullable(String) CODEC(ZSTD(1)),
+    `partition_id` Int64 DEFAULT 1 CODEC(DoubleDelta, ZSTD(1)),
+    `traversal_path` String DEFAULT multiIf(coalesce(project_id, 0) != 0, dictGetOrDefault('project_traversal_paths_dict', 'traversal_path', project_id, '0/'), '0/') CODEC(ZSTD(3)),
+    `_siphon_replicated_at` DateTime64(6, 'UTC') DEFAULT now64(6, 'UTC') CODEC(ZSTD(1)),
+    `_siphon_deleted` Bool DEFAULT false CODEC(ZSTD(1)),
+    `_siphon_watermark` DateTime64(6, 'UTC') DEFAULT now64(6, 'UTC') CODEC(ZSTD(1)),
+    INDEX idx_siphon_watermark_minmax _siphon_watermark TYPE minmax GRANULARITY 1
+)
+ENGINE = ReplacingMergeTree(_siphon_replicated_at, _siphon_deleted)
+PRIMARY KEY (traversal_path, id, partition_id)
+ORDER BY (traversal_path, id, partition_id)
+SETTINGS index_granularity = 2048;
+
 CREATE TABLE siphon_packages_build_infos
 (
     `id` Int64 CODEC(DoubleDelta, ZSTD(1)),
@@ -3118,6 +3141,19 @@ ENGINE = ReplacingMergeTree(_siphon_replicated_at, _siphon_deleted)
 PRIMARY KEY (traversal_path, id)
 ORDER BY (traversal_path, id)
 SETTINGS index_granularity = 2048, deduplicate_merge_projection_mode = 'rebuild';
+
+CREATE TABLE siphon_vulnerability_identifiers_pg_pkey_ordered
+(
+    `id` Int64 CODEC(DoubleDelta, ZSTD(1)),
+    `partition_id` Int64 CODEC(DoubleDelta, ZSTD(1)),
+    `traversal_path` String DEFAULT '0/' CODEC(ZSTD(3)),
+    `_siphon_replicated_at` DateTime64(6, 'UTC') DEFAULT now64(6, 'UTC') CODEC(ZSTD(1)),
+    `_siphon_deleted` Bool DEFAULT false CODEC(ZSTD(1))
+)
+ENGINE = ReplacingMergeTree(_siphon_replicated_at, _siphon_deleted)
+PRIMARY KEY (id, partition_id, traversal_path)
+ORDER BY (id, partition_id, traversal_path)
+SETTINGS index_granularity = 1024;
 
 CREATE TABLE siphon_vulnerability_merge_request_links
 (
@@ -5382,6 +5418,40 @@ AS SELECT
     _siphon_deleted
 FROM siphon_p_ci_stages;
 
+CREATE MATERIALIZED VIEW siphon_p_vulnerability_identifiers_mv TO siphon_p_vulnerability_identifiers
+(
+    `id` Int64,
+    `created_at` DateTime64(6, 'UTC'),
+    `updated_at` DateTime64(6, 'UTC'),
+    `project_id` Int64,
+    `fingerprint` String,
+    `external_type` LowCardinality(String),
+    `external_id` String,
+    `name` String,
+    `url` Nullable(String),
+    `partition_id` Int64,
+    `traversal_path` String,
+    `_siphon_replicated_at` DateTime64(6, 'UTC'),
+    `_siphon_deleted` Bool,
+    `_siphon_watermark` DateTime64(6, 'UTC')
+)
+AS SELECT
+    id,
+    created_at,
+    updated_at,
+    project_id,
+    fingerprint,
+    external_type,
+    external_id,
+    name,
+    url,
+    partition_id,
+    traversal_path,
+    _siphon_replicated_at,
+    _siphon_deleted,
+    _siphon_watermark
+FROM siphon_vulnerability_identifiers;
+
 CREATE MATERIALIZED VIEW siphon_packages_build_infos_pg_pkey_ordered_mv TO siphon_packages_build_infos_pg_pkey_ordered
 (
     `id` Int64,
@@ -5571,6 +5641,22 @@ AS SELECT
     _siphon_replicated_at,
     _siphon_deleted
 FROM siphon_todos;
+
+CREATE MATERIALIZED VIEW siphon_vulnerability_identifiers_pg_pkey_ordered_mv TO siphon_vulnerability_identifiers_pg_pkey_ordered
+(
+    `id` Int64,
+    `partition_id` Int64,
+    `traversal_path` String,
+    `_siphon_replicated_at` DateTime64(6, 'UTC'),
+    `_siphon_deleted` Bool
+)
+AS SELECT
+    id,
+    partition_id,
+    traversal_path,
+    _siphon_replicated_at,
+    _siphon_deleted
+FROM siphon_p_vulnerability_identifiers;
 
 CREATE MATERIALIZED VIEW user_addon_assignments_history_mv TO user_addon_assignments_history
 (

@@ -248,6 +248,7 @@ module API
         mount ::API::Admin::InstanceClusters
         mount ::API::Admin::Migrations
         mount ::API::Admin::PlanLimits
+        mount ::API::Admin::SshCertificates
         mount ::API::Admin::Token
         mount ::API::AlertManagementAlerts
         mount ::API::Appearance

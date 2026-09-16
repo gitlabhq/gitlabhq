@@ -1061,8 +1061,11 @@ Grants the ability to create, delete, and read SSH certificates.
 | Action | Access | Method | Path |
 | ------ | ------ | ------ | ---- |
 | Create | Group | `POST` | `/groups/:id/ssh_certificates` |
+| Create | Instance | `POST` | `/admin/ssh_certificates` |
 | Delete | Group | `DELETE` | `/groups/:id/ssh_certificates/:ssh_certificates_id` |
+| Delete | Instance | `DELETE` | `/admin/ssh_certificates/:id` |
 | Read | Group | `GET` | `/groups/:id/ssh_certificates` |
+| Read | Instance | `GET` | `/admin/ssh_certificates` |
 
 #### Status
 

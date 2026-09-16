@@ -4,6 +4,7 @@ import { GlTable, GlAvatarLabeled, GlAvatarLink } from '@gitlab/ui';
 import { __ } from '~/locale';
 import { getTimeago } from '~/lib/utils/datetime/timeago_utility';
 import DashboardsListItemActions from 'ee_else_ce/vue_shared/components/dashboards_list/dashboards_list_item_actions.vue';
+import { getDashboardsListFields } from 'ee_else_ce/vue_shared/components/dashboards_list/utils';
 import DashboardsListNameCell from './dashboards_list_name_cell.vue';
 
 export default {
@@ -21,34 +22,17 @@ export default {
       required: true,
     },
   },
+  computed: {
+    fields() {
+      return getDashboardsListFields();
+    },
+  },
   methods: {
     formatUpdatedAt(updatedAt) {
       return getTimeago().format(updatedAt);
     },
   },
   avatarSize: 24,
-  fields: [
-    {
-      key: 'name',
-      label: __('Title'),
-      tdClass: '!gl-align-middle',
-    },
-    {
-      key: 'createdBy',
-      label: __('Created by'),
-      tdClass: '!gl-align-bottom',
-    },
-    {
-      key: 'updatedAt',
-      label: __('Last edited'),
-      tdClass: '!gl-align-middle',
-    },
-    {
-      key: 'actions',
-      tdClass: '!gl-text-right',
-      label: __('Actions'),
-    },
-  ],
   createdByGitLab: {
     avatarUrl: GITLAB_LOGO_SVG_URL,
     label: __('GitLab'),
@@ -57,7 +41,7 @@ export default {
 </script>
 <template>
   <div>
-    <gl-table stacked="sm" :items="dashboards" :fields="$options.fields">
+    <gl-table stacked="sm" :items="dashboards" :fields="fields">
       <template #head(actions)="column"
         ><span class="gl-sr-only">{{ column.label }}</span></template
       >

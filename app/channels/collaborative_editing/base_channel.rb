@@ -100,7 +100,9 @@ module CollaborativeEditing
     end
 
     def handle_snapshot(data)
-      store.replace(data['payload'], data['token'])
+      return unless store.replace(data['payload'], data['token'])
+
+      broadcast(data.merge('type' => MESSAGE_TYPE_SYNC))
     end
 
     def broadcast(data, identity: false)

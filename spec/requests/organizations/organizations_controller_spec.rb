@@ -356,7 +356,48 @@ RSpec.describe Organizations::OrganizationsController, feature_category: :organi
   describe 'GET #index' do
     subject(:gitlab_request) { get organizations_path }
 
-    it_behaves_like 'controller action that requires authentication by any user'
+    context 'when the user is not signed in' do
+      it_behaves_like 'organization - redirects to sign in page'
+    end
+
+    context 'when the user is signed in' do
+      let_it_be(:user) { create(:user) }
+
+      before do
+        sign_in(user)
+      end
+
+      context 'when on self-managed' do
+        it_behaves_like 'organization - successful response'
+
+        context 'when the your_work_sidebar_org_menu_item release flag is disabled' do
+          before do
+            stub_organization_release(your_work_sidebar_org_menu_item: false)
+          end
+
+          it_behaves_like 'organization - not found response'
+        end
+      end
+
+      context 'when on GitLab.com', :saas do
+        it_behaves_like 'organization - not found response'
+
+        context 'when the user has an active non-default organization' do
+          let_it_be(:organization) { create(:organization) }
+          let_it_be(:user) { create(:user, organizations: [organization]) }
+
+          it_behaves_like 'organization - successful response'
+        end
+
+        context 'when the your_work_sidebar_org_menu_item release flag is also disabled' do
+          before do
+            stub_organization_release(your_work_sidebar_org_menu_item: false)
+          end
+
+          it_behaves_like 'organization - not found response'
+        end
+      end
+    end
   end
 
   describe 'POST #preview_markdown' do

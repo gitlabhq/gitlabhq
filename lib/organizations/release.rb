@@ -33,6 +33,19 @@ module Organizations
         end
       end
 
+      # Real per-user "has this actor adopted organizations" state, not a flag rollout
+      # check. `flag:` additionally requires that flag be enabled for the user first --
+      # self-managed/Dedicated (no legacy default org to leave) enroll only via a flag.
+      def enrolled?(user, flag: nil)
+        return false if flag && !enabled?(flag, user)
+
+        if Gitlab.com? # rubocop:disable Gitlab/AvoidGitlabInstanceChecks -- use Gitlab.com? for now to keep simple. May refactor to SaaS feature in the future
+          user.has_active_non_default_organization?
+        else
+          flag.present?
+        end
+      end
+
       def stages
         Stage::ALL
       end

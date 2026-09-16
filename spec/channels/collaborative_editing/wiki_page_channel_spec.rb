@@ -423,15 +423,32 @@ RSpec.describe CollaborativeEditing::WikiPageChannel, :clean_gitlab_redis_shared
         expect(transmissions.last['token']).to be_present
       end
 
-      it 'replaces the log with a snapshot without rebroadcasting it', :aggregate_failures do
+      it 'replaces the log with a snapshot', :aggregate_failures do
+        perform :receive, message('sync', 'first')
+        perform :receive, message('sync', 'second')
+        token = transmissions.last['token']
+
+        perform :receive, message('snapshot', 'a-snapshot').merge('token' => token)
+
+        expect(store_for(page).updates).to eq(['a-snapshot'])
+      end
+
+      it 'relays the snapshot to peers as a sync' do
         perform :receive, message('sync', 'first')
         perform :receive, message('sync', 'second')
         token = transmissions.last['token']
 
         expect { perform :receive, message('snapshot', 'a-snapshot').merge('token' => token) }
-          .not_to have_broadcasted_to(stream_name)
+          .to have_broadcasted_to(stream_name)
+          .with('type' => 'sync', 'payload' => 'a-snapshot', 'clientId' => 1)
+      end
 
-        expect(store_for(page).updates).to eq(['a-snapshot'])
+      it 'does not relay a snapshot the store rejected' do
+        perform :receive, message('sync', 'first')
+        perform :receive, message('sync', 'second')
+
+        expect { perform :receive, message('snapshot', 'a-snapshot').merge('token' => 'forged') }
+          .not_to have_broadcasted_to(stream_name)
       end
 
       it 'ignores a snapshot from a client that was not asked to compact' do
