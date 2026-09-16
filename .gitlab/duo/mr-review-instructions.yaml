@@ -1496,6 +1496,9 @@ instructions:
       - Reference: doc/development/cicd/keyword_reviews.md
   # <<< end generated: cicd-internals
 
+  # >>> generated: mcp-server — gitlab-ai-principles-distiller (from .ai/principles/manifest.yml; do not edit)
+  # <<< end generated: mcp-server
+
   # >>> generated: ai-instruction-files — gitlab-ai-principles-distiller (from .ai/principles/manifest.yml; do not edit)
   # distilled_at_sha: 586530a94f045df52e8ae3e37a72e449e7dd1e43
   # source_checksum: 543225a9ec264b32

@@ -64,7 +64,7 @@ export const mockCustomDashboard = {
   __typename: 'CustomDashboard',
 };
 
-export const mockSystemDashboard = {
+const mockSystemDashboard = {
   id: 'gitlab:dashboard:merge_requests',
   name: 'Merge request analytics',
   description: 'Get insights into your merge request lifecycle and view trends over time.',
@@ -103,7 +103,7 @@ export const mockDashboardCompactGridResponse = (gridHeight) => ({
   },
 });
 
-export const mockDashboardWithViews = {
+const mockDashboardWithViews = {
   ...mockCustomDashboard,
   config: {
     ...mockCustomDashboard.config,
@@ -154,7 +154,7 @@ export const mockPanelWithViews = {
   ],
 };
 
-export const mockDashboardWithPanelViews = {
+const mockDashboardWithPanelViews = {
   ...mockCustomDashboard,
   config: {
     ...mockCustomDashboard.config,

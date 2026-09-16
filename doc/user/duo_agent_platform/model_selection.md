@@ -50,6 +50,7 @@ This table lists the default model for each feature in the Agent Platform.
 - GPT-5.2 and GPT-5.3 Codex [added](https://gitlab.com/gitlab-org/modelops/applied-ml/code-suggestions/ai-assist/-/merge_requests/5652) as supported models for Code Review Flow on May 26, 2026.
 - Claude Sonnet 5 [added](https://gitlab.com/gitlab-org/modelops/applied-ml/code-suggestions/ai-assist/-/merge_requests/6383) as a supported model for Code Review Flow on August 3, 2026.
 - Claude Sonnet 4.5 as a supported model for Code Review Flow [deprecated](https://gitlab.com/gitlab-org/modelops/applied-ml/code-suggestions/ai-assist/-/merge_requests/6483) on August 10, 2026 and [removed](https://gitlab.com/gitlab-org/modelops/applied-ml/code-suggestions/ai-assist/-/merge_requests/6621) on August 25, 2026.
+- GLM 5.3, Kimi K3, and MiniMax M3 [added](https://gitlab.com/gitlab-org/modelops/applied-ml/code-suggestions/ai-assist/-/merge_requests/6930) as supported models for GitLab Duo Agentic Chat and all other agents on September 17, 2026.
 
 {{< /history >}}
 
@@ -73,6 +74,7 @@ in the Agent Platform.
 | Gemini 3.6 Flash            | {{< yes >}}             | {{< no >}}       | {{< no >}}           | {{< yes >}}      |
 | Gemini 3.7 Flash            | {{< yes >}}             | {{< no >}}       | {{< no >}}           | {{< yes >}}      |
 | Gemini 3.8 Flash            | {{< yes >}}             | {{< no >}}       | {{< no >}}           | {{< yes >}}      |
+| GLM 5.3                     | {{< yes >}}             | {{< no >}}       | {{< no >}}           | {{< yes >}}      |
 | GPT-5                       | {{< yes >}}             | {{< no >}}       | {{< no >}}           | {{< yes >}}      |
 | GPT-5.1                     | {{< yes >}}             | {{< no >}}       | {{< no >}}           | {{< yes >}}      |
 | GPT-5.2                     | {{< yes >}}             | {{< yes >}}      | {{< yes >}}          | {{< yes >}}      |
@@ -87,6 +89,8 @@ in the Agent Platform.
 | GPT-5.6 Terra <sup>2</sup>  | {{< yes >}}             | {{< no >}}       | {{< no >}}           | {{< yes >}}      |
 | GPT-5.6 Luna <sup>2</sup>   | {{< yes >}}             | {{< no >}}       | {{< no >}}           | {{< yes >}}      |
 | GPT-6 Astra <sup>2</sup>    | {{< yes >}}             | {{< no >}}       | {{< no >}}           | {{< yes >}}      |
+| Kimi K3                     | {{< yes >}}             | {{< no >}}       | {{< no >}}           | {{< yes >}}      |
+| MiniMax M3                  | {{< yes >}}             | {{< no >}}       | {{< no >}}           | {{< yes >}}      |
 
 **Footnotes**:
 

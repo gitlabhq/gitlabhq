@@ -1045,3 +1045,60 @@ principles:
         url: https://docs.gitlab.com/development/bulk_import/
       - path: doc/development/bulk_imports/contributing.md
         url: https://docs.gitlab.com/development/bulk_imports/contributing/
+
+  # ── MCP Server ───────────────────────────────────────────────────────────
+
+  mcp-server:
+    description: MCP server tool development (naming, architecture, GraphQL integration, versioning, governance)
+    group: MCP Server
+    owner_team: '@gitlab-org/ai-powered/mcp-tool-review-board'
+    file_filters:
+      # Tool services
+      - 'app/services/mcp/**/*.rb'
+      - 'ee/app/services/mcp/**/*.rb'
+      - 'ee/app/services/ee/mcp/**/*.rb'
+      # API routes and helpers
+      - 'lib/api/mcp/**/*.rb'
+      - 'lib/api/helpers/mcp/**/*.rb'
+      - 'lib/api/concerns/mcp_access.rb'
+      - 'ee/lib/ee/api/mcp/**/*.rb'
+      - 'ee/lib/ee/api/helpers/mcp_helpers.rb'
+      - 'ee/lib/api/orbit/mcp.rb'
+      - 'ee/lib/api/orbit/mcp_handlers/**/*.rb'
+      # Core library
+      - 'lib/gitlab/mcp/**/*.rb'
+      - 'ee/lib/ee/gitlab/mcp/**/*.rb'
+      # GraphQL queries
+      - 'app/graphql/queries/mcp/**/*.graphql'
+      - 'ee/app/graphql/queries/mcp/**/*.graphql'
+      # Events and workers
+      - 'ee/app/events/mcp/**/*.rb'
+      - 'ee/app/workers/mcp/**/*.rb'
+      # Rake task and cops
+      - 'lib/tasks/gitlab/mcp.rake'
+      - 'rubocop/cop/mcp/**/*.rb'
+      # Specs
+      - 'spec/services/mcp/**/*_spec.rb'
+      - 'spec/requests/api/mcp/**/*_spec.rb'
+      - 'spec/lib/api/mcp/**/*_spec.rb'
+      - 'spec/lib/api/helpers/mcp/**/*_spec.rb'
+      - 'spec/lib/gitlab/mcp/**/*_spec.rb'
+      - 'ee/spec/services/mcp/**/*_spec.rb'
+      - 'ee/spec/services/ee/mcp/**/*_spec.rb'
+      - 'ee/spec/requests/api/mcp/**/*_spec.rb'
+      - 'ee/spec/lib/ee/api/mcp/**/*_spec.rb'
+      - 'ee/spec/lib/api/orbit/mcp_handlers/**/*_spec.rb'
+      - 'ee/spec/lib/ee/gitlab/mcp/**/*_spec.rb'
+      - 'ee/spec/workers/mcp/**/*_spec.rb'
+      - 'spec/lib/api/concerns/mcp_access_spec.rb'
+      - 'spec/tasks/gitlab/mcp_rake_spec.rb'
+      - 'spec/rubocop/cop/mcp/**/*_spec.rb'
+      - 'spec/support/shared_examples/requests/api/mcp_route_setting_shared_examples.rb'
+      - 'ee/spec/requests/api/orbit/mcp_spec.rb'
+      - 'ee/spec/requests/api/mcp_context_exclusion_spec.rb'
+      - 'ee/spec/lib/ee/api/helpers/mcp_helpers_spec.rb'
+    sources:
+      - path: doc/development/duo_agent_platform/mcp/_index.md
+        url: https://docs.gitlab.com/development/duo_agent_platform/mcp/
+      - path: doc/development/duo_agent_platform/mcp/graphql_integration.md
+        url: https://docs.gitlab.com/development/duo_agent_platform/mcp/graphql_integration/

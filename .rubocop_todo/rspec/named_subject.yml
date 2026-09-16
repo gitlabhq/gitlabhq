@@ -531,7 +531,6 @@ RSpec/NamedSubject:
     - 'ee/spec/services/approval_rules/create_service_spec.rb'
     - 'ee/spec/services/approval_rules/finalize_service_spec.rb'
     - 'ee/spec/services/approval_rules/project_rule_destroy_service_spec.rb'
-    - 'ee/spec/services/approval_rules/update_service_spec.rb'
     - 'ee/spec/services/arkose/blocked_users_report_service_spec.rb'
     - 'ee/spec/services/arkose/status_service_spec.rb'
     - 'ee/spec/services/audit_events/streaming/event_type_filters/create_service_spec.rb'

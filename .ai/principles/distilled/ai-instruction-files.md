@@ -1,6 +1,6 @@
 ---
-source_checksum: 543225a9ec264b32
-distilled_at_sha: 586530a94f045df52e8ae3e37a72e449e7dd1e43
+source_checksum: 97a4ccc6746bd154
+distilled_at_sha: a7d16b7982a5a30f75fca32f276001d1f3254a1e
 ---
 <!-- Auto-generated from docs.gitlab.com by gitlab-ai-principles-distiller — do not edit manually -->
 
@@ -52,9 +52,12 @@ distilled_at_sha: 586530a94f045df52e8ae3e37a72e449e7dd1e43
 
 ### Reviewing Auto-Generated Sync Merge Requests
 
-- Compare the distilled diff against the referenced SSOT documentation changes.
-- Confirm no still-valid, SSOT-supported rule was dropped and no unsupported rule was added.
+- Get the output's `distilled_at_sha` from the distilled file's front matter; read the principle's entry in `.ai/principles/manifest.yml` at that SHA, including its sources and optional baseline; read the relevant source sections and baseline at the same SHA.
+- Compare source and manifest changes with the prior `distilled_at_sha` to verify deliberate removals; check for omitted rules and exceptions as well as unsupported additions.
+- Support each content-loss finding with the source path, SHA, and relevant passage; for an unsupported rule, cite the contradictory passage or identify the source sections and baseline checked and explain the absence of support; DO NOT report guidance deliberately removed from the source as lost content.
+- If a required source cannot be retrieved, state the limitation in the review summary instead of raising a speculative inline defect.
 - Confirm the front matter checksums were updated by the tool, not by hand.
+- Keep the source-verification procedure inline in the generated review instructions through distillation and fence reconciliation, rather than relying only on a reference link.
 - Use the `ai-principles-review-feedback` skill to work through every automated review finding before merging a weekly sync merge request.
 - Classify each Duo finding into exactly one of four outcomes before acting: Content defect (distilled text misstates the source — fix on the sync branch), Content gap (distillation dropped a supported rule — restore on the sync branch), Distiller defect (root cause is the tooling — fix the output and open an issue against the distiller), or Judgment call (output is correct but could be closer — record it, no required action).
 - When fixing a finding, restore a baseline-derived rule verbatim (the sync tooling mechanically rejects any alteration); make a source-derived fix faithful and traceable but DO NOT copy source prose verbatim (distilled files hold concrete checkable rules, and a verbatim copy is rephrased on the next run).

@@ -1065,9 +1065,6 @@ msgstr ""
 msgid "%{group_name} moved to pending deletion."
 msgstr ""
 
-msgid "%{group_name}&%{epic_iid} &middot; created %{epic_created} by %{author}"
-msgstr ""
-
 msgid "%{groupsLength} group"
 msgid_plural "%{groupsLength} groups"
 msgstr[0] ""
