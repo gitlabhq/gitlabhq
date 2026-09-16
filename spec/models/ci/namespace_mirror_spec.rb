@@ -138,7 +138,8 @@ RSpec.describe Ci::NamespaceMirror, feature_category: :continuous_integration do
       it 'creates the mirror' do
         expect { sync }.to change { described_class.count }.from(3).to(4)
 
-        expect(namespace.reload.ci_namespace_mirror).to have_attributes(traversal_ids: expected_traversal_ids)
+        expect(namespace.reload.ci_namespace_mirror)
+          .to have_attributes(traversal_ids: expected_traversal_ids, organization_id: namespace.organization_id)
       end
     end
 
@@ -152,7 +153,21 @@ RSpec.describe Ci::NamespaceMirror, feature_category: :continuous_integration do
       it 'updates the mirror' do
         expect { sync }.not_to change { described_class.count }
 
-        expect(namespace.reload.ci_namespace_mirror).to have_attributes(traversal_ids: expected_traversal_ids)
+        expect(namespace.reload.ci_namespace_mirror)
+          .to have_attributes(traversal_ids: expected_traversal_ids, organization_id: namespace.organization_id)
+      end
+
+      context 'when the namespace organization has changed' do
+        let_it_be(:other_organization) { create(:organization) }
+
+        before do
+          namespace.ci_namespace_mirror.update!(organization_id: other_organization.id)
+        end
+
+        it 'updates the organization_id of the mirror' do
+          expect { sync }.to change { namespace.ci_namespace_mirror.reload.organization_id }
+            .from(other_organization.id).to(namespace.organization_id)
+        end
       end
     end
   end

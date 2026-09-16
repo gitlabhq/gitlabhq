@@ -75,48 +75,7 @@ export const createNewMenuProjects = [
   },
 ];
 
-export const createNewMenuGroupsLegacy = [
-  {
-    name: 'This group',
-    items: [
-      {
-        text: 'New project/repository',
-        href: '/projects/new?namespace_id=22',
-      },
-      {
-        text: 'New subgroup',
-        href: '/groups/new?parent_id=22#create-group-pane',
-      },
-      {
-        text: 'New epic',
-        href: '/groups/gitlab-org/-/epics/new',
-      },
-      {
-        text: 'Invite members',
-        component: 'invite_members',
-      },
-    ],
-  },
-  {
-    name: 'GitLab',
-    items: [
-      {
-        text: 'New project/repository',
-        href: '/projects/new',
-      },
-      {
-        text: 'New group',
-        href: '/groups/new',
-      },
-      {
-        text: 'New snippet',
-        href: '/-/snippets/new',
-      },
-    ],
-  },
-];
-
-export const mergeRequestMenuGroup = [
+const mergeRequestMenuGroup = [
   {
     name: 'Merge requests',
     items: [

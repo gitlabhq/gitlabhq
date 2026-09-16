@@ -33,6 +33,7 @@ import {
   WIDGET_TYPE_ERROR_TRACKING,
   WIDGET_TYPE_NOTIFICATIONS,
   WIDGET_TYPE_AGENT_PLAN,
+  WIDGET_TYPE_DECISION_LOG,
 } from 'ee_else_ce/work_items/constants';
 import {
   findCurrentUserTodosWidget,
@@ -590,6 +591,11 @@ export const getNewWorkItemSharedCache = ({
       type: WIDGET_TYPE_AGENT_PLAN,
       aiPlanningEnabled: false,
       __typename: 'WorkItemWidgetAgentPlan',
+    },
+    decisionLog: {
+      ...widgetDefinitionsHash[WIDGET_TYPE_DECISION_LOG],
+      type: WIDGET_TYPE_DECISION_LOG,
+      __typename: 'WorkItemWidgetDecisionLog',
     },
     customFields: {
       customFieldValues: [],

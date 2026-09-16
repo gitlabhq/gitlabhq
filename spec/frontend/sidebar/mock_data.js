@@ -29,11 +29,6 @@ export const mockUser1 = createMockUser({
   compositeIdentityEnforced: false,
 });
 
-export const mockUserWithType1 = {
-  ...mockUser1,
-  type: userTypes.human,
-};
-
 export const mockUser2 = createMockUser({
   id: 'gid://gitlab/User/5',
   avatarUrl: '/avatar2',
@@ -70,12 +65,12 @@ export const mockDisabledUser = createMockUser({
   compositeIdentityEnforced: true,
 });
 
-export const mockUserWithType2 = {
+const mockUserWithType2 = {
   ...mockUser2,
   type: userTypes.human,
 };
 
-export const placeholderAuthor = {
+const placeholderAuthor = {
   id: 'some-placeholder-user',
   type: userTypes.placeholder,
   avatarUrl: '/avatar',

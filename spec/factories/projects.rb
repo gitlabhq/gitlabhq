@@ -196,7 +196,9 @@ FactoryBot.define do
       end
 
       # simulating ::Projects::ProcessSyncEventsWorker because most tests don't run Sidekiq inline
-      project.create_ci_project_mirror!(namespace_id: project.namespace_id) unless project.ci_project_mirror
+      unless project.ci_project_mirror
+        project.create_ci_project_mirror!(namespace_id: project.namespace_id, organization_id: project.organization_id)
+      end
 
       project.add_members(Array.wrap(evaluator.guests), :guest)
       project.add_members(Array.wrap(evaluator.planners), :planner)

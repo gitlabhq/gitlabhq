@@ -1,6 +1,6 @@
 import * as timeago from 'timeago.js';
 import { diffSec } from 'timeago.js/lib/utils/date';
-import { newDate } from '~/lib/utils/datetime/date_calculation_utility';
+import { isValidDate, newDate } from '~/lib/utils/datetime/date_calculation_utility';
 import {
   DEFAULT_DATE_TIME_FORMAT,
   DATE_ONLY_FORMAT,
@@ -187,13 +187,18 @@ export const getTimeago = (absoluteTimeformatName, { showDateWhenOverAYear = tru
 
 /**
  * For the given elements, sets a tooltip with a formatted date.
+ * An element whose `datetime` cannot be parsed keeps its server-rendered text and title.
  * @param {Array<Node>|NodeList} elements
  * @param {Boolean} updateTooltip
  */
 export const localTimeAgo = (elements, updateTooltip = true) => {
   const { format } = getTimeago();
-  elements.forEach((el) => {
-    el.innerText = format(newDate(el.dateTime), timeagoLanguageCode);
+  const parsable = Array.from(elements)
+    .map((el) => ({ el, date: newDate(el.dateTime) }))
+    .filter(({ date }) => isValidDate(date));
+
+  parsable.forEach(({ el, date }) => {
+    el.innerText = format(date, timeagoLanguageCode);
   });
 
   if (!updateTooltip) {
@@ -201,12 +206,9 @@ export const localTimeAgo = (elements, updateTooltip = true) => {
   }
 
   function addTimeAgoTooltip() {
-    elements.forEach((el) => {
+    parsable.forEach(({ el, date }) => {
       // Recreate with custom template
-      el.setAttribute(
-        'title',
-        localeDateFormat.asDateTimeFullWithWeekday.format(newDate(el.dateTime)),
-      );
+      el.setAttribute('title', localeDateFormat.asDateTimeFullWithWeekday.format(date));
     });
   }
 

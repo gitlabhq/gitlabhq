@@ -8,6 +8,7 @@ import Diagram from '~/content_editor/extensions/diagram';
 import Frontmatter from '~/content_editor/extensions/frontmatter';
 import Selection from '~/content_editor/extensions/selection';
 import Heading from '~/content_editor/extensions/heading';
+import HTMLComment from '~/content_editor/extensions/html_comment';
 import HorizontalRule from '~/content_editor/extensions/horizontal_rule';
 import Bold from '~/content_editor/extensions/bold';
 import Blockquote from '~/content_editor/extensions/blockquote';
@@ -38,6 +39,7 @@ describe('content_editor/extensions/copy_paste', () => {
   let bold;
   let italic;
   let heading;
+  let htmlComment;
   let horizontalRule;
   let codeBlock;
   let blockquote;
@@ -76,6 +78,7 @@ describe('content_editor/extensions/copy_paste', () => {
         Diagram,
         Frontmatter,
         Heading,
+        HTMLComment,
         HorizontalRule,
         Blockquote,
         BulletList,
@@ -97,6 +100,7 @@ describe('content_editor/extensions/copy_paste', () => {
       bold,
       italic,
       heading,
+      htmlComment,
       horizontalRule,
       codeBlock,
       blockquote,
@@ -173,6 +177,68 @@ describe('content_editor/extensions/copy_paste', () => {
 
     it('modifies the document', () => {
       expect(tiptapEditor.state.doc.toJSON()).toEqual(expectedDoc().toJSON());
+    });
+  });
+
+  describe('when the selection contains an HTML comment', () => {
+    beforeEach(() => {
+      tiptapEditor.commands.setContent(
+        doc(htmlComment({ description: 'my comment' }), p('Some text')).toJSON(),
+      );
+      tiptapEditor.commands.selectAll();
+    });
+
+    describe.each`
+      eventName | expectedDoc
+      ${'cut'}  | ${() => doc(p())}
+      ${'copy'} | ${() => doc(htmlComment({ description: 'my comment' }), p('Some text'))}
+    `('when $eventName event is triggered', ({ eventName, expectedDoc }) => {
+      let event;
+
+      beforeEach(() => {
+        event = buildClipboardEvent({ eventName });
+
+        jest.spyOn(event, 'preventDefault');
+
+        tiptapEditor.view.dispatchEvent(event);
+      });
+
+      it('writes the comment to the HTML and markdown clipboard payloads', () => {
+        expect(event.clipboardData.setData).toHaveBeenCalledWith('text/plain', 'Some text');
+        expect(event.clipboardData.setData).toHaveBeenCalledWith(
+          'text/html',
+          '<comment data-description="my comment"></comment><p dir="auto">Some text</p>',
+        );
+        expect(event.clipboardData.setData).toHaveBeenCalledWith(
+          'text/x-gfm',
+          '<!--my comment-->\n\nSome text',
+        );
+        expect(event.preventDefault).toHaveBeenCalled();
+      });
+
+      it('modifies the document', () => {
+        expect(tiptapEditor.state.doc.toJSON()).toEqual(expectedDoc().toJSON());
+      });
+    });
+
+    it('restores the comment when its HTML clipboard payload is pasted back', async () => {
+      const event = buildClipboardEvent({ eventName: 'copy' });
+      tiptapEditor.view.dispatchEvent(event);
+      const clipboard = Object.fromEntries(event.clipboardData.setData.mock.calls);
+
+      tiptapEditor.commands.setContent('<p></p>');
+
+      await triggerPasteEventHandler(
+        buildClipboardEvent({
+          types: ['text/plain', 'text/html'],
+          data: { 'text/plain': clipboard['text/plain'], 'text/html': clipboard['text/html'] },
+        }),
+      );
+      await waitForPromises();
+
+      expect(tiptapEditor.state.doc.toJSON()).toEqual(
+        doc(htmlComment({ description: 'my comment' }), p('Some text')).toJSON(),
+      );
     });
   });
 
@@ -320,6 +386,32 @@ describe('content_editor/extensions/copy_paste', () => {
           ['X', 'Y'],
           ['C', 'D'],
         ]);
+      });
+
+      it('keeps an HTML comment inside a pasted cell', async () => {
+        const result = await triggerPasteEventHandler(
+          buildClipboardEvent({
+            types: ['text/plain', 'text/html'],
+            data: {
+              'text/plain': 'X\tY',
+              'text/html':
+                '<table><tr><td><comment data-description="KEEP THIS COMMENT"></comment><p>X</p></td><td><p>Y</p></td></tr></table>',
+            },
+          }),
+        );
+
+        expect(result).toBe(true);
+        expect(getTableRows()).toEqual([
+          ['X', 'Y'],
+          ['C', 'D'],
+        ]);
+
+        const comments = [];
+        tiptapEditor.state.doc.descendants((node) => {
+          if (node.type.name === 'htmlComment') comments.push(node.attrs.description);
+          return true;
+        });
+        expect(comments).toEqual(['KEEP THIS COMMENT']);
       });
 
       it('auto-expands the table when pasting more cells than remaining columns', async () => {

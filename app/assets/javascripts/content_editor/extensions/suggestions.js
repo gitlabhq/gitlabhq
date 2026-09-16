@@ -249,6 +249,10 @@ export default Node.create({
     };
   },
 
+  renderHTML() {
+    return ['div'];
+  },
+
   addProseMirrorPlugins() {
     const { serializer, autocompleteHelper } = this.options;
 

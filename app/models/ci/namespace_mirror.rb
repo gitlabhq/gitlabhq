@@ -53,7 +53,14 @@ module Ci
         namespace = event.namespace
         traversal_ids = namespace.self_and_ancestor_ids(hierarchy_order: :desc)
 
-        upsert({ namespace_id: event.namespace_id, traversal_ids: traversal_ids }, unique_by: :namespace_id)
+        upsert(
+          {
+            namespace_id: event.namespace_id,
+            traversal_ids: traversal_ids,
+            organization_id: namespace.organization_id
+          },
+          unique_by: :namespace_id
+        )
       end
     end
   end

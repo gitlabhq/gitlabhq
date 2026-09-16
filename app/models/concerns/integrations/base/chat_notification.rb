@@ -311,7 +311,7 @@ module Integrations
         when "incident"
           Integrations::ChatMessage::IssueMessage.new(data) unless update?(data)
         when "merge_request"
-          Integrations::ChatMessage::MergeMessage.new(data) unless update?(data)
+          Integrations::ChatMessage::MergeMessage.new(data) if notify_merge_request_message?(data)
         when "note"
           Integrations::ChatMessage::NoteMessage.new(data)
         when "pipeline"
@@ -347,6 +347,16 @@ module Integrations
 
       def update?(data)
         data[:object_attributes][:action] == 'update'
+      end
+
+      def notify_merge_request_message?(data)
+        !update?(data) || notify_reviewers_change?(data)
+      end
+
+      def notify_reviewers_change?(data)
+        return false if Feature.disabled?(:chat_notify_reviewer_change, project)
+
+        data.dig(:changes, :reviewers).present?
       end
 
       def should_pipeline_be_notified?(data)

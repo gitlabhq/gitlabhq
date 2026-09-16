@@ -1,6 +1,6 @@
 import { EN } from '~/language_switcher/constants';
 
-export const ZH_CN = {
+const ZH_CN = {
   value: 'zh_CN',
   text: '简体中文',
 };
@@ -15,7 +15,7 @@ export const ZH_HK = {
   text: '繁体中文（香港）',
 };
 
-export const ZH_TW = {
+const ZH_TW = {
   value: 'zh_TW',
   text: '繁体中文（台湾）',
 };

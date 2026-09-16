@@ -5,6 +5,14 @@
     @include build-log();
   }
 
+  .job-log-top-bar-sentinel {
+    position: absolute;
+    top: 0;
+    height: 1px;
+    width: 100%;
+    pointer-events: none;
+  }
+
   .top-bar {
     @include job-log-top-bar;
 
@@ -32,7 +40,7 @@
 
 .right-sidebar.build-sidebar {
   padding: 0;
-  top: $calc-application-header-height;
+  top: calc($calc-application-header-height + 0.25rem); // Offset used for alignment with the panel header
 
   @include gl-container-width-up(lg, panel) {
     border-left-width: 0;

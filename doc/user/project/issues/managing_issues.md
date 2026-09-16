@@ -863,9 +863,9 @@ To change the assignee on an issue:
 
 1. In the top bar, select **Search or go to** and find your project.
 1. In the left sidebar, select **Plan** > **Work items**, then filter by **Type** = **Issue** and select your issue.
-1. In the right sidebar, in the **Assignees** section, select **Edit**.
-1. From the dropdown list, select the user to add as an assignee.
-1. Select any area outside the dropdown list.
+1. In the right sidebar, in the **Assignee** or **Assignees** section, select **Edit**.
+1. From the dropdown list, select the users to assign.
+1. Select **Apply**, or select any area outside the dropdown list.
 
 The assignee is changed without having to refresh the page.
 

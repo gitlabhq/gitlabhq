@@ -256,9 +256,10 @@ module EmailsHelper
     case format
     when :html
       settings_link_to = generate_link(_('two-factor authentication settings'), url).html_safe
-      _("If you want to re-enable two-factor authentication, visit the %{settings_link_to} page.").html_safe % {
+      safe_format(
+        _("If you want to re-enable two-factor authentication, visit the %{settings_link_to} page."),
         settings_link_to: settings_link_to
-      }
+      )
     else
       _('If you want to re-enable two-factor authentication, visit %{two_factor_link}') % {
         two_factor_link: url
@@ -272,10 +273,10 @@ module EmailsHelper
     case format
     when :html
       settings_link_to = generate_link(_("two-factor authentication settings"), url).html_safe
-      s_("TwoFactorEmailNotification|To manage your two-factor authentication, visit the %{settings_link_to} page.")
-      .html_safe % {
+      safe_format(
+        s_("TwoFactorEmailNotification|To manage your two-factor authentication, visit the %{settings_link_to} page."),
         settings_link_to: settings_link_to
-      }
+      )
     else
       s_("TwoFactorEmailNotification|To manage your two-factor authentication, visit %{two_factor_link}") % {
         two_factor_link: url
@@ -293,9 +294,10 @@ module EmailsHelper
     case format
     when :html
       settings_link_to = generate_link(_('email address settings'), url).html_safe
-      _("If you want to remove this email address, visit the %{settings_link_to} page.").html_safe % {
+      safe_format(
+        _("If you want to remove this email address, visit the %{settings_link_to} page."),
         settings_link_to: settings_link_to
-      }
+      )
     else
       _('If you want to remove this email address, visit %{profile_link}') %
         { profile_link: url }
@@ -308,7 +310,10 @@ module EmailsHelper
     case format
     when :html
       link_to = generate_link(url, url).html_safe
-      _('An administrator changed the password for your GitLab account on %{link_to}.').html_safe % { link_to: link_to }
+      safe_format(
+        _('An administrator changed the password for your GitLab account on %{link_to}.'),
+        link_to: link_to
+      )
     else
       _('An administrator changed the password for your GitLab account on %{link_to}.') % { link_to: url }
     end
@@ -386,9 +391,10 @@ module EmailsHelper
     case format
     when :html
       link_to = generate_link('group membership', url).html_safe
-      _('For additional information, review your %{link_to} or contact your group owner.').html_safe % {
+      safe_format(
+        _('For additional information, review your %{link_to} or contact your group owner.'),
         link_to: link_to
-      }
+      )
     else
       _('For additional information, review your group membership: %{link_to} or contact your group owner.') % {
         link_to: url
@@ -397,10 +403,14 @@ module EmailsHelper
   end
 
   def instance_access_request_text(user, format: nil)
-    _('%{username} has asked for a GitLab account on your instance %{host}:').html_safe % {
-      username: sanitize_name(user.name),
-      host: gitlab_host_link(format)
-    }
+    message = _('%{username} has asked for a GitLab account on your instance %{host}:')
+    values = { username: sanitize_name(user.name), host: gitlab_host_link(format) }
+
+    if format == :html
+      safe_format(message, values)
+    else
+      message % values
+    end
   end
 
   def instance_access_request_link(user, format: nil)
@@ -409,10 +419,11 @@ module EmailsHelper
     case format
     when :html
       user_page = '<a href="%{url}" target="_blank" rel="noopener noreferrer">'.html_safe % { url: url }
-      _("Click %{link_start}here%{link_end} to view the request.").html_safe % {
+      safe_format(
+        _("Click %{link_start}here%{link_end} to view the request."),
         link_start: user_page,
         link_end: '</a>'.html_safe
-      }
+      )
     else
       _('Click %{link_to} to view the request.') % { link_to: url }
     end
@@ -537,12 +548,13 @@ module EmailsHelper
 
       case reason
       when NotificationReason::OWN_ACTIVITY
-        _(
-          "You're receiving this email because of your activity on %{host}. " \
-            "%{unsubscribe_link_start}Unsubscribe%{unsubscribe_link_end} from this thread &middot; " \
-            "%{manage_notifications_link_start}Manage all notifications%{manage_notifications_link_end} &middot; " \
-            "%{help_link_start}Help%{help_link_end}"
-        ).html_safe % {
+        safe_format(
+          _(
+            "You're receiving this email because of your activity on %{host}. " \
+              "%{unsubscribe_link_start}Unsubscribe%{unsubscribe_link_end} from this thread &middot; " \
+              "%{manage_notifications_link_start}Manage all notifications%{manage_notifications_link_end} &middot; " \
+              "%{help_link_start}Help%{help_link_end}"
+          ),
           host: gitlab_host_link(format),
           unsubscribe_link_start: unsubscribe_link_start,
           unsubscribe_link_end: unsubscribe_link_end,
@@ -550,14 +562,15 @@ module EmailsHelper
           manage_notifications_link_end: manage_notifications_link_end,
           help_link_start: help_link_start,
           help_link_end: help_link_end
-        }
+        )
       when NotificationReason::ASSIGNED
-        _(
-          "You're receiving this email because you have been assigned an item on %{host}. " \
-            "%{unsubscribe_link_start}Unsubscribe%{unsubscribe_link_end} from this thread &middot; " \
-            "%{manage_notifications_link_start}Manage all notifications%{manage_notifications_link_end} &middot; " \
-            "%{help_link_start}Help%{help_link_end}"
-        ).html_safe % {
+        safe_format(
+          _(
+            "You're receiving this email because you have been assigned an item on %{host}. " \
+              "%{unsubscribe_link_start}Unsubscribe%{unsubscribe_link_end} from this thread &middot; " \
+              "%{manage_notifications_link_start}Manage all notifications%{manage_notifications_link_end} &middot; " \
+              "%{help_link_start}Help%{help_link_end}"
+          ),
           host: gitlab_host_link(format),
           unsubscribe_link_start: unsubscribe_link_start,
           unsubscribe_link_end: unsubscribe_link_end,
@@ -565,14 +578,15 @@ module EmailsHelper
           manage_notifications_link_end: manage_notifications_link_end,
           help_link_start: help_link_start,
           help_link_end: help_link_end
-        }
+        )
       when NotificationReason::MENTIONED
-        _(
-          "You're receiving this email because you have been mentioned on %{host}. " \
-            "%{unsubscribe_link_start}Unsubscribe%{unsubscribe_link_end} from this thread &middot; " \
-            "%{manage_notifications_link_start}Manage all notifications%{manage_notifications_link_end} &middot; " \
-            "%{help_link_start}Help%{help_link_end}"
-        ).html_safe % {
+        safe_format(
+          _(
+            "You're receiving this email because you have been mentioned on %{host}. " \
+              "%{unsubscribe_link_start}Unsubscribe%{unsubscribe_link_end} from this thread &middot; " \
+              "%{manage_notifications_link_start}Manage all notifications%{manage_notifications_link_end} &middot; " \
+              "%{help_link_start}Help%{help_link_end}"
+          ),
           host: gitlab_host_link(format),
           unsubscribe_link_start: unsubscribe_link_start,
           unsubscribe_link_end: unsubscribe_link_end,
@@ -580,14 +594,15 @@ module EmailsHelper
           manage_notifications_link_end: manage_notifications_link_end,
           help_link_start: help_link_start,
           help_link_end: help_link_end
-        }
+        )
       else
-        _(
-          "You're receiving this email because of your account on %{host}. " \
-            "%{unsubscribe_link_start}Unsubscribe%{unsubscribe_link_end} from this thread &middot; " \
-            "%{manage_notifications_link_start}Manage all notifications%{manage_notifications_link_end} &middot; " \
-            "%{help_link_start}Help%{help_link_end}"
-        ).html_safe % {
+        safe_format(
+          _(
+            "You're receiving this email because of your account on %{host}. " \
+              "%{unsubscribe_link_start}Unsubscribe%{unsubscribe_link_end} from this thread &middot; " \
+              "%{manage_notifications_link_start}Manage all notifications%{manage_notifications_link_end} &middot; " \
+              "%{help_link_start}Help%{help_link_end}"
+          ),
           host: gitlab_host_link(format),
           unsubscribe_link_start: unsubscribe_link_start,
           unsubscribe_link_end: unsubscribe_link_end,
@@ -595,7 +610,7 @@ module EmailsHelper
           manage_notifications_link_end: manage_notifications_link_end,
           help_link_start: help_link_start,
           help_link_end: help_link_end
-        }
+        )
       end
     else
       reason_text = case reason
@@ -635,17 +650,18 @@ module EmailsHelper
       }
       help_link_end = '</a>'.html_safe
 
-      _(
-        "You're receiving this email because of your account on %{host}. %{manage_label_subscriptions_link_start}" \
-          "Manage label subscriptions%{manage_label_subscriptions_link_end} &middot; " \
-          "%{help_link_start}Help%{help_link_end}"
-      ).html_safe % {
+      safe_format(
+        _(
+          "You're receiving this email because of your account on %{host}. %{manage_label_subscriptions_link_start}" \
+            "Manage label subscriptions%{manage_label_subscriptions_link_end} &middot; " \
+            "%{help_link_start}Help%{help_link_end}"
+        ),
         host: gitlab_host_link(format),
         manage_label_subscriptions_link_start: manage_label_subscriptions_link_start,
         manage_label_subscriptions_link_end: manage_label_subscriptions_link_end,
         help_link_start: help_link_start,
         help_link_end: help_link_end
-      }
+      )
     else
       _("You're receiving this email because of your account on %{host}. " \
         "Manage label subscriptions: %{manage_label_subscriptions_url} | Help: %{help_url}") % {
@@ -672,28 +688,31 @@ module EmailsHelper
 
       case reason
       when NotificationReason::MENTIONED
-        _(
-          "You're receiving this email because you have been mentioned on %{host}. " \
-            "%{manage_notifications_link_start}Manage all notifications%{manage_notifications_link_end} &middot; " \
-            "%{help_link_start}Help%{help_link_end}"
-        ).html_safe % {
+        safe_format(
+          _(
+            "You're receiving this email because you have been mentioned on %{host}. " \
+              "%{manage_notifications_link_start}Manage all notifications%{manage_notifications_link_end} &middot; " \
+              "%{help_link_start}Help%{help_link_end}"
+          ),
           host: gitlab_host_link(format),
           manage_notifications_link_start: manage_notifications_link_start,
           manage_notifications_link_end: manage_notifications_link_end,
           help_link_start: help_link_start,
           help_link_end: help_link_end
-        }
+        )
       else
-        _(
-          "You're receiving this email because of your account on %{host}. %{manage_notifications_link_start}Manage " \
-            "all notifications%{manage_notifications_link_end} &middot; %{help_link_start}Help%{help_link_end}"
-        ).html_safe % {
+        safe_format(
+          _(
+            "You're receiving this email because of your account on %{host}. " \
+              "%{manage_notifications_link_start}Manage all notifications%{manage_notifications_link_end} &middot; " \
+              "%{help_link_start}Help%{help_link_end}"
+          ),
           host: gitlab_host_link(format),
           manage_notifications_link_start: manage_notifications_link_start,
           manage_notifications_link_end: manage_notifications_link_end,
           help_link_start: help_link_start,
           help_link_end: help_link_end
-        }
+        )
       end
     else
       reason_text = case reason
@@ -714,23 +733,21 @@ module EmailsHelper
   end
 
   def notification_reason_text_without_links(reason:, format:)
-    case reason
-    when NotificationReason::OWN_ACTIVITY
-      _("You're receiving this email because of your activity on %{host}.").html_safe % {
-        host: gitlab_host_link(format)
-      }
-    when NotificationReason::ASSIGNED
-      _("You're receiving this email because you have been assigned an item on %{host}.").html_safe % {
-        host: gitlab_host_link(format)
-      }
-    when NotificationReason::MENTIONED
-      _("You're receiving this email because you have been mentioned on %{host}.").html_safe % {
-        host: gitlab_host_link(format)
-      }
+    reason_string = case reason
+                    when NotificationReason::OWN_ACTIVITY
+                      _("You're receiving this email because of your activity on %{host}.")
+                    when NotificationReason::ASSIGNED
+                      _("You're receiving this email because you have been assigned an item on %{host}.")
+                    when NotificationReason::MENTIONED
+                      _("You're receiving this email because you have been mentioned on %{host}.")
+                    else
+                      _("You're receiving this email because of your account on %{host}.")
+                    end
+
+    if format == :html
+      safe_format(reason_string, host: gitlab_host_link(format))
     else
-      _("You're receiving this email because of your account on %{host}.").html_safe % {
-        host: gitlab_host_link(format)
-      }
+      reason_string % { host: gitlab_host_link(format) }
     end
   end
 end

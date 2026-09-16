@@ -1,6 +1,13 @@
 :root {
   --layout-sticky-header-height: 0px; // stylelint-disable-line length-zero-no-unit
   --container-padding-x: #{$gl-spacing-scale-4};
+  --ai-panel-width: 0px; // stylelint-disable-line length-zero-no-unit
+  --ai-navigation-rail-size: 0px; // stylelint-disable-line length-zero-no-unit
+}
+
+:root.page-with-ai-panel {
+  --ai-panel-width: clamp(25rem, 20vw, 35rem);
+  --ai-navigation-rail-size: 2.5rem;
 }
 
 html {
@@ -51,30 +58,33 @@ html {
 }
 
 .layout-page {
-  @apply gl-pt-0;
-  @apply gl-pb-3;
+  @apply gl-py-0;
 }
 
 .page-with-panels {
   .layout-page:where(.page-with-super-sidebar) {
     @apply gl-grid;
     @apply gl-grid-cols-1;
-    @apply gl-grid-rows-[auto,1fr,auto];
+    @apply gl-grid-rows-[auto,1fr,auto,var(--ai-navigation-rail-size)];
     @apply gl-gap-0;
-    @apply sm:gl-px-3;
+    @apply sm:gl-pb-3;
     @apply gl-min-h-0;
     @apply gl-flex-1;
+
+    @apply sm:gl-px-3;
 
     grid-template-areas:
       "broadcast-message"
       "panels"
-      "ai-panels";
+      "ai-panel"
+      "ai-navigation-rail";
 
     @include media-breakpoint-up(lg) {
-      @apply gl-grid-cols-[auto,1fr];
+      @apply gl-grid-cols-[auto,1fr,auto,var(--ai-navigation-rail-size)];
+      @apply gl-grid-rows-[auto,1fr];
       grid-template-areas:
-        "super-sidebar-nav broadcast-message broadcast-message"
-        "super-sidebar-nav panels ai-panels";
+        "super-sidebar-nav broadcast-message broadcast-message ."
+        "super-sidebar-nav panels ai-panel ai-navigation-rail";
     }
   }
 
@@ -96,6 +106,12 @@ html {
   .panels-container {
     grid-area: panels;
   }
+}
+
+.page-with-panels.page-with-ai-panel .layout-page {
+  @apply sm:gl-pb-0;
+  @apply lg:gl-pb-3;
+  @apply lg:gl-pr-0;
 }
 
 .panels-container {
@@ -142,34 +158,26 @@ html {
   }
 }
 
-.ai-panels {
-  grid-area: ai-panels;
+.ai-panel-wrapper {
+  grid-area: ai-panel;
   overflow: inherit;
-  // Negative margins compensate for parent container padding/spacing
-  // to allow AI panels to extend to the edge of the viewport
-  @apply -gl-mb-3;      // Move below bottom edge on small viewport
-  @apply lg:gl-mb-0;    // Reset margin on larger viewport
-  @apply lg:-gl-mr-3;   // Extend panels to right edge on large viewport
-
-  --ai-panel-width: clamp(25rem, 20vw, 35rem);
-  --ai-navigation-rail-size: 2.5rem;
-
-  @include media-breakpoint-up(xl) {
-    min-width: var(--ai-navigation-rail-size);
-  }
+  @apply gl-relative;
 }
 
 .ai-navigation-rail {
+  grid-area: ai-navigation-rail;
+
   @apply gl-flex;
   @apply gl-flex-1;
-  @apply lg:gl-flex-col;
   @apply gl-items-center;
   @apply gl-gap-5;
-  @apply lg:gl-gap-3;
   @apply gl-p-3;
   @apply gl-h-[var(--ai-navigation-rail-size)];
-  @apply lg:gl-h-full;
+
+  @apply lg:gl-flex-col;
+  @apply lg:gl-gap-3;
   @apply lg:gl-w-[var(--ai-navigation-rail-size)];
+  @apply lg:gl-h-full;
 
   .gl-nav-item.selected::before {
     @apply -gl-bottom-[6px];
@@ -184,12 +192,13 @@ html {
     @apply gl-grid-cols-[auto,2fr,3fr];
   }
 
-  .ai-panels {
+  .ai-panel-wrapper {
     grid-column-start: panels;
-    grid-column-end: ai-panels;
+    grid-column-end: ai-panel;
   }
 
   .ai-panel {
+    @apply gl-w-full;
     @apply gl-border-l-transparent;
     @apply dark:gl-border-l-subtle;
     @apply gl-rounded-xl;
@@ -204,9 +213,13 @@ html {
 
   // Preserving other panels when DAP is maximized on bigger screens
   @media(min-width: #{$paneled-layout-ultra-wide-breakpoint}) {
-    .ai-panels {
-      grid-column-start: ai-panels;
-      width: auto;
+    .ai-panel-wrapper {
+      grid-column-start: ai-panel;
+    }
+
+    .ai-panel {
+      @apply gl-border-l;
+      @apply gl-rounded-l-none;
     }
 
     .panels-container {

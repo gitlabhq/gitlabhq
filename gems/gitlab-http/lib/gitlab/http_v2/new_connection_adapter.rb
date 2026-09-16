@@ -31,6 +31,7 @@ module Gitlab
         @allow_local_requests = options.delete(:allow_local_requests)
         @extra_allowed_uris = options.delete(:extra_allowed_uris)
         @deny_all_requests_except_allowed = options.delete(:deny_all_requests_except_allowed)
+        @deny_cloud_metadata_requests = options.delete(:deny_cloud_metadata_requests)
         @outbound_local_requests_allowlist = options.delete(:outbound_local_requests_allowlist)
         @dns_rebinding_protection_enabled = options.delete(:dns_rebinding_protection_enabled)
       end
@@ -76,6 +77,7 @@ module Gitlab
           extra_allowed_uris: @extra_allowed_uris,
           schemes: %w[http https],
           deny_all_requests_except_allowed: @deny_all_requests_except_allowed,
+          deny_cloud_metadata_requests: @deny_cloud_metadata_requests,
           outbound_local_requests_allowlist: @outbound_local_requests_allowlist,
           dns_rebind_protection: @dns_rebinding_protection_enabled
         }.compact

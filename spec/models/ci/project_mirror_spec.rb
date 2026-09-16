@@ -63,7 +63,8 @@ RSpec.describe Ci::ProjectMirror, feature_category: :continuous_integration do
       it 'creates a ci_projects record' do
         expect { sync }.to change { described_class.count }.from(0).to(1)
 
-        expect(project.ci_project_mirror).to have_attributes(namespace_id: group2.id)
+        expect(project.ci_project_mirror)
+          .to have_attributes(namespace_id: group2.id, organization_id: project.organization_id)
       end
     end
 
@@ -71,7 +72,21 @@ RSpec.describe Ci::ProjectMirror, feature_category: :continuous_integration do
       it 'updates the related ci_projects record' do
         expect { sync }.not_to change { described_class.count }
 
-        expect(project.ci_project_mirror).to have_attributes(namespace_id: group2.id)
+        expect(project.ci_project_mirror)
+          .to have_attributes(namespace_id: group2.id, organization_id: project.organization_id)
+      end
+
+      context 'when the project organization has changed' do
+        let_it_be(:other_organization) { create(:organization) }
+
+        before do
+          project.ci_project_mirror.update!(organization_id: other_organization.id)
+        end
+
+        it 'updates the organization_id of the ci_projects record' do
+          expect { sync }.to change { project.ci_project_mirror.reload.organization_id }
+            .from(other_organization.id).to(project.organization_id)
+        end
       end
     end
   end

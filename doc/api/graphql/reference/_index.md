@@ -73415,6 +73415,7 @@ Name of the feature that the callout is for.
 | <a id="usercalloutfeaturenameenum-vulnerability_report_limited_experience"></a>`VULNERABILITY_REPORT_LIMITED_EXPERIENCE` | Callout feature name for vulnerability_report_limited_experience. |
 | <a id="usercalloutfeaturenameenum-web_ide_alert_dismissed"></a>`WEB_IDE_ALERT_DISMISSED` | Callout feature name for web_ide_alert_dismissed. |
 | <a id="usercalloutfeaturenameenum-web_ide_ci_environments_guidance"></a>`WEB_IDE_CI_ENVIRONMENTS_GUIDANCE` | Callout feature name for web_ide_ci_environments_guidance. |
+| <a id="usercalloutfeaturenameenum-work_item_decision_log_popover"></a>`WORK_ITEM_DECISION_LOG_POPOVER` | Callout feature name for work_item_decision_log_popover. |
 | <a id="usercalloutfeaturenameenum-work_item_epic_feedback"></a>`WORK_ITEM_EPIC_FEEDBACK` | Callout feature name for work_item_epic_feedback. |
 
 ### `UserEventFilter`

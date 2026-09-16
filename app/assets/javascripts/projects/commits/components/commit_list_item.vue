@@ -7,7 +7,6 @@ import UserAvatarLink from '~/vue_shared/components/user_avatar/user_avatar_link
 import UserAvatarImage from '~/vue_shared/components/user_avatar/user_avatar_image.vue';
 import defaultAvatarUrl from 'images/no_avatar.png';
 import TimeagoTooltip from '~/vue_shared/components/time_ago_tooltip.vue';
-import { isValidDate, newDate } from '~/lib/utils/datetime_utility';
 import { getIdFromGraphQLId } from '~/graphql_shared/utils';
 import ExpandCollapseButton from '~/vue_shared/components/expand_collapse_button/expand_collapse_button.vue';
 import CommitListItemActionButtons from './commit_list_item_action_buttons.vue';
@@ -60,9 +59,6 @@ export default {
     },
     anchorId() {
       return `commit-list-item-${this.commit.id}`;
-    },
-    hasParsableAuthoredDate() {
-      return isValidDate(newDate(this.commit.authoredDate));
     },
     isExpanded() {
       return !this.isCollapsed && this.descriptionReady;
@@ -174,14 +170,10 @@ export default {
             </span>
             {{ __('authored') }}
             <timeago-tooltip
-              v-if="hasParsableAuthoredDate"
               :time="commit.authoredDate"
               tooltip-placement="bottom"
               data-testid="commit-authored-date"
             />
-            <span v-else data-testid="commit-authored-date-fallback">{{
-              commit.authoredDate
-            }}</span>
           </div>
         </h3>
         <div class="gl-flex gl-items-center gl-gap-4">

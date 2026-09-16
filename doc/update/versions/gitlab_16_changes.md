@@ -628,6 +628,13 @@ Specific information applies to installations using Geo:
   sudo gitlab-rails runner 'Feature.disable(:geo_object_storage_verification)'
   ```
 
+  This issue was fixed by the patch releases listed in the following table, with a further fix in GitLab 16.7.0.
+  If you disabled object storage verification as a workaround, re-enable it after you upgrade to a fixed release:
+
+  ```shell
+  sudo gitlab-rails runner 'Feature.enable(:geo_object_storage_verification)'
+  ```
+
   **Affected releases**:
 
   | Affected minor releases | Affected patch releases | Fixed in |
@@ -811,6 +818,13 @@ Specific information applies to installations using Geo:
 
   ```shell
   sudo gitlab-rails runner 'Feature.disable(:geo_object_storage_verification)'
+  ```
+
+  This issue was fixed by the patch releases listed in the following table, with a further fix in GitLab 16.7.0.
+  If you disabled object storage verification as a workaround, re-enable it after you upgrade to a fixed release:
+
+  ```shell
+  sudo gitlab-rails runner 'Feature.enable(:geo_object_storage_verification)'
   ```
 
   **Affected releases**:

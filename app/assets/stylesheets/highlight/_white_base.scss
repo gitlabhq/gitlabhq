@@ -84,7 +84,10 @@ $white-gc-bg: #eaf2f5;
   --diff-expansion-background-color: #{$gl-color-neutral-100};
 
   --code-background: #{$gl-color-neutral-0};
-  --code-empty-background: #{$gl-color-neutral-10};
+  --code-line-number-background-color: #{$gl-color-neutral-0};
+  // Alpha keeps empty and meta rows a hair off the code background; the neutral-10
+  // token was re-hued warmer in @gitlab/ui 137.2.0 and reads as a visible band.
+  --code-empty-background: #{$gl-color-alpha-dark-2};
   --code-border-color: #{$gl-color-neutral-100};
   --code-changed-border-color: #{rgba(0,0,0,0.1)};
 
@@ -94,8 +97,16 @@ $white-gc-bg: #eaf2f5;
   --code-new-diff-background-color: #{$line-added};
   --code-old-inline-diff-background-color: #fac5cd;
   --code-new-inline-diff-background-color: #c7f0d2;
-  --code-meta-diff-background-color: #{$gl-color-neutral-10};
+  --code-meta-diff-background-color: #{$gl-color-alpha-dark-2};
   --code-meta-diff-color: #{$gl-text-color-subtle};
+
+  // Declared rather than inherited: without these the Rapid Diffs viewer falls back to
+  // deprecated $gray-* tokens, leaving these surfaces outside this theme's control.
+  --code-diff-hunk-header-background-color: #{$gl-color-neutral-50};
+  --code-diff-hunk-header-color: #{$gl-color-neutral-400};
+  --code-diff-expand-button-background-color: #{$gl-color-neutral-100};
+  --code-diff-expand-button-hover-background-color: #{$gl-color-neutral-200};
+  --code-diff-expand-button-hover-color: #{$gl-color-neutral-800};
 
   --code-highlighted-line-background-color: #{$gl-color-blue-50};
   --code-highlighted-line-border-color: #{$gl-color-blue-300};

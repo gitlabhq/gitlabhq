@@ -178,7 +178,8 @@ class Project < ApplicationRecord
 
   after_save :update_project_statistics, if: :saved_change_to_namespace_id?
 
-  after_save :schedule_sync_event_worker, if: -> { saved_change_to_id? || saved_change_to_namespace_id? }
+  after_save :schedule_sync_event_worker,
+    if: -> { saved_change_to_id? || saved_change_to_namespace_id? || saved_change_to_organization_id? }
 
   after_save :create_import_state, if: ->(project) do
     project.import? && project.import_state.nil? && (!project.transfer_import? || project.mirror?)

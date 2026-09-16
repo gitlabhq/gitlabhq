@@ -22,10 +22,6 @@ export const mockNewOrganization = {
 
 export const mockOrganizations = [mockNewOrganization, mockDefaultOrganization];
 
-export const organizationsWithoutGroups = mockOrganizations.filter(
-  (organization) => !organization.groups.nodes.length,
-);
-
 export const groupsQueryResponseWithoutDefaultOrgGroups = {
   data: {
     ...groupsResponse.data,

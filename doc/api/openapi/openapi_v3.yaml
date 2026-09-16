@@ -3764,7 +3764,7 @@ paths:
         content:
           application/json:
             schema:
-              "$ref": "#/components/schemas/RequestBody_2ac715ce5351"
+              "$ref": "#/components/schemas/RequestBody_adc7f20d791e"
       x-gitlab-lifecycle: experiment
   "/api/v4/ai/duo_workflows/workflows/agent_privileges":
     get:
@@ -101892,7 +101892,7 @@ components:
           description: The ID or path of the project
           example: '1'
           nullable: true
-    RequestBody_2ac715ce5351:
+    RequestBody_adc7f20d791e:
       type: object
       properties:
         project_id:
@@ -102016,6 +102016,10 @@ components:
           - work_item_to_merge_request
           - fix_pipeline
           - convert_platform_ci_pipeline
+          - duo_cli_interactive
+          - duo_cli_run
+          - duo_cli_acp
+          - ide_extension
           description: Where the session was triggered from
           nullable: true
         callback_hook_id:

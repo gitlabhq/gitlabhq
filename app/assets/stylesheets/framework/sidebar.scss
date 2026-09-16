@@ -255,7 +255,7 @@
     top: $calc-application-header-height;
 
     @include gl-container-width-down(lg, panel) {
-      z-index: 251;
+      z-index: $sidebar-z-index;
     }
   }
 
@@ -263,7 +263,7 @@
     @include gl-container-width-down(lg, panel) {
       @include right-sidebar;
       top: $calc-application-bars-height;
-      z-index: 251;
+      z-index: $sidebar-z-index;
     }
 
     @include gl-container-width-down(md, panel) {

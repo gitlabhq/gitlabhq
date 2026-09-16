@@ -25,15 +25,13 @@ RSpec.describe API::DraftNotes, feature_category: :code_review_workflow do
       expect(response).to have_gitlab_http_status(:ok)
     end
 
-    it "returns only draft notes authored by the current user",
-      quarantine: 'https://gitlab.com/gitlab-org/quality/test-failure-issues/-/issues/17013' do
+    it "returns only draft notes authored by the current user" do
       get api(base_url, user)
 
-      draft_note_ids = json_response.pluck("id")
-
-      expect(draft_note_ids).to include(draft_note_by_current_user.id)
-      expect(draft_note_ids).not_to include(draft_note_by_random_user.id)
-      expect(draft_note_ids).not_to include(merge_request_note.id)
+      # draft_notes and notes have independent id sequences, so the previous
+      # assertion against merge_request_note.id only held while those sequences
+      # happened not to collide. Compare draft note ids with each other instead.
+      expect(json_response.pluck("id")).to contain_exactly(draft_note_by_current_user.id)
     end
 
     it_behaves_like 'authorizing granular token permissions', :read_merge_request_draft_note do

@@ -446,6 +446,7 @@ describe('work items graphql cache utils', () => {
           'crmContacts',
           'currentUserTodos',
           'customFields',
+          'decisionLog',
           'description',
           'development',
           'errorTracking',

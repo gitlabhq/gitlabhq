@@ -1,0 +1,10 @@
+---
+name: chat_notify_reviewer_change
+description: Notify chat integrations (Slack, Discord, Microsoft Teams, Pumble) when reviewers change on a merge request
+feature_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/517047
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/243466
+rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/work_items/605434
+milestone: '19.4'
+group: group::work items
+type: beta
+default_enabled: false

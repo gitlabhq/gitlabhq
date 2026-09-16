@@ -183,7 +183,7 @@ export default {
       return (
         !this.asDropdownItem &&
         this.$router &&
-        this.$router.options.routes.some((route) => route.name === 'workItem')
+        this.$router.options.routes?.some((route) => route.name === 'workItem')
       );
     },
     newWorkItemPathQuery() {

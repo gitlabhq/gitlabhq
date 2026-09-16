@@ -16,6 +16,7 @@ module Integrations
         @action = obj_attr[:action]
         @state = obj_attr[:state]
         @title = format_title(obj_attr[:title])
+        @reviewers_change = HashWithIndifferentAccess.new(params[:changes] || {})[:reviewers]
       end
 
       def attachments
@@ -69,9 +70,39 @@ module Integrations
           'added their approval to'
         when 'unapproval'
           'removed their approval from'
+        when 'update'
+          reviewers_change_text
         else
           state
         end
+      end
+
+      def reviewers_change_text
+        return state unless @reviewers_change
+
+        previous = Array(@reviewers_change[:previous])
+        current = Array(@reviewers_change[:current])
+        requested = difference_by_username(current, previous) | current.select { |reviewer| reviewer[:re_requested] }
+        removed = difference_by_username(previous, current)
+
+        if current.empty?
+          'removed all reviewers from'
+        elsif requested.any?
+          "requested a review from #{reviewer_names(requested)} of"
+        elsif removed.any?
+          "removed #{reviewer_names(removed)} as #{'reviewer'.pluralize(removed.size)} from"
+        else
+          state
+        end
+      end
+
+      def difference_by_username(reviewers, other_reviewers)
+        other_usernames = other_reviewers.to_set { |reviewer| reviewer[:username] }
+        reviewers.reject { |reviewer| other_usernames.include?(reviewer[:username]) }
+      end
+
+      def reviewer_names(reviewers)
+        reviewers.map { |reviewer| strip_markup("#{reviewer[:name]} (#{reviewer[:username]})") }.to_sentence
       end
     end
   end

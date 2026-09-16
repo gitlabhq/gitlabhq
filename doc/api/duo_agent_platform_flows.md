@@ -70,10 +70,10 @@ Supported attributes:
 | `namespace_id` | string | No | ID or path of the namespace to associate the flow with. |
 | `pre_approved_agent_privileges` | integer array | No | Privilege IDs the agent can use without asking for user approval. Must be a subset of `agent_privileges`. |
 | `project_id` | string | No | ID or path of the project to associate the flow with. |
+| `source` | string | No | Where the session was triggered from. One of the GitLab feature entry points (for example, `merge_request_code_conflict`) or the client surface that created the session (`duo_cli_interactive`, `duo_cli_run`, `duo_cli_acp`, `ide_extension`). |
 | `source_branch` | string | No | Source branch for the CI pipeline. Defaults to the project's default branch. |
 | `start_workflow` | boolean | No | When `true`, starts the flow immediately after creation. |
 | `workflow_definition` | string | No | Flow type identifier. Example: `developer/v1`. Cannot be used with `ai_catalog_item_consumer_id`; if both are provided, `ai_catalog_item_consumer_id` takes precedence. |
-| `source`                        | string | No | Where the session was triggered from in the UI. |
 
 If successful, returns [`201 Created`](rest/troubleshooting.md#status-codes) and the following response
 attributes:

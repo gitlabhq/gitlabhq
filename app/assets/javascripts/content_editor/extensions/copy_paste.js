@@ -11,7 +11,7 @@ import {
 import { handlePaste as handleTablePaste, isInTable, CellSelection } from '@tiptap/pm/tables';
 import { uniqueId } from 'lodash-es';
 import { s__, __ } from '~/locale';
-import { sanitize } from '~/lib/dompurify';
+import { sanitize, defaultConfig as sanitizeConfig } from '~/lib/dompurify';
 import { VARIANT_DANGER } from '~/alert';
 import createMarkdownDeserializer from '../services/gl_api_markdown_deserializer';
 import { ALERT_EVENT, EXTENSION_PRIORITY_HIGHEST } from '../constants';
@@ -100,9 +100,17 @@ function parseHTML(schema, html) {
   return { document: ProseMirrorDOMParser.fromSchema(schema).parse(body) };
 }
 
+// The editor's HTML clipboard payload carries HTML comments as <comment> elements (see the
+// htmlComment extension); DOMPurify would drop the unknown tag.
+const sanitizeClipboardHTML = (html) =>
+  sanitize(html, { ADD_TAGS: [...sanitizeConfig.ADD_TAGS, 'comment'] });
+
 function parseHTMLSlice(schema, html) {
   const parser = new DOMParser();
-  const { body } = parser.parseFromString(`<body>${sanitize(html)}</body>`, 'text/html');
+  const { body } = parser.parseFromString(
+    `<body>${sanitizeClipboardHTML(html)}</body>`,
+    'text/html',
+  );
   return ProseMirrorDOMParser.fromSchema(schema).parseSlice(body);
 }
 
@@ -119,14 +127,14 @@ function hasTableCells(html) {
 // through the markdown-based paste path, preserving GFM fidelity.
 function extractMultiCellTableHTML(html) {
   const parser = new DOMParser();
-  let { body } = parser.parseFromString(`<body>${sanitize(html)}</body>`, 'text/html');
+  let { body } = parser.parseFromString(`<body>${sanitizeClipboardHTML(html)}</body>`, 'text/html');
   let table = body.querySelector('table');
 
   // Wrap orphan rows before sanitizing: DOMPurify drops <tr>/<td> structure
   // that has no <table> ancestor.
   if (!table && /<tr[\s>]/i.test(html)) {
     ({ body } = parser.parseFromString(
-      `<body>${sanitize(`<table>${html}</table>`)}</body>`,
+      `<body>${sanitizeClipboardHTML(`<table>${html}</table>`)}</body>`,
       'text/html',
     ));
     table = body.querySelector('table');

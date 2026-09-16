@@ -143,6 +143,10 @@ The configuration fields are:
     starts with columns that are not part of the PostgreSQL primary key (for example, ordering by
     `(merge_request_diff_id, relative_order, traversal_path)` while the PostgreSQL primary key is
     `(merge_request_diff_id, relative_order)`).
+  - **`downstream_materialized_views`** *(optional)*: The destination tables of any materialized
+    views attached to the `target` table. Listing them here includes them in the tables that the
+    `gitlab:siphon:clean_clickhouse` Rake task truncates. For more information, see
+    [Materialized views and re-snapshots](#materialized-views-and-re-snapshots).
   - **`reconcile`** *(optional)*: Configuration for the periodic consistency check job that repairs
     denormalized columns.
     - **`column`**: The denormalized column to reconcile (for example, `traversal_path`).
@@ -158,6 +162,8 @@ database: main
 replication_targets:
   - name: clickhouse_main
     target: siphon_merge_requests
+    downstream_materialized_views:
+      - merge_requests_base
     dedup_by_table: merge_requests
     dedup_by:
       - id
@@ -208,6 +214,28 @@ Or you can start ClickHouse client and run the following query:
 ```sql
 SELECT * FROM siphon_labels;
 ```
+
+#### Materialized views and re-snapshots
+
+A re-snapshot happens when the CDC pipeline breaks and Siphon loses its consistent replication point
+in PostgreSQL. The data in ClickHouse can no longer be trusted, so the
+`gitlab:siphon:clean_clickhouse` Rake task truncates it and Siphon replays the table from scratch.
+
+A materialized view's destination table keeps its rows when the view's source table is truncated.
+Without `downstream_materialized_views`, a re-snapshot leaves that table holding a mix of stale rows
+and replayed ones. List the destination table, not the view name, so the Rake task truncates both
+together. For example, `db/siphon/tables/events.yml` lists `contributions_new`, the destination of
+the `contributions_new_mv` view.
+
+Configure it whenever a Siphon-replicated table feeds the view, both when that table is the only
+source and when the view joins other tables as well. Extra joins do not exempt the destination table.
+
+Only list tables that a replay can rebuild. If a view joins a table that Siphon does not replicate,
+that table holds the only copy of its data, and a truncate loses it permanently.
+
+The Rake task also only truncates, it never re-runs the view. An incremental view refills as the
+replay re-inserts rows into its source table. A refreshable view refills only on its next scheduled
+refresh, so its destination table stays empty until then.
 
 ## Hierarchy Denormalization Examples
 

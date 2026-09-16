@@ -11,6 +11,7 @@ import {
   WIDGET_TYPE_HIERARCHY,
 } from '~/work_items/constants';
 import WorkItemAttribute from '~/vue_shared/components/work_item_attribute.vue';
+import WorkItemDatesAttribute from '~/work_items/components/shared/work_item_dates_attribute.vue';
 import { mockParentWorkItem } from 'ee_else_ce_jest/work_items/mock_data';
 
 describe('CE IssueCardTimeInfo component', () => {
@@ -111,6 +112,7 @@ describe('CE IssueCardTimeInfo component', () => {
       propsData: { issue, hiddenMetadataKeys },
       stubs: {
         WorkItemAttribute,
+        WorkItemDatesAttribute,
       },
     });
 

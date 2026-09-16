@@ -309,12 +309,6 @@ export const databaseInformationWithFindings = {
   },
 };
 
-export const databaseInformationWithErrorSlice = {
-  databases: {
-    main: { error: 'boom' },
-  },
-};
-
 export const databaseInformationWithDatabaseError = {
   databases: {
     main: { error: 'connection refused' },

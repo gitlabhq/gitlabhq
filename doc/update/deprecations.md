@@ -105,6 +105,24 @@ In GitLab 20.0, GitLab will begin deprecation of Design Management. Design Manag
 The Audit Event APIs for instances, groups, and projects currently support optional keyset pagination. In GitLab 20.0
 we will enforce keyset pagination on these APIs.
 
+### GitLab Helm chart value `gitlab.kas.ingress.grpc.enabled`
+
+- Announced in GitLab 19.5
+- Removal in GitLab 20.0 ([breaking change](https://docs.gitlab.com/update/terminology/#breaking-change))
+- To discuss this change or learn more, see the [deprecation issue](https://gitlab.com/gitlab-org/charts/gitlab/-/work_items/6663).
+
+In the GitLab Helm chart, the KAS gRPC Ingress is now controlled by `global.kas.ingress.grpc.enabled`,
+which also decides whether the address advertised to the agent for Kubernetes uses native gRPC (`grpcs://`)
+or WebSocket (`wss://`).
+
+The `kas` chart's local value `gitlab.kas.ingress.grpc.enabled` is deprecated and will be removed in chart 11.0
+(GitLab 20.0). It still controls whether the gRPC Ingress is rendered, but the other charts cannot see it when
+they derive the advertised address, so the Ingress and the address can disagree.
+
+If you set `gitlab.kas.ingress.grpc.enabled`, move the value to `global.kas.ingress.grpc.enabled` before
+upgrading to chart 11.0. Leaving both unset keeps the default. The gRPC Ingress is rendered for the NGINX
+Ingress provider, and agents are pointed at `grpcs://` when the chart routes gRPC to KAS.
+
 ### Go module proxy (experimental) is deprecated
 
 - Announced in GitLab 19.1

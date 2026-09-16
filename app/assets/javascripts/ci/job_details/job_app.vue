@@ -23,6 +23,7 @@ import UnmetPrerequisitesBlock from './components/unmet_prerequisites_block.vue'
 import Sidebar from './components/sidebar/sidebar.vue';
 
 const STATIC_PANEL_WRAPPER_SELECTOR = '.js-static-panel-inner';
+const TOP_BAR_STICKY_OFFSET = 8;
 
 export default {
   name: 'JobPageApp',
@@ -82,6 +83,7 @@ export default {
       staticPanelWrapper: document.querySelector(STATIC_PANEL_WRAPPER_SELECTOR),
       searchResults: [],
       showUpdateVariablesState: false,
+      isTopBarStuck: false,
     };
   },
   computed: {
@@ -195,6 +197,8 @@ export default {
 
     this.staticPanelWrapper?.removeEventListener('scroll', this.updateScroll);
 
+    this.topBarStuckObserver?.disconnect();
+
     PanelBreakpointInstance.removeResizeListener(this.updateSidebar);
   },
   methods: {
@@ -227,6 +231,26 @@ export default {
     },
     updateScroll() {
       this.throttleToggleScrollButtons();
+    },
+    observeTopBarStuck(elem) {
+      this.topBarStuckObserver?.disconnect();
+
+      if (!elem) {
+        this.isTopBarStuck = false;
+        return;
+      }
+
+      this.topBarStuckObserver = new IntersectionObserver(
+        ([entry]) => {
+          this.isTopBarStuck = !entry.isIntersecting;
+        },
+        {
+          root: this.staticPanelWrapper,
+          rootMargin: `-${TOP_BAR_STICKY_OFFSET}px 0px 0px 0px`,
+          threshold: 0,
+        },
+      );
+      this.topBarStuckObserver.observe(elem);
     },
     setSearchResults(searchResults) {
       this.searchResults = searchResults;
@@ -318,7 +342,9 @@ export default {
 
         <!-- job log -->
         <div v-if="hasJobLog && !showUpdateVariablesState" class="build-log-container gl-relative">
+          <div :ref="observeTopBarStuck" class="job-log-top-bar-sentinel" aria-hidden="true"></div>
           <job-log-top-bar
+            :class="{ 'is-stuck': isTopBarStuck }"
             :size="jobLogSize"
             :raw-path="job.raw_path"
             :log-viewer-path="logViewerPath"

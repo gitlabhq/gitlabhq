@@ -179,22 +179,6 @@ describe('CommitListItem', () => {
       expect(timeago.props('time')).toBe(mockCommit.authoredDate);
       expect(timeago.props('tooltipPlacement')).toBe('bottom');
     });
-
-    describe('when authored date is outside the JS Date range', () => {
-      const outOfRangeDate = '+292278994-08-17T07:12:55+00:00';
-
-      beforeEach(() => {
-        createComponent({ commit: { ...mockCommit, authoredDate: outOfRangeDate } });
-      });
-
-      it('does not render TimeagoTooltip', () => {
-        expect(findTimeagoTooltip().exists()).toBe(false);
-      });
-
-      it('renders the raw authored date as a fallback', () => {
-        expect(wrapper.findByTestId('commit-authored-date-fallback').text()).toBe(outOfRangeDate);
-      });
-    });
   });
 
   describe('badges', () => {

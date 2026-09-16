@@ -309,7 +309,7 @@ export const deleteBranchRuleMockResponse = {
 
 // Mocks for editBrachRule mutation
 
-export const mergeAccessLevelsEditResponse = {
+const mergeAccessLevelsEditResponse = {
   __typename: 'MergeAccessLevelConnection',
   nodes: [
     {

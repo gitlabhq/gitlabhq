@@ -260,21 +260,6 @@ export const buildBoardWorkItemsCountResponse = (count = 0) => ({
   },
 });
 
-// REST count response: exposes `count` under `restWorkItems` at the query root.
-export const buildBoardRestWorkItemsCountResponse = (count = 0) => ({
-  data: {
-    namespace: {
-      __typename: 'Group',
-      id: mockGroupId,
-      name: 'Test',
-    },
-    restWorkItems: {
-      __typename: 'WorkItemConnection',
-      count,
-    },
-  },
-});
-
 export const buildWorkItemTypesResponse = (types = []) => ({
   data: {
     namespace: {

@@ -22,10 +22,23 @@
 
 // Dynamic panel portal
 .paneled-view-portal {
-  @apply gl-z-[252];
+  @apply gl-@container/panel;
+  z-index: $dynamic-panel-z-index;
+  @apply gl-absolute;
+  @apply gl-right-0;
   @apply gl-w-full;
+  @apply gl-bg-default;
+  @apply gl-rounded-l-xl;
+  @apply gl-shadow-lg;
+  @apply gl-overflow-clip;
+
   @apply sm:gl-w-8/10;
 
+  @apply @xl/content-panels:gl-relative;
+  @apply @xl/content-panels:gl-w-1/2;
+  @apply @xl/content-panels:gl-bg-transparent;
+  @apply @xl/content-panels:gl-rounded-l-none;
+  @apply @xl/content-panels:gl-shadow-none;
 
   // Fixes a Firefox 115.40.0esr issue. Keep this seperate from the below selector
   // as otherwise it won't be interpret by Firefox as it will drop this
@@ -62,7 +75,7 @@
 }
 
 // stylelint-disable-next-line gitlab/no-has -- targeting directly the AI panel
-.panels-container:has(+ .ai-panels > div > .ai-panel) {
+.panels-container:has(+ .ai-related-panels > .ai-panel-wrapper > .ai-panel) {
   @apply lg:gl-rounded-r-none;
   @apply lg:gl-border-r-0;
 }
@@ -265,9 +278,9 @@
   @include media-breakpoint-up(lg) {
     @apply gl-top-0;
     @apply gl-left-0;
-    @apply gl-mt-0;
+    @apply gl-m-0;
     width: var(--ai-panel-width);
-    height: auto;
+    @apply gl-h-full;
     z-index: auto;
   }
 }

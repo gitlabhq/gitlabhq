@@ -241,6 +241,7 @@ class Namespace < ApplicationRecord
   before_update :sync_share_with_group_lock_with_parent, if: :parent_changed?
   after_update :force_share_with_group_lock_on_descendants, if: -> { saved_change_to_share_with_group_lock? && share_with_group_lock? }
   after_update :expire_first_auto_devops_config_cache, if: -> { saved_change_to_auto_devops_enabled? }
+  after_update :schedule_sync_event_worker, if: -> { saved_change_to_organization_id? }
 
   after_commit :refresh_access_of_projects_invited_groups, on: :update, if: -> { previous_changes.key?('share_with_group_lock') }
 

@@ -13,6 +13,23 @@ module Gitlab
       BlockedUrlError = Class.new(StandardError)
       HTTP_PROXY_ENV_VARS = %w[http_proxy https_proxy HTTP_PROXY HTTPS_PROXY].freeze
 
+      # Well-known cloud metadata (IMDS) hostnames.
+      # On IaaS these can return IAM credentials, so we block them
+      # unconditionally to prevent SSRF via webhooks and integrations.
+      # See https://gitlab.com/gitlab-org/gitlab/-/issues/628701
+      CLOUD_METADATA_HOSTS = %w[metadata.google.internal].freeze
+
+      # Well-known cloud metadata (IMDS) IPs, pre-parsed as IPAddr objects for
+      # cheap comparison. Covers AWS/Azure/GCP/OCI/OpenStack (169.254.169.254),
+      # AWS IPv6 (fd00:ec2::254), Alibaba Cloud (100.100.100.200), and legacy
+      # Oracle Cloud Infrastructure (192.0.0.192).
+      CLOUD_METADATA_IPS = %w[
+        169.254.169.254
+        fd00:ec2::254
+        100.100.100.200
+        192.0.0.192
+      ].map { |ip| IPAddr.new(ip) }.freeze
+
       # Result stores the validation result:
       # uri - The original URI requested
       # hostname - The hostname that should be used to connect. For DNS
@@ -51,6 +68,13 @@ module Gitlab
         #   allowed when local requests for webhooks and integrations are disabled. This parameter is static and
         #   comes from the `outbound_local_requests_whitelist` application setting. # rubocop:disable Naming/InclusiveLanguage
         #
+        # Requests to well-known cloud metadata (IMDS) hostnames and IP addresses are blocked
+        # unconditionally by default (see CLOUD_METADATA_HOSTS and CLOUD_METADATA_IPS). Callers
+        # that legitimately need to reach IMDS (e.g. minting a workload OIDC token) must pass
+        # `deny_cloud_metadata_requests: false` to opt out. This escape hatch is intentionally
+        # per-call rather than instance-wide because IMDS access from webhooks and integrations
+        # is never a legitimate use case.
+        #
         # Returns a Result object.
         # rubocop:disable Metrics/ParameterLists
         def validate_url_with_proxy!(
@@ -64,6 +88,7 @@ module Gitlab
           enforce_user: false,
           enforce_sanitization: false,
           deny_all_requests_except_allowed: false,
+          deny_cloud_metadata_requests: true,
           dns_rebind_protection: true,
           outbound_local_requests_allowlist: []
         )
@@ -85,6 +110,11 @@ module Gitlab
             ascii_only: ascii_only
           )
 
+          # Pre-DNS block: catches literal IMDS IPs/hostnames without needing a
+          # resolver, so the check applies even when the short-circuit below skips
+          # DNS resolution.
+          validate_cloud_metadata_hostname!(uri) if deny_cloud_metadata_requests
+
           unless deny_all_requests_except_allowed || dns_rebind_protection || !allow_local_network || !allow_localhost
             return Result.new(uri, nil, true)
           end
@@ -94,6 +124,7 @@ module Gitlab
             allow_local_network: allow_local_network,
             extra_allowed_uris: extra_allowed_uris,
             deny_all_requests_except_allowed: deny_all_requests_except_allowed,
+            deny_cloud_metadata_requests: deny_cloud_metadata_requests,
             dns_rebind_protection: dns_rebind_protection,
             outbound_local_requests_allowlist: outbound_local_requests_allowlist)
         end
@@ -121,6 +152,7 @@ module Gitlab
           allow_local_network:,
           extra_allowed_uris:,
           deny_all_requests_except_allowed:,
+          deny_cloud_metadata_requests:,
           dns_rebind_protection:,
           outbound_local_requests_allowlist:
         )
@@ -138,6 +170,11 @@ module Gitlab
 
             raise BlockedUrlError, 'Host cannot be resolved or invalid'
           end
+
+          # Enforce IMDS denial before any allowlist short-circuits so it cannot
+          # be bypassed by `outbound_local_requests_allowlist`. Callers that need
+          # IMDS opt out at the call site via `deny_cloud_metadata_requests: false`.
+          validate_cloud_metadata!(address_info) if deny_cloud_metadata_requests
 
           ip_address = ip_address(address_info)
           proxy_in_use = uri_under_proxy_setting?(uri, ip_address)
@@ -418,6 +455,38 @@ module Gitlab
           return unless addrs_info.any? { |addr| addr.ipv6_linklocal? || netmask.include?(addr.ip_address) }
 
           raise BlockedUrlError, "Requests to the link local network are not allowed"
+        end
+
+        # Blocks URLs that resolve to a well-known cloud metadata (IMDS)
+        # endpoint. Called after DNS resolution so it also catches DNS
+        # rebinding and hostnames that alias to the metadata IP.
+        def validate_cloud_metadata!(addrs_info)
+          return unless addrs_info.any? { |addr| cloud_metadata_ip?(addr.ip_address) }
+
+          raise BlockedUrlError, "Requests to cloud metadata endpoints are not allowed"
+        end
+
+        # Blocks the well-known cloud metadata hostnames pre-DNS so we do not
+        # depend on DNS resolution to catch literal targeting of IMDS.
+        def validate_cloud_metadata_hostname!(uri)
+          hostname = uri.hostname&.downcase
+          return if hostname.blank?
+
+          return unless CLOUD_METADATA_HOSTS.include?(hostname) || cloud_metadata_ip?(hostname)
+
+          raise BlockedUrlError, "Requests to cloud metadata endpoints are not allowed"
+        end
+
+        def cloud_metadata_ip?(address)
+          return false if address.blank?
+
+          # `native` maps IPv4-mapped IPv6 (e.g. ::ffff:169.254.169.254) back to
+          # the canonical IPv4 form so we match a single entry in CLOUD_METADATA_IPS.
+          target = IPAddr.new(address).native
+
+          CLOUD_METADATA_IPS.include?(target)
+        rescue IPAddr::InvalidAddressError
+          false
         end
 
         # Raises a BlockedUrlError if the instance is configured to deny all requests.

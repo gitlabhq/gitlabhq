@@ -541,8 +541,7 @@ These variables can replace spec inputs and are also compatible with the beta `l
 By default, the `Dependency-Scanning.v2.gitlab-ci.yml` template runs the dependency scanning job in
 merge request pipelines. If your project does not use merge request pipelines for other jobs, this
 can cause two pipelines to run for each merge request, with other jobs running in a separate branch
-pipeline. To disable this behavior, set the spec input `enable_mr_pipelines: false` or CI/CD
-variable `AST_ENABLE_MR_PIPELINES: "false"`.
+pipeline. To disable this behavior, set the CI/CD variable `AST_ENABLE_MR_PIPELINES: "false"`.
 
 If the template is injected by a [pipeline execution policy](../../policies/pipeline_execution_policies.md),
 set `AST_ENABLE_MR_PIPELINES` in the policy CI/CD configuration instead of the project or group

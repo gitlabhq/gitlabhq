@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Integrations::ChatMessage::MergeMessage do
+RSpec.describe Integrations::ChatMessage::MergeMessage, feature_category: :integrations do
   subject { described_class.new(args) }
 
   let(:args) do
@@ -142,6 +142,190 @@ RSpec.describe Integrations::ChatMessage::MergeMessage do
         'Test User (test.user) removed their approval from merge request <http://somewhere.com/-/merge_requests/100|!100 *Merge request title*> '\
         'in <http://somewhere.com|project_name>')
       expect(subject.attachments).to be_empty
+    end
+  end
+
+  context 'when reviewers change' do
+    before do
+      args[:object_attributes][:action] = 'update'
+    end
+
+    context 'when a reviewer is requested' do
+      before do
+        args[:changes] = {
+          reviewers: {
+            previous: [],
+            current: [{ name: 'Jane Doe', username: 'jane', state: 'unreviewed' }]
+          }
+        }
+      end
+
+      it 'names the requested reviewer in the message' do
+        expect(subject.pretext).to eq(
+          'Test User (test.user) requested a review from Jane Doe (jane) of merge request '\
+          '<http://somewhere.com/-/merge_requests/100|!100 *Merge request title*> '\
+          'in <http://somewhere.com|project_name>')
+        expect(subject.attachments).to be_empty
+      end
+    end
+
+    context 'when several reviewers are requested at once' do
+      before do
+        args[:changes] = {
+          reviewers: {
+            previous: [],
+            current: [
+              { name: 'Jane Doe', username: 'jane', state: 'unreviewed' },
+              { name: 'John Roe', username: 'john', state: 'unreviewed' }
+            ]
+          }
+        }
+      end
+
+      it 'names every requested reviewer in the message' do
+        expect(subject.pretext).to eq(
+          'Test User (test.user) requested a review from Jane Doe (jane) and John Roe (john) of merge request '\
+          '<http://somewhere.com/-/merge_requests/100|!100 *Merge request title*> '\
+          'in <http://somewhere.com|project_name>')
+        expect(subject.attachments).to be_empty
+      end
+    end
+
+    context 'when all reviewers are removed' do
+      before do
+        args[:changes] = {
+          reviewers: {
+            previous: [{ name: 'Jane Doe', username: 'jane', state: 'unreviewed' }],
+            current: []
+          }
+        }
+      end
+
+      it 'returns a message regarding the reviewers being removed' do
+        expect(subject.pretext).to eq(
+          'Test User (test.user) removed all reviewers from merge request <http://somewhere.com/-/merge_requests/100|!100 *Merge request title*> '\
+          'in <http://somewhere.com|project_name>')
+        expect(subject.attachments).to be_empty
+      end
+    end
+
+    context 'when a reviewer is added alongside existing reviewers' do
+      before do
+        args[:changes] = {
+          reviewers: {
+            previous: [{ name: 'Jane Doe', username: 'jane', state: 'unreviewed' }],
+            current: [
+              { name: 'Jane Doe', username: 'jane', state: 'unreviewed' },
+              { name: 'John Roe', username: 'john', state: 'unreviewed' }
+            ]
+          }
+        }
+      end
+
+      it 'names only the newly requested reviewer in the message' do
+        expect(subject.pretext).to eq(
+          'Test User (test.user) requested a review from John Roe (john) of merge request '\
+          '<http://somewhere.com/-/merge_requests/100|!100 *Merge request title*> '\
+          'in <http://somewhere.com|project_name>')
+        expect(subject.attachments).to be_empty
+      end
+    end
+
+    context 'when a review is re-requested from an existing reviewer' do
+      before do
+        args[:changes] = {
+          reviewers: {
+            previous: [
+              { name: 'Jane Doe', username: 'jane', state: 'reviewed', re_requested: false },
+              { name: 'John Roe', username: 'john', state: 'unreviewed', re_requested: false }
+            ],
+            current: [
+              { name: 'Jane Doe', username: 'jane', state: 'unreviewed', re_requested: true },
+              { name: 'John Roe', username: 'john', state: 'unreviewed', re_requested: false }
+            ]
+          }
+        }
+      end
+
+      it 'names the re-requested reviewer in the message' do
+        expect(subject.pretext).to eq(
+          'Test User (test.user) requested a review from Jane Doe (jane) of merge request '\
+          '<http://somewhere.com/-/merge_requests/100|!100 *Merge request title*> '\
+          'in <http://somewhere.com|project_name>')
+        expect(subject.attachments).to be_empty
+      end
+    end
+
+    context 'when only a reviewer state changes without a re-request' do
+      before do
+        args[:changes] = {
+          reviewers: {
+            previous: [{ name: 'Jane Doe', username: 'jane', state: 'unreviewed', re_requested: false }],
+            current: [{ name: 'Jane Doe', username: 'jane', state: 'reviewed', re_requested: false }]
+          }
+        }
+      end
+
+      it 'falls back to the merge request state' do
+        expect(subject.pretext).to eq(
+          'Test User (test.user) opened merge request <http://somewhere.com/-/merge_requests/100|!100 *Merge request title*> '\
+          'in <http://somewhere.com|project_name>')
+        expect(subject.attachments).to be_empty
+      end
+    end
+
+    context 'when a single reviewer is removed while others remain' do
+      before do
+        args[:changes] = {
+          reviewers: {
+            previous: [
+              { name: 'Jane Doe', username: 'jane', state: 'unreviewed' },
+              { name: 'John Roe', username: 'john', state: 'unreviewed' }
+            ],
+            current: [{ name: 'Jane Doe', username: 'jane', state: 'unreviewed' }]
+          }
+        }
+      end
+
+      it 'names the removed reviewer in the message' do
+        expect(subject.pretext).to eq(
+          'Test User (test.user) removed John Roe (john) as reviewer from merge request '\
+          '<http://somewhere.com/-/merge_requests/100|!100 *Merge request title*> '\
+          'in <http://somewhere.com|project_name>')
+        expect(subject.attachments).to be_empty
+      end
+    end
+
+    context 'when several reviewers are removed while others remain' do
+      before do
+        args[:changes] = {
+          reviewers: {
+            previous: [
+              { name: 'Jane Doe', username: 'jane', state: 'unreviewed' },
+              { name: 'John Roe', username: 'john', state: 'unreviewed' },
+              { name: 'Amy Roe', username: 'amy', state: 'unreviewed' }
+            ],
+            current: [{ name: 'Jane Doe', username: 'jane', state: 'unreviewed' }]
+          }
+        }
+      end
+
+      it 'names every removed reviewer in the message' do
+        expect(subject.pretext).to eq(
+          'Test User (test.user) removed John Roe (john) and Amy Roe (amy) as reviewers from merge request '\
+          '<http://somewhere.com/-/merge_requests/100|!100 *Merge request title*> '\
+          'in <http://somewhere.com|project_name>')
+        expect(subject.attachments).to be_empty
+      end
+    end
+
+    context 'when the update does not change reviewers' do
+      it 'falls back to the merge request state' do
+        expect(subject.pretext).to eq(
+          'Test User (test.user) opened merge request <http://somewhere.com/-/merge_requests/100|!100 *Merge request title*> '\
+          'in <http://somewhere.com|project_name>')
+        expect(subject.attachments).to be_empty
+      end
     end
   end
 end

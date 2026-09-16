@@ -417,7 +417,7 @@ export const MOCK_AGGREGATIONS = [
   },
 ];
 
-export const SORTED_MOCK_AGGREGATIONS = [
+const SORTED_MOCK_AGGREGATIONS = [
   {
     name: 'language',
     buckets: MOCK_LANGUAGE_AGGREGATIONS_BUCKETS.reverse(),

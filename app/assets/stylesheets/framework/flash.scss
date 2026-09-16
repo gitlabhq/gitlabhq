@@ -12,7 +12,7 @@ $notification-box-shadow-color: rgba(0, 0, 0, 0.25);
   &.sticky {
     position: sticky;
     top: 0;
-    z-index: 251;
+    z-index: $flash-z-index;
   }
 
   &.flash-container-page {

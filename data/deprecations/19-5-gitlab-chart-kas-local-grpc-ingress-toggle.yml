@@ -1,0 +1,27 @@
+- title: "GitLab Helm chart value `gitlab.kas.ingress.grpc.enabled`"
+  removal_milestone: "20.0"
+  announcement_milestone: "19.5"
+  breaking_change: true
+  gitlab_com: false
+  window:
+  reporter: vtak
+  stage: systems
+  issue_url: https://gitlab.com/gitlab-org/charts/gitlab/-/work_items/6663
+  impact: low
+  impact_offering: self-managed
+  scope: instance
+  resolution_role: Admin
+  manual_task: true
+  body: |  # (required) Don't change this line.
+    In the GitLab Helm chart, the KAS gRPC Ingress is now controlled by `global.kas.ingress.grpc.enabled`,
+    which also decides whether the address advertised to the agent for Kubernetes uses native gRPC (`grpcs://`)
+    or WebSocket (`wss://`).
+
+    The `kas` chart's local value `gitlab.kas.ingress.grpc.enabled` is deprecated and will be removed in chart 11.0
+    (GitLab 20.0). It still controls whether the gRPC Ingress is rendered, but the other charts cannot see it when
+    they derive the advertised address, so the Ingress and the address can disagree.
+
+    If you set `gitlab.kas.ingress.grpc.enabled`, move the value to `global.kas.ingress.grpc.enabled` before
+    upgrading to chart 11.0. Leaving both unset keeps the default. The gRPC Ingress is rendered for the NGINX
+    Ingress provider, and agents are pointed at `grpcs://` when the chart routes gRPC to KAS.
+  documentation_url: https://docs.gitlab.com/charts/charts/gitlab/kas/#grpc-ingress-support

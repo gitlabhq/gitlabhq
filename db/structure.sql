@@ -13241,6 +13241,7 @@ CREATE TABLE ai_flow_triggers (
     ai_catalog_item_consumer_id bigint,
     filter jsonb DEFAULT '{}'::jsonb NOT NULL,
     active boolean DEFAULT true NOT NULL,
+    autonomous_service_account_id bigint,
     CONSTRAINT check_87b77d9d54 CHECK ((char_length(description) <= 255)),
     CONSTRAINT check_ai_flow_triggers_filter_is_hash CHECK ((jsonb_typeof(filter) = 'object'::text)),
     CONSTRAINT check_ai_flow_triggers_user_consumer_mutually_exclusive CHECK ((num_nonnulls(ai_catalog_item_consumer_id, user_id) <= 1)),
@@ -46983,6 +46984,8 @@ CREATE INDEX index_ai_flow_schedules_on_project_id ON ai_flow_schedules USING bt
 
 CREATE INDEX index_ai_flow_triggers_on_ai_catalog_item_consumer_id ON ai_flow_triggers USING btree (ai_catalog_item_consumer_id);
 
+CREATE INDEX index_ai_flow_triggers_on_autonomous_service_account_id ON ai_flow_triggers USING btree (autonomous_service_account_id) WHERE (autonomous_service_account_id IS NOT NULL);
+
 CREATE INDEX index_ai_flow_triggers_on_project_id ON ai_flow_triggers USING btree (project_id);
 
 CREATE INDEX index_ai_flow_triggers_on_user_id_and_project_id ON ai_flow_triggers USING btree (user_id, project_id);
@@ -57217,7 +57220,11 @@ CREATE TRIGGER trigger_jira_tracker_data_sharding_key_on_insert BEFORE INSERT ON
 
 CREATE TRIGGER trigger_mark_geo_ci_job_artifact_summary_dirty AFTER INSERT OR DELETE OR UPDATE OF verification_state ON ci_job_artifact_states FOR EACH ROW EXECUTE FUNCTION mark_geo_ci_job_artifact_verification_summary_dirty();
 
+CREATE TRIGGER trigger_namespaces_organization_id_on_update AFTER UPDATE ON namespaces FOR EACH ROW WHEN ((old.organization_id IS DISTINCT FROM new.organization_id)) EXECUTE FUNCTION insert_namespaces_sync_event();
+
 CREATE TRIGGER trigger_namespaces_traversal_ids_on_update AFTER UPDATE ON namespaces FOR EACH ROW WHEN ((old.traversal_ids IS DISTINCT FROM new.traversal_ids)) EXECUTE FUNCTION insert_namespaces_sync_event();
+
+CREATE TRIGGER trigger_projects_organization_id_on_update AFTER UPDATE ON projects FOR EACH ROW WHEN ((old.organization_id IS DISTINCT FROM new.organization_id)) EXECUTE FUNCTION insert_projects_sync_event();
 
 CREATE TRIGGER trigger_projects_parent_id_on_insert AFTER INSERT ON projects FOR EACH ROW EXECUTE FUNCTION insert_projects_sync_event();
 

@@ -10503,6 +10503,24 @@ RSpec.describe Project, factory_default: :keep, feature_category: :groups_and_pr
       end
     end
 
+    context 'when updating project organization_id' do
+      let_it_be(:new_organization) { create(:organization) }
+
+      it 'creates a projects_sync_event record' do
+        expect do
+          project.update_attribute(:organization_id, new_organization.id)
+        end.to change { Projects::SyncEvent.count }.by(1)
+
+        expect(project.sync_events.count).to eq(2)
+      end
+
+      it 'enqueues ProcessProjectSyncEventsWorker' do
+        expect(Projects::ProcessSyncEventsWorker).to receive(:perform_async)
+
+        project.update_attribute(:organization_id, new_organization.id)
+      end
+    end
+
     context 'when updating project other attribute' do
       it 'creates a projects_sync_event record' do
         expect do

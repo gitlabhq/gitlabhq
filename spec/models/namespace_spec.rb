@@ -1592,6 +1592,24 @@ RSpec.describe Namespace, feature_category: :groups_and_projects do
     end
   end
 
+  context 'organization_id on update' do
+    let_it_be(:new_organization) { create(:organization) }
+
+    let(:namespace1) { create(:group, organization: organization) }
+
+    it 'creates a Namespaces::SyncEvent using database trigger on the table' do
+      expect do
+        namespace1.update_attribute(:organization_id, new_organization.id)
+      end.to change { namespace1.sync_events.count }.by(1)
+    end
+
+    it 'calls schedule_sync_event_worker on the updated namespace' do
+      expect(namespace1).to receive(:schedule_sync_event_worker)
+
+      namespace1.update_attribute(:organization_id, new_organization.id)
+    end
+  end
+
   describe 'traversal_path' do
     it 'formats the traversal ids with slashes' do
       expect(namespace.traversal_path(with_organization: false)).to eq("#{namespace.id}/")

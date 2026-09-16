@@ -1,4 +1,5 @@
 import * as Y from 'yjs';
+import { DOMSerializer } from '@tiptap/pm/model';
 import { Awareness } from 'y-protocols/awareness';
 import { PROVIDE_SERIALIZER_OR_RENDERER_ERROR } from '~/content_editor/constants';
 import { createContentEditor } from '~/content_editor/services/create_content_editor';
@@ -191,6 +192,34 @@ describe('content_editor/services/create_content_editor', () => {
       it('is not loaded', () => {
         expect(hasIframeExtension()).toBe(false);
       });
+    });
+  });
+
+  describe('schema', () => {
+    let schema;
+
+    beforeEach(() => {
+      ({ schema } = createContentEditor({
+        renderMarkdown,
+        drawioEnabled: true,
+        supportsTableOfContents: true,
+        enableAutocomplete: true,
+      }).tiptapEditor);
+    });
+
+    it('gives every node type a DOM representation, which the clipboard serializer requires', () => {
+      const { nodes } = DOMSerializer.fromSchema(schema);
+      const contentNodes = Object.keys(schema.nodes).filter(
+        (name) => name !== schema.topNodeType.name,
+      );
+
+      expect(contentNodes.filter((name) => !nodes[name])).toEqual([]);
+    });
+
+    it('gives every mark type a DOM representation, which the clipboard serializer requires', () => {
+      const { marks } = DOMSerializer.fromSchema(schema);
+
+      expect(Object.keys(schema.marks).filter((name) => !marks[name])).toEqual([]);
     });
   });
 });

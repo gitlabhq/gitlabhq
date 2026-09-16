@@ -33406,6 +33406,9 @@ msgstr ""
 msgid "DuoWorkflowSettings|Allow the IDE to access external MCP tools."
 msgstr ""
 
+msgid "DuoWorkflowSettings|Allow web search"
+msgstr ""
+
 msgid "DuoWorkflowSettings|Control how GitLab Duo handles potential prompt injection attempts."
 msgstr ""
 
@@ -33431,6 +33434,12 @@ msgid "DuoWorkflowSettings|Scan and log results, but do not block requests."
 msgstr ""
 
 msgid "DuoWorkflowSettings|Turn off scanning entirely. No prompt data is sent to third-party services."
+msgstr ""
+
+msgid "DuoWorkflowSettings|Web search"
+msgstr ""
+
+msgid "DuoWorkflowSettings|When enabled, GitLab Duo Chat can send user questions to an external search provider to find current information. Users still choose to turn on web search in each conversation."
 msgstr ""
 
 msgid "DuoWorkflow|A Duo session in %{project} is paused and waiting for your input."
@@ -38399,6 +38408,9 @@ msgid "Geo|Replication failure"
 msgstr ""
 
 msgid "Geo|Replication information"
+msgstr ""
+
+msgid "Geo|Replication of %{replicable_title} is disabled on this site."
 msgstr ""
 
 msgid "Geo|Replication slot WAL"
@@ -92669,6 +92681,15 @@ msgid "WorkItemDecisionLog|Enter a summary of the decision"
 msgstr ""
 
 msgid "WorkItemDecisionLog|Hide context"
+msgstr ""
+
+msgid "WorkItemDecisionLog|Keep a record of decisions and the reasoning behind them. You can add a decision at any time, and GitLab Duo can also capture decisions during planning."
+msgstr ""
+
+msgid "WorkItemDecisionLog|Learn more about the decision log"
+msgstr ""
+
+msgid "WorkItemDecisionLog|New"
 msgstr ""
 
 msgid "WorkItemDecisionLog|New decision"

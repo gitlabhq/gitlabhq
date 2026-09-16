@@ -298,6 +298,31 @@ RSpec.describe EmailsHelper, feature_category: :shared do
     end
   end
 
+  describe '#instance_access_request_text' do
+    # Regression: safe_format HTML-escapes interpolated values, which is correct
+    # for the HTML email but wrong for the plain-text email, where a name like
+    # "O'Brien" must render literally, not as "O&#39;Brien".
+    # See https://gitlab.com/gitlab-org/gitlab/-/merge_requests/255495
+    #
+    let(:user) { build_stubbed(:user, name: "O'Brien & Co") }
+
+    it 'escapes interpolated values for the html format' do
+      result = helper.instance_access_request_text(user, format: :html)
+
+      expect(result).to include('O&#39;Brien &amp; Co')
+    end
+
+    it 'does not escape interpolated values for the text format' do
+      result = helper.instance_access_request_text(user)
+
+      aggregate_failures do
+        expect(result).to include("O'Brien & Co")
+        expect(result).not_to include('&#39;')
+        expect(result).not_to include('&amp;')
+      end
+    end
+  end
+
   describe 'password_reset_token_valid_time' do
     def validate_time_string(time_limit, expected_string)
       Devise.reset_password_within = time_limit

@@ -232,7 +232,10 @@ Assign one or more users to the work item.
 
 **Additional details**:
 
-- You can assign multiple users in a single command by separating usernames with spaces.
+- On GitLab Premium and Ultimate, you can assign multiple users in a single
+  command by separating usernames with spaces.
+  On GitLab Free, only one of the specified users is assigned.
+  For more information, see [multiple assignees](issues/multiple_assignees_for_issues.md).
 - To remove assignees, use [`/unassign`](#unassign).
 - To replace assignees, use [`/reassign`](#reassign).
 
