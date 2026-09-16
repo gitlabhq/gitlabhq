@@ -6101,6 +6101,12 @@
               "description": "Agent_user_environment content category.",
               "isDeprecated": false,
               "deprecationReason": null
+            },
+            {
+              "name": "ATTACHMENTS",
+              "description": "Attachments content category.",
+              "isDeprecated": false,
+              "deprecationReason": null
             }
           ],
           "possibleTypes": null

@@ -7,6 +7,7 @@ import {
   MOCK_AGGREGATED_FIELDS_ONE_DIM_ONE_METRIC,
   MOCK_AGGREGATED_FIELDS_TWO_DIMS_ONE_METRIC,
   MOCK_AGGREGATED_DATA_ONE_DIM,
+  MOCK_AGGREGATED_COMPARISON_DATA_ONE_DIM,
 } from '../../mock_data';
 
 // Deliberately not in value order, so the descending sort is observable.
@@ -51,6 +52,7 @@ describe('BarListPresenter', () => {
 
   const findChart = () => wrapper.findComponent(BarListChart);
   const findSkeletonLoader = () => wrapper.findComponent(GlSkeletonLoader);
+  const findEmittedErrorMessage = () => wrapper.emitted('error')?.[0]?.[0]?.message;
   const rows = () => findChart().props('data');
 
   describe('default', () => {
@@ -185,6 +187,236 @@ describe('BarListPresenter', () => {
     });
   });
 
+  describe('valueLabels', () => {
+    it('defaults the chart to share and value labels', () => {
+      createComponent();
+
+      expect(findChart().props('valueLabels')).toBe('shareAndValue');
+    });
+
+    it('forwards a value-only format from the display config', () => {
+      createComponent({ displayConfig: { valueLabels: 'value' } });
+
+      expect(findChart().props('valueLabels')).toBe('value');
+    });
+  });
+
+  describe('color', () => {
+    it('defaults the chart to orange bars', () => {
+      createComponent();
+
+      expect(findChart().props('color')).toBe('orange');
+    });
+
+    it('forwards blue from the display config', () => {
+      createComponent({ displayConfig: { color: 'blue' } });
+
+      expect(findChart().props('color')).toBe('blue');
+    });
+  });
+
+  describe('scale', () => {
+    it('defaults the chart to bars sized by share of the total', () => {
+      createComponent();
+
+      expect(findChart().props('scale')).toBe('total');
+    });
+
+    it('forwards max from the display config', () => {
+      createComponent({ displayConfig: { scale: 'max' } });
+
+      expect(findChart().props('scale')).toBe('max');
+    });
+  });
+
+  describe('when a display option has a value it does not know', () => {
+    it.each`
+      key              | value        | supportedValues
+      ${'valueLabels'} | ${'percent'} | ${'`shareAndValue`, `value`'}
+      ${'color'}       | ${'green'}   | ${'`orange`, `blue`'}
+      ${'scale'}       | ${'largest'} | ${'`total`, `max`'}
+    `('emits an error naming $key and renders no chart', ({ key, value, supportedValues }) => {
+      createComponent({ displayConfig: { [key]: value } });
+
+      expect(findEmittedErrorMessage()).toBe(
+        `Unknown \`${key}\`: \`${value}\`. Supported values are: ${supportedValues}.`,
+      );
+      expect(findChart().exists()).toBe(false);
+    });
+
+    it('emits the error before the fields are populated', () => {
+      createComponent({ fields: [], displayConfig: { color: 'green' } });
+
+      expect(findEmittedErrorMessage()).toBe(
+        'Unknown `color`: `green`. Supported values are: `orange`, `blue`.',
+      );
+    });
+  });
+
+  describe('with comparison data', () => {
+    const trendProps = {
+      comparisonData: MOCK_AGGREGATED_COMPARISON_DATA_ONE_DIM,
+      source: 'CodeSuggestions',
+    };
+    const trendOf = (name) => rows().find((row) => row.name === name).trend;
+
+    beforeEach(() => createComponent(trendProps));
+
+    // ruby: 21 against 20. python: 14 against 14. go has no previous row.
+    it('gives each paired row a signed change, coloured by its direction', () => {
+      expect(rows()).toEqual([
+        {
+          name: 'ruby',
+          value: 21,
+          share: (21 / 45) * 100,
+          trend: { text: '+5%', variant: 'success' },
+        },
+        {
+          name: 'python',
+          value: 14,
+          share: (14 / 45) * 100,
+          trend: { text: '0%', variant: 'neutral' },
+        },
+        { name: 'go', value: 10, share: (10 / 45) * 100 },
+      ]);
+    });
+
+    describe('when a value falls', () => {
+      beforeEach(() =>
+        createComponent({
+          ...trendProps,
+          data: { nodes: [{ language: 'ruby', totalCount: 15 }] },
+        }),
+      );
+
+      it('marks the fall as a bad move for a count', () => {
+        expect(trendOf('ruby')).toEqual({ text: '-25%', variant: 'danger' });
+      });
+    });
+
+    describe('when the metric is better going down', () => {
+      beforeEach(() =>
+        createComponent({
+          ...trendProps,
+          fields: [
+            MOCK_AGGREGATED_FIELDS_ONE_DIM_ONE_METRIC[0],
+            { key: 'rejectedCount', label: 'Rejected count', type: 'metric' },
+          ],
+          data: { nodes: [{ language: 'ruby', rejectedCount: 30 }] },
+          comparisonData: { nodes: [{ language: 'ruby', rejectedCount: 20 }] },
+        }),
+      );
+
+      it('marks a rise as a bad move', () => {
+        expect(trendOf('ruby')).toEqual({ text: '+50%', variant: 'danger' });
+      });
+    });
+
+    describe('when the previous value was 0', () => {
+      beforeEach(() =>
+        createComponent({
+          ...trendProps,
+          comparisonData: { nodes: [{ language: 'ruby', totalCount: 0 }] },
+        }),
+      );
+
+      // A move from 0 has no percentage to show.
+      it('says the row is new', () => {
+        expect(trendOf('ruby')).toEqual({ text: 'New', variant: 'neutral' });
+      });
+    });
+
+    describe('when the rows roll up into Other', () => {
+      // The two folded rows moved from 2 + 1 to 4 + 2.
+      const previous = (values) => ({
+        nodes: values.map((totalCount, i) => ({ language: `lang-${i}`, totalCount })),
+      });
+
+      beforeEach(() =>
+        createComponent({
+          ...trendProps,
+          data: eightRows(),
+          comparisonData: previous([30, 25, 15, 10, 8, 6, 2, 1]),
+        }),
+      );
+
+      it('compares the roll-up against the sum of its rows in the previous period', () => {
+        expect(rows().at(-1)).toEqual({
+          name: 'Other (2)',
+          value: 6,
+          share: 6,
+          trend: { text: '+100%', variant: 'success' },
+        });
+      });
+
+      describe('and one folded row has no previous value', () => {
+        beforeEach(() =>
+          createComponent({
+            ...trendProps,
+            data: eightRows(),
+            comparisonData: previous([30, 25, 15, 10, 8, 6, 2]),
+          }),
+        );
+
+        it('leaves the roll-up without a trend, since its previous total is unknown', () => {
+          expect(rows().at(-1)).toEqual({ name: 'Other (2)', value: 6, share: 6 });
+          expect(trendOf('lang-0')).toEqual({ text: '0%', variant: 'neutral' });
+        });
+      });
+    });
+
+    describe('when the previous period returned no rows', () => {
+      beforeEach(() => createComponent({ ...trendProps, comparisonData: { nodes: [] } }));
+
+      it('gives no row a trend', () => {
+        expect(rows().every((row) => !('trend' in row))).toBe(true);
+      });
+    });
+
+    describe('when the dimension buckets by date', () => {
+      beforeEach(() =>
+        createComponent({
+          ...trendProps,
+          fields: [
+            {
+              key: 'created',
+              label: 'Created',
+              type: 'dimension',
+              parameters: { granularity: 'weekly' },
+            },
+            MOCK_AGGREGATED_FIELDS_ONE_DIM_ONE_METRIC[1],
+          ],
+          data: { nodes: [{ created: '2026-01-05', totalCount: 10 }] },
+          comparisonData: { nodes: [{ created: '2025-12-29', totalCount: 5 }] },
+        }),
+      );
+
+      // The buckets are different dates in the shifted window, so nothing pairs.
+      it('gives no row a trend', () => {
+        expect(rows()).toHaveLength(1);
+        expect(rows()[0]).not.toHaveProperty('trend');
+      });
+    });
+
+    describe('when a row is duplicated in the previous period', () => {
+      beforeEach(() =>
+        createComponent({
+          ...trendProps,
+          comparisonData: {
+            nodes: [
+              { language: 'ruby', totalCount: 5 },
+              { language: 'ruby', totalCount: 15 },
+            ],
+          },
+        }),
+      );
+
+      it('gives no row a trend, since either pairing would be a guess', () => {
+        expect(rows().every((row) => !('trend' in row))).toBe(true);
+      });
+    });
+  });
+
   describe('loading', () => {
     beforeEach(() => createComponent({ loading: true }));
 
@@ -199,7 +431,7 @@ describe('BarListPresenter', () => {
       createComponent({ fields: MOCK_AGGREGATED_FIELDS_TWO_DIMS_ONE_METRIC });
 
       expect(findChart().exists()).toBe(false);
-      expect(wrapper.emitted('error')[0][0].message).toBe('barList supports exactly one dimension');
+      expect(findEmittedErrorMessage()).toBe('barList supports exactly one dimension');
     });
   });
 });

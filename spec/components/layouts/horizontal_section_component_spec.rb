@@ -2,7 +2,7 @@
 
 require "spec_helper"
 
-RSpec.describe Layouts::HorizontalSectionComponent, type: :component, feature_category: :design_system do
+RSpec.describe Layouts::HorizontalSectionComponent, feature_category: :design_system do
   let(:title) { 'Naming, visibility' }
   let(:description) { 'Update your group name, description, avatar, and visibility.' }
   let(:body) { 'This is where the settings go' }

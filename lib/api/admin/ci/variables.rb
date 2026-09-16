@@ -84,7 +84,8 @@ module API
                 optional :variable_type,
                   type: String,
                   values: ::Ci::InstanceVariable.variable_types.keys,
-                  desc: 'The type of a variable. Available types are: env_var (default) and file'
+                  default: 'env_var',
+                  desc: 'The type of a variable.'
               end
               route_setting :authorization, permissions: :create_variable, boundary_type: :instance
               post '/' do

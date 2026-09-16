@@ -191,21 +191,11 @@ cng-secrets-manager:
   extends:
     - .cng-test
     - .with-coverband-arg
-  # The specs need a license with the secrets_manager add-on. QA_EE_LICENSE_SECRETS_MANAGER
-  # is a hand-added CI variable that Terraform can remove, and a fallback to the shared license
-  # fails every spec. Allowed to fail until the license is managed like the other e2e secrets.
-  # TODO: remove once https://gitlab.com/gitlab-org/gitlab/-/work_items/628661 is done.
-  allow_failure: true
   variables:
     QA_SCENARIO: Test::Integration::SecretsManager
     QA_RSPEC_TAGS: --tag secrets_manager
     QA_FEATURE_FLAGS: "secrets_manager=enabled,group_secrets_manager=enabled,secrets_manager_namespace_enrollment=enabled,secrets_manager_instance_enrollment=enabled,secrets_manager_api_access=enabled,secrets_manager_paid_experience=enabled"
     DEPLOY_TIMEOUT: 15m
-  before_script:
-    # Secrets Manager needs an offline license that carries the secrets_manager add-on.
-    # Fall back to the shared license until QA_EE_LICENSE_SECRETS_MANAGER is provisioned.
-    - export QA_EE_LICENSE="${QA_EE_LICENSE_SECRETS_MANAGER:-$QA_EE_LICENSE}"
-    - !reference [.cng-test, before_script]
 
 # Canary for the Vue 3 rollout mechanism. The flag is set once before the
 # suite rather than inside the spec, so the test never races with the

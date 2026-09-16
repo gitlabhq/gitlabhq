@@ -5,8 +5,6 @@ module API
     include APIGuard
     include Helpers::OpenApi
 
-    use ::Gitlab::Middleware::IpAddress
-
     LOG_FILENAME = Rails.root.join("log", "api_json.log")
 
     # Origin of the catch-all `route :any, '*path'` that handles requests mapping to no real

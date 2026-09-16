@@ -35,12 +35,12 @@ module API
         optional :maintenance_note, type: String,
           desc: 'Free-form maintenance notes for the runner (1024 characters)'
         optional :paused, type: Boolean, desc: 'Specifies if the runner should ignore new jobs (defaults to false)'
-        optional :locked, type: Boolean,
-          desc: 'Specifies if the runner should be locked for the current project (defaults to false)'
+        optional :locked, type: Boolean, default: false,
+          desc: 'Specifies if the runner should be locked for the current project.'
         optional :access_level, type: String, values: ::Ci::Runner.access_levels.keys,
           desc: 'The access level of the runner'
-        optional :run_untagged, type: Boolean,
-          desc: 'Specifies if the runner should handle untagged jobs  (defaults to true)'
+        optional :run_untagged, type: Boolean, default: true,
+          desc: 'Specifies if the runner should handle untagged jobs.'
         optional :tag_list, type: Array[String], coerce_with: ::API::Validations::Types::CommaSeparatedToArray.coerce,
           desc: 'A list of runner tags'
         optional :maximum_timeout, type: Integer,

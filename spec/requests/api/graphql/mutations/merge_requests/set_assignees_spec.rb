@@ -84,7 +84,9 @@ RSpec.describe 'Setting assignees of a merge request', :assume_throttled, featur
 
   context 'when the current user does not have permission to add assignees' do
     let(:current_user) { create(:user) }
-    let(:db_query_limit) { 38 }
+    # Was 38. The token's last-used IP is now recorded; CI measures 43.
+    # See https://gitlab.com/gitlab-com/gl-infra/production-engineering/-/work_items/29728
+    let(:db_query_limit) { 43 }
 
     it 'does not change the assignees' do
       project.add_guest(current_user)

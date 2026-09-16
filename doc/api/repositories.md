@@ -190,7 +190,13 @@ response attributes:
 | `content`  | string  | Base64 encoded blob content. |
 | `encoding` | string  | Encoding used for the blob content. |
 | `sha`      | string  | Blob SHA.   |
-| `size`     | integer | Size of the blob in bytes. |
+| `size`     | integer | Size of the raw Git blob in bytes. |
+
+> [!note]
+> For text files not stored as valid UTF-8 in Git (such as UTF-16 or `ISO-8859-1`),
+> `content` is converted to UTF-8 before Base64 encoding.
+> In these cases, `size` reflects the raw blob size, which might differ from the length of the decoded content.
+> To retrieve the exact bytes stored in Git, use the [raw blob endpoint](#retrieve-raw-blob-content).
 
 Example request:
 

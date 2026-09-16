@@ -2,7 +2,7 @@
 
 require "spec_helper"
 
-RSpec.describe Pajamas::BannerComponent, type: :component do
+RSpec.describe Pajamas::BannerComponent do
   subject do
     described_class.new(**options)
   end

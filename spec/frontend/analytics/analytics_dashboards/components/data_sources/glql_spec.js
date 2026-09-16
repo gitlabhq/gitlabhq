@@ -101,6 +101,75 @@ describe('GLQL data source', () => {
       );
     });
   });
+  // A panel that buckets by date writes `%{dynamicGranularity}` where the bucket size goes, and the
+  // selected range decides it. A panel without the placeholder, such as a stat, is untouched.
+  describe('granularity', () => {
+    const BUCKETED_QUERY = `${DATED_QUERY}\ndimensions: timestamp(%{dynamicGranularity})`;
+
+    const fetchBucketed = (filters) => fetch({ query: { glql: BUCKETED_QUERY }, filters });
+
+    const customRange = (days) => ({
+      dateRangeOption: 'custom',
+      startDate: new Date(Date.UTC(2026, 0, 5)),
+      endDate: new Date(Date.UTC(2026, 0, 4 + days)),
+    });
+
+    it.each([
+      ['7d', 'daily'],
+      ['30d', 'daily'],
+      ['90d', 'weekly'],
+      ['180d', 'monthly'],
+    ])('buckets the %s preset by %s', (dateRangeOption, expected) => {
+      expect(fetchBucketed({ dateRangeOption })).toContain(`timestamp(${expected})`);
+    });
+
+    // The band follows the range's length, not the option, so a custom range sits where a preset
+    // of the same length does. Each pair straddles a boundary.
+    it.each([
+      [31, 'daily'],
+      [32, 'weekly'],
+      [91, 'weekly'],
+      [92, 'monthly'],
+    ])('buckets a %i day custom range by %s', (days, expected) => {
+      expect(fetchBucketed(customRange(days))).toContain(`timestamp(${expected})`);
+    });
+
+    it('buckets by the fallback range when no filter is set', () => {
+      expect(fetchBucketed(undefined)).toContain('timestamp(daily)');
+    });
+
+    // A half-filled custom range resolves to the fallback, so the placeholder still resolves
+    // rather than reaching the GLQL compiler as a literal.
+    it('buckets a half-filled custom range by the fallback range', () => {
+      const filters = { dateRangeOption: 'custom', startDate: new Date(Date.UTC(2026, 0, 5)) };
+
+      expect(fetchBucketed(filters)).toContain('timestamp(daily)');
+    });
+
+    it('leaves a query that does not bucket by date untouched', () => {
+      expect(fetch({ query: { glql: DATED_QUERY }, filters: { dateRangeOption: '7d' } })).toBe(
+        'type = AiUsageEvent and timestamp >= "2020-06-29" and timestamp <= "2020-07-06"',
+      );
+    });
+
+    // The comparison window is the same length as the selected one, so it buckets the same.
+    it('buckets the comparison query the same way as the main query', () => {
+      const setVisualizationOverrides = jest.fn();
+
+      fetch({
+        query: { glql: BUCKETED_QUERY },
+        filters: { dateRangeOption: '90d' },
+        visualizationOptions: { showTrends: true },
+        setVisualizationOverrides,
+      });
+
+      const { comparisonQuery } =
+        setVisualizationOverrides.mock.calls[0][0].visualizationOptionOverrides;
+
+      expect(comparisonQuery).toContain('timestamp(weekly)');
+    });
+  });
+
   describe('with showTrends', () => {
     let setVisualizationOverrides;
 

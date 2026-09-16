@@ -217,8 +217,8 @@ test_job:
 
 The content of the items in an array type can be any valid YAML map, sequence, or scalar. More complex YAML features
 like [`!reference`](../yaml/yaml_optimization.md#reference-tags) cannot be used. To reuse a list across
-configuration files, define it as an array input in an
-[external file](#define-pipeline-inputs-in-external-files), which also lets you
+configuration files, define an array input in an
+[external file](#define-pipeline-inputs-in-external-files). You can then
 [extend it with additional items](#extend-an-array-input-with-additional-items).
 
 When using the value of an array input in a string (for example
@@ -274,9 +274,9 @@ With an input value of `[shared-tag-1, shared-tag-2]`, `test_job` uses
 `[shared-tag-1, shared-tag-2, additional-tag]`.
 
 The input must be the entire array item. When an array item combines the input with other
-text, for example `- prefix-$[[ inputs.tags ]]`, the input is
-[interpolated as a string](#input-types) instead, and the item becomes a single string
-containing the string representation of the array.
+text, for example `- prefix-$[[ inputs.tags ]]`, GitLab
+[interpolates the input as a string](#input-types) instead. The item then becomes a single string
+that contains the array's string representation.
 
 ##### Array inputs with options
 
@@ -321,8 +321,8 @@ The pipeline fails to start if any value in the array input does not match a lis
 {{< /history >}}
 
 Use bracket notation with an index number to access individual elements of an array input.
-Array items are indexed in the order they are defined in the YAML array,
-with positive numbers, and the `[0]` index item is the first item in the array.
+Array items are indexed with positive numbers, in the order they are defined in the YAML array.
+The `[0]` index item is the first item in the array.
 
 For example:
 
@@ -703,8 +703,8 @@ trigger-job:
 
 {{< /history >}}
 
-You can reuse pipeline input definitions across multiple CI/CD configurations by defining them in
-external files and including them a project's pipeline configuration with [`spec:include`](../yaml/_index.md#specinclude).
+To reuse pipeline input definitions across multiple CI/CD configurations, define them in external files,
+then include them in a project's pipeline configuration with [`spec:include`](../yaml/_index.md#specinclude).
 
 Create a file with input definitions, for example in a file named `shared-inputs.yml`:
 
@@ -801,9 +801,8 @@ that runs the pipeline.
 {{< /history >}}
 
 Input keys must be unique across all included files and inline specifications.
-If you define an input with the same key in multiple included files, or in both
-an included file and the `inputs:` section in the `.gitlab-ci.yml` configuration,
-the following error is returned:
+If the same input key appears in multiple included files, or in an included file and the inline `inputs:` section,
+GitLab returns this error:
 
 ```plaintext
 Duplicate input keys found: environment. Input keys must be unique across all included files and inline specifications.
@@ -1007,7 +1006,7 @@ When you use input to modify `rules:if` expressions, you might get one of
 These errors are often related to how strings are handled in [CI/CD variable expressions](../jobs/job_rules.md#cicd-variable-expressions).
 Expressions in `rules:if` expect a CI/CD variable compared to a quoted string (`'` or `"`) or another variable.
 When input values are inserted into the `rules` configuration at pipeline runtime,
-the resulting value might not be a quoted string or variable, which causes the error.
+the resulting value might not be a quoted string or variable. This mismatch causes the error.
 
 For example, in the configuration to include:
 

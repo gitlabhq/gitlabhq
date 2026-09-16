@@ -124,6 +124,14 @@ export const DATE_RANGE_OPTIONS = {
 
 export const DATE_RANGE_OPTION_KEYS = Object.keys(DATE_RANGE_OPTIONS);
 
+export const DATE_RANGE_GRANULARITY_DAILY = 'daily';
+export const DATE_RANGE_GRANULARITY_WEEKLY = 'weekly';
+export const DATE_RANGE_GRANULARITY_MONTHLY = 'monthly';
+
+// Bounds are inclusive: 30d option spans 31 days and draws 31 daily buckets.
+export const DATE_RANGE_GRANULARITY_DAILY_MAX_DAYS = 31;
+export const DATE_RANGE_GRANULARITY_WEEKLY_MAX_DAYS = 91;
+
 export const PROJECT_FILTER_QUERY_NAME = 'projects';
 export const GROUP_FILTER_QUERY_NAME = 'groups';
 export const SCOPE_FILTER_QUERY_NAME = 'scope';

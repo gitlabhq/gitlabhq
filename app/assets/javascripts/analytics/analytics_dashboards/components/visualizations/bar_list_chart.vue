@@ -1,9 +1,19 @@
 <script>
 import { GlChart } from '@gitlab/ui/src/charts';
-import { GL_COLOR_ORANGE_400 } from '@gitlab/ui/src/tokens/build/js/tokens';
 import { merge } from 'lodash-es';
 import { formatNumber } from '~/locale';
 import { formatCountCompact } from '~/glql/utils/value_format';
+import {
+  BAR_COLOR_DEFAULT,
+  BAR_COLOR_OPTIONS,
+  BAR_COLOR_TOKENS,
+  SCALE_DEFAULT,
+  SCALE_OPTIONS,
+  SCALE_TOTAL,
+  VALUE_LABELS_DEFAULT,
+  VALUE_LABELS_OPTIONS,
+  VALUE_LABELS_VALUE,
+} from './bar_list_chart_options';
 
 const BAR_HEIGHT = 7;
 const GRID_VERTICAL_PADDING = 8;
@@ -15,8 +25,61 @@ const CATEGORY_LABEL_SIZE = 13;
 const LABEL_COLUMN_WIDTH = 164;
 const LABEL_GAP = 12;
 const VALUE_LABEL_SIZE = 11;
+const VALUE_ONLY_LABEL_SIZE = 12;
 
 const VALUE_COLUMN_WIDTH = 96;
+// A trend pill follows the value, so the column grows to keep both clear of the edge.
+const VALUE_WITH_TREND_COLUMN_WIDTH = 160;
+
+// ECharts takes pixel numbers for text sizes, so the pill cannot use the rem-valued
+// sizing tokens.
+const TREND_LABEL_SIZE = 11;
+const TREND_LINE_HEIGHT = 16;
+const TREND_PILL_PADDING = [1, 6];
+const TREND_PILL_RADIUS = 8;
+// Space between the value and its trend pill, so the pill reads as a separate mark.
+const TREND_GAP = 8;
+
+// ECharts rich text style names, one per GlBadge variant the pill can take.
+const TREND_STYLE_BY_VARIANT = {
+  success: 'trendSuccess',
+  danger: 'trendDanger',
+  neutral: 'trendNeutral',
+};
+
+// The badge tokens, so the pill matches the badge a stat renders. GlChart's SVG renderer
+// resolves the CSS variables.
+const TREND_COLOR_BY_VARIANT = {
+  success: 'var(--gl-badge-success-text-color-default)',
+  danger: 'var(--gl-badge-danger-text-color-default)',
+  neutral: 'var(--gl-badge-neutral-text-color-default)',
+};
+
+const TREND_BACKGROUND_COLOR_BY_VARIANT = {
+  success: 'var(--gl-badge-success-background-color-default)',
+  danger: 'var(--gl-badge-danger-background-color-default)',
+  neutral: 'var(--gl-badge-neutral-background-color-default)',
+};
+
+const trendStyleFor = (variant) => ({
+  fontSize: TREND_LABEL_SIZE,
+  lineHeight: TREND_LINE_HEIGHT,
+  padding: TREND_PILL_PADDING,
+  borderRadius: TREND_PILL_RADIUS,
+  color: TREND_COLOR_BY_VARIANT[variant],
+  backgroundColor: TREND_BACKGROUND_COLOR_BY_VARIANT[variant],
+});
+
+const trendStyleName = (variant) =>
+  TREND_STYLE_BY_VARIANT[variant] ?? TREND_STYLE_BY_VARIANT.neutral;
+
+const TREND_RICH_STYLES = {
+  // An empty token whose horizontal padding is the gap; rich text has no margin.
+  trendGap: { padding: [0, TREND_GAP / 2] },
+  ...Object.fromEntries(
+    Object.entries(TREND_STYLE_BY_VARIANT).map(([variant, name]) => [name, trendStyleFor(variant)]),
+  ),
+};
 
 export default {
   name: 'BarListChart',
@@ -26,13 +89,41 @@ export default {
   props: {
     /**
      * Rows to render, in display order:
-     * `[{ name: String, value: Number, share: Number }]`
-     * `share` is a percentage of the whole and sets the bar length.
+     * `[{ name: String, value: Number, share: Number, trend?: { text: String, variant: String } }]`
+     * `share` is a percentage of the whole and sets the bar length. `trend` renders as a pill
+     * after the value label, coloured by its GlBadge `variant` (`success`, `danger`, `neutral`).
      */
     data: {
       type: Array,
       required: false,
       default: () => [],
+    },
+    /**
+     * `shareAndValue` labels each bar `89% · 85.6k`; `value` labels it with the value alone,
+     * in full digits, for a list where the count matters more than the share.
+     */
+    valueLabels: {
+      type: String,
+      required: false,
+      default: VALUE_LABELS_DEFAULT,
+      validator: (value) => VALUE_LABELS_OPTIONS.includes(value),
+    },
+    /**
+     * What a bar's length is measured against. `total` (default) plots each row's `share`, so
+     * the track reads as 100% of the whole; `max` sizes bars against the largest `value`, so
+     * that row fills the track and the rest compare to it. Labels keep showing `share`.
+     */
+    scale: {
+      type: String,
+      required: false,
+      default: SCALE_DEFAULT,
+      validator: (value) => SCALE_OPTIONS.includes(value),
+    },
+    color: {
+      type: String,
+      required: false,
+      default: BAR_COLOR_DEFAULT,
+      validator: (value) => BAR_COLOR_OPTIONS.includes(value),
     },
     options: {
       type: Object,
@@ -49,13 +140,22 @@ export default {
     categories() {
       return this.rows.map(({ name }) => name);
     },
-    // Bars are drawn against the full total rather than the largest row, so the
-    // track reads as 100% and the gap after a bar is the rest of the total.
-    shares() {
-      return this.rows.map(({ share }) => share);
+    // By default bars are drawn against the full total rather than the largest row, so
+    // the track reads as 100% and the gap after a bar is the rest of the total.
+    lengths() {
+      if (this.scale === SCALE_TOTAL) return this.rows.map(({ share }) => share);
+
+      const max = Math.max(0, ...this.rows.map(({ value }) => value));
+      return this.rows.map(({ value }) => (max ? (value / max) * 100 : 0));
     },
     labels() {
       return this.rows.map((row) => this.rowLabel(row));
+    },
+    hasTrends() {
+      return this.rows.some(({ trend }) => trend);
+    },
+    valueOnly() {
+      return this.valueLabels === VALUE_LABELS_VALUE;
     },
     chartHeight() {
       return this.rows.length * ROW_HEIGHT + GRID_VERTICAL_PADDING * 2;
@@ -66,7 +166,7 @@ export default {
           top: GRID_VERTICAL_PADDING,
           bottom: GRID_VERTICAL_PADDING,
           left: LABEL_COLUMN_WIDTH,
-          right: VALUE_COLUMN_WIDTH,
+          right: this.hasTrends ? VALUE_WITH_TREND_COLUMN_WIDTH : VALUE_COLUMN_WIDTH,
         },
         // The design shows no value axis and no gridlines.
         xAxis: {
@@ -89,17 +189,23 @@ export default {
         series: [
           {
             type: 'bar',
-            data: this.shares,
+            data: this.lengths,
             barWidth: BAR_HEIGHT,
             showBackground: true,
             backgroundStyle: { color: 'var(--gl-background-color-subtle)' },
-            itemStyle: { color: GL_COLOR_ORANGE_400 },
+            itemStyle: {
+              color: BAR_COLOR_TOKENS[this.color],
+            },
             label: {
               show: true,
               position: 'right',
               // ECharts defaults this to a hardcoded #333, which never adapts.
-              color: 'var(--gl-chart-axis-text-color)',
-              fontSize: VALUE_LABEL_SIZE,
+              color: this.valueOnly
+                ? 'var(--gl-text-color-default)'
+                : 'var(--gl-chart-axis-text-color)',
+              fontSize: this.valueOnly ? VALUE_ONLY_LABEL_SIZE : VALUE_LABEL_SIZE,
+              fontWeight: this.valueOnly ? 'bold' : 'normal',
+              rich: TREND_RICH_STYLES,
               formatter: ({ dataIndex }) => this.labels[dataIndex] ?? '',
             },
           },
@@ -110,7 +216,13 @@ export default {
     },
   },
   methods: {
-    rowLabel({ value, share }) {
+    rowLabel({ value, share, trend }) {
+      const label = this.valueOnly ? formatNumber(value) : this.shareAndValueLabel(value, share);
+
+      // ECharts rich text: `{styleName|text}` picks a style from `label.rich`.
+      return trend ? `${label}{trendGap|}{${trendStyleName(trend.variant)}|${trend.text}}` : label;
+    },
+    shareAndValueLabel(value, share) {
       const formattedShare = formatNumber(share, { maximumFractionDigits: 1 });
 
       return `${formattedShare}% · ${formatCountCompact(value, { lowercaseThousands: true })}`;

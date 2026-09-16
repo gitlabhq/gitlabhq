@@ -26,7 +26,7 @@ export default class EditBlob {
   // assetsPath, filePath, currentAction, projectId, previewMarkdownPath
   constructor(options) {
     this.options = options;
-    this.configureMonacoEditor();
+    this.editorReady = this.configureMonacoEditor();
 
     this.initModePanesAndLinks();
     this.initSoftWrap();
@@ -106,13 +106,19 @@ export default class EditBlob {
     const preEl = editorEl.querySelector('.editor-loading-content');
 
     if (filePath) {
-      const { data } = await Api.getRawFile(
-        projectId,
-        filePath,
-        { ref },
-        { responseType: 'text', transformResponse: (x) => x },
-      );
-      blobContent = String(data);
+      try {
+        const { data } = await Api.getRawFile(
+          projectId,
+          filePath,
+          { ref },
+          { responseType: 'text', transformResponse: (x) => x },
+        );
+        blobContent = String(data);
+      } catch (error) {
+        // Return instead of rethrowing so editorReady settles and the handlers that await it still run.
+        createAlert({ message: BLOB_EDITOR_ERROR, error, captureError: true });
+        return;
+      }
     } else if (preEl && preEl.textContent) {
       blobContent = preEl.textContent;
     }
@@ -222,8 +228,12 @@ export default class EditBlob {
     }
   };
 
-  editModeLinkClickHandler(e) {
+  async editModeLinkClickHandler(e) {
     e.preventDefault();
+
+    // The tabs are bound synchronously, but the editor loads the file first.
+    await this.editorReady;
+    if (!this.editor) return;
 
     const currentLink = $(e.target);
     const paneId = currentLink.attr('href');
@@ -262,7 +272,7 @@ export default class EditBlob {
 
     this.$toggleButton.show();
 
-    return this.editor.focus();
+    this.editor.focus();
   }
 
   initSoftWrap() {
@@ -272,10 +282,11 @@ export default class EditBlob {
     this.$toggleButton.on('click', () => this.toggleSoftWrap());
   }
 
-  toggleSoftWrap() {
+  async toggleSoftWrap() {
     this.isSoftWrapped = !this.isSoftWrapped;
     this.$toggleButton.toggleClass('soft-wrap-active', this.isSoftWrapped);
-    this.editor.updateOptions({ wordWrap: this.isSoftWrapped ? 'on' : 'off' });
+    await this.editorReady;
+    this.editor?.updateOptions({ wordWrap: this.isSoftWrapped ? 'on' : 'off' });
   }
 
   getFileContent() {

@@ -2,7 +2,7 @@
 
 require "spec_helper"
 
-RSpec.describe Diffs::OverflowWarningComponent, type: :component, feature_category: :source_code_management do
+RSpec.describe Diffs::OverflowWarningComponent, feature_category: :source_code_management do
   include RepoHelpers
 
   subject(:component) do

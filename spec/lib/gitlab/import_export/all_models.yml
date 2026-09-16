@@ -384,6 +384,7 @@ ci_pipelines: &pipeline_definition
 - dast_profiles_pipeline
 - build_trace_chunks
 - pipeline_metadata
+- pipeline_processing_data
 - project_mirror
 - workload
 - sbom_occurrence_refs
@@ -391,6 +392,9 @@ ci_pipelines: &pipeline_definition
 - linked_duo_workflows
 pipeline_metadata:
 - pipeline
+pipeline_processing_data:
+- pipeline
+- project
 ci_refs:
 - project
 - ci_pipelines

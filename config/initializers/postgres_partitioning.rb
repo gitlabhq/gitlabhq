@@ -32,6 +32,7 @@ Gitlab::Application.config.to_prepare do
       Ci::JobMessage,
       Ci::JobRuntimeEnvironment,
       Ci::Pipeline,
+      Ci::PipelineProcessingData,
       Ci::PipelineVariable,
       Ci::RunnerManagerBuild,
       Ci::RuntimeEnvironment,

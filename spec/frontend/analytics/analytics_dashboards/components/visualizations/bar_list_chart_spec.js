@@ -1,4 +1,5 @@
 import { GlChart } from '@gitlab/ui/src/charts';
+import { GL_COLOR_DATA_BLUE_500, GL_COLOR_ORANGE_400 } from '@gitlab/ui/src/tokens/build/js/tokens';
 import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
 import BarListChart from '~/analytics/analytics_dashboards/components/visualizations/bar_list_chart.vue';
 
@@ -87,6 +88,130 @@ describe('BarListChart', () => {
     });
   });
 
+  describe('scaled to the largest row', () => {
+    beforeEach(() =>
+      createWrapper({
+        scale: 'max',
+        data: [
+          { name: 'Chat', value: 200, share: 50 },
+          { name: 'Software Dev', value: 100, share: 25 },
+          { name: 'Other (6)', value: 100, share: 25 },
+        ],
+      }),
+    );
+
+    it('fills the track with the largest row and sizes the rest against it', () => {
+      expect(firstSeries().data).toEqual([50, 50, 100]);
+    });
+
+    it('keeps labelling each row with its share of the total', () => {
+      expect(labelFor('Chat')).toBe('50% · 200');
+    });
+
+    it('draws every bar at zero length when all values are zero', () => {
+      createWrapper({
+        scale: 'max',
+        data: [
+          { name: 'Chat', value: 0, share: 0 },
+          { name: 'Other (6)', value: 0, share: 0 },
+        ],
+      });
+
+      expect(firstSeries().data).toEqual([0, 0]);
+    });
+  });
+
+  describe('with blue bars', () => {
+    beforeEach(() => createWrapper({ color: 'blue' }));
+
+    // The palette's first colour, so the list matches the other charts' first series.
+    it('fills the bars with the chart palette blue', () => {
+      expect(firstSeries().itemStyle.color).toBe(GL_COLOR_DATA_BLUE_500);
+    });
+  });
+
+  describe('with value-only labels', () => {
+    beforeEach(() => createWrapper({ valueLabels: 'value' }));
+
+    it.each`
+      name              | expected
+      ${'Chat'}         | ${'2,570,000'}
+      ${'Software Dev'} | ${'138,300'}
+      ${'Other (6)'}    | ${'23,600'}
+    `('labels $name with its full value, $expected', ({ name, expected }) => {
+      expect(labelFor(name)).toBe(expected);
+    });
+
+    // The value is the headline here rather than a footnote to the share.
+    it('emphasises the value', () => {
+      expect(firstSeries().label).toMatchObject({
+        fontWeight: 'bold',
+        color: 'var(--gl-text-color-default)',
+      });
+    });
+  });
+
+  describe('trends', () => {
+    const rowsWithTrends = [
+      { name: 'Chat', value: 1071, share: 60, trend: { text: '+7%', variant: 'success' } },
+      { name: 'Duo Planner', value: 69, share: 30, trend: { text: '-4%', variant: 'danger' } },
+      { name: 'Developer', value: 17, share: 10 },
+    ];
+
+    beforeEach(() => createWrapper({ data: rowsWithTrends, valueLabels: 'value' }));
+
+    // ECharts rich text: a `{style|text}` segment takes its style from `label.rich`.
+    it('appends each trend to its value label as a rich text pill, after a gap', () => {
+      expect(labelFor('Chat')).toBe('1,071{trendGap|}{trendSuccess|+7%}');
+      expect(labelFor('Duo Planner')).toBe('69{trendGap|}{trendDanger|-4%}');
+    });
+
+    it('sizes the gap with padding, since rich text has no margin', () => {
+      expect(firstSeries().label.rich.trendGap).toEqual({ padding: [0, 4] });
+    });
+
+    it('leaves a row without a trend as its value alone', () => {
+      expect(labelFor('Developer')).toBe('17');
+    });
+
+    it('colours each pill from the matching badge tokens', () => {
+      expect(firstSeries().label.rich).toMatchObject({
+        trendSuccess: {
+          color: 'var(--gl-badge-success-text-color-default)',
+          backgroundColor: 'var(--gl-badge-success-background-color-default)',
+        },
+        trendDanger: {
+          color: 'var(--gl-badge-danger-text-color-default)',
+          backgroundColor: 'var(--gl-badge-danger-background-color-default)',
+        },
+        trendNeutral: {
+          color: 'var(--gl-badge-neutral-text-color-default)',
+          backgroundColor: 'var(--gl-badge-neutral-background-color-default)',
+        },
+      });
+    });
+
+    it('widens the value column to make room for the pill', () => {
+      const withTrends = chartOptions().grid.right;
+
+      createWrapper({ data: rows });
+
+      expect(withTrends).toBeGreaterThan(chartOptions().grid.right);
+    });
+
+    describe('with a variant the pill has no style for', () => {
+      beforeEach(() =>
+        createWrapper({
+          data: [{ name: 'Chat', value: 10, share: 100, trend: { text: 'New', variant: 'info' } }],
+        }),
+      );
+
+      it('falls back to the neutral pill', () => {
+        expect(labelFor('Chat')).toBe('100% · 10{trendGap|}{trendNeutral|New}');
+      });
+    });
+  });
+
   describe('chrome', () => {
     beforeEach(() => createWrapper());
 
@@ -106,8 +231,8 @@ describe('BarListChart', () => {
       expect(firstSeries().showBackground).toBe(true);
     });
 
-    it('fills the bars with a solid colour', () => {
-      expect(firstSeries().itemStyle.color).toBeDefined();
+    it('fills the bars orange by default', () => {
+      expect(firstSeries().itemStyle.color).toBe(GL_COLOR_ORANGE_400);
     });
   });
 

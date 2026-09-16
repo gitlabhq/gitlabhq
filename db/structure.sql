@@ -6568,6 +6568,14 @@ CREATE TABLE p_ci_pipeline_artifact_states (
 )
 PARTITION BY LIST (partition_id);
 
+CREATE TABLE p_ci_pipeline_processing_data (
+    pipeline_id bigint NOT NULL,
+    partition_id bigint NOT NULL,
+    project_id bigint NOT NULL,
+    interruptible_protected boolean DEFAULT false NOT NULL
+)
+PARTITION BY LIST (partition_id);
+
 CREATE TABLE p_ci_pipeline_variables (
     key character varying NOT NULL,
     encrypted_value text,
@@ -41783,6 +41791,9 @@ ALTER TABLE ONLY p_ci_job_runtime_environments
 ALTER TABLE ONLY p_ci_pipeline_artifact_states
     ADD CONSTRAINT p_ci_pipeline_artifact_states_pkey PRIMARY KEY (pipeline_artifact_id, partition_id);
 
+ALTER TABLE ONLY p_ci_pipeline_processing_data
+    ADD CONSTRAINT p_ci_pipeline_processing_data_pkey PRIMARY KEY (pipeline_id, partition_id);
+
 ALTER TABLE ONLY p_ci_pipeline_variables
     ADD CONSTRAINT p_ci_pipeline_variables_pkey PRIMARY KEY (id, partition_id);
 
@@ -46209,6 +46220,8 @@ CREATE INDEX idx_p_ci_job_runtime_envs_on_project_id ON ONLY p_ci_job_runtime_en
 CREATE INDEX idx_p_ci_job_runtime_envs_on_runner_machine_id ON ONLY p_ci_job_runtime_environments USING btree (runner_machine_id);
 
 CREATE INDEX idx_p_ci_job_runtime_envs_on_runtime_environment_id ON ONLY p_ci_job_runtime_environments USING btree (runtime_environment_id, build_id, runner_machine_id);
+
+CREATE INDEX idx_p_ci_pipeline_processing_data_on_project_id ON ONLY p_ci_pipeline_processing_data USING btree (project_id);
 
 CREATE INDEX idx_p_ci_runtime_environments_on_project_id_environment_key ON ONLY p_ci_runtime_environments USING btree (project_id, environment_key);
 
@@ -61625,6 +61638,9 @@ ALTER TABLE ONLY operations_feature_flags_clients
 
 ALTER TABLE ONLY namespace_admin_notes
     ADD CONSTRAINT fk_rails_666166ea7b FOREIGN KEY (namespace_id) REFERENCES namespaces(id) ON DELETE CASCADE;
+
+ALTER TABLE p_ci_pipeline_processing_data
+    ADD CONSTRAINT fk_rails_66d29d2dcb FOREIGN KEY (partition_id, pipeline_id) REFERENCES p_ci_pipelines(partition_id, id) ON UPDATE CASCADE ON DELETE CASCADE;
 
 ALTER TABLE ONLY approval_group_rules
     ADD CONSTRAINT fk_rails_6727675176 FOREIGN KEY (group_id) REFERENCES namespaces(id) ON DELETE CASCADE;

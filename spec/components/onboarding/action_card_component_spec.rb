@@ -2,7 +2,7 @@
 
 require "spec_helper"
 
-RSpec.describe Onboarding::ActionCardComponent, type: :component, feature_category: :shared do
+RSpec.describe Onboarding::ActionCardComponent, feature_category: :shared do
   let(:icon) { 'group' }
   let(:title) { 'Create a group' }
   let(:description) { 'Groups are the best way to manage projects and members' }

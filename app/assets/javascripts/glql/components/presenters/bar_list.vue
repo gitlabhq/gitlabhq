@@ -1,12 +1,37 @@
 <script>
-import { s__, sprintf } from '~/locale';
+import { __, s__, sprintf } from '~/locale';
 import BarListChart from '~/analytics/analytics_dashboards/components/visualizations/bar_list_chart.vue';
+import {
+  BAR_COLOR_DEFAULT,
+  BAR_COLOR_OPTIONS,
+  SCALE_DEFAULT,
+  SCALE_OPTIONS,
+  VALUE_LABELS_DEFAULT,
+  VALUE_LABELS_OPTIONS,
+} from '~/analytics/analytics_dashboards/components/visualizations/bar_list_chart_options';
 import { dimensionValue, dimensionLabelFormatter } from '../../utils/chart_data';
 import DimensionRoutedChart from './chart/dimension_routed_chart.vue';
+import { trendPresentationFor } from './utils/stat';
+import {
+  TREND_PREVIOUS_KEY,
+  hasTemporalDimension,
+  hasUniqueRowKeys,
+  withTrendValues,
+} from './utils/table';
+import { formatSignedChange, trendChangeFor } from './utils/trend';
 
 // Six rows plus a rolled-up Other row, which is the shape of the design this
 // display type was built for. A query returning fewer rows is unaffected.
 const DEFAULT_MAX_ROWS = 6;
+
+const sumOf = (rows, key) => rows.reduce((sum, row) => sum + row[key], 0);
+
+// The display options a block may set, each with the values it accepts.
+const DISPLAY_OPTIONS = {
+  valueLabels: VALUE_LABELS_OPTIONS,
+  color: BAR_COLOR_OPTIONS,
+  scale: SCALE_OPTIONS,
+};
 
 export default {
   name: 'BarListPresenter',
@@ -19,6 +44,14 @@ export default {
       required: false,
       type: Object,
       default: () => ({ nodes: [] }),
+    },
+    /**
+     * Result of the same query over the previous period. When present, each row gets a trend.
+     */
+    comparisonData: {
+      required: false,
+      type: Object,
+      default: null,
     },
     fields: {
       required: false,
@@ -35,6 +68,11 @@ export default {
       type: Object,
       default: () => ({}),
     },
+    source: {
+      required: false,
+      type: String,
+      default: '',
+    },
   },
   emits: { error: null },
   computed: {
@@ -42,35 +80,108 @@ export default {
       const maxRows = Number(this.displayConfig.maxRows);
       return Number.isInteger(maxRows) && maxRows > 0 ? maxRows : DEFAULT_MAX_ROWS;
     },
+    valueLabels() {
+      return this.displayConfig?.valueLabels ?? VALUE_LABELS_DEFAULT;
+    },
+    color() {
+      return this.displayConfig?.color ?? BAR_COLOR_DEFAULT;
+    },
+    scale() {
+      return this.displayConfig?.scale ?? SCALE_DEFAULT;
+    },
+    // An unknown value is a block error, as for the stat presenter's variant, rather than a
+    // silent fallback to the default.
+    displayConfigError() {
+      const unknown = Object.entries(DISPLAY_OPTIONS).find(
+        ([key, options]) =>
+          this.displayConfig?.[key] != null && !options.includes(this.displayConfig[key]),
+      );
+      if (!unknown) return null;
+
+      const [key, options] = unknown;
+
+      return sprintf(
+        __('Unknown `%{key}`: `%{value}`. Supported values are: %{supportedValues}.'),
+        {
+          key,
+          value: this.displayConfig[key],
+          supportedValues: options.map((option) => `\`${option}\``).join(', '),
+        },
+      );
+    },
+  },
+  watch: {
+    displayConfigError: {
+      immediate: true,
+      handler(message) {
+        if (message) this.$emit('error', new Error(message));
+      },
+    },
   },
   methods: {
+    // Previous-period values, one per node, paired on dimension identity under the same
+    // guards as the table's trend column. Null when nothing can be paired.
+    previousValuesFor(nodes, dimension, metric) {
+      const comparisonNodes = this.comparisonData?.nodes;
+      if (!comparisonNodes?.length) return null;
+
+      const dimensions = [dimension];
+      if (hasTemporalDimension(dimensions)) return null;
+      // Both periods: a duplicate identity on either side mispairs rows on the other.
+      if (!hasUniqueRowKeys(nodes, dimensions)) return null;
+      if (!hasUniqueRowKeys(comparisonNodes, dimensions)) return null;
+
+      return withTrendValues(nodes, { comparisonNodes, dimensions, metric }).map(
+        (node) => node[TREND_PREVIOUS_KEY],
+      );
+    },
+    trendFor(metric, { value, previousValue }) {
+      const trend = trendPresentationFor(this.source, metric, { value, previousValue });
+      if (!trend) return null;
+
+      const change = trendChangeFor(value, previousValue);
+
+      return {
+        // A move away from 0 has no percentage, so the pill keeps the badge's "New".
+        text: change == null ? trend.metaText : formatSignedChange(change),
+        variant: trend.variant,
+      };
+    },
     // Share is each row's % of the grand total rather than of the largest row
     rowsFor(dimension, metric) {
       const nodes = this.data?.nodes ?? [];
       const formatLabel = dimensionLabelFormatter(nodes, dimension);
+      const previousValues = this.previousValuesFor(nodes, dimension, metric);
 
-      const rows = nodes.map((node) => ({
+      const rows = nodes.map((node, index) => ({
         name: formatLabel(dimensionValue(node, dimension)),
         value: node[metric.key] ?? 0,
+        previousValue: previousValues?.[index] ?? null,
       }));
-      const total = rows.reduce((sum, { value }) => sum + value, 0);
+      const total = sumOf(rows, 'value');
       const shareOf = (value) => (total ? (value / total) * 100 : 0);
+      const toRow = ({ name, value, previousValue }) => {
+        const trend = previousValues && this.trendFor(metric, { value, previousValue });
+
+        return { name, value, share: shareOf(value), ...(trend && { trend }) };
+      };
       const descending = rows.sort((a, b) => b.value - a.value);
 
       if (descending.length <= this.maxRows + 1) {
-        return descending.map((row) => ({ ...row, share: shareOf(row.value) }));
+        return descending.map(toRow);
       }
 
       const remainder = descending.slice(this.maxRows);
-      const remainderValue = remainder.reduce((sum, { value }) => sum + value, 0);
+      // One row with no previous value leaves the roll-up's previous total unknown too.
+      const remainderKnown = remainder.every(({ previousValue }) => previousValue != null);
 
       return [
-        ...descending.slice(0, this.maxRows).map((row) => ({ ...row, share: shareOf(row.value) })),
-        {
+        ...descending.slice(0, this.maxRows).map(toRow),
+        toRow({
           name: sprintf(s__('Glql|Other (%{count})'), { count: remainder.length }),
-          value: remainderValue,
-          share: shareOf(remainderValue),
-        },
+          value: sumOf(remainder, 'value'),
+          previousValue: remainderKnown ? sumOf(remainder, 'previousValue') : null,
+        }),
       ];
     },
   },
@@ -86,7 +197,13 @@ export default {
     @error="$emit('error', $event)"
   >
     <template #one-dimension="{ dimension, metrics }">
-      <bar-list-chart :data="rowsFor(dimension, metrics[0])" />
+      <bar-list-chart
+        v-if="!displayConfigError"
+        :data="rowsFor(dimension, metrics[0])"
+        :value-labels="valueLabels"
+        :color="color"
+        :scale="scale"
+      />
     </template>
   </dimension-routed-chart>
 </template>

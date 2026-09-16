@@ -36422,6 +36422,7 @@ Fields:
 | <a id="artifactregistry-id"></a>`id` {{< icon name="warning-solid" >}} | [`ID!`](#id) | Introduced in GitLab 19.5. Status: Experiment. Artifact Registry's UUID for the namespace mapped to the organization. Neither a GitLab namespace nor a GitLab global ID. Pass it as `resourceId` to the Artifact Registry role mutations. Present even when the status is `unknown`. |
 | <a id="artifactregistry-slug"></a>`slug` {{< icon name="warning-solid" >}} | [`String`](#string) | Introduced in GitLab 19.4. Status: Experiment. Registry slug, Artifact Registry's immutable identifier for the namespace. `null` when the status is `unknown`. |
 | <a id="artifactregistry-status"></a>`status` {{< icon name="warning-solid" >}} | [`String!`](#string) | Introduced in GitLab 19.4. Status: Experiment. Status Artifact Registry returned, one of `active`, `suspended`, `disabled`, `blocked`, `deleted`, or `purged`, or `unknown` when the mapped namespace did not resolve. Deliberately a string rather than an enum so a status Artifact Registry adds within its API version reaches the response instead of raising. |
+| <a id="artifactregistry-userpermissions"></a>`userPermissions` {{< icon name="warning-solid" >}} | [`ArtifactRegistryNamespacePermissions!`](#artifactregistrynamespacepermissions) | Introduced in GitLab 19.5. Status: Experiment. Permissions Artifact Registry grants the current user on the namespace, read from the namespace details as the user when this field is selected. Advisory, because Artifact Registry authorizes every request on its own. Every permission is `false` when Artifact Registry returned no verdicts. The parent field returns `null` when the `artifact_registry_ui` feature flag is disabled, so this block is not reached. |
 
 ### `ArtifactRegistryImage`
 
@@ -46594,6 +46595,7 @@ Fields:
 | <a id="gitlabsubscriptionusageuserevent-eventtype"></a>`eventType` | [`String`](#string) | Event type. |
 | <a id="gitlabsubscriptionusageuserevent-flowtype"></a>`flowType` | [`String`](#string) | User-friendly display name for the event flow type. |
 | <a id="gitlabsubscriptionusageuserevent-location"></a>`location` | [`GitlabSubscriptionUsageEventLocation`](#gitlabsubscriptionusageeventlocation) | Event location: project or namespace. |
+| <a id="gitlabsubscriptionusageuserevent-locationid"></a>`locationId` | [`GlobalID`](#globalid) | Global ID of the event location. Populated even when the referenced record is deleted or not visible to the user, unlike `location`. When both fields are present, they identify the same record. |
 | <a id="gitlabsubscriptionusageuserevent-sessionlink"></a>`sessionLink` | [`String`](#string) | URL of the agent session associated with the event. |
 | <a id="gitlabsubscriptionusageuserevent-timestamp"></a>`timestamp` | [`ISO8601DateTime`](#iso8601datetime) | Date and time of the event. |
 
@@ -67920,6 +67922,7 @@ The category of the additional context.
 | Value | Description |
 | ----- | ----------- |
 | <a id="aiadditionalcontextcategory-agent_user_environment"></a>`AGENT_USER_ENVIRONMENT` | Agent_user_environment content category. |
+| <a id="aiadditionalcontextcategory-attachments"></a>`ATTACHMENTS` | Attachments content category. |
 | <a id="aiadditionalcontextcategory-dependency"></a>`DEPENDENCY` | Dependency content category. |
 | <a id="aiadditionalcontextcategory-directory"></a>`DIRECTORY` | Directory content category. |
 | <a id="aiadditionalcontextcategory-file"></a>`FILE` | File content category. |

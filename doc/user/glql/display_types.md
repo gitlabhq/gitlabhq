@@ -292,13 +292,14 @@ sort: acceptedCount asc
 {{< history >}}
 
 - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/work_items/623319) in GitLab 19.4.
+- `valueLabels`, `color`, and `scale` display options [introduced](https://gitlab.com/gitlab-org/gitlab/-/work_items/628026) in GitLab 19.5.
 
 {{< /history >}}
 
 A bar list visualizes aggregated data from [analytics mode](_index.md#analytics-mode) as
-horizontal bars, where each bar's length is that row's percentage of the total of all rows, not a
-comparison against the largest row. A bar list answers "what share of the whole is this", while a
-bar chart answers "how do these compare to each other".
+horizontal bars. By default, each bar's length is that row's percentage of the total of all rows,
+not a comparison against the largest row. A bar list answers "what share of the whole is this",
+while a bar chart answers "how do these compare to each other".
 
 A bar list requires:
 
@@ -309,7 +310,32 @@ A bar list requires:
 More than one dimension causes a validation error in the view. A query that names more than
 one metric renders the first and ignores the rest.
 
-Rows sort in descending order by value. Each row's label shows the percentage and the value.
+Rows sort in descending order by value. Each row's label shows a value past the end of the bar,
+controlled by `valueLabels` under `displayConfig`:
+
+- `valueLabels: shareAndValue` is the default. It shows the row's share of the total and a
+  compact value, for example `89% · 85.6k`.
+- `valueLabels: value` shows only the row's value, in full digits, for example `1,071`. Use it
+  when the count matters more than the share.
+
+Bar color is set by `color` under `displayConfig`:
+
+- `color: orange` is the default. It matches the existing look.
+- `color: blue` draws the bars in the same blue the other GLQL charts use for their first
+  series, the chart palette's default color.
+
+Bar length is measured against a scale, set by `scale` under `displayConfig`:
+
+- `scale: total` is the default. A bar's length is the row's share of the total of all rows, so
+  the track reads as 100% of the whole and the gap after a bar is the rest of the total.
+- `scale: max` makes the largest row fill the track, with every other bar sized relative to it, so
+  bars compare rows against each other. Use it when the rows are many or evenly spread, where
+  shares of the total leave every bar short.
+
+The label is unaffected by `scale`: with `valueLabels: shareAndValue` it still shows the share of
+the total, whatever `scale` is.
+
+Any other value for `valueLabels`, `color`, or `scale` causes a validation error in the view.
 
 By default, a bar list shows six rows plus an `Other (N)` roll-up row, so a query that returns
 eight or more rows always has an `Other` row. A query that returns seven or fewer rows shows
@@ -318,6 +344,11 @@ To show a different number of rows, set `maxRows` under `displayConfig` to a who
 number greater than zero. GitLab keeps that many of the highest-value rows and folds the rest
 into a single row named `Other (N)`, where `N` is the number of rows folded in and the value is
 their combined total. A value that is not a whole number greater than zero falls back to six.
+
+In a dashboard panel that shows each row's change against the previous period, the `Other` row
+compares its folded rows against those same rows in the previous period, not against every row
+outside the kept rows in that period. The `Other` row shows no change when any of its folded rows
+has no previous value.
 
 A share of the total is meaningful only when the metric is a count or a sum. For a metric such as
 an average or a median, the total behind the shares has no meaning.
@@ -347,6 +378,23 @@ mode: analytics
 query: type = CodeSuggestion and timestamp >= -30d
 dimensions: language
 metrics: totalCount
+```
+````
+
+To show Duo Agent Platform sessions by flow type over the last 30 days in blue with only the
+value in each label, with bars sized against the largest row instead of the total:
+
+````yaml
+```glql
+display: barList
+displayConfig:
+  valueLabels: value
+  color: blue
+  scale: max
+mode: analytics
+query: type = AgentPlatformSession and created >= -30d
+dimensions: flowType
+metrics: usersCount
 ```
 ````
 

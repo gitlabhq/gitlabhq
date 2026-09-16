@@ -217,11 +217,9 @@ might not be published in the CI/CD catalog, but could be used for testing.
 
 #### Partial semantic versions
 
-You can use partial semantic version numbers and the keyword `~latest` when referencing
-a CI/CD catalog component to select the latest published version that matches your specification.
-
+When you reference a CI/CD catalog component, use partial semantic version numbers or `~latest`
+to select the latest published version that matches your specification.
 These formats only work with published CI/CD catalog components, not with regular project components.
-This ensures that when you use formats like `1.2` or `~latest`, you only pull components that have been validated and published to the catalog, rather than potentially untested code from any repository.
 
 This approach offers significant benefits for both consumers and authors of components:
 
@@ -433,14 +431,14 @@ When accessing the GitLab API in your component, use the `$CI_API_V4_URL` instea
 full URL and path for your instance (like `https://gitlab.com/api/v4`).
 
 These [predefined variables](../variables/predefined_variables.md)
-ensure that your component also works when used on another instance, for example when using
-[a GitLab.com component on a GitLab Self-Managed instance](#use-a-gitlabcom-component-on-gitlab-self-managed).
+ensure that your component also works when used on another instance. For example,
+you might [use a GitLab.com component on a GitLab Self-Managed instance](#use-a-gitlabcom-component-on-gitlab-self-managed).
 
 ### Do not assume API resources are always public
 
 Ensure that the component and its testing pipeline work also [on GitLab Self-Managed](#use-a-gitlabcom-component-on-gitlab-self-managed).
-While some API resources of public projects on GitLab.com could be accessed with unauthenticated requests,
-on a GitLab Self-Managed instance a component project could be mirrored as private or internal project.
+Some API resources of public projects on GitLab.com can be accessed with unauthenticated requests.
+However, on a GitLab Self-Managed instance, a component project might be mirrored as a private or internal project.
 
 It's important that an access token can optionally be provided through inputs or variables to
 authenticate requests on GitLab Self-Managed instances.
@@ -862,7 +860,7 @@ To publish the component project in the catalog again, you need to [publish a ne
 
 {{< /history >}}
 
-Some CI/CD components are badged with an icon to show that the component was created
+Some CI/CD components display a verified icon. The icon indicates the component was created
 and is maintained by users verified by GitLab or the instance administrator:
 
 - GitLab-maintained ({{< icon name="tanuki-verified" >}}): GitLab.com components that are created and maintained by GitLab.
@@ -1028,7 +1026,7 @@ you deliver to users, follow these best practices:
 
 ### `content not found` message
 
-You might receive an error message similar to the following when using the `~latest` or a partial semantic
+You might see this error if you use the `~latest` or a partial semantic
 version qualifier to reference a component hosted by a [catalog project](#set-a-component-project-as-a-catalog-project):
 
 ```plaintext

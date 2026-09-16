@@ -544,8 +544,8 @@ include:
 {{< /history >}}
 
 Use `cache` with `include:remote` to cache the fetched remote file content and reduce HTTP requests.
-When enabled, the remote file is cached for a specified time-to-live (TTL), improving pipeline performance
-for configurations that use the same remote includes repeatedly.
+When enabled, the remote file is cached for a specified time-to-live (TTL).
+This caching improves pipeline performance for configurations that reuse the same remote includes.
 
 Consider the trade-off between performance and freshness when setting cache durations.
 Longer cache durations improve performance but might use stale content if the remote file changes frequently.
@@ -959,8 +959,7 @@ with `---`.
 
 ### `spec`
 
-Add a `spec` section to the header of a YAML file to configure the behavior of a pipeline
-when a configuration is added to the pipeline with the `include` keyword.
+Add a `spec` section to a YAML file's header to control how the pipeline that includes the file behaves.
 
 Specs must be declared at the top of a configuration file, in a header section separated
 from the rest of the configuration with `---`.
@@ -3756,10 +3755,10 @@ job2:
 ### `interruptible`
 
 Use `interruptible` to configure the [auto-cancel redundant pipelines](../pipelines/settings.md#auto-cancel-redundant-pipelines)
-feature to cancel a job before it completes if a new pipeline on the same ref starts for a newer commit. If the feature
-is disabled, the keyword has no effect. The new pipeline must be for a commit with new changes. For example,
-the **Auto-cancel redundant pipelines** feature has no effect
-if you select **New pipeline** in the UI to run a pipeline for the same commit.
+feature. This feature cancels a job before it completes if a pipeline starts on the same ref for a new commit.
+If disabled, the keyword has no effect.
+
+For example, if you rerun a pipeline for the same commit with **New pipeline**, the keyword has no effect.
 
 The behavior of the **Auto-cancel redundant pipelines** feature can be controlled by
 the [`workflow:auto_cancel:on_new_commit`](#workflowauto_cancelon_new_commit) setting.
@@ -3935,8 +3934,8 @@ This example creates four paths of execution:
   - To have `needs` refer to a subset of parallelized jobs (and not all of the parallelized jobs),
     use the [`needs:parallel:matrix`](#needsparallelmatrix) keyword.
 - You can refer to jobs in the same stage as the job you are configuring.
-- If `needs` refers to a job that might not be added to
-  a pipeline because of `only`, `except`, or `rules`, the pipeline might fail to create. Use the [`needs:optional`](#needsoptional) keyword to resolve a failed pipeline creation.
+- If `needs` refers to a job that might be excluded from the pipeline by `only`, `except`, or `rules`,
+  the pipeline might fail to create. Use the [`needs:optional`](#needsoptional) keyword to resolve a failed pipeline creation.
 - If a pipeline has jobs with `needs: []` and jobs in the [`.pre`](#stage-pre) stage, they will
   all start as soon as the pipeline is created. Jobs with `needs: []` start immediately,
   and jobs in the `.pre` stage also start immediately.
@@ -4082,7 +4081,7 @@ build_job:
 #### `needs:pipeline:job`
 
 A [child pipeline](../pipelines/downstream_pipelines.md#parent-child-pipelines) can download artifacts from a
-successfully finished job in its parent pipeline or another child pipeline in the same parent-child pipeline hierarchy.
+successfully finished job. The job can be in its parent pipeline or another child pipeline in the same hierarchy.
 
 **Keyword type**: Job keyword. You can use it only as part of a job.
 
@@ -4242,8 +4241,8 @@ upstream_status:
 
 #### `needs:parallel:matrix`
 
-Jobs can use [`parallel:matrix`](#parallelmatrix) to run a job multiple times in parallel in a single pipeline,
-but with different variable values for each instance of the job.
+Jobs can use [`parallel:matrix`](#parallelmatrix) to run a job multiple times in parallel in a single pipeline.
+Each instance of the job uses different variable values.
 
 Use `needs:parallel:matrix` to execute jobs out-of-order depending on parallelized jobs.
 
@@ -5228,8 +5227,8 @@ To cover these cases, use [`rules: changes: compare_to`](#ruleschangescompare_to
 the branch to compare against the pipeline ref.
 
 If you do not use `compare_to`, you should use `rules: changes` only with [branch pipelines](../pipelines/pipeline_types.md#branch-pipeline)
-or [merge request pipelines](../pipelines/merge_request_pipelines.md), though
-`rules: changes` still evaluates to true when creating a new branch. With:
+or [merge request pipelines](../pipelines/merge_request_pipelines.md).
+However, `rules: changes` still evaluates to true when creating a new branch. With:
 
 - Merge request pipelines, `rules:changes` compares the changes with the target MR branch.
 - Branch pipelines, `rules:changes` compares the changes with the previous commit on the branch.

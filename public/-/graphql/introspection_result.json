@@ -10924,6 +10924,12 @@
               "description": "Agent_user_environment content category.",
               "isDeprecated": false,
               "deprecationReason": null
+            },
+            {
+              "name": "ATTACHMENTS",
+              "description": "Attachments content category.",
+              "isDeprecated": false,
+              "deprecationReason": null
             }
           ],
           "possibleTypes": null
@@ -37788,6 +37794,22 @@
               },
               "isDeprecated": true,
               "deprecationReason": "Status: Experiment. Introduced in GitLab 19.4."
+            },
+            {
+              "name": "userPermissions",
+              "description": "Permissions Artifact Registry grants the current user on the namespace, read from the namespace details as the user when this field is selected. Advisory, because Artifact Registry authorizes every request on its own. Every permission is `false` when Artifact Registry returned no verdicts. The parent field returns `null` when the `artifact_registry_ui` feature flag is disabled, so this block is not reached. Introduced in GitLab 19.5: Status: Experiment.",
+              "args": [],
+              "type": {
+                "kind": "NON_NULL",
+                "name": null,
+                "ofType": {
+                  "kind": "OBJECT",
+                  "name": "ArtifactRegistryNamespacePermissions",
+                  "ofType": null
+                }
+              },
+              "isDeprecated": true,
+              "deprecationReason": "Status: Experiment. Introduced in GitLab 19.5."
             }
           ],
           "inputFields": null,
@@ -173988,6 +174010,18 @@
               "type": {
                 "kind": "UNION",
                 "name": "GitlabSubscriptionUsageEventLocation",
+                "ofType": null
+              },
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "locationId",
+              "description": "Global ID of the event location. Populated even when the referenced record is deleted or not visible to the user, unlike `location`. When both fields are present, they identify the same record.",
+              "args": [],
+              "type": {
+                "kind": "SCALAR",
+                "name": "GlobalID",
                 "ofType": null
               },
               "isDeprecated": false,

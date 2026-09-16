@@ -16,6 +16,12 @@ const typePolicies = {
   },
 };
 
+// The server omits `html` when the blob has no rich viewer, but the query selects it.
+export const fetchReadme = (url) =>
+  axios
+    .get(url, { params: { format: 'json', viewer: 'rich' } })
+    .then(({ data }) => ({ html: null, ...data, __typename: 'ReadmeFile' }));
+
 const defaultClient = createDefaultClient(
   {
     Query: {
@@ -36,9 +42,7 @@ const defaultClient = createDefaultClient(
         });
       },
       readme(_, { url }) {
-        return axios
-          .get(url, { params: { format: 'json', viewer: 'rich' } })
-          .then(({ data }) => ({ ...data, __typename: 'ReadmeFile' }));
+        return fetchReadme(url);
       },
     },
   },

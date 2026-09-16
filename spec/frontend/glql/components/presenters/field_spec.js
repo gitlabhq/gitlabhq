@@ -83,4 +83,48 @@ describe('FieldPresenter', () => {
       expect(wrapper.findComponent(ParametersStub).props('parameters')).toEqual(parameters);
     });
   });
+
+  describe('when the presenter declares only some of the props', () => {
+    // Object-form props, like every production presenter.
+    const DataOnlyStub = {
+      name: 'DataOnlyStub',
+      props: { data: { type: Object, required: true } },
+      render: (h) => h('div'),
+    };
+
+    beforeEach(() => {
+      presenterFor.mockReturnValue(DataOnlyStub);
+    });
+
+    it('binds only the declared props and lets nothing fall through as attributes', () => {
+      const wrapper = mount({
+        item: { author: 'foo' },
+        fieldKey: 'author',
+        parameters: { granularity: 'monthly' },
+      });
+      const presenter = wrapper.findComponent(DataOnlyStub);
+
+      expect(presenter.props()).toEqual({ data: STUB_DATA });
+      expect(presenter.attributes()).toEqual({});
+    });
+  });
+
+  describe('when the presenter declares no props', () => {
+    const NoPropsStub = {
+      name: 'NoPropsStub',
+      render: (h) => h('em'),
+    };
+
+    beforeEach(() => {
+      presenterFor.mockReturnValue(NoPropsStub);
+    });
+
+    it('binds nothing and lets nothing fall through as attributes', () => {
+      const wrapper = mount({ item: { author: 'foo' }, fieldKey: 'author' });
+      const presenter = wrapper.findComponent(NoPropsStub);
+
+      expect(presenter.props()).toEqual({});
+      expect(presenter.attributes()).toEqual({});
+    });
+  });
 });

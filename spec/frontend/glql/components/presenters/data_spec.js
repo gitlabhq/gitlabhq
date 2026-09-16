@@ -165,6 +165,32 @@ describe('DataPresenter', () => {
     });
   });
 
+  describe('bar list', () => {
+    const createBarListWrapper = (propsData) =>
+      shallowMountExtended(DataPresenter, {
+        propsData: {
+          data: MOCK_AGGREGATED_DATA_ONE_DIM,
+          displayType: 'barList',
+          fields: MOCK_AGGREGATED_FIELDS_ONE_DIM_ONE_METRIC,
+          ...propsData,
+        },
+      });
+
+    it('forwards the comparison data to the bar list presenter', () => {
+      const comparisonData = { nodes: [{ language: 'ruby', totalCount: 4 }] };
+
+      const wrapper = createBarListWrapper({ comparisonData });
+
+      expect(wrapper.findComponent(BarListPresenter).props('comparisonData')).toBe(comparisonData);
+    });
+
+    it('forwards the query data source to the bar list presenter', () => {
+      const wrapper = createBarListWrapper({ source: 'CodeSuggestions' });
+
+      expect(wrapper.findComponent(BarListPresenter).props('source')).toBe('CodeSuggestions');
+    });
+  });
+
   describe('table', () => {
     const createTableWrapper = (propsData) =>
       shallowMountExtended(DataPresenter, {

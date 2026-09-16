@@ -56,14 +56,25 @@ response attributes:
 | `blob_id`          | string  | Blob SHA.   |
 | `commit_id`        | string  | Commit SHA for the file. |
 | `content`          | string  | Base64 encoded file content. |
-| `content_sha256`   | string  | SHA256 hash of the file content. |
+| `content_sha256`   | string  | SHA256 hash of the returned `content`. |
 | `encoding`         | string  | Encoding used for the file content. |
 | `execute_filemode` | boolean | If `true`, the execute flag is set on the file. |
 | `file_name`        | string  | Name of the file. |
 | `file_path`        | string  | Full path to the file. |
 | `last_commit_id`   | string  | SHA of the last commit that modified this file. |
 | `ref`              | string  | Name of the branch, tag, or commit used. |
-| `size`             | integer | Size of the file in bytes. |
+| `size`             | integer | Size of the raw Git blob in bytes. |
+
+> [!note]
+> For text files not stored as valid UTF-8 in Git (such as UTF-16 or `ISO-8859-1`),
+> `content` is converted to UTF-8 before Base64 encoding.
+> In these cases:
+>
+> - `size` reflects the raw blob size, which might differ from the length of the decoded content.
+> - `content_sha256` is the hash of the converted content, not the raw blob.
+>   It might not match `sha256sum` of the same file from `git clone` or when you select **Download**.
+>
+> To retrieve the exact bytes stored in Git, use the [raw file endpoint](#retrieve-a-raw-file-from-a-repository).
 
 ```shell
 curl --header "PRIVATE-TOKEN: <your_access_token>" \

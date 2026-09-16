@@ -74,7 +74,7 @@ module API
           optional :masked, type: Boolean, desc: 'Whether the variable is masked'
           optional :masked_and_hidden, type: Boolean, desc: 'Whether the variable is masked and hidden'
           optional :raw, type: Boolean, desc: 'Whether the variable will be expanded'
-          optional :variable_type, type: String, values: ::Ci::Variable.variable_types.keys, desc: 'The type of the variable. Default: env_var'
+          optional :variable_type, type: String, default: 'env_var', values: ::Ci::Variable.variable_types.keys, desc: 'The type of the variable.'
           optional :environment_scope, type: String, desc: 'The environment_scope of the variable'
           optional :description, type: String, desc: 'The description of the variable'
         end

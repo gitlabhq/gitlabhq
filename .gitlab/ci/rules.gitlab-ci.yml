@@ -1153,7 +1153,6 @@
   - Gemfile.lock
   - Gemfile.next.lock
   - yarn.lock
-  - scripts/build_gdk_image
   - scripts/frontend/postinstall.js
   - workhorse/**/*
   - vendor/gems/**/*

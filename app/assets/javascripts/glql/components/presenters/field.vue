@@ -23,8 +23,7 @@ export default {
       type: String,
       default: 'default',
     },
-    // The field spec's parameter map (e.g. `{ granularity: 'monthly' }`). Left
-    // undefined for plain fields so it doesn't fall through as a DOM attribute.
+    // The field spec's parameter map (e.g. `{ granularity: 'monthly' }`).
     parameters: {
       required: false,
       type: Object,
@@ -42,9 +41,20 @@ export default {
         parameters: this.parameters,
       });
     },
+    // Bind only the props the presenter declares. Under Vue 3 a fallthrough
+    // attr on a component root overrides that component's own prop, so an
+    // undeclared `item` replaced the status badge's `:item="data"`.
+    presenterProps() {
+      const declared = this.presenter?.props ?? {};
+      const declares = (key) =>
+        Array.isArray(declared) ? declared.includes(key) : key in declared;
+      const available = { item: this.item, data: this.data, parameters: this.parameters };
+
+      return Object.fromEntries(Object.entries(available).filter(([key]) => declares(key)));
+    },
   },
 };
 </script>
 <template>
-  <component :is="presenter" :item="item" :data="data" :parameters="parameters" />
+  <component :is="presenter" v-bind="presenterProps" />
 </template>

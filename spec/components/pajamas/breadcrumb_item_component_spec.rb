@@ -2,7 +2,7 @@
 
 require "spec_helper"
 
-RSpec.describe Pajamas::BreadcrumbItemComponent, type: :component, feature_category: :design_system do
+RSpec.describe Pajamas::BreadcrumbItemComponent, feature_category: :design_system do
   before do
     render_inline described_class.new(text: 'Foo', href: '/bar')
   end

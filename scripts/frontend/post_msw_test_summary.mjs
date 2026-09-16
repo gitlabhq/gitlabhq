@@ -87,8 +87,9 @@ const BUDGET_ACTION_S = 60; // > 60 s/test  → action required (also exits 1)
 // Frontend spec files follow the `_spec.js` naming convention.
 const SPEC_FILE_RE = /_spec\.js$/;
 
-// Deleted spec files may be RSpec (`.rb`) or JS (`.js`).
-const DELETED_SPEC_FILE_RE = /_spec\.(js|rb)$/;
+// Deleted spec files: JS only. RSpec deletions are not credited here because
+// the master baseline is built from a Jest report, which never contains `.rb` paths.
+const DELETED_SPEC_FILE_RE = /_spec\.js$/;
 
 // How far we page through the MR diffs API. 100 diffs/page × 5 pages = 500
 // files — a generous safety cap. Past this the per-file breakdown is truncated,
@@ -500,8 +501,8 @@ async function apiRequest(method, path, body) {
 
 /**
  * Fetch the list of added/modified spec files in this MR from the diffs API.
- * Deleted spec files (both `_spec.js` and `_spec.rb`) are collected separately
- * so their master baseline runtime can be surfaced as time saved.
+ * Deleted `_spec.js` files are collected separately so their master baseline
+ * runtime can be surfaced as time saved.
  * Renamed files are treated as modified, keeping the old path so their master
  * baseline can be looked up.
  *
@@ -530,7 +531,7 @@ async function fetchChangedSpecFiles(projectId, mrIid) {
       if (!Array.isArray(diffs) || diffs.length === 0) break;
       for (const d of diffs) {
         if (d.deleted_file) {
-          // Capture deleted spec files (JS or RSpec) so we can show time saved.
+          // Capture deleted JS spec files so we can show time saved.
           const oldPath = d.old_path;
           if (oldPath && DELETED_SPEC_FILE_RE.test(oldPath)) {
             deletedFiles.push({ path: oldPath });

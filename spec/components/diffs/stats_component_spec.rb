@@ -2,7 +2,7 @@
 
 require "spec_helper"
 
-RSpec.describe Diffs::StatsComponent, type: :component do
+RSpec.describe Diffs::StatsComponent do
   include RepoHelpers
 
   subject(:component) do

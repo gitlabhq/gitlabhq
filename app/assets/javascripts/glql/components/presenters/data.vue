@@ -155,9 +155,11 @@ export default {
   <bar-list-presenter
     v-else-if="displayType === $options.DISPLAY_TYPES.BAR_LIST"
     :data="data"
+    :comparison-data="comparisonData"
     :fields="fields"
     :loading="loading"
     :display-config="displayConfig"
+    :source="source"
     @error="$emit('error', $event)"
   />
   <area-chart-presenter

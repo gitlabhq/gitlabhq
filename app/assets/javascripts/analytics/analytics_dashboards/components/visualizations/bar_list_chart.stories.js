@@ -11,7 +11,7 @@ const Template = (args, { argTypes }) => ({
   props: Object.keys(argTypes),
   template: `
   <div class="gl-h-48">
-    <bar-list-chart :data="data" :options="options" />
+    <bar-list-chart :data="data" :value-labels="valueLabels" :color="color" :scale="scale" :options="options" />
   </div>`,
 });
 
@@ -20,7 +20,7 @@ const WithDashboard = (args, { argTypes }) => ({
   props: Object.keys(argTypes),
   template: `
       <dashboard-layout :panels="panelsConfig">
-        <bar-list-chart :data="data" :options="options" />
+        <bar-list-chart :data="data" :value-labels="valueLabels" :color="color" :scale="scale" :options="options" />
       </dashboard-layout>`,
 });
 
@@ -36,7 +36,7 @@ const whereCreditsWent = [
 ];
 
 export const Default = Template.bind({});
-Default.args = { data: whereCreditsWent, options: {} };
+Default.args = { data: whereCreditsWent, valueLabels: 'shareAndValue', options: {} };
 
 // One row dwarfing the rest is the realistic case, and the one where a track
 // matters most: without it the short bars have no context.
@@ -73,9 +73,48 @@ LongCategoryLabels.args = {
   options: {},
 };
 
+const withShares = (rows) => {
+  const total = rows.reduce((sum, { value }) => sum + value, 0);
+
+  return rows.map((row) => ({ ...row, share: (row.value / total) * 100 }));
+};
+
+// "Users by activity", as rendered in the DAP Impact design prototype: the count is the
+// headline, with how it moved against the previous period alongside.
+const usersByActivity = withShares([
+  { name: 'Chat', value: 1071, trend: { text: '+7%', variant: 'success' } },
+  { name: 'Code Suggestions', value: 882, trend: { text: '+12%', variant: 'success' } },
+  { name: 'Fix Pipeline', value: 358, trend: { text: '+24%', variant: 'success' } },
+  { name: 'Software Development', value: 198, trend: { text: '+18%', variant: 'success' } },
+  { name: 'Security Analyst Agent', value: 74, trend: { text: '+9%', variant: 'success' } },
+  { name: 'Duo Planner', value: 69, trend: { text: '-4%', variant: 'danger' } },
+  { name: 'CI Expert Agent', value: 40, trend: { text: 'New', variant: 'neutral' } },
+  // No counterpart in the previous period, so its change is unknown.
+  { name: 'Other (4)', value: 73 },
+]);
+
+export const ValueLabels = Template.bind({});
+ValueLabels.args = {
+  data: usersByActivity.map(({ trend, ...row }) => row),
+  valueLabels: 'value',
+  color: 'blue',
+  scale: 'max',
+  options: {},
+};
+
+export const WithTrends = Template.bind({});
+WithTrends.args = {
+  data: usersByActivity,
+  valueLabels: 'value',
+  color: 'blue',
+  scale: 'max',
+  options: {},
+};
+
 export const InDashboardPanel = WithDashboard.bind({});
 InDashboardPanel.args = {
   data: whereCreditsWent,
+  valueLabels: 'shareAndValue',
   options: {},
   panelsConfig: [
     {

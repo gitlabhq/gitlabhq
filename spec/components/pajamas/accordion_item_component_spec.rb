@@ -2,7 +2,7 @@
 
 require "spec_helper"
 
-RSpec.describe Pajamas::AccordionItemComponent, type: :component, feature_category: :shared do
+RSpec.describe Pajamas::AccordionItemComponent, feature_category: :shared do
   let(:title) { "This is a title" }
   let(:content) { "This is the content" }
   let(:button_options) { { class: 'my-class' } }

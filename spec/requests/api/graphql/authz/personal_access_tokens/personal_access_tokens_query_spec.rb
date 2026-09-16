@@ -74,7 +74,7 @@ RSpec.describe 'Get a list of personal access tokens that belong to a user', fea
   subject(:send_query) do
     post_graphql(query, current_user: current_user, token: { personal_access_token: legacy_token })
 
-    legacy_token.reload # to load last_used_at
+    legacy_token.reload # to load last_used_at and last_used_ips
   end
 
   context 'when user is authenticated' do
@@ -92,7 +92,9 @@ RSpec.describe 'Get a list of personal access tokens that belong to a user', fea
           'revoked' => false,
           'scopes' => [{ 'value' => 'api' }],
           'active' => true,
-          'lastUsedIps' => [],
+          # This is the token the query authenticates with, so its own use is
+          # recorded against the request IP.
+          'lastUsedIps' => ['127.0.0.1'],
           'lastUsedAt' => legacy_token.last_used_at.iso8601,
           'createdAt' => legacy_token.created_at.iso8601,
           'expiresAt' => legacy_token.expires_at.iso8601

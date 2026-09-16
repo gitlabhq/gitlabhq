@@ -12878,6 +12878,9 @@ msgstr ""
 msgid "ArtifactRegistry|Only npm repositories have dist-tags."
 msgstr ""
 
+msgid "ArtifactRegistry|Order"
+msgstr ""
+
 msgid "ArtifactRegistry|Organization could not be determined."
 msgstr ""
 
@@ -13003,6 +13006,9 @@ msgid "ArtifactRegistry|Remote repository"
 msgstr ""
 
 msgid "ArtifactRegistry|Repositories"
+msgstr ""
+
+msgid "ArtifactRegistry|Repositories are checked in this order when resolving an artifact. To reorder, edit this repository."
 msgstr ""
 
 msgid "ArtifactRegistry|Repositories list updated."
@@ -13156,6 +13162,9 @@ msgid "ArtifactRegistry|There are no manifests in this image yet"
 msgstr ""
 
 msgid "ArtifactRegistry|There are no packages in this repository yet"
+msgstr ""
+
+msgid "ArtifactRegistry|There are no upstream repositories yet"
 msgstr ""
 
 msgid "ArtifactRegistry|There are no versions of this package yet"
@@ -31246,6 +31255,18 @@ msgid_plural "DuoAgenticChat|%{count} characters remaining."
 msgstr[0] ""
 msgstr[1] ""
 
+msgid "DuoAgenticChat|%{filename} could not be read and was not attached."
+msgstr ""
+
+msgid "DuoAgenticChat|%{filename} was not attached. Attachments must total %{limit} or less."
+msgstr ""
+
+msgid "DuoAgenticChat|%{filename} was not attached. Images must be %{limit} or smaller."
+msgstr ""
+
+msgid "DuoAgenticChat|%{filename} was not attached. Only PNG, JPEG, and WebP images are supported."
+msgstr ""
+
 msgid "DuoAgenticChat|%{linkStart}Use non-agentic Chat%{linkEnd} (answers questions only)"
 msgstr ""
 
@@ -31271,6 +31292,9 @@ msgid "DuoAgenticChat|As Owner of the group, you can turn on GitLab Duo Agent Pl
 msgstr ""
 
 msgid "DuoAgenticChat|As Owner of the project, you can turn on GitLab Duo Agent Platform and its AI features for your team."
+msgstr ""
+
+msgid "DuoAgenticChat|Attach image"
 msgstr ""
 
 msgid "DuoAgenticChat|Cancel"
@@ -31310,6 +31334,9 @@ msgid "DuoAgenticChat|Current page"
 msgstr ""
 
 msgid "DuoAgenticChat|Development"
+msgstr ""
+
+msgid "DuoAgenticChat|Drop images to attach them"
 msgstr ""
 
 msgid "DuoAgenticChat|Generate workplan"
@@ -31399,6 +31426,9 @@ msgstr ""
 msgid "DuoAgenticChat|Ignore previous chat-rules.md"
 msgstr ""
 
+msgid "DuoAgenticChat|Images cannot be queued. Send this message again once the current response finishes."
+msgstr ""
+
 msgid "DuoAgenticChat|Invalid chat state provided"
 msgstr ""
 
@@ -31466,6 +31496,9 @@ msgid "DuoAgenticChat|Reconnect"
 msgstr ""
 
 msgid "DuoAgenticChat|Reconnect to continue this conversation."
+msgstr ""
+
+msgid "DuoAgenticChat|Remove %{filename}"
 msgstr ""
 
 msgid "DuoAgenticChat|Remove queued prompt"
@@ -31601,6 +31634,9 @@ msgid "DuoAgenticChat|Work with GitLab Duo to break your item into an efficient 
 msgstr ""
 
 msgid "DuoAgenticChat|Workplan found"
+msgstr ""
+
+msgid "DuoAgenticChat|You can attach up to %{max} images per message. Some images were not attached."
 msgstr ""
 
 msgid "DuoAgenticChat|Your GitLab Duo Agent Platform subscription has been cancelled"
@@ -55870,6 +55906,9 @@ msgstr[1] ""
 msgid "OfflineTransferExport|Deselect all"
 msgstr ""
 
+msgid "OfflineTransferExport|Destination bucket"
+msgstr ""
+
 msgid "OfflineTransferExport|Enter AWS credentials"
 msgstr ""
 
@@ -55882,13 +55921,16 @@ msgstr ""
 msgid "OfflineTransferExport|Export for offline transfer"
 msgstr ""
 
-msgid "OfflineTransferExport|Export history"
+msgid "OfflineTransferExport|Export prefix"
 msgstr ""
 
 msgid "OfflineTransferExport|Export started"
 msgstr ""
 
 msgid "OfflineTransferExport|Export your groups to an AWS S3 storage service you control. You can import them to any GitLab instance, even without a network connection between this instance and the destination instance. Each group is exported with all of its subgroups and projects."
+msgstr ""
+
+msgid "OfflineTransferExport|Exporting…"
 msgstr ""
 
 msgid "OfflineTransferExport|Groups exported through offline transfer appear here."
@@ -55898,6 +55940,9 @@ msgid "OfflineTransferExport|No groups match your search"
 msgstr ""
 
 msgid "OfflineTransferExport|No history is available yet"
+msgstr ""
+
+msgid "OfflineTransferExport|Offline export history"
 msgstr ""
 
 msgid "OfflineTransferExport|Review and export"
@@ -55919,6 +55964,9 @@ msgid "OfflineTransferExport|Select page"
 msgstr ""
 
 msgid "OfflineTransferExport|Something went wrong retrieving your groups"
+msgstr ""
+
+msgid "OfflineTransferExport|Something went wrong while fetching offline export history."
 msgstr ""
 
 msgid "OfflineTransferExport|Something went wrong. Try again later."
@@ -86358,6 +86406,9 @@ msgid "Unknown"
 msgstr ""
 
 msgid "Unknown Error"
+msgstr ""
+
+msgid "Unknown `%{key}`: `%{value}`. Supported values are: %{supportedValues}."
 msgstr ""
 
 msgid "Unknown conflict"

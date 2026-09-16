@@ -1050,13 +1050,8 @@ tags:
   x-displayName: Offline transfers
 - name: Orbit
   description: |-
-    Use this API to serve repository and merge request content to
-    [GitLab Orbit](https://docs.gitlab.com/orbit/), which indexes a group's software development
-    lifecycle into a queryable knowledge graph. These endpoints expose project metadata, commits, changed
-    paths, blobs, repository archives, and merge request diffs, and redact sensitive values from the
-    content Orbit ingests.
-
-    These endpoints are internal and used by the GitLab Orbit service.
+    Use this API to query [GitLab Orbit](https://docs.gitlab.com/orbit/),
+    which indexes a group's software development lifecycle.
 
     > [!note]
     > The availability of these endpoints is controlled by a feature flag, and GitLab Orbit is in beta.
@@ -2156,6 +2151,138 @@ paths:
           application/json:
             schema:
               "$ref": "#/components/schemas/RequestBody_a8c515dc1a08"
+  "/api/v4/orbit/query":
+    post:
+      operationId: postApiV4OrbitQuery
+      summary: Execute a query
+      description: Executes a query against the Orbit gRPC service.
+      tags:
+      - Orbit
+      responses:
+        '200':
+          description: OK
+        '400':
+          description: Bad Request
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              "$ref": "#/components/schemas/RequestBody_cbff8babb92e"
+      x-gitlab-lifecycle: beta
+  "/api/v4/orbit/query/{name}":
+    post:
+      operationId: postApiV4OrbitQueryName
+      summary: Execute a named query
+      description: 'Executes a server-defined named query against the Orbit gRPC service.
+        Requires a JSON request body: form encoding stringifies nested parameter values,
+        which the per-query parameter schemas reject.'
+      tags:
+      - Orbit
+      responses:
+        '200':
+          description: OK
+        '404':
+          description: Not Found
+        '400':
+          description: Bad Request
+      parameters:
+      - name: name
+        required: true
+        description: Named query identifier
+        schema:
+          type: string
+        in: path
+      requestBody:
+        required: false
+        content:
+          application/json:
+            schema:
+              "$ref": "#/components/schemas/RequestBody_c1f8fb649b03"
+      x-gitlab-lifecycle: beta
+  "/api/v4/orbit/query/templates":
+    get:
+      operationId: getApiV4OrbitQueryTemplates
+      summary: List named query templates
+      description: Lists the server-defined named queries with their query DSL rendered
+        for the current user.
+      tags:
+      - Orbit
+      responses:
+        '200':
+          description: OK
+        '400':
+          description: Bad Request
+      x-gitlab-lifecycle: beta
+  "/api/v4/orbit/schema":
+    get:
+      operationId: getApiV4OrbitSchema
+      summary: Retrieve the schema
+      description: Retrieves the Orbit schema.
+      tags:
+      - Orbit
+      responses:
+        '200':
+          description: OK
+        '400':
+          description: Bad Request
+      parameters:
+      - name: expand
+        required: false
+        description: Comma-separated node names to expand
+        schema:
+          type: string
+          nullable: true
+        in: query
+      - name: response_format
+        required: false
+        description: 'Response format: raw or llm'
+        schema:
+          type: string
+          enum:
+          - raw
+          - llm
+          default: raw
+        in: query
+      x-gitlab-lifecycle: beta
+  "/api/v4/orbit/status":
+    get:
+      operationId: getApiV4OrbitStatus
+      summary: Retrieve access and cluster health
+      description: Returns whether the user can access Orbit, plus cluster health.
+        Always returns 200, regardless of access.
+      tags:
+      - Orbit
+      responses:
+        '200':
+          description: OK
+        '400':
+          description: Bad Request
+      parameters:
+      - name: response_format
+        required: false
+        description: 'Response format: raw or llm'
+        schema:
+          type: string
+          enum:
+          - raw
+          - llm
+          default: raw
+        in: query
+      x-gitlab-lifecycle: beta
+  "/api/v4/orbit/tools":
+    get:
+      operationId: getApiV4OrbitTools
+      summary: List all tools
+      description: Lists all available Orbit operations.
+      tags:
+      - Orbit
+      responses:
+        '200':
+          description: OK
+        '400':
+          description: Bad Request
+      x-gitlab-lifecycle: beta
   "/api/v4/jobs/{id}/sbom_scans/authorize":
     post:
       operationId: postApiV4JobsIdSbomScansAuthorize
@@ -2412,7 +2539,7 @@ paths:
         content:
           application/json:
             schema:
-              "$ref": "#/components/schemas/RequestBody_1c40e1bd8465"
+              "$ref": "#/components/schemas/RequestBody_f583f2fa127f"
   "/api/v4/token_exchange":
     post:
       operationId: postApiV4TokenExchange
@@ -27950,7 +28077,7 @@ paths:
         content:
           application/json:
             schema:
-              "$ref": "#/components/schemas/RequestBody_085de8932e54"
+              "$ref": "#/components/schemas/RequestBody_1f1c1894d905"
   "/api/v4/user_counts":
     get:
       operationId: getApiV4UserCounts
@@ -59473,7 +59600,7 @@ paths:
         content:
           application/json:
             schema:
-              "$ref": "#/components/schemas/RequestBody_eea09d839198"
+              "$ref": "#/components/schemas/RequestBody_48a913b78361"
   "/api/v4/groups/{id}/variables/{key}":
     get:
       operationId: getApiV4GroupsIdVariablesKey
@@ -62331,7 +62458,7 @@ paths:
         content:
           application/json:
             schema:
-              "$ref": "#/components/schemas/RequestBody_2014afd4b67c"
+              "$ref": "#/components/schemas/RequestBody_6644d012a17d"
   "/api/v4/projects/{id}/feature_flags_settings":
     get:
       operationId: getApiV4ProjectsIdFeatureFlagsSettings
@@ -71406,7 +71533,7 @@ paths:
         content:
           application/json:
             schema:
-              "$ref": "#/components/schemas/RequestBody_289f9a36c0a9"
+              "$ref": "#/components/schemas/RequestBody_54d49e4cd2ba"
   "/api/v4/projects/{id}/variables/{key}":
     get:
       operationId: getApiV4ProjectsIdVariablesKey
@@ -81353,7 +81480,7 @@ paths:
         content:
           application/json:
             schema:
-              "$ref": "#/components/schemas/RequestBody_5b27109ffe2d"
+              "$ref": "#/components/schemas/RequestBody_bff9b6a958b0"
   "/api/v4/admin/ci/variables/{key}":
     get:
       operationId: getApiV4AdminCiVariablesKey
@@ -100823,6 +100950,44 @@ components:
             - channel_name
             - token
           nullable: true
+    RequestBody_cbff8babb92e:
+      type: object
+      properties:
+        query:
+          type: object
+          description: Query DSL object
+          nullable: true
+        response_format:
+          type: string
+          enum:
+          - raw
+          - llm
+          description: 'Response format: raw or llm'
+          default: raw
+        source_type:
+          type: string
+          description: Optional frontend source subtype (e.g. code_intelligence)
+          nullable: true
+      required:
+      - query
+    RequestBody_c1f8fb649b03:
+      type: object
+      properties:
+        parameters:
+          type: object
+          description: Named query parameters
+          default: {}
+        response_format:
+          type: string
+          enum:
+          - raw
+          - llm
+          description: 'Response format: raw or llm'
+          default: raw
+        source_type:
+          type: string
+          description: Optional frontend source subtype (e.g. code_intelligence)
+          nullable: true
     RequestBody_c172efdc6039:
       type: object
       properties:
@@ -100904,7 +101069,7 @@ components:
       - mr_title
       - mr_description
       - files_content
-    RequestBody_1c40e1bd8465:
+    RequestBody_f583f2fa127f:
       type: object
       properties:
         content:
@@ -100998,6 +101163,7 @@ components:
                 - repository
                 - directory
                 - agent_user_environment
+                - attachments
                 description: Category of the additional context.
                 minLength: 1
               id:
@@ -110559,7 +110725,7 @@ components:
           nullable: true
       required:
       - file
-    RequestBody_085de8932e54:
+    RequestBody_1f1c1894d905:
       type: object
       properties:
         runner_type:
@@ -110595,9 +110761,8 @@ components:
           nullable: true
         locked:
           type: boolean
-          description: Specifies if the runner should be locked for the current project
-            (defaults to false)
-          nullable: true
+          description: Specifies if the runner should be locked for the current project.
+          default: false
         access_level:
           type: string
           enum:
@@ -110607,9 +110772,8 @@ components:
           nullable: true
         run_untagged:
           type: boolean
-          description: Specifies if the runner should handle untagged jobs  (defaults
-            to true)
-          nullable: true
+          description: Specifies if the runner should handle untagged jobs.
+          default: true
         tag_list:
           type: array
           items:
@@ -120426,7 +120590,7 @@ components:
           nullable: true
       required:
       - glql_yaml
-    RequestBody_eea09d839198:
+    RequestBody_48a913b78361:
       type: object
       properties:
         key:
@@ -120460,8 +120624,8 @@ components:
           enum:
           - env_var
           - file
-          description: 'The type of the variable. Default: env_var'
-          nullable: true
+          description: The type of the variable.
+          default: env_var
         environment_scope:
           type: string
           description: The environment scope of the variable
@@ -121632,7 +121796,7 @@ components:
           type: string
           description: A comma separated list of external user ids
           nullable: true
-    RequestBody_2014afd4b67c:
+    RequestBody_6644d012a17d:
       type: object
       properties:
         name:
@@ -121645,9 +121809,9 @@ components:
           nullable: true
         active:
           type: boolean
-          description: The active state of the flag. Defaults to `true`. Supported
-            in GitLab 13.3 and later
-          nullable: true
+          description: The active state of the flag. Supported in GitLab 13.3 and
+            later
+          default: true
         strategies:
           type: array
           description: Array of feature flag strategies
@@ -122561,7 +122725,7 @@ components:
           nullable: true
       required:
       - name
-    RequestBody_289f9a36c0a9:
+    RequestBody_54d49e4cd2ba:
       type: object
       properties:
         key:
@@ -122593,8 +122757,8 @@ components:
           enum:
           - env_var
           - file
-          description: 'The type of the variable. Default: env_var'
-          nullable: true
+          description: The type of the variable.
+          default: env_var
         environment_scope:
           type: string
           description: The environment_scope of the variable
@@ -124882,7 +125046,7 @@ components:
               description: Unique namespace related to Project
               nullable: true
           nullable: true
-    RequestBody_5b27109ffe2d:
+    RequestBody_bff9b6a958b0:
       type: object
       properties:
         key:
@@ -124914,9 +125078,8 @@ components:
           enum:
           - env_var
           - file
-          description: 'The type of a variable. Available types are: env_var (default)
-            and file'
-          nullable: true
+          description: The type of a variable.
+          default: env_var
       required:
       - key
       - value

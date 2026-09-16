@@ -1,4 +1,8 @@
-import { resolveDateRangeFilter } from '~/explore/analytics_dashboards/components/utils';
+import {
+  dateRangeDayCount,
+  dateRangeGranularity,
+  resolveDateRangeFilter,
+} from '~/explore/analytics_dashboards/components/utils';
 
 // The jest environment freezes today at 2020-07-06.
 const LAST_7_DAYS = {
@@ -51,5 +55,57 @@ describe('resolveDateRangeFilter', () => {
     expect(resolveDateRangeFilter({ dateRangeOption: 'custom', ...dates }, '30d')).toMatchObject(
       LAST_30_DAYS,
     );
+  });
+});
+
+// A range of `days` whole days, both bounds counted, so `days: 1` is a single day.
+const rangeOf = (days) => ({
+  startDate: new Date('2026-01-05T00:00:00.000Z'),
+  endDate: new Date(Date.UTC(2026, 0, 4 + days)),
+});
+
+describe('dateRangeDayCount', () => {
+  it.each([
+    ['a single day', 1],
+    ['a week', 7],
+    ['a range spanning a month boundary', 45],
+    ['a range spanning a year boundary', 400],
+  ])('counts both bounds for %s', (_, days) => {
+    expect(dateRangeDayCount(rangeOf(days))).toBe(days);
+  });
+
+  // The options build their bounds at UTC midnight, so a count taken from local date parts
+  // would come up a day short west of UTC.
+  it('counts in UTC days regardless of the viewer timezone', () => {
+    expect(
+      dateRangeDayCount({
+        startDate: new Date('2026-01-05T00:00:00.000Z'),
+        endDate: new Date('2026-01-06T00:00:00.000Z'),
+      }),
+    ).toBe(2);
+  });
+});
+
+describe('dateRangeGranularity', () => {
+  it.each([
+    ['a single day', 1, 'daily'],
+    ['the last 7 days preset', 8, 'daily'],
+    ['the last day of the daily band', 31, 'daily'],
+    ['the first day of the weekly band', 32, 'weekly'],
+    ['the last 90 days preset', 91, 'weekly'],
+    ['the first day of the monthly band', 92, 'monthly'],
+    ['the last 180 days preset', 181, 'monthly'],
+  ])('buckets %s by %i days as %s', (_, days, expected) => {
+    expect(dateRangeGranularity(rangeOf(days))).toBe(expected);
+  });
+
+  // The bands are read off the length alone, so a custom range no preset matches still lands
+  // in one of them rather than falling through to a default.
+  it.each([
+    [14, 'daily'],
+    [60, 'weekly'],
+    [120, 'monthly'],
+  ])('buckets a %i day custom range as %s', (days, expected) => {
+    expect(dateRangeGranularity(rangeOf(days))).toBe(expected);
   });
 });

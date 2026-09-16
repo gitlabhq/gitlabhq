@@ -212,6 +212,9 @@ describe('computeActionable', () => {
     });
 
     it('ignores deleted files that have no master baseline entry', () => {
+      // In production a `.rb` path never reaches computeActionable because
+      // DELETED_SPEC_FILE_RE only matches `_spec.js`; this still exercises the
+      // baseline-miss path of computeActionable directly.
       const deletedFiles = [{ path: 'spec/features/unknown_spec.rb' }];
 
       const result = computeActionable({ changedFiles: [], deletedFiles, report, baseline });

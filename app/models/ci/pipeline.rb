@@ -162,6 +162,9 @@ module Ci
 
     has_one :pipeline_metadata, class_name: 'Ci::PipelineMetadata', inverse_of: :pipeline
 
+    has_one :pipeline_processing_data, class_name: 'Ci::PipelineProcessingData',
+      foreign_key: [:pipeline_id, :partition_id], inverse_of: :pipeline
+
     has_many :daily_build_group_report_results, class_name: 'Ci::DailyBuildGroupReportResult',
       foreign_key: :last_pipeline_id, inverse_of: :last_pipeline
 

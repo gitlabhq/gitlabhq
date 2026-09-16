@@ -71,11 +71,13 @@ describe('Blob Editing', () => {
     getValue: getValueMock,
     focus: jest.fn(),
     updateModelLanguage: jest.fn(),
+    updateOptions: jest.fn(),
   };
 
   const setEditorFixture = ({ editorContent = '' } = {}) => {
     setHTMLFixture(`
       <div class="js-edit-mode"><a href="#editor">Write</a><a href="#preview">Preview</a></div>
+      <button class="soft-wrap-toggle" type="button">Soft wrap</button>
       <form class="js-edit-blob-form">
         <input id="file_path" />
         <div class="js-edit-mode-pane" id="editor" data-ref="main">${editorContent}</div>
@@ -200,6 +202,81 @@ describe('Blob Editing', () => {
     it('returns content from the editor', () => {
       expect(blobInstance.getFileContent()).toBe(valueMock);
       expect(getValueMock).toHaveBeenCalled();
+    });
+  });
+
+  describe('before the editor has loaded', () => {
+    let resolveRawFile;
+    let rejectRawFile;
+
+    const clickSoftWrapToggle = async () => {
+      document.querySelector('.soft-wrap-toggle').click();
+      await waitForPromises();
+    };
+
+    beforeEach(() => {
+      Api.getRawFile.mockReturnValueOnce(
+        new Promise((resolve, reject) => {
+          resolveRawFile = resolve;
+          rejectRawFile = reject;
+        }),
+      );
+      stubPreviewEndpoint();
+
+      blobInstance = new EditBlob({
+        previewMarkdownPath: PREVIEW_MARKDOWN_PATH,
+        filePath,
+        projectPath: 'path/to/project',
+        projectId,
+      });
+    });
+
+    it('waits for the editor and then renders the preview when a mode tab is clicked', async () => {
+      await clickTab('#preview');
+
+      expect(findPreviewRequest()).toBeUndefined();
+
+      resolveRawFile({ data: 'raw content' });
+      await waitForPromises();
+
+      expectPreviewPaneRendered({ content: valueMock, file_path: '' });
+    });
+
+    it('waits for the editor and then applies soft wrap when the toggle is clicked', async () => {
+      await clickSoftWrapToggle();
+
+      expect(document.querySelector('.soft-wrap-toggle').classList).not.toContain(
+        'soft-wrap-active',
+      );
+      expect(mockInstance.updateOptions).not.toHaveBeenCalled();
+
+      resolveRawFile({ data: 'raw content' });
+      await waitForPromises();
+
+      expect(mockInstance.updateOptions).toHaveBeenCalledWith({ wordWrap: 'off' });
+    });
+
+    describe('when the file fails to load', () => {
+      beforeEach(async () => {
+        rejectRawFile(new Error('load failed'));
+        await waitForPromises();
+      });
+
+      it('creates an alert', () => {
+        expect(createAlert).toHaveBeenCalledWith({
+          message: BLOB_EDITOR_ERROR,
+          error: expect.any(Error),
+          captureError: true,
+        });
+      });
+
+      it('does not throw when a mode tab or the soft wrap toggle is clicked', async () => {
+        await clickTab('#preview');
+        await clickSoftWrapToggle();
+
+        expect(findPreviewRequest()).toBeUndefined();
+        expect(mockInstance.updateOptions).not.toHaveBeenCalled();
+      });
     });
   });
 

@@ -125,6 +125,7 @@ module Gitlab
     require_dependency Rails.root.join('lib/gitlab/middleware/rack_multipart_tempfile_factory')
     require_dependency Rails.root.join('lib/gitlab/middleware/rack_attack_headers')
     require_dependency Rails.root.join('lib/gitlab/middleware/labkit_rack_rate_limit')
+    require_dependency Rails.root.join('lib/gitlab/middleware/ip_address')
     require_dependency Rails.root.join('lib/gitlab/middleware/secure_headers')
     require_dependency Rails.root.join('lib/gitlab/middleware/static_assets_authorization')
     require_dependency Rails.root.join('lib/gitlab/runtime')
@@ -493,6 +494,12 @@ module Gitlab
     # every request (after Warden resolves auth) and can compare its decision
     # against Rack::Attack's on the way back up. It never blocks in the shadow stage.
     config.middleware.insert_before Rack::Attack, ::Gitlab::Middleware::LabkitRackRateLimit
+
+    # Above LabkitRackRateLimit: that middleware resolves the authenticated user on
+    # the way in, and anything it triggers that records an IP (personal access token
+    # last-used tracking) needs Gitlab::IpAddressState already set. Mounting this
+    # inside the Grape app was too late for it.
+    config.middleware.insert_before ::Gitlab::Middleware::LabkitRackRateLimit, ::Gitlab::Middleware::IpAddress
 
     # Add rate limit headers to all responses from Rack::Attack
     config.middleware.insert_after Rack::Attack, ::Gitlab::Middleware::RackAttackHeaders

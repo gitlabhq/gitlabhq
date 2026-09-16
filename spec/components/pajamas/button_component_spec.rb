@@ -2,7 +2,7 @@
 
 require "spec_helper"
 
-RSpec.describe Pajamas::ButtonComponent, type: :component, feature_category: :design_system do
+RSpec.describe Pajamas::ButtonComponent, feature_category: :design_system do
   subject do
     described_class.new(**options)
   end

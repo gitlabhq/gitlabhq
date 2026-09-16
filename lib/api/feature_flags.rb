@@ -60,7 +60,7 @@ module API
         params do
           requires :name, type: String, desc: 'The name of the feature flag'
           optional :description, type: String, desc: 'The description of the feature flag'
-          optional :active, type: Boolean, desc: 'The active state of the flag. Defaults to `true`. Supported in GitLab 13.3 and later'
+          optional :active, type: Boolean, default: true, desc: 'The active state of the flag. Supported in GitLab 13.3 and later'
           optional :version, type: String, desc: 'The version of the feature flag. Must be `new_version_flag`. Omit to create a Legacy feature flag.'
           optional :strategies, type: Array, desc: 'Array of feature flag strategies' do
             requires :name, type: String, desc: 'The strategy name. Can be `default`, `gradualRolloutUserId`, `userWithId`, or `gitlabUserList`. In GitLab 13.5 and later, can be `flexibleRollout`'
