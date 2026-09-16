@@ -118,7 +118,10 @@ export default {
     handleCancelButtonClick() {
       window.onbeforeunload = null;
     },
-    openModal() {
+    async openModal() {
+      // The header mounts while the editor still loads the file.
+      await this.editor.editorReady;
+
       const filePath = this.editor.filepathFormMediator?.$filenameInput?.val();
       if (!filePath) {
         this.editor.filepathFormMediator?.toggleValidationError(true);

@@ -1,4 +1,4 @@
-# E2E smoke tests against CNG, deployed by caproni on job-local k3d
+# E2E tests against CNG, deployed by caproni on job-local k3d
 
 .caproni-deploy-cmd:
   # Paths are absolute: .qa-install does `cd qa` partway through before_script.
@@ -10,11 +10,16 @@
       if [ -f "${cached_chart}" ]; then export GITLAB_CHART_PACKAGE="${cached_chart}"; fi
     # nip.io, not /etc/hosts: sibling dind containers have their own hosts file
     - GITLAB_DOMAIN="$(getent hosts docker | awk '{ print $1 }' | head -n1).nip.io"
-    # In a file, not an env var: base config wins over environment
+    # BASE_DOMAIN is set here since base config wins over env vars
+    # QA_SCENARIO also acts as the OAuth switch, so we don't need a separate variable
     - |
       {
         echo "variables:"
         echo "  BASE_DOMAIN: ${GITLAB_DOMAIN}"
+        if [ "${QA_SCENARIO}" = "Test::Integration::OAuth" ]; then
+          echo "extends:"
+          echo "  - caproni.github-oauth.yaml"
+        fi
       } > $CI_PROJECT_DIR/qa/caproni/caproni.local.yaml
       cat $CI_PROJECT_DIR/qa/caproni/caproni.local.yaml
     - |
@@ -123,3 +128,15 @@ cng-registry-caproni:
   variables:
     QA_SCENARIO: Test::Integration::Registry
     QA_RUN_IN_PARALLEL: "false"
+
+# This job is a placeholder: the only :oauth spec (login_via_oauth_and_oidc_with_gitlab_as_idp_spec.rb) is
+# quarantined, so it won't run until the quarantine is removed
+# https://gitlab.com/gitlab-org/quality/test-failure-issues/-/issues/24015
+cng-oauth-caproni:
+  extends: .caproni-test
+  variables:
+    QA_SCENARIO: Test::Integration::OAuth
+    QA_RSPEC_TAGS: --tag oauth
+    QA_RUN_IN_PARALLEL: "false"
+    QA_GITHUB_OAUTH_APP_ID: $QA_GITHUB_OAUTH_APP_ID
+    QA_GITHUB_OAUTH_APP_SECRET: $QA_GITHUB_OAUTH_APP_SECRET

@@ -10,6 +10,8 @@ module Subscriptions
     class NamespaceWorkItemChanges < BaseSubscription
       include Gitlab::Graphql::Laziness
 
+      MEMBERSHIP_CACHE_TTL = 3.minutes
+
       payload_type Types::WorkItems::NamespaceWorkItemChangesPayloadType
 
       argument :namespace_id, ::Types::GlobalIDType[::Namespace],
@@ -18,13 +20,30 @@ module Subscriptions
 
       def authorized?(namespace_id:)
         return unauthorized! unless Feature.enabled?(:work_items_realtime, current_user)
+        return unauthorized! unless current_user
+        return unauthorized! unless member?(namespace_id)
+
+        true
+      end
+
+      private
+
+      # Cached because this runs once per subscriber per event, so its queries would otherwise repeat for every
+      # subscriber on every change (up to four per miss: the namespace, two organization lookups, the membership).
+      # Only positive verdicts are cached: a denial fails the subscribe or unsubscribes the update, so it never
+      # repeats. Tradeoff: revoked access stays cached for the TTL, which is acceptable because the broadcast carries
+      # only a work item id and an action, and clients refetch the item under per-user authorization.
+      def member?(namespace_id)
+        cache_key = ['work_items', 'namespace_changes', 'member', current_user.id, namespace_id.to_s]
+
+        return true if Rails.cache.read(cache_key)
 
         namespace = force(GitlabSchema.find_by_gid(namespace_id))
 
-        return unauthorized! if namespace.nil?
-
         # Require GUEST: MINIMAL_ACCESS users are admitted by some namespaces' default access level.
-        return unauthorized! unless namespace.member?(current_user, Gitlab::Access::GUEST)
+        return false unless namespace&.member?(current_user, Gitlab::Access::GUEST)
+
+        Rails.cache.write(cache_key, true, expires_in: MEMBERSHIP_CACHE_TTL)
 
         true
       end

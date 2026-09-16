@@ -10,7 +10,7 @@ import { DATE_RANGE_OPTION_LAST_30_DAYS } from '~/explore/analytics_dashboards/c
 // A GLQL query names its own date field (`timestamp` here, `merged` there), so the panel
 // declares where the dashboard's date range goes instead of this source guessing:
 //   query: type = AiUsageEvent and timestamp >= "%{startDate}" and timestamp <= "%{endDate}"
-const dateRangeVariables = ({ startDate, endDate }) => ({
+export const dateRangeVariables = ({ startDate, endDate }) => ({
   startDate: toISODateFormat(startDate, true),
   endDate: toISODateFormat(endDate, true),
 });
@@ -18,7 +18,7 @@ const dateRangeVariables = ({ startDate, endDate }) => ({
 // A preset carries its previous window already; only a custom range derives one. GLQL reads
 // both bounds as whole days, so the length counts both ends and the previous window closes
 // the day before this one opens.
-const previousDateRange = ({ startDate, endDate, previousRange }) => {
+export const previousDateRange = ({ startDate, endDate, previousRange }) => {
   if (previousRange) return previousRange;
 
   const length = dateRangeDayCount({ startDate, endDate });
@@ -31,7 +31,7 @@ const previousDateRange = ({ startDate, endDate, previousRange }) => {
 
 // Only the names given are substituted, so any other `%{...}` the query holds reaches the
 // GLQL compiler as the author wrote it.
-const interpolate = (glql, variables) =>
+export const interpolate = (glql, variables) =>
   Object.entries(variables).reduce(
     (query, [name, value]) => query.replaceAll(`%{${name}}`, value),
     glql,

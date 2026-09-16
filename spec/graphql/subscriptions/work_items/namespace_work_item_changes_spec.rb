@@ -139,5 +139,76 @@ RSpec.describe Subscriptions::WorkItems::NamespaceWorkItemChanges, feature_categ
         end
       end
     end
+
+    describe 'membership caching', :use_clean_rails_memory_store_caching do
+      def authorize(user: current_user, gid: namespace_id)
+        resolver_instance(described_class, obj: payload, ctx: query_context(user: user), subscription_update: true)
+          .resolve_with_support(namespace_id: gid)
+      end
+
+      # The one query left is BaseSubscription's `current_user.reset`, which is out of this cache's reach.
+      it 'serves a repeated authorization without loading the namespace or its members' do
+        authorize
+
+        recorder = ActiveRecord::QueryRecorder.new { authorize }
+
+        expect(recorder.log.grep(/FROM "(namespaces|members|organizations|organization_users)"/)).to be_empty
+        expect(recorder.count).to eq(1)
+      end
+
+      it 'still delivers the payload on a cache hit' do
+        authorize
+
+        expect(authorize).to eq(payload)
+      end
+
+      it 'does not serve one user the verdict cached for another' do
+        authorize
+
+        expect(authorize(user: non_member)).to be_an(GraphQL::Execution::Skip)
+      end
+
+      it 'does not serve one namespace the verdict cached for another' do
+        authorize
+
+        expect(authorize(gid: create(:group).to_gid)).to be_an(GraphQL::Execution::Skip)
+      end
+
+      context 'when membership is revoked' do
+        # Plain `let`: each example revokes the membership, so it has to be granted afresh.
+        let(:revoked_group) { create(:group) }
+        let(:revoked_user) { create(:user) }
+
+        before do
+          revoked_group.add_guest(revoked_user)
+          authorize(user: revoked_user, gid: revoked_group.to_gid)
+          revoked_group.members.find_by(user_id: revoked_user.id).destroy!
+        end
+
+        it 'keeps delivering until the cache expires' do
+          expect(authorize(user: revoked_user, gid: revoked_group.to_gid)).to eq(payload)
+        end
+
+        it 'unsubscribes the user once the cache expires' do
+          travel_to(described_class::MEMBERSHIP_CACHE_TTL.from_now + 1.second) do
+            expect(authorize(user: revoked_user, gid: revoked_group.to_gid))
+              .to be_an(GraphQL::Execution::Skip)
+          end
+        end
+      end
+
+      context 'when membership is granted after a denial' do
+        let(:granted_group) { create(:group) }
+        let(:granted_user) { create(:user) }
+
+        it 'authorizes without waiting for the cache to expire' do
+          expect(authorize(user: granted_user, gid: granted_group.to_gid)).to be_an(GraphQL::Execution::Skip)
+
+          granted_group.add_guest(granted_user)
+
+          expect(authorize(user: granted_user, gid: granted_group.to_gid)).to eq(payload)
+        end
+      end
+    end
   end
 end

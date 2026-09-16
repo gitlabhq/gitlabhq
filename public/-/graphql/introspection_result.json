@@ -165262,6 +165262,92 @@
           "possibleTypes": null
         },
         {
+          "kind": "ENUM",
+          "name": "FunctionalVerificationState",
+          "description": "State of a GitLab Duo Agent Platform functional verification check.",
+          "fields": null,
+          "inputFields": null,
+          "interfaces": null,
+          "enumValues": [
+            {
+              "name": "NOT_RUN",
+              "description": "No verification run has been started yet.",
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "RUNNING",
+              "description": "Verification run is in progress.",
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "PASSED",
+              "description": "Verification run finished successfully.",
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "FAILED",
+              "description": "Verification run finished but failed.",
+              "isDeprecated": false,
+              "deprecationReason": null
+            }
+          ],
+          "possibleTypes": null
+        },
+        {
+          "kind": "OBJECT",
+          "name": "FunctionalVerificationStatus",
+          "description": "Status of a GitLab Duo Agent Platform functional verification check.",
+          "fields": [
+            {
+              "name": "message",
+              "description": "Message describing the result of the latest failed run.",
+              "args": [],
+              "type": {
+                "kind": "SCALAR",
+                "name": "String",
+                "ofType": null
+              },
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "state",
+              "description": "State of the verification run.",
+              "args": [],
+              "type": {
+                "kind": "NON_NULL",
+                "name": null,
+                "ofType": {
+                  "kind": "ENUM",
+                  "name": "FunctionalVerificationState",
+                  "ofType": null
+                }
+              },
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "updatedAt",
+              "description": "Timestamp the latest run was last updated at.",
+              "args": [],
+              "type": {
+                "kind": "SCALAR",
+                "name": "Time",
+                "ofType": null
+              },
+              "isDeprecated": false,
+              "deprecationReason": null
+            }
+          ],
+          "inputFields": null,
+          "interfaces": [],
+          "enumValues": null,
+          "possibleTypes": null
+        },
+        {
           "kind": "SCALAR",
           "name": "GeoAbuseReportUploadRegistryID",
           "description": "A `GeoAbuseReportUploadRegistryID` is a global ID. It is encoded as a string.\n\nAn example `GeoAbuseReportUploadRegistryID` is: `\"gid://gitlab/Geo::AbuseReportUploadRegistry/1\"`.",
@@ -361989,6 +362075,35 @@
               },
               "isDeprecated": false,
               "deprecationReason": null
+            },
+            {
+              "name": "functionalVerificationStatus",
+              "description": "Status of a GitLab Duo Agent Platform functional verification check. Introduced in GitLab 19.5: Status: Experiment.",
+              "args": [
+                {
+                  "name": "checkType",
+                  "description": "Type of functional verification check to read the status of.",
+                  "type": {
+                    "kind": "NON_NULL",
+                    "name": null,
+                    "ofType": {
+                      "kind": "ENUM",
+                      "name": "FunctionalVerificationCheckType",
+                      "ofType": null
+                    }
+                  },
+                  "defaultValue": null,
+                  "isDeprecated": false,
+                  "deprecationReason": null
+                }
+              ],
+              "type": {
+                "kind": "OBJECT",
+                "name": "FunctionalVerificationStatus",
+                "ofType": null
+              },
+              "isDeprecated": true,
+              "deprecationReason": "Status: Experiment. Introduced in GitLab 19.5."
             },
             {
               "name": "geoNode",

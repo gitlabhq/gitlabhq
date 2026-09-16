@@ -2,21 +2,6 @@
 # Cop supports --autocorrect.
 Style/RedundantSelf:
   Exclude:
-    - 'app/models/ci/group.rb'
-    - 'app/models/ci/job_artifact.rb'
-    - 'app/models/ci/job_token/project_scope_link.rb'
-    - 'app/models/ci/namespace_mirror.rb'
-    - 'app/models/ci/pending_build.rb'
-    - 'app/models/ci/pipeline.rb'
-    - 'app/models/ci/pipeline_artifact.rb'
-    - 'app/models/ci/processable.rb'
-    - 'app/models/ci/ref.rb'
-    - 'app/models/ci/resource_group.rb'
-    - 'app/models/ci/runner.rb'
-    - 'app/models/ci/running_build.rb'
-    - 'app/models/ci/stage.rb'
-    - 'app/models/ci/trigger.rb'
-    - 'app/models/clusters/concerns/application_status.rb'
     - 'app/models/clusters/platforms/kubernetes.rb'
     - 'app/models/commit.rb'
     - 'app/models/commit_range.rb'

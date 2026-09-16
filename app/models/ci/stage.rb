@@ -75,7 +75,7 @@ module Ci
     end
 
     after_initialize do
-      self.status = DEFAULT_STATUS if self.status.nil?
+      self.status = DEFAULT_STATUS if status.nil?
     end
 
     before_validation unless: :importing? do

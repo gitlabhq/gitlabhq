@@ -40,11 +40,11 @@ module Ci
       end
 
       def upsert_from_args!(args)
-        entry = self.new(args)
+        entry = new(args)
 
         entry.validate!
 
-        self.upsert(entry.attributes.compact, returning: %w[build_id], unique_by: :build_id)
+        upsert(entry.attributes.compact, returning: %w[build_id], unique_by: :build_id)
       end
 
       def namespace_transfer_params(namespace)

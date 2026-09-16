@@ -2,7 +2,8 @@
 
 require 'spec_helper'
 
-RSpec.describe WorkItems::NamespaceChanges::BroadcastService, feature_category: :planning_views do
+RSpec.describe WorkItems::NamespaceChanges::BroadcastService, :clean_gitlab_redis_rate_limiting,
+  feature_category: :planning_views do
   let_it_be(:group) { create(:group) }
   let_it_be(:project) { create(:project, group: group) }
   let_it_be(:work_item) { create(:work_item, project: project) }

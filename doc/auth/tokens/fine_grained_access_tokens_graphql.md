@@ -915,6 +915,14 @@ Grants the ability to read flows metadata.
 | Read | Group | Type | `AiFlowsMetadata` |
 | Read | Instance | Type | `AiFlowsMetadata` |
 
+#### Functional Verification Check
+
+Grants the ability to read functional verification checks.
+
+| Action | Access | Kind | Name |
+| ------ | ------ | ---- | ---- |
+| Read | Instance | Type | `FunctionalVerificationStatus` |
+
 #### Functional Verification Workflow
 
 Grants the ability to create functional verification workflows.

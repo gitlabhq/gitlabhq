@@ -29,6 +29,46 @@ RSpec.describe Gitlab::SensitiveAttributes, feature_category: :system_access do
       end
     end
 
+    context 'for models using Rails native encryption' do
+      let(:test_class) do
+        Class.new(ApplicationRecord) do
+          include Gitlab::SensitiveAttributes
+
+          self.table_name = :dependency_proxy_group_settings
+
+          encrypts :secret
+
+          def self.name
+            'TestClass'
+          end
+        end
+      end
+
+      it 'includes encrypts attributes' do
+        klass = test_class
+
+        expect(klass.sensitive_attributes).to contain_exactly(:secret)
+      end
+    end
+
+    context 'for models without encrypted attributes' do
+      let(:test_class) do
+        Class.new(ApplicationRecord) do
+          include Gitlab::SensitiveAttributes
+
+          self.table_name = :labels
+
+          def self.name
+            'TestClass'
+          end
+        end
+      end
+
+      it 'is empty' do
+        expect(test_class.sensitive_attributes).to be_empty
+      end
+    end
+
     context 'for models using TokenAuthenticatable' do
       let(:test_class) do
         Class.new(ApplicationRecord) do

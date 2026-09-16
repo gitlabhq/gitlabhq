@@ -1,8 +1,11 @@
 # frozen_string_literal: true
 
 require_relative 'policy_repository_scope_shared_examples'
+require_relative '../rego_program_helpers'
 
 RSpec.shared_examples 'a policy repository' do
+  include PolicyStoreRegoHelpers
+
   port = Gitlab::PolicyStore::Ports::PolicyRepository
 
   let(:other_organization_id) { organization_id + 1 }
@@ -12,6 +15,10 @@ RSpec.shared_examples 'a policy repository' do
 
   def non_existing_id
     -1
+  end
+
+  def broken_rule
+    { 'type' => 'custom', 'value' => "package governance\n\nviolation contains {\"msg\": \"x\" if {\n" }
   end
 
   def custom_rego_of(merged_bytesize)
@@ -494,7 +501,7 @@ RSpec.shared_examples 'a policy repository' do
 
     it 'accepts a scope_rego at exactly the limit' do
       limit = Gitlab::PolicyStore::Ports::PolicyRepository::TEXT_LIMITS[:scope_rego]
-      at_limit = attributes.merge(scope_rego: 'p' * limit)
+      at_limit = attributes.merge(scope_rego: scope_rego_of(limit))
 
       expect(repository.create(at_limit).scope_rego.length).to eq(limit)
     end
@@ -562,6 +569,49 @@ RSpec.shared_examples 'a policy repository' do
 
     it 'starts every policy at version 1, whatever version the caller supplies' do
       expect(repository.create(attributes.merge(version: 99))).to have_attributes(version: 1)
+    end
+
+    context 'with Rego that does not parse' do
+      it 'raises ValidationError naming the rule and the location, and stores nothing', :aggregate_failures do
+        expect { repository.create(attributes.merge(rules: [broken_rule])) }
+          .to raise_error(Gitlab::PolicyStore::ValidationError, /\Arules\[0\] is invalid: .+ \(at 3:\d+\)\z/)
+
+        expect(repository.list(organization_id: organization_id).items).to be_empty
+      end
+
+      it 'names the position of the rule that failed, not the first rule' do
+        rules = [{ 'type' => 'environment', 'value' => { 'tiers' => ['production'] } }, broken_rule]
+
+        expect { repository.create(attributes.merge(rules: rules)) }
+          .to raise_error(Gitlab::PolicyStore::ValidationError, /\Arules\[1\] is invalid/)
+      end
+
+      it 'raises ValidationError when an authored scope_rego does not parse' do
+        broken_scope = attributes.merge(policy_scope: nil, scope_rego: "package gitlab.scope\n\napplies if {\n")
+
+        expect { repository.create(broken_scope) }
+          .to raise_error(Gitlab::PolicyStore::ValidationError, /\Ascope_rego is invalid: .+ \(at \d+:\d+\)\z/)
+      end
+
+      it 'refuses an oversized scope_rego by length without parsing it' do
+        expect(Gitlab::PolicyStore::RegoValidator).not_to receive(:validate!).with(:scope_rego, anything)
+
+        expect { repository.create(attributes.merge(policy_scope: nil, scope_rego: 'p' * 5000)) }
+          .to raise_error(Gitlab::PolicyStore::ValidationError, 'scope_rego exceeds maximum length of 4096 characters')
+      end
+
+      it 'parses a custom rule on its own and the merged module once', :aggregate_failures do
+        custom_rule = { 'type' => 'custom', 'value' => "package governance\n\nallow := true\n" }
+        rules = [custom_rule, { 'type' => 'environment', 'value' => { 'tiers' => ['production'] } }]
+
+        expect(Gitlab::PolicyStore::RegoValidator).to receive(:validate!).with('rules[0]', custom_rule['value']).ordered
+        expect(Gitlab::PolicyStore::RegoValidator).to receive(:validate!).with(:policy_rego, /\Apackage governance\n/)
+          .ordered
+        expect(Gitlab::PolicyStore::RegoValidator).not_to receive(:validate!).with('rules[1]', anything)
+        expect(Gitlab::PolicyStore::RegoValidator).not_to receive(:validate!).with(:scope_rego, anything)
+
+        repository.create(attributes.merge(scope_rego: nil, rules: rules))
+      end
     end
   end
 
@@ -944,6 +994,43 @@ RSpec.shared_examples 'a policy repository' do
     it 'raises Gitlab::PolicyStore::NotFound when the policy does not exist' do
       expect { repository.update(non_existing_id, name: 'Renamed policy') }
         .to raise_error(Gitlab::PolicyStore::NotFound)
+    end
+
+    context 'with Rego that does not parse' do
+      it 'raises ValidationError and leaves the stored policy as it was', :aggregate_failures do
+        created = repository.create(attributes)
+
+        expect { repository.update(created.id, rules: [broken_rule]) }
+          .to raise_error(Gitlab::PolicyStore::ValidationError, /\Arules\[0\] is invalid: .+ \(at 3:\d+\)\z/)
+
+        expect(repository.find(created.id)).to eq(created)
+      end
+
+      it 'raises ValidationError when a supplied scope_rego does not parse', :aggregate_failures do
+        created = repository.create(attributes)
+
+        expect { repository.update(created.id, scope_rego: "package gitlab.scope\n\napplies if {\n") }
+          .to raise_error(Gitlab::PolicyStore::ValidationError, /\Ascope_rego is invalid: .+ \(at \d+:\d+\)\z/)
+
+        expect(repository.find(created.id)).to eq(created)
+      end
+
+      {
+        'a metadata-only update' => [{}, { description: 'Rewritten', mode: 'enforce' }],
+        'a rename that recompiles the scope from policy_scope' => [{ scope_rego: nil }, { name: 'Renamed policy' }],
+        'a policy_scope change that recompiles the scope' =>
+          [{ scope_rego: nil }, { policy_scope: { 'compliance_frameworks' => [{ 'id' => 7 }] } }],
+        'a rename that leaves a hand-written scope_rego untouched' =>
+          [{ policy_scope: nil, scope_rego: "package gitlab.scope\n\ndefault applies := false\n" }, { name: 'Renamed' }]
+      }.each do |change, (stored_overrides, changes)|
+        it "parses nothing on #{change}" do
+          created = repository.create(attributes.merge(stored_overrides))
+
+          expect(Gitlab::PolicyStore::RegoValidator).not_to receive(:validate!)
+
+          repository.update(created.id, changes)
+        end
+      end
     end
   end
 

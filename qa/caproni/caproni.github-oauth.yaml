@@ -1,0 +1,45 @@
+# yaml-language-server: $schema=https://gitlab.com/gitlab-org/caproni/-/raw/main/schema/config.v2.schema.json
+# GitHub OAuth for Test::Integration::OAuth: the gitlab-oauth-github secret the
+# orchestrator's create_oauth_secret makes, plus the omniauth chart values.
+#
+# Opt-in, not part of the base rig. A job enables it from caproni.local.yaml
+# with QA_GITHUB_OAUTH_APP_ID and QA_GITHUB_OAUTH_APP_SECRET exported:
+#
+#   extends:
+#     - caproni.github-oauth.yaml
+
+variables:
+  # Fail the config load, not the Helm install, when the credentials are missing
+  QA_GITHUB_OAUTH_APP_ID: ${QA_GITHUB_OAUTH_APP_ID:?export QA_GITHUB_OAUTH_APP_ID}
+  QA_GITHUB_OAUTH_APP_SECRET: ${QA_GITHUB_OAUTH_APP_SECRET:?export QA_GITHUB_OAUTH_APP_SECRET}
+
+deployers:
+  github-oauth-secret:
+    type: kustomize
+    # kustomize apply does not create the namespace
+    needs: [prerequisites]
+    kustomize:
+      path: ./manifests/github-oauth
+      namespace: gitlab
+      # Written into a temporary copy of the kustomization at build time; the
+      # same document create_oauth_secret writes in gitlab-orchestrator's kind.rb
+      files:
+        provider.yaml: |
+          name: 'github'
+          app_id: '${QA_GITHUB_OAUTH_APP_ID}'
+          app_secret: '${QA_GITHUB_OAUTH_APP_SECRET}'
+
+  gitlab:
+    # Lists replace rather than merge: repeat the base needs in full
+    needs: [prerequisites, gitlab-dev-stack, pre-receive-hook, github-oauth-secret]
+    helm:
+      # Appended to the base overrides, so only the omniauth keys go here
+      dynamic_overrides:
+        - type: inline
+          value_map:
+            global.appConfig.omniauth.enabled: true
+            global.appConfig.omniauth.allowSingleSignOn: [github]
+            global.appConfig.omniauth.blockAutoCreatedUsers: false
+            global.appConfig.omniauth.providers:
+              - secret: gitlab-oauth-github
+                key: provider

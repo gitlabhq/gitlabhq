@@ -1429,6 +1429,25 @@ A user's frecently visited projects.
 
 Returns [`[Project!]`](#project).
 
+### `Query.functionalVerificationStatus`
+
+{{< details >}}
+
+- Introduced in GitLab 19.5.
+- Status: Experiment.
+
+{{< /details >}}
+
+Status of a GitLab Duo Agent Platform functional verification check.
+
+Returns [`FunctionalVerificationStatus`](#functionalverificationstatus).
+
+Arguments:
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="query-functionalverificationstatus-checktype"></a>`checkType` | [`FunctionalVerificationCheckType!`](#functionalverificationchecktype) | Type of functional verification check to read the status of. |
+
 ### `Query.geoNode`
 
 Find a Geo node.
@@ -45261,6 +45280,18 @@ Fields:
 | <a id="forkdetails-hasconflicts"></a>`hasConflicts` | [`Boolean`](#boolean) | Indicates if the fork conflicts with its upstream project. |
 | <a id="forkdetails-issyncing"></a>`isSyncing` | [`Boolean`](#boolean) | Indicates if there is a synchronization in progress. |
 
+### `FunctionalVerificationStatus`
+
+Status of a GitLab Duo Agent Platform functional verification check.
+
+Fields:
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="functionalverificationstatus-message"></a>`message` | [`String`](#string) | Message describing the result of the latest failed run. |
+| <a id="functionalverificationstatus-state"></a>`state` | [`FunctionalVerificationState!`](#functionalverificationstate) | State of the verification run. |
+| <a id="functionalverificationstatus-updatedat"></a>`updatedAt` | [`Time`](#time) | Timestamp the latest run was last updated at. |
+
 ### `GeoNode`
 
 Fields:
@@ -70542,6 +70573,17 @@ Type of functional verification check.
 | Value | Description |
 | ----- | ----------- |
 | <a id="functionalverificationchecktype-agentic_chat"></a>`AGENTIC_CHAT` | Agentic Chat check. |
+
+### `FunctionalVerificationState`
+
+State of a GitLab Duo Agent Platform functional verification check.
+
+| Value | Description |
+| ----- | ----------- |
+| <a id="functionalverificationstate-failed"></a>`FAILED` | Verification run finished but failed. |
+| <a id="functionalverificationstate-not_run"></a>`NOT_RUN` | No verification run has been started yet. |
+| <a id="functionalverificationstate-passed"></a>`PASSED` | Verification run finished successfully. |
+| <a id="functionalverificationstate-running"></a>`RUNNING` | Verification run is in progress. |
 
 ### `GeoRegistriesBulkAction`
 

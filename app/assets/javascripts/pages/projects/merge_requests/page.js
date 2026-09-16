@@ -171,7 +171,11 @@ export function initMrPage(createRapidDiffsApp) {
 
   if (createRapidDiffsApp) {
     diffsEventHub.$once(EVT_MR_PREPARED, () => {
-      window.location.reload();
+      // Only the Changes tab renders the preparing empty state. Reloading from another tab has
+      // nothing to fix and cancels the full navigation that opening Changes triggers while preparing.
+      if (mergeRequest.tabs.isDiffAction(mergeRequest.tabs.getCurrentAction())) {
+        window.location.reload();
+      }
     });
   }
 

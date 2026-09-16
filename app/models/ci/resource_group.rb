@@ -104,12 +104,12 @@ module Ci
       # Currently we only support one resource per group, which means
       # maximum one build can be set to the resource group, thus builds
       # belong to the same resource group are executed once at time.
-      self.resources.build if self.resources.empty?
+      resources.build if resources.empty?
     end
 
     def log_event(success:, processable:, action:)
       Gitlab::Ci::ResourceGroups::Logger.build.info({
-        resource_group_id: self.id,
+        resource_group_id: id,
         processable_id: processable.id,
         message: "attempted to #{action}",
         success: success

@@ -382,7 +382,7 @@ module Ci
 
       after_transition any => ::Ci::Pipeline.completed_statuses do |pipeline|
         pipeline.run_after_commit do
-          AutoMergeProcessWorker.perform_async({ 'pipeline_id' => self.id })
+          AutoMergeProcessWorker.perform_async({ 'pipeline_id' => id })
 
           if pipeline.auto_devops_source?
             self.class.auto_devops_pipelines_completed_total.increment(status: pipeline.status)
@@ -902,7 +902,7 @@ module Ci
     def trigger_status_change_subscriptions
       GraphqlTriggers.ci_pipeline_status_updated(self)
 
-      GraphqlTriggers.ci_pipeline_schedule_status_updated(self.pipeline_schedule) if self.pipeline_schedule_id.present?
+      GraphqlTriggers.ci_pipeline_schedule_status_updated(pipeline_schedule) if pipeline_schedule_id.present?
 
       return if ci_pipeline_statuses_rate_limited?
 
@@ -952,7 +952,7 @@ module Ci
     end
 
     def valid_commit_sha
-      self.errors.add(:sha, "can't be 00000000 (branch removal)") if Gitlab::Git.blank_ref?(self.sha)
+      errors.add(:sha, "can't be 00000000 (branch removal)") if Gitlab::Git.blank_ref?(sha)
     end
 
     def git_author_name
@@ -1057,7 +1057,7 @@ module Ci
     end
 
     def cancelable?
-      CANCELABLE_STATUSES.include?(self.status) && internal_pipeline?
+      CANCELABLE_STATUSES.include?(status) && internal_pipeline?
     end
 
     def auto_canceled?
@@ -1140,7 +1140,7 @@ module Ci
     #
     # Return a hash of file type => array of 1 job artifact
     def latest_report_artifacts
-      ::Gitlab::SafeRequestStore.fetch("pipeline:#{self.id}:latest_report_artifacts") do
+      ::Gitlab::SafeRequestStore.fetch("pipeline:#{id}:latest_report_artifacts") do
         ::Ci::JobArtifact.where(
           id: job_artifacts.all_reports
             .select("max(#{Ci::JobArtifact.quoted_table_name}.id) as id")
@@ -1483,7 +1483,7 @@ module Ci
 
     def detailed_status(current_user)
       Gitlab::Ci::Status::Pipeline::Factory
-        .new(self.present, current_user)
+        .new(present, current_user)
         .fabricate!
     end
 
@@ -1771,7 +1771,7 @@ module Ci
     end
 
     def matches_sha_or_source_sha?(sha)
-      self.sha == sha || self.source_sha == sha
+      self.sha == sha || source_sha == sha
     end
 
     def triggered_by?(current_user)
@@ -1865,7 +1865,7 @@ module Ci
     end
 
     def build_matchers
-      self.builds.latest.build_matchers(project)
+      builds.latest.build_matchers(project)
     end
 
     def cluster_agent_authorizations
@@ -1968,7 +1968,7 @@ module Ci
     def keep_around_commits
       return unless project
 
-      project.repository.keep_around(self.sha, self.before_sha, source: self.class.name)
+      project.repository.keep_around(sha, before_sha, source: self.class.name)
     end
 
     def observe_age_in_minutes

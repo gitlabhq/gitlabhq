@@ -1295,6 +1295,8 @@
   - 1
 - - security_scan_result_policies_sync_merge_request_approvals
   - 1
+- - security_scan_result_policies_sync_merge_requests_for_project
+  - 1
 - - security_scan_result_policies_sync_project
   - 1
 - - security_scan_result_policies_sync_project_finding_enrichments

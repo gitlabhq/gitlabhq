@@ -40,11 +40,9 @@ export default {
   // at setup, so plain values/getters won't propagate filter changes to panels.
   provide() {
     return {
-      namespaceFullPath: computed(
-        () => this.selectedProject?.fullPath || this.selectedGroup?.fullPath || '',
-      ),
+      namespaceFullPath: computed(() => this.selectedNamespaceFullPath),
       namespaceId: computed(() => this.selectedProject?.id ?? this.selectedGroup?.id ?? null),
-      namespaceName: computed(() => this.selectedProject?.name ?? this.selectedGroup?.name ?? ''),
+      namespaceName: computed(() => this.selectedNamespaceName),
       isProject: computed(() => Boolean(this.selectedProject)),
 
       // TODO: Investigate how to handle this namespace specific check. It was
@@ -72,6 +70,12 @@ export default {
   computed: {
     hasNamespace() {
       return Boolean(this.selectedGroup || this.selectedProject);
+    },
+    selectedNamespaceName() {
+      return this.selectedProject?.name ?? this.selectedGroup?.name ?? '';
+    },
+    selectedNamespaceFullPath() {
+      return this.selectedProject?.fullPath ?? this.selectedGroup?.fullPath ?? '';
     },
     // A selected namespace always counts. The date range always has a value,
     // so it only counts when it differs from the configured default.
@@ -117,6 +121,13 @@ export default {
     },
     hasViews(config) {
       return Boolean(config.views?.length);
+    },
+    activeDuoPrompts(config) {
+      const viewPrompts = this.hasViews(config)
+        ? config.views[this.activeViewIndex]?.duoPrompts
+        : null;
+
+      return viewPrompts ?? config.duoPrompts ?? [];
     },
     // When a dashboard defines views, feed the active view's panels to the layout
     // so the shared grid re-renders as the user switches views.
@@ -259,6 +270,16 @@ export default {
           >
             {{ $options.i18n.reset }}
           </gl-button>
+          <slot
+            name="filter-actions"
+            :namespace-name="selectedNamespaceName"
+            :namespace-full-path="selectedNamespaceFullPath"
+            :filters="filters"
+            :panels="layoutConfig(config).panels"
+            :duo-prompts="activeDuoPrompts(config)"
+            :is-project="Boolean(selectedProject)"
+            :is-system-dashboard="isSystemDashboard"
+          ></slot>
         </template>
 
         <template #panel="{ panel }">

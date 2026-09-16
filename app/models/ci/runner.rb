@@ -420,18 +420,18 @@ module Ci
         raise ArgumentError, 'Transitioning a group runner to a project runner is not supported'
       end
 
-      if self.runner_projects.empty?
-        self.errors.add(:assign_to, 'Taking over an orphaned project runner is not allowed')
+      if runner_projects.empty?
+        errors.add(:assign_to, 'Taking over an orphaned project runner is not allowed')
         return false
       end
 
       begin
         transaction do
-          self.runner_projects << ::Ci::RunnerProject.new(project: project, runner: self)
-          self.save!
+          runner_projects << ::Ci::RunnerProject.new(project: project, runner: self)
+          save!
         end
       rescue ActiveRecord::RecordInvalid => e
-        self.errors.add(:assign_to, e.message)
+        errors.add(:assign_to, e.message)
         false
       end
     end
@@ -693,7 +693,7 @@ module Ci
     end
 
     def runner_queue_key
-      "runner:build_queue:#{self.token}"
+      "runner:build_queue:#{token}"
     end
 
     def persist_cached_data?

@@ -157,6 +157,16 @@ RSpec.describe RemoteMirror, :mailer, feature_category: :source_code_management 
         expect(mirror.errors[:base]).to include(_("You cannot mirror a repository to itself."))
       end
 
+      it 'rejects a self-referencing URL with different hostname casing', :aggregate_failures do
+        stub_default_url_options(host: 'gitlab.example.com', protocol: 'https')
+        url = Addressable::URI.parse(project.http_url_to_repo)
+        url.host = url.host.upcase
+        mirror = project.remote_mirrors.new(url: url.to_s)
+
+        expect(mirror).not_to be_valid
+        expect(mirror.errors[:base]).to include(_("You cannot mirror a repository to itself."))
+      end
+
       it 'allows an unrelated external URL' do
         mirror = project.remote_mirrors.new(url: 'https://gitlab.example.com/group/project.git')
 
@@ -178,6 +188,15 @@ RSpec.describe RemoteMirror, :mailer, feature_category: :source_code_management 
             expect(mirror).not_to be_valid
             expect(mirror.errors[:base]).to include(_("You cannot mirror a repository to itself."))
           end
+        end
+
+        it 'rejects an scp-style self-referencing URL with different hostname casing', :aggregate_failures do
+          stub_gitlab_shell_setting(ssh_path_prefix: 'git@gitlab.example.com:')
+          url = project.ssh_url_to_repo.sub('gitlab.example.com', 'GITLAB.EXAMPLE.COM')
+          mirror = project.remote_mirrors.new(url: url)
+
+          expect(mirror).not_to be_valid
+          expect(mirror.errors[:base]).to include(_("You cannot mirror a repository to itself."))
         end
 
         it 'rejects a self-referencing URL when the project uses a custom SSH port', :aggregate_failures do

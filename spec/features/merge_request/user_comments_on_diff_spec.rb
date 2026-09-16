@@ -128,7 +128,6 @@ RSpec.describe 'User comments on a diff', :js, feature_category: :code_review_wo
           note.update!(position: repositioned_position)
 
           visit(diffs_project_merge_request_path(project, merge_request))
-          wait_for_requests
         end
 
         it 'hides and shows a comment' do

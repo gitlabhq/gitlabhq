@@ -31,17 +31,36 @@ RSpec.describe MergeRequests::PostMergeService, feature_category: :code_review_w
       end.to change { project.open_merge_requests_count }.from(1).to(0)
     end
 
-    it 'updates metrics' do
-      metrics = merge_request.metrics
-      metrics_service = double(MergeRequestMetricsService)
-      allow(MergeRequestMetricsService)
-        .to receive(:new)
-        .with(metrics)
-        .and_return(metrics_service)
+    describe 'metrics' do
+      let(:metrics_service) { instance_double(MergeRequestMetricsService) }
 
-      expect(metrics_service).to receive(:merge)
+      before do
+        allow(MergeRequestMetricsService)
+          .to receive(:new)
+          .with(merge_request.metrics)
+          .and_return(metrics_service)
+      end
 
-      subject
+      it 'prepares the metrics data before the event transaction and merges it inside' do
+        expect(metrics_service).to receive(:prepare_merge_data).ordered
+        expect(Event).to receive(:transaction).ordered.and_call_original
+        expect(metrics_service).to receive(:merge).ordered
+
+        subject
+      end
+
+      context 'when merge_request_metrics_outside_merge_transaction is disabled' do
+        before do
+          stub_feature_flags(merge_request_metrics_outside_merge_transaction: false)
+        end
+
+        it 'only merges the metrics inside the event transaction' do
+          expect(metrics_service).not_to receive(:prepare_merge_data)
+          expect(metrics_service).to receive(:merge)
+
+          subject
+        end
+      end
     end
 
     it 'calls the merge request activity counter' do

@@ -74,6 +74,29 @@ RSpec.describe Gitlab::SensitiveSerializableHash, feature_category: :system_acce
       let_it_be(:model) { create(:ci_instance_variable) }
     end
 
+    shared_examples "encrypts attribute" do |klass, attribute_name|
+      context "for #{klass.name}\##{attribute_name}" do
+        it 'has an encrypted_attributes field' do
+          expect(klass.encrypted_attributes).to include(attribute_name.to_sym)
+        end
+
+        it 'does not include the attribute in serializable_hash', :aggregate_failures do
+          expect(model.attributes).to include(attribute_name) # double-check the attribute does exist
+
+          expect(model.serializable_hash).not_to include(attribute_name)
+          expect(model.to_json).not_to include(attribute_name.to_json)
+          expect(model.as_json).not_to include(attribute_name)
+        end
+      end
+    end
+
+    context 'for a dependency proxy group setting' do
+      let_it_be(:model) { create(:dependency_proxy_group_setting) }
+
+      it_behaves_like 'encrypts attribute', DependencyProxy::GroupSetting, 'identity'
+      it_behaves_like 'encrypts attribute', DependencyProxy::GroupSetting, 'secret'
+    end
+
     shared_examples "add_authentication_token_field attribute" do |klass, attribute_name|
       context "for #{klass.name}\##{attribute_name}" do
         it 'has a add_authentication_token_field field' do

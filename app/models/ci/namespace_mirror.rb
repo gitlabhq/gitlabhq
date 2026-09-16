@@ -43,7 +43,7 @@ module Ci
         mirrors << Ci::NamespaceMirror.where("(#{columns.join(',')}) IN (#{pairs.join(',')})") # rubocop:disable GitlabSecurity/SqlInjection
       end
 
-      self.from_union(mirrors)
+      from_union(mirrors)
     end
 
     scope :by_namespace_id, ->(namespace_id) { where(namespace_id: namespace_id) }

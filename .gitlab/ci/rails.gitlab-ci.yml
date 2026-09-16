@@ -694,9 +694,11 @@ rspec-ee:predictive artifact-collector:
 rspec:coverage:
   extends:
     - .coverage-base
+    - .repo-from-artifacts
     - .rails:rules:rspec-coverage
   stage: post-test
   needs:
+    - !reference [.repo-from-artifacts, needs]
     - job: setup-test-env
       artifacts: false
     # FOSS/EE jobs
@@ -819,9 +821,12 @@ rspec:test-summary:
 rspec:undercoverage:
   extends:
     - .coverage-base
+    - .repo-from-artifacts
     - .rails:rules:rspec-undercoverage
   stage: post-test
-  needs: ["rspec:coverage"]
+  needs:
+    - !reference [.repo-from-artifacts, needs]
+    - job: rspec:coverage
   script:
     - if [[ ",${CI_MERGE_REQUEST_LABELS}," == *",pipeline:skip-undercoverage,"* ]]; then
         echo "The 'pipeline:skip-undercoverage' label is set on the MR, exiting early.";

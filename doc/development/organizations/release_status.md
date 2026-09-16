@@ -25,9 +25,9 @@ The stage determines who can use a flag and whether it can be disabled.
 | Flag | Stage | Description |
 |------|-------|-------------|
 | `create_org_from_group_settings` | Experimental | Create an organization for a top-level group from the group settings. |
-| `org_admin_area` | Experimental | Organization admin area for organization owners. |
 | `org_creation` | Experimental | Create an organization from global pages or public APIs. |
 | `org_reference_in_member_access_granted_emails` | Experimental | Reference to the owning organization in the email sent when a member is granted access to a group or project. |
 | `org_switcher` | Experimental | The organization switcher dropdown component. |
+| `org_admin_area` | LA (100%) | Organization admin area for organization owners. |
 | `org_pages` | LA (100%) | Organization pages that extend `Organizations::ApplicationController`. |
 | `your_work_sidebar_org_menu_item` | LA (100%) | Shows `Organizations` menu item in the `Your work` sidebar. |

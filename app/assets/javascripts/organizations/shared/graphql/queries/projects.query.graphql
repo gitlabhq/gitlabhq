@@ -22,7 +22,6 @@ query getOrganizationProjects(
     ) {
       nodes {
         ...Project
-        organizationEditPath
       }
       pageInfo {
         ...PageInfo

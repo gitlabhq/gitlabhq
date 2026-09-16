@@ -60,7 +60,7 @@ module Ci
     end
 
     def token=(token_value)
-      self.set_token(token_value)
+      set_token(token_value)
     end
 
     def last_used
@@ -79,7 +79,7 @@ module Ci
     alias_method :trigger_short_token, :short_token
 
     def can_access_project?
-      Ability.allowed?(self.owner, :create_build, project)
+      Ability.allowed?(owner, :create_build, project)
     end
 
     protected

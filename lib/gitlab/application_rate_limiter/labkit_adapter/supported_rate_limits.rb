@@ -405,8 +405,8 @@ module Gitlab
             namespace_work_item_changes_broadcast: ::Labkit::RateLimit::Rule.new(
               name: 'limit_namespace_work_item_change_broadcasts_by_namespace',
               characteristics: %i[group namespace],
-              limit: 30,
-              period: 1.minute,
+              limit: 5,
+              period: 15.seconds,
               action: :limit
             ),
             notes_create: ::Labkit::RateLimit::Rule.new(

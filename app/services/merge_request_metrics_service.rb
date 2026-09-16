@@ -7,6 +7,12 @@ class MergeRequestMetricsService
     @merge_request_metrics = merge_request_metrics
   end
 
+  # Overridden in EE. Lets callers do any expensive reads before opening the
+  # transaction that #merge runs in.
+  def prepare_merge_data
+    # No-op
+  end
+
   def merge(event)
     update!(merged_by_id: event.author_id, merged_at: event.created_at)
   end

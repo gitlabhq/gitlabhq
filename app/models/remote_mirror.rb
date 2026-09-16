@@ -336,8 +336,10 @@ class RemoteMirror < ApplicationRecord
     return if value.blank?
 
     canonical = canonicalize_scp_style(value)
-    # Normalize to a credential-insensitive form so equivalent URLs compare equal.
-    Gitlab::UrlSanitizer.new(canonical).sanitized_url.chomp('/').delete_suffix('.git').chomp('/')
+    normalized = Addressable::URI.parse(Gitlab::UrlSanitizer.new(canonical).sanitized_url)
+    # Hostnames are case-insensitive, but repository paths may not be.
+    normalized.host = normalized.host&.downcase
+    normalized.to_s.chomp('/').delete_suffix('.git').chomp('/')
   rescue Addressable::URI::InvalidURIError
     nil
   end

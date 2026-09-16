@@ -79,6 +79,8 @@ RSpec.describe API::Internal::OrgMover, feature_category: :organization do
     it_behaves_like 'an internal org_mover endpoint'
 
     it 'returns the readiness status' do
+      stub_maintenance_readiness(false)
+
       request
 
       expect(response).to have_gitlab_http_status(:ok)
@@ -144,9 +146,7 @@ RSpec.describe API::Internal::OrgMover, feature_category: :organization do
     it_behaves_like 'an internal org_mover endpoint'
 
     it 'transitions the organization and returns 204' do
-      allow_next_instance_of(Gitlab::Organizations::MaintenanceReadiness) do |readiness|
-        allow(readiness).to receive(:ready?).and_return(true)
-      end
+      stub_maintenance_readiness(true)
 
       expect { request }
         .to change { organization.reload.state }.from('maintenance_initialization').to('maintenance')
@@ -155,6 +155,8 @@ RSpec.describe API::Internal::OrgMover, feature_category: :organization do
     end
 
     it 'returns 409 when the organization is not ready' do
+      stub_maintenance_readiness(false)
+
       request
 
       expect(response).to have_gitlab_http_status(:conflict)
@@ -224,6 +226,12 @@ RSpec.describe API::Internal::OrgMover, feature_category: :organization do
       request
 
       expect(response).to have_gitlab_http_status(:no_content)
+    end
+  end
+
+  def stub_maintenance_readiness(ready)
+    allow_next_instance_of(Gitlab::Organizations::MaintenanceReadiness) do |readiness|
+      allow(readiness).to receive(:ready?).and_return(ready)
     end
   end
 end

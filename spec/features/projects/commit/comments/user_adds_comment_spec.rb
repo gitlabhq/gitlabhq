@@ -131,8 +131,6 @@ RSpec.describe "User adds a comment on a commit", :js, feature_category: :source
           fill_in("note[note]", with: comment_text)
           click_button("Comment")
         end
-
-        wait_for_requests
       end
 
       it "hides and shows a comment" do

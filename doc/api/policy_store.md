@@ -24,6 +24,7 @@ title: Policy store API
 - [Changed](https://gitlab.com/gitlab-org/gitlab/-/work_items/612905) to limit `rules` and `actions` to 5 entries each, and each entry to 4096 bytes, in GitLab 19.4.
 - [Changed](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/252841) to add the `environment_advanced` and `deployment_promoted` triggers, and to rename the `deployment_requested` trigger's display name to `Deployment requested`, in GitLab 19.4.
 - [Changed](https://gitlab.com/gitlab-org/gitlab/-/work_items/598030) the catalog endpoints to require an authenticated caller instead of anonymous access, in GitLab 19.4.
+- [Changed](https://gitlab.com/gitlab-org/gitlab/-/work_items/618556) to reject a `custom` rule or an authored `scope_rego` that does not parse as Rego in GitLab 19.5.
 
 {{< /history >}}
 
@@ -181,6 +182,7 @@ alongside `policy_scope`.
 On [Create a policy](#create-a-policy), an empty value has the same effect as omitting it.
 On [Update a policy](#update-a-policy), it retires an authored program and compiles a new one
 from `policy_scope`.
+A `scope_rego` that does not parse returns `400 Bad Request`.
 
 `scope_rego` is always present in a response, because a policy with no scope compiles to a
 program that applies to every project.
@@ -253,6 +255,15 @@ for example `rules[0] is blank`.
 Each array accepts at most 5 entries, and each entry cannot serialize to more than 4096 bytes.
 Exceeding either limit returns `400 Bad Request`. An oversized entry names each offending
 position, for example `rules has an entry exceeding maximum size of 4096 bytes at 0`.
+
+A `custom` rule's Rego, and the `policy_rego` module all rules merge into, must parse.
+A `custom` rule that does not returns `400 Bad Request`. The error names the rule's position
+and includes the engine's message with a line and column in the Rego you sent in `value`,
+for example ``rules[0] is invalid: error: expecting `}` while parsing object (at line:column)``.
+An error in the merged module reads `policy_rego is invalid: <message> (at line:column)`,
+with the location in that module.
+If the Policy Engine itself fails, rather than your Rego, the request returns
+`500 Internal Server Error` and the policy is not stored.
 
 A request replaces the whole array.
 You cannot add or remove a single entry.

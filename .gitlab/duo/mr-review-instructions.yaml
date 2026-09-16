@@ -451,8 +451,8 @@ instructions:
       - Reference: https://docs.gitlab.com/development/feature_flags/
 
   # >>> generated: authentication — gitlab-ai-principles-distiller (from .ai/principles/manifest.yml; do not edit)
-  # distilled_at_sha: 18bec1426aecafc1e6f6e47896f845e2690b2bf8
-  # source_checksum: 4f4508ed3a4c3e52
+  # distilled_at_sha: 3378d9de7ce956458ecfbc5e1845591fa87448fc
+  # source_checksum: 5358c8252b33ecac
   - name: Authentication & Authorization Security
     fileFilters:
       # Controllers / entry points
@@ -585,15 +585,12 @@ instructions:
 
       ### SAML
 
-      - When modifying `extern_uid` through the API, set `trusted_extern_uid` to `false`; the base OAuth login class (`lib/gitlab/auth/o_auth/user.rb`) checks `trusted_extern_uid?` before resolving the user — when overriding user lookup in a subclass, verify the override also checks this flag.
       - Validate SAML `RelayState` parameters before using them as redirect targets (past incident: open redirect via unvalidated RelayState in SAML Single Logout).
       - Validate the XML signature on every SAML response and verify the signed element is the assertion being trusted — defends against XML signature wrapping (past incident: [#486565](https://gitlab.com/gitlab-org/gitlab/-/issues/486565) — unauthenticated SAML sign-in bypass).
 
       ### Identity Linking and extern_uid
 
-      - DO NOT update `extern_uid` without setting `trusted_extern_uid` to `false`; unverified `extern_uid` changes can enable account takeover.
-      - When overriding user lookup in OAuth subclasses (for example, `GroupSaml::User`), verify the override checks `trusted_extern_uid?`; the base class checks this but overrides can bypass it.
-      - DO NOT resolve users solely by `extern_uid` without verifying the identity is trusted (`trusted_extern_uid?`).
+      - DO NOT resolve users solely by `extern_uid` without verifying the identity is trusted (the provider must establish that the UID belongs to the account).
 
       ### Two-Factor Authentication
 
@@ -625,8 +622,11 @@ instructions:
       - DO NOT use the standard authorization code flow (browser consent) for composite identity service accounts; service accounts are bot users that cannot sign in interactively.
       - Ensure composite identity OAuth token scopes include the concrete dynamic scope `user:$ID` for the human user who originated the AI request, plus any required base scopes (for example, `api`).
       - Always use `Gitlab::Auth::Identity.resolve_composite_identity_actor(current_user)` to resolve the actor for any write operation; DO NOT determine the composite identity context manually.
-      - Use the actor returned by `resolve_composite_identity_actor` wherever authorship is set (notes, issues/MRs, commits, pipeline user context).
+      - Use the actor returned by `resolve_composite_identity_actor` wherever authorship is set (notes, system notes, pipeline user context). Exception: DO NOT use `resolve_composite_identity_actor` to set the author of a merge request — the MR author must always be the human user (`current_user` before composite identity resolution), even in the `:authentication` context, to preserve the self-approval guard (`merge_requests_author_approval` defaults to false).
+      - For Git CLI commits in the `:authentication` context, set the human user as the commit `committer` and the service account as the commit `author`; DO NOT swap these roles — keeping the human as committer preserves segregation of duties when `merge_requests_disable_committers_approval` is enabled.
       - Understand attribution context: OAuth/CI flows tag `:authentication` context (service account is attributed); web/assignment flows tag `:permission_check` context (human is attributed) — DO NOT override this context manually. In the `:authentication` context, audit events store `author_name` as `<service account name> on behalf of @<human username>` truncated to 255 characters, and record `human_author_id`, `human_author_name`, and `human_author_username` in event `details`; in the `:permission_check` context the human remains the author and no `human_author_*` keys are added (GitLab 19.3 and later).
+      - Link at most one service account with `:authentication` per request; linking a second raises `Gitlab::Auth::Identity::TooManyIdentitiesLinkedError`. Allow any number of `:permission_check` links.
+      - Account for `Gitlab::Auth::Identity.currently_linked` selecting the authenticated identity, or the most recently linked identity when none is authenticated. When no authenticated identity exists, link the intended service account immediately before starting its work, because background jobs carry only one identity.
 
       ### Feature Flags
 
@@ -774,8 +774,8 @@ instructions:
   # <<< end generated: authentication-testing
 
   # >>> generated: documentation — gitlab-ai-principles-distiller (from .ai/principles/manifest.yml; do not edit)
-  # distilled_at_sha: da75f7373628b035becb13fb3f0d21b4b3d3690f
-  # source_checksum: c49a0e93d1f3e494
+  # distilled_at_sha: 3378d9de7ce956458ecfbc5e1845591fa87448fc
+  # source_checksum: cfd7a3bf6cbc9236
   - name: Documentation
     fileFilters:
       - "doc/**/*.md"
@@ -957,6 +957,7 @@ instructions:
       - When a feature changes from seat-based billing to usage-based billing with GitLab Credits, add a `Changed to usage-based billing` entry only to the feature's history; DO NOT add an entry to the GitLab Credits history.
       - Remove history items and inline version references that refer to unsupported GitLab versions (current major version and two previous major versions are supported); when a new major version is about to be released, create removal MRs in advance but merge them only during that milestone.
       - For tools released on their own schedule (e.g., editor extensions, CLI tools), include both the GitLab version and the tool version in history entries with a link to the tool's release page; nest tool version entries under the related instance history item when both change together, or use `during the GitLab X.Y release` phrasing when the change is tool-only.
+      - For GitLab Duo AI Gateway model changes that reach all versions immediately (not gated by a GitLab release), use a date instead of a milestone in the history entry and link the AI Gateway MR that made the change, not the GitLab issue or MR (e.g., `Claude Sonnet 5 [added](https://ai-gateway-mr-link) as a supported model on August 3, 2026`).
       - For GitLab Duo features available with self-hosted models, use the `{{< collapsible title="Model information" >}}` shortcode; DO NOT state that a feature is unavailable on self-hosted models unless necessary, and if you must, use "Not available on GitLab Duo with self-hosted models" without a link.
       - When documenting LLMs used by a GitLab Duo feature, include a link to the LLM and use separate entries for code generation vs. code completion or Amazon Q when they differ.
 

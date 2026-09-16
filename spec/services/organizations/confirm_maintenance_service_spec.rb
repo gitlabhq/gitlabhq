@@ -13,15 +13,15 @@ RSpec.describe Organizations::ConfirmMaintenanceService, feature_category: :orga
 
   subject(:response) { described_class.new(organization).execute }
 
-  def stub_ready
+  def stub_ready(ready)
     allow_next_instance_of(Gitlab::Organizations::MaintenanceReadiness) do |readiness|
-      allow(readiness).to receive(:ready?).and_return(true)
+      allow(readiness).to receive(:ready?).and_return(ready)
     end
   end
 
   def reach_source_state
     organization.start_maintenance(maintenance_reason: 'migration')
-    stub_ready
+    stub_ready(true)
   end
 
   def reach_target_state
@@ -39,6 +39,7 @@ RSpec.describe Organizations::ConfirmMaintenanceService, feature_category: :orga
     context 'when the organization is not ready for maintenance' do
       before do
         organization.start_maintenance(maintenance_reason: 'migration')
+        stub_ready(false)
       end
 
       it 'returns a retryable error and does not transition', :aggregate_failures do

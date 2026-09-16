@@ -191,11 +191,23 @@ updates before merging.
 Each per-team merge request's approval is routed to the SSOT-owning team
 through generated per-file CODEOWNERS rules. When reviewing one:
 
-- Compare the distilled diff against the referenced SSOT documentation
-  changes.
-- Confirm no still-valid, SSOT-supported rule was dropped, and no
-  unsupported rule was added.
+- Get the output's `distilled_at_sha` from the distilled file's front matter.
+- Read the principle's entry in `.ai/principles/manifest.yml` at that SHA, including its sources
+  and optional baseline. Read the relevant source sections and baseline at the same SHA.
+- Compare source and manifest changes with the prior `distilled_at_sha` when needed to verify
+  deliberate removals. Check for omitted rules and exceptions as well as unsupported additions.
+- Support each content-loss finding with the source path, SHA, and relevant passage.
+  For an unsupported rule, cite the contradictory passage or identify the source sections and
+  baseline checked and explain the absence of support.
+  Do not report guidance deliberately removed from the source as lost content.
+- If a required source cannot be retrieved, state the limitation in the review summary instead
+  of raising a speculative inline defect.
 - Confirm the front matter checksums were updated by the tool, not by hand.
+
+Code Review Flow retrieves [referenced files](../user/duo_agent_platform/customize/review_instructions.md#reference-files-in-instructions)
+on a best-effort basis and summarizes their contents.
+Keep the source-verification procedure inline in the generated review instructions through
+distillation and fence reconciliation, rather than relying only on a reference link.
 
 ### Acting on automated review feedback
 

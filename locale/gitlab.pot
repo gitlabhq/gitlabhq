@@ -1227,9 +1227,6 @@ msgstr ""
 msgid "%{label_name} was removed"
 msgstr ""
 
-msgid "%{label}"
-msgstr ""
-
 msgid "%{lessThan} 1 hour"
 msgstr ""
 
@@ -3803,9 +3800,6 @@ msgid "AICatalog|unable to validate definition"
 msgstr ""
 
 msgid "AISummary|View summary"
-msgstr ""
-
-msgid "AI|AI Item"
 msgstr ""
 
 msgid "AI|AI actions"
@@ -11065,7 +11059,13 @@ msgstr ""
 msgid "AnalyticsDashboards|An error occurred when trying to display this panel"
 msgstr ""
 
+msgid "AnalyticsDashboards|Analyze with Duo"
+msgstr ""
+
 msgid "AnalyticsDashboards|Are you sure you want to permanently delete this dashboard?"
+msgstr ""
+
+msgid "AnalyticsDashboards|Ask me about the data on this dashboard."
 msgstr ""
 
 msgid "AnalyticsDashboards|Cancel"
@@ -31057,9 +31057,6 @@ msgid "DuoAgentPlatform|Install GitLab Duo CLI"
 msgstr ""
 
 msgid "DuoAgentPlatform|Install glab"
-msgstr ""
-
-msgid "DuoAgentPlatform|Job IDs"
 msgstr ""
 
 msgid "DuoAgentPlatform|Local setup"
@@ -65822,6 +65819,18 @@ msgid "ProtectedEnvironments|Edit"
 msgstr ""
 
 msgid "ProtectedEnvironments|Enable group inheritance"
+msgstr ""
+
+msgid "ProtectedEnvironments|Failed to unprotect the environment."
+msgstr ""
+
+msgid "ProtectedEnvironments|Failed to unprotect the environment. %{detail}"
+msgstr ""
+
+msgid "ProtectedEnvironments|Failed to update the protected environment."
+msgstr ""
+
+msgid "ProtectedEnvironments|Failed to update the protected environment. %{detail}"
 msgstr ""
 
 msgid "ProtectedEnvironments|If a group is invited to the current project, its parent and members inherit the permissions of the invited group."

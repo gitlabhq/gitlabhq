@@ -32,12 +32,18 @@ describe('ExploreAnalyticsDashboardDetails', () => {
   const mockResolvedQuery = (queryResponse = mockDashboardResponse) =>
     createMockApollo([[getDashboardQuery, jest.fn().mockResolvedValue({ data: queryResponse })]]);
 
-  const createComponent = ({ requestHandlers, routeParams = { slug: '3' }, stubs = {} } = {}) => {
+  const createComponent = ({
+    requestHandlers,
+    routeParams = { slug: '3' },
+    stubs = {},
+    scopedSlots = {},
+  } = {}) => {
     wrapper = shallowMountExtended(ExploreAnalyticsDashboard, {
       apolloProvider: requestHandlers || mockResolvedQuery(),
       provide: { breadcrumbState: mockBreadcrumbState },
       mocks: { $route: { params: routeParams } },
       stubs: { DashboardLoader, ...stubs },
+      scopedSlots,
     });
   };
 
@@ -70,7 +76,7 @@ describe('ExploreAnalyticsDashboardDetails', () => {
   const filtersLoaderStubFor = (config = { panels: [] }) => ({
     template: `
       <div>
-        <slot name="dashboard" :config="dashboardConfig" :cell-height="undefined" :min-cell-height="undefined" :has-panels="false" />
+        <slot name="dashboard" :config="dashboardConfig" :cell-height="undefined" :min-cell-height="undefined" :has-panels="false" :is-system-dashboard="true" />
       </div>
     `,
     data() {
@@ -98,9 +104,13 @@ describe('ExploreAnalyticsDashboardDetails', () => {
       `,
   };
 
-  const createWithFilters = async (loaderStub = filtersLoaderStub) => {
+  const createWithFilters = async (
+    loaderStub = filtersLoaderStub,
+    { stubs = {}, ...options } = {},
+  ) => {
     createComponent({
-      stubs: { DashboardLoader: loaderStub, GlDashboardLayout: filtersLayoutStub },
+      stubs: { DashboardLoader: loaderStub, GlDashboardLayout: filtersLayoutStub, ...stubs },
+      ...options,
     });
     await waitForPromises();
   };
@@ -172,6 +182,88 @@ describe('ExploreAnalyticsDashboardDetails', () => {
       it('passes the date range to the dashboard layout filters', () => {
         expect(findDashboardLayout().props('filters')).toMatchObject(dateRange);
       });
+    });
+  });
+
+  describe('the filter-actions slot', () => {
+    const findSlotProbe = () => wrapper.findByTestId('filter-actions-probe');
+
+    beforeEach(() =>
+      createWithFilters(undefined, {
+        scopedSlots: {
+          'filter-actions': `<span data-testid="filter-actions-probe">{{ props.namespaceName }}|{{ props.namespaceFullPath }}|{{ props.filters.dateRangeOption }}|{{ props.panels.length }}|{{ props.isProject }}|{{ props.isSystemDashboard }}</span>`,
+        },
+      }),
+    );
+
+    it('exposes no namespace before a scope is selected', () => {
+      expect(findSlotProbe().text()).toBe('||30d|0|false|true');
+    });
+
+    it('exposes the selected group name and full path', async () => {
+      await selectScope(mockGroup);
+
+      expect(findSlotProbe().text()).toBe('GitLab.org|gitlab-org|30d|0|false|true');
+    });
+
+    it('exposes the selected project name and full path', async () => {
+      await selectScope(mockProject);
+
+      expect(findSlotProbe().text()).toBe('GitLab|gitlab-org/gitlab|30d|0|true|true');
+    });
+
+    it('clears the namespace when the scope is cleared', async () => {
+      await selectScope(mockGroup);
+      await selectScope(null);
+
+      expect(findSlotProbe().text()).toBe('||30d|0|false|true');
+    });
+  });
+
+  describe('the filter-actions slot duoPrompts', () => {
+    const findPromptsProbe = () => wrapper.findByTestId('duo-prompts-probe');
+    const promptsProbeSlot = {
+      'filter-actions': `<span data-testid="duo-prompts-probe">{{ props.duoPrompts.join(',') }}</span>`,
+    };
+
+    it('exposes dashboard-level prompts', async () => {
+      await createWithFilters(filtersLoaderStubFor({ panels: [], duoPrompts: ['Dash prompt'] }), {
+        scopedSlots: promptsProbeSlot,
+      });
+
+      expect(findPromptsProbe().text()).toBe('Dash prompt');
+    });
+
+    it('prefers the active view prompts over dashboard-level ones', async () => {
+      await createWithFilters(
+        filtersLoaderStubFor({
+          panels: [],
+          duoPrompts: ['Dash prompt'],
+          views: [{ title: 'Adoption', panels: [], duoPrompts: ['View prompt'] }],
+        }),
+        { scopedSlots: promptsProbeSlot },
+      );
+
+      expect(findPromptsProbe().text()).toBe('View prompt');
+    });
+
+    it('falls back to dashboard-level prompts when the view defines none', async () => {
+      await createWithFilters(
+        filtersLoaderStubFor({
+          panels: [],
+          duoPrompts: ['Dash prompt'],
+          views: [{ title: 'Adoption', panels: [] }],
+        }),
+        { scopedSlots: promptsProbeSlot },
+      );
+
+      expect(findPromptsProbe().text()).toBe('Dash prompt');
+    });
+
+    it('exposes an empty list when the config defines no prompts', async () => {
+      await createWithFilters(undefined, { scopedSlots: promptsProbeSlot });
+
+      expect(findPromptsProbe().text()).toBe('');
     });
   });
 

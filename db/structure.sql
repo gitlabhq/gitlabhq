@@ -13001,7 +13001,6 @@ CREATE TABLE ai_catalog_items (
     item_type smallint NOT NULL,
     description text NOT NULL,
     name text NOT NULL,
-    public boolean DEFAULT false NOT NULL,
     deleted_at timestamp with time zone,
     latest_version_id bigint,
     latest_released_version_id bigint,
@@ -46937,8 +46936,6 @@ CREATE INDEX index_ai_catalog_items_on_latest_version_id ON ai_catalog_items USI
 CREATE INDEX index_ai_catalog_items_on_org_id_and_visibility_not_deleted ON ai_catalog_items USING btree (organization_id, visibility) WHERE (deleted_at IS NULL);
 
 CREATE INDEX index_ai_catalog_items_on_project_id ON ai_catalog_items USING btree (project_id);
-
-CREATE INDEX index_ai_catalog_items_on_public ON ai_catalog_items USING btree (public);
 
 CREATE INDEX index_ai_catalog_items_on_verification_level ON ai_catalog_items USING btree (verification_level);
 

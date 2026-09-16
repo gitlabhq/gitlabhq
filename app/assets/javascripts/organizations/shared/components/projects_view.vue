@@ -5,7 +5,8 @@ import { s__ } from '~/locale';
 import ProjectsList from '~/vue_shared/components/projects_list/projects_list.vue';
 import { DEFAULT_PER_PAGE } from '~/api';
 import { createAlert } from '~/alert';
-import { timestampType, formatProjects } from '~/organizations/shared/utils';
+import { timestampType } from '~/organizations/shared/utils';
+import { formatGraphQLProjects } from '~/vue_shared/components/projects_list/formatter';
 import { SORT_ITEM_NAME, SORT_DIRECTION_ASC } from '../constants';
 import projectsQuery from '../graphql/queries/projects.query.graphql';
 import NewProjectButton from './new_project_button.vue';
@@ -103,7 +104,7 @@ export default {
         },
       }) {
         return {
-          nodes: formatProjects(nodes),
+          nodes: formatGraphQLProjects(nodes),
           pageInfo,
         };
       },

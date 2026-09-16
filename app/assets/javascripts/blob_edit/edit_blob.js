@@ -245,12 +245,20 @@ export default class EditBlob {
 
     this.$editModePanes.hide();
 
+    if (isMarkdownFilePath(findFileNameEl()?.value)) {
+      // Ensure the extensions are installed before showing panes:
+      // the load may still be in flight, or the cached promise cleared on failure.
+      await this.installMarkdownExtensions();
+    }
+
     if (this.markdownExtensions) {
       // The live preview renders next to the editor, so the editor pane
       // is always the one to show, even if the preview pane was open.
       this.$editModePanes.filter('#editor').show();
       this.toggleMarkdownPreview(paneId === '#preview');
     } else {
+      // Also reached when the extensions failed to load,
+      // falling back to the rendered preview pane.
       currentPane.show();
 
       if (paneId === '#preview') {

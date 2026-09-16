@@ -1,0 +1,10 @@
+---
+name: merge_request_metrics_outside_merge_transaction
+description: Computes merge request metrics such as commit dates and diff line counts before the post-merge event transaction instead of inside it
+feature_issue_url: https://gitlab.com/gitlab-org/gitlab/-/work_items/628868
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/255421
+rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/work_items/629135
+milestone: '19.5'
+group: group::code review
+type: gitlab_com_derisk
+default_enabled: false

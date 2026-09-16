@@ -48,6 +48,20 @@ You can create a merge request from the list of merge requests.
 Each branch can be associated with only one open merge request. If a merge request
 already exists for this branch, a link to the existing merge request is shown.
 
+## From the commits page
+
+You can create a merge request from your branch's commit history.
+
+1. In the top bar, select **Search or go to** and find your project.
+1. In the left sidebar, select **Code** > **Commits**.
+1. At the top, open the **Select Git revision** dropdown list, then select a branch other than
+   the default branch.
+1. In the upper-right corner, select **Create merge request**.
+1. Complete the fields on the **New merge request** page, then select **Create merge request**.
+
+If an open merge request already exists for the branch, the button shows **View open merge request**
+instead, and opens the existing merge request.
+
 ## From an issue
 
 If your development workflow requires an issue for every merge

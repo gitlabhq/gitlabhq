@@ -17,20 +17,10 @@ RSpec.describe Sidebars::Organizations::Menus::ManageMenu, feature_category: :na
   describe 'Menu items' do
     subject(:item) { menu.renderable_items.find { |e| e.item_id == item_id } }
 
-    describe 'Users' do
-      let(:item_id) { :organization_users }
+    describe 'Groups and projects' do
+      let(:item_id) { :organization_groups_and_projects }
 
-      context 'when current user has permissions' do
-        before do
-          create(:organization_owner, user: user, organization: organization) # rubocop: disable RSpec/FactoryBot/AvoidCreate -- does not work with build_stubbed
-        end
-
-        it { is_expected.not_to be_nil }
-      end
-
-      context 'when current user does not have permissions' do
-        it { is_expected.to be_nil }
-      end
+      it { is_expected.not_to be_nil }
     end
   end
 end

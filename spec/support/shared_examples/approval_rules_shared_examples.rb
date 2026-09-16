@@ -15,24 +15,20 @@ RSpec.shared_context 'with merge request approval settings' do
     create(:security_orchestration_policy_configuration, project: approval_rule_project)
   end
 
-  let(:policy_read) do
-    if approval_policy_prevents_author_approval && approval_policy_prevents_committer_approval
-      create(:scan_result_policy_read,
-        project: approval_rule_project,
-        security_orchestration_policy_configuration: policy_config,
-        project_approval_settings: {
-          prevent_approval_by_author: true,
-          prevent_approval_by_commit_author: true
-        })
-    elsif approval_policy_prevents_author_approval
-      create(:scan_result_policy_read, :prevent_approval_by_author,
-        project: approval_rule_project,
-        security_orchestration_policy_configuration: policy_config)
-    elsif approval_policy_prevents_committer_approval
-      create(:scan_result_policy_read, :prevent_approval_by_commit_author,
-        project: approval_rule_project,
-        security_orchestration_policy_configuration: policy_config)
-    end
+  let(:policy_approval_settings) do
+    {
+      prevent_approval_by_author: approval_policy_prevents_author_approval,
+      prevent_approval_by_commit_author: approval_policy_prevents_committer_approval
+    }.select { |_, prevented| prevented }
+  end
+
+  let(:policy_rule) do
+    next if policy_approval_settings.empty?
+
+    policy = create(:security_policy,
+      security_orchestration_policy_configuration: policy_config,
+      content: { approval_settings: policy_approval_settings })
+    create(:approval_policy_rule, security_policy: policy)
   end
 
   let_it_be(:group, freeze: false) { create(:group) }
@@ -58,7 +54,7 @@ RSpec.shared_context 'with merge request approval settings' do
       merge_requests_disable_committers_approval: project_prevents_committer_approval
     )
 
-    rule.update!(scan_result_policy_read: policy_read) if policy_read
+    rule.update!(approval_policy_rule: policy_rule) if policy_rule
   end
 end
 

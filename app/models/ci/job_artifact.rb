@@ -87,7 +87,7 @@ module Ci
     end
 
     scope :erasable, -> do
-      where(file_type: self.erasable_file_types)
+      where(file_type: erasable_file_types)
     end
 
     scope :non_trace, -> { where.not(file_type: [:trace]) }
@@ -143,15 +143,15 @@ module Ci
     end
 
     def self.erasable_file_types
-      self.file_types.keys - Enums::Ci::JobArtifact.non_erasable_file_types
+      file_types.keys - Enums::Ci::JobArtifact.non_erasable_file_types
     end
 
     def self.total_size
-      self.sum(:size)
+      sum(:size)
     end
 
     def self.artifacts_size_for(project)
-      self.where(project: project).sum(:size)
+      where(project: project).sum(:size)
     end
 
     def self.pluck_job_id
@@ -190,19 +190,19 @@ module Ci
     end
 
     def validate_file_format!
-      unless Enums::Ci::JobArtifact.type_and_format_pairs[self.file_type&.to_sym] == self.file_format&.to_sym
+      unless Enums::Ci::JobArtifact.type_and_format_pairs[file_type&.to_sym] == file_format&.to_sym
         errors.add(:base, _('Invalid file format with specified file type'))
       end
     end
 
     def local_store?
-      [nil, ::JobArtifactUploader::Store::LOCAL].include?(self.file_store)
+      [nil, ::JobArtifactUploader::Store::LOCAL].include?(file_store)
     end
 
     def hashed_path?
       return true if trace? # ArchiveLegacyTraces background migration might not have `file_location` column
 
-      super || self.file_location.nil?
+      super || file_location.nil?
     end
 
     def expired?

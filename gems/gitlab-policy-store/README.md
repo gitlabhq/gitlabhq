@@ -256,17 +256,39 @@ absent, `null`, a number, or an object produces no violation and no error, becau
 orders across types, so the freeze window never fires at all. Neither the transpiler nor
 the emitted program can tell. Whoever calls the engine owns that contract.
 
+## Rego validation
+
+On create and on update, Rego is parsed by the Policy Engine through
+`Gitlab::PolicyStore::RegoValidator` before anything is stored. A program that does not
+parse raises `ValidationError` with the engine's message and location, and the policy is
+not written.
+
+What is parsed:
+
+- **Each `custom` rule on its own**, since it is the only rule type whose program the
+  caller writes. The error names the rule, for example
+  ``rules[0] is invalid: error: expecting `}` while parsing object (at line:column)``, and the
+  location points into the rule's `value`.
+- **The merged module**, once. It is what `RuleProgramMerger` produces and what the API
+  returns as `policy_rego`. An error there is reported as `policy_rego`.
+- **An authored `scope_rego`**, once.
+
+The engine is only called when a write supplies `rules` or a hand-written `scope_rego`.
+A rename, a `policy_scope` change, or an update to any other attribute never reaches it.
+
+When the engine itself fails, rather than the program, `RegoValidator` raises `EngineError`.
+
 ## Enforcement Modes
 
-Every policy has a `mode` that controls how evaluation outcomes are handled by callers.
-The Policy Store stores and returns this mode but does not interpret it — **mode routing
-is the caller's responsibility**.
+Every policy has a `mode` that controls how callers handle evaluation outcomes.
+The Policy Store stores and returns this mode but does not interpret it — **mode
+routing is the caller's responsibility**. Policies default to `warn`.
 
-| Mode | Description | Caller Action on Deny |
+| Mode | Description | Caller Responsibility |
 |------|-------------|----------------------|
-| `warn` | Surface a warning, do not block | Show warning to user, allow the action to proceed |
+| `warn` | Surface a warning without blocking | Show warning to user, allow the action |
+| `audit` | Log only with no user-facing effect | Record the evaluation, take no action |
 | `enforce` | Apply the configured action | Block the action or require approval |
-| `audit` | Log only, no user-facing action | Record the evaluation, take no blocking action |
 
 ## Repository Contract
 

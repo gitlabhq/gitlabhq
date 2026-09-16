@@ -40,7 +40,7 @@ module Ci
       }
 
       def self.for_source_and_target(source_project, target_project)
-        self.find_by(source_project: source_project, target_project: target_project)
+        find_by(source_project: source_project, target_project: target_project)
       end
 
       private
