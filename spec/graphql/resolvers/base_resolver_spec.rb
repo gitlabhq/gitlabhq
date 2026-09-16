@@ -238,20 +238,23 @@ RSpec.describe Resolvers::BaseResolver, feature_category: :api do
       expect(field.complexity.call({}, { search: 'foo' }, 1)).to eq 7
     end
 
-    it 'does not increase complexity when filtering by iids' do
+    it 'does not increase complexity when filtering by single iid' do
       field = Types::BaseField.new(name: 'test', type: GraphQL::Types::String.connection_type, resolver_class: described_class, null: false, max_page_size: 100)
 
       expect(field.complexity.call({}, { sort: 'foo' }, 1)).to eq 6
       expect(field.complexity.call({}, { sort: 'foo', iid: 1 }, 1)).to eq 3
-      expect(field.complexity.call({}, { sort: 'foo', iids: [1, 2, 3] }, 1)).to eq 6
     end
 
-    it 'does increase complexity when the number of iids present surpasses 100' do
+    it 'increases complexity based on iids tier' do
       field = Types::BaseField.new(name: 'test', type: GraphQL::Types::String.connection_type, resolver_class: described_class, null: false, max_page_size: 100)
 
-      expect(field.complexity.call({}, { sort: 'foo' }, 1)).to eq 6
-      iid_array = (1..1000).to_a.sample(1000)
-      expect(field.complexity.call({}, { sort: 'foo', iids: iid_array }, 1)).to eq 9
+      small_iids = (1..3).to_a
+      large_iids = (1..500).to_a
+
+      small_complexity = field.complexity.call({}, { sort: 'foo', iids: small_iids }, 1)
+      large_complexity = field.complexity.call({}, { sort: 'foo', iids: large_iids }, 1)
+
+      expect(large_complexity).to be > small_complexity
     end
   end
 
@@ -294,6 +297,69 @@ RSpec.describe Resolvers::BaseResolver, feature_category: :api do
         .with(object, current_user, scope_validator: scope_validator)
 
       resolver.authorized?(object, context)
+    end
+  end
+
+  describe '.complexity_multiplier' do
+    context 'when iids array is present' do
+      it 'returns 0.05 for tier 1 (1-100 iids)' do
+        expect(described_class.complexity_multiplier(iids: [1])).to eq(0.05)
+        expect(described_class.complexity_multiplier(iids: (1..50).to_a)).to eq(0.05)
+        expect(described_class.complexity_multiplier(iids: (1..100).to_a)).to eq(0.05)
+      end
+
+      it 'returns 0.5 for tier 2 (101-1000 iids)' do
+        expect(described_class.complexity_multiplier(iids: (1..101).to_a)).to eq(0.5)
+        expect(described_class.complexity_multiplier(iids: (1..500).to_a)).to eq(0.5)
+        expect(described_class.complexity_multiplier(iids: (1..1000).to_a)).to eq(0.5)
+      end
+
+      it 'returns 5.0 for tier 3 (1001+ iids)' do
+        expect(described_class.complexity_multiplier(iids: (1..1001).to_a)).to eq(5.0)
+        expect(described_class.complexity_multiplier(iids: (1..5000).to_a)).to eq(5.0)
+      end
+    end
+
+    context 'when iid is present but iids is not' do
+      it 'returns 0 (optimized case)' do
+        expect(described_class.complexity_multiplier(iid: 1)).to eq(0)
+        expect(described_class.complexity_multiplier(iid: 100)).to eq(0)
+      end
+    end
+
+    context 'when neither iid nor iids is present' do
+      it 'returns 0.01 (default multiplier)' do
+        expect(described_class.complexity_multiplier({})).to eq(0.01)
+        expect(described_class.complexity_multiplier(sort: 'foo')).to eq(0.01)
+        expect(described_class.complexity_multiplier(search: 'bar')).to eq(0.01)
+      end
+    end
+
+    context 'when both iid and iids are present' do
+      it 'prioritizes iids over iid' do
+        expect(described_class.complexity_multiplier(iid: 1, iids: (1..50).to_a)).to eq(0.05)
+        expect(described_class.complexity_multiplier(iid: 1, iids: (1..500).to_a)).to eq(0.5)
+      end
+    end
+
+    context 'when iids is an empty array' do
+      it 'returns 0.01 (default multiplier)' do
+        expect(described_class.complexity_multiplier(iids: [])).to eq(0.01)
+      end
+    end
+
+    context 'when iids is not an array' do
+      it 'returns 0.01 (default multiplier) for string' do
+        expect(described_class.complexity_multiplier(iids: 'not_an_array')).to eq(0.01)
+      end
+
+      it 'returns 0.01 (default multiplier) for integer' do
+        expect(described_class.complexity_multiplier(iids: 123)).to eq(0.01)
+      end
+
+      it 'returns 0.01 (default multiplier) for hash' do
+        expect(described_class.complexity_multiplier(iids: { foo: 'bar' })).to eq(0.01)
+      end
     end
   end
 end
