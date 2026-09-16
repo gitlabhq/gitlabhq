@@ -242,7 +242,7 @@ describe('work item list cache updates', () => {
       );
     });
 
-    it('returns the ids the server matched', async () => {
+    it('returns the nodes the server matched', async () => {
       const client = createFakeClient({
         namespace: { workItems: { nodes: [{ id: workItemId(2) }] } },
       });
@@ -256,10 +256,10 @@ describe('work item list cache updates', () => {
         glFeatures: {},
       });
 
-      expect(result).toEqual(new Set([workItemId(2)]));
+      expect(result).toEqual([{ id: workItemId(2) }]);
     });
 
-    it('returns an empty set when nothing matches', async () => {
+    it('returns an empty array when nothing matches', async () => {
       const client = createFakeClient({ namespace: { workItems: { nodes: [] } } });
 
       const result = await findMatchingWorkItems({
@@ -271,7 +271,7 @@ describe('work item list cache updates', () => {
         glFeatures: {},
       });
 
-      expect(result).toEqual(new Set());
+      expect(result).toEqual([]);
     });
   });
 

@@ -10,7 +10,14 @@ import BoardView from '~/work_items/board/board_view.vue';
 import BoardColumn from '~/work_items/board/components/board_column.vue';
 import CreateWorkItemModal from '~/work_items/components/create_work_item_modal.vue';
 import * as grouping from '~/work_items/board/grouping';
-import { addWorkItemToColumn } from '~/work_items/board/graphql/cache_updates';
+import { RELATIVE_POSITION_ASC } from '~/work_items/list/constants';
+import {
+  addWorkItemToColumn,
+  adjustWorkItemCountInColumn,
+  readWorkItemConnectionFromColumn,
+  readWorkItemFromColumn,
+  removeWorkItemFromColumn,
+} from '~/work_items/board/graphql/cache_updates';
 import getBoardWorkItemsQuery from 'ee_else_ce/work_items/board/graphql/get_board_work_items.query.graphql';
 import getWorkItemsRestQuery from 'ee_else_ce/work_items/list/graphql/get_work_items_rest.query.graphql';
 import {
@@ -19,6 +26,7 @@ import {
   buildBoardRestWorkItemsResponse,
   buildBoardWorkItemsResponse,
   buildWorkItemNode,
+  buildStatus,
   mockStatus,
 } from './mock_data';
 
@@ -192,6 +200,164 @@ describe('BoardView', () => {
       expect(addWorkItemToColumn).toHaveBeenCalledWith(
         expect.objectContaining({ query: getBoardWorkItemsQuery, useRestApi: false }),
       );
+    });
+  });
+
+  describe('when realtime changes are matched for items already on the board', () => {
+    const createdMatch = buildWorkItemNode(43);
+    const updatedMatch = buildWorkItemNode(44);
+    const otherStatus = buildStatus(2, 'Doing');
+
+    // Matches the shape `handleWorkItemCreated`'s tests use above, except `itemValueId`
+    // is parameterized so a test can target either column.
+    const fakeStrategy = (targetStatusId) => ({
+      property: 'status',
+      valuesQuery: groupValuesQuery,
+      extractValues: () => [mockStatus, otherStatus],
+      groupFilter: (value) => ({ status: { name: value.name } }),
+      headerDecoration: () => ({ type: 'none' }),
+      moveInput: () => ({}),
+      newItemDraft: () => ({}),
+      patchCard: () => {},
+      itemValueId: () => targetStatusId,
+    });
+
+    beforeEach(() => {
+      groupValuesHandler.mockResolvedValue(
+        buildNamespaceStatusesResponse([mockStatus, otherStatus]),
+      );
+    });
+
+    it('inserts a matched created item into the column its grouped value points to', async () => {
+      jest.spyOn(grouping, 'groupingStrategyFor').mockReturnValue(fakeStrategy(otherStatus.id));
+      createComponent();
+      await waitForPromises();
+
+      wrapper.setProps({ realtimeMatches: { created: [createdMatch], updated: [] } });
+      await waitForPromises();
+
+      expect(addWorkItemToColumn).toHaveBeenCalledWith(
+        expect.objectContaining({
+          workItem: createdMatch,
+          index: 0,
+          variables: expect.objectContaining({ status: { name: otherStatus.name } }),
+        }),
+      );
+      expect(adjustWorkItemCountInColumn).toHaveBeenCalledWith(
+        expect.objectContaining({ delta: 1 }),
+      );
+    });
+
+    it('does not insert a matched created item whose grouped value has no column', async () => {
+      jest
+        .spyOn(grouping, 'groupingStrategyFor')
+        .mockReturnValue(fakeStrategy('gid://gitlab/WorkItems::Statuses::Custom::Status/999'));
+      createComponent();
+      await waitForPromises();
+
+      wrapper.setProps({ realtimeMatches: { created: [createdMatch], updated: [] } });
+      await waitForPromises();
+
+      expect(addWorkItemToColumn).not.toHaveBeenCalled();
+    });
+
+    describe('under manual sort', () => {
+      const manualSortQueryVariables = { ...queryVariables, sort: RELATIVE_POSITION_ASC };
+
+      it('appends a matched created item to the end of the column when it has nothing left to load', async () => {
+        jest.spyOn(grouping, 'groupingStrategyFor').mockReturnValue(fakeStrategy(otherStatus.id));
+        const nodes = [buildWorkItemNode(1), buildWorkItemNode(2), buildWorkItemNode(3)];
+        readWorkItemConnectionFromColumn.mockReturnValue({
+          nodes,
+          pageInfo: { hasNextPage: false },
+        });
+        createComponent({ props: { queryVariables: manualSortQueryVariables } });
+        await waitForPromises();
+
+        wrapper.setProps({ realtimeMatches: { created: [createdMatch], updated: [] } });
+        await waitForPromises();
+
+        expect(addWorkItemToColumn).toHaveBeenCalledWith(
+          expect.objectContaining({ workItem: createdMatch, index: nodes.length }),
+        );
+        expect(adjustWorkItemCountInColumn).toHaveBeenCalledWith(
+          expect.objectContaining({ delta: 1 }),
+        );
+      });
+
+      it('skips a matched created item but still bumps the count when the column has more pages to load', async () => {
+        jest.spyOn(grouping, 'groupingStrategyFor').mockReturnValue(fakeStrategy(otherStatus.id));
+        readWorkItemConnectionFromColumn.mockReturnValue({
+          nodes: [buildWorkItemNode(1)],
+          pageInfo: { hasNextPage: true },
+        });
+        createComponent({ props: { queryVariables: manualSortQueryVariables } });
+        await waitForPromises();
+
+        wrapper.setProps({ realtimeMatches: { created: [createdMatch], updated: [] } });
+        await waitForPromises();
+
+        expect(addWorkItemToColumn).not.toHaveBeenCalled();
+        expect(adjustWorkItemCountInColumn).toHaveBeenCalledWith(
+          expect.objectContaining({ delta: 1 }),
+        );
+      });
+    });
+
+    it('ignores a matched created item already in its target column', async () => {
+      jest.spyOn(grouping, 'groupingStrategyFor').mockReturnValue(fakeStrategy(otherStatus.id));
+      readWorkItemConnectionFromColumn.mockReturnValue({
+        nodes: [createdMatch],
+        pageInfo: { hasNextPage: false },
+      });
+      createComponent();
+      await waitForPromises();
+
+      wrapper.setProps({ realtimeMatches: { created: [createdMatch], updated: [] } });
+      await waitForPromises();
+
+      expect(addWorkItemToColumn).not.toHaveBeenCalled();
+      expect(adjustWorkItemCountInColumn).not.toHaveBeenCalled();
+    });
+
+    it('moves a matched updated item into its new column', async () => {
+      jest.spyOn(grouping, 'groupingStrategyFor').mockReturnValue(fakeStrategy(otherStatus.id));
+      readWorkItemFromColumn.mockImplementation(({ variables }) =>
+        variables.status?.name === mockStatus.name ? updatedMatch : null,
+      );
+      createComponent();
+      await waitForPromises();
+
+      wrapper.setProps({ realtimeMatches: { created: [], updated: [updatedMatch] } });
+      await waitForPromises();
+
+      expect(removeWorkItemFromColumn).toHaveBeenCalledWith(
+        expect.objectContaining({
+          workItemId: updatedMatch.id,
+          variables: expect.objectContaining({ status: { name: mockStatus.name } }),
+        }),
+      );
+      expect(addWorkItemToColumn).toHaveBeenCalledWith(
+        expect.objectContaining({
+          workItem: updatedMatch,
+          variables: expect.objectContaining({ status: { name: otherStatus.name } }),
+        }),
+      );
+    });
+
+    it('does not move a matched updated item that is already in the right column', async () => {
+      jest.spyOn(grouping, 'groupingStrategyFor').mockReturnValue(fakeStrategy(mockStatus.id));
+      readWorkItemFromColumn.mockImplementation(({ variables }) =>
+        variables.status?.name === mockStatus.name ? updatedMatch : null,
+      );
+      createComponent();
+      await waitForPromises();
+
+      wrapper.setProps({ realtimeMatches: { created: [], updated: [updatedMatch] } });
+      await waitForPromises();
+
+      expect(removeWorkItemFromColumn).not.toHaveBeenCalled();
+      expect(addWorkItemToColumn).not.toHaveBeenCalled();
     });
   });
 

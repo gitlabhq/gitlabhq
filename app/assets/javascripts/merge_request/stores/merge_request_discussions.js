@@ -211,6 +211,7 @@ export const useMergeRequestDiscussions = defineStore('mergeRequestDiscussions',
         : null;
     return diffDiscussions.addNewLineDiscussionForm({
       ...params,
+      diffRefs,
       positionExtras: diffRefs,
       extraOptions: {
         ...extraOptions,
@@ -446,7 +447,7 @@ export const useMergeRequestDiscussions = defineStore('mergeRequestDiscussions',
     setDiscussionFormText: diffDiscussions.setDiscussionFormText,
     setNewLineDiscussionFormAutofocus: diffDiscussions.setNewLineDiscussionFormAutofocus,
     setFileDiscussionsHidden: diffDiscussions.setFileDiscussionsHidden,
-    setPositionDiscussionsHidden: diffDiscussions.setPositionDiscussionsHidden,
+    expandLineDiscussions: diffDiscussions.expandLineDiscussions,
     findDiscussionsForFile,
     findLinePositionsForFile,
     findLineDiscussionsForPosition,

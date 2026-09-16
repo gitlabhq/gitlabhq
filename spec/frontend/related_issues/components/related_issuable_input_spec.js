@@ -3,6 +3,7 @@ import { shallowMount } from '@vue/test-utils';
 import { TEST_HOST } from 'helpers/test_constants';
 import GfmAutoComplete from '~/gfm_auto_complete';
 import { TYPE_ISSUE } from '~/issues/constants';
+import IssueToken from '~/related_issues/components/issue_token.vue';
 import RelatedIssuableInput from '~/related_issues/components/related_issuable_input.vue';
 import { PathIdSeparator } from '~/related_issues/constants';
 
@@ -63,6 +64,19 @@ describe('RelatedIssuableInput', () => {
 
         expect(GfmAutoComplete).not.toHaveBeenCalled();
       });
+    });
+  });
+
+  describe('with a placeholder reference object', () => {
+    it('renders the placeholder text as a token', () => {
+      mountComponent({
+        references: ['!1', { text: '1 inaccessible merge request', isHiddenRef: true }],
+      });
+
+      const tokens = wrapper.findAllComponents(IssueToken);
+
+      expect(tokens).toHaveLength(2);
+      expect(tokens.at(1).props('displayReference')).toBe('1 inaccessible merge request');
     });
   });
 

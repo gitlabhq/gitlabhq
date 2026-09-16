@@ -4,8 +4,10 @@ import Vue, { nextTick } from 'vue';
 import { GlIntersectionObserver } from '@gitlab/ui';
 import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
 import Chunk from '~/vue_shared/components/source_viewer/components/chunk.vue';
+import BlameCommitInfo from '~/vue_shared/components/source_viewer/components/blame_commit_info.vue';
+import BlameSkeletonLoader from '~/vue_shared/components/source_viewer/components/blame_skeleton_loader.vue';
 import { addInteractionClass } from '~/code_navigation/utils';
-import { CHUNK_1, CHUNK_2 } from '../mock_data';
+import { CHUNK_1, CHUNK_2, CHUNK_BLAME_GROUPS_MOCK } from '../mock_data';
 
 jest.mock('~/code_navigation/utils');
 
@@ -72,16 +74,6 @@ describe('Chunk component', () => {
 
       expect(wrapper.emitted('disappear')).toHaveLength(1);
     });
-
-    it('emits highlighted when shouldHighlight transitions to true', async () => {
-      createComponent({ ...CHUNK_2, isHighlighted: false });
-      expect(wrapper.emitted('highlighted')).toBeUndefined();
-
-      await wrapper.setProps({ isHighlighted: true });
-      await nextTick();
-
-      expect(wrapper.emitted('highlighted')).toHaveLength(1);
-    });
   });
 
   describe('rendering', () => {
@@ -109,10 +101,12 @@ describe('Chunk component', () => {
 
       it('renders highlighted content', () => {
         expect(findHighlightOverlay().exists()).toBe(true);
-        expect(findHighlightOverlay().attributes('style')).toContain('margin-left: 96px;');
-        expect(findHighlightOverlay().attributes('style')).toContain(
-          '--source-gutter-width: 96px;',
-        );
+      });
+
+      it('does not offset the overlay by a measured gutter width', () => {
+        // The gutter is a real grid column now, so the overlay no longer needs a
+        // margin derived from the line-number element's width.
+        expect(findHighlightOverlay().attributes('style')).toBeUndefined();
       });
     });
   });
@@ -246,6 +240,191 @@ describe('Chunk component', () => {
 
         const actualHref = findBlameLink(1).attributes('href');
         expect(actualHref).toBe(`${blamePath}${wrapper.vm.pageSearchString}#L1`);
+      });
+    });
+  });
+
+  describe('blame rendering', () => {
+    const findBlameCells = () => wrapper.findAllByTestId('blame-cell');
+    const findBlameSeparators = () => wrapper.findAllByTestId('blame-separator');
+    const findGutterSeparators = () => wrapper.findAllByTestId('blame-separator-gutter');
+    const findSkeletonLoader = () => wrapper.findComponent(BlameSkeletonLoader);
+    const findCommitInfos = () => wrapper.findAllComponents(BlameCommitInfo);
+
+    const createWithBlame = (props = {}) =>
+      createComponent({
+        isBlameActive: true,
+        blameGroups: CHUNK_BLAME_GROUPS_MOCK,
+        ...props,
+      });
+
+    it('renders no blame cells when blame is inactive', () => {
+      createWithBlame({ isBlameActive: false });
+
+      expect(findBlameCells()).toHaveLength(0);
+    });
+
+    it('renders a blame cell per group when blame is active', () => {
+      createWithBlame();
+
+      expect(findBlameCells()).toHaveLength(2);
+    });
+
+    it('passes each group commit through to BlameCommitInfo', () => {
+      createWithBlame();
+
+      expect(findCommitInfos().at(0).props()).toMatchObject({
+        commit: CHUNK_BLAME_GROUPS_MOCK[0].commit,
+        previousPath: CHUNK_BLAME_GROUPS_MOCK[0].previousPath,
+      });
+    });
+
+    describe('screen reader line range', () => {
+      const findCellLines = (index) => wrapper.findAllByTestId('blame-cell-lines').at(index).text();
+
+      it('labels a multi-line group with its line range', () => {
+        createWithBlame();
+
+        expect(findCellLines(0)).toBe('Lines 1 to 2');
+      });
+
+      it('labels a single-line group with one line number', () => {
+        createWithBlame();
+
+        expect(findCellLines(1)).toBe('Line 3');
+      });
+
+      it('offsets the range by the chunk start', () => {
+        createWithBlame({ startingFrom: 70 });
+
+        expect(findCellLines(0)).toBe('Lines 71 to 72');
+      });
+
+      it('labels a group carried over from the previous chunk with the lines it renders', () => {
+        // Group opens at line 65, but this chunk starts at 71, so the cell is
+        // clamped to lines 71-74 even though `lineno` still reads 65.
+        createWithBlame({
+          startingFrom: 70,
+          blameGroups: [
+            { ...CHUNK_BLAME_GROUPS_MOCK[0], lineno: 65, span: 10, rowStart: 1, rowSpan: 4 },
+          ],
+        });
+
+        expect(findCellLines(0)).toBe('Lines 71 to 74');
+      });
+    });
+
+    describe('grid placement', () => {
+      it('places a group in the blame column across exactly the rows it spans', () => {
+        createWithBlame();
+        const cell = findBlameCells().at(0);
+
+        expect(cell.classes()).toContain('gl-col-start-1');
+        expect(cell.element.style.gridRowStart).toBe('1');
+        // rowStart 1 + rowSpan 2 -> ends before row 3
+        expect(cell.element.style.gridRowEnd).toBe('3');
+      });
+
+      it('places a single-line group on one row', () => {
+        createWithBlame();
+        const { style } = findBlameCells().at(1).element;
+
+        expect(style.gridRowStart).toBe('3');
+        expect(style.gridRowEnd).toBe('4');
+      });
+
+      const findAgeColor = (index) =>
+        findBlameCells().at(index).element.style.getPropertyValue('--blame-age-color');
+
+      it('colours the age indicator from the commit age bucket', () => {
+        createWithBlame();
+
+        expect(findAgeColor(0)).toBe('var(--gl-color-data-blue-50)'); // blame-commit-age-9
+        expect(findAgeColor(1)).toBe('var(--gl-color-data-blue-900)'); // blame-commit-age-0
+      });
+
+      it('falls back to a transparent indicator when age data is missing', () => {
+        createWithBlame({
+          blameGroups: [{ ...CHUNK_BLAME_GROUPS_MOCK[0], commitData: undefined }],
+        });
+
+        expect(findAgeColor(0)).toBe('transparent');
+      });
+    });
+
+    describe('group separators', () => {
+      it('draws a separator only for the groups flagged for one', () => {
+        createWithBlame();
+
+        expect(findBlameSeparators()).toHaveLength(1);
+      });
+
+      it('draws a separator for a flagged group', () => {
+        createWithBlame({
+          blameGroups: [{ ...CHUNK_BLAME_GROUPS_MOCK[0], rowStart: 1, hasSeparator: true }],
+        });
+
+        expect(findBlameSeparators()).toHaveLength(1);
+      });
+
+      it('draws no separator for an unflagged group', () => {
+        createWithBlame({
+          blameGroups: [{ ...CHUNK_BLAME_GROUPS_MOCK[0], rowStart: 1, hasSeparator: false }],
+        });
+
+        expect(findBlameSeparators()).toHaveLength(0);
+      });
+
+      it('draws a matching separator half in the gutter column', () => {
+        createWithBlame();
+
+        expect(findGutterSeparators()).toHaveLength(1);
+        expect(findGutterSeparators().at(0).element.style.gridRow).toBe('3');
+      });
+
+      it('spans the code separator across the line-number and code columns', () => {
+        createWithBlame();
+        const separator = findBlameSeparators().at(0);
+
+        expect(separator.classes()).toContain('gl-col-start-2');
+        expect(separator.classes()).toContain('gl-col-span-2');
+        expect(separator.element.style.gridRow).toBe('3');
+      });
+
+      it('draws the code separator before the gutter half so the gutter half paints over it', () => {
+        createWithBlame();
+        const halves = wrapper.findAll(
+          '[data-testid="blame-separator"], [data-testid="blame-separator-gutter"]',
+        );
+
+        expect(halves.at(0).attributes('data-testid')).toBe('blame-separator');
+        expect(halves.at(1).attributes('data-testid')).toBe('blame-separator-gutter');
+        expect(halves.at(0).classes()).toContain('gl-z-4');
+        expect(halves.at(1).classes()).toContain('gl-z-4');
+      });
+    });
+
+    describe('skeleton loader', () => {
+      it('shows while the chunk is fetching and has no groups yet', () => {
+        createWithBlame({ blameGroups: [], isBlameLoading: true });
+
+        expect(findSkeletonLoader().exists()).toBe(true);
+        expect(findSkeletonLoader().props()).toMatchObject({
+          startLine: CHUNK_1.startingFrom,
+          totalLines: CHUNK_1.totalLines,
+        });
+      });
+
+      it('hides once the groups for the chunk have arrived', () => {
+        createWithBlame({ isBlameLoading: true });
+
+        expect(findSkeletonLoader().exists()).toBe(false);
+      });
+
+      it('hides when blame is inactive', () => {
+        createWithBlame({ isBlameActive: false, blameGroups: [], isBlameLoading: true });
+
+        expect(findSkeletonLoader().exists()).toBe(false);
       });
     });
   });

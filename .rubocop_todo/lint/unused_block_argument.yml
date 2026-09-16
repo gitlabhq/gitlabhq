@@ -2,7 +2,6 @@
 # Cop supports --autocorrect.
 Lint/UnusedBlockArgument:
   Exclude:
-    - 'app/models/alert_management/alert.rb'
     - 'app/models/appearance.rb'
     - 'app/models/ci/build.rb'
     - 'app/models/ci/instance_variable.rb'

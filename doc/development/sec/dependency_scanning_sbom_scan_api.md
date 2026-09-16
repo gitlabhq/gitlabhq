@@ -9,7 +9,7 @@ title: New dependency scanning, the SBOM scan API
 `gl-dependency-scanning-report.json` by calling the GitLab SBOM Vulnerability Scan
 API. The API matches the SBOM against Package Metadata DB (PMDB) advisories
 server-side and returns vulnerability data as a result file. This flow is
-**ephemeral and analyzer-facing**: it does not create `security_findings` or
+ephemeral and analyzer-facing: it does not create `security_findings` or
 `vulnerabilities`; those are produced later when the report is ingested (see
 [CycloneDX to security findings](cyclonedx_to_security_findings.md)).
 
@@ -48,7 +48,7 @@ flowchart TD
    to return workhorse direct-upload headers (rate limited by
    `dependency_scanning_sbom_scan_api_upload`).
 1. **Upload the SBOM.** `POST /jobs/:id/sbom_scans` uploads the file.
-   `CreateSbomScanService#execute` creates an **ephemeral** `SbomScan` record and
+   `CreateSbomScanService#execute` creates an ephemeral `SbomScan` record and
    enqueues processing via `ProcessSbomScanWorker`.
    <!-- When the project is throttled (`dependency_scanning_sbom_scan_api_throttling`),
    processing is enqueued via `ProcessSbomScanThrottledWorker` (lower urgency) instead. -->
@@ -59,7 +59,7 @@ flowchart TD
    (`Parsers::Sbom::Cyclonedx`), validates it is a `dependency_scanning`-source
    cyclonedx, then runs `VulnerabilityScanning::SecurityReportBuilder` to match
    components against PMDB advisories (`pm_advisories` / `pm_affected_packages`)
-   using `AdvisoryUtils` + `FindingBuilder`. This is the **same builder** that the
+   using `AdvisoryUtils` + `FindingBuilder`. This is the same builder that the
    [CycloneDX to security findings](cyclonedx_to_security_findings.md) workflow
    uses, but here the output goes to a file, not to the database.
 1. **Save the result.** `save_result` stores the resulting
@@ -92,7 +92,7 @@ flowchart TD
 `gl-dependency-scanning-report.json` path, where it is ingested into
 `security_findings`. Because the analyzer already produced that report via this
 API, when the same job also uploads the cyclonedx as a pipeline artifact, the
-store stage **skips** the cyclonedx finding-synthesis to avoid double ingestion.
+store stage skips the cyclonedx finding-synthesis to avoid double ingestion.
 
 ## Related
 

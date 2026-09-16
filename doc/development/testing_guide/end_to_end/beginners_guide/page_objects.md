@@ -100,7 +100,7 @@ The `element` DSL method in turn declares an element for which a corresponding
 `testid=element-name` data attribute must be added, if not already, to the view file.
 
 You can also define a value (String or Regexp) to match to the actual view
-code but **this is deprecated** in favor of the above method for two reasons:
+code but this is deprecated in favor of the above method for two reasons:
 
 - Consistency: there is only one way to define an element
 - Separation of concerns: Tests use dedicated `data-testid` attributes instead of reusing code

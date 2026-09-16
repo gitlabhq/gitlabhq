@@ -8,7 +8,7 @@ module MergeRequests
 
       approval = merge_request.approvals.new(
         user: current_user,
-        patch_id_sha: merge_request.current_patch_id_sha
+        patch_id_sha: patch_id_sha_for(merge_request)
       )
 
       return success unless save_approval(approval)
@@ -50,6 +50,24 @@ module MergeRequests
 
     def eligible_for_approval?(merge_request)
       merge_request.eligible_for_approval_by?(current_user)
+    end
+
+    def patch_id_sha_for(merge_request)
+      unless Feature.enabled?(:patch_id_sha_fallback_when_diff_missing, merge_request.target_project)
+        return merge_request.current_patch_id_sha
+      end
+
+      sha = params[:sha]
+
+      # The API checked `sha` against the diff head before calling us, but a push can land in
+      # between and swap the diff. Recording that newer diff's patch ID would credit the approver
+      # with a version they never saw, so only use the diff when it is still for `sha`.
+      if sha.blank? || merge_request.merge_request_diff.head_commit_sha == sha
+        patch_id_sha = merge_request.current_patch_id_sha
+        return patch_id_sha if patch_id_sha.present?
+      end
+
+      merge_request.patch_id_sha_for_head(sha)
     end
 
     def save_approval(approval)

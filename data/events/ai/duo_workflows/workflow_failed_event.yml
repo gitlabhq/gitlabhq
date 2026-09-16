@@ -1,0 +1,7 @@
+---
+event: Ai::DuoWorkflows::WorkflowFailedEvent
+description: Published when a Duo workflow is dropped or stopped. Carries the
+  status event (drop or stop). Only emitted for messaging-triggered workflows.
+  Deferred via run_after_commit.
+feature_category: duo_agent_platform
+ee_only: true

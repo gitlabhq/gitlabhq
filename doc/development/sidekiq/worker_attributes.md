@@ -105,7 +105,7 @@ shard_consumption = shard_rps * shard_duration_avg
 (new_queue_consumption / shard_consumption) * 100
 ```
 
-If we expect an increase of **less than 5%**, then no further action is needed.
+If we expect an increase of less than 5%, then no further action is needed.
 
 Otherwise, ping `@gitlab-com/gl-infra/data-access/durability` on the merge request and ask
 for a review.

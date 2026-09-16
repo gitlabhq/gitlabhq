@@ -53,7 +53,9 @@ describe('commitDiffDiscussions store', () => {
     'saveNote',
     'destroyNote',
     'toggleAwardOnNote',
-    'setPositionDiscussionsHidden',
+    'expandLineDiscussions',
+    'collapseDiscussion',
+    'expandDiscussion',
   ])('exposes %s action', (action) => {
     expect(useCommitDiffDiscussions()[action]).toEqual(expect.any(Function));
   });

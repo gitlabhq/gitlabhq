@@ -645,6 +645,43 @@ RSpec.describe API::Files, feature_category: :source_code_management do
         )
       end
     end
+
+    context 'when Gitaly is unavailable' do
+      using RSpec::Parameterized::TableSyntax
+
+      where(:raised_error) do
+        [
+          [-> { GRPC::Unavailable.new('failed to connect to all addresses') }],
+          [-> { GRPC::DeadlineExceeded.new('deadline exceeded') }]
+        ]
+      end
+
+      with_them do
+        before do
+          allow_next_instance_of(Gitlab::GitalyClient::CommitService) do |svc|
+            allow(svc).to receive(:find_commit).and_raise(raised_error.call)
+          end
+
+          allow_next_instance_of(Gitlab::GitalyClient::HealthCheckService) do |svc|
+            allow(svc).to receive(:check).and_return(success: false, message: 'Gitaly is not available')
+          end
+        end
+
+        it 'returns 503 Service Unavailable instead of 404', :aggregate_failures do
+          get api(route(file_path), user), params: params
+
+          expect(response).to have_gitlab_http_status(:service_unavailable)
+          expect(json_response['message']).to eq('503 Service Unavailable')
+        end
+      end
+
+      it 'still returns 404 for a genuinely missing ref when Gitaly is healthy', :aggregate_failures do
+        get api(route(file_path), user), params: { ref: '1111111111111111111111111111111111111111' }
+
+        expect(response).to have_gitlab_http_status(:not_found)
+        expect(json_response['message']).to eq('404 Commit Not Found')
+      end
+    end
   end
 
   describe 'GET /projects/:id/repository/files/:file_path/blame' do

@@ -27,7 +27,7 @@ text = "foo\nbar"
 p text.match /^bar$/
 ```
 
-The output of this example is `#<MatchData "bar">`, as Ruby treats the input `text` line by line. To match the whole **string**, the Regex anchors `\A` and `\z` should be used.
+The output of this example is `#<MatchData "bar">`, as Ruby treats the input `text` line by line. To match the whole string, the Regex anchors `\A` and `\z` should be used.
 
 #### Impact
 
@@ -210,7 +210,7 @@ value, we will not be protected against DNS rebinding.
 
 This is the case with validators such as the `AddressableUrlValidator` (called with `validates :url, addressable_url: {opts}` or `public_url: {opts}`).
 Validation errors are only raised when validations are called, for example when a record is created or saved. If we ignore the value returned by the validation
-when persisting the record, **we need to recheck** its validity before using it. For more information, see [Time of check to time of use bugs](_index.md#time-of-check-to-time-of-use-bugs).
+when persisting the record, we need to recheck its validity before using it. For more information, see [Time of check to time of use bugs](_index.md#time-of-check-to-time-of-use-bugs).
 
 #### Feature-specific mitigations
 
@@ -857,7 +857,7 @@ This class of issue applies to more than just email; other examples might includ
 
 ## Guidelines when defining missing methods with metaprogramming
 
-Metaprogramming is a way to define methods **at runtime**, instead of at the time of writing and deploying the code. It is a powerful tool, but can be dangerous if we allow untrusted actors (like users) to define their own arbitrary methods. For example, imagine we accidentally let an attacker overwrite an access control method to always return true! It can lead to many classes of vulnerabilities such as access control bypass, information disclosure, arbitrary file reads, and remote code execution.
+Metaprogramming is a way to define methods at runtime, instead of at the time of writing and deploying the code. It is a powerful tool, but can be dangerous if we allow untrusted actors (like users) to define their own arbitrary methods. For example, imagine we accidentally let an attacker overwrite an access control method to always return true! It can lead to many classes of vulnerabilities such as access control bypass, information disclosure, arbitrary file reads, and remote code execution.
 
 Key methods to watch out for are `method_missing`, `define_method`, `delegate`, and similar methods.
 
@@ -938,7 +938,7 @@ In the example above, the `is_admin?` method is overwritten when passing it to t
 ### Best practices
 
 - Never pass user-provided details into method-defining metaprogramming methods.
-  - If you must, be **very** confident that you've sanitized the values correctly.
+  - If you must, be very confident that you've sanitized the values correctly.
     Consider creating an allowlist of values, and validating the user input against that.
 - When extending classes that use metaprogramming, make sure you don't inadvertently override any method definition safety checks.
 

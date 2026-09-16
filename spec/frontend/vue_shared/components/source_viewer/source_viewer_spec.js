@@ -2,7 +2,6 @@ import Vue, { nextTick } from 'vue';
 import VueApollo from 'vue-apollo';
 import createMockApollo from 'helpers/mock_apollo_helper';
 import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
-import { setHTMLFixture } from 'helpers/fixtures';
 import SourceViewer from '~/vue_shared/components/source_viewer/source_viewer.vue';
 import Chunk from '~/vue_shared/components/source_viewer/components/chunk.vue';
 import {
@@ -12,14 +11,13 @@ import {
 } from '~/vue_shared/components/source_viewer/constants';
 import * as urlUtility from '~/lib/utils/url_utility';
 import Tracking from '~/tracking';
+import { DEFAULT_DEBOUNCE_AND_THROTTLE_MS } from '~/lib/utils/constants';
 import LineHighlighter from '~/blob/line_highlighter';
 import addBlobLinksTracking from '~/blob/blob_links_tracking';
 import waitForPromises from 'helpers/wait_for_promises';
 import { createAlert } from '~/alert';
 import blameDataQuery from '~/vue_shared/components/source_viewer/queries/blame_data.query.graphql';
-import Blame from '~/vue_shared/components/source_viewer/components/blame_info.vue';
-import BlameSkeletonLoader from '~/vue_shared/components/source_viewer/components/blame_skeleton_loader.vue';
-import * as utils from '~/vue_shared/components/source_viewer/utils';
+import BlameColumnResizer from '~/vue_shared/components/source_viewer/components/blame_column_resizer.vue';
 import CodeownersValidation from 'ee_component/blob/components/codeowners_validation.vue';
 
 import {
@@ -29,7 +27,6 @@ import {
   CHUNK_3,
   LANGUAGE_MOCK,
   BLAME_DATA_QUERY_RESPONSE_MOCK,
-  SOURCE_CODE_CONTENT_MOCK,
 } from './mock_data';
 
 jest.mock('~/alert');
@@ -80,8 +77,8 @@ describe('Source Viewer component', () => {
   };
 
   const findChunks = () => wrapper.findAllComponents(Chunk);
-  const findBlameComponents = () => wrapper.findAllComponents(Blame);
-  const findBlameSkeletonLoaders = () => wrapper.findAllComponents(BlameSkeletonLoader);
+  const findFileContent = () => wrapper.findByTestId('blob-viewer-file-content');
+  const findColumnResizer = () => wrapper.findComponent(BlameColumnResizer);
   const triggerChunkAppear = async (chunkIndex = 0) => {
     findChunks().at(chunkIndex).vm.$emit('appear');
     await waitForPromises();
@@ -102,14 +99,15 @@ describe('Source Viewer component', () => {
       expect(lineHighlighter.highlightHash).toHaveBeenCalledWith(hash);
     });
 
-    it('hides the blame viewer if showBlame changes to false', async () => {
+    it('hides the blame gutter if showBlame changes to false', async () => {
       await triggerChunkAppear();
-      expect(findBlameComponents()).toHaveLength(1);
+      expect(findChunks().at(0).props('blameGroups')).toHaveLength(1);
 
       await wrapper.setProps({ showBlame: false });
       await nextTick();
 
-      expect(findBlameComponents()).toHaveLength(0);
+      expect(findChunks().at(0).props('isBlameActive')).toBe(false);
+      expect(findChunks().at(0).props('blameGroups')).toHaveLength(0);
     });
   });
 
@@ -125,89 +123,52 @@ describe('Source Viewer component', () => {
   });
 
   describe('rendering', () => {
-    describe('DOM updates', () => {
-      it('adds the necessary classes to the DOM', async () => {
-        setHTMLFixture(SOURCE_CODE_CONTENT_MOCK);
-        jest.spyOn(utils, 'toggleBlameLineBorders');
-        createComponent();
-        await triggerChunkAppear();
-        expect(utils.toggleBlameLineBorders).toHaveBeenCalledWith(blameInfo, true);
-      });
-    });
-
     describe('Blame information', () => {
-      it('renders a Blame component when a chunk appears', async () => {
+      it('passes the blame groups covering a chunk to that chunk', async () => {
         await triggerChunkAppear();
 
-        expect(findBlameComponents().at(0).exists()).toBe(true);
-        expect(findBlameComponents().at(0).props()).toMatchObject({
-          blameInfo,
+        expect(findChunks().at(0).props()).toMatchObject({
+          isBlameActive: true,
           projectPath,
         });
+        expect(findChunks().at(0).props('blameGroups')).toEqual([
+          expect.objectContaining({ commit: blameInfo[0].commit }),
+        ]);
       });
 
-      it('defers blame entries until their chunk emits highlighted', async () => {
-        jest.spyOn(utils, 'calculateBlameOffset').mockReturnValue(null);
-        createComponent();
+      it('positions blame groups by grid row instead of a measured offset', async () => {
         await triggerChunkAppear();
-        expect(findBlameComponents().at(0).props('blameInfo')).toEqual([]);
 
-        utils.calculateBlameOffset.mockReturnValue('42px');
-        findChunks().at(0).vm.$emit('highlighted');
+        // The mocked group starts at line 1 and spans 3 lines. Opening the file,
+        // it takes no separator.
+        expect(findChunks().at(0).props('blameGroups')).toEqual([
+          expect.objectContaining({ rowStart: 1, rowSpan: 3, hasSeparator: false }),
+        ]);
+      });
+
+      it('gives a chunk with no blame data no groups', async () => {
+        await triggerChunkAppear(0);
+
+        expect(findChunks().at(1).props('blameGroups')).toEqual([]);
+      });
+
+      it('declares the shared blame column once so chunks can align to it', async () => {
+        await triggerChunkAppear();
+
+        expect(findFileContent().attributes('style')).toContain(
+          'grid-template-columns: 400px auto 1fr',
+        );
+      });
+
+      it('marks a chunk as loading only while its blame request is in flight', async () => {
+        findChunks().at(0).vm.$emit('appear');
         await nextTick();
 
-        expect(findBlameComponents().at(0).props('blameInfo')).toHaveLength(1);
-      });
+        expect(findChunks().at(0).props('isBlameLoading')).toBe(true);
 
-      describe('per-chunk skeleton loaders', () => {
-        const emitAppear = (index = 0) => findChunks().at(index).vm.$emit('appear');
+        await waitForPromises();
 
-        it.each([
-          { showBlame: true, minCount: 1 },
-          { showBlame: false, minCount: 0 },
-        ])(
-          'shows skeleton loaders when showBlame is $showBlame',
-          async ({ showBlame, minCount }) => {
-            createComponent({ showBlame });
-            emitAppear();
-            await nextTick();
-            expect(findBlameSkeletonLoaders().length).toBeGreaterThanOrEqual(minCount);
-          },
-        );
-
-        it('removes skeleton loader after data loads', async () => {
-          createComponent();
-          await triggerChunkAppear(0);
-          expect(findBlameSkeletonLoaders()).toHaveLength(0);
-        });
-
-        it('positions skeleton loader at chunk offset', async () => {
-          createComponent();
-          emitAppear();
-          await nextTick();
-
-          const chunkOffset = findChunks().at(0).element.offsetTop;
-          expect(findBlameSkeletonLoaders().at(0)?.attributes('style')).toContain(
-            `transform: translateY(${chunkOffset}px)`,
-          );
-        });
-
-        it('passes totalLines from the chunk to the skeleton loader', async () => {
-          createComponent();
-          emitAppear();
-          await nextTick();
-
-          const chunk1Loader = findBlameSkeletonLoaders().at(0);
-          expect(chunk1Loader.props('totalLines')).toBe(70);
-          expect(chunk1Loader.props('startLine')).toBe(0);
-
-          emitAppear(1);
-          await nextTick();
-
-          const chunk2Loader = findBlameSkeletonLoaders().at(1);
-          expect(chunk2Loader.props('totalLines')).toBe(40);
-          expect(chunk2Loader.props('startLine')).toBe(70);
-        });
+        expect(findChunks().at(0).props('isBlameLoading')).toBe(false);
       });
 
       it('preloads blame data', async () => {
@@ -282,15 +243,36 @@ describe('Source Viewer component', () => {
       });
 
       describe('chunk visibility queuing', () => {
+        // The debounce mock is synchronous by default, which would process the
+        // chunk on `appear` and leave nothing for `disappear` to cancel. Give it a
+        // real timeout so the queue can actually be drained late.
+        beforeEach(() => {
+          global.JEST_DEBOUNCE_THROTTLE_TIMEOUT = DEFAULT_DEBOUNCE_AND_THROTTLE_MS;
+        });
+
+        afterEach(() => {
+          global.JEST_DEBOUNCE_THROTTLE_TIMEOUT = undefined;
+        });
+
         it('does not fetch blame data when chunk disappears before processing', () => {
           blameDataQueryHandlerSuccess.mockClear();
 
-          triggerChunkAppear(0);
+          findChunks().at(0).vm.$emit('appear');
           findChunks().at(0).vm.$emit('disappear');
 
           jest.runAllTimers();
 
           expect(blameDataQueryHandlerSuccess).not.toHaveBeenCalled();
+        });
+
+        it('fetches blame data for a chunk that stays visible', () => {
+          blameDataQueryHandlerSuccess.mockClear();
+
+          findChunks().at(0).vm.$emit('appear');
+
+          jest.runAllTimers();
+
+          expect(blameDataQueryHandlerSuccess).toHaveBeenCalledTimes(1);
         });
       });
 
@@ -308,11 +290,24 @@ describe('Source Viewer component', () => {
         expect(findChunks().at(0).props('isHighlighted')).toBe(true);
       });
 
-      it('does not render a Blame component when `showBlame: false`', async () => {
+      it('does not activate the blame gutter when `showBlame: false`', async () => {
         createComponent({ showBlame: false });
         await triggerChunkAppear();
 
-        expect(findBlameComponents()).toHaveLength(0);
+        expect(findChunks().at(0).props('isBlameActive')).toBe(false);
+        expect(findChunks().at(0).props('blameGroups')).toEqual([]);
+      });
+
+      it('treats a response carrying no blame groups as empty, not as a failure', async () => {
+        createAlert.mockClear();
+        const noGroups = jest.fn().mockResolvedValue({
+          data: { project: { id: '1', repository: { blobs: { nodes: [] } } } },
+        });
+        createComponent({ blameQueryHandler: noGroups });
+        await triggerChunkAppear();
+
+        expect(createAlert).not.toHaveBeenCalled();
+        expect(findChunks().at(0).props('blameGroups')).toEqual([]);
       });
 
       it('shows error alert when blame query fails', async () => {
@@ -365,6 +360,38 @@ describe('Source Viewer component', () => {
     });
   });
 
+  describe('blame column resizer', () => {
+    const findBlameColumnWidth = () =>
+      findFileContent()
+        .attributes('style')
+        .match(/grid-template-columns: (\S+)/)[1];
+
+    it('mounts the resizer', () => {
+      expect(findColumnResizer().exists()).toBe(true);
+    });
+
+    it('feeds the resizer width into the shared blame column', async () => {
+      expect(findBlameColumnWidth()).toBe('400px');
+
+      findColumnResizer().vm.$emit('input', 520);
+      await nextTick();
+
+      expect(findBlameColumnWidth()).toBe('520px');
+    });
+
+    describe('when showBlame is false', () => {
+      beforeEach(() => createComponent({ showBlame: false }));
+
+      it('does not mount the resizer', () => {
+        expect(findColumnResizer().exists()).toBe(false);
+      });
+
+      it('collapses the blame column', () => {
+        expect(findBlameColumnWidth()).toBe('0');
+      });
+    });
+  });
+
   describe('Codeowners validation', () => {
     const findCodeownersValidation = () => wrapper.findComponent(CodeownersValidation);
 
@@ -376,7 +403,6 @@ describe('Source Viewer component', () => {
 
     it('renders codeowners validation when file is CODEOWNERS', async () => {
       await createComponent({ blob: { name: CODEOWNERS_FILE_NAME } });
-      // CodeownersValidation is an async component.
       await waitForPromises();
       expect(findCodeownersValidation().exists()).toBe(true);
     });

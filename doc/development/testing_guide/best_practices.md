@@ -510,7 +510,7 @@ end
 
 We can use the `rspec_profiling` gem to diagnose, for instance, the number of SQL queries we're making when running a test.
 
-This could be caused by some application side SQL queries **triggered by a test that could mock parts that are not under test** (for example, [!123810](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/123810)).
+This could be caused by some application side SQL queries triggered by a test that could mock parts that are not under test (for example, [!123810](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/123810)).
 
 [See the instructions in the performance docs](../performance.md#rspec-profiling).
 
@@ -969,8 +969,8 @@ be real.
 
 Examples from production codebase fixes:
 
-- A spec that triggered a real Go compilation added **~3 minutes** per run.
-- A spec that ran real Git commands added **~10 seconds** per example.
+- A spec that triggered a real Go compilation added ~3 minutes per run.
+- A spec that ran real Git commands added ~10 seconds per example.
 
 In both cases, the logic under test was already covered by unit tests.
 
@@ -2009,8 +2009,8 @@ ensure the change is rolled back.
 If you need to modify the contents of the `ENV` constant, you can use the
 `stub_env` helper method instead.
 
-While most Ruby **instances** are not shared between specs, **classes**
-and **modules** generally are. Class and module instance variables, accessors,
+While most Ruby instances are not shared between specs, classes
+and modules generally are. Class and module instance variables, accessors,
 class variables, and other stateful idioms, should be treated in the same way as
 global variables. Don't modify them unless you have to! In particular, prefer
 using expectations, or dependency injection along with stubs, to avoid the need
@@ -2079,9 +2079,9 @@ This section describes how to test with events that have yet to convert to
 ##### Backend
 
 > [!warning]
-> Snowplow performs **runtime type checks** by using the [contracts gem](https://rubygems.org/gems/contracts).
-> Because Snowplow is **by default disabled in tests and development**, it can be hard to
-> **catch exceptions** when mocking `Gitlab::Tracking`.
+> Snowplow performs runtime type checks by using the [contracts gem](https://rubygems.org/gems/contracts).
+> Because Snowplow is by default disabled in tests and development, it can be hard to
+> catch exceptions when mocking `Gitlab::Tracking`.
 
 To catch runtime errors due to type checks you can use `expect_snowplow_event`, which checks for
 calls to `Gitlab::Tracking#event`.

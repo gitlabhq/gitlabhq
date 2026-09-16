@@ -173,7 +173,7 @@ export default {
         </span>
       </div>
 
-      <p class="gl-mb-0" data-testid="deployment-ci-build-id">
+      <p v-if="deployment.ciBuildId" class="gl-mb-0" data-testid="deployment-ci-build-id">
         <gl-icon name="deployments" />
         <span class="gl-text-subtle">{{ $options.i18n.deployJobLabel }}:</span>
         <a :href="ciBuildUrl" class="!gl-text-link" @click.stop>

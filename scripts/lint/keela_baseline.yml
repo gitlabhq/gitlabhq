@@ -670,8 +670,6 @@ scopes:
   app/models/packages/dependency_link.rb:
   - with_dependency_type
   - includes_dependency
-  app/models/packages/nuget/package.rb:
-  - without_nuget_temporary_name
   app/models/packages/package.rb:
   - including_dependency_links
   app/models/packages/package_file.rb:

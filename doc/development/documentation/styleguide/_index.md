@@ -1051,63 +1051,36 @@ For example, use footnotes when you must:
 
 #### Footnote format
 
-In the table, use the HTML superscript tag `<sup>` for each footnote.
-Put the tag at the end of the sentence. Leave one space between the sentence and the tag.
+In the table cell, write a footnote reference as `[^label]`.
+Add the reference at the end of the sentence, with no space before it.
+Write the matching definition as `[^label]: Footnote text.`
 
 For example:
 
 ```markdown
 | App name | Description |
 |:---------|:------------|
-| App A    | Description text. <sup>1</sup> |
-| App B    | Description text. <sup>2</sup> |
+| App A    | Description text.[^rate-limit] |
+| App B    | Description text.[^retention] |
+
+[^rate-limit]: This is the first footnote.
+[^retention]: This is the second footnote.
 ```
 
-When you add a footnote, do not re-sort the existing tags in the table.
+Add a table's definitions directly below that table, so the source stays readable.
+Do not put a footnote reference or definition inside a shortcode, like tabs (`{{</* tabs */>}}`).
 
-For the footnotes below the table, use `**Footnotes**:` followed by an ordered list.
+The renderer numbers the footnotes and adds a `Footnotes` heading below the table.
 
-For example:
+#### Footnote numbering
 
-```markdown
-**Footnotes**:
+Footnotes are numbered in the order they're first referenced.
+The count is page-wide and includes every table and paragraph on the page.
 
-1. This is the first footnote.
-1. This is the second footnote.
-```
-
-The table and footnotes would render as follows:
-
-| App name | Description |
-|:---------|:------------|
-| App A    | Description text. <sup>1</sup> |
-| App B    | Description text. <sup>2</sup> |
-
-**Footnotes**:
-
-1. This is the first footnote.
-1. This is the second footnote.
-
-##### Five or more footnotes
-
-If you have five or more footnotes that you cannot include in the table itself,
-use consecutive numbers for the list items.
-If you use consecutive numbers, you must disable Markdown rule `029`:
-
-```markdown
-**Footnotes**:
-
-<!-- Disable ordered list rule https://github.com/DavidAnson/markdownlint/blob/main/doc/Rules.md#md029---ordered-list-item-prefix -->
-<!-- markdownlint-disable MD029 -->
-
-1. This is the first footnote.
-2. This is the second footnote.
-3. This is the third footnote.
-4. This is the fourth footnote.
-5. This is the fifth footnote.
-
-<!-- markdownlint-enable MD029 -->
-```
+Footnote labels are also page-wide.
+Use the same label in several references when you want them to share one footnote.
+Otherwise, give each footnote a unique label.
+If you define the same label twice, the renderer keeps the first definition and discards the second without a warning.
 
 ## Links
 

@@ -45,6 +45,8 @@ module API
         authorize_ai_access! if ai_workflow_scope?
 
         @commit = user_project.commit(params[:ref])
+
+        verify_gitaly_availability! unless @commit
         not_found!('Commit') unless @commit
 
         @repo = user_project.repository
@@ -53,6 +55,17 @@ module API
         not_found!('File') unless @blob
 
         audit_repository_file_api_access
+      rescue Gitlab::Git::CommandError
+        service_unavailable!
+      end
+
+      def verify_gitaly_availability!
+        storage = user_project.repository.storage
+        result = Gitlab::GitalyClient::HealthCheckService.new(storage).check
+
+        return if result[:success]
+
+        raise Gitlab::Git::CommandError, result[:message] || 'Gitaly is not available'
       end
 
       def audit_repository_file_api_access

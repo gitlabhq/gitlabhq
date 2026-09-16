@@ -21,13 +21,13 @@ semantically incorrect.
 ## Naming conventions
 
 Directory names under `spec/contracts/consumer/external/` and
-`spec/contracts/contracts/external/` use **underscores**
+`spec/contracts/contracts/external/` use underscores
 (for example, `artifact_registry/`).
 
-Contract filenames use **hyphens**
+Contract filenames use hyphens
 (for example, `gitlab-rails-artifact-registry-repositories-get.json`).
 
-GCS path slugs use **underscores**, matching the directory name
+GCS path slugs use underscores, matching the directory name
 (for example, `gs://.../artifact_registry/18.0/...`).
 
 All contract filenames follow:

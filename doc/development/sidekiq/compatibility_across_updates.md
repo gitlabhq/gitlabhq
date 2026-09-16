@@ -43,7 +43,7 @@ For GitLab.com, this can occur if there are multiple deployments in the same mil
 
 ### Deprecate and remove an argument
 
-**Before you remove arguments from the `perform_async` and `perform` methods**, deprecate them. The
+Before you remove arguments from the `perform_async` and `perform` methods, deprecate them. The
 following example deprecates and then removes `arg2` from the `perform_async` method:
 
 1. Provide a default value (usually `nil`) and use a comment to mark the
@@ -207,7 +207,7 @@ For the same reasons that removing workers is dangerous, care should be taken
 when renaming queues.
 
 When renaming queues, use the `sidekiq_queue_migrate` helper migration method
-in a **post-deployment migration**:
+in a post-deployment migration:
 
 ```ruby
 class MigrateTheRenamedSidekiqQueue < Gitlab::Database::Migration[2.1]

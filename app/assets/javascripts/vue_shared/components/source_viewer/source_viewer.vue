@@ -10,24 +10,22 @@ import { parseBoolean } from '~/lib/utils/common_utils';
 import { createAlert } from '~/alert';
 import addBlobLinksTracking from '~/blob/blob_links_tracking';
 import LineHighlighter from '~/blob/line_highlighter';
-import { EVENT_ACTION, EVENT_LABEL_VIEWER, CODEOWNERS_FILE_NAME } from './constants';
-import Chunk from './components/chunk.vue';
-import BlameInfo from './components/blame_info.vue';
 import {
-  calculateBlameOffset,
-  shouldRender,
-  toggleBlameLineBorders,
-  hasBlameDataForChunk,
-} from './utils';
+  EVENT_ACTION,
+  EVENT_LABEL_VIEWER,
+  CODEOWNERS_FILE_NAME,
+  BLAME_COLUMN_DEFAULT_WIDTH,
+} from './constants';
+import Chunk from './components/chunk.vue';
+import BlameColumnResizer from './components/blame_column_resizer.vue';
+import { hasBlameDataForChunk, normalizeBlameGroups, blameGroupsForChunk } from './utils';
 import blameDataQuery from './queries/blame_data.query.graphql';
-import BlameSkeletonLoader from './components/blame_skeleton_loader.vue';
 
 export default {
   name: 'SourceViewer',
   components: {
     Chunk,
-    BlameInfo,
-    BlameSkeletonLoader,
+    BlameColumnResizer,
     CodeownersValidation: defineAsyncComponent(
       () => import('ee_component/blob/components/codeowners_validation.vue'),
     ),
@@ -73,34 +71,42 @@ export default {
       lineHighlighter: new LineHighlighter(),
       blameData: [],
       renderedChunks: [],
-      isBlameLoading: false,
       loadingChunks: [], // Which chunks are currently fetching blame data (e.g., [0, 1, 2])
-      chunkOffsets: {}, // Vertical position of each chunk (e.g., { 0: 0, 1: 450, 2: 900 })
+      blameColumnWidth: BLAME_COLUMN_DEFAULT_WIDTH,
     };
   },
   computed: {
-    blameInfo() {
-      return this.blameData.reduce((result, blame, index) => {
-        if (!shouldRender(this.blameData, index)) return result;
-        const blameOffset = calculateBlameOffset(blame.lineno);
-        if (blameOffset !== null) result.push({ ...blame, blameOffset });
-        return result;
-      }, []);
-    },
     isCodeownersFile() {
       return this.blob.name === CODEOWNERS_FILE_NAME;
     },
     /**
-     * Filters out chunks that already have blame data loaded,
-     * so skeleton loaders only show for chunks still fetching.
+     * Blame groups pre-sliced per chunk, keyed by chunk index. Sliced once here
+     * rather than derived inside each chunk, so a chunk never has to reason
+     * about blame data belonging to lines it does not render.
      */
-    activeLoadingChunks() {
-      if (!this.showBlame) return [];
+    blameGroupsByChunk() {
+      if (!this.showBlame) return {};
 
-      return this.loadingChunks.filter((chunkIndex) => {
-        const chunk = this.chunks[chunkIndex];
-        return chunk && !hasBlameDataForChunk(this.blameData, chunk);
-      });
+      const blameGroups = normalizeBlameGroups(this.blameData);
+
+      return Object.fromEntries(
+        this.chunks.map((chunk, index) => [index, blameGroupsForChunk(blameGroups, chunk)]),
+      );
+    },
+    /**
+     * The blame gutter is rendered inside every chunk, so the three tracks are
+     * declared once here and each chunk inherits them through `subgrid`. That is
+     * what keeps the columns aligned across chunks. The width is also published
+     * as a custom property, which is how chunks pin their line numbers just
+     * past the gutter.
+     */
+    blameGridStyling() {
+      const blameColumn = this.showBlame ? `${this.blameColumnWidth}px` : '0';
+      return {
+        // eslint-disable-next-line @gitlab/require-i18n-strings
+        gridTemplateColumns: `${blameColumn} auto 1fr`,
+        '--blame-column-width': blameColumn,
+      };
     },
   },
   watch: {
@@ -111,34 +117,15 @@ export default {
       },
     },
     showBlame: {
-      async handler(isVisible) {
-        toggleBlameLineBorders(this.blameData, isVisible);
-
+      handler(isVisible) {
         if (isVisible) {
-          this.isBlameLoading = true;
           this.renderedChunks.forEach((chunkIndex) => {
             if (!this.loadingChunks.includes(chunkIndex)) this.loadingChunks.push(chunkIndex);
           });
-          await this.updateChunkOffsets(this.renderedChunks);
           this.requestBlameInfoForRenderedChunks();
         } else {
-          this.isBlameLoading = false;
           this.loadingChunks = [];
           this.blameData = [];
-        }
-      },
-      immediate: true,
-    },
-    blameData: {
-      async handler(blameData) {
-        if (!this.showBlame) return;
-        toggleBlameLineBorders(blameData, true);
-
-        if (blameData.length > 0) {
-          this.isBlameLoading = false;
-
-          // Reposition skeleton loaders after new blame data affects layout
-          await this.updateChunkOffsets(this.activeLoadingChunks);
         }
       },
       immediate: true,
@@ -185,7 +172,6 @@ export default {
 
       this.renderedChunks.push(chunkIndex);
       this.loadingChunks.push(chunkIndex);
-      await this.updateChunkOffsets([chunkIndex]);
       await this.requestBlameInfo(chunkIndex);
       this.loadingChunks = this.loadingChunks.filter((id) => id !== chunkIndex);
     },
@@ -208,8 +194,9 @@ export default {
 
         const blob = data?.project?.repository?.blobs?.nodes[0];
         const blameGroups = blob?.blame?.groups;
-        const isDuplicate = this.blameData.includes(blameGroups[0]);
-        if (blameGroups && !isDuplicate) this.blameData.push(...blameGroups);
+        // Duplicates are folded together by `normalizeBlameGroups`, so repeat
+        // deliveries of the same group need no guard here.
+        if (blameGroups) this.blameData.push(...blameGroups);
       } catch (error) {
         const errorMessage =
           error.graphQLErrors?.[0]?.message || this.$options.i18n.blameErrorMessage;
@@ -226,17 +213,6 @@ export default {
       await this.$nextTick();
       this.lineHighlighter.highlightHash(this.$route.hash);
     },
-    async updateChunkOffsets(chunkIndices) {
-      await this.$nextTick();
-      const newOffsets = { ...this.chunkOffsets };
-      chunkIndices.forEach((chunkIndex) => {
-        const chunkEl = this.$refs[`chunk-${chunkIndex}`]?.[0]?.$el;
-        if (chunkEl) newOffsets[chunkIndex] = chunkEl.offsetTop;
-      });
-
-      this.chunkOffsets = newOffsets;
-    },
-
     handleAppear(chunkIndex) {
       // Queue visible chunks to prevent skipping during rapid scrolling
       this.pendingChunks.add(chunkIndex);
@@ -253,52 +229,50 @@ export default {
 <template>
   <div>
     <div class="flash-container gl-mb-3"></div>
-    <div ref="fileContent" class="gl-relative gl-flex gl-overflow-x-auto gl-overflow-y-hidden">
-      <blame-info v-if="showBlame" :blame-info="blameInfo" :project-path="projectPath" />
-
-      <blame-skeleton-loader
-        v-for="chunkIndex in activeLoadingChunks"
-        :key="`loading-${chunkIndex}`"
-        :start-line="chunks[chunkIndex].startingFrom"
-        :total-lines="chunks[chunkIndex].totalLines"
-        class="gl-absolute gl-left-0"
-        :style="{ transform: `translateY(${chunkOffsets[chunkIndex] || 0}px)` }"
-      />
+    <div
+      ref="fileContent"
+      class="gl-relative gl-isolate gl-flex gl-overflow-x-auto gl-overflow-y-hidden"
+    >
+      <div
+        v-if="showBlame"
+        class="gl-pointer-events-none gl-absolute gl-bottom-0 gl-top-0 gl-z-3"
+        :style="{ width: `${blameColumnWidth}px` }"
+        data-testid="blame-resize-handle"
+      >
+        <blame-column-resizer v-model="blameColumnWidth" />
+      </div>
 
       <div
-        class="file-content code code-syntax-highlight-theme js-syntax-highlight blob-content blob-viewer gl-flex gl-w-full gl-flex-col gl-overflow-auto"
+        class="file-content code code-syntax-highlight-theme js-syntax-highlight blob-content blob-viewer gl-grid gl-w-full gl-overflow-auto"
         data-type="simple"
         :data-path="blob.path"
         data-testid="blob-viewer-file-content"
+        :style="blameGridStyling"
       >
         <codeowners-validation
           v-if="isCodeownersFile"
-          class="gl-text-default"
+          class="gl-col-span-3 gl-text-default"
           :current-ref="currentRef"
           :project-path="projectPath"
           :file-path="blob.path"
         />
-        <!-- One max-content column so the widest line in the file sets the width for
-        every chunk. Without it a chunk only stretches to its own longest line, and a
-        selected line in a narrow chunk stops short of the right edge. -->
-        <div class="gl-flex gl-w-max gl-min-w-full gl-flex-col">
-          <chunk
-            v-for="(chunk, index) in chunks"
-            :key="index"
-            :ref="`chunk-${index}`"
-            :is-highlighted="Boolean(chunk.isHighlighted)"
-            :raw-content="chunk.rawContent"
-            :highlighted-content="chunk.highlightedContent"
-            :total-lines="chunk.totalLines"
-            :starting-from="chunk.startingFrom"
-            :blame-path="blob.blamePath"
-            :blob-path="blob.path"
-            :is-blame-active="showBlame"
-            @appear="() => handleAppear(index)"
-            @disappear="() => handleDisappear(index)"
-            @highlighted="blameData = [...blameData]"
-          />
-        </div>
+        <chunk
+          v-for="(chunk, index) in chunks"
+          :key="index"
+          :is-highlighted="Boolean(chunk.isHighlighted)"
+          :raw-content="chunk.rawContent"
+          :highlighted-content="chunk.highlightedContent"
+          :total-lines="chunk.totalLines"
+          :starting-from="chunk.startingFrom"
+          :blame-path="blob.blamePath"
+          :blob-path="blob.path"
+          :is-blame-active="showBlame"
+          :blame-groups="blameGroupsByChunk[index]"
+          :is-blame-loading="loadingChunks.includes(index)"
+          :project-path="projectPath"
+          @appear="() => handleAppear(index)"
+          @disappear="() => handleDisappear(index)"
+        />
       </div>
     </div>
   </div>

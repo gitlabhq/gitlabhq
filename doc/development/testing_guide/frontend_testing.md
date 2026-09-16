@@ -950,7 +950,7 @@ unit testing by mocking out modules that cannot be easily consumed in our test e
 #### Where should you put manual mocks?
 
 Jest supports [manual module mocks](https://jestjs.io/docs/manual-mocks) by placing a mock in a `__mocks__/` directory next to the source module
-(for example, `app/assets/javascripts/ide/__mocks__`). **Don't do this.** We want to keep all of our test-related code in one place (the `spec/` folder).
+(for example, `app/assets/javascripts/ide/__mocks__`). Don't do this. We want to keep all of our test-related code in one place (the `spec/` folder).
 
 If a manual mock is needed for a `node_modules` package, use the `spec/frontend/__mocks__` folder. Here's an example of
 a [Jest mock for the package `monaco-editor`](https://gitlab.com/gitlab-org/gitlab/-/blob/b7f914cddec9fc5971238cdf12766e79fa1629d7/spec/frontend/__mocks__/monaco-editor/index.js#L1).
@@ -1661,7 +1661,7 @@ The feature handler serves the active variant by calling `getActiveVariant('oper
 
 #### How the variant registry works
 
-`defineFixtureVariants` self-registers at **module load time** by adding the query to a module-level registry inside `fixture_variant_schema.js`. There are three consequences you must understand before using it:
+`defineFixtureVariants` self-registers at module load time by adding the query to a module-level registry inside `fixture_variant_schema.js`. There are three consequences you must understand before using it:
 
 **The variant file must be imported in the feature handler.**
 `setQueryVariant` throws `"expected a query constant"` if you pass something other than a variant file's default export.
@@ -2118,7 +2118,7 @@ it('shows the component', () => {
 })
 ```
 
-Not only that, but imagine having passed the wrong prop to your component and having the wrong visibility: the snapshot test would still pass because you would have captured the HTML **with the issue** and so unless you double-checked the output of the snapshot, you would never know that your test is broken.
+Not only that, but imagine having passed the wrong prop to your component and having the wrong visibility: the snapshot test would still pass because you would have captured the HTML with the issue and so unless you double-checked the output of the snapshot, you would never know that your test is broken.
 
 #### Example #2 - Presence of text
 
@@ -2159,7 +2159,7 @@ it('renders the paragraph text', () => {
 
 #### Example #3 - Complex HTML
 
-When we have very complex HTML, we should focus on asserting specific sensitive and meaningful points rather than capturing it as a whole. The value in a snapshot test is to **warn developers** that they might have accidentally change an HTML structure that they did not intend to change. If the output of the change is hard to read, which is often the case with complex HTML output, then **is the signal itself that something changed** sufficient? And if it is, can it be accomplished without snapshots?
+When we have very complex HTML, we should focus on asserting specific sensitive and meaningful points rather than capturing it as a whole. The value in a snapshot test is to warn developers that they might have accidentally change an HTML structure that they did not intend to change. If the output of the change is hard to read, which is often the case with complex HTML output, then is the signal itself that something changed sufficient? And if it is, can it be accomplished without snapshots?
 
 A good example of a complex HTML output is `GlTable`. Snapshot testing might feel like a good option since you can capture rows and columns structure, but we should instead try to assert text we expect or count the number of rows and columns manually.
 
@@ -2260,7 +2260,7 @@ Use a unit test if:
 
 Once you decide a feature test is appropriate, there are two types at
 GitLab. Default to MSW integration tests because they are
-**significantly** faster.
+significantly faster.
 
 Use an **MSW integration test** (`ee/spec/frontend/msw_integration/`, EE-only) when:
 
@@ -2410,7 +2410,7 @@ end
 
 Each test is in its own environment and so you must use a factory to seed the required data. For example, to create a test that takes you to the main pipeline page at the route `/namespace/project/-/pipelines/:id/`.
 
-Most feature tests at least require you to create a user, because you want to be signed in. You can skip this step if you don't have to be signed in, but as a general rule, you should **always create a user unless you are specifically testing a feature looked at by an anonymous user**. This makes sure that you explicitly set a level of permission that you can edit in the test as needed to change or test a new level of permission as the section changes. To create a user:
+Most feature tests at least require you to create a user, because you want to be signed in. You can skip this step if you don't have to be signed in, but as a general rule, you should always create a user unless you are specifically testing a feature looked at by an anonymous user. This makes sure that you explicitly set a level of permission that you can edit in the test as needed to change or test a new level of permission as the section changes. To create a user:
 
 ```ruby
   let(:user) { create(:user) }
@@ -2551,7 +2551,7 @@ confirm the operation has completed. Do not use `wait_for_requests` or
 
 #### Feature flags
 
-By default, every feature flag is enabled **regardless of the YAML definition or the flags you've set manually in your GDK**. To test when a feature flag is disabled, you must manually stub the flag, ideally in a `before do` block.
+By default, every feature flag is enabled regardless of the YAML definition or the flags you've set manually in your GDK. To test when a feature flag is disabled, you must manually stub the flag, ideally in a `before do` block.
 
 ```ruby
   stub_feature_flags(my_feature_flag: false)

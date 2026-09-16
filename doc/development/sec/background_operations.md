@@ -87,7 +87,7 @@ TTL: 72 hours
 
 ## Email notifications
 
-Emails are sent **only when failures occur** after the operation completes.
+Emails are sent only when failures occur after the operation completes.
 
 Email includes:
 

@@ -67,9 +67,14 @@ does not fire the large set of unrelated jobs gated on the shared
 - `$CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH`
 
 Configured at <https://gitlab.com/gitlab-org/gitlab/-/pipeline_schedules>
-as the "AI principles distillation" schedule, with cron `0 6 * * 1`
-(Monday 06:00 UTC) and the `SCHEDULE_TYPE=ai-principles-distillation`
-variable.
+as the "[Weekly] AI principles distillation" schedule, with cron
+`0 2 * * 2` (Tuesday 02:00 UTC) and the
+`SCHEDULE_TYPE=ai-principles-distillation` variable.
+
+Fence reconciliation runs from its own schedule, "[Nightly] AI
+principles fence reconcile", with cron `0 5 * * *` (daily 05:00 UTC) and
+the `SCHEDULE_TYPE=ai-principles-fence-reconcile` variable. Both
+schedules run against `refs/heads/master`.
 
 ### Run the distillation manually
 
@@ -77,7 +82,7 @@ Because the job has its own schedule, you can trigger a distillation run
 on demand without starting an unrelated pipeline:
 
 1. Go to <https://gitlab.com/gitlab-org/gitlab/-/pipeline_schedules>.
-1. Find the "AI principles distillation" schedule.
+1. Find the "[Weekly] AI principles distillation" schedule.
 1. Select **Run** (the play icon).
 
 The run fires the `ai-principles-pipeline-generate` job, which scans for drift and
@@ -344,6 +349,102 @@ The per-file CODEOWNERS rules are **generated** from `owner_team` /
 after the broad `/.ai/` rule so CODEOWNERS last-match-wins routes each
 file to its owning team. Do not edit that block by hand; re-run the sync
 (or the static-artifact regeneration) to refresh it.
+
+## Adding a new principle
+
+Adding a new principle requires a manifest entry and a validation pass.
+The weekly pipeline then generates the distilled content automatically
+(`.ai/principles/distilled/<name>.md` + routing table update for agents).
+
+If you also want **Duo Code Review** to use the principle, you need to
+seed an empty fence in `mr-review-instructions.yaml` (step 2 below).
+Without the fence, agents (Claude Code, OpenCode) still get the principle
+but Duo Code Review does not.
+
+### 1. Add the manifest entry
+
+Append an entry to `principles:` in [`manifest.yml`](manifest.yml).
+Required fields: `description`, `sources`, `owner_team`. See
+[Manifest schema](#manifest-schema) for the full field reference.
+
+```yaml
+  my-new-principle:
+    description: One-line summary of what this principle covers
+    group: Backend                       # display grouping only
+    owner_team: '@gitlab-org/team-handle'
+    file_filters:
+      - 'app/services/my_area/**/*.rb'
+      - 'ee/app/services/my_area/**/*.rb'
+      - 'spec/services/my_area/**/*_spec.rb'
+      - 'ee/spec/services/my_area/**/*_spec.rb'
+    sources:
+      - path: doc/development/my_area/_index.md
+        url: https://docs.gitlab.com/development/my_area/
+```
+
+### 2. Seed the empty fence (for Duo Code Review)
+
+Skip this step if you only need agent coverage (Claude Code, OpenCode).
+
+The daily reconciliation job **refreshes** existing fences but **cannot
+create** new ones. To get Duo Code Review coverage, manually seed an
+empty fence in
+[`.gitlab/duo/mr-review-instructions.yaml`](../../.gitlab/duo/mr-review-instructions.yaml)
+so the reconcile job has a target to fill.
+
+Add the following two comment lines in the `instructions` section,
+adjacent to a topically related fence:
+
+```yaml
+  # >>> generated: my-new-principle — gitlab-ai-principles-distiller (from .ai/principles/manifest.yml; do not edit)
+  # <<< end generated: my-new-principle
+```
+
+The name after `generated:` must match the manifest key exactly.
+
+### 3. Validate
+
+Run the manifest validator from the gem directory to confirm the entry is
+well-formed and all source paths exist:
+
+```shell
+cd gems/gitlab-ai-principles-distiller
+bundle install
+bundle exec bin/gitlab-ai-principles-distiller-validate --workspace "$(git rev-parse --show-toplevel)"
+```
+
+### 4. Merge to `master`
+
+Commit the manifest entry (plus the fence seed, if you added one), open
+an MR, and get it merged. Both the weekly schedule and a manual trigger
+of it run against `master`, so a pushed branch is not enough — nothing
+happens until your changes land on the default branch.
+
+### 5. Wait for the generated MRs
+
+Nothing is generated in a single step. Two schedules are involved, and
+each opens a merge request that has to be merged in turn:
+
+1. The weekly distillation run (Tuesday 02:00 UTC) distills the SSOT
+   sources and opens a per-team MR carrying
+   `.ai/principles/distilled/<name>.md`, with approval routed to
+   `owner_team` via CODEOWNERS. A separate tooling MR carries the global
+   routing tables (AGENTS.md, CLAUDE.md, SKILL.md).
+1. Once the distilled-content and tooling MRs merge, agents (Claude Code,
+   OpenCode) can discover and load the principle.
+1. The daily fence-reconcile run (05:00 UTC) then regenerates the fences by
+   projection from merged `master` and opens a third MR of its own (for
+   example
+   [!254678](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/254678)).
+   Duo Code Review only picks up the principle after that MR merges.
+
+Fence regeneration is deliberately decoupled from distillation, which is
+why it takes a separate run and a separate MR rather than arriving with
+the distilled content.
+
+To trigger the distillation immediately instead of waiting for the weekly
+schedule, see [Run the distillation
+manually](#run-the-distillation-manually).
 
 ## Modifying principles
 

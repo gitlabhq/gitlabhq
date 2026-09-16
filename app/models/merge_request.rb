@@ -2841,6 +2841,21 @@ class MergeRequest < ApplicationRecord
     merge_request_diff.get_patch_id_sha
   end
 
+  # head_sha must be a head the caller has verified the approver acted on, since
+  # resets compare approvals against the value derived here.
+  def patch_id_sha_for_head(head_sha)
+    return if head_sha.blank?
+
+    # Only the fork has the source head until the diff's fetch_ref! runs.
+    repository = for_fork? ? source_project&.repository : target_project.repository
+    return if repository.nil? || target_branch_sha.blank?
+
+    base = repository.merge_base(target_branch_sha, head_sha)
+    return if base.blank? || base == head_sha
+
+    repository.get_patch_id(base, head_sha)
+  end
+
   def diff_head_pipeline_considered_in_progress?
     return true if pipeline_creating?
 

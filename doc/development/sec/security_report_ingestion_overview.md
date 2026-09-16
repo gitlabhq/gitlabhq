@@ -36,7 +36,7 @@ An instance of the `Vulnerabilities::StateTransition` class. This model represen
 
 ### Vulnerability
 
-An instance of `Vulnerability` class. A `Vulnerability` is representative of a `Vulnerabilities::Finding` record which has been detected in the default branch of the project, or if the `present_on_default_branch` flag is false, is representative of a finding which has been interacted with in some way outside of the default branch, such as if it is dismissed (`State Transition`), or linked to an `Issue` or `Merge Request`. They are created based on information available in the `Vulnerabilities::Finding` class. Every `Vulnerability` **must have** a corresponding `Vulnerabilities::Finding` object to be valid, however this is not enforced at the database level.
+An instance of `Vulnerability` class. A `Vulnerability` is representative of a `Vulnerabilities::Finding` record which has been detected in the default branch of the project, or if the `present_on_default_branch` flag is false, is representative of a finding which has been interacted with in some way outside of the default branch, such as if it is dismissed (`State Transition`), or linked to an `Issue` or `Merge Request`. They are created based on information available in the `Vulnerabilities::Finding` class. Every `Vulnerability` must have a corresponding `Vulnerabilities::Finding` object to be valid, however this is not enforced at the database level.
 
 ### Vulnerability Finding
 

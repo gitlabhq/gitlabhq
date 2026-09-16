@@ -123,6 +123,32 @@ RSpec.describe "User adds a comment on a commit", :js, feature_category: :source
         end
       end
     end
+
+    context "when hiding a comment on diff" do
+      before do
+        within(first_diff_file) do
+          click_inline_diff_line(*first_comment_position)
+          fill_in("note[note]", with: comment_text)
+          click_button("Comment")
+        end
+
+        wait_for_requests
+      end
+
+      it "hides and shows a comment" do
+        within(first_diff_file) do
+          expect(page).to have_testid('noteable-note-container', text: comment_text)
+
+          find_by_testid('collapse-toggle', match: :first).click
+
+          expect(page).not_to have_testid('noteable-note-container', text: comment_text)
+
+          find_by_testid('gutter-avatar', match: :first).click
+
+          expect(page).to have_testid('noteable-note-container', text: comment_text)
+        end
+      end
+    end
   end
 
   context "side-by-side view" do

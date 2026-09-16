@@ -3,6 +3,7 @@ import { ref, computed } from 'vue';
 import { defineStore } from 'pinia';
 import { useDiscussions } from '~/notes/store/discussions';
 import {
+  discussionMatchesLinePosition,
   isFileDiscussion,
   isImageDiscussion,
   isLineDiscussion,
@@ -88,14 +89,13 @@ export const useDiffDiscussions = defineStore('diffDiscussions', () => {
     });
   }
 
-  function setPositionDiscussionsHidden(linePos, newState) {
+  function expandLineDiscussions(linePos, diffRefs) {
     discussions.discussions.forEach((discussion) => {
       if (
         discussion.diff_discussion &&
-        discussion.position &&
-        positionMatchesLine(discussion.position, linePos)
+        discussionMatchesLinePosition(discussion, linePos, diffRefs)
       ) {
-        discussion.hidden = newState;
+        discussions.expandDiscussion(discussion);
       }
     });
   }
@@ -107,6 +107,7 @@ export const useDiffDiscussions = defineStore('diffDiscussions', () => {
     lineChange,
     lineCode,
     positionExtras,
+    diffRefs,
     extraOptions = {},
     noteBody = '',
   }) {
@@ -134,7 +135,7 @@ export const useDiffDiscussions = defineStore('diffDiscussions', () => {
       noteBody,
       shouldFocus: true,
     });
-    setPositionDiscussionsHidden({ oldPath, newPath, oldLine, newLine }, false);
+    expandLineDiscussions({ oldPath, newPath, oldLine, newLine }, diffRefs);
     return undefined;
   }
 
@@ -233,7 +234,7 @@ export const useDiffDiscussions = defineStore('diffDiscussions', () => {
     removeNewFileDiscussionForm,
     expandFileDiscussions,
     setFileDiscussionsHidden,
-    setPositionDiscussionsHidden,
+    expandLineDiscussions,
     setInitialDiscussions: discussions.setInitialDiscussions,
     replaceDiscussion: discussions.replaceDiscussion,
     updateDiscussion: discussions.updateDiscussion,

@@ -51,17 +51,6 @@ RSpec.describe Packages::Nuget::Package, type: :model, feature_category: :packag
     end
   end
 
-  describe '.without_nuget_temporary_name' do
-    let!(:package1) { create(:nuget_package) }
-    let!(:package2) { create(:nuget_package, name: Packages::Nuget::TEMPORARY_PACKAGE_NAME) }
-
-    subject(:result) { described_class.without_nuget_temporary_name }
-
-    it 'does not include nuget temporary packages' do
-      expect(result).to eq([package1])
-    end
-  end
-
   describe '.including_dependency_links_with_nuget_metadatum' do
     let_it_be(:package) { create(:nuget_package) }
     let_it_be(:packages_dependency_link) { create(:packages_dependency_link, :with_nuget_metadatum, package: package) }

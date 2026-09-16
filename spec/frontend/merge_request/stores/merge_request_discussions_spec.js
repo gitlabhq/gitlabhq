@@ -117,7 +117,7 @@ describe('mergeRequestDiscussions store', () => {
     'destroyNote',
     'toggleAwardOnNote',
     'toggleResolveNote',
-    'setPositionDiscussionsHidden',
+    'expandLineDiscussions',
     'createDraftLineDiscussion',
     'createDraftFileDiscussion',
     'addDraftToDiscussion',
@@ -781,8 +781,8 @@ describe('mergeRequestDiscussions store', () => {
     });
   });
 
-  describe('setPositionDiscussionsHidden', () => {
-    it('hides discussions for the position', () => {
+  describe('expandLineDiscussions', () => {
+    it('expands discussions for the position', () => {
       const pos = { oldPath: 'a.js', newPath: 'a.js', oldLine: 1, newLine: 1 };
       useDiscussions().setInitialDiscussions([
         {
@@ -798,10 +798,11 @@ describe('mergeRequestDiscussions store', () => {
           notes: [],
         },
       ]);
+      useDiscussions().discussions[0].hidden = true;
 
-      store.setPositionDiscussionsHidden(pos, true);
+      store.expandLineDiscussions(pos);
 
-      expect(useDiscussions().discussions[0].hidden).toBe(true);
+      expect(useDiscussions().discussions[0].hidden).toBe(false);
     });
   });
 
@@ -1076,6 +1077,28 @@ describe('mergeRequestDiscussions store', () => {
         });
         expect(result).toHaveLength(1);
         expect(result[0].id).toBe('swap');
+      });
+
+      it('hides and shows a repositioned discussion found for the rendered line', () => {
+        useDiscussions().setInitialDiscussions([
+          makeDiscussion('swap', {
+            position: makePos(otherRefs, 99),
+            original_position: makePos(diffRefs, 5),
+          }),
+        ]);
+
+        const rendered = store.findLineDiscussionsForPosition({
+          ...filePaths,
+          oldLine: 5,
+          newLine: 5,
+        });
+        rendered.forEach((discussion) => store.collapseDiscussion(discussion));
+
+        expect(useDiscussions().discussions[0].hidden).toBe(true);
+
+        rendered.forEach((discussion) => store.expandDiscussion(discussion));
+
+        expect(useDiscussions().discussions[0].hidden).toBe(false);
       });
 
       it('excludes drafts until comments are ready', () => {

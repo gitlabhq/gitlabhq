@@ -91,7 +91,7 @@ domain layer and infrastructure layer.
 
 For **domain layer** we refer to:
 
-1. Code in `app`, excluding the **application adapters** (controllers, API endpoints, and views).
+1. Code in `app`, excluding the application adapters (controllers, API endpoints, and views).
 1. Code in `lib` that specifically relates to domain logic.
 
 This includes `ActiveRecord` models, service objects, workers, and domain-specific Plain Old Ruby Objects.

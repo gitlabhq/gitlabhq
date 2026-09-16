@@ -83,6 +83,33 @@ export const BLAME_DATA_MOCK = [
   },
 ];
 
+/**
+ * Blame groups as they reach a Chunk: already sliced to the chunk's line range
+ * and carrying their 1-based grid position.
+ */
+export const CHUNK_BLAME_GROUPS_MOCK = [
+  {
+    lineno: 1,
+    span: 2,
+    rowStart: 1,
+    rowSpan: 2,
+    hasSeparator: false,
+    commit: { sha: 'abc', title: 'First commit' },
+    previousPath: 'old/path.js',
+    commitData: COMMIT_DATA_MOCK,
+  },
+  {
+    lineno: 3,
+    span: 1,
+    rowStart: 3,
+    rowSpan: 1,
+    hasSeparator: true,
+    commit: { sha: 'def', title: 'Second commit' },
+    previousPath: null,
+    commitData: { ageMapClass: 'blame-commit-age-0' },
+  },
+];
+
 export const BLAME_DATA_QUERY_RESPONSE_MOCK = {
   data: {
     project: {

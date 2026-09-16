@@ -298,50 +298,145 @@ describe('diffDiscussions store', () => {
     });
   });
 
-  describe('setPositionDiscussionsHidden', () => {
+  describe('per-discussion hiding alongside the bulk toggles', () => {
+    const lineDiscussion = (id, overrides = {}) => ({
+      id,
+      diff_discussion: true,
+      hidden: false,
+      position: {
+        old_path: 'file1.js',
+        new_path: 'file1.js',
+        old_line: Number(id),
+        new_line: null,
+        position_type: 'text',
+      },
+      ...overrides,
+    });
+
+    beforeEach(() => {
+      useDiscussions().discussions = [lineDiscussion('1'), lineDiscussion('2')];
+    });
+
+    it('keeps the global toggle collapsed while one discussion is expanded again', () => {
+      const store = useDiffDiscussions();
+      store.toggleAllDiffDiscussions();
+      store.expandDiscussion(useDiscussions().discussions[0]);
+
+      expect(useDiscussions().discussions[0].hidden).toBe(false);
+      expect(useDiscussions().discussions[1].hidden).toBe(true);
+      expect(store.allDiffDiscussionsExpanded).toBe(false);
+    });
+
+    it('reports all expanded once every discussion is expanded individually', () => {
+      const store = useDiffDiscussions();
+      store.toggleAllDiffDiscussions();
+      useDiscussions().discussions.forEach((discussion) => store.expandDiscussion(discussion));
+
+      expect(store.allDiffDiscussionsExpanded).toBe(true);
+    });
+
+    it('expands everything on the next global toggle after a single collapse', () => {
+      const store = useDiffDiscussions();
+      store.collapseDiscussion(useDiscussions().discussions[0]);
+      store.toggleAllDiffDiscussions();
+
+      expect(useDiscussions().discussions[0].hidden).toBe(false);
+      expect(useDiscussions().discussions[1].hidden).toBe(false);
+    });
+
+    it('leaves the per-file toggle state derived from the discussions it hid', () => {
+      const store = useDiffDiscussions();
+      store.setFileDiscussionsHidden('file1.js', 'file1.js', true);
+      store.expandDiscussion(useDiscussions().discussions[0]);
+
+      const fileDiscussions = store.findDiscussionsForFile({
+        oldPath: 'file1.js',
+        newPath: 'file1.js',
+      });
+
+      expect(fileDiscussions.every((discussion) => discussion.hidden)).toBe(false);
+      expect(useDiscussions().discussions[1].hidden).toBe(true);
+    });
+  });
+
+  describe('expandLineDiscussions', () => {
     beforeEach(() => {
       useDiscussions().discussions = [
         {
           id: '1',
           diff_discussion: true,
+          hidden: true,
           position: { old_path: 'file1.js', new_path: 'file1.js', old_line: 5, new_line: null },
         },
         {
           id: '2',
           diff_discussion: true,
-          position: { old_path: 'file1.js', new_path: 'file1.js', old_line: 5, new_line: null },
-        },
-        {
-          id: '3',
-          diff_discussion: true,
+          hidden: true,
           position: { old_path: 'file1.js', new_path: 'file1.js', old_line: 10, new_line: null },
         },
       ];
     });
 
-    it('hides discussions at a specific position', () => {
-      useDiffDiscussions().setPositionDiscussionsHidden(
-        { oldPath: 'file1.js', newPath: 'file1.js', oldLine: 5, newLine: null },
-        true,
-      );
-
-      expect(useDiscussions().discussions[0].hidden).toBe(true);
-      expect(useDiscussions().discussions[1].hidden).toBe(true);
-      expect(useDiscussions().discussions[2].hidden).toBeUndefined();
-    });
-
-    it('shows discussions at a specific position', () => {
-      useDiffDiscussions().setPositionDiscussionsHidden(
-        { oldPath: 'file1.js', newPath: 'file1.js', oldLine: 5, newLine: null },
-        true,
-      );
-      useDiffDiscussions().setPositionDiscussionsHidden(
-        { oldPath: 'file1.js', newPath: 'file1.js', oldLine: 5, newLine: null },
-        false,
-      );
+    it('expands discussions at a specific position', () => {
+      useDiffDiscussions().expandLineDiscussions({
+        oldPath: 'file1.js',
+        newPath: 'file1.js',
+        oldLine: 5,
+        newLine: null,
+      });
 
       expect(useDiscussions().discussions[0].hidden).toBe(false);
-      expect(useDiscussions().discussions[1].hidden).toBe(false);
+      expect(useDiscussions().discussions[1].hidden).toBe(true);
+    });
+
+    describe('when a discussion was repositioned by a newer diff', () => {
+      const diffRefs = { base_sha: 'base', start_sha: 'start', head_sha: 'head' };
+
+      beforeEach(() => {
+        useDiscussions().discussions = [
+          {
+            id: '1',
+            diff_discussion: true,
+            hidden: true,
+            position: {
+              old_path: 'file1.js',
+              new_path: 'file1.js',
+              old_line: 5,
+              new_line: null,
+              base_sha: 'old-base',
+              start_sha: 'old-start',
+              head_sha: 'old-head',
+            },
+            positions: [
+              {
+                old_path: 'file1.js',
+                new_path: 'file1.js',
+                old_line: 25,
+                new_line: null,
+                ...diffRefs,
+              },
+            ],
+          },
+        ];
+      });
+
+      it('expands it at the position rendered for the given diffRefs', () => {
+        useDiffDiscussions().expandLineDiscussions(
+          { oldPath: 'file1.js', newPath: 'file1.js', oldLine: 25, newLine: null },
+          diffRefs,
+        );
+
+        expect(useDiscussions().discussions[0].hidden).toBe(false);
+      });
+
+      it('leaves it alone at the position it no longer occupies', () => {
+        useDiffDiscussions().expandLineDiscussions(
+          { oldPath: 'file1.js', newPath: 'file1.js', oldLine: 5, newLine: null },
+          diffRefs,
+        );
+
+        expect(useDiscussions().discussions[0].hidden).toBe(true);
+      });
     });
   });
 

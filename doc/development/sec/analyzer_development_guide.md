@@ -405,7 +405,7 @@ The `GITLAB_TOKEN` for the [@gl-service-dev-secure-analyzers-automation](https:/
 
    > FYI I've just released `ANALYZER_NAME` `ANALYZER_VERSION`. `LINK_TO_RELEASE`
 
-**Never delete a Git tag that has been pushed** as there is a good
+Never delete a Git tag that has been pushed. There is a good
 chance that the tag will be used and/or cached by the Go package registry.
 
 ### Backporting a critical fix or patch
@@ -468,7 +468,7 @@ Assuming the current analyzer release is `v{N}`:
      - some breaking change (!123)
      ```
 
-     Using `release candidates` allows us to release **all breaking changes in a single major version bump**, which follows the [semver guidance](https://semver.org) of only making breaking changes in a major version update.
+     Using `release candidates` allows us to release all breaking changes in a single major version bump, which follows the [semver guidance](https://semver.org) of only making breaking changes in a major version update.
 
 1. During the milestone of the major release, when there are no more changes to be merged into the `default` or `v{N+1}` branches:
    1. Create a `v{N}` branch from the `default` branch.
@@ -864,7 +864,7 @@ To create a new Git tag to rebuild the analyzer, follow these steps:
 
 ### Monthly release process
 
-This should be done on the **18th of each month**. Though, this is a soft deadline and there is no harm in doing it within a few days after.
+This should be done on the 18th of each month. Though, this is a soft deadline and there is no harm in doing it within a few days after.
 
 First, create a new issue for a release with a script from this repo: `./scripts/release_issue.rb MAJOR.MINOR`.
 This issue will guide you through the whole release process. In general, you have to perform the following tasks:
@@ -873,7 +873,7 @@ This issue will guide you through the whole release process. In general, you hav
   - [Supported languages in SAST](../../user/application_security/sast/_index.md#supported-languages-and-frameworks)
   - [Supported languages in DS](../../user/application_security/dependency_scanning/dependency_scanning_sbom/_index.md#supported-languages-and-files)
   - [Supported languages in LS](../../user/compliance/license_scanning_of_cyclonedx_files/_index.md#supported-languages-and-package-managers)
-- Check that CI **_job definitions are still accurate_** in vendored CI/CD templates and **_all of the ENV vars are propagated_** to the Docker containers upon `docker run` per tool.
+- Check that CI job definitions are still accurate in vendored CI/CD templates and all of the ENV vars are propagated to the Docker containers upon `docker run` per tool.
   - [SAST vendored CI/CD template](https://gitlab.com/gitlab-org/gitlab/blob/master/lib/gitlab/ci/templates/Security/SAST.gitlab-ci.yml)
   - [Dependency scanning vendored CI/CD template](https://gitlab.com/gitlab-org/gitlab/blob/master/lib/gitlab/ci/templates/Security/Dependency-Scanning.gitlab-ci.yml)
   - [Container scanning CI/CD template](https://gitlab.com/gitlab-org/gitlab/blob/master/lib/gitlab/ci/templates/Security/Container-Scanning.gitlab-ci.yml)
@@ -917,7 +917,7 @@ Changelog entries in merge requests with dependency updates are automatically ge
 
 ##### Secret detection automated dependency updates with SastBot
 
-The Secret Detection team uses an internal tool ([SastBot](https://gitlab.com/gitlab-org/security-products/analyzers/sast-analyzer-deps-bot#dependency-update-automation)) to automate dependency management of pipeline-based secret detection analyzers. SastBot generates MRs on the **8th of each month** and distributes their assignment among team members to take them forward for review. For details on the process, see [dependency update automation](https://gitlab.com/gitlab-org/security-products/analyzers/sast-analyzer-deps-bot#dependency-update-automation).
+The Secret Detection team uses an internal tool ([SastBot](https://gitlab.com/gitlab-org/security-products/analyzers/sast-analyzer-deps-bot#dependency-update-automation)) to automate dependency management of pipeline-based secret detection analyzers. SastBot generates MRs on the 8th of each month and distributes their assignment among team members to take them forward for review. For details on the process, see [dependency update automation](https://gitlab.com/gitlab-org/security-products/analyzers/sast-analyzer-deps-bot#dependency-update-automation).
 
 SastBot requires different access tokens for each job. It uses the `DEP_GITLAB_TOKEN` environment variable to retrieve the token when running scheduled pipeline jobs.
 

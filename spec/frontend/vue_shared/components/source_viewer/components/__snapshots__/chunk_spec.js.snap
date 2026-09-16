@@ -2,8 +2,9 @@
 
 exports[`Chunk component rendering isHighlighted is true renders line numbers 1`] = `
 <div
-  class="!gl-p-0 diff-line-num gl-border-r gl-flex gl-z-3 line-links line-numbers"
+  class="!gl-p-0 diff-line-num gl-border-r gl-col-start-2 gl-flex gl-sticky gl-z-3 line-links line-numbers"
   data-testid="line-numbers"
+  style="grid-row: 1;"
 >
   <a
     aria-label="View blame for line 71"

@@ -40,8 +40,8 @@ export const evictWorkItem = (cache, workItemId) => {
 };
 
 // Re-runs the query the view already renders with, narrowed to just these ids — the server's
-// answer is the visibility check, and Apollo normalizes whatever nodes come back into the cache
-// as a side effect, patching them for free. Returns `null` when there are too many ids to ask about.
+// answer is the visibility check, and Apollo normalizes the returned nodes into the cache for
+// free. Returns the matched nodes (a board needs their fields), or `null` above `MAX_MATCH_IDS`.
 export const findMatchingWorkItems = async ({
   client,
   queryVariables,
@@ -75,7 +75,7 @@ export const findMatchingWorkItems = async ({
     context: { featureCategory: 'portfolio_management' },
   });
 
-  return new Set(getWorkItemsConnection(data, useRestApi)?.nodes.map((node) => node.id) ?? []);
+  return getWorkItemsConnection(data, useRestApi)?.nodes ?? [];
 };
 
 // Namespace-scoped `workItems` and the top-level `restWorkItems` are the two places a work item

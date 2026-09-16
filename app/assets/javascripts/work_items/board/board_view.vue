@@ -44,6 +44,7 @@ import {
 import {
   addWorkItemToColumn,
   adjustWorkItemCountInColumn,
+  readWorkItemConnectionFromColumn,
   readWorkItemFromColumn,
   readWorkItemsFromColumn,
   removeWorkItemFromColumn,
@@ -141,6 +142,11 @@ export default {
       default: true,
     },
     updatedWorkItem: {
+      type: Object,
+      required: false,
+      default: null,
+    },
+    realtimeMatches: {
       type: Object,
       required: false,
       default: null,
@@ -277,6 +283,11 @@ export default {
   watch: {
     updatedWorkItem(workItem) {
       this.syncCardWithBoard(workItem);
+    },
+    realtimeMatches(matches) {
+      if (matches) {
+        this.applyRealtimeMatches(matches);
+      }
     },
     orderedGroupValues: {
       immediate: true,
@@ -724,6 +735,64 @@ export default {
         workItem: node,
         index: 0,
       });
+      adjustWorkItemCountInColumn({
+        cache,
+        query: getWorkItemsCountOnlyQuery,
+        variables: this.columnCountVariables(column),
+        delta: 1,
+      });
+    },
+    // Realtime events for items already shown elsewhere on the board (list, drawer) still need
+    // moving or inserting into the right column here, since normalizing their fields doesn't
+    // touch which column's cached connection holds them.
+    applyRealtimeMatches({ created = [], updated = [] }) {
+      updated.forEach((workItem) => this.moveCardToMatchingColumn(workItem));
+      created.forEach((workItem) => this.insertRealtimeCreatedItem(workItem));
+    },
+    insertRealtimeCreatedItem(workItem) {
+      const valueId = this.strategy?.itemValueId?.(workItem);
+      const column = valueId && this.valueById(valueId);
+      if (!column) {
+        return;
+      }
+
+      const { cache } = this.$apollo.getClient();
+      const query = this.columnQuery;
+      const variables = this.columnVariables(column);
+
+      const connection = readWorkItemConnectionFromColumn({
+        cache,
+        query,
+        variables,
+        useRestApi: this.useRestApi,
+      });
+      const nodes = connection?.nodes ?? [];
+
+      // A repeat event for a card we already hold would otherwise double-count the column below.
+      if (nodes.some((node) => node.id === workItem.id)) {
+        return;
+      }
+
+      let index = 0;
+      if (this.isManualSort) {
+        // A new item's relative_position always sorts last. We only know where "last" is
+        // once the column has nothing left to paginate, so skip the insert otherwise.
+        index = connection?.pageInfo?.hasNextPage ? -1 : nodes.length;
+      }
+
+      if (index !== -1) {
+        addWorkItemToColumn({
+          cache,
+          query,
+          variables,
+          workItem,
+          index,
+          useRestApi: this.useRestApi,
+        });
+      }
+
+      // Runs even when index === -1 (card is in the column but past the last loaded page): the
+      // count query refetches after every realtime batch, so this just stops the header lagging.
       adjustWorkItemCountInColumn({
         cache,
         query: getWorkItemsCountOnlyQuery,

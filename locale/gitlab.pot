@@ -15422,6 +15422,12 @@ msgstr ""
 msgid "Blame|Learn to ignore specific revisions"
 msgstr ""
 
+msgid "Blame|Line %{start}"
+msgstr ""
+
+msgid "Blame|Lines %{start} to %{end}"
+msgstr ""
+
 msgid "Blame|Newer"
 msgstr ""
 
@@ -32860,6 +32866,9 @@ msgstr ""
 msgid "DuoCodeReview|Something went wrong. Please try again."
 msgstr ""
 
+msgid "DuoCodeReview|The session was stopped before it finished."
+msgstr ""
+
 msgid "DuoCodeReview|The workflow completed but no response was produced. Please try again."
 msgstr ""
 
@@ -33362,6 +33371,9 @@ msgid "DuoSlack|Tell us what went wrong."
 msgstr ""
 
 msgid "DuoSlack|The Duo Developer flow is not enabled for your namespace. Ask a group owner to enable it in the Duo Agent Platform settings."
+msgstr ""
+
+msgid "DuoSlack|The session was stopped before it finished."
 msgstr ""
 
 msgid "DuoSlack|The task completed but the agent didn't produce a response. Check the session in GitLab for details."
@@ -73782,6 +73794,9 @@ msgstr ""
 msgid "SecurityOrchestration|Allowed licenses"
 msgstr ""
 
+msgid "SecurityOrchestration|Allowed severity: %{severity}."
+msgstr ""
+
 msgid "SecurityOrchestration|Allowlist details"
 msgstr ""
 
@@ -74069,6 +74084,9 @@ msgstr ""
 msgid "SecurityOrchestration|Denied licenses"
 msgstr ""
 
+msgid "SecurityOrchestration|Denied severity: %{severity}."
+msgstr ""
+
 msgid "SecurityOrchestration|Deny a package when it has more vulnerabilities at a severity than the threshold allows."
 msgstr ""
 
@@ -74217,6 +74235,9 @@ msgid "SecurityOrchestration|Except"
 msgstr ""
 
 msgid "SecurityOrchestration|Except for following users:"
+msgstr ""
+
+msgid "SecurityOrchestration|Except for: %{exceptions}."
 msgstr ""
 
 msgid "SecurityOrchestration|Exception Bypass (pre-approved)"
@@ -74774,6 +74795,9 @@ msgstr ""
 msgid "SecurityOrchestration|Risk severity"
 msgstr ""
 
+msgid "SecurityOrchestration|Risk severity is %{severity} with a risk score of more than %{threshold}."
+msgstr ""
+
 msgid "SecurityOrchestration|Risk severity rule"
 msgstr ""
 
@@ -75197,7 +75221,22 @@ msgstr ""
 msgid "SecurityOrchestration|This merge request migrates compliance pipeline `%{path}` to a pipeline execution policy scoped to framework [%{framework}](%{link})."
 msgstr ""
 
+msgid "SecurityOrchestration|This policy applies to a rule type that can't be displayed yet."
+msgstr ""
+
+msgid "SecurityOrchestration|This policy applies when a dependency is flagged as malicious, except for: %{exceptions}."
+msgstr ""
+
+msgid "SecurityOrchestration|This policy applies when a dependency is flagged as malicious."
+msgstr ""
+
 msgid "SecurityOrchestration|This policy applies when the license for a dependency matches any of the following criteria:"
+msgstr ""
+
+msgid "SecurityOrchestration|This policy applies when the risk severity for a dependency matches any of the following criteria:"
+msgstr ""
+
+msgid "SecurityOrchestration|This policy applies when the vulnerability severity for a dependency matches any of the following criteria:"
 msgstr ""
 
 msgid "SecurityOrchestration|This policy doesn't contain any actions or override project approval settings. You cannot create an empty policy."

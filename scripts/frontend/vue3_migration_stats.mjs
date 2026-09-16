@@ -48,12 +48,20 @@
  * but not its controller, the attribution is wrong. It is a starting point
  * for assigning work, not a declaration of ownership.
  *
+ * Feature flag overlap asks whether two flags roll out the same components.
+ * Each flag's component set is the union over the pages it covers, minus the
+ * shared layer (`config/frontend_packages.mjs`) and minus a baseline of
+ * components that nearly every flag reaches, such as the Markdown render
+ * path. Two flags with a high overlap on many components are two rollouts of
+ * one code path, which is twice the rollout work for no extra coverage.
+ *
  * Usage — every path is resolved against the repository, so it runs from
  * any directory:
  *
  *   node scripts/frontend/vue3_migration_stats.mjs             summary
  *   node scripts/frontend/vue3_migration_stats.mjs --tree      + entrypoint tree
  *   node scripts/frontend/vue3_migration_stats.mjs --owners    + ownership table
+ *   node scripts/frontend/vue3_migration_stats.mjs --overlap   + flag overlap table
  *   node scripts/frontend/vue3_migration_stats.mjs --json      records, as JSON
  *   node scripts/frontend/vue3_migration_stats.mjs --refresh   rebuild caches
  *
@@ -83,6 +91,7 @@ import { program } from 'commander';
 import { cruise } from 'dependency-cruiser';
 // eslint-disable-next-line import/no-unresolved -- This is a valid subpath export
 import extractWebpackResolveConfig from 'dependency-cruiser/config-utl/extract-webpack-resolve-config';
+import { ASSET_ROOT, SHARED_LAYER, group as alternation } from '../../config/frontend_packages.mjs';
 
 const require = createRequire(import.meta.url);
 const glob = require('glob');
@@ -102,11 +111,18 @@ program
   .description('Reports Vue 3 migration progress and team ownership across page entrypoints.')
   .option('--tree', 'list every entrypoint as a tree')
   .option('--owners', 'list every entrypoint and its owning team, as a Markdown table')
+  .option('--overlap', 'list pairs of feature flags that roll out the same components')
   .option('--json', 'print the underlying records instead of a report')
   .option('--refresh', 'rebuild every cached input: feature categories, stages.yml, import graph')
   .parse();
 
-const { tree: TREE, owners: OWNERS, json: JSON_OUTPUT, refresh: REFRESH } = program.opts();
+const {
+  tree: TREE,
+  owners: OWNERS,
+  overlap: OVERLAP,
+  json: JSON_OUTPUT,
+  refresh: REFRESH,
+} = program.opts();
 
 // The slow inputs are cached here: one boots Rails, one hits the network, one
 // cruises the import graph. `tmp/` is fully gitignored.
@@ -477,6 +493,102 @@ const reachableFrom = (seeds, graph) => {
 };
 
 // ───────────────────────────────────────────────────────────────────────
+// Feature flag overlap
+// ───────────────────────────────────────────────────────────────────────
+
+// Shared-layer components are excluded from a flag's set: every page reaches
+// them, so they say nothing about which pages share a feature.
+const SHARED_LAYER_PATTERN = new RegExp(`${ASSET_ROOT}/${alternation(SHARED_LAYER)}/`);
+
+// A component reached by this many flags or more is baseline rather than
+// feature code. On today's graph that is the Markdown render path (GLQL, the
+// content editor, issuable popovers), which nearly every page imports and
+// which would otherwise put every pair of flags at a similar-looking overlap.
+const BASELINE_FLAG_THRESHOLD = 8;
+
+/**
+ * How much of the same component tree pairs of feature flags put behind a
+ * rollout. A flag's set is the union over the entrypoints it covers, minus the
+ * shared layer and the baseline.
+ *
+ * Two measures per pair. Jaccard (shared / union) says whether two flags are
+ * the same family; it is low when a small flag sits inside a large one. The
+ * overlap coefficient (shared / smaller set) catches exactly that containment,
+ * and is the one to read for "does the second flag prove anything the first
+ * does not". Pairs sharing nothing are left out.
+ *
+ * @typedef {object} FeatureFlagOverlap
+ * @property {number} baselineFlagThreshold
+ * @property {number} baselineComponentCount - Components removed as baseline.
+ * @property {Array<{featureFlag: string, entrypointCount: number, componentCount: number}>} flags
+ * @property {Array<{a: string, b: string, shared: number, jaccard: number, overlap: number}>} pairs
+ *
+ * @param {Entrypoint[]} entrypoints
+ * @param {Map<string, string[]>} componentsByEntry - `.vue` files per entry name.
+ * @returns {FeatureFlagOverlap}
+ */
+function computeFeatureFlagOverlap(entrypoints, componentsByEntry) {
+  const flagged = entrypoints.filter((entry) => entry.featureFlag);
+  const setsByFlag = new Map();
+  const entryCounts = new Map();
+  for (const entry of flagged) {
+    if (!setsByFlag.has(entry.featureFlag)) {
+      setsByFlag.set(entry.featureFlag, new Set());
+      entryCounts.set(entry.featureFlag, 0);
+    }
+    entryCounts.set(entry.featureFlag, entryCounts.get(entry.featureFlag) + 1);
+    const set = setsByFlag.get(entry.featureFlag);
+    for (const file of componentsByEntry.get(entry.name) ?? []) {
+      if (!SHARED_LAYER_PATTERN.test(file)) set.add(file);
+    }
+  }
+
+  const flagsPerComponent = new Map();
+  for (const set of setsByFlag.values()) {
+    for (const file of set) flagsPerComponent.set(file, (flagsPerComponent.get(file) ?? 0) + 1);
+  }
+  const baseline = new Set(
+    [...flagsPerComponent].filter(([, count]) => count >= BASELINE_FLAG_THRESHOLD).map(([f]) => f),
+  );
+  for (const set of setsByFlag.values()) {
+    for (const file of baseline) set.delete(file);
+  }
+
+  const flagNames = [...setsByFlag.keys()].sort((a, b) => a.localeCompare(b));
+  const pairs = [];
+  for (const [index, a] of flagNames.entries()) {
+    for (const b of flagNames.slice(index + 1)) {
+      const setA = setsByFlag.get(a);
+      const setB = setsByFlag.get(b);
+      let shared = 0;
+      for (const file of setA) if (setB.has(file)) shared += 1;
+      if (shared === 0) continue;
+      const union = setA.size + setB.size - shared;
+      const smaller = Math.min(setA.size, setB.size);
+      pairs.push({
+        a,
+        b,
+        shared,
+        jaccard: Number((shared / union).toFixed(3)),
+        overlap: Number((shared / smaller).toFixed(3)),
+      });
+    }
+  }
+  pairs.sort((x, y) => y.shared - x.shared || x.a.localeCompare(y.a) || x.b.localeCompare(y.b));
+
+  return {
+    baselineFlagThreshold: BASELINE_FLAG_THRESHOLD,
+    baselineComponentCount: baseline.size,
+    flags: flagNames.map((featureFlag) => ({
+      featureFlag,
+      entrypointCount: entryCounts.get(featureFlag),
+      componentCount: setsByFlag.get(featureFlag).size,
+    })),
+    pairs,
+  };
+}
+
+// ───────────────────────────────────────────────────────────────────────
 // Collection
 // ───────────────────────────────────────────────────────────────────────
 
@@ -614,6 +726,10 @@ async function collectEntrypoints() {
 
   const moduleGraph = await loadModuleGraph([...new Set(names.flatMap((name) => filesOf(name)))]);
 
+  // The reachable set itself is kept aside for the overlap computation; the
+  // record only carries its size.
+  const componentsByEntry = new Map();
+
   const entrypoints = names.map((name) => {
     const status = migrations[name]
       ? migrations[name].status
@@ -655,7 +771,10 @@ async function collectEntrypoints() {
     const [[controller] = []] = busiest(controllersByEntry, name);
 
     const fileNames = filesOf(name);
-    const reachable = reachableFrom(fileNames, moduleGraph);
+    const components = [...reachableFrom(fileNames, moduleGraph)].filter((file) =>
+      file.endsWith('.vue'),
+    );
+    componentsByEntry.set(name, components);
 
     return {
       name,
@@ -665,9 +784,11 @@ async function collectEntrypoints() {
       featureFlag,
       flagDefaultEnabled: featureFlag ? (flagDefaults.get(featureFlag) ?? null) : null,
       featureCategories: categories,
-      reachableComponentCount: [...reachable].filter((file) => file.endsWith('.vue')).length,
+      reachableComponentCount: components.length,
     };
   });
+
+  const featureFlagOverlap = computeFeatureFlagOverlap(entrypoints, componentsByEntry);
 
   if (names.length !== entriesState.autoEntriesCount) {
     warnings.push(
@@ -698,7 +819,7 @@ async function collectEntrypoints() {
     );
   }
 
-  return { entrypoints, edition, warnings, committedAt: readCommitDate() };
+  return { entrypoints, featureFlagOverlap, edition, warnings, committedAt: readCommitDate() };
 }
 
 // ───────────────────────────────────────────────────────────────────────
@@ -1025,19 +1146,75 @@ function renderOwners(entrypoints) {
   );
 }
 
+// Below either limit a pair is a small widget in common, not a duplicated
+// rollout: a tiny page fully inside a big flag, or two flags touching one
+// shared table. Both limits sit in the gap of the observed distribution.
+const OVERLAP_MIN_COEFFICIENT = 0.75;
+const OVERLAP_MIN_SHARED = 20;
+
+/**
+ * Pairs of feature flags that roll out mostly the same components, as a
+ * Markdown table with the biggest shared set first.
+ *
+ * @param {FeatureFlagOverlap} overlap
+ */
+function renderOverlap({ baselineComponentCount, baselineFlagThreshold, flags, pairs }) {
+  const sizeOf = new Map(flags.map((flag) => [flag.featureFlag, flag.componentCount]));
+  const rows = pairs.filter(
+    (pair) => pair.overlap >= OVERLAP_MIN_COEFFICIENT && pair.shared >= OVERLAP_MIN_SHARED,
+  );
+
+  console.log();
+  console.log('Feature flag overlap — pairs rolling out the same components');
+  console.log();
+  console.log(
+    `${flags.length} flags · shared layer excluded · ${baselineComponentCount} baseline ` +
+      `components reached by ${baselineFlagThreshold}+ flags excluded`,
+  );
+  console.log(
+    `Listed: overlap coefficient ≥ ${OVERLAP_MIN_COEFFICIENT} (shared / smaller set) ` +
+      `and ≥ ${OVERLAP_MIN_SHARED} shared components`,
+  );
+  console.log();
+
+  if (rows.length === 0) {
+    console.log('  none');
+    return;
+  }
+
+  const columns = [
+    { header: 'flag A', of: (pair) => `\`${pair.a}\`` },
+    { header: 'flag B', of: (pair) => `\`${pair.b}\`` },
+    { header: 'shared', of: (pair) => String(pair.shared) },
+    { header: 'size A', of: (pair) => String(sizeOf.get(pair.a)) },
+    { header: 'size B', of: (pair) => String(sizeOf.get(pair.b)) },
+    { header: 'overlap', of: (pair) => pair.overlap.toFixed(2) },
+    { header: 'jaccard', of: (pair) => pair.jaccard.toFixed(2) },
+  ];
+  const widths = columns.map(({ header, of }) =>
+    Math.max(header.length, ...rows.map((pair) => of(pair).length)),
+  );
+  const line = (values) => `| ${values.map((value, i) => value.padEnd(widths[i])).join(' | ')} |`;
+  console.log(line(columns.map(({ header }) => header)));
+  console.log(`|${widths.map((width) => '-'.repeat(width + 2)).join('|')}|`);
+  for (const pair of rows) console.log(line(columns.map(({ of }) => of(pair))));
+}
+
 // ───────────────────────────────────────────────────────────────────────
 // Main
 // ───────────────────────────────────────────────────────────────────────
 
-const { entrypoints, edition, warnings, committedAt } = await collectEntrypoints();
+const { entrypoints, featureFlagOverlap, edition, warnings, committedAt } =
+  await collectEntrypoints();
 
 if (JSON_OUTPUT) {
-  console.log(JSON.stringify({ committedAt, edition, entrypoints }, null, 2));
+  console.log(JSON.stringify({ committedAt, edition, entrypoints, featureFlagOverlap }, null, 2));
 } else {
   console.log(`Vue 3 page entrypoint migration — ${edition} build`);
   console.log(`Latest commit: ${committedAt ?? 'unknown'}`);
   if (TREE) renderTree(entrypoints);
   if (OWNERS) renderOwners(entrypoints);
+  if (OVERLAP) renderOverlap(featureFlagOverlap);
   renderSummary(entrypoints);
 
   for (const warning of warnings) console.warn(`\nWarning: ${warning}`);

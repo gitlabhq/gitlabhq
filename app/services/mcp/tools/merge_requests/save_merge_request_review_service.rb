@@ -223,7 +223,8 @@ module Mcp
           check_approval_sha!(merge_request, arguments[:sha])
 
           ::MergeRequests::ApprovalService
-            .new(project: merge_request.project, current_user: current_user)
+            .new(project: merge_request.project, current_user: current_user,
+              params: { sha: arguments[:sha] })
             .execute(merge_request)
 
           # ApprovalService returns nil on every failure and can report success on a raced

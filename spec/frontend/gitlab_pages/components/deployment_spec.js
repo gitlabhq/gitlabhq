@@ -109,6 +109,20 @@ describe('PagesDeployment', () => {
       });
     });
 
+    describe('deployment has no CI build', () => {
+      beforeEach(() => {
+        createComponent({ deployment: { ...deployment, ciBuildId: null } });
+      });
+
+      it('does not render the deploy job link', () => {
+        expect(wrapper.findByTestId('deployment-ci-build-id').exists()).toBe(false);
+      });
+
+      it('still renders the deployment URL', () => {
+        expect(wrapper.findByTestId('deployment-url').text()).toBe(deployment.url);
+      });
+    });
+
     describe('deployment is inactive', () => {
       beforeEach(() => {
         createComponent({ deployment: { ...deployment, active: false } });

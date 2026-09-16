@@ -11,10 +11,11 @@ Vue.use(VueApollo);
 describe('PagesLiveBlock', () => {
   let wrapper;
 
-  const createComponent = ({ provide = {} } = {}) => {
+  const createComponent = ({ provide = {}, deployment = primaryDeployment } = {}) => {
     wrapper = mountExtended(LiveBlock, {
       propsData: {
-        deployment: primaryDeployment,
+        deployment,
+        isLoading: false,
       },
       provide: {
         projectFullPath: 'my-group/my-project',
@@ -74,6 +75,21 @@ describe('PagesLiveBlock', () => {
       );
       expect(findHeadingLink().attributes('href')).toBe(primaryDomain);
       expect(findVisitSite().attributes('href')).toBe(primaryDomain);
+    });
+  });
+
+  describe('when the deployment has no CI build', () => {
+    beforeEach(() => {
+      createComponent({ deployment: { ...primaryDeployment, ciBuildId: null } });
+    });
+
+    it('does not render the deploy job link', () => {
+      expect(findDeployJobNumber().exists()).toBe(false);
+      expect(wrapper.text()).not.toContain('Deploy job');
+    });
+
+    it('still renders updated at', () => {
+      expect(findUpdatedAt().props('time')).toBe(primaryDeployment.updatedAt);
     });
   });
 });

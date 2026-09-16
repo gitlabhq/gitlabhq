@@ -573,6 +573,10 @@ span.idiff {
   }
 }
 
+.blame-age-indicator {
+  border-left: 3px solid var(--blame-age-color, transparent);
+}
+
 .blame.file-content .td.line-numbers {
   float: none;
   @apply gl-border-l;

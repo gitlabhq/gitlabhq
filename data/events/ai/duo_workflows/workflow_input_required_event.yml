@@ -1,0 +1,7 @@
+---
+event: Ai::DuoWorkflows::WorkflowInputRequiredEvent
+description: Published when a Duo workflow pauses in :input_required (the agent
+  has answered and waits for the user's next message). Only emitted for
+  messaging-triggered workflows. Deferred via run_after_commit.
+feature_category: duo_agent_platform
+ee_only: true

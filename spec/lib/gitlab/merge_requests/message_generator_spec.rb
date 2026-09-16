@@ -690,6 +690,22 @@ RSpec.describe Gitlab::MergeRequests::MessageGenerator, feature_category: :code_
       end
     end
 
+    context 'when project has commit template with commits_count' do
+      let(message_template_name) { "Merging %{commits_count} commit(s)" }
+
+      it 'returns the number of commits in the merge request' do
+        expect(result_message).to eq('Merging 1 commit(s)')
+      end
+
+      context 'with 2 commits' do
+        let(:source_branch) { 'fix' }
+
+        it 'returns the number of commits in the merge request' do
+          expect(result_message).to eq('Merging 2 commit(s)')
+        end
+      end
+    end
+
     context 'when project has template with all variables' do
       let(message_template_name) { <<~MSG.rstrip }
         source_branch:%{source_branch}
@@ -707,6 +723,7 @@ RSpec.describe Gitlab::MergeRequests::MessageGenerator, feature_category: :code_
         co_authored_by:%{co_authored_by}
         merge_request_author:%{merge_request_author}
         all_commits:%{all_commits}
+        commits_count:%{commits_count}
       MSG
 
       it 'uses custom template' do
@@ -733,6 +750,7 @@ RSpec.describe Gitlab::MergeRequests::MessageGenerator, feature_category: :code_
           all_commits:* Feature added
 
           Signed-off-by: Dmitriy Zaporozhets <dmitriy.zaporozhets@gmail.com>
+          commits_count:1
         MSG
       end
     end
@@ -1167,6 +1185,7 @@ RSpec.describe Gitlab::MergeRequests::MessageGenerator, feature_category: :code_
         co_authored_by:%{co_authored_by}
         merge_request_author:%{merge_request_author}
         all_commits:%{all_commits}
+        commits_count:%{commits_count}
       MSG
 
       it 'renders only variables specific to a new non-persisted merge request' do
@@ -1191,6 +1210,7 @@ RSpec.describe Gitlab::MergeRequests::MessageGenerator, feature_category: :code_
           all_commits:* Feature added
 
           Signed-off-by: Dmitriy Zaporozhets <dmitriy.zaporozhets@gmail.com>
+          commits_count:1
         MSG
       end
 
@@ -1213,6 +1233,7 @@ RSpec.describe Gitlab::MergeRequests::MessageGenerator, feature_category: :code_
             co_authored_by:
             merge_request_author:
             all_commits:
+            commits_count:0
           MSG
         end
       end

@@ -9680,6 +9680,107 @@ RSpec.describe MergeRequest, factory_default: :keep, feature_category: :code_rev
     it { is_expected.to eq(patch_id) }
   end
 
+  describe '#patch_id_sha_for_head' do
+    let_it_be(:project) { create(:project, :repository) }
+
+    let(:merge_request) do
+      create(:merge_request, :skip_diff_creation, source_project: project, target_project: project)
+    end
+
+    let(:head_sha) { merge_request.source_branch_head.sha }
+
+    subject(:patch_id_sha_for_head) { merge_request.patch_id_sha_for_head(head_sha) }
+
+    it 'is the patch ID the diff goes on to report' do
+      expect(merge_request.merge_request_diff).not_to be_persisted
+
+      patch_id_while_preparing = patch_id_sha_for_head
+
+      merge_request.ensure_merge_request_diff
+
+      expect(patch_id_while_preparing).to be_present
+      expect(patch_id_while_preparing).to eq(merge_request.reload.current_patch_id_sha)
+    end
+
+    it 'does not persist a diff as a side effect' do
+      expect { patch_id_sha_for_head }.not_to change { merge_request.merge_request_diffs.count }
+    end
+
+    context 'when no head SHA is given' do
+      let(:head_sha) { nil }
+
+      it { is_expected.to be_nil }
+    end
+
+    context 'when the head SHA is already the merge base' do
+      let(:head_sha) { merge_request.target_branch_sha }
+
+      it { is_expected.to be_nil }
+    end
+
+    context 'when the target branch no longer resolves' do
+      before do
+        allow(merge_request).to receive(:target_branch_sha).and_return(nil)
+      end
+
+      it 'skips the fallback rather than asking Gitaly for an empty revision' do
+        expect(project.repository).not_to receive(:merge_base)
+
+        expect(patch_id_sha_for_head).to be_nil
+      end
+    end
+
+    context 'when the merge request comes from a fork' do
+      let_it_be(:fork) { fork_project(project, nil, repository: true) }
+      let_it_be(:fork_only_branch) { 'fork-only-branch' }
+
+      let_it_be(:fork_head) do
+        fork.repository.add_branch(fork.creator, fork_only_branch, fork.default_branch)
+        fork.repository.create_file(
+          fork.creator, 'fork-only.txt', 'body',
+          message: 'A commit that only the fork has', branch_name: fork_only_branch
+        )
+      end
+
+      let(:merge_request) do
+        create(:merge_request, :skip_diff_creation,
+          source_project: fork, target_project: project,
+          source_branch: fork_only_branch, target_branch: project.default_branch)
+      end
+
+      it 'resolves the patch ID in the fork, which is the only side holding both SHAs' do
+        expect(merge_request.diff_base_sha).to be_nil
+
+        patch_id_while_preparing = patch_id_sha_for_head
+
+        merge_request.ensure_merge_request_diff
+
+        expect(patch_id_while_preparing).to be_present
+        expect(patch_id_while_preparing).to eq(merge_request.reload.current_patch_id_sha)
+      end
+
+      context 'when the fork can no longer see the target branch head' do
+        before do
+          allow(fork.repository).to receive(:merge_base).and_return(nil)
+        end
+
+        it { is_expected.to be_nil }
+      end
+
+      context 'when the source project is gone' do
+        # Resolved straight from the repository: the merge request cannot report its
+        # own head once source_project is nil.
+        let(:head_sha) { fork.repository.commit(fork_only_branch).sha }
+
+        before do
+          allow(merge_request).to receive(:source_project).and_return(nil)
+        end
+
+        it { is_expected.to be_nil }
+      end
+    end
+  end
+
   describe '#all_mergeability_checks_results' do
     let(:merge_request) { build_stubbed(:merge_request) }
     let(:result) { instance_double(ServiceResponse, payload: { results: ['result'] }) }

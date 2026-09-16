@@ -441,6 +441,28 @@ RSpec.describe Mcp::Tools::MergeRequests::SaveMergeRequestReviewService, feature
         expect(merge_request.reset.approved_by?(user)).to be(true)
       end
 
+      it 'forwards the given sha to the approval service', :aggregate_failures do
+        expect(::MergeRequests::ApprovalService).to receive(:new)
+          .with(project: project, current_user: user, params: { sha: merge_request.diff_head_sha })
+          .and_call_original
+
+        result = service.execute(
+          request: request,
+          params: { arguments: identification.merge(method: 'approve', sha: merge_request.diff_head_sha) }
+        )
+
+        expect(result[:isError]).to be(false)
+        expect(merge_request.reset.approved_by?(user)).to be(true)
+      end
+
+      it 'forwards a nil sha to the approval service when none is given' do
+        expect(::MergeRequests::ApprovalService).to receive(:new)
+          .with(project: project, current_user: user, params: { sha: nil })
+          .and_call_original
+
+        service.execute(request: request, params: params)
+      end
+
       it 'refuses to approve on a stale sha', :aggregate_failures do
         result = service.execute(
           request: request,

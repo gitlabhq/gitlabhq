@@ -30,9 +30,7 @@
 
     code {
       display: inline-block;
-      // The source viewer offsets the code by `--source-gutter-width`; subtract it
-      // so the code doesn't overrun the viewport by that much.
-      min-width: calc(100% - var(--source-gutter-width, 0px));
+      min-width: 100%;
       font-family: $monospace-font;
       white-space: normal;
       word-wrap: normal;

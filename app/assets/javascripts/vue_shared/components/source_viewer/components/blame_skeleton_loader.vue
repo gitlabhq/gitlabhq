@@ -26,6 +26,7 @@ export default {
 <template>
   <div
     data-testid="blame-skeleton-loader"
+    class="gl-overflow-hidden"
     role="status"
     aria-busy="true"
     :aria-label="__('Loading blame information')"

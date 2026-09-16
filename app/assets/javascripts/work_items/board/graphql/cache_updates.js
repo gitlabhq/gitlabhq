@@ -12,12 +12,17 @@ export const readWorkItemFromColumn = ({ cache, query, variables, workItemId, us
   return node ? cloneDeep(node) : null;
 };
 
+// Full connection (nodes + pageInfo), for callers that need to know whether the
+// column has more pages left to load, not just its currently-cached nodes.
+export const readWorkItemConnectionFromColumn = ({ cache, query, variables, useRestApi }) => {
+  const data = cache.readQuery({ query, variables });
+  return getWorkItemsConnection(data, useRestApi) ?? null;
+};
+
 // Snapshot of a column's order before a move, used to work out the
 // moveBeforeId/moveAfterId for the card landing there.
-export const readWorkItemsFromColumn = ({ cache, query, variables, useRestApi }) => {
-  const data = cache.readQuery({ query, variables });
-  return getWorkItemsConnection(data, useRestApi)?.nodes ?? [];
-};
+export const readWorkItemsFromColumn = (params) =>
+  readWorkItemConnectionFromColumn(params)?.nodes ?? [];
 
 // A column can be missing from the cache if it's collapsed or hasn't loaded
 // yet. When that happens we just do nothing, so the move still succeeds.

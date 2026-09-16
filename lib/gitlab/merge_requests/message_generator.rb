@@ -138,6 +138,7 @@ module Gitlab
             end
             .join("\n\n")
         end,
+        'commits_count' => ->(merge_request, _, _, _) { merge_request.commits_count.to_s },
         'issue_id' => ->(_, _, _, issue) { issue&.iid&.to_s },
         # Safe on the same axis as issue_title below: this only ever emits the issue
         # reference, and append_closes_description already writes that exact reference
@@ -166,6 +167,7 @@ module Gitlab
         first_multiline_commit_description
         co_authored_by
         all_commits
+        commits_count
       ].freeze
 
       ALLOWED_NEW_MR_TITLE_PLACEHOLDERS = %w[

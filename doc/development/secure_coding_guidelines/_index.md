@@ -78,17 +78,17 @@ Each time you implement a new feature or endpoint at the UI, API, or GraphQL lev
 
 ### Mitigations
 
-**Start by writing tests** around permissions: unit and feature specs should both include tests based around permissions
+Start by writing tests around permissions: unit and feature specs should both include tests based around permissions.
 
 - Fine-grained, nitty-gritty specs for permissions are good: it is ok to be verbose here
   - Make assertions based on the actors and objects involved: can a user or group or XYZ perform this action on this object?
   - Consider defining them upfront with stakeholders, particularly for the edge cases
-- Do not forget **abuse cases**: write specs that **make sure certain things can't happen**
+- Do not forget abuse cases: write specs that make sure certain things can't happen.
   - A lot of specs are making sure things do happen and coverage percentage doesn't take into account permissions as the same piece of code is used.
   - Make assertions that certain actors cannot perform actions
 - Naming convention to ease auditability: to be defined, for example, a subfolder containing those specific permission tests, or a `#permissions` block
 
-Be careful to **also test [visibility levels](https://gitlab.com/gitlab-org/gitlab-foss/-/blob/master/doc/development/permissions.md#feature-specific-permissions)** and not only project access rights.
+Be careful to also test [visibility levels](https://gitlab.com/gitlab-org/gitlab-foss/-/blob/master/doc/development/permissions.md#feature-specific-permissions) and not only project access rights.
 
 The HTTP status code returned when an authorization check fails should generally be `404 Not Found` to avoid revealing information
 about whether or not the requested resource exists. `403 Forbidden` may be appropriate if you need to display a specific message to the user
@@ -575,7 +575,7 @@ For any and all input fields, ensure to define expectations on the type/format o
 - Based on the expectations you [defined above](#setting-expectations):
   - Validate the <i class="fa-youtube-play" aria-hidden="true"></i> [input size limits](https://youtu.be/2VFavqfDS6w?t=7582).
   - Validate the input using an <i class="fa-youtube-play" aria-hidden="true"></i> [allowlist approach](https://youtu.be/2VFavqfDS6w?t=7816) to only allow characters through which you are expecting to receive for the field.
-    - Input which fails validation should be **rejected**, and not sanitized.
+    - Input which fails validation should be rejected, and not sanitized.
 - When adding redirects or links to a user-controlled URL, ensure that the scheme is HTTP or HTTPS. Allowing other schemes like `javascript://` can lead to XSS and other security issues.
 
 Note that denylists should be avoided, as it is near impossible to block all [variations of XSS](https://owasp.org/www-community/xss-filter-evasion-cheatsheet).
@@ -706,13 +706,13 @@ And the following cipher suites (according to the [RFC 8446](https://datatracker
 - `TLS_AES_256_GCM_SHA384`
 
 > [!note]
-> **Go** does [not support](https://github.com/golang/go/blob/go1.17/src/crypto/tls/cipher_suites.go#L676) all cipher suites with TLS 1.3.
+> Go does [not support](https://github.com/golang/go/blob/go1.17/src/crypto/tls/cipher_suites.go#L676) all cipher suites with TLS 1.3.
 
 ##### Implementation examples
 
 ##### TLS 1.3
 
-For TLS 1.3, **Go** only supports [3 cipher suites](https://github.com/golang/go/blob/go1.17/src/crypto/tls/cipher_suites.go#L676), as such we only need to set the TLS version:
+For TLS 1.3, Go only supports [3 cipher suites](https://github.com/golang/go/blob/go1.17/src/crypto/tls/cipher_suites.go#L676), as such we only need to set the TLS version:
 
 ```go
 cfg := &tls.Config{
@@ -720,9 +720,9 @@ cfg := &tls.Config{
 }
 ```
 
-For **Ruby**, you can use [`HTTParty`](https://github.com/jnunemaker/httparty) and specify TLS 1.3 version as well as ciphers:
+For Ruby, you can use [`HTTParty`](https://github.com/jnunemaker/httparty) and specify TLS 1.3 version as well as ciphers:
 
-Whenever possible this example should be **avoided** for security purposes:
+Whenever possible this example should be avoided for security purposes:
 
 ```ruby
 response = HTTParty.get('https://gitlab.com', ssl_version: :TLSv1_3, ciphers: ['TLS_AES_128_GCM_SHA256', 'TLS_AES_256_GCM_SHA384'])
@@ -738,7 +738,7 @@ response = Gitlab::HTTP.get('https://gitlab.com', ssl_version: :TLSv1_3, ciphers
 
 ##### TLS 1.2
 
-**Go** does support multiple cipher suites that we do not want to use with TLS 1.2. We need to explicitly list authorized ciphers:
+Go does support multiple cipher suites that we do not want to use with TLS 1.2. We need to explicitly list authorized ciphers:
 
 ```go
 func secureCipherSuites() []uint16 {
@@ -763,7 +763,7 @@ tls.Config{
 
 This example was taken [from the GitLab agent for Kubernetes](https://gitlab.com/gitlab-org/cluster-integration/gitlab-agent/-/blob/871b52dc700f1a66f6644fbb1e78a6d463a6ff83/internal/tool/tlstool/tlstool.go#L72).
 
-For **Ruby**, you can use again [`HTTParty`](https://github.com/jnunemaker/httparty) and specify this time TLS 1.2 version alongside with the recommended ciphers:
+For Ruby, you can use again [`HTTParty`](https://github.com/jnunemaker/httparty) and specify this time TLS 1.2 version alongside with the recommended ciphers:
 
 ```ruby
 response = Gitlab::HTTP.get('https://gitlab.com', ssl_version: :TLSv1_2, ciphers: ['ECDHE-ECDSA-AES128-GCM-SHA256', 'ECDHE-RSA-AES128-GCM-SHA256', 'ECDHE-ECDSA-AES256-GCM-SHA384', 'ECDHE-RSA-AES256-GCM-SHA384'])
@@ -773,7 +773,7 @@ response = Gitlab::HTTP.get('https://gitlab.com', ssl_version: :TLSv1_2, ciphers
 
 ### Introduction
 
-There are some cases where `users` passed in the code is actually referring to a `DeployToken`/`DeployKey` entity instead of a real `User`, because of the code below in **`/lib/api/api_guard.rb`**
+There are some cases where `users` passed in the code is actually referring to a `DeployToken`/`DeployKey` entity instead of a real `User`, because of the code below in `/lib/api/api_guard.rb`
 
 ```ruby
       def find_user_from_sources
@@ -959,7 +959,7 @@ class WebHookLog < ApplicationRecord
 end
 ```
 
-Using [the `TokenAuthenticatable` concern](../token_authenticatable.md) to create a prefixed token **and** store the hashed value of the token, at rest:
+Using [the `TokenAuthenticatable` concern](../token_authenticatable.md) to create a prefixed token and store the hashed value of the token, at rest:
 
 ```ruby
 class User

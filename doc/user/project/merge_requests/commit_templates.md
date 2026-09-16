@@ -74,6 +74,7 @@ GitLab creates a squash commit message with this template:
 {{< history >}}
 
 - `merge_request_author` variable [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/152510) in GitLab 17.1.
+- `commits_count` variable [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/383062) in GitLab 19.5.
 
 {{< /history >}}
 
@@ -99,6 +100,7 @@ Commit message templates support these variables:
 | `%{merge_request_author}`               | Name and email of the merge request author.                                                                                                                                                                                                   | `Zane Doe <zdoe@example.com>`                                                                                                                                                                    |
 | `%{co_authored_by}`                     | Names and emails of commit authors in a `Co-authored-by` Git commit trailer format. Limited to authors of 100 most recent commits in merge request.                                                                                           | `Co-authored-by: Zane Doe <zdoe@example.com>` <br> `Co-authored-by: Blake Smith <bsmith@example.com>`                                                                                            |
 | `%{all_commits}`                        | Messages from all commits in the merge request. Limited to 100 most recent commits. Skips commit bodies exceeding 100 KiB and merge commit messages.                                                                                          | `* Feature introduced` <br><br> `This commit implements feature` <br> `Changelog:added` <br><br> `* Bug fixed` <br><br> `* Documentation improved` <br><br>`This commit introduced better docs.` |
+| `%{commits_count}`                      | Number of commits in the merge request.                                                                                                                                                                                                       | `3`                                                                                                                                                                                              |
 
 Any line containing only an empty variable is removed. If the removed line is both
 preceded and followed by an empty line, the preceding empty line is also removed.

@@ -822,6 +822,11 @@ To recreate a pipeline execution policy:
 
 In busy projects, the most recent pipeline may not have completed security scans available right away, which blocks security report comparisons. Use the `security_report_time_window` setting to security reports from recently completed pipelines instead. The security reports cannot be older than the time window, specified in minutes prior to the creation of the target branch pipeline. This setting does not apply if the selected pipeline already has completed security reports.
 
+The time-window look-back considers only pipelines with a standard CI source (for example, `push`, `schedule`, `pipeline`, `web`, `api`).
+Pipelines created by a scheduled scan execution policy (source `security_orchestration_policy`) are not eligible for this fallback.
+If the only recent pipeline carrying the required security reports is a scheduled scan execution policy pipeline, widening `security_report_time_window` does not cause that pipeline to be selected.
+See [How the target-branch comparison pipeline is selected](#how-the-target-branch-comparison-pipeline-is-selected) for how scan execution policy pipelines participate in the comparison.
+
 | Field  | Type     | Required | Possible values    | Description                                                                                                          |
 |--------|----------|----------|--------------------|----------------------------------------------------------------------------------------------------------------------|
 | `security_report_time_window` | `integer` | false    | 1 to 10080 (7 days) | Specifies the time window in minutes for choosing the target pipeline for the security report comparison. |
@@ -1047,6 +1052,37 @@ actions:
 - If the merge request approval policy looks for a combination of new and pre-existing vulnerability states, the comparison is done against the common ancestor of the source and target branches.
 - Merge request approval policies considers all supported pipeline sources (based on the [`CI_PIPELINE_SOURCE` variable](../../../ci/variables/predefined_variables.md)) when comparing results from both the source and target branches when determining if a merge request requires approval. Pipelines with source `webide` are not supported.
 - The child pipelines of each of the selected pipelines are also considered for comparison.
+
+#### How the target-branch comparison pipeline is selected
+
+For the target branch, GitLab does not always pick the most recent pipeline.
+GitLab selects a baseline pipeline whose security reports are then combined with related pipelines on the same commit.
+This selection order determines which pipelines contribute to the comparison, especially on busy default branches where many pipelines run per commit.
+
+1. GitLab collects candidate pipelines at a short list of commits, in this order:
+
+   1. The merge base between the source branch and the target branch.
+   1. The commit the merge request diff was generated against (`start_sha`).
+   1. The ten most recent commits on the target branch.
+
+1. At each commit, GitLab examines at most the ten newest completed pipelines whose source is a standard CI source (for example, `push`, `schedule`, `pipeline`, `web`, `api`).
+   Pipelines created by a scheduled scan execution policy (source `security_orchestration_policy`) are not eligible at this step.
+   Any completed pipelines beyond the tenth newest for a given commit are not examined.
+
+1. The first candidate whose jobs (or child pipelines) produced the required security report artifacts becomes the baseline pipeline.
+
+1. Once the baseline is chosen, GitLab adds the latest completed pipeline of every supported source on the baseline's commit (including scheduled scan execution policy pipelines) and their child pipelines, and combines their security reports.
+   This is the only stage at which a scheduled scan execution policy pipeline can contribute to the comparison, and only when it shares a commit with the baseline.
+
+##### Implications for busy default branches
+
+On projects where the target branch receives many pipelines per commit (for example, an hourly scheduled pipeline in addition to push and merge request pipelines), report-less pipelines can fill the ten-pipeline window at a given commit. When that happens, the pipeline that carries the security reports is not examined at that commit, and the baseline moves to a later candidate commit. If a scan execution policy pipeline exists only at the earlier commit, it does not join the comparison.
+
+To increase the likelihood that a report-carrying pipeline is examined at the merge base:
+
+- Reduce the number of pipelines created per commit on the target branch. A top-level [`workflow`](../../../ci/yaml/_index.md#workflow) block with rules that prevent pipeline creation when no work is needed is more effective than job-level `rules:`. A pipeline that is never created does not consume a slot in the ten-pipeline window, but a pipeline that is created but empty does.
+- Rebase merge requests whose branches have diverged from the target branch some time ago, so the comparison anchors on a more recent commit.
+- Ensure security scanners run on every target-branch pipeline (typically via a [scan execution policy](scan_execution_policies.md) or the project's `.gitlab-ci.yml`), so that whichever pipeline is selected as the baseline carries the required reports.
 
 ### Accepting risk and ignoring vulnerabilities in future merge requests
 

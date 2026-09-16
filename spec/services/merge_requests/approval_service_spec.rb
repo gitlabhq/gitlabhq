@@ -106,6 +106,71 @@ RSpec.describe MergeRequests::ApprovalService, feature_category: :code_review_wo
             expect(merge_request.approvals.last.patch_id_sha).to be_nil
           end
         end
+
+        context 'when the caller asserts the head SHA it is approving' do
+          let(:asserted_sha) { merge_request.source_branch_head.sha }
+
+          subject(:service) do
+            described_class.new(project: project, current_user: user, params: { sha: asserted_sha })
+          end
+
+          it 'derives the value from the asserted SHA when there is no diff to read it from' do
+            derived = merge_request.patch_id_sha_for_head(asserted_sha)
+            allow(merge_request).to receive(:current_patch_id_sha).and_return(nil)
+
+            service.execute(merge_request)
+
+            expect(derived).to be_present
+            expect(merge_request.approvals.last.patch_id_sha).to eq(derived)
+          end
+
+          it 'prefers the diff-derived value when there is one' do
+            expect(merge_request).not_to receive(:patch_id_sha_for_head)
+
+            service.execute(merge_request)
+
+            expect(merge_request.approvals.last.patch_id_sha).to eq(merge_request.current_patch_id_sha)
+          end
+
+          context 'when the diff is for a different head than the asserted SHA' do
+            let(:asserted_sha) { merge_request.merge_request_diff.head_commit_sha.reverse }
+            let(:derived) { OpenSSL::Digest::SHA256.hexdigest('derived') }
+
+            it 'derives the value from the asserted SHA instead of the diff' do
+              expect(merge_request).not_to receive(:current_patch_id_sha)
+              expect(merge_request).to receive(:patch_id_sha_for_head).with(asserted_sha).and_return(derived)
+
+              service.execute(merge_request)
+
+              expect(merge_request.approvals.last.patch_id_sha).to eq(derived)
+            end
+          end
+
+          context 'when patch_id_sha_fallback_when_diff_missing is disabled' do
+            before do
+              stub_feature_flags(patch_id_sha_fallback_when_diff_missing: false)
+            end
+
+            it 'records the diff-derived value and never consults the asserted SHA' do
+              expect(merge_request).not_to receive(:patch_id_sha_for_head)
+
+              service.execute(merge_request)
+
+              expect(merge_request.approvals.last.patch_id_sha).to eq(merge_request.current_patch_id_sha)
+            end
+
+            context 'when there is no diff to read it from' do
+              it 'records nil' do
+                allow(merge_request).to receive(:current_patch_id_sha).and_return(nil)
+                expect(merge_request).not_to receive(:patch_id_sha_for_head)
+
+                service.execute(merge_request)
+
+                expect(merge_request.approvals.last.patch_id_sha).to be_nil
+              end
+            end
+          end
+        end
       end
 
       it 'publishes MergeRequests::ApprovedEvent' do

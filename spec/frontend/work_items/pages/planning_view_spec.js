@@ -4163,7 +4163,7 @@ describe('planning-view', () => {
     const cachedWorkItemId = 'gid://gitlab/WorkItem/1';
     const uncachedWorkItemId = 'gid://gitlab/WorkItem/2';
     const cursor = btoa(JSON.stringify({ created_at: '2025-12-14 17:09:52.000000000 +0000' }));
-    const BoardViewStub = { name: 'BoardView', template: '<div />' };
+    const BoardViewStub = { name: 'BoardView', props: ['realtimeMatches'], template: '<div />' };
 
     let subscription;
     let subscriptionHandler;
@@ -4294,6 +4294,29 @@ describe('planning-view', () => {
         expect(evictedFields(evictSpy)).toEqual([]);
         expect(wasRemovedFromLists(modifySpy, cachedWorkItemId)).toBe(true);
       });
+
+      it('passes it to the board instead of removing it, when it still matches in board view', async () => {
+        await mountWithSubscription({
+          provide: { glFeatures: { planningViewBoards: true } },
+          stubs: { BoardView: BoardViewStub },
+        });
+        findDisplaySettingsDrawer().vm.$emit('toggle-view-mode', VIEW_MODE_BOARD);
+        await waitForPromises();
+        cacheWorkItem(cachedWorkItemId);
+        const matchedNode = buildWorkItemNode(1);
+        boardMatchHandler.mockResolvedValue(buildBoardWorkItemsResponse([matchedNode]));
+        const evictSpy = jest.spyOn(getCache(), 'evict');
+        const modifySpy = jest.spyOn(getCache(), 'modify');
+
+        emitChange(cachedWorkItemId, 'UPDATED');
+        await flushChanges();
+
+        expect(evictedFields(evictSpy)).toEqual([]);
+        expect(wasRemovedFromLists(modifySpy, cachedWorkItemId)).toBe(false);
+        const matches = findBoardView().props('realtimeMatches');
+        expect(matches.created).toEqual([]);
+        expect(matches.updated.map((node) => node.id)).toEqual([cachedWorkItemId]);
+      });
     });
 
     describe('when a work item in the cache is deleted', () => {
@@ -4410,14 +4433,15 @@ describe('planning-view', () => {
         expect(evictedFields(evictSpy)).toEqual(['workItems']);
       });
 
-      it('reloads the board when the new item matches, probing with the board query', async () => {
+      it('passes the matched item to the board instead of reloading it', async () => {
         await mountWithSubscription({
           provide: { glFeatures: { planningViewBoards: true } },
           stubs: { BoardView: BoardViewStub },
         });
         findDisplaySettingsDrawer().vm.$emit('toggle-view-mode', VIEW_MODE_BOARD);
         await waitForPromises();
-        boardMatchHandler.mockResolvedValue(buildBoardWorkItemsResponse([buildWorkItemNode(2)]));
+        const matchedNode = buildWorkItemNode(2);
+        boardMatchHandler.mockResolvedValue(buildBoardWorkItemsResponse([matchedNode]));
         const evictSpy = jest.spyOn(getCache(), 'evict');
 
         emitChange(uncachedWorkItemId, 'CREATED');
@@ -4425,7 +4449,10 @@ describe('planning-view', () => {
 
         expect(boardMatchHandler).toHaveBeenCalled();
         expect(slimMatchHandler).not.toHaveBeenCalled();
-        expect(evictedFields(evictSpy)).toEqual(['workItems']);
+        expect(evictedFields(evictSpy)).toEqual([]);
+        const matches = findBoardView().props('realtimeMatches');
+        expect(matches.created.map((node) => node.id)).toEqual([uncachedWorkItemId]);
+        expect(matches.updated).toEqual([]);
       });
 
       it('does not reload the list when the match query fails', async () => {

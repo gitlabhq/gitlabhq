@@ -1,0 +1,7 @@
+---
+event: Ai::DuoWorkflows::WorkflowApprovalRequiredEvent
+description: Published when a Duo workflow pauses in :tool_call_approval_required
+  (the agent needs a human decision). Only emitted for messaging-triggered
+  workflows. Deferred via run_after_commit.
+feature_category: duo_agent_platform
+ee_only: true

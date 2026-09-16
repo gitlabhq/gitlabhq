@@ -352,6 +352,7 @@ export default {
       displayDrawerPage: DISPLAY_SETTINGS_PAGE_ROOT,
       drawerTopOffset: '0px',
       boardUpdatedItem: null,
+      boardRealtimeMatches: null,
     };
   },
 
@@ -2164,11 +2165,22 @@ export default {
               // Too many changed items to check in one go — treat it as a bulk change and reload.
               needsListRefetch = true;
             } else {
-              needsListRefetch = checkableCreated.some((id) => matches.has(id));
+              const isMatched = (id) => matches.some((node) => node.id === id);
+
+              // Boards move and insert their own matched cards below instead of reloading.
+              if (this.isBoardView) {
+                this.boardRealtimeMatches = {
+                  created: matches.filter((node) => checkableCreated.includes(node.id)),
+                  updated: matches.filter((node) => visibleUpdated.includes(node.id)),
+                };
+              } else {
+                needsListRefetch = checkableCreated.some(isMatched);
+              }
+
               // A match already patched the item for free; a miss means it no longer belongs in
               // the current filters, so it needs to leave every cached page and board column.
               visibleUpdated
-                .filter((id) => !matches.has(id))
+                .filter((id) => !isMatched(id))
                 .forEach((id) => removeWorkItemFromNamespaceLists(cache, this.namespaceId, id));
             }
           } catch (error) {
@@ -2601,6 +2613,7 @@ export default {
       :active-item="activeItem"
       :detail-panel-enabled="workItemDetailPanelEnabled"
       :updated-work-item="boardUpdatedItem"
+      :realtime-matches="boardRealtimeMatches"
       :has-active-filters="hasActiveFilters"
       :preselected-work-item-type="preselectedWorkItemType"
       :can-create-work-item="showProjectNewWorkItem"
