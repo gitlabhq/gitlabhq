@@ -255,6 +255,7 @@ these parameters:
 - `throttle_authenticated_git_http_enabled`, `throttle_authenticated_git_http_period_in_seconds`, and `throttle_authenticated_git_http_requests_per_period` attributes [added](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/191552) in GitLab 18.1 [with a feature flag](../administration/feature_flags/_index.md) named `git_authenticated_http_limit`. Disabled by default.
 - `git_authenticated_http_limit` feature flag [enabled](https://gitlab.com/gitlab-org/gitlab/-/issues/543768) in GitLab 18.3.
 - `git_authenticated_http_limit` feature flag [removed](https://gitlab.com/gitlab-org/gitlab/-/issues/561577) in GitLab 18.4.
+- `throttle_authenticated_dependency_proxy_enabled`, `throttle_authenticated_dependency_proxy_period_in_seconds`, and `throttle_authenticated_dependency_proxy_requests_per_period` attributes [added](https://gitlab.com/gitlab-org/gitlab/-/issues/627044) in GitLab 19.2.7.
 
 {{< /history >}}
 
@@ -840,6 +841,9 @@ to configure other related settings. These requirements are in the `Required` co
 | `throttle_authenticated_api_enabled`                      | boolean | no                                                              | (**If enabled, requires**: `throttle_authenticated_api_period_in_seconds` and `throttle_authenticated_api_requests_per_period`) Enable authenticated API request rate limit. Helps reduce request volume (for example, from crawlers or abusive bots). |
 | `throttle_authenticated_api_period_in_seconds`            | integer | required by:<br>`throttle_authenticated_api_enabled`            | Rate limit period (in seconds). |
 | `throttle_authenticated_api_requests_per_period`          | integer | required by:<br>`throttle_authenticated_api_enabled`            | Maximum requests per period per user. |
+| `throttle_authenticated_dependency_proxy_enabled`             | boolean | conditionally | If `true`, enforces the authenticated dependency proxy request rate limit. Default value: `false`. |
+| `throttle_authenticated_dependency_proxy_period_in_seconds`   | integer | no            | Rate limit period in seconds. `throttle_authenticated_dependency_proxy_enabled` must be `true`. Default value: `15`. |
+| `throttle_authenticated_dependency_proxy_requests_per_period` | integer | no            | Maximum requests per period per user. `throttle_authenticated_dependency_proxy_enabled` must be `true`. Default value: `1000`. |
 | `throttle_authenticated_git_http_enabled`             | boolean | conditionally | If `true`, enforces the authenticated Git HTTP request rate limit. Default value: `false`. |
 | `throttle_authenticated_git_http_period_in_seconds`   | integer | no            | Rate limit period in seconds. `throttle_authenticated_git_http_enabled` must be `true`. Default value: `3600`. |
 | `throttle_authenticated_git_http_requests_per_period` | integer | no            | Maximum requests per period per user. `throttle_authenticated_git_http_enabled` must be `true`. Default value: `3600`. |

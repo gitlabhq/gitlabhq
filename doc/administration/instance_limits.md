@@ -241,6 +241,15 @@ Autocomplete requests that exceed the autocomplete rate limit per minute return 
 This endpoint has been requested too many times. Try again later.
 ```
 
+### Dependency proxy rate limit
+
+Authenticated requests to the
+[dependency proxy for container images](../user/packages/dependency_proxy/_index.md) can use a
+[dedicated rate limit](settings/user_and_ip_rate_limits.md#enable-authenticated-dependency-proxy-request-rate-limit)
+instead of the authenticated web request rate limit.
+
+- **Default rate limit**: Disabled. When enabled, defaults to 1,000 requests per 15 seconds per user.
+
 ### Pipeline creation rate limit
 
 {{< history >}}
