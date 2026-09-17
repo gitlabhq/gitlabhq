@@ -3,7 +3,6 @@ import VueApollo from 'vue-apollo';
 import { shallowMount } from '@vue/test-utils';
 import createMockApollo from 'helpers/mock_apollo_helper';
 import waitForPromises from 'helpers/wait_for_promises';
-import { stubPerformanceWebAPI } from 'helpers/performance';
 import GetSnippetQuery from 'shared_queries/snippet/snippet.query.graphql';
 import { getSnippetMixin } from '~/snippets/mixins/snippets';
 import { createGQLSnippetsQueryResponse, createGQLSnippet } from '../test_utils';
@@ -35,10 +34,6 @@ describe('getSnippetMixin', () => {
       },
     });
   };
-
-  beforeEach(() => {
-    stubPerformanceWebAPI();
-  });
 
   describe('GetSnippetQuery variables', () => {
     it('includes projectId when projectId prop is provided', async () => {

@@ -1521,11 +1521,6 @@ RSpec.describe ProjectsHelper, feature_category: :source_code_management do
         expect(helper.localized_project_human_access(key)).to eq(localized_project_human_access)
       end
     end
-    context 'when security manager is disabled', :disable_security_manager do
-      it 'does not include Security Manager role' do
-        expect(helper.localized_project_human_access(Gitlab::Access::SECURITY_MANAGER)).to be_blank
-      end
-    end
   end
 
   describe '#vue_fork_divergence_data' do

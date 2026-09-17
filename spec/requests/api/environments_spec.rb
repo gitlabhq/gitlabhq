@@ -687,6 +687,14 @@ RSpec.describe API::Environments, feature_category: :continuous_delivery do
           expect(response).to match_response_schema('public_api/v4/environment')
           expect(environment.reload).to be_stopped
         end
+
+        it 'returns a 200 when forced' do
+          post api("/projects/#{project.id}/environments/#{environment.id}/stop", user), params: { force: true }
+
+          expect(response).to have_gitlab_http_status(:ok)
+          expect(response).to match_response_schema('public_api/v4/environment')
+          expect(environment.reload).to be_stopped
+        end
       end
 
       context 'with a stopping environment' do
@@ -700,6 +708,14 @@ RSpec.describe API::Environments, feature_category: :continuous_delivery do
           expect(response).to have_gitlab_http_status(:ok)
           expect(response).to match_response_schema('public_api/v4/environment')
           expect(environment.reload).to be_stopping
+        end
+
+        it 'returns a 200 and completes the stop when forced' do
+          post api("/projects/#{project.id}/environments/#{environment.id}/stop", user), params: { force: true }
+
+          expect(response).to have_gitlab_http_status(:ok)
+          expect(response).to match_response_schema('public_api/v4/environment')
+          expect(environment.reload).to be_stopped
         end
       end
 

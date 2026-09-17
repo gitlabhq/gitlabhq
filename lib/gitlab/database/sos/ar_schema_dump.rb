@@ -13,7 +13,7 @@ module Gitlab
         end
 
         def run
-          file_path = File.join(name, "#{name}_schema_dump.sql")
+          file_path = File.join(name, "#{name}_schema_dump.rb")
           output.write_file(file_path) do |f|
             File.open(f, 'w') do |file|
               connection.create_schema_dumper({}).dump(file)

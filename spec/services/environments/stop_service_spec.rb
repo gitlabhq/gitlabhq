@@ -52,6 +52,24 @@ RSpec.describe Environments::StopService, :with_current_organization, feature_ca
           expect { subject }.to change { environment.reload.state }.from('available').to('stopped')
           expect(stop_review_job.reload.status).to eq('manual')
         end
+
+        context 'when the environment has already been stopped' do
+          let!(:environment) { create(:environment, :stopped, project: project) }
+
+          it 'returns a success status without changing the state' do
+            expect { subject }.not_to change { environment.reload.state }
+            expect(subject.status).to eq(:success)
+          end
+        end
+
+        context 'when the environment is currently stopping' do
+          let!(:environment) { create(:environment, :stopping, project: project) }
+
+          it 'completes the stop and returns a success status' do
+            expect { subject }.to change { environment.reload.state }.from('stopping').to('stopped')
+            expect(subject.status).to eq(:success)
+          end
+        end
       end
 
       context 'when the environment has already been stopped' do

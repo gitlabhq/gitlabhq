@@ -17,8 +17,8 @@ RSpec.describe Gitlab::IssuableMetadata do
   context 'issues' do
     let!(:issue) { create(:issue, author: user, project: project) }
     let!(:closed_issue) { create(:issue, state: :closed, author: user, project: project) }
-    let!(:downvote) { create(:award_emoji, :downvote, awardable: closed_issue) }
-    let!(:upvote) { create(:award_emoji, :upvote, awardable: issue) }
+    let!(:downvote) { create(:award_emoji, :downvote, user: user, awardable: closed_issue) }
+    let!(:upvote) { create(:award_emoji, :upvote, user: user, awardable: issue) }
     let!(:merge_request) { create(:merge_request, :simple, author: user, assignees: [user], source_project: project, target_project: project, title: "Test") }
     let!(:closing_issues) { create(:merge_requests_closing_issues, issue: issue, merge_request: merge_request) }
 
@@ -41,8 +41,8 @@ RSpec.describe Gitlab::IssuableMetadata do
   context 'merge requests' do
     let!(:merge_request) { create(:merge_request, :simple, author: user, assignees: [user], source_project: project, target_project: project, title: "Test") }
     let!(:merge_request_closed) { create(:merge_request, state: "closed", source_project: project, target_project: project, title: "Closed Test") }
-    let!(:downvote) { create(:award_emoji, :downvote, awardable: merge_request) }
-    let!(:upvote) { create(:award_emoji, :upvote, awardable: merge_request) }
+    let!(:downvote) { create(:award_emoji, :downvote, user: user, awardable: merge_request) }
+    let!(:upvote) { create(:award_emoji, :upvote, user: user, awardable: merge_request) }
     let!(:note) { create(:note_on_merge_request, author: user, project: project, noteable: merge_request, note: "a comment on a MR") }
 
     it 'aggregates stats on merge requests' do

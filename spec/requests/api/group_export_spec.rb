@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe API::GroupExport, feature_category: :importers do
+RSpec.describe API::GroupExport, :aggregate_failures, feature_category: :importers do
   let_it_be(:group) { create(:group) }
   let_it_be(:user) { create(:user) }
 
@@ -43,6 +43,8 @@ RSpec.describe API::GroupExport, feature_category: :importers do
         get api(download_path, user)
 
         expect(response).to have_gitlab_http_status(:ok)
+        expect(response.header['Content-Disposition']).to include('group_export.tar.gz')
+        expect(response.header['Content-Type']).to eq('application/octet-stream')
       end
 
       context 'when export_file.file does not exist' do

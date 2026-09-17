@@ -134,7 +134,7 @@ personal_access_token_last_used_ips: https://gitlab.com/gitlab-org/gitlab/-/issu
 personal_access_tokens: supported
 personal_snippet_upload_states: https://gitlab.com/gitlab-org/gitlab/-/issues/611963
 pool_repositories: no_work_needed
-project_topic_upload_states: https://gitlab.com/gitlab-org/gitlab/-/work_items/616255
+project_topic_upload_states: no_work_needed
 project_topic_uploads: no_work_needed
 project_type_ci_runner_machines: supported
 project_type_ci_runners: supported

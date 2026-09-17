@@ -63,7 +63,6 @@ export default {
               this.exploreAnalyticsDashboardsPath,
               String(getDashboardIdFromGraphQLId(data.id)),
             ),
-        isStarred: false,
       }));
     },
   },

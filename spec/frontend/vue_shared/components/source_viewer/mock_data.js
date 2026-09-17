@@ -53,14 +53,14 @@ export const SOURCE_CODE_CONTENT_MOCK = `
 
 const COMMIT_DATA_MOCK = {
   ageMapClass: 'blame-commit-age-9',
+  previousBlamePath: '/gitlab-org/gitlab/-/blob/parent123/old/file.js?blame=1',
 };
 
 export const BLAME_DATA_MOCK = [
   {
     lineno: 1,
     span: 1,
-    commit: { author: 'Peter', sha: 'abc', parentSha: 'parent-abc' },
-    previousPath: 'old/path.js',
+    commit: { author: 'Peter', sha: 'abc' },
     index: 0,
     blameOffset: '0px',
     commitData: COMMIT_DATA_MOCK,
@@ -68,16 +68,14 @@ export const BLAME_DATA_MOCK = [
   {
     lineno: 2,
     span: 1,
-    commit: { author: 'Sarah', sha: 'def', parentSha: 'parent-def' },
-    previousPath: 'old/path2.js',
+    commit: { author: 'Sarah', sha: 'def' },
     index: 1,
     blameOffset: '1px',
   },
   {
     lineno: 3,
     span: 1,
-    commit: { author: 'Peter', sha: 'ghi', parentSha: 'parent-ghi' },
-    previousPath: 'old/path3.js',
+    commit: { author: 'Peter', sha: 'ghi' },
     index: 2,
     blameOffset: '2px',
   },
@@ -95,7 +93,6 @@ export const CHUNK_BLAME_GROUPS_MOCK = [
     rowSpan: 2,
     hasSeparator: false,
     commit: { sha: 'abc', title: 'First commit' },
-    previousPath: 'old/path.js',
     commitData: COMMIT_DATA_MOCK,
   },
   {
@@ -105,7 +102,6 @@ export const CHUNK_BLAME_GROUPS_MOCK = [
     rowSpan: 1,
     hasSeparator: true,
     commit: { sha: 'def', title: 'Second commit' },
-    previousPath: null,
     commitData: { ageMapClass: 'blame-commit-age-0' },
   },
 ];
@@ -128,7 +124,6 @@ export const BLAME_DATA_QUERY_RESPONSE_MOCK = {
                   {
                     lineno: 1,
                     span: 3,
-                    previousPath: 'old/file.js',
                     commit: {
                       id: 'gid://gitlab/CommitPresenter/13b0aca4142d1d55931577f69289a792f216f805',
                       title: 'Upload New File',
@@ -141,7 +136,6 @@ export const BLAME_DATA_QUERY_RESPONSE_MOCK = {
                       author: {},
                       sha: '13b0aca4142d1d55931577f69289a792f216f805',
                       shortId: '13b0aca4',
-                      parentSha: 'parent123',
                     },
                     commitData: COMMIT_DATA_MOCK,
                   },

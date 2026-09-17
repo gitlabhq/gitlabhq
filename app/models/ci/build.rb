@@ -953,7 +953,7 @@ module Ci
 
       return unless project.has_active_hooks?(:job_hooks) || project.has_active_integrations?(:job_hooks)
 
-      Ci::ExecuteBuildHooksWorker.perform_async(project.id, build_data)
+      Ci::ExecuteBuildHooksWorker.perform_async(project.id, id, hook_state_attrs)
     end
 
     def browsable_artifacts?
@@ -1421,6 +1421,17 @@ module Ci
 
     private
 
+    def hook_state_attrs
+      {
+        build_status: status,
+        build_started_at: started_at,
+        build_finished_at: finished_at,
+        build_duration: duration,
+        build_queued_duration: queued_duration,
+        build_failure_reason: failure_reason
+      }
+    end
+
     def with_pending_build_args
       prepare_pending_build_args
       yield
@@ -1494,13 +1505,6 @@ module Ci
     def auto_retry
       strong_memoize(:auto_retry) do
         Gitlab::Ci::Build::AutoRetry.new(self)
-      end
-    end
-
-    def build_data
-      strong_memoize(:build_data) do
-        ActiveRecord::Associations::Preloader.new(records: [self], associations: { runner: :tags }).call
-        Gitlab::DataBuilder::Build.build(self)
       end
     end
 

@@ -1,13 +1,10 @@
 <script>
-import { GlButton, GlLink, GlTruncate } from '@gitlab/ui';
-import { __, sprintf } from '~/locale';
+import { GlLink } from '@gitlab/ui';
 
 export default {
   name: 'DashboardsListNameCell',
   components: {
-    GlButton,
     GlLink,
-    GlTruncate,
   },
   props: {
     name: {
@@ -23,56 +20,31 @@ export default {
       type: String,
       required: true,
     },
-    isStarred: {
+    // Opt-in because the cell also renders inside GlTable rows, which are
+    // not positioned, so a stretched link there would cover the whole table.
+    stretched: {
       type: Boolean,
       required: false,
       default: false,
-    },
-    withStars: {
-      type: Boolean,
-      required: false,
-      default: false,
-    },
-  },
-  computed: {
-    starIcon() {
-      return this.isStarred ? 'star' : 'star-o';
-    },
-    starTitle() {
-      return this.isStarred ? __('Remove from favorites') : __('Add to favorites');
-    },
-    starAriaLabel() {
-      const str = this.isStarred
-        ? __('Remove %{name} from favorites')
-        : __('Add %{name} to favorites');
-      return sprintf(str, { name: this.name });
     },
   },
 };
 </script>
 <template>
-  <div class="gl-inline-block gl-w-full gl-min-w-1 gl-flex-row gl-items-center sm:gl-flex">
-    <gl-button
-      v-if="withStars"
-      class="sm:gl-mr-3"
-      category="tertiary"
-      variant="default"
-      data-testid="dashboard-star-icon"
-      :aria-label="starAriaLabel"
-      :title="starTitle"
-      :icon="starIcon"
-    />
-
-    <div class="gl-flex-1 gl-flex-col gl-text-right sm:gl-w-48 sm:gl-text-left">
-      <gl-link
-        data-testid="dashboard-redirect-link"
-        :href="dashboardUrl"
-        class="gl-font-bold gl-text-black !gl-no-underline"
-        >{{ name }}</gl-link
-      >
-      <div v-if="description">
-        <gl-truncate :text="description" with-tooltip />
-      </div>
-    </div>
+  <div class="gl-min-w-0">
+    <gl-link
+      data-testid="dashboard-redirect-link"
+      :href="dashboardUrl"
+      class="gl-text-lg gl-font-bold !gl-text-strong !gl-no-underline"
+      :class="{ 'gl-stretched-link': stretched }"
+      >{{ name }}</gl-link
+    >
+    <p
+      v-if="description"
+      class="gl-m-0 gl-line-clamp-2 gl-text-subtle"
+      data-testid="dashboard-description"
+    >
+      {{ description }}
+    </p>
   </div>
 </template>

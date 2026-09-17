@@ -19866,7 +19866,7 @@ paths:
         content:
           application/json:
             schema:
-              "$ref": "#/components/schemas/RequestBody_9cf55a9e1208"
+              "$ref": "#/components/schemas/RequestBody_5482fda793e3"
   "/api/v4/service_accounts":
     post:
       operationId: postApiV4ServiceAccounts
@@ -91939,6 +91939,8 @@ components:
           type: string
         project_audit_events_api_limit:
           type: string
+        group_audit_events_api_limit:
+          type: string
         dependency_scanning_sbom_scan_api_upload_limit:
           type: string
         dependency_scanning_sbom_scan_api_download_limit:
@@ -106606,7 +106608,7 @@ components:
           description: Scopes available to the application. Separate multiple scopes
             with a space.
           nullable: true
-    RequestBody_9cf55a9e1208:
+    RequestBody_5482fda793e3:
       type: object
       properties:
         admin_mode:
@@ -108656,6 +108658,11 @@ components:
           type: integer
           description: Maximum number of requests per minute per user per project
             to the project audit events API.
+          nullable: true
+        group_audit_events_api_limit:
+          type: integer
+          description: Maximum number of requests per minute per user per group to
+            the group audit events API.
           nullable: true
         group_owners_can_manage_default_branch_protection:
           type: boolean

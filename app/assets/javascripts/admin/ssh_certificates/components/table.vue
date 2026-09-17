@@ -7,6 +7,8 @@ import { getAdminSshCertificates } from '~/api/admin_ssh_certificates_api';
 import CrudComponent from '~/vue_shared/components/crud_component.vue';
 import TimeAgoTooltip from '~/vue_shared/components/time_ago_tooltip.vue';
 import ClipboardButton from '~/vue_shared/components/clipboard_button.vue';
+import toast from '~/vue_shared/plugins/global_toast';
+import AddCertificateAuthorityForm from './add_certificate_authority_form.vue';
 
 // 10 rather than the usual 20: the CRUD card is compact and 20 rows take up
 // too much of the Admin Area screen.
@@ -24,6 +26,8 @@ export default {
       "SshCertificates|This instance doesn't have any SSH certificate authorities.",
     ),
     copyFingerprint: s__('SshCertificates|Copy fingerprint'),
+    addToggleText: s__('SshCertificates|Add certificate authority'),
+    addedMessage: s__('SshCertificates|Certificate authority added.'),
     apiErrorMessage: s__(
       'SshCertificates|An error occurred while fetching the SSH certificate authorities. Please try again.',
     ),
@@ -59,6 +63,7 @@ export default {
     GlLink,
     TimeAgoTooltip,
     ClipboardButton,
+    AddCertificateAuthorityForm,
   },
   directives: {
     GlTooltip: GlTooltipDirective,
@@ -114,6 +119,16 @@ export default {
 
       this.loading = false;
     },
+    onCertificateAdded(hideForm) {
+      hideForm();
+      toast(this.$options.i18n.addedMessage);
+
+      if (this.page === 1) {
+        this.fetchCertificates();
+      } else {
+        this.page = 1;
+      }
+    },
     // Fixed-length middle truncation, e.g. `SHA256:k3F9pQz1…8xLm`, so the column
     // width stays predictable and the full value is available in the tooltip.
     truncateFingerprint(fingerprint) {
@@ -129,10 +144,15 @@ export default {
     icon="credentials"
     :count="totalItems"
     :is-loading="loading"
+    :toggle-text="$options.i18n.addToggleText"
   >
     <template #description>
       {{ $options.i18n.description }}
       <gl-link :href="$options.helpPath" target="_blank">{{ $options.i18n.helpLinkText }}</gl-link>
+    </template>
+
+    <template #form="{ hideForm }">
+      <add-certificate-authority-form @added="onCertificateAdded(hideForm)" @cancel="hideForm" />
     </template>
 
     <template v-if="!hasCertificates" #empty>

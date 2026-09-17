@@ -205,6 +205,71 @@ describe('UploadBlobModal', () => {
     });
   });
 
+  describe('file size validation', () => {
+    const MAX_FILE_SIZE_MIB = 50;
+
+    let mockFileReader;
+
+    const createFileOfSizeMiB = (sizeMiB, name = 'large.bin') => {
+      const file = new File(['content'], name, { type: 'application/octet-stream' });
+      Object.defineProperty(file, 'size', { value: sizeMiB * 1024 * 1024 });
+
+      return file;
+    };
+
+    beforeEach(() => {
+      gon.max_file_size = MAX_FILE_SIZE_MIB;
+      createComponent();
+
+      mockFileReader = {
+        readAsDataURL: jest.fn(),
+        onload: null,
+        onerror: null,
+      };
+      jest.spyOn(window, 'FileReader').mockImplementation(() => mockFileReader);
+    });
+
+    afterEach(() => {
+      jest.restoreAllMocks();
+    });
+
+    it('rejects a file larger than the maximum attachment size', async () => {
+      findUploadDropzone().vm.$emit('change', createFileOfSizeMiB(53));
+
+      await nextTick();
+
+      expect(findCommitChangesModal().props('error')).toBe(
+        'File is too big (53.00MiB). Max filesize: 50MiB.',
+      );
+      expect(findCommitChangesModal().props('valid')).toBe(false);
+      expect(mockFileReader.readAsDataURL).not.toHaveBeenCalled();
+      expect(wrapper.text()).not.toContain('large.bin');
+    });
+
+    it('accepts a file at the maximum attachment size', async () => {
+      findUploadDropzone().vm.$emit('change', createFileOfSizeMiB(50, 'exact.bin'));
+      mockFileReader.onload({ target: { result: 'data:application/octet-stream;base64,' } });
+
+      await nextTick();
+
+      expect(findCommitChangesModal().props('error')).toBeNull();
+      expect(findCommitChangesModal().props('valid')).toBe(true);
+      expect(wrapper.text()).toContain('exact.bin');
+    });
+
+    it('does not enforce a limit when gon.max_file_size is unset', async () => {
+      gon.max_file_size = undefined;
+
+      findUploadDropzone().vm.$emit('change', createFileOfSizeMiB(500, 'huge.bin'));
+      mockFileReader.onload({ target: { result: 'data:application/octet-stream;base64,' } });
+
+      await nextTick();
+
+      expect(findCommitChangesModal().props('error')).toBeNull();
+      expect(wrapper.text()).toContain('huge.bin');
+    });
+  });
+
   describe('uploadPath prop functionality', () => {
     const CUSTOM_UPLOAD_PATH = '/custom/upload/path';
 

@@ -67,19 +67,6 @@ RSpec.describe Gitlab::HttpIO, feature_category: :job_artifacts do
 
       expect(http_io.read).to eq(file_body)
     end
-
-    context 'when the connection fails mid-read' do
-      before do
-        # This example asserts single-attempt behavior. Flags default to enabled in specs, so
-        # disable this one here; the retry path is covered under 'retrying transient failures'.
-        stub_feature_flags(http_io_retry_transient_errors: false)
-        stub_request(:get, url).to_raise(Errno::ECONNRESET)
-      end
-
-      it 'surfaces the error instead of returning a truncated read' do
-        expect { http_io.read }.to raise_error(Errno::ECONNRESET)
-      end
-    end
   end
 
   describe 'connection lifecycle against a real keep-alive server' do
@@ -113,23 +100,24 @@ RSpec.describe Gitlab::HttpIO, feature_category: :job_artifacts do
     end
 
     context 'when the server fails persistently and then recovers' do
+      let(:attempts) { described_class::RETRY_BUDGET + 1 }
+
       before do
-        # Asserts on Net::HTTP's own single retry, which HttpIO retries would
-        # otherwise absorb.
-        stub_feature_flags(http_io_retry_transient_errors: false)
+        allow(http_io).to receive(:sleep)
       end
 
       it 'surfaces the error, then a retried read on the same object succeeds', :aggregate_failures do
-        server.fail_next_requests(2)
+        # Two failures per HttpIO attempt, since Net::HTTP retries the
+        # idempotent GET once before the error reaches HttpIO.
+        server.fail_next_requests(2 * attempts)
 
         expect { http_io.read }.to raise_error(described_class::FailedToGetChunkError)
 
         http_io.seek(0)
         expect(http_io.read).to eq(file_body)
 
-        # initial connection + Net::HTTP internal retry + fresh connection
-        # for the successful read
-        expect(server.accepts).to eq(3)
+        # a fresh connection per failed request, plus one for the successful read
+        expect(server.accepts).to eq((2 * attempts) + 1)
       end
     end
 
@@ -142,37 +130,14 @@ RSpec.describe Gitlab::HttpIO, feature_category: :job_artifacts do
         # initial connection + reconnect for the retried chunk
         expect(server.accepts).to eq(2)
       end
-
-      context 'when the truncation persists' do
-        before do
-          stub_feature_flags(http_io_retry_transient_errors: false)
-        end
-
-        it 'surfaces the error, then a retried read on the same object succeeds', :aggregate_failures do
-          server.truncate_next_responses(2)
-
-          expect { http_io.read }.to raise_error(described_class::FailedToGetChunkError)
-
-          http_io.seek(0)
-          expect(http_io.read).to eq(file_body)
-
-          # initial connection + Net::HTTP internal retry + fresh connection
-          # for the successful read
-          expect(server.accepts).to eq(3)
-        end
-      end
     end
   end
 
   describe 'retrying transient failures', :prometheus do
     before do
       set_smaller_buffer_size_than(size)
-      # Stub sleep to avoid real backoff delays. allow_next_instance_of rather
-      # than allow(http_io), which would instantiate http_io before inner
-      # contexts stub the feature flag that initialize reads.
-      allow_next_instance_of(described_class) do |instance|
-        allow(instance).to receive(:sleep)
-      end
+      # Stub sleep to avoid real backoff delays.
+      allow(http_io).to receive(:sleep)
     end
 
     context 'with a transient response code' do
@@ -287,19 +252,6 @@ RSpec.describe Gitlab::HttpIO, feature_category: :job_artifacts do
         # its own; the read fails on the failure after the budget is spent.
         expect { http_io.read }.to raise_error(described_class::FailedToGetChunkError)
         expect(requests).to eq((2 * described_class::RETRY_BUDGET) + 2)
-      end
-    end
-
-    context 'when the flag is disabled' do
-      before do
-        stub_feature_flags(http_io_retry_transient_errors: false)
-      end
-
-      it 'fails on the first attempt' do
-        stub_remote_url_500(url)
-
-        expect { http_io.read }.to raise_error(described_class::FailedToGetChunkError)
-        expect(a_request(:get, url)).to have_been_made.once
       end
     end
 
@@ -551,9 +503,7 @@ RSpec.describe Gitlab::HttpIO, feature_category: :job_artifacts do
       let(:length) { nil }
 
       before do
-        # This example asserts single-attempt behavior. Flags default to enabled in specs, so
-        # disable this one here; the retry path is covered under 'retrying transient failures'.
-        stub_feature_flags(http_io_retry_transient_errors: false)
+        allow(http_io).to receive(:sleep)
         stub_remote_url_500(url)
       end
 
@@ -630,9 +580,7 @@ RSpec.describe Gitlab::HttpIO, feature_category: :job_artifacts do
       let(:length) { nil }
 
       before do
-        # This example asserts single-attempt behavior. Flags default to enabled in specs, so
-        # disable this one here; the retry path is covered under 'retrying transient failures'.
-        stub_feature_flags(http_io_retry_transient_errors: false)
+        allow(http_io).to receive(:sleep)
         stub_remote_url_500(url)
       end
 

@@ -310,7 +310,11 @@ class ProjectsController < Projects::ApplicationController
     if @project.export_file_exists?(current_user)
       if @project.export_archive_exists?(current_user)
         export_file = @project.export_file(current_user)
-        send_upload(export_file, attachment: export_file.filename)
+        send_upload(
+          export_file,
+          attachment: export_file.filename,
+          send_params: { content_type: Gitlab::ImportExport.export_download_content_type }
+        )
       else
         redirect_to(
           edit_project_path(@project, anchor: 'js-project-advanced-settings'),

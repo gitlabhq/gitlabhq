@@ -335,6 +335,19 @@ RSpec.describe API::ProjectExport, :aggregate_failures, :clean_gitlab_redis_cach
         upload.save!
       end
 
+      it 'returns download headers for import compatibility' do
+        upload = ImportExportUpload.new(project: project_finished, user: user)
+        upload.export_file = fixture_file_upload('spec/fixtures/project_export.tar.gz', "`/tar.gz")
+        upload.save!
+        project_finished.add_maintainer(user)
+
+        get api("/projects/#{project_finished.id}/export/download", user)
+
+        expect(response).to have_gitlab_http_status(:ok)
+        expect(response.header['Content-Disposition']).to include('_export.tar.gz')
+        expect(response.header['Content-Type']).to eq('application/octet-stream')
+      end
+
       it_behaves_like 'get project download by strategy'
     end
   end

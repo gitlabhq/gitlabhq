@@ -16,7 +16,6 @@ const defaultCommit = {
   webPath: '/gitlab-org/gitlab/-/commit/abc123def456',
   authorGravatar:
     'https://www.gravatar.com/avatar/00000000000000000000000000000000?s=80&d=identicon',
-  parentSha: 'parent123456789',
 };
 
 const defaultAuthor = {
@@ -29,8 +28,7 @@ const defaultAuthor = {
 
 const defaultArgs = {
   commit: defaultCommit,
-  previousPath: 'app/models/user.rb',
-  projectPath: 'gitlab-org/gitlab',
+  previousBlamePath: '/gitlab-org/gitlab/-/blob/parent123456789/app/models/user.rb?blame=1',
 };
 
 const Template = (args, { argTypes }) => ({

@@ -129,7 +129,6 @@ describe('Source Viewer component', () => {
 
         expect(findChunks().at(0).props()).toMatchObject({
           isBlameActive: true,
-          projectPath,
         });
         expect(findChunks().at(0).props('blameGroups')).toEqual([
           expect.objectContaining({ commit: blameInfo[0].commit }),
@@ -144,6 +143,18 @@ describe('Source Viewer component', () => {
         expect(findChunks().at(0).props('blameGroups')).toEqual([
           expect.objectContaining({ rowStart: 1, rowSpan: 3, hasSeparator: false }),
         ]);
+      });
+
+      it('does not hand a chunk a new blame groups array when its blame is unchanged', async () => {
+        await triggerChunkAppear(0);
+        const groups = findChunks().at(0).props('blameGroups');
+
+        // Chunk 1 appearing refetches chunk 0 as well, so chunk 0's blame is
+        // rebuilt from data it already had. Its prop must keep its identity, or
+        // every appeared chunk re-renders on every blame arrival.
+        await triggerChunkAppear(1);
+
+        expect(findChunks().at(0).props('blameGroups')).toBe(groups);
       });
 
       it('gives a chunk with no blame data no groups', async () => {

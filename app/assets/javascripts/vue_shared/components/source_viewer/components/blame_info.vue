@@ -22,11 +22,6 @@ export default {
       type: Array,
       required: true,
     },
-    projectPath: {
-      type: String,
-      required: false,
-      default: null,
-    },
   },
   data() {
     return {
@@ -117,8 +112,7 @@ export default {
           :style="{ top: blame.blameOffset }"
           :commit="blame.commit"
           :span="blame.span"
-          :previous-path="blame.previousPath"
-          :project-path="projectPath"
+          :previous-blame-path="blame.commitData && blame.commitData.previousBlamePath"
         />
       </template>
     </div>

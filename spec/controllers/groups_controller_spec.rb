@@ -103,10 +103,12 @@ RSpec.describe GroupsController, factory_default: :keep, feature_category: :code
         create(:import_export_upload, group: group, export_file: export_file, user: admin)
       end
 
-      it 'sends the file' do
+      it 'sends the file with import-compatible download headers' do
         get :download_export, params: { id: group.to_param }
 
         expect(response.body).to eq export_file.tempfile.read
+        expect(response.header['Content-Disposition']).to include('group_export.tar.gz')
+        expect(response.header['Content-Type']).to eq('application/octet-stream')
       end
     end
 

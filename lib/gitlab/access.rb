@@ -71,10 +71,10 @@ module Gitlab
           "Guest" => GUEST,
           "Planner" => PLANNER,
           "Reporter" => REPORTER,
-          "Security Manager" => (Gitlab::Security::SecurityManagerConfig.enabled? ? SECURITY_MANAGER : nil),
+          "Security Manager" => SECURITY_MANAGER,
           "Developer" => DEVELOPER,
           "Maintainer" => MAINTAINER
-        }.compact
+        }
       end
 
       def options_with_owner
@@ -95,11 +95,11 @@ module Gitlab
           GUEST => s_('MemberRole|The Guest role is for users who need visibility into a project or group but should not have the ability to make changes, such as external stakeholders.'),
           PLANNER => s_('MemberRole|The Planner role is suitable for team members who need to manage projects and track work items but do not need to contribute code.'),
           REPORTER => s_('MemberRole|The Reporter role is suitable for team members who need to stay informed about a project or group but do not actively contribute code.'),
-          SECURITY_MANAGER => (Gitlab::Security::SecurityManagerConfig.enabled? ? s_('MemberRole|The Security Manager role is for security team members who need to view and manage security features for the group or project.') : nil),
+          SECURITY_MANAGER => s_('MemberRole|The Security Manager role is for security team members who need to view and manage security features for the group or project.'),
           DEVELOPER => s_('MemberRole|The Developer role gives users access to contribute code while restricting sensitive administrative actions.'),
           MAINTAINER => s_('MemberRole|The Maintainer role is primarily used for managing code reviews, approvals, and administrative settings for projects. This role can also manage project memberships.'),
           OWNER => s_('MemberRole|The Owner role is typically assigned to the individual or team responsible for managing and maintaining the group or creating the project. This role has the highest level of administrative control, and can manage all aspects of the group or project, including managing other Owners.')
-        }.compact
+        }
       end
 
       def sym_options

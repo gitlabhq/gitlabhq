@@ -197,6 +197,7 @@ these parameters:
 - `file_template_project_id`
 - `geo_node_allowed_ips`
 - `geo_status_timeout`
+- `group_audit_events_api_limit`
 - `group_owners_can_manage_default_branch_protection`
 - `lock_duo_features_enabled`
 - `project_audit_events_api_limit`
@@ -424,6 +425,7 @@ these parameters:
 - `allow_all_integrations`
 - `allowed_integrations`
 - `audit_events_api_limit`
+- `group_audit_events_api_limit`
 - `project_audit_events_api_limit`
 - `group_owners_can_manage_default_branch_protection`
 - `file_template_project_id`
@@ -484,6 +486,7 @@ This heading is referenced by a script: `scripts/cells/application-settings-anal
 - `block_jwt_for_reclaimed_paths` [introduced](https://gitlab.com/gitlab-org/gitlab/-/work_items/623356) in GitLab 19.4.
 - `project_audit_events_api_limit` [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/253781) in GitLab 19.5.
 - `pg_ash_sampling_enabled` and `pg_ash_sample_interval_seconds` [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/250170) in GitLab 19.4.
+- `group_audit_events_api_limit` [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/255336) in GitLab 19.5.
 
 {{< /history >}}
 
@@ -669,6 +672,7 @@ to configure other related settings. These requirements are in the `Required` co
 | `grafana_enabled`                        | boolean          | no                                   | Enable Grafana. |
 | `grafana_url`                            | string           | no                                   | Grafana URL. |
 | `gravatar_enabled`                       | boolean          | no                                   | Enable Gravatar. |
+| `group_audit_events_api_limit`           | integer          | no                                   | Maximum number of requests to the [group audit events API](audit_events.md#group-audit-events) per minute per user per group. Default: 200. Set to `0` to disable the rate limit. GitLab Self-Managed, Premium and Ultimate only. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/255336) in GitLab 19.5. |
 | `group_owners_can_manage_default_branch_protection` | boolean | no                                 | Prevent overrides of default branch protection. GitLab Self-Managed, Premium and Ultimate only. |
 | `hashed_storage_enabled`                 | boolean          | no                                   | Create new projects using hashed storage paths: Enable immutable, hash-based paths and repository names to store repositories on disk. This prevents repositories from having to be moved or renamed when the Project URL changes and may improve disk I/O performance. (Always enabled in GitLab versions 13.0 and later, configuration is scheduled for removal in 14.0) |
 | `help_page_hide_commercial_content`      | boolean          | no                                   | Hide marketing-related entries from help. |

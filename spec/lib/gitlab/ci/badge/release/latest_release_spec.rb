@@ -6,10 +6,6 @@ RSpec.describe Gitlab::Ci::Badge::Release::LatestRelease do
   let_it_be_with_reload(:project) { create(:project) }
   let_it_be(:user) { create(:user, guest_of: project) }
 
-  before_all do
-    create(:release, project: project, released_at: 1.day.ago)
-  end
-
   subject { described_class.new(project, user) }
 
   describe '#entity' do

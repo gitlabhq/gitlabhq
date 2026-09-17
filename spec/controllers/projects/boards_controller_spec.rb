@@ -15,6 +15,8 @@ RSpec.describe Projects::BoardsController, feature_category: :planning_views do
       expect { list_boards }.to change { project.boards.count }.by(1)
     end
 
+    it_behaves_like 'default board creation allowed on GET'
+
     it 'renders template' do
       list_boards
 

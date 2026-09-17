@@ -7,6 +7,7 @@ import {
   normalizeBlameGroups,
   blameGroupsForChunk,
   findOverlayElementFromPoint,
+  createBlameSliceBuilder,
 } from '~/vue_shared/components/source_viewer/utils';
 import { SOURCE_CODE_CONTENT_MOCK, BLAME_DATA_MOCK } from './mock_data';
 
@@ -176,6 +177,72 @@ describe('SourceViewer utils', () => {
       normalizeBlameGroups([...input, { lineno: 3, span: 1, commit: { sha: 'a' } }]);
 
       expect(input[0].span).toBe(2);
+    });
+  });
+
+  describe('createBlameSliceBuilder', () => {
+    const chunks = [
+      { startingFrom: 0, totalLines: 70 },
+      { startingFrom: 70, totalLines: 40 },
+    ];
+    const inChunkOne = { lineno: 1, span: 2, commit: { sha: 'a' } };
+    const inChunkTwo = { lineno: 75, span: 2, commit: { sha: 'b' } };
+
+    it('reuses the previous array for a chunk whose slice is unchanged', () => {
+      const build = createBlameSliceBuilder();
+      const first = build(chunks, [inChunkOne]);
+      const second = build(chunks, [inChunkOne, inChunkTwo]);
+
+      expect(second[0]).toBe(first[0]);
+      expect(second[1]).not.toBe(first[1]);
+    });
+
+    it('returns a new array once a chunk gains a group', () => {
+      const build = createBlameSliceBuilder();
+      const first = build(chunks, []);
+      const second = build(chunks, [inChunkOne]);
+
+      expect(second[0]).not.toBe(first[0]);
+      expect(second[0]).toHaveLength(1);
+    });
+
+    it('returns a new array when a group grows into more rows', () => {
+      const build = createBlameSliceBuilder();
+      const first = build(chunks, [inChunkOne]);
+      const second = build(chunks, [{ ...inChunkOne, span: 6 }]);
+
+      expect(second[0]).not.toBe(first[0]);
+      expect(second[0][0].rowSpan).toBe(6);
+    });
+
+    it('returns a new array when a group stops opening a block', () => {
+      const build = createBlameSliceBuilder();
+      const standalone = { lineno: 71, span: 2, commit: { sha: 'a' } };
+      const carriedOver = { lineno: 69, span: 4, commit: { sha: 'a' } };
+
+      const first = build(chunks, [standalone]);
+      const second = build(chunks, [carriedOver]);
+
+      expect(first[1][0]).toMatchObject({ rowStart: 1, rowSpan: 2, hasSeparator: true });
+      expect(second[1][0]).toMatchObject({ rowStart: 1, rowSpan: 2, hasSeparator: false });
+      expect(second[1]).not.toBe(first[1]);
+    });
+
+    it('keeps identity across a rebuild with no change at all', () => {
+      const build = createBlameSliceBuilder();
+      const first = build(chunks, [inChunkOne]);
+      const second = build(chunks, [inChunkOne]);
+
+      expect(second[0]).toBe(first[0]);
+      expect(second[1]).toBe(first[1]);
+    });
+
+    it('does not share a cache between builders', () => {
+      const first = createBlameSliceBuilder()(chunks, [inChunkOne]);
+      const second = createBlameSliceBuilder()(chunks, [inChunkOne]);
+
+      expect(second[0]).not.toBe(first[0]);
+      expect(second[0]).toEqual(first[0]);
     });
   });
 

@@ -9,3 +9,9 @@ export function getAdminSshCertificates({ page = 1, perPage = DEFAULT_PER_PAGE }
 
   return axios.get(url, { params: { page, per_page: perPage } });
 }
+
+export function createAdminSshCertificate({ title, key }) {
+  const url = buildApiUrl(ADMIN_SSH_CERTIFICATES_PATH);
+
+  return axios.post(url, { title, key });
+}

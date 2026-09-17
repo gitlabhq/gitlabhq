@@ -125,3 +125,50 @@ export const blameGroupsForChunk = (blameGroups, chunk) => {
     return result;
   }, []);
 };
+
+/**
+ * Whether two slices would render the same blame cells.
+ *
+ * Compares only what a chunk draws from a group: where the cell sits, which
+ * commit it names, and whether it opens a block. Enough for a caller to hand
+ * back the previous array and keep the prop identity stable.
+ */
+const isSameBlameSlice = (a, b) => {
+  if (a === b) return true;
+  if (!a || !b || a.length !== b.length) return false;
+
+  return a.every((group, index) => {
+    const other = b[index];
+    return (
+      group.rowStart === other.rowStart &&
+      group.rowSpan === other.rowSpan &&
+      group.hasSeparator === other.hasSeparator &&
+      group.commit?.sha === other.commit?.sha
+    );
+  });
+};
+
+/**
+ * Builds every chunk's blame slice for a render, reusing the previous array
+ * wherever a chunk's slice has not changed.
+ *
+ * One chunk's blame arriving rebuilds all of them, which would hand every
+ * appeared chunk a fresh `blameGroups` array and re-render it. Holding the last
+ * result confines re-renders to the chunks whose blame actually moved.
+ */
+export const createBlameSliceBuilder = () => {
+  let previous = {};
+
+  return (chunks, blameGroups) => {
+    previous = Object.fromEntries(
+      chunks.map((chunk, index) => {
+        const slice = blameGroupsForChunk(blameGroups, chunk);
+        const cached = previous[index];
+
+        return [index, isSameBlameSlice(cached, slice) ? cached : slice];
+      }),
+    );
+
+    return previous;
+  };
+};

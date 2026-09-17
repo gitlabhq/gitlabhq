@@ -1,14 +1,12 @@
 ---
-title: "GitLab 19.4 (Upcoming release)"
-description: "Summary of features included in GitLab 19.4"
+title: "GitLab 19.4 release notes"
+description: "GitLab 19.4 released with governance for GitLab MCP server tools"
 group: Monthly Release
+date: 2026-09-17
 stage: Release Notes
 ---
 
-The following features are being delivered for GitLab 19.4.
-These features are now available on GitLab.com.
-
-## Notable contributor
+On September 17, 2026, GitLab 19.4 was released with the following features.
 
 We are excited to recognize [Jimmy](https://gitlab.com/jspagnola), a Level 4 contributor,
 as this month's [Notable Contributor](https://contributors.gitlab.com/notable-contributors)!

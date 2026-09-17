@@ -193,6 +193,9 @@ A user with:
 - The Owner role can retrieve group audit events of all users.
 - The Developer or Maintainer role is limited to group audit events based on their individual actions.
 
+Requests to this API are subject to a
+[configurable per-user, per-group rate limit](../administration/settings/rate-limit-on-audit-events-api.md).
+
 > [!warning]
 > Offset-based pagination was [deprecated](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/186194) in GitLab 17.8
 > and is planned for removal in 19.0. Use [keyset-based](rest/_index.md#keyset-based-pagination) pagination instead.

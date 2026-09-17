@@ -116,7 +116,6 @@ describe('Blob Simple Viewer component', () => {
         expect(findBlameComponents().at(0).exists()).toBe(true);
         expect(findBlameComponents().at(0).props()).toMatchObject({
           blameInfo,
-          projectPath: 'test',
         });
       });
 

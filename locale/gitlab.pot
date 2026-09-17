@@ -5292,9 +5292,6 @@ msgstr ""
 msgid "Add %{name} as a reviewer"
 msgstr ""
 
-msgid "Add %{name} to favorites"
-msgstr ""
-
 msgid "Add %{shrug}"
 msgstr ""
 
@@ -5611,9 +5608,6 @@ msgid "Add time entry"
 msgstr ""
 
 msgid "Add to board"
-msgstr ""
-
-msgid "Add to favorites"
 msgstr ""
 
 msgid "Add to merge train"
@@ -8365,8 +8359,18 @@ msgid_plural "AiGovernance|%d audit events"
 msgstr[0] ""
 msgstr[1] ""
 
+msgid "AiGovernance|%d machine"
+msgid_plural "AiGovernance|%d machines"
+msgstr[0] ""
+msgstr[1] ""
+
 msgid "AiGovernance|%d session"
 msgid_plural "AiGovernance|%d sessions"
+msgstr[0] ""
+msgstr[1] ""
+
+msgid "AiGovernance|%d user"
+msgid_plural "AiGovernance|%d users"
 msgstr[0] ""
 msgstr[1] ""
 
@@ -11017,6 +11021,9 @@ msgstr ""
 msgid "AnalyticsDashboards|Ask me about the data on this dashboard."
 msgstr ""
 
+msgid "AnalyticsDashboards|By %{name}"
+msgstr ""
+
 msgid "AnalyticsDashboards|Cancel"
 msgstr ""
 
@@ -11101,6 +11108,9 @@ msgstr ""
 msgid "AnalyticsDashboards|Keep your teams aligned around the metrics that matter most."
 msgstr ""
 
+msgid "AnalyticsDashboards|More actions for %{name}"
+msgstr ""
+
 msgid "AnalyticsDashboards|More information about %{title}"
 msgstr ""
 
@@ -11117,6 +11127,9 @@ msgid "AnalyticsDashboards|No groups or projects found"
 msgstr ""
 
 msgid "AnalyticsDashboards|No projects"
+msgstr ""
+
+msgid "AnalyticsDashboards|Open dashboard"
 msgstr ""
 
 msgid "AnalyticsDashboards|Panel query"
@@ -32112,7 +32125,7 @@ msgstr ""
 msgid "DuoAgentsPlatform|Session"
 msgstr ""
 
-msgid "DuoAgentsPlatform|Session has been cancelled successfully."
+msgid "DuoAgentsPlatform|Session has been canceled successfully."
 msgstr ""
 
 msgid "DuoAgentsPlatform|Sessions"
@@ -48955,9 +48968,6 @@ msgstr ""
 msgid "MaintenanceMode|There was an error updating the Maintenance Mode Settings"
 msgstr ""
 
-msgid "Make a copy"
-msgstr ""
-
 msgid "Make adjustments to how your GitLab instance is set up."
 msgstr ""
 
@@ -49775,6 +49785,9 @@ msgid "Maximum requests to the %{api_name} API per %{timeframe} per user or IP a
 msgstr ""
 
 msgid "Maximum requests to the %{api_name} API per minute per user"
+msgstr ""
+
+msgid "Maximum requests to the %{api_name} API per minute per user per group"
 msgstr ""
 
 msgid "Maximum requests to the %{api_name} API per minute per user per project"
@@ -67179,9 +67192,6 @@ msgstr ""
 msgid "Remove %{namespace}"
 msgstr ""
 
-msgid "Remove %{name} from favorites"
-msgstr ""
-
 msgid "Remove %{parent_ref} as this item's parent item."
 msgstr ""
 
@@ -67282,9 +67292,6 @@ msgid "Remove from batch"
 msgstr ""
 
 msgid "Remove from epic"
-msgstr ""
-
-msgid "Remove from favorites"
 msgstr ""
 
 msgid "Remove header logo"
@@ -80014,16 +80021,40 @@ msgstr ""
 msgid "Squashing combines multiple commits into a single commit on merge. This keeps your repository history clean and makes it easier to revert changes."
 msgstr ""
 
+msgid "SshCertificates|Add certificate authority"
+msgstr ""
+
+msgid "SshCertificates|An error occurred while adding the SSH certificate authority. Please try again."
+msgstr ""
+
 msgid "SshCertificates|An error occurred while fetching the SSH certificate authorities. Please try again."
 msgstr ""
 
 msgid "SshCertificates|Certificate authorities"
 msgstr ""
 
+msgid "SshCertificates|Certificate authority added."
+msgstr ""
+
 msgid "SshCertificates|Copy fingerprint"
 msgstr ""
 
+msgid "SshCertificates|Key titles are publicly visible."
+msgstr ""
+
+msgid "SshCertificates|Public key"
+msgstr ""
+
+msgid "SshCertificates|Public key is required."
+msgstr ""
+
 msgid "SshCertificates|This instance doesn't have any SSH certificate authorities."
+msgstr ""
+
+msgid "SshCertificates|This is the CA's public key, not an individual user's key. Certificates it signs are trusted instance-wide."
+msgstr ""
+
+msgid "SshCertificates|Title is required."
 msgstr ""
 
 msgid "SshCertificates|Trusted certificate authorities that allow anyone with a signed certificate to authenticate over SSH. Short-lived certificates are recommended."
@@ -92733,13 +92764,16 @@ msgstr ""
 msgid "WorkItemCustomField|Use on"
 msgstr ""
 
+msgid "WorkItemDecisionLog|Archive decision"
+msgstr ""
+
+msgid "WorkItemDecisionLog|Archived"
+msgstr ""
+
 msgid "WorkItemDecisionLog|Are you sure you want to cancel creating this decision?"
 msgstr ""
 
 msgid "WorkItemDecisionLog|Are you sure you want to cancel editing this decision?"
-msgstr ""
-
-msgid "WorkItemDecisionLog|Are you sure you want to remove this decision?"
 msgstr ""
 
 msgid "WorkItemDecisionLog|Background on the decision and any other options considered."
@@ -92770,6 +92804,9 @@ msgid "WorkItemDecisionLog|Decision (required)"
 msgstr ""
 
 msgid "WorkItemDecisionLog|Decision actions"
+msgstr ""
+
+msgid "WorkItemDecisionLog|Decision archived."
 msgstr ""
 
 msgid "WorkItemDecisionLog|Decision created."
@@ -92820,9 +92857,6 @@ msgstr ""
 msgid "WorkItemDecisionLog|Recorded manually on this work item"
 msgstr ""
 
-msgid "WorkItemDecisionLog|Remove decision"
-msgstr ""
-
 msgid "WorkItemDecisionLog|Select a user"
 msgstr ""
 
@@ -92835,10 +92869,10 @@ msgstr ""
 msgid "WorkItemDecisionLog|Slack, Google Docs, GitLab, or anywhere the discussion lives."
 msgstr ""
 
-msgid "WorkItemDecisionLog|Something went wrong when fetching the decision log. Please try again."
+msgid "WorkItemDecisionLog|Something went wrong when archiving the decision. Please try again."
 msgstr ""
 
-msgid "WorkItemDecisionLog|Something went wrong when removing the decision. Please try again."
+msgid "WorkItemDecisionLog|Something went wrong when fetching the decision log. Please try again."
 msgstr ""
 
 msgid "WorkItemDecisionLog|Something went wrong when saving the decision. Please try again."

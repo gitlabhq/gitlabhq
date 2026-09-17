@@ -3,8 +3,10 @@
 require 'spec_helper'
 
 RSpec.describe Gitlab::Template::MergeRequestTemplate do
-  let_it_be(:project) { create(:project, :repository, create_templates: :merge_request) }
-  let_it_be(:empty_project) { create(:project) }
+  let_it_be(:user) { create(:user) }
+  let_it_be(:group) { create(:group) }
+  let_it_be(:project) { create(:project, :repository, create_templates: :merge_request, group: group, creator: user) }
+  let_it_be(:empty_project) { create(:project, group: group, creator: user) }
 
   describe '.all' do
     it 'strips the md suffix' do

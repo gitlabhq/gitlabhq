@@ -5867,27 +5867,29 @@ RSpec.describe Ci::Build, feature_category: :continuous_integration, factory_def
   end
 
   describe '#execute_hooks' do
-    before do
-      build.clear_memoization(:build_data)
-    end
-
     context 'when project hooks exists' do
-      let(:build_data) { double(:BuildData) }
-
       before do
         create(:project_hook, project: project, job_events: true)
         allow(Ci::ExecuteBuildHooksWorker).to receive(:perform_async)
       end
 
-      it 'enqueues ExecuteBuildHooksWorker' do
-        expect(::Gitlab::DataBuilder::Build)
-            .to receive(:build).with(build).and_return(build_data)
-
+      it 'enqueues ExecuteBuildHooksWorker with the build id and a state snapshot' do
         build.execute_hooks
 
         expect(Ci::ExecuteBuildHooksWorker)
           .to have_received(:perform_async)
-          .with(project.id, build_data)
+          .with(project.id, build.id, hash_including(
+            build_status: build.status,
+            build_started_at: build.started_at,
+            build_finished_at: build.finished_at,
+            build_duration: build.duration
+          ))
+      end
+
+      it 'does not build the webhook payload when enqueuing' do
+        expect(::Gitlab::DataBuilder::Build).not_to receive(:build)
+
+        build.execute_hooks
       end
 
       context 'with blocked users' do

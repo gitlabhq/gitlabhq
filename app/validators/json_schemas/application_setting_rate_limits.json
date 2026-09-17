@@ -14,6 +14,11 @@
       "minimum": 0,
       "description": "Number of requests allowed to the project audit events API endpoints per user per project per minute."
     },
+    "group_audit_events_api_limit": {
+      "type": "integer",
+      "minimum": 0,
+      "description": "Number of requests allowed to the group audit events API endpoints per user per group per minute."
+    },
     "autocomplete_users_limit": {
       "type": "integer",
       "minimum": 0,

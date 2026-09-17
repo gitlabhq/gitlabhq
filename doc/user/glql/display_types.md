@@ -117,6 +117,7 @@ query: type = Issue AND project = "gitlab-org/gitlab" AND assignee = currentUser
 {{< history >}}
 
 - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/241395) in GitLab 19.2.
+- `compact` display option [introduced](https://gitlab.com/groups/gitlab-org/-/work_items/23470) in GitLab 19.5.
 - Dynamic descriptions [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/255287) in GitLab 19.5.
 
 {{< /history >}}
@@ -132,7 +133,10 @@ A single stat requires:
 - No `dimensions`.
 
 Values format automatically based on the metric. For example, counts use thousands separators and
-rates display as percentages.
+rates display as percentages. To render numbers in compact notation
+instead, for example `1.45M`, set `compact: true` under `displayConfig`. Rates keep their
+percentage format, and durations drop to their largest unit, for example `1h 1m 1s`
+becomes `1h`.
 
 To describe the value, set `description` under `displayConfig`. A description can include
 `%{metricName}` placeholders, where `metricName` identifies a metric from `metrics`.

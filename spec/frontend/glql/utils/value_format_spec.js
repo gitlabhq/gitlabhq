@@ -8,6 +8,7 @@ import {
   formatterFor,
   axisFormatterFor,
   valueFormatterFor,
+  compactValueFormatterFor,
   unitFor,
   labelForUnit,
   buildFormatterByLabel,
@@ -43,6 +44,17 @@ describe('formatCountCompact', () => {
     ${'a string'} | ${'a string'}
   `('formats $value as $expected', ({ value, expected }) => {
     expect(formatCountCompact(value)).toBe(expected);
+  });
+
+  describe('with maximumFractionDigits', () => {
+    it.each`
+      value      | digits | expected
+      ${1450191} | ${2}   | ${'1.45M'}
+      ${1450191} | ${1}   | ${'1.5M'}
+      ${2500}    | ${2}   | ${'2.5K'}
+    `('formats $value at $digits digits as $expected', ({ value, digits, expected }) => {
+      expect(formatCountCompact(value, { maximumFractionDigits: digits })).toBe(expected);
+    });
   });
 
   describe('with lowercaseThousands', () => {
@@ -222,6 +234,27 @@ describe('valueFormatterFor', () => {
 
   it('resolves through the base field key of an aliased metric', () => {
     expect(valueFormatterFor(metric('p50', { field: 'durationQuantile' }))(3661)).toBe('1h 1m 1s');
+  });
+});
+
+describe('compactValueFormatterFor', () => {
+  const metric = (key, extra = {}) => ({ key, name: key, label: key, type: 'metric', ...extra });
+
+  it.each`
+    fieldKey                 | value      | expected
+    ${'totalCount'}          | ${999}     | ${'999'}
+    ${'totalCount'}          | ${1450191} | ${'1.45M'}
+    ${'creditsUsedSum'}      | ${2500}    | ${'2.5K'}
+    ${'acceptanceRate'}      | ${0.735}   | ${'73.5%'}
+    ${'durationQuantile'}    | ${3661}    | ${'1h'}
+    ${'timeToMergeQuantile'} | ${90}      | ${'1.5min'}
+    ${'somethingCustom'}     | ${1234}    | ${'1234'}
+  `('formats $fieldKey value $value as $expected', ({ fieldKey, value, expected }) => {
+    expect(compactValueFormatterFor(metric(fieldKey))(value)).toBe(expected);
+  });
+
+  it('resolves through the base field key of an aliased metric', () => {
+    expect(compactValueFormatterFor(metric('p50', { field: 'durationQuantile' }))(3661)).toBe('1h');
   });
 });
 

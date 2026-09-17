@@ -3,7 +3,6 @@ import waitForPromises from 'helpers/wait_for_promises';
 import setWindowLocation from 'helpers/set_window_location_helper';
 import { scrollToElement } from '~/lib/utils/scroll_utils';
 import { createAlert } from '~/alert';
-import { stubPerformanceWebAPI } from 'helpers/performance';
 
 import LogViewerApp from '~/ci/job_log_viewer/log_viewer_app.vue';
 
@@ -37,8 +36,6 @@ describe('LogViewerApp', () => {
   const findUtcHint = () => wrapper.findByTestId('utc-hint');
 
   beforeEach(() => {
-    stubPerformanceWebAPI();
-
     fetchLogLines.mockResolvedValue(mockLog);
   });
 

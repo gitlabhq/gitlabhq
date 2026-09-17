@@ -38,6 +38,7 @@ class Projects::BlobController < Projects::ApplicationController
   before_action :require_blob, except: [:new, :create, :preview]
   before_action :require_branch_head, only: [:edit, :update]
   before_action :editor_variables, except: [:show, :preview, :diff]
+  before_action :validate_uploaded_file_size!, only: [:create, :update]
   before_action :validate_diff_params, only: :diff
 
   before_action :set_last_commit_sha, only: [:edit, :update]
@@ -317,6 +318,22 @@ class Projects::BlobController < Projects::ApplicationController
     return if permitted_params[:full]
 
     head :ok if [:since, :to, :offset].any? { |key| permitted_params[key].blank? }
+  end
+
+  def validate_uploaded_file_size!
+    uploaded_file = permitted_params[:file]
+    return if uploaded_file.blank?
+
+    max_size_mib = Gitlab::CurrentSettings.max_attachment_size
+    return if uploaded_file.size <= max_size_mib.megabytes
+
+    message = format(
+      _('File is too big (%{fileSize}MiB). Max filesize: %{maxFileSize}MiB.'),
+      fileSize: format('%.2f', uploaded_file.size.to_f / 1.megabyte),
+      maxFileSize: max_size_mib
+    )
+
+    render json: { error: message }, status: :payload_too_large
   end
 
   def set_last_commit_sha

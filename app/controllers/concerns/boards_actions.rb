@@ -12,8 +12,14 @@ module BoardsActions
   end
 
   def index
-    # if no board exists, create one
-    @board = board_create_service.execute.payload[:board] unless board # rubocop:disable Gitlab/ModuleWithInstanceVariables -- Should be allowable in concerns
+    return if board
+
+    # Creating the default board is a one-time bootstrap per parent, not a per-request
+    # write, so it is allowed to run on this GET instead of being moved off the request.
+    @board = Gitlab::Database::QueryAnalyzers::PreventWritesOnGet.allow_write_on_get( # rubocop:disable Gitlab/ModuleWithInstanceVariables -- Should be allowable in concerns
+      url: 'https://gitlab.com/gitlab-org/gitlab/-/issues/608670') do
+      board_create_service.execute.payload[:board]
+    end
   end
 
   def show

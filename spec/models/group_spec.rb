@@ -4671,21 +4671,9 @@ RSpec.describe Group, feature_category: :groups_and_projects do
     let_it_be(:security_manager) { create(:group_member, :security_manager, group: group) }
     let_it_be(:developer) { create(:group_member, :developer, group: group) }
 
-    context 'when security manager role is enabled' do
-      it 'returns security manager members' do
-        expect(group.members.security_managers).to include(security_manager)
-        expect(group.members.security_managers).not_to include(developer)
-      end
-    end
-
-    context 'when security manager role is disabled', :disable_security_manager do
-      it 'returns empty relation' do
-        expect(group.members.security_managers).to be_empty
-      end
-
-      it 'does not return security manager members even if they exist' do
-        expect(group.members.security_managers).not_to include(security_manager)
-      end
+    it 'returns security manager members', :aggregate_failures do
+      expect(group.members.security_managers).to include(security_manager)
+      expect(group.members.security_managers).not_to include(developer)
     end
   end
 

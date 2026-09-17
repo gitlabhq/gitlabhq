@@ -45,11 +45,10 @@ export default {
       <template #head(actions)="column"
         ><span class="gl-sr-only">{{ column.label }}</span></template
       >
-      <template #cell(name)="{ item: { name, isStarred, description, dashboardUrl } }">
+      <template #cell(name)="{ item: { name, description, dashboardUrl } }">
         <dashboards-list-name-cell
           :name="name"
           :description="description"
-          :is-starred="isStarred"
           :dashboard-url="dashboardUrl"
         />
       </template>

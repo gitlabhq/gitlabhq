@@ -181,6 +181,50 @@ RSpec.describe SendFileUpload, feature_category: :user_profile do
       it_behaves_like 'handles image resize requests', :pwa_icon
     end
 
+    context 'with an explicit content_type override' do
+      let(:filename) { 'export.tar.gz' }
+      let(:params) { { attachment: filename, send_params: { content_type: 'application/octet-stream' } } }
+
+      context 'when local file is used' do
+        before do
+          uploader.store!(temp_file)
+        end
+
+        it 'sends a file with the forced content type instead of the detected mime type' do
+          expected_params = {
+            type: 'application/octet-stream',
+            filename: filename,
+            disposition: 'attachment'
+          }
+          expect(controller).to receive(:send_file).with(uploader.path, expected_params)
+
+          subject
+        end
+      end
+
+      context 'with a proxied file in object storage' do
+        before do
+          stub_uploads_object_storage(uploader: uploader_class)
+          uploader.object_store = ObjectStorage::Store::REMOTE
+          uploader.store!(temp_file)
+          allow(Gitlab.config.uploads.object_store).to receive(:proxy_download).and_return(true)
+        end
+
+        it 'forces the response-content-type header regardless of the detected mime type' do
+          headers = double
+          expected_headers = /response-content-type=application%2Foctet-stream/
+          expect(Gitlab::Workhorse).to receive(:send_url).with(expected_headers).and_call_original
+          expect(headers).to receive(:store).with(Gitlab::Workhorse::SEND_DATA_HEADER, /^send-url:/)
+
+          expect(controller).not_to receive(:send_file)
+          expect(controller).to receive(:headers) { headers }
+          expect(controller).to receive(:head).with(:ok)
+
+          subject
+        end
+      end
+    end
+
     context 'with inline image' do
       let(:filename) { 'test.png' }
       let(:params) { { disposition: 'inline', attachment: filename } }

@@ -740,16 +740,10 @@ RSpec.describe Member, feature_category: :groups_and_projects do
 
       subject { described_class.security_managers }
 
-      context 'when security manager role is enabled' do
-        it { is_expected.to include security_manager }
-        it { is_expected.to include security_manager_invited }
-        it { is_expected.not_to include developer }
-        it { is_expected.not_to include blocked_security_manager }
-      end
-
-      context 'when security manager role is disabled', :disable_security_manager do
-        it { is_expected.to be_empty }
-      end
+      it { is_expected.to include security_manager }
+      it { is_expected.to include security_manager_invited }
+      it { is_expected.not_to include developer }
+      it { is_expected.not_to include blocked_security_manager }
     end
 
     describe '.developers' do

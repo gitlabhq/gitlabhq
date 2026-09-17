@@ -7,10 +7,13 @@ import { baseFieldKeyOf, labelWithParameter } from './chart_data';
 
 export const formatCount = (value) => formatNumber(value);
 
-// Compact notation for chart axes where horizontal space is tight: 2,500,000 → 2.5M.
-// Cells and tooltips keep the full-digit `formatCount` for precision.
-export const formatCountCompact = (value, { lowercaseThousands = false } = {}) => {
-  const formatted = formatNumber(value, { notation: 'compact', maximumFractionDigits: 1 });
+// Compact notation where horizontal space is tight: 2,500,000 → 2.5M.
+// Axes keep 1 fraction digit; stats use 2 for extra precision at large sizes.
+export const formatCountCompact = (
+  value,
+  { lowercaseThousands = false, maximumFractionDigits = 1 } = {},
+) => {
+  const formatted = formatNumber(value, { notation: 'compact', maximumFractionDigits });
 
   return lowercaseThousands && typeof formatted === 'string'
     ? formatted.replace('K', 'k')
@@ -89,6 +92,24 @@ export const formatterFor = (fieldKey) => UNITS[unitFor(fieldKey)]?.cell ?? rawS
 export const axisFormatterFor = (fieldKey) => UNITS[unitFor(fieldKey)]?.axis ?? rawString;
 
 export const valueFormatterFor = (metric) => formatterFor(baseFieldKeyOf(metric));
+
+// Compact notation per unit: numbers gain a compact suffix (1,450,191 -> 1.45M),
+// rates stay in their already-short percentage format, and durations drop to
+// their largest unit (1h 1m 1s -> 1h).
+const formatCountCompactTwoDigits = (value) =>
+  formatCountCompact(value, { maximumFractionDigits: 2 });
+
+const COMPACT_BY_UNIT = {
+  count: formatCountCompactTwoDigits,
+  credits: formatCountCompactTwoDigits,
+  rate: formatRate,
+  duration: formatDurationCompact,
+};
+
+export const compactValueFormatterFor = (metric) => {
+  const fieldKey = baseFieldKeyOf(metric);
+  return COMPACT_BY_UNIT[unitFor(fieldKey)] ?? formatterFor(fieldKey);
+};
 
 const UNIT_LABELS = {
   count: () => __('Count'),

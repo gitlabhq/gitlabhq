@@ -1983,15 +1983,25 @@ RSpec.describe ProjectsController, feature_category: :groups_and_projects do
 
     describe '#download_export', :clean_gitlab_redis_rate_limiting do
       let(:project) { create(:project, service_desk_enabled: false, creator: user) }
-      let!(:export) { create(:import_export_upload, project: project, user: user) }
+      let!(:export) do
+        create(
+          :import_export_upload,
+          project: project,
+          user: user,
+          export_file: fixture_file_upload('spec/fixtures/project_export.tar.gz')
+        )
+      end
+
       let(:action) { :download_export }
 
       context 'object storage enabled' do
         context 'when project export is enabled' do
-          it 'returns 200' do
+          it 'returns download headers for import compatibility' do
             get action, params: { namespace_id: project.namespace, id: project }
 
             expect(response).to have_gitlab_http_status(:ok)
+            expect(response.header['Content-Disposition']).to include('project_export.tar.gz')
+            expect(response.header['Content-Type']).to eq('application/octet-stream')
           end
         end
 

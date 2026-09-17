@@ -194,6 +194,5 @@
 - :zoekt
 - :zoekt_cache_disabled
 - :zoekt_settings_enabled
-- :disable_security_manager
 - :disable_wip_custom_abilities
 - :duo_panel_auto_expand

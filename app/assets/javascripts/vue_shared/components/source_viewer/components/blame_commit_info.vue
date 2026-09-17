@@ -1,8 +1,6 @@
 <script>
 import { uniqueId } from 'lodash-es';
 import { GlTooltipDirective, GlButton, GlLink, GlTruncate } from '@gitlab/ui';
-import { joinPaths } from '~/lib/utils/url_utility';
-import { projectBlobPath } from '~/lib/utils/path_helpers/repository';
 import { sprintf, __ } from '~/locale';
 import defaultAvatarUrl from 'images/no_avatar.png';
 import { getIdFromGraphQLId } from '~/graphql_shared/utils';
@@ -28,12 +26,7 @@ export default {
       type: Object,
       required: true,
     },
-    previousPath: {
-      type: String,
-      required: false,
-      default: null,
-    },
-    projectPath: {
+    previousBlamePath: {
       type: String,
       required: false,
       default: null,
@@ -59,19 +52,6 @@ export default {
     },
     hasMessage() {
       return Boolean(this.commit.message || this.commit.title);
-    },
-    previousBlameUrl() {
-      if (!this.previousPath || !this.commit.parentSha || !this.projectPath) {
-        return null;
-      }
-
-      return projectBlobPath(
-        this.projectPath,
-        joinPaths(this.commit.parentSha, this.previousPath),
-        {
-          blame: 1,
-        },
-      );
     },
     author() {
       return this.commit.author;
@@ -141,7 +121,7 @@ export default {
 
     <gl-button
       v-gl-tooltip
-      :href="previousBlameUrl"
+      :href="previousBlamePath"
       :title="$options.i18n.viewBlamePrior"
       :aria-label="$options.i18n.viewBlamePrior"
       category="tertiary"
@@ -151,7 +131,7 @@ export default {
       data-testid="view-previous-blame-button"
       style="min-height: var(--source-line-height)"
       class="!gl-text-subtle focus:!gl-focus-inset"
-      :class="{ 'gl-invisible': !previousBlameUrl }"
+      :class="{ 'gl-invisible': !previousBlamePath }"
     />
   </div>
 </template>

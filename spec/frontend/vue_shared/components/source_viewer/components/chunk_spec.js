@@ -275,7 +275,7 @@ describe('Chunk component', () => {
 
       expect(findCommitInfos().at(0).props()).toMatchObject({
         commit: CHUNK_BLAME_GROUPS_MOCK[0].commit,
-        previousPath: CHUNK_BLAME_GROUPS_MOCK[0].previousPath,
+        previousBlamePath: CHUNK_BLAME_GROUPS_MOCK[0].commitData.previousBlamePath,
       });
     });
 

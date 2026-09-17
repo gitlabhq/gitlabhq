@@ -200,23 +200,33 @@ When a cascading setting on `project_settings` uses `NOT NULL DEFAULT`, new proj
 For example, if a group has `duo_features_enabled` set to `false` but the column default is `true`,
 a newly created project under that group starts with `duo_features_enabled: true`.
 
-To handle this, add a method in `EE::Projects::CreateService` that copies the inherited value from the parent group at project creation time.
-The existing methods `reset_duo_features_to_inherit_from_namespace` and `reset_ai_audit_events_storage_to_inherit_from_namespace` follow this pattern:
+To handle this, add your setting name to the `DUO_CASCADING_SETTINGS` array in `EE::Projects::CreateService`.
+The `sync_duo_cascading_defaults_from_namespace` method reads the database default from `ProjectSetting.column_defaults` at runtime and copies the inherited value when it differs:
 
 ```ruby
 # In EE::Projects::CreateService
 
-def reset_duo_features_to_inherit_from_namespace
-  inherited_value = project.group.duo_features_enabled
-  return if inherited_value
+DUO_CASCADING_SETTINGS = %i[
+  duo_features_enabled
+  ai_audit_events_storage_enabled
+  duo_auto_mode_enabled
+].freeze
 
-  return if project.project_setting.duo_features_enabled_locked?
+def sync_duo_cascading_defaults_from_namespace
+  DUO_CASCADING_SETTINGS.each do |setting|
+    db_default = ::ProjectSetting.column_defaults[setting.to_s]
 
-  project.project_setting.update!(duo_features_enabled: inherited_value)
+    inherited_value = project.group.public_send(setting) # rubocop:disable GitlabSecurity/PublicSend -- setting names from a frozen constant
+    next if inherited_value == db_default
+
+    next if project.project_setting.public_send(:"#{setting}_locked?") # rubocop:disable GitlabSecurity/PublicSend -- setting names from a frozen constant
+
+    project.project_setting.update!(setting => inherited_value)
+  end
 end
 ```
 
-Call this method from the `after_create_actions` method in `EE::Projects::CreateService`, guarded by `return unless project.group`.
+This method runs from `after_create_actions` in `EE::Projects::CreateService`, guarded by `return unless project.group`.
 
 Without this fixup, the `auto_duo_code_review_enabled` setting
 ([merge request 200397](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/200397)) required a

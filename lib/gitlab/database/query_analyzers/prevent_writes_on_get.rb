@@ -56,9 +56,7 @@ module Gitlab
           'GET /api/:version/virtual_registries/packages/maven/:id/*path' => TRACKING_URL,
 
           'Projects::BoardsController#show' => TRACKING_URL,
-          'Projects::BoardsController#index' => TRACKING_URL,
           'Groups::BoardsController#show' => TRACKING_URL,
-          'Groups::BoardsController#index' => TRACKING_URL,
 
           'Projects::Settings::RepositoryController#show' => TRACKING_URL,
           'Groups::Settings::RepositoryController#show' => TRACKING_URL,

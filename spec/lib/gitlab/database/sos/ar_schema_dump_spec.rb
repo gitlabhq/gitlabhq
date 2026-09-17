@@ -23,14 +23,26 @@ RSpec.describe Gitlab::Database::Sos::ArSchemaDump, feature_category: :database 
   end
 
   describe '#run' do
-    it 'successfully writes the schema dump results to an sql file' do
-      relative_file_path = "#{db_name}/#{db_name}_schema_dump.sql"
-      File.join(temp_directory, relative_file_path)
+    it 'successfully writes the schema dump results to a Ruby schema file' do
+      relative_file_path = "#{db_name}/#{db_name}_schema_dump.rb"
 
       expect(output).to receive(:write_file).with(relative_file_path).and_yield(StringIO.new)
       expect(File).to receive(:open).with(instance_of(StringIO), 'w').and_return(:file)
 
       handler.run
+    end
+
+    it 'writes the schema dumper output to a .rb file' do
+      dumper = instance_double(ActiveRecord::ConnectionAdapters::SchemaDumper)
+      allow(connection).to receive(:create_schema_dumper).with({}).and_return(dumper)
+      allow(dumper).to receive(:dump) { |io| io.write('ActiveRecord::Schema[8.0].define(version: 0) {}') }
+
+      dump_path = File.join(temp_directory, db_name, "#{db_name}_schema_dump.rb")
+      expect(File.exist?(dump_path)).to be(false)
+
+      handler.run
+
+      expect(File.read(dump_path)).to include('ActiveRecord::Schema')
     end
 
     context 'when an error occurs' do

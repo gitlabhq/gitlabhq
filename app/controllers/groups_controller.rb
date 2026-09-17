@@ -266,7 +266,11 @@ class GroupsController < Groups::ApplicationController
     if @group.export_file_exists?(current_user)
       if @group.export_archive_exists?(current_user)
         export_file = @group.export_file(current_user)
-        send_upload(export_file, attachment: export_file.filename)
+        send_upload(
+          export_file,
+          attachment: export_file.filename,
+          send_params: { content_type: Gitlab::ImportExport.export_download_content_type }
+        )
       else
         redirect_to edit_group_path(@group),
           alert: _(

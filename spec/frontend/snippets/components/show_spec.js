@@ -9,7 +9,6 @@ import SnippetApp from '~/snippets/components/show.vue';
 import SnippetBlob from '~/snippets/components/snippet_blob_view.vue';
 import SnippetHeader from '~/snippets/components/snippet_header.vue';
 import SnippetDescription from '~/snippets/components/snippet_description.vue';
-import { stubPerformanceWebAPI } from 'helpers/performance';
 import { createGQLSnippet, createGQLSnippetsQueryResponse } from '../test_utils';
 
 Vue.use(VueApollo);
@@ -74,10 +73,6 @@ describe('Snippet view app', () => {
   }
 
   const findLoadingIcon = () => wrapper.findComponent(GlLoadingIcon);
-
-  beforeEach(() => {
-    stubPerformanceWebAPI();
-  });
 
   it('renders loader while the query is in flight', () => {
     createComponent();

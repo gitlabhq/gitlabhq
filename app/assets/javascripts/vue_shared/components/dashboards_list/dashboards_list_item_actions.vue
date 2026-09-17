@@ -1,5 +1,6 @@
 <script>
 import { GlDisclosureDropdown, GlDisclosureDropdownItem, GlTooltipDirective } from '@gitlab/ui';
+import dashboardsListItemActionsMixin from './dashboards_list_item_actions_mixin';
 
 export default {
   name: 'DashboardsListItemActions',
@@ -10,6 +11,7 @@ export default {
   directives: {
     GlTooltip: GlTooltipDirective,
   },
+  mixins: [dashboardsListItemActionsMixin],
   inheritAttrs: false,
   props: {
     actionLabel: {
@@ -25,16 +27,23 @@ export default {
     v-gl-tooltip.hover
     icon="ellipsis_v"
     category="tertiary"
-    :title="actionLabel"
+    :title="__('More actions')"
     no-caret
-    left
-    :toggle-text="__('More actions')"
+    placement="bottom-end"
+    :toggle-text="actionLabel"
     text-sr-only
   >
-    <gl-disclosure-dropdown-item>
-      <template #list-item>
-        {{ __('Share') }}
-      </template>
-    </gl-disclosure-dropdown-item>
+    <gl-disclosure-dropdown-item
+      :item="openDashboardItem"
+      icon="dashboard"
+      data-testid="dashboard-open-action"
+    />
+    <gl-disclosure-dropdown-item
+      :item="$options.copyLinkItem"
+      icon="link"
+      data-testid="dashboard-copy-link-action"
+      :data-clipboard-text="absoluteDashboardUrl"
+      @action="handleCopyLinkAction"
+    />
   </gl-disclosure-dropdown>
 </template>

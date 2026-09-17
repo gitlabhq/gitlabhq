@@ -89,6 +89,8 @@
   - 1
 - - ai_duo_workflows_process_audit_events
   - 1
+- - ai_duo_workflows_session_lifecycle
+  - 1
 - - ai_duo_workflows_sync_session_artifact
   - 1
 - - ai_duo_workflows_update_workflow_status_event

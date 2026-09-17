@@ -78,11 +78,6 @@ export default {
       required: false,
       default: false,
     },
-    projectPath: {
-      type: String,
-      required: false,
-      default: null,
-    },
   },
   emits: ['appear', 'disappear'],
   data() {
@@ -284,8 +279,7 @@ export default {
         <span class="gl-sr-only" data-testid="blame-cell-lines">{{ blameCellLabel(group) }}</span>
         <blame-commit-info
           :commit="group.commit"
-          :previous-path="group.previousPath"
-          :project-path="projectPath"
+          :previous-blame-path="group.commitData && group.commitData.previousBlamePath"
         />
       </div>
 

@@ -379,13 +379,6 @@ RSpec.configure do |config|
       end
     end
 
-    # The Security Manager role is always enabled.
-    # Tests covering the removed opt-out can still disable it with the
-    # :disable_security_manager tag until those call sites are cleaned up.
-    if example.metadata[:disable_security_manager]
-      allow(Gitlab::Security::SecurityManagerConfig).to receive(:enabled?).and_return(false)
-    end
-
     # Make sure specs test by default admin mode setting on, unless forced to the opposite
     stub_application_setting(admin_mode: true) unless example.metadata[:do_not_mock_admin_mode_setting]
 

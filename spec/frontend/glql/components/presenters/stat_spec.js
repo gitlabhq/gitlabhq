@@ -159,6 +159,35 @@ describe('StatPresenter', () => {
       expect(findSingleStat().props('description')).toBeNull();
     });
 
+    it.each`
+      metric               | expected
+      ${USERS_COUNT}       | ${'14.61K'}
+      ${ACCEPTANCE_RATE}   | ${'73.5%'}
+      ${DURATION_QUANTILE} | ${'1h'}
+    `(
+      'renders $metric.key in its unit-aware compact format with displayConfig.compact',
+      ({ metric, expected }) => {
+        createComponent({ fields: [metric], displayConfig: { compact: true } });
+
+        expect(findSingleStat().props('value')).toBe(expected);
+      },
+    );
+
+    it('keeps the full format with compact set to false', () => {
+      createComponent({ fields: [USERS_COUNT], displayConfig: { compact: false } });
+
+      expect(findSingleStat().props('value')).toBe('14,614');
+    });
+
+    it('rejects a non-boolean compact value', () => {
+      createComponent({ displayConfig: { compact: 'yes' } });
+
+      expect(findSingleStat().exists()).toBe(false);
+      expect(findEmittedErrorMessage()).toBe(
+        'Unknown `compact`: `yes`. Supported values are: `true`, `false`.',
+      );
+    });
+
     it('takes displayConfig.description over the derived copy', () => {
       createComponent({
         fields: [ACCEPTANCE_RATE],

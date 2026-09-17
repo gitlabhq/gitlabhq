@@ -5,7 +5,7 @@ import { badgeVariantOptions } from '@gitlab/ui/src/utils/constants';
 import iconSpriteInfo from '@gitlab/svgs/dist/icons.json';
 import { __, sprintf } from '~/locale';
 import { dimensionsOf, metricsOf } from '../../utils/chart_data';
-import { valueFormatterFor } from '../../utils/value_format';
+import { compactValueFormatterFor, valueFormatterFor } from '../../utils/value_format';
 import {
   NO_VALUE,
   TREND_KEYS,
@@ -18,6 +18,7 @@ import {
 const metricValueIn = (data, metric) => (metric ? data?.nodes?.[0]?.[metric.key] : undefined);
 
 const BADGE_VARIANTS = Object.values(badgeVariantOptions);
+const COMPACT_OPTIONS = [true, false];
 const KNOWN_ICONS = new Set(iconSpriteInfo.icons);
 
 export default {
@@ -89,6 +90,18 @@ export default {
       });
     },
     displayConfigError() {
+      const { compact } = this.displayConfig ?? {};
+      if (compact != null && !COMPACT_OPTIONS.includes(compact)) {
+        return sprintf(
+          __('Unknown `%{key}`: `%{value}`. Supported values are: %{supportedValues}.'),
+          {
+            key: 'compact',
+            value: compact,
+            supportedValues: COMPACT_OPTIONS.map((option) => `\`${option}\``).join(', '),
+          },
+        );
+      }
+
       const { variant, metaIcon, titleIcon } = this.statConfig;
 
       if (!BADGE_VARIANTS.includes(variant)) {
@@ -147,6 +160,9 @@ export default {
     displayValue() {
       if (!this.metric) return '';
       if (this.value == null) return NO_VALUE;
+      if (this.displayConfig?.compact === true) {
+        return compactValueFormatterFor(this.metric)(this.value);
+      }
       return valueFormatterFor(this.metric)(this.value);
     },
   },

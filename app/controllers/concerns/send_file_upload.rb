@@ -4,7 +4,9 @@ module SendFileUpload
   def send_upload(
     file_upload, send_params: {}, redirect_params: {}, attachment: nil, proxy: false,
     disposition: 'attachment', ssrf_params: {}, sanitize_content_type: false)
-    if attachment # rubocop:disable Cop/LineBreakAroundConditionalBlock: -- Not a justified complaint
+    resolved_content_type = nil
+
+    if attachment
       response_disposition = ActionDispatch::Http::ContentDisposition.format(disposition: disposition,
         filename: attachment)
 
@@ -12,22 +14,25 @@ module SendFileUpload
       # Google Cloud Storage, so the metadata needs to be cleared on GCS for
       # this to work. However, this override works with AWS.
       #
-      content_type = content_type_for(attachment, sanitize: sanitize_content_type)
+      # Callers may force a specific content type via send_params[:content_type].
+      explicit_content_type = send_params.delete(:content_type)
+      resolved_content_type = explicit_content_type || content_type_for(attachment, sanitize: sanitize_content_type)
       redirect_params[:query] = { "response-content-disposition" => response_disposition,
-                                  "response-content-type" => content_type }
+                                  "response-content-type" => resolved_content_type }
 
       # By default, Rails will send uploads with an extension of .js with a
       # content-type of text/javascript, which will trigger Rails'
       # cross-origin JavaScript protection.
       #
       send_params[:content_type] = 'text/plain' if File.extname(attachment) == '.js'
+      send_params[:type] = explicit_content_type if explicit_content_type
 
       send_params.merge!(filename: attachment, disposition: disposition)
     end
 
     if image_scaling_request?(file_upload)
       location = file_upload.file_storage? ? file_upload.path : file_upload.url
-      content_type ||= content_type_for(attachment, sanitize: sanitize_content_type)
+      content_type = resolved_content_type || content_type_for(attachment, sanitize: sanitize_content_type)
 
       store_workhorse_send_data! { Gitlab::Workhorse.send_scaled_image(location, safe_width, content_type) }
 

@@ -3,8 +3,16 @@
 require 'spec_helper'
 
 RSpec.describe Gitlab::Template::IssueTemplate do
-  let_it_be(:project) { create(:project, :repository, create_templates: :issue) }
-  let_it_be(:empty_project) { create(:project) }
+  let_it_be(:project) do
+    create(:project, :custom_repo, files: {
+      '.gitlab/issue_templates/bug.md' => 'something valid',
+      '.gitlab/issue_templates/(test).md' => 'parentheses',
+      '.gitlab/issue_templates/template_test.md' => 'template_test',
+      '.gitlab/issue_templates/feature_proposal.md' => 'feature_proposal'
+    })
+  end
+
+  let_it_be(:empty_project) { create(:project, namespace: project.namespace) }
 
   describe '.all' do
     it 'strips the md suffix' do

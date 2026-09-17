@@ -4,9 +4,9 @@ import FileIcon from '~/vue_shared/components/file_icon.vue';
 import axios from '~/lib/utils/axios_utils';
 import { logError } from '~/lib/logger';
 import { contentTypeMultipartFormData } from '~/lib/utils/headers';
-import { numberToHumanSize } from '~/lib/utils/number_utils';
+import { bytesToMiB, numberToHumanSize } from '~/lib/utils/number_utils';
 import { visitUrl, joinPaths } from '~/lib/utils/url_utility';
-import { __ } from '~/locale';
+import { __, sprintf } from '~/locale';
 import UploadDropzone from '~/vue_shared/components/upload_dropzone/upload_dropzone.vue';
 import CommitChangesModal from '~/repository/components/commit_changes_modal.vue';
 import { InternalEvents } from '~/tracking';
@@ -25,6 +25,7 @@ export default {
     DIRECTORY_FILE_ERROR: __(
       'Directories cannot be uploaded. Please upload a single file instead.',
     ),
+    FILE_TOO_BIG_ERROR: __('File is too big (%{fileSize}MiB). Max filesize: %{maxFileSize}MiB.'),
   },
   mixins: [InternalEvents.mixin()],
   props: {
@@ -95,8 +96,22 @@ export default {
       this.$refs[this.modalId].show();
     },
     setFile(file) {
-      this.file = file;
       this.error = null;
+
+      const fileSizeMiB = bytesToMiB(file.size);
+      const maxFileSizeMiB = gon.max_file_size;
+
+      if (maxFileSizeMiB && fileSizeMiB > maxFileSizeMiB) {
+        this.removeFile();
+        this.error = sprintf(this.$options.i18n.FILE_TOO_BIG_ERROR, {
+          fileSize: fileSizeMiB.toFixed(2),
+          maxFileSize: maxFileSizeMiB,
+        });
+
+        return;
+      }
+
+      this.file = file;
 
       const fileUurlReader = new FileReader();
 

@@ -1,6 +1,5 @@
 import { GlButton, GlLink } from '@gitlab/ui';
 import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
-import { useConfigurePathHelpers } from 'helpers/configure_path_helpers';
 import BlameCommitInfo from '~/vue_shared/components/source_viewer/components/blame_commit_info.vue';
 import CommitPopover from '~/vue_shared/components/source_viewer/components/commit_popover.vue';
 import TimeagoTooltip from '~/vue_shared/components/time_ago_tooltip.vue';
@@ -16,7 +15,6 @@ describe('BlameCommitInfo component', () => {
     authorGravatar: 'https://gravatar.com/avatar',
     authorName: 'Test Author',
     webPath: '/commit/abc123',
-    parentSha: 'parent123',
     sha: 'abc123',
   };
 
@@ -139,48 +137,19 @@ describe('BlameCommitInfo component', () => {
   });
 
   describe('previous blame button', () => {
-    it('is visible when previousPath, parentSha, and projectPath are provided', () => {
-      createComponent({
-        previousPath: 'old/file.js',
-        projectPath: 'gitlab-org/gitlab',
-      });
+    const previousBlamePath = '/gitlab/gitlab-org/gitlab/-/blob/parent123/old/file.js?blame=1';
+
+    it('is visible and uses the server-built path when previousBlamePath is provided', () => {
+      createComponent({ previousBlamePath });
 
       expect(findPreviousBlameButton().classes()).not.toContain('gl-invisible');
-      expect(findPreviousBlameButton().attributes('href')).toBe(
-        '/gitlab-org/gitlab/-/blob/parent123/old/file.js?blame=1',
-      );
+      expect(findPreviousBlameButton().attributes('href')).toBe(previousBlamePath);
     });
 
-    it.each([
-      ['previousPath', { projectPath: 'gitlab-org/gitlab' }],
-      ['projectPath', { previousPath: 'old/file.js' }],
-      [
-        'parentSha',
-        {
-          previousPath: 'old/file.js',
-          projectPath: 'gitlab-org/gitlab',
-          commit: { ...defaultCommit, parentSha: null },
-        },
-      ],
-    ])('is hidden when %s is missing', (_, props) => {
-      createComponent(props);
+    it('is hidden when previousBlamePath is missing', () => {
+      createComponent();
 
       expect(findPreviousBlameButton().classes()).toContain('gl-invisible');
-    });
-
-    describe('with a relative URL root', () => {
-      useConfigurePathHelpers('/gitlab');
-
-      it('includes the relative URL root in the href', () => {
-        createComponent({
-          previousPath: 'old/file.js',
-          projectPath: 'gitlab-org/gitlab',
-        });
-
-        expect(findPreviousBlameButton().attributes('href')).toBe(
-          '/gitlab/gitlab-org/gitlab/-/blob/parent123/old/file.js?blame=1',
-        );
-      });
     });
   });
 });

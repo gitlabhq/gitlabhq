@@ -18,7 +18,7 @@ import {
 } from './constants';
 import Chunk from './components/chunk.vue';
 import BlameColumnResizer from './components/blame_column_resizer.vue';
-import { hasBlameDataForChunk, normalizeBlameGroups, blameGroupsForChunk } from './utils';
+import { hasBlameDataForChunk, normalizeBlameGroups, createBlameSliceBuilder } from './utils';
 import blameDataQuery from './queries/blame_data.query.graphql';
 
 export default {
@@ -80,18 +80,14 @@ export default {
       return this.blob.name === CODEOWNERS_FILE_NAME;
     },
     /**
-     * Blame groups pre-sliced per chunk, keyed by chunk index. Sliced once here
-     * rather than derived inside each chunk, so a chunk never has to reason
-     * about blame data belonging to lines it does not render.
+     * Blame groups pre-sliced per chunk, keyed by chunk index. Every blame
+     * arrival rebuilds the slices, but a chunk keeps its previous array when
+     * its slice is unchanged, so only chunks whose blame moved re-render.
      */
     blameGroupsByChunk() {
       if (!this.showBlame) return {};
 
-      const blameGroups = normalizeBlameGroups(this.blameData);
-
-      return Object.fromEntries(
-        this.chunks.map((chunk, index) => [index, blameGroupsForChunk(blameGroups, chunk)]),
-      );
+      return this.buildBlameSlices(this.chunks, normalizeBlameGroups(this.blameData));
     },
     /**
      * The blame gutter is rendered inside every chunk, so the three tracks are
@@ -141,6 +137,7 @@ export default {
   },
   created() {
     this.pendingChunks = new Set();
+    this.buildBlameSlices = createBlameSliceBuilder();
     this.processPendingChunks = debounce(() => {
       this.pendingChunks.forEach((index) => this.handleChunkAppear(index));
       this.pendingChunks.clear();
@@ -269,7 +266,6 @@ export default {
           :is-blame-active="showBlame"
           :blame-groups="blameGroupsByChunk[index]"
           :is-blame-loading="loadingChunks.includes(index)"
-          :project-path="projectPath"
           @appear="() => handleAppear(index)"
           @disappear="() => handleDisappear(index)"
         />
