@@ -54,20 +54,20 @@ To avoid confusion and ensure [communication is efficient](https://handbook.gitl
 
 | Term              | Description | Example of misuse | Should be |
 | ---               | ---         | ---               | ---       |
-| work item type    | Classes of work item; for example: issue, requirement, test case, incident, or task | _Epics will eventually become issues_ | _Epics will eventually become a **work item type**_ |
+| work item type    | Classes of work item; for example: issue, requirement, test case, incident, or task | Epics will eventually become issues | Epics will eventually become a work item type |
 | work item         | An instance of a work item type | | |
-| work item view    | The new frontend view that renders work items of any type | _This should be rendered in the new view_ | _This should be rendered in the work item view_ |
-| legacy object     | An object that has been or will be converted to a Work Item Type | _Epics will be migrated from a standalone/old/former object to a work item type_ | _Epics will be converted from a legacy object to a work item type_ |
-| legacy issue view | The existing view used to render issues and incidents | _Issues continue to be rendered in the old view_ | _Issues continue to be rendered in the legacy issue view_ |
+| work item view    | The new frontend view that renders work items of any type | This should be rendered in the new view | This should be rendered in the work item view |
+| legacy object     | An object that has been or will be converted to a Work Item Type | Epics will be migrated from a standalone/old/former object to a work item type | Epics will be converted from a legacy object to a work item type |
+| legacy issue view | The existing view used to render issues and incidents | Issues continue to be rendered in the old view | Issues continue to be rendered in the legacy issue view |
 | issue             | The existing issue model | | |
-| issuable          | Any model currently using the issuable module (issues, epics and MRs) | _Incidents are an **issuable**_ | _Incidents are a **work item type**_ |
+| issuable          | Any model currently using the issuable module (issues, epics and MRs) | Incidents are an issuable | Incidents are a work item type |
 | widget            | A UI element to present or allow interaction with specific work item data | | |
 
 Some terms have been used in the past but have since become confusing and are now discouraged.
 
 | Term              | Description | Example of misuse | Should be |
 | ---               | ---         | ---               | ---       |
-| issue type        | A former way to refer to classes of work item | _Tasks are an **issue type**_ | _Tasks are a **work item type**_ |
+| issue type        | A former way to refer to classes of work item | Tasks are an issue type | Tasks are a work item type |
 
 ## Migration strategy
 
@@ -242,7 +242,7 @@ and widgets. It means there can be multiple widgets that use or manage the same 
 be present at the same time (for example, a read-only summary widget and an editable detail widget,
 or two widgets showing two different filtered views of the same model).
 
-Widgets should be differentiated by their **purpose**. When possible, this purpose should be
+Widgets should be differentiated by their purpose. When possible, this purpose should be
 abstracted to the highest reasonable level to maximize reusability. For example, the widget for
 managing "tasks" was built as "child items". Rather than managing one type of child, it's abstracted
 up to managing any children.
@@ -283,9 +283,9 @@ Custom work item types delegate to a system-defined type's `base_type`, inheriti
 
 To add a new system-defined work item type to GitLab:
 
-1. **Create a definition module** in `app/models/work_items/types_framework/system_defined/definitions/` that defines the type configuration, widgets, and behavior.
-1. **Include the definition** in `WorkItems::TypesFramework::SystemDefined::Type` so it's loaded at application startup.
-1. **Add to visibility constants** - Add the base type to frontend and backend constants that control where the type appears in the UI and APIs.
+1. Create a definition module in `app/models/work_items/types_framework/system_defined/definitions/` that defines the type configuration, widgets, and behavior.
+1. Include the definition in `WorkItems::TypesFramework::SystemDefined::Type` so it's loaded at application startup.
+1. Add to visibility constants. Add the base type to frontend and backend constants that control where the type appears in the UI and APIs.
 
 For specific implementation details, reach out to the Plan Project Management team in `#g_project-management` on Slack.
 
@@ -447,10 +447,10 @@ For the complete list of trackable work item events, see
 
 To add a new work item event:
 
-1. **Define your event and metrics** using the internal events CLI. Follow the
+1. Define your event and metrics using the internal events CLI. Follow the
    [quick start guide](internal_analytics/internal_event_instrumentation/quick_start.md#defining-event-and-metrics)
    to generate the necessary YAML definitions.
-1. **Add the event constant** in `lib/gitlab/work_items/instrumentation/event_actions.rb`:
+1. Add the event constant in `lib/gitlab/work_items/instrumentation/event_actions.rb`:
 
    ```ruby
    NEW_ACTION = 'work_item_new_action'
@@ -461,7 +461,7 @@ To add a new work item event:
    ].freeze
    ```
 
-1. **Add mapping** (for update-derived events only) in `lib/gitlab/work_items/instrumentation/event_mappings.rb`:
+1. Add mapping (for update-derived events only) in `lib/gitlab/work_items/instrumentation/event_mappings.rb`:
 
    For attribute changes:
 
@@ -485,8 +485,8 @@ To add a new work item event:
    ].freeze
    ```
 
-1. **Call the tracking service** from the relevant service class.
-1. **Add specs** using the shared examples:
+1. Call the tracking service from the relevant service class.
+1. Add specs using the shared examples:
 
    ```ruby
    it_behaves_like 'tracks work item event', :work_item, :user, 'work_item_new_action'

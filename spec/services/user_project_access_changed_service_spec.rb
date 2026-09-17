@@ -49,6 +49,38 @@ RSpec.describe UserProjectAccessChangedService, feature_category: :system_access
           end
         end
 
+        context 'when the feature flag `use_db_to_queue_safety_net_auth_refresh` is enabled for some of the users' do
+          subject(:execute) do
+            described_class.new([enabled_user.id, disabled_user.id]).execute(priority: described_class::LOW_PRIORITY)
+          end
+
+          let_it_be(:enabled_user) { create(:user) }
+          let_it_be(:disabled_user) { create(:user) }
+
+          before do
+            stub_feature_flags(use_db_to_queue_safety_net_auth_refresh: enabled_user)
+          end
+
+          it 'queues the enabled users and enqueues safety net jobs for the rest' do
+            execute
+
+            expect(Authz::ProjectAuthorizationReverification.pluck(:user_id)).to contain_exactly(enabled_user.id)
+            expect(AuthorizedProjectUpdate::UserRefreshFromReplicaWorker.jobs.pluck('args'))
+              .to contain_exactly([disabled_user.id])
+          end
+
+          it 'does not query users to check the feature flag', :use_sql_query_cache, :request_store do
+            control = ActiveRecord::QueryRecorder.new(skip_cached: false) { execute }
+
+            more_users = create_list(:user, 3)
+            stub_feature_flags(use_db_to_queue_safety_net_auth_refresh: [enabled_user, *more_users])
+            user_ids = [enabled_user.id, disabled_user.id, *more_users.map(&:id)]
+
+            expect { described_class.new(user_ids).execute(priority: described_class::LOW_PRIORITY) }
+              .not_to exceed_all_query_limit(control)
+          end
+        end
+
         context 'when the feature flag `use_db_to_queue_safety_net_auth_refresh` is disabled' do
           before do
             stub_feature_flags(use_db_to_queue_safety_net_auth_refresh: false)

@@ -15,8 +15,6 @@ module Authz
     MAX_RUNTIME = 270.seconds
 
     def perform
-      return unless Feature.enabled?(:use_db_to_queue_safety_net_auth_refresh, :instance)
-
       requeue_abandoned
 
       users_processed = 0

@@ -38,7 +38,7 @@ Use [frontend feature tests](testing_levels.md#frontend-feature-tests) to valida
 
 ## DAP feature tests in core feature pages
 
-To test that DAP features are functional in a core feature page **and** core features are functional with DAP components,
+To test that DAP features are functional in a core feature page and core features are functional with DAP components,
 use the following shared context and examples in a feature spec:
 
 - Include the shared context `include_context 'with duo features enabled and agentic chat available for group on SaaS'`

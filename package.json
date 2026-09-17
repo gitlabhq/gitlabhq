@@ -271,7 +271,7 @@
     "yjs": "^13.6.30"
   },
   "devDependencies": {
-    "@eslint/eslintrc": "^3.3.6",
+    "@eslint/eslintrc": "^3.3.7",
     "@eslint/js": "^9.39.5",
     "@gitlab/eslint-plugin": "21.5.0",
     "@gitlab/jest-metrics-exporter": "^0.2.0",

@@ -5,11 +5,17 @@ require 'spec_helper'
 RSpec.describe Gitlab::ImportExport::MergeRequestParser, feature_category: :importers do
   include ProjectForksHelper
 
-  let(:user) { create(:user) }
-  let!(:project) { create(:project, :repository, name: 'test-repo-restorer', path: 'test-repo-restorer') }
-  let(:forked_project) { fork_project(project) }
+  let_it_be(:user) { create(:user) }
+  let_it_be(:group) { create(:group) }
 
-  let!(:merge_request) do
+  let!(:project) do
+    create(:project, :repository, name: 'test-repo-restorer', path: 'test-repo-restorer',
+      group: group, creator: user, maintainers: user)
+  end
+
+  let(:forked_project) { fork_project(project, user) }
+
+  let(:merge_request) do
     create(:merge_request, source_project: forked_project, target_project: project)
   end
 
@@ -23,10 +29,6 @@ RSpec.describe Gitlab::ImportExport::MergeRequestParser, feature_category: :impo
       merge_request.as_json,
       user: user
     ).parse!
-  end
-
-  before do
-    project.add_maintainer(user)
   end
 
   after do
@@ -135,7 +137,7 @@ RSpec.describe Gitlab::ImportExport::MergeRequestParser, feature_category: :impo
 
   # Regression test for https://gitlab.com/gitlab-org/gitlab/-/issues/604665.
   context 'when the payload targets an existing protected branch' do
-    let!(:attacker) { create(:user) }
+    let_it_be(:attacker) { create(:user) }
 
     let(:protected_branch_name) { project.default_branch_or_main }
 

@@ -5,6 +5,7 @@ require 'spec_helper'
 RSpec.describe 'User creates work items', :js, feature_category: :team_planning do
   include WorkItemsHelpers
   include ListboxHelpers
+  include RichTextEditorHelpers
 
   let_it_be(:user) { create(:user) }
   let_it_be(:group) { create(:group, :public) }
@@ -51,6 +52,28 @@ RSpec.describe 'User creates work items', :js, feature_category: :team_planning 
         expect(created_work_item.title).to eq("#{type} from sidebar")
         expect(created_work_item.description).to eq("#{type} description from sidebar")
       end
+    end
+
+    it 'closes the description suggestions on Escape and reaches the form only on a second Escape' do
+      suggestions_dropdown = '[data-testid="content-editor-suggestions-dropdown"]'
+      discard_prompt = 'Are you sure you want to cancel creating this issue?'
+
+      fill_work_item_title('Keyboard draft')
+      switch_to_content_editor
+      type_in_content_editor 'Draft description :'
+
+      expect(find(suggestions_dropdown)).to have_text('grinning')
+
+      send_keys :escape
+
+      expect(page).not_to have_css(suggestions_dropdown)
+      expect(page).not_to have_text(discard_prompt)
+      expect(page).to have_css('.create-work-item-modal')
+      expect(find(content_editor_testid)).to have_text('Draft description :')
+
+      send_keys :escape
+
+      expect(page).to have_text(discard_prompt).or(have_no_css('.create-work-item-modal'))
     end
   end
 end

@@ -31,8 +31,6 @@ RSpec.describe Gitlab::Ci::Components::InstancePath, feature_category: :pipeline
     let_it_be(:project_path) { project.full_path }
 
     before_all do
-      project.add_maintainer(user)
-
       create(
         :release, :with_catalog_resource_version,
         project: project, tag: '0.1.0', author: user, sha: commit.id
@@ -54,6 +52,7 @@ RSpec.describe Gitlab::Ci::Components::InstancePath, feature_category: :pipeline
       let_it_be(:project, freeze: false) do
         create(
           :project, :custom_repo,
+          developers: user,
           files: {
             'templates/secret-detection.yml' => 'image: alpine_1',
             'templates/dast/template.yml' => 'image: alpine_2',
@@ -61,10 +60,6 @@ RSpec.describe Gitlab::Ci::Components::InstancePath, feature_category: :pipeline
             'templates/dast/another-folder/template.yml' => 'image: alpine_4'
           }
         )
-      end
-
-      before do
-        project.add_developer(user)
       end
 
       context 'when user does not have permissions' do
@@ -95,7 +90,7 @@ RSpec.describe Gitlab::Ci::Components::InstancePath, feature_category: :pipeline
         it_behaves_like 'fetches the component content'
 
         context 'when the there is a redirect set for the project' do
-          let!(:redirect_route) { project.redirect_routes.create!(path: 'another-group/new-project') }
+          let_it_be(:redirect_route) { project.redirect_routes.create!(path: 'another-group/new-project') }
           let(:project_path) { redirect_route.path }
 
           it_behaves_like 'fetches the component content'
@@ -144,7 +139,7 @@ RSpec.describe Gitlab::Ci::Components::InstancePath, feature_category: :pipeline
         end
 
         context 'when the project is not a catalog resource' do
-          let_it_be(:project, freeze: false) { create(:project, :repository) }
+          let_it_be(:project, freeze: false) { create(:project, :small_repo) }
 
           it_behaves_like 'does not find the component'
         end
@@ -153,6 +148,7 @@ RSpec.describe Gitlab::Ci::Components::InstancePath, feature_category: :pipeline
           let_it_be(:project, freeze: false) do
             create(
               :project, :custom_repo,
+              developers: user,
               files: {
                 'templates/secret-detection.yml' => 'image: alpine_1'
               }
@@ -163,7 +159,9 @@ RSpec.describe Gitlab::Ci::Components::InstancePath, feature_category: :pipeline
 
           let_it_be(:v2_6_0, freeze: false) do
             sha = project.repository.commit('master').id
-            release = create(:release, project: project, tag: '2.6.0', sha: sha, released_at: Date.yesterday)
+            release = create(
+              :release, project: project, tag: '2.6.0', sha: sha, author: user, released_at: Date.yesterday
+            )
 
             create(:ci_catalog_resource_version, catalog_resource: resource, release: release, semver: '2.6.0')
           end
@@ -173,7 +171,7 @@ RSpec.describe Gitlab::Ci::Components::InstancePath, feature_category: :pipeline
               user, 'templates/secret-detection.yml', 'image: alpine_2',
               message: 'Updates image', branch_name: project.default_branch
             )
-            release = create(:release, project: project, tag: '1.1.2', sha: sha, released_at: Date.today)
+            release = create(:release, project: project, tag: '1.1.2', sha: sha, author: user, released_at: Date.today)
 
             create(:ci_catalog_resource_version, catalog_resource: resource, release: release, semver: '1.1.2')
           end
@@ -183,7 +181,9 @@ RSpec.describe Gitlab::Ci::Components::InstancePath, feature_category: :pipeline
               user, 'templates/secret-detection.yml', 'image: alpine_6',
               message: 'Updates release', branch_name: project.default_branch
             )
-            release = create(:release, project: project, tag: '6.0.0-pre', sha: sha, released_at: Date.today)
+            release = create(
+              :release, project: project, tag: '6.0.0-pre', sha: sha, author: user, released_at: Date.today
+            )
 
             create(:ci_catalog_resource_version, catalog_resource: resource, release: release, semver: '6.0.0-pre')
           end
@@ -256,9 +256,9 @@ RSpec.describe Gitlab::Ci::Components::InstancePath, feature_category: :pipeline
 
         context 'when fetching the latest release' do
           let(:version) { '~latest' }
-          let!(:resource) { create(:ci_catalog_resource, project: project) }
+          let_it_be_with_reload(:resource) { create(:ci_catalog_resource, project: project) }
 
-          let!(:catalog_version) do
+          let_it_be(:catalog_version) do
             sha = project.repository.commit.id
             release = create(:release, project: project, tag: '1.0.0', sha: sha, author: user)
             create(:ci_catalog_resource_version, catalog_resource: resource, release: release, semver: '1.0.0')
@@ -274,9 +274,9 @@ RSpec.describe Gitlab::Ci::Components::InstancePath, feature_category: :pipeline
 
         context 'when using shorthand semver' do
           let(:version) { '1' }
-          let!(:resource) { create(:ci_catalog_resource, project: project) }
+          let_it_be_with_reload(:resource) { create(:ci_catalog_resource, project: project) }
 
-          let!(:catalog_version) do
+          let_it_be(:catalog_version) do
             sha = project.repository.commit.id
             release = create(:release, project: project, tag: '1.2.0', sha: sha, author: user)
             create(:ci_catalog_resource_version, catalog_resource: resource, release: release, semver: '1.2.0')
@@ -293,7 +293,7 @@ RSpec.describe Gitlab::Ci::Components::InstancePath, feature_category: :pipeline
         context 'when using a released tag' do
           let(:version) { '2.0.0' }
 
-          let!(:release) do
+          let_it_be(:release) do
             create(:release, project: project, tag: '2.0.0', author: user, sha: project.repository.commit.id)
           end
 
@@ -338,8 +338,6 @@ RSpec.describe Gitlab::Ci::Components::InstancePath, feature_category: :pipeline
 
         before_all do
           project.add_maintainer(user)
-          project.repository.rm_tag(user, version)
-          project.repository.add_tag(user, version, commit.id)
         end
 
         context 'when there is a release' do
@@ -514,7 +512,7 @@ RSpec.describe Gitlab::Ci::Components::InstancePath, feature_category: :pipeline
 
     context 'when the project is a catalog resource' do
       let(:version) { '~latest' }
-      let!(:catalog_resource) { create(:ci_catalog_resource, project: project) }
+      let_it_be(:catalog_resource) { create(:ci_catalog_resource, project: project) }
 
       it 'returns false' do
         expect(path.invalid_usage_for_latest?).to be_falsey
@@ -528,7 +526,7 @@ RSpec.describe Gitlab::Ci::Components::InstancePath, feature_category: :pipeline
     let(:address) { "acme.com/#{project_path}/secret-detection@#{version}" }
 
     context 'when the project is a catalog resource' do
-      let!(:catalog_resource) { create(:ci_catalog_resource, project: project) }
+      let_it_be(:catalog_resource) { create(:ci_catalog_resource, project: project) }
 
       context 'when selected by a partial semantic version' do
         let(:version) { '1.0' }
@@ -648,6 +646,7 @@ RSpec.describe Gitlab::Ci::Components::InstancePath, feature_category: :pipeline
     let_it_be(:project, freeze: false) do
       create(
         :project, :custom_repo,
+        developers: user,
         files: {
           'templates/component-a.yml' => 'job_a: { script: echo a }',
           'templates/component-b.yml' => 'job_b: { script: echo b }'
@@ -657,10 +656,6 @@ RSpec.describe Gitlab::Ci::Components::InstancePath, feature_category: :pipeline
 
     let(:version) { 'master' }
     let(:project_path) { project.full_path }
-
-    before_all do
-      project.add_developer(user)
-    end
 
     context 'when ci_cache_component_includes is disabled' do
       before do

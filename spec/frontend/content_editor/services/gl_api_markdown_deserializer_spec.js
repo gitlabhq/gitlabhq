@@ -39,6 +39,44 @@ describe('content_editor/services/gl_api_markdown_deserializer', () => {
         transformQuickActions('Link to [GitLab][link]\n/confidential\n[link]: https://gitlab.com'),
       ).toBe('Link to [GitLab][link]\n/confidential\n\n\n[link]: https://gitlab.com');
     });
+
+    it.each`
+      block                                           | markdown
+      ${'a backtick fence'}                           | ${'```\nvar test1 10\n// testing comment\n/usr/bin/env bash\ntest 1\n```'}
+      ${'a tilde fence'}                              | ${'~~~\n// testing comment\n/usr/local/bin\n~~~'}
+      ${'a fence with an info string'}                | ${'```js\n// testing comment\n```'}
+      ${'a fence indented by up to three spaces'}     | ${'   ```\n/usr/local/bin\n   ```'}
+      ${'a fence closed by a longer fence'}           | ${'```\n// testing comment\n`````'}
+      ${'a longer fence that contains a shorter one'} | ${'````\n```\n// testing comment\n````'}
+      ${'a fence in a list item'}                     | ${'* item\n\n  ```\n  // testing comment\n  ```'}
+      ${'a fence in a blockquote'}                    | ${'> ```\n> // testing comment\n> ```'}
+      ${'an unterminated fence'}                      | ${'```\n// testing comment\n/usr/local/bin\n'}
+      ${'an indented code block'}                     | ${'    // testing comment\n    /usr/local/bin\n'}
+    `('leaves lines starting with a slash inside $block untouched', ({ markdown }) => {
+      expect(transformQuickActions(markdown)).toBe(markdown);
+    });
+
+    it.each`
+      position                                                          | markdown                                                                   | expected
+      ${'right after a closing fence'}                                  | ${'```\n// testing comment\n```\n/label ~bug\n[link]: https://gitlab.com'} | ${'```\n// testing comment\n```\n/label ~bug\n\n\n[link]: https://gitlab.com'}
+      ${'before and after a fence'}                                     | ${'/label ~bug\n```\n// testing comment\n```\n/assign @root\ntext'}        | ${'/label ~bug\n\n\n```\n// testing comment\n```\n/assign @root\n\n\ntext'}
+      ${'after a fence closed by a longer fence'}                       | ${'```\n// testing comment\n`````\n/label ~bug\n'}                         | ${'```\n// testing comment\n`````\n/label ~bug\n\n\n'}
+      ${'after backticks indented by four spaces'}                      | ${'    ```\n/label ~bug\n'}                                                | ${'    ```\n/label ~bug\n\n\n'}
+      ${'after a backtick fence whose info string contains a backtick'} | ${'``` a`b\n/label ~bug\n'}                                                | ${'``` a`b\n/label ~bug\n\n\n'}
+    `('still isolates a quick action $position', ({ markdown, expected }) => {
+      expect(transformQuickActions(markdown)).toBe(expected);
+    });
+
+    it.each`
+      case                                           | markdown                                               | expected
+      ${'a quick action'}                            | ${'/label ~bug\n'}                                     | ${'/label ~bug\n\n\n'}
+      ${'a quick action after a paragraph line'}     | ${'text\n/assign @root\nmore text'}                    | ${'text\n/assign @root\n\n\nmore text'}
+      ${'two quick actions'}                         | ${'/close\n/label ~bug\n\n[link]: https://gitlab.com'} | ${'/close\n\n\n/label ~bug\n\n\n\n[link]: https://gitlab.com'}
+      ${'a slash inside a line'}                     | ${'see /docs/path for details\n'}                      | ${'see /docs/path for details\n'}
+      ${'a quick action without a trailing newline'} | ${'/label ~bug'}                                       | ${'/label ~bug'}
+    `('keeps the existing output outside code fences for $case', ({ markdown, expected }) => {
+      expect(transformQuickActions(markdown)).toBe(expected);
+    });
   });
 
   describe('when deserializing', () => {
@@ -118,6 +156,25 @@ describe('content_editor/services/gl_api_markdown_deserializer', () => {
 
       expect(await roundTrip(REPOSITORY_RELATIVE_IMAGE_WITHOUT_CANONICAL_SRC_HTML, markdown)).toBe(
         '![logo](/gitlab-org/gitlab/-/raw/master/app/assets/images/logo.svg)',
+      );
+    });
+  });
+
+  describe('when deserializing markdown with a code block', () => {
+    it('renders lines starting with a slash inside the code block untouched', async () => {
+      const deserializer = createMarkdownDeserializer({ render: renderMarkdown });
+
+      renderMarkdown.mockResolvedValueOnce({
+        body: '<p>/label ~bug</p>\n<pre><code>// testing comment</code></pre>',
+      });
+
+      await deserializer.deserialize({
+        markdown: '/label ~bug\n```\n// testing comment\n```\n',
+        schema: tiptapEditor.schema,
+      });
+
+      expect(renderMarkdown).toHaveBeenCalledWith(
+        '/label ~bug\n\n\n```\n// testing comment\n```\n',
       );
     });
   });

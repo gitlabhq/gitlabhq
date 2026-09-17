@@ -1,4 +1,5 @@
 <script>
+import { defineAsyncComponent } from 'vue';
 import { GlAlert, GlLoadingIcon, GlTabs } from '@gitlab/ui';
 import { s__ } from '~/locale';
 import PipelineGraph from '~/ci/pipeline_editor/components/graph/pipeline_graph.vue';
@@ -42,6 +43,13 @@ export default {
         'PipelineEditor|The full configuration view is displayed when the CI/CD configuration file has valid syntax.',
       ),
     },
+    identityVerification: {
+      title: s__('IdentityVerification|Verify your identity to commit this change'),
+      description: s__(
+        'IdentityVerification|This step is separate from the verification you completed during registration.',
+      ),
+      buttonText: s__('IdentityVerification|Verify identity'),
+    },
   },
   errorTexts: {
     loadMergedYaml: s__('Pipelines|Could not load full configuration content'),
@@ -65,6 +73,9 @@ export default {
     GlTabs,
     PipelineGraph,
     TextEditor,
+    PipelineAccountVerificationAlert: defineAsyncComponent(
+      () => import('ee_component/vue_shared/components/pipeline_account_verification_alert.vue'),
+    ),
   },
   mixins: [glListenersMixin],
   props: {
@@ -155,6 +166,15 @@ export default {
     :query-param-name="$options.query.TAB_QUERY_PARAM"
     sync-active-tab-with-query-params
   >
+    <pipeline-account-verification-alert
+      class="gl-mb-3"
+      button-variant="default"
+      sticky
+      open-in-new-tab
+      :title="$options.i18n.identityVerification.title"
+      :description="$options.i18n.identityVerification.description"
+      :button-text="$options.i18n.identityVerification.buttonText"
+    />
     <editor-tab
       class="gl-mb-3"
       :title="$options.i18n.tabEdit"

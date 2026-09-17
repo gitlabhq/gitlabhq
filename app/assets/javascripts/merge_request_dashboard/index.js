@@ -134,6 +134,8 @@ export function initMergeRequestDashboard(el) {
       initialSort: el.dataset.initialSort,
       isPublicVisibilityRestricted: parseBoolean(el.dataset.isPublicVisibilityRestricted),
       isSignedIn: parseBoolean(el.dataset.isSignedIn),
+      savedViewLimit: Number(el.dataset.savedViewLimit),
+      savedViewsEnabled: parseBoolean(el.dataset.savedViewsEnabled),
       vueSearchEnabled: parseBoolean(el.dataset.vueSearchEnabled),
     },
     component: App,

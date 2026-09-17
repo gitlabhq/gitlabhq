@@ -605,6 +605,7 @@ RSpec/BeforeAllRoleAssignment:
     - 'spec/requests/projects/usage_quotas_spec.rb'
     - 'spec/requests/projects/work_items_spec.rb'
     - 'spec/requests/projects_controller_spec.rb'
+    - 'spec/requests/rack_attack_global_spec.rb'
     - 'spec/serializers/ci/pipeline_entity_spec.rb'
     - 'spec/services/authorized_project_update/project_recalculate_per_user_service_spec.rb'
     - 'spec/services/authorized_project_update/project_recalculate_service_spec.rb'

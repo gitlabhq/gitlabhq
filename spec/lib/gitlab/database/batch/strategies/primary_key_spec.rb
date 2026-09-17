@@ -12,13 +12,24 @@ RSpec.describe Gitlab::Database::Batch::Strategies::PrimaryKey, '#next_batch', f
     end
   end
 
-  let(:namespaces) { table(:namespaces) }
+  let_it_be(:namespaces) { table(:namespaces) }
 
-  let!(:organization) { table(:organizations).create!(name: 'organization', path: 'organization') }
-  let!(:namespace1) { namespaces.create!(name: 'batchtest999', path: 'batch-test1', organization_id: organization.id) }
-  let!(:namespace2) { namespaces.create!(name: 'batchtest2', path: 'batch-test2', organization_id: organization.id) }
-  let!(:namespace3) { namespaces.create!(name: 'batchtest3', path: 'batch-test3', organization_id: organization.id) }
-  let!(:namespace4) { namespaces.create!(name: 'batchtest4', path: 'batch-test4', organization_id: organization.id) }
+  let_it_be(:organization) { table(:organizations).create!(name: 'organization', path: 'organization') }
+  let_it_be(:namespace1) do
+    namespaces.create!(name: 'batchtest999', path: 'batch-test1', organization_id: organization.id)
+  end
+
+  let_it_be(:namespace2) do
+    namespaces.create!(name: 'batchtest2', path: 'batch-test2', organization_id: organization.id)
+  end
+
+  let_it_be(:namespace3) do
+    namespaces.create!(name: 'batchtest3', path: 'batch-test3', organization_id: organization.id)
+  end
+
+  let_it_be(:namespace4) do
+    namespaces.create!(name: 'batchtest4', path: 'batch-test4', organization_id: organization.id)
+  end
 
   it { expect(described_class).to be < Gitlab::Database::Batch::Strategies::BaseStrategy }
 

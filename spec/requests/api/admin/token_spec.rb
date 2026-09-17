@@ -304,9 +304,6 @@ RSpec.describe API::Admin::Token, :aggregate_failures, feature_category: :system
 
           before do
             allow(orphan_token).to receive_messages(group: nil, project: nil)
-            # The rate limiter resolves every request through deploy_token_from_request,
-            # which probes with a blank token, so the stub needs a default.
-            allow(::DeployToken).to receive(:find_by_token).and_call_original
             allow(::DeployToken).to receive(:find_by_token).with(plaintext).and_return(orphan_token)
           end
 

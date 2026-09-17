@@ -64,10 +64,7 @@ describe('JobLogTopBar', () => {
     wrapper.findComponent('[data-testid="job-scroll-to-prev-btn"]');
   const findJobLogSearchNextButton = () =>
     wrapper.findComponent('[data-testid="job-scroll-to-next-btn"]');
-  const findShowFullScreenButton = () =>
-    wrapper.find('[data-testid="job-top-bar-enter-fullscreen"]');
-  const findExitFullScreenButton = () =>
-    wrapper.find('[data-testid="job-top-bar-exit-fullscreen"]');
+  const findFullScreenButton = () => wrapper.find('[data-testid="job-top-bar-toggle-fullscreen"]');
 
   describe('Truncate information', () => {
     describe('with isJobLogSizeVisible', () => {
@@ -398,20 +395,20 @@ describe('JobLogTopBar', () => {
   });
 
   describe('Fullscreen controls', () => {
-    it('displays a disabled "Show fullscreen" button', () => {
+    it('displays a disabled fullscreen button', () => {
       createWrapper();
 
-      expect(findShowFullScreenButton().exists()).toBe(true);
-      expect(findShowFullScreenButton().attributes('aria-disabled')).toBe('true');
+      expect(findFullScreenButton().exists()).toBe(true);
+      expect(findFullScreenButton().attributes('aria-disabled')).toBe('true');
     });
 
-    it('displays a enabled "Show fullscreen" button', () => {
+    it('displays an enabled "Show full screen" button', () => {
       createWrapper({
         fullScreenModeAvailable: true,
       });
 
-      expect(findShowFullScreenButton().exists()).toBe(true);
-      expect(findShowFullScreenButton().attributes('aria-disabled')).toBeUndefined();
+      expect(findFullScreenButton().attributes('aria-disabled')).toBeUndefined();
+      expect(findFullScreenButton().attributes('aria-label')).toBe('Show full screen');
     });
 
     it('emits a enter-fullscreen event when the show fullscreen is clicked', async () => {
@@ -419,19 +416,19 @@ describe('JobLogTopBar', () => {
         fullScreenModeAvailable: true,
       });
 
-      await findShowFullScreenButton().trigger('click');
+      await findFullScreenButton().trigger('click');
 
       expect(wrapper.emitted('enter-fullscreen')).toHaveLength(1);
     });
 
-    it('displays a enabled "Exit fullscreen" button', () => {
+    it('displays an enabled "Exit full screen" button', () => {
       createWrapper({
         fullScreenModeAvailable: true,
         fullScreenEnabled: true,
       });
 
-      expect(findExitFullScreenButton().exists()).toBe(true);
-      expect(findExitFullScreenButton().attributes('aria-disabled')).toBeUndefined();
+      expect(findFullScreenButton().attributes('aria-disabled')).toBeUndefined();
+      expect(findFullScreenButton().attributes('aria-label')).toBe('Exit full screen');
     });
 
     it('emits a exit-fullscreen event when the exit fullscreen is clicked', async () => {
@@ -440,9 +437,21 @@ describe('JobLogTopBar', () => {
         fullScreenEnabled: true,
       });
 
-      await findExitFullScreenButton().trigger('click');
+      await findFullScreenButton().trigger('click');
 
       expect(wrapper.emitted('exit-fullscreen')).toHaveLength(1);
+    });
+
+    it('keeps the same button element when toggling fullscreen, so focus persists', async () => {
+      createWrapper({
+        fullScreenModeAvailable: true,
+      });
+
+      const buttonElement = findFullScreenButton().element;
+
+      await wrapper.setProps({ fullScreenEnabled: true });
+
+      expect(findFullScreenButton().element).toBe(buttonElement);
     });
   });
 });

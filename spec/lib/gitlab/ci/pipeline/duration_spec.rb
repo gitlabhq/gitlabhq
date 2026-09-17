@@ -181,7 +181,10 @@ RSpec.describe Gitlab::Ci::Pipeline::Duration, feature_category: :continuous_int
       let_it_be(:manual_bridge) { create_bridge(:manual) }
 
       let_it_be(:success_bridge_pipeline) do
-        create(:ci_pipeline, :success, started_at: start_time + 230, finished_at: start_time + 280).tap do |p|
+        create(
+          :ci_pipeline, :success, project: pipeline.project,
+          started_at: start_time + 230, finished_at: start_time + 280
+        ).tap do |p|
           create(:ci_sources_pipeline, source_job: success_bridge, pipeline: p)
           create_build(:success, pipeline: p, started_at: start_time + 235, finished_at: start_time + 280)
           create_bridge(:success, pipeline: p, started_at: start_time + 240, finished_at: start_time + 280)
@@ -189,7 +192,10 @@ RSpec.describe Gitlab::Ci::Pipeline::Duration, feature_category: :continuous_int
       end
 
       let_it_be(:failed_bridge_pipeline) do
-        create(:ci_pipeline, :failed, started_at: start_time + 225, finished_at: start_time + 240).tap do |p|
+        create(
+          :ci_pipeline, :failed, project: pipeline.project,
+          started_at: start_time + 225, finished_at: start_time + 240
+        ).tap do |p|
           create(:ci_sources_pipeline, source_job: failed_bridge, pipeline: p)
           create_build(:failed, pipeline: p, started_at: start_time + 230, finished_at: start_time + 240)
           create_bridge(:success, pipeline: p, started_at: start_time + 235, finished_at: start_time + 240)
@@ -197,7 +203,10 @@ RSpec.describe Gitlab::Ci::Pipeline::Duration, feature_category: :continuous_int
       end
 
       let_it_be(:canceled_bridge_pipeline) do
-        create(:ci_pipeline, :canceled, started_at: start_time + 190, finished_at: start_time + 210).tap do |p|
+        create(
+          :ci_pipeline, :canceled, project: pipeline.project,
+          started_at: start_time + 190, finished_at: start_time + 210
+        ).tap do |p|
           create(:ci_sources_pipeline, source_job: canceled_bridge, pipeline: p)
           create_build(:canceled, pipeline: p, started_at: start_time + 200, finished_at: start_time + 210)
           create_bridge(:success, pipeline: p, started_at: start_time + 205, finished_at: start_time + 210)
@@ -229,7 +238,10 @@ RSpec.describe Gitlab::Ci::Pipeline::Duration, feature_category: :continuous_int
         end
 
         let_it_be(:success_downstream_pipeline) do
-          create(:ci_pipeline, :success, started_at: start_time + 285, finished_at: start_time + 300).tap do |p|
+          create(
+            :ci_pipeline, :success, project: pipeline.project,
+            started_at: start_time + 285, finished_at: start_time + 300
+          ).tap do |p|
             create(:ci_sources_pipeline, source_job: success_direct_bridge, pipeline: p)
             create_build(:success, pipeline: p, started_at: start_time + 290, finished_at: start_time + 296)
             create_bridge(:success, pipeline: p, started_at: start_time + 285, finished_at: start_time + 288)
@@ -237,7 +249,10 @@ RSpec.describe Gitlab::Ci::Pipeline::Duration, feature_category: :continuous_int
         end
 
         let_it_be(:failed_downstream_pipeline) do
-          create(:ci_pipeline, :failed, started_at: start_time + 305, finished_at: start_time + 350).tap do |p|
+          create(
+            :ci_pipeline, :failed, project: pipeline.project,
+            started_at: start_time + 305, finished_at: start_time + 350
+          ).tap do |p|
             create(:ci_sources_pipeline, source_job: success_direct_bridge, pipeline: p)
             create_build(:failed, pipeline: p, started_at: start_time + 320, finished_at: start_time + 327)
             create_bridge(:success, pipeline: p, started_at: start_time + 305, finished_at: start_time + 350)
@@ -245,7 +260,10 @@ RSpec.describe Gitlab::Ci::Pipeline::Duration, feature_category: :continuous_int
         end
 
         let_it_be(:canceled_downstream_pipeline) do
-          create(:ci_pipeline, :canceled, started_at: start_time + 360, finished_at: start_time + 400).tap do |p|
+          create(
+            :ci_pipeline, :canceled, project: pipeline.project,
+            started_at: start_time + 360, finished_at: start_time + 400
+          ).tap do |p|
             create(:ci_sources_pipeline, source_job: success_direct_bridge, pipeline: p)
             create_build(:canceled, pipeline: p, started_at: start_time + 390, finished_at: start_time + 398)
             create_bridge(:success, pipeline: p, started_at: start_time + 360, finished_at: start_time + 378)
@@ -296,7 +314,10 @@ RSpec.describe Gitlab::Ci::Pipeline::Duration, feature_category: :continuous_int
         create_list(
           :ci_bridge, 2, :success,
           pipeline: pipeline, started_at: start_time + 220, finished_at: start_time + 280).each do |bridge|
-          create(:ci_pipeline, :success, started_at: start_time + 235, finished_at: start_time + 280).tap do |p|
+          create(
+            :ci_pipeline, :success, project: pipeline.project,
+            started_at: start_time + 235, finished_at: start_time + 280
+          ).tap do |p|
             create(:ci_sources_pipeline, source_job: bridge, pipeline: p)
             create_builds(3, :success)
           end

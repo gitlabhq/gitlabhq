@@ -3729,6 +3729,38 @@ paths:
           application/json:
             schema:
               "$ref": "#/components/schemas/RequestBody_7139042d9372"
+  "/api/v4/ai/duo_workflows/workflows/{workflow_id}/restart":
+    post:
+      operationId: postApiV4AiDuoWorkflowsWorkflowsWorkflowIdRestart
+      summary: Restart a failed or stopped workflow as a new session
+      description: Creates and starts a new session with the flow, goal, noteable,
+        source, privileges and trigger of the given workflow. The original workflow
+        is not modified.
+      tags:
+      - GitLab Duo workflows
+      responses:
+        '201':
+          description: Created
+        '400':
+          description: Validation failed
+        '401':
+          description: Unauthorized
+        '403':
+          description: Forbidden
+        '404':
+          description: Not found
+        '409':
+          description: Conflict
+        '422':
+          description: Unprocessable entity
+      parameters:
+      - name: workflow_id
+        required: true
+        description: The ID of the workflow to restart
+        schema:
+          type: string
+        in: path
+        example: '1'
   "/api/v4/ai/llm/git_command":
     post:
       operationId: postApiV4AiLlmGitCommand

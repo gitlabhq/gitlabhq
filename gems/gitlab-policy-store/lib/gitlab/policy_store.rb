@@ -47,7 +47,7 @@ module Gitlab
     NotFound = Class.new(Error)
     ValidationError = Class.new(Error)
     # Raised when the Rego engine itself fails.
-    EngineError = Class.new(ValidationError)
+    EngineError = Class.new(Error)
 
     class << self
       def configure

@@ -2,6 +2,7 @@
 import {
   GlTooltipDirective,
   GlLink,
+  GlButtonGroup,
   GlButton,
   GlSearchBoxByClick,
   GlSprintf,
@@ -31,6 +32,7 @@ export default {
   },
   components: {
     GlLink,
+    GlButtonGroup,
     GlButton,
     GlSearchBoxByClick,
     GlSprintf,
@@ -122,9 +124,14 @@ export default {
     shouldDisableJumpToFailures() {
       return !this.hasFailures;
     },
+    fullScreenButtonLabel() {
+      return this.fullScreenEnabled
+        ? this.$options.i18n.exitFullScreen
+        : this.$options.i18n.enterFullscreen;
+    },
     fullScreenTooltipContent() {
       return this.fullScreenModeAvailable
-        ? this.$options.i18n.enterFullscreen
+        ? this.fullScreenButtonLabel
         : this.$options.i18n.fullScreenNotAvailable;
     },
   },
@@ -187,11 +194,8 @@ export default {
       this.$emit('scroll-job-log-bottom');
       this.failureIndex = 0;
     },
-    handleFullscreenMode() {
-      this.$emit('enter-fullscreen');
-    },
-    handleExitFullscreenMode() {
-      this.$emit('exit-fullscreen');
+    handleToggleFullscreenMode() {
+      this.$emit(this.fullScreenEnabled ? 'exit-fullscreen' : 'enter-fullscreen');
     },
     async searchJobLog() {
       this.searchResults = [];
@@ -293,25 +297,26 @@ export default {
 
       <div class="gl-flex gl-gap-2">
         <!-- links -->
-        <div v-gl-tooltip :title="$options.i18n.scrollToPreviousResult">
+        <gl-button-group>
           <gl-button
+            v-gl-tooltip
+            :title="$options.i18n.scrollToPreviousResult"
             :aria-label="$options.i18n.scrollToPreviousResult"
             :disabled="!canGoToPreviousResult"
             data-testid="job-scroll-to-prev-btn"
             icon="chevron-up"
             @click="scrollToSearchResult('prev')"
           />
-        </div>
-
-        <div v-gl-tooltip :title="$options.i18n.scrollToNextResult">
           <gl-button
+            v-gl-tooltip
+            :title="$options.i18n.scrollToNextResult"
             :aria-label="$options.i18n.scrollToNextResult"
             :disabled="!canGoToNextResult"
             data-testid="job-scroll-to-next-btn"
             icon="chevron-down"
             @click="scrollToSearchResult('next')"
           />
-        </div>
+        </gl-button-group>
 
         <gl-button
           v-if="rawPath"
@@ -325,57 +330,47 @@ export default {
         <!-- eo links -->
 
         <!-- scroll buttons -->
-        <div v-gl-tooltip :title="$options.i18n.scrollToNextFailureButtonLabel">
+        <gl-button-group>
           <gl-button
+            v-gl-tooltip
+            :title="$options.i18n.scrollToNextFailureButtonLabel"
             :aria-label="$options.i18n.scrollToNextFailureButtonLabel"
             :disabled="shouldDisableJumpToFailures"
             data-testid="job-top-bar-scroll-to-failure"
             icon="soft-wrap"
             @click="handleScrollToNextFailure"
           />
-        </div>
-
-        <div v-gl-tooltip :title="$options.i18n.scrollToTopButtonLabel">
           <gl-button
+            v-gl-tooltip
+            :title="$options.i18n.scrollToTopButtonLabel"
             :disabled="isScrollTopDisabled"
             data-testid="job-top-bar-scroll-top"
             icon="scroll_up"
             :aria-label="$options.i18n.scrollToTopButtonLabel"
             @click="handleScrollToTop"
           />
-        </div>
-
-        <div v-gl-tooltip :title="$options.i18n.scrollToBottomButtonLabel">
           <gl-button
+            v-gl-tooltip
+            :title="$options.i18n.scrollToBottomButtonLabel"
             :disabled="isScrollBottomDisabled"
             data-testid="job-top-bar-scroll-bottom"
             icon="scroll_down"
             :aria-label="$options.i18n.scrollToBottomButtonLabel"
             @click="handleScrollToBottom"
           />
-        </div>
+        </gl-button-group>
         <!-- eo scroll buttons -->
 
-        <div v-gl-tooltip :title="fullScreenTooltipContent">
-          <gl-button
-            v-if="!fullScreenEnabled"
-            :disabled="!fullScreenModeAvailable"
-            :aria-label="$options.i18n.enterFullscreen"
-            data-testid="job-top-bar-enter-fullscreen"
-            icon="maximize"
-            @click="handleFullscreenMode"
-          />
-        </div>
-
-        <div v-gl-tooltip :title="$options.i18n.exitFullScreen">
-          <gl-button
-            v-if="fullScreenEnabled"
-            :aria-label="$options.i18n.exitFullScreen"
-            data-testid="job-top-bar-exit-fullscreen"
-            icon="minimize"
-            @click="handleExitFullscreenMode"
-          />
-        </div>
+        <gl-button
+          v-gl-tooltip
+          category="tertiary"
+          :title="fullScreenTooltipContent"
+          :aria-label="fullScreenButtonLabel"
+          :disabled="!fullScreenModeAvailable"
+          :icon="fullScreenEnabled ? 'minimize' : 'maximize'"
+          data-testid="job-top-bar-toggle-fullscreen"
+          @click="handleToggleFullscreenMode"
+        />
       </div>
     </div>
   </div>

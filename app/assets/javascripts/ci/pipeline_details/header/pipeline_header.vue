@@ -558,6 +558,15 @@ export default {
     </page-heading>
 
     <pipeline-agent-sessions v-if="pipeline" class="gl-mt-4" />
-    <pipeline-account-verification-alert class="gl-mt-4" />
+    <pipeline-account-verification-alert
+      class="gl-mt-4"
+      :title="s__('IdentityVerification|Verify your identity to run this pipeline')"
+      :description="
+        s__(
+          'IdentityVerification|This step is separate from the verification you completed during registration.',
+        )
+      "
+      :button-text="s__('IdentityVerification|Verify identity')"
+    />
   </div>
 </template>

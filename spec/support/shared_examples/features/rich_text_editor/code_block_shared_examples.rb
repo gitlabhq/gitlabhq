@@ -62,4 +62,22 @@ RSpec.shared_examples 'rich text editor - code blocks' do
       expect(find('[data-testid="code-block-bubble-menu"]')).to have_text('Custom (nomnoml)')
     end
   end
+
+  describe 'switching between editors', feature_category: :markdown do
+    it 'keeps lines starting with a slash inside a code block intact' do
+      markdown = "```\nvar test1 10\n// testing comment\n/usr/bin/env bash\ntest 1\n```\n\nNotes"
+
+      find('textarea').set(markdown)
+      switch_to_content_editor
+
+      expect(page).to have_css("#{content_editor_testid} pre", text: 'testing comment')
+
+      type_in_content_editor ' edited'
+      wait_until_hidden_field_is_updated(/Notes edited/)
+
+      switch_to_markdown_editor
+
+      expect(find('textarea').value).to eq(markdown.sub('Notes', 'Notes edited'))
+    end
+  end
 end

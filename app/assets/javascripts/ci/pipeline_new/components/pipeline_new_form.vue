@@ -245,7 +245,11 @@ export default {
 
 <template>
   <gl-form @submit.prevent="createPipeline">
-    <pipeline-account-verification-alert v-if="identityVerificationRequiredError" class="gl-mb-4" />
+    <pipeline-account-verification-alert
+      v-if="identityVerificationRequiredError"
+      class="gl-mb-4"
+      button-variant="default"
+    />
     <gl-alert
       v-else-if="error"
       :title="errorTitle"

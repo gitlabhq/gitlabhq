@@ -1,6 +1,6 @@
 ---
-source_checksum: 3731d9ca4e1ffc04
-distilled_at_sha: 3477a0d37b5792d9979852b021dc2f157963dc7d
+source_checksum: ea7286f7dbe0db17
+distilled_at_sha: 3378d9de7ce956458ecfbc5e1845591fa87448fc
 ---
 <!-- Auto-generated from docs.gitlab.com by gitlab-ai-principles-distiller — do not edit manually -->
 
@@ -17,9 +17,6 @@ distilled_at_sha: 3477a0d37b5792d9979852b021dc2f157963dc7d
 - Ensure concurrent migration operations (`add_concurrent_index`, `add_concurrent_foreign_key`, validate constraint) complete within 5min for migrations and 20min for post-migrations
 - Ensure background migration queries execute under 1s
 - Ensure Service Ping queries execute under 1s
-- Analyze query plans using `EXPLAIN(analyze, buffers)` and document results in the MR description for sequential scans on large tables, nested loops with large datasets, missing or inefficient index usage, high-cost operations, unexpected sort operations
-- Verify query plans reflect the complete query as executed (including all chained scopes, pagination, ordering)
-- Verify queries return expected records (not zero rows)
 - Consider async index creation if index creation in post-migrations exceeds 20 minutes
 
 ### SQL Query Guidelines
@@ -126,3 +123,4 @@ For the full picture, see:
 - doc/development/database/iterating_tables_in_batches.md
 - doc/development/database/insert_into_tables_in_batches.md
 - doc/development/database/pagination_performance_guidelines.md
+

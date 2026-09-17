@@ -7,6 +7,11 @@ title: Billing event tracking (Ruby)
 
 Track billable usage events from the GitLab Rails monolith with `Gitlab::BillingEvents::Client`. The client sends Snowplow structured events with a [`billable_usage`](https://gitlab.com/gitlab-org/iglu/-/blob/master/public/schemas/com.gitlab/billable_usage/jsonschema/1-0-3) context to the Data Insights Platform billing collector.
 
+Events go to the production billing collector, except for GitLab.com staging, GitLab QA instances,
+and instances whose `CUSTOMER_PORTAL_URL` points at the staging Customers Portal.
+Those use the staging billing collector, so their usage reaches the same CustomersDot
+environment as their subscription.
+
 For the schema field reference, see [Billable events schema](billable_events_schema.md).
 
 ## Track a billing event

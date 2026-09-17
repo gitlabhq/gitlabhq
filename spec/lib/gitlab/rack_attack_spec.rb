@@ -194,12 +194,47 @@ RSpec.describe Gitlab::RackAttack, :aggregate_failures, feature_category: :rate_
         captured_block
       end
 
+      def stub_shadow_and_enforce(cohort, shadow:, enforce:)
+        stub_feature_flags(
+          "rate_limiter_use_labkit_rack_cohort_#{cohort}": shadow,
+          "rate_limiter_use_labkit_rack_cohort_#{cohort}_enforce": enforce
+        )
+      end
+
       it 'registers a safelist rule' do
         expect(safelist_block).to be_a(Proc)
       end
 
-      it 'safelists every request, since every cohort unconditionally enforces' do
+      # spec/support/rate_limiter_labkit_rack_shadow.rb defaults every cohort's
+      # enforce flag off across the suite, matching production before rollout.
+      it 'does not safelist by default (no cohort enforces yet)' do
+        expect(safelist_block.call(nil)).to be(false)
+      end
+
+      it 'safelists every request once every cohort both shadows and enforces' do
+        registry = Gitlab::RackAttack::LabkitRateLimit::ThrottleRegistry
+        registry.cohorts.each { |cohort| stub_shadow_and_enforce(cohort, shadow: true, enforce: true) }
+
         expect(safelist_block.call(nil)).to be(true)
+      end
+
+      it 'does not safelist while any single cohort does not yet enforce' do
+        registry = Gitlab::RackAttack::LabkitRateLimit::ThrottleRegistry
+        registry.cohorts.each { |cohort| stub_shadow_and_enforce(cohort, shadow: true, enforce: true) }
+        stub_shadow_and_enforce(2, shadow: true, enforce: false)
+
+        expect(safelist_block.call(nil)).to be(false)
+      end
+
+      # Regression guard: enforce alone must never be enough to safelist, or a
+      # misconfiguration (enforce on, shadow off) would silently disable rate
+      # limiting entirely - Labkit does nothing without shadow, and this
+      # safelist would still wave Rack::Attack through.
+      it 'does not safelist when every cohort enforces but none shadow' do
+        registry = Gitlab::RackAttack::LabkitRateLimit::ThrottleRegistry
+        registry.cohorts.each { |cohort| stub_shadow_and_enforce(cohort, shadow: false, enforce: true) }
+
+        expect(safelist_block.call(nil)).to be(false)
       end
     end
   end

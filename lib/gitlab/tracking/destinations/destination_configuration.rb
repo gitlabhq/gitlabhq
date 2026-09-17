@@ -27,10 +27,22 @@ module Gitlab
             host = Gitlab.config.gitlab.host
             is_gitlab_qa_instance = host.start_with?('gitlab') && host.end_with?('.test')
 
-            Gitlab.staging? || is_gitlab_qa_instance
+            Gitlab.staging? || is_gitlab_qa_instance || staging_customer_portal?
           end
 
           private
+
+          # An instance whose CUSTOMER_PORTAL_URL points at the staging Customers Portal is a staging
+          # instance for billing purposes
+          def staging_customer_portal?
+            configured_url = ENV['CUSTOMER_PORTAL_URL'].presence
+            return false unless configured_url
+
+            staging_url = ENV['STAGING_CUSTOMER_PORTAL_URL'].presence ||
+              Gitlab::SubscriptionPortal.default_staging_customer_portal_url
+
+            configured_url.chomp('/') == staging_url.chomp('/')
+          end
 
           def snowplow_micro_uri
             url = Gitlab.config.snowplow_micro.address

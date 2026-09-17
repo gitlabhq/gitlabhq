@@ -23,7 +23,7 @@ breakdown of which upload settings map to each of these strategies.
 
 Upload settings themselves are documented in [Uploads administration](../../administration/uploads.md).
 Here, we focus on how these settings drive the internals of GitLab upload logic.
-At the top level, we distinguish between two **destinations** for uploaded files:
+At the top level, we distinguish between two destinations for uploaded files:
 
 - [**Local storage**](#local-storage) - Files are stored on a volume attached to the web server node.
 - [**Object storage**](#object-storage) - Files are stored in a remote object store bucket.

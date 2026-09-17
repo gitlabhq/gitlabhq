@@ -4692,21 +4692,11 @@ RSpec.describe Group, feature_category: :groups_and_projects do
   describe '#add_security_manager' do
     let_it_be(:user) { create(:user) }
 
-    context 'with security manager role' do
-      it 'adds security manager when feature is enabled' do
-        member = group.add_security_manager(user)
-        expect(member.access_level).to eq(Gitlab::Access::SECURITY_MANAGER)
-        expect(group.members.security_managers).to include(member)
-      end
-    end
+    it 'adds security manager', :aggregate_failures do
+      member = group.add_security_manager(user)
 
-    context 'when security manager role is disabled', :disable_security_manager do
-      it 'returns nil and does not add the user' do
-        result = group.add_security_manager(user)
-
-        expect(result).to be_nil
-        expect(group.members.where(user: user)).to be_empty
-      end
+      expect(member.access_level).to eq(Gitlab::Access::SECURITY_MANAGER)
+      expect(group.members.security_managers).to include(member)
     end
   end
 

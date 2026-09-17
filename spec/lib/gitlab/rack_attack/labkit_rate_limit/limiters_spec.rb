@@ -25,17 +25,17 @@ RSpec.describe Gitlab::RackAttack::LabkitRateLimit::Limiters, feature_category: 
         .with(hash_including(name: 'unauthenticated_web', action: :limit))
     end
 
-    it 'builds the full rule set across both limiters (universal presence)', :aggregate_failures do
+    it 'builds every rule regardless of cohort (universal presence)', :aggregate_failures do
       limiters = described_class.all
 
       expect(limiters.keys).to include(registry::GENERAL, registry::PROTECTED)
-      # A specialized-API and a git throttle are both built: the ordering encodes
-      # the exclusions, so every rule has to be present to classify correctly.
+      # a cohort-1 and a cohort-3 throttle are both built without any cohort being
+      # passed in: cohort gates enforcement, not presence.
       expect(Labkit::RateLimit::Rule).to have_received(:new).with(hash_including(name: 'unauthenticated_packages_api'))
       expect(Labkit::RateLimit::Rule).to have_received(:new).with(hash_including(name: 'authenticated_git_http'))
     end
 
-    it "passes the registry entry's match through to the rule unchanged" do
+    it 'builds the rule match from the registry, with no cohort key' do
       entry = registry.all.fetch('throttle_unauthenticated_web')
       described_class.all
 
@@ -271,8 +271,9 @@ RSpec.describe Gitlab::RackAttack::LabkitRateLimit::Limiters, feature_category: 
   # Classification selection: run a representative request's facts through the real
   # limiter and assert which single rule it selects. This is the faithfulness check
   # for the registry ordering and matchers, covering both over-classification (a rule
-  # claiming a request it should not) and under-classification (missing one). This
-  # drives the limiter directly, bypassing the middleware, with every rule present.
+  # claiming a request it should not) and under-classification (missing one). The wip
+  # cohort flags default OFF in the test env, so this drives the limiter directly with
+  # every rule present.
   describe 'classification selection', :clean_gitlab_redis_rate_limiting do
     let(:general) { described_class.all.fetch(registry::GENERAL) }
     let(:protected_limiter) { described_class.all.fetch(registry::PROTECTED) }

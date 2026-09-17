@@ -34303,6 +34303,26 @@
                   "deprecationReason": null
                 },
                 {
+                  "name": "groupId",
+                  "description": "Filter by one or many group Global IDs, including events from their descendants",
+                  "type": {
+                    "kind": "LIST",
+                    "name": null,
+                    "ofType": {
+                      "kind": "NON_NULL",
+                      "name": null,
+                      "ofType": {
+                        "kind": "SCALAR",
+                        "name": "String",
+                        "ofType": null
+                      }
+                    }
+                  },
+                  "defaultValue": null,
+                  "isDeprecated": false,
+                  "deprecationReason": null
+                },
+                {
                   "name": "event",
                   "description": "Filter by one or many events",
                   "type": {

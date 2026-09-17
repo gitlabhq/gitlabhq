@@ -66,12 +66,12 @@ RSpec.describe Gitlab::PolicyStore::RegoValidator do
         .to raise_error(Gitlab::PolicyStore::ValidationError, "scope_rego must be valid UTF-8")
     end
 
-    it "raises EngineError, a ValidationError, when the engine faults, keeping the fault as the cause" do
+    it "raises EngineError when the engine faults" do
       allow(engine).to receive(:validate).and_raise(RuntimeError, "engine panicked")
 
       expect { described_class.validate!(:policy_rego, "x") }
         .to raise_error(Gitlab::PolicyStore::EngineError, "policy_rego could not be validated") { |error|
-          expect(error).to be_a(Gitlab::PolicyStore::ValidationError)
+          expect(error).to be_a(Gitlab::PolicyStore::Error)
           expect(error.cause).to have_attributes(class: RuntimeError, message: "engine panicked")
         }
     end

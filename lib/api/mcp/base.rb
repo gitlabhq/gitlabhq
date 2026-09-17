@@ -93,7 +93,10 @@ module API
           header_value = headers['X-Gitlab-Enabled-Mcp-Server-Tools']
           return if header_value.blank?
 
-          header_value.split(',').map(&:strip).reject(&:blank?)
+          names = header_value.split(',').map(&:strip).reject(&:blank?)
+          return if names.empty?
+
+          names
         end
 
         # Returns the prefix for all MCP tool names for this request.
@@ -209,8 +212,19 @@ module API
               Handlers::CallTool.new(namespace_setting(:mcp_manager)).invoke(request, params[:params], current_user,
                 tool_name_prefix: mcp_server_tool_name_prefix)
             when 'tools/list'
+              allowed_tools = enabled_mcp_server_tools
+              toolsets_enabled = Feature.enabled?(:mcp_toolsets, current_user)
+
+              if toolsets_enabled
+                allowed_toolsets = ::Mcp::Tools::Toolsets.parse(
+                  headers['X-Gitlab-Enabled-Mcp-Server-Toolsets']
+                )
+                allowed_toolsets = ::Mcp::Tools::Toolsets.defaults if allowed_toolsets.blank? && allowed_tools.blank?
+              end
+
               Handlers::ListTools.new(namespace_setting(:mcp_manager)).invoke(current_user,
-                allowed_tools: enabled_mcp_server_tools, tool_name_prefix: mcp_server_tool_name_prefix)
+                allowed_tools: allowed_tools, allowed_toolsets: allowed_toolsets,
+                tool_name_prefix: mcp_server_tool_name_prefix)
             else
               invoke_basic_handler
             end

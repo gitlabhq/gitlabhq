@@ -26,7 +26,7 @@ class UserProjectAccessChangedService
       when MEDIUM_PRIORITY
         AuthorizedProjectUpdate::UserRefreshWithLowUrgencyWorker.bulk_perform_in(MEDIUM_DELAY, bulk_args, batch_size: 100, batch_delay: 30.seconds) # rubocop:disable Scalability/BulkPerformWithContext
       when LOW_PRIORITY
-        execute_low_priority_refresh(bulk_args)
+        execute_low_priority_refresh
       end
 
     ::User.sticking.bulk_stick(:user, @user_ids)
@@ -36,22 +36,31 @@ class UserProjectAccessChangedService
 
   private
 
-  def execute_low_priority_refresh(bulk_args)
+  def execute_low_priority_refresh
     return if Feature.enabled?(:do_not_run_safety_net_auth_refresh_jobs)
 
-    if Feature.enabled?(:use_db_to_queue_safety_net_auth_refresh, :instance)
-      Authz::ProjectAuthorizationReverification.queue_users(@user_ids)
-    else
-      Gitlab::ApplicationContext.with_raw_context(
-        authorized_projects_refresh_purpose: SAFETY_NET_REFRESH_PURPOSE
-      ) do
-        # rubocop:disable Scalability/BulkPerformWithContext -- related_class context is set by the wrapping block
-        with_related_class_context do
-          AuthorizedProjectUpdate::UserRefreshFromReplicaWorker.bulk_perform_in(
-            DELAY, bulk_args, batch_size: 100, batch_delay: 30.seconds)
-        end
-        # rubocop:enable Scalability/BulkPerformWithContext
+    # The actor is the user being refreshed, so each user is on exactly one path.
+    db_queued_user_ids, legacy_user_ids = @user_ids.partition do |user_id|
+      Feature.enabled?(:use_db_to_queue_safety_net_auth_refresh, ::User.actor_from_id(user_id))
+    end
+
+    # Legacy path first so a failure in the newer queue path cannot block it.
+    enqueue_legacy_safety_net_jobs(legacy_user_ids) if legacy_user_ids.any?
+    Authz::ProjectAuthorizationReverification.queue_users(db_queued_user_ids) if db_queued_user_ids.any?
+  end
+
+  def enqueue_legacy_safety_net_jobs(user_ids)
+    bulk_args = user_ids.map { |id| [id] }
+
+    Gitlab::ApplicationContext.with_raw_context(
+      authorized_projects_refresh_purpose: SAFETY_NET_REFRESH_PURPOSE
+    ) do
+      # rubocop:disable Scalability/BulkPerformWithContext -- related_class context is set by the wrapping block
+      with_related_class_context do
+        AuthorizedProjectUpdate::UserRefreshFromReplicaWorker.bulk_perform_in(
+          DELAY, bulk_args, batch_size: 100, batch_delay: 30.seconds)
       end
+      # rubocop:enable Scalability/BulkPerformWithContext
     end
   end
 

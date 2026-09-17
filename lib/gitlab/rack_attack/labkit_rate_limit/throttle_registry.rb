@@ -60,10 +60,10 @@ module Gitlab
       #                   (.all raises on an undeclared one): adding a throttle
       #                   forces the decision of whether it stops evaluation or lets
       #                   the request fall through to the rules below it.
-      #   :cohort         which of the three migration cohorts promoted this
-      #                   throttle. Nothing reads it now that the cohorts all
-      #                   enforce unconditionally; it is removed in a follow-up to
-      #                   https://gitlab.com/gitlab-com/gl-infra/production-engineering/-/issues/29663.
+      #   :cohort         drives the per-cohort enforce flag. Cohort gates enforcement
+      #                   only: every rule is always built (universal presence), so
+      #                   an inactive cohort still classifies and counts but its block
+      #                   does not become a 429.
       #
       # Order within a limiter is load-bearing (together with the declared claim
       # rules, it encodes the exclusions): the hash
@@ -143,6 +143,15 @@ module Gitlab
             end
           end
 
+          # The distinct cohorts, ascending. Read from the static metadata so the
+          # middleware can check which cohort enforce flags are on without building
+          # the full (definition-merged) registry.
+          def cohorts
+            # rubocop:disable Rails/Pluck -- meta is a plain Hash, not an ActiveRecord relation
+            meta.values.map { |attrs| attrs[:cohort] }.uniq.sort
+            # rubocop:enable Rails/Pluck
+          end
+
           # Entries grouped by limiter, preserving rule order, for building each
           # Limiter's rule set.
           def by_limiter
@@ -151,16 +160,41 @@ module Gitlab
 
           # Every rule name mapped to its Entry. Each registry entry is exactly one
           # Labkit rule, so this is all re-keyed by rule_name. The middleware resolves
-          # a matched rule to its throttle here, for the 429 headers (Entry#name).
+          # a matched rule to its throttle here - for the enforce cohort (Entry#cohort)
+          # and the 429 headers (Entry#name, the backing throttle).
           def by_rule_name
             all.values.index_by(&:rule_name)
           end
 
-          # Always true now that the six wip cohort flags are gone (post #29540
-          # soak). Left in place, not inlined, for #29543 to remove together
-          # with the Gitlab::RackAttack safelist that reads it.
+          # The shadow/enforce feature-flag basis for a cohort, mirroring Stage
+          # 2a's flag_scope convention but namespaced so it cannot collide with
+          # the ApplicationRateLimiter cohorts.
+          def flag_basis(cohort)
+            "rack_cohort_#{cohort}"
+          end
+
+          # Determines whether a single cohort's shadow flag is on
+          def shadow_enabled?(cohort)
+            # rubocop:disable Gitlab/FeatureFlagKeyDynamic -- bases enumerated in ThrottleRegistry, with matching YAMLs in config/feature_flags/beta/
+            ::Feature.enabled?(
+              :"rate_limiter_use_labkit_#{flag_basis(cohort)}", ::Feature.current_request, type: :beta
+            )
+            # rubocop:enable Gitlab/FeatureFlagKeyDynamic
+          end
+
+          # Determines whether a single cohort's enforce flag is on
+          def enforce_enabled?(cohort)
+            # rubocop:disable Gitlab/FeatureFlagKeyDynamic -- bases enumerated in ThrottleRegistry, with matching YAMLs in config/feature_flags/beta/
+            ::Feature.enabled?(
+              :"rate_limiter_use_labkit_#{flag_basis(cohort)}_enforce", ::Feature.current_request, type: :beta
+            )
+            # rubocop:enable Gitlab/FeatureFlagKeyDynamic
+          end
+
+          # True once every cohort both shadows AND enforces
+          # Gitlab::RackAttack safelists every request on this so it stops re-running throttles Labkit already decided
           def fully_enforced?
-            true
+            cohorts.present? && cohorts.all? { |cohort| shadow_enabled?(cohort) && enforce_enabled?(cohort) }
           end
 
           # Labkit rule and limiter names must match /\A[a-z0-9_]+\z/. Throttle

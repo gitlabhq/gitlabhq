@@ -258,6 +258,7 @@ RSpec/AnyInstanceOf:
     - 'spec/support/shared_examples/models/with_uploads_shared_examples.rb'
     - 'spec/support/shared_examples/requests/api/discussions_shared_examples.rb'
     - 'spec/support/shared_examples/requests/api/snippets_shared_examples.rb'
+    - 'spec/support/shared_examples/requests/rack_attack_shared_examples.rb'
     - 'spec/support/shared_examples/requests/snippet_shared_examples.rb'
     - 'spec/support/shared_examples/services/boards/issues_move_service_shared_examples.rb'
     - 'spec/support/shared_examples/uploaders/object_storage_shared_examples.rb'

@@ -201,6 +201,43 @@ Example response:
 }
 ```
 
+## Restart a flow
+
+{{< details >}}
+
+- Status: Experiment
+
+{{< /details >}}
+
+Restarts a failed or stopped flow by starting a new flow with the same flow parameters. The new flow runs
+from the beginning. The original flow is not modified and keeps its `failed` or `stopped` status.
+
+Only project-level flows with a `failed` or `stopped` status can be restarted. Restarting a
+flow with any other status, or a group-level flow, returns `403 Forbidden`. Restarting the same flow again while a restart is still
+in progress returns `409 Conflict`.
+
+```plaintext
+POST /ai/duo_workflows/workflows/:workflow_id/restart
+```
+
+Supported attributes:
+
+| Attribute | Type | Required | Description |
+|-----------|------|----------|-------------|
+| `workflow_id` | integer | Yes | ID of the flow to restart. |
+
+If successful, returns [`201 Created`](rest/troubleshooting.md#status-codes) and the same response
+attributes as [Trigger a flow](#trigger-a-flow). The response describes the new flow, so `id` is
+the ID of the new flow rather than the one you restarted.
+
+Example request:
+
+```shell
+curl --request POST \
+  --header "PRIVATE-TOKEN: <your_access_token>" \
+  --url "https://gitlab.example.com/api/v4/ai/duo_workflows/workflows/42/restart"
+```
+
 ## Get workflow trace as JSONL
 
 {{< details >}}

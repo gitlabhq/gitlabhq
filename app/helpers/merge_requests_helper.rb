@@ -365,6 +365,8 @@ module MergeRequestsHelper
       is_public_visibility_restricted:
         Gitlab::CurrentSettings.restricted_visibility_levels&.include?(Gitlab::VisibilityLevel::PUBLIC).to_s,
       is_signed_in: current_user.present?.to_s,
+      saved_view_limit: ::MergeRequests::SavedView.views_limit,
+      saved_views_enabled: Feature.enabled?(:mr_dashboard_saved_views, current_user).to_s,
       vue_search_enabled: Feature.enabled?(:mr_dashboard_vue_search, current_user).to_s
     }
   end

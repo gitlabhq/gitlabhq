@@ -3,17 +3,17 @@
 require 'spec_helper'
 
 # End-to-end coverage of Gitlab::Middleware::LabkitRackRateLimit through the full
-# Rack stack (mounted above Rack::Attack, which is safelisted into a permanent
-# pass-through - see Gitlab::RackAttack). A real request reaches the inbound
-# path, which builds labkit's identifier, increments labkit's counter in its own
-# keyspace, and renders the byte-identical legacy 429 directly when a throttle
-# is exceeded.
+# Rack stack (mounted above Rack::Attack). In shadow mode a real request reaches
+# the inbound path, which builds labkit's identifier and increments labkit's
+# counter in its own keyspace without changing the response. In enforce mode the
+# same path renders the 429 directly. Each case confirms the per-cohort flag
+# gates the behaviour at the middleware position.
 #
 # The product-analytics collector is used because it fires on path alone (no
 # auth, no enable setting) and counts by the `aid` query parameter. The
 # unauthenticated and authenticated API throttles below cover the dimensions it
 # skips (an enable setting, an IP discriminator, and authenticated identity
-# resolution).
+# resolution), each with the cohort flag in both states.
 RSpec.describe 'Labkit::RateLimit rack middleware', :clean_gitlab_redis_rate_limiting, feature_category: :rate_limiting do
   using RSpec::Parameterized::TableSyntax
   include RackAttackSpecHelpers
@@ -40,11 +40,29 @@ RSpec.describe 'Labkit::RateLimit rack middleware', :clean_gitlab_redis_rate_lim
     end
   end
 
-  it 'increments labkit\'s counter in parallel and does not block the request' do
-    get "/-/collector/i?aid=#{aid}"
+  context 'when the throttle cohort shadow flag is on' do
+    before do
+      stub_feature_flags(rate_limiter_use_labkit_rack_cohort_1: true)
+    end
 
-    expect(response).not_to have_gitlab_http_status(:too_many_requests)
-    expect(labkit_count).to eq(1)
+    it 'increments labkit\'s counter in parallel and does not block the request' do
+      get "/-/collector/i?aid=#{aid}"
+
+      expect(response).not_to have_gitlab_http_status(:too_many_requests)
+      expect(labkit_count).to eq(1)
+    end
+  end
+
+  context 'when the throttle cohort shadow flag is off' do
+    before do
+      stub_feature_flags(rate_limiter_use_labkit_rack_cohort_1: false)
+    end
+
+    it 'does not run the shadow, leaving labkit untouched' do
+      get "/-/collector/i?aid=#{aid}"
+
+      expect(labkit_count).to eq(0)
+    end
   end
 
   describe 'an unauthenticated API throttle (enable setting + IP discriminator)' do
@@ -56,11 +74,29 @@ RSpec.describe 'Labkit::RateLimit rack middleware', :clean_gitlab_redis_rate_lim
       )
     end
 
-    it 'counts in labkit without blocking the request' do
-      get '/api/v4/projects'
+    context 'when the cohort shadow flag is on' do
+      before do
+        stub_feature_flags(rate_limiter_use_labkit_rack_cohort_2: true)
+      end
 
-      expect(response).not_to have_gitlab_http_status(:too_many_requests)
-      expect(labkit_count_for('unauthenticated_api')).to eq(1)
+      it 'counts in labkit without blocking the request' do
+        get '/api/v4/projects'
+
+        expect(response).not_to have_gitlab_http_status(:too_many_requests)
+        expect(labkit_count_for('unauthenticated_api')).to eq(1)
+      end
+    end
+
+    context 'when the cohort shadow flag is off' do
+      before do
+        stub_feature_flags(rate_limiter_use_labkit_rack_cohort_2: false)
+      end
+
+      it 'leaves labkit untouched' do
+        get '/api/v4/projects'
+
+        expect(labkit_count_for('unauthenticated_api')).to eq(0)
+      end
     end
   end
 
@@ -75,11 +111,29 @@ RSpec.describe 'Labkit::RateLimit rack middleware', :clean_gitlab_redis_rate_lim
       )
     end
 
-    it 'counts the authenticated requester in labkit without blocking the request' do
-      get '/api/v4/projects', params: { private_token: token.token }
+    context 'when the cohort shadow flag is on' do
+      before do
+        stub_feature_flags(rate_limiter_use_labkit_rack_cohort_2: true)
+      end
 
-      expect(response).not_to have_gitlab_http_status(:too_many_requests)
-      expect(labkit_count_for('authenticated_api')).to eq(1)
+      it 'counts the authenticated requester in labkit without blocking the request' do
+        get '/api/v4/projects', params: { private_token: token.token }
+
+        expect(response).not_to have_gitlab_http_status(:too_many_requests)
+        expect(labkit_count_for('authenticated_api')).to eq(1)
+      end
+    end
+
+    context 'when the cohort shadow flag is off' do
+      before do
+        stub_feature_flags(rate_limiter_use_labkit_rack_cohort_2: false)
+      end
+
+      it 'leaves labkit untouched' do
+        get '/api/v4/projects', params: { private_token: token.token }
+
+        expect(labkit_count_for('authenticated_api')).to eq(0)
+      end
     end
   end
 
@@ -89,6 +143,16 @@ RSpec.describe 'Labkit::RateLimit rack middleware', :clean_gitlab_redis_rate_lim
   def perform_request
     login_as(user) if login_as_user
     public_send(method, path, params: params, headers: headers)
+  end
+
+  # Shadow+enforce a single cohort - what every table below needs to prove its own
+  # throttles block. The "dry run" describe further down enables every cohort at
+  # once instead, for a different reason (Rack::Attack's own boot-time throttling).
+  def enable_cohort!(cohort)
+    stub_feature_flags(
+      "rate_limiter_use_labkit_rack_cohort_#{cohort}": true,
+      "rate_limiter_use_labkit_rack_cohort_#{cohort}_enforce": true
+    )
   end
 
   # Shared by tables whose throttles each have their own <prefix>_enabled/
@@ -136,9 +200,13 @@ RSpec.describe 'Labkit::RateLimit rack middleware', :clean_gitlab_redis_rate_lim
   end
 
   # Table-based coverage for the four "general" throttles (see
-  # Gitlab::RackAttack::LabkitRateLimit::ThrottleRegistry::GENERAL).
+  # Gitlab::RackAttack::LabkitRateLimit::ThrottleRegistry::GENERAL, cohort 2).
   describe 'general web and API throttles' do
     let(:headers) { {} }
+
+    before do
+      enable_cohort!(2)
+    end
 
     # setting_prefix follows the uniform <prefix>_enabled/_requests_per_period/
     # _period_in_seconds naming every one of these four throttles uses.
@@ -154,12 +222,16 @@ RSpec.describe 'Labkit::RateLimit rack middleware', :clean_gitlab_redis_rate_lim
   end
 
   # Table-based coverage for the specialized-path throttles (packages, files,
-  # deprecated).
+  # deprecated), cohort 1.
   describe 'specialized API throttles' do
     let_it_be(:project) { create(:project, :public, :custom_repo, files: { 'README' => 'foo' }) }
     let_it_be(:group) { create(:group, :public) }
     let(:files_token_params) { { ref: 'master', private_token: token.token } }
     let(:headers) { {} }
+
+    before do
+      enable_cohort!(1)
+    end
 
     where(:throttle_name, :setting_prefix, :method, :path, :params) do
       'throttle_unauthenticated_packages_api' | 'throttle_unauthenticated_packages_api' | :get |
@@ -183,10 +255,15 @@ RSpec.describe 'Labkit::RateLimit rack middleware', :clean_gitlab_redis_rate_lim
     end
   end
 
-  # Table-based coverage for the git throttles (git_http unauth/auth, git_lfs auth).
+  # Table-based coverage for the git throttles (git_http unauth/auth, git_lfs auth),
+  # cohort 3.
   describe 'git throttles' do
     let_it_be(:project) { create(:project, :small_repo, :public) }
     let(:git_auth_headers) { workhorse_internal_api_request_header.merge(basic_auth_headers(user, token)) }
+
+    before do
+      enable_cohort!(3)
+    end
 
     where(:throttle_name, :setting_prefix, :method, :path, :headers) do
       'throttle_unauthenticated_git_http' | 'throttle_unauthenticated_git_http' | :get |
@@ -210,6 +287,10 @@ RSpec.describe 'Labkit::RateLimit rack middleware', :clean_gitlab_redis_rate_lim
   # (protected_paths vs protected_paths_for_get_request) - path doubles as both.
   describe 'protected-paths throttles' do
     let(:headers) { {} }
+
+    before do
+      enable_cohort!(3)
+    end
 
     # Deliberately overrides the top-level stub_throttle_settings by name, not a
     # naming collision: the shared example calls it generically, so this table's
@@ -250,6 +331,7 @@ RSpec.describe 'Labkit::RateLimit rack middleware', :clean_gitlab_redis_rate_lim
 
     before do
       stub_env('GITLAB_THROTTLE_BYPASS_HEADER', 'GITLAB_BYPASS')
+      enable_cohort!(2)
     end
 
     # Delegates to the top-level stub_throttle_settings(enabled:) instead of
@@ -277,6 +359,7 @@ RSpec.describe 'Labkit::RateLimit rack middleware', :clean_gitlab_redis_rate_lim
       allow(Gitlab::RackAttack).to receive(:user_allowlist).and_return(Set.new([user.id]))
       # The allowlist is baked into the memoized rule set; rebuild it after stubbing.
       Gitlab::RackAttack::LabkitRateLimit::Limiters.reset!
+      enable_cohort!(2)
     end
 
     after do
@@ -298,10 +381,20 @@ RSpec.describe 'Labkit::RateLimit rack middleware', :clean_gitlab_redis_rate_lim
     with_them { include_examples 'an exempt labkit throttle' }
   end
 
-  # Naming a throttle swaps its rule to :log (see Limiters#build_rules). Rack::Attack
-  # is unconditionally safelisted, so its own boot-time registration (fixed before
-  # this stub_env runs) never gets a chance to block instead.
+  # Naming a throttle swaps its rule to :log (see Limiters#build_rules). Every
+  # cohort must be fully enforced (ThrottleRegistry.fully_enforced?): Rack::Attack's
+  # own registration is fixed at boot, before this stub_env runs, so it still blocks.
   describe 'dry run (GITLAB_THROTTLE_DRY_RUN)' do
+    before do
+      labkit_flags = Gitlab::RackAttack::LabkitRateLimit::ThrottleRegistry.cohorts.flat_map do |cohort|
+        [
+          :"rate_limiter_use_labkit_rack_cohort_#{cohort}",
+          :"rate_limiter_use_labkit_rack_cohort_#{cohort}_enforce"
+        ]
+      end
+      stub_feature_flags(labkit_flags.index_with(true))
+    end
+
     after do
       Gitlab::RackAttack::LabkitRateLimit::Limiters.reset!
     end
@@ -347,6 +440,7 @@ RSpec.describe 'Labkit::RateLimit rack middleware', :clean_gitlab_redis_rate_lim
   describe 'a specialized API throttle is claimed before the general API rule' do
     before do
       stub_application_setting(throttle_unauthenticated_packages_api_enabled: true)
+      stub_feature_flags(rate_limiter_use_labkit_rack_cohort_1: true, rate_limiter_use_labkit_rack_cohort_2: true)
     end
 
     it 'counts a packages request under the packages rule, not unauthenticated_api', :aggregate_failures do
@@ -363,6 +457,7 @@ RSpec.describe 'Labkit::RateLimit rack middleware', :clean_gitlab_redis_rate_lim
         throttle_unauthenticated_git_http_enabled: true,
         throttle_unauthenticated_enabled: true
       )
+      stub_feature_flags(rate_limiter_use_labkit_rack_cohort_2: true, rate_limiter_use_labkit_rack_cohort_3: true)
     end
 
     it 'counts a git request under the git rule, not unauthenticated_web', :aggregate_failures do
@@ -410,6 +505,7 @@ RSpec.describe 'Labkit::RateLimit rack middleware', :clean_gitlab_redis_rate_lim
           throttle_authenticated_dependency_proxy_requests_per_period: 1,
           throttle_authenticated_dependency_proxy_period_in_seconds: 60
         )
+        enable_cohort!(1)
       end
 
       it 'rejects requests over the rate limit', :aggregate_failures do
@@ -426,6 +522,7 @@ RSpec.describe 'Labkit::RateLimit rack middleware', :clean_gitlab_redis_rate_lim
           throttle_authenticated_dependency_proxy_enabled: true,
           throttle_authenticated_web_enabled: true
         )
+        stub_feature_flags(rate_limiter_use_labkit_rack_cohort_1: true, rate_limiter_use_labkit_rack_cohort_2: true)
       end
 
       it 'counts under the dependency proxy rule, not authenticated_web', :aggregate_failures do
@@ -442,6 +539,7 @@ RSpec.describe 'Labkit::RateLimit rack middleware', :clean_gitlab_redis_rate_lim
           throttle_authenticated_dependency_proxy_enabled: false,
           throttle_authenticated_web_enabled: true
         )
+        stub_feature_flags(rate_limiter_use_labkit_rack_cohort_1: true, rate_limiter_use_labkit_rack_cohort_2: true)
       end
 
       it 'falls through to the authenticated_web rule', :aggregate_failures do
@@ -459,6 +557,7 @@ RSpec.describe 'Labkit::RateLimit rack middleware', :clean_gitlab_redis_rate_lim
   describe 'a collector request with the web throttle enabled' do
     before do
       stub_application_setting(throttle_unauthenticated_enabled: true)
+      stub_feature_flags(rate_limiter_use_labkit_rack_cohort_1: true, rate_limiter_use_labkit_rack_cohort_2: true)
     end
 
     it 'counts under the collector throttle only, under-counting web as Rack::Attack does not', :aggregate_failures do
@@ -484,6 +583,7 @@ RSpec.describe 'Labkit::RateLimit rack middleware', :clean_gitlab_redis_rate_lim
         throttle_unauthenticated_api_requests_per_period: 1000,
         throttle_unauthenticated_api_period_in_seconds: 60
       )
+      stub_feature_flags(rate_limiter_use_labkit_rack_cohort_2: true)
     end
 
     after do
@@ -519,6 +619,7 @@ RSpec.describe 'Labkit::RateLimit rack middleware', :clean_gitlab_redis_rate_lim
         throttle_authenticated_api_requests_per_period: 1000,
         throttle_authenticated_api_period_in_seconds: 60
       )
+      stub_feature_flags(rate_limiter_use_labkit_rack_cohort_2: true)
     end
 
     it 'still counts an anonymous request under unauthenticated_api', :aggregate_failures do
@@ -545,22 +646,35 @@ RSpec.describe 'Labkit::RateLimit rack middleware', :clean_gitlab_redis_rate_lim
     end
   end
 
-  # Pre-seed only labkit's counter to the product-analytics limit (100/60), so
-  # the request's own increment tips labkit over while Rack::Attack's separate
-  # counter is still at zero. A 429 therefore proves labkit enforced it: the
-  # middleware short-circuits above Rack::Attack, which would have allowed it.
-  it 'blocks the request with a 429 from labkit, not Rack::Attack' do
-    Gitlab::Redis::RateLimiting.with { |redis| redis.set(labkit_key, 100) }
+  context 'when the throttle cohort enforce flag is on' do
+    before do
+      stub_feature_flags(
+        rate_limiter_use_labkit_rack_cohort_1: true,
+        rate_limiter_use_labkit_rack_cohort_1_enforce: true
+      )
+    end
 
-    get "/-/collector/i?aid=#{aid}"
+    # Pre-seed only labkit's counter to the product-analytics limit (100/60), so
+    # the request's own increment tips labkit over while Rack::Attack's separate
+    # counter is still at zero. A 429 therefore proves labkit enforced it: the
+    # middleware short-circuits above Rack::Attack, which would have allowed it.
+    it 'blocks the request with a 429 from labkit, not Rack::Attack' do
+      Gitlab::Redis::RateLimiting.with { |redis| redis.set(labkit_key, 100) }
 
-    expect(response).to have_gitlab_http_status(:too_many_requests)
-    expect(response.headers['RateLimit-Name']).to eq('throttle_product_analytics_collector')
+      get "/-/collector/i?aid=#{aid}"
+
+      expect(response).to have_gitlab_http_status(:too_many_requests)
+      expect(response.headers['RateLimit-Name']).to eq('throttle_product_analytics_collector')
+    end
   end
 
   context 'when the bypass header is set' do
     before do
       stub_env('GITLAB_THROTTLE_BYPASS_HEADER', 'GITLAB_BYPASS')
+      stub_feature_flags(
+        rate_limiter_use_labkit_rack_cohort_1: true,
+        rate_limiter_use_labkit_rack_cohort_1_enforce: true
+      )
     end
 
     # Even with labkit's counter pre-seeded over the limit and enforce on, a bypassed

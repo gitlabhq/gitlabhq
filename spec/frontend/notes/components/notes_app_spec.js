@@ -14,6 +14,7 @@ import axios from '~/lib/utils/axios_utils';
 import { HTTP_STATUS_OK } from '~/lib/utils/http_status';
 import { getLocationHash } from '~/lib/utils/url_utility';
 import * as urlUtility from '~/lib/utils/url_utility';
+import { createAlert, VARIANT_INFO } from '~/alert';
 import notesEventHub from '~/notes/event_hub';
 import CommentForm from '~/notes/components/comment_form.vue';
 import NotesApp from '~/notes/components/notes_app.vue';
@@ -42,6 +43,10 @@ import { createDiscussionMock } from '../mock_data';
 
 jest.mock('~/behaviors/markdown/render_gfm');
 jest.mock('~/behaviors/markdown/copy_as_gfm');
+jest.mock('~/alert', () => ({
+  createAlert: jest.fn(),
+  VARIANT_INFO: 'info',
+}));
 jest.mock('~/lib/utils/selection');
 jest.mock('~/lib/utils/resize_observer', () => ({
   scrollToTargetOnResize: jest.fn(),
@@ -359,6 +364,150 @@ describe('note_app', () => {
       window.dispatchEvent(new Event('hashchange'), hash);
 
       expect(useNotes().setTargetNoteHash).toHaveBeenCalledWith('note_1234');
+    });
+  });
+
+  describe('deleted note deep link', () => {
+    const missingNoteAlert = {
+      message:
+        "The comment you're looking for could not be found. It may have been deleted, or you may not have permission to view it.",
+      variant: VARIANT_INFO,
+    };
+
+    // The feature has two production triggers: the isFetching watcher, which
+    // runs checkLocationHash() once the initial fetch settles, and the window
+    // hashchange listener installed in mounted(). The tests drive those real
+    // entry points instead of calling checkLocationHash() directly.
+    const changeHash = async (hash) => {
+      setWindowLocation(`#${hash}`);
+      window.dispatchEvent(new Event('hashchange'));
+      await nextTick();
+    };
+
+    beforeEach(() => {
+      axiosMock.onAny().reply(mockData.getIndividualNoteResponse);
+    });
+
+    describe('when the page loads directly on a note anchor', () => {
+      it('shows an info alert once the fetch settles and the note is absent', async () => {
+        setWindowLocation('#note_9999999');
+        mountComponent();
+        await waitForPromises();
+
+        expect(createAlert).toHaveBeenCalledWith(missingNoteAlert);
+      });
+    });
+
+    describe('when the hash changes after notes have loaded', () => {
+      beforeEach(() => {
+        mountComponent({
+          props: { notesFilterValue: constants.DISCUSSION_FILTERS_DEFAULT_VALUE },
+        });
+        return waitForPromises();
+      });
+
+      it('shows an info alert when the anchored note no longer exists', async () => {
+        await changeHash('note_9999999');
+
+        expect(createAlert).toHaveBeenCalledWith(missingNoteAlert);
+      });
+
+      it('does not alert when the anchored note exists', async () => {
+        const discussion = createDiscussionMock();
+        discussion.notes[0].id = '777';
+        useDiscussions().discussions = [discussion];
+        await nextTick();
+
+        await changeHash('note_777');
+
+        expect(createAlert).not.toHaveBeenCalled();
+      });
+
+      it('does not alert when a live note is only hidden by the activity filter', async () => {
+        const discussion = createDiscussionMock();
+        discussion.notes[0].id = '777';
+        useNotes().noteableData = { ...mockData.noteableDataMock, targetType: 'merge_request' };
+        useNotes().mergeRequestFilters = constants.MR_FILTER_OPTIONS.map(
+          ({ value }) => value,
+        ).filter((value) => value !== 'comments');
+        useDiscussions().discussions = [discussion];
+        await nextTick();
+
+        await changeHash('note_777');
+
+        expect(createAlert).not.toHaveBeenCalled();
+      });
+
+      it('does not alert while notes are still being fetched', async () => {
+        useNotes().isNotesFetched = false;
+
+        await changeHash('note_9999999');
+
+        expect(createAlert).not.toHaveBeenCalled();
+      });
+
+      it('dismisses the previous alert when another missing note is targeted', async () => {
+        const dismiss = jest.fn();
+        createAlert.mockReturnValue({ dismiss });
+
+        await changeHash('note_111');
+        await changeHash('note_222');
+
+        expect(dismiss).toHaveBeenCalledTimes(1);
+        expect(createAlert).toHaveBeenCalledTimes(2);
+      });
+
+      it('dismisses the alert when the hash changes to a note that exists', async () => {
+        const dismiss = jest.fn();
+        createAlert.mockReturnValue({ dismiss });
+        const discussion = createDiscussionMock();
+        discussion.notes[0].id = '777';
+
+        await changeHash('note_9999999');
+        useDiscussions().discussions = [discussion];
+        await nextTick();
+        await changeHash('note_777');
+
+        expect(dismiss).toHaveBeenCalledTimes(1);
+        expect(createAlert).toHaveBeenCalledTimes(1);
+      });
+
+      it('dismisses the alert when the hash changes to a non-note anchor', async () => {
+        const dismiss = jest.fn();
+        createAlert.mockReturnValue({ dismiss });
+
+        await changeHash('note_9999999');
+        await changeHash('some-other-anchor');
+
+        expect(dismiss).toHaveBeenCalledTimes(1);
+        expect(createAlert).toHaveBeenCalledTimes(1);
+      });
+    });
+
+    describe('when a non-default notes filter is active', () => {
+      beforeEach(() => {
+        mountComponent();
+        return waitForPromises();
+      });
+
+      it('does not alert about a live note while the filter reset is refetching', async () => {
+        const liveNoteId =
+          mockData.INDIVIDUAL_NOTE_RESPONSE_MAP.GET[
+            '/gitlab-org/gitlab-foss/issues/26/discussions.json'
+          ][0].notes[0].id;
+
+        // DiscussionFilter reacts to the same hashchange by resetting the
+        // filter, which empties the discussions store and refetches; the
+        // momentarily empty store must not be reported as a missing note.
+        await changeHash(`note_${liveNoteId}`);
+
+        expect(useNotes().isLoading).toBe(true);
+        expect(createAlert).not.toHaveBeenCalled();
+
+        await waitForPromises();
+
+        expect(createAlert).not.toHaveBeenCalled();
+      });
     });
   });
 

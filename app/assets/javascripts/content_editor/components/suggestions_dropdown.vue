@@ -277,6 +277,8 @@ export default {
       }
 
       if (event.key === 'Enter' || event.key === 'Tab') {
+        if (this.selectedIndex < 0) return false;
+
         this.enterHandler();
         return true;
       }

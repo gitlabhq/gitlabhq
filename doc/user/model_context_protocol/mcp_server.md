@@ -21,6 +21,7 @@ title: GitLab MCP server
 - Support for `2025-03-26` and `2025-06-18` MCP protocol specifications [added](https://gitlab.com/gitlab-org/gitlab/-/issues/581459) in GitLab 18.7.
 - Support for the `2025-11-25` MCP protocol specification [added](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/216219) in GitLab 18.7.
 - [Changed](https://gitlab.com/gitlab-org/gitlab/-/work_items/590729) to a separate setting and [moved](https://gitlab.com/groups/gitlab-org/-/work_items/21183) from GitLab Premium to GitLab Free in GitLab 19.2.
+- Toolset selection [added](https://gitlab.com/gitlab-org/gitlab/-/work_items/607755) in GitLab 19.5 [with a feature flag](../../administration/feature_flags/_index.md) named `mcp_toolsets`. Disabled by default.
 
 {{< /history >}}
 
@@ -107,6 +108,57 @@ The prefix is truncated to the first 32 characters if it exceeds this limit.
       "url": "https://<gitlab.example.com>/api/v4/mcp",
       "headers": {
         "X-Gitlab-Mcp-Server-Tool-Name-Prefix": "gitlab_"
+      }
+    }
+  }
+}
+```
+
+#### Select tool groups (toolsets)
+
+> [!flag]
+> The availability of this feature is controlled by a feature flag. For more information, see the history.
+
+To limit the tools returned by the GitLab MCP server to specific groups, configure the
+`X-Gitlab-Enabled-Mcp-Server-Toolsets` HTTP header with a comma-separated list of toolset names.
+
+Available toolsets:
+
+| Toolset | Included by default |
+|---------|----------------------|
+| `meta` | Always |
+| `core` | Yes |
+| `merge_requests` | Yes |
+| `work_items` | Yes |
+| `repository` | Yes |
+| `ci` | Yes |
+| `duo_agent_platform` | No (opt-in) |
+| `wikis` | No (opt-in) |
+| `code_security` | No (opt-in) |
+
+To include an opt-in toolset, add it to the header value explicitly. To request every toolset,
+including all opt-in toolsets, set the header to `all`.
+
+When you omit both headers, the server returns the default toolsets. If you omit the toolsets header
+but set `X-Gitlab-Enabled-Mcp-Server-Tools`, the server returns only the tools you named, without any
+default toolsets or `meta` tools.
+
+Toolset names in the `X-Gitlab-Enabled-Mcp-Server-Toolsets` header are matched without regard to
+case, so `ci`, `CI`, and `Ci` are all accepted.
+
+An unrecognized toolset name in the header returns a `400` error.
+
+If you also set `X-Gitlab-Enabled-Mcp-Server-Tools`, the server returns the union of both lists,
+not the intersection. Setting both headers never returns fewer tools than either header alone.
+
+```json
+{
+  "mcpServers": {
+    "GitLab": {
+      "type": "http",
+      "url": "https://<gitlab.example.com>/api/v4/mcp",
+      "headers": {
+        "X-Gitlab-Enabled-Mcp-Server-Toolsets": "core,work_items"
       }
     }
   }

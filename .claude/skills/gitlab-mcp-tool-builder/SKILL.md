@@ -1,7 +1,7 @@
 ---
 name: gitlab-mcp-tool-builder
 description: "Build a new GraphQL-backed MCP server tool in gitlab-org/gitlab. Use when adding or scaffolding a GitLab Duo Agent Platform MCP tool that follows the app/services/mcp/tools/ *Tool + Graphql*Service pattern — covers GraphQL API discovery, the two-class-plus-registration build recipe, and gotchas. Keywords: MCP tool, MCP server, GraphQL tool, GitLab Duo Agent Platform."
-version: 1.11.0
+version: 1.13.0
 license: MIT
 compatibility: opencode
 metadata:
@@ -56,6 +56,10 @@ MCP client (JSON-RPC POST /api/v4/mcp, "tools/call")
   `description`, and `annotations`.
 - **Registration** — one line in `manager.rb` `GRAPHQL_TOOLS`:
   `'<tool_name>' => ::Mcp::Tools::<Area>::<Name>Service`.
+
+Every tool must also declare exactly one **toolset** (`toolset: :symbol` in the Service's
+`register_version` metadata) from `Mcp::Tools::Toolsets::ALL` — a coverage spec fails
+CI if it's missing or invalid.
 
 Key fact: `GraphqlTool#execute` calls **`GitlabSchema.execute(...)`** — the same schema
 the HTTP `/api/graphql` endpoint uses, run **as `current_user`**, so the tool inherits
@@ -163,9 +167,20 @@ a convention (non-standard verb, second write tool on one resource).
    instance method if the root field varies at call time (e.g. project-or-group tools —
    see `references/tool-anatomy.md`); map `params → variables` in `build_variables`;
    reshape in `process_result` if needed.
-5. **Service class** (`< Base::GraphqlService`): write `input_schema` (agent-facing args
-   + `required`; do **not** add `additionalProperties`), `description`, `annotations`
-   (`readOnlyHint` correct — it drives pre-approval); point `graphql_tool_class` at the Tool.
+5. **Service class** (`< Base::GraphqlService`): write `toolset: :symbol` (one of
+   `Mcp::Tools::Toolsets::ALL`), `input_schema` (agent-facing args + `required`;
+   do **not** add `additionalProperties`), `description`, `annotations` (`readOnlyHint`
+   correct — it drives pre-approval); point `graphql_tool_class` at the Tool. Example
+   `register_version` metadata:
+
+   ```ruby
+   register_version '0.1.0', {
+     toolset: :work_items,
+     description: 'Example description',
+     annotations: { readOnlyHint: true },
+     input_schema: { type: 'object', properties: {} }
+   }
+   ```
 6. **Declare the governance namespace.** Every tool inherits
    `{ project: :project_id, group: :group_id }` from `GovernanceNamespaceResolver`. If your
    `input_schema` already names its project/group arguments `project_id`/`group_id`, skip this

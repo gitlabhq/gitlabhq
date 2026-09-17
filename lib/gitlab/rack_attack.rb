@@ -4,7 +4,7 @@
 # in doc/administration/settings/user_and_ip_rate_limits.md
 #
 # Integration specs for throttling can be found in:
-# spec/requests/labkit_rack_rate_limit_spec.rb
+# spec/requests/rack_attack_global_spec.rb
 module Gitlab
   module RackAttack
     def self.configure(rack_attack)
@@ -125,9 +125,10 @@ module Gitlab
           req.get_header(Gitlab::Throttle.bypass_header) == '1'
       end
 
-      # Labkit fully owns rate limiting, so Rack::Attack has nothing left to
-      # independently throttle: safelisting every request here stops it from
-      # re-running (and possibly re-blocking) a request Labkit already decided.
+      # Once every Labkit cohort enforces, Labkit fully owns rate limiting and
+      # Rack::Attack has nothing left to independently throttle: safelisting
+      # every request here stops it from re-running (and possibly re-blocking)
+      # a request Labkit already decided.
       #
       # The registry is referenced from the top level (::Gitlab::...) rather
       # than relative to the surrounding module: this block is registered once

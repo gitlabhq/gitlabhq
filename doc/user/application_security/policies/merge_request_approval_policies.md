@@ -213,8 +213,8 @@ the following sections and tables provide an alternative.
 | `description`       | `string`           | false    |                 | Description of the policy.                               |
 | `enabled`           | `boolean`          | true     | `true`, `false` | Flag to enable (`true`) or disable (`false`) the policy. |
 | `rules`             | `array` of rules   | true     |                 | List of rules that the policy applies.                   |
-| `actions`           | `array` of actions | false    |                 | List of actions that the policy enforces.                |
-| `approval_settings` | `object`           | false    |                 | Project settings that the policy overrides.              |
+| `actions`           | `array` of actions | true if `approval_settings` field does not exist | | List of actions that the policy enforces.                |
+| `approval_settings` | `object`           | true if `actions` field does not exist | | Project settings that the policy overrides.              |
 | `fallback_behavior` | `object`           | false    |                 | Settings that affect invalid or unenforceable rules.     |
 | `policy_scope`      | `object` of [`policy_scope`](_index.md#configure-the-policy-scope) | false |  | Defines the scope of the policy based on the projects, groups, or compliance framework labels you specify. |
 | `policy_tuning`     | `object`           | false    |                 | (Experimental) Settings that affect policy comparison logic.     |

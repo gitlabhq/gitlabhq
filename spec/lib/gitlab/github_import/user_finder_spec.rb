@@ -120,9 +120,9 @@ RSpec.describe Gitlab::GithubImport::UserFinder, :clean_gitlab_redis_shared_stat
     end
 
     context 'when user mapping is enabled' do
-      let!(:source_user) do
+      let_it_be(:source_user) do
         create(:import_source_user,
-          namespace_id: project.root_ancestor.id,
+          namespace: project.root_ancestor,
           source_user_identifier: '7',
           source_hostname: 'https://github.com'
         )
@@ -164,7 +164,7 @@ RSpec.describe Gitlab::GithubImport::UserFinder, :clean_gitlab_redis_shared_stat
     context 'when source user exists' do
       let!(:source_user) do
         create(:import_source_user,
-          namespace_id: project.root_ancestor.id,
+          namespace: project.root_ancestor,
           source_user_identifier: '7',
           source_hostname: 'https://github.com'
         )
@@ -215,7 +215,7 @@ RSpec.describe Gitlab::GithubImport::UserFinder, :clean_gitlab_redis_shared_stat
   end
 
   describe '#find' do
-    let(:user) { create(:user) }
+    let_it_be_with_reload(:user) { create(:user) }
 
     before do
       allow(finder).to receive(:email_for_github_username)
@@ -295,7 +295,7 @@ RSpec.describe Gitlab::GithubImport::UserFinder, :clean_gitlab_redis_shared_stat
   end
 
   describe '#find_id_from_database' do
-    let(:user) { create(:user) }
+    let_it_be_with_reload(:user) { create(:user) }
 
     it 'returns the GitLab user ID for a GitHub user ID' do
       user.identities.create!(provider: :github, extern_uid: 42)
@@ -795,8 +795,8 @@ RSpec.describe Gitlab::GithubImport::UserFinder, :clean_gitlab_redis_shared_stat
   end
 
   describe '#source_user_accepted?' do
-    let!(:user) { { id: 7, login: 'anything' } }
-    let!(:source_user) do
+    let_it_be(:user) { { id: 7, login: 'anything' } }
+    let_it_be_with_reload(:source_user) do
       create(
         :import_source_user, :awaiting_approval,
         namespace: project.root_ancestor,

@@ -67,9 +67,9 @@ module Gitlab
 
       # Creates a RequestThrottleData instance from a Labkit::RateLimit::Result.
       #
-      # Used by Gitlab::Middleware::LabkitRackRateLimit both when a throttle
-      # blocks a request, and to build the proactive (non-429) headers it adds
-      # to every other response.
+      # Used by Gitlab::Middleware::LabkitRackRateLimit both when a promoted
+      # (enforced) throttle blocks a request, and to build the proactive (non-429)
+      # headers it adds once every cohort is fully enforced.
       # The headers it produces are byte-identical to the
       # legacy Rack::Attack 429 because both paths feed the same
       # RequestThrottleData math: only labkit's resolved limit/period and

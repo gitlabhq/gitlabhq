@@ -1,7 +1,7 @@
 import { Node } from '@tiptap/core';
 import { VueRenderer } from '@tiptap/vue-2';
 import tippy from 'tippy.js';
-import Suggestion from '@tiptap/suggestion';
+import Suggestion, { findSuggestionMatch } from '@tiptap/suggestion';
 import { PluginKey } from '@tiptap/pm/state';
 import { uniqueId } from 'lodash-es';
 import { REFERENCE_TYPES } from '~/content_editor/constants/reference_types';
@@ -19,6 +19,16 @@ import Frontmatter from './frontmatter';
 import Code from './code';
 
 const CODE_NODE_TYPES = [CodeBlockHighlight.name, Diagram.name, Frontmatter.name, Code.name];
+
+// No autocompleted name starts with a space, so a space right after a trigger
+// character means the author is writing prose, not searching: `Bonjour !` and
+// `Statut :` should leave the popup closed. Spaces later in the query still search
+// (`:smiling ` narrows the smiling faces, `#login page` finds an issue by title).
+function findMatchUnlessQueryStartsWithSpace(config) {
+  const match = findSuggestionMatch(config);
+
+  return /^\s/.test(match?.query ?? '') ? null : match;
+}
 
 const QUOTED_QUICK_ACTION_REFERENCE_TYPES = {
   [COMMANDS.STATUS]: REFERENCE_TYPES.STATUS,
@@ -76,6 +86,7 @@ function createSuggestionPlugin({
     editor,
     char,
     allowSpaces: true,
+    findSuggestionMatch: findMatchUnlessQueryStartsWithSpace,
     pluginKey: new PluginKey(uniqueId('suggestions')),
 
     command: ({ editor: tiptapEditor, range, props }) => {
@@ -220,13 +231,22 @@ function createSuggestionPlugin({
         onKeyDown(props) {
           if (isHidden) return false;
 
-          if (props.event.key === 'Escape') {
+          const { event } = props;
+
+          if (event.key === 'Escape') {
+            event.stopPropagation();
             popup?.[0].hide();
 
             return true;
           }
 
-          return component?.ref?.onKeyDown(props);
+          const handled = component?.ref?.onKeyDown(props) ?? false;
+
+          if (!handled && (event.key === 'Enter' || event.key === 'Tab')) {
+            popup?.[0].hide();
+          }
+
+          return handled;
         },
 
         onExit() {

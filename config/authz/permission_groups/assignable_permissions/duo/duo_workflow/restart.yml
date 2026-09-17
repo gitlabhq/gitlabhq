@@ -1,0 +1,9 @@
+---
+name: restart_duo_workflow
+description: Grants the ability to restart a failed or stopped flow at the beginning of its process
+boundaries:
+  - user
+available_for:
+  - granular_access_token
+permissions:
+  - restart_duo_workflow

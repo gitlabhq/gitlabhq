@@ -368,6 +368,10 @@
       th {
         @apply gl-border-b;
       }
+
+      td[align="right"] {
+        font-variant-numeric: tabular-nums;
+      }
     }
 
     &.grid-none {

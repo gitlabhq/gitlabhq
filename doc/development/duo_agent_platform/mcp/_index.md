@@ -814,6 +814,36 @@ The default is `false`, so existing tools remain listed until they opt in.
 > Keep `unlisted?` static. Do not drive it from a per-user or credential-dependent check, because
 > the AI Catalog picker cannot evaluate one.
 
+### Declaring a toolset
+
+Every tool must declare exactly one toolset from
+[`Mcp::Tools::Toolsets::ALL`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/app/services/mcp/tools/toolsets.rb).
+A tool without a declared toolset becomes unreachable through any toolset:
+`spec/services/mcp/tools/toolset_coverage_spec.rb` asserts every registered tool declares a valid
+toolset, so a missing or invalid declaration fails CI rather than surfacing as a runtime error.
+
+For custom, GraphQL, and aggregated tools, add `toolset: :symbol` to the `register_version`
+metadata:
+
+```ruby
+register_version '0.1.0', {
+  toolset: :work_items,
+  description: 'Example description',
+  # ...
+}
+```
+
+For API tools, add `toolset: :symbol` to the `route_setting :mcp`:
+
+```ruby
+route_setting :mcp, tool_name: :example_tool, toolset: :work_items, params: [:id]
+```
+
+Unknown toolset names in the `X-Gitlab-Enabled-Mcp-Server-Toolsets` header return a `400` error
+because toolsets are a closed enum. Unknown tool names in `X-Gitlab-Enabled-Mcp-Server-Tools` are
+logged as a warning and ignored because tool names are an open, evolving set that varies across
+GitLab editions and versions.
+
 ### Splitting an action out of an aggregated tool
 
 An aggregated tool that folds several operations behind a parameter (for example, an `action` or

@@ -33,11 +33,11 @@ A `before` hook reverts all migrations to the point that a migration
 under test is not yet migrated.
 
 In other words, our custom RSpec hooks find a previous migration, and
-migrate the database **down** to the previous migration version.
+migrate the database down to the previous migration version.
 
 With this approach you can test a migration against a database schema.
 
-An `after` hook migrates the database **up** and restores the latest
+An `after` hook migrates the database up and restores the latest
 schema version, so that the process does not affect subsequent specs and
 ensures proper isolation.
 
@@ -132,10 +132,10 @@ Use the `reversible_migration` helper to test migrations with either a
 the application and its data after the migration becomes reversed is the
 same as it was before the migration ran in the first place. The helper:
 
-1. Runs the `before` expectations before the **up** migration.
-1. Migrates **up**.
+1. Runs the `before` expectations before the up migration.
+1. Migrates up.
 1. Runs the `after` expectations.
-1. Migrates **down**.
+1. Migrates down.
 1. Runs the `before` expectations a second time.
 
 Example:

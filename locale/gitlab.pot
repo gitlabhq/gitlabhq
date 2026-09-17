@@ -33277,16 +33277,28 @@ msgstr ""
 msgid "DuoSecretDetection|Use false positive detection for Secret Detection vulnerabilities on the default branch"
 msgstr ""
 
+msgid "DuoSlack|%{count} more actions are not shown here."
+msgstr ""
+
 msgid "DuoSlack|*Feedback submitted.* Thanks for helping us improve GitLab Duo."
 msgstr ""
 
+msgid "DuoSlack|Approve and continue"
+msgstr ""
+
 msgid "DuoSlack|Cancel"
+msgstr ""
+
+msgid "DuoSlack|Close"
 msgstr ""
 
 msgid "DuoSlack|Could not set up the service account for the Duo Developer flow. Contact your group owner."
 msgstr ""
 
 msgid "DuoSlack|Could not set up the workspace project. Check that you have access to the namespace and permission to create projects."
+msgstr ""
+
+msgid "DuoSlack|Deny and continue without running these actions"
 msgstr ""
 
 msgid "DuoSlack|Didn't do what I asked"
@@ -33296,6 +33308,17 @@ msgid "DuoSlack|Done"
 msgstr ""
 
 msgid "DuoSlack|Failed to start the Duo Developer workflow. Try again."
+msgstr ""
+
+msgid "DuoSlack|GitLab Duo needs your approval to run: %{tool_names}"
+msgstr ""
+
+msgid "DuoSlack|GitLab Duo wants to run %{count} action. Review it and choose whether to continue."
+msgid_plural "DuoSlack|GitLab Duo wants to run %{count} actions. Review them and choose whether to continue."
+msgstr[0] ""
+msgstr[1] ""
+
+msgid "DuoSlack|GitLab Duo wants to run the %{tool_name} tool."
 msgstr ""
 
 msgid "DuoSlack|Helpful"
@@ -33319,10 +33342,19 @@ msgstr ""
 msgid "DuoSlack|Not helpful"
 msgstr ""
 
+msgid "DuoSlack|Only the person who started this session can respond to this request."
+msgstr ""
+
 msgid "DuoSlack|Other"
 msgstr ""
 
 msgid "DuoSlack|Plan"
+msgstr ""
+
+msgid "DuoSlack|Review"
+msgstr ""
+
+msgid "DuoSlack|Review Duo actions"
 msgstr ""
 
 msgid "DuoSlack|Set your default Duo namespace in your GitLab preferences (%{preferences_url}) to use Duo from Slack."
@@ -33355,6 +33387,9 @@ msgstr ""
 msgid "DuoSlack|The task completed but the agent didn't produce a response. Check the session in GitLab for details."
 msgstr ""
 
+msgid "DuoSlack|This approval request has already been answered."
+msgstr ""
+
 msgid "DuoSlack|This feedback helps us improve Duo. We'll share your feedback and the related session with GitLab."
 msgstr ""
 
@@ -33368,6 +33403,12 @@ msgid "DuoSlack|What went wrong?"
 msgstr ""
 
 msgid "DuoSlack|You don't have access to Duo in this namespace, or it has run out of GitLab Duo credits. Ask a group owner to check the Duo Agent Platform settings."
+msgstr ""
+
+msgid "DuoSlack|Your Slack account is not connected to a GitLab account, so you cannot respond to this request."
+msgstr ""
+
+msgid "DuoSlack|Your decision"
 msgstr ""
 
 msgid "DuoSlack|Your message is too long for me to process (the limit is about %{limit} characters). Shorten it and mention me again."
@@ -43130,6 +43171,9 @@ msgid "IdentityVerification|Verify with a phone number instead?"
 msgstr ""
 
 msgid "IdentityVerification|Verify your identity"
+msgstr ""
+
+msgid "IdentityVerification|Verify your identity to commit this change"
 msgstr ""
 
 msgid "IdentityVerification|Verify your identity to run this pipeline"
@@ -54091,6 +54135,9 @@ msgid "Notes|Show comments only"
 msgstr ""
 
 msgid "Notes|Show history only"
+msgstr ""
+
+msgid "Notes|The comment you're looking for could not be found. It may have been deleted, or you may not have permission to view it."
 msgstr ""
 
 msgid "Notes|This comment has changed since you started editing, please review the %{open_link}updated comment%{close_link} to ensure information is not lost"

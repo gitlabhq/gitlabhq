@@ -190,13 +190,18 @@ export default {
       :aria-label="__('Select action')"
       :toggle-text="__('Select action')"
       text-sr-only
+      fluid-width
       :items="dropdownItems"
       @action="runCommand"
     >
       <template #list-item="{ item }">
-        <span class="gl-flex gl-items-center gl-justify-between gl-gap-3">
+        <span
+          class="gl-flex gl-w-max gl-min-w-full gl-max-w-full gl-items-center gl-justify-between gl-gap-3"
+        >
           <span>{{ item.text }}</span>
-          <kbd v-if="item.kbd" class="flat" aria-hidden="true">{{ item.kbd }}</kbd>
+          <kbd v-if="item.kbd" class="flat gl-shrink-0 !gl-py-0" aria-hidden="true">{{
+            item.kbd
+          }}</kbd>
         </span>
       </template>
     </gl-disclosure-dropdown>

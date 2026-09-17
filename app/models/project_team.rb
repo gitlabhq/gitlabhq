@@ -20,8 +20,6 @@ class ProjectTeam
   end
 
   def add_security_manager(user, current_user: nil)
-    return unless Gitlab::Security::SecurityManagerConfig.enabled?
-
     add_member(user, :security_manager, current_user: current_user)
   end
 

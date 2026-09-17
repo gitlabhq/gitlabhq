@@ -7352,6 +7352,12 @@
     "dottedExample": "/api/v4/ai/duo_workflows/workflows/john.doe/execute"
   },
   {
+    "template": "/api/:version/ai/duo_workflows/workflows/:workflow_id/restart",
+    "example": "/api/v4/ai/duo_workflows/workflows/foo/restart",
+    "acceptsFormat": true,
+    "dottedExample": "/api/v4/ai/duo_workflows/workflows/john.doe/restart"
+  },
+  {
     "template": "/api/:version/ai/duo_workflows/workflows/:workflow_id/resume",
     "example": "/api/v4/ai/duo_workflows/workflows/foo/resume",
     "acceptsFormat": true,

@@ -103,6 +103,10 @@
   - 1
 - - ai_repository_xray_scan_dependencies
   - 1
+- - ai_risk_classification_calculate_score
+  - 1
+- - ai_risk_classification_timeout
+  - 1
 - - ai_run_flow_schedule
   - 1
 - - analytics_ai_usage_events_backfill

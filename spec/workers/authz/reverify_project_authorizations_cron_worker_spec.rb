@@ -77,10 +77,10 @@ RSpec.describe Authz::ReverifyProjectAuthorizationsCronWorker, feature_category:
         stub_feature_flags(use_db_to_queue_safety_net_auth_refresh: false)
       end
 
-      it 'leaves the record pending without refreshing the user' do
+      it 'still drains records queued while the flag was enabled' do
         expect { perform }
-          .to not_change { authorized? }.from(false)
-          .and not_change { reverification.reload.status }.from('pending')
+          .to change { authorized? }.from(false).to(true)
+          .and change { queued? }.from(true).to(false)
       end
     end
 

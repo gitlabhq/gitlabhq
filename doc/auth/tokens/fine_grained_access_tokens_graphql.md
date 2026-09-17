@@ -886,7 +886,7 @@ Grants the ability to create user feedback on Duo AI messages.
 
 #### Duo Workflow
 
-Grants the ability to create, delete, read, resume, and update duo workflows.
+Grants the ability to create, delete, read, restart, resume, and update duo workflows.
 
 | Action | Access | Kind | Name |
 | ------ | ------ | ---- | ---- |

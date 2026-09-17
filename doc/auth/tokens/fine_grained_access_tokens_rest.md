@@ -775,7 +775,7 @@ Grants the ability to read code suggestion enabled status.
 
 #### Duo Workflow
 
-Grants the ability to create, delete, read, resume, and update duo workflows.
+Grants the ability to create, delete, read, restart, resume, and update duo workflows.
 
 | Action | Access | Method | Path |
 | ------ | ------ | ------ | ---- |
@@ -785,6 +785,7 @@ Grants the ability to create, delete, read, resume, and update duo workflows.
 | Read | User | `GET` | `/ai/duo_workflows/workflows/agent_privileges` |
 | Read | User | `GET` | `/ai/duo_workflows/ws` |
 | Read | User | `POST` | `/ai/duo_workflows/workflows/:workflow_id/execute` |
+| Restart | User | `POST` | `/ai/duo_workflows/workflows/:workflow_id/restart` |
 | Resume | User | `POST` | `/ai/duo_workflows/workflows/:workflow_id/resume` |
 
 #### Duo Workflow Direct Access Token

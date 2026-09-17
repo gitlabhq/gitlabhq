@@ -1,6 +1,6 @@
 ---
-source_checksum: 982592b26eb8f4db
-distilled_at_sha: 829339e2e65aa85defcd3357097b75335668e334
+source_checksum: a03187fdcb79118a
+distilled_at_sha: 3378d9de7ce956458ecfbc5e1845591fa87448fc
 ---
 <!-- Auto-generated from docs.gitlab.com by gitlab-ai-principles-distiller — do not edit manually -->
 
@@ -13,7 +13,7 @@ distilled_at_sha: 829339e2e65aa85defcd3357097b75335668e334
 ### Indexes
 
 - DO NOT add an index without first checking if existing indexes can be reused or modified
-- DO NOT add an index to a table that already has 15 indexes without first removing or combining existing ones
+- DO NOT add an index to a table that already has 15 indexes without first removing or combining existing ones; some frequently-accessed tables have a RuboCop `PreventIndexCreation` check that blocks further indexes entirely
 - DO NOT use hash indexes; use B-tree indexes instead (RuboCop enforces this)
 - DO NOT create indexes concurrently on partitioned tables directly; use `add_concurrent_partitioned_index` instead
 - DO NOT add a new index without making the corresponding application code change in the same MR when possible
@@ -51,7 +51,7 @@ distilled_at_sha: 829339e2e65aa85defcd3357097b75335668e334
 - DO NOT use `add_foreign_key` or `add_concurrent_foreign_key` more than once per migration file unless source and target tables are identical
 - `add_concurrent_foreign_key`, `add_concurrent_partitioned_foreign_key`, `remove_foreign_key_if_exists`, and `remove_partitioned_foreign_key` all default to `reverse_lock_order: true`; set `reverse_lock_order: false` explicitly only when the FK points from a parent table to a child table
 - Use `remove_partitioned_foreign_key` instead of `remove_foreign_key` when removing FKs from partitioned tables
-- For composite indexes serving as FK indexes, ensure the FK column is in the leading position
+- For composite indexes serving as FK indexes, ensure the FK column is in the leading position; DO NOT use a partial index as a FK index (it cannot serve cascading deletes)
 - DO NOT use `dependent: :destroy` or `dependent: :delete` on associations; let the database handle cascading deletes via FK constraints
 - DO NOT define `before_destroy` or `after_destroy` callbacks unless approved by database specialists; use service classes for non-database cleanup
 - Use `_id` suffix only for columns referencing another table; use `_xid` for third-party platform IDs
@@ -72,6 +72,7 @@ distilled_at_sha: 829339e2e65aa85defcd3357097b75335668e334
 - For very large tables, add the constraint with `validate: false` first, then use `prepare_async_check_constraint_validation` for asynchronous validation
 - DO NOT drop a `NOT NULL` constraint from an individual partition; drop it from the parent table so it cascades
 - Use `add_multi_column_not_null_constraint` when enforcing that a specific number of columns across a set must be non-null (e.g., exactly one of `project_id` or `group_id` must be present)
+- When dropping a `NOT NULL` constraint backed by a check constraint, use `remove_not_null_constraint`; when it is a plain column-level constraint, use `change_column_null`; always pair the schema migration with a separate data migration to handle rollback integrity
 
 ### Text Columns and Limits
 
@@ -94,6 +95,10 @@ distilled_at_sha: 829339e2e65aa85defcd3357097b75335668e334
 ### Column Ordering
 
 - Order columns in new tables by type size descending (largest fixed-size types first, variable-size types last) to minimize alignment padding
+
+### Wide Tables
+
+- DO NOT add new columns to tables protected by the `AddColumnsToWideTables` RuboCop check (frequently-accessed tables subject to LockManager LWLock contention)
 
 ### Polymorphic Associations
 
@@ -140,3 +145,4 @@ For the full picture, see:
 - doc/development/database/serializing_data.md
 - doc/development/database/single_table_inheritance.md
 - doc/development/database/hash_indexes.md
+

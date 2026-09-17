@@ -5,10 +5,10 @@ require 'spec_helper'
 RSpec.describe Gitlab::Database::MigrationHelpers::GranularScopePermissions, feature_category: :permissions do
   include MigrationsHelpers
 
-  let(:granular_scopes) { table(:granular_scopes) }
-  let(:organizations) { table(:organizations) }
+  let_it_be(:granular_scopes) { table(:granular_scopes) }
+  let_it_be(:organizations) { table(:organizations) }
 
-  let!(:organization) { organizations.create!(name: 'Organization', path: 'organization') }
+  let_it_be(:organization) { organizations.create!(name: 'Organization', path: 'organization') }
 
   let(:old_permission) { 'write_work_item' }
   let(:new_permissions) { %w[create_work_item update_work_item] }
@@ -116,7 +116,7 @@ RSpec.describe Gitlab::Database::MigrationHelpers::GranularScopePermissions, fea
       end
     end
 
-    let!(:scope_with_both) do
+    let_it_be_with_reload(:scope_with_both) do
       granular_scopes.create!(
         organization_id: organization.id,
         permissions: %w[write_work_item manage_deploy_key read_wiki],
@@ -124,7 +124,7 @@ RSpec.describe Gitlab::Database::MigrationHelpers::GranularScopePermissions, fea
       )
     end
 
-    let!(:scope_with_one) do
+    let_it_be_with_reload(:scope_with_one) do
       granular_scopes.create!(
         organization_id: organization.id,
         permissions: %w[manage_deploy_key read_code],
@@ -132,7 +132,7 @@ RSpec.describe Gitlab::Database::MigrationHelpers::GranularScopePermissions, fea
       )
     end
 
-    let!(:scope_with_none) do
+    let_it_be_with_reload(:scope_with_none) do
       granular_scopes.create!(
         organization_id: organization.id,
         permissions: %w[read_wiki read_code],

@@ -44,6 +44,8 @@ describe('Pipeline editor home wrapper', () => {
           aiChatAvailable: false,
           projectFullPath: '',
           totalBranches: 19,
+          identityVerificationRequired: false,
+          identityVerificationPath: '',
           glFeatures: {
             ...glFeatures,
           },

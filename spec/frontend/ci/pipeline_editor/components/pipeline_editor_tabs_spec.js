@@ -71,6 +71,8 @@ describe('Pipeline editor tabs component', () => {
         projectFullPath: '/path/to/project',
         simulatePipelineHelpPagePath: 'path/to/help/page',
         totalBranches: 1,
+        identityVerificationRequired: false,
+        identityVerificationPath: '',
         ...provide,
       },
       stubs: {
