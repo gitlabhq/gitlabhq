@@ -23,9 +23,9 @@ The `CI_JOB_JWT` variables are deprecated, but updating to ID tokens requires so
 important configuration changes to work with Vault. If you have more than a handful of jobs,
 converting everything at once is a daunting task.
 
-There isn't one standard method to migrate to [ID tokens](id_token_authentication.md), so this tutorial
-includes two variations for how to convert your existing CI/CD secrets. Choose the method that is most appropriate for
-your use case:
+You can migrate to [ID tokens](id_token_authentication.md) by creating a new Vault authentication path,
+or by updating existing roles to accept both token types temporarily.
+Choose the method that is most appropriate for your use case:
 
 1. Update your Vault configuration:
    - Method A: Migrate JWT roles to the new Vault auth method
@@ -67,7 +67,7 @@ $ vault write auth/jwt/config \
 
 After you make this change, jobs that use `CI_JOB_JWT` start to fail.
 
-You can create multiple authentication paths in Vault, which enable you to transition to ID Tokens on a per-project or per-job basis without disruption.
+To transition to ID Tokens on a per-project or per-job basis without disruption, create multiple authentication paths in Vault:
 
 1. Configure a new authentication path with the name `jwt_v2`, run:
 
@@ -175,8 +175,7 @@ the prefixed and non-prefixed `iss` claim for this role.
 
 You must apply this change to all JWT roles used for the GitLab integration before moving on to the next step.
 
-You can revert the migration of the `iss` claim validation from the auth method to the roles if desired,
-after all projects have been migrated and you no longer need parallel support for `CI_JOB_JWT` and ID tokens.
+After all projects have migrated, you can revert the `iss` claim validation from the roles back to the auth method.
 
 ### Remove `bound_issuers` claim from auth method
 
@@ -202,7 +201,7 @@ Also, if needed you can review the CI/CD documentation for:
 - [`secrets:`](../yaml/_index.md#secrets)
 - [`id_tokens:`](../yaml/_index.md#id_tokens)
 
-The following examples show how to obtain the staging database password written to the `password` field in `secret/myproject/staging/db`.
+The following examples show how to obtain the staging database password. It's stored in the `password` field of `secret/myproject/staging/db`.
 
 The value for the `VAULT_AUTH_PATH` variable depends on the migration method you used:
 
@@ -236,7 +235,7 @@ job:
 Both `VAULT_SERVER_URL` and `VAULT_AUTH_PATH` can be [defined as project or group CI/CD variables](../variables/_index.md#define-a-cicd-variable-in-the-ui),
 if preferred.
 
-[`secrets:file`](../yaml/_index.md#secretsfile) is set to `false` because ID tokens place secrets in a file by default and it needs to work as a regular variable instead to match the old behavior.
+[`secrets:file`](../yaml/_index.md#secretsfile) is set to `false` because ID tokens place secrets in a file by default. The secret needs to work as a regular variable instead, to match the old behavior.
 
 ### KV Secrets Engine v2
 
@@ -285,4 +284,4 @@ job:
 
 After you commit the updated CI/CD configuration, your jobs fetch secrets with ID Tokens, congratulations!
 
-If you have migrated all projects to fetch secrets with ID Tokens and used method B for the migration, it is now possible to move the `iss` claim validation back to the auth method configuration if you desire.
+After you migrate all projects to ID tokens using method B, you can move the `iss` claim validation back to the auth method configuration.

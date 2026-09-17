@@ -12001,6 +12001,9 @@ msgstr ""
 msgid "Archived (%{movedToStart}moved%{movedToEnd})"
 msgstr ""
 
+msgid "Archived decisions cannot be deleted"
+msgstr ""
+
 msgid "Archived in this version"
 msgstr ""
 
@@ -28181,6 +28184,9 @@ msgid "December"
 msgstr ""
 
 msgid "Decision cannot have more than %{max} options"
+msgstr ""
+
+msgid "Decision is already archived"
 msgstr ""
 
 msgid "Decision is already resolved"
@@ -56837,6 +56843,9 @@ msgstr ""
 msgid "Only required if not using role instance credentials."
 msgstr ""
 
+msgid "Only resolved decisions can be archived"
+msgstr ""
+
 msgid "Only the author can change visibility settings"
 msgstr ""
 
@@ -61852,7 +61861,7 @@ msgstr ""
 msgid "PolicyStore|Evaluate the event against custom OPA/Rego policy code"
 msgstr ""
 
-msgid "PolicyStore|Evaluations this week"
+msgid "PolicyStore|Evaluations (last %{days} days)"
 msgstr ""
 
 msgid "PolicyStore|Every project in this group, including newly created ones"
@@ -61904,6 +61913,9 @@ msgid "PolicyStore|No rules configured"
 msgstr ""
 
 msgid "PolicyStore|None added"
+msgstr ""
+
+msgid "PolicyStore|Not available"
 msgstr ""
 
 msgid "PolicyStore|Notify the user and log the violation"
@@ -68188,6 +68200,9 @@ msgstr ""
 msgid "Resolved by %{name}"
 msgstr ""
 
+msgid "Resolved decisions cannot be deleted"
+msgstr ""
+
 msgid "Resolver must have access to the work item"
 msgstr ""
 
@@ -70435,6 +70450,9 @@ msgid "ScanExecutionPolicy|on %{hostname}"
 msgstr ""
 
 msgid "ScanExecutionPolicy|on the Kubernetes agent pod"
+msgstr ""
+
+msgid "ScanExecutionPolicy|on the cron schedule %{cadence} %{timezone}, run for: %{duration}, %{timezoneLabel}"
 msgstr ""
 
 msgid "ScanExecutionPolicy|selected automatically"
@@ -74831,6 +74849,9 @@ msgstr ""
 msgid "SecurityOrchestration|Schedule a new"
 msgstr ""
 
+msgid "SecurityOrchestration|Schedule not editable in rule mode"
+msgstr ""
+
 msgid "SecurityOrchestration|Schedule the following pipeline execution policy to run %{branchInfo} %{scheduleTypeInfo} %{timeInfo} %{timeWindowInfo} %{timezoneInfo}."
 msgstr ""
 
@@ -75213,6 +75234,9 @@ msgid "SecurityOrchestration|This project"
 msgstr ""
 
 msgid "SecurityOrchestration|This rule is active as soon as it appears in the rules list, and always denies packages flagged by the malicious packages data feed - it cannot be switched to an allow list. To turn it off, remove this rule using the button on the right."
+msgstr ""
+
+msgid "SecurityOrchestration|This schedule uses a format rule mode cannot display, like a range, step, or minute offset. The YAML is valid and the policy still runs. Switch to YAML mode to change the schedule."
 msgstr ""
 
 msgid "SecurityOrchestration|This setting will be locked for 10 minutes after making changes to prevent further performance issues."

@@ -43,6 +43,7 @@ Asana
 Asciidoctor
 asdf
 Assembla
+Astra
 Astro
 async
 Atlassian
@@ -435,6 +436,7 @@ Gitpod
 Gitter
 glab
 GLab
+GLM
 globals
 globbing
 globstar
@@ -567,6 +569,7 @@ keytabs
 Kibana
 kibibyte
 kibibytes
+Kimi
 Kinesis
 Kiro
 Klar
@@ -668,6 +671,7 @@ mitigations
 mitmproxy
 mixin
 mixins
+Mixtral
 MLflow
 MLOps
 Mmap
@@ -840,6 +844,7 @@ Python
 Qualys
 queryable
 Quicktime
+Qwen
 Rackspace
 railties
 Raspbian
@@ -1295,6 +1300,7 @@ virtualizing
 Vite
 VMs
 VPCs
+VRAM
 VSCodium
 Vue
 Vuex

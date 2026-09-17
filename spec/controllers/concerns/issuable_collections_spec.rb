@@ -20,8 +20,7 @@ RSpec.describe IssuableCollections do
 
     controller = klass.new
 
-    allow(controller).to receive(:params).and_return(ActionController::Parameters.new(params))
-    allow(controller).to receive(:current_user).and_return(user)
+    allow(controller).to receive_messages(params: ActionController::Parameters.new(params), current_user: user)
 
     controller
   end
@@ -61,8 +60,7 @@ RSpec.describe IssuableCollections do
 
   describe '#finder_options' do
     before do
-      allow(controller).to receive(:cookies).and_return({})
-      allow(controller).to receive(:current_user).and_return(nil)
+      allow(controller).to receive_messages(cookies: {}, current_user: nil)
     end
 
     subject { controller.send(:finder_options).to_h }

@@ -274,14 +274,31 @@ A scheduled pipeline:
 
 ### Cadence
 
+{{< history >}}
+
+- Monthly cadence support in rule mode [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/606441) in GitLab 19.4.
+
+{{< /history >}}
+
 Use the `cadence` field to schedule when you want the policy's actions to run. The `cadence` field
 uses [cron syntax](../../../topics/cron/_index.md), but with some restrictions:
 
 - Only the following types of cron syntax are supported:
   - A daily cadence of once per hour around specified time, for example: `0 18 * * *`
   - A weekly cadence of once per week on a specified day and around specified time, for example: `0 13 * * 0`
+  - A monthly cadence on one or more specified days of the month and around specified time,
+    for example: `0 0 1 * *` or, for multiple days, a comma-separated list in the day-of-month
+    field: `0 0 1,15 * *`. A day greater than the number of days in a given month is skipped
+    for that month, so a scan scheduled for day 31 does not run in a 30-day month.
 - Use of the comma (,), hyphens (-), or step operators (/) are not supported for minutes and hours.
   Any scheduled pipeline using these characters is skipped.
+
+> [!note]
+> Cron syntax that uses ranges, step operators, or a non-zero minute (for example `0 22 * * 1-5` or
+> `30 2 * * *`) is valid but rule mode cannot display it. If your policy uses one of these formats,
+> the Conditions section is read-only in rule mode and shows the cron expression as written. Edit
+> the schedule in YAML mode instead. The
+> policy continues to run on its existing schedule either way.
 
 Consider the following when choosing a value for the `cadence` field:
 

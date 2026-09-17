@@ -74,17 +74,13 @@ RSpec.describe SendFileUpload, feature_category: :user_profile do
       end
 
       before do
-        allow(uploader).to receive(:image_safe_for_scaling?).and_return(true)
-        allow(uploader).to receive(:mounted_as).and_return(mount)
-
-        allow(controller).to receive(:headers).and_return(headers)
         # both of these are valid cases, depending on whether we are dealing with
         # local or remote files
         allow(controller).to receive(:send_file)
         allow(controller).to receive(:redirect_to)
 
-        allow(controller).to receive(:current_user).and_return(image_requester)
-        allow(uploader).to receive(:model).and_return(image_owner)
+        allow(controller).to receive_messages(headers: headers, current_user: image_requester)
+        allow(uploader).to receive_messages(image_safe_for_scaling?: true, mounted_as: mount, model: image_owner)
       end
 
       context 'with valid width parameter' do

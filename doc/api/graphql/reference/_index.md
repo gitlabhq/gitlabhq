@@ -20712,6 +20712,34 @@ Fields:
 | <a id="mutation-workitemcreatefromtask-newworkitem"></a>`newWorkItem` | [`WorkItem`](#workitem) | New work item created from task. |
 | <a id="mutation-workitemcreatefromtask-workitem"></a>`workItem` | [`WorkItem`](#workitem) | Updated work item. |
 
+### `Mutation.workItemDecisionArchive`
+
+{{< details >}}
+
+- Introduced in GitLab 19.5.
+- Status: Experiment.
+
+{{< /details >}}
+
+Archives a resolved decision in the decision log of a work item. The decision is kept but marked as archived. Open decisions cannot be archived, and archiving cannot be undone.
+
+Input type: `WorkItemDecisionArchiveInput`
+
+Arguments:
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="mutation-workitemdecisionarchive-clientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
+| <a id="mutation-workitemdecisionarchive-id"></a>`id` | [`WorkItemsDecisionID!`](#workitemsdecisionid) | Global ID of the decision. |
+
+Fields:
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="mutation-workitemdecisionarchive-clientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
+| <a id="mutation-workitemdecisionarchive-decision"></a>`decision` | [`WorkItemDecision`](#workitemdecision) | Decision after mutation. |
+| <a id="mutation-workitemdecisionarchive-errors"></a>`errors` | [`[String!]!`](#string) | Errors encountered during the mutation. |
+
 ### `Mutation.workItemDecisionCreate`
 
 {{< details >}}
@@ -20745,6 +20773,34 @@ Fields:
 | <a id="mutation-workitemdecisioncreate-clientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
 | <a id="mutation-workitemdecisioncreate-decision"></a>`decision` | [`WorkItemDecision`](#workitemdecision) | Decision after mutation. |
 | <a id="mutation-workitemdecisioncreate-errors"></a>`errors` | [`[String!]!`](#string) | Errors encountered during the mutation. |
+
+### `Mutation.workItemDecisionDelete`
+
+{{< details >}}
+
+- Introduced in GitLab 19.5.
+- Status: Experiment.
+
+{{< /details >}}
+
+Deletes an open decision from the decision log of a work item. Resolved or archived decisions cannot be deleted; archive resolved decisions instead.
+
+Input type: `WorkItemDecisionDeleteInput`
+
+Arguments:
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="mutation-workitemdecisiondelete-clientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
+| <a id="mutation-workitemdecisiondelete-id"></a>`id` | [`WorkItemsDecisionID!`](#workitemsdecisionid) | Global ID of the decision. |
+
+Fields:
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="mutation-workitemdecisiondelete-clientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
+| <a id="mutation-workitemdecisiondelete-decision"></a>`decision` | [`WorkItemDecision`](#workitemdecision) | Deleted decision. |
+| <a id="mutation-workitemdecisiondelete-errors"></a>`errors` | [`[String!]!`](#string) | Errors encountered during the mutation. |
 
 ### `Mutation.workItemDecisionResolve`
 
@@ -66307,6 +66363,7 @@ Fields:
 
 | Name | Type | Description |
 | ---- | ---- | ----------- |
+| <a id="workitemdecision-archivedat"></a>`archivedAt` {{< icon name="warning-solid" >}} | [`Time`](#time) | Introduced in GitLab 19.5. Status: Experiment. Timestamp when the decision was archived. |
 | <a id="workitemdecision-author"></a>`author` {{< icon name="warning-solid" >}} | [`UserCore`](#usercore) | Introduced in GitLab 19.4. Status: Experiment. User who raised the decision. |
 | <a id="workitemdecision-description"></a>`description` {{< icon name="warning-solid" >}} | [`String`](#string) | Introduced in GitLab 19.4. Status: Experiment. Context of the decision. |
 | <a id="workitemdecision-discussionid"></a>`discussionId` {{< icon name="warning-solid" >}} | [`DiscussionID`](#discussionid) | Introduced in GitLab 19.4. Status: Experiment. Global ID of the originating discussion thread. |
@@ -66318,6 +66375,7 @@ Fields:
 | <a id="workitemdecision-resolvedby"></a>`resolvedBy` {{< icon name="warning-solid" >}} | [`UserCore`](#usercore) | Introduced in GitLab 19.4. Status: Experiment. User who resolved the decision. |
 | <a id="workitemdecision-resolvingnoteid"></a>`resolvingNoteId` {{< icon name="warning-solid" >}} | [`NoteID`](#noteid) | Introduced in GitLab 19.4. Status: Experiment. Global ID of the comment that resolved the decision. |
 | <a id="workitemdecision-sourcelink"></a>`sourceLink` {{< icon name="warning-solid" >}} | [`String`](#string) | Introduced in GitLab 19.4. Status: Experiment. URL of the comment, discussion, or external resource that prompted the decision. Present only on manually created decisions. |
+| <a id="workitemdecision-state"></a>`state` {{< icon name="warning-solid" >}} | [`WorkItemDecisionState!`](#workitemdecisionstate) | Introduced in GitLab 19.5. Status: Experiment. State of the decision. |
 | <a id="workitemdecision-title"></a>`title` {{< icon name="warning-solid" >}} | [`String`](#string) | Introduced in GitLab 19.4. Status: Experiment. Question being decided. May be absent for decisions recorded as already resolved at creation. |
 
 ### `WorkItemDecisionOption`
@@ -66810,8 +66868,32 @@ Fields:
 
 | Name | Type | Description |
 | ---- | ---- | ----------- |
-| <a id="workitemwidgetdecisionlog-decisions"></a>`decisions` {{< icon name="warning-solid" >}} | [`WorkItemDecisionConnection`](#workitemdecisionconnection) | Introduced in GitLab 19.4. Status: Experiment. Decisions recorded on the work item. |
 | <a id="workitemwidgetdecisionlog-type"></a>`type` | [`WorkItemWidgetType`](#workitemwidgettype) | Widget type. |
+
+#### Fields with arguments
+
+##### `WorkItemWidgetDecisionLog.decisions`
+
+{{< details >}}
+
+- Introduced in GitLab 19.4.
+- Status: Experiment.
+
+{{< /details >}}
+
+Decisions recorded on the work item. Can be requested once per query; use `states` to fetch several states in one call.
+
+Returns [`WorkItemDecisionConnection`](#workitemdecisionconnection).
+
+This field returns a [connection](#connections). It accepts the
+four standard [pagination arguments](#pagination-arguments):
+`before: String`, `after: String`, `first: Int`, and `last: Int`.
+
+Arguments:
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="workitemwidgetdecisionlog-decisions-states"></a>`states` | [`[WorkItemDecisionState!]`](#workitemdecisionstate) | Filter decisions by one or more states. Omit to return all states. |
 
 ### `WorkItemWidgetDefinitionAssignees`
 
@@ -74020,6 +74102,16 @@ Action that triggered a work item change event.
 | <a id="workitemchangeaction-created"></a>`CREATED` {{< icon name="warning-solid" >}} | Introduced in GitLab 19.3. Status: Experiment. Work item was created. |
 | <a id="workitemchangeaction-deleted"></a>`DELETED` {{< icon name="warning-solid" >}} | Introduced in GitLab 19.3. Status: Experiment. Work item was deleted. |
 | <a id="workitemchangeaction-updated"></a>`UPDATED` {{< icon name="warning-solid" >}} | Introduced in GitLab 19.3. Status: Experiment. Work item was updated. |
+
+### `WorkItemDecisionState`
+
+State of a decision in the decision log of a work item.
+
+| Value | Description |
+| ----- | ----------- |
+| <a id="workitemdecisionstate-active"></a>`ACTIVE` | Decision is open and awaiting resolution. |
+| <a id="workitemdecisionstate-archived"></a>`ARCHIVED` | Decision was resolved and later archived. |
+| <a id="workitemdecisionstate-resolved"></a>`RESOLVED` | Decision has been resolved. |
 
 ### `WorkItemDiscussionsSort`
 

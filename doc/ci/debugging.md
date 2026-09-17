@@ -129,10 +129,9 @@ and check if their values are what you expect.
 #### Use variables to add flags to CLI commands
 
 You can define CI/CD variables that are not used in standard pipeline runs, but can
-be used for debugging on demand. If you add a variable like in the following example,
-you can add it during manual runs of the [pipeline](pipelines/_index.md#run-a-pipeline-manually)
-or [individual job](jobs/job_control.md#run-a-manual-job) to modify the command's behavior.
-For example:
+be used for debugging on demand. If you add a variable, you can set its value during
+manual runs of the [pipeline](pipelines/_index.md#run-a-pipeline-manually) or [individual job](jobs/job_control.md#run-a-manual-job)
+to modify the command's behavior. For example:
 
 ```yaml
 my-flaky-job:
@@ -193,9 +192,9 @@ verifies the updated image or dependency still works with your pipeline.
 
 #### Make output verbose
 
-If you use `--silent` to reduce the amount of output in a job log, it can make it
-difficult to identify what went wrong in a job. Additionally, consider using `--verbose`
-when possible, for additional details.
+You can use `--silent` to reduce the amount of output in a job log. However, this can make it
+difficult to identify what went wrong in a job. Consider using `--verbose` when possible,
+which shows more detail about what a command is doing.
 
 ```yaml
 job1:
@@ -250,8 +249,8 @@ You can use GitLab Duo Root Cause Analysis in GitLab Duo Chat to [troubleshoot f
 
 ## Job configuration issues
 
-A lot of common pipeline issues can be fixed by analyzing the behavior of the `rules`
-or `only/except` configuration used to [control when jobs are added to a pipeline](jobs/job_control.md).
+Many common pipeline issues can be fixed by analyzing the behavior of the `rules`
+or `only/except` configuration. This configuration is used to [control when jobs are added to a pipeline](jobs/job_control.md).
 You shouldn't use these two configurations in the same pipeline, as they behave differently.
 It's hard to predict how a pipeline runs with this mixed behavior. `rules` is the preferred
 choice for controlling jobs, as `only` and `except` are no longer being actively developed.
@@ -284,8 +283,8 @@ There must be at least one other job in a different stage.
 
 A [UTF-8 Byte-Order Mark (BOM)](https://en.wikipedia.org/wiki/Byte_order_mark) in
 the `.gitlab-ci.yml` file or other included configuration files can lead to incorrect
-pipeline behavior. The byte order mark affects parsing of the file, causing some configuration
-to be ignored - jobs might be missing, and variables could have the wrong values.
+pipeline behavior. The byte order mark affects parsing of the file. As a result, some
+configuration might be ignored, jobs might be missing, and variables could have the wrong values.
 Some text editors could insert a BOM character if configured to do so.
 
 If your pipeline has confusing behavior, you can check for the presence of BOM characters
@@ -499,7 +498,7 @@ These errors can happen if the following are both true:
 - The job attempting to fetch the image is running in a project that is not listed in
   the private project's allowlist.
 
-To resolve this issue, add any projects with CI/CD jobs that fetch images from the container
+To resolve this issue, add any project with CI/CD jobs that fetch images from the container
 registry to the target project's [job token allowlist](jobs/ci_job_token.md#add-a-group-or-project-to-the-job-token-allowlist).
 
 These errors might also happen when trying to use a [project access token](../user/project/settings/project_access_tokens.md)

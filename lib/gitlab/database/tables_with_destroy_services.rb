@@ -64,6 +64,7 @@ module Gitlab
         'two_factor' => 'webauthn_registrations',
         'users/abuse/namespace_bans' => 'namespace_bans',
         'webauthn' => 'webauthn_registrations',
+        'work_items/decisions' => 'work_item_decisions',
         'work_items/legacy_epics/epic_issues' => 'epic_issues',
         'work_items/legacy_epics/related_epic_links' => 'related_epic_links',
         'work_items/lifecycles' => 'work_item_custom_lifecycles',

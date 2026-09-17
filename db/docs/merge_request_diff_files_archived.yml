@@ -9,5 +9,5 @@ description: |
   It will be removed in a future milestone once the partitioned table is fully validated.
 introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/241924
 milestone: '19.3'
-gitlab_schema: gitlab_main_org
+gitlab_schema: gitlab_main_cell_local
 sharding_key_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/422771

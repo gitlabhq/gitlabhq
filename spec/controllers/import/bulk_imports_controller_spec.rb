@@ -19,8 +19,7 @@ RSpec.describe Import::BulkImportsController, feature_category: :importers do
       describe 'POST configure' do
         before do
           allow_next_instance_of(BulkImports::Clients::HTTP) do |instance|
-            allow(instance).to receive(:validate_instance_version!).and_return(true)
-            allow(instance).to receive(:validate_import_scopes!).and_return(true)
+            allow(instance).to receive_messages(validate_instance_version!: true, validate_import_scopes!: true)
           end
         end
 
@@ -163,8 +162,7 @@ RSpec.describe Import::BulkImportsController, feature_category: :importers do
 
           before do
             allow_next_instance_of(BulkImports::Clients::HTTP) do |instance|
-              allow(instance).to receive(:instance_version).and_return(source_version)
-              allow(instance).to receive(:instance_enterprise).and_return(false)
+              allow(instance).to receive_messages(instance_version: source_version, instance_enterprise: false)
             end
           end
 
@@ -280,8 +278,7 @@ RSpec.describe Import::BulkImportsController, feature_category: :importers do
 
           before do
             allow_next_instance_of(BulkImports::Clients::HTTP) do |instance|
-              allow(instance).to receive(:instance_version).and_return(source_version)
-              allow(instance).to receive(:instance_enterprise).and_return(false)
+              allow(instance).to receive_messages(instance_version: source_version, instance_enterprise: false)
               allow(instance).to receive(:get).and_raise(BulkImports::Error)
             end
           end
@@ -517,8 +514,7 @@ RSpec.describe Import::BulkImportsController, feature_category: :importers do
         stub_application_setting(bulk_import_enabled: false)
 
         allow_next_instance_of(BulkImports::Clients::HTTP) do |instance|
-          allow(instance).to receive(:validate_instance_version!).and_return(true)
-          allow(instance).to receive(:validate_import_scopes!).and_return(true)
+          allow(instance).to receive_messages(validate_instance_version!: true, validate_import_scopes!: true)
         end
       end
 

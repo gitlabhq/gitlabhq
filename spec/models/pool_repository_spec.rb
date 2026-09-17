@@ -231,6 +231,18 @@ RSpec.describe PoolRepository, feature_category: :source_code_management do
 
         expect(pool.reload).to be_obsolete
       end
+
+      context 'when the pool is already obsolete' do
+        let(:pool) { create(:pool_repository, :obsolete) }
+
+        it 'schedules its destruction again' do
+          expect(ObjectPool::DestroyWorker).to receive(:perform_async).with(pool.id)
+
+          pool.remove_member(member)
+
+          expect(pool.reload).to be_obsolete
+        end
+      end
     end
   end
 

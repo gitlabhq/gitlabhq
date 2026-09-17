@@ -27,6 +27,8 @@ end
 
 DeclarativePolicy.configure do
   named_policy :global, ::GlobalPolicy
+  named_policy :instance_admin_area, ::Authz::InstanceAdminAreaPolicy
+  named_policy :organization_admin_area, ::Authz::OrganizationAdminAreaPolicy
 end
 
 DeclarativePolicy.prepend(ClassForClassCache)

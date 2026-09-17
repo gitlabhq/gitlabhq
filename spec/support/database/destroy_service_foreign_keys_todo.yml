@@ -1462,6 +1462,10 @@ users:
 work_item_custom_lifecycles:
 - work_item_custom_lifecycle_statuses.lifecycle_id
 - work_item_type_custom_lifecycles.lifecycle_id
+work_item_decisions:
+# Cascade-only by design: options are row-only children capped at 5, with
+# nothing beyond the row to clean up. Revisit in a follow-up if that changes.
+- work_item_decision_options.work_item_decision_id
 work_item_parent_links:
 - epic_issues.work_item_parent_link_id
 - epics.work_item_parent_link_id

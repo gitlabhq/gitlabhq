@@ -141,6 +141,9 @@ upgrading GitLab:
    match your new GitLab version.
 1. If you use advanced search (Elasticsearch), confirm advanced search migrations are complete
    by [checking for pending migrations](background_migrations.md#check-for-pending-advanced-search-migrations).
+   [The `gitlab:check` Rake task](../integration/advanced_search/elasticsearch.md#all-migrations-must-be-finished-before-doing-a-major-upgrade)
+   also reports whether any advanced search migrations are pending.
+   The check does not stop an upgrade, so you must read the output and act on the result.
 
    After upgrading GitLab, you might have to upgrade
    [Elasticsearch if the new version breaks compatibility](../integration/advanced_search/elasticsearch.md#version-compatibility).

@@ -20,7 +20,6 @@ CrystalballEnv.start!
 
 ENV["RAILS_ENV"] = 'test'
 ENV["IN_MEMORY_APPLICATION_SETTINGS"] = 'true'
-ENV["GITLAB_SECURITY_MANAGER_ROLE"] = 'true'
 ENV["GITLAB_LOAD_WIP_CUSTOM_ABILITIES"] = 'true'
 
 require_relative '../config/environment'
@@ -380,10 +379,11 @@ RSpec.configure do |config|
       end
     end
 
-    # Security manager is enabled by default via ENV var
-    # Tests can opt out with :disable_security_manager tag
+    # The Security Manager role is always enabled.
+    # Tests covering the removed opt-out can still disable it with the
+    # :disable_security_manager tag until those call sites are cleaned up.
     if example.metadata[:disable_security_manager]
-      stub_env('GITLAB_SECURITY_MANAGER_ROLE', 'false')
+      allow(Gitlab::Security::SecurityManagerConfig).to receive(:enabled?).and_return(false)
     end
 
     # Make sure specs test by default admin mode setting on, unless forced to the opposite

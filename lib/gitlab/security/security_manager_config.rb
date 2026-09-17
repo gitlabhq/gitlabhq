@@ -3,8 +3,11 @@
 module Gitlab
   module Security
     class SecurityManagerConfig
+      # The Security Manager role is generally available and no longer gated.
+      # This class is retained only until its remaining call sites are removed.
+      # See https://gitlab.com/gitlab-org/gitlab/-/issues/584144
       def self.enabled?
-        ENV.fetch('GITLAB_SECURITY_MANAGER_ROLE', 'true').downcase.in?(%w[true 1 yes on enabled])
+        true
       end
     end
   end

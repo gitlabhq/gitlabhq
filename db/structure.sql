@@ -35420,6 +35420,7 @@ CREATE TABLE work_item_decisions (
     resolution_rationale text,
     discussion_id text,
     source_link text,
+    archived_at timestamp with time zone,
     CONSTRAINT check_5a3ddf5181 CHECK ((char_length(discussion_id) <= 255)),
     CONSTRAINT check_8e46bf5aec CHECK ((char_length(description) <= 3000)),
     CONSTRAINT check_ac996a3be7 CHECK ((char_length(title) <= 255)),

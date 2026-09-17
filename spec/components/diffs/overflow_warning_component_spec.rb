@@ -99,8 +99,7 @@ RSpec.describe Diffs::OverflowWarningComponent, feature_category: :source_code_m
     # Compare revisions or Merge Request create page
     context "both conditions fail" do
       before do
-        allow(component).to receive(:commit?).and_return(false)
-        allow(component).to receive(:merge_request?).and_return(false)
+        allow(component).to receive_messages(commit?: false, merge_request?: false)
         render_inline component
       end
 
@@ -140,15 +139,13 @@ RSpec.describe Diffs::OverflowWarningComponent, feature_category: :source_code_m
     end
 
     it "is a string when on a merge request page" do
-      allow(component).to receive(:commit?).and_return(false)
-      allow(component).to receive(:merge_request?).and_return(true)
+      allow(component).to receive_messages(commit?: false, merge_request?: true)
 
       is_expected.to eq("foo")
     end
 
     it "is nil in other situations" do
-      allow(component).to receive(:commit?).and_return(false)
-      allow(component).to receive(:merge_request?).and_return(false)
+      allow(component).to receive_messages(commit?: false, merge_request?: false)
 
       is_expected.to be_nil
     end
@@ -169,15 +166,13 @@ RSpec.describe Diffs::OverflowWarningComponent, feature_category: :source_code_m
     end
 
     it "is a string when on a merge request page" do
-      allow(component).to receive(:commit?).and_return(false)
-      allow(component).to receive(:merge_request?).and_return(true)
+      allow(component).to receive_messages(commit?: false, merge_request?: true)
 
       is_expected.to eq("foo")
     end
 
     it "is nil in other situations" do
-      allow(component).to receive(:commit?).and_return(false)
-      allow(component).to receive(:merge_request?).and_return(false)
+      allow(component).to receive_messages(commit?: false, merge_request?: false)
 
       is_expected.to be_nil
     end
@@ -214,8 +209,7 @@ RSpec.describe Diffs::OverflowWarningComponent, feature_category: :source_code_m
 
     context "when not on a commit or merge request page" do
       before do
-        allow(component).to receive(:commit?).and_return(false)
-        allow(component).to receive(:merge_request?).and_return(false)
+        allow(component).to receive_messages(commit?: false, merge_request?: false)
         render_inline component
       end
 

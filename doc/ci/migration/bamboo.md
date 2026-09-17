@@ -12,8 +12,11 @@ title: Migrate from Bamboo
 
 {{< /details >}}
 
-You can migrate from Atlassian Bamboo to GitLab CI/CD by converting Bamboo Specs YAML
-configurations exported from the Bamboo UI or stored in Spec repositories.
+You can migrate from Atlassian Bamboo to GitLab CI/CD by converting your Bamboo Specs to a
+`.gitlab-ci.yml` file.
+
+You can export these Specs from the Bamboo UI, or use ones you've already defined as code in
+a Specs repository.
 
 ## Key migration considerations
 
@@ -151,22 +154,22 @@ job1:
 
 ### Jobs and tasks
 
-In both GitLab and Bamboo, jobs in the same stage run in parallel, except where there is
-a dependency that needs to be met before a job runs.
+In both GitLab and Bamboo, jobs in the same stage run in parallel, except when a
+dependency must be met first.
 
 The number of jobs that can run in Bamboo depends on availability of Bamboo agents
 and Bamboo license size.
 
 With GitLab CI/CD, the number of parallel jobs depends on the number
-of runners integrated with the GitLab instance and the concurrency set in the runners.
+of runners integrated with the GitLab instance and their configured concurrency.
 
 {{< tabs >}}
 
 {{< tab title="Bamboo" >}}
 
-In Bamboo, jobs are composed of tasks, which can be a set of commands run as a script
-or predefined tasks like source code checkout, artifact download, and other tasks available
-in the Atlassian tasks marketplace.
+In Bamboo, jobs are composed of tasks. A task can be a set of commands run as a script,
+or a predefined task like source code checkout or artifact download. Bamboo also offers
+other tasks in the Atlassian tasks marketplace.
 
 ```yaml
 version: 2
@@ -561,8 +564,8 @@ a subscription for the service.
 
 GitLab also supports OIDC authentication for other third-party services that support OIDC.
 
-Additionally, you can make credentials available to jobs by storing them in CI/CD variables,
-though secrets stored in plain text are susceptible to accidental exposure.
+Additionally, you can make credentials available to jobs by storing them in CI/CD variables.
+However, secrets stored in plain text are susceptible to accidental exposure.
 You should always store sensitive information in masked and protected variables,
 which mitigates some of the risk.
 

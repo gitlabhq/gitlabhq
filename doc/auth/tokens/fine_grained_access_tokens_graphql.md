@@ -1672,7 +1672,9 @@ Grants the ability to create, delete, read, subscribe, and update work items suc
 | Update | Project | Mutation | `WorkItemBulkUpdate` |
 | Update | Project | Mutation | `WorkItemConvert` |
 | Update | Project | Mutation | `WorkItemCreateFromTask` |
+| Update | Project | Mutation | `WorkItemDecisionArchive` |
 | Update | Project | Mutation | `WorkItemDecisionCreate` |
+| Update | Project | Mutation | `WorkItemDecisionDelete` |
 | Update | Project | Mutation | `WorkItemDecisionResolve` |
 | Update | Project | Mutation | `WorkItemDecisionUpdate` |
 | Update | Project | Mutation | `WorkItemEnableAiPlanning` |
@@ -1697,7 +1699,9 @@ Grants the ability to create, delete, read, subscribe, and update work items suc
 | Update | Group | Mutation | `WorkItemBulkMove` |
 | Update | Group | Mutation | `WorkItemBulkUpdate` |
 | Update | Group | Mutation | `WorkItemConvert` |
+| Update | Group | Mutation | `WorkItemDecisionArchive` |
 | Update | Group | Mutation | `WorkItemDecisionCreate` |
+| Update | Group | Mutation | `WorkItemDecisionDelete` |
 | Update | Group | Mutation | `WorkItemDecisionResolve` |
 | Update | Group | Mutation | `WorkItemDecisionUpdate` |
 | Update | Group | Mutation | `WorkItemEnableAiPlanning` |
