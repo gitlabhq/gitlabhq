@@ -1146,78 +1146,6 @@ msgstr ""
 msgid "%{labelName} will be permanently deleted. This cannot be undone."
 msgstr ""
 
-msgid "%{labelStart}Actual response:%{labelEnd} %{headers}"
-msgstr ""
-
-msgid "%{labelStart}Affected Endpoint:%{labelEnd} %{url}"
-msgstr ""
-
-msgid "%{labelStart}Assert:%{labelEnd} %{assertion}"
-msgstr ""
-
-msgid "%{labelStart}CVSS:%{labelEnd} %{cvss}"
-msgstr ""
-
-msgid "%{labelStart}Class:%{labelEnd} %{class}"
-msgstr ""
-
-msgid "%{labelStart}Container Image:%{labelEnd} %{image}"
-msgstr ""
-
-msgid "%{labelStart}Crash Address:%{labelEnd} %{crash_address}"
-msgstr ""
-
-msgid "%{labelStart}Crash State:%{labelEnd} %{crash_state}"
-msgstr ""
-
-msgid "%{labelStart}Crash State:%{labelEnd} %{stacktrace_snippet}"
-msgstr ""
-
-msgid "%{labelStart}Crash Type:%{labelEnd} %{crash_type}"
-msgstr ""
-
-msgid "%{labelStart}Detected by:%{labelEnd} %{scanner}"
-msgstr ""
-
-msgid "%{labelStart}Evidence:%{labelEnd} %{evidence}"
-msgstr ""
-
-msgid "%{labelStart}Exploit Probability (EPSS):%{labelEnd} %{epss}"
-msgstr ""
-
-msgid "%{labelStart}File:%{labelEnd} %{file}"
-msgstr ""
-
-msgid "%{labelStart}Known Exploited (CISA KEV):%{labelEnd} %{kev}"
-msgstr ""
-
-msgid "%{labelStart}Method:%{labelEnd} %{method}"
-msgstr ""
-
-msgid "%{labelStart}Namespace:%{labelEnd} %{namespace}"
-msgstr ""
-
-msgid "%{labelStart}Project:%{labelEnd} %{project}"
-msgstr ""
-
-msgid "%{labelStart}Reachability:%{labelEnd} %{reachability}"
-msgstr ""
-
-msgid "%{labelStart}Report type:%{labelEnd} %{reportType}"
-msgstr ""
-
-msgid "%{labelStart}Sent request:%{labelEnd} %{headers}"
-msgstr ""
-
-msgid "%{labelStart}Severity:%{labelEnd} %{severity}"
-msgstr ""
-
-msgid "%{labelStart}Unmodified response:%{labelEnd} %{headers}"
-msgstr ""
-
-msgid "%{labelStart}Validity check:%{labelEnd} %{validityCheck}"
-msgstr ""
-
 msgid "%{label_name} is locked and was not removed"
 msgstr ""
 
@@ -6563,6 +6491,9 @@ msgstr ""
 msgid "AdminSettings|A Let's Encrypt account will be configured for this GitLab instance using this email address. You will receive emails to warn of expiring certificates. %{link_start}Learn more%{link_end}."
 msgstr ""
 
+msgid "AdminSettings|Active session history"
+msgstr ""
+
 msgid "AdminSettings|Add a custom message with details about instance runners. The message is visible when you view runners for projects and groups. Markdown is supported."
 msgstr ""
 
@@ -6812,6 +6743,12 @@ msgstr ""
 msgid "AdminSettings|Groups cannot change this setting."
 msgstr ""
 
+msgid "AdminSettings|Has no effect until you install pg_ash. Changes to this setting apply automatically, but can take up to 90 seconds."
+msgstr ""
+
+msgid "AdminSettings|How often to take a sample, in seconds. Must be between 1 and 60. Default is 1."
+msgstr ""
+
 msgid "AdminSettings|I have read and agree to the Let's Encrypt %{link_start}Terms of Service%{link_end} (PDF)."
 msgstr ""
 
@@ -7007,6 +6944,12 @@ msgstr ""
 msgid "AdminSettings|Restricted visibility levels"
 msgstr ""
 
+msgid "AdminSettings|Sample database activity so you can review what the database was doing in the past. Install pg_ash before you turn on sampling."
+msgstr ""
+
+msgid "AdminSettings|Sample interval (seconds)"
+msgstr ""
+
 msgid "AdminSettings|Save %{name} limits"
 msgstr ""
 
@@ -7173,6 +7116,9 @@ msgid "AdminSettings|Turn off advanced search until indexing is complete."
 msgstr ""
 
 msgid "AdminSettings|Turn on indexing for advanced search"
+msgstr ""
+
+msgid "AdminSettings|Turn on session sampling"
 msgstr ""
 
 msgid "AdminSettings|Turning off this setting will delete all dynamically registered OAuth applications and revoke their access tokens."
@@ -8025,9 +7971,6 @@ msgid "AdvancedSearch|You have %{count} pending %{migrations_link_start}advanced
 msgstr ""
 
 msgid "AdvancedSearch|You have pending obsolete migrations"
-msgstr ""
-
-msgid "Affected Location"
 msgstr ""
 
 msgid "Affected columns"
@@ -66590,9 +66533,6 @@ msgstr ""
 msgid "Read documentation"
 msgstr ""
 
-msgid "Read less"
-msgstr ""
-
 msgid "Read more"
 msgstr ""
 
@@ -76291,9 +76231,6 @@ msgstr ""
 msgid "SecurityReports|Edit dismissal"
 msgstr ""
 
-msgid "SecurityReports|Edit vulnerability"
-msgstr ""
-
 msgid "SecurityReports|Enable"
 msgstr ""
 
@@ -83189,9 +83126,6 @@ msgstr ""
 msgid "Things to be aware of before transferring:"
 msgstr ""
 
-msgid "Third Party Advisory Link"
-msgstr ""
-
 msgid "This %{issuable} belongs to an archived project and is read-only."
 msgstr ""
 
@@ -86469,6 +86403,9 @@ msgid "Unknown `%{key}`: `%{value}`. Supported values are: %{supportedValues}."
 msgstr ""
 
 msgid "Unknown conflict"
+msgstr ""
+
+msgid "Unknown description placeholder: `%{placeholder}`."
 msgstr ""
 
 msgid "Unknown display type: `%{displayType}`. Supported display types are: %{supportedDisplayTypes}."
@@ -90677,9 +90614,6 @@ msgstr ""
 msgid "VulnerabilityManagement|Something went wrong while trying to fetch related Jira issues. Please check the %{linkStart}Jira integration settings%{linkEnd} and try again."
 msgstr ""
 
-msgid "VulnerabilityManagement|Something went wrong while trying to refresh the vulnerability. Please try again later."
-msgstr ""
-
 msgid "VulnerabilityManagement|Something went wrong while trying to retrieve the vulnerability history. Please try again later."
 msgstr ""
 
@@ -90693,9 +90627,6 @@ msgid "VulnerabilityManagement|Something went wrong, could not fetch AI resoluti
 msgstr ""
 
 msgid "VulnerabilityManagement|Something went wrong, could not fetch AI secret detection configuration."
-msgstr ""
-
-msgid "VulnerabilityManagement|Something went wrong, could not get user."
 msgstr ""
 
 msgid "VulnerabilityManagement|Something went wrong, could not resolve the vulnerability."
@@ -90792,9 +90723,6 @@ msgid "Vulnerability|AI analysis"
 msgstr ""
 
 msgid "Vulnerability|AI false positive confidence score"
-msgstr ""
-
-msgid "Vulnerability|AI false positive reasoning:"
 msgstr ""
 
 msgid "Vulnerability|AI false positive scan complete"
@@ -91023,9 +90951,6 @@ msgid "Vulnerability|For more information, view vulnerability details."
 msgstr ""
 
 msgid "Vulnerability|GitLab Duo evaluated this finding. Confidence that it is a false positive: %{level}."
-msgstr ""
-
-msgid "Vulnerability|GitLab Duo scanned this vulnerability to identify the likelihood that it is a false positive (FP) and found that this vulnerability is %{falsePositiveResult}."
 msgstr ""
 
 msgid "Vulnerability|GitLab Security Report"
@@ -91323,15 +91248,6 @@ msgid "Vulnerability|What is code flow?"
 msgstr ""
 
 msgid "Vulnerability|circular dependency"
-msgstr ""
-
-msgid "Vulnerability|likely a false positive"
-msgstr ""
-
-msgid "Vulnerability|not a false positive"
-msgstr ""
-
-msgid "Vulnerability|possibly a false positive"
 msgstr ""
 
 msgid "WARNING:"
@@ -97091,9 +97007,6 @@ msgstr ""
 msgid "ciReport|Expand load performance details"
 msgstr ""
 
-msgid "ciReport|Explain vulnerability"
-msgstr ""
-
 msgid "ciReport|Failed to load %{reportName} report"
 msgstr ""
 
@@ -97241,12 +97154,6 @@ msgid "ciReport|This project uses diff-based scanning for GitLab Advanced SAST. 
 msgstr ""
 
 msgid "ciReport|This report contains all Code Quality issues in the source branch."
-msgstr ""
-
-msgid "ciReport|Use GitLab Duo AI to generate a merge request with a suggested solution"
-msgstr ""
-
-msgid "ciReport|Use GitLab Duo AI to provide insights about the vulnerability and suggested solutions"
 msgstr ""
 
 msgid "ciReport|Used by %{packagesString}"
@@ -99084,7 +98991,7 @@ msgstr ""
 msgid "stat display type cannot have dimensions"
 msgstr ""
 
-msgid "stat display type requires exactly 1 metric"
+msgid "stat display type requires at least 1 metric"
 msgstr ""
 
 msgid "structure is too large. Maximum size is %{max_size} characters"

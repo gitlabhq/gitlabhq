@@ -908,6 +908,7 @@ projects:
 - custom_software_licenses.project_id
 - dependency_firewall_activity_stats.project_id
 - dependency_firewall_policy_rules.security_policy_management_project_id
+- dependency_firewall_prevented_packages.project_id
 - dependency_list_export_upload_states.project_id
 - dependency_proxy_packages_settings.project_id
 - deploy_keys_projects.project_id

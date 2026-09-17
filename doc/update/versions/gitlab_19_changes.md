@@ -18,6 +18,8 @@ Ensure you review these instructions for:
 - Your installation type.
 - All versions between your current version and your target version.
 
+If you also plan to upgrade GitLab Runner alongside GitLab, review the GitLab Runner [CHANGELOG](https://gitlab.com/gitlab-org/gitlab-runner/blob/main/CHANGELOG.md) for changes that might affect your setup.
+
 For additional information for Helm chart installations, see
 [the Helm chart 10.0 upgrade notes](https://docs.gitlab.com/charts/releases/10_0/).
 

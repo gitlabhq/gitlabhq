@@ -49,6 +49,28 @@ EXECUTE grants are snapshotted and re-applied), leaving the collected samples,
 the `ash.config` settings and `installed_at` untouched. It runs inside a single
 transaction, so a failure part-way rolls back and re-running after one is safe.
 
+## How sampling is driven
+
+Installing does not start sampling. `Gitlab::Metrics::Samplers::PgAshSampler` runs
+a thread in every Sidekiq process, and the process that wins a Redis exclusive
+lease calls `ash.take_sample()` on a fixed cadence. One process samples at a
+time.
+
+Two application settings control it, both in the `database_settings` JSONB
+column and editable under **Admin** > **Settings** > **Metrics and profiling**:
+`pg_ash_sampling_enabled` (off by default) and
+`pg_ash_sample_interval_seconds` (1 by default, 1 to 60). The sampler re-reads
+both on every tick, so a change needs no restart, but each process picks it up
+within its application settings cache window.
+
+The sampler writes the interval back into `ash.config`, because pg_ash uses its
+own copy for missed-sample bookkeeping.
+
+Rollup and retention (`ash.rollup_minute`, `ash.rollup_hour`,
+`ash.rollup_cleanup` and `ash.rotate`) still have no driver, so samples
+accumulate until an administrator uninstalls `pg_ash`. Tracked in
+<https://gitlab.com/gitlab-org/gitlab/-/issues/608100>.
+
 ## Why the schema is invisible to the schema tooling
 
 pg_ash puts its objects in a Postgres schema named `ash`, which is not part of

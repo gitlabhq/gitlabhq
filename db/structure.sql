@@ -19846,6 +19846,31 @@ CREATE SEQUENCE dependency_firewall_policy_rules_id_seq
 
 ALTER SEQUENCE dependency_firewall_policy_rules_id_seq OWNED BY dependency_firewall_policy_rules.id;
 
+CREATE TABLE dependency_firewall_prevented_packages (
+    id bigint NOT NULL,
+    project_id bigint NOT NULL,
+    first_seen_at timestamp with time zone NOT NULL,
+    last_blocked_at timestamp with time zone,
+    last_warned_at timestamp with time zone,
+    created_at timestamp with time zone NOT NULL,
+    updated_at timestamp with time zone NOT NULL,
+    rule_type smallint NOT NULL,
+    severity smallint,
+    identifier text NOT NULL,
+    CONSTRAINT check_59b3d4e571 CHECK ((char_length(identifier) <= 512)),
+    CONSTRAINT check_dep_fw_prevented_packages_severity_rule_type CHECK (((severity IS NULL) OR (rule_type = ANY (ARRAY[1, 4])))),
+    CONSTRAINT check_dep_fw_prevented_packages_timestamps CHECK ((num_nonnulls(last_blocked_at, last_warned_at) >= 1))
+);
+
+CREATE SEQUENCE dependency_firewall_prevented_packages_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+ALTER SEQUENCE dependency_firewall_prevented_packages_id_seq OWNED BY dependency_firewall_prevented_packages.id;
+
 CREATE TABLE dependency_list_export_part_upload_states (
     id bigint NOT NULL,
     verification_started_at timestamp with time zone,
@@ -37370,6 +37395,8 @@ ALTER TABLE ONLY dependency_firewall_activity_stats ALTER COLUMN id SET DEFAULT 
 
 ALTER TABLE ONLY dependency_firewall_policy_rules ALTER COLUMN id SET DEFAULT nextval('dependency_firewall_policy_rules_id_seq'::regclass);
 
+ALTER TABLE ONLY dependency_firewall_prevented_packages ALTER COLUMN id SET DEFAULT nextval('dependency_firewall_prevented_packages_id_seq'::regclass);
+
 ALTER TABLE ONLY dependency_list_export_part_upload_states ALTER COLUMN id SET DEFAULT nextval('dependency_list_export_part_upload_states_id_seq'::regclass);
 
 ALTER TABLE ONLY dependency_list_export_parts ALTER COLUMN id SET DEFAULT nextval('dependency_list_export_parts_id_seq'::regclass);
@@ -40791,6 +40818,9 @@ ALTER TABLE ONLY dependency_firewall_activity_stats
 
 ALTER TABLE ONLY dependency_firewall_policy_rules
     ADD CONSTRAINT dependency_firewall_policy_rules_pkey PRIMARY KEY (id);
+
+ALTER TABLE ONLY dependency_firewall_prevented_packages
+    ADD CONSTRAINT dependency_firewall_prevented_packages_pkey PRIMARY KEY (id);
 
 ALTER TABLE ONLY dependency_list_export_part_upload_states
     ADD CONSTRAINT dependency_list_export_part_upload_states_pkey PRIMARY KEY (id);
@@ -45546,6 +45576,12 @@ CREATE INDEX i_dast_profiles_tags_on_scanner_profiles_id ON dast_profiles_tags U
 CREATE INDEX i_dep_fw_activity_stats_project_time ON dependency_firewall_activity_stats USING btree (project_id, stat_time);
 
 CREATE UNIQUE INDEX i_dep_fw_activity_stats_unique ON dependency_firewall_activity_stats USING btree (dependency_firewall_policy_rule_id, project_id, stat_time, outcome) NULLS NOT DISTINCT;
+
+CREATE INDEX i_dep_fw_prevented_packages_blocked ON dependency_firewall_prevented_packages USING btree (project_id, rule_type, last_blocked_at);
+
+CREATE UNIQUE INDEX i_dep_fw_prevented_packages_unique ON dependency_firewall_prevented_packages USING btree (project_id, rule_type, identifier);
+
+CREATE INDEX i_dep_fw_prevented_packages_warned ON dependency_firewall_prevented_packages USING btree (project_id, rule_type, last_warned_at);
 
 CREATE INDEX i_dep_fw_rules_pol_mgmt_proj_id ON dependency_firewall_policy_rules USING btree (security_policy_management_project_id);
 
@@ -59260,6 +59296,9 @@ ALTER TABLE ONLY subscriptions
 
 ALTER TABLE ONLY cd_rollout_channel_tokens
     ADD CONSTRAINT fk_93c7b60be5 FOREIGN KEY (rollout_id) REFERENCES cd_rollouts(id) ON DELETE CASCADE;
+
+ALTER TABLE ONLY dependency_firewall_prevented_packages
+    ADD CONSTRAINT fk_94075635ff FOREIGN KEY (project_id) REFERENCES projects(id) ON DELETE CASCADE;
 
 ALTER TABLE ONLY workspaces_agent_configs
     ADD CONSTRAINT fk_94660551c8 FOREIGN KEY (cluster_agent_id) REFERENCES cluster_agents(id) ON DELETE CASCADE;

@@ -351,6 +351,12 @@ RSpec.describe ApplicationController, type: :request, feature_category: :shared 
       sign_in(user)
     end
 
+    it 'permits blob: media sources' do
+      get root_path
+
+      expect(response.headers['Content-Security-Policy']).to match(/media-src[^;]*blob:/)
+    end
+
     context 'when configuring iframes in Markdown' do
       let(:iframe_rendering_allowlist) { ['www.youtube.com', 'embed.figma.com', 'www.figma.com'] }
 

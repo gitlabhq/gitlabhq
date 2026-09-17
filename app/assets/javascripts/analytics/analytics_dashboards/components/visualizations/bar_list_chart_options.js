@@ -21,8 +21,10 @@ export const BAR_COLOR_TOKENS = {
 };
 
 // What a bar's length is measured against. `total` reads as share of the whole; `max` sizes
-// every bar against the largest row, which fills the track.
+// every bar against the largest row, which fills the track. `log` plots the values on a log
+// axis, so a spread of several orders of magnitude compresses into decades.
 export const SCALE_TOTAL = 'total';
 export const SCALE_MAX = 'max';
-export const SCALE_OPTIONS = [SCALE_TOTAL, SCALE_MAX];
+export const SCALE_LOG = 'log';
+export const SCALE_OPTIONS = [SCALE_TOTAL, SCALE_MAX, SCALE_LOG];
 export const SCALE_DEFAULT = SCALE_TOTAL;

@@ -1147,7 +1147,9 @@ class ApplicationSetting < ApplicationRecord
   validates :database_reindexing, json_schema: { filename: "application_setting_database_reindexing" }
 
   jsonb_accessor :database_settings,
-    background_operations_max_jobs: [:integer, { default: 10 }]
+    background_operations_max_jobs: [:integer, { default: 10 }],
+    pg_ash_sampling_enabled: [:boolean, { default: false }],
+    pg_ash_sample_interval_seconds: [:integer, { default: 1 }]
 
   validates :database_settings, json_schema: { filename: "application_setting_database_settings" }
 

@@ -134,6 +134,14 @@ rspec unit pg17:
     - .rspec-unit-parallel
     - .rails:rules:ee-and-foss-unit
 
+rspec graphql-query-documents pg17:
+  extends:
+    - .rspec-base-pg17
+    - .rails:rules:graphql-query-documents
+  script:
+    - !reference [.base-script, script]
+    - rspec_section rspec_simple_job "-- spec/graphql/all_queries_spec.rb"
+
 rspec unit pg17 single-redis:
   extends:
     - rspec unit pg17
@@ -1177,6 +1185,14 @@ rspec-ee unit pg17:
     - .rspec-ee-base-pg17
     - .rspec-ee-unit-parallel
     - .rails:rules:ee-only-unit
+
+rspec-ee graphql-query-documents pg17:
+  extends:
+    - .rspec-ee-base-pg17
+    - .rails:rules:graphql-query-documents-ee
+  script:
+    - !reference [.base-script, script]
+    - rspec_section rspec_simple_job "-- ee/spec/graphql/all_queries_spec.rb"
 
 rspec-ee unit pg17 single-db:
   extends:

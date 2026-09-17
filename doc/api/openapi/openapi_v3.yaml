@@ -19955,7 +19955,7 @@ paths:
         content:
           application/json:
             schema:
-              "$ref": "#/components/schemas/RequestBody_f8d71e9e4d52"
+              "$ref": "#/components/schemas/RequestBody_9cf55a9e1208"
   "/api/v4/service_accounts":
     post:
       operationId: postApiV4ServiceAccounts
@@ -91652,6 +91652,10 @@ components:
           type: string
         background_operations_max_jobs:
           type: string
+        pg_ash_sampling_enabled:
+          type: string
+        pg_ash_sample_interval_seconds:
+          type: string
         enforce_granular_tokens:
           type: string
         granular_tokens_enforced_after:
@@ -106745,7 +106749,7 @@ components:
           description: Scopes available to the application. Separate multiple scopes
             with a space.
           nullable: true
-    RequestBody_f8d71e9e4d52:
+    RequestBody_9cf55a9e1208:
       type: object
       properties:
         admin_mode:
@@ -109521,6 +109525,12 @@ components:
           type: string
           nullable: true
         background_operations_max_jobs:
+          type: string
+          nullable: true
+        pg_ash_sampling_enabled:
+          type: string
+          nullable: true
+        pg_ash_sample_interval_seconds:
           type: string
           nullable: true
         enforce_granular_tokens:

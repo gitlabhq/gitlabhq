@@ -717,6 +717,8 @@ module ApplicationSettingsHelper
       :runner_jobs_patch_trace_api_limit,
       :runner_jobs_endpoints_api_limit,
       :background_operations_max_jobs,
+      :pg_ash_sampling_enabled,
+      :pg_ash_sample_interval_seconds,
       :enforce_granular_tokens,
       :granular_tokens_enforced_after,
       :logging_field_schema_version,

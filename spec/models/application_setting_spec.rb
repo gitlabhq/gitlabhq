@@ -218,6 +218,8 @@ RSpec.describe ApplicationSetting, feature_category: :settings do
         password_authentication_enabled_for_git: true,
         password_authentication_enabled_for_web: Settings.gitlab['signin_enabled'],
         personal_access_token_prefix: 'glpat-',
+        pg_ash_sample_interval_seconds: 1,
+        pg_ash_sampling_enabled: false,
         plantuml_enabled: false,
         plantuml_diagram_proxy_enabled: false,
         project_api_limit: 400,
@@ -3282,7 +3284,9 @@ RSpec.describe ApplicationSetting, feature_category: :settings do
   describe '#database_settings' do
     let(:valid_settings) do
       {
-        background_operations_max_jobs: 10
+        background_operations_max_jobs: 10,
+        pg_ash_sampling_enabled: true,
+        pg_ash_sample_interval_seconds: 5
       }
     end
 
@@ -3294,9 +3298,14 @@ RSpec.describe ApplicationSetting, feature_category: :settings do
     it { is_expected.not_to allow_value({ background_operations_max_jobs: 0 }).for(:database_settings) }
     it { is_expected.not_to allow_value({ background_operations_max_jobs: -1 }).for(:database_settings) }
     it { is_expected.not_to allow_value({ invalid_key: 10 }).for(:database_settings) }
+    it { is_expected.not_to allow_value({ pg_ash_sampling_enabled: 'yes' }).for(:database_settings) }
+    it { is_expected.not_to allow_value({ pg_ash_sample_interval_seconds: 0 }).for(:database_settings) }
+    it { is_expected.not_to allow_value({ pg_ash_sample_interval_seconds: 61 }).for(:database_settings) }
 
     it 'sets the correct default value' do
       expect(setting.background_operations_max_jobs).to eq(10)
+      expect(setting.pg_ash_sampling_enabled).to be(false)
+      expect(setting.pg_ash_sample_interval_seconds).to eq(1)
     end
   end
 

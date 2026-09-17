@@ -15,7 +15,7 @@ title: AI Catalog
 
 {{< collapsible title="Model information" >}}
 
-- LLM: Anthropic [Claude Sonnet 4](https://www.anthropic.com/claude/sonnet)
+- For the models used by agents and flows, see [Agent Platform AI models](model_selection.md).
 
 {{< /collapsible >}}
 

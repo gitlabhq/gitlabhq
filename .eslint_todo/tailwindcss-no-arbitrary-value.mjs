@@ -74,7 +74,6 @@ export default {
     'ee/app/assets/javascripts/usage_quotas/usage_billing/components/usage_by_user_tab.vue',
     'ee/app/assets/javascripts/vue_shared/components/filtered_search_bar/tokens/work_item_status_token.vue',
     'ee/app/assets/javascripts/vue_shared/components/markdown/composer.vue',
-    'ee/app/assets/javascripts/vulnerabilities/components/false_positive_details.vue',
     'ee/app/assets/javascripts/vulnerabilities/components/validity_check.vue',
   ],
   rules: {

@@ -153,6 +153,10 @@ function handle_retry_rspec_in_new_process() {
       exit "${rspec_run_status}"
     fi
 
+    if last_run_has_no_failures; then
+      exit "${rspec_run_status}"
+    fi
+
     retry_failed_rspec_examples $rspec_run_status || rspec_retry_status=$?
   else
     echosuccess "No examples to retry, congrats!"

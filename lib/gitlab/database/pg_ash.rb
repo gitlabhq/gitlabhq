@@ -18,6 +18,16 @@ module Gitlab
         File.read(Rails.root.join(INSTALL_SQL_PATH))
           .gsub(/^\\.*\n/, '')
       end
+
+      # The ash schema is absent from the gitlab_schema dictionary, so the
+      # analyzers reject any statement that touches it.
+      def self.execute(connection, sql)
+        Gitlab::Database::QueryAnalyzers::RestrictAllowedSchemas.with_suppressed do
+          Gitlab::Database::QueryAnalyzers::GitlabSchemasValidateConnection.with_suppressed do
+            connection.execute(sql)
+          end
+        end
+      end
     end
   end
 end

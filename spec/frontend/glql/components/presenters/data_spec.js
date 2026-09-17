@@ -8,6 +8,7 @@ import ListPresenter from '~/glql/components/presenters/list.vue';
 import StatPresenter from '~/glql/components/presenters/stat.vue';
 import TablePresenter from '~/glql/components/presenters/table.vue';
 import HeatMapPresenter from '~/glql/components/presenters/heat_map.vue';
+import DivergingBarChartPresenter from '~/glql/components/presenters/diverging_bar_chart.vue';
 import DataPresenter from '~/glql/components/presenters/data.vue';
 import {
   MOCK_FIELDS,
@@ -15,6 +16,7 @@ import {
   MOCK_AGGREGATED_FIELDS_ONE_DIM_ONE_METRIC,
   MOCK_AGGREGATED_DATA_ONE_DIM,
   MOCK_AGGREGATED_FIELDS_TWO_DIMS_ONE_METRIC,
+  MOCK_AGGREGATED_FIELDS_ONE_DIM_TWO_METRICS,
 } from '../../mock_data';
 
 const MOCK_STAT_FIELDS = [
@@ -23,17 +25,18 @@ const MOCK_STAT_FIELDS = [
 
 describe('DataPresenter', () => {
   it.each`
-    displayType      | fields                                        | presenterProps                                            | PresenterComponent
-    ${'list'}        | ${MOCK_FIELDS}                                | ${{ fields: MOCK_FIELDS, listType: 'ul' }}                | ${ListPresenter}
-    ${'orderedList'} | ${MOCK_FIELDS}                                | ${{ fields: MOCK_FIELDS, listType: 'ol' }}                | ${ListPresenter}
-    ${'table'}       | ${MOCK_FIELDS}                                | ${{ fields: MOCK_FIELDS }}                                | ${TablePresenter}
-    ${'stat'}        | ${MOCK_STAT_FIELDS}                           | ${{ fields: MOCK_STAT_FIELDS }}                           | ${StatPresenter}
-    ${'columnChart'} | ${MOCK_AGGREGATED_FIELDS_ONE_DIM_ONE_METRIC}  | ${{ fields: MOCK_AGGREGATED_FIELDS_ONE_DIM_ONE_METRIC }}  | ${ColumnChartPresenter}
-    ${'lineChart'}   | ${MOCK_AGGREGATED_FIELDS_ONE_DIM_ONE_METRIC}  | ${{ fields: MOCK_AGGREGATED_FIELDS_ONE_DIM_ONE_METRIC }}  | ${LineChartPresenter}
-    ${'barChart'}    | ${MOCK_AGGREGATED_FIELDS_ONE_DIM_ONE_METRIC}  | ${{ fields: MOCK_AGGREGATED_FIELDS_ONE_DIM_ONE_METRIC }}  | ${BarChartPresenter}
-    ${'barList'}     | ${MOCK_AGGREGATED_FIELDS_ONE_DIM_ONE_METRIC}  | ${{ fields: MOCK_AGGREGATED_FIELDS_ONE_DIM_ONE_METRIC }}  | ${BarListPresenter}
-    ${'areaChart'}   | ${MOCK_AGGREGATED_FIELDS_ONE_DIM_ONE_METRIC}  | ${{ fields: MOCK_AGGREGATED_FIELDS_ONE_DIM_ONE_METRIC }}  | ${AreaChartPresenter}
-    ${'heatMap'}     | ${MOCK_AGGREGATED_FIELDS_TWO_DIMS_ONE_METRIC} | ${{ fields: MOCK_AGGREGATED_FIELDS_TWO_DIMS_ONE_METRIC }} | ${HeatMapPresenter}
+    displayType            | fields                                        | presenterProps                                            | PresenterComponent
+    ${'list'}              | ${MOCK_FIELDS}                                | ${{ fields: MOCK_FIELDS, listType: 'ul' }}                | ${ListPresenter}
+    ${'orderedList'}       | ${MOCK_FIELDS}                                | ${{ fields: MOCK_FIELDS, listType: 'ol' }}                | ${ListPresenter}
+    ${'table'}             | ${MOCK_FIELDS}                                | ${{ fields: MOCK_FIELDS }}                                | ${TablePresenter}
+    ${'stat'}              | ${MOCK_STAT_FIELDS}                           | ${{ fields: MOCK_STAT_FIELDS }}                           | ${StatPresenter}
+    ${'columnChart'}       | ${MOCK_AGGREGATED_FIELDS_ONE_DIM_ONE_METRIC}  | ${{ fields: MOCK_AGGREGATED_FIELDS_ONE_DIM_ONE_METRIC }}  | ${ColumnChartPresenter}
+    ${'lineChart'}         | ${MOCK_AGGREGATED_FIELDS_ONE_DIM_ONE_METRIC}  | ${{ fields: MOCK_AGGREGATED_FIELDS_ONE_DIM_ONE_METRIC }}  | ${LineChartPresenter}
+    ${'barChart'}          | ${MOCK_AGGREGATED_FIELDS_ONE_DIM_ONE_METRIC}  | ${{ fields: MOCK_AGGREGATED_FIELDS_ONE_DIM_ONE_METRIC }}  | ${BarChartPresenter}
+    ${'barList'}           | ${MOCK_AGGREGATED_FIELDS_ONE_DIM_ONE_METRIC}  | ${{ fields: MOCK_AGGREGATED_FIELDS_ONE_DIM_ONE_METRIC }}  | ${BarListPresenter}
+    ${'areaChart'}         | ${MOCK_AGGREGATED_FIELDS_ONE_DIM_ONE_METRIC}  | ${{ fields: MOCK_AGGREGATED_FIELDS_ONE_DIM_ONE_METRIC }}  | ${AreaChartPresenter}
+    ${'heatMap'}           | ${MOCK_AGGREGATED_FIELDS_TWO_DIMS_ONE_METRIC} | ${{ fields: MOCK_AGGREGATED_FIELDS_TWO_DIMS_ONE_METRIC }} | ${HeatMapPresenter}
+    ${'divergingBarChart'} | ${MOCK_AGGREGATED_FIELDS_ONE_DIM_TWO_METRICS} | ${{ fields: MOCK_AGGREGATED_FIELDS_ONE_DIM_TWO_METRICS }} | ${DivergingBarChartPresenter}
   `(
     'inits appropriate presenter for displayType: $displayType',
     ({ displayType, fields, presenterProps, PresenterComponent }) => {
@@ -272,6 +275,8 @@ describe('DataPresenter', () => {
       expect(wrapper.findComponent(BarChartPresenter).exists()).toBe(false);
       expect(wrapper.findComponent(BarListPresenter).exists()).toBe(false);
       expect(wrapper.findComponent(AreaChartPresenter).exists()).toBe(false);
+      expect(wrapper.findComponent(HeatMapPresenter).exists()).toBe(false);
+      expect(wrapper.findComponent(DivergingBarChartPresenter).exists()).toBe(false);
     });
   });
 });

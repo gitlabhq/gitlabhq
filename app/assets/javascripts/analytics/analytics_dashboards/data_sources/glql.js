@@ -62,12 +62,16 @@ const usesWholeDateRange = (glql, variables) =>
  *   dimensions: created(%{dynamicGranularity})
  * A panel that does not ask for it, such as a stat, is unaffected.
  *
+ * The visualization's own `data.query.dateRange` is the window used when the dashboard
+ * has no date range filter. The dashboard filter wins when both are set, matching the
+ * precedence the other analytics data sources already apply to a panel date range.
+ *
  * With `showTrends` in the visualization options, the same query over the window
  * immediately before the selected one is handed down as the `comparisonQuery`
  * visualization option, which the stat display renders as a trend.
  */
 export default function fetch({
-  query: { glql = '' } = {},
+  query: { glql = '', dateRange: panelDateRange } = {},
   filters = {},
   visualizationOptions: { showTrends = false } = {},
   setVisualizationOverrides = () => {},
@@ -76,7 +80,10 @@ export default function fetch({
     throw new Error(s__('Glql|GLQL query must be a string.'));
   }
 
-  const dateRange = resolveDateRangeFilter(filters, DATE_RANGE_OPTION_LAST_30_DAYS);
+  const dateRange = resolveDateRangeFilter(
+    { ...filters, dateRangeOption: filters.dateRangeOption || panelDateRange },
+    DATE_RANGE_OPTION_LAST_30_DAYS,
+  );
   const dateVariables = dateRangeVariables(dateRange);
   const dynamicGranularity = dateRangeGranularity(dateRange);
 

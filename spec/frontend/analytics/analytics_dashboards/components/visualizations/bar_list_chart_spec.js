@@ -39,7 +39,7 @@ describe('BarListChart', () => {
     });
 
     it('fixes the value axis to a full 100%', () => {
-      expect(chartOptions().xAxis).toMatchObject({ min: 0, max: 100 });
+      expect(chartOptions().xAxis).toMatchObject({ type: 'value', min: 0, max: 100 });
     });
   });
 
@@ -118,6 +118,103 @@ describe('BarListChart', () => {
       });
 
       expect(firstSeries().data).toEqual([0, 0]);
+    });
+  });
+
+  describe('on a log scale', () => {
+    beforeEach(() =>
+      createWrapper({
+        scale: 'log',
+        data: [
+          { name: 'Chat', value: 900, share: 96.5 },
+          { name: 'Software Dev', value: 30, share: 3.2 },
+          { name: 'Other (6)', value: 3, share: 0.3 },
+        ],
+      }),
+    );
+
+    // Every other scale plots a percentage of the track; a log axis needs the values
+    // themselves, and lets the axis do the compressing. Each is shifted by one, so
+    // 900/30/3 plot as 901/31/4.
+    it('plots the values rather than a percentage of the track', () => {
+      expect(firstSeries().data).toEqual([4, 31, 901]);
+    });
+
+    it('switches the value axis to a base-10 log scale', () => {
+      expect(chartOptions().xAxis).toMatchObject({ type: 'log', logBase: 10, show: false });
+    });
+
+    // The track starts at the bar baseline and ends at the next whole power of ten above
+    // the largest row.
+    it('spans one to the next power of ten above the largest value', () => {
+      expect(chartOptions().xAxis).toMatchObject({ min: 1, max: 1000 });
+    });
+
+    it('keeps labelling each row with its share and value', () => {
+      expect(labelFor('Chat')).toBe('96.5% · 900');
+    });
+
+    describe('when the largest value is itself a power of ten', () => {
+      beforeEach(() =>
+        createWrapper({ scale: 'log', data: [{ name: 'Chat', value: 1000, share: 100 }] }),
+      );
+
+      // The ceiling sits strictly above the largest value, so the longest bar stops
+      // short of the value column rather than running into it.
+      it('raises the ceiling by a further decade', () => {
+        expect(chartOptions().xAxis.max).toBe(10000);
+      });
+    });
+
+    describe('when a row has no sessions', () => {
+      beforeEach(() =>
+        createWrapper({
+          scale: 'log',
+          data: [
+            { name: 'Chat', value: 50, share: 100 },
+            { name: 'Other (6)', value: 0, share: 0 },
+          ],
+        }),
+      );
+
+      // The shift puts a zero on the bar baseline, so it draws no bar at all.
+      it('plots the value at the axis minimum', () => {
+        expect(firstSeries().data).toEqual([1, 51]);
+      });
+    });
+
+    describe('when a row has a single session', () => {
+      beforeEach(() =>
+        createWrapper({
+          scale: 'log',
+          data: [
+            { name: 'Chat', value: 1, share: 100 },
+            { name: 'Other (6)', value: 0, share: 0 },
+          ],
+        }),
+      );
+
+      // The smallest real count clears the baseline, so it draws a bar rather than
+      // reading as an empty row.
+      it('plots it above the zero row', () => {
+        expect(firstSeries().data).toEqual([1, 2]);
+      });
+    });
+
+    describe('when every value is zero', () => {
+      beforeEach(() =>
+        createWrapper({
+          scale: 'log',
+          data: [
+            { name: 'Chat', value: 0, share: 0 },
+            { name: 'Other (6)', value: 0, share: 0 },
+          ],
+        }),
+      );
+
+      it('keeps the axis to a single decade', () => {
+        expect(chartOptions().xAxis).toMatchObject({ min: 1, max: 10 });
+      });
     });
   });
 

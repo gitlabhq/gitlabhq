@@ -8,6 +8,7 @@ import {
   BAR_COLOR_OPTIONS,
   BAR_COLOR_TOKENS,
   SCALE_DEFAULT,
+  SCALE_LOG,
   SCALE_OPTIONS,
   SCALE_TOTAL,
   VALUE_LABELS_DEFAULT,
@@ -73,6 +74,14 @@ const trendStyleFor = (variant) => ({
 const trendStyleName = (variant) =>
   TREND_STYLE_BY_VARIANT[variant] ?? TREND_STYLE_BY_VARIANT.neutral;
 
+const LOG_BASE = 10;
+// A log axis has no zero, and ECharts grows its bars from 1, not from the axis start.
+const LOG_AXIS_MIN = 1;
+// Offset the values when using log scaling. This is to prevent a value of 1 appearing the same
+// as a 0 in the chart. The shift is negligible for large values, so the spread is kept,
+// and labels show the real count anyways.
+const LOG_VALUE_OFFSET = 1;
+
 const TREND_RICH_STYLES = {
   // An empty token whose horizontal padding is the gap; rich text has no margin.
   trendGap: { padding: [0, TREND_GAP / 2] },
@@ -111,7 +120,9 @@ export default {
     /**
      * What a bar's length is measured against. `total` (default) plots each row's `share`, so
      * the track reads as 100% of the whole; `max` sizes bars against the largest `value`, so
-     * that row fills the track and the rest compare to it. Labels keep showing `share`.
+     * that row fills the track and the rest compare to it. `log` plots the values on a
+     * base-10 log axis rather than a percentage of the track, so dominant rows do not flatten
+     * the rest. Labels keep showing the true value and `share` no matter the scale.
      */
     scale: {
       type: String,
@@ -168,13 +179,7 @@ export default {
           left: LABEL_COLUMN_WIDTH,
           right: this.hasTrends ? VALUE_WITH_TREND_COLUMN_WIDTH : VALUE_COLUMN_WIDTH,
         },
-        // The design shows no value axis and no gridlines.
-        xAxis: {
-          type: 'value',
-          show: false,
-          min: 0,
-          max: 100,
-        },
+        xAxis: this.valueAxis,
         yAxis: {
           type: 'category',
           data: this.categories,
@@ -189,7 +194,8 @@ export default {
         series: [
           {
             type: 'bar',
-            data: this.lengths,
+            // Only the log scale plots values directly; the rest plot a percentage of the track.
+            data: this.isLogScale ? this.logScaleValues : this.lengths,
             barWidth: BAR_HEIGHT,
             showBackground: true,
             backgroundStyle: { color: 'var(--gl-background-color-subtle)' },
@@ -213,6 +219,33 @@ export default {
       };
 
       return merge({}, base, this.options);
+    },
+    isLogScale() {
+      return this.scale === SCALE_LOG;
+    },
+    logScaleValues() {
+      return this.isLogScale
+        ? this.rows.map(({ value }) => Math.max(value, 0) + LOG_VALUE_OFFSET)
+        : [];
+    },
+    maxLogScaleValue() {
+      // Every value clears the minimum already, so it only covers an empty chart here.
+      const max = Math.max(LOG_AXIS_MIN, ...this.logScaleValues);
+
+      return LOG_BASE ** (Math.floor(Math.log10(max)) + 1);
+    },
+    valueAxis() {
+      if (this.isLogScale) {
+        return {
+          type: 'log',
+          logBase: LOG_BASE,
+          show: false,
+          min: LOG_AXIS_MIN,
+          max: this.maxLogScaleValue,
+        };
+      }
+
+      return { type: 'value', show: false, min: 0, max: 100 };
     },
   },
   methods: {

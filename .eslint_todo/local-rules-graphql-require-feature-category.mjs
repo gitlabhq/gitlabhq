@@ -1265,7 +1265,6 @@ export default {
     'ee/app/assets/javascripts/security_configuration/secret_detection/graphql/project_security_exclusion_delete.mutation.graphql',
     'ee/app/assets/javascripts/security_configuration/secret_detection/graphql/project_security_exclusion_update.mutation.graphql',
     'ee/app/assets/javascripts/security_configuration/secret_detection/graphql/project_security_exclusions.query.graphql',
-    'ee/app/assets/javascripts/security_dashboard/graphql/header_vulnerability.graphql',
     'ee/app/assets/javascripts/security_dashboard/graphql/mutations/add_project_to_security_dashboard.mutation.graphql',
     'ee/app/assets/javascripts/security_dashboard/graphql/mutations/delete_project_from_security_dashboard.mutation.graphql',
     'ee/app/assets/javascripts/security_dashboard/graphql/mutations/dismiss_finding.mutation.graphql',

@@ -18,14 +18,14 @@ description: Vulnerability details, status, resolution, and linking issues.
 - Redesigned vulnerability page:
   - [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/21907) in GitLab 19.0 as a [beta](../../../policy/development_stages_support.md#beta) feature [with a feature flag](../../../administration/feature_flags/_index.md) named `vulnerability_details_enrichment`. Disabled by default.
   - [Enabled on GitLab.com, GitLab Self-Managed, and GitLab Dedicated](https://gitlab.com/gitlab-org/gitlab/-/work_items/606953) in GitLab 19.3.
+  - [Generally available](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/254166) in GitLab 19.5. Feature flag `vulnerability_details_enrichment` removed.
 - Display of malware findings:
   - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/work_items/587647) in GitLab 19.4 as a [beta](../../../policy/development_stages_support.md#beta) feature [with a feature flag](../../../administration/feature_flags/_index.md) named `vulnerability_malware_detection`. Enabled by default.
 
 {{< /history >}}
 
 > [!flag]
-> The availability of the redesigned vulnerability page is controlled by a feature flag.
-> The display of malware findings is controlled by a separate feature flag.
+> The display of malware findings is controlled by a feature flag.
 > For more information, see the history.
 
 Each vulnerability in a project has a vulnerability page. The page header shows the vulnerability

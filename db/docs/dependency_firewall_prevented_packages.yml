@@ -1,0 +1,15 @@
+---
+table_name: dependency_firewall_prevented_packages
+classes:
+- Security::DependencyFirewallPreventedPackage
+feature_categories:
+- dependency_firewall
+description: Distinct-entity ledger of package versions blocked or warned by dependency
+  firewall rules, one row per project, rule type and purl, powering the dashboard's
+  prevented stats.
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/253941
+milestone: '19.5'
+gitlab_schema: gitlab_main_org
+table_size: small
+sharding_key:
+  project_id: projects

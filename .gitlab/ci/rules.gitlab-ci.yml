@@ -590,7 +590,7 @@
   - "{,ee/,jh/}spec/**/*"
 
 # Frontend GraphQL query documents.
-# A query change should re-run backend unit/integration specs (e.g. the N+1
+# A query change should re-run backend integration specs (e.g. the N+1
 # request specs added in https://gitlab.com/gitlab-org/gitlab/-/merge_requests/224202),
 # but it must NOT trigger migration specs. Keep this out of `.backend-patterns`
 # so the `*-background-migration` rules (which key off `.backend-patterns`) are
@@ -2879,8 +2879,6 @@
     - <<: *if-default-refs
       changes: *backend-patterns
     - <<: *if-default-refs
-      changes: *frontend-graphql-patterns
-    - <<: *if-default-refs
       changes: *backstage-patterns
 
 .rails:rules:clickhouse-changes:
@@ -3074,8 +3072,22 @@
     - !reference [".rails:rules:ee-and-foss-default-rules", rules]
     - <<: *if-default-refs
       changes: *backend-patterns
+
+# No tier guard: predictive selection ignores non-Ruby files.
+.rails:rules:graphql-query-documents:
+  rules:
+    - <<: *if-fork-merge-request
+      when: never
+    - <<: *if-merge-request-labels-pipeline-expedite
+      when: never
     - <<: *if-default-refs
       changes: *frontend-graphql-patterns
+
+.rails:rules:graphql-query-documents-ee:
+  rules:
+    - <<: *if-not-ee
+      when: never
+    - !reference [".rails:rules:graphql-query-documents", rules]
 
 .rails:rules:ee-only-integration:
   rules:

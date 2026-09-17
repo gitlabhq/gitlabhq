@@ -170,6 +170,61 @@ describe('GLQL data source', () => {
     });
   });
 
+  // A panel sets its own window with `data.query.dateRange`. The dashboard filter wins
+  // when both are set, matching the precedence the other analytics data sources apply.
+  describe('with a panel date range', () => {
+    const fetchWithPanelRange = (dateRange, filters) =>
+      fetch({ query: { glql: DATED_QUERY, dateRange }, filters });
+
+    it('resolves the placeholders from the panel date range', () => {
+      expect(fetchWithPanelRange('90d', {})).toBe(
+        'type = AiUsageEvent and timestamp >= "2020-04-07" and timestamp <= "2020-07-06"',
+      );
+    });
+
+    it('takes the dashboard filter over the panel date range', () => {
+      expect(fetchWithPanelRange('90d', { dateRangeOption: '7d' })).toBe(
+        'type = AiUsageEvent and timestamp >= "2020-06-29" and timestamp <= "2020-07-06"',
+      );
+    });
+
+    it('takes a custom dashboard range over the panel date range', () => {
+      const filters = {
+        dateRangeOption: 'custom',
+        startDate: new Date(Date.UTC(2026, 0, 5)),
+        endDate: new Date(Date.UTC(2026, 2, 31)),
+      };
+
+      expect(fetchWithPanelRange('90d', filters)).toBe(
+        'type = AiUsageEvent and timestamp >= "2026-01-05" and timestamp <= "2026-03-31"',
+      );
+    });
+
+    it('falls back to the last 30 days for an unknown panel date range', () => {
+      expect(fetchWithPanelRange('last-fortnight', {})).toBe(
+        'type = AiUsageEvent and timestamp >= "2020-06-06" and timestamp <= "2020-07-06"',
+      );
+    });
+
+    it('derives the comparison window from the panel date range', () => {
+      const setVisualizationOverrides = jest.fn();
+
+      fetch({
+        query: { glql: DATED_QUERY, dateRange: '90d' },
+        filters: {},
+        visualizationOptions: { showTrends: true },
+        setVisualizationOverrides,
+      });
+
+      expect(setVisualizationOverrides).toHaveBeenCalledWith({
+        visualizationOptionOverrides: {
+          comparisonQuery:
+            'type = AiUsageEvent and timestamp >= "2020-01-07" and timestamp <= "2020-04-06"',
+        },
+      });
+    });
+  });
+
   describe('with showTrends', () => {
     let setVisualizationOverrides;
 

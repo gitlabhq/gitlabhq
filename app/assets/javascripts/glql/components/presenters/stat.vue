@@ -6,11 +6,14 @@ import iconSpriteInfo from '@gitlab/svgs/dist/icons.json';
 import { __, sprintf } from '~/locale';
 import { dimensionsOf, metricsOf } from '../../utils/chart_data';
 import { valueFormatterFor } from '../../utils/value_format';
-import { TREND_KEYS, statPresentationFor, trendPresentationFor } from './utils/stat';
-
-// Rendered when an aggregated query has no row for the single metric. Aggregations
-// over an empty set can omit the node entirely, so distinguish "no data" from a 0.
-const NO_VALUE = '—';
+import {
+  NO_VALUE,
+  TREND_KEYS,
+  interpolateDescription,
+  placeholdersIn,
+  statPresentationFor,
+  trendPresentationFor,
+} from './utils/stat';
 
 const metricValueIn = (data, metric) => (metric ? data?.nodes?.[0]?.[metric.key] : undefined);
 
@@ -69,6 +72,12 @@ export default {
         ...this.displayConfig,
       });
     },
+    description() {
+      return interpolateDescription(this.statConfig.description, this.metrics, this.row);
+    },
+    descriptionPlaceholders() {
+      return placeholdersIn(this.statConfig.description);
+    },
     // A block that sets any part of the badge owns all of it: its own text under a derived
     // arrow, colour and tooltip would make the badge contradict itself.
     trend() {
@@ -106,16 +115,28 @@ export default {
       // Config errors do not depend on the query result, so they surface before it arrives.
       if (this.displayConfigError) return this.displayConfigError;
       if (!this.fields.length) return null;
-      if (this.metrics.length !== 1) {
-        return __('stat display type requires exactly 1 metric');
+      if (this.metrics.length < 1) {
+        return __('stat display type requires at least 1 metric');
       }
       if (this.dimensions.length > 0) {
         return __('stat display type cannot have dimensions');
       }
+
+      const metricKeys = new Set(this.metrics.map(({ key }) => key));
+      const unknownPlaceholder = this.descriptionPlaceholders.find((key) => !metricKeys.has(key));
+      if (unknownPlaceholder) {
+        return sprintf(__('Unknown description placeholder: `%{placeholder}`.'), {
+          placeholder: unknownPlaceholder,
+        });
+      }
+
       return null;
     },
     metric() {
       return this.metrics[0];
+    },
+    row() {
+      return this.data?.nodes?.[0];
     },
     value() {
       return metricValueIn(this.data, this.metric);
@@ -149,7 +170,7 @@ export default {
       :value="displayValue"
       :title="statConfig.title"
       :unit="statConfig.unit"
-      :description="statConfig.description"
+      :description="description"
       :meta-text="statConfig.metaText"
       :meta-icon="statConfig.metaIcon"
       :meta-tooltip="statConfig.metaTooltip"

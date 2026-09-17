@@ -43,9 +43,11 @@ module Analytics
         { 'name' => 'list', 'description' => 'A bulleted list of items.' },
         { 'name' => 'orderedList', 'description' => 'A numbered list of items.' },
         { 'name' => 'table', 'description' => 'One row per item, one column per display field.' },
-        { 'name' => 'stat', 'description' => 'A single aggregate value.',
+        { 'name' => 'stat',
+          'description' => 'A single aggregate value. The first metric listed is the value to ' \
+            'display, subsequent metrics are used to fill placeholders in the description.',
           'selections' => [
-            { 'dimensions' => 0, 'metrics' => { 'min' => 1, 'max' => 1 } }
+            { 'dimensions' => 0, 'metrics' => { 'min' => 1 } }
           ] },
         { 'name' => 'columnChart', 'description' => 'Vertical bars, one per dimension value.',
           'selections' => [

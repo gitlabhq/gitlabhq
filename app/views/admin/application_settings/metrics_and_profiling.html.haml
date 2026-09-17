@@ -22,6 +22,16 @@
   - c.with_body do
     = render 'grafana'
 
+= render ::Layouts::SettingsBlockComponent.new(s_('AdminSettings|Active session history'),
+  id: 'js-pg-ash-settings',
+  testid: 'pg-ash-settings',
+  expanded: expanded_by_default?) do |c|
+  - c.with_description do
+    = s_('AdminSettings|Sample database activity so you can review what the database was doing in the past. Install pg_ash before you turn on sampling.')
+    = link_to _('Learn more.'), help_page_path('administration/monitoring/performance/_index.md', anchor: 'active-session-history'), target: '_blank', rel: 'noopener noreferrer'
+  - c.with_body do
+    = render 'pg_ash'
+
 = render ::Layouts::SettingsBlockComponent.new(_('Profiling - Performance bar'),
   id: 'js-performance-bar-settings',
   testid: 'performance-bar-settings-content',

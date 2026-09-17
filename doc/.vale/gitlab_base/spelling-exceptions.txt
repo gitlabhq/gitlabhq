@@ -756,6 +756,7 @@ passwordless
 Patroni
 PDFs
 performant
+pg_ash
 PgBouncer
 pgFormatter
 pgLoader

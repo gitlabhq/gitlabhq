@@ -227,6 +227,12 @@ describe('BarListPresenter', () => {
 
       expect(findChart().props('scale')).toBe('max');
     });
+
+    it('forwards log from the display config', () => {
+      createComponent({ displayConfig: { scale: 'log' } });
+
+      expect(findChart().props('scale')).toBe('log');
+    });
   });
 
   describe('when a display option has a value it does not know', () => {
@@ -234,7 +240,7 @@ describe('BarListPresenter', () => {
       key              | value        | supportedValues
       ${'valueLabels'} | ${'percent'} | ${'`shareAndValue`, `value`'}
       ${'color'}       | ${'green'}   | ${'`orange`, `blue`'}
-      ${'scale'}       | ${'largest'} | ${'`total`, `max`'}
+      ${'scale'}       | ${'largest'} | ${'`total`, `max`, `log`'}
     `('emits an error naming $key and renders no chart', ({ key, value, supportedValues }) => {
       createComponent({ displayConfig: { [key]: value } });
 

@@ -66,3 +66,148 @@ The following environment variables are recognized:
 - `PUMA_SAMPLER_INTERVAL_SECONDS`
 - `THREADS_SAMPLER_INTERVAL_SECONDS`
 - `GLOBAL_SEARCH_SAMPLER_INTERVAL_SECONDS`
+- `PG_ASH_SAMPLER_INTERVAL_SECONDS`
+
+## Active session history
+
+{{< details >}}
+
+- Tier: Free, Premium, Ultimate
+- Offering: GitLab Self-Managed
+- Status: Experiment
+
+{{< /details >}}
+
+{{< history >}}
+
+- Introduced in GitLab 19.5 as an [experiment](../../../policy/development_stages_support.md).
+
+{{< /history >}}
+
+Active session history samples `pg_stat_activity` on the main database, so you can see what the
+database was doing at a point in the past.
+GitLab vendors [pg_ash](https://github.com/NikolayS/pg_ash) to collect and store the samples.
+
+This feature is an experiment and is not ready for production use.
+Test it outside of production first.
+
+`pg_ash` is not installed by default, and sampling is off by default.
+
+{{< tabs >}}
+
+{{< tab title="Linux package (Omnibus)" >}}
+
+To install `pg_ash`:
+
+```shell
+sudo gitlab-rake gitlab:db:pg_ash:install
+```
+
+To check an install:
+
+```shell
+sudo gitlab-rake gitlab:db:pg_ash:status
+```
+
+To remove `pg_ash` and every sample it holds:
+
+```shell
+sudo gitlab-rake gitlab:db:pg_ash:uninstall
+```
+
+{{< /tab >}}
+
+{{< tab title="Helm chart (Kubernetes)" >}}
+
+To install `pg_ash`:
+
+```shell
+kubectl exec -it <toolbox-pod-name> -- gitlab-rake gitlab:db:pg_ash:install
+```
+
+To check an install:
+
+```shell
+kubectl exec -it <toolbox-pod-name> -- gitlab-rake gitlab:db:pg_ash:status
+```
+
+To remove `pg_ash` and every sample it holds:
+
+```shell
+kubectl exec -it <toolbox-pod-name> -- gitlab-rake gitlab:db:pg_ash:uninstall
+```
+
+{{< /tab >}}
+
+{{< tab title="Docker" >}}
+
+To install `pg_ash`:
+
+```shell
+sudo docker exec -t <container-name> gitlab-rake gitlab:db:pg_ash:install
+```
+
+To check an install:
+
+```shell
+sudo docker exec -t <container-name> gitlab-rake gitlab:db:pg_ash:status
+```
+
+To remove `pg_ash` and every sample it holds:
+
+```shell
+sudo docker exec -t <container-name> gitlab-rake gitlab:db:pg_ash:uninstall
+```
+
+{{< /tab >}}
+
+{{< tab title="Self-compiled (source)" >}}
+
+To install `pg_ash`:
+
+```shell
+sudo -u git -H bundle exec rake gitlab:db:pg_ash:install RAILS_ENV=production
+```
+
+To check an install:
+
+```shell
+sudo -u git -H bundle exec rake gitlab:db:pg_ash:status RAILS_ENV=production
+```
+
+To remove `pg_ash` and every sample it holds:
+
+```shell
+sudo -u git -H bundle exec rake gitlab:db:pg_ash:uninstall RAILS_ENV=production
+```
+
+{{< /tab >}}
+
+{{< /tabs >}}
+
+To turn on sampling:
+
+1. Sign in as a user with administrator access.
+1. In the upper-right corner, select **Admin**.
+1. In the left sidebar, select **Settings** > **Metrics and profiling**.
+1. Expand the **Active session history** section.
+1. Select the **Turn on session sampling** checkbox.
+1. Optional. Change **Sample interval (seconds)**. The default is one second.
+1. Select **Save changes**.
+
+A background thread in the Sidekiq process takes the samples.
+Only one process samples at a time, so the interval you set is the interval for the whole instance.
+Sampling needs the GitLab Prometheus metrics endpoint, which is on by default.
+Sampling stops when Sidekiq stops, so a restart or a deployment can lose samples.
+
+A change to either setting applies without a restart, but not at once.
+Each Sidekiq process reads the new value in up to 90 seconds.
+
+`PG_ASH_SAMPLER_INTERVAL_SECONDS` sets how often a Sidekiq process checks whether it should take
+over as the sampling process.
+It does not set the sample interval.
+
+> [!note]
+> GitLab does not summarize or delete old samples. Sample data grows until you uninstall `pg_ash`.
+> Support for these operations is proposed in
+> [issue 608100](https://gitlab.com/gitlab-org/gitlab/-/work_items/608100).

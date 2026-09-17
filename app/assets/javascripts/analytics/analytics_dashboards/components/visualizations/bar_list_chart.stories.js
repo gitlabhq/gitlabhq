@@ -111,6 +111,29 @@ WithTrends.args = {
   options: {},
 };
 
+// "Sessions by activity", where chat runs an order of magnitude above every other flow
+// type. LongTail plots the same shape as a share of the total, where the short bars end
+// up indistinguishable; a log scale compresses the spread into decades instead, at the
+// cost of bar length no longer being proportional to the count.
+const sessionsByActivity = withShares([
+  { name: 'Chat', value: 921 },
+  { name: 'Code Review', value: 35 },
+  { name: 'Software Development', value: 24 },
+  { name: 'Developer', value: 18 },
+  { name: 'Fix Pipeline', value: 1 },
+  { name: 'Security Analyst Agent', value: 0 },
+  { name: 'Other (10)', value: 75 },
+]);
+
+export const LogScale = Template.bind({});
+LogScale.args = {
+  data: sessionsByActivity,
+  valueLabels: 'value',
+  color: 'blue',
+  scale: 'log',
+  options: {},
+};
+
 export const InDashboardPanel = WithDashboard.bind({});
 InDashboardPanel.args = {
   data: whereCreditsWent,

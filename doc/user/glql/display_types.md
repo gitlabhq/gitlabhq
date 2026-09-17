@@ -117,6 +117,7 @@ query: type = Issue AND project = "gitlab-org/gitlab" AND assignee = currentUser
 {{< history >}}
 
 - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/241395) in GitLab 19.2.
+- Dynamic descriptions [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/255287) in GitLab 19.5.
 
 {{< /history >}}
 
@@ -126,11 +127,25 @@ large value. Use a single stat to highlight a key number, such as a total or a r
 A single stat requires:
 
 - Analytics mode, set with `mode: analytics`.
-- Only one metric, set with the `metrics` parameter.
+- One or more metrics, set with the `metrics` parameter. The stat displays the value of the first
+  metric and ignores the rest, unless the description references them.
 - No `dimensions`.
 
 Values format automatically based on the metric. For example, counts use thousands separators and
 rates display as percentages.
+
+To describe the value, set `description` under `displayConfig`. A description can include
+`%{metricName}` placeholders, where `metricName` identifies a metric from `metrics`.
+GitLab replaces each placeholder with that metric's value, formatted by that metric's own unit. A
+placeholder that names a metric the query does not select shows a validation error. When a metric's
+value is missing from the response, its placeholder renders as an em dash (`—`).
+
+Metrics are always identified by key name, unless they are duplicated parameterized metrics, in
+which case they need an alias to be identified. For example, `metrics: totalCount as "count"` is
+still referenced as `%{totalCount}`, because the alias only sets the label. When the same metric
+appears twice with different parameters, as in
+`metrics: durationQuantile(0.5) as "Median", durationQuantile(0.95) as "p95 duration"`, each alias
+becomes the key, so you reference them as `%{Median}` and `%{p95 duration}`.
 
 ### Example
 
@@ -142,6 +157,19 @@ display: stat
 mode: analytics
 query: type = CodeSuggestion and timestamp >= -30d
 metrics: totalCount
+```
+````
+
+To describe the value with the other metrics the query selects:
+
+````yaml
+```glql
+display: stat
+displayConfig:
+  description: "%{acceptedCount} of %{shownCount} suggestions accepted"
+mode: analytics
+query: type = CodeSuggestion and timestamp >= -30d
+metrics: acceptanceRate, acceptedCount, shownCount
 ```
 ````
 
