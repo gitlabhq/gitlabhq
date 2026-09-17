@@ -32,7 +32,14 @@ module Gitlab
       end
 
       def wildcard_regex
-        @wildcard_regex ||= Regexp.new(pattern.gsub('*', '.*'))
+        @wildcard_regex ||= begin
+          # Escape everything between the '*'s, then rejoin with '.*?' so only
+          # the user's own '*' characters act as wildcards. \A/\z anchor the
+          # match to the whole environment name, not a substring of it.
+          regex_string = pattern.split('*', -1).map { |segment| Regexp.quote(segment) }.join('.*?')
+
+          Gitlab::UntrustedRegexp.new("\\A#{regex_string}\\z")
+        end
       end
     end
   end
