@@ -198,6 +198,13 @@ module Gitlab
                 limiter: GENERAL, characteristics: [:requester_type, :requester_id], cohort: 1,
                 match: { path: packages, setting_authenticated_packages: true, requester_id: /./ }
               },
+              # Ordered ahead of the cohort 2 web rules: while the setting is off this
+              # rule never matches, so the request is claimed by the web rule below it
+              # instead of escaping both.
+              'throttle_authenticated_dependency_proxy' => {
+                limiter: GENERAL, characteristics: [:requester_type, :requester_id], cohort: 1,
+                match: { setting_authenticated_dependency_proxy: true, requester_id: /./, dependency_proxy: true }
+              },
               'throttle_unauthenticated_files_api' => {
                 limiter: GENERAL, characteristics: [:ip], cohort: 1,
                 match: { path: files, requester_id: nil, runner_id: nil, setting_unauthenticated_files: true }

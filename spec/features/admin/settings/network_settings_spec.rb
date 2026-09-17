@@ -101,6 +101,32 @@ RSpec.describe 'Admin updates network settings', :request_store, :enable_admin_m
     end
   end
 
+  it 'changes authenticated dependency proxy rate limits settings', :aggregate_failures do
+    within_testid('dependency-proxy-limits-settings') do
+      click_unchecked_field(_('Enable authenticated dependency proxy request rate limit'))
+      fill_field_with_new_value(
+        _('Max authenticated dependency proxy requests per period per user'),
+        (ApplicationSetting::DEFAULT_AUTHENTICATED_DEPENDENCY_PROXY_LIMIT + 1).to_s
+      )
+      fill_field_with_new_value(
+        _('Authenticated dependency proxy rate limit period in seconds'),
+        (ApplicationSetting::DEFAULT_AUTHENTICATED_DEPENDENCY_PROXY_PERIOD + 2).to_s
+      )
+
+      expect_save_settings
+
+      expect_field_checked(_('Enable authenticated dependency proxy request rate limit'))
+      expect_field_value(
+        _('Max authenticated dependency proxy requests per period per user'),
+        (ApplicationSetting::DEFAULT_AUTHENTICATED_DEPENDENCY_PROXY_LIMIT + 1).to_s
+      )
+      expect_field_value(
+        _('Authenticated dependency proxy rate limit period in seconds'),
+        (ApplicationSetting::DEFAULT_AUTHENTICATED_DEPENDENCY_PROXY_PERIOD + 2).to_s
+      )
+    end
+  end
+
   it 'changes Issues rate limits settings' do
     within_testid('issue-limits-settings') do
       fill_field_with_new_value(_('Maximum number of requests per minute'), '0')

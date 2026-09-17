@@ -123,6 +123,19 @@ RSpec.describe Gitlab::RackAttack::LabkitRateLimit::ThrottleRegistry, feature_ca
     end
   end
 
+  describe 'the dependency proxy rule position' do
+    it 'orders the dependency proxy rule ahead of both web rules', :aggregate_failures do
+      # Order is the whole exclusion mechanism here: with the setting off the
+      # dependency proxy rule never matches, so the request must reach the web rule
+      # below it rather than escaping both.
+      general = described_class.all.values.select { |entry| entry.limiter == described_class::GENERAL }
+      positions = general.each_with_index.to_h { |entry, index| [entry.name, index] }
+
+      expect(positions['throttle_authenticated_dependency_proxy']).to be < positions['throttle_unauthenticated_web']
+      expect(positions['throttle_authenticated_dependency_proxy']).to be < positions['throttle_authenticated_web']
+    end
+  end
+
   describe '.skip_matches' do
     it 'gates each path skip on an unauthenticated request' do
       described_class.skip_matches.each_value do |match|

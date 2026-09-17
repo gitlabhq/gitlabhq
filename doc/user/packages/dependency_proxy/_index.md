@@ -24,6 +24,10 @@ upstream image from a registry, acting as a pull-through cache.
 To use the dependency proxy for container images, it must be enabled for the GitLab instance. It's enabled by default,
 but [administrators can turn it off](../../../administration/packages/dependency_proxy.md).
 
+On GitLab Self-Managed, administrators can also configure a dedicated rate limit for authenticated
+dependency proxy requests. For more information, see
+[User and IP rate limits](../../../administration/settings/user_and_ip_rate_limits.md#enable-authenticated-dependency-proxy-request-rate-limit).
+
 ### Supported images and packages
 
 The following images and packages are supported.

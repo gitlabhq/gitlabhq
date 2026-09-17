@@ -22,6 +22,7 @@ The following limits are disabled by default:
 - [Unauthenticated web requests (per IP)](#enable-unauthenticated-web-request-rate-limit).
 - [Authenticated API requests (per user)](#enable-authenticated-api-request-rate-limit).
 - [Authenticated web requests (per user)](#enable-authenticated-web-request-rate-limit).
+- [Authenticated dependency proxy requests (per user)](#enable-authenticated-dependency-proxy-request-rate-limit).
 
 > [!note]
 > By default, all Git operations are first tried unauthenticated. Because of this, HTTP Git operations
@@ -89,6 +90,41 @@ To enable the authenticated request rate limit:
      Defaults to `7200`.
    - Optional. Update the **Authenticated web rate limit period in seconds** value.
      Defaults to `3600`.
+
+## Enable authenticated dependency proxy request rate limit
+
+Authenticated requests to the
+[dependency proxy for container images](../../user/packages/dependency_proxy/_index.md) count
+against the [authenticated web request rate limit](#enable-authenticated-web-request-rate-limit)
+by default. Container image pulls then share a budget with a user's other web traffic. Parallel
+CI/CD pulls can exhaust that budget and fail with a `429` error.
+
+To give dependency proxy traffic its own budget, enable a rate limit dedicated to the container
+image manifest and blob endpoints under `/v2/<group>/dependency_proxy/containers/`. This limit
+applies only to authenticated requests. GitLab does not provide a rate limit for unauthenticated
+dependency proxy requests.
+
+To enable the authenticated dependency proxy rate limit:
+
+1. In the upper-right corner, select **Admin**.
+1. In the left sidebar, select **Settings** > **Network**.
+1. Expand **Dependency proxy rate limits**.
+1. Select **Enable authenticated dependency proxy request rate limit**.
+
+   - Optional. Update the **Max authenticated dependency proxy requests per period per user** value.
+     Defaults to `1000`.
+   - Optional. Update the **Authenticated dependency proxy rate limit period in seconds** value.
+     Defaults to `15`.
+
+While this limit is disabled, dependency proxy requests continue to count against the
+authenticated web request rate limit.
+
+> [!note]
+> When you upgrade to GitLab 19.2.7 or later, GitLab automatically enables this limit if the
+> authenticated web request rate limit is already enabled on your instance, and copies its
+> requests-per-period and period-in-seconds values. This can only loosen limits: dependency proxy
+> traffic that previously shared a budget with web traffic gets its own budget of the same size.
+> If the authenticated web request rate limit is disabled, this limit remains disabled.
 
 ## Use a custom rate limit response
 

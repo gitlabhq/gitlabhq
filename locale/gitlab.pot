@@ -12368,6 +12368,12 @@ msgstr ""
 msgid "Authenticated Git LFS requests"
 msgstr ""
 
+msgid "Authenticated dependency proxy rate limit period in seconds"
+msgstr ""
+
+msgid "Authenticated dependency proxy request rate limit"
+msgstr ""
+
 msgid "Authenticated web rate limit period in seconds"
 msgstr ""
 
@@ -21562,6 +21568,9 @@ msgstr ""
 msgid "Configure specific limits for Git LFS requests that supersede the general user and IP rate limits."
 msgstr ""
 
+msgid "Configure specific limits for authenticated dependency proxy requests."
+msgstr ""
+
 msgid "Configure specific limits for deprecated API requests that supersede the general user and IP rate limits."
 msgstr ""
 
@@ -26644,6 +26653,9 @@ msgstr ""
 msgid "Dependency list"
 msgstr ""
 
+msgid "Dependency proxy rate limits"
+msgstr ""
+
 msgid "Dependency scanning"
 msgstr ""
 
@@ -31062,6 +31074,9 @@ msgid "Enable authenticated Git HTTP request rate limit"
 msgstr ""
 
 msgid "Enable authenticated Git LFS request rate limit"
+msgstr ""
+
+msgid "Enable authenticated dependency proxy request rate limit"
 msgstr ""
 
 msgid "Enable authenticated web request rate limit"
@@ -45944,6 +45959,9 @@ msgid "Max Value"
 msgstr ""
 
 msgid "Max authenticated Git LFS requests per period per user"
+msgstr ""
+
+msgid "Max authenticated dependency proxy requests per period per user"
 msgstr ""
 
 msgid "Max role"
