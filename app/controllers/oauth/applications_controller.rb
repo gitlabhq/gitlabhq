@@ -16,6 +16,7 @@ class Oauth::ApplicationsController < Doorkeeper::ApplicationsController
   before_action :add_gon_variables
   before_action :load_scopes, only: [:index, :create, :edit, :update]
   before_action :set_current_organization
+  before_action :enforce_organization_maintenance_mode
 
   around_action :set_locale
 

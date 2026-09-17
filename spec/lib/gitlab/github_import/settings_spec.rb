@@ -70,7 +70,7 @@ RSpec.describe Gitlab::GithubImport::Settings, feature_category: :importers do
       settings.write(data_input)
 
       expect(project.import_data.data['optional_stages'])
-        .to eq optional_stages.merge(single_endpoint_notes_import: true).stringify_keys
+        .to eq optional_stages.stringify_keys
       expect(project.import_data.data['timeout_strategy'])
         .to eq("optimistic")
       expect(project.import_data.data['user_contribution_mapping_enabled'])
@@ -78,21 +78,12 @@ RSpec.describe Gitlab::GithubImport::Settings, feature_category: :importers do
       expect(project.import_data.data['pagination_limit'])
         .to eq(50)
     end
-
-    it 'always forces single_endpoint_notes_import to true regardless of input' do
-      project.build_or_assign_import_data(credentials: { user: 'token' })
-
-      settings.write(data_input.deep_merge('optional_stages' => { 'single_endpoint_notes_import' => 'false' }))
-
-      expect(project.import_data.data['optional_stages']['single_endpoint_notes_import']).to be(true)
-    end
   end
 
   describe '#enabled?' do
     it 'returns is enabled or not specific optional stage' do
       project.build_or_assign_import_data(data: { optional_stages: optional_stages })
 
-      expect(settings.enabled?(:single_endpoint_notes_import)).to be false
       expect(settings.enabled?(:attachments_import)).to be false
       expect(settings.enabled?(:collaborators_import)).to be false
     end
@@ -102,7 +93,6 @@ RSpec.describe Gitlab::GithubImport::Settings, feature_category: :importers do
     it 'returns is disabled or not specific optional stage' do
       project.build_or_assign_import_data(data: { optional_stages: optional_stages })
 
-      expect(settings.disabled?(:single_endpoint_notes_import)).to be true
       expect(settings.disabled?(:attachments_import)).to be true
       expect(settings.disabled?(:collaborators_import)).to be true
     end

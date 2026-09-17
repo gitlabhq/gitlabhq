@@ -457,7 +457,6 @@ Lint/UnusedMethodArgument:
     - 'spec/support/import_export/project_tree_expectations.rb'
     - 'spec/support/shared_contexts/mailers/emails/service_desk_shared_context.rb'
     - 'spec/support/shared_examples/features/master_manages_access_requests_shared_example.rb'
-    - 'spec/support/shared_examples/requests/rack_attack_shared_examples.rb'
     - 'spec/support/sidekiq_middleware.rb'
     - 'spec/support_specs/capybara_slow_finder_spec.rb'
     - 'spec/tooling/graphql/deprecated_docs/renderer_spec.rb'

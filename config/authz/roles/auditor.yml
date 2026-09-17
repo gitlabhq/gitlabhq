@@ -149,6 +149,7 @@ project:
   - read_runners
   - read_saved_replies
   - read_saved_view
+  - read_security_attribute
   - read_security_inventory
   - read_security_orchestration_policies
   - read_security_project_tracked_ref
@@ -213,6 +214,7 @@ group:
   - read_saml_user
   - read_saved_replies
   - read_saved_view
+  - read_security_attribute
   - read_security_inventory
   - read_security_orchestration_policies
   - read_security_resource

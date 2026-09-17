@@ -31,7 +31,6 @@ class ApplicationController < BaseActionController
   include Gitlab::HttpRouter::RuleContext
   include Gitlab::HttpRouter::RuleMetrics
   include CookiesHelper
-  include EnforcesOrganizationMaintenanceMode
 
   content_security_policy do |p|
     next if p.directives.blank?

@@ -20,6 +20,22 @@ describe('~/vue_merge_request_widget/components/widget/action_buttons.vue', () =
       expect(wrapper.findAllComponents(GlButton)).toHaveLength(1);
     });
 
+    it('passes target and rel to the link', () => {
+      factory({
+        tertiaryButtons: [
+          {
+            text: 'hello world',
+            href: 'https://gitlab.com',
+            target: '_blank',
+            rel: 'noopener noreferrer',
+          },
+        ],
+      });
+
+      expect(wrapper.findComponent(GlButton).props('rel')).toBe('noopener noreferrer');
+      expect(wrapper.findComponent(GlButton).attributes('target')).toBe('_blank');
+    });
+
     it('calls action click handler', async () => {
       const onClick = jest.fn();
 

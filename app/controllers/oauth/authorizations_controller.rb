@@ -13,6 +13,7 @@ class Oauth::AuthorizationsController < Doorkeeper::AuthorizationsController
 
   prepend_before_action :set_current_organization
 
+  before_action :enforce_organization_maintenance_mode
   before_action :add_gon_variables
   before_action :verify_confirmed_email!, :verify_admin_allowed!
   # rubocop: disable Rails/LexicallyScopedActionFilter -- :create is defined in Doorkeeper::AuthorizationsController

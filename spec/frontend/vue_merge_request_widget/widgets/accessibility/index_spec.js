@@ -1,11 +1,17 @@
 import MockAdapter from 'axios-mock-adapter';
 import { mountExtended } from 'helpers/vue_test_utils_helper';
 import { trimText } from 'helpers/text_helper';
+import { useMockInternalEventsTracking } from 'helpers/tracking_internal_events_helper';
 import waitForPromises from 'helpers/wait_for_promises';
 import api from '~/api';
 import axios from '~/lib/utils/axios_utils';
+import Widget from '~/vue_merge_request_widget/components/widget/widget.vue';
 import AccessibilityWidget from '~/vue_merge_request_widget/widgets/accessibility/index.vue';
-import { HTTP_STATUS_INTERNAL_SERVER_ERROR, HTTP_STATUS_OK } from '~/lib/utils/http_status';
+import {
+  HTTP_STATUS_INTERNAL_SERVER_ERROR,
+  HTTP_STATUS_NO_CONTENT,
+  HTTP_STATUS_OK,
+} from '~/lib/utils/http_status';
 import { accessibilityReportResponseErrors, accessibilityReportResponseSuccess } from './mock_data';
 
 describe('Accessibility widget', () => {
@@ -13,19 +19,22 @@ describe('Accessibility widget', () => {
   let mock;
 
   const endpoint = '/root/repo/-/merge_requests/4/accessibility_reports.json';
+  const reportsTabPath = '/root/repo/-/merge_requests/4/reports';
 
   const mockApi = (statusCode, data) => {
     mock.onGet(endpoint).reply(statusCode, data, {});
   };
 
+  const findWidget = () => wrapper.findComponent(Widget);
   const findToggleCollapsedButton = () => wrapper.findByTestId('toggle-button');
   const findAllExtensionListItems = () => wrapper.findAllByTestId('extension-list-item');
 
-  const createComponent = () => {
+  const createComponent = ({ mrProps = {} } = {}) => {
     wrapper = mountExtended(AccessibilityWidget, {
       propsData: {
         mr: {
           accessibilityReportPath: endpoint,
+          ...mrProps,
         },
       },
     });
@@ -80,6 +89,7 @@ describe('Accessibility widget', () => {
       expect(wrapper.text()).toBe(
         'Accessibility scanning detected 5 issues for the source branch only',
       );
+      expect(findWidget().props('statusIconName')).toBe('warning');
       expect(findToggleCollapsedButton().exists()).toBe(true);
     });
 
@@ -93,6 +103,7 @@ describe('Accessibility widget', () => {
       expect(wrapper.text()).toBe(
         'Accessibility scanning detected no issues for the source branch only',
       );
+      expect(findWidget().props('statusIconName')).toBe('success');
       expect(findToggleCollapsedButton().exists()).toBe(false);
     });
   });
@@ -163,5 +174,70 @@ describe('Accessibility widget', () => {
         'https://www.w3.org/TR/WCAG20-TECHS/H32.html',
       ]);
     });
+  });
+
+  describe('"View report" button', () => {
+    const { bindInternalEventDocument } = useMockInternalEventsTracking();
+
+    beforeEach(() => mockApi(HTTP_STATUS_OK, accessibilityReportResponseErrors));
+
+    it('is not rendered, and the widget stays expandable, without a reports tab', async () => {
+      createComponent();
+      await waitForPromises();
+
+      expect(findWidget().props('actionButtons')).toHaveLength(0);
+      expect(findWidget().props('isCollapsible')).toBe(true);
+    });
+
+    it('links to the accessibility report instead of expanding', async () => {
+      createComponent({ mrProps: { reportsTabPath } });
+      await waitForPromises();
+
+      expect(findWidget().props('actionButtons')).toMatchObject([
+        { text: 'View report', href: `${reportsTabPath}/accessibility` },
+      ]);
+      expect(findWidget().props('isCollapsible')).toBe(false);
+    });
+
+    it('navigates to the report without a page reload and tracks the click', async () => {
+      createComponent({ mrProps: { reportsTabPath } });
+      await waitForPromises();
+
+      const { trackEventSpy } = bindInternalEventDocument(wrapper.element);
+      const pushStateSpy = jest.spyOn(window.history, 'pushState');
+      const dispatchEventSpy = jest.spyOn(window, 'dispatchEvent');
+      const [button] = findWidget().props('actionButtons');
+      const event = { preventDefault: jest.fn() };
+
+      button.onClick(button, event);
+
+      expect(event.preventDefault).toHaveBeenCalled();
+      expect(trackEventSpy).toHaveBeenCalledWith(
+        'click_view_report_on_merge_request_widget',
+        { label: 'accessibility' },
+        undefined,
+      );
+      expect(pushStateSpy).toHaveBeenCalledWith(null, null, `${reportsTabPath}/accessibility`);
+      expect(dispatchEventSpy).toHaveBeenCalledWith(expect.any(PopStateEvent));
+    });
+  });
+
+  it('reports no results when polling finishes without a report', async () => {
+    mock.onGet(endpoint).reply(HTTP_STATUS_NO_CONTENT, '', {});
+
+    createComponent();
+    await waitForPromises();
+
+    expect(wrapper.text()).toBe('Accessibility scanning results are not available');
+    expect(findWidget().props('statusIconName')).toBe('warning');
+  });
+
+  it('does not fail while the report is still being parsed', async () => {
+    mock.onGet(endpoint).reply(HTTP_STATUS_NO_CONTENT, '', { 'poll-interval': '1' });
+
+    createComponent();
+    await waitForPromises();
+
+    expect(wrapper.text()).toBe('Accessibility scanning results are being parsed');
   });
 });

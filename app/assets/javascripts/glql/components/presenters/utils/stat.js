@@ -8,7 +8,6 @@ const POSITIVE_DIRECTION_BY_UNIT = {
   count: 'up',
   rate: 'up',
   duration: 'down',
-  durationMs: 'down',
 };
 
 // Keyed by the source `glql.compile` resolves, because one metric name has a different
@@ -42,7 +41,11 @@ const METRIC_PRESENTATION = {
       description: __('Ratio of canceled pipelines to finished pipelines.'),
       positiveDirection: 'down',
     },
+    durationMax: { description: __('Longest pipeline duration, in seconds.') },
+    durationMean: { description: __('Average pipeline duration, in seconds.') },
+    durationMin: { description: __('Shortest pipeline duration, in seconds.') },
     durationQuantile: { description: __('Pipeline duration quantile, in seconds.') },
+    durationSum: { description: __('Total duration of all pipelines, in seconds.') },
     failureRate: {
       description: __('Ratio of failed pipelines to finished pipelines.'),
       positiveDirection: 'down',
@@ -58,7 +61,15 @@ const METRIC_PRESENTATION = {
   },
   MergeRequests: {
     throughputCount: { description: __('Number of merged merge requests.') },
-    timeToMergeQuantile: { description: __('Time from creation to merge.') },
+    timeToMergeMax: { description: __('Longest time from creation to merge, in seconds.') },
+    timeToMergeMean: { description: __('Average time from creation to merge, in seconds.') },
+    timeToMergeMin: { description: __('Shortest time from creation to merge, in seconds.') },
+    timeToMergeQuantile: { description: __('Time from creation to merge, in seconds.') },
+    timeToMergeSum: {
+      description: __(
+        'Total time from creation to merge across all merged merge requests, in seconds.',
+      ),
+    },
     totalCount: { description: __('Total number of merge requests.') },
   },
   Contributions: {

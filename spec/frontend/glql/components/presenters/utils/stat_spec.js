@@ -26,7 +26,9 @@ describe('statPresentationFor', () => {
       ${'AiUsageEvents'}   | ${'featuresCount'}       | ${'Number of unique features used.'}
       ${'Pipelines'}       | ${'failureRate'}         | ${'Ratio of failed pipelines to finished pipelines.'}
       ${'Pipelines'}       | ${'durationQuantile'}    | ${'Pipeline duration quantile, in seconds.'}
-      ${'MergeRequests'}   | ${'timeToMergeQuantile'} | ${'Time from creation to merge.'}
+      ${'MergeRequests'}   | ${'timeToMergeQuantile'} | ${'Time from creation to merge, in seconds.'}
+      ${'MergeRequests'}   | ${'timeToMergeMean'}     | ${'Average time from creation to merge, in seconds.'}
+      ${'Pipelines'}       | ${'durationSum'}         | ${'Total duration of all pipelines, in seconds.'}
       ${'Contributions'}   | ${'usersCount'}          | ${'Number of unique contributors.'}
       ${'DuoWorkflows'}    | ${'creditsUsedSum'}      | ${'Total credits used by all flows.'}
       ${'DuoWorkflows'}    | ${'projectsCount'}       | ${'Number of unique projects.'}

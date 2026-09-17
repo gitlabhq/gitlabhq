@@ -5,8 +5,6 @@ import {
   formatRate,
   formatDuration,
   formatDurationCompact,
-  formatDurationMs,
-  formatDurationMsCompact,
   formatterFor,
   axisFormatterFor,
   valueFormatterFor,
@@ -122,31 +120,6 @@ describe('formatDurationCompact', () => {
   });
 });
 
-describe('formatDurationMs', () => {
-  it.each`
-    milliseconds | expected
-    ${0}         | ${'0s'}
-    ${30000}     | ${'30s'}
-    ${90000}     | ${'1m 30s'}
-    ${250000}    | ${'4m 10s'}
-    ${3661000}   | ${'1h 1m 1s'}
-  `('formats $milliseconds milliseconds as $expected', ({ milliseconds, expected }) => {
-    expect(formatDurationMs(milliseconds)).toBe(expected);
-  });
-});
-
-describe('formatDurationMsCompact', () => {
-  it.each`
-    milliseconds | expected
-    ${0}         | ${'0s'}
-    ${30000}     | ${'30s'}
-    ${90000}     | ${'1.5min'}
-    ${10000000}  | ${'2.8h'}
-  `('formats $milliseconds milliseconds as $expected', ({ milliseconds, expected }) => {
-    expect(formatDurationMsCompact(milliseconds)).toBe(expected);
-  });
-});
-
 describe('formatterFor', () => {
   it.each`
     fieldKey                      | input     | expected
@@ -168,7 +141,11 @@ describe('formatterFor', () => {
     ${'duration'}                 | ${3600}   | ${'1h'}
     ${'queuedDuration'}           | ${90}     | ${'1m 30s'}
     ${'durationQuantile'}         | ${3661}   | ${'1h 1m 1s'}
-    ${'timeToMergeQuantile'}      | ${250000} | ${'4m 10s'}
+    ${'timeToMergeQuantile'}      | ${250}    | ${'4m 10s'}
+    ${'timeToMergeMean'}          | ${90}     | ${'1m 30s'}
+    ${'timeToMergeMin'}           | ${30}     | ${'30s'}
+    ${'timeToMergeMax'}           | ${3600}   | ${'1h'}
+    ${'timeToMergeSum'}           | ${3661}   | ${'1h 1m 1s'}
     ${'completionRate'}           | ${0.6}    | ${'60%'}
     ${'finishedCount'}            | ${789}    | ${'789'}
     ${'durationMean'}             | ${90}     | ${'1m 30s'}
@@ -215,12 +192,12 @@ describe('axisFormatterFor', () => {
   });
 
   it.each`
-    fieldKey                 | input       | expected
-    ${'successRate'}         | ${0.819}    | ${'81.9%'}
-    ${'durationQuantile'}    | ${10000}    | ${'2.8h'}
-    ${'timeToMergeQuantile'} | ${10000000} | ${'2.8h'}
-    ${'duration'}            | ${3661}     | ${'1h'}
-    ${'queuedDuration'}      | ${90}       | ${'1.5min'}
+    fieldKey                 | input    | expected
+    ${'successRate'}         | ${0.819} | ${'81.9%'}
+    ${'durationQuantile'}    | ${10000} | ${'2.8h'}
+    ${'timeToMergeQuantile'} | ${10000} | ${'2.8h'}
+    ${'duration'}            | ${3661}  | ${'1h'}
+    ${'queuedDuration'}      | ${90}    | ${'1.5min'}
   `('uses the unit-specific axis formatter for $fieldKey', ({ fieldKey, input, expected }) => {
     expect(axisFormatterFor(fieldKey)(input)).toBe(expected);
   });
@@ -262,7 +239,11 @@ describe('unitFor', () => {
     ${'previousPeriodUsersCount'} | ${'count'}
     ${'duration'}                 | ${'duration'}
     ${'durationQuantile'}         | ${'duration'}
-    ${'timeToMergeQuantile'}      | ${'durationMs'}
+    ${'timeToMergeQuantile'}      | ${'duration'}
+    ${'timeToMergeMean'}          | ${'duration'}
+    ${'timeToMergeMin'}           | ${'duration'}
+    ${'timeToMergeMax'}           | ${'duration'}
+    ${'timeToMergeSum'}           | ${'duration'}
     ${'completionRate'}           | ${'rate'}
     ${'finishedCount'}            | ${'count'}
     ${'durationMean'}             | ${'duration'}
@@ -286,12 +267,11 @@ describe('unitFor', () => {
 
 describe('labelForUnit', () => {
   it.each`
-    unit            | expected
-    ${'count'}      | ${'Count'}
-    ${'credits'}    | ${'Credits'}
-    ${'rate'}       | ${'Percentage'}
-    ${'duration'}   | ${'Duration'}
-    ${'durationMs'} | ${'Duration'}
+    unit          | expected
+    ${'count'}    | ${'Count'}
+    ${'credits'}  | ${'Credits'}
+    ${'rate'}     | ${'Percentage'}
+    ${'duration'} | ${'Duration'}
   `('maps $unit to $expected', ({ unit, expected }) => {
     expect(labelForUnit(unit)).toBe(expected);
   });

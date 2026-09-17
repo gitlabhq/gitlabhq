@@ -27,6 +27,8 @@ describe('Merge request reports App component', () => {
   const findSecurityNavItem = () => wrapper.findComponent({ name: 'SecurityNavItem' });
   const findCodeQualityProvider = () => wrapper.findComponent({ name: 'CodeQualityProvider' });
   const findCodeQualityNavItem = () => wrapper.findComponent({ name: 'CodeQualityNavItem' });
+  const findAccessibilityProvider = () => wrapper.findComponent({ name: 'AccessibilityProvider' });
+  const findAccessibilityNavItem = () => wrapper.findComponent({ name: 'AccessibilityNavItem' });
   const findLoadingIcon = () => wrapper.findComponent(GlLoadingIcon);
   const findKeepAlive = () => wrapper.findByTestId('keep-alive');
   const findRouterView = () => wrapper.findComponent({ name: 'RouterView' });
@@ -37,11 +39,13 @@ describe('Merge request reports App component', () => {
   const expectProvidersToExist = (exists) => {
     expect(findSecurityScansProvider().exists()).toBe(exists);
     expect(findCodeQualityProvider().exists()).toBe(exists);
+    expect(findAccessibilityProvider().exists()).toBe(exists);
   };
 
   const expectNavItemsToExist = (exists) => {
     expect(findSecurityNavItem().exists()).toBe(exists);
     expect(findCodeQualityNavItem().exists()).toBe(exists);
+    expect(findAccessibilityNavItem().exists()).toBe(exists);
   };
 
   const mockNoPipeline = () => {
@@ -66,6 +70,7 @@ describe('Merge request reports App component', () => {
   };
 
   const codeQualityConfigured = { codequality_reports_path: 'codequality_reports.json' };
+  const accessibilityConfigured = { accessibility_report_path: 'accessibility_report.json' };
 
   const emitSecurityScansChange = async (enabled) => {
     findSecurityScansProvider().vm.$emit('enabled-scans-change', enabled);
@@ -114,6 +119,14 @@ describe('Merge request reports App component', () => {
         },
         CodeQualityNavItem: {
           name: 'CodeQualityNavItem',
+          template: '<div></div>',
+        },
+        AccessibilityProvider: {
+          name: 'AccessibilityProvider',
+          template: '<div><slot /></div>',
+        },
+        AccessibilityNavItem: {
+          name: 'AccessibilityNavItem',
           template: '<div></div>',
         },
         MetricsProvider: {
@@ -216,7 +229,7 @@ describe('Merge request reports App component', () => {
 
   describe('when pipeline is complete', () => {
     beforeEach(async () => {
-      mockPipeline(false, codeQualityConfigured);
+      mockPipeline(false, { ...codeQualityConfigured, ...accessibilityConfigured });
       createComponent();
       await waitForPromises();
       await emitSecurityScansChange(true);
@@ -261,6 +274,7 @@ describe('Merge request reports App component', () => {
 
       expect(findSecurityNavItem().exists()).toBe(false);
       expect(findCodeQualityNavItem().exists()).toBe(true);
+      expect(findAccessibilityNavItem().exists()).toBe(false);
       expect(wrapper.vm.$route.name).toBe('code-quality');
     });
 

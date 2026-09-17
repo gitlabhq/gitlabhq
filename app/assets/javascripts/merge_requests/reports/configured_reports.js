@@ -1,5 +1,7 @@
 export const hasCodeQualityReport = (mr) => Boolean(mr?.codequalityReportsPath);
 
+export const hasAccessibilityReport = (mr) => Boolean(mr?.accessibilityReportPath);
+
 export const hasLicenseComplianceReport = () => false;
 
 export const hasBrowserPerformanceReport = () => false;

@@ -927,7 +927,7 @@
   - "{,ee/,jh/}fixtures/**/*"
   - "scripts/**/*"
   - "{,spec/}tooling/**/*"
-  - "{,ee/,jh/}spec/{frontend,frontend_integration,support,factories,fixtures}/**/*"
+  - "{,ee/,jh/}spec/{frontend,support,factories,fixtures}/**/*"
   # spec_helper.rb and the files it requires (simplecov_env.rb, knapsack_env.rb, ...)
   - "{,ee/,jh/}spec/*.rb"
   # FE island changes
@@ -1922,7 +1922,6 @@
   rules:
     - <<: *if-merge-request-labels-pipeline-expedite
       when: never
-    - if: '$ENABLE_JEST_INTEGRATION == "true"'
     - if: '$ENABLE_RSPEC_FRONTEND_FIXTURE == "true"'
     - if: '$ENABLE_ESLINT == "true"'
     - if: '$ENABLE_COMPILE_STORYBOOK == "true"'
@@ -2087,25 +2086,6 @@
       when: never
     - <<: *if-merge-request
       changes: *frontend-predictive-patterns
-
-# .frontend:rules:default-frontend-jobs, with additional rules for tier-1 pipelines
-.frontend:rules:jest-integration:
-  rules:
-    # From .frontend:rules:default-frontend-jobs
-    - <<: *if-merge-request-labels-pipeline-expedite
-      when: never
-    - if: '$ENABLE_JEST_INTEGRATION == "true"'
-    - <<: *if-merge-request-labels-run-all-rspec
-    - <<: *if-merge-request-labels-frontend-and-feature-flag
-      changes: *setup-test-env-patterns
-    # For tier-1 pipelines, only run when jest predictive jobs would
-    - <<: *if-merge-request-tier-1-or-no-tier
-      changes: *frontend-predictive-patterns
-    - <<: *if-merge-request-tier-1-or-no-tier
-      when: never
-    # From .frontend:rules:default-frontend-jobs
-    - <<: *if-default-refs
-      changes: *code-backstage-spec-patterns
 
 .frontend:rules:jest-msw-integration:
   rules:

@@ -23,9 +23,6 @@ dependent:
   # Backend integration tests
   - "^spec/(requests|features|system|integration)/"
   - "^ee/spec/(requests|features|system|integration)/"
-  # Frontend integration tests
-  - "^spec/frontend_integration/"
-  - "^ee/spec/frontend_integration/"
   # E2E tests
   - "^qa/"
   # Go integration tests

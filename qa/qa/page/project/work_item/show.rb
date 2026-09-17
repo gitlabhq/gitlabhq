@@ -98,6 +98,8 @@ module QA
           end
 
           def open_actions_dropdown
+            dismiss_decision_log_onboarding_popover_if_exists
+
             click_element('work-item-actions-dropdown') unless has_element?('state-toggle-action', visible: true)
           end
 
@@ -152,6 +154,10 @@ module QA
 
           # No-op in CE; overridden by EE::Page::Component::DapEmptyState when prepended
           def close_dap_panel_if_exists; end
+
+          # No-op in CE; overridden in EE::Page::Project::WorkItem::Show when prepended.
+          # The popover renders over the header actions dropdown and swallows clicks on its items.
+          def dismiss_decision_log_onboarding_popover_if_exists; end
         end
       end
     end

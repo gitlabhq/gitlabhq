@@ -190,11 +190,12 @@ Five properties of that compilation, each of which a caller has to work with:
   so `rules` is stored per rule rather than as one program per policy, and `custom` is
   stored as authored rather than reformatted. `RuleProgramMerger` combines them into one
   per-policy module, keeping a single `package governance` line and stripping it from
-  every rule. That module is what the API exposes as `policy_rego`, and what a write
-  supplying `rules` is measured against. A violation the transpiler emits carries its
-  `rule_index` so that attribution survives a merge, since `violation` is a set and two
-  rules emitting identical objects would deduplicate. A `custom` program is stored as
-  authored, so only its author can do the same for it.
+  every rule. Each rule's `import` lines are lifted under that line, since Rego allows
+  imports only ahead of the first rule. That module is what the API exposes as
+  `policy_rego`, and what a write supplying `rules` is measured against. A violation the
+  transpiler emits carries its `rule_index` so that attribution survives a merge, since
+  `violation` is a set and two rules emitting identical objects would deduplicate. A
+  `custom` program is stored as authored, so only its author can do the same for it.
 - **A policy still fires when any one of its rules fires**, but that OR belongs to
   whoever evaluates the programs, whether it runs each separately and concatenates the
   violations or evaluates one merged module. This is the reverse of scope compilation,

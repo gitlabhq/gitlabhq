@@ -864,31 +864,6 @@ export default [
   // Jest config
   jestConfig,
 
-  // Integration tests config
-  {
-    files: ['{,ee/}spec/frontend_integration/**/*.js'],
-
-    settings: {
-      ...jestConfig.settings,
-      'import/resolver': {
-        jest: {
-          jestConfigFile: 'jest.config.integration.js',
-        },
-      },
-    },
-
-    rules: {
-      ...jestConfig.rules,
-      'no-restricted-imports': ['error', 'fs'],
-    },
-
-    languageOptions: {
-      globals: {
-        mockServer: false,
-      },
-    },
-  },
-
   // MSW integration tests (EE-only)
   {
     files: ['ee/spec/frontend/msw_integration/**/*_spec.js'],

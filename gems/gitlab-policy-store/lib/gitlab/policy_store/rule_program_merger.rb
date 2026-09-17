@@ -13,16 +13,22 @@ module Gitlab
         raise PolicyStore::Error, "rules must be an array of compiled entries" unless rules.is_a?(Array)
         return nil if rules.empty?
 
+        # Rego allows imports only ahead of the first rule.
+        # Lift every rule's imports into the shared header so the merged module parses.
+        imports = []
         bodies = rules.map.with_index do |rule, index|
           rego = rule.is_a?(Hash) ? rule["rego"] : nil
           unless rego.is_a?(String) && !rego.empty?
             raise PolicyStore::Error, "rule #{index} has no compiled rego to merge"
           end
 
-          ensure_trailing_newline(strip_declaration(rego))
+          body, rule_imports = split_header(rego)
+          imports.concat(rule_imports)
+
+          ensure_trailing_newline(body)
         end
 
-        "#{RULE_PRELUDE}\n#{bodies.join}"
+        "#{header(imports)}#{bodies.join}"
       end
 
       private

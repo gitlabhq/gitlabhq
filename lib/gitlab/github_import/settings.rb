@@ -51,11 +51,6 @@ module Gitlab
 
         optional_stages = fetch_stages_from_params(user_settings[:optional_stages])
 
-        # Phase 1 of https://gitlab.com/gitlab-org/gitlab/-/work_items/617148: force this on for all
-        # new imports at write-time only. Remove once DiffNotesImporter and the related branching
-        # are deleted in phase 2.
-        optional_stages[:single_endpoint_notes_import] = true
-
         import_data = project.build_or_assign_import_data(
           data: {
             optional_stages: optional_stages,

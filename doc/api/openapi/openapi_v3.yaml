@@ -467,8 +467,6 @@ tags:
   x-displayName: Draft notes
   externalDocs:
     url: https://docs.gitlab.com/api/draft_notes/
-- name: Duo workflow flow callback hooks
-  description: Operations related to duo workflow flow callback hooks.
 - name: Enterprise users
   description: |-
     Use this API to manage the [enterprise users](https://docs.gitlab.com/user/enterprise_user/) of a
@@ -3036,126 +3034,6 @@ paths:
             schema:
               "$ref": "#/components/schemas/RequestBody_7f012aede422"
       x-gitlab-lifecycle: experiment
-  "/api/v4/ai/duo_workflows/flow_callbacks":
-    get:
-      operationId: getApiV4AiDuoWorkflowsFlowCallbacks
-      summary: List registered flow callback endpoints
-      description: Lists the flow callback endpoints registered for your organization.
-        Secrets are not returned.
-      tags:
-      - Duo workflow flow callback hooks
-      responses:
-        '200':
-          description: OK
-          content:
-            application/json:
-              schema:
-                "$ref": "#/components/schemas/APIEntitiesAiDuoWorkflowsFlowCallbackHook"
-        '400':
-          description: Bad request
-        '401':
-          description: Unauthorized
-        '403':
-          description: Forbidden
-      parameters:
-      - name: page
-        required: false
-        description: Current page number
-        schema:
-          type: integer
-          default: 1
-        in: query
-        example: 1
-      - name: per_page
-        required: false
-        description: Number of items per page
-        schema:
-          type: integer
-          default: 20
-        in: query
-        example: 20
-    post:
-      operationId: postApiV4AiDuoWorkflowsFlowCallbacks
-      summary: Register a flow callback endpoint
-      description: Registers an HTTPS endpoint for Duo flow lifecycle callbacks. Reference
-        the returned id via callback_hook_id when creating a flow. Secrets are never
-        returned.
-      tags:
-      - Duo workflow flow callback hooks
-      responses:
-        '201':
-          description: Created
-          content:
-            application/json:
-              schema:
-                "$ref": "#/components/schemas/APIEntitiesAiDuoWorkflowsFlowCallbackHook"
-        '400':
-          description: Validation failed
-        '401':
-          description: Unauthorized
-        '403':
-          description: Forbidden
-      requestBody:
-        required: true
-        content:
-          application/json:
-            schema:
-              "$ref": "#/components/schemas/RequestBody_3bf1a359c145"
-  "/api/v4/ai/duo_workflows/flow_callbacks/{id}":
-    get:
-      operationId: getApiV4AiDuoWorkflowsFlowCallbacksId
-      summary: Get a registered flow callback endpoint
-      description: Returns a single registered flow callback endpoint. Secrets are
-        not returned.
-      tags:
-      - Duo workflow flow callback hooks
-      responses:
-        '200':
-          description: OK
-          content:
-            application/json:
-              schema:
-                "$ref": "#/components/schemas/APIEntitiesAiDuoWorkflowsFlowCallbackHook"
-        '400':
-          description: Bad request
-        '401':
-          description: Unauthorized
-        '403':
-          description: Forbidden
-        '404':
-          description: Not found
-      parameters:
-      - name: id
-        required: true
-        description: The ID of a registered flow callback endpoint
-        schema:
-          type: integer
-        in: path
-    delete:
-      operationId: deleteApiV4AiDuoWorkflowsFlowCallbacksId
-      summary: Delete a registered flow callback endpoint
-      description: Deletes a registered flow callback endpoint so it no longer receives
-        deliveries.
-      tags:
-      - Duo workflow flow callback hooks
-      responses:
-        '204':
-          description: No Content
-        '400':
-          description: Bad request
-        '401':
-          description: Unauthorized
-        '403':
-          description: Forbidden
-        '404':
-          description: Not found
-      parameters:
-      - name: id
-        required: true
-        description: The ID of a registered flow callback endpoint
-        schema:
-          type: integer
-        in: path
   "/api/v4/ai/duo_workflows/workflows/{id}/audit_events":
     post:
       operationId: postApiV4AiDuoWorkflowsWorkflowsIdAuditEvents
@@ -8957,7 +8835,7 @@ paths:
         content:
           application/json:
             schema:
-              "$ref": "#/components/schemas/RequestBody_b14b4c6fd72e"
+              "$ref": "#/components/schemas/RequestBody_c734b449baa8"
   "/api/v4/groups/{id}/member_roles/{member_role_id}":
     delete:
       operationId: deleteApiV4GroupsIdMemberRolesMemberRoleId
@@ -9027,7 +8905,7 @@ paths:
         content:
           application/json:
             schema:
-              "$ref": "#/components/schemas/RequestBody_b14b4c6fd72e"
+              "$ref": "#/components/schemas/RequestBody_c734b449baa8"
   "/api/v4/member_roles/{member_role_id}":
     delete:
       operationId: deleteApiV4MemberRolesMemberRoleId
@@ -75974,7 +75852,7 @@ paths:
         content:
           multipart/form-data:
             schema:
-              "$ref": "#/components/schemas/RequestBody_ca36c5857eaa"
+              "$ref": "#/components/schemas/RequestBody_44f3c209c81d"
   "/api/v4/groups/{id}":
     put:
       operationId: putApiV4GroupsId
@@ -76006,7 +75884,7 @@ paths:
         content:
           multipart/form-data:
             schema:
-              "$ref": "#/components/schemas/RequestBody_ea23abb32b0c"
+              "$ref": "#/components/schemas/RequestBody_c4f77126635f"
     get:
       operationId: getApiV4GroupsId
       summary: Retrieve a group
@@ -82656,28 +82534,6 @@ components:
         created_at:
           type: string
           example: '2026-06-17T00:00:00.000Z'
-    APIEntitiesAiDuoWorkflowsFlowCallbackHook:
-      type: object
-      properties:
-        id:
-          type: integer
-          example: 1
-        url:
-          type: string
-          example: https://autoflow.example.com/duo/callbacks
-        name:
-          type: string
-          example: AutoFlow
-        signing_token_set:
-          type: boolean
-          example: true
-        token_set:
-          type: boolean
-          example: false
-        created_at:
-          type: string
-          format: date-time
-          example: '2026-07-22T11:37:00Z'
     APIEntitiesCustomAttribute:
       type: object
       properties:
@@ -101432,35 +101288,6 @@ components:
       required:
       - session_id
       - events
-    RequestBody_3bf1a359c145:
-      type: object
-      properties:
-        url:
-          type: string
-          description: HTTPS URL that receives callbacks
-          example: https://autoflow.example.com/duo/callbacks
-          nullable: true
-          maxLength: 8192
-        name:
-          type: string
-          description: A label for this endpoint
-          nullable: true
-          maxLength: 255
-        signing_token:
-          type: string
-          description: HMAC signing secret in whsec_<base64-of-32-bytes> format, used
-            to compute the webhook-signature header so you can verify payloads. Not
-            returned.
-          nullable: true
-          maxLength: 51
-        token:
-          type: string
-          description: Optional shared secret sent verbatim as the X-Gitlab-Token
-            header. Not returned.
-          nullable: true
-          maxLength: 8192
-      required:
-      - url
     RequestBody_8129788813d5:
       type: object
       properties:
@@ -103840,7 +103667,7 @@ components:
           nullable: true
       required:
       - extern_uid
-    RequestBody_b14b4c6fd72e:
+    RequestBody_c734b449baa8:
       type: object
       properties:
         base_access_level:
@@ -103978,8 +103805,8 @@ components:
           default: false
         admin_security_attributes:
           type: boolean
-          description: Manage the security categories and attributes belonging to
-            a top-level group. Also requires the `read_security_attribute` permission.
+          description: Manage the security categories and attributes. Also requires
+            the `read_security_attribute` permission.
           default: false
         admin_terraform_state:
           type: boolean
@@ -104060,8 +103887,7 @@ components:
           default: false
         read_security_attribute:
           type: boolean
-          description: Allows read-only access to the security categories and attributes
-            that belong to a top-level group.
+          description: Allows read-only access to the security categories and attributes.
           default: false
         read_admin_subscription:
           type: boolean
@@ -123568,7 +123394,7 @@ components:
           example:
             environment: production
           nullable: true
-    RequestBody_ca36c5857eaa:
+    RequestBody_44f3c209c81d:
       type: object
       properties:
         name:
@@ -123817,6 +123643,15 @@ components:
           description: Tool approval for session availability. One of `default_on`,
             `default_off` or `never_on`
           nullable: true
+        duo_auto_mode_availability:
+          type: string
+          enum:
+          - default_on
+          - default_off
+          - never_on
+          description: Duo auto mode availability. One of `default_on`, `default_off`
+            or `never_on`
+          nullable: true
         amazon_q_auto_review_enabled:
           type: boolean
           description: Enable Amazon Q auto review for merge request
@@ -123943,7 +123778,7 @@ components:
       required:
       - name
       - path
-    RequestBody_ea23abb32b0c:
+    RequestBody_c4f77126635f:
       type: object
       properties:
         name:
@@ -124193,6 +124028,15 @@ components:
           - never_on
           description: Tool approval for session availability. One of `default_on`,
             `default_off` or `never_on`
+          nullable: true
+        duo_auto_mode_availability:
+          type: string
+          enum:
+          - default_on
+          - default_off
+          - never_on
+          description: Duo auto mode availability. One of `default_on`, `default_off`
+            or `never_on`
           nullable: true
         amazon_q_auto_review_enabled:
           type: boolean

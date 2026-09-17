@@ -7278,17 +7278,6 @@
     "acceptsFormat": true
   },
   {
-    "template": "/api/:version/ai/duo_workflows/flow_callbacks",
-    "example": "/api/v4/ai/duo_workflows/flow_callbacks",
-    "acceptsFormat": true
-  },
-  {
-    "template": "/api/:version/ai/duo_workflows/flow_callbacks/:id",
-    "example": "/api/v4/ai/duo_workflows/flow_callbacks/foo",
-    "acceptsFormat": true,
-    "dottedExample": "/api/v4/ai/duo_workflows/flow_callbacks/john.doe"
-  },
-  {
     "template": "/api/:version/ai/duo_workflows/list_tools",
     "example": "/api/v4/ai/duo_workflows/list_tools",
     "acceptsFormat": true

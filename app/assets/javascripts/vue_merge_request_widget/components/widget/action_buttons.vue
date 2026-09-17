@@ -45,6 +45,7 @@ export default {
             dataClipboardText: button.dataClipboardText,
             dataMethod: button.dataMethod,
             target: button.target,
+            rel: button.rel,
             disabled: button.disabled,
           },
         };
@@ -111,6 +112,7 @@ export default {
       :title="setTooltip(btn)"
       :href="btn.href"
       :target="btn.target"
+      :rel="btn.rel"
       :class="[{ 'gl-mr-3': index !== tertiaryButtons.length - 1 }, btn.class]"
       :data-clipboard-text="btn.dataClipboardText"
       :data-method="btn.dataMethod"

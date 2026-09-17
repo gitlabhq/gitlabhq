@@ -2,35 +2,26 @@
 
 module Gitlab
   module Middleware
-    # Runs Labkit::RateLimit alongside Rack::Attack during the migration off the
-    # legacy stack. Per-cohort wip flags drive three states, mirroring
-    # Gitlab::ApplicationRateLimiter::LabkitAdapter:
-    #
-    #   shadow off              : labkit does not run; Rack::Attack alone decides.
-    #   shadow on, enforce off  : labkit runs, but its decision is never acted on.
-    #   shadow on, enforce on   : labkit additionally blocks. On a block whose cohort
-    #                             enforces it renders the byte-identical legacy 429
-    #                             and short-circuits; otherwise the request falls
-    #                             through to Rack::Attack, which still enforces.
-    #
-    # PlanRules also starts it, independently of the cohorts.
+    # Enforces request rate limits with Labkit::RateLimit. On a block it renders
+    # the byte-identical legacy 429 and short-circuits; otherwise the request
+    # falls through to Rack::Attack, which is safelisted into a pass-through
+    # (see Gitlab::RackAttack) and never blocks.
     #
     # Mounted directly above Rack::Attack (see config/application.rb), so it wraps it
     # and observes every request after Warden has resolved auth. On the way in it
     # builds a ClassifiedRequest of raw request facts and runs every limiter's full,
-    # ordered rule set over them (cohort gates enforcement, not which rules exist).
-    # Each limiter returns its first matching rule's decision; labkit blocks the
-    # request when any of those decisions is a block whose cohort enforces. Once
-    # fully enforced, on the way back up it adds the proactive RateLimit-* headers to
-    # non-429 responses, taking over from RackAttackHeaders, which the safelist leaves
-    # with nothing to read.
+    # ordered rule set over them. Each limiter returns its first matching rule's
+    # decision; labkit blocks the request when any of those decisions is a block. On
+    # the way back up it adds the proactive RateLimit-* headers to non-429 responses,
+    # taking over from RackAttackHeaders, which the safelist leaves with nothing to
+    # read.
     #
-    # The middleware blocks only when an enforcing cohort's rule blocks, or when a
-    # rule with no registry entry (a plan rule) blocks, otherwise it never blocks.
-    # The request's own errors propagate (@app.call is not wrapped);
-    # the labkit decision is guarded, so a failure there is tracked and falls open to
-    # Rack::Attack rather than affecting the response. labkit itself also fails open
-    # on any Redis error.
+    # The middleware blocks whenever a rule blocks, a registry rule and a rule with
+    # no entry (a plan rule) alike; otherwise it never blocks. The request's own
+    # errors propagate (@app.call is not wrapped); the labkit decision is guarded, so
+    # a failure there is tracked and the request proceeds unthrottled, since
+    # Rack::Attack no longer enforces anything to fall back on. labkit itself also
+    # fails open on any Redis error.
     #
     # Collaborators are referenced lazily inside methods rather than via class-body
     # constants: this file is require_dependency'd from config/application.rb before
@@ -59,12 +50,9 @@ module Gitlab
       # ordered rule set. Each limiter returns its first matching rule's result (an
       # :allow for a bypassed/skipped/unmatched request, otherwise the matched
       # throttle's decision). Returns those results (read again on the way out) and
-      # the byte-identical 429 to return in place of calling the app (nil unless an
-      # enforcing cohort's rule blocks), or nil when it did not run (nothing enabled
-      # it, or a guarded failure).
+      # the byte-identical 429 to return in place of calling the app (nil unless a
+      # rule blocks), or nil on a guarded failure.
       def run(env)
-        return unless any_active_cohort? || plan_rules.active?
-
         request = build_request(env)
         context = with_isolated_throttle_instrumentation { request.labkit_facts }
         results = limiters.all.values.map { |limiter| limiter.check(context) }
@@ -72,12 +60,11 @@ module Gitlab
       end
 
       # Outbound: proactive RateLimit-* headers for non-429 responses (a 429 already
-      # carries its own), added only once labkit fully owns enforcement - until then
-      # Rack::Attack still evaluates throttles and RackAttackHeaders builds these.
-      # Built from the counted evaluations, not each limiter's reported result (an
-      # under-limit result reports the claim rule, which carries no counter info).
+      # carries its own). Built from the counted evaluations, not each limiter's
+      # reported result (an under-limit result reports the claim rule, which
+      # carries no counter info).
       def annotate_rate_limit_headers(status, headers, results)
-        return if status == 429 || !registry.fully_enforced?
+        return if status == 429
 
         evaluation = most_constraining_enforced(results)
         return unless evaluation
@@ -106,23 +93,14 @@ module Gitlab
         evaluation
       end
 
-      # The byte-identical legacy 429 for the first blocking rule that enforces: a
-      # registry rule whose cohort enforces, or a rule with no entry (a plan rule is
-      # only built as :limit when its enforce flag is on). Nil when none does. The
-      # counter was already incremented in the limiter check, so reading the decision
-      # here never double-counts. Mirrors Gitlab::RackAttack's throttled_responder so
-      # a promoted throttle is indistinguishable from the legacy stack to clients.
+      # The byte-identical legacy 429 for the first blocking rule, or nil when none
+      # blocks. A registry rule and a rule with no entry (a plan rule is only built
+      # as :limit when its enforce flag is on) both block. The counter was already
+      # incremented in the limiter check, so reading the decision here never
+      # double-counts. Mirrors Gitlab::RackAttack's throttled_responder so a promoted
+      # throttle is indistinguishable from the legacy stack to clients.
       def enforced_response(results)
-        blocked = results.find do |result|
-          # An unmatched or synthetic-allow result carries no rule, so its cohort can
-          # only be looked up once blocked? has confirmed a matched throttle blocked
-          # (a block always carries its rule). Testing blocked? first also preserves
-          # the short-circuit the &&-chain relied on before entry was hoisted out.
-          next false unless blocked?(result)
-
-          entry = entry_for_rule(result.rule.name)
-          entry.nil? || registry.enforce_enabled?(entry.cohort)
-        end
+        blocked = results.find { |result| blocked?(result) }
         return unless blocked
 
         headers = ::Gitlab::RackAttack::RequestThrottleData
@@ -149,9 +127,9 @@ module Gitlab
       # The throttle Entry a matched Labkit rule name resolves to, memoized on first
       # use (the first request, past initialization, so the require_dependency'd
       # middleware never resolves its registry sibling at load time). Keyed by Labkit
-      # rule name, from which both the enforce cohort (Entry#cohort) and the 429 header
-      # name (Entry#name, the backing throttle) resolve. Synthetic and plan rules have
-      # no entry: a synthetic rule never blocks, and a plan rule needs no cohort.
+      # rule name, from which the 429 header name (Entry#name, the backing throttle)
+      # resolves. Synthetic and plan rules have no entry, so throttle_name_for falls
+      # back to the rule's own name for them.
       def entry_for_rule(rule_name)
         @entries_by_rule ||= registry.by_rule_name
         @entries_by_rule[rule_name]
@@ -171,10 +149,6 @@ module Gitlab
         yield
       ensure
         instrumentation.safelist = original unless instrumentation.safelist == original
-      end
-
-      def any_active_cohort?
-        registry.cohorts.any? { |cohort| registry.shadow_enabled?(cohort) }
       end
 
       # The request that classifies itself for labkit, built from a dup of the env
@@ -203,10 +177,6 @@ module Gitlab
 
       def limiters
         ::Gitlab::RackAttack::LabkitRateLimit::Limiters
-      end
-
-      def plan_rules
-        ::Gitlab::RateLimit::PlanRules
       end
     end
   end

@@ -97988,6 +97988,22 @@
           "description": "A security policy scoped to a compliance framework",
           "fields": [
             {
+              "name": "hasActiveProjects",
+              "description": "Whether the policy has at least one non-archived assigned project.",
+              "args": [],
+              "type": {
+                "kind": "NON_NULL",
+                "name": null,
+                "ofType": {
+                  "kind": "SCALAR",
+                  "name": "Boolean",
+                  "ofType": null
+                }
+              },
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
               "name": "name",
               "description": "Name of the security policy.",
               "args": [],
@@ -182349,6 +182365,18 @@
               "deprecationReason": null
             },
             {
+              "name": "duoAutoModeEnabled",
+              "description": "Indicates whether Duo Agent Platform auto mode is enabled for the group. Introduced in GitLab 19.5: Status: Experiment.",
+              "args": [],
+              "type": {
+                "kind": "SCALAR",
+                "name": "Boolean",
+                "ofType": null
+              },
+              "isDeprecated": true,
+              "deprecationReason": "Status: Experiment. Introduced in GitLab 19.5."
+            },
+            {
               "name": "duoFeaturesEnabled",
               "description": "Indicates whether GitLab Duo features are enabled for the group. Introduced in GitLab 16.10: Status: Experiment.",
               "args": [],
@@ -185574,6 +185602,18 @@
               },
               "isDeprecated": true,
               "deprecationReason": "Status: Experiment. Introduced in GitLab 19.0."
+            },
+            {
+              "name": "lockDuoAutoModeEnabled",
+              "description": "Indicates if the Duo Agent Platform auto mode setting is enforced for all subgroups. Introduced in GitLab 19.5: Status: Experiment.",
+              "args": [],
+              "type": {
+                "kind": "SCALAR",
+                "name": "Boolean",
+                "ofType": null
+              },
+              "isDeprecated": true,
+              "deprecationReason": "Status: Experiment. Introduced in GitLab 19.5."
             },
             {
               "name": "lockDuoFeaturesEnabled",
@@ -200882,6 +200922,30 @@
               "defaultValue": null,
               "isDeprecated": true,
               "deprecationReason": "Status: Experiment. Introduced in GitLab 18.11."
+            },
+            {
+              "name": "duoAutoModeEnabled",
+              "description": "Indicates whether Duo Agent Platform auto mode is enabled for the group. Introduced in GitLab 19.5: Status: Experiment.",
+              "type": {
+                "kind": "SCALAR",
+                "name": "Boolean",
+                "ofType": null
+              },
+              "defaultValue": null,
+              "isDeprecated": true,
+              "deprecationReason": "Status: Experiment. Introduced in GitLab 19.5."
+            },
+            {
+              "name": "lockDuoAutoModeEnabled",
+              "description": "Indicates if the Duo Agent Platform auto mode setting is enforced for all subgroups. Introduced in GitLab 19.5: Status: Experiment.",
+              "type": {
+                "kind": "SCALAR",
+                "name": "Boolean",
+                "ofType": null
+              },
+              "defaultValue": null,
+              "isDeprecated": true,
+              "deprecationReason": "Status: Experiment. Introduced in GitLab 19.5."
             },
             {
               "name": "builtInProjectTemplatesEnabled",
@@ -229635,7 +229699,7 @@
             },
             {
               "name": "ADMIN_SECURITY_ATTRIBUTES",
-              "description": "Manage the security categories and attributes belonging to a top-level group. Also requires the `read_security_attribute` permission.",
+              "description": "Manage the security categories and attributes. Also requires the `read_security_attribute` permission.",
               "isDeprecated": false,
               "deprecationReason": null
             },
@@ -229737,7 +229801,7 @@
             },
             {
               "name": "READ_SECURITY_ATTRIBUTE",
-              "description": "Allows read-only access to the security categories and attributes that belong to a top-level group.",
+              "description": "Allows read-only access to the security categories and attributes.",
               "isDeprecated": false,
               "deprecationReason": null
             },
@@ -229916,7 +229980,7 @@
             },
             {
               "name": "ADMIN_SECURITY_ATTRIBUTES",
-              "description": "Manage the security categories and attributes belonging to a top-level group. Also requires the `read_security_attribute` permission.",
+              "description": "Manage the security categories and attributes. Also requires the `read_security_attribute` permission.",
               "isDeprecated": false,
               "deprecationReason": null
             },
@@ -230000,7 +230064,7 @@
             },
             {
               "name": "READ_SECURITY_ATTRIBUTE",
-              "description": "Allows read-only access to the security categories and attributes that belong to a top-level group.",
+              "description": "Allows read-only access to the security categories and attributes.",
               "isDeprecated": false,
               "deprecationReason": null
             },
@@ -230481,15 +230545,15 @@
             },
             {
               "name": "memberRole",
-              "description": "Custom role associated with the access level. Introduced in GitLab 19.2: Status: Experiment.",
+              "description": "Custom role associated with the access level.",
               "args": [],
               "type": {
                 "kind": "OBJECT",
                 "name": "MemberRole",
                 "ofType": null
               },
-              "isDeprecated": true,
-              "deprecationReason": "Status: Experiment. Introduced in GitLab 19.2."
+              "isDeprecated": false,
+              "deprecationReason": null
             },
             {
               "name": "user",
@@ -230651,15 +230715,15 @@
             },
             {
               "name": "memberRoleId",
-              "description": "Custom member role associated with the access level. Introduced in GitLab 19.2: Status: Experiment.",
+              "description": "Custom member role associated with the access level.",
               "type": {
                 "kind": "SCALAR",
                 "name": "MemberRoleID",
                 "ofType": null
               },
               "defaultValue": null,
-              "isDeprecated": true,
-              "deprecationReason": "Status: Experiment. Introduced in GitLab 19.2."
+              "isDeprecated": false,
+              "deprecationReason": null
             }
           ],
           "interfaces": null,
@@ -350948,6 +351012,18 @@
               "deprecationReason": "Status: Experiment. Introduced in GitLab 19.2."
             },
             {
+              "name": "duoAutoModeEnabled",
+              "description": "Indicates whether Duo Agent Platform auto mode is enabled for the project.",
+              "args": [],
+              "type": {
+                "kind": "SCALAR",
+                "name": "Boolean",
+                "ofType": null
+              },
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
               "name": "duoContextExclusionSettings",
               "description": "Settings for excluding files from Duo context.",
               "args": [],
@@ -351066,6 +351142,18 @@
             {
               "name": "toolApprovalForSessionEnabled",
               "description": "Indicates whether tool approval for Duo Workflow sessions is enabled for the project.",
+              "type": {
+                "kind": "SCALAR",
+                "name": "Boolean",
+                "ofType": null
+              },
+              "defaultValue": null,
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "duoAutoModeEnabled",
+              "description": "Indicates whether Duo Agent Platform auto mode is enabled for the project.",
               "type": {
                 "kind": "SCALAR",
                 "name": "Boolean",
@@ -356270,15 +356358,15 @@
             },
             {
               "name": "memberRole",
-              "description": "Custom role associated with the access level. Introduced in GitLab 19.2: Status: Experiment.",
+              "description": "Custom role associated with the access level.",
               "args": [],
               "type": {
                 "kind": "OBJECT",
                 "name": "MemberRole",
                 "ofType": null
               },
-              "isDeprecated": true,
-              "deprecationReason": "Status: Experiment. Introduced in GitLab 19.2."
+              "isDeprecated": false,
+              "deprecationReason": null
             },
             {
               "name": "user",
@@ -356440,15 +356528,15 @@
             },
             {
               "name": "memberRoleId",
-              "description": "Custom member role associated with the access level. Introduced in GitLab 19.2: Status: Experiment.",
+              "description": "Custom member role associated with the access level.",
               "type": {
                 "kind": "SCALAR",
                 "name": "MemberRoleID",
                 "ofType": null
               },
               "defaultValue": null,
-              "isDeprecated": true,
-              "deprecationReason": "Status: Experiment. Introduced in GitLab 19.2."
+              "isDeprecated": false,
+              "deprecationReason": null
             },
             {
               "name": "deployKeyId",
@@ -410830,15 +410918,15 @@
             },
             {
               "name": "memberRole",
-              "description": "Custom role associated with the access level. Introduced in GitLab 19.2: Status: Experiment.",
+              "description": "Custom role associated with the access level.",
               "args": [],
               "type": {
                 "kind": "OBJECT",
                 "name": "MemberRole",
                 "ofType": null
               },
-              "isDeprecated": true,
-              "deprecationReason": "Status: Experiment. Introduced in GitLab 19.2."
+              "isDeprecated": false,
+              "deprecationReason": null
             },
             {
               "name": "user",

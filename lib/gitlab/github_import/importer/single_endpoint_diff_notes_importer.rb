@@ -1,8 +1,5 @@
 # frozen_string_literal: true
 
-# This importer is used when `github_importer_single_endpoint_notes_import`
-# feature flag is on and replaces `DiffNotesImporter`.
-#
 # It fetches 1 PR's diff notes at a time using `pull_request_comments` endpoint, which is
 # slower than `NotesImporter` but it makes sure all notes are imported,
 # as it can sometimes not be the case for `NotesImporter`, because

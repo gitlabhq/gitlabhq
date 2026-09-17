@@ -1,7 +1,6 @@
 ---
 table_name: web_hooks
 classes:
-- Ai::DuoWorkflows::FlowCallbackHook
 - GroupHook
 - ProjectHook
 - ServiceHook

@@ -15,12 +15,9 @@ module Gitlab
       # likewise overlaps the general web throttle.) The limiters are built straight
       # from the registry, so an added limiter needs no change here.
       #
-      # Every rule is always built, regardless of cohort: cohort gates enforcement
-      # (whether a matched block becomes a 429, decided in the middleware), not
-      # presence. Building only the active cohorts' rules would break the ordering -
-      # a git request would fall through to the web rule whenever the git cohort was
-      # inactive - so the full, ordered rule set is always present and classifies
-      # every request the same way at any rollout stage.
+      # The full, ordered rule set is always built: the ordering encodes the
+      # exclusions, so a partial rule set would misclassify (a git request would
+      # fall through to the web rule).
       #
       # Each throttle's rule matches the facts ClassifiedRequest exposes (the
       # registry's :match) and counts by its discriminators (the :characteristics).

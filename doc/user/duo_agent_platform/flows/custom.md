@@ -303,6 +303,48 @@ The flow appears in the project's **AI** > **Flows** list.
 The top-level group's service account is added to the project.
 This account is assigned the Developer role.
 
+## Manage trigger conditions
+
+{{< history >}}
+
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/255119) in GitLab 19.5.
+
+{{< /history >}}
+
+You can manage a flow's triggers from its configuration page.
+
+For more information about triggers, including how to create one, see [triggers](../triggers/_index.md).
+
+Prerequisites:
+
+- The Maintainer or Owner role for the project.
+
+### Turn a trigger on or off
+
+1. In the top bar, select **Search or go to** and find your project.
+1. In the left sidebar, select **AI** > **Flows**.
+1. Select the flow you want to manage.
+1. In the **Trigger conditions** section, for the trigger you want to turn on or off,
+   select the toggle.
+
+### Edit a trigger
+
+1. In the top bar, select **Search or go to** and find your project.
+1. In the left sidebar, select **AI** > **Flows**.
+1. Select the flow you want to manage.
+1. In the **Trigger conditions** section, for the trigger you want to change,
+   select **Trigger actions** ({{< icon name="ellipsis_v" >}}) > **Edit**.
+1. Make the changes and select **Save changes**.
+
+### Delete a trigger
+
+1. In the top bar, select **Search or go to** and find your project.
+1. In the left sidebar, select **AI** > **Flows**.
+1. Select the flow you want to manage.
+1. In the **Trigger conditions** section, for the trigger you want to delete,
+   select **Trigger actions** ({{< icon name="ellipsis_v" >}}) > **Delete**.
+1. On the confirmation dialog, select **Delete**.
+
 ## Disable a flow
 
 Prerequisites:

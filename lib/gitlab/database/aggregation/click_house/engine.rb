@@ -43,6 +43,7 @@ module Gitlab
               {
                 exact_match: ExactMatchFilter,
                 range: RangeFilter,
+                descendants: DescendantsFilter,
                 metric_exact_match: MetricExactMatchFilter,
                 metric_range: MetricRangeFilter
               }

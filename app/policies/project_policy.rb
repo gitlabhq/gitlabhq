@@ -905,6 +905,7 @@ class ProjectPolicy < BasePolicy
     prevent :read_security_resource
     prevent :read_security_inventory
     prevent :admin_security_attributes
+    prevent :read_security_attribute
     prevent :read_security_orchestration_policies
     prevent :modify_security_policy
     prevent :read_compliance_dashboard

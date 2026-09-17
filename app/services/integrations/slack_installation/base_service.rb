@@ -67,6 +67,14 @@ module Integrations
       attr_reader :current_user, :params
 
       def update_installation!(integration, installation, slack_data)
+        # `authorized_scope_names=` resolves API scopes against the installation's own
+        # organization, so the sharding key has to be set before it is assigned.
+        installation.assign_attributes(
+          organization_id: integration.organization_id,
+          group_id: integration.group_id,
+          project_id: integration.project_id
+        )
+
         attributes = {
           bot_user_id: slack_data['bot_user_id'],
           bot_access_token: slack_data['access_token'],
@@ -74,10 +82,7 @@ module Integrations
           team_name: slack_data.dig('team', 'name'),
           alias: installation_alias,
           user_id: slack_data.dig('authed_user', 'id'),
-          authorized_scope_names: slack_data['scope'],
-          organization_id: integration.organization_id,
-          group_id: integration.group_id,
-          project_id: integration.project_id
+          authorized_scope_names: slack_data['scope']
         }
 
         installation.update!(attributes)

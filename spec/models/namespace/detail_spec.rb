@@ -125,6 +125,24 @@ RSpec.describe Namespace::Detail, type: :model, feature_category: :groups_and_pr
     end
   end
 
+  describe '.oldest_deletion_scheduled_at', :freeze_time do
+    subject { described_class.oldest_deletion_scheduled_at }
+
+    it 'returns the oldest deletion_scheduled_at among scheduled namespaces' do
+      create(:namespace, deletion_scheduled_at: 1.day.ago)
+      create(:namespace, deletion_scheduled_at: 5.days.ago)
+      create(:namespace, deletion_scheduled_at: nil)
+
+      is_expected.to eq(5.days.ago)
+    end
+
+    it 'returns nil when no namespace is scheduled for deletion' do
+      create(:namespace, deletion_scheduled_at: nil)
+
+      is_expected.to be_nil
+    end
+  end
+
   context 'with loose foreign key on namespace_details.creator_id' do
     it_behaves_like 'cleanup by a loose foreign key' do
       let_it_be(:parent) { create(:user) }

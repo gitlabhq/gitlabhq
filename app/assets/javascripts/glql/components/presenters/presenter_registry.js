@@ -16,7 +16,6 @@ import CiStatusPresenter from './ci_status.vue';
 import CodePresenter from './code.vue';
 import DateBucketPresenter from './date_bucket.vue';
 import DurationPresenter from './duration.vue';
-import DurationMsPresenter from './duration_ms.vue';
 import NamedTextPresenter from './named_text.vue';
 import NullPresenter from './null.vue';
 import BoolPresenter from './bool.vue';
@@ -135,8 +134,11 @@ export const presentersByFieldKey = {
   durationMin: DurationPresenter,
   durationMax: DurationPresenter,
   durationSum: DurationPresenter,
-  // timeToMergeQuantile arrives in milliseconds, unlike durationQuantile (seconds)
-  timeToMergeQuantile: DurationMsPresenter,
+  timeToMergeQuantile: DurationPresenter,
+  timeToMergeMean: DurationPresenter,
+  timeToMergeMin: DurationPresenter,
+  timeToMergeMax: DurationPresenter,
+  timeToMergeSum: DurationPresenter,
 };
 
 // Returns the field key that holds the title for the given __typename,

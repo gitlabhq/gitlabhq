@@ -131,6 +131,7 @@ Gitlab::Cluster::LifecycleEvents.on_worker_start do
         Gitlab::Metrics::Samplers::ConcurrencyLimitSampler.instance(logger: logger).start
         Gitlab::Metrics::Samplers::StatActivitySampler.instance(logger: logger).start
         Gitlab::Metrics::Samplers::PgAshSampler.instance(logger: logger).start
+        Gitlab::Metrics::Samplers::DeletionScheduledBacklogSampler.instance(logger: logger).start
         Gitlab::Metrics::Samplers::GlobalSearchSampler.instance(logger: logger).start if Gitlab.ee?
         @samplers_started = true
       end

@@ -37,83 +37,26 @@ RSpec.describe Gitlab::GithubImport::IssuableFinder, :clean_gitlab_redis_shared_
       expect { finder.database_id }.to raise_error(TypeError)
     end
 
-    context 'when group is present' do
-      # single_endpoint_notes_import is hardcoded to enabled in Settings#write for new imports,
-      # so these contexts stub Settings#enabled? directly to keep the disabled branch (kept as a
-      # rollback safety net) covered even though it's currently unreachable in production.
-      context 'when settings single_endpoint_notes_import is enabled' do
-        before do
-          allow_next_instance_of(Gitlab::GithubImport::Settings) do |settings|
-            allow(settings).to receive(:enabled?).with(:single_endpoint_notes_import).and_return(true)
-          end
-        end
+    it 'reads cache value with longer timeout' do
+      expect(Gitlab::Cache::Import::Caching)
+        .to receive(:read)
+        .with(anything, timeout: Gitlab::Cache::Import::Caching::LONGER_TIMEOUT, refresh: true)
 
-        it 'reads cache value with longer timeout' do
-          expect(Gitlab::Cache::Import::Caching)
-            .to receive(:read)
-            .with(anything, timeout: Gitlab::Cache::Import::Caching::LONGER_TIMEOUT, refresh: true)
-
-          described_class.new(project, issue).database_id
-        end
-      end
-
-      context 'when settings single_endpoint_notes_import is disabled' do
-        before do
-          allow_next_instance_of(Gitlab::GithubImport::Settings) do |settings|
-            allow(settings).to receive(:enabled?).with(:single_endpoint_notes_import).and_return(false)
-          end
-        end
-
-        it 'reads cache value with default timeout' do
-          expect(Gitlab::Cache::Import::Caching)
-            .to receive(:read)
-            .with(anything, timeout: Gitlab::Cache::Import::Caching::TIMEOUT, refresh: true)
-
-          described_class.new(project, issue).database_id
-        end
-      end
+      finder.database_id
     end
   end
 
   describe '#cache_database_id' do
-    before do
-      allow_next_instance_of(Gitlab::GithubImport::Settings) do |settings|
-        allow(settings).to receive(:enabled?).with(:single_endpoint_notes_import).and_return(false)
-      end
-    end
-
-    it 'caches the ID of a database row' do
+    it 'caches the ID of a database row with longer timeout' do
       expect(Gitlab::Cache::Import::Caching)
         .to receive(:write)
-        .with("github-import/issuable-finder/20/MergeRequest/#{merge_request.iid}", 10, timeout: 86400)
+        .with(
+          "github-import/issuable-finder/20/MergeRequest/#{merge_request.iid}",
+          10,
+          timeout: Gitlab::Cache::Import::Caching::LONGER_TIMEOUT
+        )
 
       finder.cache_database_id(10)
-    end
-
-    context 'when settings single_endpoint_notes_import is enabled' do
-      before do
-        allow_next_instance_of(Gitlab::GithubImport::Settings) do |settings|
-          allow(settings).to receive(:enabled?).with(:single_endpoint_notes_import).and_return(true)
-        end
-      end
-
-      it 'caches value with longer timeout' do
-        expect(Gitlab::Cache::Import::Caching)
-          .to receive(:write)
-          .with(anything, anything, timeout: Gitlab::Cache::Import::Caching::LONGER_TIMEOUT)
-
-        described_class.new(project, issue).cache_database_id(10)
-      end
-    end
-
-    context 'when settings single_endpoint_notes_import is disabled' do
-      it 'caches value with default timeout' do
-        expect(Gitlab::Cache::Import::Caching)
-          .to receive(:write)
-          .with(anything, anything, timeout: Gitlab::Cache::Import::Caching::TIMEOUT)
-
-        described_class.new(project, issue).cache_database_id(10)
-      end
     end
   end
 end

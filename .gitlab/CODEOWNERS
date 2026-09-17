@@ -111,7 +111,6 @@ yarn.lock @gitlab-org/maintainers/frontend
 /ee/frontend_islands/ @gitlab-org/maintainers/frontend
 /spec/frontend/ @gitlab-org/maintainers/frontend
 /ee/spec/frontend/ @gitlab-org/maintainers/frontend
-/spec/frontend_integration/ @gitlab-org/maintainers/frontend
 /lib/gitlab/js_routes.rb @gitlab-org/maintainers/frontend
 
 # Events / Analytics / Feature flags
@@ -240,6 +239,7 @@ yarn.lock @gitlab-org/maintainers/frontend
 /.ai/principles/distilled/analytics.md @gitlab-org/analytics-section/analytics-instrumentation/engineers @gitlab-org/analytics-section/product-analytics/engineers/frontend
 /.ai/principles/distilled/import-fundamentals.md @gitlab-com/create-team/import
 /.ai/principles/distilled/import-direct-and-offline.md @gitlab-com/create-team/import
+/.ai/principles/distilled/mcp-server.md @gitlab-org/ai-powered/mcp-tool-review-board
 # END GENERATED: gitlab-ai-principles-distiller
 /.claude/ @gitlab-org/maintainers/ai-harness
 /.claude/skills/gitlab-mcp-tool-builder/ @gitlab-org/maintainers/ai-harness @gitlab-org/ai-powered/mcp-tool-review-board
@@ -2001,6 +2001,7 @@ lib/api/mcp/
 ee/lib/ee/api/mcp/
 app/services/mcp/tools/
 ee/app/services/ee/mcp/tools/
+doc/development/duo_agent_platform/mcp/
 
 [Category:Code Suggestions] @gitlab-org/code-creation/engineers
 ee/lib/api/code_suggestions.rb

@@ -94,8 +94,13 @@ RSpec.describe Oauth::UserinfoController, feature_category: :system_access do
           expect(response).to have_gitlab_http_status(:unauthorized)
         end
 
-        it 'runs IAM JWT validation only once' do
-          expect(Authn::Tokens::IamOauthToken).to receive(:from_jwt).once.and_call_original
+        # Four: the rate limiter resolves identity for each of [:api, :rss, :ics],
+        # and a failed resolution raises, so strong_memoize never caches it and
+        # every format re-runs validation. The fourth is this controller's own.
+        # Restore to once when gitlab-com/gl-infra/production-engineering#29728
+        # collapses the duplicate resolution and this starts failing.
+        it 'runs IAM JWT validation once per resolution pass' do
+          expect(Authn::Tokens::IamOauthToken).to receive(:from_jwt).exactly(4).times.and_call_original
 
           get_userinfo(iam_jwt)
         end

@@ -91,6 +91,9 @@ ALWAYS load Database principles regardless of which files you are editing.
 - **Import/Export framework internals and general importer-design points that are NOT specific to particular import source**: Read .ai/principles/distilled/import-fundamentals.md *(load for any import work)*
 - **Bulk Import/Offline Transfer specific import/export documentation**: Read .ai/principles/distilled/import-direct-and-offline.md *(also load: .ai/principles/distilled/import-fundamentals.md)*
 
+**MCP Server:**
+- **MCP server tool development (naming, architecture, GraphQL integration, versioning, governance)**: Read .ai/principles/distilled/mcp-server.md
+
 - **Git, commits, or branches**: Read .ai/git.md
 - **CI/CD pipelines or `.gitlab-ci.yml`**: Read .ai/ci-cd.md
 - **Confidential issue with `~security` label and without `~security-fix-in-public` label**: Read .ai/security-fixes.md

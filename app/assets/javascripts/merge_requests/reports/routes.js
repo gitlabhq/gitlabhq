@@ -5,6 +5,7 @@ import {
   CODE_QUALITY_ROUTE,
   BROWSER_PERFORMANCE_ROUTE,
   LOAD_PERFORMANCE_ROUTE,
+  ACCESSIBILITY_ROUTE,
   ROOT_ROUTE,
   METRICS_ROUTE,
 } from './constants';
@@ -49,6 +50,11 @@ export default [
     path: `/${LOAD_PERFORMANCE_ROUTE}`,
     component: () =>
       import('ee_component/merge_requests/reports/load_performance/load_performance_page.vue'),
+  },
+  {
+    name: ACCESSIBILITY_ROUTE,
+    path: `/${ACCESSIBILITY_ROUTE}`,
+    component: () => import('~/merge_requests/reports/accessibility/accessibility_page.vue'),
   },
   {
     name: METRICS_ROUTE,

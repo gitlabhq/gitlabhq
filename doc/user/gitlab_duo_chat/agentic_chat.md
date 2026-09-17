@@ -85,8 +85,13 @@ in your terminal.
 - New navigation and GitLab Duo sidebar introduced on GitLab.com in GitLab 18.6 with a [flag](../../administration/feature_flags/_index.md) named `paneled_view`. Enabled by default.
 - Previous navigation instructions removed in GitLab 18.7.
 - New navigation and GitLab Duo sidebar [generally available](https://gitlab.com/gitlab-org/gitlab/-/work_items/574049) in GitLab 18.8. Feature flag `paneled_view` removed.
+- Ability to retry the previous question [introduced](https://gitlab.com/groups/gitlab-org/-/work_items/21289) in GitLab 19.5 with a [flag](../../administration/feature_flags/_index.md) named `agentic_manual_retry_for_duo_chat_responses`. Disabled by default.
 
 {{< /history >}}
+
+> [!flag]
+> The availability of this feature is controlled by a feature flag.
+> For more information, see the history.
 
 Prerequisites:
 
@@ -107,6 +112,8 @@ To use Chat in the GitLab UI:
    - You can provide additional [context](../duo_agent_platform/context.md#gitlab-duo-agentic-chat) for your chat.
    - It might take a few seconds for the interactive AI chat to produce an answer.
 1. Optional. You can:
+   - Select **Retry** ({{< icon name="retry" >}}) to try to get a different answer
+     to your question. Use the arrows to select from the original or retry answers to continue the conversation.
    - Ask a follow-up question.
    - Start [another conversation](#have-multiple-conversations).
 

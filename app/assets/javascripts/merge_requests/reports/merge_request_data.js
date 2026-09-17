@@ -4,6 +4,7 @@ import SmartInterval from '~/smart_interval';
 import { secondsToMilliseconds } from '~/lib/utils/datetime_utility';
 import { observable } from '~/lib/utils/observable';
 import {
+  hasAccessibilityReport,
   hasBrowserPerformanceReport,
   hasCodeQualityReport,
   hasLicenseComplianceReport,
@@ -102,6 +103,9 @@ export default {
     },
     hasLoadPerformanceReports() {
       return hasLoadPerformanceReport(state.mr);
+    },
+    hasAccessibilityReports() {
+      return hasAccessibilityReport(state.mr);
     },
     hasMetricsReports() {
       return hasMetricsReport(state.mr);

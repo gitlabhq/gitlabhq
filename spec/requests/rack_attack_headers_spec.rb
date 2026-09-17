@@ -198,28 +198,10 @@ RSpec.describe 'Rack Attack Headers', :use_clean_rails_memory_store_caching, :fr
     end
   end
 
-  # The suite-wide default (spec/support/rate_limiter_labkit_rack_shadow.rb) forces
-  # every labkit cohort flag off, so Rack::Attack evaluates the throttles and
-  # RackAttackHeaders builds the headers from its env annotation.
-  context 'when Rack::Attack is the enforcer' do
-    it_behaves_like 'proactive rate limit headers'
-  end
-
-  # Once every cohort both shadows and enforces, Rack::Attack is safelisted and
-  # LabkitRackRateLimit adds the headers itself. The same examples must pass
-  # unchanged; see gitlab-com/gl-infra/production-engineering#29539.
-  context 'when labkit fully enforces', :clean_gitlab_redis_rate_limiting do
-    before do
-      labkit_flags = Gitlab::RackAttack::LabkitRateLimit::ThrottleRegistry.cohorts.flat_map do |cohort|
-        [
-          :"rate_limiter_use_labkit_rack_cohort_#{cohort}",
-          :"rate_limiter_use_labkit_rack_cohort_#{cohort}_enforce"
-        ]
-      end
-
-      stub_feature_flags(labkit_flags.index_with(true))
-    end
-
+  # Rack::Attack is safelisted (every cohort unconditionally enforces) and
+  # LabkitRackRateLimit adds these headers itself; see
+  # gitlab-com/gl-infra/production-engineering#29539.
+  describe 'proactive rate limit headers', :clean_gitlab_redis_rate_limiting do
     it_behaves_like 'proactive rate limit headers'
   end
 end

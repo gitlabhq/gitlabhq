@@ -635,6 +635,55 @@ Filters rows by value range using `BETWEEN`. Supports filtering on regular colum
 | `merge_column` | Boolean | No | If `true`, applies filter using `HAVING` instead of `WHERE` |
 | `description` | String | No | Human-readable description |
 
+#### `descendants` filter
+
+Filters rows whose traversal path column starts with any of the given paths, so a namespace
+matches together with all of its descendants. Values are Group Global IDs. Request validation
+resolves the Global IDs to traversal paths before the filter runs.
+
+| Option | Type | Required | Description |
+|--------|------|----------|-------------|
+| `name` | Symbol | Yes | Filter identifier, for example `:group_id` |
+| `type` | Symbol | Yes | Data type of filter values (`:string` for Global IDs) |
+| `expression` | Proc | No | Expression returning the traversal path column. Defaults to the column named `name`. |
+| `merge_column` | Boolean | No | If `true`, applies filter using `HAVING` instead of `WHERE` |
+| `max_size` | Integer | No | Maximum number of values allowed in filter |
+| `with_organization` | Boolean | No | If `false`, resolves Global IDs to traversal paths without the organization prefix. Defaults to `true`. |
+| `description` | String | No | Human-readable description |
+
+```ruby
+filters do
+  descendants :group_id, :string, -> { sql('traversal_path') }, max_size: 100
+end
+```
+
+One PostgreSQL primary key lookup, `Group.id_in`, finds the groups, and
+`traversal_path(with_organization:)` builds each path.
+
+Validation rejects the whole request with the error "Values must be Global IDs of existing groups
+for filter `<key>`" when the value list is empty, a value is blank, a value is not a Global ID,
+the Global ID belongs to another model such as a Project, or the group does not exist. This check
+applies even when a Project's numeric ID collides with a group ID. No value is dropped silently.
+
+`max_size` is validated first. An oversized request is rejected before the PostgreSQL lookup runs,
+so set `max_size` to bound the lookup.
+
+Every resolved path must end with `/`, or the request is rejected with the error "Values must be
+traversal paths ending with `/` for filter `<key>`". A path `1/2` would also match `1/20/`,
+exposing rows of an unrelated group. This check guards against a broken ID-to-path transformation.
+
+Once validation passes, the filter renders one `startsWith(<path column>, '<traversal path>')`
+condition per resolved path, joined with `OR`, as a `WHERE` clause, or as a `HAVING` clause when
+`merge_column` is `true`.
+
+Tables whose path column has no organization prefix, `namespace_path` for example, pass
+`with_organization: false`, until
+[every traversal path carries the organization prefix](https://gitlab.com/gitlab-org/gitlab/-/work_items/603734):
+
+```ruby
+descendants :group_id, :string, -> { sql('namespace_path') }, max_size: 100, with_organization: false
+```
+
 #### `metric_exact_match` filter
 
 Filters groups by exact match on an aggregated metric value. Applied as a `HAVING` clause in post-aggregation.
@@ -1047,7 +1096,7 @@ query IssueAnalytics($projectId: ID!) {
 
 Filter arguments are split across the two levels based on when the filter is applied:
 
-- **Non-metric filters** (those defined with `exact_match` or `range`) appear on the outer field (e.g. `issueAnalytics`).
+- **Non-metric filters** (those defined with `exact_match`, `range`, or `descendants`) appear on the outer field (e.g. `issueAnalytics`).
 - **Metric filters** (those defined with `metric_exact_match` or `metric_range`) appear on the
   inner `aggregated` field.
 

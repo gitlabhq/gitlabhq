@@ -4,6 +4,7 @@ export const SECURITY_SCAN_ROUTE = 'security-scan';
 export const LICENSE_COMPLIANCE_ROUTE = 'license-compliance';
 export const BROWSER_PERFORMANCE_ROUTE = 'browser-performance';
 export const LOAD_PERFORMANCE_ROUTE = 'load-performance';
+export const ACCESSIBILITY_ROUTE = 'accessibility';
 export const ROOT_ROUTE = 'reports-root';
 export const METRICS_ROUTE = 'metrics';
 
@@ -23,4 +24,5 @@ export const TRACKING_LABEL_BY_ROUTE = {
   [CODE_QUALITY_ROUTE]: 'code_quality',
   [BROWSER_PERFORMANCE_ROUTE]: 'browser_performance',
   [LOAD_PERFORMANCE_ROUTE]: 'load_performance',
+  [ACCESSIBILITY_ROUTE]: 'accessibility',
 };

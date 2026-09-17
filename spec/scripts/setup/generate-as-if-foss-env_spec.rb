@@ -45,7 +45,6 @@ RSpec.describe GenerateAsIfFossEnv, feature_category: :tooling do # rubocop:disa
         'generate-apollo-graphql-schema',
         'graphql-schema-dump',
         'jest 1/5',
-        'jest-integration',
         'jest-msw-integration',
         'jest predictive 1/5',
         'rubocop',
@@ -113,7 +112,6 @@ RSpec.describe GenerateAsIfFossEnv, feature_category: :tooling do # rubocop:disa
         ENABLE_GENERATE_APOLLO_GRAPHQL_SCHEMA: 'true',
         ENABLE_GRAPHQL_SCHEMA_DUMP: 'true',
         ENABLE_JEST: 'true',
-        ENABLE_JEST_INTEGRATION: 'true',
         ENABLE_JEST_MSW_INTEGRATION: 'true',
         ENABLE_JEST_PREDICTIVE: 'true',
         ENABLE_RUBOCOP: 'true',
@@ -131,7 +129,6 @@ RSpec.describe GenerateAsIfFossEnv, feature_category: :tooling do # rubocop:disa
     context 'when there are only predictive frontend jobs' do
       let(:jobs) do
         [
-          'jest-integration',
           'jest predictive 1/5',
           'jest-with-fixtures predictive 1/2'
         ]
@@ -146,7 +143,6 @@ RSpec.describe GenerateAsIfFossEnv, feature_category: :tooling do # rubocop:disa
           FIND_CHANGES_MERGE_REQUEST_PROJECT_PATH: ENV['CI_MERGE_REQUEST_PROJECT_PATH'],
           FIND_CHANGES_MERGE_REQUEST_IID: ENV['CI_MERGE_REQUEST_IID'],
           GLCI_USE_TEST_BALANCING: ENV['GLCI_USE_TEST_BALANCING'],
-          ENABLE_JEST_INTEGRATION: 'true',
           ENABLE_JEST_PREDICTIVE: 'true'
         })
       end
@@ -231,7 +227,6 @@ RSpec.describe GenerateAsIfFossEnv, feature_category: :tooling do # rubocop:disa
         ENABLE_GENERATE_APOLLO_GRAPHQL_SCHEMA=true
         ENABLE_GRAPHQL_SCHEMA_DUMP=true
         ENABLE_JEST=true
-        ENABLE_JEST_INTEGRATION=true
         ENABLE_JEST_MSW_INTEGRATION=true
         ENABLE_JEST_PREDICTIVE=true
         ENABLE_RUBOCOP=true

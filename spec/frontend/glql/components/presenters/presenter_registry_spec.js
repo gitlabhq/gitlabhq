@@ -8,7 +8,6 @@ import CodePresenter from '~/glql/components/presenters/code.vue';
 import CollectionPresenter from '~/glql/components/presenters/collection.vue';
 import DateBucketPresenter from '~/glql/components/presenters/date_bucket.vue';
 import DurationPresenter from '~/glql/components/presenters/duration.vue';
-import DurationMsPresenter from '~/glql/components/presenters/duration_ms.vue';
 import HtmlPresenter from '~/glql/components/presenters/html.vue';
 import IssuablePresenter from '~/glql/components/presenters/issuable.vue';
 import LabelPresenter from '~/glql/components/presenters/label.vue';
@@ -126,7 +125,11 @@ describe('presenter_registry', () => {
         ${'returningUsersCount'}      | ${12}            | ${NumberPresenter}
         ${'previousPeriodUsersCount'} | ${8}             | ${NumberPresenter}
         ${'durationQuantile'}         | ${3661}          | ${DurationPresenter}
-        ${'timeToMergeQuantile'}      | ${250000}        | ${DurationMsPresenter}
+        ${'timeToMergeQuantile'}      | ${250}           | ${DurationPresenter}
+        ${'timeToMergeMean'}          | ${90}            | ${DurationPresenter}
+        ${'timeToMergeMin'}           | ${30}            | ${DurationPresenter}
+        ${'timeToMergeMax'}           | ${3600}          | ${DurationPresenter}
+        ${'timeToMergeSum'}           | ${3661}          | ${DurationPresenter}
         ${'queuedDuration'}           | ${90}            | ${DurationPresenter}
         ${'completionRate'}           | ${0.6}           | ${PercentagePresenter}
         ${'finishedCount'}            | ${789}           | ${NumberPresenter}

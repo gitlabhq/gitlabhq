@@ -8,6 +8,7 @@ import {
   CODE_QUALITY_ROUTE,
   BROWSER_PERFORMANCE_ROUTE,
   LOAD_PERFORMANCE_ROUTE,
+  ACCESSIBILITY_ROUTE,
   METRICS_ROUTE,
   ROOT_ROUTE,
   EMPTY_STATE_NO_PIPELINE,
@@ -22,6 +23,7 @@ const REPORT_ROUTES = [
   CODE_QUALITY_ROUTE,
   BROWSER_PERFORMANCE_ROUTE,
   LOAD_PERFORMANCE_ROUTE,
+  ACCESSIBILITY_ROUTE,
   METRICS_ROUTE,
 ];
 const OWNED_ROUTES = [ROOT_ROUTE, ...REPORT_ROUTES];
@@ -68,6 +70,12 @@ export default {
       () =>
         import('ee_component/merge_requests/reports/load_performance/load_performance_nav_item.vue'),
     ),
+    AccessibilityProvider: defineAsyncComponent(
+      () => import('~/merge_requests/reports/accessibility/accessibility_provider.vue'),
+    ),
+    AccessibilityNavItem: defineAsyncComponent(
+      () => import('~/merge_requests/reports/accessibility/accessibility_nav_item.vue'),
+    ),
     MetricsProvider: defineAsyncComponent(
       () => import('ee_component/merge_requests/reports/metrics/metrics_provider.vue'),
     ),
@@ -92,6 +100,7 @@ export default {
         [CODE_QUALITY_ROUTE]: this.hasCodeQualityReports,
         [BROWSER_PERFORMANCE_ROUTE]: this.hasBrowserPerformanceReports,
         [LOAD_PERFORMANCE_ROUTE]: this.hasLoadPerformanceReports,
+        [ACCESSIBILITY_ROUTE]: this.hasAccessibilityReports,
         [METRICS_ROUTE]: this.hasMetricsReports,
       };
 
@@ -180,6 +189,9 @@ export default {
           <load-performance-provider v-if="hasLoadPerformanceReports" :mr="mr">
             <load-performance-nav-item />
           </load-performance-provider>
+          <accessibility-provider v-if="hasAccessibilityReports" :mr="mr">
+            <accessibility-nav-item />
+          </accessibility-provider>
           <metrics-provider v-if="hasMetricsReports" :mr="mr">
             <metrics-nav-item />
           </metrics-provider>

@@ -23,4 +23,13 @@ RSpec.describe Oauth::ApplicationsController, feature_category: :system_access d
 
     include_examples 'applications controller - scopes include mcp'
   end
+
+  describe 'organization maintenance mode enforcement' do
+    let_it_be_with_reload(:organization) { create(:organization) }
+    let_it_be(:user) { create(:user, organization: organization) }
+
+    subject(:request) { get oauth_applications_path }
+
+    it_behaves_like 'a controller request enforcing organization maintenance mode'
+  end
 end

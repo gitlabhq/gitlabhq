@@ -36268,6 +36268,22 @@
           "description": "A security policy scoped to a compliance framework",
           "fields": [
             {
+              "name": "hasActiveProjects",
+              "description": "Whether the policy has at least one non-archived assigned project.",
+              "args": [],
+              "type": {
+                "kind": "NON_NULL",
+                "name": null,
+                "ofType": {
+                  "kind": "SCALAR",
+                  "name": "Boolean",
+                  "ofType": null
+                }
+              },
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
               "name": "name",
               "description": "Name of the security policy.",
               "args": [],
@@ -106820,7 +106836,7 @@
             },
             {
               "name": "ADMIN_SECURITY_ATTRIBUTES",
-              "description": "Manage the security categories and attributes belonging to a top-level group. Also requires the `read_security_attribute` permission.",
+              "description": "Manage the security categories and attributes. Also requires the `read_security_attribute` permission.",
               "isDeprecated": false,
               "deprecationReason": null
             },
@@ -106922,7 +106938,7 @@
             },
             {
               "name": "READ_SECURITY_ATTRIBUTE",
-              "description": "Allows read-only access to the security categories and attributes that belong to a top-level group.",
+              "description": "Allows read-only access to the security categories and attributes.",
               "isDeprecated": false,
               "deprecationReason": null
             },
@@ -107188,6 +107204,18 @@
               "type": {
                 "kind": "OBJECT",
                 "name": "AccessLevelGroup",
+                "ofType": null
+              },
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "memberRole",
+              "description": "Custom role associated with the access level.",
+              "args": [],
+              "type": {
+                "kind": "OBJECT",
+                "name": "MemberRole",
                 "ofType": null
               },
               "isDeprecated": false,
@@ -178750,6 +178778,18 @@
               "deprecationReason": null
             },
             {
+              "name": "memberRole",
+              "description": "Custom role associated with the access level.",
+              "args": [],
+              "type": {
+                "kind": "OBJECT",
+                "name": "MemberRole",
+                "ofType": null
+              },
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
               "name": "user",
               "description": "User associated with the access level.",
               "args": [],
@@ -210826,6 +210866,18 @@
               "type": {
                 "kind": "OBJECT",
                 "name": "AccessLevelGroup",
+                "ofType": null
+              },
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "memberRole",
+              "description": "Custom role associated with the access level.",
+              "args": [],
+              "type": {
+                "kind": "OBJECT",
+                "name": "MemberRole",
                 "ofType": null
               },
               "isDeprecated": false,

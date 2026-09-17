@@ -3,7 +3,7 @@
 require 'spec_helper'
 
 RSpec.describe SlackIntegration, feature_category: :integrations do
-  let_it_be(:integration) { create(:slack_integration) }
+  let_it_be_with_reload(:integration) { create(:slack_integration) }
 
   describe "Associations" do
     it { is_expected.to belong_to(:integration) }
@@ -85,6 +85,40 @@ RSpec.describe SlackIntegration, feature_category: :integrations do
       slack_integration.update!(authorized_scope_names: 'foo , bar,baz')
 
       expect(slack_integration.authorized_scope_names).to contain_exactly('foo', 'bar', 'baz')
+    end
+
+    it 'creates the api scopes in the organization the record is sharded to' do
+      slack_integration.update!(authorized_scope_names: 'foo')
+
+      expect(slack_integration.slack_api_scopes).to contain_exactly(
+        have_attributes(name: 'foo', organization_id: slack_integration.organization_id_from_parent)
+      )
+    end
+  end
+
+  describe '#organization_id_from_parent' do
+    context 'when sharded to an organization' do
+      let_it_be(:slack_integration) { create(:slack_integration, :instance) }
+
+      it 'returns its own organization_id' do
+        expect(slack_integration.organization_id_from_parent).to eq(slack_integration.organization_id)
+      end
+    end
+
+    context 'when sharded to a group' do
+      let_it_be(:slack_integration) { create(:slack_integration, :group) }
+
+      it "returns the group's organization_id" do
+        expect(slack_integration.organization_id_from_parent).to eq(slack_integration.group.organization_id)
+      end
+    end
+
+    context 'when sharded to a project' do
+      let_it_be(:slack_integration) { create(:slack_integration, :project) }
+
+      it "returns the project's organization_id" do
+        expect(slack_integration.organization_id_from_parent).to eq(slack_integration.project.organization_id)
+      end
     end
   end
 

@@ -133,6 +133,7 @@ $dark-il: #de935f;
   --code-border-lightness-adjust: 0.1;
   --diff-expansion-background-color: #{$gl-color-neutral-600};
 
+  --code-text-color: #{$dark-line-color};
   --code-empty-background: #{$gl-color-neutral-900};
   --code-border-color: #{$gl-color-neutral-700};
   --code-changed-border-color: #{rgba(255,255,255,0.15)};

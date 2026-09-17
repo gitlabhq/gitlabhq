@@ -35,29 +35,42 @@ RSpec.describe Gitlab::PolicyStore::RegoPackage do
     end
   end
 
-  describe ".strip_declaration" do
+  describe ".split_header" do
     it "removes a bare declaration line, leaving the rest untouched" do
       source = "package governance\n\nallow := true\n"
 
-      expect(described_class.strip_declaration(source)).to eq("\nallow := true\n")
+      expect(described_class.split_header(source)).to eq(["\nallow := true\n", []])
     end
 
     it "removes only the declaration line, keeping a leading comment" do
       source = "# authored by hand\npackage governance\n\nallow := true\n"
 
-      expect(described_class.strip_declaration(source)).to eq("# authored by hand\n\nallow := true\n")
+      expect(described_class.split_header(source)).to eq(["# authored by hand\n\nallow := true\n", []])
     end
 
     it "removes a declaration carrying a trailing comment" do
       source = "package governance # deployment freeze\n\nallow := true\n"
 
-      expect(described_class.strip_declaration(source)).to eq("\nallow := true\n")
+      expect(described_class.split_header(source)).to eq(["\nallow := true\n", []])
+    end
+
+    it "lifts the imports between the declaration and the first rule, without their comments" do
+      source = "package governance\n\nimport rego.v1\nimport data.approvals as a # runbook\n\nallow if true\n"
+
+      expect(described_class.split_header(source))
+        .to eq(["\n\nallow if true\n", ["import rego.v1", "import data.approvals as a"]])
+    end
+
+    it "stops at the first rule, leaving a later import in the body" do
+      source = "package governance\n\nallow := true\n\nimport rego.v1\n"
+
+      expect(described_class.split_header(source)).to eq(["\nallow := true\n\nimport rego.v1\n", []])
     end
 
     it "returns the source unchanged when it declares no package" do
       source = "allow := true\n"
 
-      expect(described_class.strip_declaration(source)).to eq(source)
+      expect(described_class.split_header(source)).to eq([source, []])
     end
 
     it "does not strip a later line that merely reads like a declaration, agreeing with .declared_in",
@@ -65,7 +78,25 @@ RSpec.describe Gitlab::PolicyStore::RegoPackage do
       source = "allow := true\n# a note that happens to read like\npackage decoy\n\nmore := 1\n"
 
       expect(described_class.declared_in(source)).to be_nil
-      expect(described_class.strip_declaration(source)).to eq(source)
+      expect(described_class.split_header(source)).to eq([source, []])
+    end
+  end
+
+  describe ".header" do
+    it "renders only the package line when there are no imports" do
+      expect(described_class.header([])).to eq("package governance\n")
+    end
+
+    it "renders the imports under the package line, separated from it by a blank line" do
+      expect(described_class.header(["import rego.v1", "import data.approvals as a"]))
+        .to eq("package governance\n\nimport rego.v1\nimport data.approvals as a\n")
+    end
+
+    it "keeps one copy of an import several rules share" do
+      imports = ["import rego.v1", "import data.approvals as a", "import rego.v1"]
+
+      expect(described_class.header(imports))
+        .to eq("package governance\n\nimport rego.v1\nimport data.approvals as a\n")
     end
   end
 end

@@ -11,7 +11,6 @@
  * 3. Backend changes (`js_matching_files.txt`)
  *  3a. Fixtures
  *  3b. Views
- * 4. Jest integration tests (uses --config `jest.config.integration.js`)
  *
  * CI rule match these file patterns
  * .frontend-predictive-patterns:
@@ -113,10 +112,7 @@ function collectTests(changedFiles) {
   }
   console.log(`Analyzing ${changedFiles.length} changed files...`);
 
-  const configs = [
-    { name: 'unit', configPath: 'jest.config.js' },
-    { name: 'integration', configPath: 'jest.config.integration.js' },
-  ];
+  const configs = [{ name: 'unit', configPath: 'jest.config.js' }];
 
   const allTests = [];
 

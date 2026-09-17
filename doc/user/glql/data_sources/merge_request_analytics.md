@@ -15,6 +15,8 @@ title: Merge request analytics
 {{< history >}}
 
 - [Introduced](https://gitlab.com/groups/gitlab-org/-/work_items/21214) in GitLab 19.3.
+- `timeToMergeQuantile` [changed](https://gitlab.com/gitlab-org/glql/-/merge_requests/501) to report seconds in GitLab 19.5.
+- `timeToMergeMin`, `timeToMergeMax`, `timeToMergeMean`, and `timeToMergeSum` metrics [introduced](https://gitlab.com/gitlab-org/glql/-/merge_requests/507) in GitLab 19.5.
 
 {{< /history >}}
 
@@ -108,7 +110,11 @@ Use these fields in the `query` parameter to filter your results.
 | Metric                 | Name                   | Description                              |
 | ---------------------- | ---------------------- | ---------------------------------------- |
 | Throughput count       | `throughputCount`      | Number of merged merge requests.         |
-| Time to merge quantile | `timeToMergeQuantile`  | Time from creation to merge, rendered as a duration. For example, `1d 2h`. Accepts a [`quantile` parameter](../_index.md#field-parameters) between `0.01` and `0.99` (default: `0.5`, the median). For example, `timeToMergeQuantile(0.95)`. |
+| Time to merge max      | `timeToMergeMax`       | Longest time from creation to merge, in seconds. |
+| Time to merge mean     | `timeToMergeMean`      | Average time from creation to merge, in seconds. |
+| Time to merge min      | `timeToMergeMin`       | Shortest time from creation to merge, in seconds. |
+| Time to merge quantile | `timeToMergeQuantile`  | Time from creation to merge, in seconds, rendered as a duration. For example, `1d 2h`. Accepts a [`quantile` parameter](../_index.md#field-parameters) between `0.01` and `0.99` (default: `0.5`, the median). For example, `timeToMergeQuantile(0.95)`. |
+| Time to merge sum      | `timeToMergeSum`       | Total time from creation to merge across all merged merge requests, in seconds. |
 | Total count            | `totalCount`           | Total number of merge requests.          |
 
 ## Sort fields

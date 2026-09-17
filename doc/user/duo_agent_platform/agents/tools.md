@@ -9,6 +9,12 @@ The following tools are available to custom agents.
 
 ## Tools available in the Web UI and IDE
 
+{{< history >}}
+
+- Get Previous Session Context tool [renamed](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/254136) to Get Session Context in GitLab 19.4.
+
+{{< /history >}}
+
 | Name | Tool | Description |
 |------|------|-------------|
 | Add Merge Request Reviewers | `add_merge_request_reviewers` | Add reviewers to a merge request without removing existing reviewers. |

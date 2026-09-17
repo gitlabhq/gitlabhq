@@ -5,6 +5,59 @@ require 'spec_helper'
 RSpec.describe Oauth::TokensController, feature_category: :system_access do
   let_it_be(:organization) { create(:organization) }
 
+  # Requires the caller to define:
+  # - `maintenance_organization`: the org the credential resolves to
+  # - `request`: performs the token request
+  shared_examples 'an OAuth token request blocked by organization maintenance mode' do
+    context 'for a time-bounded maintenance reason' do
+      before do
+        maintenance_organization.start_maintenance(maintenance_reason: 'migration')
+        maintenance_organization.confirm_maintenance
+      end
+
+      it 'does not issue a token and responds with service unavailable', :aggregate_failures do
+        expect { request }.not_to change { Doorkeeper::AccessToken.count }
+
+        expect(response).to have_gitlab_http_status(:service_unavailable)
+        expect(response.headers['Retry-After']).to eq('60')
+        expect(response.parsed_body['error']).to eq('temporarily_unavailable')
+        expect(response.parsed_body['error_description'])
+          .to eq(_('This organization is temporarily unavailable due to maintenance.'))
+      end
+    end
+
+    context 'for an indefinite maintenance reason' do
+      before do
+        maintenance_organization.start_maintenance(maintenance_reason: 'legal')
+        maintenance_organization.confirm_maintenance
+      end
+
+      it 'does not issue a token and responds with forbidden', :aggregate_failures do
+        expect { request }.not_to change { Doorkeeper::AccessToken.count }
+
+        expect(response).to have_gitlab_http_status(:forbidden)
+        expect(response.headers['Retry-After']).to be_nil
+        expect(response.parsed_body['error']).to eq('access_denied')
+        expect(response.parsed_body['error_description'])
+          .to eq(_('This organization is unavailable.'))
+      end
+    end
+
+    context 'when enforcement is disabled' do
+      before do
+        maintenance_organization.start_maintenance(maintenance_reason: 'migration')
+        maintenance_organization.confirm_maintenance
+        stub_feature_flags(organization_maintenance_enforcement: false)
+      end
+
+      it 'issues a token' do
+        expect { request }.to change { Doorkeeper::AccessToken.count }.by(1)
+
+        expect(response).to have_gitlab_http_status(:ok)
+      end
+    end
+  end
+
   describe 'POST /oauth/token' do
     context 'with dynamic user scope', :aggregate_failures do
       def expect_token_info_appended_to_logs
@@ -457,6 +510,52 @@ RSpec.describe Oauth::TokensController, feature_category: :system_access do
       end
 
       it_behaves_like 'CORS preflight OPTIONS request'
+    end
+  end
+
+  describe 'organization maintenance mode enforcement on POST /oauth/token' do
+    let_it_be_with_reload(:maintenance_organization) { create(:organization) }
+    let_it_be(:user) { create(:user, organization: maintenance_organization) }
+    let_it_be(:oauth_application) do
+      create(:oauth_application, owner: user, scopes: 'api', redirect_uri: 'http://example.com')
+    end
+
+    context 'with the authorization_code grant' do
+      let_it_be(:oauth_access_grant) do
+        create(:oauth_access_grant, resource_owner_id: user.id, application: oauth_application,
+          scopes: 'api', redirect_uri: oauth_application.redirect_uri,
+          organization_id: maintenance_organization.id)
+      end
+
+      subject(:request) do
+        post('/oauth/token', params: {
+          grant_type: 'authorization_code',
+          client_id: oauth_application.uid,
+          client_secret: oauth_application.secret,
+          redirect_uri: oauth_application.redirect_uri,
+          code: oauth_access_grant.plaintext_token
+        })
+      end
+
+      it_behaves_like 'an OAuth token request blocked by organization maintenance mode'
+    end
+
+    context 'with the refresh_token grant' do
+      let_it_be(:oauth_token) do
+        create(:oauth_access_token, resource_owner_id: user.id, application: oauth_application,
+          scopes: 'api', use_refresh_token: true, organization_id: maintenance_organization.id)
+      end
+
+      subject(:request) do
+        post('/oauth/token', params: {
+          grant_type: 'refresh_token',
+          client_id: oauth_application.uid,
+          client_secret: oauth_application.secret,
+          refresh_token: oauth_token.plaintext_refresh_token
+        })
+      end
+
+      it_behaves_like 'an OAuth token request blocked by organization maintenance mode'
     end
   end
 end

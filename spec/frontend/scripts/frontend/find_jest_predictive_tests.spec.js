@@ -245,7 +245,7 @@ describe('find_jest_predictive_tests', () => {
       expect(result).toEqual([]);
     });
 
-    it('collects tests from both unit and integration configs', () => {
+    it('collects tests from the unit config', () => {
       spawnSync.mockImplementation((_, args) => {
         const config = args[2]; // --config value
         if (config === 'jest.config.js') {
@@ -254,25 +254,15 @@ describe('find_jest_predictive_tests', () => {
             stdout: 'spec/frontend/foo_spec.js\nspec/frontend/bar_spec.js',
           };
         }
-        if (config === 'jest.config.integration.js') {
-          return {
-            status: 0,
-            stdout: 'spec/frontend_integration/baz_spec.js',
-          };
-        }
         return { status: 1, stderr: 'Unknown config' };
       });
 
       const result = collectTests(mockChangedFiles);
 
-      expect(result).toEqual([
-        'spec/frontend/bar_spec.js',
-        'spec/frontend/foo_spec.js',
-        'spec/frontend_integration/baz_spec.js',
-      ]);
+      expect(result).toEqual(['spec/frontend/bar_spec.js', 'spec/frontend/foo_spec.js']);
     });
 
-    it('deduplicates tests across configs', () => {
+    it('deduplicates tests', () => {
       spawnSync.mockReturnValue({
         status: 0,
         stdout: 'spec/frontend/foo_spec.js\nspec/frontend/foo_spec.js',
@@ -283,21 +273,12 @@ describe('find_jest_predictive_tests', () => {
       expect(result).toEqual(['spec/frontend/foo_spec.js']);
     });
 
-    it('continues when one config fails', () => {
-      spawnSync.mockImplementation((_, args) => {
-        const config = args[2];
-        if (config === 'jest.config.js') {
-          return { status: 1, stderr: 'Config error' };
-        }
-        return {
-          status: 0,
-          stdout: 'spec/frontend_integration/test_spec.js',
-        };
-      });
+    it('logs and returns no tests when the config fails', () => {
+      spawnSync.mockReturnValue({ status: 1, stderr: 'Config error' });
 
       const result = collectTests(mockChangedFiles);
 
-      expect(result).toEqual(['spec/frontend_integration/test_spec.js']);
+      expect(result).toEqual([]);
       expect(consoleErrorSpy).toHaveBeenCalledTimes(1);
     });
 

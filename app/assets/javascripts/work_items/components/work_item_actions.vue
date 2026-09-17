@@ -578,6 +578,7 @@ export default {
               id: this.workItemId,
               workItemTypeId: this.objectiveWorkItemTypeId,
             },
+            useWorkItemFeatures: Boolean(this.glFeatures?.workItemFeaturesField),
           },
         });
         if (errors.length > 0) {

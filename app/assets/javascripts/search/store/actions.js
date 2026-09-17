@@ -11,6 +11,7 @@ import {
   queryToObject,
 } from '~/lib/utils/url_utility';
 import { logError } from '~/lib/logger';
+import { HTTP_STATUS_REQUEST_TIMEOUT } from '~/lib/utils/http_status';
 import { __ } from '~/locale';
 import {
   SCOPE_BLOB,
@@ -117,6 +118,10 @@ export const setFrequentProject = ({ state, commit }, item) => {
   commit(types.LOAD_FREQUENT_ITEMS, { key: PROJECTS_LOCAL_STORAGE_KEY, data: frequentItems });
 };
 
+// Only SearchController#render_timeout answers 408 here. It already reports
+// the timeout to error tracking, so the client has nothing new to log.
+const isSearchTimeout = (error) => error?.response?.status === HTTP_STATUS_REQUEST_TIMEOUT;
+
 const filterBlobs = (navigationItemScope, skipBlobs) => {
   return navigationItemScope !== SCOPE_BLOB ? true : skipBlobs;
 };
@@ -152,7 +157,11 @@ export const fetchSidebarCount = ({ commit, state }, skipBlobs) => {
       .then(({ data: { count } }) => {
         commit(types.RECEIVE_NAVIGATION_COUNT, { key: navigationItem.scope, count });
       })
-      .catch((e) => logError(e)),
+      .catch((e) => {
+        if (isSearchTimeout(e)) return;
+
+        logError(e);
+      }),
   );
 
   return Promise.all(promises);
@@ -292,7 +301,8 @@ export const fetchAllAggregation = ({ commit, state }) => {
       commit(types.RECEIVE_AGGREGATIONS_SUCCESS, prepareSearchAggregations(state, data));
     })
     .catch((e) => {
-      logError(e);
+      if (!isSearchTimeout(e)) logError(e);
+
       commit(types.RECEIVE_AGGREGATIONS_ERROR);
     });
 };

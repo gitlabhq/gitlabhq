@@ -34,6 +34,7 @@ import convertWorkItemMutation from '~/work_items/graphql/work_item_convert.muta
 import {
   convertWorkItemMutationErrorResponse,
   convertWorkItemMutationResponse,
+  mockWorkItemFeaturesData,
   namespaceWorkItemTypesQueryResponse,
   updateWorkItemMutationResponse,
   updateWorkItemNotificationsMutationResponse,
@@ -620,27 +621,47 @@ describe('WorkItemActions component', () => {
       });
     });
 
-    describe('when button is clicked', () => {
-      beforeEach(async () => {
-        createComponent({
-          workItemType: WORK_ITEM_TYPE_NAME_KEY_RESULT,
-          provide: {
-            getWorkItemTypeConfiguration: jest
-              .fn()
-              .mockReturnValue({ canPromoteToObjective: true }),
+    describe.each([false, true])(
+      'when button is clicked and workItemFeaturesField is %s',
+      (workItemFeaturesField) => {
+        const { workItemConvert } = convertWorkItemMutationResponse.data;
+        const convertHandler = jest.fn().mockResolvedValue({
+          data: {
+            workItemConvert: {
+              ...workItemConvert,
+              workItem: {
+                ...workItemConvert.workItem,
+                ...(workItemFeaturesField && { features: mockWorkItemFeaturesData() }),
+              },
+            },
           },
         });
-        await waitForPromises();
 
-        findPromoteButton().vm.$emit('action');
-        await waitForPromises();
-      });
+        beforeEach(async () => {
+          createComponent({
+            workItemType: WORK_ITEM_TYPE_NAME_KEY_RESULT,
+            convertWorkItemMutationHandler: convertHandler,
+            provide: {
+              getWorkItemTypeConfiguration: jest
+                .fn()
+                .mockReturnValue({ canPromoteToObjective: true }),
+              glFeatures: { workItemFeaturesField },
+            },
+          });
+          await waitForPromises();
 
-      it('promotes key result to objective', () => {
-        expect(convertWorkItemMutationSuccessHandler).toHaveBeenCalled();
-        expect($toast.show).toHaveBeenCalledWith('Promoted to objective.');
-      });
-    });
+          findPromoteButton().vm.$emit('action');
+          await waitForPromises();
+        });
+
+        it('promotes key result to objective', () => {
+          expect(convertHandler).toHaveBeenCalledWith(
+            expect.objectContaining({ useWorkItemFeatures: workItemFeaturesField }),
+          );
+          expect($toast.show).toHaveBeenCalledWith('Promoted to objective.');
+        });
+      },
+    );
 
     describe('when promote mutation fails', () => {
       beforeEach(async () => {

@@ -79,6 +79,7 @@ describe('WorkItemChangeTypeModal component', () => {
     convertWorkItemMutationHandler = convertWorkItemMutationSuccessHandler,
     designQueryHandler = noDesignQueryHandler,
     hasSubepicsFeature = true,
+    glFeatures = {},
   } = {}) => {
     wrapper = shallowMountExtended(WorkItemChangeTypeModal, {
       apolloProvider: createMockApollo([
@@ -99,6 +100,7 @@ describe('WorkItemChangeTypeModal component', () => {
       provide: {
         hasSubepicsFeature,
         getWorkItemTypeConfiguration: jest.fn(),
+        glFeatures,
       },
     });
   };
@@ -380,6 +382,24 @@ describe('WorkItemChangeTypeModal component', () => {
         },
         useWorkItemFeatures: false,
       });
+    });
+
+    it('passes useWorkItemFeatures as true when the workItemFeaturesField flag is enabled', async () => {
+      createComponent({ glFeatures: { workItemFeaturesField: true } });
+
+      await waitForPromises();
+
+      findGlFormSelect().vm.$emit('change', issueTypeId);
+
+      await nextTick();
+
+      findChangeTypeModal().vm.$emit('primary');
+
+      await waitForPromises();
+
+      expect(convertWorkItemMutationSuccessHandler).toHaveBeenCalledWith(
+        expect.objectContaining({ useWorkItemFeatures: true }),
+      );
     });
 
     it.each`

@@ -5933,7 +5933,7 @@ msgstr ""
 msgid "AdminAIPoweredFeatures|Available models"
 msgstr ""
 
-msgid "AdminAIPoweredFeatures|Available models can only be configured when using a GitLab managed model."
+msgid "AdminAIPoweredFeatures|Available models can only be configured when using a GitLab-managed model."
 msgstr ""
 
 msgid "AdminAIPoweredFeatures|Available models: %{featureTitle}"
@@ -5972,7 +5972,7 @@ msgstr ""
 msgid "AdminAIPoweredFeatures|GitLab Duo for merge requests"
 msgstr ""
 
-msgid "AdminAIPoweredFeatures|GitLab managed model"
+msgid "AdminAIPoweredFeatures|GitLab-managed model"
 msgstr ""
 
 msgid "AdminAIPoweredFeatures|Model"
@@ -5999,7 +5999,7 @@ msgstr ""
 msgid "AdminAIPoweredFeatures|This is the currently selected model for Agentic Chat, which is always available to users. To remove it from the list, select a different model."
 msgstr ""
 
-msgid "AdminAIPoweredFeatures|When turned on, users can only use the models selected below, which always includes the currently selected default model. When turned off, users can use all available %{linkStart}GitLab managed models%{linkEnd} (including those added in the future), unless a non-GitLab default model is set as the model for Agentic Chat, in which case users can only use that model."
+msgid "AdminAIPoweredFeatures|When turned on, users can only use the models selected below, which always includes the currently selected default model. When turned off, users can use all available %{linkStart}GitLab-managed models%{linkEnd} (including those added in the future), unless a non-GitLab default model is set as the model for Agentic Chat, in which case users can only use that model."
 msgstr ""
 
 msgid "AdminAiPoweredFeatures|%{selected_model} is incompatible with the %{title} feature"
@@ -6293,10 +6293,10 @@ msgstr ""
 msgid "AdminSelfHostedModels|Assign a model to enable this feature"
 msgstr ""
 
-msgid "AdminSelfHostedModels|Configure and assign GitLab managed models to AI-native features."
+msgid "AdminSelfHostedModels|Configure and assign GitLab-managed models to AI-native features."
 msgstr ""
 
-msgid "AdminSelfHostedModels|Configure and assign self-hosted models or GitLab managed models to AI-native features."
+msgid "AdminSelfHostedModels|Configure and assign self-hosted models or GitLab-managed models to AI-native features."
 msgstr ""
 
 msgid "AdminSelfHostedModels|Delete self-hosted model"
@@ -6314,10 +6314,10 @@ msgstr ""
 msgid "AdminSelfHostedModels|Endpoint"
 msgstr ""
 
-msgid "AdminSelfHostedModels|GitLab managed model"
+msgid "AdminSelfHostedModels|GitLab-managed model"
 msgstr ""
 
-msgid "AdminSelfHostedModels|GitLab managed models"
+msgid "AdminSelfHostedModels|GitLab-managed models"
 msgstr ""
 
 msgid "AdminSelfHostedModels|Google Vertex AI"
@@ -6431,7 +6431,7 @@ msgstr ""
 msgid "AdminSelfHostedModels|There was an error saving the self-hosted model. Please try again."
 msgstr ""
 
-msgid "AdminSelfHostedModels|This feature is using a GitLab managed model, external to your infrastructure."
+msgid "AdminSelfHostedModels|This feature is using a GitLab-managed model, external to your infrastructure."
 msgstr ""
 
 msgid "AdminSelfHostedModels|This feature is using a self-hosted model, deployed on your own infrastructure."
@@ -8294,6 +8294,12 @@ msgstr ""
 msgid "AggregationEngine|metric `%{identifier}` must be requested to filter by it"
 msgstr ""
 
+msgid "AggregationEngine|must be Global IDs of existing groups for filter `%{key}`"
+msgstr ""
+
+msgid "AggregationEngine|must be traversal paths ending with `/` for filter `%{key}`"
+msgstr ""
+
 msgid "AggregationEngine|ordering by '%{identifier}' is not authorized"
 msgstr ""
 
@@ -9074,6 +9080,9 @@ msgid "AiPowered|Failed to load denylist domains."
 msgstr ""
 
 msgid "AiPowered|Failed to load groups"
+msgstr ""
+
+msgid "AiPowered|Failed to load last run details."
 msgstr ""
 
 msgid "AiPowered|Features with CI/CD pipelines"
@@ -14156,6 +14165,12 @@ msgid "Average credits used per flow."
 msgstr ""
 
 msgid "Average per day: %{average}"
+msgstr ""
+
+msgid "Average pipeline duration, in seconds."
+msgstr ""
+
+msgid "Average time from creation to merge, in seconds."
 msgstr ""
 
 msgid "Avg"
@@ -30735,9 +30750,6 @@ msgid "Due to inactivity, this project is scheduled to be deleted on %{deletion_
 msgstr ""
 
 msgid "Duo controls"
-msgstr ""
-
-msgid "Duo flow callback hooks"
 msgstr ""
 
 msgid "Duo workflow"
@@ -48812,6 +48824,12 @@ msgstr ""
 msgid "LogsViewer|Scroll to top"
 msgstr ""
 
+msgid "Longest pipeline duration, in seconds."
+msgstr ""
+
+msgid "Longest time from creation to merge, in seconds."
+msgstr ""
+
 msgid "Low - S4"
 msgstr ""
 
@@ -52534,6 +52552,9 @@ msgid "MrList|Assigned to %{name}"
 msgstr ""
 
 msgid "MrList|Review requested from %{name}"
+msgstr ""
+
+msgid "MrReports|Accessibility"
 msgstr ""
 
 msgid "MrReports|Add a scanning job to your CI/CD pipeline to see reports here."
@@ -67628,6 +67649,9 @@ msgstr ""
 msgid "Reports|Accessibility scanning results are being parsed"
 msgstr ""
 
+msgid "Reports|Accessibility scanning results are not available"
+msgstr ""
+
 msgid "Reports|An error occurred while loading %{name} results"
 msgstr ""
 
@@ -78583,6 +78607,12 @@ msgstr ""
 msgid "Short name"
 msgstr ""
 
+msgid "Shortest pipeline duration, in seconds."
+msgstr ""
+
+msgid "Shortest time from creation to merge, in seconds."
+msgstr ""
+
 msgid "Should these changes be private?"
 msgstr ""
 
@@ -84070,7 +84100,7 @@ msgstr ""
 msgid "Time estimate: %{estimate}"
 msgstr ""
 
-msgid "Time from creation to merge."
+msgid "Time from creation to merge, in seconds."
 msgstr ""
 
 msgid "Time from first comment to last commit"
@@ -85268,6 +85298,9 @@ msgstr ""
 msgid "Total credits used by all flows."
 msgstr ""
 
+msgid "Total duration of all pipelines, in seconds."
+msgstr ""
+
 msgid "Total items: %{total}"
 msgstr ""
 
@@ -85296,6 +85329,9 @@ msgid "Total of child items"
 msgstr ""
 
 msgid "Total test time for all commits/merges"
+msgstr ""
+
+msgid "Total time from creation to merge across all merged merge requests, in seconds."
 msgstr ""
 
 msgid "Total time spent cannot be negative."

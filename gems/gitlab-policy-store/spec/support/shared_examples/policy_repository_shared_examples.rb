@@ -457,7 +457,7 @@ RSpec.shared_examples 'a policy repository' do
     end
 
     # A sum that subtracts one declaration per rule still measures this wrong, because
-    # `strip_declaration` drops the whole line and a trailing comment rides along with it.
+    # `split_header` drops the whole line and a trailing comment rides along with it.
     it 'measures the module the merger builds rather than summing the compiled rules' do
       merged_program = "package governance\nallow := true\n"
       stub_const("#{port}::MAX_COMPILED_RULES_BYTES", merged_program.bytesize)
@@ -584,6 +584,13 @@ RSpec.shared_examples 'a policy repository' do
 
         expect { repository.create(attributes.merge(rules: rules)) }
           .to raise_error(Gitlab::PolicyStore::ValidationError, /\Arules\[1\] is invalid/)
+      end
+
+      it 'accepts a custom rule with an import after another rule, since the merged module lifts it' do
+        importing_rule = { 'type' => 'custom', 'value' => "package governance\n\nimport rego.v1\n\nallow if true\n" }
+        rules = [{ 'type' => 'environment', 'value' => { 'tiers' => ['production'] } }, importing_rule]
+
+        expect(repository.create(attributes.merge(rules: rules)).rules.size).to eq(2)
       end
 
       it 'raises ValidationError when an authored scope_rego does not parse' do

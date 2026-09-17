@@ -71,7 +71,6 @@ RSpec.describe Tooling::Danger::ProjectHelper, feature_category: :tooling do
       'public/foo'                       | [:frontend]
       'scripts/frontend/foo'             | [:frontend]
       'spec/frontend/bar'                | [:frontend]
-      'spec/frontend_integration/bar'    | [:frontend]
       'vendor/assets/foo'                | [:frontend]
       'babel.config.js'                  | [:frontend]
       'jest.config.js'                   | [:frontend]
@@ -88,7 +87,6 @@ RSpec.describe Tooling::Danger::ProjectHelper, feature_category: :tooling do
       'ee/app/assets/foo'                | [:frontend]
       'ee/app/views/foo'                 | [:frontend, :backend]
       'ee/spec/frontend/bar'             | [:frontend]
-      'ee/spec/frontend_integration/bar' | [:frontend]
 
       'app/models/foo'             | [:backend]
       'bin/foo'                    | [:backend]

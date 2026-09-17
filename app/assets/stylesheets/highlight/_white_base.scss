@@ -84,6 +84,7 @@ $white-gc-bg: #eaf2f5;
   --diff-expansion-background-color: #{$gl-color-neutral-100};
 
   --code-background: #{$gl-color-neutral-0};
+  --code-text-color: #{$white-code-color};
   --code-line-number-background-color: #{$gl-color-neutral-0};
   // Alpha keeps empty and meta rows a hair off the code background; the neutral-10
   // token was re-hued warmer in @gitlab/ui 137.2.0 and reads as a visible band.

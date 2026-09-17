@@ -156,8 +156,8 @@ RSpec.describe Integrations::Propagation::BulkCreateService, feature_category: :
           team_name: 'instance_team_name',
           alias: 'instance_alias',
           bot_access_token: 'instance_bot_access_token',
-          authorized_scope_names: %w[instance_scope1 instance_scope2],
-          organization_id: organization.id
+          organization_id: organization.id,
+          authorized_scope_names: %w[instance_scope1 instance_scope2]
         )
       )
     end
@@ -238,9 +238,9 @@ RSpec.describe Integrations::Propagation::BulkCreateService, feature_category: :
           team_name: 'group_team_name',
           alias: 'group_alias',
           bot_access_token: 'group_bot_access_token',
-          authorized_scope_names: %w[group_scope1 group_scope2],
           organization: nil,
-          group: group
+          group: group,
+          authorized_scope_names: %w[group_scope1 group_scope2]
         )
       )
     end

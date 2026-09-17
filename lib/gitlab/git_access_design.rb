@@ -7,6 +7,7 @@ module Gitlab
     def check(_cmd, _changes)
       check_protocol!
       check_can_create_design!
+      check_organization_maintenance!
 
       success_result
     end
@@ -17,6 +18,14 @@ module Gitlab
     end
 
     private
+
+    # The design repository container resolves its organization via the project.
+    override :check_organization_maintenance!
+    def check_organization_maintenance!
+      design_project = container.is_a?(::Project) ? container : container.try(:project)
+
+      enforce_organization_maintenance!(design_project&.organization)
+    end
 
     def check_protocol!
       if protocol != 'web'

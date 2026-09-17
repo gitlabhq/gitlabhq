@@ -147,17 +147,10 @@ module MergeRequests
     end
     # rubocop: enable CodeReuse/ActiveRecord
 
-    # The diff commit graph is only read by the pre-8.4 `head_commit_sha` fallback, and
-    # preloading it costs a scope evaluation per diff commit for every open merge request
-    # on the branch. Without it the fallback runs an indexed lookup for the few that need it.
     def post_merge_candidates
-      relation = @project.merge_requests.opened
+      @project.merge_requests.opened
         .preload_project_and_latest_diff
         .preload_merge_data(@project)
-
-      return relation if Feature.enabled?(:merge_request_refresh_skip_diff_commit_preload, @project)
-
-      relation.preload_latest_diff_commit(@project)
     end
 
     # Link LFS objects that exists in forks but does not exists in merge requests

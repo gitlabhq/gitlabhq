@@ -861,7 +861,7 @@ RSpec.describe Tooling::Danger::AnalyticsInstrumentation, feature_category: :ser
     context 'when the file is a spec file' do
       let(:event_name) { 'spec_only_event' }
       let(:js_files) do
-        %w[spec/frontend/example_spec.js spec/frontend_integration/example_spec.js spec/test244907.js]
+        %w[spec/frontend/example_spec.js spec/test244907.js]
       end
 
       let(:file_changes) do

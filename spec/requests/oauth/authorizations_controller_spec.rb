@@ -530,4 +530,17 @@ RSpec.describe Oauth::AuthorizationsController, :with_current_organization, feat
       end
     end
   end
+
+  describe 'organization maintenance mode enforcement', :without_current_organization do
+    let_it_be_with_reload(:organization) { create(:organization) }
+    let_it_be(:user, freeze: false) { create(:user, organization: organization) }
+
+    before do
+      sign_in(user)
+    end
+
+    subject(:request) { get oauth_authorization_path }
+
+    it_behaves_like 'a controller request enforcing organization maintenance mode'
+  end
 end

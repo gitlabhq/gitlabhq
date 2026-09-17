@@ -544,20 +544,6 @@ jest-msw-integration vue3:
     - jest-msw-integration
     - .vue3
 
-jest-integration:
-  extends:
-    - .frontend-test-base
-    - .repo-from-artifacts
-    - .frontend:rules:jest-integration
-  script:
-    - yarn jest:integration --ci
-  needs:
-    # it's ok to wait for the repo artifact as we're waiting for the fixtures (which wait for the repo artifact) anyway
-    - !reference [.frontend-test-base, needs]
-    - !reference [.repo-from-artifacts, needs]
-    - !reference [.with-fixtures-needs, needs]
-    - !reference [.with-graphql-schema-dump-needs, needs]
-
 jest-snapshot-vue3:
   extends:
     - .frontend-test-base

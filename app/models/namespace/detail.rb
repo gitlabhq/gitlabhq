@@ -28,6 +28,14 @@ class Namespace::Detail < ApplicationRecord
 
   scope :deletion_scheduled_before, ->(time) { where(deletion_scheduled_at: ..time) }
 
+  # Returns the oldest deletion_scheduled_at among namespaces awaiting deletion,
+  # used to alert when the deletion backlog is not draining. Scoped to
+  # deletion_scheduled_at IS NOT NULL so MIN uses the partial index
+  # index_namespace_details_on_deletion_scheduled_at.
+  def self.oldest_deletion_scheduled_at
+    where.not(deletion_scheduled_at: nil).minimum(:deletion_scheduled_at)
+  end
+
   cache_markdown_field :description, pipeline: :description
 
   self.primary_key = :namespace_id
