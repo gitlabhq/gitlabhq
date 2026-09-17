@@ -76,4 +76,20 @@ RSpec.describe Gitlab::Throttle do
       expect(options[:period].call).to eq(30)
     end
   end
+
+  describe '.throttle_authenticated_dependency_proxy_options' do
+    before do
+      stub_application_setting(
+        throttle_authenticated_dependency_proxy_requests_per_period: 50,
+        throttle_authenticated_dependency_proxy_period_in_seconds: 30
+      )
+    end
+
+    it 'returns correct options' do
+      options = described_class.throttle_authenticated_dependency_proxy_options
+
+      expect(options[:limit].call).to eq(50)
+      expect(options[:period].call).to eq(30)
+    end
+  end
 end

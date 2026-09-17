@@ -294,6 +294,11 @@ RSpec.describe ApplicationSetting, feature_category: :settings, type: :model do
           ApplicationSetting::DEFAULT_AUTHENTICATED_GIT_HTTP_LIMIT,
         throttle_authenticated_git_http_period_in_seconds:
           ApplicationSetting::DEFAULT_AUTHENTICATED_GIT_HTTP_PERIOD,
+        throttle_authenticated_dependency_proxy_enabled: false,
+        throttle_authenticated_dependency_proxy_requests_per_period:
+          ApplicationSetting::DEFAULT_AUTHENTICATED_DEPENDENCY_PROXY_LIMIT,
+        throttle_authenticated_dependency_proxy_period_in_seconds:
+          ApplicationSetting::DEFAULT_AUTHENTICATED_DEPENDENCY_PROXY_PERIOD,
         throttle_unauthenticated_git_http_enabled: false,
         throttle_unauthenticated_git_http_period_in_seconds: 3600,
         throttle_unauthenticated_git_http_requests_per_period: 3600,
@@ -753,6 +758,8 @@ RSpec.describe ApplicationSetting, feature_category: :settings, type: :model do
           snippet_size_limit
           throttle_authenticated_api_period_in_seconds
           throttle_authenticated_api_requests_per_period
+          throttle_authenticated_dependency_proxy_period_in_seconds
+          throttle_authenticated_dependency_proxy_requests_per_period
           throttle_authenticated_deprecated_api_period_in_seconds
           throttle_authenticated_deprecated_api_requests_per_period
           throttle_authenticated_files_api_period_in_seconds

@@ -2,7 +2,7 @@
 
 #
 # Requires let variables:
-# * throttle_setting_prefix: "throttle_authenticated_api", "throttle_authenticated_web", "throttle_protected_paths", "throttle_authenticated_packages_api", "throttle_authenticated_git_lfs", "throttle_authenticated_files_api", "throttle_authenticated_deprecated_api"
+# * throttle_setting_prefix: "throttle_authenticated_api", "throttle_authenticated_web", "throttle_protected_paths", "throttle_authenticated_packages_api", "throttle_authenticated_git_lfs", "throttle_authenticated_files_api", "throttle_authenticated_deprecated_api", "throttle_authenticated_dependency_proxy"
 # * request_method
 # * request_args
 # * other_user_request_args
@@ -61,7 +61,8 @@ RSpec.shared_examples 'rate-limited token requests' do
       "throttle_authenticated_packages_api" => "throttle_authenticated_packages_api",
       "throttle_authenticated_git_lfs" => "throttle_authenticated_git_lfs",
       "throttle_authenticated_files_api" => "throttle_authenticated_files_api",
-      "throttle_authenticated_deprecated_api" => "throttle_authenticated_deprecated_api"
+      "throttle_authenticated_deprecated_api" => "throttle_authenticated_deprecated_api",
+      "throttle_authenticated_dependency_proxy" => "throttle_authenticated_dependency_proxy"
     }
   end
 

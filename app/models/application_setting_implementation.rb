@@ -235,6 +235,11 @@ module ApplicationSettingImplementation
           ApplicationSetting::DEFAULT_AUTHENTICATED_GIT_HTTP_LIMIT,
         throttle_authenticated_git_http_period_in_seconds:
           ApplicationSetting::DEFAULT_AUTHENTICATED_GIT_HTTP_PERIOD,
+        throttle_authenticated_dependency_proxy_enabled: false,
+        throttle_authenticated_dependency_proxy_requests_per_period:
+          ApplicationSetting::DEFAULT_AUTHENTICATED_DEPENDENCY_PROXY_LIMIT,
+        throttle_authenticated_dependency_proxy_period_in_seconds:
+          ApplicationSetting::DEFAULT_AUTHENTICATED_DEPENDENCY_PROXY_PERIOD,
         throttle_authenticated_git_lfs_enabled: false,
         throttle_authenticated_git_lfs_period_in_seconds: 60,
         throttle_authenticated_git_lfs_requests_per_period: 1000,
