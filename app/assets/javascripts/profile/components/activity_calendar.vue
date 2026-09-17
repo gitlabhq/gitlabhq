@@ -5,6 +5,16 @@ import { __, n__, s__, sprintf } from '~/locale';
 import { getMonthNames } from '~/lib/utils/datetime/date_format_utility';
 import { CONTRIB_LEGENDS, FIRST_DAY_OF_WEEK_CHOICES } from '~/contribution_events/constants';
 import AjaxCache from '~/lib/utils/ajax_cache';
+import {
+  ARROW_LEFT_KEY,
+  ARROW_RIGHT_KEY,
+  ARROW_UP_KEY,
+  ARROW_DOWN_KEY,
+  HOME_KEY,
+  END_KEY,
+  PAGE_UP_KEY,
+  PAGE_DOWN_KEY,
+} from '~/lib/utils/keys';
 import { userCalendarPath } from '~/lib/utils/path_helpers/user';
 import {
   getCurrentDateAtOffset,
@@ -17,6 +27,8 @@ import { CALENDAR_PERIOD_12_MONTHS } from '../constants';
 
 const MONTH_NAMES = getMonthNames(true);
 const DAYS_IN_THE_WEEK = 7;
+const FIRST_DAY_OF_WEEK_INDEX = 0;
+const LAST_DAY_OF_WEEK_INDEX = 6;
 
 export default {
   name: 'ActivityCalendar',
@@ -50,6 +62,7 @@ export default {
       isLoading: true,
       hasError: false,
       timestamps: {},
+      focusedCell: { weekIndex: 0, dayIndex: 0 },
     };
   },
   computed: {
@@ -112,6 +125,24 @@ export default {
 
       return weeksWithComputedMonthLabel;
     },
+    calendarDataForKeyboardNavigation() {
+      return this.calendarData.flatMap((week, weekIndex) => {
+        return week.days.map((day, dayIndex) => ({ weekIndex, dayIndex, day }));
+      });
+    },
+    firstTabableCell() {
+      return this.calendarDataForKeyboardNavigation.find(({ day }) => day !== null);
+    },
+    lastAvailableCell() {
+      return this.calendarDataForKeyboardNavigation.findLast(({ day }) => day !== null);
+    },
+    horizontalNavigationCells() {
+      // Real cells in visual row order: the same day across all weeks, then
+      // the next day's row. Horizontal arrow steps walk this sequence.
+      return this.calendarDataForKeyboardNavigation
+        .filter(({ day }) => day !== null)
+        .sort((a, b) => a.dayIndex - b.dayIndex || a.weekIndex - b.weekIndex);
+    },
     systemDate() {
       // Today's calendar date in the profile user's timezone.
       return getCurrentDateAtOffset(this.utcOffset);
@@ -160,6 +191,11 @@ export default {
         null,
       ];
     },
+  },
+  created() {
+    // The grid renders while the fetch is in flight, so the roving tabindex
+    // must point at a real (non-padding) cell before the data arrives.
+    this.initializeFocusedCell();
   },
   mounted() {
     this.loadActivityCalendar();
@@ -210,13 +246,177 @@ export default {
     },
     getAriaLabel(day) {
       if (!day) {
-        return '';
+        // null omits the aria-label attribute entirely on empty padding cells
+        return null;
       }
 
       return sprintf(__('%{contributions} on %{date}'), {
         contributions: this.getContributionText(day),
         date: localeDateFormat.asDateFullWithWeekday.format(day),
       });
+    },
+    getCellId(weekIndex, dayIndex) {
+      return `calendar-cell-${weekIndex}-${dayIndex}`;
+    },
+    getCellTabIndex(weekIndex, dayIndex) {
+      if (this.focusedCell.weekIndex === weekIndex && this.focusedCell.dayIndex === dayIndex) {
+        return '0';
+      }
+
+      return '-1';
+    },
+    handleKeyDown(event, weekIndex, dayIndex) {
+      const { key } = event;
+      let handled = false;
+
+      switch (key) {
+        case ARROW_LEFT_KEY:
+          // Previous week (wraps to the previous row's last cell)
+          this.moveHorizontal(weekIndex, dayIndex, -1);
+          handled = true;
+          break;
+        case ARROW_RIGHT_KEY:
+          // Next week (wraps to the next row's first cell)
+          this.moveHorizontal(weekIndex, dayIndex, 1);
+          handled = true;
+          break;
+        case ARROW_UP_KEY:
+          // Previous day (wraps to the previous week's last day)
+          this.moveVertical(weekIndex, dayIndex, -1);
+          handled = true;
+          break;
+        case ARROW_DOWN_KEY:
+          // Next day (wraps to the next week's first day)
+          this.moveVertical(weekIndex, dayIndex, 1);
+          handled = true;
+          break;
+        case HOME_KEY:
+          // Move to the first available day of the current week
+          this.focusFirstDayOfWeek(weekIndex);
+          handled = true;
+          break;
+        case END_KEY:
+          // Move to the last available day of the current week
+          this.focusLastDayOfWeek(weekIndex);
+          handled = true;
+          break;
+        case PAGE_UP_KEY:
+          // Move to same day, 4 weeks earlier
+          this.moveHorizontal(weekIndex, dayIndex, -4);
+          handled = true;
+          break;
+        case PAGE_DOWN_KEY:
+          // Move to same day, 4 weeks later
+          this.moveHorizontal(weekIndex, dayIndex, 4);
+          handled = true;
+          break;
+        default:
+          break;
+      }
+
+      if (handled) {
+        event.preventDefault();
+      }
+    },
+    moveHorizontal(weekIndex, dayIndex, delta) {
+      if (Math.abs(delta) > 1) {
+        const rowCells = this.horizontalNavigationCells.filter(
+          (cell) => cell.dayIndex === dayIndex,
+        );
+        const firstWeekOfRow = rowCells[0].weekIndex;
+        const lastWeekOfRow = rowCells[rowCells.length - 1].weekIndex;
+        const targetWeek = Math.min(Math.max(weekIndex + delta, firstWeekOfRow), lastWeekOfRow);
+
+        this.setFocusedCell(targetWeek, dayIndex);
+
+        return;
+      }
+
+      const cells = this.horizontalNavigationCells;
+      const currentIndex = cells.findIndex(
+        (cell) => cell.weekIndex === weekIndex && cell.dayIndex === dayIndex,
+      );
+      const foundCell = cells[currentIndex + delta];
+
+      if (!foundCell) {
+        return;
+      }
+
+      this.setFocusedCell(foundCell.weekIndex, foundCell.dayIndex);
+    },
+    moveVertical(weekIndex, dayIndex, delta) {
+      let targetWeek = weekIndex;
+      let targetDay = dayIndex + delta;
+
+      // Wrap across week boundaries (columns).
+      if (targetDay > LAST_DAY_OF_WEEK_INDEX) {
+        targetWeek += 1;
+        targetDay = FIRST_DAY_OF_WEEK_INDEX;
+      } else if (targetDay < FIRST_DAY_OF_WEEK_INDEX) {
+        targetWeek -= 1;
+        targetDay = LAST_DAY_OF_WEEK_INDEX;
+      }
+
+      const foundCell = this.calendarDataForKeyboardNavigation.find(
+        (cell) => cell.weekIndex === targetWeek && cell.dayIndex === targetDay && cell.day !== null,
+      );
+
+      // Only the calendar's very first/last day has no vertical neighbor
+      // (padding only pads the edge weeks), so wrap to the opposite end.
+      if (!foundCell) {
+        const cell = delta > 0 ? this.firstTabableCell : this.lastAvailableCell;
+        this.setFocusedCell(cell.weekIndex, cell.dayIndex);
+
+        return;
+      }
+
+      this.setFocusedCell(foundCell.weekIndex, foundCell.dayIndex);
+    },
+    focusFirstDayOfWeek(weekIndex) {
+      const foundCell = this.calendarDataForKeyboardNavigation.find(
+        (cell) =>
+          cell.weekIndex === weekIndex &&
+          cell.dayIndex >= FIRST_DAY_OF_WEEK_INDEX &&
+          cell.day !== null,
+      );
+
+      if (!foundCell) {
+        return;
+      }
+
+      this.setFocusedCell(foundCell.weekIndex, foundCell.dayIndex);
+    },
+    focusLastDayOfWeek(weekIndex) {
+      const foundCell = this.calendarDataForKeyboardNavigation.findLast(
+        (cell) =>
+          cell.weekIndex === weekIndex &&
+          cell.dayIndex <= LAST_DAY_OF_WEEK_INDEX &&
+          cell.day !== null,
+      );
+
+      if (!foundCell) {
+        return;
+      }
+
+      this.setFocusedCell(foundCell.weekIndex, foundCell.dayIndex);
+    },
+    setFocusedCell(weekIndex, dayIndex) {
+      this.focusedCell = { weekIndex, dayIndex };
+
+      this.$nextTick(() => {
+        // Scoped to the component root so duplicate ids from a second mount
+        // cannot steal the focus target.
+        const element = this.$el.querySelector(`#${this.getCellId(weekIndex, dayIndex)}`);
+        if (element) {
+          element.focus();
+        }
+      });
+    },
+    initializeFocusedCell() {
+      // Direct assignment: setFocusedCell would move DOM focus into the
+      // calendar, which must only happen for user-initiated navigation.
+      const { weekIndex, dayIndex } = this.firstTabableCell;
+      this.focusedCell = { weekIndex, dayIndex };
     },
     scrollToEnd() {
       const wrapper = this.$refs.calendarWrapper;
@@ -286,6 +486,7 @@ export default {
           <component
             :is="day ? 'button' : 'div'"
             v-for="(day, dayIndex) in week.days"
+            :id="getCellId(weekIndex, dayIndex)"
             :key="`cell-${weekIndex}-${dayIndex}`"
             v-gl-tooltip.html="getCellTooltip(day)"
             :type="day ? 'button' : null"
@@ -294,7 +495,9 @@ export default {
             :style="{ '--contrib-fade-delay': `${(calendarData.length - weekIndex) * 12}ms` }"
             :aria-label="getAriaLabel(day)"
             :aria-hidden="day ? null : 'true'"
+            :tabindex="getCellTabIndex(weekIndex, dayIndex)"
             data-testid="user-contrib-cell"
+            @keydown="handleKeyDown($event, weekIndex, dayIndex)"
           />
         </template>
       </div>

@@ -78,13 +78,24 @@ RSpec.describe API::Internal::OrgMover, feature_category: :organization do
 
     it_behaves_like 'an internal org_mover endpoint'
 
-    it 'returns the readiness status' do
+    it 'returns the readiness status and blocking reason' do
       stub_maintenance_readiness(false)
 
       request
 
       expect(response).to have_gitlab_http_status(:ok)
       expect(json_response['ready']).to be(false)
+      expect(json_response['blocking_reason']).to eq('pending migrations')
+    end
+
+    it 'returns a null blocking reason when ready' do
+      stub_maintenance_readiness(true)
+
+      request
+
+      expect(response).to have_gitlab_http_status(:ok)
+      expect(json_response['ready']).to be(true)
+      expect(json_response['blocking_reason']).to be_nil
     end
   end
 
@@ -231,7 +242,7 @@ RSpec.describe API::Internal::OrgMover, feature_category: :organization do
 
   def stub_maintenance_readiness(ready)
     allow_next_instance_of(Gitlab::Organizations::MaintenanceReadiness) do |readiness|
-      allow(readiness).to receive(:ready?).and_return(ready)
+      allow(readiness).to receive(:blocking_reason).and_return(ready ? nil : 'pending migrations')
     end
   end
 end

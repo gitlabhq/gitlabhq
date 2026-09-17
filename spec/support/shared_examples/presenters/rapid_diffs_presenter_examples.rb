@@ -34,6 +34,12 @@ RSpec.shared_examples 'rapid diffs presenter base diffs_resource' do |include_st
       it 'returns nil' do
         expect(presenter.linked_file).to be_nil
       end
+
+      it 'looks the file up once' do
+        expect(resource).to receive(:diffs).once.and_return(diff_files)
+
+        2.times { presenter.linked_file }
+      end
     end
   end
 

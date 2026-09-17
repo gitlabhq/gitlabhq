@@ -1516,16 +1516,6 @@
   :idempotent: true
   :tags: []
   :queue_namespace: :cronjob
-- :name: cronjob:users_migrate_non_human_records_to_ghost_user_in_batches
-  :worker_name: Users::MigrateNonHumanRecordsToGhostUserInBatchesWorker
-  :feature_category: :user_profile
-  :has_external_dependencies: false
-  :urgency: :low
-  :resource_boundary: :unknown
-  :weight: 1
-  :idempotent: true
-  :tags: []
-  :queue_namespace: :cronjob
 - :name: cronjob:users_migrate_project_bot_records_to_ghost_user_in_batches
   :worker_name: Users::MigrateProjectBotRecordsToGhostUserInBatchesWorker
   :feature_category: :user_profile

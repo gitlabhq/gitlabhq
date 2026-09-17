@@ -1,0 +1,21 @@
+---
+description: Events where a GitLab managed Terraform state is marked for deletion
+internal_events: true
+status: active
+action: delete_terraform_state
+identifiers:
+  - project
+  - namespace
+  - user
+additional_properties:
+  label:
+    description: Whether the state had any versions stored when it was deleted
+product_group: runner_core
+product_categories:
+  - infrastructure_as_code
+milestone: '19.4'
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/255345
+tiers:
+  - free
+  - premium
+  - ultimate

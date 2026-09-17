@@ -865,6 +865,7 @@ Gitlab/BoundedContexts:
     - 'app/models/concerns/presentable.rb'
     - 'app/models/concerns/project_api_compatibility.rb'
     - 'app/models/concerns/project_features_compatibility.rb'
+    - 'app/models/concerns/project_scoped_commit_signature.rb'
     - 'app/models/concerns/prometheus_adapter.rb'
     - 'app/models/concerns/protected_branch_access.rb'
     - 'app/models/concerns/protected_ref.rb'

@@ -56,13 +56,14 @@ module Slack
       handle_http_error(e, 'Slack API error when removing reaction', channel)
     end
 
-    def post_ephemeral(channel:, user:, text:, thread_ts: nil)
+    def post_ephemeral(channel:, user:, text:, thread_ts: nil, blocks: nil)
       Gitlab::IntegrationsLogger.info(
         message: 'Slack API: posting ephemeral',
         channel_id: channel
       )
       payload = { channel: channel, user: user, text: text }
       payload[:thread_ts] = thread_ts if thread_ts.present?
+      payload[:blocks] = blocks if blocks.present?
       response = post('chat.postEphemeral', payload)
       log_error('Slack API error when posting ephemeral message', response, channel) unless response['ok']
       response

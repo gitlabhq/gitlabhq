@@ -2749,7 +2749,7 @@ RSpec.describe QuickActions::InterpretService, feature_category: :text_editors d
             expect_next_instance_of(
               MergeRequests::ApprovalService, project: merge_request.project, current_user: current_user
             ) do |service|
-              expect(service).to receive(:execute).with(merge_request).and_return(true)
+              expect(service).to receive(:execute).with(merge_request).and_return(ServiceResponse.success)
             end
 
             _, _, message = service.execute('/submit_review approve', merge_request)
@@ -2761,7 +2761,8 @@ RSpec.describe QuickActions::InterpretService, feature_category: :text_editors d
             expect_next_instance_of(
               MergeRequests::ApprovalService, project: merge_request.project, current_user: current_user
             ) do |service|
-              expect(service).to receive(:execute).with(merge_request).and_return(false)
+              expect(service).to receive(:execute).with(merge_request)
+                .and_return(ServiceResponse.error(message: 'Nope', reason: :not_eligible))
             end
 
             _, _, message = service.execute('/submit_review approve', merge_request)

@@ -147630,6 +147630,31 @@
               "deprecationReason": null
             },
             {
+              "name": "group",
+              "description": "Group at the requested depth of the hierarchy. NULL for events tracked above that depth. Events tracked in a project at that depth bucket by project namespace ID, which also resolves to NULL.",
+              "args": [
+                {
+                  "name": "depth",
+                  "description": "Depth in the group hierarchy, counted from the top-level group. Defaults to 1.",
+                  "type": {
+                    "kind": "SCALAR",
+                    "name": "Int",
+                    "ofType": null
+                  },
+                  "defaultValue": null,
+                  "isDeprecated": false,
+                  "deprecationReason": null
+                }
+              ],
+              "type": {
+                "kind": "OBJECT",
+                "name": "Group",
+                "ofType": null
+              },
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
               "name": "timestamp",
               "description": "Event date",
               "args": [

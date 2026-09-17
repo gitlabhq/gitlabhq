@@ -109,14 +109,13 @@ export function initLabels() {
   initLabelsActions();
 }
 
-export function initLabelIndex() {
-  Vue.use(Translate);
-
-  initLabels();
-  initDeleteLabelModal();
+export function initPromoteLabelModal() {
+  // The page renders the mount point only when the project has labels or an active filter.
+  const el = document.getElementById('js-promote-label-modal');
+  if (!el) return null;
 
   return new Vue({
-    el: '#js-promote-label-modal',
+    el,
     name: 'PromoteLabelModal',
     data() {
       return {
@@ -151,6 +150,14 @@ export function initLabelIndex() {
       });
     },
   });
+}
+
+export function initLabelIndex() {
+  Vue.use(Translate);
+
+  initLabels();
+  initDeleteLabelModal();
+  initPromoteLabelModal();
 }
 
 export function initAdminLabels() {

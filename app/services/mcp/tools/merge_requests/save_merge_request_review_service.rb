@@ -222,17 +222,14 @@ module Mcp
 
           check_approval_sha!(merge_request, arguments[:sha])
 
-          ::MergeRequests::ApprovalService
+          result = ::MergeRequests::ApprovalService
             .new(project: merge_request.project, current_user: current_user,
               params: { sha: arguments[:sha] })
             .execute(merge_request)
 
-          # ApprovalService returns nil on every failure and can report success on a raced
-          # save, so the merge request state is the only trustworthy outcome signal.
-          return method_response(merge_request, 'approve', 'approved') if
-            merge_request.reset.approved_by?(current_user)
+          return ::Mcp::Tools::Base::Response.error(approve_failure_message(merge_request)) unless result.success?
 
-          ::Mcp::Tools::Base::Response.error(approve_failure_message(merge_request))
+          method_response(merge_request.reset, 'approve', 'approved')
         end
 
         def perform_unapprove(arguments)

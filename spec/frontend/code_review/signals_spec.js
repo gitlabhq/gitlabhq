@@ -30,36 +30,60 @@ describe('~/code_review', () => {
     describe('observeMergeRequestFinishingPreparation', () => {
       const callArgs = {};
       const apollo = {};
+      const preparingStatus = {
+        data: { project: { mergeRequest: { id: 'gql:id:1', preparedAt: null } } },
+      };
+      const preparedStatus = {
+        data: { project: { mergeRequest: { id: 'gql:id:1', preparedAt: 'x', commitCount: 3 } } },
+      };
+      // the server acknowledges a new subscription with an empty payload
+      const acknowledgement = { data: { mergeRequestMergeStatusUpdated: null } };
+      const preparedUpdate = { data: { mergeRequestMergeStatusUpdated: { preparedAt: 'x' } } };
       let querySpy;
       let apolloSubscribeSpy;
       let subscribeSpy;
-      let nextSpy;
       let unsubscribeSpy;
-      let observable;
+      let emitSpy;
+      let behavior;
+
+      // textContent is not `-` so observeMergeRequestDiffGenerated stays out of the way
+      const renderTabCount = (preparing) => {
+        setHTMLFixture(
+          `<span class="js-changes-tab-count" data-gid="gql:id:1" data-preparing="${preparing}">0</span>`,
+        );
+      };
+
+      const withoutAutomaticAcknowledgement = () => {
+        subscribeSpy.mockImplementation((handler) => {
+          behavior = handler;
+
+          return { unsubscribe: unsubscribeSpy };
+        });
+      };
 
       beforeEach(() => {
-        querySpy = jest.fn();
-        apolloSubscribeSpy = jest.fn();
-        subscribeSpy = jest.fn();
+        querySpy = jest.fn().mockResolvedValue(preparedStatus);
         unsubscribeSpy = jest.fn();
-        nextSpy = jest.fn();
-        observable = {
-          next: nextSpy,
-          subscribe: subscribeSpy.mockReturnValue({
-            unsubscribe: unsubscribeSpy,
-          }),
-        };
+        subscribeSpy = jest.fn().mockImplementation((handler) => {
+          behavior = handler;
+          queueMicrotask(() => handler(acknowledgement));
 
-        querySpy.mockResolvedValue({
-          data: { project: { mergeRequest: { id: 'gql:id:1', preparedAt: 'x' } } },
+          return { unsubscribe: unsubscribeSpy };
         });
-        apolloSubscribeSpy.mockReturnValue(observable);
+        apolloSubscribeSpy = jest.fn().mockReturnValue({ subscribe: subscribeSpy });
+        emitSpy = jest.spyOn(diffsEventHub, '$emit');
 
         apollo.query = querySpy;
         apollo.subscribe = apolloSubscribeSpy;
 
         callArgs.signalBus = io;
         callArgs.apolloClient = apollo;
+
+        renderTabCount(false);
+      });
+
+      afterEach(() => {
+        resetHTMLFixture();
       });
 
       it('does not query at all if the page does not seem like a merge request', async () => {
@@ -85,124 +109,260 @@ describe('~/code_review', () => {
           );
         });
 
-        it('does not subscribe to any updates if the preparedAt value is already populated', async () => {
-          await start(callArgs);
-
-          expect(apolloSubscribeSpy).not.toHaveBeenCalled();
-        });
-
         describe('when the project does not exist', () => {
           beforeEach(() => {
-            querySpy.mockResolvedValue({
-              data: { project: null },
-            });
+            querySpy.mockResolvedValue({ data: { project: null } });
           });
 
-          it('does not fail and quits silently', () => {
-            expect(async () => {
-              await start(callArgs);
-            }).not.toThrow();
+          it('does not fail and quits silently', async () => {
+            renderTabCount(true);
+
+            await expect(start(callArgs)).resolves.toBeUndefined();
+
+            expect(emitSpy).not.toHaveBeenCalled();
+            expect(apolloSubscribeSpy).not.toHaveBeenCalled();
           });
         });
 
-        describe('if the merge request is still asynchronously preparing', () => {
-          beforeEach(() => {
-            querySpy.mockResolvedValue({
-              data: { project: { mergeRequest: { id: 'gql:id:1', preparedAt: null } } },
+        describe('when the merge request is already prepared', () => {
+          it('does not subscribe to preparation updates', async () => {
+            await start(callArgs);
+
+            expect(apolloSubscribeSpy).not.toHaveBeenCalled();
+          });
+
+          describe('and the page was not rendered while it was preparing', () => {
+            it('emits EVT_MR_DIFF_GENERATED with the current status and never EVT_MR_PREPARED', async () => {
+              await start(callArgs);
+
+              expect(emitSpy).toHaveBeenCalledWith(
+                EVT_MR_DIFF_GENERATED,
+                preparedStatus.data.project.mergeRequest,
+              );
+              expect(emitSpy).not.toHaveBeenCalledWith(EVT_MR_PREPARED);
             });
           });
 
-          it('subscribes to updates', async () => {
+          describe('and the page was rendered while it was preparing', () => {
+            beforeEach(() => {
+              renderTabCount(true);
+            });
+
+            it('emits EVT_MR_PREPARED', async () => {
+              await start(callArgs);
+
+              expect(emitSpy).toHaveBeenCalledWith(EVT_MR_PREPARED);
+            });
+
+            it('emits EVT_MR_DIFF_GENERATED with the status response without querying again', async () => {
+              await start(callArgs);
+              await waitForPromises();
+
+              expect(querySpy).toHaveBeenCalledTimes(1);
+              expect(emitSpy).toHaveBeenCalledWith(
+                EVT_MR_DIFF_GENERATED,
+                preparedStatus.data.project.mergeRequest,
+              );
+            });
+          });
+        });
+
+        describe('when the merge request is still preparing', () => {
+          beforeEach(() => {
+            querySpy.mockResolvedValue(preparingStatus);
+          });
+
+          it('subscribes to preparation updates after querying the current status', async () => {
             await start(callArgs);
 
             expect(apolloSubscribeSpy).toHaveBeenCalledWith(
               expect.objectContaining({ variables: { issuableId: 'gql:id:1' } }),
             );
-            expect(observable.subscribe).toHaveBeenCalled();
+            expect(querySpy.mock.invocationCallOrder[0]).toBeLessThan(
+              apolloSubscribeSpy.mock.invocationCallOrder[0],
+            );
           });
 
-          describe('when the MR has been updated', () => {
-            let emitSpy;
-            let behavior;
+          it('does not emit anything while the merge request is still preparing', async () => {
+            await start(callArgs);
+            await waitForPromises();
 
+            expect(emitSpy).not.toHaveBeenCalled();
+            expect(unsubscribeSpy).not.toHaveBeenCalled();
+          });
+
+          describe('when the page was not rendered while the merge request was preparing', () => {
+            it('does not re-read the status when the subscription is acknowledged', async () => {
+              await start(callArgs);
+              await waitForPromises();
+
+              expect(querySpy).toHaveBeenCalledTimes(1);
+            });
+          });
+
+          describe('when the page was rendered while the merge request was preparing', () => {
             beforeEach(() => {
-              emitSpy = jest.spyOn(diffsEventHub, '$emit');
-              nextSpy.mockImplementation((data) => behavior?.(data));
-              subscribeSpy.mockImplementation((handler) => {
-                behavior = handler;
+              renderTabCount(true);
+              withoutAutomaticAcknowledgement();
+            });
 
-                return { unsubscribe: unsubscribeSpy };
+            it('re-reads the status with network-only fetch policy once the subscription is acknowledged', async () => {
+              await start(callArgs);
+
+              expect(querySpy).toHaveBeenCalledTimes(1);
+
+              behavior(acknowledgement);
+              await waitForPromises();
+
+              expect(querySpy).toHaveBeenCalledTimes(2);
+              expect(querySpy).toHaveBeenLastCalledWith(
+                expect.objectContaining({ fetchPolicy: 'network-only' }),
+              );
+            });
+
+            it('re-reads the status only once', async () => {
+              await start(callArgs);
+
+              behavior(acknowledgement);
+              behavior({ data: { mergeRequestMergeStatusUpdated: { preparedAt: null } } });
+              await waitForPromises();
+
+              expect(querySpy).toHaveBeenCalledTimes(2);
+            });
+
+            describe('when the re-read still reports the merge request as preparing', () => {
+              it('keeps the subscription and emits nothing', async () => {
+                await start(callArgs);
+
+                behavior(acknowledgement);
+                await waitForPromises();
+
+                expect(emitSpy).not.toHaveBeenCalled();
+                expect(unsubscribeSpy).not.toHaveBeenCalled();
               });
             });
 
-            it('emits EVT_MR_PREPARED and unsubscribes when the MR is prepared', async () => {
+            describe('when the re-read reports the merge request as prepared', () => {
+              beforeEach(() => {
+                querySpy
+                  .mockResolvedValueOnce(preparingStatus)
+                  .mockResolvedValueOnce(preparedStatus);
+              });
+
+              it('emits EVT_MR_PREPARED and unsubscribes', async () => {
+                await start(callArgs);
+
+                behavior(acknowledgement);
+                await waitForPromises();
+
+                expect(emitSpy).toHaveBeenCalledWith(EVT_MR_PREPARED);
+                expect(unsubscribeSpy).toHaveBeenCalled();
+              });
+
+              it('emits EVT_MR_DIFF_GENERATED with the re-read status without querying again', async () => {
+                await start(callArgs);
+
+                behavior(acknowledgement);
+                await waitForPromises();
+
+                expect(querySpy).toHaveBeenCalledTimes(2);
+                expect(emitSpy).toHaveBeenCalledWith(
+                  EVT_MR_DIFF_GENERATED,
+                  preparedStatus.data.project.mergeRequest,
+                );
+              });
+            });
+
+            describe('when the re-read fails', () => {
+              it('does not throw and keeps the subscription', async () => {
+                querySpy
+                  .mockResolvedValueOnce(preparingStatus)
+                  .mockRejectedValueOnce(new Error('network error'));
+
+                await start(callArgs);
+
+                behavior(acknowledgement);
+                await waitForPromises();
+
+                expect(emitSpy).not.toHaveBeenCalled();
+                expect(unsubscribeSpy).not.toHaveBeenCalled();
+              });
+            });
+
+            it('acts once when the subscription reports prepared while the re-read is in flight', async () => {
+              let resolveRecheck;
+              querySpy.mockResolvedValueOnce(preparingStatus).mockImplementationOnce(
+                () =>
+                  new Promise((resolve) => {
+                    resolveRecheck = resolve;
+                  }),
+              );
+
               await start(callArgs);
 
-              observable.next({ data: { mergeRequestMergeStatusUpdated: { preparedAt: 'x' } } });
+              behavior(acknowledgement);
+              await waitForPromises();
+              behavior(preparedUpdate);
+              resolveRecheck(preparedStatus);
+              await waitForPromises();
+
+              expect(
+                emitSpy.mock.calls.filter(([event]) => event === EVT_MR_PREPARED),
+              ).toHaveLength(1);
+              expect(unsubscribeSpy).toHaveBeenCalledTimes(1);
+            });
+          });
+
+          describe('when the subscription reports the merge request as prepared', () => {
+            it('emits EVT_MR_PREPARED and unsubscribes', async () => {
+              await start(callArgs);
+
+              behavior(preparedUpdate);
               await waitForPromises();
 
               expect(unsubscribeSpy).toHaveBeenCalled();
               expect(emitSpy).toHaveBeenCalledWith(EVT_MR_PREPARED);
             });
 
-            describe('and the MR preparation is complete (preparedAt is set)', () => {
-              const freshMrData = {
-                commitCount: 3,
-                diffStatsSummary: { fileCount: 5 },
-                preparedAt: 'x',
-              };
+            it('ignores updates without preparedAt', async () => {
+              await start(callArgs);
 
-              beforeEach(() => {
-                querySpy.mockResolvedValueOnce({
-                  data: { project: { mergeRequest: { id: 'gql:id:1', preparedAt: null } } },
-                });
-                querySpy.mockResolvedValueOnce({
-                  data: { project: { mergeRequest: freshMrData } },
-                });
-              });
+              behavior({ data: { mergeRequestMergeStatusUpdated: { preparedAt: null } } });
+              await waitForPromises();
 
-              it('re-queries the MR with network-only fetch policy', async () => {
-                await start(callArgs);
-
-                observable.next({ data: { mergeRequestMergeStatusUpdated: { preparedAt: 'x' } } });
-                await waitForPromises();
-
-                expect(querySpy).toHaveBeenCalledTimes(2);
-                expect(querySpy).toHaveBeenLastCalledWith(
-                  expect.objectContaining({
-                    variables: { projectPath: 'x/y', iid: '1' },
-                    fetchPolicy: 'network-only',
-                  }),
-                );
-              });
-
-              it('emits EVT_MR_DIFF_GENERATED with fresh MR data', async () => {
-                await start(callArgs);
-
-                observable.next({ data: { mergeRequestMergeStatusUpdated: { preparedAt: 'x' } } });
-                await waitForPromises();
-
-                expect(emitSpy).toHaveBeenCalledWith(EVT_MR_DIFF_GENERATED, freshMrData);
-              });
+              expect(emitSpy).not.toHaveBeenCalled();
             });
 
-            describe('and the re-query fails', () => {
-              beforeEach(() => {
-                querySpy.mockResolvedValueOnce({
-                  data: { project: { mergeRequest: { id: 'gql:id:1', preparedAt: null } } },
-                });
-                querySpy.mockRejectedValueOnce(new Error('network error'));
-              });
+            it('re-queries the MR with network-only fetch policy and emits fresh data', async () => {
+              querySpy.mockResolvedValueOnce(preparingStatus).mockResolvedValueOnce(preparedStatus);
 
-              it('does not throw and does not emit EVT_MR_DIFF_GENERATED', async () => {
-                await start(callArgs);
+              await start(callArgs);
 
-                observable.next({ data: { mergeRequestMergeStatusUpdated: { preparedAt: 'x' } } });
-                await waitForPromises();
+              behavior(preparedUpdate);
+              await waitForPromises();
 
-                expect(emitSpy).toHaveBeenCalledWith(EVT_MR_PREPARED);
-                expect(emitSpy).not.toHaveBeenCalledWith(EVT_MR_DIFF_GENERATED, expect.anything());
-              });
+              expect(querySpy).toHaveBeenCalledTimes(2);
+              expect(querySpy).toHaveBeenLastCalledWith(
+                expect.objectContaining({ fetchPolicy: 'network-only' }),
+              );
+              expect(emitSpy).toHaveBeenCalledWith(
+                EVT_MR_DIFF_GENERATED,
+                preparedStatus.data.project.mergeRequest,
+              );
+            });
+
+            it('does not throw and does not emit EVT_MR_DIFF_GENERATED when the re-query fails', async () => {
+              querySpy
+                .mockResolvedValueOnce(preparingStatus)
+                .mockRejectedValueOnce(new Error('network error'));
+
+              await start(callArgs);
+
+              behavior(preparedUpdate);
+              await waitForPromises();
+
+              expect(emitSpy).toHaveBeenCalledWith(EVT_MR_PREPARED);
+              expect(emitSpy).not.toHaveBeenCalledWith(EVT_MR_DIFF_GENERATED, expect.anything());
             });
           });
         });

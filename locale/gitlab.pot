@@ -57843,7 +57843,7 @@ msgstr ""
 msgid "Organization is not initializing maintenance"
 msgstr ""
 
-msgid "Organization is not ready for maintenance"
+msgid "Organization is not ready for maintenance: %{reason}"
 msgstr ""
 
 msgid "Organization is not soft-deleted"
@@ -70521,6 +70521,15 @@ msgstr ""
 msgid "ScanProfiles|Default"
 msgstr ""
 
+msgid "ScanProfiles|Delete %{profileName}"
+msgstr ""
+
+msgid "ScanProfiles|Delete profile"
+msgstr ""
+
+msgid "ScanProfiles|Deleted “%{profileName}”"
+msgstr ""
+
 msgid "ScanProfiles|Full repository"
 msgstr ""
 
@@ -70531,6 +70540,9 @@ msgid "ScanProfiles|General details"
 msgstr ""
 
 msgid "ScanProfiles|GitLab"
+msgstr ""
+
+msgid "ScanProfiles|GitLab-managed profiles can't be deleted."
 msgstr ""
 
 msgid "ScanProfiles|Information about this configuration profile."
@@ -70582,6 +70594,9 @@ msgid "ScanProfiles|What are configuration profiles?"
 msgstr ""
 
 msgid "ScanProfiles|When and how scans are run."
+msgstr ""
+
+msgid "ScanProfiles|You are about to delete “%{profileName}”. Are you sure you want to proceed?"
 msgstr ""
 
 msgid "ScanResultPolicy|%{boldStart}Warning:%{boldEnd} Using this status in strictly enforced policies can block merge requests even if there are no new vulnerabilities found in the latest scan. It's recommended that you use warn mode only with this status."
@@ -72784,6 +72799,9 @@ msgid "SecurityConfiguration|Exit setup"
 msgstr ""
 
 msgid "SecurityConfiguration|Failed"
+msgstr ""
+
+msgid "SecurityConfiguration|Failed to delete “%{profileName}”."
 msgstr ""
 
 msgid "SecurityConfiguration|Failed to load projects"
@@ -98433,7 +98451,7 @@ msgstr ""
 msgid "must be less than the limit of %{tag_limit} tags"
 msgstr ""
 
-msgid "must be nil or a lambda accepting keyword arguments: %{keywords}"
+msgid "must be nil, or a lambda or class accepting keyword arguments: %{keywords}"
 msgstr ""
 
 msgid "must be no greater than the number of agent config versions"

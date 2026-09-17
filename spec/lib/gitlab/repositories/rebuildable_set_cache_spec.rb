@@ -20,12 +20,8 @@ RSpec.describe Gitlab::Repositories::RebuildableSetCache, :clean_gitlab_redis_re
       expect(described_class::REBUILD_FLAG_TTL).to eq(10.minutes)
     end
 
-    it 'defines TRUST_TTL as 1 hour' do
-      expect(described_class::TRUST_TTL).to eq(1.hour)
-    end
-
-    it 'defines INCREASED_TRUST_TTL as 6 hours' do
-      expect(described_class::INCREASED_TRUST_TTL).to eq(6.hours)
+    it 'defines TRUST_TTL as 6 hours' do
+      expect(described_class::TRUST_TTL).to eq(6.hours)
     end
 
     it 'defines TRUST_TTL_JITTER as 30 minutes' do
@@ -531,6 +527,10 @@ RSpec.describe Gitlab::Repositories::RebuildableSetCache, :clean_gitlab_redis_re
     subject(:write_cache) { cache.write(:branch_names, %w[main feature]) }
 
     let(:trust_ttl_offset) { 5.minutes.to_i }
+
+    before do
+      allow(cache).to receive(:rand).with(described_class::TRUST_TTL_JITTER.to_i).and_return(trust_ttl_offset)
+    end
 
     it 'writes the values to the cache' do
       write_cache
@@ -1077,90 +1077,45 @@ RSpec.describe Gitlab::Repositories::RebuildableSetCache, :clean_gitlab_redis_re
       end
     end
 
-    context 'when increase_ref_cache_trust_ttl is enabled' do
-      before do
-        allow(cache).to receive(:rand).with(described_class::TRUST_TTL_JITTER.to_i).and_return(trust_ttl_offset)
-      end
+    it 'forwards the jittered TTL to the non-empty cache Lua writer', :aggregate_failures do
+      full_key = cache.cache_key(:branch_names)
+      trust_key = cache.trust_key(:branch_names)
 
-      it 'forwards the increased jittered TTL to the non-empty cache Lua writer', :aggregate_failures do
-        full_key = cache.cache_key(:branch_names)
-        trust_key = cache.trust_key(:branch_names)
-
-        eval_keys = nil
-        eval_argv = nil
-        allow(Gitlab::Redis::RepositoryCache).to receive(:with).and_wrap_original do |original, &block|
-          original.call do |redis|
-            allow(redis).to receive(:eval).and_wrap_original do |eval_method, script, keys:, argv:|
-              if script == described_class::TRUST_IF_EXISTS_SCRIPT
-                eval_keys = keys
-                eval_argv = argv
-              end
-
-              eval_method.call(script, keys: keys, argv: argv)
+      eval_keys = nil
+      eval_argv = nil
+      allow(Gitlab::Redis::RepositoryCache).to receive(:with).and_wrap_original do |original, &block|
+        original.call do |redis|
+          allow(redis).to receive(:eval).and_wrap_original do |eval_method, script, keys:, argv:|
+            if script == described_class::TRUST_IF_EXISTS_SCRIPT
+              eval_keys = keys
+              eval_argv = argv
             end
 
-            block.call(redis)
+            eval_method.call(script, keys: keys, argv: argv)
           end
+
+          block.call(redis)
         end
-
-        cache.write(:branch_names, %w[main develop])
-
-        expect(eval_keys).to eq([full_key, trust_key])
-        expect(eval_argv).to eq([
-          described_class::INCREASED_TRUST_TTL.to_i + trust_ttl_offset,
-          described_class::FLAG_VALUE
-        ])
       end
 
-      it 'sets the increased jittered TTL on the empty cache trust flag' do
-        cache.write(:branch_names, [])
+      cache.write(:branch_names, %w[main develop])
 
-        ttl = Gitlab::Redis::RepositoryCache.with do |redis|
-          redis.ttl(cache.trust_key(:branch_names))
-        end
-        expected_ttl = described_class::INCREASED_TRUST_TTL.to_i + trust_ttl_offset
-
-        expect(ttl).to be_between(expected_ttl - 2, expected_ttl)
-      end
+      expect(eval_keys).to eq([full_key, trust_key])
+      expect(eval_argv).to eq([
+        described_class::TRUST_TTL.to_i + trust_ttl_offset,
+        described_class::FLAG_VALUE
+      ])
     end
 
-    context 'when increase_ref_cache_trust_ttl is disabled' do
-      before do
-        stub_feature_flags(increase_ref_cache_trust_ttl: false)
+    it 'sets the jittered TTL on the empty cache trust flag' do
+      cache.write(:branch_names, [])
+
+      ttl = Gitlab::Redis::RepositoryCache.with do |redis|
+        redis.ttl(cache.trust_key(:branch_names))
       end
+      expected_ttl = described_class::TRUST_TTL.to_i + trust_ttl_offset
 
-      it 'forwards the legacy TTL to the non-empty cache Lua writer', :aggregate_failures do
-        expect(cache).not_to receive(:rand)
-
-        eval_argv = nil
-        allow(Gitlab::Redis::RepositoryCache).to receive(:with).and_wrap_original do |original, &block|
-          original.call do |redis|
-            allow(redis).to receive(:eval).and_wrap_original do |eval_method, script, keys:, argv:|
-              eval_argv = argv if script == described_class::TRUST_IF_EXISTS_SCRIPT
-
-              eval_method.call(script, keys: keys, argv: argv)
-            end
-
-            block.call(redis)
-          end
-        end
-
-        cache.write(:branch_names, %w[main develop])
-
-        expect(eval_argv).to eq([described_class::TRUST_TTL.to_i, described_class::FLAG_VALUE])
-      end
-
-      it 'sets the legacy TTL on the empty cache trust flag', :aggregate_failures do
-        expect(cache).not_to receive(:rand)
-
-        cache.write(:branch_names, [])
-
-        ttl = Gitlab::Redis::RepositoryCache.with do |redis|
-          redis.ttl(cache.trust_key(:branch_names))
-        end
-
-        expect(ttl).to be_between(described_class::TRUST_TTL.to_i - 2, described_class::TRUST_TTL.to_i)
-      end
+      expect(ttl).to be_between(expected_ttl - 2, expected_ttl)
     end
   end
 

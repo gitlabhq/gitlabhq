@@ -44,8 +44,11 @@ module RapidDiffs
 
     def linked_file
       return if linked_file_params[:old_path].nil? && linked_file_params[:new_path].nil?
+      # `||=` would re-run the lookup on every call when the requested file is not in the diff,
+      # and every caller of #offset asks for it.
+      return @linked_file if defined?(@linked_file)
 
-      @linked_file ||= begin
+      @linked_file = begin
         collection = resource.diffs(diff_options.merge({
           paths: [linked_file_params[:old_path], linked_file_params[:new_path]].compact
         }))

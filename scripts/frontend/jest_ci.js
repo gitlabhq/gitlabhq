@@ -42,10 +42,6 @@ function parseArgumentsAndEnvironment() {
       'Run tests under Vue 3 (via @vue/compat). The default is to run under Vue 2. The VUE_VERSION environment variable must agree with this option.',
     )
     .option(
-      '--include-vue3-quarantined',
-      'Include tests normally quarantined under Vue 3. This is currently used for nightly pipelines. Has no effect without --vue3. The default (given --vue3) is to exclude quarantined tests.',
-    )
-    .option(
       '--predictive',
       'Only run specs affected by the changes in the merge request. The default is to run all specs.',
     )
@@ -124,7 +120,6 @@ function parseArgumentsAndEnvironment() {
 
   return {
     vue3: options.vue3,
-    includeVue3Quarantined: options.includeVue3Quarantined,
     predictive: options.predictive,
     fixtures: options.fixtures,
     coverage,
@@ -147,8 +142,6 @@ function loggedSpawnSync(command, args, options) {
 }
 
 function runJest({
-  vue3,
-  includeVue3Quarantined,
   predictive,
   fixtures,
   coverage,
@@ -166,12 +159,7 @@ function runJest({
     '--testLocationInResults',
   ];
 
-  const sequencerArguments = [
-    '--testSequencer',
-    vue3 && !includeVue3Quarantined
-      ? './scripts/frontend/skip_specs_broken_in_vue_compat_fixture_ci_sequencer.js'
-      : './scripts/frontend/fixture_ci_sequencer.js',
-  ];
+  const sequencerArguments = ['--testSequencer', './scripts/frontend/fixture_ci_sequencer.js'];
 
   const predictiveArguments = predictive
     ? ['--passWithNoTests', '--findRelatedTests', ...changedFiles]

@@ -13,15 +13,15 @@ RSpec.describe Organizations::ConfirmMaintenanceService, feature_category: :orga
 
   subject(:response) { described_class.new(organization).execute }
 
-  def stub_ready(ready)
+  def stub_blocking_reason(reason)
     allow_next_instance_of(Gitlab::Organizations::MaintenanceReadiness) do |readiness|
-      allow(readiness).to receive(:ready?).and_return(ready)
+      allow(readiness).to receive(:blocking_reason).and_return(reason)
     end
   end
 
   def reach_source_state
     organization.start_maintenance(maintenance_reason: 'migration')
-    stub_ready(true)
+    stub_blocking_reason(nil)
   end
 
   def reach_target_state
@@ -39,12 +39,13 @@ RSpec.describe Organizations::ConfirmMaintenanceService, feature_category: :orga
     context 'when the organization is not ready for maintenance' do
       before do
         organization.start_maintenance(maintenance_reason: 'migration')
-        stub_ready(false)
+        stub_blocking_reason('active batched background migrations')
       end
 
-      it 'returns a retryable error and does not transition', :aggregate_failures do
+      it 'returns a retryable error naming the blocker and does not transition', :aggregate_failures do
         expect(response).to be_error
-        expect(response.message).to eq('Organization is not ready for maintenance')
+        expect(response.message)
+          .to eq('Organization is not ready for maintenance: active batched background migrations')
         expect(response.reason).to eq(:not_ready)
         expect(organization.reload.state_name).to eq(:maintenance_initialization)
       end

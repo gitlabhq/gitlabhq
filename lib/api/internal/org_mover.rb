@@ -69,7 +69,8 @@ module API
         end
 
         desc 'Report cutover readiness for an organization' do
-          detail 'Reports whether an organization is drained and safe to enter maintenance.'
+          detail 'Reports whether an organization is drained and safe to enter maintenance, ' \
+            'and what is blocking it when not.'
           success code: 200
           failure [
             { code: 401, message: 'Unauthorized' },
@@ -83,9 +84,9 @@ module API
         route_setting :authorization, skip_granular_token_authorization: :gitlab_shell_token_auth
         get 'maintenance_readiness' do
           organization = find_org!
-          readiness = ::Gitlab::Organizations::MaintenanceReadiness.new(organization)
+          blocking_reason = ::Gitlab::Organizations::MaintenanceReadiness.new(organization).blocking_reason
 
-          { ready: readiness.ready? }
+          { ready: blocking_reason.nil?, blocking_reason: blocking_reason }
         end
 
         desc 'Start maintenance on an organization (active -> maintenance_initialization)' do

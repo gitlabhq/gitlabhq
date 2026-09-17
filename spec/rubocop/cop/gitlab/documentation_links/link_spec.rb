@@ -1,5 +1,7 @@
 # frozen_string_literal: true
 
+require 'fileutils'
+require 'tmpdir'
 require 'rubocop_spec_helper'
 require_relative '../../../../../rubocop/cop/gitlab/documentation_links/link'
 
@@ -178,8 +180,83 @@ RSpec.describe RuboCop::Cop::Gitlab::DocumentationLinks::Link, feature_category:
   end
 
   describe '#external_dependency_checksum' do
-    it 'returns a SHA256 digest used by RuboCop to invalid cache' do
-      expect(cop.external_dependency_checksum).to match(/^\h{128}$/)
+    let(:tmpdir) { Dir.mktmpdir }
+
+    around do |example|
+      Dir.chdir(tmpdir) { example.run }
+    end
+
+    after do
+      FileUtils.remove_entry(tmpdir)
+    end
+
+    def write_doc(path, heading: '# Heading')
+      full = File.join('doc', path)
+      FileUtils.mkdir_p(File.dirname(full))
+      File.write(full, "#{heading}\n")
+    end
+
+    # A fresh checksum from a fresh cop instance. Clears the class-level anchor
+    # cache so each computation reflects the current files (in a real run the
+    # checksum is computed once and docs do not change mid-run).
+    def checksum
+      described_class.anchors_by_docs_file = {}
+      described_class.new(config).external_dependency_checksum
+    end
+
+    before do
+      write_doc('page.md', heading: "# Title\n\n## Section")
+    end
+
+    it 'returns a SHA512 digest used by RuboCop to invalidate its cache' do
+      expect(checksum).to match(/^\h{128}$/)
+    end
+
+    it 'is stable across runs when nothing changes' do
+      first = checksum
+      second = checksum
+
+      expect(first).to eq(second)
+    end
+
+    it 'changes when a heading is added, moved, or renamed' do
+      before_change = checksum
+
+      write_doc('page.md', heading: "# Title\n\n## Section\n\n## New section")
+
+      expect(checksum).not_to eq(before_change)
+    end
+
+    it 'does not change on a prose-only edit' do
+      before_change = checksum
+
+      write_doc('page.md', heading: "# Title\n\nSome new prose.\n\n## Section")
+
+      expect(checksum).to eq(before_change)
+    end
+
+    it 'changes when a doc is added' do
+      before_change = checksum
+
+      write_doc('another.md')
+
+      expect(checksum).not_to eq(before_change)
+    end
+
+    it 'changes when a doc is removed' do
+      before_change = checksum
+
+      FileUtils.rm(File.join('doc', 'page.md'))
+
+      expect(checksum).not_to eq(before_change)
+    end
+
+    it 'hashes every doc, including ones no source file links to' do
+      before_change = checksum
+
+      write_doc('unreferenced/other.md', heading: "# Changed\n\n## Anchor")
+
+      expect(checksum).not_to eq(before_change)
     end
   end
 end

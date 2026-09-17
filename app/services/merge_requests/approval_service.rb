@@ -3,15 +3,23 @@
 module MergeRequests
   class ApprovalService < MergeRequests::BaseService
     def execute(merge_request)
-      return unless eligible_for_approval?(merge_request)
-      return if merge_request.merged?
+      unless eligible_for_approval?(merge_request)
+        return already_approved_error if merge_request.approved_by?(current_user)
+
+        return ServiceResponse.error(message: 'User is not eligible to approve', reason: :not_eligible)
+      end
+
+      if merge_request.merged?
+        return ServiceResponse.error(message: 'Merge request is already merged', reason: :merge_request_merged)
+      end
 
       approval = merge_request.approvals.new(
         user: current_user,
         patch_id_sha: patch_id_sha_for(merge_request)
       )
 
-      return success unless save_approval(approval)
+      # A failed save means a concurrent request already created the approval.
+      return ServiceResponse.success unless save_approval(approval)
 
       update_reviewer_state(merge_request, current_user, 'approved')
 
@@ -43,10 +51,14 @@ module MergeRequests
         )
       )
 
-      success
+      ServiceResponse.success
     end
 
     private
+
+    def already_approved_error
+      ServiceResponse.error(message: 'Merge request is already approved by the user', reason: :already_approved)
+    end
 
     def eligible_for_approval?(merge_request)
       merge_request.eligible_for_approval_by?(current_user)

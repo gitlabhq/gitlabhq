@@ -2274,7 +2274,7 @@ GEM
     timfel-krb5-auth (0.8.3)
     tins (1.31.1)
       sync
-    toml-rb (4.1.0)
+    toml-rb (4.2.1)
       citrus (~> 3.0, > 3.0)
       racc (~> 1.7)
     tomlrb (1.3.0)
@@ -3581,7 +3581,7 @@ CHECKSUMS
   timeout (0.6.1) sha256=78f57368a7e7bbadec56971f78a3f5ecbcfb59b7fcbb0a3ed6ddc08a5094accb
   timfel-krb5-auth (0.8.3) sha256=ab388c9d747fa3cd95baf2cc1c03253e372d8c680adcc543670f4f099854bb80
   tins (1.31.1) sha256=51c4a347c25c630d310cbc2c040ffb84e266c8227f2ade881f1130ee4f9fbecf
-  toml-rb (4.1.0) sha256=14456ec4549e4703881bf04b83a56f3264ef99884880092d83c98a2058d95846
+  toml-rb (4.2.1) sha256=e6c40e27905e86a7d38cc252eb4bc12d72c61576c826a358390c30f5de0b9dbb
   tomlrb (1.3.0) sha256=68666bf53fa70ba686a48a7435ce7e086f5227c58c4c993bd9792f4760f2a503
   toon-ruby (0.1.1) sha256=c0395be95161f3fe2487888b4172cc6ecafdbbbb9aa2a580a0dc2d7563458428
   tpm-key_attestation (0.14.1) sha256=7fd4e4653a7afd0a386632ddfb05d10ecfdd47678299c5e69165bc9ae111193f

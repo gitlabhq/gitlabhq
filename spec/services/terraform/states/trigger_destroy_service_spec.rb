@@ -20,12 +20,47 @@ RSpec.describe Terraform::States::TriggerDestroyService, feature_category: :infr
       expect(state.deleted_at).to be_like_time(Time.current)
     end
 
+    context 'when the state has no versions' do
+      let(:state) { create(:terraform_state, project: project) }
+
+      it 'tracks an internal event' do
+        expect { subject }
+          .to trigger_internal_events('delete_terraform_state')
+          .with(project: project, user: user, additional_properties: { label: 'without_versions' })
+          .and increment_usage_metrics('counts.count_total_delete_terraform_state')
+      end
+    end
+
+    context 'when the state has versions' do
+      let(:state) { create(:terraform_state, :with_version, project: project) }
+
+      it 'tracks an internal event labelled with_versions' do
+        expect { subject }
+          .to trigger_internal_events('delete_terraform_state')
+          .with(project: project, user: user, additional_properties: { label: 'with_versions' })
+          .and increment_usage_metrics('counts.count_total_delete_terraform_state')
+      end
+    end
+
     context 'within a database transaction' do
       subject { state.with_lock { service.execute } }
 
       it 'does not raise an EnqueueFromTransactionError' do
         expect { subject }.not_to raise_error
         expect(state.deleted_at).to be_like_time(Time.current)
+      end
+    end
+
+    context 'when the surrounding transaction rolls back' do
+      let(:state) { create(:terraform_state, project: project) }
+
+      it 'does not track an internal event' do
+        expect do
+          ApplicationRecord.transaction(requires_new: true) do
+            service.execute
+            raise ActiveRecord::Rollback
+          end
+        end.not_to trigger_internal_events('delete_terraform_state')
       end
     end
 
@@ -36,6 +71,10 @@ RSpec.describe Terraform::States::TriggerDestroyService, feature_category: :infr
         expect { subject }.not_to change { state.deleted_at }
         expect(subject).to be_error
         expect(subject.message).to eq(message)
+      end
+
+      it 'does not track an internal event' do
+        expect { subject }.not_to trigger_internal_events('delete_terraform_state')
       end
     end
 

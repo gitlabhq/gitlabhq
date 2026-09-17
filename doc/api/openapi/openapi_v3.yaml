@@ -15038,7 +15038,8 @@ paths:
     get:
       operationId: getApiV4InternalOrgMoverMaintenanceReadiness
       summary: Report cutover readiness for an organization
-      description: Reports whether an organization is drained and safe to enter maintenance.
+      description: Reports whether an organization is drained and safe to enter maintenance,
+        and what is blocking it when not.
       tags:
       - Organizations
       responses:

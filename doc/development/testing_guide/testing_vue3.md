@@ -12,7 +12,6 @@ Right now, we fail pipelines if:
 
 1. A new test file is added that fails in Vue 3 mode.
 1. An existing test file fails under Vue 3 that was previously passing.
-1. One of the known failures on the [quarantine list](#quarantine-list) is now passing and has not been removed from the quarantine list.
 
 ## Running unit tests locally with Vue 3
 
@@ -389,29 +388,3 @@ Unlike Vue router 3 (Vue 2), Vue router 4 requires a `component` or `children` p
 This is an anti-pattern, as Vue router is overkill, a preferable approach would be to use vanilla JS to manage query routes with [URL searchParams](https://developer.mozilla.org/en-US/docs/Web/API/URL/searchParams) for example.
 
 When rewriting the component is not possible, passing the `App` component that the application is rendering without the use of `router-view` will let the tests pass, however, this opens up the possibility of introducing unwanted behavior in the future if a `<router-view />` is added to the component and should be used with care.
-
-### Quarantine list
-
-The `scripts/frontend/quarantined_vue3_specs.txt` file is built up of all the known failing Vue 3 test files.
-In order to not overwhelm us with failing pipelines, these files are skipped on the Vue 3 test job.
-
-If you're reading this, it's likely you were sent here by a failing quarantine job.
-This job is confusing as it fails when a test passes and it passes if they all fail.
-The reason for this is because all newly passing tests should be [removed from the quarantine list](#removing-from-the-quarantine-list).
-Congratulate yourself on fixing a previously failing test and remove it from the quarantine list to get this pipeline passing again.
-
-#### Removing from the quarantine list
-
-If your pipeline is failing because of the `vue3 check quarantined` jobs, good news!
-You fixed a previously failing test!
-What you need to do now is remove the newly-passing test from the quarantine list.
-This ensures that the test will continue to pass and prevent any further regressions.
-
-#### Adding to the quarantine list
-
-Don't do it.
-This list should only get smaller, not larger.
-If your MR introduces a new test file or breaks a currently passing one, then you should fix it.
-
-If you are moving a test file from one location to another, then it's okay to modify the location in the quarantine list.
-However, before doing so, consider fixing the test first.

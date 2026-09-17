@@ -1,6 +1,7 @@
 import diffGeneratedSubscription from '~/pages/projects/merge_requests/queries/diff_generated.subscription.graphql';
 
 import createApolloClient from '../lib/graphql';
+import { parseBoolean } from '../lib/utils/common_utils';
 
 import { getDerivedMergeRequestInformation } from '../diffs/utils/merge_request';
 import { EVT_MR_PREPARED, EVT_MR_DIFF_GENERATED } from '../diffs/constants';
@@ -22,53 +23,73 @@ async function observeMergeRequestFinishingPreparation({ apollo, signaler }) {
   });
   const projectPath = `${namespace}/${project}`;
 
-  if (projectPath && iid) {
-    const currentStatus = await apollo.query({
-      query: getMr,
-      variables: { projectPath, iid },
-    });
+  if (!projectPath || !iid) return;
 
-    if (!currentStatus.data.project) {
+  const renderedWhilePreparing = parseBoolean(
+    document.querySelector('.js-changes-tab-count')?.dataset.preparing,
+  );
+  const getStatus = (fetchPolicy) =>
+    apollo.query({ query: getMr, variables: { projectPath, iid }, fetchPolicy });
+
+  const currentStatus = await getStatus();
+
+  if (!currentStatus.data.project) return;
+
+  const { id: gqlMrId, preparedAt } = currentStatus.data.project.mergeRequest;
+  let preparationSubscriber;
+  let prepared = false;
+
+  // Both the subscription and a status query can report the MR as prepared: act on the first.
+  const onPrepared = async (knownStatus) => {
+    if (prepared) return;
+    prepared = true;
+
+    preparationSubscriber?.unsubscribe();
+    signaler.$emit(EVT_MR_PREPARED);
+
+    if (knownStatus) {
+      signaler.$emit(EVT_MR_DIFF_GENERATED, knownStatus);
       return;
     }
 
-    const { id: gqlMrId, preparedAt } = currentStatus.data.project.mergeRequest;
-    let preparationObservable;
-    let preparationSubscriber;
-
-    if (!preparedAt) {
-      preparationObservable = apollo.subscribe({
-        query: mrPreparation,
-        variables: {
-          issuableId: gqlMrId,
-        },
-      });
-
-      preparationSubscriber = preparationObservable.subscribe(async (preparationUpdate) => {
-        if (preparationUpdate.data.mergeRequestMergeStatusUpdated?.preparedAt) {
-          signaler.$emit(EVT_MR_PREPARED);
-          preparationSubscriber.unsubscribe();
-
-          try {
-            const freshStatus = await apollo.query({
-              query: getMr,
-              variables: { projectPath, iid },
-              fetchPolicy: 'network-only',
-            });
-            if (freshStatus.data.project?.mergeRequest) {
-              signaler.$emit(EVT_MR_DIFF_GENERATED, freshStatus.data.project.mergeRequest);
-            }
-          } catch {
-            // noop: tab counts remain as `-` until the user refreshes
-          }
-        } else {
-          signaler.$emit(EVT_MR_DIFF_GENERATED, currentStatus.data.project.mergeRequest);
-        }
-      });
-    } else {
-      signaler.$emit(EVT_MR_DIFF_GENERATED, currentStatus.data.project.mergeRequest);
+    try {
+      const { data } = await getStatus('network-only');
+      if (data.project?.mergeRequest)
+        signaler.$emit(EVT_MR_DIFF_GENERATED, data.project.mergeRequest);
+    } catch {
+      // noop: tab counts remain as `-` until the user refreshes
     }
+  };
+
+  if (preparedAt) {
+    // Preparation finished between the server render and this query, so no broadcast follows it.
+    if (renderedWhilePreparing) onPrepared(currentStatus.data.project.mergeRequest);
+    else signaler.$emit(EVT_MR_DIFF_GENERATED, currentStatus.data.project.mergeRequest);
+    return;
   }
+
+  let recheckedOnAck = false;
+
+  preparationSubscriber = apollo
+    .subscribe({ query: mrPreparation, variables: { issuableId: gqlMrId } })
+    .subscribe(async (preparationUpdate) => {
+      if (preparationUpdate.data?.mergeRequestMergeStatusUpdated?.preparedAt) {
+        onPrepared();
+        return;
+      }
+
+      // The first payload acknowledges the subscription. Preparation that finished before the
+      // subscription was registered never reached it, so the status is read once more.
+      if (recheckedOnAck || !renderedWhilePreparing) return;
+      recheckedOnAck = true;
+
+      try {
+        const { data } = await getStatus('network-only');
+        if (data.project?.mergeRequest?.preparedAt) onPrepared(data.project.mergeRequest);
+      } catch {
+        // noop: the subscription stays open for the broadcast
+      }
+    });
 }
 
 function observeMergeRequestDiffGenerated({ apollo, signaler }) {

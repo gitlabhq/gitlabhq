@@ -296,17 +296,15 @@ include:
 #
 #     => To reach 30min target duration, we would need 18 parallel jobs instead of 10.
 #
-# At the moment, we set the target to 30 minutes
+# At the moment, we set the target to 35 minutes
 #
 # https://app.snowflake.com/ys68254/gitlab/w2woEkSvsfYa/chart
 .rspec-migration-parallel:
-  parallel: 26
+  parallel: 8
 
 # https://app.snowflake.com/ys68254/gitlab/wpUmrAF0RJL/chart
-#
-# Please set back to around 10 once https://gitlab.com/gitlab-org/gitlab/-/issues/503221 is closed
 .rspec-background-migration-parallel:
-  parallel: 17
+  parallel: 12
 
 # https://app.snowflake.com/ys68254/gitlab/w4cxPH8ySQlP/chart
 .rspec-ee-migration-parallel:
@@ -318,11 +316,11 @@ include:
 
 # https://app.snowflake.com/ys68254/gitlab/w1tkkoZAXSsZ/chart
 .rspec-unit-parallel:
-  parallel: 44
+  parallel: 35
 
 # https://app.snowflake.com/ys68254/gitlab/w2GlD4YqHSbO/chart
 .rspec-ee-unit-parallel:
-  parallel: 39
+  parallel: 47
 
 # https://app.snowflake.com/ys68254/gitlab/w56UXaCA4xkG/chart
 .rspec-integration-parallel:
@@ -330,12 +328,12 @@ include:
 
 # https://app.snowflake.com/ys68254/gitlab/w4tXhUkSsFj/chart
 .rspec-ee-integration-parallel:
-  parallel: 9
+  parallel: 12
 
 # https://app.snowflake.com/ys68254/gitlab/w3Y3rkdbS25v/chart
 .rspec-system-parallel:
-  parallel: 32
+  parallel: 27
 
 # https://app.snowflake.com/ys68254/gitlab/w4zGboX1YRrY/chart
 .rspec-ee-system-parallel:
-  parallel: 16
+  parallel: 15

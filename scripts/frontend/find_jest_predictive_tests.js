@@ -7,7 +7,7 @@
  * 1. Changed files (changed_files.txt)
  * 2. Vue version predictive tests -- this doesn't affect test discovery, only test execution, so, we'lll get the list using Vue2
  *  2b. Vue 2 (includes all tests)
- *  2a. Vue 3 (some vue3 tests are quarantined)
+ *  2a. Vue 3
  * 3. Backend changes (`js_matching_files.txt`)
  *  3a. Fixtures
  *  3b. Views

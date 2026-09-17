@@ -43906,6 +43906,18 @@ Fields:
 
 #### Fields with arguments
 
+##### `DuoUsageEventsAggregationResponseDimensions.group`
+
+Group at the requested depth of the hierarchy. NULL for events tracked above that depth. Events tracked in a project at that depth bucket by project namespace ID, which also resolves to NULL.
+
+Returns [`Group`](#group).
+
+Arguments:
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="duousageeventsaggregationresponsedimensions-group-depth"></a>`depth` | [`Int`](#int) | Depth in the group hierarchy, counted from the top-level group. Defaults to 1. |
+
 ##### `DuoUsageEventsAggregationResponseDimensions.timestamp`
 
 Event date.

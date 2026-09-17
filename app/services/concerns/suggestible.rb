@@ -31,6 +31,12 @@ module Suggestible
     raise NotImplementedError
   end
 
+  # Highlighting only needs paths and diff_refs, so subclasses may return a
+  # cheaper file than the one used for applying the suggestion.
+  def diff_file_for_highlight
+    diff_file
+  end
+
   def target_line
     raise NotImplementedError
   end

@@ -33,6 +33,7 @@ export default {
   data() {
     return {
       availableBranches: [],
+      lastCommitBranch: '',
       pageCounter: 0,
       searchTerm: '',
       currentBranch: this.currentBranchName,
@@ -58,21 +59,10 @@ export default {
         this.emitFetchError();
       },
     },
-    // eslint-disable-next-line @gitlab/vue-no-undef-apollo-properties
     lastCommitBranch: {
       query: getLastCommitBranch,
       update(data) {
         return data.workBranches.lastCommit.name;
-      },
-      result({ data }) {
-        if (data) {
-          const { name: lastCommitBranch } = data.workBranches.lastCommit;
-          if (lastCommitBranch === '' || this.availableBranches.includes(lastCommitBranch)) {
-            return;
-          }
-
-          this.availableBranches.unshift(lastCommitBranch);
-        }
       },
     },
   },
@@ -80,8 +70,14 @@ export default {
     infiniteScrollEnabled() {
       return this.availableBranches.length > 0;
     },
+    branches() {
+      if (!this.lastCommitBranch || this.availableBranches.includes(this.lastCommitBranch)) {
+        return this.availableBranches;
+      }
+      return [this.lastCommitBranch, ...this.availableBranches];
+    },
     branchesData() {
-      return this.availableBranches.map((branch) => ({
+      return this.branches.map((branch) => ({
         text: branch,
         value: branch,
       }));

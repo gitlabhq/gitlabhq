@@ -12918,6 +12918,7 @@ CREATE TABLE ai_catalog_item_consumers (
     pinned_version_prefix text,
     service_account_id bigint,
     parent_item_consumer_id bigint,
+    kind smallint DEFAULT 0 NOT NULL,
     CONSTRAINT check_0acef721fa CHECK ((num_nonnulls(group_id, project_id) = 1)),
     CONSTRAINT check_a788d1fdfa CHECK ((char_length(pinned_version_prefix) <= 50))
 );
@@ -13230,7 +13231,7 @@ ALTER SEQUENCE ai_flow_schedules_id_seq OWNED BY ai_flow_schedules.id;
 
 CREATE TABLE ai_flow_triggers (
     id bigint NOT NULL,
-    project_id bigint NOT NULL,
+    project_id bigint,
     user_id bigint,
     config_path text,
     description text NOT NULL,
@@ -13241,8 +13242,10 @@ CREATE TABLE ai_flow_triggers (
     filter jsonb DEFAULT '{}'::jsonb NOT NULL,
     active boolean DEFAULT true NOT NULL,
     autonomous_service_account_id bigint,
+    group_id bigint,
     CONSTRAINT check_87b77d9d54 CHECK ((char_length(description) <= 255)),
     CONSTRAINT check_ai_flow_triggers_filter_is_hash CHECK ((jsonb_typeof(filter) = 'object'::text)),
+    CONSTRAINT check_ai_flow_triggers_project_or_group CHECK ((num_nonnulls(group_id, project_id) = 1)),
     CONSTRAINT check_ai_flow_triggers_user_consumer_mutually_exclusive CHECK ((num_nonnulls(ai_catalog_item_consumer_id, user_id) <= 1)),
     CONSTRAINT check_f3a5b0bd6e CHECK ((char_length(config_path) <= 255))
 );
@@ -47029,6 +47032,8 @@ CREATE INDEX index_ai_flow_triggers_on_ai_catalog_item_consumer_id ON ai_flow_tr
 
 CREATE INDEX index_ai_flow_triggers_on_autonomous_service_account_id ON ai_flow_triggers USING btree (autonomous_service_account_id) WHERE (autonomous_service_account_id IS NOT NULL);
 
+CREATE INDEX index_ai_flow_triggers_on_group_id ON ai_flow_triggers USING btree (group_id);
+
 CREATE INDEX index_ai_flow_triggers_on_project_id ON ai_flow_triggers USING btree (project_id);
 
 CREATE INDEX index_ai_flow_triggers_on_user_id_and_project_id ON ai_flow_triggers USING btree (user_id, project_id);
@@ -58424,6 +58429,9 @@ ALTER TABLE ONLY approval_group_rules_groups
 
 ALTER TABLE ONLY approval_group_rules_protected_branches
     ADD CONSTRAINT fk_514003db08 FOREIGN KEY (group_id) REFERENCES namespaces(id) ON DELETE CASCADE;
+
+ALTER TABLE ONLY ai_flow_triggers
+    ADD CONSTRAINT fk_514c473335 FOREIGN KEY (group_id) REFERENCES namespaces(id) ON DELETE CASCADE;
 
 ALTER TABLE ONLY design_management_action_upload_states
     ADD CONSTRAINT fk_518cd96118 FOREIGN KEY (namespace_id) REFERENCES namespaces(id) ON DELETE CASCADE;

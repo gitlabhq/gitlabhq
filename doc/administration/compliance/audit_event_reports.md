@@ -24,10 +24,10 @@ To view instance audit events:
 1. In the upper-right corner, select **Admin**.
 1. In the left sidebar, select **Monitoring** > **Audit events**.
 1. Filter by the following:
-   - Member of the project (user) who performed the action
-   - Group
-   - Project
-   - Date Range
+   - User the action was performed on
+   - Group the action was performed on
+   - Project the action was performed on
+   - Date range
 
 Instance audit events can also be accessed using the [instance audit events API](../../api/audit_events.md#instance-audit-events).
 

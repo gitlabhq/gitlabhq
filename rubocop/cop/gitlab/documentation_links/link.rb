@@ -85,12 +85,19 @@ module RuboCop
               begin
                 mds = Dir["doc/**/*.md"]
                 digest = Digest::SHA512.new
-                mds.each { |md| digest.file(md) }
+                mds.each { |md| digest.update(doc_signature(md)) }
                 digest.hexdigest
               end
           end
 
           private
+
+          # A `\0` delimited signature for a doc file, capturing only what affects
+          # this cop's verdict: its path and its heading anchors
+          # (prose is excluded so prose-only edits don't invalidate the cache).
+          def doc_signature(file)
+            [file, *get_anchors_in_markdown(file)].join("\0") << "\0"
+          end
 
           def check_path_argument(node)
             unless first_argument_is_string?(node)
@@ -195,7 +202,7 @@ module RuboCop
             anchor_node.value if anchor_node.str_type?
           end
 
-          # This methods extracts anchors from a Markdown file. The logic in here replicates our
+          # This method extracts anchors from a Markdown file. The logic in here replicates our
           # custom Kramdown header parser at https://gitlab.com/gitlab-org/ruby/gems/gitlab_kramdown/-/blob/bbc5ac439a2e6af60cbcce9a157283b2c5b59b38/lib/gitlab_kramdown/parser/header.rb.
           # The logic is documented here: https://docs.gitlab.com/user/markdown/#heading-anchors.
           # There a special undocumnented syntax that makes it possible to set custom IDs, eg:

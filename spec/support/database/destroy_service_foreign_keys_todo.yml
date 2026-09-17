@@ -327,6 +327,8 @@ namespaces:
 - ai_catalog_item_consumers.group_id
 - ai_catalog_mcp_server_blocks.namespace_id
 - ai_compliance_anthropic_integrations.namespace_id
+# No group-scoped triggers exist yet; Groups::DestroyService handling lands in #627517
+- ai_flow_triggers.group_id
 - ai_namespace_feature_access_rules.root_namespace_id
 - ai_namespace_feature_access_rules.through_namespace_id
 - ai_namespace_feature_settings.namespace_id

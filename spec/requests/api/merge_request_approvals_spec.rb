@@ -138,8 +138,20 @@ RSpec.describe API::MergeRequestApprovals, feature_category: :source_code_manage
             create(:approval, user: approver, merge_request: merge_request)
           end
 
-          it 'completes the experience as an error', :aggregate_failures do
-            expect { approve }.to complete_user_experience(:approve_merge_request, error: true)
+          it 'completes the experience without an error', :aggregate_failures do
+            expect { approve }.to complete_user_experience(:approve_merge_request, error: false)
+
+            expect(response).to have_gitlab_http_status(:unauthorized)
+          end
+        end
+
+        context 'when the merge request is merged' do
+          before do
+            merge_request.mark_as_merged
+          end
+
+          it 'completes the experience without an error', :aggregate_failures do
+            expect { approve }.to complete_user_experience(:approve_merge_request, error: false)
 
             expect(response).to have_gitlab_http_status(:unauthorized)
           end
@@ -158,6 +170,18 @@ RSpec.describe API::MergeRequestApprovals, feature_category: :source_code_manage
           end
         end
 
+        context 'when the approval raises' do
+          it 'completes the experience as an error', :aggregate_failures do
+            expect_next_instance_of(::MergeRequests::ApprovalService) do |service|
+              expect(service).to receive(:execute).and_raise(ActiveRecord::QueryCanceled)
+            end
+
+            expect { approve }.to complete_user_experience(:approve_merge_request, error: true)
+
+            expect(response).to have_gitlab_http_status(:internal_server_error)
+          end
+        end
+
         context 'when the sha param is incorrect' do
           it 'does not start the experience' do
             expect { approve(sha: merge_request.diff_head_sha.reverse) }
@@ -165,9 +189,69 @@ RSpec.describe API::MergeRequestApprovals, feature_category: :source_code_manage
           end
         end
 
+        context 'when the merge request does not exist' do
+          it 'does not start the experience', :aggregate_failures do
+            expect do
+              post api("/projects/#{project.id}/merge_requests/#{non_existing_record_iid}/approve", approver)
+            end.not_to start_user_experience(:approve_merge_request)
+
+            expect(response).to have_gitlab_http_status(:not_found)
+          end
+        end
+
+        describe 'the recorded outcome' do
+          let(:completions) { [] }
+
+          before do
+            allow(Labkit::UserExperienceSli).to receive(:get).and_wrap_original do |original, *args|
+              experience = original.call(*args)
+
+              allow(experience).to receive(:complete).and_wrap_original do |complete, **extra|
+                completions << extra
+                complete.call(**extra)
+              end
+
+              experience
+            end
+          end
+
+          it 'records a successful approval' do
+            approve
+
+            expect(completions).to include(hash_including(approval_result: :success))
+          end
+
+          it 'records the reason for a refused approval' do
+            create(:approval, user: approver, merge_request: merge_request)
+
+            approve
+
+            expect(completions).to include(hash_including(approval_result: :already_approved))
+          end
+
+          it 'records a refusal that carries no reason' do
+            allow_next_instance_of(::MergeRequests::ApprovalService) do |service|
+              allow(service).to receive(:execute).and_return(ServiceResponse.error(message: 'Refused'))
+            end
+
+            approve
+
+            expect(completions).to include(hash_including(approval_result: :refused))
+          end
+
+          it 'records a failed review publish' do
+            allow_next_instance_of(::DraftNotes::PublishService) do |service|
+              allow(service).to receive(:execute).and_return(ServiceResponse.error(message: 'Error'))
+            end
+
+            approve(publish_review: true)
+
+            expect(completions).to include(hash_including(approval_result: :publish_review_failed))
+          end
+        end
+
         describe 'the publish step checkpoint' do
-          # The Sidekiq client middleware checkpoints the experience for every job the
-          # approval enqueues, so the counter matchers cannot isolate this one checkpoint.
+          # Sidekiq client middleware also checkpoints, so the counter matchers can't isolate this one.
           let(:checkpoint_actions) { [] }
 
           before do

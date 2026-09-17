@@ -23,25 +23,29 @@
 }
 
 .contrib-calendar .user-contribution-graph-cell {
-  cursor: pointer;
   // Fade contribution colors in once the data has been fetched. The delay is
   // staggered per column (via --contrib-fade-delay) for a more natural reveal.
   transition:
     background-color 0.5s ease var(--contrib-fade-delay, 0ms),
     border-color 0.1s ease;
+}
 
-  &:disabled {
-    cursor: default;
-    opacity: 0;
-  }
+// Only real days render as buttons; empty padding cells are plain divs
+// that are hidden and must not look interactive.
+.contrib-calendar button.user-contribution-graph-cell {
+  cursor: pointer;
 
-  &:not(:disabled):hover,
-  &:not(:disabled):focus {
+  &:hover,
+  &:focus {
     z-index: 1;
     border: 2px solid var(--gl-background-color-default);
     outline: 2px solid var(--gl-action-selected-border-color-default) !important;
     outline-offset: 0;
   }
+}
+
+.contrib-calendar div.user-contribution-graph-cell {
+  opacity: 0;
 }
 
 .contrib-legend-cell {

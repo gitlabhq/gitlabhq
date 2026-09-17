@@ -75,38 +75,38 @@ module API
 
           check_sha_param!(params, merge_request)
 
-          # Measures the approve journey. The web UI's Approve button posts here
-          # (MergeRequestPresenter#api_approve_path), so this covers UI and API approvals alike.
           # Started after the lookup and SHA check so 404s and 409s stay out of the SLI.
-          Labkit::UserExperienceSli.start(:approve_merge_request) do |experience|
-            if params[:publish_review]
-              result = ::DraftNotes::PublishService.new(merge_request, current_user).execute
+          experience = Labkit::UserExperienceSli.start(:approve_merge_request)
+          outcome = :error
 
-              unless result[:status] == :success
-                # Grape signals errors with `throw`, which Labkit cannot see.
-                experience.error!('Failed to publish review')
-                render_api_error!('Failed to publish review', 500)
-              end
+          if params[:publish_review]
+            publish_result = ::DraftNotes::PublishService.new(merge_request, current_user).execute
 
-              # Separates draft publishing from the approval itself, so a slow review
-              # submission is distinguishable from a slow approval in the same journey.
-              experience.checkpoint(checkpoint_action: 'notes_published')
+            unless publish_result[:status] == :success
+              outcome = :publish_review_failed
+              experience.error!('Failed to publish review')
+              render_api_error!('Failed to publish review', 500)
             end
 
-            success =
-              ::MergeRequests::ApprovalService
-                .new(project: user_project, current_user: current_user, params: params)
-                .execute(merge_request)
-
-            unless success
-              # Grape signals errors with `throw`, which Labkit cannot see, so an ineligible
-              # approver would otherwise be recorded as a successful experience.
-              experience.error!('Merge request was not approved')
-              unauthorized!
-            end
-
-            present_approval(merge_request)
+            experience.checkpoint(checkpoint_action: 'notes_published')
           end
+
+          result =
+            ::MergeRequests::ApprovalService
+              .new(project: user_project, current_user: current_user, params: params)
+              .execute(merge_request)
+
+          # A refused approve is a handled outcome, not an SLI error; the reason goes to the log.
+          outcome = result.success? ? :success : (result.reason || :refused)
+
+          unauthorized! unless result.success?
+
+          present_approval(merge_request)
+        rescue StandardError => e
+          experience&.error!(e.message)
+          raise
+        ensure
+          experience&.complete(approval_result: outcome)
         end
 
         desc 'Unapprove a merge request' do

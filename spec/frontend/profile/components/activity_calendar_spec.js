@@ -1,9 +1,9 @@
 import { GlAlert } from '@gitlab/ui';
 import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
+import { useFakeDate } from 'helpers/fake_date';
 import waitForPromises from 'helpers/wait_for_promises';
 import { createMockDirective, getBinding } from 'helpers/vue_mock_directive';
 import ActivityCalendar from '~/profile/components/activity_calendar.vue';
-import { useFakeDate } from 'helpers/fake_date';
 import AjaxCache from '~/lib/utils/ajax_cache';
 
 jest.mock('~/lib/utils/ajax_cache');
@@ -34,6 +34,10 @@ describe('ActivityCalendar', () => {
   const expectToBeEmptyCells = (...cells) => {
     cells.forEach((cell) => {
       expect(cell.attributes('aria-hidden')).toBe('true');
+      // Padding cells are plain divs so they are not focusable, and carry no
+      // label of their own.
+      expect(cell.element.tagName).toBe('DIV');
+      expect(cell.attributes('aria-label')).toBeUndefined();
     });
   };
 
@@ -42,6 +46,8 @@ describe('ActivityCalendar', () => {
   const expectToBeDateCells = (...cells) => {
     cells.forEach((cell) => {
       expect(cell.attributes('aria-hidden')).toBeUndefined();
+      // Real days render as buttons so they can be focused and activated.
+      expect(cell.element.tagName).toBe('BUTTON');
     });
   };
 
@@ -417,6 +423,233 @@ describe('ActivityCalendar', () => {
 
       expect(findAlert().exists()).toBe(false);
       expect(AjaxCache.retrieve).toHaveBeenCalledTimes(2);
+    });
+  });
+
+  describe('keyboard navigation', () => {
+    // The focused cell is observable as the single cell with tabindex="0" (the
+    // accessible tab-stop). Because each cell binds handleKeyDown with its own
+    // coordinates, pressing a key on a specific cell navigates relative to it,
+    // so tests drive setup with real key presses rather than internal state.
+    const findCellById = (weekIndex, dayIndex) =>
+      wrapper.find(`#calendar-cell-${weekIndex}-${dayIndex}`);
+
+    const findTabbableCell = () =>
+      findCells().wrappers.find((cell) => cell.attributes('tabindex') === '0');
+
+    const tabbableCellId = () => findTabbableCell().attributes('id');
+
+    const pressKeyOn = (weekIndex, dayIndex, key) =>
+      findCellById(weekIndex, dayIndex).trigger('keydown', { key });
+
+    // The first real (non-padding) cell in DOM order, which is where the
+    // initial tab-stop sits. Its exact coordinates depend on the mocked date's
+    // first-week padding, so tests derive it rather than hardcoding it.
+    const findFirstDateCell = () =>
+      findCells().wrappers.find((cell) => cell.element.tagName === 'BUTTON');
+
+    beforeEach(async () => {
+      AjaxCache.retrieve.mockResolvedValue({});
+      createComponent();
+      await waitForPromises();
+    });
+
+    describe('roving tabindex', () => {
+      it('makes exactly one cell tabbable', () => {
+        const tabbableCells = findCells().wrappers.filter(
+          (cell) => cell.attributes('tabindex') === '0',
+        );
+
+        expect(tabbableCells).toHaveLength(1);
+      });
+
+      it('makes the first non-empty cell tabbable', () => {
+        expect(tabbableCellId()).toBe(findFirstDateCell().attributes('id'));
+        expect(findTabbableCell().element.tagName).toBe('BUTTON');
+      });
+
+      it('renders all other cells as not tabbable', () => {
+        const notTabbable = findCells().wrappers.filter(
+          (cell) => cell.attributes('tabindex') === '-1',
+        );
+
+        expect(notTabbable).toHaveLength(findCells().length - 1);
+      });
+
+      it('makes a real day cell tabbable before the fetch resolves', () => {
+        AjaxCache.retrieve.mockReturnValue(new Promise(() => {}));
+        createComponent();
+
+        expect(findTabbableCell().element.tagName).toBe('BUTTON');
+      });
+
+      it('moves the tab-stop to the cell the user navigates to', async () => {
+        // Day 2 is the first non-padding row under the default mocked date.
+        await pressKeyOn(0, 2, 'ArrowRight');
+
+        expect(tabbableCellId()).toBe('calendar-cell-1-2');
+      });
+    });
+
+    describe('arrow keys', () => {
+      it('ArrowRight moves focus to the next week (same day row)', async () => {
+        // Day 2 is the first non-padding row under the default mocked date.
+        await pressKeyOn(0, 2, 'ArrowRight');
+
+        expect(tabbableCellId()).toBe('calendar-cell-1-2');
+      });
+
+      it('ArrowLeft moves focus to the previous week (same day row)', async () => {
+        await pressKeyOn(1, 2, 'ArrowLeft');
+
+        expect(tabbableCellId()).toBe('calendar-cell-0-2');
+      });
+
+      it('ArrowDown moves focus to the next day (same week column)', async () => {
+        await pressKeyOn(5, 2, 'ArrowDown');
+
+        expect(tabbableCellId()).toBe('calendar-cell-5-3');
+      });
+
+      it('ArrowUp from the top day of a week wraps to the previous week', async () => {
+        await pressKeyOn(1, 0, 'ArrowUp');
+
+        expect(tabbableCellId()).toBe('calendar-cell-0-6');
+      });
+    });
+
+    describe('Home and End keys', () => {
+      it('Home moves focus to the first day of the current week', async () => {
+        await pressKeyOn(5, 4, 'Home');
+
+        expect(tabbableCellId()).toBe('calendar-cell-5-0');
+      });
+
+      it('End moves focus to the last day of the current week', async () => {
+        await pressKeyOn(5, 1, 'End');
+
+        expect(tabbableCellId()).toBe('calendar-cell-5-6');
+      });
+    });
+
+    describe('PageUp and PageDown keys', () => {
+      it('PageDown moves focus four weeks forward', async () => {
+        await pressKeyOn(2, 3, 'PageDown');
+
+        expect(tabbableCellId()).toBe('calendar-cell-6-3');
+      });
+
+      it('PageUp moves focus four weeks backward', async () => {
+        await pressKeyOn(6, 3, 'PageUp');
+
+        expect(tabbableCellId()).toBe('calendar-cell-2-3');
+      });
+    });
+
+    describe('padded edges (disabled cells)', () => {
+      // Fixed date so the padding of the first and last weeks is
+      // deterministic: the range runs Feb 21 2022 - Feb 21 2023, giving the
+      // first week one leading empty cell (day 0) and the last week (index
+      // 52) four trailing empty cells (days 3-6).
+      useFakeDate(2023, 1, 21);
+
+      it('ArrowRight from the last week wraps to the start of the next row', async () => {
+        await pressKeyOn(52, 1, 'ArrowRight');
+
+        // Day 2 row starts at week 0 (only day 0 of the first week is padding).
+        expect(tabbableCellId()).toBe('calendar-cell-0-2');
+      });
+
+      it('ArrowLeft from the first week wraps to the end of the previous row', async () => {
+        await pressKeyOn(0, 3, 'ArrowLeft');
+
+        expect(tabbableCellId()).toBe('calendar-cell-52-2');
+      });
+
+      it('ArrowLeft skips the disabled cells of the last week when wrapping to the previous row', async () => {
+        await pressKeyOn(0, 4, 'ArrowLeft');
+
+        // Day 3 of the last week is padding, so focus lands on the week before.
+        expect(tabbableCellId()).toBe('calendar-cell-51-3');
+      });
+
+      it('ArrowRight skips the disabled cells of the last week and wraps to the next row', async () => {
+        await pressKeyOn(51, 5, 'ArrowRight');
+
+        expect(tabbableCellId()).toBe('calendar-cell-0-6');
+      });
+
+      it('ArrowDown from the last available cell wraps to the first available cell', async () => {
+        await pressKeyOn(52, 2, 'ArrowDown');
+
+        expect(tabbableCellId()).toBe('calendar-cell-0-1');
+      });
+
+      it('ArrowUp from the first available cell wraps to the last available cell', async () => {
+        await pressKeyOn(0, 1, 'ArrowUp');
+
+        expect(tabbableCellId()).toBe('calendar-cell-52-2');
+      });
+
+      it('Home moves to the first available day in the padded first week', async () => {
+        await pressKeyOn(0, 4, 'Home');
+
+        expect(tabbableCellId()).toBe('calendar-cell-0-1');
+      });
+
+      it('End moves to the last available day in the padded last week', async () => {
+        await pressKeyOn(52, 1, 'End');
+
+        expect(tabbableCellId()).toBe('calendar-cell-52-2');
+      });
+
+      it('PageDown near the end clamps to the last week instead of wrapping', async () => {
+        await pressKeyOn(50, 1, 'PageDown');
+
+        expect(tabbableCellId()).toBe('calendar-cell-52-1');
+      });
+
+      it('PageDown clamping backs off the padding cells of the last week', async () => {
+        await pressKeyOn(50, 4, 'PageDown');
+
+        // Day 4 of the last week is padding, so focus lands on the week before.
+        expect(tabbableCellId()).toBe('calendar-cell-51-4');
+      });
+
+      it('PageUp near the start clamps to the first week instead of wrapping', async () => {
+        await pressKeyOn(2, 3, 'PageUp');
+
+        expect(tabbableCellId()).toBe('calendar-cell-0-3');
+      });
+
+      it('PageUp clamping backs off the padding cell of the first week', async () => {
+        await pressKeyOn(3, 0, 'PageUp');
+
+        // Day 0 of the first week is padding, so focus lands on the week after.
+        expect(tabbableCellId()).toBe('calendar-cell-1-0');
+      });
+    });
+
+    describe('event handling', () => {
+      const dispatchKeydown = (weekIndex, dayIndex, key) => {
+        const event = new KeyboardEvent('keydown', { key, bubbles: true, cancelable: true });
+        findCellById(weekIndex, dayIndex).element.dispatchEvent(event);
+
+        return event;
+      };
+
+      it('prevents default scrolling for handled navigation keys', () => {
+        // Day 2 is the first non-padding cell under the default mocked date.
+        const event = dispatchKeydown(0, 2, 'ArrowRight');
+
+        expect(event.defaultPrevented).toBe(true);
+      });
+
+      it('does not prevent default for unhandled keys', () => {
+        const event = dispatchKeydown(0, 2, 'Enter');
+
+        expect(event.defaultPrevented).toBe(false);
+      });
     });
   });
 });

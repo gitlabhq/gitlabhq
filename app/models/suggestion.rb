@@ -19,6 +19,16 @@ class Suggestion < ApplicationRecord
     note.latest_diff_file
   end
 
+  # `latest_diff_file` runs a Gitaly compare on every discussions load; the
+  # discussion diff file comes from the stored `note_diff_files` row and is
+  # enough to pick a lexer. Replies share the first note position but never
+  # get a row of their own, so they borrow it from the discussion.
+  def diff_file_for_highlight
+    return diff_file unless Feature.enabled?(:suggestion_highlight_uses_note_diff_file, note.project)
+
+    note.discussion.diff_file
+  end
+
   def source_project
     noteable.source_project
   end

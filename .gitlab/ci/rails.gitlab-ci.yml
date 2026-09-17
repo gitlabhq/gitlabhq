@@ -515,7 +515,7 @@ rspec:artifact-collector unit:
     - .artifact-collector
     - .rails:rules:artifact-collector-unit
   needs:
-    - job: rspec unit pg17  # 44 jobs
+    - job: rspec unit pg17  # 35 jobs
       optional: true
     - job: rspec unit clickhouse26  # 1 job
       optional: true
@@ -527,9 +527,9 @@ rspec:artifact-collector part-a:
     - .artifact-collector
     - .rails:rules:artifact-collector-part-a
   needs:
-    - job: rspec system pg17  # 32 jobs
+    - job: rspec system pg17  # 27 jobs
       optional: true
-    - job: rspec background_migration pg17  # 17 jobs
+    - job: rspec background_migration pg17  # 12 jobs
       optional: true
 
 rspec:artifact-collector part-c:
@@ -549,7 +549,7 @@ rspec:artifact-collector part-b:
       optional: true
     - job: rspec integration pg17 clickhouse25  # 1 job
       optional: true
-    - job: rspec migration pg17  # 26 jobs
+    - job: rspec migration pg17  # 8 jobs
       optional: true
 
 rspec:artifact-collector unit single-redis:
@@ -557,7 +557,7 @@ rspec:artifact-collector unit single-redis:
     - .artifact-collector
     - .rails:rules:single-redis
   needs:
-    - job: rspec unit pg17 single-redis  # 44 jobs
+    - job: rspec unit pg17 single-redis  # 35 jobs
       optional: true
 
 rspec:artifact-collector system single-redis:
@@ -565,7 +565,7 @@ rspec:artifact-collector system single-redis:
     - .artifact-collector
     - .rails:rules:single-redis
   needs:
-    - job: rspec system pg17 single-redis  # 32 jobs
+    - job: rspec system pg17 single-redis  # 27 jobs
       optional: true
 
 rspec:artifact-collector remainder single-redis:
@@ -581,7 +581,7 @@ rspec:artifact-collector ee unit single-redis:
     - .artifact-collector
     - .rails:rules:single-redis
   needs:
-    - job: rspec-ee unit pg17 single-redis  # 39 jobs
+    - job: rspec-ee unit pg17 single-redis  # 47 jobs
       optional: true
 
 rspec:artifact-collector ee remainder single-redis:
@@ -589,16 +589,16 @@ rspec:artifact-collector ee remainder single-redis:
     - .artifact-collector
     - .rails:rules:single-redis
   needs:
-    - job: rspec-ee integration pg17 single-redis  # 9 jobs
+    - job: rspec-ee integration pg17 single-redis  # 12 jobs
       optional: true
-    - job: rspec-ee system pg17 single-redis  # 16 jobs
+    - job: rspec-ee system pg17 single-redis  # 15 jobs
       optional: true
 
 rspec:artifact-collector ee unit:
   extends:
     - .artifact-collector
   needs:
-    - job: rspec-ee unit pg17  # 39 jobs
+    - job: rspec-ee unit pg17  # 47 jobs
       optional: true
   rules:
     - !reference ['.rails:rules:ee-only-unit', rules]
@@ -615,11 +615,11 @@ rspec:artifact-collector ee remainder:
       optional: true
     - job: rspec-ee unit clickhouse25  # 1 job
       optional: true
-    - job: rspec-ee integration pg17  # 9 jobs
+    - job: rspec-ee integration pg17  # 12 jobs
       optional: true
     - job: rspec-ee integration pg17 clickhouse25  # 1 job
       optional: true
-    - job: rspec-ee system pg17  # 16 jobs
+    - job: rspec-ee system pg17  # 15 jobs
       optional: true
     - job: rspec-ee system clickhouse25  # 1 job
       optional: true
@@ -1322,7 +1322,7 @@ rspec-ee system pg17 duo_workflow_service:
   variables:
     RSPEC_TAGS: "--tag duo_workflow_service"
     RSPEC_DRY_RUN_TAGS: "duo_workflow_service"
-  parallel: 1  # override parallel: 16 inherited from `rspec-ee system pg17` (.rspec-ee-system-parallel)
+  parallel: 1  # override parallel: 15 inherited from `rspec-ee system pg17` (.rspec-ee-system-parallel)
   rules:
     - !reference [".rails:rules:triggered-by-aigw-project", rules]
     - !reference [".rails:rules:tier-2-with-backend-spec", rules]

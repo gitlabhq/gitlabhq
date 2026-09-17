@@ -467,18 +467,6 @@ RSpec.describe MergeRequests::RefreshService, feature_category: :code_review_wor
         # A divergent newrev, so Gitlab::Git::Push actually reports a force push.
         refresh_service.execute(@oldrev, @project.commit('feature').id, 'refs/heads/master')
       end
-
-      context 'when the merge_request_refresh_batched_commit_lookup feature flag is disabled' do
-        before do
-          stub_feature_flags(merge_request_refresh_batched_commit_lookup: false)
-        end
-
-        it 'falls back to asking each merge request in turn' do
-          expect(MergeRequestDiff).not_to receive(:ids_including_any_commits)
-
-          refresh_service.execute(@oldrev, @newrev, 'refs/heads/master')
-        end
-      end
     end
 
     context 'push to origin repo target branch' do
@@ -824,19 +812,6 @@ RSpec.describe MergeRequests::RefreshService, feature_category: :code_review_wor
           service.new(project: @project, current_user: @user).execute(@oldrev, first_commit, 'refs/heads/master')
           reload_mrs
         end.to change { forked_master_mr.merge_request_diffs.count }.by(1)
-      end
-
-      context 'when the merge_request_refresh_batched_commit_lookup feature flag is disabled' do
-        before do
-          stub_feature_flags(merge_request_refresh_batched_commit_lookup: false)
-        end
-
-        it 'reloads a new diff for a push to the target project that contains a commit in the MR' do
-          expect do
-            service.new(project: @project, current_user: @user).execute(@oldrev, first_commit, 'refs/heads/master')
-            reload_mrs
-          end.to change { forked_master_mr.merge_request_diffs.count }.by(1)
-        end
       end
 
       it 'does not increase the diff count for a new push to target branch' do

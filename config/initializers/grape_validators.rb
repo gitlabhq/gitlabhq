@@ -22,5 +22,6 @@
   ::API::Validations::Validators::BulkImports::DestinationSlugPath,
   ::API::Validations::Validators::BulkImports::SourceFullPath,
   ::API::Validations::Validators::Limit,
-  ::API::Validations::Validators::NoBlankElements
+  ::API::Validations::Validators::NoBlankElements,
+  ::API::Validations::Validators::ObjectElements
 ].each(&:name)

@@ -187,48 +187,14 @@ module MergeRequests
       merge_requests_array = merge_requests.to_a + merge_requests_from_forks.to_a
       filtered_merge_requests = filter_merge_requests(merge_requests_array)
 
-      if batched_commit_lookup_enabled?
-        new_recheck_merge_requests_batched(filtered_merge_requests)
-      else
-        old_recheck_merge_requests_batched(filtered_merge_requests)
-      end
+      recheck_merge_requests_batched(filtered_merge_requests)
 
       # Upcoming method calls need the refreshed version of
       # @source_merge_requests diffs (for MergeRequest#commit_shas for instance).
       merge_requests_for_source_branch(reload: true)
     end
 
-    def batched_commit_lookup_enabled?
-      Feature.enabled?(:merge_request_refresh_batched_commit_lookup, @project)
-    end
-
-    def old_recheck_merge_requests_batched(filtered_merge_requests)
-      source_branch_or_force_pushed_mrs = []
-      all_mr_ids = []
-
-      filtered_merge_requests.each do |merge_request|
-        all_mr_ids << merge_request.id
-
-        if branch_and_project_match?(merge_request) || @push.force_push?
-          merge_request.reload_diff(current_user)
-          schedule_duo_code_review(merge_request)
-          source_branch_or_force_pushed_mrs << merge_request
-        elsif merge_request.merge_request_diff.includes_any_commits?(push_commit_ids)
-          merge_request.reload_diff(current_user)
-        end
-      end
-
-      MergeRequest.batch_mark_as_unchecked(all_mr_ids, mrs_to_trigger: source_branch_or_force_pushed_mrs)
-
-      # Clear existing merge error if the push were directed at the
-      # source branch. Clearing the error when the target branch
-      # changes will hide the error from the user.
-      MergeRequest.batch_clear_merge_error(source_branch_or_force_pushed_mrs.map(&:id))
-
-      enqueue_auto_merge_for_unchecked(filtered_merge_requests)
-    end
-
-    def new_recheck_merge_requests_batched(filtered_merge_requests)
+    def recheck_merge_requests_batched(filtered_merge_requests)
       source_branch_or_force_pushed_mrs = []
       all_mr_ids = []
       diff_ids_to_reload = batched_diff_ids_to_reload(filtered_merge_requests)

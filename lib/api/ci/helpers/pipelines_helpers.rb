@@ -26,7 +26,8 @@ module API
         params :create_pipeline_params do
           requires :ref, type: String, desc: 'Reference',
             documentation: { example: 'develop' }
-          optional :variables, type: Array, desc: 'Array of variables available in the pipeline' do
+          optional :variables, type: Array, object_elements: true,
+            desc: 'Array of variables available in the pipeline' do
             optional :key, type: String, desc: 'The key of the variable', documentation: { example: 'UPLOAD_TO_S3' }
             optional :value, type: String, desc: 'The value of the variable', documentation: { example: 'true' }
             optional :variable_type, type: String,

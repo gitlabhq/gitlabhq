@@ -878,6 +878,21 @@ RSpec.describe API::Ci::Pipelines, feature_category: :continuous_integration do
           end
         end
 
+        context 'when a variables entry is not an object' do
+          [['UPLOAD_TO_S3=true'], [%w[UPLOAD_TO_S3 true]], [nil]].each do |variables|
+            it "rejects #{variables.inspect}", :aggregate_failures do
+              expect do
+                post api("/projects/#{project.id}/pipeline", user),
+                  params: { ref: project.default_branch, variables: variables }.to_json,
+                  headers: { 'Content-Type' => 'application/json' }
+              end.not_to change { project.ci_pipelines.count }
+
+              expect(response).to have_gitlab_http_status(:bad_request)
+              expect(json_response['error']).to eq('variables[0] is not an object')
+            end
+          end
+        end
+
         describe 'using variables conditions' do
           let(:variables) { [{ 'variable_type' => 'env_var', 'key' => 'STAGING', 'value' => 'true' }] }
 

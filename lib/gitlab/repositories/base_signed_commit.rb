@@ -60,6 +60,8 @@ module Gitlab
 
       private
 
+      attr_reader :commit
+
       def update_committer_email!(cached_signature)
         cached_signature.update!(committer_email: committer_email)
         @signature = cached_signature

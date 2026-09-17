@@ -832,6 +832,37 @@ PRIMARY KEY id
 ORDER BY id
 SETTINGS index_granularity = 512, deduplicate_merge_projection_mode = 'rebuild';
 
+CREATE TABLE query_log_usage
+(
+    `event_time` DateTime64(6, 'UTC') CODEC(Delta(8), ZSTD(1)),
+    `query_id` String CODEC(ZSTD(1)),
+    `root_namespace_id` Int64 CODEC(ZSTD(1)),
+    `organization_id` Int64 CODEC(ZSTD(1)),
+    `user_id` Int64 CODEC(ZSTD(1)),
+    `correlation_id` String CODEC(ZSTD(1)),
+    `application` LowCardinality(String),
+    `feature_category` LowCardinality(String),
+    `query_kind` LowCardinality(String),
+    `databases` Array(LowCardinality(String)),
+    `tables` Array(LowCardinality(String)),
+    `query_duration_ms` Int64 CODEC(ZSTD(1)),
+    `read_rows` Int64 CODEC(ZSTD(1)),
+    `read_bytes` Int64 CODEC(ZSTD(1)),
+    `written_rows` Int64 CODEC(ZSTD(1)),
+    `written_bytes` Int64 CODEC(ZSTD(1)),
+    `memory_usage_bytes` Int64 CODEC(ZSTD(1)),
+    `os_cpu_virtual_time_us` Int64 CODEC(ZSTD(1)),
+    `exception_code` Int64 CODEC(ZSTD(1)),
+    `log_comment` String CODEC(ZSTD(1)),
+    `vcpu_seconds` Float64 ALIAS os_cpu_virtual_time_us / 1000000,
+    `memory_gb_seconds` Float64 ALIAS (toFloat64(memory_usage_bytes) * query_duration_ms) / 1000000000000
+)
+ENGINE = MergeTree
+PARTITION BY toYYYYMM(event_time)
+ORDER BY (event_time, query_id)
+TTL event_time + toIntervalMonth(3)
+SETTINGS index_granularity = 8192;
+
 CREATE TABLE schema_migrations
 (
     `version` LowCardinality(String),
@@ -5283,6 +5314,53 @@ SELECT
     namespaces_cte.deleted
 FROM cte
 INNER JOIN namespaces_cte ON namespaces_cte.id = cte.project_namespace_id;
+
+CREATE MATERIALIZED VIEW query_log_usage_mv TO query_log_usage
+(
+    `event_time` DateTime64(6),
+    `query_id` String,
+    `root_namespace_id` Int64,
+    `organization_id` Int64,
+    `user_id` Int64,
+    `correlation_id` String,
+    `application` String,
+    `feature_category` String,
+    `query_kind` LowCardinality(String),
+    `databases` Array(LowCardinality(String)),
+    `tables` Array(LowCardinality(String)),
+    `query_duration_ms` UInt64,
+    `read_rows` UInt64,
+    `read_bytes` UInt64,
+    `written_rows` UInt64,
+    `written_bytes` UInt64,
+    `memory_usage_bytes` UInt64,
+    `os_cpu_virtual_time_us` UInt64,
+    `exception_code` Int32,
+    `log_comment` String
+)
+AS SELECT
+    event_time_microseconds AS event_time,
+    query_id,
+    assumeNotNull(JSONExtract(log_comment, 'root_namespace_id', 'Nullable(Int64)')) AS root_namespace_id,
+    JSONExtract(log_comment, 'organization_id', 'Int64') AS organization_id,
+    JSONExtract(log_comment, 'user_id', 'Int64') AS user_id,
+    JSONExtractString(log_comment, 'correlation_id') AS correlation_id,
+    JSONExtractString(log_comment, 'application') AS application,
+    JSONExtractString(log_comment, 'feature_category') AS feature_category,
+    query_kind,
+    databases,
+    tables,
+    query_duration_ms,
+    read_rows,
+    read_bytes,
+    written_rows,
+    written_bytes,
+    memory_usage AS memory_usage_bytes,
+    ProfileEvents['OSCPUVirtualTimeMicroseconds'] AS os_cpu_virtual_time_us,
+    exception_code,
+    log_comment
+FROM system.query_log
+WHERE (type != 'QueryStart') AND (query_kind != 'AsyncInsertFlush') AND (log_comment LIKE '{%') AND (JSONExtract(log_comment, 'root_namespace_id', 'Nullable(Int64)') IS NOT NULL);
 
 CREATE MATERIALIZED VIEW siphon_ai_catalog_items_pg_pkey_ordered_mv TO siphon_ai_catalog_items_pg_pkey_ordered
 (

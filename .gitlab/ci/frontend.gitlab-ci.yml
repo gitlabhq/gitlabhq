@@ -490,52 +490,6 @@ jest-with-fixtures vue3 predictive:
       fi
   parallel: !reference [jest-with-fixtures predictive, parallel]
 
-jest vue3 check quarantined predictive:
-  extends:
-    - jest vue3
-    - .frontend:rules:jest:predictive
-  needs:
-    - !reference [jest vue3, needs]
-    - "detect-tests"
-  script:
-    - |
-      if [[ -s "$GLCI_PREDICTIVE_CHANGED_FILES_PATH" ]] || [[ -s "$GLCI_PREDICTIVE_MATCHING_JS_FILES_PATH" ]]; then
-        ./scripts/frontend/check_jest_vue3_quarantine.js
-      fi
-  parallel: 1
-  artifacts:
-    name: quarantined_tests_output
-    expire_in: 31d
-    when: always
-    paths:
-      - tmp/tests/frontend/jest_stderr
-      - tmp/tests/frontend/jest_results.json
-
-jest-with-fixtures vue3 check quarantined predictive:
-  extends:
-    - jest vue3 check quarantined predictive
-  parallel: 1
-  variables:
-    JEST_FIXTURE_JOBS_ONLY: 1
-
-jest vue3 check quarantined:
-  extends:
-    - jest vue3 check quarantined predictive
-    - .frontend:rules:jest-vue3-check-quarantined
-  parallel: 1
-  script:
-    - |
-      if [[ -s "$GLCI_PREDICTIVE_CHANGED_FILES_PATH" ]] || [[ -s "$GLCI_PREDICTIVE_MATCHING_JS_FILES_PATH" ]]; then
-        ./scripts/frontend/check_jest_vue3_quarantine.js --all
-      fi
-
-jest-with-fixtures vue3 check quarantined:
-  extends:
-    - jest vue3 check quarantined
-  parallel: 1
-  variables:
-    JEST_FIXTURE_JOBS_ONLY: 1
-
 # Jest integration tests with Mock Service Worker
 jest-msw-integration:
   extends:

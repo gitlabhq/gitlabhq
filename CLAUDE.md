@@ -28,22 +28,7 @@ These apply to every task without needing a trigger:
 
 ## AI-authored GitLab comments
 
-Wrap the full body of any comment, note, or reply you post to GitLab (issues,
-merge requests, epics — whether via `glab`/`glab api`, the GitLab MCP server
-tools, or any other path) in `<:robot:>` / `</:robot:>` tags (GitLab emoji
-shortcode, renders as 🤖), so readers can tell at a glance that it's
-AI-generated:
-
-```
-<:robot:>
-
-...full comment body...
-
-</:robot:>
-```
-
-This applies to newly posted comments. It does not apply to code, commit
-messages, or MR/issue descriptions unless asked.
+- **Point first, justification collapsed** — state the concise point first and put any justification (reasoning, evidence) in a `<details>` block so readers can skip it. Omit the justification block when there is nothing to justify.
 
 ## Project Notes
 

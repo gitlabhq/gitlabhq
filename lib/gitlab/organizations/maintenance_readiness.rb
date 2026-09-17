@@ -9,8 +9,11 @@ module Gitlab
         @organization = organization
       end
 
-      def ready?
-        no_active_batched_background_migrations?
+      def blocking_reason
+        return 'active batched background migrations' unless no_active_batched_background_migrations?
+        return 'pending migrations' unless no_pending_migrations?
+
+        nil
       end
 
       private
@@ -27,6 +30,18 @@ module Gitlab
         end
 
         !active
+      end
+
+      def no_pending_migrations?
+        pending = false
+
+        ::Gitlab::Database::EachDatabase.each_connection(include_shared: false) do |connection|
+          pending ||= connection.pool.migration_context.needs_migration?
+
+          break if pending
+        end
+
+        !pending
       end
     end
   end

@@ -7,6 +7,7 @@ import waitForPromises from 'helpers/wait_for_promises';
 import BranchSelector from '~/ci/pipeline_editor/components/shared/branch_selector.vue';
 import getAvailableBranchesQuery from '~/ci/pipeline_editor/graphql/queries/available_branches.query.graphql';
 import getLastCommitBranch from '~/ci/pipeline_editor/graphql/queries/client/last_commit_branch.query.graphql';
+import updateLastCommitBranchMutation from '~/ci/pipeline_editor/graphql/mutations/client/update_last_commit_branch.mutation.graphql';
 import { resolvers } from '~/ci/pipeline_editor/graphql/resolvers';
 
 import {
@@ -34,10 +35,7 @@ describe('Pipeline editor branch switcher', () => {
     paginationLimit: mockBranchPaginationLimit,
   };
 
-  const createComponent = ({ props = {} } = {}) => {
-    const handlers = [[getAvailableBranchesQuery, mockAvailableBranchQuery]];
-    mockApollo = createMockApollo(handlers, resolvers);
-
+  const writeLastCommitBranch = (name) => {
     mockApollo.clients.defaultClient.cache.writeQuery({
       query: getLastCommitBranch,
       data: {
@@ -45,11 +43,18 @@ describe('Pipeline editor branch switcher', () => {
           __typename: 'BranchList',
           lastCommit: {
             __typename: 'WorkBranch',
-            name: '',
+            name,
           },
         },
       },
     });
+  };
+
+  const createComponent = ({ props = {} } = {}) => {
+    const handlers = [[getAvailableBranchesQuery, mockAvailableBranchQuery]];
+    mockApollo = createMockApollo(handlers, resolvers);
+
+    writeLastCommitBranch('');
 
     wrapper = shallowMount(BranchSelector, {
       propsData: {
@@ -118,6 +123,62 @@ describe('Pipeline editor branch switcher', () => {
 
       expect(nonDefaultBranch.text()).not.toBe(mockDefaultBranch);
       expect(nonDefaultBranch.props('isSelected')).toBe(false);
+    });
+  });
+
+  describe('when a commit is made on a branch that is not in the list', () => {
+    const newBranch = 'brand-new-branch';
+
+    beforeEach(async () => {
+      setAvailableBranchesMock(generateMockProjectBranches());
+      await createComponent();
+
+      await mockApollo.clients.defaultClient.mutate({
+        mutation: updateLastCommitBranchMutation,
+        variables: { lastCommitBranch: newBranch },
+      });
+      await waitForPromises();
+    });
+
+    it('prepends that branch to the list', () => {
+      expect(findGlListboxItems()).toHaveLength(mockTotalBranchResults + 1);
+      expect(findGlListboxItems().at(0).text()).toBe(newBranch);
+    });
+
+    it('keeps that branch first after fetching more branches', async () => {
+      setAvailableBranchesMock(generateMockProjectBranches('page-2-'));
+      findGlCollapsibleListbox().vm.$emit('bottom-reached');
+      await waitForPromises();
+
+      expect(findGlListboxItems()).toHaveLength(mockTotalBranchResults * 2 + 1);
+      expect(findGlListboxItems().at(0).text()).toBe(newBranch);
+    });
+
+    it('keeps that branch first after a search replaces the list', async () => {
+      setAvailableBranchesMock(mockSearchBranches);
+      findGlCollapsibleListbox().vm.$emit('search', 'te');
+      await waitForPromises();
+
+      expect(findGlListboxItems()).toHaveLength(mockTotalSearchResults + 1);
+      expect(findGlListboxItems().at(0).text()).toBe(newBranch);
+    });
+  });
+
+  describe('when a commit is made on a branch that is already in the list', () => {
+    beforeEach(async () => {
+      setAvailableBranchesMock(generateMockProjectBranches());
+      await createComponent();
+
+      await mockApollo.clients.defaultClient.mutate({
+        mutation: updateLastCommitBranchMutation,
+        variables: { lastCommitBranch: 'develop' },
+      });
+      await waitForPromises();
+    });
+
+    it('does not add a duplicate entry', () => {
+      expect(findGlListboxItems()).toHaveLength(mockTotalBranchResults);
+      expect(findGlListboxItems().filter((item) => item.text() === 'develop')).toHaveLength(1);
     });
   });
 

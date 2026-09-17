@@ -52,6 +52,10 @@ RSpec.describe MergeRequests::ApprovalService, feature_category: :code_review_wo
       end
 
       it_behaves_like 'no-op call'
+
+      it 'reports success, because a failed save means a concurrent request approved first' do
+        expect(service.execute(merge_request)).to be_success
+      end
     end
 
     context 'with an already approved MR' do
@@ -60,12 +64,20 @@ RSpec.describe MergeRequests::ApprovalService, feature_category: :code_review_wo
       end
 
       it_behaves_like 'no-op call'
+
+      it 'reports the already_approved reason' do
+        expect(service.execute(merge_request).reason).to eq(:already_approved)
+      end
     end
 
     context 'with a merged MR' do
       let(:merge_request) { create(:merge_request, :merged) }
 
       it_behaves_like 'no-op call'
+
+      it 'reports the merge_request_merged reason' do
+        expect(service.execute(merge_request).reason).to eq(:merge_request_merged)
+      end
     end
 
     context 'user cannot update the merge request' do
@@ -74,6 +86,10 @@ RSpec.describe MergeRequests::ApprovalService, feature_category: :code_review_wo
       end
 
       it_behaves_like 'no-op call'
+
+      it 'reports the not_eligible reason' do
+        expect(service.execute(merge_request).reason).to eq(:not_eligible)
+      end
     end
 
     context 'with valid approval' do

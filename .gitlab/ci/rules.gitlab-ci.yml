@@ -2199,16 +2199,6 @@
     - <<: *if-not-foss
       changes: ["scripts/frontend/infection_scanner/**/*", "spec/frontend/scripts/infection_scanner/**/*"]
 
-.frontend:rules:jest-vue3-check-quarantined:
-  rules:
-    - <<: *if-not-merge-request
-      when: never
-    - <<: *if-security-merge-request
-      when: never
-    - <<: *if-merge-request-targeting-stable-branch
-      when: never
-    - !reference [.frontend:rules:jest, rules]
-
 .frontend:rules:fixtures-packages-cleanup:
   rules:
     - *if-dot-com-ee-schedule-default-branch-maintenance

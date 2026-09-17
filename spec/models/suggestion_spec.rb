@@ -52,6 +52,45 @@ RSpec.describe Suggestion, feature_category: :code_review_workflow do
     end
   end
 
+  describe '#diff_file_for_highlight' do
+    let(:suggestion) { build(:suggestion) }
+
+    it 'uses the discussion diff file and never the latest diff file' do
+      discussion_diff_file = instance_double(Gitlab::Diff::File)
+      allow(suggestion.note).to receive(:discussion)
+        .and_return(instance_double(DiffDiscussion, diff_file: discussion_diff_file))
+      expect(suggestion.note).not_to receive(:latest_diff_file)
+
+      expect(suggestion.diff_file_for_highlight).to eq(discussion_diff_file)
+    end
+
+    context 'when the suggestion is in a reply' do
+      let_it_be(:first_note) { create(:diff_note_on_merge_request) }
+      let_it_be(:reply) { create(:diff_note_on_merge_request, in_reply_to: first_note) }
+
+      let(:suggestion) { build(:suggestion, note: reply) }
+
+      it 'reuses the stored diff file of the first note instead of comparing' do
+        expect(CompareService).not_to receive(:new)
+
+        expect(suggestion.diff_file_for_highlight.unique_identifier).to eq(first_note.note_diff_file.id)
+      end
+    end
+
+    context 'when suggestion_highlight_uses_note_diff_file is disabled' do
+      before do
+        stub_feature_flags(suggestion_highlight_uses_note_diff_file: false)
+      end
+
+      it 'falls back to the latest diff file' do
+        latest_diff_file = instance_double(Gitlab::Diff::File)
+        allow(suggestion.note).to receive(:latest_diff_file).and_return(latest_diff_file)
+
+        expect(suggestion.diff_file_for_highlight).to eq(latest_diff_file)
+      end
+    end
+  end
+
   describe '#appliable?' do
     let(:suggestion) { build(:suggestion) }
 

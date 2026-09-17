@@ -283,14 +283,12 @@ class MergeRequestDiff < ApplicationRecord
     by_head_commit_sha(head_commit_sha).maximum(:id)
   end
 
-  # Batched counterpart to #includes_any_commits?: the Set of `merge_request_diffs.id`
-  # values containing at least one of `shas`. Resolving the shas once and matching
-  # every diff in the same query makes the cost independent of the diff count,
-  # instead of re-serializing the whole sha list once per diff per BATCH_SIZE chunk.
+  # The Set of `merge_request_diffs.id` values containing at least one of `shas`.
+  # Resolving the shas once and matching every diff in the same query keeps the
+  # cost independent of the diff count.
   #
-  # The two-step fallback must stay in step with #includes_any_commits?: while
-  # mr_diff_commits_read_new_table is not the read source, a commit may exist only
-  # on merge_request_diff_commits.sha.
+  # While mr_diff_commits_read_new_table is not the read source, a commit may
+  # exist only on merge_request_diff_commits.sha, hence the two-step fallback.
   def self.ids_including_any_commits(diff_ids, shas, project:)
     matched = Set.new
     return matched if diff_ids.blank? || shas.blank?
@@ -536,19 +534,6 @@ class MergeRequestDiff < ApplicationRecord
     return sorted_diff_commits.map { |dc| dc.merge_request_commits_metadata.sha } if read_new_commits_table?
 
     sorted_diff_commits.map(&:sha)
-  end
-
-  def includes_any_commits?(shas)
-    return false if shas.blank?
-
-    # when the number of shas is huge (1000+) we don't want
-    # to pass them all as an SQL param, let's pass them in batches
-    shas.each_slice(BATCH_SIZE).any? do |batched_shas|
-      next true if metadata_sha_exists?(batched_shas)
-      next false if read_new_commits_table?
-
-      merge_request_diff_commits.where(sha: batched_shas).exists?
-    end
   end
 
   def diff_refs=(new_diff_refs)
@@ -1192,23 +1177,6 @@ class MergeRequestDiff < ApplicationRecord
       Dir.tmpdir,
       EXTERNAL_DIFFS_CACHE_TMPDIR % { project_id: project.id, mr_id: merge_request_id, id: id }
     )
-  end
-
-  def metadata_sha_exists?(shas)
-    diff_commits_relation = MergeRequestDiffCommit.where(merge_request_diff_id: id)
-    if MergeRequestDiffCommit.read_new_commits_table?(project_id)
-      diff_commits_relation = diff_commits_relation.where(project_id: project_id)
-    end
-
-    MergeRequest::CommitsMetadata
-      .where(project: project, sha: shas)
-      .where_exists(
-        diff_commits_relation
-          .where(
-            MergeRequestDiffCommit.arel_table[:merge_request_commits_metadata_id]
-                                  .eq(MergeRequest::CommitsMetadata.arel_table[:id])
-          )
-      ).exists?
   end
 
   def commit_shas_from_metadata(limit)
