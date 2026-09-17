@@ -256,11 +256,12 @@ RSpec.describe API::Mcp::Base, feature_category: :mcp_server do
         stub_application_setting(mcp_server_enabled: false)
       end
 
-      it 'returns not_found' do
+      it 'returns forbidden' do
         post api('/mcp', user, oauth_access_token: access_token),
           params: { jsonrpc: '2.0', method: 'initialize', id: '1', params: { protocolVersion: '2025-06-18' } }
 
-        expect(response).to have_gitlab_http_status(:not_found)
+        expect(response).to have_gitlab_http_status(:forbidden)
+        expect(json_response['message']).to eq('403 Forbidden - MCP server disabled')
       end
 
       it 'logs that the MCP server is not available' do
@@ -312,6 +313,19 @@ RSpec.describe API::Mcp::Base, feature_category: :mcp_server do
         get api('/mcp', user, oauth_access_token: access_token)
 
         expect(response).to have_gitlab_http_status(:method_not_allowed)
+      end
+    end
+
+    context 'when mcp_server_enabled is false' do
+      before do
+        stub_application_setting(mcp_server_enabled: false)
+      end
+
+      it 'returns forbidden' do
+        get api('/mcp', user, oauth_access_token: access_token)
+
+        expect(response).to have_gitlab_http_status(:forbidden)
+        expect(json_response['message']).to eq('403 Forbidden - MCP server disabled')
       end
     end
 

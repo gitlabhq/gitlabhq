@@ -86,9 +86,9 @@ export const baseMutations = {
     });
     return axios
       .post(environment.stopPath)
-      .then(() => buildErrors())
       .then(() => {
         cache.evict({ fieldName: 'folder' });
+        return buildErrors();
       })
       .catch(() => {
         client.writeQuery({
@@ -104,8 +104,10 @@ export const baseMutations = {
   deleteEnvironment(_, { environment: { deletePath } }, { cache }) {
     return axios
       .delete(deletePath)
-      .then(() => buildErrors())
-      .then(() => cache.evict({ fieldName: 'folder' }))
+      .then(() => {
+        cache.evict({ fieldName: 'folder' });
+        return buildErrors();
+      })
       .catch(() =>
         buildErrors([
           s__(
@@ -117,9 +119,9 @@ export const baseMutations = {
   rollbackEnvironment(_, { environment, isLastDeployment }, { cache }) {
     return axios
       .post(environment?.retryUrl)
-      .then(() => buildErrors())
       .then(() => {
         cache.evict({ fieldName: 'folder' });
+        return buildErrors();
       })
       .catch(() =>
         buildErrors([

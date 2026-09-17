@@ -2147,6 +2147,9 @@
 
 .frontend:rules:bundle-size-review:
   rules:
+    # The job requests the medium runner tag, which is stuck when unset.
+    - if: '$GLCI_MEDIUM_RUNNER_REQUIRED == ""'
+      when: never
     - <<: *if-not-canonical-namespace
       when: never
     - <<: *if-merge-request-labels-pipeline-expedite

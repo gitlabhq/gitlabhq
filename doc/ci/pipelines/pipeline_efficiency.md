@@ -43,7 +43,7 @@ Additional points to pay attention to relate to [GitLab Runners](../runners/_ind
 
 - Availability of the runners and the resources they are provisioned with.
   If you use GitLab-hosted runners, choose a
-  [machine type](../runners/hosted_runners/linux.md#machine-types-available-for-linux---x86-64)
+  [machine type](../runners/hosted_runners/linux.md#machine-types-available-for-linux-x86-64)
   sized for the job instead of over-provisioning or under-provisioning.
 - Build dependencies, their installation time, and storage space requirements.
 - [Container image size](#docker-images).

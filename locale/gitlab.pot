@@ -31695,6 +31695,9 @@ msgstr ""
 msgid "DuoAgentsPlatform|Analyze pipeline failures and get fix suggestions"
 msgstr ""
 
+msgid "DuoAgentsPlatform|Any status"
+msgstr ""
+
 msgid "DuoAgentsPlatform|Approval gate"
 msgstr ""
 
@@ -31705,6 +31708,9 @@ msgid "DuoAgentsPlatform|Are you sure you want to delete this trigger? This acti
 msgstr ""
 
 msgid "DuoAgentsPlatform|Available"
+msgstr ""
+
+msgid "DuoAgentsPlatform|Available only when Status changed is the only selected action."
 msgstr ""
 
 msgid "DuoAgentsPlatform|Before you can use GitLab Duo Agent Platform, we need to verify your account."
@@ -31762,6 +31768,9 @@ msgid "DuoAgentsPlatform|Confirm action"
 msgstr ""
 
 msgid "DuoAgentsPlatform|Contact a project Maintainer or group Owner"
+msgstr ""
+
+msgid "DuoAgentsPlatform|Could not load statuses. Refresh the page to try again."
 msgstr ""
 
 msgid "DuoAgentsPlatform|Create a trigger to run a flow or external agent based on project events."
@@ -32001,6 +32010,9 @@ msgstr ""
 msgid "DuoAgentsPlatform|Run on"
 msgstr ""
 
+msgid "DuoAgentsPlatform|Run only when the work item changes to one of the selected statuses. Leave empty to run on any status change."
+msgstr ""
+
 msgid "DuoAgentsPlatform|Run when"
 msgstr ""
 
@@ -32073,6 +32085,9 @@ msgstr ""
 msgid "DuoAgentsPlatform|Select pipeline events"
 msgstr ""
 
+msgid "DuoAgentsPlatform|Select statuses"
+msgstr ""
+
 msgid "DuoAgentsPlatform|Select work item actions"
 msgstr ""
 
@@ -32094,6 +32109,9 @@ msgstr ""
 msgid "DuoAgentsPlatform|Something went wrong while fetching Agent Flows"
 msgstr ""
 
+msgid "DuoAgentsPlatform|Something went wrong while fetching work item statuses. Please try again."
+msgstr ""
+
 msgid "DuoAgentsPlatform|Specify the path to a YAML file that contains a flow definition."
 msgstr ""
 
@@ -32107,6 +32125,9 @@ msgid "DuoAgentsPlatform|Started %{timeago} by %{user}"
 msgstr ""
 
 msgid "DuoAgentsPlatform|Status"
+msgstr ""
+
+msgid "DuoAgentsPlatform|Status changed to %{statusNames}"
 msgstr ""
 
 msgid "DuoAgentsPlatform|Supplemental"
@@ -57450,6 +57471,9 @@ msgstr ""
 msgid "Orbit|Only owners of this top-level group can change Orbit indexing."
 msgstr ""
 
+msgid "Orbit|Only top-level groups can be excluded"
+msgstr ""
+
 msgid "Orbit|Only top-level groups can be indexed"
 msgstr ""
 
@@ -57622,6 +57646,9 @@ msgid "Orbit|Table"
 msgstr ""
 
 msgid "Orbit|Templates"
+msgstr ""
+
+msgid "Orbit|This top-level group is excluded from indexing"
 msgstr ""
 
 msgid "Orbit|Toggle indexed content"

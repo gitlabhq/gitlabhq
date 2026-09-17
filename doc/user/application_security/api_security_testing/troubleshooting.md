@@ -7,7 +7,7 @@ title: Troubleshooting API security testing jobs
 
 ## API security testing job times out after N hours
 
-For larger repositories, the API security testing job could time out on the [small hosted runner on Linux](../../../ci/runners/hosted_runners/linux.md#machine-types-available-for-linux---x86-64), which is set by default. If this happens in your jobs, you should scale up to a [larger runner](performance.md#using-a-larger-runner).
+For larger repositories, the API security testing job could time out on the [small hosted runner on Linux](../../../ci/runners/hosted_runners/linux.md#machine-types-available-for-linux-x86-64), which is set by default. If this happens in your jobs, you should scale up to a [larger runner](performance.md#using-a-larger-runner).
 
 See the following documentation sections for assistance:
 

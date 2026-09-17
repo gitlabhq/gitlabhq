@@ -35,6 +35,13 @@ mkdir -p bundle-size-review
 
 # Running webpack
 export WEBPACK_REPORT="true"
+
+# webpack-prod's fixed default heap can exceed the runner, and then the kernel
+# kills Node before V8 ever applies back-pressure. Size it from the container.
+heap_mb="$(ruby -Iscripts/lib -r assets_heap_sizing -e 'print AssetsHeapSizing.node_heap_size_mb')"
+echo "Node heap limit: ${heap_mb} MB"
+export NODE_OPTIONS="--max-old-space-size=${heap_mb}"
+
 yarn run webpack-prod > bundle-size-review/webpack-output.log
 
 # Copy results from stats plugin

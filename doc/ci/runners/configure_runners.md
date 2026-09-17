@@ -75,21 +75,21 @@ To set the maximum job timeout:
 
 ## How maximum job timeout works
 
-**Example 1 - Runner timeout bigger than project timeout**
+Example 1: Runner timeout bigger than project timeout
 
 1. You set the `maximum_timeout` parameter for a runner to 24 hours.
 1. You set the **Maximum job timeout** for a project to 2 hours.
 1. You start a job.
 1. The job, if running longer, times out after 2 hours.
 
-**Example 2 - Runner timeout not configured**
+Example 2: Runner timeout not configured
 
 1. You remove the `maximum_timeout` parameter configuration from a runner.
 1. You set the **Maximum job timeout** for a project to 2 hours.
 1. You start a job.
 1. The job, if running longer, times out after 2 hours.
 
-**Example 3 - Runner timeout smaller than project timeout**
+Example 3: Runner timeout smaller than project timeout
 
 1. You set the `maximum_timeout` parameter for a runner to 30 minutes.
 1. You set the **Maximum job timeout** for a project to 2 hours.

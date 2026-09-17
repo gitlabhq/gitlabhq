@@ -34,13 +34,17 @@ To index existing and new top-level group namespaces automatically:
 1. Select **Index root namespaces automatically**.
 1. Select **Save changes**.
 
-When you save the setting, GitLab enqueues a background job that enrolls top-level group namespaces that are not
-already enrolled. Enrollment happens shortly afterward rather than immediately.
-When the setting is already enabled, an hourly background job enrolls newly created top-level groups
-and acts as a safety net after direct database changes. Enrollment can take up to one hour.
+When you save the setting, GitLab enqueues a background job.
+The job enrolls top-level group namespaces that are not already enrolled or excluded by an
+administrator.
+Enrollment happens shortly afterward rather than immediately.
+An hourly background job also enrolls newly created top-level groups and removes enrollments for
+excluded groups.
+The hourly job acts as a safety net after direct database changes.
+These changes can take up to one hour.
 Personal namespaces are not enrolled.
 
-When you clear **Index root namespaces automatically**, existing enrollments remain.
+When you clear **Index root namespaces automatically**, existing non-excluded enrollments remain.
 The background job does not enroll new top-level groups until you select the setting again.
 
 > [!note]

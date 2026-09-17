@@ -18,9 +18,9 @@ require 'digest'
 #
 # Otherwise: the `pipeline:skip-test-balancing` MR label opts out entirely (an
 # escape hatch when balancing misbehaves on an MR); the `pipeline:use-test-balancing`
-# label forces it on; otherwise a random 30% of pipelines enable it.
+# label forces it on; otherwise a random 60% of pipelines enable it.
 class DecideTestBalancing
-  ROLLOUT_RATIO = 0.3
+  ROLLOUT_RATIO = 0.6
   FORCE_LABEL = 'pipeline:use-test-balancing'
   SKIP_LABEL = 'pipeline:skip-test-balancing'
 

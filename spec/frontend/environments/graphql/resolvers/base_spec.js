@@ -150,7 +150,13 @@ describe('~/frontend/environments/graphql/resolvers', () => {
       const cache = { evict: jest.fn() };
       const client = { writeQuery: jest.fn() };
       const environment = { stopPath: ENDPOINT };
-      await mockResolvers.Mutation.stopEnvironmentREST(null, { environment }, { client, cache });
+      const result = await mockResolvers.Mutation.stopEnvironmentREST(
+        null,
+        { environment },
+        { client, cache },
+      );
+
+      expect(result).toEqual({ errors: [], __typename: 'LocalEnvironmentErrors' });
 
       expect(mock.history.post).toContainEqual(
         expect.objectContaining({ url: ENDPOINT, method: 'post' }),
@@ -186,7 +192,7 @@ describe('~/frontend/environments/graphql/resolvers', () => {
       mock.onPost(ENDPOINT).reply(HTTP_STATUS_OK);
       const cache = { evict: jest.fn() };
 
-      await mockResolvers.Mutation.rollbackEnvironment(
+      const result = await mockResolvers.Mutation.rollbackEnvironment(
         null,
         {
           environment: { retryUrl: ENDPOINT },
@@ -194,6 +200,7 @@ describe('~/frontend/environments/graphql/resolvers', () => {
         { cache },
       );
 
+      expect(result).toEqual({ errors: [], __typename: 'LocalEnvironmentErrors' });
       expect(mock.history.post).toContainEqual(
         expect.objectContaining({ url: ENDPOINT, method: 'post' }),
       );
@@ -205,7 +212,7 @@ describe('~/frontend/environments/graphql/resolvers', () => {
       mock.onDelete(ENDPOINT).reply(HTTP_STATUS_OK);
       const cache = { evict: jest.fn() };
 
-      await mockResolvers.Mutation.deleteEnvironment(
+      const result = await mockResolvers.Mutation.deleteEnvironment(
         null,
         {
           environment: { deletePath: ENDPOINT },
@@ -213,6 +220,7 @@ describe('~/frontend/environments/graphql/resolvers', () => {
         { cache },
       );
 
+      expect(result).toEqual({ errors: [], __typename: 'LocalEnvironmentErrors' });
       expect(mock.history.delete).toContainEqual(
         expect.objectContaining({ url: ENDPOINT, method: 'delete' }),
       );

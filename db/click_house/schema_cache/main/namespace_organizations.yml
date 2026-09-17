@@ -1,0 +1,20 @@
+---
+name: namespace_organizations
+engine: ReplacingMergeTree
+engine_full: ReplacingMergeTree(version) ORDER BY root_namespace_id SETTINGS index_granularity
+  = 8192
+primary_key: root_namespace_id
+sorting_key: root_namespace_id
+settings:
+  index_granularity: '8192'
+columns:
+- name: root_namespace_id
+  type: UInt64
+  is_in_sorting_key: true
+  is_in_primary_key: true
+- name: organization_id
+  type: UInt64
+- name: version
+  type: DateTime64(6, 'UTC')
+  default_kind: DEFAULT
+  default_expression: now64(6, 'UTC')

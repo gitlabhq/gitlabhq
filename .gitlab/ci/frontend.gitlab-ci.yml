@@ -790,6 +790,10 @@ bundle-size-review:
       when: never
     - !reference [".frontend:rules:bundle-size-review", rules]
   stage: test-frontend
+  # This job runs the same webpack build as compile-production-assets, plus the
+  # bundle analyzer, so the default runner OOM-kills it.
+  tags:
+    - $GLCI_MEDIUM_RUNNER_REQUIRED
   needs:
     - job: compile-fe-islands
       optional: true

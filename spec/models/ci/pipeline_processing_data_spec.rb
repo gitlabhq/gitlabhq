@@ -11,6 +11,11 @@ RSpec.describe Ci::PipelineProcessingData, feature_category: :continuous_integra
   it { is_expected.to validate_presence_of(:pipeline) }
   it { is_expected.to validate_presence_of(:project_id) }
 
+  it_behaves_like 'cleanup by a loose foreign key' do
+    let!(:model) { create(:ci_pipeline_processing_data, pipeline: create(:ci_pipeline)) }
+    let!(:parent) { model.project }
+  end
+
   it 'is keyed by the pipeline it belongs to' do
     processing_data = described_class.create!(pipeline: pipeline, project_id: pipeline.project_id)
 

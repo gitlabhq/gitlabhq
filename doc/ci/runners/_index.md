@@ -26,7 +26,7 @@ For more information, see [Runner execution flow](https://docs.gitlab.com/runner
 When a CI/CD job needs to be executed, GitLab creates a job based on the tasks defined in the `.gitlab-ci.yml` file.
 The jobs are placed in a queue. GitLab checks for available runners that match:
 
-- Runner tags
+- [Runner tags](../yaml/_index.md#tags).
 - Runner types (like shared or group)
 - Runner status and capacity
 - Required capabilities

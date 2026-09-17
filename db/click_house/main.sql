@@ -8,6 +8,16 @@ SOURCE(CLICKHOUSE(USER '$DICTIONARY_USER' PASSWORD '$DICTIONARY_PASSWORD' SECURE
 LIFETIME(MIN 300 MAX 3600)
 LAYOUT(HASHED_ARRAY());
 
+CREATE DICTIONARY namespace_organizations_dict
+(
+    `root_namespace_id` UInt64,
+    `organization_id` UInt64
+)
+PRIMARY KEY root_namespace_id
+SOURCE(CLICKHOUSE(USER '$DICTIONARY_USER' PASSWORD '$DICTIONARY_PASSWORD' SECURE '$DICTIONARY_SECURE' QUERY '\n        SELECT root_namespace_id, argMax(organization_id, version) AS organization_id\n        FROM $DICTIONARY_DATABASE.namespace_organizations\n        GROUP BY root_namespace_id\n      '))
+LIFETIME(MIN 60 MAX 300)
+LAYOUT(HASHED());
+
 CREATE DICTIONARY namespace_traversal_paths_dict
 (
     `id` UInt64,
@@ -776,6 +786,16 @@ ENGINE = ReplacingMergeTree(_siphon_replicated_at, _siphon_deleted)
 PRIMARY KEY (traversal_path, id)
 ORDER BY (traversal_path, id)
 TTL seen + toIntervalHour(1)
+SETTINGS index_granularity = 8192;
+
+CREATE TABLE namespace_organizations
+(
+    `root_namespace_id` UInt64,
+    `organization_id` UInt64,
+    `version` DateTime64(6, 'UTC') DEFAULT now64(6, 'UTC')
+)
+ENGINE = ReplacingMergeTree(version)
+ORDER BY root_namespace_id
 SETTINGS index_granularity = 8192;
 
 CREATE TABLE namespace_traversal_paths

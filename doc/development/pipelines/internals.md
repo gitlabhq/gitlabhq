@@ -106,18 +106,22 @@ if these variables are not defined, those jobs are skipped entirely.
 
 #### `GLCI_MEDIUM_RUNNER_REQUIRED`
 
-This variable enables system (feature) test jobs that require runners with at least 4 cores and 16 GB of RAM.
+This variable enables jobs that require runners with at least 4 cores and 16 GB of RAM. These jobs are the
+system (feature) test jobs and `bundle-size-review`.
 Chrome version 133+ requires additional compute resources to run reliably. Otherwise, system test
 jobs become unpredictably unstable due to insufficient resources for the PostgreSQL database and
 Rails application.
 
+The `bundle-size-review` job requires these resources because it runs a full production webpack build with the
+bundle analyzer, which is OOM-killed on smaller runners.
+
 Define this variable in the CI/CD settings and set it to a runner tag that has at least 4 cores and 16 GB of RAM.
 For complete configuration details, see the [testing section](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/207000#testing) of the MR that introduced this variable.
 
-When not defined (default is empty string), system test jobs are not run.
+When not defined (default is empty string), the jobs that request this tag are not run.
 This prevents resource-intensive tests from running in environments without sufficient runner capacity, such as contributors' personal forks.
 
-Required for environments where system tests need to run, including:
+Required for environments where these jobs need to run, including:
 
 - The canonical `gitlab-org/gitlab` project
 - The GitLab Community fork

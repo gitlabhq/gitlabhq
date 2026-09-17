@@ -20,11 +20,12 @@ The machine type and underlying processor type might change. Jobs optimized for 
 
 [Untagged](../../yaml/_index.md#tags) jobs run on the `small` Linux x86-64 runner.
 
-## Machine types available for Linux - x86-64
+## Machine types available for Linux x86-64
 
 GitLab offers the following machine types for hosted runners on Linux x86-64.
 
-<table id="x86-runner-specs" aria-label="Machine types available for Linux x86-64">
+<div class="table-container">
+<table id="x86-runner-specs" class="docs-table" aria-label="Machine types available for Linux x86-64">
   <thead>
     <tr>
       <th>Runner Tag</th>
@@ -76,12 +77,14 @@ GitLab offers the following machine types for hosted runners on Linux x86-64.
     </tr>
   </tbody>
 </table>
+</div>
 
-## Machine types available for Linux - Arm64
+## Machine types available for Linux Arm64
 
 GitLab offers the following machine type for hosted runners on Linux Arm64.
 
-<table id="arm64-runner-specs" aria-label="Machine types available for Linux Arm64">
+<div class="table-container">
+<table id="arm64-runner-specs" class="docs-table" aria-label="Machine types available for Linux Arm64">
   <thead>
     <tr>
       <th>Runner Tag</th>
@@ -117,6 +120,7 @@ GitLab offers the following machine type for hosted runners on Linux Arm64.
     </tr>
   </tbody>
 </table>
+</div>
 
 > [!note]
 > Users can experience network connectivity issues when they use Docker-in-Docker with hosted runners on Linux

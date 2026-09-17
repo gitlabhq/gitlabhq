@@ -59,7 +59,7 @@ module API
             Labkit::Fields::GL_USER_ID => current_user.id
           )
 
-          not_found!
+          forbidden!('MCP server disabled')
         end
 
         forbidden! unless AccessTokenValidationService.new(access_token)
@@ -195,7 +195,7 @@ module API
             { code: 400, message: 'Bad request' },
             { code: 401, message: 'Unauthorized' },
             { code: 403, message: 'Forbidden' },
-            { code: 404, message: 'Not found' }
+            { code: 404, message: 'Method not found' }
           ]
           tags ['mcp']
         end
@@ -224,7 +224,6 @@ module API
           failure [
             { code: 401, message: 'Unauthorized' },
             { code: 403, message: 'Forbidden' },
-            { code: 404, message: 'Not found' },
             { code: 405, message: 'Method not allowed' }
           ]
           tags ['mcp']

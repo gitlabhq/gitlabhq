@@ -23860,6 +23860,12 @@ CREATE SEQUENCE knowledge_graph_enabled_namespaces_id_seq
 
 ALTER SEQUENCE knowledge_graph_enabled_namespaces_id_seq OWNED BY knowledge_graph_enabled_namespaces.id;
 
+CREATE TABLE knowledge_graph_excluded_namespaces (
+    root_namespace_id bigint NOT NULL,
+    created_at timestamp with time zone NOT NULL,
+    updated_at timestamp with time zone NOT NULL
+);
+
 CREATE TABLE label_links (
     id bigint NOT NULL,
     label_id bigint,
@@ -41371,6 +41377,9 @@ ALTER TABLE ONLY keys
 
 ALTER TABLE ONLY knowledge_graph_enabled_namespaces
     ADD CONSTRAINT knowledge_graph_enabled_namespaces_pkey PRIMARY KEY (id);
+
+ALTER TABLE ONLY knowledge_graph_excluded_namespaces
+    ADD CONSTRAINT knowledge_graph_excluded_namespaces_pkey PRIMARY KEY (root_namespace_id);
 
 ALTER TABLE ONLY label_links
     ADD CONSTRAINT label_links_pkey PRIMARY KEY (id);
@@ -62420,6 +62429,9 @@ ALTER TABLE ONLY project_feature_usages
 
 ALTER TABLE ONLY packages_nuget_dependency_link_metadata
     ADD CONSTRAINT fk_rails_c3313ee2e4 FOREIGN KEY (dependency_link_id) REFERENCES packages_dependency_links(id) ON DELETE CASCADE;
+
+ALTER TABLE ONLY knowledge_graph_excluded_namespaces
+    ADD CONSTRAINT fk_rails_c36a52edca FOREIGN KEY (root_namespace_id) REFERENCES namespaces(id) ON DELETE CASCADE;
 
 ALTER TABLE ONLY project_wiki_repositories
     ADD CONSTRAINT fk_rails_c3dd796199 FOREIGN KEY (project_id) REFERENCES projects(id) ON DELETE CASCADE;

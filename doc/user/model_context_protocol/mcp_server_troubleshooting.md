@@ -16,10 +16,14 @@ title: Troubleshooting the GitLab MCP server
 
 When working with the GitLab MCP server, you might encounter the following issues.
 
-## Error: `404 Not Found`
+## Error: `403 Forbidden`
 
-You might get this error when you start the GitLab MCP server, or when
-`POST /api/v4/mcp` returns `404 Not Found` after the OAuth flow completes.
+You might get this error when you start the GitLab MCP server. You might also get this error
+when `POST /api/v4/mcp` or `GET /api/v4/mcp` returns `403 Forbidden` after the OAuth flow
+completes, with the body `{"message": "403 Forbidden - MCP server disabled"}`.
+
+In GitLab 19.4 and earlier, the same issue returns `404 Not Found` instead. Both status codes
+share the same causes.
 
 To resolve this issue, make sure you meet the
 [prerequisites for the GitLab MCP server](mcp_server.md#prerequisites).

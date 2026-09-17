@@ -491,6 +491,9 @@ namespaces:
 - jira_connect_subscriptions.namespace_id
 - jira_tracker_data.group_id
 - knowledge_graph_enabled_namespaces.root_namespace_id
+# Exclusion rows contain no application-managed resources and are intentionally
+# removed by the cascading foreign key when their top-level group is deleted.
+- knowledge_graph_excluded_namespaces.root_namespace_id
 - label_links.namespace_id
 - labels.group_id
 - lists.group_id

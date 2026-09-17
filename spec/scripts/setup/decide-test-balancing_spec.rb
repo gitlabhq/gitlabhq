@@ -64,13 +64,13 @@ RSpec.describe DecideTestBalancing, feature_category: :tooling do # rubocop:disa
 
     context 'when no relevant label is present and CI_PIPELINE_ID is absent' do
       it 'is enabled when the roll falls within the rollout ratio' do
-        allow(decision).to receive(:rand).and_return(0.29)
+        allow(decision).to receive(:rand).and_return(0.59)
 
         expect(decision.enabled?).to be(true)
       end
 
       it 'is disabled when the roll falls outside the rollout ratio' do
-        allow(decision).to receive(:rand).and_return(0.3)
+        allow(decision).to receive(:rand).and_return(0.6)
 
         expect(decision.enabled?).to be(false)
       end

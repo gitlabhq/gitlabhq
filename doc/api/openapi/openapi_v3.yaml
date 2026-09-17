@@ -23450,7 +23450,7 @@ paths:
         '403':
           description: Forbidden
         '404':
-          description: Not found
+          description: Method not found
       requestBody:
         required: true
         content:
@@ -23470,8 +23470,6 @@ paths:
           description: Unauthorized
         '403':
           description: Forbidden
-        '404':
-          description: Not found
         '405':
           description: Method not allowed
   "/api/v4/groups/{id}/service_accounts":

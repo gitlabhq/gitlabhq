@@ -46,7 +46,7 @@ RSpec.describe Gitlab::Usage::Metrics::Instrumentations::CountImportedProjectsMe
       let(:start) { 30.days.ago.to_fs(:db) }
       let(:finish) { 2.days.ago.to_fs(:db) }
       let(:expected_query) do
-        "SELECT COUNT(\"projects\".\"id\") FROM \"projects\" WHERE \"projects\".\"created_at\" "\
+        "SELECT COUNT(\"projects\".\"id\") FROM \"projects\" WHERE \"projects\".\"created_at\" " \
         "BETWEEN '#{start}' AND '#{finish}' AND \"projects\".\"import_type\" = 'gitea'"
       end
 
@@ -73,7 +73,7 @@ RSpec.describe Gitlab::Usage::Metrics::Instrumentations::CountImportedProjectsMe
       let(:start) { 30.days.ago.to_fs(:db) }
       let(:finish) { 2.days.ago.to_fs(:db) }
       let(:expected_query) do
-        "SELECT COUNT(\"projects\".\"id\") FROM \"projects\" WHERE \"projects\".\"created_at\" "\
+        "SELECT COUNT(\"projects\".\"id\") FROM \"projects\" WHERE \"projects\".\"created_at\" " \
         "BETWEEN '#{start}' AND '#{finish}' AND \"projects\".\"import_type\" = 'bitbucket'"
       end
 

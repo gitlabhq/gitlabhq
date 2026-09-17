@@ -7,7 +7,7 @@ RSpec.describe Gitlab::Usage::Metrics::Instrumentations::GitlabForJiraAppProxyIn
 
   let(:expected_value) { 1 }
   let(:expected_query) do
-    'SELECT COUNT("jira_connect_installations"."id") FROM "jira_connect_installations" '\
+    'SELECT COUNT("jira_connect_installations"."id") FROM "jira_connect_installations" ' \
     'WHERE "jira_connect_installations"."instance_url" IS NOT NULL'
   end
 
