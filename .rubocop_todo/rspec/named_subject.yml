@@ -604,7 +604,6 @@ RSpec/NamedSubject:
     - 'ee/spec/services/external_status_checks/retry_service_spec.rb'
     - 'ee/spec/services/geo/base_file_service_spec.rb'
     - 'ee/spec/services/geo/blob_download_service_spec.rb'
-    - 'ee/spec/services/geo/blob_upload_service_spec.rb'
     - 'ee/spec/services/geo/cache_invalidation_event_store_spec.rb'
     - 'ee/spec/services/geo/container_repository_sync_service_spec.rb'
     - 'ee/spec/services/geo/container_repository_sync_spec.rb'
