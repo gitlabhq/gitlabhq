@@ -44,9 +44,10 @@ module Mcp
               },
               body: {
                 type: 'string',
-                description: 'Content of the note/comment (max 1,048,576 characters). Lines beginning with ' \
+                description: 'Content of the note/comment (max ' \
+                  "#{Concerns::Constants::MARKDOWN_TEXT_MAX_LENGTH} characters). Lines beginning with " \
                   '"/" are rejected to avoid triggering quick actions such as /merge',
-                maxLength: 1_048_576
+                maxLength: Concerns::Constants::MARKDOWN_TEXT_MAX_LENGTH
               },
               internal: {
                 type: 'boolean',

@@ -462,8 +462,9 @@ module Mcp
               },
               body: {
                 type: 'string',
-                description: 'Content of the note/comment (max 1,048,576 characters)',
-                maxLength: 1_048_576
+                description: 'Content of the note/comment (max ' \
+                  "#{Concerns::Constants::MARKDOWN_TEXT_MAX_LENGTH} characters)",
+                maxLength: Concerns::Constants::MARKDOWN_TEXT_MAX_LENGTH
               }
             },
             required: ['body']

@@ -79,6 +79,13 @@ describe('DashboardCard', () => {
       });
     });
 
+    it('seeds the identicon fallback so a broken avatar image shows a lettered circle', () => {
+      expect(findAvatar().props()).toMatchObject({
+        entityName: mockCustomDashboard.createdBy.name,
+        entityId: 133737,
+      });
+    });
+
     it('renders the last updated time as relative time next to the creator', () => {
       expect(findUpdatedAt().text()).toBe('Updated 5 days ago');
       expect(wrapper.text()).toContain('·');
@@ -149,6 +156,7 @@ describe('DashboardCard', () => {
         shape: 'circle',
         fallbackOnError: true,
         label: 'By GitLab',
+        entityName: 'GitLab',
       });
     });
 

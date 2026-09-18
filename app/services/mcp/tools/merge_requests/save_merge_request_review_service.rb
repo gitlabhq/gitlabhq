@@ -61,10 +61,10 @@ module Mcp
               },
               body: {
                 type: 'string',
-                description: 'Note text (create_note, reply_discussion, create_diff_note; max 1,048,576 ' \
-                  'characters). Lines that begin with "/" are rejected to avoid triggering quick actions ' \
-                  'such as /merge.',
-                maxLength: 1_048_576
+                description: 'Note text (create_note, reply_discussion, create_diff_note; max ' \
+                  "#{Concerns::Constants::MARKDOWN_TEXT_MAX_LENGTH} characters). Lines that begin with " \
+                  '"/" are rejected to avoid triggering quick actions such as /merge.',
+                maxLength: Concerns::Constants::MARKDOWN_TEXT_MAX_LENGTH
               },
               discussion_id: {
                 type: 'string',

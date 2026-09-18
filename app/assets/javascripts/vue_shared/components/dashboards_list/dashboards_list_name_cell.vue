@@ -35,13 +35,16 @@ export default {
     <gl-link
       data-testid="dashboard-redirect-link"
       :href="dashboardUrl"
-      class="gl-text-lg gl-font-bold !gl-text-strong !gl-no-underline"
+      class="gl-text-lg gl-font-bold !gl-text-strong !gl-no-underline gl-break-anywhere"
       :class="{ 'gl-stretched-link': stretched }"
       >{{ name }}</gl-link
     >
+    <!-- The native title recovers the clamped text; a stretched link can cover
+         the paragraph, so it cannot be selected or hovered as a GlTooltip target. -->
     <p
       v-if="description"
-      class="gl-m-0 gl-line-clamp-2 gl-text-subtle"
+      :title="description"
+      class="gl-m-0 gl-line-clamp-2 gl-text-subtle gl-break-anywhere"
       data-testid="dashboard-description"
     >
       {{ description }}

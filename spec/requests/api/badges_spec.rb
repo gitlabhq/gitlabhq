@@ -3,15 +3,15 @@
 require 'spec_helper'
 
 RSpec.describe API::Badges, feature_category: :groups_and_projects do
-  let(:maintainer) { create(:user, username: 'maintainer_user') }
+  let_it_be(:maintainer) { create(:user, username: 'maintainer_user') }
   let(:example_url2) { 'http://www.example1.com' }
   let(:example_url) { 'http://www.example.com' }
-  let(:developer) { create(:user) }
-  let(:access_requester) { create(:user) }
-  let(:stranger) { create(:user) }
+  let_it_be(:developer) { create(:user) }
+  let_it_be(:access_requester) { create(:user) }
+  let_it_be(:stranger) { create(:user) }
   let(:project_group) { create(:group) }
   let(:project) { setup_project }
-  let!(:group) { setup_group }
+  let(:group) { setup_group }
 
   shared_context 'source helpers' do
     def get_source(source_type)

@@ -67,7 +67,7 @@ RSpec.describe Mcp::Tools::MergeRequests::SaveMergeRequestReviewService, feature
           },
           body: {
             type: 'string',
-            description: 'Note text (create_note, reply_discussion, create_diff_note; max 1,048,576 ' \
+            description: 'Note text (create_note, reply_discussion, create_diff_note; max 1048576 ' \
               'characters). Lines that begin with "/" are rejected to avoid triggering quick actions ' \
               'such as /merge.',
             maxLength: 1_048_576

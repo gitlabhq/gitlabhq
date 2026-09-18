@@ -5,6 +5,9 @@ require 'spec_helper'
 RSpec.describe 'Query.note(id)', feature_category: :team_planning do
   include GraphqlHelpers
 
+  # The ai_workflows scope is only accepted for GraphQL requests in EE, so the awardEmoji
+  # examples covering it live in ee/spec/requests/api/graphql/notes/note_spec.rb.
+
   let_it_be(:current_user) { create(:user) }
   let_it_be(:reporter_user) { create(:user) }
   let_it_be(:project) { create(:project, :private, reporters: reporter_user) }

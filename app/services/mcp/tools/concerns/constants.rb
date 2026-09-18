@@ -11,6 +11,8 @@ module Mcp
         VERSIONS = {
           v0_1_0: '0.1.0'
         }.freeze
+
+        MARKDOWN_TEXT_MAX_LENGTH = 1_048_576
       end
     end
   end

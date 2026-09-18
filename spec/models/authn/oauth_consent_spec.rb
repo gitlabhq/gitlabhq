@@ -106,10 +106,10 @@ RSpec.describe Authn::OauthConsent, feature_category: :system_access do
     let_it_be(:other_user) { create(:user) }
     let_it_be(:app) { create(:oauth_application) }
 
-    let!(:authorized) { create(:oauth_consent, user: user, application: app) }
-    let!(:other_user_authorized) { create(:oauth_consent, user: other_user, application: app) }
-    let!(:already_revoked) { create(:oauth_consent, :revoked, user: user, application: app) }
-    let!(:rejected) { create(:oauth_consent, :rejected, user: user, application: app) }
+    let_it_be_with_reload(:authorized) { create(:oauth_consent, user: user, application: app) }
+    let_it_be_with_reload(:other_user_authorized) { create(:oauth_consent, user: other_user, application: app) }
+    let_it_be_with_reload(:already_revoked) { create(:oauth_consent, :revoked, user: user, application: app) }
+    let_it_be_with_reload(:rejected) { create(:oauth_consent, :rejected, user: user, application: app) }
 
     subject(:revoke) { described_class.revoke_authorized_for(user: user, client_id: app.uid) }
 

@@ -263,7 +263,7 @@ Credits, see the [hosted runners for GitLab Dedicated SLA definition](https://ha
 
 > [!note]
 > Hosted runners for GitLab Dedicated keep running jobs after you deplete your Monthly Commitment Pool of GitLab
-> Credits, so your CI/CD pipelines are not interrupted, provided you have accepted the usage billing terms.
+> Credits, so your CI/CD pipelines are not interrupted.
 
 If you're at risk of overage, monitor your usage on the GitLab Credits dashboard and do one of the following:
 

@@ -3,10 +3,22 @@
 module API
   class AwardEmoji < ::API::Base
     include PaginationParams
+    include APIGuard
 
     helpers ::API::Helpers::AwardEmoji
 
     AWARD_EMOJI_TAG = %w[award_emoji].freeze
+
+    # Keep `ai_workflows` award emoji access aligned with issue, merge request, and epic APIs.
+    # Snippet award emoji access requires separate approval.
+    AI_WORKFLOWS_AWARDABLE_PATH = %r{/(?:issues|merge_requests|epics)/[^/]+/(?:notes/[^/]+/)?award_emoji}
+
+    def self.ai_workflows_readable?(request)
+      (request.get? || request.head?) && request.path.match?(AI_WORKFLOWS_AWARDABLE_PATH)
+    end
+
+    allow_access_with_scope :ai_workflows, if: ->(request) { ai_workflows_readable?(request) }
+
     Helpers::AwardEmoji.awardables.each do |awardable_params|
       resource awardable_params[:resource], requirements: ::API::NAMESPACE_OR_PROJECT_REQUIREMENTS do
         awardable_string = awardable_params[:type].pluralize

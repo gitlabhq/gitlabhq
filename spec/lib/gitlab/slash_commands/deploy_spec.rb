@@ -4,18 +4,14 @@ require 'spec_helper'
 
 RSpec.describe Gitlab::SlashCommands::Deploy, feature_category: :environment_management do
   describe '#execute' do
-    let(:project) { create(:project, :repository) }
-    let(:user) { create(:user) }
+    let_it_be(:user) { create(:user) }
+    let_it_be_with_reload(:project) { create(:project, :repository, developers: user) }
+
     let(:chat_name) { double(:chat_name, user: user) }
     let(:regex_match) { described_class.match('deploy staging to production') }
 
-    before do
-      # Make it possible to trigger protected manual actions for developers.
-      #
-      project.add_developer(user)
-
-      create(:protected_branch, :developers_can_merge,
-        name: 'master', project: project)
+    before_all do
+      create(:protected_branch, :developers_can_merge, name: 'master', project: project)
     end
 
     subject do
@@ -30,10 +26,10 @@ RSpec.describe Gitlab::SlashCommands::Deploy, feature_category: :environment_man
     end
 
     context 'with environment' do
-      let!(:staging) { create(:environment, name: 'staging', project: project) }
-      let!(:pipeline) { create(:ci_pipeline, project: project) }
-      let!(:build) { create(:ci_build, pipeline: pipeline, environment: 'production') }
-      let!(:deployment) { create(:deployment, :success, environment: staging, deployable: build) }
+      let_it_be(:staging) { create(:environment, name: 'staging', project: project) }
+      let_it_be_with_reload(:pipeline) { create(:ci_pipeline, project: project) }
+      let_it_be(:build) { create(:ci_build, pipeline: pipeline, environment: 'production') }
+      let_it_be(:deployment) { create(:deployment, :success, environment: staging, deployable: build) }
 
       context 'without actions' do
         it 'does not execute an action' do

@@ -27,27 +27,27 @@ RSpec.describe MergeRequests::MergeabilityCheckBatchWorker, feature_category: :c
         ).values.sum
       end
 
-      let(:mr1) do
+      let_it_be(:mr1) do
         create(:merge_request, :unique_branches, source_project: project, merge_status: :unchecked)
       end
 
-      let(:mr2) do
+      let_it_be(:mr2) do
         create(:merge_request, :unique_branches, source_project: another_project, merge_status: :unchecked)
       end
 
-      let(:mr3) do
+      let_it_be(:mr3) do
         create(:merge_request, :unique_branches, source_project: project, merge_status: :can_be_merged)
       end
 
-      let(:mr4) do
+      let_it_be(:mr4) do
         create(:merge_request, :unique_branches, source_project: project, merge_status: :cannot_be_merged_recheck)
       end
 
-      let(:mr5) do
+      let_it_be(:mr5) do
         create(:merge_request, :unique_branches, source_project: project, merge_status: :cannot_be_merged_recheck)
       end
 
-      let(:mr6) do
+      let_it_be(:mr6) do
         create(:merge_request, :unique_branches, source_project: project, merge_status: :unchecked)
       end
 

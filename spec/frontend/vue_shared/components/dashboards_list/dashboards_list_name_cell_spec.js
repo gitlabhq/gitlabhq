@@ -40,6 +40,18 @@ describe('DashboardsListNameCell', () => {
     });
   });
 
+  describe('with a long unbroken name', () => {
+    beforeEach(() => {
+      createWrapper({
+        name: 'a_71_character_unbroken_name_that_would_otherwise_overflow_the_card_yes',
+      });
+    });
+
+    it('breaks the name anywhere so unbroken strings wrap inside the card', () => {
+      expect(findDashboardLink().classes()).toContain('gl-break-anywhere');
+    });
+  });
+
   describe('when stretched', () => {
     beforeEach(() => {
       createWrapper({ stretched: true });
@@ -61,6 +73,14 @@ describe('DashboardsListNameCell', () => {
 
     it('clamps the description to two lines instead of truncating mid-word', () => {
       expect(findDescription().classes()).toContain('gl-line-clamp-2');
+    });
+
+    it('exposes the full description as a native title so clamped text stays recoverable', () => {
+      expect(findDescription().attributes('title')).toBe('Built in dashboard description');
+    });
+
+    it('breaks the description anywhere so unbroken strings clamp instead of overflowing', () => {
+      expect(findDescription().classes()).toContain('gl-break-anywhere');
     });
   });
 });

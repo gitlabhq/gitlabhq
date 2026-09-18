@@ -7,8 +7,8 @@ RSpec.describe ServiceDesk::CustomEmailVerificationCleanupWorker, type: :worker,
     let_it_be(:project) { create(:project) }
     let_it_be(:other_project) { create(:project) }
     let!(:credential) { create(:service_desk_custom_email_credential, project: project) }
-    let!(:settings) { create(:service_desk_setting, project: project, custom_email: 'user@example.com') }
-    let!(:verification) { create(:service_desk_custom_email_verification, :overdue, project: project) }
+    let_it_be(:settings) { create(:service_desk_setting, project: project, custom_email: 'user@example.com') }
+    let_it_be(:verification) { create(:service_desk_custom_email_verification, :overdue, project: project) }
 
     it 'calls the custom email verification update service' do
       expect_next_instance_of(ServiceDesk::CustomEmailVerifications::UpdateService) do |instance|

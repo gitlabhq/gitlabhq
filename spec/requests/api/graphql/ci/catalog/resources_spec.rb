@@ -145,19 +145,19 @@ RSpec.describe 'Query.ciCatalogResources', feature_category: :pipeline_compositi
   end
 
   describe 'versions' do
-    let!(:private_resource_v1) do
+    let_it_be_with_reload(:private_resource_v1) do
       create(:ci_catalog_resource_version, semver: '1.0.0', catalog_resource: private_resource)
     end
 
-    let!(:private_resource_v2) do
+    let_it_be_with_reload(:private_resource_v2) do
       create(:ci_catalog_resource_version, semver: '2.0.0', catalog_resource: private_resource)
     end
 
-    let!(:public_resource_v1) do
+    let_it_be_with_reload(:public_resource_v1) do
       create(:ci_catalog_resource_version, semver: '1.0.0', catalog_resource: public_resource)
     end
 
-    let!(:public_resource_v2) do
+    let_it_be_with_reload(:public_resource_v2) do
       create(:ci_catalog_resource_version, semver: '2.0.0', catalog_resource: public_resource)
     end
 

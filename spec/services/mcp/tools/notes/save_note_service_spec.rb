@@ -69,7 +69,7 @@ RSpec.describe Mcp::Tools::Notes::SaveNoteService, feature_category: :mcp_server
           },
           body: {
             type: 'string',
-            description: 'Content of the note/comment (max 1,048,576 characters). Lines beginning with ' \
+            description: 'Content of the note/comment (max 1048576 characters). Lines beginning with ' \
               '"/" are rejected to avoid triggering quick actions such as /merge',
             maxLength: 1_048_576
           },

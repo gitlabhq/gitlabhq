@@ -22,7 +22,13 @@ If you need to configure runners on the machine where you installed GitLab Runne
 
 You can specify a maximum job timeout for each runner to prevent projects
 with longer job timeouts from using the runner. The maximum job timeout is
-used if it is shorter than the job timeout defined in the project.
+used if it is shorter than the job timeout defined in the project:
+
+| Runner timeout | Project timeout | Job times out after |
+|----------------|------------------|----------------------|
+| 24 hours       | 2 hours          | 2 hours              |
+| Not configured | 2 hours          | 2 hours              |
+| 30 minutes     | 2 hours          | 30 minutes           |
 
 To set a runner's maximum timeout, set the `maximum_timeout` parameter in the REST API endpoint [`PUT /runners/:id`](../../api/runners.md#update-runners-details).
 
@@ -72,29 +78,6 @@ To set the maximum job timeout:
 1. To the right of the runner you want to edit, select **Edit** ({{< icon name="pencil" >}}).
 1. In the **Maximum job timeout** field, enter a value in seconds. The minimum value is 600 seconds (10 minutes). If not defined, the [job timeout for the project](../pipelines/settings.md#set-a-limit-for-how-long-jobs-can-run) is used instead.
 1. Select **Save changes**.
-
-## How maximum job timeout works
-
-Example 1: Runner timeout bigger than project timeout
-
-1. You set the `maximum_timeout` parameter for a runner to 24 hours.
-1. You set the **Maximum job timeout** for a project to 2 hours.
-1. You start a job.
-1. The job, if running longer, times out after 2 hours.
-
-Example 2: Runner timeout not configured
-
-1. You remove the `maximum_timeout` parameter configuration from a runner.
-1. You set the **Maximum job timeout** for a project to 2 hours.
-1. You start a job.
-1. The job, if running longer, times out after 2 hours.
-
-Example 3: Runner timeout smaller than project timeout
-
-1. You set the `maximum_timeout` parameter for a runner to 30 minutes.
-1. You set the **Maximum job timeout** for a project to 2 hours.
-1. You start a job.
-1. The job, if running longer, times out after 30 minutes.
 
 ## Set `script` and `after_script` timeouts
 

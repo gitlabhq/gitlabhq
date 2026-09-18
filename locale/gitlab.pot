@@ -10991,6 +10991,9 @@ msgstr ""
 msgid "AnalyticsDashboards|%{count} groups selected"
 msgstr ""
 
+msgid "AnalyticsDashboards|%{name} deleted"
+msgstr ""
+
 msgid "AnalyticsDashboards|Add panel"
 msgstr ""
 
@@ -11015,7 +11018,7 @@ msgstr ""
 msgid "AnalyticsDashboards|Analyze with Duo"
 msgstr ""
 
-msgid "AnalyticsDashboards|Are you sure you want to permanently delete this dashboard?"
+msgid "AnalyticsDashboards|Are you sure you want to permanently delete the %{name} dashboard?"
 msgstr ""
 
 msgid "AnalyticsDashboards|Ask me about the data on this dashboard."

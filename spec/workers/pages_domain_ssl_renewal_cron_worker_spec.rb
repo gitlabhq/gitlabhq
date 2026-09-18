@@ -14,22 +14,22 @@ RSpec.describe PagesDomainSslRenewalCronWorker, feature_category: :pages do
   describe '#perform' do
     let_it_be(:project) { create :project }
 
-    let!(:domain) { create(:pages_domain, project: project, auto_ssl_enabled: false) }
-    let!(:domain_with_enabled_auto_ssl) { create(:pages_domain, project: project, auto_ssl_enabled: true) }
-    let!(:domain_with_obtained_letsencrypt) do
+    let_it_be(:domain) { create(:pages_domain, project: project, auto_ssl_enabled: false) }
+    let_it_be(:domain_with_enabled_auto_ssl) { create(:pages_domain, project: project, auto_ssl_enabled: true) }
+    let_it_be(:domain_with_obtained_letsencrypt) do
       create(:pages_domain, :letsencrypt, project: project, auto_ssl_enabled: true)
     end
 
-    let!(:domain_without_auto_certificate) do
+    let_it_be(:domain_without_auto_certificate) do
       create(:pages_domain, :without_certificate, :without_key, project: project, auto_ssl_enabled: true)
     end
 
-    let!(:domain_with_failed_auto_ssl) do
+    let_it_be(:domain_with_failed_auto_ssl) do
       create(:pages_domain, :without_certificate, :without_key,
         project: project, auto_ssl_enabled: true, auto_ssl_failed: true)
     end
 
-    let!(:domain_with_expired_auto_ssl) do
+    let_it_be(:domain_with_expired_auto_ssl) do
       create(:pages_domain, :letsencrypt, :with_expired_certificate, project: project)
     end
 

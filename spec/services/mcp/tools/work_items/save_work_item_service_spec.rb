@@ -79,7 +79,7 @@ RSpec.describe Mcp::Tools::WorkItems::SaveWorkItemService, feature_category: :mc
             },
             description: {
               type: 'string',
-              description: 'Description in GitLab Flavored Markdown (max 1,048,576 characters).',
+              description: 'Description in GitLab Flavored Markdown (max 1048576 characters).',
               maxLength: 1_048_576
             },
             assignee_ids: {

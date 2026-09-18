@@ -53,8 +53,9 @@ module Mcp
               },
               description: {
                 type: 'string',
-                description: 'Description in GitLab Flavored Markdown (max 1,048,576 characters).',
-                maxLength: 1_048_576
+                description: 'Description in GitLab Flavored Markdown ' \
+                  "(max #{Concerns::Constants::MARKDOWN_TEXT_MAX_LENGTH} characters).",
+                maxLength: Concerns::Constants::MARKDOWN_TEXT_MAX_LENGTH
               },
               assignee_ids: {
                 type: 'array',

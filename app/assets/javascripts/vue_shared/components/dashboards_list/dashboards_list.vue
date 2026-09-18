@@ -76,9 +76,10 @@ export default {
           formatUpdatedAt(updatedAt)
         }}</span>
       </template>
-      <template #cell(actions)="{ field, item: { id, system, dashboardUrl } }">
+      <template #cell(actions)="{ field, item: { id, name, system, dashboardUrl } }">
         <dashboards-list-item-actions
           :id="id"
+          :name="name"
           :system="system"
           :dashboard-url="dashboardUrl"
           :action-label="field.label"

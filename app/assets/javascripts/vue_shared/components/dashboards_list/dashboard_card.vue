@@ -2,6 +2,7 @@
 import GITLAB_LOGO_SVG_URL from '@gitlab/svgs/dist/illustrations/gitlab_logo.svg?url';
 import { GlAvatarLabeled, GlAvatarLink, GlSprintf } from '@gitlab/ui';
 import { __, s__, sprintf } from '~/locale';
+import { getIdFromGraphQLId } from '~/graphql_shared/utils';
 import TimeAgoTooltip from '~/vue_shared/components/time_ago_tooltip.vue';
 import DashboardsListItemActions from 'ee_else_ce/vue_shared/components/dashboards_list/dashboards_list_item_actions.vue';
 import DashboardCardThumbnail from './dashboard_card_thumbnail.vue';
@@ -51,6 +52,10 @@ export default {
     thumbnailPieces() {
       return configToPreviewPieces(this.dashboard.config);
     },
+    // Numeric id seeding the identicon's background when the avatar image fails.
+    creatorEntityId() {
+      return getIdFromGraphQLId(this.dashboard.createdBy?.id) || 0;
+    },
   },
   avatarSize: 24,
   createdByGitLab: {
@@ -78,6 +83,7 @@ export default {
           :src="$options.createdByGitLab.avatarUrl"
           :size="$options.avatarSize"
           :label="authorLabel"
+          :entity-name="$options.createdByGitLab.label"
           shape="circle"
           fallback-on-error
         />
@@ -86,10 +92,14 @@ export default {
           class="gl-relative gl-z-1"
           :href="dashboard.createdBy.webPath"
         >
+          <!-- entity-name/entity-id seed the identicon fallback so a broken
+               avatar image degrades to a lettered circle rather than a blank one. -->
           <gl-avatar-labeled
             :src="dashboard.createdBy.avatarUrl"
             :size="$options.avatarSize"
             :label="authorLabel"
+            :entity-name="dashboard.createdBy.name"
+            :entity-id="creatorEntityId"
             shape="circle"
             fallback-on-error
           />
@@ -113,6 +123,7 @@ export default {
     <div class="gl-absolute gl-right-3 gl-top-3 gl-z-1" data-testid="dashboard-card-actions">
       <dashboards-list-item-actions
         :id="dashboard.id"
+        :name="dashboard.name"
         :action-label="actionsLabel"
         :dashboard-url="dashboard.dashboardUrl"
         :system="dashboard.system"

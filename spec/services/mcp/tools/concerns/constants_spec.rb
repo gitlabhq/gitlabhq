@@ -62,4 +62,10 @@ RSpec.describe Mcp::Tools::Concerns::Constants, feature_category: :mcp_server do
       end
     end
   end
+
+  describe 'MARKDOWN_TEXT_MAX_LENGTH' do
+    it 'caps long-form markdown fields at 1,048,576 characters' do
+      expect(test_class::MARKDOWN_TEXT_MAX_LENGTH).to eq(1_048_576)
+    end
+  end
 end

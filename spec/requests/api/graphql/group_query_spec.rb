@@ -49,10 +49,10 @@ RSpec.describe 'getting group information', :with_license, feature_category: :gr
     end
 
     context "when authenticated as user" do
-      let!(:group1) { create(:group, avatar: File.open(uploaded_image_temp_path)) }
-      let!(:group2) { create(:group, :private) }
+      let_it_be(:group1) { create(:group, avatar: File.open(uploaded_image_temp_path)) }
+      let_it_be(:group2) { create(:group, :private) }
 
-      before do
+      before_all do
         group1.add_owner(user1)
         group2.add_owner(user2)
       end

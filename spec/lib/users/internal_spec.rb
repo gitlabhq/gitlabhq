@@ -9,7 +9,7 @@ RSpec.describe Users::Internal, feature_category: :user_profile do
   shared_examples 'bot users' do |bot_type, username, email|
     subject(:bot_user) { described_class.in_organization(organization).public_send(bot_type) }
 
-    let(:bot_username) do
+    let_it_be(:bot_username) do
       described_class.in_organization(organization).send(
         :username_with_organization_suffix, username
       )

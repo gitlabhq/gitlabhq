@@ -648,4 +648,60 @@ RSpec.describe API::AwardEmoji, feature_category: :shared do
       end
     end
   end
+
+  describe 'when authenticated with a token that has the ai_workflows scope' do
+    context 'on an issue' do
+      it_behaves_like 'read-only award emoji access for the ai_workflows scope' do
+        let(:awardable) { issue }
+        let(:request_path) { "/projects/#{project.id}/issues/#{issue.iid}/award_emoji" }
+      end
+    end
+
+    context 'on a merge request' do
+      it_behaves_like 'read-only award emoji access for the ai_workflows scope' do
+        let(:awardable) { merge_request }
+        let(:award_emoji) { downvote }
+        let(:request_path) { "/projects/#{project.id}/merge_requests/#{merge_request.iid}/award_emoji" }
+      end
+    end
+
+    context 'on a note' do
+      it_behaves_like 'read-only award emoji access for the ai_workflows scope' do
+        let(:awardable) { mr_note }
+        let!(:award_emoji) { create(:award_emoji, awardable: mr_note, name: 'rocket', user: user) }
+        let(:request_path) do
+          "/projects/#{project.id}/merge_requests/#{merge_request.iid}/notes/#{mr_note.id}/award_emoji"
+        end
+      end
+    end
+
+    context 'on a snippet' do
+      let!(:snippet_award) { create(:award_emoji, awardable: snippet, user: user) }
+      let!(:snippet_note_award) { create(:award_emoji, awardable: snippet_note, user: user) }
+      let(:oauth_token) { create(:oauth_access_token, user: user, scopes: [:ai_workflows]) }
+
+      it 'does not allow reading the award emoji' do
+        get api("/projects/#{project.id}/snippets/#{snippet.id}/award_emoji", oauth_access_token: oauth_token)
+
+        expect(response).to have_gitlab_http_status(:forbidden)
+      end
+
+      it 'does not allow reading the award emoji of a note' do
+        get api("/projects/#{project.id}/snippets/#{snippet.id}/notes/#{snippet_note.id}/award_emoji",
+          oauth_access_token: oauth_token)
+
+        expect(response).to have_gitlab_http_status(:forbidden)
+      end
+    end
+
+    context 'when the user cannot read the awardable' do
+      let(:oauth_token) { create(:oauth_access_token, user: create(:user), scopes: [:ai_workflows]) }
+
+      it 'returns 404' do
+        get api("/projects/#{project.id}/issues/#{issue.iid}/award_emoji", oauth_access_token: oauth_token)
+
+        expect(response).to have_gitlab_http_status(:not_found)
+      end
+    end
+  end
 end

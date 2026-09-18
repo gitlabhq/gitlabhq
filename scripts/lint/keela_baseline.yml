@@ -458,8 +458,6 @@ methods:
   - valid_runners_token?
   app/models/project_custom_attribute.rb:
   - self.declarative_policy_class
-  app/models/project_group_link.rb:
-  - owner_access?
   app/models/project_team.rb:
   - guest?
   - reporter?
