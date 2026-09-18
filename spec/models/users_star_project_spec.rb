@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe UsersStarProject, type: :model do
+RSpec.describe UsersStarProject do
   let_it_be(:project1) { create(:project) }
   let_it_be(:project2) { create(:project) }
   let_it_be(:user_active) { create(:user, state: 'active', name: 'user2', private_profile: true) }

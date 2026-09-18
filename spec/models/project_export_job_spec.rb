@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe ProjectExportJob, feature_category: :importers, type: :model do
+RSpec.describe ProjectExportJob, feature_category: :importers do
   describe 'associations' do
     it { is_expected.to belong_to(:project) }
     it { is_expected.to belong_to(:user) }

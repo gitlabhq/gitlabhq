@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Packages::Tag, type: :model, feature_category: :package_registry do
+RSpec.describe Packages::Tag, feature_category: :package_registry do
   let_it_be(:project) { create(:project) }
   let_it_be(:package) do
     create(:npm_package, version: '1.0.2', project: project, updated_at: 3.days.ago, package_files: [])

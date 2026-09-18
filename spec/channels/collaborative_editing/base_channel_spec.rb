@@ -12,6 +12,12 @@ RSpec.describe CollaborativeEditing::BaseChannel, feature_category: :wiki do
     stub_action_cable_connection current_user: user
   end
 
+  describe '.action_methods' do
+    it 'only exposes the message entry point' do
+      expect(described_class.action_methods).to contain_exactly('receive')
+    end
+  end
+
   describe 'the subclass contract' do
     let(:container) { instance_double(Project) }
 

@@ -12,6 +12,7 @@ RSpec.describe Clusters::Agents::Authorizations::UserAccess::Finder, feature_cat
     let_it_be(:deployment_maintainer) { create(:user, maintainer_of: deployment_project) }
     let_it_be(:deployment_developer) { create(:user, developer_of: deployment_project) }
     let_it_be(:deployment_guest) { create(:user, guest_of: deployment_project) }
+    let_it_be(:instance_admin) { create(:admin) }
 
     let(:user) { deployment_developer }
     let(:params) { { agent: nil } }
@@ -48,6 +49,40 @@ RSpec.describe Clusters::Agents::Authorizations::UserAccess::Finder, feature_cat
 
         it 'does not return authorization' do
           is_expected.to be_empty
+        end
+      end
+
+      context 'when user is an instance administrator without membership' do
+        let(:user) { instance_admin }
+
+        context 'when admin mode is enabled', :enable_admin_mode do
+          it 'returns authorization' do
+            is_expected.to contain_exactly(authorization_1)
+
+            expect(subject.first.access_level).to eq(Gitlab::Access::OWNER)
+          end
+
+          context 'with specific agent' do
+            let(:params) { { agent: agent } }
+
+            it 'returns authorization' do
+              is_expected.to contain_exactly(authorization_1)
+            end
+          end
+
+          context 'with specific project' do
+            let(:params) { { project: deployment_project } }
+
+            it 'returns authorization' do
+              is_expected.to contain_exactly(authorization_1)
+            end
+          end
+        end
+
+        context 'when admin mode is disabled' do
+          it 'does not return authorization' do
+            is_expected.to be_empty
+          end
         end
       end
 
@@ -129,6 +164,40 @@ RSpec.describe Clusters::Agents::Authorizations::UserAccess::Finder, feature_cat
         end
       end
 
+      context 'when user is an instance administrator without membership' do
+        let(:user) { instance_admin }
+
+        context 'when admin mode is enabled', :enable_admin_mode do
+          it 'returns authorization' do
+            is_expected.to contain_exactly(authorization_1)
+
+            expect(subject.first.access_level).to eq(Gitlab::Access::OWNER)
+          end
+
+          context 'with specific agent' do
+            let(:params) { { agent: agent } }
+
+            it 'returns authorization' do
+              is_expected.to contain_exactly(authorization_1)
+            end
+          end
+
+          context 'with specific project' do
+            let(:params) { { project: deployment_project } }
+
+            it 'returns authorization' do
+              is_expected.to contain_exactly(authorization_1)
+            end
+          end
+        end
+
+        context 'when admin mode is disabled' do
+          it 'does not return authorization' do
+            is_expected.to be_empty
+          end
+        end
+      end
+
       context 'with multiple authorizations' do
         let_it_be(:agent_2) { create(:cluster_agent, project: agent_configuration_project) }
 
@@ -187,6 +256,14 @@ RSpec.describe Clusters::Agents::Authorizations::UserAccess::Finder, feature_cat
 
           it 'returns only the authorization connected to the parent group' do
             is_expected.to contain_exactly(authorization_1)
+          end
+
+          context 'when user is an instance administrator with admin mode enabled', :enable_admin_mode do
+            let(:user) { instance_admin }
+
+            it 'returns only the authorization connected to the parent group' do
+              is_expected.to contain_exactly(authorization_1)
+            end
           end
         end
       end

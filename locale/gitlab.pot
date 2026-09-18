@@ -12986,7 +12986,9 @@ msgid "ArtifactRegistry|Repositories list updated."
 msgstr ""
 
 msgid "ArtifactRegistry|Repository"
-msgstr ""
+msgid_plural "ArtifactRegistry|Repositories"
+msgstr[0] ""
+msgstr[1] ""
 
 msgid "ArtifactRegistry|Repository URL copied to clipboard."
 msgstr ""

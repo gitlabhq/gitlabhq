@@ -99,6 +99,33 @@ RSpec.describe Clusters::Agents::Authorizations::UserAccess::GroupAuthorization,
     end
   end
 
+  describe '.for_admin' do
+    let_it_be(:authorization) { create(:agent_user_access_group_authorization) }
+
+    subject { described_class.for_admin }
+
+    it 'returns every authorization with the access level of an owner' do
+      expect(subject).to contain_exactly(authorization)
+      expect(subject.first.access_level).to eq(Gitlab::Access::OWNER)
+    end
+  end
+
+  describe '.for_project' do
+    let_it_be(:group) { create(:group) }
+    let_it_be(:subgroup) { create(:group, parent: group) }
+    let_it_be(:project) { create(:project, group: subgroup) }
+
+    let_it_be(:group_authorization) { create(:agent_user_access_group_authorization, group: group) }
+    let_it_be(:subgroup_authorization) { create(:agent_user_access_group_authorization, group: subgroup) }
+    let_it_be(:other_authorization) { create(:agent_user_access_group_authorization) }
+
+    subject { described_class.for_project(project) }
+
+    it 'returns the authorizations of the project namespace and its ancestors' do
+      expect(subject).to contain_exactly(group_authorization, subgroup_authorization)
+    end
+  end
+
   describe '#config_project' do
     let(:record) { create(:agent_user_access_group_authorization) }
 

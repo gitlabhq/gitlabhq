@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Packages::Rpm::RepositoryFile, type: :model, feature_category: :package_registry do
+RSpec.describe Packages::Rpm::RepositoryFile, feature_category: :package_registry do
   using RSpec::Parameterized::TableSyntax
 
   let_it_be(:repository_file) { create(:rpm_repository_file) }

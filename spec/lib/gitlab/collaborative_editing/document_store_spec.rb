@@ -206,42 +206,10 @@ RSpec.describe Gitlab::CollaborativeEditing::DocumentStore, :clean_gitlab_redis_
         expect(store.updates).to eq(%w[first second])
       end
 
-      it 'refuses a nil token', :aggregate_failures do
-        token
-
-        expect(store.replace('snapshot', nil)).to be(false)
-        expect(store.updates).to eq(%w[first second])
-      end
-
       it 'refuses an empty token', :aggregate_failures do
         token
 
         expect(store.replace('snapshot', '')).to be(false)
-        expect(store.updates).to eq(%w[first second])
-      end
-
-      [{ 'a' => 'b' }, 1, :sym].each do |bad|
-        it "refuses a #{bad.class} token", :aggregate_failures do
-          token
-
-          expect(store.replace('snapshot', bad)).to be(false)
-          expect(store.updates).to eq(%w[first second])
-        end
-      end
-
-      it 'refuses an Array carrying the real token, leaving the log intact', :aggregate_failures do
-        claim = token
-
-        expect(store.replace('snapshot', [claim, 'x'])).to be(false)
-        expect(store.updates).to eq(%w[first second])
-        expect(ttl_of(updates_key)).to be_positive
-        expect(store.replace('snapshot', claim)).to be(true)
-      end
-
-      it 'refuses a snapshot that is not a String', :aggregate_failures do
-        claim = token
-
-        expect(store.replace(%w[a b], claim)).to be(false)
         expect(store.updates).to eq(%w[first second])
       end
 
@@ -259,6 +227,26 @@ RSpec.describe Gitlab::CollaborativeEditing::DocumentStore, :clean_gitlab_redis_
 
         expect(store.replace('second-snapshot', claim)).to be(false)
         expect(store.updates).to eq(%w[snapshot third])
+      end
+    end
+
+    context 'with arguments that break the contract' do
+      [nil, { 'a' => 'b' }, 1, :sym, %w[a b]].each do |bad|
+        it "refuses a #{bad.class} token, leaving the log intact", :aggregate_failures do
+          claim = token
+
+          expect { store.replace('snapshot', bad) }.to raise_error(ArgumentError)
+          expect(store.updates).to eq(%w[first second])
+          expect(ttl_of(updates_key)).to be_positive
+          expect(store.replace('snapshot', claim)).to be(true)
+        end
+      end
+
+      it 'refuses a snapshot that is not a String', :aggregate_failures do
+        token
+
+        expect { store.replace(%w[a b], token) }.to raise_error(ArgumentError)
+        expect(store.updates).to eq(%w[first second])
       end
     end
   end

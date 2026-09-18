@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Projects::ImportExport::RelationExportUpload, type: :model, feature_category: :importers do
+RSpec.describe Projects::ImportExport::RelationExportUpload, feature_category: :importers do
   subject { described_class.new(relation_export: project_relation_export) }
 
   let_it_be(:project) { create(:project) }

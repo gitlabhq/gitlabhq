@@ -258,17 +258,6 @@ RSpec.describe CollaborativeEditing::WikiPageChannel, :clean_gitlab_redis_shared
     end
   end
 
-  describe 'periodic access revalidation without a subscription' do
-    it 'does nothing when the subscription was rejected', :aggregate_failures do
-      subscribe(container_full_path: project.full_path, slug: 'does-not-exist')
-
-      expect(subscription).to be_rejected
-      expect(subscription).not_to receive(:unsubscribe_from_channel)
-
-      revalidate
-    end
-  end
-
   describe 'periodic access revalidation' do
     before do
       subscribe(subscribe_params)
@@ -324,6 +313,45 @@ RSpec.describe CollaborativeEditing::WikiPageChannel, :clean_gitlab_redis_shared
 
         expect { perform :receive, message('sync', 'an-update') }
           .not_to have_broadcasted_to(stream_name)
+      end
+    end
+
+    it 'does not revalidate a channel that has already been unsubscribed' do
+      subscription.unsubscribe_from_channel
+
+      expect(subscription).not_to receive(:feature_enabled?)
+
+      revalidate
+    end
+  end
+
+  describe 'unsubscribing' do
+    before do
+      subscribe(subscribe_params)
+    end
+
+    it 'stops relaying updates', :aggregate_failures do
+      subscription.unsubscribe_from_channel
+
+      expect { perform :receive, message('sync', 'an-update') }
+        .not_to have_broadcasted_to(stream_name)
+
+      expect(store_for(page).updates).to be_empty
+    end
+
+    context 'when authentication fails mid-session' do
+      before do
+        allow(subscription).to receive(:validate_and_save_access_token!)
+          .and_raise(Gitlab::Auth::AuthenticationError)
+      end
+
+      it 'stops relaying updates', :aggregate_failures do
+        subscription.send(:validate_user_authorization)
+
+        expect { perform :receive, message('sync', 'an-update') }
+          .not_to have_broadcasted_to(stream_name)
+
+        expect(store_for(page).updates).to be_empty
       end
     end
   end
@@ -467,6 +495,17 @@ RSpec.describe CollaborativeEditing::WikiPageChannel, :clean_gitlab_redis_shared
         perform :receive, message('snapshot', 'a-snapshot')
 
         expect(store_for(page).updates).to eq(%w[first second])
+      end
+
+      [{ 'a' => 'b' }, 1, %w[a b]].each do |bad|
+        it "ignores a snapshot carrying a #{bad.class} token" do
+          perform :receive, message('sync', 'first')
+          perform :receive, message('sync', 'second')
+
+          perform :receive, message('snapshot', 'a-snapshot').merge('token' => bad)
+
+          expect(store_for(page).updates).to eq(%w[first second])
+        end
       end
     end
 

@@ -486,9 +486,14 @@ For more information, see [application settings API](../../api/settings.md).
 
 {{< history >}}
 
-- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/work_items/599092) in GitLab 19.4.
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/work_items/599092) in GitLab 19.4
+  [with a feature flag](../../administration/feature_flags/_index.md) named `limit_concurrent_project_exports`. Disabled by default.
 
 {{< /history >}}
+
+> [!flag]
+> The availability of this feature is controlled by a feature flag.
+> For more information, see the history.
 
 Project file exports run on Sidekiq nodes with limited memory and disk space, so too many
 concurrent exports can saturate those nodes and delay every export on the instance.

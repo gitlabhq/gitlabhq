@@ -40,7 +40,8 @@ RSpec.shared_examples 'Signup name validation' do |field, max_length, label|
   end
 end
 
-RSpec.describe 'Signup', :with_current_organization, :js, feature_category: :user_management do
+RSpec.describe 'Signup', :with_current_organization, :js, :disable_rate_limiter,
+  feature_category: :user_management do
   include EmailHelpers
   include TermsHelper
   using RSpec::Parameterized::TableSyntax

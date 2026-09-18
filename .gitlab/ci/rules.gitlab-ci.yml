@@ -1149,7 +1149,6 @@
   - "{,ee/,jh/}config/feature_flags/**/*.yml"
 
 .gdk-component-patterns: &gdk-component-patterns
-  - qa/gdk/**/*
   - Gemfile.lock
   - Gemfile.next.lock
   - yarn.lock
@@ -2307,7 +2306,6 @@
     - <<: *if-merge-request
       changes: *gitlab-pages-patterns
     - <<: *if-merge-request
-      # Certain components trigger a rebuild of the e2e GDK image so we want to test it too
       changes: *gdk-component-patterns
     - <<: *if-merge-request
       changes: *code-backstage-qa-patterns

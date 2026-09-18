@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe ProjectImportState, type: :model, feature_category: :importers do
+RSpec.describe ProjectImportState, feature_category: :importers do
   let_it_be(:correlation_id) { 'cid' }
   let_it_be_with_refind(:import_state) { create(:import_state, correlation_id_value: correlation_id) }
 

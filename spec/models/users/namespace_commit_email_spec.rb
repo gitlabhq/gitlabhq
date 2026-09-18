@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Users::NamespaceCommitEmail, type: :model, feature_category: :source_code_management do
+RSpec.describe Users::NamespaceCommitEmail, feature_category: :source_code_management do
   subject { build(:namespace_commit_email) }
 
   describe 'associations' do

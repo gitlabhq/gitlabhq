@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe ResourceStateEvent, feature_category: :team_planning, type: :model do
+RSpec.describe ResourceStateEvent, feature_category: :team_planning do
   subject { build(:resource_state_event, issue: issue) }
 
   let_it_be(:group) { create(:group) }

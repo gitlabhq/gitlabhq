@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe ProjectDeployToken, type: :model do
+RSpec.describe ProjectDeployToken do
   let(:project) { create(:project) }
   let(:deploy_token) { create(:deploy_token) }
 

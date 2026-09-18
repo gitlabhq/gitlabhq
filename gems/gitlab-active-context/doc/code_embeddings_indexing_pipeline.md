@@ -304,6 +304,20 @@ Ai::ActiveContext::Code::SchedulingWorker.new.perform("mark_repository_as_ready"
 Ai::ActiveContext::Connection.active.enabled_namespaces.first.repositories
 ```
 
+### Handling Initial Indexing Failures
+
+`InitialIndexingService` rescues indexing errors and updates the repository state:
+
+- A first failure moves the repository to `pending_retry` and clears `last_commit`, so the retry runs a full re-index.
+- The `retry_repository` task runs every 30 minutes. It enqueues each `pending_retry` repository to `RepositoryIndexWorker`.
+- If the retry also fails, the repository moves to `failed`. This state is terminal: GitLab does not retry it automatically. This will be addressed in https://gitlab.com/gitlab-org/gitlab/-/work_items/629396.
+
+To retry a `failed` repository manually, reset it to `pending`:
+
+```ruby
+repository.update!(state: :pending, last_commit: nil, metadata: {})
+```
+
 ### Verify Indexing Results
 
 Check if documents were indexed:

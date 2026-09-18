@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Packages::TerraformModule::Package, type: :model, feature_category: :package_registry do
+RSpec.describe Packages::TerraformModule::Package, feature_category: :package_registry do
   describe 'relationships' do
     it do
       is_expected.to have_one(:terraform_module_metadatum).inverse_of(:package)

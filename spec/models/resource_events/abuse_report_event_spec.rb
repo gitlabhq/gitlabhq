@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe ResourceEvents::AbuseReportEvent, feature_category: :instance_resiliency, type: :model do
+RSpec.describe ResourceEvents::AbuseReportEvent, feature_category: :instance_resiliency do
   include ResourceEvents::AbuseReportEventsHelper
 
   subject(:event) { build(:abuse_report_event) }

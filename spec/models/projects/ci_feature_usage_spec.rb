@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Projects::CiFeatureUsage, type: :model do
+RSpec.describe Projects::CiFeatureUsage do
   describe 'associations' do
     it { is_expected.to belong_to(:project) }
   end

@@ -12,6 +12,7 @@ RSpec.describe 'Project.user_access_authorized_agents', feature_category: :deplo
   let_it_be(:deployment_project) { create(:project, :private, group: organization) }
   let_it_be(:deployment_developer) { create(:user, developer_of: deployment_project) }
   let_it_be(:deployment_reporter) { create(:user, reporter_of: deployment_project) }
+  let_it_be(:instance_admin) { create(:admin) }
 
   let(:user) { deployment_developer }
 
@@ -73,6 +74,31 @@ RSpec.describe 'Project.user_access_authorized_agents', feature_category: :deplo
         expect(subject['data']['project']['userAccessAuthorizedAgents']).to be_nil
       end
     end
+
+    context 'when user is an instance administrator without membership' do
+      let(:user) { instance_admin }
+
+      context 'when admin mode is enabled', :enable_admin_mode do
+        it 'returns the authorized agent' do
+          authorized_agents = subject.dig('data', 'project', 'userAccessAuthorizedAgents', 'nodes')
+
+          expect(authorized_agents.count).to eq(1)
+
+          authorized_agent = authorized_agents.first
+
+          expect(authorized_agent['agent']['id']).to eq(agent.to_global_id.to_s)
+          expect(authorized_agent['agent']['name']).to eq(agent.name)
+          expect(authorized_agent['config']).to eq({})
+          expect(authorized_agent['agent']['project']['name']).to eq(agent_management_project.name)
+        end
+      end
+
+      context 'when admin mode is disabled' do
+        it 'returns nothing' do
+          expect(subject.dig('data', 'project')).to be_nil
+        end
+      end
+    end
   end
 
   context 'with group authorization' do
@@ -103,6 +129,31 @@ RSpec.describe 'Project.user_access_authorized_agents', feature_category: :deplo
           expect(subject['data']['project']['userAccessAuthorizedAgents']).to be_nil
         end
       end
+
+      context 'when user is an instance administrator without membership' do
+        let(:user) { instance_admin }
+
+        context 'when admin mode is enabled', :enable_admin_mode do
+          it 'returns the authorized agent' do
+            authorized_agents = subject.dig('data', 'project', 'userAccessAuthorizedAgents', 'nodes')
+
+            expect(authorized_agents.count).to eq(1)
+
+            authorized_agent = authorized_agents.first
+
+            expect(authorized_agent['agent']['id']).to eq(agent.to_global_id.to_s)
+            expect(authorized_agent['agent']['name']).to eq(agent.name)
+            expect(authorized_agent['config']).to eq({})
+            expect(authorized_agent['agent']['project']['name']).to eq(agent_management_project.name)
+          end
+        end
+
+        context 'when admin mode is disabled' do
+          it 'returns nothing' do
+            expect(subject.dig('data', 'project')).to be_nil
+          end
+        end
+      end
     end
 
     context "when the agent is authorized to the sub-group" do
@@ -119,6 +170,15 @@ RSpec.describe 'Project.user_access_authorized_agents', feature_category: :deplo
       it 'returns empty authorized agents' do
         authorized_agents = subject.dig('data', 'project', 'userAccessAuthorizedAgents', 'nodes')
         expect(authorized_agents).to be_empty
+      end
+
+      context 'when user is an instance administrator with admin mode enabled', :enable_admin_mode do
+        let(:user) { instance_admin }
+
+        it 'returns empty authorized agents' do
+          authorized_agents = subject.dig('data', 'project', 'userAccessAuthorizedAgents', 'nodes')
+          expect(authorized_agents).to be_empty
+        end
       end
 
       context 'when user is reporter' do

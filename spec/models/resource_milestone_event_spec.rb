@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe ResourceMilestoneEvent, feature_category: :team_planning, type: :model do
+RSpec.describe ResourceMilestoneEvent, feature_category: :team_planning do
   let_it_be(:group) { create(:group) }
   let_it_be(:project) { create(:project, group: group) }
 

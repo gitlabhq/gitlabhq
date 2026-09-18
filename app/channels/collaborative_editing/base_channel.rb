@@ -12,22 +12,6 @@ module CollaborativeEditing
 
     periodically :revalidate_access, every: REVALIDATE_ACCESS_EVERY
 
-    def subscribed
-      container = find_container
-      return reject unless container && feature_enabled?(container)
-      return reject unless authorized?(container)
-
-      document = find_document(container)
-      return reject unless document
-
-      @container = container
-      @stream_key = document_key(container, document)
-      @store = Gitlab::CollaborativeEditing::DocumentStore.new(@stream_key)
-
-      stream_from stream_name
-      transmit_initial_state
-    end
-
     def receive(data)
       return unless @stream_key
       return unless valid_payload?(data)
@@ -46,6 +30,28 @@ module CollaborativeEditing
     private
 
     attr_reader :store
+
+    def subscribed
+      container = find_container
+      return reject unless container && feature_enabled?(container)
+      return reject unless authorized?(container)
+
+      document = find_document(container)
+      return reject unless document
+
+      @container = container
+      @stream_key = document_key(container, document)
+      @store = Gitlab::CollaborativeEditing::DocumentStore.new(@stream_key)
+
+      stream_from stream_name
+      transmit_initial_state
+    end
+
+    def unsubscribed
+      @container = nil
+      @stream_key = nil
+      @store = nil
+    end
 
     def authorization_scopes
       [:api]
@@ -100,7 +106,9 @@ module CollaborativeEditing
     end
 
     def handle_snapshot(data)
-      return unless store.replace(data['payload'], data['token'])
+      token = data['token']
+      return unless token.is_a?(String)
+      return unless store.replace(data['payload'], token)
 
       broadcast(data.merge('type' => MESSAGE_TYPE_SYNC))
     end
@@ -139,10 +147,6 @@ module CollaborativeEditing
       return unless @container
 
       return if feature_enabled?(@container) && authorized?(@container)
-
-      @container = nil
-      @stream_key = nil
-      @store = nil
 
       unsubscribe_from_channel
     end
