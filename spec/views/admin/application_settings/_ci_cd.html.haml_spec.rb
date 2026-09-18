@@ -103,6 +103,28 @@ RSpec.describe 'admin/application_settings/_ci_cd' do
     end
   end
 
+  context 'for the reclaimed-path JWT restriction checkbox', feature_category: :secrets_management do
+    let(:label) { 'Block JWT generation in reclaimed project paths' }
+
+    before do
+      assign(:plans, [default_plan_limits.plan])
+    end
+
+    it 'renders the checkbox' do
+      subject
+
+      expect(rendered).to have_field(label, type: 'checkbox')
+    end
+
+    context 'on GitLab.com', :saas do
+      it 'does not render the checkbox' do
+        subject
+
+        expect(rendered).not_to have_field(label, type: 'checkbox')
+      end
+    end
+  end
+
   context 'with multiple plans' do
     let_it_be(:plan) { create(:plan, name: 'ultimate') }
     let_it_be(:ultimate_plan_limits) { create(:plan_limits, plan: plan, **limits_attributes) }
