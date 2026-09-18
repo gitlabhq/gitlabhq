@@ -1599,7 +1599,6 @@ Grants the ability to create, delete, read, subscribe, and update work items suc
 | Create | Project | Mutation | `CreateNote` |
 | Create | Project | Mutation | `CreateRequirement` |
 | Create | Project | Mutation | `CreateTestCase` |
-| Create | Project | Mutation | `WorkItemBulkMove` |
 | Create | Project | Mutation | `WorkItemCreate` |
 | Create | Project | Mutation | `WorkItemsCsvImport` |
 | Create | Project | Field | `EpicIssue.createNoteEmail` |
@@ -1614,7 +1613,6 @@ Grants the ability to create, delete, read, subscribe, and update work items suc
 | Create | Group | Mutation | `CustomFieldCreate` |
 | Create | Group | Mutation | `IterationCadenceCreate` |
 | Create | Group | Mutation | `LifecycleCreate` |
-| Create | Group | Mutation | `WorkItemBulkMove` |
 | Create | Group | Mutation | `WorkItemCreate` |
 | Create | Group | Mutation | `WorkItemTypeCreate` |
 | Create | Group | Mutation | `iterationCreate` |

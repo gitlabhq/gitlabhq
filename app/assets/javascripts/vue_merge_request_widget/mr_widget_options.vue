@@ -21,7 +21,6 @@ import SourceBranchRemovalStatus from './components/source_branch_removal_status
 import ArchivedState from './components/states/mr_widget_archived.vue';
 import MrWidgetAutoMergeEnabled from './components/states/mr_widget_auto_merge_enabled.vue';
 import AutoMergeFailed from './components/states/mr_widget_auto_merge_failed.vue';
-import CheckingState from './components/states/mr_widget_checking.vue';
 import PreparingState from './components/states/mr_widget_preparing.vue';
 import ClosedState from './components/states/mr_widget_closed.vue';
 import MergedState from './components/states/mr_widget_merged.vue';
@@ -64,7 +63,6 @@ export default {
     MrWidgetMissingBranch: MissingBranchState,
     MrWidgetReadyToMerge,
     ShaMismatch,
-    MrWidgetChecking: CheckingState,
     MrWidgetPreparing: PreparingState,
     MrWidgetAutoMergeEnabled,
     MrWidgetAutoMergeFailed: AutoMergeFailed,
@@ -252,7 +250,6 @@ export default {
     mergeBlockedComponentVisible() {
       return !(
         [
-          'checking',
           'preparing',
           'nothingToMerge',
           'archived',

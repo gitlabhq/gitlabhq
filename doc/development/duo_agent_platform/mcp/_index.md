@@ -164,8 +164,20 @@ A caller provides either:
 
 - `url` - a full GitLab URL that encodes the whole path (for example
   `https://gitlab.com/group/project/-/merge_requests/1`), or
-- The ID group - `project_id` (numeric ID or URL-encoded path such as `gitlab-org%2Fgitlab`) plus
+- The ID group - `project_id` (numeric ID or full path such as `gitlab-org/gitlab`) plus
   the resource's internal ID (`merge_request_iid`, `work_item_iid`, `commit_sha`, and so on).
+
+Always pass the full path, never a URL-encoded one. This holds for every MCP tool, whether it is
+backed by GraphQL, by a REST route, or by an aggregator. Nothing in the MCP layer percent-decodes an
+argument: GraphQL-backed and custom tools resolve `project_id` through `ResourceFinder`, and
+REST-backed tools go straight into Grape routing arguments without a URL being built. Both end up
+in `Gitlab::ResourceLookup`. `lookup_project` treats a value as a path only when it contains a
+literal `/`, while `lookup_group` hands anything non-numeric straight to `find_by_full_path`. Either
+way `gitlab-org%2Fgitlab` resolves to `nil` and the caller gets a not-found error.
+
+The GitLab REST API documents the URL-encoded form because a real HTTP request has its path segment
+decoded before Grape sees it. An MCP argument is not a path segment, so that decoding never happens.
+Do not carry the REST wording into a tool's `input_schema`.
 
 Keep the project identifier and the internal ID as separate parameters.
 Do not fold them into a

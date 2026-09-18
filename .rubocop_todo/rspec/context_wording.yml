@@ -699,7 +699,6 @@ RSpec/ContextWording:
     - 'ee/spec/workers/incident_management/apply_incident_sla_exceeded_label_worker_spec.rb'
     - 'ee/spec/workers/incident_management/oncall_rotations/persist_shifts_job_spec.rb'
     - 'ee/spec/workers/merge_request_reset_approvals_worker_spec.rb'
-    - 'ee/spec/workers/personal_access_tokens/groups/policy_worker_spec.rb'
     - 'ee/spec/workers/personal_access_tokens/instance/policy_worker_spec.rb'
     - 'ee/spec/workers/post_receive_spec.rb'
     - 'ee/spec/workers/project_import_schedule_worker_spec.rb'

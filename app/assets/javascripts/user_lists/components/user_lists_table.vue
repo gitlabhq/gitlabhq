@@ -4,22 +4,16 @@ import {
   GlButtonGroup,
   GlModal,
   GlSprintf,
-  GlTooltipDirective,
   GlModalDirective,
   GlTruncateText,
 } from '@gitlab/ui';
 import { __, s__, sprintf } from '~/locale';
-import timeagoMixin from '~/vue_shared/mixins/timeago';
+import TimeAgo from '~/vue_shared/components/time_ago_tooltip.vue';
 
 export default {
   name: 'UserListsTable',
-  i18n: {
-    showMore: __('Show more'),
-    showLess: __('Show less'),
-  },
-  components: { GlButton, GlButtonGroup, GlModal, GlSprintf, GlTruncateText },
-  directives: { GlTooltip: GlTooltipDirective, GlModal: GlModalDirective },
-  mixins: [timeagoMixin],
+  components: { GlButton, GlButtonGroup, GlModal, GlSprintf, GlTruncateText, TimeAgo },
+  directives: { GlModal: GlModalDirective },
   props: {
     userLists: {
       type: Array,
@@ -27,12 +21,6 @@ export default {
     },
   },
   emits: ['delete'],
-  translations: {
-    createdTimeagoLabel: s__('UserList|created %{timeago}'),
-    deleteListTitle: s__('UserList|Delete %{name}?'),
-    deleteListMessage: __('User list %{name} will be removed. Are you sure?'),
-    editUserListLabel: s__('FeatureFlags|Edit User List'),
-  },
   modal: {
     id: 'deleteListModal',
     actionPrimary: {
@@ -50,7 +38,7 @@ export default {
       return this.deleteUserList?.name;
     },
     modalTitle() {
-      return sprintf(this.$options.translations.deleteListTitle, {
+      return sprintf(s__('UserList|Delete %{name}?'), {
         name: this.deleteListName,
       });
     },
@@ -80,23 +68,19 @@ export default {
         <span data-testid="ffUserListName" class="gl-mb-2 gl-font-bold">
           {{ list.name }}
         </span>
-        <span
-          v-gl-tooltip
-          :title="tooltipTitle(list.created_at)"
-          data-testid="ffUserListTimestamp"
-          class="gl-mb-2 gl-text-gray-300"
-        >
-          <gl-sprintf :message="$options.translations.createdTimeagoLabel">
+        <span data-testid="ffUserListTimestamp" class="gl-mb-2 gl-text-subtle">
+          <gl-sprintf :message="s__('UserList|created %{timeago}')">
             <template #timeago>
-              <time :datetime="list.created_at">{{ timeFormatted(list.created_at) }}</time>
+              <time-ago :time="list.created_at" />
             </template>
           </gl-sprintf>
         </span>
+
         <gl-truncate-text
           :lines="2"
           :mobile-lines="2"
-          :show-more-text="$options.i18n.showMore"
-          :show-less-text="$options.i18n.showLess"
+          :show-more-text="__('Show more')"
+          :show-less-text="__('Show less')"
         >
           <div data-testid="ffUserListIds">
             {{ displayList(list) }}
@@ -109,7 +93,7 @@ export default {
           :href="list.path"
           category="secondary"
           icon="pencil"
-          :aria-label="$options.translations.editUserListLabel"
+          :aria-label="s__('FeatureFlags|Edit User List')"
           data-testid="edit-user-list"
         />
         <gl-button
@@ -130,7 +114,7 @@ export default {
       static
       @primary="onDelete"
     >
-      <gl-sprintf :message="$options.translations.deleteListMessage">
+      <gl-sprintf :message="__('User list %{name} will be removed. Are you sure?')">
         <template #name>
           <b>{{ deleteListName }}</b>
         </template>

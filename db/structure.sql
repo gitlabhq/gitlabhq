@@ -1687,84 +1687,6 @@ RETURN NULL;
 END
 $$;
 
-CREATE FUNCTION table_sync_function_3f39f64fc3_reverse() RETURNS trigger
-    LANGUAGE plpgsql
-    AS $$
-BEGIN
-IF (TG_OP = 'DELETE') THEN
-  DELETE FROM merge_request_diff_files_archived
-  WHERE "merge_request_diff_id" = OLD."merge_request_diff_id"
-    AND "relative_order" = OLD."relative_order";
-ELSIF (TG_OP = 'UPDATE') THEN
-  IF NEW."merge_request_diff_id" <= 2147483647 THEN
-    UPDATE merge_request_diff_files_archived
-    SET "new_file" = NEW."new_file",
-      "renamed_file" = NEW."renamed_file",
-      "deleted_file" = NEW."deleted_file",
-      "too_large" = NEW."too_large",
-      "a_mode" = NEW."a_mode",
-      "b_mode" = NEW."b_mode",
-      "new_path" = NULLIF(NEW."new_path", NEW."old_path"),
-      "old_path" = NEW."old_path",
-      "diff" = NEW."diff",
-      "binary" = NEW."binary",
-      "external_diff_offset" = NEW."external_diff_offset",
-      "external_diff_size" = NEW."external_diff_size",
-      "generated" = NEW."generated",
-      "encoded_file_path" = NEW."encoded_file_path",
-      "project_id" = NEW."project_id"
-    WHERE merge_request_diff_files_archived."merge_request_diff_id" = NEW."merge_request_diff_id"
-      AND merge_request_diff_files_archived."relative_order" = NEW."relative_order";
-  END IF;
-ELSIF (TG_OP = 'INSERT') THEN
-  IF NEW."merge_request_diff_id" <= 2147483647 THEN
-    INSERT INTO merge_request_diff_files_archived (
-      "merge_request_diff_id",
-      "relative_order",
-      "new_file",
-      "renamed_file",
-      "deleted_file",
-      "too_large",
-      "a_mode",
-      "b_mode",
-      "new_path",
-      "old_path",
-      "diff",
-      "binary",
-      "external_diff_offset",
-      "external_diff_size",
-      "generated",
-      "encoded_file_path",
-      "project_id"
-    )
-    VALUES (
-      NEW."merge_request_diff_id",
-      NEW."relative_order",
-      NEW."new_file",
-      NEW."renamed_file",
-      NEW."deleted_file",
-      NEW."too_large",
-      NEW."a_mode",
-      NEW."b_mode",
-      NULLIF(NEW."new_path", NEW."old_path"),
-      NEW."old_path",
-      NEW."diff",
-      NEW."binary",
-      NEW."external_diff_offset",
-      NEW."external_diff_size",
-      NEW."generated",
-      NEW."encoded_file_path",
-      NEW."project_id"
-    )
-    ON CONFLICT ("merge_request_diff_id", "relative_order") DO NOTHING;
-  END IF;
-END IF;
-
-RETURN NULL;
-
-END
-$$;
-
 CREATE FUNCTION timestamp_coalesce(t1 timestamp with time zone, t2 anyelement) RETURNS timestamp without time zone
     LANGUAGE plpgsql IMMUTABLE
     AS $$
@@ -56708,8 +56630,6 @@ CREATE TRIGGER table_sync_trigger_57c8465cd7_delete AFTER DELETE ON merge_reques
 
 CREATE TRIGGER table_sync_trigger_57c8465cd7_insert AFTER INSERT ON merge_request_diff_commits REFERENCING NEW TABLE AS new_table FOR EACH STATEMENT EXECUTE FUNCTION table_sync_function_0992e728d3_insert();
 
-CREATE TRIGGER table_sync_trigger_cd362c20e2_reverse AFTER INSERT OR DELETE OR UPDATE ON merge_request_diff_files FOR EACH ROW EXECUTE FUNCTION table_sync_function_3f39f64fc3_reverse();
-
 CREATE TRIGGER tags_loose_fk_trigger AFTER DELETE ON tags REFERENCING OLD TABLE AS old_table FOR EACH STATEMENT EXECUTE FUNCTION insert_into_loose_foreign_keys_deleted_records();
 
 CREATE TRIGGER terraform_state_versions_loose_fk_trigger AFTER DELETE ON terraform_state_versions REFERENCING OLD TABLE AS old_table FOR EACH STATEMENT EXECUTE FUNCTION insert_into_loose_foreign_keys_deleted_records();
@@ -57562,9 +57482,6 @@ ALTER TABLE ONLY vulnerability_detection_transitions
 
 ALTER TABLE ONLY approval_project_rules_users
     ADD CONSTRAINT fk_0dfcd9e339 FOREIGN KEY (project_id) REFERENCES projects(id) ON DELETE CASCADE;
-
-ALTER TABLE ONLY merge_request_diff_files_archived
-    ADD CONSTRAINT fk_0e3ba01603 FOREIGN KEY (project_id) REFERENCES projects(id) ON DELETE CASCADE NOT VALID;
 
 ALTER TABLE ONLY security_policy_project_links
     ADD CONSTRAINT fk_0eba4d5d71 FOREIGN KEY (project_id) REFERENCES projects(id) ON DELETE CASCADE;
@@ -61441,9 +61358,6 @@ ALTER TABLE ONLY packages_debian_publications
 
 ALTER TABLE merge_requests_merge_data
     ADD CONSTRAINT fk_rails_4fd2676ef4 FOREIGN KEY (project_id) REFERENCES projects(id) ON DELETE CASCADE;
-
-ALTER TABLE ONLY merge_request_diff_files_archived
-    ADD CONSTRAINT fk_rails_501aa0a391 FOREIGN KEY (merge_request_diff_id) REFERENCES merge_request_diffs(id) ON DELETE CASCADE;
 
 ALTER TABLE ONLY resource_iteration_events
     ADD CONSTRAINT fk_rails_501fa15d69 FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE SET NULL;

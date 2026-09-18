@@ -1,7 +1,7 @@
 ---
 name: gitlab-mcp-tool-builder
 description: "Build a new GraphQL-backed MCP server tool in gitlab-org/gitlab. Use when adding or scaffolding a GitLab Duo Agent Platform MCP tool that follows the app/services/mcp/tools/ *Tool + Graphql*Service pattern — covers GraphQL API discovery, the two-class-plus-registration build recipe, and gotchas. Keywords: MCP tool, MCP server, GraphQL tool, GitLab Duo Agent Platform."
-version: 1.13.0
+version: 1.14.0
 license: MIT
 compatibility: opencode
 metadata:
@@ -286,6 +286,12 @@ a convention (non-standard verb, second write tool on one resource).
   `:read_merge_request` instead of `:read_project`), pass it as `ability:`:
   `find_project!(project_id, ability: :read_merge_request)`. The same uniform-error guarantee
   applies regardless of which ability you pass.
+- **Never describe a project/group argument as accepting a URL-encoded path.** Use "ID or
+  full path, e.g. `gitlab-org/gitlab`" instead. The encoded form (`gitlab-org%2Fgitlab`) fails
+  for every tool type: `Gitlab::ResourceLookup#lookup_project` (lib/gitlab/resource_lookup.rb:14)
+  only treats a value as a path when it contains a literal `/`, and nothing in the MCP layer
+  percent-decodes the argument first. This keeps recurring because the REST API docs correctly
+  say "URL-encoded path" (Rack decodes it there); that wording doesn't transfer to MCP.
 - **Don't hardcode a value list the schema already derives from a model.** GraphQL
   `enum`s are often generated from a model constant (e.g. `DuoWorkflowStatusGroup` is built
   from `Ai::DuoWorkflows::Workflow::GROUPED_STATUSES`). Derive your `input_schema` `enum`

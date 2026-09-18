@@ -41,7 +41,7 @@ module Mcp
             properties: {
               id: {
                 type: 'string',
-                description: 'ID or URL-encoded path of the project'
+                description: 'ID or full path of the project'
               },
               pipeline_id: {
                 type: 'integer',

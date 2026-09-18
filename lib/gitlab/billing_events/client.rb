@@ -116,7 +116,7 @@ module Gitlab
           realm: realm,
           deployment_type: deployment_type,
           instance_id: ::Gitlab::GlobalAnonymousId.instance_id,
-          unique_instance_id: ::Gitlab::GlobalAnonymousId.instance_uuid,
+          unique_instance_id: unique_instance_id,
           instance_version: Gitlab.version_info.to_s,
           host_name: Gitlab.config.gitlab.host,
           correlation_id: ::Labkit::Correlation::CorrelationId.current_or_new_id
@@ -139,6 +139,10 @@ module Gitlab
         return SecureRandom.uuid if idempotency_key.blank?
 
         Digest::UUID.uuid_v5(::Gitlab::GlobalAnonymousId.instance_uuid, idempotency_key)
+      end
+
+      def unique_instance_id
+        ::Gitlab::GlobalAnonymousId.instance_uuid
       end
 
       def realm

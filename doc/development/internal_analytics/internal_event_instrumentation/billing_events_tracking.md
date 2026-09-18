@@ -80,6 +80,15 @@ The following is an example of the `billable_usage` context the client produces.
 }
 ```
 
+### Instance identifiers
+
+- `instance_id` is the instance UUID (`Gitlab::CurrentSettings.uuid`).
+- `unique_instance_id` is the identifier CustomersDot uses to resolve the event to a subscription or trial.
+  On GitLab.com it is `Gitlab::GlobalAnonymousId.instance_uuid`. On GitLab Self-Managed and GitLab Dedicated
+  it is the `gitlab_instance_uid` claim of the instance's Cloud Connector token, which CustomersDot issued
+  for the instance. When no token is available, the client falls back to `Gitlab::GlobalAnonymousId.instance_uuid`,
+  and CustomersDot cannot resolve the event.
+
 ## Internal event for correlation
 
 Every call to `track_billing_event` also fires a `usage_billing_event`

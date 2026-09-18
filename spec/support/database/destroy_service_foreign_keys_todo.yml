@@ -991,7 +991,6 @@ projects:
 - merge_request_context_commits.project_id
 - merge_request_diff_details.project_id
 - merge_request_diff_files.project_id
-- merge_request_diff_files_archived.project_id
 - merge_request_diffs.project_id
 - merge_request_merge_schedules.project_id
 - merge_request_metrics.target_project_id

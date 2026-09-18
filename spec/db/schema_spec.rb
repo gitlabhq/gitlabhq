@@ -20,7 +20,9 @@ RSpec.describe 'Database schema',
   let(:removed_fks_map) do
     {
       # example_table: %w[example_column]
-      search_namespace_index_assignments: [%w[search_index_id index_type]]
+      search_namespace_index_assignments: [%w[search_index_id index_type]],
+      # FKs removed here; table dropped in a follow-up MR (see https://gitlab.com/gitlab-org/gitlab/-/work_items/627149).
+      merge_request_diff_files_archived: %w[merge_request_diff_id project_id]
     }.with_indifferent_access.freeze
   end
 

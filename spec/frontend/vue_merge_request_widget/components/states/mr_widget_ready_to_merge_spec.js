@@ -295,7 +295,7 @@ describe('ReadyToMerge', () => {
     });
 
     it('should not exist if merge is not allowed', () => {
-      createComponent({ mr: { state: 'checking' } });
+      createComponent({ mr: { state: 'mergeChecksFailed' } });
 
       expect(findMergeButton().exists()).toBe(false);
     });

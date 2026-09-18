@@ -92,11 +92,11 @@ module Mcp
             },
             group_id: {
               type: 'string',
-              description: 'Provide to search within a group. The ID or URL-encoded path of the group'
+              description: 'Provide to search within a group. The ID or full path of the group'
             },
             project_id: {
               type: 'string',
-              description: 'Provide to search within a project. The ID or URL-encoded path of the project'
+              description: 'Provide to search within a project. The ID or full path of the project'
             },
             state: {
               type: 'string',

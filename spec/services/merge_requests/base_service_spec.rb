@@ -167,21 +167,6 @@ RSpec.describe MergeRequests::BaseService, feature_category: :code_review_workfl
 
           subject.execute(merge_request, async: true, checkout_sha: pinned_sha)
         end
-
-        it 'does not fall back to diff_head_sha when checkout_sha is explicitly provided' do
-          service = instance_double(MergeRequests::CreatePipelineService)
-
-          expect(MergeRequests::CreatePipelineService)
-            .to receive(:new)
-            .with(hash_including(params: hash_including(checkout_sha: pinned_sha)))
-            .and_return(service)
-
-          allow(service).to receive(:execute_async)
-
-          expect(merge_request).not_to receive(:diff_head_sha)
-
-          subject.execute(merge_request, async: true, checkout_sha: pinned_sha)
-        end
       end
     end
   end

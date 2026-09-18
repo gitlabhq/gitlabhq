@@ -715,7 +715,6 @@ scopes:
   - for_projects_after
   ee/app/models/ee/group.rb:
   - with_managed_accounts_enabled
-  - with_no_pat_expiry_policy
   - with_trial_started_on
   ee/app/models/ee/group_group_link.rb:
   - not_in_shared_with_group

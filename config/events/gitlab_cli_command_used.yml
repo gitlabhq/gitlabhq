@@ -14,6 +14,8 @@ additional_properties:
     description: Command and subcommand used - e.g. 'mr view'
   coding_agent:
     description: AI coding agent driving the CLI - e.g. 'claude-code', 'codex', 'cursor'. Omitted when no agent was detected.
+  invocation_source:
+    description: How glab was invoked when another glab process started it - e.g. 'mcp' when the glab MCP server ran the command for a tool call. Omitted when a user ran glab directly, including from an agent's terminal.
   cli_version:
     description: Version of the glab binary - e.g. 'v1.116.0'
   platform:

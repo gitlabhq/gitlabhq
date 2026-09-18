@@ -1245,11 +1245,6 @@ msgstr ""
 msgid "%{name}: %{resultsString}"
 msgstr ""
 
-msgid "%{no_of_days} day"
-msgid_plural "%{no_of_days} days"
-msgstr[0] ""
-msgstr[1] ""
-
 msgid "%{noteable_type} is not supported"
 msgstr ""
 
@@ -12312,13 +12307,13 @@ msgstr ""
 msgid "ArtifactRegistry|Add the dependency to your %{codeStart}build.sbt%{codeEnd} file:"
 msgstr ""
 
-msgid "ArtifactRegistry|Add the repository to your %{codeStart}build.gradle%{codeEnd} file:"
+msgid "ArtifactRegistry|Add the registry to your %{codeStart}.npmrc%{codeEnd} file:"
 msgstr ""
 
-msgid "ArtifactRegistry|Add the repository to your %{codeStart}build.gradle.kts%{codeEnd} file:"
+msgid "ArtifactRegistry|Add the repository to your %{codeStart}build.gradle%{codeEnd} file, using the values glab wrote to %{codeStart}gradle.properties%{codeEnd}:"
 msgstr ""
 
-msgid "ArtifactRegistry|Add this to your %{codeStart}.npmrc%{codeEnd} file:"
+msgid "ArtifactRegistry|Add the repository to your %{codeStart}build.gradle.kts%{codeEnd} file, using the values glab wrote to %{codeStart}gradle.properties%{codeEnd}:"
 msgstr ""
 
 msgid "ArtifactRegistry|Add this to your %{codeStart}.yarnrc.yml%{codeEnd} file:"
@@ -12328,9 +12323,6 @@ msgid "ArtifactRegistry|Add this to your %{codeStart}build.sbt%{codeEnd} file:"
 msgstr ""
 
 msgid "ArtifactRegistry|Add this to your %{codeStart}pom.xml%{codeEnd} file:"
-msgstr ""
-
-msgid "ArtifactRegistry|Add this to your %{codeStart}~/.sbt/1.0/credentials.sbt%{codeEnd} file:"
 msgstr ""
 
 msgid "ArtifactRegistry|All formats"
@@ -12404,9 +12396,6 @@ msgstr ""
 msgid "ArtifactRegistry|At least one revocation is required."
 msgstr ""
 
-msgid "ArtifactRegistry|Authenticate with a token in your %{codeStart}settings.xml%{codeEnd} file:"
-msgstr ""
-
 msgid "ArtifactRegistry|Authentication (optional)"
 msgstr ""
 
@@ -12464,13 +12453,13 @@ msgstr ""
 msgid "ArtifactRegistry|Copy repository URL"
 msgstr ""
 
-msgid "ArtifactRegistry|Copy the authentication configuration"
-msgstr ""
-
 msgid "ArtifactRegistry|Copy the dependency declaration"
 msgstr ""
 
 msgid "ArtifactRegistry|Copy the distribution management configuration"
+msgstr ""
+
+msgid "ArtifactRegistry|Copy the glab login command"
 msgstr ""
 
 msgid "ArtifactRegistry|Copy the install command"
@@ -12494,10 +12483,10 @@ msgstr ""
 msgid "ArtifactRegistry|Copy the registry configuration"
 msgstr ""
 
-msgid "ArtifactRegistry|Copy the repository configuration"
+msgid "ArtifactRegistry|Copy the registry line"
 msgstr ""
 
-msgid "ArtifactRegistry|Copy the sign-in command"
+msgid "ArtifactRegistry|Copy the repository configuration"
 msgstr ""
 
 msgid "ArtifactRegistry|Copy upstream URL"
@@ -13029,6 +13018,9 @@ msgstr ""
 msgid "ArtifactRegistry|Revocation %{number} on resource %{resource_id}: %{message}"
 msgstr ""
 
+msgid "ArtifactRegistry|Run the following command with %{linkStart}glab%{linkEnd} 1.115 or later:"
+msgstr ""
+
 msgid "ArtifactRegistry|SBOM attestation"
 msgstr ""
 
@@ -13048,9 +13040,6 @@ msgid "ArtifactRegistry|Setup instructions"
 msgstr ""
 
 msgid "ArtifactRegistry|Show checksums for %{name}"
-msgstr ""
-
-msgid "ArtifactRegistry|Sign in to the registry:"
 msgstr ""
 
 msgid "ArtifactRegistry|Signature"
@@ -13279,6 +13268,9 @@ msgid "ArtifactRegistry|You must be signed in to read role assignments."
 msgstr ""
 
 msgid "ArtifactRegistry|You must be signed in to revoke a role."
+msgstr ""
+
+msgid "ArtifactRegistry|glab cannot configure Yarn yet. See %{linkStart}how to authenticate%{linkEnd}:"
 msgstr ""
 
 msgid "ArtifactRegistry|npm"
@@ -43255,9 +43247,6 @@ msgid "If any indexed field exceeds this limit, it is truncated to this number o
 msgstr ""
 
 msgid "If blank, defaults to %{code_open}Retry later%{code_close}."
-msgstr ""
-
-msgid "If blank, set allowable lifetime to %{instance_level_policy_in_words}, as defined by the instance admin. Once set, existing tokens for users in this group may be revoked."
 msgstr ""
 
 msgid "If checked, group owners can manage LDAP group links and LDAP member overrides"
@@ -98284,9 +98273,6 @@ msgstr ""
 msgid "mrWidget|Checking if auto-merge is available…"
 msgstr ""
 
-msgid "mrWidget|Checking if merge request can be merged…"
-msgstr ""
-
 msgid "mrWidget|Cherry-pick"
 msgstr ""
 
@@ -98748,9 +98734,6 @@ msgid "new merge request"
 msgstr ""
 
 msgid "no"
-msgstr ""
-
-msgid "no expiration"
 msgstr ""
 
 msgid "no name set"

@@ -127,7 +127,6 @@ RSpec/RedundantMetatagType:
     - 'ee/spec/workers/package_metadata/cve_enrichment_sync_worker_spec.rb'
     - 'ee/spec/workers/package_metadata/licenses_sync_worker_spec.rb'
     - 'ee/spec/workers/personal_access_tokens/expiring_worker_spec.rb'
-    - 'ee/spec/workers/personal_access_tokens/groups/policy_worker_spec.rb'
     - 'ee/spec/workers/personal_access_tokens/instance/policy_worker_spec.rb'
     - 'ee/spec/workers/projects/disable_legacy_open_source_license_for_inactive_projects_worker_spec.rb'
     - 'ee/spec/workers/sbom/process_transfer_events_worker_spec.rb'

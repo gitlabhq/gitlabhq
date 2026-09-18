@@ -5,6 +5,7 @@ ignored_columns:
   - runners_token
   - saml_discovery_token
   - runners_token_encrypted
+  - max_personal_access_token_lifetime
 replication_targets:
   - name: clickhouse_main
     target: siphon_namespaces

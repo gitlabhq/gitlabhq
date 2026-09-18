@@ -1683,7 +1683,6 @@ lib/gitlab/checks/
 /ee/app/views/devise/registrations/_password_input.html.haml
 /ee/app/views/devise/sessions/
 /ee/app/views/devise/shared/
-/ee/app/views/groups/_personal_access_token_expiration_policy.html.haml
 /ee/app/views/groups/settings/_personal_access_tokens.html.haml
 /ee/app/views/groups/settings/service_accounts/
 /ee/app/views/layouts/mailer/devise.text.erb

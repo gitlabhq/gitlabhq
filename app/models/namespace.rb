@@ -34,6 +34,7 @@ class Namespace < ApplicationRecord
   ignore_column :file_template_project_id, remove_with: '19.2', remove_after: '2026-06-18'
   ignore_column :custom_project_templates_group_id, remove_with: '19.2', remove_after: '2026-06-18'
   ignore_columns %i[marked_for_deletion_at marked_for_deletion_by_user_id], remove_with: '19.4', remove_after: '2026-09-17'
+  ignore_column :max_personal_access_token_lifetime, remove_with: '19.7', remove_after: '2026-11-13'
 
   columns_changing_default :organization_id
 

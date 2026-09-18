@@ -129,7 +129,7 @@ Creates a new issue in a GitLab project.
 
 | Parameter      | Type              | Required | Description |
 |----------------|-------------------|----------|-------------|
-| `id`           | string            | Yes      | ID or URL-encoded path of the project. |
+| `id`           | string            | Yes      | ID or full path of the project. |
 | `title`        | string            | Yes      | Title of the issue. |
 | `description`  | string            | No       | Description of the issue. |
 | `assignee_ids` | array of integers | No       | Array of IDs of assigned users. |
@@ -161,7 +161,7 @@ Retrieves detailed information about a specific GitLab issue.
 
 | Parameter   | Type    | Required | Description |
 |-------------|---------|----------|-------------|
-| `id`        | string  | Yes      | ID or URL-encoded path of the project. |
+| `id`        | string  | Yes      | ID or full path of the project. |
 | `issue_iid` | integer | Yes      | Internal ID of the issue. |
 
 Example:
@@ -233,7 +233,7 @@ Only the base merge request is returned unless you request associated data with 
 | Parameter           | Type    | Required | Description |
 |---------------------|---------|----------|-------------|
 | `url`               | string  | No       | GitLab URL of the merge request. Provide this, or `project_id` and `merge_request_iid`. |
-| `project_id`        | string  | No       | ID or URL-encoded path of the project. Required if `url` is missing. |
+| `project_id`        | string  | No       | ID or full path of the project. Required if `url` is missing. |
 | `merge_request_iid` | integer | No       | Internal ID of the merge request. Required if `url` is missing. |
 | `include`           | array   | No       | Associated facets to return with the merge request. One of `diffs`, `commits`, `notes`, `pipelines`, `discussions`, or `conflicts`. Limited to one facet per call. |
 | `notes_after`       | string  | No       | Cursor for forward pagination of notes. Applies only when `include` is `["notes"]`. |
@@ -269,7 +269,7 @@ suggested polling delay; use `get_duo_session` with the returned `workflow_id` t
 
 | Parameter                     | Type    | Required | Description |
 |-------------------------------|---------|----------|-------------|
-| `project_id`                  | string  | Yes      | ID or URL-encoded path of the project the flow runs in. |
+| `project_id`                  | string  | Yes      | ID or full path of the project the flow runs in. |
 | `ai_catalog_item_consumer_id` | integer | Yes      | ID of the AI Catalog item consumer that configures which flow to run. |
 | `goal`                        | string  | Yes      | What the agent should do. This is the prompt the flow starts from. |
 
@@ -412,7 +412,7 @@ Retrieves the list of commits in a specific GitLab merge request.
 
 | Parameter           | Type    | Required | Description |
 |---------------------|---------|----------|-------------|
-| `id`                | string  | Yes      | ID or URL-encoded path of the project. |
+| `id`                | string  | Yes      | ID or full path of the project. |
 | `merge_request_iid` | integer | Yes      | Internal ID of the merge request. |
 | `per_page`          | integer | No       | Number of commits per page. |
 | `page`              | integer | No       | Current page number. |
@@ -435,7 +435,7 @@ Retrieves the diffs for a specific GitLab merge request.
 
 | Parameter           | Type    | Required | Description |
 |---------------------|---------|----------|-------------|
-| `id`                | string  | Yes      | ID or URL-encoded path of the project. |
+| `id`                | string  | Yes      | ID or full path of the project. |
 | `merge_request_iid` | integer | Yes      | Internal ID of the merge request. |
 | `per_page`          | integer | No       | Number of diffs per page. |
 | `page`              | integer | No       | Current page number. |
@@ -458,7 +458,7 @@ Retrieves the pipelines for a specific GitLab merge request.
 
 | Parameter           | Type    | Required | Description |
 |---------------------|---------|----------|-------------|
-| `id`                | string  | Yes      | ID or URL-encoded path of the project. |
+| `id`                | string  | Yes      | ID or full path of the project. |
 | `merge_request_iid` | integer | Yes      | Internal ID of the merge request. |
 
 Example:
@@ -545,7 +545,7 @@ Retrieves the notes (comments and system notes) for a specific GitLab merge requ
 | Parameter           | Type    | Required | Description                                                                                    |
 |---------------------|---------|----------|--------------------------------------------------------------------------------------------------|
 | `url`               | string  | No       | URL of the GitLab merge request. Required if `project_id` and `merge_request_iid` are missing.   |
-| `project_id`        | string  | No       | ID or URL-encoded path of the project. Required if `url` is missing.                           |
+| `project_id`        | string  | No       | ID or full path of the project. Required if `url` is missing.                                  |
 | `merge_request_iid` | integer | No       | Internal ID of the merge request. Required if `url` is missing.                                |
 | `after`             | string  | No       | Cursor for forward pagination.                                                                 |
 | `before`            | string  | No       | Cursor for backward pagination.                                                                |
@@ -749,7 +749,7 @@ permission to fork the project.
 
 | Parameter        | Type    | Required | Description |
 |------------------|---------|----------|-------------|
-| `id`             | string  | Yes      | ID or URL-encoded path of the project. |
+| `id`             | string  | Yes      | ID or full path of the project. |
 | `namespace_id`   | integer | No       | ID of the namespace to fork the project into. |
 | `namespace_path` | string  | No       | Path of the namespace to fork the project into. |
 | `name`           | string  | No       | Name to assign to the fork. |
@@ -775,7 +775,7 @@ Lists the branches of a GitLab project, optionally filtered by name.
 
 | Parameter  | Type    | Required | Description |
 |------------|---------|----------|-------------|
-| `id`       | string  | Yes      | ID or URL-encoded path of the project. |
+| `id`       | string  | Yes      | ID or full path of the project. |
 | `search`   | string  | No       | Filters branches by name. |
 | `page`     | integer | No       | Current page number. Default is `1`. |
 | `per_page` | integer | No       | Number of items per page. Default is `20`. |
@@ -864,7 +864,7 @@ Retrieves a single commit's metadata, and optionally its diff or notes.
 | Parameter     | Type    | Required | Description |
 |---------------|---------|----------|-------------|
 | `url`         | string  | No       | URL of the GitLab commit. Required if `project_id` and `commit_sha` are not provided. |
-| `project_id`  | string  | No       | ID or URL-encoded path of the project. Required if `url` is not provided. |
+| `project_id`  | string  | No       | ID or full path of the project. Required if `url` is not provided. |
 | `commit_sha`  | string  | No       | Commit to look up. Accepts a full or short SHA, branch name, or tag name. Required if `url` is not provided. |
 | `include`     | array   | No       | Associated facet to fetch inline, one per call (`diff` or `notes`). Base metadata is always returned. |
 | `diff_detail` | string  | No       | Level of detail in the commit diff. Applies only when `include` contains `diff`. Can be either `stats` or `full_patch`. Default is `stats`. |
@@ -1066,7 +1066,7 @@ pipeline's data in a single call, use the `get_pipeline` tool with `include: job
 
 | Parameter     | Type    | Required | Description |
 |---------------|---------|----------|-------------|
-| `id`          | string  | Yes      | ID or URL-encoded path of the project. |
+| `id`          | string  | Yes      | ID or full path of the project. |
 | `pipeline_id` | integer | Yes      | ID of the pipeline. |
 | `per_page`    | integer | No       | Number of jobs per page. |
 | `page`        | integer | No       | Current page number. |
@@ -1176,7 +1176,7 @@ Lists pipelines in a GitLab project, with optional filters.
 
 | Parameter        | Type    | Required | Description |
 |------------------|---------|----------|-------------|
-| `id`             | string  | Yes      | ID or URL-encoded path of the project. |
+| `id`             | string  | Yes      | ID or full path of the project. |
 | `ref`            | string  | No       | Branch or tag name. Filters pipelines by ref. |
 | `status`         | string  | No       | Filters pipelines by status (for example, `running`, `success`, `failed`). |
 | `source`         | string  | No       | Filters pipelines by source (for example, `push`, `web`, `schedule`). |
@@ -1263,7 +1263,7 @@ instead.
 
 | Parameter     | Type    | Required    | Description |
 |---------------|---------|-------------|-------------|
-| `id`          | string  | Yes         | ID or URL-encoded path of the project. |
+| `id`          | string  | Yes         | ID or full path of the project. |
 | `pipeline_id` | integer | Yes         | ID of the pipeline. If only this parameter is set, deletes a pipeline and all related data. |
 | `name`        | string  | No          | Name of the pipeline. If this parameter and `pipeline_id` are set, updates the pipeline metadata. |
 
@@ -1660,8 +1660,8 @@ Available scopes depend on the [search type](../search/_index.md).
 |----------------|------------------|----------|-------------|
 | `scope`        | string           | Yes      | Search scope (for example, `work_items`, `merge_requests`, or `projects`). |
 | `search`       | string           | Yes      | Search term. |
-| `group_id`     | string           | No       | ID or URL-encoded path of the group you want to search. |
-| `project_id`   | string           | No       | ID or URL-encoded path of the project you want to search. |
+| `group_id`     | string           | No       | ID or full path of the group you want to search. |
+| `project_id`   | string           | No       | ID or full path of the project you want to search. |
 | `state`        | string           | No       | State of search results (for `work_items` and `merge_requests`). |
 | `confidential` | boolean          | No       | Filters results by confidentiality (for `work_items`). Default is `false`. |
 | `fields`       | array of strings | No       | Array of fields you want to search (for `work_items` and `merge_requests`). |

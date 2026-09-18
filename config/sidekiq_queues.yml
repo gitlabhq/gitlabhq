@@ -897,6 +897,8 @@
   - 1
 - - package_metadata_global_malware_advisory_scan
   - 1
+- - package_metadata_reindex_malware_advisory_occurrence_refs
+  - 1
 - - package_repositories
   - 1
 - - pages
