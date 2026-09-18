@@ -37,7 +37,7 @@ RSpec.describe Authz::BoundaryPolicy, feature_category: :permissions do
     let(:granular_scope) { create(:granular_scope, boundary: boundary, permissions: Array(permissions)) }
     let(:token) { token_class.new(user, [granular_scope]) }
 
-    it 'evaluates permissions via the membership rule' do
+    it 'evaluates permissions from the token scope' do
       expect_allowed(*permissions)
     end
 
@@ -61,18 +61,12 @@ RSpec.describe Authz::BoundaryPolicy, feature_category: :permissions do
       it { expect_disallowed(*permissions) }
     end
 
-    context 'when the user is not a member' do
-      let_it_be(:user) { create(:user) }
-
-      it { expect_disallowed(*permissions) }
-    end
-
-    context 'when an anonymous caller would be granted the permission' do
+    context 'when an anonymous caller would be granted a permission outside the token scope' do
       let_it_be(:user) { create(:user) }
       let_it_be(:boundary_object) { create(:project, :public) }
 
       let(:permission) { :read_work_item }
-      let(:granular_scope) { create(:granular_scope, boundary: boundary, permissions: [permission]) }
+      let(:granular_scope) { create(:granular_scope, boundary: boundary, permissions: [:update_wiki]) }
 
       it 'does not apply the PAT-only anonymous rule' do
         expect(::Users::Anonymous.can?(permission, boundary_object)).to be(true)
@@ -112,15 +106,25 @@ RSpec.describe Authz::BoundaryPolicy, feature_category: :permissions do
     it { expect_disallowed(:not_allowed_permission) }
   end
 
-  context 'when the user is not a member' do
+  context 'when the user is not a member of the boundary' do
     let_it_be(:user) { create(:user) }
 
-    it { expect_disallowed(*permissions) }
+    it 'grants the permission on a private boundary' do
+      expect_allowed(*permissions)
+    end
 
-    context 'when the user is an admin', :enable_admin_mode do
-      let_it_be(:user) { create(:admin) }
+    context 'and the boundary is a public project' do
+      let_it_be(:boundary_object) { create(:project, :public) }
 
-      it { expect_allowed(*permissions) }
+      # create_work_item is an assignable permission group, and it expands to
+      # include the create_issue permission asserted below.
+      let_it_be(:permissions) { :create_work_item }
+
+      it 'grants a permission the anonymous rule does not cover' do
+        expect(::Users::Anonymous.can?(:create_issue, boundary_object)).to be(false)
+
+        expect_allowed(:create_issue)
+      end
     end
   end
 

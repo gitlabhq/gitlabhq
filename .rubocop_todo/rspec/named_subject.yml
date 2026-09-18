@@ -621,7 +621,6 @@ RSpec/NamedSubject:
     - 'ee/spec/services/issue_feature_flags/list_service_spec.rb'
     - 'ee/spec/services/issues/duplicate_service_spec.rb'
     - 'ee/spec/services/iterations/cadences/create_iterations_in_advance_service_spec.rb'
-    - 'ee/spec/services/iterations/roll_over_issues_service_spec.rb'
     - 'ee/spec/services/iterations/update_service_spec.rb'
     - 'ee/spec/services/jira/jql_builder_service_spec.rb'
     - 'ee/spec/services/lfs/lock_file_service_spec.rb'

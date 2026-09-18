@@ -1,0 +1,10 @@
+---
+name: ci_job_trace_api_archived_log_via_workhorse
+description: Let Workhorse serve archived job logs from the job trace API (send-url for object storage, X-Sendfile for local disk) instead of buffering them in Rails
+feature_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/629424
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/255994
+rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/work_items/629437
+milestone: "19.5"
+group: group::pipeline execution
+type: beta
+default_enabled: false

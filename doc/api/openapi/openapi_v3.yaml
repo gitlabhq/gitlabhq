@@ -9542,7 +9542,7 @@ paths:
         content:
           application/json:
             schema:
-              "$ref": "#/components/schemas/RequestBody_ed4b8b8e97cd"
+              "$ref": "#/components/schemas/RequestBody_8ff39ff33479"
       x-gitlab-lifecycle: experiment
     get:
       operationId: getApiV4ProjectsIdMirrorPull
@@ -100021,6 +100021,11 @@ components:
           example: new ssh cert
         key:
           type: string
+        fingerprint:
+          type: string
+          description: SHA256 fingerprint of the SSH certificate authority public
+            key
+          example: SHA256:1CrrRznEotAVn+wfXVzYlDCaVcGoTvHIup4eNWBPK2k
         created_at:
           type: string
           format: date-time
@@ -104144,7 +104149,7 @@ components:
           description: Reset the mirror if it is in a hard-failed state and retry
             the update
           nullable: true
-    RequestBody_ed4b8b8e97cd:
+    RequestBody_8ff39ff33479:
       type: object
       properties:
         enabled:
@@ -104170,7 +104175,7 @@ components:
           nullable: true
         only_mirror_protected_branches:
           type: boolean
-          description: Only mirror protected branches
+          description: Only mirror protected branches. Mutually exclusive with `mirror_branch_regex`.
           nullable: true
         mirror_overwrites_diverged_branches:
           type: boolean
@@ -104179,12 +104184,8 @@ components:
         mirror_branch_regex:
           type: string
           description: Only mirror branches with names that match this regex. Mutually
-            exclusive with `only_protected_branches`.
+            exclusive with `only_mirror_protected_branches`.
           nullable: true
-        only_protected_branches:
-          type: string
-          nullable: true
-          description: Mutually exclusive with `mirror_branch_regex`.
     RequestBody_90c26864a87c:
       type: object
       properties:

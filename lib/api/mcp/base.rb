@@ -59,7 +59,7 @@ module API
             Labkit::Fields::GL_USER_ID => current_user.id
           )
 
-          forbidden!('MCP server disabled')
+          forbidden!(mcp_denial_message)
         end
 
         forbidden! unless AccessTokenValidationService.new(access_token)
@@ -85,6 +85,10 @@ module API
           nil
         end
         strong_memoize_attr :mcp_denial_reason
+
+        def mcp_denial_message
+          'MCP server disabled for this instance'
+        end
 
         # Returns the allowed MCP tool names for this request, as set by the Duo Workflow
         # executor via the `x-gitlab-enabled-mcp-server-tools` header.

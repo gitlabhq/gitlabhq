@@ -77,6 +77,10 @@ module Gitlab
       { prefix: match[1].strip, algorithm: match[2], key_data: match[3].strip }
     end
 
+    def self.with_sha256_prefix(fingerprint)
+      "SHA256:#{fingerprint}" if fingerprint
+    end
+
     attr_reader :key_text, :key
 
     def initialize(key_text)
@@ -107,7 +111,7 @@ module Gitlab
     end
 
     def fingerprint_sha256
-      'SHA256:' + key.fingerprint(md5: false) if valid?
+      self.class.with_sha256_prefix(key.fingerprint(md5: false)) if valid?
     end
 
     def bits

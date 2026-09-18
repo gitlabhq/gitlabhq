@@ -42,6 +42,7 @@ module Gitlab
             def filters_mapping
               {
                 exact_match: ExactMatchFilter,
+                exact_not_match: ExactNotMatchFilter,
                 range: RangeFilter,
                 descendants: DescendantsFilter,
                 metric_exact_match: MetricExactMatchFilter,

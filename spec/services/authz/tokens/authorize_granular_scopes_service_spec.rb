@@ -232,6 +232,18 @@ RSpec.describe ::Authz::Tokens::AuthorizeGranularScopesService, feature_category
         end
       end
 
+      context 'when the token is scoped to the hidden boundary' do
+        let_it_be(:token, freeze: false) do
+          create(:granular_pat, boundary: Authz::Boundary.for(private_project), permissions: :read_code)
+        end
+
+        # 404 masking only runs on the denial path, so an in-scope token short-circuits
+        # it. The non-member is denied afterwards by the endpoint's own authorization.
+        it 'returns success and leaves the user-level denial to the endpoint' do
+          expect(service.execute).to be_success
+        end
+      end
+
       context 'when one of the multiple boundaries is hidden' do
         let_it_be(:public_group, freeze: false) { create(:group, :public) }
         let_it_be(:boundary, freeze: false) { [Authz::Boundary.for(private_project), Authz::Boundary.for(public_group)] }

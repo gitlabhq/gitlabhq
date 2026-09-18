@@ -40,6 +40,41 @@ describe('GlqlVisualization', () => {
     });
   });
 
+  // The resolver does not re-query on prop changes, so the panel remounts it instead.
+  describe('when the panel changes', () => {
+    const query = 'type = Issue AND state = opened';
+
+    it('remounts the resolver when the query changes', async () => {
+      createWrapper({ data: query, namespace: 'gitlab-org' });
+      const original = findResolver().vm;
+
+      wrapper.setProps({ data: 'type = Issue AND state = closed' });
+      await nextTick();
+
+      expect(findResolver().vm).not.toBe(original);
+    });
+
+    it('remounts the resolver when the namespace changes', async () => {
+      createWrapper({ data: query, namespace: 'gitlab-org' });
+      const original = findResolver().vm;
+
+      wrapper.setProps({ namespace: 'gitlab-com' });
+      await nextTick();
+
+      expect(findResolver().vm).not.toBe(original);
+    });
+
+    it('keeps the same resolver when nothing it depends on changes', async () => {
+      createWrapper({ data: query, namespace: 'gitlab-org' });
+      const original = findResolver().vm;
+
+      wrapper.setProps({ options: { showActions: false } });
+      await nextTick();
+
+      expect(findResolver().vm).toBe(original);
+    });
+  });
+
   describe('comparison', () => {
     const comparisonQuery = 'type = Issue AND created >= "2026-01-01"';
 

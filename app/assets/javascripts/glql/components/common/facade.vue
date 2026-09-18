@@ -268,7 +268,7 @@ export default {
           <glql-resolver
             v-if="showResolver"
             ref="resolver"
-            :key="retryCount"
+            :key="`${retryCount}|${queryYaml}`"
             :glql-query="queryYaml"
             tracking-event-name="render_glql_block"
             @change="onResolverChange"

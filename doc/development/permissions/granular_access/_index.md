@@ -18,6 +18,7 @@ Granular PATs allow fine-grained access control through granular scopes that con
 - [GraphQL architecture](graphql_architecture.md): Detailed explanation of how the GraphQL granular token authorization system works internally.
 - [Permission definitions](permission_definitions.md): How to create permission definition YAML files using the `bin/permission` command.
 - [Assignable permissions](assignable_permissions.md): How to create assignable permission YAML files and maintain them.
+- [Authorization principles](authorization_principles.md): A granular token authorizes the API.
 
 ## Job tokens
 

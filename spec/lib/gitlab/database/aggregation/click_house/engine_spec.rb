@@ -487,7 +487,9 @@ RSpec.describe Gitlab::Database::Aggregation::ClickHouse::Engine, :click_house,
 
         filters do
           exact_match :project_id, :integer
+          exact_not_match :project_id, :integer
           exact_match :name, :string
+          exact_not_match :name, :string
         end
 
         dimensions do
@@ -546,6 +548,31 @@ RSpec.describe Gitlab::Database::Aggregation::ClickHouse::Engine, :click_house,
       # Only build1_v2 survives (build1_v1 deduplicated, build2_deleted filtered)
       expect(dedup_engine).to execute_aggregation(request).and_return([
         { project_id: 100, total_count: 1 }
+      ])
+    end
+
+    it 'applies PK exclusion filters on raw data before deduplication' do
+      request = Gitlab::Database::Aggregation::Request.new(
+        filters: [{ identifier: :project_id_not, values: [100] }],
+        dimensions: [{ identifier: :project_id }],
+        metrics: [{ identifier: :total_count }]
+      )
+
+      expect(dedup_engine).to execute_aggregation(request).and_return([
+        { project_id: 200, total_count: 1 }
+      ])
+    end
+
+    it 'applies non-PK exclusion filters after deduplication so they see argMax-resolved values' do
+      request = Gitlab::Database::Aggregation::Request.new(
+        filters: [{ identifier: :name_not, values: ['build1_v2'] }],
+        dimensions: [{ identifier: :project_id }],
+        metrics: [{ identifier: :total_count }]
+      )
+
+      # Excluding the latest version drops id 1 entirely; the superseded 'build1_v1' must not resurface.
+      expect(dedup_engine).to execute_aggregation(request).and_return([
+        { project_id: 200, total_count: 1 }
       ])
     end
 

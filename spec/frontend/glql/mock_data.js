@@ -260,6 +260,31 @@ export const MOCK_CI_STAGE = {
 
 export const MOCK_LINK = { title: 'title', webUrl: 'url' };
 
+// Aggregated rows split across pages; `count` is the total auto-pagination walks towards.
+export const MOCK_AGGREGATED_PAGES = [
+  {
+    count: 5,
+    pageInfo: { endCursor: 'cursor-1', hasNextPage: true },
+    nodes: [
+      { language: 'ruby', totalCount: 10 },
+      { language: 'js', totalCount: 9 },
+    ],
+  },
+  {
+    count: 5,
+    pageInfo: { endCursor: 'cursor-2', hasNextPage: true },
+    nodes: [
+      { language: 'go', totalCount: 8 },
+      { language: 'rust', totalCount: 7 },
+    ],
+  },
+  {
+    count: 5,
+    pageInfo: { endCursor: 'cursor-3', hasNextPage: false },
+    nodes: [{ language: 'python', totalCount: 6 }],
+  },
+];
+
 export const MOCK_AGGREGATED_FIELDS_ONE_DIM_ONE_METRIC = [
   { key: 'language', label: 'Language', name: 'language', type: 'dimension' },
   { key: 'totalCount', label: 'Total count', name: 'totalCount', type: 'metric' },

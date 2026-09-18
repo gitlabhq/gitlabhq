@@ -84,6 +84,7 @@ Example response:
 {{< history >}}
 
 - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/494294) in GitLab 17.6.
+- [Changed](https://gitlab.com/gitlab-org/gitlab/-/issues/627615) in GitLab 19.5. Sending both `only_mirror_protected_branches` and `mirror_branch_regex` now returns `400 Bad Request` instead of silently forcing `only_mirror_protected_branches` to `false`.
 
 {{< /history >}}
 
@@ -101,10 +102,10 @@ Supported attributes:
 | `auth_password`                       | string            | No       | Password used for authentication of a project to pull mirror. |
 | `auth_user`                           | string            | No       | Username used for authentication of a project to pull mirror. |
 | `enabled`                             | boolean           | No       | If `true`, enables pull mirroring on project when set to `true`. |
-| `mirror_branch_regex`                 | string            | No       | Contains a regular expression. Only branches with names matching the regex are mirrored. Requires `only_mirror_protected_branches` to be disabled. |
+| `mirror_branch_regex`                 | string            | No       | Contains a regular expression. Only branches with names matching the regex are mirrored. Omit `only_mirror_protected_branches` when using this attribute. Sending both returns `400 Bad Request`, even when `only_mirror_protected_branches` is `false`. |
 | `mirror_overwrites_diverged_branches` | boolean           | No       | If `true`, overwrites diverged branches. |
 | `mirror_trigger_builds`               | boolean           | No       | If `true`, triggers pipelines for mirror updates. |
-| `only_mirror_protected_branches`      | boolean           | No       | If `true`, limits mirroring to only protected branches. |
+| `only_mirror_protected_branches`      | boolean           | No       | If `true`, limits mirroring to only protected branches. Omit `mirror_branch_regex` when using this attribute. Sending both returns `400 Bad Request`. |
 | `url`                                 | string            | No       | URL of remote repository being mirrored. |
 
 If successful, returns [`200 OK`](rest/troubleshooting.md#status-codes) and the

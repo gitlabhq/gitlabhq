@@ -29,6 +29,12 @@ Prerequisites:
 
 ## List all group SSH certificates
 
+{{< history >}}
+
+- `fingerprint` response attribute [introduced](https://gitlab.com/gitlab-org/gitlab/-/work_items/629633) in GitLab 19.5.
+
+{{< /history >}}
+
 Lists all SSH certificates for a specified group.
 
 ```plaintext
@@ -58,19 +64,27 @@ Example response:
   {
     "id": 12345,
     "title": "SSH Title 1",
-    "key": "ssh-rsa AAAAB3NzaC1ea2dAAAADAQABAAAAgQDGbLkF44ScxRQi2FfA7VsHgGqptguSbmW26jkJhEiRZpGS4/+UzaaSqc8Psw2OhSsKc5QwfrB/ANpO4LhOjDzhf2FuD8ACkv3R7XtaJ+rN6PlyzoBfLAiSyzxhEoMFDBprTgaiZKgg2yQ9dRH55w3f6XMZ4hnaUae53nQgfQLxFw== example@gitlab.com",
+    "key": "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIKW2o6syFnRbO6D++jJHc3Eqj1k+XspAgCvLq8lXlDUj ca@example.com",
+    "fingerprint": "SHA256:1CrrRznEotAVn+wfXVzYlDCaVcGoTvHIup4eNWBPK2k",
     "created_at": "2023-09-08T12:39:00.172Z"
   },
   {
     "id":12346,
     "title":"SSH Title 2",
-    "key": "ssh-rsa AAAAB3NzaC1ac2EAAAADAQABAAAAgQDTl/hHfu1F/KlR+QfgM2wUmyxcN5YeiaWluEGIrfXUeJuI+bK6xjpE3+2afHDYtE9VQkeL32KRjefX2d72Jeoa68ewt87Vn8CcGkUTOTpHNzeL8pHMKFs3m7ArSBxNg5vTdgAsq5dbDGNtat7b2WCHTNvtWoON1Jetne30uW2EwQ== example@gitlab.com",
+    "key": "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIMJfRGzblvgogdxwPnwsH+h4U5eo+xOzGru08CCaezaL ca@example.com",
+    "fingerprint": "SHA256:/P+kBF3hlgEYGohCvKCLQXewtPcI+4B4phcctFeExG8",
     "created_at": "2023-09-08T12:39:00.244Z"
   }
 ]
 ```
 
 ## Add a group SSH certificate
+
+{{< history >}}
+
+- `fingerprint` response attribute [introduced](https://gitlab.com/gitlab-org/gitlab/-/work_items/629633) in GitLab 19.5.
+
+{{< /history >}}
 
 Adds a group SSH certificate for a specified group.
 
@@ -91,7 +105,9 @@ Example request:
 ```shell
 curl --request POST \
   --header "PRIVATE-TOKEN: <your_access_token>" \
-  --url "https://gitlab.example.com/api/v4/groups/5/ssh_certificates?title=newtitle&key=ssh-rsa+REDACTED+example%40gitlab.com"
+  --data-urlencode "title=newtitle" \
+  --data-urlencode "key=ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIKW2o6syFnRbO6D++jJHc3Eqj1k+XspAgCvLq8lXlDUj ca@example.com" \
+  --url "https://gitlab.example.com/api/v4/groups/5/ssh_certificates"
 ```
 
 Example response:
@@ -100,7 +116,8 @@ Example response:
 {
   "id": 54321,
   "title": "newtitle",
-  "key": "ssh-rsa ssh-rsa AAAAB3NzaC1ea2dAAAADAQABAAAAgQDGbLkF44ScxRQi2FfA7VsHgGqptguSbmW26jkJhEiRZpGS4/+UzaaSqc8Psw2OhSsKc5QwfrB/ANpO4LhOjDzhf2FuD8ACkv3R7XtaJ+rN6PlyzoBfLAiSyzxhEoMFDBprTgaiZKgg2yQ9dRH55w3f6XMZ4hnaUae53nQgfQLxFw== example@gitlab.com",
+  "key": "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIKW2o6syFnRbO6D++jJHc3Eqj1k+XspAgCvLq8lXlDUj ca@example.com",
+  "fingerprint": "SHA256:1CrrRznEotAVn+wfXVzYlDCaVcGoTvHIup4eNWBPK2k",
   "created_at": "2023-09-08T12:39:00.172Z"
 }
 ```

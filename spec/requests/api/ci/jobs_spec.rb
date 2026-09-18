@@ -5,6 +5,7 @@ require 'spec_helper'
 RSpec.describe API::Ci::Jobs, feature_category: :continuous_integration do
   include HttpBasicAuthHelpers
   include DependencyProxyHelpers
+  include WorkhorseHelpers
 
   using RSpec::Parameterized::TableSyntax
   include HttpIOHelpers
@@ -881,10 +882,11 @@ RSpec.describe API::Ci::Jobs, feature_category: :continuous_integration do
         end
       end
 
-      context 'when log is in ObjectStorage' do
+      context 'when log is in ObjectStorage', :skip_before_request do
         let!(:job) { create(:ci_build, :trace_artifact, pipeline: pipeline) }
         let(:url) { 'http://object-storage/trace' }
         let(:file_path) { expand_fixture_path('trace/sample_trace') }
+        let(:content_disposition) { "infile; filename=\"#{job.id}.log\"" }
 
         before do
           stub_remote_url_206(url, file_path)
@@ -895,18 +897,88 @@ RSpec.describe API::Ci::Jobs, feature_category: :continuous_integration do
           end
         end
 
-        it 'returns specific job logs' do
+        it 'lets Workhorse stream the log from object storage' do
+          get api("/projects/#{project.id}/jobs/#{job.id}/trace", api_user)
+
           expect(response).to have_gitlab_http_status(:ok)
-          expect(response.body).to eq(job.trace.raw)
+          expect(response.body).to be_empty
+          expect(response.headers['Content-Disposition']).to eq(content_disposition)
+
+          type, params = workhorse_send_data
+          expect(type).to eq('send-url')
+          expect(params['URL']).to eq(url)
+          expect(params['ResponseHeaders']).to eq(
+            'Content-Type' => ['text/plain'],
+            'Content-Disposition' => [content_disposition]
+          )
+          expect(a_request(:get, url)).not_to have_been_made
+        end
+
+        it 'answers HEAD from the artifact metadata without fetching the object' do
+          head api("/projects/#{project.id}/jobs/#{job.id}/trace", api_user)
+
+          expect(response).to have_gitlab_http_status(:ok)
+          expect(response.headers).not_to include(Gitlab::Workhorse::SEND_DATA_HEADER)
+          expect(response.headers['Content-Length']).to eq(File.size(file_path).to_s)
+          expect(response.headers['Content-Disposition']).to eq(content_disposition)
+        end
+
+        it 'rejects requests that did not come through Workhorse before setting log headers', :verify_workhorse_jwt do
+          get api("/projects/#{project.id}/jobs/#{job.id}/trace", api_user)
+
+          expect(response).to have_gitlab_http_status(:forbidden)
+          expect(response.headers).not_to include('Content-Disposition')
+        end
+
+        context 'when a byte range is requested' do
+          it 'reads the range in Rails' do
+            get api("/projects/#{project.id}/jobs/#{job.id}/trace", api_user), params: { byte_offset: 0, byte_limit: 5 }
+
+            expect(response).to have_gitlab_http_status(:ok)
+            expect(response.headers).not_to include(Gitlab::Workhorse::SEND_DATA_HEADER)
+            expect(response.body).to eq(job.trace.raw.byteslice(0, 5))
+          end
+        end
+
+        context 'when the ci_job_trace_api_archived_log_via_workhorse feature flag is disabled' do
+          before do
+            stub_feature_flags(ci_job_trace_api_archived_log_via_workhorse: false)
+          end
+
+          it 'returns specific job logs' do
+            get api("/projects/#{project.id}/jobs/#{job.id}/trace", api_user)
+
+            expect(response).to have_gitlab_http_status(:ok)
+            expect(response.headers).not_to include(Gitlab::Workhorse::SEND_DATA_HEADER)
+            expect(response.body).to eq(job.trace.raw)
+          end
         end
       end
 
-      context 'when log is artifact' do
+      context 'when log is artifact', :skip_before_request do
         let(:job) { create(:ci_build, :trace_artifact, pipeline: pipeline) }
 
-        it 'returns specific job log' do
+        it 'lets Workhorse send the log from disk' do
+          get api("/projects/#{project.id}/jobs/#{job.id}/trace", api_user)
+
           expect(response).to have_gitlab_http_status(:ok)
-          expect(response.body).to eq(job.trace.raw)
+          expect(response.body).to be_empty
+          expect(response.headers['X-Sendfile']).to eq(job.job_artifacts_trace.file.path)
+          expect(response.headers['Content-Disposition']).to eq("infile; filename=\"#{job.id}.log\"")
+        end
+
+        context 'when the ci_job_trace_api_archived_log_via_workhorse feature flag is disabled' do
+          before do
+            stub_feature_flags(ci_job_trace_api_archived_log_via_workhorse: false)
+          end
+
+          it 'returns specific job log' do
+            get api("/projects/#{project.id}/jobs/#{job.id}/trace", api_user)
+
+            expect(response).to have_gitlab_http_status(:ok)
+            expect(response.headers).not_to include('X-Sendfile')
+            expect(response.body).to eq(job.trace.raw)
+          end
         end
       end
 

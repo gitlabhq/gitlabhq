@@ -177,15 +177,23 @@ class Projects::CommitController < Projects::ApplicationController
     target_project = find_cherry_pick_target_project
     return render_404 unless target_project
 
-    @branch_name = create_new_branch? ? @commit.cherry_pick_branch_name : @start_branch
+    if create_new_branch?
+      branch_name_generator = ->(project) { @commit.cherry_pick_branch_name(repository: project.repository) }
+    else
+      @branch_name = @start_branch
+    end
+
+    change_type_title = @commit.change_type_title(current_user)
 
     create_commit(
       Commits::CherryPickService,
-      success_notice: "The #{@commit.change_type_title(current_user)} has been successfully " \
-        "cherry-picked into #{@branch_name}.",
+      success_notice: -> do
+        "The #{change_type_title} has been successfully cherry-picked into #{@branch_name}."
+      end,
       success_path: -> { successful_change_path(target_project) },
       failure_path: failed_change_path,
-      target_project: target_project
+      target_project: target_project,
+      branch_name_generator: branch_name_generator
     )
   end
 

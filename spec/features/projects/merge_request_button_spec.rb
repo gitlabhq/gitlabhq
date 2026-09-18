@@ -150,8 +150,9 @@ RSpec.describe 'Merge Request button', feature_category: :groups_and_projects do
 
   context 'on commits page' do
     before do
-      # TODO: Remove stub once merge request button is implemented in refactored UI
-      # See: https://gitlab.com/gitlab-org/gitlab/-/work_items/598206
+      # Pins the flag off so these shared examples exercise the legacy (non-Vue) commits UI.
+      # The merge request button on the refactored commits page is covered by
+      # ee/spec/frontend/msw_integration/commits/merge_request_button_spec.js
       stub_feature_flags(project_commits_refactor: false)
     end
 
@@ -173,20 +174,12 @@ RSpec.describe 'Merge Request button', feature_category: :groups_and_projects do
           visit project_commits_path(project, 'feature')
         end
 
-        it 'does not show Create merge request button' do
-          expect(page).not_to have_link('Create merge request')
+        it 'shows Create merge request button' do
+          href = project_new_merge_request_path(project, merge_request: { source_branch: 'feature' })
+
+          expect(page).to have_link('Create merge request', href: href)
         end
       end
-
-      # TODO: Implement merge request button functionality in refactored UI
-      # See: https://gitlab.com/gitlab-org/gitlab/-/work_items/598206
-      # The following scenarios from the shared example will be tested once implemented:
-      # - not logged in (button not shown)
-      # - logged in as developer (button shown)
-      # - merge requests disabled (button not shown)
-      # - project archived (button not shown)
-      # - logged in as non-member (button not shown)
-      # - on own fork of project (button shown)
     end
   end
 end

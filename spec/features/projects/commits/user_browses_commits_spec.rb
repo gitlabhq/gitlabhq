@@ -603,13 +603,7 @@ RSpec.describe 'User browses commits', feature_category: :source_code_management
         end
       end
 
-      # TODO: Implement merge request button functionality in refactored UI
-      # See: https://gitlab.com/gitlab-org/gitlab/-/work_items/598206
-      # The following tests will be added once the feature is implemented:
-      # - renders create merge request button (feature branch without open MRs)
-      # - renders create merge request button when clicking compare tab
-      # - renders button to the merge request (feature branch with open MR)
-      # - renders button to the merge request when clicking compare tab
+      # Merge request button is covered by ee/spec/frontend/msw_integration/commits/merge_request_button_spec.js
     end
   end
 end

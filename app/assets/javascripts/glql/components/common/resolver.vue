@@ -4,15 +4,24 @@ import { sha256 } from '~/lib/utils/text_utility';
 import * as Sentry from '~/sentry/sentry_browser_wrapper';
 import { InternalEvents } from '~/tracking';
 import {
+  AGGREGATED_AUTO_PAGE_SIZE,
   DEFAULT_PAGE_SIZE,
   DEFAULT_DISPLAY_TYPE,
-  PAGINATED_DISPLAY_TYPES_WITH_DEFAULT_LIMIT,
+  MAX_AUTO_PAGINATED_ROWS,
+  MODE_ANALYTICS,
+  PAGINATION_AUTO,
+  PAGINATION_BY_DISPLAY_TYPE,
+  PAGINATION_LOAD_MORE,
 } from '~/glql/constants';
 import { parse } from '../../core/parser';
 import { execute } from '../../core/executor';
 import { transform } from '../../core/transformer';
 import DataPresenter from '../presenters/data.vue';
 import GlqlPagination from './pagination.vue';
+
+// No display type maps to this: it is what `pagination` falls back to when neither
+// strategy applies, for an aggregated display outside analytics mode or one with a `limit:`.
+const PAGINATION_NONE = 'none';
 
 export default {
   name: 'GlqlResolver',
@@ -65,36 +74,43 @@ export default {
       mode: undefined,
       source: undefined,
       error: undefined,
+      resultsTruncated: false,
+
+      // The pagination loop is a plain async function, so destroying the component does not
+      // stop it. Parents remount this component instead of mutating its props.
+      discarded: false,
     };
   },
   computed: {
     hasDisplayType() {
       return Boolean(this.config?.display);
     },
-    isPaginatedDisplayWithDefaultLimit() {
-      return PAGINATED_DISPLAY_TYPES_WITH_DEFAULT_LIMIT.has(
-        this.config?.display ?? DEFAULT_DISPLAY_TYPE,
-      );
+    pagination() {
+      const strategy = PAGINATION_BY_DISPLAY_TYPE[this.config?.display ?? DEFAULT_DISPLAY_TYPE];
+
+      if (strategy === PAGINATION_LOAD_MORE) return PAGINATION_LOAD_MORE;
+      if (
+        strategy === PAGINATION_AUTO &&
+        this.mode === MODE_ANALYTICS &&
+        this.config?.limit == null
+      ) {
+        return PAGINATION_AUTO;
+      }
+
+      return PAGINATION_NONE;
     },
     hasNextPage() {
       return (
-        this.isPaginatedDisplayWithDefaultLimit &&
+        this.pagination === PAGINATION_LOAD_MORE &&
         Boolean(this.data?.count && this.data.nodes?.length < this.data.count)
       );
     },
   },
-  watch: {
-    glqlQuery() {
-      this.executeQuery();
-    },
-    // The query string is unchanged when only the namespace changes, so without this the
-    // rendered results would still be those of the previously selected namespace.
-    scope() {
-      this.executeQuery();
-    },
-  },
   mounted() {
     this.executeQuery();
+  },
+  beforeDestroy() {
+    this.discarded = true;
   },
   methods: {
     resetData() {
@@ -107,6 +123,7 @@ export default {
       this.mode = undefined;
       this.source = undefined;
       this.error = undefined;
+      this.resultsTruncated = false;
     },
 
     emitChange() {
@@ -124,6 +141,7 @@ export default {
           'error',
           'loading',
           'hasNextPage',
+          'resultsTruncated',
         ]),
       );
     },
@@ -138,6 +156,7 @@ export default {
       if (!this.glqlQuery.trim()) return;
 
       this.resetData();
+
       this.loading = true;
       this.emitChange();
 
@@ -154,22 +173,23 @@ export default {
         this.mode = mode;
         this.source = source;
 
-        // Honor an explicit `limit:` from the user. Otherwise, only paginated
-        // display types (lists, tables) get the default page size; aggregated
-        // displays (charts) fetch the full result set in one round-trip.
+        // Honor an explicit `limit:` from the user. Otherwise, paginated display
+        // types (lists, tables) get the default page size; aggregated displays
+        // (charts) take a full page that `autoPaginate` walks to the end of.
         if (this.config.limit != null) {
           this.setVariable('limit', this.config.limit);
-        } else if (this.isPaginatedDisplayWithDefaultLimit) {
+        } else if (this.pagination === PAGINATION_LOAD_MORE) {
           this.setVariable('limit', DEFAULT_PAGE_SIZE);
+        } else if (this.pagination === PAGINATION_AUTO) {
+          this.setVariable('limit', AGGREGATED_AUTO_PAGE_SIZE);
         }
 
-        const executionResult = await execute(this.query, this.variables);
+        const executionResult = await execute(query, variables);
 
-        this.data = await transform(executionResult, {
-          fields: this.fields,
-          mode: this.mode,
-          source: this.source,
-        });
+        this.data = await transform(executionResult, { fields, mode, source });
+
+        if (this.pagination === PAGINATION_AUTO) await this.autoPaginate();
+
         this.comparisonData = await this.fetchComparison();
 
         this.trackRender();
@@ -182,11 +202,16 @@ export default {
       }
     },
 
-    // Runs once and is never paginated: `loadMore` pages the main query alone, since two result
-    // sets paged in step drift apart as soon as one page fails. A comparison that fails to
-    // compile or run is dropped and reported, so the main result still renders without it.
+    // Runs once, as a single page. The previous period is a different result set with its own
+    // rows, order and count, so it cannot be paged in step with the main query; presenters pair
+    // the two by dimension identity instead. That pairing is only sound when both sides are
+    // complete, so the comparison is skipped once the main result exceeds one page. A comparison
+    // that fails to compile or run is dropped and reported, so the main result still renders
+    // without it.
     async fetchComparison() {
       if (!this.comparison?.query) return undefined;
+
+      if (this.data?.count > AGGREGATED_AUTO_PAGE_SIZE) return undefined;
 
       try {
         const { query, variables, fields, mode, source } = await parse(
@@ -203,25 +228,65 @@ export default {
       }
     },
 
+    async fetchNextPage() {
+      const executionResult = await execute(this.query, this.variables);
+
+      const data = await transform(executionResult, {
+        fields: this.fields,
+        mode: this.mode,
+        source: this.source,
+      });
+
+      this.data = {
+        ...this.data,
+        pageInfo: data.pageInfo,
+        nodes: [...this.data.nodes, ...data.nodes],
+      };
+    },
+
+    // Emits nothing: the caller emits once, so the chart never draws a partial aggregate.
+    async autoPaginate() {
+      if (!this.data?.nodes) return;
+
+      // Bounds requests as well as rows, so a backend that keeps claiming another page can't spin.
+      const maxPages = Math.ceil(MAX_AUTO_PAGINATED_ROWS / AGGREGATED_AUTO_PAGE_SIZE);
+
+      for (let page = 0; page < maxPages; page += 1) {
+        if (this.discarded) return;
+
+        const after = this.data.pageInfo?.endCursor;
+        if (!after || !this.data.pageInfo.hasNextPage) break;
+        if (this.data.nodes.length >= MAX_AUTO_PAGINATED_ROWS) break;
+
+        this.setVariable('after', after);
+
+        try {
+          // Sequential by nature: each request needs the previous page's cursor.
+          // eslint-disable-next-line no-await-in-loop
+          await this.fetchNextPage();
+        } catch (error) {
+          if (this.discarded) return;
+
+          // Rate limiting is keyed by query SHA, so once a page fails the next is rejected too.
+          // Keep the pages already loaded rather than losing the chart. TODO: warn that the view
+          // is incomplete — https://gitlab.com/gitlab-org/glql/-/work_items/216
+          Sentry.captureException(error);
+          break;
+        }
+      }
+
+      // Every exit above can leave rows behind, not just the row cap: a short page, a missing
+      // cursor, or a failed continuation. Compare against the total rather than track each one.
+      this.resultsTruncated = Boolean(this.data?.count && this.data.nodes.length < this.data.count);
+    },
+
     async loadMore() {
       try {
         this.setVariable('after', this.data.pageInfo?.endCursor);
         this.loading = true;
         this.emitChange();
 
-        const executionResult = await execute(this.query, this.variables);
-
-        const data = await transform(executionResult, {
-          fields: this.fields,
-          mode: this.mode,
-          source: this.source,
-        });
-
-        this.data = {
-          ...this.data,
-          pageInfo: data.pageInfo,
-          nodes: [...this.data.nodes, ...data.nodes],
-        };
+        await this.fetchNextPage();
       } catch (error) {
         this.error = error;
       } finally {

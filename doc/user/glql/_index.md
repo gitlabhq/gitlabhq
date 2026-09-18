@@ -272,7 +272,7 @@ limit: <number>
 | `metrics` | Yes | Aggregated values to compute. At least one metric is required. |
 | `dimensions` | No | Fields to group results by. Select any combination, or omit entirely to return a single aggregated row. |
 | `sort` | No | Sort fields must also appear in your selected dimensions or metrics. |
-| `limit` | No | Defaults to `100`. Maximum value is `100`. |
+| `limit` | No | Rows per page, up to `100`. Analytics-mode display types such as charts and stats fetch every page automatically when `limit` is omitted, up to 1,000 rows. See [Pagination support](display_types.md#pagination-support). |
 
 ### Field parameters
 

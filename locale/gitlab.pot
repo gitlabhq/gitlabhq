@@ -11025,12 +11025,6 @@ msgstr ""
 msgid "AnalyticsDashboards|Add to dashboard"
 msgstr ""
 
-msgid "AnalyticsDashboards|All"
-msgstr ""
-
-msgid "AnalyticsDashboards|All available dashboards"
-msgstr ""
-
 msgid "AnalyticsDashboards|An error occurred when trying to display this panel"
 msgstr ""
 
@@ -11061,12 +11055,6 @@ msgstr ""
 msgid "AnalyticsDashboards|Collapse %{name}"
 msgstr ""
 
-msgid "AnalyticsDashboards|Created by GitLab"
-msgstr ""
-
-msgid "AnalyticsDashboards|Created by me"
-msgstr ""
-
 msgid "AnalyticsDashboards|Dashboard description"
 msgstr ""
 
@@ -11083,12 +11071,6 @@ msgid "AnalyticsDashboards|Dashboard title"
 msgstr ""
 
 msgid "AnalyticsDashboards|Dashboard title is required."
-msgstr ""
-
-msgid "AnalyticsDashboards|Dashboards created by GitLab"
-msgstr ""
-
-msgid "AnalyticsDashboards|Dashboards created by me"
 msgstr ""
 
 msgid "AnalyticsDashboards|Date range"
@@ -11109,9 +11091,6 @@ msgstr ""
 msgid "AnalyticsDashboards|Expand %{name}"
 msgstr ""
 
-msgid "AnalyticsDashboards|Failed to create dashboard. Please try again."
-msgstr ""
-
 msgid "AnalyticsDashboards|Failed to load dashboard. Please try again."
 msgstr ""
 
@@ -11127,19 +11106,16 @@ msgstr ""
 msgid "AnalyticsDashboards|Failed to update dashboard. Please try again."
 msgstr ""
 
-msgid "AnalyticsDashboards|Keep your teams aligned around the metrics that matter most."
+msgid "AnalyticsDashboards|GitLab Analytics"
+msgstr ""
+
+msgid "AnalyticsDashboards|Keep your teams aligned around the metrics that matter most"
 msgstr ""
 
 msgid "AnalyticsDashboards|More actions for %{name}"
 msgstr ""
 
 msgid "AnalyticsDashboards|More information about %{title}"
-msgstr ""
-
-msgid "AnalyticsDashboards|New dashboard"
-msgstr ""
-
-msgid "AnalyticsDashboards|Next"
 msgstr ""
 
 msgid "AnalyticsDashboards|No dashboards found"
@@ -12268,7 +12244,16 @@ msgstr[1] ""
 msgid "ArtifactRegistry|%{artifactType} for %{digest}"
 msgstr ""
 
+msgid "ArtifactRegistry|%{count} of %{cap}"
+msgstr ""
+
 msgid "ArtifactRegistry|%{date} by %{user}"
+msgstr ""
+
+msgid "ArtifactRegistry|%{format} repositories"
+msgstr ""
+
+msgid "ArtifactRegistry|%{name} moved to position %{position} of %{total}."
 msgstr ""
 
 msgid "ArtifactRegistry|%{tab} tab for manifest %{digest} of %{name}."
@@ -12310,6 +12295,9 @@ msgstr ""
 msgid "ArtifactRegistry|A virtual registry acts as a single access point that routes requests across one or more hosted and remote repositories. %{linkStart}More information%{linkEnd}"
 msgstr ""
 
+msgid "ArtifactRegistry|A virtual repository combines other repositories behind one endpoint. It resolves artifacts from an ordered list of upstream repositories."
+msgstr ""
+
 msgid "ArtifactRegistry|Access is limited to members with explicit permissions only."
 msgstr ""
 
@@ -12320,6 +12308,9 @@ msgid "ArtifactRegistry|Activation"
 msgstr ""
 
 msgid "ArtifactRegistry|Active since"
+msgstr ""
+
+msgid "ArtifactRegistry|Add repository"
 msgstr ""
 
 msgid "ArtifactRegistry|Add the dependency to your %{codeStart}build.gradle%{codeEnd} file:"
@@ -12353,6 +12344,9 @@ msgid "ArtifactRegistry|All formats"
 msgstr ""
 
 msgid "ArtifactRegistry|All tags"
+msgstr ""
+
+msgid "ArtifactRegistry|All upstream repositories removed. The list is empty."
 msgstr ""
 
 msgid "ArtifactRegistry|Ancestor ID must be a valid UUIDv7."
@@ -12599,6 +12593,9 @@ msgstr[1] ""
 msgid "ArtifactRegistry|Downloads"
 msgstr ""
 
+msgid "ArtifactRegistry|Edit %{name}"
+msgstr ""
+
 msgid "ArtifactRegistry|Edit hosted repository"
 msgstr ""
 
@@ -12609,6 +12606,9 @@ msgid "ArtifactRegistry|Edit remote repository"
 msgstr ""
 
 msgid "ArtifactRegistry|Edit repository"
+msgstr ""
+
+msgid "ArtifactRegistry|Edit virtual repository"
 msgstr ""
 
 msgid "ArtifactRegistry|Enable Artifact Registry"
@@ -12799,6 +12799,18 @@ msgstr[1] ""
 msgid "ArtifactRegistry|More actions for %{name}"
 msgstr ""
 
+msgid "ArtifactRegistry|Move %{name} down"
+msgstr ""
+
+msgid "ArtifactRegistry|Move %{name} up"
+msgstr ""
+
+msgid "ArtifactRegistry|Move to end of list"
+msgstr ""
+
+msgid "ArtifactRegistry|Move to start of list"
+msgstr ""
+
 msgid "ArtifactRegistry|Must be between %{min} and %{max} characters."
 msgstr ""
 
@@ -12826,6 +12838,9 @@ msgstr ""
 msgid "ArtifactRegistry|New repository"
 msgstr ""
 
+msgid "ArtifactRegistry|New virtual repository"
+msgstr ""
+
 msgid "ArtifactRegistry|No connection information available."
 msgstr ""
 
@@ -12839,6 +12854,9 @@ msgid "ArtifactRegistry|No packages have been cached yet."
 msgstr ""
 
 msgid "ArtifactRegistry|No repositories added to this virtual repository yet"
+msgstr ""
+
+msgid "ArtifactRegistry|No repositories added yet. Select %{addLabel} to add a source."
 msgstr ""
 
 msgid "ArtifactRegistry|No repositories match your filters."
@@ -12992,6 +13010,9 @@ msgstr ""
 msgid "ArtifactRegistry|Remote repository"
 msgstr ""
 
+msgid "ArtifactRegistry|Remove %{name}"
+msgstr ""
+
 msgid "ArtifactRegistry|Repositories"
 msgstr ""
 
@@ -13028,6 +13049,9 @@ msgid "ArtifactRegistry|Repository was successfully updated."
 msgstr ""
 
 msgid "ArtifactRegistry|Required only if the upstream registry is private or rate-limited. Credentials are stored encrypted."
+msgstr ""
+
+msgid "ArtifactRegistry|Resolution order updated: %{names}."
 msgstr ""
 
 msgid "ArtifactRegistry|Resource ID must be a valid UUIDv7."
@@ -13118,6 +13142,9 @@ msgid "ArtifactRegistry|The Artifact Registry service is unavailable. Please try
 msgstr ""
 
 msgid "ArtifactRegistry|The format cannot be changed after the repository is created."
+msgstr ""
+
+msgid "ArtifactRegistry|The format cannot be changed after the repository is created. Upstream repositories must use the same format."
 msgstr ""
 
 msgid "ArtifactRegistry|The registry handle will appear in the following areas:"
@@ -13226,6 +13253,9 @@ msgid "ArtifactRegistry|Upstream URL"
 msgstr ""
 
 msgid "ArtifactRegistry|Upstream responded with %{status}"
+msgstr ""
+
+msgid "ArtifactRegistry|Use the arrow buttons to reorder repositories. Artifacts are resolved from top to bottom."
 msgstr ""
 
 msgid "ArtifactRegistry|Username"
@@ -35008,9 +35038,6 @@ msgid "Error creating vulnerability finding: %{errors}"
 msgstr ""
 
 msgid "Error deleting the value stream"
-msgstr ""
-
-msgid "Error fetching branches"
 msgstr ""
 
 msgid "Error fetching burnup chart data"
@@ -75438,6 +75465,9 @@ msgid "SecurityOrchestration|This project"
 msgstr ""
 
 msgid "SecurityOrchestration|This rule is active as soon as it appears in the rules list, and always denies packages flagged by the malicious packages data feed - it cannot be switched to an allow list. To turn it off, remove this rule using the button on the right."
+msgstr ""
+
+msgid "SecurityOrchestration|This rule is an allow list. New license rules can only deny; to change this rule back to a deny list, edit the policy YAML directly."
 msgstr ""
 
 msgid "SecurityOrchestration|This schedule uses a format rule mode cannot display, like a range, step, or minute offset. The YAML is valid and the policy still runs. Switch to YAML mode to change the schedule."

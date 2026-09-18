@@ -263,6 +263,17 @@ describe('GlqlFacade', () => {
       expect(oldResolver.exists()).toBe(false);
       expect(findResolver().exists()).toBe(true);
     });
+
+    it('remounts the resolver when the query changes', async () => {
+      const oldResolver = findResolver();
+
+      await wrapper.setProps({ queryYaml: 'assignee = "bar"' });
+      await nextTick();
+
+      expect(oldResolver.exists()).toBe(false);
+      expect(findResolver().exists()).toBe(true);
+      expect(findResolver().props('glqlQuery')).toBe('assignee = "bar"');
+    });
   });
 
   describe('when the query results in a timeout (503) error', () => {

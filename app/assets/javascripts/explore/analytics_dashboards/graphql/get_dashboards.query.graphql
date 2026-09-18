@@ -1,8 +1,8 @@
 #import "~/graphql_shared/fragments/user.fragment.graphql"
 
 # @feature_category: custom_dashboards_foundation
-query getDashboards($search: String, $scope: CustomDashboardScope = ALL, $createdById: UserID) {
-  customDashboards(search: $search, scope: $scope, createdById: $createdById) {
+query getDashboards($scope: CustomDashboardScope = ALL, $createdById: UserID) {
+  customDashboards(scope: $scope, createdById: $createdById) {
     nodes {
       id
       name

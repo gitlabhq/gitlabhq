@@ -425,7 +425,11 @@ class Commit
     "revert-#{short_id}"
   end
 
-  def cherry_pick_branch_name
+  # Generates a cherry-pick branch name unique to the repository where the branch will be created.
+  #
+  # @param repository [Repository] Repository used to determine branch-name uniqueness
+  # @return [String]
+  def cherry_pick_branch_name(repository: self.repository)
     repository.next_branch("cherry-pick-#{short_id}", mild: true)
   end
 

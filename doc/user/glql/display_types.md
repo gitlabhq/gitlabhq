@@ -682,7 +682,20 @@ sort: totalCount desc
 
 ## Pagination support
 
+{{< history >}}
+
+- Automatic pagination for analytics mode visualizations [introduced](https://gitlab.com/gitlab-org/glql/-/work_items/170) in GitLab 19.5.
+
+{{< /history >}}
+
 Display types available in any mode display the first page of results and provide a **Load more**
 action to fetch additional pages. For more information, see [pagination](_index.md#pagination).
 
-Analytics mode visualizations don't support pagination. They render all aggregated results at once.
+Analytics mode aggregated visualizations such as charts and stats don't provide a **Load more**
+action. They fetch every page of aggregated results automatically, up to a maximum of 1,000 rows.
+
+If your query returns more than 1,000 aggregated rows, the visualization shows the first 1,000 rows.
+To see all your data, add filters to the query or group by fewer dimensions.
+
+To show a single page instead, set `limit` in the block. The visualization then shows at most that
+many rows, up to a maximum of 100.

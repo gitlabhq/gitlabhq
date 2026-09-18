@@ -14,16 +14,32 @@ export const DISPLAY_TYPES = {
   DIVERGING_BAR_CHART: 'divergingBarChart',
 };
 
-// Display types that opt into the page-size default and the load-more UI.
-// Anything not in this set renders without pagination — appropriate for
-// aggregated views (charts) where paginating the underlying buckets would
-// produce a partial picture. An explicit `limit:` in the GLQL block is
-// always honored; non-paginated types simply skip the default page size.
-export const PAGINATED_DISPLAY_TYPES_WITH_DEFAULT_LIMIT = new Set([
-  DISPLAY_TYPES.LIST,
-  DISPLAY_TYPES.ORDERED_LIST,
-  DISPLAY_TYPES.TABLE,
-]);
+// Shows one page and offers Load more for the rest. An explicit `limit:` sets the page size,
+// otherwise DEFAULT_PAGE_SIZE applies.
+export const PAGINATION_LOAD_MORE = 'load-more';
+
+// Fetches page after page before rendering, up to MAX_AUTO_PAGINATED_ROWS, because a partial
+// set of aggregated rows draws a complete-looking but wrong picture. With an explicit `limit:`
+// a single page of that size is fetched instead, with no way to load more.
+export const PAGINATION_AUTO = 'auto';
+
+// Every display type names its strategy, so a new one has to pick rather than inherit.
+export const PAGINATION_BY_DISPLAY_TYPE = {
+  [DISPLAY_TYPES.LIST]: PAGINATION_LOAD_MORE,
+  [DISPLAY_TYPES.ORDERED_LIST]: PAGINATION_LOAD_MORE,
+  [DISPLAY_TYPES.TABLE]: PAGINATION_LOAD_MORE,
+  [DISPLAY_TYPES.STAT]: PAGINATION_AUTO,
+  [DISPLAY_TYPES.COLUMN_CHART]: PAGINATION_AUTO,
+  [DISPLAY_TYPES.LINE_CHART]: PAGINATION_AUTO,
+  [DISPLAY_TYPES.BAR_CHART]: PAGINATION_AUTO,
+  [DISPLAY_TYPES.BAR_LIST]: PAGINATION_AUTO,
+  [DISPLAY_TYPES.AREA_CHART]: PAGINATION_AUTO,
+  [DISPLAY_TYPES.HEAT_MAP]: PAGINATION_AUTO,
+  [DISPLAY_TYPES.DIVERGING_BAR_CHART]: PAGINATION_AUTO,
+};
+
+export const AGGREGATED_AUTO_PAGE_SIZE = 100;
+export const MAX_AUTO_PAGINATED_ROWS = 1000;
 
 export const DEFAULT_DISPLAY_TYPE = DISPLAY_TYPES.LIST;
 export const MODE_STANDARD = 'standard';

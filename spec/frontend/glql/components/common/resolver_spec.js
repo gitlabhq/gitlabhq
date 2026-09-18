@@ -10,7 +10,13 @@ import Pagination from '~/glql/components/common/pagination.vue';
 import { mountExtended } from 'helpers/vue_test_utils_helper';
 import waitForPromises from 'helpers/wait_for_promises';
 import { useMockInternalEventsTracking } from 'helpers/tracking_internal_events_helper';
-import { MOCK_ISSUES, MOCK_ISSUES_PAGE_2, MOCK_FIELDS } from '../../mock_data';
+import {
+  MOCK_AGGREGATED_FIELDS_ONE_DIM_ONE_METRIC,
+  MOCK_AGGREGATED_PAGES,
+  MOCK_ISSUES,
+  MOCK_ISSUES_PAGE_2,
+  MOCK_FIELDS,
+} from '../../mock_data';
 
 jest.mock('~/sentry/sentry_browser_wrapper');
 jest.mock('~/glql/core/parser');
@@ -104,19 +110,6 @@ describe('Resolver', () => {
       await waitForPromises();
 
       expect(parse).toHaveBeenCalledWith('assignee = "foo"', { group: 'gitlab-org' });
-    });
-
-    it('re-runs the query when the scope changes', async () => {
-      createWrapper({ scope: { group: 'gitlab-org' } });
-      await waitForPromises();
-
-      expect(parse).toHaveBeenCalledTimes(1);
-
-      await wrapper.setProps({ scope: { group: 'gitlab-com' } });
-      await waitForPromises();
-
-      expect(parse).toHaveBeenCalledTimes(2);
-      expect(parse).toHaveBeenLastCalledWith('assignee = "foo"', { group: 'gitlab-com' });
     });
   });
 
@@ -390,6 +383,20 @@ describe('Resolver', () => {
       });
     });
 
+    it('skips the comparison when the main result outgrows a single page', async () => {
+      mockParse();
+      execute.mockImplementation((query) =>
+        Promise.resolve(isComparison(query) ? PREVIOUS : { ...CURRENT, count: 500 }),
+      );
+      transform.mockImplementation(identity);
+
+      createWrapper({ glqlQuery: GLQL_QUERY, comparison: { query: COMPARISON_QUERY } });
+      await waitForPromises();
+
+      expect(execute.mock.calls.map(([query]) => query)).toEqual(['query {}']);
+      expect(findPresenter().props('comparisonData')).toBeNull();
+    });
+
     it('renders both results through the presenter', async () => {
       await setup();
 
@@ -425,26 +432,6 @@ describe('Resolver', () => {
       expectEmittedChanges([
         { loading: true },
         { loading: false, data: CURRENT, comparisonData: PREVIOUS },
-      ]);
-    });
-
-    it('runs the new comparison query when the queries change together', async () => {
-      const nextQuery =
-        'type = AiUsageEvent and timestamp >= "2026-08-30" and timestamp <= "2026-09-05"';
-      const nextComparisonQuery =
-        'type = AiUsageEvent and timestamp >= "2026-08-23" and timestamp <= "2026-08-29"';
-      await setup();
-      parse.mockClear();
-
-      await wrapper.setProps({
-        glqlQuery: nextQuery,
-        comparison: { query: nextComparisonQuery },
-      });
-      await waitForPromises();
-
-      expect(parse.mock.calls).toEqual([
-        [nextQuery, SCOPE],
-        [nextComparisonQuery, SCOPE],
       ]);
     });
 
@@ -569,7 +556,7 @@ describe('Resolver', () => {
   describe('per-display-type pagination behaviour', () => {
     // Setting totalCount higher than the loaded nodes is what makes the
     // resolver think "more data exists". hasNextPage only flips to true when
-    // the display type *also* opts into pagination via PAGINATED_DISPLAY_TYPES_WITH_DEFAULT_LIMIT.
+    // the display type *also* maps to load-more in PAGINATION_BY_DISPLAY_TYPE.
     const TOTAL_COUNT_WITH_MORE_DATA = MOCK_ISSUES.nodes.length + 30;
 
     const parseOutputFor = ({ display, limit = null }) => ({
@@ -689,6 +676,181 @@ describe('Resolver', () => {
         await setup({ display });
 
         expect(lastEmittedChange().hasNextPage).toBe(true);
+      });
+    });
+  });
+  describe('auto-pagination for aggregated displays', () => {
+    const CHART_PAGE_SIZE = 100;
+    let cursorsRequested;
+
+    const mockParseOutput = ({ display, limit = null }) => ({
+      ...MOCK_PARSE_OUTPUT,
+      config: { display, ...(limit != null && { limit }) },
+      fields: MOCK_AGGREGATED_FIELDS_ONE_DIM_ONE_METRIC,
+      mode: 'analytics',
+      variables: {
+        limit: { value: null, type: 'Int' },
+        after: { value: null, type: 'String' },
+        before: { value: null, type: 'String' },
+      },
+    });
+
+    const setup = async ({ display = 'columnChart', limit = null, pages, respond }) => {
+      parse.mockResolvedValue(mockParseOutput({ display, limit }));
+      transform.mockImplementation(identity);
+
+      // `variables` is mutated in place, so cursors are captured per request, not read back.
+      cursorsRequested = [];
+      execute.mockReset();
+      execute.mockImplementation((_query, variables) => {
+        cursorsRequested.push(variables.after.value);
+        const page = cursorsRequested.length - 1;
+        return respond ? respond(page) : Promise.resolve(pages[Math.min(page, pages.length - 1)]);
+      });
+
+      createWrapper();
+      await waitForPromises();
+    };
+
+    const lastEmittedChange = () => wrapper.emitted('change').slice(-1)[0][0];
+
+    describe('when every page is reachable', () => {
+      beforeEach(() => setup({ pages: MOCK_AGGREGATED_PAGES }));
+
+      it('requests a full page for each page in turn, advancing the cursor', () => {
+        expect(cursorsRequested).toEqual([null, 'cursor-1', 'cursor-2']);
+        expect(execute).toHaveBeenLastCalledWith(
+          expect.anything(),
+          expect.objectContaining({ limit: { value: CHART_PAGE_SIZE, type: 'Int' } }),
+        );
+      });
+
+      it('renders every aggregated row in order and reports no truncation', () => {
+        expect(findPresenter().props('data').nodes).toEqual([
+          { language: 'ruby', totalCount: 10 },
+          { language: 'js', totalCount: 9 },
+          { language: 'go', totalCount: 8 },
+          { language: 'rust', totalCount: 7 },
+          { language: 'python', totalCount: 6 },
+        ]);
+        expect(lastEmittedChange().resultsTruncated).toBe(false);
+      });
+
+      it('emits change once for the whole fetch rather than once per page', () => {
+        expect(wrapper.emitted('change')).toHaveLength(2);
+        expect(wrapper.emitted('change')[0][0]).toMatchObject({ loading: true });
+        expect(wrapper.emitted('change')[1][0]).toMatchObject({ loading: false });
+      });
+    });
+
+    it('stops at the row cap and reports the results as truncated', async () => {
+      await setup({
+        respond: (page) =>
+          Promise.resolve({
+            count: 5000,
+            pageInfo: { endCursor: `cursor-${page + 1}`, hasNextPage: true },
+            nodes: new Array(CHART_PAGE_SIZE).fill({ language: 'ruby', totalCount: 1 }),
+          }),
+      });
+
+      expect(execute).toHaveBeenCalledTimes(10);
+      expect(findPresenter().props('data').nodes).toHaveLength(1000);
+      expect(lastEmittedChange().resultsTruncated).toBe(true);
+    });
+
+    it('stops when the backend reports no further page, whatever the count says', async () => {
+      await setup({
+        pages: [
+          {
+            count: 500,
+            pageInfo: { endCursor: 'cursor-1', hasNextPage: false },
+            nodes: MOCK_AGGREGATED_PAGES[0].nodes,
+          },
+        ],
+      });
+
+      expect(execute).toHaveBeenCalledTimes(1);
+      expect(lastEmittedChange().resultsTruncated).toBe(true);
+    });
+
+    it('stops at the request cap when pages come back empty', async () => {
+      await setup({
+        respond: (page) =>
+          Promise.resolve({
+            count: 500,
+            pageInfo: { endCursor: `cursor-${page + 1}`, hasNextPage: true },
+            nodes: page === 0 ? MOCK_AGGREGATED_PAGES[0].nodes : [],
+          }),
+      });
+
+      expect(execute).toHaveBeenCalledTimes(11);
+      expect(findPresenter().props('data').nodes).toEqual(MOCK_AGGREGATED_PAGES[0].nodes);
+    });
+
+    it('stops when the response carries no cursor to advance to', async () => {
+      await setup({ pages: [{ count: 5, nodes: MOCK_AGGREGATED_PAGES[0].nodes }] });
+
+      expect(execute).toHaveBeenCalledTimes(1);
+      expect(lastEmittedChange().resultsTruncated).toBe(true);
+    });
+
+    it('does not paginate when the GLQL block sets an explicit limit', async () => {
+      await setup({ limit: 2, pages: MOCK_AGGREGATED_PAGES });
+
+      expect(execute).toHaveBeenCalledTimes(1);
+      expect(lastEmittedChange().resultsTruncated).toBe(false);
+    });
+
+    it('does not paginate a table display, which offers load-more instead', async () => {
+      await setup({
+        display: 'table',
+        pages: [
+          { count: 5, pageInfo: { endCursor: 'cursor-1', hasNextPage: true }, ...MOCK_ISSUES },
+        ],
+      });
+
+      expect(execute).toHaveBeenCalledTimes(1);
+      expect(findPagination().exists()).toBe(true);
+    });
+
+    it('stops paginating once the component is destroyed', async () => {
+      let finishSecondPage;
+      await setup({
+        respond: (page) =>
+          page === 1
+            ? new Promise((resolve) => {
+                finishSecondPage = resolve;
+              })
+            : Promise.resolve(MOCK_AGGREGATED_PAGES[Math.min(page, 2)]),
+      });
+
+      wrapper.destroy();
+      finishSecondPage(MOCK_AGGREGATED_PAGES[1]);
+      await waitForPromises();
+
+      expect(execute).toHaveBeenCalledTimes(2);
+    });
+
+    describe('when a continuation page fails', () => {
+      beforeEach(() =>
+        setup({
+          respond: (page) =>
+            page === 0
+              ? Promise.resolve(MOCK_AGGREGATED_PAGES[0])
+              : Promise.reject(new Error('execute error')),
+        }),
+      );
+
+      it('keeps the pages already loaded', () => {
+        expect(findPresenter().props('data').nodes).toEqual(MOCK_AGGREGATED_PAGES[0].nodes);
+      });
+
+      it('reports the results as truncated without surfacing an error', () => {
+        expect(lastEmittedChange()).toMatchObject({ resultsTruncated: true, error: undefined });
+      });
+
+      it('reports the failure to Sentry', () => {
+        expect(Sentry.captureException).toHaveBeenCalledWith(new Error('execute error'));
       });
     });
   });

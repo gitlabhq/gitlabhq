@@ -56,6 +56,11 @@ export default {
 
       return { query: this.options.comparisonQuery, metric: this.options.trendMetric };
     },
+    // The resolver does not re-query on prop changes. Remounting it discards the old instance
+    // along with its in-flight requests, so a superseded result can never arrive here.
+    resolverKey() {
+      return `${this.isProject}|${this.namespace}|${this.data}`;
+    },
     // Null, not an empty object, so the resolver falls back to deriving the namespace from the URL.
     scope() {
       if (!this.namespace) return null;
@@ -67,8 +72,7 @@ export default {
     data() {
       this.resolverData = undefined;
     },
-    // Also clears the empty state. Leaving it up keeps the resolver unmounted, and an unmounted
-    // resolver can never run its own scope watcher to re-query the new namespace.
+    // Also clears the empty state, so the resolver remounts under the new key.
     scope() {
       this.resolverData = undefined;
     },
@@ -123,6 +127,7 @@ export default {
     <glql-resolver
       v-else
       ref="resolver"
+      :key="resolverKey"
       :glql-query="data"
       :comparison="comparison"
       :scope="scope"

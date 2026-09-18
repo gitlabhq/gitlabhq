@@ -19,8 +19,8 @@ title: Fine-grained personal access tokens
 
 {{< /history >}}
 
-Fine-grained personal access tokens are scoped to only access the specific resources and permissions
-you define. When creating the token, you define the following attributes:
+Fine-grained personal access tokens are scoped to the resources and permissions you define. When
+creating the token, you define the following attributes:
 
 - Resources: A collection of API operations. Resources are grouped into larger boundaries (
   `Group and project`, `User`, and `Global`).
@@ -50,6 +50,17 @@ To create a fine-grained personal access token:
 
 A personal access token is displayed. Save the personal access token somewhere safe. After you leave
 or refresh the page, you cannot view it again.
+
+## How fine-grained tokens authorize each request
+
+Every API request made with a fine-grained personal access token passes two checks. Both of the
+following must be true:
+
+- The token has a permission for the operation, on the resource in the request path.
+- You, as the token owner, can perform that operation.
+
+The token check controls which API operations the token can call, and on which resource. After that
+check passes, your own access decides whether the operation is allowed.
 
 ## Impersonate users with sudo
 

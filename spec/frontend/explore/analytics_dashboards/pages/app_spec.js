@@ -27,7 +27,6 @@ describe('ExploreAnalyticsDashboards', () => {
   const createWrapper = () => {
     shallowMountExtended(App, {
       router,
-      propsData: { currentUserId: 'gid://gitlab/User/1' },
     });
   };
 

@@ -454,21 +454,44 @@ RSpec.describe Projects::CommitController, feature_category: :source_code_manage
           expect(flash[:notice]).to start_with("The commit has been successfully cherry-picked into #{branch}")
           expect(project.commit(branch).message).to include(commit_id)
         end
+
+        it 'uses a branch name that is unique in the upstream project' do
+          commit = forked_project.commit(commit_id)
+          existing_branch = "cherry-pick-#{commit.short_id}"
+          project.repository.add_branch(user, existing_branch, project.commit('feature').id)
+          existing_branch_oid = project.commit(existing_branch).id
+          new_branch = project.repository.next_branch(existing_branch, mild: true)
+
+          expect(forked_project.repository.branch_exists?(existing_branch)).to be(false)
+
+          send_request
+
+          aggregate_failures do
+            expect(project.commit(existing_branch).id).to eq(existing_branch_oid)
+            expect(response).to redirect_to merge_request_url(project, new_branch)
+            expect(flash[:notice]).to start_with("The commit has been successfully cherry-picked into #{new_branch}")
+            expect(project.commit(new_branch)&.message).to include(commit_id)
+          end
+        end
       end
 
       context 'when a user cannot push to upstream project' do
         let(:create_merge_request) { true }
+        let(:branch) { forked_project.commit(commit_id).cherry_pick_branch_name }
 
         before do
+          project.repository.add_branch(user, branch, project.commit('feature').id)
           project.add_reporter(user)
         end
 
         it 'cherry picks a commit to the fork' do
-          branch = forked_project.commit(commit_id).cherry_pick_branch_name
+          upstream_branch_oid = project.commit(branch).id
+
           send_request
 
           expect(response).to redirect_to merge_request_url(forked_project, branch)
           expect(flash[:notice]).to start_with("The commit has been successfully cherry-picked into #{branch}")
+          expect(project.commit(branch).id).to eq(upstream_branch_oid)
           expect(project.commit('feature').message).not_to include(commit_id)
           expect(forked_project.commit(branch).message).to include(commit_id)
         end

@@ -123,9 +123,6 @@ module API
           present build, with: Entities::Ci::RuntimeEnvironmentKey
         end
 
-        # TODO: We should use `present_disk_file!` and leave this implementation for backward compatibility (when build trace
-        #       is saved in the DB instead of file). But before that, we need to consider how to replace the value of
-        #       `runners_token` with some mask (like `xxxxxx`) when sending trace file directly by workhorse.
         desc 'Get a trace of a specific job of a project' do
           detail 'Retrieves a log file for a job.'
           success code: 200, model: Entities::Ci::Job
@@ -153,21 +150,25 @@ module API
 
           authorize_read_build_trace!(build) if build
 
-          header 'Content-Disposition', "infile; filename=\"#{build.id}.log\""
-          content_type 'text/plain'
-          env['api.format'] = :binary
+          range_requested = params[:byte_offset] || params[:byte_limit]
 
-          trace = if params[:byte_offset] || params[:byte_limit]
-                    byte_offset = params[:byte_offset] || 0
-                    byte_limit = params[:byte_limit]
+          if !range_requested && send_archived_trace_via_workhorse?(build)
+            send_archived_trace_via_workhorse!(build)
+          else
+            set_trace_response_headers!(build)
 
-                    build.trace.raw_range(byte_offset: byte_offset, byte_limit: byte_limit)
-                  else
-                    build.trace.raw
-                  end
+            trace = if range_requested
+                      byte_offset = params[:byte_offset] || 0
+                      byte_limit = params[:byte_limit]
 
-          # The trace can be nil but body method expects a string as an argument.
-          body trace || ''
+                      build.trace.raw_range(byte_offset: byte_offset, byte_limit: byte_limit)
+                    else
+                      build.trace.raw
+                    end
+
+            # The trace can be nil but body method expects a string as an argument.
+            body trace || ''
+          end
         end
 
         desc 'Cancel a job' do
@@ -392,6 +393,49 @@ module API
       end
 
       helpers do
+        def set_trace_response_headers!(build)
+          header 'Content-Disposition', trace_content_disposition(build)
+          content_type 'text/plain'
+          env['api.format'] = :binary
+        end
+
+        def trace_content_disposition(build)
+          "infile; filename=\"#{build.id}.log\""
+        end
+
+        # Only archived logs qualify: live logs are assembled from chunks in Rails.
+        def send_archived_trace_via_workhorse?(build)
+          Feature.enabled?(:ci_job_trace_api_archived_log_via_workhorse, build.project, type: :beta) && build.trace.archived?
+        end
+
+        # Not present_disk_file!/present_carrierwave_file!: both replace the
+        # Content-Disposition this endpoint has always sent. Object storage sets
+        # its own Content-Type, so the send-url branch pins both headers.
+        def send_archived_trace_via_workhorse!(build)
+          trace_artifact = build.job_artifacts_trace
+          file = trace_artifact.file
+
+          # Before any response header, so a rejected request gets a plain 403.
+          verify_workhorse_api! unless file.file_storage?
+
+          set_trace_response_headers!(build)
+          apply_etag_or_suppress_rack_etag!(nil)
+
+          # Grape routes HEAD to this block; without this, Workhorse would fetch
+          # the whole object only to discard the body.
+          if request.head?
+            header 'Content-Length', trace_artifact.size.to_s
+            body ''
+          elsif file.file_storage?
+            sendfile file.path
+          else
+            response_headers = { 'Content-Type' => 'text/plain', 'Content-Disposition' => trace_content_disposition(build) }
+            header(*Gitlab::Workhorse.send_url(file.url, response_headers: response_headers))
+            status :ok
+            body ''
+          end
+        end
+
         # rubocop: disable CodeReuse/ActiveRecord
         def filter_builds_by_scope(builds, scope)
           return builds if scope.nil? || scope.empty?

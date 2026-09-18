@@ -6,9 +6,23 @@ module CreatesCommit
   include SafeFormatHelper
   include ActionView::Helpers::SanitizeHelper
 
+  # Creates a commit in the requested project or the current user's fork.
+  #
+  # @param service [Class] Commit service to execute
+  # @param success_path [String, Proc] Path used after a successful commit
+  # @param failure_path [String, Proc] Path used after a failed commit
+  # @param failure_view [Symbol, nil] View rendered after a failed commit
+  # @param success_notice [String, Proc, nil] Flash notice used after a successful commit
+  # @param target_project [Project, nil] Requested commit destination
+  # @param branch_name_generator [Proc, nil] Generates a branch name for the candidate destination before its
+  #   branch-specific permission check, and again if the destination falls back to the current user's fork
   # rubocop:disable Gitlab/ModuleWithInstanceVariables
-  def create_commit(service, success_path:, failure_path:, failure_view: nil, success_notice: nil, target_project: nil)
+  def create_commit(
+    service, success_path:, failure_path:, failure_view: nil, success_notice: nil, target_project: nil,
+    branch_name_generator: nil
+  )
     target_project ||= @project
+    @branch_name = branch_name_from_generator(branch_name_generator, target_project, fallback: @branch_name)
 
     if user_access(target_project).can_push_to_branch?(branch_name_or_ref)
       @project_to_commit_into = target_project
@@ -17,6 +31,9 @@ module CreatesCommit
     else
       @project_to_commit_into = current_user.fork_of(target_project)
       @different_project = true
+      @branch_name = branch_name_from_generator(
+        branch_name_generator, @project_to_commit_into, fallback: @branch_name
+      )
       @branch_name ||= generated_branch_name(@project_to_commit_into)
     end
 
@@ -34,6 +51,7 @@ module CreatesCommit
 
     if result[:status] == :success
       success_path = final_success_path(success_path, target_project)
+      success_notice = success_notice.call if success_notice.respond_to?(:call)
 
       update_flash_notice(success_notice, success_path)
 
@@ -76,6 +94,18 @@ module CreatesCommit
   end
 
   private
+
+  # Resolves a destination-specific branch name without changing the fallback when no destination is available.
+  #
+  # @param generator [Proc, nil] Destination-aware branch-name generator
+  # @param project [Project, nil] Candidate commit destination
+  # @param fallback [String, nil] Branch name retained when generation is unavailable
+  # @return [String, nil]
+  def branch_name_from_generator(generator, project, fallback: nil)
+    return fallback unless generator && project
+
+    generator.call(project)
+  end
 
   def flash_message(result, project, branch_name, commit_params)
     if result[:status] == :error && commit_params[:revert]

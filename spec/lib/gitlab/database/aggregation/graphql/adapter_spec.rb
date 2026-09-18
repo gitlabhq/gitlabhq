@@ -30,6 +30,12 @@ RSpec.describe Gitlab::Database::Aggregation::Graphql::Adapter, feature_category
       )
     end
 
+    let(:exact_not_match_filter) do
+      Gitlab::Database::Aggregation::ClickHouse::ExactNotMatchFilter.new(
+        :status, :string, description: 'Exclude by status'
+      )
+    end
+
     let(:range_filter) do
       Gitlab::Database::Aggregation::ClickHouse::RangeFilter.new(
         :created_at, :datetime, description: 'Filter by creation date'
@@ -50,15 +56,27 @@ RSpec.describe Gitlab::Database::Aggregation::Graphql::Adapter, feature_category
 
     context 'with multiple filters' do
       it 'yields arguments for all filters' do
-        filters = [exact_match_filter, range_filter]
+        filters = [exact_match_filter, exact_not_match_filter, range_filter]
         arguments = []
 
         described_class.each_filter_argument(filters) do |identifier, type, options|
           arguments << [identifier, type, options]
         end
 
-        expect(arguments.size).to eq(3)
-        expect(arguments.map(&:first)).to eq([:status, :created_at_from, :created_at_to])
+        expect(arguments.size).to eq(4)
+        expect(arguments.map(&:first)).to eq([:status, :status_not, :created_at_from, :created_at_to])
+      end
+
+      it 'exposes exact_not_match filters as a list argument with the `_not` suffix' do
+        arguments = []
+
+        described_class.each_filter_argument([exact_not_match_filter]) do |identifier, type, options|
+          arguments << [identifier, type, options]
+        end
+
+        expect(arguments).to eq([
+          [:status_not, [::GraphQL::Types::String], { required: false, description: 'Exclude by status' }]
+        ])
       end
     end
 
@@ -101,6 +119,7 @@ RSpec.describe Gitlab::Database::Aggregation::Graphql::Adapter, feature_category
 
   describe '.arguments_to_filters' do
     let(:exact_match) { Gitlab::Database::Aggregation::ClickHouse::ExactMatchFilter.new(:status, :string) }
+    let(:exact_not_match) { Gitlab::Database::Aggregation::ClickHouse::ExactNotMatchFilter.new(:status, :string) }
     let(:metric_exact_match) do
       Gitlab::Database::Aggregation::ClickHouse::MetricExactMatchFilter.new(:session_count, :integer)
     end
@@ -109,11 +128,12 @@ RSpec.describe Gitlab::Database::Aggregation::Graphql::Adapter, feature_category
       Gitlab::Database::Aggregation::ClickHouse::MetricRangeFilter.new(:session_duration, :integer)
     end
 
-    let(:filters) { [exact_match, metric_exact_match, metric_range] }
+    let(:filters) { [exact_match, exact_not_match, metric_exact_match, metric_range] }
 
     it 'builds filter configurations for the provided filters' do
       arguments = {
         status: %w[active],
+        status_not: %w[archived],
         session_count: [1, 2, 3],
         session_duration_from: 10,
         session_duration_to: 20
@@ -122,6 +142,7 @@ RSpec.describe Gitlab::Database::Aggregation::Graphql::Adapter, feature_category
       expect(described_class.arguments_to_filters(filters, arguments))
         .to contain_exactly(
           { identifier: :status, values: %w[active] },
+          { identifier: :status_not, values: %w[archived] },
           { identifier: :session_count, values: [1, 2, 3] },
           { identifier: :session_duration, values: 10..20 }
         )

@@ -191389,6 +191389,26 @@
                   "deprecationReason": "Status: Experiment. Introduced in GitLab 18.9."
                 },
                 {
+                  "name": "securityAttributesFilters",
+                  "description": "Filter vulnerabilities by the security attributes of their projects. Up to 20 filters. To use this argument, you must have advanced search configured and advanced vulnerability management set up. Available on group queries only, when the `vulnerability_report_security_attributes_filter` feature flag is enabled. Introduced in GitLab 19.5: Status: Experiment.",
+                  "type": {
+                    "kind": "LIST",
+                    "name": null,
+                    "ofType": {
+                      "kind": "NON_NULL",
+                      "name": null,
+                      "ofType": {
+                        "kind": "INPUT_OBJECT",
+                        "name": "AttributeFilterInput",
+                        "ofType": null
+                      }
+                    }
+                  },
+                  "defaultValue": null,
+                  "isDeprecated": true,
+                  "deprecationReason": "Status: Experiment. Introduced in GitLab 19.5."
+                },
+                {
                   "name": "after",
                   "description": "Returns the elements in the list that come after the specified cursor.",
                   "type": {
@@ -192237,6 +192257,26 @@
                   "defaultValue": null,
                   "isDeprecated": true,
                   "deprecationReason": "Status: Experiment. Introduced in GitLab 19.0."
+                },
+                {
+                  "name": "securityAttributesFilters",
+                  "description": "Filter vulnerabilities by the security attributes of their projects. Up to 20 filters. To use this argument, you must have advanced search configured and advanced vulnerability management set up. Available on group queries only, when the `vulnerability_report_security_attributes_filter` feature flag is enabled. Introduced in GitLab 19.5: Status: Experiment.",
+                  "type": {
+                    "kind": "LIST",
+                    "name": null,
+                    "ofType": {
+                      "kind": "NON_NULL",
+                      "name": null,
+                      "ofType": {
+                        "kind": "INPUT_OBJECT",
+                        "name": "AttributeFilterInput",
+                        "ofType": null
+                      }
+                    }
+                  },
+                  "defaultValue": null,
+                  "isDeprecated": true,
+                  "deprecationReason": "Status: Experiment. Introduced in GitLab 19.5."
                 }
               ],
               "type": {
@@ -209478,6 +209518,26 @@
                   "defaultValue": null,
                   "isDeprecated": true,
                   "deprecationReason": "Status: Experiment. Introduced in GitLab 19.0."
+                },
+                {
+                  "name": "securityAttributesFilters",
+                  "description": "Filter vulnerabilities by the security attributes of their projects. Up to 20 filters. To use this argument, you must have advanced search configured and advanced vulnerability management set up. Available on group queries only, when the `vulnerability_report_security_attributes_filter` feature flag is enabled. Introduced in GitLab 19.5: Status: Experiment.",
+                  "type": {
+                    "kind": "LIST",
+                    "name": null,
+                    "ofType": {
+                      "kind": "NON_NULL",
+                      "name": null,
+                      "ofType": {
+                        "kind": "INPUT_OBJECT",
+                        "name": "AttributeFilterInput",
+                        "ofType": null
+                      }
+                    }
+                  },
+                  "defaultValue": null,
+                  "isDeprecated": true,
+                  "deprecationReason": "Status: Experiment. Introduced in GitLab 19.5."
                 }
               ],
               "type": {
@@ -339164,6 +339224,26 @@
                   "deprecationReason": "Status: Experiment. Introduced in GitLab 18.9."
                 },
                 {
+                  "name": "securityAttributesFilters",
+                  "description": "Filter vulnerabilities by the security attributes of their projects. Up to 20 filters. To use this argument, you must have advanced search configured and advanced vulnerability management set up. Available on group queries only, when the `vulnerability_report_security_attributes_filter` feature flag is enabled. Introduced in GitLab 19.5: Status: Experiment.",
+                  "type": {
+                    "kind": "LIST",
+                    "name": null,
+                    "ofType": {
+                      "kind": "NON_NULL",
+                      "name": null,
+                      "ofType": {
+                        "kind": "INPUT_OBJECT",
+                        "name": "AttributeFilterInput",
+                        "ofType": null
+                      }
+                    }
+                  },
+                  "defaultValue": null,
+                  "isDeprecated": true,
+                  "deprecationReason": "Status: Experiment. Introduced in GitLab 19.5."
+                },
+                {
                   "name": "after",
                   "description": "Returns the elements in the list that come after the specified cursor.",
                   "type": {
@@ -340036,6 +340116,26 @@
                   "defaultValue": null,
                   "isDeprecated": true,
                   "deprecationReason": "Status: Experiment. Introduced in GitLab 19.0."
+                },
+                {
+                  "name": "securityAttributesFilters",
+                  "description": "Filter vulnerabilities by the security attributes of their projects. Up to 20 filters. To use this argument, you must have advanced search configured and advanced vulnerability management set up. Available on group queries only, when the `vulnerability_report_security_attributes_filter` feature flag is enabled. Introduced in GitLab 19.5: Status: Experiment.",
+                  "type": {
+                    "kind": "LIST",
+                    "name": null,
+                    "ofType": {
+                      "kind": "NON_NULL",
+                      "name": null,
+                      "ofType": {
+                        "kind": "INPUT_OBJECT",
+                        "name": "AttributeFilterInput",
+                        "ofType": null
+                      }
+                    }
+                  },
+                  "defaultValue": null,
+                  "isDeprecated": true,
+                  "deprecationReason": "Status: Experiment. Introduced in GitLab 19.5."
                 }
               ],
               "type": {
@@ -369296,6 +369396,26 @@
                   "defaultValue": null,
                   "isDeprecated": true,
                   "deprecationReason": "Status: Experiment. Introduced in GitLab 18.9."
+                },
+                {
+                  "name": "securityAttributesFilters",
+                  "description": "Filter vulnerabilities by the security attributes of their projects. Up to 20 filters. To use this argument, you must have advanced search configured and advanced vulnerability management set up. Available on group queries only, when the `vulnerability_report_security_attributes_filter` feature flag is enabled. Introduced in GitLab 19.5: Status: Experiment.",
+                  "type": {
+                    "kind": "LIST",
+                    "name": null,
+                    "ofType": {
+                      "kind": "NON_NULL",
+                      "name": null,
+                      "ofType": {
+                        "kind": "INPUT_OBJECT",
+                        "name": "AttributeFilterInput",
+                        "ofType": null
+                      }
+                    }
+                  },
+                  "defaultValue": null,
+                  "isDeprecated": true,
+                  "deprecationReason": "Status: Experiment. Introduced in GitLab 19.5."
                 },
                 {
                   "name": "after",

@@ -40,7 +40,8 @@ module Authz
       end
 
       rule { granular_pat & cond(:"anonymous_can_#{permission}") }.enable permission
-      rule { granular_token & cond(permission) & member }.enable permission
+
+      rule { granular_token & cond(permission) }.enable permission
     end
   end
 end

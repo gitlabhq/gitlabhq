@@ -99,7 +99,7 @@ module Gitlab
                 from = arguments[:"#{definition.identifier}_from"]
                 to = arguments[:"#{definition.identifier}_to"]
                 result[:values] = from..to if from || to
-              else # ExactMatchFilter / MetricExactMatchFilter
+              else
                 result[:values] = arguments[definition.identifier]
               end
               result
@@ -115,7 +115,7 @@ module Gitlab
                   [:"#{filter.identifier}_to",
                     graphql_type(filter.type),
                     { required: false, description: "#{filter_description(filter)}. End of the range." }]]
-              else # ExactMatchFilter / MetricExactMatchFilter
+              else
                 [[filter.identifier,
                   [graphql_type(filter.type)],
                   { required: false, description: filter_description(filter) }]]

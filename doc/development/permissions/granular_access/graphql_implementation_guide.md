@@ -465,7 +465,7 @@ The `boundary_object` must match the `boundary_type`:
 | `:user` | `:user` |
 | `:instance` | `:instance` |
 
-**Important:** When the boundary object is a `:project` or `:group`, the `user` must be a member of that namespace (project or group) for the authorization to be granted.
+**Important:** When the boundary object is a `:project` or `:group`, the `user` must have access to that namespace (project or group) for the authorization to be granted.
 
 **What These Tests Verify:**
 

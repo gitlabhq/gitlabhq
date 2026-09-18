@@ -84,7 +84,8 @@ RSpec.describe API::Admin::SshCertificates, feature_category: :source_code_manag
           'id' => certificate.id,
           'title' => certificate.title,
           'key' => certificate.key,
-          'created_at' => certificate.created_at.as_json
+          'created_at' => certificate.created_at.as_json,
+          'fingerprint' => Gitlab::SSHPublicKey.new(certificate.key).fingerprint_sha256
         )
       end
 
@@ -135,6 +136,7 @@ RSpec.describe API::Admin::SshCertificates, feature_category: :source_code_manag
         'id' => certificate.id,
         'title' => title,
         'key' => key,
+        'fingerprint' => Gitlab::SSHPublicKey.new(key).fingerprint_sha256,
         'created_at' => certificate.created_at.as_json
       )
       expect(certificate.fingerprint).to eq(

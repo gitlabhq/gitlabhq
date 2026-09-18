@@ -578,6 +578,18 @@ RSpec.describe Gitlab::SSHPublicKey, :lib, feature_category: :system_access, fip
     end
   end
 
+  describe '.with_sha256_prefix' do
+    it 'prefixes an unprefixed fingerprint' do
+      fingerprint = 'GdtgO0eHbwLB+mK47zblkoXujkqKRZjgMQrHH6Kks3E'
+
+      expect(described_class.with_sha256_prefix(fingerprint)).to eq("SHA256:#{fingerprint}")
+    end
+
+    it 'returns nil for a missing fingerprint' do
+      expect(described_class.with_sha256_prefix(nil)).to be_nil
+    end
+  end
+
   describe '#fingerprint_sha256' do
     subject { public_key.fingerprint_sha256 }
 

@@ -387,10 +387,13 @@ RSpec.describe API::GroupPackages, feature_category: :package_registry do
 
           subject(:list_request) { get api(url, personal_access_token: pat) }
 
-          it 'returns 404 because the read_group check rejects non-members' do
+          # Matches the non-token request above: the user reaches the group through
+          # the subproject, so an in-scope token must not be treated differently.
+          it 'returns 200 with the subproject package' do
             list_request
 
-            expect(response).to have_gitlab_http_status(:not_found)
+            expect(response).to have_gitlab_http_status(:ok)
+            expect(json_response.pluck('id')).to contain_exactly(package.id)
           end
         end
       end

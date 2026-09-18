@@ -21,39 +21,6 @@ RSpec.describe Gitlab::Database::Aggregation::ClickHouse::ExactMatchFilter, :cli
     end
   end
 
-  let(:session1) do # finished & long
-    created_at = DateTime.parse('2025-03-01 00:00:00 UTC')
-    { session_id: 1, user_id: 1, project_id: 1, namespace_path: '1/2/', flow_type: 'chat', environment: 'prod',
-      session_year: 2025,
-      created_event_at: created_at,
-      started_event_at: created_at + 1.second,
-      finished_event_at: created_at + 10.minutes,
-      resumed_event_at: created_at + 9.minutes }
-  end
-
-  let(:session2) do # finished & short
-    created_at = DateTime.parse('2025-03-02 00:00:00 UTC')
-    { session_id: 2, user_id: 2, project_id: 1, namespace_path: '1/2/', flow_type: 'chat', environment: 'prod',
-      session_year: 2025,
-      created_event_at: created_at,
-      started_event_at: created_at + 1.second,
-      finished_event_at: created_at + 3.minutes,
-      resumed_event_at: created_at + 2.minutes }
-  end
-
-  let(:session3) do # not finished yet. in progress
-    created_at = DateTime.parse('2025-03-04 00:00:00 UTC')
-    { session_id: 3, user_id: 1, project_id: 1, namespace_path: '1/2/', flow_type: 'code_review', environment: 'prod',
-      session_year: 2025,
-      created_event_at: created_at,
-      started_event_at: created_at + 1.second,
-      resumed_event_at: created_at + 9.minutes }
-  end
-
-  let(:all_data_rows) do
-    [session1, session2, session3]
-  end
-
   it 'applies single value filter' do
     request = Gitlab::Database::Aggregation::Request.new(
       filters: [{ identifier: :session_id, values: [1] }],

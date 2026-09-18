@@ -17,10 +17,6 @@ describe('Explore analytics dashboards index', () => {
     );
   };
 
-  beforeEach(() => {
-    window.gon = { current_user_id: 1 };
-  });
-
   afterEach(() => {
     resetHTMLFixture();
   });

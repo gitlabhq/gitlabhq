@@ -623,6 +623,28 @@ Filters rows by exact value match. Supports filtering on regular columns or merg
 | `max_size` | Integer | No | Maximum number of values allowed in filter |
 | `description` | String | No | Human-readable description |
 
+#### `exact_not_match` filter (ClickHouse only)
+
+Filters out rows whose value matches any of the given values. It works like `exact_match`, but generates a `NOT IN` condition instead of `IN`. This filter is only available for ClickHouse engines.
+
+```ruby
+filters do
+  exact_match :status, :string
+  exact_not_match :status, :string
+end
+```
+
+In a request, use `{ identifier: :status_not, values: ['skipped'] }`. In GraphQL, the identifier becomes a list argument named in camelCase, for example `statusNot`.
+
+| Option | Type | Required | Description |
+|--------|------|----------|-------------|
+| `name` | Symbol | Yes | Column name to filter |
+| `type` | Symbol | Yes | Data type of filter values |
+| `expression` | Proc | No | Custom expression instead of column |
+| `merge_column` | Boolean | No | If `true`, applies filter using `HAVING` instead of `WHERE` |
+| `max_size` | Integer | No | Maximum number of values allowed in filter |
+| `description` | String | No | Human-readable description |
+
 #### `range` filter
 
 Filters rows by value range using `BETWEEN`. Supports filtering on regular columns or merge columns.
@@ -1096,7 +1118,7 @@ query IssueAnalytics($projectId: ID!) {
 
 Filter arguments are split across the two levels based on when the filter is applied:
 
-- **Non-metric filters** (those defined with `exact_match`, `range`, or `descendants`) appear on the outer field (e.g. `issueAnalytics`).
+- **Non-metric filters** (those defined with `exact_match`, `exact_not_match`, `range`, or `descendants`) appear on the outer field (e.g. `issueAnalytics`).
 - **Metric filters** (those defined with `metric_exact_match` or `metric_range`) appear on the
   inner `aggregated` field.
 

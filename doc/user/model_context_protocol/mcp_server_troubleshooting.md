@@ -20,7 +20,7 @@ When working with the GitLab MCP server, you might encounter the following issue
 
 You might get this error when you start the GitLab MCP server. You might also get this error
 when `POST /api/v4/mcp` or `GET /api/v4/mcp` returns `403 Forbidden` after the OAuth flow
-completes, with the body `{"message": "403 Forbidden - MCP server disabled"}`.
+completes.
 
 In GitLab 19.4 and earlier, the same issue returns `404 Not Found` instead. Both status codes
 share the same causes.
@@ -28,13 +28,15 @@ share the same causes.
 To resolve this issue, make sure you meet the
 [prerequisites for the GitLab MCP server](mcp_server.md#prerequisites).
 
-To find the cause, check the [`mcp.log`](../../administration/logs/_index.md#mcplog) file
-for the `denial_reason` field:
+To find the cause, read the message in the response body. Administrators can also check the
+`denial_reason` field in the [`mcp.log`](../../administration/logs/_index.md#mcplog) file:
 
-- `instance_setting_disabled`: On GitLab Self-Managed, the MCP server is
+- `MCP server disabled for this instance` (`denial_reason`: `instance_setting_disabled`):
+  On GitLab Self-Managed, an administrator
   [turned off](../../administration/settings/visibility_and_access_controls.md#allow-access-to-the-mcp-server)
-  for the instance.
-- `no_enabled_namespace`: On GitLab.com, no top-level group you belong to has the MCP server
+  the MCP server for the instance.
+- `MCP server not enabled for any of your groups` (`denial_reason`: `no_enabled_namespace`):
+  On GitLab.com, no top-level group you belong to has the MCP server
   [turned on](../group/access_and_permissions.md#allow-access-to-the-mcp-server).
 
 > [!note]
