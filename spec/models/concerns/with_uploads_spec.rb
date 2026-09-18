@@ -179,20 +179,6 @@ RSpec.describe WithUploads, feature_category: :groups_and_projects do
       end
     end
 
-    context 'when sweep_orphaned_mounted_uploads is disabled' do
-      before do
-        stub_feature_flags(sweep_orphaned_mounted_uploads: false)
-        FileUtils.rm_f(user.avatar.path)
-      end
-
-      it 'leaves the row carrierwave skipped behind', :aggregate_failures do
-        expect(DeleteStoredFilesWorker).not_to receive(:perform_async)
-
-        expect { user.destroy! }.not_to change { mounted_uploads.count }
-        expect(mounted_uploads.count).to eq(1)
-      end
-    end
-
     context 'when the file is still present' do
       it 'leaves the cleanup to carrierwave', :aggregate_failures do
         absolute_path = user.avatar.path

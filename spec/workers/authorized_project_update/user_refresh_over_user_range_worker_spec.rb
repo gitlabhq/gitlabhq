@@ -3,22 +3,39 @@
 require 'spec_helper'
 
 RSpec.describe AuthorizedProjectUpdate::UserRefreshOverUserRangeWorker, feature_category: :permissions do
+  subject(:execute_worker) { described_class.new.perform(start_user_id, end_user_id) }
+
   let_it_be(:project) { create(:project) }
 
   let(:user) { project.namespace.owner }
   let(:start_user_id) { user.id }
   let(:end_user_id) { start_user_id }
-  let(:execute_worker) { subject.perform(start_user_id, end_user_id) }
+
+  before do
+    stub_feature_flags(do_not_run_safety_net_auth_refresh_jobs: false)
+  end
 
   it_behaves_like 'worker with data consistency', described_class, data_consistency: :delayed
 
   describe '#perform' do
-    context 'when checking if project authorization update is required' do
-      it 'checks if a project_authorization refresh is needed for each of the users' do
+    context 'when the feature flag `do_not_run_safety_net_auth_refresh_jobs` is disabled' do
+      it 'runs the safety net refresh' do
         User.where(id: start_user_id..end_user_id).find_each do |user|
           expect(AuthorizedProjectUpdate::FindRecordsDueForRefreshService).to(
             receive(:new).with(user).and_call_original)
         end
+
+        execute_worker
+      end
+    end
+
+    context 'when the feature flag `do_not_run_safety_net_auth_refresh_jobs` is enabled' do
+      before do
+        stub_feature_flags(do_not_run_safety_net_auth_refresh_jobs: true)
+      end
+
+      it 'skips the safety net refresh' do
+        expect(AuthorizedProjectUpdate::FindRecordsDueForRefreshService).not_to receive(:new)
 
         execute_worker
       end

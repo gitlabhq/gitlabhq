@@ -334,7 +334,6 @@
   - ".gitlab/ci/build-images.gitlab-ci.yml"
   - ".gitlab/ci/qa.gitlab-ci.yml"
   - ".gitlab/ci/test-on-omnibus/*.yml"
-  - ".gitlab/ci/test-on-gdk/*.yml"
   - ".gitlab/ci/version.yml"
 
 .gitaly-patterns: &gitaly-patterns
@@ -738,7 +737,7 @@
 .qa-patterns: &qa-patterns
   - ".dockerignore"
   - "{,jh/}qa/**/*"
-  - ".gitlab/ci/{test-on-omnibus,qa-common,test-on-cng,test-on-gdk,performance-on-cng}/*"
+  - ".gitlab/ci/{test-on-omnibus,qa-common,test-on-cng,performance-on-cng}/*"
 
 # See https://gitlab.com/gitlab-org/quality/engineering-productivity/team/-/issues/470
 # for the reasons why we only match those patterns.

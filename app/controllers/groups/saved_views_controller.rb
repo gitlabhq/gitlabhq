@@ -15,7 +15,6 @@ module Groups
       push_frontend_feature_flag(:planning_view_boards, current_user)
       push_frontend_feature_flag(:planning_view_table, current_user)
       push_frontend_feature_flag(:work_items_realtime, current_user)
-      push_frontend_feature_flag(:work_items_task_list_toggle, group.root_ancestor)
     end
 
     def show

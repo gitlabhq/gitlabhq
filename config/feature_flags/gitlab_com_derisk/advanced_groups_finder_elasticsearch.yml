@@ -1,0 +1,9 @@
+---
+name: advanced_groups_finder_elasticsearch
+description: Serve group listings and searches from Elasticsearch instead of PostgreSQL
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/254568
+rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/333635
+milestone: '19.5'
+group: group::global search
+type: gitlab_com_derisk
+default_enabled: false

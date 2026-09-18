@@ -37,7 +37,7 @@ class UserProjectAccessChangedService
   private
 
   def execute_low_priority_refresh
-    return if Feature.enabled?(:do_not_run_safety_net_auth_refresh_jobs)
+    return if Feature.enabled?(:do_not_run_safety_net_auth_refresh_jobs, :instance)
 
     # The actor is the user being refreshed, so each user is on exactly one path.
     db_queued_user_ids, legacy_user_ids = @user_ids.partition do |user_id|

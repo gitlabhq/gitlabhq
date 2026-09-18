@@ -34,6 +34,27 @@ const sevenRows = () => ({
   })),
 });
 
+// Two quantiles of one duration metric, aliased the way a block writes them.
+const QUANTILE_FIELDS = [
+  {
+    key: 'Median',
+    field: 'timeToMergeQuantile',
+    label: 'Median',
+    type: 'metric',
+    parameters: { quantile: 0.5 },
+  },
+  {
+    key: 'p75',
+    field: 'timeToMergeQuantile',
+    label: 'p75',
+    type: 'metric',
+    parameters: { quantile: 0.75 },
+  },
+];
+
+// 9h 24m and 23h, in milliseconds.
+const QUANTILES = { nodes: [{ Median: 33840, p75: 82800 }] };
+
 describe('BarListPresenter', () => {
   let wrapper;
 
@@ -109,6 +130,73 @@ describe('BarListPresenter', () => {
         { name: 'ruby', value: 0, share: 0 },
         { name: 'go', value: 0, share: 0 },
       ]);
+    });
+  });
+
+  describe('when the query has no dimension', () => {
+    beforeEach(() => createComponent({ fields: QUANTILE_FIELDS, data: QUANTILES }));
+
+    it('renders one row per metric, in query order', () => {
+      expect(rows().map(({ name }) => name)).toEqual(['Median', 'p75']);
+    });
+
+    // A count would read 33,840 here; the metric's own unit makes it a duration.
+    it('labels each row in the unit of its metric', () => {
+      expect(rows().map(({ label }) => label)).toEqual(['9h 24m', '23h']);
+    });
+
+    it('keeps the value and gives each row its share of the summed values', () => {
+      expect(rows()).toMatchObject([
+        { value: 33840, share: (33840 / 116640) * 100 },
+        { value: 82800, share: (82800 / 116640) * 100 },
+      ]);
+    });
+
+    it('names an unaliased row after the metric and its parameter', () => {
+      createComponent({
+        fields: [
+          {
+            key: 'timeToMergeQuantile',
+            label: 'Time to merge quantile',
+            type: 'metric',
+            parameters: { quantile: 0.5 },
+          },
+        ],
+        data: { nodes: [{ timeToMergeQuantile: 33840 }] },
+      });
+
+      expect(rows()).toMatchObject([{ name: 'Time to merge quantile (0.5)', label: '9h 24m' }]);
+    });
+
+    // A quantile over no merge requests comes back null. That is no data rather than a duration
+    // of 0s, so the row keeps an empty bar and shows the same dash the stat presenter does.
+    it('shows no value for a metric the response left null', () => {
+      createComponent({ fields: QUANTILE_FIELDS, data: { nodes: [{ Median: null }] } });
+
+      expect(rows()).toEqual([
+        { name: 'Median', value: 0, share: 0, label: '\u2014' },
+        { name: 'p75', value: 0, share: 0, label: '\u2014' },
+      ]);
+    });
+
+    it('renders the skeleton loader and no chart while loading', () => {
+      createComponent({ fields: QUANTILE_FIELDS, data: QUANTILES, loading: true });
+
+      expect(findSkeletonLoader().exists()).toBe(true);
+      expect(findChart().exists()).toBe(false);
+    });
+
+    it('renders no chart for a display option it does not know', () => {
+      createComponent({
+        fields: QUANTILE_FIELDS,
+        data: QUANTILES,
+        displayConfig: { color: 'green' },
+      });
+
+      expect(findChart().exists()).toBe(false);
+      expect(findEmittedErrorMessage()).toBe(
+        'Unknown `color`: `green`. Supported values are: `orange`, `blue`, `gray`.',
+      );
     });
   });
 
@@ -213,6 +301,12 @@ describe('BarListPresenter', () => {
 
       expect(findChart().props('color')).toBe('blue');
     });
+
+    it('forwards gray from the display config', () => {
+      createComponent({ displayConfig: { color: 'gray' } });
+
+      expect(findChart().props('color')).toBe('gray');
+    });
   });
 
   describe('scale', () => {
@@ -239,7 +333,7 @@ describe('BarListPresenter', () => {
     it.each`
       key              | value        | supportedValues
       ${'valueLabels'} | ${'percent'} | ${'`shareAndValue`, `value`'}
-      ${'color'}       | ${'green'}   | ${'`orange`, `blue`'}
+      ${'color'}       | ${'green'}   | ${'`orange`, `blue`, `gray`'}
       ${'scale'}       | ${'largest'} | ${'`total`, `max`, `log`'}
     `('emits an error naming $key and renders no chart', ({ key, value, supportedValues }) => {
       createComponent({ displayConfig: { [key]: value } });
@@ -254,7 +348,7 @@ describe('BarListPresenter', () => {
       createComponent({ fields: [], displayConfig: { color: 'green' } });
 
       expect(findEmittedErrorMessage()).toBe(
-        'Unknown `color`: `green`. Supported values are: `orange`, `blue`.',
+        'Unknown `color`: `green`. Supported values are: `orange`, `blue`, `gray`.',
       );
     });
   });

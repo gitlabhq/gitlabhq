@@ -72,7 +72,6 @@ Gitlab/JsonSafeParse:
     - 'app/services/audit_events/processor.rb'
     - 'app/services/ide/schemas_config_service.rb'
     - 'app/services/packages/composer/composer_json_service.rb'
-    - 'app/services/packages/npm/process_temporary_package_file_service.rb'
     - 'app/services/projects/lfs_pointers/lfs_download_link_list_service.rb'
     - 'app/validators/json_schema_validator.rb'
     - 'app/workers/gitlab/version/version_check_cron_worker.rb'

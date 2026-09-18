@@ -5,6 +5,10 @@ require 'spec_helper'
 RSpec.describe Authz::ReverifyProjectAuthorizationsCronWorker, feature_category: :permissions do
   let(:worker) { described_class.new }
 
+  before do
+    stub_feature_flags(do_not_run_safety_net_auth_refresh_jobs: false)
+  end
+
   it_behaves_like 'an idempotent worker'
 
   it 'has the `until_executing` deduplicate strategy' do
@@ -81,6 +85,20 @@ RSpec.describe Authz::ReverifyProjectAuthorizationsCronWorker, feature_category:
         expect { perform }
           .to change { authorized? }.from(false).to(true)
           .and change { queued? }.from(true).to(false)
+      end
+    end
+
+    context 'when the feature flag `do_not_run_safety_net_auth_refresh_jobs` is enabled' do
+      let_it_be(:reverification) do
+        create(:project_authorization_reverification, :to_be_processed, user: user)
+      end
+
+      before do
+        stub_feature_flags(do_not_run_safety_net_auth_refresh_jobs: true)
+      end
+
+      it 'leaves the record pending' do
+        expect { perform }.not_to change { reverification.reload.status }.from('pending')
       end
     end
 

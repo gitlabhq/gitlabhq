@@ -463088,15 +463088,15 @@
             },
             {
               "name": "taskListToggle",
-              "description": "Toggle a single task list item instead of replacing the full description. Only supported when updating a work item, and only when the `work_items_task_list_toggle` feature flag is enabled. Introduced in GitLab 19.2: Status: Experiment.",
+              "description": "Toggle a single task list item instead of replacing the full description. Only supported when updating a work item.",
               "type": {
                 "kind": "INPUT_OBJECT",
                 "name": "TaskListToggleInput",
                 "ofType": null
               },
               "defaultValue": null,
-              "isDeprecated": true,
-              "deprecationReason": "Status: Experiment. Introduced in GitLab 19.2."
+              "isDeprecated": false,
+              "deprecationReason": null
             }
           ],
           "interfaces": null,

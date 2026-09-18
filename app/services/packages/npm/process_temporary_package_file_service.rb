@@ -21,7 +21,7 @@ module Packages
       end
 
       def execute
-        json_doc = Gitlab::Json.parse(package_file.file.read)
+        json_doc = Gitlab::Json::SafeParser.parse(package_file.file.read, max_json_size_bytes: max_json_size_bytes)
         json_doc = json_doc.with_indifferent_access
 
         response = if params[:deprecate]
@@ -38,6 +38,10 @@ module Packages
       private
 
       attr_reader :package_file
+
+      def max_json_size_bytes
+        project.actual_limits.npm_max_file_size
+      end
 
       def handle_deprecation(json_doc)
         return ERRORS[:missing_versions] unless json_doc.key?('versions')

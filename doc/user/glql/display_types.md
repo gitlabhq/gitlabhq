@@ -325,6 +325,7 @@ sort: acceptedCount asc
 
 - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/work_items/623319) in GitLab 19.4.
 - `valueLabels`, `color`, and `scale` display options [introduced](https://gitlab.com/gitlab-org/gitlab/-/work_items/628026) in GitLab 19.5.
+- Rows from metrics for a query without a dimension, and `color: gray`, [introduced](https://gitlab.com/gitlab-org/gitlab/-/work_items/628932) in GitLab 19.5.
 
 {{< /history >}}
 
@@ -336,14 +337,23 @@ while a bar chart answers "how do these compare to each other".
 A bar list requires:
 
 - Analytics mode, set with `mode: analytics`.
-- Exactly one `dimensions` value.
-- Exactly one metric, set with the `metrics` parameter.
+- At most one `dimensions` value.
+- At least one metric, set with the `metrics` parameter.
 
-More than one dimension causes a validation error in the view. A query that names more than
-one metric renders the first and ignores the rest.
+With one dimension, each row is a value of that dimension and the first metric sets the row's
+value. A query that names more than one metric renders the first and ignores the rest. Rows sort
+in descending order by value. More than one dimension causes a validation error in the view.
 
-Rows sort in descending order by value. Each row's label shows a value past the end of the bar,
-controlled by `valueLabels` under `displayConfig`:
+Without a dimension, each metric becomes a row, in the order the query names them. Use this to
+compare percentiles or counts of a single measure, such as the median and 75th percentile time to
+merge. Each row's value is formatted in the unit of its metric, so a duration reads as `9h 24m`
+rather than as a number of milliseconds. These rows keep their order, are never folded into an
+`Other` row, and show no change against the previous period. A metric with no value in the
+response, such as a percentile over no merge requests, renders as an em dash (`—`) with an empty
+bar.
+
+Each row's label shows a value past the end of the bar, controlled by `valueLabels` under
+`displayConfig`:
 
 - `valueLabels: shareAndValue` is the default. It shows the row's share of the total and a
   compact value, for example `89% · 85.6k`.
@@ -355,6 +365,7 @@ Bar color is set by `color` under `displayConfig`:
 - `color: orange` is the default. It matches the existing look.
 - `color: blue` draws the bars in the same blue the other GLQL charts use for their first
   series, the chart palette's default color.
+- `color: gray` draws neutral gray bars, for a baseline shown next to a colored list.
 
 Bar length is measured against a scale, set by `scale` under `displayConfig`:
 
@@ -427,6 +438,21 @@ mode: analytics
 query: type = AgentPlatformSession and created >= -30d
 dimensions: flowType
 metrics: usersCount
+```
+````
+
+To compare the median and 75th percentile time to merge for merge requests merged in the last
+30 days, with one row per percentile and the longer bar filling the track:
+
+````yaml
+```glql
+display: barList
+displayConfig:
+  valueLabels: value
+  scale: max
+mode: analytics
+query: type = MergeRequest and merged >= -30d
+metrics: timeToMergeQuantile(0.5) as "Median", timeToMergeQuantile(0.75) as "p75"
 ```
 ````
 

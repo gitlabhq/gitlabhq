@@ -3,10 +3,14 @@
 require 'spec_helper'
 
 RSpec.describe AuthorizedProjectUpdate::UserRefreshFromReplicaWorker, feature_category: :permissions do
+  subject(:execute_worker) { described_class.new.perform(user.id) }
+
   let_it_be(:project) { create(:project) }
   let_it_be(:user) { project.namespace.owner }
 
-  let(:execute_worker) { subject.perform(user.id) }
+  before do
+    stub_feature_flags(do_not_run_safety_net_auth_refresh_jobs: false)
+  end
 
   it 'is labeled as low urgency' do
     expect(described_class.get_urgency).to eq(:low)
@@ -26,11 +30,13 @@ RSpec.describe AuthorizedProjectUpdate::UserRefreshFromReplicaWorker, feature_ca
   end
 
   describe '#perform' do
-    it 'checks if a project_authorization refresh is needed for the user' do
-      expect(AuthorizedProjectUpdate::FindRecordsDueForRefreshService).to(
-        receive(:new).with(user).and_call_original)
+    context 'when the feature flag `do_not_run_safety_net_auth_refresh_jobs` is disabled' do
+      it 'runs the safety net refresh' do
+        expect(AuthorizedProjectUpdate::FindRecordsDueForRefreshService).to(
+          receive(:new).with(user).and_call_original)
 
-      execute_worker
+        execute_worker
+      end
     end
 
     context 'when there are project authorization records due for either removal or addition for a specific user' do
@@ -48,6 +54,18 @@ RSpec.describe AuthorizedProjectUpdate::UserRefreshFromReplicaWorker, feature_ca
     context 'when there are no additions or removals to be made to project authorizations for a specific user' do
       it 'does not enqueue a new project authorization update job for the user' do
         expect(AuthorizedProjectUpdate::UserRefreshWithLowUrgencyWorker).not_to receive(:perform_async)
+
+        execute_worker
+      end
+    end
+
+    context 'when the feature flag `do_not_run_safety_net_auth_refresh_jobs` is enabled' do
+      before do
+        stub_feature_flags(do_not_run_safety_net_auth_refresh_jobs: true)
+      end
+
+      it 'skips the safety net refresh' do
+        expect(AuthorizedProjectUpdate::FindRecordsDueForRefreshService).not_to receive(:new)
 
         execute_worker
       end

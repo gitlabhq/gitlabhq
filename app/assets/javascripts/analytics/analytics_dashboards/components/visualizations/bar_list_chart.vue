@@ -98,9 +98,10 @@ export default {
   props: {
     /**
      * Rows to render, in display order:
-     * `[{ name: String, value: Number, share: Number, trend?: { text: String, variant: String } }]`
-     * `share` is a percentage of the whole and sets the bar length. `trend` renders as a pill
-     * after the value label, coloured by its GlBadge `variant` (`success`, `danger`, `neutral`).
+     * `[{ name: String, value: Number, share: Number, label?: String, trend?: { text: String, variant: String } }]`
+     * `share` is a percentage of the whole and sets the bar length. `label` stands in for the
+     * formatted value when the value is not a count, such as a duration. `trend` renders as a
+     * pill after the value label, coloured by its GlBadge `variant` (`success`, `danger`, `neutral`).
      */
     data: {
       type: Array,
@@ -249,16 +250,18 @@ export default {
     },
   },
   methods: {
-    rowLabel({ value, share, trend }) {
-      const label = this.valueOnly ? formatNumber(value) : this.shareAndValueLabel(value, share);
+    rowLabel({ value, share, label: valueLabel, trend }) {
+      const formattedValue =
+        valueLabel ??
+        (this.valueOnly
+          ? formatNumber(value)
+          : formatCountCompact(value, { lowercaseThousands: true }));
+      const label = this.valueOnly
+        ? formattedValue
+        : `${formatNumber(share, { maximumFractionDigits: 1 })}% · ${formattedValue}`;
 
       // ECharts rich text: `{styleName|text}` picks a style from `label.rich`.
       return trend ? `${label}{trendGap|}{${trendStyleName(trend.variant)}|${trend.text}}` : label;
-    },
-    shareAndValueLabel(value, share) {
-      const formattedShare = formatNumber(share, { maximumFractionDigits: 1 });
-
-      return `${formattedShare}% · ${formatCountCompact(value, { lowercaseThousands: true })}`;
     },
   },
 };

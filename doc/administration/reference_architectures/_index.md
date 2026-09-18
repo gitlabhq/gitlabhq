@@ -157,7 +157,13 @@ If you still need HA for fewer users, you can achieve it with an adjusted [3K ar
 
 #### Zero-downtime upgrades
 
-[Zero-downtime upgrades](../../update/zero_downtime.md) are available for standard environments with HA (Cloud Native Hybrid is [not supported](https://gitlab.com/groups/gitlab-org/cloud-native/-/work_items/52)). This allows for an environment to stay up during an upgrade. However, this process is more complex as a result and has some limitations as detailed in the documentation.
+[Zero-downtime upgrades](../../update/zero_downtime.md) are available:
+
+- For standard environments with HA.
+- In GitLab 18.9 and later, also for Cloud Native Hybrid environments.
+ 
+Zero-downtime upgrades allow for an environment to stay up during an upgrade. However, this process is
+more complex as a result and has some limitations that detailed in the documentation.
 
 When going through this process, it's worth noting that there may still be brief moments of downtime when the HA mechanisms take effect.
 

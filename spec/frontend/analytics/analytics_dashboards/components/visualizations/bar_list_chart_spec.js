@@ -1,5 +1,9 @@
 import { GlChart } from '@gitlab/ui/src/charts';
-import { GL_COLOR_DATA_BLUE_500, GL_COLOR_ORANGE_400 } from '@gitlab/ui/src/tokens/build/js/tokens';
+import {
+  GL_COLOR_DATA_BLUE_500,
+  GL_COLOR_NEUTRAL_400,
+  GL_COLOR_ORANGE_400,
+} from '@gitlab/ui/src/tokens/build/js/tokens';
 import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
 import BarListChart from '~/analytics/analytics_dashboards/components/visualizations/bar_list_chart.vue';
 
@@ -85,6 +89,25 @@ describe('BarListChart', () => {
 
     it('renders an empty label for an unknown category', () => {
       expect(labelFor('Nope')).toBe('');
+    });
+
+    describe('when a row carries its own label', () => {
+      const durations = [
+        { name: 'Median', value: 33840000, share: 29, label: '9h 24m' },
+        { name: 'p75', value: 82800000, share: 71, label: '23h' },
+      ];
+
+      it('shows the label in place of the compact value', () => {
+        createWrapper({ data: durations });
+
+        expect(labelFor('Median')).toBe('29% · 9h 24m');
+      });
+
+      it('shows the label alone with value-only labels', () => {
+        createWrapper({ data: durations, valueLabels: 'value' });
+
+        expect(labelFor('p75')).toBe('23h');
+      });
     });
   });
 
@@ -224,6 +247,14 @@ describe('BarListChart', () => {
     // The palette's first colour, so the list matches the other charts' first series.
     it('fills the bars with the chart palette blue', () => {
       expect(firstSeries().itemStyle.color).toBe(GL_COLOR_DATA_BLUE_500);
+    });
+  });
+
+  describe('with gray bars', () => {
+    beforeEach(() => createWrapper({ color: 'gray' }));
+
+    it('fills the bars with the neutral gray', () => {
+      expect(firstSeries().itemStyle.color).toBe(GL_COLOR_NEUTRAL_400);
     });
   });
 

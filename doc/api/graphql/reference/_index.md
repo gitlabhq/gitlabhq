@@ -80128,7 +80128,7 @@ Arguments:
 | Name | Type | Description |
 | ---- | ---- | ----------- |
 | <a id="workitemwidgetdescriptioninput-description"></a>`description` | [`String`](#string) | Description of the work item. |
-| <a id="workitemwidgetdescriptioninput-tasklisttoggle"></a>`taskListToggle` {{< icon name="warning-solid" >}} | [`TaskListToggleInput`](#tasklisttoggleinput) | Introduced in GitLab 19.2. Status: Experiment. Toggle a single task list item instead of replacing the full description. Only supported when updating a work item, and only when the `work_items_task_list_toggle` feature flag is enabled. |
+| <a id="workitemwidgetdescriptioninput-tasklisttoggle"></a>`taskListToggle` | [`TaskListToggleInput`](#tasklisttoggleinput) | Toggle a single task list item instead of replacing the full description. Only supported when updating a work item. |
 
 ### `WorkItemWidgetDevelopmentCreateInput`
 

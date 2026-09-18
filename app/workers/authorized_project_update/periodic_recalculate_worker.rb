@@ -15,6 +15,8 @@ module AuthorizedProjectUpdate
     idempotent!
 
     def perform
+      return if Feature.enabled?(:do_not_run_safety_net_auth_refresh_jobs, :instance)
+
       AuthorizedProjectUpdate::PeriodicRecalculateService.new.execute
     end
   end

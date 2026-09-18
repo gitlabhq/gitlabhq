@@ -1,4 +1,5 @@
 <script>
+import { GlSkeletonLoader } from '@gitlab/ui';
 import { __, s__, sprintf } from '~/locale';
 import BarListChart from '~/analytics/analytics_dashboards/components/visualizations/bar_list_chart.vue';
 import {
@@ -9,9 +10,16 @@ import {
   VALUE_LABELS_DEFAULT,
   VALUE_LABELS_OPTIONS,
 } from '~/analytics/analytics_dashboards/components/visualizations/bar_list_chart_options';
-import { dimensionValue, dimensionLabelFormatter } from '../../utils/chart_data';
+import {
+  dimensionValue,
+  dimensionLabelFormatter,
+  dimensionsOf,
+  labelWithParameter,
+  metricsOf,
+} from '../../utils/chart_data';
+import { valueFormatterFor } from '../../utils/value_format';
 import DimensionRoutedChart from './chart/dimension_routed_chart.vue';
-import { trendPresentationFor } from './utils/stat';
+import { NO_VALUE, trendPresentationFor } from './utils/stat';
 import {
   TREND_PREVIOUS_KEY,
   hasTemporalDimension,
@@ -38,6 +46,7 @@ export default {
   components: {
     BarListChart,
     DimensionRoutedChart,
+    GlSkeletonLoader,
   },
   props: {
     data: {
@@ -76,6 +85,13 @@ export default {
   },
   emits: { error: null },
   computed: {
+    queryMetrics() {
+      return metricsOf(this.fields);
+    },
+    // Without a dimension the query returns a single node, and each metric becomes a row.
+    metricRows() {
+      return dimensionsOf(this.fields).length === 0 && this.queryMetrics.length > 0;
+    },
     maxRows() {
       const maxRows = Number(this.displayConfig.maxRows);
       return Number.isInteger(maxRows) && maxRows > 0 ? maxRows : DEFAULT_MAX_ROWS;
@@ -119,6 +135,24 @@ export default {
     },
   },
   methods: {
+    // One row per metric from the single node, in query order, labelled in the metric's unit so
+    // two quantiles of a duration read as durations rather than counts. A metric the response
+    // left null, such as a quantile over no rows, keeps an empty bar and shows no value.
+    metricRowsFor(metrics) {
+      const node = this.data?.nodes?.[0] ?? {};
+      const rows = metrics.map((metric) => {
+        const value = node[metric.key];
+
+        return {
+          name: labelWithParameter(metric),
+          value: value ?? 0,
+          label: value == null ? NO_VALUE : valueFormatterFor(metric)(value),
+        };
+      });
+      const total = sumOf(rows, 'value');
+
+      return rows.map((row) => ({ ...row, share: total ? (row.value / total) * 100 : 0 }));
+    },
     // Previous-period values, one per node, paired on dimension identity under the same
     // guards as the table's trend column. Null when nothing can be paired.
     previousValuesFor(nodes, dimension, metric) {
@@ -189,7 +223,18 @@ export default {
 </script>
 
 <template>
+  <div v-if="metricRows">
+    <gl-skeleton-loader v-if="loading" />
+    <bar-list-chart
+      v-else-if="!displayConfigError"
+      :data="metricRowsFor(queryMetrics)"
+      :value-labels="valueLabels"
+      :color="color"
+      :scale="scale"
+    />
+  </div>
   <dimension-routed-chart
+    v-else
     display-type="barList"
     :fields="fields"
     :loading="loading"

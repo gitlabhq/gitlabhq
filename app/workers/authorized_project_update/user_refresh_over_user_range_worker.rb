@@ -25,6 +25,8 @@ module AuthorizedProjectUpdate
     idempotent!
 
     def perform(start_user_id, end_user_id)
+      return if Feature.enabled?(:do_not_run_safety_net_auth_refresh_jobs, :instance)
+
       User.where(id: start_user_id..end_user_id).find_each do |user| # rubocop: disable CodeReuse/ActiveRecord
         enqueue_project_authorizations_refresh(user) if project_authorizations_needs_refresh?(user)
       end
