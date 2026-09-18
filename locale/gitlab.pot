@@ -12285,6 +12285,9 @@ msgstr ""
 msgid "ArtifactRegistry|A user can hold only one Artifact Registry role per resource. The following are listed more than once."
 msgstr ""
 
+msgid "ArtifactRegistry|A virtual registry acts as a single access point that routes requests across one or more hosted and remote repositories. %{linkStart}More information%{linkEnd}"
+msgstr ""
+
 msgid "ArtifactRegistry|Access is limited to members with explicit permissions only."
 msgstr ""
 
@@ -12817,6 +12820,9 @@ msgid "ArtifactRegistry|No manifests found for %{name}."
 msgstr ""
 
 msgid "ArtifactRegistry|No packages have been cached yet."
+msgstr ""
+
+msgid "ArtifactRegistry|No repositories added to this virtual repository yet"
 msgstr ""
 
 msgid "ArtifactRegistry|No repositories match your filters."
@@ -31687,9 +31693,6 @@ msgstr ""
 msgid "DuoAgentsPlatform|Action"
 msgstr ""
 
-msgid "DuoAgentsPlatform|Actions"
-msgstr ""
-
 msgid "DuoAgentsPlatform|Add a condition so this %{itemType} knows when to run."
 msgstr ""
 
@@ -31993,9 +31996,6 @@ msgstr ""
 msgid "DuoAgentsPlatform|On an event"
 msgstr ""
 
-msgid "DuoAgentsPlatform|Owner"
-msgstr ""
-
 msgid "DuoAgentsPlatform|Path to configuration file"
 msgstr ""
 
@@ -32191,12 +32191,6 @@ msgstr ""
 msgid "DuoAgentsPlatform|Trigger deleted successfully."
 msgstr ""
 
-msgid "DuoAgentsPlatform|Trigger disabled."
-msgstr ""
-
-msgid "DuoAgentsPlatform|Trigger enabled."
-msgstr ""
-
 msgid "DuoAgentsPlatform|Trigger not found."
 msgstr ""
 
@@ -32222,6 +32216,9 @@ msgid "DuoAgentsPlatform|Triggers run a flow or external agent when defined even
 msgstr ""
 
 msgid "DuoAgentsPlatform|Try GitLab Duo Agent Platform"
+msgstr ""
+
+msgid "DuoAgentsPlatform|Turn trigger on or off: %{description}"
 msgstr ""
 
 msgid "DuoAgentsPlatform|Unknown"

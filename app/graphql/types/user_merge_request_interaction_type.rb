@@ -11,6 +11,8 @@ module Types
     MD
 
     authorize :read_merge_request
+    authorize_granular_token permissions: :read_merge_request,
+      boundary: :project, boundary_type: :project
 
     field :can_merge,
       type: ::GraphQL::Types::Boolean,

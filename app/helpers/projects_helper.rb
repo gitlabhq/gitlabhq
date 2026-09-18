@@ -776,12 +776,6 @@ module ProjectsHelper
     namespace.can_push_initial_commit?(current_user)
   end
 
-  # This function is here to solve rubocop error of line too long.
-  # Need to remove in the cleanup of the security manager feature flag.
-  def localized_security_manager_role_name
-    (::Gitlab::Security::SecurityManagerConfig.enabled? ? _('Security Manager') : nil)
-  end
-
   def localized_access_names
     {
       Gitlab::Access::NO_ACCESS => _('No access'),
@@ -789,11 +783,11 @@ module ProjectsHelper
       Gitlab::Access::GUEST => _('Guest'),
       Gitlab::Access::PLANNER => _('Planner'),
       Gitlab::Access::REPORTER => _('Reporter'),
-      Gitlab::Access::SECURITY_MANAGER => localized_security_manager_role_name,
+      Gitlab::Access::SECURITY_MANAGER => _('Security Manager'),
       Gitlab::Access::DEVELOPER => _('Developer'),
       Gitlab::Access::MAINTAINER => _('Maintainer'),
       Gitlab::Access::OWNER => _('Owner')
-    }.compact
+    }
   end
 
   def configure_oauth_import_message(provider, help_url)

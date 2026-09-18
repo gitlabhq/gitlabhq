@@ -2,6 +2,9 @@
 
 module Users
   class MergeRequestInteraction
+    # The granular token boundary extractor reads the project from the object.
+    delegate :project, to: :merge_request
+
     def initialize(user:, merge_request:, current_user: nil)
       @user = user
       @merge_request = merge_request

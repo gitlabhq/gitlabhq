@@ -317,6 +317,22 @@ during systematic improvement efforts. Each links to detailed guidance in the
   an HTML response would suffice. See
   [Don't request capabilities you don't need](best_practices.md#dont-request-capabilities-you-dont-need).
 
+### Report slow-test improvements
+
+When addressing a slow-test issue:
+
+- Splitting a spec file alone is a readability or organization change, not slow-test
+  remediation.
+  It can accompany a genuine optimization, but it cannot replace one.
+  Per-file reporting thresholds can hide redistributed runtime after a split.
+- In the remediation merge request, report the total runtime across all affected spec
+  files before and after the change.
+  Include sibling files and any files involved in splits or moves.
+  For splits and moves, compare the original files before the change with the
+  resulting files afterward, rather than reporting only the file named in the issue.
+- When splitting a file, list the resulting paths in the closing note on the original
+  issue so the history remains traceable.
+
 ---
 
 [Return to Testing documentation](_index.md)

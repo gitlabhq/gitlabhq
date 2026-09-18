@@ -59,6 +59,55 @@ RSpec.describe 'getting merge request information nested in a project', feature_
     end
   end
 
+  describe 'granular PAT authorization for the merge request interaction' do
+    let_it_be(:reviewer) { create(:user, developer_of: project) }
+
+    before_all do
+      merge_request.merge_request_reviewers.create!(reviewer: reviewer, state: :requested_changes)
+    end
+
+    it_behaves_like 'authorizing granular token permissions for GraphQL',
+      [:read_project, :read_merge_request] do
+      let(:user) { current_user }
+      let(:boundary_object) { project }
+      let(:query) do
+        graphql_query_for(
+          :project,
+          { full_path: project.full_path },
+          query_graphql_field(
+            :merge_request,
+            { iid: merge_request.iid.to_s },
+            'reviewers { nodes { mergeRequestInteraction { reviewState } } }'
+          )
+        )
+      end
+
+      let(:request) { post_graphql(query, token: { personal_access_token: pat }) }
+    end
+
+    it 'returns the review state for a granular token that can read the merge request' do
+      assignable = ->(permission) { ::Authz::PermissionGroups::Assignable.for_permission(permission).first.name }
+      pat = create(:granular_pat, user: current_user, boundary: ::Authz::Boundary.for(project),
+        permissions: [assignable.call(:read_project), assignable.call(:read_merge_request)],
+        additional_scopes: [{ boundary: ::Authz::Boundary.for(:user),
+                              permissions: [assignable.call(:read_user)] }])
+      query = graphql_query_for(
+        :project,
+        { full_path: project.full_path },
+        query_graphql_field(
+          :merge_request,
+          { iid: merge_request.iid.to_s },
+          'reviewers { nodes { mergeRequestInteraction { reviewState } } }'
+        )
+      )
+
+      post_graphql(query, token: { personal_access_token: pat })
+
+      expect(graphql_data_at(:project, :merge_request, :reviewers, :nodes, 0, :merge_request_interaction))
+        .to eq({ 'reviewState' => 'REQUESTED_CHANGES' })
+    end
+  end
+
   it_behaves_like 'a working graphql query' do
     # we exclude Project.pipeline because it needs arguments,
     # codequalityReportsComparer because it is behind a feature flag

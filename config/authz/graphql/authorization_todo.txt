@@ -796,7 +796,6 @@ type:UserCallout
 type:UserDuoStatus
 type:UserGroupCallout
 type:UserMemberRole
-type:UserMergeRequestInteraction
 type:UserNamespaceLinks
 type:UserNamespaceMarkdownPaths
 type:UserNamespaceMetadata

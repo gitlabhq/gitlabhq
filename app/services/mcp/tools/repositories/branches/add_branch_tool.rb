@@ -14,7 +14,10 @@ module Mcp
           }
 
           def build_variables
-            project = find_project!(project_identifier)
+            identifier = project_identifier
+            project = find_project!(identifier)
+
+            validate_numeric_project_id_consistency!(project, identifier) if params[:url].present?
 
             {
               input: {
@@ -48,6 +51,14 @@ module Mcp
             project_id = params[:project_id].to_s
             return if project_id.blank? || project_id.exclude?('/')
             return if project_id == url_path
+
+            raise ArgumentError, "Project mismatch: project_id is '#{project_id}' but url contains '#{url_path}'"
+          end
+
+          def validate_numeric_project_id_consistency!(url_project, url_path)
+            project_id = params[:project_id].to_s
+            return unless Gitlab::ResourceLookup::INTEGER_ID_REGEX.match?(project_id)
+            return if url_project.id == project_id.to_i
 
             raise ArgumentError, "Project mismatch: project_id is '#{project_id}' but url contains '#{url_path}'"
           end

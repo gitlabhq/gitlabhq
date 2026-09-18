@@ -88,6 +88,26 @@ RSpec.describe Mcp::Tools::Repositories::Branches::AddBranchTool, feature_catego
       end
     end
 
+    context 'when url and an inaccessible numeric project_id disagree' do
+      let_it_be(:inaccessible_project) { create(:project, :private) }
+
+      let(:params) do
+        {
+          url: "https://gitlab.example.com/#{project.full_path}",
+          project_id: inaccessible_project.id.to_s,
+          branch: 'my-feature',
+          ref: 'master'
+        }
+      end
+
+      it 'raises an error' do
+        expect { tool.build_variables }.to raise_error(
+          ArgumentError,
+          "Project mismatch: project_id is '#{inaccessible_project.id}' but url contains '#{project.full_path}'"
+        )
+      end
+    end
+
     context 'when url and project_id agree' do
       let(:params) do
         { url: "https://gitlab.example.com/#{project.full_path}", project_id: project.full_path,
@@ -104,6 +124,33 @@ RSpec.describe Mcp::Tools::Repositories::Branches::AddBranchTool, feature_catego
             ref: 'master'
           }
         )
+      end
+    end
+
+    context 'when url and numeric project_id agree' do
+      let(:params) do
+        { url: "https://gitlab.example.com/#{project.full_path}", project_id: project.id.to_s,
+          branch: 'my-feature', ref: 'master' }
+      end
+
+      it 'builds variables using the project' do
+        variables = tool.build_variables
+
+        expect(variables).to eq(
+          input: {
+            projectPath: project.full_path,
+            name: 'my-feature',
+            ref: 'master'
+          }
+        )
+      end
+
+      context 'when project_id has leading zeros' do
+        let(:params) { super().merge(project_id: "0#{project.id}") }
+
+        it 'builds variables using the project' do
+          expect(tool.build_variables.dig(:input, :projectPath)).to eq(project.full_path)
+        end
       end
     end
   end
