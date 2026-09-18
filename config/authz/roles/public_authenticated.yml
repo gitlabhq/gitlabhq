@@ -62,6 +62,7 @@ project:
 group:
   permissions: []
   raw_permissions:
+  - _delete_authored_timelog
   - request_access
   - update_work_item_user_preference
   - upload_file

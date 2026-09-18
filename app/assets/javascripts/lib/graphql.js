@@ -218,14 +218,22 @@ function createApolloClient(resolvers = {}, config = {}) {
     return fetch(stripWhitespaceFromQuery(url, uri), options);
   };
 
+  // Lets a link tag its own request for the logs by appending `context.requestTag` to the query
+  // string — `json.path` has its query string stripped by Lograge, but `json.params` keeps it.
+  const requestUri = (operation) => {
+    const tag = operation.getContext().requestTag;
+    return tag ? `${uri}?${objectToQuery(tag)}` : uri;
+  };
+
   const requestLink = ApolloLink.split(
     (operation) => operation.getContext().batchKey,
     new BatchHttpLink({
       ...httpOptions,
+      uri: requestUri,
       batchKey: (operation) => operation.getContext().batchKey,
       fetch: fetchIntervention,
     }),
-    new HttpLink({ ...httpOptions, fetch: fetchIntervention }),
+    new HttpLink({ ...httpOptions, uri: requestUri, fetch: fetchIntervention }),
   );
 
   const uploadsLink = ApolloLink.split(

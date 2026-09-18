@@ -115,9 +115,29 @@ describe('ExploreAnalyticsDashboardDetails', () => {
     await waitForPromises();
   };
 
-  const findFilterDates = () => {
+  const currentDateRangeParams = () => {
+    const params = new URLSearchParams(window.location.search);
+    return {
+      dateRangeOption: params.get('date_range'),
+      startDate: params.get('start_date'),
+      endDate: params.get('end_date'),
+    };
+  };
+
+  const selectDateRange = async (dateRange) => {
+    findDashboardFilters().vm.$emit('set-date-range', dateRange);
+    await waitForPromises();
+  };
+
+  // Every window asserted here runs between UTC midnights, so the bounds are given as plain
+  // `yyyy-mm-dd` and the helper fills in the time.
+  const expectFilterDates = (start, end) => {
     const { startDate, endDate } = findDashboardLayout().props('filters');
-    return [startDate.toISOString(), endDate.toISOString()];
+
+    expect([startDate.toISOString(), endDate.toISOString()]).toEqual([
+      `${start}T00:00:00.000Z`,
+      `${end}T00:00:00.000Z`,
+    ]);
   };
 
   describe('dashboard filters', () => {
@@ -127,7 +147,7 @@ describe('ExploreAnalyticsDashboardDetails', () => {
     // to match. A panel would otherwise resolve a window the picker does not name.
     it('seeds the dashboard layout filters with the default date range', () => {
       expect(findDashboardLayout().props('filters')).toMatchObject({ dateRangeOption: '30d' });
-      expect(findFilterDates()).toEqual(['2020-06-06T00:00:00.000Z', '2020-07-06T00:00:00.000Z']);
+      expectFilterDates('2020-06-06', '2020-07-06');
     });
 
     describe('when dashboard-filters emits set-scope with a group', () => {
@@ -276,7 +296,7 @@ describe('ExploreAnalyticsDashboardDetails', () => {
       );
 
       expect(findDashboardLayout().props('filters')).toMatchObject({ dateRangeOption: '7d' });
-      expect(findFilterDates()).toEqual(['2020-06-29T00:00:00.000Z', '2020-07-06T00:00:00.000Z']);
+      expectFilterDates('2020-06-29', '2020-07-06');
     });
 
     it('falls back to the last 30 days for an unknown option', async () => {
@@ -404,17 +424,6 @@ describe('ExploreAnalyticsDashboardDetails', () => {
       expect(currentScopeParam()).toBeNull();
     });
 
-    // GlTabs writes `view` straight to history, so the router never sees it. Going through the
-    // router here would rebuild the URL without it and drop the active view.
-    it('leaves the view param alone', async () => {
-      setWindowLocation('?view=1');
-      await createWithFilters();
-
-      await selectScope(mockGroup);
-
-      expect(window.location.search).toBe(`?view=1&scope=${mockGroup.fullPath}`);
-    });
-
     it('adds no history entry, a filter change not being a place to go back to', async () => {
       await createWithFilters();
       const before = window.history.length;
@@ -453,6 +462,234 @@ describe('ExploreAnalyticsDashboardDetails', () => {
       it('starts the remounted picker with no selection', () => {
         expect(findScopePath()).toBe('');
       });
+    });
+  });
+
+  describe('the date range URL params', () => {
+    const configWithDateRange = (dateRange) => ({ panels: [], filters: { dateRange } });
+    const customRange = {
+      dateRangeOption: 'custom',
+      startDate: new Date('2020-05-05T00:00:00.000Z'),
+      endDate: new Date('2020-06-30T00:00:00.000Z'),
+    };
+
+    afterEach(() => setWindowLocation(TEST_HOST));
+
+    describe('on load', () => {
+      it('restores a named option from the params, so a shared URL opens on that range', async () => {
+        setWindowLocation('?date_range=90d');
+
+        await createWithFilters();
+
+        expect(findDashboardLayout().props('filters')).toMatchObject({ dateRangeOption: '90d' });
+        expectFilterDates('2020-04-07', '2020-07-06');
+      });
+
+      it('hands the restored range to the filter bar, so the picker agrees with the URL', async () => {
+        setWindowLocation('?date_range=90d');
+
+        await createWithFilters();
+
+        expect(findDashboardFilters().props('dateRangeFilter')).toMatchObject({
+          dateRangeOption: '90d',
+        });
+      });
+
+      it('restores both bounds of a custom range', async () => {
+        setWindowLocation('?date_range=custom&start_date=2020-05-05&end_date=2020-06-30');
+
+        await createWithFilters();
+
+        expect(findDashboardLayout().props('filters')).toMatchObject({
+          dateRangeOption: 'custom',
+        });
+        expectFilterDates('2020-05-05', '2020-06-30');
+      });
+
+      it('falls back to the configured default when the params name no range', async () => {
+        await createWithFilters(
+          filtersLoaderStubFor(configWithDateRange({ enabled: true, defaultOption: '7d' })),
+        );
+
+        expect(findDashboardLayout().props('filters')).toMatchObject({ dateRangeOption: '7d' });
+      });
+
+      // The dashboard's day limit applies to the options it lists, so an option outside that
+      // list would query a window past the limit.
+      it('ignores an option the dashboard does not offer', async () => {
+        setWindowLocation('?date_range=365d');
+
+        await createWithFilters(
+          filtersLoaderStubFor(
+            configWithDateRange({ enabled: true, defaultOption: '30d', options: ['7d', '30d'] }),
+          ),
+        );
+
+        expect(findDashboardLayout().props('filters')).toMatchObject({ dateRangeOption: '30d' });
+      });
+
+      it('ignores a custom range longer than the dashboard allows', async () => {
+        setWindowLocation('?date_range=custom&start_date=2019-01-01&end_date=2020-07-01');
+
+        await createWithFilters(
+          filtersLoaderStubFor(
+            configWithDateRange({ enabled: true, defaultOption: '30d', numberOfDaysLimit: 180 }),
+          ),
+        );
+
+        expect(findDashboardLayout().props('filters')).toMatchObject({ dateRangeOption: '30d' });
+      });
+
+      it('ignores a custom range ending after today', async () => {
+        setWindowLocation('?date_range=custom&start_date=2020-07-01&end_date=2020-07-07');
+
+        await createWithFilters(
+          filtersLoaderStubFor(configWithDateRange({ enabled: true, defaultOption: '30d' })),
+        );
+
+        expect(findDashboardLayout().props('filters')).toMatchObject({ dateRangeOption: '30d' });
+      });
+
+      it('seeds nothing when the dashboard turns the filter off, params or not', async () => {
+        setWindowLocation('?date_range=90d');
+
+        await createWithFilters(filtersLoaderStubFor(configWithDateRange({ enabled: false })));
+
+        expect(findDashboardLayout().props('filters')).toEqual({});
+      });
+    });
+
+    describe('when the date range changes', () => {
+      beforeEach(() => createWithFilters());
+
+      it('writes the selected option to the params', async () => {
+        await selectDateRange({
+          dateRangeOption: '90d',
+          startDate: new Date('2020-04-07T00:00:00.000Z'),
+          endDate: new Date('2020-07-06T00:00:00.000Z'),
+        });
+
+        expect(currentDateRangeParams()).toEqual({
+          dateRangeOption: '90d',
+          startDate: null,
+          endDate: null,
+        });
+      });
+
+      it('writes both bounds of a custom range', async () => {
+        await selectDateRange(customRange);
+
+        expect(currentDateRangeParams()).toEqual({
+          dateRangeOption: 'custom',
+          startDate: '2020-05-05',
+          endDate: '2020-06-30',
+        });
+      });
+
+      it('writes the day the picker names and queries it in UTC', async () => {
+        await selectDateRange({
+          dateRangeOption: 'custom',
+          startDate: new Date('2020-05-05T13:45:00.000Z'),
+          endDate: new Date('2020-06-30T13:45:00.000Z'),
+        });
+
+        expect(currentDateRangeParams()).toMatchObject({
+          startDate: '2020-05-05',
+          endDate: '2020-06-30',
+        });
+        expectFilterDates('2020-05-05', '2020-06-30');
+      });
+
+      it('drops the bounds again on returning to a named option', async () => {
+        await selectDateRange(customRange);
+        await selectDateRange({ dateRangeOption: '30d' });
+
+        expect(currentDateRangeParams()).toEqual({
+          dateRangeOption: '30d',
+          startDate: null,
+          endDate: null,
+        });
+      });
+
+      it('adds no history entry, a filter change not being a place to go back to', async () => {
+        const before = window.history.length;
+
+        await selectDateRange({ dateRangeOption: '90d' });
+
+        expect(window.history).toHaveLength(before);
+      });
+    });
+
+    describe('when the filters are reset', () => {
+      it('clears the params rather than pinning the default', async () => {
+        await createWithFilters();
+        await selectDateRange(customRange);
+
+        findResetButton().vm.$emit('click');
+        await waitForPromises();
+
+        expect(currentDateRangeParams()).toEqual({
+          dateRangeOption: null,
+          startDate: null,
+          endDate: null,
+        });
+      });
+    });
+  });
+
+  describe('filters do not override each other in the URL', () => {
+    const visualization = { slug: 'line_chart', type: 'LineChart' };
+    const viewsConfig = {
+      panels: [],
+      views: [
+        { title: 'Overview', panels: [{ id: 'panel-1', title: 'Overview panel', visualization }] },
+        { title: 'Details', panels: [{ id: 'panel-2', title: 'Details panel', visualization }] },
+      ],
+    };
+
+    const findPanel = () => wrapper.findComponent(AnalyticsDashboardPanel);
+
+    // Panels only render for a selected namespace, so the scope param is written on the way in.
+    const createWithViewPanels = async () => {
+      createComponent({
+        stubs: {
+          DashboardLoader: filtersLoaderStubFor(viewsConfig),
+          GlDashboardLayout: panelLayoutStub,
+        },
+      });
+
+      await waitForPromises();
+      await selectScope(mockGroup);
+    };
+
+    afterEach(() => setWindowLocation(TEST_HOST));
+
+    it('keeps the view and date range params when the scope changes', async () => {
+      setWindowLocation('?view=1&date_range=90d');
+      await createWithFilters();
+
+      await selectScope(mockGroup);
+
+      expect(window.location.search).toBe(`?view=1&date_range=90d&scope=${mockGroup.fullPath}`);
+    });
+
+    it('keeps the view and scope params when the date range changes', async () => {
+      setWindowLocation('?view=1&scope=gitlab-org');
+      await createWithFilters();
+
+      await selectDateRange({ dateRangeOption: '90d' });
+
+      expect(window.location.search).toBe('?view=1&scope=gitlab-org&date_range=90d');
+    });
+
+    it('keeps the scope and date range params when the view changes', async () => {
+      setWindowLocation('?date_range=90d');
+      await createWithViewPanels();
+
+      findPanel().vm.$emit('select-dashboard-view', 1);
+      await waitForPromises();
+
+      expect(window.location.search).toBe('?date_range=90d&scope=gitlab-org&view=1');
     });
   });
 

@@ -121,4 +121,24 @@ RSpec.describe Gitlab::ExclusiveLeaseHelpers::SleepingLock, :clean_gitlab_redis_
       end
     end
   end
+
+  describe '#renew' do
+    let!(:lease) { stub_exclusive_lease(key, 'uuid') }
+
+    it 'delegates to the underlying lease' do
+      expect(lease).to receive(:renew)
+
+      subject.renew
+    end
+  end
+
+  describe '#same_uuid?' do
+    let!(:lease) { stub_exclusive_lease(key, 'uuid') }
+
+    it 'delegates to the underlying lease' do
+      expect(lease).to receive(:same_uuid?)
+
+      subject.same_uuid?
+    end
+  end
 end

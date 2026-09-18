@@ -144,7 +144,19 @@ ai-principles-reconcile-fences:
     # fences from that ref's committed distilled files, so master's tip must be
     # available. A failed fetch must fail the job rather than silently
     # reconciling from a stale ref, so no `|| true` here.
-    - git fetch --depth=1 origin "$CI_DEFAULT_BRANCH:refs/remotes/origin/$CI_DEFAULT_BRANCH"
+    - |
+      attempt=1
+      retry_delay=10
+      until git fetch --depth=1 origin "$CI_DEFAULT_BRANCH:refs/remotes/origin/$CI_DEFAULT_BRANCH"; do
+        status=$?
+        if [ "$attempt" -ge 4 ]; then
+          exit "$status"
+        fi
+        echo "Fetch attempt $attempt failed; retrying in $retry_delay seconds..."
+        sleep "$retry_delay"
+        attempt=$((attempt + 1))
+        retry_delay=$((retry_delay * 2))
+      done
     - cd gems/gitlab-ai-principles-distiller
     - gem install bundler --no-document --version "$(tail -n 1 Gemfile.lock | tr -d '[:space:]')"
     - bundle install --jobs=$(nproc) --retry=3

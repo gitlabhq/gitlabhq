@@ -1,3 +1,4 @@
+import { nextTick } from 'vue';
 import { GlChart } from '@gitlab/ui/src/charts';
 import {
   GL_COLOR_DATA_BLUE_500,
@@ -399,6 +400,130 @@ describe('BarListChart', () => {
 
     it('keeps the defaults it does not override', () => {
       expect(chartOptions().xAxis.show).toBe(false);
+    });
+  });
+
+  describe('stacked rows', () => {
+    const stackedRows = [
+      {
+        name: 'Sonnet',
+        value: 80,
+        share: (80 / 120) * 100,
+        segments: [
+          { name: 'Chat', value: 60, share: 50 },
+          { name: 'Dev', value: 20, share: (20 / 120) * 100 },
+        ],
+      },
+      {
+        name: 'Haiku',
+        value: 40,
+        share: (40 / 120) * 100,
+        segments: [
+          { name: 'Chat', value: 30, share: 25 },
+          { name: 'Dev', value: 10, share: (10 / 120) * 100 },
+        ],
+      },
+    ];
+
+    const seriesByName = (name) => chartOptions().series.find((series) => series.name === name);
+    const lastSeries = () => chartOptions().series[chartOptions().series.length - 1];
+
+    beforeEach(() => createWrapper({ data: stackedRows }));
+
+    it('renders one stacked bar series per segment name', () => {
+      expect(chartOptions().series.map(({ name, stack }) => ({ name, stack }))).toEqual([
+        { name: 'Chat', stack: 'row' },
+        { name: 'Dev', stack: 'row' },
+      ]);
+    });
+
+    it('plots each segment as its share of the grand total', () => {
+      // Rows render bottom-up, so Haiku comes first.
+      expect(seriesByName('Chat').data).toEqual([25, 50]);
+      expect(seriesByName('Dev').data).toEqual([(10 / 120) * 100, (20 / 120) * 100]);
+    });
+
+    it('labels only the stack end, with the compact row total', () => {
+      expect(seriesByName('Chat').label.show).toBe(false);
+      expect(lastSeries().label.show).toBe(true);
+      expect(lastSeries().label.formatter({ dataIndex: 1 })).toBe('80');
+    });
+
+    it('shows a legend and reserves space for it', () => {
+      expect(chartOptions().legend.show).toBe(true);
+      expect(wrapper.element.style.height).toBe(`${2 * 28 + 16 + 32}px`);
+    });
+
+    it('shows no legend for single-dimension rows', () => {
+      createWrapper();
+
+      expect(chartOptions().legend).toBeUndefined();
+    });
+
+    describe('legend interaction', () => {
+      let onLegendChange;
+
+      beforeEach(() => {
+        findChart().vm.$emit('created', {
+          on: (event, handler) => {
+            onLegendChange = handler;
+          },
+        });
+      });
+
+      const hide = async (selected) => {
+        onLegendChange({ selected });
+        await nextTick();
+      };
+
+      it('rescales the remaining segments to the visible total', async () => {
+        await hide({ Chat: false, Dev: true });
+
+        expect(seriesByName('Chat').data).toEqual([0, 0]);
+        expect(seriesByName('Dev').data).toEqual([(10 / 30) * 100, (20 / 30) * 100]);
+      });
+
+      it('relabels rows with their visible totals', async () => {
+        await hide({ Chat: false, Dev: true });
+
+        expect(seriesByName('Dev').label.formatter({ dataIndex: 1 })).toBe('20');
+      });
+
+      it('pins every series into the legend options, hidden ones deselected', async () => {
+        await hide({ Chat: false, Dev: true });
+
+        expect(chartOptions().legend.selected).toEqual({ Chat: false, Dev: true });
+      });
+
+      // setOption merges, so without an explicit true ECharts would keep the
+      // series deselected while the component recomputes as if it were visible.
+      it('re-selects every series when the data changes', async () => {
+        await hide({ Chat: false, Dev: true });
+        await wrapper.setProps({ data: [...stackedRows] });
+
+        expect(chartOptions().legend.selected).toEqual({ Chat: true, Dev: true });
+      });
+
+      it('moves the row labels to the last visible series when the last one hides', async () => {
+        await hide({ Chat: true, Dev: false });
+
+        expect(seriesByName('Dev').label.show).toBe(false);
+        expect(seriesByName('Chat').label.show).toBe(true);
+        expect(seriesByName('Chat').label.formatter({ dataIndex: 1 })).toBe('60');
+      });
+
+      it('keeps the track background on every series', () => {
+        expect(chartOptions().series.every((series) => series.showBackground)).toBe(true);
+      });
+
+      it('restores the full totals when the series is shown again', async () => {
+        await hide({ Chat: false, Dev: true });
+        await hide({ Chat: true, Dev: true });
+
+        expect(seriesByName('Chat').data).toEqual([25, 50]);
+        expect(lastSeries().label.formatter({ dataIndex: 1 })).toBe('80');
+        expect(chartOptions().legend.selected).toEqual({ Chat: true, Dev: true });
+      });
     });
   });
 });

@@ -28,6 +28,13 @@ export default {
       required: false,
       default: '',
     },
+    // The range the page resolved for this load from the URL. The date
+    // filter owns its selection after mount, so this only seeds it.
+    dateRangeFilter: {
+      type: Object,
+      required: false,
+      default: () => ({}),
+    },
   },
   emits: ['set-date-range', 'set-scope', 'error'],
   computed: {
@@ -45,6 +52,9 @@ export default {
     },
     dateRangeLimit() {
       return this.dateRangeConfig.numberOfDaysLimit ?? 0;
+    },
+    dateRangeSelectedOption() {
+      return this.dateRangeFilter.dateRangeOption ?? this.dateRangeDefaultOption;
     },
   },
 };
@@ -65,7 +75,9 @@ export default {
     </gl-form-group>
     <gl-form-group v-if="showDateRangeFilter" class="gl-mb-0" :label="$options.i18n.dateRangeLabel">
       <date-range-filter
-        :default-option="dateRangeDefaultOption"
+        :default-option="dateRangeSelectedOption"
+        :start-date="dateRangeFilter.startDate || null"
+        :end-date="dateRangeFilter.endDate || null"
         :options="dateRangeOptions"
         :date-range-limit="dateRangeLimit"
         @change="$emit('set-date-range', $event)"

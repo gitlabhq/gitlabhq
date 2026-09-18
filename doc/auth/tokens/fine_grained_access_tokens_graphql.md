@@ -1583,6 +1583,7 @@ Grants the ability to create and delete timelogs.
 | Create | Project | Mutation | `TimelogCreate` |
 | Create | Group | Mutation | `TimelogCreate` |
 | Delete | Project | Mutation | `TimelogDelete` |
+| Delete | Group | Mutation | `TimelogDelete` |
 
 #### Work Item
 

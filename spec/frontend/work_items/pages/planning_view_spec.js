@@ -88,6 +88,10 @@ import getSubscribedSavedViewsQuery from '~/work_items/list/graphql/work_item_sa
 import updateWorkItemListUserPreference from '~/work_items/graphql/update_work_item_list_user_preferences.mutation.graphql';
 import namespaceWorkItemChangesSubscription from '~/work_items/list/graphql/namespace_work_item_changes.subscription.graphql';
 import workItemIdFragment from '~/work_items/graphql/work_item_id.fragment.graphql';
+import {
+  markRealtimeRefetch,
+  COUNT_OPERATIONS,
+} from '~/work_items/list/graphql/realtime_request_tag';
 import getWorkItemsSlimQuery from 'ee_else_ce/work_items/list/graphql/get_work_items_slim.query.graphql';
 import getBoardWorkItemsQuery from 'ee_else_ce/work_items/board/graphql/get_board_work_items.query.graphql';
 
@@ -154,6 +158,10 @@ const emptySavedViewsResult = {
 
 jest.mock('~/sentry/sentry_browser_wrapper');
 jest.mock('~/lib/utils/common_utils');
+jest.mock('~/work_items/list/graphql/realtime_request_tag', () => ({
+  ...jest.requireActual('~/work_items/list/graphql/realtime_request_tag'),
+  markRealtimeRefetch: jest.fn(),
+}));
 jest.mock('~/alert');
 jest.mock('~/lib/utils/url_utility');
 jest.mock('~/lib/utils/confirm_via_gl_modal/confirm_via_gl_modal', () => ({
@@ -4263,6 +4271,7 @@ describe('planning-view', () => {
         await flushChanges();
 
         expect(defaultCountsOnlyHandler.mock.calls.length).toBeGreaterThan(initialCallCount);
+        expect(markRealtimeRefetch).toHaveBeenCalledWith('count', COUNT_OPERATIONS);
       });
     });
 
@@ -4378,6 +4387,7 @@ describe('planning-view', () => {
 
         expect(slimMatchHandler).toHaveBeenCalled();
         expect(evictedFields(evictSpy)).toEqual(['workItems']);
+        expect(markRealtimeRefetch).toHaveBeenCalledWith('refetch');
       });
 
       it('does not reload the list when the new item does not match the current filters', async () => {
@@ -4551,6 +4561,7 @@ describe('planning-view', () => {
         await flushChanges();
 
         expect(evictedFields(evictSpy)).toEqual(['workItems']);
+        expect(markRealtimeRefetch).toHaveBeenCalledWith('reconnect');
       });
 
       it('does nothing when the workItemsRealtime feature flag is off', async () => {
@@ -4561,6 +4572,7 @@ describe('planning-view', () => {
         await flushChanges();
 
         expect(evictSpy).not.toHaveBeenCalled();
+        expect(markRealtimeRefetch).not.toHaveBeenCalled();
       });
 
       it('does not act on a reconnect that arrives just before the component is destroyed', async () => {

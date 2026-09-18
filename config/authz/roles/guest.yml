@@ -68,6 +68,7 @@ project:
 group:
   permissions: []
   raw_permissions:
+  - _delete_authored_timelog
   - _read_assigned_work_item
   - _read_authored_work_item
   - _reopen_assigned_work_item

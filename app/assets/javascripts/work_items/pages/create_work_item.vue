@@ -10,8 +10,7 @@ import {
   CREATION_CONTEXT_NEW_ROUTE,
   WORK_ITEM_TYPE_NAME_EPIC,
   WORK_ITEM_TYPE_NAME_INCIDENT,
-  WORK_ITEM_TYPE_ROUTE_WORK_ITEM,
-  WORK_ITEM_TYPE_ROUTE_ISSUE,
+  WORK_ITEM_TYPE_ENUM_INCIDENT,
 } from '../constants';
 import workItemRelatedItemQuery from '../graphql/work_item_related_item.query.graphql';
 import namespaceWorkItemTypesQuery from '../graphql/namespace_work_item_types.query.graphql';
@@ -125,23 +124,10 @@ export default {
       }
     },
     handleCancelClick() {
-      // eslint-disable-next-line @gitlab/no-hardcoded-urls -- Vue Router path segment manipulation, not ideal but acceptable
-      const listPath = this.$router.history.base + this.$route.fullPath.replace('/new', '');
-      const isWorkItemRoute = this.$route.params?.type === 'work_items';
-      const isGroupWorkItemRoute = isWorkItemRoute && this.$router.history.base.includes('groups');
-
-      /**
-       * If the route is epics, issues or work items on the group level
-       * (because work items on the project level is not yet available)
-       * we redirect to the list page when the user clicks on cancel,
-       * otherwise we go back to the previous page.
-       */
-      if (Boolean(listPath) && isWorkItemRoute && isGroupWorkItemRoute) {
-        visitUrl(listPath.replaceAll(WORK_ITEM_TYPE_ROUTE_WORK_ITEM, WORK_ITEM_TYPE_ROUTE_ISSUE));
-      } else if (Boolean(listPath) && (!isWorkItemRoute || isGroupWorkItemRoute)) {
-        visitUrl(listPath);
-      } else {
+      if (getParameterByName('type') === WORK_ITEM_TYPE_ENUM_INCIDENT) {
         this.$router.go(-1);
+      } else {
+        this.$router.push({ name: ROUTES.index });
       }
     },
     hideConfirmationModal() {

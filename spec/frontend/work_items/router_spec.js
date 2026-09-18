@@ -15,7 +15,6 @@ import currentUserQuery from '~/graphql_shared/queries/current_user.query.graphq
 import App from '~/work_items/components/app.vue';
 import workItemByIidQuery from '~/work_items/graphql/work_item_by_iid.query.graphql';
 import CreateWorkItem from '~/work_items/pages/create_work_item.vue';
-import { WORK_ITEM_BASE_ROUTE_MAP } from '~/work_items/constants';
 import WorkItemsRoot from '~/work_items/pages/work_item_root.vue';
 import { createRouter } from '~/work_items/router';
 import workItemUpdatedSubscription from '~/work_items/graphql/work_item_updated.subscription.graphql';
@@ -31,7 +30,6 @@ describe('Work items router', () => {
 
   Vue.use(VueApollo);
 
-  const workItemTypes = Object.keys(WORK_ITEM_BASE_ROUTE_MAP);
   const workItemQueryHandler = jest
     .fn()
     .mockResolvedValue(workItemByIidResponseFactory({ hierarchyWidgetPresent: false }));
@@ -143,25 +141,21 @@ describe('Work items router', () => {
   });
 
   it(`renders create work item page on /issues/new route with 'issue[issue_type]' param set to 'ISSUE'`, async () => {
-    await createComponent(`/issues/new?issue%5Bissue_type%5D%3DISSUE`);
+    await createComponent(`/issues/new?issue[issue_type]=ISSUE`);
 
     expect(findCreateWorkItem().exists()).toBe(true);
     expect(findCreateWorkItem().props('workItemTypeEnum')).toBe('ISSUE');
   });
 
-  describe.each(workItemTypes)('Create Work Item for type: %s', (type) => {
-    it(`renders create work item page on /${type}/new route`, async () => {
-      await createComponent(`/${type}/new`);
+  it('renders create work item page on /work_items/new route', async () => {
+    await createComponent('/work_items/new');
 
-      expect(findCreateWorkItem().exists()).toBe(true);
-    });
+    expect(findCreateWorkItem().exists()).toBe(true);
   });
 
-  describe.each(workItemTypes)('Display Work Item for type: %s', (type) => {
-    it(`renders work item page on /${type}/1 route`, async () => {
-      await createComponent(`/${type}/1`);
+  it('renders work item page on /work_items/1 route', async () => {
+    await createComponent('/work_items/1');
 
-      expect(wrapper.findComponent(WorkItemsRoot).exists()).toBe(true);
-    });
+    expect(wrapper.findComponent(WorkItemsRoot).exists()).toBe(true);
   });
 });

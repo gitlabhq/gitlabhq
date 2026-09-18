@@ -351,7 +351,7 @@ RSpec.describe 'post_rspec_test_summary', feature_category: :tooling do
         ## Test Result Summary
 
         <!-- section:msw -->
-        ### MSW Test Result Summary
+        ### Frontend Integration Test Result Summary
 
         msw body
         <!-- /section:msw -->
@@ -374,7 +374,13 @@ RSpec.describe 'post_rspec_test_summary', feature_category: :tooling do
     it 'leaves the other section untouched' do
       result = splice_section(existing, 'rspec', 'fresh rspec body')
 
-      expect(result).to include("<!-- section:msw -->\n### MSW Test Result Summary\n\nmsw body\n<!-- /section:msw -->")
+      expect(result).to include(<<~MD.chomp)
+        <!-- section:msw -->
+        ### Frontend Integration Test Result Summary
+
+        msw body
+        <!-- /section:msw -->
+      MD
     end
 
     it 'appends the section when its markers are missing' do
@@ -1179,28 +1185,28 @@ RSpec.describe 'post_rspec_test_summary', feature_category: :tooling do
     end
 
     it 'is true when the pipeline holds the job' do
-      allow(self).to receive(:api_request).and_return([{ 'name' => 'jest-msw-integration' }])
+      allow(self).to receive(:api_request).and_return([{ 'name' => 'jest-integration' }])
 
-      expect(counterpart_job_present?('1', 'jest-msw-integration')).to be(true)
+      expect(counterpart_job_present?('1', 'jest-integration')).to be(true)
     end
 
     it 'is false when the pipeline does not hold the job' do
       allow(self).to receive(:api_request).and_return([{ 'name' => 'rspec:test-summary' }])
 
-      expect(counterpart_job_present?('1', 'jest-msw-integration')).to be(false)
+      expect(counterpart_job_present?('1', 'jest-integration')).to be(false)
     end
 
     it 'is false outside a pipeline' do
       stub_env('CI_PIPELINE_ID', '')
 
-      expect(counterpart_job_present?('1', 'jest-msw-integration')).to be(false)
+      expect(counterpart_job_present?('1', 'jest-integration')).to be(false)
     end
 
     it 'warns and is false when the jobs endpoint fails' do
       allow(self).to receive(:api_request).and_raise(StandardError, 'boom')
 
-      expect { expect(counterpart_job_present?('1', 'jest-msw-integration')).to be(false) }
-        .to output(/Could not look up jest-msw-integration/).to_stderr
+      expect { expect(counterpart_job_present?('1', 'jest-integration')).to be(false) }
+        .to output(/Could not look up jest-integration/).to_stderr
     end
   end
 
@@ -1223,7 +1229,7 @@ RSpec.describe 'post_rspec_test_summary', feature_category: :tooling do
         allow(self).to receive_messages(find_existing_note: nil, counterpart_job_present?: true)
       end
 
-      it 'posts a combined note holding this section and a placeholder for MSW' do
+      it 'posts a combined note holding this section and a placeholder for the integration suite' do
         record_api_calls
 
         expect { post_or_update_comment('1', '2', section) }

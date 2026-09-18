@@ -213,6 +213,7 @@ group:
   - admin_push_rules
   - admin_security_attributes
   - admin_security_testing
+  - admin_timelog
   - admin_upload
   - admin_vulnerability
   - admin_wiki
@@ -240,6 +241,7 @@ group:
   - create_work_item_type
   - delete_custom_emoji
   - delete_security_scan_profiles
+  - delete_timelog
   - destroy_package
   - destroy_protected_branch
   - destroy_upload

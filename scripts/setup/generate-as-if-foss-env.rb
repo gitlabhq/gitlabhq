@@ -40,7 +40,7 @@ class GenerateAsIfFossEnv
     'static-analysis' => 'ENABLE_STATIC_ANALYSIS',
     # Jest
     /^jest#{PARALLEL}/ => 'ENABLE_JEST',
-    /^jest-msw-integration/ => 'ENABLE_JEST_MSW_INTEGRATION',
+    /^jest-integration/ => 'ENABLE_JEST_INTEGRATION',
     /^jest predictive#{PARALLEL}/ => 'ENABLE_JEST_PREDICTIVE',
     # RSpec
     /^rspec/ => 'ENABLE_RSPEC',

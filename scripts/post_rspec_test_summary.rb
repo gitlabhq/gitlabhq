@@ -19,7 +19,7 @@
 #   CI_JOB_NAME, CI_JOB_URL
 #   CI_PROJECT_DIR        (used to normalise absolute report paths)
 #
-# Actionability model (mirrors scripts/frontend/post_msw_test_summary.mjs):
+# Actionability model (mirrors scripts/frontend/post_integration_test_summary.mjs):
 #   - Aggregates every rspec job's report into one per-file map.
 #   - Publishes a compact per-file baseline artifact (every pipeline, master included).
 #   - Detects the spec files this MR adds/changes (via the MR diffs API).
@@ -37,12 +37,12 @@ require 'optparse'
 require 'uri'
 
 # Both test-summary scripts write into a single note, each owning one marked
-# section and byte-preserving the other. scripts/frontend/post_msw_test_summary.mjs
+# section and byte-preserving the other. scripts/frontend/post_integration_test_summary.mjs
 # implements the same contract; changing these markers means changing both.
 COMBINED_MARKER = '<!-- test-result-summary -->'
 
 SECTIONS = {
-  'msw' => { label: 'MSW Test Result Summary', job: 'jest-msw-integration' },
+  'msw' => { label: 'Frontend Integration Test Result Summary', job: 'jest-integration' },
   'rspec' => { label: 'RSpec Test Result Summary', job: 'rspec:test-summary' }
 }.freeze
 
@@ -421,7 +421,7 @@ end
 # ---------------------------------------------------------------------------
 # Comment building
 # ---------------------------------------------------------------------------
-# -- comment-building helper mirrors MSW script structure
+# -- comment-building helper mirrors the integration script structure
 def build_file_row(file)
   tag = if file[:is_new]
           ' (new)'
@@ -448,7 +448,7 @@ def build_file_row(file)
 end
 
 # Append the actionable headline to lines based on baseline availability.
-# -- mirrors MSW script structure
+# -- mirrors the integration script structure
 def append_headline(lines, actionable, has_baseline)
   unless has_baseline
     lines << '> No master baseline available yet -- runtime delta omitted.'

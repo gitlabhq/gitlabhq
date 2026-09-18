@@ -1,7 +1,10 @@
 <script>
-import { GlLoadingIcon, GlSkeletonLoader } from '@gitlab/ui';
+import { defineAsyncComponent } from 'vue';
+import { GlButton, GlLoadingIcon, GlSkeletonLoader, GlToastMixin } from '@gitlab/ui';
 import { isEmpty } from 'lodash-es';
 import { convertToSearchQuery } from 'ee_else_ce/work_items/list/utils';
+import IssuableBulkEditSidebar from '~/vue_shared/issuable/list/components/issuable_bulk_edit_sidebar.vue';
+import { evictNamespaceWorkItems } from '~/work_items/list/graphql/cache_updates';
 import getWorkItemsQuery from 'ee_else_ce/work_items/list/graphql/get_work_items_full.query.graphql';
 import getWorkItemsSlimQuery from 'ee_else_ce/work_items/list/graphql/get_work_items_slim.query.graphql';
 import getWorkItemsRestQuery from 'ee_else_ce/work_items/list/graphql/get_work_items_rest.query.graphql';
@@ -25,20 +28,26 @@ import WorkItemTableRow from './components/work_item_table_row.vue';
 export default {
   name: 'TableView',
   components: {
+    GlButton,
     GlLoadingIcon,
     GlSkeletonLoader,
+    IssuableBulkEditSidebar,
     WorkItemTableRow,
+    WorkItemBulkEditSidebar: defineAsyncComponent(
+      () => import('~/work_items/list/components/work_item_bulk_edit_sidebar.vue'),
+    ),
   },
-  mixins: [glFeatureFlagMixin()],
+  mixins: [glFeatureFlagMixin(), GlToastMixin],
   inject: [
     'hasIssuableHealthStatusFeature',
     'hasIssueWeightsFeature',
     'hasIterationsFeature',
     'hasStatusFeature',
+    'isGroup',
     'workItemType',
   ],
-  // The list and table views share a prop contract, and the table doesn't use the list-only
-  // props (for example bulk edit), so keep those from landing on the root element.
+  // The list and table views share a prop contract, and the table doesn't use every list-only
+  // prop, so keep the rest from landing on the root element.
   inheritAttrs: false,
   apollo: {
     workItemsFull() {
@@ -113,13 +122,33 @@ export default {
       required: false,
       default: null,
     },
+    showBulkEditSidebar: {
+      type: Boolean,
+      required: false,
+      default: false,
+    },
+    checkedIssuableIds: {
+      type: Array,
+      required: false,
+      default: () => [],
+    },
   },
-  emits: ['namespace-data-loaded', 'set-active-item', 'set-error', 'work-items-changed'],
+  emits: [
+    'namespace-data-loaded',
+    'refetch-data',
+    'set-active-item',
+    'set-checked-issuable-ids',
+    'set-error',
+    'toggle-bulk-edit-sidebar',
+    'work-items-changed',
+  ],
   data() {
     return {
       workItemsFull: [],
       workItemsSlim: [],
       isInitialLoadComplete: false,
+      bulkEditInProgress: false,
+      namespaceId: null,
     };
   },
   computed: {
@@ -144,6 +173,9 @@ export default {
     },
     workItemDetailPanelEnabled() {
       return this.displaySettings?.commonPreferences?.shouldOpenItemsInSidePanel ?? true;
+    },
+    checkedIssuables() {
+      return this.workItems.filter((workItem) => this.checkedIssuableIds.includes(workItem.id));
     },
     isLoading() {
       return this.$apollo.queries.workItemsSlim.loading;
@@ -235,6 +267,7 @@ export default {
     },
     handleTableDataResults(data) {
       if (data?.namespace) {
+        this.namespaceId = data.namespace.id;
         this.$emit('namespace-data-loaded', { namespaceName: data.namespace.name, data });
       }
       this.isInitialLoadComplete = true;
@@ -264,6 +297,36 @@ export default {
         updateHistory({ url: removeParams([DETAIL_VIEW_QUERY_PARAM_NAME]) });
       }
     },
+    isIssuableChecked(workItem) {
+      return this.checkedIssuableIds.includes(workItem.id);
+    },
+    updateCheckedIssuableIds(workItem, toCheck) {
+      const isIdChecked = this.isIssuableChecked(workItem);
+      if (toCheck && !isIdChecked) {
+        this.$emit('set-checked-issuable-ids', [...this.checkedIssuableIds, workItem.id]);
+      }
+      if (!toCheck && isIdChecked) {
+        this.$emit(
+          'set-checked-issuable-ids',
+          this.checkedIssuableIds.filter((id) => id !== workItem.id),
+        );
+      }
+    },
+    handleBulkEditSuccess(event) {
+      this.$emit('toggle-bulk-edit-sidebar', false);
+      this.refetchItems(event);
+      if (event?.toastMessage) {
+        this.$toast.show(event.toastMessage);
+      }
+    },
+    refetchItems({ refetchCounts = false } = {}) {
+      if (refetchCounts) {
+        this.$emit('refetch-data', 'counts');
+      }
+      evictNamespaceWorkItems(this.$apollo.provider.defaultClient.cache, this.namespaceId, {
+        useRestApi: this.useRestApi,
+      });
+    },
     isColumnLicensed(column) {
       return !column.licensedFeature || Boolean(this[column.licensedFeature]);
     },
@@ -282,6 +345,37 @@ export default {
   </div>
 
   <div v-else class="issuable-list-container" data-testid="table-view">
+    <issuable-bulk-edit-sidebar :expanded="showBulkEditSidebar">
+      <template #bulk-edit-actions>
+        <gl-button
+          :disabled="!checkedIssuables.length || bulkEditInProgress"
+          form="work-item-list-bulk-edit"
+          :loading="bulkEditInProgress"
+          type="submit"
+          variant="confirm"
+        >
+          {{ __('Update selected') }}
+        </gl-button>
+        <gl-button class="gl-float-right" @click="$emit('toggle-bulk-edit-sidebar', false)">
+          {{ __('Cancel') }}
+        </gl-button>
+      </template>
+      <template #sidebar-items>
+        <div class="work-item-bulk-edit-sidebar-wrapper gl-overflow-y-auto">
+          <work-item-bulk-edit-sidebar
+            v-if="showBulkEditSidebar"
+            :checked-items="checkedIssuables"
+            :full-path="rootPageFullPath"
+            :is-epics-list="isEpicsList"
+            :is-group="isGroup"
+            @finish="bulkEditInProgress = false"
+            @start="bulkEditInProgress = true"
+            @success="handleBulkEditSuccess"
+          />
+        </div>
+      </template>
+    </issuable-bulk-edit-sidebar>
+
     <div v-if="hasRows" class="gl-border gl-overflow-x-auto gl-rounded-lg">
       <table
         class="gl-min-w-full gl-table-fixed gl-border-collapse gl-text-sm"
@@ -293,10 +387,15 @@ export default {
           }}
         </caption>
         <colgroup>
+          <col v-if="showBulkEditSidebar" class="gl-w-10" />
           <col v-for="column in columns" :key="column.key" :class="column.widthClass" />
         </colgroup>
         <thead>
           <tr class="gl-border-b gl-bg-subtle">
+            <!-- Select all lives in the filtered search bar, so this only names the column. -->
+            <th v-if="showBulkEditSidebar" scope="col" class="gl-border-r gl-px-4 gl-py-3">
+              <span class="gl-sr-only">{{ s__('WorkItem|Select work item') }}</span>
+            </th>
             <th
               v-for="column in columns"
               :key="column.key"
@@ -310,6 +409,7 @@ export default {
         <tbody :aria-busy="isLoading">
           <template v-if="isLoading">
             <tr v-for="row in skeletonRowCount" :key="`skeleton-${row}`" class="gl-border-b">
+              <td v-if="showBulkEditSidebar" class="gl-border-r gl-px-4 gl-py-3"></td>
               <td
                 v-for="column in columns"
                 :key="column.key"
@@ -328,7 +428,10 @@ export default {
               :root-page-full-path="rootPageFullPath"
               :active-item="activeItem"
               :detail-panel-enabled="workItemDetailPanelEnabled"
+              :show-checkbox="showBulkEditSidebar"
+              :checked="isIssuableChecked(workItem)"
               @set-active-item="handleSetActiveItem"
+              @checked-input="updateCheckedIssuableIds(workItem, $event)"
             />
           </template>
         </tbody>

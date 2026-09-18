@@ -12,7 +12,7 @@ import {
   formatSignedDuration,
   buildDeletedFileRow,
   apiRequest,
-} from '../../../../scripts/frontend/post_msw_test_summary.mjs';
+} from '../../../../scripts/frontend/post_integration_test_summary.mjs';
 
 // Helper: build a Jest --json-shaped testResults entry with the given
 // assertion durations (ms). Jest records absolute file paths.
@@ -25,14 +25,14 @@ describe('perFileFromReport', () => {
   it('normalises absolute paths and aggregates runtime + test count per file', () => {
     const data = {
       testResults: [
-        reportEntry('spec/frontend/msw_integration/a_spec.js', [1000, 2000]),
-        reportEntry('ee/spec/frontend/msw_integration/b_spec.js', [500]),
+        reportEntry('spec/frontend/integration/a_spec.js', [1000, 2000]),
+        reportEntry('ee/spec/frontend/integration/b_spec.js', [500]),
       ],
     };
 
     expect(perFileFromReport(data)).toEqual({
-      'spec/frontend/msw_integration/a_spec.js': { runtimeS: 3, testCount: 2 },
-      'ee/spec/frontend/msw_integration/b_spec.js': { runtimeS: 0.5, testCount: 1 },
+      'spec/frontend/integration/a_spec.js': { runtimeS: 3, testCount: 2 },
+      'ee/spec/frontend/integration/b_spec.js': { runtimeS: 0.5, testCount: 1 },
     });
   });
 
@@ -71,25 +71,25 @@ describe('formatSignedDuration', () => {
 describe('computeActionable', () => {
   const report = {
     perFile: {
-      'spec/frontend/msw_integration/slow_spec.js': { runtimeS: 170, testCount: 9 },
-      'spec/frontend/msw_integration/new_spec.js': { runtimeS: 12, testCount: 4 },
-      'spec/frontend/msw_integration/renamed_spec.js': { runtimeS: 20, testCount: 5 },
-      'spec/frontend/msw_integration/untouched_spec.js': { runtimeS: 99, testCount: 3 },
+      'spec/frontend/integration/slow_spec.js': { runtimeS: 170, testCount: 9 },
+      'spec/frontend/integration/new_spec.js': { runtimeS: 12, testCount: 4 },
+      'spec/frontend/integration/renamed_spec.js': { runtimeS: 20, testCount: 5 },
+      'spec/frontend/integration/untouched_spec.js': { runtimeS: 99, testCount: 3 },
     },
   };
   const baseline = {
     perFile: {
-      'spec/frontend/msw_integration/slow_spec.js': { runtimeS: 40, testCount: 8 },
-      'spec/frontend/msw_integration/old_name_spec.js': { runtimeS: 18, testCount: 5 },
+      'spec/frontend/integration/slow_spec.js': { runtimeS: 40, testCount: 8 },
+      'spec/frontend/integration/old_name_spec.js': { runtimeS: 18, testCount: 5 },
     },
   };
 
   it('diffs a modified file against its master baseline', () => {
     const changedFiles = [
       {
-        path: 'spec/frontend/msw_integration/slow_spec.js',
+        path: 'spec/frontend/integration/slow_spec.js',
         isNew: false,
-        oldPath: 'spec/frontend/msw_integration/slow_spec.js',
+        oldPath: 'spec/frontend/integration/slow_spec.js',
       },
     ];
 
@@ -104,9 +104,9 @@ describe('computeActionable', () => {
   it('treats a brand-new file as fully added cost', () => {
     const changedFiles = [
       {
-        path: 'spec/frontend/msw_integration/new_spec.js',
+        path: 'spec/frontend/integration/new_spec.js',
         isNew: true,
-        oldPath: 'spec/frontend/msw_integration/new_spec.js',
+        oldPath: 'spec/frontend/integration/new_spec.js',
       },
     ];
 
@@ -121,9 +121,9 @@ describe('computeActionable', () => {
   it('looks up a renamed file under its old path', () => {
     const changedFiles = [
       {
-        path: 'spec/frontend/msw_integration/renamed_spec.js',
+        path: 'spec/frontend/integration/renamed_spec.js',
         isNew: false,
-        oldPath: 'spec/frontend/msw_integration/old_name_spec.js',
+        oldPath: 'spec/frontend/integration/old_name_spec.js',
       },
     ];
 
@@ -138,9 +138,9 @@ describe('computeActionable', () => {
   it('ignores changed files that did not run in this job', () => {
     const changedFiles = [
       {
-        path: 'spec/frontend/msw_integration/deleted_from_run_spec.js',
+        path: 'spec/frontend/integration/deleted_from_run_spec.js',
         isNew: false,
-        oldPath: 'spec/frontend/msw_integration/deleted_from_run_spec.js',
+        oldPath: 'spec/frontend/integration/deleted_from_run_spec.js',
       },
     ];
 
@@ -153,14 +153,14 @@ describe('computeActionable', () => {
   it('aggregates across multiple files into a single per-test number', () => {
     const changedFiles = [
       {
-        path: 'spec/frontend/msw_integration/slow_spec.js',
+        path: 'spec/frontend/integration/slow_spec.js',
         isNew: false,
-        oldPath: 'spec/frontend/msw_integration/slow_spec.js',
+        oldPath: 'spec/frontend/integration/slow_spec.js',
       },
       {
-        path: 'spec/frontend/msw_integration/new_spec.js',
+        path: 'spec/frontend/integration/new_spec.js',
         isNew: true,
-        oldPath: 'spec/frontend/msw_integration/new_spec.js',
+        oldPath: 'spec/frontend/integration/new_spec.js',
       },
     ];
 
@@ -177,9 +177,9 @@ describe('computeActionable', () => {
     // it is not a new file, so the missing row means "unknown", not "all added".
     const changedFiles = [
       {
-        path: 'spec/frontend/msw_integration/new_spec.js',
+        path: 'spec/frontend/integration/new_spec.js',
         isNew: false,
-        oldPath: 'spec/frontend/msw_integration/new_spec.js',
+        oldPath: 'spec/frontend/integration/new_spec.js',
       },
     ];
 
@@ -226,13 +226,13 @@ describe('computeActionable', () => {
 
     it('includes deleted files that have a master baseline entry', () => {
       // slow_spec.js is in the baseline with runtimeS: 40, testCount: 8.
-      const deletedFiles = [{ path: 'spec/frontend/msw_integration/slow_spec.js' }];
+      const deletedFiles = [{ path: 'spec/frontend/integration/slow_spec.js' }];
 
       const result = computeActionable({ changedFiles: [], deletedFiles, report, baseline });
 
       expect(result.deletedFiles).toHaveLength(1);
       expect(result.deletedFiles[0]).toEqual({
-        path: 'spec/frontend/msw_integration/slow_spec.js',
+        path: 'spec/frontend/integration/slow_spec.js',
         masterRuntimeS: 40,
         masterTests: 8,
       });
@@ -240,7 +240,7 @@ describe('computeActionable', () => {
 
     it('subtracts deleted file runtime and tests from the net totals', () => {
       // slow_spec.js baseline: runtimeS 40, testCount 8.
-      const deletedFiles = [{ path: 'spec/frontend/msw_integration/slow_spec.js' }];
+      const deletedFiles = [{ path: 'spec/frontend/integration/slow_spec.js' }];
 
       const result = computeActionable({ changedFiles: [], deletedFiles, report, baseline });
 
@@ -249,7 +249,7 @@ describe('computeActionable', () => {
     });
 
     it('sets perTestS to null when deletions outweigh additions (no net-new tests)', () => {
-      const deletedFiles = [{ path: 'spec/frontend/msw_integration/slow_spec.js' }];
+      const deletedFiles = [{ path: 'spec/frontend/integration/slow_spec.js' }];
 
       const result = computeActionable({ changedFiles: [], deletedFiles, report, baseline });
 
@@ -260,12 +260,12 @@ describe('computeActionable', () => {
       // new_spec.js (new): +4 tests, +12s. slow_spec.js (deleted): -8 tests, -40s.
       const changedFiles = [
         {
-          path: 'spec/frontend/msw_integration/new_spec.js',
+          path: 'spec/frontend/integration/new_spec.js',
           isNew: true,
-          oldPath: 'spec/frontend/msw_integration/new_spec.js',
+          oldPath: 'spec/frontend/integration/new_spec.js',
         },
       ];
-      const deletedFiles = [{ path: 'spec/frontend/msw_integration/slow_spec.js' }];
+      const deletedFiles = [{ path: 'spec/frontend/integration/slow_spec.js' }];
 
       const result = computeActionable({ changedFiles, deletedFiles, report, baseline });
 
@@ -280,10 +280,10 @@ describe('computeActionable', () => {
 describe('buildComment', () => {
   const stats = { total: 100, passed: 99, failed: 0, skipped: 1, suites: 10, testDurationS: 300 };
   const baseline = {
-    perFile: { 'spec/frontend/msw_integration/slow_spec.js': { runtimeS: 40, testCount: 8 } },
+    perFile: { 'spec/frontend/integration/slow_spec.js': { runtimeS: 40, testCount: 8 } },
   };
   const baseArgs = {
-    jobName: 'jest-msw-integration',
+    jobName: 'jest-integration',
     jobUrl: 'https://example.com/job',
     ciDuration: 320,
     stats,
@@ -293,7 +293,7 @@ describe('buildComment', () => {
     const actionable = {
       files: [
         {
-          path: 'spec/frontend/msw_integration/slow_spec.js',
+          path: 'spec/frontend/integration/slow_spec.js',
           isNew: false,
           currentRuntimeS: 170,
           masterRuntimeS: 40,
@@ -310,13 +310,13 @@ describe('buildComment', () => {
 
     const comment = buildComment({ ...baseArgs, baseline, actionable });
 
-    expect(comment).toContain('### MSW Test Result Summary');
+    expect(comment).toContain('### Frontend Integration Test Result Summary');
     expect(comment).not.toContain(COMBINED_MARKER);
     expect(comment).toContain('🔴 **Action required**');
     expect(comment).toContain('+1 new test');
     expect(comment).toContain('130s/test');
     expect(comment).toContain('40s → 2m 50s');
-    expect(comment).toContain('**jest-msw-integration**: ❌ [job log]');
+    expect(comment).toContain('**jest-integration**: ❌ [job log]');
     expect(comment).toContain('| ❌ | 100 | 99 | 0 |');
   });
 
@@ -328,7 +328,7 @@ describe('buildComment', () => {
     expect(comment).toContain('No master baseline available yet');
     expect(comment).not.toContain('Action required');
     expect(comment).not.toContain('Warning');
-    expect(comment).toContain('**jest-msw-integration**: ✅ [job log]');
+    expect(comment).toContain('**jest-integration**: ✅ [job log]');
   });
 
   it('reports missing report gracefully', () => {
@@ -367,7 +367,7 @@ describe('buildComment', () => {
       const actionable = {
         files: [
           {
-            path: 'ee/spec/frontend/msw_integration/work_items_spec.js',
+            path: 'ee/spec/frontend/integration/work_items_spec.js',
             isNew: true,
             currentRuntimeS: 3,
             masterRuntimeS: null,
@@ -523,7 +523,7 @@ describe('spliceSection', () => {
     '## Test Result Summary',
     '',
     '<!-- section:msw -->',
-    '### MSW Test Result Summary',
+    '### Frontend Integration Test Result Summary',
     '',
     'stale msw body',
     '<!-- /section:msw -->',

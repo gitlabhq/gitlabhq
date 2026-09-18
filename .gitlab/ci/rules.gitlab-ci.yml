@@ -1920,6 +1920,9 @@
   rules:
     - <<: *if-merge-request-labels-pipeline-expedite
       when: never
+    # jest-integration has a hard `needs` on graphql-schema-dump, which extends these
+    # rules, so forcing the suite must schedule its dependency too.
+    - if: '$ENABLE_JEST_INTEGRATION == "true"'
     - if: '$ENABLE_RSPEC_FRONTEND_FIXTURE == "true"'
     - if: '$ENABLE_ESLINT == "true"'
     - if: '$ENABLE_COMPILE_STORYBOOK == "true"'
@@ -2085,22 +2088,22 @@
     - <<: *if-merge-request
       changes: *frontend-predictive-patterns
 
-.frontend:rules:jest-msw-integration:
+.frontend:rules:jest-integration:
   rules:
-    # MSW integration tests are EE-only; the harness and fixtures do not exist in
+    # Frontend integration tests are EE-only; the harness and fixtures do not exist in
     # FOSS, so never run this job in a FOSS (including as-if-foss) pipeline.
     - <<: *if-not-ee
       when: never
     - <<: *if-merge-request-labels-pipeline-expedite
       when: never
-    - if: '$ENABLE_JEST_MSW_INTEGRATION == "true"'
+    - if: '$ENABLE_JEST_INTEGRATION == "true"'
     - <<: *if-merge-request-labels-run-all-rspec
     - <<: *if-merge-request-labels-frontend-and-feature-flag
       changes: *setup-test-env-patterns
-    # Tier-1: only run when the MSW integration tests themselves change
+    # Tier-1: only run when the frontend integration tests themselves change
     - <<: *if-merge-request-tier-1-or-no-tier
       changes:
-        - "{ee,jh}/spec/frontend/msw_integration/**/*"
+        - "{ee,jh}/spec/frontend/integration/**/*"
     - <<: *if-merge-request-tier-1-or-no-tier
       when: never
     # Tier-2+: same scope as the full Jest jobs, since this suite also runs on the frontend fixtures

@@ -1024,6 +1024,10 @@ class MergeRequestDiff < ApplicationRecord
       commits = diff_commits.with_users(read_new_commits_table: read_new_commits_table?).map { |commit| Commit.from_hash(commit.to_hash, project) }
     end
 
+    MergeRequests::RestoreDiffCommitsWorker.schedule_for(self) do
+      page.to_i <= 1 && (load_from_gitaly ? shas.empty? : commits.empty?)
+    end
+
     CommitCollection
       .new(merge_request.target_project, commits, merge_request.target_branch, page: page.to_i, per_page: limit, count: commits_count)
   end

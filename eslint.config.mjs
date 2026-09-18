@@ -864,9 +864,9 @@ export default [
   // Jest config
   jestConfig,
 
-  // MSW integration tests (EE-only)
+  // Frontend integration tests (EE-only)
   {
-    files: ['ee/spec/frontend/msw_integration/**/*_spec.js'],
+    files: ['ee/spec/frontend/integration/**/*_spec.js'],
     languageOptions: {
       globals: {
         waitForElement: 'readonly',
@@ -913,7 +913,7 @@ export default [
             {
               name: '@vue/test-utils',
               message:
-                'Do not import from @vue/test-utils in MSW integration specs. Use @testing-library/vue for queries and fullMount from test_helpers.js for mounting.',
+                'Do not import from @vue/test-utils in frontend integration specs. Use @testing-library/vue for queries and fullMount from test_helpers.js for mounting.',
             },
             {
               name: '@testing-library/dom',
@@ -987,17 +987,17 @@ export default [
     },
   },
 
-  // MSW integration tests are EE-only. Block any file from being (re)introduced
-  // under the CE path; the harness and fixtures live under ee/spec/frontend/msw_integration/.
+  // Frontend integration tests are EE-only. Block any file from being (re)introduced
+  // under the CE path; the harness and fixtures live under ee/spec/frontend/integration/.
   {
-    files: ['spec/frontend/msw_integration/**/*'],
+    files: ['spec/frontend/integration/**/*'],
     rules: {
       'no-restricted-syntax': [
         'error',
         {
           selector: 'Program',
           message:
-            'MSW integration tests are EE-only; use Capybara for FOSS/licensed behavior. Place this file under ee/spec/frontend/msw_integration/ instead.',
+            'Frontend integration tests are EE-only; use Capybara for FOSS/licensed behavior. Place this file under ee/spec/frontend/integration/ instead.',
         },
       ],
     },

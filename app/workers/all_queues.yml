@@ -4734,6 +4734,16 @@
   :idempotent: true
   :tags: []
   :queue_namespace:
+- :name: merge_requests_restore_diff_commits
+  :worker_name: MergeRequests::RestoreDiffCommitsWorker
+  :feature_category: :code_review_workflow
+  :has_external_dependencies: false
+  :urgency: :low
+  :resource_boundary: :unknown
+  :weight: 1
+  :idempotent: true
+  :tags: []
+  :queue_namespace:
 - :name: merge_requests_update_head_pipeline
   :worker_name: MergeRequests::UpdateHeadPipelineWorker
   :feature_category: :code_review_workflow

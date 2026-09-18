@@ -11,7 +11,13 @@ import { glSlotsMixin } from '~/lib/utils/vue3compat/gl_slots_mixin';
 import DashboardFilters from '../components/dashboard_filters.vue';
 import DashboardLoader from '../components/dashboard_loader.vue';
 import { DATE_RANGE_OPTION_LAST_30_DAYS, SCOPE_FILTER_QUERY_NAME } from '../components/constants';
-import { dateRangeOptionToFilter, getDateRangeOption } from '../components/utils';
+import {
+  dateRangeFilterFromQuery,
+  dateRangeFilterToQueryParams,
+  dateRangeFilterToUtc,
+  dateRangeOptionToFilter,
+  getDateRangeOption,
+} from '../components/utils';
 
 export default {
   name: 'ExploreAnalyticsDashboardDetails',
@@ -77,6 +83,11 @@ export default {
     selectedNamespaceFullPath() {
       return this.selectedProject?.fullPath ?? this.selectedGroup?.fullPath ?? '';
     },
+    // The filters are held in local time, the way the picker and the URL work. Panel queries
+    // run in whole UTC days, so the range is converted here to be passed to the panels.
+    utcFilters() {
+      return dateRangeFilterToUtc(this.filters);
+    },
     // A selected namespace always counts. The date range always has a value,
     // so it only counts when it differs from the configured default.
     hasActiveFilters() {
@@ -99,7 +110,7 @@ export default {
     // first view if the query param wasn't included, or has an invalid index.
     onDashboardLoaded({ config }) {
       this.dashboardFilterConfig = config.filters;
-      this.filters = this.defaultFilters();
+      this.filters = this.initialDateRangeFilter();
 
       const viewParam = getParameterByName('view');
       const viewIndex = (config.views ?? []).findIndex((_, index) => `${index}` === viewParam);
@@ -152,6 +163,16 @@ export default {
         startDate,
         endDate,
       };
+      this.syncDateRangeToUrl(this.filters);
+    },
+    // Written to history rather than through the router, for the same reason as the scope
+    // filter below. Replaced, not pushed, so Back leaves the dashboard rather than walking
+    // through every range the user tried.
+    syncDateRangeToUrl(filter) {
+      updateHistory({
+        url: setUrlParams(dateRangeFilterToQueryParams(filter)),
+        replace: true,
+      });
     },
     // The picker emits one namespace, or null, and its type says which of the two the rest of
     // the page should treat it as. Panels still read groups and projects separately.
@@ -191,9 +212,9 @@ export default {
       });
     },
     // The date range picker renders the dashboard's configured default without emitting it,
-    // so seed the filters to match. Otherwise a panel falls back to its own default window
+    // so seed the range to match. Otherwise a panel falls back to its own default window
     // and the first load can show a different range than the picker names.
-    defaultFilters() {
+    defaultDateRangeFilter() {
       const { dateRange = {} } = this.dashboardFilterConfig ?? {};
 
       // dashboard_filters.vue renders the picker whenever dateRange.enabled is not false, so
@@ -206,12 +227,28 @@ export default {
 
       return dateRangeOptionToFilter(option);
     },
+    // A reloaded or shared link restores the range it names, so the page and the picker
+    // agree with the URL on load. Anything the URL cannot supply falls back to the default.
+    initialDateRangeFilter() {
+      const { dateRange = {} } = this.dashboardFilterConfig ?? {};
+
+      if (dateRange.enabled === false) return this.defaultDateRangeFilter();
+
+      const fromQuery = dateRangeFilterFromQuery(window.location.search, {
+        ...(dateRange.options && { options: dateRange.options }),
+        daysLimit: dateRange.numberOfDaysLimit ?? 0,
+      });
+
+      return fromQuery ?? this.defaultDateRangeFilter();
+    },
     resetFilters() {
-      this.filters = this.defaultFilters();
+      this.filters = this.defaultDateRangeFilter();
       this.selectedGroup = null;
       this.selectedProject = null;
       this.scopePath = '';
       this.syncScopeToUrl('');
+      // Cleared rather than set to the default, so the URL only names a range the user chose.
+      this.syncDateRangeToUrl({});
       // The controls own their selection, so remount them to clear it.
       this.filtersKey += 1;
     },
@@ -232,7 +269,7 @@ export default {
         :config="layoutConfig(config)"
         :cell-height="cellHeight"
         :min-cell-height="minCellHeight"
-        :filters="filters"
+        :filters="utcFilters"
       >
         <template v-if="glSlots().actions" #actions>
           <slot name="actions" :is-system-dashboard="isSystemDashboard"></slot>
@@ -254,6 +291,7 @@ export default {
             :key="filtersKey"
             :dashboard-filters="config.filters"
             :scope-path="scopePath"
+            :date-range-filter="filters"
             @set-date-range="setDateRangeFilter"
             @set-scope="setScopeFilter"
             @error="onScopeError"
@@ -299,7 +337,7 @@ export default {
             :visualization="panel.visualization"
             :query-overrides="panel.queryOverrides"
             :views="panel.views"
-            :filters="filters"
+            :filters="utcFilters"
             :data-testid="panelTestId(panel)"
             @select-dashboard-view="selectDashboardView"
           />

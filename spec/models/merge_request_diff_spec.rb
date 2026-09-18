@@ -1678,6 +1678,71 @@ RSpec.describe MergeRequestDiff, feature_category: :code_review_workflow do
     end
   end
 
+  describe 'scheduling a restore of missing commit rows' do
+    let_it_be(:project) { create(:project, :repository) }
+    let_it_be(:merge_request) { create(:merge_request, source_project: project, target_project: project) }
+
+    let(:diff) { described_class.find(merge_request.merge_request_diff.id) }
+    let(:worker) { MergeRequests::RestoreDiffCommitsWorker }
+
+    before do
+      stub_read_new_commits_table
+    end
+
+    context 'when the rows are missing' do
+      before do
+        MergeRequestDiffCommit.where(merge_request_diff_id: diff.id).delete_all
+      end
+
+      it 'schedules from #commits' do
+        expect(worker).to receive(:perform_async).with(diff.id)
+
+        diff.commits
+      end
+
+      it 'schedules from #commits when loading from gitaly' do
+        expect(worker).to receive(:perform_async).with(diff.id)
+
+        diff.commits(load_from_gitaly: true)
+      end
+
+      it 'does not schedule for a later page' do
+        expect(worker).not_to receive(:perform_async)
+
+        diff.commits(limit: 1, page: 2)
+      end
+
+      context 'when the flag is disabled' do
+        before do
+          stub_feature_flags(restore_missing_mr_diff_commits: false)
+        end
+
+        it 'only checks the flag', :aggregate_failures do
+          expect(worker).not_to receive(:perform_async)
+          expect(described_class).not_to receive(:inside_transaction?)
+
+          diff.commits
+        end
+      end
+    end
+
+    context 'when the rows are present' do
+      it 'does not schedule' do
+        expect(worker).not_to receive(:perform_async)
+
+        diff.commits
+      end
+
+      it 'does not schedule when gitaly returns nothing for the stored shas' do
+        allow(Gitlab::Git::Commit).to receive(:batch_by_oid).and_return([])
+
+        expect(worker).not_to receive(:perform_async)
+
+        expect(diff.commits(load_from_gitaly: true)).to be_empty
+      end
+    end
+  end
+
   describe '#commit_shas' do
     let_it_be(:project) { create(:project, :repository) }
     let(:shas_from_commits) do

@@ -2,6 +2,7 @@
 name: delete_timelog
 description: Grants the ability to delete timelogs that track time spent on issuables
 boundaries:
+  - group
   - project
 available_for:
   - granular_access_token

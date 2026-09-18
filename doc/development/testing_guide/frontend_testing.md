@@ -6,7 +6,7 @@ title: Frontend testing standards and style guidelines
 ---
 
 There are two types of test suites encountered while developing frontend code
-at GitLab. We use Jest for JavaScript unit and [integration testing](#msw-integration-tests),
+at GitLab. We use Jest for JavaScript unit and [integration testing](#frontend-integration-tests),
 and Capybara feature tests for e2e (end-to-end) integration testing.
 
 Unit and feature tests need to be written for all new features.
@@ -1296,19 +1296,19 @@ Main information on frontend testing levels can be found in the [Testing Levels 
 
 Tests relevant for frontend development can be found at the following places:
 
-- `spec/frontend/`, for Jest unit, component, and integration tests
-- `ee/spec/frontend/msw_integration/`, for MSW integration tests (EE-only)
+- `spec/frontend/`, for Jest unit and component tests
+- `ee/spec/frontend/integration/`, for frontend integration tests (EE-only)
 - `spec/features/`, for Capybara feature tests
 
-`spec/frontend/` contains [frontend unit tests](testing_levels.md#frontend-unit-tests), [frontend component tests](testing_levels.md#frontend-component-tests), and [frontend integration tests](testing_levels.md#frontend-integration-tests). Capybara runs [frontend feature tests](testing_levels.md#frontend-feature-tests) in `spec/features/`.
+`spec/frontend/` contains [frontend unit tests](testing_levels.md#frontend-unit-tests) and [frontend component tests](testing_levels.md#frontend-component-tests). `ee/spec/frontend/integration/` contains [frontend integration tests](testing_levels.md#frontend-integration-tests). Capybara runs [frontend feature tests](testing_levels.md#frontend-feature-tests) in `spec/features/`.
 
 Before May 2018, `features/` also contained feature tests run by Spinach. These tests were removed from the codebase in May 2018 ([#23036](https://gitlab.com/gitlab-org/gitlab-foss/-/issues/23036)).
 
 See also [Notes on testing Vue components](../fe_guide/vue.md#testing-vue-components).
 
-## MSW integration tests
+## Frontend integration tests
 
-MSW integration tests bridge the gap between unit tests and Capybara
+Frontend integration tests bridge the gap between unit tests and Capybara
 feature tests. They mount full Vue applications in jsdom (no browser
 needed) and use [MSW (Mock Service Worker)](https://github.com/mswjs/msw)
 to intercept API requests and respond with fixture data. This provides
@@ -1316,13 +1316,13 @@ realistic UI interaction testing at a fraction of the cost of Capybara.
 
 ### Directory structure
 
-MSW integration tests are EE-only. All specs and the shared harness live under
-`ee/spec/frontend/msw_integration/`.
+Frontend integration tests are EE-only. All specs and the shared harness live under
+`ee/spec/frontend/integration/`.
 
 ```plaintext
-ee/spec/frontend/msw_integration/
+ee/spec/frontend/integration/
 ├── handlers.js           # Aggregates the per-feature GraphQL handlers
-├── polyfills.js          # Environment polyfills (loaded by jest.config.msw_integration.js)
+├── polyfills.js          # Environment polyfills (loaded by jest.config.integration.js)
 ├── server.js             # MSW server setup
 ├── test_setup.js         # Global Jest setup and teardown; wires helpers into scope
 ├── core/                 # Shared harness: fixture loading, variants, request assertions
@@ -1341,7 +1341,7 @@ ee/spec/frontend/msw_integration/
 ```
 
 The shared files are configured automatically through
-`jest.config.msw_integration.js`.
+`jest.config.integration.js`.
 
 `polyfills.js` exists because `msw/node` reads globals such as
 `fetch`, `Request`, `Response`, `Headers`, the stream classes,
@@ -1353,9 +1353,9 @@ module body evaluates, which is before Jest's
 All helper utilities exported from `helpers/test_helpers.js` are auto-imported globally
 through `Object.assign(global, testHelpers)` in `test_setup.js`. To add a new
 helper, export it from `helpers/test_helpers.js` and it becomes available globally in
-all MSW integration tests.
+all frontend integration tests.
 
-### Why MSW integration tests are EE-only
+### Why frontend integration tests are EE-only
 
 MSW mocks the network layer, including authentication headers and session
 state, which means it also implicitly mocks licensing. As a result, these tests
@@ -1364,14 +1364,14 @@ verify FOSS-versus-licensed behavior, use Capybara feature specs instead.
 
 ### CE path lint guard
 
-Adding any file under `spec/frontend/msw_integration/` fails ESLint with the
-message: "MSW integration tests are EE-only; use Capybara for FOSS/licensed
+Adding any file under `spec/frontend/integration/` fails ESLint with the
+message: "Frontend integration tests are EE-only; use Capybara for FOSS/licensed
 behavior." This is intentional. Place the file under
-`ee/spec/frontend/msw_integration/` instead.
+`ee/spec/frontend/integration/` instead.
 
 ### Community contributors
 
-MSW integration specs require EE fixture-generation infrastructure. If you
+Frontend integration specs require EE fixture-generation infrastructure. If you
 cannot run EE locally, open an issue or ask a GitLab team member to add the
 spec.
 
@@ -1551,7 +1551,7 @@ const OPERATION_NAME_OVERRIDES = {
 
 ```javascript
 import { join } from 'node:path';
-import { loadFixturesMap } from 'ee_jest/msw_integration/core/fixture_utils';
+import { loadFixturesMap } from 'ee_jest/integration/core/fixture_utils';
 
 const FIXTURES_PATH = join('tmp/tests/frontend/fixtures-ee/graphql/my_feature/integration/');
 const fixtures = loadFixturesMap(FIXTURES_PATH);
@@ -1614,7 +1614,7 @@ export function handleMyFeatureOperation({ operationName, variables }) {
 Recorded fixtures provide the base response for a GraphQL query.
 To test a different response shape such as an error, an empty list, or a flipped flag, you declare named variants instead of editing handlers.
 
-Place a variant file at `ee/spec/frontend/msw_integration/<feature>/fixture_variants/<query>.js`.
+Place a variant file at `ee/spec/frontend/integration/<feature>/fixture_variants/<query>.js`.
 It calls `defineFixtureVariants({ query, variants })` as its default export.
 `query` is the camelCase GraphQL operation name.
 `variants` maps UPPER_SNAKE_CASE keys to fixtures.
@@ -1628,8 +1628,8 @@ Each helper deep-clones its input and returns a new fixture, so you never clone 
 
 ```javascript
 import base from 'test_fixtures/graphql/work_items/integration/get_work_items_full.query.graphql.json';
-import { defineFixtureVariants } from 'ee_jest/msw_integration/core/fixture_variant_schema';
-import { setFixtureItemsCount } from 'ee_jest/msw_integration/core/fixture_utils';
+import { defineFixtureVariants } from 'ee_jest/integration/core/fixture_variant_schema';
+import { setFixtureItemsCount } from 'ee_jest/integration/core/fixture_utils';
 
 export default defineFixtureVariants({
   query: 'getWorkItemsFullEE',
@@ -1640,14 +1640,14 @@ export default defineFixtureVariants({
 });
 ```
 
-In a test, activate a variant with `setQueryVariant` imported from `ee_jest/msw_integration/helpers/setup_utils`.
+In a test, activate a variant with `setQueryVariant` imported from `ee_jest/integration/helpers/setup_utils`.
 Pass the query constant, which is the variant file's default export, and call the method named after the variant key.
 `EMPTY` becomes `empty()`, `WITH_ERROR` becomes `withError()`, so an unknown key cannot be spelled and editor autocomplete lists the variants for that query.
 The active variant resets to `BASE` automatically in `afterEach`.
 
 ```javascript
-import { setQueryVariant } from 'ee_jest/msw_integration/helpers/setup_utils';
-import getWorkItemsFull from 'ee_jest/msw_integration/work_items/fixture_variants/get_work_items_full';
+import { setQueryVariant } from 'ee_jest/integration/helpers/setup_utils';
+import getWorkItemsFull from 'ee_jest/integration/work_items/fixture_variants/get_work_items_full';
 
 it('renders the empty state', async () => {
   setQueryVariant(getWorkItemsFull).empty();
@@ -1685,8 +1685,8 @@ Prefer `??` over `||` here. `getActiveVariant` only ever returns a validated fix
 **Each query can only be registered once.**
 `defineFixtureVariants` throws `"variants for query X are already registered"` if it runs twice for the same query name. Importing one variant file from several places is safe — the module body executes only once, so the registration runs once. The error means two different variant files declare the same `query` name, usually a copy-paste. Keep one variant file per query and import it in the feature handler.
 
-Generate a manifest of every registered query and its variant keys with `yarn msw:variants`.
-It writes a keys-only JSON file to `tmp/tests/frontend/msw_variants.manifest.json`.
+Generate a manifest of every registered query and its variant keys with `yarn integration:variants`.
+It writes a keys-only JSON file to `tmp/tests/frontend/integration_variants.manifest.json`.
 The manifest is not committed.
 It is regenerated on demand and has no maintenance cost.
 Read it to discover which variants exist for which queries.
@@ -1714,7 +1714,7 @@ Take a snapshot before the action, perform the action, then assert inside
 operation families:
 
 ```javascript
-import { snapshotRequests, expectGraphQLCalls } from 'ee_jest/msw_integration/core/operation_helpers';
+import { snapshotRequests, expectGraphQLCalls } from 'ee_jest/integration/core/operation_helpers';
 
 it('updates the comment count without refetching the list', async () => {
   const baseline = snapshotRequests();
@@ -1740,7 +1740,7 @@ where creating a comment triggered an unnecessary list refetch.
 
 ### Write a test file
 
-Test files live under `ee/spec/frontend/msw_integration/` in a subdirectory that
+Test files live under `ee/spec/frontend/integration/` in a subdirectory that
 mirrors the feature area. Each file should:
 
 1. Create a router with `assignRouter` from `test_helpers.js` instead of
@@ -1781,7 +1781,7 @@ Use native DOM equivalents instead:
 | `.exists()` | `!== null` |
 | `.setValue(val)` | `el.value = val; el.dispatchEvent(new Event('input', { bubbles: true }))` |
 
-The following helpers from `ee_jest/msw_integration/helpers/test_helpers` cover common async interaction patterns:
+The following helpers from `ee_jest/integration/helpers/test_helpers` cover common async interaction patterns:
 
 | Helper | Description |
 |---|---|
@@ -1804,7 +1804,7 @@ import { waitFor } from '@testing-library/dom';
 import { apolloProvider } from '~/graphql_shared/issuable_client';
 import { createRouter } from '~/my_feature/router';
 import MyApp from '~/my_feature/components/app.vue';
-import { assignRouter, fullMount, waitForElement, getText } from 'ee_jest/msw_integration/helpers/test_helpers';
+import { assignRouter, fullMount, waitForElement, getText } from 'ee_jest/integration/helpers/test_helpers';
 
 Vue.use(VueApollo);
 
@@ -1887,21 +1887,21 @@ stale response for the next test's identical query. To prevent this,
 cancels in-flight fetches before each test runs. Spec files do not need to
 do anything extra beyond the usual `cache.reset()`.
 
-### Run MSW integration tests
+### Run frontend integration tests
 
-Run all MSW integration tests:
+Run all frontend integration tests:
 
 ```shell
-yarn jest:msw-integration
+yarn jest:integration
 ```
 
 Run a single file:
 
 ```shell
-yarn jest:msw-integration ee/spec/frontend/msw_integration/work_items/agent_plan_spec.js
+yarn jest:integration ee/spec/frontend/integration/work_items/agent_plan_spec.js
 ```
 
-In CI, these tests run in the `jest-msw-integration` job (tier-2+ pipelines).
+In CI, these tests run in the `jest-integration` job (tier-2+ pipelines).
 
 ## Test helpers
 
@@ -2259,10 +2259,10 @@ Use a unit test if:
 ### Choose the right feature test type
 
 Once you decide a feature test is appropriate, there are two types at
-GitLab. Default to MSW integration tests because they are
+GitLab. Default to frontend integration tests because they are
 significantly faster.
 
-Use an **MSW integration test** (`ee/spec/frontend/msw_integration/`, EE-only) when:
+Use a **frontend integration test** (`ee/spec/frontend/integration/`, EE-only) when:
 
 - The test covers multi-component interaction on a single page (for example, list + drawer).
 - The backend responses can be represented with auto-generated fixtures.
@@ -2285,7 +2285,7 @@ A [Capybara feature test](testing_levels.md#white-box-tests-at-the-system-level-
 - Call the API.
 
 Capybara feature tests are expensive to run. Make sure you cannot achieve
-the same coverage with an [MSW integration test](#msw-integration-tests)
+the same coverage with a [frontend integration test](#frontend-integration-tests)
 before writing one.
 
 All Capybara feature tests are written in `Ruby` but often end up being written by `JavaScript` engineers, as they implement the user-facing feature. The following section assumes no prior knowledge of `Ruby` or `Capybara`, and provides a clear guideline on when and how to use these tests.

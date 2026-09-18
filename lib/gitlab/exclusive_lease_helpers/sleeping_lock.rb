@@ -4,7 +4,7 @@ module Gitlab
   module ExclusiveLeaseHelpers
     # Wrapper around ExclusiveLease that adds retry logic
     class SleepingLock
-      delegate :cancel, to: :@lease
+      delegate :cancel, :renew, :same_uuid?, to: :@lease
       MAX_ATTEMPTS = 65
       DEFAULT_ATTEMPTS = 10
 

@@ -1,6 +1,6 @@
 #!/usr/bin/env node
-// Posts (or updates) a "MSW Test Result Summary" comment on the current MR
-// after a jest-msw-integration / jest-msw-integration vue3 job finishes.
+// Posts (or updates) a "Frontend Integration Test Result Summary" comment on the current MR
+// after a jest-integration / jest-integration vue3 job finishes.
 //
 // Called from the CI after_script — no external dependencies, uses only
 // Node built-ins and the fetch API available in Node 18+.
@@ -13,7 +13,7 @@
 //   CI_JOB_NAME, CI_JOB_URL, CI_JOB_DURATION
 //   CI_PROJECT_DIR        (used to normalise absolute report paths)
 //
-// Actionability model (see docs/superpowers/specs/2026-07-09-msw-actionable-runtime-signal-design.md):
+// Actionability model:
 //   - Detects the spec files this MR adds/changes (via the MR diffs API).
 //   - For each changed file that ran in this job, diffs its runtime and test
 //     count against the same file in the latest successful master run.
@@ -29,8 +29,10 @@ import { parseArgs } from 'node:util';
 // implements the same contract; changing these markers means changing both.
 const COMBINED_MARKER = '<!-- test-result-summary -->';
 
+// The `msw` key is the on-the-wire section marker (<!-- section:msw -->) already
+// embedded in existing MR notes; renaming it would orphan those sections.
 const SECTIONS = {
-  msw: { label: 'MSW Test Result Summary', job: 'jest-msw-integration' },
+  msw: { label: 'Frontend Integration Test Result Summary', job: 'jest-integration' },
   rspec: { label: 'RSpec Test Result Summary', job: 'rspec:test-summary' },
 };
 
@@ -78,7 +80,7 @@ function buildCombinedComment(name, content, { counterpartPresent }) {
 }
 
 // ---------------------------------------------------------------------------
-// Per-new-test time budget (seconds). MSW integration tests are heavier than
+// Per-new-test time budget (seconds). Frontend integration tests are heavier than
 // unit tests, so the budget is generous compared to a plain unit test.
 // ---------------------------------------------------------------------------
 const BUDGET_OK_S = 15; // < 15 s/test  → OK
@@ -104,10 +106,10 @@ const MAX_BACKOFF_S = 60;
 function parseOptions() {
   const { values } = parseArgs({
     options: {
-      'job-name': { type: 'string', default: process.env.CI_JOB_NAME ?? 'jest-msw-integration' },
+      'job-name': { type: 'string', default: process.env.CI_JOB_NAME ?? 'jest-integration' },
       'report-path': { type: 'string', default: '' },
       // Path of the artifact *within the artifact archive* used to fetch the
-      // master baseline report (e.g. "tmp/jest-msw-report.json").
+      // master baseline report (e.g. "tmp/jest-integration-report.json").
       'artifact-path': { type: 'string', default: '' },
       'job-url': { type: 'string', default: process.env.CI_JOB_URL ?? '' },
       duration: { type: 'string', default: process.env.CI_JOB_DURATION ?? '0' },
@@ -171,7 +173,7 @@ function normalizeReportPath(absPath) {
  *
  * Uses the sum of per-assertion `duration` (ms) rather than `perfStats` /
  * suite start-end timestamps: Jest's --json output has no `perfStats`, and the
- * MSW tests mock the system clock (every suite reports the same fake timestamp),
+ * Integration tests mock the system clock (every suite reports the same fake timestamp),
  * so only assertion durations remain a reliable measure.
  *
  * @returns {Object<string, { runtimeS: number, testCount: number }>}
@@ -377,10 +379,10 @@ function buildComment({
     const changedPart =
       actionable.files.length > 0
         ? `Changed ${actionable.files.length} spec file${actionable.files.length === 1 ? '' : 's'} with no net-new tests · **${formatSignedDuration(actionable.addedRuntimeS)} vs master**`
-        : `No changed MSW spec files`;
+        : `No changed integration spec files`;
     lines.push(`${changedPart}${deletedSuffix}`);
   } else {
-    lines.push('No changed MSW spec files detected in this MR.');
+    lines.push('No changed integration spec files detected in this MR.');
   }
   lines.push('');
 
@@ -467,7 +469,7 @@ async function apiRequest(method, path, body) {
     const retry = async (reason) => {
       const backoffS = Math.min(2 ** n, MAX_BACKOFF_S);
       console.warn(
-        `[MSW] ${reason} — retrying in ${backoffS}s (attempt ${n + 1}/${MAX_API_ATTEMPTS}).`,
+        `[Integration] ${reason} — retrying in ${backoffS}s (attempt ${n + 1}/${MAX_API_ATTEMPTS}).`,
       );
       await sleep(backoffS);
       return attempt(n + 1);
@@ -552,7 +554,7 @@ async function fetchChangedSpecFiles(projectId, mrIid) {
       if (page === MAX_DIFF_PAGES) truncated = true;
     }
   } catch (err) {
-    console.warn(`[MSW] Could not fetch MR changed files: ${err.message}`);
+    console.warn(`[Integration] Could not fetch MR changed files: ${err.message}`);
   }
   return { files, deletedFiles, truncated };
 }
@@ -576,10 +578,10 @@ async function fetchMasterBaseline(projectId, jobName, reportArtifactPath) {
       'GET',
       `/projects/${projectId}/jobs/artifacts/master/raw/${reportArtifactPath}?job=${encodeURIComponent(jobName)}`,
     );
-    console.log(`[MSW] Master baseline: latest successful "${jobName}" on master.`);
+    console.log(`[Integration] Master baseline: latest successful "${jobName}" on master.`);
     return { perFile: perFileFromReport(data) };
   } catch (err) {
-    console.log(`[MSW] No master baseline available (${err.message}) — skipping delta.`);
+    console.log(`[Integration] No master baseline available (${err.message}) — skipping delta.`);
     return null;
   }
 }
@@ -595,7 +597,7 @@ async function findExistingNote(projectId, mrIid) {
     authorUsername = me?.username ?? null;
   } catch (err) {
     console.warn(
-      `[MSW] Could not resolve current user (${err.message}) — matching on marker only.`,
+      `[Integration] Could not resolve current user (${err.message}) — matching on marker only.`,
     );
   }
 
@@ -636,7 +638,7 @@ async function counterpartJobPresent(projectId, jobName) {
       if (jobs.length < 100) break;
     }
   } catch (err) {
-    console.warn(`[MSW] Could not look up ${jobName} in the pipeline: ${err.message}`);
+    console.warn(`[Integration] Could not look up ${jobName} in the pipeline: ${err.message}`);
   }
 
   return false;
@@ -645,7 +647,7 @@ async function counterpartJobPresent(projectId, jobName) {
 async function run() {
   const mrIid = process.env.CI_MERGE_REQUEST_IID;
   if (!mrIid) {
-    console.log('Not a merge-request pipeline — skipping MSW summary comment.');
+    console.log('Not a merge-request pipeline — skipping integration summary comment.');
     return;
   }
 
@@ -681,14 +683,14 @@ async function run() {
   const threshold = thresholdInfo(actionable.perTestS);
   const perTestStr = actionable.perTestS != null ? `${Math.round(actionable.perTestS)}s` : '—';
   console.log(
-    `[MSW] New tests: +${actionable.addedTests} | Added runtime: ${formatSignedDuration(Math.round(actionable.addedRuntimeS))} | Per new test: ${perTestStr} | ${threshold.label || 'no baseline'}`,
+    `[Integration] New tests: +${actionable.addedTests} | Added runtime: ${formatSignedDuration(Math.round(actionable.addedRuntimeS))} | Per new test: ${perTestStr} | ${threshold.label || 'no baseline'}`,
   );
 
   if (opts.dryRun) {
-    console.log('\n[MSW] --dry-run: comment NOT posted. Rendered comment below:\n');
+    console.log('\n[Integration] --dry-run: comment NOT posted. Rendered comment below:\n');
     console.log(comment);
     if (threshold.level === 'action') {
-      console.log(`\n[MSW] --dry-run: would exit 1 (action required).`);
+      console.log(`\n[Integration] --dry-run: would exit 1 (action required).`);
     }
     return;
   }
@@ -709,7 +711,9 @@ async function run() {
         `/projects/${projectId}/merge_requests/${mrIid}/notes/${existing.id}`,
         { body },
       );
-      console.log(`Updated the MSW section of the test summary comment (note ${existing.id}).`);
+      console.log(
+        `Updated the integration section of the test summary comment (note ${existing.id}).`,
+      );
     } catch (err) {
       // The CI token can only edit notes it authored, so updating a note that
       // was created by a different user/token fails (typically 403). Fall back
@@ -726,19 +730,19 @@ async function run() {
   // range. The comment has already been posted, so reviewers see the details.
   if (threshold.level === 'action') {
     console.error(
-      `🔴 [MSW] Action required: ${Math.round(actionable.perTestS)}s per new test (budget ${BUDGET_OK_S}s/test). Exiting with code 1.`,
+      `🔴 [Integration] Action required: ${Math.round(actionable.perTestS)}s per new test (budget ${BUDGET_OK_S}s/test). Exiting with code 1.`,
     );
     process.exit(1);
   }
 }
 
-// Only run when invoked directly (node scripts/frontend/post_msw_test_summary.mjs).
+// Only run when invoked directly (node scripts/frontend/post_integration_test_summary.mjs).
 // When imported by the unit test, the pure functions are exercised instead.
-if (process.argv[1]?.endsWith('post_msw_test_summary.mjs')) {
+if (process.argv[1]?.endsWith('post_integration_test_summary.mjs')) {
   run().catch((err) => {
     // Posting the summary is best-effort: never fail the (already-finished)
     // job's after_script just because the comment could not be posted.
-    console.warn(`Skipping MSW summary comment: ${err.message}`);
+    console.warn(`Skipping integration summary comment: ${err.message}`);
   });
 }
 

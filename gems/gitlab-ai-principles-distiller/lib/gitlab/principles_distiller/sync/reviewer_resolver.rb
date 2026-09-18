@@ -72,7 +72,7 @@ module Gitlab
         attr_reader :workflow, :distillation_base_sha
 
         def aggregate_author_commits(authors)
-          ordered = authors.sort_by { |author| -author[:authored_at].to_i }
+          ordered = authors.sort_by { |author| [-author[:authored_at].to_i, author[:commit_sha]] }
           ordered.first.except(:commit_sha).merge(commit_shas: ordered.map { |author| author[:commit_sha] }.uniq)
         end
 

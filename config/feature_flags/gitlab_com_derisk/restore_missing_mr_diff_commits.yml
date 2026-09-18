@@ -1,0 +1,10 @@
+---
+name: restore_missing_mr_diff_commits
+description: Restore merge request diff commit rows skipped by the partitioning backfill when a read finds them missing
+feature_issue_url: https://gitlab.com/gitlab-org/gitlab/-/work_items/628194
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/256346
+rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/work_items/629824
+milestone: '19.5'
+type: gitlab_com_derisk
+group: group::code review
+default_enabled: false

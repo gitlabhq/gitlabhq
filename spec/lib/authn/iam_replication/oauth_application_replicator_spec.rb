@@ -98,10 +98,10 @@ RSpec.describe Authn::IamReplication::OauthApplicationReplicator, feature_catego
       context 'when the application is dynamic' do
         let(:application) { create(:oauth_application, :dynamic) }
 
-        it 'sends the anonymous service label' do
+        it 'sends no owner' do
           replicator.deliver(row)
 
-          expect(client).to have_received(:upsert_oauth_application).with(hash_including(owner: 'An anonymous service'))
+          expect(client).to have_received(:upsert_oauth_application).with(hash_including(owner: nil))
         end
       end
 

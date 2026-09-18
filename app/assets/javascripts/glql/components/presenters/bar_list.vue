@@ -19,6 +19,8 @@ import {
 } from '../../utils/chart_data';
 import { valueFormatterFor } from '../../utils/value_format';
 import DimensionRoutedChart from './chart/dimension_routed_chart.vue';
+import { foldTail } from './bar_list/fold_tail';
+import TwoDimensionsBarList from './bar_list/two_dimensions_bar_list.vue';
 import { NO_VALUE, trendPresentationFor } from './utils/stat';
 import {
   TREND_PREVIOUS_KEY,
@@ -31,6 +33,10 @@ import { formatSignedChange, trendChangeFor } from './utils/trend';
 // Six rows plus a rolled-up Other row, which is the shape of the design this
 // display type was built for. A query returning fewer rows is unaffected.
 const DEFAULT_MAX_ROWS = 6;
+
+// How many secondary-dimension values keep their own stacked segment before
+// the rest roll up into an Other segment, keeping the legend legible.
+const DEFAULT_MAX_SERIES = 6;
 
 const sumOf = (rows, key) => rows.reduce((sum, row) => sum + row[key], 0);
 
@@ -46,6 +52,7 @@ export default {
   components: {
     BarListChart,
     DimensionRoutedChart,
+    TwoDimensionsBarList,
     GlSkeletonLoader,
   },
   props: {
@@ -95,6 +102,10 @@ export default {
     maxRows() {
       const maxRows = Number(this.displayConfig.maxRows);
       return Number.isInteger(maxRows) && maxRows > 0 ? maxRows : DEFAULT_MAX_ROWS;
+    },
+    maxSeries() {
+      const maxSeries = Number(this.displayConfig.maxSeries);
+      return Number.isInteger(maxSeries) && maxSeries > 0 ? maxSeries : DEFAULT_MAX_SERIES;
     },
     valueLabels() {
       return this.displayConfig?.valueLabels ?? VALUE_LABELS_DEFAULT;
@@ -201,22 +212,16 @@ export default {
       };
       const descending = rows.sort((a, b) => b.value - a.value);
 
-      if (descending.length <= this.maxRows + 1) {
-        return descending.map(toRow);
-      }
+      return foldTail(descending, this.maxRows, (remainder) => {
+        // One row with no previous value leaves the roll-up's previous total unknown too.
+        const remainderKnown = remainder.every(({ previousValue }) => previousValue != null);
 
-      const remainder = descending.slice(this.maxRows);
-      // One row with no previous value leaves the roll-up's previous total unknown too.
-      const remainderKnown = remainder.every(({ previousValue }) => previousValue != null);
-
-      return [
-        ...descending.slice(0, this.maxRows).map(toRow),
-        toRow({
+        return {
           name: sprintf(s__('Glql|Other (%{count})'), { count: remainder.length }),
           value: sumOf(remainder, 'value'),
           previousValue: remainderKnown ? sumOf(remainder, 'previousValue') : null,
-        }),
-      ];
+        };
+      }).map(toRow);
     },
   },
 };
@@ -238,7 +243,7 @@ export default {
     display-type="barList"
     :fields="fields"
     :loading="loading"
-    :max-dimensions="1"
+    :max-dimensions="2"
     @error="$emit('error', $event)"
   >
     <template #one-dimension="{ dimension, metrics }">
@@ -248,6 +253,17 @@ export default {
         :value-labels="valueLabels"
         :color="color"
         :scale="scale"
+      />
+    </template>
+    <template #two-dimensions="{ dimensions, metric }">
+      <two-dimensions-bar-list
+        v-if="!displayConfigError"
+        :data="data"
+        :primary-dimension="dimensions[0]"
+        :secondary-dimension="dimensions[1]"
+        :metric="metric"
+        :max-rows="maxRows"
+        :max-series="maxSeries"
       />
     </template>
   </dimension-routed-chart>

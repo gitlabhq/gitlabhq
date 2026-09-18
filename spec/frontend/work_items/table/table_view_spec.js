@@ -1,7 +1,8 @@
-import { GlLoadingIcon, GlSkeletonLoader } from '@gitlab/ui';
+import { GlButton, GlLoadingIcon, GlSkeletonLoader } from '@gitlab/ui';
 import Vue, { nextTick } from 'vue';
 import VueApollo from 'vue-apollo';
 import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
+import { stubComponent } from 'helpers/stub_component';
 import createMockApollo from 'helpers/mock_apollo_helper';
 import waitForPromises from 'helpers/wait_for_promises';
 import getWorkItemsQuery from 'ee_else_ce/work_items/list/graphql/get_work_items_full.query.graphql';
@@ -17,6 +18,8 @@ import {
 import { removeParams, updateHistory } from '~/lib/utils/url_utility';
 import setWindowLocation from 'helpers/set_window_location_helper';
 import { DEFAULT_SKELETON_COUNT } from '~/vue_shared/issuable/list/constants';
+import IssuableBulkEditSidebar from '~/vue_shared/issuable/list/components/issuable_bulk_edit_sidebar.vue';
+import WorkItemBulkEditSidebar from '~/work_items/list/components/work_item_bulk_edit_sidebar.vue';
 import TableView from '~/work_items/table/table_view.vue';
 import WorkItemTableRow from '~/work_items/table/components/work_item_table_row.vue';
 import {
@@ -33,6 +36,8 @@ jest.mock('~/lib/utils/url_utility', () => ({
 }));
 
 Vue.use(VueApollo);
+
+const showToast = jest.fn();
 
 describe('TableView', () => {
   let wrapper;
@@ -52,6 +57,14 @@ describe('TableView', () => {
   const findRows = () => wrapper.findAllComponents(WorkItemTableRow);
   const findSkeletonLoaders = () => wrapper.findAllComponents(GlSkeletonLoader);
   const findSkeletonRows = () => wrapper.findAll('tbody tr');
+  const findBulkEditSidebar = () => wrapper.findComponent(IssuableBulkEditSidebar);
+  const findBulkEditForm = () => wrapper.findComponent(WorkItemBulkEditSidebar);
+  const findUpdateSelectedButton = () =>
+    wrapper
+      .findAllComponents(GlButton)
+      .wrappers.find((button) => button.text() === 'Update selected');
+  const findCancelButton = () =>
+    wrapper.findAllComponents(GlButton).wrappers.find((button) => button.text() === 'Cancel');
 
   const createComponent = ({
     props = {},
@@ -81,6 +94,7 @@ describe('TableView', () => {
         hasIssueWeightsFeature: false,
         hasIterationsFeature: false,
         hasStatusFeature: false,
+        isGroup: false,
         workItemType: null,
         ...provide,
       },
@@ -94,6 +108,12 @@ describe('TableView', () => {
         ...props,
       },
       slots,
+      stubs: {
+        WorkItemBulkEditSidebar: stubComponent(WorkItemBulkEditSidebar),
+      },
+      mocks: {
+        $toast: { show: showToast },
+      },
     });
   };
 
@@ -416,6 +436,145 @@ describe('TableView', () => {
     it('renders the page empty state instead of the table', () => {
       expect(findTable().exists()).toBe(false);
       expect(wrapper.findByTestId('page-empty').exists()).toBe(true);
+    });
+  });
+
+  describe('bulk editing', () => {
+    const firstWorkItem = workItems[0];
+
+    describe('when bulk editing is off', () => {
+      beforeEach(async () => {
+        createComponent();
+        await waitForPromises();
+      });
+
+      it('keeps the sidebar collapsed and renders no form', () => {
+        expect(findBulkEditSidebar().props('expanded')).toBe(false);
+        expect(findBulkEditForm().exists()).toBe(false);
+      });
+
+      it('renders no checkbox column', () => {
+        expect(findColumnHeaders().at(0).text()).toBe('Title');
+        expect(findRows().at(0).props('showCheckbox')).toBe(false);
+      });
+    });
+
+    describe('when bulk editing is on', () => {
+      beforeEach(async () => {
+        createComponent({ props: { showBulkEditSidebar: true } });
+        await waitForPromises();
+      });
+
+      it('expands the sidebar and renders the form for the namespace', () => {
+        expect(findBulkEditSidebar().props('expanded')).toBe(true);
+        expect(findBulkEditForm().props()).toMatchObject({
+          checkedItems: [],
+          fullPath: 'group',
+          isGroup: false,
+        });
+      });
+
+      it('adds a checkbox column ahead of the others', () => {
+        expect(findColumnHeaders().at(0).text()).toBe('Select work item');
+        expect(findColumnHeaders().at(1).text()).toBe('Title');
+        expect(findRows().at(0).props('showCheckbox')).toBe(true);
+      });
+
+      it('asks for a work item to be checked when its row is checked', () => {
+        findRows().at(0).vm.$emit('checked-input', true);
+
+        expect(wrapper.emitted('set-checked-issuable-ids')).toEqual([[[firstWorkItem.id]]]);
+      });
+
+      it('leaves the checked ids alone when a checked row reports checked again', async () => {
+        await wrapper.setProps({ checkedIssuableIds: [firstWorkItem.id] });
+        findRows().at(0).vm.$emit('checked-input', true);
+
+        expect(wrapper.emitted('set-checked-issuable-ids')).toBeUndefined();
+      });
+
+      it('submits through the shared form so the button sits outside it', () => {
+        expect(findUpdateSelectedButton().attributes()).toMatchObject({
+          form: 'work-item-list-bulk-edit',
+          type: 'submit',
+        });
+      });
+
+      it('asks to close the sidebar when cancelled', () => {
+        findCancelButton().vm.$emit('click');
+
+        expect(wrapper.emitted('toggle-bulk-edit-sidebar')).toEqual([[false]]);
+      });
+    });
+
+    describe('with rows checked', () => {
+      beforeEach(async () => {
+        createComponent({
+          props: { showBulkEditSidebar: true, checkedIssuableIds: [firstWorkItem.id] },
+        });
+        await waitForPromises();
+      });
+
+      it('marks only the checked rows', () => {
+        expect(findRows().at(0).props('checked')).toBe(true);
+        expect(findRows().at(1).props('checked')).toBe(false);
+      });
+
+      it('hands the checked work items to the form, not just their ids', () => {
+        expect(findBulkEditForm().props('checkedItems')).toEqual([
+          expect.objectContaining({ id: firstWorkItem.id }),
+        ]);
+      });
+
+      it('asks for a work item to be unchecked when its row is unchecked', () => {
+        findRows().at(0).vm.$emit('checked-input', false);
+
+        expect(wrapper.emitted('set-checked-issuable-ids')).toEqual([[[]]]);
+      });
+
+      it('enables the submit button', () => {
+        expect(findUpdateSelectedButton().props('disabled')).toBe(false);
+      });
+
+      describe('while an update is in flight', () => {
+        beforeEach(() => {
+          findBulkEditForm().vm.$emit('start');
+        });
+
+        it('shows the submit button as loading and blocks a second submit', () => {
+          expect(findUpdateSelectedButton().props()).toMatchObject({
+            loading: true,
+            disabled: true,
+          });
+        });
+
+        it('stops loading when the form finishes', async () => {
+          findBulkEditForm().vm.$emit('finish');
+          await nextTick();
+
+          expect(findUpdateSelectedButton().props('loading')).toBe(false);
+        });
+      });
+
+      describe('when the update succeeds', () => {
+        it('closes the sidebar', () => {
+          findBulkEditForm().vm.$emit('success', {});
+
+          expect(wrapper.emitted('toggle-bulk-edit-sidebar')).toEqual([[false]]);
+        });
+
+        it('shows the toast the form asked for', () => {
+          findBulkEditForm().vm.$emit('success', { toastMessage: '2 items updated' });
+
+          expect(showToast).toHaveBeenCalledWith('2 items updated');
+        });
+
+        it('refetches the counts when the form asks for it', () => {
+          findBulkEditForm().vm.$emit('success', { refetchCounts: true });
+
+          expect(wrapper.emitted('refetch-data')).toEqual([['counts']]);
+        });
+      });
     });
   });
 });

@@ -150,4 +150,26 @@ describe('createDefaultClient', () => {
       expect(chain.indexOf(customLink)).toBeLessThan(chain.indexOf(suppressLink));
     });
   });
+
+  describe('request tag', () => {
+    // `json.path` has its query string stripped by Lograge, so a link that wants a request
+    // countable in the logs tags it via `context.requestTag` instead.
+    const getRequestUri = () => HttpLink.mock.calls.at(-1)[0].uri;
+
+    it('uses the plain endpoint when the operation has no requestTag', () => {
+      createDefaultClient();
+
+      expect(getRequestUri()({ getContext: () => ({}) })).toBe('/api/graphql');
+    });
+
+    it('appends the requestTag as a query string when the operation sets one', () => {
+      createDefaultClient();
+
+      const uri = getRequestUri()({
+        getContext: () => ({ requestTag: { wi_realtime: 'match' } }),
+      });
+
+      expect(uri).toBe('/api/graphql?wi_realtime=match');
+    });
+  });
 });

@@ -12,13 +12,16 @@ module Mutations
 
       authorize :delete_timelog
 
-      # Project boundary only: the role definitions grant timelog deletion
-      # abilities at project scope only, so deleting a timelog on a
-      # group-level work item is denied for every role and a group boundary
-      # could never grant access. Group-level timelogs fail closed
-      # (unresolvable boundary). Extend when group-scope grants exist.
+      # A timelog on a project issuable resolves through `project`; one on a
+      # group-level work item has no project and resolves through `namespace`
+      # to its group. Both are declared because either can be the real
+      # boundary, and BoundaryExtractor discards the directive whose resolved
+      # object does not match its declared boundary_type.
       authorize_granular_token permissions: :delete_timelog,
-        boundary_argument: :id, boundary: :project, boundary_type: :project
+        boundaries: [
+          { boundary_argument: :id, boundary: :project, boundary_type: :project },
+          { boundary_argument: :id, boundary: :namespace, boundary_type: :group }
+        ]
 
       def resolve(id:)
         timelog = authorized_find!(id: id)

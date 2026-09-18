@@ -1,3 +1,4 @@
+import { GlFormCheckbox } from '@gitlab/ui';
 import { mountExtended, shallowMountExtended } from 'helpers/vue_test_utils_helper';
 import WorkItemTableCell from '~/work_items/table/components/work_item_table_cell.vue';
 import WorkItemTableRow from '~/work_items/table/components/work_item_table_row.vue';
@@ -20,6 +21,8 @@ describe('WorkItemTableRow', () => {
   const findCells = () => wrapper.findAllComponents(WorkItemTableCell);
 
   const findRow = () => wrapper.findByTestId('work-item-table-row');
+  const findCheckbox = () => wrapper.findComponent(GlFormCheckbox);
+  const findCheckboxCell = () => wrapper.findByTestId('work-item-table-checkbox-cell');
 
   const createComponent = ({ mountFn = shallowMountExtended, props = {} } = {}) => {
     wrapper = mountFn(WorkItemTableRow, {
@@ -142,6 +145,64 @@ describe('WorkItemTableRow', () => {
 
       expect(wrapper.emitted('set-active-item')).toBeUndefined();
       expect(findRow().classes()).not.toContain('gl-cursor-pointer');
+    });
+  });
+
+  describe('bulk edit checkbox', () => {
+    it('is absent by default', () => {
+      createComponent({ mountFn: mountExtended });
+
+      expect(findCheckboxCell().exists()).toBe(false);
+      expect(wrapper.findAll('td')).toHaveLength(1);
+    });
+
+    describe('when the row can be selected', () => {
+      beforeEach(() => {
+        createComponent({ mountFn: mountExtended, props: { showCheckbox: true } });
+      });
+
+      it('renders an unchecked checkbox named after the work item', () => {
+        expect(findCheckbox().props('checked')).toBe(false);
+        expect(findCheckboxCell().text()).toBe(item.title);
+      });
+
+      it('reports the new state when checked', async () => {
+        // A synthetic click ticks the box without firing `change`, which is the event the
+        // checkbox actually listens to, so this toggles it the way a real one would.
+        const checkbox = wrapper.find('input[type="checkbox"]');
+        checkbox.element.checked = true;
+        await checkbox.trigger('change');
+
+        expect(wrapper.emitted('checked-input')).toEqual([[true]]);
+      });
+    });
+
+    describe('while the side panel is enabled', () => {
+      beforeEach(() => {
+        createComponent({
+          mountFn: mountExtended,
+          props: { showCheckbox: true, detailPanelEnabled: true },
+        });
+      });
+
+      it('does not open the work item when the checkbox cell is clicked', () => {
+        findCheckboxCell().trigger('click');
+
+        expect(wrapper.emitted('set-active-item')).toBeUndefined();
+      });
+
+      it('does not open the work item when the row is clicked', async () => {
+        await findRow().trigger('click');
+
+        expect(wrapper.emitted('set-active-item')).toBeUndefined();
+        expect(findRow().classes()).not.toContain('gl-cursor-pointer');
+      });
+    });
+
+    it('renders a checked checkbox when the row is selected', () => {
+      createComponent({ mountFn: mountExtended, props: { showCheckbox: true, checked: true } });
+
+      expect(findCheckbox().props('checked')).toBe(true);
     });
   });
 });

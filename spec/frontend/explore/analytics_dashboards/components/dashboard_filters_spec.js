@@ -11,7 +11,7 @@ describe('DashboardFilters', () => {
   };
   const DateRangeFilterStub = {
     name: 'DateRangeFilter',
-    props: ['defaultOption', 'options', 'dateRangeLimit'],
+    props: ['defaultOption', 'options', 'dateRangeLimit', 'startDate', 'endDate'],
     template: '<div />',
   };
 
@@ -85,6 +85,46 @@ describe('DashboardFilters', () => {
       expect(findDateRangeFilter().props('defaultOption')).toBe('30d');
       expect(findDateRangeFilter().props('options')).toBeUndefined();
       expect(findDateRangeFilter().props('dateRangeLimit')).toBe(0);
+    });
+  });
+
+  describe('when the page passes a date range, as it does from the URL params', () => {
+    const dashboardFilters = { dateRange: { enabled: true, defaultOption: '30d' } };
+
+    it('starts the filter on the option the page resolved, not the configured default', () => {
+      createComponent({
+        props: { dashboardFilters, dateRangeFilter: { dateRangeOption: '90d' } },
+      });
+
+      expect(findDateRangeFilter().props('defaultOption')).toBe('90d');
+    });
+
+    it('hands the filter both bounds of a custom range', () => {
+      const startDate = new Date('2026-01-05T00:00:00.000Z');
+      const endDate = new Date('2026-03-31T00:00:00.000Z');
+
+      createComponent({
+        props: {
+          dashboardFilters,
+          dateRangeFilter: { dateRangeOption: 'custom', startDate, endDate },
+        },
+      });
+
+      expect(findDateRangeFilter().props()).toMatchObject({
+        defaultOption: 'custom',
+        startDate,
+        endDate,
+      });
+    });
+
+    it('falls back to the configured default when the page resolved no option', () => {
+      createComponent({ props: { dashboardFilters, dateRangeFilter: {} } });
+
+      expect(findDateRangeFilter().props()).toMatchObject({
+        defaultOption: '30d',
+        startDate: null,
+        endDate: null,
+      });
     });
   });
 

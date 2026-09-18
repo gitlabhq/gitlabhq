@@ -64,10 +64,8 @@ module Authn
       end
 
       # Mirrors auth_helper#auth_app_owner_text
-      # Temporary: removed once IAM owns the owner label, see
-      # https://gitlab.com/gitlab-org/gitlab/-/work_items/623571
       def owner_label(application)
-        return 'An anonymous service' if application.dynamic?
+        return if application.dynamic?
         return 'An administrator' unless application.owner
 
         application.owner.name

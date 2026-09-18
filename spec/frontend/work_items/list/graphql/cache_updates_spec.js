@@ -16,6 +16,7 @@ import {
   removeWorkItemFromNamespaceLists,
   MAX_MATCH_IDS,
 } from '~/work_items/list/graphql/cache_updates';
+import { WI_REALTIME_TAG_KEY } from '~/work_items/list/graphql/realtime_request_tag';
 import { buildWorkItemNode, buildBoardWorkItemsResponse, mockGroupId } from '../../board/mock_data';
 
 const NAMESPACE_ID = 'gid://gitlab/Group/3';
@@ -187,7 +188,10 @@ describe('work item list cache updates', () => {
           lastPageSize: null,
         },
         fetchPolicy: 'network-only',
-        context: { featureCategory: 'portfolio_management' },
+        context: {
+          featureCategory: 'portfolio_management',
+          requestTag: { [WI_REALTIME_TAG_KEY]: 'match' },
+        },
       });
     });
 

@@ -132,6 +132,10 @@ export const DATE_RANGE_GRANULARITY_MONTHLY = 'monthly';
 export const DATE_RANGE_GRANULARITY_DAILY_MAX_DAYS = 31;
 export const DATE_RANGE_GRANULARITY_WEEKLY_MAX_DAYS = 91;
 
+export const DATE_RANGE_QUERY_NAME = 'date_range';
+export const START_DATE_QUERY_NAME = 'start_date';
+export const END_DATE_QUERY_NAME = 'end_date';
+
 export const PROJECT_FILTER_QUERY_NAME = 'projects';
 export const GROUP_FILTER_QUERY_NAME = 'groups';
 export const SCOPE_FILTER_QUERY_NAME = 'scope';

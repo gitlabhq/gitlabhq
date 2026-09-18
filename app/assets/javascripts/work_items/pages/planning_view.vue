@@ -158,6 +158,7 @@ import {
   findMatchingWorkItems,
   removeWorkItemFromNamespaceLists,
 } from '../list/graphql/cache_updates';
+import { markRealtimeRefetch, COUNT_OPERATIONS } from '../list/graphql/realtime_request_tag';
 
 import SavedViewsNotFoundModal from '../list/components/work_items_saved_views_not_found_modal.vue';
 import SavedViewsLimitWarningModal from '../list/components/work_items_saved_views_limit_warning_modal.vue';
@@ -2030,7 +2031,12 @@ export default {
     handleBoardWorkItemCreated() {
       this.$apollo.queries.workItemsCount.refetch();
     },
-    async refetchItems({ refetchCounts = false }) {
+    // `cause` is set only by the realtime paths below, so a user-driven refetch (creating an
+    // item, changing filters, ...) stays untagged in the request logs.
+    async refetchItems({ refetchCounts = false, cause }) {
+      if (cause) {
+        markRealtimeRefetch(cause);
+      }
       if (refetchCounts) {
         this.$apollo.queries.workItemsCount.refetch();
         this.$apollo.queries.hasWorkItems.refetch();
@@ -2111,7 +2117,7 @@ export default {
         return;
       }
 
-      this.refetchItems({ refetchCounts: true });
+      this.refetchItems({ refetchCounts: true, cause: 'reconnect' });
     },
     // Events arrive for every work item in the namespace and its descendants, so a bulk edit can
     // fire many changes at once — buffer them and process together instead of one at a time.
@@ -2193,7 +2199,7 @@ export default {
         }
 
         if (needsListRefetch) {
-          this.refetchItems({ refetchCounts: true });
+          this.refetchItems({ refetchCounts: true, cause: 'refetch' });
           return;
         }
 
@@ -2205,6 +2211,7 @@ export default {
         // A change we ignored can still move the counts, and the payload doesn't say which
         // fields changed, so counts always refresh. Using `refetchQueries` instead of a single
         // query's `.refetch()` also catches every board column's own count query.
+        markRealtimeRefetch('count', COUNT_OPERATIONS);
         client.refetchQueries({ include: [getWorkItemsCountOnlyQuery] });
         if (created.length > 0 || deleted.length > 0) {
           this.$apollo.queries.hasWorkItems.refetch();

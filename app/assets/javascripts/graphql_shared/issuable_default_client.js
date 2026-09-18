@@ -17,6 +17,7 @@ import {
 } from '~/work_items/constants';
 
 import isExpandedHierarchyTreeChildQuery from '~/work_items/graphql/client/is_expanded_hierarchy_tree_child.query.graphql';
+import { getRealtimeRequestTagLink } from '~/work_items/list/graphql/realtime_request_tag';
 import activeBoardItemQuery from 'ee_else_ce/boards/graphql/client/active_board_item.query.graphql';
 import activeDiscussionQuery from '~/work_items/components/design_management/graphql/client/active_design_discussion.query.graphql';
 import { updateNewWorkItemCache, workItemBulkEdit } from '~/work_items/graphql/resolvers';
@@ -128,6 +129,9 @@ const updateLinkedItems = (linkedItemsWidget, context) => {
 
 export const config = {
   typeDefs,
+  // Gated on the flag so this link (which only matches work item queries) doesn't run for
+  // every other app that shares this client.
+  links: window.gon?.features?.workItemsRealtime ? [getRealtimeRequestTagLink()] : [],
   cacheConfig: {
     typePolicies: {
       Query: {

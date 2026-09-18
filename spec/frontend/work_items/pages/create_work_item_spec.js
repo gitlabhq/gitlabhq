@@ -13,6 +13,7 @@ import setWindowLocation from 'helpers/set_window_location_helper';
 import CreateWorkItemCancelConfirmationModal from '~/work_items/components/create_work_item_cancel_confirmation_modal.vue';
 import {
   CREATION_CONTEXT_NEW_ROUTE,
+  ROUTES,
   WORK_ITEM_TYPE_ENUM_EPIC,
   WORK_ITEM_TYPE_ENUM_INCIDENT,
   WORK_ITEM_TYPE_ENUM_ISSUE,
@@ -56,7 +57,7 @@ describe('Create work item page component', () => {
 
   const relatedItemQueryHandler = jest.fn().mockResolvedValue(mockRelatedItem);
 
-  const createComponent = ({ props = {}, provide = {}, $router = undefined, $route } = {}) => {
+  const createComponent = ({ props = {}, provide = {}, $router = undefined } = {}) => {
     wrapper = shallowMount(CreateWorkItemPage, {
       propsData: {
         workItemTypeEnum: WORK_ITEM_TYPE_ENUM_ISSUE,
@@ -66,7 +67,6 @@ describe('Create work item page component', () => {
       apolloProvider: createMockApollo([[workItemRelatedItemQuery, relatedItemQueryHandler]]),
       mocks: {
         $router,
-        $route,
       },
       provide: {
         fullPath: 'gitlab-org',
@@ -266,119 +266,47 @@ describe('Create work item page component', () => {
       expect(findCancelConfirmationModal().props('isVisible')).toBe(false);
     });
 
-    it('confirmation modal closes when user clicks "Discard changes" and redirects to previous page when on project `work_items/new` route', async () => {
-      const goMock = jest.fn();
-      const historyMock = {
-        base: '/gitlab-org/gitlab-test/-',
-        current: {
-          fullPath: '/work_items/new',
-        },
-      };
-      const routeMock = {
-        params: { type: 'work_items' },
-        fullPath: '/work_items/new',
-      };
+    describe('when user clicks "Discard changes"', () => {
+      let pushMock;
+      let goMock;
 
-      createComponent({ $router: { history: historyMock, go: goMock }, $route: routeMock });
+      const discardDraft = async () => {
+        findCreateWorkItem().vm.$emit('confirm-cancel');
+        await nextTick();
 
-      findCreateWorkItem().vm.$emit('confirm-cancel');
-      await nextTick();
-
-      expect(findCancelConfirmationModal().props('isVisible')).toBe(true);
-
-      findCancelConfirmationModal().vm.$emit('discard-draft');
-      await nextTick();
-
-      expect(findCancelConfirmationModal().props('isVisible')).toBe(false);
-      await nextTick();
-
-      expect(goMock).toHaveBeenCalled();
-    });
-
-    it('confirmation modal closes when user clicks "Discard changes" and redirects to list page when on project `issues/new` route', async () => {
-      const historyMock = {
-        base: '/gitlab-org/gitlab-test/-',
-        current: {
-          fullPath: '/issues/new',
-        },
-      };
-      const routeMock = {
-        params: { type: 'issues' },
-        fullPath: '/issues/new',
+        findCancelConfirmationModal().vm.$emit('discard-draft');
+        await nextTick();
       };
 
-      createComponent({ $router: { history: historyMock }, $route: routeMock });
-
-      findCreateWorkItem().vm.$emit('confirm-cancel');
-      await nextTick();
-
-      expect(findCancelConfirmationModal().props('isVisible')).toBe(true);
-
-      findCancelConfirmationModal().vm.$emit('discard-draft');
-      await nextTick();
-
-      expect(findCancelConfirmationModal().props('isVisible')).toBe(false);
-      expect(visitUrl).toHaveBeenCalledWith('/gitlab-org/gitlab-test/-/issues');
-    });
-
-    it('confirmation modal closes when user clicks "Discard changes" and redirects to issues list page when on group `work_items/new` route', async () => {
-      const historyMock = {
-        base: '/groups/gitlab-org/-',
-        current: {
-          fullPath: '/work_items/new',
-        },
-      };
-      const routeMock = {
-        params: { type: 'work_items' },
-        fullPath: '/work_items/new',
-      };
-
-      createComponent({
-        provide: { isGroup: true },
-        $router: { history: historyMock },
-        $route: routeMock,
+      beforeEach(() => {
+        pushMock = jest.fn();
+        goMock = jest.fn();
       });
 
-      findCreateWorkItem().vm.$emit('confirm-cancel');
-      await nextTick();
+      it('closes the confirmation modal and redirects to the index page', async () => {
+        setWindowLocation('/work_items/new');
+        createComponent({ $router: { push: pushMock, go: goMock } });
 
-      expect(findCancelConfirmationModal().props('isVisible')).toBe(true);
+        await discardDraft();
 
-      findCancelConfirmationModal().vm.$emit('discard-draft');
-      await nextTick();
-
-      expect(findCancelConfirmationModal().props('isVisible')).toBe(false);
-      expect(visitUrl).toHaveBeenCalledWith('/groups/gitlab-org/-/issues');
-    });
-
-    it('confirmation modal closes when user clicks "Discard changes" and redirects to list page when on group `epics/new` route', async () => {
-      const historyMock = {
-        base: '/groups/gitlab-org/-',
-        current: {
-          fullPath: '/epics/new',
-        },
-      };
-      const routeMock = {
-        params: { type: 'epics' },
-        fullPath: '/epics/new',
-      };
-
-      createComponent({
-        provide: { isGroup: true },
-        $router: { history: historyMock },
-        $route: routeMock,
+        expect(findCancelConfirmationModal().props('isVisible')).toBe(false);
+        expect(pushMock).toHaveBeenCalledWith({ name: ROUTES.index });
       });
 
-      findCreateWorkItem().vm.$emit('confirm-cancel');
-      await nextTick();
+      describe('when the type query param is INCIDENT', () => {
+        it('closes the confirmation modal and returns to the previous page', async () => {
+          setWindowLocation('/work_items/new?type=INCIDENT');
+          createComponent({
+            props: { workItemTypeEnum: WORK_ITEM_TYPE_ENUM_INCIDENT },
+            $router: { push: pushMock, go: goMock },
+          });
 
-      expect(findCancelConfirmationModal().props('isVisible')).toBe(true);
+          await discardDraft();
 
-      findCancelConfirmationModal().vm.$emit('discard-draft');
-      await nextTick();
-
-      expect(findCancelConfirmationModal().props('isVisible')).toBe(false);
-      expect(visitUrl).toHaveBeenCalledWith('/groups/gitlab-org/-/epics');
+          expect(findCancelConfirmationModal().props('isVisible')).toBe(false);
+          expect(goMock).toHaveBeenCalledWith(-1);
+        });
+      });
     });
   });
 });

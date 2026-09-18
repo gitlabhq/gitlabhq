@@ -8,15 +8,9 @@ import {
   CREATION_CONTEXT_NEW_ROUTE,
   ROUTES,
   NAME_TO_ENUM_MAP,
-  WORK_ITEM_BASE_ROUTE_MAP,
   WORK_ITEM_TYPE_ENUM_INCIDENT,
   WORK_ITEM_TYPE_ENUM_ISSUE,
 } from '../constants';
-
-function generateTypeRegex(routeMap) {
-  const types = Object.keys(routeMap);
-  return types.join('|');
-}
 
 /**
  * For `.params-issue-type`, the backend only returns "incident" or "issue"
@@ -37,33 +31,32 @@ function getIssueTypeEnumFromDocument() {
 }
 
 function getRoutes(fullPath) {
-  const routes = [
+  return [
     {
-      path: `/:type(${generateTypeRegex(WORK_ITEM_BASE_ROUTE_MAP)})`,
+      path: '/:type',
       name: ROUTES.index,
       component: PlanningView,
     },
     {
-      path: `/:type(${generateTypeRegex(WORK_ITEM_BASE_ROUTE_MAP)})/views/:view_id`,
+      path: '/:type/views/:view_id',
       name: ROUTES.savedView,
       component: PlanningView,
     },
     {
-      path: `/:type(${generateTypeRegex(WORK_ITEM_BASE_ROUTE_MAP)})/new`,
+      path: '/:type/new',
       name: ROUTES.new,
       component: CreateWorkItem,
-      props: ({ params, query }) => ({
+      props: ({ query }) => ({
         workItemTypeEnum:
           query.type ||
           getIssueTypeEnumFromDocument() ||
           NAME_TO_ENUM_MAP[
             getDraftWorkItemType({ fullPath, context: CREATION_CONTEXT_NEW_ROUTE })?.name
-          ] ||
-          WORK_ITEM_BASE_ROUTE_MAP[params.type],
+          ],
       }),
     },
     {
-      path: `/:type(${generateTypeRegex(WORK_ITEM_BASE_ROUTE_MAP)})/:iid`,
+      path: '/:type/:iid',
       name: ROUTES.workItem,
       component: WorkItemDetail,
       props: true,
@@ -92,8 +85,6 @@ function getRoutes(fullPath) {
       ],
     },
   ];
-
-  return routes;
 }
 
 export const routes = getRoutes;

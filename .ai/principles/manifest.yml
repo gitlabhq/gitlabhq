@@ -776,7 +776,7 @@ principles:
         url: https://docs.gitlab.com/development/testing_guide/testing_migrations_guide/
 
   testing-frontend-testing-hierarchy:
-    description: Frontend testing hierarchy — which test type to write (unit vs MSW integration vs Capybara vs QA), lazy-load discovery, and cross-layer anti-patterns
+    description: Frontend testing hierarchy — which test type to write (unit vs frontend integration vs Capybara vs QA), lazy-load discovery, and cross-layer anti-patterns
     group: Testing
     owner_team: '@gitlab-org/maintainers/frontend'
     file_filters:
@@ -791,13 +791,13 @@ principles:
       - path: doc/development/testing_guide/testing_levels.md
         url: https://docs.gitlab.com/development/testing_guide/testing_levels/
 
-  testing-msw:
-    description: How to write MSW integration tests correctly (setup, mounting, handlers, fixtures, request counting)
+  testing-frontend-integration:
+    description: How to write frontend integration tests correctly (setup, mounting, handlers, fixtures, request counting)
     group: Testing
     owner_team: '@gitlab-org/maintainers/frontend'
     file_filters:
-      - 'ee/spec/frontend/msw_integration/**/*'
-    baseline: .ai/principles/baselines/testing-msw.md
+      - 'ee/spec/frontend/integration/**/*'
+    baseline: .ai/principles/baselines/testing-frontend-integration.md
     sources:
       - path: doc/development/testing_guide/frontend_testing.md
         url: https://docs.gitlab.com/development/testing_guide/frontend_testing/

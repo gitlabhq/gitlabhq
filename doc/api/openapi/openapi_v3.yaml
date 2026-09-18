@@ -15,7 +15,7 @@ info:
   title: GitLab REST API
   description: GitLab REST API used to interact with a GitLab installation.
   termsOfService: https://handbook.gitlab.com/handbook/legal/api-terms/
-  version: '19.4'
+  version: '19.5'
   license:
     name: CC BY-SA 4.0
     url: https://gitlab.com/gitlab-org/gitlab/-/blob/master/LICENSE
@@ -19866,7 +19866,7 @@ paths:
         content:
           application/json:
             schema:
-              "$ref": "#/components/schemas/RequestBody_5482fda793e3"
+              "$ref": "#/components/schemas/RequestBody_12ed1a76e5fd"
   "/api/v4/service_accounts":
     post:
       operationId: postApiV4ServiceAccounts
@@ -91751,6 +91751,10 @@ components:
           type: string
         tool_approval_for_session_availability:
           type: string
+        duo_auto_mode_enabled:
+          type: string
+        duo_auto_mode_availability:
+          type: string
         enabled_expanded_logging:
           type: string
         foundational_agents_default_enabled:
@@ -106608,7 +106612,7 @@ components:
           description: Scopes available to the application. Separate multiple scopes
             with a space.
           nullable: true
-    RequestBody_5482fda793e3:
+    RequestBody_12ed1a76e5fd:
       type: object
       properties:
         admin_mode:
@@ -109539,6 +109543,12 @@ components:
           type: string
           nullable: true
         tool_approval_for_session_availability:
+          type: string
+          nullable: true
+        duo_auto_mode_enabled:
+          type: string
+          nullable: true
+        duo_auto_mode_availability:
           type: string
           nullable: true
         enabled_expanded_logging:

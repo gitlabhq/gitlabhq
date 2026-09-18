@@ -1,4 +1,4 @@
-# MSW Integration Tests — How to Write Them
+# Frontend Integration Tests — How to Write Them
 
 > **Prerequisite:** Read `.ai/principles/distilled/testing-jest.md` first — its
 > **MSW Integration Tests**, **Capybara Feature Tests**, and **Test Fixtures**
@@ -14,16 +14,16 @@ For the decision of *which* test type to write, see
 
 ### Location (EE-only)
 
-- Place all MSW integration specs and harness files under
-  `ee/spec/frontend/msw_integration/`. The CE path
-  `spec/frontend/msw_integration/` is intentionally empty and blocked by ESLint.
-- DO NOT add MSW integration tests for FOSS-versus-licensed behavior; MSW mocks
+- Place all frontend integration specs and harness files under
+  `ee/spec/frontend/integration/`. The CE path
+  `spec/frontend/integration/` is intentionally empty and blocked by ESLint.
+- DO NOT add frontend integration tests for FOSS-versus-licensed behavior; MSW mocks
   the network layer (including auth and licensing) and cannot assert those
   differences. Use a Capybara feature spec instead.
 
-### Running MSW Integration Tests
+### Running Frontend Integration Tests
 
-- Run with `yarn jest:msw-integration`; DO NOT run with the default `yarn jest`.
+- Run with `yarn jest:integration`; DO NOT run with the default `yarn jest`.
 
 ### Handler Registration
 
@@ -31,7 +31,7 @@ For the decision of *which* test type to write, see
   (e.g. `work_items/handlers.js`) and register them in the top-level
   `handlers.js` via `featureHandlers`/`restEndpoints`.
 - Export new test helpers from `test_helpers.js` so they are available
-  globally in all MSW integration tests (auto-imported via
+  globally in all frontend integration tests (auto-imported via
   `Object.assign(global, testHelpers)` in `test_setup.js`).
 
 ### Mounting
@@ -45,7 +45,7 @@ For the decision of *which* test type to write, see
   `shallowMountExtended` or `mountExtended`.
 - Example: the AI Duo Panel suite's `mountAISidebar` and
   `mountDuoAgenticChatStateManager` (in
-  `ee/spec/frontend/msw_integration/ai_duo_panel/test_support/`) both call
+  `ee/spec/frontend/integration/ai_duo_panel/test_support/`) both call
   `fullMount` internally. See that suite's README for when to use each one.
 
 ### Finding Elements & Interactions

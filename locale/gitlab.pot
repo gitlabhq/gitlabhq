@@ -8901,6 +8901,27 @@ msgstr ""
 msgid "AiPowered|Assign self-hosted or cloud-connected models to use with specific AI-native features."
 msgstr ""
 
+msgid "AiPowered|Auto mode"
+msgstr ""
+
+msgid "AiPowered|Auto mode is available. Groups and subgroups can turn it off."
+msgstr ""
+
+msgid "AiPowered|Auto mode is available. Subgroups can turn it off."
+msgstr ""
+
+msgid "AiPowered|Auto mode is not available and cannot be turned on for any group or subgroup."
+msgstr ""
+
+msgid "AiPowered|Auto mode is not available and cannot be turned on for any subgroup."
+msgstr ""
+
+msgid "AiPowered|Auto mode is not available. Groups and subgroups can turn it on."
+msgstr ""
+
+msgid "AiPowered|Auto mode is not available. Subgroups can turn it on."
+msgstr ""
+
 msgid "AiPowered|Automatic Code Reviews"
 msgstr ""
 
@@ -8986,6 +9007,9 @@ msgid "AiPowered|Control whether GitLab Duo is available for this group."
 msgstr ""
 
 msgid "AiPowered|Control whether users can approve tools for a session in the IDE and CLI."
+msgstr ""
+
+msgid "AiPowered|Control whether users can relax governance \"Always Ask\" rules to \"Always Allow\" in the IDE and CLI. \"Always Deny\" rules always hold, regardless of mode."
 msgstr ""
 
 msgid "AiPowered|Control which external network resources the GitLab Duo Agent Platform can access."
@@ -31325,6 +31349,9 @@ msgstr ""
 msgid "DuoAgenticChat|Current page"
 msgstr ""
 
+msgid "DuoAgenticChat|Define a condition Duo should work until it achieves..."
+msgstr ""
+
 msgid "DuoAgenticChat|Development"
 msgstr ""
 
@@ -31383,6 +31410,9 @@ msgid "DuoAgenticChat|Go to Duo settings"
 msgstr ""
 
 msgid "DuoAgenticChat|Go to your chat history"
+msgstr ""
+
+msgid "DuoAgenticChat|Goal"
 msgstr ""
 
 msgid "DuoAgenticChat|Groups with GitLab Duo enabled"
@@ -31491,6 +31521,9 @@ msgid "DuoAgenticChat|Reconnect to continue this conversation."
 msgstr ""
 
 msgid "DuoAgenticChat|Remove %{filename}"
+msgstr ""
+
+msgid "DuoAgenticChat|Remove goal"
 msgstr ""
 
 msgid "DuoAgenticChat|Remove queued prompt"
@@ -31620,6 +31653,9 @@ msgid "DuoAgenticChat|Web search"
 msgstr ""
 
 msgid "DuoAgenticChat|Work items"
+msgstr ""
+
+msgid "DuoAgenticChat|Work towards a goal until it is achieved"
 msgstr ""
 
 msgid "DuoAgenticChat|Work with GitLab Duo to break your item into an efficient implementation plan."
@@ -33520,10 +33556,16 @@ msgstr ""
 msgid "Duo|Customize code review"
 msgstr ""
 
-msgid "Duo|Customize code review for all groups in this instance"
+msgid "Duo|GitLab Duo reads exclusion rules and custom instructions from the source project and applies them to code reviews across the group. For more information, see %{linkStart}custom review instructions%{linkEnd}."
 msgstr ""
 
-msgid "Duo|Select a project to use for customizing code review."
+msgid "Duo|GitLab Duo reads exclusion rules and custom instructions from the source project and applies them to code reviews across the instance. For more information, see %{linkStart}custom review instructions%{linkEnd}."
+msgstr ""
+
+msgid "Duo|Select a project"
+msgstr ""
+
+msgid "Duo|Source project"
 msgstr ""
 
 msgid "Duplicate entries found for compliance controls for the requirement."
@@ -94260,6 +94302,9 @@ msgid "WorkItem|Select types"
 msgstr ""
 
 msgid "WorkItem|Select which type you would like to change this item to."
+msgstr ""
+
+msgid "WorkItem|Select work item"
 msgstr ""
 
 msgid "WorkItem|Send email"

@@ -45,7 +45,7 @@ RSpec.describe GenerateAsIfFossEnv, feature_category: :tooling do # rubocop:disa
         'generate-apollo-graphql-schema',
         'graphql-schema-dump',
         'jest 1/5',
-        'jest-msw-integration',
+        'jest-integration',
         'jest predictive 1/5',
         'rubocop',
         'qa:internal',
@@ -112,7 +112,7 @@ RSpec.describe GenerateAsIfFossEnv, feature_category: :tooling do # rubocop:disa
         ENABLE_GENERATE_APOLLO_GRAPHQL_SCHEMA: 'true',
         ENABLE_GRAPHQL_SCHEMA_DUMP: 'true',
         ENABLE_JEST: 'true',
-        ENABLE_JEST_MSW_INTEGRATION: 'true',
+        ENABLE_JEST_INTEGRATION: 'true',
         ENABLE_JEST_PREDICTIVE: 'true',
         ENABLE_RUBOCOP: 'true',
         ENABLE_QA_INTERNAL: 'true',
@@ -227,7 +227,7 @@ RSpec.describe GenerateAsIfFossEnv, feature_category: :tooling do # rubocop:disa
         ENABLE_GENERATE_APOLLO_GRAPHQL_SCHEMA=true
         ENABLE_GRAPHQL_SCHEMA_DUMP=true
         ENABLE_JEST=true
-        ENABLE_JEST_MSW_INTEGRATION=true
+        ENABLE_JEST_INTEGRATION=true
         ENABLE_JEST_PREDICTIVE=true
         ENABLE_RUBOCOP=true
         ENABLE_QA_INTERNAL=true

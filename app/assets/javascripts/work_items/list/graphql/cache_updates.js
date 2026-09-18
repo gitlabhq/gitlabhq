@@ -4,6 +4,7 @@ import getWorkItemsSlimQuery from 'ee_else_ce/work_items/list/graphql/get_work_i
 import getWorkItemsRestQuery from 'ee_else_ce/work_items/list/graphql/get_work_items_rest.query.graphql';
 import { boardColumnQuery } from '~/work_items/board/utils';
 import { getWorkItemsConnection } from '~/work_items/utils';
+import { WI_REALTIME_TAG_KEY } from './realtime_request_tag';
 
 // The backend rejects a `workItems(ids:)` filter longer than this (`WorkItems::
 // SharedFilterArguments::MAX_FIELD_LIMIT`), so a flush bigger than this can't be checked in one go.
@@ -72,7 +73,10 @@ export const findMatchingWorkItems = async ({
       lastPageSize: null,
     },
     fetchPolicy: 'network-only',
-    context: { featureCategory: 'portfolio_management' },
+    context: {
+      featureCategory: 'portfolio_management',
+      requestTag: { [WI_REALTIME_TAG_KEY]: 'match' },
+    },
   });
 
   return getWorkItemsConnection(data, useRestApi)?.nodes ?? [];

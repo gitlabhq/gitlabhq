@@ -73,9 +73,9 @@ Everything you should know about [how to run end-to-end tests](end_to_end/_index
 
 Everything you should know about [how to test migrations](testing_migrations_guide.md).
 
-## MSW integration tests
+## Frontend integration tests
 
-[MSW integration tests](frontend_testing.md#msw-integration-tests) can replace Capybara feature specs
+[Frontend integration tests](frontend_testing.md#frontend-integration-tests) can replace Capybara feature specs
 with fast, MSW-backed Jest tests that verify full-page frontend interactions.
 
 ## Contract tests

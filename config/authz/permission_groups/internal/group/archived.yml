@@ -1,5 +1,6 @@
 description: Permissions that are disabled when a group is archived
 permissions:
+  - _delete_authored_timelog
   - activate_group_member
   - add_cluster
   - admin_achievement
@@ -33,6 +34,7 @@ permissions:
   - admin_runners
   - admin_software_license_policy
   - admin_tag
+  - admin_timelog
   - admin_value_stream
   - admin_vulnerability
   - admin_web_hook
@@ -70,6 +72,7 @@ permissions:
   - create_test_case
   - create_vulnerability_export
   - create_wiki
+  - delete_timelog
   - destroy_deploy_token
   - destroy_epic
   - import_projects

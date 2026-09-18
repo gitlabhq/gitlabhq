@@ -98,7 +98,7 @@ The trigger now appears in **AI** > **Triggers**.
 
 1. In the top bar, select **Search or go to** and find your project.
 1. In the left sidebar, select **AI** > **Triggers**.
-1. For the trigger you want to change, select **Edit flow trigger** ({{< icon name="pencil" >}}).
+1. For the trigger you want to change, select **More actions** ({{< icon name="ellipsis_v" >}}) > **Edit trigger**.
 1. Make the changes and select **Save changes**.
 
 You can also edit a custom flow's trigger on its configuration page, under **Trigger conditions**.
@@ -116,7 +116,7 @@ it stops running automatically after its configured actions, and remains in the 
 
 1. In the top bar, select **Search or go to** and find your project.
 1. In the left sidebar, select **AI** > **Triggers**.
-1. For the trigger you want to turn on or off, in the **Status** column, select the toggle.
+1. For the trigger you want to turn on or off, on the right side, select the toggle.
 
 You can also turn a custom flow's trigger on or off on its configuration page, under **Trigger conditions**.
 
@@ -124,7 +124,7 @@ You can also turn a custom flow's trigger on or off on its configuration page, u
 
 1. In the top bar, select **Search or go to** and find your project.
 1. In the left sidebar, select **AI** > **Triggers**.
-1. For the trigger you want to change, select **Delete flow trigger** ({{< icon name="remove" >}}).
+1. For the trigger you want to delete, select **More actions** ({{< icon name="ellipsis_v" >}}) > **Delete trigger**.
 1. On the confirmation dialog, select **OK**.
 
 You can also delete a custom flow's trigger on its configuration page, under **Trigger conditions**.

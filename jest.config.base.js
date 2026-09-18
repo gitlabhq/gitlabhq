@@ -331,8 +331,8 @@ module.exports = (path, options = {}) => {
     maxWorkers: process.env.CI ? '' : '60%',
     testPathIgnorePatterns: [
       '<rootDir>/ee/frontend_islands',
-      // MSW integration tests are EE-only and run via jest.config.msw_integration.js.
-      '<rootDir>/ee/spec/frontend/msw_integration',
+      // Frontend integration tests are EE-only and run via jest.config.integration.js.
+      '<rootDir>/ee/spec/frontend/integration/',
     ],
   };
 };

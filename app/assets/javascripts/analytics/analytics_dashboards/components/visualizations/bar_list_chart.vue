@@ -143,11 +143,80 @@ export default {
       default: () => ({}),
     },
   },
+  data() {
+    return {
+      // Series hidden via the legend. Stacked shares and labels rescale to the
+      // visible total, so hiding a dominant series keeps the rest readable.
+      hiddenSeries: [],
+    };
+  },
   computed: {
     // ECharts draws a category axis bottom-up, so reverse once to keep the
     // caller's order reading top-down.
     rows() {
       return [...this.data].reverse();
+    },
+    // Stacked mode: rows carry `segments: [{ name, value, share }]`, one bar
+    // series per segment name, with a legend below the chart.
+    stacked() {
+      return this.data.some((row) => Array.isArray(row.segments) && row.segments.length);
+    },
+    seriesNames() {
+      const names = [];
+      this.data.forEach((row) => {
+        (row.segments ?? []).forEach(({ name }) => {
+          if (!names.includes(name)) names.push(name);
+        });
+      });
+      return names;
+    },
+    visibleRowValues() {
+      return this.rows.map((row) => {
+        const segments = row.segments ?? [];
+        if (!segments.some((segment) => segment.value != null)) return row.value;
+        return segments
+          .filter((segment) => !this.hiddenSeries.includes(segment.name))
+          .reduce((sum, segment) => sum + (segment.value ?? 0), 0);
+      });
+    },
+    visibleGrandTotal() {
+      return this.visibleRowValues.reduce((sum, value) => sum + value, 0);
+    },
+    stackedSeries() {
+      // The row-total label rides the last series ECharts still renders, so it
+      // survives any series being hidden via the legend.
+      const visible = this.seriesNames.filter((name) => !this.hiddenSeries.includes(name));
+      const lastVisible = visible[visible.length - 1];
+      const grand = this.visibleGrandTotal;
+      return this.seriesNames.map((name) => ({
+        type: 'bar',
+        stack: 'row',
+        name,
+        barWidth: BAR_HEIGHT,
+        showBackground: true,
+        backgroundStyle: { color: 'var(--gl-background-color-subtle)' },
+        data: this.rows.map((row) => {
+          const segment = (row.segments ?? []).find((s) => s.name === name);
+          if (!segment) return 0;
+          if (segment.value == null || !grand) return segment.share ?? 0;
+          return this.hiddenSeries.includes(name) ? 0 : (segment.value / grand) * 100;
+        }),
+        label: {
+          show: name === lastVisible,
+          position: 'right',
+          color: 'var(--gl-chart-axis-text-color)',
+          fontSize: VALUE_LABEL_SIZE,
+          formatter: ({ dataIndex }) => this.stackedLabels[dataIndex] ?? '',
+        },
+      }));
+    },
+    stackedLabels() {
+      return this.visibleRowValues.map((value) =>
+        formatCountCompact(value, { lowercaseThousands: true }),
+      );
+    },
+    legendHeight() {
+      return this.stacked ? 32 : 0;
     },
     categories() {
       return this.rows.map(({ name }) => name);
@@ -170,17 +239,34 @@ export default {
       return this.valueLabels === VALUE_LABELS_VALUE;
     },
     chartHeight() {
-      return this.rows.length * ROW_HEIGHT + GRID_VERTICAL_PADDING * 2;
+      return this.rows.length * ROW_HEIGHT + GRID_VERTICAL_PADDING * 2 + this.legendHeight;
     },
     fullOptions() {
       const base = {
         grid: {
           top: GRID_VERTICAL_PADDING,
-          bottom: GRID_VERTICAL_PADDING,
+          bottom: GRID_VERTICAL_PADDING + this.legendHeight,
           left: LABEL_COLUMN_WIDTH,
           right: this.hasTrends ? VALUE_WITH_TREND_COLUMN_WIDTH : VALUE_COLUMN_WIDTH,
         },
-        xAxis: this.valueAxis,
+        legend: this.stacked
+          ? {
+              show: true,
+              bottom: 0,
+              icon: 'circle',
+              itemWidth: 10,
+              itemHeight: 10,
+              textStyle: { color: 'var(--gl-chart-axis-text-color)', fontSize: VALUE_LABEL_SIZE },
+              // GlChart applies options in merge mode, where ECharts keeps its own
+              // selection state, so every series is pinned explicitly — re-selecting
+              // any a data change un-hid.
+              selected: Object.fromEntries(
+                this.seriesNames.map((name) => [name, !this.hiddenSeries.includes(name)]),
+              ),
+            }
+          : undefined,
+        // Stacked bars always plot shares of the track; `scale` applies to one dimension only.
+        xAxis: this.stacked ? { type: 'value', show: false, min: 0, max: 100 } : this.valueAxis,
         yAxis: {
           type: 'category',
           data: this.categories,
@@ -192,31 +278,33 @@ export default {
             overflow: 'truncate',
           },
         },
-        series: [
-          {
-            type: 'bar',
-            // Only the log scale plots values directly; the rest plot a percentage of the track.
-            data: this.isLogScale ? this.logScaleValues : this.lengths,
-            barWidth: BAR_HEIGHT,
-            showBackground: true,
-            backgroundStyle: { color: 'var(--gl-background-color-subtle)' },
-            itemStyle: {
-              color: BAR_COLOR_TOKENS[this.color],
-            },
-            label: {
-              show: true,
-              position: 'right',
-              // ECharts defaults this to a hardcoded #333, which never adapts.
-              color: this.valueOnly
-                ? 'var(--gl-text-color-default)'
-                : 'var(--gl-chart-axis-text-color)',
-              fontSize: this.valueOnly ? VALUE_ONLY_LABEL_SIZE : VALUE_LABEL_SIZE,
-              fontWeight: this.valueOnly ? 'bold' : 'normal',
-              rich: TREND_RICH_STYLES,
-              formatter: ({ dataIndex }) => this.labels[dataIndex] ?? '',
-            },
-          },
-        ],
+        series: this.stacked
+          ? this.stackedSeries
+          : [
+              {
+                type: 'bar',
+                // Only the log scale plots values directly; the rest plot a percentage of the track.
+                data: this.isLogScale ? this.logScaleValues : this.lengths,
+                barWidth: BAR_HEIGHT,
+                showBackground: true,
+                backgroundStyle: { color: 'var(--gl-background-color-subtle)' },
+                itemStyle: {
+                  color: BAR_COLOR_TOKENS[this.color],
+                },
+                label: {
+                  show: true,
+                  position: 'right',
+                  // ECharts defaults this to a hardcoded #333, which never adapts.
+                  color: this.valueOnly
+                    ? 'var(--gl-text-color-default)'
+                    : 'var(--gl-chart-axis-text-color)',
+                  fontSize: this.valueOnly ? VALUE_ONLY_LABEL_SIZE : VALUE_LABEL_SIZE,
+                  fontWeight: this.valueOnly ? 'bold' : 'normal',
+                  rich: TREND_RICH_STYLES,
+                  formatter: ({ dataIndex }) => this.labels[dataIndex] ?? '',
+                },
+              },
+            ],
       };
 
       return merge({}, base, this.options);
@@ -249,7 +337,17 @@ export default {
       return { type: 'value', show: false, min: 0, max: 100 };
     },
   },
+  watch: {
+    data() {
+      this.hiddenSeries = [];
+    },
+  },
   methods: {
+    onChartCreated(chart) {
+      chart.on('legendselectchanged', ({ selected }) => {
+        this.hiddenSeries = Object.keys(selected).filter((name) => !selected[name]);
+      });
+    },
     rowLabel({ value, share, label: valueLabel, trend }) {
       const formattedValue =
         valueLabel ??
@@ -277,6 +375,7 @@ export default {
       responsive
       class="gl-grow gl-overflow-hidden"
       data-testid="bar-list-chart"
+      @created="onChartCreated"
     />
   </div>
 </template>

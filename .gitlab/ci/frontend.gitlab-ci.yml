@@ -490,22 +490,22 @@ jest-with-fixtures vue3 predictive:
       fi
   parallel: !reference [jest-with-fixtures predictive, parallel]
 
-# Jest integration tests with Mock Service Worker
-jest-msw-integration:
+# Frontend integration tests (Jest, backed by Mock Service Worker)
+jest-integration:
   extends:
     - .frontend-test-base
     - .repo-from-artifacts
-    - .frontend:rules:jest-msw-integration
+    - .frontend:rules:jest-integration
   variables:
-    JEST_MSW_REPORT: tmp/jest-msw-report.json
-    JEST_MSW_START_TIME_FILE: tmp/jest-msw-start-time
+    JEST_INTEGRATION_REPORT: tmp/jest-integration-report.json
+    JEST_INTEGRATION_START_TIME_FILE: tmp/jest-integration-start-time
   script:
-    - date +%s > "${JEST_MSW_START_TIME_FILE}"
+    - date +%s > "${JEST_INTEGRATION_START_TIME_FILE}"
     # Capture the Jest exit code so we can re-raise it after the summary step.
     # The summary is always posted (even on test failure) because the inline
     # comment is the primary signal for reviewers; the job itself also fails
     # when tests fail, surfacing the failure in the pipeline.
-    - yarn jest:msw-integration --ci --passWithNoTests --forceExit --json --outputFile="${JEST_MSW_REPORT}"; JEST_EXIT=$?
+    - yarn jest:integration --ci --passWithNoTests --forceExit --json --outputFile="${JEST_INTEGRATION_REPORT}"; JEST_EXIT=$?
     # This runs in `script` instead of `after_script` on purpose.
     # We want the budget gate to be able to fail the job when someone adds too many new tests.
     # That only works from `script`, because GitLab ignores the exit code of `after_script` and a failure there
@@ -514,24 +514,24 @@ jest-msw-integration:
     # Posting the summary comment is best-effort: if the API call fails, the script quietly ignores it
     # and the job keeps going. The job fails when tests fail or when the per-new-test budget is breached.
     - |
-      # Read the recorded jest-msw start timestamp; fall back to 0 if the file is
+      # Read the recorded integration-test start timestamp; fall back to 0 if the file is
       # missing or unreadable (keeps later duration math from breaking).
-      START=$(cat "${JEST_MSW_START_TIME_FILE}" 2>/dev/null || echo 0)
+      START=$(cat "${JEST_INTEGRATION_START_TIME_FILE}" 2>/dev/null || echo 0)
       DURATION=$(( $(date +%s) - START ))
-      node scripts/frontend/post_msw_test_summary.mjs \
+      node scripts/frontend/post_integration_test_summary.mjs \
         --job-name "${CI_JOB_NAME}" \
-        --report-path "${JEST_MSW_REPORT}" \
-        --artifact-path "${JEST_MSW_REPORT}" \
+        --report-path "${JEST_INTEGRATION_REPORT}" \
+        --artifact-path "${JEST_INTEGRATION_REPORT}" \
         --job-url "${CI_JOB_URL}" \
         --duration "${DURATION}"
       echo "Exiting with jest exit code $JEST_EXIT."
       exit $JEST_EXIT
   artifacts:
-    name: jest-msw-report
+    name: jest-integration-report
     expire_in: 7d
     when: always
     paths:
-      - tmp/jest-msw-report.json
+      - tmp/jest-integration-report.json
   needs:
     # it's ok to wait for the repo artifact as we're waiting for the fixtures (which wait for the repo artifact) anyway
     - !reference [.frontend-test-base, needs]
@@ -539,9 +539,9 @@ jest-msw-integration:
     - !reference [.with-fixtures-needs, needs]
     - !reference [.with-graphql-schema-dump-needs, needs]
 
-jest-msw-integration vue3:
+jest-integration vue3:
   extends:
-    - jest-msw-integration
+    - jest-integration
     - .vue3
 
 jest-snapshot-vue3:

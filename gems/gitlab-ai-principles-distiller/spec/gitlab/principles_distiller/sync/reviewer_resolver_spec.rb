@@ -389,6 +389,41 @@ RSpec.describe Gitlab::PrinciplesDistiller::Sync::ReviewerResolver do
       end
     end
 
+    context 'when commits have identical authored dates' do
+      let(:entries) do
+        [
+          ['ada', 1, '2026-08-20T00:00:00Z', commit_sha(2)],
+          ['ada', 1, '2026-08-21T00:00:00Z', commit_sha(3)],
+          ['ada', 1, '2026-08-20T00:00:00Z', commit_sha(0)],
+          ['ada', 1, '2026-08-20T00:00:00Z', commit_sha(1)]
+        ]
+      end
+
+      let(:returned_entries) { entries }
+
+      before do
+        allow(workflow).to receive(:query_graphql).and_return(
+          'project' => { 'repository' => { 'p0' => commits_connection(returned_entries) } }
+        )
+      end
+
+      it 'orders by newest date and then ascending SHA' do
+        expect(authors).to eq([
+          { username: 'ada', id: 1, commit_shas: [commit_sha(3), commit_sha(0), commit_sha(1), commit_sha(2)] }
+        ])
+      end
+
+      context 'when the API returns commits in reverse order' do
+        let(:returned_entries) { entries.reverse }
+
+        it 'produces the same ordering' do
+          expect(authors).to eq([
+            { username: 'ada', id: 1, commit_shas: [commit_sha(3), commit_sha(0), commit_sha(1), commit_sha(2)] }
+          ])
+        end
+      end
+    end
+
     context 'when commits touch multiple source paths and principles' do
       let(:affected_entries) do
         {

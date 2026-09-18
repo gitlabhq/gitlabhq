@@ -1,6 +1,7 @@
 import { GlSkeletonLoader } from '@gitlab/ui';
 import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
 import BarListPresenter from '~/glql/components/presenters/bar_list.vue';
+import TwoDimensionsBarList from '~/glql/components/presenters/bar_list/two_dimensions_bar_list.vue';
 import DimensionRoutedChart from '~/glql/components/presenters/chart/dimension_routed_chart.vue';
 import BarListChart from '~/analytics/analytics_dashboards/components/visualizations/bar_list_chart.vue';
 import {
@@ -526,12 +527,55 @@ describe('BarListPresenter', () => {
     });
   });
 
-  describe('validation', () => {
-    it('rejects a second dimension', () => {
-      createComponent({ fields: MOCK_AGGREGATED_FIELDS_TWO_DIMS_ONE_METRIC });
+  describe('two dimensions', () => {
+    const TWO_DIM_DATA = {
+      nodes: [
+        { user: 'alice', language: 'ruby', totalCount: 40 },
+        { user: 'bob', language: 'ruby', totalCount: 30 },
+      ],
+    };
+
+    const findTwoDimensions = () => wrapper.findComponent(TwoDimensionsBarList);
+
+    it('routes to the two-dimension bar list with the dimensions, metric and caps', () => {
+      createComponent({
+        data: TWO_DIM_DATA,
+        fields: MOCK_AGGREGATED_FIELDS_TWO_DIMS_ONE_METRIC,
+        displayConfig: { maxRows: 2, maxSeries: 1 },
+      });
+
+      expect(findTwoDimensions().props()).toMatchObject({
+        data: TWO_DIM_DATA,
+        primaryDimension: expect.objectContaining({ key: 'user' }),
+        secondaryDimension: expect.objectContaining({ key: 'language' }),
+        metric: expect.objectContaining({ key: 'totalCount' }),
+        maxRows: 2,
+        maxSeries: 1,
+      });
+    });
+
+    it('renders no two-dimension list when a display option is invalid', () => {
+      createComponent({
+        data: TWO_DIM_DATA,
+        fields: MOCK_AGGREGATED_FIELDS_TWO_DIMS_ONE_METRIC,
+        displayConfig: { color: 'green' },
+      });
+
+      expect(findTwoDimensions().exists()).toBe(false);
+    });
+
+    it('rejects a third dimension', () => {
+      createComponent({
+        fields: [
+          { key: 'user', label: 'User', name: 'user', type: 'dimension' },
+          { key: 'language', label: 'Language', name: 'language', type: 'dimension' },
+          { key: 'ideName', label: 'IDE', name: 'ideName', type: 'dimension' },
+          { key: 'totalCount', label: 'Total count', name: 'totalCount', type: 'metric' },
+        ],
+      });
 
       expect(findChart().exists()).toBe(false);
-      expect(findEmittedErrorMessage()).toBe('barList supports exactly one dimension');
+      expect(findEmittedErrorMessage()).toBe('barList supports a maximum of 2 dimensions');
     });
   });
 });

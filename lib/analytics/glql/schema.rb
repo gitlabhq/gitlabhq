@@ -62,10 +62,12 @@ module Analytics
         { 'name' => 'barList',
           'description' => 'Horizontal bars, one per dimension value in descending order, or one ' \
             'per metric in query order when there is no dimension. By default each bar is sized ' \
-            'and labeled as a share of the total.',
+            'and labeled as a share of the total. With two dimensions, each bar splits into ' \
+            'stacked segments, one per value of the second dimension.',
           'selections' => [
             { 'dimensions' => 0, 'metrics' => { 'min' => 1 } },
-            { 'dimensions' => 1, 'metrics' => { 'min' => 1, 'max' => 1 } }
+            { 'dimensions' => 1, 'metrics' => { 'min' => 1, 'max' => 1 } },
+            { 'dimensions' => 2, 'metrics' => { 'min' => 1, 'max' => 1 } }
           ] },
         { 'name' => 'lineChart',
           'description' => 'A line over an ordered dimension, typically a date.',
