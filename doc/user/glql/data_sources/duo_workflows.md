@@ -16,6 +16,8 @@ title: Duo workflows
 {{< history >}}
 
 - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/work_items/606576) in GitLab 19.5 as an [experiment](../../../policy/development_stages_support.md#experiment).
+- `model` dimension [introduced](https://gitlab.com/gitlab-org/glql/-/merge_requests/511) in GitLab 19.5.
+- `status` filter and dimension, and the `flowTypesCount`, `returningUsersCount`, `joinedUsersCount`, `churnedUsersCount`, `previousPeriodUsersCount`, `createdMrCount`, `mergedMrCount`, and `closedMrCount` metrics [introduced](https://gitlab.com/gitlab-org/glql/-/merge_requests/514) in GitLab 19.5.
 
 {{< /history >}}
 
@@ -50,6 +52,7 @@ Use these fields in the `query` parameter to filter your results.
 | ----------------------- | --------------------------------------------- | ------------------------- |
 | [Created](#created)     | `created` (`opened`, `openedAt`, `createdAt`) | `=`, `>`, `<`, `>=`, `<=` |
 | [Flow type](#flow-type) | `flowType`                                    | `=`, `in`                 |
+| [Status](#status)       | `status`                                      | `=`, `in`                 |
 | [User](#user)           | `user`                                        | `=`, `in`                 |
 
 ### Created
@@ -77,6 +80,21 @@ For example, `software_development` or `code_review/v1`.
 - `String`
 - `List` (use `in` operator for multiple values)
 
+### Status
+
+**Description**: Filter flows by their lifecycle status.
+
+**Allowed value types**:
+
+- `Enum`, one of `created`, `running`, `paused`, `finished`, `failed`, `stopped`,
+  `input_required`, `plan_approval_required`, or `tool_call_approval_required`
+- `List` (use `in` operator for multiple values)
+
+**Notes**:
+
+- The three `*_required` statuses are flows waiting on the user, and are distinct from `paused`.
+- Statuses are matched case-insensitively. Other spellings, like `completed` or `aborted`, are not accepted.
+
 ### User
 
 **Description**: Filter by the user who ran the flow.
@@ -95,26 +113,56 @@ For example, `software_development` or `code_review/v1`.
 |-----------|------------|-------------|
 | Created   | `created`  | Group by date. Accepts a [`granularity` parameter](../_index.md#field-parameters) of `daily`, `weekly`, or `monthly` (default: `monthly`). For example, `created(weekly)`. |
 | Flow type | `flowType` | Group by flow type. |
+| Model     | `model`    | Group by the model the flow used. |
 | Project   | `project`  | Group by project. Flows that are not scoped to a project are grouped into a single row with no project. |
+| Status    | `status`   | Group by flow status. Rows are sorted in lifecycle order, not alphabetically. |
 | User      | `user`     | Group by user (displays avatar, name, and username). |
 
 ## Metrics
 
-| Metric                | Name                  | Description |
-|-----------------------|-----------------------|-------------|
-| Credits used max      | `creditsUsedMax`      | Most credits used by a single flow. |
-| Credits used mean     | `creditsUsedMean`     | Average credits used per flow. |
-| Credits used min      | `creditsUsedMin`      | Fewest credits used by a single flow. |
-| Credits used quantile | `creditsUsedQuantile` | Credits used per flow at a given quantile. Accepts a [`quantile` parameter](../_index.md#field-parameters) between `0.01` and `0.99` (default: `0.5`). For example, `creditsUsedQuantile(0.95)`. |
-| Credits used sum      | `creditsUsedSum`      | Total credits used by all flows. |
-| Projects count        | `projectsCount`       | Number of unique projects. Flows that are not scoped to a project are not counted, so the row for those flows shows `0`. |
-| Total count           | `totalCount`          | Total number of flows. |
-| Users count           | `usersCount`          | Number of unique users. |
+| Metric                      | Name                       | Description |
+|-----------------------------|----------------------------|-------------|
+| Churned users count         | `churnedUsersCount`        | Number of unique users who ran a flow in the previous period but not in this one. |
+| Closed MR count max         | `closedMrCountMax`         | Most closed merge requests created by a single flow. |
+| Closed MR count mean        | `closedMrCountMean`        | Average closed merge requests created per flow. |
+| Closed MR count min         | `closedMrCountMin`         | Fewest closed merge requests created by a single flow. |
+| Closed MR count quantile    | `closedMrCountQuantile`    | Closed merge requests created per flow at a given quantile. Accepts a [`quantile` parameter](../_index.md#field-parameters) between `0.01` and `0.99` (default: `0.5`). For example, `closedMrCountQuantile(0.95)`. |
+| Closed MR count sum         | `closedMrCountSum`         | Total closed merge requests created by all flows. |
+| Created MR count max        | `createdMrCountMax`        | Most merge requests created by a single flow. |
+| Created MR count mean       | `createdMrCountMean`       | Average merge requests created per flow. |
+| Created MR count min        | `createdMrCountMin`        | Fewest merge requests created by a single flow. |
+| Created MR count quantile   | `createdMrCountQuantile`   | Merge requests created per flow at a given quantile. Accepts a [`quantile` parameter](../_index.md#field-parameters) between `0.01` and `0.99` (default: `0.5`). For example, `createdMrCountQuantile(0.95)`. |
+| Created MR count sum        | `createdMrCountSum`        | Total merge requests created by all flows. |
+| Credits used max            | `creditsUsedMax`           | Most credits used by a single flow. |
+| Credits used mean           | `creditsUsedMean`          | Average credits used per flow. |
+| Credits used min            | `creditsUsedMin`           | Fewest credits used by a single flow. |
+| Credits used quantile       | `creditsUsedQuantile`      | Credits used per flow at a given quantile. Accepts a [`quantile` parameter](../_index.md#field-parameters) between `0.01` and `0.99` (default: `0.5`). For example, `creditsUsedQuantile(0.95)`. |
+| Credits used sum            | `creditsUsedSum`           | Total credits used by all flows. |
+| Flow types count            | `flowTypesCount`           | Number of unique flow types. |
+| Joined users count          | `joinedUsersCount`         | Number of unique users who ran a flow in this period but not in the previous one. |
+| Merged MR count max         | `mergedMrCountMax`         | Most merged merge requests created by a single flow. |
+| Merged MR count mean        | `mergedMrCountMean`        | Average merged merge requests created per flow. |
+| Merged MR count min         | `mergedMrCountMin`         | Fewest merged merge requests created by a single flow. |
+| Merged MR count quantile    | `mergedMrCountQuantile`    | Merged merge requests created per flow at a given quantile. Accepts a [`quantile` parameter](../_index.md#field-parameters) between `0.01` and `0.99` (default: `0.5`). For example, `mergedMrCountQuantile(0.95)`. |
+| Merged MR count sum         | `mergedMrCountSum`         | Total merged merge requests created by all flows. |
+| Previous period users count | `previousPeriodUsersCount` | Number of unique users in the previous period. |
+| Projects count              | `projectsCount`            | Number of unique projects. Flows that are not scoped to a project are not counted, so the row for those flows shows `0`. |
+| Returning users count       | `returningUsersCount`      | Number of unique users who also ran a flow in the previous period. |
+| Total count                 | `totalCount`               | Total number of flows. |
+| Users count                 | `usersCount`               | Number of unique users. |
 
 > [!note]
 > The credits metrics require the Owner or Security Manager role for the group or project, or a
 > [custom role](../../custom_roles/abilities.md) with the `read_agent_artifacts` permission.
 > For other users, these metrics are empty.
+
+**Notes**:
+
+- The `returningUsersCount`, `joinedUsersCount`, `churnedUsersCount`, and `previousPeriodUsersCount`
+  metrics compare each `created` bucket with the preceding one, so they are only valid when the
+  `created` dimension is also selected. A `created` filter alone is not enough.
+- The `mergedMrCount` and `closedMrCount` metrics count merge requests a flow created that were
+  later merged, or closed without merging. They can lag behind the current state of those merge requests.
 
 ## Sort fields
 
@@ -163,6 +211,34 @@ information, see [analytics mode sorting](../_index.md#sorting).
   metrics: totalCount as "Flows", creditsUsedSum as "Credits", creditsUsedMean as "Avg credits per flow"
   sort: creditsUsedSum desc
   limit: 10
+  ```
+  ````
+
+- Flows by status for the last 30 days:
+
+  ````yaml
+  ```glql
+  title: "Duo workflows by status (last 30 days)"
+  display: table
+  mode: analytics
+  query: type = DuoWorkflow and group = "gitlab-org" and created > -30d
+  dimensions: status as "Status"
+  metrics: totalCount as "Flows", createdMrCountSum as "MRs created", mergedMrCountSum as "MRs merged"
+  sort: status asc
+  ```
+  ````
+
+- Weekly user retention:
+
+  ````yaml
+  ```glql
+  title: "Weekly Duo workflow user retention"
+  display: table
+  mode: analytics
+  query: type = DuoWorkflow and group = "gitlab-org" and created > -90d
+  dimensions: created(weekly) as "Week"
+  metrics: usersCount as "Users", returningUsersCount as "Returning", joinedUsersCount as "Joined", churnedUsersCount as "Churned"
+  sort: created desc
   ```
   ````
 

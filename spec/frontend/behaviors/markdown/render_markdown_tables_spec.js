@@ -262,6 +262,64 @@ describe('renderMarkdownTables', () => {
       expect(container.querySelector('table')).toBe(firstTable);
     });
 
+    it('does not re-mount the table rendered by the component on a later pass', async () => {
+      const table = buildTable();
+      const container = appendTable(table);
+
+      await renderMarkdownTables([table]);
+      const renderedTable = container.querySelector('table');
+
+      expect(renderMarkdownTables([renderedTable])).toBeNull();
+      expect(container.querySelectorAll('table')).toHaveLength(1);
+      expect(container.querySelector('table')).toBe(renderedTable);
+      expect(
+        container.querySelector(
+          '[data-testid="table-shadow-overlay"] [data-testid="table-shadow-overlay"]',
+        ),
+      ).toBeNull();
+    });
+
+    describe('when a second copy of the module processes the same container', () => {
+      let renderMarkdownTablesCopy;
+
+      beforeEach(() => {
+        jest.isolateModules(() => {
+          // eslint-disable-next-line global-require
+          renderMarkdownTablesCopy = require('~/behaviors/markdown/render_markdown_tables').default;
+        });
+      });
+
+      it('does not re-mount a table rendered by the first copy', async () => {
+        const table = buildTable();
+        const container = appendTable(table);
+
+        await renderMarkdownTables([table]);
+        const renderedTable = container.querySelector('table');
+
+        expect(renderMarkdownTablesCopy([renderedTable])).toBeNull();
+        expect(container.querySelectorAll('table')).toHaveLength(1);
+        expect(container.querySelector('table')).toBe(renderedTable);
+        expect(
+          container.querySelector(
+            '[data-testid="table-shadow-overlay"] [data-testid="table-shadow-overlay"]',
+          ),
+        ).toBeNull();
+      });
+
+      it('does not mount a table claimed by the first copy while it is still loading', async () => {
+        const table = buildTable();
+        const container = appendTable(table);
+
+        const rendered = renderMarkdownTables([table]);
+        expect(renderMarkdownTablesCopy([table])).toBeNull();
+
+        await rendered;
+        await waitForPromises();
+
+        expect(container.querySelectorAll('table')).toHaveLength(1);
+      });
+    });
+
     it('does not mount a table claimed by an earlier pass that has yet to finish', async () => {
       const table = buildTable();
       const container = appendTable(table);

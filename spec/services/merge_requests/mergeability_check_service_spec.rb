@@ -262,35 +262,6 @@ RSpec.describe MergeRequests::MergeabilityCheckService, :clean_gitlab_redis_shar
         it 'reports the merge status as discarded' do
           expect(subject.reason).to eq(described_class::STALE_MERGE_STATUS_DISCARDED)
         end
-
-        context 'when discard_stale_mergeability_verdicts is disabled' do
-          before do
-            stub_feature_flags(discard_stale_mergeability_verdicts: false)
-          end
-
-          it 'writes the stale unmergeable status' do
-            expect { subject }.to change { merge_request.merge_status }
-              .from('unchecked').to('cannot_be_merged')
-          end
-        end
-      end
-
-      context 'when discard_stale_mergeability_verdicts is disabled' do
-        before do
-          stub_feature_flags(discard_stale_mergeability_verdicts: false)
-        end
-
-        it 'overwrites the current merge status with the stale one' do
-          expect { subject }.to change { MergeRequest.find(merge_request.id).merge_status }
-            .from('cannot_be_merged').to('can_be_merged')
-        end
-
-        it 'takes the original path, reading no inputs and locking no row' do
-          expect(merge_request).not_to receive(:merge_status_inputs)
-          expect(merge_request).not_to receive(:merge_status_inputs_current?)
-
-          subject
-        end
       end
     end
 
@@ -309,17 +280,6 @@ RSpec.describe MergeRequests::MergeabilityCheckService, :clean_gitlab_redis_shar
       it 'discards the merge status computed for the old source SHA' do
         expect { subject }.not_to change { MergeRequest.find(merge_request.id).merge_status }
           .from('cannot_be_merged')
-      end
-
-      context 'when discard_stale_mergeability_verdicts is disabled' do
-        before do
-          stub_feature_flags(discard_stale_mergeability_verdicts: false)
-        end
-
-        it 'overwrites the current merge status with the stale one' do
-          expect { subject }.to change { MergeRequest.find(merge_request.id).merge_status }
-            .from('cannot_be_merged').to('can_be_merged')
-        end
       end
     end
 

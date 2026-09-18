@@ -9,7 +9,13 @@ import getWorkItemsSlimQuery from 'ee_else_ce/work_items/list/graphql/get_work_i
 import getWorkItemsRestQuery from 'ee_else_ce/work_items/list/graphql/get_work_items_rest.query.graphql';
 import { CREATED_DESC } from '~/work_items/list/constants';
 import { STATUS_OPEN } from '~/issues/constants';
-import { METADATA_KEYS, WORK_ITEM_TYPE_NAME_EPIC } from '~/work_items/constants';
+import {
+  DETAIL_VIEW_QUERY_PARAM_NAME,
+  METADATA_KEYS,
+  WORK_ITEM_TYPE_NAME_EPIC,
+} from '~/work_items/constants';
+import { removeParams, updateHistory } from '~/lib/utils/url_utility';
+import setWindowLocation from 'helpers/set_window_location_helper';
 import { DEFAULT_SKELETON_COUNT } from '~/vue_shared/issuable/list/constants';
 import TableView from '~/work_items/table/table_view.vue';
 import WorkItemTableRow from '~/work_items/table/components/work_item_table_row.vue';
@@ -20,6 +26,11 @@ import {
 } from '../board/mock_data';
 
 jest.mock('~/sentry/sentry_browser_wrapper');
+jest.mock('~/lib/utils/url_utility', () => ({
+  ...jest.requireActual('~/lib/utils/url_utility'),
+  updateHistory: jest.fn(),
+  removeParams: jest.fn(),
+}));
 
 Vue.use(VueApollo);
 
@@ -319,6 +330,73 @@ describe('TableView', () => {
     it('renders the list empty state instead of the table', () => {
       expect(findTable().exists()).toBe(false);
       expect(wrapper.findByTestId('list-empty').exists()).toBe(true);
+    });
+  });
+
+  describe('detail panel', () => {
+    // The `show` param carries a base64-encoded work item reference.
+    const showParam = (id) =>
+      `${DETAIL_VIEW_QUERY_PARAM_NAME}=${btoa(JSON.stringify({ id, full_path: 'group' }))}`;
+
+    describe('by default', () => {
+      beforeEach(async () => {
+        createComponent();
+        await waitForPromises();
+      });
+
+      it('lets rows open in the panel', () => {
+        expect(findRows().at(0).props()).toMatchObject({
+          activeItem: null,
+          detailPanelEnabled: true,
+        });
+      });
+
+      it('opens the work item a row asks for', async () => {
+        await findRows().at(0).vm.$emit('set-active-item', workItems[0]);
+
+        expect(wrapper.emitted('set-active-item').at(-1)).toEqual([workItems[0]]);
+      });
+
+      it('drops the work item from the URL when a row closes the panel', async () => {
+        await findRows().at(0).vm.$emit('set-active-item', null);
+
+        expect(wrapper.emitted('set-active-item').at(-1)).toEqual([null]);
+        expect(updateHistory).toHaveBeenCalled();
+        expect(removeParams).toHaveBeenCalledWith([DETAIL_VIEW_QUERY_PARAM_NAME]);
+      });
+    });
+
+    describe('when the work items open on their own page instead', () => {
+      beforeEach(async () => {
+        createComponent({
+          props: { displaySettings: { commonPreferences: { shouldOpenItemsInSidePanel: false } } },
+        });
+        await waitForPromises();
+      });
+
+      it('tells the rows to leave their links alone', () => {
+        expect(findRows().at(0).props('detailPanelEnabled')).toBe(false);
+      });
+    });
+
+    describe('when the URL names a work item', () => {
+      it('opens it once the rows have loaded', async () => {
+        setWindowLocation(`?${showParam(2)}`);
+        createComponent();
+        await waitForPromises();
+
+        expect(wrapper.emitted('set-active-item').at(-1)).toEqual([
+          expect.objectContaining({ id: workItems[1].id }),
+        ]);
+      });
+
+      it('drops it from the URL when no row matches', async () => {
+        setWindowLocation(`?${showParam(404)}`);
+        createComponent();
+        await waitForPromises();
+
+        expect(removeParams).toHaveBeenCalledWith([DETAIL_VIEW_QUERY_PARAM_NAME]);
+      });
     });
   });
 

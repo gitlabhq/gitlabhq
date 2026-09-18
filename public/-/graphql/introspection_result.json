@@ -33937,7 +33937,7 @@
             },
             {
               "name": "contributions",
-              "description": "Aggregation engine for contribution analytics Introduced in GitLab 19.0: Status: Experiment.",
+              "description": "Aggregation engine for contribution analytics. Requires Siphon replication to be enabled on the instance. Introduced in GitLab 19.0: Status: Experiment.",
               "args": [
                 {
                   "name": "descendantsScope",
@@ -34006,7 +34006,7 @@
             },
             {
               "name": "deployments",
-              "description": "Aggregation engine for deployment analytics Introduced in GitLab 19.0: Status: Experiment.",
+              "description": "Aggregation engine for deployment analytics. Requires Siphon replication to be enabled on the instance. Introduced in GitLab 19.0: Status: Experiment.",
               "args": [
                 {
                   "name": "descendantsScope",
@@ -34417,7 +34417,7 @@
             },
             {
               "name": "duoWorkflows",
-              "description": "Aggregation engine for GitLab Duo Agent Platform flows Introduced in GitLab 19.4: Status: Experiment.",
+              "description": "Aggregation engine for GitLab Duo Agent Platform flows. Requires Siphon replication to be enabled on the instance. Introduced in GitLab 19.4: Status: Experiment.",
               "args": [
                 {
                   "name": "descendantsScope",
@@ -34494,6 +34494,26 @@
                 {
                   "name": "userId",
                   "description": "Filter by one or many user Global IDs",
+                  "type": {
+                    "kind": "LIST",
+                    "name": null,
+                    "ofType": {
+                      "kind": "NON_NULL",
+                      "name": null,
+                      "ofType": {
+                        "kind": "SCALAR",
+                        "name": "String",
+                        "ofType": null
+                      }
+                    }
+                  },
+                  "defaultValue": null,
+                  "isDeprecated": false,
+                  "deprecationReason": null
+                },
+                {
+                  "name": "groupId",
+                  "description": "Filter by one or many group Global IDs, including flows from their descendants",
                   "type": {
                     "kind": "LIST",
                     "name": null,
@@ -34594,7 +34614,7 @@
             },
             {
               "name": "mergeRequests",
-              "description": "Aggregation engine for merge request analytics Introduced in GitLab 19.2: Status: Experiment.",
+              "description": "Aggregation engine for merge request analytics. Requires Siphon replication to be enabled on the instance. Introduced in GitLab 19.2: Status: Experiment.",
               "args": [
                 {
                   "name": "descendantsScope",
@@ -34747,7 +34767,7 @@
             },
             {
               "name": "pipelines",
-              "description": "Aggregation engine for CI pipeline analytics Introduced in GitLab 19.2: Status: Experiment.",
+              "description": "Aggregation engine for CI pipeline analytics. Requires Siphon replication to be enabled on the instance. Introduced in GitLab 19.2: Status: Experiment.",
               "args": [
                 {
                   "name": "descendantsScope",
@@ -151858,6 +151878,31 @@
               "type": {
                 "kind": "SCALAR",
                 "name": "Date",
+                "ofType": null
+              },
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "group",
+              "description": "Group at the requested depth of the hierarchy. NULL for flows tracked above that depth. Flows tracked in a project at that depth bucket by project namespace ID, which also resolves to NULL.",
+              "args": [
+                {
+                  "name": "depth",
+                  "description": "Depth in the group hierarchy, counted from the top-level group. Defaults to 1.",
+                  "type": {
+                    "kind": "SCALAR",
+                    "name": "Int",
+                    "ofType": null
+                  },
+                  "defaultValue": null,
+                  "isDeprecated": false,
+                  "deprecationReason": null
+                }
+              ],
+              "type": {
+                "kind": "OBJECT",
+                "name": "Group",
                 "ofType": null
               },
               "isDeprecated": false,

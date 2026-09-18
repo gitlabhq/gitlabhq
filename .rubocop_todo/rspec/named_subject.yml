@@ -576,7 +576,6 @@ RSpec/NamedSubject:
     - 'ee/spec/services/ee/groups/group_links/destroy_service_spec.rb'
     - 'ee/spec/services/ee/ip_restrictions/update_service_spec.rb'
     - 'ee/spec/services/ee/issuable/bulk_update_service_spec.rb'
-    - 'ee/spec/services/ee/issuable/destroy_service_spec.rb'
     - 'ee/spec/services/ee/issue_links/create_service_spec.rb'
     - 'ee/spec/services/ee/issues/update_service_spec.rb'
     - 'ee/spec/services/ee/keys/destroy_service_spec.rb'

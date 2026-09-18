@@ -1,6 +1,6 @@
 <script>
 import { defineAsyncComponent } from 'vue';
-import { GlLabel, GlTruncate } from '@gitlab/ui';
+import { GlLabel, GlLink, GlTruncate } from '@gitlab/ui';
 import { localeDateFormat, newDate } from '~/lib/utils/datetime_utility';
 import { isScopedLabel } from '~/lib/utils/common_utils';
 import IssueAssignees from '~/issuable/components/issue_assignees.vue';
@@ -36,6 +36,7 @@ export default {
   name: 'WorkItemTableCell',
   components: {
     GlLabel,
+    GlLink,
     GlTruncate,
     IssueAssignees,
     IssuableMilestone,
@@ -80,8 +81,9 @@ export default {
     assignees() {
       return findAssigneesWidget(this.item)?.assignees?.nodes ?? [];
     },
-    singleAssigneeName() {
-      return this.assignees.length === 1 ? this.assignees[0].name : null;
+    // Only one assignee is named, since more than one would not fit the column.
+    singleAssignee() {
+      return this.assignees.length === 1 ? this.assignees[0] : null;
     },
     labels() {
       return findLabelsWidget(this.item)?.labels?.nodes ?? [];
@@ -155,7 +157,14 @@ export default {
       :max-visible="$options.MAX_VISIBLE_ASSIGNEES"
       class="gl-flex gl-shrink-0 gl-items-center"
     />
-    <gl-truncate v-if="singleAssigneeName" :text="singleAssigneeName" />
+    <gl-link
+      v-if="singleAssignee"
+      :href="singleAssignee.webPath"
+      class="gl-min-w-0 gl-text-default hover:gl-text-default"
+      data-testid="assignee-name-link"
+    >
+      <gl-truncate :text="singleAssignee.name" />
+    </gl-link>
   </div>
 
   <div

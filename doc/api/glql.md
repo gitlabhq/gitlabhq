@@ -638,7 +638,7 @@ Example response, truncated:
   "functions": [
     { "name": "today", "kind": "value", "description": "Today's date at 00:00 UTC.", "args": [], "returns": "Date" }
   ],
-  "version": "0.37.0"
+  "version": "0.38.0"
 }
 ```
 

@@ -32,6 +32,9 @@ describe('statPresentationFor', () => {
       ${'Contributions'}   | ${'usersCount'}          | ${'Number of unique contributors.'}
       ${'DuoWorkflows'}    | ${'creditsUsedSum'}      | ${'Total credits used by all flows.'}
       ${'DuoWorkflows'}    | ${'projectsCount'}       | ${'Number of unique projects.'}
+      ${'DuoWorkflows'}    | ${'createdMrCountSum'}   | ${'Total merge requests created by all flows.'}
+      ${'DuoWorkflows'}    | ${'joinedUsersCount'}    | ${'Number of unique users who ran a flow in this period but not in the previous one.'}
+      ${'MergeRequests'}   | ${'acceptanceRate'}      | ${'Share of merge requests that were merged.'}
     `('derives the description of $fieldKey in $source', ({ source, fieldKey, expected }) => {
       expect(statPresentationFor(source, metric(fieldKey)).description).toBe(expected);
     });
@@ -222,6 +225,10 @@ describe('positiveDirectionFor', () => {
     ${'Pipelines'}       | ${'durationQuantile'}    | ${'down'}
     ${'MergeRequests'}   | ${'timeToMergeQuantile'} | ${'down'}
     ${'DuoWorkflows'}    | ${'creditsUsedSum'}      | ${null}
+    ${'DuoWorkflows'}    | ${'churnedUsersCount'}   | ${'down'}
+    ${'DuoWorkflows'}    | ${'closedMrCountSum'}    | ${'down'}
+    ${'DuoWorkflows'}    | ${'createdMrCountSum'}   | ${'up'}
+    ${'MergeRequests'}   | ${'acceptanceRate'}      | ${'up'}
     ${'CodeSuggestions'} | ${'somethingCustom'}     | ${null}
   `('returns $expected for $fieldKey in $source', ({ source, fieldKey, expected }) => {
     expect(positiveDirectionFor(source, metric(fieldKey))).toBe(expected);

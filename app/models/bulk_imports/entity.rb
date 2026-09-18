@@ -117,16 +117,29 @@ class BulkImports::Entity < ApplicationRecord
 
       entity.track_project_import_event('cancel_project_import')
       entity.track_group_import_event('cancel_group_import')
+      entity.track_entity_import_event('cancel_gitlab_migration_entity')
     end
 
     after_transition on: :fail_op do |entity, _|
       entity.track_project_import_event('fail_project_import')
       entity.track_group_import_event('fail_group_import')
+      entity.track_entity_import_event('fail_gitlab_migration_entity')
     end
 
     after_transition on: :cleanup_stale do |entity, _|
       entity.track_project_import_event('timeout_project_import')
       entity.track_group_import_event('timeout_group_import')
+      entity.track_entity_import_event('timeout_gitlab_migration_entity')
+    end
+
+    after_transition on: :start do |entity, _|
+      entity.track_entity_import_event('start_gitlab_migration_entity')
+    end
+
+    after_transition on: :finish do |entity, _|
+      # `event :finish` has a `failed => failed` self-transition, so guard on
+      # the terminal state to only fire when the entity truly finished.
+      entity.track_entity_import_event('finish_gitlab_migration_entity') if entity.finished?
     end
   end
 
@@ -304,6 +317,24 @@ class BulkImports::Entity < ApplicationRecord
 
   def group_import_event_attributes
     import_event_attributes.merge(namespace: group)
+  end
+
+  # Fires for both project and group entities, and may fire before any
+  # Project/Group record exists (e.g. failure during the very first pipeline),
+  # so no project?/group? guard and identifiers are attached only when present.
+  def track_entity_import_event(action)
+    run_after_commit do
+      track_internal_event(action, entity_import_event_attributes)
+    end
+  end
+
+  def entity_import_event_attributes
+    base = import_event_attributes
+    base.merge(
+      namespace: project&.namespace || group,
+      project: project,
+      additional_properties: base[:additional_properties].merge(parent_entity_id: parent_id).compact
+    )
   end
 
   # label (gitlab_migration vs offline_transfer) distinguishes Direct Transfer

@@ -129,7 +129,7 @@ module MergeRequests
 
       # Read before the checks below, so that refreshing the record while we wait on
       # Gitaly cannot move the inputs the merge status is judged against.
-      inputs = merge_request.merge_status_inputs if discard_stale_merge_status_writes?
+      inputs = merge_request.merge_status_inputs
 
       if merge_request.broken?
         write_merge_status(inputs) { merge_request.mark_as_unmergeable }
@@ -157,12 +157,6 @@ module MergeRequests
     #
     # Returns whether the status was written.
     def write_merge_status(inputs)
-      unless discard_stale_merge_status_writes?
-        yield
-
-        return true
-      end
-
       merge_request.transaction do
         unless merge_request.merge_status_inputs_current?(inputs)
           @merge_status_discarded = true
@@ -175,11 +169,6 @@ module MergeRequests
         true
       end
     end
-
-    def discard_stale_merge_status_writes?
-      Feature.enabled?(:discard_stale_mergeability_verdicts, project)
-    end
-    strong_memoize_attr :discard_stale_merge_status_writes?
 
     def reload_merge_head_diff
       MergeRequests::ReloadMergeHeadDiffService.new(merge_request).execute

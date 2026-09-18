@@ -965,18 +965,32 @@ RSpec.describe Gitlab::PrinciplesDistiller::Sync do # rubocop:disable RSpec/Spec
     end
 
     context 'when SSOT authors resolve' do
+      let(:ada_commit_shas) do
+        %w[aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb]
+      end
+
+      let(:grace_commit_sha) { 'cccccccccccccccccccccccccccccccccccccccc' }
+
       before do
         # Override the hermetic default: individuals who changed the SSOT are
         # pinged instead of the owning team.
         allow(reviewer_resolver).to receive(:ssot_authors).and_return([
-          { username: 'ada', id: 1 }, { username: 'grace', id: 2 }
+          { username: 'ada', id: 1, commit_shas: ada_commit_shas },
+          { username: 'grace', id: 2, commit_shas: [grace_commit_sha] }
         ])
       end
 
-      it 'pings the resolved authors and omits the team fallback ping', :aggregate_failures do
+      it 'lists each author with their commit SHAs in a table and assigns them as reviewers', :aggregate_failures do
         body = capture_post_body
 
-        expect(body[:description]).to include('authored by @ada @grace')
+        expect(body[:description]).to include(<<~TABLE)
+
+          | Author | SSOT commit(s) |
+          | --- | --- |
+          | @ada | #{ada_commit_shas.join(', ')} |
+          | @grace | #{grace_commit_sha} |
+
+        TABLE
         expect(body[:reviewer_ids]).to eq([1, 2])
         # The team-fallback ping ("Please review: **team**.") must not appear
         # when authors resolved.
@@ -1004,6 +1018,7 @@ RSpec.describe Gitlab::PrinciplesDistiller::Sync do # rubocop:disable RSpec/Spec
 
         expect(body[:description]).to include('routing to @ada')
         expect(body[:reviewer_ids]).to eq([1])
+        expect(body[:description]).not_to include('| Author | SSOT commit(s) |')
       end
 
       it 'explains that review was routed to an individual, not a group', :aggregate_failures do
@@ -1019,9 +1034,11 @@ RSpec.describe Gitlab::PrinciplesDistiller::Sync do # rubocop:disable RSpec/Spec
     end
 
     context 'when authors are mentioned but cannot be assigned as reviewers' do
+      let(:commit_sha) { 'aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa' }
+
       before do
         allow(reviewer_resolver).to receive_messages(
-          ssot_authors: [{ username: 'ada', id: nil }],
+          ssot_authors: [{ username: 'ada', id: nil, commit_shas: [commit_sha] }],
           owner_team_reviewer: { username: 'grace', id: 2, review_count: 0 }
         )
       end
@@ -1029,7 +1046,7 @@ RSpec.describe Gitlab::PrinciplesDistiller::Sync do # rubocop:disable RSpec/Spec
       it 'assigns and names the fallback reviewer without hiding the author mention', :aggregate_failures do
         body = capture_post_body
 
-        expect(body[:description]).to include('authored by @ada')
+        expect(body[:description]).to include("| @ada | #{commit_sha} |")
         expect(body[:description]).to include('Reviewer assignment routed to @grace')
         expect(body[:reviewer_ids]).to eq([2])
       end
@@ -1045,7 +1062,9 @@ RSpec.describe Gitlab::PrinciplesDistiller::Sync do # rubocop:disable RSpec/Spec
 
     context 'when authors resolve to reviewer IDs' do
       before do
-        allow(reviewer_resolver).to receive(:ssot_authors).and_return([{ username: 'ada', id: 1 }])
+        allow(reviewer_resolver).to receive(:ssot_authors).and_return([
+          { username: 'ada', id: 1, commit_shas: ['aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa'] }
+        ])
       end
 
       it 'does not query a fallback reviewer' do

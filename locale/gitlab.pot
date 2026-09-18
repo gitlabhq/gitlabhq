@@ -14177,7 +14177,16 @@ msgstr ""
 msgid "Avatar will be removed. Are you sure?"
 msgstr ""
 
+msgid "Average closed merge requests created per flow."
+msgstr ""
+
 msgid "Average credits used per flow."
+msgstr ""
+
+msgid "Average merge requests created per flow."
+msgstr ""
+
+msgid "Average merged merge requests created per flow."
 msgstr ""
 
 msgid "Average per day: %{average}"
@@ -19068,6 +19077,9 @@ msgstr[0] ""
 msgstr[1] ""
 
 msgid "Closed issues"
+msgstr ""
+
+msgid "Closed merge requests created per flow at a given quantile."
 msgstr ""
 
 msgid "Closed this %{quick_action_target}."
@@ -25986,9 +25998,6 @@ msgstr ""
 msgid "Created branch '%{branch_name}' and a merge request to resolve this issue."
 msgstr ""
 
-msgid "Created by"
-msgstr ""
-
 msgid "Created by %{author}"
 msgstr ""
 
@@ -30893,6 +30902,9 @@ msgstr[1] ""
 msgid "DuoAgentPlatform|CI/CD runner"
 msgstr ""
 
+msgid "DuoAgentPlatform|CLI"
+msgstr ""
+
 msgid "DuoAgentPlatform|Cancelled"
 msgstr ""
 
@@ -31085,6 +31097,9 @@ msgid "DuoAgentPlatform|Project-wide behavior, unrelated to readiness."
 msgstr ""
 
 msgid "DuoAgentPlatform|Query graph"
+msgstr ""
+
+msgid "DuoAgentPlatform|Read-only on the web"
 msgstr ""
 
 msgid "DuoAgentPlatform|Ready. Flows can run in this project."
@@ -36860,7 +36875,16 @@ msgstr ""
 msgid "Fetching incoming email"
 msgstr ""
 
+msgid "Fewest closed merge requests created by a single flow."
+msgstr ""
+
 msgid "Fewest credits used by a single flow."
+msgstr ""
+
+msgid "Fewest merge requests created by a single flow."
+msgstr ""
+
+msgid "Fewest merged merge requests created by a single flow."
 msgstr ""
 
 msgid "File"
@@ -47904,9 +47928,6 @@ msgstr ""
 msgid "Last contact"
 msgstr ""
 
-msgid "Last edited"
-msgstr ""
-
 msgid "Last event"
 msgstr ""
 
@@ -50734,6 +50755,9 @@ msgstr ""
 msgid "Merge requests can't be merged if the status checks did not succeed or are still running."
 msgstr ""
 
+msgid "Merge requests created per flow at a given quantile."
+msgstr ""
+
 msgid "Merge requests that reach this diff commits limit cannot be updated."
 msgstr ""
 
@@ -51137,6 +51161,9 @@ msgid "Merged branches are being deleted. This can take some time depending on t
 msgstr ""
 
 msgid "Merged by"
+msgstr ""
+
+msgid "Merged merge requests created per flow at a given quantile."
 msgstr ""
 
 msgid "Merged this merge request."
@@ -52494,10 +52521,19 @@ msgstr ""
 msgid "More topics"
 msgstr ""
 
+msgid "Most closed merge requests created by a single flow."
+msgstr ""
+
 msgid "Most common"
 msgstr ""
 
 msgid "Most credits used by a single flow."
+msgstr ""
+
+msgid "Most merge requests created by a single flow."
+msgstr ""
+
+msgid "Most merged merge requests created by a single flow."
 msgstr ""
 
 msgid "Most recent commit."
@@ -54920,10 +54956,22 @@ msgstr ""
 msgid "Number of unique features used."
 msgstr ""
 
+msgid "Number of unique flow types."
+msgstr ""
+
 msgid "Number of unique projects."
 msgstr ""
 
 msgid "Number of unique users in the previous period."
+msgstr ""
+
+msgid "Number of unique users who also ran a flow in the previous period."
+msgstr ""
+
+msgid "Number of unique users who ran a flow in the previous period but not in this one."
+msgstr ""
+
+msgid "Number of unique users who ran a flow in this period but not in the previous one."
 msgstr ""
 
 msgid "Number of unique users."
@@ -78607,6 +78655,9 @@ msgstr ""
 msgid "Share and reuse infrastructure code"
 msgstr ""
 
+msgid "Share of merge requests that were merged."
+msgstr ""
+
 msgid "Share the %{strong_open}GitLab single sign-on URL%{strong_close} with members so they can sign in to your group through your identity provider"
 msgstr ""
 
@@ -85361,6 +85412,9 @@ msgstr ""
 msgid "Total Risk Score"
 msgstr ""
 
+msgid "Total closed merge requests created by all flows."
+msgstr ""
+
 msgid "Total cores (CPUs)"
 msgstr ""
 
@@ -85374,6 +85428,12 @@ msgid "Total items: %{total}"
 msgstr ""
 
 msgid "Total memory (GB)"
+msgstr ""
+
+msgid "Total merge requests created by all flows."
+msgstr ""
+
+msgid "Total merged merge requests created by all flows."
 msgstr ""
 
 msgid "Total number of contributions."
@@ -97871,6 +97931,9 @@ msgstr ""
 msgid "is linked to an account pending deletion."
 msgstr ""
 
+msgid "is listed more than once for the same namespace"
+msgstr ""
+
 msgid "is locked by an instance administrator and can only be changed by an instance administrator."
 msgstr ""
 
@@ -98431,6 +98494,9 @@ msgid "must be 3 months old at the most"
 msgstr ""
 
 msgid "must be a boolean value"
+msgstr ""
+
+msgid "must be a group"
 msgstr ""
 
 msgid "must be a hash"

@@ -151,6 +151,7 @@ export default {
       :data-print-scale-container="isSticky || null"
     >
       <table
+        data-markdown-table-applied="true"
         :data-print-scale-container="isSticky ? null : ''"
         data-print-scale-target
         :class="{ 'gl-my-5': !isSticky }"

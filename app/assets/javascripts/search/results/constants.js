@@ -27,3 +27,10 @@ export const ELLIPSIS = '…';
 export const MAX_GAP = 800;
 export const HIGHLIGHT_CLASSES = ['hll', 'c', 'p', 'k'];
 export const ZOEKT_CONNECTION_ERROR_IDENTIFIER = 'ClientConnectionError';
+export const ZOEKT_NODE_UNAVAILABLE_ERROR_IDENTIFIER = 'NodeUnavailableError';
+// Both mean the backend is down rather than the query being wrong, so both get the
+// connection copy instead of the syntax help link.
+export const ZOEKT_BACKEND_ERROR_IDENTIFIERS = [
+  ZOEKT_CONNECTION_ERROR_IDENTIFIER,
+  ZOEKT_NODE_UNAVAILABLE_ERROR_IDENTIFIER,
+];

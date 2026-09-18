@@ -1,4 +1,5 @@
 <script>
+import { getIdFromGraphQLId } from '~/graphql_shared/utils';
 import { COLUMN_TITLE } from '../constants';
 import WorkItemTableCell from './work_item_table_cell.vue';
 import WorkItemTitleCell from './work_item_title_cell.vue';
@@ -22,8 +23,25 @@ export default {
       type: String,
       required: true,
     },
+    activeItem: {
+      type: Object,
+      required: false,
+      default: null,
+    },
+    detailPanelEnabled: {
+      type: Boolean,
+      required: false,
+      default: false,
+    },
   },
+  emits: ['set-active-item'],
   computed: {
+    isActive() {
+      return Boolean(
+        this.activeItem &&
+        getIdFromGraphQLId(this.item.id) === getIdFromGraphQLId(this.activeItem.id),
+      );
+    },
     // Decides element and role once per column, so the template doesn't re-derive them
     // per cell. The title names the row, so it is the row's header cell, not a data cell.
     normalizedColumns() {
@@ -33,11 +51,39 @@ export default {
       });
     },
   },
+  methods: {
+    handleRowClick(event) {
+      if (!this.detailPanelEnabled) {
+        return;
+      }
+
+      if (event.metaKey || event.ctrlKey || event.shiftKey) {
+        return;
+      }
+      // Every other link in a row, an assignee or a milestone, points somewhere else and is
+      // that link's own business. The title link is the one pointing at this work item.
+      const link = event.target.closest('a');
+      if (link && link.getAttribute('href') !== this.item.webPath) {
+        return;
+      }
+      event.preventDefault();
+      this.$emit('set-active-item', this.isActive ? null : this.item);
+    },
+  },
 };
 </script>
 
 <template>
-  <tr class="gl-border-b last:gl-border-b-0 hover:gl-bg-subtle" data-testid="work-item-table-row">
+  <tr
+    class="gl-border-b last:gl-border-b-0 hover:gl-bg-subtle"
+    :class="{
+      '!gl-bg-feedback-info hover:!gl-bg-feedback-info': isActive,
+      'gl-cursor-pointer': detailPanelEnabled,
+    }"
+    :aria-current="isActive ? 'true' : undefined"
+    data-testid="work-item-table-row"
+    @click="handleRowClick"
+  >
     <component
       :is="column.tag"
       v-for="column in normalizedColumns"

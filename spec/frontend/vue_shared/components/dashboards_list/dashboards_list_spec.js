@@ -1,15 +1,15 @@
-import { GlTable, GlAvatarLabeled } from '@gitlab/ui';
-import GITLAB_LOGO_SVG_URL from '@gitlab/svgs/dist/illustrations/gitlab_logo.svg?url';
-import { shallowMountExtended, mountExtended } from 'helpers/vue_test_utils_helper';
+import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
 import DashboardsList from '~/vue_shared/components/dashboards_list/dashboards_list.vue';
-import DashboardsListItemActions from 'ee_else_ce/vue_shared/components/dashboards_list/dashboards_list_item_actions.vue';
+import DashboardCard from '~/vue_shared/components/dashboards_list/dashboard_card.vue';
 
+// Custom dashboards have a null slug in production; only their `id` is unique.
 const mockDashboards = [
   {
     id: 'gid://gitlab/Analytics::CustomDashboard/1',
     name: 'First custom dashboard',
     description: 'Default dashboard description',
-    slug: 'first-custom-dashboard',
+    slug: null,
+    system: false,
     createdBy: {
       id: 133737,
       name: 'Fake User',
@@ -18,18 +18,15 @@ const mockDashboards = [
       webUrl: '/fakeuser',
       webPath: '/fakeuser',
     },
-    isCustom: true,
-    isEditable: true,
-    shareLink: '/fake/link/to/share',
     updatedAt: '2020-07-01',
     dashboardUrl: '/fake/url/1',
   },
   {
     id: 'gid://gitlab/Analytics::CustomDashboard/2',
-    name: 'Cool dashboard',
-    description:
-      'Cool custom dashboard that has a description that is very long and will most definitely overflow',
-    slug: 'cool-custom-dashboard',
+    name: 'Second custom dashboard',
+    description: 'Another dashboard description',
+    slug: null,
+    system: false,
     createdBy: {
       id: 133737,
       name: 'Fake User',
@@ -38,11 +35,16 @@ const mockDashboards = [
       webUrl: '/fakeuser',
       webPath: '/fakeuser',
     },
-    isCustom: true,
-    isEditable: true,
-    shareLink: '/fake/link/to/share',
-    updatedAt: '2020-06-01',
+    updatedAt: '2020-07-02',
     dashboardUrl: '/fake/url/2',
+  },
+  {
+    id: 'gitlab:dashboard:system-dashboard',
+    name: 'System dashboard',
+    description: 'Dashboard created and maintained by GitLab',
+    slug: 'system-dashboard',
+    system: true,
+    dashboardUrl: '/fake/url/system',
   },
 ];
 
@@ -50,15 +52,11 @@ describe('DashboardsList', () => {
   /** @type {import('helpers/vue_test_utils_helper').ExtendedWrapper} */
   let wrapper;
 
-  const findTable = () => wrapper.findComponent(GlTable);
-  const findTableRows = () => wrapper.findAll('tbody tr');
-  const findStarIcons = () => wrapper.findAllByTestId('dashboard-star-icon');
-  const findDashboardLinks = () => wrapper.findAllByTestId('dashboard-redirect-link');
-  const findUserAvatars = () => wrapper.findAllComponents(GlAvatarLabeled);
-  const findActionDropdowns = () => wrapper.findAllComponents(DashboardsListItemActions);
+  const findGrid = () => wrapper.findByTestId('dashboards-list');
+  const findDashboardCards = () => wrapper.findAllComponents(DashboardCard);
 
-  const createWrapper = (props = {}, mountFn = shallowMountExtended) => {
-    wrapper = mountFn(DashboardsList, {
+  const createWrapper = (props = {}) => {
+    wrapper = shallowMountExtended(DashboardsList, {
       propsData: {
         dashboards: mockDashboards,
         ...props,
@@ -66,103 +64,35 @@ describe('DashboardsList', () => {
     });
   };
 
-  const findFieldLabels = () =>
-    findTable()
-      .props('fields')
-      .map(({ label }) => label);
-
-  describe('with valid dashboard data', () => {
+  describe('with dashboards', () => {
     beforeEach(() => {
       createWrapper();
     });
 
-    it('renders the table component', () => {
-      expect(findTable().exists()).toBe(true);
-      expect(findTable().attributes('stacked')).toBe('sm');
+    it('renders the dashboards in a list', () => {
+      expect(findGrid().element.tagName).toBe('UL');
     });
-  });
 
-  describe('with data', () => {
-    describe('with custom dashboards', () => {
-      beforeEach(() => {
-        createWrapper({}, mountExtended);
-      });
+    it('renders a card for each dashboard', () => {
+      expect(findDashboardCards()).toHaveLength(mockDashboards.length);
+    });
 
-      it('renders the correct number of table rows', () => {
-        expect(findTableRows()).toHaveLength(mockDashboards.length);
-      });
+    it('passes each dashboard to its card', () => {
+      const cards = findDashboardCards();
 
-      it('renders user avatars with correct props', () => {
-        const avatars = findUserAvatars();
-
-        avatars.wrappers.forEach((avatar, index) => {
-          const dashboard = mockDashboards[index];
-          expect(avatar.props()).toMatchObject({
-            src: dashboard.createdBy.avatarUrl,
-            size: 24,
-            shape: 'circle',
-            fallbackOnError: true,
-            label: dashboard.createdBy.name,
-          });
-        });
-      });
-
-      it('renders user', () => {
-        mockDashboards.forEach((dashboard, index) => {
-          const row = findTableRows().at(index);
-          expect(row.text()).toContain(dashboard.createdBy.name);
-
-          expect(row.html()).toContain(dashboard.createdBy.webPath);
-        });
-      });
-
-      it('renders action dropdowns for each dashboard', () => {
-        expect(findActionDropdowns()).toHaveLength(mockDashboards.length);
-      });
-
-      it('renders the valid fields', () => {
-        expect(findFieldLabels()).toEqual(['Title', 'Created by', 'Actions']);
+      mockDashboards.forEach((dashboard, index) => {
+        expect(cards.at(index).props('dashboard')).toEqual(dashboard);
       });
     });
 
-    describe('with system dashboards', () => {
-      const mockSystemDashboards = [
-        {
-          name: 'System dashboard',
-          system: true,
-          description:
-            'Cool custom dashboard that has a description that is very long and will most definitely overflow',
-          slug: 'cool-custom-dashboard',
-          shareLink: '/fake/link/to/share',
-          updatedAt: '2025-10-28',
-          dashboardUrl: '/fake/url/2',
-        },
-      ];
+    it('keeps cards in sync when the list is re-ordered', async () => {
+      const reversed = [...mockDashboards].reverse();
 
-      beforeEach(() => {
-        createWrapper({ dashboards: mockSystemDashboards }, mountExtended);
-      });
+      await wrapper.setProps({ dashboards: reversed });
 
-      it('renders the correct number of table rows', () => {
-        expect(findTableRows()).toHaveLength(mockSystemDashboards.length);
-      });
-
-      it('renders GitLab in the created by field', () => {
-        const avatars = findUserAvatars();
-
-        avatars.wrappers.forEach((avatar) => {
-          expect(avatar.props()).toMatchObject({
-            src: GITLAB_LOGO_SVG_URL,
-            size: 24,
-            shape: 'circle',
-            fallbackOnError: true,
-            label: 'GitLab',
-          });
-        });
-      });
-
-      it('renders the valid fields', () => {
-        expect(findFieldLabels()).toEqual(['Title', 'Created by', 'Actions']);
+      const cards = findDashboardCards();
+      reversed.forEach((dashboard, index) => {
+        expect(cards.at(index).props('dashboard')).toEqual(dashboard);
       });
     });
   });
@@ -172,24 +102,12 @@ describe('DashboardsList', () => {
       createWrapper({ dashboards: [] });
     });
 
-    it('renders the table component', () => {
-      expect(findTable().exists()).toBe(true);
+    it('renders the list container', () => {
+      expect(findGrid().exists()).toBe(true);
     });
 
-    it('renders no table rows', () => {
-      expect(findTableRows()).toHaveLength(0);
-    });
-
-    it('renders no dashboard links', () => {
-      expect(findDashboardLinks()).toHaveLength(0);
-    });
-
-    it('renders no star icons', () => {
-      expect(findStarIcons()).toHaveLength(0);
-    });
-
-    it('renders no user avatars', () => {
-      expect(findUserAvatars()).toHaveLength(0);
+    it('renders no cards', () => {
+      expect(findDashboardCards()).toHaveLength(0);
     });
   });
 });

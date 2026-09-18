@@ -17,6 +17,7 @@ title: Merge request analytics
 - [Introduced](https://gitlab.com/groups/gitlab-org/-/work_items/21214) in GitLab 19.3.
 - `timeToMergeQuantile` [changed](https://gitlab.com/gitlab-org/glql/-/merge_requests/501) to report seconds in GitLab 19.5.
 - `timeToMergeMin`, `timeToMergeMax`, `timeToMergeMean`, and `timeToMergeSum` metrics [introduced](https://gitlab.com/gitlab-org/glql/-/merge_requests/507) in GitLab 19.5.
+- `createdByDuo` filter and dimension, and `acceptanceRate` metric [introduced](https://gitlab.com/gitlab-org/glql/-/merge_requests/518) in GitLab 19.5.
 
 {{< /history >}}
 
@@ -42,6 +43,7 @@ Use these fields in the `query` parameter to filter your results.
 | Field                              | Name           | Operators                 |
 | ---------------------------------- | -------------- | ------------------------- |
 | [Created at](#created-at)          | `created`      | `=`, `>`, `<`, `>=`, `<=` |
+| [Created by Duo](#created-by-duo)  | `createdByDuo` | `=`, `!=`                 |
 | [Merged at](#merged-at)            | `merged`       | `=`, `>`, `<`, `>=`, `<=` |
 | [State](#state)                    | `state`        | `=`, `in`                 |
 | [Target branch](#target-branch)    | `targetBranch` | `=`, `in`                 |
@@ -59,6 +61,14 @@ Use these fields in the `query` parameter to filter your results.
 **Notes**:
 
 - For the `=` operator, the time range is considered from 00:00 to 23:59 in the user's time zone.
+
+### Created by Duo {#created-by-duo}
+
+**Description**: Filter merge requests by whether a GitLab Duo Agent Platform session created them.
+
+**Allowed value types**:
+
+- `Boolean` (`true` or `false`)
 
 ### Merged at {#merged-at}
 
@@ -101,6 +111,7 @@ Use these fields in the `query` parameter to filter your results.
 | Dimension     | Name           | Description                              |
 | ------------- | -------------- | ---------------------------------------- |
 | Created at    | `created`      | Group by creation date. Accepts a [`granularity` parameter](../_index.md#field-parameters) of `daily`, `weekly`, or `monthly` (default: `weekly`). For example, `created(monthly)`. |
+| Created by Duo | `createdByDuo` | Group by whether a GitLab Duo Agent Platform session created the merge request. |
 | Merged at     | `merged`       | Group by merge date. Accepts a [`granularity` parameter](../_index.md#field-parameters) of `daily`, `weekly`, or `monthly` (default: `weekly`). For example, `merged(monthly)`. |
 | State         | `state`        | Group by merge request state.            |
 | Target branch | `targetBranch` | Group by target branch.                  |
@@ -109,6 +120,7 @@ Use these fields in the `query` parameter to filter your results.
 
 | Metric                 | Name                   | Description                              |
 | ---------------------- | ---------------------- | ---------------------------------------- |
+| Acceptance rate        | `acceptanceRate`       | Share of merge requests that were merged. |
 | Throughput count       | `throughputCount`      | Number of merged merge requests.         |
 | Time to merge max      | `timeToMergeMax`       | Longest time from creation to merge, in seconds. |
 | Time to merge mean     | `timeToMergeMean`      | Average time from creation to merge, in seconds. |
@@ -177,6 +189,20 @@ information, see [analytics mode sorting](../_index.md#sorting).
   dimensions: targetBranch as "Target branch"
   metrics: totalCount as "Total", throughputCount as "Merged"
   sort: throughputCount desc
+  ```
+  ````
+
+- Acceptance rate of merge requests created by GitLab Duo compared to other merge requests:
+
+  ````yaml
+  ```glql
+  title: "Merge request acceptance rate by origin (last 30 days)"
+  display: table
+  mode: analytics
+  query: type = MergeRequest and group = "gitlab-org" and created > -30d
+  dimensions: createdByDuo as "Created by Duo"
+  metrics: totalCount as "Total", throughputCount as "Merged", acceptanceRate as "Acceptance rate"
+  sort: totalCount desc
   ```
   ````
 

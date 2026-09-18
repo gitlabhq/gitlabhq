@@ -6,7 +6,6 @@ const loadMarkdownTable = memoize(
   () => import(/* webpackChunkName: 'gfm_markdown_table' */ '../components/markdown_table.vue'),
 );
 
-const mountedTables = new WeakMap();
 const mountedApps = new Set();
 let removalObserver;
 
@@ -23,7 +22,8 @@ function observeRemoval(table, app) {
       if (entry.app.$el.isConnected) return;
 
       entry.app.$destroy();
-      mountedTables.delete(entry.table);
+      // eslint-disable-next-line no-param-reassign
+      delete entry.table.dataset.markdownTableApplied;
       mountedApps.delete(entry);
     });
 
@@ -89,13 +89,14 @@ export default function renderMarkdownTables(els) {
   const claimed = [];
 
   els.forEach((table) => {
-    if (mountedTables.has(table)) return;
+    if (table.dataset.markdownTableApplied === 'true') return;
     if (!table.parentNode) return;
 
     const parsed = parseTable(table);
     if (!parsed) return;
 
-    mountedTables.set(table, null);
+    // eslint-disable-next-line no-param-reassign
+    table.dataset.markdownTableApplied = 'true';
     claimed.push({ table, ...parsed });
   });
 
@@ -106,7 +107,8 @@ export default function renderMarkdownTables(els) {
   return loadMarkdownTable().then(({ default: MarkdownTable }) => {
     claimed.forEach(({ table, fields, items }) => {
       if (!table.parentNode) {
-        mountedTables.delete(table);
+        // eslint-disable-next-line no-param-reassign
+        delete table.dataset.markdownTableApplied;
         return;
       }
 
@@ -116,7 +118,6 @@ export default function renderMarkdownTables(els) {
         render: (h) => h(MarkdownTable, { props: { fields, items, isSortable, isSticky } }),
       });
 
-      mountedTables.set(table, app);
       observeRemoval(table, app);
     });
   });

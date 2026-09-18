@@ -508,6 +508,190 @@ RSpec.describe BulkImports::Entity, feature_category: :importers do
     end
   end
 
+  describe 'entity-level internal events on state transitions' do
+    shared_examples 'tracks the entity-level event' do |event_name, transition|
+      it "tracks #{event_name} on #{transition}" do
+        expect { entity.public_send(:"#{transition}!") }
+          .to trigger_internal_events(event_name)
+          .with(expected_payload)
+      end
+    end
+
+    context 'for a project entity' do
+      let_it_be(:project) { create(:project, import_type: 'gitlab_project_migration') }
+      let(:bulk_import) { create(:bulk_import, :with_configuration) }
+      let(:entity) do
+        create(:bulk_import_entity, :project_entity, :created, project: project, bulk_import: bulk_import)
+      end
+
+      let(:expected_payload) do
+        {
+          project: project,
+          user: entity.bulk_import.user,
+          namespace: project.namespace,
+          additional_properties: { label: 'gitlab_migration', property: entity.hashed_import_source }
+        }
+      end
+
+      it_behaves_like 'tracks the entity-level event', 'start_gitlab_migration_entity', :start
+
+      context 'when the entity is started' do
+        before do
+          entity.start!
+        end
+
+        it_behaves_like 'tracks the entity-level event', 'finish_gitlab_migration_entity', :finish
+        it_behaves_like 'tracks the entity-level event', 'fail_gitlab_migration_entity', :fail_op
+        it_behaves_like 'tracks the entity-level event', 'cancel_gitlab_migration_entity', :cancel
+        it_behaves_like 'tracks the entity-level event', 'timeout_gitlab_migration_entity', :cleanup_stale
+      end
+    end
+
+    context 'for a group entity' do
+      let_it_be(:group) { create(:group) }
+      let(:bulk_import) { create(:bulk_import, :with_configuration) }
+      let(:entity) do
+        create(:bulk_import_entity, :group_entity, :created, group: group, bulk_import: bulk_import)
+      end
+
+      let(:expected_payload) do
+        {
+          user: entity.bulk_import.user,
+          namespace: group,
+          additional_properties: { label: 'gitlab_migration', property: entity.hashed_import_source }
+        }
+      end
+
+      it_behaves_like 'tracks the entity-level event', 'start_gitlab_migration_entity', :start
+
+      context 'when the entity is started' do
+        before do
+          entity.start!
+        end
+
+        it_behaves_like 'tracks the entity-level event', 'finish_gitlab_migration_entity', :finish
+        it_behaves_like 'tracks the entity-level event', 'fail_gitlab_migration_entity', :fail_op
+        it_behaves_like 'tracks the entity-level event', 'cancel_gitlab_migration_entity', :cancel
+        it_behaves_like 'tracks the entity-level event', 'timeout_gitlab_migration_entity', :cleanup_stale
+      end
+    end
+
+    context 'when finish is called on an already-failed entity' do
+      let(:entity) do
+        create(:bulk_import_entity, :project_entity, :failed, bulk_import: create(:bulk_import, :with_configuration))
+      end
+
+      it 'does not fire finish_gitlab_migration_entity on the failed => failed self-transition' do
+        expect { entity.finish! }
+          .not_to trigger_internal_events('finish_gitlab_migration_entity')
+      end
+    end
+
+    context 'for an offline project entity' do
+      let_it_be(:project) { create(:project, import_type: 'offline_transfer') }
+      let(:entity) do
+        create(
+          :bulk_import_entity, :project_entity, :started, project: project,
+          bulk_import: create(:bulk_import, :with_offline_configuration)
+        )
+      end
+
+      it 'labels the event as offline_transfer' do
+        expect { entity.fail_op! }
+          .to trigger_internal_events('fail_gitlab_migration_entity')
+          .with(
+            project: project,
+            user: entity.bulk_import.user,
+            namespace: project.namespace,
+            additional_properties: { label: 'offline_transfer', property: entity.hashed_import_source }
+          )
+      end
+    end
+
+    context 'for an offline group entity' do
+      let_it_be(:group) { create(:group) }
+      let(:entity) do
+        create(
+          :bulk_import_entity, :group_entity, :started, group: group,
+          bulk_import: create(:bulk_import, :with_offline_configuration)
+        )
+      end
+
+      it 'labels the event as offline_transfer' do
+        expect { entity.fail_op! }
+          .to trigger_internal_events('fail_gitlab_migration_entity')
+          .with(
+            user: entity.bulk_import.user,
+            namespace: group,
+            additional_properties: { label: 'offline_transfer', property: entity.hashed_import_source }
+          )
+      end
+    end
+
+    context 'for a project entity with no project record yet' do
+      let(:entity) do
+        create(:bulk_import_entity, :project_entity, :started, bulk_import: create(:bulk_import, :with_configuration))
+      end
+
+      it 'still fires, with nil project and namespace' do
+        expect { entity.fail_op! }
+          .to trigger_internal_events('fail_gitlab_migration_entity')
+          .with(
+            project: nil,
+            user: entity.bulk_import.user,
+            namespace: nil,
+            additional_properties: { label: 'gitlab_migration', property: entity.hashed_import_source }
+          )
+      end
+    end
+
+    context 'for a group entity with no group record yet' do
+      let(:entity) do
+        create(:bulk_import_entity, :group_entity, :started, bulk_import: create(:bulk_import, :with_configuration))
+      end
+
+      it 'still fires, with nil namespace' do
+        expect { entity.fail_op! }
+          .to trigger_internal_events('fail_gitlab_migration_entity')
+          .with(
+            user: entity.bulk_import.user,
+            namespace: nil,
+            additional_properties: { label: 'gitlab_migration', property: entity.hashed_import_source }
+          )
+      end
+    end
+
+    context 'for a nested entity' do
+      let_it_be(:parent_group) { create(:group) }
+      let_it_be(:child_group) { create(:group, parent: parent_group) }
+      let(:bulk_import) { create(:bulk_import, :with_configuration) }
+      let(:parent_entity) do
+        create(:bulk_import_entity, :group_entity, :started, group: parent_group, bulk_import: bulk_import)
+      end
+
+      let(:entity) do
+        create(
+          :bulk_import_entity, :group_entity, :started,
+          group: child_group, bulk_import: bulk_import, parent: parent_entity
+        )
+      end
+
+      it 'includes parent_entity_id in additional_properties' do
+        expect { entity.fail_op! }
+          .to trigger_internal_events('fail_gitlab_migration_entity')
+          .with(
+            user: entity.bulk_import.user,
+            namespace: child_group,
+            additional_properties: {
+              label: 'gitlab_migration',
+              property: entity.hashed_import_source,
+              parent_entity_id: parent_entity.id
+            }
+          )
+      end
+    end
+  end
+
   describe '#hashed_import_source' do
     let(:bulk_import) { create(:bulk_import, :with_configuration) }
     let(:entity) do

@@ -12,6 +12,20 @@ RSpec.describe Gitlab::PrinciplesDistiller::Sync::ReviewerResolver do
     )
   end
 
+  let(:http) { instance_double(Net::HTTP) }
+  let(:commit_response) { Net::HTTPOK.new('1.1', '200', 'OK') }
+  let(:commit_body) { { 'parent_ids' => [commit_sha(99)] }.to_json }
+
+  before do
+    stub_const('ENV', ENV.to_h.merge('GITLAB_TOKEN' => 'test-token'))
+    allow(workflow).to receive(:gitlab_host).and_return('https://gitlab.com')
+    allow(Net::HTTP).to receive(:new).with('gitlab.com', 443).and_return(http)
+    allow(http).to receive(:use_ssl=).with(true)
+    allow(http).to receive(:read_timeout=).with(60)
+    allow(http).to receive(:request).and_return(commit_response)
+    allow(commit_response).to receive(:body).and_return(commit_body)
+  end
+
   describe '#ssot_authors' do
     subject(:authors) { resolver.ssot_authors(affected_entries) }
 
@@ -41,7 +55,7 @@ RSpec.describe Gitlab::PrinciplesDistiller::Sync::ReviewerResolver do
           'repository' => {
             'p0' => {
               'nodes' => authors.map.with_index do |author, index|
-                { 'author' => author, 'authoredDate' => authored_date(index) }
+                { 'author' => author, 'authoredDate' => authored_date(index), 'sha' => commit_sha(index) }
               end,
               'pageInfo' => { 'hasNextPage' => has_next_page }
             }
@@ -61,7 +75,7 @@ RSpec.describe Gitlab::PrinciplesDistiller::Sync::ReviewerResolver do
       end
 
       it 'pings the author despite the account having no public email' do
-        expect(authors).to eq([{ username: 'eread', id: 1 }])
+        expect(authors).to eq([{ username: 'eread', id: 1, commit_shas: [commit_sha(0)] }])
       end
     end
 
@@ -77,7 +91,16 @@ RSpec.describe Gitlab::PrinciplesDistiller::Sync::ReviewerResolver do
       end
 
       it 'returns deduped @username mentions by most recent commit' do
-        expect(authors).to eq([{ username: 'ada', id: 1 }, { username: 'grace', id: 2 }])
+        expect(authors).to eq([
+          { username: 'ada', id: 1, commit_shas: [commit_sha(0), commit_sha(2)] },
+          { username: 'grace', id: 2, commit_shas: [commit_sha(1)] }
+        ])
+      end
+
+      it 'requests commit SHAs from GraphQL' do
+        authors
+
+        expect(workflow).to have_received(:query_graphql).with(a_string_matching(/\bsha\b/), anything)
       end
     end
 
@@ -95,7 +118,7 @@ RSpec.describe Gitlab::PrinciplesDistiller::Sync::ReviewerResolver do
       end
 
       it 'excludes bot accounts, deny-listed service accounts, and bot-suffixed usernames' do
-        expect(authors).to eq([{ username: 'ada', id: 4 }])
+        expect(authors).to eq([{ username: 'ada', id: 4, commit_shas: [commit_sha(3)] }])
       end
     end
 
@@ -106,7 +129,121 @@ RSpec.describe Gitlab::PrinciplesDistiller::Sync::ReviewerResolver do
       end
 
       it 'drops the unlinked commit (falls back to team ping upstream)' do
-        expect(authors).to eq([{ username: 'ada', id: 1 }])
+        expect(authors).to eq([{ username: 'ada', id: 1, commit_shas: [commit_sha(1)] }])
+      end
+    end
+
+    context 'when the history includes a merge-only author' do
+      before do
+        allow(workflow).to receive(:query_graphql).and_return(commits_response([
+          { 'id' => 'gid://gitlab/User/1', 'username' => 'merger', 'bot' => false },
+          { 'id' => 'gid://gitlab/User/2', 'username' => 'ada', 'bot' => false },
+          { 'id' => 'gid://gitlab/User/3', 'username' => 'grace', 'bot' => false },
+          { 'id' => 'gid://gitlab/User/4', 'username' => 'linus', 'bot' => false },
+          { 'id' => 'gid://gitlab/User/5', 'username' => 'marge', 'bot' => false }
+        ]))
+        allow(http).to receive(:request) do |request|
+          response = Net::HTTPOK.new('1.1', '200', 'OK')
+          parents = request.path.end_with?(commit_sha(0)) ? [commit_sha(98), commit_sha(99)] : [commit_sha(99)]
+          allow(response).to receive(:body).and_return({ 'parent_ids' => parents }.to_json)
+          response
+        end
+      end
+
+      it 'excludes the merger before applying the author cap' do
+        expect(authors.map { |author| author[:username] }).to eq(%w[ada grace linus marge])
+      end
+    end
+
+    context 'when an author also merges another change' do
+      before do
+        allow(workflow).to receive(:query_graphql).and_return(commits_response([
+          { 'id' => 'gid://gitlab/User/1', 'username' => 'ada', 'bot' => false },
+          { 'id' => 'gid://gitlab/User/2', 'username' => 'grace', 'bot' => false },
+          { 'id' => 'gid://gitlab/User/1', 'username' => 'ada', 'bot' => false }
+        ]))
+        allow(http).to receive(:request) do |request|
+          response = Net::HTTPOK.new('1.1', '200', 'OK')
+          parents = request.path.end_with?(commit_sha(0)) ? [commit_sha(98), commit_sha(99)] : [commit_sha(99)]
+          allow(response).to receive(:body).and_return({ 'parent_ids' => parents }.to_json)
+          response
+        end
+      end
+
+      it 'ranks and attributes only their original commits' do
+        expect(authors).to eq([
+          { username: 'grace', id: 2, commit_shas: [commit_sha(1)] },
+          { username: 'ada', id: 1, commit_shas: [commit_sha(2)] }
+        ])
+      end
+    end
+
+    context 'when checking commit parents' do
+      before do
+        allow(workflow).to receive(:query_graphql).and_return(commits_response([
+          { 'id' => 'gid://gitlab/User/1', 'username' => 'ada', 'bot' => false }
+        ]))
+      end
+
+      it 'uses authenticated REST metadata for the full commit SHA', :aggregate_failures do
+        authors
+
+        expect(http).to have_received(:request) do |request|
+          expect(request).to be_a(Net::HTTP::Get)
+          expect(request.path).to eq("/api/v4/projects/gitlab-org%2Fgitlab/repository/commits/#{commit_sha(0)}")
+          expect(request['Authorization']).to eq('Bearer test-token')
+        end
+      end
+
+      context 'with a root commit' do
+        let(:commit_body) { { 'parent_ids' => [] }.to_json }
+
+        it 'retains the original author' do
+          expect(authors).to eq([{ username: 'ada', id: 1, commit_shas: [commit_sha(0)] }])
+        end
+      end
+
+      context 'with missing parent metadata' do
+        let(:commit_body) { {}.to_json }
+
+        it 'warns and skips the unverified commit' do
+          expect do
+            expect(authors).to be_empty
+          end.to output(/could not verify parents.*skipping SSOT attribution/).to_stderr
+        end
+      end
+
+      context 'with an HTTP failure' do
+        let(:commit_response) { Net::HTTPNotFound.new('1.1', '404', 'Not Found') }
+
+        it 'warns and caches the failed lookup', :aggregate_failures do
+          expect do
+            2.times { expect(resolver.ssot_authors(affected_entries)).to be_empty }
+          end.to output(/could not verify parents.*HTTP 404.*skipping SSOT attribution/).to_stderr
+          expect(http).to have_received(:request).once
+        end
+      end
+
+      context 'with a transport failure' do
+        before do
+          allow(http).to receive(:request).and_raise(Net::ReadTimeout)
+        end
+
+        it 'warns and skips the unverified commit' do
+          expect do
+            expect(authors).to be_empty
+          end.to output(/could not verify parents.*skipping SSOT attribution/).to_stderr
+        end
+      end
+
+      context 'with invalid JSON' do
+        let(:commit_body) { '<html>Service unavailable</html>' }
+
+        it 'warns and skips the unverified commit' do
+          expect do
+            expect(authors).to be_empty
+          end.to output(/could not verify parents.*skipping SSOT attribution/).to_stderr
+        end
       end
     end
 
@@ -118,7 +255,7 @@ RSpec.describe Gitlab::PrinciplesDistiller::Sync::ReviewerResolver do
       end
 
       it 'still returns the authors from the first page but warns about the truncation', :aggregate_failures do
-        expect { expect(authors).to eq([{ username: 'ada', id: 1 }]) }
+        expect { expect(authors).to eq([{ username: 'ada', id: 1, commit_shas: [commit_sha(0)] }]) }
           .to output(%r{doc/development/qa\.md has more than \d+ commits}).to_stderr
       end
     end
@@ -129,8 +266,8 @@ RSpec.describe Gitlab::PrinciplesDistiller::Sync::ReviewerResolver do
           'project' => {
             'repository' => {
               'p0' => commits_connection([
-                ['unknown-date', 1, nil],
-                ['dated', 2, '2026-08-20T00:00:00Z']
+                ['unknown-date', 1, nil, commit_sha(0)],
+                ['dated', 2, '2026-08-20T00:00:00Z', commit_sha(1)]
               ])
             }
           }
@@ -138,7 +275,10 @@ RSpec.describe Gitlab::PrinciplesDistiller::Sync::ReviewerResolver do
       end
 
       it 'ranks the author after dated commits' do
-        expect(authors).to eq([{ username: 'dated', id: 2 }, { username: 'unknown-date', id: 1 }])
+        expect(authors).to eq([
+          { username: 'dated', id: 2, commit_shas: [commit_sha(1)] },
+          { username: 'unknown-date', id: 1, commit_shas: [commit_sha(0)] }
+        ])
       end
     end
 
@@ -184,7 +324,7 @@ RSpec.describe Gitlab::PrinciplesDistiller::Sync::ReviewerResolver do
           commits_response([{ 'id' => 'gid://gitlab/User/1', 'username' => 'ada', 'bot' => false }])
         end
 
-        expect(authors).to eq([{ username: 'ada', id: 1 }])
+        expect(authors).to eq([{ username: 'ada', id: 1, commit_shas: [commit_sha(0)] }])
         expect(batch_sizes).to eq([
           described_class::AUTHOR_LOOKUP_BATCH_SIZE,
           many_paths.size - described_class::AUTHOR_LOOKUP_BATCH_SIZE
@@ -211,21 +351,21 @@ RSpec.describe Gitlab::PrinciplesDistiller::Sync::ReviewerResolver do
           'project' => {
             'repository' => {
               'p0' => commits_connection([
-                ['ada', 1, '2026-08-20T00:00:00Z'],
-                ['grace', 2, '2026-08-19T00:00:00Z'],
-                ['linus', 3, '2026-08-18T00:00:00Z'],
-                ['marge', 4, '2026-08-17T00:00:00Z']
+                ['ada', 1, '2026-08-20T00:00:00Z', commit_sha(0)],
+                ['grace', 2, '2026-08-19T00:00:00Z', commit_sha(1)],
+                ['linus', 3, '2026-08-18T00:00:00Z', commit_sha(2)],
+                ['marge', 4, '2026-08-17T00:00:00Z', commit_sha(3)]
               ]),
-              'p1' => commits_connection([['jessie', 5, '2026-08-21T00:00:00Z']])
+              'p1' => commits_connection([['jessie', 5, '2026-08-21T00:00:00Z', commit_sha(4)]])
             }
           }
         )
 
         expect(authors).to eq([
-          { username: 'jessie', id: 5 },
-          { username: 'ada', id: 1 },
-          { username: 'grace', id: 2 },
-          { username: 'linus', id: 3 }
+          { username: 'jessie', id: 5, commit_shas: [commit_sha(4)] },
+          { username: 'ada', id: 1, commit_shas: [commit_sha(0)] },
+          { username: 'grace', id: 2, commit_shas: [commit_sha(1)] },
+          { username: 'linus', id: 3, commit_shas: [commit_sha(2)] }
         ])
       end
 
@@ -233,16 +373,81 @@ RSpec.describe Gitlab::PrinciplesDistiller::Sync::ReviewerResolver do
         allow(workflow).to receive(:query_graphql).and_return(
           'project' => {
             'repository' => {
-              'p0' => commits_connection([['ada', 1, '2026-08-18T00:00:00Z']]),
+              'p0' => commits_connection([['ada', 1, '2026-08-18T00:00:00Z', commit_sha(0)]]),
               'p1' => commits_connection([
-                ['grace', 2, '2026-08-20T00:00:00Z'],
-                ['ada', 1, '2026-08-21T00:00:00Z']
+                ['grace', 2, '2026-08-20T00:00:00Z', commit_sha(1)],
+                ['ada', 1, '2026-08-21T00:00:00Z', commit_sha(2)]
               ])
             }
           }
         )
 
-        expect(authors).to eq([{ username: 'ada', id: 1 }, { username: 'grace', id: 2 }])
+        expect(authors).to eq([
+          { username: 'ada', id: 1, commit_shas: [commit_sha(2), commit_sha(0)] },
+          { username: 'grace', id: 2, commit_shas: [commit_sha(1)] }
+        ])
+      end
+    end
+
+    context 'when commits touch multiple source paths and principles' do
+      let(:affected_entries) do
+        {
+          'graphql' => {
+            config: {},
+            changed_sources: [
+              { 'path' => 'doc/development/api_graphql_styleguide.md' },
+              { 'path' => 'doc/development/graphql_guide/reviewing.md' }
+            ],
+            prior_sha: '1111111111111111111111111111111111111111'
+          },
+          'qa' => {
+            config: {},
+            changed_sources: [{ 'path' => 'doc/development/qa.md' }],
+            prior_sha: '3333333333333333333333333333333333333333'
+          }
+        }
+      end
+
+      before do
+        allow(workflow).to receive(:query_graphql).and_return(
+          {
+            'project' => {
+              'repository' => {
+                'p0' => commits_connection([
+                  ['ada', 1, '2026-08-18T00:00:00Z', commit_sha(0)],
+                  ['grace', 2, '2026-08-19T00:00:00Z', commit_sha(3)]
+                ]),
+                'p1' => commits_connection([
+                  ['ada', 1, '2026-08-18T00:00:00Z', commit_sha(0)],
+                  ['ada', 1, '2026-08-20T00:00:00Z', commit_sha(1)]
+                ])
+              }
+            }
+          },
+          {
+            'project' => {
+              'repository' => {
+                'p0' => commits_connection([
+                  ['ada', 1, '2026-08-20T00:00:00Z', commit_sha(1)],
+                  ['ada', 1, '2026-08-21T00:00:00Z', commit_sha(2)]
+                ])
+              }
+            }
+          }
+        )
+      end
+
+      it 'deduplicates commit SHAs per author and orders them newest first' do
+        expect(authors).to eq([
+          { username: 'ada', id: 1, commit_shas: [commit_sha(2), commit_sha(1), commit_sha(0)] },
+          { username: 'grace', id: 2, commit_shas: [commit_sha(3)] }
+        ])
+      end
+
+      it 'fetches parent metadata only once per unique SHA across paths and principles' do
+        authors
+
+        expect(http).to have_received(:request).exactly(4).times
       end
     end
   end
@@ -274,8 +479,10 @@ RSpec.describe Gitlab::PrinciplesDistiller::Sync::ReviewerResolver do
       ]))
 
       expect(authors).to eq([
-        { username: 'ada', id: 1 }, { username: 'grace', id: 2 },
-        { username: 'linus', id: 3 }, { username: 'marge', id: 4 }
+        { username: 'ada', id: 1, commit_shas: [commit_sha(0)] },
+        { username: 'grace', id: 2, commit_shas: [commit_sha(1)] },
+        { username: 'linus', id: 3, commit_shas: [commit_sha(2)] },
+        { username: 'marge', id: 4, commit_shas: [commit_sha(3)] }
       ])
     end
 
@@ -283,7 +490,7 @@ RSpec.describe Gitlab::PrinciplesDistiller::Sync::ReviewerResolver do
       allow(workflow).to receive(:query_graphql)
         .and_return(commits_response([{ 'id' => 'invalid', 'username' => 'ada', 'bot' => false }]))
 
-      expect { expect(authors).to eq([{ username: 'ada', id: nil }]) }
+      expect { expect(authors).to eq([{ username: 'ada', id: nil, commit_shas: [commit_sha(0)] }]) }
         .to output(/could not resolve reviewer ID for SSOT author @ada/).to_stderr
     end
 
@@ -292,7 +499,7 @@ RSpec.describe Gitlab::PrinciplesDistiller::Sync::ReviewerResolver do
       response.dig('project', 'repository', 'p0', 'nodes').first['authoredDate'] = 123
       allow(workflow).to receive(:query_graphql).and_return(response)
 
-      expect(authors).to eq([{ username: 'ada', id: 1 }])
+      expect(authors).to eq([{ username: 'ada', id: 1, commit_shas: [commit_sha(0)] }])
     end
   end
 
@@ -466,7 +673,7 @@ RSpec.describe Gitlab::PrinciplesDistiller::Sync::ReviewerResolver do
         'repository' => {
           'p0' => {
             'nodes' => authors.map.with_index do |author, index|
-              { 'author' => author, 'authoredDate' => authored_date(index) }
+              { 'author' => author, 'authoredDate' => authored_date(index), 'sha' => commit_sha(index) }
             end,
             'pageInfo' => { 'hasNextPage' => has_next_page }
           }
@@ -477,10 +684,11 @@ RSpec.describe Gitlab::PrinciplesDistiller::Sync::ReviewerResolver do
 
   def commits_connection(entries)
     {
-      'nodes' => entries.map do |username, id, authored_date|
+      'nodes' => entries.map do |username, id, authored_date, sha|
         {
           'author' => { 'id' => "gid://gitlab/User/#{id}", 'username' => username, 'bot' => false },
-          'authoredDate' => authored_date
+          'authoredDate' => authored_date,
+          'sha' => sha
         }
       end,
       'pageInfo' => { 'hasNextPage' => false }
@@ -489,5 +697,9 @@ RSpec.describe Gitlab::PrinciplesDistiller::Sync::ReviewerResolver do
 
   def authored_date(index)
     (Time.utc(2026, 8, 20) - (index * 86_400)).iso8601
+  end
+
+  def commit_sha(index)
+    format('%040x', index + 1)
   end
 end

@@ -42,6 +42,7 @@ module Gitlab
         def initialize(workflow:, distillation_base_sha:)
           @workflow = workflow
           @distillation_base_sha = distillation_base_sha
+          @non_merge_commits = {}
         end
 
         # Resolves people who changed the SSOT docs backing the given principles since each was last distilled.
@@ -51,8 +52,7 @@ module Gitlab
           affected_entries.values.flat_map { |entry| ssot_authors_for_entry(entry) }
             .group_by { |author| author[:username] }
             .values
-            # Undated authors sort last because nil.to_i is zero.
-            .map { |authors| authors.max_by { |author| author[:authored_at].to_i } }
+            .map { |authors| aggregate_author_commits(authors) }
             .sort_by { |author| [-author[:authored_at].to_i, author[:username]] }
             .first(MAX_SSOT_AUTHORS)
             .map { |author| author.except(:authored_at) }
@@ -70,6 +70,11 @@ module Gitlab
         private
 
         attr_reader :workflow, :distillation_base_sha
+
+        def aggregate_author_commits(authors)
+          ordered = authors.sort_by { |author| -author[:authored_at].to_i }
+          ordered.first.except(:commit_sha).merge(commit_shas: ordered.map { |author| author[:commit_sha] }.uniq)
+        end
 
         def group_members(handle)
           members = []
@@ -215,7 +220,7 @@ module Gitlab
 
         def commits_alias_fragment(alias_name)
           "#{alias_name}: commits(ref: $range, path: $path_#{alias_name}, first: #{AUTHOR_LOOKUP_PAGE_SIZE}) " \
-            '{ nodes { authoredDate author { id username bot } } pageInfo { hasNextPage } }'
+            '{ nodes { sha authoredDate author { id username bot } } pageInfo { hasNextPage } }'
         end
 
         # Extracts pingable authors from one `commits` connection: drops unlinked commits, bots, and deny-listed users.
@@ -239,6 +244,7 @@ module Gitlab
             username = author['username'].to_s
             next if username.empty?
             next if non_pingable_username?(username)
+            next unless non_merge_commit?(node.fetch('sha'))
 
             id = author['id'].to_s.split('/').last
             unless id.match?(/\A\d+\z/)
@@ -246,7 +252,8 @@ module Gitlab
               id = nil
             end
 
-            { username: username, id: id&.to_i, authored_at: parse_authored_at(node['authoredDate']) }
+            { username: username, id: id&.to_i, authored_at: parse_authored_at(node['authoredDate']),
+              commit_sha: node['sha'] }
           end
         end
 
@@ -254,6 +261,34 @@ module Gitlab
           Time.iso8601(authored_date) if authored_date
         rescue ArgumentError, TypeError
           nil
+        end
+
+        def non_merge_commit?(sha)
+          @non_merge_commits.fetch(sha) do
+            @non_merge_commits[sha] = fetch_non_merge_commit(sha)
+          end
+        end
+
+        # Use REST parent_ids: GraphQL exposes only the first parent; merge authors must not count as SSOT contributors.
+        def fetch_non_merge_commit(sha)
+          project = URI.encode_www_form_component(workflow.catalog_project_path)
+          encoded_sha = URI.encode_www_form_component(sha)
+          uri = URI("#{workflow.gitlab_host}/api/v4/projects/#{project}/repository/commits/#{encoded_sha}")
+          http = Net::HTTP.new(uri.host, uri.port)
+          http.use_ssl = uri.scheme == 'https'
+          http.read_timeout = 60
+          request = Net::HTTP::Get.new(uri)
+          request['Authorization'] = "Bearer #{ENV.fetch(Env::GITLAB_TOKEN)}"
+          response = http.request(request)
+          raise "HTTP #{response.code}" unless response.is_a?(Net::HTTPSuccess)
+
+          parents = JSON.parse(response.body).fetch('parent_ids')
+          raise 'invalid parent_ids' unless parents.is_a?(Array)
+
+          parents.size <= 1
+        rescue StandardError => e
+          warn Rainbow("WARNING: could not verify parents for #{sha} (#{e.message}); skipping SSOT attribution").yellow
+          false
         end
       end
     end

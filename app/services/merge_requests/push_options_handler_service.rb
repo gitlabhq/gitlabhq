@@ -196,14 +196,28 @@ module MergeRequests
       params
     end
 
-    def merge_params(branch)
-      return {} unless push_options.key?(:merge_when_pipeline_succeeds) || push_options.key?(:auto_merge)
+    def merge_params(target_branch, source_branch)
+      return {} unless auto_merge_requested?
+      return {} unless allowed_to_auto_merge?(target_branch)
 
       {
         auto_merge_enabled: push_options[:auto_merge] || push_options[:merge_when_pipeline_succeeds],
         merge_user: current_user,
-        sha: changes_by_branch.dig(branch, :newrev)
+        sha: changes_by_branch.dig(source_branch, :newrev)
       }
+    end
+
+    def auto_merge_requested?
+      push_options.key?(:merge_when_pipeline_succeeds) || push_options.key?(:auto_merge)
+    end
+
+    def allowed_to_auto_merge?(target_branch)
+      return true if ::Gitlab::UserAccess.new(current_user, container: target_project)
+        .can_update_branch?(target_branch)
+
+      errors << "merge_request.auto_merge was not applied: you do not have permission " \
+        "to merge into #{target_project.full_path}:#{target_branch}"
+      false
     end
 
     def create_params(branch)
@@ -216,15 +230,19 @@ module MergeRequests
         target_project: target_project
       )
 
-      params.merge!(merge_params(branch))
-
       params[:target_branch] ||= target_project.default_branch
+
+      params.merge!(merge_params(params[:target_branch], branch))
 
       params
     end
 
     def update_params(merge_request)
-      base_params.merge(merge_params(merge_request.source_branch))
+      params = base_params
+      # base_params may change target_branch via the merge_request.target push
+      # option, so resolve the final target branch before the auto-merge check.
+      target_branch = params[:target_branch] || merge_request.target_branch
+      params.merge(merge_params(target_branch, merge_request.source_branch))
     end
 
     def convert_to_user_ids(ids_or_usernames)

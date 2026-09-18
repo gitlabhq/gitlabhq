@@ -97,7 +97,7 @@ export default {
     <gl-alert v-else-if="hasError" variant="danger" :dismissible="false" class="gl-mt-4">{{
       errorText
     }}</gl-alert>
-    <dashboards-list v-else-if="hasDashboards" :dashboards="enrichedDashboards" />
+    <dashboards-list v-else-if="hasDashboards" class="gl-mt-4" :dashboards="enrichedDashboards" />
     <empty-state v-else />
   </gl-tab>
 </template>

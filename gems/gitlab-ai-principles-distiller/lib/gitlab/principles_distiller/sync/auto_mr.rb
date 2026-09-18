@@ -816,19 +816,20 @@ module Gitlab
           # resolves (see team_display).
           author_entries = affected.slice(*changed_principles.keys)
           authors = reviewer_resolver.ssot_authors(author_entries)
-          mentions = authors.map { |author| "@#{author[:username]}" }
           reviewer_ids = authors.filter_map { |author| author[:id] }
           fallback_reviewer = reviewer_resolver.owner_team_reviewer(team) if reviewer_ids.empty?
-          outcome = ping_outcome(mentions, fallback_reviewer)
-          ping_line = ping_line_for(outcome, mentions, fallback_reviewer, team)
+          outcome = ping_outcome(authors, fallback_reviewer)
+          ping_line = ping_line_for(outcome, authors, fallback_reviewer, team)
 
           description = <<~DESC
         ## Summary
 
         This MR updates AI development principles based on recent changes to the
-        development documentation (SSOT). #{ping_line} It is one of several
+        development documentation (SSOT). It is one of several
         team-scoped MRs from this run; the global routing tables (AGENTS.md,
         CLAUDE.md, SKILL.md) are updated in a separate tooling MR.
+
+        #{ping_line}
         #{why_you_were_pinged_section(outcome)}
         #{review_request_section(changed_principles.keys, team)}
         #{failed_principles_section(ctx.failed)}
@@ -942,8 +943,8 @@ module Gitlab
 
         # Which of the four ping paths `ping_line_for` took. Named so the "why you were pinged" prose can describe
         # what actually happened rather than asserting one path for every MR.
-        def ping_outcome(mentions, fallback_reviewer)
-          if mentions.any?
+        def ping_outcome(authors, fallback_reviewer)
+          if authors.any?
             fallback_reviewer ? :authors_with_fallback : :authors
           else
             fallback_reviewer ? :fallback : :team_only
@@ -953,10 +954,10 @@ module Gitlab
         # Names *who* is being asked to review. Four outcomes, because an author may resolve without being assignable
         # (no user ID), and the owning team may yield no assignable member at all (see owner_team_reviewer, which
         # returns nil for an unresolvable group).
-        def ping_line_for(outcome, mentions, fallback_reviewer, team)
+        def ping_line_for(outcome, authors, fallback_reviewer, team)
           case outcome
           when :authors_with_fallback
-            "Recent SSOT changes here were authored by #{mentions.join(' ')} — please review. " \
+            "#{ssot_authors_table(authors)}\n" \
               "Reviewer assignment routed to @#{fallback_reviewer[:username]} from " \
               "**#{manifest.team_display(team)}**."
           when :fallback
@@ -965,8 +966,18 @@ module Gitlab
           when :team_only
             "Please review: **#{manifest.team_display(team)}**."
           else
-            "Recent SSOT changes here were authored by #{mentions.join(' ')} — please review."
+            ssot_authors_table(authors)
           end
+        end
+
+        def ssot_authors_table(authors)
+          <<~TABLE
+            Could the authors listed below review the principles distilled from their SSOT changes?
+
+            | Author | SSOT commit(s) |
+            | --- | --- |
+            #{authors.map { |author| "| @#{author[:username]} | #{author[:commit_shas].join(', ')} |" }.join("\n")}
+          TABLE
         end
 
         # Explains why the recipient was pinged and why merging (not just reviewing) matters.

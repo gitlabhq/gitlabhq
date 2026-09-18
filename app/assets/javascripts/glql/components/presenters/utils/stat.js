@@ -60,6 +60,7 @@ const METRIC_PRESENTATION = {
     },
   },
   MergeRequests: {
+    acceptanceRate: { description: __('Share of merge requests that were merged.') },
     throughputCount: { description: __('Number of merged merge requests.') },
     timeToMergeMax: { description: __('Longest time from creation to merge, in seconds.') },
     timeToMergeMean: { description: __('Average time from creation to merge, in seconds.') },
@@ -77,12 +78,62 @@ const METRIC_PRESENTATION = {
     usersCount: { description: __('Number of unique contributors.') },
   },
   DuoWorkflows: {
+    churnedUsersCount: {
+      description: __(
+        'Number of unique users who ran a flow in the previous period but not in this one.',
+      ),
+      positiveDirection: 'down',
+    },
+    closedMrCountMax: {
+      description: __('Most closed merge requests created by a single flow.'),
+      positiveDirection: 'down',
+    },
+    closedMrCountMean: {
+      description: __('Average closed merge requests created per flow.'),
+      positiveDirection: 'down',
+    },
+    closedMrCountMin: {
+      description: __('Fewest closed merge requests created by a single flow.'),
+      positiveDirection: 'down',
+    },
+    closedMrCountQuantile: {
+      description: __('Closed merge requests created per flow at a given quantile.'),
+      positiveDirection: 'down',
+    },
+    closedMrCountSum: {
+      description: __('Total closed merge requests created by all flows.'),
+      positiveDirection: 'down',
+    },
+    createdMrCountMax: { description: __('Most merge requests created by a single flow.') },
+    createdMrCountMean: { description: __('Average merge requests created per flow.') },
+    createdMrCountMin: { description: __('Fewest merge requests created by a single flow.') },
+    createdMrCountQuantile: {
+      description: __('Merge requests created per flow at a given quantile.'),
+    },
+    createdMrCountSum: { description: __('Total merge requests created by all flows.') },
     creditsUsedMax: { description: __('Most credits used by a single flow.') },
     creditsUsedMean: { description: __('Average credits used per flow.') },
     creditsUsedMin: { description: __('Fewest credits used by a single flow.') },
     creditsUsedQuantile: { description: __('Credits used per flow at a given quantile.') },
     creditsUsedSum: { description: __('Total credits used by all flows.') },
+    flowTypesCount: { description: __('Number of unique flow types.') },
+    joinedUsersCount: {
+      description: __(
+        'Number of unique users who ran a flow in this period but not in the previous one.',
+      ),
+    },
+    mergedMrCountMax: { description: __('Most merged merge requests created by a single flow.') },
+    mergedMrCountMean: { description: __('Average merged merge requests created per flow.') },
+    mergedMrCountMin: { description: __('Fewest merged merge requests created by a single flow.') },
+    mergedMrCountQuantile: {
+      description: __('Merged merge requests created per flow at a given quantile.'),
+    },
+    mergedMrCountSum: { description: __('Total merged merge requests created by all flows.') },
+    previousPeriodUsersCount: { description: __('Number of unique users in the previous period.') },
     projectsCount: { description: __('Number of unique projects.') },
+    returningUsersCount: {
+      description: __('Number of unique users who also ran a flow in the previous period.'),
+    },
     totalCount: { description: __('Total number of flows.') },
     usersCount: { description: __('Number of unique users.') },
   },

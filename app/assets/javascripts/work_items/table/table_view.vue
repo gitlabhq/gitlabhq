@@ -11,8 +11,14 @@ import { s__ } from '~/locale';
 import * as Sentry from '~/sentry/sentry_browser_wrapper';
 import { DEFAULT_PAGE_SIZE, DEFAULT_SKELETON_COUNT } from '~/vue_shared/issuable/list/constants';
 import glFeatureFlagMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
-import { WORK_ITEM_TYPE_NAME_EPIC } from '../constants';
-import { combineWorkItemLists, getSortedWorkItems, getWorkItemsConnection } from '../utils';
+import { getParameterByName, removeParams, updateHistory } from '~/lib/utils/url_utility';
+import { DETAIL_VIEW_QUERY_PARAM_NAME, WORK_ITEM_TYPE_NAME_EPIC } from '../constants';
+import {
+  combineWorkItemLists,
+  findDetailPanelWorkItem,
+  getSortedWorkItems,
+  getWorkItemsConnection,
+} from '../utils';
 import { TABLE_COLUMNS } from './constants';
 import WorkItemTableRow from './components/work_item_table_row.vue';
 
@@ -102,8 +108,13 @@ export default {
       required: false,
       default: 0,
     },
+    activeItem: {
+      type: Object,
+      required: false,
+      default: null,
+    },
   },
-  emits: ['namespace-data-loaded', 'set-error', 'work-items-changed'],
+  emits: ['namespace-data-loaded', 'set-active-item', 'set-error', 'work-items-changed'],
   data() {
     return {
       workItemsFull: [],
@@ -130,6 +141,9 @@ export default {
     },
     hiddenMetadataKeys() {
       return this.displaySettings?.namespacePreferences?.hiddenMetadataKeys || [];
+    },
+    workItemDetailPanelEnabled() {
+      return this.displaySettings?.commonPreferences?.shouldOpenItemsInSidePanel ?? true;
     },
     isLoading() {
       return this.$apollo.queries.workItemsSlim.loading;
@@ -172,12 +186,22 @@ export default {
   watch: {
     workItems: {
       handler(value) {
+        if (!this.shouldLoad && this.workItemsSlim.length > 0) {
+          this.checkDetailPanelParams();
+        }
         this.$emit('work-items-changed', {
           count: value.length,
           ids: value.map((workItem) => workItem.id),
         });
       },
       immediate: true,
+    },
+    $route(newValue) {
+      if (newValue.query[DETAIL_VIEW_QUERY_PARAM_NAME]) {
+        this.checkDetailPanelParams();
+      } else {
+        this.$emit('set-active-item', null);
+      }
     },
   },
   methods: {
@@ -214,6 +238,31 @@ export default {
         this.$emit('namespace-data-loaded', { namespaceName: data.namespace.name, data });
       }
       this.isInitialLoadComplete = true;
+    },
+    checkDetailPanelParams() {
+      const queryParam = getParameterByName(DETAIL_VIEW_QUERY_PARAM_NAME);
+
+      if (!queryParam) {
+        this.$emit('set-active-item', null);
+        return;
+      }
+
+      const { item, notFound } = findDetailPanelWorkItem(
+        queryParam,
+        this.workItems,
+        this.activeItem,
+      );
+      if (item) {
+        this.$emit('set-active-item', item);
+      } else if (notFound) {
+        updateHistory({ url: removeParams([DETAIL_VIEW_QUERY_PARAM_NAME]) });
+      }
+    },
+    handleSetActiveItem(item) {
+      this.$emit('set-active-item', item);
+      if (!item) {
+        updateHistory({ url: removeParams([DETAIL_VIEW_QUERY_PARAM_NAME]) });
+      }
     },
     isColumnLicensed(column) {
       return !column.licensedFeature || Boolean(this[column.licensedFeature]);
@@ -277,6 +326,9 @@ export default {
               :item="workItem"
               :columns="columns"
               :root-page-full-path="rootPageFullPath"
+              :active-item="activeItem"
+              :detail-panel-enabled="workItemDetailPanelEnabled"
+              @set-active-item="handleSetActiveItem"
             />
           </template>
         </tbody>

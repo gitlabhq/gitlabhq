@@ -170,6 +170,16 @@ describe('formatterFor', () => {
     ${'creditsUsedMean'}          | ${18.456} | ${'18.46'}
     ${'creditsUsedSum'}           | ${1234.5} | ${'1,234.5'}
     ${'creditsUsedQuantile'}      | ${19.12}  | ${'19.12'}
+    ${'flowTypesCount'}           | ${3}      | ${'3'}
+    ${'joinedUsersCount'}         | ${1200}   | ${'1,200'}
+    ${'churnedUsersCount'}        | ${8}      | ${'8'}
+    ${'createdMrCountMin'}        | ${0}      | ${'0'}
+    ${'createdMrCountMax'}        | ${4}      | ${'4'}
+    ${'createdMrCountMean'}       | ${1.5}    | ${'1.5'}
+    ${'createdMrCountSum'}        | ${1234}   | ${'1,234'}
+    ${'createdMrCountQuantile'}   | ${2}      | ${'2'}
+    ${'mergedMrCountSum'}         | ${37}     | ${'37'}
+    ${'closedMrCountSum'}         | ${5}      | ${'5'}
   `(
     'returns a formatter for $fieldKey that maps $input to $expected',
     ({ fieldKey, input, expected }) => {

@@ -36137,7 +36137,7 @@ Arguments:
 
 {{< /details >}}
 
-Aggregation engine for contribution analytics.
+Aggregation engine for contribution analytics. Requires Siphon replication to be enabled on the instance.
 
 Returns [`ContributionsAggregationScope`](#contributionsaggregationscope).
 
@@ -36159,7 +36159,7 @@ Arguments:
 
 {{< /details >}}
 
-Aggregation engine for deployment analytics.
+Aggregation engine for deployment analytics. Requires Siphon replication to be enabled on the instance.
 
 Returns [`DeploymentsAggregationScope`](#deploymentsaggregationscope).
 
@@ -36222,7 +36222,7 @@ Arguments:
 
 {{< /details >}}
 
-Aggregation engine for GitLab Duo Agent Platform flows.
+Aggregation engine for GitLab Duo Agent Platform flows. Requires Siphon replication to be enabled on the instance.
 
 Returns [`DuoWorkflowsAggregationScope`](#duoworkflowsaggregationscope).
 
@@ -36237,6 +36237,7 @@ Arguments:
 | <a id="analytics-duoworkflows-descendantsscope"></a>`descendantsScope` | [`AggregationScopeInput`](#aggregationscopeinput) | Child groups and projects to aggregate data for. Not supported at project level. |
 | <a id="analytics-duoworkflows-flowtypesusedfrom"></a>`flowTypesUsedFrom` | [`Int`](#int) | Filter by the number of distinct flow types the user ran in the selected period. Start of the range. |
 | <a id="analytics-duoworkflows-flowtypesusedto"></a>`flowTypesUsedTo` | [`Int`](#int) | Filter by the number of distinct flow types the user ran in the selected period. End of the range. |
+| <a id="analytics-duoworkflows-groupid"></a>`groupId` | [`[String!]`](#string) | Filter by one or many group Global IDs, including flows from their descendants. |
 | <a id="analytics-duoworkflows-projectid"></a>`projectId` | [`[String!]`](#string) | Filter by one or many project Global IDs. |
 | <a id="analytics-duoworkflows-status"></a>`status` | [`[String!]`](#string) | Filter by one or many flow statuses (created, running, finished, failed, ...). |
 | <a id="analytics-duoworkflows-userid"></a>`userId` | [`[String!]`](#string) | Filter by one or many user Global IDs. |
@@ -36251,7 +36252,7 @@ Arguments:
 
 {{< /details >}}
 
-Aggregation engine for merge request analytics.
+Aggregation engine for merge request analytics. Requires Siphon replication to be enabled on the instance.
 
 Returns [`MergeRequestsAggregationScope`](#mergerequestsaggregationscope).
 
@@ -36278,7 +36279,7 @@ Arguments:
 
 {{< /details >}}
 
-Aggregation engine for CI pipeline analytics.
+Aggregation engine for CI pipeline analytics. Requires Siphon replication to be enabled on the instance.
 
 Returns [`PipelinesAggregationScope`](#pipelinesaggregationscope).
 
@@ -44458,6 +44459,18 @@ Arguments:
 | ---- | ---- | ----------- |
 | <a id="duoworkflowsaggregationresponsedimensions-createdat-granularity"></a>`granularity` | [`String`](#string) | Date granularity: daily, weekly, monthly, or a fixed number of days between 1d and 399d (for example 30d). |
 | <a id="duoworkflowsaggregationresponsedimensions-createdat-origin"></a>`origin` | [`Time`](#time) | Anchor for fixed-day granularities: buckets start at this timestamp and repeat every N days. Only valid with a fixed-day granularity. |
+
+##### `DuoWorkflowsAggregationResponseDimensions.group`
+
+Group at the requested depth of the hierarchy. NULL for flows tracked above that depth. Flows tracked in a project at that depth bucket by project namespace ID, which also resolves to NULL.
+
+Returns [`Group`](#group).
+
+Arguments:
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="duoworkflowsaggregationresponsedimensions-group-depth"></a>`depth` | [`Int`](#int) | Depth in the group hierarchy, counted from the top-level group. Defaults to 1. |
 
 ##### `DuoWorkflowsAggregationResponseDimensions.userTier`
 

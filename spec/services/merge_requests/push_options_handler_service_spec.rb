@@ -7,7 +7,7 @@ RSpec.describe MergeRequests::PushOptionsHandlerService, feature_category: :sour
 
   let_it_be(:parent_group) { create(:group, :public) }
   let_it_be(:child_group) { create(:group, :public, parent: parent_group) }
-  let_it_be(:project) { create(:project, :public, :repository, group: child_group) }
+  let_it_be_with_reload(:project) { create(:project, :public, :repository, group: child_group) }
   let_it_be(:user1) { create(:user, developer_of: project) }
   let_it_be(:user2) { create(:user, developer_of: project) }
   let_it_be(:user3) { create(:user, developer_of: project) }
@@ -248,6 +248,63 @@ RSpec.describe MergeRequests::PushOptionsHandlerService, feature_category: :sour
 
         it_behaves_like 'a service that can create a merge request'
         it_behaves_like 'a service that can set the merge request to auto merge'
+      end
+    end
+
+    context 'when the user cannot merge into the target branch' do
+      let(:merge_error) do
+        "merge_request.auto_merge was not applied: you do not have permission " \
+          "to merge into #{project.full_path}:#{project.default_branch}"
+      end
+
+      before do
+        create(:protected_branch, :maintainers_can_merge, project: project, name: project.default_branch)
+      end
+
+      context 'when creating a merge request' do
+        let(:push_options) { { create: true, auto_merge: true } }
+        let(:changes) { new_branch_changes }
+
+        it_behaves_like 'a service that can create a merge request'
+
+        it 'does not enable auto-merge and reports the missing permission' do
+          service.execute
+
+          expect(MergeRequest.last.auto_merge_enabled).to be(false)
+          expect(service.errors).to include(merge_error)
+        end
+      end
+
+      context 'when updating an existing merge request' do
+        let(:push_options) { { auto_merge: true } }
+        let(:changes) { existing_branch_changes }
+        let_it_be_with_reload(:merge_request) do
+          create(:merge_request, source_project: project, source_branch: source_branch,
+            target_project: project, target_branch: project.default_branch)
+        end
+
+        it 'does not enable auto-merge and reports the missing permission' do
+          service.execute
+
+          expect(merge_request.reload.auto_merge_enabled).to be(false)
+          expect(service.errors).to include(merge_error)
+        end
+      end
+
+      context 'when the push switches the target to the protected branch' do
+        let(:push_options) { { auto_merge: true, target: project.default_branch } }
+        let(:changes) { existing_branch_changes }
+        let_it_be_with_reload(:merge_request) do
+          create(:merge_request, source_project: project, source_branch: source_branch,
+            target_project: project, target_branch: target_branch)
+        end
+
+        it 'does not enable auto-merge and reports the missing permission' do
+          service.execute
+
+          expect(merge_request.reload.auto_merge_enabled).to be(false)
+          expect(service.errors).to include(merge_error)
+        end
       end
     end
   end

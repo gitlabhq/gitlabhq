@@ -1,7 +1,10 @@
 import { GlEmptyState, GlSprintf, GlLink } from '@gitlab/ui';
 import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
 import ResultsError from '~/search/results/components/result_error.vue';
-import { ZOEKT_CONNECTION_ERROR_IDENTIFIER } from '~/search/results/constants';
+import {
+  ZOEKT_CONNECTION_ERROR_IDENTIFIER,
+  ZOEKT_NODE_UNAVAILABLE_ERROR_IDENTIFIER,
+} from '~/search/results/constants';
 
 describe('when resultsError', () => {
   let wrapper;
@@ -83,6 +86,34 @@ describe('when resultsError', () => {
     });
 
     it('shows network error description', () => {
+      expect(wrapper.vm.errorDescription).toContain('Cannot connect to the Zoekt');
+    });
+
+    it('does not show syntax help link', () => {
+      expect(wrapper.vm.showSyntaxLink).toBe(false);
+    });
+  });
+
+  describe('when no node is available to serve the search', () => {
+    beforeEach(() => {
+      const error = {
+        graphQLErrors: [
+          {
+            message: 'No online nodes found for replica 1 in zoekt enabled namespace 2',
+            extensions: {
+              error_type: ZOEKT_NODE_UNAVAILABLE_ERROR_IDENTIFIER,
+            },
+          },
+        ],
+      };
+      createComponent({ error });
+    });
+
+    it('sets errorType to network', () => {
+      expect(wrapper.vm.errorType).toBe('network');
+    });
+
+    it('shows network error description rather than the query syntax copy', () => {
       expect(wrapper.vm.errorDescription).toContain('Cannot connect to the Zoekt');
     });
 

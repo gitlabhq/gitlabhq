@@ -143,6 +143,24 @@ describe('presenter_registry', () => {
         ${'creditsUsedMean'}          | ${18.456}        | ${CreditsPresenter}
         ${'creditsUsedSum'}           | ${2214.77}       | ${CreditsPresenter}
         ${'creditsUsedQuantile'}      | ${19.12}         | ${CreditsPresenter}
+        ${'flowTypesCount'}           | ${3}             | ${NumberPresenter}
+        ${'joinedUsersCount'}         | ${6}             | ${NumberPresenter}
+        ${'churnedUsersCount'}        | ${3}             | ${NumberPresenter}
+        ${'createdMrCountMin'}        | ${0}             | ${NumberPresenter}
+        ${'createdMrCountMax'}        | ${4}             | ${NumberPresenter}
+        ${'createdMrCountMean'}       | ${1.5}           | ${NumberPresenter}
+        ${'createdMrCountSum'}        | ${37}            | ${NumberPresenter}
+        ${'createdMrCountQuantile'}   | ${2}             | ${NumberPresenter}
+        ${'mergedMrCountMin'}         | ${0}             | ${NumberPresenter}
+        ${'mergedMrCountMax'}         | ${4}             | ${NumberPresenter}
+        ${'mergedMrCountMean'}        | ${1.5}           | ${NumberPresenter}
+        ${'mergedMrCountSum'}         | ${37}            | ${NumberPresenter}
+        ${'mergedMrCountQuantile'}    | ${2}             | ${NumberPresenter}
+        ${'closedMrCountMin'}         | ${0}             | ${NumberPresenter}
+        ${'closedMrCountMax'}         | ${4}             | ${NumberPresenter}
+        ${'closedMrCountMean'}        | ${1.5}           | ${NumberPresenter}
+        ${'closedMrCountSum'}         | ${37}            | ${NumberPresenter}
+        ${'closedMrCountQuantile'}    | ${2}             | ${NumberPresenter}
       `(
         'resolves field key $fieldKey to the matching presenter',
         ({ fieldKey, field, presenter }) => {
@@ -177,6 +195,15 @@ describe('presenter_registry', () => {
         expect(presenterFor({ __typename: 'Issue', status: 'open' }, 'status')).not.toBe(
           CiStatusPresenter,
         );
+      });
+
+      it('renders status on Duo workflows dimensions as plain text', () => {
+        expect(
+          presenterFor(
+            { __typename: 'DuoWorkflowsAggregationResponseDimensions', status: 'finished' },
+            'status',
+          ),
+        ).toBe(TextPresenter);
       });
 
       it('resolves user on analytics dimensions to UserAvatarPresenter', () => {
