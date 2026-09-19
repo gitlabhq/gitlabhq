@@ -91,11 +91,17 @@ changes.delete(:docs)
 changes.delete(:changelog)
 # No special review for feature flags needed.
 changes.delete(:feature_flag)
+# Database review is mandatory (not a suggestion) and spins its own reviewer,
+# unaffected by the reviewer-column-hiding experiment below. See danger/database/Dangerfile.
+changes.delete(:database)
 
 categories = roulette.prepare_categories(changes.keys - [:unknown])
+# `prepare_categories` re-adds :database based on the `database` label; strip it
+# back out since it's handled entirely by danger/database/Dangerfile.
+categories.delete(:database)
 
 # Skip specialty reviews for stable branch MRs since they have already been merged to the default branch
-categories.subtract([:database, :ux, :analytics_instrumentation]) if stable_branch.valid_stable_branch?
+categories.subtract([:ux, :analytics_instrumentation]) if stable_branch.valid_stable_branch?
 
 if changes.any? || roulette.required_approvals.any?
   random_roulette_spins = roulette.spin(nil, categories)

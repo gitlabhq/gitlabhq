@@ -38,6 +38,10 @@ module Tooling
         end
       end
 
+      def database_reviewer_spin
+        roulette.spin(nil, [:database]).first
+      end
+
       def check_migration_type_on_stable_branch(file_names)
         migrations = file_names.select { |f| f.match?(MIGRATION_MATCHER) }
         return if migrations.empty?

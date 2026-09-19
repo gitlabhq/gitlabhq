@@ -308,4 +308,16 @@ RSpec.describe Tooling::Danger::Database, feature_category: :tooling do
       end
     end
   end
+
+  describe '#database_reviewer_spin' do
+    let(:fake_roulette) { double('roulette') } # rubocop:disable RSpec/VerifiedDoubles -- Danger::Roulette plugin class isn't loaded in this fast spec
+    let(:spin) { double('spin') } # rubocop:disable RSpec/VerifiedDoubles -- Gitlab::Dangerfiles::Spin isn't loaded in this fast spec
+
+    it 'spins the roulette for the database category only' do
+      allow(database).to receive(:roulette).and_return(fake_roulette)
+      expect(fake_roulette).to receive(:spin).with(nil, [:database]).and_return([spin])
+
+      expect(database.database_reviewer_spin).to eq(spin)
+    end
+  end
 end
