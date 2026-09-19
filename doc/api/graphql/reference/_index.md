@@ -6744,13 +6744,6 @@ Fields:
 
 ### `Mutation.bulkSetVulnerabilityFindingsDueDates`
 
-{{< details >}}
-
-- Introduced in GitLab 18.11.
-- Status: Experiment.
-
-{{< /details >}}
-
 Bulk set due dates for vulnerability findings using individual UUID entries.
 This operation is best-effort: valid updates are applied even if some fail.
 
@@ -41276,7 +41269,7 @@ Fields:
 | <a id="countablevulnerability-dismissalreason"></a>`dismissalReason` | [`VulnerabilityDismissalReason`](#vulnerabilitydismissalreason) | Reason for dismissal. Returns `null` for states other than `dismissed`. |
 | <a id="countablevulnerability-dismissedat"></a>`dismissedAt` | [`Time`](#time) | Timestamp of when the vulnerability state was changed to dismissed. |
 | <a id="countablevulnerability-dismissedby"></a>`dismissedBy` | [`UserCore`](#usercore) | User that dismissed the vulnerability. |
-| <a id="countablevulnerability-duedate"></a>`dueDate` {{< icon name="warning-solid" >}} | [`ISO8601Date`](#iso8601date) | Introduced in GitLab 18.11. Status: Experiment. Vulnerability finding due date. |
+| <a id="countablevulnerability-duedate"></a>`dueDate` | [`ISO8601Date`](#iso8601date) | Vulnerability finding due date. |
 | <a id="countablevulnerability-duosastvrworkflowenabled"></a>`duoSastVrWorkflowEnabled` {{< icon name="warning-solid" >}} | [`Boolean`](#boolean) | Introduced in GitLab 19.1. Status: Experiment. Indicates whether the SAST vulnerability review workflow is enabled for the project. |
 | <a id="countablevulnerability-externalissuelinks"></a>`externalIssueLinks` | [`VulnerabilityExternalIssueLinkConnection!`](#vulnerabilityexternalissuelinkconnection) | List of external issue links related to the vulnerability. (see [Connections](#connections)) |
 | <a id="countablevulnerability-falsepositive"></a>`falsePositive` | [`Boolean`](#boolean) | Indicates whether the vulnerability is a false positive. |
@@ -56493,7 +56486,7 @@ Fields:
 | <a id="pipeline-user"></a>`user` | [`UserCore`](#usercore) | Pipeline user. |
 | <a id="pipeline-userpermissions"></a>`userPermissions` | [`PipelinePermissions!`](#pipelinepermissions) | Permissions for the current user on the resource. |
 | <a id="pipeline-usesneeds"></a>`usesNeeds` | [`Boolean`](#boolean) | Indicates if the pipeline has jobs with `needs` dependencies. |
-| <a id="pipeline-warningmessages"></a>`warningMessages` | [`PipelineMessageConnection`](#pipelinemessageconnection) | Pipeline warning messages. (see [Connections](#connections)) |
+| <a id="pipeline-warningmessages"></a>`warningMessages` | [`PipelineMessageConnection`](#pipelinemessageconnection) | Pipeline warning messages. Always empty for pipelines created in 19.5 and later due to database concerns. (see [Connections](#connections)) |
 | <a id="pipeline-warnings"></a>`warnings` | [`Boolean!`](#boolean) | Indicates if a pipeline has warnings. |
 | <a id="pipeline-yamlerrormessages"></a>`yamlErrorMessages` | [`String`](#string) | Pipeline YAML errors. |
 | <a id="pipeline-yamlerrors"></a>`yamlErrors` | [`Boolean!`](#boolean) | If the pipeline has YAML errors. |
@@ -65086,7 +65079,7 @@ Fields:
 | <a id="vulnerability-dismissalreason"></a>`dismissalReason` | [`VulnerabilityDismissalReason`](#vulnerabilitydismissalreason) | Reason for dismissal. Returns `null` for states other than `dismissed`. |
 | <a id="vulnerability-dismissedat"></a>`dismissedAt` | [`Time`](#time) | Timestamp of when the vulnerability state was changed to dismissed. |
 | <a id="vulnerability-dismissedby"></a>`dismissedBy` | [`UserCore`](#usercore) | User that dismissed the vulnerability. |
-| <a id="vulnerability-duedate"></a>`dueDate` {{< icon name="warning-solid" >}} | [`ISO8601Date`](#iso8601date) | Introduced in GitLab 18.11. Status: Experiment. Vulnerability finding due date. |
+| <a id="vulnerability-duedate"></a>`dueDate` | [`ISO8601Date`](#iso8601date) | Vulnerability finding due date. |
 | <a id="vulnerability-duosastvrworkflowenabled"></a>`duoSastVrWorkflowEnabled` {{< icon name="warning-solid" >}} | [`Boolean`](#boolean) | Introduced in GitLab 19.1. Status: Experiment. Indicates whether the SAST vulnerability review workflow is enabled for the project. |
 | <a id="vulnerability-externalissuelinks"></a>`externalIssueLinks` | [`VulnerabilityExternalIssueLinkConnection!`](#vulnerabilityexternalissuelinkconnection) | List of external issue links related to the vulnerability. (see [Connections](#connections)) |
 | <a id="vulnerability-falsepositive"></a>`falsePositive` | [`Boolean`](#boolean) | Indicates whether the vulnerability is a false positive. |

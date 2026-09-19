@@ -3,6 +3,7 @@
 class ProjectAuthorization < ApplicationRecord
   include EachBatch
   include FromUnion
+  include SafelyChangeColumnDefault
 
   belongs_to :user
   belongs_to :project
@@ -25,8 +26,12 @@ class ProjectAuthorization < ApplicationRecord
     group(:user_id).count
   end
 
+  # columns_changing_default forces is_unique into every INSERT while the database default
+  # is in flux, so a process holding a stale schema cache cannot fall back to a default it
+  # cannot see. It is removed in the release after the default ships.
   # TODO: To be removed after https://gitlab.com/gitlab-org/gitlab/-/issues/418205
   before_create :assign_is_unique
+  columns_changing_default :is_unique
 
   # Reads authorizations as raw [project_id, access_level] pairs. A single user
   # can be authorized on tens of thousands of projects, and instantiating one

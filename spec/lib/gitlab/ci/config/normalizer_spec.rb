@@ -8,12 +8,6 @@ RSpec.describe Gitlab::Ci::Config::Normalizer, feature_category: :pipeline_compo
   let(:config) { { job_name => job_config } }
 
   describe '.normalize_jobs' do
-    around do |example|
-      Gitlab::Ci::Config::FeatureFlags.with_actor(nil) do
-        example.run
-      end
-    end
-
     subject(:normalized_jobs) { described_class.new(config).normalize_jobs }
 
     shared_examples 'parallel dependencies' do
@@ -461,12 +455,6 @@ RSpec.describe Gitlab::Ci::Config::Normalizer, feature_category: :pipeline_compo
   end
 
   describe '#job_name_mappings' do
-    around do |example|
-      Gitlab::Ci::Config::FeatureFlags.with_actor(nil) do
-        example.run
-      end
-    end
-
     subject(:job_name_mappings) { described_class.new(config).job_name_mappings }
 
     context 'with parallel:matrix jobs' do

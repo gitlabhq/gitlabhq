@@ -34,6 +34,10 @@ RSpec.describe Ci::CreatePipelineService, feature_category: :continuous_integrat
             /jobs:test may allow multiple pipelines to run/
           )
         end
+
+        it 'does not save the warnings' do
+          expect(::Ci::PipelineMessage.where(pipeline: pipeline)).to be_empty
+        end
       end
 
       context 'when no warnings are raised' do
@@ -93,6 +97,12 @@ RSpec.describe Ci::CreatePipelineService, feature_category: :continuous_integrat
           expect(pipeline.errors.full_messages).to contain_exactly(error_message)
 
           expect(pipeline.warning_messages.map(&:content)).to contain_exactly(warning_message)
+        end
+
+        it 'saves the errors but not the warnings' do
+          expect(::Ci::PipelineMessage.where(pipeline: pipeline).map(&:content)).to contain_exactly(
+            a_string_matching(/need test is not defined/)
+          )
         end
       end
 

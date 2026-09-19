@@ -1,0 +1,8 @@
+---
+migration_job_name: NullifyPersonalNamespaceIdOnGroupWikiEvents
+description: Nullifies personal_namespace_id on events rows where both group_id and personal_namespace_id are set for target_type 'WikiPage::Meta'. These rows were created during a bug window in GitLab 17.5-17.6 and left with both sharding keys populated by a subsequent backfill.
+feature_category: wiki
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/241192
+milestone: '19.5'
+queued_migration_version: 20260916223000
+gitlab_schema: gitlab_main_org

@@ -636,6 +636,24 @@ module Gitlab
           end
         end
 
+        context 'when a job uses a deprecated `retry:when` value' do
+          let(:config) do
+            <<-YAML
+            rspec:
+              script: echo
+              retry:
+                max: 2
+                when: stuck_or_timeout_failure
+            YAML
+          end
+
+          it 'is propagated all the way up to the processor' do
+            expect(subject.warnings).to contain_exactly(
+              /retry uses deprecated `when` value\(s\): stuck_or_timeout_failure/
+            )
+          end
+        end
+
         context 'when a warning is raised together with errors' do
           let(:config) do
             <<-YAML

@@ -1194,8 +1194,12 @@ module Ci
       add_message(:error, content)
     end
 
+    # Warnings are kept in memory only. Nothing reads them after the request that creates
+    # the pipeline, so saving them only grows ci_pipeline_messages.
     def add_warning_message(content)
-      add_message(:warning, content)
+      in_memory_warning_messages << ::Ci::PipelineMessage.new(
+        severity: :warning, content: content, project_id: project_id
+      )
     end
 
     # Like #drop!, but does not persist the pipeline nor trigger any state
@@ -1212,10 +1216,10 @@ module Ci
       messages.select(&:error?)
     end
 
+    # Both branches must return a copy. Handing out the internal array would let callers
+    # record warnings through the reader.
     def warning_messages(limit: nil)
-      messages.select(&:warning?).tap do |warnings|
-        break warnings.take(limit) if limit
-      end
+      limit ? in_memory_warning_messages.take(limit) : in_memory_warning_messages.dup
     end
 
     # Manually set the notes for a Ci::Pipeline
@@ -1941,6 +1945,10 @@ module Ci
 
     def add_message(severity, content)
       messages.build(severity: severity, content: content, project_id: project_id)
+    end
+
+    def in_memory_warning_messages
+      @in_memory_warning_messages ||= []
     end
 
     def push_details

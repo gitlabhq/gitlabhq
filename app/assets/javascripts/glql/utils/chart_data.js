@@ -89,7 +89,9 @@ const spansMultipleYears = (nodes, dimension) => {
 // titles, sizing). A factory: the year decision needs the whole series.
 export const dimensionLabelFormatter = (nodes, dimension) => {
   const granularity = dimension?.parameters?.granularity;
-  if (!granularity) return (value) => String(value);
+  // An empty dimension value still labels its row, so absent attribution stays visible.
+  if (!granularity)
+    return (value) => (value == null || value === '' ? __('Unknown') : String(value));
   const includeYear = spansMultipleYears(nodes, dimension);
   return (value) => formatBucketDate(value, granularity, includeYear);
 };

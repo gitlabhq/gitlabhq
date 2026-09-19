@@ -190,7 +190,8 @@ module Types
         method: :source_ref_path
 
       field :warning_messages, Types::Ci::PipelineMessageType.connection_type, null: true,
-        description: 'Pipeline warning messages.'
+        description: 'Pipeline warning messages. Always empty for pipelines created in 19.5 and later ' \
+          'due to database concerns.'
 
       field :error_messages, Types::Ci::PipelineMessageType.connection_type, null: true,
         description: 'Pipeline error messages.'

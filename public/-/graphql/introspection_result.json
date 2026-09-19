@@ -108725,15 +108725,15 @@
             },
             {
               "name": "dueDate",
-              "description": "Vulnerability finding due date. Introduced in GitLab 18.11: Status: Experiment.",
+              "description": "Vulnerability finding due date.",
               "args": [],
               "type": {
                 "kind": "SCALAR",
                 "name": "ISO8601Date",
                 "ofType": null
               },
-              "isDeprecated": true,
-              "deprecationReason": "Status: Experiment. Introduced in GitLab 18.11."
+              "isDeprecated": false,
+              "deprecationReason": null
             },
             {
               "name": "duoSastVrWorkflowEnabled",
@@ -267415,7 +267415,7 @@
             },
             {
               "name": "bulkSetVulnerabilityFindingsDueDates",
-              "description": "Bulk set due dates for vulnerability findings using individual UUID entries.\nThis operation is best-effort: valid updates are applied even if some fail. Introduced in GitLab 18.11: Status: Experiment.",
+              "description": "Bulk set due dates for vulnerability findings using individual UUID entries.\nThis operation is best-effort: valid updates are applied even if some fail.\n",
               "args": [
                 {
                   "name": "input",
@@ -267439,8 +267439,8 @@
                 "name": "FindingDueDatesSetPayload",
                 "ofType": null
               },
-              "isDeprecated": true,
-              "deprecationReason": "Status: Experiment. Introduced in GitLab 18.11."
+              "isDeprecated": false,
+              "deprecationReason": null
             },
             {
               "name": "bulkUpdateAiToolRules",
@@ -312034,7 +312034,7 @@
             },
             {
               "name": "warningMessages",
-              "description": "Pipeline warning messages.",
+              "description": "Pipeline warning messages. Always empty for pipelines created in 19.5 and later due to database concerns.",
               "args": [
                 {
                   "name": "after",
@@ -436363,15 +436363,15 @@
             },
             {
               "name": "dueDate",
-              "description": "Vulnerability finding due date. Introduced in GitLab 18.11: Status: Experiment.",
+              "description": "Vulnerability finding due date.",
               "args": [],
               "type": {
                 "kind": "SCALAR",
                 "name": "ISO8601Date",
                 "ofType": null
               },
-              "isDeprecated": true,
-              "deprecationReason": "Status: Experiment. Introduced in GitLab 18.11."
+              "isDeprecated": false,
+              "deprecationReason": null
             },
             {
               "name": "duoSastVrWorkflowEnabled",

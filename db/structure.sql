@@ -28754,7 +28754,7 @@ CREATE TABLE project_authorizations (
     user_id bigint NOT NULL,
     project_id bigint NOT NULL,
     access_level integer NOT NULL,
-    is_unique boolean
+    is_unique boolean DEFAULT true
 );
 
 CREATE TABLE project_authorizations_for_migration (

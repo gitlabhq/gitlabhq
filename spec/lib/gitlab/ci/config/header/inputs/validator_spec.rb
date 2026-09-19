@@ -16,9 +16,7 @@ RSpec.describe Gitlab::Ci::Config::Header::Inputs::Validator, feature_category: 
 
   describe '#validate!' do
     before do
-      Gitlab::Ci::Config::FeatureFlags.with_actor(nil) do
-        inputs.compose!
-      end
+      inputs.compose!
     end
 
     context 'when inputs are valid' do

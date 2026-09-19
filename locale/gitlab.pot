@@ -2696,6 +2696,9 @@ msgstr ""
 msgid "AICatalog|Cannot restore a deprecated version."
 msgstr ""
 
+msgid "AICatalog|Choose a project"
+msgstr ""
+
 msgid "AICatalog|Choose whether to delete or hide this %{itemType}."
 msgstr ""
 

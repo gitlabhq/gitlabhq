@@ -277,6 +277,11 @@ describe('dimensionLabelFormatter', () => {
     expect(dimensionLabelFormatter([], LANGUAGE)('2026-01-01')).toBe('2026-01-01');
     expect(dimensionLabelFormatter([], LANGUAGE)(42)).toBe('42');
   });
+
+  it('labels an empty dimension value as Unknown', () => {
+    expect(dimensionLabelFormatter([], LANGUAGE)('')).toBe('Unknown');
+    expect(dimensionLabelFormatter([], LANGUAGE)(null)).toBe('Unknown');
+  });
 });
 
 describe('multi-year time dimensions', () => {

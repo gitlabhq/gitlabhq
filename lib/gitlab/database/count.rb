@@ -24,6 +24,8 @@ module Gitlab
           ].freeze
         end
 
+      ORGANIZATION_SCOPE = :in_organization
+
       # Takes in an array of models and returns a Hash for the approximate
       # counts for them.
       #
@@ -58,6 +60,51 @@ module Gitlab
           end
         end
       end
+
+      # Counts each model scoped to a single organization.
+      #
+      # A regular organization is counted exactly, but the default organization
+      # holds effectively every row, so we fall back to .approximate_counts
+      # there to avoid the whole-table scan an exact count would trigger.
+      #
+      # Scope overrides only apply to the exact path. Prefer scopes backed by a
+      # single indexed `organization_id`; join-based scopes (Snippet, Member)
+      # are far more expensive to count and are unbounded here.
+      #
+      # A model whose count times out is omitted so one slow table cannot fail
+      # the whole batch.
+      #
+      # @param models [Array] models to count
+      # @param organization [Organizations::Organization] the organization to scope by
+      # @param scopes [Hash] optional Model => scope name overrides (e.g. { User => :member_of_organization })
+      # @return [Hash] of Model -> count mapping
+      def self.approximate_counts_for_organization(models, organization, scopes: {})
+        models.each { |model| validate_organization_scope!(model, scopes) }
+
+        return approximate_counts(models) if organization.default?
+
+        models.index_with do |model|
+          organization_count(model, organization, scopes)
+        end.compact
+      end
+
+      def self.validate_organization_scope!(model, scopes)
+        scope_name = scopes.fetch(model, ORGANIZATION_SCOPE)
+
+        return if model.respond_to?(scope_name)
+
+        raise ArgumentError, "#{model} does not respond to :#{scope_name} for organization scoping"
+      end
+      private_class_method :validate_organization_scope!
+
+      def self.organization_count(model, organization, scopes)
+        scope_name = scopes.fetch(model, ORGANIZATION_SCOPE)
+
+        model.public_send(scope_name, organization).count # rubocop:disable GitlabSecurity/PublicSend -- scope existence checked in validate_organization_scope!
+      rescue *CONNECTION_ERRORS
+        nil
+      end
+      private_class_method :organization_count
     end
   end
 end

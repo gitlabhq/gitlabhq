@@ -116,7 +116,14 @@ Validity checks support the following secret types:
 - OpenAI user API keys
 - Postman API tokens
 - SendGrid API tokens
+- Stripe live publishable keys
+- Stripe live restricted keys
 - Stripe live secret keys
+- Stripe live short secret keys
+- Stripe test publishable keys
+- Stripe test restricted keys
+- Stripe test secret keys
+- Stripe test short secret keys
 
 Validity checks for AWS IAM access key IDs, Google Cloud API keys, and Postman API tokens
 work with any secret detection analyzer.
