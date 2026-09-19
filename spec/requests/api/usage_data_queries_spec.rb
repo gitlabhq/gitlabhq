@@ -17,10 +17,6 @@ RSpec.describe API::UsageDataQueries, :aggregate_failures, feature_category: :se
     let(:endpoint) { '/usage_data/queries' }
 
     context 'with authentication' do
-      before do
-        stub_feature_flags(usage_data_queries_api: true)
-      end
-
       it_behaves_like 'GET request permissions for admin mode' do
         let(:path) { endpoint }
       end
@@ -66,32 +62,10 @@ RSpec.describe API::UsageDataQueries, :aggregate_failures, feature_category: :se
     end
 
     context 'without authentication' do
-      before do
-        stub_feature_flags(usage_data_queries_api: true)
-      end
-
       it 'returns unauthorized' do
         get api(endpoint)
 
         expect(response).to have_gitlab_http_status(:unauthorized)
-      end
-    end
-
-    context 'when feature_flag is disabled' do
-      before do
-        stub_feature_flags(usage_data_queries_api: false)
-      end
-
-      it 'returns not_found for admin' do
-        get api(endpoint, admin, admin_mode: true)
-
-        expect(response).to have_gitlab_http_status(:not_found)
-      end
-
-      it 'returns forbidden for non-admin' do
-        get api(endpoint, user)
-
-        expect(response).to have_gitlab_http_status(:forbidden)
       end
     end
 

@@ -28007,8 +28007,8 @@ paths:
     get:
       operationId: getApiV4UsageDataQueries
       summary: List all Service Ping SQL queries
-      description: Lists all raw SQL queries used to compute Service Ping. This action
-        is behind the `usage_data_queries_api` feature flag. Administrators only.
+      description: Lists all raw SQL queries used to compute Service Ping. Administrators
+        only.
       tags:
       - Usage data
       responses:

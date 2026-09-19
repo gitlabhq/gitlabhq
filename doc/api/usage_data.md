@@ -101,12 +101,12 @@ Example response:
 
 - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/57016) in GitLab 13.11.
 - [Deployed behind a feature flag](../administration/feature_flags/_index.md) named `usage_data_queries_api`, disabled by default.
+- Feature flag `usage_data_queries_api` [removed](https://gitlab.com/gitlab-org/gitlab/-/work_items/510638) in GitLab 19.5.
 
 {{< /history >}}
 
-Lists all raw SQL queries used to compute Service Ping. This action is behind the
-`usage_data_queries_api` feature flag and is available only for the GitLab instance
-[Administrator](../user/permissions.md) users.
+Lists all raw SQL queries used to compute Service Ping.
+This action is available only for the GitLab instance [Administrator](../user/permissions.md) users.
 
 ```plaintext
 GET /usage_data/queries
