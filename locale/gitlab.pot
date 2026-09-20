@@ -8378,9 +8378,6 @@ msgstr ""
 msgid "AiGovernance|%{change} this week"
 msgstr ""
 
-msgid "AiGovernance|%{change} today"
-msgstr ""
-
 msgid "AiGovernance|AI Governance"
 msgstr ""
 
@@ -8486,6 +8483,9 @@ msgstr ""
 msgid "AiGovernance|Inherited from group"
 msgstr ""
 
+msgid "AiGovernance|Last 30 days"
+msgstr ""
+
 msgid "AiGovernance|Last 7 days"
 msgstr ""
 
@@ -8549,6 +8549,12 @@ msgstr ""
 msgid "AiGovernance|Show"
 msgstr ""
 
+msgid "AiGovernance|Shows the current registry, not filtered by date range."
+msgstr ""
+
+msgid "AiGovernance|Shows the most recent sessions, not filtered by date range."
+msgstr ""
+
 msgid "AiGovernance|Source"
 msgstr ""
 
@@ -8568,6 +8574,9 @@ msgid "AiGovernance|Tool name"
 msgstr ""
 
 msgid "AiGovernance|Type"
+msgstr ""
+
+msgid "AiGovernance|Usage rankings are always based on the last 30 days."
 msgstr ""
 
 msgid "AiGovernance|View MCP registry"
