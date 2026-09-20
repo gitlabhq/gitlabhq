@@ -153,8 +153,6 @@ module MergeRequests
       # never lands leaves commits resolving to this merge request through the
       # state-filter-free by_related_commit_sha. Mirrors MergeTrains::Car#cleanup_ref.
       def cleanup_generated_ref_commits
-        return unless Feature.enabled?(:generated_ref_commits_for_automatic_rebase, project)
-
         ::MergeRequests::GeneratedRefCommit.delete_all_for(merge_request)
       rescue StandardError => e
         # Best-effort cleanup: raising here would replace the merge failure the

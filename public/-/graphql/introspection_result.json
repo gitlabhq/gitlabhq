@@ -382394,6 +382394,22 @@
               "deprecationReason": null
             },
             {
+              "name": "projectCount",
+              "description": "Number of projects the scan profile is attached to. Introduced in GitLab 19.5: Status: Experiment.",
+              "args": [],
+              "type": {
+                "kind": "NON_NULL",
+                "name": null,
+                "ofType": {
+                  "kind": "SCALAR",
+                  "name": "Int",
+                  "ofType": null
+                }
+              },
+              "isDeprecated": true,
+              "deprecationReason": "Status: Experiment. Introduced in GitLab 19.5."
+            },
+            {
               "name": "scanType",
               "description": "Scan profile type.",
               "args": [],

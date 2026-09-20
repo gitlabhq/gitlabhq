@@ -447,6 +447,11 @@ msgid_plural "%d projects affected"
 msgstr[0] ""
 msgstr[1] ""
 
+msgid "%d project currently uses this profile and will be left without one."
+msgid_plural "%d projects currently use this profile and will be left without one."
+msgstr[0] ""
+msgstr[1] ""
+
 msgid "%d project has access"
 msgid_plural "%d projects have access"
 msgstr[0] ""
@@ -72818,6 +72823,11 @@ msgstr ""
 
 msgid "SecurityConfiguration|%d scanner not enabled"
 msgid_plural "SecurityConfiguration|%d scanners not enabled"
+msgstr[0] ""
+msgstr[1] ""
+
+msgid "SecurityConfiguration|%{count} project"
+msgid_plural "SecurityConfiguration|%{count} projects"
 msgstr[0] ""
 msgstr[1] ""
 

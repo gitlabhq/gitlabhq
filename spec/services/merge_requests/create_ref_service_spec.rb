@@ -446,14 +446,6 @@ RSpec.describe MergeRequests::CreateRefService, feature_category: :merge_trains 
                 .to change { merge_request.generated_ref_commits.count }
                 .from(0).to(expected_count)
             end
-
-            context 'when generated_ref_commits_for_automatic_rebase is disabled' do
-              before do
-                stub_feature_flags(generated_ref_commits_for_automatic_rebase: false)
-              end
-
-              include_examples 'does not generate ref merge request commits'
-            end
           end
         end
       end

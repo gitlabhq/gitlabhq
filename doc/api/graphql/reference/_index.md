@@ -62342,6 +62342,7 @@ Fields:
 | <a id="scanprofiletype-gitlabrecommended"></a>`gitlabRecommended` | [`Boolean!`](#boolean) | Indicates whether the scan profile is a default profile. |
 | <a id="scanprofiletype-id"></a>`id` | [`SecurityScanProfileID`](#securityscanprofileid) | Global ID of the security scan profile. |
 | <a id="scanprofiletype-name"></a>`name` | [`String!`](#string) | Name of the security scan profile. |
+| <a id="scanprofiletype-projectcount"></a>`projectCount` {{< icon name="warning-solid" >}} | [`Int!`](#int) | Introduced in GitLab 19.5. Status: Experiment. Number of projects the scan profile is attached to. |
 | <a id="scanprofiletype-scantype"></a>`scanType` | [`SecurityScanProfileType!`](#securityscanprofiletype) | Scan profile type. |
 | <a id="scanprofiletype-triggersettings"></a>`triggerSettings` {{< icon name="warning-solid" >}} | [`[ScanProfileTriggerSetting!]!`](#scanprofiletriggersetting) | Introduced in GitLab 19.3. Status: Experiment. Trigger settings, including effective configuration, for the scan profile. |
 | <a id="scanprofiletype-triggers"></a>`triggers` {{< icon name="warning-solid" >}} | [`[ScanProfileTriggerType!]!`](#scanprofiletriggertype) | Introduced in GitLab 18.10. Status: Experiment. Trigger types for the scan profile. |
