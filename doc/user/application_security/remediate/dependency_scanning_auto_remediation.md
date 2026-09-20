@@ -35,6 +35,8 @@ description: Automatically open merge requests to fix vulnerable dependencies.
   [removed](https://gitlab.com/gitlab-org/gitlab/-/work_items/595588) in GitLab 19.3.
 - NuGet (.NET) support [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/604603)
   in GitLab 19.4.
+- Pub (Dart and Flutter) support [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/604604)
+  in GitLab 19.5.
 - Support in the triage and remediation profile [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/253780) in GitLab 19.4 [with a feature flag](../../../administration/feature_flags/_index.md) named `triage_and_remediation_profile`. Enabled by default.
 - Feature flag `enable_dependency_bump_breaking_changes`
   [removed](https://gitlab.com/gitlab-org/gitlab/-/work_items/604558) in GitLab 19.4.
@@ -144,6 +146,7 @@ Dependency scanning auto-remediation supports the following package managers:
 | Go                      | Go modules                          | `go.mod`, `go.sum`                                                             |
 | Rust                    | Cargo                               | `Cargo.toml`, `Cargo.lock`                                                     |
 | .NET                    | NuGet                               | `*.csproj`, `packages.lock.json`                                               |
+| Dart and Flutter        | Pub                                 | `pubspec.yaml`, `pubspec.lock`                                                 |
 
 Support for additional ecosystems is proposed in
 [epic 19244](https://gitlab.com/groups/gitlab-org/-/work_items/19244).
@@ -153,6 +156,13 @@ For .NET, dependency scanning only detects NuGet dependencies from a committed
 auto-remediation has nothing to act on. To generate the lock file, set
 [`RestorePackagesWithLockFile`](https://learn.microsoft.com/en-us/nuget/consume-packages/package-references-in-project-files#enabling-lock-file)
 in your project file and commit the result.
+
+For Dart and Flutter, dependency scanning only detects Pub dependencies from a
+committed `pubspec.lock`. Projects without one produce no Pub findings, so
+auto-remediation has nothing to act on. Generate the lock file by running
+`dart pub get` or `flutter pub get`, and commit the result. Pub auto-remediation
+jobs also take several minutes longer than other ecosystems, because the updater
+sets up a Flutter SDK before resolving dependencies, even for pure-Dart projects.
 
 ## Service account permissions
 
