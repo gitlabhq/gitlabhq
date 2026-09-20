@@ -2,7 +2,7 @@
 stage: Verify
 group: CI Functions Platform
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see <https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments>
-title: GitLab Functionsの例
+title: GitLab Functionの例
 ---
 
 {{< details >}}
@@ -19,7 +19,7 @@ title: GitLab Functionsの例
 
 後続のステップで使用するメッセージをエコーします。完全なソースコードについては、[echo](https://gitlab.com/gitlab-org/ci-cd/runner-tools/gitlab-functions-examples/echo)を参照してください。
 
-関数定義:
+Function定義:
 
 ```yaml
 spec:
@@ -57,7 +57,7 @@ my-job:
         message: "The echo_hi step said: ${{ steps.echo_hi.outputs.message }}"
 ```
 
-出力:
+アウトプット:
 
 ```shell
 Running step name=echo_hi
@@ -70,7 +70,7 @@ The echo_hi step said: Hi, Zhang Wei
 
 後続のステップで使用するランダム値を生成します。完全なソースコードについては、[random](https://gitlab.com/gitlab-org/ci-cd/runner-tools/gitlab-functions-examples/random)を参照してください。
 
-関数定義:
+Function定義:
 
 ```yaml
 spec:
@@ -99,7 +99,7 @@ my-job:
         message: "The random value is: ${{ steps.random.outputs.random_value }}"
 ```
 
-出力:
+アウトプット:
 
 ```shell
 Running step name=random
@@ -109,9 +109,9 @@ The random value is: DVhV5vcd2BjDDtpV
 
 ## JSONからフィールドを抽出する {#extract-fields-from-json}
 
-JSON入力をフィルタリングするために`jq`を実行します。完全なソースコードについては、[jq](https://gitlab.com/gitlab-org/ci-cd/runner-tools/gitlab-functions-examples/jq)を参照してください。
+JSONのインプットをフィルタリングするために`jq`を実行します。完全なソースコードについては、[jq](https://gitlab.com/gitlab-org/ci-cd/runner-tools/gitlab-functions-examples/jq)を参照してください。
 
-関数定義:
+Function定義:
 
 ```yaml
 spec:
@@ -166,7 +166,7 @@ my-job:
         message: "Admins: ${{ steps.jq.outputs.result.value }}"
 ```
 
-出力:
+アウトプット:
 
 ```shell
 Running step name=jq
@@ -176,9 +176,9 @@ Admins: ["Alice", "Carol"]
 
 ## Dockerに認証する {#authenticate-to-docker}
 
-Docker設定を作成し、その値を環境変数`DOCKER_AUTH_CONFIG`として追加して、後続の関数で使用します。完全なソースコードについては、[Docker Auth](https://gitlab.com/gitlab-org/ci-cd/runner-tools/gitlab-functions-examples/docker-auth)を参照してください。
+Dockerの設定を作成し、後続のFunctionで使用するために、それを環境変数`DOCKER_AUTH_CONFIG`の値として追加します。完全なソースコードについては、[Docker Auth](https://gitlab.com/gitlab-org/ci-cd/runner-tools/gitlab-functions-examples/docker-auth)を参照してください。
 
-関数定義:
+Function定義:
 
 ```yaml
 spec:
@@ -249,7 +249,7 @@ build-image:
       func: my.registry.com/my-function:latest  # requires auth to fetch an image
 ```
 
-出力:
+アウトプット:
 
 ```shell
 Running step name=auth_to_my_registry

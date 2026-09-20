@@ -1,6 +1,6 @@
 ---
-source_checksum: dccc3e71696cd255
-distilled_at_sha: 1f3c26497b7f19bbd0b53f947a7f7aaa95685501
+source_checksum: b51141fe9895d75e
+distilled_at_sha: 98a4a3ab667724497f85efcd3a8545cfe1d1efd3
 ---
 <!-- Auto-generated from docs.gitlab.com by gitlab-ai-principles-distiller — do not edit manually -->
 
@@ -42,9 +42,13 @@ distilled_at_sha: 1f3c26497b7f19bbd0b53f947a7f7aaa95685501
 - DO NOT place a zero-state phrase in the `one` (singular) slot of a plural string; handle the zero state as a separate string outside the `n__()` call.
 - Pluralize whole sentences rather than extracting a single word and constructing the sentence around it, so translators have full context for all plural forms.
 - Prefer named `%{count}` interpolation over positional `%d` in plural strings; for strings with multiple variables, always use named `%{placeholder}` syntax.
-- DO NOT hardcode the number `1` in the singular form of a plural string; use `%{count}` (preferred) or `%s` (acceptable) so that languages where the `one` CLDR category covers numbers other than 1 (e.g., Ukrainian: 21, 31, …) produce correct output. Exception: when a natural singular form without a number is desired, handle the exact count of 1 as a separate string outside the plural call (e.g., `if count == 1 … else n_(…) end`).
+- Interpolate named placeholders in JavaScript `n__()` results with `sprintf()` or `GlSprintf`; `n__()` substitutes only `%d` automatically and leaves named placeholders and `%s` unchanged.
+- Explicitly interpolate Ruby/HAML `n_()` results with `format()` for named placeholders, `safe_format()` when rendering HTML, or `%` for `%d`; `n_()` performs no automatic substitution.
+- DO NOT hardcode the number `1` in the singular form of a plural string; use `%{count}` (preferred) or `%d` for a single count so that languages where the `one` CLDR category covers numbers other than 1 (e.g., Ukrainian: 21, 31, …) produce correct output. Exception: when a natural singular form without a number is desired, handle the exact count of 1 as a separate string outside the plural call (e.g., `if count == 1 … else n_(…) end`).
+- Use `%s` in JavaScript plural strings only for the existing `Timeago|` strings, where `timeago.js` substitutes it after `n__()` returns; use named placeholders or `%d` elsewhere.
 - DO NOT use `%d` in the singular form when the number adds no value (e.g., prefer `'Last day'` over `'Last 1 day'`).
 - For strings with multiple independently pluralized nouns (e.g., hours and minutes), split into separate `n__()` calls and combine with a non-pluralized connector string via `sprintf`; DO NOT attempt to pluralize multiple nouns in a single `n__()` call.
+- Interpolate each pluralized part before combining the parts; `sprintf()` does not recursively substitute placeholders inside interpolation values.
 - DO NOT use Rails `pluralize` helper or `String#pluralize` on translated strings; they apply English-only rules and produce broken output in other locales. Use `n_()` with a whole-sentence pattern instead.
 - In Vue, define pluralized strings that depend on runtime counts as functions accepting a `count` argument in the `i18n` constants object; DO NOT define them as static string constants.
 
@@ -97,3 +101,4 @@ For the full picture, see:
 
 - doc/development/i18n/externalization.md
 - doc/development/i18n/pluralization.md
+
