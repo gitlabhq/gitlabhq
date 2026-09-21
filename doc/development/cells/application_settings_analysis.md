@@ -155,6 +155,8 @@ title: Application Settings analysis
 | `dsa_key_restriction` | `false` | `integer` | `integer` | `true` | `'-1'::integer` | `false` | `false`| `true` |
 | `duo_agent_platform_service_url` | `false` | `text` | `` | `false` | `null` | `false` | `false`| `false` |
 | `duo_chat` | `false` | `jsonb` | `` | `true` | `'{}'::jsonb` | `false` | `true`| `false` |
+| `duo_code_review_approval_counts_enabled` | `false` | `boolean` | `` | `true` | `false` | `false` | `false`| `false` |
+| `duo_code_review_decisions_enabled` | `false` | `boolean` | `` | `true` | `true` | `false` | `false`| `false` |
 | `duo_features_enabled` | `false` | `boolean` | `boolean` | `true` | `true` | `false` | `false`| `true` |
 | `duo_foundational_flows_enabled` | `false` | `boolean` | `` | `true` | `true` | `false` | `true`| `false` |
 | `duo_remote_flows_enabled` | `false` | `boolean` | `` | `true` | `true` | `false` | `false`| `false` |
@@ -274,6 +276,8 @@ title: Application Settings analysis
 | `license_usage_data_exported` | `false` | `boolean` | `` | `true` | `false` | `false` | `false`| `false` |
 | `local_markdown_version` | `false` | `integer` | `integer` | `true` | `0` | `true` | `false`| `true` |
 | `lock_auto_duo_code_review_enabled` | `false` | `boolean` | `` | `true` | `false` | `false` | `false`| `false` |
+| `lock_duo_code_review_approval_counts_enabled` | `false` | `boolean` | `` | `true` | `false` | `false` | `false`| `false` |
+| `lock_duo_code_review_decisions_enabled` | `false` | `boolean` | `` | `true` | `false` | `false` | `false`| `false` |
 | `lock_duo_features_enabled` | `false` | `boolean` | `boolean` | `true` | `false` | `false` | `false`| `true` |
 | `lock_duo_foundational_flows_enabled` | `false` | `boolean` | `` | `true` | `false` | `false` | `true`| `false` |
 | `lock_duo_remote_flows_enabled` | `false` | `boolean` | `` | `true` | `false` | `false` | `false`| `false` |

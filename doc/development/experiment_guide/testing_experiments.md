@@ -115,7 +115,7 @@ The contract names the experiment once, so every event in the arm under test is 
 carry that experiment's context:
 
 ```ruby
-expect_snowplow_tracking_journey('whats_new_placement', variant: variant)
+expect_snowplow_tracking_journey('my_experiment', variant: variant)
 ```
 
 For the contract format and the rest of the mechanism, see

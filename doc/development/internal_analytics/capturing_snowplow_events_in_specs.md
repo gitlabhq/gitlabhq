@@ -97,20 +97,15 @@ turn.
 A full spec looks like this:
 
 ```ruby
-RSpec.describe "What's new placement experiment", :js, feature_category: :onboarding do
-  let_it_be(:user) { create(:user) }
+RSpec.describe 'SaaS registration from an invite', :js, :saas_registration, feature_category: :onboarding do
+  let_it_be(:group) { create(:group, name: 'Test Group') }
 
-  before do
-    stub_experiments(whats_new_placement: :candidate)
-    sign_in(user)
-    visit root_path
-  end
+  it 'registers the user and sends them to the group page', :capture_snowplow_events do
+    registers_from_invite(group: group)
+    fill_in_welcome_form
+    click_on 'Get started!'
 
-  it 'emits every event the journey declares', :capture_snowplow_events do
-    find_by_testid('user-menu-toggle').click
-    find_by_testid('whats-new-for-you-profile-menu-item').click
-
-    expect_snowplow_tracking_journey('whats_new_placement', variant: 'candidate')
+    expect_snowplow_tracking_journey('invite_registration')
   end
 end
 ```
@@ -157,30 +152,41 @@ Instead, let a failing assertion tell you:
 
 ### Experiments
 
-A contract can name an experiment and declare its arms under `variants:`:
+A contract can name an experiment and declare its arms under `variants:`. The names in
+this example are illustrative:
 
 ```yaml
 ---
-experiment: whats_new_placement
+experiment: my_experiment
 description: |
   ...
 
 variants:
   candidate:
     events:
-      - action: render_whats_new_for_you_menu_item
-        property: profile_menu
+      - category: my_experiment
+        action: assignment
+
+      - action: click_call_to_action
+
+      - category: my_experiment
+        action: finish_signup
 
   control:
     events:
-      - action: render_whats_new_for_you_menu_item
-        property: help_menu
+      - category: my_experiment
+        action: assignment
+
+      - action: click_call_to_action
+
+      - category: my_experiment
+        action: finish_signup
 ```
 
 Assert one arm at a time with a `variant:`:
 
 ```ruby
-expect_snowplow_tracking_journey('whats_new_placement', variant: variant)
+expect_snowplow_tracking_journey('my_experiment', variant: variant)
 ```
 
 When `experiment:` is set, every event declared for the arm under test is additionally required to
@@ -230,7 +236,7 @@ experiment would otherwise collide on the same directory:
 ```plaintext
 tmp/captured_snowplow_events/
   index.json
-  ee/spec/features/experiments/whats_new_placement_events_spec/
+  ee/spec/features/experiments/my_experiment_events_spec/
     1-1-1-1/   events.yml  payloads.json
     1-2-1-1/   events.yml  payloads.json
 ```
@@ -244,18 +250,17 @@ Each example directory holds two files:
 - `payloads.json` holds the raw payloads exactly as they would have been POSTed to the collector.
 
 ```yaml
-# Captured from: What's new placement experiment when assigned the candidate variant ...
-# ./ee/spec/features/experiments/whats_new_placement_events_spec.rb:16 at 2026-09-02T08:28:00Z
+# Captured from: My experiment when assigned the candidate variant ...
+# ./ee/spec/features/experiments/my_experiment_events_spec.rb:16 at 2026-09-02T08:28:00Z
 #
 # Frontend categories are the page an event fired on, so they are rarely worth asserting.
 # Also captured, not expressible in a contract: 1 page view, 1 self-describing event
 ---
 events:
-- category: whats_new_placement
+- category: my_experiment
   action: assignment
 - category: root:index
-  action: click_whats_new_for_you_menu_item
-  property: profile_menu
+  action: click_call_to_action
 ```
 
 `index.json`, at the root of the dump, maps each example's dump to the tracking journey and
@@ -267,10 +272,10 @@ A successful entry looks like this:
 
 ```json
 {
-  "journey": "whats_new_placement",
+  "journey": "my_experiment",
   "variant": "candidate",
-  "events": "ee/spec/features/experiments/whats_new_placement_events_spec/1-1-1-1/events.yml",
-  "payloads": "ee/spec/features/experiments/whats_new_placement_events_spec/1-1-1-1/payloads.json"
+  "events": "ee/spec/features/experiments/my_experiment_events_spec/1-1-1-1/events.yml",
+  "payloads": "ee/spec/features/experiments/my_experiment_events_spec/1-1-1-1/payloads.json"
 }
 ```
 

@@ -257,6 +257,9 @@ RSpec.describe Emails::Imports, feature_category: :importers do
       is_expected.to have_content('Export failed')
       is_expected.to have_content(configuration.source_hostname)
       is_expected.to have_content(start_date)
+      is_expected.to have_content(configuration.export_prefix)
+      is_expected.to have_content('You can safely delete any files found at that path')
+      is_expected.to have_content('To try again, start a new export from your source GitLab instance')
     end
 
     context 'when source_hostname contains credentials' do

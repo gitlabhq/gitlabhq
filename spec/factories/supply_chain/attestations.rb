@@ -12,6 +12,7 @@ FactoryBot.define do
 
     trait :with_signing_certificate do
       signing_certificate { association(:supply_chain_signing_certificate, project: project) }
+      signing_method { :local_ca }
     end
 
     trait :with_error_status do

@@ -263,10 +263,13 @@ include:
 .db-job-base:
   extends:
     - .rails-job-base
+    - .repo-from-artifacts
     - .rails:rules:ee-and-foss-migration
     - .use-pg17
   stage: test
-  needs: ["setup-test-env"]
+  needs:
+    - setup-test-env
+    - !reference [.repo-from-artifacts, needs]
 
 ######################
 # lint stage base job

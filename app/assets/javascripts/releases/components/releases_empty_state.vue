@@ -7,7 +7,11 @@ export default {
   components: {
     GlEmptyState,
   },
-  inject: ['documentationPath', 'illustrationPath', 'newReleasePath'],
+  inject: {
+    documentationPath: { default: null },
+    illustrationPath: { default: null },
+    newReleasePath: { default: null },
+  },
   i18n: {
     emptyStateTitle: s__('Release|Getting started with releases'),
     emptyStateText: s__(

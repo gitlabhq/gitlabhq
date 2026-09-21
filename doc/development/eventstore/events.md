@@ -98,6 +98,7 @@ To find subscribers, search the subscription files under
 
 | Event | Feature category | Edition | Description |
 |-------|-----------------|---------|-------------|
+| `Members::AcceptedInviteCloudEvent` | `user_management` | CE | CloudEvent published when a user accepts a membership invitation to a group or project. |
 | `Members::AcceptedInviteEvent` | `user_management` | CE | Published when a user accepts a membership invitation to a group or project. |
 | `Members::AddedCloudEvent` | `user_management` | CE | CloudEvent published after one or more members are added to a group or project. A single event carries all successfully created user IDs; skipped entirely when every invited user fails validation. |
 | `Members::DestroyedEvent` | `user_management` | CE | Published after a member record is removed from a group or project. Fires once per user per destroy operation; not published on recursive cascades (for example, when a parent group destroy removes child memberships). Deferred via run_after_commit_or_now. |

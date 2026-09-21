@@ -19,6 +19,7 @@ title: Workplan
 - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/240718) in GitLab 19.0 [with a feature flag](../../administration/feature_flags/_index.md) named `workplan`. Disabled by default.
 - Workplan widget [changed](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/250010) in GitLab 19.4.
 - View and implement a workplan from GitLab Duo Agentic Chat [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/252727) in GitLab 19.4.
+- View and implement a workplan from GitLab Duo Agentic Chat [removed](https://gitlab.com/gitlab-org/gitlab/-/work_items/626672) in GitLab 19.5.
 
 {{< /history >}}
 
@@ -140,10 +141,10 @@ that end in `.plan`.
 
 ## View a workplan
 
-To view a workplan, use one of the following methods:
+To view a workplan:
 
-- On the work item, in the **Workplan** widget, select **View**.
-- On the work item, in [GitLab Duo Agentic Chat](../gitlab_duo_chat/agentic_chat.md), select **View**.
+1. Go to the work item.
+1. In the **Workplan** widget, select **View**.
 
 The workplan opens in a panel and shows the rendered content.
 
@@ -284,7 +285,6 @@ Prerequisites:
 To implement a workplan with GitLab Duo, use one of the following methods:
 
 - On the work item, in the **Workplan** widget, select **Implement**.
-- On the work item, in GitLab Duo Agentic Chat, select **Implement**.
 - Open the workplan, then implement it from the panel:
   1. On the work item, in the **Workplan** widget, select **View**.
   1. In the panel, select **Implement**.

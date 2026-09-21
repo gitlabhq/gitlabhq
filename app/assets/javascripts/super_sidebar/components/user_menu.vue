@@ -13,7 +13,6 @@ import {
 } from '@gitlab/ui';
 import UserMenuUpgradeSubscription from 'ee_component/super_sidebar/components/user_menu_upgrade_subscription.vue';
 import SafeHtml from '~/vue_shared/directives/safe_html';
-import glFeatureFlagsMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
 import { s__, __, sprintf } from '~/locale';
 import Tracking from '~/tracking';
 import { SET_STATUS_MODAL_ID } from '~/set_status_modal/constants';
@@ -22,8 +21,6 @@ import { visitUrl, refreshCurrentPage } from '~/lib/utils/url_utility';
 import { setGitlabNext } from '~/lib/utils/gitlab_next';
 import * as Sentry from '~/sentry/sentry_browser_wrapper';
 import { logError } from '~/lib/logger';
-import GitlabExperiment from '~/experimentation/components/gitlab_experiment.vue';
-import { isExperimentVariant } from '~/experimentation/utils';
 import WhatsNewForYouMenuItem from '~/whats_new/components/whats_new_for_you_menu_item.vue';
 import {
   adminImpersonationPath,
@@ -39,13 +36,10 @@ import { USER_MENU_TRACKING_DEFAULTS } from '../constants';
 import UserMenuProfileItem from './user_menu_profile_item.vue';
 import UserCounts from './user_counts.vue';
 
-const WHATS_NEW_EXPERIMENT = 'whats_new_placement';
-const WHATS_NEW_PLACEMENT = 'profile_menu';
-
 export default {
   name: 'UserMenu',
   SET_STATUS_MODAL_ID,
-  WHATS_NEW_EXPERIMENT,
+  WHATS_NEW_TRACKING_PROPERTY: USER_MENU_TRACKING_DEFAULTS['data-track-property'],
   // "GitLab Next" is a proper noun, so it is intentionally not translated
   GITLAB_NEXT_LABEL: 'GitLab Next',
   i18n: {
@@ -69,7 +63,6 @@ export default {
     GlDisclosureDropdownGroup,
     GlDisclosureDropdownItem,
     GlButton,
-    GitlabExperiment,
     GlToggle,
     UserCounts,
     UserMenuProfileItem,
@@ -87,7 +80,7 @@ export default {
     GlModal: GlModalDirective,
     GlTooltip: GlTooltipDirective,
   },
-  mixins: [Tracking.mixin({ experiment: WHATS_NEW_EXPERIMENT }), glFeatureFlagsMixin()],
+  mixins: [Tracking.mixin()],
   inject: ['isImpersonating', 'isSaas'],
   props: {
     data: {
@@ -273,9 +266,6 @@ export default {
     },
     onShow() {
       this.initBuyCIMinsCallout();
-      if (this.data.display_whats_new && isExperimentVariant(WHATS_NEW_EXPERIMENT, 'candidate')) {
-        this.track('render_whats_new_for_you_menu_item', { property: WHATS_NEW_PLACEMENT });
-      }
     },
     openStatusModal() {
       this.setStatusModalReady = true;
@@ -465,16 +455,13 @@ export default {
 
       <user-menu-upgrade-subscription v-if="data.upgrade_link" :upgrade-link="data.upgrade_link" />
 
-      <gitlab-experiment :name="$options.WHATS_NEW_EXPERIMENT">
-        <template #candidate>
-          <whats-new-for-you-menu-item
-            :sidebar-data="data"
-            placement="profile_menu"
-            icon="compass"
-            @action="$refs.userDropdown.close()"
-          />
-        </template>
-      </gitlab-experiment>
+      <whats-new-for-you-menu-item
+        :sidebar-data="data"
+        placement="profile_menu"
+        :tracking-property="$options.WHATS_NEW_TRACKING_PROPERTY"
+        icon="compass"
+        @action="$refs.userDropdown.close()"
+      />
 
       <gl-disclosure-dropdown-group v-if="addBuyPipelineMinutesMenuItem" bordered>
         <gl-disclosure-dropdown-item

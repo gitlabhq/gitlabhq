@@ -361,5 +361,5 @@ The pricing depends on the selected model.
 
 The following features also consume credits, but with a different consumption model:
 
-- [GitLab Secrets Manager](../ci/secrets/secrets_manager/secrets_manager_billing.md)
+- [GitLab Secrets Manager](../ci/secrets/secrets_manager/credit_usage.md)
 - [Hosted runners for GitLab Dedicated](../administration/dedicated/hosted_runners.md#usage-cap-exemptions)

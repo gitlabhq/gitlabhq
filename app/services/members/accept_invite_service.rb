@@ -31,6 +31,9 @@ module Members
     end
 
     def publish_accepted_invite_event
+      # TODO: Remove in a later milestone after CloudEvent migration is complete.
+      # Dual-published alongside AcceptedInviteCloudEvent to allow in-flight events to drain.
+      # See https://gitlab.com/gitlab-org/gitlab/-/work_items/605291
       Gitlab::EventStore.publish(
         Members::AcceptedInviteEvent.new(data: {
           member_id: member.id,
@@ -38,6 +41,15 @@ module Members
           source_type: member.source_type,
           user_id: user.id
         })
+      )
+
+      Gitlab::EventStore.publish(
+        Members::AcceptedInviteCloudEvent.build(
+          source: member.source,
+          current_user: user,
+          user_id: user.id,
+          member_id: member.id
+        )
       )
     end
   end

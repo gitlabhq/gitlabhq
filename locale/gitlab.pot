@@ -31402,9 +31402,6 @@ msgstr ""
 msgid "DuoAgenticChat|Drop images to attach them"
 msgstr ""
 
-msgid "DuoAgenticChat|Generate workplan"
-msgstr ""
-
 msgid "DuoAgenticChat|Get GitLab Duo turned on"
 msgstr ""
 
@@ -31555,9 +31552,6 @@ msgstr ""
 msgid "DuoAgenticChat|Queued"
 msgstr ""
 
-msgid "DuoAgenticChat|Ready when you are"
-msgstr ""
-
 msgid "DuoAgenticChat|Reconnect"
 msgstr ""
 
@@ -31687,12 +31681,6 @@ msgstr ""
 msgid "DuoAgenticChat|Usage billing not available"
 msgstr ""
 
-msgid "DuoAgenticChat|View"
-msgstr ""
-
-msgid "DuoAgenticChat|View the workplan and implement it when you're ready."
-msgstr ""
-
 msgid "DuoAgenticChat|Web search"
 msgstr ""
 
@@ -31700,12 +31688,6 @@ msgid "DuoAgenticChat|Work items"
 msgstr ""
 
 msgid "DuoAgenticChat|Work towards a goal until it is achieved"
-msgstr ""
-
-msgid "DuoAgenticChat|Work with GitLab Duo to break your item into an efficient implementation plan."
-msgstr ""
-
-msgid "DuoAgenticChat|Workplan found"
 msgstr ""
 
 msgid "DuoAgenticChat|You can attach up to %{max} images per message. Some images were not attached."
@@ -56136,6 +56118,9 @@ msgstr ""
 msgid "OfflineTransferExport|Offline export history"
 msgstr ""
 
+msgid "OfflineTransferExport|Partial export artifacts may have been written to %{strong_open}%{export_prefix}%{strong_close} in the configured object storage bucket. You can safely delete any files found at that path."
+msgstr ""
+
 msgid "OfflineTransferExport|Review and export"
 msgstr ""
 
@@ -56170,6 +56155,9 @@ msgid "OfflineTransferExport|The offline export you started on %{start_date} fro
 msgstr ""
 
 msgid "OfflineTransferExport|The offline export you started on %{start_date} from %{strong_open}%{source_hostname}%{strong_close} is complete. Find the export at %{strong_open}%{export_prefix}%{strong_close} in the configured object storage bucket."
+msgstr ""
+
+msgid "OfflineTransferExport|To try again, start a new export from your source GitLab instance."
 msgstr ""
 
 msgid "OfflineTransferExport|Try again, or refresh the page."
@@ -56824,21 +56812,6 @@ msgstr ""
 msgid "Onboarding|(optional)"
 msgstr ""
 
-msgid "Onboarding|Add a CODEOWNERS rule so the files Duo reads as instructions (AGENTS.md, .gitlab/duo/, skills/) require code-owner review before changes merge."
-msgstr ""
-
-msgid "Onboarding|Analyze the repository and create a .gitlab/duo/chat-rules.md file with rules tuned for interactive GitLab Duo Chat conversations."
-msgstr ""
-
-msgid "Onboarding|Analyze the repository and create a .gitlab/duo/mr-review-instructions.yaml file so the Code Review flow enforces your project conventions."
-msgstr ""
-
-msgid "Onboarding|Analyze the repository and create an AGENTS.md file so GitLab Duo Agent Platform understands your codebase."
-msgstr ""
-
-msgid "Onboarding|Analyze your .gitlab-ci.yml and get improvement suggestions in a draft merge request."
-msgstr ""
-
 msgid "Onboarding|Blank project (default)"
 msgstr ""
 
@@ -56846,9 +56819,6 @@ msgid "Onboarding|Continue"
 msgstr ""
 
 msgid "Onboarding|Country"
-msgstr ""
-
-msgid "Onboarding|Create a .gitlab/duo/agent-config.yml file so CI-launched flows run in a container that matches your tech stack."
 msgstr ""
 
 msgid "Onboarding|Create your first project"
@@ -56878,21 +56848,6 @@ msgstr ""
 msgid "Onboarding|If you can't find your organization, request an invite from your company's GitLab administrator."
 msgstr ""
 
-msgid "Onboarding|Improve CI setup"
-msgstr ""
-
-msgid "Onboarding|Initialize Chat custom rules"
-msgstr ""
-
-msgid "Onboarding|Initialize code review instructions"
-msgstr ""
-
-msgid "Onboarding|Initialize execution environment"
-msgstr ""
-
-msgid "Onboarding|Initialize project context"
-msgstr ""
-
 msgid "Onboarding|Last name"
 msgstr ""
 
@@ -56912,9 +56867,6 @@ msgid "Onboarding|Project name"
 msgstr ""
 
 msgid "Onboarding|Projects help you organize your work. They contain your file repository, issues, merge requests, and so much more."
-msgstr ""
-
-msgid "Onboarding|Protect agent files with Code Owners"
 msgstr ""
 
 msgid "Onboarding|Select a country or region"

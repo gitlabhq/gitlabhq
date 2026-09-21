@@ -200,6 +200,8 @@ project_setting:
     - duo_features_enabled
     - auto_duo_code_review_enabled
     - auto_duo_code_review_on_push_enabled
+    - duo_code_review_decisions_enabled
+    - duo_code_review_approval_counts_enabled
     - require_reauthentication_to_approve
     - observability_alerts_enabled
     - spp_repository_pipeline_access

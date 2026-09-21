@@ -9,7 +9,6 @@ import UserMenuProfileItem from '~/super_sidebar/components/user_menu_profile_it
 import WhatsNewForYouMenuItem from '~/whats_new/components/whats_new_for_you_menu_item.vue';
 import SetStatusModal from '~/set_status_modal/set_status_modal_wrapper.vue';
 import { mockTracking } from 'helpers/tracking_helper';
-import { stubExperiments } from 'helpers/experimentation_helper';
 import { visitUrl, refreshCurrentPage } from '~/lib/utils/url_utility';
 import * as gitlabNext from '~/lib/utils/gitlab_next';
 import * as Sentry from '~/sentry/sentry_browser_wrapper';
@@ -25,16 +24,6 @@ jest.mock('~/lib/logger');
 describe('UserMenu component', () => {
   let wrapper;
   let trackingSpy;
-  let origGl;
-
-  beforeEach(() => {
-    origGl = window.gl;
-    window.gl = { ...window.gl, experiments: {} };
-  });
-
-  afterEach(() => {
-    window.gl = origGl;
-  });
 
   const GlEmoji = { template: '<img/>' };
   const findDropdown = () => wrapper.findComponent(GlDisclosureDropdown);
@@ -715,7 +704,7 @@ describe('UserMenu component', () => {
     });
   });
 
-  describe('whats_new_placement experiment', () => {
+  describe("What's new for you", () => {
     const findWhatsNewForYouMenuItem = () => wrapper.findComponent(WhatsNewForYouMenuItem);
 
     const whatsNewSidebarData = {
@@ -725,40 +714,13 @@ describe('UserMenu component', () => {
       whats_new_read_articles: [],
     };
 
-    describe('when not in the candidate variant', () => {
-      it('does not render the WhatsNewForYouMenuItem (no experiment data)', () => {
-        createWrapper(whatsNewSidebarData);
-        expect(findWhatsNewForYouMenuItem().exists()).toBe(false);
-      });
-
-      it('does not render the WhatsNewForYouMenuItem in the control variant', () => {
-        stubExperiments({ whats_new_placement: 'control' });
-        createWrapper(whatsNewSidebarData);
-        expect(findWhatsNewForYouMenuItem().exists()).toBe(false);
-      });
-    });
-
-    describe('candidate variant', () => {
-      beforeEach(() => {
-        stubExperiments({ whats_new_placement: 'candidate' });
-        createWrapper(whatsNewSidebarData);
-      });
-
-      it('renders WhatsNewForYouMenuItem with profile_menu placement', () => {
-        const item = findWhatsNewForYouMenuItem();
-        expect(item.exists()).toBe(true);
-        expect(item.props('placement')).toBe('profile_menu');
-        expect(item.props('icon')).toBe('compass');
-      });
-
-      it('fires the render tracking event when the dropdown is shown', () => {
-        showDropdown();
-        expect(trackingSpy).toHaveBeenCalledWith(
-          undefined,
-          'render_whats_new_for_you_menu_item',
-          expect.objectContaining({ property: 'profile_menu' }),
-        );
-      });
+    it('renders WhatsNewForYouMenuItem with profile_menu placement', () => {
+      createWrapper(whatsNewSidebarData);
+      const item = findWhatsNewForYouMenuItem();
+      expect(item.exists()).toBe(true);
+      expect(item.props('placement')).toBe('profile_menu');
+      expect(item.props('trackingProperty')).toBe('nav_user_menu');
+      expect(item.props('icon')).toBe('compass');
     });
   });
 });

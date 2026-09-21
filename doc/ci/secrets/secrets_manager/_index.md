@@ -32,7 +32,7 @@ Secrets represent sensitive information your CI/CD jobs need to function. Secret
 database credentials, private keys, or similar. Unlike CI/CD variables, which are always available to jobs by default,
 secrets must be explicitly requested by a job.
 
-GitLab Secrets Manager [consumes GitLab Credits](secrets_manager_billing.md).
+GitLab Secrets Manager [consumes GitLab Credits](credit_usage.md).
 
 Share your feedback during the public beta in [feedback issue 598100](https://gitlab.com/gitlab-org/gitlab/-/work_items/598100).
 
@@ -50,7 +50,7 @@ Status: Limited Availability
 
 {{< /details >}}
 
-- You can start a 30-day trial to try GitLab Secrets Manager with temporary evaluation credits. After the trial expires, GitLab Secrets Manager starts consuming GitLab credits. To avoid a service interruption, purchase a monthly commitment pool of credits or enable on-demand billing before the trial ends. For more information, see [GitLab Secrets Manager usage and billing](secrets_manager_billing.md).
+- You can start a 30-day trial to try GitLab Secrets Manager with temporary evaluation credits. After the trial expires, GitLab Secrets Manager starts consuming GitLab credits. To avoid a service interruption, purchase a monthly commitment pool of credits or enable on-demand billing before the trial ends. For more information, see [GitLab Secrets Manager credit usage](credit_usage.md).
 - If you opted into the beta before August 21, 2026, your environment has a grace period with continued access until September 21, 2026. After the grace period, GitLab disables access. To continue access, start a trial before the grace period ends.
 
 Prerequisites:
@@ -307,7 +307,7 @@ For more information, see [Access secrets from non-CI/CD workloads](non_cicd_acc
 
 ## Related topics
 
-- [GitLab Secrets Manager usage and billing](secrets_manager_billing.md)
+- [GitLab Secrets Manager credit usage](credit_usage.md)
 - [Secret Audit Tool for Variables](https://gitlab.com/guided-explorations/secrets-management/secret-audit-tool-for-variables):
   A community tool that scans a GitLab group hierarchy for CI/CD variables whose names suggest they may hold credentials
   (passwords, tokens, API keys, and similar). It generates an HTML report to help you identify

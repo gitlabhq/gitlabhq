@@ -3,7 +3,6 @@ import { GlDrawer } from '@gitlab/ui';
 import { mapState, mapActions } from 'pinia';
 import Tracking from '~/tracking';
 import { getContentWrapperHeight } from '~/lib/utils/dom_utils';
-import glFeatureFlagsMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
 import { useWhatsNew } from '../store';
 import OtherUpdates from './other_updates.vue';
 
@@ -13,7 +12,7 @@ export default {
     GlDrawer,
     OtherUpdates,
   },
-  mixins: [Tracking.mixin({ experiment: 'whats_new_placement' }), glFeatureFlagsMixin()],
+  mixins: [Tracking.mixin()],
   props: {
     versionDigest: {
       type: String,
@@ -65,7 +64,7 @@ export default {
     const body = document.querySelector('body');
     const { namespaceId } = body.dataset;
 
-    this.track('view_whats_new_drawer', {
+    this.track('open_whats_new_drawer', {
       label: 'namespace_id',
       value: namespaceId,
       property: this.placement,

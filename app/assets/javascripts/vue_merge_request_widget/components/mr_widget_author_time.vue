@@ -21,7 +21,8 @@ export default {
     },
     dateTitle: {
       type: String,
-      required: true,
+      required: false,
+      default: '',
     },
     dateReadable: {
       type: String,

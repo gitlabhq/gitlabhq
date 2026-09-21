@@ -25,6 +25,21 @@ RSpec.describe SupplyChain::Attestation, feature_category: :artifact_security do
     it { is_expected.to validate_uniqueness_of(:subject_digest).scoped_to([:project_id, :predicate_kind]) }
   end
 
+  describe 'signing_method' do
+    it { is_expected.to define_enum_for(:signing_method).with_values(sigstore: 0, local_ca: 1).with_prefix }
+
+    it 'defaults to sigstore' do
+      expect(described_class.new).to be_signing_method_sigstore
+      expect(create(:supply_chain_attestation).reload).to be_signing_method_sigstore
+    end
+
+    it 'is set to local_ca by the :with_signing_certificate trait' do
+      attestation = build(:supply_chain_attestation, :with_signing_certificate)
+
+      expect(attestation).to be_signing_method_local_ca
+    end
+  end
+
   describe 'signing certificate' do
     it 'is valid without a signing certificate' do
       expect(build(:supply_chain_attestation)).to be_valid
