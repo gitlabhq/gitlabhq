@@ -6,6 +6,7 @@ RSpec.describe Admin::ClustersController, feature_category: :deployment_manageme
   include AccessMatchersForController
   include GoogleApi::CloudPlatformHelpers
 
+  let_it_be(:cluster_user) { create(:user) }
   let(:admin) { create(:admin) }
 
   before do
@@ -19,12 +20,12 @@ RSpec.describe Admin::ClustersController, feature_category: :deployment_manageme
 
     describe 'functionality' do
       context 'when instance has one or more clusters' do
-        let!(:enabled_cluster) do
-          create(:cluster, :provided_by_gcp, :instance)
+        let_it_be(:enabled_cluster) do
+          create(:cluster, :provided_by_gcp, :instance, user: cluster_user)
         end
 
-        let!(:disabled_cluster) do
-          create(:cluster, :disabled, :provided_by_gcp, :production_environment, :instance)
+        let_it_be(:disabled_cluster) do
+          create(:cluster, :disabled, :provided_by_gcp, :production_environment, :instance, user: cluster_user)
         end
 
         include_examples ':certificate_based_clusters feature flag controller responses' do
@@ -57,9 +58,12 @@ RSpec.describe Admin::ClustersController, feature_category: :deployment_manageme
           let(:last_page) { Clusters::Cluster.instance_type.page.total_pages }
           let(:total_count) { Clusters::Cluster.instance_type.page.total_count }
 
+          before_all do
+            create_list(:cluster, 2, :provided_by_gcp, :production_environment, :instance, user: cluster_user)
+          end
+
           before do
             allow(Clusters::Cluster).to receive(:default_per_page).and_return(1)
-            create_list(:cluster, 2, :provided_by_gcp, :production_environment, :instance)
           end
 
           it 'redirects to the page' do
@@ -95,8 +99,6 @@ RSpec.describe Admin::ClustersController, feature_category: :deployment_manageme
     end
 
     describe 'security' do
-      let(:cluster) { create(:cluster, :provided_by_gcp, :instance) }
-
       it { expect { get_index }.to be_allowed_for(:admin) }
       it { expect { get_index }.to be_denied_for(:user) }
       it { expect { get_index }.to be_denied_for(:external) }
@@ -175,7 +177,7 @@ RSpec.describe Admin::ClustersController, feature_category: :deployment_manageme
   end
 
   describe 'PUT update_migration' do
-    let(:cluster) { create(:cluster, :instance) }
+    let_it_be(:cluster) { create(:cluster, :instance, user: cluster_user) }
     let(:redirect_path) { admin_cluster_path(cluster, tab: 'migrate') }
 
     def go
@@ -192,8 +194,8 @@ RSpec.describe Admin::ClustersController, feature_category: :deployment_manageme
   end
 
   describe 'DELETE clear cluster cache' do
-    let(:cluster) { create(:cluster, :instance) }
-    let!(:kubernetes_namespace) do
+    let_it_be(:cluster) { create(:cluster, :instance, user: cluster_user) }
+    let_it_be(:kubernetes_namespace) do
       create(:cluster_kubernetes_namespace,
         cluster: cluster,
         project: create(:project)
@@ -223,7 +225,7 @@ RSpec.describe Admin::ClustersController, feature_category: :deployment_manageme
   end
 
   describe 'POST migrate' do
-    let_it_be(:cluster) { create(:cluster, :instance) }
+    let_it_be(:cluster) { create(:cluster, :instance, user: cluster_user) }
     let_it_be(:configuration_project) { create(:project) }
 
     def go
@@ -281,7 +283,7 @@ RSpec.describe Admin::ClustersController, feature_category: :deployment_manageme
   end
 
   describe 'GET #cluster_status' do
-    let(:cluster) { create(:cluster, :providing_by_gcp, :instance) }
+    let_it_be(:cluster) { create(:cluster, :providing_by_gcp, :instance, user: cluster_user) }
 
     def get_cluster_status
       get :cluster_status,
@@ -312,7 +314,7 @@ RSpec.describe Admin::ClustersController, feature_category: :deployment_manageme
   end
 
   describe 'GET #show' do
-    let(:cluster) { create(:cluster, :provided_by_gcp, :instance) }
+    let_it_be(:cluster) { create(:cluster, :provided_by_gcp, :instance, user: cluster_user) }
 
     def get_show(tab: nil)
       get :show,
@@ -341,7 +343,7 @@ RSpec.describe Admin::ClustersController, feature_category: :deployment_manageme
       )
     end
 
-    let(:cluster) { create(:cluster, :provided_by_user, :instance) }
+    let_it_be_with_reload(:cluster) { create(:cluster, :provided_by_user, :instance, user: cluster_user) }
     let(:domain) { 'test-domain.com' }
 
     let(:params) do
@@ -433,7 +435,7 @@ RSpec.describe Admin::ClustersController, feature_category: :deployment_manageme
     end
 
     describe 'security' do
-      let_it_be(:cluster) { create(:cluster, :provided_by_gcp, :instance) }
+      let_it_be(:cluster) { create(:cluster, :provided_by_gcp, :production_environment, :instance, user: cluster_user) }
 
       it { expect { put_update }.to be_allowed_for(:admin) }
       it { expect { put_update }.to be_denied_for(:user) }
@@ -442,7 +444,7 @@ RSpec.describe Admin::ClustersController, feature_category: :deployment_manageme
   end
 
   describe 'DELETE #destroy' do
-    let!(:cluster) { create(:cluster, :provided_by_gcp, :production_environment, :instance) }
+    let!(:cluster) { create(:cluster, :provided_by_gcp, :production_environment, :instance, user: cluster_user) }
 
     def delete_destroy
       delete :destroy,
@@ -470,7 +472,7 @@ RSpec.describe Admin::ClustersController, feature_category: :deployment_manageme
         end
 
         context 'when cluster is being created' do
-          let!(:cluster) { create(:cluster, :providing_by_gcp, :production_environment, :instance) }
+          let!(:cluster) { create(:cluster, :providing_by_gcp, :production_environment, :instance, user: cluster_user) }
 
           it 'destroys and redirects back to clusters list' do
             expect { delete_destroy }
@@ -484,7 +486,7 @@ RSpec.describe Admin::ClustersController, feature_category: :deployment_manageme
       end
 
       context 'when cluster is provided by user' do
-        let!(:cluster) { create(:cluster, :provided_by_user, :production_environment, :instance) }
+        let!(:cluster) { create(:cluster, :provided_by_user, :production_environment, :instance, user: cluster_user) }
 
         it 'destroys and redirects back to clusters list' do
           expect { delete_destroy }
@@ -499,7 +501,7 @@ RSpec.describe Admin::ClustersController, feature_category: :deployment_manageme
     end
 
     describe 'security' do
-      let_it_be(:cluster) { create(:cluster, :provided_by_gcp, :production_environment, :instance) }
+      let_it_be(:cluster) { create(:cluster, :provided_by_gcp, :production_environment, :instance, user: cluster_user) }
 
       it { expect { delete_destroy }.to be_allowed_for(:admin) }
       it { expect { delete_destroy }.to be_denied_for(:user) }

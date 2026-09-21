@@ -47845,6 +47845,8 @@ CREATE UNIQUE INDEX index_ci_runner_namespaces_on_runner_id_and_namespace_id ON 
 
 CREATE INDEX index_ci_runner_projects_on_project_id ON ci_runner_projects USING btree (project_id);
 
+CREATE INDEX index_ci_runner_projects_on_runner_id_and_id ON ci_runner_projects USING btree (runner_id, id);
+
 CREATE INDEX index_ci_runner_taggings_on_organization_id ON ONLY ci_runner_taggings USING btree (organization_id);
 
 CREATE INDEX index_ci_runner_taggings_group_type_on_organization_id ON ci_runner_taggings_group_type USING btree (organization_id);

@@ -20,6 +20,7 @@ include:
     SETUP_DB: "false"
     USE_BUNDLE_INSTALL: "false"  # skip bundle install from default prepare_build script
     WEBPACK_VENDOR_DLL: "true"
+    GLCI_ASSETS_BUNDLER: "webpack"
     # Disable warnings in browserslist which can break on backports
     # https://github.com/browserslist/browserslist/blob/a287ec6/node.js#L367-L384
     BROWSERSLIST_IGNORE_OLD_DATA: "true"
@@ -48,7 +49,10 @@ compile-production-assets:
   tags:
     - $GLCI_PRODUCTION_ASSETS_RUNNER_OPTIONAL
   variables:
-    GLCI_BUILD_ASSETS_IMAGE: "true"
+    # The image is built by `build-assets-image`, which combines this Webpack build
+    # with the Rspack one. This job still compiles Webpack assets and emits the assets
+    # tag/hash artifacts that downstream (Omnibus, CNG, release-environments) consume.
+    GLCI_BUILD_ASSETS_IMAGE: "false"
     GLCI_ASSETS_TAG_ENV_FILE_PATH: "assets-tag-env.env"
     ARCH: linux/amd64,linux/arm64
     HEALTHCHECK_TCP_PORT: "2375"
@@ -84,6 +88,9 @@ compile-production-assets istanbul:
   variables:
     BABEL_ENV: "istanbul"
     GLCI_ASSETS_TAG_ENV_FILE_PATH: "assets-tag-env-istanbul.env"
+    # compile-production-assets no longer builds an image (build-assets-image does), but the
+    # istanbul job still builds its own instrumented image, so re-enable it here.
+    GLCI_BUILD_ASSETS_IMAGE: "true"
     # Instrumented code is much bigger, so a default build exhausts the pod
     NO_SOURCEMAPS: "true"
     NO_COMPRESSION: "true"
@@ -115,6 +122,27 @@ compile-production-assets vue3:
     - $GLCI_PRODUCTION_ASSETS_RUNNER_OPTIONAL
   artifacts:
     name: webpack-report-vue3
+    expire_in: 7d
+    when: always
+    paths:
+      - ${WEBPACK_COMPILE_LOG_PATH}
+
+compile-production-assets-rspack as-if-foss:
+  extends:
+    - compile-production-assets-rspack
+    - .as-if-foss
+    - .qa:rules:test-on-omnibus-ce:follow-up
+
+# Vue 3 twin of compile-production-assets-rspack, mirroring `compile-production-assets vue3`:
+# it only proves the Vue 3 production build compiles, so nothing consumes its output.
+compile-production-assets-rspack vue3:
+  extends:
+    - compile-production-assets-rspack
+    - .vue3
+  script:
+    - scripts/compile_assets
+  artifacts:
+    name: rspack-report-vue3
     expire_in: 7d
     when: always
     paths:
@@ -260,6 +288,7 @@ cleanup-frontend-fixtures:
 graphql-schema-dump:
   variables:
     SETUP_DB: "false"
+    GIT_DEPTH: "1"
   extends:
     - .default-retry
     - .ruby-cache
@@ -295,7 +324,12 @@ upload-graphql-schema-dump:
 jest-build-cache:
   extends:
     - .frontend-test-base
+    - .repo-from-artifacts
     - .frontend:rules:jest
+  needs:
+    - !reference [.frontend-test-base, needs]
+    # it's ok to wait for the repo artifact as we're waiting for compile-fe-islands which finishes around the same time as clone-gitlab-repo
+    - !reference [.repo-from-artifacts, needs]
   artifacts:
     name: jest-cache
     expire_in: 12h
@@ -357,9 +391,11 @@ jest-build-cache-vue3-ensure-compilable-sfcs:
 jest:
   extends:
     - .frontend-test-base
+    - .repo-from-artifacts
     - .frontend:rules:jest
   needs:
     - !reference [.frontend-test-base, needs]
+    - !reference [.repo-from-artifacts, needs]
     - job: jest-build-cache
       optional: true
   artifacts:
@@ -385,8 +421,6 @@ jest-with-fixtures:
     - .frontend:rules:jest
   needs:
     - !reference [jest, needs]
-    # it's ok to wait for the repo artifact as we're waiting for the fixtures (which wait for the repo artifact) anyway
-    - !reference [.repo-from-artifacts, needs]
     - !reference [.with-fixtures-needs, needs]
   parallel: 2
   script:
@@ -395,10 +429,12 @@ jest-with-fixtures:
 jest vue3:
   extends:
     - .frontend-test-base
+    - .repo-from-artifacts
     - .frontend:rules:jest
     - .vue3
   needs:
     - !reference [.frontend-test-base, needs]
+    - !reference [.repo-from-artifacts, needs]
     - !reference [.with-jest-build-cache-vue3-ensure-compilable-sfcs-needs, needs]
   variables:
     GLCI_TEST_METRICS_RUN_TYPE: frontend-jest-tests-vue3
@@ -766,3 +802,79 @@ untamper-fe-islands-lockfile:
         - ee/frontend_islands/yarn.lock
   after_script:
     - untamper-my-lockfile --lockfile ee/frontend_islands/yarn.lock
+
+compile-production-assets-rspack:
+  extends:
+    - .compile-assets-base
+    - .production
+    - .frontend:rules:compile-production-assets
+  # High-memory runner (matches Webpack); the Rspack build OOMs the default one.
+  tags:
+    - $GLCI_PRODUCTION_ASSETS_RUNNER_OPTIONAL
+  needs:
+    - cache:assets-hash-rspack
+    - job: compile-fe-islands
+      optional: true
+  variables:
+    ENABLE_RSPACK: "true"
+    GLCI_ASSETS_BUNDLER: "rspack"
+  script:
+    - scripts/compile_assets
+    # Distinct path: the runner can't extract two artifacts sharing public/assets/webpack/**.
+    - rm -rf rspack-assets && mkdir -p rspack-assets && cp -r public/assets/webpack rspack-assets/webpack
+  artifacts:
+    name: rspack-production-assets
+    expire_in: 31d
+    paths:
+      - rspack-assets/
+      - ${WEBPACK_COMPILE_LOG_PATH}
+    when: always
+
+# Combined gitlab-assets-ee image (Webpack + Rspack) so one image serves either bundler.
+build-assets-image:
+  extends:
+    - .base-image-build-buildx
+    - .production
+    - .frontend:rules:compile-production-assets
+  stage: prepare
+  tags:
+    - $GLCI_PRODUCTION_ASSETS_RUNNER_OPTIONAL
+  needs:
+    - cache:assets-hash
+    - job: compile-production-assets
+      artifacts: true
+    - job: compile-production-assets-rspack
+      artifacts: true
+  variables:
+    GLCI_BUILD_ASSETS_IMAGE: "true"
+    # The assets hash doesn't cover .gitlab/ci/** or app/helpers/**, so the assets-hash tag
+    # may already hold a Webpack-only image from master; without this the script would
+    # re-tag it and the Rspack assets would never ship. Drop this (and restore the free
+    # registry-side re-tag) once Webpack is gone.
+    GLCI_REBUILD_ASSETS_IMAGE: "true"
+    GLCI_ASSETS_TAG_ENV_FILE_PATH: "assets-tag-env.env"
+    ARCH: linux/amd64,linux/arm64
+    HEALTHCHECK_TCP_PORT: "2375"
+  script:
+    - cp --recursive --no-clobber rspack-assets/webpack/. public/assets/webpack/
+    - scripts/build_assets_image
+  after_script:
+    - source scripts/utils.sh
+    - echo "GLCI_ASSETS_IMAGE_TAG=$(assets_image_tag)" > $GLCI_ASSETS_TAG_ENV_FILE_PATH
+  artifacts:
+    reports:
+      dotenv: $GLCI_ASSETS_TAG_ENV_FILE_PATH
+
+# FOSS (CE) counterpart of build-assets-image: combines the Webpack and Rspack FOSS
+# compiles into the gitlab-assets-ce image (FOSS_ONLY selects the image name).
+build-assets-image as-if-foss:
+  extends:
+    - build-assets-image
+    - .as-if-foss
+    - .qa:rules:test-on-omnibus-ce:follow-up
+  needs:
+    - cache:assets-hash
+    - job: compile-production-assets as-if-foss
+      artifacts: true
+    - job: compile-production-assets-rspack as-if-foss
+      artifacts: true

@@ -23,6 +23,15 @@ Use [`artifacts:reports`](_index.md#artifactsreports) to:
   - [Security dashboards](../../user/application_security/security_dashboard/_index.md).
 
 Artifacts created for `artifacts: reports` are always uploaded, regardless of the job results (success or failure).
+
+> [!note]
+> For security report types (`sarif`, `sast`, `dast`, `container_scanning`,
+> `dependency_scanning`, `secret_detection`, `api_fuzzing`, and `coverage_fuzzing`),
+> the artifact is always uploaded but findings are only ingested when the
+> producing job succeeds. A failed job, including one with `allow_failure: true`,
+> does not produce ingested findings. For more information, see
+> [scanner exit codes](../../user/application_security/detect/sarif.md#scanner-exit-codes).
+
 You can use [`artifacts:expire_in`](_index.md#artifactsexpire_in) to set an expiration
 time for the artifacts, which overrides the instance's [default setting](../../administration/settings/continuous_integration.md#set-default-artifacts-expiration).
 GitLab.com might have a [different default artifacts expiry value](../../user/gitlab_com/_index.md#cicd).
@@ -386,6 +395,10 @@ GitLab can display the results of one or more reports in:
 - The pipeline [**Security** tab](../../user/application_security/detect/security_scanning_results.md).
 - The [security dashboard](../../user/application_security/security_dashboard/_index.md).
 - The [Project Vulnerability report](../../user/application_security/vulnerability_report/_index.md).
+
+> [!note]
+> The artifact is always uploaded regardless of job status, but findings are
+> only ingested when the job succeeds.
 
 **Example**:
 

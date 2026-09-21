@@ -14,11 +14,11 @@ RSpec.describe CloudSeed::GoogleCloud::CreateServiceAccountsService, feature_cat
       allow_next_instance_of(GoogleApi::CloudPlatform::Client) do |client|
         mock_service_account = Struct.new(:project_id, :unique_id, :email)
                                      .new('mock-project-id', 'mock-unique-id', 'mock-email')
-        allow(client).to receive(:create_service_account)
-                           .and_return(mock_service_account)
 
-        allow(client).to receive(:create_service_account_key)
-                           .and_return('mock-key')
+        allow(client).to receive_messages(
+          create_service_account: mock_service_account,
+          create_service_account_key: 'mock-key'
+        )
 
         allow(client)
           .to receive(:grant_service_account_roles)

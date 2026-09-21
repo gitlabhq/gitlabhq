@@ -3,6 +3,7 @@ stage: Plan
 group: Planner Intelligence
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see <https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments>
 title: GitLab Pages rate limits
+description: Configure rate limits for GitLab Pages requests and TLS connections by IP address or domain.
 ---
 
 {{< details >}}
@@ -30,20 +31,20 @@ GitLab Pages supports the following types of rate limiting:
 
 HTTP request-based rate limits are enforced using the following settings:
 
-- `rate_limit_source_ip`: Maximum requests per client IP per second. Set to `0` to disable.
+- `rate_limit_source_ip`: Maximum requests per client IP per second. Set to `0` to turn off.
 - `rate_limit_source_ip_burst`: Maximum requests allowed in an initial burst per client IP, for
   example when a page loads multiple resources simultaneously.
-- `rate_limit_domain`: Maximum requests per hosted Pages domain per second. Set to `0` to disable.
+- `rate_limit_domain`: Maximum requests per hosted Pages domain per second. Set to `0` to turn off.
 - `rate_limit_domain_burst`: Maximum requests allowed in an initial burst per hosted Pages domain.
 
 TLS connection-based rate limits are enforced using the following settings:
 
 - `rate_limit_tls_source_ip`: Maximum TLS connections per client IP per second. Set to `0` to
-  disable.
+  turn off.
 - `rate_limit_tls_source_ip_burst`: Maximum TLS connections allowed in an initial burst per client
   IP.
 - `rate_limit_tls_domain`: Maximum TLS connections per hosted Pages domain per second. Set to `0`
-  to disable.
+  to turn off.
 - `rate_limit_tls_domain_burst`: Maximum TLS connections allowed in an initial burst per hosted
   Pages domain.
 

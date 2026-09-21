@@ -1,0 +1,11 @@
+---
+name: delete_experiment_assignment
+description: Grants the ability to clear a forced variant assignment for an experiment
+boundaries:
+  - instance
+available_for:
+  - granular_access_token
+permissions:
+  - delete_experiment_assignment
+assignable_when:
+  - condition: gitlab_team_member

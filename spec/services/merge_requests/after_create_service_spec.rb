@@ -15,8 +15,10 @@ RSpec.describe MergeRequests::AfterCreateService, feature_category: :code_review
     let(:notification_service) { instance_double('NotificationService', new_merge_request: true) }
 
     before do
-      allow(after_create_service).to receive(:event_service).and_return(event_service)
-      allow(after_create_service).to receive(:notification_service).and_return(notification_service)
+      allow(after_create_service).to receive_messages(
+        event_service: event_service,
+        notification_service: notification_service
+      )
     end
 
     subject(:execute_service) { after_create_service.execute(merge_request) }

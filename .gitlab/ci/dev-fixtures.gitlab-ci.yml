@@ -3,9 +3,12 @@
     - .default-retry
     - .ruby-cache
     - .default-before_script
+    - .repo-from-artifacts
     - .use-pg17-clickhouse26
   stage: test
-  needs: ["setup-test-env"]
+  needs:
+    - setup-test-env
+    - !reference [.repo-from-artifacts, needs]
   variables:
     RAILS_ENV: "test"
     FIXTURE_PATH: "db/fixtures/development"
@@ -25,8 +28,8 @@
   - !reference [.clickhouse-setup, script]
   - bundle exec rake gitlab:clickhouse:schema:load
   - section_end "setup-clickhouse"
-  - section_start "seeding-db" "Seeding DB";  bundle exec rake db:seed_fu; section_end "seeding-db";
-  - section_start "fixture-coverage" "Fixture coverage for new tables"; bundle exec rake "gitlab:seed:coverage_report"; section_end "fixture-coverage";
+  # One rake invocation so Rails boots once rather than twice.
+  - section_start "seeding-db" "Seeding DB and reporting fixture coverage"; bundle exec rake db:seed_fu "gitlab:seed:coverage_report"; section_end "seeding-db";
 run-dev-fixtures:
   extends:
     - .run-dev-fixtures

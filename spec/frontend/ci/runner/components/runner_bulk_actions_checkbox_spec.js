@@ -5,6 +5,7 @@ import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
 import RunnerBulkActionsCheckbox from '~/ci/runner/components/runner_bulk_actions_checkbox.vue';
 import createMockApollo from 'helpers/mock_apollo_helper';
 import { createLocalState } from '~/ci/runner/graphql/list/local_state';
+import { useMockInternalEventsTracking } from 'helpers/tracking_internal_events_helper';
 
 Vue.use(VueApollo);
 
@@ -27,6 +28,8 @@ describe('RunnerBulkActionsCheckbox', () => {
   let mockCheckedRunnerIds;
 
   const findCheckbox = () => wrapper.findComponent(GlFormCheckbox);
+
+  const { bindInternalEventDocument } = useMockInternalEventsTracking();
 
   const expectCheckboxToBe = (state) => {
     const expected = stateToAttrs[state];
@@ -125,6 +128,22 @@ describe('RunnerBulkActionsCheckbox', () => {
         isChecked: checked,
         runners: mockRunners,
       });
+    });
+
+    it.each`
+      checked  | property
+      ${true}  | ${'checked'}
+      ${false} | ${'unchecked'}
+    `('tracks the change as $property', ({ checked, property }) => {
+      const { trackEventSpy } = bindInternalEventDocument(wrapper.element);
+
+      findCheckbox().vm.$emit('change', checked);
+
+      expect(trackEventSpy).toHaveBeenCalledWith(
+        'click_select_all_runners_checkbox',
+        { property },
+        undefined,
+      );
     });
   });
 

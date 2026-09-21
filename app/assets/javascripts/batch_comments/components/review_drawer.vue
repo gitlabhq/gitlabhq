@@ -264,9 +264,12 @@ export default {
           });
         }
       } catch (e) {
-        if (e.data?.message) {
-          createAlert({ message: e.data.message, captureError: true, error: e });
-        }
+        const message =
+          e?.data?.message ||
+          e?.response?.data?.message ||
+          __('Something went wrong. Please try again.');
+
+        createAlert({ message, captureError: true, error: e });
 
         this.isSubmitting = false;
       }

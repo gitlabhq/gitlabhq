@@ -3,7 +3,7 @@ import { __, s__ } from '~/locale';
 import GlqlResolver from '~/glql/components/common/resolver.vue';
 import ViewSourceModal from '~/glql/components/common/view_source_modal.vue';
 import { copyQuerySource } from '~/glql/utils/common';
-import { copyGLQLNodeAsGFM } from '~/glql/utils/copy_as_gfm';
+import { copyGLQLContents } from '~/glql/utils/copy_as_gfm';
 
 export default {
   name: 'GlqlVisualization',
@@ -36,13 +36,13 @@ export default {
   emits: ['set-alerts', 'set-actions', 'reload'],
   data() {
     return {
-      resolverData: undefined,
+      resolverResult: undefined,
       modalVisible: false,
     };
   },
   computed: {
     showEmptyState() {
-      return this.resolverData?.nodes?.length === 0;
+      return this.resolverResult?.data?.nodes?.length === 0;
     },
     // GlDashboardPanel hides its actions dropdown when a panel has no actions, so opting out
     // means emitting an empty list. Panels opt out entirely, error state included.
@@ -70,16 +70,16 @@ export default {
   },
   watch: {
     data() {
-      this.resolverData = undefined;
+      this.resolverResult = undefined;
     },
     // Also clears the empty state, so the resolver remounts under the new key.
     scope() {
-      this.resolverData = undefined;
+      this.resolverResult = undefined;
     },
   },
   methods: {
-    handleResolverChange({ data, error }) {
-      this.resolverData = data;
+    handleResolverChange({ data, config, fields, error }) {
+      this.resolverResult = { data, config, fields };
 
       const actions = [];
       if (error) {
@@ -112,7 +112,7 @@ export default {
       copyQuerySource(this.data);
     },
     async copyAsGFM() {
-      await copyGLQLNodeAsGFM(this.$refs.resolver.$el);
+      await copyGLQLContents({ ...this.resolverResult, el: this.$refs.resolver.$el });
     },
   },
 };

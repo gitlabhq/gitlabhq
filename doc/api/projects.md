@@ -2275,11 +2275,11 @@ Supported general project attributes:
 Example request:
 
 ```shell
-curl --request POST --header "PRIVATE-TOKEN: <your-token>" \
-     --header "Content-Type: application/json" --data '{
-        "name": "new_project", "description": "New Project", "path": "new_project",
-        "namespace_id": "42", "initialize_with_readme": "true"}' \
-     --url "https://gitlab.example.com/api/v4/projects/"
+curl --request POST \
+  --header "PRIVATE-TOKEN: <your-token>" \
+  --header "Content-Type: application/json" \
+  --data '{"name": "new_project", "description": "New Project", "path": "new_project", "namespace_id": "42", "initialize_with_readme": "true"}' \
+  --url "https://gitlab.example.com/api/v4/projects/"
 ```
 
 To set the visibility level of individual project features,
@@ -2514,9 +2514,10 @@ Supported general project attributes:
 For example, to toggle the setting for [instance runners on a GitLab.com project](../ci/runners/_index.md):
 
 ```shell
-curl --request PUT --header "PRIVATE-TOKEN: <your-token>" \
-     --url "https://gitlab.com/api/v4/projects/<your-project-ID>" \
-     --data "shared_runners_enabled=true" # to turn off: "shared_runners_enabled=false"
+curl --request PUT \
+  --header "PRIVATE-TOKEN: <your-token>" \
+  --data "shared_runners_enabled=true" \
+  --url "https://gitlab.com/api/v4/projects/<your-project-ID>" # to turn off: "shared_runners_enabled=false"
 ```
 
 To set the visibility level of individual project features,

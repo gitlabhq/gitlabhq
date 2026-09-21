@@ -43,8 +43,7 @@ RSpec.describe Import::BitbucketService, feature_category: :importers do
       allow(service).to receive(:authorized?).and_return(true)
 
       allow_next_instance_of(Bitbucket::Client) do |client|
-        allow(client).to receive(:repo).and_return(repo)
-        allow(client).to receive(:user).and_return(bitbucket_user)
+        allow(client).to receive_messages(repo: repo, user: bitbucket_user)
       end
     end
 
@@ -146,9 +145,9 @@ RSpec.describe Import::BitbucketService, feature_category: :importers do
     context 'when repo returns an error' do
       it 'returns an error' do
         allow_next_instance_of(Bitbucket::Client) do |client|
-          allow(client).to receive(:user).and_return(bitbucket_user)
-          allow(client).to receive(:repo).and_return(
-            Bitbucket::Representation::Repo.new('error' => { 'message' => 'error!' })
+          allow(client).to receive_messages(
+            user: bitbucket_user,
+            repo: Bitbucket::Representation::Repo.new('error' => { 'message' => 'error!' })
           )
         end
 
@@ -165,9 +164,9 @@ RSpec.describe Import::BitbucketService, feature_category: :importers do
     context 'when repo does not have clone links' do
       it 'returns an error' do
         allow_next_instance_of(Bitbucket::Client) do |client|
-          allow(client).to receive(:user).and_return(bitbucket_user)
-          allow(client).to receive(:repo).and_return(
-            Bitbucket::Representation::Repo.new('name' => 'foo', 'is_private' => false)
+          allow(client).to receive_messages(
+            user: bitbucket_user,
+            repo: Bitbucket::Representation::Repo.new('name' => 'foo', 'is_private' => false)
           )
         end
 

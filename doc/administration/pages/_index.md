@@ -3,6 +3,7 @@ stage: Plan
 group: Planner Intelligence
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see <https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments>
 title: GitLab Pages administration
+description: Configure and administer GitLab Pages, including storage, size limits, and logging.
 ---
 
 {{< details >}}
@@ -17,7 +18,7 @@ Server administrators must configure Pages before users can access this feature.
 As an administrator, you can use GitLab Pages to:
 
 - Host static websites securely with [custom domains](#custom-domains) and SSL/TLS certificates.
-- Enable authentication to control access to Pages sites through GitLab permissions.
+- Turn on authentication to control access to Pages sites through GitLab permissions.
 - Scale deployments using object storage or network storage in multi-node environments.
 - Monitor and manage traffic with rate limiting and custom headers.
 - Support IPv4 and IPv6 addresses for all Pages sites.
@@ -87,7 +88,7 @@ Before configuring Pages for wildcard domains, you must:
 1. Configure a wildcard DNS record.
 1. Optional. Have a wildcard certificate for that domain if you decide to
    serve Pages under HTTPS.
-1. Optional but recommended. Enable [instance runners](../../ci/runners/_index.md)
+1. Optional but recommended. Turn on [instance runners](../../ci/runners/_index.md)
    so that your users do not have to bring their own.
 1. For custom domains, have a secondary IP.
 
@@ -114,7 +115,7 @@ Before configuring Pages for single-domain sites, you must:
 
 1. Configure a DNS record.
 1. Optional. If you decide to serve Pages under HTTPS, have a TLS certificate for that domain.
-1. Optional but recommended. Enable [instance runners](../../ci/runners/_index.md)
+1. Optional but recommended. Turn on [instance runners](../../ci/runners/_index.md)
    so that your users do not have to bring their own.
 1. For custom domains, have a secondary IP.
 
@@ -152,8 +153,6 @@ IPv6 address. If you do not have IPv6, you can omit the `AAAA` record.
 
 {{< history >}}
 
-- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/17584) as an [experiment](../../policy/development_stages_support.md) in GitLab 16.7.
-- [Moved](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/148621) to [beta](../../policy/development_stages_support.md) in GitLab 16.11.
 - [Changed](https://gitlab.com/gitlab-org/gitlab-pages/-/issues/1111) implementation from NGINX to the GitLab Pages codebase in GitLab 17.2.
 - [Generally available](https://gitlab.com/gitlab-org/gitlab/-/issues/483365) in GitLab 17.4.
 
@@ -161,7 +160,7 @@ IPv6 address. If you do not have IPv6, you can omit the `AAAA` record.
 
 To configure GitLab Pages DNS for single-domain sites without wildcard DNS:
 
-1. Enable the GitLab Pages flag for this feature by adding
+1. Turn on the GitLab Pages flag for this feature by adding
    `gitlab_pages['namespace_in_path'] = true` to `/etc/gitlab/gitlab.rb`.
 1. In your DNS provider, add entries for `example.io`.
    Replace `example.io` with your domain name, and `192.0.0.0` with the IPv4 address of your
@@ -243,8 +242,6 @@ For an overview, see the [enable GitLab Pages for GitLab CE and EE](https://www.
 
 {{< history >}}
 
-- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/17584) as an [experiment](../../policy/development_stages_support.md) in GitLab 16.7.
-- [Moved](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/148621) to [beta](../../policy/development_stages_support.md) in GitLab 16.11.
 - [Changed](https://gitlab.com/gitlab-org/gitlab-pages/-/issues/1111) implementation from NGINX to the GitLab Pages codebase in GitLab 17.2.
 - [Generally available](https://gitlab.com/gitlab-org/gitlab/-/issues/483365) in GitLab 17.4.
 
@@ -263,13 +260,13 @@ Prerequisites:
 
 To configure GitLab Pages to use single-domain sites:
 
-1. In `/etc/gitlab/gitlab.rb`, set the external URL for GitLab Pages, and enable the feature:
+1. In `/etc/gitlab/gitlab.rb`, set the external URL for GitLab Pages, and turn on the feature:
 
    ```ruby
    external_url "http://example.com" # Swap out this URL for your own
    pages_external_url 'http://example.io' # Important: not a subdomain of external_url, so cannot be http://pages.example.com
 
-   # Set this flag to enable this feature
+   # Set this flag to turn on this feature
    gitlab_pages['namespace_in_path'] = true
    ```
 
@@ -279,7 +276,7 @@ The resulting URL scheme is `http://example.io/<namespace>/<project_slug>`.
 
 > [!warning]
 > GitLab Pages supports only one URL scheme at a time: wildcard domains or single-domain sites.
-> If you enable `namespace_in_path`, existing GitLab Pages websites are accessible only as
+> If you turn on `namespace_in_path`, existing GitLab Pages websites are accessible only as
 > single-domain sites.
 
 ### Wildcard domains with TLS support
@@ -331,8 +328,6 @@ The resulting URL scheme is `https://<namespace>.example.io/<project_slug>`.
 
 {{< history >}}
 
-- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/17584) as an [experiment](../../policy/development_stages_support.md) in GitLab 16.7.
-- [Moved](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/148621) to [beta](../../policy/development_stages_support.md) in GitLab 16.11.
 - [Changed](https://gitlab.com/gitlab-org/gitlab-pages/-/issues/1111) implementation from NGINX to the GitLab Pages codebase in GitLab 17.2.
 - [Generally available](https://gitlab.com/gitlab-org/gitlab/-/issues/483365) in GitLab 17.4.
 
@@ -350,7 +345,7 @@ Prerequisites:
 To configure single-domain sites with TLS support:
 
 1. Add your TLS certificate and key to `/etc/gitlab/ssl`.
-1. In `/etc/gitlab/gitlab.rb`, set the external URL for GitLab Pages and enable the feature:
+1. In `/etc/gitlab/gitlab.rb`, set the external URL for GitLab Pages and turn on the feature:
 
    ```ruby
    external_url "https://example.com" # Swap out this URL for your own
@@ -358,7 +353,7 @@ To configure single-domain sites with TLS support:
 
    pages_nginx['redirect_http_to_https'] = true
 
-   # Set this flag to enable this feature
+   # Set this flag to turn on this feature
    gitlab_pages['namespace_in_path'] = true
    ```
 
@@ -388,7 +383,7 @@ The resulting URL scheme is `https://example.io/<namespace>/<project_slug>`.
 > [!warning]
 > GitLab Pages supports only one URL scheme at a time:
 > wildcard domains or single-domain sites.
-> If you enable `namespace_in_path`, existing GitLab Pages websites
+> If you turn on `namespace_in_path`, existing GitLab Pages websites
 > are accessible only as single-domain sites.
 
 ### Wildcard domains with TLS-terminating load balancer
@@ -436,9 +431,9 @@ For more information, see
 |-----------------------------------------|-------------------------------------------------------|-------------|
 | `pages_external_url` <sup>1</sup>       | Not applicable                                        | The URL where GitLab Pages is accessible, including protocol (HTTP / HTTPS). If `https://` is used, additional configuration is required. For more information, see [wildcard domains with TLS support](#wildcard-domains-with-tls-support) and [custom domains with TLS support](#custom-domains-with-tls-support). |
 | **`gitlab_pages[]`**                    | Not applicable                                        |             |
-| `access_control`                        | Not applicable                                        | Whether to enable [access control](#access-control). |
+| `access_control`                        | Not applicable                                        | Whether to turn on [access control](#access-control). |
 | `api_secret_key`                        | Auto-generated                                        | Full path to file with secret key used to authenticate with the GitLab API. |
-| `artifacts_server`                      | Not applicable                                        | Enable viewing [job artifacts](../cicd/job_artifacts.md) in GitLab Pages. |
+| `artifacts_server`                      | Not applicable                                        | Turn on viewing [job artifacts](../cicd/job_artifacts.md) in GitLab Pages. |
 | `artifacts_server_timeout`              | Not applicable                                        | Timeout (in seconds) for a proxied request to the artifacts server. |
 | `artifacts_server_url`                  | GitLab `external URL` + `/api/v4`                     | API URL to proxy artifact requests to, for example `https://gitlab.com/api/v4`. When running a separate Pages server, this URL must point to the main GitLab server's API. |
 | `auth_redirect_uri`                     | Project's subdomain of `pages_external_url` + `/auth` | Callback URL for authenticating with GitLab. URL should be subdomain of `pages_external_url` + `/auth`, for example `https://projects.example.io/auth`. When `namespace_in_path` is enabled, defaults to `pages_external_url` + `/projects/auth`, for example `https://example.io/projects/auth`. |
@@ -447,10 +442,10 @@ For more information, see
 | `client_key`                            | Not applicable                                        | Client key used for [mutual TLS](#support-mutual-tls-when-calling-the-gitlab-api) with the GitLab API. |
 | `client_ca_certs`                       | Not applicable                                        | Root CA certificates used to sign client certificate used for [mutual TLS](#support-mutual-tls-when-calling-the-gitlab-api) with the GitLab API. |
 | `dir`                                   | Not applicable                                        | Working directory for configuration and secrets files. |
-| `enable`                                | Not applicable                                        | Enable or disable GitLab Pages on the current system. |
+| `enable`                                | Not applicable                                        | Turn GitLab Pages on or off for the current system. |
 | `external_http`                         | Not applicable                                        | Configure Pages to bind to one or more secondary IP addresses, serving HTTP requests. Multiple addresses can be given as an array, along with exact ports, for example `['1.2.3.4', '1.2.3.5:8063']`. Sets value for `listen_http`. If running GitLab Pages behind a reverse proxy with TLS termination, specify `listen_proxy` instead of `external_http`. |
 | `external_https`                        | Not applicable                                        | Configure Pages to bind to one or more secondary IP addresses, serving HTTPS requests. Multiple addresses can be given as an array, along with exact ports, for example `['1.2.3.4', '1.2.3.5:8063']`. Sets value for `listen_https`. |
-| `custom_domain_mode`                    | Not applicable                                        | Configure Pages to enable custom domain: `http` or `https`. When running a separate Pages server, configure this setting on the GitLab server as well. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/285089) in GitLab 18.1. |
+| `custom_domain_mode`                    | Not applicable                                        | Configure Pages to turn on custom domains: `http` or `https`. When running a separate Pages server, configure this setting on the GitLab server as well. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/285089) in GitLab 18.1. |
 | `server_shutdown_timeout`               | `30s`                                                 | GitLab Pages server shutdown timeout in seconds. |
 | `gitlab_client_http_timeout`            | `60s`                                                 | GitLab API HTTP client connection timeout in seconds. |
 | `gitlab_client_jwt_expiry`              | `30s`                                                 | JWT Token expiry time in seconds. |
@@ -465,16 +460,16 @@ For more information, see
 | `auth_scope`                            | `api`                                                 | The OAuth application scope to use for authentication. Must match GitLab Pages OAuth application settings. Leave blank to use `api` scope by default. |
 | `auth_timeout`                          | `5s`                                                  | GitLab application client timeout for authentication in seconds. A value of `0` means no timeout. |
 | `auth_cookie_session_timeout`           | `10m`                                                 | Authentication cookie session timeout in seconds. A value of `0` means the cookie is deleted after the browser session ends. |
-| `gitlab_server`                         | GitLab `external_url`                                 | Server to use for authentication when access control is enabled. |
+| `gitlab_server`                         | GitLab `external_url`                                 | Server to use for authentication when access control is turned on. |
 | `headers`                               | Not applicable                                        | Specify any additional HTTP headers that should be sent to the client with each response. Multiple headers can be given as an array, header and value as one string. For example `['my-header: myvalue', 'my-other-header: my-other-value']`. |
-| `enable_disk`                           | Not applicable                                        | Allows the GitLab Pages daemon to serve content from disk. Disable if shared disk storage is not available. |
+| `enable_disk`                           | Not applicable                                        | Allows the GitLab Pages daemon to serve content from disk. Turn off if shared disk storage is not available. |
 | `insecure_ciphers`                      | Not applicable                                        | Use default list of cipher suites, which may contain insecure ones like 3DES and RC4. |
 | `internal_gitlab_server`                | GitLab `external_url`                                 | Internal GitLab server address used exclusively for API requests. Use if you want to send that traffic over an internal load balancer. |
 | `listen_proxy`                          | Not applicable                                        | The addresses to listen on for reverse-proxy requests. Pages binds to these addresses' network sockets and receives incoming requests from them. Sets the value of `proxy_pass` in `$nginx-dir/conf/gitlab-pages.conf`. |
 | `log_directory`                         | Not applicable                                        | Absolute path to a log directory. |
 | `log_format`                            | Not applicable                                        | The log output format: `text` or `json`. |
 | `log_verbose`                           | Not applicable                                        | Verbose logging, true/false. |
-| `namespace_in_path`                     | `false`                                               | Enable or disable namespace in the URL path to support single-domain sites DNS setup. |
+| `namespace_in_path`                     | `false`                                               | Turn the namespace in the URL path on or off to support single-domain sites DNS setup. |
 | `propagate_correlation_id`              | `false`                                               | Set to true to re-use existing Correlation ID from the incoming request header `X-Request-ID` if present. If a reverse proxy sets this header, the value is propagated in the request chain. |
 | `max_connections`                       | Not applicable                                        | Limit on the number of concurrent connections to the HTTP, HTTPS or proxy listeners. |
 | `max_uri_length`                        | `2048`                                                | The maximum length of URIs accepted by GitLab Pages. Set to 0 for unlimited length. |
@@ -484,12 +479,12 @@ For more information, see
 | `redirects_max_path_segments`           | `25`                                                  | The maximum number of path segments allowed in `_redirects` rules URLs. |
 | `redirects_max_rule_count`              | `1000`                                                | The maximum number of rules allowed in `_redirects`. |
 | `sentry_dsn`                            | Not applicable                                        | The address for sending Sentry crash reporting to. |
-| `sentry_enabled`                        | Not applicable                                        | Enable reporting and logging with Sentry, true/false. |
+| `sentry_enabled`                        | Not applicable                                        | Turn on reporting and logging with Sentry, true/false. |
 | `sentry_environment`                    | Not applicable                                        | The environment for Sentry crash reporting. |
-| `status_uri`                            | Not applicable                                        | The URL path for a status page, for example, `/@status`. Configure to enable health check endpoint on GitLab Pages. |
+| `status_uri`                            | Not applicable                                        | The URL path for a status page, for example, `/@status`. Configure to turn on the health check endpoint on GitLab Pages. |
 | `tls_max_version`                       | Not applicable                                        | Specifies the maximum TLS version ("tls1.2" or "tls1.3"). |
 | `tls_min_version`                       | Not applicable                                        | Specifies the minimum TLS version ("tls1.2" or "tls1.3"). |
-| `use_http2`                             | Not applicable                                        | Enable HTTP2 support. |
+| `use_http2`                             | Not applicable                                        | Turn on HTTP2 support. |
 | **`gitlab_pages['env'][]`**             | Not applicable                                        |             |
 | `http_proxy`                            | Not applicable                                        | Configure GitLab Pages to use an HTTP proxy to mediate traffic between Pages and GitLab. Sets an environment variable `http_proxy` when starting the Pages daemon. |
 | **`gitlab_rails[]`**                    | Not applicable                                        |             |
@@ -499,21 +494,21 @@ For more information, see
 | `pages_path`                            | `GITLAB-RAILS/shared/pages`                           | The directory on disk where pages are stored. |
 | **`pages_nginx[]`**                     | Not applicable                                        |             |
 | `enable`                                | Not applicable                                        | Include a virtual host `server{}` block for Pages inside NGINX. Needed for NGINX to proxy traffic back to the Pages daemon. Set to `false` if the Pages daemon should directly receive all requests, for example, when using [custom domains](#custom-domains). |
-| `FF_CONFIGURABLE_ROOT_DIR`              | Not applicable                                        | Feature flag to [customize the default folder](../../user/project/pages/introduction.md#customize-the-default-folder) (enabled by default). |
-| `FF_ENABLE_PLACEHOLDERS`                | Not applicable                                        | Feature flag for rewrites (enabled by default). For more information, see [rewrites](../../user/project/pages/redirects.md#rewrites). |
-| `rate_limit_source_ip`                  | Not applicable                                        | Rate limit per source IP in number of requests per second. Set to `0` to disable this feature. |
+| `FF_CONFIGURABLE_ROOT_DIR`              | Not applicable                                        | Feature flag to [customize the default folder](../../user/project/pages/introduction.md#customize-the-default-folder) (turned on by default). |
+| `FF_ENABLE_PLACEHOLDERS`                | Not applicable                                        | Feature flag for rewrites (turned on by default). For more information, see [rewrites](../../user/project/pages/redirects.md#rewrites). |
+| `rate_limit_source_ip`                  | Not applicable                                        | Rate limit per source IP in number of requests per second. Set to `0` to turn off this feature. |
 | `rate_limit_source_ip_burst`            | Not applicable                                        | Rate limit per source IP maximum burst allowed per second. |
-| `rate_limit_domain`                     | Not applicable                                        | Rate limit per domain in number of requests per second. Set to `0` to disable this feature. |
+| `rate_limit_domain`                     | Not applicable                                        | Rate limit per domain in number of requests per second. Set to `0` to turn off this feature. |
 | `rate_limit_domain_burst`               | Not applicable                                        | Rate limit per domain maximum burst allowed per second. |
-| `rate_limit_tls_source_ip`              | Not applicable                                        | Rate limit per source IP in number of TLS connections per second. Set to `0` to disable this feature. |
+| `rate_limit_tls_source_ip`              | Not applicable                                        | Rate limit per source IP in number of TLS connections per second. Set to `0` to turn off this feature. |
 | `rate_limit_tls_source_ip_burst`        | Not applicable                                        | Rate limit per source IP maximum TLS connections burst allowed per second. |
-| `rate_limit_tls_domain`                 | Not applicable                                        | Rate limit per domain in number of TLS connections per second. Set to `0` to disable this feature. |
+| `rate_limit_tls_domain`                 | Not applicable                                        | Rate limit per domain in number of TLS connections per second. Set to `0` to turn off this feature. |
 | `rate_limit_tls_domain_burst`           | Not applicable                                        | Rate limit per domain maximum TLS connections burst allowed per second. |
 | `rate_limit_subnets_allow_list`         | Not applicable                                        | Allow list with the IP ranges (subnets) that should bypass all rate limits. For example, `['1.2.3.4/24', '2001:db8::1/32']`. [Introduced](https://gitlab.com/groups/gitlab-org/-/work_items/14653) in GitLab 17.3. |
 | `server_read_timeout`                   | `5s`                                                  | Maximum duration to read the request headers and body. For no timeout, set to `0` or a negative value. |
 | `server_read_header_timeout`            | `1s`                                                  | Maximum duration to read the request headers. For no timeout, set to `0` or a negative value. |
 | `server_write_timeout`                  | `0`                                                   | Maximum duration to write all files in the response. Larger files require more time. For no timeout, set to `0` or a negative value. |
-| `server_keep_alive`                     | `15s`                                                 | The `Keep-Alive` period for network connections accepted by this listener. If `0`, `Keep-Alive` is enabled if supported by the protocol and operating system. If negative, `Keep-Alive` is disabled. |
+| `server_keep_alive`                     | `15s`                                                 | The `Keep-Alive` period for network connections accepted by this listener. If `0`, `Keep-Alive` is turned on if supported by the protocol and operating system. If negative, `Keep-Alive` is turned off. |
 
 **Footnotes**:
 
@@ -529,7 +524,7 @@ IPv4 addresses, you can use them both.
 ### Custom domains
 
 By default, GitLab Pages sites are served on a subdomain of the Pages root domain, for example, `namespace.example.io/project`.
-To configure a custom domain for a Pages site, add a CNAME DNS record that points your own domain (for example, `example-custom-site-here.com`) to GitLab Pages.
+To configure a custom domain for a Pages site, add a `CNAME` DNS record that points your own domain (for example, `example-custom-site-here.com`) to GitLab Pages.
 
 If you only need the default `*.example.io` subdomain URLs, you don't need to configure custom domain support.
 
@@ -611,27 +606,27 @@ When adding a custom domain, users must prove they own it by
 adding a GitLab-controlled verification code to the DNS records for that domain.
 
 > [!warning]
-> Disabling domain verification is unsafe and can lead to various vulnerabilities. If you disable
-> it, ensure that the Pages root domain itself does not point to the secondary IP, or add the root
+> Turning off domain verification is unsafe and can lead to various vulnerabilities. If you turn it
+> off, ensure that the Pages root domain itself does not point to the secondary IP, or add the root
 > domain as a custom domain to a project. Otherwise, any user can add this domain as a custom domain
 > to their project.
 
-If your user base is private or otherwise trusted, you can disable the
+If your user base is private or otherwise trusted, you can turn off the
 verification requirement:
 
 1. In the upper-right corner, select **Admin**.
 1. In the left sidebar, select **Settings** > **Preferences**.
 1. Expand **Pages**.
 1. Clear the **Require users to prove ownership of custom domains** checkbox.
-   This setting is enabled by default.
+   This setting is turned on by default.
 
 ### Let's Encrypt integration
 
 [GitLab Pages' Let's Encrypt integration](../../user/project/pages/custom_domains_ssl_tls_certification/lets_encrypt_integration.md)
-allows users to add Let's Encrypt SSL certificates for GitLab Pages
+lets users add Let's Encrypt SSL certificates for GitLab Pages
 sites served under a custom domain.
 
-To enable it:
+To turn it on:
 
 1. Choose an email address to receive notifications about expiring domains.
 1. In the upper-right corner, select **Admin**.
@@ -654,7 +649,7 @@ Each request to view a resource in a private site is authenticated by Pages usin
 each request it receives, Pages makes a request to the GitLab API to check that the user is
 authorized to read that site.
 
-Pages access control is disabled by default. To enable it:
+Pages access control is turned off by default. To turn it on:
 
 1. In `/etc/gitlab/gitlab.rb`, add:
 
@@ -685,7 +680,7 @@ pre-existing applications must modify the GitLab Pages OAuth application.
 
 Prerequisites:
 
-- You have enabled [access control](#access-control).
+- You have turned on [access control](#access-control).
 
 To change the scope Pages uses:
 
@@ -699,7 +694,7 @@ To change the scope Pages uses:
 #### Disable public access to all Pages sites
 
 You can enforce access control for all GitLab Pages websites hosted
-on your GitLab instance. When you enable this setting, only authenticated users
+on your GitLab instance. When you turn on this setting, only authenticated users
 can access Pages websites. All projects lose the **Everyone** visibility level option
 and are restricted to project members or everyone with access, depending on the
 project's visibility setting.
@@ -710,9 +705,9 @@ instance only.
 Prerequisites:
 
 - Administrator access to the instance.
-- Access control enabled for the setting to show in the Admin area.
+- Access control turned on for the setting to show in the Admin area.
 
-To disable public access to all Pages sites:
+To turn off public access to all Pages sites:
 
 1. In the upper-right corner, select **Admin**.
 1. In the left sidebar, select **Settings** > **Preferences**.
@@ -732,7 +727,7 @@ By default, all newly created GitLab Pages sites use unique domain URLs
 (for example, `my-project-1a2b3c.example.com`), which prevents cookie sharing
 between different sites under the same namespace.
 
-You can disable this default behavior so that new Pages sites use path-based URLs
+You can turn off this default behavior so that new Pages sites use path-based URLs
 (for example, `my-namespace.example.com/my-project`) instead.
 However, this approach has the risk of cookie sharing between different sites under the same namespace.
 
@@ -743,7 +738,7 @@ Prerequisites:
 
 - You must have administrator access to the instance.
 
-To disable unique domains by default:
+To turn off unique domains by default:
 
 1. In the upper-right corner, select **Admin**.
 1. In the left sidebar, select **Settings** > **Preferences**.
@@ -877,7 +872,7 @@ After an archive reaches `zip_cache_expiration`, it's marked as expired and remo
 
 ### HTTP Strict Transport Security (HSTS) support
 
-HTTP Strict Transport Security (HSTS) can be enabled through the `gitlab_pages['headers']`
+HTTP Strict Transport Security (HSTS) can be turned on through the `gitlab_pages['headers']`
 configuration option. HSTS informs browsers that the website should always be accessed over HTTPS,
 preventing attackers from forcing unencrypted connections. It can also improve page loading speed by
 preventing browsers from attempting an unencrypted HTTP connection before being redirected to HTTPS.
@@ -901,9 +896,9 @@ gitlab_pages['redirects_max_rule_count'] = 2000
 
 ## Use environment variables
 
-You can pass an environment variable to the Pages daemon to enable or disable a feature flag.
+You can pass an environment variable to the Pages daemon to turn a feature flag on or off.
 
-To disable the configurable directory feature:
+To turn off the configurable directory feature:
 
 1. Edit `/etc/gitlab/gitlab.rb`:
 
@@ -935,7 +930,7 @@ and set a correlation ID on requests sent to GitLab Pages. When a reverse proxy 
 value `X-Request-ID`, the value propagates in the request chain. Users can
 [find the correlation ID in the logs](../logs/tracing_correlation_id.md#identify-the-correlation-id-for-a-request).
 
-To enable the propagation of the correlation ID:
+To turn on the propagation of the correlation ID:
 
 1. In `/etc/gitlab/gitlab.rb`, add:
 
@@ -964,7 +959,7 @@ To configure the proxy listener of GitLab Pages:
 
 1. By default the listener is configured to listen for requests on `localhost:8090`.
 
-   To disable it, edit `/etc/gitlab/gitlab.rb`:
+   To turn it off, edit `/etc/gitlab/gitlab.rb`:
 
    ```ruby
    gitlab_pages['listen_proxy'] = nil
@@ -1099,14 +1094,14 @@ your main application server.
 
 To configure GitLab Pages on a separate server:
 
-1. Optional. To enable access control, add the following to `/etc/gitlab/gitlab.rb` and
+1. Optional. To turn on access control, add the following to `/etc/gitlab/gitlab.rb` and
    [reconfigure the **GitLab server**](../restart_gitlab.md#reconfigure-a-linux-package-installation):
 
    > [!warning]
-   > If you plan to use GitLab Pages with access control, enable it on the GitLab server before
-   > copying `gitlab-secrets.json`. Enabling access control generates a new OAuth application, and
-   > information about it propagates to `gitlab-secrets.json`. If this is not done in the correct
-   > order, you may face issues with access control.
+   > If you plan to use GitLab Pages with access control, turn on access control on the GitLab
+   > server before copying `gitlab-secrets.json`. Turning on access control generates a new OAuth
+   > application, and information about it propagates to `gitlab-secrets.json`. If this is not done
+   > in the correct order, you may face issues with access control.
 
    ```ruby
    gitlab_pages['access_control'] = true
@@ -1118,7 +1113,7 @@ To configure GitLab Pages on a separate server:
    cp /etc/gitlab/gitlab-secrets.json /etc/gitlab/gitlab-secrets.json.bak
    ```
 
-1. On the **GitLab server**, to enable Pages, add the following to `/etc/gitlab/gitlab.rb`:
+1. On the **GitLab server**, to turn on Pages, add the following to `/etc/gitlab/gitlab.rb`:
 
    ```ruby
    pages_external_url "http://<pages_server_URL>"
@@ -1155,7 +1150,7 @@ To configure GitLab Pages on a separate server:
    cp /etc/gitlab/gitlab-secrets.json /etc/gitlab/gitlab-secrets.json.bak
    ```
 
-1. To enable custom domains for individual GitLab Pages sites, set up the **Pages server** using either:
+1. To turn on custom domains for individual GitLab Pages sites, set up the **Pages server** using either:
 
    - [Custom domains](#custom-domains).
    - [Custom domains with TLS support](#custom-domains-with-tls-support).
@@ -1180,7 +1175,7 @@ To configure GitLab Pages on a separate server:
    pages_nginx['enable'] = false
    ```
 
-1. To enable custom domains for individual GitLab Pages sites, on the **GitLab server**,
+1. To turn on custom domains for individual GitLab Pages sites, on the **GitLab server**,
    make the following changes to `/etc/gitlab/gitlab.rb`:
 
    - Custom domains:
@@ -1254,13 +1249,13 @@ The following [object storage](../object_storage.md) settings are:
 
 | Setting | Description | Default |
 |---------|-------------|---------|
-| `enabled` | Whether object storage is enabled. | `false` |
+| `enabled` | Whether object storage is turned on. | `false` |
 | `remote_directory` | The name of the bucket where Pages site content is stored. | |
 | `connection` | Various connection options described below. | |
 
 > [!note]
 > If you want to stop using and disconnect the NFS server, you must
-> [explicitly disable local storage](#disable-pages-local-storage).
+> [explicitly turn off local storage](#disable-pages-local-storage).
 
 ### S3-compatible connection settings
 
@@ -1296,7 +1291,7 @@ total | filesystem | objectstg
 ```
 
 After verifying everything is working correctly,
-[disable Pages local storage](#disable-pages-local-storage).
+[turn off Pages local storage](#disable-pages-local-storage).
 
 ### Rolling Pages deployments back to local storage
 
@@ -1308,7 +1303,7 @@ sudo gitlab-rake gitlab:pages:deployments:migrate_to_local
 
 ### Disable Pages local storage
 
-If you use object storage, you can disable local storage to avoid unnecessary disk usage or writes:
+If you use object storage, you can turn off local storage to avoid unnecessary disk usage or writes:
 
 1. Edit `/etc/gitlab/gitlab.rb`:
 

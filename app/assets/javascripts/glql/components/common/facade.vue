@@ -8,7 +8,7 @@ import { InternalEvents } from '~/tracking';
 import glFeatureFlagsMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
 import { MODE_ANALYTICS, FULL_BLEED_DISPLAY_TYPES } from '../../constants';
 import { copyQuerySource } from '../../utils/common';
-import { copyGLQLNodeAsGFM } from '../../utils/copy_as_gfm';
+import { copyGLQLContents } from '../../utils/copy_as_gfm';
 import Counter from '../../utils/counter';
 import GlqlResolver from './resolver.vue';
 import GlqlActions from './actions.vue';
@@ -63,6 +63,7 @@ export default {
       query: undefined,
       config: undefined,
       data: undefined,
+      fields: undefined,
       mode: undefined,
 
       preClasses: 'code highlight code-syntax-highlight-theme',
@@ -135,7 +136,12 @@ export default {
     },
 
     async copyAsGFM() {
-      await copyGLQLNodeAsGFM(this.$refs.resolver.$el);
+      await copyGLQLContents({
+        config: this.config,
+        data: this.data,
+        fields: this.fields,
+        el: this.$refs.resolver.$el,
+      });
     },
 
     onAppear() {
@@ -164,11 +170,12 @@ export default {
       }
     },
     renderMarkdown,
-    onResolverChange({ loading, query, config, data, mode, error }) {
+    onResolverChange({ loading, query, config, data, fields, mode, error }) {
       this.loading = loading;
       this.query = query;
       this.config = config;
       this.data = data;
+      this.fields = fields;
       this.mode = mode;
 
       if (error) {

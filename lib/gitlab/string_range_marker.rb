@@ -2,6 +2,13 @@
 
 module Gitlab
   class StringRangeMarker
+    # Anchored (\G) at rich_pos so a bare & fails the match in O(1) instead of
+    # scanning to a distant/absent ; (which was O(k*n) for k bare & on one line).
+    # Bounds mirror the longest HTML5 entities: 32-char named, 31-digit decimal,
+    # 30-hexit numeric.
+    #
+    ENTITY_PATTERN = /\G&(?:\w{1,32}|#\d{1,31}|#x\h{1,30});/
+
     attr_accessor :raw_line, :rich_line, :html_escaped
 
     def initialize(raw_line, rich_line = nil)
@@ -81,13 +88,14 @@ module Gitlab
 
         break if rich_pos >= rich_length
 
-        rich_char = rich_line[rich_pos]
+        # A well-formed entity (&name; / &#nn; / &#xhh;) collapses to one raw
+        # position. A bare, literal & fails the anchored match and maps 1:1
+        # rather than overrunning to an unrelated ; and mangling later positions.
+        #
+        match = rich_line.match(ENTITY_PATTERN, rich_pos) if rich_line[rich_pos] == '&'
 
-        if rich_char == '&'
-          # Collect HTML entity positions
-          entity_end = rich_pos
-          entity_end += 1 while entity_end < rich_length && rich_line[entity_end] != ';'
-
+        if match
+          entity_end = match.end(0) - 1
           mapping[raw_pos] = (rich_pos..entity_end).to_a
           rich_pos = entity_end + 1
         else

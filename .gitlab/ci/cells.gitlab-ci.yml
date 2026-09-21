@@ -1,6 +1,7 @@
 cells-routes:up-to-date:
   variables:
     SETUP_DB: "false"
+    GIT_DEPTH: "1"
   extends:
     - .default-retry
     - .ruby-cache

@@ -15,8 +15,7 @@ RSpec.describe MergeRequests::Mergeability::CheckCommitsStatusService, feature_c
     let(:branch_missing) { false }
 
     before do
-      allow(merge_request).to receive(:has_no_commits?).and_return(has_no_commits)
-      allow(merge_request).to receive(:branch_missing?).and_return(branch_missing)
+      allow(merge_request).to receive_messages(has_no_commits?: has_no_commits, branch_missing?: branch_missing)
     end
 
     context 'when the merge request branch is missing' do

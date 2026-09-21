@@ -160,6 +160,10 @@ class SearchController < ApplicationController
 
   private
 
+  def processing_action_is_opensearch?
+    action_name == 'opensearch'
+  end
+
   def record_search_apdex
     Gitlab::Metrics::GlobalSearchSlis.record_apdex(
       elapsed: @global_search_duration_s,
@@ -181,7 +185,7 @@ class SearchController < ApplicationController
   end
 
   def authenticate?
-    return false if action_name == 'opensearch'
+    return false if processing_action_is_opensearch?
     return true if public_visibility_restricted?
 
     if search_service.global_search? && ::Gitlab::CurrentSettings.global_search_block_anonymous_searches_enabled?
@@ -318,6 +322,7 @@ class SearchController < ApplicationController
   end
 
   def abuse_payload_metadata
+    return {} if processing_action_is_opensearch?
     return {} unless search_service.abuse_detected?
 
     {

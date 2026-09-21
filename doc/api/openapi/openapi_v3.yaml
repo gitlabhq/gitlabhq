@@ -19866,7 +19866,7 @@ paths:
         content:
           application/json:
             schema:
-              "$ref": "#/components/schemas/RequestBody_12ed1a76e5fd"
+              "$ref": "#/components/schemas/RequestBody_c47606fab71c"
   "/api/v4/service_accounts":
     post:
       operationId: postApiV4ServiceAccounts
@@ -106613,7 +106613,7 @@ components:
           description: Scopes available to the application. Separate multiple scopes
             with a space.
           nullable: true
-    RequestBody_12ed1a76e5fd:
+    RequestBody_c47606fab71c:
       type: object
       properties:
         admin_mode:
@@ -109679,6 +109679,9 @@ components:
           type: string
           nullable: true
         dependency_scanning_sbom_scan_api_download_limit:
+          type: string
+          nullable: true
+        auto_duo_code_review_on_push_enabled:
           type: string
           nullable: true
     RequestBody_4d6a710f0d2d:

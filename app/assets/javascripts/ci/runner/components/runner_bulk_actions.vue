@@ -2,6 +2,7 @@
 import { GlButton, GlModalDirective, GlModal, GlSprintf } from '@gitlab/ui';
 import { createAlert } from '~/alert';
 import { __, s__, n__, sprintf } from '~/locale';
+import { InternalEvents } from '~/tracking';
 import checkedRunnerIdsQuery from '../graphql/list/checked_runner_ids.query.graphql';
 import BulkRunnerDelete from '../graphql/list/bulk_runner_delete.mutation.graphql';
 import BulkRunnerPause from '../graphql/list/bulk_runner_pause.mutation.graphql';
@@ -17,6 +18,7 @@ export default {
   directives: {
     GlModal: GlModalDirective,
   },
+  mixins: [InternalEvents.mixin()],
   inject: ['localMutations'],
   props: {
     runners: {
@@ -165,6 +167,8 @@ export default {
     async onConfirmDelete(e) {
       this.isDeleting = true;
       e.preventDefault(); // don't close modal until deletion is complete
+
+      this.trackEvent('click_bulk_delete_runners_button', { value: this.checkedCount });
 
       try {
         await this.$apollo.mutate({

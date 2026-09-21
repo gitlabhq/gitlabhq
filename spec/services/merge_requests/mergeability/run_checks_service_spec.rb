@@ -52,8 +52,7 @@ RSpec.describe MergeRequests::Mergeability::RunChecksService, :clean_gitlab_redi
       before do
         checks.each do |check|
           allow_next_instance_of(check) do |service|
-            allow(service).to receive(:skip?).and_return(false)
-            allow(service).to receive(:execute).and_return(success_result)
+            allow(service).to receive_messages(skip?: false, execute: success_result)
           end
         end
 
@@ -81,8 +80,7 @@ RSpec.describe MergeRequests::Mergeability::RunChecksService, :clean_gitlab_redi
 
         before do
           allow_next_instance_of(MergeRequests::Mergeability::CheckOpenStatusService) do |service|
-            allow(service).to receive(:skip?).and_return(false)
-            allow(service).to receive(:execute).and_return(failed_result)
+            allow(service).to receive_messages(skip?: false, execute: failed_result)
           end
         end
 
@@ -104,8 +102,7 @@ RSpec.describe MergeRequests::Mergeability::RunChecksService, :clean_gitlab_redi
 
         before do
           allow_next_instance_of(MergeRequests::Mergeability::CheckOpenStatusService) do |service|
-            allow(service).to receive(:skip?).and_return(false)
-            allow(service).to receive(:execute).and_return(checking_result)
+            allow(service).to receive_messages(skip?: false, execute: checking_result)
           end
         end
 
@@ -127,8 +124,7 @@ RSpec.describe MergeRequests::Mergeability::RunChecksService, :clean_gitlab_redi
 
         before do
           allow_next_instance_of(MergeRequests::Mergeability::CheckOpenStatusService) do |service|
-            allow(service).to receive(:skip?).and_return(false)
-            allow(service).to receive(:execute).and_return(inactive_result)
+            allow(service).to receive_messages(skip?: false, execute: inactive_result)
           end
         end
 
@@ -156,9 +152,7 @@ RSpec.describe MergeRequests::Mergeability::RunChecksService, :clean_gitlab_redi
 
         expect(MergeRequests::Mergeability::CheckCiStatusService).to receive(:new).and_return(merge_check)
         expect(merge_check).to receive(:skip?).and_return(false)
-        allow(merge_check).to receive(:cacheable?).and_return(cacheable)
-        allow(merge_check).to receive(:cache_ttl).and_return(6.hours)
-        allow(merge_check).to receive(:execute).and_return(success_result)
+        allow(merge_check).to receive_messages(cacheable?: cacheable, cache_ttl: 6.hours, execute: success_result)
       end
 
       context 'when the check is cacheable' do

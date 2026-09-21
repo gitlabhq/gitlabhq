@@ -1371,6 +1371,7 @@ Arguments:
 | <a id="query-duoworkflowworkflows-search"></a>`search` | [`String`](#string) | Flow title or goal to search for. |
 | <a id="query-duoworkflowworkflows-sort"></a>`sort` | [`DuoWorkflowsWorkflowSort`](#duoworkflowsworkflowsort) | Sort flows by the criteria. |
 | <a id="query-duoworkflowworkflows-statusgroup"></a>`statusGroup` | [`DuoWorkflowStatusGroup`](#duoworkflowstatusgroup) | Status group to filter flow sessions by. |
+| <a id="query-duoworkflowworkflows-statuses"></a>`statuses` | [`[DuoWorkflowStatus!]`](#duoworkflowstatus) | Exact statuses to filter flow sessions by. Cannot be combined with statusGroup. |
 | <a id="query-duoworkflowworkflows-type"></a>`type` | [`String`](#string) | Type of flow to filter by (for example, software_development or foundational_chat_agents). |
 | <a id="query-duoworkflowworkflows-updatedafter"></a>`updatedAfter` | [`ISO8601DateTime`](#iso8601datetime) | Filters flows updated after a given date. |
 | <a id="query-duoworkflowworkflows-workflowid"></a>`workflowId` | [`AiDuoWorkflowsWorkflowID`](#aiduoworkflowsworkflowid) | Flow ID to filter by. |
@@ -36544,13 +36545,70 @@ Fields:
 
 | Name | Type | Description |
 | ---- | ---- | ----------- |
+| <a id="artifactregistrymanifest-architecture"></a>`architecture` {{< icon name="warning-solid" >}} | [`String`](#string) | Introduced in GitLab 19.5. Status: Experiment. CPU architecture an image manifest targets. Null on an index, per value on an image whose config did not carry it, and always null on a remote repository. |
 | <a id="artifactregistrymanifest-artifacttype"></a>`artifactType` {{< icon name="warning-solid" >}} | [`String`](#string) | Introduced in GitLab 19.4. Status: Experiment. Artifact type of the manifest. Null when the manifest declares none. |
+| <a id="artifactregistrymanifest-childrencount"></a>`childrenCount` {{< icon name="warning-solid" >}} | [`Int`](#int) | Introduced in GitLab 19.5. Status: Experiment. Number of platform children of a manifest index. Zero on an image manifest, and always zero on a remote repository. Null on a deployment predating the field. |
 | <a id="artifactregistrymanifest-createdat"></a>`createdAt` {{< icon name="warning-solid" >}} | [`Time`](#time) | Introduced in GitLab 19.4. Status: Experiment. Time the manifest was pushed. Null if the timestamp is absent or unparseable. |
 | <a id="artifactregistrymanifest-digest"></a>`digest` {{< icon name="warning-solid" >}} | [`String!`](#string) | Introduced in GitLab 19.4. Status: Experiment. Content-addressable digest of the manifest. |
 | <a id="artifactregistrymanifest-id"></a>`id` {{< icon name="warning-solid" >}} | [`ID!`](#id) | Introduced in GitLab 19.4. Status: Experiment. ID of the manifest in Artifact Registry. |
 | <a id="artifactregistrymanifest-mediatype"></a>`mediaType` {{< icon name="warning-solid" >}} | [`String!`](#string) | Introduced in GitLab 19.4. Status: Experiment. Media type of the manifest. |
+| <a id="artifactregistrymanifest-os"></a>`os` {{< icon name="warning-solid" >}} | [`String`](#string) | Introduced in GitLab 19.5. Status: Experiment. Operating system an image manifest targets. Null on an index, per value on an image whose config did not carry it, and always null on a remote repository. |
+| <a id="artifactregistrymanifest-osvariant"></a>`osVariant` {{< icon name="warning-solid" >}} | [`String`](#string) | Introduced in GitLab 19.5. Status: Experiment. CPU variant an image manifest targets. Null on an index, on most images, and always null on a remote repository. |
+| <a id="artifactregistrymanifest-referrerscount"></a>`referrersCount` {{< icon name="warning-solid" >}} | [`Int`](#int) | Introduced in GitLab 19.5. Status: Experiment. Number of manifests in the image that name this digest as their subject. Zero when none do, and always zero on a remote repository. Null on a deployment predating the field. |
 | <a id="artifactregistrymanifest-size"></a>`size` {{< icon name="warning-solid" >}} | [`BigInt!`](#bigint) | Introduced in GitLab 19.4. Status: Experiment. Size of the manifest, in bytes. For a hosted repository, the push-time tree total, where an index total already contains its platform children and so does not sum across sibling rows. For a remote repository, the cached manifest's own payload bytes. |
-| <a id="artifactregistrymanifest-subjectdigest"></a>`subjectDigest` {{< icon name="warning-solid" >}} | [`String`](#string) | Introduced in GitLab 19.4. Status: Experiment. Digest of the subject manifest a referrer refers to. Null for a manifest that is not a referrer, and always null on this connection until the referrer-inclusion argument lands: the read leaves Artifact Registry on its default, which excludes referrers. |
+| <a id="artifactregistrymanifest-subjectdigest"></a>`subjectDigest` {{< icon name="warning-solid" >}} | [`String`](#string) | Introduced in GitLab 19.4. Status: Experiment. Digest of the subject manifest a referrer refers to. Null for a manifest that is not a referrer, and null on the manifests list on its default, which excludes referrers unless the caller sets includeReferrers. |
+| <a id="artifactregistrymanifest-tagscount"></a>`tagsCount` {{< icon name="warning-solid" >}} | [`Int`](#int) | Introduced in GitLab 19.5. Status: Experiment. Number of tags pointing at the manifest. Zero when untagged. Null on a deployment predating the field. |
+
+### `ArtifactRegistryManifestAnnotation`
+
+OCI annotation of a container manifest in an Artifact Registry repository.
+
+Fields:
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="artifactregistrymanifestannotation-key"></a>`key` {{< icon name="warning-solid" >}} | [`String!`](#string) | Introduced in GitLab 19.5. Status: Experiment. Annotation key. |
+| <a id="artifactregistrymanifestannotation-value"></a>`value` {{< icon name="warning-solid" >}} | [`String!`](#string) | Introduced in GitLab 19.5. Status: Experiment. Annotation value. |
+
+### `ArtifactRegistryManifestDetails`
+
+Single container manifest in an Artifact Registry repository, reached by digest under the image it belongs to (Docker and OCI).
+
+Fields:
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="artifactregistrymanifestdetails-annotations"></a>`annotations` {{< icon name="warning-solid" >}} | [`[ArtifactRegistryManifestAnnotation!]`](#artifactregistrymanifestannotation) | Introduced in GitLab 19.5. Status: Experiment. OCI annotations of the manifest, as key/value pairs. Empty when the manifest carried an empty annotations map, and null when it carried none: the two are kept apart. Always null on a remote repository, where the field is not served. |
+| <a id="artifactregistrymanifestdetails-architecture"></a>`architecture` {{< icon name="warning-solid" >}} | [`String`](#string) | Introduced in GitLab 19.5. Status: Experiment. CPU architecture an image manifest targets. Null on an index, per value on an image whose config did not carry it, and always null on a remote repository. |
+| <a id="artifactregistrymanifestdetails-artifacttype"></a>`artifactType` {{< icon name="warning-solid" >}} | [`String`](#string) | Introduced in GitLab 19.4. Status: Experiment. Artifact type of the manifest. Null when the manifest declares none. |
+| <a id="artifactregistrymanifestdetails-children"></a>`children` {{< icon name="warning-solid" >}} | [`[ArtifactRegistryManifestPlatform!]`](#artifactregistrymanifestplatform) | Introduced in GitLab 19.5. Status: Experiment. Platform children of a manifest index, child digest ascending, each with its digest and platform triple. Empty on an image manifest and on a remote repository. Null on a deployment predating the field. |
+| <a id="artifactregistrymanifestdetails-childrencount"></a>`childrenCount` {{< icon name="warning-solid" >}} | [`Int`](#int) | Introduced in GitLab 19.5. Status: Experiment. Number of platform children of a manifest index. Zero on an image manifest, and always zero on a remote repository. Null on a deployment predating the field. |
+| <a id="artifactregistrymanifestdetails-createdat"></a>`createdAt` {{< icon name="warning-solid" >}} | [`Time`](#time) | Introduced in GitLab 19.4. Status: Experiment. Time the manifest was pushed. Null if the timestamp is absent or unparseable. |
+| <a id="artifactregistrymanifestdetails-digest"></a>`digest` {{< icon name="warning-solid" >}} | [`String!`](#string) | Introduced in GitLab 19.4. Status: Experiment. Content-addressable digest of the manifest. |
+| <a id="artifactregistrymanifestdetails-id"></a>`id` {{< icon name="warning-solid" >}} | [`ID!`](#id) | Introduced in GitLab 19.4. Status: Experiment. ID of the manifest in Artifact Registry. |
+| <a id="artifactregistrymanifestdetails-mediatype"></a>`mediaType` {{< icon name="warning-solid" >}} | [`String!`](#string) | Introduced in GitLab 19.4. Status: Experiment. Media type of the manifest. |
+| <a id="artifactregistrymanifestdetails-os"></a>`os` {{< icon name="warning-solid" >}} | [`String`](#string) | Introduced in GitLab 19.5. Status: Experiment. Operating system an image manifest targets. Null on an index, per value on an image whose config did not carry it, and always null on a remote repository. |
+| <a id="artifactregistrymanifestdetails-osvariant"></a>`osVariant` {{< icon name="warning-solid" >}} | [`String`](#string) | Introduced in GitLab 19.5. Status: Experiment. CPU variant an image manifest targets. Null on an index, on most images, and always null on a remote repository. |
+| <a id="artifactregistrymanifestdetails-parentdigests"></a>`parentDigests` {{< icon name="warning-solid" >}} | [`[String!]`](#string) | Introduced in GitLab 19.5. Status: Experiment. Digests of the indexes that reference this manifest, parent id ascending. Empty when no index references it. Null until Artifact Registry serves the field. |
+| <a id="artifactregistrymanifestdetails-parentscount"></a>`parentsCount` {{< icon name="warning-solid" >}} | [`Int`](#int) | Introduced in GitLab 19.5. Status: Experiment. Number of indexes that reference this manifest. Zero when none do. Null until Artifact Registry serves the field. |
+| <a id="artifactregistrymanifestdetails-referrerscount"></a>`referrersCount` {{< icon name="warning-solid" >}} | [`Int`](#int) | Introduced in GitLab 19.5. Status: Experiment. Number of manifests in the image that name this digest as their subject. Zero when none do, and always zero on a remote repository. Null on a deployment predating the field. |
+| <a id="artifactregistrymanifestdetails-size"></a>`size` {{< icon name="warning-solid" >}} | [`BigInt!`](#bigint) | Introduced in GitLab 19.4. Status: Experiment. Size of the manifest, in bytes. For a hosted repository, the push-time tree total, where an index total already contains its platform children and so does not sum across sibling rows. For a remote repository, the cached manifest's own payload bytes. |
+| <a id="artifactregistrymanifestdetails-subjectdigest"></a>`subjectDigest` {{< icon name="warning-solid" >}} | [`String`](#string) | Introduced in GitLab 19.5. Status: Experiment. Digest of the subject manifest this manifest refers to. Null for a manifest that is not a referrer. Populated here even for a referrer, unlike the manifests list, because the detail route serves a referrer row like any other manifest. |
+| <a id="artifactregistrymanifestdetails-tags"></a>`tags` {{< icon name="warning-solid" >}} | [`[String!]`](#string) | Introduced in GitLab 19.5. Status: Experiment. Tags pointing at the manifest, name ascending. Empty when untagged. A window bounded by container.manifest_max_tags (1,000 by default), so it can stop short of tagsCount. Null on a deployment predating the field. |
+| <a id="artifactregistrymanifestdetails-tagscount"></a>`tagsCount` {{< icon name="warning-solid" >}} | [`Int`](#int) | Introduced in GitLab 19.5. Status: Experiment. Number of tags pointing at the manifest. Zero when untagged. Null on a deployment predating the field. |
+
+### `ArtifactRegistryManifestPlatform`
+
+Platform child of a container manifest index in an Artifact Registry repository.
+
+Fields:
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="artifactregistrymanifestplatform-architecture"></a>`architecture` {{< icon name="warning-solid" >}} | [`String`](#string) | Introduced in GitLab 19.5. Status: Experiment. CPU architecture the child targets. Null when the manifest carries none. |
+| <a id="artifactregistrymanifestplatform-digest"></a>`digest` {{< icon name="warning-solid" >}} | [`String!`](#string) | Introduced in GitLab 19.5. Status: Experiment. Content-addressable digest of the child manifest. |
+| <a id="artifactregistrymanifestplatform-os"></a>`os` {{< icon name="warning-solid" >}} | [`String`](#string) | Introduced in GitLab 19.5. Status: Experiment. Operating system the child targets. Null when the manifest carries none. |
+| <a id="artifactregistrymanifestplatform-osvariant"></a>`osVariant` {{< icon name="warning-solid" >}} | [`String`](#string) | Introduced in GitLab 19.5. Status: Experiment. CPU variant the child targets. Null when the manifest carries none, which is most images. |
 
 ### `ArtifactRegistryMavenPackage`
 
@@ -36853,6 +36911,26 @@ Arguments:
 | Name | Type | Description |
 | ---- | ---- | ----------- |
 | <a id="artifactregistryrepositorydetails-image-id"></a>`id` | [`ID!`](#id) | ID of the image in Artifact Registry. |
+
+##### `ArtifactRegistryRepositoryDetails.manifest`
+
+{{< details >}}
+
+- Introduced in GitLab 19.5.
+- Status: Experiment.
+
+{{< /details >}}
+
+Single container manifest the repository holds, by digest and the ID of the image it belongs to. Can be selected once per operation, counting every selection of the field. `null` while the `artifact_registry_ui` feature flag is off, resolved without a read. Returns `null` for a repository holding packages, for a manifest that is gone, and for a blank or dot-segment image ID or digest, which resolves without a read. Also `null` when Artifact Registry rejects the read: silently for a 401, 403, or 404, and alongside a top-level error for a 429, a 5xx, or any other 4xx.
+
+Returns [`ArtifactRegistryManifestDetails`](#artifactregistrymanifestdetails).
+
+Arguments:
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="artifactregistryrepositorydetails-manifest-artifactid"></a>`artifactId` | [`ID!`](#id) | ID of the image the manifest belongs to, in Artifact Registry. |
+| <a id="artifactregistryrepositorydetails-manifest-digest"></a>`digest` | [`String!`](#string) | Digest of the manifest in Artifact Registry. |
 
 ##### `ArtifactRegistryRepositoryDetails.package`
 
@@ -58652,6 +58730,7 @@ Arguments:
 | <a id="project-duoworkflowworkflows-search"></a>`search` | [`String`](#string) | Flow title or goal to search for. |
 | <a id="project-duoworkflowworkflows-sort"></a>`sort` | [`DuoWorkflowsWorkflowSort`](#duoworkflowsworkflowsort) | Sort flows by the criteria. |
 | <a id="project-duoworkflowworkflows-statusgroup"></a>`statusGroup` | [`DuoWorkflowStatusGroup`](#duoworkflowstatusgroup) | Status group to filter flow sessions by. |
+| <a id="project-duoworkflowworkflows-statuses"></a>`statuses` | [`[DuoWorkflowStatus!]`](#duoworkflowstatus) | Exact statuses to filter flow sessions by. Cannot be combined with statusGroup. |
 | <a id="project-duoworkflowworkflows-type"></a>`type` | [`String`](#string) | Type of flow to filter by (for example, software_development or foundational_chat_agents). |
 | <a id="project-duoworkflowworkflows-updatedafter"></a>`updatedAfter` | [`ISO8601DateTime`](#iso8601datetime) | Filters flows updated after a given date. |
 | <a id="project-duoworkflowworkflows-workflowid"></a>`workflowId` | [`AiDuoWorkflowsWorkflowID`](#aiduoworkflowsworkflowid) | Flow ID to filter by. |
@@ -62805,6 +62884,7 @@ Fields:
 
 | Name | Type | Description |
 | ---- | ---- | ----------- |
+| <a id="securityposturecounters-total"></a>`total` {{< icon name="warning-solid" >}} | [`Int!`](#int) | Introduced in GitLab 19.5. Status: Experiment. Total number of unarchived projects in the namespace. |
 | <a id="securityposturecounters-withfailures"></a>`withFailures` {{< icon name="warning-solid" >}} | [`Int!`](#int) | Introduced in GitLab 19.0. Status: Experiment. Number of unarchived projects with at least one failed scan. |
 | <a id="securityposturecounters-withscanners"></a>`withScanners` {{< icon name="warning-solid" >}} | [`Int!`](#int) | Introduced in GitLab 19.0. Status: Experiment. Number of unarchived projects with at least one security scanner configured. |
 | <a id="securityposturecounters-withstale"></a>`withStale` {{< icon name="warning-solid" >}} | [`Int!`](#int) | Introduced in GitLab 19.0. Status: Experiment. Number of unarchived projects with at least one stale scan. |

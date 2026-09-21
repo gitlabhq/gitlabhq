@@ -89,6 +89,7 @@ pajamas_adoption:
   needs: []
   variables:
     FF_USE_NEW_BASH_EVAL_STRATEGY: 'true'
+    GIT_DEPTH: "1"
   script:
     - scan_gitlab_code_quality {,ee/}app/
   artifacts:

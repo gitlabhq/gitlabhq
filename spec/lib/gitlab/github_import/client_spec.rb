@@ -454,6 +454,53 @@ RSpec.describe Gitlab::GithubImport::Client, feature_category: :importers do
         end
       end
     end
+
+    context 'without a token refresher' do
+      it 'propagates an unauthorized response unchanged' do
+        allow(client).to receive(:requests_remaining?).and_return(true)
+
+        expect { client.with_rate_limit { raise Octokit::Unauthorized } }
+          .to raise_error(Octokit::Unauthorized)
+      end
+    end
+
+    context 'with a token refresher' do
+      subject(:client) { described_class.new('foo', token_refresher: token_refresher) }
+
+      let(:token_refresher) { -> { 'refreshed-token' } }
+
+      before do
+        allow(client).to receive(:requests_remaining?).and_return(true)
+      end
+
+      it 'mints a fresh credential and retries once after an unauthorized response' do
+        attempts = 0
+
+        result = client.with_rate_limit do
+          attempts += 1
+          raise Octokit::Unauthorized if attempts == 1
+
+          'success'
+        end
+
+        expect(result).to eq('success')
+        expect(attempts).to eq(2)
+        expect(client.octokit.access_token).to eq('refreshed-token')
+      end
+
+      it 'does not retry a second unauthorized response from the same attempt' do
+        expect { client.with_rate_limit { raise Octokit::Unauthorized } }
+          .to raise_error(Octokit::Unauthorized)
+      end
+
+      it 'raises when the refresher returns no credential' do
+        client = described_class.new('foo', token_refresher: -> { nil })
+        allow(client).to receive(:requests_remaining?).and_return(true)
+
+        expect { client.with_rate_limit { raise Octokit::Unauthorized } }
+          .to raise_error(ArgumentError, 'GitHub installation token refresh returned no credential')
+      end
+    end
   end
 
   describe '#requests_remaining?' do

@@ -101,8 +101,7 @@ RSpec.describe Gitlab::Metrics::GitalyClientSlis, feature_category: :gitaly do
         GRPC::Internal           | true
         GRPC::Unavailable        | true
         GRPC::DataLoss           | true
-        # ResourceExhausted is ignored server-side but counts as an error here.
-        GRPC::ResourceExhausted  | true
+        GRPC::ResourceExhausted  | false
       end
 
       with_them do

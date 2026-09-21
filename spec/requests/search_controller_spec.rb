@@ -52,14 +52,22 @@ RSpec.describe SearchController, :with_current_organization, feature_category: :
     end
 
     context 'for merge_requests scope' do
+      # Each project sits in its own nested group so that a regression in route
+      # or namespace preloading surfaces as an N+1 instead of being absorbed by
+      # a shared namespace.
+      let_it_be(:projects) do
+        Array.new(3) do
+          create(:project, :public, :repository, :wiki_repo, group: create(:group, parent: create(:group)))
+        end
+      end
+
       let(:creation_traits) { [:unique_branches] }
       let(:labels) { create_list(:label, 3, project: project) }
       let(:object) { :merge_request }
       let(:creation_args) { { source_project: project, title: 'bar', labels: labels } }
       let(:params) { { search: 'bar', scope: 'merge_requests' } }
-      # some N+1 queries still exist
-      # each merge request runs an extra query for project routes
-      let(:threshold) { 4 }
+      # 1 batched query preloading the parent namespaces of the result projects
+      let(:threshold) { 1 }
 
       it_behaves_like 'an efficient database result'
     end
@@ -333,6 +341,15 @@ RSpec.describe SearchController, :with_current_organization, feature_category: :
 
       expect(response).to have_gitlab_http_status(:ok)
       expect(request.session_options[:skip]).to be(true)
+    end
+
+    # See https://gitlab.com/gitlab-org/gitlab/-/work_items/629538
+    context 'when organization is not resolved', :without_current_organization do
+      it 'renders the document without raising any error' do
+        get search_opensearch_path(format: :xml)
+
+        expect(response).to have_gitlab_http_status(:ok)
+      end
     end
   end
 

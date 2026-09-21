@@ -1,6 +1,7 @@
 <script>
 import { GlFormCheckbox } from '@gitlab/ui';
 import { s__ } from '~/locale';
+import { InternalEvents } from '~/tracking';
 import checkedRunnerIdsQuery from '../graphql/list/checked_runner_ids.query.graphql';
 
 export default {
@@ -8,6 +9,7 @@ export default {
   components: {
     GlFormCheckbox,
   },
+  mixins: [InternalEvents.mixin()],
   inject: ['localMutations'],
   props: {
     runners: {
@@ -48,6 +50,10 @@ export default {
       return this.checkedRunnerIds.indexOf(id) >= 0;
     },
     onChange($event) {
+      this.trackEvent('click_select_all_runners_checkbox', {
+        property: $event ? 'checked' : 'unchecked',
+      });
+
       this.localMutations.setRunnersChecked({
         runners: this.deletableRunners,
         isChecked: $event,

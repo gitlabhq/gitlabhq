@@ -45,18 +45,18 @@ module Gitlab
       #            this value to `true` for parallel importing is crucial as
       #            otherwise hitting the rate limit will result in a thread
       #            being blocked in a `sleep()` call for up to an hour.
-      def initialize(token, host: nil, per_page: DEFAULT_PER_PAGE, parallel: true)
+      #
+      # token_refresher - An optional zero-argument callable that mints a fresh
+      #                    token. When given, one Octokit::Unauthorized response
+      #                    triggers exactly one in-place credential refresh and
+      #                    retry per token generation; without it, Unauthorized
+      #                    propagates unchanged as before.
+      def initialize(token, host: nil, per_page: DEFAULT_PER_PAGE, parallel: true, token_refresher: nil)
         @host = host
-        @octokit = ::Octokit::Client.new(
-          access_token: token,
-          per_page: per_page,
-          api_endpoint: api_endpoint,
-          web_endpoint: web_endpoint
-        )
-
-        @octokit.connection_options[:ssl] = { verify: verify_ssl }
-
+        @per_page = per_page
         @parallel = parallel
+        @token_refresher = token_refresher
+        @octokit = build_octokit(token)
       end
 
       def parallel?
@@ -181,7 +181,11 @@ module Gitlab
       # The exact strategy used for handling rate limiting errors depends on
       # whether we are running in parallel mode or not. For more information see
       # `#rate_or_wait_for_rate_limit`.
-      def with_rate_limit
+      def with_rate_limit(&block)
+        with_authentication_retry { with_rate_limit_handling(&block) }
+      end
+
+      def with_rate_limit_handling
         return with_retry { yield } unless rate_limiting_enabled?
 
         request_count_counter.increment
@@ -296,6 +300,45 @@ module Gitlab
       end
 
       private
+
+      # Retries one failed GitHub App request with a freshly minted credential.
+      # Ordinary OAuth/PAT clients have no refresher and re-raise unchanged. A
+      # second unauthorized response is never retried by this invocation.
+      def with_authentication_retry
+        yield
+      rescue ::Octokit::Unauthorized
+        raise unless refreshable?
+
+        refresh_token!
+        yield
+      end
+
+      # Replaces the in-memory Octokit client with a freshly minted credential.
+      # No credential is persisted, logged, cached, or returned to the caller.
+      def refresh_token!
+        refreshed_token = @token_refresher.call
+        raise ArgumentError, 'GitHub installation token refresh returned no credential' if refreshed_token.blank?
+
+        @octokit = build_octokit(refreshed_token)
+      end
+
+      # Reports whether this client owns a JIT installation-token callback.
+      def refreshable?
+        @token_refresher.respond_to?(:call)
+      end
+
+      # Builds an Octokit client from an ephemeral credential held only in
+      # memory. Rebuilding uses the same host, page size, and TLS policy.
+      def build_octokit(token)
+        client = ::Octokit::Client.new(
+          access_token: token,
+          per_page: @per_page,
+          api_endpoint: api_endpoint,
+          web_endpoint: web_endpoint
+        )
+        client.connection_options[:ssl] = { verify: verify_ssl }
+        client
+      end
 
       def formatted_api_endpoint
         strong_memoize(:formatted_api_endpoint) do

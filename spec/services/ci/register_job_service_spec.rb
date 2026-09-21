@@ -1533,13 +1533,10 @@ module Ci
       before do
         allow(Time).to receive(:now).and_return(current_time)
         # Stub tested metrics
-        allow(Gitlab::Ci::Queue::Metrics)
-          .to receive(:attempt_counter)
-                .and_return(attempt_counter)
-
-        allow(Gitlab::Ci::Queue::Metrics)
-          .to receive(:job_queue_duration_seconds)
-                .and_return(job_queue_duration_seconds)
+        allow(Gitlab::Ci::Queue::Metrics).to receive_messages(
+          attempt_counter: attempt_counter,
+          job_queue_duration_seconds: job_queue_duration_seconds
+        )
 
         project.update!(shared_runners_enabled: true)
         pending_job_2.update!(created_at: current_time - 3600, queued_at: current_time - 1800)

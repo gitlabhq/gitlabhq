@@ -164,6 +164,8 @@ e2e:test-on-omnibus-ee:
     - .qa:rules:test-on-omnibus-ee
   needs:
     - compile-production-assets
+    # Gate on the combined assets image so omnibus doesn't pull a stale Webpack-only one.
+    - build-assets-image
     - e2e-test-pipeline-generate
     - job: coverage-frontend
       optional: true
@@ -186,6 +188,8 @@ e2e:test-on-omnibus-ce:
     - .qa:rules:test-on-omnibus-ce:follow-up
   needs:
     - compile-production-assets as-if-foss
+    # Gate on the combined assets image so omnibus doesn't pull a stale Webpack-only one.
+    - build-assets-image as-if-foss
     - build-qa-image as-if-foss
     - e2e-test-pipeline-generate as-if-foss
   variables:
@@ -205,6 +209,8 @@ e2e:test-on-cng:
     - compile-production-assets
     - job: compile-production-assets istanbul
       optional: true
+    # Gate on the combined assets image so CNG doesn't pull a stale Webpack-only one.
+    - build-assets-image
     - e2e-test-pipeline-generate
     - job: coverage-frontend
       optional: true
@@ -221,6 +227,8 @@ e2e:perf-on-cng:
   stage: qa
   needs:
     - compile-production-assets
+    # Gate on the combined assets image so CNG doesn't pull a stale Webpack-only one.
+    - build-assets-image
     - e2e-test-pipeline-generate
   variables:
     QA_RUN_TYPE: e2e-perf-on-cng

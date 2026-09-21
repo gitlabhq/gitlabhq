@@ -665,8 +665,9 @@ Project permissions for [merge requests](project/merge_requests/_index.md):
    must be given explicit access (at least the **Reporter** role) even if the project is internal. Users
    with the Guest role on GitLab.com are only able to perform this action on public projects because
    internal visibility is not available.
-1. Users with the Planner role can not use advanced search for merge requests and comments on merge
-   requests. For more information, see [epic &17674](https://gitlab.com/groups/gitlab-org/-/work_items/17674).
+1. In private projects, comments on merge
+   requests are not returned in advanced search results for users with the Planner role.
+   For more information, see [epic 17674](https://gitlab.com/groups/gitlab-org/-/work_items/17674).
 1. Approval from Planner and Reporter roles is available only if
    [enabled for the project](project/merge_requests/approvals/rules.md#enable-approval-permissions-for-additional-users).
 1. In projects that accept contributions from external members, users can create, edit, and close their

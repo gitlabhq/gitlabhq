@@ -425,4 +425,32 @@ describe('BoardsSelector', () => {
       });
     });
   });
+
+  describe('document title', () => {
+    const originalTitle = document.title;
+
+    afterEach(() => {
+      document.title = originalTitle;
+    });
+
+    it('replaces only the board-name segment, preserving prefix and suffix', async () => {
+      document.title = 'Issue Boards · Old board · Boards · Flight · GitLab';
+      await createComponent({ isProjectBoard: true, props: { board: mockBoard } });
+
+      wrapper.setProps({ board: { ...mockBoard, name: 'New board' } });
+      await nextTick();
+
+      expect(document.title).toBe('Issue Boards · New board · Boards · Flight · GitLab');
+    });
+
+    it('falls back to the bare board name when the title is not segmented', async () => {
+      document.title = 'GitLab';
+      await createComponent({ isProjectBoard: true, props: { board: mockBoard } });
+
+      wrapper.setProps({ board: { ...mockBoard, name: 'New board' } });
+      await nextTick();
+
+      expect(document.title).toBe('New board');
+    });
+  });
 });

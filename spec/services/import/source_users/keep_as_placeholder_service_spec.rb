@@ -59,9 +59,10 @@ RSpec.describe Import::SourceUsers::KeepAsPlaceholderService, feature_category: 
 
     context 'when an error occurs' do
       before do
-        allow(import_source_user).to receive(:keep_as_placeholder).and_return(false)
-        allow(import_source_user).to receive(:errors).and_return(instance_double(ActiveModel::Errors,
-          full_messages: ['Error']))
+        allow(import_source_user).to receive_messages(
+          keep_as_placeholder: false,
+          errors: instance_double(ActiveModel::Errors, full_messages: ['Error'])
+        )
       end
 
       it 'returns an error' do

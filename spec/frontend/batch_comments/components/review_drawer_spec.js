@@ -20,8 +20,10 @@ import MarkdownField from '~/vue_shared/components/markdown/field.vue';
 import { CLEAR_AUTOSAVE_ENTRY_EVENT } from '~/vue_shared/constants';
 import reviewDrawerQuery from '~/batch_comments/queries/review_drawer.query.graphql';
 import toast from '~/vue_shared/plugins/global_toast';
+import { createAlert } from '~/alert';
 
 jest.mock('~/vue_shared/plugins/global_toast');
+jest.mock('~/alert');
 
 jest.mock('~/autosave');
 jest.mock('~/vue_shared/components/markdown/eventhub');
@@ -55,6 +57,8 @@ describe('ReviewDrawer', () => {
 
     await findForm().vm.$emit('submit', { preventDefault: jest.fn() });
   };
+
+  const submitDrawerForm = () => findForm().vm.$emit('submit', { preventDefault: jest.fn() });
 
   const createComponent = ({
     canApprove = true,
@@ -515,6 +519,51 @@ describe('ReviewDrawer', () => {
     findForm().vm.$emit('submit', { preventDefault: jest.fn() });
 
     expect(useBatchComments().publishReviewInBatches).toHaveBeenCalled();
+  });
+
+  describe('failed batch publish', () => {
+    beforeEach(() => {
+      useBatchComments().drafts = new Array(1).fill({});
+      useBatchComments().drawerOpened = true;
+    });
+
+    it('shows the server message if the body has one', async () => {
+      createComponent();
+
+      await waitForPromises();
+
+      useBatchComments().publishReviewInBatches.mockRejectedValue({
+        response: { data: { message: 'Unable to save Note: Note is too long' } },
+      });
+
+      submitDrawerForm();
+
+      await waitForPromises();
+
+      expect(createAlert).toHaveBeenCalledWith(
+        expect.objectContaining({ message: 'Unable to save Note: Note is too long' }),
+      );
+    });
+
+    it.each([
+      ['a body with no message', { response: { data: { status: 500, error: 'Server Error' } } }],
+      ['an HTML body', { response: { data: '<!DOCTYPE html><title>500</title>' } }],
+      ['no response', new Error('Network Error')],
+    ])('shows a generic alert given %s', async (_, rejection) => {
+      createComponent();
+
+      await waitForPromises();
+
+      useBatchComments().publishReviewInBatches.mockRejectedValue(rejection);
+
+      submitDrawerForm();
+
+      await waitForPromises();
+
+      expect(createAlert).toHaveBeenCalledWith(
+        expect.objectContaining({ message: 'Something went wrong. Please try again.' }),
+      );
+    });
   });
 
   it('disables table of contents support in the markdown editor', async () => {

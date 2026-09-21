@@ -3184,6 +3184,15 @@ Grants the ability to read experiments.
 | Read | Instance | `GET` | `/experiments` |
 | Read | Instance | `GET` | `/experiments/:experiment_name/assignments` |
 
+#### Experiment Assignment
+
+Grants the ability to create and delete experiment assignments.
+
+| Action | Access | Method | Path |
+| ------ | ------ | ------ | ---- |
+| Create | Instance | `POST` | `/experiments/:experiment_name/assignments` |
+| Delete | Instance | `DELETE` | `/experiments/:experiment_name/assignments` |
+
 #### Experiment Cache
 
 Grants the ability to delete experiment caches.

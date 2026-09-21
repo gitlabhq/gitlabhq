@@ -120,6 +120,23 @@ cache:assets-hash:
       dotenv: build.env
   allow_failure: false
 
+# ENABLE_RSPACK makes assets_sha.rb append the bundler name, yielding a distinct
+# hash so Rspack assets never share a cache key or image tag with Webpack ones.
+cache:assets-hash-rspack:
+  extends:
+    - .cache-pull-push-base
+    - .with-alpine-ruby-image
+    - .caching:rules:frontend-asset-hash
+  variables:
+    ENABLE_RSPACK: "true"
+  script:
+    - echo "GLCI_GITLAB_ASSETS_HASH=$(ruby scripts/lib/assets_sha.rb)" > build.env
+    - echo "Calculated assets checksum - $(cat build.env)"
+  artifacts:
+    reports:
+      dotenv: build.env
+  allow_failure: false
+
 # =================================
 # FE Island
 # =================================

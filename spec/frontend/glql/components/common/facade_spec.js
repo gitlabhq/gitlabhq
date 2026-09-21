@@ -8,9 +8,13 @@ import GlqlViewSourceModal from '~/glql/components/common/view_source_modal.vue'
 import Counter from '~/glql/utils/counter';
 import { copyToClipboard } from '~/lib/utils/copy_to_clipboard';
 import CrudComponent from '~/vue_shared/components/crud_component.vue';
+import { copyGLQLContents } from '~/glql/utils/copy_as_gfm';
 import { MOCK_ISSUES, MOCK_FIELDS } from '../../mock_data';
 
 jest.mock('~/lib/utils/copy_to_clipboard');
+jest.mock('~/glql/utils/copy_as_gfm', () => ({
+  copyGLQLContents: jest.fn().mockResolvedValue(),
+}));
 
 const MOCK_PARSE_OUTPUT = {
   query: 'query {}',
@@ -372,6 +376,32 @@ describe('GlqlFacade', () => {
 
       expect(oldResolver.exists()).toBe(false);
       expect(findResolver().exists()).toBe(true);
+    });
+  });
+
+  describe('when "Copy contents" is triggered', () => {
+    const config = { display: 'columnChart', title: 'Data view' };
+    const data = { count: 1, nodes: [{ language: 'ruby', totalCount: 21 }] };
+    const fields = [
+      { key: 'language', label: 'Language', type: 'dimension' },
+      { key: 'totalCount', label: 'Total count', type: 'metric' },
+    ];
+
+    beforeEach(async () => {
+      await createComponent();
+      await triggerIntersectionObserver();
+      await emitResolverChange({ config, data, fields });
+
+      wrapper.findComponent(GlqlActions).vm.$emit('copy-as-gfm');
+    });
+
+    it('copies the view with the state the resolver last reported', () => {
+      expect(copyGLQLContents).toHaveBeenCalledWith({
+        config,
+        data,
+        fields,
+        el: findResolver().element,
+      });
     });
   });
 });

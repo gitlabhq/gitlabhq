@@ -41,6 +41,27 @@ export const PAGINATION_BY_DISPLAY_TYPE = {
 export const AGGREGATED_AUTO_PAGE_SIZE = 100;
 export const MAX_AUTO_PAGINATED_ROWS = 1000;
 
+// "Copy contents" copies these displays from their rendered DOM, which already carries
+// the on-screen order and formatting.
+export const DOM_COPY_DISPLAY_TYPES = new Set([
+  DISPLAY_TYPES.LIST,
+  DISPLAY_TYPES.ORDERED_LIST,
+  DISPLAY_TYPES.TABLE,
+  DISPLAY_TYPES.STAT,
+]);
+
+// "Copy contents" builds a table from the query result for these displays, since ECharts
+// renders to SVG/canvas with nothing copyable in the DOM.
+export const DATA_COPY_DISPLAY_TYPES = new Set([
+  DISPLAY_TYPES.COLUMN_CHART,
+  DISPLAY_TYPES.LINE_CHART,
+  DISPLAY_TYPES.BAR_CHART,
+  DISPLAY_TYPES.BAR_LIST,
+  DISPLAY_TYPES.AREA_CHART,
+  DISPLAY_TYPES.HEAT_MAP,
+  DISPLAY_TYPES.DIVERGING_BAR_CHART,
+]);
+
 export const DEFAULT_DISPLAY_TYPE = DISPLAY_TYPES.LIST;
 export const MODE_STANDARD = 'standard';
 export const MODE_ANALYTICS = 'analytics';

@@ -139,8 +139,7 @@ RSpec.describe Git::BaseHooksService, feature_category: :source_code_management 
       before do
         params[:execute_project_hooks] = false
 
-        allow(project).to receive(:has_active_hooks?).and_return(true)
-        allow(project).to receive(:has_active_integrations?).and_return(true)
+        allow(project).to receive_messages(has_active_hooks?: true, has_active_integrations?: true)
       end
 
       it 'does not execute hooks and integrations' do

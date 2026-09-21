@@ -119,7 +119,12 @@ module WebpackHelper
   end
 
   def rspack_enabled?
-    Gitlab::Utils.to_boolean(ENV['ENABLE_RSPACK'], default: Gitlab.config.webpack.bundler == 'rspack')
+    # Actor is the request, not current_user: a nil actor never matches a
+    # percentage_of_actors gate, which would exclude all anonymous traffic from the rollout.
+    default = Gitlab.config.webpack.bundler == 'rspack' ||
+      (Rails.env.production? && Feature.enabled?(:rspack_production_assets, Feature.current_request))
+
+    Gitlab::Utils.to_boolean(ENV['ENABLE_RSPACK'], default: default)
   end
 
   def bundler_manifest_filename

@@ -8734,19 +8734,144 @@ msgstr ""
 msgid "AiModelDeprecation|The following models have been deprecated and will stop working after GitLab removes them. Please change to an alternative model before the removal version to avoid disruption."
 msgstr ""
 
+msgid "AiOverview|%{count} unresolved thread"
+msgid_plural "AiOverview|%{count} unresolved threads"
+msgstr[0] ""
+msgstr[1] ""
+
+msgid "AiOverview|%{given} of %{required} required"
+msgstr ""
+
+msgid "AiOverview|%{passing} of %{total} checks passing"
+msgstr ""
+
 msgid "AiOverview|AI Overview"
+msgstr ""
+
+msgid "AiOverview|All resolved"
+msgstr ""
+
+msgid "AiOverview|Approval sync"
+msgstr ""
+
+msgid "AiOverview|Blocked"
+msgstr ""
+
+msgid "AiOverview|Checking"
+msgstr ""
+
+msgid "AiOverview|Checking whether this merge request can be merged"
+msgstr ""
+
+msgid "AiOverview|Closed"
 msgstr ""
 
 msgid "AiOverview|Could not load this merge request"
 msgstr ""
 
+msgid "AiOverview|Discussions"
+msgstr ""
+
+msgid "AiOverview|Every merge check is passing."
+msgstr ""
+
+msgid "AiOverview|In progress"
+msgstr ""
+
+msgid "AiOverview|Jira issue reference"
+msgstr ""
+
+msgid "AiOverview|Locked LFS files"
+msgstr ""
+
+msgid "AiOverview|Locked paths"
+msgstr ""
+
+msgid "AiOverview|Merge check"
+msgstr ""
+
+msgid "AiOverview|Merge in progress"
+msgstr ""
+
+msgid "AiOverview|Merge request state"
+msgstr ""
+
+msgid "AiOverview|Merge time"
+msgstr ""
+
+msgid "AiOverview|Merge with caution"
+msgstr ""
+
+msgid "AiOverview|Merged"
+msgstr ""
+
+msgid "AiOverview|Must be resolved"
+msgstr ""
+
+msgid "AiOverview|No pipeline"
+msgstr ""
+
+msgid "AiOverview|None"
+msgstr ""
+
+msgid "AiOverview|Not ready to merge"
+msgstr ""
+
+msgid "AiOverview|Not required"
+msgstr ""
+
+msgid "AiOverview|Override added"
+msgstr ""
+
+msgid "AiOverview|Passing"
+msgstr ""
+
+msgid "AiOverview|Passing with an override: %{checks}."
+msgstr ""
+
+msgid "AiOverview|Ready to merge"
+msgstr ""
+
+msgid "AiOverview|Ready to merge, with caution"
+msgstr ""
+
+msgid "AiOverview|Requested changes"
+msgstr ""
+
 msgid "AiOverview|Retry"
+msgstr ""
+
+msgid "AiOverview|Security policy pipelines"
+msgstr ""
+
+msgid "AiOverview|Still checking: %{checks}."
 msgstr ""
 
 msgid "AiOverview|Switch to the classic overview"
 msgstr ""
 
+msgid "AiOverview|This merge request has been merged."
+msgstr ""
+
+msgid "AiOverview|This merge request is being merged."
+msgstr ""
+
+msgid "AiOverview|This merge request is not ready to merge"
+msgstr ""
+
+msgid "AiOverview|This merge request was closed without being merged."
+msgstr ""
+
 msgid "AiOverview|Try the new overview"
+msgstr ""
+
+msgid "AiOverview|View discussions"
+msgstr ""
+
+msgid "AiOverview|View pipeline"
+msgstr ""
+
+msgid "AiOverview|Waiting on: %{checks}."
 msgstr ""
 
 msgid "AiPowered|%d check failed"
@@ -32924,6 +33049,15 @@ msgid "DuoCodeReview|Something went wrong while running the task. Please try aga
 msgstr ""
 
 msgid "DuoCodeReview|Something went wrong. Please try again."
+msgstr ""
+
+msgid "DuoCodeReview|Start a new review on push"
+msgstr ""
+
+msgid "DuoCodeReview|Starts a new review when a merge request receives new commits."
+msgstr ""
+
+msgid "DuoCodeReview|Starts a new review when a merge request receives new commits. Applies across all groups and projects."
 msgstr ""
 
 msgid "DuoCodeReview|The session was stopped before it finished."
@@ -64837,6 +64971,12 @@ msgid "ProjectSettings|Squashing is always performed. Checkbox is visible and se
 msgstr ""
 
 msgid "ProjectSettings|Squashing is never performed and the checkbox is hidden."
+msgstr ""
+
+msgid "ProjectSettings|Start a new review on push"
+msgstr ""
+
+msgid "ProjectSettings|Starts a new review when a merge request receives new commits."
 msgstr ""
 
 msgid "ProjectSettings|Status checks must succeed"

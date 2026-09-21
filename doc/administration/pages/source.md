@@ -3,6 +3,7 @@ stage: Plan
 group: Planner Intelligence
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see <https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments>
 title: GitLab Pages administration for self-compiled installations
+description: Configure GitLab Pages for self-compiled GitLab installations.
 ---
 
 {{< details >}}
@@ -13,7 +14,7 @@ title: GitLab Pages administration for self-compiled installations
 {{< /details >}}
 
 > [!note]
-> Before attempting to enable GitLab Pages, first make sure you have
+> Before attempting to turn on GitLab Pages, first make sure you have
 > [installed GitLab](../../install/self_compiled/_index.md) successfully.
 
 This document explains how to configure GitLab Pages for self-compiled GitLab installations.
@@ -56,7 +57,7 @@ Before proceeding with the Pages configuration, make sure that:
   The packages are required to compress and decompress Pages artifacts.
 - Optional. You have a wildcard certificate for the Pages domain (`*.example.io`) if you decide
   to serve Pages under HTTPS.
-- Optional but recommended. You have configured and enabled
+- Optional but recommended. You have configured and turned on
   [instance runners](../../ci/runners/_index.md) so your users do not have to bring their own.
 
 ### DNS configuration
@@ -139,6 +140,7 @@ The Pages daemon does not listen to the outside world.
    api-secret-key=/home/git/gitlab/gitlab-pages-secret
    pages-domain=example.io
    internal-gitlab-server=https://gitlab.example.com
+   ```
 
    You can use an `http` address when running GitLab Pages and GitLab on the same host. If you use
    `https` with a self-signed certificate, make your custom CA available to GitLab Pages, for
@@ -150,7 +152,7 @@ The Pages daemon does not listen to the outside world.
    sudo -u git -H openssl rand -base64 32 > /home/git/gitlab/gitlab-pages-secret
    ```
 
-1. To enable the pages daemon:
+1. To turn on the pages daemon:
 
    - If your system uses systemd init, run:
 
@@ -421,7 +423,7 @@ Access control parameters for Pages are:
 `gitlab-pages-config`.
 - Passed to Pages using the `-config` flag or `CONFIG` environment variable.
 
-Pages access control is disabled by default. To enable it:
+Pages access control is turned off by default. To turn it on:
 
 1. Modify `config/gitlab.yml`:
 

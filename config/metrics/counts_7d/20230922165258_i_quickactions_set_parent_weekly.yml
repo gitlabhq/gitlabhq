@@ -4,7 +4,7 @@ name: quickactions_set_parent_weekly
 description: Count of WAU using the `/set_parent` quick action
 product_group: portfolio_planning
 product_categories:
-- team_planning
+- portfolio_management
 value_type: number
 status: active
 milestone: "16.5"

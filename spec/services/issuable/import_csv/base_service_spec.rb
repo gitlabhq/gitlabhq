@@ -42,8 +42,7 @@ RSpec.describe Issuable::ImportCsv::BaseService, feature_category: :importers do
 
     context 'with csv that has milestone heading' do
       before do
-        allow(utility_class).to receive(:new).and_return(utility_class)
-        allow(utility_class).to receive(:execute).and_return(ServiceResponse.success)
+        allow(utility_class).to receive_messages(new: utility_class, execute: ServiceResponse.success)
       end
 
       it 'calls PreprocessMilestonesService' do

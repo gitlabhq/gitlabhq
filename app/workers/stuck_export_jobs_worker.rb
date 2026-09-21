@@ -40,12 +40,17 @@ class StuckExportJobsWorker
 
     stuck_jobs = completed_jobs.reject { |job| still_running?(job, completed_jids) }
 
-    Sidekiq.logger.info(
-      message: 'Marked stuck export jobs as failed',
-      job_ids: stuck_jobs.map(&:jid)
-    )
+    stuck_jobs.each do |job|
+      job.fail_op
 
-    stuck_jobs.each(&:fail_op).count
+      Gitlab::Export::Logger.info(
+        message: 'Marked stuck export job as failed',
+        jid: job.jid,
+        Labkit::Fields::GL_PROJECT_ID => job.project_id
+      )
+    end
+
+    stuck_jobs.count
   end
   # rubocop: enable CodeReuse/ActiveRecord
 

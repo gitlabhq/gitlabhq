@@ -123,7 +123,7 @@ class ApplicationSetting < ApplicationRecord
   include ApplicationSettingImplementation
 
   serialize :restricted_visibility_levels # rubocop:disable Cop/ActiveRecordSerialize
-  serialize :import_sources # rubocop:disable Cop/ActiveRecordSerialize
+  serialize :import_sources, type: Array # rubocop:disable Cop/ActiveRecordSerialize
   serialize :disabled_oauth_sign_in_sources, type: Array # rubocop:disable Cop/ActiveRecordSerialize
   serialize :domain_allowlist, type: Array # rubocop:disable Cop/ActiveRecordSerialize
   serialize :domain_denylist, type: Array # rubocop:disable Cop/ActiveRecordSerialize

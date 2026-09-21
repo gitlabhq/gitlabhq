@@ -162988,6 +162988,24 @@
                   "defaultValue": null
                 },
                 {
+                  "name": "statuses",
+                  "description": "Exact statuses to filter flow sessions by. Cannot be combined with statusGroup.",
+                  "type": {
+                    "kind": "LIST",
+                    "name": null,
+                    "ofType": {
+                      "kind": "NON_NULL",
+                      "name": null,
+                      "ofType": {
+                        "kind": "ENUM",
+                        "name": "DuoWorkflowStatus",
+                        "ofType": null
+                      }
+                    }
+                  },
+                  "defaultValue": null
+                },
+                {
                   "name": "updatedAfter",
                   "description": "Filters flows updated after a given date.",
                   "type": {

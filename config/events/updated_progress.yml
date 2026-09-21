@@ -3,7 +3,7 @@ description: Tracks when the work item progress is updated
 action: updated_progress
 product_group: work_items
 product_categories:
-- okr_management
+- team_planning
 milestone: '15.7'
 introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/105770
 tiers:

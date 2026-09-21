@@ -10,11 +10,13 @@ RSpec.describe ClickHouse::SyncStrategies::BaseSyncStrategy, feature_category: :
 
     context 'when clickhouse configuration database is available', :click_house do
       before do
-        allow(strategy).to receive(:model_class).and_return(::Event)
-        allow(strategy).to receive(:projections).and_return([:id])
-        allow(strategy).to receive(:csv_mapping).and_return({ id: :id })
-        allow(strategy).to receive(:insert_query).and_return("INSERT INTO events (id) SETTINGS async_insert=1,
-                                                            wait_for_async_insert=1 FORMAT CSV")
+        allow(strategy).to receive_messages(
+          model_class: ::Event,
+          projections: [:id],
+          csv_mapping: { id: :id },
+          insert_query: "INSERT INTO events (id) SETTINGS async_insert=1,
+                                                            wait_for_async_insert=1 FORMAT CSV"
+        )
       end
 
       context 'when there is nothing to sync' do
@@ -67,9 +69,8 @@ RSpec.describe ClickHouse::SyncStrategies::BaseSyncStrategy, feature_category: :
           end
 
           it 'uses the configured primary_key for the id_for_cursor alias' do
-            allow(strategy).to receive(:primary_key).and_return(:id)
             # consider primary key :id out of projections
-            allow(strategy).to receive(:projections).and_return([:project_id])
+            allow(strategy).to receive_messages(primary_key: :id, projections: [:project_id])
 
             expect(execute).to eq({ status: :processed, records_inserted: 4, reached_end_of_table: true })
             # cursor is still set to last primary key

@@ -49,9 +49,9 @@ module TwCodeowners
     # CodeOwnerRule.new('Database Operations', ''),
     # CodeOwnerRule.new('DataOps', ''),
     # CodeOwnerRule.new('Delivery', ''),
-    CodeOwnerRule.new('Developer Clients', '@jglassman1'),
-    CodeOwnerRule.new('Duo Chat', '@jglassman1'),
-    CodeOwnerRule.new('Duo Client SDK', '@jglassman1'),
+    # CodeOwnerRule.new('Developer Clients', ''),
+    # CodeOwnerRule.new('Duo Chat', ''),
+    # CodeOwnerRule.new('Duo Client SDK', ''),
     CodeOwnerRule.new('Dynamic Analysis', '@rsarangadharan'),
     # CodeOwnerRule.new('Engagement', ''),
     CodeOwnerRule.new('Environment Automation', '@lyspin'),
@@ -60,7 +60,7 @@ module TwCodeowners
     # CodeOwnerRule.new('Fuzz Testing', ''),
     CodeOwnerRule.new('Geo', '@axil'),
     CodeOwnerRule.new('Gitaly', '@eread'),
-    CodeOwnerRule.new('Global Search', '@ashrafkhamis'),
+    # CodeOwnerRule.new('Global Search', ''),
     CodeOwnerRule.new('Import', '@eread'),
     # CodeOwnerRule.new('Knowledge Graph', ''),
     # CodeOwnerRule.new('MLOps', ''),
@@ -100,10 +100,10 @@ module TwCodeowners
     CodeOwnerRule.new('Testing', '@eread'),
     CodeOwnerRule.new('Tutorials', '@gl-docsteam'),
     CodeOwnerRule.new('US Public Sector Services', '@lyspin'),
-    CodeOwnerRule.new('Utilization', '@lciutacu'),
+    CodeOwnerRule.new('Utilization', '@lciutacu')
     # CodeOwnerRule.new('Vulnerability Research', ''),
     # CodeOwnerRule.new('Work Items', ''),
-    CodeOwnerRule.new('Workflow Catalog', '@jglassman1')
+    # CodeOwnerRule.new('Workflow Catalog', '')
   ].freeze
 
   CONTRIBUTOR_DOCS_PATH = '/doc/development/'

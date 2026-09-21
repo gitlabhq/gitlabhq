@@ -342,6 +342,7 @@ custom-roles-verify:
 permissions-verify:
   variables:
     SETUP_DB: "false"
+    GIT_DEPTH: "1"
   extends:
     - .default-retry
     - .ruby-cache
@@ -357,6 +358,7 @@ permissions-verify:
 ci-job-token-policies-verify:
   variables:
     SETUP_DB: "false"
+    GIT_DEPTH: "1"
   extends:
     - .default-retry
     - .ruby-cache

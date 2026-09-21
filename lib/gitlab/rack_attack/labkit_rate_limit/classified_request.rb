@@ -62,8 +62,6 @@ module Gitlab
         # runner_id present is a runner, and both nil is unauthenticated? (see the
         # unauthenticated rules' `requester_id: nil, runner_id: nil` guard).
         def identity_facts
-          requester = requester([:api, :rss, :ics])
-
           {
             ip: ip,
             requester_id: requester[:id],
@@ -94,12 +92,17 @@ module Gitlab
         # Labkit joins into one redis key - equivalent to the old "type:id" string,
         # and keeping a DeployToken and a User with the same numeric id on distinct
         # counters via the type segment.
-        def requester(request_formats)
-          identifier = authenticated_identifier(request_formats)
+        #
+        def requester
+          identifier = authenticated_identifier(REQUESTER_FORMATS)
           return {} unless identifier
 
-          { id: identifier[:identifier_id].to_s, type: identifier[:identifier_type].to_s }
+          {
+            id: identifier[:identifier_id].to_s,
+            type: identifier[:identifier_type].to_s
+          }
         end
+        strong_memoize_attr :requester
 
         # Boolean facts a rule matches on, coerced to strict true/false in
         # #labkit_facts. EE extends this (incident management, Geo). These are only
@@ -185,9 +188,15 @@ module Gitlab
         # requester_id alone, yet Rack::Attack skips the former and counts the
         # latter (a PAT-driven bot polling job status is real API usage).
         def runner_jobs?
-          runner_jobs_api_path? &&
-            (runner_id.present? || request_authenticator.job_from_token.present?)
+          runner_jobs_api_path? && (runner_id.present? || job_from_token.present?)
         end
+
+        # Memoized for the same reason as runner_id: the authenticator re-runs the
+        # job lookup on every call, and EE's plan facts read it too.
+        def job_from_token
+          request_authenticator.job_from_token
+        end
+        strong_memoize_attr :job_from_token
 
         # Combines the module's protected_path? (POST list) and
         # get_request_protected_path? (GET list) into one method-aware predicate: it

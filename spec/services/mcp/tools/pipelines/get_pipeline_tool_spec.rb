@@ -289,6 +289,30 @@ RSpec.describe Mcp::Tools::Pipelines::GetPipelineTool, :request_store, feature_c
           expect(result[:structuredContent][:page_info][:end_cursor]).to be_present
         end
       end
+
+      context 'when an artifact is expired' do
+        let_it_be(:pipeline_with_expired_artifact) { create(:ci_pipeline, project: project) }
+        let_it_be(:job_with_expired_artifact) do
+          create(:ci_build, :success, pipeline: pipeline_with_expired_artifact, name: 'rspec-expired')
+        end
+
+        let_it_be(:expired_artifact) { create(:ci_job_artifact, :archive, :expired, job: job_with_expired_artifact) }
+
+        let(:params) do
+          { id: project.full_path, pipeline_id: pipeline_with_expired_artifact.id, include: ['artifacts'] }
+        end
+
+        it 'reports the artifact as expired with its ISO 8601 expiry timestamp', :aggregate_failures do
+          result = tool.execute
+
+          expect(result[:isError]).to be(false), -> { result.inspect }
+
+          artifacts = result[:structuredContent][:artifacts]
+          expect(artifacts.pluck(:id)).to contain_exactly(expired_artifact.id)
+          expect(artifacts.first[:expired]).to be(true)
+          expect(artifacts.first[:expire_at]).to eq(expired_artifact.expire_at.iso8601)
+        end
+      end
     end
 
     context 'when the pipeline does not exist' do

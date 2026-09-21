@@ -87,8 +87,7 @@ RSpec.describe Issues::RelativePositionRebalancingService, :clean_gitlab_redis_s
 
     it 'aborts if there are too many rebalances running' do
       caching = service.send(:caching)
-      allow(caching).to receive(:rebalance_in_progress?).and_return(false)
-      allow(caching).to receive(:concurrent_running_rebalances_count).and_return(10)
+      allow(caching).to receive_messages(rebalance_in_progress?: false, concurrent_running_rebalances_count: 10)
       allow(service).to receive(:caching).and_return(caching)
 
       expect { service.execute }.to raise_error(Issues::RelativePositionRebalancingService::TooManyConcurrentRebalances)

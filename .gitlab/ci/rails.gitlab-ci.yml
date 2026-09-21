@@ -856,11 +856,13 @@ rspec:undercoverage:
 
 rspec:feature-flags:
   extends:
+    - .repo-from-artifacts
     - .rails:rules:rspec-feature-flags
   stage: post-test
   needs:
     - job: "feature-flags-usage"
     - job: "haml-lint"
+    - !reference [.repo-from-artifacts, needs]
   before_script:
     - source scripts/utils.sh
   script:
@@ -936,8 +938,10 @@ rspec:flaky-tests-report:
 
 rspec:merge-auto-explain-logs:
   extends:
+    - .repo-from-artifacts
     - .rails:rules:rspec-merge-auto-explain-logs
   stage: post-test
+  # rspec:coverage's needs already include clone-gitlab-repo via .repo-from-artifacts
   needs: !reference ["rspec:coverage", "needs"]
   script:
     - scripts/merge-auto-explain-logs
@@ -963,12 +967,14 @@ rspec:merge-auto-explain-logs:
 # distinguish from app code. Revisit if the CI database has another LWLock incident.
 rspec:check-ci-partition-pruning:
   extends:
+    - .repo-from-artifacts
     - .rails:rules:check-ci-partition-pruning
   stage: post-test
   needs:
     - job: "rspec:merge-auto-explain-logs"
       artifacts: true
       optional: true
+    - !reference [.repo-from-artifacts, needs]
   allow_failure: true
   script:
     - scripts/database/check_ci_partition_pruning.rb "$RSPEC_AUTO_EXPLAIN_LOG_PATH"
@@ -980,6 +986,7 @@ rspec:check-ci-partition-pruning:
 # EE: default refs (MRs, default branch, schedules) jobs #
 rspec-predictive:pipeline-generate:
   extends:
+    - .repo-from-artifacts
     - .rails:rules:rspec-predictive:pipeline-generate
   stage: prepare
   needs:
@@ -987,6 +994,7 @@ rspec-predictive:pipeline-generate:
     - job: "retrieve-tests-metadata"
     - job: "detect-system-tests-duo"
       optional: true
+    - !reference [.repo-from-artifacts, needs]
   script:
     - scripts/prepare_predictive_system_pipeline.rb
     - |

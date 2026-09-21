@@ -3,11 +3,11 @@ import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
 import GlqlVisualization from '~/analytics/analytics_dashboards/components/visualizations/glql.vue';
 import GlqlResolver from '~/glql/components/common/resolver.vue';
 import GlqlViewSourceModal from '~/glql/components/common/view_source_modal.vue';
-import { copyGLQLNodeAsGFM } from '~/glql/utils/copy_as_gfm';
+import { copyGLQLContents } from '~/glql/utils/copy_as_gfm';
 import { copyToClipboard } from '~/lib/utils/copy_to_clipboard';
 
 jest.mock('~/glql/utils/copy_as_gfm', () => ({
-  copyGLQLNodeAsGFM: jest.fn(),
+  copyGLQLContents: jest.fn(),
 }));
 jest.mock('~/lib/utils/copy_to_clipboard');
 
@@ -283,13 +283,24 @@ describe('GlqlVisualization', () => {
       expect(copyToClipboard).toHaveBeenCalledWith(wrappedQuery, document.body);
     });
 
-    it('copies the rendered contents when "Copy contents" is triggered', async () => {
-      findResolver().vm.$emit('change', { data: { count: 1, nodes: [{ id: 1 }] } });
+    // Panels route through the same helper the embedded facade uses, so a chart panel copies a
+    // table built from its data rather than the axis labels scraped out of its SVG.
+    it('copies the contents with the state the resolver last reported', async () => {
+      const change = {
+        config: { display: 'columnChart' },
+        data: { count: 1, nodes: [{ language: 'ruby', totalCount: 21 }] },
+        fields: [
+          { key: 'language', label: 'Language', type: 'dimension' },
+          { key: 'totalCount', label: 'Total count', type: 'metric' },
+        ],
+      };
+
+      findResolver().vm.$emit('change', change);
       await nextTick();
 
       findAction('Copy contents').action();
 
-      expect(copyGLQLNodeAsGFM).toHaveBeenCalledWith(findResolver().element);
+      expect(copyGLQLContents).toHaveBeenCalledWith({ ...change, el: findResolver().element });
     });
 
     it('emits reload to reload the whole panel when "Reload" is triggered', () => {

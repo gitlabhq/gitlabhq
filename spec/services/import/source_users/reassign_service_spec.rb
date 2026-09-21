@@ -343,9 +343,10 @@ RSpec.describe Import::SourceUsers::ReassignService, feature_category: :importer
 
     context 'when an error occurs' do
       before do
-        allow(import_source_user).to receive(:reassign).and_return(false)
-        allow(import_source_user).to receive(:errors).and_return(instance_double(ActiveModel::Errors,
-          full_messages: ['Error']))
+        allow(import_source_user).to receive_messages(
+          reassign: false,
+          errors: instance_double(ActiveModel::Errors, full_messages: ['Error'])
+        )
       end
 
       it_behaves_like 'an error response', 'active record', error: ['Error']

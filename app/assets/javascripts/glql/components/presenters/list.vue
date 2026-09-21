@@ -1,6 +1,7 @@
 <script>
 import { GlIntersperse, GlSkeletonLoader } from '@gitlab/ui';
-import { baseFieldKeyOf } from '../../utils/chart_data';
+import { baseFieldKeyOf, labelWithParameter } from '../../utils/chart_data';
+import { FIELD_TYPES } from '../../constants';
 import { titleFieldFor } from './presenter_registry';
 import FieldPresenter from './field.vue';
 
@@ -63,6 +64,10 @@ export default {
   },
   methods: {
     baseFieldKeyOf,
+    labelWithParameter,
+    isMetric(field) {
+      return field.type === FIELD_TYPES.METRIC;
+    },
   },
 };
 </script>
@@ -88,6 +93,7 @@ export default {
         <div>
           <gl-intersperse separator=" · ">
             <span v-for="field in visibleFields" :key="field.key">
+              <template v-if="isMetric(field)">{{ labelWithParameter(field) }}: </template>
               <field-presenter
                 :item="item"
                 :field-key="field.key"

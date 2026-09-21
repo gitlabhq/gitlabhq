@@ -89,11 +89,9 @@ RSpec.describe Ci::PipelineSchedules::VariablesUpdateService, feature_category: 
       subject(:service) { described_class.new(pipeline_schedule_variable, user, {}) }
 
       before do
-        allow(pipeline_schedule_variable).to receive(:save).and_return(false)
-
         errors = ActiveModel::Errors.new(project)
         errors.add(:base, 'An error occurred')
-        allow(pipeline_schedule_variable).to receive(:errors).and_return(errors)
+        allow(pipeline_schedule_variable).to receive_messages(save: false, errors: errors)
       end
 
       it 'returns ServiceResponse.error' do

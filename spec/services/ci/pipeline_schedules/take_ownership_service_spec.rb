@@ -40,11 +40,9 @@ RSpec.describe Ci::PipelineSchedules::TakeOwnershipService, feature_category: :c
         subject(:service) { described_class.new(pipeline_schedule, owner) }
 
         before do
-          allow(pipeline_schedule).to receive(:update).and_return(false)
-
           errors = ActiveModel::Errors.new(pipeline_schedule)
           errors.add(:base, 'An error occurred')
-          allow(pipeline_schedule).to receive(:errors).and_return(errors)
+          allow(pipeline_schedule).to receive_messages(update: false, errors: errors)
         end
 
         it 'returns ServiceResponse.error' do

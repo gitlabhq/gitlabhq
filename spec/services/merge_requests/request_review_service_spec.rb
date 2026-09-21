@@ -15,8 +15,7 @@ RSpec.describe MergeRequests::RequestReviewService, feature_category: :code_revi
 
   before do
     allow(NotificationService).to receive(:new) { notification_service }
-    allow(service).to receive(:todo_service).and_return(todo_service)
-    allow(service).to receive(:notification_service).and_return(notification_service)
+    allow(service).to receive_messages(todo_service: todo_service, notification_service: notification_service)
 
     reviewer.update!(state: MergeRequestReviewer.states[:reviewed])
 

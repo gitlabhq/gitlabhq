@@ -1157,6 +1157,12 @@ RSpec.describe ApplicationSetting, feature_category: :settings do
 
       it { is_expected.to allow_value(valid_import_sources).for(:import_sources) }
       it { is_expected.not_to allow_value(invalid_import_sources).for(:import_sources) }
+
+      it 'coerces a nil column value to an empty array' do
+        setting.update_column(:import_sources, nil)
+
+        expect(setting.reload.import_sources).to eq([])
+      end
     end
 
     describe 'default_artifacts_expire_in' do

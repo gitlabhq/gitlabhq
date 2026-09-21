@@ -161,6 +161,125 @@ RSpec.describe Gitlab::StringRangeMarker, feature_category: :source_code_managem
           expect(result).to be_html_safe
         end
       end
+
+      # The following specs exercise safe_position_mapping directly. mark skips
+      # mapping when raw and rich lengths match (identity_mapping?), so each input
+      # below keeps raw and rich lengths unequal to force the mapping path, while
+      # placing a literal (unescaped) ampersand in the html_safe rich_line.
+      #
+      context 'when rich text contains a literal ampersand followed by an unrelated semicolon' do
+        let(:raw) { 'Tom & Jerry; extra' }
+        let(:rich) { 'Tom & Jerry; extra!'.html_safe }
+        let(:ranges) { [0..4] }
+
+        it 'maps the literal ampersand 1:1 without overrunning to the semicolon', :aggregate_failures do
+          expect(result).to eq('<mark>Tom &</mark> Jerry; extra!')
+          expect(result).to be_html_safe
+        end
+      end
+
+      context 'when a literal ampersand is followed by more rich characters' do
+        let(:raw) { 'Tom &' }
+        let(:rich) { 'Tom &X more'.html_safe }
+        let(:ranges) { [0..4] }
+
+        it 'maps the ampersand 1:1 without dropping subsequent characters', :aggregate_failures do
+          expect(result).to eq('<mark>Tom &</mark>X more')
+          expect(result).to be_html_safe
+        end
+      end
+
+      context 'when rich text ends with a literal ampersand' do
+        let(:raw) { 'Tom &' }
+        let(:rich) { '<b>Tom &</b>'.html_safe }
+        let(:ranges) { [0..4] }
+
+        it 'maps the trailing ampersand without overrunning past end-of-string', :aggregate_failures do
+          expect(result).to eq('<b><mark>Tom &</mark></b>')
+          expect(result).to be_html_safe
+        end
+      end
+
+      context 'when rich text contains a valid HTML entity (regression guard)' do
+        let(:raw) { 'a&b extra' }
+        let(:rich) { 'a&amp;b extra!'.html_safe }
+        let(:ranges) { [0..2] }
+
+        it 'still collapses the entity to a single raw position', :aggregate_failures do
+          expect(result).to eq('<mark>a&amp;b</mark> extra!')
+          expect(result).to be_html_safe
+        end
+      end
+
+      context 'when rich text contains multiple literal ampersands' do
+        let(:raw) { 'A & B & C' }
+        let(:rich) { 'A & B & C!'.html_safe }
+        let(:ranges) { [0..2] }
+
+        it 'maps the first literal ampersand 1:1 without overrunning to a later one', :aggregate_failures do
+          expect(result).to eq('<mark>A &</mark> B & C!')
+          expect(result).to be_html_safe
+        end
+      end
+
+      context 'when rich text contains numeric HTML entities' do
+        let(:raw) { "a'b/c" }
+        let(:rich) { "a&#39;b&#x2F;c extra".html_safe }
+        let(:ranges) { [0..4] }
+
+        it 'collapses decimal and hex entities correctly', :aggregate_failures do
+          expect(result).to eq("<mark>a&#39;b&#x2F;c</mark> extra")
+          expect(result).to be_html_safe
+        end
+      end
+
+      context 'when rich text contains ampersand-semicolon with no entity name' do
+        let(:raw) { 'test &; more' }
+        let(:rich) { 'test &; more!'.html_safe }
+        let(:ranges) { [0..6] }
+
+        it 'treats &; as two separate characters (not a valid entity)', :aggregate_failures do
+          expect(result).to eq('<mark>test &;</mark> more!')
+          expect(result).to be_html_safe
+        end
+      end
+
+      context 'when rich text contains an HTML tag and a literal ampersand' do
+        let(:raw) { 'a & b' }
+        let(:rich) { '<span>a & b</span> extra'.html_safe }
+        let(:ranges) { [0..4] }
+
+        it 'handles both the tag skip and literal ampersand correctly', :aggregate_failures do
+          expect(result).to eq('<span><mark>a & b</mark></span> extra')
+          expect(result).to be_html_safe
+        end
+      end
+
+      context 'when multiple ranges span a literal ampersand' do
+        let(:raw) { 'Tom & Jerry' }
+        let(:rich) { 'Tom & Jerry!'.html_safe }
+        let(:ranges) { [0..2, 4..10] }
+
+        it 'marks both ranges correctly without overrunning', :aggregate_failures do
+          expect(result).to eq('<mark>Tom</mark> <mark>& Jerry</mark>!')
+          expect(result).to be_html_safe
+        end
+      end
+
+      context 'when a run of bare ampersands precedes a distant semicolon' do
+        let(:count) { 5_000 }
+        let(:raw) { "#{'&' * count};" }
+        # Wrapped in a tag so raw and rich lengths differ; otherwise
+        # identity_mapping? short-circuits and safe_position_mapping never runs.
+        #
+        let(:rich) { "<b>#{'&' * count};</b>".html_safe }
+        let(:ranges) { [0..2] }
+
+        it 'maps each bare ampersand 1:1 without scanning to the distant semicolon', :aggregate_failures do
+          expect(result).to eq("<b><mark>&&&</mark>#{'&' * (count - 3)};</b>")
+          expect(result).to be_html_safe
+        end
+      end
     end
 
     it_behaves_like 'bounds-checked position mapping'

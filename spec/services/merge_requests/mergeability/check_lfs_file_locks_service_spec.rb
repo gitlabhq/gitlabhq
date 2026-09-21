@@ -133,8 +133,7 @@ RSpec.describe MergeRequests::Mergeability::CheckLfsFileLocksService, feature_ca
       let(:expected_cache_key) { format(described_class::CACHE_KEY, id: id, sha: sha, epoch: epoch) }
 
       before do
-        allow(merge_request).to receive(:id).and_return(id)
-        allow(merge_request).to receive(:diff_head_sha).and_return(sha)
+        allow(merge_request).to receive_messages(id: id, diff_head_sha: sha)
         allow(project).to receive(:lfs_file_locks_changed_epoch).and_return(epoch)
       end
 

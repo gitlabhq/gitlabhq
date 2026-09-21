@@ -1211,6 +1211,8 @@
   - 1
 - - security_generate_policy_violation_comment
   - 1
+- - security_inventory_filters_update_traversal_ids
+  - 1
 - - security_orchestration_configuration_create_bot
   - 1
 - - security_orchestration_configuration_create_bot_for_namespace

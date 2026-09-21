@@ -141,7 +141,7 @@ export default {
   },
   watch: {
     board(newBoard) {
-      document.title = newBoard.name;
+      this.updateDocumentTitle(newBoard);
     },
   },
   created() {
@@ -151,6 +151,25 @@ export default {
     this.handleSearch.cancel();
   },
   methods: {
+    updateDocumentTitle(newBoard) {
+      if (!newBoard?.name) {
+        return;
+      }
+
+      // The server renders the title as "Issue Boards · [board name] · Boards · [Project] · GitLab".
+      // Replace only the board-name segment so the prefix and project/instance suffix are preserved,
+      // instead of clobbering the whole title with the bare board name.
+      const separator = ' · ';
+      const segments = document.title.split(separator);
+      const boardNameIndex = 1;
+
+      if (segments.length > boardNameIndex) {
+        segments[boardNameIndex] = newBoard.name;
+        document.title = segments.join(separator);
+      } else {
+        document.title = newBoard.name;
+      }
+    },
     fullBoardId(boardId) {
       return fullBoardId(boardId);
     },

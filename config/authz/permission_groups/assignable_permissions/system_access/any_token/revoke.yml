@@ -7,3 +7,5 @@ available_for:
   - granular_access_token
 permissions:
   - revoke_any_token
+assignable_when:
+  - condition: admin

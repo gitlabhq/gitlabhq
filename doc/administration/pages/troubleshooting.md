@@ -3,6 +3,7 @@ stage: Plan
 group: Planner Intelligence
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see <https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments>
 title: Troubleshooting GitLab Pages administration
+description: Diagnose and fix common errors that occur when you administer GitLab Pages.
 ---
 
 {{< details >}}
@@ -344,7 +345,7 @@ in all of your GitLab Pages instances.
 
 ## Intermittent 502 errors when using an AWS Network Load Balancer and GitLab Pages
 
-Connections time out when using a Network Load Balancer with client IP preservation enabled and [the request is looped back to the source server](https://docs.aws.amazon.com/elasticloadbalancing/latest/network/load-balancer-troubleshooting.html#loopback-timeout).
+Connections time out when using a Network Load Balancer with client IP preservation turned on and [the request is looped back to the source server](https://docs.aws.amazon.com/elasticloadbalancing/latest/network/load-balancer-troubleshooting.html#loopback-timeout).
 This can happen to GitLab instances with multiple servers
 running both the core GitLab application and GitLab Pages. This can also happen when a single
 container is running both the core GitLab application and GitLab Pages.
@@ -425,11 +426,11 @@ ERRO[0145] cannot serve from disk                        error="gitlab: disk acc
 ```
 
 It means that GitLab Rails is telling GitLab Pages to serve content from a location on disk.
-However, GitLab Pages was configured to disable disk access.
+However, GitLab Pages was configured to turn off disk access.
 
-To enable disk access:
+To turn on disk access:
 
-1. Enable disk access for GitLab Pages in `/etc/gitlab/gitlab.rb`:
+1. Turn on disk access for GitLab Pages in `/etc/gitlab/gitlab.rb`:
 
    ```ruby
    gitlab_pages['enable_disk'] = true
@@ -445,7 +446,7 @@ If you see an error similar to:
 {"error":"httprange: new resource 403: \"403 Forbidden\"","host":"root.pages.example.com","level":"error","msg":"vfs.Root","path":"/pages1/","time":"2021-06-10T08:45:19Z"}
 ```
 
-And you run pages on the separate server syncing files via NFS, it may mean that
+And you run pages on the separate server syncing files through NFS, it may mean that
 the shared pages directory is mounted on a different path on the main GitLab server and the
 GitLab Pages server.
 
@@ -465,7 +466,7 @@ The error message `is not a recognized provider` could be coming from the `fog` 
 
 To fix that:
 
-1. Check your `gitlab.rb` file. If you have `gitlab_rails['pages_object_store_enabled']` enabled, but no bucket details have been configured, either:
+1. Check your `gitlab.rb` file. If you have `gitlab_rails['pages_object_store_enabled']` turned on, but no bucket details have been configured, either:
 
    - Configure object storage for your Pages deployments, following the [S3-compatible connection settings](_index.md#s3-compatible-connection-settings) guide.
    - Store your deployments locally, by commenting out that line.
@@ -481,12 +482,12 @@ If you get a `404 Page Not Found` response from GitLab Pages:
 
 Without the `pages:deploy` job, the updates to your GitLab Pages site are never published.
 
-If you're using a separate Pages server with `namespace_in_path` enabled, see
+If you're using a separate Pages server with `namespace_in_path` turned on, see
 [404 error when UI shows incorrect URL](#404-error-page-not-found-when-pages-ui-shows-incorrect-url).
 
 ## 404 error: Page not found when Pages UI shows incorrect URL
 
-If you configured and enabled `namespace_in_path` on a [separate GitLab Pages server](_index.md#running-gitlab-pages-on-a-separate-server)
+If you configured and turned on `namespace_in_path` on a [separate GitLab Pages server](_index.md#running-gitlab-pages-on-a-separate-server)
 you might get a `404 Page not found` error.
 
 This error occurs when the `namespace_in_path` setting is misconfigured or missing on the GitLab Pages
@@ -534,7 +535,7 @@ For a complete configuration example, see
 
 ## 503 error `Client authentication failed due to unknown client`
 
-If Pages is a registered OAuth application and [access control is enabled](../../user/project/pages/pages_access_control.md), this error indicates that the authentication token stored in `/etc/gitlab/gitlab-secrets.json` has become invalid:
+If Pages is a registered OAuth application and [access control is turned on](../../user/project/pages/pages_access_control.md), this error indicates that the authentication token stored in `/etc/gitlab/gitlab-secrets.json` has become invalid:
 
 ```plaintext
 Client authentication failed due to unknown client, no client authentication included,

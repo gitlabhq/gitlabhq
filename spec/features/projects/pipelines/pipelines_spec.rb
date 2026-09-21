@@ -21,7 +21,7 @@ RSpec.describe 'Pipelines', :js, feature_category: :continuous_integration do
     end
 
     describe 'GET /:project/-/pipelines' do
-      let(:project) { create(:project, :repository) }
+      let_it_be_with_reload(:project) { create(:project, :repository) }
 
       let!(:pipeline) do
         create(
@@ -219,6 +219,7 @@ RSpec.describe 'Pipelines', :js, feature_category: :continuous_integration do
         it_behaves_like 'detached merge request pipeline'
 
         context 'when source project is a forked project' do
+          let(:project) { create(:project, :repository) }
           let(:source_project) { fork_project(project, user, repository: true) }
 
           it_behaves_like 'detached merge request pipeline'
@@ -259,6 +260,7 @@ RSpec.describe 'Pipelines', :js, feature_category: :continuous_integration do
         it_behaves_like 'Correct merge request pipeline information'
 
         context 'when source project is a forked project' do
+          let(:project) { create(:project, :repository) }
           let(:source_project) { fork_project(project, user, repository: true) }
 
           it_behaves_like 'Correct merge request pipeline information'
@@ -266,7 +268,7 @@ RSpec.describe 'Pipelines', :js, feature_category: :continuous_integration do
       end
 
       context 'when pipeline is a scheduled pipeline' do
-        let(:project) { create(:project, :repository, public_builds: false) }
+        let_it_be_with_reload(:project) { create(:project, :repository, public_builds: false) }
         let(:schedule) { create(:ci_pipeline_schedule, project: project, owner: user) }
         let!(:pipeline) { create(:ci_pipeline, project: project, pipeline_schedule: schedule) }
 
@@ -650,7 +652,7 @@ RSpec.describe 'Pipelines', :js, feature_category: :continuous_integration do
     end
 
     describe 'POST /:project/-/pipelines' do
-      let(:project) { create(:project, :repository) }
+      let_it_be_with_reload(:project) { create(:project, :repository) }
 
       before do
         visit new_project_pipeline_path(project)
@@ -727,11 +729,11 @@ RSpec.describe 'Pipelines', :js, feature_category: :continuous_integration do
     end
 
     describe 'Reset runner caches' do
-      let(:project) { create(:project, :repository) }
+      let_it_be_with_reload(:project) { create(:project, :repository) }
 
       before do
         create(:ci_empty_pipeline, status: 'success', project: project, sha: project.commit.id, ref: 'master')
-        project.add_maintainer(user)
+        project.add_maintainer(user) # rubocop:disable RSpec/BeforeAllRoleAssignment -- user is a per-example let from outer context, so before_all cannot access it
         visit_project_pipelines
       end
 
@@ -763,7 +765,7 @@ RSpec.describe 'Pipelines', :js, feature_category: :continuous_integration do
     end
 
     describe 'Run Pipelines' do
-      let(:project) { create(:project, :repository) }
+      let_it_be_with_reload(:project) { create(:project, :repository) }
 
       before do
         visit new_project_pipeline_path(project)
@@ -863,7 +865,7 @@ RSpec.describe 'Pipelines', :js, feature_category: :continuous_integration do
     end
 
     context 'when project is public' do
-      let(:project) { create(:project, :public, :repository) }
+      let_it_be_with_reload(:project) { create(:project, :public, :repository) }
 
       context 'without pipelines' do
         it { expect(page).to have_content 'This project is not currently set up to run pipelines.' }
@@ -871,7 +873,7 @@ RSpec.describe 'Pipelines', :js, feature_category: :continuous_integration do
     end
 
     context 'when project is private' do
-      let(:project) { create(:project, :private, :repository) }
+      let_it_be_with_reload(:project) { create(:project, :private, :repository) }
 
       it 'redirects the user to sign_in and displays the flash alert' do
         expect(page).to have_content 'Sign in or sign up before continuing'

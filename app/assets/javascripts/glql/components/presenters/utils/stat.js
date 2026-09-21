@@ -264,7 +264,8 @@ export const statPresentationFor = (source, metric, displayConfig) => {
 
   return {
     // A block's own `title:` and a dashboard panel each render a heading already, so the
-    // stat's title stays empty unless a block asks for one.
+    // stat's title stays empty unless a block asks for one. "Copy contents" supplies the
+    // metric label separately, since that heading is outside the copied element.
     title: asString(config.title) ?? '',
     unit: asString(config.unit),
     description:

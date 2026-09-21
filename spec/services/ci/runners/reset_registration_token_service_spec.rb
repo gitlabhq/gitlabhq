@@ -60,8 +60,7 @@ RSpec.describe ::Ci::Runners::ResetRegistrationTokenService, '#execute', feature
     let_it_be(:scope) { create(:application_setting, allow_runner_registration_token: true) }
 
     before do
-      allow(ApplicationSetting).to receive(:current).and_return(scope)
-      allow(ApplicationSetting).to receive(:current_without_cache).and_return(scope)
+      allow(ApplicationSetting).to receive_messages(current: scope, current_without_cache: scope)
     end
 
     it_behaves_like 'a registration token reset operation' do

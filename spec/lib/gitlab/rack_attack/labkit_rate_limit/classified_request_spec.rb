@@ -189,8 +189,10 @@ RSpec.describe Gitlab::RackAttack::LabkitRateLimit::ClassifiedRequest, feature_c
       end
 
       it 'returns a strict boolean for every classification fact' do
-        raw_keys = %i[ip requester_id requester_type runner_id aid path method]
-        classification = facts_for('/api/v4/projects').except(*raw_keys)
+        # Asks the request for its identity facts rather than listing them, so this
+        # CE spec does not have to name the EE plan facts that EE adds to them.
+        request = described_class.new(Rack::MockRequest.env_for('/api/v4/projects'))
+        classification = request.labkit_facts.except(*request.send(:identity_facts).keys)
 
         expect(classification.values).to all(be_in([true, false]))
       end

@@ -65,11 +65,68 @@ Prerequisites:
          sarif: sarif.json
    ```
 
+   > [!note]
+   > The job must complete successfully for GitLab to ingest the findings.
+
 1. Commit and push the change. GitLab parses the SARIF file when the job completes.
 1. View the added findings in the pipeline **Security** tab.
 
 For the CI/CD artifact reference, see
 [`artifacts:reports:sarif`](../../../ci/yaml/artifacts_reports.md#artifactsreportssarif).
+
+## Scanner exit codes
+
+GitLab ingests security findings only when the job that produces them completes
+successfully. If the job fails, the SARIF artifact is still uploaded and available for
+download, but GitLab doesn't process the findings, and they don't appear in the Security
+tab, vulnerability report, or merge request widget.
+
+Many scanners exit with a non-zero code when they detect findings. Some do this by
+default. Others do it when configured to fail the pipeline on findings. Examples include
+kube-score, Trivy with `--exit-code 1`, Checkov, tfsec, and Hadolint. GitLab analyzers
+always exit `0` when they detect findings.
+
+If you use `allow_failure: true`, or `allow_failure:exit_codes` to allow exit code
+`1` specifically, a failed job no longer fails the pipeline, but GitLab still
+records the job itself as failed and still doesn't process its findings.
+
+To integrate a scanner that exits non-zero on findings, capture the exit code in the job
+script and don't propagate it as the job result:
+
+```yaml
+sarif_scan:
+  image: <scanner-image>
+  script:
+    - <scanner-command> --output sarif.json || scanner_exit=$?
+    - scanner_exit=${scanner_exit:-0}
+    - if [ "$scanner_exit" -ne 0 ]; then echo "Scanner found issues (exit ${scanner_exit}). See the Security tab for details."; fi
+  artifacts:
+    reports:
+      sarif: sarif.json
+```
+
+The job always exits `0`, so GitLab ingests the report regardless of what the scanner
+found.
+
+To distinguish between findings and a scanner crash, check whether a valid report exists
+before the job exits:
+
+```yaml
+sarif_scan:
+  image: <scanner-image>
+  script:
+    - <scanner-command> --output sarif.json || scanner_exit=$?
+    - scanner_exit=${scanner_exit:-0}
+    - if [ ! -s sarif.json ]; then echo "Scanner failed to produce a report."; exit 1; fi
+    - if [ "$scanner_exit" -ne 0 ]; then echo "Scanner found issues (exit ${scanner_exit}). See the Security tab for details."; fi
+  artifacts:
+    reports:
+      sarif: sarif.json
+```
+
+If the scanner never writes a report, the job fails and GitLab has no report to process
+either way, so a hard failure here reveals the real problem instead of a silent
+zero-findings report.
 
 ## Assigned report types
 
@@ -268,6 +325,22 @@ the same file gets its own location fingerprint.
 ## Troubleshooting
 
 When you add SARIF reports, you might encounter the following issues:
+
+### No findings appear despite a valid SARIF artifact
+
+The Security tab, vulnerability report, and merge request widget show no findings,
+but the SARIF artifact exists and contains valid results.
+
+This issue occurs when the producing CI job has a failed status. GitLab uploads the
+artifact regardless of job status, but only processes findings when the job succeeds.
+Setting `allow_failure: true` does not change the job status used during ingestion.
+
+To resolve this issue:
+
+1. Check the job status in the pipeline view. A failed or allowed-to-fail job does
+   not produce ingested findings.
+1. Update the job script to capture and suppress the scanner's findings exit code.
+   For more information, see [scanner exit codes](#scanner-exit-codes).
 
 ### Warning: `... result(s) were skipped during ingestion`
 

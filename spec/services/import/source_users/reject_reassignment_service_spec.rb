@@ -80,9 +80,10 @@ RSpec.describe Import::SourceUsers::RejectReassignmentService, feature_category:
 
     context 'when an error occurs' do
       before do
-        allow(import_source_user).to receive(:reject).and_return(false)
-        allow(import_source_user).to receive(:errors).and_return(instance_double(ActiveModel::Errors,
-          full_messages: ['Error']))
+        allow(import_source_user).to receive_messages(
+          reject: false,
+          errors: instance_double(ActiveModel::Errors, full_messages: ['Error'])
+        )
       end
 
       it 'returns an error' do

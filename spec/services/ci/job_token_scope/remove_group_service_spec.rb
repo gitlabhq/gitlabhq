@@ -87,8 +87,7 @@ RSpec.describe Ci::JobTokenScope::RemoveGroupService, feature_category: :continu
 
       before do
         allow(::Ci::JobToken::GroupScopeLink).to receive(:for_source_and_target).and_return(link)
-        allow(link).to receive(:destroy).and_return(false)
-        allow(link).to receive(:errors).and_return(ActiveModel::Errors.new(link))
+        allow(link).to receive_messages(destroy: false, errors: ActiveModel::Errors.new(link))
         link.errors.add(:base, 'Custom error message')
       end
 

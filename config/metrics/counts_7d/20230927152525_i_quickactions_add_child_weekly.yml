@@ -4,7 +4,7 @@ name: quickactions_add_child_weekly
 description: Count of WAU using the `/add_child` quick action
 product_group: portfolio_planning
 product_categories:
-- team_planning
+- portfolio_management
 value_type: number
 status: active
 milestone: "16.5"

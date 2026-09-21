@@ -12,6 +12,7 @@ import BulkRunnerPauseMutation from '~/ci/runner/graphql/list/bulk_runner_pause.
 import BulkRunnerDeleteMutation from '~/ci/runner/graphql/list/bulk_runner_delete.mutation.graphql';
 import { createLocalState } from '~/ci/runner/graphql/list/local_state';
 import waitForPromises from 'helpers/wait_for_promises';
+import { useMockInternalEventsTracking } from 'helpers/tracking_internal_events_helper';
 import { allRunnersData } from '../mock_data';
 
 Vue.use(VueApollo);
@@ -30,6 +31,8 @@ describe('RunnerBulkActions', () => {
   const findPauseBtn = () => wrapper.findComponentByTestId('pause-selected');
   const findUnpauseBtn = () => wrapper.findComponentByTestId('unpause-selected');
   const findModal = () => wrapper.findComponent(GlModal);
+
+  const { bindInternalEventDocument } = useMockInternalEventsTracking();
 
   const mockRunners = allRunnersData.data.runners.nodes;
   const mockId1 = allRunnersData.data.runners.nodes[0].id;
@@ -301,6 +304,16 @@ describe('RunnerBulkActions', () => {
           expect(bulkRunnerDeleteHandler).toHaveBeenCalledWith({
             input: { ids: mockCheckedRunnerIds() },
           });
+        });
+
+        it('tracks the confirmation with the number of selected runners', () => {
+          const { trackEventSpy } = bindInternalEventDocument(wrapper.element);
+
+          expect(trackEventSpy).toHaveBeenCalledWith(
+            'click_bulk_delete_runners_button',
+            { value: 2 },
+            undefined,
+          );
         });
       });
 

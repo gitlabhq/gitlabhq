@@ -10,6 +10,8 @@ start-release-environments-security-pipeline:
   # https://gitlab.com/gitlab-org/gitlab/-/issues/387183
   needs:
     - compile-production-assets
+    # Gate on the combined assets image so the downstream deploy doesn't pull a stale Webpack-only one.
+    - build-assets-image
     - build-qa-image
   inherit:
     variables:

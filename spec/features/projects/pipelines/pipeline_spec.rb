@@ -237,7 +237,7 @@ RSpec.describe 'Pipeline', :js, feature_category: :continuous_integration do
           visit_pipeline
         end
 
-        let(:project) { create(:project, :repository, group: group) }
+        let_it_be(:project) { create(:project, :repository, group: group) }
 
         it 'shows the scheduled icon and an unschedule action for the delayed job' do
           page.within('#ci-badge-delayed-job') do
@@ -338,7 +338,7 @@ RSpec.describe 'Pipeline', :js, feature_category: :continuous_integration do
       end
 
       context 'when pipeline has a downstream pipeline' do
-        let(:downstream_project) { create(:project, :repository, group: group) }
+        let_it_be(:downstream_project) { create(:project, :repository, group: group) }
         let(:downstream_pipeline) do
           create(
             :ci_pipeline,
@@ -483,7 +483,7 @@ RSpec.describe 'Pipeline', :js, feature_category: :continuous_integration do
       end
 
       context 'without permission to access builds' do
-        let(:project) { create(:project, :public, :repository, public_builds: false) }
+        let_it_be(:project) { create(:project, :public, :repository, public_builds: false) }
         let(:role) { :guest }
 
         it 'does not show the pipeline details page' do
@@ -792,8 +792,8 @@ RSpec.describe 'Pipeline', :js, feature_category: :continuous_integration do
   context 'when a bridge job exists' do
     include_context 'pipeline builds'
 
-    let(:project) { create(:project, :repository) }
-    let(:downstream) { create(:project, :repository) }
+    let_it_be(:project) { create(:project, :repository) }
+    let_it_be(:downstream) { create(:project, :repository) }
 
     let(:pipeline) do
       create(
@@ -1332,7 +1332,7 @@ RSpec.describe 'Pipeline', :js, feature_category: :continuous_integration do
     context 'when pipeline uses auto devops' do
       include_context 'pipeline builds'
 
-      let(:project) { create(:project, :repository, auto_devops_attributes: { enabled: true }) }
+      let_it_be(:project) { create(:project, :repository, auto_devops_attributes: { enabled: true }) }
       let(:pipeline) do
         create(
           :ci_pipeline,

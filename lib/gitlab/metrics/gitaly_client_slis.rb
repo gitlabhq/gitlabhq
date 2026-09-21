@@ -13,9 +13,11 @@ module Gitlab
       # `libsonnet/service-archetypes/helpers/gitaly.libsonnet`, which decides
       # what the server-side SLI counts as an error. Keep the two lists in sync.
       #
-      # Note: unlike the runbooks list, this SLI does not ignore
-      # `resource_exhausted` or `deadline_exceeded`. On the client side a `ResourceExhausted` means the call did not
-      # succeed for the caller, so we count it as an error.
+      # Note: unlike the runbooks list, this SLI ignores `resource_exhausted`
+      # but not `deadline_exceeded`. ResourceExhausted is ignored because Gitaly
+      # returns it when a request is dropped due to rate limiting. DeadlineExceeded
+      # on the other hand, is a sign that the Gitaly server is under resource
+      # contention due to some other cause, and can be investigated.
       #
       # Codes are matched against the snake_case names from
       # `Gitlab::Git::BaseError::GRPC_CODES`.
@@ -28,6 +30,7 @@ module Gitlab
         permission_denied
         failed_precondition
         unauthenticated
+        resource_exhausted
       ].freeze
 
       class << self

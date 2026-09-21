@@ -7,9 +7,9 @@ identifiers:
   - project
   - namespace
   - user
-product_group: portfolio_planning
+product_group: planning_views
 product_categories:
-  - team_planning
+  - planning_views
 milestone: '18.3'
 introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/198482
 tiers:
