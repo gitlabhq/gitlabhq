@@ -146,9 +146,10 @@ Supported attributes:
 Example request:
 
 ```shell
-curl --request POST \ --header "PRIVATE-TOKEN: <your_access_token>" \
+curl --request POST \
+     --header "PRIVATE-TOKEN: <your_access_token>" \
      --header "Content-Type: application/json" \
-     --data "{"title": "My deploy key", "key": "ssh-rsa AAAA...", "expired_at": "2024-12-31T08:00:00Z"}" \
+     --data '{"title": "My deploy key", "key": "ssh-rsa AAAA...", "expires_at": "2024-12-31T08:00:00Z"}' \
      --url "https://gitlab.example.com/api/v4/deploy_keys/"
 ```
 
@@ -327,9 +328,10 @@ POST /projects/:id/deploy_keys
 | `expires_at` | datetime | no | Expiration date for the deploy key. Does not expire if no value is provided. Expected in ISO 8601 format (`2019-03-15T08:00:00Z`) |
 
 ```shell
-curl --request POST --header "PRIVATE-TOKEN: <your_access_token>" \
+curl --request POST \
+     --header "PRIVATE-TOKEN: <your_access_token>" \
      --header "Content-Type: application/json" \
-     --data "{"title": "My deploy key", "key": "ssh-rsa AAAA...", "can_push": "true"}" \
+     --data '{"title": "My deploy key", "key": "ssh-rsa AAAA...", "can_push": true}' \
      --url "https://gitlab.example.com/api/v4/projects/5/deploy_keys/"
 ```
 
@@ -361,9 +363,10 @@ PUT /projects/:id/deploy_keys/:key_id
 | `title`    | string  | no | New deploy key's title |
 
 ```shell
-curl --request PUT --header "PRIVATE-TOKEN: <your_access_token>" \
+curl --request PUT \
+     --header "PRIVATE-TOKEN: <your_access_token>" \
      --header "Content-Type: application/json" \
-     --data "{"title": "New deploy key", "can_push": true}" \
+     --data '{"title": "New deploy key", "can_push": true}' \
      --url "https://gitlab.example.com/api/v4/projects/5/deploy_keys/11"
 ```
 
@@ -464,9 +467,10 @@ With those IDs, add the same deploy key to all:
 
 ```shell
 for project_id in 321 456 987; do
-    curl --request POST --header "PRIVATE-TOKEN: <your_access_token>" \
+    curl --request POST \
+         --header "PRIVATE-TOKEN: <your_access_token>" \
          --header "Content-Type: application/json" \
-         --data "{"title": "my key", "key": "ssh-rsa AAAA..."}" \
-         "https://gitlab.example.com/api/v4/projects/${project_id}/deploy_keys"
+         --data '{"title": "my key", "key": "ssh-rsa AAAA..."}' \
+         --url "https://gitlab.example.com/api/v4/projects/${project_id}/deploy_keys"
 done
 ```

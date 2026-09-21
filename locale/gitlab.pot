@@ -12790,12 +12790,6 @@ msgstr ""
 msgid "ArtifactRegistry|Manifest successfully scheduled for deletion."
 msgstr ""
 
-msgid "ArtifactRegistry|Manually published"
-msgstr ""
-
-msgid "ArtifactRegistry|Manually published by %{author}"
-msgstr ""
-
 msgid "ArtifactRegistry|Maven"
 msgstr ""
 

@@ -21,6 +21,10 @@ module Keeps
       @file_helper = ::Keeps::Helpers::RubocopFixer::FileHelper.new
     end
 
+    def recreate_when_closed?
+      true
+    end
+
     def each_identified_change
       each_allowed_rubocop_rule do |rule, rule_file_path, violating_files|
         logger.puts "RubopCop rule #{rule}"
@@ -57,6 +61,14 @@ module Keeps
         Fixes the #{violating_files.count} violations for the rubocop rule `#{rule}`
         that were previously excluded in `#{rule_file_path}`.
         The exclusions have now been removed.
+
+        ## Stopping this MR from being recreated
+
+        This MR is regenerated on every run, so closing it will not prevent it from coming back.
+        If you find this cop's autocorrect is not safe or not desirable, add `AutoCorrect: false`
+        (or `SafeAutoCorrect: false`) under this cop in
+        [`.rubocop.yml`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/.rubocop.yml).
+        Housekeeper will then stop recreating this MR on the next run.
       MARKDOWN
 
       if remove_allow_rule

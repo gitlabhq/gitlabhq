@@ -27,7 +27,7 @@ export const DEFAULT_DATE_RANGE_OPTIONS = [
   DATE_RANGE_OPTION_CUSTOM,
 ];
 
-export const DEFAULT_SELECTED_DATE_RANGE_OPTION = DATE_RANGE_OPTION_LAST_7_DAYS;
+export const DEFAULT_SELECTED_DATE_RANGE_OPTION = DATE_RANGE_OPTION_LAST_30_DAYS;
 
 /**
  * The default options to display in the date_range_filter.

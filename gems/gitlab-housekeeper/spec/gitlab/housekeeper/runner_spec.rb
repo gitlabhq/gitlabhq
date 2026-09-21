@@ -41,6 +41,7 @@ RSpec.describe ::Gitlab::Housekeeper::Runner do
 
     allow(fake_keep_instance).to receive(:make_change!)
     allow(fake_keep_instance).to receive(:should_push_code?).and_return(true)
+    allow(fake_keep_instance).to receive(:recreate_when_closed?).and_return(false)
   end
 
   describe '#run' do
@@ -278,27 +279,6 @@ RSpec.describe ::Gitlab::Housekeeper::Runner do
     end
   end
 
-  describe '#housekeeper_fork_project_id' do
-    before do
-      stub_env('HOUSEKEEPER_FORK_PROJECT_ID', nil)
-      stub_env('HOUSEKEEPER_TARGET_PROJECT_ID', '456')
-    end
-
-    context 'when HOUSEKEEPER_FORK_PROJECT_ID env var is set' do
-      before do
-        stub_env('HOUSEKEEPER_FORK_PROJECT_ID', '123')
-      end
-
-      it 'gets its value from the env var' do
-        expect(described_class.new.housekeeper_fork_project_id).to eq('123')
-      end
-    end
-
-    it 'defaults to HOUSEKEEPER_TARGET_PROJECT_ID env var' do
-      expect(described_class.new.housekeeper_fork_project_id).to eq('456')
-    end
-  end
-
   describe 'when a closed merge request exists' do
     let(:closed_mr_change) { create_change(identifiers: ['closed-mr-branch']) }
     let(:fake_keep_with_closed_mr) { instance_double(Class) }
@@ -312,6 +292,7 @@ RSpec.describe ::Gitlab::Housekeeper::Runner do
 
       allow(fake_keep_with_closed_mr).to receive(:new).and_return(fake_keep_with_closed_mr_instance)
       allow(fake_keep_with_closed_mr_instance).to receive(:each_identified_change).and_yield(closed_mr_change)
+      allow(fake_keep_with_closed_mr_instance).to receive(:recreate_when_closed?).and_return(false)
 
       allow(::Gitlab::Housekeeper::Git).to receive(:new).and_return(closed_mr_git)
       allow(::Gitlab::Housekeeper::GitlabClient).to receive(:new).and_return(closed_mr_gitlab_client)
@@ -345,6 +326,37 @@ RSpec.describe ::Gitlab::Housekeeper::Runner do
           .with('Skipping change: ["closed-mr-branch"] as we have closed an MR for this branch closed-mr-branch')
 
       described_class.new(max_mrs: 1, keeps: [fake_keep_with_closed_mr]).run
+    end
+
+    context 'when the keep recreates MRs even if closed' do
+      before do
+        allow(fake_keep_with_closed_mr_instance).to receive(:recreate_when_closed?).and_return(true)
+        allow(fake_keep_with_closed_mr_instance).to receive(:make_change!)
+        allow(fake_keep_with_closed_mr_instance).to receive(:should_push_code?).and_return(true)
+        allow(::Gitlab::Housekeeper::Substitutor).to receive(:perform)
+        allow(::Gitlab::Housekeeper::Shell).to receive(:execute)
+        allow(closed_mr_gitlab_client).to receive(:non_housekeeper_changes).and_return([])
+        allow(closed_mr_gitlab_client).to receive(:get_existing_merge_request).and_return(nil)
+        allow(closed_mr_git).to receive(:push)
+      end
+
+      it 'creates the MR instead of skipping' do
+        expect(closed_mr_gitlab_client).not_to receive(:closed_merge_request_exists?)
+        expect(closed_mr_gitlab_client).to receive(:create_or_update_merge_request)
+          .at_least(:once)
+          .and_return({ 'web_url' => 'https://example.com' })
+
+        described_class.new(max_mrs: 1, keeps: [fake_keep_with_closed_mr]).run
+      end
+
+      it 'force-pushes over the closed branch' do
+        allow(closed_mr_gitlab_client).to receive(:create_or_update_merge_request)
+          .and_return({ 'web_url' => 'https://example.com' })
+
+        expect(closed_mr_git).to receive(:push).with('closed-mr-branch', anything).at_least(:once)
+
+        described_class.new(max_mrs: 1, keeps: [fake_keep_with_closed_mr]).run
+      end
     end
   end
 end

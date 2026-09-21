@@ -55364,7 +55364,9 @@ Arguments:
 | Name | Type | Description |
 | ---- | ---- | ----------- |
 | <a id="organization-artifactregistryrepositories-format"></a>`format` {{< icon name="warning-solid" >}} | [`ArtifactRegistryRepositoryFormat`](#artifactregistryrepositoryformat) | Introduced in GitLab 19.3. Status: Experiment. Return only repositories holding the given package format. |
+| <a id="organization-artifactregistryrepositories-formats"></a>`formats` {{< icon name="warning-solid" >}} | [`[ArtifactRegistryRepositoryFormat!]`](#artifactregistryrepositoryformat) | Introduced in GitLab 19.5. Status: Experiment. Return only repositories holding one of the given package formats. |
 | <a id="organization-artifactregistryrepositories-kind"></a>`kind` {{< icon name="warning-solid" >}} | [`ArtifactRegistryRepositoryKind`](#artifactregistryrepositorykind) | Introduced in GitLab 19.3. Status: Experiment. Return only repositories sourcing their artifacts the given way. |
+| <a id="organization-artifactregistryrepositories-kinds"></a>`kinds` {{< icon name="warning-solid" >}} | [`[ArtifactRegistryRepositoryKind!]`](#artifactregistryrepositorykind) | Introduced in GitLab 19.5. Status: Experiment. Return only repositories sourcing their artifacts one of the given ways. |
 | <a id="organization-artifactregistryrepositories-sort"></a>`sort` {{< icon name="warning-solid" >}} | [`ArtifactRegistryRepositorySort`](#artifactregistryrepositorysort) | Introduced in GitLab 19.3. Status: Experiment. Sort repositories by the criteria. |
 
 ##### `Organization.artifactRegistryRepository`

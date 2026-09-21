@@ -48,6 +48,12 @@ RSpec.describe Keeps::RubocopFixer, feature_category: :tooling do
     FileUtils.remove_entry(todo_dir)
   end
 
+  describe '#recreate_when_closed?' do
+    it 'returns true so MRs are recreated even after being closed' do
+      expect(rubocop_fixer.recreate_when_closed?).to be(true)
+    end
+  end
+
   describe '#each_identified_change' do
     it 'iterates over todo_dir_pattern files' do
       yielded_times = 0

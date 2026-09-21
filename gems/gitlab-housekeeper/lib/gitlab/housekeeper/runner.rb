@@ -5,9 +5,9 @@ require 'active_support/core_ext'
 require 'active_support/core_ext/string'
 require 'gitlab/housekeeper/logger'
 require 'gitlab/housekeeper/keep'
-require 'gitlab/housekeeper/gitlab_client'
 require 'gitlab/housekeeper/git'
 require 'gitlab/housekeeper/change'
+require 'gitlab/housekeeper/merge_request_manager'
 require 'gitlab/housekeeper/substitutor'
 require 'gitlab/housekeeper/filter_identifiers'
 require 'amazing_print'
@@ -49,32 +49,7 @@ module Gitlab
             @logger.puts "Running keep #{keep_class}"
             keep = keep_class.new(logger: @logger, filter_identifiers: @filter_identifiers)
             keep.each_identified_change do |change|
-              change.keep_class ||= keep_class
-              branch_name = git.create_branch(change)
-              next unless allowed_change?(change, branch_name)
-
-              keep.make_change!(change)
-
-              add_standard_change_data(change)
-
-              unless change.valid?
-                @logger.warn "Ignoring invalid change from #{keep_class} with identifier #{change.identifiers}"
-                next
-              end
-
-              next if skip_change_if_aborted(change, branch_name)
-
-              setup_merge_request(change, branch_name, keep) unless @dry_run
-
-              git.in_branch(branch_name) do
-                Gitlab::Housekeeper::Substitutor.perform(change)
-                git.create_commit(change)
-              end
-
-              print_change_details(change, branch_name)
-              create(change, branch_name, keep) unless @dry_run
-
-              mrs_created_count += 1
+              mrs_created_count += 1 if process_change(change, keep, keep_class)
               break if mrs_created_count >= @max_mrs
             end
             break if mrs_created_count >= @max_mrs
@@ -84,13 +59,42 @@ module Gitlab
         print_completion_message(mrs_created_count)
       end
 
-      def allowed_change?(change, branch_name)
+      def process_change(change, keep, keep_class)
+        change.keep_class ||= keep_class
+        branch_name = git.create_branch(change)
+        return false unless allowed_change?(change, branch_name, keep)
+
+        keep.make_change!(change)
+
+        add_standard_change_data(change)
+
+        unless change.valid?
+          @logger.warn "Ignoring invalid change from #{keep_class} with identifier #{change.identifiers}"
+          return false
+        end
+
+        return false if skip_change_if_aborted(change, branch_name)
+
+        merge_request_manager.setup(change, branch_name, keep) unless @dry_run
+
+        git.in_branch(branch_name) do
+          Gitlab::Housekeeper::Substitutor.perform(change)
+          git.create_commit(change)
+        end
+
+        print_change_details(change, branch_name)
+        merge_request_manager.create_or_update(change, branch_name, keep) unless @dry_run
+
+        true
+      end
+
+      def allowed_change?(change, branch_name, keep)
         unless @filter_identifiers.matches_filters?(change.identifiers)
           @logger.puts "Skipping change: #{change.identifiers} due to not matching filter."
           return false
         end
 
-        if !@dry_run && has_closed_merge_request?(branch_name)
+        if !@dry_run && !keep.recreate_when_closed? && merge_request_manager.closed_merge_request_exists?(branch_name)
           @logger.puts "Skipping change: #{change.identifiers} as we have closed an MR for this branch #{branch_name}"
           return false
         end
@@ -130,14 +134,17 @@ module Gitlab
         true
       end
 
-      def setup_merge_request(change, branch_name, keep)
-        merge_request = get_existing_merge_request(branch_name) || create(change, branch_name, keep)
-        change.mr_web_url = merge_request['web_url']
-        change.has_conflicts = merge_request['has_conflicts'] || false
-      end
-
       def git
         @git ||= ::Gitlab::Housekeeper::Git.new(logger: @logger, branch_from: @target_branch)
+      end
+
+      def merge_request_manager
+        @merge_request_manager ||= ::Gitlab::Housekeeper::MergeRequestManager.new(
+          git: git,
+          target_branch: @target_branch,
+          push_when_approved: @push_when_approved,
+          push_when_conflict: @push_when_conflict
+        )
       end
 
       def require_keeps
@@ -174,57 +181,6 @@ module Gitlab
         @logger.puts Shell.execute('git', '--no-pager', 'diff', '--color=always', @target_branch, branch_name, '--',
           *change.changed_files)
         @logger.puts
-      end
-
-      def create(change, branch_name, keep)
-        change.non_housekeeper_changes = gitlab_client.non_housekeeper_changes(
-          source_project_id: housekeeper_fork_project_id,
-          source_branch: branch_name,
-          target_branch: @target_branch,
-          target_project_id: housekeeper_target_project_id
-        )
-
-        if keep.should_push_code?(change, @push_when_approved, push_when_conflict: @push_when_conflict)
-          git.push(branch_name, change.push_options)
-        end
-
-        gitlab_client.create_or_update_merge_request(
-          change: change,
-          source_project_id: housekeeper_fork_project_id,
-          source_branch: branch_name,
-          target_branch: @target_branch,
-          target_project_id: housekeeper_target_project_id
-        )
-      end
-
-      def get_existing_merge_request(branch_name)
-        gitlab_client.get_existing_merge_request(
-          source_project_id: housekeeper_fork_project_id,
-          source_branch: branch_name,
-          target_branch: @target_branch,
-          target_project_id: housekeeper_target_project_id
-        )
-      end
-
-      def has_closed_merge_request?(branch_name)
-        gitlab_client.closed_merge_request_exists?(
-          source_project_id: housekeeper_fork_project_id,
-          source_branch: branch_name,
-          target_branch: @target_branch,
-          target_project_id: housekeeper_target_project_id
-        )
-      end
-
-      def housekeeper_fork_project_id
-        ENV.fetch('HOUSEKEEPER_FORK_PROJECT_ID', housekeeper_target_project_id)
-      end
-
-      def housekeeper_target_project_id
-        ENV.fetch('HOUSEKEEPER_TARGET_PROJECT_ID')
-      end
-
-      def gitlab_client
-        @gitlab_client ||= GitlabClient.new
       end
 
       def all_keeps

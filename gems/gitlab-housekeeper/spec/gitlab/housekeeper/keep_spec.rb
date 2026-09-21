@@ -53,6 +53,12 @@ RSpec.describe ::Gitlab::Housekeeper::Keep do
     end
   end
 
+  describe '#recreate_when_closed?' do
+    it 'defaults to false' do
+      expect(keep_instance.recreate_when_closed?).to be false
+    end
+  end
+
   describe '#matches_filter_identifiers?' do
     context 'when filter_identifiers is nil' do
       it 'returns true' do

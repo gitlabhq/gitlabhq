@@ -82,6 +82,15 @@ module Gitlab
         change.update_required?(:code)
       end
 
+      # By default a change is skipped when a closed MR already exists for its branch, so a human closing
+      # the MR is respected. Keeps that regenerate the same branch on every run can override this to
+      # recreate the MR regardless.
+      #
+      # @return [Boolean] Whether to recreate the MR even if a closed one exists
+      def recreate_when_closed?
+        false
+      end
+
       private
 
       attr_reader :logger

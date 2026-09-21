@@ -28,7 +28,7 @@ describe('resolveDateRangeFilter', () => {
   });
 
   it('falls back to the default selected option when given nothing', () => {
-    expect(resolveDateRangeFilter()).toMatchObject(LAST_7_DAYS);
+    expect(resolveDateRangeFilter()).toMatchObject(LAST_30_DAYS);
   });
 
   it('falls back to the given default option for an option it does not know', () => {

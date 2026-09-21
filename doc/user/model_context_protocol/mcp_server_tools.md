@@ -1403,7 +1403,78 @@ Example:
 Show me the work items in this saved view: <URL>
 ```
 
+## `list_vulnerabilities`
+
+{{< details >}}
+
+- Tier: Ultimate
+- Offering: GitLab.com, GitLab Self-Managed, GitLab Dedicated
+
+{{< /details >}}
+
+{{< history >}}
+
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/251243) in GitLab 19.4.
+
+{{< /history >}}
+
+Lists security vulnerabilities in a GitLab project, with optional filters and cursor pagination.
+Returns paginated vulnerability metadata. To get full details for a single vulnerability,
+use [`get_vulnerability`](#get_vulnerability).
+
+Requires the security dashboard feature to be enabled.
+
+| Parameter            | Type             | Required | Description |
+|----------------------|------------------|----------|-------------|
+| `project_full_path`  | string           | Yes      | Full path of the project (for example, `namespace/project` or `group/subgroup/project`). |
+| `severity`           | array of strings | No       | Filter by severity level. Omit to include vulnerabilities of any severity. One or more of `CRITICAL`, `HIGH`, `MEDIUM`, `LOW`, `INFO`, or `UNKNOWN`. |
+| `report_type`        | array of strings | No       | Filter by security report type. Omit to include all report types. For example, `SAST`, `DAST`, or `DEPENDENCY_SCANNING`. |
+| `state`              | array of strings | No       | Filter by vulnerability state. Omit to include vulnerabilities in any state. One or more of `CONFIRMED`, `DETECTED`, `DISMISSED`, or `RESOLVED`. |
+| `first`              | integer          | No       | Number of vulnerabilities to return for forward pagination. Default is `20`, maximum is `100`. |
+| `after`              | string           | No       | Cursor for forward pagination. Use `pageInfo.endCursor` from a previous response. |
+
+Example:
+
+```plaintext
+List critical and high severity vulnerabilities in project gitlab-org/gitlab
+```
+
+## `get_vulnerability`
+
+{{< details >}}
+
+- Tier: Ultimate
+- Offering: GitLab.com, GitLab Self-Managed, GitLab Dedicated
+
+{{< /details >}}
+
+{{< history >}}
+
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/251243) in GitLab 19.4.
+
+{{< /history >}}
+
+Returns comprehensive details for a single vulnerability, including title, state, description,
+severity, and identifiers.
+
+| Parameter          | Type   | Required | Description |
+|--------------------|--------|----------|-------------|
+| `vulnerability_id` | string | Yes      | Numeric ID of the vulnerability (for example, `567`). |
+
+Example:
+
+```plaintext
+Get full details for vulnerability 567
+```
+
 ## `save_vulnerability`
+
+{{< details >}}
+
+- Tier: Ultimate
+- Offering: GitLab.com, GitLab Self-Managed, GitLab Dedicated
+
+{{< /details >}}
 
 {{< history >}}
 
