@@ -457,40 +457,35 @@ RSpec.describe Gitlab::GithubImport::Client, feature_category: :importers do
   end
 
   describe '#requests_remaining?' do
-    context 'when default requests limit is set' do
-      before do
-        allow(client).to receive(:requests_limit).and_return(5000)
-      end
+    using RSpec::Parameterized::TableSyntax
 
-      it 'returns true if enough requests remain' do
-        expect(client).to receive(:remaining_requests).and_return(9000)
-
-        expect(client.requests_remaining?).to be(true)
-      end
-
-      it 'returns false if not enough requests remain' do
-        expect(client).to receive(:remaining_requests).and_return(1)
-
-        expect(client.requests_remaining?).to be(false)
-      end
+    where(:requests_limit, :remaining_requests, :result) do
+      5000 | (described_class::RATE_LIMIT_THRESHOLD_MAX + 1) | true
+      5000 | described_class::RATE_LIMIT_THRESHOLD_MAX | false
+      5000 | (described_class::RATE_LIMIT_THRESHOLD_MAX - 1) | false
+      969  | described_class::RATE_LIMIT_THRESHOLD_MAX | true
+      959  | (described_class::RATE_LIMIT_THRESHOLD_MAX - 1) | false
+      500  | 27   | true
+      500  | 26   | false
+      30   | 4    | true
+      30   | 3    | false
+      10   | 3    | true
+      10   | 2    | false
+      5    | 2    | true
+      5    | 1    | false
+      1    | 1    | true
+      1    | 0    | false
     end
 
-    context 'when search requests limit is set' do
+    with_them do
       before do
-        allow(client).to receive(:requests_limit).and_return(described_class::SEARCH_MAX_REQUESTS_PER_MINUTE)
+        allow(client).to receive_messages(
+          requests_limit: requests_limit,
+          remaining_requests: remaining_requests
+        )
       end
 
-      it 'returns true if enough requests remain' do
-        expect(client).to receive(:remaining_requests).and_return(described_class::SEARCH_RATE_LIMIT_THRESHOLD + 1)
-
-        expect(client.requests_remaining?).to be(true)
-      end
-
-      it 'returns false if not enough requests remain' do
-        expect(client).to receive(:remaining_requests).and_return(described_class::SEARCH_RATE_LIMIT_THRESHOLD - 1)
-
-        expect(client.requests_remaining?).to be(false)
-      end
+      it { expect(client.requests_remaining?).to be(result) }
     end
   end
 
@@ -737,15 +732,51 @@ RSpec.describe Gitlab::GithubImport::Client, feature_category: :importers do
 
   describe '#rate_limiting_enabled?' do
     it 'returns true when using GitHub.com' do
+      expect(client.octokit).not_to receive(:rate_limit)
+
       expect(client.rate_limiting_enabled?).to be(true)
     end
 
-    it 'returns false for GitHub enterprise installations' do
-      expect(client)
-        .to receive(:api_endpoint)
-        .and_return('https://github.kittens.com/')
+    context 'for GitHub enterprise installations' do
+      before do
+        allow(client)
+          .to receive(:api_endpoint)
+          .and_return('https://github.kittens.com/')
+      end
 
-      expect(client.rate_limiting_enabled?).to be(false)
+      it 'returns true when the rate limit endpoint exists' do
+        stub_request(:get, 'https://api.github.com/rate_limit')
+          .to_return(status: 200, headers: { 'X-RateLimit-Limit' => 5000, 'X-RateLimit-Remaining' => 5000 })
+
+        expect(client.rate_limiting_enabled?).to be(true)
+      end
+
+      it 'returns false when the rate limit endpoint does not exist' do
+        stub_request(:get, 'https://api.github.com/rate_limit')
+          .to_return(status: 404)
+
+        expect(client.rate_limiting_enabled?).to be(false)
+      end
+
+      it 'memoizes the result and only checks the rate limit endpoint once' do
+        stub_request(:get, 'https://api.github.com/rate_limit')
+          .to_return(status: 404)
+
+        2.times { expect(client.rate_limiting_enabled?).to be(false) }
+
+        expect(a_request(:get, 'https://api.github.com/rate_limit')).to have_been_made.once
+      end
+
+      it 'retries on connection error and succeeds' do
+        allow_retry(:rate_limit)
+
+        expect(Gitlab::GithubImport::Logger)
+          .to receive(:info)
+          .with(hash_including('error.class': described_class::CLIENT_CONNECTION_ERROR))
+          .once
+
+        expect(client.rate_limiting_enabled?).to be(true)
+      end
     end
   end
 
