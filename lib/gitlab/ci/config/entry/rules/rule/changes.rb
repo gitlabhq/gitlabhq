@@ -55,7 +55,7 @@ module Gitlab
                   def regexp_is_valid
                     return unless regexp.is_a?(String)
 
-                    Regexp.new(regexp)
+                    ::Gitlab::Ci::Build::Rules::Rule::Clause.compile_regexp(regexp)
                   rescue RegexpError => e
                     errors.add(:regexp, "is invalid: #{e.message}")
                   end
